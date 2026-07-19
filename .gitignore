@@ -15,3 +15,7 @@
 # Environment
 .env
 .env.local
+
+# Build artifacts
+frontend/node_modules/
+frontend/dist/
