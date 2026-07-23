@@ -137,11 +137,22 @@ export const GROUND_Y = {
 
 // Building OSM ways that already have handcrafted landmark geometry. The
 // generic building layer skips these so we don't z-fight our own detail.
-export const LANDMARK_BUILDING_IDS: Set<string> = new Set(
-  WORLD.landmarks
+//
+// Shared-container buildings: these OSM ways don't map to a single
+// landmark via the way→osmId lookup above, but they physically HOUSE
+// multiple node landmarks (e.g. `w869907962` is the 50.9 × 16.8 m
+// Torget long house that contains Guldkringlan, Cornelis and
+// Antikvariat as three commercial tenants). Handcrafted landmark
+// geometry renders these as proper multi-storey buildings; the
+// generic OsmBuildings layer skips them.
+const SHARED_CONTAINER_BUILDING_IDS = ['w869907962'];
+
+export const LANDMARK_BUILDING_IDS: Set<string> = new Set([
+  ...WORLD.landmarks
     .filter((l) => l.source.osmType === 'way' && l.source.osmId != null)
-    .map((l) => `w${l.source.osmId}`)
-);
+    .map((l) => `w${l.source.osmId}`),
+  ...SHARED_CONTAINER_BUILDING_IDS
+]);
 
 // Roads categorised for movement systems.
 //
