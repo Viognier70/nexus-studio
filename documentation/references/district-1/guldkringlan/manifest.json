@@ -1,0 +1,51 @@
+{
+  "landmark": "gry-kringlan",
+  "displayName": "Guldkringlan",
+  "osmSource": {
+    "type": "node",
+    "id": 3587736399,
+    "fetched": "2026-07-02T16:51:45Z"
+  },
+  "confidenceThreshold": 0.9,
+  "requiredReferencesByAspect": {
+    "position": "OSM node 3587736399 (verified — point only)",
+    "footprint": "Google Maps aerial of the parcel — establishes footprint polygon",
+    "orientation": "aerial + street-facing photograph",
+    "storeyCount": "facade photograph",
+    "wallHeight": "facade photograph with scale",
+    "wallMaterial": "daylight facade photograph",
+    "wallColour": "daylight facade photograph, midday",
+    "roofForm": "aerial or gable-end photograph",
+    "roofColour": "close photograph of roof surface",
+    "entranceForm": "photograph of the entrance (door, awning, signage)",
+    "windowsRhythm": "one photograph showing the fenestration",
+    "signage": "photograph of the sign board in current form"
+  },
+  "collectedSources": [
+    {
+      "path": "guldkringlan2.jpg",
+      "view": "main facade, three-quarter close; shows three-storey Falu-red vertical timber siding, three-bay window rhythm per storey, central entrance under sign board 'GULDKRINGLAN' (gold letters on black), 'Café' hanging sign, concrete ramp with railing up to entrance, bicycle racks",
+      "verifies": ["wallMaterial", "wallColour", "storeyCount", "windowsRhythm", "entranceForm", "signage"],
+      "notes": "Only one facade visible; roof form and footprint depth still unknown"
+    },
+    {
+      "path": "guldkringlan vid torget.avif",
+      "view": "large AVIF file (~116 KB) — not readable by current pipeline as image; filename indicates a view of Guldkringlan at Torget",
+      "verifies": [],
+      "notes": "Present but not yet inventoried by content"
+    }
+  ],
+  "confidenceByAspect": {
+    "position": { "score": 1.00, "justification": "OSM node 3587736399 verified" },
+    "storeyCount": { "score": 0.95, "justification": "Three storeys clearly visible in guldkringlan2.jpg" },
+    "wallMaterial": { "score": 0.95, "justification": "Vertical Falu-red timber siding" },
+    "wallColour": { "score": 0.95, "justification": "Consistent Falu red in daylight" },
+    "windowsRhythm": { "score": 0.90, "justification": "Three bays of double-hung white-framed windows on each storey" },
+    "entranceForm": { "score": 0.90, "justification": "Central double doors, concrete ramp with railing, signage above" },
+    "signage": { "score": 0.95, "justification": "'GULDKRINGLAN' gold-on-black board over entrance; separate 'Café' hanging sign" },
+    "footprint": { "score": 0.20, "justification": "Only one facade visible; depth and full footprint not resolved. Needs aerial." },
+    "orientation": { "score": 0.30, "justification": "Facade orientation only partially inferable from context" },
+    "roofForm": { "score": 0.20, "justification": "Roof not visible in facade shot" },
+    "roofColour": { "score": 0.20, "justification": "Not visible" }
+  }
+}

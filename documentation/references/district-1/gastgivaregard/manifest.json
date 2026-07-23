@@ -1,0 +1,69 @@
+{
+  "landmark": "gry-gastgivaregard",
+  "displayName": "Grythyttans Gästgivaregård",
+  "osmSource": {
+    "type": "way",
+    "id": 869907964,
+    "fetched": "2026-07-02T16:51:45Z"
+  },
+  "confidenceThreshold": 0.9,
+  "requiredReferencesByAspect": {
+    "footprint": "OSM way 869907964 (verified)",
+    "orientation": "OSM way 869907964 (verified)",
+    "wallHeight": "gable-end photograph with human/vehicle scale",
+    "wallColour": "one daylight facade photograph, midday",
+    "roofForm": "Google Maps aerial 45° view of the parcel",
+    "roofPitch": "photograph of one gable end (or Street View)",
+    "roofMaterial": "close photograph of roof surface",
+    "roofColour": "close photograph of roof surface",
+    "chimneysCountAndPosition": "aerial view of the roof",
+    "entranceForm": "photograph of the entrance side (canopy, steps, door)",
+    "wingExtensions": "aerial + facade photographs confirming any wings",
+    "windowsCountAndRhythm": "one photograph of each long facade, straight-on",
+    "gableEnds": "photograph of each gable end, straight-on",
+    "terraceOrArrivalCourt": "any Street View / photograph"
+  },
+  "collectedSources": [
+    {
+      "path": "gästgiveriet.jpeg",
+      "view": "street-facing main facade along Prästgatan; shows two-storey Falu-red timber, sign board 'GÄSTGIVAREGÅRDEN 1641' over entrance, adjacent attached red timber wing with rhythmic small-paned white-framed windows, cobbled street",
+      "verifies": ["wallMaterial", "wallColour", "signBoard", "entrancePosition", "windowsCountAndRhythm", "wingExtensions", "storeyCount"],
+      "notes": "Gable end at left with oculus (round) window"
+    },
+    {
+      "path": "gästgiveriet3.jpeg",
+      "view": "rear / courtyard facade in daylight; shows terrace with diners, two dormer windows with round oculi on north pitch, chimneys, curved roof end",
+      "verifies": ["dormers", "chimneysCountAndPosition", "roofForm", "wallColour", "terraceOrArrivalCourt"],
+      "notes": "Chimney count approx 2-3 across the roof line"
+    },
+    {
+      "path": "gästgiveriet 4.jpeg",
+      "view": "corner three-quarter view of main gable end and street facade; shows gable-end silhouette, half-timber-style detailing, sign board and lantern",
+      "verifies": ["gableEnds", "signBoard", "entranceForm", "wallColour"],
+      "notes": "Very useful for establishing gable-end proportions"
+    },
+    {
+      "path": "gästgibveriet på prästgatan.jpeg",
+      "view": "winter shot of Prästgatan looking down the street; shows Gästgivaregård context with neighbouring buildings, snow-covered roofs",
+      "verifies": ["roofForm", "roofPitch", "streetContext"],
+      "notes": "Roof pitch legible against sky; secondary use only"
+    }
+  ],
+  "confidenceByAspect": {
+    "footprint": { "score": 1.00, "justification": "OSM way 869907964 verified" },
+    "orientation": { "score": 1.00, "justification": "OSM verified" },
+    "wallMaterial": { "score": 0.95, "justification": "Vertical Falu-red timber siding, consistent across all four photos" },
+    "wallColour": { "score": 0.95, "justification": "Consistent Falu red in daylight" },
+    "storeyCount": { "score": 0.90, "justification": "Two storeys visible along street facade" },
+    "roofForm": { "score": 0.85, "justification": "Steep gable with dormers on north pitch and gabled dormers on street pitch; not yet a plan-view aerial" },
+    "roofPitch": { "score": 0.75, "justification": "Readable from gable-end and winter-street photos" },
+    "roofColour": { "score": 0.75, "justification": "Dark-grey / near-black roof visible" },
+    "chimneysCountAndPosition": { "score": 0.65, "justification": "2-3 chimneys visible in rear view; positions not exact" },
+    "entrancePosition": { "score": 0.90, "justification": "Sign board over street-facing entrance" },
+    "entranceForm": { "score": 0.75, "justification": "Sign board 'GÄSTGIVAREGÅRDEN 1641' with hanging lantern" },
+    "wingExtensions": { "score": 0.85, "justification": "Attached red-timber wing to the north along street" },
+    "windowsCountAndRhythm": { "score": 0.75, "justification": "Rhythmic small-paned windows visible; approx count from photos" },
+    "gableEnds": { "score": 0.75, "justification": "Left gable end with oculus visible" },
+    "terraceOrArrivalCourt": { "score": 0.85, "justification": "Rear courtyard with terrace confirmed in gästgiveriet3.jpeg" }
+  }
+}

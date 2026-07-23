@@ -1,0 +1,52 @@
+{
+  "landmark": "gry-campus",
+  "displayName": "Måltidens hus / Sevillapaviljongen (Campus Grythyttan)",
+  "note": "Not part of the §4.3 pass and not in the original District 1 reference-request scope, but Vision Owner has now supplied references. Folder inventoried here so a reconstruction pass can follow once the church is done.",
+  "osmSource": null,
+  "confidenceThreshold": 0.9,
+  "requiredReferencesByAspect": {
+    "footprint": "Google Maps aerial of the campus parcel",
+    "orientation": "aerial + street photograph",
+    "maltidensHusEntranceWing": "photograph of the entrance, main hall and glazing",
+    "sevillaPavilionForm": "photographs of the pavilion showing its plan, roof form, colours",
+    "sevillaPavilionLantern": "photograph of the pavilion's crown / cupola / any lantern",
+    "flagMast": "photograph confirming or denying any flag mast",
+    "wallMaterial": "daylight facade photograph",
+    "wallColour": "daylight facade photograph",
+    "roofMaterial": "close photograph of roof surface",
+    "roofColour": "close photograph of roof surface",
+    "monolithOrSignage": "photograph of the entrance monolith / signage if present"
+  },
+  "collectedSources": [
+    {
+      "path": "maltidens-hus-i-norden 1.jpg",
+      "view": "from below the pavilion canopy, three-quarter angle; shows multicoloured chess-pattern flat roof canopy supported by four pairs of heavy timber columns, dark cylindrical drum tower with checkerboard-patterned base and glazed upper storeys, angled white side buildings behind",
+      "verifies": ["sevillaPavilionForm", "canopyPattern", "columnStructure", "drumTower", "maltidensHusForm"],
+      "notes": "Best structural view of the canopy underside"
+    },
+    {
+      "path": "maltidens-hus-i-norden2.jpg",
+      "view": "front-on frontal view of the pavilion; shows the drum tower with a viewing balcony/gallery near the top and a small conical / gilded finial cap, four pairs of columns holding the multicoloured canopy, angled white buildings on both sides",
+      "verifies": ["sevillaPavilionForm", "sevillaPavilionLantern", "drumTowerBalcony", "maltidensHusForm"],
+      "notes": "Confirms conical finial, NOT the previous 'glowing sphere lantern' invention"
+    },
+    {
+      "path": "maltidens-hus-i-norden3.jpg",
+      "view": "three-quarter view showing drum tower with conical crown and heavy timber columns supporting the canopy, adjacent buildings in background, grass foreground",
+      "verifies": ["sevillaPavilionForm", "sevillaPavilionLantern", "columnStructure"],
+      "notes": "Confirms scale relative to human figures"
+    }
+  ],
+  "confidenceByAspect": {
+    "sevillaPavilionForm": { "score": 0.90, "justification": "Cylindrical drum tower + flat multicoloured canopy on four column pairs, consistent across all three photos. The current in-repo model (octagonal wooden peaked pavilion with flag mast and glowing sphere) is wrong and must be replaced." },
+    "sevillaPavilionLantern": { "score": 0.80, "justification": "Small conical / bell-shaped finial on the drum crown; no glowing sphere" },
+    "drumTower": { "score": 0.90, "justification": "Round tower with checkerboard base and glazed upper storeys" },
+    "drumTowerBalcony": { "score": 0.85, "justification": "Viewing balcony near the top of the drum" },
+    "canopyPattern": { "score": 0.90, "justification": "Chess-pattern multicoloured flat canopy" },
+    "columnStructure": { "score": 0.85, "justification": "Four pairs of heavy timber columns (abstracted 'tree' forms)" },
+    "maltidensHusForm": { "score": 0.75, "justification": "Angled white / silver side buildings visible around the pavilion" },
+    "footprint": { "score": 0.30, "justification": "No aerial; footprint approximate from OSM only" },
+    "orientation": { "score": 0.60, "justification": "Approximate from context" },
+    "flagMast": { "score": 0.10, "justification": "No flag mast visible in any photo — the current model's flag mast is invention" }
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "landmark": "gry-torget",
+  "displayName": "Torget",
+  "osmSource": {
+    "type": "way",
+    "id": 122157681,
+    "fetched": "2026-07-02T16:51:45Z"
+  },
+  "confidenceThreshold": 0.9,
+  "requiredReferencesByAspect": {
+    "boundary": "OSM way 122157681 (verified)",
+    "position": "OSM way 122157681 (verified)",
+    "aerial": "Google Maps aerial view of the whole square",
+    "monumentExistence": "any photograph of the square showing the centre",
+    "monumentForm": "one straight-on photograph per side of the monument",
+    "monumentMaterial": "close photograph of the monument",
+    "groundMaterial": "photograph of the paving stones / curb",
+    "benchesAndPlanters": "photograph showing seating and planting on the square",
+    "trees": "photograph showing vegetation extent",
+    "lampPosts": "photograph showing lamp posts / kiosks if present",
+    "perimeterN": "Street View along the north edge of the square",
+    "perimeterE": "Street View along the east edge",
+    "perimeterS": "Street View along the south edge",
+    "perimeterW": "Street View along the west edge"
+  },
+  "collectedSources": [
+    {
+      "path": "torget.jpeg",
+      "view": "historic photo (rainy, deciduous trees leafless), looking down a wide open square with a formal avenue of large mature trees; two-storey white timber building on one perimeter side, red timber buildings on the other; Gästgivaregård visible in the distance",
+      "verifies": ["treeAvenue", "openSquare", "perimeterBuildingStyle"],
+      "notes": "'Foto: Carlsson, Ulla — Örebro läns museum' watermark — historic archival photo"
+    },
+    {
+      "path": "torget2.jpeg",
+      "view": "colour postcard-era photo of corner of Torget with a green two-storey timber shop ('BÖCKER PAPPER TOBAK'), mature deciduous trees, red timber buildings visible in the distance, wide paved surface, kiosk with awning",
+      "verifies": ["treeAvenue", "openSquare", "perimeterBuildingStyle", "groundMaterial"],
+      "notes": "Ground surface reads as paved / gravel mixture"
+    },
+    {
+      "path": "torget 3.jpg",
+      "view": "historic B&W photo of Torget corner with two-storey timber building ('FRISÖR' hair-salon sign), long avenue of trees running down the length of the square, dirt / gravel surface, buildings receding into distance",
+      "verifies": ["treeAvenue", "openSquare", "perimeterBuildingStyle"],
+      "notes": "Historic — surface has since been paved; 'Lindebilder.se' watermark"
+    }
+  ],
+  "confidenceByAspect": {
+    "boundary": { "score": 1.00, "justification": "OSM way 122157681 verified" },
+    "position": { "score": 1.00, "justification": "OSM verified" },
+    "openSquare": { "score": 0.95, "justification": "Wide open square consistent across all three photos" },
+    "treeAvenue": { "score": 0.90, "justification": "Formal avenue of large mature deciduous trees along the square, consistent across three photos" },
+    "perimeterBuildingStyle": { "score": 0.85, "justification": "Two-storey timber buildings, mix of red and painted lighter tones (green, white)" },
+    "monumentExistence": { "score": 0.25, "justification": "No central monument visible in any of the three photos — the previous obelisk was invention. Vision Owner may confirm actual monument if any exists." },
+    "monumentForm": { "score": 0.10, "justification": "Not visible in any supplied photo" },
+    "groundMaterial": { "score": 0.55, "justification": "Historic photos show gravel/dirt; modern paving assumed but not verified" },
+    "benchesAndPlanters": { "score": 0.20, "justification": "Not clearly identifiable in supplied photos" },
+    "trees": { "score": 0.90, "justification": "Large mature deciduous trees along the avenue" },
+    "lampPosts": { "score": 0.30, "justification": "Historic photos show some poles; not resolved" }
+  }
+}

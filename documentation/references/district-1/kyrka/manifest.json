@@ -1,0 +1,72 @@
+{
+  "landmark": "gry-kyrka",
+  "displayName": "Grythyttans kyrka",
+  "osmSource": {
+    "type": "way",
+    "id": 869907961,
+    "fetched": "2026-07-02T16:51:45Z"
+  },
+  "confidenceThreshold": 0.9,
+  "requiredReferencesByAspect": {
+    "footprint": "OSM way 869907961 (verified)",
+    "orientation": "OSM way 869907961 (verified)",
+    "roofForm": "Google Maps aerial 45° view over 59.706°N, 14.537°E",
+    "roofPitch": "photograph of one gable end (or Street View)",
+    "wallMaterial": "one daylight facade photograph",
+    "wallColour": "one daylight facade photograph, midday",
+    "roofMaterial": "close photograph of roof surface",
+    "roofColour": "close photograph of roof surface",
+    "bellTowerPresence": "any azimuth photograph or Wikipedia article confirming a tower",
+    "bellTowerPosition": "aerial + facade photograph or plan drawing",
+    "bellTowerShape": "one photograph of the tower",
+    "bellTowerHeight": "reference photograph with scale (person / vehicle / neighbouring wall)",
+    "spireForm": "close photograph of the crown",
+    "windowsLongFacadeCount": "one photograph of each long facade, straight-on",
+    "windowsLongFacadeRhythm": "one photograph of each long facade, straight-on",
+    "entrancePosition": "photograph of the entrance side",
+    "entranceForm": "photograph of the entrance",
+    "churchyardPerimeter": "perimeter photographs, one per side"
+  },
+  "collectedSources": [
+    {
+      "path": "kyrkan.jpg",
+      "view": "south facade, spring, tower at right (west end); shows nave flank with tall arched windows, dark roof, tower body, main entrance porch",
+      "verifies": ["wallMaterial", "wallColour", "roofForm", "roofColour", "bellTowerPresence", "bellTowerPosition", "bellTowerShape", "windowsLongFacadeRhythm", "entrancePosition"],
+      "notes": "Trees partially occlude the west gable end of the nave"
+    },
+    {
+      "path": "kyrkan.jpeg",
+      "view": "east / south-east three-quarter, tower at right; shows east gable end wing of nave and full-height view of tower body + roof cap + spire",
+      "verifies": ["bellTowerShape", "bellTowerHeight", "spireForm", "roofForm", "churchyardPerimeter"],
+      "notes": "Large conifer occludes part of nave"
+    },
+    {
+      "path": "kyrkan2.jpeg",
+      "view": "north facade, tower at left; shows clock face on tower west face, cross on top, two roof dormers on the nave, churchyard entrance path, nave flank with arched windows",
+      "verifies": ["bellTowerPosition", "bellTowerShape", "spireForm", "roofForm", "clockFace", "cross", "dormers", "windowsLongFacadeRhythm", "wallColour", "roofColour"],
+      "notes": "Best single view for tower proportions and cross"
+    }
+  ],
+  "confidenceByAspect": {
+    "footprint": { "score": 1.00, "justification": "OSM way 869907961 verified" },
+    "orientation": { "score": 1.00, "justification": "OSM way 869907961 verified; tower at west end confirmed by clock-face orientation in kyrkan2.jpeg" },
+    "wallMaterial": { "score": 0.95, "justification": "All three photos show vertical Falu-red timber siding on nave and tower" },
+    "wallColour": { "score": 0.95, "justification": "Consistent Falu-red across three daylight photos" },
+    "roofForm": { "score": 0.92, "justification": "Steep gable over nave with two dormers on the north pitch; visible in kyrkan.jpeg and kyrkan2.jpeg" },
+    "roofColour": { "score": 0.90, "justification": "Uniform near-black / dark charcoal across all three photos" },
+    "roofMaterial": { "score": 0.65, "justification": "Reads as dark painted metal / shingle; no close-up available" },
+    "bellTowerPresence": { "score": 1.00, "justification": "Tower visible in all three photos" },
+    "bellTowerPosition": { "score": 0.90, "justification": "Tower at west end of nave, integrated with west wall; consistent across all three views" },
+    "bellTowerShape": { "score": 0.90, "justification": "Square base + bell-shaped (ogee) cap + slender spire; consistent across all three views" },
+    "bellTowerHeight": { "score": 0.80, "justification": "Tower reads as ~2× the nave-wall height from foreground trees/wall scale" },
+    "spireForm": { "score": 0.85, "justification": "Slender spire above the ogee cap with a cross finial" },
+    "clockFace": { "score": 0.90, "justification": "Circular clock face on west face of tower, visible in kyrkan2.jpeg" },
+    "cross": { "score": 1.00, "justification": "Cross finial on top of spire, kyrkan2.jpeg" },
+    "windowsLongFacadeCount": { "score": 0.70, "justification": "Visible rhythm on both flanks but no straight-on facade shot; approx 4-5 arched windows per long side" },
+    "windowsLongFacadeRhythm": { "score": 0.80, "justification": "Tall arched windows with white frames, evenly spaced" },
+    "dormers": { "score": 0.85, "justification": "Two dormers on north pitch, kyrkan2.jpeg" },
+    "entrancePosition": { "score": 0.70, "justification": "Small porch on the south transept protrusion; partial view in kyrkan.jpg" },
+    "entranceForm": { "score": 0.55, "justification": "Not clearly resolved in any photo" },
+    "churchyardPerimeter": { "score": 0.75, "justification": "Rubble-stone low wall confirmed on south side (kyrkan.jpg, kyrkan.jpeg); full perimeter not resolved" }
+  }
+}

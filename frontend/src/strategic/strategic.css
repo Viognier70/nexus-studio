@@ -1,0 +1,337 @@
+:root {
+  --gb-bg: #0d1112;
+  --gb-panel: rgba(20, 22, 24, 0.94);
+  --gb-panel-soft: rgba(20, 22, 24, 0.78);
+  --gb-border: rgba(255, 255, 255, 0.09);
+  --gb-text: #ece7de;
+  --gb-text-dim: #b3ada2;
+  --gb-accent: #d9c199;
+  --gb-focus: #e6c98c;
+}
+
+.gb-root {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--gb-bg);
+  color: var(--gb-text);
+  font-family: 'Iowan Old Style', 'Palatino Linotype', 'Palatino',
+    'URW Palladio L', 'Georgia', serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none;
+}
+
+.gb-canvas-host {
+  position: absolute;
+  inset: 0;
+}
+
+/* View label — subtle top-centre chrome */
+.gb-viewlabel {
+  position: absolute;
+  top: 1.4rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.4rem 1rem;
+  color: var(--gb-text);
+  letter-spacing: 0.28em;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  background: var(--gb-panel-soft);
+  border: 1px solid var(--gb-border);
+  border-radius: 2px;
+  z-index: 6;
+  pointer-events: none;
+}
+
+/* Verification badge — persistent lower-left */
+.gb-verify-badge {
+  position: absolute;
+  bottom: 1.4rem;
+  left: 1.4rem;
+  padding: 0.4rem 0.75rem;
+  background: var(--gb-panel-soft);
+  border: 1px solid var(--gb-border);
+  border-radius: 2px;
+  color: var(--gb-text-dim);
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  z-index: 6;
+  pointer-events: none;
+}
+
+/* Top-right controls */
+.gb-topright {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.2rem;
+  display: flex;
+  gap: 0.5rem;
+  z-index: 10;
+}
+.gb-btn {
+  border: 1px solid var(--gb-border);
+  background: var(--gb-panel-soft);
+  color: var(--gb-text);
+  padding: 0.5rem 0.9rem;
+  font: inherit;
+  cursor: pointer;
+  border-radius: 2px;
+  min-height: 40px;
+  min-width: 44px;
+  letter-spacing: 0.04em;
+  font-size: 0.9rem;
+}
+.gb-btn:hover {
+  background: rgba(255, 255, 255, 0.13);
+}
+.gb-btn.primary {
+  background: var(--gb-accent);
+  color: #201b12;
+  border-color: transparent;
+}
+.gb-btn:focus-visible,
+.gb-outward:focus-visible,
+.gb-mode-switch:focus-visible,
+.gb-selection-close:focus-visible,
+.gb-hint-close:focus-visible {
+  outline: 2px solid var(--gb-focus);
+  outline-offset: 2px;
+}
+
+.gb-mode-switch {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.9rem;
+  color: var(--gb-text);
+  background: var(--gb-panel-soft);
+  border: 1px solid var(--gb-border);
+  border-radius: 2px;
+  text-decoration: none;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+}
+.gb-mode-switch:hover {
+  background: rgba(255, 255, 255, 0.13);
+}
+
+/* Outward button — always reachable */
+.gb-outward {
+  position: absolute;
+  bottom: max(1.4rem, env(safe-area-inset-bottom));
+  right: max(1.4rem, env(safe-area-inset-right));
+  padding: 0.8rem 1.4rem;
+  background: var(--gb-panel);
+  color: var(--gb-text);
+  border: 1px solid var(--gb-border);
+  border-radius: 40px;
+  font: inherit;
+  letter-spacing: 0.06em;
+  min-height: 52px;
+  min-width: 56px;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+.gb-outward:hover {
+  background: rgba(255, 255, 255, 0.13);
+}
+
+/* Controls hint — bottom center, dismissable */
+.gb-hint {
+  position: absolute;
+  bottom: max(1.4rem, env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.55rem 0.9rem;
+  background: var(--gb-panel-soft);
+  border: 1px solid var(--gb-border);
+  border-radius: 2px;
+  color: var(--gb-text-dim);
+  font-size: 0.85rem;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  max-width: 88vw;
+}
+.gb-hint b {
+  color: var(--gb-text);
+  font-weight: 500;
+}
+.gb-hint-close {
+  border: none;
+  background: transparent;
+  color: var(--gb-text-dim);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0 0.35rem;
+  line-height: 1;
+}
+.gb-hint-close:hover {
+  color: var(--gb-text);
+}
+
+/* Selection chrome — right side, above outward button */
+.gb-selection {
+  position: absolute;
+  top: 5rem;
+  right: 1.4rem;
+  width: min(22rem, 84vw);
+  padding: 1rem 1.1rem;
+  background: var(--gb-panel);
+  border: 1px solid var(--gb-border);
+  border-radius: 3px;
+  color: var(--gb-text);
+  z-index: 8;
+}
+.gb-selection-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+.gb-selection-title {
+  font-size: 1.1rem;
+  letter-spacing: 0.04em;
+}
+.gb-selection-kind {
+  font-size: 0.8rem;
+  color: var(--gb-accent);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 0.15rem;
+}
+.gb-selection-close {
+  border: none;
+  background: transparent;
+  color: var(--gb-text-dim);
+  font-size: 1.4rem;
+  cursor: pointer;
+  padding: 0 0.35rem;
+  line-height: 1;
+}
+.gb-selection-close:hover {
+  color: var(--gb-text);
+}
+.gb-selection-verify {
+  margin-top: 0.6rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gb-text-dim);
+}
+.gb-selection-note {
+  margin-top: 0.6rem;
+  font-size: 0.88rem;
+  color: var(--gb-text-dim);
+  line-height: 1.4;
+}
+.gb-selection-source {
+  margin-top: 0.4rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: var(--gb-text-dim);
+  text-transform: uppercase;
+}
+
+/* Modal (about) */
+.gb-modal {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.4rem;
+  z-index: 20;
+}
+.gb-modal-panel {
+  background: var(--gb-panel);
+  border: 1px solid var(--gb-border);
+  border-radius: 3px;
+  padding: 1.8rem 2rem;
+  max-width: 32rem;
+  width: 100%;
+  max-height: 88vh;
+  overflow: auto;
+}
+.gb-modal-panel h2,
+.gb-modal-panel h3 {
+  margin: 0 0 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+}
+.gb-modal-panel h3 {
+  margin-top: 1.4rem;
+  font-size: 0.95rem;
+  color: var(--gb-accent);
+}
+.gb-modal-panel p {
+  margin: 0 0 0.7rem;
+  color: var(--gb-text-dim);
+  line-height: 1.55;
+}
+.gb-modal-panel p.gb-lead {
+  color: var(--gb-text);
+}
+.gb-controls {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  color: var(--gb-text-dim);
+  font-size: 0.92rem;
+}
+.gb-controls li {
+  padding: 0.2rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+.gb-controls li:last-child {
+  border-bottom: none;
+}
+.gb-modal-actions {
+  margin-top: 1.4rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Street name labels drawn as HTML via drei's <Html>. Kept minimal so the
+   village reads through shape, not through UI. Three tiers — major /
+   secondary / local — carry subtle hierarchy through size and colour so
+   the strategic view reads like a modern digital map without adding
+   overlays or coloured markers. */
+.gb-street-label {
+  color: rgba(232, 226, 210, 0.88);
+  font-family: 'Iowan Old Style', 'Palatino Linotype', 'Palatino', 'Georgia',
+    serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-shadow:
+    0 0 3px rgba(0, 0, 0, 0.6),
+    0 0 8px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  user-select: none;
+  transition: opacity 0.25s ease;
+}
+.gb-street-major {
+  color: rgba(244, 236, 214, 0.95);
+  font-size: 0.86rem;
+  letter-spacing: 0.18em;
+}
+.gb-street-secondary {
+  color: rgba(232, 226, 210, 0.86);
+  font-size: 0.72rem;
+}
+.gb-street-local {
+  color: rgba(220, 214, 198, 0.72);
+  font-size: 0.62rem;
+  text-transform: none;
+  letter-spacing: 0.08em;
+}
+
+/* Fallback screen (shared with VS-01 index.css) — nothing to override */

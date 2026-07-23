@@ -1,0 +1,184 @@
+import { Html } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
+import { useMemo, useRef, useState } from 'react';
+import { useCamera } from '../camera/CameraContext';
+import { WORLD, polylineLength } from '../content/world';
+import type { RawRoad, Vec2Tuple } from '../content/world';
+import { readabilityFade } from '../util/readability';
+
+type Tier = 'major' | 'secondary' | 'local';
+
+interface Label {
+  road: RawRoad;
+  centre: Vec2Tuple;
+  angleDeg: number;
+  tier: Tier;
+}
+
+// Compute the midpoint of a polyline plus the heading of its middle segment
+// so the label sits along the street rather than fighting the road angle.
+function computeCentre(poly: Vec2Tuple[]): { c: Vec2Tuple; angleDeg: number } {
+  const mid = Math.floor(poly.length / 2);
+  const a = poly[Math.max(0, mid - 1)];
+  const b = poly[Math.min(poly.length - 1, mid)];
+  const c: Vec2Tuple = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+  const dx = b[0] - a[0];
+  const dz = b[1] - a[1];
+  let angleDeg = (Math.atan2(-dz, dx) * 180) / Math.PI;
+  // Keep labels roughly upright — flip 180° when they'd read upside-down.
+  if (angleDeg > 90) angleDeg -= 180;
+  else if (angleDeg < -90) angleDeg += 180;
+  return { c, angleDeg };
+}
+
+// Three-tier label system, modelled on modern digital maps.
+//
+//   MAJOR      the through-roads that make the village legible from the
+//              strategic view. Only these are named at village altitude.
+//   SECONDARY  the named residential and local streets that appear once
+//              the camera drops into district range.
+//   LOCAL      everything else. Only surfaces at business range.
+const MAJOR_NAMES = new Set([
+  'Bergslagsgatan',
+  'Hyttgatan',
+  'Kyrkogatan',
+  'Lokavägen',
+  'Sörälgsvägen',
+  'Torget'
+]);
+const SECONDARY_NAMES = new Set([
+  'Prästgatan',
+  'Smedsgatan',
+  'Skolgatan',
+  'Kolargatan',
+  'Stationsgatan',
+  'Nygatan',
+  'Badvägen',
+  'Hammargatan',
+  'Kvarnvägen',
+  'Sjögatan',
+  'Kyrkbacken',
+  'Järnvägsgatan',
+  'Magasinsgatan',
+  'Norra Bergvägen',
+  'Östra Bergvägen',
+  'Västra Bergvägen'
+]);
+
+function tierForName(name: string): Tier {
+  if (MAJOR_NAMES.has(name)) return 'major';
+  if (SECONDARY_NAMES.has(name)) return 'secondary';
+  return 'local';
+}
+
+// Labels are cheap only if we don't spawn hundreds. Filter to streets that
+// pass through or near the built village so labels cluster where the player
+// is reading.
+const VILLAGE_ANCHOR: Vec2Tuple = [200, -40];
+const VILLAGE_RADIUS = 900;
+
+function inVillage(c: Vec2Tuple): boolean {
+  return (
+    Math.hypot(c[0] - VILLAGE_ANCHOR[0], c[1] - VILLAGE_ANCHOR[1]) <
+    VILLAGE_RADIUS
+  );
+}
+
+// Camera-distance visibility envelopes per tier. The nearIn/nearOut
+// pair fades a label IN as the camera pulls back; the farIn/farOut pair
+// fades it OUT again beyond that. This is what gives the digital-map
+// behaviour where you zoom out and only major roads stay named.
+//
+//   MAJOR      visible from mid-district (120 m) up to strategic max.
+//              At business range it fades out; the immediate local
+//              street labels take over there.
+//   SECONDARY  visible from close range (40 m) through district; fades
+//              out before the strategic view so the map doesn't clutter.
+//   LOCAL      visible only at business range (< 100 m).
+const TIER_FADE: Record<Tier, {
+  nearIn: number; nearOut: number; farIn?: number; farOut?: number;
+}> = {
+  major: { nearIn: 120, nearOut: 250 },
+  secondary: { nearIn: 40, nearOut: 80, farIn: 350, farOut: 500 },
+  local: { nearIn: 10, nearOut: 25, farIn: 70, farOut: 110 }
+};
+
+export function StreetLabels() {
+  const labels = useMemo<Label[]>(() => {
+    const seen = new Set<string>();
+    const out: Label[] = [];
+    for (const r of WORLD.roads) {
+      if (!r.name) continue;
+      if (r.poly.length < 2) continue;
+      // Drop duplicate names — many OSM ways carry the same street name.
+      if (seen.has(r.name)) continue;
+      const len = polylineLength(r.poly);
+      if (len < 30) continue;
+      const { c, angleDeg } = computeCentre(r.poly);
+      if (!inVillage(c)) continue;
+      out.push({
+        road: r,
+        centre: c,
+        angleDeg,
+        tier: tierForName(r.name)
+      });
+      seen.add(r.name);
+    }
+    return out;
+  }, []);
+
+  const { actualRef } = useCamera();
+  // Poll the camera distance in the frame loop but only push it to React
+  // state at ~10 Hz so we're not re-rendering every label 60 fps.
+  const [dist, setDist] = useState<number>(actualRef.current.distance);
+  const last = useRef(performance.now());
+  useFrame(() => {
+    const now = performance.now();
+    if (now - last.current > 100) {
+      last.current = now;
+      const d = actualRef.current.distance;
+      if (Math.abs(d - dist) > 5) setDist(d);
+    }
+  });
+
+  // drei's <Html distanceFactor> renders the DOM element at ~ (distanceFactor
+  // / cameraDistance) apparent size. We drive distanceFactor from the current
+  // camera distance so labels keep a roughly constant on-screen size across
+  // the entire zoom range: DOM scale ≈ dist * 0.42 / dist ≈ 0.42, floored so
+  // close-range labels don't shrink to nothing and capped so village-scale
+  // doesn't overflow.
+  const distanceFactor = Math.max(70, Math.min(650, dist * 0.42));
+
+  return (
+    <group>
+      {labels.map((l) => {
+        const opacity = readabilityFade(dist, TIER_FADE[l.tier]);
+        if (opacity < 0.02) return null;
+        // Major labels sit a touch heavier so they read at strategic
+        // altitude; local labels are lighter so they don't compete with
+        // the room at business range.
+        const weight = l.tier === 'major' ? 600 : l.tier === 'secondary' ? 500 : 400;
+        return (
+          <Html
+            key={l.road.id}
+            position={[l.centre[0], 1.4, l.centre[1]]}
+            center
+            zIndexRange={[10, 0]}
+            distanceFactor={distanceFactor}
+          >
+            <div
+              className={`gb-street-label gb-street-${l.tier}`}
+              style={{
+                opacity,
+                transform: `rotate(${-l.angleDeg}deg)`,
+                fontWeight: weight
+              }}
+            >
+              {l.road.name}
+            </div>
+          </Html>
+        );
+      })}
+    </group>
+  );
+}
