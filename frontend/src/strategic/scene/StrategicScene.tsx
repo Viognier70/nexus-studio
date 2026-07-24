@@ -4,6 +4,7 @@ import { CameraController } from '../camera/CameraController';
 import type { Landmark } from '../content/world';
 import { ChimneySmoke } from './ChimneySmoke';
 import { CraftedLandmarks } from './CraftedLandmarks';
+import { CraftedLandmarksD2 } from './CraftedLandmarksD2';
 import { LandmarkGatherers } from './LandmarkGatherers';
 import { OsmBoats } from './OsmBoats';
 import { OsmBuildings } from './OsmBuildings';
@@ -97,6 +98,7 @@ export function StrategicScene({ onSelect, selectedId }: Props) {
         <OsmPropertyDetail />
         <OsmYards />
         <CraftedLandmarks />
+        <CraftedLandmarksD2 />
         <OsmLandmarks onSelect={onSelect} selectedId={selectedId} />
         <OsmTraffic />
         <OsmPedestrians />

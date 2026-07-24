@@ -147,11 +147,20 @@ export const GROUND_Y = {
 // generic OsmBuildings layer skips them.
 const SHARED_CONTAINER_BUILDING_IDS = ['w869907962'];
 
+// District 2 handcrafted buildings that have no `gry-*` landmark record in
+// WORLD.landmarks. Rendered by CraftedLandmarksD2 with their actual OSM
+// polygon; the generic OsmBuildings layer must skip them to avoid double
+// rendering / z-fighting.
+const D2_HANDCRAFTED_BUILDING_IDS = [
+  'w193810921'   // Kärnhuset — Campus Grythyttan support building, 1993
+];
+
 export const LANDMARK_BUILDING_IDS: Set<string> = new Set([
   ...WORLD.landmarks
     .filter((l) => l.source.osmType === 'way' && l.source.osmId != null)
     .map((l) => `w${l.source.osmId}`),
-  ...SHARED_CONTAINER_BUILDING_IDS
+  ...SHARED_CONTAINER_BUILDING_IDS,
+  ...D2_HANDCRAFTED_BUILDING_IDS
 ]);
 
 // Roads categorised for movement systems.
