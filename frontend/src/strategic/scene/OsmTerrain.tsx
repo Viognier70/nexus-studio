@@ -41,12 +41,16 @@ export function OsmTerrain() {
       const over = Math.hypot(overX, overZ);
       if (over === 0) continue;
       const falloff = Math.min(1, over / 800);
-      // Two-octave sinusoidal noise. Amplitude ramps from 0 (village
-      // edge) to ~5 m (far background). No sharp features.
+      // Two-octave sinusoidal noise, clamped to non-negative displacement
+      // so the terrain only ever rises. Water polygons extend far beyond
+      // the village and sit at Y = 0.20; if the terrain were allowed to
+      // dip below 0 in the far background, the water would visibly float
+      // above the dip. Non-negative displacement keeps every water body
+      // sitting on the terrain regardless of distance.
       const n =
         Math.sin(x * 0.0055) * Math.cos(z * 0.0067) * 2.2 +
         Math.sin(x * 0.0021 + 1.7) * Math.cos(z * 0.0018 - 0.9) * 3.4;
-      pos.setY(i, n * falloff);
+      pos.setY(i, Math.max(0, n) * falloff);
     }
     pos.needsUpdate = true;
     geo.computeVertexNormals();
