@@ -257,9 +257,77 @@ export function roleFor(road: RawRoad): RoadRole {
   }
 }
 
+// Per-surface visual override. Applied on top of the base role colour.
+// Signal: the OSM `surface` tag exists on 211/327 Grythyttan roads
+// (113 asphalt, 75 unpaved, 21 compacted, 1 fine_gravel, 1 sett).
+// Rendering roads at the same tone regardless of surface reads as an
+// asphalt village — real Grythyttan has gravel farm yards and
+// forest-track colouring against a paved core. Blend strength kept
+// modest so the surface distinction is legible without overwhelming
+// the role hierarchy.
+//
+//   asphalt       — no shift (already the base colour)
+//   compacted     — dense gravel, slightly warmer / lighter
+//   unpaved       — gravel / dirt, warm brown
+//   fine_gravel   — pale gravel scatter
+//   sett          — cool cobble grey
+//   ground / dirt / grass / mud — treated as unpaved
+interface SurfaceTint {
+  tint: string;
+  strength: number;
+}
+const SURFACE_TINTS: Record<string, SurfaceTint> = {
+  asphalt: { tint: '#8f8a82', strength: 0 },
+  concrete: { tint: '#8f8a82', strength: 0 },
+  paved: { tint: '#8f8a82', strength: 0 },
+  paving_stones: { tint: '#7f7a72', strength: 0.15 },
+  sett: { tint: '#6c6a68', strength: 0.35 },
+  cobblestone: { tint: '#6c6a68', strength: 0.35 },
+  unpaved: { tint: '#8a6a48', strength: 0.55 },
+  compacted: { tint: '#93805e', strength: 0.35 },
+  gravel: { tint: '#a08b64', strength: 0.5 },
+  fine_gravel: { tint: '#b8a678', strength: 0.5 },
+  ground: { tint: '#7d654a', strength: 0.55 },
+  dirt: { tint: '#7d654a', strength: 0.6 },
+  grass: { tint: '#7c8a5d', strength: 0.55 },
+  mud: { tint: '#6a5a45', strength: 0.55 }
+};
+
+// Blend two hex #rrggbb colours in linear-RGB by fraction k. Duplicated
+// from world.ts to keep roadRoles.ts self-contained and avoid a
+// circular import through the WORLD singleton.
+function blendHex(base: string, tint: string, k: number): string {
+  const parse = (c: string) => [
+    parseInt(c.slice(1, 3), 16),
+    parseInt(c.slice(3, 5), 16),
+    parseInt(c.slice(5, 7), 16)
+  ];
+  const [br, bg, bb] = parse(base);
+  const [tr, tg, tbl] = parse(tint);
+  const r = Math.round(br * (1 - k) + tr * k);
+  const g = Math.round(bg * (1 - k) + tg * k);
+  const b = Math.round(bb * (1 - k) + tbl * k);
+  const hex = (v: number) => v.toString(16).padStart(2, '0');
+  return `#${hex(r)}${hex(g)}${hex(b)}`;
+}
+
+// Apply the OSM `surface` tag to a base role colour. Cars-only roads
+// keep asphalt on-mode; the surface override wins for gravel / dirt /
+// setts. Pedestrian-only tiers (track, cycleway, footpath) already have
+// warm gravel base colours in ROLE_SPECS so we only apply the tint if
+// its strength meaningfully differs.
+function surfaceApplied(base: string, surface: string | null | undefined): string {
+  if (!surface) return base;
+  const entry = SURFACE_TINTS[surface];
+  if (!entry || entry.strength <= 0) return base;
+  return blendHex(base, entry.tint, entry.strength);
+}
+
 export function specFor(road: RawRoad): RoadRoleSpec {
   const role = roleFor(road);
-  return { role, ...ROLE_SPECS[role] };
+  const base = ROLE_SPECS[role];
+  const colour = surfaceApplied(base.colour, road.surface);
+  return { role, ...base, colour };
 }
 
 // ---------- Derived display-name layer ----------

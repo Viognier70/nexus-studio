@@ -5,6 +5,15 @@ import type { RawRoad, Vec2Tuple } from '../content/world';
 import { specFor, type RoadRole } from '../content/roadRoles';
 import { inside, polygonBounds } from '../procgen/geom';
 
+// Surfaces where a paved sidewalk would visually contradict the road
+// itself. A compacted gravel local_street receives no paved kerb + walk
+// even though its role tier normally carries one — real gravel roads
+// don't have concrete kerbs.
+const UNPAVED_SURFACES: ReadonlySet<string> = new Set([
+  'unpaved', 'compacted', 'gravel', 'fine_gravel',
+  'ground', 'dirt', 'grass', 'mud', 'sand'
+]);
+
 // Y-level for the sidewalk layer — a hair below the road plane so major
 // roads still win the middle at intersections, but enough separation to
 // avoid z-fighting at strategic-zoom depth precision (~10 cm at 1800 m).
@@ -161,8 +170,11 @@ export function OsmRoads() {
       geo.rotateX(-Math.PI / 2);
       let sidewalkGeo: THREE.BufferGeometry | null = null;
       let kerbGeo: THREE.BufferGeometry | null = null;
+      const surfaceIsUnpaved =
+        road.surface != null && UNPAVED_SURFACES.has(road.surface);
       if (
         spec.sidewalkWidth > 0 &&
+        !surfaceIsUnpaved &&
         sidewalkClearsBuildings(road.poly, half + spec.sidewalkWidth)
       ) {
         const swShape = buildRoadShape(road, half + spec.sidewalkWidth);
