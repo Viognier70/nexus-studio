@@ -2356,68 +2356,128 @@ function SkolaLandmark({ landmark }: { landmark: Landmark }) {
 // 36 × 30 placeholder rectangle. Proper polygon ingestion is a separate
 // PASS 1 follow-up.
 //
-// ORDER 008 P2b investigation (2026-07-24): the placeholder can NOT be
-// promoted to an "actual closed area polygon" because none exists in the
-// Grythyttan OSM export we work from. `w122157681` is a 4-point open
-// linestring named "Torget" (a road segment named after the square, not
-// the square itself). No way carries `place=square`, `landuse=plaza`, or
-// an equivalent closed polygon for the square. The gry-torget landmark
-// position (12.48, -27.59) sits ON that road, roughly 60 m north of the
-// long house / Cornelis / Antikvariat / Guldkringlan cluster which
-// visually define Torget in the Vision Owner photos. Retaining the
-// placeholder rectangle is the defensible option under the reference
-// confidence rule until either a heritage survey or a Vision Owner
-// annotation supplies the actual perimeter.
+// ORDER 008 P2b investigation (2026-07-24) established that no closed
+// `place=square` / `landuse=plaza` polygon exists in the Grythyttan OSM
+// export — the 4-point road `w122157681` IS OSM's model for Torget, a
+// wide-format Swedish town-square street with the plaza function baked
+// into the street envelope itself. The `gry-torget` landmark position
+// sits on the midpoint of that road.
+//
+// ORDER 009 authenticity fix (2026-07-24): the plaza is now derived
+// from the actual road polyline widened to a 15 m plaza envelope, so
+// the shape follows the real Torget street rather than a hardcoded
+// 36 × 30 rectangle 45 m north of the mapped square. Trees are placed
+// along both long edges of that envelope, spaced along the actual
+// road extent.
 //
 // PASS 4 (ORDER 005, 2026-07-23): formal deciduous tree avenue lining the
 // long edges of the square. Verified in all three supplied photographs
 // (torget.jpeg, torget2.jpeg, torget 3.jpg) — mature deciduous trees
 // spaced regularly along at least one, likely both, long edges.
+
+// Half-width of the Torget plaza envelope, in metres. Widens the road
+// polyline into a plaza polygon.
+const TORGET_PLAZA_HALF_WIDTH = 7.5;
+
+// Left / right offset polygon from a polyline. Same idea as OsmRoads'
+// buildRoadShape, kept local because CraftedLandmarks doesn't import
+// from OsmRoads.
+function widenPolylineToPlaza(
+  poly: Vec2Tuple[],
+  half: number
+): Vec2Tuple[] {
+  const left: Vec2Tuple[] = [];
+  const right: Vec2Tuple[] = [];
+  for (let i = 0; i < poly.length; i++) {
+    const prev = poly[Math.max(0, i - 1)];
+    const next = poly[Math.min(poly.length - 1, i + 1)];
+    const dx = next[0] - prev[0];
+    const dz = next[1] - prev[1];
+    const len = Math.hypot(dx, dz) || 1;
+    const nx = -dz / len;
+    const nz = dx / len;
+    left.push([poly[i][0] + nx * half, poly[i][1] + nz * half]);
+    right.push([poly[i][0] - nx * half, poly[i][1] - nz * half]);
+  }
+  // CCW polygon: left forward, right backward.
+  return [...left, ...right.reverse()];
+}
+
 function TorgetLandmark({ landmark }: { landmark: Landmark }) {
-  const b = buildingFor(landmark);
-  const groundGeo = useMemo(() => {
-    if (!b) return null;
-    const c = polygonCentre(b.poly);
+  // Torget in OSM = road w122157681. Widen its polyline to a plaza envelope.
+  const plazaData = useMemo(() => {
+    const road = WORLD.roads.find((r) => r.id === 'w122157681');
+    if (!road || road.poly.length < 2) return null;
+    const envelope = widenPolylineToPlaza(road.poly, TORGET_PLAZA_HALF_WIDTH);
+    const centroid = polygonCentre(envelope);
+    // Build shape in a local frame around the plaza centroid so the
+    // outer group can render at the landmark position while the plaza
+    // geometry sits centred underneath it.
     const shape = new THREE.Shape();
-    shape.moveTo(b.poly[0][0] - c[0], -(b.poly[0][1] - c[1]));
-    for (let i = 1; i < b.poly.length; i++) {
-      shape.lineTo(b.poly[i][0] - c[0], -(b.poly[i][1] - c[1]));
+    shape.moveTo(envelope[0][0] - centroid[0], -(envelope[0][1] - centroid[1]));
+    for (let i = 1; i < envelope.length; i++) {
+      shape.lineTo(envelope[i][0] - centroid[0], -(envelope[i][1] - centroid[1]));
     }
+    shape.closePath();
     const g = new THREE.ShapeGeometry(shape);
     g.rotateX(-Math.PI / 2);
-    return g;
-  }, [b]);
+    // Offset from landmark position → plaza centroid (also flipping Z
+    // because the wall-frame convention negates Y-of-polygon on extrude,
+    // which for a ground plane means negating the Z we render at).
+    const offsetX = centroid[0] - landmark.position[0];
+    const offsetZ = -(centroid[1] - landmark.position[1]);
+    // Trees along both long sides, computed in the flipped frame.
+    // Road direction is roughly along local X (west→east) so the long
+    // sides are at ±TORGET_PLAZA_HALF_WIDTH in local Z.
+    const treeCount = 5;
+    const treeSpan = 40;  // trees spread over the middle 40 m of the road
+    const treeXs: number[] = [];
+    for (let i = 0; i < treeCount; i++) {
+      treeXs.push(-treeSpan / 2 + (i * treeSpan) / (treeCount - 1));
+    }
+    return {
+      geo: g,
+      offsetX,
+      offsetZ,
+      treeXs,
+      treeZ: TORGET_PLAZA_HALF_WIDTH - 1.0
+    };
+  }, [landmark.position]);
+
   return (
     <group position={[landmark.position[0], 0, landmark.position[1]]}>
-      {groundGeo ? (
-        <mesh geometry={groundGeo} position={[0, 0.06, 0]}>
-          <meshStandardMaterial
-            color="#b6ab94"
-            roughness={0.9}
-            side={THREE.DoubleSide}
-          />
-        </mesh>
+      {plazaData ? (
+        <group position={[plazaData.offsetX, 0, plazaData.offsetZ]}>
+          <mesh geometry={plazaData.geo} position={[0, 0.06, 0]}>
+            <meshStandardMaterial
+              color="#b6ab94"
+              roughness={0.9}
+              side={THREE.DoubleSide}
+            />
+          </mesh>
+          {/* PASS 4 — formal tree avenue along both long edges of the
+              plaza envelope. */}
+          {plazaData.treeXs.flatMap((dx, i) => [
+            <LandmarkTree
+              key={`t-n-${i}`}
+              position={[dx, 0, -plazaData.treeZ]}
+              scale={1.15}
+              rotation={dx * 0.13}
+            />,
+            <LandmarkTree
+              key={`t-s-${i}`}
+              position={[dx, 0, plazaData.treeZ]}
+              scale={1.15}
+              rotation={-dx * 0.13}
+            />
+          ])}
+        </group>
       ) : (
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.06, 0]}>
           <planeGeometry args={[36, 30]} />
           <meshStandardMaterial color="#b6ab94" roughness={0.9} />
         </mesh>
       )}
-      {/* PASS 4 — formal tree avenue along both long edges of the square. */}
-      {[-14, -7, 0, 7, 14].flatMap((dx) => [
-        <LandmarkTree
-          key={`t-n-${dx}`}
-          position={[dx, 0, -13]}
-          scale={1.15}
-          rotation={dx * 0.13}
-        />,
-        <LandmarkTree
-          key={`t-s-${dx}`}
-          position={[dx, 0, 13]}
-          scale={1.15}
-          rotation={-dx * 0.13}
-        />
-      ])}
     </group>
   );
 }

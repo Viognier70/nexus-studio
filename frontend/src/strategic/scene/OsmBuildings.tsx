@@ -23,6 +23,7 @@ interface Extruded {
   building: RawBuilding;
   ridgeH: number;         // computed roof height (peak above the eaves)
   effectiveKind: string;  // after any 'yes' → shed/garage/small-commercial reclassify
+  trimColour: string;     // per-building ridge cap / fascia / chimney colour
 }
 
 // Base palette per building kind. Subdued Scandinavian tones with enough
@@ -274,6 +275,11 @@ function toExtruded(b: RawBuilding): Extruded | null {
     roofColour = tintColour(base.roof, pal.roof, 0.35);
   }
   const style = roofStyleFor(kind);
+  // Trim colour = deeper wobble around a near-black base, deterministic
+  // per building. Breaks the flat "every ridge cap is #22201c" look that
+  // reads as machine-perfect at village zoom.
+  const trimBase = tintColour(roofColour, '#0a0906', 0.72);
+  const trimColour = wobbleColour(trimBase, hash * 3.13 % 1, 0.14);
   return {
     id: b.id,
     geo,
@@ -287,7 +293,8 @@ function toExtruded(b: RawBuilding): Extruded | null {
     roofStyle: style,
     building: b,
     ridgeH: ridgeHeightFor(style, obb.d),
-    effectiveKind: kind
+    effectiveKind: kind,
+    trimColour
   };
 }
 
@@ -390,7 +397,8 @@ function RoofCap({
   height,
   ridgeH,
   style,
-  roofColour
+  roofColour,
+  trimColour
 }: {
   id: string;
   centre: [number, number];
@@ -401,6 +409,7 @@ function RoofCap({
   ridgeH: number;
   style: Extruded['roofStyle'];
   roofColour: string;
+  trimColour: string;
 }) {
   if (style === 'flat') return null;
   const hash = idHash(id);
@@ -459,13 +468,13 @@ function RoofCap({
         {chimneyOn && (
           <mesh position={[chimneyOffset * rw, rh / 2 + 0.75, 0]}>
             <boxGeometry args={[0.6, 1.5, 0.6]} />
-            <meshStandardMaterial color="#2a251f" roughness={0.9} />
+            <meshStandardMaterial color={trimColour} roughness={0.9} />
           </mesh>
         )}
         {twinChimney && (
           <mesh position={[-chimneyOffset * rw, rh / 2 + 0.75, 0]}>
             <boxGeometry args={[0.6, 1.5, 0.6]} />
-            <meshStandardMaterial color="#2a251f" roughness={0.9} />
+            <meshStandardMaterial color={trimColour} roughness={0.9} />
           </mesh>
         )}
       </group>
@@ -505,7 +514,7 @@ function RoofCap({
         </mesh>
         <mesh position={[0, ridgeH + 0.04, 0]}>
           <boxGeometry args={[rw + 0.1, 0.08, 0.18]} />
-          <meshStandardMaterial color="#22201c" roughness={0.9} />
+          <meshStandardMaterial color={trimColour} roughness={0.9} />
         </mesh>
       </group>
     );
@@ -525,28 +534,28 @@ function RoofCap({
       {/* Dark ridge cap board along the peak. */}
       <mesh position={[0, ridgeH + 0.06, 0]}>
         <boxGeometry args={[rw, 0.1, 0.22]} />
-        <meshStandardMaterial color="#22201c" roughness={0.9} />
+        <meshStandardMaterial color={trimColour} roughness={0.9} />
       </mesh>
       {/* Dark fascia strip along each eave — reads as gutter shadow at
           strategic zoom and gives every gable a defined roof-wall line. */}
       <mesh position={[0, -0.02, rd * 0.5 - 0.02]}>
         <boxGeometry args={[rw + 0.05, 0.14, 0.06]} />
-        <meshStandardMaterial color="#22201c" roughness={0.9} />
+        <meshStandardMaterial color={trimColour} roughness={0.9} />
       </mesh>
       <mesh position={[0, -0.02, -rd * 0.5 + 0.02]}>
         <boxGeometry args={[rw + 0.05, 0.14, 0.06]} />
-        <meshStandardMaterial color="#22201c" roughness={0.9} />
+        <meshStandardMaterial color={trimColour} roughness={0.9} />
       </mesh>
       {chimneyOn && (
         <mesh position={[chimneyOffset * rw, ridgeH + 0.85, 0]}>
           <boxGeometry args={[0.55, 1.7, 0.55]} />
-          <meshStandardMaterial color="#2a251f" roughness={0.9} />
+          <meshStandardMaterial color={trimColour} roughness={0.9} />
         </mesh>
       )}
       {twinChimney && (
         <mesh position={[-chimneyOffset * rw, ridgeH + 0.85, 0]}>
           <boxGeometry args={[0.55, 1.7, 0.55]} />
-          <meshStandardMaterial color="#2a251f" roughness={0.9} />
+          <meshStandardMaterial color={trimColour} roughness={0.9} />
         </mesh>
       )}
     </group>
@@ -682,6 +691,7 @@ export function OsmBuildings() {
               ridgeH={b.ridgeH}
               style={b.roofStyle}
               roofColour={b.roofColour}
+              trimColour={b.trimColour}
             />
           </group>
         );
