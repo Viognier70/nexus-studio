@@ -38,43 +38,29 @@ function computeCentre(poly: Vec2Tuple[]): { c: Vec2Tuple; angleDeg: number } {
 //   SECONDARY  the named residential and local streets that appear once
 //              the camera drops into district range.
 //   LOCAL      everything else. Only surfaces at business range.
-const MAJOR_NAMES = new Set([
-  'Bergslagsgatan',
-  'Hyttgatan',
-  'Kyrkogatan',
-  'Lokavägen',
-  'Sörälgsvägen',
-  'Torget'
-]);
-const SECONDARY_NAMES = new Set([
-  'Prästgatan',
-  'Smedsgatan',
-  'Skolgatan',
-  'Kolargatan',
-  'Stationsgatan',
-  'Nygatan',
-  'Badvägen',
-  'Hammargatan',
-  'Kvarnvägen',
-  'Sjögatan',
-  'Kyrkbacken',
-  'Järnvägsgatan',
-  'Magasinsgatan',
-  'Norra Bergvägen',
-  'Östra Bergvägen',
-  'Västra Bergvägen'
-]);
+//
+// Tier is derived from the OSM `highway` class rather than a hardcoded
+// name list. The previous hardcoded lists missed roughly half of the
+// real Grythyttan road inventory (Magasinsgatan, Västra Bergvägen,
+// Kvarnvägen, Gruvgatan, Skiffergatan, Vintervägen, Närkesgatan,
+// Hantverksgatan, Mellanvägen, Baluns väg, Breviksvägen, Erik
+// Andersgatan, Stallgatan, Åsgatan…), and included some names that no
+// longer resolve to real ways.
+const MAJOR_KINDS = new Set(['motorway', 'trunk', 'primary', 'secondary']);
+const SECONDARY_KINDS = new Set(['tertiary', 'unclassified']);
 
-function tierForName(name: string): Tier {
-  if (MAJOR_NAMES.has(name)) return 'major';
-  if (SECONDARY_NAMES.has(name)) return 'secondary';
+function tierForRoad(r: RawRoad): Tier {
+  if (MAJOR_KINDS.has(r.kind)) return 'major';
+  if (SECONDARY_KINDS.has(r.kind)) return 'secondary';
   return 'local';
 }
 
-// Labels are cheap only if we don't spawn hundreds. Filter to streets that
-// pass through or near the built village so labels cluster where the player
-// is reading.
-const VILLAGE_ANCHOR: Vec2Tuple = [200, -40];
+// Labels are cheap only if we don't spawn hundreds. Filter to streets
+// that pass through or near the built village so labels cluster where
+// the player is reading. Anchor is a rough approximation of the built
+// village centroid (Torget region: X ~ 10, Z ~ -5). Radius keeps the
+// entire built area comfortably in range.
+const VILLAGE_ANCHOR: Vec2Tuple = [10, -5];
 const VILLAGE_RADIUS = 900;
 
 function inVillage(c: Vec2Tuple): boolean {
@@ -120,7 +106,7 @@ export function StreetLabels() {
         road: r,
         centre: c,
         angleDeg,
-        tier: tierForName(r.name)
+        tier: tierForRoad(r)
       });
       seen.add(r.name);
     }

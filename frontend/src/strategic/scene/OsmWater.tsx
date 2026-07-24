@@ -52,7 +52,8 @@ export function OsmWater() {
   const surfaceRef = useRef<THREE.Group>(null);
 
   // Very slow, very subtle brightness ripple. Enough to signal "water" at a
-  // glance without becoming a distraction.
+  // glance without becoming a distraction. Amplitude kept low so the water
+  // reads as calm Bergslag lake, not a shimmering pool.
   useFrame(({ clock }) => {
     if (!surfaceRef.current) return;
     const t = clock.getElapsedTime();
@@ -60,7 +61,7 @@ export function OsmWater() {
       const mesh = child as THREE.Mesh & { material?: THREE.MeshStandardMaterial };
       if (mesh.isMesh && mesh.material && 'emissiveIntensity' in mesh.material) {
         (mesh.material as THREE.MeshStandardMaterial).emissiveIntensity =
-          0.06 + 0.03 * Math.sin(t * 0.4);
+          0.02 + 0.02 * Math.sin(t * 0.4);
       }
     });
   });
@@ -78,9 +79,13 @@ export function OsmWater() {
           <meshStandardMaterial color="#254452" roughness={0.9} />
         </mesh>
       ))}
-      {/* Glassy blue surface with slight metalness so the sky and sun bake
-          in as reflection tint, and depthWrite off so nothing above it needs
-          to reason about the water layer. */}
+      {/* Calm lake surface: matte-ish with a hint of sky reflection.
+          Previous revision used metalness=0.65 + a strong emissive tint
+          which read as shiny mercury under the strategic-scene lighting;
+          Bergslag lakes are still and dark, so metalness is dropped to
+          0.25 and the base emissive is removed. The animated shimmer in
+          useFrame supplies the "this is water" signal without needing a
+          constant self-illumination baseline. */}
       <group ref={surfaceRef}>
         {geometries.map(({ id, g }) => (
           <mesh
@@ -91,11 +96,11 @@ export function OsmWater() {
             <meshStandardMaterial
               color="#3d6c88"
               emissive="#7fbfd8"
-              emissiveIntensity={0.08}
-              roughness={0.22}
-              metalness={0.65}
+              emissiveIntensity={0.02}
+              roughness={0.55}
+              metalness={0.25}
               transparent
-              opacity={0.92}
+              opacity={0.94}
               depthWrite={false}
             />
           </mesh>
