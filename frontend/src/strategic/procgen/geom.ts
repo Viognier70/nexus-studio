@@ -347,3 +347,55 @@ export function segmentIntersection(
     z: a1z + tA * (a2z - a1z)
   };
 }
+
+// Exact segment-vs-any-building intersection. Used by parcel-boundary
+// logic to reject fence sides that would clip a neighbour building —
+// replaces the earlier N-point sampling approach which could miss
+// crossings that fall between two adjacent sample points.
+//
+// Returns true if the segment (a1 → a2) crosses (or enters) any
+// building polygon other than `excludeId`. `dilation` expands the
+// bbox pre-reject; the actual intersection test is exact.
+//
+// ORDER 016 PASS 2 finding: an N=5 point-sample check let one real
+// fence-through-building slip through at t=0.85 between samples.
+// Exact segment-polygon-edge intersection removes that class of
+// error entirely.
+export function segmentCrossesAnyBuilding(
+  a1x: number,
+  a1z: number,
+  a2x: number,
+  a2z: number,
+  excludeId: string | null,
+  dilation = 0
+): boolean {
+  const minX = Math.min(a1x, a2x);
+  const maxX = Math.max(a1x, a2x);
+  const minZ = Math.min(a1z, a2z);
+  const maxZ = Math.max(a1z, a2z);
+  for (const b of WORLD.buildings) {
+    if (excludeId != null && b.id === excludeId) continue;
+    if (b.poly.length < 3) continue;
+    const bb = polygonBounds(b.poly);
+    if (
+      maxX < bb.minX - dilation ||
+      bb.maxX + dilation < minX ||
+      maxZ < bb.minZ - dilation ||
+      bb.maxZ + dilation < minZ
+    ) continue;
+    // Segment endpoint inside the polygon (segment starts / ends in it).
+    if (inside(b.poly, a1x, a1z) || inside(b.poly, a2x, a2z)) return true;
+    // Segment crosses any polygon edge.
+    for (let i = 0; i < b.poly.length - 1; i++) {
+      const p1 = b.poly[i];
+      const p2 = b.poly[i + 1];
+      if (
+        segmentIntersection(
+          a1x, a1z, a2x, a2z,
+          p1[0], p1[1], p2[0], p2[1]
+        )
+      ) return true;
+    }
+  }
+  return false;
+}

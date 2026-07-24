@@ -6,11 +6,11 @@ import {
   closestRoadPoint,
   idHash,
   inAnyWater,
-  nearAnyBuilding,
   nearAnyRoadSegment,
   obbLocalToWorld,
   orientedBbox,
   polygonArea,
+  segmentCrossesAnyBuilding,
   segmentIntersection
 } from '../procgen/geom';
 
@@ -276,15 +276,26 @@ export function OsmParcelBoundaries() {
         const [wxA, wzA] = obbLocalToWorld(obb, ax, az);
         const [wxB, wzB] = obbLocalToWorld(obb, bxx, bzz);
 
-        const NSAMPLES = 5;
+        // Exact segment-vs-any-building intersection first — ORDER 016
+        // PASS 2 replaced the earlier 5-point sample check because it
+        // could miss crossings that fall between adjacent samples
+        // (e.g. at t=0.85 between the t=0.8 and t=1.0 sample points).
         let valid = true;
-        for (let i = 0; i <= NSAMPLES; i++) {
-          const t = i / NSAMPLES;
-          const px = wxA + t * (wxB - wxA);
-          const pz = wzA + t * (wzB - wzA);
-          if (nearAnyRoadSegment(px, pz, segments, 2.0)) { valid = false; break; }
-          if (nearAnyBuilding(px, pz, b.id, 0.6)) { valid = false; break; }
-          if (inAnyWater(px, pz)) { valid = false; break; }
+        if (segmentCrossesAnyBuilding(wxA, wzA, wxB, wzB, b.id, 0.3)) {
+          valid = false;
+        }
+        // Road and water are still checked by point-sample — they're
+        // distance / area predicates rather than intersection tests, so
+        // sampling is the natural mechanism.
+        if (valid) {
+          const NSAMPLES = 5;
+          for (let i = 0; i <= NSAMPLES; i++) {
+            const t = i / NSAMPLES;
+            const px = wxA + t * (wxB - wxA);
+            const pz = wzA + t * (wzB - wzA);
+            if (nearAnyRoadSegment(px, pz, segments, 2.0)) { valid = false; break; }
+            if (inAnyWater(px, pz)) { valid = false; break; }
+          }
         }
         if (!valid) continue;
 
