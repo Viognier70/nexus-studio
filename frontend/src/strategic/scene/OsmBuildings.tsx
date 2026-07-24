@@ -1,3 +1,4 @@
+import { Instance, Instances } from '@react-three/drei';
 import { useMemo } from 'react';
 import * as THREE from 'three';
 import {
@@ -641,6 +642,88 @@ function StoreyBands({
   );
 }
 
+// Which effective kinds get a rhythmic procedural window grid on the
+// OBB faces. Shed / garage / barn / industrial / flat all stay blank —
+// their walls read as agricultural / utility surfaces where added
+// windows would look wrong at village and district zoom.
+const WINDOW_KINDS = new Set([
+  'house', 'detached', 'residential', 'apartments',
+  'hotel', 'school', 'university', 'train_station',
+  'commercial'
+]);
+
+// Compute world-space instances of procedural windows on the four OBB
+// faces of a building. Windows sit ~0.03 m inside the wall so they
+// depth-write above the wall face without z-fighting. Reasonable bay
+// and storey counts per OBB extent — no exhaustive per-vertex.
+function windowsFor(b: Extruded): Array<{
+  pos: [number, number, number];
+  rotY: number;
+  w: number;
+  h: number;
+}> {
+  const wallH = b.height;
+  const storeyH = 3.0;
+  const storeys = Math.max(1, Math.min(4, Math.round(wallH / storeyH)));
+  // Storey mid-Y positions from ground upward. First storey a bit lower
+  // than mid to sit above the plinth; upper storeys evenly spaced.
+  const storeyYs: number[] = [];
+  for (let s = 0; s < storeys; s++) {
+    storeyYs.push(0.9 + s * (wallH - 1.2) / Math.max(1, storeys - 1) * (storeys > 1 ? 1 : 0) + (storeys === 1 ? wallH * 0.4 : 0));
+  }
+  // Bay counts per side scale with the OBB extent.
+  const rw = b.ridgeW;
+  const rd = b.ridgeD;
+  const longBays = Math.max(2, Math.min(8, Math.round(rw / 3.2)));
+  const shortBays = Math.max(1, Math.min(4, Math.round(rd / 3.2)));
+  const longSpan = rw - 1.8;
+  const shortSpan = rd - 1.8;
+  const longXs: number[] = [];
+  for (let i = 0; i < longBays; i++) {
+    longXs.push(-longSpan / 2 + (i * longSpan) / Math.max(1, longBays - 1));
+  }
+  const shortZs: number[] = [];
+  for (let i = 0; i < shortBays; i++) {
+    shortZs.push(-shortSpan / 2 + (i * shortSpan) / Math.max(1, shortBays - 1));
+  }
+  const angle = -b.ridgeAngle;
+  const cos = Math.cos(angle);
+  const sin = Math.sin(angle);
+  const cx = b.ridgeCentre[0];
+  const cz = b.ridgeCentre[1];
+  const halfD = rd / 2 - 0.03;
+  const halfW = rw / 2 - 0.03;
+  const out: Array<{ pos: [number, number, number]; rotY: number; w: number; h: number }> = [];
+  const winW = 0.95;
+  const winH = 1.35;
+
+  const project = (lx: number, ly: number, lz: number): [number, number, number] => {
+    const wx = cx + lx * cos - lz * sin;
+    const wz = cz + lx * sin + lz * cos;
+    return [wx, ly, wz];
+  };
+
+  for (const y of storeyYs) {
+    // Long +Z face (outward +Z in local frame → world rotY = angle)
+    for (const lx of longXs) {
+      out.push({ pos: project(lx, y, halfD), rotY: angle, w: winW, h: winH });
+    }
+    // Long -Z face
+    for (const lx of longXs) {
+      out.push({ pos: project(lx, y, -halfD), rotY: angle + Math.PI, w: winW, h: winH });
+    }
+    // Short +X face
+    for (const lz of shortZs) {
+      out.push({ pos: project(halfW, y, lz), rotY: angle - Math.PI / 2, w: winW, h: winH });
+    }
+    // Short -X face
+    for (const lz of shortZs) {
+      out.push({ pos: project(-halfW, y, lz), rotY: angle + Math.PI / 2, w: winW, h: winH });
+    }
+  }
+  return out;
+}
+
 export function OsmBuildings() {
   const buildings = useMemo(
     () =>
@@ -651,6 +734,18 @@ export function OsmBuildings() {
         .filter((b): b is Extruded => b !== null),
     []
   );
+
+  // Aggregate every window across every eligible building into one flat
+  // list, rendered via a single drei Instances call — one draw call for
+  // the entire village window population instead of one mesh per pane.
+  const windows = useMemo(() => {
+    const out: Array<{ pos: [number, number, number]; rotY: number; w: number; h: number }> = [];
+    for (const b of buildings) {
+      if (!WINDOW_KINDS.has(b.effectiveKind)) continue;
+      for (const w of windowsFor(b)) out.push(w);
+    }
+    return out;
+  }, [buildings]);
 
   return (
     <group>
@@ -696,6 +791,29 @@ export function OsmBuildings() {
           </group>
         );
       })}
+      {/* Procedural window rhythm — one Instances draw call for the
+          entire village. Windows are small emissive rectangles pinned
+          just proud of the OBB wall face. Legible from village zoom as
+          a horizontal band and readable as individual panes at close
+          zoom without the earlier blank-slab feel. */}
+      {windows.length > 0 && (
+        <Instances limit={windows.length} range={windows.length}>
+          <boxGeometry args={[0.95, 1.35, 0.06]} />
+          <meshStandardMaterial
+            color="#efe6d4"
+            emissive="#f4c680"
+            emissiveIntensity={0.14}
+            roughness={0.65}
+          />
+          {windows.map((w, i) => (
+            <Instance
+              key={i}
+              position={w.pos}
+              rotation={[0, w.rotY, 0]}
+            />
+          ))}
+        </Instances>
+      )}
     </group>
   );
 }
