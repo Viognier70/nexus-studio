@@ -236,8 +236,12 @@ export function OsmParcelBoundaries() {
       const buildingHash = idHash(b.id + ':fence');
 
       const obb = computeOBB(b.poly);
+      // Margins strictly larger than the OsmProceduralOutbuildings
+      // maximum clearance (6.5 m for medium sheds) so a modest parcel
+      // with a medium shed still encloses the shed inside the fence
+      // line. Block 5 P5 cleanup bump: modest 6 → 7.
       const margin =
-        wealth === 'prosperous' ? 9 : wealth === 'standard' ? 7.5 : 6;
+        wealth === 'prosperous' ? 9 : wealth === 'standard' ? 7.5 : 7;
       const halfW = obb.w / 2 + margin;
       const halfD = obb.d / 2 + margin;
       const corners: Array<[number, number]> = [
