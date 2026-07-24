@@ -2355,6 +2355,20 @@ function SkolaLandmark({ landmark }: { landmark: Landmark }) {
 // linear feature), not `buildings`, so buildingFor() falls back to a
 // 36 × 30 placeholder rectangle. Proper polygon ingestion is a separate
 // PASS 1 follow-up.
+//
+// ORDER 008 P2b investigation (2026-07-24): the placeholder can NOT be
+// promoted to an "actual closed area polygon" because none exists in the
+// Grythyttan OSM export we work from. `w122157681` is a 4-point open
+// linestring named "Torget" (a road segment named after the square, not
+// the square itself). No way carries `place=square`, `landuse=plaza`, or
+// an equivalent closed polygon for the square. The gry-torget landmark
+// position (12.48, -27.59) sits ON that road, roughly 60 m north of the
+// long house / Cornelis / Antikvariat / Guldkringlan cluster which
+// visually define Torget in the Vision Owner photos. Retaining the
+// placeholder rectangle is the defensible option under the reference
+// confidence rule until either a heritage survey or a Vision Owner
+// annotation supplies the actual perimeter.
+//
 // PASS 4 (ORDER 005, 2026-07-23): formal deciduous tree avenue lining the
 // long edges of the square. Verified in all three supplied photographs
 // (torget.jpeg, torget2.jpeg, torget 3.jpg) — mature deciduous trees

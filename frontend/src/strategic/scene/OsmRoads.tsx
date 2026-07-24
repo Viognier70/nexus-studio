@@ -32,7 +32,9 @@ const CATEGORY: Record<string, CategoryDef> = {
   living_street: { width: 3.5, colour: '#a89876', ped: false, stripe: false, sidewalkWidth: 0.9 },
   service: { width: 2.6, colour: '#75705f', ped: false, stripe: false, gravel: true },
   track: { width: 2.2, colour: '#7a6a52', ped: true, stripe: false, gravel: true },
-  cycleway: { width: 1.6, colour: '#8f8770', ped: true, stripe: false },
+  // Cycleways in Sweden are commonly painted in a warmer red-brown asphalt
+  // colour to distinguish them from footways. Kept subtle at village zoom.
+  cycleway: { width: 1.6, colour: '#8f7362', ped: true, stripe: false },
   footway: { width: 1.1, colour: '#948667', ped: true, stripe: false },
   path: { width: 1.1, colour: '#948667', ped: true, stripe: false, gravel: true },
   steps: { width: 1.1, colour: '#7f7462', ped: true, stripe: false },
