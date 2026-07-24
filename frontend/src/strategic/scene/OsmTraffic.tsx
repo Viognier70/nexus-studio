@@ -10,6 +10,7 @@ import {
   samplePolyline
 } from '../content/world';
 import type { RawRoad } from '../content/world';
+import { specFor } from '../content/roadRoles';
 import { createRng } from '../util/rng';
 import { readabilityScale, type ReadabilityCurve } from '../util/readability';
 
@@ -267,9 +268,30 @@ export function OsmTraffic() {
       if (g) {
         const cfg = KIND_CONFIG[v.kind];
         const read = readabilityScale(camDist, cfg.readability);
-        // Position.y scales with the readability multiplier so the wheels
-        // stay on the road as the group scales.
-        g.position.set(p.x, (cfg.size[1] / 2) * read, p.z);
+        // Lane offset — Sweden drives on the right. samplePolyline's
+        // yaw is `atan2(dx, dz)`, so the polyline forward direction
+        // is `(sin(yaw), cos(yaw))` and the RIGHT side (facing forward)
+        // is `(-cos(yaw), sin(yaw))`. Vehicles going against the
+        // polyline direction sit on the polyline's LEFT (their own
+        // right when facing the reversed heading).
+        //
+        // Offset scales with road half-width: maxOffset = halfWidth −
+        // vehicleHalfWidth − 0.2 m clearance, capped at 1.2 m so
+        // vehicles ride the right lane on wide roads without spilling
+        // off narrow service tracks. Falls back to 0 (centre) when
+        // the road is too narrow to fit a vehicle at any offset.
+        const halfW = specFor(v.road).width / 2;
+        const vehHalf = cfg.size[0] / 2;
+        const maxOffset = Math.max(0, halfW - vehHalf - 0.2);
+        const laneOffset = Math.min(1.2, maxOffset);
+        const sign = v.forward === 1 ? 1 : -1;
+        const offX = -Math.cos(p.yaw) * laneOffset * sign;
+        const offZ = Math.sin(p.yaw) * laneOffset * sign;
+        g.position.set(
+          p.x + offX,
+          (cfg.size[1] / 2) * read,
+          p.z + offZ
+        );
         g.rotation.y = p.yaw + (v.forward === -1 ? Math.PI : 0);
         g.scale.setScalar(read);
       }
