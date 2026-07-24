@@ -32,6 +32,14 @@ export function OsmTerrain() {
     geo.translate(cx, 0, cz);
 
     const pos = geo.attributes.position as THREE.BufferAttribute;
+    // Per-vertex colour tint. Village meadow reads as mixed grass /
+    // moss / dry earth instead of one flat sage-green. Deterministic
+    // per (x, z) so nothing shifts frame to frame.
+    const colors = new Float32Array(pos.count * 3);
+    const base = new THREE.Color('#79806b');
+    const dry = new THREE.Color('#8a7a5e');   // dry hay / bare-earth patches
+    const moss = new THREE.Color('#6a7561');  // damper mossy patches
+
     for (let i = 0; i < pos.count; i++) {
       const x = pos.getX(i);
       const z = pos.getZ(i);
@@ -39,27 +47,36 @@ export function OsmTerrain() {
       const overX = Math.max(0, Math.abs(x - cx) - flatX);
       const overZ = Math.max(0, Math.abs(z - cz) - flatZ);
       const over = Math.hypot(overX, overZ);
-      if (over === 0) continue;
-      const falloff = Math.min(1, over / 800);
-      // Two-octave sinusoidal noise, clamped to non-negative displacement
-      // so the terrain only ever rises. Water polygons extend far beyond
-      // the village and sit at Y = 0.20; if the terrain were allowed to
-      // dip below 0 in the far background, the water would visibly float
-      // above the dip. Non-negative displacement keeps every water body
-      // sitting on the terrain regardless of distance.
-      const n =
-        Math.sin(x * 0.0055) * Math.cos(z * 0.0067) * 2.2 +
-        Math.sin(x * 0.0021 + 1.7) * Math.cos(z * 0.0018 - 0.9) * 3.4;
-      pos.setY(i, Math.max(0, n) * falloff);
+      if (over > 0) {
+        const falloff = Math.min(1, over / 800);
+        // Two-octave sinusoidal displacement, clamped non-negative so
+        // water at Y = 0.20 never floats above a terrain dip.
+        const n =
+          Math.sin(x * 0.0055) * Math.cos(z * 0.0067) * 2.2 +
+          Math.sin(x * 0.0021 + 1.7) * Math.cos(z * 0.0018 - 0.9) * 3.4;
+        pos.setY(i, Math.max(0, n) * falloff);
+      }
+      // Colour noise, independent from displacement noise so the two
+      // don't correlate visually.
+      const cn =
+        Math.sin(x * 0.019) * Math.cos(z * 0.023) * 0.55 +
+        Math.sin(x * 0.007 + 2.1) * Math.cos(z * 0.005 - 1.3) * 0.45;
+      const tint = cn > 0 ? dry : moss;
+      const k = Math.min(0.45, Math.abs(cn) * 0.55);
+      const c = base.clone().lerp(tint, k);
+      colors[i * 3] = c.r;
+      colors[i * 3 + 1] = c.g;
+      colors[i * 3 + 2] = c.b;
     }
     pos.needsUpdate = true;
+    geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
     geo.computeVertexNormals();
     return geo;
   }, []);
 
   return (
     <mesh geometry={geometry}>
-      <meshStandardMaterial color="#79806b" roughness={1} />
+      <meshStandardMaterial vertexColors roughness={1} />
     </mesh>
   );
 }
