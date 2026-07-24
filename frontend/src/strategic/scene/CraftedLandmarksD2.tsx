@@ -392,7 +392,7 @@ interface IndustrialShedProps {
   roofColour: string;
 }
 
-function IndustrialShedD2Pass2({
+function IndustrialShedD2Pass3({
   osmId,
   wallHeight,
   wallColour,
@@ -402,8 +402,23 @@ function IndustrialShedD2Pass2({
   const PARAPET_H = 0.4;
   const wallGeo = useWallGeo(b, wallHeight);
   const parapetGeo = useWallGeo(b, PARAPET_H);
-  if (!b || !wallGeo || !parapetGeo) return null;
+
+  // Reuse the polygon-decor helper — derives cornerposts, fascia,
+  // longest edge (loading dock location) from the OSM polygon.
+  const decor = useMemo(() => {
+    if (!b) return null;
+    return derivePhase3Decor(b, polygonCentre(b.poly));
+  }, [b]);
+
+  if (!b || !wallGeo || !parapetGeo || !decor) return null;
+
   const centre = polygonCentre(b.poly);
+  const CORNERPOST_COLOUR = '#2f2925';   // dark iron / weathered timber
+  const FASCIA_COLOUR = roofColour;
+
+  const loadingDoorHeight = Math.min(wallHeight - 0.5, 3.6);
+  const dock = decor.entranceEdge;   // longest edge = loading side
+
   return (
     <group position={[centre[0], 0, centre[1]]}>
       <mesh geometry={wallGeo}>
@@ -413,8 +428,6 @@ function IndustrialShedD2Pass2({
           side={THREE.DoubleSide}
         />
       </mesh>
-      {/* Flat parapetted roof — matches industrial typology for both
-          BJ-era freight buildings and modern food-industry warehouses. */}
       <mesh geometry={parapetGeo} position={[0, wallHeight, 0]}>
         <meshStandardMaterial
           color={roofColour}
@@ -422,6 +435,76 @@ function IndustrialShedD2Pass2({
           side={THREE.DoubleSide}
         />
       </mesh>
+
+      {/* Dark cornerposts at convex polygon vertices — industrial
+          reinforcement / iron corner cladding. */}
+      {decor.cornerposts.length > 0 && (
+        <Instances
+          limit={decor.cornerposts.length}
+          range={decor.cornerposts.length}
+        >
+          <boxGeometry args={[0.22, wallHeight, 0.22]} />
+          <meshStandardMaterial color={CORNERPOST_COLOUR} roughness={0.9} />
+          {decor.cornerposts.map((c, i) => (
+            <Instance
+              key={`icp-${i}`}
+              position={[c.x, wallHeight / 2, c.z]}
+            />
+          ))}
+        </Instances>
+      )}
+
+      {/* Fascia at wall/roof junction — matches parapet colour. */}
+      {decor.fascia.length > 0 && (
+        <Instances
+          limit={decor.fascia.length}
+          range={decor.fascia.length}
+        >
+          <boxGeometry args={[1, 0.2, 0.05]} />
+          <meshStandardMaterial color={FASCIA_COLOUR} roughness={0.9} />
+          {decor.fascia.map((f, i) => (
+            <Instance
+              key={`if-${i}`}
+              position={[f.midX, wallHeight - 0.05, f.midZ]}
+              rotation={[0, f.angle, 0]}
+              scale={[f.length, 1, 1]}
+            />
+          ))}
+        </Instances>
+      )}
+
+      {/* Single loading door on the longest edge — no glass, industrial
+          roll-up style. Dimensions scale with the building's wall
+          height so small BJ outbuildings get pedestrian-scale doors,
+          large modern warehouses get bay-scale roll-ups. */}
+      {dock && (
+        <group
+          position={[
+            dock.midLx + dock.nx * 0.04,
+            0,
+            dock.midLz + dock.nz * 0.04
+          ]}
+          rotation={[0, dock.angleY, 0]}
+        >
+          <mesh position={[0, loadingDoorHeight / 2, 0.05]}>
+            <boxGeometry args={[
+              wallHeight > 6 ? 4.4 : 2.6,
+              loadingDoorHeight,
+              0.08
+            ]} />
+            <meshStandardMaterial color="#2a251f" roughness={0.85} />
+          </mesh>
+          {/* Small dark step in front of the door */}
+          <mesh position={[0, 0.09, 0.35]}>
+            <boxGeometry args={[
+              wallHeight > 6 ? 4.6 : 2.8,
+              0.18,
+              0.6
+            ]} />
+            <meshStandardMaterial color="#6a6058" roughness={0.95} />
+          </mesh>
+        </group>
+      )}
     </group>
   );
 }
@@ -483,7 +566,7 @@ export function CraftedLandmarksD2() {
     <group>
       <KarnhusetD2Pass5 />
       {STATION_CORRIDOR.map((e) => (
-        <IndustrialShedD2Pass2
+        <IndustrialShedD2Pass3
           key={e.osmId}
           osmId={e.osmId}
           wallHeight={e.wallHeight}
