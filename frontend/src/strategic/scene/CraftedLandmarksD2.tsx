@@ -392,7 +392,7 @@ interface IndustrialShedProps {
   roofColour: string;
 }
 
-function IndustrialShedD2Pass3({
+function IndustrialShedD2Pass4({
   osmId,
   wallHeight,
   wallColour,
@@ -503,6 +503,18 @@ function IndustrialShedD2Pass3({
             ]} />
             <meshStandardMaterial color="#6a6058" roughness={0.95} />
           </mesh>
+          {/* PHASE 4 — Gravel loading yard in front of the dock. Larger
+              for larger buildings (freight trucks need turnaround). */}
+          <mesh
+            rotation={[-Math.PI / 2, 0, 0]}
+            position={[0, 0.11, wallHeight > 6 ? 5.5 : 2.8]}
+          >
+            <planeGeometry args={[
+              wallHeight > 6 ? 12 : 6,
+              wallHeight > 6 ? 9 : 4.5
+            ]} />
+            <meshStandardMaterial color="#8f867a" roughness={0.95} />
+          </mesh>
         </group>
       )}
     </group>
@@ -566,7 +578,7 @@ export function CraftedLandmarksD2() {
     <group>
       <KarnhusetD2Pass5 />
       {STATION_CORRIDOR.map((e) => (
-        <IndustrialShedD2Pass3
+        <IndustrialShedD2Pass4
           key={e.osmId}
           osmId={e.osmId}
           wallHeight={e.wallHeight}
