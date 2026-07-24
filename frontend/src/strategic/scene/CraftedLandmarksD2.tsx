@@ -617,7 +617,7 @@ interface SchoolBuildingProps {
   roofColour: string;
 }
 
-function SchoolBuildingD2Pass3({
+function SchoolBuildingD2Pass4({
   osmId,
   wallHeight,
   wallColour,
@@ -739,6 +739,16 @@ function SchoolBuildingD2Pass3({
           ]}
           rotation={[0, entrance.angleY, 0]}
         >
+          {/* PHASE 4 — Paved apron in front of the entrance,
+              standard municipal-school landing scaled to the
+              building. */}
+          <mesh
+            rotation={[-Math.PI / 2, 0, 0]}
+            position={[0, 0.13, 2.0]}
+          >
+            <planeGeometry args={[5.5, 3.2]} />
+            <meshStandardMaterial color="#a89e88" roughness={0.95} />
+          </mesh>
           <mesh position={[0, 0.11, 0.35]}>
             <boxGeometry args={[2.2, 0.22, 0.55]} />
             <meshStandardMaterial color="#8a8078" roughness={0.95} />
@@ -801,7 +811,7 @@ export function CraftedLandmarksD2() {
         />
       ))}
       {SCHOOL_COMPLEX.map((e) => (
-        <SchoolBuildingD2Pass3
+        <SchoolBuildingD2Pass4
           key={e.osmId}
           osmId={e.osmId}
           wallHeight={e.wallHeight}
