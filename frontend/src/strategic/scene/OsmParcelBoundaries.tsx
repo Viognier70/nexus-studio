@@ -74,6 +74,26 @@ interface CornerPost {
   z: number;
 }
 
+// Parcel envelope precomputed once, used by the party-line coordination
+// pass to detect neighbouring parcels whose parcel rectangles overlap.
+interface Parcel {
+  id: string;
+  centreX: number;
+  centreZ: number;
+  halfW: number;
+  halfD: number;
+  cos: number;   // cos(-angle) for world → local rotation
+  sin: number;   // sin(-angle)
+}
+
+function parcelContains(p: Parcel, x: number, z: number): boolean {
+  const dx = x - p.centreX;
+  const dz = z - p.centreZ;
+  const lx = dx * p.cos - dz * p.sin;
+  const lz = dx * p.sin + dz * p.cos;
+  return Math.abs(lx) < p.halfW && Math.abs(lz) < p.halfD;
+}
+
 // Same driveway rules OsmDriveways applies. Kept in sync here so the
 // gate logic knows whether a driveway exists and where it lands.
 const MAX_DRIVEWAY_LEN = 45;
@@ -144,6 +164,32 @@ export function OsmParcelBoundaries() {
     const stone: Segment3D[] = [];
     const cornerPosts: CornerPost[] = [];
     const segments = carRoadSegments();
+
+    // Party-line coordination: precompute parcel envelopes for every
+    // eligible building so a fence side can check if its midpoint lies
+    // inside a lower-id neighbour's envelope (in which case the
+    // lower-id neighbour "wins" the shared boundary).
+    const parcels: Parcel[] = [];
+    for (const b of WORLD.buildings) {
+      if (LANDMARK_BUILDING_IDS.has(b.id)) continue;
+      const kind = b.kind ?? 'yes';
+      if (!HOST_KINDS.has(kind)) continue;
+      const area = polygonArea(b.poly);
+      if (area < 55) continue;
+      const wealth = wealthFor(b.id);
+      const margin =
+        wealth === 'prosperous' ? 9 : wealth === 'standard' ? 7.5 : 7;
+      const obb = orientedBbox(b.poly);
+      parcels.push({
+        id: b.id,
+        centreX: obb.centre[0],
+        centreZ: obb.centre[1],
+        halfW: obb.w / 2 + margin,
+        halfD: obb.d / 2 + margin,
+        cos: Math.cos(-obb.angle),
+        sin: Math.sin(-obb.angle)
+      });
+    }
 
     for (const b of WORLD.buildings) {
       if (LANDMARK_BUILDING_IDS.has(b.id)) continue;
@@ -222,7 +268,27 @@ export function OsmParcelBoundaries() {
         const pieces = fenceSegmentsAcrossGate(wxA, wzA, wxB, wzB, driveway);
         if (pieces.length === 0) continue;
 
+        // Party-line coordination: for each piece, check whether its
+        // midpoint falls inside a lower-id neighbour's parcel
+        // envelope. If it does, that neighbour has already committed
+        // to fencing the shared line and we skip our piece to avoid
+        // rendering two competing full fences.
+        const kept: Segment3D[] = [];
         for (const piece of pieces) {
+          let overridden = false;
+          for (const other of parcels) {
+            if (other.id === b.id) continue;
+            if (other.id >= b.id) continue;   // ties broken by lexicographic id
+            if (parcelContains(other, piece.midX, piece.midZ)) {
+              overridden = true;
+              break;
+            }
+          }
+          if (!overridden) kept.push(piece);
+        }
+        if (kept.length === 0) continue;
+
+        for (const piece of kept) {
           if (style === 'painted_timber') paintedTimber.push(piece);
           else if (style === 'wire') wire.push(piece);
           else if (style === 'hedge') hedge.push(piece);
