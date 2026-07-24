@@ -1,6 +1,7 @@
 import { Instance, Instances } from '@react-three/drei';
 import { useMemo } from 'react';
 import { LANDMARK_BY_ID } from '../content/world';
+import { inAnyWater } from '../procgen/geom';
 import { createRng } from '../util/rng';
 
 // Distant Bergslag forest ring.
@@ -42,6 +43,11 @@ interface DistantTree {
   cool: boolean;
 }
 
+// A candidate marker is only accepted when it lies inside the annulus
+// AND outside every water polygon. Sör-Älgen and Torrvarpen extend
+// well into the 700–2200 m band around Torget — without the water
+// exclusion, ~38 % of the ring lands on lake surfaces. `inAnyWater`
+// is the shared point-in-polygon test from procgen/geom.ts.
 function ringPointOK(
   x: number,
   z: number,
@@ -51,7 +57,9 @@ function ringPointOK(
   const dx = x - cx;
   const dz = z - cz;
   const r = Math.hypot(dx, dz);
-  return r >= RING_INNER && r <= RING_OUTER;
+  if (r < RING_INNER || r > RING_OUTER) return false;
+  if (inAnyWater(x, z)) return false;
+  return true;
 }
 
 export function HorizonForest() {
@@ -66,7 +74,12 @@ export function HorizonForest() {
     const rng = createRng(0x1f0e57);
     const out: DistantTree[] = [];
     let attempts = 0;
-    while (out.length < target && attempts < target * 4) {
+    // Rejection rate is dominated by the square-box vs annulus ratio
+    // (~π · (Ro²−Ri²) / (2·Ro)² ≈ 60 %) plus the water exclusion
+    // (Sör-Älgen + Torrvarpen removing ~35 % of the remaining area).
+    // Attempt budget of 10 × target keeps the useMemo cost bounded
+    // while still hitting the target density in the free area.
+    while (out.length < target && attempts < target * 10) {
       attempts++;
       const x = cx + rng.range(-side / 2, side / 2);
       const z = cz + rng.range(-side / 2, side / 2);
