@@ -617,20 +617,34 @@ interface SchoolBuildingProps {
   roofColour: string;
 }
 
-function SchoolBuildingD2Pass1({
+function SchoolBuildingD2Pass2({
   osmId,
   wallHeight,
-  wallColour
+  wallColour,
+  roofColour
 }: SchoolBuildingProps) {
   const b = BUILDING_BY_ID[osmId];
+  const PARAPET_H = 0.45;
   const wallGeo = useWallGeo(b, wallHeight);
-  if (!b || !wallGeo) return null;
+  const parapetGeo = useWallGeo(b, PARAPET_H);
+  if (!b || !wallGeo || !parapetGeo) return null;
   const centre = polygonCentre(b.poly);
   return (
     <group position={[centre[0], 0, centre[1]]}>
       <mesh geometry={wallGeo}>
         <meshStandardMaterial
           color={wallColour}
+          roughness={0.9}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+      {/* Flat parapetted roof — consistent across the 9-building
+          complex. Defensible for post-1970 Swedish municipal
+          schools; inventing per-building gable ridges without
+          reference support would exceed the ordinary-tier policy. */}
+      <mesh geometry={parapetGeo} position={[0, wallHeight, 0]}>
+        <meshStandardMaterial
+          color={roofColour}
           roughness={0.9}
           side={THREE.DoubleSide}
         />
@@ -679,7 +693,7 @@ export function CraftedLandmarksD2() {
         />
       ))}
       {SCHOOL_COMPLEX.map((e) => (
-        <SchoolBuildingD2Pass1
+        <SchoolBuildingD2Pass2
           key={e.osmId}
           osmId={e.osmId}
           wallHeight={e.wallHeight}
