@@ -392,7 +392,7 @@ interface IndustrialShedProps {
   roofColour: string;
 }
 
-function IndustrialShedD2Pass4({
+function IndustrialShedD2Pass5({
   osmId,
   wallHeight,
   wallColour,
@@ -453,6 +453,37 @@ function IndustrialShedD2Pass4({
           ))}
         </Instances>
       )}
+
+      {/* PHASE 5 — Dark downpipes at every convex vertex (industrial
+          drainage standard). Same positions as the cornerposts. */}
+      {decor.cornerposts.length > 0 && (
+        <Instances
+          limit={decor.cornerposts.length}
+          range={decor.cornerposts.length}
+        >
+          <cylinderGeometry args={[0.08, 0.08, wallHeight, 6]} />
+          <meshStandardMaterial color={CORNERPOST_COLOUR} roughness={0.9} />
+          {decor.cornerposts.map((c, i) => (
+            <Instance
+              key={`idp-${i}`}
+              position={[c.x, wallHeight / 2, c.z]}
+            />
+          ))}
+        </Instances>
+      )}
+
+      {/* PHASE 5 — Small roof exhaust vent at the polygon centroid.
+          Universal industrial-building rooftop fitting. */}
+      <group position={[0, wallHeight + PARAPET_H, 0]}>
+        <mesh position={[0, 0.6, 0]}>
+          <cylinderGeometry args={[0.28, 0.28, 1.2, 10]} />
+          <meshStandardMaterial color="#2a251f" roughness={0.9} />
+        </mesh>
+        <mesh position={[0, 1.35, 0]}>
+          <cylinderGeometry args={[0.36, 0.36, 0.15, 10]} />
+          <meshStandardMaterial color="#2a251f" roughness={0.9} />
+        </mesh>
+      </group>
 
       {/* Fascia at wall/roof junction — matches parapet colour. */}
       {decor.fascia.length > 0 && (
@@ -578,7 +609,7 @@ export function CraftedLandmarksD2() {
     <group>
       <KarnhusetD2Pass5 />
       {STATION_CORRIDOR.map((e) => (
-        <IndustrialShedD2Pass4
+        <IndustrialShedD2Pass5
           key={e.osmId}
           osmId={e.osmId}
           wallHeight={e.wallHeight}
