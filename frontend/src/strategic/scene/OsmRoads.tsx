@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import * as THREE from 'three';
-import { GROUND_Y, WORLD } from '../content/world';
+import { CLIPPED_ROADS, GROUND_Y } from '../content/world';
 import type { RawRoad } from '../content/world';
 
 // Width and colour by OSM highway kind. Real hierarchy: Lokavägen is the
@@ -96,7 +96,7 @@ export function OsmRoads() {
     const ped: RoadPiece[] = [];
     const car: RoadPiece[] = [];
     const major: RoadPiece[] = [];
-    for (const road of WORLD.roads) {
+    for (const road of CLIPPED_ROADS) {
       if (road.poly.length < 2) continue;
       const cat = CATEGORY[road.kind] ?? DEFAULT_CAT;
       const shape = buildRoadShape(road, cat.width / 2);

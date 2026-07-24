@@ -9,6 +9,7 @@
 //    canonical landmark id `gry-campus` per the design constitution.
 
 import worldRaw from '../data/grythyttan-world.json';
+import { clipPolylineAgainstBuildings } from '../procgen/geom';
 
 export type LatLon = [number, number];
 export type Vec2Tuple = [number, number];
@@ -187,26 +188,54 @@ export const LANDMARK_BUILDING_IDS: Set<string> = new Set([
 // * `CYCLE_PATHS` — pleasant cycling routes.
 const TRACK_KINDS = new Set(['track']);
 
-export const CAR_ROADS = WORLD.roads.filter((r) => r.car && r.poly.length >= 2);
+// Building-clipped road set. OSM occasionally tags service roads that
+// continue into warehouse loading bays or through factory yards as
+// through-roads; if we render those verbatim, asphalt disappears into a
+// wall and simulated vehicles walk through it. Preprocessing every road
+// once against the building footprints trims those inside-building runs
+// procedurally, without per-road exceptions. See ORDER 017a visual audit
+// backlog items C1 (buildings clip road space) and C2 (vehicles off-road).
+//
+// Each split piece keeps its parent road's `id` for piece 0 and gets a
+// `#pN` suffix for subsequent pieces, so any existing lookup against the
+// canonical OSM way id still resolves to the first (usually main) piece.
+export const CLIPPED_ROADS: RawRoad[] = (() => {
+  const out: RawRoad[] = [];
+  for (const road of WORLD.roads) {
+    if (road.poly.length < 2) continue;
+    const pieces = clipPolylineAgainstBuildings(road.poly);
+    if (pieces.length === 0) continue;
+    pieces.forEach((piece, idx) => {
+      out.push({
+        ...road,
+        id: idx === 0 ? road.id : `${road.id}#p${idx}`,
+        poly: piece
+      });
+    });
+  }
+  return out;
+})();
 
-export const VILLAGE_CAR_ROADS = WORLD.roads.filter(
+export const CAR_ROADS = CLIPPED_ROADS.filter((r) => r.car && r.poly.length >= 2);
+
+export const VILLAGE_CAR_ROADS = CLIPPED_ROADS.filter(
   (r) => r.car && r.poly.length >= 2 && !TRACK_KINDS.has(r.kind)
 );
 
-export const TRACK_ROADS = WORLD.roads.filter(
+export const TRACK_ROADS = CLIPPED_ROADS.filter(
   (r) => r.car && r.poly.length >= 2 && TRACK_KINDS.has(r.kind)
 );
 
-export const PED_PATHS = WORLD.roads.filter((r) => r.ped && r.poly.length >= 2);
+export const PED_PATHS = CLIPPED_ROADS.filter((r) => r.ped && r.poly.length >= 2);
 
-export const MAJOR_ROADS = WORLD.roads.filter(
+export const MAJOR_ROADS = CLIPPED_ROADS.filter(
   (r) =>
     r.car &&
     r.poly.length >= 2 &&
     ['secondary', 'tertiary', 'primary', 'unclassified'].includes(r.kind)
 );
 
-export const CYCLE_PATHS = WORLD.roads.filter(
+export const CYCLE_PATHS = CLIPPED_ROADS.filter(
   (r) =>
     (r.kind === 'cycleway' ||
       r.kind === 'path' ||

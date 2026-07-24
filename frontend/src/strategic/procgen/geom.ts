@@ -1,4 +1,4 @@
-import { WORLD } from '../content/world';
+import { CAR_ROADS, WORLD } from '../content/world';
 import type { Vec2Tuple } from '../content/world';
 
 // Shared deterministic procedural-geometry primitives, used by every
@@ -252,8 +252,11 @@ let CACHED_ROAD_SEGMENTS: RoadSegment[] | null = null;
 export function carRoadSegments(): RoadSegment[] {
   if (CACHED_ROAD_SEGMENTS) return CACHED_ROAD_SEGMENTS;
   const out: RoadSegment[] = [];
-  for (const road of WORLD.roads) {
-    if (!road.car) continue;
+  // Uses the building-clipped car road set (see CLIPPED_ROADS in
+  // content/world.ts) so procedural placement — driveways, parcel
+  // fences, meadow vegetation exclusion — never respects a phantom
+  // road segment that runs through a building wall.
+  for (const road of CAR_ROADS) {
     if (road.poly.length < 2) continue;
     for (let i = 1; i < road.poly.length; i++) {
       const ax = road.poly[i - 1][0];
@@ -346,6 +349,110 @@ export function segmentIntersection(
     x: a1x + tA * (a2x - a1x),
     z: a1z + tA * (a2z - a1z)
   };
+}
+
+// Clip a polyline (road centreline) against every building footprint in
+// the world, returning zero or more sub-polylines with the inside-building
+// runs removed. Used by the road preprocessor so vehicles never travel
+// through walls and the rendered asphalt never disappears under a
+// building. Preferred over per-building exceptions: OSM occasionally
+// tags a service road that continues into a warehouse loading bay as a
+// through-road, and this clip fixes every case with one procedural rule.
+//
+// Algorithm: for each segment (a, b), collect the parametric positions of
+// every intersection with any building polygon edge, sort and dedupe
+// them. Between two consecutive crossings the segment cannot enter or
+// leave any building, so the whole subinterval is either fully outside
+// or fully inside — we classify it by testing its midpoint against
+// `inside-any-building`. Outside subintervals are stitched into the
+// current output polyline; a transition to inside flushes it. This is
+// topology-robust: adjacent buildings that share a wall, or overlapping
+// polygons, cannot break parity because each subinterval is classified
+// on its own.
+export function clipPolylineAgainstBuildings(
+  poly: Vec2Tuple[]
+): Vec2Tuple[][] {
+  if (poly.length < 2) return [];
+  const insideAnyBuilding = (x: number, z: number): boolean => {
+    for (const b of WORLD.buildings) {
+      if (b.poly.length < 3) continue;
+      const bb = polygonBounds(b.poly);
+      if (x < bb.minX || x > bb.maxX || z < bb.minZ || z > bb.maxZ) continue;
+      if (inside(b.poly, x, z)) return true;
+    }
+    return false;
+  };
+  const result: Vec2Tuple[][] = [];
+  let current: Vec2Tuple[] = [];
+  let openOutside = false;
+  const flush = () => {
+    if (current.length >= 2) result.push(current);
+    current = [];
+    openOutside = false;
+  };
+  const pushOutsidePoint = (x: number, z: number) => {
+    const last = current[current.length - 1];
+    if (
+      !last ||
+      Math.abs(last[0] - x) > 1e-9 ||
+      Math.abs(last[1] - z) > 1e-9
+    ) {
+      current.push([x, z]);
+    }
+  };
+  for (let i = 0; i < poly.length - 1; i++) {
+    const a = poly[i];
+    const b = poly[i + 1];
+    const minX = Math.min(a[0], b[0]);
+    const maxX = Math.max(a[0], b[0]);
+    const minZ = Math.min(a[1], b[1]);
+    const maxZ = Math.max(a[1], b[1]);
+    const ts: number[] = [0, 1];
+    for (const bd of WORLD.buildings) {
+      if (bd.poly.length < 3) continue;
+      const bb = polygonBounds(bd.poly);
+      if (maxX < bb.minX || bb.maxX < minX) continue;
+      if (maxZ < bb.minZ || bb.maxZ < minZ) continue;
+      for (let j = 0; j < bd.poly.length - 1; j++) {
+        const p1 = bd.poly[j];
+        const p2 = bd.poly[j + 1];
+        const hit = segmentIntersection(
+          a[0], a[1], b[0], b[1],
+          p1[0], p1[1], p2[0], p2[1]
+        );
+        if (hit) ts.push(hit.tA);
+      }
+    }
+    ts.sort((p, q) => p - q);
+    const uniq: number[] = [ts[0]];
+    for (let k = 1; k < ts.length; k++) {
+      if (ts[k] - uniq[uniq.length - 1] > 1e-6) uniq.push(ts[k]);
+    }
+    for (let k = 0; k < uniq.length - 1; k++) {
+      const t0 = uniq[k];
+      const t1 = uniq[k + 1];
+      const mt = (t0 + t1) / 2;
+      const mx = a[0] + mt * (b[0] - a[0]);
+      const mz = a[1] + mt * (b[1] - a[1]);
+      if (insideAnyBuilding(mx, mz)) {
+        if (openOutside) flush();
+        continue;
+      }
+      const x0 = a[0] + t0 * (b[0] - a[0]);
+      const z0 = a[1] + t0 * (b[1] - a[1]);
+      const x1 = a[0] + t1 * (b[0] - a[0]);
+      const z1 = a[1] + t1 * (b[1] - a[1]);
+      if (!openOutside) {
+        current.push([x0, z0]);
+        openOutside = true;
+      } else {
+        pushOutsidePoint(x0, z0);
+      }
+      pushOutsidePoint(x1, z1);
+    }
+  }
+  flush();
+  return result;
 }
 
 // Exact segment-vs-any-building intersection. Used by parcel-boundary
