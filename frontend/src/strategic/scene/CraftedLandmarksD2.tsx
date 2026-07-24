@@ -374,11 +374,105 @@ function KarnhusetD2Pass5({ landmark }: { landmark?: unknown } = {}) {
   );
 }
 
+// ---------- Old Station corridor — shared industrial-shed helper ----------
+// Handcrafts the actual OSM polygon at a chosen wall height. Reused
+// across the 5 D2 station-corridor buildings so all five share one
+// small component. Each renders inside a group anchored at its own
+// polygon centroid, using the same D1-style Y-negation frame
+// convention as useWallGeo.
+//
+// BATCH PHASE 1: walls only. Later phases will progressively add
+// roof, facade, surroundings and fine detail — same batch mechanic,
+// same shared helper.
+
+interface IndustrialShedProps {
+  osmId: string;
+  wallHeight: number;
+  wallColour: string;
+}
+
+function IndustrialShedD2Pass1({ osmId, wallHeight, wallColour }: IndustrialShedProps) {
+  const b = BUILDING_BY_ID[osmId];
+  const wallGeo = useWallGeo(b, wallHeight);
+  if (!b || !wallGeo) return null;
+  const centre = polygonCentre(b.poly);
+  return (
+    <group position={[centre[0], 0, centre[1]]}>
+      <mesh geometry={wallGeo}>
+        <meshStandardMaterial
+          color={wallColour}
+          roughness={0.9}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+    </group>
+  );
+}
+
+// Typology palette for the 5 corridor buildings. Kept close to the
+// procedural `industrial` and `barn` KIND_COLOUR baselines from
+// OsmBuildings so neighbourhood coherence holds; per-building
+// variation from the historical/functional context (BJ era vs
+// modern food industry) applied within that palette.
+interface StationCorridorEntry {
+  osmId: string;
+  wallHeight: number;
+  wallColour: string;
+  roofColour: string;   // reserved for PHASE 2
+  note: string;
+}
+
+const STATION_CORRIDOR: StationCorridorEntry[] = [
+  {
+    osmId: 'w870510842',
+    wallHeight: 4,
+    wallColour: '#7a3626',   // Faluröd — station-adjacent BJ-era outbuilding
+    roofColour: '#312622',
+    note: 'BJ switching building (small)'
+  },
+  {
+    osmId: 'w870510839',
+    wallHeight: 5,
+    wallColour: '#6a3226',   // dark Faluröd — freight warehouse
+    roofColour: '#2f2925',
+    note: 'BJ-era freight warehouse'
+  },
+  {
+    osmId: 'w870510833',
+    wallHeight: 5,
+    wallColour: '#6a675e',   // industrial grey — modern food-industry
+    roofColour: '#3d3a34',
+    note: 'Medium food-industry warehouse'
+  },
+  {
+    osmId: 'w870510834',
+    wallHeight: 7,
+    wallColour: '#6f6c62',   // industrial grey (slightly lighter for the largest)
+    roofColour: '#3d3a34',
+    note: 'Large food-industry complex'
+  },
+  {
+    osmId: 'w870510823',
+    wallHeight: 7,
+    wallColour: '#6a675e',   // industrial grey
+    roofColour: '#3d3a34',
+    note: 'Largest food-industry warehouse'
+  }
+];
+
 // ---------- Composition ----------
 export function CraftedLandmarksD2() {
   return (
     <group>
       <KarnhusetD2Pass5 />
+      {STATION_CORRIDOR.map((e) => (
+        <IndustrialShedD2Pass1
+          key={e.osmId}
+          osmId={e.osmId}
+          wallHeight={e.wallHeight}
+          wallColour={e.wallColour}
+        />
+      ))}
     </group>
   );
 }

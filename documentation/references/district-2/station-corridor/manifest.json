@@ -1,0 +1,97 @@
+{
+  "id": "d2-station-corridor",
+  "district": "district-2",
+  "clusterZone": "grythyttan-old-station",
+  "anchorLandmark": {
+    "id": "gry-jarnvag",
+    "osmWayId": "w870510841",
+    "status": "FROZEN (District 1)"
+  },
+  "historicalContext": {
+    "line": "Bergslagsbanan (BJ), opened 1876",
+    "features": [
+      "12-track brick roundhouse at south end of rail yard (1876)",
+      "Parallel stall for 4 locomotives (1940s, demolished post-1946)",
+      "Modern food-industry warehousing"
+    ],
+    "sources": [
+      "https://www.jarnvag.net/banguide/kil-stalldalen",
+      "https://sites.google.com/view/bjs-hemsida/bj-historia",
+      "https://www.jvmv2.se/forum/index.php?mode=thread&id=49011"
+    ]
+  },
+  "phase": 0,
+  "tier": "ordinary",
+  "buildings": [
+    {
+      "osmWayId": "w870510842",
+      "kind": "yes",
+      "footprint": [12.0, 13.7],
+      "area": 106,
+      "vertices": 6,
+      "distanceFromStation": 14,
+      "likelyFunction": "Station-adjacent switching building (BJ-era, per banguide)",
+      "aspects": {
+        "footprint": { "state": "VERIFIED", "confidence": 1.0 },
+        "placement": { "state": "VERIFIED", "confidence": 1.0 },
+        "orientation": { "state": "VERIFIED", "confidence": 1.0 },
+        "scale": { "state": "VERIFIED", "confidence": 1.0 },
+        "wallMaterial": { "state": "TYPOLOGY", "confidence": 0.65 },
+        "wallColour": { "state": "TYPOLOGY", "confidence": 0.65 },
+        "roofForm": { "state": "TYPOLOGY", "confidence": 0.65 }
+      },
+      "overallConfidence": 0.77,
+      "phase1MinimumMet": true
+    },
+    {
+      "osmWayId": "w870510839",
+      "kind": "industrial",
+      "footprint": [19.0, 29.3],
+      "area": 321,
+      "vertices": 5,
+      "distanceFromStation": 38,
+      "likelyFunction": "Freight-yard warehouse (godsmagasin)",
+      "overallConfidence": 0.77,
+      "phase1MinimumMet": true
+    },
+    {
+      "osmWayId": "w870510833",
+      "kind": "industrial",
+      "footprint": [20.4, 35.8],
+      "area": 398,
+      "vertices": 5,
+      "distanceFromStation": 129,
+      "likelyFunction": "Modern food-industry warehouse (medium)",
+      "overallConfidence": 0.77,
+      "phase1MinimumMet": true
+    },
+    {
+      "osmWayId": "w870510834",
+      "kind": "industrial",
+      "footprint": [33.8, 78.0],
+      "area": 1064,
+      "vertices": 14,
+      "distanceFromStation": 153,
+      "likelyFunction": "Modern food-industry complex (multi-wing)",
+      "overallConfidence": 0.77,
+      "phase1MinimumMet": true
+    },
+    {
+      "osmWayId": "w870510823",
+      "kind": "industrial",
+      "footprint": [35.8, 51.3],
+      "area": 1297,
+      "vertices": 6,
+      "distanceFromStation": 156,
+      "likelyFunction": "Largest freight-yard warehouse",
+      "overallConfidence": 0.77,
+      "phase1MinimumMet": true
+    }
+  ],
+  "excludedProcedural": {
+    "count": "~31",
+    "reason": "Residential + small yes-tagged outbuildings within 250 m radius of the station. Procedural OsmBuildings sub-typology (ORDER 011 shed / garage / outbuilding / residential) handles them defensibly; adding ~30 near-identical handcrafts would not measurably improve the digital twin."
+  },
+  "publicSourcesExhausted": true,
+  "sourcesFile": "notes.md"
+}

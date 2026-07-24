@@ -152,7 +152,14 @@ const SHARED_CONTAINER_BUILDING_IDS = ['w869907962'];
 // polygon; the generic OsmBuildings layer must skip them to avoid double
 // rendering / z-fighting.
 const D2_HANDCRAFTED_BUILDING_IDS = [
-  'w193810921'   // Kärnhuset — Campus Grythyttan support building, 1993
+  'w193810921',  // Kärnhuset — Campus Grythyttan support building, 1993
+  // Old Station corridor (BJ Bergslagsbanan freight yard + food-industry
+  // warehousing). See documentation/references/district-2/station-corridor/.
+  'w870510842',  // Station-adjacent outbuilding (BJ switching building)
+  'w870510839',  // Freight-yard warehouse near platform
+  'w870510833',  // Medium modern food-industry warehouse
+  'w870510834',  // Large multi-wing modern food-industry complex
+  'w870510823'   // Largest single freight-yard warehouse
 ];
 
 export const LANDMARK_BUILDING_IDS: Set<string> = new Set([
