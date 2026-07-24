@@ -1,0 +1,49 @@
+{
+  "id": "d2-karnhuset",
+  "displayName": "Kärnhuset",
+  "osmWayId": "w193810921",
+  "address": "Sörälgsvägen 1, 712 60 Grythyttan",
+  "propertyDesignation": "Grythyttan 6:419",
+  "operator": "Akademiska Hus",
+  "tenant": "Örebro universitet",
+  "yearBuilt": 1993,
+  "acquired": 2007,
+  "district": "district-2",
+  "clusterZone": "campus-grythyttan",
+  "phase": 0,
+  "readyForPhase": null,
+  "aspects": {
+    "footprint": { "state": "VERIFIED", "source": "OSM way 193810921", "confidence": 1.0 },
+    "position": { "state": "VERIFIED", "source": "OSM + hitta.se GPS", "confidence": 1.0 },
+    "address": { "state": "VERIFIED", "source": "Akademiska Hus T0014002", "confidence": 1.0 },
+    "yearBuilt": { "state": "VERIFIED", "source": "Akademiska Hus T0014002", "confidence": 0.95 },
+    "function": { "state": "VERIFIED", "source": "Akademiska Hus + Örebro universitet", "confidence": 0.95 },
+    "storeys": { "state": "PARTIAL", "source": "Lecture hall K215 on floor 2 confirmed; higher floors not confirmed", "confidence": 0.75 },
+    "wallMaterial": { "state": "ABSENT", "source": null, "confidence": 0.0 },
+    "wallColour": { "state": "ABSENT", "source": null, "confidence": 0.0 },
+    "roofForm": { "state": "ABSENT", "source": null, "confidence": 0.0 },
+    "roofColour": { "state": "ABSENT", "source": null, "confidence": 0.0 },
+    "windows": { "state": "ABSENT", "source": null, "confidence": 0.0 },
+    "entrance": { "state": "ABSENT", "source": null, "confidence": 0.0 },
+    "architect": { "state": "ABSENT", "source": null, "confidence": 0.0 },
+    "polygonOrientation": { "state": "UNVERIFIED", "source": "OSM only; polygon 70×98 unusually large for a 2-storey academic building — may include yard/parking within the boundary", "confidence": 0.5 }
+  },
+  "overallConfidence": 0.55,
+  "phaseGate": {
+    "phase1Minimum": 0.85,
+    "phase1MinimumMet": false,
+    "blockers": [
+      "wallMaterial ABSENT",
+      "wallColour ABSENT",
+      "roofForm ABSENT",
+      "roofColour ABSENT"
+    ]
+  },
+  "visionOwnerRequest": {
+    "minimum": "Two daylight ground photographs (entrance elevation + full-length side) OR one Google Street View screenshot at Sörälgsvägen 1 that resolves the roof + facade",
+    "optional": "Aerial view or 45° oblique showing the roof pitch and how the building sits within the 70×98 m polygon"
+  },
+  "publicSourcesExhausted": true,
+  "sourcesFile": "urls.md",
+  "notesFile": "notes.md"
+}

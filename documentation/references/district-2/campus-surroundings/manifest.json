@@ -1,0 +1,49 @@
+{
+  "id": "d2-campus-surroundings",
+  "district": "district-2",
+  "clusterZone": "campus-grythyttan",
+  "phase": 0,
+  "readyForPhase": null,
+  "buildings": [
+    {
+      "osmWayId": "w611766155",
+      "footprint": [14.1, 12.3],
+      "area": 92,
+      "kind": "yes",
+      "identity": "UNKNOWN",
+      "overallConfidence": 0.2,
+      "recommendation": "Leave at procedural (OsmBuildings small-shed sub-typology)"
+    },
+    {
+      "osmWayId": "w611766156",
+      "footprint": [10.8, 9.3],
+      "area": 55,
+      "kind": "yes",
+      "identity": "UNKNOWN",
+      "overallConfidence": 0.2,
+      "recommendation": "Leave at procedural (OsmBuildings small-shed sub-typology)"
+    },
+    {
+      "osmWayId": "w611766157",
+      "footprint": [16.8, 14.5],
+      "area": 128,
+      "kind": "yes",
+      "identity": "UNKNOWN",
+      "overallConfidence": 0.2,
+      "recommendation": "Leave at procedural (OsmBuildings outbuilding sub-typology)"
+    }
+  ],
+  "excludedButNoted": [
+    {
+      "id": "d2-halsans-hus",
+      "displayName": "Hälsans Hus",
+      "akademiskaHusId": "T0014003",
+      "address": "Carl Jans väg, 712 60 Grythyttan",
+      "reason": "Located outside the Sörälgsvägen campus cluster; currently vacant with plans for dismantling and relocation. Not present in the local OSM data under a matching name.",
+      "confidenceIfProceeded": 0.4
+    }
+  ],
+  "publicSourcesExhausted": true,
+  "sourcesFile": "../karnhuset/urls.md",
+  "notesFile": "notes.md"
+}
