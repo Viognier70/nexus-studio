@@ -19,7 +19,7 @@ interface Extruded {
   ridgeD: number;
   ridgeAngle: number;
   height: number;
-  roofStyle: 'flat' | 'gable' | 'hip' | 'industrial' | 'shed';
+  roofStyle: 'flat' | 'gable' | 'hip' | 'industrial' | 'shed' | 'barn';
   building: RawBuilding;
   ridgeH: number;         // computed roof height (peak above the eaves)
   effectiveKind: string;  // after any 'yes' → shed/garage/small-commercial reclassify
@@ -53,7 +53,11 @@ const KIND_COLOUR: Record<string, { wall: string; roof: string }> = {
   // pick up the right typology instead of all being ochre boxes.
   shed: { wall: '#7d5b3f', roof: '#3a2b22' },      // creosoted timber
   garage: { wall: '#a24a3a', roof: '#3a2b22' },    // small Falu-red garage
-  outbuilding: { wall: '#b8a68a', roof: '#4a4136' } // generic small building
+  outbuilding: { wall: '#b8a68a', roof: '#4a4136' }, // generic small building
+  // Bergslag barns: long, dark-red vertical-board timber walls with a
+  // steep double-pitch iron-sheet roof. Reclassified from `industrial`
+  // at build time based on aspect ratio.
+  barn: { wall: '#6a3226', roof: '#312622' }
 };
 
 const DEFAULT_COLOUR = { wall: '#a89e88', roof: '#4a4136' };
@@ -126,6 +130,7 @@ function heightFor(b: RawBuilding, kind: string): number {
   else if (kind === 'train_station') base = 6;
   else if (kind === 'school') base = 8;
   else if (kind === 'industrial') base = 7;
+  else if (kind === 'barn') base = 6;
   else if (kind === 'house' || kind === 'detached') base = 4.5;
   else if (kind === 'residential') base = 6.5;
   else if (kind === 'shed') base = 2.6;
@@ -139,15 +144,17 @@ function heightFor(b: RawBuilding, kind: string): number {
 // Which roof style suits which kind. Houses / detached get gables; larger
 // residential and civic blocks get hipped roofs; industrial gets a flat
 // vented look; sheds get a single-slope shed roof; garages get a low
-// gable; unknown 'yes' still stays flat so we don't fake detail on
-// polygons we know nothing about.
+// monopitch (visually distinct from house gables); barns get a steep
+// double-pitch gable; unknown 'yes' still stays flat so we don't fake
+// detail on polygons we know nothing about.
 function roofStyleFor(kind: string): Extruded['roofStyle'] {
   if (kind === 'house' || kind === 'detached') return 'gable';
   if (kind === 'residential') return 'gable';
   if (kind === 'apartments' || kind === 'hotel' || kind === 'school') return 'hip';
   if (kind === 'industrial') return 'industrial';
+  if (kind === 'barn') return 'barn';
   if (kind === 'shed') return 'shed';
-  if (kind === 'garage') return 'gable';
+  if (kind === 'garage') return 'shed';     // monopitch garage
   if (kind === 'outbuilding') return 'gable';
   if (kind === 'commercial') return 'gable';
   return 'flat';
@@ -155,13 +162,29 @@ function roofStyleFor(kind: string): Extruded['roofStyle'] {
 
 // Roof pitch (ridge height above the eave) per style. Kept moderate so
 // procedural silhouettes read at village zoom without towering over the
-// handcrafted District 1 landmarks.
+// handcrafted District 1 landmarks. The barn pitch is intentionally
+// steeper — a defining Bergslag barn silhouette.
 function ridgeHeightFor(style: Extruded['roofStyle'], rd: number): number {
   if (style === 'flat' || style === 'industrial') return 0;
   if (style === 'gable') return Math.min(2.4, rd * 0.32);
+  if (style === 'barn') return Math.min(3.6, rd * 0.5);
   if (style === 'hip') return Math.min(1.6, rd * 0.22);
   if (style === 'shed') return Math.min(1.2, rd * 0.18);
   return 0;
+}
+
+// Post-OBB reclassify pass. Some `industrial` polygons are actually
+// long, narrow farmhouse-adjacent barns (aspect ratio > ~2.2, area
+// > 150 m²); render them as barns rather than flat-topped factories.
+// Some `yes` polygons that dropped through the size heuristic and
+// stayed generic ('yes' > 140 m²) are quite likely small commercial or
+// utility blocks — a low hip roof reads better than a flat cap.
+function postObbKind(kind: string, w: number, d: number): string {
+  const aspect = Math.max(w, d) / Math.max(1, Math.min(w, d));
+  const area = w * d;
+  if (kind === 'industrial' && aspect > 2.2 && area > 150) return 'barn';
+  if (kind === 'yes' && area > 140) return 'commercial';
+  return kind;
 }
 
 // Oriented bounding box: rotate the polygon so the longest edge lies along
@@ -226,7 +249,13 @@ function toExtruded(b: RawBuilding): Extruded | null {
   shape.moveTo(b.poly[0][0], b.poly[0][1]);
   for (let i = 1; i < b.poly.length; i++)
     shape.lineTo(b.poly[i][0], b.poly[i][1]);
-  const kind = effectiveKindFor(b);
+  // First-pass kind from `building=*` tag and area-based sub-classification.
+  const preKind = effectiveKindFor(b);
+  const obb = orientedBbox(b.poly);
+  // Second-pass reclassify using the oriented dimensions — long narrow
+  // industrial polygons become barns, larger `yes` polygons become
+  // commercial with a hip roof rather than a flat cap.
+  const kind = postObbKind(preKind, obb.w, obb.d);
   const h = heightFor(b, kind);
   const geo = new THREE.ExtrudeGeometry(shape, {
     depth: h,
@@ -236,8 +265,6 @@ function toExtruded(b: RawBuilding): Extruded | null {
   geo.rotateX(-Math.PI / 2);
   const base = KIND_COLOUR[kind] ?? DEFAULT_COLOUR;
   const hash = idHash(b.id);
-  // Per-building wobble first, so status tint (if any) still dominates the
-  // signal on curated commercial polygons.
   let wallColour = wobbleColour(base.wall, hash, 0.08);
   let roofColour = wobbleColour(base.roof, hash, 0.06);
   const status = BUILDING_STATUS_BY_OSM_ID[b.id];
@@ -246,7 +273,6 @@ function toExtruded(b: RawBuilding): Extruded | null {
     wallColour = tintColour(base.wall, pal.wall, 0.55);
     roofColour = tintColour(base.roof, pal.roof, 0.35);
   }
-  const obb = orientedBbox(b.poly);
   const style = roofStyleFor(kind);
   return {
     id: b.id,
@@ -457,6 +483,29 @@ function RoofCap({
           scale={[rw, ridgeH, rd]}
         >
           <meshStandardMaterial color={roofColour} roughness={0.9} />
+        </mesh>
+      </group>
+    );
+  }
+  if (style === 'barn') {
+    // Steep double-pitch gable. No chimney (barns typically have none),
+    // no fascia strip (Bergslag barns show plain rough eaves), and the
+    // ridge cap is subtler than on a house — reads as a distinct
+    // agricultural silhouette.
+    return (
+      <group
+        position={[centre[0], height, centre[1]]}
+        rotation={[0, -ridgeAngle, 0]}
+      >
+        <mesh
+          geometry={UNIT_GABLE_GEO}
+          scale={[rw, ridgeH, rd]}
+        >
+          <meshStandardMaterial color={roofColour} roughness={0.95} />
+        </mesh>
+        <mesh position={[0, ridgeH + 0.04, 0]}>
+          <boxGeometry args={[rw + 0.1, 0.08, 0.18]} />
+          <meshStandardMaterial color="#22201c" roughness={0.9} />
         </mesh>
       </group>
     );
