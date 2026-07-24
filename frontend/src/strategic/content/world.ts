@@ -159,7 +159,12 @@ const D2_HANDCRAFTED_BUILDING_IDS = [
   'w870510839',  // Freight-yard warehouse near platform
   'w870510833',  // Medium modern food-industry warehouse
   'w870510834',  // Large multi-wing modern food-industry complex
-  'w870510823'   // Largest single freight-yard warehouse
+  'w870510823',  // Largest single freight-yard warehouse
+  // School complex — Grythyttans skola F-6 + Förskolor Björken/Linden.
+  // See documentation/references/district-2/school-complex/.
+  'w870510877', 'w870510878', 'w870510876',
+  'w870510869', 'w870510870', 'w870510866',
+  'w870510884', 'w870510872', 'w870510871'
 ];
 
 export const LANDMARK_BUILDING_IDS: Set<string> = new Set([

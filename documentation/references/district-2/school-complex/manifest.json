@@ -1,0 +1,33 @@
+{
+  "id": "d2-school-complex",
+  "district": "district-2",
+  "clusterZone": "grythyttan-school",
+  "anchorLandmark": {
+    "id": "gry-skola",
+    "osmWayId": "w1239584179",
+    "status": "FROZEN (District 1)"
+  },
+  "operator": "Hällefors kommun",
+  "function": "F–6 grundskola + förskolor Björken och Linden + 2 fritidshem",
+  "enrolment": "~110–120 students",
+  "visitingAddress": "Stationsgatan 6, 712 60 Grythyttan",
+  "phase": 0,
+  "tier": "ordinary",
+  "buildings": [
+    { "osmWayId": "w870510877", "kind": "school", "footprint": [null, null], "area": 159, "vertices": 8, "distance": 33, "likelyFunction": "Small annex / classroom outbuilding", "overallConfidence": 0.76 },
+    { "osmWayId": "w870510878", "kind": "school", "footprint": [null, null], "area": 566, "vertices": 6, "distance": 35, "likelyFunction": "Medium school block (classrooms or gymnastikhall)", "overallConfidence": 0.76 },
+    { "osmWayId": "w870510876", "kind": "school", "footprint": [null, null], "area": 1327, "vertices": 23, "distance": 41, "likelyFunction": "Largest complex building (main F–6 wing?)", "overallConfidence": 0.76 },
+    { "osmWayId": "w870510869", "kind": "school", "footprint": [null, null], "area": 384, "vertices": 6, "distance": 81, "likelyFunction": "Medium block", "overallConfidence": 0.76 },
+    { "osmWayId": "w870510870", "kind": "school", "footprint": [null, null], "area": 456, "vertices": 6, "distance": 101, "likelyFunction": "Medium block", "overallConfidence": 0.76 },
+    { "osmWayId": "w870510866", "kind": "school", "footprint": [null, null], "area": 609, "vertices": 9, "distance": 106, "likelyFunction": "Medium block", "overallConfidence": 0.76 },
+    { "osmWayId": "w870510884", "kind": "school", "footprint": [null, null], "area": 379, "vertices": 15, "distance": 108, "likelyFunction": "L-shape annex (possibly Förskola Björken or Linden)", "overallConfidence": 0.76 },
+    { "osmWayId": "w870510872", "kind": "school", "footprint": [null, null], "area": 850, "vertices": 8, "distance": 125, "likelyFunction": "Large block (possibly Förskola Björken or Linden)", "overallConfidence": 0.76 },
+    { "osmWayId": "w870510871", "kind": "school", "footprint": [null, null], "area": 497, "vertices": 6, "distance": 140, "likelyFunction": "Medium block", "overallConfidence": 0.76 }
+  ],
+  "excludedProcedural": {
+    "count": 39,
+    "reason": "Residential + small yes-tagged polygons within 200 m of the school. Procedural OsmBuildings sub-typology handles them defensibly; adding 39 near-identical residential handcrafts would not measurably improve recognition of the school-complex zone."
+  },
+  "publicSourcesExhausted": true,
+  "sourcesFile": "notes.md"
+}

@@ -603,6 +603,67 @@ const STATION_CORRIDOR: StationCorridorEntry[] = [
   }
 ];
 
+// ---------- School complex — shared helper ----------
+// Handcrafts each Grythyttans skola outbuilding at its actual OSM
+// polygon. Reused across the 9 buildings of the D2 school-complex
+// zone. Palette matches the procedural `school` KIND_COLOUR baseline
+// (warm ochre plaster + brown roof) so the handcrafted buildings sit
+// coherently among any procedural school buildings elsewhere.
+
+interface SchoolBuildingProps {
+  osmId: string;
+  wallHeight: number;
+  wallColour: string;
+  roofColour: string;
+}
+
+function SchoolBuildingD2Pass1({
+  osmId,
+  wallHeight,
+  wallColour
+}: SchoolBuildingProps) {
+  const b = BUILDING_BY_ID[osmId];
+  const wallGeo = useWallGeo(b, wallHeight);
+  if (!b || !wallGeo) return null;
+  const centre = polygonCentre(b.poly);
+  return (
+    <group position={[centre[0], 0, centre[1]]}>
+      <mesh geometry={wallGeo}>
+        <meshStandardMaterial
+          color={wallColour}
+          roughness={0.9}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+    </group>
+  );
+}
+
+// School palette per building. Wall heights scale with function
+// class (small annex → 4.5 m single-storey; large multi-wing main
+// building → 7 m two-storey). Wall colours drawn from a small
+// coherent palette so the whole complex reads as one municipal
+// facility rather than 9 independent buildings.
+interface SchoolEntry {
+  osmId: string;
+  wallHeight: number;
+  wallColour: string;
+  roofColour: string;
+  note: string;
+}
+
+const SCHOOL_COMPLEX: SchoolEntry[] = [
+  { osmId: 'w870510877', wallHeight: 4.5, wallColour: '#c4ac86', roofColour: '#5a3f30', note: 'small annex' },
+  { osmId: 'w870510878', wallHeight: 6.0, wallColour: '#c4ac86', roofColour: '#5a3f30', note: 'medium block' },
+  { osmId: 'w870510876', wallHeight: 7.0, wallColour: '#c9b28e', roofColour: '#5a3f30', note: 'main F-6 wing (largest)' },
+  { osmId: 'w870510869', wallHeight: 5.5, wallColour: '#c4ac86', roofColour: '#5a3f30', note: 'medium block' },
+  { osmId: 'w870510870', wallHeight: 6.0, wallColour: '#c4ac86', roofColour: '#5a3f30', note: 'medium block' },
+  { osmId: 'w870510866', wallHeight: 6.0, wallColour: '#c4ac86', roofColour: '#5a3f30', note: 'medium block' },
+  { osmId: 'w870510884', wallHeight: 5.0, wallColour: '#c9b28e', roofColour: '#5a3f30', note: 'L-shape annex (Björken/Linden preschool)' },
+  { osmId: 'w870510872', wallHeight: 6.5, wallColour: '#c9b28e', roofColour: '#5a3f30', note: 'large block (Björken/Linden preschool)' },
+  { osmId: 'w870510871', wallHeight: 6.0, wallColour: '#c4ac86', roofColour: '#5a3f30', note: 'medium block' }
+];
+
 // ---------- Composition ----------
 export function CraftedLandmarksD2() {
   return (
@@ -610,6 +671,15 @@ export function CraftedLandmarksD2() {
       <KarnhusetD2Pass5 />
       {STATION_CORRIDOR.map((e) => (
         <IndustrialShedD2Pass5
+          key={e.osmId}
+          osmId={e.osmId}
+          wallHeight={e.wallHeight}
+          wallColour={e.wallColour}
+          roofColour={e.roofColour}
+        />
+      ))}
+      {SCHOOL_COMPLEX.map((e) => (
+        <SchoolBuildingD2Pass1
           key={e.osmId}
           osmId={e.osmId}
           wallHeight={e.wallHeight}
