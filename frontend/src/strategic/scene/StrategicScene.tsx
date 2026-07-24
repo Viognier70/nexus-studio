@@ -59,13 +59,24 @@ export function StrategicScene({ onSelect, selectedId }: Props) {
           at village and district zoom. Far end pulled in to 3600 m so
           the fog envelope stays inside the sky sphere. */}
       <fog attach="fog" args={['#cdc8ba', 1000, 3600]} />
-      <hemisphereLight args={['#f5efdd', '#485044', 0.95]} />
+      {/* Hemisphere: sky-side warm cream, ground-side updated to match
+          the new three-octave terrain palette (average tone shifted from
+          the earlier #485044 dark-green to a slightly warmer #5d6553).
+          The bounce onto meshes now agrees with the terrain colour
+          instead of pulling everything toward pine-forest green. */}
+      <hemisphereLight args={['#f5efdd', '#5d6553', 0.95]} />
+      {/* Directional (sun): nudged from the earlier east-heavy (280, 380,
+          140) toward a more typical Bergslag midday (200, 380, 200) —
+          equally east and south, ~62° altitude, so the shadow angle
+          reads as "daytime" rather than "morning". Colour cooled a
+          hair from #fdefcc → #f7ecd0 so it doesn't over-warm the
+          Faluröd houses. */}
       <directionalLight
-        position={[280, 380, 140]}
+        position={[200, 380, 200]}
         intensity={1.05}
-        color="#fdefcc"
+        color="#f7ecd0"
       />
-      <ambientLight intensity={0.38} />
+      <ambientLight intensity={0.32} />
       <Suspense fallback={null}>
         <Sky />
         <OsmTerrain />
