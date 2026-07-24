@@ -211,13 +211,18 @@ interface Segment3D {
   length: number;
   angle: number;
 }
+interface CornerPost {
+  x: number;
+  z: number;
+}
 
 export function OsmParcelBoundaries() {
-  const { paintedTimber, wire, hedge, stone } = useMemo(() => {
+  const { paintedTimber, wire, hedge, stone, cornerPosts } = useMemo(() => {
     const paintedTimber: Segment3D[] = [];
     const wire: Segment3D[] = [];
     const hedge: Segment3D[] = [];
     const stone: Segment3D[] = [];
+    const cornerPosts: CornerPost[] = [];
     const segments = buildRoadSegments();
 
     for (const b of WORLD.buildings) {
@@ -231,10 +236,8 @@ export function OsmParcelBoundaries() {
       const buildingHash = idHash(b.id + ':fence');
 
       const obb = computeOBB(b.poly);
-      // Parcel dilation from the OBB — prosperous parcels are more
-      // generous, modest ones just wrap the house.
       const margin =
-        wealth === 'prosperous' ? 7 : wealth === 'standard' ? 5 : 3.5;
+        wealth === 'prosperous' ? 9 : wealth === 'standard' ? 7.5 : 6;
       const halfW = obb.w / 2 + margin;
       const halfD = obb.d / 2 + margin;
       const corners: Array<[number, number]> = [
@@ -245,6 +248,11 @@ export function OsmParcelBoundaries() {
       ];
       const cos = Math.cos(obb.angle);
       const sin = Math.sin(obb.angle);
+
+      // Track which corners are anchored by at least one valid side —
+      // corner posts render only there so we don't leave a post
+      // dangling in mid-air next to a rejected side.
+      const cornerValid = [false, false, false, false];
 
       for (let s = 0; s < 4; s++) {
         const [ax, az] = corners[s];
@@ -259,9 +267,6 @@ export function OsmParcelBoundaries() {
         const wxB = obb.centre[0] + cos * bxx - sin * bzz;
         const wzB = obb.centre[1] + sin * bxx + cos * bzz;
 
-        // Sample the segment at 5 points; reject the whole side if any
-        // sample lands on a road, another building or in water. This
-        // trims most bad cases without exhaustive per-metre testing.
         const NSAMPLES = 5;
         let valid = true;
         for (let i = 0; i <= NSAMPLES; i++) {
@@ -287,9 +292,23 @@ export function OsmParcelBoundaries() {
         else if (style === 'wire') wire.push(seg);
         else if (style === 'hedge') hedge.push(seg);
         else stone.push(seg);
+
+        cornerValid[s] = true;
+        cornerValid[(s + 1) % 4] = true;
+      }
+
+      // Corner post at each parcel corner adjacent to at least one
+      // valid side. Small dark-timber post so the parcel edge reads as
+      // an intentional composition rather than four floating slabs.
+      for (let c = 0; c < 4; c++) {
+        if (!cornerValid[c]) continue;
+        const [cx, cz] = corners[c];
+        const wx = obb.centre[0] + cos * cx - sin * cz;
+        const wz = obb.centre[1] + sin * cx + cos * cz;
+        cornerPosts.push({ x: wx, z: wz });
       }
     }
-    return { paintedTimber, wire, hedge, stone };
+    return { paintedTimber, wire, hedge, stone, cornerPosts };
   }, []);
 
   return (
@@ -350,6 +369,20 @@ export function OsmParcelBoundaries() {
               position={[s.midX, 0.175, s.midZ]}
               rotation={[0, -s.angle, 0]}
               scale={[s.length, 1, 1]}
+            />
+          ))}
+        </Instances>
+      )}
+      {/* Corner posts — small dark-timber posts at each parcel corner
+          adjacent to at least one valid fence / hedge / stone side. */}
+      {cornerPosts.length > 0 && (
+        <Instances limit={cornerPosts.length} range={cornerPosts.length}>
+          <boxGeometry args={[0.16, 1.2, 0.16]} />
+          <meshStandardMaterial color="#3f382e" roughness={0.9} />
+          {cornerPosts.map((c, i) => (
+            <Instance
+              key={`cp-${i}`}
+              position={[c.x, 0.6, c.z]}
             />
           ))}
         </Instances>
