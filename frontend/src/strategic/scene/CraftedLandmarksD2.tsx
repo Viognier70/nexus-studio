@@ -389,18 +389,35 @@ interface IndustrialShedProps {
   osmId: string;
   wallHeight: number;
   wallColour: string;
+  roofColour: string;
 }
 
-function IndustrialShedD2Pass1({ osmId, wallHeight, wallColour }: IndustrialShedProps) {
+function IndustrialShedD2Pass2({
+  osmId,
+  wallHeight,
+  wallColour,
+  roofColour
+}: IndustrialShedProps) {
   const b = BUILDING_BY_ID[osmId];
+  const PARAPET_H = 0.4;
   const wallGeo = useWallGeo(b, wallHeight);
-  if (!b || !wallGeo) return null;
+  const parapetGeo = useWallGeo(b, PARAPET_H);
+  if (!b || !wallGeo || !parapetGeo) return null;
   const centre = polygonCentre(b.poly);
   return (
     <group position={[centre[0], 0, centre[1]]}>
       <mesh geometry={wallGeo}>
         <meshStandardMaterial
           color={wallColour}
+          roughness={0.9}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+      {/* Flat parapetted roof — matches industrial typology for both
+          BJ-era freight buildings and modern food-industry warehouses. */}
+      <mesh geometry={parapetGeo} position={[0, wallHeight, 0]}>
+        <meshStandardMaterial
+          color={roofColour}
           roughness={0.9}
           side={THREE.DoubleSide}
         />
@@ -466,11 +483,12 @@ export function CraftedLandmarksD2() {
     <group>
       <KarnhusetD2Pass5 />
       {STATION_CORRIDOR.map((e) => (
-        <IndustrialShedD2Pass1
+        <IndustrialShedD2Pass2
           key={e.osmId}
           osmId={e.osmId}
           wallHeight={e.wallHeight}
           wallColour={e.wallColour}
+          roofColour={e.roofColour}
         />
       ))}
     </group>
