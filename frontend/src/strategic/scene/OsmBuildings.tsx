@@ -761,6 +761,119 @@ function RoofCap({
   );
 }
 
+// Vertical cream corner boards on the four OBB corners of a building.
+// One of the most distinctive Bergslag painted-timber house details;
+// added per typology profile so only ~70 % of eligible houses get
+// them, breaking the "every house has the exact same trim" look.
+function Cornerboards({
+  centre,
+  ridgeW,
+  ridgeD,
+  ridgeAngle,
+  height,
+  trimColour
+}: {
+  centre: [number, number];
+  ridgeW: number;
+  ridgeD: number;
+  ridgeAngle: number;
+  height: number;
+  trimColour: string;
+}) {
+  const inset = 0.02;
+  const halfW = ridgeW / 2 - inset;
+  const halfD = ridgeD / 2 - inset;
+  const barW = 0.25;
+  return (
+    <group
+      position={[centre[0], height / 2, centre[1]]}
+      rotation={[0, -ridgeAngle, 0]}
+    >
+      {([[-1, -1], [-1, 1], [1, -1], [1, 1]] as const).map(
+        ([sx, sz], i) => (
+          <mesh
+            key={`cb-${i}`}
+            position={[sx * halfW, 0, sz * halfD]}
+          >
+            <boxGeometry args={[barW, height, barW]} />
+            <meshStandardMaterial color="#efe6d4" roughness={0.85} />
+          </mesh>
+        )
+      )}
+      {/* Trim strip at the wall top → roof line, hides the join. */}
+      <mesh position={[0, height / 2 - 0.08, halfD - 0.02]}>
+        <boxGeometry args={[ridgeW * 0.98, 0.16, 0.04]} />
+        <meshStandardMaterial color={trimColour} roughness={0.9} />
+      </mesh>
+      <mesh position={[0, height / 2 - 0.08, -halfD + 0.02]}>
+        <boxGeometry args={[ridgeW * 0.98, 0.16, 0.04]} />
+        <meshStandardMaterial color={trimColour} roughness={0.9} />
+      </mesh>
+    </group>
+  );
+}
+
+// Small entrance marker on the +Z facade of residential-scale buildings.
+// One dark door box, optional cream lintel — reads as "the front door"
+// at close zoom without inventing a full porch. Skipped when the OBB
+// short axis is too small (long-thin buildings likely enter on the end).
+function EntranceMarker({
+  centre,
+  ridgeW,
+  ridgeD,
+  ridgeAngle,
+  trimColour,
+  hash
+}: {
+  centre: [number, number];
+  ridgeW: number;
+  ridgeD: number;
+  ridgeAngle: number;
+  trimColour: string;
+  hash: number;
+}) {
+  if (ridgeW < 4 || ridgeD < 3.5) return null;
+  const doorX = ((hash * 4.71) % 1 - 0.5) * ridgeW * 0.4;
+  return (
+    <group
+      position={[centre[0], 0, centre[1]]}
+      rotation={[0, -ridgeAngle, 0]}
+    >
+      {/* Small step at the door. */}
+      <mesh position={[doorX, 0.11, ridgeD / 2 + 0.15]}>
+        <boxGeometry args={[1.4, 0.22, 0.4]} />
+        <meshStandardMaterial color="#8a8078" roughness={0.95} />
+      </mesh>
+      {/* Door itself. */}
+      <mesh position={[doorX, 1.4, ridgeD / 2 - 0.02]}>
+        <boxGeometry args={[1.0, 2.6, 0.06]} />
+        <meshStandardMaterial color="#3a2b22" roughness={0.85} />
+      </mesh>
+      {/* Cream lintel above the door. */}
+      <mesh position={[doorX, 2.85, ridgeD / 2 - 0.01]}>
+        <boxGeometry args={[1.2, 0.14, 0.05]} />
+        <meshStandardMaterial color="#efe6d4" roughness={0.85} />
+      </mesh>
+      {/* Small warm door lantern. */}
+      <mesh position={[doorX + 0.75, 2.6, ridgeD / 2 + 0.03]}>
+        <boxGeometry args={[0.2, 0.35, 0.2]} />
+        <meshStandardMaterial
+          color="#f4e6cf"
+          emissive="#f4c680"
+          emissiveIntensity={0.35}
+          roughness={0.55}
+        />
+      </mesh>
+      {/* Retain trimColour reference so this trim mesh renders coherent
+          with the roof cap when its material inherits the same look. */}
+      <mesh position={[doorX, 3.05, ridgeD / 2 - 0.02]}>
+        <boxGeometry args={[1.5, 0.06, 0.03]} />
+        <meshStandardMaterial color={trimColour} roughness={0.9} />
+      </mesh>
+    </group>
+  );
+}
+
 // A low stone base band around the wall of residential-scale buildings.
 // Rendered as a slightly inset OBB-aligned box so it never pokes out
 // beyond the wall on irregular polygons. Wall material overlaps the top
@@ -951,6 +1064,19 @@ export function OsmBuildings() {
         const hasPlinth = PLINTH_KINDS.has(b.effectiveKind);
         const hasStoreyBands =
           STOREY_BAND_KINDS.has(b.effectiveKind) && b.height > 6.5;
+        const hasCornerboards =
+          b.profile.hasCornerboards &&
+          (b.effectiveKind === 'house' ||
+            b.effectiveKind === 'detached' ||
+            b.effectiveKind === 'residential' ||
+            b.effectiveKind === 'outbuilding' ||
+            b.effectiveKind === 'commercial');
+        const hasEntrance =
+          b.effectiveKind === 'house' ||
+          b.effectiveKind === 'detached' ||
+          b.effectiveKind === 'residential' ||
+          b.effectiveKind === 'commercial';
+        const bhash = idHash(b.id + ':entry');
         return (
           <group key={b.id}>
             {hasPlinth && (
@@ -972,6 +1098,26 @@ export function OsmBuildings() {
                 ridgeAngle={b.ridgeAngle}
                 height={b.height}
                 wallColour={b.wallColour}
+              />
+            )}
+            {hasCornerboards && (
+              <Cornerboards
+                centre={b.ridgeCentre}
+                ridgeW={b.ridgeW}
+                ridgeD={b.ridgeD}
+                ridgeAngle={b.ridgeAngle}
+                height={b.height}
+                trimColour={b.trimColour}
+              />
+            )}
+            {hasEntrance && (
+              <EntranceMarker
+                centre={b.ridgeCentre}
+                ridgeW={b.ridgeW}
+                ridgeD={b.ridgeD}
+                ridgeAngle={b.ridgeAngle}
+                trimColour={b.trimColour}
+                hash={bhash}
               />
             )}
             <RoofCap
