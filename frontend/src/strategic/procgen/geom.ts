@@ -542,6 +542,97 @@ export function splitAtBridgeEdges(
   return filtered;
 }
 
+// Vehicle-safe clip. Same shape as clipPolylineAgainstBuildings but
+// classifies a polyline sample as "unsafe" when it sits within
+// `clearanceM` metres of ANY building — not just inside one. Used
+// by the vehicle navigation pipeline so a car's swept envelope
+// (centreline + right-lane offset + vehicle half-width + clearance)
+// never enters a wall, even when the raw road centreline runs
+// legitimately close to a building on a driveway or loading approach.
+//
+// Algorithm: densely resample the polyline at `stepM` metres, mark
+// each sample safe or unsafe, and emit contiguous safe runs. The
+// endpoints of each run are shrunk to the last-safe sample (with
+// a small `bufferM` inset so the run terminates comfortably before
+// the unsafe boundary rather than at the exact transition).
+//
+// Not called on the road-rendering hot path — rendering keeps using
+// the centreline clip (0-clearance) so asphalt remains where OSM
+// says it is. Only the derived vehicle road set uses this.
+export function clipPolylineForVehicles(
+  poly: Vec2Tuple[],
+  clearanceM: number,
+  stepM: number = 1.0,
+  bufferM: number = 0.5
+): Vec2Tuple[][] {
+  if (poly.length < 2) return [];
+  // Precompute segment arc lengths for the resample walk.
+  const seg: { a: Vec2Tuple; b: Vec2Tuple; len: number }[] = [];
+  let total = 0;
+  for (let i = 1; i < poly.length; i++) {
+    const a = poly[i - 1], b = poly[i];
+    const l = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    if (l > 0) {
+      seg.push({ a, b, len: l });
+      total += l;
+    }
+  }
+  if (total === 0) return [];
+  const n = Math.max(2, Math.ceil(total / stepM));
+
+  const insideOrNear = (x: number, z: number): boolean => {
+    for (const b of WORLD.buildings) {
+      if (b.poly.length < 3) continue;
+      const bb = polygonBounds(b.poly);
+      if (
+        x < bb.minX - clearanceM ||
+        x > bb.maxX + clearanceM ||
+        z < bb.minZ - clearanceM ||
+        z > bb.maxZ + clearanceM
+      ) continue;
+      if (inside(b.poly, x, z)) return true;
+      if (distanceToPolygon(b.poly, x, z) < clearanceM) return true;
+    }
+    return false;
+  };
+
+  // Sample the polyline. `samples[k]` = { x, z, safe }.
+  interface S { x: number; z: number; safe: boolean }
+  const samples: S[] = [];
+  for (let k = 0; k < n; k++) {
+    const target = (k / (n - 1)) * total;
+    let acc = 0;
+    for (const s of seg) {
+      if (acc + s.len >= target || s === seg[seg.length - 1]) {
+        const f = (target - acc) / Math.max(1e-9, s.len);
+        const x = s.a[0] + f * (s.b[0] - s.a[0]);
+        const z = s.a[1] + f * (s.b[1] - s.a[1]);
+        samples.push({ x, z, safe: !insideOrNear(x, z) });
+        break;
+      }
+      acc += s.len;
+    }
+  }
+
+  // Emit contiguous safe runs, applying a small buffer inset.
+  const runs: Vec2Tuple[][] = [];
+  let current: Vec2Tuple[] = [];
+  const bufferSteps = Math.max(1, Math.round(bufferM / stepM));
+  for (let k = 0; k < samples.length; k++) {
+    const s = samples[k];
+    if (s.safe) {
+      current.push([s.x, s.z]);
+    } else if (current.length > 0) {
+      // Trim trailing buffer.
+      const trimmed = current.slice(0, Math.max(0, current.length - bufferSteps));
+      if (trimmed.length >= 2) runs.push(trimmed);
+      current = [];
+    }
+  }
+  if (current.length >= 2) runs.push(current);
+  return runs;
+}
+
 // Exact segment-vs-any-building intersection. Used by parcel-boundary
 // logic to reject fence sides that would clip a neighbour building —
 // replaces the earlier N-point sampling approach which could miss

@@ -11,6 +11,7 @@
 import worldRaw from '../data/grythyttan-world.json';
 import {
   clipPolylineAgainstBuildings,
+  clipPolylineForVehicles,
   polygonArea,
   splitAtBridgeEdges
 } from '../procgen/geom';
@@ -314,17 +315,50 @@ export const CLIPPED_ROADS: RawRoad[] = (() => {
 
 export const CAR_ROADS = CLIPPED_ROADS.filter((r) => r.car && r.poly.length >= 2);
 
-export const VILLAGE_CAR_ROADS = CLIPPED_ROADS.filter(
+// Vehicle-safe road set. clipPolylineAgainstBuildings clips the raw
+// centreline against building polygon EDGES with zero clearance —
+// that keeps the rendered asphalt where OSM says it is even when a
+// road physically touches a loading-bay wall. Vehicles, however,
+// ride at up to 1.2 m right-lane offset plus their own half-width
+// (~0.9 m at 1× scale, up to ~1.7 m at village-zoom readability scale)
+// so a car whose centre is 1.2 m from a wall still enters the wall.
+//
+// CLEARANCE_M = 1.2 (lane offset) + 1.7 (max scaled vehicle half)
+//             + 0.3 (safety) = 3.2 m
+//
+// clipPolylineForVehicles densely resamples every polyline and drops
+// any run whose sample is within CLEARANCE_M of any building. The
+// output is what the traffic navigation graph traverses; road
+// rendering keeps using the raw centreline clip.
+const VEHICLE_CLEARANCE_M = 3.2;
+const CLIPPED_ROADS_VEHICLE: RawRoad[] = (() => {
+  const out: RawRoad[] = [];
+  for (const road of CLIPPED_ROADS) {
+    if (road.poly.length < 2) continue;
+    if (!road.car) continue;
+    const pieces = clipPolylineForVehicles(road.poly, VEHICLE_CLEARANCE_M);
+    pieces.forEach((piece, idx) => {
+      out.push({
+        ...road,
+        id: idx === 0 ? road.id : `${road.id}#v${idx}`,
+        poly: piece
+      });
+    });
+  }
+  return out;
+})();
+
+export const VILLAGE_CAR_ROADS = CLIPPED_ROADS_VEHICLE.filter(
   (r) => r.car && r.poly.length >= 2 && !TRACK_KINDS.has(r.kind)
 );
 
-export const TRACK_ROADS = CLIPPED_ROADS.filter(
+export const TRACK_ROADS = CLIPPED_ROADS_VEHICLE.filter(
   (r) => r.car && r.poly.length >= 2 && TRACK_KINDS.has(r.kind)
 );
 
 export const PED_PATHS = CLIPPED_ROADS.filter((r) => r.ped && r.poly.length >= 2);
 
-export const MAJOR_ROADS = CLIPPED_ROADS.filter(
+export const MAJOR_ROADS = CLIPPED_ROADS_VEHICLE.filter(
   (r) =>
     r.car &&
     r.poly.length >= 2 &&
