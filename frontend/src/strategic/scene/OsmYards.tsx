@@ -25,6 +25,8 @@ interface Patch {
   x: number;
   z: number;
   angle: number;
+  scaleX: number;
+  scaleZ: number;
 }
 interface Tree {
   x: number;
@@ -54,7 +56,8 @@ export function OsmYards() {
       // at the left-mid side of the OBB (opposite the wood pile in
       // OsmPropertyDetail which sits at right-mid). Skipped when the
       // outbuilding for this parent also landed on the left, to avoid
-      // shed+garden overlap.
+      // shed+garden overlap. Rotation and size take a small deterministic
+      // wobble so a row of gardens doesn't line up in lockstep.
       const gh = idHash(b.id + ':garden');
       if (wealth !== 'modest' && gh < 0.22) {
         const outbuildingSide = outbuildingSideFor(b);
@@ -68,7 +71,17 @@ export function OsmYards() {
             !inAnyWater(gx, gz) &&
             !nearAnyBuilding(gx, gz, b.id, 0.5)
           ) {
-            g.push({ x: gx, z: gz, angle: obb.angle });
+            // Small rotation and size wobble.
+            const rotDelta = (idHash(b.id + ':gardenRot') - 0.5) * 0.4;   // ±0.2 rad
+            const sw = 0.85 + idHash(b.id + ':gardenW') * 0.3;             // 0.85–1.15
+            const sd = 0.85 + idHash(b.id + ':gardenD') * 0.3;
+            g.push({
+              x: gx,
+              z: gz,
+              angle: obb.angle + rotDelta,
+              scaleX: sw,
+              scaleZ: sd
+            });
           }
         }
       }
@@ -102,6 +115,35 @@ export function OsmYards() {
           }
         }
       }
+
+      // Standard-tier houses: one small yard tree on the front-right of
+      // ~30 % of parcels. Gives standard properties a vertical yard
+      // element without turning every street into an orchard.
+      if (
+        wealth === 'standard' &&
+        outbuildingSideFor(b) !== 'front' &&
+        outbuildingSideFor(b) !== 'right'
+      ) {
+        const sh = idHash(b.id + ':stdyardtree');
+        if (sh < 0.32) {
+          const [wx, wz] = obbLocalToWorld(
+            obb,
+            obb.w / 2 + 3.0,
+            obb.d / 2 + 4.5
+          );
+          if (
+            !inAnyWater(wx, wz) &&
+            !nearAnyBuilding(wx, wz, b.id, 0.5)
+          ) {
+            t.push({
+              x: wx,
+              z: wz,
+              scale: 0.78 + sh * 0.4,     // 0.78–1.10, slightly smaller than villa trees
+              rotation: (sh * 5.1) % (Math.PI * 2)
+            });
+          }
+        }
+      }
     }
     return { gardens: g, yardTrees: t };
   }, []);
@@ -109,7 +151,8 @@ export function OsmYards() {
   return (
     <group>
       {/* Kitchen garden — 3.6 × 2.8 m tilled patch, darker peat colour,
-          just above landcover so grass shows around it. */}
+          just above landcover so grass shows around it. Per-instance
+          rotation and scale add small deterministic variance. */}
       {gardens.length > 0 && (
         <Instances limit={gardens.length} range={gardens.length}>
           <boxGeometry args={[3.6, 0.06, 2.8]} />
@@ -119,6 +162,7 @@ export function OsmYards() {
               key={`kg-${i}`}
               position={[p.x, GROUND_Y.landcover + 0.03, p.z]}
               rotation={[0, -p.angle, 0]}
+              scale={[p.scaleX, 1, p.scaleZ]}
             />
           ))}
         </Instances>

@@ -1,6 +1,6 @@
 import { Instance, Instances } from '@react-three/drei';
 import { useMemo } from 'react';
-import { GROUND_Y, LANDMARK_BUILDING_IDS, WORLD } from '../content/world';
+import { LANDMARK_BUILDING_IDS, WORLD } from '../content/world';
 import {
   carRoadSegments,
   closestRoadPoint,
@@ -84,6 +84,11 @@ export function OsmDriveways() {
 
   if (driveways.length === 0) return null;
 
+  // Driveway sits just above the entrance pad's top face (pad Y = 0.12
+  // + height 0.05 = 0.17) so at close zoom the two gravel surfaces
+  // read as one continuous apron. Previous 0.30 elevation floated
+  // ~0.16 m above the pad — invisible at wide zoom, awkward at kvarteret.
+  const DRIVEWAY_Y = 0.16;
   return (
     <Instances limit={driveways.length} range={driveways.length}>
       <boxGeometry args={[1, 0.02, 2.6]} />
@@ -91,7 +96,7 @@ export function OsmDriveways() {
       {driveways.map((d, i) => (
         <Instance
           key={`dw-${i}`}
-          position={[d.midX, GROUND_Y.landcover + 0.02, d.midZ]}
+          position={[d.midX, DRIVEWAY_Y, d.midZ]}
           rotation={[0, -d.angle, 0]}
           scale={[d.length, 1, 1]}
         />

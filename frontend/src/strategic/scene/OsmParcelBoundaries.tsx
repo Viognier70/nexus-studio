@@ -36,31 +36,52 @@ function wealthFor(id: string): WealthTier {
   return w < 0.28 ? 'modest' : w < 0.85 ? 'standard' : 'prosperous';
 }
 
+// Primary boundary style for a whole property, driven by wealth +
+// building hash. Real Bergslag properties usually keep one boundary
+// type across all four sides (a hedge, or a painted-timber fence, or
+// a stone edge), so we resolve a primary style once and let each
+// side either use it, leave itself bare, or occasionally swap to a
+// sanctioned alternate.
+function primaryStyleFor(
+  wealth: WealthTier,
+  buildingHash: number
+): BoundaryStyle | null {
+  if (wealth === 'modest') {
+    // Most modest parcels stay unfenced; those that do get a wire fence.
+    return buildingHash < 0.55 ? null : 'wire';
+  }
+  if (wealth === 'standard') {
+    if (buildingHash < 0.5) return 'painted_timber';
+    return 'hedge';
+  }
+  // prosperous
+  if (buildingHash < 0.5) return 'hedge';
+  if (buildingHash < 0.85) return 'painted_timber';
+  return 'stone';
+}
+
 // Per-side style selection. `null` = no boundary on this side, which is
 // a legitimate outcome: a modest cottage may have wire on the road
 // side and nothing at the back, a prosperous villa a hedge on three
-// sides and a stone edge along the driveway.
+// sides and a stone edge along the driveway. Given the property's
+// primary style, each side is:
+//   - primary                       (~65 %)
+//   - null (bare)                   (~25 %)
+//   - alternate compatible style    (~10 %)
 function chooseStyle(
+  primary: BoundaryStyle | null,
   wealth: WealthTier,
-  buildingHash: number,
   sideHash: number
 ): BoundaryStyle | null {
-  // Modest tier: mostly bare, occasional wire.
-  if (wealth === 'modest') {
-    if (buildingHash < 0.50) return null;
-    return sideHash < 0.6 ? 'wire' : null;
-  }
-  // Standard tier: mix of painted timber, hedge, some bare.
-  if (wealth === 'standard') {
-    if (sideHash < 0.24) return null;
-    if (sideHash < 0.58) return 'painted_timber';
-    return 'hedge';
-  }
-  // Prosperous tier: mostly hedge / painted timber, some stone.
-  if (sideHash < 0.12) return null;
-  if (sideHash < 0.55) return 'hedge';
-  if (sideHash < 0.85) return 'painted_timber';
-  return 'stone';
+  if (!primary) return null;
+  if (sideHash < 0.25) return null;
+  if (sideHash < 0.90) return primary;
+  // 10 % alternate — pick a sanctioned neighbour style so the mix
+  // stays plausible for the wealth tier.
+  if (wealth === 'prosperous') return primary === 'hedge' ? 'painted_timber' : 'hedge';
+  if (wealth === 'standard') return primary === 'hedge' ? 'painted_timber' : 'hedge';
+  // modest tier only supports 'wire' or null; keep the primary.
+  return primary;
 }
 
 interface Segment3D {
@@ -240,11 +261,15 @@ export function OsmParcelBoundaries() {
         }
       }
 
+      // One primary style per property, then per-side variation on top.
+      const primary = primaryStyleFor(wealth, buildingHash);
+      if (!primary) continue;
+
       for (let s = 0; s < 4; s++) {
         const [ax, az] = corners[s];
         const [bxx, bzz] = corners[(s + 1) % 4];
         const sideHash = idHash(b.id + ':side' + s);
-        const style = chooseStyle(wealth, buildingHash, sideHash);
+        const style = chooseStyle(primary, wealth, sideHash);
         if (!style) continue;
 
         // World endpoints of this side.
