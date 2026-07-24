@@ -9,7 +9,11 @@
 //    canonical landmark id `gry-campus` per the design constitution.
 
 import worldRaw from '../data/grythyttan-world.json';
-import { clipPolylineAgainstBuildings } from '../procgen/geom';
+import {
+  clipPolylineAgainstBuildings,
+  polygonArea,
+  splitAtBridgeEdges
+} from '../procgen/geom';
 
 export type LatLon = [number, number];
 export type Vec2Tuple = [number, number];
@@ -102,7 +106,79 @@ export interface WorldData {
   landmarks: Landmark[];
 }
 
-export const WORLD: WorldData = worldRaw as unknown as WorldData;
+const WORLD_RAW: WorldData = worldRaw as unknown as WorldData;
+
+// Split any building polygon whose OSM way has "bridge" edges longer
+// than 25 m into its connected sub-polygons. See
+// procgen/geom.ts::splitAtBridgeEdges — this is a systemic correction
+// for OSM ways that walk multi-wing buildings as one self-touching
+// polygon (Kärnhuset w193810921 is the motivating case).
+//
+// For each split building we keep the LARGEST sub-polygon under the
+// original OSM id so any handcrafted lookup (e.g. BUILDING_BY_ID)
+// resolves to the main mass. Additional wings become `#p1`, `#p2` …
+// and render through the procedural OsmBuildings layer.
+//
+// Threshold notes:
+//   - 25 m is chosen so genuinely-long straight barn / warehouse
+//     walls (documented up to ~50 m in the Grythyttan dataset) do
+//     NOT trigger the splitter. Buildings with edges 25–50 m but
+//     with normal aspect ratio remain a single polygon.
+//   - Only polygons with area / bbox_area < 0.6 are considered
+//     candidates — a compact simple polygon can have one long side
+//     without being multi-wing (a 50×20 m warehouse has one 50 m
+//     edge and area / bbox = 1.0, and stays intact).
+const SPLIT_MAX_EDGE_M = 25;
+const SPLIT_AREA_BBOX_RATIO = 0.6;
+const BUILDINGS_SPLIT: RawBuilding[] = (() => {
+  const out: RawBuilding[] = [];
+  for (const b of WORLD_RAW.buildings) {
+    if (b.poly.length < 4) { out.push(b); continue; }
+    // Compute bbox area
+    let minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity;
+    for (const [x, z] of b.poly) {
+      if (x < minX) minX = x;
+      if (x > maxX) maxX = x;
+      if (z < minZ) minZ = z;
+      if (z > maxZ) maxZ = z;
+    }
+    const bboxArea = Math.max(1, (maxX - minX) * (maxZ - minZ));
+    const ratio = polygonArea(b.poly) / bboxArea;
+    if (ratio >= SPLIT_AREA_BBOX_RATIO) {
+      out.push(b);
+      continue;
+    }
+    const parts = splitAtBridgeEdges(b.poly, SPLIT_MAX_EDGE_M);
+    if (parts.length <= 1) {
+      out.push(b);
+      continue;
+    }
+    // Sort by area descending; keep the largest under the original id.
+    const sorted = parts
+      .map((poly) => ({ poly, area: polygonArea(poly) }))
+      .sort((a, b) => b.area - a.area);
+    sorted.forEach((part, idx) => {
+      out.push({
+        ...b,
+        id: idx === 0 ? b.id : `${b.id}#p${idx}`,
+        poly: part.poly
+      });
+    });
+  }
+  return out;
+})();
+
+// Publish the split building set as `WORLD.buildings` so every
+// consumer (OsmBuildings, CraftedLandmarksD2 via BUILDING_BY_ID,
+// clipPolylineAgainstBuildings, procgen exclusion tests) sees the
+// same corrected geometry. Raw OSM buildings remain available via
+// `WORLD_RAW_BUILDINGS` for anything that specifically needs the
+// original vertex list.
+export const WORLD: WorldData = {
+  ...WORLD_RAW,
+  buildings: BUILDINGS_SPLIT
+};
+export const WORLD_RAW_BUILDINGS: RawBuilding[] = WORLD_RAW.buildings;
 
 export const LANDMARK_BY_ID: Record<string, Landmark> = Object.fromEntries(
   WORLD.landmarks.map((l) => [l.id, l])

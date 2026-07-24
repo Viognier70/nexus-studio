@@ -455,6 +455,93 @@ export function clipPolylineAgainstBuildings(
   return result;
 }
 
+// Split a closed OSM building polygon at any "bridge" edge whose
+// length exceeds `maxEdgeM` metres, returning one closed sub-polygon
+// per connected wing.
+//
+// Why this exists: OSM ways occasionally represent multi-wing
+// buildings as a single self-touching closed way that walks around
+// each wing, joined by a thin diagonal cut through empty space
+// (e.g. Kärnhuset — way 193810921 — has 27 vertices with a 47.9 m
+// diagonal joining two wings ~30 m apart). Downstream Three.js
+// ExtrudeGeometry triangulates such a polygon with earcut, producing
+// spurious wall triangles along the diagonals; the naive centroid
+// also falls in the empty waist between the wings, so the whole
+// render is anchored off the real building mass.
+//
+// Algorithm:
+//   1. Walk the polygon; find every edge whose length > `maxEdgeM`.
+//      These are the bridge cuts.
+//   2. If no bridges exist, return `[poly]` unchanged.
+//   3. Otherwise walk the vertex list; every time we cross a bridge
+//      edge we close the current run into a sub-polygon (if it has
+//      ≥ 3 vertices) and start a new one.
+//   4. Because the polygon starts and ends at the same vertex, the
+//      final run may need to be merged with the first if they share
+//      that vertex.
+//
+// Returned polygons are closed (last vertex duplicates the first),
+// matching the OSM convention. Sub-polygons smaller than
+// `minAreaM2` are dropped — small remainder rings are usually
+// artefacts of vertex duplication near the wing boundaries.
+export function splitAtBridgeEdges(
+  poly: Vec2Tuple[],
+  maxEdgeM: number,
+  minAreaM2 = 6
+): Vec2Tuple[][] {
+  if (poly.length < 4) return [poly];
+  const n = poly.length - 1;   // closed: poly[n] === poly[0]
+
+  // Identify bridge edges (index i → (i+1) mod n has length > maxEdgeM).
+  const bridge = new Set<number>();
+  for (let i = 0; i < n; i++) {
+    const p = poly[i];
+    const q = poly[(i + 1) % n];
+    const l = Math.hypot(q[0] - p[0], q[1] - p[1]);
+    if (l > maxEdgeM) bridge.add(i);
+  }
+  if (bridge.size === 0) return [poly];
+
+  // Start walking at the vertex just AFTER a bridge edge — that way
+  // the first sub-polygon runs cleanly from one bridge endpoint to
+  // the next without being truncated by the polygon-closure wrap.
+  // Walking from v0 (arbitrary) can put the closure inside a wing
+  // and produce a spurious tail fragment (v23..v25 for Kärnhuset).
+  let start = 0;
+  for (let i = 0; i < n; i++) {
+    if (bridge.has(i)) { start = (i + 1) % n; break; }
+  }
+
+  const runs: Vec2Tuple[][] = [];
+  let current: Vec2Tuple[] = [];
+  for (let k = 0; k < n; k++) {
+    const i = (start + k) % n;
+    current.push(poly[i]);
+    if (bridge.has(i)) {
+      if (current.length >= 3) {
+        current.push([current[0][0], current[0][1]]);
+        runs.push(current);
+      }
+      current = [];
+    }
+  }
+  // The loop ends after visiting every vertex once. If any residual
+  // vertices remain in `current` (they only should when the vertex
+  // range doesn't end on a bridge — which shouldn't happen when we
+  // started right after a bridge, but guard anyway) close them into
+  // a final run.
+  if (current.length >= 3) {
+    current.push([current[0][0], current[0][1]]);
+    runs.push(current);
+  }
+
+  // Drop rings smaller than `minAreaM2` — degenerate slivers, and
+  // small artefacts of the merging pass, both fall out here.
+  const filtered = runs.filter((p) => polygonArea(p) >= minAreaM2);
+  if (filtered.length === 0) return [poly];
+  return filtered;
+}
+
 // Exact segment-vs-any-building intersection. Used by parcel-boundary
 // logic to reject fence sides that would clip a neighbour building —
 // replaces the earlier N-point sampling approach which could miss
