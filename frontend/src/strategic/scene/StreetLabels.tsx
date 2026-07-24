@@ -56,7 +56,12 @@ function computeCentre(poly: Vec2Tuple[]): { c: Vec2Tuple; angleDeg: number } {
 // does not appear in the OSM dataset.
 function tierForRoad(r: RawRoad, displayName: string): Tier {
   const role = roleFor(r);
-  if (role === 'main') return 'main';
+  // Primary (Rv 244 / Hälleforsvägen) shares the top label tier with
+  // main (Rv 205 / Lokavägen). Without this the primary through-road
+  // would fall through to 'local' via the WAYFINDING name check alone
+  // and fade out beyond ~1200 m — the very view where its label
+  // matters most.
+  if (role === 'primary' || role === 'main') return 'main';
   if (role === 'secondary_connector') return 'major';
   // Wayfinding-critical named roads — Prästgatan toward Torget,
   // Sörälgsvägen up to Campus, Skolgatan, Stationsgatan — stay
