@@ -3,13 +3,15 @@ import { useMemo } from 'react';
 import { LANDMARK_BUILDING_IDS, WORLD } from '../content/world';
 import {
   carRoadSegments,
+  closestRoadPoint,
   idHash,
   inAnyWater,
   nearAnyBuilding,
   nearAnyRoadSegment,
   obbLocalToWorld,
   orientedBbox,
-  polygonArea
+  polygonArea,
+  segmentIntersection
 } from '../procgen/geom';
 
 // Deterministic parcel boundaries — one line of fence, hedge or stone
@@ -72,6 +74,68 @@ interface CornerPost {
   z: number;
 }
 
+// Same driveway rules OsmDriveways applies. Kept in sync here so the
+// gate logic knows whether a driveway exists and where it lands.
+const MAX_DRIVEWAY_LEN = 45;
+const MIN_DRIVEWAY_LEN = 1.8;
+
+// Gate + minimum-fragment thresholds. A useful fence fragment is at
+// least 1.5 m long; a shorter cut is discarded so we don't render
+// visible stubs. Half gate = 1.6 m so the total gap is ~3.2 m —
+// enough to read as an entrance without breaking the parcel line.
+const HALF_GATE = 1.6;
+const MIN_FRAGMENT = 1.5;
+
+// Split a raw fence side (defined by its world endpoints) into 0, 1
+// or 2 Segment3D entries. If the driveway line crosses this side, cut
+// a gate-width gap centred on the crossing point; otherwise return
+// the full side. Fragments shorter than MIN_FRAGMENT are dropped.
+function fenceSegmentsAcrossGate(
+  wxA: number, wzA: number,
+  wxB: number, wzB: number,
+  driveway: { sx: number; sz: number; qx: number; qz: number } | null
+): Segment3D[] {
+  const emit = (aX: number, aZ: number, bX: number, bZ: number): Segment3D | null => {
+    const dx = bX - aX;
+    const dz = bZ - aZ;
+    const length = Math.hypot(dx, dz);
+    if (length < MIN_FRAGMENT) return null;
+    return {
+      midX: (aX + bX) / 2,
+      midZ: (aZ + bZ) / 2,
+      length,
+      angle: Math.atan2(dz, dx)
+    };
+  };
+  const full = emit(wxA, wzA, wxB, wzB);
+  if (!full) return [];
+  if (!driveway) return [full];
+
+  const isect = segmentIntersection(
+    wxA, wzA, wxB, wzB,
+    driveway.sx, driveway.sz, driveway.qx, driveway.qz
+  );
+  if (!isect) return [full];
+
+  // tA parametrises the fence side; cut a gate centred on tA.
+  const sideLen = Math.hypot(wxB - wxA, wzB - wzA);
+  if (sideLen === 0) return [full];
+  const half = HALF_GATE / sideLen;
+  const tCutA = Math.max(0, isect.tA - half);
+  const tCutB = Math.min(1, isect.tA + half);
+  const cutAx = wxA + tCutA * (wxB - wxA);
+  const cutAz = wzA + tCutA * (wzB - wzA);
+  const cutBx = wxA + tCutB * (wxB - wxA);
+  const cutBz = wzA + tCutB * (wzB - wzA);
+  const out: Segment3D[] = [];
+  const left = emit(wxA, wzA, cutAx, cutAz);
+  if (left) out.push(left);
+  const right = emit(cutBx, cutBz, wxB, wzB);
+  if (right) out.push(right);
+  return out;
+}
+
+
 export function OsmParcelBoundaries() {
   const { paintedTimber, wire, hedge, stone, cornerPosts } = useMemo(() => {
     const paintedTimber: Segment3D[] = [];
@@ -112,6 +176,24 @@ export function OsmParcelBoundaries() {
       // dangling in mid-air next to a rejected side.
       const cornerValid = [false, false, false, false];
 
+      // Compute the parent's driveway line once — the fence sides
+       // that cross it will be cut to accommodate a gate. Mirrors the
+       // rules OsmDriveways applies.
+      let driveway: { sx: number; sz: number; qx: number; qz: number } | null = null;
+      const [dSx, dSz] = obbLocalToWorld(obb, 0, obb.d / 2 + 2.0);
+      const nearestRoad = closestRoadPoint(dSx, dSz, segments);
+      if (nearestRoad) {
+        const dist = Math.sqrt(nearestRoad.distSq);
+        if (dist >= MIN_DRIVEWAY_LEN && dist <= MAX_DRIVEWAY_LEN) {
+          driveway = {
+            sx: dSx,
+            sz: dSz,
+            qx: nearestRoad.qx,
+            qz: nearestRoad.qz
+          };
+        }
+      }
+
       for (let s = 0; s < 4; s++) {
         const [ax, az] = corners[s];
         const [bxx, bzz] = corners[(s + 1) % 4];
@@ -135,19 +217,17 @@ export function OsmParcelBoundaries() {
         }
         if (!valid) continue;
 
-        const dx = wxB - wxA;
-        const dz = wzB - wzA;
-        const length = Math.hypot(dx, dz);
-        if (length < 2) continue;
-        const midX = (wxA + wxB) / 2;
-        const midZ = (wzA + wzB) / 2;
-        const angle = Math.atan2(dz, dx);
-        const seg: Segment3D = { midX, midZ, length, angle };
+        // Cut a gate where the driveway crosses this side; either 0,
+        // 1 or 2 segments come back.
+        const pieces = fenceSegmentsAcrossGate(wxA, wzA, wxB, wzB, driveway);
+        if (pieces.length === 0) continue;
 
-        if (style === 'painted_timber') paintedTimber.push(seg);
-        else if (style === 'wire') wire.push(seg);
-        else if (style === 'hedge') hedge.push(seg);
-        else stone.push(seg);
+        for (const piece of pieces) {
+          if (style === 'painted_timber') paintedTimber.push(piece);
+          else if (style === 'wire') wire.push(piece);
+          else if (style === 'hedge') hedge.push(piece);
+          else stone.push(piece);
+        }
 
         cornerValid[s] = true;
         cornerValid[(s + 1) % 4] = true;
