@@ -33,20 +33,45 @@ function idHash(id: string): number {
   return (h >>> 0) / 0xffffffff;
 }
 
-// Roof-style mirror. Kept in a small local map here rather than exported
-// from OsmBuildings, because that file is very hot and any shared symbol
-// would create an accidental cross-scene coupling. Diverging silently
-// is fine — this is a visual cue only.
+// Rough polygon footprint area, used by the same 'yes' → shed/garage/
+// outbuilding heuristic OsmBuildings applies. Kept local so this file
+// has no runtime coupling to OsmBuildings.
+function polygonArea(poly: Vec2Tuple[]): number {
+  let sum = 0;
+  for (let i = 0; i < poly.length - 1; i++) {
+    sum += poly[i][0] * poly[i + 1][1] - poly[i + 1][0] * poly[i][1];
+  }
+  return Math.abs(sum) / 2;
+}
+
+// Which effective kind a building would have in OsmBuildings after the
+// 'yes' area heuristic. Only the buckets that would end up with a
+// chimney-bearing roof style matter here.
+function effectiveKind(b: RawBuilding): string {
+  const raw = b.kind ?? 'yes';
+  if (raw !== 'yes') return raw;
+  const area = polygonArea(b.poly);
+  if (area < 22) return 'shed';
+  if (area < 55) return 'garage';
+  if (area < 140) return 'outbuilding';
+  return 'commercial'; // matches postObbKind for large `yes`
+}
+
+// Mirrors the chimney selection in OsmBuildings' RoofCap: gable and hip
+// buildings whose longest wall is > 4 m get a chimney. Now includes the
+// `commercial` and `outbuilding` reclass buckets that also render with
+// a gable roof, so smoke and chimneys stay coherent.
 function likelyChimney(b: RawBuilding, w: number): boolean {
-  const k = b.kind ?? 'yes';
+  const k = effectiveKind(b);
   const gabled =
-    k === 'house' || k === 'detached' || k === 'residential';
+    k === 'house' || k === 'detached' || k === 'residential' ||
+    k === 'commercial' || k === 'outbuilding';
   const hipped = k === 'apartments' || k === 'hotel' || k === 'school';
   return (gabled || hipped) && w > 4;
 }
 
 function heightFor(b: RawBuilding): number {
-  const k = b.kind ?? 'yes';
+  const k = effectiveKind(b);
   let base: number;
   if (k === 'university') base = 9;
   else if (k === 'hotel') base = 8;
@@ -57,6 +82,7 @@ function heightFor(b: RawBuilding): number {
   else if (k === 'industrial') base = 7;
   else if (k === 'house' || k === 'detached') base = 4.5;
   else if (k === 'residential') base = 6.5;
+  else if (k === 'outbuilding') base = 4;
   else base = 5;
   const wobble = (idHash(b.id) - 0.5) * 0.24;
   return base * (1 + wobble);
