@@ -425,6 +425,33 @@ function toExtruded(b: RawBuilding): Extruded | null {
     roofColour = tintColour(roofColour, aged, (ageHash - 0.35) * 0.35);
   }
 
+  // Economic character in architectural language only.
+  // Modest houses drift a hair toward weathered darker paint; prosperous
+  // villas drift toward brighter freshly-painted / plaster tones.
+  // Municipal / civic kinds get a small cool nudge so plaster reads as
+  // an institutional colour rather than a warm domestic Faluröd.
+  if (kind === 'house' || kind === 'detached' || kind === 'residential') {
+    if (kind === 'house' || kind === 'detached') {
+      // Apply wealth tint only after neighbourhood + ageing so the wealth
+      // signal is subtle rather than dominant.
+      const w = idHash(b.id + ':wealth');
+      const wealth: WealthTier =
+        w < 0.28 ? 'modest' : w < 0.85 ? 'standard' : 'prosperous';
+      if (wealth === 'modest') {
+        wallColour = tintColour(wallColour, '#403830', 0.10);   // slight weathering
+      } else if (wealth === 'prosperous') {
+        wallColour = tintColour(wallColour, '#f0e8d4', 0.14);   // fresher paint / plaster
+        roofColour = tintColour(roofColour, '#3a2d24', 0.06);   // richer roof pigment
+      }
+    }
+  } else if (
+    kind === 'apartments' || kind === 'hotel' || kind === 'school' ||
+    kind === 'university' || kind === 'train_station'
+  ) {
+    // Institutional plaster leans a hair cooler and lighter than domestic.
+    wallColour = tintColour(wallColour, '#e0dccc', 0.10);
+  }
+
   const status = BUILDING_STATUS_BY_OSM_ID[b.id];
   if (status) {
     const pal = STATUS_PALETTE[status];
@@ -882,19 +909,25 @@ function BuildingPlinth({
   centre,
   ridgeW,
   ridgeD,
-  ridgeAngle
+  ridgeAngle,
+  wealth
 }: {
   centre: [number, number];
   ridgeW: number;
   ridgeD: number;
   ridgeAngle: number;
+  wealth: WealthTier;
 }) {
-  const H = 0.4;
+  // Modest houses sit on a shorter plinth; prosperous villas on a
+  // taller, more visible stone base. Civic / commercial kinds default
+  // to standard.
+  const H = wealth === 'prosperous' ? 0.65 : wealth === 'modest' ? 0.32 : 0.42;
   // Inset slightly so the plinth sits inside the wall footprint even on
   // irregular polygons. The wall extrusion covers the plinth top face.
   const inset = 0.35;
   const pw = Math.max(1.0, ridgeW - inset * 2);
   const pd = Math.max(1.0, ridgeD - inset * 2);
+  const colour = wealth === 'prosperous' ? '#948e82' : '#8a8478';
   return (
     <mesh
       geometry={UNIT_PLINTH_GEO}
@@ -902,7 +935,7 @@ function BuildingPlinth({
       rotation={[0, -ridgeAngle, 0]}
       scale={[pw + inset * 2 + 0.1, H, pd + inset * 2 + 0.1]}
     >
-      <meshStandardMaterial color="#8a8478" roughness={0.95} />
+      <meshStandardMaterial color={colour} roughness={0.95} />
     </mesh>
   );
 }
@@ -1085,6 +1118,7 @@ export function OsmBuildings() {
                 ridgeW={b.ridgeW}
                 ridgeD={b.ridgeD}
                 ridgeAngle={b.ridgeAngle}
+                wealth={b.profile.wealth}
               />
             )}
             <mesh geometry={b.geo}>
