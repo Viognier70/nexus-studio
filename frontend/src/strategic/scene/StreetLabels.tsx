@@ -4,7 +4,11 @@ import { useMemo, useRef, useState } from 'react';
 import { useCamera } from '../camera/CameraContext';
 import { WORLD, polylineLength } from '../content/world';
 import type { RawRoad, Vec2Tuple } from '../content/world';
-import { roleFor } from '../content/roadRoles';
+import {
+  displayNameFor,
+  roleFor,
+  WAYFINDING_ROAD_NAMES
+} from '../content/roadRoles';
 import { readabilityFade } from '../util/readability';
 
 type Tier = 'main' | 'major' | 'secondary' | 'local';
@@ -50,12 +54,18 @@ function computeCentre(poly: Vec2Tuple[]): { c: Vec2Tuple; angleDeg: number } {
 // `Lokavägen` on its 3 named segments — the Vision Owner's reference
 // to `Hälleforsvägen` matches the same physical road but that name
 // does not appear in the OSM dataset.
-function tierForRoad(r: RawRoad): Tier {
+function tierForRoad(r: RawRoad, displayName: string): Tier {
   const role = roleFor(r);
   if (role === 'main') return 'main';
   if (role === 'secondary_connector') return 'major';
   if (role === 'local_street') return 'secondary';
-  if (role === 'residential') return 'local';
+  // Wayfinding-critical residentials (Prästgatan, Skolgatan,
+  // Stationsgatan) are promoted from `local` to `secondary` so they
+  // stay legible at district range. Every other residential falls
+  // back to the local tier.
+  if (role === 'residential' && WAYFINDING_ROAD_NAMES.has(displayName)) {
+    return 'secondary';
+  }
   return 'local';
 }
 
@@ -99,10 +109,17 @@ export function StreetLabels() {
     const seen = new Set<string>();
     const out: Label[] = [];
     for (const r of WORLD.roads) {
-      if (!r.name) continue;
       if (r.poly.length < 2) continue;
-      // Drop duplicate names — many OSM ways carry the same street name.
-      if (seen.has(r.name)) continue;
+      // Use the derived display name so promoted unnamed segments
+      // (Rv 244 → Hälleforsvägen, unnamed Rv 205 → Lokavägen) surface
+      // in the label pool. Fall back to `road.name` for everything
+      // else.
+      const label = displayNameFor(r);
+      if (!label) continue;
+      // Drop duplicate names — many OSM ways carry the same street
+      // name (Lokavägen alone spans 6 segments once Rv 205
+      // continuations are promoted).
+      if (seen.has(label)) continue;
       const len = polylineLength(r.poly);
       if (len < 30) continue;
       const { c, angleDeg } = computeCentre(r.poly);
@@ -111,9 +128,9 @@ export function StreetLabels() {
         road: r,
         centre: c,
         angleDeg,
-        tier: tierForRoad(r)
+        tier: tierForRoad(r, label)
       });
-      seen.add(r.name);
+      seen.add(label);
     }
     return out;
   }, []);
@@ -168,7 +185,7 @@ export function StreetLabels() {
                 fontWeight: weight
               }}
             >
-              {l.road.name}
+              {displayNameFor(l.road)}
             </div>
           </Html>
         );
