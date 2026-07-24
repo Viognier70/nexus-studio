@@ -617,7 +617,7 @@ interface SchoolBuildingProps {
   roofColour: string;
 }
 
-function SchoolBuildingD2Pass2({
+function SchoolBuildingD2Pass3({
   osmId,
   wallHeight,
   wallColour,
@@ -627,8 +627,22 @@ function SchoolBuildingD2Pass2({
   const PARAPET_H = 0.45;
   const wallGeo = useWallGeo(b, wallHeight);
   const parapetGeo = useWallGeo(b, PARAPET_H);
-  if (!b || !wallGeo || !parapetGeo) return null;
+
+  const decor = useMemo(() => {
+    if (!b) return null;
+    return derivePhase3Decor(b, polygonCentre(b.poly));
+  }, [b]);
+
+  if (!b || !wallGeo || !parapetGeo || !decor) return null;
+
   const centre = polygonCentre(b.poly);
+  const TRIM_COLOUR = '#efe6d4';        // cream painted-timber institutional trim
+  const WINDOW_COLOUR = '#efe6d4';
+  const WINDOW_EMISSIVE = '#f4c680';
+  const FASCIA_COLOUR = roofColour;
+  const twoStoreys = wallHeight >= 6;
+  const entrance = decor.entranceEdge;
+
   return (
     <group position={[centre[0], 0, centre[1]]}>
       <mesh geometry={wallGeo}>
@@ -638,10 +652,6 @@ function SchoolBuildingD2Pass2({
           side={THREE.DoubleSide}
         />
       </mesh>
-      {/* Flat parapetted roof — consistent across the 9-building
-          complex. Defensible for post-1970 Swedish municipal
-          schools; inventing per-building gable ridges without
-          reference support would exceed the ordinary-tier policy. */}
       <mesh geometry={parapetGeo} position={[0, wallHeight, 0]}>
         <meshStandardMaterial
           color={roofColour}
@@ -649,6 +659,104 @@ function SchoolBuildingD2Pass2({
           side={THREE.DoubleSide}
         />
       </mesh>
+
+      {/* Institutional windows — 1 or 2 storeys per building. Only
+          the +Z-facing side of each edge is emitted; each `window`
+          from decor is already positioned proud of the wall with
+          the correct rotation. Emit the second storey only for
+          buildings tall enough. */}
+      {decor.windows.length > 0 && (
+        <Instances
+          limit={decor.windows.length}
+          range={decor.windows.length}
+        >
+          <boxGeometry args={[0.95, 1.35, 0.06]} />
+          <meshStandardMaterial
+            color={WINDOW_COLOUR}
+            emissive={WINDOW_EMISSIVE}
+            emissiveIntensity={0.12}
+            roughness={0.65}
+          />
+          {decor.windows
+            .filter((w) => twoStoreys || w.y < 3.5)
+            .map((w, i) => (
+              <Instance
+                key={`sw-${osmId}-${i}`}
+                position={[w.x, w.y, w.z]}
+                rotation={[0, w.angleY, 0]}
+              />
+            ))}
+        </Instances>
+      )}
+
+      {/* Cornerposts — cream painted vertical trim at every convex
+          polygon vertex. */}
+      {decor.cornerposts.length > 0 && (
+        <Instances
+          limit={decor.cornerposts.length}
+          range={decor.cornerposts.length}
+        >
+          <boxGeometry args={[0.24, wallHeight, 0.24]} />
+          <meshStandardMaterial color={TRIM_COLOUR} roughness={0.85} />
+          {decor.cornerposts.map((c, i) => (
+            <Instance
+              key={`scp-${osmId}-${i}`}
+              position={[c.x, wallHeight / 2, c.z]}
+            />
+          ))}
+        </Instances>
+      )}
+
+      {/* Fascia at wall/roof junction. */}
+      {decor.fascia.length > 0 && (
+        <Instances
+          limit={decor.fascia.length}
+          range={decor.fascia.length}
+        >
+          <boxGeometry args={[1, 0.2, 0.05]} />
+          <meshStandardMaterial color={FASCIA_COLOUR} roughness={0.9} />
+          {decor.fascia.map((f, i) => (
+            <Instance
+              key={`sf-${osmId}-${i}`}
+              position={[f.midX, wallHeight - 0.05, f.midZ]}
+              rotation={[0, f.angle, 0]}
+              scale={[f.length, 1, 1]}
+            />
+          ))}
+        </Instances>
+      )}
+
+      {/* Main entrance — one per building, on the longest edge.
+          Twin doors sized for schoolchildren / staff traffic. Only
+          emit for buildings large enough to be a main entrance
+          (skip the smallest annex). */}
+      {entrance && wallHeight >= 5 && (
+        <group
+          position={[
+            entrance.midLx + entrance.nx * 0.04,
+            0,
+            entrance.midLz + entrance.nz * 0.04
+          ]}
+          rotation={[0, entrance.angleY, 0]}
+        >
+          <mesh position={[0, 0.11, 0.35]}>
+            <boxGeometry args={[2.2, 0.22, 0.55]} />
+            <meshStandardMaterial color="#8a8078" roughness={0.95} />
+          </mesh>
+          <mesh position={[-0.5, 1.35, 0.05]}>
+            <boxGeometry args={[0.95, 2.6, 0.06]} />
+            <meshStandardMaterial color="#2f2620" roughness={0.85} />
+          </mesh>
+          <mesh position={[0.5, 1.35, 0.05]}>
+            <boxGeometry args={[0.95, 2.6, 0.06]} />
+            <meshStandardMaterial color="#2f2620" roughness={0.85} />
+          </mesh>
+          <mesh position={[0, 2.83, 0.06]}>
+            <boxGeometry args={[2.15, 0.14, 0.06]} />
+            <meshStandardMaterial color={TRIM_COLOUR} roughness={0.85} />
+          </mesh>
+        </group>
+      )}
     </group>
   );
 }
@@ -693,7 +801,7 @@ export function CraftedLandmarksD2() {
         />
       ))}
       {SCHOOL_COMPLEX.map((e) => (
-        <SchoolBuildingD2Pass2
+        <SchoolBuildingD2Pass3
           key={e.osmId}
           osmId={e.osmId}
           wallHeight={e.wallHeight}
