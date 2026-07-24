@@ -12,6 +12,7 @@ import { OsmForest } from './OsmForest';
 import { OsmLandmarks } from './OsmLandmarks';
 import { OsmMeadowVegetation } from './OsmMeadowVegetation';
 import { OsmOutbuildings } from './OsmProceduralOutbuildings';
+import { OsmParcelBoundaries } from './OsmParcelBoundaries';
 import { OsmPedestrians } from './OsmPedestrians';
 import { OsmPropertyDetail } from './OsmPropertyDetail';
 import { OsmRoads } from './OsmRoads';
@@ -89,6 +90,7 @@ export function StrategicScene({ onSelect, selectedId }: Props) {
         <OsmRoads />
         <OsmBuildings />
         <OsmOutbuildings />
+        <OsmParcelBoundaries />
         <OsmPropertyDetail />
         <CraftedLandmarks />
         <OsmLandmarks onSelect={onSelect} selectedId={selectedId} />
