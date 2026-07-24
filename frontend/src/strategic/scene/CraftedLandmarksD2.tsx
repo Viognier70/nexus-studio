@@ -617,7 +617,7 @@ interface SchoolBuildingProps {
   roofColour: string;
 }
 
-function SchoolBuildingD2Pass4({
+function SchoolBuildingD2Pass5({
   osmId,
   wallHeight,
   wallColour,
@@ -707,6 +707,24 @@ function SchoolBuildingD2Pass4({
         </Instances>
       )}
 
+      {/* PHASE 5 — Dark drainpipes at every convex vertex,
+          co-located with the cornerposts. */}
+      {decor.cornerposts.length > 0 && (
+        <Instances
+          limit={decor.cornerposts.length}
+          range={decor.cornerposts.length}
+        >
+          <cylinderGeometry args={[0.08, 0.08, wallHeight, 6]} />
+          <meshStandardMaterial color={FASCIA_COLOUR} roughness={0.9} />
+          {decor.cornerposts.map((c, i) => (
+            <Instance
+              key={`sdp-${osmId}-${i}`}
+              position={[c.x, wallHeight / 2, c.z]}
+            />
+          ))}
+        </Instances>
+      )}
+
       {/* Fascia at wall/roof junction. */}
       {decor.fascia.length > 0 && (
         <Instances
@@ -765,6 +783,20 @@ function SchoolBuildingD2Pass4({
             <boxGeometry args={[2.15, 0.14, 0.06]} />
             <meshStandardMaterial color={TRIM_COLOUR} roughness={0.85} />
           </mesh>
+          {/* PHASE 5 — small entrance lantern + address plate. */}
+          <mesh position={[1.35, 2.55, 0.08]}>
+            <boxGeometry args={[0.22, 0.35, 0.22]} />
+            <meshStandardMaterial
+              color="#f4e6cf"
+              emissive="#f4c680"
+              emissiveIntensity={0.5}
+              roughness={0.55}
+            />
+          </mesh>
+          <mesh position={[-1.45, 1.85, 0.06]}>
+            <boxGeometry args={[0.3, 0.45, 0.04]} />
+            <meshStandardMaterial color={TRIM_COLOUR} roughness={0.85} />
+          </mesh>
         </group>
       )}
     </group>
@@ -811,7 +843,7 @@ export function CraftedLandmarksD2() {
         />
       ))}
       {SCHOOL_COMPLEX.map((e) => (
-        <SchoolBuildingD2Pass4
+        <SchoolBuildingD2Pass5
           key={e.osmId}
           osmId={e.osmId}
           wallHeight={e.wallHeight}
