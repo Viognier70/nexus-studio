@@ -174,7 +174,7 @@ function derivePhase3Decor(b: RawBuilding, centre: [number, number]) {
   return { windows, cornerposts, fascia, entranceEdge };
 }
 
-function KarnhusetD2Pass4({ landmark }: { landmark?: unknown } = {}) {
+function KarnhusetD2Pass5({ landmark }: { landmark?: unknown } = {}) {
   const b = BUILDING_BY_ID['w193810921'];
   const WALL_H = 7;
   const PARAPET_H = 0.5;
@@ -254,6 +254,26 @@ function KarnhusetD2Pass4({ landmark }: { landmark?: unknown } = {}) {
           {decor.cornerposts.map((c, i) => (
             <Instance
               key={`kcp-${i}`}
+              position={[c.x, WALL_H / 2, c.z]}
+            />
+          ))}
+        </Instances>
+      )}
+
+      {/* PHASE 5 — Dark drainpipes at every convex vertex, running
+          from the parapet down to the ground. Standard Bergslag
+          institutional-timber drainage detail; every cornerboard
+          gets a paired downpipe on the outer side. */}
+      {decor.cornerposts.length > 0 && (
+        <Instances
+          limit={decor.cornerposts.length}
+          range={decor.cornerposts.length}
+        >
+          <cylinderGeometry args={[0.09, 0.09, WALL_H, 6]} />
+          <meshStandardMaterial color={FASCIA_COLOUR} roughness={0.9} />
+          {decor.cornerposts.map((c, i) => (
+            <Instance
+              key={`kdp-${i}`}
               position={[c.x, WALL_H / 2, c.z]}
             />
           ))}
@@ -340,6 +360,14 @@ function KarnhusetD2Pass4({ landmark }: { landmark?: unknown } = {}) {
               roughness={0.55}
             />
           </mesh>
+          {/* PHASE 5 — Small cream address / building-name plate
+              beside the door at eye level. Reads as generic building
+              marking at strategic zoom (text is a bitmap job outside
+              the current scope). */}
+          <mesh position={[-1.6, 1.9, 0.06]}>
+            <boxGeometry args={[0.35, 0.55, 0.04]} />
+            <meshStandardMaterial color={TRIM_COLOUR} roughness={0.85} />
+          </mesh>
         </group>
       )}
     </group>
@@ -350,7 +378,7 @@ function KarnhusetD2Pass4({ landmark }: { landmark?: unknown } = {}) {
 export function CraftedLandmarksD2() {
   return (
     <group>
-      <KarnhusetD2Pass4 />
+      <KarnhusetD2Pass5 />
     </group>
   );
 }

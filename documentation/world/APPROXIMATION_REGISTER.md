@@ -271,5 +271,12 @@ Not yet started. Rows will be added when a district enters reconstruction.
    - **Main entrance** — placed on the LONGEST outer edge (heuristic: the main facade). Twin doors, cream lintel, small dark canopy overhead, one warm wall lantern to the side. Restrained institutional composition — no portico, no columns, no historic detail the reference package cannot support.
    - Component renamed `KarnhusetD2Pass2` → `KarnhusetD2Pass3` following the D1 convention. All new geometry uses drei Instances so PHASE 3 adds 3 draw calls total (windows + cornerboards + fascia). Entrance is one group of small meshes. Overall Kärnhuset confidence rises to 0.83 as facade rhythm now reads at close and district zoom.
 - 2026-07-24 — **ORDER 014 District 2 BLOCK 4 — Kärnhuset PHASE 4**. Minimal PHASE 4 additions: a single 6.5 × 3.6 m paved apron directly in front of the entrance (institutional-typology standard, matches Bergslag academic-institution norm). No perimeter trees, no parking, no bicycle stand, no bollards — none of these have location support in the reference package, and placing them without a reference would be architectural fabrication for an ordinary-tier building. Component renamed `KarnhusetD2Pass3` → `KarnhusetD2Pass4`.
+- 2026-07-24 — **ORDER 014 District 2 BLOCK 5 — Kärnhuset PHASE 5**. Restrained fine detail:
+   - Dark drainpipes (0.09 m radius cylinders, 7 m tall) at every convex polygon vertex, co-located with the cornerposts. One drei Instances group.
+   - Small cream address plate (0.35 × 0.55 × 0.04 m) beside the entrance door at eye level. One mesh, no text (bitmap text remains out of scope at strategic zoom).
+   - Deliberately skipped: signage board (needs building-name typography), bicycle stand (location unsupported), exhaust vent (food-lab position unknown), planters (no reference for placement), benches (institutional-common but not location-anchored).
+   - Component renamed `KarnhusetD2Pass4` → `KarnhusetD2Pass5`. Overall confidence stable at 0.83.
+
+Kärnhuset D2 handcrafted reconstruction complete through the five-pass ladder. Frozen at PHASE 5 unless a Vision Owner reference package arrives that verifies specific fine detail (in which case a targeted follow-up would promote aspects with new reference support).
 
 **End of approximation register.**
