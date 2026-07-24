@@ -1,128 +1,20 @@
 import { Instance, Instances } from '@react-three/drei';
 import { useMemo } from 'react';
 import { LANDMARK_BUILDING_IDS, WORLD } from '../content/world';
-import type { Vec2Tuple } from '../content/world';
+import {
+  idHash,
+  inAnyWater,
+  nearAnyBuilding,
+  obbLocalToWorld,
+  orientedBbox,
+  polygonArea
+} from '../procgen/geom';
 
 // Small secondary structures (garden sheds, small outbuildings) placed
 // deterministically alongside larger residential buildings so a farm
 // or family plot reads as a full property rather than a single free-
 // standing box. Everything renders through drei Instances — 2 shed
 // wall instances + 2 shed roof instances for the whole village.
-
-// ---------- Local helpers (duplicated from OsmBuildings for module
-// independence — the outbuilding placement code doesn't need to reach
-// into OsmBuildings' private module scope). ----------
-
-function idHash(id: string): number {
-  let h = 2166136261;
-  for (let i = 0; i < id.length; i++) {
-    h ^= id.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
-  return (h >>> 0) / 0xffffffff;
-}
-
-function polygonArea(poly: Vec2Tuple[]): number {
-  let sum = 0;
-  for (let i = 0; i < poly.length - 1; i++) {
-    sum += poly[i][0] * poly[i + 1][1] - poly[i + 1][0] * poly[i][1];
-  }
-  return Math.abs(sum) / 2;
-}
-
-function inside(polygon: Vec2Tuple[], x: number, z: number): boolean {
-  let hit = false;
-  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-    const [xi, zi] = polygon[i];
-    const [xj, zj] = polygon[j];
-    const intersect =
-      zi > z !== zj > z &&
-      x < ((xj - xi) * (z - zi)) / (zj - zi + 1e-9) + xi;
-    if (intersect) hit = !hit;
-  }
-  return hit;
-}
-
-interface OBB {
-  centre: [number, number];
-  w: number;
-  d: number;
-  angle: number;
-}
-
-function computeOBB(poly: Vec2Tuple[]): OBB {
-  let bestLen = 0;
-  let angle = 0;
-  for (let i = 1; i < poly.length; i++) {
-    const dx = poly[i][0] - poly[i - 1][0];
-    const dz = poly[i][1] - poly[i - 1][1];
-    const l = Math.hypot(dx, dz);
-    if (l > bestLen) {
-      bestLen = l;
-      angle = Math.atan2(dz, dx);
-    }
-  }
-  let cx = 0, cz = 0, n = 0;
-  for (let i = 0; i < poly.length - 1; i++) {
-    cx += poly[i][0];
-    cz += poly[i][1];
-    n++;
-  }
-  cx /= Math.max(1, n);
-  cz /= Math.max(1, n);
-  const cos = Math.cos(-angle);
-  const sin = Math.sin(-angle);
-  let minU = Infinity, maxU = -Infinity, minV = Infinity, maxV = -Infinity;
-  for (const [x, z] of poly) {
-    const u = (x - cx) * cos - (z - cz) * sin;
-    const v = (x - cx) * sin + (z - cz) * cos;
-    if (u < minU) minU = u;
-    if (u > maxU) maxU = u;
-    if (v < minV) minV = v;
-    if (v > maxV) maxV = v;
-  }
-  return { centre: [cx, cz], w: maxU - minU, d: maxV - minV, angle };
-}
-
-// Bbox-based near-any-building test with a small dilation. Used to
-// reject candidate outbuilding positions that would clip another
-// building's footprint. Excludes the parent building by id.
-function nearAnyBuilding(
-  x: number,
-  z: number,
-  excludeId: string,
-  dilation: number
-): boolean {
-  for (const b of WORLD.buildings) {
-    if (b.id === excludeId) continue;
-    if (b.poly.length < 3) continue;
-    let minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity;
-    for (const [bx, bz] of b.poly) {
-      if (bx < minX) minX = bx;
-      if (bx > maxX) maxX = bx;
-      if (bz < minZ) minZ = bz;
-      if (bz > maxZ) maxZ = bz;
-    }
-    if (
-      x < minX - dilation ||
-      x > maxX + dilation ||
-      z < minZ - dilation ||
-      z > maxZ + dilation
-    ) continue;
-    if (inside(b.poly, x, z)) return true;
-  }
-  return false;
-}
-
-function inAnyWater(x: number, z: number): boolean {
-  for (const w of WORLD.water) {
-    if (w.poly.length < 3) continue;
-    if (inside(w.poly, x, z)) return true;
-  }
-  return false;
-}
-
-// ---------- Outbuilding placement ----------
 
 interface Outbuilding {
   x: number;
@@ -158,7 +50,7 @@ export function OsmOutbuildings() {
       // one on a different side.
       if (hash > 0.55) continue;
 
-      const obb = computeOBB(b.poly);
+      const obb = orientedBbox(b.poly);
       const size: Outbuilding['size'] = hash < 0.15 ? 'medium' : 'small';
       const paletteIdx = Math.floor(hash * 100) % SHED_PALETTE.length;
       const colour = SHED_PALETTE[paletteIdx];
@@ -176,11 +68,8 @@ export function OsmOutbuildings() {
         { lx: 0,           lz: halfD + clearance }     // front (last resort)
       ];
 
-      const cos = Math.cos(obb.angle);
-      const sin = Math.sin(obb.angle);
       for (const c of candidates) {
-        const wx = obb.centre[0] + cos * c.lx - sin * c.lz;
-        const wz = obb.centre[1] + sin * c.lx + cos * c.lz;
+        const [wx, wz] = obbLocalToWorld(obb, c.lx, c.lz);
         // Reject if the candidate would clip another building or land
         // in water.
         if (nearAnyBuilding(wx, wz, b.id, 1.5)) continue;

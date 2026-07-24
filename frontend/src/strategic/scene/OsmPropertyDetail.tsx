@@ -1,123 +1,21 @@
 import { Instance, Instances } from '@react-three/drei';
 import { useMemo } from 'react';
 import { LANDMARK_BUILDING_IDS, WORLD } from '../content/world';
-import type { Vec2Tuple } from '../content/world';
+import {
+  idHash,
+  inAnyWater,
+  nearAnyBuilding,
+  obbLocalToWorld,
+  orientedBbox,
+  polygonArea
+} from '../procgen/geom';
 
 // Property-scale decor around every eligible residential building:
 //   - Small gravel pad in front of the entrance
 //   - Wood pile at the rear corner (~1 in 4 houses)
 // Everything deterministic per building id + hash suffix. Rendered
-// via drei Instances so 250+ pads and ~60 wood piles cost 3 draw
+// via drei Instances so 250+ pads and ~60 wood piles cost 4 draw
 // calls total.
-
-function idHash(id: string): number {
-  let h = 2166136261;
-  for (let i = 0; i < id.length; i++) {
-    h ^= id.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
-  return (h >>> 0) / 0xffffffff;
-}
-
-function polygonArea(poly: Vec2Tuple[]): number {
-  let sum = 0;
-  for (let i = 0; i < poly.length - 1; i++) {
-    sum += poly[i][0] * poly[i + 1][1] - poly[i + 1][0] * poly[i][1];
-  }
-  return Math.abs(sum) / 2;
-}
-
-function inside(polygon: Vec2Tuple[], x: number, z: number): boolean {
-  let hit = false;
-  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-    const [xi, zi] = polygon[i];
-    const [xj, zj] = polygon[j];
-    const intersect =
-      zi > z !== zj > z &&
-      x < ((xj - xi) * (z - zi)) / (zj - zi + 1e-9) + xi;
-    if (intersect) hit = !hit;
-  }
-  return hit;
-}
-
-function inAnyWater(x: number, z: number): boolean {
-  for (const w of WORLD.water) {
-    if (w.poly.length < 3) continue;
-    if (inside(w.poly, x, z)) return true;
-  }
-  return false;
-}
-
-// Bbox-dilated near-any-building check, so wood piles don't clip
-// neighbour houses. Parent building excluded by id since the pile is
-// placed just outside its OBB.
-function nearAnyBuilding(
-  x: number,
-  z: number,
-  excludeId: string,
-  dilation: number
-): boolean {
-  for (const b of WORLD.buildings) {
-    if (b.id === excludeId) continue;
-    if (b.poly.length < 3) continue;
-    let minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity;
-    for (const [bx, bz] of b.poly) {
-      if (bx < minX) minX = bx;
-      if (bx > maxX) maxX = bx;
-      if (bz < minZ) minZ = bz;
-      if (bz > maxZ) maxZ = bz;
-    }
-    if (
-      x < minX - dilation ||
-      x > maxX + dilation ||
-      z < minZ - dilation ||
-      z > maxZ + dilation
-    ) continue;
-    if (inside(b.poly, x, z)) return true;
-  }
-  return false;
-}
-
-interface OBB {
-  centre: [number, number];
-  w: number;
-  d: number;
-  angle: number;
-}
-
-function computeOBB(poly: Vec2Tuple[]): OBB {
-  let bestLen = 0;
-  let angle = 0;
-  for (let i = 1; i < poly.length; i++) {
-    const dx = poly[i][0] - poly[i - 1][0];
-    const dz = poly[i][1] - poly[i - 1][1];
-    const l = Math.hypot(dx, dz);
-    if (l > bestLen) {
-      bestLen = l;
-      angle = Math.atan2(dz, dx);
-    }
-  }
-  let cx = 0, cz = 0, n = 0;
-  for (let i = 0; i < poly.length - 1; i++) {
-    cx += poly[i][0];
-    cz += poly[i][1];
-    n++;
-  }
-  cx /= Math.max(1, n);
-  cz /= Math.max(1, n);
-  const cos = Math.cos(-angle);
-  const sin = Math.sin(-angle);
-  let minU = Infinity, maxU = -Infinity, minV = Infinity, maxV = -Infinity;
-  for (const [x, z] of poly) {
-    const u = (x - cx) * cos - (z - cz) * sin;
-    const v = (x - cx) * sin + (z - cz) * cos;
-    if (u < minU) minU = u;
-    if (u > maxU) maxU = u;
-    if (v < minV) minV = v;
-    if (v > maxV) maxV = v;
-  }
-  return { centre: [cx, cz], w: maxU - minU, d: maxV - minV, angle };
-}
 
 const HOST_KINDS = new Set(['house', 'detached', 'residential']);
 
@@ -143,19 +41,17 @@ export function OsmPropertyDetail() {
       if (!HOST_KINDS.has(kind)) continue;
       const area = polygonArea(b.poly);
       if (area < 55) continue;
-      const obb = computeOBB(b.poly);
-      // Gravel entrance pad on the +Z side (matching the EntranceMarker
-      // convention in OsmBuildings). Positioned just past the wall.
-      const cos = Math.cos(obb.angle);
-      const sin = Math.sin(obb.angle);
-      // +Z-in-OBB-frame vector rotated to world.
+      const obb = orientedBbox(b.poly);
+
+      // Gravel entrance pad on the +Z-in-OBB side (matching the
+      // EntranceMarker convention in OsmBuildings). Positioned 1.5 m
+      // clear of the wall.
       const halfD = obb.d / 2;
-      const padOffset = halfD + 1.5;   // 1.5 m clear of the wall
-      const px = obb.centre[0] + (-sin) * padOffset;   // rotate (0, padOffset) by obb.angle
-      const pz = obb.centre[1] + cos * padOffset;
+      const [px, pz] = obbLocalToWorld(obb, 0, halfD + 1.5);
       if (!inAnyWater(px, pz)) {
         p.push({ x: px, z: pz, angle: obb.angle });
       }
+
       // Wood pile on the right-mid side of the parent OBB on ~28 % of
       // eligible houses. Placed at (halfW + 2, -halfD * 0.4) so it
       // sits clearly outside the wall AND clearly away from the
@@ -164,15 +60,12 @@ export function OsmPropertyDetail() {
       // building.
       const wh = idHash(b.id + ':woodpile');
       if (wh < 0.28) {
-        const wpLx = obb.w / 2 + 2.0;
-        const wpLz = -halfD * 0.4;
-        const cornerX = obb.centre[0] + cos * wpLx - sin * wpLz;
-        const cornerZ = obb.centre[1] + sin * wpLx + cos * wpLz;
+        const [wx, wz] = obbLocalToWorld(obb, obb.w / 2 + 2.0, -halfD * 0.4);
         if (
-          !inAnyWater(cornerX, cornerZ) &&
-          !nearAnyBuilding(cornerX, cornerZ, b.id, 1.0)
+          !inAnyWater(wx, wz) &&
+          !nearAnyBuilding(wx, wz, b.id, 1.0)
         ) {
-          w.push({ x: cornerX, z: cornerZ, angle: obb.angle });
+          w.push({ x: wx, z: wz, angle: obb.angle });
         }
       }
     }

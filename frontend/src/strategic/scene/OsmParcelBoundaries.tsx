@@ -1,7 +1,16 @@
 import { Instance, Instances } from '@react-three/drei';
 import { useMemo } from 'react';
-import { CAR_ROADS, LANDMARK_BUILDING_IDS, WORLD } from '../content/world';
-import type { Vec2Tuple } from '../content/world';
+import { LANDMARK_BUILDING_IDS, WORLD } from '../content/world';
+import {
+  carRoadSegments,
+  idHash,
+  inAnyWater,
+  nearAnyBuilding,
+  nearAnyRoadSegment,
+  obbLocalToWorld,
+  orientedBbox,
+  polygonArea
+} from '../procgen/geom';
 
 // Deterministic parcel boundaries — one line of fence, hedge or stone
 // edge along each of the four OBB sides of every eligible residential
@@ -12,159 +21,6 @@ import type { Vec2Tuple } from '../content/world';
 // segment style hash — variety inside a neighbourhood without random
 // noise. Segments are rejected if they would cross a road, sit on
 // another building, or land in water.
-
-function idHash(id: string): number {
-  let h = 2166136261;
-  for (let i = 0; i < id.length; i++) {
-    h ^= id.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
-  return (h >>> 0) / 0xffffffff;
-}
-
-function polygonArea(poly: Vec2Tuple[]): number {
-  let sum = 0;
-  for (let i = 0; i < poly.length - 1; i++) {
-    sum += poly[i][0] * poly[i + 1][1] - poly[i + 1][0] * poly[i][1];
-  }
-  return Math.abs(sum) / 2;
-}
-
-function inside(polygon: Vec2Tuple[], x: number, z: number): boolean {
-  let hit = false;
-  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-    const [xi, zi] = polygon[i];
-    const [xj, zj] = polygon[j];
-    const intersect =
-      zi > z !== zj > z &&
-      x < ((xj - xi) * (z - zi)) / (zj - zi + 1e-9) + xi;
-    if (intersect) hit = !hit;
-  }
-  return hit;
-}
-
-interface OBB {
-  centre: [number, number];
-  w: number;
-  d: number;
-  angle: number;
-}
-
-function computeOBB(poly: Vec2Tuple[]): OBB {
-  let bestLen = 0;
-  let angle = 0;
-  for (let i = 1; i < poly.length; i++) {
-    const dx = poly[i][0] - poly[i - 1][0];
-    const dz = poly[i][1] - poly[i - 1][1];
-    const l = Math.hypot(dx, dz);
-    if (l > bestLen) {
-      bestLen = l;
-      angle = Math.atan2(dz, dx);
-    }
-  }
-  let cx = 0, cz = 0, n = 0;
-  for (let i = 0; i < poly.length - 1; i++) {
-    cx += poly[i][0];
-    cz += poly[i][1];
-    n++;
-  }
-  cx /= Math.max(1, n);
-  cz /= Math.max(1, n);
-  const cos = Math.cos(-angle);
-  const sin = Math.sin(-angle);
-  let minU = Infinity, maxU = -Infinity, minV = Infinity, maxV = -Infinity;
-  for (const [x, z] of poly) {
-    const u = (x - cx) * cos - (z - cz) * sin;
-    const v = (x - cx) * sin + (z - cz) * cos;
-    if (u < minU) minU = u;
-    if (u > maxU) maxU = u;
-    if (v < minV) minV = v;
-    if (v > maxV) maxV = v;
-  }
-  return { centre: [cx, cz], w: maxU - minU, d: maxV - minV, angle };
-}
-
-// Flat list of road segments for fast distance-to-road tests.
-interface Segment {
-  ax: number; az: number; bx: number; bz: number;
-  lenSq: number;
-}
-
-function buildRoadSegments(): Segment[] {
-  const out: Segment[] = [];
-  for (const road of CAR_ROADS) {
-    for (let i = 1; i < road.poly.length; i++) {
-      const ax = road.poly[i - 1][0];
-      const az = road.poly[i - 1][1];
-      const bx = road.poly[i][0];
-      const bz = road.poly[i][1];
-      const dx = bx - ax;
-      const dz = bz - az;
-      out.push({ ax, az, bx, bz, lenSq: dx * dx + dz * dz });
-    }
-  }
-  return out;
-}
-
-function nearAnyRoad(
-  x: number,
-  z: number,
-  segments: Segment[],
-  maxDist: number
-): boolean {
-  const maxSq = maxDist * maxDist;
-  for (const s of segments) {
-    if (s.lenSq === 0) {
-      const dx = x - s.ax;
-      const dz = z - s.az;
-      if (dx * dx + dz * dz < maxSq) return true;
-      continue;
-    }
-    let t = ((x - s.ax) * (s.bx - s.ax) + (z - s.az) * (s.bz - s.az)) / s.lenSq;
-    t = Math.max(0, Math.min(1, t));
-    const qx = s.ax + t * (s.bx - s.ax);
-    const qz = s.az + t * (s.bz - s.az);
-    const dx = x - qx;
-    const dz = z - qz;
-    if (dx * dx + dz * dz < maxSq) return true;
-  }
-  return false;
-}
-
-function nearAnyBuilding(
-  x: number,
-  z: number,
-  excludeId: string,
-  dilation: number
-): boolean {
-  for (const b of WORLD.buildings) {
-    if (b.id === excludeId) continue;
-    if (b.poly.length < 3) continue;
-    let minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity;
-    for (const [bx, bz] of b.poly) {
-      if (bx < minX) minX = bx;
-      if (bx > maxX) maxX = bx;
-      if (bz < minZ) minZ = bz;
-      if (bz > maxZ) maxZ = bz;
-    }
-    if (
-      x < minX - dilation ||
-      x > maxX + dilation ||
-      z < minZ - dilation ||
-      z > maxZ + dilation
-    ) continue;
-    if (inside(b.poly, x, z)) return true;
-  }
-  return false;
-}
-
-function inAnyWater(x: number, z: number): boolean {
-  for (const w of WORLD.water) {
-    if (w.poly.length < 3) continue;
-    if (inside(w.poly, x, z)) return true;
-  }
-  return false;
-}
 
 type BoundaryStyle = 'painted_timber' | 'wire' | 'hedge' | 'stone';
 
@@ -223,7 +79,7 @@ export function OsmParcelBoundaries() {
     const hedge: Segment3D[] = [];
     const stone: Segment3D[] = [];
     const cornerPosts: CornerPost[] = [];
-    const segments = buildRoadSegments();
+    const segments = carRoadSegments();
 
     for (const b of WORLD.buildings) {
       if (LANDMARK_BUILDING_IDS.has(b.id)) continue;
@@ -235,11 +91,11 @@ export function OsmParcelBoundaries() {
       const wealth = wealthFor(b.id);
       const buildingHash = idHash(b.id + ':fence');
 
-      const obb = computeOBB(b.poly);
+      const obb = orientedBbox(b.poly);
       // Margins strictly larger than the OsmProceduralOutbuildings
       // maximum clearance (6.5 m for medium sheds) so a modest parcel
       // with a medium shed still encloses the shed inside the fence
-      // line. Block 5 P5 cleanup bump: modest 6 → 7.
+      // line.
       const margin =
         wealth === 'prosperous' ? 9 : wealth === 'standard' ? 7.5 : 7;
       const halfW = obb.w / 2 + margin;
@@ -250,8 +106,6 @@ export function OsmParcelBoundaries() {
         [halfW, halfD],
         [-halfW, halfD]
       ];
-      const cos = Math.cos(obb.angle);
-      const sin = Math.sin(obb.angle);
 
       // Track which corners are anchored by at least one valid side —
       // corner posts render only there so we don't leave a post
@@ -266,10 +120,8 @@ export function OsmParcelBoundaries() {
         if (!style) continue;
 
         // World endpoints of this side.
-        const wxA = obb.centre[0] + cos * ax - sin * az;
-        const wzA = obb.centre[1] + sin * ax + cos * az;
-        const wxB = obb.centre[0] + cos * bxx - sin * bzz;
-        const wzB = obb.centre[1] + sin * bxx + cos * bzz;
+        const [wxA, wzA] = obbLocalToWorld(obb, ax, az);
+        const [wxB, wzB] = obbLocalToWorld(obb, bxx, bzz);
 
         const NSAMPLES = 5;
         let valid = true;
@@ -277,7 +129,7 @@ export function OsmParcelBoundaries() {
           const t = i / NSAMPLES;
           const px = wxA + t * (wxB - wxA);
           const pz = wzA + t * (wzB - wzA);
-          if (nearAnyRoad(px, pz, segments, 2.0)) { valid = false; break; }
+          if (nearAnyRoadSegment(px, pz, segments, 2.0)) { valid = false; break; }
           if (nearAnyBuilding(px, pz, b.id, 0.6)) { valid = false; break; }
           if (inAnyWater(px, pz)) { valid = false; break; }
         }
@@ -306,9 +158,7 @@ export function OsmParcelBoundaries() {
       // an intentional composition rather than four floating slabs.
       for (let c = 0; c < 4; c++) {
         if (!cornerValid[c]) continue;
-        const [cx, cz] = corners[c];
-        const wx = obb.centre[0] + cos * cx - sin * cz;
-        const wz = obb.centre[1] + sin * cx + cos * cz;
+        const [wx, wz] = obbLocalToWorld(obb, corners[c][0], corners[c][1]);
         cornerPosts.push({ x: wx, z: wz });
       }
     }
