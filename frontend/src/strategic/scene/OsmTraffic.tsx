@@ -10,9 +10,74 @@ import {
   samplePolyline
 } from '../content/world';
 import type { RawRoad } from '../content/world';
-import { specFor } from '../content/roadRoles';
+import { specFor, type RoadRole } from '../content/roadRoles';
 import { createRng } from '../util/rng';
 import { readabilityScale, type ReadabilityCurve } from '../util/readability';
+
+// Traffic-density weight per OSM `maxspeed` band. Missing maxspeed
+// (Overpass has no value for ~223/327 Grythyttan roads — most are
+// service and pedestrian tags) falls back to a low baseline so cars
+// concentrate on tagged through-roads. Values are visual targets
+// tuned against real Grythyttan flow (Rv 244/205 carry the bulk of
+// through-traffic; residential 50 km/h streets carry a bit; service
+// roads carry almost none).
+function speedWeight(road: RawRoad): number {
+  const ms = road.maxspeed;
+  if (ms == null) return 0.25;
+  if (ms >= 80) return 4.0;
+  if (ms >= 70) return 3.0;
+  if (ms >= 60) return 2.2;
+  if (ms >= 50) return 1.0;
+  if (ms >= 40) return 0.7;
+  return 0.5;
+}
+
+// Additional weight per resolved semantic role. Amplifies the maxspeed
+// signal so the primary through-road always wins even when a
+// residential lane happens to share its speed limit. Never zeroes a
+// road out — kind-level exclusion is still handled by the eligibility
+// filter (roads: 'major'), so this stays a pure weight.
+const ROLE_WEIGHT: Record<RoadRole, number> = {
+  primary: 3.0,
+  main: 2.0,
+  secondary_connector: 1.3,
+  village_street: 0.9,
+  local_street: 0.7,
+  residential: 0.4,
+  service: 0.15,
+  track: 0.05,
+  cycleway: 0.05,
+  footpath: 0.05
+};
+
+// Length weight: longer roads carry more traffic proportionally so
+// short service stubs don't attract disproportionate spawns from the
+// role weight alone. Capped so a very long forest track can't dominate.
+function lengthWeight(road: RawRoad): number {
+  const l = polylineLength(road.poly);
+  if (l < 30) return 0.3;
+  if (l > 400) return 3.0;
+  return l / 100;
+}
+
+function roadTrafficWeight(road: RawRoad): number {
+  const role = specFor(road).role;
+  return speedWeight(road) * ROLE_WEIGHT[role] * lengthWeight(road);
+}
+
+// Weighted pick over a pool, using a caller-supplied rng. Falls back
+// to a uniform pick if the total weight is zero.
+function weightedPick<T>(items: T[], weights: number[], rng: () => number): T {
+  const total = weights.reduce((s, w) => s + w, 0);
+  if (total <= 0) return items[Math.floor(rng() * items.length)];
+  const r = rng() * total;
+  let acc = 0;
+  for (let i = 0; i < items.length; i++) {
+    acc += weights[i];
+    if (r <= acc) return items[i];
+  }
+  return items[items.length - 1];
+}
 
 type VehicleKind =
   | 'car'
@@ -168,6 +233,20 @@ function nearestPointDistance(
   return best;
 }
 
+// Kind-specific speed floor. Larger heavier vehicles do not appear on
+// low-speed residential lanes or unspecified-speed local roads at all
+// — a bus on a 30 km/h residential grid would visually contradict the
+// hierarchy the road tier system establishes. `null` = no floor.
+const KIND_SPEED_FLOOR: Record<VehicleKind, number | null> = {
+  car: null,
+  taxi: null,
+  motorcycle: null,
+  van: null,
+  bus: 50,
+  truck: 50,
+  tourist_bus: 50
+};
+
 function eligibleRoads(kind: VehicleKind): RawRoad[] {
   const cfg = KIND_CONFIG[kind];
   // Use VILLAGE_CAR_ROADS (excludes forest tracks) as the general pool so no
@@ -175,43 +254,74 @@ function eligibleRoads(kind: VehicleKind): RawRoad[] {
   const pool = cfg.roads === 'major' ? MAJOR_ROADS : VILLAGE_CAR_ROADS;
   const filtered = pool.filter((r) => polylineLength(r.poly) >= cfg.minRoad);
   const base = filtered.length > 0 ? filtered : pool;
+  const floor = KIND_SPEED_FLOOR[kind];
+  // Enforce the per-kind speed floor. Roads with no maxspeed are
+  // treated as sub-floor so heavy vehicles stay on tagged through-roads.
+  const speedFiltered = floor == null
+    ? base
+    : base.filter((r) => r.maxspeed != null && r.maxspeed >= floor);
+  const workingPool = speedFiltered.length > 0 ? speedFiltered : base;
   // Behavioural composition — each kind biases toward the roads that give
   // it a reason to exist. Tourists arrive at Campus / Gästgivaregården;
   // delivery vans stop at restaurants; taxis wait near transport nodes.
   if (kind === 'tourist_bus' && TOURIST_DESTINATIONS.length > 0) {
-    const near = base.filter(
+    const near = workingPool.filter(
       (r) => nearestPointDistance(r, TOURIST_DESTINATIONS) < 600
     );
     if (near.length) return near;
   }
   if (kind === 'van' && DELIVERY_DESTINATIONS.length > 0) {
-    const near = base.filter(
+    const near = workingPool.filter(
       (r) => nearestPointDistance(r, DELIVERY_DESTINATIONS) < 350
     );
     if (near.length) return near;
   }
   if (kind === 'taxi' && TAXI_HUBS.length > 0) {
-    const near = base.filter(
+    const near = workingPool.filter(
       (r) => nearestPointDistance(r, TAXI_HUBS) < 400
     );
     if (near.length) return near;
   }
-  return base;
+  return workingPool;
+}
+
+// Precompute weights for a pool. Kept out of the hot path so the swap
+// tick doesn't reallocate for every vehicle every frame.
+function weightsFor(pool: RawRoad[]): number[] {
+  return pool.map(roadTrafficWeight);
 }
 
 export function OsmTraffic() {
   const { actualRef } = useCamera();
+  // Cache per-kind pool + weights once so spawn and swap both use the
+  // same numbers and neither pays the reweight cost per event.
+  const pools = useMemo(() => {
+    const out: Record<VehicleKind, { pool: RawRoad[]; weights: number[] }> = {
+      car: { pool: [], weights: [] },
+      van: { pool: [], weights: [] },
+      bus: { pool: [], weights: [] },
+      truck: { pool: [], weights: [] },
+      taxi: { pool: [], weights: [] },
+      motorcycle: { pool: [], weights: [] },
+      tourist_bus: { pool: [], weights: [] }
+    };
+    (Object.keys(out) as VehicleKind[]).forEach((k) => {
+      const pool = eligibleRoads(k);
+      out[k] = { pool, weights: weightsFor(pool) };
+    });
+    return out;
+  }, []);
   const vehicles = useMemo<Vehicle[]>(() => {
     const rng = createRng(0xb2b3);
     const list: Vehicle[] = [];
     (Object.keys(KIND_CONFIG) as VehicleKind[]).forEach((kind) => {
       const cfg = KIND_CONFIG[kind];
-      const pool = eligibleRoads(kind);
+      const { pool, weights } = pools[kind];
       if (pool.length === 0) return;
       for (let i = 0; i < cfg.count; i++) {
         list.push({
           kind,
-          road: rng.pick(pool),
+          road: weightedPick(pool, weights, () => rng.next()),
           t: rng.next(),
           speed: rng.range(cfg.speed[0], cfg.speed[1]),
           forward: rng.chance(0.5) ? 1 : -1,
@@ -224,7 +334,7 @@ export function OsmTraffic() {
       }
     });
     return list;
-  }, []);
+  }, [pools]);
   const refs = useRef<Array<THREE.Group | null>>([]);
   const bodyMatRefs = useRef<Array<THREE.MeshStandardMaterial | null>>([]);
   const cabinMatRefs = useRef<Array<THREE.MeshStandardMaterial | null>>([]);
@@ -250,10 +360,10 @@ export function OsmTraffic() {
         v.forward = 1;
       }
       if (v.swap <= 0) {
-        const pool = eligibleRoads(v.kind);
+        const { pool, weights } = pools[v.kind];
         if (pool.length) {
           const rng = createRng(Math.floor(performance.now() * 13 + i * 7));
-          v.road = rng.pick(pool);
+          v.road = weightedPick(pool, weights, () => rng.next());
           v.forward = rng.chance(0.5) ? 1 : -1;
           v.t = rng.next();
           v.swap = rng.range(45, 120);
