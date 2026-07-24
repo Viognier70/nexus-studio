@@ -190,8 +190,23 @@ function idHash(id: string): number {
 
 // Per-kind base height. Then a ±12% deterministic wobble breaks the
 // domino look that appears when every 'yes' or 'industrial' building
-// stands at exactly the same height.
+// stands at exactly the same height. OSM `height` / `building:levels`
+// override the derivation when present so a tagged 5-storey block is
+// not squashed into the same ~8 m default as every other apartment.
 function heightFor(b: RawBuilding, kind: string): number {
+  // Direct OSM height (metres). Tagged on ~0/274 buildings in the
+  // current Grythyttan dataset but honoured for the future refetch
+  // when it becomes populated.
+  if (b.height != null && b.height > 2 && b.height < 60) {
+    return b.height;
+  }
+  // OSM building:levels → 3.0 m per storey (Bergslag civic default).
+  // The ±12% wobble is applied on top so a row of 2-storey houses
+  // still varies visibly.
+  if (b.buildingLevels != null && b.buildingLevels >= 1 && b.buildingLevels < 20) {
+    const wobble = (idHash(b.id) - 0.5) * 0.16; // slightly gentler when we know the storey count
+    return b.buildingLevels * 3.0 * (1 + wobble);
+  }
   let base: number;
   if (kind === 'university') base = 9;
   else if (kind === 'hotel') base = 8;
@@ -209,6 +224,28 @@ function heightFor(b: RawBuilding, kind: string): number {
   else base = 5;
   const wobble = (idHash(b.id) - 0.5) * 0.24; // ±12%
   return base * (1 + wobble);
+}
+
+// OSM `roof:shape` → internal roof-style mapping. Only the values that
+// map unambiguously to our five procedural roof styles are honoured;
+// exotic shapes (dome, onion, sawtooth, gambrel) fall through to the
+// kind-driven inference so a future asset system can pick them up
+// without a code change here.
+function roofStyleFromOsm(
+  osmShape: string | null | undefined
+): Extruded['roofStyle'] | null {
+  if (!osmShape) return null;
+  const v = osmShape.toLowerCase();
+  if (v === 'flat') return 'flat';
+  if (v === 'gabled' || v === 'gable' || v === 'pitched') return 'gable';
+  if (
+    v === 'hipped' ||
+    v === 'half-hipped' ||
+    v === 'side_hipped' ||
+    v === 'pyramidal'
+  ) return 'hip';
+  if (v === 'skillion' || v === 'mono_pitch' || v === 'monopitch') return 'shed';
+  return null;
 }
 
 // Which roof style suits which kind. Houses / detached get gables; larger
@@ -458,7 +495,10 @@ function toExtruded(b: RawBuilding): Extruded | null {
     wallColour = tintColour(base.wall, pal.wall, 0.55);
     roofColour = tintColour(base.roof, pal.roof, 0.35);
   }
-  const style = roofStyleFor(kind);
+  // Prefer OSM `roof:shape` when we have one; fall back to the
+  // kind-driven inference. Only unambiguous mappings are honoured
+  // (see roofStyleFromOsm); exotic shapes still derive from kind.
+  const style = roofStyleFromOsm(b.roofShape) ?? roofStyleFor(kind);
   const profile = profileFor(b, kind);
   // Trim colour = deeper wobble around a near-black base, deterministic
   // per building. Breaks the flat "every ridge cap is #22201c" look that

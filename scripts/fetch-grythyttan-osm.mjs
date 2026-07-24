@@ -107,7 +107,23 @@ function extractBuildings(els) {
       amenity: e.tags.amenity ?? null,
       tourism: e.tags.tourism ?? null,
       religion: e.tags.religion ?? null,
-      historic: e.tags.historic ?? null
+      historic: e.tags.historic ?? null,
+      // Optional structural detail. Present on only a small fraction of
+      // Grythyttan buildings today (roof:shape on ~14/274), but the
+      // downstream renderer prefers the OSM signal when it exists and
+      // falls back to kind-driven inference otherwise. Capturing the
+      // full set means a future OSM survey improves the render without
+      // an ingest change.
+      roofShape: e.tags['roof:shape'] ?? null,
+      roofLevels: e.tags['roof:levels'] ? Number(e.tags['roof:levels']) : null,
+      buildingLevels: e.tags['building:levels']
+        ? Number(e.tags['building:levels'])
+        : null,
+      height: e.tags.height ? Number(e.tags.height) : null,
+      roofMaterial: e.tags['roof:material'] ?? null,
+      roofColour: e.tags['roof:colour'] ?? null,
+      wallMaterial: e.tags['building:material'] ?? null,
+      wallColour: e.tags['building:colour'] ?? null
     });
   }
   return out;

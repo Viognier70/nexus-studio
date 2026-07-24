@@ -31,6 +31,21 @@ export interface RawBuilding {
   tourism?: string | null;
   religion?: string | null;
   historic?: string | null;
+  // Optional structural detail — captured by the fetcher whenever
+  // Overpass returns them. See scripts/fetch-grythyttan-osm.mjs
+  // extractBuildings() for the source tags. Very sparsely populated
+  // for Grythyttan today (roof:shape on ~14/274 buildings, others
+  // essentially zero) but the renderer prefers real OSM values when
+  // present and falls back to kind-driven inference otherwise, so a
+  // future OSM survey improves the render without a code change.
+  roofShape?: string | null;
+  roofLevels?: number | null;
+  buildingLevels?: number | null;
+  height?: number | null;
+  roofMaterial?: string | null;
+  roofColour?: string | null;
+  wallMaterial?: string | null;
+  wallColour?: string | null;
 }
 
 export interface RawRoad {
