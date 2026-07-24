@@ -57,7 +57,7 @@ function useWallGeo(
   }, [b, wallHeight]);
 }
 
-// ---------- Kärnhuset — PHASE 1 (walls only) ----------
+// ---------- Kärnhuset — PHASE 2 (walls + roof) ----------
 // ORDER 014 District 2, ordinary tier (threshold 0.75).
 //
 // VERIFIED aspects (from documentation/references/district-2/karnhuset/):
@@ -77,30 +77,45 @@ function useWallGeo(
 //     handcrafted rendering doesn't invent a divergent identity
 //     against neighbouring institutional buildings)
 //   • Wall height: 7 m (2-storey institutional, ~3.5 m floor-to-floor)
+//   • Roof: flat with a low parapet cap. Bergslag institutional 1993
+//     multi-wing polygons don't lend themselves to per-wing gables
+//     without inventing ridge lines; a flat parapetted roof is the
+//     safe institutional-typology default, and it matches the
+//     neighbouring Måltidens hus roof geometry (also flat).
 //
-// NOT INCLUDED in PHASE 1 (later phases):
-//   • Roof (PHASE 2)
+// NOT INCLUDED in PHASE 2 (later phases):
 //   • Windows, entrance (PHASE 3)
 //   • Immediate surroundings (PHASE 4)
 //   • Fine detail (PHASE 5)
-function KarnhusetD2Pass1() {
+function KarnhusetD2Pass2({ landmark }: { landmark?: unknown } = {}) {
   const b = BUILDING_BY_ID['w193810921'];
   const WALL_H = 7;
+  const PARAPET_H = 0.5;   // shallow parapet cap for the flat roof
   const wallGeo = useWallGeo(b, WALL_H);
-  if (!b || !wallGeo) return null;
+  const parapetGeo = useWallGeo(b, PARAPET_H);
+  void landmark;   // reserved for a future gry-* landmark record
+
+  if (!b || !wallGeo || !parapetGeo) return null;
 
   const centre = polygonCentre(b.poly);
-  // Wall colour: pale institutional cream matching the procedural
-  // 'university' KIND_COLOUR baseline (#e7dcc7) so Kärnhuset reads
-  // consistent with any other university-tagged building in the
-  // village. Kept as a single named constant so a later PHASE 3
-  // (facade) pass can layer trim / band colours on top.
-  const WALL_COLOUR = '#e0d8c2';   // very slight desaturation vs baseline
+  const WALL_COLOUR = '#e0d8c2';   // very slight desaturation of the procedural university baseline
+  const ROOF_COLOUR = '#3a352d';   // dark grey-brown institutional flat roof
+
   return (
     <group position={[centre[0], 0, centre[1]]}>
       <mesh geometry={wallGeo}>
         <meshStandardMaterial
           color={WALL_COLOUR}
+          roughness={0.9}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+      {/* Flat parapetted roof — dark grey-brown box that caps the
+          walls with a small vertical face reading as the parapet
+          edge from oblique view. */}
+      <mesh geometry={parapetGeo} position={[0, WALL_H, 0]}>
+        <meshStandardMaterial
+          color={ROOF_COLOUR}
           roughness={0.9}
           side={THREE.DoubleSide}
         />
@@ -113,7 +128,7 @@ function KarnhusetD2Pass1() {
 export function CraftedLandmarksD2() {
   return (
     <group>
-      <KarnhusetD2Pass1 />
+      <KarnhusetD2Pass2 />
     </group>
   );
 }
