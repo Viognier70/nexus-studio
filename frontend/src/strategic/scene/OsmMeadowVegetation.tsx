@@ -97,6 +97,34 @@ function inAnyGrass(x: number, z: number): boolean {
   return false;
 }
 
+// Point-in-any-building. Some buildings (isolated houses, industrial
+// pads, campus outbuildings) sit outside every residential polygon, so
+// the residential-only exclusion isn't enough to keep a pasture tree
+// from spawning inside their footprint. A 6 m dilation guards against
+// trees crowding right up against the wall.
+const BUILDING_DILATION = 6;
+function nearAnyBuilding(x: number, z: number): boolean {
+  for (const b of WORLD.buildings) {
+    if (b.poly.length < 3) continue;
+    // Quick bbox reject.
+    let minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity;
+    for (const [bx, bz] of b.poly) {
+      if (bx < minX) minX = bx;
+      if (bx > maxX) maxX = bx;
+      if (bz < minZ) minZ = bz;
+      if (bz > maxZ) maxZ = bz;
+    }
+    if (
+      x < minX - BUILDING_DILATION ||
+      x > maxX + BUILDING_DILATION ||
+      z < minZ - BUILDING_DILATION ||
+      z > maxZ + BUILDING_DILATION
+    ) continue;
+    if (inside(b.poly, x, z)) return true;
+  }
+  return false;
+}
+
 export function OsmMeadowVegetation() {
   const { pastureTrees, bushes } = useMemo(() => {
     // Grid extent centred on WORLD_BOUNDS + margin.
@@ -123,6 +151,7 @@ export function OsmMeadowVegetation() {
         if (inAnyWater(x, z)) continue;
         if (inAnyResidential(x, z)) continue;
         if (inAnyGrass(x, z)) continue;  // sports fields etc.
+        if (nearAnyBuilding(x, z)) continue;  // isolated houses outside residential polys
         trees.push({
           x,
           z,
@@ -175,14 +204,16 @@ export function OsmMeadowVegetation() {
               if (
                 !inAnyWater(lx, lz) &&
                 !inAnyResidential(lx, lz) &&
-                !inAnyForest(lx, lz)
+                !inAnyForest(lx, lz) &&
+                !nearAnyBuilding(lx, lz)
               ) {
                 bushList.push({ x: lx, z: lz, s: 0.6 + seg * 0.5 });
               }
               if (
                 !inAnyWater(rx, rz) &&
                 !inAnyResidential(rx, rz) &&
-                !inAnyForest(rx, rz)
+                !inAnyForest(rx, rz) &&
+                !nearAnyBuilding(rx, rz)
               ) {
                 bushList.push({ x: rx, z: rz, s: 0.6 + seg * 0.5 });
               }
