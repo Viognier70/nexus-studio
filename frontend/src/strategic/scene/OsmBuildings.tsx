@@ -272,27 +272,26 @@ function toExtruded(b: RawBuilding): Extruded | null {
 // The prism sits with the eave line on Y = 0, ridge along local +X, base
 // spanning local Z from -0.5 to +0.5, apex at Y = 1 above the ridge line.
 // A scale of (rw, rh, rd) turns it into the right size for a specific
-// building.
+// building. All face indices are wound so the computed normal points
+// outward — meshStandardMaterial with default FrontSide culling then
+// renders every face correctly from a camera outside the building.
 const UNIT_GABLE_GEO: THREE.BufferGeometry = (() => {
   const g = new THREE.BufferGeometry();
   const positions = new Float32Array([
-    // bottom rect
     -0.5, 0, -0.5,   0.5, 0, -0.5,   0.5, 0,  0.5,   -0.5, 0,  0.5,
-    // ridge line
     -0.5, 1,  0,     0.5, 1,  0
   ]);
-  // Indices, wound CCW when viewed from outside.
   const indices = [
-    // Bottom (viewed from below → keep CCW so it also draws with
-    // DoubleSide if we ever swap materials)
-    0, 2, 1,    0, 3, 2,
-    // Front pitch (+Z side): v3, v2, v5, v4 → tris (3,2,5) & (3,5,4)
-    3, 2, 5,    3, 5, 4,
-    // Back pitch (-Z side): v1, v0, v4, v5 → (1,0,4) & (1,4,5)
-    1, 0, 4,    1, 4, 5,
-    // -X gable end: v0, v3, v4
+    // Bottom (outward normal -Y). Hidden inside the wall extrusion in
+    // practice, but wound correctly so vertex-normal averaging stays clean.
+    0, 1, 2,   0, 2, 3,
+    // Front pitch (+Z side)
+    3, 2, 5,   3, 5, 4,
+    // Back pitch (-Z side)
+    1, 0, 4,   1, 4, 5,
+    // -X gable end
     0, 3, 4,
-    // +X gable end: v2, v1, v5
+    // +X gable end
     2, 1, 5
   ];
   g.setAttribute('position', new THREE.BufferAttribute(positions, 3));
@@ -307,32 +306,49 @@ const UNIT_GABLE_GEO: THREE.BufferGeometry = (() => {
 const UNIT_SHED_GEO: THREE.BufferGeometry = (() => {
   const g = new THREE.BufferGeometry();
   const positions = new Float32Array([
-    // bottom rect
     -0.5, 0, -0.5,   0.5, 0, -0.5,   0.5, 0,  0.5,   -0.5, 0,  0.5,
-    // high edge (over the +Z side)
     -0.5, 1,  0.5,   0.5, 1,  0.5
   ]);
   const indices = [
-    // bottom
-    0, 2, 1,    0, 3, 2,
-    // top slope (single face, from v0,v1 up to v4,v5)
-    // vertices: 0, 1 at Y=0 (Z=-0.5), 4, 5 at Y=1 (Z=+0.5)
-    // slope quad: 0, 1, 5, 4 → tris (0,1,5) & (0,5,4)
-    0, 1, 5,    0, 5, 4,
-    // -X gable/end: v0, v4, v3
-    0, 4, 3,
-    // +X gable/end: v1, v2, v5
-    1, 2, 5,
-    // front high wall (+Z side, closes the shed): v3, v4, v5, v2 → (3,4,5)&(3,5,2)
-    3, 4, 5,    3, 5, 2,
-    // back wall (-Z, closes it below the eaves) is degenerate — Y=0 on both
-    // v0,v1 — no separate face needed.
+    // Bottom (outward -Y)
+    0, 1, 2,   0, 2, 3,
+    // Top slope (outward +Y, -Z direction)
+    0, 4, 5,   0, 5, 1,
+    // Front high wall (+Z, closes the shed on the high side)
+    3, 2, 5,   3, 5, 4,
+    // -X end (triangle)
+    0, 3, 4,
+    // +X end (triangle)
+    1, 5, 2
   ];
   g.setAttribute('position', new THREE.BufferAttribute(positions, 3));
   g.setIndex(indices);
   g.computeVertexNormals();
   return g;
 })();
+
+// One shared unit box for the stone plinth used on residential-scale
+// buildings. Positioned inside a group at Y = 0..plinthH, scaled to
+// (plinthW, plinthH, plinthD). Kept separate from three.js BoxGeometry
+// so all plinths share one geometry allocation across ~200 buildings.
+const UNIT_PLINTH_GEO: THREE.BufferGeometry = new THREE.BoxGeometry(1, 1, 1);
+
+// Which building kinds get a low stone plinth around the base. Bergslag
+// timber houses very commonly sit on a visible stone or concrete base
+// band 0.3–0.5 m tall — omitting it makes procedural houses read as
+// timber floating on grass. Sheds, garages and industrial sit directly
+// on the ground and are excluded.
+const PLINTH_KINDS = new Set([
+  'house', 'detached', 'residential', 'apartments',
+  'hotel', 'school', 'university', 'train_station',
+  'commercial', 'outbuilding'
+]);
+
+// Kinds that get the alternating storey shadow band on tall walls.
+const STOREY_BAND_KINDS = new Set([
+  'apartments', 'hotel', 'school', 'university',
+  'residential', 'commercial', 'train_station'
+]);
 
 // Roof cap placed on top of the extruded box. Uses shared unit gable
 // and shed geometries scaled per building — much cheaper than building a
@@ -365,10 +381,14 @@ function RoofCap({
   // Deterministic chimney placement per building. A single soot-black
   // stack on gabled/hipped roofs breaks the uniform silhouette that
   // makes procedural residential blocks read as identical boxes. Skipped
-  // for very small buildings where a chimney would overpower.
+  // for very small buildings where a chimney would overpower. Larger
+  // buildings (ridgeW > 12 m) get a second symmetric chimney — the
+  // manor / long-house typology visible across the region.
   const chimneyOn =
     (style === 'gable' || style === 'hip') && ridgeW > 4 && hash > 0.35;
   const chimneyOffset = (hash - 0.5) * 0.5;
+  const twinChimney =
+    (style === 'gable' || style === 'hip') && ridgeW > 12 && hash > 0.5;
   // A small inset so the roof cap doesn't hang over the walls.
   const inset = 0.25;
   const rw = Math.max(1.4, ridgeW - inset * 2);
@@ -416,6 +436,12 @@ function RoofCap({
             <meshStandardMaterial color="#2a251f" roughness={0.9} />
           </mesh>
         )}
+        {twinChimney && (
+          <mesh position={[-chimneyOffset * rw, rh / 2 + 0.75, 0]}>
+            <boxGeometry args={[0.6, 1.5, 0.6]} />
+            <meshStandardMaterial color="#2a251f" roughness={0.9} />
+          </mesh>
+        )}
       </group>
     );
   }
@@ -452,13 +478,108 @@ function RoofCap({
         <boxGeometry args={[rw, 0.1, 0.22]} />
         <meshStandardMaterial color="#22201c" roughness={0.9} />
       </mesh>
+      {/* Dark fascia strip along each eave — reads as gutter shadow at
+          strategic zoom and gives every gable a defined roof-wall line. */}
+      <mesh position={[0, -0.02, rd * 0.5 - 0.02]}>
+        <boxGeometry args={[rw + 0.05, 0.14, 0.06]} />
+        <meshStandardMaterial color="#22201c" roughness={0.9} />
+      </mesh>
+      <mesh position={[0, -0.02, -rd * 0.5 + 0.02]}>
+        <boxGeometry args={[rw + 0.05, 0.14, 0.06]} />
+        <meshStandardMaterial color="#22201c" roughness={0.9} />
+      </mesh>
       {chimneyOn && (
         <mesh position={[chimneyOffset * rw, ridgeH + 0.85, 0]}>
           <boxGeometry args={[0.55, 1.7, 0.55]} />
           <meshStandardMaterial color="#2a251f" roughness={0.9} />
         </mesh>
       )}
+      {twinChimney && (
+        <mesh position={[-chimneyOffset * rw, ridgeH + 0.85, 0]}>
+          <boxGeometry args={[0.55, 1.7, 0.55]} />
+          <meshStandardMaterial color="#2a251f" roughness={0.9} />
+        </mesh>
+      )}
     </group>
+  );
+}
+
+// A low stone base band around the wall of residential-scale buildings.
+// Rendered as a slightly inset OBB-aligned box so it never pokes out
+// beyond the wall on irregular polygons. Wall material overlaps the top
+// of the plinth — the visible band is only the small height difference.
+function BuildingPlinth({
+  centre,
+  ridgeW,
+  ridgeD,
+  ridgeAngle
+}: {
+  centre: [number, number];
+  ridgeW: number;
+  ridgeD: number;
+  ridgeAngle: number;
+}) {
+  const H = 0.4;
+  // Inset slightly so the plinth sits inside the wall footprint even on
+  // irregular polygons. The wall extrusion covers the plinth top face.
+  const inset = 0.35;
+  const pw = Math.max(1.0, ridgeW - inset * 2);
+  const pd = Math.max(1.0, ridgeD - inset * 2);
+  return (
+    <mesh
+      geometry={UNIT_PLINTH_GEO}
+      position={[centre[0], H / 2, centre[1]]}
+      rotation={[0, -ridgeAngle, 0]}
+      scale={[pw + inset * 2 + 0.1, H, pd + inset * 2 + 0.1]}
+    >
+      <meshStandardMaterial color="#8a8478" roughness={0.95} />
+    </mesh>
+  );
+}
+
+// A subtle darker horizontal band around a tall building at the storey
+// break, so a five-storey apartment block reads as five storeys rather
+// than one tall box. Deterministic placement (~3 m per storey), inset
+// slightly so it doesn't overshoot irregular polygons.
+function StoreyBands({
+  centre,
+  ridgeW,
+  ridgeD,
+  ridgeAngle,
+  height,
+  wallColour
+}: {
+  centre: [number, number];
+  ridgeW: number;
+  ridgeD: number;
+  ridgeAngle: number;
+  height: number;
+  wallColour: string;
+}) {
+  const inset = 0.25;
+  const bw = Math.max(1.0, ridgeW - inset * 2 + 0.05);
+  const bd = Math.max(1.0, ridgeD - inset * 2 + 0.05);
+  // Bands at 3 m, 6 m, 9 m — up to the wall height. Skip if too close
+  // to top (< 1.2 m from roof) to leave room for the eave.
+  const bandYs: number[] = [];
+  for (let y = 3.0; y < height - 1.2; y += 3.0) bandYs.push(y);
+  if (bandYs.length === 0) return null;
+  // A darker version of the wall colour so the band reads as shadow.
+  const bandColour = tintColour(wallColour, '#000000', 0.35);
+  return (
+    <>
+      {bandYs.map((y, i) => (
+        <mesh
+          key={`sb-${i}`}
+          geometry={UNIT_PLINTH_GEO}
+          position={[centre[0], y, centre[1]]}
+          rotation={[0, -ridgeAngle, 0]}
+          scale={[bw, 0.12, bd]}
+        >
+          <meshStandardMaterial color={bandColour} roughness={0.9} />
+        </mesh>
+      ))}
+    </>
   );
 }
 
@@ -475,24 +596,47 @@ export function OsmBuildings() {
 
   return (
     <group>
-      {buildings.map((b) => (
-        <group key={b.id}>
-          <mesh geometry={b.geo}>
-            <meshStandardMaterial color={b.wallColour} roughness={0.9} />
-          </mesh>
-          <RoofCap
-            id={b.id}
-            centre={b.ridgeCentre}
-            ridgeW={b.ridgeW}
-            ridgeD={b.ridgeD}
-            ridgeAngle={b.ridgeAngle}
-            height={b.height}
-            ridgeH={b.ridgeH}
-            style={b.roofStyle}
-            roofColour={b.roofColour}
-          />
-        </group>
-      ))}
+      {buildings.map((b) => {
+        const hasPlinth = PLINTH_KINDS.has(b.effectiveKind);
+        const hasStoreyBands =
+          STOREY_BAND_KINDS.has(b.effectiveKind) && b.height > 6.5;
+        return (
+          <group key={b.id}>
+            {hasPlinth && (
+              <BuildingPlinth
+                centre={b.ridgeCentre}
+                ridgeW={b.ridgeW}
+                ridgeD={b.ridgeD}
+                ridgeAngle={b.ridgeAngle}
+              />
+            )}
+            <mesh geometry={b.geo}>
+              <meshStandardMaterial color={b.wallColour} roughness={0.9} />
+            </mesh>
+            {hasStoreyBands && (
+              <StoreyBands
+                centre={b.ridgeCentre}
+                ridgeW={b.ridgeW}
+                ridgeD={b.ridgeD}
+                ridgeAngle={b.ridgeAngle}
+                height={b.height}
+                wallColour={b.wallColour}
+              />
+            )}
+            <RoofCap
+              id={b.id}
+              centre={b.ridgeCentre}
+              ridgeW={b.ridgeW}
+              ridgeD={b.ridgeD}
+              ridgeAngle={b.ridgeAngle}
+              height={b.height}
+              ridgeH={b.ridgeH}
+              style={b.roofStyle}
+              roofColour={b.roofColour}
+            />
+          </group>
+        );
+      })}
     </group>
   );
 }
