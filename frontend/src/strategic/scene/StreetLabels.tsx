@@ -58,14 +58,15 @@ function tierForRoad(r: RawRoad, displayName: string): Tier {
   const role = roleFor(r);
   if (role === 'main') return 'main';
   if (role === 'secondary_connector') return 'major';
+  // Wayfinding-critical named roads — Prästgatan toward Torget,
+  // Sörälgsvägen up to Campus, Skolgatan, Stationsgatan — stay
+  // visible from close range up to strategic altitude regardless of
+  // their raw OSM classification. Without this promotion a
+  // residential-tagged wayfinding street fades out around 500 m and
+  // the player loses the mental map at village zoom (localhost
+  // village-preset screenshot review 2026-07-24).
+  if (WAYFINDING_ROAD_NAMES.has(displayName)) return 'major';
   if (role === 'local_street') return 'secondary';
-  // Wayfinding-critical residentials (Prästgatan, Skolgatan,
-  // Stationsgatan) are promoted from `local` to `secondary` so they
-  // stay legible at district range. Every other residential falls
-  // back to the local tier.
-  if (role === 'residential' && WAYFINDING_ROAD_NAMES.has(displayName)) {
-    return 'secondary';
-  }
   return 'local';
 }
 
