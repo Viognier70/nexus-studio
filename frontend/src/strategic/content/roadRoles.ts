@@ -221,6 +221,7 @@ const VILLAGE_STREET_NAMES: ReadonlySet<string> = new Set([
   // School district
   'Skolgatan',
   'Kyrkogårdsgatan',
+  'Artur Lindqvists gata',
   // South of Rv 205 grid
   'Hammargatan',
   'Bergslagsgatan',
@@ -419,6 +420,7 @@ export const WAYFINDING_ROAD_NAMES: ReadonlySet<string> = new Set([
   'Stallgatan',
   'Skolgatan',
   'Kyrkogårdsgatan',
+  'Artur Lindqvists gata',
   'Hammargatan',
   'Bergslagsgatan',
   'Närkesgatan',
