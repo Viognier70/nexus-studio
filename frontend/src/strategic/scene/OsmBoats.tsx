@@ -37,7 +37,9 @@ const MAX_DISTANCE = 3200;
 const MIN_WATER_AREA_M2 = 15_000;
 // Boats must orbit within this distance of the village core so far-away
 // stretches of Torrvarpen / Sör-Älgen don't hide the fleet off-screen.
-const VILLAGE_ANCHOR: Vec2Tuple = [200, -40];
+// Anchor corrected from the historic (200, -40) — that value was 170 m
+// east of the real built centroid.
+const VILLAGE_ANCHOR: Vec2Tuple = [10, -5];
 const MAX_BOAT_CENTRE_DISTANCE = 2500;
 
 function polygonArea(poly: Vec2Tuple[]): number {
