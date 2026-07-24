@@ -174,7 +174,7 @@ function derivePhase3Decor(b: RawBuilding, centre: [number, number]) {
   return { windows, cornerposts, fascia, entranceEdge };
 }
 
-function KarnhusetD2Pass3({ landmark }: { landmark?: unknown } = {}) {
+function KarnhusetD2Pass4({ landmark }: { landmark?: unknown } = {}) {
   const b = BUILDING_BY_ID['w193810921'];
   const WALL_H = 7;
   const PARAPET_H = 0.5;
@@ -283,7 +283,8 @@ function KarnhusetD2Pass3({ landmark }: { landmark?: unknown } = {}) {
       {/* Main entrance — placed on the longest outer edge. A dark door
           + cream lintel + small dark canopy overhead. Restrained
           institutional composition, no portico, no columns, nothing
-          the reference package doesn't support. */}
+          the reference package doesn't support. PHASE 4 adds a
+          small paved apron directly in front. */}
       {entrance && (
         <group
           position={[
@@ -293,6 +294,18 @@ function KarnhusetD2Pass3({ landmark }: { landmark?: unknown } = {}) {
           ]}
           rotation={[0, entrance.angleY, 0]}
         >
+          {/* PHASE 4 — Small paved apron in front of the entrance
+              (Bergslag academic-institutional standard). Sits above
+              landcover so it reads over grass. Kept restrained: no
+              parking lot / bicycle stand / bollards placed without
+              a reference. */}
+          <mesh
+            rotation={[-Math.PI / 2, 0, 0]}
+            position={[0, 0.13, 2.2]}
+          >
+            <planeGeometry args={[6.5, 3.6]} />
+            <meshStandardMaterial color="#a89e88" roughness={0.95} />
+          </mesh>
           {/* Threshold step */}
           <mesh position={[0, 0.11, 0.35]}>
             <boxGeometry args={[2.4, 0.22, 0.6]} />
@@ -337,7 +350,7 @@ function KarnhusetD2Pass3({ landmark }: { landmark?: unknown } = {}) {
 export function CraftedLandmarksD2() {
   return (
     <group>
-      <KarnhusetD2Pass3 />
+      <KarnhusetD2Pass4 />
     </group>
   );
 }
