@@ -192,17 +192,42 @@ export const ROLE_SPECS: Record<RoadRole, Omit<RoadRoleSpec, 'role'>> = {
 // campus quarter. Promoted from raw OSM `residential` (3.6 m) to
 // `village_street` (4.6 m) so they read as village streets and not
 // residential alleys.
+// Every named residential street that reads as a village street on
+// the real Grythyttan map (Google Maps + OSM cross-referenced against
+// the Vision Owner reference screenshots 2026-07-25) — promoted from
+// the raw OSM `residential` (3.6 m) to the `village_street` tier
+// (4.6 m) so residents can find them at village and district zoom.
 const VILLAGE_STREET_NAMES: ReadonlySet<string> = new Set([
+  // Historic centre wayfinding
   'Prästgatan',
-  'Skolgatan',
-  'Stationsgatan',
-  'Kolargatan',
   'Torget',
+  'Kyrkbacken',
+  // North of Torget
   'Norra Bergvägen',
   'Östra Bergvägen',
   'Västra Bergvägen',
+  'Nygatan',
+  'Östergatan',
+  'Hantverksgatan',
+  'Sjögatan',
+  // East / hospitality quarter
+  'Hyttgatan',
+  'Kolargatan',
+  // Campus + old station corridor
+  'Stationsgatan',
+  'Magasinsgatan',
+  'Järnvägsgatan',
+  'Stallgatan',
+  // School district
+  'Skolgatan',
+  'Kyrkogårdsgatan',
+  // South of Rv 205 grid
   'Hammargatan',
-  'Bergslagsgatan'
+  'Bergslagsgatan',
+  'Närkesgatan',
+  'Skiffergatan',
+  'Badvägen',
+  'Gruvgatan'
 ]);
 
 // OSM ref values that promote a road to `primary` — the national
@@ -359,13 +384,45 @@ export function displayNameFor(road: RawRoad): string {
 // their OSM road class would give them, because they are how the
 // player mentally connects the village. Kept small and defensible —
 // each entry needs a real wayfinding function, not just a name.
+// Every road whose label is worth carrying at village + district
+// zoom because a resident would use its name for orientation.
+// Superset of VILLAGE_STREET_NAMES plus the tertiary + unclassified
+// collectors and the two through-roads.
 export const WAYFINDING_ROAD_NAMES: ReadonlySet<string> = new Set([
-  'Hälleforsvägen',    // principal through-road (north branch)
-  'Lokavägen',         // principal through-road (south-west branch)
-  'Prästgatan',        // begins at Lokavägen junction, ends at Torget
-  'Skolgatan',         // reaches Grythyttans skola
-  'Stationsgatan',     // reaches old station area
-  'Kyrkogatan',        // village collector past the church
-  'Smedsgatan',        // village collector
-  'Sörälgsvägen'       // spur to Campus (Måltidens hus / Kärnhuset)
+  // National through-road
+  'Hälleforsvägen',
+  'Lokavägen',
+  // Village collectors (tertiary)
+  'Kyrkogatan',
+  'Smedsgatan',
+  // Campus / Måltidens hus spur (unclassified)
+  'Sörälgsvägen',
+  'Kvarnvägen',
+  'Breviksvägen',
+  // Village streets — same set as VILLAGE_STREET_NAMES above, in
+  // sync so promotion and label visibility stay coherent.
+  'Prästgatan',
+  'Torget',
+  'Kyrkbacken',
+  'Norra Bergvägen',
+  'Östra Bergvägen',
+  'Västra Bergvägen',
+  'Nygatan',
+  'Östergatan',
+  'Hantverksgatan',
+  'Sjögatan',
+  'Hyttgatan',
+  'Kolargatan',
+  'Stationsgatan',
+  'Magasinsgatan',
+  'Järnvägsgatan',
+  'Stallgatan',
+  'Skolgatan',
+  'Kyrkogårdsgatan',
+  'Hammargatan',
+  'Bergslagsgatan',
+  'Närkesgatan',
+  'Skiffergatan',
+  'Badvägen',
+  'Gruvgatan'
 ]);
