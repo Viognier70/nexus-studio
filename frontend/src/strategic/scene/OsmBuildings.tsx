@@ -74,6 +74,62 @@ function polygonArea(poly: Vec2Tuple[]): number {
   return Math.abs(sum) / 2;
 }
 
+function polygonCentroid(poly: Vec2Tuple[]): [number, number] {
+  let cx = 0, cz = 0, n = 0;
+  for (let i = 0; i < poly.length - 1; i++) {
+    cx += poly[i][0];
+    cz += poly[i][1];
+    n++;
+  }
+  return n === 0 ? [0, 0] : [cx / n, cz / n];
+}
+
+// Neighbourhood tints derived from the 12 OSM residential polygons.
+// Each polygon takes a deterministic warm-or-cool nudge; buildings
+// snap to the nearest neighbourhood centroid and inherit its tint at
+// a small magnitude. This turns a village of ~340 individually wobbled
+// buildings into ~12 visually coherent neighbourhoods, so a resident
+// can read "the ochre street" versus "the Falu-red street" without any
+// hand-authored zoning.
+const NEIGHBOURHOOD_WARM_TINT = '#c98f5a';    // warmer ochre / burnt orange
+const NEIGHBOURHOOD_COOL_TINT = '#7a8a92';    // cool grey-blue
+
+interface NeighbourhoodTint {
+  centre: [number, number];
+  wallTint: string;
+  roofTint: string;
+  strength: number;
+}
+
+const NEIGHBOURHOOD_TINTS: NeighbourhoodTint[] = WORLD.residential
+  .map((r) => {
+    const h = idHash(r.id);
+    return {
+      centre: polygonCentroid(r.poly),
+      // Alternate warm/cool per polygon deterministically.
+      wallTint: h > 0.5 ? NEIGHBOURHOOD_WARM_TINT : NEIGHBOURHOOD_COOL_TINT,
+      roofTint: h > 0.5 ? '#3a2620' : '#2f333a',
+      strength: 0.08 + Math.abs(h - 0.5) * 0.12  // 0.08–0.14
+    };
+  });
+
+function nearestNeighbourhood(x: number, z: number): NeighbourhoodTint | null {
+  if (NEIGHBOURHOOD_TINTS.length === 0) return null;
+  let best: NeighbourhoodTint = NEIGHBOURHOOD_TINTS[0];
+  let bestDist = Infinity;
+  for (const n of NEIGHBOURHOOD_TINTS) {
+    const d = Math.hypot(x - n.centre[0], z - n.centre[1]);
+    if (d < bestDist) {
+      bestDist = d;
+      best = n;
+    }
+  }
+  // Neighbourhood influence tapers past ~180 m — buildings out on the
+  // village fringes don't get pulled toward an urban palette.
+  if (bestDist > 180) return null;
+  return best;
+}
+
 // Small per-building colour wobble in linear RGB. Deterministic per id so
 // the same building always renders the same colour across sessions. The
 // wobble is intentionally subtle — enough to break the "one wall of
@@ -269,6 +325,30 @@ function toExtruded(b: RawBuilding): Extruded | null {
   const hash = idHash(b.id);
   let wallColour = wobbleColour(base.wall, hash, 0.08);
   let roofColour = wobbleColour(base.roof, hash, 0.06);
+
+  // Neighbourhood coherence: pull each building's palette a small
+  // amount toward the local residential polygon's assigned tint.
+  // Applied before the status override so curated commercial signals
+  // still dominate; skipped for very small kinds (shed / garage) so
+  // outbuildings keep their own colour identity.
+  if (kind !== 'shed' && kind !== 'garage') {
+    const nb = nearestNeighbourhood(obb.centre[0], obb.centre[1]);
+    if (nb) {
+      wallColour = tintColour(wallColour, nb.wallTint, nb.strength);
+      roofColour = tintColour(roofColour, nb.roofTint, nb.strength * 0.6);
+    }
+  }
+
+  // Roof ageing — a per-building drift toward a weathered grey / green.
+  // Older roofs pick up moss and dust; younger roofs stay closer to
+  // their paint. Deterministic per building so nothing flickers between
+  // frames.
+  const ageHash = idHash(b.id + ':age');
+  if (ageHash > 0.35) {
+    const aged = ageHash > 0.75 ? '#4a5142' : '#5f5748';
+    roofColour = tintColour(roofColour, aged, (ageHash - 0.35) * 0.35);
+  }
+
   const status = BUILDING_STATUS_BY_OSM_ID[b.id];
   if (status) {
     const pal = STATUS_PALETTE[status];
