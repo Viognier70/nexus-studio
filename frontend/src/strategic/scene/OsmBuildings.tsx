@@ -10,6 +10,17 @@ import {
 } from '../content/world';
 import type { RawBuilding, Vec2Tuple } from '../content/world';
 
+type WealthTier = 'modest' | 'standard' | 'prosperous';
+
+interface TypologyProfile {
+  wealth: WealthTier;
+  pitchMul: number;         // 1.0 = the ridgeHeightFor default; scales ridgeH
+  dormerCount: number;      // 0, 1, 2 — only placed on gable roofs
+  chimneyCount: number;     // 1 or 2
+  hasCornerboards: boolean; // white painted corner boards
+  cladding: 'vertical_timber' | 'horizontal_timber' | 'plaster' | 'iron_sheet';
+}
+
 interface Extruded {
   id: string;
   geo: THREE.BufferGeometry;
@@ -25,6 +36,7 @@ interface Extruded {
   ridgeH: number;         // computed roof height (peak above the eaves)
   effectiveKind: string;  // after any 'yes' → shed/garage/small-commercial reclassify
   trimColour: string;     // per-building ridge cap / fascia / chimney colour
+  profile: TypologyProfile;
 }
 
 // Base palette per building kind. Subdued Scandinavian tones with enough
@@ -221,14 +233,78 @@ function roofStyleFor(kind: string): Extruded['roofStyle'] {
 // Roof pitch (ridge height above the eave) per style. Kept moderate so
 // procedural silhouettes read at village zoom without towering over the
 // handcrafted District 1 landmarks. The barn pitch is intentionally
-// steeper — a defining Bergslag barn silhouette.
-function ridgeHeightFor(style: Extruded['roofStyle'], rd: number): number {
+// steeper — a defining Bergslag barn silhouette. The pitchMul argument
+// nudges the pitch up or down per building (modest houses read a bit
+// shallower, prosperous villas a bit steeper).
+function ridgeHeightFor(
+  style: Extruded['roofStyle'],
+  rd: number,
+  pitchMul = 1
+): number {
   if (style === 'flat' || style === 'industrial') return 0;
-  if (style === 'gable') return Math.min(2.4, rd * 0.32);
+  if (style === 'gable') return Math.min(2.8, rd * 0.32 * pitchMul);
   if (style === 'barn') return Math.min(3.6, rd * 0.5);
-  if (style === 'hip') return Math.min(1.6, rd * 0.22);
+  if (style === 'hip') return Math.min(1.8, rd * 0.22 * pitchMul);
   if (style === 'shed') return Math.min(1.2, rd * 0.18);
   return 0;
+}
+
+// Cladding inferred from kind — determines wall-colour family bias in
+// facade code and future material tweaks (Block 2 uses this).
+function claddingFor(kind: string): TypologyProfile['cladding'] {
+  if (kind === 'apartments' || kind === 'hotel' || kind === 'school' ||
+      kind === 'university' || kind === 'train_station' || kind === 'commercial')
+    return 'plaster';
+  if (kind === 'industrial' || kind === 'barn' || kind === 'shed')
+    return 'iron_sheet';
+  // Timber for house / detached / residential / garage / outbuilding —
+  // pick vertical vs horizontal deterministically per building.
+  return 'vertical_timber';   // per-building horizontal alternative set in profileFor
+}
+
+// Deterministic per-building typology profile. Only residential-scale
+// kinds get wealth-driven variation — municipal / commercial / farm
+// buildings stay 'standard' so their institutional silhouette holds.
+function profileFor(b: RawBuilding, kind: string): TypologyProfile {
+  const wealthCan =
+    kind === 'house' || kind === 'detached' || kind === 'residential';
+  const cladBase = claddingFor(kind);
+  const cladHash = idHash(b.id + ':cladding');
+  // 50/50 vertical vs horizontal timber inside the timber families.
+  const cladding: TypologyProfile['cladding'] =
+    cladBase === 'vertical_timber' && cladHash > 0.5
+      ? 'horizontal_timber'
+      : cladBase;
+
+  if (!wealthCan) {
+    return {
+      wealth: 'standard',
+      pitchMul: 1.0,
+      dormerCount: 0,
+      chimneyCount: kind === 'apartments' || kind === 'hotel' ? 2 : 1,
+      hasCornerboards:
+        kind === 'commercial' || kind === 'outbuilding' || kind === 'garage',
+      cladding
+    };
+  }
+
+  const wh = idHash(b.id + ':wealth');
+  const wealth: WealthTier =
+    wh < 0.28 ? 'modest' : wh < 0.85 ? 'standard' : 'prosperous';
+  const pitchMul =
+    wealth === 'modest' ? 0.88 :
+    wealth === 'standard' ? 1.0 : 1.18;
+  // Dormers only on gable roofs. Modest houses skip them, standard
+  // houses get one occasionally, prosperous villas get two.
+  const dormerCount =
+    wealth === 'prosperous' ? 2 :
+    wealth === 'standard' && wh > 0.6 ? 1 : 0;
+  const chimneyCount = wealth === 'prosperous' ? 2 : 1;
+  // Cornerboards on ~70 % of houses. Painted-timber Bergslag houses
+  // very commonly have them; leaving 30 % without breaks the "every
+  // house has the exact same trim" look.
+  const hasCornerboards = idHash(b.id + ':corners') > 0.3;
+  return { wealth, pitchMul, dormerCount, chimneyCount, hasCornerboards, cladding };
 }
 
 // Post-OBB reclassify pass. Some `industrial` polygons are actually
@@ -356,6 +432,7 @@ function toExtruded(b: RawBuilding): Extruded | null {
     roofColour = tintColour(base.roof, pal.roof, 0.35);
   }
   const style = roofStyleFor(kind);
+  const profile = profileFor(b, kind);
   // Trim colour = deeper wobble around a near-black base, deterministic
   // per building. Breaks the flat "every ridge cap is #22201c" look that
   // reads as machine-perfect at village zoom.
@@ -373,9 +450,10 @@ function toExtruded(b: RawBuilding): Extruded | null {
     height: h,
     roofStyle: style,
     building: b,
-    ridgeH: ridgeHeightFor(style, obb.d),
+    ridgeH: ridgeHeightFor(style, obb.d, profile.pitchMul),
     effectiveKind: kind,
-    trimColour
+    trimColour,
+    profile
   };
 }
 
@@ -479,7 +557,8 @@ function RoofCap({
   ridgeH,
   style,
   roofColour,
-  trimColour
+  trimColour,
+  profile
 }: {
   id: string;
   centre: [number, number];
@@ -491,22 +570,24 @@ function RoofCap({
   style: Extruded['roofStyle'];
   roofColour: string;
   trimColour: string;
+  profile: TypologyProfile;
 }) {
   if (style === 'flat') return null;
   const hash = idHash(id);
-  // Deterministic chimney placement per building. A single soot-black
-  // stack on gabled/hipped roofs breaks the uniform silhouette that
-  // makes procedural residential blocks read as identical boxes. Skipped
-  // for very small buildings where a chimney would overpower. Larger
-  // buildings (ridgeW > 12 m) get a second symmetric chimney — the
-  // manor / long-house typology visible across the region.
-  const chimneyOn =
-    (style === 'gable' || style === 'hip') && ridgeW > 4 && hash > 0.35;
-  const chimneyOffset = (hash - 0.5) * 0.5;
+  // Chimney selection driven by the typology profile — prosperous villas
+  // and larger civic buildings pick up a symmetric pair, modest houses
+  // stay single. Barns and sheds still skip chimneys entirely.
+  const chimneyEligible =
+    (style === 'gable' || style === 'hip') && ridgeW > 4;
+  const chimneyOn = chimneyEligible && profile.chimneyCount >= 1;
   const twinChimney =
-    (style === 'gable' || style === 'hip') && ridgeW > 12 && hash > 0.5;
-  // A small inset so the roof cap doesn't hang over the walls.
-  const inset = 0.25;
+    chimneyEligible && (profile.chimneyCount >= 2 || ridgeW > 14);
+  const chimneyOffset = (hash - 0.5) * 0.5;
+  // A small inset so the roof cap doesn't hang over the walls. Slightly
+  // reduced (0.18) so the roof reads with a modest eave overhang against
+  // rectangular polygons; irregular polygons still tolerate it because
+  // the inset is smaller than the previous 0.25.
+  const inset = 0.18;
   const rw = Math.max(1.4, ridgeW - inset * 2);
   const rd = Math.max(1.4, ridgeD - inset * 2);
 
@@ -601,6 +682,17 @@ function RoofCap({
     );
   }
   // Gable: true triangular prism using the shared UNIT_GABLE_GEO.
+  // Dormer positions along the ridge axis, centred at the mid-pitch
+  // height. Dormers face the +Z pitch (street-side by convention for
+  // rectangular polygons). Placed at deterministic offsets so a row
+  // of prosperous villas doesn't line up dormers in lockstep.
+  const dormerXs: number[] = [];
+  if (profile.dormerCount === 1) {
+    dormerXs.push(((hash * 2.7) % 1 - 0.5) * rw * 0.35);
+  } else if (profile.dormerCount === 2) {
+    const spread = rw * 0.28;
+    dormerXs.push(-spread, spread);
+  }
   return (
     <group
       position={[centre[0], height, centre[1]]}
@@ -627,6 +719,32 @@ function RoofCap({
         <boxGeometry args={[rw + 0.05, 0.14, 0.06]} />
         <meshStandardMaterial color={trimColour} roughness={0.9} />
       </mesh>
+      {/* Dormers on the +Z pitch for houses whose typology profile
+          allows them (standard / prosperous). Small gabled boxes
+          sitting on the mid-pitch. */}
+      {dormerXs.map((dx, di) => {
+        const dormerY = ridgeH * 0.45;
+        return (
+          <group
+            key={`dorm-${di}`}
+            position={[dx, dormerY, rd * 0.28]}
+          >
+            <mesh>
+              <boxGeometry args={[1.5, 1.4, 1.4]} />
+              <meshStandardMaterial color={roofColour} roughness={0.9} />
+            </mesh>
+            <mesh position={[0, 0.9, 0]}>
+              <coneGeometry args={[1.05, 0.9, 4]} />
+              <meshStandardMaterial color={roofColour} roughness={0.9} />
+            </mesh>
+            {/* Dormer window — small cream pane. */}
+            <mesh position={[0, 0, 0.71]}>
+              <boxGeometry args={[0.7, 0.7, 0.05]} />
+              <meshStandardMaterial color="#efe6d4" roughness={0.7} />
+            </mesh>
+          </group>
+        );
+      })}
       {chimneyOn && (
         <mesh position={[chimneyOffset * rw, ridgeH + 0.85, 0]}>
           <boxGeometry args={[0.55, 1.7, 0.55]} />
@@ -867,6 +985,7 @@ export function OsmBuildings() {
               style={b.roofStyle}
               roofColour={b.roofColour}
               trimColour={b.trimColour}
+              profile={b.profile}
             />
           </group>
         );
