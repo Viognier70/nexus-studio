@@ -13,24 +13,19 @@
 //   - The role is derived; the raw name (e.g. Lokavägen) is what the
 //     player reads on the map.
 //
-// Grythyttan-specific topology audit, verified against live Overpass
-// tags on 2026-07-24 (see APPROXIMATION_REGISTER entry of the same
-// date):
+// Grythyttan-specific topology, verified against live Overpass tags
+// 2026-07-24 (see APPROXIMATION_REGISTER of the same date):
 //   - The through-road through Grythyttan is TWO different numbered
 //     roads meeting at the T-junction at local (413, -7) =
 //     (59.70581°N, 14.54460°E):
-//       * `Rv 244` heads north-east toward Hällefors — this is what
-//         the Vision Owner (and residents) call `Hälleforsvägen`.
+//       * `Rv 244` heads north-east toward Hällefors — locally
+//         `Hälleforsvägen`.
 //       * `Rv 205` heads south-west toward Loka Brunn / Karlskoga —
-//         this is `Lokavägen`.
-//   - The current world.json export captures only the OSM `name` tag,
-//     not `ref`. Three of the six Rv 205 segments carry the name
-//     `Lokavägen` (`w568472820`, `w1006216362`, `w1329020070`) and
-//     are labelled correctly; the six Rv 244 segments are all
-//     unnamed in the export and therefore render as an asphalt strip
-//     with no player-facing name. That gap is why the Vision Owner
-//     reported `Hälleforsvägen` as "missing" — the road IS drawn, but
-//     unlabelled.
+//         `Lokavägen`.
+//   - The regenerated `grythyttan-world.json` (ORDER 018 refetch)
+//     captures the full OSM `ref` tag, so Rv 244 / Rv 205 promotion
+//     is now driven by `road.ref === '244'` / `'205'` rather than a
+//     hardcoded way-id table.
 //   - Topology itself is geographically correct: Kärnhuset (408, -90)
 //     and Måltidens hus (568, -86) sit north of Rv 244; Ingo
 //     (368, -12) sits on it; Pizzans Hus (345, +22) sits south of it.
@@ -210,14 +205,22 @@ const VILLAGE_STREET_NAMES: ReadonlySet<string> = new Set([
   'Bergslagsgatan'
 ]);
 
+// OSM ref values that promote a road to `primary` — the national
+// through-route that must dominate the render. `244` = the road to
+// Hällefors (locally `Hälleforsvägen`). Add other refs here only if
+// they carry equivalent through-flow authority.
+const PRIMARY_ROAD_REFS: ReadonlySet<string> = new Set(['244']);
+
 // Derive a role from a raw OSM road. Pure and deterministic — safe to
 // call from anywhere without side effects. See file header for the
 // Grythyttan-specific reasoning behind the primary / main split.
 export function roleFor(road: RawRoad): RoadRole {
-  // Rv 244 (Hälleforsvägen) is the national through-route to Hällefors
-  // and must clearly dominate every other road. Detected by way-id
-  // (world.json export doesn't carry OSM `ref` yet — see file header).
-  if (HALLEFORSVAGEN_WAY_IDS.has(road.id)) return 'primary';
+  // Primary through-road is detected by OSM ref (post-ORDER 018
+  // refetch). Rv 244 = Hälleforsvägen: 6 continuous segments carry
+  // `ref: "244"` in OSM, some named and some unnamed. Using `ref`
+  // lets any future national road pick up the primary treatment
+  // without a code change.
+  if (road.ref && PRIMARY_ROAD_REFS.has(road.ref)) return 'primary';
   switch (road.kind) {
     case 'motorway':
     case 'trunk':
@@ -261,35 +264,27 @@ export function specFor(road: RawRoad): RoadRoleSpec {
 
 // ---------- Derived display-name layer ----------
 //
-// Hardcoded OSM way-id sets for the six unnamed Rv 244 segments (the
-// road to Hällefors — locally `Hälleforsvägen`) and the three unnamed
-// Rv 205 continuations (`Lokavägen`). Verified 2026-07-24 by fetching
-// live Overpass tags for every OSM secondary in the world bbox.
-//
-// These are the ONLY promotions needed for Grythyttan's principal
-// through-route. Every other named road already carries its OSM
-// `name` and needs no derivation.
-const HALLEFORSVAGEN_WAY_IDS: ReadonlySet<string> = new Set([
-  'w1006222227',   // enters village from north (curving down to junction)
-  'w8122751',      // junction → E/SE
-  'w287145821',    // continues E
-  'w287145822',    // continues SE (out of village bbox to E)
-  'w1006216361',   // continues N (out of village bbox to NE)
-  'w25514870'      // continues to Hällefors
-]);
-const LOKAVAGEN_UNNAMED_WAY_IDS: ReadonlySet<string> = new Set([
-  'w568472821',    // Lokavägen continuation SW (unnamed in OSM)
-  'w614988987',    // Lokavägen continuation further SW
-  'w1083999822'    // Lokavägen continuation into Loka
-]);
+// Ref → local display name. Post-ORDER-018 the world export carries
+// OSM `ref`, so we can promote every unnamed Rv 244 segment to
+// `Hälleforsvägen` and every unnamed Rv 205 segment to `Lokavägen`
+// without maintaining a way-id table. Named segments (three of six
+// Rv 205 ways carry the OSM `name: "Lokavägen"`) still use their raw
+// name — the ref lookup is a fallback for the segments OSM leaves
+// unnamed.
+const REF_DISPLAY_NAMES: Record<string, string> = {
+  '244': 'Hälleforsvägen',
+  '205': 'Lokavägen'
+};
 
 // Return the label the player should see for this road. Falls back to
 // the raw OSM `name`; never mutates the road. Empty string when the
 // road has no display name at all.
 export function displayNameFor(road: RawRoad): string {
-  if (HALLEFORSVAGEN_WAY_IDS.has(road.id)) return 'Hälleforsvägen';
-  if (LOKAVAGEN_UNNAMED_WAY_IDS.has(road.id)) return 'Lokavägen';
-  return road.name ?? '';
+  if (road.name) return road.name;
+  if (road.ref && REF_DISPLAY_NAMES[road.ref]) {
+    return REF_DISPLAY_NAMES[road.ref];
+  }
+  return '';
 }
 
 // Wayfinding streets deserve a broader label-visibility envelope than

@@ -38,6 +38,11 @@ export interface RawRoad {
   poly: Vec2Tuple[];
   kind: string;
   name?: string | null;
+  ref?: string | null;         // OSM ref tag (e.g. "244" for Rv 244)
+  surface?: string | null;     // asphalt, gravel, etc.
+  width?: number | null;       // metres
+  maxspeed?: number | null;    // km/h
+  lanes?: number | null;
   car: boolean;
   ped: boolean;
 }
