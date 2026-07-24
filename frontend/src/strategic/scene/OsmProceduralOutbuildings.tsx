@@ -1,20 +1,16 @@
 import { Instance, Instances } from '@react-three/drei';
 import { useMemo } from 'react';
-import { LANDMARK_BUILDING_IDS, WORLD } from '../content/world';
-import {
-  idHash,
-  inAnyWater,
-  nearAnyBuilding,
-  obbLocalToWorld,
-  orientedBbox,
-  polygonArea
-} from '../procgen/geom';
+import { WORLD } from '../content/world';
+import { idHash, orientedBbox } from '../procgen/geom';
+import { outbuildingPlacementFor } from '../procgen/parcel';
 
 // Small secondary structures (garden sheds, small outbuildings) placed
 // deterministically alongside larger residential buildings so a farm
 // or family plot reads as a full property rather than a single free-
-// standing box. Everything renders through drei Instances — 2 shed
-// wall instances + 2 shed roof instances for the whole village.
+// standing box. Placement is delegated to procgen/parcel.ts so the
+// wood-pile / garden / yard-tree modules can query the same authority.
+// Everything renders through drei Instances — 2 shed wall instances +
+// 2 shed roof instances for the whole village.
 
 interface Outbuilding {
   x: number;
@@ -23,10 +19,6 @@ interface Outbuilding {
   size: 'small' | 'medium';
   colour: string;
 }
-
-// Which OSM kinds can host an outbuilding. Farm-style outbuildings only
-// make sense next to a residential-scale parent.
-const HOST_KINDS = new Set(['house', 'detached', 'residential']);
 
 const SHED_PALETTE = [
   '#7d5b3f',   // creosoted timber
@@ -39,50 +31,23 @@ export function OsmOutbuildings() {
   const outbuildings = useMemo<Outbuilding[]>(() => {
     const list: Outbuilding[] = [];
     for (const b of WORLD.buildings) {
-      if (LANDMARK_BUILDING_IDS.has(b.id)) continue;
-      const kind = b.kind ?? 'yes';
-      if (!HOST_KINDS.has(kind)) continue;
-      const area = polygonArea(b.poly);
-      if (area < 90) continue;    // parent must be big enough to warrant an outbuilding
-
-      const hash = idHash(b.id + ':outbuilding');
-      // ~50 % of eligible parents get one; ~15 % get a second smaller
-      // one on a different side.
-      if (hash > 0.55) continue;
-
+      // Placement helper handles landmark exclusion, host-kind check,
+      // area threshold, spawn probability, and OBB-side selection.
+      // Wood pile / kitchen garden / yard tree code queries the same
+      // helper so all four modules agree on which side the shed
+      // occupies and can skip conflicting positions.
+      const placement = outbuildingPlacementFor(b);
+      if (!placement) continue;
       const obb = orientedBbox(b.poly);
-      const size: Outbuilding['size'] = hash < 0.15 ? 'medium' : 'small';
+      const hash = idHash(b.id + ':outbuilding');
       const paletteIdx = Math.floor(hash * 100) % SHED_PALETTE.length;
-      const colour = SHED_PALETTE[paletteIdx];
-
-      // Candidate offsets in the parent's OBB frame — try rear first,
-      // then a side, then the other side. Front is deliberately last so
-      // outbuildings don't crowd the entrance side.
-      const halfW = obb.w / 2;
-      const halfD = obb.d / 2;
-      const clearance = size === 'medium' ? 6.5 : 5.0;
-      const candidates: Array<{ lx: number; lz: number }> = [
-        { lx: 0,           lz: -halfD - clearance },  // rear
-        { lx: halfW + clearance, lz: 0 },              // right
-        { lx: -halfW - clearance, lz: 0 },             // left
-        { lx: 0,           lz: halfD + clearance }     // front (last resort)
-      ];
-
-      for (const c of candidates) {
-        const [wx, wz] = obbLocalToWorld(obb, c.lx, c.lz);
-        // Reject if the candidate would clip another building or land
-        // in water.
-        if (nearAnyBuilding(wx, wz, b.id, 1.5)) continue;
-        if (inAnyWater(wx, wz)) continue;
-        list.push({
-          x: wx,
-          z: wz,
-          angle: obb.angle,
-          size,
-          colour
-        });
-        break;
-      }
+      list.push({
+        x: placement.wx,
+        z: placement.wz,
+        angle: obb.angle,
+        size: placement.size,
+        colour: SHED_PALETTE[paletteIdx]
+      });
     }
     return list;
   }, []);

@@ -9,6 +9,7 @@ import {
   orientedBbox,
   polygonArea
 } from '../procgen/geom';
+import { outbuildingSideFor } from '../procgen/parcel';
 
 // Two restrained yard features on top of the existing property system:
 //   - Kitchen garden patch on ~20 % of eligible houses (tilled dark
@@ -51,26 +52,33 @@ export function OsmYards() {
 
       // Kitchen garden on ~22 % of standard / prosperous houses. Placed
       // at the left-mid side of the OBB (opposite the wood pile in
-      // OsmPropertyDetail which sits at right-mid).
+      // OsmPropertyDetail which sits at right-mid). Skipped when the
+      // outbuilding for this parent also landed on the left, to avoid
+      // shed+garden overlap.
       const gh = idHash(b.id + ':garden');
       if (wealth !== 'modest' && gh < 0.22) {
-        const [gx, gz] = obbLocalToWorld(
-          obb,
-          -(obb.w / 2 + 2.5),
-          -obb.d * 0.15
-        );
-        if (
-          !inAnyWater(gx, gz) &&
-          !nearAnyBuilding(gx, gz, b.id, 0.5)
-        ) {
-          g.push({ x: gx, z: gz, angle: obb.angle });
+        const outbuildingSide = outbuildingSideFor(b);
+        if (outbuildingSide !== 'left') {
+          const [gx, gz] = obbLocalToWorld(
+            obb,
+            -(obb.w / 2 + 2.5),
+            -obb.d * 0.15
+          );
+          if (
+            !inAnyWater(gx, gz) &&
+            !nearAnyBuilding(gx, gz, b.id, 0.5)
+          ) {
+            g.push({ x: gx, z: gz, angle: obb.angle });
+          }
         }
       }
 
       // Prosperous villas: two small yard trees on the front-left / front-
       // right of the parcel. Placed clear of the entrance pad and
-      // driveway on the front axis.
-      if (wealth === 'prosperous') {
+      // driveway on the front axis. Skipped when the outbuilding
+      // fell back to the front (rare — a shed sits where the trees
+      // would go).
+      if (wealth === 'prosperous' && outbuildingSideFor(b) !== 'front') {
         const th = idHash(b.id + ':yardtrees');
         if (th < 0.55) {
           const offsets: Array<[number, number]> = [

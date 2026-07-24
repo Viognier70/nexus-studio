@@ -9,6 +9,7 @@ import {
   orientedBbox,
   polygonArea
 } from '../procgen/geom';
+import { outbuildingSideFor } from '../procgen/parcel';
 
 // Property-scale decor around every eligible residential building:
 //   - Small gravel pad in front of the entrance
@@ -57,11 +58,14 @@ export function OsmPropertyDetail() {
       // sits clearly outside the wall AND clearly away from the
       // rear-centre where OsmProceduralOutbuildings prefers to put
       // its shed. Rejects positions that would clip a neighbour
-      // building.
+      // building or an outbuilding sharing the right side.
       const wh = idHash(b.id + ':woodpile');
       if (wh < 0.28) {
         const [wx, wz] = obbLocalToWorld(obb, obb.w / 2 + 2.0, -halfD * 0.4);
+        const outbuildingSide = outbuildingSideFor(b);
+        const wouldCollideWithShed = outbuildingSide === 'right';
         if (
+          !wouldCollideWithShed &&
           !inAnyWater(wx, wz) &&
           !nearAnyBuilding(wx, wz, b.id, 1.0)
         ) {
