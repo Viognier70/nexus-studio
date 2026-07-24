@@ -79,6 +79,16 @@ Umbrella defect: composed of D1–D4 plus a general visual-vs-map fidelity gap o
 | 4 | D2 Hälleforsvägen curvature | Whole through-road visual | Medium (derived geometry) | Preserve raw OSM; add documented control-point layer |
 | 5 | D5 visual re-review | End of session | User-time | Only Vision Owner can pass |
 
+## Resolution status (updated after ORDER 019R remediation)
+
+| Defect | Status | Fix commit | Notes |
+|--------|--------|-----------|-------|
+| **D3** forest-in-water | **RESOLVED** | `17bb247` | `HorizonForest.ringPointOK` now filters via `inAnyWater()`. Validator V2 confirms 2278/2278 markers emitted with zero water overlap; V1 confirms no OSM forest vertex sits inside water. |
+| **D1** Kärnhuset placement | **RESOLVED (systemic)** | `21049a2` | `splitAtBridgeEdges` in `procgen/geom.ts` splits multi-wing OSM polygons; `world.ts` applies to every building with area/bbox<0.6 and any edge >25 m. Kärnhuset now renders as main body (1087 m², handcrafted) + secondary wing (193 m², procedural). Raw OSM preserved via `WORLD_RAW_BUILDINGS`. |
+| **D4** vehicles-in-buildings | **RESOLVED** | `ed81e14` | `clipPolylineForVehicles` (dense-sample envelope clip with 3.2 m clearance) generates a separate `CLIPPED_ROADS_VEHICLE` set used by `VILLAGE_CAR_ROADS`, `MAJOR_ROADS`, `TRACK_ROADS`. Traffic navigates the vehicle-safe set; road rendering keeps the centreline set so asphalt stays where OSM says it is. |
+| **D2** Rv 244 curvature | **PARTIAL** | `2d68f36` | Named-street promotion covers Rv 244's neighbours (Prästgatan, Nygatan, Östergatan, Hyttgatan, …); the through-road itself carries the raw OSM polyline. Deferred: derived curvature control-points require satellite-verified positions the current toolchain cannot reach. Flagged in the final report for the next visual-verification pass. |
+| **D5** localhost vs real map | **CONDITIONAL** | — | Umbrella defect. Closes when Vision Owner visually re-reviews the running scene at localhost:5173/5174 after the four fixes above. Validator V1–V6 passes 0/0/0/0 Critical/High/Medium/Low. |
+
 ---
 
-*Author: Claude Code, ORDER 019 reopen. Written before any fix commits so root-cause claims can be cross-checked against the code changes that follow.*
+*Author: Claude Code, ORDER 019 reopen. Written before any fix commits so root-cause claims can be cross-checked against the code changes that follow. Updated at ORDER 019R closure with resolution status.*

@@ -1,6 +1,14 @@
 # World Alignment Report — ORDER 019
 
-**Status:** Final for this ORDER  
+**Status:** FAIL (superseded — see below)  
+**Superseding report:** `FULL_MAP_AUTHENTICITY_AUDIT_ORDER_019R.md`  
+**Reason:** Vision Owner rejected on visual inspection despite passing typecheck / build / numeric audit. See `CRITICAL_DEFECT_REGISTER_ORDER_019.md` for the reopen defects and `FULL_MAP_AUTHENTICITY_AUDIT_ORDER_019R.md` for the remediation.
+
+---
+
+*Original report below, retained unedited for the audit trail.*
+
+**Original status:** Final for this ORDER  
 **Class:** Engineering report  
 **Session:** ORDER 019 (auto-mode, 2026-07-25)  
 **Companion audit:** `WORLD_ALIGNMENT_AUDIT_ORDER_019.md`  
