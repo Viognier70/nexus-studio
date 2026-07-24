@@ -14,13 +14,15 @@ const KERB_COLOUR = '#4a463f';         // dark granite kerb
 const STRIPE_COLOUR = '#d0c7ae';       // muted road-marking cream
 const EDGE_LINE_COLOUR = '#c9c0a5';    // slightly cooler edge line
 
-// Vehicle-tier Y offsets. Main wins intersections; secondary + local
-// stack under; residential + service are on the base plane.
-const TIER_Y: Record<'main' | 'secondary' | 'local' | 'base', number> = {
+// Vehicle-tier Y offsets. Primary (Rv 244) wins every intersection;
+// main (Rv 205 and other secondaries) sit just under; secondary +
+// local + base stack below in order.
+const TIER_Y: Record<'primary' | 'main' | 'secondary' | 'local' | 'base', number> = {
   base: GROUND_Y.roads,
   local: GROUND_Y.roads + 0.01,
   secondary: GROUND_Y.roads + 0.02,
-  main: GROUND_Y.roads + 0.03
+  main: GROUND_Y.roads + 0.03,
+  primary: GROUND_Y.roads + 0.04
 };
 const MARKING_Y_OFFSET = 0.02;
 
@@ -129,20 +131,26 @@ interface RoadPiece {
 }
 
 // Group a role into a rendering tier so intersections stack sensibly.
-function tierForRole(role: RoadRole): 'main' | 'secondary' | 'local' | 'base' {
+// village_street sits with local_street so wayfinding named residentials
+// visually align with the named unclassifieds.
+function tierForRole(
+  role: RoadRole
+): 'primary' | 'main' | 'secondary' | 'local' | 'base' {
+  if (role === 'primary') return 'primary';
   if (role === 'main') return 'main';
   if (role === 'secondary_connector') return 'secondary';
-  if (role === 'local_street') return 'local';
+  if (role === 'local_street' || role === 'village_street') return 'local';
   return 'base';
 }
 
 export function OsmRoads() {
-  const { ped, base, local, secondary, main } = useMemo(() => {
+  const { ped, base, local, secondary, main, primary } = useMemo(() => {
     const ped: RoadPiece[] = [];
     const base: RoadPiece[] = [];
     const local: RoadPiece[] = [];
     const secondary: RoadPiece[] = [];
     const main: RoadPiece[] = [];
+    const primary: RoadPiece[] = [];
     for (const road of CLIPPED_ROADS) {
       if (road.poly.length < 2) continue;
       const spec = specFor(road);
@@ -207,6 +215,7 @@ export function OsmRoads() {
       if (spec.ped) ped.push(piece);
       else {
         switch (tierForRole(spec.role)) {
+          case 'primary': primary.push(piece); break;
           case 'main': main.push(piece); break;
           case 'secondary': secondary.push(piece); break;
           case 'local': local.push(piece); break;
@@ -214,7 +223,7 @@ export function OsmRoads() {
         }
       }
     }
-    return { ped, base, local, secondary, main };
+    return { ped, base, local, secondary, main, primary };
   }, []);
 
   return (
@@ -234,10 +243,11 @@ export function OsmRoads() {
         ))}
       </group>
       {/* Sidewalks — beneath the road plane so the road punches through
-          the middle. Only main / secondary_connector / local_street
-          carry them. */}
+          the middle. Every tier that carries a sidewalk contributes:
+          primary, main, secondary_connector, local_street,
+          village_street. */}
       <group position={[0, SIDEWALK_Y, 0]}>
-        {[...base, ...local, ...secondary, ...main].map((p) =>
+        {[...base, ...local, ...secondary, ...main, ...primary].map((p) =>
           p.sidewalkGeo ? (
             <mesh key={`sw-${p.id}`} geometry={p.sidewalkGeo}>
               <meshStandardMaterial color={SIDEWALK_COLOUR} roughness={0.95} />
@@ -248,7 +258,7 @@ export function OsmRoads() {
       {/* Kerb — a narrow dark strip immediately outside the road, above
           the sidewalk and below the road asphalt. */}
       <group position={[0, SIDEWALK_Y + 0.01, 0]}>
-        {[...base, ...local, ...secondary, ...main].map((p) =>
+        {[...base, ...local, ...secondary, ...main, ...primary].map((p) =>
           p.kerbGeo ? (
             <mesh key={`kerb-${p.id}`} geometry={p.kerbGeo}>
               <meshStandardMaterial color={KERB_COLOUR} roughness={0.9} />
@@ -281,7 +291,8 @@ export function OsmRoads() {
           </mesh>
         ))}
       </group>
-      {/* Main through-road — dominates every intersection. */}
+      {/* Main through-road continuation (Rv 205 / Lokavägen etc.) —
+          sits under the primary tier but on top of everything else. */}
       <group position={[0, TIER_Y.main, 0]}>
         {main.map((p) => (
           <mesh key={p.id} geometry={p.geo}>
@@ -289,10 +300,20 @@ export function OsmRoads() {
           </mesh>
         ))}
       </group>
-      {/* Centre stripes on main + secondary. Rendered above every
-          carriageway so intersecting stripes never disappear. */}
-      <group position={[0, TIER_Y.main + MARKING_Y_OFFSET, 0]}>
-        {[...secondary, ...main].map((p) =>
+      {/* Primary through-road (Rv 244 / Hälleforsvägen) — dominates
+          every intersection. Rendered on the top vehicle layer so it
+          always wins the crossing pixel. */}
+      <group position={[0, TIER_Y.primary, 0]}>
+        {primary.map((p) => (
+          <mesh key={p.id} geometry={p.geo}>
+            <meshStandardMaterial color={p.colour} roughness={0.95} />
+          </mesh>
+        ))}
+      </group>
+      {/* Centre stripes on primary + main + secondary. Rendered above
+          every carriageway so intersecting stripes never disappear. */}
+      <group position={[0, TIER_Y.primary + MARKING_Y_OFFSET, 0]}>
+        {[...secondary, ...main, ...primary].map((p) =>
           p.centreGeo ? (
             <mesh key={`ctr-${p.id}`} geometry={p.centreGeo}>
               <meshStandardMaterial color={STRIPE_COLOUR} roughness={0.9} />
@@ -300,10 +321,11 @@ export function OsmRoads() {
           ) : null
         )}
       </group>
-      {/* Edge lines — reserved for the principal through-road. Reads
-          instantly as "this is the road that carries the through-flow". */}
-      <group position={[0, TIER_Y.main + MARKING_Y_OFFSET, 0]}>
-        {main.map((p) => (
+      {/* Edge lines — primary (Rv 244) + main (Rv 205) carry a
+          continuous edge line on both sides so the through-route
+          reads as a single national artery. */}
+      <group position={[0, TIER_Y.primary + MARKING_Y_OFFSET, 0]}>
+        {[...main, ...primary].map((p) => (
           <group key={`edge-${p.id}`}>
             {p.edgeLGeo && (
               <mesh geometry={p.edgeLGeo}>

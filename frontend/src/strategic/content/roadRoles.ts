@@ -56,10 +56,12 @@
 import type { RawRoad } from './world';
 
 export type RoadRole =
-  | 'main'
-  | 'secondary_connector'
-  | 'local_street'
-  | 'residential'
+  | 'primary'              // national through-road (Rv 244 / Hälleforsvägen)
+  | 'main'                 // major continuation (Rv 205 / Lokavägen and other secondaries)
+  | 'secondary_connector'  // village collectors — Kyrkogatan, Smedsgatan
+  | 'village_street'       // named residentials that carry village wayfinding
+  | 'local_street'         // named unclassifieds
+  | 'residential'          // ordinary residential lane
   | 'service'
   | 'track'
   | 'cycleway'
@@ -88,16 +90,31 @@ export interface RoadRoleSpec {
   ped: boolean;
 }
 
-// Width targets from ORDER 017a H1 (mid of each range):
-//   main               8.5–10.0 → 9.0
-//   secondary          5.5–7.0  → 6.2
-//   local_street       4.5–5.5  → 5.0
-//   residential        3.2–4.5  → 3.8
+// Width targets after ORDER 018 hierarchy rebuild. The primary through
+// route is 10.0 m so it clearly dominates a 9.0 m main continuation;
+// a new `village_street` tier sits between local_street and residential
+// so wayfinding named residentials (Prästgatan, Torget) read as real
+// village streets rather than driveways.
+//
+//   primary            9.5–10.5 → 10.0  (Rv 244 / Hälleforsvägen)
+//   main               8.5–9.5  → 9.0   (Rv 205 / Lokavägen etc.)
+//   secondary          5.5–7.0  → 6.2   (Kyrkogatan / Smedsgatan)
+//   local_street       4.5–5.5  → 5.0   (named unclassifieds)
+//   village_street     4.2–5.0  → 4.6   (named wayfinding residentials)
+//   residential        3.2–4.0  → 3.6   (ordinary residential grid)
 //   service            2.5–3.5  → 2.8
 //   track              2.0–3.0  → 2.4
 //   cycleway           1.8–2.6  → 2.0
 //   footpath           1.0–1.8  → 1.3
 export const ROLE_SPECS: Record<RoadRole, Omit<RoadRoleSpec, 'role'>> = {
+  primary: {
+    width: 10.0,
+    colour: '#8c8780',           // slightly darker cool asphalt
+    sidewalkWidth: 1.6,
+    centreline: true,
+    edgeLine: true,
+    ped: false
+  },
   main: {
     width: 9.0,
     colour: '#8f8a82',           // cool asphalt
@@ -122,8 +139,16 @@ export const ROLE_SPECS: Record<RoadRole, Omit<RoadRoleSpec, 'role'>> = {
     edgeLine: false,
     ped: false
   },
+  village_street: {
+    width: 4.6,
+    colour: '#7d7870',           // shared with local_street palette
+    sidewalkWidth: 0.9,
+    centreline: false,
+    edgeLine: false,
+    ped: false
+  },
   residential: {
-    width: 3.8,
+    width: 3.6,
     colour: '#7a756d',
     sidewalkWidth: 0,
     centreline: false,
@@ -164,20 +189,39 @@ export const ROLE_SPECS: Record<RoadRole, Omit<RoadRoleSpec, 'role'>> = {
   }
 };
 
-// Roads that OSM labels with names that traditionally denote the
-// through-road even when OSM tagged them below `secondary`. Empty for
-// Grythyttan — all Lokavägen segments are already `secondary`. Kept for
-// future promotion if a specific named road needs to be lifted to
-// `main` regardless of its OSM class.
-const PRINCIPAL_ROAD_NAMES: ReadonlySet<string> = new Set<string>();
+// Wayfinding-critical named residentials. These are village streets
+// that a resident would name when giving directions — Prästgatan runs
+// from the Rv 205 junction to Torget; Skolgatan reaches the school;
+// Stationsgatan reaches the old station; the Bergvägen streets bound
+// the village on the north-east; Kolargatan links Torget to the
+// campus quarter. Promoted from raw OSM `residential` (3.6 m) to
+// `village_street` (4.6 m) so they read as village streets and not
+// residential alleys.
+const VILLAGE_STREET_NAMES: ReadonlySet<string> = new Set([
+  'Prästgatan',
+  'Skolgatan',
+  'Stationsgatan',
+  'Kolargatan',
+  'Torget',
+  'Norra Bergvägen',
+  'Östra Bergvägen',
+  'Västra Bergvägen',
+  'Hammargatan',
+  'Bergslagsgatan'
+]);
 
 // Derive a role from a raw OSM road. Pure and deterministic — safe to
-// call from anywhere without side effects.
+// call from anywhere without side effects. See file header for the
+// Grythyttan-specific reasoning behind the primary / main split.
 export function roleFor(road: RawRoad): RoadRole {
-  if (road.name && PRINCIPAL_ROAD_NAMES.has(road.name)) return 'main';
+  // Rv 244 (Hälleforsvägen) is the national through-route to Hällefors
+  // and must clearly dominate every other road. Detected by way-id
+  // (world.json export doesn't carry OSM `ref` yet — see file header).
+  if (HALLEFORSVAGEN_WAY_IDS.has(road.id)) return 'primary';
   switch (road.kind) {
     case 'motorway':
     case 'trunk':
+      return 'primary';
     case 'primary':
     case 'secondary':
       return 'main';
@@ -187,6 +231,11 @@ export function roleFor(road: RawRoad): RoadRole {
       return 'local_street';
     case 'residential':
     case 'living_street':
+      // Named wayfinding streets read as village streets; every other
+      // residential falls back to the ordinary residential lane.
+      if (road.name && VILLAGE_STREET_NAMES.has(road.name)) {
+        return 'village_street';
+      }
       return 'residential';
     case 'service':
       return 'service';
