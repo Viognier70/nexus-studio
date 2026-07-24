@@ -48,6 +48,36 @@ function inAnyWater(x: number, z: number): boolean {
   return false;
 }
 
+// Bbox-dilated near-any-building check, so wood piles don't clip
+// neighbour houses. Parent building excluded by id since the pile is
+// placed just outside its OBB.
+function nearAnyBuilding(
+  x: number,
+  z: number,
+  excludeId: string,
+  dilation: number
+): boolean {
+  for (const b of WORLD.buildings) {
+    if (b.id === excludeId) continue;
+    if (b.poly.length < 3) continue;
+    let minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity;
+    for (const [bx, bz] of b.poly) {
+      if (bx < minX) minX = bx;
+      if (bx > maxX) maxX = bx;
+      if (bz < minZ) minZ = bz;
+      if (bz > maxZ) maxZ = bz;
+    }
+    if (
+      x < minX - dilation ||
+      x > maxX + dilation ||
+      z < minZ - dilation ||
+      z > maxZ + dilation
+    ) continue;
+    if (inside(b.poly, x, z)) return true;
+  }
+  return false;
+}
+
 interface OBB {
   centre: [number, number];
   w: number;
@@ -126,15 +156,22 @@ export function OsmPropertyDetail() {
       if (!inAnyWater(px, pz)) {
         p.push({ x: px, z: pz, angle: obb.angle });
       }
-      // Wood pile at the rear corner on ~28 % of eligible houses.
+      // Wood pile on the right-mid side of the parent OBB on ~28 % of
+      // eligible houses. Placed at (halfW + 2, -halfD * 0.4) so it
+      // sits clearly outside the wall AND clearly away from the
+      // rear-centre where OsmProceduralOutbuildings prefers to put
+      // its shed. Rejects positions that would clip a neighbour
+      // building.
       const wh = idHash(b.id + ':woodpile');
       if (wh < 0.28) {
-        // Rear-left corner in OBB frame: (-halfW*0.6, -halfD - 2).
-        const cornerX = obb.centre[0] +
-          cos * (-obb.w / 2 * 0.6) - sin * (-halfD - 2);
-        const cornerZ = obb.centre[1] +
-          sin * (-obb.w / 2 * 0.6) + cos * (-halfD - 2);
-        if (!inAnyWater(cornerX, cornerZ)) {
+        const wpLx = obb.w / 2 + 2.0;
+        const wpLz = -halfD * 0.4;
+        const cornerX = obb.centre[0] + cos * wpLx - sin * wpLz;
+        const cornerZ = obb.centre[1] + sin * wpLx + cos * wpLz;
+        if (
+          !inAnyWater(cornerX, cornerZ) &&
+          !nearAnyBuilding(cornerX, cornerZ, b.id, 1.0)
+        ) {
           w.push({ x: cornerX, z: cornerZ, angle: obb.angle });
         }
       }
