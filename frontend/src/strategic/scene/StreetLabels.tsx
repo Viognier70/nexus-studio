@@ -4,9 +4,10 @@ import { useMemo, useRef, useState } from 'react';
 import { useCamera } from '../camera/CameraContext';
 import { WORLD, polylineLength } from '../content/world';
 import type { RawRoad, Vec2Tuple } from '../content/world';
+import { roleFor } from '../content/roadRoles';
 import { readabilityFade } from '../util/readability';
 
-type Tier = 'major' | 'secondary' | 'local';
+type Tier = 'main' | 'major' | 'secondary' | 'local';
 
 interface Label {
   road: RawRoad;
@@ -31,27 +32,30 @@ function computeCentre(poly: Vec2Tuple[]): { c: Vec2Tuple; angleDeg: number } {
   return { c, angleDeg };
 }
 
-// Three-tier label system, modelled on modern digital maps.
+// Four-tier label system, modelled on modern digital maps.
 //
-//   MAJOR      the through-roads that make the village legible from the
-//              strategic view. Only these are named at village altitude.
-//   SECONDARY  the named residential and local streets that appear once
-//              the camera drops into district range.
-//   LOCAL      everything else. Only surfaces at business range.
+//   MAIN       the principal through-road. Reads first, dominates at
+//              every zoom.
+//   MAJOR      village-collector secondaries — Kyrkogatan, Smedsgatan.
+//              Named at village altitude alongside main, one weight
+//              subordinate.
+//   SECONDARY  named local streets (Sörälgsvägen, Kvarnvägen,
+//              Gruvgatan…). Appear at district range.
+//   LOCAL      named residentials — the neighbourhood grid. Surfaces at
+//              business range.
 //
-// Tier is derived from the OSM `highway` class rather than a hardcoded
-// name list. The previous hardcoded lists missed roughly half of the
-// real Grythyttan road inventory (Magasinsgatan, Västra Bergvägen,
-// Kvarnvägen, Gruvgatan, Skiffergatan, Vintervägen, Närkesgatan,
-// Hantverksgatan, Mellanvägen, Baluns väg, Breviksvägen, Erik
-// Andersgatan, Stallgatan, Åsgatan…), and included some names that no
-// longer resolve to real ways.
-const MAJOR_KINDS = new Set(['motorway', 'trunk', 'primary', 'secondary']);
-const SECONDARY_KINDS = new Set(['tertiary', 'unclassified']);
-
+// Tier is derived from the semantic road role in `content/roadRoles`
+// so this file stays in sync with the road renderer's hierarchy. Raw
+// OSM names are preserved as-is: e.g. the principal route is labelled
+// `Lokavägen` on its 3 named segments — the Vision Owner's reference
+// to `Hälleforsvägen` matches the same physical road but that name
+// does not appear in the OSM dataset.
 function tierForRoad(r: RawRoad): Tier {
-  if (MAJOR_KINDS.has(r.kind)) return 'major';
-  if (SECONDARY_KINDS.has(r.kind)) return 'secondary';
+  const role = roleFor(r);
+  if (role === 'main') return 'main';
+  if (role === 'secondary_connector') return 'major';
+  if (role === 'local_street') return 'secondary';
+  if (role === 'residential') return 'local';
   return 'local';
 }
 
@@ -84,7 +88,8 @@ function inVillage(c: Vec2Tuple): boolean {
 const TIER_FADE: Record<Tier, {
   nearIn: number; nearOut: number; farIn?: number; farOut?: number;
 }> = {
-  major: { nearIn: 120, nearOut: 250 },
+  main: { nearIn: 140, nearOut: 260 },
+  major: { nearIn: 110, nearOut: 220, farIn: 900, farOut: 1200 },
   secondary: { nearIn: 40, nearOut: 80, farIn: 350, farOut: 500 },
   local: { nearIn: 10, nearOut: 25, farIn: 70, farOut: 110 }
 };
@@ -143,7 +148,10 @@ export function StreetLabels() {
         // Major labels sit a touch heavier so they read at strategic
         // altitude; local labels are lighter so they don't compete with
         // the room at business range.
-        const weight = l.tier === 'major' ? 600 : l.tier === 'secondary' ? 500 : 400;
+        const weight =
+          l.tier === 'main' ? 700 :
+          l.tier === 'major' ? 600 :
+          l.tier === 'secondary' ? 500 : 400;
         return (
           <Html
             key={l.road.id}

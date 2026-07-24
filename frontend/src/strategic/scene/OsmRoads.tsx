@@ -1,61 +1,31 @@
 import { useMemo } from 'react';
 import * as THREE from 'three';
-import { CLIPPED_ROADS, GROUND_Y } from '../content/world';
-import type { RawRoad } from '../content/world';
+import { CLIPPED_ROADS, GROUND_Y, WORLD } from '../content/world';
+import type { RawRoad, Vec2Tuple } from '../content/world';
+import { specFor, type RoadRole } from '../content/roadRoles';
+import { inside, polygonBounds } from '../procgen/geom';
 
-// Width and colour by OSM highway kind. Real hierarchy: Lokavägen is the
-// through-road (secondary); Kyrkogatan / Smedsgatan are village collectors
-// (tertiary); the residential grid (Prästgatan, Skolgatan, Bergvägen etc.)
-// is next; service roads are driveways / access; footpath and cycleway
-// finish the pedestrian layer.
-interface CategoryDef {
-  width: number;
-  colour: string;
-  ped: boolean;
-  stripe: boolean;
-  sidewalkWidth?: number;   // per-side pavement width, 0 = no sidewalk
-  gravel?: boolean;         // dustier warmer material tint
-}
-
-// Widths tuned for the Grythyttan hierarchy. Sidewalks are added only on
-// the collector network (secondary/tertiary/primary/unclassified) and
-// pedestrian streets — residential lanes, service tracks and forest
-// tracks don't get one in reality either.
-const CATEGORY: Record<string, CategoryDef> = {
-  motorway: { width: 9, colour: '#a7a29b', ped: false, stripe: true, sidewalkWidth: 1.6 },
-  trunk: { width: 9, colour: '#a7a29b', ped: false, stripe: true, sidewalkWidth: 1.6 },
-  primary: { width: 8, colour: '#a09b93', ped: false, stripe: true, sidewalkWidth: 1.6 },
-  secondary: { width: 6.8, colour: '#98938b', ped: false, stripe: true, sidewalkWidth: 1.4 },
-  tertiary: { width: 5.4, colour: '#8a867d', ped: false, stripe: false, sidewalkWidth: 1.2 },
-  unclassified: { width: 4.4, colour: '#7f7c73', ped: false, stripe: false, sidewalkWidth: 1.0 },
-  residential: { width: 4, colour: '#7a7770', ped: false, stripe: false },
-  living_street: { width: 3.5, colour: '#a89876', ped: false, stripe: false, sidewalkWidth: 0.9 },
-  service: { width: 2.6, colour: '#75705f', ped: false, stripe: false, gravel: true },
-  track: { width: 2.2, colour: '#7a6a52', ped: true, stripe: false, gravel: true },
-  // Cycleways in Sweden are commonly painted in a warmer red-brown asphalt
-  // colour to distinguish them from footways. Kept subtle at village zoom.
-  cycleway: { width: 1.6, colour: '#8f7362', ped: true, stripe: false },
-  footway: { width: 1.1, colour: '#948667', ped: true, stripe: false },
-  path: { width: 1.1, colour: '#948667', ped: true, stripe: false, gravel: true },
-  steps: { width: 1.1, colour: '#7f7462', ped: true, stripe: false },
-  pedestrian: { width: 3, colour: '#a89876', ped: true, stripe: false },
-  platform: { width: 2, colour: '#6a675e', ped: true, stripe: false }
-};
-
-const DEFAULT_CAT: CategoryDef = {
-  width: 3,
-  colour: '#7a7770',
-  ped: false,
-  stripe: false
-};
-
-// Y-level for the sidewalk layer — a hair below the road so major roads
-// still win the middle at intersections, but enough separation to avoid
-// z-fighting at strategic-zoom depth precision (~10 cm at 1800 m).
+// Y-level for the sidewalk layer — a hair below the road plane so major
+// roads still win the middle at intersections, but enough separation to
+// avoid z-fighting at strategic-zoom depth precision (~10 cm at 1800 m).
 const SIDEWALK_Y = 0.38;
 const SIDEWALK_COLOUR = '#b8ac96';    // pale limestone
 const KERB_COLOUR = '#4a463f';         // dark granite kerb
+const STRIPE_COLOUR = '#d0c7ae';       // muted road-marking cream
+const EDGE_LINE_COLOUR = '#c9c0a5';    // slightly cooler edge line
 
+// Vehicle-tier Y offsets. Main wins intersections; secondary + local
+// stack under; residential + service are on the base plane.
+const TIER_Y: Record<'main' | 'secondary' | 'local' | 'base', number> = {
+  base: GROUND_Y.roads,
+  local: GROUND_Y.roads + 0.01,
+  secondary: GROUND_Y.roads + 0.02,
+  main: GROUND_Y.roads + 0.03
+};
+const MARKING_Y_OFFSET = 0.02;
+
+// Build a two-sided strip of `2 * half` metres centred on the road
+// polyline. Used for the carriageway, sidewalk envelope and kerb strips.
 function buildRoadShape(road: RawRoad, half: number): THREE.Shape | null {
   if (road.poly.length < 2) return null;
   const left: [number, number][] = [];
@@ -81,78 +51,177 @@ function buildRoadShape(road: RawRoad, half: number): THREE.Shape | null {
   return shape;
 }
 
+// Sample the sidewalk envelope of a road piece and return true if any
+// corner would sit inside a building polygon. Sidewalks widen the
+// effective envelope beyond the CLIPPED_ROADS geometry; where the road
+// terminates at a wall, the sidewalk cap can still project into a
+// neighbouring building. Skipping the sidewalk on those pieces (not
+// the road itself) is a pure procedural rule — no per-road exceptions.
+function sidewalkClearsBuildings(poly: Vec2Tuple[], envHalf: number): boolean {
+  if (poly.length < 2) return true;
+  for (let i = 0; i < poly.length; i++) {
+    const p = poly[i];
+    const prev = poly[Math.max(0, i - 1)];
+    const next = poly[Math.min(poly.length - 1, i + 1)];
+    const dx = next[0] - prev[0];
+    const dz = next[1] - prev[1];
+    const len = Math.hypot(dx, dz) || 1;
+    const nx = -dz / len;
+    const nz = dx / len;
+    for (const sign of [1, -1]) {
+      const ex = p[0] + nx * envHalf * sign;
+      const ez = p[1] + nz * envHalf * sign;
+      for (const b of WORLD.buildings) {
+        if (b.poly.length < 3) continue;
+        const bb = polygonBounds(b.poly);
+        if (ex < bb.minX || ex > bb.maxX || ez < bb.minZ || ez > bb.maxZ) continue;
+        if (inside(b.poly, ex, ez)) return false;
+      }
+    }
+  }
+  return true;
+}
+
+// Same as buildRoadShape but the centreline is first offset by
+// `centreOffset` along the polyline's left normal. Used to place edge
+// lines at ±(road_half - inset) from the centreline.
+function buildOffsetLineShape(
+  road: RawRoad,
+  centreOffset: number,
+  halfThickness: number
+): THREE.Shape | null {
+  if (road.poly.length < 2) return null;
+  const left: [number, number][] = [];
+  const right: [number, number][] = [];
+  for (let i = 0; i < road.poly.length; i++) {
+    const p = road.poly[i];
+    const prev = road.poly[Math.max(0, i - 1)];
+    const next = road.poly[Math.min(road.poly.length - 1, i + 1)];
+    const dx = next[0] - prev[0];
+    const dz = next[1] - prev[1];
+    const len = Math.hypot(dx, dz) || 1;
+    const nx = -dz / len;
+    const nz = dx / len;
+    const cx = p[0] + nx * centreOffset;
+    const cz = p[1] + nz * centreOffset;
+    left.push([cx + nx * halfThickness, cz + nz * halfThickness]);
+    right.push([cx - nx * halfThickness, cz - nz * halfThickness]);
+  }
+  const shape = new THREE.Shape();
+  shape.moveTo(left[0][0], left[0][1]);
+  for (let i = 1; i < left.length; i++) shape.lineTo(left[i][0], left[i][1]);
+  for (let i = right.length - 1; i >= 0; i--)
+    shape.lineTo(right[i][0], right[i][1]);
+  shape.closePath();
+  return shape;
+}
+
 interface RoadPiece {
   id: string;
-  geo: THREE.BufferGeometry;
+  role: RoadRole;
   colour: string;
-  stripeGeo: THREE.BufferGeometry | null;
+  geo: THREE.BufferGeometry;
   sidewalkGeo: THREE.BufferGeometry | null;
   kerbGeo: THREE.BufferGeometry | null;
-  category: 'ped' | 'car' | 'major';
+  centreGeo: THREE.BufferGeometry | null;
+  edgeLGeo: THREE.BufferGeometry | null;
+  edgeRGeo: THREE.BufferGeometry | null;
+}
+
+// Group a role into a rendering tier so intersections stack sensibly.
+function tierForRole(role: RoadRole): 'main' | 'secondary' | 'local' | 'base' {
+  if (role === 'main') return 'main';
+  if (role === 'secondary_connector') return 'secondary';
+  if (role === 'local_street') return 'local';
+  return 'base';
 }
 
 export function OsmRoads() {
-  const { ped, car, major } = useMemo(() => {
+  const { ped, base, local, secondary, main } = useMemo(() => {
     const ped: RoadPiece[] = [];
-    const car: RoadPiece[] = [];
-    const major: RoadPiece[] = [];
+    const base: RoadPiece[] = [];
+    const local: RoadPiece[] = [];
+    const secondary: RoadPiece[] = [];
+    const main: RoadPiece[] = [];
     for (const road of CLIPPED_ROADS) {
       if (road.poly.length < 2) continue;
-      const cat = CATEGORY[road.kind] ?? DEFAULT_CAT;
-      const shape = buildRoadShape(road, cat.width / 2);
+      const spec = specFor(road);
+      const half = spec.width / 2;
+      const shape = buildRoadShape(road, half);
       if (!shape) continue;
-      const g = new THREE.ShapeGeometry(shape);
-      g.rotateX(-Math.PI / 2);
-      let stripeGeo: THREE.BufferGeometry | null = null;
-      if (cat.stripe) {
-        // Thin centreline stripe so the through-road pops from village
-        // scale — reads immediately as the main artery.
-        const stripe = buildRoadShape(road, 0.18);
-        if (stripe) {
-          stripeGeo = new THREE.ShapeGeometry(stripe);
-          stripeGeo.rotateX(-Math.PI / 2);
-        }
-      }
-      // Sidewalk / kerb for classes that carry pavement. Rendered
-      // slightly below the road plane so the road punches through in
-      // the middle; the visible sidewalk is the strip outside the road
-      // edge on each side.
+      const geo = new THREE.ShapeGeometry(shape);
+      geo.rotateX(-Math.PI / 2);
       let sidewalkGeo: THREE.BufferGeometry | null = null;
       let kerbGeo: THREE.BufferGeometry | null = null;
-      if (cat.sidewalkWidth && cat.sidewalkWidth > 0) {
-        const sidewalkHalf = cat.width / 2 + cat.sidewalkWidth;
-        const swShape = buildRoadShape(road, sidewalkHalf);
+      if (
+        spec.sidewalkWidth > 0 &&
+        sidewalkClearsBuildings(road.poly, half + spec.sidewalkWidth)
+      ) {
+        const swShape = buildRoadShape(road, half + spec.sidewalkWidth);
         if (swShape) {
           sidewalkGeo = new THREE.ShapeGeometry(swShape);
           sidewalkGeo.rotateX(-Math.PI / 2);
         }
-        // Kerb strip: slightly wider than the road edge, thin and dark.
-        const kerbShape = buildRoadShape(road, cat.width / 2 + 0.18);
-        if (kerbShape) {
-          kerbGeo = new THREE.ShapeGeometry(kerbShape);
+        const kbShape = buildRoadShape(road, half + 0.18);
+        if (kbShape) {
+          kerbGeo = new THREE.ShapeGeometry(kbShape);
           kerbGeo.rotateX(-Math.PI / 2);
+        }
+      }
+      let centreGeo: THREE.BufferGeometry | null = null;
+      if (spec.centreline) {
+        const stripe = buildRoadShape(road, 0.14);
+        if (stripe) {
+          centreGeo = new THREE.ShapeGeometry(stripe);
+          centreGeo.rotateX(-Math.PI / 2);
+        }
+      }
+      let edgeLGeo: THREE.BufferGeometry | null = null;
+      let edgeRGeo: THREE.BufferGeometry | null = null;
+      if (spec.edgeLine) {
+        // Edge lines sit inset 0.35 m from the carriageway edge, 0.10 m
+        // thick. Only on the principal through-road (main).
+        const edgeOff = half - 0.35;
+        const eL = buildOffsetLineShape(road, edgeOff, 0.10);
+        if (eL) {
+          edgeLGeo = new THREE.ShapeGeometry(eL);
+          edgeLGeo.rotateX(-Math.PI / 2);
+        }
+        const eR = buildOffsetLineShape(road, -edgeOff, 0.10);
+        if (eR) {
+          edgeRGeo = new THREE.ShapeGeometry(eR);
+          edgeRGeo.rotateX(-Math.PI / 2);
         }
       }
       const piece: RoadPiece = {
         id: road.id,
-        geo: g,
-        colour: cat.colour,
-        stripeGeo,
+        role: spec.role,
+        colour: spec.colour,
+        geo,
         sidewalkGeo,
         kerbGeo,
-        category: cat.ped ? 'ped' : cat.stripe ? 'major' : 'car'
+        centreGeo,
+        edgeLGeo,
+        edgeRGeo
       };
-      if (cat.ped) ped.push(piece);
-      else if (cat.stripe) major.push(piece);
-      else car.push(piece);
+      if (spec.ped) ped.push(piece);
+      else {
+        switch (tierForRole(spec.role)) {
+          case 'main': main.push(piece); break;
+          case 'secondary': secondary.push(piece); break;
+          case 'local': local.push(piece); break;
+          default: base.push(piece);
+        }
+      }
     }
-    return { ped, car, major };
+    return { ped, base, local, secondary, main };
   }, []);
 
   return (
     <group>
-      {/* Foot paths sit slightly below the vehicle roads so a footpath
-          crossing a road never fights for the top pixel. */}
+      {/* Pedestrian layer — footpaths, cycleways, forest tracks. Sits
+          below the vehicle roads so a footpath crossing a road never
+          fights for the top pixel. */}
       <group position={[0, GROUND_Y.landcover, 0]}>
         {ped.map((p) => (
           <mesh key={p.id} geometry={p.geo}>
@@ -165,26 +234,21 @@ export function OsmRoads() {
         ))}
       </group>
       {/* Sidewalks — beneath the road plane so the road punches through
-          the middle. Visible strip on each side of the collectors and
-          through-roads. Rendered before all vehicle layers so the road
-          asphalt fills the middle. */}
+          the middle. Only main / secondary_connector / local_street
+          carry them. */}
       <group position={[0, SIDEWALK_Y, 0]}>
-        {[...car, ...major].map((p) =>
+        {[...base, ...local, ...secondary, ...main].map((p) =>
           p.sidewalkGeo ? (
             <mesh key={`sw-${p.id}`} geometry={p.sidewalkGeo}>
-              <meshStandardMaterial
-                color={SIDEWALK_COLOUR}
-                roughness={0.95}
-              />
+              <meshStandardMaterial color={SIDEWALK_COLOUR} roughness={0.95} />
             </mesh>
           ) : null
         )}
       </group>
       {/* Kerb — a narrow dark strip immediately outside the road, above
-          the sidewalk and below the road asphalt. Reads as the granite
-          kerb between road and pavement. */}
+          the sidewalk and below the road asphalt. */}
       <group position={[0, SIDEWALK_Y + 0.01, 0]}>
-        {[...car, ...major].map((p) =>
+        {[...base, ...local, ...secondary, ...main].map((p) =>
           p.kerbGeo ? (
             <mesh key={`kerb-${p.id}`} geometry={p.kerbGeo}>
               <meshStandardMaterial color={KERB_COLOUR} roughness={0.9} />
@@ -192,32 +256,67 @@ export function OsmRoads() {
           ) : null
         )}
       </group>
-      {/* Residential + service roads. */}
-      <group position={[0, GROUND_Y.roads, 0]}>
-        {car.map((p) => (
+      {/* Base vehicle layer — service + residential. */}
+      <group position={[0, TIER_Y.base, 0]}>
+        {base.map((p) => (
           <mesh key={p.id} geometry={p.geo}>
             <meshStandardMaterial color={p.colour} roughness={0.95} />
           </mesh>
         ))}
       </group>
-      {/* Major roads on top of the car layer, so through-routes always win
-          intersections visually. */}
-      <group position={[0, GROUND_Y.roads + 0.02, 0]}>
-        {major.map((p) => (
+      {/* Local streets stack over base so they win at driveway junctions. */}
+      <group position={[0, TIER_Y.local, 0]}>
+        {local.map((p) => (
           <mesh key={p.id} geometry={p.geo}>
             <meshStandardMaterial color={p.colour} roughness={0.95} />
           </mesh>
         ))}
       </group>
-      {/* Thin centreline stripe over each major road. */}
-      <group position={[0, GROUND_Y.roads + 0.05, 0]}>
-        {major.map((p) =>
-          p.stripeGeo ? (
-            <mesh key={`stripe-${p.id}`} geometry={p.stripeGeo}>
-              <meshStandardMaterial color="#c9c1ac" roughness={0.9} />
+      {/* Secondary connectors — Kyrkogatan, Smedsgatan and the other
+          village collectors. */}
+      <group position={[0, TIER_Y.secondary, 0]}>
+        {secondary.map((p) => (
+          <mesh key={p.id} geometry={p.geo}>
+            <meshStandardMaterial color={p.colour} roughness={0.95} />
+          </mesh>
+        ))}
+      </group>
+      {/* Main through-road — dominates every intersection. */}
+      <group position={[0, TIER_Y.main, 0]}>
+        {main.map((p) => (
+          <mesh key={p.id} geometry={p.geo}>
+            <meshStandardMaterial color={p.colour} roughness={0.95} />
+          </mesh>
+        ))}
+      </group>
+      {/* Centre stripes on main + secondary. Rendered above every
+          carriageway so intersecting stripes never disappear. */}
+      <group position={[0, TIER_Y.main + MARKING_Y_OFFSET, 0]}>
+        {[...secondary, ...main].map((p) =>
+          p.centreGeo ? (
+            <mesh key={`ctr-${p.id}`} geometry={p.centreGeo}>
+              <meshStandardMaterial color={STRIPE_COLOUR} roughness={0.9} />
             </mesh>
           ) : null
         )}
+      </group>
+      {/* Edge lines — reserved for the principal through-road. Reads
+          instantly as "this is the road that carries the through-flow". */}
+      <group position={[0, TIER_Y.main + MARKING_Y_OFFSET, 0]}>
+        {main.map((p) => (
+          <group key={`edge-${p.id}`}>
+            {p.edgeLGeo && (
+              <mesh geometry={p.edgeLGeo}>
+                <meshStandardMaterial color={EDGE_LINE_COLOUR} roughness={0.9} />
+              </mesh>
+            )}
+            {p.edgeRGeo && (
+              <mesh geometry={p.edgeRGeo}>
+                <meshStandardMaterial color={EDGE_LINE_COLOUR} roughness={0.9} />
+              </mesh>
+            )}
+          </group>
+        ))}
       </group>
     </group>
   );

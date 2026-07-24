@@ -318,9 +318,17 @@
   user-select: none;
   transition: opacity 0.25s ease;
 }
+.gb-street-main {
+  color: rgba(252, 244, 220, 1);
+  font-size: 1.02rem;
+  letter-spacing: 0.22em;
+  text-shadow:
+    0 0 4px rgba(0, 0, 0, 0.7),
+    0 0 12px rgba(0, 0, 0, 0.5);
+}
 .gb-street-major {
   color: rgba(244, 236, 214, 0.95);
-  font-size: 0.86rem;
+  font-size: 0.82rem;
   letter-spacing: 0.18em;
 }
 .gb-street-secondary {
