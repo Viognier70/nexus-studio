@@ -15,6 +15,7 @@ import { OsmRoads } from './OsmRoads';
 import { OsmTerrain } from './OsmTerrain';
 import { OsmTraffic } from './OsmTraffic';
 import { OsmWater } from './OsmWater';
+import { Sky } from './Sky';
 import { StreetLabels } from './StreetLabels';
 
 // GL config for stable rendering.
@@ -47,8 +48,16 @@ export function StrategicScene({ onSelect, selectedId }: Props) {
       shadows={false}
       style={CANVAS_STYLE}
     >
-      <color attach="background" args={['#c3ccc9']} />
-      <fog attach="fog" args={['#c3ccc9', 1400, 4200]} />
+      {/* Background fallback matches the sky sphere horizon colour so
+          any pixel that misses the sphere still reads consistent. */}
+      <color attach="background" args={['#cdc8ba']} />
+      {/* Fog colour tracks the sky horizon, so distant features fade
+          into the horizon band rather than a mismatched grey. Fog
+          starts earlier (1000 m) than the previous 1400 m so
+          mid-distance features gain a hint of atmospheric perspective
+          at village and district zoom. Far end pulled in to 3600 m so
+          the fog envelope stays inside the sky sphere. */}
+      <fog attach="fog" args={['#cdc8ba', 1000, 3600]} />
       <hemisphereLight args={['#f5efdd', '#485044', 0.95]} />
       <directionalLight
         position={[280, 380, 140]}
@@ -57,6 +66,7 @@ export function StrategicScene({ onSelect, selectedId }: Props) {
       />
       <ambientLight intensity={0.38} />
       <Suspense fallback={null}>
+        <Sky />
         <OsmTerrain />
         <OsmDistricts />
         <OsmWater />
