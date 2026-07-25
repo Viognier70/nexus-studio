@@ -35,6 +35,9 @@ Each Vision Owner defect was traced through the full source-to-render chain befo
 ## 4 · Commits shipped (Phase 2–8)
 
 ```
+1c39547 fix(ingest):    splitAtBridgeEdges requires >=2 bridge edges
+8937921 data(landmarks): add 5 missing landmarks (INGO, Tempo, Direkten, Kantin, Bergslagshus)
+651ce03 test(shadow-map): P1R — SVG shadow-map generator for visual diff
 acf3d96 test(world):    P8 — automated world-authenticity validator
 2d68f36 feat(roads):    P2 — promote 14 named village streets to wayfinding
 ed81e14 fix(traffic):   D4 — vehicle-safe road clip with envelope clearance
@@ -42,6 +45,11 @@ ed81e14 fix(traffic):   D4 — vehicle-safe road clip with envelope clearance
 17bb247 fix(scene):     D3 — HorizonForest excludes water polygons
 cc3cd5b docs(register): ORDER 019 critical defects — reopen after Vision Owner rejection
 ```
+
+**Post-reissue additions (2026-07-25 second pass):**
+- `scripts/shadow-map.mjs` — SVG shadow-map generator producing 7 zone SVGs (6 matching reference screenshot centres + 1 whole-village overview) at `reports/shadow-map/`. Enables direct side-by-side comparison of world data against the Vision Owner Google Maps references without browser access to localhost.
+- 5 new landmark records (`gry-ingo`, `gry-tempo`, `gry-direkten`, `gry-kantin-hyttblecket`, `gry-bergslagshus`), all sourced from Overpass amenity/shop tags and cross-verified against the reference screenshots. Landmarks 13 → 18.
+- `splitAtBridgeEdges` threshold refined from ≥1 to ≥2 bridge edges — single-long-edge polygons are legitimate long walls, not self-touching multi-wing outlines.
 
 Typecheck and build were kept green after every commit. Working tree remains clean of unrelated files.
 
@@ -99,10 +107,10 @@ Summary: 0 Critical, 0 High, 0 Medium, 0 Low, 6 Info
 
 ## 8 · What ORDER 019R did NOT deliver
 
-- **D2 Rv 244 derived curvature.** The through-road's OSM digitisation is sparse (up to 68 m per vertex on `w25514870`). Adding derived control points requires satellite-verified positions the current toolchain (WebFetch / WebSearch / Overpass) cannot reliably capture. Landing an authored curvature layer without visual evidence risks introducing invented geometry — worse than the current sparse rendering.
+- **D2 Rv 244 derived curvature.** The through-road's OSM digitisation is sparse (up to 68 m per vertex on `w25514870`). Adding derived control points requires satellite-verified positions the current toolchain (WebFetch / WebSearch / Overpass) cannot reliably capture. Landing an authored curvature layer without visual evidence risks introducing invented geometry — worse than the current sparse rendering. **Confirmed via a follow-up direct Overpass fetch of every Rv 244 way**: our world data exactly matches Overpass vertex-for-vertex (7 / 59 / 2 / 34 / 19 / 8 vertices per way). The sparseness is upstream, not a data-loss defect in our ingest.
 - **Kärnhuset visual verification.** The split polygon renders geometrically clean but the two wings' relative visual weight has not been Vision-Owner-verified.
-- **Direct browser visual sweep (P7).** The tools available to this agent cannot capture the running scene. Vision Owner remains the acceptance surface.
-- **INGO landmark record.** INGO is present in the world data as building `w614554207` and renders through OsmBuildings, but there is no `gry-*` landmark entry for click-selection or highlighted labelling.
+- **Direct browser visual sweep (P7).** The tools available to this agent cannot capture the running scene. Vision Owner remains the acceptance surface. The shadow-map SVGs at `reports/shadow-map/` are a partial substitute — they render the same world data the runtime consumes and can be opened in any browser for direct side-by-side comparison with the Google Maps screenshots.
+- **~10 additional derived landmarks** visible in the reference screenshots but not present in OSM: Sörgårdens Äldreboende, Jaktakademin, Grythyttans förskola, Grythyttans Församlingshem, Grythyttans Kapell, SolidFeet, Grythyttan Stålmöbler, Djurskyddet Vilsna Tassar Hällefors, Grythyttans Fotbollsplan, Barbellclub Bergslagen, Restaurang- och hotellhögskolan. Each would require careful pixel-space measurement from the screenshots to estimate its lat/lon — deferred pending Vision Owner call on whether that estimation is desired (positions would be `approximate` verification tier, not `verified`).
 
 ## 9 · Files touched
 
