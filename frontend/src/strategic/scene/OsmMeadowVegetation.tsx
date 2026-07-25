@@ -97,6 +97,47 @@ function inAnyGrass(x: number, z: number): boolean {
   return false;
 }
 
+// Point-to-nearest-car-road distance. ORDER 022 V8 exclusion: OSM
+// service and residential roads pass very close to pasture-tree
+// grid cells; the previous polygon-only exclusion set (buildings +
+// water + residential + forest + grass) still allowed trees within
+// 1–2 m of an asphalt centreline. `nearAnyCarRoad` provides the
+// perpendicular-distance test the polygon set cannot express.
+const CAR_HW_KINDS: ReadonlySet<string> = new Set([
+  'motorway', 'trunk', 'primary', 'secondary', 'tertiary',
+  'unclassified', 'residential', 'living_street', 'service'
+]);
+function distPointToSegment(px: number, pz: number, ax: number, az: number, bx: number, bz: number): number {
+  const dx = bx - ax, dz = bz - az;
+  const l2 = dx * dx + dz * dz;
+  if (l2 === 0) return Math.hypot(px - ax, pz - az);
+  let t = ((px - ax) * dx + (pz - az) * dz) / l2;
+  t = Math.max(0, Math.min(1, t));
+  return Math.hypot(px - (ax + t * dx), pz - (az + t * dz));
+}
+function nearAnyCarRoad(x: number, z: number, clearance: number): boolean {
+  for (const r of WORLD.roads) {
+    if (!CAR_HW_KINDS.has(r.kind)) continue;
+    if (r.poly.length < 2) continue;
+    // Cheap bbox reject over the polyline.
+    let minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity;
+    for (const [rx, rz] of r.poly) {
+      if (rx < minX) minX = rx; if (rx > maxX) maxX = rx;
+      if (rz < minZ) minZ = rz; if (rz > maxZ) maxZ = rz;
+    }
+    if (
+      x < minX - clearance || x > maxX + clearance ||
+      z < minZ - clearance || z > maxZ + clearance
+    ) continue;
+    for (let i = 1; i < r.poly.length; i++) {
+      if (distPointToSegment(x, z, r.poly[i-1][0], r.poly[i-1][1], r.poly[i][0], r.poly[i][1]) < clearance) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 // Point-in-any-building. Some buildings (isolated houses, industrial
 // pads, campus outbuildings) sit outside every residential polygon, so
 // the residential-only exclusion isn't enough to keep a pasture tree
@@ -152,6 +193,12 @@ export function OsmMeadowVegetation() {
         if (inAnyResidential(x, z)) continue;
         if (inAnyGrass(x, z)) continue;  // sports fields etc.
         if (nearAnyBuilding(x, z)) continue;  // isolated houses outside residential polys
+        // ORDER 022 V8 fix: also exclude cells that would land on a car
+        // road. Prior code exclusions only covered polygons; a pasture
+        // tree could still spawn 1–2 m from a service-road centreline
+        // and render on the asphalt. 3.5 m clearance keeps small trees
+        // clear of ~7 m carriageway envelopes plus their lane offset.
+        if (nearAnyCarRoad(x, z, 3.5)) continue;
         trees.push({
           x,
           z,

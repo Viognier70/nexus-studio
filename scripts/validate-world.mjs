@@ -249,6 +249,84 @@ function mulberry32(state) {
   else addDefect('Info', 'V5', 'V5 clean: every landmark position within 5 m of its OSM building centroid');
 }
 
+// ---------- V8: procedural tree instances inside roads (ORDER 022) ----------
+// The OsmMeadowVegetation and OsmForest layers already exclude
+// buildings and water, but neither checks that a tree instance sits
+// on a driveable road surface. Trees inside asphalt read as jarring
+// artefacts. This check samples every pasture-tree candidate cell
+// and rejects any that lands within 3 m of a car-driveable road
+// centreline. Uses the same deterministic hash the runtime uses.
+{
+  const CAR_HW = new Set(['motorway','trunk','primary','secondary','tertiary',
+    'unclassified','residential','living_street','service']);
+  const carRoads = world.roads.filter((r) => CAR_HW.has(r.kind) && r.poly.length >= 2);
+  const CELL = 55;
+  const CELL_YIELD = 0.28;
+  const PASTURE_MARGIN = 200;
+  const ROAD_CLEARANCE_M = 3.0;
+
+  function cellHash(ix, iz) {
+    let h = 2166136261;
+    h ^= ix | 0; h = Math.imul(h, 16777619);
+    h ^= iz | 0; h = Math.imul(h, 16777619);
+    return (h >>> 0) / 0xffffffff;
+  }
+  function distPointSeg(px, pz, ax, az, bx, bz) {
+    const dx = bx - ax, dz = bz - az;
+    const l2 = dx*dx + dz*dz;
+    if (l2 === 0) return Math.hypot(px - ax, pz - az);
+    let t = ((px - ax)*dx + (pz - az)*dz) / l2;
+    t = Math.max(0, Math.min(1, t));
+    return Math.hypot(px - (ax + t*dx), pz - (az + t*dz));
+  }
+
+  let bounds = { minX: Infinity, maxX: -Infinity, minZ: Infinity, maxZ: -Infinity };
+  world.buildings.forEach((b) => b.poly.forEach(([x, z]) => {
+    if (x < bounds.minX) bounds.minX = x; if (x > bounds.maxX) bounds.maxX = x;
+    if (z < bounds.minZ) bounds.minZ = z; if (z > bounds.maxZ) bounds.maxZ = z;
+  }));
+  const minX = bounds.minX - PASTURE_MARGIN, maxX = bounds.maxX + PASTURE_MARGIN;
+  const minZ = bounds.minZ - PASTURE_MARGIN, maxZ = bounds.maxZ + PASTURE_MARGIN;
+  const nx = Math.ceil((maxX - minX) / CELL);
+  const nz = Math.ceil((maxZ - minZ) / CELL);
+
+  let inRoad = 0;
+  let candidates = 0;
+  for (let iz = 0; iz < nz; iz++) {
+    for (let ix = 0; ix < nx; ix++) {
+      const h = cellHash(ix, iz);
+      if (h > CELL_YIELD) continue;
+      const jx = ((h * 71.19) % 1) - 0.5;
+      const jz = ((h * 97.31) % 1) - 0.5;
+      const x = minX + (ix + 0.5 + jx * 0.7) * CELL;
+      const z = minZ + (iz + 0.5 + jz * 0.7) * CELL;
+      candidates++;
+      for (const r of carRoads) {
+        let close = false;
+        for (let i = 1; i < r.poly.length; i++) {
+          if (distPointSeg(x, z, r.poly[i-1][0], r.poly[i-1][1], r.poly[i][0], r.poly[i][1]) < ROAD_CLEARANCE_M) {
+            close = true; break;
+          }
+        }
+        if (close) { inRoad++; break; }
+      }
+    }
+  }
+  // Detect whether the runtime OsmMeadowVegetation applies a road
+  // exclusion — the presence of `nearAnyCarRoad` in that file's source
+  // is what makes these candidate cells safe. If the guard is missing,
+  // the runtime is emitting trees on asphalt.
+  const meadowSrc = readFileSync('frontend/src/strategic/scene/OsmMeadowVegetation.tsx', 'utf8');
+  const runtimeExcludesRoads = meadowSrc.includes('nearAnyCarRoad');
+  if (inRoad > 0 && !runtimeExcludesRoads) {
+    addDefect('Medium', 'V8', `${inRoad}/${candidates} pasture-tree candidate cells sit within ${ROAD_CLEARANCE_M} m of a car road AND the runtime does not exclude them — visible trees on asphalt`);
+  } else if (inRoad > 0) {
+    addDefect('Info', 'V8', `V8 clean: ${inRoad}/${candidates} pasture-tree candidates would be near roads, but OsmMeadowVegetation excludes them via nearAnyCarRoad`);
+  } else {
+    addDefect('Info', 'V8', `V8 clean: 0/${candidates} pasture-tree candidates within ${ROAD_CLEARANCE_M} m of a car road`);
+  }
+}
+
 // ---------- V7: silent invisible buildings (ORDER 021 drift check) ----------
 // A building is silently invisible when:
 //   - it exists in WORLD.buildings
