@@ -79,9 +79,12 @@ function insideAnyWater(x, z) {
 }
 
 // ---------- Reports ----------
+// Every defect carries { severity, id, message, detail, suggestedFix,
+// files } so a downstream reviewer can act without re-diagnosing.
+// severity ∈ Critical | High | Medium | Low | Info.
 const defects = [];
-function addDefect(severity, id, message, detail = null) {
-  defects.push({ severity, id, message, detail });
+function addDefect(severity, id, message, detail = null, suggestedFix = null, files = null) {
+  defects.push({ severity, id, message, detail, suggestedFix, files });
 }
 
 // ---------- V1: forest polygon vertices inside water ----------
@@ -406,6 +409,184 @@ function mulberry32(state) {
   }
   if (susp.length > 0) addDefect('Info', 'V6', `${susp.length} multi-wing building polygons detected — expected to be split by splitAtBridgeEdges`, susp);
   else addDefect('Info', 'V6', 'V6 clean: no unsplit multi-wing polygons');
+}
+
+// ---------- V9: invalid polygons (ORDER 023) ----------
+// Buildings, water and forest polygons must be closed and non-degenerate.
+// Anything with < 4 verts (< 3 unique for a closed ring) or area < 1 m²
+// would silently drop from THREE.js triangulation.
+{
+  const bad = [];
+  const check = (records, kind) => {
+    for (const r of records) {
+      if (!r.poly || r.poly.length < 4) {
+        bad.push({ kind, id: r.id, name: r.name || null, reason: 'poly.length < 4' });
+        continue;
+      }
+      const a = polygonArea(r.poly);
+      if (a < 1) bad.push({ kind, id: r.id, name: r.name || null, reason: `area ${a.toFixed(2)} m² < 1` });
+    }
+  };
+  check(world.buildings, 'building');
+  check(world.water, 'water');
+  check(world.forest, 'forest');
+  check(world.residential, 'residential');
+  check(world.grass, 'grass');
+  check(world.graveyards, 'graveyard');
+  if (bad.length === 0) {
+    addDefect('Info', 'V9', 'V9 clean: no degenerate polygon (< 4 verts or < 1 m²) across buildings/water/forest/residential/grass/graveyards');
+  } else {
+    addDefect('High', 'V9', `${bad.length} degenerate polygons — would drop silently at triangulation`, bad,
+      'Filter out or repair in the fetcher (scripts/fetch-grythyttan-osm.mjs) and skip in the ingest.',
+      ['scripts/fetch-grythyttan-osm.mjs', 'frontend/src/strategic/content/world.ts']);
+  }
+}
+
+// ---------- V10: duplicate landmark records (ORDER 023) ----------
+// Two landmark records pointing at the same OSM way / node would cause
+// double-render / double-click-target chaos.
+{
+  const bySource = new Map();
+  for (const l of world.landmarks) {
+    if (!l.source?.osmType || l.source?.osmId == null) continue;
+    const key = l.source.osmType + '/' + l.source.osmId;
+    if (!bySource.has(key)) bySource.set(key, []);
+    bySource.get(key).push(l.id);
+  }
+  const dupes = [...bySource.entries()].filter(([, ids]) => ids.length > 1);
+  if (dupes.length === 0) {
+    addDefect('Info', 'V10', 'V10 clean: no duplicate landmark record — every OSM source is claimed by at most one landmark');
+  } else {
+    addDefect('High', 'V10', `${dupes.length} OSM sources have multiple landmark records`,
+      dupes.map(([k, ids]) => ({ source: k, landmarks: ids })),
+      'Consolidate to a single landmark or remove the duplicate from grythyttan-world.json.',
+      ['frontend/src/strategic/data/grythyttan-world.json']);
+  }
+}
+
+// ---------- V11: impossible building heights (ORDER 023) ----------
+// OSM `height` tag captured in ORDER 019 Block C — must be in a
+// realistic range for a village. Reject < 2 m (single-storey below a
+// bicycle shed) and > 60 m (nothing in Grythyttan reaches 20 storeys).
+{
+  const bad = [];
+  for (const b of world.buildings) {
+    if (b.height == null) continue;
+    if (b.height < 2 || b.height > 60) {
+      bad.push({ id: b.id, name: b.name || null, kind: b.kind, height_m: b.height });
+    }
+  }
+  if (bad.length === 0) {
+    addDefect('Info', 'V11', 'V11 clean: every building with an OSM `height` tag is within the plausible 2–60 m range');
+  } else {
+    addDefect('Medium', 'V11', `${bad.length} buildings carry an implausible OSM height tag`, bad,
+      'Investigate the upstream OSM record; if the tag is a mis-entry, add the building id to a documented override list in OsmBuildings.tsx heightFor.',
+      ['frontend/src/strategic/scene/OsmBuildings.tsx']);
+  }
+}
+
+// ---------- V12: unknown building kinds (ORDER 023) ----------
+// KIND_COLOUR in OsmBuildings.tsx enumerates every kind that gets a
+// dedicated colour + typology. Any building whose `kind` is not in
+// that set falls through to DEFAULT_COLOUR and appears as ochre —
+// a signal the ingest saw a new OSM `building=*` value we should
+// deliberately handle.
+{
+  const src = readFileSync('frontend/src/strategic/scene/OsmBuildings.tsx', 'utf8');
+  const kindMatch = src.match(/KIND_COLOUR:\s*Record<string,\s*\{[^}]*\}>\s*=\s*\{([\s\S]*?)^\};/m);
+  const known = new Set();
+  if (kindMatch) {
+    for (const m of kindMatch[1].matchAll(/^\s*(\w+):/gm)) known.add(m[1]);
+  }
+  // Also the effectiveKindFor + postObbKind reclassifications introduce
+  // shed/garage/outbuilding/barn/commercial — always known.
+  ['shed', 'garage', 'outbuilding', 'barn', 'commercial', 'yes'].forEach((k) => known.add(k));
+  // `church` is intentionally skipped by OsmBuildings' filter and
+  // rendered by the handcrafted ChurchLandmark — treat as known.
+  known.add('church');
+  const unknowns = [];
+  const counts = {};
+  for (const b of world.buildings) {
+    const k = b.kind || 'null';
+    if (!known.has(k)) {
+      counts[k] = (counts[k] || 0) + 1;
+      unknowns.push({ id: b.id, name: b.name || null, kind: k });
+    }
+  }
+  if (unknowns.length === 0) {
+    addDefect('Info', 'V12', `V12 clean: every OSM building kind is handled by OsmBuildings.KIND_COLOUR (${known.size} kinds)`);
+  } else {
+    addDefect('Medium', 'V12', `${unknowns.length} buildings have an OSM `+"`building=*`"+` value with no KIND_COLOUR entry: ${JSON.stringify(counts)}`,
+      unknowns.slice(0, 10),
+      'Add the OSM kind to KIND_COLOUR + roofStyleFor + heightFor + PLINTH_KINDS as appropriate.',
+      ['frontend/src/strategic/scene/OsmBuildings.tsx']);
+  }
+}
+
+// ---------- V13: broken landmark references (ORDER 023) ----------
+// Every landmark that names an OSM way or node must resolve to a real
+// world.json entry. Landmarks pointing at nonexistent OSM ids will
+// silently render at the fetcher's fallback position (usually the
+// previous export's coordinates) with no visible geometry.
+{
+  const buildingIds = new Set(world.buildings.map((b) => b.id.split('#')[0]));
+  const stale = [];
+  const legitNonBuilding = [];
+  for (const l of world.landmarks) {
+    if (l.source?.osmType !== 'way' || l.source?.osmId == null) continue;
+    const id = 'w' + l.source.osmId;
+    if (buildingIds.has(id)) continue;
+    // Landmark references a way that is NOT in world.buildings.
+    // Split into two cases:
+    //   - resolvedFrom === 'osm' means the fetcher DID resolve the OSM
+    //     position (the way exists upstream, just not as a building —
+    //     legitimate for plaza / sports-ground / campus landmark).
+    //   - anything else (previous-export fallback) means the OSM way
+    //     no longer resolves upstream at all — a real stale reference.
+    const resolvedFrom = l.source.resolvedFrom || 'unknown';
+    if (resolvedFrom === 'osm') {
+      legitNonBuilding.push({ landmark: l.id, name: l.displayName, source: id, resolvedFrom });
+    } else {
+      stale.push({ landmark: l.id, name: l.displayName, source: id, resolvedFrom });
+    }
+  }
+  if (stale.length === 0 && legitNonBuilding.length === 0) {
+    addDefect('Info', 'V13', 'V13 clean: every way-based landmark resolves to a building in world.json');
+  } else {
+    if (legitNonBuilding.length > 0) {
+      addDefect('Info', 'V13a', `${legitNonBuilding.length} landmark(s) point at non-building OSM ways (plaza / sports / campus) — position resolved fresh by the fetcher`, legitNonBuilding);
+    }
+    if (stale.length > 0) {
+      addDefect('High', 'V13', `${stale.length} landmark records reference OSM ways that no longer resolve upstream`, stale,
+        'Re-run the fetcher and confirm the OSM way still exists at that id. If the way was retired, retag the landmark with the new OSM id or downgrade to node source.',
+        ['frontend/src/strategic/data/grythyttan-world.json', 'scripts/fetch-grythyttan-osm.mjs']);
+    }
+  }
+}
+
+// ---------- V14: unreachable / unused landmark ids (ORDER 023) ----------
+// Any landmark id referenced by the runtime code must correspond to a
+// landmark record. Catches typos in the composition dispatch or in
+// the HANDCRAFTED_LANDMARK_IDS set.
+{
+  const landmarkIds = new Set(world.landmarks.map((l) => l.id));
+  const worldTs = readFileSync('frontend/src/strategic/content/world.ts', 'utf8');
+  const d1Src = readFileSync('frontend/src/strategic/scene/CraftedLandmarks.tsx', 'utf8');
+  const d2Src = readFileSync('frontend/src/strategic/scene/CraftedLandmarksD2.tsx', 'utf8');
+  const referenced = new Set([
+    ...[...worldTs.matchAll(/'(gry-[a-z0-9-]+)'/g)].map((m) => m[1]),
+    ...[...d1Src.matchAll(/LANDMARK_BY_ID\['(gry-[a-z0-9-]+)'\]/g)].map((m) => m[1]),
+    ...[...d2Src.matchAll(/'(gry-[a-z0-9-]+)'/g)].map((m) => m[1])
+  ]);
+  const broken = [...referenced].filter((id) => !landmarkIds.has(id));
+  if (broken.length === 0) {
+    addDefect('Info', 'V14', `V14 clean: every runtime-referenced landmark id (${referenced.size}) exists in world.landmarks (${landmarkIds.size})`);
+  } else {
+    addDefect('High', 'V14', `${broken.length} landmark id(s) referenced by runtime code do not exist in world.landmarks: ${broken.join(', ')}`,
+      broken,
+      'Fix the typo, remove the reference, or add the missing landmark record.',
+      ['frontend/src/strategic/content/world.ts', 'frontend/src/strategic/scene/CraftedLandmarks.tsx', 'frontend/src/strategic/scene/CraftedLandmarksD2.tsx']);
+  }
 }
 
 // ---------- Output ----------
