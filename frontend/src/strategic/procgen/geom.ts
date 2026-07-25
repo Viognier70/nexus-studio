@@ -500,7 +500,12 @@ export function splitAtBridgeEdges(
     const l = Math.hypot(q[0] - p[0], q[1] - p[1]);
     if (l > maxEdgeM) bridge.add(i);
   }
-  if (bridge.size === 0) return [poly];
+  // A single long edge is usually a legitimate long wall (barn, apartment
+  // block, factory). Self-touching multi-wing polygons need at least
+  // two bridges — one to reach the second wing, one to return. Fewer
+  // than two means the polygon is either simple with a long side or a
+  // shape the splitter cannot safely resolve — leave it alone.
+  if (bridge.size < 2) return [poly];
 
   // Start walking at the vertex just AFTER a bridge edge — that way
   // the first sub-polygon runs cleanly from one bridge endpoint to
