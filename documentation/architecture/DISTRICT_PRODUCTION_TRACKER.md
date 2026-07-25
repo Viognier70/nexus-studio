@@ -21,21 +21,21 @@
 
 | ID | Label | Buildings | Landmarks | Status | Notes |
 |----|-------|-----------|-----------|--------|-------|
-| **D03** | Torget | 14 | 2 | ⬜ | Recommended first district — small footprint, high recognition density |
+| **D03** | Torget | 15 | 4 | 🟠 | **AWAITING REVIEW (ORDER 026)** — Gästgivaregården handcrafted; 12 candidate defects in `KNOWN_ISSUES.md` |
 | **D04** | Church | 3 | 1 | ⬜ | Kyrkan handcrafted (ORDER 003); mostly frozen at data level |
 | **D02** | Campus | 2 | 2 | ⬜ | Kärnhuset + Måltidens Hus handcrafted; Kantin marker |
 | **D06** | School | 48 | 2 | ⬜ | 9 D2-handcrafted school buildings; residential grid around |
 | **D05** | Station | 10 | 1 | ⬜ | 6 D2-handcrafted station corridor buildings |
 | **D08** | Hälleforsvägen Corridor | 20 | 3 | ⬜ | INGO + Pizzans handcrafted; Rv 244 curvature deferred |
 | **D09** | Prästgatan Corridor | 24 | 0 | ⬜ | Connects Torget → Rv 244 T-junction |
-| **D01** | Historic Centre | 3 | 1 | ⬜ | Prästgatan chain west of Torget |
-| **D10** | Residential North | 18 | 1 | ⬜ | Bergslagshus AB DIY shop |
+| **D01** | Historic Centre | 4 | 3 | ⬜ | Prästgatan chain west of Torget + long house tenants |
+| **D10** | Residential North | 20 | 1 | ⬜ | Bergslagshus AB DIY shop |
 | **D11** | Residential South | 5 | 0 | ⬜ | Small — mostly Rv 205 side |
 | **D13** | Residential West | 3 | 1 | ⬜ | Tempo grocery |
 | **D12** | Residential East | 6 | 1 | ⬜ | Herrgården Grythyttan |
 | **D07** | Industrial Area | 13 | 0 | ⬜ | Swedecote + Länsmansgården adjacent |
 | **D14** | Lakeshore | 26 | 0 | ⬜ | Torrvarpen shoreline scatter |
-| **D15** | Forest Edge | 80 | 3 | ⬜ | Outlying rural buildings; lowest priority |
+| **D15** | Forest Edge | 71 | 3 | ⬜ | Outlying rural buildings; lowest priority |
 
 ## Roll-up totals
 
