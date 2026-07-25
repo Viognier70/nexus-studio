@@ -657,13 +657,23 @@ function RoofCap({
   const twinChimney =
     chimneyEligible && (profile.chimneyCount >= 2 || ridgeW > 14);
   const chimneyOffset = (hash - 0.5) * 0.5;
-  // A small inset so the roof cap doesn't hang over the walls. Slightly
-  // reduced (0.18) so the roof reads with a modest eave overhang against
-  // rectangular polygons; irregular polygons still tolerate it because
-  // the inset is smaller than the previous 0.25.
-  const inset = 0.18;
-  const rw = Math.max(1.4, ridgeW - inset * 2);
-  const rd = Math.max(1.4, ridgeD - inset * 2);
+  // ORDER 021A facade-fidelity fix. Prior code applied a 0.18 m
+  // INWARD inset so the roof rendered NARROWER than the walls it
+  // covered — the opposite of the Bergslag typology target
+  // (0.3–0.6 m outward overhang). Every gable/hip roof consequently
+  // read as a lid clipped inside the wall footprint instead of a
+  // proper eave. Flat/industrial roofs also drew inside the walls.
+  //
+  // Corrected: 0.35 m eave overhang for gable + hip + shed + barn;
+  // 0 for flat/industrial (they render with a parapet band, not an
+  // eave). Overhang applied uniformly in both OBB axes; the roof cap
+  // still uses the same shared UNIT_GABLE_GEO scaled up by
+  // (ridge + 2·overhang).
+  // `flat` returns early above; industrial gets a parapet band with
+  // no eave (overhang 0); every other style takes the 0.35 m eave.
+  const overhang = style === 'industrial' ? 0 : 0.35;
+  const rw = Math.max(1.4, ridgeW + overhang * 2);
+  const rd = Math.max(1.4, ridgeD + overhang * 2);
 
   if (style === 'industrial') {
     return (
@@ -908,28 +918,52 @@ function EntranceMarker({
 }) {
   if (ridgeW < 4 || ridgeD < 3.5) return null;
   const doorX = ((hash * 4.71) % 1 - 0.5) * ridgeW * 0.4;
+  // ORDER 021A facade-fidelity fix. Before this the door mesh sat at
+  // Y=1.4 (bottom 0.10 m) which is buried inside the 0.32–0.65 m
+  // plinth AND behind the wall face (depth 0.06 m at Z=ridgeD/2−0.02
+  // put 5 cm of the door inside the wall). Doors read as "floating or
+  // not on ground" per the Vision Owner reference.
+  //
+  // Corrected geometry:
+  //   - Step is 0.30 m tall sitting on the ground beside the plinth,
+  //     projecting 0.5 m from the facade so the door has a real
+  //     ground-level threshold to stand on.
+  //   - Door base sits ON the step top (Y=0.30). Door height 2.05 m,
+  //     centre Y = 0.30 + 1.025 = 1.325. Standard Swedish domestic
+  //     entrance proportions.
+  //   - Door pushed 0.04 m OUT from the wall face so its full depth
+  //     (0.08 m) reads as attached, not embedded.
+  const STEP_H = 0.30;
+  const STEP_DEPTH = 0.5;
+  const DOOR_H = 2.05;
+  const DOOR_W = 1.0;
+  const DOOR_D = 0.08;
+  const DOOR_CENTRE_Y = STEP_H + DOOR_H / 2;   // 1.325
+  const DOOR_FRONT_Z = ridgeD / 2 + DOOR_D / 2;   // door sits proud of wall
+  const LINTEL_H = 0.14;
+  const LINTEL_CENTRE_Y = STEP_H + DOOR_H + LINTEL_H / 2;
   return (
     <group
       position={[centre[0], 0, centre[1]]}
       rotation={[0, -ridgeAngle, 0]}
     >
-      {/* Small step at the door. */}
-      <mesh position={[doorX, 0.11, ridgeD / 2 + 0.15]}>
-        <boxGeometry args={[1.4, 0.22, 0.4]} />
+      {/* Grounded step — 30 cm tall, projects 0.5 m from the facade. */}
+      <mesh position={[doorX, STEP_H / 2, ridgeD / 2 + STEP_DEPTH / 2]}>
+        <boxGeometry args={[1.4, STEP_H, STEP_DEPTH]} />
         <meshStandardMaterial color="#8a8078" roughness={0.95} />
       </mesh>
-      {/* Door itself. */}
-      <mesh position={[doorX, 1.4, ridgeD / 2 - 0.02]}>
-        <boxGeometry args={[1.0, 2.6, 0.06]} />
+      {/* Door — bottom on the step top, centre pushed clear of the wall. */}
+      <mesh position={[doorX, DOOR_CENTRE_Y, DOOR_FRONT_Z]}>
+        <boxGeometry args={[DOOR_W, DOOR_H, DOOR_D]} />
         <meshStandardMaterial color="#3a2b22" roughness={0.85} />
       </mesh>
-      {/* Cream lintel above the door. */}
-      <mesh position={[doorX, 2.85, ridgeD / 2 - 0.01]}>
-        <boxGeometry args={[1.2, 0.14, 0.05]} />
+      {/* Cream lintel immediately above the door. */}
+      <mesh position={[doorX, LINTEL_CENTRE_Y, DOOR_FRONT_Z]}>
+        <boxGeometry args={[1.2, LINTEL_H, 0.05]} />
         <meshStandardMaterial color="#efe6d4" roughness={0.85} />
       </mesh>
-      {/* Small warm door lantern. */}
-      <mesh position={[doorX + 0.75, 2.6, ridgeD / 2 + 0.03]}>
+      {/* Small warm door lantern to the right of the door head. */}
+      <mesh position={[doorX + 0.75, LINTEL_CENTRE_Y - 0.25, DOOR_FRONT_Z + 0.05]}>
         <boxGeometry args={[0.2, 0.35, 0.2]} />
         <meshStandardMaterial
           color="#f4e6cf"
@@ -938,9 +972,9 @@ function EntranceMarker({
           roughness={0.55}
         />
       </mesh>
-      {/* Retain trimColour reference so this trim mesh renders coherent
-          with the roof cap when its material inherits the same look. */}
-      <mesh position={[doorX, 3.05, ridgeD / 2 - 0.02]}>
+      {/* Trim strip just above the lintel — belongs to the wall/roof
+          junction band; kept as a subtle rhythm cue. */}
+      <mesh position={[doorX, LINTEL_CENTRE_Y + LINTEL_H / 2 + 0.06, DOOR_FRONT_Z - 0.02]}>
         <boxGeometry args={[1.5, 0.06, 0.03]} />
         <meshStandardMaterial color={trimColour} roughness={0.9} />
       </mesh>
@@ -1054,13 +1088,36 @@ function windowsFor(b: Extruded): Array<{
   h: number;
 }> {
   const wallH = b.height;
-  const storeyH = 3.0;
-  const storeys = Math.max(1, Math.min(4, Math.round(wallH / storeyH)));
-  // Storey mid-Y positions from ground upward. First storey a bit lower
-  // than mid to sit above the plinth; upper storeys evenly spaced.
+  // ORDER 021A facade-fidelity fix. Prior storey-Y formula placed the
+  // ground-floor window at Y=0.90 (below the 0.32–0.65 m plinth) and
+  // the top-floor window at Y = wallH − 0.30 (poking through the roof
+  // ridge for 2+ storey buildings). Corrected algorithm:
+  //   1. Budget the usable wall span as `wallH − plinthH` where
+  //      plinthH matches the wealth-tier plinth added by BuildingPlinth.
+  //   2. Storey count preferrs OSM `building:levels` if present,
+  //      otherwise floor(usable/2.7) — Bergslag domestic storeys are
+  //      2.4–2.7 m floor-to-floor, hence the 2.7 default.
+  //   3. Storeys evenly divide the usable span (accommodates 4.5 m
+  //      one-storey houses through 12 m four-storey apartments).
+  //   4. Window centre sits at each storey's midpoint. With winH=1.35
+  //      the sill lands at ~0.6 m above each floor — a typical
+  //      Bergslag sill height, comfortably above any plinth band.
+  const plinthH =
+    b.profile.wealth === 'prosperous' ? 0.65 :
+    b.profile.wealth === 'modest' ? 0.32 : 0.42;
+  const storeyH = 2.7;
+  const usableH = Math.max(1.8, wallH - plinthH);
+  const wallLevels =
+    b.building.buildingLevels != null &&
+    b.building.buildingLevels >= 1 &&
+    b.building.buildingLevels < 6
+      ? b.building.buildingLevels
+      : Math.max(1, Math.min(4, Math.floor(usableH / (storeyH * 0.9))));
+  const storeys = wallLevels;
+  const storeySpan = usableH / storeys;
   const storeyYs: number[] = [];
   for (let s = 0; s < storeys; s++) {
-    storeyYs.push(0.9 + s * (wallH - 1.2) / Math.max(1, storeys - 1) * (storeys > 1 ? 1 : 0) + (storeys === 1 ? wallH * 0.4 : 0));
+    storeyYs.push(plinthH + (s + 0.5) * storeySpan);
   }
   // Bay counts per side scale with the OBB extent.
   const rw = b.ridgeW;
