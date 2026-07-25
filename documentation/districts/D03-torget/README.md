@@ -13,11 +13,11 @@
 
 | Category | Count |
 |----------|-------|
-| Buildings | 14 |
-| — handcrafted | 0 |
+| Buildings | 15 |
+| — handcrafted | 1 |
 | — procedural | 14 |
-| Roads (segments) | 5 |
-| Landmarks | 2 |
+| Roads (segments) | 7 |
+| Landmarks | 4 |
 | Water polygons | 0 |
 | Forest polygons | 0 |
 | Residential zones | 0 |
@@ -25,17 +25,19 @@
 | Graveyards | 0 |
 
 ## Landmarks in this district
+- `gry-kringlan` **Guldkringlan** — commercial · verified · OSM node/3587736399
 - `gry-glass` **Grythyttans glass & choklad** — commercial · verified · OSM node/11515836627
 - `gry-torget` **Torget** — municipal · verified · OSM way/122157681
+- `gry-gastgivaregard` **Grythyttans Gästgivaregård** — commercial · verified · OSM way/869907964
 
 ## Named buildings
-_(none)_
+- `w869907964` Grythyttans Gästgivaregård — kind: `hotel`
 
 ## Named roads
+- Torget (2 segments)
 - Kyrkogatan (2 segments)
-- Torget (1 segments)
+- Västra Bergvägen (2 segments)
 - Lokavägen (1 segments)
-- Västra Bergvägen (1 segments)
 
 ## Water bodies
 _(none)_

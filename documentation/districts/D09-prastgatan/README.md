@@ -13,9 +13,9 @@
 
 | Category | Count |
 |----------|-------|
-| Buildings | 24 |
+| Buildings | 25 |
 | — handcrafted | 0 |
-| — procedural | 24 |
+| — procedural | 25 |
 | Roads (segments) | 14 |
 | Landmarks | 0 |
 | Water polygons | 0 |

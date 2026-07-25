@@ -16,7 +16,7 @@
 | Buildings | 3 |
 | — handcrafted | 1 |
 | — procedural | 2 |
-| Roads (segments) | 5 |
+| Roads (segments) | 6 |
 | Landmarks | 1 |
 | Water polygons | 0 |
 | Forest polygons | 0 |
@@ -32,6 +32,7 @@
 
 ## Named roads
 - Kyrkbacken (1 segments)
+- Smedsgatan (1 segments)
 
 ## Water bodies
 _(none)_

@@ -68,22 +68,41 @@ function polylineMid(poly) {
 }
 function distSq(a, b) { const dx = a[0]-b[0], dz = a[1]-b[1]; return dx*dx + dz*dz; }
 
+// Districts D14 Lakeshore + D15 Forest Edge are FALLBACK-ONLY. Their
+// huge radii would otherwise dominate the nearest-anchor rule for any
+// point near world origin — Gästgivaregården at (62, 38) is 72 m from
+// origin, closer than to D03 Torget's anchor (81 m), so a naive
+// distance rule would falsely land it in D15. The fix: exclude the
+// fallback districts from the primary pass, and only pick them if no
+// specific district contains the point.
+const FALLBACK_DISTRICT_IDS = new Set(['D14-lakeshore', 'D15-forest-edge']);
+
 function assignByAnchor(point) {
-  // Prefer non-fallback districts within their own radius; tie-break by
-  // list order. Lakeshore + Forest Edge act as final fallbacks with
-  // huge radii — anything not in a specific district lands in Forest
-  // Edge (or Lakeshore for far-out water).
+  // Pass 1 — specific districts (non-fallback). Prefer the one whose
+  // point is strictly INSIDE its radius; if multiple, closest anchor
+  // wins.
   let best = null;
   let bestPenalty = Infinity;
   for (const d of DISTRICTS) {
+    if (FALLBACK_DISTRICT_IDS.has(d.id)) continue;
     const dSq = distSq(point, d.anchor);
     const inside = dSq <= d.radius * d.radius;
-    // Penalty: distance squared, plus a large boost if not inside
-    // (only fallback districts get chosen out-of-range).
-    const penalty = inside ? dSq : dSq + 1e9;
-    if (penalty < bestPenalty) { bestPenalty = penalty; best = d.id; }
+    if (!inside) continue;
+    if (dSq < bestPenalty) { bestPenalty = dSq; best = d.id; }
   }
-  return best || 'D15-forest-edge';
+  if (best) return best;
+
+  // Pass 2 — no specific district claimed the point. Pick the closest
+  // fallback (D14 vs D15) by anchor distance, ignoring radii (they
+  // both cover the whole world).
+  let fbBest = null;
+  let fbBestDsq = Infinity;
+  for (const d of DISTRICTS) {
+    if (!FALLBACK_DISTRICT_IDS.has(d.id)) continue;
+    const dSq = distSq(point, d.anchor);
+    if (dSq < fbBestDsq) { fbBestDsq = dSq; fbBest = d.id; }
+  }
+  return fbBest || 'D15-forest-edge';
 }
 
 const assignment = {

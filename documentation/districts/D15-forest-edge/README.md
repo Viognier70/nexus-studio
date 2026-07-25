@@ -13,11 +13,11 @@
 
 | Category | Count |
 |----------|-------|
-| Buildings | 80 |
-| — handcrafted | 1 |
-| — procedural | 79 |
-| Roads (segments) | 113 |
-| Landmarks | 3 |
+| Buildings | 71 |
+| — handcrafted | 0 |
+| — procedural | 71 |
+| Roads (segments) | 108 |
+| Landmarks | 0 |
 | Water polygons | 4 |
 | Forest polygons | 5 |
 | Residential zones | 3 |
@@ -25,18 +25,15 @@
 | Graveyards | 1 |
 
 ## Landmarks in this district
-- `gry-kringlan` **Guldkringlan** — commercial · verified · OSM node/3587736399
-- `gry-antik` **Grythyttans antikvariat** — commercial · verified · OSM node/12863936584
-- `gry-gastgivaregard` **Grythyttans Gästgivaregård** — commercial · verified · OSM way/869907964
+_(none)_
 
 ## Named buildings
-- `w869907964` Grythyttans Gästgivaregård — kind: `hotel`
+_(none)_
 
 ## Named roads
 - Badvägen (6 segments)
 - Gruvgatan (3 segments)
 - Mellanvägen (3 segments)
-- Torget (2 segments)
 - Breviksvägen (2 segments)
 - Baluns väg (2 segments)
 - Vintervägen (2 segments)
@@ -44,14 +41,11 @@
 - Smalviksvägen (1 segments)
 - Linnskällvägen (1 segments)
 - Bergslagsgatan (1 segments)
-- Smedsgatan (1 segments)
 - Norrheden (1 segments)
 - Lokavägen (1 segments)
 - Grythyttan-Hällefors cykelväg (1 segments)
 - Åsgatan (1 segments)
-- Västra Bergvägen (1 segments)
 - Skiffergatan (1 segments)
-- Artur Lindqvists gata (1 segments)
 
 ## Water bodies
 - Jordantjärnen

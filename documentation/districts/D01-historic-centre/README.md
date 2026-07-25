@@ -13,11 +13,11 @@
 
 | Category | Count |
 |----------|-------|
-| Buildings | 2 |
+| Buildings | 7 |
 | — handcrafted | 0 |
-| — procedural | 2 |
-| Roads (segments) | 5 |
-| Landmarks | 1 |
+| — procedural | 7 |
+| Roads (segments) | 7 |
+| Landmarks | 2 |
 | Water polygons | 0 |
 | Forest polygons | 0 |
 | Residential zones | 0 |
@@ -26,15 +26,17 @@
 
 ## Landmarks in this district
 - `gry-cornelis` **Cornelis** — commercial · verified · OSM node/4346388591
+- `gry-antik` **Grythyttans antikvariat** — commercial · verified · OSM node/12863936584
 
 ## Named buildings
 - `w1422743880` Länsmansgården — kind: `yes`
 
 ## Named roads
+- Artur Lindqvists gata (2 segments)
 - Smedsgatan (1 segments)
+- Torget (1 segments)
 - Skolgatan (1 segments)
 - Östergatan (1 segments)
-- Artur Lindqvists gata (1 segments)
 
 ## Water bodies
 _(none)_
