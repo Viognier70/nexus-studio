@@ -3,6 +3,7 @@
 **Status:** Living process document for Phase IV.
 **Audience:** Vision Owner + Claude Code.
 **Time budget per review:** 5–15 minutes per district.
+**Canonical priority:** `DESIGN_PRINCIPLE_REALITY_VS_GAMEPLAY.md` — SPATIAL is canonical, FUNCTION is not. Fail approval on HIGH-priority defects (footprint / placement / road / district / terrain); log MEDIUM-priority defects (facade / roof / materials / colours); document LOW-priority items (current tenant / branding / signage) as waivers.
 
 Every district cycle centres on the Vision Owner review. This document standardises the workflow so every review compares apples-to-apples.
 
@@ -17,46 +18,53 @@ Before the first review, the following must exist:
 
 ## Review checklist
 
-Walk the checklist below in order. Any 🔴 or 🟠 finding pauses the district; log to `KNOWN_ISSUES.md` before proceeding.
+Walk the checklist below in order. **HIGH-priority (§1–§3, §6) findings pause the district — log to `KNOWN_ISSUES.md` at 🔴/🟠 severity before proceeding.** MEDIUM-priority (§4) log at 🟡; ship if only 🟡 remains. LOW-priority (§5-tenant, §7-content) log as waivers, don't block freeze. See `DESIGN_PRINCIPLE_REALITY_VS_GAMEPLAY.md` for the ladder.
 
-### 1 · Position (fast fail)
+### 1 · Position (fast fail) — HIGH priority
 - Every landmark is visible at its expected map position.
 - No mirrored geometry (compare to shadow-map SVG).
 - No floating buildings (visible gap between wall and terrain).
 - No buildings on top of roads.
 
-### 2 · Roads
+### 2 · Roads — HIGH priority
 - Every named street visible in this district's Google Maps view is visible on localhost.
 - Hälleforsvägen dominates its corridor.
 - Prästgatan reads as a village street (not a residential alley).
 - Intersections stack without visible gaps.
 
-### 3 · Buildings — massing
+### 3 · Buildings — massing — HIGH priority
 - Building footprints match Google Maps footprints.
 - Building heights look plausible for their kind (2–3 storeys for house, 3–5 for apartments).
 - Multi-wing buildings render as connected volumes (Kärnhuset, Gästgivaregården).
 
-### 4 · Buildings — facade
+### 4 · Buildings — facade — MEDIUM priority
 - Windows sit ABOVE the plinth on the ground floor.
 - Windows sit BELOW the roof line on the top floor.
 - Doors stand grounded on their step, attached to (not embedded in) the wall.
 - Roof eaves project past the walls by ~0.35 m (except industrial parapets).
 
-### 5 · Landmarks — recognition
-- Church tower recognisable from village view.
+### 5 · Landmark shell recognition — MEDIUM priority
+The **shell** must be recognisable — the current tenant does not.
+- Church tower silhouette recognisable from village view.
 - Torget reads as a plaza, not a road.
-- INGO recognisable as a fuel station canopy.
-- Tempo recognisable as a small grocery.
+- Petrol canopy shape recognisable at (368, −12) — the shell, regardless of "INGO" branding.
+- Small commercial-block shape recognisable at (−170, 54) — the shell, regardless of "Tempo" branding.
 - Kärnhuset + Måltidens Hus recognisable as institutional buildings on Campus.
 
-### 6 · Vegetation
+### 5b · Current tenant markers — LOW priority (waiver-eligible)
+- Whether a marker for a current shop points at the correct current tenant.
+- Whether signage matches current real-world business names.
+Log as ⚪ Low; document as waiver at freeze; do not fail approval.
+
+### 6 · Vegetation — HIGH priority
 - No trees inside buildings.
 - No trees on roads.
 - No trees on water.
 - Forest edge feels natural (no hard boundary).
 
-### 7 · Overall recognition
-- Would a resident of Grythyttan recognise this district without the labels?
+### 7 · Overall recognition — HIGH priority for SHELL; LOW for CONTENT
+- Would a resident of Grythyttan recognise this district by its **shell** (footprints, roads, silhouettes)? — HIGH.
+- Does every current shop / tenant read correctly? — LOW, not a blocker.
 
 ## Recording findings
 
