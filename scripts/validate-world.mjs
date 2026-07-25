@@ -589,6 +589,82 @@ function mulberry32(state) {
   }
 }
 
+// ---------- V15: building family completeness (ORDER 025 Phase J) ----------
+// Every runtime building must resolve to a deterministic family via
+// scripts/metadata-engine.mjs. A missing family means the metadata
+// engine's classifyBuilding fell through — new OSM kind or a data
+// pattern the classifier doesn't yet handle.
+{
+  try {
+    const buildings = JSON.parse(readFileSync('reports/metadata/buildings.json', 'utf8'));
+    const unknown = buildings.buildings.filter((b) => b.family === 'Unknown');
+    if (unknown.length === 0) {
+      addDefect('Info', 'V15', `V15 clean: every building resolved to a family (${Object.keys(buildings.by_family).length} distinct families)`);
+    } else {
+      addDefect('Medium', 'V15', `${unknown.length} buildings classified as Unknown by the metadata engine`,
+        unknown.slice(0, 10),
+        'Extend classifyBuilding in scripts/metadata-engine.mjs — add a name/amenity/kind rule.',
+        ['scripts/metadata-engine.mjs']);
+    }
+  } catch {
+    addDefect('Info', 'V15', 'V15 skipped: reports/metadata/buildings.json not present — run `node scripts/metadata-engine.mjs`');
+  }
+}
+
+// ---------- V16: POI category coverage (ORDER 025 Phase J) ----------
+// Every landmark in the POI database must have a category other than
+// Unknown. Unknown here means the POI_CATEGORY table in the metadata
+// engine is out of sync with the landmark list.
+{
+  try {
+    const pois = JSON.parse(readFileSync('reports/metadata/pois.json', 'utf8'));
+    const unknown = pois.pois.filter((p) => p.category === 'Unknown');
+    if (unknown.length === 0) {
+      addDefect('Info', 'V16', `V16 clean: every landmark POI has a known category (${Object.keys(pois.by_category).length} categories in use)`);
+    } else {
+      addDefect('Medium', 'V16', `${unknown.length} landmark POI(s) have category=Unknown`,
+        unknown.map((p) => p.id),
+        'Add the landmark id to POI_CATEGORY in scripts/metadata-engine.mjs with the appropriate category + importance.',
+        ['scripts/metadata-engine.mjs']);
+    }
+  } catch {
+    addDefect('Info', 'V16', 'V16 skipped: reports/metadata/pois.json not present');
+  }
+}
+
+// ---------- V17: district assignment coverage (ORDER 025 Phase J) ----------
+// Every world entity must land in exactly one district. district-assign
+// asserts 100 % at generation time but a stale reports/districts/
+// output vs current world.json will diverge — surface that.
+{
+  try {
+    const assign = JSON.parse(readFileSync('reports/districts/assignment.json', 'utf8'));
+    const totalEntities =
+      world.buildings.length + world.roads.length + world.landmarks.length +
+      world.water.length + world.forest.length + world.residential.length +
+      world.grass.length + world.graveyards.length;
+    const assignedTotal =
+      Object.keys(assign.assignment.buildings).length +
+      Object.keys(assign.assignment.roads).length +
+      Object.keys(assign.assignment.landmarks).length +
+      Object.keys(assign.assignment.water).length +
+      Object.keys(assign.assignment.forest).length +
+      Object.keys(assign.assignment.residential).length +
+      Object.keys(assign.assignment.grass).length +
+      Object.keys(assign.assignment.graveyards).length;
+    if (assignedTotal === totalEntities) {
+      addDefect('Info', 'V17', `V17 clean: 100 % district assignment (${assignedTotal}/${totalEntities})`);
+    } else {
+      addDefect('High', 'V17', `District assignment stale: ${assignedTotal}/${totalEntities} entities covered`,
+        null,
+        'Re-run `node scripts/district-assign.mjs` and `node scripts/metadata-engine.mjs`.',
+        ['scripts/district-assign.mjs']);
+    }
+  } catch {
+    addDefect('Info', 'V17', 'V17 skipped: reports/districts/assignment.json not present — run `node scripts/district-assign.mjs`');
+  }
+}
+
 // ---------- Output ----------
 if (asJson) {
   console.log(JSON.stringify(defects, null, 2));
