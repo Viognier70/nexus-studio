@@ -665,6 +665,76 @@ function mulberry32(state) {
   }
 }
 
+// ---------- V18: place classification coverage (ORDER 027) ----------
+// Every Place must resolve to a known classification. Unknown means
+// the classify rule in place-engine.mjs fell through — indicates a
+// new family or missing rule.
+{
+  try {
+    const places = JSON.parse(readFileSync('reports/semantic/places.json', 'utf8'));
+    const unknown = places.places.filter((p) => p.classification === 'Unknown');
+    if (unknown.length === 0) {
+      addDefect('Info', 'V18', `V18 clean: every Place resolved to a classification (${Object.keys(places.summary.by_class).length} classes in use, ${places.places.length} places)`);
+    } else {
+      addDefect('Medium', 'V18', `${unknown.length} Places classified as Unknown`, unknown.slice(0, 5).map((p) => p.id),
+        'Add family → class mapping in scripts/place-engine.mjs::CLASS_BY_FAMILY.',
+        ['scripts/place-engine.mjs']);
+    }
+  } catch {
+    addDefect('Info', 'V18', 'V18 skipped: reports/semantic/places.json not present — run `node scripts/place-engine.mjs`');
+  }
+}
+
+// ---------- V19: district identity completeness (ORDER 027) ----------
+// Every district must have primary_identity + secondary_identity in
+// the district-identity engine. Empty strings indicate a new district
+// added without an identity curated.
+{
+  try {
+    const di = JSON.parse(readFileSync('reports/semantic/districts-identity.json', 'utf8'));
+    const missing = di.districts.filter((d) => !d.primary_identity || !d.secondary_identity);
+    if (missing.length === 0) {
+      addDefect('Info', 'V19', `V19 clean: every district (${di.districts.length}) has primary + secondary identity`);
+    } else {
+      addDefect('Medium', 'V19', `${missing.length} districts missing primary/secondary identity`,
+        missing.map((d) => d.id),
+        'Add district id to PRIMARY map in scripts/district-identity.mjs.',
+        ['scripts/district-identity.mjs']);
+    }
+  } catch {
+    addDefect('Info', 'V19', 'V19 skipped: reports/semantic/districts-identity.json not present');
+  }
+}
+
+// ---------- V20: landmark → Place coverage (ORDER 027) ----------
+// Every landmark whose linked building EXISTS in world.buildings must
+// produce a Place. Landmarks whose OSM way is a non-building polygon
+// (plaza / sports / campus) are excluded — V13a already accounts for
+// those; they'd need a separate Place emitter for polygon-only
+// landmarks which is a future extension.
+{
+  try {
+    const landmarks = JSON.parse(readFileSync('reports/metadata/landmarks.json', 'utf8'));
+    const places = JSON.parse(readFileSync('reports/semantic/places.json', 'utf8'));
+    const placeBuildingIds = new Set(places.places.map((p) => p.building_id));
+    // Only consider landmarks whose building_ref actually exists as a
+    // building (building_exists is set by the metadata engine).
+    const eligible = landmarks.landmarks.filter((l) => l.building_ref && l.building_exists);
+    const missing = eligible.filter((l) => !placeBuildingIds.has(l.building_ref));
+    const nonBuildingCount = landmarks.landmarks.filter((l) => l.building_ref && !l.building_exists).length;
+    if (missing.length === 0) {
+      addDefect('Info', 'V20', `V20 clean: ${eligible.length} way-landmarks with real buildings all produced Places (${nonBuildingCount} landmarks point at non-building OSM ways — see V13a)`);
+    } else {
+      addDefect('High', 'V20', `${missing.length} landmarks with a real building did NOT produce a Place`,
+        missing.map((l) => ({ id: l.id, building: l.building_ref })),
+        'The place-worthiness threshold in scripts/place-engine.mjs::isPlace is filtering these out. Ensure isPlace() returns true for any landmark-linked building.',
+        ['scripts/place-engine.mjs']);
+    }
+  } catch {
+    addDefect('Info', 'V20', 'V20 skipped: places.json or landmarks.json not present');
+  }
+}
+
 // ---------- Output ----------
 if (asJson) {
   console.log(JSON.stringify(defects, null, 2));
