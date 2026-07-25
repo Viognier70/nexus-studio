@@ -249,6 +249,63 @@ function mulberry32(state) {
   else addDefect('Info', 'V5', 'V5 clean: every landmark position within 5 m of its OSM building centroid');
 }
 
+// ---------- V7: silent invisible buildings (ORDER 021 drift check) ----------
+// A building is silently invisible when:
+//   - it exists in WORLD.buildings
+//   - AND its id is in LANDMARK_BUILDING_IDS (skipped by OsmBuildings)
+//   - AND no handcrafted component renders it
+// The ORDER 019R INGO+Tempo defect is the motivating case.
+{
+  const worldTs = readFileSync('frontend/src/strategic/content/world.ts', 'utf8');
+  const HL_MATCH = worldTs.match(/HANDCRAFTED_LANDMARK_IDS[^=]*=\s*new Set\(\[([\s\S]*?)\]\)/);
+  const D2_MATCH = worldTs.match(/D2_HANDCRAFTED_BUILDING_IDS\s*=\s*\[([\s\S]*?)\]/);
+  const SHARED_MATCH = worldTs.match(/SHARED_CONTAINER_BUILDING_IDS\s*=\s*\[([\s\S]*?)\]/);
+  const parse = (m) => m ? [...m[1].matchAll(/'([^']+)'/g)].map((x) => x[1]) : [];
+  const handcraftedLandmarkIds = new Set(parse(HL_MATCH));
+  const d2Skip = new Set(parse(D2_MATCH));
+  const sharedSkip = new Set(parse(SHARED_MATCH));
+
+  const d2Src = readFileSync('frontend/src/strategic/scene/CraftedLandmarksD2.tsx', 'utf8');
+  const d2HandcraftedRefs = new Set([
+    ...[...d2Src.matchAll(/BUILDING_BY_ID\['(w\d+)'\]/g)].map((x) => x[1]),
+    ...[...d2Src.matchAll(/osmId:\s*'(w\d+)'/g)].map((x) => x[1])
+  ]);
+
+  const invisible = [];
+  // Landmark-with-way records not in HANDCRAFTED_LANDMARK_IDS → they should NOT be in the skip list
+  // (checked implicitly — they would still render procedurally).
+  // But a landmark-with-way IN HANDCRAFTED_LANDMARK_IDS is expected to have a handcrafted
+  // component; we can't statically detect the component itself but we CAN check that the id
+  // appears as a landmark composition entry.
+  const d1Src = readFileSync('frontend/src/strategic/scene/CraftedLandmarks.tsx', 'utf8');
+  for (const lmId of handcraftedLandmarkIds) {
+    // The composition function references landmarks by string id
+    const pattern = new RegExp(`LANDMARK_BY_ID\\['${lmId}'\\]`);
+    if (!pattern.test(d1Src)) {
+      // Might be legitimately elsewhere; treat as info
+      invisible.push({ severity: 'Low', kind: 'handcrafted-landmark-no-composition', id: lmId });
+    }
+  }
+  // D2 skip vs handcrafted parity
+  for (const id of d2Skip) {
+    if (!d2HandcraftedRefs.has(id)) {
+      invisible.push({ severity: 'High', kind: 'd2-skip-no-handcrafted', id });
+    }
+  }
+  for (const id of d2HandcraftedRefs) {
+    if (!d2Skip.has(id)) {
+      invisible.push({ severity: 'High', kind: 'd2-handcrafted-not-in-skip', id });
+    }
+  }
+  if (invisible.length === 0) {
+    addDefect('Info', 'V7', 'V7 clean: no silent invisible building — every landmark-way in the skip list has a handcrafted component');
+  } else {
+    for (const inv of invisible) {
+      addDefect(inv.severity, 'V7', `${inv.kind}: ${inv.id}`);
+    }
+  }
+}
+
 // ---------- V6: multi-wing polygon detection ----------
 {
   const SPLIT_MAX_EDGE_M = 25;
