@@ -416,10 +416,17 @@ function orientedBbox(poly: Vec2Tuple[]): {
 
 function toExtruded(b: RawBuilding): Extruded | null {
   if (b.poly.length < 4) return null;
+  // Y-negation is the ORDER 020 transform-parity fix. `rotateX(-π/2)`
+  // below sends shape (x, y, 0) → world (x, 0, -y); negating y at the
+  // shape.moveTo call cancels that, so a polygon vertex at OSM (x, z)
+  // renders at world Z = +z — the same coordinate frame the shadow
+  // map, camera, landmarks and vehicles use. See
+  // CraftedLandmarks.useLandmarkWallGeo for the equivalent fix on the
+  // handcrafted-landmark path.
   const shape = new THREE.Shape();
-  shape.moveTo(b.poly[0][0], b.poly[0][1]);
+  shape.moveTo(b.poly[0][0], -b.poly[0][1]);
   for (let i = 1; i < b.poly.length; i++)
-    shape.lineTo(b.poly[i][0], b.poly[i][1]);
+    shape.lineTo(b.poly[i][0], -b.poly[i][1]);
   // First-pass kind from `building=*` tag and area-based sub-classification.
   const preKind = effectiveKindFor(b);
   const obb = orientedBbox(b.poly);

@@ -34,9 +34,14 @@ function districtWobble(baseHex: string, id: string, magnitude: number): string 
 
 function toShapeGeom(poly: Vec2Tuple[]): THREE.BufferGeometry | null {
   if (poly.length < 4) return null;
+  // ORDER 020 transform-parity fix: negate Y so world Z = +OSM Z (see
+  // OsmBuildings.toExtruded for the full derivation). Prior to this
+  // the residential / forest / grass / graveyard tints all rendered
+  // mirrored across the east-west axis relative to the buildings and
+  // roads that sit on them.
   const shape = new THREE.Shape();
-  shape.moveTo(poly[0][0], poly[0][1]);
-  for (let i = 1; i < poly.length; i++) shape.lineTo(poly[i][0], poly[i][1]);
+  shape.moveTo(poly[0][0], -poly[0][1]);
+  for (let i = 1; i < poly.length; i++) shape.lineTo(poly[i][0], -poly[i][1]);
   shape.closePath();
   const g = new THREE.ShapeGeometry(shape);
   g.rotateX(-Math.PI / 2);

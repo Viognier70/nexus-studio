@@ -53,11 +53,16 @@ function buildRoadShape(road: RawRoad, half: number): THREE.Shape | null {
     left.push([p[0] + nx * half, p[1] + nz * half]);
     right.push([p[0] - nx * half, p[1] - nz * half]);
   }
+  // ORDER 020 transform-parity fix: negate Y so the road envelope lands
+  // at world Z = +OSM Z instead of the mirrored -OSM Z that
+  // `rotateX(-π/2)` would otherwise produce. Same fix applied to every
+  // shape-based renderer (OsmBuildings, OsmWater, OsmDistricts,
+  // CraftedLandmarks.extrudeShape).
   const shape = new THREE.Shape();
-  shape.moveTo(left[0][0], left[0][1]);
-  for (let i = 1; i < left.length; i++) shape.lineTo(left[i][0], left[i][1]);
+  shape.moveTo(left[0][0], -left[0][1]);
+  for (let i = 1; i < left.length; i++) shape.lineTo(left[i][0], -left[i][1]);
   for (let i = right.length - 1; i >= 0; i--)
-    shape.lineTo(right[i][0], right[i][1]);
+    shape.lineTo(right[i][0], -right[i][1]);
   shape.closePath();
   return shape;
 }
@@ -118,11 +123,12 @@ function buildOffsetLineShape(
     left.push([cx + nx * halfThickness, cz + nz * halfThickness]);
     right.push([cx - nx * halfThickness, cz - nz * halfThickness]);
   }
+  // ORDER 020 transform-parity fix — see buildRoadShape.
   const shape = new THREE.Shape();
-  shape.moveTo(left[0][0], left[0][1]);
-  for (let i = 1; i < left.length; i++) shape.lineTo(left[i][0], left[i][1]);
+  shape.moveTo(left[0][0], -left[0][1]);
+  for (let i = 1; i < left.length; i++) shape.lineTo(left[i][0], -left[i][1]);
   for (let i = right.length - 1; i >= 0; i--)
-    shape.lineTo(right[i][0], right[i][1]);
+    shape.lineTo(right[i][0], -right[i][1]);
   shape.closePath();
   return shape;
 }

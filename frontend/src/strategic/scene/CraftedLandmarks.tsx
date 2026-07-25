@@ -29,9 +29,16 @@ function buildingFor(landmark: Landmark): RawBuilding | null {
 }
 
 function extrudeShape(poly: Vec2Tuple[], height: number): THREE.BufferGeometry {
+  // ORDER 020 transform-parity fix: negate Y so `rotateX(-π/2)` sends
+  // the polygon to world Z = +OSM Z (matching the shadow map, camera
+  // and every other renderer after ORDER 020). Before this fix the
+  // sole caller SkolaLandmark rendered the school walls mirrored
+  // across the east-west axis while its own roof-cap group placed the
+  // roof at the correct polygon centroid — walls and roof landed in
+  // two different frames.
   const shape = new THREE.Shape();
-  shape.moveTo(poly[0][0], poly[0][1]);
-  for (let i = 1; i < poly.length; i++) shape.lineTo(poly[i][0], poly[i][1]);
+  shape.moveTo(poly[0][0], -poly[0][1]);
+  for (let i = 1; i < poly.length; i++) shape.lineTo(poly[i][0], -poly[i][1]);
   const geo = new THREE.ExtrudeGeometry(shape, {
     depth: height,
     bevelEnabled: false,

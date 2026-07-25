@@ -109,10 +109,15 @@ export function OsmWater() {
     return WORLD.water
       .filter((w) => w.poly.length >= 4 && !outsideRange(w.poly))
       .map((w) => {
+        // ORDER 020 transform-parity fix: negate Y so world Z = +OSM Z
+        // matches the shadow map, landmarks, camera and vehicles. Prior
+        // to this the whole water polygon rendered mirrored across the
+        // east-west axis — Torrvarpen and Sör-Älgen appeared on the
+        // opposite side of the village from where the map showed them.
         const shape = new THREE.Shape();
-        shape.moveTo(w.poly[0][0], w.poly[0][1]);
+        shape.moveTo(w.poly[0][0], -w.poly[0][1]);
         for (let i = 1; i < w.poly.length; i++)
-          shape.lineTo(w.poly[i][0], w.poly[i][1]);
+          shape.lineTo(w.poly[i][0], -w.poly[i][1]);
         shape.closePath();
         // Higher curveSegments so the shore band has enough vertices
         // for the depth gradient to read smoothly. ShapeGeometry
