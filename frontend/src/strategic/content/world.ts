@@ -265,9 +265,40 @@ const D2_HANDCRAFTED_BUILDING_IDS = [
   'w870510884', 'w870510872', 'w870510871'
 ];
 
+// The set of landmark IDs that have a dedicated handcrafted rendering
+// component. Only these landmarks' OSM ways are hidden from the
+// generic OsmBuildings layer — a landmark record on its own does NOT
+// suppress the procedural build, because the procedural build is what
+// the render depends on when no handcrafted component exists.
+//
+// ORDER 021 defect trace: prior to this list, every landmark with an
+// OSM way was blanket-skipped by OsmBuildings on the assumption that
+// a handcrafted component existed for it. ORDER 019R added `gry-ingo`
+// (way w614554207) and `gry-tempo` (way w1250001245) as verified
+// landmark records without handcrafted components — the blanket rule
+// hid both buildings from the render for the whole 019R session.
+// This list makes the "has-handcrafted" contract explicit so a new
+// landmark record can only cause invisibility if the developer
+// deliberately adds it to this set.
+const HANDCRAFTED_LANDMARK_IDS: ReadonlySet<string> = new Set([
+  'gry-kyrka',            // ChurchLandmark
+  'gry-campus',           // MaltidensHusPass2
+  'gry-gastgivaregard',   // GastgivaregardPass2
+  'gry-pizzanshus',       // PizzansHusPass2
+  'gry-herrgard',         // HerrgardPass2
+  'gry-jarnvag',          // OldStationPass2
+  'gry-skola',            // SkolaLandmark
+  'gry-torget',           // TorgetLandmark (plaza render; w122157681 is not a building anyway)
+  'gry-ip'                // IpLandmark (leisure polygon; not a building anyway)
+]);
+
 export const LANDMARK_BUILDING_IDS: Set<string> = new Set([
   ...WORLD.landmarks
-    .filter((l) => l.source.osmType === 'way' && l.source.osmId != null)
+    .filter((l) =>
+      HANDCRAFTED_LANDMARK_IDS.has(l.id) &&
+      l.source.osmType === 'way' &&
+      l.source.osmId != null
+    )
     .map((l) => `w${l.source.osmId}`),
   ...SHARED_CONTAINER_BUILDING_IDS,
   ...D2_HANDCRAFTED_BUILDING_IDS
