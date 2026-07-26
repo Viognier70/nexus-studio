@@ -9,6 +9,7 @@ import {
   WORLD
 } from '../content/world';
 import type { RawBuilding, Vec2Tuple } from '../content/world';
+import { nearestStreetProfile } from '../content/streetProfiles';
 
 type WealthTier = 'modest' | 'standard' | 'prosperous';
 
@@ -488,30 +489,54 @@ function toExtruded(b: RawBuilding): Extruded | null {
         roofColour = tintColour(roofColour, '#3a2d24', 0.06);   // richer roof pigment
       }
 
-      // ORDER 030 recognisability lift, Tier 1b — palette diversity.
-      // Vision Owner Street View survey (RECOGNISABILITY_SURVEY.md) found
-      // Badvägen and Kyrkogatan have visibly cream / pale-yellow / white
-      // painted villas that the runtime was rendering all as Faluröd. Reality
-      // is a mix: about 60% Faluröd red, 15% cream / plaster, 10% pale
-      // yellow, 10% white, 5% weathered brown. A deterministic per-building
-      // hash selects a tier; each tier tints the wall toward its palette so
-      // neighbourhood coherence + wealth signal still register but the whole
-      // village stops feeling like a single tomato-red monoculture.
-      const paletteHash = idHash(b.id + ':palette');
-      if (paletteHash > 0.95) {
-        // Weathered brown — old timber that has lost its paint.
-        wallColour = tintColour(wallColour, '#5a4838', 0.35);
-      } else if (paletteHash > 0.85) {
-        // Pale white / off-white painted timber.
-        wallColour = tintColour(wallColour, '#efe6d4', 0.60);
-      } else if (paletteHash > 0.75) {
-        // Pale yellow / gold — common on genteel villas along Badvägen.
-        wallColour = tintColour(wallColour, '#e6c76a', 0.55);
-      } else if (paletteHash > 0.60) {
-        // Cream / soft plaster — a warm off-white with a touch of ochre.
-        wallColour = tintColour(wallColour, '#e8dcb8', 0.55);
+      // ORDER 031 replaces the earlier ORDER 030 Tier 1b random palette
+      // hash. The prior scheme assigned villa wall colours from a generic
+      // Swedish distribution (60/15/10/10/5 across Faluröd / cream / yellow
+      // / white / brown) — a "statistical assumption" explicitly forbidden
+      // by ORDER 031 Phase 4.
+      //
+      // The new logic derives colour by evidence in three tiers:
+      //   1. If OSM building:colour is set, use it (handled below, after
+      //      the wealth block).
+      //   2. Otherwise inherit the fronting street's colour_tendency
+      //      from streetProfiles.ts (evidence-based per-street palette
+      //      derived from the Vision Owner Street View archive).
+      //   3. Fall through to the family base palette if the street has
+      //      no colour tendency signal.
+      // Neighbouring plots on the same street therefore share a coherent
+      // colour tendency (Badvägen leans cream-dominant, Kyrkogatan leans
+      // Faluröd-dominant, Nygatan leans industrial-brick), and the diversity
+      // between individual buildings comes from wobble + wealth + neighbourhood
+      // tint — not from a random per-building palette assignment.
+      const profile = nearestStreetProfile(obb.centre[0], obb.centre[1]);
+      switch (profile.colour_tendency) {
+        case 'cream-dominant':
+          // Pull walls toward pale cream — Badvägen lakeshore villas.
+          wallColour = tintColour(wallColour, '#e8dcb8', 0.45);
+          break;
+        case 'faluröd-dominant':
+          // Keep Faluröd base intact — village historic core.
+          // No override; kind base is already Faluröd for houses.
+          break;
+        case 'mixed-warm':
+          // No strong pull — let wobble + wealth speak.
+          break;
+        case 'weathered-timber':
+          // Aged dark red-brown — rural / agricultural periphery.
+          wallColour = tintColour(wallColour, '#6a4a38', 0.30);
+          break;
+        case 'institutional-plaster':
+          // Cool plaster — school / care corridor. Applied later for
+          // institutional kinds; here it also applies to residential
+          // buildings mixed into that district.
+          wallColour = tintColour(wallColour, '#d8d0bc', 0.30);
+          break;
+        case 'industrial-brick':
+          // Faluröd brick — Nygatan / Lokavägen industrial corridor.
+          // Residential buildings in this zone lean brick-toned.
+          wallColour = tintColour(wallColour, '#8a4232', 0.30);
+          break;
       }
-      // Otherwise (paletteHash ≤ 0.60) the building keeps its Faluröd base.
     }
   } else if (
     kind === 'apartments' || kind === 'hotel' || kind === 'school' ||

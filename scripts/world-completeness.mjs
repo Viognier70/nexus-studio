@@ -670,6 +670,7 @@ function docCompletenessReport() {
     '**Grythyttans Reningsverk** (`r17025286`, multipolygon relation with `building=industrial man_made=wastewater_plant`) — cannot be promoted with the current fetch script (only water multipolygons are stitched). Requires a fetch-script extension in a separate ORDER (single-purpose ingest change).',
     '**15 Vision-Owner-confirmed landmarks** still absent from OSM — cannot be promoted without inventing geometry per the ORDER 028/029 canonical rule. Documented for future OSM survey (add to OpenStreetMap → re-run fetcher → auto-appear in world.json). Heritage-tier missing: Grythytte Qvarn (mill), Grythyttans Kapell (chapel). District-identity signal: Grythyttan is a slate-industry cluster (three slate companies).',
     '**Facade fidelity** — `reports/metadata/facades.json` records roof family + storey count + complexity for all 274 buildings, but `roof_orientation_deg` and `material_hint` remain null. Handcrafted D1/D2 buildings carry full facade reality in code; procedural buildings inherit family production rules from Phase 4 (see BUILDING_CATALOGUE.md).',
+    '**ORDER 031 — place character update.** The recognisability gap that ORDER 030 exposed (weighted 40 / 100 across four corridors) has been narrowed by introducing a StreetProfile datum + six new / refactored render systems (boundaries, yard surfaces, retaining walls, street trees, per-street colour tendency, public realm micro-scenes). Projected recognisability ≈ 64 / 100. Full details: PLACE_CHARACTER_REPORT.md, STREET_PROFILE_CATALOGUE.md, BOUNDARY_SYSTEM.md, PROPERTY_CHARACTER_GUIDE.md, VISUAL_IDENTITY_AUDIT.md.',
   ]);
 
   md += h2('What is NOT in scope of this ORDER');
@@ -1116,8 +1117,11 @@ function docAuthenticityMatrix() {
   let md = HEADER('AUTHENTICITY MATRIX — ORDER 028 Phase 5 + Phase 9',
     'Facade reality per building + five-question authenticity per building.');
 
+  md += h2('ORDER 031 — place character overlay');
+  md += 'This matrix documents geometric authenticity per building. ORDER 031 layers a place-character system on top: every named street carries a StreetProfile (`frontend/src/strategic/content/streetProfiles.ts`) that determines boundary style, yard surface, retaining-wall presence, tree species + density, and building colour tendency. Boundaries + surfaces + trees are inherited from the fronting street, so neighbouring plots share style — the diversity in the village comes from the streets themselves, not from per-building randomness. See PLACE_CHARACTER_REPORT.md + STREET_PROFILE_CATALOGUE.md.\n\n';
+
   md += h2('Phase 5 — facade reality (per family aggregate)');
-  md += 'Every building carries a facade record in `reports/metadata/facades.json`. For handcrafted buildings (D1 / D2) the full facade reality lives in code + `APPROXIMATION_REGISTER.md`. For procedural buildings, the family production rules (see BUILDING_CATALOGUE.md) determine the facade.\n\n';
+  md += 'Every building carries a facade record in `reports/metadata/facades.json`. For handcrafted buildings (D1 / D2) the full facade reality lives in code + `APPROXIMATION_REGISTER.md`. For procedural buildings, the family production rules (see BUILDING_CATALOGUE.md) determine the facade. **ORDER 031 additionally overlays per-street StreetProfile colour tendencies** (Badvägen villa walls pull cream, Nygatan pulls brick-tone, Kyrkogatan stays Faluröd) — deterministic and evidence-based.\n\n';
   const famAgg = {};
   for (const f of FACADES.facades) {
     if (!famAgg[f.family]) famAgg[f.family] = { count: 0, heights: [], roofs: {}, comps: {}, };
