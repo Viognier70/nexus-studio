@@ -289,7 +289,8 @@ const HANDCRAFTED_LANDMARK_IDS: ReadonlySet<string> = new Set([
   'gry-jarnvag',          // OldStationPass2
   'gry-skola',            // SkolaLandmark
   'gry-torget',           // TorgetLandmark (plaza render; w122157681 is not a building anyway)
-  'gry-ip'                // IpLandmark (leisure polygon; not a building anyway)
+  'gry-ip',               // IpLandmark (leisure polygon; not a building anyway)
+  'gry-ingo'              // ORDER 032 — IngoCanopy in PublicRealm (building=roof + amenity=fuel; canopy not walls)
 ]);
 
 export const LANDMARK_BUILDING_IDS: Set<string> = new Set([

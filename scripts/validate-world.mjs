@@ -359,11 +359,12 @@ function mulberry32(state) {
   // component; we can't statically detect the component itself but we CAN check that the id
   // appears as a landmark composition entry.
   const d1Src = readFileSync('frontend/src/strategic/scene/CraftedLandmarks.tsx', 'utf8');
+  // ORDER 032: PublicRealm also handcrafts landmark shells (INGO canopy,
+  // Pizzans yard, Fotbollsplan goals, Church boundary, School playground).
+  const publicRealmSrc = readFileSync('frontend/src/strategic/scene/PublicRealm.tsx', 'utf8');
   for (const lmId of handcraftedLandmarkIds) {
-    // The composition function references landmarks by string id
-    const pattern = new RegExp(`LANDMARK_BY_ID\\['${lmId}'\\]`);
-    if (!pattern.test(d1Src)) {
-      // Might be legitimately elsewhere; treat as info
+    const pattern = new RegExp(`LANDMARK_BY_ID\\['${lmId}'\\]|'${lmId}'`);
+    if (!pattern.test(d1Src) && !pattern.test(publicRealmSrc)) {
       invisible.push({ severity: 'Low', kind: 'handcrafted-landmark-no-composition', id: lmId });
     }
   }
