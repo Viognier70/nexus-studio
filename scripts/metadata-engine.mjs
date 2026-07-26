@@ -339,7 +339,9 @@ const POI_CATEGORY = {
   'gry-lansmansgarden': { category: 'Historic', importance: 'medium' },  // historic building near Torget
   'gry-swedecote': { category: 'Industrial', importance: 'medium' },     // slate industry, Lokavägen 1
   'gry-miljongruvan': { category: 'Historic', importance: 'high' },      // heritage mine, outdoor museum substitute
-  'gry-fotbollsplan': { category: 'Sports', importance: 'medium' }       // soccer pitch, distinct from IP
+  'gry-fotbollsplan': { category: 'Sports', importance: 'medium' },      // soccer pitch, distinct from IP
+  // ORDER 032 additions
+  'gry-reningsverk': { category: 'Industrial', importance: 'low' }       // municipal wastewater plant, multipolygon recovery
 };
 const pois = world.landmarks.map((l) => {
   const info = POI_CATEGORY[l.id] || { category: 'Unknown', importance: 'low' };

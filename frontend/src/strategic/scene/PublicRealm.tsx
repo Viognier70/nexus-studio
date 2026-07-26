@@ -179,6 +179,27 @@ function FotbollsplanGoals() {
           />
         ))}
       </Instances>
+
+      {/* ORDER 032 — spectator fence on the +x touch line (nearest to
+          Mässingsslatan) + tiny changing-room / pavilion on the -x
+          long side. Reads at village zoom as "this is a proper
+          community sports pitch", not just a rectangle of grass. */}
+      <mesh position={[goals.centre[0] + goals.pitchWidth / 2 + 1.5, 0.55, goals.centre[1]]}>
+        <boxGeometry args={[0.06, 1.1, goals.pitchLen]} />
+        <meshStandardMaterial color="#7d7d75" roughness={1} />
+      </mesh>
+      <group position={[goals.centre[0] - goals.pitchWidth / 2 - 6, 0, goals.centre[1]]}>
+        {/* Small pavilion — walls + shallow-pitch roof. Fits between
+            two goal ends. */}
+        <mesh position={[0, 1.4, 0]}>
+          <boxGeometry args={[6, 2.8, 4]} />
+          <meshStandardMaterial color="#c9b28e" roughness={0.95} />
+        </mesh>
+        <mesh position={[0, 2.95, 0]}>
+          <boxGeometry args={[6.5, 0.3, 4.5]} />
+          <meshStandardMaterial color="#5a3f30" roughness={0.9} />
+        </mesh>
+      </group>
     </group>
   );
 }
