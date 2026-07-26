@@ -10,6 +10,7 @@ import { OsmBoats } from './OsmBoats';
 import { OsmBuildings } from './OsmBuildings';
 import { OsmDistricts } from './OsmDistricts';
 import { OsmDriveways } from './OsmDriveways';
+import { OsmFences } from './OsmFences';
 import { HorizonForest } from './HorizonForest';
 import { OsmForest } from './OsmForest';
 import { OsmLandmarks } from './OsmLandmarks';
@@ -25,6 +26,8 @@ import { OsmTraffic } from './OsmTraffic';
 import { OsmWater } from './OsmWater';
 import { Sky } from './Sky';
 import { StreetLabels } from './StreetLabels';
+import { StreetTrees } from './StreetTrees';
+import { TorgetPlaza } from './TorgetPlaza';
 
 // GL config for stable rendering.
 //
@@ -94,7 +97,10 @@ export function StrategicScene({ onSelect, selectedId }: Props) {
         <OsmMeadowVegetation />
         <OsmRoads />
         <OsmDriveways />
+        <TorgetPlaza />
         <OsmBuildings />
+        <OsmFences />
+        <StreetTrees />
         <OsmOutbuildings />
         <OsmParcelBoundaries />
         <OsmPropertyDetail />

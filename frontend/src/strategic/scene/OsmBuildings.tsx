@@ -487,6 +487,31 @@ function toExtruded(b: RawBuilding): Extruded | null {
         wallColour = tintColour(wallColour, '#f0e8d4', 0.14);   // fresher paint / plaster
         roofColour = tintColour(roofColour, '#3a2d24', 0.06);   // richer roof pigment
       }
+
+      // ORDER 030 recognisability lift, Tier 1b — palette diversity.
+      // Vision Owner Street View survey (RECOGNISABILITY_SURVEY.md) found
+      // Badvägen and Kyrkogatan have visibly cream / pale-yellow / white
+      // painted villas that the runtime was rendering all as Faluröd. Reality
+      // is a mix: about 60% Faluröd red, 15% cream / plaster, 10% pale
+      // yellow, 10% white, 5% weathered brown. A deterministic per-building
+      // hash selects a tier; each tier tints the wall toward its palette so
+      // neighbourhood coherence + wealth signal still register but the whole
+      // village stops feeling like a single tomato-red monoculture.
+      const paletteHash = idHash(b.id + ':palette');
+      if (paletteHash > 0.95) {
+        // Weathered brown — old timber that has lost its paint.
+        wallColour = tintColour(wallColour, '#5a4838', 0.35);
+      } else if (paletteHash > 0.85) {
+        // Pale white / off-white painted timber.
+        wallColour = tintColour(wallColour, '#efe6d4', 0.60);
+      } else if (paletteHash > 0.75) {
+        // Pale yellow / gold — common on genteel villas along Badvägen.
+        wallColour = tintColour(wallColour, '#e6c76a', 0.55);
+      } else if (paletteHash > 0.60) {
+        // Cream / soft plaster — a warm off-white with a touch of ochre.
+        wallColour = tintColour(wallColour, '#e8dcb8', 0.55);
+      }
+      // Otherwise (paletteHash ≤ 0.60) the building keeps its Faluröd base.
     }
   } else if (
     kind === 'apartments' || kind === 'hotel' || kind === 'school' ||
@@ -495,6 +520,16 @@ function toExtruded(b: RawBuilding): Extruded | null {
     // Institutional plaster leans a hair cooler and lighter than domestic.
     wallColour = tintColour(wallColour, '#e0dccc', 0.10);
   }
+
+  // ORDER 030 recognisability lift, Tier 1b — per-building override.
+  // The fetcher already captures OSM `building:colour` and
+  // `roof:colour` tags into RawBuilding.wallColour / roofColour, but the
+  // renderer previously ignored them. When set, the OSM tag wins over all
+  // palette + wobble + tint logic above. This gives the Vision Owner a
+  // per-building recognisability lever: paint an OSM tag, re-run the
+  // fetcher, the specific building renders in that colour.
+  if (b.wallColour) wallColour = b.wallColour;
+  if (b.roofColour) roofColour = b.roofColour;
 
   const status = BUILDING_STATUS_BY_OSM_ID[b.id];
   if (status) {
