@@ -617,6 +617,59 @@ interface SchoolBuildingProps {
   roofColour: string;
 }
 
+// ORDER 032 — school gable-roof correction.
+// Compute OBB for the school buildings so we can render the correct
+// steep-gable dark-shingle roof the Vision Owner Street View archive
+// documents (the previous flat parapet was cited as the survey's #2
+// defect on the school district).
+function schoolObb(poly: Vec2Tuple[]) {
+  let bestLen = 0;
+  let angle = 0;
+  for (let i = 1; i < poly.length; i++) {
+    const dx = poly[i][0] - poly[i - 1][0];
+    const dz = poly[i][1] - poly[i - 1][1];
+    const l = Math.hypot(dx, dz);
+    if (l > bestLen) { bestLen = l; angle = Math.atan2(dz, dx); }
+  }
+  let cx = 0, cz = 0;
+  for (const [x, z] of poly) { cx += x; cz += z; }
+  cx /= poly.length;
+  cz /= poly.length;
+  const cos = Math.cos(-angle);
+  const sin = Math.sin(-angle);
+  let minU = Infinity, maxU = -Infinity, minV = Infinity, maxV = -Infinity;
+  for (const [x, z] of poly) {
+    const u = (x - cx) * cos - (z - cz) * sin;
+    const v = (x - cx) * sin + (z - cz) * cos;
+    if (u < minU) minU = u;
+    if (u > maxU) maxU = u;
+    if (v < minV) minV = v;
+    if (v > maxV) maxV = v;
+  }
+  return { angle, w: maxU - minU, d: maxV - minV };
+}
+
+// Shared triangular-prism gable geometry — apex at y = 1, base at y = 0,
+// length 1 along X, depth 1 along Z. Scaled per building via mesh.scale.
+const SCHOOL_GABLE_GEO: THREE.BufferGeometry = (() => {
+  const g = new THREE.BufferGeometry();
+  const v = new Float32Array([
+    // Front pitch (+Z half)
+    -0.5, 0, 0.5,   0.5, 0, 0.5,   0.5, 1, 0,
+    -0.5, 0, 0.5,   0.5, 1, 0,    -0.5, 1, 0,
+    // Rear pitch (-Z half)
+     0.5, 0, -0.5, -0.5, 0, -0.5, -0.5, 1, 0,
+     0.5, 0, -0.5, -0.5, 1, 0,    0.5, 1, 0,
+    // Gable end -X
+    -0.5, 0, -0.5, -0.5, 0, 0.5,  -0.5, 1, 0,
+    // Gable end +X
+     0.5, 0, 0.5,   0.5, 0, -0.5,  0.5, 1, 0,
+  ]);
+  g.setAttribute('position', new THREE.BufferAttribute(v, 3));
+  g.computeVertexNormals();
+  return g;
+})();
+
 function SchoolBuildingD2Pass5({
   osmId,
   wallHeight,
@@ -624,16 +677,30 @@ function SchoolBuildingD2Pass5({
   roofColour
 }: SchoolBuildingProps) {
   const b = BUILDING_BY_ID[osmId];
-  const PARAPET_H = 0.45;
   const wallGeo = useWallGeo(b, wallHeight);
-  const parapetGeo = useWallGeo(b, PARAPET_H);
 
   const decor = useMemo(() => {
     if (!b) return null;
     return derivePhase3Decor(b, polygonCentre(b.poly));
   }, [b]);
 
-  if (!b || !wallGeo || !parapetGeo || !decor) return null;
+  const roof = useMemo(() => {
+    if (!b) return null;
+    const obb = schoolObb(b.poly);
+    // Steep dark-shingle gable — pitch ~35°. Ridge along the OBB's
+    // longer axis (w). Overhang 0.4 m outward on all sides so the
+    // roof visibly caps the walls (Vision Owner reference confirms
+    // the school has clear eaves rather than a flush parapet).
+    const overhang = 0.4;
+    const rw = Math.max(2, obb.w + overhang * 2);
+    const rd = Math.max(2, obb.d + overhang * 2);
+    // Pitch: 0.32 × shorter horizontal dimension, capped at 3.0 m so
+    // the small annexes don't get freakish sky-scraping ridges.
+    const ridgeH = Math.min(3.0, Math.min(rw, rd) * 0.32);
+    return { angle: obb.angle, rw, rd, ridgeH };
+  }, [b]);
+
+  if (!b || !wallGeo || !decor || !roof) return null;
 
   const centre = polygonCentre(b.poly);
   const TRIM_COLOUR = '#efe6d4';        // cream painted-timber institutional trim
@@ -652,13 +719,17 @@ function SchoolBuildingD2Pass5({
           side={THREE.DoubleSide}
         />
       </mesh>
-      <mesh geometry={parapetGeo} position={[0, wallHeight, 0]}>
-        <meshStandardMaterial
-          color={roofColour}
-          roughness={0.9}
-          side={THREE.DoubleSide}
-        />
-      </mesh>
+      {/* ORDER 032 — steep dark-shingle gable roof (replaces flat parapet). */}
+      <group position={[0, wallHeight, 0]} rotation={[0, -roof.angle, 0]}>
+        <mesh geometry={SCHOOL_GABLE_GEO} scale={[roof.rw, roof.ridgeH, roof.rd]}>
+          <meshStandardMaterial color={roofColour} roughness={0.95} side={THREE.DoubleSide} />
+        </mesh>
+        {/* Ridge cap board along the peak. */}
+        <mesh position={[0, roof.ridgeH + 0.06, 0]}>
+          <boxGeometry args={[roof.rw, 0.1, 0.22]} />
+          <meshStandardMaterial color={'#3a2e20'} roughness={0.9} />
+        </mesh>
+      </group>
 
       {/* Institutional windows — 1 or 2 storeys per building. Only
           the +Z-facing side of each edge is emitted; each `window`
