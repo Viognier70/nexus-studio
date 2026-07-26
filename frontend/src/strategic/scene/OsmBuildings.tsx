@@ -1253,7 +1253,18 @@ export function OsmBuildings() {
   const windows = useMemo(() => {
     const out: Array<{ pos: [number, number, number]; rotY: number; w: number; h: number }> = [];
     for (const b of buildings) {
-      if (!WINDOW_KINDS.has(b.effectiveKind)) continue;
+      const kind = b.effectiveKind;
+      const inWindowSet = WINDOW_KINDS.has(kind);
+      // ORDER 032 — historic red-brick industrial buildings show sparse
+      // rectangular windows in Vision Owner Street View shots
+      // (Nygatan / Prästgatan 10 / Swedecote area). Include industrial
+      // + warehouse when a Vision Owner colour override exists OR the
+      // building is tall enough to read as a multi-storey industrial
+      // (buildingLevels ≥ 2) rather than a single-storey shed.
+      const isMultiStoreyIndustrial =
+        (kind === 'industrial' || kind === 'warehouse') &&
+        (b.building.wallColour != null || (b.building.buildingLevels ?? 0) >= 2);
+      if (!inWindowSet && !isMultiStoreyIndustrial) continue;
       for (const w of windowsFor(b)) out.push(w);
     }
     return out;
