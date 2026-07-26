@@ -333,7 +333,13 @@ const POI_CATEGORY = {
   'gry-tempo': { category: 'Retail', importance: 'high' },
   'gry-direkten': { category: 'Retail', importance: 'medium' },
   'gry-kantin-hyttblecket': { category: 'Food', importance: 'medium' },
-  'gry-bergslagshus': { category: 'Retail', importance: 'medium' }
+  'gry-bergslagshus': { category: 'Retail', importance: 'medium' },
+  // ORDER 029 promotions
+  'gry-karnhuset': { category: 'Education', importance: 'high' },        // campus core building (Örebro universitet — RHS)
+  'gry-lansmansgarden': { category: 'Historic', importance: 'medium' },  // historic building near Torget
+  'gry-swedecote': { category: 'Industrial', importance: 'medium' },     // slate industry, Lokavägen 1
+  'gry-miljongruvan': { category: 'Historic', importance: 'high' },      // heritage mine, outdoor museum substitute
+  'gry-fotbollsplan': { category: 'Sports', importance: 'medium' }       // soccer pitch, distinct from IP
 };
 const pois = world.landmarks.map((l) => {
   const info = POI_CATEGORY[l.id] || { category: 'Unknown', importance: 'low' };
