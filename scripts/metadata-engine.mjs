@@ -341,7 +341,8 @@ const POI_CATEGORY = {
   'gry-miljongruvan': { category: 'Historic', importance: 'high' },      // heritage mine, outdoor museum substitute
   'gry-fotbollsplan': { category: 'Sports', importance: 'medium' },      // soccer pitch, distinct from IP
   // ORDER 032 additions
-  'gry-reningsverk': { category: 'Industrial', importance: 'low' }       // municipal wastewater plant, multipolygon recovery
+  'gry-reningsverk': { category: 'Industrial', importance: 'low' },      // municipal wastewater plant, multipolygon recovery
+  'gry-qvarn': { category: 'Historic', importance: 'medium' }            // Grythytte Qvarn heritage mill, Vision Owner add
 };
 const pois = world.landmarks.map((l) => {
   const info = POI_CATEGORY[l.id] || { category: 'Unknown', importance: 'low' };

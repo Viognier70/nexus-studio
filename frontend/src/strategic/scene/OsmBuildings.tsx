@@ -72,7 +72,11 @@ const KIND_COLOUR: Record<string, { wall: string; roof: string }> = {
   // Bergslag barns: long, dark-red vertical-board timber walls with a
   // steep double-pitch iron-sheet roof. Reclassified from `industrial`
   // at build time based on aspect ratio.
-  barn: { wall: '#6a3226', roof: '#312622' }
+  barn: { wall: '#6a3226', roof: '#312622' },
+  // ORDER 032 — heritage buildings (Grythytte Qvarn added from Vision
+  // Owner archive). Dark red-brown Bergslag timber with darker roof.
+  historic: { wall: '#6a3226', roof: '#3a2b22' },
+  chapel: { wall: '#efe6d4', roof: '#3a2e20' }
 };
 
 const DEFAULT_COLOUR = { wall: '#a89e88', roof: '#4a4136' };
