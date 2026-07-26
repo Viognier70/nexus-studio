@@ -239,6 +239,48 @@ function extractWaterFromRelations(els) {
   return out;
 }
 
+// ORDER 032 — building multipolygon extractor.
+// Some real Grythyttan buildings are stored in OSM as multipolygon
+// relations rather than single ways. Grythyttans Reningsverk
+// (r17025286, building=industrial + man_made=wastewater_plant) is the
+// documented example. Without this extractor those buildings were
+// silently dropped from the export.
+function extractBuildingsFromRelations(els) {
+  const out = [];
+  for (const e of els) {
+    if (e.type !== 'relation') continue;
+    if (!e.tags?.building) continue;
+    const outerWays = [];
+    for (const m of e.members ?? []) {
+      if (m.type !== 'way' || m.role !== 'outer' || !m.geometry) continue;
+      if (m.geometry.length < 2) continue;
+      outerWays.push(m.geometry.map((n) => [n.lat, n.lon]));
+    }
+    if (outerWays.length === 0) continue;
+    const stitched = stitchRing(outerWays);
+    if (!stitched || stitched.length < 3) continue;
+    out.push({
+      id: 'r' + e.id,
+      poly: stitched.map(([lat, lon]) => toLocal(lat, lon)),
+      name: e.tags?.name ?? null,
+      kind: e.tags.building === 'yes' ? 'yes' : e.tags.building,
+      amenity: e.tags.amenity ?? null,
+      tourism: e.tags.tourism ?? null,
+      religion: e.tags.religion ?? null,
+      historic: e.tags.historic ?? null,
+      roofShape: e.tags['roof:shape'] ?? null,
+      roofLevels: e.tags['roof:levels'] ? Number(e.tags['roof:levels']) : null,
+      buildingLevels: e.tags['building:levels'] ? Number(e.tags['building:levels']) : null,
+      height: e.tags.height ? Number(e.tags.height) : null,
+      roofMaterial: e.tags['roof:material'] ?? null,
+      roofColour: e.tags['roof:colour'] ?? null,
+      wallMaterial: e.tags['building:material'] ?? null,
+      wallColour: e.tags['building:colour'] ?? null
+    });
+  }
+  return out;
+}
+
 // --- Landmarks -------------------------------------------------------
 //
 // Landmark records are project curation, not something OSM provides
@@ -370,7 +412,10 @@ async function main() {
     else if (el.type === 'way') wayIndex.set(el.id, el);
   }
 
-  const buildings = extractBuildings(els);
+  const buildings = [
+    ...extractBuildings(els),
+    ...extractBuildingsFromRelations(els)
+  ];
   const roads = extractRoads(els);
   const water = [
     ...extractSimplePoly(els, (t) => t.natural === 'water' || t.waterway === 'riverbank'),
