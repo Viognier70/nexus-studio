@@ -1,0 +1,39 @@
+{
+  "street": "Badvägen",
+  "generated": "2026-07-27",
+  "order": "ORDER 032",
+  "road_ids": [
+    "w287143008",
+    "w1071570852",
+    "w1329020090",
+    "w1329020116",
+    "w1329020126",
+    "w1329020128"
+  ],
+  "osm_status": "Only 1 building (w611776595) in OSM export for the ~700m Badvägen corridor. Google Maps darker-grey rectangles + 9 Vision Owner SVs (2, 4, 6, 8, 12, 15, 18 Badvägen visible) show ~15+ villa plots with occasional garages.",
+  "reconciliation": [
+    {
+      "filenames": [
+        "16.12.06",
+        "16.29.01",
+        "16.29.42",
+        "16.29.52",
+        "16.30.15",
+        "16.30.54",
+        "16.31.03",
+        "16.31.11",
+        "21.13.48"
+      ],
+      "visible_buildings_added": 15,
+      "colour_pattern": "cream / pale-yellow / white dominant per StreetProfile.colour_tendency=cream-dominant; some Faluröd weathered — matches Vision Owner survey",
+      "style": "gable roof 2-storey, white picket fences (OsmFences renders these per StreetProfile.boundary=picket)",
+      "positions": "parametric along Badvägen linestring, alternating sides, setback 25m from centre. Approximate ±10m.",
+      "pattern": "addresses 2, 4, 5, 6, 8, 9, 10, 12, 14, 15, 16, 18 as main villas + 3 garages at 4, 12, 18"
+    }
+  ],
+  "summary": {
+    "total_missing_buildings": 15,
+    "reason": "not_in_osm",
+    "proposed_fix_status": "implemented ORDER 032 block 9"
+  }
+}

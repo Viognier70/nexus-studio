@@ -92,6 +92,7 @@ const KIND_TO_FAMILY = {
   // ORDER 032 additions from Vision Owner archive
   shed: 'Outbuilding',
   outbuilding: 'Outbuilding',
+  garage: 'Garage',
   chapel: 'Religious',
   historic: 'Historic'
 };
