@@ -88,7 +88,12 @@ const KIND_TO_FAMILY = {
   residential: 'Apartment',
   house: 'Villa',
   detached: 'Villa',
-  roof: 'Commercial'   // petrol canopies etc.
+  roof: 'Commercial',   // petrol canopies etc.
+  // ORDER 032 additions from Vision Owner archive
+  shed: 'Outbuilding',
+  outbuilding: 'Outbuilding',
+  chapel: 'Religious',
+  historic: 'Historic'
 };
 
 function classifyBuilding(b) {

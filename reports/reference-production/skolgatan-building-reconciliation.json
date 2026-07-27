@@ -1,0 +1,201 @@
+{
+  "street": "Skolgatan",
+  "generated": "2026-07-27",
+  "order": "ORDER 032",
+  "road_ids": [
+    "w122157686",
+    "w191323432"
+  ],
+  "osm_status": "Only 3 buildings (Tempo w1250001245 + w1250001244 + w1425946299) exist in OSM Overpass export for this ~340m corridor. Google Maps darker-grey building rectangles + Vision Owner Street View shots clearly show 8-12 additional buildings on both sides of the street. Google's building layer draws from proprietary imagery-detection data, not OSM.",
+  "reconciliation": [
+    {
+      "filename": "Skärmavbild 2026-07-26 kl. 16.10.00.png",
+      "address": "5 Skolgatan",
+      "camera_local": [
+        -98,
+        32
+      ],
+      "view_direction": "west",
+      "visible_buildings": [
+        {
+          "role": "main",
+          "position_estimate": [
+            -105,
+            55
+          ],
+          "size": [
+            16,
+            10
+          ],
+          "colour": "Faluröd",
+          "storeys": 2,
+          "roof": "gable",
+          "runtime_status": "MISSING",
+          "action": "add as vw-skg-05"
+        },
+        {
+          "role": "outbuilding",
+          "position_estimate": [
+            -92,
+            62
+          ],
+          "size": [
+            6,
+            5
+          ],
+          "colour": "Faluröd dark",
+          "storeys": 1,
+          "roof": "shed",
+          "runtime_status": "MISSING",
+          "action": "add as vw-skg-05b"
+        }
+      ]
+    },
+    {
+      "filename": "Skärmavbild 2026-07-26 kl. 16.02.04.png",
+      "address": "9 Skolgatan",
+      "camera_local": [
+        -121,
+        32
+      ],
+      "view_direction": "west",
+      "visible_buildings": [
+        {
+          "role": "main",
+          "position_estimate": [
+            -115,
+            55
+          ],
+          "size": [
+            12,
+            9
+          ],
+          "colour": "pale green / cream",
+          "storeys": 2,
+          "roof": "gable",
+          "runtime_status": "MISSING",
+          "action": "add as vw-skg-09"
+        },
+        {
+          "role": "main opposite",
+          "position_estimate": [
+            -115,
+            15
+          ],
+          "size": [
+            14,
+            10
+          ],
+          "colour": "white",
+          "storeys": 2,
+          "roof": "gable",
+          "runtime_status": "MISSING",
+          "action": "add as vw-skg-12 (north side, opposite address 9)"
+        }
+      ]
+    },
+    {
+      "filename": "Skärmavbild 2026-07-26 kl. 16.02.23.png",
+      "address": "16 Skolgatan",
+      "camera_local": [
+        -165,
+        32
+      ],
+      "view_direction": "east",
+      "visible_buildings": [
+        {
+          "role": "main opposite tempo",
+          "position_estimate": [
+            -170,
+            20
+          ],
+          "size": [
+            18,
+            12
+          ],
+          "colour": "cream / warm ochre",
+          "storeys": 3,
+          "roof": "gable",
+          "runtime_status": "MISSING",
+          "action": "add as vw-skg-16 (large 3-storey opposite Tempo — this is the FAIL-verdict building)"
+        },
+        {
+          "role": "annex barn",
+          "position_estimate": [
+            -155,
+            15
+          ],
+          "size": [
+            12,
+            8
+          ],
+          "colour": "Faluröd",
+          "storeys": 2,
+          "roof": "gable",
+          "runtime_status": "MISSING",
+          "action": "add as vw-skg-14"
+        }
+      ]
+    },
+    {
+      "filename": "Skärmavbild 2026-07-26 kl. 16.02.12.png",
+      "address": "11 Skolgatan",
+      "camera_local": [
+        -145,
+        32
+      ],
+      "view_direction": "east",
+      "visible_buildings": [
+        {
+          "role": "main opposite",
+          "position_estimate": [
+            -140,
+            15
+          ],
+          "size": [
+            12,
+            10
+          ],
+          "colour": "cream",
+          "storeys": 2,
+          "roof": "gable",
+          "runtime_status": "MISSING",
+          "action": "add as vw-skg-10"
+        }
+      ]
+    },
+    {
+      "filename": "Skärmavbild 2026-07-26 kl. 16.02.33.png",
+      "address": "Skolgatan west end (near IP)",
+      "camera_local": [
+        -230,
+        40
+      ],
+      "view_direction": "south",
+      "visible_buildings": [
+        {
+          "role": "main",
+          "position_estimate": [
+            -220,
+            20
+          ],
+          "size": [
+            15,
+            12
+          ],
+          "colour": "cream",
+          "storeys": 2,
+          "roof": "gable",
+          "runtime_status": "MISSING",
+          "action": "add as vw-skg-20"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "total_missing_buildings": 8,
+    "reason": "not_in_osm",
+    "root_cause": "OSM export lacks per-street building geometry for Skolgatan; Google Maps darker-grey rectangles come from Google proprietary building layer",
+    "proposed_fix": "hand-author approximate footprints derived from SV info-card addresses + street orientation. Positions approximate ~±5m. Sizes derived from SV facade widths."
+  }
+}
