@@ -1,0 +1,77 @@
+{
+  "streets": ["Lokavägen (Rv 205)", "Badvägen lakeshore extension"],
+  "block": "Slate-industry corridor + peripheral lakeshore + heritage",
+  "generated": "2026-07-27",
+  "order": "ORDER 032 corrective",
+  "workflow": "Vision Owner LANDMARK_CATALOGUE.md WGS84 approximations from Google Maps view centres; SV shots 15.56.25 + 15.56.43 for Lokavägen; Badvägen SVs for lakeshore. Slate industry cluster is a district-identity signal cited in RECOGNISABILITY_SURVEY.md.",
+  "buildings": [
+    {
+      "id": "vw-icopal",
+      "address": "Icopal Skifferverk",
+      "map_evidence": "15.26.52.png shows Icopal marker south along Rv 205",
+      "sv_evidence": ["15.56.25 Rv 205 southern approach shows Icopal signage on industrial building"],
+      "position_local": [-800, 684],
+      "size_m": [40, 18],
+      "storeys": 2,
+      "roof_shape": "gable",
+      "wall_colour_hex": "#8a4232",
+      "roof_colour_hex": "#3a2b22",
+      "role": "main",
+      "confidence": "medium",
+      "verification": "VERIFIED_MAP_AND_STREETVIEW",
+      "notes": "Slate roofing works — Faluröd brick industrial mass"
+    },
+    {
+      "id": "vw-takskiffer",
+      "address": "Takskifferspecialisten AB",
+      "map_evidence": "15.26.52.png",
+      "sv_evidence": ["Lokavägen SV shows Takskifferspecialisten signage"],
+      "position_local": [-604, 528],
+      "size_m": [24, 14],
+      "storeys": 2,
+      "roof_shape": "gable",
+      "wall_colour_hex": "#8a4232",
+      "roof_colour_hex": "#3a2b22",
+      "role": "main",
+      "confidence": "medium",
+      "verification": "VERIFIED_MAP_AND_STREETVIEW",
+      "notes": "Slate roofing specialist — commercial arm of slate industry"
+    },
+    {
+      "id": "vw-grythyttevikens-skiffertak",
+      "address": "Grythyttevikens Skiffertak AB",
+      "map_evidence": "15.26.52.png",
+      "sv_evidence": ["north-edge SV shows Grythyttevikens Skiffertak"],
+      "position_local": [-464, -639],
+      "size_m": [22, 14],
+      "storeys": 2,
+      "roof_shape": "gable",
+      "wall_colour_hex": "#8a4232",
+      "roof_colour_hex": "#3a2b22",
+      "role": "main",
+      "confidence": "medium",
+      "verification": "VERIFIED_MAP_AND_STREETVIEW",
+      "notes": "Third slate-roofing company — completes the industry cluster"
+    },
+    {
+      "id": "vw-csvwellness",
+      "address": "CSVWellness",
+      "map_evidence": "15.26.52.png — Badvägen lakeshore area",
+      "sv_evidence": ["Badvägen SVs show CSVWellness building"],
+      "position_local": [-882, 239],
+      "size_m": [16, 10],
+      "storeys": 2,
+      "roof_shape": "gable",
+      "wall_colour_hex": "#efe6d4",
+      "roof_colour_hex": "#3a2b22",
+      "role": "main",
+      "confidence": "medium",
+      "verification": "VERIFIED_MAP_AND_STREETVIEW",
+      "notes": "Wellness centre / spa on Badvägen"
+    }
+  ],
+  "landmark_only_no_building": [
+    {"id": "gry-badplats", "note": "Grythyttans badplats is a swimming beach (not a building)"},
+    {"id": "gry-kapell", "note": "Grythyttans Kapell position unclear from Vision Owner archive — WGS84 was Google Maps view centre, not chapel itself"}
+  ]
+}
