@@ -1,201 +1,142 @@
 {
   "street": "Skolgatan",
+  "block": "Tempo cluster and adjacent",
   "generated": "2026-07-27",
-  "order": "ORDER 032",
-  "road_ids": [
-    "w122157686",
-    "w191323432"
-  ],
-  "osm_status": "Only 3 buildings (Tempo w1250001245 + w1250001244 + w1425946299) exist in OSM Overpass export for this ~340m corridor. Google Maps darker-grey building rectangles + Vision Owner Street View shots clearly show 8-12 additional buildings on both sides of the street. Google's building layer draws from proprietary imagery-detection data, not OSM.",
-  "reconciliation": [
+  "order": "ORDER 032 corrective",
+  "workflow": "MAP (15.26.52.png) -> footprint + placement; SV info-card address -> building identity; SV facade -> appearance",
+  "anchors": {
+    "Tempo_w1250001245": [-166, 54],
+    "Skolgatan_road_midline_Y": [30, 48]
+  },
+  "convention": "Odd addresses south of road; even north. Tempo is #7 on south side.",
+  "buildings": [
     {
-      "filename": "Skärmavbild 2026-07-26 kl. 16.10.00.png",
+      "id": "vw-skg-5",
       "address": "5 Skolgatan",
-      "camera_local": [
-        -98,
-        32
-      ],
-      "view_direction": "west",
-      "visible_buildings": [
-        {
-          "role": "main",
-          "position_estimate": [
-            -105,
-            55
-          ],
-          "size": [
-            16,
-            10
-          ],
-          "colour": "Faluröd",
-          "storeys": 2,
-          "roof": "gable",
-          "runtime_status": "MISSING",
-          "action": "add as vw-skg-05"
-        },
-        {
-          "role": "outbuilding",
-          "position_estimate": [
-            -92,
-            62
-          ],
-          "size": [
-            6,
-            5
-          ],
-          "colour": "Faluröd dark",
-          "storeys": 1,
-          "roof": "shed",
-          "runtime_status": "MISSING",
-          "action": "add as vw-skg-05b"
-        }
-      ]
+      "map_evidence": "15.26.52.png upper-left third, south side of Skolgatan",
+      "sv_evidence": ["16.10.00.png shows SV info card 5 Skolgatan; large red Faluröd 2-storey timber building on LEFT of frame"],
+      "position_local": [-115, 60],
+      "size_m": [16, 10],
+      "storeys": 2,
+      "roof_shape": "gable",
+      "wall_colour_hex": "#a24a3a",
+      "roof_colour_hex": "#3a2b22",
+      "role": "main",
+      "confidence": "high",
+      "verification": "VERIFIED_MAP_AND_STREETVIEW",
+      "notes": "Red Faluröd 2-storey timber; full-frame in 16.10.00; dark shingle roof"
     },
     {
-      "filename": "Skärmavbild 2026-07-26 kl. 16.02.04.png",
+      "id": "vw-skg-8",
+      "address": "8 Skolgatan",
+      "map_evidence": "15.26.52.png upper-left third — cream rectangle N of road",
+      "sv_evidence": ["16.01.41.png SV info card 8 Skolgatan"],
+      "position_local": [-135, 15],
+      "size_m": [14, 10],
+      "storeys": 2,
+      "roof_shape": "gable",
+      "wall_colour_hex": "#e6dcd0",
+      "roof_colour_hex": "#2a2520",
+      "role": "main",
+      "confidence": "high",
+      "verification": "VERIFIED_MAP_AND_STREETVIEW",
+      "notes": "Cream 2-storey with dark roof, N side of Skolgatan near Kyrkbacken junction"
+    },
+    {
+      "id": "vw-skg-9",
       "address": "9 Skolgatan",
-      "camera_local": [
-        -121,
-        32
-      ],
-      "view_direction": "west",
-      "visible_buildings": [
-        {
-          "role": "main",
-          "position_estimate": [
-            -115,
-            55
-          ],
-          "size": [
-            12,
-            9
-          ],
-          "colour": "pale green / cream",
-          "storeys": 2,
-          "roof": "gable",
-          "runtime_status": "MISSING",
-          "action": "add as vw-skg-09"
-        },
-        {
-          "role": "main opposite",
-          "position_estimate": [
-            -115,
-            15
-          ],
-          "size": [
-            14,
-            10
-          ],
-          "colour": "white",
-          "storeys": 2,
-          "roof": "gable",
-          "runtime_status": "MISSING",
-          "action": "add as vw-skg-12 (north side, opposite address 9)"
-        }
-      ]
+      "map_evidence": "15.26.52.png upper-left third — light grey rectangle S of road",
+      "sv_evidence": ["16.02.04.png SV info card 9 Skolgatan; pale green 2-storey timber", "16.02.12.png background context"],
+      "position_local": [-135, 60],
+      "size_m": [14, 10],
+      "storeys": 2,
+      "roof_shape": "gable",
+      "wall_colour_hex": "#b8d4c8",
+      "roof_colour_hex": "#2d2a28",
+      "role": "main",
+      "confidence": "high",
+      "verification": "VERIFIED_MAP_AND_STREETVIEW",
+      "notes": "Grey-green painted timber 2-storey with dark shingle roof"
     },
     {
-      "filename": "Skärmavbild 2026-07-26 kl. 16.02.23.png",
-      "address": "16 Skolgatan",
-      "camera_local": [
-        -165,
-        32
-      ],
-      "view_direction": "east",
-      "visible_buildings": [
-        {
-          "role": "main opposite tempo",
-          "position_estimate": [
-            -170,
-            20
-          ],
-          "size": [
-            18,
-            12
-          ],
-          "colour": "cream / warm ochre",
-          "storeys": 3,
-          "roof": "gable",
-          "runtime_status": "MISSING",
-          "action": "add as vw-skg-16 (large 3-storey opposite Tempo — this is the FAIL-verdict building)"
-        },
-        {
-          "role": "annex barn",
-          "position_estimate": [
-            -155,
-            15
-          ],
-          "size": [
-            12,
-            8
-          ],
-          "colour": "Faluröd",
-          "storeys": 2,
-          "roof": "gable",
-          "runtime_status": "MISSING",
-          "action": "add as vw-skg-14"
-        }
-      ]
+      "id": "vw-skg-10",
+      "address": "10 Skolgatan",
+      "map_evidence": "15.26.52.png upper-left N side, opposite Tempo cluster",
+      "sv_evidence": ["16.02.12.png (from 11 Skolgatan facing east; #10 visible on N side of road)"],
+      "position_local": [-155, 15],
+      "size_m": [12, 10],
+      "storeys": 2,
+      "roof_shape": "gable",
+      "wall_colour_hex": "#e8dcb8",
+      "roof_colour_hex": "#3a2b22",
+      "role": "main",
+      "confidence": "medium",
+      "verification": "VERIFIED_MAP_ONLY",
+      "notes": "Cream 2-storey on N side, glimpsed only in wide SV shots"
     },
     {
-      "filename": "Skärmavbild 2026-07-26 kl. 16.02.12.png",
+      "id": "vw-skg-11",
       "address": "11 Skolgatan",
-      "camera_local": [
-        -145,
-        32
-      ],
-      "view_direction": "east",
-      "visible_buildings": [
-        {
-          "role": "main opposite",
-          "position_estimate": [
-            -140,
-            15
-          ],
-          "size": [
-            12,
-            10
-          ],
-          "colour": "cream",
-          "storeys": 2,
-          "roof": "gable",
-          "runtime_status": "MISSING",
-          "action": "add as vw-skg-10"
-        }
-      ]
+      "map_evidence": "15.26.52.png upper-left — S side, ~30m west of Tempo",
+      "sv_evidence": ["16.01.55.png SV info card 11 Skolgatan; cream 2-storey", "16.02.12.png"],
+      "position_local": [-155, 60],
+      "size_m": [14, 10],
+      "storeys": 2,
+      "roof_shape": "gable",
+      "wall_colour_hex": "#f5f0e8",
+      "roof_colour_hex": "#3a2b22",
+      "role": "main",
+      "confidence": "high",
+      "verification": "VERIFIED_MAP_AND_STREETVIEW",
+      "notes": "Off-white 2-storey with dark shingle, tree-lined verge"
     },
     {
-      "filename": "Skärmavbild 2026-07-26 kl. 16.02.33.png",
-      "address": "Skolgatan west end (near IP)",
-      "camera_local": [
-        -230,
-        40
-      ],
-      "view_direction": "south",
-      "visible_buildings": [
-        {
-          "role": "main",
-          "position_estimate": [
-            -220,
-            20
-          ],
-          "size": [
-            15,
-            12
-          ],
-          "colour": "cream",
-          "storeys": 2,
-          "roof": "gable",
-          "runtime_status": "MISSING",
-          "action": "add as vw-skg-20"
-        }
-      ]
+      "id": "vw-skg-12",
+      "address": "12 Skolgatan",
+      "map_evidence": "15.26.52.png N side, directly opposite Tempo",
+      "sv_evidence": ["16.02.23.png (facing east from 16 Skolgatan; #12 visible foreground on N side)"],
+      "position_local": [-175, 15],
+      "size_m": [14, 10],
+      "storeys": 2,
+      "roof_shape": "gable",
+      "wall_colour_hex": "#efe6d4",
+      "roof_colour_hex": "#3a2b22",
+      "role": "main",
+      "confidence": "high",
+      "verification": "VERIFIED_MAP_AND_STREETVIEW",
+      "notes": "White 2-storey timber DIRECTLY OPPOSITE TEMPO — FAIL-verdict guard building"
+    },
+    {
+      "id": "vw-skg-14",
+      "address": "14 Skolgatan",
+      "map_evidence": "15.26.52.png N side, ~200m west of Torget",
+      "sv_evidence": ["16.02.23.png (Faluröd 2-storey barn visible LEFT of frame from #16 facing east)"],
+      "position_local": [-195, 15],
+      "size_m": [12, 8],
+      "storeys": 2,
+      "roof_shape": "gable",
+      "wall_colour_hex": "#7c3a2a",
+      "roof_colour_hex": "#3a2b22",
+      "role": "outbuilding",
+      "confidence": "medium",
+      "verification": "VERIFIED_MAP_AND_STREETVIEW",
+      "notes": "Small Faluröd barn / outbuilding"
+    },
+    {
+      "id": "vw-skg-16",
+      "address": "16 Skolgatan",
+      "map_evidence": "15.26.52.png N side, prominent cream 3-storey rectangle",
+      "sv_evidence": ["16.02.23.png SV info card 16 Skolgatan; large cream 3-storey building"],
+      "position_local": [-215, 15],
+      "size_m": [18, 12],
+      "storeys": 3,
+      "roof_shape": "hip",
+      "wall_colour_hex": "#e8dcb8",
+      "roof_colour_hex": "#5a3f30",
+      "role": "main",
+      "confidence": "high",
+      "verification": "VERIFIED_MAP_AND_STREETVIEW",
+      "notes": "Large cream 3-storey apartment / historic building, hip roof — Vision Owner survey highlighted"
     }
-  ],
-  "summary": {
-    "total_missing_buildings": 8,
-    "reason": "not_in_osm",
-    "root_cause": "OSM export lacks per-street building geometry for Skolgatan; Google Maps darker-grey rectangles come from Google proprietary building layer",
-    "proposed_fix": "hand-author approximate footprints derived from SV info-card addresses + street orientation. Positions approximate ~±5m. Sizes derived from SV facade widths."
-  }
+  ]
 }
