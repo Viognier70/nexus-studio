@@ -1,0 +1,76 @@
+{
+  "street": "Kyrkogatan back-cluster (deep audit pass 2)",
+  "block": "historic village core — rear plots and corner recognisability",
+  "generated": "2026-07-27",
+  "order": "ORDER 033 deep audit",
+  "workflow": "Follow-up scan of Vision Owner SVs 16.05.58, 16.06.16, 16.06.26, 16.06.32, 16.09.35 that show Kyrkogatan features not captured by the first-pass reconciliation. Rear-plot cluster behind #9 (SV 16.06.26), pale mansard villa on east side south of #9 (SV 16.05.58 / 16.06.32), small white gambrel booth at Torget-Kyrkogatan corner (SV 16.09.35). Anchor: existing vw-kyr-1 (-29,-11), vw-kyr-9 (-31,4).",
+  "buildings": [
+    {
+      "id": "vw-kyr-9e-mansard",
+      "address": "Kyrkogatan east mansard villa (opposite #9)",
+      "map_evidence": "15.26.52.png — building on east side of Kyrkogatan south of #9",
+      "sv_evidence": [
+        "16.05.58 wider Kyrkogatan shot; pale grey/white 2-storey mansard/gambrel villa with TV antenna on east side of road",
+        "16.06.32 confirms same mansard villa mid-road view"
+      ],
+      "position_local": [-14, 5],
+      "size_m": [11, 9],
+      "storeys": 2,
+      "roof_shape": "gable",
+      "wall_colour_hex": "#d8d4c8",
+      "roof_colour_hex": "#3a2b22",
+      "role": "main",
+      "confidence": "medium",
+      "verification": "VERIFIED_MAP_AND_STREETVIEW",
+      "notes": "Distinctive pale mansard villa — Vision Owner recognisability landmark on Kyrkogatan east side"
+    },
+    {
+      "id": "vw-kyr-9-rear-barn",
+      "address": "Kyrkogatan back-lot Faluröd barn",
+      "map_evidence": "15.26.52.png — outbuilding footprint on rear plot behind #9",
+      "sv_evidence": ["16.06.26 driveway view showing Faluröd shed/barn on left of rear lot"],
+      "position_local": [-45, 8],
+      "size_m": [8, 6],
+      "storeys": 1,
+      "roof_shape": "gable",
+      "wall_colour_hex": "#8a4232",
+      "roof_colour_hex": "#312622",
+      "role": "outbuilding",
+      "confidence": "medium",
+      "verification": "VERIFIED_MAP_AND_STREETVIEW",
+      "notes": "Faluröd back-lot outbuilding behind Kyrkogatan #9"
+    },
+    {
+      "id": "vw-kyr-9-rear-villa",
+      "address": "Kyrkogatan back-lot cream villa",
+      "map_evidence": "15.26.52.png — larger residential footprint deep on rear plot",
+      "sv_evidence": ["16.06.26 background shows tall cream multi-storey gabled villa with dormers"],
+      "position_local": [-42, 15],
+      "size_m": [10, 8],
+      "storeys": 3,
+      "roof_shape": "gable",
+      "wall_colour_hex": "#efe6d4",
+      "roof_colour_hex": "#3a2b22",
+      "role": "main",
+      "confidence": "medium",
+      "verification": "VERIFIED_MAP_AND_STREETVIEW",
+      "notes": "Cream 3-storey villa on rear lot behind Kyrkogatan #9"
+    },
+    {
+      "id": "vw-kyr-1-booth",
+      "address": "Kyrkogatan corner booth (near Torget)",
+      "map_evidence": "15.26.52.png — small structure at Torget-Kyrkogatan junction",
+      "sv_evidence": ["16.09.35 shows small white 1-storey historic booth with dark gambrel roof at corner"],
+      "position_local": [-24, -15],
+      "size_m": [6, 5],
+      "storeys": 1,
+      "roof_shape": "gable",
+      "wall_colour_hex": "#efe6d4",
+      "roof_colour_hex": "#312622",
+      "role": "main",
+      "confidence": "medium",
+      "verification": "VERIFIED_MAP_AND_STREETVIEW",
+      "notes": "Small historic white booth with dark gambrel roof at Torget-Kyrkogatan corner"
+    }
+  ]
+}
