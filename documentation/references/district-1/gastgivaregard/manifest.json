@@ -47,6 +47,30 @@
       "view": "winter shot of Prästgatan looking down the street; shows Gästgivaregård context with neighbouring buildings, snow-covered roofs",
       "verifies": ["roofForm", "roofPitch", "streetContext"],
       "notes": "Roof pitch legible against sky; secondary use only"
+    },
+    {
+      "path": "../../grythyttan bilder/Skärmavbild 2026-07-26 kl. 15.59.26.png",
+      "view": "Google Street View at 13 Prästgatan with SV info-card panel open — the Gästgivaregård zone with the INGO petrol station in the same block. Info-card thumbnails show the INGO forecourt",
+      "verifies": ["streetContext", "adjacencyToIngo"],
+      "notes": "Not head-on to the Gästgivaregård itself; useful only for streetscape context and neighbour layout."
+    },
+    {
+      "path": "../../grythyttan bilder/Skärmavbild 2026-07-26 kl. 15.59.53.png",
+      "view": "SV wide street along Prästgatan by the Gästgivaregård forecourt looking toward the square; red timber façades of the Gästgivaregård complex on one side, INGO signage in the background",
+      "verifies": ["streetContext", "wallColour"],
+      "notes": "Oblique — no straight-on facade, no gable end, no roof surface."
+    },
+    {
+      "path": "../../grythyttan bilder/Skärmavbild 2026-07-26 kl. 16.00.16.png",
+      "view": "SV facade close-up at 3 Prästgatan — Gästgivaregård courtyard side; Falu-red vertical timber wing, cobbled courtyard, adjacent white timber structure visible",
+      "verifies": ["wallMaterial", "wallColour", "wingExtensions", "terraceOrArrivalCourt"],
+      "notes": "Roof pitch not readable at this angle; sign board and main entrance not in frame."
+    },
+    {
+      "path": "../../grythyttan bilder/Skärmavbild 2026-07-26 kl. 16.00.26.png",
+      "view": "SV wide street at 1 Prästgatan looking west toward Torget; the Falu-red magasin/timber corner building of the Gästgivaregård block visible at the Torget-facing corner",
+      "verifies": ["streetContext", "adjacencyToTorget"],
+      "notes": "Gästgivaregård main volume is behind camera; frame documents only the Torget-facing corner."
     }
   ],
   "confidenceByAspect": {

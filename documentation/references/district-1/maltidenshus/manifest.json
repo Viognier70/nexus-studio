@@ -35,6 +35,42 @@
       "view": "three-quarter view showing drum tower with conical crown and heavy timber columns supporting the canopy, adjacent buildings in background, grass foreground",
       "verifies": ["sevillaPavilionForm", "sevillaPavilionLantern", "columnStructure"],
       "notes": "Confirms scale relative to human figures"
+    },
+    {
+      "path": "../../grythyttan bilder/Skärmavbild 2026-07-20 kl. 00.28.35.png",
+      "view": "Google Maps overview of Grythyttan area with POI labels: 'Måltidens Hus i Norden' (red marker), 'Pizzans Hus', 'Gryhytte Qvarn', 'Herrgården i Grythyttan', 'Grythyttans gästgivaregård', 'Gryhyttevikens utskeppsplats'. The Campus block sits along Kvarnvägen with Torrvarpen lake to the east",
+      "verifies": ["position", "adjacencyToLake", "adjacencyToPizzansHus", "adjacencyToHerrgard", "adjacencyToQvarn"],
+      "notes": "Map only — no roof/facade information; contributes only to position and adjacency confidence."
+    },
+    {
+      "path": "../../grythyttan bilder/Skärmavbild 2026-07-26 kl. 15.56.25.png",
+      "view": "SV wide street from the Lokavägen roundabout (rv 244) toward the Campus block; the Sevillapaviljongen multicoloured canopy visible in the middle distance behind trees",
+      "verifies": ["arrivalContext", "sevillaPavilionSilhouette"],
+      "notes": "Distance too great for facade or canopy detail — silhouette-in-context only."
+    },
+    {
+      "path": "../../grythyttan bilder/Skärmavbild 2026-07-26 kl. 15.56.43.png",
+      "view": "SV of the tourist-bus parking apron at 2 Sörälgsvägen on the Måltidens Hus side; paved parking, low signage, side of Campus block visible",
+      "verifies": ["arrivalApron", "parkingLayout"],
+      "notes": "Pavilion drum-and-canopy not framed head-on; no roof-form information."
+    },
+    {
+      "path": "../../grythyttan bilder/Skärmavbild 2026-07-26 kl. 15.56.59.png",
+      "view": "SV at the 2 Sörälgsvägen / Kvarnvägen junction — low light-toned pavilion-form Campus building on the right with an angular flat/shallow roof, grass and paved paths in front",
+      "verifies": ["maltidensHusForm", "wallColour", "roofFormLowPitch"],
+      "notes": "The Sevillapaviljongen drum-and-canopy is not in this frame; verifies the adjacent Måltidens hus side buildings only."
+    },
+    {
+      "path": "../../grythyttan bilder/Skärmavbild 2026-07-26 kl. 15.57.12.png",
+      "view": "SV wide street down Kvarnvägen toward the Campus lawn; the Campus block, lawn and pedestrian paths visible in context",
+      "verifies": ["approachRoute", "grassSetting"],
+      "notes": "No close view of Sevillapaviljongen or Måltidens hus in this frame."
+    },
+    {
+      "path": "../../grythyttan bilder/Skärmavbild 2026-07-26 kl. 15.57.24.png",
+      "view": "SV facade close-up at 5 Kvarnvägen — modern light-toned Campus block (part of Måltidens Hus complex), flat roof line, rhythm of dark window openings, entrance zone",
+      "verifies": ["maltidensHusForm", "wallMaterial", "wallColour", "roofMaterial", "roofColour"],
+      "notes": "Frames the Måltidens Hus side building, not the Sevillapaviljongen drum tower; no aerial view of the whole complex."
     }
   ],
   "confidenceByAspect": {

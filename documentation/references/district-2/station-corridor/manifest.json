@@ -92,6 +92,26 @@
     "count": "~31",
     "reason": "Residential + small yes-tagged outbuildings within 250 m radius of the station. Procedural OsmBuildings sub-typology (ORDER 011 shed / garage / outbuilding / residential) handles them defensibly; adding ~30 near-identical handcrafts would not measurably improve the digital twin."
   },
+  "collectedSources": [
+    {
+      "path": "../../grythyttan bilder/Skärmavbild 2026-07-26 kl. 16.02.33.png",
+      "view": "SV wide street of the Grythyttan railway/station corridor along Järnvägsgatan; shows tracks, ballast, station-adjacent Falu-red trackside structure, and open rail-yard extent",
+      "verifies": ["stationCorridorLayout", "trackAdjacency", "walkableApron"],
+      "notes": "Old-station building itself (w870510841) not framed; useful only for corridor context and yard scale."
+    },
+    {
+      "path": "../../grythyttan bilder/Skärmavbild 2026-07-26 kl. 16.11.23.png",
+      "view": "SV wide street at 2 Magasinsgatan — Falu-red residential building in the foreground with the Bergslagsbanan grade crossing (railway bommar) visible at the end of the street",
+      "verifies": ["railwayCrossingPosition", "corridorHousingContext"],
+      "notes": "Not head-on to any corridor building; verifies crossing location relative to Magasinsgatan and the housing adjacency."
+    },
+    {
+      "path": "../../grythyttan bilder/Skärmavbild 2026-07-26 kl. 16.11.42.png",
+      "view": "SV of the Lokavägen railway crossing — grade crossing with bommar spanning the road, tracks running perpendicular to Lokavägen",
+      "verifies": ["railwayCrossingLokavagen", "gradeCrossingForm", "trackOrientation"],
+      "notes": "Only the crossing itself is in frame — no rail-yard warehousing (w870510833/834/823/839) or switching building (w870510842) visible."
+    }
+  ],
   "publicSourcesExhausted": true,
   "sourcesFile": "notes.md"
 }

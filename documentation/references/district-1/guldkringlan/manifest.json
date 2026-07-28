@@ -23,16 +23,22 @@
   },
   "collectedSources": [
     {
-      "path": "guldkringlan2.jpg",
+      "path": "uploaded/guldkringlan2.jpg",
       "view": "main facade, three-quarter close; shows three-storey Falu-red vertical timber siding, three-bay window rhythm per storey, central entrance under sign board 'GULDKRINGLAN' (gold letters on black), 'Café' hanging sign, concrete ramp with railing up to entrance, bicycle racks",
       "verifies": ["wallMaterial", "wallColour", "storeyCount", "windowsRhythm", "entranceForm", "signage"],
       "notes": "Only one facade visible; roof form and footprint depth still unknown"
     },
     {
-      "path": "guldkringlan vid torget.avif",
-      "view": "large AVIF file (~116 KB) — not readable by current pipeline as image; filename indicates a view of Guldkringlan at Torget",
+      "path": "uploaded/guldkringlan vid torget.avif",
+      "view": "AVIF original of the wide three-quarter view of the entrance facade seen from Torget. Kept as-is; use guldkringlan vid torget.jpg for pipeline-compatible reading.",
       "verifies": [],
-      "notes": "Present but not yet inventoried by content"
+      "notes": "See sibling .jpg for content-verified aspects (converted via sips 2026-07-28)"
+    },
+    {
+      "path": "uploaded/guldkringlan vid torget.jpg",
+      "view": "wide three-quarter view of Guldkringlan from Torget, ~980×551. Falu-red vertical timber siding, white-framed double-hung windows in a regular rhythm across at least two visible storeys, central entrance beneath 'GULDKRINGLAN' gold-on-black sign board, concrete ramp with steel railing, small Swedish flags in the door windows, red 'STANNA' vehicle-stop sign at ramp corner, wrought-iron lantern on a low black pole to the left, bare deciduous trees, cobbled forecourt, adjacent lighter side building visible at left edge",
+      "verifies": ["wallMaterial", "wallColour", "windowsRhythm", "entranceForm", "signage", "orientation"],
+      "notes": "Confirms entrance side faces the Torget cobble apron. Roof not visible; footprint depth still not resolved. Complements guldkringlan2.jpg by adding streetscape context (lantern, forecourt, adjacent building, cobble surface)."
     }
   ],
   "confidenceByAspect": {
@@ -44,7 +50,7 @@
     "entranceForm": { "score": 0.90, "justification": "Central double doors, concrete ramp with railing, signage above" },
     "signage": { "score": 0.95, "justification": "'GULDKRINGLAN' gold-on-black board over entrance; separate 'Café' hanging sign" },
     "footprint": { "score": 0.20, "justification": "Only one facade visible; depth and full footprint not resolved. Needs aerial." },
-    "orientation": { "score": 0.30, "justification": "Facade orientation only partially inferable from context" },
+    "orientation": { "score": 0.75, "justification": "guldkringlan vid torget.jpg shows the entrance facade opening onto the cobbled Torget forecourt, confirming which side faces Torget" },
     "roofForm": { "score": 0.20, "justification": "Roof not visible in facade shot" },
     "roofColour": { "score": 0.20, "justification": "Not visible" }
   }

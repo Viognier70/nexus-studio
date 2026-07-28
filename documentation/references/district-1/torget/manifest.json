@@ -41,6 +41,18 @@
       "view": "historic B&W photo of Torget corner with two-storey timber building ('FRISÖR' hair-salon sign), long avenue of trees running down the length of the square, dirt / gravel surface, buildings receding into distance",
       "verifies": ["treeAvenue", "openSquare", "perimeterBuildingStyle"],
       "notes": "Historic — surface has since been paved; 'Lindebilder.se' watermark"
+    },
+    {
+      "path": "../../grythyttan bilder/Skärmavbild 2026-07-26 kl. 15.26.52.png",
+      "view": "Google Maps zoomed on Grythyttan centre with labels for 'Grythyttans gästgivaregård', 'Grythyttans kyrka', 'Tempo' and 'Pizzans Hus', and a red POI marker over Torget. Shows the road-net around the square: Prästgatan enters from the east, Skolgatan meets the west end, Hammargatan crosses south of the square, Lokavägen skirts the south side, Kyrkogatan and Nygatan run parallel to the north",
+      "verifies": ["position", "adjacencyToKyrka", "adjacencyToGastgivaregard", "adjacencyToTempo", "roadNetContext"],
+      "notes": "Map only — no ground surface, monument, benches, trees or perimeter-facade information."
+    },
+    {
+      "path": "../../grythyttan bilder/Skärmavbild 2026-07-26 kl. 16.00.38.png",
+      "view": "Google Street View wide shot from the Prästgatan/Torget corner (SV address label 'Torget 4') looking north-east across the square; paved/gravel surface, a parked lorry near the corner, one row of perimeter buildings visible along the north edge",
+      "verifies": ["perimeterEntry", "groundMaterialModern"],
+      "notes": "Only one side of the square in frame; no central-monument view, no full-perimeter coverage, no tree canopy visible from this angle."
     }
   ],
   "confidenceByAspect": {
