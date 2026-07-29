@@ -63,7 +63,7 @@ Every ORDER number that appears anywhere in the repository — filename, documen
 | 033 | Reference audit & memory audit | Executed | Reference only | Cited by `ADR_002_SYNTHESIS_POLICY.md` §1 (reference audit) and §7 (memory audit). Findings absorbed into ADR 002 rather than a standalone report. |
 | 034 | Documentation Alignment | Awaiting Vision Owner approval | **Own document** | `ORDER_034_DOCUMENTATION_ALIGNMENT.md`. |
 | 035 | Memory Provenance Repair | Awaiting Vision Owner approval | **Own document** | `ORDER_035_MEMORY_PROVENANCE_REPAIR.md`. Parent: `ADR_002_SYNTHESIS_POLICY.md` §7, §9.1. |
-| 036 | Reference Integrity Infrastructure | Pending | **Own document** | `ORDER_036_REFERENCE_INTEGRITY_INFRASTRUCTURE.md`. Parent: `ADR_002_SYNTHESIS_POLICY.md` §4.2, §5, §9 steps 1–3. |
+| 036 | Reference Integrity Infrastructure | Executed 2026-07-29 | **Own document** | `ORDER_036_REFERENCE_INTEGRITY_INFRASTRUCTURE.md`. Parent: `ADR_002_SYNTHESIS_POLICY.md` §4.2, §5, §9 steps 1–3. Executed in four section commits: `9e826c9` (§0, registry entries), `71ae625` (§2, 13 relocations + manifest paths), `73420e3` (§3, `scripts/validate-references.mjs` + `VALIDATOR_REFERENCE.md`), `e29d354` (§4, `reviewState` backfill + schema in `documentation/references/README.md`). Steps 4–8 of ADR 002 §9 remain out of scope per §5. |
 | 100 | Nexus Studio Game Design Constitution (vision reference) | Reclassified as vision reference (outside precedence order) per SD-002 §3 | Own document (currently binary `.docx` with `.md` extension — to be converted per ORDER 034 §6) | `documentation/foundation/NEXUS_STUDIO_GAME_DESIGN_CONSTITUTION.md` (planned move to `documentation/foundation/vision/ORDER_100_VISION.md`). |
 
 ## 4. Findings
