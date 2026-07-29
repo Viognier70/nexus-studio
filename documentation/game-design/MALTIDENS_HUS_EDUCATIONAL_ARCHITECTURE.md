@@ -8,9 +8,6 @@
 **Companions:**
 - `documentation/game-design/GRYTHYTTAN_WORLD_SPECIFICATION.md`
 - `documentation/game-design/CAMERA_AND_GAMEPLAY_BIBLE.md`
-- `documentation/world/04_CAMPUS_GRYTHYTTAN.md`
-- `documentation/world/05_SEVILLA_PAVILION.md`
-- `documentation/world/09_NPC_AND_PLAYER_GROUPS.md`
 
 **Scope note.** This document specifies the *gameplay architecture* of Måltidens Hus: purpose, spatial organisation, educational philosophy, per-space gameplay loops, the competence dimensions the building writes to, how those dimensions later modulate strategic play, and the long-arc player journey. It does not specify geometry, coordinates, footprints or art. It does not authorise modification of the world layer. It does not implement code. It does not create assets. Where it touches world geography, it defers to the verified geographic layer (Layer A) and the Building Passport for Måltidens hus / Sevillapaviljongen (constitution §5, world spec §5). Where the building's real-world relationship to Sevillapaviljongen is unresolved (VQ‑02), this document treats *Måltidens Hus* as the interior educational programme hosted by the pavilion complex, without prejudice to the eventual passport resolution.
 
@@ -675,7 +672,7 @@ Måltidens Hus, under this specification, is not and may not become:
 - A source of morality bars or virtue scores.
 - A place where numeric HUDs dominate the interface.
 - A location whose interior changes procedurally between sessions.
-- A pretext for first-person action in *strategic* play. Educational play here supports avatar presence; strategic play at building scale still obeys the director principle (constitution §2).
+- A pretext for first-person action, in any mode. There is no avatar in Nexus at any scale (`SUPERSEDING_DIRECTIVE_002.md` §2.1); the strategic building-scale reading remains directorial per constitution §2.
 
 ---
 
@@ -702,7 +699,7 @@ A prototype of Måltidens Hus is acceptable only when it satisfies the following
 - **MQ-01.** Is Måltidens Hus the interior programme hosted by the Sevillapaviljongen complex, or a separate building with its own passport? (Chained to `GRYTHYTTAN_WORLD_SPECIFICATION.md` VQ-02.)
 - **MQ-02.** Is *Stensöta* the canonical Nexus name for the school café-restaurant, or is a real Grythyttan name in current use? Verification required.
 - **MQ-03.** Is *Kalastorget* the canonical Nexus name for the ceremonial hall, or does the real complex use another name?
-- **MQ-04.** How is the transition between avatar presence (student inside the building) and directorial camera (observing the building from Kvarteret scale) authored to remain continuous? Concept-level answer needed before Priority 5 or Priority 7 begins.
+- **MQ-04.** *Dissolved* by `SUPERSEDING_DIRECTIVE_002.md` §2.3 — no avatar-to-camera transition exists to author. Retained here to preserve MQ numbering; do not re-open without unfreezing SD-002.
 - **MQ-05.** Which existing faculty and named guest chefs (if any) may be represented by name and likeness? Rights checkpoint per `documentation/foundation/RIGHTS_REGISTER.md` §3 (the SEVILLA_PAVILION-origin checkpoint has been extracted to that register under ORDER 034 §2).
 - **MQ-06.** What is the earliest phase in the four-phase journey at which the player is permitted to open or lead a business elsewhere in Grythyttan? Currently placed at Master (§7.4); Vision Owner may prefer Advanced Practitioner (§7.3).
 - **MQ-07.** Does the personal notebook (§5.4) persist across sessions in the same run only, or across all runs of the same player identity? Interacts with save architecture.

@@ -111,6 +111,12 @@ The camera does not change. What can be read and clicked changes.
 
 All camera changes are **exponentially damped**. There are no instant cuts. There are no jump transitions between scales. Every camera change resolves within roughly one second. The world remains simulating during transitions; nothing pauses because the camera moved.
 
+### 4.3 The opening (intent)
+
+Nexus opens with the camera at the innermost point of the zoom curve, at approximately human height, inside the arriving bus. Over the opening minutes the camera draws slowly outward until it rests at the director's reading distance. The first minutes are the movement from being someone in the village to being the one who reads it.
+
+This is directive intent per `SUPERSEDING_DIRECTIVE_002.md` §2.4. The implementation specification for the opening is authorised separately and is not part of this bible.
+
 ---
 
 ## 5. Information density by scale
@@ -292,7 +298,7 @@ Internal numeric state may exist. It does not dominate the interface.
 
 ## 14. Non-goals
 
-- First-person control of the player at any scale.
+- First-person control of the player, or any avatar the player inhabits or moves, at any point in Nexus and in any mode of play — strategic, educational, ceremonial or introductory. (Per `SUPERSEDING_DIRECTIVE_002.md` §2.1.)
 - Individual move-orders on any autonomous NPC.
 - Snap-to-preset camera behaviour on the primary player interface.
 - Numeric HUDs that dominate the interface.

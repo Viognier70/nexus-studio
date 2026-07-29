@@ -263,6 +263,8 @@ Randomness in the engine exists to give the property market texture (bankruptcie
 
 ## 9. What this specification prohibits
 
+> **Header note (ORDER 034 §7.5):** All prohibitions in this section are **superseded by `ADR_001_DIGITAL_TWIN_PHASE.md` §3**, which authorises the Digital Twin Phase (Phase IV). The prohibitions belonged to the pre-Phase-IV constraint regime and are retained verbatim below for historical reference only; they are no longer operative. (ORDER 034 §7.5 referred to "five clauses"; the section contains seven — interpretation confirmed by Vision Owner as covering all seven.)
+
 - **No coordinate fetching.** No implementation may fetch geographic coordinates for real buildings at this stage.
 - **No coordinate invention.** No implementation may fabricate coordinates for real buildings.
 - **No geodata import.** No implementation may import OpenStreetMap, cadastral data, satellite tiles or any other geodata source at this stage.
