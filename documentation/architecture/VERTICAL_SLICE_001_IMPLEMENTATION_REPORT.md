@@ -6,6 +6,8 @@
 **Design doc:** `VERTICAL_SLICE_001.md`
 **Author:** Frontend prototype
 
+> **Note (ORDER 034 §3):** The `WP02_REVIEW_REPORT.md` (and any `NN_*.md` documents) referenced below live at `documentation/archive/world-wp02/` after ORDER 034 §4 — the WP-02 corpus is historical, not authoritative.
+
 ---
 
 ## 1. Files created

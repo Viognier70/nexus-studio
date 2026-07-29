@@ -8,6 +8,8 @@
 **Records:** Vision Owner decisions A, C and D
 **Companion order:** `ORDER_034_DOCUMENTATION_ALIGNMENT.md`
 
+> **Note (ORDER 034 §3):** Any `NN_*.md` document referenced below (e.g. `02_FIRST_ARRIVAL.md` in §2.4) lives at `documentation/archive/world-wp02/` after ORDER 034 §4 — the WP-02 corpus is historical, not authoritative.
+
 ---
 
 ## 1. Why this instrument

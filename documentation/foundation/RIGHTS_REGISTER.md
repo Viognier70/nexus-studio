@@ -20,7 +20,7 @@ Referred to the Vision Owner per `ORDER_034_DOCUMENTATION_ALIGNMENT.md` §10: fi
 
 ## 1. Origin — the Sevilla Pavilion rights checkpoint
 
-Extracted verbatim from `documentation/world/05_SEVILLA_PAVILION.md` §"Rights checkpoint":
+Extracted verbatim from `documentation/archive/world-wp02/05_SEVILLA_PAVILION.md` §"Rights checkpoint":
 
 > Before production use, verify permissions concerning architectural depiction, naming and commercial representation.
 
@@ -30,7 +30,9 @@ Prior to this register, that sentence was the only rights instrument recorded an
 
 ## 2. Open items carried across from `WP02_REVIEW_REPORT.md` §4
 
-Every item below is **open**. Source lines are quoted or paraphrased tightly from `documentation/world/WP02_REVIEW_REPORT.md` §4; nothing has been reinterpreted.
+Every item below is **open**. Source lines are quoted or paraphrased tightly from `documentation/archive/world-wp02/WP02_REVIEW_REPORT.md` §4; nothing has been reinterpreted.
+
+> **Note (ORDER 034 §3):** The `NN_*.md` documents cited by short name in the items below all live at `documentation/archive/world-wp02/` after ORDER 034 §4 — the WP-02 corpus is historical, not authoritative.
 
 ### 2.1 Real-place representation (WP02 §4.1)
 
