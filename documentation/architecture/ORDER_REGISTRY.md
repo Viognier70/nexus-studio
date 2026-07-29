@@ -17,6 +17,7 @@ Every ORDER number that appears anywhere in the repository — filename, documen
 - **Reference only** — the number is cited by other documents but no order document or report exists in the repository. The ORDER is inferred, not evidenced.
 - **Not found in repo** — the number does not appear anywhere in `documentation/`. Included in the sequence for gap-visibility.
 - **Void** — a draft was issued but withdrawn before ever taking effect (recorded here so the number is not silently reused).
+- **Reserved** — a number has been claimed in this registry per `CLAUDE.md` rule 9 but no order file is committed yet. Held pending file authoring or Vision Owner approval.
 
 ## 3. Registry
 
