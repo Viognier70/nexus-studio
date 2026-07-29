@@ -58,6 +58,23 @@ Note that ORDER 019 and 020 have reports in the tree (`WORLD_ALIGNMENT_AUDIT_ORD
 
 Both records are cited from `ORDER_REGISTRY.md` against their respective entries, and SD-001 is added to the registry as a governance instrument gap even though it is not an ORDER.
 
+### 2.4 Vision Owner decision on SD-001 (recorded 2026-07-29)
+
+**Alternative A is chosen: a real `SUPERSEDING_DIRECTIVE_001.md` shall be authored from the §2.1 reconstruction record.**
+
+**Conditions.**
+
+- Authored only after the §2.1 record is delivered and reviewed. Not authored from memory or inference alone.
+- Mandatory header marking, above all other content:
+  - **Status line**, verbatim: `Reconstructed 2026-07-29 from SD_001_RECONSTRUCTION_RECORD.md. This is not the instrument that was issued. The original was never written to the repository.`
+  - Every clause marked either **known** (quoted from an existing document) or **reconstructed** (inferred from downstream artefacts). No clause left unmarked.
+  - Retroactive effective date as established by §2.1, stated as approximate where it cannot be fixed.
+  - An explicit statement that where the reconstruction conflicts with any document authored under the original instrument, the downstream document prevails. The reconstruction cannot retroactively invalidate work done under the instrument it reconstructs.
+
+`ADR_001_DIGITAL_TWIN_PHASE.md` remains unmodified. Its citation resolves to the reconstructed instrument once that exists; no amendment to ADR 001 text is authorised by this order.
+
+**§6 is amended accordingly:** writing `SUPERSEDING_DIRECTIVE_001.md` is authorised, but only in a separate commit after the §2.1 record is reviewed.
+
 ---
 
 ## 3. Transition period
@@ -144,7 +161,7 @@ Propose the format before applying it. Apply consistently once approved.
 
 ## 6. What this order does not authorise
 
-- Writing `SUPERSEDING_DIRECTIVE_001.md`. §2.1 produces a reconstruction record only.
+- Writing `SUPERSEDING_DIRECTIVE_001.md` **except** as authorised by §2.4 — only after the §2.1 record is reviewed, in a separate commit, under the mandatory reconstruction markings §2.4 specifies. §2.1 by itself produces only the reconstruction record.
 - Amending `ADR_001_DIGITAL_TWIN_PHASE.md` in any way.
 - Creating the proposed documents in §4.3, §4.5, §4.6. Each requires Vision Owner approval.
 - Deleting any memory file.
