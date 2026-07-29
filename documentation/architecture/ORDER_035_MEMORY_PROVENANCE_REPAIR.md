@@ -162,6 +162,14 @@ It may already be embodied in `PHASE_IV_PRODUCTION_PLAN.md` and `VISION_REVIEW_W
 
 ADR 002 §7 now governs the same question from the repository. Reduce this file to a pointer at §7, or retire it. Report which, with reasoning, and report any rule it contains that §7 does not cover — such a rule needs a repository home, not deletion.
 
+**Disposition 2026-07-30:**
+
+- **Recommendation: reduce, not retire.** The file contains a content taxonomy (do not store gameplay design / world canon / specifications / implementation) that ADR 002 §7 does not cover — §7 frames memory as "derived, never primary" but does not enumerate which categories cannot be derived. Retiring the file would lose the taxonomy.
+- **Gap reported:** the taxonomy needs a repository home. Recommendation: a future order extends ADR 002 with a §7.6 (or appendix) lifting the taxonomy into normative text. Once that lands, this file becomes redundant and can be retired.
+- **Interim citation applied** to the memory file: authority `ADR_002_SYNTHESIS_POLICY.md` §7; gap flagged inline; reduction proposal recorded.
+- **Not reduced** per §6 (memory rule rewriting beyond named corrections). Vision Owner decision required.
+- **§7.1 transition: complete** — authority cited; reduction is a separate decision.
+
 ### 4.8 `nexus_framework_governance.md` — resolve dangling reference
 
 The only file passing §7.1. It cites `NEXUS_GAMEPLAY_FRAMEWORK.md` v2.0 correctly.
