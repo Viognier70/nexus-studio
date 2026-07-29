@@ -1,7 +1,7 @@
 # ADR 002 — Synthesis Policy and Reference Cluster Structure
 
 **Version:** 1.1
-**Status:** Proposed. Awaiting Vision Owner approval.
+**Status:** Accepted 2026-07-29.
 **Date:** 2026-07-28
 **Deciders:** Vision Owner
 **Author (recording):** Claude (chat)
