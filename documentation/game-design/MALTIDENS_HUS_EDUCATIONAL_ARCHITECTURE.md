@@ -70,7 +70,7 @@ The building has no hallway of doors. Passage between rooms is always through a 
 
 **Character.** Modest, oriented to the pavilion approach. The door is heavy, deliberate, not automatic. It reads as an institutional threshold, not a shop entrance.
 
-**Player experience.** On first visit, entry is the closing beat of the *First Arrival* sequence (`documentation/world/02_FIRST_ARRIVAL.md`) — the player has been walking; entering is the act of arriving. On repeat visits, entry is fast and unceremonious: the door opens, the vestibulen is one step ahead.
+**Player experience.** On first visit, entry is the closing beat of the *First Arrival* sequence (`documentation/archive/world-wp02/02_FIRST_ARRIVAL.md`) — the player has been walking; entering is the act of arriving. On repeat visits, entry is fast and unceremonious: the door opens, the vestibulen is one step ahead.
 
 **Function.**
 - Physical boundary between exterior weather (see the ambience engine in `frontend/src/audio/`) and interior acoustics.
@@ -228,7 +228,7 @@ Reading is measured not by pages consumed but by *return*. A passage read once c
 **Multiplayer.**
 - Stensöta is designed for player brigades. A shift staffed by three players and one NPC reads and plays differently than a shift with four NPCs.
 - The kitchen and floor coordinate visibly; a well-coordinated player pair produces measurably better service.
-- Guests, per the player substitution rule (`09_NPC_AND_PLAYER_GROUPS.md`), may be other players — investors, alumni, visiting professionals — who arrived to observe or to eat.
+- Guests, per the player substitution rule (`documentation/archive/world-wp02/09_NPC_AND_PLAYER_GROUPS.md`), may be other players — investors, alumni, visiting professionals — who arrived to observe or to eat.
 
 **NPC roles.**
 - **Ansvarig chef (the chef in charge).** Runs the kitchen. Recognisable, named, present across seasons. Different in style from the Metodköket's kokmästaren.
@@ -245,7 +245,7 @@ Reading is measured not by pages consumed but by *return*. A passage read once c
 **Function.** Kalastorget is the site of **Phronesis-in-context** — the hall where knowledge, craft, tradition, hospitality and community meet in a single event. It is also the site where Nexus's ceremonial layer (initiation, seasonal feasts, examinations, alumni returns) is enacted.
 
 **Event types.**
-- **Introduktionsmiddagen.** The first-arrival banquet for new students (`documentation/world/07_THE_INITIATION.md`).
+- **Introduktionsmiddagen.** The first-arrival banquet for new students (`documentation/archive/world-wp02/07_THE_INITIATION.md`).
 - **Årstidsmiddagar.** Seasonal feasts (spring, summer, autumn, winter — anchored to the real Grythyttan calendar per `documentation/world/06_TRADITIONS_AND_CEREMONIES.md`).
 - **Examensbanketten.** Examination banquets, held when a cohort reaches Master Gastronome status.
 - **Alumnimiddagar.** Alumni gatherings, in which returning experienced players (or NPC alumni) host courses for current students.
@@ -570,7 +570,7 @@ A complete learning journey through Måltidens Hus is organised into four phases
 
 ### 7.1 Phase — New student
 
-The player has arrived (`documentation/world/02_FIRST_ARRIVAL.md`) and has been registered at Sevillapaviljongen. The first entry into Måltidens Hus is part of the initiation (`07_THE_INITIATION.md`).
+The player has arrived (`documentation/archive/world-wp02/02_FIRST_ARRIVAL.md`) and has been registered at Sevillapaviljongen. The first entry into Måltidens Hus is part of the initiation (`documentation/archive/world-wp02/07_THE_INITIATION.md`).
 
 **Character.** Curious, disoriented, careful. The player does not yet know what any of the spaces do beyond their names on the vestibulen surface.
 
@@ -623,7 +623,7 @@ The player is capable and recognised.
 
 **Competence written.** Situational Judgement and Leadership Presence become primary. Reputation begins to compound. Cultural Fluency deepens through banquet and public roles.
 
-**Multiplayer.** The player becomes a *teacher* in the peer sense — leading brigades, mentoring newer students in study groups, hosting cohort presentations. The player substitution rule (`09_NPC_AND_PLAYER_GROUPS.md`) begins to bind: the player is now a role a newer student can encounter.
+**Multiplayer.** The player becomes a *teacher* in the peer sense — leading brigades, mentoring newer students in study groups, hosting cohort presentations. The player substitution rule (`documentation/archive/world-wp02/09_NPC_AND_PLAYER_GROUPS.md`) begins to bind: the player is now a role a newer student can encounter.
 
 **Exit indicator (not shown to the player).** The player has led a Kalastorget course successfully and has been invited (by an NPC mentor) to author a menu or to master-of-ceremonies a future banquet.
 
