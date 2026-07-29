@@ -20,57 +20,66 @@
   "collectedSources": [
     {
       "path": "uploaded/maltidens-hus-i-norden 1.jpg",
+      "reviewState": "unknown",
       "view": "from below the pavilion canopy, three-quarter angle; shows multicoloured chess-pattern flat roof canopy supported by four pairs of heavy timber columns, dark cylindrical drum tower with checkerboard-patterned base and glazed upper storeys, angled white side buildings behind",
       "verifies": ["sevillaPavilionForm", "canopyPattern", "columnStructure", "drumTower", "maltidensHusForm"],
       "notes": "Best structural view of the canopy underside"
     },
     {
       "path": "uploaded/maltidens-hus-i-norden2.jpg",
+      "reviewState": "unknown",
       "view": "front-on frontal view of the pavilion; shows the drum tower with a viewing balcony/gallery near the top and a small conical / gilded finial cap, four pairs of columns holding the multicoloured canopy, angled white buildings on both sides",
       "verifies": ["sevillaPavilionForm", "sevillaPavilionLantern", "drumTowerBalcony", "maltidensHusForm"],
       "notes": "Confirms conical finial, NOT the previous 'glowing sphere lantern' invention"
     },
     {
       "path": "uploaded/maltidens-hus-i-norden3.jpg",
+      "reviewState": "unknown",
       "view": "three-quarter view showing drum tower with conical crown and heavy timber columns supporting the canopy, adjacent buildings in background, grass foreground",
       "verifies": ["sevillaPavilionForm", "sevillaPavilionLantern", "columnStructure"],
       "notes": "Confirms scale relative to human figures"
     },
     {
       "path": "../../grythyttan bilder/Skärmavbild 2026-07-20 kl. 00.28.35.png",
+      "reviewState": "read",
       "view": "Google Maps overview of Grythyttan area with POI labels: 'Måltidens Hus i Norden' (red marker), 'Pizzans Hus', 'Gryhytte Qvarn', 'Herrgården i Grythyttan', 'Grythyttans gästgivaregård', 'Gryhyttevikens utskeppsplats'. The Campus block sits along Kvarnvägen with Torrvarpen lake to the east",
       "verifies": ["position", "adjacencyToLake", "adjacencyToPizzansHus", "adjacencyToHerrgard", "adjacencyToQvarn"],
-      "notes": "Map only — no roof/facade information; contributes only to position and adjacency confidence."
+      "notes": "Map only — no roof/facade information; contributes only to position and adjacency confidence. Evidence for reviewState=read: documentation/references/grythyttan bilder/TRIAGE.md (2026-07-28, Kategori A)."
     },
     {
       "path": "../../grythyttan bilder/Skärmavbild 2026-07-26 kl. 15.56.25.png",
+      "reviewState": "read",
       "view": "SV wide street from the Lokavägen roundabout (rv 244) toward the Campus block; the Sevillapaviljongen multicoloured canopy visible in the middle distance behind trees",
       "verifies": ["arrivalContext", "sevillaPavilionSilhouette"],
-      "notes": "Distance too great for facade or canopy detail — silhouette-in-context only."
+      "notes": "Distance too great for facade or canopy detail — silhouette-in-context only. Evidence for reviewState=read: documentation/references/grythyttan bilder/TRIAGE.md (2026-07-28, Kategori A)."
     },
     {
       "path": "../../grythyttan bilder/Skärmavbild 2026-07-26 kl. 15.56.43.png",
+      "reviewState": "read",
       "view": "SV of the tourist-bus parking apron at 2 Sörälgsvägen on the Måltidens Hus side; paved parking, low signage, side of Campus block visible",
       "verifies": ["arrivalApron", "parkingLayout"],
-      "notes": "Pavilion drum-and-canopy not framed head-on; no roof-form information."
+      "notes": "Pavilion drum-and-canopy not framed head-on; no roof-form information. Evidence for reviewState=read: documentation/references/grythyttan bilder/TRIAGE.md (2026-07-28, Kategori A)."
     },
     {
       "path": "../../grythyttan bilder/Skärmavbild 2026-07-26 kl. 15.56.59.png",
+      "reviewState": "read",
       "view": "SV at the 2 Sörälgsvägen / Kvarnvägen junction — low light-toned pavilion-form Campus building on the right with an angular flat/shallow roof, grass and paved paths in front",
       "verifies": ["maltidensHusForm", "wallColour", "roofFormLowPitch"],
-      "notes": "The Sevillapaviljongen drum-and-canopy is not in this frame; verifies the adjacent Måltidens hus side buildings only."
+      "notes": "The Sevillapaviljongen drum-and-canopy is not in this frame; verifies the adjacent Måltidens hus side buildings only. Evidence for reviewState=read: documentation/references/grythyttan bilder/TRIAGE.md (2026-07-28, Kategori A)."
     },
     {
       "path": "../../grythyttan bilder/Skärmavbild 2026-07-26 kl. 15.57.12.png",
+      "reviewState": "read",
       "view": "SV wide street down Kvarnvägen toward the Campus lawn; the Campus block, lawn and pedestrian paths visible in context",
       "verifies": ["approachRoute", "grassSetting"],
-      "notes": "No close view of Sevillapaviljongen or Måltidens hus in this frame."
+      "notes": "No close view of Sevillapaviljongen or Måltidens hus in this frame. Evidence for reviewState=read: documentation/references/grythyttan bilder/TRIAGE.md (2026-07-28, Kategori A)."
     },
     {
       "path": "../../grythyttan bilder/Skärmavbild 2026-07-26 kl. 15.57.24.png",
+      "reviewState": "read",
       "view": "SV facade close-up at 5 Kvarnvägen — modern light-toned Campus block (part of Måltidens Hus complex), flat roof line, rhythm of dark window openings, entrance zone",
       "verifies": ["maltidensHusForm", "wallMaterial", "wallColour", "roofMaterial", "roofColour"],
-      "notes": "Frames the Måltidens Hus side building, not the Sevillapaviljongen drum tower; no aerial view of the whole complex."
+      "notes": "Frames the Måltidens Hus side building, not the Sevillapaviljongen drum tower; no aerial view of the whole complex. Evidence for reviewState=read: documentation/references/grythyttan bilder/TRIAGE.md (2026-07-28, Kategori A)."
     }
   ],
   "confidenceByAspect": {

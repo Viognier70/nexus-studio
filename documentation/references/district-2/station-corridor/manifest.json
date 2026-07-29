@@ -95,21 +95,24 @@
   "collectedSources": [
     {
       "path": "../../grythyttan bilder/Skärmavbild 2026-07-26 kl. 16.02.33.png",
+      "reviewState": "read",
       "view": "SV wide street of the Grythyttan railway/station corridor along Järnvägsgatan; shows tracks, ballast, station-adjacent Falu-red trackside structure, and open rail-yard extent",
       "verifies": ["stationCorridorLayout", "trackAdjacency", "walkableApron"],
-      "notes": "Old-station building itself (w870510841) not framed; useful only for corridor context and yard scale."
+      "notes": "Old-station building itself (w870510841) not framed; useful only for corridor context and yard scale. Evidence for reviewState=read: documentation/references/grythyttan bilder/TRIAGE.md (2026-07-28, Kategori A)."
     },
     {
       "path": "../../grythyttan bilder/Skärmavbild 2026-07-26 kl. 16.11.23.png",
+      "reviewState": "read",
       "view": "SV wide street at 2 Magasinsgatan — Falu-red residential building in the foreground with the Bergslagsbanan grade crossing (railway bommar) visible at the end of the street",
       "verifies": ["railwayCrossingPosition", "corridorHousingContext"],
-      "notes": "Not head-on to any corridor building; verifies crossing location relative to Magasinsgatan and the housing adjacency."
+      "notes": "Not head-on to any corridor building; verifies crossing location relative to Magasinsgatan and the housing adjacency. Evidence for reviewState=read: documentation/references/grythyttan bilder/TRIAGE.md (2026-07-28, Kategori A)."
     },
     {
       "path": "../../grythyttan bilder/Skärmavbild 2026-07-26 kl. 16.11.42.png",
+      "reviewState": "read",
       "view": "SV of the Lokavägen railway crossing — grade crossing with bommar spanning the road, tracks running perpendicular to Lokavägen",
       "verifies": ["railwayCrossingLokavagen", "gradeCrossingForm", "trackOrientation"],
-      "notes": "Only the crossing itself is in frame — no rail-yard warehousing (w870510833/834/823/839) or switching building (w870510842) visible."
+      "notes": "Only the crossing itself is in frame — no rail-yard warehousing (w870510833/834/823/839) or switching building (w870510842) visible. Evidence for reviewState=read: documentation/references/grythyttan bilder/TRIAGE.md (2026-07-28, Kategori A)."
     }
   ],
   "publicSourcesExhausted": true,
