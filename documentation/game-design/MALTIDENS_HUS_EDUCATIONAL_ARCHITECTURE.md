@@ -703,7 +703,7 @@ A prototype of Måltidens Hus is acceptable only when it satisfies the following
 - **MQ-02.** Is *Stensöta* the canonical Nexus name for the school café-restaurant, or is a real Grythyttan name in current use? Verification required.
 - **MQ-03.** Is *Kalastorget* the canonical Nexus name for the ceremonial hall, or does the real complex use another name?
 - **MQ-04.** How is the transition between avatar presence (student inside the building) and directorial camera (observing the building from Kvarteret scale) authored to remain continuous? Concept-level answer needed before Priority 5 or Priority 7 begins.
-- **MQ-05.** Which existing faculty and named guest chefs (if any) may be represented by name and likeness? Rights checkpoint per `05_SEVILLA_PAVILION.md`.
+- **MQ-05.** Which existing faculty and named guest chefs (if any) may be represented by name and likeness? Rights checkpoint per `documentation/foundation/RIGHTS_REGISTER.md` §3 (the SEVILLA_PAVILION-origin checkpoint has been extracted to that register under ORDER 034 §2).
 - **MQ-06.** What is the earliest phase in the four-phase journey at which the player is permitted to open or lead a business elsewhere in Grythyttan? Currently placed at Master (§7.4); Vision Owner may prefer Advanced Practitioner (§7.3).
 - **MQ-07.** Does the personal notebook (§5.4) persist across sessions in the same run only, or across all runs of the same player identity? Interacts with save architecture.
 - **MQ-08.** How is decay (§5.5) tuned to remain non-punitive while still legible? Numeric tuning is out of scope for this document.
