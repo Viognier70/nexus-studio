@@ -176,6 +176,13 @@ The only file passing §7.1. It cites `NEXUS_GAMEPLAY_FRAMEWORK.md` v2.0 correct
 
 It also references a *"Director's Addendum issued after Order 001"* matching no file. Establish whether it exists under another name, was never written, or is the same instrument as something now in the tree. If unrecoverable, mark it so rather than removing it — a lost instrument is a fact worth keeping. Cross-reference §2.1, since ORDER 001 and SD-001 may be related gaps.
 
+**Disposition 2026-07-30:**
+
+- **Three-rule citation applied** per §5 rule 1 (this file carries three distinct rules, so three authority blocks). Rule 1 (freeze) → ADR 001 §4 line 134 + §5.5 line 171. Rule 2 (citation) → NEXUS_GAMEPLAY_FRAMEWORK.md line 448. Rule 3 (ADR for contradictions) → framework line 14 + ADR 001 §4 line 134.
+- **Director's Addendum status: unrecoverable but named.** The instrument is referenced by ADR 001 §4 line 134 (*"the Director's Addendum rule applies"*), so it is not memory-only — ADR 001 itself cites it as authority. No repository file carries its text. It is **not** the same as SD-001 (different domain: framework governance vs Digital Twin Phase). The substance of all three rules it authorised is preserved across the citations above; the instrument name is not. Marked as unrecoverable in the memory file. Removing the memory reference would leave ADR 001 citing an unreadable authority — kept per the "lost instrument is a fact worth keeping" guidance.
+- **Cross-reference to §2.1:** SD-001 and the Director's Addendum are two distinct memory-only governance instruments. Both are noted in `SD_001_RECONSTRUCTION_RECORD.md` §8; both are now cross-referenced from the registry (SD-001 has its own row; the Director's Addendum has no row because ORDER 035 §1 restricts the registry to ORDER numbers and Directives — a non-numeric Addendum falls outside).
+- **§7.1 transition: complete** — all three rules cited.
+
 ### 4.9 `production_mode_no_optional_diagnostics.md` — home needed
 
 Cites ORDER 005. Await §2.2, then cite whatever document is found to carry the rule, or propose a home.
