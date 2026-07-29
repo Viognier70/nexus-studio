@@ -155,7 +155,28 @@ New file created 2026-07-29 under ORDER 036 §4 to capture the evidence rule for
 
 Every surviving memory rule carries a citation in a consistent form: repository path, section, and whether the cited document is authority or evidence.
 
-Propose the format before applying it. Apply consistently once approved.
+**Approved 2026-07-30.** Each rule carries one citation block appended to its body, after any `**Why:**` and `**How to apply:**` lines. Block shape:
+
+```markdown
+**Rule:** <rule name — required only when the file carries more than one rule>
+
+**Repository home (authority):** `path/to/document.md` §"Section title" — one-sentence
+statement of what that section authoritatively defines relative to this rule.
+Multiple sections in the same document may be listed on one line
+(e.g. §"Section A" + §"Section B" — combined statement).
+
+**Related evidence (not authority):** `path/to/report.md` — one-sentence statement of
+what the report demonstrates that supports (but does not establish) the rule.
+(Optional. Omit if none. Multiple evidence lines allowed.)
+```
+
+**Rules for filling it in:**
+
+1. **One `Repository home (authority)` block per rule, not per file.** Files that carry more than one rule get one block per rule, with the rule named at the top of the block via the `Rule:` line. Files that carry exactly one rule may omit the `Rule:` line.
+2. If a rule has no authority anywhere in the repository, it is not eligible for `read`-state promotion under ADR 002 §7.1 — it stays under §3 transition until a home is proposed in §4 or a home is created and cited.
+3. Zero or more `Related evidence (not authority)` lines. Reports are evidence, not authority, per ORDER 035 §4.5.
+4. Paths are repository-root-relative posix paths. Section names are quoted verbatim from the target document's heading. Multiple section names in the same document may be combined on one line rather than repeating the path.
+5. A memory file is never a valid authority — cite the underlying repository document instead. If no such document exists, propose a home in §4.
 
 ---
 
