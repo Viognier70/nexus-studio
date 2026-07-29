@@ -19,19 +19,19 @@
   },
   "collectedSources": [
     {
-      "path": "maltidens-hus-i-norden 1.jpg",
+      "path": "uploaded/maltidens-hus-i-norden 1.jpg",
       "view": "from below the pavilion canopy, three-quarter angle; shows multicoloured chess-pattern flat roof canopy supported by four pairs of heavy timber columns, dark cylindrical drum tower with checkerboard-patterned base and glazed upper storeys, angled white side buildings behind",
       "verifies": ["sevillaPavilionForm", "canopyPattern", "columnStructure", "drumTower", "maltidensHusForm"],
       "notes": "Best structural view of the canopy underside"
     },
     {
-      "path": "maltidens-hus-i-norden2.jpg",
+      "path": "uploaded/maltidens-hus-i-norden2.jpg",
       "view": "front-on frontal view of the pavilion; shows the drum tower with a viewing balcony/gallery near the top and a small conical / gilded finial cap, four pairs of columns holding the multicoloured canopy, angled white buildings on both sides",
       "verifies": ["sevillaPavilionForm", "sevillaPavilionLantern", "drumTowerBalcony", "maltidensHusForm"],
       "notes": "Confirms conical finial, NOT the previous 'glowing sphere lantern' invention"
     },
     {
-      "path": "maltidens-hus-i-norden3.jpg",
+      "path": "uploaded/maltidens-hus-i-norden3.jpg",
       "view": "three-quarter view showing drum tower with conical crown and heavy timber columns supporting the canopy, adjacent buildings in background, grass foreground",
       "verifies": ["sevillaPavilionForm", "sevillaPavilionLantern", "columnStructure"],
       "notes": "Confirms scale relative to human figures"

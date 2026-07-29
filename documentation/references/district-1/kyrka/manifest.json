@@ -29,19 +29,19 @@
   },
   "collectedSources": [
     {
-      "path": "kyrkan.jpg",
+      "path": "uploaded/kyrkan.jpg",
       "view": "south facade, spring, tower at right (west end); shows nave flank with tall arched windows, dark roof, tower body, main entrance porch",
       "verifies": ["wallMaterial", "wallColour", "roofForm", "roofColour", "bellTowerPresence", "bellTowerPosition", "bellTowerShape", "windowsLongFacadeRhythm", "entrancePosition"],
       "notes": "Trees partially occlude the west gable end of the nave"
     },
     {
-      "path": "kyrkan.jpeg",
+      "path": "uploaded/kyrkan.jpeg",
       "view": "east / south-east three-quarter, tower at right; shows east gable end wing of nave and full-height view of tower body + roof cap + spire",
       "verifies": ["bellTowerShape", "bellTowerHeight", "spireForm", "roofForm", "churchyardPerimeter"],
       "notes": "Large conifer occludes part of nave"
     },
     {
-      "path": "kyrkan2.jpeg",
+      "path": "uploaded/kyrkan2.jpeg",
       "view": "north facade, tower at left; shows clock face on tower west face, cross on top, two roof dormers on the nave, churchyard entrance path, nave flank with arched windows",
       "verifies": ["bellTowerPosition", "bellTowerShape", "spireForm", "roofForm", "clockFace", "cross", "dormers", "windowsLongFacadeRhythm", "wallColour", "roofColour"],
       "notes": "Best single view for tower proportions and cross"

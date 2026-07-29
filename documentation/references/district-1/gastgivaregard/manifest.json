@@ -25,28 +25,28 @@
   },
   "collectedSources": [
     {
-      "path": "gästgiveriet.jpeg",
+      "path": "uploaded/gästgiveriet.jpeg",
       "view": "street-facing main facade along Prästgatan; shows two-storey Falu-red timber, sign board 'GÄSTGIVAREGÅRDEN 1641' over entrance, adjacent attached red timber wing with rhythmic small-paned white-framed windows, cobbled street",
       "verifies": ["wallMaterial", "wallColour", "signBoard", "entrancePosition", "windowsCountAndRhythm", "wingExtensions", "storeyCount"],
       "notes": "Gable end at left with oculus (round) window"
     },
     {
-      "path": "gästgiveriet3.jpeg",
+      "path": "uploaded/gästgiveriet3.jpeg",
       "view": "rear / courtyard facade in daylight; shows terrace with diners, two dormer windows with round oculi on north pitch, chimneys, curved roof end",
       "verifies": ["dormers", "chimneysCountAndPosition", "roofForm", "wallColour", "terraceOrArrivalCourt"],
       "notes": "Chimney count approx 2-3 across the roof line"
     },
     {
-      "path": "gästgiveriet 4.jpeg",
+      "path": "uploaded/gästgiveriet 4.jpeg",
       "view": "corner three-quarter view of main gable end and street facade; shows gable-end silhouette, half-timber-style detailing, sign board and lantern",
       "verifies": ["gableEnds", "signBoard", "entranceForm", "wallColour"],
       "notes": "Very useful for establishing gable-end proportions"
     },
     {
-      "path": "gästgibveriet på prästgatan.jpeg",
+      "path": "uploaded/gästgibveriet på prästgatan.jpeg",
       "view": "winter shot of Prästgatan looking down the street; shows Gästgivaregård context with neighbouring buildings, snow-covered roofs",
       "verifies": ["roofForm", "roofPitch", "streetContext"],
-      "notes": "Roof pitch legible against sky; secondary use only"
+      "notes": "Roof pitch legible against sky; secondary use only. Filename is misspelled at source ('gästgibveriet' rather than 'gästgiveriet'); preserved verbatim under ORDER 036 §2 to keep the manifest citation stable."
     },
     {
       "path": "../../grythyttan bilder/Skärmavbild 2026-07-26 kl. 15.59.26.png",
