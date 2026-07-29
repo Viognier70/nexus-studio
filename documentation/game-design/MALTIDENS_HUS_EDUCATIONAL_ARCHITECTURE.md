@@ -246,7 +246,7 @@ Reading is measured not by pages consumed but by *return*. A passage read once c
 
 **Event types.**
 - **Introduktionsmiddagen.** The first-arrival banquet for new students (`documentation/archive/world-wp02/07_THE_INITIATION.md`).
-- **Årstidsmiddagar.** Seasonal feasts (spring, summer, autumn, winter — anchored to the real Grythyttan calendar per `documentation/world/06_TRADITIONS_AND_CEREMONIES.md`).
+- **Årstidsmiddagar.** Seasonal feasts (spring, summer, autumn, winter — anchored to the real Grythyttan calendar per `documentation/archive/world-wp02/06_TRADITIONS_AND_CEREMONIES.md`).
 - **Examensbanketten.** Examination banquets, held when a cohort reaches Master Gastronome status.
 - **Alumnimiddagar.** Alumni gatherings, in which returning experienced players (or NPC alumni) host courses for current students.
 - **Gästmiddagar.** Guest banquets for visiting institutions, investors, critics, or municipal partners.
@@ -271,7 +271,7 @@ Reading is measured not by pages consumed but by *return*. A passage read once c
 
 **Multiplayer.**
 - Kalastorget is designed as a shared occasion. A banquet with a full complement of players is the intended maximum-density expression of Nexus.
-- Player alumni return to Kalastorget banquets as invited elders. This is the substitution rule (`09_NPC_AND_PLAYER_GROUPS.md`) at its most visible.
+- Player alumni return to Kalastorget banquets as invited elders. This is the substitution rule (`documentation/archive/world-wp02/09_NPC_AND_PLAYER_GROUPS.md`) at its most visible.
 - Cross-cohort mixing is designed into seating.
 
 **NPC roles.**
