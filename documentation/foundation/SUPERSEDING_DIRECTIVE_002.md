@@ -115,7 +115,7 @@ The precedence order in `ADR_001_DIGITAL_TWIN_PHASE.md` §4 is **unchanged**. Th
 - It does not modify `NEXUS_GAMEPLAY_FRAMEWORK.md`, which remains frozen.
 - It does not modify `GRYTHYTTAN_WORLD_SPECIFICATION.md`.
 - It does not authorise any code.
-- It does not archive, move or delete any file. Those actions are ordered separately in `ORDER_030_DOCUMENTATION_ALIGNMENT.md`.
+- It does not archive, move or delete any file. Those actions are ordered separately in `ORDER_034_DOCUMENTATION_ALIGNMENT.md`.
 - It does not specify the opening. §2.4 states intent; the specification is authorised separately.
 
 ---
