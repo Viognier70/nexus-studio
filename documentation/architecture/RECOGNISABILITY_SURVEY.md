@@ -1,5 +1,6 @@
 # RECOGNISABILITY SURVEY — Street View vs localhost
 
+> **Status:** Superseded by `PLACE_CHARACTER_REPORT.md`. Retained for historical reference only.
 > Field survey against the 91 Google Street View + map screenshots in `documentation/references/grythyttan bilder/`.
 > The objective is VISUAL RECOGNISABILITY, not metadata completeness. Every visible thing on the street that localhost does not render is a defect.
 > Companion catalog: `RUNTIME_RENDER_CATALOG.md` (what localhost currently produces per family).

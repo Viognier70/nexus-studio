@@ -1,7 +1,7 @@
 # VERTICAL_SLICE_002 — Strategic Prototype
 
 **Version:** 0.1
-**Status:** Draft — prototype only
+**Status:** Paused per `EXECUTIVE_DESIGN_DIRECTIVE_001.md` §13. Historical reference. Not authoritative, not extended.
 **Owner:** Frontend / prototype
 **Source of truth:** `documentation/archive/world-wp02/*` (historical WP-02 corpus), `documentation/world/APPROXIMATION_REGISTER.md` (remaining active world document), `documentation/game-design/CAMERA_AND_VIEW_SYSTEM.md`
 **Related:** `VERTICAL_SLICE_001.md`

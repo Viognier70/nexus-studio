@@ -1,6 +1,7 @@
 # RUNTIME RENDER CATALOG — what localhost produces per building family
 
-> Internal reference. Ground-truth "expected localhost look" side for Street-View-vs-localhost surveys.
+> **Status:** Superseded by `PLACE_CHARACTER_REPORT.md`. Retained for historical reference only.
+> Ground-truth "expected localhost look" side for Street-View-vs-localhost surveys.
 > Extracted from `frontend/src/strategic/scene/OsmBuildings.tsx` and its procgen helpers 2026-07-26.
 > Regenerate/verify when OsmBuildings.tsx or the procgen helpers change materially.
 

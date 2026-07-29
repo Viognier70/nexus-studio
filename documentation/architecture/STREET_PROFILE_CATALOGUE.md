@@ -2,7 +2,7 @@
 
 > The spine of the place-character system. Every named street carries a StreetProfile that boundary / surface / vegetation / colour renderers consume.
 > Source of truth: `frontend/src/strategic/content/streetProfiles.ts`.
-> Evidence source: Vision Owner Street View screenshots + `RECOGNISABILITY_SURVEY.md`.
+> Evidence source: Vision Owner Street View screenshots + `PLACE_CHARACTER_REPORT.md`.
 
 ## What a StreetProfile is
 

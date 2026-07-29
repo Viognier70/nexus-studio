@@ -1,7 +1,7 @@
 # Camera and View System
 
 **Version:** 0.1
-**Status:** Draft
+**Status:** Superseded as a design specification by `CAMERA_AND_GAMEPLAY_BIBLE.md`. Retained only for the strategic camera coordinate reference cited by `REVIEW_PACKAGE_ORDER_029.md`. Do not cite for design intent.
 **Owner:** Game Design / Camera
 **Scope:** Vertical Slice 002 and forward
 **Related:** `VERTICAL_SLICE_002.md`
