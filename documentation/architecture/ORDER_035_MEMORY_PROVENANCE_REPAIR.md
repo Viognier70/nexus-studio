@@ -128,6 +128,10 @@ Cites ORDER 004 and 005. Same treatment as §4.9.
 
 This file governs how production is actually run. It is the strongest argument for §3 and must be dispositioned last.
 
+### 4.11 `feedback_manifest_read_evidence.md` — cite (repository home established under ORDER 036 §4)
+
+New file created 2026-07-29 under ORDER 036 §4 to capture the evidence rule for `reviewState = "read"`. The rule's authority is `documentation/references/README.md` §"Evidence rule for `read`" (added by the same order, commit `e29d354`). Add the citation using the ORDER 035 §5 format once approved. No transition-period gap: this file was created after ADR 002 §7 was Accepted and its home landed in the same commit series, so §7.1 applies immediately.
+
 ---
 
 ## 5. Citation format
