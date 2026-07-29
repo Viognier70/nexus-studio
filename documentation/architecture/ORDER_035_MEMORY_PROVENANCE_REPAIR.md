@@ -201,6 +201,14 @@ Cites ORDER 004 and 005. Same treatment as §4.9.
 
 This file governs how production is actually run. It is the strongest argument for §3 and must be dispositioned last.
 
+**Disposition 2026-07-30:**
+
+- **§2.2 finding confirmed as the biggest gap:** this file's ~60-min block rule, six-step end-of-block report, interruption criteria, and pass ladder all live only in memory. If the memory directory is lost before an authority lands, the practice that governs day-to-day production vanishes with it.
+- **Interim citation applied** to the memory file: `Repository home (authority)` marked *none yet*; §2.2 record cited as evidence of the ORDER-005 gap; `APPROXIMATION_REGISTER.md` lines 244–249 cited as evidence of the execution history.
+- **Home proposal — shared with §4.9:** extend `PHASE_IV_PRODUCTION_PLAN.md` with a "Production block work cycle" section covering all of: block length, six-step end-of-block report, interruption criteria, pass ladder, no-optional-diagnostics rule (§4.9). Alternative: new `PRODUCTION_MODE_WORKFLOW.md`. Preferred: extend the existing doc, per §4.9 rationale.
+- **Not created** per §6. Awaiting Vision Owner selection.
+- **§7.1 transition: under §3** — rule applies as written. Because this is the last file in §4 and the largest survival risk, its landing is the practical closing act of the §3 transition period.
+
 ### 4.11 `feedback_manifest_read_evidence.md` — cite (repository home established under ORDER 036 §4)
 
 New file created 2026-07-29 under ORDER 036 §4 to capture the evidence rule for `reviewState = "read"`. The rule's authority is `documentation/references/README.md` §"Evidence rule for `read`" (added by the same order, commit `e29d354`). Add the citation using the ORDER 035 §5 format once approved. No transition-period gap: this file was created after ADR 002 §7 was Accepted and its home landed in the same commit series, so §7.1 applies immediately.
