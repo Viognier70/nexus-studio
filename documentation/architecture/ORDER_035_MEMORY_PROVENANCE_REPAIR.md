@@ -107,6 +107,14 @@ The index hook for `reference_confidence_rule.md` still describes the pre-correc
 
 **Then:** the workflow rules have no repository home. Propose `documentation/architecture/HOT_RELOAD_REVIEW_WORKFLOW.md`, or a section in an existing living-process document. Present the proposal; do not create the file.
 
+**Disposition 2026-07-30:**
+
+- **Immediate correction applied** to the memory file: the "≥ 90 % bar" language rewritten to cite the ADR 002 §2.1 two-tier + interim-state model rather than the pre-correction single threshold. Points readers at `reference_confidence_rule.md` (which is itself now correct per §4.1) and at ADR 002 as the authority.
+- **Home proposal — preferred:** extend `documentation/architecture/VISION_REVIEW_WORKFLOW.md` with a new "Hot-reload inspection loop" section formalising the five-step cycle (dev-server confirmation → typecheck → refresh prompt → change summary → camera preset). Rationale: the workflow *is* a vision-review workflow — the semantic fit is exact, avoids creating a new sibling doc, and puts the rule beside the "does this look like Grythyttan?" acceptance criterion that governs its output.
+- **Home proposal — alternatives:** (a) new `documentation/architecture/HOT_RELOAD_REVIEW_WORKFLOW.md` as ORDER 035 names, if VISION_REVIEW_WORKFLOW.md should stay narrowly scoped; (b) section in `PHASE_IV_PRODUCTION_PLAN.md` if the production-plan doc is preferred as the living-process container.
+- **Not created** per §6. Awaiting Vision Owner selection among options.
+- **§7.1 transition: under §3** — rule applies as written until an authority lands.
+
 ### 4.4 `feedback_reality_vs_gameplay_principle.md` — cite, provisionally
 
 `DESIGN_PRINCIPLE_REALITY_VS_GAMEPLAY.md` exists and is the versioned authority. Add the citation.
