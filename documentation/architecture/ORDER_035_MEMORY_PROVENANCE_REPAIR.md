@@ -138,6 +138,14 @@ The transform frame convention — projection, sign convention, polygon winding 
 
 Where the report is cited in the interim, cite it as **evidence, not authority**.
 
+**Disposition 2026-07-30:**
+
+- **Interim citation applied** to the memory file: `Repository home (authority)` marked *none yet*; `RENDERER_ALIGNMENT_REPORT_ORDER_020.md` cited as **evidence, not authority** per the order's explicit instruction; `scripts/parity-check.mjs` cited as the enforcer, also evidence.
+- **Home proposal — preferred:** new `documentation/architecture/TRANSFORM_FRAME_CONVENTION.md` synthesising the report + parity-check into a single authoritative convention document. Rationale: the rule is load-bearing engineering that governs new renderers, deserves a dedicated doc rather than living inside a report on past work.
+- **Home proposal — alternative:** extend `VALIDATOR_REFERENCE.md` with a "Convention B — the rule the parity-check enforces" section. Cheaper, but conflates convention with validator documentation.
+- **Not created** per §6. Awaiting Vision Owner selection.
+- **§7.1 transition: under §3** — rule applies as written until an authority lands.
+
 ### 4.6 `feedback_visual_validation_authoritative.md` — home needed
 
 The principle that visual validation outranks code audit has no repository home and is one of the most consequential rules the project holds.
