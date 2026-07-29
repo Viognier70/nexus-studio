@@ -99,6 +99,8 @@ Corrected under ADR 002 §9.1. No further action.
 
 The index hook for `reference_confidence_rule.md` still describes the pre-correction rule. Update it. Re-check every other hook against its file.
 
+**Disposition 2026-07-30:** hook for `reference_confidence_rule.md` rewritten to reflect the ADR-002 two-tier + interim-state model (no longer a single-90% threshold rule). Every other hook spot-checked against its file's frontmatter and first paragraph — all match. MEMORY.md is an index rather than a rule file, so no §5 citation block applies to it. **§7.1 transition: complete.**
+
 ### 4.3 `digital_twin_hot_reload_workflow.md` — immediate correction, then home
 
 **Immediate:** the "≥ 90 % bar" in *How to apply* contradicts ADR 002 §2.1. Correct now, ahead of the transition, citing ADR 002.
