@@ -123,6 +123,13 @@ The index hook for `reference_confidence_rule.md` still describes the pre-correc
 
 Report whether this memory file should be reduced to a pointer rather than restating design content, which `memory_scope.md` prohibits.
 
+**Disposition 2026-07-30:**
+
+- **Provisional citation applied** to the memory file: authority `documentation/architecture/DESIGN_PRINCIPLE_REALITY_VS_GAMEPLAY.md` (four sections in one line per §5 rule 4). The path is `architecture/`, not `foundation/` as the ORDER 035 wording implies. Provisional flag references the ORDER 034 §8.1 unresolved-placement finding.
+- **Reduction recommendation (report only, not applied per §6):** yes, the memory file should eventually be reduced to a pointer. Its `**Rule:**` paragraph (line 7) and `**Priority ladder**` block (lines 9–13) restate design content already carried by the authority doc — `memory_scope.md` prohibits this. The `**How to apply:**` block (lines 17–23) is operational workflow and belongs in memory. Recommended reduction: delete the Rule paragraph and the Priority ladder; keep the frontmatter, Why, How to apply, Not to confuse with, and the new citation block. Estimated file size change: 26 → ~18 lines.
+- **Not reduced** per §6 (memory rule content rewriting beyond named corrections). Vision Owner decision required.
+- **§7.1 transition: under §3** until the authority-doc placement is resolved *and* the reduction is either applied or declined.
+
 ### 4.5 `feedback_transform_frame_convention.md` — home needed
 
 Cites ORDER 020, which exists only as a report. A report records findings; it does not govern.
