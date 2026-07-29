@@ -1,5 +1,6 @@
 # ADR 002 — Synthesis Policy and Reference Cluster Structure
 
+**Version:** 1.1
 **Status:** Proposed. Awaiting Vision Owner approval.
 **Date:** 2026-07-28
 **Deciders:** Vision Owner
@@ -8,6 +9,8 @@
 **Precedence:** Level 3 (per `ADR_001_DIGITAL_TWIN_PHASE.md` §4)
 **Parent:** `ADR_001_DIGITAL_TWIN_PHASE.md`
 **Companions:** `documentation/world/APPROXIMATION_REGISTER.md`, `documentation/references/README.md`
+
+**Changes in v1.1:** adds §7 (agent memory is derived, never primary) following the ORDER 033 memory audit, and §8.5 recording the specific corrections required to `reference_confidence_rule.md`. Section numbers after §6 have shifted.
 
 ---
 
@@ -37,7 +40,7 @@ The existing threshold policy is confirmed and stated plainly.
 
 **Ordinary tier — 0.75.** Architectural detail may be synthesised from Bergslagen typology. This covers every building not on the identity landmark list: the anonymous dwellings along Kyrkogatan, Nygatan, Badvägen, Magasinsgatan, Hantverksgatan, and all residential, outbuilding and industrial stock across the fifteen districts.
 
-No change. This is how all 274 buildings already work.
+No change. This is how all 274 buildings already work. Synthesis at ordinary tier is the **default**, not an exception.
 
 **Identity tier — 0.90.** The named landmarks a Grythyttan resident recognises. Synthesis is permitted here under §2.2, but never silently.
 
@@ -59,11 +62,13 @@ Every `SYNTHESISED` entity carries:
 
 **Partial synthesis is the norm.** A landmark verified for wall material, wall colour, storey count and signage, but synthesised for roof form and footprint, records exactly that. It does not become wholly synthetic because two aspects are unresolved.
 
+**Effect on the STOP rule.** An identity-tier entity below 0.90 previously had one route: stop and issue a reference request. It now has two. Stopping remains correct when the Vision Owner wants the reference collected before the entity is built. Recording as `SYNTHESISED` is correct when production should continue. Neither is automatic; the entity does not silently proceed, and it does not silently halt.
+
 ### 2.3 What `SYNTHESISED` does not license
 
 - It does not license invention of **verifiable** facts. Addresses, names, ownership, opening dates and histories remain governed by `EXECUTIVE_DESIGN_DIRECTIVE_001.md` §5 and `ADR_001_DIGITAL_TWIN_PHASE.md` §5.3. Nothing in this ADR touches those.
 - It does not license **contradicting** a known fact. Where a reference establishes an aspect, synthesis may not override it. The Sevilla Pavilion flag mast is the worked example: it was rendered, then verified absent, then removed. Verified absence is verified knowledge.
-- It does not license silence. An unlabelled synthetic render is invention, and remains prohibited.
+- It does not license silence. **Unlabelled typological rendering of an identity landmark is invention and remains prohibited.** Labelled synthesis is permitted. The label is the entire difference.
 
 ### 2.4 Reversibility is the point
 
@@ -158,7 +163,27 @@ Before any threshold is recomputed: report every `confidenceByAspect` score whos
 
 ---
 
-## 7. What this ADR does not do
+## 7. Agent memory is derived, never primary
+
+The ORDER 033 memory audit found that `reference_confidence_rule.md`, held in Claude Code's memory directory, carries production rules — threshold values, a STOP rule, a prohibition on inventing architectural detail — that would block what this ADR permits.
+
+That file is not in the repository. It is not versioned, does not appear in `git log`, was not reviewed by anyone, and nearly failed to survive the move from `~/Downloads` to `~/Projects`. It is nonetheless read at the start of every session and shapes production decisions.
+
+This makes agent memory a fourth source of governance alongside the constitutional chain, the ORDER/ADR stream, and `DESIGN_PRINCIPLE_REALITY_VS_GAMEPLAY.md`. Unlike those three it is invisible to every participant except the agent holding it.
+
+**Therefore:**
+
+1. **Every memory rule that governs a production decision names the versioned document it derives from.** A memory rule without a citation is treated as invalid and is not applied.
+2. **Memory summarises. It never extends or narrows.** Where a memory file states a threshold, a prohibition or a workflow, the repository document is the authority and the memory file is a convenience copy.
+3. **On conflict, the repository wins.** The agent reports the conflict rather than resolving it in favour of memory.
+4. **Memory files are audited when a governing document changes.** Adopting this ADR requires the corrections in §8.5. The same obligation applies to every future directive, ADR and order that touches a rule held in memory.
+5. **Memory is not a place to record decisions.** Decisions live in the repository. If something is worth remembering across sessions and is not written down, that is a documentation defect, not a memory feature.
+
+This section governs all memory files, not only `reference_confidence_rule.md`. Ten exist today and there will be more.
+
+---
+
+## 8. What this ADR does not do
 
 - It does not modify `DESIGN_DECISIONS_001.md` or `EXECUTIVE_DESIGN_DIRECTIVE_001.md`. Per `ADR_001_DIGITAL_TWIN_PHASE.md` §4, an ADR may not modify Constitution or Directive text.
 - It does not weaken `EXECUTIVE_DESIGN_DIRECTIVE_001.md` §5. Guessing at verifiable facts remains prohibited.
@@ -167,7 +192,7 @@ Before any threshold is recomputed: report every `confidenceByAspect` score whos
 
 ---
 
-## 8. Implementation sequence
+## 9. Implementation sequence
 
 1. Move the thirteen root-level reference files; correct manifest paths.
 2. Add the §5.1 validator. Expect it to fail on first run; fix what it finds.
@@ -180,6 +205,22 @@ Before any threshold is recomputed: report every `confidenceByAspect` score whos
 9. Update `DISTRICT_FREEZE_GUIDE.md` per §6.
 
 Steps 1–3 are mechanical. Step 4 is a gate.
+
+### 9.1 Memory corrections — on adoption, before any production work
+
+`reference_confidence_rule.md` is corrected on the same day this ADR is accepted. Until then it blocks §2.2, and production against it would be incorrect in both directions.
+
+| # | Current memory rule | Correction |
+|---|---|---|
+| 1 | Below ~90 % confidence, STOP and produce a reference request | STOP remains available. Recording as `SYNTHESISED` per §2.2 is the second permitted route. Neither is automatic |
+| 2 | Never invent architectural detail | Unlabelled typological rendering of an identity landmark remains prohibited. Labelled `SYNTHESISED` rendering is permitted per §2.3 |
+| 3 | `APPROXIMATION` is the interim state below 90 % | There are two interim states. `APPROXIMATION` where a verification route is known; `SYNTHESISED` where no reference exists. They differ in kind |
+| 4 | *(absent)* | Verified absence is verified knowledge and raises confidence. Aspects are tri-state: present, absent, unknown. Per §3 |
+| 5 | ~90 % as the single threshold | Two tiers: 0.75 ordinary, 0.90 identity. Synthesis at ordinary tier is the default for the 274 ordinary buildings, not an exception. Per §2.1 |
+
+Each corrected rule cites this ADR as its source, per §7.1.
+
+Every other memory file is then audited against §7 and reported. No memory file is rewritten beyond adding citations without a separate order.
 
 ---
 
