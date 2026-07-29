@@ -3,8 +3,10 @@
 **Version:** 0.1
 **Status:** Draft — prototype only
 **Owner:** Frontend / prototype
-**Source of truth:** `documentation/world/*`, `documentation/game-design/CAMERA_AND_VIEW_SYSTEM.md`
+**Source of truth:** `documentation/archive/world-wp02/*` (historical WP-02 corpus), `documentation/world/APPROXIMATION_REGISTER.md` (remaining active world document), `documentation/game-design/CAMERA_AND_VIEW_SYSTEM.md`
 **Related:** `VERTICAL_SLICE_001.md`
+
+> **Note (ORDER 034 §3):** The WP-02 corpus previously at `documentation/world/*` has been archived to `documentation/archive/world-wp02/` by ORDER 034 §4 and is **historical**, not authoritative — see the archival header on each. Only `APPROXIMATION_REGISTER.md` remains at `documentation/world/` per `ADR_001_DIGITAL_TWIN_PHASE.md` §5.2. VS-002 itself is paused per `EXECUTIVE_DESIGN_DIRECTIVE_001.md` §13.
 
 ## Purpose
 

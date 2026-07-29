@@ -3,8 +3,10 @@
 **Version:** 0.1
 **Status:** Draft — prototype only
 **Owner:** Frontend / prototype
-**Source of truth:** `documentation/world/01_THE_ORIGIN.md`, `02_FIRST_ARRIVAL.md`, `05_SEVILLA_PAVILION.md`
-**Related:** `documentation/world/WP02_REVIEW_REPORT.md`
+**Source of truth:** `documentation/archive/world-wp02/01_THE_ORIGIN.md`, `documentation/archive/world-wp02/02_FIRST_ARRIVAL.md`, `documentation/archive/world-wp02/05_SEVILLA_PAVILION.md`
+**Related:** `documentation/archive/world-wp02/WP02_REVIEW_REPORT.md`
+
+> **Note (ORDER 034 §3):** The `NN_*.md` and `WP02_REVIEW_REPORT.md` documents cited below live at `documentation/archive/world-wp02/` after ORDER 034 §4. They are **historical** and no longer authoritative — see the archival header on each. VS-001 itself remains committed and reachable per `EXECUTIVE_DESIGN_DIRECTIVE_001.md` §13; only the source-of-truth documents have moved.
 
 ## Purpose
 

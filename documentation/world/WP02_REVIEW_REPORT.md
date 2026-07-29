@@ -3,6 +3,8 @@
 **Version:** 0.1
 **Status:** Draft
 **Reviewer:** Claude Code (per instruction in `10_WP02_REVIEW_AND_HANDOFF.md`)
+
+> **Note (ORDER 034 §3):** After ORDER 034 §4, this report and every `NN_*.md` document cited below live under `documentation/archive/world-wp02/` and are **historical** — retained for tone, narrative and cultural reference; not authoritative. Rights items originally in §4 of this report have been extracted to `documentation/foundation/RIGHTS_REGISTER.md` and remain open there.
 **Scope:** All Markdown files under `documentation/world/`
 **Files reviewed:**
 
