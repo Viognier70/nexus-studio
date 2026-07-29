@@ -69,7 +69,7 @@ Every ORDER number that appears anywhere in the repository — filename, documen
 
 **Observation 2 — Draft collision.** Two competing drafts (ORDER 020 draft, ORDER 030 draft) were withdrawn before this order existed. This is the specific pathology §0 exists to prevent recurrence of.
 
-**Observation 3 — Dangling companion reference.** `SUPERSEDING_DIRECTIVE_002.md` §1 header names `ORDER_030_DOCUMENTATION_ALIGNMENT.md` as its companion order. That draft is void per ORDER 034. This is a §8 companion-integrity item.
+**Observation 3 (resolved 2026-07-29 by commits `9b16962` + `2f5f523`).** `SUPERSEDING_DIRECTIVE_002.md` §1 header and §6 previously named the void `ORDER_030_DOCUMENTATION_ALIGNMENT.md` draft. Both references now repointed to `ORDER_034_DOCUMENTATION_ALIGNMENT.md`.
 
 **Observation 4 — Number gaps.** 001, 007, 008, 009, 010, 012, 013, 016, 032 do not appear in the repository. Whether they were verbally issued and lost, deliberately skipped, or never issued is not determinable from the repo. Numbers 003A, 014, 015, 017a appear once each without descriptive context.
 
