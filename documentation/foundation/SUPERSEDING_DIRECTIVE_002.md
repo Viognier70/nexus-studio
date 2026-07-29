@@ -6,7 +6,7 @@
 **Precedence:** Level 2 (per `ADR_001_DIGITAL_TWIN_PHASE.md` §4)
 **Modifies:** `EXECUTIVE_DESIGN_DIRECTIVE_001.md` §11
 **Records:** Vision Owner decisions A, C and D
-**Companion order:** `ORDER_030_DOCUMENTATION_ALIGNMENT.md`
+**Companion order:** `ORDER_034_DOCUMENTATION_ALIGNMENT.md`
 
 ---
 
