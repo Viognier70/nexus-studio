@@ -60,6 +60,7 @@ npm run preview    # förhandsgranska bygget
 6. **Bevara prestandabudgeten:** procedurell geometri, ingen tung post-processing utan beslut, testa mentalt mot mobil/touch.
 7. **Svenska i spelet, engelska i koden.** Kodkommentarer, variabelnamn och commits på engelska; spelartext på svenska via `strings.sv.ts`.
 8. När en uppgift är klar: sammanfatta vad som gjordes, vilka filer som ändrades och vad som återstår — kort och konkret.
+9. **Inget ORDER-nummer utfärdas utan en post i `documentation/architecture/ORDER_REGISTRY.md`.** Registret är källan till sanning för nummerbruk; renumrera innan filen skrivs om en kollision hittas.
 
 ## Definition of Done (Vertical Slice 001)
 
