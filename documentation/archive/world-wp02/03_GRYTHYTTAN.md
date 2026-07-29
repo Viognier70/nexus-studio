@@ -1,7 +1,10 @@
 # Grythyttan
 
 **Version:** 0.1  
-**Status:** Draft  
+**Status:** Historical — superseded. Retained for tone, narrative and cultural reference.  
+Not an active specification. Superseded by SUPERSEDING_DIRECTIVE_002 (avatar) and by  
+EXECUTIVE_DESIGN_DIRECTIVE_001 §12 (authenticity). Rights items extracted to  
+documentation/foundation/RIGHTS_REGISTER.md.  
 **Owner:** World Design
 
 ## World function
