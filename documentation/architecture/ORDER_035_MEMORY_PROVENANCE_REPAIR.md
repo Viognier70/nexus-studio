@@ -152,6 +152,12 @@ The principle that visual validation outranks code audit has no repository home 
 
 It may already be embodied in `PHASE_IV_PRODUCTION_PLAN.md` and `VISION_REVIEW_WORKFLOW.md`, whose acceptance criterion is *"does this look like Grythyttan?"* rather than *"does the validator pass?"* Report whether either states it sufficiently for citation. If neither does, propose where it should live.
 
+**Disposition 2026-07-30:**
+
+- **Sufficient home exists — no proposal needed.** `PHASE_IV_PRODUCTION_PLAN.md` line 7 states the visual-outranks-numeric half of the rule almost verbatim (*"the acceptance criterion is 'does this look like Grythyttan?' and no longer 'does the validator pass?'. Validators remain a necessary guard but are not sufficient for approval."*), line 4 names the Vision Owner as visual authority, and line 72 states the root-cause-only half (*"Never move a building visually to 'fix composition'. Fix the coordinate chain that placed it wrong."*). Both halves of the memory rule are carried.
+- **Citation applied** to the memory file: authority `PHASE_IV_PRODUCTION_PLAN.md`; related evidence `VISION_REVIEW_WORKFLOW.md` (operationalises the review) and `CRITICAL_DEFECT_REGISTER_ORDER_019.md` (records the incident that produced the rule).
+- **§7.1 transition: complete** — applies without exception.
+
 ### 4.7 `memory_scope.md` — retire or reduce
 
 ADR 002 §7 now governs the same question from the repository. Reduce this file to a pointer at §7, or retire it. Report which, with reasoning, and report any rule it contains that §7 does not cover — such a rule needs a repository home, not deletion.
