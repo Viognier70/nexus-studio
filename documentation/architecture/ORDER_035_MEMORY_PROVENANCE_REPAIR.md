@@ -93,6 +93,8 @@ The transition ends when every file in §4 is dispositioned. From that point §7
 
 Corrected under ADR 002 §9.1. No further action.
 
+**Disposition 2026-07-30:** file was already substantively correct per §9.1. §5 citation block appended to the memory file body (memory-side, outside repo): authority `ADR_002_SYNTHESIS_POLICY.md` §2.1 + §2.2 + §2.3 + §3 + §7 + §9.1 (six sections in one line, per §5 rule 4); related evidence `ADR_001_DIGITAL_TWIN_PHASE.md` §2.2/§2.3/§5.3/§6.1 and `EXECUTIVE_DESIGN_DIRECTIVE_001.md` §5. **§7.1 transition: complete** — applies without exception.
+
 ### 4.2 `MEMORY.md` — refresh
 
 The index hook for `reference_confidence_rule.md` still describes the pre-correction rule. Update it. Re-check every other hook against its file.
