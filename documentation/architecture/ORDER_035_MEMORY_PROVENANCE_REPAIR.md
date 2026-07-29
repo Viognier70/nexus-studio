@@ -187,6 +187,14 @@ It also references a *"Director's Addendum issued after Order 001"* matching no 
 
 Cites ORDER 005. Await §2.2, then cite whatever document is found to carry the rule, or propose a home.
 
+**Disposition 2026-07-30:**
+
+- **§2.2 finding:** ORDER 005 has no repository artefact; its workflow rules live only in agent memory (`ORDER_RECONSTRUCTION_004_005_019_020.md` §3 identifies this as "the biggest gap of the four orders"). Therefore no existing document can be cited as authority for this rule.
+- **Interim citation applied** to the memory file: `Repository home (authority)` marked *none yet*; §2.2 record cited as evidence of the gap.
+- **Home proposal — shared with §4.10:** a single Production Mode home in `documentation/architecture/`. Two candidates: (a) extend `PHASE_IV_PRODUCTION_PLAN.md` with a "Production block work cycle" section, which is a low-cost land and keeps production rules with the production plan; (b) new `PRODUCTION_MODE_WORKFLOW.md` as a dedicated sibling. Preferred: option (a), since PHASE_IV_PRODUCTION_PLAN.md is already the "how production runs" doc and adding a new sibling risks fragmenting the same subject.
+- **Not created** per §6. Awaiting Vision Owner selection.
+- **§7.1 transition: under §3** — rule applies as written until an authority lands.
+
 ### 4.10 `production_mode_workflow.md` — home needed, last
 
 Cites ORDER 004 and 005. Same treatment as §4.9.
