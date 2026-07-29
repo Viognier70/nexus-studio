@@ -2,9 +2,9 @@
 
 **Status:** Living document
 **Class:** Engineering reference
-**Owner:** ORDER 023 infrastructure
+**Owner:** ORDER 023 infrastructure (extended by ORDER 036 §3)
 
-Two Node validators guard the world data and the runtime transform pipeline. Both are dependency-free — you can run them at any time without a build step.
+Three Node validators guard the world data, the runtime transform pipeline, and reference-manifest integrity. All are dependency-free — you can run them at any time without a build step.
 
 ## `scripts/parity-check.mjs`
 
@@ -50,6 +50,18 @@ World-data + runtime-consistency validator. 14 checks in one pass.
 | **V13a** | Info | Landmark record points at a non-building OSM way that resolved fresh — legitimate (plaza / sports / campus polygons) | No action |
 | **V14** | High | Landmark ID referenced by runtime code but missing from `world.landmarks` (composition typo or dropped record) | Fix the typo or add the landmark |
 
+## `scripts/validate-references.mjs`
+
+Reference-integrity validator from ORDER 036 §3. Ensures every `collectedSources[].path` in every `manifest.json` under `documentation/references/` resolves to a file on disk, relative to the citing manifest.
+
+**Modes:**
+- `node scripts/validate-references.mjs` — human-readable, exit 1 on any unresolved citation
+- `--json` — machine-readable summary + failure array
+
+**Failure record:** `manifest` (path), `index` (entry index in `collectedSources`), `path` (cited), `resolved` (path as resolved relative to CWD), `reason`.
+
+**Why it exists.** ADR 002 §5.1 requires manifest bindings to be machine-checked. Before this validator, thirteen reference files sat in the repository root while manifests cited them by bare filename — undetected for weeks. A citation that resolves nowhere is a build-blocking defect.
+
 ## Adding a new check
 
 1. Append a new `{ ... }` block inside `validate-world.mjs` before the output section.
@@ -62,5 +74,5 @@ World-data + runtime-consistency validator. 14 checks in one pass.
 The validators are Node-only and take < 1 s. Suggested hooks:
 ```
 pre-commit  → node scripts/parity-check.mjs --strict
-pre-push    → node scripts/parity-check.mjs --strict && node scripts/validate-world.mjs --strict
+pre-push    → node scripts/parity-check.mjs --strict && node scripts/validate-world.mjs --strict && node scripts/validate-references.mjs
 ```
