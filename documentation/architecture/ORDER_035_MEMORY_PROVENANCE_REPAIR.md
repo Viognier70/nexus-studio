@@ -213,6 +213,8 @@ This file governs how production is actually run. It is the strongest argument f
 
 New file created 2026-07-29 under ORDER 036 §4 to capture the evidence rule for `reviewState = "read"`. The rule's authority is `documentation/references/README.md` §"Evidence rule for `read`" (added by the same order, commit `e29d354`). Add the citation using the ORDER 035 §5 format once approved. No transition-period gap: this file was created after ADR 002 §7 was Accepted and its home landed in the same commit series, so §7.1 applies immediately.
 
+**Disposition 2026-07-30:** citation now reformatted in the memory file to the §5-approved shape (single-block, multiple sections in the same document on one line per §5 rule 4). The provisional "pending format" caveat is removed. **§7.1 transition: complete** — as previously recorded under 3c77476.
+
 ---
 
 ## 5. Citation format
