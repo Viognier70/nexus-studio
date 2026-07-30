@@ -390,4 +390,35 @@ District 2 zone (Campus + Station corridor + School complex) — 15 handcrafted 
    - Screenshot at `documentation/references/district-1/kyrka/uploaded/render-2026-07-30-church-occlusion.png` — Vision-Owner-supplied render, tagged `reviewState="present-unread"` per ORDER 036 §4 (renders of our own output are never reference evidence).
    - `npm run typecheck`, `npm run build`, `validate-world.mjs`, `parity-check.mjs`, `validate-references.mjs` all green — unchanged, nothing was modified. `git diff` shows zero changes under `frontend/src/strategic/data/`.
 
+- 2026-07-30 — **OPEN DEFECT — vw-named-objects-untraceable: 12 named real-world entities were added to `grythyttan-world.json` under `vw-*` ids with no OSM way, no landmark record and no source.** Follow-up analysis to the ORDER 039 diagnostic (see the 2026-07-30 ORDER 039 register entry above and `documentation/architecture/BUILDING_OVERLAP_DIAGNOSTIC_REPORT_ORDER_039.md` §2b). Of the 87 handcrafted `vw-*` buildings, 75 are anonymous street fill (53 address-only, 17 descriptive, 5 no-name) and 12 name specific real-world entities. Each of the 12 is a factual claim about the existence, location and identity of a real Grythyttan business, institution or historical property — the class of claim `EXECUTIVE_DESIGN_DIRECTIVE_001.md` §5 governs directly.
+
+   **The 12 named entities:**
+
+   | vw-id | Displayed name | Represents | Own OSM way? |
+   |---|---|---|---|
+   | `vw-qvarn` | Grythytte Qvarn | Historical mill (*bruk*-era property) | No; only a Vision-Owner-supplied landmark record `gry-qvarn` (`source.osmType=null`, `resolvedFrom="vision-owner-2026-07-26"`) |
+   | `vw-pra-djurskyddet` | Djurskyddet Vilsna Tassar Hällefors | Animal welfare / rescue | No |
+   | `vw-sorgarden` | Sörgårdens Äldreboende | Elderly-care home (municipal) | No |
+   | `vw-jaktakademin` | Jaktakademin | Hunting academy | No |
+   | `vw-stalmobler` | Grythyttan Stålmöbler | Steel-furniture manufacturer | No |
+   | `vw-barbellclub` | Barbellclub Bergslagen | Gym / strength club | No |
+   | `vw-forskola` | Grythyttans förskola | Municipal preschool | No |
+   | `vw-solidfeet` | SolidFeet | Footwear / foot-health brand | No |
+   | `vw-icopal` | Icopal Skifferverk | Slate works (industrial) | No |
+   | `vw-takskiffer` | Takskifferspecialisten AB | Roof-slate specialist | No |
+   | `vw-grythyttevikens-skiffertak` | Grythyttevikens Skiffertak AB | Slate-roof company | No |
+   | `vw-csvwellness` | CSVWellness | Wellness / spa / gym | No |
+
+   **Cross-reference to ORDER 019R.** `FULL_MAP_AUTHENTICITY_AUDIT_ORDER_019R.md` §9 previously listed 11 named entities *"visible in the reference screenshots but not present in OSM"*. Seven of those 11 later entered `world.json` as `vw-*` records (Sörgårdens Äldreboende, Jaktakademin, Grythyttans förskola, SolidFeet, Grythyttan Stålmöbler, Djurskyddet, Barbellclub Bergslagen). Four from the 019R list remain unrepresented (Grythyttans Församlingshem, Grythyttans Kapell, Grythyttans Fotbollsplan; plus Restaurang- och hotellhögskolan which is actually Kärnhuset `w193810921`, an OSM building already handcrafted). Five entries in `vw-*` are new since 019R (Grythytte Qvarn later promoted to landmark, plus Icopal, Takskifferspecialisten, Grythyttevikens Skiffertak, CSVWellness).
+
+   **What makes this an OPEN defect, not just a marking issue:**
+
+   - Each of the 12 is a **verifiable fact** in the EDD §5 sense: existence at a specific location, identity as a specific named business or institution.
+   - None carries a source citation, `VERIFICATION REQUIRED` marker, `SYNTHESISED` label, or landmark record with `resolvedFrom` — with the sole partial exception of Grythytte Qvarn, whose landmark record does have `resolvedFrom` but with `osmType=null`.
+   - Under ADR 002 §2.1 identity-tier rigour (0.90 threshold), an entity claiming to be a specific real property at a specific real coordinate needs reference material sufficient to reach that threshold or an explicit `APPROXIMATION` / `SYNTHESISED` state. None of the 12 has either.
+   - Under ADR 002 §2.3 sentence 3 (*"verifiable facts may never be invented"*), the named-entity status is precisely what the rule protects.
+   - Whether each of the 12 is (a) a real Grythyttan entity correctly placed but under-cited, (b) a real entity mis-placed, (c) an entity that no longer exists, or (d) an entity that never existed — is not determinable from the repository.
+
+   **Status: OPEN. No order authored. No data changed.** This entry exists so the defect is findable by anyone searching the register for `OPEN DEFECT`, `vw-named-objects-untraceable`, or any of the twelve names above. Each of the twelve is a candidate for either promotion to a proper landmark record with verified reference material, or retraction if the location or existence cannot be established. That call is a Vision Owner decision (per report §7 item 2 — marking policy for the 87 `vw-*` buildings).
+
 **End of approximation register.**
