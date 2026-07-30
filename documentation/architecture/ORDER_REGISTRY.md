@@ -10,6 +10,8 @@
 
 Every ORDER number that appears anywhere in the repository — filename, document header, status line, change-log entry, or narrative reference — is recorded here. Gaps in the sequence are shown, not hidden. An ORDER cited only in agent memory but never written into the repository is a documentation defect and is **not** eligible for a registry entry (per `ADR_002_SYNTHESIS_POLICY.md` §7.5).
 
+**Non-ORDER governance instruments** with a defective provenance (a Superseding Directive that has no artefact in the repository, for example) are also recorded here per `ORDER_035_MEMORY_PROVENANCE_REPAIR.md` §2.3, so the gap does not sit invisible. Such rows carry their instrument type in the `#` column (e.g. `SD-001`) and are not part of the ORDER number sequence.
+
 ## 2. Legend — Carrier
 
 - **Own document** — the ORDER text itself is committed as its own file. This is the only carrier that qualifies as a versioned instrument.
@@ -17,6 +19,7 @@ Every ORDER number that appears anywhere in the repository — filename, documen
 - **Reference only** — the number is cited by other documents but no order document or report exists in the repository. The ORDER is inferred, not evidenced.
 - **Not found in repo** — the number does not appear anywhere in `documentation/`. Included in the sequence for gap-visibility.
 - **Void** — a draft was issued but withdrawn before ever taking effect (recorded here so the number is not silently reused).
+- **Reserved** — a number has been claimed in this registry per `CLAUDE.md` rule 9 but no order file is committed yet. Held pending file authoring or Vision Owner approval.
 
 ## 3. Registry
 
@@ -26,8 +29,8 @@ Every ORDER number that appears anywhere in the repository — filename, documen
 | 002 | Recognisable-village exploration prototype (first playable) | Superseded / historical | Reference only | Cited by `ADR_001_DIGITAL_TWIN_PHASE.md`, `SUPERSEDING_DIRECTIVE_002.md`. No order document committed. |
 | 003 | Digital Twin Reconstruction — District 1 | Superseded / historical | Reference only | Cited by `DISTRICT_PRODUCTION_TRACKER.md`, `DISTRICT_1_REFERENCE_REQUEST.md`, `APPROXIMATION_REGISTER.md`. No order document. |
 | 003A | *(unknown sub-variant)* | Unclear | Reference only | Single mention in `APPROXIMATION_REGISTER.md`. |
-| 004 | PASS 1 baseline placement (District 1) | Superseded / historical | Reference only | Cited by `APPROXIMATION_REGISTER.md`, `RENDERER_ALIGNMENT_REPORT_ORDER_020.md`. **No own order document (per ADR 002 memory audit).** |
-| 005 | Production Mode — 60-minute work cycles | Active workflow rule | Reference only | Cited by `APPROXIMATION_REGISTER.md` and agent memory. **No own order document (per ADR 002 memory audit).** |
+| 004 | PASS 1 baseline placement (District 1) | Superseded / historical | Reference only | Cited by `APPROXIMATION_REGISTER.md`, `RENDERER_ALIGNMENT_REPORT_ORDER_020.md`. **No own order document (per ADR 002 memory audit).** Provenance evidence: `ORDER_RECONSTRUCTION_004_005_019_020.md` §2 (ORDER 035 §2.2). |
+| 005 | Production Mode — 60-minute work cycles | Active workflow rule | Reference only | Cited by `APPROXIMATION_REGISTER.md` and agent memory. **No own order document (per ADR 002 memory audit).** Provenance evidence: `ORDER_RECONSTRUCTION_004_005_019_020.md` §3 (ORDER 035 §2.2). |
 | 006 | Torget long-house block modelling | Superseded / historical | Reference only | Cited by `APPROXIMATION_REGISTER.md`. No order document. |
 | 007 | — | Not found in repo | — | Gap in sequence — number possibly never issued. |
 | 008 | — | Not found in repo | — | Gap in sequence — number possibly never issued. |
@@ -41,9 +44,9 @@ Every ORDER number that appears anywhere in the repository — filename, documen
 | 016 | — | Not found in repo | — | Gap in sequence — number possibly never issued. |
 | 017a | *(unknown sub-variant)* | Unclear | Reference only | Single mention in `APPROXIMATION_REGISTER.md`. |
 | 018 | Road-hierarchy rebuild | Historical | Reference only | Cited by `WORLD_ALIGNMENT_AUDIT_ORDER_019.md`, `APPROXIMATION_REGISTER.md`. No order document. |
-| 019 | World Alignment | Executed — reported | Report only | `WORLD_ALIGNMENT_REPORT_ORDER_019.md`, `WORLD_ALIGNMENT_AUDIT_ORDER_019.md`, `CRITICAL_DEFECT_REGISTER_ORDER_019.md`. **No own order document (per ADR 002 memory audit).** |
+| 019 | World Alignment | Executed — reported | Report only | `WORLD_ALIGNMENT_REPORT_ORDER_019.md`, `WORLD_ALIGNMENT_AUDIT_ORDER_019.md`, `CRITICAL_DEFECT_REGISTER_ORDER_019.md`. **No own order document (per ADR 002 memory audit).** Provenance evidence: `ORDER_RECONSTRUCTION_004_005_019_020.md` §4 (ORDER 035 §2.2). |
 | 019R | Full-map authenticity re-audit (revision of 019) | Executed — reported | Report only | `FULL_MAP_AUTHENTICITY_AUDIT_ORDER_019R.md`. |
-| 020 | District Coherence — landmark procedural detail unification | Executed — reported | Report only | `RENDERER_ALIGNMENT_REPORT_ORDER_020.md`. **No own order document (per ADR 002 memory audit).** |
+| 020 | District Coherence — landmark procedural detail unification | Executed — reported | Report only | `RENDERER_ALIGNMENT_REPORT_ORDER_020.md`. **No own order document (per ADR 002 memory audit).** Provenance evidence: `ORDER_RECONSTRUCTION_004_005_019_020.md` §5 (ORDER 035 §2.2) — records the title/content mismatch between the ORDER 019 proposal ("District Coherence") and the executed report ("Renderer Alignment"). |
 | 020 *(draft, competing)* | Documentation Alignment (competing draft) | Void | — | Withdrawn by `ORDER_034_DOCUMENTATION_ALIGNMENT.md` header — collided with the existing ORDER 020 above. |
 | 021 | Building completion | Executed — reported | Report only | `BUILDING_COMPLETION_REPORT_ORDER_021.md`, `BUILDING_COMPLETION_AUDIT_ORDER_021.md`. |
 | 021A | Performance preparation / phase gate | Historical | Reference only | Cited by `PERFORMANCE_PREPARATION_REFERENCE.md`, `WORLD_AUTHENTICITY_REPORT_ORDER_022.md`. |
@@ -61,7 +64,10 @@ Every ORDER number that appears anywhere in the repository — filename, documen
 | 032 | — | Not found in repo | — | Number possibly never issued. |
 | 033 | Reference audit & memory audit | Executed | Reference only | Cited by `ADR_002_SYNTHESIS_POLICY.md` §1 (reference audit) and §7 (memory audit). Findings absorbed into ADR 002 rather than a standalone report. |
 | 034 | Documentation Alignment | Awaiting Vision Owner approval | **Own document** | `ORDER_034_DOCUMENTATION_ALIGNMENT.md`. |
-| 100 | Nexus Studio Game Design Constitution (vision reference) | Reclassified as vision reference (outside precedence order) per SD-002 §3 | Own document (currently binary `.docx` with `.md` extension — to be converted per ORDER 034 §6) | `documentation/foundation/NEXUS_STUDIO_GAME_DESIGN_CONSTITUTION.md` (planned move to `documentation/foundation/vision/ORDER_100_VISION.md`). |
+| 035 | Memory Provenance Repair | Awaiting Vision Owner approval | **Own document** | `ORDER_035_MEMORY_PROVENANCE_REPAIR.md`. Parent: `ADR_002_SYNTHESIS_POLICY.md` §7, §9.1. |
+| 036 | Reference Integrity Infrastructure | Executed 2026-07-29 | **Own document** | `ORDER_036_REFERENCE_INTEGRITY_INFRASTRUCTURE.md`. Parent: `ADR_002_SYNTHESIS_POLICY.md` §4.2, §5, §9 steps 1–3. Executed in four section commits: `9e826c9` (§0, registry entries), `71ae625` (§2, 13 relocations + manifest paths), `73420e3` (§3, `scripts/validate-references.mjs` + `VALIDATOR_REFERENCE.md`), `e29d354` (§4, `reviewState` backfill + schema in `documentation/references/README.md`). Steps 4–8 of ADR 002 §9 remain out of scope per §5. |
+| 100 | Nexus Studio Game Design Constitution (vision reference) | Reclassified as vision reference (outside precedence order) per SD-002 §3 | **Own document** | `documentation/foundation/vision/ORDER_100_VISION.md` (markdown). Converted from `.docx` and relocated under ORDER 034 §6, commit `69df962`; source `.docx` archived alongside the previous name. |
+| SD-001 | Superseding Directive 001 — declares Digital Twin Phase, installs authenticity, defines precedence order | Governance instrument gap — referenced as issued but never written to the repository | Reference only | Not an ORDER. Attested as issued 2026-07-22 by `ADR_001_DIGITAL_TWIN_PHASE.md` §1.4; cited in ADR 001 (11 refs), `DISTRICT_1_REFERENCE_REQUEST.md` line 221, and agent memory `reference_confidence_rule.md` line 29. Provenance evidence: `documentation/foundation/SD_001_RECONSTRUCTION_RECORD.md` (ORDER 035 §2.1). Vision Owner decision (ORDER 035 §2.4, 2026-07-29): Alternative A — a real `SUPERSEDING_DIRECTIVE_001.md` shall be authored from the reconstruction record under the mandatory reconstruction markings, in a separate commit after review. |
 
 ## 4. Findings
 

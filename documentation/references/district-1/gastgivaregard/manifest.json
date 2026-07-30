@@ -25,52 +25,60 @@
   },
   "collectedSources": [
     {
-      "path": "gästgiveriet.jpeg",
+      "path": "uploaded/gästgiveriet.jpeg",
+      "reviewState": "unknown",
       "view": "street-facing main facade along Prästgatan; shows two-storey Falu-red timber, sign board 'GÄSTGIVAREGÅRDEN 1641' over entrance, adjacent attached red timber wing with rhythmic small-paned white-framed windows, cobbled street",
       "verifies": ["wallMaterial", "wallColour", "signBoard", "entrancePosition", "windowsCountAndRhythm", "wingExtensions", "storeyCount"],
       "notes": "Gable end at left with oculus (round) window"
     },
     {
-      "path": "gästgiveriet3.jpeg",
+      "path": "uploaded/gästgiveriet3.jpeg",
+      "reviewState": "unknown",
       "view": "rear / courtyard facade in daylight; shows terrace with diners, two dormer windows with round oculi on north pitch, chimneys, curved roof end",
       "verifies": ["dormers", "chimneysCountAndPosition", "roofForm", "wallColour", "terraceOrArrivalCourt"],
       "notes": "Chimney count approx 2-3 across the roof line"
     },
     {
-      "path": "gästgiveriet 4.jpeg",
+      "path": "uploaded/gästgiveriet 4.jpeg",
+      "reviewState": "unknown",
       "view": "corner three-quarter view of main gable end and street facade; shows gable-end silhouette, half-timber-style detailing, sign board and lantern",
       "verifies": ["gableEnds", "signBoard", "entranceForm", "wallColour"],
       "notes": "Very useful for establishing gable-end proportions"
     },
     {
-      "path": "gästgibveriet på prästgatan.jpeg",
+      "path": "uploaded/gästgibveriet på prästgatan.jpeg",
+      "reviewState": "unknown",
       "view": "winter shot of Prästgatan looking down the street; shows Gästgivaregård context with neighbouring buildings, snow-covered roofs",
       "verifies": ["roofForm", "roofPitch", "streetContext"],
-      "notes": "Roof pitch legible against sky; secondary use only"
+      "notes": "Roof pitch legible against sky; secondary use only. Filename is misspelled at source ('gästgibveriet' rather than 'gästgiveriet'); preserved verbatim under ORDER 036 §2 to keep the manifest citation stable."
     },
     {
       "path": "../../grythyttan bilder/Skärmavbild 2026-07-26 kl. 15.59.26.png",
+      "reviewState": "read",
       "view": "Google Street View at 13 Prästgatan with SV info-card panel open — the Gästgivaregård zone with the INGO petrol station in the same block. Info-card thumbnails show the INGO forecourt",
       "verifies": ["streetContext", "adjacencyToIngo"],
-      "notes": "Not head-on to the Gästgivaregård itself; useful only for streetscape context and neighbour layout."
+      "notes": "Not head-on to the Gästgivaregård itself; useful only for streetscape context and neighbour layout. Evidence for reviewState=read: documentation/references/grythyttan bilder/TRIAGE.md (2026-07-28, Kategori A)."
     },
     {
       "path": "../../grythyttan bilder/Skärmavbild 2026-07-26 kl. 15.59.53.png",
+      "reviewState": "read",
       "view": "SV wide street along Prästgatan by the Gästgivaregård forecourt looking toward the square; red timber façades of the Gästgivaregård complex on one side, INGO signage in the background",
       "verifies": ["streetContext", "wallColour"],
-      "notes": "Oblique — no straight-on facade, no gable end, no roof surface."
+      "notes": "Oblique — no straight-on facade, no gable end, no roof surface. Evidence for reviewState=read: documentation/references/grythyttan bilder/TRIAGE.md (2026-07-28, Kategori A)."
     },
     {
       "path": "../../grythyttan bilder/Skärmavbild 2026-07-26 kl. 16.00.16.png",
+      "reviewState": "read",
       "view": "SV facade close-up at 3 Prästgatan — Gästgivaregård courtyard side; Falu-red vertical timber wing, cobbled courtyard, adjacent white timber structure visible",
       "verifies": ["wallMaterial", "wallColour", "wingExtensions", "terraceOrArrivalCourt"],
-      "notes": "Roof pitch not readable at this angle; sign board and main entrance not in frame."
+      "notes": "Roof pitch not readable at this angle; sign board and main entrance not in frame. Evidence for reviewState=read: documentation/references/grythyttan bilder/TRIAGE.md (2026-07-28, Kategori A)."
     },
     {
       "path": "../../grythyttan bilder/Skärmavbild 2026-07-26 kl. 16.00.26.png",
+      "reviewState": "read",
       "view": "SV wide street at 1 Prästgatan looking west toward Torget; the Falu-red magasin/timber corner building of the Gästgivaregård block visible at the Torget-facing corner",
       "verifies": ["streetContext", "adjacencyToTorget"],
-      "notes": "Gästgivaregård main volume is behind camera; frame documents only the Torget-facing corner."
+      "notes": "Gästgivaregård main volume is behind camera; frame documents only the Torget-facing corner. Evidence for reviewState=read: documentation/references/grythyttan bilder/TRIAGE.md (2026-07-28, Kategori A)."
     }
   ],
   "confidenceByAspect": {
