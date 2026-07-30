@@ -27,9 +27,29 @@ export interface WorldMeta {
   fetched?: string | null;
 }
 
+// Per ORDER 040 §2, every building record must declare where its
+// geometry came from — required at compile time so a new record cannot
+// be authored without stating it.
+//
+// - `osm`           — geometry from OpenStreetMap ingest (fetch-grythyttan-osm.mjs).
+// - `synthesised`   — handcrafted; makes no claim beyond "a building
+//                     stands here". Ordinary-tier synthesis per ADR 002 §2.1.
+// - `vision-owner`  — position confirmed by the Vision Owner on a
+//                     specific dated sheet. Not set on the basis of a
+//                     `resolvedFrom` citation alone (per Vision Owner
+//                     correction 2026-07-30 to ORDER 040 §2): citation
+//                     ≠ endorsement. See memory
+//                     `feedback_citation_is_not_endorsement.md`.
+//
+// A fourth value may be introduced later (`vision-owner-unconfirmed`
+// or similar) if any Category B entry comes back from the §4.1 sheet
+// as "unsure"; landed on demand rather than pre-emptively.
+export type BuildingProvenance = 'osm' | 'synthesised' | 'vision-owner';
+
 export interface RawBuilding {
   id: string;
   poly: Vec2Tuple[];
+  provenance: BuildingProvenance;
   name?: string | null;
   kind?: string | null;
   amenity?: string | null;

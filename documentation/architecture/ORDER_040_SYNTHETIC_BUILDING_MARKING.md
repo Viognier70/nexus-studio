@@ -49,7 +49,9 @@ Propose the field name and whether a fourth value is needed before applying it.
 
 **Required at compile time.** A new building must not be authorable without it. That compile-time requirement is the durable part of this order — the same reasoning as ORDER 037 §2.
 
-Backfill: 274 `w*` buildings as `osm`, 87 `vw-*` as `synthesised`, except `vw-qvarn` which has a landmark record with `resolvedFrom: "vision-owner-2026-07-26"`.
+Backfill: 274 `w*` buildings as `osm`, 1 relation-based `r*` building as `osm`, and all 87 `vw-*` as `synthesised`.
+
+**Correction 2026-07-30 (Vision Owner):** the original clause exempted `vw-qvarn` on the basis of its landmark record's `resolvedFrom: "vision-owner-2026-07-26"`. That reasoning was wrong. A `resolvedFrom` value shows a record was **written under that reference**; it is not evidence the cited authority **confirmed** the underlying position. All twelve Category B named entities (including `vw-qvarn`) go on the §4.1 sheet at `synthesised`, and `vision-owner` is set only after the Vision Owner marks the sheet. Pattern also captured under memory `feedback_citation_is_not_endorsement.md`.
 
 ---
 
