@@ -22,7 +22,16 @@ const VILLAGE_FOCUS: [number, number] = [
   (TORGET[1] + CAMPUS[1]) / 2 + 20
 ];
 
-export const PRESETS: Record<'village' | 'district' | 'business', Preset> = {
+// ORDER 042 §3.1 developer preset — jumps the camera to the player-
+// business building (w869907963, centroid ≈ (44.9, 44.4)) at a
+// distance where the roof crossfade is actively fading. Camera bible
+// §4.1 puts the roof-fade midpoint at GRAY_BOX_CAMERA.restaurant
+// RoofFadeMid = 40 m with a ±12 m band, so distance = 40 lands the
+// roof at exactly 50 % opacity — a good starting point for the
+// Vision Owner to zoom in and out through the transition.
+const PLAYER_BUSINESS_CENTROID: [number, number] = [44.9, 44.4];
+
+export const PRESETS: Record<'village' | 'district' | 'business' | 'myBusiness', Preset> = {
   village: {
     label: 'grythyttan',
     // Composition, not overview. The camera sits lower and tilts further
@@ -67,6 +76,21 @@ export const PRESETS: Record<'village' | 'district' | 'business', Preset> = {
       distance: 55,
       yaw: 0.15,
       pitch: (34 * Math.PI) / 180
+    }
+  },
+  myBusiness: {
+    // Developer shortcut per ORDER 042 §3.1 review request. Centres on
+    // w869907963 at distance 40 m — the roof-fade midpoint. Pitch 38°
+    // gives ~25 m altitude so the roof is above camera height and the
+    // fade is visible; yaw 0.4 rad (~23° off north) angles the
+    // building's long north-south axis so the interior stub is legible
+    // rather than seen end-on.
+    label: 'vinbaren',
+    target: {
+      focus: { x: PLAYER_BUSINESS_CENTROID[0], z: PLAYER_BUSINESS_CENTROID[1] },
+      distance: 40,
+      yaw: 0.4,
+      pitch: (38 * Math.PI) / 180
     }
   }
 };

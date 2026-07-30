@@ -1,14 +1,16 @@
 import { useEffect } from 'react';
+import type { PRESETS } from './viewLevels';
 import { useCamera } from './CameraContext';
 
 interface Options {
   enabled: boolean;
   targetElement: () => HTMLElement | null;
-  onJumpPreset?: (preset: 'village' | 'district' | 'business') => void;
+  onJumpPreset?: (preset: keyof typeof PRESETS) => void;
 }
 
 // Wheel = zoom (continuous). LMB drag = pan. RMB or MMB drag = rotate.
-// Q / E = rotate yaw. Escape = outward. Digits 1/2/3 = dev preset jump.
+// Q / E = rotate yaw. Escape = outward.
+// Digit dev-presets: 1 village, 2 district, 3 business, 4 myBusiness.
 export function useDesktopControls({ enabled, targetElement, onJumpPreset }: Options) {
   const camera = useCamera();
 
@@ -58,6 +60,7 @@ export function useDesktopControls({ enabled, targetElement, onJumpPreset }: Opt
       if (event.key === '1' && onJumpPreset) onJumpPreset('village');
       if (event.key === '2' && onJumpPreset) onJumpPreset('district');
       if (event.key === '3' && onJumpPreset) onJumpPreset('business');
+      if (event.key === '4' && onJumpPreset) onJumpPreset('myBusiness');
     };
 
     el.addEventListener('wheel', wheelHandler, { passive: false });
