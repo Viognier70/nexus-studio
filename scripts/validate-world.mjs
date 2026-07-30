@@ -78,6 +78,76 @@ function insideAnyWater(x, z) {
   return null;
 }
 
+// Sutherland-Hodgman polygon clipping — subject polygon clipped by a
+// convex clip polygon. Building footprints in Grythyttan are effectively
+// convex (rectangles with minor wing offsets); non-convex clip polygons
+// may under-report intersection area. For V21's tier-3 threshold
+// (A ≥ 5 m² AND ≥ 5 % of smaller footprint) any under-report of a real
+// overlap by more than half is unlikely.
+//
+// Returns the clipped polygon as a Vec2 array (may be empty if disjoint).
+function polygonClip(subject, clip) {
+  // Ensure clip is closed (last === first is allowed but not required)
+  const clean = subject.length > 1 && subject[0][0] === subject[subject.length - 1][0]
+    && subject[0][1] === subject[subject.length - 1][1]
+    ? subject.slice(0, -1) : subject;
+  let out = clean.slice();
+  const cClean = clip.length > 1 && clip[0][0] === clip[clip.length - 1][0]
+    && clip[0][1] === clip[clip.length - 1][1]
+    ? clip.slice(0, -1) : clip;
+  for (let i = 0; i < cClean.length; i++) {
+    if (out.length === 0) return out;
+    const a = cClean[i];
+    const b = cClean[(i + 1) % cClean.length];
+    // Edge is (a -> b). "Inside" is left of the directed edge (CCW clip
+    // gives positive-area interior; CW gives the opposite). Test both
+    // orientations by using signed cross-product; positive = left of ab.
+    const isInside = (p) => (b[0] - a[0]) * (p[1] - a[1]) - (b[1] - a[1]) * (p[0] - a[0]) >= 0;
+    const isect = (p1, p2) => {
+      // Intersect segment p1-p2 with line through a-b
+      const x1 = p1[0], y1 = p1[1], x2 = p2[0], y2 = p2[1];
+      const x3 = a[0], y3 = a[1], x4 = b[0], y4 = b[1];
+      const denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+      if (Math.abs(denom) < 1e-12) return p2;
+      const t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denom;
+      return [x1 + t * (x2 - x1), y1 + t * (y2 - y1)];
+    };
+    const next = [];
+    for (let j = 0; j < out.length; j++) {
+      const cur = out[j], prev = out[(j - 1 + out.length) % out.length];
+      const inCur = isInside(cur), inPrev = isInside(prev);
+      if (inCur) {
+        if (!inPrev) next.push(isect(prev, cur));
+        next.push(cur);
+      } else if (inPrev) {
+        next.push(isect(prev, cur));
+      }
+    }
+    out = next;
+  }
+  return out;
+}
+// Make clip polygon CCW so isInside consistently means "interior side".
+// If polygon is CW (negative signed area), reverse it.
+function ensureCCW(poly) {
+  let s = 0;
+  for (let i = 0; i < poly.length; i++) {
+    const [x1, y1] = poly[i];
+    const [x2, y2] = poly[(i + 1) % poly.length];
+    s += (x2 - x1) * (y2 + y1);
+  }
+  return s > 0 ? poly.slice().reverse() : poly;
+}
+// Compute intersection area of two polygons.
+function polygonIntersectionArea(a, b) {
+  const clipped = polygonClip(a, ensureCCW(b));
+  if (clipped.length < 3) return 0;
+  return polygonArea([...clipped, clipped[0]]);
+}
+function bboxesOverlap(b1, b2) {
+  return !(b1.maxX < b2.minX || b2.maxX < b1.minX || b1.maxZ < b2.minZ || b2.maxZ < b1.minZ);
+}
+
 // ---------- Reports ----------
 // Every defect carries { severity, id, message, detail, suggestedFix,
 // files } so a downstream reviewer can act without re-diagnosing.
@@ -733,6 +803,107 @@ function mulberry32(state) {
     }
   } catch {
     addDefect('Info', 'V20', 'V20 skipped: places.json or landmarks.json not present');
+  }
+}
+
+// ---------- V21: pairwise building overlap (ORDER 040 §7) ----------
+// A new building must not overlap an existing one above the ORDER 039
+// tier-3 threshold: intersection area A ≥ 5 m² AND A ≥ 5 % of the
+// smaller footprint's area. See ORDER_039_BUILDING_OVERLAP_DIAGNOSTIC.md
+// for the threshold rationale.
+//
+// The 39 pairs listed in V21_ACCEPTED_OVERLAPS are pre-ORDER-040
+// overlaps found by ORDER 039 §2. Corrections are proposed under
+// ORDER 040 §6 and applied in a later fix-order; each pair comes off
+// this list as it is corrected. When the list is empty, the exception
+// mechanism can be removed.
+//
+// Pair keys are the two building ids sorted lexicographically and
+// joined by `|`, so the check is order-independent.
+{
+  const V21_ACCEPTED_OVERLAPS = new Set([
+    'vw-bv-lakeshore|vw-bv-lakeshore-boathouse',           //   9.18 m², 38.2 %
+    'vw-bv-tree-cluster|vw-bv-tree-garage',                //   5.31 m², 15.2 %
+    'vw-kyr-1|vw-kyr-torget-lh',                           //  20.00 m², 25.0 %
+    'vw-kyr-1-booth|vw-kyr-torget-lh',                     //  30.00 m², 100.0 %
+    'vw-kyr-11|vw-kyr-13',                                 //  52.00 m², 65.0 %
+    'vw-kyr-11|w869907961',                                //  43.74 m², 54.7 %   church
+    'vw-kyr-12|vw-kyr-14',                                 //   8.00 m², 6.7 %
+    'vw-kyr-13|w869907961',                                //  52.14 m², 40.1 %   church
+    'vw-kyr-14|vw-kyr-kyrkbacken-lh',                      //  30.00 m², 25.0 %
+    'vw-kyr-16|vw-kyr-18',                                 //  35.00 m², 26.9 %
+    'vw-kyr-16|vw-kyr-kyrkbacken-lh',                      //  32.00 m², 21.3 %
+    'vw-kyr-16|w869907961',                                // 131.35 m², 85.3 %   church — primary occluder
+    'vw-kyr-18|vw-kyr-20',                                 //  30.00 m², 23.1 %
+    'vw-kyr-18|w869907961',                                //  15.02 m², 11.6 %   church
+    'vw-kyr-20|vw-kyr-20-garage',                          //  19.00 m², 23.8 %
+    'vw-kyr-20|vw-kyr-22',                                 //  40.00 m², 30.8 %
+    'vw-kyr-20-garage|vw-kyr-22',                          //  11.25 m², 14.1 %
+    'vw-kyr-22|vw-kyr-26',                                 //  28.00 m², 29.2 %
+    'vw-kyr-5|vw-kyr-5-barn',                              //  39.00 m², 55.7 %
+    'vw-kyr-5-barn|vw-kyr-9',                              //  11.00 m², 15.7 %
+    'vw-kyr-9-rear-barn|w869907961',                       //  43.37 m², 90.3 %   church
+    'vw-kyr-9-rear-villa|w869907961',                      //  80.00 m², 100.0 %  church
+    'vw-kyr-kyrkbacken-lh|w869907961',                     //  38.14 m², 25.4 %   church
+    'vw-kyr-torget-lh|vw-torget-bus-shelter',              //   8.75 m², 100.0 %
+    'vw-nyg-1|w869907972',                                 //  40.37 m², 25.6 %
+    'vw-nyg-20|w870510857',                                //  69.18 m², 32.0 %
+    'vw-pra-12s|w193810941',                               // 138.10 m², 89.7 %
+    'vw-pra-16|vw-pra-19n',                                //  36.00 m², 27.7 %
+    'vw-pra-20s|vw-pra-21',                                //  82.50 m², 83.3 %
+    'vw-pra-4n|vw-pra-6n',                                 //  48.75 m², 49.2 %
+    'vw-pra-4n|vw-pra-8',                                  //   8.00 m², 10.0 %
+    'vw-pra-6n|vw-pra-8',                                  //  35.75 m², 44.7 %
+    'vw-skg-11|w1250001245',                               //  56.37 m², 40.3 %   Tempo
+    'vw-skg-9|w1250001244',                                //  49.29 m², 35.2 %
+    'vw-stn-8|w870510842',                                 //  47.26 m², 44.7 %
+    'vw-torget-east-lh|w869907976',                        //  42.08 m², 41.4 %
+    'vw-torget-east-lh|w869907977',                        // 145.39 m², 42.8 %
+    'vw-torget-kyrkbacken-pair|vw-torget-north-lh',        //  63.25 m², 22.0 %
+    'vw-torget-north-lh|w869907971',                       // 123.39 m², 60.9 %
+  ]);
+  const AREA_THRESHOLD_M2 = 5.0;
+  const FRACTION_THRESHOLD = 0.05;
+
+  const bldgs = world.buildings.filter((b) => b.poly && b.poly.length >= 3);
+  // Precompute area + bbox for each building
+  const meta = bldgs.map((b) => ({ id: b.id, poly: b.poly, area: polygonArea([...b.poly, b.poly[0]]), bbox: polygonBounds(b.poly) }));
+  const unresolvedDefects = [];
+  const acceptedFound = new Set();
+  for (let i = 0; i < meta.length; i++) {
+    for (let j = i + 1; j < meta.length; j++) {
+      if (!bboxesOverlap(meta[i].bbox, meta[j].bbox)) continue;
+      const A = polygonIntersectionArea(meta[i].poly, meta[j].poly);
+      if (A <= 0) continue;
+      const smaller = Math.min(meta[i].area, meta[j].area);
+      if (smaller <= 0) continue;
+      const f = A / smaller;
+      if (A < AREA_THRESHOLD_M2 || f < FRACTION_THRESHOLD) continue;
+      const ids = [meta[i].id, meta[j].id].sort();
+      const key = `${ids[0]}|${ids[1]}`;
+      if (V21_ACCEPTED_OVERLAPS.has(key)) {
+        acceptedFound.add(key);
+        continue;
+      }
+      unresolvedDefects.push({ pair: key, area_m2: Number(A.toFixed(2)), fraction_of_smaller: Number((f * 100).toFixed(1)) });
+    }
+  }
+  const acceptedMissing = [...V21_ACCEPTED_OVERLAPS].filter((k) => !acceptedFound.has(k));
+
+  if (unresolvedDefects.length === 0 && acceptedMissing.length === 0) {
+    addDefect('Info', 'V21', `V21 clean: ${acceptedFound.size} tier-3 overlaps present, all in the accepted-exception list (ORDER 039 §2 findings, to be corrected under ORDER 040 §6 + follow-up fix-order). No new tier-3 overlaps introduced.`);
+  } else if (unresolvedDefects.length === 0 && acceptedMissing.length > 0) {
+    addDefect('Info', 'V21', `V21 clean plus ${acceptedMissing.length} previously-accepted overlaps have been corrected — remove them from V21_ACCEPTED_OVERLAPS`, acceptedMissing.slice(0, 10),
+      `Delete these entries from scripts/validate-world.mjs V21_ACCEPTED_OVERLAPS: ${acceptedMissing.join(', ')}`,
+      ['scripts/validate-world.mjs']);
+  } else {
+    addDefect('High', 'V21', `${unresolvedDefects.length} new tier-3 building overlap(s) not in the accepted-exception list`,
+      unresolvedDefects.slice(0, 10),
+      'A new building placement introduces a substantial overlap (A ≥ 5 m² AND ≥ 5 % of the smaller footprint). Fix the placement — nudge, shrink or remove — before landing. If the overlap is genuinely intentional (attached wing recorded as a separate polygon, etc.) add the pair to V21_ACCEPTED_OVERLAPS with a comment naming what authorised it. See ORDER 039 §2 for threshold rationale.',
+      ['scripts/validate-world.mjs', 'frontend/src/strategic/data/grythyttan-world.json']);
+    if (acceptedMissing.length > 0) {
+      addDefect('Info', 'V21', `V21 side note: ${acceptedMissing.length} previously-accepted overlaps have been corrected and should be removed from V21_ACCEPTED_OVERLAPS`, acceptedMissing.slice(0, 10));
+    }
   }
 }
 

@@ -49,6 +49,8 @@ World-data + runtime-consistency validator. 14 checks in one pass.
 | **V13** | High | Landmark record references an OSM way that no longer resolves upstream (`resolvedFrom !== 'osm'` fallback) | Re-run the fetcher; retag or downgrade the landmark |
 | **V13a** | Info | Landmark record points at a non-building OSM way that resolved fresh — legitimate (plaza / sports / campus polygons) | No action |
 | **V14** | High | Landmark ID referenced by runtime code but missing from `world.landmarks` (composition typo or dropped record) | Fix the typo or add the landmark |
+| **V15–V20** | Info / Medium / High | Metadata and Place coverage (POI category / Place classification / district identity / landmark → Place). Skip cleanly when the report JSON they depend on is missing | See per-check message when they fire |
+| **V21** | High | Two building footprints overlap above the ORDER 039 tier-3 threshold (A ≥ 5 m² AND ≥ 5 % of the smaller footprint) and the pair is not in `V21_ACCEPTED_OVERLAPS`. Uses Sutherland-Hodgman polygon clipping for intersection area | Fix the placement (nudge, shrink or remove) before landing. If the overlap is intentional (attached wing rendered as a separate polygon), add the pair to `V21_ACCEPTED_OVERLAPS` with a comment naming what authorised it. Also fires as Info when a previously-accepted pair has been corrected and can be removed from the exception list. See ORDER 039 §2 for threshold rationale, ORDER 040 §7 for the validator authorisation |
 
 ## `scripts/validate-references.mjs`
 
@@ -61,6 +63,18 @@ Reference-integrity validator from ORDER 036 §3. Ensures every `collectedSource
 **Failure record:** `manifest` (path), `index` (entry index in `collectedSources`), `path` (cited), `resolved` (path as resolved relative to CWD), `reason`.
 
 **Why it exists.** ADR 002 §5.1 requires manifest bindings to be machine-checked. Before this validator, thirteen reference files sat in the repository root while manifests cited them by bare filename — undetected for weeks. A citation that resolves nowhere is a build-blocking defect.
+
+### V21 accepted-exception mechanism
+
+The 39 tier-3 building overlaps that ORDER 039 §2 catalogued predate this validator. To let it land immediately without blocking the build, they are enumerated in `V21_ACCEPTED_OVERLAPS` inside `validate-world.mjs` and pass the check as an Info summary. Each entry is a `"id1|id2"` string with the two OSM/handcraft ids sorted lexicographically (so the check is order-independent). Comments after each entry record the intersection area and fraction so a reviewer can see what is being tolerated.
+
+**Lifecycle.** As ORDER 040 §6 corrections apply and pairs are resolved:
+
+1. The pair is removed from `V21_ACCEPTED_OVERLAPS` in the same commit that applies the fix.
+2. The validator confirms the pair no longer produces a tier-3 overlap.
+3. Info side-note fires if a pair is still in the exception list but the overlap is gone — flags the exception list for cleanup.
+
+When the exception list is empty, the mechanism itself can be retired — a plain "no tier-3 overlaps" is the target state.
 
 ## Adding a new check
 
