@@ -1,10 +1,34 @@
 # Building Overlap Diagnostic Report — ORDER 039
 
-**Status:** Diagnostic report. No world data changed by this order. Screenshot supplied by Vision Owner.
+**Status:** Diagnostic report. No world data changed by this order. Screenshot supplied by Vision Owner. **Root-cause claim corrected 2026-07-30 under ORDER 040 §5 — see Correction block below.**
 **Class:** Engineering report — geometric integrity, marking policy
 **Session:** ORDER 039 (2026-07-30)
 **Parent order:** `ORDER_039_BUILDING_OVERLAP_DIAGNOSTIC.md`
 **Governing:** `ADR_001_DIGITAL_TWIN_PHASE.md`; `ADR_002_SYNTHESIS_POLICY.md` §2.1–§2.3; `EXECUTIVE_DESIGN_DIRECTIVE_001.md` §5; `PHASE_IV_PRODUCTION_PLAN.md` (visual acceptance criterion)
+
+---
+
+## Correction 2026-07-30 — densifier-as-cause claim withdrawn
+
+The following claims made in this report are **not supported by evidence** and are withdrawn. The historical text below is preserved for provenance; this correction block is authoritative where it conflicts with the original.
+
+**Withdrawn claims (with pointers to where they appear):**
+
+- §1 executive summary — *"The 8 church-overlapping buildings are part of a class of 87. All 87 `vw-*` handcrafted buildings entered the world via `scripts/densify-villagerings.mjs` …"*
+- §1 executive summary — *"Root cause: `scripts/densify-villagerings.mjs` … The script's self-documented 'skip landmark zones' rule is not working."*
+- §2b.1 — *"The script cites ORDER 032 as its authorising instrument."* (the "no ORDER 032 document" observation stands; the causal implication about the script does not)
+- §3.3 — *"Handcrafted (`vw-*`) buildings: carry their own `kind` … as assigned by `densify-villagerings.mjs`."*
+- §3.5 diagnosis — *"The `densify-villagerings.mjs` 'skip landmark zones' rule did not exclude the church's footprint."* (moot — the script did not run against the current buildings)
+- §4.3 ancillary — *"Likely a data-entry error in `densify-villagerings.mjs`."* (the 3.0 m value was written by a hand-authored commit editing the record directly, not by the script)
+- **§7.1 — the proposed fix path *"filter at build time — extend `densify-villagerings.mjs` with a proper landmark-zone check"* falls with this correction.** The script never wrote any of the 87 buildings currently in the world, so extending it would fix nothing that exists. **ORDER 040 §7's building-overlap validator replaces this proposal** as the correct mechanism — a validator that refuses new overlapping placements at commit time, on the same footing as the ORDER 036 §3 reference-integrity validator.
+
+**Corrected reading.** The 87 `vw-*` buildings are hand-authored placements by the Vision Owner. Per `git log -S`, every one traces to a `fix(<street>): …` commit with rationale like *"rebuild historic core from map + Street View evidence"* or *"back-cluster deep audit — 4 structures from previously-unmined SVs"*. The 39 tier-3 overlaps arose because no automated overlap validator existed to catch when a well-reasoned individual placement fell inside an existing footprint. That validator is what ORDER 040 §7 will add, promoted ahead of ORDER 040 §6 under the same Vision Owner call that authorised this correction.
+
+The densifier is orphaned dead code — its git history has a single commit (`66d81e2 fix(village): bulk densify all residential streets — 677 buildings`), its output was purged by commit `954c767 revert(order-032): purge 469 synthetic buildings — corrective ORDER`, and no `package.json` script or code path invokes it today. It is deleted under ORDER 040 §5 in the same commit series.
+
+**What still stands.** The 39-overlap count and per-pair table (§2); the 8 church intrusions with their overlap areas (§2.3); the identification of `vw-kyr-16` (apartment block, 8.4 m > 8.0 m nave wall) as the primary occluder (§1, §3.5); the marking-policy findings (§2b — 87 unmarked, EDD §5 relationship, SYNTHESISED absent); the ORDER 032 provenance gap (§2b.1) with the twist added by this correction — it is now recorded in `ORDER_REGISTRY.md` row 032 as *contested*, not *possibly never issued*, because two mutually-incompatible claims about ORDER 032 exist (the purge commit's title vs the densifier's header). Only the causal attribution to the densifier and the §7.1 fix-path proposal that followed from it are withdrawn.
+
+**Mechanism note.** This is a third occurrence of the "citation ≠ endorsement" pattern (memory `feedback_citation_is_not_endorsement.md`), authored under the same review cycle that later saved the memory rule. The densifier's header cites ORDER 032 as authorising it; the report inferred causation from that header without verifying that the script's output ids (`vw-dnf-*`) match any building in the world. Zero matches. Recording the mechanism here rather than only in memory because the report is the artefact that carried the mistake into the register and the registry.
 
 ---
 
