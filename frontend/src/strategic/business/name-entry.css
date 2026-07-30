@@ -1,0 +1,97 @@
+/* First-run business-name overlay per ORDER 042 §3.1.
+   Sits above the canvas without blocking WebGL. Neutral warm palette
+   to avoid the modal-dialog / game-menu look — this is diegetic-ish. */
+
+.business-name-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(20, 18, 15, 0.55);
+  backdrop-filter: blur(2px);
+  animation: business-name-fade-in 220ms ease-out;
+}
+
+@keyframes business-name-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.business-name-card {
+  max-width: 460px;
+  width: 92%;
+  padding: 28px 30px 22px;
+  background: #f5f0e0;
+  color: #2c241c;
+  border: 1px solid #a8926a;
+  border-radius: 6px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+.business-name-card h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.business-name-card p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.45;
+  color: #43382d;
+}
+
+.business-name-card input {
+  padding: 10px 12px;
+  font-size: 17px;
+  border: 1px solid #b09477;
+  border-radius: 4px;
+  background: #fdfaee;
+  color: #2c241c;
+  font-family: inherit;
+}
+
+.business-name-card input:focus {
+  outline: 2px solid #7b3f2b;
+  outline-offset: 1px;
+}
+
+.business-name-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.business-name-card button {
+  padding: 9px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  background: #7b3f2b;
+  color: #f5f0e0;
+  border: 1px solid #5d2f20;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.business-name-card button:hover:not(:disabled) {
+  background: #8f4a34;
+}
+
+.business-name-card button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.business-name-hint {
+  font-size: 12px;
+  color: #6a5849;
+  font-style: italic;
+  margin-top: 4px;
+}

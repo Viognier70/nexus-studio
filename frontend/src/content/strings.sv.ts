@@ -64,5 +64,14 @@ export const strings = {
     quote:
       'Alla kommer hit med drömmar. Ingen vet ännu vem de kommer att bli.',
     restart: 'Försök igen'
+  },
+  business: {
+    firstRunHeading: 'Din verksamhet',
+    firstRunBody:
+      'Du äger en restaurang i Grythyttans historiska kärna. Vad heter den?',
+    firstRunPlaceholder: 'Restaurangens namn',
+    firstRunSubmit: 'Öppna verksamheten',
+    firstRunHint: 'Namnet kan du inte ändra senare.',
+    labelPrefix: 'Restaurang'
   }
 } as const;

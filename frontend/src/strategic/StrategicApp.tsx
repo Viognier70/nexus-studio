@@ -1,4 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
+import { BusinessProvider } from './business/BusinessContext';
+import { NameEntryOverlay } from './business/NameEntryOverlay';
 import { CameraProvider, useCamera } from './camera/CameraContext';
 import { useDesktopControls } from './camera/useDesktopControls';
 import { useTouchControls } from './camera/useTouchControls';
@@ -21,9 +23,12 @@ export function StrategicApp() {
     return <WebGLFallback onRestart={() => window.location.reload()} />;
   }
   return (
-    <CameraProvider>
-      <StrategicShell />
-    </CameraProvider>
+    <BusinessProvider>
+      <CameraProvider>
+        <StrategicShell />
+        <NameEntryOverlay />
+      </CameraProvider>
+    </BusinessProvider>
   );
 }
 

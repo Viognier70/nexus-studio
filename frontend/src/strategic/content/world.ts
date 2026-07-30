@@ -313,6 +313,16 @@ const HANDCRAFTED_LANDMARK_IDS: ReadonlySet<string> = new Set([
   'gry-ingo'              // ORDER 032 — IngoCanopy in PublicRealm (building=roof + amenity=fuel; canopy not walls)
 ]);
 
+// Player-owned business — rendered by PlayerBusiness with a roof
+// crossfade so the interior becomes visible on zoom, per ORDER 042 §3.1
+// and CAMERA_AND_GAMEPLAY_BIBLE.md §4.1. Listed here as a
+// "handcrafted-like" building so OsmBuildings, ChimneySmoke,
+// OsmParcelBoundaries and OsmYardSurfaces skip it and PlayerBusiness
+// has the polygon to itself.
+export const PLAYER_BUSINESS_BUILDING_IDS: ReadonlySet<string> = new Set([
+  'w869907963'   // Vision Owner choice per ORDER 042 §1
+]);
+
 export const LANDMARK_BUILDING_IDS: Set<string> = new Set([
   ...WORLD.landmarks
     .filter((l) =>
@@ -322,7 +332,8 @@ export const LANDMARK_BUILDING_IDS: Set<string> = new Set([
     )
     .map((l) => `w${l.source.osmId}`),
   ...SHARED_CONTAINER_BUILDING_IDS,
-  ...D2_HANDCRAFTED_BUILDING_IDS
+  ...D2_HANDCRAFTED_BUILDING_IDS,
+  ...PLAYER_BUSINESS_BUILDING_IDS
 ]);
 
 // Roads categorised for movement systems.
