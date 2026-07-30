@@ -1,18 +1,30 @@
 // The player-owned business, rendered in the strategic scene.
 //
-// ORDER 042 §3.1: `w869907963` becomes the player's premises. The
-// building reads as *yours* — carries its name above the roof, and its
-// roof crossfades transparent when the camera zooms below the interior
-// threshold so the interior is reachable by zoom alone (no mode picker,
-// per CAMERA_AND_GAMEPLAY_BIBLE.md §4.1).
+// ORDER 042 §3.1: an OSM building becomes the player's premises. The
+// specific building id lives in PLAYER_BUSINESS_BUILDING_IDS in
+// world.ts; this component reads whichever id is registered there so a
+// building swap requires no code change here. Currently: `w869907975`
+// (Candidate A, Torget south edge, 146 m²) — corrected from
+// `w869907963` on 2026-07-30 after the ORDER 041 §6 filter-miss
+// surfaced (see APPROXIMATION_REGISTER.md entry and world.ts comment).
 //
-// This component replaces OsmBuildings' rendering of `w869907963` (the
-// building is in LANDMARK_BUILDING_IDS which OsmBuildings skips). It
-// draws:
+// The building reads as *yours* — carries its name above the roof, and
+// its roof crossfades transparent when the camera zooms below the
+// interior threshold so the interior is reachable by zoom alone (no
+// mode picker, per CAMERA_AND_GAMEPLAY_BIBLE.md §4.1).
+//
+// This component replaces OsmBuildings' rendering of the registered
+// building (which sits in LANDMARK_BUILDING_IDS so OsmBuildings skips
+// it). It draws:
 //   - Walls, extruded from the OSM footprint at a fixed height
 //   - A roof cap whose opacity fades with camera distance
-//   - A stub interior (floor, tables, entrance marker) below the roof
+//   - A stub interior (floor, bar, tables, entrance marker) below the roof
 //   - A drei <Html> label with the business name above the roof
+//
+// Interior geometry sizes itself from the building's bbox (dynamic), so
+// a building swap adapts the table layout automatically — a compact
+// ~150 m² café-scale footprint gives ~6 small tables; a larger 250 m²
+// footprint gives more room per table.
 //
 // Crossfade thresholds live in GRAY_BOX_CAMERA (already authored per
 // CAMERA_AND_GAMEPLAY_BIBLE.md §4.1):

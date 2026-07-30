@@ -319,8 +319,18 @@ const HANDCRAFTED_LANDMARK_IDS: ReadonlySet<string> = new Set([
 // "handcrafted-like" building so OsmBuildings, ChimneySmoke,
 // OsmParcelBoundaries and OsmYardSurfaces skip it and PlayerBusiness
 // has the polygon to itself.
+//
+// Vision Owner initially picked `w869907963` per ORDER 042 §1 (Candidate
+// C, 252 m² historic-centre sit-down). Corrected 2026-07-30 to
+// `w869907975` (Candidate A, 146 m² Torget south edge café-scale)
+// after the ORDER 041 §6 candidate-filter miss surfaced: `w869907963`
+// coincides with the `gry-kringlan` (Guldkringlan) node landmark's
+// rendered volume and sits 4.6 m from Gästgivaregård. The filter only
+// excluded WAY-based landmarks and ran no landmark-proximity check;
+// node landmarks and adjacency slipped through. See the 2026-07-30
+// entry in APPROXIMATION_REGISTER.md for the mechanism-note.
 export const PLAYER_BUSINESS_BUILDING_IDS: ReadonlySet<string> = new Set([
-  'w869907963'   // Vision Owner choice per ORDER 042 §1
+  'w869907975'   // Candidate A, Torget south edge café-scale
 ]);
 
 export const LANDMARK_BUILDING_IDS: Set<string> = new Set([

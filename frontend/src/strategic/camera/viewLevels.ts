@@ -23,13 +23,21 @@ const VILLAGE_FOCUS: [number, number] = [
 ];
 
 // ORDER 042 §3.1 developer preset — jumps the camera to the player-
-// business building (w869907963, centroid ≈ (44.9, 44.4)) at a
+// business building (w869907975, centroid ≈ (31.6, −16.7)) at a
 // distance where the roof crossfade is actively fading. Camera bible
 // §4.1 puts the roof-fade midpoint at GRAY_BOX_CAMERA.restaurant
 // RoofFadeMid = 40 m with a ±12 m band, so distance = 40 lands the
 // roof at exactly 50 % opacity — a good starting point for the
 // Vision Owner to zoom in and out through the transition.
-const PLAYER_BUSINESS_CENTROID: [number, number] = [44.9, 44.4];
+//
+// Building corrected 2026-07-30 from `w869907963` (Candidate C, which
+// coincided with Guldkringlan's node-landmark rendered volume) to
+// `w869907975` (Candidate A, Torget south edge — spatially clean:
+// nearest landmark is Torget plaza at 13.9 m, no volumetric building
+// within 5 m). See the corresponding note in PLAYER_BUSINESS_
+// BUILDING_IDS in world.ts and the 2026-07-30 mechanism-note in
+// APPROXIMATION_REGISTER.md.
+const PLAYER_BUSINESS_CENTROID: [number, number] = [31.6, -16.7];
 
 export const PRESETS: Record<'village' | 'district' | 'business' | 'myBusiness', Preset> = {
   village: {
