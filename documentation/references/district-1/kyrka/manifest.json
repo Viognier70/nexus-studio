@@ -48,6 +48,13 @@
       "view": "north facade, tower at left; shows clock face on tower west face, cross on top, two roof dormers on the nave, churchyard entrance path, nave flank with arched windows",
       "verifies": ["bellTowerPosition", "bellTowerShape", "spireForm", "roofForm", "clockFace", "cross", "dormers", "windowsLongFacadeRhythm", "wallColour", "roofColour"],
       "notes": "Best single view for tower proportions and cross"
+    },
+    {
+      "path": "uploaded/render-2026-07-30-church-occlusion.png",
+      "reviewState": "present-unread",
+      "view": "Vision-Owner-supplied dev-server render (localhost:5173) of the church area, 1383×868. Captured 2026-07-30 as the visual evidence for the ORDER 039 diagnostic. Shows the church-occlusion defect the Vision Owner reported: village-fill vw-kyr-* buildings sitting on the church footprint (see BUILDING_OVERLAP_DIAGNOSTIC_REPORT_ORDER_039.md §3.2 for the 8 buildings at 0.00 m distance).",
+      "verifies": [],
+      "notes": "**Not reference evidence.** A render of our own output is never reference evidence per ORDER 036 §4 / documentation/references/README.md §\"Evidence rule for `read`\". reviewState=present-unread ensures it contributes to no aspect confidence. Note on format: file is WebP-encoded despite the .png extension; that's fine for reference storage since reviewState=present-unread means no pipeline reads it."
     }
   ],
   "confidenceByAspect": {
