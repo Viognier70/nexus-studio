@@ -160,17 +160,31 @@ export function PlayerBusiness() {
       dist
     );
     if (roofMaterialRef.current) {
-      roofMaterialRef.current.opacity = roofOpacity;
-      roofMaterialRef.current.transparent = roofOpacity < 0.99;
-      roofMaterialRef.current.depthWrite = roofOpacity > 0.5;
+      const mat = roofMaterialRef.current;
+      mat.opacity = roofOpacity;
+      const wantTransparent = roofOpacity < 0.99;
+      // needsUpdate = true forces THREE to recompile the material's shader
+      // and move it between the opaque and transparent render buckets.
+      // Without this, toggling .transparent at runtime is silently ignored
+      // and .opacity has no visual effect.
+      if (mat.transparent !== wantTransparent) {
+        mat.transparent = wantTransparent;
+        mat.needsUpdate = true;
+      }
+      mat.depthWrite = roofOpacity > 0.5;
     }
     if (wallMaterialRef.current) {
       // Walls stay visible always — the interior is a *cutaway*, not a
       // building removal. But they thin slightly when zoomed in so the
       // interior isn't visually strangled at close range.
       const wallOpacity = 0.5 + 0.5 * roofOpacity;
-      wallMaterialRef.current.opacity = wallOpacity;
-      wallMaterialRef.current.transparent = wallOpacity < 0.99;
+      const mat = wallMaterialRef.current;
+      mat.opacity = wallOpacity;
+      const wantTransparent = wallOpacity < 0.99;
+      if (mat.transparent !== wantTransparent) {
+        mat.transparent = wantTransparent;
+        mat.needsUpdate = true;
+      }
     }
     if (interiorGroupRef.current) {
       interiorGroupRef.current.visible = interiorVisibility > 0.02;
@@ -181,7 +195,11 @@ export function PlayerBusiness() {
           const mat = mesh.material as THREE.MeshStandardMaterial;
           if (mat && 'opacity' in mat) {
             mat.opacity = interiorVisibility;
-            mat.transparent = interiorVisibility < 0.99;
+            const wantTransparent = interiorVisibility < 0.99;
+            if (mat.transparent !== wantTransparent) {
+              mat.transparent = wantTransparent;
+              mat.needsUpdate = true;
+            }
           }
         }
       });
@@ -235,16 +253,21 @@ export function PlayerBusiness() {
           color={WALL_COLOUR}
           roughness={0.85}
           metalness={0.02}
+          transparent
         />
       </mesh>
 
-      {/* Roof cap — fades on zoom */}
+      {/* Roof cap — fades on zoom. transparent set here so THREE places
+          the material in the transparent render bucket from mount; the
+          useFrame toggle above still refreshes it (with needsUpdate) if
+          the fade lands fully opaque at large distances. */}
       <mesh geometry={geom.capGeo} receiveShadow castShadow>
         <meshStandardMaterial
           ref={roofMaterialRef}
           color={ROOF_COLOUR}
           roughness={0.9}
           metalness={0.05}
+          transparent
         />
       </mesh>
 

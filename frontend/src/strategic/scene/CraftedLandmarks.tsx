@@ -8,6 +8,7 @@ import {
   tintColour
 } from '../content/world';
 import type { CommercialStatus, Landmark, RawBuilding, Vec2Tuple } from '../content/world';
+import { nearAnyBuilding } from '../procgen/geom';
 
 // Handcrafted low-poly geometry for the landmarks a Grythyttan visitor must
 // recognise within seconds. Where a landmark corresponds to a real OSM way
@@ -2438,16 +2439,31 @@ function TorgetLandmark({ landmark }: { landmark: Landmark }) {
     // sides are at ±TORGET_PLAZA_HALF_WIDTH in local Z.
     const treeCount = 5;
     const treeSpan = 40;  // trees spread over the middle 40 m of the road
-    const treeXs: number[] = [];
+    const treeZ = TORGET_PLAZA_HALF_WIDTH - 1.0;
+    // Filter each candidate slot against building footprints. Trees live
+    // in two nested groups (outer = landmark.position, inner = offset), so
+    // world position = landmark.position + offset + local. Without this
+    // check the avenue used to clip through w869907975 (player business,
+    // Torget south edge). 1.5 m dilation matches StreetTrees.tsx.
+    const trees: Array<{ dx: number; side: 'north' | 'south' }> = [];
     for (let i = 0; i < treeCount; i++) {
-      treeXs.push(-treeSpan / 2 + (i * treeSpan) / (treeCount - 1));
+      const dx = -treeSpan / 2 + (i * treeSpan) / (treeCount - 1);
+      const worldX = landmark.position[0] + offsetX + dx;
+      const worldZnorth = landmark.position[1] + offsetZ - treeZ;
+      const worldZsouth = landmark.position[1] + offsetZ + treeZ;
+      if (!nearAnyBuilding(worldX, worldZnorth, null, 1.5)) {
+        trees.push({ dx, side: 'north' });
+      }
+      if (!nearAnyBuilding(worldX, worldZsouth, null, 1.5)) {
+        trees.push({ dx, side: 'south' });
+      }
     }
     return {
       geo: g,
       offsetX,
       offsetZ,
-      treeXs,
-      treeZ: TORGET_PLAZA_HALF_WIDTH - 1.0
+      trees,
+      treeZ
     };
   }, [landmark.position]);
 
@@ -2463,21 +2479,17 @@ function TorgetLandmark({ landmark }: { landmark: Landmark }) {
             />
           </mesh>
           {/* PASS 4 — formal tree avenue along both long edges of the
-              plaza envelope. */}
-          {plazaData.treeXs.flatMap((dx, i) => [
+              plaza envelope. Each candidate slot pre-filtered against
+              building footprints so trees never clip through a building
+              (e.g. w869907975 on the south edge). */}
+          {plazaData.trees.map(({ dx, side }, i) => (
             <LandmarkTree
-              key={`t-n-${i}`}
-              position={[dx, 0, -plazaData.treeZ]}
+              key={`t-${side}-${i}`}
+              position={[dx, 0, side === 'north' ? -plazaData.treeZ : plazaData.treeZ]}
               scale={1.15}
-              rotation={dx * 0.13}
-            />,
-            <LandmarkTree
-              key={`t-s-${i}`}
-              position={[dx, 0, plazaData.treeZ]}
-              scale={1.15}
-              rotation={-dx * 0.13}
+              rotation={side === 'north' ? dx * 0.13 : -dx * 0.13}
             />
-          ])}
+          ))}
         </group>
       ) : (
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.06, 0]}>
