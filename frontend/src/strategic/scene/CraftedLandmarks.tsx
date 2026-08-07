@@ -2451,12 +2451,10 @@ function TorgetLandmark({ landmark }: { landmark: Landmark }) {
       const worldX = landmark.position[0] + offsetX + dx;
       const worldZnorth = landmark.position[1] + offsetZ - treeZ;
       const worldZsouth = landmark.position[1] + offsetZ + treeZ;
-      if (!nearAnyBuilding(worldX, worldZnorth, null, 1.5)) {
-        trees.push({ dx, side: 'north' });
-      }
-      if (!nearAnyBuilding(worldX, worldZsouth, null, 1.5)) {
-        trees.push({ dx, side: 'south' });
-      }
+      const nKeep = !nearAnyBuilding(worldX, worldZnorth, null, 1.5);
+      const sKeep = !nearAnyBuilding(worldX, worldZsouth, null, 1.5);
+      if (nKeep) trees.push({ dx, side: 'north' });
+      if (sKeep) trees.push({ dx, side: 'south' });
     }
     return {
       geo: g,

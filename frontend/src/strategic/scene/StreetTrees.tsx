@@ -158,7 +158,6 @@ export function StreetTrees() {
             const tx = px + nx * offset * side;
             const tz = pz + nz * offset * side;
             if (inAnyWater(tx, tz)) continue;
-            if (nearAnyBuilding(tx, tz, null, 1.5)) continue;
 
             // Density gate — a deterministic hash < gate keeps this
             // tree, otherwise the slot skips. This is how 'sparse'
@@ -173,9 +172,12 @@ export function StreetTrees() {
             const jx = (h - 0.5) * 1.5;
             const jz = (((h * 3.19) % 1) - 0.5) * 1.5;
             const scaleWobble = 0.4 * ((h * 5.11) % 1);
+            const fx = tx + jx;
+            const fz = tz + jz;
+            if (nearAnyBuilding(fx, fz, null, 1.5)) continue;
             out.push({
-              x: tx + jx,
-              z: tz + jz,
+              x: fx,
+              z: fz,
               s: speciesGeo.scaleBase + scaleWobble,
               r: ((h * 7.13) % 1) * Math.PI,
               species
