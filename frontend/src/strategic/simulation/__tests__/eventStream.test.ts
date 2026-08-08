@@ -189,6 +189,45 @@ describe('stream does not move capital', () => {
   });
 });
 
+describe('repeat guard — no ambient sentence repeats within 4 min', () => {
+  it('a full weak-team dinner produces no near-repeats inside REPEAT_GUARD_SEC', () => {
+    let s = reducer(makeInitialState(3), { type: 'SKIP_LUNCH' });
+    s = reducer(s, { type: 'SET_POLICY', patch: { trainingLevel: 1, staffCount: 2 } });
+    s = reducer(s, {
+      type: 'OPEN_SERVICE',
+      service: 'dinner',
+      lengthMinutes: 15
+    });
+    // Auto-resolve scenarios so outcomes fire too.
+    for (let i = 0; i < 4500; i++) {
+      s = reducer(s, { type: 'TICK', dt: 0.2 });
+      if (s.scenario.phase === 'subject') {
+        s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
+        s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
+        s = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'A' });
+      }
+    }
+    // Walk the ambient stream in order; for each entry, ensure no
+    // earlier entry with the SAME text sits within the guard window.
+    // The guard falls back to the full bank when exhausted, so this
+    // asserts the fall-back never triggered during this seeded run —
+    // stronger than "the guard is present" and lets a future test
+    // failure catch bank-shrinkage regressions.
+    const ambient = s.eventStream.filter((e) => e.category === 'ambient');
+    for (let i = 0; i < ambient.length; i++) {
+      for (let j = 0; j < i; j++) {
+        if (ambient[i].text === ambient[j].text) {
+          const gap = ambient[i].at - ambient[j].at;
+          expect(
+            gap,
+            `sentence "${ambient[i].text}" repeats at ${gap.toFixed(1)} s (< 240 s)`
+          ).toBeGreaterThan(240);
+        }
+      }
+    }
+  });
+});
+
 describe('eventProbabilityPerTick stays inside [0, 1]', () => {
   it('handles extreme states without producing p > 1', () => {
     const s = inPeriod(1, 'dinner');

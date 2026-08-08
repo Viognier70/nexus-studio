@@ -43,6 +43,14 @@ export const STREAM_KEEP = 40;
 // choice → outcome — outcome — mentor.
 export const OUTCOME_OFFSETS_SEC: readonly number[] = [6, 18];
 
+// ORDER 043 Addendum A repeat-guard (Vision Owner 2026-08-08):
+// "samma mening ska inte komma två gånger på fyra minuter." When
+// picking an ambient sentence, filter out any that appeared in the
+// stream within this window. If the whole bank is exhausted (all
+// eight variants used inside the window), fall back to the full
+// bank — a repeat is better than a silent tick.
+export const REPEAT_GUARD_SEC = 240;
+
 // ORDER 043 Addendum A §A.7 stand-in note: enablers.scientific /
 // .cultural are not yet written to by scenario responses, so they
 // carry 0 weight. Until they do, competence is derived entirely
@@ -180,9 +188,24 @@ export function eventProbabilityPerTick(
 
 // -------- ambient roll -----------------------------------------------------
 
-function pickAmbientText(kind: AmbientEventKind, rng: Rng): string {
+function pickAmbientText(
+  kind: AmbientEventKind,
+  state: SimulationState,
+  rng: Rng
+): string {
   const bank = AMBIENT_TEXTS[kind];
-  return bank[Math.floor(rng.next() * bank.length)];
+  // Filter out any sentence that appeared in the last REPEAT_GUARD_SEC
+  // of stream. Text-level filter so the guard trips across ambient
+  // and outcome layers too (an outcome line is not in a bank, but
+  // reading state.eventStream is simpler than distinguishing).
+  const now = state.simTime;
+  const recentTexts = new Set<string>();
+  for (const e of state.eventStream) {
+    if (now - e.at <= REPEAT_GUARD_SEC) recentTexts.add(e.text);
+  }
+  const fresh = bank.filter((t) => !recentTexts.has(t));
+  const pool = fresh.length > 0 ? fresh : bank;
+  return pool[Math.floor(rng.next() * pool.length)];
 }
 
 function makeAmbientEntry(
@@ -192,7 +215,7 @@ function makeAmbientEntry(
 ): EventStreamEntry {
   return {
     at: state.simTime,
-    text: pickAmbientText(def.kind, rng),
+    text: pickAmbientText(def.kind, state, rng),
     category: 'ambient',
     causeTag: def.causeTag,
     sustainability: def.sustainability,
