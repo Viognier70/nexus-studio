@@ -1,0 +1,125 @@
+# DESIGN BACKLOG
+
+**What this file is.** Design decisions and ideas that arose in conversation and are not yet specified in any order. Each entry records what was decided, why, and what would need to be true before it could be built.
+
+**Why it exists.** On 2026-08-08 the Vision Owner asked about competition, multiplayer and premises choice, saying "I have a feeling we discussed this." All four had been discussed — in foundation documents, never in an order — so nobody knew where. In the same session, the ambition-wager, the competitor visit, the evening's account and the reduction of eight staff roles to four were all decided in conversation and written down nowhere.
+
+**The rule.** When something is decided in conversation and is not going into an order that day, it lands here the same day. An entry here is not a commitment to build — it is a commitment not to lose it.
+
+**Status values:** `open` (not scheduled), `next` (candidate for the next order), `folded in` (now specified in an order — cite which), `dropped` (decided against — record why).
+
+---
+
+## Entries
+
+### B-001 · The ambition wager
+**Recorded:** 2026-08-08 · **Status:** open
+
+A stake placed *before* service rather than between scenarios: the player sets the evening's ambition — mise en place, staffing, menu — which costs money before a single guest arrives and returns more if the evening holds. A blind bet on one's own capability.
+
+Discussed at length as the alternative to the difficulty selector, then set aside when the theme wager (ORDER 043 §4) took its place. It is not the same mechanic: the theme wager is a reading between scenarios, this is a commitment before the service.
+
+**Before it can be built:** it overlaps with the team system (ORDER 043 §3) and service-length choice (§2), which already carry some of this weight. Decide whether it adds a distinct decision or duplicates one.
+
+---
+
+### B-002 · Visiting competitors
+**Recorded:** 2026-08-08 · **Status:** open
+
+The player enters a competitor's premises and reads *their* event stream — sees the kitchen falling behind, the service inexperienced. Reconnaissance by the same reading skill used on one's own room.
+
+Strong because the stream already exists: a competitor becomes legible for free once it has a business to read.
+
+**Before it can be built:** competitors are currently buildings with no business behind them. Simulating their staffing, competence and strain means running the model in several instances — Priority 8 work per `DESIGN_DECISIONS_001.md`, after the property engine.
+
+**Open question:** what does the player do with what they see? Reconnaissance without action is tourism. Poach their chef? Undercut them? Or is it purely knowledge that makes one better at reading one's own room — which is the truest answer, since that is how the trade is learnt.
+
+---
+
+### B-003 · The evening's account
+**Recorded:** 2026-08-08 · **Status:** next
+
+Service ends, cost is charged, morning arrives — and the player is shown nothing. No summary of what the night gave: revenue, cost, how the sustainabilities moved, what credits were earned.
+
+Without it the player invests without knowing what they are investing on the basis of.
+
+**Should be in the observer's voice** (ORDER 043 Addendum B), not a table. What a proprietor tells themselves after closing.
+
+**Pairs with:** the investment panel (ORDER 043 §7, specified but unbuilt). Together they turn the day into a cycle rather than a series of evenings.
+
+---
+
+### B-004 · The full staff roster
+**Recorded:** 2026-08-08 · **Status:** open
+
+The Vision Owner named eight roles across two sides: runner, waiter, experienced-and-trained waiter, sommelier; apprentice, cook, sous chef, head chef. ORDER 043 §3 narrowed this to four (värd, servitör, kock, lärling) for the first cycle — **at the assistant's suggestion, to keep the first version balanceable**, not because the Vision Owner preferred four.
+
+The narrowing is in ORDER 043. The original eight are recorded nowhere.
+
+**Before it can be built:** the four-role version must first prove the hiring decision is felt. Eight roles is more to balance and more to make legible in the room.
+
+---
+
+### B-005 · Persistence and time between sessions
+**Recorded:** 2026-08-08 · **Status:** open · **Also:** LQ-04, unresolved since July
+
+Nothing survives a reload. `LEARNING_AND_SCENARIO_ARCHITECTURE.md` §11.1 requires that time not depend on the player being logged in, and ORDER 043's state model was shaped to keep that possible (plain-object records, simTime timestamps, event-log-as-primary) — but no persistence layer exists.
+
+**Consequence today:** the reputation loop and the consequence chain are the mechanics that most need days to accumulate, and they reset every reload.
+
+---
+
+### B-006 · Nightclub as a business type
+**Recorded:** 2026-08-08 · **Status:** open
+
+ORDER 043 §2 defines four periods and defers night explicitly: different staff, different economics, different social pressure. Grythyttan's nightclub is a real place and a real business type, not a fourth service on the same model.
+
+---
+
+### B-007 · Weather, roadworks and the ecological reading overlap
+**Recorded:** 2026-08-08 · **Status:** open · **Kind:** known ambiguity, deliberate
+
+The roadworks factor (ORDER 045) slows delivery cadence by 1.4×. Delivery cadence is also the ecological capital reading (ORDER 043 §5A.3). On a roadworks evening the two are indistinguishable: what looks like falling ecological capital may be a closed road.
+
+Deliberate, in the spirit of the queue's ambiguity — but it makes an ecological wager hard to judge on those evenings. Watch whether it reads as texture or as noise.
+
+---
+
+### B-008 · The stream is not yet the room
+**Recorded:** 2026-08-08 · **Status:** open
+
+ORDER 044 §3.3 mapped all 99 stream sentences against visual correlates. Roughly 55 have none — kitchen-internal events and phone-call outcomes happen off-screen.
+
+Per §A.3 inventing weak correlates is worse than none, so they stay text-only. But it means more than half the stream describes things the room cannot show, which is a standing tension with Addendum A §5A.2's requirement that the text say what happens and the room show that it happens.
+
+**Worth revisiting** once the kitchen exists as a place rather than a bar puck.
+
+---
+
+### B-009 · No menu, and whether that holds
+**Recorded:** 2026-08-08 · **Status:** open
+
+After forty-five orders there is no start menu; the player lands in the village. Much is settled implicitly by `CAMERA_AND_GAMEPLAY_BIBLE.md` §4 (no mode picker) and `EXECUTIVE_DESIGN_DIRECTIVE_001.md` §11 (no dominant HUD).
+
+The working assumption: **the village is the menu, the morning is the interface**, and the only thing outside the fiction is choosing a business the first time. Choosing premises from available buildings is Priority 8 (property engine).
+
+Not yet decided by the Vision Owner. Recorded so the assumption is visible rather than accidental.
+
+---
+
+### B-010 · Knowledge-seeking — the missing limb
+**Recorded:** 2026-08-08 · **Status:** next · **Largest gap in the project**
+
+The constitution's core loop has seven movements: explore the village, meet problems, **seek knowledge**, acquire competence, invest, change the business, meet harder problems.
+
+Competence now grows from behaviour (ORDER 043 §3.3) — the player learns by doing. But there is nowhere to *go to learn*. `MALTIDENS_HUS_EDUCATIONAL_ARCHITECTURE.md` specifies this in detail and has never been built.
+
+This is the limb that makes Nexus an education rather than a restaurant simulator.
+
+**Before it can be built:** ORDER 043 must be complete and its loop judged to hold. Then it deserves its own order — probably the largest since 042.
+
+---
+
+## How to use this file
+
+Add an entry the day a decision is made outside an order. When an entry is folded into an order, change its status and cite the order — do not delete it. The record of *when* something was decided is worth as much as the decision.
