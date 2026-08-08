@@ -31,7 +31,7 @@ export interface Policies {
   trainingLevel: 1 | 2 | 3;
   service: ServiceConcept;
   pricing: PricingTier;
-  capacity: 6 | 8 | 10 | 12;
+  capacity: number;
   ingredientTier: IngredientTier;
   welcomeDrink: boolean;
   localSourcing: boolean;

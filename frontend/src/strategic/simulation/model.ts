@@ -1,3 +1,4 @@
+import { TOTAL_SEATS } from '../business/interiorLayout';
 import { INTERIOR, RESIDENT_SPLINES } from '../content/layout';
 import type {
   DeliveryVehicle,
@@ -13,12 +14,17 @@ import type {
 
 export const DEFAULT_SEED = 20260719;
 
+// capacity derives from the interior layout's TOTAL_SEATS rather than
+// being restated here.  Per APPROXIMATION_REGISTER 2026-08-08 §5 (the
+// three-way capacity drift) and §6 (AABB-vs-OBB), the reducer's number
+// and the visual layer's seat count must have a single source; this
+// import is that source.
 export const DEFAULT_POLICIES: Policies = {
   staffCount: 3,
   trainingLevel: 2,
   service: 'vardaglig',
   pricing: 'medel',
-  capacity: 8,
+  capacity: TOTAL_SEATS,
   ingredientTier: 'utvald',
   welcomeDrink: false,
   localSourcing: true

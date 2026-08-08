@@ -87,7 +87,7 @@ export function InteriorGuests() {
 
   if (!layout) return null;
 
-  const slots = projectGuests(sim.guests, layout.entrance, layout.waitingSpot, layout.tables);
+  const slots = projectGuests(sim.guests, layout.entrance, layout.waitingSpot, layout.seats);
   if (slots.length === 0) return null;
 
   return (
@@ -106,7 +106,7 @@ function projectGuests(
   guests: Guest[],
   entrance: [number, number],
   waitingSpot: [number, number],
-  tables: Array<[number, number]>
+  seats: Array<[number, number]>
 ): GuestSlot[] {
   const slots: GuestSlot[] = [];
   let arrivingIdx = 0;
@@ -116,9 +116,10 @@ function projectGuests(
     const colour = GUEST_COLOUR[g.state];
     switch (g.state) {
       case 'arriving': {
-        // Fan out arrivals in a small arc south of the entrance so a
-        // party of eight reads as *incoming* rather than a single blob.
-        const angle = (-Math.PI / 2) + (arrivingIdx - 3.5) * 0.12;
+        // Fan out arrivals in a small arc outside the entrance so a
+        // party of five reads as *incoming* rather than a single blob.
+        // Arc is small — a wide fan would overshoot the plaza.
+        const angle = (-Math.PI / 2) + (arrivingIdx - 2) * 0.14;
         const r = 5 + (arrivingIdx % 3) * 0.7;
         slots.push({
           id: g.id,
@@ -144,9 +145,13 @@ function projectGuests(
       case 'ordering':
       case 'dining':
       case 'paying': {
+        // seatIndex points into the flat seats array; TOTAL_SEATS long,
+        // one entry per chair (tables' chairs first, bar stools last).
+        // Fallback to seats[0] rather than skipping so a guest with a
+        // stale seatIndex still renders somewhere legible.
         const idx = g.seatIndex ?? -1;
-        const table = idx >= 0 && idx < tables.length ? tables[idx] : tables[0];
-        slots.push({ id: g.id, x: table[0], z: table[1], colour });
+        const seat = idx >= 0 && idx < seats.length ? seats[idx] : seats[0];
+        slots.push({ id: g.id, x: seat[0], z: seat[1], colour });
         break;
       }
       case 'leaving': {

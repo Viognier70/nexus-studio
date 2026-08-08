@@ -38,7 +38,7 @@ import * as THREE from 'three';
 import { useCamera } from '../camera/CameraContext';
 import { GRAY_BOX_CAMERA } from '../content/grythyttan';
 import { useBusiness } from '../business/BusinessContext';
-import { BAR_STRIP, usePlayerBusinessInterior } from '../business/interiorLayout';
+import { usePlayerBusinessInterior } from '../business/interiorLayout';
 import { strings } from '../../content/strings.sv';
 
 // Business volume constants — the D01 historic-centre building is a
@@ -188,10 +188,12 @@ export function PlayerBusiness() {
   if (!layout || !geom) return null;
 
   const [cx, cz] = layout.centre;
-  const barLength = layout.depth * 0.7;
-  const barX = layout.bbox.minX + BAR_STRIP.widthM / 2 + BAR_STRIP.offsetM;
-  const barZ = cz;
-  const tables = layout.tables;
+  // All interior geometry rotates with the building's OBB angle so bar
+  // strip, tables, stools and floor stay parallel to the actual walls.
+  // three.js Y rotation is CCW around +Y; obb.angle is measured CCW in
+  // world XZ, so mesh rotation-Y = -angle aligns mesh local X with the
+  // OBB's local X.
+  const roomRotY = -layout.worldAngle;
 
   // Business name label — floats slightly above the roof line at the
   // building centre, always visible. Once `hasName` is false the
@@ -231,28 +233,56 @@ export function PlayerBusiness() {
         />
       </mesh>
 
-      {/* Interior stub — hidden at far zoom, fades in as camera approaches */}
+      {/* Interior stub — hidden at far zoom, fades in as camera approaches.
+          Everything below sits in a group rotated to the OBB frame so the
+          bar, tables and entrance step stay parallel to the actual walls
+          of the rotated OSM footprint. Positions come from layout, which
+          runs obbLocalToWorld internally. */}
       <group ref={interiorGroupRef} visible={false}>
-        {/* Floor — sits ~0.05 m above ground to avoid z-fighting */}
-        <mesh position={[cx, 0.06, cz]} rotation={[-Math.PI / 2, 0, 0]}>
+        {/* Floor — planeGeometry is in the mesh's local XY; after
+            rotation-X = -π/2 (to lie flat) and rotation-Y = roomRotY the
+            plane's local X sits along the OBB's long axis. */}
+        <mesh position={[cx, 0.06, cz]} rotation={[-Math.PI / 2, 0, roomRotY]}>
           <planeGeometry args={[layout.width - 0.4, layout.depth - 0.4]} />
           <meshStandardMaterial color={INTERIOR_FLOOR_COLOUR} transparent opacity={0} />
         </mesh>
-        {/* Bar strip along west wall */}
-        <mesh position={[barX, 0.55, barZ]}>
-          <boxGeometry args={[BAR_STRIP.widthM, 1.05, barLength]} />
+        {/* Bar strip — long axis along OBB local +X, so mesh args =
+            [lengthAlongX, height, widthAlongZ]. */}
+        <mesh
+          position={[layout.bar.worldPosition[0], 0.55, layout.bar.worldPosition[1]]}
+          rotation={[0, roomRotY, 0]}
+        >
+          <boxGeometry args={[layout.bar.lengthM, 1.05, layout.bar.widthM]} />
           <meshStandardMaterial color={BAR_COLOUR} transparent opacity={0} />
         </mesh>
-        {/* Six tables */}
-        {tables.map(([tx, tz], i) => (
-          <mesh key={i} position={[tx, 0.45, tz]}>
-            <boxGeometry args={[1.05, 0.75, 1.05]} />
+        {/* Tables — each rotated to the OBB angle so the box sides align
+            with the room's walls. */}
+        {layout.tables.map((t) => (
+          <mesh
+            key={t.id}
+            position={[t.worldPosition[0], 0.45, t.worldPosition[1]]}
+            rotation={[0, roomRotY, 0]}
+          >
+            <boxGeometry args={[t.sizeM, 0.75, t.sizeM]} />
             <meshStandardMaterial color={TABLE_COLOUR} transparent opacity={0} />
           </mesh>
         ))}
-        {/* Entrance marker — a small step at the south end of the building */}
-        <mesh position={[layout.entrance[0], 0.1, layout.entrance[1]]}>
-          <boxGeometry args={[2.2, 0.2, 0.4]} />
+        {/* Bar stools — small pucks at each seat position in front of
+            the bar. Round so no rotation needed. */}
+        {layout.barStoolPositions.map((p, i) => (
+          <mesh key={`stool-${i}`} position={[p[0], 0.5, p[1]]}>
+            <cylinderGeometry args={[0.28, 0.28, 0.9, 10]} />
+            <meshStandardMaterial color={BAR_COLOUR} transparent opacity={0} />
+          </mesh>
+        ))}
+        {/* Entrance marker — small step at the entrance-side wall,
+            rotated so its long axis runs along the OBB local Z (across
+            the door). */}
+        <mesh
+          position={[layout.entrance[0], 0.1, layout.entrance[1]]}
+          rotation={[0, roomRotY, 0]}
+        >
+          <boxGeometry args={[0.4, 0.2, 2.2]} />
           <meshStandardMaterial color={TRIM_COLOUR} transparent opacity={0} />
         </mesh>
       </group>
