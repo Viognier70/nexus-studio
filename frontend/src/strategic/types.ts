@@ -351,6 +351,16 @@ export interface DayState {
   // OPEN_SERVICE. Empty on most evenings; the outer world reports
   // in ~37 % of services (any factor firing). Cleared on close.
   worldFactors: ActiveWorldFactor[];
+  // ORDER 046 §1 — set true when a collapse roll fires during this
+  // service. Blocks the collapse tick from firing twice in the same
+  // service; read by the evening-account panel to pick the collapsed
+  // branch. Cleared on service open.
+  serviceCollapsed: boolean;
+  // Which competence axis was weakest at the moment of collapse
+  // (scientific / cultural / practical). Null when no collapse has
+  // fired this service. Consumed by the evening-account panel and
+  // future scenarios that want to reference the specific failure.
+  collapseAxis: 'scientific' | 'cultural' | 'practical' | null;
 }
 
 // ----- ORDER 043 two-layer capital model ----------------------------------

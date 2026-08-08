@@ -42,6 +42,7 @@ import {
 // waiting count, short enough not to become its own act.
 export const OPENING_DURATION_SEC = 10;
 import { pickScenarioSpec, scenarioById } from './scenarios';
+import { tickCollapseRoll } from './collapse';
 import { initialDay, makeGuest, makeInitialState, makeStaff } from './model';
 import { tickReputationDrift } from './reputation';
 import { tickGuests, tickStaff } from './service';
@@ -236,7 +237,10 @@ function openService(
     weather,
     waitingAtOpening,
     doorsOpenedThisService: false,
-    worldFactors
+    worldFactors,
+    // ORDER 046 §1 — new service opens with a clean collapse slate.
+    serviceCollapsed: false,
+    collapseAxis: null
   };
   return {
     ...state,
@@ -288,7 +292,9 @@ function skipLunch(state: SimulationState): SimulationState {
       weather: null,
       waitingAtOpening: 0,
       doorsOpenedThisService: false,
-      worldFactors: []
+      worldFactors: [],
+      serviceCollapsed: false,
+      collapseAxis: null
     }
   };
 }
@@ -831,6 +837,14 @@ function advanceTick(state: SimulationState): SimulationState {
   // driven (ACCEPT_AGENCY / DECLINE_AGENCY); this tick fires the
   // offer and expires it into an implicit decline.
   tickAgencyStrain(draft);
+
+  // ORDER 046 §1 — collapse roll. Runs after agency strain (so the
+  // same tick that fires an offer can also fire the collapse; the
+  // team asking for help mid-strain is not immune from the roll).
+  // Guarded internally to post-opening + post-prep service and to
+  // once-per-service; on fire, force-transitions period to evening.
+  // Uses a tick-derived RNG so downstream random draws aren't shifted.
+  tickCollapseRoll(draft);
 
   // ORDER 043 v3 step 5b — scheduled scenario firing.
   //
