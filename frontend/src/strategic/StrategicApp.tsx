@@ -83,18 +83,36 @@ function StrategicShell() {
     const cycle = (cap: 'economic' | 'social' | 'ecological') => {
       cyclePosition[cap] = (cyclePosition[cap] + 1) % cycleSteps.length;
       const value = cycleSteps[cyclePosition[cap]];
-      // Dev-only log: without the value in the console the Vision
-      // Owner can't distinguish "phenomenon not working" from "value
-      // I didn't set". Removed at B.3 with the rest of the dev
-      // cycle shortcuts.
       // eslint-disable-next-line no-console
       console.log(`[CAPITAL] ${cap} = ${value.toFixed(2)}`);
       simDispatch({ type: 'SET_CAPITAL', capital: cap, value });
     };
+    // ORDER 043 B.1 gate diagnostics — Vision Owner reported no
+    // [CAPITAL] log firing on S/E/C. This block prints the binding
+    // table at handler-mount time and logs every keydown that reaches
+    // window, so a missing [CAPITAL] can be traced to (a) handler not
+    // mounted, (b) event not reaching window, (c) target-tag filter
+    // rejecting it, or (d) key value differing from expectation.
+    // Remove alongside the rest of the dev shortcuts at B.3.
+    // eslint-disable-next-line no-console
+    console.log(
+      '[KEYBIND] StrategicApp dev shortcuts mounted:',
+      '5 → TRIGGER_SCENARIO, R → RESET, S → social cycle, E → economic cycle, C → ecological cycle'
+    );
     const onKey = (event: KeyboardEvent) => {
-      if (event.metaKey || event.ctrlKey || event.altKey) return;
       const target = event.target as HTMLElement | null;
-      const tag = target?.tagName;
+      const tag = target?.tagName ?? 'null';
+      const mods = [
+        event.metaKey && 'meta',
+        event.ctrlKey && 'ctrl',
+        event.altKey && 'alt',
+        event.shiftKey && 'shift'
+      ]
+        .filter(Boolean)
+        .join('+') || 'none';
+      // eslint-disable-next-line no-console
+      console.log(`[KEYDOWN] key='${event.key}' code='${event.code}' target=<${tag.toLowerCase()}> mods=${mods}`);
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
       if (tag === 'INPUT' || tag === 'TEXTAREA') return;
       if (event.key === '5') simDispatch({ type: 'TRIGGER_SCENARIO' });
       if (event.key === 'r' || event.key === 'R') simDispatch({ type: 'RESET' });
@@ -103,7 +121,11 @@ function StrategicShell() {
       if (event.key === 'c' || event.key === 'C') cycle('ecological');
     };
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    return () => {
+      // eslint-disable-next-line no-console
+      console.log('[KEYBIND] StrategicApp dev shortcuts unmounted');
+      window.removeEventListener('keydown', onKey);
+    };
   }, [simDispatch]);
 
   const handleSelect = useCallback(
