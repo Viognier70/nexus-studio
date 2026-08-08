@@ -39,7 +39,6 @@ import { useCamera } from '../camera/CameraContext';
 import { GRAY_BOX_CAMERA } from '../content/grythyttan';
 import { useBusiness } from '../business/BusinessContext';
 import { usePlayerBusinessInterior } from '../business/interiorLayout';
-import { obbLocalToWorld } from '../procgen/geom';
 import { strings } from '../../content/strings.sv';
 
 // Business volume constants — the D01 historic-centre building is a
@@ -136,10 +135,6 @@ export function PlayerBusiness() {
   const wallMaterialRef = useRef<THREE.MeshStandardMaterial>(null);
   const roofMaterialRef = useRef<THREE.MeshStandardMaterial>(null);
   const interiorGroupRef = useRef<THREE.Group>(null);
-  // TEMPORARY (ORDER 042 §3.2 diagnostic 2026-08-08): frame counter for
-  // throttled [PB-DIAG] logs — remove with the rest of the diag block
-  // in useFrame once the residual brown-tint source is identified.
-  const diagFrameRef = useRef(0);
 
   // Wall + roof geometry from the shared building polygon.
   const geom = useMemo(() => {
@@ -197,10 +192,18 @@ export function PlayerBusiness() {
       mat.depthWrite = roofOpacity > 0.5;
     }
     if (wallMaterialRef.current) {
-      // Walls stay visible always — the interior is a *cutaway*, not a
-      // building removal. But they thin slightly when zoomed in so the
-      // interior isn't visually strangled at close range.
-      const wallOpacity = 0.5 + 0.5 * roofOpacity;
+      // Walls fade with the same curve as the roof. Vision Owner
+      // decision 2026-08-08: at close zoom the walls should disappear
+      // completely, not sit at half alpha — the earlier "cutaway"
+      // reading with 50% translucent walls tinted everything visible
+      // through them regardless of DoubleSide / depthWrite settings,
+      // because a translucent surface with any alpha > 0 blends its
+      // colour into whatever is behind it. Fading to 0 removes the
+      // failure mode; the room's spatial anchoring is carried by the
+      // floor + bar + tables, not by the wall silhouette at that zoom.
+      // Dollhouse-view (cull only the camera-facing wall) is the
+      // proper long-term answer and is deferred to its own order.
+      const wallOpacity = roofOpacity;
       const mat = wallMaterialRef.current;
       mat.opacity = wallOpacity;
       const wantTransparent = wallOpacity < 0.99;
@@ -208,12 +211,6 @@ export function PlayerBusiness() {
         mat.transparent = wantTransparent;
         mat.needsUpdate = true;
       }
-      // Match the roof's depthWrite discipline: transparent geometry
-      // must NOT write to the depth buffer, or it culls / tints every
-      // subsequent transparent object drawn behind it (trees, fences,
-      // other buildings' translucent parts). Without this, the walls'
-      // 0.5-alpha brown-red colour bleeds across the whole view when
-      // the camera crosses the roof-fade threshold.
       mat.depthWrite = wallOpacity > 0.5;
     }
     if (interiorGroupRef.current) {
@@ -232,52 +229,6 @@ export function PlayerBusiness() {
             }
           }
         }
-      });
-    }
-
-    // TEMPORARY (ORDER 042 §3.2 diagnostic 2026-08-08): once per second
-    // at 60 Hz, log the exact fade state and floor-plane world corners
-    // vs polygon vertices, so the residual brown-tint source can be
-    // identified from actual values instead of guessed. Remove this
-    // block, `diagFrameRef` and the `obbLocalToWorld` import once the
-    // diagnosis lands.
-    diagFrameRef.current += 1;
-    if (diagFrameRef.current % 60 === 0 && layout) {
-      const wallOpacity = 0.5 + 0.5 * roofOpacity;
-      const halfW = (layout.width - 0.4) / 2;
-      const halfH = (layout.depth - 0.4) / 2;
-      // Floor plane geometry is planeGeometry(W, H) rotated
-      // [-π/2, 0, -worldAngle]. Its local (x_p, y_p) maps to OBB local
-      // (x_p, -y_p) — so the four plane-local corners at (±halfW, ±halfH)
-      // become OBB local (±halfW, ∓halfH), then obbLocalToWorld.
-      const floorCorners = [
-        obbLocalToWorld(layout.obb,  halfW, -halfH),
-        obbLocalToWorld(layout.obb,  halfW,  halfH),
-        obbLocalToWorld(layout.obb, -halfW,  halfH),
-        obbLocalToWorld(layout.obb, -halfW, -halfH)
-      ];
-      const roofMat = roofMaterialRef.current;
-      const wallMat = wallMaterialRef.current;
-      // eslint-disable-next-line no-console
-      console.log('[PB-DIAG]', {
-        dist: dist.toFixed(2),
-        roofOp: roofOpacity.toFixed(3),
-        wallOp: wallOpacity.toFixed(3),
-        intVis: interiorVisibility.toFixed(3),
-        roof: roofMat ? {
-          op: roofMat.opacity.toFixed(3),
-          transp: roofMat.transparent,
-          depthWrite: roofMat.depthWrite
-        } : 'no-ref',
-        wall: wallMat ? {
-          op: wallMat.opacity.toFixed(3),
-          transp: wallMat.transparent,
-          depthWrite: wallMat.depthWrite,
-          side: wallMat.side
-        } : 'no-ref',
-        interiorGroupVisible: interiorGroupRef.current?.visible ?? null,
-        floorCorners: floorCorners.map((c) => [c[0].toFixed(2), c[1].toFixed(2)]),
-        polyVertices: layout.building.poly.map((p) => [p[0].toFixed(2), p[1].toFixed(2)])
       });
     }
   });
@@ -302,13 +253,12 @@ export function PlayerBusiness() {
 
   return (
     <group>
-      {/* Walls — literal side quads only, no top or bottom cap (that
-          was the ORDER 042 §3.2 tint bug). DoubleSide so the walls read
-          correctly whether the camera is outside the building looking in
-          or inside looking out; per-vertex normals point outward and
-          three.js flips them for back-facing pixels under DoubleSide, so
-          both sides light correctly. useFrame keeps opacity + depthWrite
-          in sync with the roof crossfade. */}
+      {/* Walls — side quads only, no top or bottom cap. FrontSide (the
+          material default) is enough now that walls fade to 0 alongside
+          the roof: the camera never sees the walls translucent from
+          inside, so the DoubleSide inside-face handling from the earlier
+          cutaway attempt isn't needed. useFrame keeps opacity +
+          depthWrite in sync with the roof crossfade. */}
       <mesh geometry={geom.wallGeo}>
         <meshStandardMaterial
           ref={wallMaterialRef}
@@ -316,7 +266,6 @@ export function PlayerBusiness() {
           roughness={0.85}
           metalness={0.02}
           transparent
-          side={THREE.DoubleSide}
         />
       </mesh>
 
