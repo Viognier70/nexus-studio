@@ -17,7 +17,7 @@ import {
   SERVICE_LENGTH_MIN_MINUTES
 } from '../types';
 import { strings } from '../../content/strings.sv';
-import { maybeSpawnGuest, scenarioSpawnStep } from './arrivals';
+import { maybeSpawnGuest, scenarioSpawnStep, walkAwayProbability } from './arrivals';
 import { planScenariosForService, scheduleScenarioTriggerTimes } from './day';
 import { revenuePerGuest } from './economics';
 import {
@@ -28,8 +28,15 @@ import {
   tickEventStream
 } from './eventStream';
 import { PREP_CARRYOVER_TEXT } from '../../content/eventStream.sv';
+import { generateWeather, waitingAtOpeningCount } from './weather';
+
+// ORDER 045 — the opening image sits over the room for this long
+// after OPEN_SERVICE, before prep begins. Ten seconds reads as an
+// anticipation moment — long enough to notice the weather and the
+// waiting count, short enough not to become its own act.
+export const OPENING_DURATION_SEC = 10;
 import { pickScenarioSpec, scenarioById } from './scenarios';
-import { initialDay, makeInitialState, makeStaff } from './model';
+import { initialDay, makeGuest, makeInitialState, makeStaff } from './model';
 import { tickReputationDrift } from './reputation';
 import { tickGuests, tickStaff } from './service';
 import { tickSustainability } from './sustainability';
@@ -165,13 +172,27 @@ function openService(
   // fires during the mise en place window; the head-space buffer
   // in scheduleScenarioTriggerTimes then applies on top.
   const rng = createRng(state.rngState);
+  // ORDER 045 — generate the evening's weather first so subsequent
+  // calculations (waiting count, scenario schedule) see a stable
+  // weather record.
+  const weather = generateWeather(rng);
   const scenariosPlanned = planScenariosForService(length, rng);
+  // Opening runs first, then prep, then service. Scenario schedule
+  // shifted by opening + prep so no scenario fires while the doors
+  // are still closed.
+  const doorsOpenAt =
+    state.simTime + OPENING_DURATION_SEC + PREP_DURATION_SEC;
+  const serviceWindowMinutes = Math.max(
+    1,
+    length - (OPENING_DURATION_SEC + PREP_DURATION_SEC) / 60
+  );
   const scenarioTriggerTimes = scheduleScenarioTriggerTimes(
     scenariosPlanned,
-    state.simTime + PREP_DURATION_SEC,
-    Math.max(1, length - PREP_DURATION_SEC / 60),
+    doorsOpenAt,
+    serviceWindowMinutes,
     rng
   );
+  const waitingAtOpening = waitingAtOpeningCount(state.reputation, weather);
   const day: DayState = {
     ...state.day,
     period: service,
@@ -180,10 +201,15 @@ function openService(
     scenariosPlanned,
     scenariosFiredThisService: 0,
     scenarioTriggerTimes,
-    // Prep window opens for PREP_DURATION_SEC starting now. Arrivals
-    // + scenario firing are gated until prep ends (see advanceTick).
-    prepEndsAt: state.simTime + PREP_DURATION_SEC,
-    prepIgnoranceCount: 0
+    // Opening panel for OPENING_DURATION_SEC, then prep for
+    // PREP_DURATION_SEC. Arrivals + scenarios gated until both close
+    // (see advanceTick + arrivalProbability).
+    openingEndsAt: state.simTime + OPENING_DURATION_SEC,
+    prepEndsAt: state.simTime + OPENING_DURATION_SEC + PREP_DURATION_SEC,
+    prepIgnoranceCount: 0,
+    weather,
+    waitingAtOpening,
+    doorsOpenedThisService: false
   };
   return {
     ...state,
@@ -238,8 +264,12 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           scenariosPlanned: 0,
           scenariosFiredThisService: 0,
           scenarioTriggerTimes: [],
+          openingEndsAt: null,
           prepEndsAt: null,
-          prepIgnoranceCount: 0
+          prepIgnoranceCount: 0,
+          weather: null,
+          waitingAtOpening: 0,
+          doorsOpenedThisService: false
         }
       };
     }
@@ -263,8 +293,12 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           scenariosPlanned: 0,
           scenariosFiredThisService: 0,
           scenarioTriggerTimes: [],
+          openingEndsAt: null,
           prepEndsAt: null,
-          prepIgnoranceCount: 0
+          prepIgnoranceCount: 0,
+          weather: null,
+          waitingAtOpening: 0,
+          doorsOpenedThisService: false
         }
       };
     }
@@ -661,11 +695,29 @@ function advanceTick(state: SimulationState): SimulationState {
   // rep drift also feeds this tick's ambient probability.
   tickEventStream(draft, rng);
 
+  // ORDER 045 opening-window end. When the 10-s opening panel expires
+  // the day rolls into prep — no visible state change other than the
+  // opening panel closing; arrivals + scenarios are still gated by
+  // prepEndsAt (see arrivalProbability + the scheduled-scenario
+  // check below).
+  if (
+    draft.day.openingEndsAt !== null &&
+    draft.simTime >= draft.day.openingEndsAt
+  ) {
+    draft.day = { ...draft.day, openingEndsAt: null };
+  }
+
   // ORDER 043 Addendum A prep-window end. Runs after tickEventStream
   // so this tick's prep events are already counted. If prep just
   // ended AND the team fumbled enough during it, schedule a
   // carryover bottleneck ~13 min into service — the mise en place
   // sin coming home to roost.
+  //
+  // ORDER 045 — doors open at prep-end. The guests who were waiting
+  // outside during the opening + prep window spawn now, as arrivals.
+  // They start at their arrival slots (the "waiting outside"
+  // vocabulary) and the room's normal state machine takes them from
+  // there.
   if (
     draft.day.prepEndsAt !== null &&
     draft.simTime >= draft.day.prepEndsAt
@@ -682,7 +734,20 @@ function advanceTick(state: SimulationState): SimulationState {
         }
       ];
     }
-    draft.day = { ...draft.day, prepEndsAt: null };
+    // Doors-open guest spawn — fires exactly once per service via
+    // the doorsOpenedThisService flag.
+    if (!draft.day.doorsOpenedThisService && draft.day.waitingAtOpening > 0) {
+      const walkAwayCeil = walkAwayProbability(draft.capitals.values.economic);
+      for (let i = 0; i < draft.day.waitingAtOpening; i++) {
+        const walkAway = rng.chance(walkAwayCeil);
+        draft.guests.push(makeGuest(draft.simTime, false, walkAway));
+      }
+    }
+    draft.day = {
+      ...draft.day,
+      prepEndsAt: null,
+      doorsOpenedThisService: true
+    };
   }
 
   // ORDER 043 v3 §10 step 5 — agency-offer strain tracking and

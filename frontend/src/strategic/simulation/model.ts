@@ -161,8 +161,12 @@ export function initialDay(): DayState {
     scenariosPlanned: 0,
     scenariosFiredThisService: 0,
     scenarioTriggerTimes: [],
+    openingEndsAt: null,
     prepEndsAt: null,
-    prepIgnoranceCount: 0
+    prepIgnoranceCount: 0,
+    weather: null,
+    waitingAtOpening: 0,
+    doorsOpenedThisService: false
   };
 }
 
