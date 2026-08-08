@@ -141,4 +141,47 @@ describe('computePlayerBusinessInterior', () => {
     const dot = (bx - cx) * (ex - cx) + (bz - cz) * (ez - cz);
     expect(dot, 'delivery bay should be opposite the entrance on the long axis').toBeLessThan(0);
   });
+
+  it('ORDER 043 puck slots all sit on the entrance side of the building', () => {
+    // Regression pin for the pre-B.1-fix bug: waiting/declined pucks
+    // were placed with world-frame offsets so the queue stretched
+    // down the street on rotated polygons. Every slot should now be
+    // on the OBB local +X side (same side as the entrance), tested
+    // via the sign of the dot product with the entrance-out vector.
+    const [ex, ez] = layout.entrance;
+    const [cx, cz] = layout.centre;
+    // Entrance-out vector in world XZ (from centre toward the door).
+    const outVec: [number, number] = [ex - cx, ez - cz];
+    const groups: Array<{ name: string; slots: readonly [number, number][] }> = [
+      { name: 'waitingSlots', slots: layout.waitingSlots },
+      { name: 'declinedSlots', slots: layout.declinedSlots },
+      { name: 'arrivalSlots', slots: layout.arrivalSlots }
+    ];
+    for (const { name, slots } of groups) {
+      expect(slots.length, `${name} should not be empty`).toBeGreaterThan(0);
+      for (const [sx, sz] of slots) {
+        const dot = (sx - cx) * outVec[0] + (sz - cz) * outVec[1];
+        expect(
+          dot,
+          `${name} slot at (${sx.toFixed(2)}, ${sz.toFixed(2)}) is on the wrong side of the centre`
+        ).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('ORDER 043 puck slots stay within reasonable radius of the entrance', () => {
+    // Regression pin: at high indices the pre-fix declined pucks
+    // reached past the NE corner of the building. Every slot should
+    // now sit within a bounded envelope from the entrance.
+    const [ex, ez] = layout.entrance;
+    const MAX_RADIUS_M = 12;
+    for (const [sx, sz] of [
+      ...layout.waitingSlots,
+      ...layout.declinedSlots,
+      ...layout.arrivalSlots
+    ]) {
+      const d = Math.hypot(sx - ex, sz - ez);
+      expect(d, `slot at (${sx.toFixed(2)}, ${sz.toFixed(2)}) is ${d.toFixed(2)}m from entrance`).toBeLessThan(MAX_RADIUS_M);
+    }
+  });
 });

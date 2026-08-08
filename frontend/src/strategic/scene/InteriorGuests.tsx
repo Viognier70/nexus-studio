@@ -87,7 +87,7 @@ export function InteriorGuests() {
 
   if (!layout) return null;
 
-  const slots = projectGuests(sim.guests, layout.entrance, layout.waitingSpot, layout.seats);
+  const slots = projectGuests(sim.guests, layout);
   if (slots.length === 0) return null;
 
   return (
@@ -104,11 +104,10 @@ export function InteriorGuests() {
 
 function projectGuests(
   guests: Guest[],
-  entrance: [number, number],
-  waitingSpot: [number, number],
-  seats: Array<[number, number]>
+  layout: NonNullable<ReturnType<typeof usePlayerBusinessInterior>>
 ): GuestSlot[] {
   const slots: GuestSlot[] = [];
+  const { waitingSlots, declinedSlots, arrivalSlots, seats } = layout;
   let arrivingIdx = 0;
   let leavingIdx = 0;
   let waitingIdx = 0;
@@ -117,28 +116,22 @@ function projectGuests(
     const colour = GUEST_COLOUR[g.state];
     switch (g.state) {
       case 'arriving': {
-        // Fan out arrivals in a small arc outside the entrance so a
-        // party of five reads as *incoming* rather than a single blob.
-        // Arc is small — a wide fan would overshoot the plaza.
-        const angle = (-Math.PI / 2) + (arrivingIdx - 2) * 0.14;
-        const r = 5 + (arrivingIdx % 3) * 0.7;
-        slots.push({
-          id: g.id,
-          x: entrance[0] + Math.cos(angle) * r,
-          z: entrance[1] - Math.sin(angle) * r,
-          colour
-        });
+        // Pre-computed arrival arc in the OBB frame. Modulo wrap keeps
+        // a big arrival wave from stretching indefinitely past the
+        // building's short-side bounds.
+        const [wx, wz] = arrivalSlots[arrivingIdx % arrivalSlots.length];
+        slots.push({ id: g.id, x: wx, z: wz, colour });
         arrivingIdx += 1;
         break;
       }
       case 'waiting': {
-        // Small line at the waiting spot outside the door.
-        slots.push({
-          id: g.id,
-          x: waitingSpot[0] + ((waitingIdx % 2) === 0 ? -0.5 : 0.5) - Math.floor(waitingIdx / 2) * 0.9,
-          z: waitingSpot[1] + Math.floor(waitingIdx / 2) * 0.4,
-          colour
-        });
+        // Pre-computed queue slots — 2 wide, 4 deep, extending
+        // perpendicular to the entrance wall in the OBB local +X
+        // direction. Modulo wrap keeps the queue bounded rather than
+        // stretching down the street (the pre-ORDER-043-B.1 world-
+        // frame offsets did the wrong thing on the rotated polygon).
+        const [wx, wz] = waitingSlots[waitingIdx % waitingSlots.length];
+        slots.push({ id: g.id, x: wx, z: wz, colour });
         waitingIdx += 1;
         break;
       }
@@ -156,31 +149,21 @@ function projectGuests(
         break;
       }
       case 'leaving': {
-        slots.push({
-          id: g.id,
-          x: entrance[0] + (leavingIdx - 1) * 0.7,
-          z: entrance[1] + 1.5,
-          colour
-        });
+        // Leaving guests exit through the entrance to the +X side.
+        // Small spread using OBB-aware slot picking so we don't slide
+        // sideways down the street on rotated polygons.
+        const [wx, wz] = arrivalSlots[leavingIdx % arrivalSlots.length];
+        slots.push({ id: g.id, x: wx, z: wz, colour });
         leavingIdx += 1;
         break;
       }
       case 'declined': {
-        // ORDER 043 §6 economic phenomenon: walk-away guests transition
-        // to 'declined' after reaching the entrance and turning back.
-        // Render them just past the waitingSpot on the outside of the
-        // building so the eye reads "someone approached the door and
-        // walked away". The reducer prunes each puck within a few sim-
-        // seconds, so the window is short — but at low economic the
-        // rate of walk-aways is high enough that at any moment there
-        // are usually one or two visible on the entrance side.
-        //
-        // Fan spread with declinedIdx so multiple walk-aways don't
-        // stack on the same point.
-        const [wx, wz] = waitingSpot;
-        const dx = (declinedIdx - 1) * 0.9;
-        const dz = 1.2 + (declinedIdx % 2) * 0.4;
-        slots.push({ id: g.id, x: wx + dx, z: wz + dz, colour });
+        // ORDER 043 §6 walk-away visualisation. Slots are laterally
+        // offset from the waiting queue in the OBB local frame, so
+        // the walk-away puck reads as "someone walked past the queue
+        // back out" rather than joining the queue.
+        const [wx, wz] = declinedSlots[declinedIdx % declinedSlots.length];
+        slots.push({ id: g.id, x: wx, z: wz, colour });
         declinedIdx += 1;
         break;
       }
