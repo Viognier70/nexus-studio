@@ -148,21 +148,34 @@ describe('outcome events fire deterministically after RESOLVE', () => {
     s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
     const resolveAt = s.simTime;
     s = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'A' });
-    expect(s.pendingOutcomes).toHaveLength(2);
-    expect(s.pendingOutcomes[0].dueAt).toBeCloseTo(resolveAt + 6, 5);
-    expect(s.pendingOutcomes[1].dueAt).toBeCloseTo(resolveAt + 18, 5);
+    // Filter to scenario outcomes — a prep-carryover from mise en
+    // place can also sit in pendingOutcomes (with flavor set).
+    const scenarioOutcomes = s.pendingOutcomes.filter(
+      (p) => p.flavor !== 'prep-carryover'
+    );
+    expect(scenarioOutcomes).toHaveLength(2);
+    expect(scenarioOutcomes[0].dueAt).toBeCloseTo(resolveAt + 6, 5);
+    expect(scenarioOutcomes[1].dueAt).toBeCloseTo(resolveAt + 18, 5);
 
     // Advance ~7 s — first outcome should have emitted, second still pending.
     for (let i = 0; i < 40; i++) s = reducer(s, { type: 'TICK', dt: 0.2 });
     const outcomes1 = s.eventStream.filter((e) => e.category === 'outcome');
     expect(outcomes1.length).toBe(1);
-    expect(s.pendingOutcomes).toHaveLength(1);
+    // Only the second scenario outcome should still be pending;
+    // prep-carryover may also be pending (fires 13 min after prep-end).
+    const stillPendingScenario = s.pendingOutcomes.filter(
+      (p) => p.flavor !== 'prep-carryover'
+    );
+    expect(stillPendingScenario).toHaveLength(1);
 
     // Advance to ~20 s past resolve — both outcomes should have emitted.
     for (let i = 0; i < 65; i++) s = reducer(s, { type: 'TICK', dt: 0.2 });
     const outcomes2 = s.eventStream.filter((e) => e.category === 'outcome');
     expect(outcomes2.length).toBe(2);
-    expect(s.pendingOutcomes).toHaveLength(0);
+    const stillPendingScenarioAfter = s.pendingOutcomes.filter(
+      (p) => p.flavor !== 'prep-carryover'
+    );
+    expect(stillPendingScenarioAfter).toHaveLength(0);
   });
 });
 

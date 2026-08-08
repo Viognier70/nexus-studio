@@ -93,3 +93,59 @@ export const AMBIENT_TEXTS = {
 // away in a content-side table.
 
 export type AmbientEventKind = keyof typeof AMBIENT_TEXTS;
+
+// ORDER 043 Addendum A mise en place — prep events fire only during
+// the 2-min prep window before service begins. Weighted like ambient
+// events (per-role competence), so a thin team is legible before the
+// doors open. Vocabulary reads with worry, not atmosphere: the lines
+// name what is late, missed, or wrong — not what is happening.
+//
+// Three kinds, mapped to the same competence axes as ambient events:
+//   prep_kitchen  → scientific (kitchen technique / mise en place)
+//   prep_room     → practical  (house standard / dukning)
+//   prep_delivery → cultural   (supplier relationships / mottagning)
+//
+// All three carry causeTag: 'ignorance' — a competent team barely
+// generates prep events, an incompetent one leaks them. Prep has no
+// strain component (no guests yet).
+export const PREP_TEXTS = {
+  prep_kitchen: [
+    'Mise en place är sen — köket startade tio minuter efter tid.',
+    'En reduktion sätts igång utan att grundbuljongen är silad.',
+    'Passtavlan skrivs upp — halva menyn saknar tider.',
+    'En sås står kvar i frysen, glömd sedan igår.',
+    'Kockparet börjar med två olika förberedelselistor.',
+    'Kryddställningen är inte påfylld — måste hämtas mitt i förarbetet.',
+    'En förrätt saknar sin garnityr — inget färskt in idag.',
+    'Kylens plaster märks inte upp — vad är dagens och vad är gårdagens?'
+  ],
+  prep_room: [
+    'Ett bord glöms i utsträckningen — servetterna ligger på nästa.',
+    'Ljusen på baren tänds aldrig.',
+    'Två stolar står kvar från förra kvällen, felvridna.',
+    'Vinlistan uppdateras i sista minuten — några priser står gamla.',
+    'Golvet vid entrén är inte moppat — spår av gårdagens middag syns.',
+    'Bokningsöversikten skrivs ut men lämnas i värdstationen.',
+    'Bordskorten läggs på fel bord — värden hinner byta innan öppning.',
+    'Musiken går på förra kvällens spellista — ingen bytte.'
+  ],
+  prep_delivery: [
+    'Kylkedjan pausas för länge medan kartongerna sorteras.',
+    'En låda öppnas i fel ordning — färskvaror hamnar under torrvaror.',
+    'Två notor från leverantören ligger osignerade på diskbänken.',
+    'Leverantören lämnade en varusammansättning som inte matchar beställningen.',
+    'Fisken lyfts in utan att vägas — nästa förrätt får uppskattad portion.',
+    'Grönsakslådorna staplas i gången och blockerar diskstationen.',
+    'En pall står kvar på gården — glasflaskor hann inte in.',
+    'Leverantörens temperaturlogg saknas — kylkedjan går att gissa.'
+  ]
+} as const;
+
+export type PrepEventKind = keyof typeof PREP_TEXTS;
+
+// Carryover text — the single ambient-bottleneck line that fires
+// mid-service when the prep window ended with too many ignorance
+// events. One line, hand-authored — the point is "this is what
+// wasn't done in mise en place coming home to roost", not variety.
+export const PREP_CARRYOVER_TEXT =
+  'En sås som inte silades i morse dyker upp — köket måste hoppa över den mitt i passet.';

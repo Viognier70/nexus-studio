@@ -160,7 +160,9 @@ export function initialDay(): DayState {
     currentServiceLengthMinutes: null,
     scenariosPlanned: 0,
     scenariosFiredThisService: 0,
-    scenarioTriggerTimes: []
+    scenarioTriggerTimes: [],
+    prepEndsAt: null,
+    prepIgnoranceCount: 0
   };
 }
 

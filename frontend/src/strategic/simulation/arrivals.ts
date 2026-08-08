@@ -79,7 +79,18 @@ const ACTIVE_GUEST_CAP = 24;
 // pricing and service concept, then modulated by the current economic
 // capital and reputation so a weak-economy period visibly thins the
 // room and a strong-reputation restaurant pulls guests in.
+//
+// ORDER 043 Addendum A prep gate: while day.prepEndsAt is set and
+// simTime hasn't crossed it, the doors haven't opened yet — no
+// arrivals, no queue. The prep event stream carries the reading
+// during this window.
 export function arrivalProbability(state: SimulationState): number {
+  if (
+    state.day.prepEndsAt !== null &&
+    state.simTime < state.day.prepEndsAt
+  ) {
+    return 0;
+  }
   const perMinute =
     ARRIVAL_BASE_PER_MINUTE *
     periodArrivalMultiplier(state.day.period) *

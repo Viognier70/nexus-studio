@@ -270,6 +270,16 @@ export interface DayState {
   // from scenariosPlanned; consumed head-first as advanceTick fires
   // each scenario. Cleared on any period transition + on SKIP_LUNCH.
   scenarioTriggerTimes: number[];
+  // ORDER 043 Addendum A prep window — set at OPEN_SERVICE to
+  // simTime + PREP_DURATION_SEC. While non-null the service is
+  // "in mise en place": no arrivals, no scenarios, prep events fire
+  // on the stream instead. Cleared (set to null) when the prep
+  // window expires; the carryover check runs at that moment.
+  prepEndsAt: number | null;
+  // Number of ignorance-tagged prep events fired during the current
+  // prep window. Read at prep-end to decide whether to schedule a
+  // carryover bottleneck event ~13 min into service.
+  prepIgnoranceCount: number;
 }
 
 // ----- ORDER 043 two-layer capital model ----------------------------------
@@ -393,6 +403,11 @@ export interface PendingOutcome {
   text: string;
   sustainability: SustainabilityKey;
   scenarioId: string;
+  // ORDER 043 Addendum A prep-carryover — emit as ambient bottleneck
+  // rather than as a scenario outcome. Defaults to 'outcome' (the
+  // scenario-response case). 'prep-carryover' is used when a weak
+  // mise en place scheduled a bottleneck event ~13 min into service.
+  flavor?: 'outcome' | 'prep-carryover';
 }
 
 export interface SimulationState {

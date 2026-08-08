@@ -30,7 +30,12 @@ import type {
   SustainabilityKey
 } from '../types';
 import type { Rng } from '../util/rng';
-import { AMBIENT_TEXTS, type AmbientEventKind } from '../../content/eventStream.sv';
+import {
+  AMBIENT_TEXTS,
+  PREP_TEXTS,
+  type AmbientEventKind,
+  type PrepEventKind
+} from '../../content/eventStream.sv';
 import { teamCapacity, teamCompetence } from './team';
 
 const TICK_SECONDS = 0.2;
@@ -50,6 +55,17 @@ export const OUTCOME_OFFSETS_SEC: readonly number[] = [6, 18];
 // eight variants used inside the window), fall back to the full
 // bank — a repeat is better than a silent tick.
 export const REPEAT_GUARD_SEC = 240;
+
+// ORDER 043 Addendum A prep window (Vision Owner 2026-08-08):
+// "Håll den kort — ett par minuter, inte fem." Two minutes reads as
+// a busy prep beat without becoming its own act.
+export const PREP_DURATION_SEC = 120;
+
+// Carryover trigger: if the prep window fires this many ignorance
+// events, a bottleneck line is scheduled ~13 min into service — the
+// undone mise en place coming home to roost.
+export const PREP_CARRYOVER_THRESHOLD = 2;
+export const PREP_CARRYOVER_OFFSET_SEC = 13 * 60;
 
 // ORDER 043 v3 §10 step 5 competence source resolution — replaces
 // the trainingLevel stand-in from §A.7. Each competence source name
@@ -110,6 +126,22 @@ export interface EventDef {
   baseRatePerMin: number;
   competenceSource: CompetenceSource;
 }
+
+// ORDER 043 Addendum A prep-window event defs. Fire only while
+// `state.day.prepEndsAt` is set (prep window open). Rates chosen so
+// a 2-min prep produces ~3–4 lines at mid competence — enough to
+// read the team from, not enough to become its own act.
+export interface PrepEventDef {
+  kind: PrepEventKind;
+  competenceSource: 'scientific' | 'cultural' | 'trainingLevel';
+  baseRatePerMin: number;
+}
+
+export const PREP_EVENT_DEFS: readonly PrepEventDef[] = [
+  { kind: 'prep_kitchen',  competenceSource: 'scientific',    baseRatePerMin: 0.6 },
+  { kind: 'prep_room',     competenceSource: 'trainingLevel', baseRatePerMin: 0.6 },
+  { kind: 'prep_delivery', competenceSource: 'cultural',      baseRatePerMin: 0.6 }
+];
 
 // Base rates sum to ≈ 1.0 event / sim-minute across all kinds, so
 // the multiplier math from the model report applies directly to
@@ -184,18 +216,16 @@ export function eventProbabilityPerTick(
   return Math.min(1, (perMinute * TICK_SECONDS) / 60);
 }
 
-// -------- ambient roll -----------------------------------------------------
+// -------- ambient / prep roll --------------------------------------------
 
-function pickAmbientText(
-  kind: AmbientEventKind,
+function pickTextWithRepeatGuard(
+  bank: readonly string[],
   state: SimulationState,
   rng: Rng
 ): string {
-  const bank = AMBIENT_TEXTS[kind];
   // Filter out any sentence that appeared in the last REPEAT_GUARD_SEC
-  // of stream. Text-level filter so the guard trips across ambient
-  // and outcome layers too (an outcome line is not in a bank, but
-  // reading state.eventStream is simpler than distinguishing).
+  // of stream. Text-level filter so the guard trips across ambient,
+  // prep, and outcome layers alike.
   const now = state.simTime;
   const recentTexts = new Set<string>();
   for (const e of state.eventStream) {
@@ -213,13 +243,47 @@ function makeAmbientEntry(
 ): EventStreamEntry {
   return {
     at: state.simTime,
-    text: pickAmbientText(def.kind, state, rng),
+    text: pickTextWithRepeatGuard(AMBIENT_TEXTS[def.kind], state, rng),
     category: 'ambient',
     causeTag: def.causeTag,
     sustainability: def.sustainability,
     kind: def.kind,
     scenarioId: null
   };
+}
+
+function makePrepEntry(
+  def: PrepEventDef,
+  state: SimulationState,
+  rng: Rng
+): EventStreamEntry {
+  // Prep events all carry causeTag: 'ignorance' — a competent team
+  // barely leaks them; an incompetent one does. Sustainability is
+  // 'social' as a stand-in (the team's readiness is a social
+  // reading), matching the ambient convention for team-strain events.
+  return {
+    at: state.simTime,
+    text: pickTextWithRepeatGuard(PREP_TEXTS[def.kind], state, rng),
+    category: 'ambient',
+    causeTag: 'ignorance',
+    sustainability: 'social',
+    kind: def.kind,
+    scenarioId: null
+  };
+}
+
+function prepEventProbabilityPerTick(
+  def: PrepEventDef,
+  state: SimulationState
+): number {
+  // Prep rate = base * ignoranceMultiplier(competenceForAxis).
+  // No strain component during prep — the guests aren't in yet.
+  const source = def.competenceSource;
+  const axis: 'scientific' | 'cultural' | 'practical' =
+    source === 'trainingLevel' ? 'practical' : source;
+  const c = teamCompetence(state.team, axis);
+  const perMinute = def.baseRatePerMin * ignoranceMultiplier(c);
+  return Math.min(1, (perMinute * TICK_SECONDS) / 60);
 }
 
 // -------- outcome scheduling ----------------------------------------------
@@ -248,6 +312,20 @@ export function scheduleOutcomes(
 
 
 function outcomeToEntry(p: PendingOutcome, at: number): EventStreamEntry {
+  // Prep-carryover emits as an ambient bottleneck line (not an
+  // outcome), so vocabulary/cadence read correctly — the player sees
+  // a "kitchen bottleneck" event mid-service, not a scenario echo.
+  if (p.flavor === 'prep-carryover') {
+    return {
+      at,
+      text: p.text,
+      category: 'ambient',
+      causeTag: 'strain',
+      sustainability: p.sustainability,
+      kind: 'bottleneck',
+      scenarioId: p.scenarioId
+    };
+  }
   return {
     at,
     text: p.text,
@@ -265,13 +343,15 @@ function outcomeToEntry(p: PendingOutcome, at: number): EventStreamEntry {
 //   1. Any pending outcomes whose dueAt has arrived (regardless of period —
 //      an outcome scheduled by a scenario that resolved just before service
 //      end must still fire; the choice was real).
-//   2. Ambient rolls, but ONLY during a running service (lunch / dinner).
-//      Ambient chatter outside service would be nonsense — no one is in
-//      the room.
+//   2. Prep-window events during the mise en place window (prepEndsAt
+//      set and simTime < prepEndsAt). Weighted by team competence, no
+//      strain component — the room is empty.
+//   3. Ambient rolls, during service after the prep window closes
+//      (period lunch/dinner AND prepEndsAt === null).
 export function tickEventStream(state: SimulationState, rng: Rng): void {
   const emitted: EventStreamEntry[] = [];
 
-  // Emit any due outcomes.
+  // Emit any due outcomes / carryovers.
   const stillPending: PendingOutcome[] = [];
   for (const p of state.pendingOutcomes) {
     if (state.simTime >= p.dueAt) {
@@ -282,9 +362,30 @@ export function tickEventStream(state: SimulationState, rng: Rng): void {
   }
   state.pendingOutcomes = stillPending;
 
-  // Ambient rolls — service-only.
   const period = state.day.period;
-  if (period === 'lunch' || period === 'dinner') {
+  const inService = period === 'lunch' || period === 'dinner';
+  const inPrep = inService && state.day.prepEndsAt !== null && state.simTime < state.day.prepEndsAt;
+
+  if (inPrep) {
+    // Prep rolls — competence-weighted, no strain. Bump the day's
+    // prepIgnoranceCount for each fired event so the carryover
+    // decision at prep-end can read a running total.
+    let prepFired = 0;
+    for (const def of PREP_EVENT_DEFS) {
+      const p = prepEventProbabilityPerTick(def, state);
+      if (rng.chance(p)) {
+        emitted.push(makePrepEntry(def, state, rng));
+        prepFired += 1;
+      }
+    }
+    if (prepFired > 0) {
+      state.day = {
+        ...state.day,
+        prepIgnoranceCount: state.day.prepIgnoranceCount + prepFired
+      };
+    }
+  } else if (inService) {
+    // Full service — ambient rolls.
     for (const def of EVENT_DEFS) {
       const p = eventProbabilityPerTick(def, state);
       if (rng.chance(p)) {

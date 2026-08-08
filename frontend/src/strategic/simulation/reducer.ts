@@ -20,7 +20,14 @@ import { strings } from '../../content/strings.sv';
 import { maybeSpawnGuest, scenarioSpawnStep } from './arrivals';
 import { planScenariosForService, scheduleScenarioTriggerTimes } from './day';
 import { revenuePerGuest } from './economics';
-import { scheduleOutcomes, tickEventStream } from './eventStream';
+import {
+  PREP_CARRYOVER_OFFSET_SEC,
+  PREP_CARRYOVER_THRESHOLD,
+  PREP_DURATION_SEC,
+  scheduleOutcomes,
+  tickEventStream
+} from './eventStream';
+import { PREP_CARRYOVER_TEXT } from '../../content/eventStream.sv';
 import { pickScenarioSpec, scenarioById } from './scenarios';
 import { initialDay, makeInitialState, makeStaff } from './model';
 import { tickReputationDrift } from './reputation';
@@ -154,12 +161,15 @@ function openService(
   const length = clampServiceLength(lengthMinutes);
   // Deterministic scenario count + schedule from the current rng
   // state — same seed + same open sequence yields the same rhythm.
+  // The schedule is shifted by PREP_DURATION_SEC so no scenario
+  // fires during the mise en place window; the head-space buffer
+  // in scheduleScenarioTriggerTimes then applies on top.
   const rng = createRng(state.rngState);
   const scenariosPlanned = planScenariosForService(length, rng);
   const scenarioTriggerTimes = scheduleScenarioTriggerTimes(
     scenariosPlanned,
-    state.simTime,
-    length,
+    state.simTime + PREP_DURATION_SEC,
+    Math.max(1, length - PREP_DURATION_SEC / 60),
     rng
   );
   const day: DayState = {
@@ -169,7 +179,11 @@ function openService(
     currentServiceLengthMinutes: length,
     scenariosPlanned,
     scenariosFiredThisService: 0,
-    scenarioTriggerTimes
+    scenarioTriggerTimes,
+    // Prep window opens for PREP_DURATION_SEC starting now. Arrivals
+    // + scenario firing are gated until prep ends (see advanceTick).
+    prepEndsAt: state.simTime + PREP_DURATION_SEC,
+    prepIgnoranceCount: 0
   };
   return {
     ...state,
@@ -189,7 +203,9 @@ function skipLunch(state: SimulationState): SimulationState {
       currentServiceLengthMinutes: null,
       scenariosPlanned: 0,
       scenariosFiredThisService: 0,
-      scenarioTriggerTimes: []
+      scenarioTriggerTimes: [],
+      prepEndsAt: null,
+      prepIgnoranceCount: 0
     }
   };
 }
@@ -221,7 +237,9 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           currentServiceLengthMinutes: null,
           scenariosPlanned: 0,
           scenariosFiredThisService: 0,
-          scenarioTriggerTimes: []
+          scenarioTriggerTimes: [],
+          prepEndsAt: null,
+          prepIgnoranceCount: 0
         }
       };
     }
@@ -244,7 +262,9 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           currentServiceLengthMinutes: null,
           scenariosPlanned: 0,
           scenariosFiredThisService: 0,
-          scenarioTriggerTimes: []
+          scenarioTriggerTimes: [],
+          prepEndsAt: null,
+          prepIgnoranceCount: 0
         }
       };
     }
@@ -640,6 +660,30 @@ function advanceTick(state: SimulationState): SimulationState {
   // and after reputation drift so a large queue that just triggered
   // rep drift also feeds this tick's ambient probability.
   tickEventStream(draft, rng);
+
+  // ORDER 043 Addendum A prep-window end. Runs after tickEventStream
+  // so this tick's prep events are already counted. If prep just
+  // ended AND the team fumbled enough during it, schedule a
+  // carryover bottleneck ~13 min into service — the mise en place
+  // sin coming home to roost.
+  if (
+    draft.day.prepEndsAt !== null &&
+    draft.simTime >= draft.day.prepEndsAt
+  ) {
+    if (draft.day.prepIgnoranceCount >= PREP_CARRYOVER_THRESHOLD) {
+      draft.pendingOutcomes = [
+        ...draft.pendingOutcomes,
+        {
+          dueAt: draft.simTime + PREP_CARRYOVER_OFFSET_SEC,
+          text: PREP_CARRYOVER_TEXT,
+          sustainability: 'social',
+          scenarioId: 'prep-carryover',
+          flavor: 'prep-carryover'
+        }
+      ];
+    }
+    draft.day = { ...draft.day, prepEndsAt: null };
+  }
 
   // ORDER 043 v3 §10 step 5 — agency-offer strain tracking and
   // offer expiry. Runs after tickEventStream so this tick's load
