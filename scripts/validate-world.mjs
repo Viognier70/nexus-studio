@@ -821,30 +821,21 @@ function mulberry32(state) {
 // Pair keys are the two building ids sorted lexicographically and
 // joined by `|`, so the check is order-independent.
 {
+  // ORDER 044 §2 — the church has been cleared of its eight vw-kyr-*
+  // intrusions. Thirteen entries below have been removed accordingly.
+  // Remaining entries will fall off as ORDER 040 §6's classification
+  // is applied in the follow-up commit.
   const V21_ACCEPTED_OVERLAPS = new Set([
     'vw-bv-lakeshore|vw-bv-lakeshore-boathouse',           //   9.18 m², 38.2 %
     'vw-bv-tree-cluster|vw-bv-tree-garage',                //   5.31 m², 15.2 %
     'vw-kyr-1|vw-kyr-torget-lh',                           //  20.00 m², 25.0 %
     'vw-kyr-1-booth|vw-kyr-torget-lh',                     //  30.00 m², 100.0 %
-    'vw-kyr-11|vw-kyr-13',                                 //  52.00 m², 65.0 %
-    'vw-kyr-11|w869907961',                                //  43.74 m², 54.7 %   church
     'vw-kyr-12|vw-kyr-14',                                 //   8.00 m², 6.7 %
-    'vw-kyr-13|w869907961',                                //  52.14 m², 40.1 %   church
-    'vw-kyr-14|vw-kyr-kyrkbacken-lh',                      //  30.00 m², 25.0 %
-    'vw-kyr-16|vw-kyr-18',                                 //  35.00 m², 26.9 %
-    'vw-kyr-16|vw-kyr-kyrkbacken-lh',                      //  32.00 m², 21.3 %
-    'vw-kyr-16|w869907961',                                // 131.35 m², 85.3 %   church — primary occluder
-    'vw-kyr-18|vw-kyr-20',                                 //  30.00 m², 23.1 %
-    'vw-kyr-18|w869907961',                                //  15.02 m², 11.6 %   church
     'vw-kyr-20|vw-kyr-20-garage',                          //  19.00 m², 23.8 %
     'vw-kyr-20|vw-kyr-22',                                 //  40.00 m², 30.8 %
     'vw-kyr-20-garage|vw-kyr-22',                          //  11.25 m², 14.1 %
     'vw-kyr-22|vw-kyr-26',                                 //  28.00 m², 29.2 %
     'vw-kyr-5|vw-kyr-5-barn',                              //  39.00 m², 55.7 %
-    'vw-kyr-5-barn|vw-kyr-9',                              //  11.00 m², 15.7 %
-    'vw-kyr-9-rear-barn|w869907961',                       //  43.37 m², 90.3 %   church
-    'vw-kyr-9-rear-villa|w869907961',                      //  80.00 m², 100.0 %  church
-    'vw-kyr-kyrkbacken-lh|w869907961',                     //  38.14 m², 25.4 %   church
     'vw-kyr-torget-lh|vw-torget-bus-shelter',              //   8.75 m², 100.0 %
     'vw-nyg-1|w869907972',                                 //  40.37 m², 25.6 %
     'vw-nyg-20|w870510857',                                //  69.18 m², 32.0 %
@@ -854,7 +845,7 @@ function mulberry32(state) {
     'vw-pra-4n|vw-pra-6n',                                 //  48.75 m², 49.2 %
     'vw-pra-4n|vw-pra-8',                                  //   8.00 m², 10.0 %
     'vw-pra-6n|vw-pra-8',                                  //  35.75 m², 44.7 %
-    'vw-skg-11|w1250001245',                               //  56.37 m², 40.3 %   Tempo
+    'vw-skg-11|w1250001245',                               //  56.37 m², 40.3 %   Tempo — await ground truth
     'vw-skg-9|w1250001244',                                //  49.29 m², 35.2 %
     'vw-stn-8|w870510842',                                 //  47.26 m², 44.7 %
     'vw-torget-east-lh|w869907976',                        //  42.08 m², 41.4 %
