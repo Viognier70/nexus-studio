@@ -11,6 +11,7 @@ import { StrategicScene } from './scene/StrategicScene';
 import { SimulationProvider, useSimDispatch } from './simulation/SimulationProvider';
 import { AboutPanel } from './ui/AboutPanel';
 import { ControlsHint } from './ui/ControlsHint';
+import { DevPanel } from './ui/DevPanel';
 import { ModeSwitchLink } from './ui/ModeSwitchLink';
 import { OutwardButton } from './ui/OutwardButton';
 import { SelectionChrome } from './ui/SelectionChrome';
@@ -40,6 +41,11 @@ function StrategicShell() {
   const hostRef = useRef<HTMLDivElement>(null);
   const [aboutOpen, setAboutOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  // ORDER 043 B.1 dev readout — the last key the shortcut handler
+  // processed. Renders in DevPanel (dev-only) so the Vision Owner can
+  // verify a keypress actually reached the handler without opening
+  // browser dev tools.
+  const [lastKey, setLastKey] = useState('');
   const { focusOn, jumpToPreset } = useCamera();
   const simDispatch = useSimDispatch();
 
@@ -82,38 +88,21 @@ function StrategicShell() {
     };
     const cycle = (cap: 'economic' | 'social' | 'ecological') => {
       cyclePosition[cap] = (cyclePosition[cap] + 1) % cycleSteps.length;
-      const value = cycleSteps[cyclePosition[cap]];
-      // eslint-disable-next-line no-console
-      console.log(`[CAPITAL] ${cap} = ${value.toFixed(2)}`);
-      simDispatch({ type: 'SET_CAPITAL', capital: cap, value });
+      simDispatch({
+        type: 'SET_CAPITAL',
+        capital: cap,
+        value: cycleSteps[cyclePosition[cap]]
+      });
     };
-    // ORDER 043 B.1 gate diagnostics — Vision Owner reported no
-    // [CAPITAL] log firing on S/E/C. This block prints the binding
-    // table at handler-mount time and logs every keydown that reaches
-    // window, so a missing [CAPITAL] can be traced to (a) handler not
-    // mounted, (b) event not reaching window, (c) target-tag filter
-    // rejecting it, or (d) key value differing from expectation.
-    // Remove alongside the rest of the dev shortcuts at B.3.
-    // eslint-disable-next-line no-console
-    console.log(
-      '[KEYBIND] StrategicApp dev shortcuts mounted:',
-      '5 → TRIGGER_SCENARIO, R → RESET, S → social cycle, E → economic cycle, C → ecological cycle'
-    );
     const onKey = (event: KeyboardEvent) => {
-      const target = event.target as HTMLElement | null;
-      const tag = target?.tagName ?? 'null';
-      const mods = [
-        event.metaKey && 'meta',
-        event.ctrlKey && 'ctrl',
-        event.altKey && 'alt',
-        event.shiftKey && 'shift'
-      ]
-        .filter(Boolean)
-        .join('+') || 'none';
-      // eslint-disable-next-line no-console
-      console.log(`[KEYDOWN] key='${event.key}' code='${event.code}' target=<${tag.toLowerCase()}> mods=${mods}`);
       if (event.metaKey || event.ctrlKey || event.altKey) return;
+      const target = event.target as HTMLElement | null;
+      const tag = target?.tagName;
       if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+      // Record every reachable keypress for the DevPanel readout so
+      // the Vision Owner can see whether a key even reached the
+      // handler — separate from whether it hit a binding.
+      setLastKey(event.key);
       if (event.key === '5') simDispatch({ type: 'TRIGGER_SCENARIO' });
       if (event.key === 'r' || event.key === 'R') simDispatch({ type: 'RESET' });
       if (event.key === 's' || event.key === 'S') cycle('social');
@@ -121,11 +110,7 @@ function StrategicShell() {
       if (event.key === 'c' || event.key === 'C') cycle('ecological');
     };
     window.addEventListener('keydown', onKey);
-    return () => {
-      // eslint-disable-next-line no-console
-      console.log('[KEYBIND] StrategicApp dev shortcuts unmounted');
-      window.removeEventListener('keydown', onKey);
-    };
+    return () => window.removeEventListener('keydown', onKey);
   }, [simDispatch]);
 
   const handleSelect = useCallback(
@@ -163,6 +148,7 @@ function StrategicShell() {
         onClose={() => setSelectedId(null)}
       />
       <ScenarioOverlay />
+      <DevPanel lastKey={lastKey} />
       <AboutPanel open={aboutOpen} onClose={() => setAboutOpen(false)} />
     </div>
   );
