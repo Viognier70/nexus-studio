@@ -7,6 +7,7 @@ import { useTouchControls } from './camera/useTouchControls';
 import type { Landmark } from './content/world';
 import { LANDMARK_BY_ID } from './content/world';
 import { StrategicScene } from './scene/StrategicScene';
+import { SimulationProvider } from './simulation/SimulationProvider';
 import { AboutPanel } from './ui/AboutPanel';
 import { ControlsHint } from './ui/ControlsHint';
 import { ModeSwitchLink } from './ui/ModeSwitchLink';
@@ -25,8 +26,10 @@ export function StrategicApp() {
   return (
     <BusinessProvider>
       <CameraProvider>
-        <StrategicShell />
-        <NameEntryOverlay />
+        <SimulationProvider>
+          <StrategicShell />
+          <NameEntryOverlay />
+        </SimulationProvider>
       </CameraProvider>
     </BusinessProvider>
   );

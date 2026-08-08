@@ -37,9 +37,8 @@ import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { useCamera } from '../camera/CameraContext';
 import { GRAY_BOX_CAMERA } from '../content/grythyttan';
-import { PLAYER_BUSINESS_BUILDING_IDS, WORLD } from '../content/world';
-import type { RawBuilding } from '../content/world';
 import { useBusiness } from '../business/BusinessContext';
+import { BAR_STRIP, usePlayerBusinessInterior } from '../business/interiorLayout';
 import { strings } from '../../content/strings.sv';
 
 // Business volume constants — the D01 historic-centre building is a
@@ -65,15 +64,6 @@ function smoothstep(a: number, b: number, x: number): number {
   return t * t * (3 - 2 * t);
 }
 
-// Fetch the building record once (module-scope Map is populated by
-// world.ts split logic).
-function usePlayerBuildingRecord(): RawBuilding | null {
-  return useMemo(() => {
-    const targetId = [...PLAYER_BUSINESS_BUILDING_IDS][0];
-    return WORLD.buildings.find((b) => b.id === targetId) ?? null;
-  }, []);
-}
-
 // Build a THREE.Shape from the raw OSM polygon (with the -y flip that
 // every other shape-based renderer uses — see feedback memory
 // `feedback_transform_frame_convention.md`).
@@ -90,19 +80,18 @@ function polygonShape(poly: readonly [number, number][]): THREE.Shape {
 export function PlayerBusiness() {
   const { business, hasName } = useBusiness();
   const { actualRef } = useCamera();
-  const building = usePlayerBuildingRecord();
+  const layout = usePlayerBusinessInterior();
 
   const wallMaterialRef = useRef<THREE.MeshStandardMaterial>(null);
   const roofMaterialRef = useRef<THREE.MeshStandardMaterial>(null);
   const interiorGroupRef = useRef<THREE.Group>(null);
 
-  // Precompute geometries + local frame for the interior stub.
+  // Wall + roof geometry from the shared building polygon.
   const geom = useMemo(() => {
-    if (!building) return null;
+    if (!layout) return null;
 
-    const shape = polygonShape(building.poly);
+    const shape = polygonShape(layout.building.poly);
 
-    // Wall: extrude the footprint upward by WALL_HEIGHT_M
     const wallGeo = new THREE.ExtrudeGeometry(shape, {
       depth: WALL_HEIGHT_M,
       bevelEnabled: false,
@@ -123,25 +112,8 @@ export function PlayerBusiness() {
     capGeo.rotateX(-Math.PI / 2);
     capGeo.translate(0, WALL_HEIGHT_M + 0.05, 0);
 
-    // Compute centroid + oriented bbox for the interior stub placement.
-    const xs = building.poly.map((p) => p[0]);
-    const zs = building.poly.map((p) => p[1]);
-    const centreX = xs.reduce((a, b) => a + b, 0) / xs.length;
-    const centreZ = zs.reduce((a, b) => a + b, 0) / zs.length;
-    const minX = Math.min(...xs), maxX = Math.max(...xs);
-    const minZ = Math.min(...zs), maxZ = Math.max(...zs);
-    const width = maxX - minX;
-    const depth = maxZ - minZ;
-
-    return {
-      wallGeo,
-      capGeo,
-      centre: [centreX, centreZ] as [number, number],
-      width,
-      depth,
-      minX, maxX, minZ, maxZ
-    };
-  }, [building]);
+    return { wallGeo, capGeo };
+  }, [layout]);
 
   // Camera-distance driven opacity — the roof crossfade and interior
   // reveal that CAMERA_AND_GAMEPLAY_BIBLE.md §4.1 specifies.
@@ -206,35 +178,13 @@ export function PlayerBusiness() {
     }
   });
 
-  if (!building || !geom) return null;
+  if (!layout || !geom) return null;
 
-  const [cx, cz] = geom.centre;
-  // Interior local coords — a plain floor plane, a bar strip along the
-  // building's long axis, and 6 table pucks in two rows. The 252 m²
-  // footprint gives ample room.
-  //
-  // The building's OSM polygon runs roughly north-south (bbox 10.8 m
-  // wide × 38.5 m long). Put the bar along the west wall and tables in
-  // two rows east of it.
-  const barWidth = 1.6;
-  const barLength = geom.depth * 0.7;
-  const tableRows = 2;
-  const tableCols = 3;
-  const tableSpacingX = 2.0;
-  const tableSpacingZ = geom.depth / (tableCols + 1);
-
-  const tables: Array<[number, number]> = [];
-  for (let r = 0; r < tableRows; r++) {
-    for (let c = 0; c < tableCols; c++) {
-      // Offset tables east of the bar strip, spanning most of the width
-      const x = geom.minX + barWidth + 1.6 + r * tableSpacingX;
-      const z = geom.minZ + (c + 1) * tableSpacingZ;
-      tables.push([x, z]);
-    }
-  }
-
-  const barX = geom.minX + barWidth / 2 + 0.6;
+  const [cx, cz] = layout.centre;
+  const barLength = layout.depth * 0.7;
+  const barX = layout.bbox.minX + BAR_STRIP.widthM / 2 + BAR_STRIP.offsetM;
   const barZ = cz;
+  const tables = layout.tables;
 
   // Business name label — floats slightly above the roof line at the
   // building centre, always visible. Once `hasName` is false the
@@ -275,12 +225,12 @@ export function PlayerBusiness() {
       <group ref={interiorGroupRef} visible={false}>
         {/* Floor — sits ~0.05 m above ground to avoid z-fighting */}
         <mesh position={[cx, 0.06, cz]} rotation={[-Math.PI / 2, 0, 0]}>
-          <planeGeometry args={[geom.width - 0.4, geom.depth - 0.4]} />
+          <planeGeometry args={[layout.width - 0.4, layout.depth - 0.4]} />
           <meshStandardMaterial color={INTERIOR_FLOOR_COLOUR} transparent opacity={0} />
         </mesh>
         {/* Bar strip along west wall */}
         <mesh position={[barX, 0.55, barZ]}>
-          <boxGeometry args={[barWidth, 1.05, barLength]} />
+          <boxGeometry args={[BAR_STRIP.widthM, 1.05, barLength]} />
           <meshStandardMaterial color={BAR_COLOUR} transparent opacity={0} />
         </mesh>
         {/* Six tables */}
@@ -291,7 +241,7 @@ export function PlayerBusiness() {
           </mesh>
         ))}
         {/* Entrance marker — a small step at the south end of the building */}
-        <mesh position={[cx, 0.1, geom.maxZ - 0.6]}>
+        <mesh position={[layout.entrance[0], 0.1, layout.entrance[1]]}>
           <boxGeometry args={[2.2, 0.2, 0.4]} />
           <meshStandardMaterial color={TRIM_COLOUR} transparent opacity={0} />
         </mesh>

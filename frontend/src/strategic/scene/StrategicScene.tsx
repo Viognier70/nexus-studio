@@ -25,6 +25,7 @@ import { OsmRoads } from './OsmRoads';
 import { OsmTerrain } from './OsmTerrain';
 import { OsmTraffic } from './OsmTraffic';
 import { OsmWater } from './OsmWater';
+import { InteriorGuests } from './InteriorGuests';
 import { PlayerBusiness } from './PlayerBusiness';
 import { Sky } from './Sky';
 import { StreetLabels } from './StreetLabels';
@@ -115,6 +116,7 @@ export function StrategicScene({ onSelect, selectedId }: Props) {
         <CraftedLandmarks />
         <CraftedLandmarksD2 />
         <PlayerBusiness />
+        <InteriorGuests />
         <OsmLandmarks onSelect={onSelect} selectedId={selectedId} />
         <OsmTraffic />
         <OsmPedestrians />
