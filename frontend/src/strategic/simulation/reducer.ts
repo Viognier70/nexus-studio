@@ -17,20 +17,13 @@ import {
 } from '../types';
 import { strings } from '../../content/strings.sv';
 import { maybeSpawnGuest, scenarioSpawnStep } from './arrivals';
-import { planScenariosForService } from './day';
+import { planScenariosForService, scheduleScenarioTriggerTimes } from './day';
 import { revenuePerGuest } from './economics';
 import { initialDay, makeInitialState, makeStaff } from './model';
 import { tickReputationDrift } from './reputation';
 import { tickGuests, tickStaff } from './service';
 import { tickSustainability } from './sustainability';
 import { drawNextTheme, wagerPayout } from './themeSelection';
-
-// Sim-seconds until the walk-in-of-five scenario auto-triggers if the
-// player takes no action. Kept short so a one-and-done playtest doesn't
-// have to sit through two minutes of ambient sim before the loop
-// engages; a manual key-5 trigger from the app shell is also wired for
-// the case where the player wants it now.
-const AUTO_SCENARIO_AT = 30;
 
 // ORDER 043 §4 wager tuning — cycle-1 defaults, will be tuned against
 // play. Report gate at §10 lands with these; scenario integration
@@ -136,17 +129,24 @@ function openService(
   const expectedPhase: DayPeriod = service === 'lunch' ? 'morning' : 'afternoon';
   if (state.day.period !== expectedPhase) return state;
   const length = clampServiceLength(lengthMinutes);
-  // Deterministic scenario count from the current rng state — same
-  // seed + same open sequence yields the same plan.
+  // Deterministic scenario count + schedule from the current rng
+  // state — same seed + same open sequence yields the same rhythm.
   const rng = createRng(state.rngState);
   const scenariosPlanned = planScenariosForService(length, rng);
+  const scenarioTriggerTimes = scheduleScenarioTriggerTimes(
+    scenariosPlanned,
+    state.simTime,
+    length,
+    rng
+  );
   const day: DayState = {
     ...state.day,
     period: service,
     periodStartAt: state.simTime,
     currentServiceLengthMinutes: length,
     scenariosPlanned,
-    scenariosFiredThisService: 0
+    scenariosFiredThisService: 0,
+    scenarioTriggerTimes
   };
   return {
     ...state,
@@ -165,7 +165,8 @@ function skipLunch(state: SimulationState): SimulationState {
       periodStartAt: state.simTime,
       currentServiceLengthMinutes: null,
       scenariosPlanned: 0,
-      scenariosFiredThisService: 0
+      scenariosFiredThisService: 0,
+      scenarioTriggerTimes: []
     }
   };
 }
@@ -193,7 +194,8 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           periodStartAt: simTime,
           currentServiceLengthMinutes: null,
           scenariosPlanned: 0,
-          scenariosFiredThisService: 0
+          scenariosFiredThisService: 0,
+          scenarioTriggerTimes: []
         }
       };
     }
@@ -209,7 +211,8 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           periodStartAt: simTime,
           currentServiceLengthMinutes: null,
           scenariosPlanned: 0,
-          scenariosFiredThisService: 0
+          scenariosFiredThisService: 0,
+          scenarioTriggerTimes: []
         }
       };
     }
@@ -397,9 +400,34 @@ function advanceTick(state: SimulationState): SimulationState {
   // previous tick's state.
   tickReputationDrift(draft);
 
-  // Auto-trigger scenario once.
-  if (!draft.scenario.hasAutoTriggered && draft.simTime >= AUTO_SCENARIO_AT) {
-    return triggerScenario(draft, /* auto */ true);
+  // ORDER 043 v3 step 5b — scheduled scenario firing.
+  //
+  // Fires when: service is running (lunch / dinner), there are still
+  // fires remaining in the schedule, the head fire time is due, and
+  // the previous scenario has settled (or none has ever fired). The
+  // last gate means resolve → settle → next-trigger is serialised;
+  // scenarios never overlap the response window.
+  //
+  // hasAutoTriggered is retained for backward compat with tests but
+  // no longer gates: the schedule is the authority now.
+  const scheduled = draft.day.scenarioTriggerTimes;
+  const period = draft.day.period;
+  const canFire = period === 'lunch' || period === 'dinner';
+  const scenarioIdle =
+    draft.scenario.phase === 'idle' || draft.scenario.phase === 'settled';
+  if (
+    canFire &&
+    scenarioIdle &&
+    scheduled.length > 0 &&
+    draft.simTime >= scheduled[0]
+  ) {
+    const nextDraft = triggerScenario(draft, /* auto */ true);
+    nextDraft.day = {
+      ...nextDraft.day,
+      scenarioTriggerTimes: scheduled.slice(1),
+      scenariosFiredThisService: draft.day.scenariosFiredThisService + 1
+    };
+    return nextDraft;
   }
 
   // Transition scenario from 'resolving' → 'settled' after the

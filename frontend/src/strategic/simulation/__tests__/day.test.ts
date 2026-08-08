@@ -18,7 +18,7 @@
 import { describe, expect, it } from 'vitest';
 import { makeInitialState } from '../model';
 import { reducer, tickDayTransitions } from '../reducer';
-import { planScenariosForService } from '../day';
+import { planScenariosForService, scheduleScenarioTriggerTimes } from '../day';
 import { createRng } from '../../util/rng';
 import {
   SERVICE_LENGTH_MAX_MINUTES,
@@ -221,6 +221,86 @@ describe('scenario planning determinism', () => {
       lengthMinutes: 20
     });
     expect(s1.day.scenariosPlanned).toBe(s2.day.scenariosPlanned);
+  });
+});
+
+describe('scheduleScenarioTriggerTimes', () => {
+  it('returns an empty array for count 0', () => {
+    expect(scheduleScenarioTriggerTimes(0, 100, 10, createRng(1))).toEqual([]);
+  });
+
+  it('returns count entries, sorted ascending', () => {
+    const times = scheduleScenarioTriggerTimes(5, 100, 10, createRng(7));
+    expect(times).toHaveLength(5);
+    for (let i = 1; i < times.length; i++) {
+      expect(times[i]).toBeGreaterThanOrEqual(times[i - 1]);
+    }
+  });
+
+  it('keeps all times inside the head/tail-buffered window', () => {
+    // 10-min service starting at t=100 → window [100+12, 100+600-20] = [112, 680].
+    const times = scheduleScenarioTriggerTimes(6, 100, 10, createRng(3));
+    for (const t of times) {
+      expect(t).toBeGreaterThanOrEqual(112);
+      expect(t).toBeLessThanOrEqual(680);
+    }
+  });
+
+  it('degenerate short service (< head + tail) still produces one fire', () => {
+    const times = scheduleScenarioTriggerTimes(3, 100, 0.3, createRng(1));
+    expect(times.length).toBeGreaterThan(0);
+  });
+});
+
+describe('OPEN_SERVICE populates scenarioTriggerTimes', () => {
+  it('has scenariosPlanned entries in the schedule after opening', () => {
+    const s = reducer(makeInitialState(1), {
+      type: 'OPEN_SERVICE',
+      service: 'lunch',
+      lengthMinutes: 10
+    });
+    expect(s.day.scenarioTriggerTimes).toHaveLength(s.day.scenariosPlanned);
+  });
+
+  it('SKIP_LUNCH clears the schedule (no scenarios during afternoon)', () => {
+    let s = reducer(makeInitialState(1), { type: 'SKIP_LUNCH' });
+    expect(s.day.scenarioTriggerTimes).toEqual([]);
+    // Then opening dinner sets a new schedule.
+    s = reducer(s, {
+      type: 'OPEN_SERVICE',
+      service: 'dinner',
+      lengthMinutes: 10
+    });
+    expect(s.day.scenarioTriggerTimes.length).toBe(s.day.scenariosPlanned);
+  });
+});
+
+describe('scheduled scenario firing during service', () => {
+  // Full-service integration: run a 10-min lunch, resolve every
+  // scenario as it fires, and assert that scenariosFiredThisService
+  // reaches scenariosPlanned by end of service.
+  it('fires every scheduled scenario before the service ends', () => {
+    let s = reducer(makeInitialState(9), {
+      type: 'OPEN_SERVICE',
+      service: 'lunch',
+      lengthMinutes: 10
+    });
+    const planned = s.day.scenariosPlanned;
+    // Tick through the whole service. Each scenario that reaches
+    // 'subject' phase gets advanced + resolved so the next can fire.
+    for (let i = 0; i < 3000; i++) {
+      s = reducer(s, { type: 'TICK', dt: 0.2 });
+      if (s.scenario.phase === 'subject') {
+        s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
+        s = reducer(s, {
+          type: 'SET_SCENARIO_DIFFICULTY',
+          difficulty: 2
+        });
+        s = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'A' });
+      }
+    }
+    expect(s.day.scenariosFiredThisService).toBe(planned);
+    expect(s.day.scenarioTriggerTimes).toEqual([]);
   });
 });
 

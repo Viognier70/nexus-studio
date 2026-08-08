@@ -158,7 +158,8 @@ export function initialDay(): DayState {
     periodStartAt: 0,
     currentServiceLengthMinutes: null,
     scenariosPlanned: 0,
-    scenariosFiredThisService: 0
+    scenariosFiredThisService: 0,
+    scenarioTriggerTimes: []
   };
 }
 

@@ -185,10 +185,15 @@ export interface DayState {
   currentServiceLengthMinutes: number | null;
   // Random count computed at OPEN_SERVICE, weighted by service length
   // (v3 §2 "scenario count is random, weighted by service length —
-  // never a fixed cadence"). This cycle's step 1 stores the count
-  // but doesn't fire scenarios; step 5 will consume it.
+  // never a fixed cadence"). Consumed by scenarioTriggerTimes below.
   scenariosPlanned: number;
   scenariosFiredThisService: number;
+  // ORDER 043 v3 step 5b — scheduled scenario firing times (absolute
+  // simTime), spread across the service window with jitter so cadence
+  // is felt as rhythm rather than metronome. Populated at OPEN_SERVICE
+  // from scenariosPlanned; consumed head-first as advanceTick fires
+  // each scenario. Cleared on any period transition + on SKIP_LUNCH.
+  scenarioTriggerTimes: number[];
 }
 
 // ----- ORDER 043 two-layer capital model ----------------------------------
