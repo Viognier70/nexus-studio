@@ -88,17 +88,28 @@ export const PRESETS: Record<'village' | 'district' | 'business' | 'myBusiness',
   },
   myBusiness: {
     // Developer shortcut per ORDER 042 §3.1 review request. Centres on
-    // w869907963 at distance 40 m — the roof-fade midpoint. Pitch 38°
-    // gives ~25 m altitude so the roof is above camera height and the
-    // fade is visible; yaw 0.4 rad (~23° off north) angles the
-    // building's long north-south axis so the interior stub is legible
-    // rather than seen end-on.
+    // the player business (`w869907975`, centroid ≈ (31.6, −16.7)) and
+    // lands the camera INSIDE the interior-view threshold immediately
+    // — below the roof-fade band, so on first paint the roof is
+    // already invisible and the interior stub is fully visible. Vision
+    // Owner request 2026-08-08: this must use the same threshold
+    // constant as the PlayerBusiness fade logic so the two cannot
+    // drift apart.
+    //
+    // At dist = restaurantRoofFadeMid - restaurantRoofFadeHalf (28 m),
+    // roof opacity is exactly 0; the margin (4 m) makes sure a small
+    // manual zoom-out during play still keeps the roof invisible. Pitch
+    // 50° keeps the camera above the roof line but tilted enough to
+    // see the interior in perspective (not top-down plan view).
     label: 'vinbaren',
     target: {
       focus: { x: PLAYER_BUSINESS_CENTROID[0], z: PLAYER_BUSINESS_CENTROID[1] },
-      distance: 40,
+      distance:
+        GRAY_BOX_CAMERA.restaurantRoofFadeMid -
+        GRAY_BOX_CAMERA.restaurantRoofFadeHalf -
+        4,
       yaw: 0.4,
-      pitch: (38 * Math.PI) / 180
+      pitch: (50 * Math.PI) / 180
     }
   }
 };
