@@ -148,6 +148,77 @@ describe('day-advance integration — charge fires once per day', () => {
 // Sanity: unused import guard so a future test can grow this file.
 void AGENCY_HIRE_COST;
 
+describe('HIRE_TEAM_MEMBER / FIRE_TEAM_MEMBER (morning-only)', () => {
+  it('HIRE adds a member with the requested role, morning phase only', () => {
+    let s = makeInitialState(1);
+    expect(s.day.period).toBe('morning');
+    const before = s.team.members.length;
+    s = reducer(s, { type: 'HIRE_TEAM_MEMBER', role: 'lärling' });
+    expect(s.team.members.length).toBe(before + 1);
+    const added = s.team.members[s.team.members.length - 1];
+    expect(added.role).toBe('lärling');
+    expect(added.hiredOnDay).toBe(s.day.dayNumber);
+    expect(added.contractEndsDay).toBe(s.day.dayNumber + 7);
+    expect(added.isAgency).toBe(false);
+  });
+
+  it('HIRE outside morning is a no-op', () => {
+    let s = reducer(makeInitialState(1), { type: 'SKIP_LUNCH' });
+    expect(s.day.period).toBe('afternoon');
+    const before = s.team.members.length;
+    s = reducer(s, { type: 'HIRE_TEAM_MEMBER', role: 'lärling' });
+    expect(s.team.members.length).toBe(before);
+  });
+
+  it('HIRE respects TEAM_MAX_MEMBERS cap (6)', () => {
+    let s = makeInitialState(1);
+    // Start at 3; try to hire 5 more.
+    for (let i = 0; i < 5; i++) {
+      s = reducer(s, { type: 'HIRE_TEAM_MEMBER', role: 'lärling' });
+    }
+    expect(s.team.members.length).toBe(6);
+  });
+
+  it('FIRE removes the named member and pays a buyout for remaining contract', () => {
+    let s = makeInitialState(1);
+    const initialMember = s.team.members[0];
+    const buyout =
+      Math.max(0, initialMember.contractEndsDay - s.day.dayNumber) *
+      initialMember.dailyCost;
+    const costBefore = s.cost;
+    const paidBefore = s.team.paidStructuralCost;
+    s = reducer(s, { type: 'FIRE_TEAM_MEMBER', memberId: initialMember.id });
+    expect(s.team.members.find((m) => m.id === initialMember.id)).toBeUndefined();
+    expect(s.cost).toBe(costBefore + buyout);
+    expect(s.team.paidStructuralCost).toBe(paidBefore + buyout);
+  });
+
+  it('FIRE outside morning is a no-op', () => {
+    let s = reducer(makeInitialState(1), { type: 'SKIP_LUNCH' });
+    const firstId = s.team.members[0].id;
+    const before = s.team.members.length;
+    s = reducer(s, { type: 'FIRE_TEAM_MEMBER', memberId: firstId });
+    expect(s.team.members.length).toBe(before);
+  });
+
+  it('FIRE with a bogus memberId is a no-op', () => {
+    let s = makeInitialState(1);
+    const before = s.team.members.length;
+    s = reducer(s, { type: 'FIRE_TEAM_MEMBER', memberId: 'nonexistent' });
+    expect(s.team.members.length).toBe(before);
+  });
+
+  it('HIRE then FIRE within same morning charges the full buyout (no free churn)', () => {
+    let s = makeInitialState(1);
+    const costBefore = s.cost;
+    s = reducer(s, { type: 'HIRE_TEAM_MEMBER', role: 'kock' });
+    const hired = s.team.members[s.team.members.length - 1];
+    const expectedBuyout = 7 * hired.dailyCost; // full contract remaining
+    s = reducer(s, { type: 'FIRE_TEAM_MEMBER', memberId: hired.id });
+    expect(s.cost).toBe(costBefore + expectedBuyout);
+  });
+});
+
 describe('agency offer machinery', () => {
   // Helper: build up a saturated dinner so activeGuests / capacity
   // sits above threshold long enough for an offer to fire.

@@ -505,6 +505,13 @@ export type SimAction =
   // ORDER 043 v3 §10 step 5 agency-staff mid-service offer response.
   | { type: 'ACCEPT_AGENCY' }
   | { type: 'DECLINE_AGENCY' }
+  // ORDER 043 v3 §10 step 5 morning hiring — the decision surface
+  // §11 point 1 requires. HIRE_TEAM_MEMBER adds a role at the
+  // current day's default competence + cost + a fresh 7-day
+  // contract. FIRE_TEAM_MEMBER pays out the remaining contract as
+  // a buyout so quitting is not free while the contract runs.
+  | { type: 'HIRE_TEAM_MEMBER'; role: StaffRole }
+  | { type: 'FIRE_TEAM_MEMBER'; memberId: string }
   | { type: 'RESET' };
 
 export interface CameraTarget {

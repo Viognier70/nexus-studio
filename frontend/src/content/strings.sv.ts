@@ -133,6 +133,32 @@ export const strings = {
       C_high: 'Bestämt nej. Rummet håller sin form, tipsen blir mindre.'
     }
   },
+  // ORDER 043 v3 §10 step 5 — the morning team panel. Player-facing
+  // labels for the hire/fire surface, keyed by role for a compact
+  // switch in TeamPanel. Role labels are capitalized display forms
+  // of the internal StaffRole (which stays lowercase for code-side).
+  team: {
+    heading: 'Laget',
+    body: 'Anställ och säg upp inför dagen. Kontrakt löper i sju dagar.',
+    contractLabel: 'kontrakt t.o.m. dag',
+    dailyCostLabel: 'kr/dag',
+    fireButton: 'Säg upp',
+    buyoutLabel: 'buyout',
+    kr: 'kr',
+    hireHeading: 'Anställ',
+    roleLabel: {
+      'värd':     'Värd',
+      'servitör': 'Servitör',
+      'kock':     'Kock',
+      'lärling':  'Lärling'
+    },
+    roleDescription: {
+      'värd':     'Hälsar och styr rummet — hög kulturell kompetens.',
+      'servitör': 'Bär order och håller flöde — balanserad rustning.',
+      'kock':     'Håller köket — hög vetenskaplig kompetens.',
+      'lärling':  'Lärling som avlastar överallt — låg kompetens, låg kostnad.'
+    }
+  },
   // ORDER 043 v3 §10 step 5 — agency-staff offer. Appears mid-service
   // when strain has been sustained above threshold. Player accepts
   // (money cost, agency joins for the service) or declines (social

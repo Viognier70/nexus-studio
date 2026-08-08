@@ -9,6 +9,7 @@ import type {
   ScenarioDifficulty,
   SimAction,
   SimulationState,
+  StaffRole,
   SustainabilityKey
 } from '../types';
 import {
@@ -34,6 +35,7 @@ import {
   AGENCY_OFFER_WINDOW_SEC,
   addAgencyMember,
   chargeStructuralCost,
+  makeTeamMember,
   removeAgencyMembers,
   teamCapacity
 } from './team';
@@ -119,6 +121,10 @@ export function reducer(state: SimulationState, action: SimAction): SimulationSt
       return acceptAgency(state);
     case 'DECLINE_AGENCY':
       return declineAgency(state);
+    case 'HIRE_TEAM_MEMBER':
+      return hireTeamMember(state, action.role);
+    case 'FIRE_TEAM_MEMBER':
+      return fireTeamMember(state, action.memberId);
     case 'RESET':
       return makeInitialState(state.seed, state.policies);
     default:
@@ -398,6 +404,74 @@ function declineAgency(state: SimulationState): SimulationState {
         at: state.simTime,
         kind: 'system',
         text: 'Avstod hyrpersonal — laget märker att det inte kom hjälp.'
+      }
+    ]
+  };
+}
+
+// ---------- ORDER 043 v3 §10 step 5 — morning hire / fire ---------------
+//
+// §11 point 1's acceptance criterion — "the team decision mattered,
+// and its cost was felt during service" — requires a hiring surface.
+// This is it. Only fires during the morning phase; hires start with
+// their role's default competence and a fresh 7-day contract. Firing
+// pays out remaining contract days as a lump-sum buyout so a spam
+// hire-then-fire chain isn't free.
+//
+// No hard team-size cap; economic capital + ongoing dailyCost are
+// the natural bounds. A 6-role team is expensive; a lärling-only
+// team is cheap but reads badly in the stream (kock competence
+// collapses).
+
+const TEAM_MAX_MEMBERS = 6; // guard against absurd hiring
+
+function hireTeamMember(state: SimulationState, role: StaffRole): SimulationState {
+  if (state.day.period !== 'morning') return state;
+  if (state.team.members.length >= TEAM_MAX_MEMBERS) return state;
+  const member = makeTeamMember(role, state.day.dayNumber);
+  return {
+    ...state,
+    team: {
+      ...state.team,
+      members: [...state.team.members, member]
+    },
+    events: [
+      ...state.events,
+      {
+        at: state.simTime,
+        kind: 'system',
+        text: `Anställde ${role} — kontrakt till dag ${member.contractEndsDay}.`
+      }
+    ]
+  };
+}
+
+function fireTeamMember(state: SimulationState, memberId: string): SimulationState {
+  if (state.day.period !== 'morning') return state;
+  const member = state.team.members.find((m) => m.id === memberId);
+  if (!member) return state;
+  // Buyout = remaining contract days × dailyCost. Fired the day
+  // after the contract ends → buyout 0. Fired mid-contract → the
+  // days you promised to pay for are paid up-front.
+  const remainingDays = Math.max(0, member.contractEndsDay - state.day.dayNumber);
+  const buyout = remainingDays * member.dailyCost;
+  return {
+    ...state,
+    team: {
+      ...state.team,
+      members: state.team.members.filter((m) => m.id !== memberId),
+      paidStructuralCost: state.team.paidStructuralCost + buyout
+    },
+    cost: state.cost + buyout,
+    events: [
+      ...state.events,
+      {
+        at: state.simTime,
+        kind: 'system',
+        text:
+          buyout > 0
+            ? `Sa upp ${member.role} — buyout ${buyout} kr (${remainingDays} dagar kvar av kontraktet).`
+            : `Sa upp ${member.role} — kontraktet var slut.`
       }
     ]
   };
