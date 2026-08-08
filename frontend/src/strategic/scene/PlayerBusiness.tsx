@@ -57,6 +57,10 @@ const TRIM_COLOUR = '#efe6d4';
 // camera crosses the roof-fade threshold.
 const INTERIOR_FLOOR_COLOUR = '#a08462';
 const TABLE_COLOUR = '#e5d5b8';
+// The 4-top gets a distinct tint so the Option 1 mix (four 2-tops + one
+// 4-top) reads unambiguously from bird's-eye — five uniform brown boxes
+// look like an indistinct row and the 4-top gets lost.
+const FOURTOP_COLOUR = '#c9a878';
 const BAR_COLOUR = '#5a3f2d';
 
 function smoothstep(a: number, b: number, x: number): number {
@@ -77,6 +81,52 @@ function polygonShape(poly: readonly [number, number][]): THREE.Shape {
   return shape;
 }
 
+// Build the building's side walls as a set of quads — no top or bottom
+// cap. Fixes the ORDER 042 §3.2 close-zoom tint bug: ExtrudeGeometry
+// puts a solid cap face at Y=WALL_HEIGHT_M covering the whole footprint,
+// and when the wall material fades to 50% alpha that cap draws as a
+// large translucent brown-red rectangle across the view. The roof cap
+// (capGeo) is a separate mesh with its own fade to 0, so removing the
+// wall's cap doesn't leave the building open — it leaves the wall
+// geometry as literal walls.
+//
+// DoubleSide keeps things correct from both inside and outside without
+// needing to reason about winding direction per building; the polygon
+// count is 4–8 so the doubled fill rate is negligible.
+function sideWallGeometry(
+  poly: readonly [number, number][],
+  height: number
+): THREE.BufferGeometry {
+  const positions: number[] = [];
+  const normals: number[] = [];
+  const indices: number[] = [];
+  let base = 0;
+  for (let i = 0; i < poly.length - 1; i++) {
+    const a = poly[i];
+    const b = poly[i + 1];
+    const dx = b[0] - a[0];
+    const dz = b[1] - a[1];
+    const len = Math.hypot(dx, dz);
+    if (len < 1e-6) continue;
+    // Outward-facing normal candidate; the sign flips per polygon
+    // winding but DoubleSide renders both sides correctly regardless.
+    const nx = -dz / len;
+    const nz =  dx / len;
+    positions.push(a[0], 0,      a[1]);
+    positions.push(b[0], 0,      b[1]);
+    positions.push(b[0], height, b[1]);
+    positions.push(a[0], height, a[1]);
+    normals.push(nx, 0, nz, nx, 0, nz, nx, 0, nz, nx, 0, nz);
+    indices.push(base, base + 1, base + 2, base, base + 2, base + 3);
+    base += 4;
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geo.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
+  geo.setIndex(indices);
+  return geo;
+}
+
 export function PlayerBusiness() {
   const { business, hasName } = useBusiness();
   const { actualRef } = useCamera();
@@ -90,20 +140,16 @@ export function PlayerBusiness() {
   const geom = useMemo(() => {
     if (!layout) return null;
 
+    // Side walls only — no top or bottom cap. See sideWallGeometry
+    // comment for why an ExtrudeGeometry here would tint the view.
+    const wallGeo = sideWallGeometry(layout.building.poly, WALL_HEIGHT_M);
+
+    // Roof cap: a thin slab on top of the walls. This mesh IS an
+    // extruded cap — its whole purpose is to be a translucent lid that
+    // fades to 0 at close zoom, so the interior becomes visible. Its
+    // own fade curve (useFrame below) drops opacity + depthWrite when
+    // the camera crosses the roof-fade threshold.
     const shape = polygonShape(layout.building.poly);
-
-    const wallGeo = new THREE.ExtrudeGeometry(shape, {
-      depth: WALL_HEIGHT_M,
-      bevelEnabled: false,
-      steps: 1
-    });
-    wallGeo.rotateX(-Math.PI / 2);
-
-    // Roof cap: a thin slab on top of the walls, plus a gable-ish prism.
-    // Kept intentionally simple — this is a first-loop render, not a
-    // finished landmark. The gable adds enough silhouette that the
-    // building is distinguishable from its flat-roofed neighbours from
-    // the strategic view.
     const capGeo = new THREE.ExtrudeGeometry(shape, {
       depth: 0.3,
       bevelEnabled: false,
@@ -205,10 +251,13 @@ export function PlayerBusiness() {
 
   return (
     <group>
-      {/* Walls. Canvas runs shadows={false}, so receiveShadow / castShadow
-          would be noise. Material is `transparent` from mount so THREE
-          places it in the transparent render bucket; useFrame keeps its
-          opacity + depthWrite in sync with the roof crossfade. */}
+      {/* Walls — literal side quads only, no top or bottom cap (that
+          was the ORDER 042 §3.2 tint bug). DoubleSide so the walls read
+          correctly whether the camera is outside the building looking in
+          or inside looking out; per-vertex normals point outward and
+          three.js flips them for back-facing pixels under DoubleSide, so
+          both sides light correctly. useFrame keeps opacity + depthWrite
+          in sync with the roof crossfade. */}
       <mesh geometry={geom.wallGeo}>
         <meshStandardMaterial
           ref={wallMaterialRef}
@@ -216,6 +265,7 @@ export function PlayerBusiness() {
           roughness={0.85}
           metalness={0.02}
           transparent
+          side={THREE.DoubleSide}
         />
       </mesh>
 
@@ -256,7 +306,8 @@ export function PlayerBusiness() {
           <meshStandardMaterial color={BAR_COLOUR} transparent opacity={0} />
         </mesh>
         {/* Tables — each rotated to the OBB angle so the box sides align
-            with the room's walls. */}
+            with the room's walls. The 4-top uses a distinct colour so
+            the mix reads clearly from bird's-eye. */}
         {layout.tables.map((t) => (
           <mesh
             key={t.id}
@@ -264,7 +315,11 @@ export function PlayerBusiness() {
             rotation={[0, roomRotY, 0]}
           >
             <boxGeometry args={[t.sizeM, 0.75, t.sizeM]} />
-            <meshStandardMaterial color={TABLE_COLOUR} transparent opacity={0} />
+            <meshStandardMaterial
+              color={t.kind === 'four' ? FOURTOP_COLOUR : TABLE_COLOUR}
+              transparent
+              opacity={0}
+            />
           </mesh>
         ))}
         {/* Bar stools — small pucks at each seat position in front of
