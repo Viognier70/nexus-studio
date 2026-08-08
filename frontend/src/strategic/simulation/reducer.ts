@@ -29,6 +29,12 @@ import {
 } from './eventStream';
 import { PREP_CARRYOVER_TEXT } from '../../content/eventStream.sv';
 import { generateWeather, waitingAtOpeningCount } from './weather';
+import {
+  generateWorldFactors,
+  worldFactorDeliveryMultiplier,
+  worldFactorRevenueMultiplier,
+  worldFactorWaitingMultiplier
+} from './worldFactors';
 
 // ORDER 045 — the opening image sits over the room for this long
 // after OPEN_SERVICE, before prep begins. Ten seconds reads as an
@@ -174,8 +180,10 @@ function openService(
   const rng = createRng(state.rngState);
   // ORDER 045 — generate the evening's weather first so subsequent
   // calculations (waiting count, scenario schedule) see a stable
-  // weather record.
+  // weather record. World factors roll after weather; both feed
+  // waitingAtOpening below.
   const weather = generateWeather(rng);
+  const worldFactors = generateWorldFactors(rng);
   const scenariosPlanned = planScenariosForService(length, rng);
   // Opening runs first, then prep, then service. Scenario schedule
   // shifted by opening + prep so no scenario fires while the doors
@@ -192,7 +200,15 @@ function openService(
     serviceWindowMinutes,
     rng
   );
-  const waitingAtOpening = waitingAtOpeningCount(state.reputation, weather);
+  // Waiting count stacks reputation × weather (in waitingAtOpeningCount)
+  // × world-factor waiting mult (here), capped again at the same 6-guest
+  // ceiling.
+  const waitingCap = 6;
+  const baseWaiting = waitingAtOpeningCount(state.reputation, weather);
+  const waitingAtOpening = Math.min(
+    waitingCap,
+    Math.round(baseWaiting * worldFactorWaitingMultiplier(worldFactors))
+  );
   const day: DayState = {
     ...state.day,
     period: service,
@@ -209,7 +225,8 @@ function openService(
     prepIgnoranceCount: 0,
     weather,
     waitingAtOpening,
-    doorsOpenedThisService: false
+    doorsOpenedThisService: false,
+    worldFactors
   };
   return {
     ...state,
@@ -230,8 +247,13 @@ function skipLunch(state: SimulationState): SimulationState {
       scenariosPlanned: 0,
       scenariosFiredThisService: 0,
       scenarioTriggerTimes: [],
+      openingEndsAt: null,
       prepEndsAt: null,
-      prepIgnoranceCount: 0
+      prepIgnoranceCount: 0,
+      weather: null,
+      waitingAtOpening: 0,
+      doorsOpenedThisService: false,
+      worldFactors: []
     }
   };
 }
@@ -269,7 +291,8 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           prepIgnoranceCount: 0,
           weather: null,
           waitingAtOpening: 0,
-          doorsOpenedThisService: false
+          doorsOpenedThisService: false,
+          worldFactors: []
         }
       };
     }
@@ -298,7 +321,8 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           prepIgnoranceCount: 0,
           weather: null,
           waitingAtOpening: 0,
-          doorsOpenedThisService: false
+          doorsOpenedThisService: false,
+          worldFactors: []
         }
       };
     }
@@ -639,8 +663,14 @@ function advanceTick(state: SimulationState): SimulationState {
       // baseline, ecological = 1 halves it to ~36 sec, ecological = 0
       // extends to ~84 sec. The van's absence between arrivals IS the
       // reading; the rhythm of appearance is what the player watches.
+      // ORDER 043 §6 ecological cadence + ORDER 045 world factor —
+      // vägarbeten multiplies the cooldown base by 1.4× (the
+      // supplier's route is disrupted).
       const ecological = draft.capitals.values.ecological;
-      const cooldownBase = 60 * (1.4 - 0.8 * ecological);
+      const cooldownBase =
+        60 *
+        (1.4 - 0.8 * ecological) *
+        worldFactorDeliveryMultiplier(draft.day.worldFactors);
       draft.delivery.cooldown = cooldownBase + rng.range(0, 30);
     }
   } else {
@@ -670,10 +700,13 @@ function advanceTick(state: SimulationState): SimulationState {
   tickGuests(draft);
   tickStaff(draft);
 
-  // Payment triggers revenue.
+  // Payment triggers revenue. ORDER 045 world-factor revenue mult
+  // (betalningsvilja): konjunktur uppgång/nedgång shifts +10 / −15 %,
+  // festival crowd +5 %, hockey crowd −10 % (casual + price-sensitive).
+  const revenueMult = worldFactorRevenueMultiplier(draft.day.worldFactors);
   for (const guest of draft.guests) {
     if (guest.state === 'paying' && guest.stateTime === draft.simTime) {
-      draft.revenue += revenuePerGuest(draft.policies);
+      draft.revenue += revenuePerGuest(draft.policies) * revenueMult;
     }
   }
   // Accumulate cost.

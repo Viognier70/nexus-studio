@@ -269,6 +269,25 @@ export interface WeatherConditions {
   outdoorViable: boolean;
 }
 
+// ORDER 045 outer-world factors. Rare per-service events that
+// modulate arrivals, waiting count, revenue, or delivery cadence.
+// Each factor has a fire rate (Bernoulli per service) and one or
+// two realisations picked when it fires. Kind alone is stored on
+// state; labels + multipliers live in worldFactors.ts so state
+// stays portable (§11.1).
+export type WorldFactorKind =
+  | 'konjunktur_uppgang'
+  | 'konjunktur_nedgang'
+  | 'vagarbeten'
+  | 'sasong_turism'
+  | 'sasong_semester'
+  | 'evenemang_festival'
+  | 'evenemang_hockey';
+
+export interface ActiveWorldFactor {
+  kind: WorldFactorKind;
+}
+
 export interface DayState {
   dayNumber: number;               // 1-indexed
   period: DayPeriod;
@@ -305,12 +324,16 @@ export interface DayState {
   // ORDER 045 — the evening's weather. Generated at OPEN_SERVICE.
   weather: WeatherConditions | null;
   // Number of guests already outside when the opening panel appears,
-  // derived from reputation × weather. They spawn as arrivals the
-  // moment the prep window closes ("doors open").
+  // derived from reputation × weather × world factors. They spawn as
+  // arrivals the moment the prep window closes ("doors open").
   waitingAtOpening: number;
   // Set once at prep-end so the door-opening waiting-spawn only fires
   // once, not every tick after prep closes.
   doorsOpenedThisService: boolean;
+  // ORDER 045 outer-world factors — 0-N per service, rolled at
+  // OPEN_SERVICE. Empty on most evenings; the outer world reports
+  // in ~37 % of services (any factor firing). Cleared on close.
+  worldFactors: ActiveWorldFactor[];
 }
 
 // ----- ORDER 043 two-layer capital model ----------------------------------

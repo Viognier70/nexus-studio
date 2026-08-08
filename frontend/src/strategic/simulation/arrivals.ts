@@ -4,6 +4,7 @@ import { makeGuest } from './model';
 import { PRICE_ARRIVAL_MULT, SERVICE_ARRIVAL_MULT } from './economics';
 import { currentRhythmMultiplier } from './rhythm';
 import { weatherArrivalMultiplier } from './weather';
+import { worldFactorArrivalMultiplier } from './worldFactors';
 
 // ORDER 043 §6 phenomena constants.
 //
@@ -113,6 +114,7 @@ export function arrivalProbability(state: SimulationState): number {
     economicArrivalMultiplier(state.capitals.values.economic) *
     reputationArrivalMultiplier(state.reputation) *
     weatherArrivalMultiplier(state.day.weather) *
+    worldFactorArrivalMultiplier(state.day.worldFactors) *
     currentRhythmMultiplier(state);
   return perMinute / (60 * 5); // 5 Hz tick.
 }

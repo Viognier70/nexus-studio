@@ -166,7 +166,8 @@ export function initialDay(): DayState {
     prepIgnoranceCount: 0,
     weather: null,
     waitingAtOpening: 0,
-    doorsOpenedThisService: false
+    doorsOpenedThisService: false,
+    worldFactors: []
   };
 }
 
