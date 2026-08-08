@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { BusinessProvider } from './business/BusinessContext';
+import { InvestmentPanel } from './business/InvestmentPanel';
 import { NameEntryOverlay } from './business/NameEntryOverlay';
 import { TeamPanel } from './business/TeamPanel';
 import { CameraProvider, useCamera } from './camera/CameraContext';
@@ -161,6 +162,7 @@ function StrategicShell() {
       <ScenarioOverlay />
       <ServiceLengthPicker />
       <TeamPanel />
+      <InvestmentPanel />
       <WagerPanel />
       <AgencyOfferPanel />
       <OpeningPanel />

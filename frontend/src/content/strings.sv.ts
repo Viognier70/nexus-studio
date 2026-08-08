@@ -170,6 +170,47 @@ export const strings = {
     decline: 'Avstå',
     kr: 'kr'
   },
+  // ORDER 046 §2 — the morning investment panel. Sits alongside
+  // TeamPanel and surfaces the three policy dials that shape the
+  // service (training level, price positioning, ingredient tier).
+  // Not a scoreboard — the labels are the reading.
+  invest: {
+    heading: 'Investering',
+    body: 'Vad står laget inför i dag? Träning, prisläge och råvara sätter kvällens karaktär.',
+    trainingHeading: 'Utbildning',
+    trainingLevels: {
+      1: 'Grundnivå',
+      2: 'Erfaren',
+      3: 'Specialiserad'
+    },
+    trainingDescriptions: {
+      1: 'Räcker för att öppna dörrarna. Rummet får bära det som händer.',
+      2: 'Kockar och servitörer har rutin. Slag jämnas ut innan de syns.',
+      3: 'Alla vet mer än det som krävs i stunden. Servicen har djup att gå till.'
+    },
+    pricingHeading: 'Prisläge',
+    pricingLevels: {
+      'låg':   'Lågt',
+      'medel': 'Medel',
+      'hög':   'Högt'
+    },
+    pricingDescriptions: {
+      'låg':   'Fyllt hus, tunnare marginal. Krogen håller pulsen uppe.',
+      'medel': 'Balans mellan volym och intäkt. Kvällens standardläge.',
+      'hög':   'Färre gäster, mer per bord. Rummet måste bära förväntan.'
+    },
+    ingredientHeading: 'Råvara',
+    ingredientLevels: {
+      'grund':   'Grund',
+      'utvald':  'Utvald',
+      'premium': 'Premium'
+    },
+    ingredientDescriptions: {
+      'grund':   'Standardleverantör. Kvällen bygger på hantverket, inte på råvaran.',
+      'utvald':  'Utvalda leverantörer när det räknas. Något att prata om vid ett par bord.',
+      'premium': 'Det bästa av det som finns. Kvällen står och faller med det köket gör med det.'
+    }
+  },
   // ORDER 043 v3 §7 wager — placed between scenarios on which
   // sustainability the next situation will concern. Optional; declining
   // is legitimate and progresses more slowly.
