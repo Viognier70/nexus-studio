@@ -36,6 +36,7 @@ import {
   type AmbientEventKind,
   type PrepEventKind
 } from '../../content/eventStream.sv';
+import { currentRhythmMultiplier } from './rhythm';
 import { teamCapacity, teamCompetence } from './team';
 
 const TICK_SECONDS = 0.2;
@@ -211,7 +212,13 @@ export function eventProbabilityPerTick(
   def: EventDef,
   state: SimulationState
 ): number {
-  const perMinute = def.baseRatePerMin * eventMultiplier(def, state);
+  // ORDER 043 Addendum A rhythm — the ambient stream inherits the
+  // service curve (opening / buildup / rush / decline) so cadence
+  // rises and falls with the room's pace, not as a flat carpet.
+  const perMinute =
+    def.baseRatePerMin *
+    eventMultiplier(def, state) *
+    currentRhythmMultiplier(state);
   // Cap at 1 to keep chance() well-defined even in extreme states.
   return Math.min(1, (perMinute * TICK_SECONDS) / 60);
 }

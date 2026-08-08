@@ -181,8 +181,17 @@ describe('outcome events fire deterministically after RESOLVE', () => {
 
 describe('stream does not move capital', () => {
   it('capital values are untouched by ambient rolls over a full dinner', () => {
-    let s = reducer(makeInitialState(3), { type: 'SKIP_LUNCH' });
-    s = reducer(s, { type: 'SET_POLICY', patch: { trainingLevel: 1, staffCount: 2 } });
+    // Well-staffed team so load stays below the agency-offer threshold.
+    // Without this, a 10-min dinner accumulates enough strain to fire
+    // an offer that expires unanswered and drops social capital by
+    // AGENCY_DECLINE_SOCIAL_COST — a legitimate mechanic, but it
+    // obscures the invariant this test is meant to pin (streams are
+    // read-only against capitals).
+    let s = makeInitialState(3);
+    for (let i = 0; i < 3; i++) {
+      s = reducer(s, { type: 'HIRE_TEAM_MEMBER', role: 'lärling' });
+    }
+    s = reducer(s, { type: 'SKIP_LUNCH' });
     s = reducer(s, {
       type: 'OPEN_SERVICE',
       service: 'dinner',
@@ -190,10 +199,9 @@ describe('stream does not move capital', () => {
     });
     const before = { ...s.capitals.values };
     // Tick through the whole service WITHOUT resolving any scenarios,
-    // so only ambient rolls (+ their side effects) touch state. Do
-    // stop the scenario auto-advance by never dispatching
-    // ADVANCE_SCENARIO_TO_DIFFICULTY — the scenario sits in 'subject'
-    // and blocks further scenario fires; ambient stream keeps rolling.
+    // so only ambient rolls (+ their side effects) touch state. The
+    // scenario auto-triggers but sits in 'subject' (no advance
+    // dispatched), blocking further scenario fires.
     for (let i = 0; i < 3000; i++) s = reducer(s, { type: 'TICK', dt: 0.2 });
     const ambient = s.eventStream.filter((e) => e.category === 'ambient');
     expect(ambient.length).toBeGreaterThan(0);

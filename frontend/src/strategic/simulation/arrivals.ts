@@ -2,6 +2,7 @@ import type { Rng } from '../util/rng';
 import type { DayPeriod, Guest, SimulationState } from '../types';
 import { makeGuest } from './model';
 import { PRICE_ARRIVAL_MULT, SERVICE_ARRIVAL_MULT } from './economics';
+import { currentRhythmMultiplier } from './rhythm';
 
 // ORDER 043 §6 phenomena constants.
 //
@@ -91,13 +92,18 @@ export function arrivalProbability(state: SimulationState): number {
   ) {
     return 0;
   }
+  // ORDER 043 Addendum A rhythm — the service has an opening, a
+  // buildup, a rush and a decline. Multiplier applied to both
+  // arrivals and event probability so the room's pace and the
+  // stream's cadence rise and fall together.
   const perMinute =
     ARRIVAL_BASE_PER_MINUTE *
     periodArrivalMultiplier(state.day.period) *
     SERVICE_ARRIVAL_MULT[state.policies.service] *
     PRICE_ARRIVAL_MULT[state.policies.pricing] *
     economicArrivalMultiplier(state.capitals.values.economic) *
-    reputationArrivalMultiplier(state.reputation);
+    reputationArrivalMultiplier(state.reputation) *
+    currentRhythmMultiplier(state);
   return perMinute / (60 * 5); // 5 Hz tick.
 }
 
