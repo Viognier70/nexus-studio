@@ -132,15 +132,84 @@ const WALK_IN_OF_FIVE: ScenarioSpec = {
   }
 };
 
-// ---------- (economic + ecological scenarios added in following commits) --
+// ---------- time-pressure (economic) --------------------------------------
+//
+// A late booking that promises a lift — but wants a special menu run
+// tonight as a pre-taste. The choice is what to protect: the rhythm
+// of the current service, the potential margin, or a middle path
+// that takes the booking without disrupting the pass.
+//
+// Reads the economic axis because the offer is money-shaped, and
+// the trade-off is money vs the team's evening. Two of three choices
+// take the booking; C refuses.
+
+const TIME_PRESSURE: ScenarioSpec = {
+  id: 'time-pressure',
+  sustainability: 'economic',
+  subjectBody:
+    'En delegation ringer — vill boka i morgon, men förutsätter att specialmenyn provkörs i kväll.',
+  subjectCta: 'Fortsätt',
+  situationBody:
+    'Bokningen kräver att köket byter menyn i kväll för att smaka igenom rätterna. Ekonomiskt lyft imorgon, men laget hinner knappt planera. Vad gör du?',
+  choices: {
+    A: {
+      label: 'Ta bokningen och kör nya menyn direkt.',
+      registerWrites: [{ enabler: 'cultural', register: 'techne', amount: 0.05 }],
+      spawnedRemaining: 0,
+      nextSpawnAtOffset: 0,
+      capitalSign: 1,
+      outcomes: [
+        'Menyn byts på passet — köket noterar men följer med.',
+        'Notan svullnar snabbt — resten av kvällen betalar i tempo.'
+      ],
+      mentor: {
+        1: 'Djärvt val. Menybytet mitt i passet är risken du sa ja till — se om laget håller.',
+        2: 'Vinst i syfte, spänning i praktik. Öka planeringstiden nästa gång.',
+        3: 'Fullt påslag. Om laget klarar tempot är det en kväll som räknas.'
+      }
+    },
+    B: {
+      label: 'Ta bokningen — bara imorgon, ingen provkörning i kväll.',
+      registerWrites: [{ enabler: 'scientific', register: 'phronesis', amount: 0.05 }],
+      spawnedRemaining: 0,
+      nextSpawnAtOffset: 0,
+      capitalSign: 1,
+      outcomes: [
+        'Bokningen skrivs för morgondagen — kvällen får en paus att andas ut.',
+        'Kocken börjar planera i huvudet — nästa mise en place är i morgon.'
+      ],
+      mentor: {
+        1: 'Klok mellanväg. Ger köket tid att förbereda på ett kontrollerat sätt.',
+        2: 'Bra bedömning. Delegationen kommer imorgon utan att kvällen tar smäll.',
+        3: 'Balanserad linje. Vinst utan att förbränna passet.'
+      }
+    },
+    C: {
+      label: 'Neka — behåll kvällens rytm.',
+      registerWrites: [{ enabler: 'cultural', register: 'phronesis', amount: 0.03 }],
+      spawnedRemaining: 0,
+      nextSpawnAtOffset: 0,
+      capitalSign: -0.5,
+      outcomes: [
+        'Delegationen tackar men går vidare — värden noterar att någon annan tog dem.',
+        'Kvällens takt behålls — passet håller inte fler överraskningar.'
+      ],
+      mentor: {
+        1: 'Rätt att skydda tempot när laget är osäkert. Nästa gång kanske marginalen räcker.',
+        2: 'Att avstå är också ett svar. Kvällen bevaras, men intäkten går till någon annan.',
+        3: 'Bestämt val att hålla rytmen. Rummet mår väl, kassan lär sig sitt tempo.'
+      }
+    }
+  }
+};
+
+// ---------- (ecological scenario added in following commit) --------------
 
 export const SCENARIO_BY_THEME: Record<SustainabilityKey, ScenarioSpec> = {
   social: WALK_IN_OF_FIVE,
-  // Placeholders for economic + ecological until their commits land.
-  // The reducer never picks these paths during cycle-1 without a real
-  // spec — falls back to WALK_IN_OF_FIVE if the theme's spec is
-  // missing (see pickScenarioSpec).
-  economic: WALK_IN_OF_FIVE,
+  economic: TIME_PRESSURE,
+  // Placeholder for ecological until the commit lands. Falls back
+  // to walk-in-of-five so a themed draw doesn't crash mid-play.
   ecological: WALK_IN_OF_FIVE
 };
 
@@ -149,7 +218,7 @@ export function pickScenarioSpec(theme: SustainabilityKey): ScenarioSpec {
 }
 
 // Convenience export: array form for iteration / spec-lookup by id.
-export const ALL_SCENARIOS: readonly ScenarioSpec[] = [WALK_IN_OF_FIVE];
+export const ALL_SCENARIOS: readonly ScenarioSpec[] = [WALK_IN_OF_FIVE, TIME_PRESSURE];
 
 export function scenarioById(id: string): ScenarioSpec | null {
   return ALL_SCENARIOS.find((s) => s.id === id) ?? null;
