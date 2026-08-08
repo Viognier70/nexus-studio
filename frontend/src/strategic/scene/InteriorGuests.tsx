@@ -72,6 +72,16 @@ const WAIT_LEAN_START_SEC = 8;         // how long unattended before lean starts
 const WAIT_LEAN_FULL_SEC = 45;         // lean saturates at this wait duration
 const SEATED_STATES: readonly GuestState[] = ['seated', 'ordering', 'dining', 'paying'];
 
+// ORDER 046 §4 — sit / stand animation.
+//
+// On the transition tick 'waiting' → 'seated', dip Y by SIT_DIP_M
+// over SIT_STAND_DURATION_SEC then stay dipped (guest is sitting).
+// On 'paying' → 'leaving', rise Y from the dip back to standing.
+// The Y offset composes on top of the lean-Y so a seated-and-leaning
+// guest still leans normally.
+const SIT_DIP_M = 0.15;
+const SIT_STAND_DURATION_SEC = 0.5;
+
 const GUEST_COLOUR: Record<GuestState, string> = {
   arriving: '#e6d4a0',
   waiting: '#e6b878',
@@ -105,6 +115,17 @@ interface AnimatedPos {
   leanX: number;
   leanZ: number;
   leanY: number;
+  // ORDER 046 §4 — sit / stand animation.
+  //
+  // Previous state, tracked so we can detect the transition tick
+  // and start the animation. Null on first frame.
+  prevState: GuestState | null;
+  // Sit/stand animation phase, 0..1 within the SIT_STAND_DURATION.
+  // −1 when no animation active. Y-offset is a triangular envelope
+  // over the phase (down then up for sit, up-then-back for stand).
+  sitStandPhase: number;
+  // Direction: -1 for sit (dip and stay), +1 for stand (rise back).
+  sitStandDir: -1 | 0 | 1;
 }
 
 export function InteriorGuests() {
@@ -178,8 +199,56 @@ export function InteriorGuests() {
       let pos = positionsRef.current.get(guest.id);
       if (!pos) {
         const spawn = spawnPoints[slots.arrival];
-        pos = { cx: spawn[0], cz: spawn[1], leanX: 0, leanZ: 0, leanY: 0 };
+        pos = {
+          cx: spawn[0], cz: spawn[1],
+          leanX: 0, leanZ: 0, leanY: 0,
+          prevState: null, sitStandPhase: -1, sitStandDir: 0
+        };
         positionsRef.current.set(guest.id, pos);
+      }
+
+      // ORDER 046 §4 — detect sit / stand transitions and start the
+      // Y-animation. waiting → seated is a sit (dip down); paying →
+      // leaving is a stand (rise back). Any other transition resets
+      // the phase so we don't double-animate.
+      if (pos.prevState !== null && pos.prevState !== guest.state) {
+        if (pos.prevState === 'waiting' && guest.state === 'seated') {
+          pos.sitStandPhase = 0;
+          pos.sitStandDir = -1;
+        } else if (pos.prevState === 'paying' && guest.state === 'leaving') {
+          pos.sitStandPhase = 0;
+          pos.sitStandDir = 1;
+        }
+      }
+      pos.prevState = guest.state;
+
+      // Advance sit / stand phase.
+      let sitStandY = 0;
+      if (pos.sitStandDir !== 0 && pos.sitStandPhase >= 0) {
+        pos.sitStandPhase += delta / SIT_STAND_DURATION_SEC;
+        if (pos.sitStandPhase >= 1) {
+          pos.sitStandPhase = 1;
+          if (pos.sitStandDir === 1) {
+            // Stand complete — back to zero.
+            pos.sitStandDir = 0;
+            pos.sitStandPhase = -1;
+          }
+        }
+        if (pos.sitStandDir === -1) {
+          // Sit — ease from 0 to −SIT_DIP_M with an easeOut curve.
+          const t = pos.sitStandPhase;
+          const eased = 1 - (1 - t) * (1 - t);
+          sitStandY = -SIT_DIP_M * eased;
+        } else if (pos.sitStandDir === 1) {
+          // Stand — ease from −SIT_DIP_M back to 0.
+          const t = pos.sitStandPhase;
+          const eased = t * t;
+          sitStandY = -SIT_DIP_M * (1 - eased);
+        }
+      } else if (SEATED_STATES.includes(guest.state)) {
+        // Guest is seated but never played the sit-down (e.g. joined
+        // mid-service already seated). Hold at the dipped position.
+        sitStandY = -SIT_DIP_M;
       }
       // Ease toward target at walking pace.
       const dx = target.x - pos.cx;
@@ -202,10 +271,15 @@ export function InteriorGuests() {
       pos.leanZ += (lean.tz - pos.leanZ) * Math.min(1, leanEase);
       pos.leanY += (lean.ty - pos.leanY) * Math.min(1, leanEase);
 
-      // Push to mesh.
+      // Push to mesh. sit-stand Y composes on top of lean-Y so a
+      // seated-and-leaning guest still leans normally.
       const mesh = meshRefs.current.get(guest.id);
       if (mesh) {
-        mesh.position.set(pos.cx + pos.leanX, GUEST_Y + pos.leanY, pos.cz + pos.leanZ);
+        mesh.position.set(
+          pos.cx + pos.leanX,
+          GUEST_Y + pos.leanY + sitStandY,
+          pos.cz + pos.leanZ
+        );
         const mat = mesh.material as THREE.MeshStandardMaterial;
         if (mat) {
           mat.color.set(target.colour);

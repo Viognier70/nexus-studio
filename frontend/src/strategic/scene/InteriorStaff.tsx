@@ -48,6 +48,15 @@ const PREP_PACE_MULTIPLIER = 1.8;
 const PREP_DRIFT_AMPLITUDE_M = 1.5;   // vs the 0.5 m service-time idle drift
 const PREP_DRIFT_FREQ_HZ = 1.1;       // vs the ~0.4 Hz service-time frequency
 
+// ORDER 046 §4 — task bob. When guests are in the room, staff pucks
+// bob subtly in Y to read as "doing something at their station"
+// rather than "standing still." Amplitude scales with load so a
+// calm room reads different from a busy one; during prep the pucks
+// already bob larger via the drift amplitude so this is a service-
+// time-only overlay.
+const TASK_BOB_AMPLITUDE_M = 0.05;
+const TASK_BOB_FREQ_HZ = 2.0;
+
 // Uniform tones per role — kept dark and low-chroma so staff never
 // blend with the warm-beige guest palette. Same shape difference
 // (slim + tall) reinforces the distinction from the top-down camera.
@@ -205,9 +214,22 @@ export function InteriorStaff() {
         pos.cz = targetZ;
       }
 
+      // ORDER 046 §4 — task-bob overlay. Applies during service
+       // (post-prep) when there are active guests; scales with load
+       // so a calm room bobs subtly and a busy one more visibly.
+       // Per-puck phase from jitterSeed so the pucks don't bob in
+       // lockstep. During prep the pucks are already bobbing on the
+       // drift; adding this would smear the two reads together, so
+       // suppress during prep.
+       let bobY = 0;
+       if (!inPrep && (sim.day.period === 'lunch' || sim.day.period === 'dinner') && load > 0.05) {
+         const bobAmp = TASK_BOB_AMPLITUDE_M * Math.min(1, load);
+         bobY = Math.sin(now * TASK_BOB_FREQ_HZ * 2 * Math.PI + pos.jitterSeed * 3) * bobAmp;
+       }
+
       const mesh = meshRefs.current.get(member.id);
       if (mesh) {
-        mesh.position.set(pos.cx, STAFF_Y, pos.cz);
+        mesh.position.set(pos.cx, STAFF_Y + bobY, pos.cz);
         const mat = mesh.material as THREE.MeshStandardMaterial;
         if (mat) {
           // Colour is stable per role; only opacity ticks with visibility.
