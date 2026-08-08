@@ -157,6 +157,13 @@ export function PlayerBusiness() {
         mat.transparent = wantTransparent;
         mat.needsUpdate = true;
       }
+      // Match the roof's depthWrite discipline: transparent geometry
+      // must NOT write to the depth buffer, or it culls / tints every
+      // subsequent transparent object drawn behind it (trees, fences,
+      // other buildings' translucent parts). Without this, the walls'
+      // 0.5-alpha brown-red colour bleeds across the whole view when
+      // the camera crosses the roof-fade threshold.
+      mat.depthWrite = wallOpacity > 0.5;
     }
     if (interiorGroupRef.current) {
       interiorGroupRef.current.visible = interiorVisibility > 0.02;
@@ -196,8 +203,11 @@ export function PlayerBusiness() {
 
   return (
     <group>
-      {/* Walls */}
-      <mesh geometry={geom.wallGeo} receiveShadow castShadow>
+      {/* Walls. Canvas runs shadows={false}, so receiveShadow / castShadow
+          would be noise. Material is `transparent` from mount so THREE
+          places it in the transparent render bucket; useFrame keeps its
+          opacity + depthWrite in sync with the roof crossfade. */}
+      <mesh geometry={geom.wallGeo}>
         <meshStandardMaterial
           ref={wallMaterialRef}
           color={WALL_COLOUR}
@@ -211,7 +221,7 @@ export function PlayerBusiness() {
           the material in the transparent render bucket from mount; the
           useFrame toggle above still refreshes it (with needsUpdate) if
           the fade lands fully opaque at large distances. */}
-      <mesh geometry={geom.capGeo} receiveShadow castShadow>
+      <mesh geometry={geom.capGeo}>
         <meshStandardMaterial
           ref={roofMaterialRef}
           color={ROOF_COLOUR}
