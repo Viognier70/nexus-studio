@@ -20,11 +20,13 @@ The ORDER 041 report must be on `main`.
 
 ## 1. Vision Owner decision — the premises
 
-**`w869907963`** — historic centre, 252 m², sit-down restaurant. Candidate C.
+**`w869907975`** — Torget south edge, 146 m², café-scale. Candidate A.
 
-Chosen over the two smaller candidates because the loop's first scenario is *walk-in-of-eight*, and a party of eight is only a dilemma where it almost fits. On a 146 m² café the answer is no, and no is not a decision. At 252 m² the trade-off is real: seat them and strain the service, or turn them away and lose the evening's best table.
+Chosen because the loop's first scenario is *walk-in-of-five*, and a party of five is only a dilemma where it almost fits. On a 12–16 cover café the answer is contested: seat all five by combining a 4-top with a 2-top and disrupting an already-seated couple, seat four and offer the fifth a bar stool, or turn them away and keep the evening's shape. On a 252 m² sit-down room five would seat trivially and no is not a decision.
 
-The same reasoning governs the visible consequence in §4: a change in the room is only legible when there are enough guests for a change to show.
+The same reasoning governs the visible consequence in §4: a change in the room is only legible when there are enough guests for a change to show, and when the party's arrival forces the room to reconfigure.
+
+**Superseded pick — 2026-07-30 and 2026-08-08.** Version 1.0 of this order picked `w869907963` (Candidate C, 252 m²) with walk-in-of-eight as the scenario. The ORDER 041 §6 candidate-filter miss (see `documentation/world/APPROXIMATION_REGISTER.md`) disqualified `w869907963` on spatial grounds (Guldkringlan and Gästgivaregård within 8 m); §3.1 swapped to `w869907975` on 2026-07-30. Scenario re-scaled here on 2026-08-08 so the "almost fits" dilemma structure holds at 146 m² — proportional to §1's original reasoning, applied to the smaller footprint. Table mix and precise cover count are set in `frontend/src/strategic/business/interiorLayout.ts`; capacity flows from there rather than being restated here so the doc and the code cannot drift again.
 
 ---
 
@@ -46,7 +48,7 @@ One element at a time, in this sequence. Each is a commit. Each must be visible 
 
 ### 3.1 The business exists
 
-`w869907963` becomes the player's premises. It needs:
+`w869907975` becomes the player's premises (per §1's superseded-pick note). It needs:
 
 - a name the player sets on first run
 - staff as a count and a competence level, per `EXECUTIVE_DESIGN_DIRECTIVE_001.md` §7 — never individuals the player commands
@@ -68,7 +70,7 @@ Stop and show it: guests should arrive and leave without the player doing anythi
 
 ### 3.3 The scenario arrives
 
-Walk-in-of-eight. Unbidden, unscheduled, in the business.
+Walk-in-of-five. Unbidden, unscheduled, in the business. (§1's superseded-pick note: originally walk-in-of-eight for the 252 m² Candidate C; rescaled to five on 2026-08-08 with the swap to the 146 m² Candidate A so the party remains marginal on the actual footprint.)
 
 The player sees the subject, chooses a difficulty level, then sees the situation and responds. Per `LEARNING_AND_SCENARIO_ARCHITECTURE.md` §4.3, difficulty is chosen **before** the situation is revealed.
 
