@@ -38,6 +38,16 @@ const STAFF_Y = STAFF_HEIGHT_M / 2 + 0.06;
 // load pick their step up a touch.
 const STAFF_WALK_SPEED_M_PER_S = 1.4;
 
+// ORDER 045 prep tempo — Vision Owner (2026-08-08): "Personalen rör
+// sig för långsamt under prep — de ska arbeta, inte driva." During
+// the mise-en-place window (day.prepEndsAt set, past opening, before
+// service arrivals) staff are actively working: pace × 1.8, drift
+// amplitude 3× wider, faster oscillation frequency. Falls back to
+// service-time defaults the moment prep closes.
+const PREP_PACE_MULTIPLIER = 1.8;
+const PREP_DRIFT_AMPLITUDE_M = 1.5;   // vs the 0.5 m service-time idle drift
+const PREP_DRIFT_FREQ_HZ = 1.1;       // vs the ~0.4 Hz service-time frequency
+
 // Uniform tones per role — kept dark and low-chroma so staff never
 // blend with the warm-beige guest palette. Same shape difference
 // (slim + tall) reinforces the distinction from the top-down camera.
@@ -134,6 +144,22 @@ export function InteriorStaff() {
     const load = activeGuestCount(sim.guests) / capacity;
     const strainFactor = Math.min(1, Math.max(0, load - 0.4) / 0.8);
 
+    // ORDER 045 prep-tempo detection. In prep window (opening closed,
+    // prep still running) staff work at PREP_PACE_MULTIPLIER pace with
+    // wider + faster drift — the kitchen setting up, the floor being
+    // wiped down, the delivery being unpacked. Falls back the moment
+    // prep closes.
+    const inPrep =
+      (sim.day.period === 'lunch' || sim.day.period === 'dinner') &&
+      sim.day.openingEndsAt === null &&
+      sim.day.prepEndsAt !== null &&
+      sim.simTime < sim.day.prepEndsAt;
+    const pace = inPrep
+      ? STAFF_WALK_SPEED_M_PER_S * PREP_PACE_MULTIPLIER
+      : STAFF_WALK_SPEED_M_PER_S;
+    const driftAmp = inPrep ? PREP_DRIFT_AMPLITUDE_M : 0.5;
+    const driftFreq = inPrep ? PREP_DRIFT_FREQ_HZ : 0.4;
+
     const now = sim.simTime;
     const [gcx, gcz] = layout.centre; // room's centre-of-gravity for load drift
     const seenIds = new Set<string>();
@@ -153,21 +179,23 @@ export function InteriorStaff() {
         positionsRef.current.set(member.id, pos);
       }
 
-      // Target: home station + small idle drift + load-driven pull
-      // toward the room's centre. At load ≤ 0.4 the puck sits at home;
-      // at load ≥ 1.2 it's substantially pulled into the guest area.
-      const jitterX = Math.sin(now * 0.4 + pos.jitterSeed) * 0.5;
-      const jitterZ = Math.cos(now * 0.35 + pos.jitterSeed * 1.7) * 0.5;
+      // Target: home station + idle drift (wider + faster in prep) +
+      // load-driven pull toward the room's centre. At load ≤ 0.4 the
+      // puck sits at home; at load ≥ 1.2 it's substantially pulled
+      // into the guest area (post-prep only).
+      const jitterX = Math.sin(now * driftFreq + pos.jitterSeed) * driftAmp;
+      const jitterZ =
+        Math.cos(now * driftFreq * 0.9 + pos.jitterSeed * 1.7) * driftAmp;
       const pullDX = gcx - home[0];
       const pullDZ = gcz - home[1];
       const targetX = home[0] + jitterX + pullDX * strainFactor * 0.5;
       const targetZ = home[1] + jitterZ + pullDZ * strainFactor * 0.5;
 
-      // Ease toward target at walking pace.
+      // Ease toward target at walking pace (boosted during prep).
       const dx = targetX - pos.cx;
       const dz = targetZ - pos.cz;
       const dsq = dx * dx + dz * dz;
-      const step = STAFF_WALK_SPEED_M_PER_S * delta;
+      const step = pace * delta;
       if (dsq > step * step) {
         const invd = 1 / Math.sqrt(dsq);
         pos.cx += dx * invd * step;
