@@ -269,6 +269,103 @@ describe('ORDER 043 §11.1 portability contract', () => {
   });
 });
 
+describe('ORDER 043 v3 §7 chain — theme draw + capital movement + wager payout', () => {
+  it('triggerScenario draws a theme and stores it on scenario.drawnTheme', () => {
+    let s = makeInitialState(42);
+    s = reducer(s, { type: 'TRIGGER_SCENARIO' });
+    expect(s.scenario.drawnTheme).not.toBeNull();
+    expect(SUSTAINABILITIES).toContain(s.scenario.drawnTheme!);
+  });
+
+  it('same seed produces the same drawnTheme (determinism)', () => {
+    let a = makeInitialState(42);
+    a = reducer(a, { type: 'TRIGGER_SCENARIO' });
+    let b = makeInitialState(42);
+    b = reducer(b, { type: 'TRIGGER_SCENARIO' });
+    expect(a.scenario.drawnTheme).toBe(b.scenario.drawnTheme);
+  });
+
+  it('choice A/B moves the drawn theme capital up; choice C moves it down', () => {
+    const run = (choice: 'A' | 'B' | 'C') => {
+      let s = makeInitialState(42);
+      s = reducer(s, { type: 'TRIGGER_SCENARIO' });
+      const theme = s.scenario.drawnTheme!;
+      const before = s.capitals.values[theme];
+      s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
+      s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
+      s = reducer(s, { type: 'RESOLVE_SCENARIO', choice });
+      return s.capitals.values[theme] - before;
+    };
+    expect(run('A')).toBeGreaterThan(0);
+    expect(run('B')).toBeGreaterThan(0);
+    expect(run('C')).toBeLessThan(0);
+  });
+
+  it('themeHistory appends the drawn theme on resolve (bounded to history limit)', () => {
+    let s = makeInitialState(42);
+    s = reducer(s, { type: 'TRIGGER_SCENARIO' });
+    const drawn = s.scenario.drawnTheme!;
+    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
+    s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
+    s = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'A' });
+    expect(s.capitals.themeHistory).toContain(drawn);
+    expect(s.capitals.themeHistory.length).toBeLessThanOrEqual(6);
+  });
+
+  it('wager on the drawn theme is a WIN and appends to wagerHistory', () => {
+    let s = makeInitialState(42);
+    s = reducer(s, { type: 'TRIGGER_SCENARIO' });
+    const drawn = s.scenario.drawnTheme!;
+    // Stake on the drawn theme — should win.
+    s = reducer(s, { type: 'PLACE_WAGER', capital: drawn });
+    const before = s.capitals.values[drawn];
+    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
+    s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
+    s = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'A' });
+    // Themed delta (+SCENARIO_CAPITAL_DELTA) plus wager win (positive) →
+    // capital moved by more than SCENARIO_CAPITAL_DELTA alone.
+    expect(s.capitals.values[drawn]).toBeGreaterThan(before + 0.06);
+    // Wager consumed.
+    expect(s.wager).toBeNull();
+    // History logged.
+    expect(s.capitals.wagerHistory).toHaveLength(1);
+    const entry = s.capitals.wagerHistory[0];
+    expect(entry.outcome).toBe('win');
+    expect(entry.staked).toBe(drawn);
+    expect(entry.drew).toBe(drawn);
+    expect(entry.delta).toBeGreaterThan(0);
+  });
+
+  it('wager on the WRONG capital is a LOSS: staked capital loses; drawn capital moves via scenario delta', () => {
+    let s = makeInitialState(42);
+    s = reducer(s, { type: 'TRIGGER_SCENARIO' });
+    const drawn = s.scenario.drawnTheme!;
+    // Pick a capital that was NOT drawn to stake on.
+    const wrongCapital = SUSTAINABILITIES.find((k) => k !== drawn)!;
+    s = reducer(s, { type: 'PLACE_WAGER', capital: wrongCapital });
+    const wrongBefore = s.capitals.values[wrongCapital];
+    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
+    s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
+    s = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'A' });
+    // Wrong capital: dropped by the stake amount.
+    expect(s.capitals.values[wrongCapital]).toBeLessThan(wrongBefore);
+    expect(s.wager).toBeNull();
+    const entry = s.capitals.wagerHistory[0];
+    expect(entry.outcome).toBe('loss');
+    expect(entry.staked).toBe(wrongCapital);
+    expect(entry.drew).toBe(drawn);
+  });
+
+  it('no wager placed → resolve does not append to wagerHistory', () => {
+    let s = makeInitialState(42);
+    s = reducer(s, { type: 'TRIGGER_SCENARIO' });
+    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
+    s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
+    s = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'A' });
+    expect(s.capitals.wagerHistory).toHaveLength(0);
+  });
+});
+
 describe('ORDER 043 RESET behaviour', () => {
   it('RESET returns capitals, enablers, wager, consequence events to initial', () => {
     let s = makeInitialState(1);

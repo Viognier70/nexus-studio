@@ -117,6 +117,11 @@ export interface ScenarioState {
   spawnedRemaining: number;
   nextSpawnAt: number;
   visibleGuestIds: string[];
+  // ORDER 043 v3 §7 chain — theme drawn at trigger time (before the
+  // player sees the scenario), consumed at resolve to move the themed
+  // capital and pay out any standing wager. Null between scenarios
+  // and during the resting phases.
+  drawnTheme: SustainabilityKey | null;
   // Populated by the reducer when the scenario transitions to
   // `settled`. Rendered as an in-world text bubble by MentorComment;
   // per CAMERA_AND_GAMEPLAY_BIBLE §8.1 this must not be a modal.

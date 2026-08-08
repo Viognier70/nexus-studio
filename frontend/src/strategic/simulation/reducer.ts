@@ -23,6 +23,7 @@ import { initialDay, makeInitialState, makeStaff } from './model';
 import { tickReputationDrift } from './reputation';
 import { tickGuests, tickStaff } from './service';
 import { tickSustainability } from './sustainability';
+import { drawNextTheme, wagerPayout } from './themeSelection';
 
 // Sim-seconds until the walk-in-of-five scenario auto-triggers if the
 // player takes no action. Kept short so a one-and-done playtest doesn't
@@ -50,6 +51,27 @@ const SCENARIO_SETTLE_AFTER = 35;
 // the 146 m² café-scale Candidate A footprint). Choice A/B both seat
 // the party; choice C turns them away.
 const WALK_IN_PARTY_SIZE = 5;
+
+// ORDER 043 v3 §7 chain — magnitude of the capital movement produced
+// by a scenario resolution on its drawn theme. Choice A/B are the
+// generous / demanding responses that move the themed capital up;
+// choice C is the refusal that moves it down. Cycle-1 default —
+// deliberately smaller than the wager stake (0.10) so a scenario
+// outcome + wager payout compose without one dominating the other.
+export const SCENARIO_CAPITAL_DELTA = 0.06;
+
+// Per-choice signed multiplier on SCENARIO_CAPITAL_DELTA. Chosen so
+// that A and B differ only in what they cost — both engage the
+// capital, one via the demanding response and one via the generous
+// response. C's magnitude is smaller (halved) because the loss is
+// already carried by the reputation dip in the walk-in-of-five
+// specific handler; letting C also cost a full capital would double-
+// count the refusal.
+const CHOICE_CAPITAL_SIGN: Record<ScenarioChoice, number> = {
+  A: 1,
+  B: 1,
+  C: -0.5
+};
 
 export function reducer(state: SimulationState, action: SimAction): SimulationState {
   switch (action.type) {
@@ -459,6 +481,16 @@ function triggerScenario(state: SimulationState, auto: boolean): SimulationState
   // to true so the auto-check in advanceTick can't re-fire and reset
   // an in-progress scenario back to `subject`.
   void auto;
+  // ORDER 043 v3 §7 chain — draw the theme *before* the player sees
+  // the scenario. Weakness-weighted with damping (see themeSelection.ts).
+  // Consumes rng state so the same seed + same open sequence yields
+  // the same chain.
+  const rng = createRng(state.rngState);
+  const drawnTheme = drawNextTheme(
+    state.capitals.values,
+    state.capitals.themeHistory,
+    rng
+  );
   const scenario = {
     ...state.scenario,
     hasAutoTriggered: true,
@@ -471,12 +503,14 @@ function triggerScenario(state: SimulationState, auto: boolean): SimulationState
     spawnedRemaining: 0,
     nextSpawnAt: 0,
     visibleGuestIds: [],
+    drawnTheme,
     mentorComment: null,
     mentorCommentAt: null
   };
   return {
     ...state,
     scenario,
+    rngState: rng.state,
     events: [
       ...state.events,
       {
@@ -551,11 +585,58 @@ function resolveScenario(
   let reputation = state.reputation;
   if (choice === 'C') reputation = Math.max(0, reputation - 0.03);
 
+  // ORDER 043 v3 §7 chain — capital movement on the drawn theme +
+  // wager payout. Requires the theme was drawn at triggerScenario;
+  // if not (older-flow test paths), skip the capital layer.
+  let capitals = state.capitals;
+  let wagerHistory = state.capitals.wagerHistory;
+  let themeHistory = state.capitals.themeHistory;
+  let wager = state.wager;
+  const drawn = scenario.drawnTheme;
+  if (drawn) {
+    const themedDelta =
+      SCENARIO_CAPITAL_DELTA * CHOICE_CAPITAL_SIGN[choice];
+    const capitalAtPlacement = wager
+      ? state.capitals.values[wager.capital]
+      : 0;
+    const payout = wagerPayout(drawn, wager, capitalAtPlacement);
+    const nextValues = { ...state.capitals.values };
+    nextValues[drawn] = clampCapital(nextValues[drawn] + themedDelta);
+    if (payout.targetCapital) {
+      nextValues[payout.targetCapital] = clampCapital(
+        nextValues[payout.targetCapital] + payout.delta
+      );
+    }
+    themeHistory = [...themeHistory, drawn].slice(-THEME_HISTORY_LIMIT);
+    if (payout.outcome !== 'no_wager') {
+      wagerHistory = [
+        ...wagerHistory,
+        {
+          at: state.simTime,
+          staked: wager!.capital,
+          drew: drawn,
+          outcome: payout.outcome,
+          delta: payout.delta
+        }
+      ];
+      // Wager is spent on resolution — cleared regardless of outcome.
+      wager = null;
+    }
+    capitals = {
+      ...state.capitals,
+      values: nextValues,
+      themeHistory,
+      wagerHistory
+    };
+  }
+
   return {
     ...state,
     scenario,
     policies,
     reputation,
+    capitals,
+    wager,
     events: [
       ...state.events,
       {
@@ -565,6 +646,10 @@ function resolveScenario(
       }
     ]
   };
+}
+
+function clampCapital(v: number): number {
+  return Math.max(CAPITAL_MIN, Math.min(CAPITAL_MAX, v));
 }
 
 function mentorCommentFor(
