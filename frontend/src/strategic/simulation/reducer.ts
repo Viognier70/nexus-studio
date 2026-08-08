@@ -178,7 +178,15 @@ function advanceTick(state: SimulationState): SimulationState {
     if (draft.delivery.progress >= 1) {
       draft.delivery.active = false;
       draft.delivery.progress = 0;
-      draft.delivery.cooldown = 60 + rng.range(0, 30);
+      // ORDER 043 §6 ecological phenomenon: cooldown between deliveries
+      // stretches when ecological capital is low. Formula chosen so
+      // ecological ≈ 0.55 (initial) reproduces the pre-ORDER-043 60-sec
+      // baseline, ecological = 1 halves it to ~36 sec, ecological = 0
+      // extends to ~84 sec. The van's absence between arrivals IS the
+      // reading; the rhythm of appearance is what the player watches.
+      const ecological = draft.capitals.values.ecological;
+      const cooldownBase = 60 * (1.4 - 0.8 * ecological);
+      draft.delivery.cooldown = cooldownBase + rng.range(0, 30);
     }
   } else {
     draft.delivery.cooldown -= tickSeconds;

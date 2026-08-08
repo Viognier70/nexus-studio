@@ -67,6 +67,12 @@ export interface Guest {
   targetPosition: Vec2;
   moveProgress: number;
   hadWelcomeDrink: boolean;
+  // ORDER 043 §6 economic-phenomenon flag. When true, the guest walks
+  // to the entrance and turns back without sitting — the visible
+  // reading of low economic capital ("guests leaving without sitting").
+  // Decided at spawn time from the current economic capital value;
+  // wired in arrivals.ts via maybeSpawnGuest.
+  walkAwayOnArrival: boolean;
 }
 
 export type SustainabilityDirection =

@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { arrivalProbability, maybeSpawnGuest, scenarioSpawnStep } from '../arrivals';
+import {
+  arrivalProbability,
+  economicArrivalMultiplier,
+  maybeSpawnGuest,
+  scenarioSpawnStep,
+  walkAwayProbability
+} from '../arrivals';
 import { PRICE_ARRIVAL_MULT, SERVICE_ARRIVAL_MULT } from '../economics';
 import { makeGuest, makeInitialState } from '../model';
 import type { Guest, PricingTier, ServiceConcept, SimulationState } from '../../types';
@@ -29,10 +35,15 @@ describe('arrivalProbability', () => {
     expect(arrivalProbability(s)).toBeGreaterThan(0);
   });
 
-  it('matches perMinute * SERVICE_MULT * PRICE_MULT / 300 (5 Hz)', () => {
+  it('matches perMinute * SERVICE_MULT * PRICE_MULT * economicMult / 300 (5 Hz)', () => {
     const s = makeInitialState(1);
+    // ORDER 043 §6 economic multiplier modulates the policy-only rate.
+    // At initial economic capital = 0.55, the multiplier is 0.73.
     const expected =
-      (3.2 * SERVICE_ARRIVAL_MULT[s.policies.service] * PRICE_ARRIVAL_MULT[s.policies.pricing]) /
+      (3.2 *
+        SERVICE_ARRIVAL_MULT[s.policies.service] *
+        PRICE_ARRIVAL_MULT[s.policies.pricing] *
+        economicArrivalMultiplier(s.capitals.values.economic)) /
       300;
     expect(arrivalProbability(s)).toBeCloseTo(expected, 10);
   });
@@ -130,5 +141,83 @@ describe('scenarioSpawnStep', () => {
     expect(guest.scenarioSource).toBe(true);
     expect(guest.state).toBe('arriving');
     expect(guest.arrivalTime).toBe(5);
+  });
+
+  it('scenario-flagged guests never walk away', () => {
+    // Even at critically weak economic, scenario guests must reach the
+    // door — the whole point of a scenario is that the player responds
+    // to a specific arrival. Walk-away is for ambient regulars only.
+    const s = armedState(3, 5, 5);
+    s.capitals.values.economic = 0;
+    const g = scenarioSpawnStep(s) as Guest;
+    expect(g.walkAwayOnArrival).toBe(false);
+  });
+});
+
+describe('ORDER 043 §6 economic arrival multiplier', () => {
+  it('is ECONOMIC_ARRIVAL_FLOOR (0.4) at capital = 0 and 1 at capital = 1', () => {
+    expect(economicArrivalMultiplier(0)).toBeCloseTo(0.4, 10);
+    expect(economicArrivalMultiplier(1)).toBeCloseTo(1, 10);
+  });
+
+  it('is monotonically increasing across [0, 1]', () => {
+    let last = -Infinity;
+    for (let v = 0; v <= 1; v += 0.1) {
+      const m = economicArrivalMultiplier(v);
+      expect(m).toBeGreaterThanOrEqual(last);
+      last = m;
+    }
+  });
+
+  it('clamps out-of-range inputs', () => {
+    expect(economicArrivalMultiplier(-1)).toBeCloseTo(0.4, 10);
+    expect(economicArrivalMultiplier(2)).toBeCloseTo(1, 10);
+  });
+
+  it('arrivalProbability visibly falls as economic drops', () => {
+    const strong = makeInitialState(1);
+    strong.capitals.values.economic = 1;
+    const weak = makeInitialState(1);
+    weak.capitals.values.economic = 0;
+    // At floor 0.4 vs 1.0, weak should be 40% of strong's rate.
+    expect(arrivalProbability(weak) / arrivalProbability(strong)).toBeCloseTo(0.4, 3);
+  });
+});
+
+describe('ORDER 043 §6 walk-away probability', () => {
+  it('is 0 at economic = 1 (no walk-aways in a strong economy)', () => {
+    expect(walkAwayProbability(1)).toBe(0);
+  });
+
+  it('is ECONOMIC_WALKAWAY_CEIL (0.4) at economic = 0', () => {
+    expect(walkAwayProbability(0)).toBeCloseTo(0.4, 10);
+  });
+
+  it('is monotonically decreasing across [0, 1]', () => {
+    let last = Infinity;
+    for (let v = 0; v <= 1; v += 0.1) {
+      const p = walkAwayProbability(v);
+      expect(p).toBeLessThanOrEqual(last);
+      last = p;
+    }
+  });
+
+  it('maybeSpawnGuest flags walk-away when the second roll fires at low economic', () => {
+    const s = makeInitialState(1);
+    s.capitals.values.economic = 0; // walk-away probability = 0.4
+    // First roll (arrival chance) at 0 → passes. Second roll (walk-away)
+    // at 0 → below 0.4 → walk-away flagged.
+    const g = maybeSpawnGuest(s, fakeRng([0, 0]));
+    expect(g).not.toBeNull();
+    expect(g!.walkAwayOnArrival).toBe(true);
+  });
+
+  it('maybeSpawnGuest does not flag walk-away when second roll misses', () => {
+    const s = makeInitialState(1);
+    s.capitals.values.economic = 0.55; // walk-away probability = 0.18
+    // First roll 0 → arrival fires. Second roll 0.9 → above 0.18 → no walk-away.
+    const g = maybeSpawnGuest(s, fakeRng([0, 0.9]));
+    expect(g).not.toBeNull();
+    expect(g!.walkAwayOnArrival).toBe(false);
   });
 });

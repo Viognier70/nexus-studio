@@ -129,6 +129,16 @@ export function tickGuests(state: SimulationState) {
 
     if (guest.state === 'arriving') {
       if (guest.moveProgress >= 1) {
+        // ORDER 043 §6 walk-away: guests whose economic-at-spawn said
+        // "refuse entry" turn back without checking for a seat. Visible
+        // reading: at low economic, more pucks approach the door and
+        // walk out again — "guests leaving without sitting."
+        if (guest.walkAwayOnArrival && !guest.scenarioSource) {
+          guest.state = 'declined';
+          guest.stateTime = now;
+          moveGuest(guest, { x: 0, z: 8 });
+          continue;
+        }
         const seat = findFreeSeat(state, guest.scenarioSource);
         if (seat !== null && !state.scenario.awaitingChoice) {
           setGuestSeated(state, guest, seat);
@@ -337,7 +347,11 @@ function beginStaffTask(
 ) {
   staff.taskType = type;
   staff.taskProgress = 0;
-  staff.taskDuration = taskDurationTicks(state.policies, type);
+  staff.taskDuration = taskDurationTicks(
+    state.policies,
+    type,
+    state.capitals.values.social
+  );
   staff.targetGuestId = targetGuestId;
   const guest = state.guests.find((g) => g.id === targetGuestId);
   if (guest) {

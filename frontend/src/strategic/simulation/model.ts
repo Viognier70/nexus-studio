@@ -232,7 +232,11 @@ export function nextGuestId(scenario = false): string {
   return `${scenario ? 'grp' : 'gst'}-${guestCounter}`;
 }
 
-export function makeGuest(simTime: number, scenario = false): Guest {
+export function makeGuest(
+  simTime: number,
+  scenario = false,
+  walkAwayOnArrival = false
+): Guest {
   return {
     id: nextGuestId(scenario),
     state: 'arriving',
@@ -244,6 +248,7 @@ export function makeGuest(simTime: number, scenario = false): Guest {
     position: { x: 0, z: 8 },
     targetPosition: { x: INTERIOR.entrance.x, z: INTERIOR.entrance.z },
     moveProgress: 0,
-    hadWelcomeDrink: false
+    hadWelcomeDrink: false,
+    walkAwayOnArrival
   };
 }
