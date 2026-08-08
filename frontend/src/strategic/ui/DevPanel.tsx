@@ -60,7 +60,17 @@ export function DevPanel({ lastKey }: Props) {
           const s = Math.floor(rem % 60);
           return `${m}:${s.toString().padStart(2, '0')} / ${d.currentServiceLengthMinutes}min`;
         })();
+  // ORDER 045 weather + world-factor line. Kept compact so the dev
+  // panel stays a two-liner most of the time and grows to three
+  // only on services where the outer world reports in.
+  const weather = d.weather
+    ? `${d.weather.tempC}°C  ${d.weather.windMS}m/s  ${d.weather.precipitation}  waiting=${d.waitingAtOpening}`
+    : 'no weather (out of service)';
+  const factors = d.worldFactors.length > 0
+    ? '  factors=' + d.worldFactors.map((f) => f.kind).join(',')
+    : '';
   const line1 = `DEV  day=${d.dayNumber} ${d.period.padEnd(9)}  service=${serviceReadout.padEnd(14)}  scenarios=${d.scenariosFiredThisService}/${d.scenariosPlanned}`;
   const line2 = `     econ=${c.economic.toFixed(2)}  soc=${c.social.toFixed(2)}  eco=${c.ecological.toFixed(2)}  rep=${sim.reputation.toFixed(2)}  wager=${wager}  key=${lastKey || '-'}`;
-  return <div style={PANEL_STYLE}>{`${line1}\n${line2}`}</div>;
+  const line3 = `     ${weather}${factors}`;
+  return <div style={PANEL_STYLE}>{`${line1}\n${line2}\n${line3}`}</div>;
 }

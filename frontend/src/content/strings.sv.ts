@@ -184,6 +184,36 @@ export const strings = {
     decline: 'Avstå',
     standing: 'Satsat:',
     clear: 'Ångra',
-    placed: 'Insatsen står.'
+    placed: 'Insatsen står.',
+    // ORDER 045 — weather line shown under the capital buttons so the
+    // wager reads against the evening's conditions.
+    weatherPrefix: 'Kvällen:'
+  },
+  // ORDER 045 — the opening image before mise en place. Ten-second
+  // briefing screen showing weather + local factors + how many are
+  // already outside. No numeric HUD dominance (§9); the copy carries
+  // the reading.
+  opening: {
+    heading: 'Kvällen',
+    tempSuffix: '°C',
+    windSuffix: 'm/s',
+    precipitation: {
+      none: 'uppehåll',
+      drizzle: 'duggregn',
+      rain: 'regn',
+      snow: 'snö'
+    },
+    clouds: {
+      clear: 'klart',
+      partly: 'halvklart',
+      overcast: 'mulet'
+    },
+    outdoorViable: 'Uteserveringen är i läge.',
+    outdoorClosed: 'Uteserveringen är stängd i kväll.',
+    waitingSingular: 'En person står redan utanför dörren.',
+    waitingPlural: (n: number) => `${n} personer står redan utanför dörren.`,
+    waitingNone: 'Ingen står utanför ännu.',
+    countdownPrefix: 'Dörrarna öppnar om',
+    countdownSecondsSuffix: 's'
   }
 } as const;
