@@ -16,32 +16,46 @@
 
 import { reducer } from '../src/strategic/simulation/reducer';
 import { makeInitialState } from '../src/strategic/simulation/model';
-import type { EventStreamEntry, SimulationState } from '../src/strategic/types';
+import { makeTeamMember } from '../src/strategic/simulation/team';
+import type {
+  EventStreamEntry,
+  SimulationState,
+  TeamMember
+} from '../src/strategic/types';
 
 const SERVICE_MINUTES = 15;
 const TICKS = Math.floor((SERVICE_MINUTES * 60) / 0.2);
 
 interface Condition {
   label: string;
-  trainingLevel: 1 | 2 | 3;
-  staffCount: 2 | 3 | 4;
+  buildTeam: () => TeamMember[];
 }
 
-// Two conditions per §A.7. Load will build naturally from the arrival
-// pressure — dinner base 12/min × rep 0.6 × economic 0.55 gives ~4-5
-// arrivals per sim-min, which stresses staffCount=2 (capacity 10) but
-// not staffCount=4 (capacity 20). So condition also drives load
-// indirectly.
+// Rewired at ORDER 043 v3 §10 step 5 — competence + capacity now
+// come from state.team, not policies. Conditions build the team
+// directly.
 const STRONG_TEAM: Condition = {
-  label: 'STRONG (trainingLevel 3, staffCount 4)',
-  trainingLevel: 3,
-  staffCount: 4
+  label: 'STRONG (4 competent members: värd + servitör + kock + lärling with upped competence)',
+  buildTeam: () => {
+    const members = [
+      makeTeamMember('värd', 1),
+      makeTeamMember('servitör', 1),
+      makeTeamMember('kock', 1),
+      makeTeamMember('lärling', 1)
+    ];
+    // Give the lärling higher-than-default competence for a "trained"
+    // apprentice — reads as a well-drilled team.
+    members[3].competence = { scientific: 0.55, cultural: 0.55, practical: 0.55 };
+    return members;
+  }
 };
 
 const WEAK_TEAM: Condition = {
-  label: 'WEAK   (trainingLevel 1, staffCount 2)',
-  trainingLevel: 1,
-  staffCount: 2
+  label: 'WEAK   (2 members: värd + lärling only, no kock)',
+  buildTeam: () => [
+    makeTeamMember('värd', 1),
+    makeTeamMember('lärling', 1)
+  ]
 };
 
 function runDinner(
@@ -51,13 +65,15 @@ function runDinner(
   let s: SimulationState = reducer(makeInitialState(seed), {
     type: 'SKIP_LUNCH'
   });
-  s = reducer(s, {
-    type: 'SET_POLICY',
-    patch: {
-      trainingLevel: condition.trainingLevel,
-      staffCount: condition.staffCount
+  // Rebuild the team for this condition (probe-only shortcut — real
+  // gameplay would hire/fire via UI, not swap wholesale).
+  s = {
+    ...s,
+    team: {
+      ...s.team,
+      members: condition.buildTeam()
     }
-  });
+  };
   s = reducer(s, {
     type: 'OPEN_SERVICE',
     service: 'dinner',

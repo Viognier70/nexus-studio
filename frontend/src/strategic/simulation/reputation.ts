@@ -38,6 +38,7 @@
 // All deltas are clamped into [0, 1] by applyReputationDelta.
 
 import type { SimulationState } from '../types';
+import { teamCapacity } from './team';
 
 const TICK_SECONDS = 0.2;
 
@@ -48,8 +49,10 @@ export const QUEUE_STRAIN_THRESHOLD = 3;
 export const QUEUE_STRAIN_RATE = 0.005;
 
 // Team-strain: reputation loses ~0.001/sec when active guests exceed
-// COVERS_PER_STAFF per staff. At staffCount=3 the threshold is 15 guests.
-export const COVERS_PER_STAFF = 5;
+// the team's capacity. Rewired from policies.staffCount × 5 to
+// teamCapacity(state.team) at ORDER 043 v3 §10 step 5 — a hired
+// lärling or an agency hand now visibly changes the strain threshold
+// in the reading, not just the labels.
 export const TEAM_STRAIN_RATE = 0.001;
 
 // Per-event costs. Give-up dwarfs unhappy-departure because a walkout
@@ -92,8 +95,7 @@ export function tickReputationDrift(state: SimulationState): void {
       g.state === 'dining' ||
       g.state === 'paying'
   ).length;
-  const teamCapacity = state.policies.staffCount * COVERS_PER_STAFF;
-  if (activeGuests > teamCapacity) {
+  if (activeGuests > teamCapacity(state.team)) {
     delta -= TEAM_STRAIN_RATE * TICK_SECONDS;
   }
 

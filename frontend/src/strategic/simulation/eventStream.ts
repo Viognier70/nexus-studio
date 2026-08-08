@@ -32,6 +32,7 @@ import type {
 } from '../types';
 import type { Rng } from '../util/rng';
 import { AMBIENT_TEXTS, OUTCOME_TEXTS, type AmbientEventKind } from '../../content/eventStream.sv';
+import { teamCapacity, teamCompetence } from './team';
 
 const TICK_SECONDS = 0.2;
 
@@ -51,14 +52,16 @@ export const OUTCOME_OFFSETS_SEC: readonly number[] = [6, 18];
 // bank — a repeat is better than a silent tick.
 export const REPEAT_GUARD_SEC = 240;
 
-// ORDER 043 Addendum A §A.7 stand-in note: enablers.scientific /
-// .cultural are not yet written to by scenario responses, so they
-// carry 0 weight. Until they do, competence is derived entirely
-// from policies.trainingLevel / 3. When enablers begin to matter,
-// blend as: competence = 0.5 · trainingLevel/3 + 0.5 · enablerLevel.
-function trainingCompetence(state: SimulationState): number {
-  return state.policies.trainingLevel / 3;
-}
+// ORDER 043 v3 §10 step 5 competence source resolution — replaces
+// the trainingLevel stand-in from §A.7. Each competence source name
+// now maps to a team-competence axis:
+//   'scientific'    → team's average scientific competence (kitchen)
+//   'cultural'      → team's average cultural competence (hospitality)
+//   'trainingLevel' → team's average practical competence (house standard)
+// Reading with the team model in place: a kitchen with a specialist
+// kock ticks kitchen_slip events down noticeably; hiring a lärling
+// with low cultural drags service_slip events up until an experienced
+// värd or servitör balances the average.
 
 export type CompetenceSource = 'scientific' | 'cultural' | 'trainingLevel' | null;
 
@@ -66,18 +69,15 @@ export function competenceFor(
   source: CompetenceSource,
   state: SimulationState
 ): number {
-  // Cycle-1: all sources collapse to trainingLevel/3 per the §A.7
-  // stand-in note. Kept as a switch here so a future order can wire
-  // enablers in without reshaping the caller.
   if (source === null) return 1; // strain-only events pass through 1×
-  return trainingCompetence(state);
+  if (source === 'trainingLevel') return teamCompetence(state.team, 'practical');
+  return teamCompetence(state.team, source);
 }
 
-// Load = active guests / (staffCount · COVERS_PER_STAFF). Reads the
-// same denominator the reputation loop uses (reputation.ts) so the
-// two systems agree on what "strained" means.
-const COVERS_PER_STAFF = 5;
-
+// Load = active guests / teamCapacity(state.team). Reads the same
+// denominator as reputation.ts and the agency-offer trigger, so all
+// three systems agree on what "strained" means. Rewired from
+// policies.staffCount × 5 at ORDER 043 v3 §10 step 5.
 export function loadOf(state: SimulationState): number {
   const active = state.guests.filter(
     (g) =>
@@ -88,8 +88,7 @@ export function loadOf(state: SimulationState): number {
       g.state === 'dining' ||
       g.state === 'paying'
   ).length;
-  const capacity = Math.max(1, state.policies.staffCount * COVERS_PER_STAFF);
-  return active / capacity;
+  return active / teamCapacity(state.team);
 }
 
 export function ignoranceMultiplier(competence: number): number {

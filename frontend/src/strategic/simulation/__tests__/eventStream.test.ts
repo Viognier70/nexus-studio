@@ -18,6 +18,7 @@ import { reducer } from '../reducer';
 import { makeInitialState } from '../model';
 import {
   EVENT_DEFS,
+  competenceFor,
   eventMultiplier,
   eventProbabilityPerTick,
   ignoranceMultiplier,
@@ -68,11 +69,13 @@ describe('strainMultiplier — approved shape', () => {
 });
 
 describe('eventMultiplier composition per cause tag', () => {
-  it('ignorance-only reads only ignoranceMultiplier', () => {
+  it('ignorance-only reads competence for its source axis via teamCompetence', () => {
     const s = inPeriod(1, 'dinner');
-    s.policies.trainingLevel = 3; // full competence
     const def = EVENT_DEFS.find((d) => d.causeTag === 'ignorance')!;
-    expect(eventMultiplier(def, s)).toBeCloseTo(0.1, 10);
+    // Expected: ignoranceMultiplier(teamCompetence(source)) — verifies
+    // the wiring from EVENT_DEFS.competenceSource through the team.
+    const expected = ignoranceMultiplier(competenceFor(def.competenceSource, s));
+    expect(eventMultiplier(def, s)).toBeCloseTo(expected, 10);
   });
   it('strain-only reads only strainMultiplier', () => {
     const s = inPeriod(1, 'dinner');
@@ -98,10 +101,9 @@ describe('eventMultiplier composition per cause tag', () => {
   });
   it('both-cause is the product of both', () => {
     const s = inPeriod(1, 'dinner');
-    s.policies.trainingLevel = 1;
     const def = EVENT_DEFS.find((d) => d.causeTag === 'both')!;
     const expected =
-      ignoranceMultiplier(s.policies.trainingLevel / 3) *
+      ignoranceMultiplier(competenceFor(def.competenceSource, s)) *
       strainMultiplier(loadOf(s));
     expect(eventMultiplier(def, s)).toBeCloseTo(expected, 10);
   });
