@@ -132,5 +132,21 @@ export const strings = {
       C_mid:  'Att neka är också ett val. Kvällens rytm bevaras — men ryktet noteras.',
       C_high: 'Bestämt nej. Rummet håller sin form, tipsen blir mindre.'
     }
+  },
+  // ORDER 043 v3 §7 wager — placed between scenarios on which
+  // sustainability the next situation will concern. Optional; declining
+  // is legitimate and progresses more slowly.
+  wager: {
+    heading: 'Läs rummet',
+    body: 'Vilken hållbarhet handlar nästa situation om?',
+    capitals: {
+      economic:   'Ekonomiskt',
+      social:     'Socialt',
+      ecological: 'Ekologiskt'
+    },
+    decline: 'Avstå',
+    standing: 'Satsat:',
+    clear: 'Ångra',
+    placed: 'Insatsen står.'
   }
 } as const;

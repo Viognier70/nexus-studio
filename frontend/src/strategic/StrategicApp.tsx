@@ -8,6 +8,7 @@ import type { Landmark } from './content/world';
 import { LANDMARK_BY_ID } from './content/world';
 import { ScenarioOverlay } from './scenario/ScenarioOverlay';
 import { ServiceLengthPicker } from './scenario/ServiceLengthPicker';
+import { WagerPanel } from './scenario/WagerPanel';
 import { StrategicScene } from './scene/StrategicScene';
 import { SimulationProvider, useSimDispatch } from './simulation/SimulationProvider';
 import { AboutPanel } from './ui/AboutPanel';
@@ -155,6 +156,7 @@ function StrategicShell() {
       />
       <ScenarioOverlay />
       <ServiceLengthPicker />
+      <WagerPanel />
       <DevPanel lastKey={lastKey} />
       <AboutPanel open={aboutOpen} onClose={() => setAboutOpen(false)} />
     </div>
