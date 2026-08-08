@@ -65,16 +65,22 @@ describe('planScenariosForService (weighted by length)', () => {
     const long = count(30);
     expect(medium).toBeGreaterThan(short);
     expect(long).toBeGreaterThan(medium);
-    // Density = 0.1 per minute — long service should average roughly
-    // 3 scenarios (±60 % variance).
-    expect(long).toBeGreaterThan(2);
-    expect(long).toBeLessThan(6);
+    // Density = 0.15 per minute — long service should average roughly
+    // 4.5 scenarios (±60 % variance).
+    expect(long).toBeGreaterThan(3);
+    expect(long).toBeLessThan(7);
   });
 
-  it('never returns a negative count', () => {
-    for (let seed = 1; seed <= 20; seed++) {
-      for (const mins of [1, 3, 7, 15, 30]) {
-        expect(planScenariosForService(mins, createRng(seed))).toBeGreaterThanOrEqual(0);
+  it('always fires at least one scenario for any positive length', () => {
+    // Cycle-1 floor (v3 §10 step 3 retune): every service the player
+    // opens must be a decision surface — a 3-minute service that closes
+    // with zero scenarios is a no-op window that reads to the player
+    // as "why did I bother." Assert the floor across every seed.
+    for (let seed = 1; seed <= 40; seed++) {
+      for (const mins of [1, 3, 5, 7, 15, 30]) {
+        expect(
+          planScenariosForService(mins, createRng(seed))
+        ).toBeGreaterThanOrEqual(1);
       }
     }
   });
