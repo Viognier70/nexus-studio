@@ -124,4 +124,21 @@ describe('computePlayerBusinessInterior', () => {
   it('totalSeats echoed on the layout equals the compile-time constant', () => {
     expect(layout.totalSeats).toBe(TOTAL_SEATS);
   });
+
+  it('ORDER 043 delivery bay sits outside the building, opposite the entrance', () => {
+    const [bx, bz] = layout.deliveryBay;
+    const [ax, az] = layout.deliveryApproach;
+    const [ex, ez] = layout.entrance;
+    const [cx, cz] = layout.centre;
+    // Bay outside the polygon (the van parks against the -X wall).
+    expect(inside(layout.building.poly, bx, bz)).toBe(false);
+    // Approach further outside than the bay.
+    const bayDist = Math.hypot(bx - cx, bz - cz);
+    const approachDist = Math.hypot(ax - cx, az - cz);
+    expect(approachDist).toBeGreaterThan(bayDist);
+    // Bay and entrance on opposite sides of the centre along the OBB
+    // long axis — dot(bay−centre, entrance−centre) should be negative.
+    const dot = (bx - cx) * (ex - cx) + (bz - cz) * (ez - cz);
+    expect(dot, 'delivery bay should be opposite the entrance on the long axis').toBeLessThan(0);
+  });
 });

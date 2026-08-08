@@ -76,6 +76,13 @@ const TABLE_SPECS: readonly TableSpec[] = [
 const BAR_STOOL_LOCAL_X: readonly number[] = [-3, -1, 1, 3];
 const BAR_STOOL_COUNT = BAR_STOOL_LOCAL_X.length;
 
+// ORDER 043 §6 ecological anchor placement. Bay sits 2 m outside the
+// -X wall (opposite the entrance); approach 15 m beyond the bay, so
+// the van has room to drive up and reverse. Local Z = 0 keeps the
+// approach along the OBB centre line — the van comes straight in.
+const DELIVERY_BAY_OFFSET_M = 2;
+const DELIVERY_APPROACH_OFFSET_M = 15;
+
 // Compile-time seat count — single source of truth for reducer capacity.
 export const TOTAL_SEATS: number =
   TABLE_SPECS.reduce((n, t) => n + t.seats, 0) + BAR_STOOL_COUNT;
@@ -111,6 +118,12 @@ export interface InteriorLayout {
   barStoolPositions: [number, number][]; // world XZ per bar stool
   entrance: [number, number];            // world XZ, inside the entrance wall
   waitingSpot: [number, number];         // world XZ, outside the entrance
+  // ORDER 043 §6 ecological anchor. Delivery bay sits at the opposite
+  // end of the OBB long axis from the entrance — physically at the
+  // "back" of the building where suppliers arrive, thematically the
+  // far side of the room from the guest queue.
+  deliveryBay: [number, number];         // world XZ where the van parks
+  deliveryApproach: [number, number];    // world XZ ~15 m off the bay, where the van enters/exits
   // Flat list of every seat in the room, indexed by the reducer's
   // seatIndex.  Order: table 0 seats, table 1 seats, ..., bar stools.
   seats: [number, number][];
@@ -200,6 +213,14 @@ export function computePlayerBusinessInterior(): InteriorLayout | null {
   // encode the entrance side in the building record itself.
   const entrance = obbLocalToWorld(obb, halfW - ENTRANCE_INSET_M, 0);
   const waitingSpot = obbLocalToWorld(obb, halfW + WAITING_STANDOFF_M, 0);
+  // Delivery bay at the -X end (opposite the entrance).  For w869907975
+  // this is the "back" of the building.  Approach 15 m further out.
+  const deliveryBay = obbLocalToWorld(obb, -halfW - DELIVERY_BAY_OFFSET_M, 0);
+  const deliveryApproach = obbLocalToWorld(
+    obb,
+    -halfW - DELIVERY_BAY_OFFSET_M - DELIVERY_APPROACH_OFFSET_M,
+    0
+  );
 
   return {
     building,
@@ -213,6 +234,8 @@ export function computePlayerBusinessInterior(): InteriorLayout | null {
     barStoolPositions,
     entrance,
     waitingSpot,
+    deliveryBay,
+    deliveryApproach,
     seats,
     totalSeats: TOTAL_SEATS
   };

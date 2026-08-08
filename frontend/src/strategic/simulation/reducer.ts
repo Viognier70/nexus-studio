@@ -73,11 +73,28 @@ export function reducer(state: SimulationState, action: SimAction): SimulationSt
         action.amount,
         action.scenarioId
       );
+    case 'SET_CAPITAL':
+      return setCapital(state, action.capital, action.value);
     case 'RESET':
       return makeInitialState(state.seed, state.policies);
     default:
       return state;
   }
+}
+
+function setCapital(
+  state: SimulationState,
+  capital: SustainabilityKey,
+  value: number
+): SimulationState {
+  const clamped = Math.max(0, Math.min(1, value));
+  return {
+    ...state,
+    capitals: {
+      ...state.capitals,
+      values: { ...state.capitals.values, [capital]: clamped }
+    }
+  };
 }
 
 // ---------- ORDER 043 wager + enabler transitions -------------------------

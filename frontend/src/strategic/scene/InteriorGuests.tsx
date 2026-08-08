@@ -112,6 +112,7 @@ function projectGuests(
   let arrivingIdx = 0;
   let leavingIdx = 0;
   let waitingIdx = 0;
+  let declinedIdx = 0;
   for (const g of guests) {
     const colour = GUEST_COLOUR[g.state];
     switch (g.state) {
@@ -164,10 +165,25 @@ function projectGuests(
         leavingIdx += 1;
         break;
       }
-      case 'declined':
-        // Skip — the reducer prunes these within a few seconds, and drawing
-        // them adds nothing legible.
+      case 'declined': {
+        // ORDER 043 §6 economic phenomenon: walk-away guests transition
+        // to 'declined' after reaching the entrance and turning back.
+        // Render them just past the waitingSpot on the outside of the
+        // building so the eye reads "someone approached the door and
+        // walked away". The reducer prunes each puck within a few sim-
+        // seconds, so the window is short — but at low economic the
+        // rate of walk-aways is high enough that at any moment there
+        // are usually one or two visible on the entrance side.
+        //
+        // Fan spread with declinedIdx so multiple walk-aways don't
+        // stack on the same point.
+        const [wx, wz] = waitingSpot;
+        const dx = (declinedIdx - 1) * 0.9;
+        const dz = 1.2 + (declinedIdx % 2) * 0.4;
+        slots.push({ id: g.id, x: wx + dx, z: wz + dz, colour });
+        declinedIdx += 1;
         break;
+      }
     }
   }
   return slots;

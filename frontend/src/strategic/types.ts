@@ -315,6 +315,11 @@ export type SimAction =
   // against a register + enabler as a small positive amount. Only
   // scenario responses generate these; nothing else may.
   | { type: 'RECORD_ENABLER_EVENT'; enabler: EnablerKey; register: Register; amount: number; scenarioId: string | null }
+  // ORDER 043 dev-only capital nudge. Not for player use — only wired
+  // to the B.1 gate playtest shortcuts (StrategicApp.tsx) so the
+  // Vision Owner can verify the room reads capital state without
+  // waiting for scenario-driven capital movement (Phase B.2+).
+  | { type: 'SET_CAPITAL'; capital: SustainabilityKey; value: number }
   | { type: 'RESET' };
 
 export interface CameraTarget {

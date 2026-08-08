@@ -61,11 +61,29 @@ function StrategicShell() {
   //       only mutator, BusinessContext.setName, filters empty inputs).
   //       If a full reset including the business name is ever needed,
   //       browser reload (Cmd+R / Ctrl+R) is the intended path.
+  //
+  //   ORDER 043 B.1 gate shortcuts — no numeric HUD, no on-screen
+  //   readout; the room itself is the reading. Cycle the capital
+  //   through [1.0, 0.7, 0.4, 0.15, 0.0] to see the phenomenon respond:
+  //     S — social capital cycle (watch the queue grow / shrink)
+  //     E — economic capital cycle (watch tables empty, walk-aways rise)
+  //     C — ecological capital cycle (watch the delivery van cadence)
+  //   These get removed at B.3 when the wager UI + scenario-driven
+  //   capital movement replace them.
+  //
   // Modifier keys are ignored so that Cmd+R / Ctrl+R (browser reload)
   // and any future keyboard chords aren't hijacked by the dev handler.
   // Ignored when an <input> or <textarea> has focus (name-entry etc.)
   // so typing a business name doesn't accidentally trigger scenarios.
   useEffect(() => {
+    const cycleSteps = [1.0, 0.7, 0.4, 0.15, 0.0];
+    const cyclePosition: Record<'economic' | 'social' | 'ecological', number> = {
+      economic: 0, social: 0, ecological: 0
+    };
+    const cycle = (cap: 'economic' | 'social' | 'ecological') => {
+      cyclePosition[cap] = (cyclePosition[cap] + 1) % cycleSteps.length;
+      simDispatch({ type: 'SET_CAPITAL', capital: cap, value: cycleSteps[cyclePosition[cap]] });
+    };
     const onKey = (event: KeyboardEvent) => {
       if (event.metaKey || event.ctrlKey || event.altKey) return;
       const target = event.target as HTMLElement | null;
@@ -73,6 +91,9 @@ function StrategicShell() {
       if (tag === 'INPUT' || tag === 'TEXTAREA') return;
       if (event.key === '5') simDispatch({ type: 'TRIGGER_SCENARIO' });
       if (event.key === 'r' || event.key === 'R') simDispatch({ type: 'RESET' });
+      if (event.key === 's' || event.key === 'S') cycle('social');
+      if (event.key === 'e' || event.key === 'E') cycle('economic');
+      if (event.key === 'c' || event.key === 'C') cycle('ecological');
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
