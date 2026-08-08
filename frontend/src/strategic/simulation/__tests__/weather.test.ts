@@ -210,7 +210,6 @@ describe('doors-open spawn — fires once, exactly waitingAtOpening guests', () 
     });
     const expected = s.day.waitingAtOpening;
     expect(expected).toBeGreaterThan(0);
-    const guestsBefore = s.guests.length;
     // Advance just past prep close (~652 ticks = 130.4 s covers
     // opening + prep). One extra tick past that so the spawn has
     // fired but tickGuests hasn't yet had time to move walk-aways

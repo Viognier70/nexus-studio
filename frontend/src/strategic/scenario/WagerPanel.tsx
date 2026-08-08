@@ -108,6 +108,8 @@ export function WagerPanel() {
 
   const wager = sim.wager;
 
+  const weather = sim.day.weather;
+
   return (
     <div style={OVERLAY_STYLE}>
       <div style={HEADING_STYLE}>{strings.wager.heading}</div>
@@ -138,6 +140,24 @@ export function WagerPanel() {
           </button>
         ) : null}
       </div>
+      {weather ? (
+        <div
+          style={{
+            marginTop: 12,
+            paddingTop: 10,
+            borderTop: '1px solid rgba(168, 146, 106, 0.35)',
+            fontSize: 11,
+            opacity: 0.78,
+            letterSpacing: 0.3
+          }}
+        >
+          {strings.wager.weatherPrefix} {weather.tempC}°C, vind {weather.windMS} m/s,{' '}
+          {strings.opening.precipitation[weather.precipitation]}
+          {sim.day.worldFactors.length > 0
+            ? ' — ' + sim.day.worldFactors.map((f) => f.kind.replace(/_/g, ' ')).join(', ')
+            : ''}
+        </div>
+      ) : null}
     </div>
   );
 }
