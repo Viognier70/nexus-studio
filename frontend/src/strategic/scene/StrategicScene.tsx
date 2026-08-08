@@ -25,6 +25,7 @@ import { OsmRoads } from './OsmRoads';
 import { OsmTerrain } from './OsmTerrain';
 import { OsmTraffic } from './OsmTraffic';
 import { OsmWater } from './OsmWater';
+import { DayLighting } from './DayLighting';
 import { DeliveryVan } from './DeliveryVan';
 import { InteriorGuests } from './InteriorGuests';
 import { MentorComment } from './MentorComment';
@@ -76,24 +77,14 @@ export function StrategicScene({ onSelect, selectedId }: Props) {
           at village and district zoom. Far end pulled in to 3600 m so
           the fog envelope stays inside the sky sphere. */}
       <fog attach="fog" args={['#cdc8ba', 1000, 3600]} />
-      {/* Hemisphere: sky-side warm cream, ground-side updated to match
-          the new three-octave terrain palette (average tone shifted from
-          the earlier #485044 dark-green to a slightly warmer #5d6553).
-          The bounce onto meshes now agrees with the terrain colour
-          instead of pulling everything toward pine-forest green. */}
-      <hemisphereLight args={['#f5efdd', '#5d6553', 0.95]} />
-      {/* Directional (sun): nudged from the earlier east-heavy (280, 380,
-          140) toward a more typical Bergslag midday (200, 380, 200) —
-          equally east and south, ~62° altitude, so the shadow angle
-          reads as "daytime" rather than "morning". Colour cooled a
-          hair from #fdefcc → #f7ecd0 so it doesn't over-warm the
-          Faluröd houses. */}
-      <directionalLight
-        position={[200, 380, 200]}
-        intensity={1.05}
-        color="#f7ecd0"
-      />
-      <ambientLight intensity={0.32} />
+      {/* ORDER 043 v3 step 1: hemisphere + directional + ambient
+          lights are now period-driven by DayLighting. The lunch
+          configuration reproduces the ORDER 042 baseline exactly
+          (hemi #f5efdd/#5d6553 @0.95, sun [200,380,200] intensity
+          1.05 colour #f7ecd0, ambient 0.32) so full-daylight scenes
+          don't regress. Morning, afternoon, dinner and evening
+          depart from that baseline. */}
+      <DayLighting />
       <Suspense fallback={null}>
         <Sky />
         <OsmTerrain />

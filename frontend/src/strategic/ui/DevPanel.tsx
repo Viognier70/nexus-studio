@@ -44,6 +44,23 @@ export function DevPanel({ lastKey }: Props) {
   const sim = useSimState();
   const c = sim.capitals.values;
   const wager = sim.wager ? `${sim.wager.capital[0].toUpperCase()}` : '-';
-  const line = `DEV  econ=${c.economic.toFixed(2)}  soc=${c.social.toFixed(2)}  eco=${c.ecological.toFixed(2)}  wager=${wager}  key=${lastKey || '-'}`;
-  return <div style={PANEL_STYLE}>{line}</div>;
+  const d = sim.day;
+  // Service progress readout: "5:23 / 10 min" when a service is
+  // running, "-" otherwise. Player-facing text never shows numbers
+  // (§9), but the dev strip does — it's the only surface where a
+  // countdown belongs.
+  const serviceReadout =
+    d.currentServiceLengthMinutes === null
+      ? '-'
+      : (() => {
+          const elapsed = sim.simTime - d.periodStartAt;
+          const totalSec = d.currentServiceLengthMinutes * 60;
+          const rem = Math.max(0, totalSec - elapsed);
+          const m = Math.floor(rem / 60);
+          const s = Math.floor(rem % 60);
+          return `${m}:${s.toString().padStart(2, '0')} / ${d.currentServiceLengthMinutes}min`;
+        })();
+  const line1 = `DEV  day=${d.dayNumber} ${d.period.padEnd(9)}  service=${serviceReadout.padEnd(14)}  scenarios=${d.scenariosFiredThisService}/${d.scenariosPlanned}`;
+  const line2 = `     econ=${c.economic.toFixed(2)}  soc=${c.social.toFixed(2)}  eco=${c.ecological.toFixed(2)}  wager=${wager}  key=${lastKey || '-'}`;
+  return <div style={PANEL_STYLE}>{`${line1}\n${line2}`}</div>;
 }

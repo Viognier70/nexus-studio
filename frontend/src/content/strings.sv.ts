@@ -74,6 +74,23 @@ export const strings = {
     firstRunHint: 'Namnet kan du inte ändra senare.',
     labelPrefix: 'Restaurang'
   },
+  day: {
+    // ORDER 043 v3 §2 — day-period player-facing text. Cycle-1 scope:
+    // morning + afternoon are the two picker phases; lunch/dinner/
+    // evening are running or transitional.
+    morning: {
+      heading: 'Morgon',
+      body: 'Öppna lunch eller hoppa över.',
+      openLunch: 'Öppna lunch',
+      skipLunch: 'Hoppa över lunch'
+    },
+    afternoon: {
+      heading: 'Eftermiddag',
+      body: 'Öppna middag.',
+      openDinner: 'Öppna middag'
+    },
+    minutesSuffix: 'min'
+  },
   scenario: {
     // ORDER 042 §3.3 walk-in-of-five. Difficulty is chosen BEFORE the
     // situation is revealed (LEARNING_AND_SCENARIO_ARCHITECTURE §4.3).
