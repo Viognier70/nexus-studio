@@ -21,13 +21,23 @@ import { useSimState } from '../simulation/SimulationProvider';
 // state.eventStream (bounded by STREAM_KEEP = 40) but off-screen.
 const VISIBLE_ENTRIES = 8;
 
+// Anchor inside the viewport with a right margin that survives narrow
+// widths. `width` clamps to `calc(100vw - 40px)` so the panel is never
+// wider than the visible area minus its own 20 px gutters. `boxSizing:
+// border-box` folds padding into the width so the panel cannot spill
+// past the clamp. `wordBreak: normal` + `overflowWrap: normal` +
+// `hyphens: none` block the browser from splitting a Swedish word
+// across a line at the right edge (Vision Owner 2026-08-08: "texten
+// bryts mitt i ordet").
 const PANEL_STYLE: React.CSSProperties = {
   position: 'absolute',
-  right: 16,
-  top: 96,               // clear of the top-right buttons (Om, ModeSwitchLink)
-  bottom: 120,           // clear of the wager panel / scenario overlay
-  width: 320,
-  padding: '10px 12px',
+  right: 20,
+  top: 96,                                    // clear of top-right buttons
+  bottom: 120,                                // clear of wager / scenario overlay
+  width: 'min(320px, calc(100vw - 40px))',
+  minWidth: 220,                              // still readable on the narrowest viewports
+  boxSizing: 'border-box',
+  padding: '10px 14px',
   background: 'rgba(20, 14, 10, 0.62)',
   color: '#f0e8d4',
   border: '1px solid rgba(168, 146, 106, 0.35)',
@@ -41,13 +51,21 @@ const PANEL_STYLE: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'flex-end',
-  overflow: 'hidden'
+  overflow: 'hidden',
+  wordBreak: 'normal',
+  overflowWrap: 'normal',
+  hyphens: 'none'
 };
 
 const ENTRY_BASE_STYLE: React.CSSProperties = {
   marginTop: 6,
-  paddingLeft: 4,
-  borderLeft: '2px solid rgba(168, 146, 106, 0.55)'
+  paddingLeft: 6,
+  borderLeft: '2px solid rgba(168, 146, 106, 0.55)',
+  // Belt-and-braces: same wrap rules per entry so a nested style from
+  // an ancestor cannot override them at the paragraph level.
+  wordBreak: 'normal',
+  overflowWrap: 'normal',
+  hyphens: 'none'
 };
 
 export function EventStreamPanel() {
