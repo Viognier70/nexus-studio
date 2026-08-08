@@ -71,10 +71,15 @@ function StrategicShell() {
   //
   //   ORDER 043 B.1 gate shortcuts — no numeric HUD, no on-screen
   //   readout; the room itself is the reading. Cycle the capital
-  //   through [1.0, 0.7, 0.4, 0.15, 0.0] to see the phenomenon respond:
-  //     S — social capital cycle (watch the queue grow / shrink)
-  //     E — economic capital cycle (watch tables empty, walk-aways rise)
-  //     C — ecological capital cycle (watch the delivery van cadence)
+  //   through [1.0, 0.7, 0.4, 0.15, 0.0] to see the phenomenon respond.
+  //   Bindings moved off letter mnemonics (s/e/c) 2026-08-08 after
+  //   `e` collided with camera yaw-rotate; the punctuation triplet
+  //   , . / has no overlap with camera (q/e/1-4/Esc) or sim shortcuts
+  //   (5/r) and reads as an obvious dev keybind — no player would
+  //   press comma expecting a game effect.
+  //     , — social capital cycle (watch the queue grow / shrink)
+  //     . — economic capital cycle (watch tables empty, walk-aways rise)
+  //     / — ecological capital cycle (watch the delivery van cadence)
   //   These get removed at B.3 when the wager UI + scenario-driven
   //   capital movement replace them.
   //
@@ -106,9 +111,9 @@ function StrategicShell() {
       setLastKey(event.key);
       if (event.key === '5') simDispatch({ type: 'TRIGGER_SCENARIO' });
       if (event.key === 'r' || event.key === 'R') simDispatch({ type: 'RESET' });
-      if (event.key === 's' || event.key === 'S') cycle('social');
-      if (event.key === 'e' || event.key === 'E') cycle('economic');
-      if (event.key === 'c' || event.key === 'C') cycle('ecological');
+      if (event.key === ',') cycle('social');
+      if (event.key === '.') cycle('economic');
+      if (event.key === '/') cycle('ecological');
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
