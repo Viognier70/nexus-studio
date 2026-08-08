@@ -213,6 +213,133 @@ describe('reducer RESOLVE_SCENARIO (walk-in-of-five)', () => {
   });
 });
 
+describe('seat allocation invariants', () => {
+  function seatedGuests(s: SimulationState) {
+    return s.guests.filter((g) =>
+      ['seated', 'ordering', 'dining', 'paying'].includes(g.state)
+    );
+  }
+
+  it('no two seated guests share a seatIndex during normal ambient play', () => {
+    let s = makeInitialState(1);
+    // Run ~90 sim-sec of ambient play (450 ticks). Regular arrivals
+    // fire ~every 16 sim-sec, so we'll accumulate 5–6 seated guests
+    // over this window; if findFreeSeat ever hands the same slot to
+    // two guests, this test catches it.
+    for (let t = 0; t < 450; t++) {
+      s = reducer(s, { type: 'TICK', dt: 1 / 5 });
+      const seats = seatedGuests(s).map((g) => g.seatIndex);
+      const uniq = new Set(seats);
+      expect(
+        uniq.size,
+        `tick ${t}: duplicate seatIndex in ${JSON.stringify(seats)}`
+      ).toBe(seats.length);
+    }
+  });
+
+  it('no two seated guests share a seatIndex through a full scenario', () => {
+    // Walk the full loop: ambient → auto-trigger → subject → difficulty
+    // → situation → resolve A → 120 sim-sec of consequence. Pins that
+    // the party-of-five never steals a seat from an already-seated
+    // regular, and no seatIndex ever appears twice in state.guests.
+    let s = makeInitialState(1);
+    // Advance past auto-trigger (150 ticks ≈ 30 sim-sec)
+    for (let t = 0; t < 155; t++) s = reducer(s, { type: 'TICK', dt: 1 / 5 });
+    if (s.scenario.phase !== 'subject') {
+      // Manual trigger fallback (auto shouldn't miss but be defensive)
+      s = reducer(s, { type: 'TRIGGER_SCENARIO' });
+    }
+    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
+    s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
+    s = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'A' });
+    // 120 sim-sec = 600 ticks of consequence to cover spawn + walk-in +
+    // full dining cycle + leave for the party of five.
+    for (let t = 0; t < 600; t++) {
+      s = reducer(s, { type: 'TICK', dt: 1 / 5 });
+      const seats = seatedGuests(s).map((g) => g.seatIndex);
+      const uniq = new Set(seats);
+      expect(
+        uniq.size,
+        `tick ${t} post-resolve: duplicate seatIndex in ${JSON.stringify(seats)}`
+      ).toBe(seats.length);
+    }
+  });
+
+  it('every seated guest has a non-null seatIndex within layout range', () => {
+    let s = makeInitialState(1);
+    for (let t = 0; t < 155; t++) s = reducer(s, { type: 'TICK', dt: 1 / 5 });
+    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
+    s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
+    s = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'A' });
+    for (let t = 0; t < 300; t++) s = reducer(s, { type: 'TICK', dt: 1 / 5 });
+    const seats = seatedGuests(s);
+    for (const g of seats) {
+      expect(g.seatIndex, `guest ${g.id} in state '${g.state}' has null seatIndex`).not.toBeNull();
+      expect(g.seatIndex).toBeGreaterThanOrEqual(0);
+      expect(g.seatIndex).toBeLessThan(16); // TOTAL_SEATS
+    }
+  });
+
+  it('choice A: party of five occupies the 4-top + one adjacent 2-top seat', () => {
+    // Start clean (no ambient regulars so the party's preferred seats
+    // are all free). Manual trigger, choice A, then advance until all 5
+    // scenario guests have arrived and been seated.
+    let s = makeInitialState(1);
+    s = reducer(s, { type: 'TRIGGER_SCENARIO' });
+    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
+    s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
+    s = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'A' });
+    for (let t = 0; t < 80; t++) s = reducer(s, { type: 'TICK', dt: 1 / 5 });
+    // 4-top seat range is 4..7; one adjacent 2-top seat is 8 or 9.
+    // No party guest should land at the outer 2-tops (10/11), no bar
+    // stool (12–15), and none should land on the far-left 2-tops (0–3)
+    // as long as SEATS_CHOICE_A wasn't exhausted.
+    const partySeats = s.guests
+      .filter((g) => g.scenarioSource && g.seatIndex !== null)
+      .map((g) => g.seatIndex as number)
+      .sort((a, b) => a - b);
+    expect(partySeats).toHaveLength(5);
+    // All five should be in {4,5,6,7,8}
+    const allowed = new Set([4, 5, 6, 7, 8]);
+    for (const seat of partySeats) {
+      expect(allowed.has(seat), `party seat ${seat} outside SEATS_CHOICE_A`).toBe(true);
+    }
+  });
+
+  it('choice B: party of five fills the 4-top + one bar stool', () => {
+    let s = makeInitialState(1);
+    s = reducer(s, { type: 'TRIGGER_SCENARIO' });
+    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
+    s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
+    s = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'B' });
+    for (let t = 0; t < 80; t++) s = reducer(s, { type: 'TICK', dt: 1 / 5 });
+    const partySeats = s.guests
+      .filter((g) => g.scenarioSource && g.seatIndex !== null)
+      .map((g) => g.seatIndex as number)
+      .sort((a, b) => a - b);
+    expect(partySeats).toHaveLength(5);
+    // Four at the 4-top + one bar stool (seat 12)
+    expect(partySeats).toEqual([4, 5, 6, 7, 12]);
+  });
+
+  it('regulars prefer the outer 2-tops so the 4-top stays open for parties', () => {
+    // With SEATS_DEFAULT front-loading t0/t1/t3/t4 before the 4-top,
+    // the first several regular arrivals shouldn't touch seats 4–7.
+    let s = makeInitialState(1);
+    // Ambient play for ~90 sim-sec — enough for a few regulars but not
+    // enough to fill 8 outer 2-top seats + 4 bar stools before the 4-top.
+    for (let t = 0; t < 450; t++) s = reducer(s, { type: 'TICK', dt: 1 / 5 });
+    const regularSeatsAtFourTop = s.guests
+      .filter((g) => !g.scenarioSource && g.seatIndex !== null)
+      .map((g) => g.seatIndex as number)
+      .filter((seat) => seat >= 4 && seat <= 7);
+    // With ~5 regular arrivals expected in this window, none should
+    // spill onto the 4-top (front-loaded ordering has 8 outer + 4 bar
+    // seats to fill first, total 12 preferred slots before the 4-top).
+    expect(regularSeatsAtFourTop.length, 'regulars leaked onto the 4-top').toBe(0);
+  });
+});
+
 describe('reducer scenario resolves in the room (§3.4 mentor comment)', () => {
   function inResolving(choice: 'A' | 'B' | 'C', difficulty: 1 | 2 | 3): SimulationState {
     let s = makeInitialState(1);
