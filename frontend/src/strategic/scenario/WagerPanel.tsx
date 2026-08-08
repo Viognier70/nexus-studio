@@ -85,13 +85,6 @@ const SELECTED_BUTTON_STYLE: React.CSSProperties = {
   color: '#1a1409'
 };
 
-const DECLINE_BUTTON_STYLE: React.CSSProperties = {
-  ...BUTTON_STYLE,
-  background: '#2a1e14',
-  fontWeight: 500,
-  opacity: 0.85
-};
-
 export function WagerPanel() {
   const sim = useSimState();
   const dispatch = useSimDispatch();
@@ -116,29 +109,43 @@ export function WagerPanel() {
       <div style={BODY_STYLE}>
         {wager ? strings.wager.placed : strings.wager.body}
       </div>
+      {wager ? null : (
+        <div
+          style={{
+            fontSize: 11,
+            opacity: 0.72,
+            marginBottom: 12,
+            fontStyle: 'italic',
+            letterSpacing: 0.2
+          }}
+        >
+          {strings.wager.lockNote}
+        </div>
+      )}
       <div style={BUTTON_ROW_STYLE}>
         {CAPITAL_ORDER.map((cap) => {
           const isSelected = wager?.capital === cap;
+          const isLocked = wager !== null;
+          const buttonStyle = isSelected
+            ? SELECTED_BUTTON_STYLE
+            : isLocked
+            ? { ...BUTTON_STYLE, opacity: 0.35, cursor: 'default' as const }
+            : BUTTON_STYLE;
           return (
             <button
               key={cap}
               type="button"
-              style={isSelected ? SELECTED_BUTTON_STYLE : BUTTON_STYLE}
-              onClick={() => dispatch({ type: 'PLACE_WAGER', capital: cap })}
+              disabled={isLocked}
+              style={buttonStyle}
+              onClick={() => {
+                if (isLocked) return;
+                dispatch({ type: 'PLACE_WAGER', capital: cap });
+              }}
             >
               {strings.wager.capitals[cap]}
             </button>
           );
         })}
-        {wager ? (
-          <button
-            type="button"
-            style={{ ...DECLINE_BUTTON_STYLE, marginLeft: 'auto' }}
-            onClick={() => dispatch({ type: 'CLEAR_WAGER' })}
-          >
-            {strings.wager.clear}
-          </button>
-        ) : null}
       </div>
       {weather ? (
         <div

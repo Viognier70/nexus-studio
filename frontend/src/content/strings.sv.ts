@@ -175,7 +175,12 @@ export const strings = {
   // is legitimate and progresses more slowly.
   wager: {
     heading: 'Läs rummet',
-    body: 'Vilken hållbarhet handlar nästa situation om?',
+    // ORDER 043 Addendum B — pre-placement copy in the observer's
+    // voice. Names what the stake is, what a correct read gives back,
+    // what a wrong one costs, and that it locks the moment it's
+    // placed. Not a rules panel; a briefing.
+    body: 'Vilken hållbarhet handlar nästa situation om? Rätt läsning ger tillbaka — och lite mer om den avläsning du valde ligger svagt. Fel läsning tas.',
+    lockNote: 'Insatsen låser i samma stund du väljer. Ingen ångrings-knapp; det är där risken bor.',
     capitals: {
       economic:   'Ekonomiskt',
       social:     'Socialt',
@@ -183,8 +188,7 @@ export const strings = {
     },
     decline: 'Avstå',
     standing: 'Satsat:',
-    clear: 'Ångra',
-    placed: 'Insatsen står.',
+    placed: 'Insatsen står — vi ser hur nästa situation faller ut.',
     // ORDER 045 — weather line shown under the capital buttons so the
     // wager reads against the evening's conditions.
     weatherPrefix: 'Kvällen:'

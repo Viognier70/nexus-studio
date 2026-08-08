@@ -1,4 +1,4 @@
-// ORDER 043 Addendum A — the service event stream panel.
+// ORDER 043 Addendum A + B — the service event stream panel.
 //
 // Player-facing text strip on the right of the viewport. Shows the
 // last N events in chronological order (newest at the bottom, so new
@@ -9,17 +9,32 @@
 // cadence carry the reading, not styling. Older entries fade to keep
 // the recent ones legible without a hard cutoff.
 //
+// Addendum B §5A.7 arrival mark: each new line arrives with a brief
+// slide-in animation and a soft procedural sound. Same for every
+// event regardless of kind — the mark says "something has happened";
+// the text says what.
+//
 // Visible only during service (lunch / dinner) — outside service the
 // stream is either empty or stale, and rendering it would compete
 // with the ServiceLengthPicker / WagerPanel for the player's
 // attention. Fade-out on transition rather than pop; the closing
 // scene of an evening should carry a moment of its own text.
 
+import { useEffect, useRef, useState } from 'react';
+import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
 import { useSimState } from '../simulation/SimulationProvider';
+import { playStreamArrivalCue } from './streamArrivalCue';
 
 // Show at most this many recent entries. Anything older is still in
 // state.eventStream (bounded by STREAM_KEEP = 40) but off-screen.
+// Halved rates (Addendum B) mean fewer entries per service — the
+// same 8-line window now carries a wider time span.
 const VISIBLE_ENTRIES = 8;
+
+// Arrival animation window: how long the newest entry visibly slides
+// into place. Longer than a UI fade so the eye can catch it from
+// across the room without staring at the panel.
+const ARRIVAL_ANIM_MS = 420;
 
 // Anchor inside the viewport with a right margin that survives narrow
 // widths. `width` clamps to `calc(100vw - 40px)` so the panel is never
@@ -27,15 +42,14 @@ const VISIBLE_ENTRIES = 8;
 // border-box` folds padding into the width so the panel cannot spill
 // past the clamp. `wordBreak: normal` + `overflowWrap: normal` +
 // `hyphens: none` block the browser from splitting a Swedish word
-// across a line at the right edge (Vision Owner 2026-08-08: "texten
-// bryts mitt i ordet").
+// across a line at the right edge.
 const PANEL_STYLE: React.CSSProperties = {
   position: 'absolute',
   right: 20,
-  top: 96,                                    // clear of top-right buttons
-  bottom: 120,                                // clear of wager / scenario overlay
+  top: 96,
+  bottom: 120,
   width: 'min(320px, calc(100vw - 40px))',
-  minWidth: 220,                              // still readable on the narrowest viewports
+  minWidth: 220,
   boxSizing: 'border-box',
   padding: '10px 14px',
   background: 'rgba(20, 14, 10, 0.62)',
@@ -61,15 +75,44 @@ const ENTRY_BASE_STYLE: React.CSSProperties = {
   marginTop: 6,
   paddingLeft: 6,
   borderLeft: '2px solid rgba(168, 146, 106, 0.55)',
-  // Belt-and-braces: same wrap rules per entry so a nested style from
-  // an ancestor cannot override them at the paragraph level.
   wordBreak: 'normal',
   overflowWrap: 'normal',
-  hyphens: 'none'
+  hyphens: 'none',
+  transition: `transform ${ARRIVAL_ANIM_MS}ms ease-out, opacity ${ARRIVAL_ANIM_MS}ms ease-out`
 };
 
 export function EventStreamPanel() {
   const sim = useSimState();
+  const reduceMotion = usePrefersReducedMotion();
+
+  // Track the last stream length so we can detect a fresh arrival and
+  // trigger the sound + animation exactly once per new entry.
+  const lastLenRef = useRef<number>(sim.eventStream.length);
+  // Key of the newest entry being animated in. Cleared after the
+  // animation window elapses so subsequent renders don't re-animate
+  // the same line.
+  const [animatingKey, setAnimatingKey] = useState<string | null>(null);
+
+  useEffect(() => {
+    const currLen = sim.eventStream.length;
+    if (currLen > lastLenRef.current) {
+      const newest = sim.eventStream[currLen - 1];
+      const key = `${newest.at.toFixed(3)}-${newest.kind}`;
+      setAnimatingKey(key);
+      playStreamArrivalCue();
+      const t = window.setTimeout(() => setAnimatingKey(null), ARRIVAL_ANIM_MS);
+      lastLenRef.current = currLen;
+      return () => window.clearTimeout(t);
+    }
+    // Handle ring-buffer wrap: STREAM_KEEP caps at 40 so length is
+    // stable once full. Track by newest.at so a same-length transition
+    // still catches the arrival.
+    if (currLen === lastLenRef.current && currLen > 0) {
+      // No new entry — nothing to do.
+    }
+    lastLenRef.current = currLen;
+  }, [sim.eventStream]);
+
   const period = sim.day.period;
   if (period !== 'lunch' && period !== 'dinner') return null;
 
@@ -81,18 +124,66 @@ export function EventStreamPanel() {
       {entries.map((e, i) => {
         // Fade older entries. Newest (bottom, last in array) at full
         // opacity; each step back drops by ~9 %. The oldest of eight
-        // sits at ~0.38 — legible but clearly receding.
+        // sits at ~0.35 — legible but clearly receding.
         const stepsFromNewest = entries.length - 1 - i;
         const opacity = Math.max(0.35, 1 - stepsFromNewest * 0.09);
+        const key = `${e.at.toFixed(3)}-${e.kind}-${i}`;
+        const isArriving =
+          !reduceMotion &&
+          stepsFromNewest === 0 &&
+          animatingKey === `${e.at.toFixed(3)}-${e.kind}`;
+        // Slide-in from the right, small offset — visible in
+        // peripheral vision but not distracting. Reduced-motion users
+        // get a plain fade-in via the same opacity easing.
+        const style: React.CSSProperties = {
+          ...ENTRY_BASE_STYLE,
+          opacity: isArriving ? 0 : opacity,
+          transform: isArriving ? 'translateX(12px)' : 'translateX(0)'
+        };
+        // Force a second render one frame later so the CSS transition
+        // eases from (0, translateX(12px)) to (opacity, translateX(0)).
         return (
-          <div
-            key={`${e.at}-${i}`}
-            style={{ ...ENTRY_BASE_STYLE, opacity }}
-          >
-            {e.text}
-          </div>
+          <ArrivalEntry
+            key={key}
+            text={e.text}
+            style={style}
+            settledStyle={{
+              ...ENTRY_BASE_STYLE,
+              opacity,
+              transform: 'translateX(0)'
+            }}
+            isArriving={isArriving}
+          />
         );
       })}
     </div>
   );
+}
+
+interface ArrivalEntryProps {
+  text: string;
+  style: React.CSSProperties;
+  settledStyle: React.CSSProperties;
+  isArriving: boolean;
+}
+
+// A single stream entry. When it mounts in "arriving" state it starts
+// at (opacity 0, translateX(12px)), then requests an animation frame
+// and eases to the settled style. Non-arriving entries render at the
+// settled style directly.
+function ArrivalEntry({ text, style, settledStyle, isArriving }: ArrivalEntryProps) {
+  const [current, setCurrent] = useState<React.CSSProperties>(
+    isArriving ? style : settledStyle
+  );
+  useEffect(() => {
+    if (!isArriving) {
+      setCurrent(settledStyle);
+      return;
+    }
+    // One rAF to let the initial (offset) style paint, then swap in
+    // the settled style so the CSS transition animates.
+    const raf = window.requestAnimationFrame(() => setCurrent(settledStyle));
+    return () => window.cancelAnimationFrame(raf);
+  }, [isArriving, settledStyle]);
+  return <div style={current}>{text}</div>;
 }

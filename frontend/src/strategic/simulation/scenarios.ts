@@ -88,8 +88,8 @@ const WALK_IN_OF_FIVE: ScenarioSpec = {
       nextSpawnAtOffset: 0.4,
       capitalSign: 1,
       outcomes: [
-        'Fyran och tvåan slås ihop — grannbordet tappar armbågsrymden.',
-        'Sällskapets ordering kommer i klump — passet får en spik.'
+        'Fyran och tvåan har slagits ihop — grannbordet får hasa in mot väggen för att hämta besticket. Ingen sa något men jag såg blicken; undrar om vi skulle ha lämnat en förklaring innan de fick lista ut det själva.',
+        'Sällskapets ordering kom in i klump på passet — köket har fem huvudrätter samtidigt istället för spridda i tid. Kocken vid grillen ser sammanbiten ut; hm, det var vi som valde det när vi sa ja.'
       ],
       mentor: {
         1: 'Djärvt val för första kvällen. Låt köket få tempo.',
@@ -104,8 +104,8 @@ const WALK_IN_OF_FIVE: ScenarioSpec = {
       nextSpawnAtOffset: 0.4,
       capitalSign: 1,
       outcomes: [
-        'Fyra vid fyran, en vid baren — den femte försöker verka nöjd.',
-        'Bartendern hälsar sent — den femte har hunnit vänta ut sin egen tystnad.'
+        'Fyra sitter vid fyran och en sitter vid baren — den femte hänger jackan över barstolen och försöker se avslappnad ut. Sällskapet vid bordet tittar dit lite för ofta; undrar om han vet att vi vet att vi delade honom.',
+        'Bartendern hälsade sent på den femte — han hann vänta ut sin egen tystnad först. Nu står drinken framför honom men samtalet vid bordet har gått vidare utan honom. Hm, den där ensamheten är svår att ta tillbaka i efterhand.'
       ],
       mentor: {
         1: 'Bra kompromiss. Femte vid baren får en annan upplevelse — se till att någon hälsar.',
@@ -120,8 +120,8 @@ const WALK_IN_OF_FIVE: ScenarioSpec = {
       nextSpawnAtOffset: 0.3,
       capitalSign: -0.5,
       outcomes: [
-        'Två av sällskapet vänder redan i entrén — de andra följer efter.',
-        'En stamgäst vid fönsterbordet höjer på ögonbrynen — noterar.'
+        'Två av sällskapet vände redan i entrén innan värden hade sagt hela meningen — de andra tre följde efter utan att fråga varför. Kvar står värden med en artighet på tungan som ingen tog emot; hm, den där ansiktet är svårare att glömma än beslutet var att fatta.',
+        'En stamgäst vid fönsterbordet såg hela utbytet och höjde på ögonbrynen mot sin sällskapare. De sa inget till oss men växlade en blick. Undrar hur många kvällar det tar innan den blicken kommer tillbaka som en avbokning.'
       ],
       mentor: {
         1: 'Rätt att skydda kvällen. Nästa gång kanske servisen är redo.',
@@ -159,8 +159,8 @@ const TIME_PRESSURE: ScenarioSpec = {
       nextSpawnAtOffset: 0,
       capitalSign: 1,
       outcomes: [
-        'Menyn byts på passet — köket noterar men följer med.',
-        'Notan svullnar snabbt — resten av kvällen betalar i tempo.'
+        'Menyn byts mitt på passet — köket noterar med en nick och börjar tömma om stationerna. Två pågående beställningar får läggas ner halvfärdiga och tas om. Undrar om vi förklarade tydligt nog för dem att detta var mitt beslut, inte deras.',
+        'Notan svullnar snabbt när delegationen bokas för imorgon — men resten av kvällen betalar i tempo. Två stambord får sitt bröd senare än vanligt; hm, det är räkningen för morgondagens seger, betald i kvällens andrum.'
       ],
       mentor: {
         1: 'Djärvt val. Menybytet mitt i passet är risken du sa ja till — se om laget håller.',
@@ -175,8 +175,8 @@ const TIME_PRESSURE: ScenarioSpec = {
       nextSpawnAtOffset: 0,
       capitalSign: 1,
       outcomes: [
-        'Bokningen skrivs för morgondagen — kvällen får en paus att andas ut.',
-        'Kocken börjar planera i huvudet — nästa mise en place är i morgon.'
+        'Bokningen skrevs för morgondagen — kvällen fick andas ut. Servitören sa till köket och båda log lätt utan att kommentera. Undrar om det är den där sortens signal som håller ett lag ihop längre än en bonus gör.',
+        'Kocken började planera imorgondagens meny i huvudet mitt i pass 5 — han var redan hemma i tanken. Hm, det är den luxuösa sortens uppmärksamhet vi köpte oss med att säga nej ikväll och ja i morgon.'
       ],
       mentor: {
         1: 'Klok mellanväg. Ger köket tid att förbereda på ett kontrollerat sätt.',
@@ -191,8 +191,8 @@ const TIME_PRESSURE: ScenarioSpec = {
       nextSpawnAtOffset: 0,
       capitalSign: -0.5,
       outcomes: [
-        'Delegationen tackar men går vidare — värden noterar att någon annan tog dem.',
-        'Kvällens takt behålls — passet håller inte fler överraskningar.'
+        'Delegationen tackade artigt och la på — inom en halvtimme såg vi via en av stamgästerna att de bokat sig på hotellrestaurangen istället. Undrar om vår rytm värderas till vad vi tror den värderas till, eller om vi lagt ett golv där ingen annan skulle ha lagt det.',
+        'Kvällens takt behölls — inga fler överraskningar nådde passet. Servitörerna rör sig som om de vet vad de gör i två timmar till. Hm, det är den där stillheten som är svår att räkna in i kassan men lätt att räkna in i vem som orkar komma i morgon.'
       ],
       mentor: {
         1: 'Rätt att skydda tempot när laget är osäkert. Nästa gång kanske marginalen räcker.',
@@ -234,8 +234,8 @@ const MORAL_DILEMMA: ScenarioSpec = {
       // never learns it.
       capitalSign: -1,
       outcomes: [
-        'Två av förrätterna kommer utan certifikat — värden viker undan frågor från stamgäster.',
-        'En gäst frågar om fiskens ursprung — servitören blir tyst en sekund för länge.'
+        'Två av förrätterna gick ut utan att någon nämnde att spårbarheten fattades — värden viker undan frågor från stamgäster på bord tre. Han svarar utan att svara. Undrar om han vet att den där ovilligheten själv säger något som gästen läser utan att formulera det.',
+        'En gäst frågade rakt ut om fiskens ursprung — servitören blev tyst en sekund för länge innan hon svarade "från vår vanliga leverantör". Bordet nöjde sig med det men växlade en blick. Hm, den där sekunden är den enda tid vi kommer att kunna ta tillbaka det på.'
       ],
       mentor: {
         1: 'Ett risktagande utan säkerhet. Servisen hoppas att inget märks — som ofta är fallet, men inte alltid.',
@@ -253,8 +253,8 @@ const MORAL_DILEMMA: ScenarioSpec = {
       // hit but the room stayed honest).
       capitalSign: 0.5,
       outcomes: [
-        'Menytavlan skrivs om i sista stund — köket skiftar utan gnäll.',
-        'Alternativet presenteras utan ursäkter — bordet fortsätter obemärkt.'
+        'Menytavlan skrevs om i sista stund — köket bytte till kyckling utan gnäll och började plocka fram vad som fanns. Ingen kommenterade förändringen. Undrar om det där lugnet är en effekt av att beslutet var mitt att fatta och deras att verkställa.',
+        'Alternativet presenterades utan ursäkter — servitören sa "vi har justerat menyn efter dagens leverans" och bordet nickade utan att fråga vidare. Hm, det är det där språket som gör en substitution till ett val istället för ett problem.'
       ],
       mentor: {
         1: 'Trygg justering. Bytet stör men skyddar.',
@@ -271,8 +271,8 @@ const MORAL_DILEMMA: ScenarioSpec = {
       // legible to the room. Largest ecological lift of the three.
       capitalSign: 1,
       outcomes: [
-        'Gröna alternativen presenteras med sin egen berättelse — bordsprat stiger.',
-        'En gäst noterar att kvällens meny ändrades och nickar uppskattande.'
+        'De gröna alternativen presenterades med sin egen berättelse — servitören berättade om odlaren och veckans skörd. Bordspratet steg märkbart över tre bord. Undrar om vi kommer att se det här som en punkt där menyn ändrades permanent, eller som en engångskväll.',
+        'En gäst vid pass 4 noterade uttryckligen att kvällens meny hade ändrats och nickade uppskattande — hon frågade var grönsakerna kom ifrån. Servitören visste svaret. Hm, det där svaret är resultatet av morgonens beslut att inte ta genvägen.'
       ],
       mentor: {
         1: 'Djärvt val — förvandlar en risk till en möjlighet. Kräver att köket är med.',

@@ -223,6 +223,16 @@ function openService(
     openingEndsAt: state.simTime + OPENING_DURATION_SEC,
     prepEndsAt: state.simTime + OPENING_DURATION_SEC + PREP_DURATION_SEC,
     prepIgnoranceCount: 0,
+    // ORDER 043 Addendum B prep floor — two guaranteed prep events
+    // per service, at ~35 s and ~85 s past prep-start (~45 s and
+    // ~95 s past OPEN_SERVICE, which sits before opening). Kinds
+    // rotate across services via a coarse dayNumber+service mod so
+    // consecutive services don't spotlight the same axis.
+    prepFloorSchedule: buildPrepFloorSchedule(
+      state.simTime + OPENING_DURATION_SEC,
+      state.day.dayNumber,
+      service
+    ),
     weather,
     waitingAtOpening,
     doorsOpenedThisService: false,
@@ -233,6 +243,30 @@ function openService(
     day,
     rngState: rng.state
   };
+}
+
+// ORDER 043 Addendum B — two guaranteed prep events per service.
+// Slot times are fixed at 35 s and 85 s past prep-start (leaving
+// 30 s of "quiet" head and tail so the floor doesn't feel metronomic).
+// Kinds are rotated across services by (dayNumber + service parity)
+// so consecutive services don't foreground the same axis.
+const PREP_FLOOR_OFFSETS_SEC = [35, 85] as const;
+const PREP_KINDS: readonly ('prep_kitchen' | 'prep_room' | 'prep_delivery')[] = [
+  'prep_kitchen',
+  'prep_room',
+  'prep_delivery'
+];
+function buildPrepFloorSchedule(
+  prepStartAt: number,
+  dayNumber: number,
+  service: 'lunch' | 'dinner'
+): { dueAt: number; kind: 'prep_kitchen' | 'prep_room' | 'prep_delivery' }[] {
+  const parity = service === 'lunch' ? 0 : 1;
+  const baseIdx = (dayNumber - 1) * 2 + parity;
+  return PREP_FLOOR_OFFSETS_SEC.map((offset, i) => ({
+    dueAt: prepStartAt + offset,
+    kind: PREP_KINDS[(baseIdx + i) % PREP_KINDS.length]
+  }));
 }
 
 function skipLunch(state: SimulationState): SimulationState {
@@ -250,6 +284,7 @@ function skipLunch(state: SimulationState): SimulationState {
       openingEndsAt: null,
       prepEndsAt: null,
       prepIgnoranceCount: 0,
+      prepFloorSchedule: [],
       weather: null,
       waitingAtOpening: 0,
       doorsOpenedThisService: false,
@@ -289,6 +324,7 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           openingEndsAt: null,
           prepEndsAt: null,
           prepIgnoranceCount: 0,
+          prepFloorSchedule: [],
           weather: null,
           waitingAtOpening: 0,
           doorsOpenedThisService: false,
@@ -319,6 +355,7 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           openingEndsAt: null,
           prepEndsAt: null,
           prepIgnoranceCount: 0,
+          prepFloorSchedule: [],
           weather: null,
           waitingAtOpening: 0,
           doorsOpenedThisService: false,
@@ -558,11 +595,11 @@ function fireTeamMember(state: SimulationState, memberId: string): SimulationSta
 // ---------- ORDER 043 wager + enabler transitions -------------------------
 
 function placeWager(state: SimulationState, capital: SustainabilityKey): SimulationState {
-  // Placing a new wager replaces any prior standing wager. Wagers are
-  // only meaningful between scenarios (§4 "after a scenario resolves
-  // and before the next arrives"); we permit the action in any phase
-  // so the UI is simpler, and Phase B's scenario integration will
-  // resolve or discard a standing wager appropriately.
+  // ORDER 043 Addendum B — the stake is locked the moment it is
+  // placed. No withdrawal, no time window. Once a wager stands,
+  // PLACE_WAGER is a no-op; the only way out is the next scenario
+  // resolving (which clears the wager as part of payout).
+  if (state.wager !== null) return state;
   return {
     ...state,
     wager: {
@@ -573,6 +610,11 @@ function placeWager(state: SimulationState, capital: SustainabilityKey): Simulat
   };
 }
 
+// CLEAR_WAGER intentionally retired at Addendum B. The stake locks
+// at placement; the wager is cleared only by RESOLVE_SCENARIO after
+// payout. Kept as a helper for backward compat if a future order
+// needs a system-side retract (e.g. a service that ends before a
+// scenario fires); currently unused.
 function clearWager(state: SimulationState): SimulationState {
   return { ...state, wager: null };
 }

@@ -288,6 +288,16 @@ export interface ActiveWorldFactor {
   kind: WorldFactorKind;
 }
 
+// ORDER 043 Addendum B — one guaranteed prep event slot. Two of
+// these are scheduled per service at fixed offsets into the prep
+// window. `kind` is chosen at OPEN_SERVICE (round-robin across the
+// three prep kinds); polarity is decided at fire time from team
+// competence for that kind's axis.
+export interface PrepFloorSlot {
+  dueAt: number;
+  kind: 'prep_kitchen' | 'prep_room' | 'prep_delivery';
+}
+
 export interface DayState {
   dayNumber: number;               // 1-indexed
   period: DayPeriod;
@@ -321,6 +331,13 @@ export interface DayState {
   // prep window. Read at prep-end to decide whether to schedule a
   // carryover bottleneck event ~13 min into service.
   prepIgnoranceCount: number;
+  // ORDER 043 Addendum B — the prep floor. Two guaranteed prep
+  // events per service, scheduled at fixed offsets into the prep
+  // window. Polarity picked at fire time from team competence for
+  // the kind's axis: > 0.5 → positive (prep going well), else →
+  // ignorance (prep going wrong). Ensures a strong team's mise en
+  // place doesn't read as silent. Consumed head-first.
+  prepFloorSchedule: PrepFloorSlot[];
   // ORDER 045 — the evening's weather. Generated at OPEN_SERVICE.
   weather: WeatherConditions | null;
   // Number of guests already outside when the opening panel appears,

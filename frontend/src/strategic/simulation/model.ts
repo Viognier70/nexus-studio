@@ -164,6 +164,7 @@ export function initialDay(): DayState {
     openingEndsAt: null,
     prepEndsAt: null,
     prepIgnoranceCount: 0,
+    prepFloorSchedule: [],
     weather: null,
     waitingAtOpening: 0,
     doorsOpenedThisService: false,
