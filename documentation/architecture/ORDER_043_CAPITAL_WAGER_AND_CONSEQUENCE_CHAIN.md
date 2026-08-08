@@ -106,6 +106,8 @@ A novice sees the queue and thinks business is good. Someone who knows the trade
 - **Dinner is the queue reading.** Peak queue grows monotonically as social capital falls (2 → 4 → 4 → 5 → 7 across social 1.0 → 0.0). Pinned as a regression test — see `day.test.ts` "dinner queue grows monotonically as social falls." That invariant is what makes the queue a phenomenon, not noise; it must not slip in a future retune.
 - **Lunch is the seat + walk-away reading.** Mean seated rises as social falls (staff bottleneck slows turnover), and walk-away volume tracks economic. A lunch queue is not the signal — its absence is *not a bug.* Do not "fix" it by pushing lunch's multiplier up to dinner's; that would flatten the two services into one and lose the reading contrast.
 
+**The queue has been demoted from the primary social reading (2026-08-08).** The queue-persistence probe (`frontend/reports/queue-persistence.probe.ts`) measured mean dwell < 2 s at any social ≥ 0.3 — below the "buildable phenomenon" threshold. The event stream introduced by **Addendum A** now carries the primary social reading; the queue remains a *secondary signal* at very low social capital (~≤ 0.3) where dwell rises to 4–9 s and the standing line becomes visible. Do not tune diningDuration further to try to force the queue back — the fix is the event stream, not more turnover slowdown.
+
 ### 5.2 Two hardcoded caps must be lifted
 
 Probing during v2 found two limits invisible from outside:
