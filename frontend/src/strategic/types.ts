@@ -380,12 +380,17 @@ export interface WagerHistoryEntry {
 // (strain-events). See eventStream.ts for the mechanics and
 // eventStream.sv.ts for the sentence banks.
 //
-// Two categories:
-//   ambient — rolled per tick from base rates × ignorance × strain
-//   outcome — hand-authored per (scenario, choice), fires
-//             deterministically 6 s and 18 s after RESOLVE_SCENARIO
-//             to fill the space between choice and mentor comment.
-export type EventStreamCategory = 'ambient' | 'outcome';
+// Three categories:
+//   ambient  — rolled per tick from base rates × ignorance × strain
+//   outcome  — hand-authored per (scenario, choice), fires
+//              deterministically 6 s and 18 s after RESOLVE_SCENARIO
+//              to fill the space between choice and mentor comment.
+//   positive — verksamhet som går bra. Fills calm periods, absence
+//              during a lull is itself a signal (Vision Owner
+//              2026-08-08: "frånvaro betyder att något är fel").
+//              Fires only during service, gated by calmness × team
+//              competence — a weak or strained team gets no positives.
+export type EventStreamCategory = 'ambient' | 'outcome' | 'positive';
 export type EventStreamCauseTag = 'ignorance' | 'strain' | 'both';
 
 export interface EventStreamEntry {

@@ -58,6 +58,25 @@ const WEAK_TEAM: Condition = {
   ]
 };
 
+// A calm-and-capable condition to demonstrate positive events firing.
+// A 6-member team pushes capacity to 30, well above the arrival
+// stream's saturation point, so load stays low across the service —
+// the calmness gate opens and positives come through.
+const CALM_TEAM: Condition = {
+  label: 'CALM   (6 competent members — capacity headroom, positive events fire)',
+  buildTeam: () => {
+    const members = [
+      makeTeamMember('värd', 1),
+      makeTeamMember('värd', 1),
+      makeTeamMember('servitör', 1),
+      makeTeamMember('servitör', 1),
+      makeTeamMember('kock', 1),
+      makeTeamMember('kock', 1)
+    ];
+    return members;
+  }
+};
+
 function runDinner(
   seed: number,
   condition: Condition
@@ -123,10 +142,11 @@ function report(condition: Condition, seed: number) {
   const { entries, finalStreamLen, finalRep } = runDinner(seed, condition);
   const ambient = entries.filter((e) => e.category === 'ambient');
   const outcomes = entries.filter((e) => e.category === 'outcome');
+  const positives = entries.filter((e) => e.category === 'positive');
 
   console.log(`\n=== ${condition.label}  (seed ${seed}) ===`);
   console.log(
-    `  ambient over ${SERVICE_MINUTES} min: ${ambient.length}  |  outcomes: ${outcomes.length}  |  final reputation ${finalRep.toFixed(2)}`
+    `  ambient: ${ambient.length}  |  outcomes: ${outcomes.length}  |  positive: ${positives.length}  |  final reputation ${finalRep.toFixed(2)}`
   );
   console.log('  first 20 ambient events (time from service open, kind, text):');
   for (const e of ambient.slice(0, 20)) {
@@ -139,6 +159,12 @@ function report(condition: Condition, seed: number) {
       console.log(`   [${fmtTime(e.at)}]  outcome           ${e.text}`);
     }
   }
+  if (positives.length > 0) {
+    console.log('  positive events (things going well):');
+    for (const e of positives) {
+      console.log(`   [${fmtTime(e.at)}]  positive          ${e.text}`);
+    }
+  }
   void finalStreamLen;
 }
 
@@ -147,11 +173,12 @@ function main() {
     `ORDER 043 Addendum A — sample streams (dinner, ${SERVICE_MINUTES} min)`
   );
   console.log(
-    'Both runs use the same seed so arrivals + capital drifts are identical;\nonly team competence + staffing differ.\n'
+    'All runs use the same seed so arrivals + capital drifts are identical;\nonly team competence + staffing differ.\n'
   );
   const SEED = 42;
   report(STRONG_TEAM, SEED);
   report(WEAK_TEAM, SEED);
+  report(CALM_TEAM, SEED);
   console.log('');
 }
 

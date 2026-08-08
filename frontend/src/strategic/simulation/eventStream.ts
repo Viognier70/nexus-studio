@@ -32,6 +32,7 @@ import type {
 import type { Rng } from '../util/rng';
 import {
   AMBIENT_TEXTS,
+  POSITIVE_TEXTS,
   PREP_TEXTS,
   type AmbientEventKind,
   type PrepEventKind
@@ -293,6 +294,50 @@ function prepEventProbabilityPerTick(
   return Math.min(1, (perMinute * TICK_SECONDS) / 60);
 }
 
+// -------- positive events -------------------------------------------------
+//
+// Verksamhet som går bra. Fires only during service (post-prep) at
+// a rate gated by calmness (inverse of load) and team practical
+// competence. A weak or strained team gets none of these; a strong
+// team at low pressure gets several per service. Absence during a
+// calm patch is itself a signal — no need for a badge.
+
+// Base rate chosen so a strong-team + calm dinner produces ~3–4
+// positive events over 15 sim-minutes (one every 4–5 min); at
+// mid competence and load, ~1–2; at weak+strained, near zero.
+export const POSITIVE_BASE_RATE_PER_MIN = 0.30;
+
+// Calmness curve. Load ≤ 0.6 reads as calm (multiplier ~1.4);
+// load 1.0 reads as busy but flowing (~0.5); load ≥ 1.4 reads as
+// strained (multiplier ~0.05, positives essentially stop).
+export function calmnessMultiplier(load: number): number {
+  const L = Math.max(0, load);
+  return Math.max(0.05, 1.5 - L);
+}
+
+export function positiveEventProbabilityPerTick(state: SimulationState): number {
+  const load = loadOf(state);
+  const competence = teamCompetence(state.team, 'practical');
+  const perMinute =
+    POSITIVE_BASE_RATE_PER_MIN * calmnessMultiplier(load) * competence;
+  return Math.min(1, (perMinute * TICK_SECONDS) / 60);
+}
+
+function makePositiveEntry(
+  state: SimulationState,
+  rng: Rng
+): EventStreamEntry {
+  return {
+    at: state.simTime,
+    text: pickTextWithRepeatGuard(POSITIVE_TEXTS, state, rng),
+    category: 'positive',
+    causeTag: null,
+    sustainability: 'social',
+    kind: 'positive',
+    scenarioId: null
+  };
+}
+
 // -------- outcome scheduling ----------------------------------------------
 
 // Called from resolveScenario. Returns the PendingOutcome list to
@@ -392,12 +437,19 @@ export function tickEventStream(state: SimulationState, rng: Rng): void {
       };
     }
   } else if (inService) {
-    // Full service — ambient rolls.
+    // Full service — ambient rolls + positive rolls in parallel.
+    // Positives are gated by calmness × competence, so a strained
+    // or weak team just doesn't get any — reads correctly without
+    // needing a styling difference.
     for (const def of EVENT_DEFS) {
       const p = eventProbabilityPerTick(def, state);
       if (rng.chance(p)) {
         emitted.push(makeAmbientEntry(def, state, rng));
       }
+    }
+    const positiveP = positiveEventProbabilityPerTick(state);
+    if (rng.chance(positiveP)) {
+      emitted.push(makePositiveEntry(state, rng));
     }
   }
 

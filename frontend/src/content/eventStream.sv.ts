@@ -149,3 +149,26 @@ export type PrepEventKind = keyof typeof PREP_TEXTS;
 // wasn't done in mise en place coming home to roost", not variety.
 export const PREP_CARRYOVER_TEXT =
   'En sås som inte silades i morse dyker upp — köket måste hoppa över den mitt i passet.';
+
+// ORDER 043 Addendum A rev 2 — the positive-events bank. Not
+// errors: verksamhet som går bra. Fills the space that would
+// otherwise read as dead air in a calm service. Vision Owner's
+// seed line ("Bordet vid fönstret beställer en flaska till.") sets
+// the register — small, specific, room-visible moments of things
+// working. Absence during a calm patch reads as "something is
+// wrong" without needing a badge.
+//
+// Weighted at fire time by calmness (inverse of load) × team
+// practical competence, so a strained or weak team gets none of
+// them. Same 8-line minimum as ambient banks for the repeat guard
+// to have room to rotate.
+export const POSITIVE_TEXTS = [
+  'Bordet vid fönstret beställer en flaska till.',
+  'En stamgäst hälsar värden med namn — samtal glider igång.',
+  'Kocken vid pannan smakar av — nöjd nick.',
+  'Ett bord ber att få stanna kvar en stund efter kaffet.',
+  'En förrätt får en spontan uppgradering — köket har lite över.',
+  'Notan lämnas med ett par sedlar dricks utöver summan.',
+  'Ett bord ber om att få reservera igen till nästa vecka.',
+  'En gäst fångar värdens öga — nickar och pekar på vinlistan.'
+] as const;

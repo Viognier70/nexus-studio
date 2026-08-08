@@ -18,11 +18,13 @@ import { reducer } from '../reducer';
 import { makeInitialState } from '../model';
 import {
   EVENT_DEFS,
+  calmnessMultiplier,
   competenceFor,
   eventMultiplier,
   eventProbabilityPerTick,
   ignoranceMultiplier,
   loadOf,
+  positiveEventProbabilityPerTick,
   strainMultiplier
 } from '../eventStream';
 import type { DayPeriod, SimulationState } from '../../types';
@@ -209,6 +211,61 @@ describe('stream does not move capital', () => {
     for (const key of ['economic', 'social', 'ecological'] as const) {
       expect(s.capitals.values[key]).toBe(before[key]);
     }
+  });
+});
+
+describe('positive category — verksamhet som går bra', () => {
+  it('calmnessMultiplier peaks near load 0 and decays as load rises', () => {
+    expect(calmnessMultiplier(0)).toBeCloseTo(1.5, 5);
+    expect(calmnessMultiplier(0.7)).toBeCloseTo(0.8, 5);
+    expect(calmnessMultiplier(1.4)).toBeGreaterThan(0);
+    expect(calmnessMultiplier(2)).toBe(0.05); // clamped floor
+  });
+
+  it('positiveEventProbabilityPerTick > 0 with a competent team at low load', () => {
+    const s = inPeriod(1, 'dinner');
+    // Fresh default team (competence ~0.55) + zero guests → high calmness.
+    expect(positiveEventProbabilityPerTick(s)).toBeGreaterThan(0);
+  });
+
+  it('positiveEventProbabilityPerTick collapses under high load', () => {
+    const s = inPeriod(1, 'dinner');
+    // Fabricate a saturated room (load well above 1.5).
+    for (let i = 0; i < 40; i++) {
+      s.guests.push({
+        id: `g${i}`,
+        state: 'dining',
+        satisfaction: 0.5,
+        seatIndex: 0,
+        arrivalTime: 0,
+        stateTime: 0,
+        scenarioSource: false,
+        position: { x: 0, z: 0 },
+        targetPosition: { x: 0, z: 0 },
+        moveProgress: 1,
+        hadWelcomeDrink: false,
+        walkAwayOnArrival: false
+      });
+    }
+    const rate = positiveEventProbabilityPerTick(s);
+    // Should be dominated by the 0.05 calmness floor — very low.
+    expect(rate).toBeLessThan(0.001);
+  });
+
+  it('a well-staffed calm dinner produces at least one positive event', () => {
+    let s = makeInitialState(11);
+    for (let i = 0; i < 3; i++) {
+      s = reducer(s, { type: 'HIRE_TEAM_MEMBER', role: 'lärling' });
+    }
+    s = reducer(s, { type: 'SKIP_LUNCH' });
+    s = reducer(s, {
+      type: 'OPEN_SERVICE',
+      service: 'dinner',
+      lengthMinutes: 15
+    });
+    for (let i = 0; i < 4500; i++) s = reducer(s, { type: 'TICK', dt: 0.2 });
+    const positives = s.eventStream.filter((e) => e.category === 'positive');
+    expect(positives.length).toBeGreaterThan(0);
   });
 });
 
