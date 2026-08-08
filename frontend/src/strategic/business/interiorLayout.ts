@@ -40,9 +40,13 @@ const BAR_LENGTH_FRAC = 0.7;     // fraction of the room's long axis
 const STOOL_OFFSET_M = 0.5;      // stool front vs bar front edge
 const TABLE_ROW_Z = 3.0;         // table row centre, opposite side from bar
 const TABLE_HALF_SPAN_X = 5.0;   // outermost table centres at local ±5
-const TWOTOP_SIZE_M = 1.05;      // rendered box side
-const FOURTOP_SIZE_M = 1.35;     // rendered box side
-const SEAT_STANDOFF_M = 0.6;     // chair centre offset from table centre
+// 2-top vs 4-top: the size delta reads legibly from bird's-eye. A
+// smaller delta (e.g. 1.05 vs 1.35) reads as five uniform tables from
+// altitude and the mix gets miscounted; 1.05 vs 1.7 makes the 4-top
+// unambiguous.
+const TWOTOP_SIZE_M = 1.05;
+const FOURTOP_SIZE_M = 1.7;
+const SEAT_STANDOFF_M = 0.7;     // chair centre offset from table centre
 const ENTRANCE_INSET_M = 0.6;    // distance from the entrance-wall inward
 const WAITING_STANDOFF_M = 2.5;  // waiting-spot distance outside the door
 
