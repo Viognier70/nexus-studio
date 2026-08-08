@@ -177,6 +177,7 @@ export function initialScenario(): ScenarioState {
     nextSpawnAt: 0,
     visibleGuestIds: [],
     drawnTheme: null,
+    scenarioId: null,
     mentorComment: null,
     mentorCommentAt: null
   };

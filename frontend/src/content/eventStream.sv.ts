@@ -85,35 +85,11 @@ export const AMBIENT_TEXTS = {
   ]
 } as const;
 
-// -------- outcome banks — keyed by (scenarioId, choice) --------------------
-//
-// Fire deterministically after RESOLVE_SCENARIO to close the loop
-// ORDER 042's flat responses left open: what the choice did in the
-// room, in the room's voice, before the mentor line arrives.
-//
-// Cycle-1 scenarios: walk-in-of-five (§ORDER 042 §3.3 rescaled).
-// Each choice gets two outcomes at t+6 s and t+18 s (relative to
-// resolveAt). Written to sit inside the SCENARIO_SETTLE_AFTER (35 s)
-// window so the sequence reads: choice → outcome — outcome — mentor.
-
-export const OUTCOME_TEXTS = {
-  'walk-in-of-five': {
-    // Choice A — seat all five by combining the 4-top with a 2-top
-    A: [
-      'Fyran och tvåan slås ihop — grannbordet tappar armbågsrymden.',
-      'Sällskapets ordering kommer i klump — passet får en spik.'
-    ],
-    // Choice B — seat four at the 4-top, fifth at the bar (welcome drink on)
-    B: [
-      'Fyra vid fyran, en vid baren — den femte försöker verka nöjd.',
-      'Bartendern hälsar sent — den femte har hunnit vänta ut sin egen tystnad.'
-    ],
-    // Choice C — refuse the party
-    C: [
-      'Två av sällskapet vänder redan i entrén — de andra följer efter.',
-      'En stamgäst vid fönsterbordet höjer på ögonbrynen — noterar.'
-    ]
-  }
-} as const;
+// Outcome banks were previously here as OUTCOME_TEXTS, keyed by
+// (scenarioId, choice). Moved to simulation/scenarios.ts alongside
+// the rest of each scenario's authored content (subject, situation,
+// choice labels, mentor lines, register writes) — one file owns
+// each scenario's voice, rather than the outcomes being one hop
+// away in a content-side table.
 
 export type AmbientEventKind = keyof typeof AMBIENT_TEXTS;

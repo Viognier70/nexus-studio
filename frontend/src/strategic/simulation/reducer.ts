@@ -20,6 +20,7 @@ import { maybeSpawnGuest, scenarioSpawnStep } from './arrivals';
 import { planScenariosForService, scheduleScenarioTriggerTimes } from './day';
 import { revenuePerGuest } from './economics';
 import { scheduleOutcomes, tickEventStream } from './eventStream';
+import { pickScenarioSpec, scenarioById } from './scenarios';
 import { initialDay, makeInitialState, makeStaff } from './model';
 import { tickReputationDrift } from './reputation';
 import { tickGuests, tickStaff } from './service';
@@ -53,10 +54,9 @@ export const THEME_HISTORY_LIMIT = 6;
 // mentor comment surfaces in the world.
 const SCENARIO_SETTLE_AFTER = 35;
 
-// Party size for walk-in-of-five (ORDER 042 §1 rescaled 2026-08-08 to
-// the 146 m² café-scale Candidate A footprint). Choice A/B both seat
-// the party; choice C turns them away.
-const WALK_IN_PARTY_SIZE = 5;
+// Party size for walk-in-of-five now lives on the scenario spec
+// (scenarios.ts WALK_IN_OF_FIVE.choices.*.spawnedRemaining). Kept
+// out of the reducer to keep authoring in one file.
 
 // ORDER 043 v3 §7 chain — magnitude of the capital movement produced
 // by a scenario resolution on its drawn theme. Choice A/B are the
@@ -612,7 +612,11 @@ function advanceTick(state: SimulationState): SimulationState {
     draft.scenario.choiceAt !== null &&
     draft.simTime - draft.scenario.choiceAt >= SCENARIO_SETTLE_AFTER
   ) {
-    const comment = mentorCommentFor(draft.scenario.choice, draft.scenario.difficulty);
+    const comment = mentorCommentFor(
+      draft.scenario.scenarioId,
+      draft.scenario.choice,
+      draft.scenario.difficulty
+    );
     draft.scenario = {
       ...draft.scenario,
       phase: 'settled',
@@ -693,6 +697,9 @@ function triggerScenario(state: SimulationState, auto: boolean): SimulationState
     state.capitals.themeHistory,
     rng
   );
+  // Look up the scenario spec for the drawn theme. Cycle-1: one
+  // spec per theme (see scenarios.ts SCENARIO_BY_THEME).
+  const scenarioSpec = pickScenarioSpec(drawnTheme);
   const scenario = {
     ...state.scenario,
     hasAutoTriggered: true,
@@ -706,6 +713,7 @@ function triggerScenario(state: SimulationState, auto: boolean): SimulationState
     nextSpawnAt: 0,
     visibleGuestIds: [],
     drawnTheme,
+    scenarioId: scenarioSpec.id,
     mentorComment: null,
     mentorCommentAt: null
   };
@@ -718,7 +726,9 @@ function triggerScenario(state: SimulationState, auto: boolean): SimulationState
       {
         at: state.simTime,
         kind: 'scenario' as const,
-        text: auto ? 'Sällskapet står i entrén' : 'Scenariot replays (utvecklarläge)'
+        text: auto
+          ? scenarioSpec.subjectBody
+          : 'Scenariot replays (utvecklarläge)'
       }
     ]
   };
@@ -761,43 +771,50 @@ function resolveScenario(
   scenario.choice = choice;
   scenario.choiceAt = state.simTime;
 
-  // Walk-in-of-five (ORDER 042 §1 rescaled 2026-08-08). A and B both
-  // seat the party; the mechanical difference is B flips welcomeDrink
-  // on, which lifts satisfaction but adds staff workload. C turns the
-  // party away — a couple visibly walk in and back out, then reputation
-  // dips a hair.
-  if (choice === 'A' || choice === 'B') {
-    scenario.spawnedRemaining = WALK_IN_PARTY_SIZE;
-    scenario.nextSpawnAt = state.simTime + 0.4;
-  } else {
-    // Choice C — a couple of the party still approach the door before
-    // being turned away, so the refusal is visible in the room, not
-    // just a state change.
-    scenario.spawnedRemaining = 2;
-    scenario.nextSpawnAt = state.simTime + 0.3;
-  }
+  // Look up the scenario spec chosen at trigger. Falls back to
+  // walk-in-of-five if for some legacy reason scenarioId wasn't
+  // set — cycle-1 tests pre-dating the spec pattern rely on this.
+  const spec = scenario.scenarioId
+    ? scenarioById(scenario.scenarioId)
+    : scenarioById('walk-in-of-five');
+  const choiceSpec = spec?.choices[choice] ?? null;
 
-  // Immediate policy nudge for choice B (welcome drink flips on).
+  // Spawn effects from spec (party arriving, refusal partial-approach
+  // etc). Zero-spawn scenarios (time-pressure, moral-dilemma) leave
+  // the room's puck layer untouched.
+  scenario.spawnedRemaining = choiceSpec?.spawnedRemaining ?? 0;
+  scenario.nextSpawnAt = state.simTime + (choiceSpec?.nextSpawnAtOffset ?? 0);
+
+  // Walk-in-of-five's B flips welcomeDrink on (adds staff task /
+  // satisfaction lift). Kept inline as it's a scenario-specific
+  // policy nudge — a future order could generalise via a
+  // policyPatch field on ScenarioChoiceSpec.
   let policies = state.policies;
-  if (choice === 'B') {
+  if (spec?.id === 'walk-in-of-five' && choice === 'B') {
     policies = { ...policies, welcomeDrink: true };
   }
 
-  // Reputation nudge on refusal.
+  // Reputation nudge for walk-in-of-five's C (refusal in front of
+  // the entrance registers publicly). Other scenarios' refusals
+  // don't have this specific rep hit — their consequence flows
+  // through the capital delta + wager loop instead.
   let reputation = state.reputation;
-  if (choice === 'C') reputation = Math.max(0, reputation - 0.03);
+  if (spec?.id === 'walk-in-of-five' && choice === 'C') {
+    reputation = Math.max(0, reputation - 0.03);
+  }
 
   // ORDER 043 v3 §7 chain — capital movement on the drawn theme +
-  // wager payout. Requires the theme was drawn at triggerScenario;
-  // if not (older-flow test paths), skip the capital layer.
+  // wager payout. capitalSign now comes from the spec so scenarios
+  // can weight A/B/C differently (a moral-dilemma A might read as
+  // -1 while walk-in-of-five A reads as +1).
   let capitals = state.capitals;
   let wagerHistory = state.capitals.wagerHistory;
   let themeHistory = state.capitals.themeHistory;
   let wager = state.wager;
   const drawn = scenario.drawnTheme;
   if (drawn) {
-    const themedDelta =
-      SCENARIO_CAPITAL_DELTA * CHOICE_CAPITAL_SIGN[choice];
+    const capitalSign = choiceSpec?.capitalSign ?? CHOICE_CAPITAL_SIGN[choice];
+    const themedDelta = SCENARIO_CAPITAL_DELTA * capitalSign;
     const capitalAtPlacement = wager
       ? state.capitals.values[wager.capital]
       : 0;
@@ -832,20 +849,47 @@ function resolveScenario(
     };
   }
 
-  // ORDER 043 Addendum A outcome events. Fill the space that was
-  // empty in ORDER 042 — between choice and mentor comment — with 1–2
-  // authored lines describing what the choice did in the room. The
-  // scenario id is currently hard-coded to 'walk-in-of-five' because
-  // it is the only scenario shape wired; a future order that adds new
-  // scenarios must carry the id on ScenarioState so this lookup
-  // generalises.
-  const outcomeTheme = drawn ?? 'social';
-  const newOutcomes = scheduleOutcomes(
-    'walk-in-of-five',
-    choice,
-    state.simTime,
-    outcomeTheme
-  );
+  // ORDER 043 v3 §10 step 5 hand-authored register writes per
+  // response. Enabler-history evidence is the primary unit of the
+  // portfolio (§8); it's what a future scenario will draw from,
+  // never a numeric readout. Amounts clamped by the enabler write
+  // logic below (mirrors recordEnablerEvent behaviour).
+  let enablers = state.enablers;
+  if (choiceSpec) {
+    enablers = { ...enablers };
+    for (const w of choiceSpec.registerWrites) {
+      const amount = Math.max(0, Math.min(1, w.amount));
+      if (amount === 0) continue;
+      const previous = enablers[w.enabler];
+      enablers[w.enabler] = {
+        ...previous,
+        [w.register]: previous[w.register] + amount,
+        history: [
+          ...previous.history,
+          {
+            at: state.simTime,
+            register: w.register,
+            amount,
+            scenarioId: spec?.id ?? null
+          }
+        ]
+      };
+    }
+  }
+
+  // ORDER 043 Addendum A outcome events — 1–2 hand-authored lines
+  // from the spec's choice, fired at t+6 s and t+18 s to fill the
+  // space between choice and mentor. Empty outcomes list = no
+  // stream fill for this choice.
+  const outcomeTheme = drawn ?? spec?.sustainability ?? 'social';
+  const newOutcomes = choiceSpec
+    ? scheduleOutcomes(
+        choiceSpec.outcomes,
+        state.simTime,
+        outcomeTheme,
+        spec?.id ?? 'unknown'
+      )
+    : [];
 
   return {
     ...state,
@@ -853,6 +897,7 @@ function resolveScenario(
     policies,
     reputation,
     capitals,
+    enablers,
     wager,
     pendingOutcomes: [...state.pendingOutcomes, ...newOutcomes],
     events: [
@@ -871,14 +916,22 @@ function clampCapital(v: number): number {
 }
 
 function mentorCommentFor(
+  scenarioId: string | null,
   choice: ScenarioChoice | null,
   difficulty: ScenarioDifficulty | null
 ): string {
-  // Only one bank of comments; a null/unexpected combination falls back
-  // to a neutral line rather than throwing.
+  // Null/unexpected combination falls back to a neutral line rather
+  // than throwing — a scenario that resolved with an odd state
+  // shouldn't kill the render.
   if (!choice || !difficulty) {
     return 'Kvällen gick vidare — vi tittar på hur den utvecklade sig nästa gång.';
   }
+  const spec = scenarioId ? scenarioById(scenarioId) : null;
+  if (spec) {
+    return spec.choices[choice].mentor[difficulty];
+  }
+  // Fallback: legacy walk-in-of-five strings for pre-refactor tests
+  // that trigger a scenario without a scenarioId.
   const rank = difficulty === 1 ? 'low' : difficulty === 2 ? 'mid' : 'high';
   const key = `${choice}_${rank}` as keyof typeof strings.scenario.mentor;
   return strings.scenario.mentor[key];

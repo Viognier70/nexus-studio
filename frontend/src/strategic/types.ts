@@ -193,6 +193,11 @@ export interface ScenarioState {
   // capital and pay out any standing wager. Null between scenarios
   // and during the resting phases.
   drawnTheme: SustainabilityKey | null;
+  // ORDER 043 v3 §10 step 5 — id of the scenario spec chosen at
+  // trigger from the drawn theme (see scenarios.ts). The overlay
+  // reads strings, choice labels, mentor lines, etc. from the spec.
+  // Null between scenarios; set at triggerScenario.
+  scenarioId: string | null;
   // Populated by the reducer when the scenario transitions to
   // `settled`. Rendered as an in-world text bubble by MentorComment;
   // per CAMERA_AND_GAMEPLAY_BIBLE §8.1 this must not be a modal.

@@ -26,12 +26,11 @@
 import type {
   EventStreamEntry,
   PendingOutcome,
-  ScenarioChoice,
   SimulationState,
   SustainabilityKey
 } from '../types';
 import type { Rng } from '../util/rng';
-import { AMBIENT_TEXTS, OUTCOME_TEXTS, type AmbientEventKind } from '../../content/eventStream.sv';
+import { AMBIENT_TEXTS, type AmbientEventKind } from '../../content/eventStream.sv';
 import { teamCapacity, teamCompetence } from './team';
 
 const TICK_SECONDS = 0.2;
@@ -227,23 +226,26 @@ function makeAmbientEntry(
 
 // Called from resolveScenario. Returns the PendingOutcome list to
 // splice onto the existing state.pendingOutcomes.
+//
+// Post-ORDER-043 §10 step 5 refactor: outcomes are supplied by the
+// caller (from ScenarioSpec) rather than looked up from a name-
+// keyed table here. Keeps the scenarios file authoritative for its
+// own text.
 export function scheduleOutcomes(
-  scenarioId: string,
-  choice: ScenarioChoice,
+  outcomes: readonly string[],
   resolveAt: number,
-  themeSustainability: SustainabilityKey
+  themeSustainability: SustainabilityKey,
+  scenarioId: string
 ): PendingOutcome[] {
-  const bank = OUTCOME_TEXTS[scenarioId as keyof typeof OUTCOME_TEXTS];
-  if (!bank) return [];
-  const texts = bank[choice];
-  if (!texts) return [];
-  return texts.map((text, i) => ({
+  if (outcomes.length === 0) return [];
+  return outcomes.map((text, i) => ({
     dueAt: resolveAt + OUTCOME_OFFSETS_SEC[Math.min(i, OUTCOME_OFFSETS_SEC.length - 1)],
     text,
     sustainability: themeSustainability,
     scenarioId
   }));
 }
+
 
 function outcomeToEntry(p: PendingOutcome, at: number): EventStreamEntry {
   return {
