@@ -39,6 +39,7 @@ import { useCamera } from '../camera/CameraContext';
 import { GRAY_BOX_CAMERA } from '../content/grythyttan';
 import { useBusiness } from '../business/BusinessContext';
 import { usePlayerBusinessInterior } from '../business/interiorLayout';
+import { obbLocalToWorld } from '../procgen/geom';
 import { strings } from '../../content/strings.sv';
 
 // Business volume constants — the D01 historic-centre building is a
@@ -135,6 +136,10 @@ export function PlayerBusiness() {
   const wallMaterialRef = useRef<THREE.MeshStandardMaterial>(null);
   const roofMaterialRef = useRef<THREE.MeshStandardMaterial>(null);
   const interiorGroupRef = useRef<THREE.Group>(null);
+  // TEMPORARY (ORDER 042 §3.2 diagnostic 2026-08-08): frame counter for
+  // throttled [PB-DIAG] logs — remove with the rest of the diag block
+  // in useFrame once the residual brown-tint source is identified.
+  const diagFrameRef = useRef(0);
 
   // Wall + roof geometry from the shared building polygon.
   const geom = useMemo(() => {
@@ -227,6 +232,52 @@ export function PlayerBusiness() {
             }
           }
         }
+      });
+    }
+
+    // TEMPORARY (ORDER 042 §3.2 diagnostic 2026-08-08): once per second
+    // at 60 Hz, log the exact fade state and floor-plane world corners
+    // vs polygon vertices, so the residual brown-tint source can be
+    // identified from actual values instead of guessed. Remove this
+    // block, `diagFrameRef` and the `obbLocalToWorld` import once the
+    // diagnosis lands.
+    diagFrameRef.current += 1;
+    if (diagFrameRef.current % 60 === 0 && layout) {
+      const wallOpacity = 0.5 + 0.5 * roofOpacity;
+      const halfW = (layout.width - 0.4) / 2;
+      const halfH = (layout.depth - 0.4) / 2;
+      // Floor plane geometry is planeGeometry(W, H) rotated
+      // [-π/2, 0, -worldAngle]. Its local (x_p, y_p) maps to OBB local
+      // (x_p, -y_p) — so the four plane-local corners at (±halfW, ±halfH)
+      // become OBB local (±halfW, ∓halfH), then obbLocalToWorld.
+      const floorCorners = [
+        obbLocalToWorld(layout.obb,  halfW, -halfH),
+        obbLocalToWorld(layout.obb,  halfW,  halfH),
+        obbLocalToWorld(layout.obb, -halfW,  halfH),
+        obbLocalToWorld(layout.obb, -halfW, -halfH)
+      ];
+      const roofMat = roofMaterialRef.current;
+      const wallMat = wallMaterialRef.current;
+      // eslint-disable-next-line no-console
+      console.log('[PB-DIAG]', {
+        dist: dist.toFixed(2),
+        roofOp: roofOpacity.toFixed(3),
+        wallOp: wallOpacity.toFixed(3),
+        intVis: interiorVisibility.toFixed(3),
+        roof: roofMat ? {
+          op: roofMat.opacity.toFixed(3),
+          transp: roofMat.transparent,
+          depthWrite: roofMat.depthWrite
+        } : 'no-ref',
+        wall: wallMat ? {
+          op: wallMat.opacity.toFixed(3),
+          transp: wallMat.transparent,
+          depthWrite: wallMat.depthWrite,
+          side: wallMat.side
+        } : 'no-ref',
+        interiorGroupVisible: interiorGroupRef.current?.visible ?? null,
+        floorCorners: floorCorners.map((c) => [c[0].toFixed(2), c[1].toFixed(2)]),
+        polyVertices: layout.building.poly.map((p) => [p[0].toFixed(2), p[1].toFixed(2)])
       });
     }
   });
