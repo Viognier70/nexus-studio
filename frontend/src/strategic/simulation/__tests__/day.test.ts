@@ -224,3 +224,50 @@ describe('tickDayTransitions helper is idle in resting phases', () => {
     expect(tickDayTransitions(s)).toBe(s);
   });
 });
+
+describe('period gate — arrivals only fire during a running service', () => {
+  // ORDER 043 v3 §2 period gate: morning / afternoon / evening are
+  // closed windows. The tick loop keeps running (staff / timers / day
+  // transitions), but no ambient guest may spawn. Enforced here at the
+  // integration level: run the sim through a period for a long time
+  // and assert no guests appeared.
+  it('morning produces no arrivals over an hour of sim-time', () => {
+    let s = makeInitialState(7);
+    // 3600 sim-sec = 18000 ticks. Morning does not auto-advance.
+    s = tick(s, 18000);
+    expect(s.day.period).toBe('morning');
+    expect(s.guests.length).toBe(0);
+  });
+
+  it('afternoon produces no arrivals over an hour of sim-time', () => {
+    let s = reducer(makeInitialState(7), { type: 'SKIP_LUNCH' });
+    expect(s.day.period).toBe('afternoon');
+    s = tick(s, 18000);
+    expect(s.day.period).toBe('afternoon');
+    expect(s.guests.length).toBe(0);
+  });
+
+  it('lunch produces arrivals during the service window', () => {
+    let s = reducer(makeInitialState(7), {
+      type: 'OPEN_SERVICE',
+      service: 'lunch',
+      lengthMinutes: 5
+    });
+    // 5 min = 300 sim-sec = 1500 ticks. Stop just short of the close.
+    s = tick(s, 1400);
+    expect(s.day.period).toBe('lunch');
+    expect(s.guests.length).toBeGreaterThan(0);
+  });
+
+  it('dinner produces arrivals during the service window', () => {
+    let s = reducer(makeInitialState(7), { type: 'SKIP_LUNCH' });
+    s = reducer(s, {
+      type: 'OPEN_SERVICE',
+      service: 'dinner',
+      lengthMinutes: 5
+    });
+    s = tick(s, 1400);
+    expect(s.day.period).toBe('dinner');
+    expect(s.guests.length).toBeGreaterThan(0);
+  });
+});

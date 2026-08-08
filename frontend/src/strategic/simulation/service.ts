@@ -4,6 +4,13 @@ import { taskDurationTicks } from './economics';
 
 const TICK_SECONDS = 0.2;
 
+// ORDER 043 v3 §5.2 — the waiting queue is a phenomenon, not a
+// furniture list. The room's painted waiting spots (INTERIOR.waitingSpots)
+// stay at 4 for cycle 1, but the queue itself can grow to 12 before a
+// guest is turned away; overflow guests re-render on the same pucks via
+// modulo. Signal path: peakQueue is the reading, floor pucks are chrome.
+const WAITING_QUEUE_CAP = 12;
+
 function distance(a: Vec2, b: Vec2): number {
   const dx = a.x - b.x;
   const dz = a.z - b.z;
@@ -143,9 +150,18 @@ export function tickGuests(state: SimulationState) {
         if (seat !== null && !state.scenario.awaitingChoice) {
           setGuestSeated(state, guest, seat);
         } else {
-          // Queue at waiting spot.
+          // Queue at waiting spot. The waiting cap (WAITING_QUEUE_CAP)
+          // is decoupled from the number of physical waiting-spot pucks
+          // in INTERIOR.waitingSpots: at cycle-1 the room only has 4
+          // painted spots but the queue needs headroom for the dinner
+          // signal (peak 5–7 at low social) — otherwise every extra
+          // guest is a walk-away and the queue length collapses to a
+          // step function. Overflow guests re-use the visible spots via
+          // modulo; the "extra" arrivals stack on the same pucks in
+          // rendering, which is fine for now — the phenomenon-of-record
+          // is the count, not the individual placement.
           const idx = state.waitingIds.length;
-          if (idx >= INTERIOR.waitingSpots.length) {
+          if (idx >= WAITING_QUEUE_CAP) {
             // No waiting room — leave.
             guest.state = 'declined';
             guest.stateTime = now;
@@ -154,7 +170,9 @@ export function tickGuests(state: SimulationState) {
             state.waitingIds.push(guest.id);
             guest.state = 'waiting';
             guest.stateTime = now;
-            moveGuest(guest, INTERIOR.waitingSpots[idx]);
+            const spot =
+              INTERIOR.waitingSpots[idx % INTERIOR.waitingSpots.length];
+            moveGuest(guest, spot);
           }
         }
       }
@@ -235,7 +253,16 @@ function setGuestSeated(state: SimulationState, guest: Guest, seat: number) {
 }
 
 function diningDuration(state: SimulationState): number {
-  return state.policies.service === 'formell' ? 55 : 34;
+  const base = state.policies.service === 'formell' ? 55 : 34;
+  // ORDER 043 v3 §5.2 — low social capital lingers, high social capital
+  // turns tables. Scale factor (2 − social) with social clamped [0, 1]:
+  //   social = 1 → factor 1.0  (normal linger)
+  //   social = 0.5 → factor 1.5 (~50 % longer)
+  //   social = 0  → factor 2.0  (double linger, staff bottleneck)
+  // The queue reading depends on this: without slower turnover at low
+  // social, the room drains fast enough that a queue never forms.
+  const social = Math.max(0, Math.min(1, state.capitals.values.social));
+  return base * (2 - social);
 }
 
 // -------------------------------------------------------------------------

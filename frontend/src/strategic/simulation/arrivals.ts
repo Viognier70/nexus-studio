@@ -1,5 +1,5 @@
 import type { Rng } from '../util/rng';
-import type { Guest, SimulationState } from '../types';
+import type { DayPeriod, Guest, SimulationState } from '../types';
 import { makeGuest } from './model';
 import { PRICE_ARRIVAL_MULT, SERVICE_ARRIVAL_MULT } from './economics';
 
@@ -15,16 +15,52 @@ const ECONOMIC_ARRIVAL_FLOOR = 0.4;
 // ECONOMIC_WALKAWAY_CEIL — maximum probability that an arriving guest
 // walks to the entrance and turns back (as opposed to entering and
 // sitting). Multiplied by (1 − economic) so at capital=1 nobody walks
-// away, at capital=0 40% of arrivals refuse entry. Cycle-1 tuning; a
-// future order can revise from playtest evidence.
-const ECONOMIC_WALKAWAY_CEIL = 0.4;
+// away, at capital=0 20% of arrivals refuse entry. Halved from 0.4 at
+// the room-flow retune (Vision Owner: "femton per lunch är en ström,
+// inte ett undantag") — the previous ceiling flooded lunch with
+// vändare at moderate economic. Cycle-1 tuning; revisit from playtest.
+const ECONOMIC_WALKAWAY_CEIL = 0.2;
+
+// ORDER 043 v3 §2 period gate. Ambient arrivals only fire during a
+// running service; morning / afternoon / evening are closed windows
+// (no guests, no queue, no walk-aways). A future order can widen this
+// (e.g. a "late-morning stragglers" bonus) but the base rule is: the
+// room fills when the doors are open, and only then.
+const PERIOD_ARRIVAL_MULTIPLIER: Record<DayPeriod, number> = {
+  morning: 0,
+  lunch: 0.6,
+  afternoon: 0,
+  dinner: 1.0,
+  evening: 0
+};
+
+export function periodArrivalMultiplier(period: DayPeriod): number {
+  return PERIOD_ARRIVAL_MULTIPLIER[period];
+}
+
+// Base arrival rate in guests per sim-minute, before any of the
+// modulators (period gate, service concept, pricing tier, economic
+// capital). Tuned at the ORDER 043 v3 room-flow retune from the old
+// 3.2/min baseline: at the previous rate a full 30-min dinner service
+// averaged ~5 seated at the peak, well under the 16-cover room. 12/min
+// combined with period gates (lunch 0.6, dinner 1.0) yields a lunch of
+// ~7 covers and a dinner that reliably fills the room, so the queue
+// carries a signal.
+const ARRIVAL_BASE_PER_MINUTE = 12;
+
+// Maximum concurrent guests (seated + waiting + arriving + declined
+// pending removal). Raised from 12 → 24 alongside the base-rate lift so
+// the arrival stream can actually reach 16 covers + 4 waiting at peak
+// without the cap short-circuiting spawns.
+const ACTIVE_GUEST_CAP = 24;
 
 // Very small arrival model. Expected guests per sim-minute is derived from
 // pricing and service concept, then modulated by the current economic
 // capital so a weak-economy period visibly thins the room.
 export function arrivalProbability(state: SimulationState): number {
   const perMinute =
-    3.2 *
+    ARRIVAL_BASE_PER_MINUTE *
+    periodArrivalMultiplier(state.day.period) *
     SERVICE_ARRIVAL_MULT[state.policies.service] *
     PRICE_ARRIVAL_MULT[state.policies.pricing] *
     economicArrivalMultiplier(state.capitals.values.economic);
@@ -47,7 +83,7 @@ export function walkAwayProbability(economic: number): number {
 
 export function maybeSpawnGuest(state: SimulationState, rng: Rng): Guest | null {
   const active = state.guests.length;
-  if (active >= 12) return null;
+  if (active >= ACTIVE_GUEST_CAP) return null;
   if (!rng.chance(arrivalProbability(state))) return null;
   const walkAway = rng.chance(walkAwayProbability(state.capitals.values.economic));
   return makeGuest(state.simTime, false, walkAway);
