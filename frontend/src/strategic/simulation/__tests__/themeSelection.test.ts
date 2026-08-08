@@ -14,6 +14,7 @@ import type { SustainabilityKey, WagerState } from '../../types';
 import {
   CONSECUTIVE_THEME_CAP,
   THEMES,
+  WEAK_FLOOR,
   drawNextTheme,
   isThemeCappedOut,
   wagerPayout,
@@ -25,24 +26,35 @@ import { WAGER_UNIT_STAKE, WAGER_WEAK_WIN_MULTIPLIER } from '../reducer';
 // -------- invariants ------------------------------------------------------
 
 describe('weightForCapital', () => {
-  it('is 1.0 at capital 0 and 0.0 at capital 1', () => {
-    expect(weightForCapital(0)).toBe(1);
-    expect(weightForCapital(1)).toBe(0);
+  it('is 1 + WEAK_FLOOR at capital 0 and WEAK_FLOOR at capital 1', () => {
+    expect(weightForCapital(0)).toBeCloseTo(1 + WEAK_FLOOR, 10);
+    expect(weightForCapital(1)).toBeCloseTo(WEAK_FLOOR, 10);
   });
 
-  it('is 0.25 at capital 0.5 — the mid-point pivot', () => {
-    expect(weightForCapital(0.5)).toBe(0.25);
+  it('is 0.25 + WEAK_FLOOR at capital 0.5 — the mid-point pivot', () => {
+    expect(weightForCapital(0.5)).toBeCloseTo(0.25 + WEAK_FLOOR, 10);
   });
 
-  it('produces the promised 64:1 ratio between v=0.2 and v=0.9', () => {
+  it('produces the post-floor ~11.5:1 ratio between v=0.2 and v=0.9', () => {
+    // Pre-floor the endpoint ratio was 64:1. The 0.05 floor lifts
+    // v=0.9 from 0.01 to 0.06 and v=0.2 from 0.64 to 0.69, so the
+    // ratio drops to 0.69 / 0.06 = 11.5. Strong-attraction preserved,
+    // strong capitals no longer starved.
     const strong = weightForCapital(0.9);
     const weak = weightForCapital(0.2);
-    expect(weak / strong).toBeCloseTo(64, 0);
+    expect(weak / strong).toBeCloseTo(11.5, 1);
   });
 
-  it('clamps out-of-range inputs into [0, 1]', () => {
-    expect(weightForCapital(-1)).toBe(1); // -1 → 0 → weight 1
-    expect(weightForCapital(2)).toBe(0);  //  2 → 1 → weight 0
+  it('a maximally-strong capital still has WEAK_FLOOR draw weight', () => {
+    // Vision Owner rationale: knowledge that is never tested is
+    // forgotten. The floor guarantees every capital keeps returning.
+    expect(weightForCapital(1)).toBe(WEAK_FLOOR);
+    expect(weightForCapital(1)).toBeGreaterThan(0);
+  });
+
+  it('clamps out-of-range inputs into [0, 1] before adding the floor', () => {
+    expect(weightForCapital(-1)).toBeCloseTo(1 + WEAK_FLOOR, 10);
+    expect(weightForCapital(2)).toBeCloseTo(WEAK_FLOOR, 10);
   });
 
   it('is monotonically decreasing over the [0, 1] range', () => {
@@ -81,10 +93,10 @@ describe('weightTable', () => {
     const social = rows.find((r) => r.theme === 'social')!;
     expect(social.cappedOut).toBe(true);
     expect(social.weight).toBe(0);
-    // Other themes still get their raw weight.
+    // Other themes still get their raw weight (0.25 + WEAK_FLOOR at v=0.5).
     const economic = rows.find((r) => r.theme === 'economic')!;
     expect(economic.cappedOut).toBe(false);
-    expect(economic.weight).toBe(0.25);
+    expect(economic.weight).toBeCloseTo(0.25 + WEAK_FLOOR, 10);
   });
 });
 
@@ -212,9 +224,10 @@ describe('wagerPayout', () => {
 
 // -------- Distribution report --------------------------------------------
 //
-// Runs the "100 draws at several capital profiles" scenario the Vision
-// Owner asked for as the Phase B gate. Results log to console during
-// the test run so the exact numbers are captured for reporting.
+// Runs 100 draws per profile, averaged across 100 seeds — 10 000 total
+// draws per profile. The reported numbers are the expected distribution
+// (per 100 draws) plus the ±σ across seeds, so the table shows what
+// the mechanic will typically feel like rather than a seed-artifact.
 
 interface Profile {
   name: string;
@@ -285,16 +298,54 @@ function simulate(profile: Profile, seed: number, draws: number): Distribution {
   return { count, maxRun };
 }
 
-describe('DISTRIBUTION REPORT — 100 draws per profile, deterministic seed', () => {
-  it('logs the distribution table for the Phase B gate', () => {
+interface AveragedDistribution {
+  mean: Record<SustainabilityKey, number>;
+  stdev: Record<SustainabilityKey, number>;
+  maxRunObserved: number;
+}
+
+function averageOverSeeds(
+  profile: Profile,
+  drawsPerSession: number,
+  seeds: number
+): AveragedDistribution {
+  const perSeed: Distribution[] = [];
+  for (let seed = 1; seed <= seeds; seed++) {
+    perSeed.push(simulate(profile, seed, drawsPerSession));
+  }
+  const mean: Record<SustainabilityKey, number> = {
+    economic: 0, social: 0, ecological: 0
+  };
+  const stdev: Record<SustainabilityKey, number> = {
+    economic: 0, social: 0, ecological: 0
+  };
+  for (const theme of THEMES) {
+    const vals = perSeed.map((d) => d.count[theme]);
+    const m = vals.reduce((s, v) => s + v, 0) / vals.length;
+    mean[theme] = m;
+    const variance = vals.reduce((s, v) => s + (v - m) ** 2, 0) / vals.length;
+    stdev[theme] = Math.sqrt(variance);
+  }
+  const maxRunObserved = perSeed.reduce((m, d) => Math.max(m, d.maxRun), 0);
+  return { mean, stdev, maxRunObserved };
+}
+
+describe('DISTRIBUTION REPORT — 100 draws × 100 seeds per profile', () => {
+  it('logs the averaged distribution table for the Phase B gate', () => {
+    const drawsPerSession = 100;
+    const seeds = 100;
     const rows: string[] = [];
     rows.push('');
-    rows.push('╔════════════════════════════════════════════════════════════════╗');
-    rows.push('║  ORDER 043 §4 theme-selection distribution (100 draws, seed=1) ║');
-    rows.push('╚════════════════════════════════════════════════════════════════╝');
+    rows.push('╔════════════════════════════════════════════════════════════════════════════╗');
+    rows.push(`║  ORDER 043 §4 theme-selection distribution — ${drawsPerSession} draws × ${seeds} seeds       ║`);
+    rows.push('║  Reported: mean count per 100 draws ± σ across seeds                       ║');
+    rows.push(`║  Post-Vision-Owner floor: weight = (1 − v)² + ${WEAK_FLOOR}                             ║`);
+    rows.push('╚════════════════════════════════════════════════════════════════════════════╝');
     for (const p of PROFILES) {
-      const d = simulate(p, 1, 100);
-      const line = `${p.name.padEnd(48)}  econ=${String(d.count.economic).padStart(3)}  soc=${String(d.count.social).padStart(3)}  eco=${String(d.count.ecological).padStart(3)}  maxRun=${d.maxRun}`;
+      const d = averageOverSeeds(p, drawsPerSession, seeds);
+      const cell = (k: SustainabilityKey) =>
+        `${d.mean[k].toFixed(1).padStart(5)}±${d.stdev[k].toFixed(1).padStart(3)}`;
+      const line = `${p.name.padEnd(48)}  econ=${cell('economic')}  soc=${cell('social')}  eco=${cell('ecological')}  maxRun=${d.maxRunObserved}`;
       rows.push(line);
     }
     rows.push('');
@@ -302,15 +353,27 @@ describe('DISTRIBUTION REPORT — 100 draws per profile, deterministic seed', ()
     console.log(rows.join('\n'));
 
     // Pin the invariant that matters most: max consecutive run never
-    // exceeds the cap, at any profile, at any seed.
-    for (const seed of [1, 2, 3, 42, 2026]) {
-      for (const p of PROFILES) {
-        const d = simulate(p, seed, 200);
-        expect(
-          d.maxRun,
-          `profile=${p.name} seed=${seed} exceeded consecutive-recurrence cap`
-        ).toBeLessThanOrEqual(CONSECUTIVE_THEME_CAP);
-      }
+    // exceeds the cap, at any profile, across all 100 seeds.
+    for (const p of PROFILES) {
+      const d = averageOverSeeds(p, drawsPerSession, seeds);
+      expect(
+        d.maxRunObserved,
+        `profile=${p.name}: some seed exceeded consecutive-recurrence cap`
+      ).toBeLessThanOrEqual(CONSECUTIVE_THEME_CAP);
     }
+
+    // Pin the invariant that motivates the floor: even a maximally-strong
+    // capital (v=0.9 or 1.0) draws non-trivially often — no starvation.
+    // At profile C (economic=0.9 with two mid capitals) the mean count
+    // should be well above the pre-floor ~2 draws per 100 baseline.
+    const c = averageOverSeeds(
+      PROFILES.find((p) => p.name.startsWith('C'))!,
+      drawsPerSession,
+      seeds
+    );
+    expect(
+      c.mean.economic,
+      'floor failed: strong capital in profile C still starved'
+    ).toBeGreaterThan(7);
   });
 });

@@ -35,14 +35,23 @@ export const THEMES: readonly SustainabilityKey[] = [
 // theme may recur consecutively"). Setting to 3 would allow one repeat.
 export const CONSECUTIVE_THEME_CAP = 2;
 
-// Weakness weight per capital. Squaring is the design choice: linear
-// weighting doesn't punish weakness enough (ratio 4.5:1 at the range
-// endpoints); cubing punishes too much (ratio 512:1). The square gives
-// a 64:1 endpoint ratio, which is strong-attraction to weakness without
-// making a strong capital effectively invisible.
+// Base uniform floor added to every weight (Vision Owner decision
+// 2026-08-08). Without the floor, a strong capital (v=0.9) drew ~2%
+// of the time in cycle-1 simulations — knowledge that is never tested
+// is forgotten, and the pattern reads as arbitrary rather than
+// pedagogical. Adding 0.05 lifts the minimum draw share for a
+// maximally-strong capital to ~11%, so every capital keeps returning
+// often enough for the player to know they still hold it.
+export const WEAK_FLOOR = 0.05;
+
+// Weakness weight per capital. Squared for strong-attraction to
+// weakness (v=0.2 vs v=0.9 gives an 11.5:1 ratio after the floor is
+// added — down from 64:1 pre-floor). Linear weighting doesn't punish
+// weakness enough (ratio 4.5:1); cubing punishes too much (ratio
+// 512:1). Formula: (1 − v)² + WEAK_FLOOR.
 export function weightForCapital(value: number): number {
   const clamped = Math.max(0, Math.min(1, value));
-  return (1 - clamped) ** 2;
+  return (1 - clamped) ** 2 + WEAK_FLOOR;
 }
 
 // Returns true if the same theme has drawn `CONSECUTIVE_THEME_CAP`
