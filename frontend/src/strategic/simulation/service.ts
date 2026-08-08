@@ -93,9 +93,32 @@ export function findFreeSeat(
   // next, then 6, 7, 8; only after the preference list is exhausted
   // fall back to the general sequence.
   if (forScenarioGuest && state.scenario.choice) {
-    for (const seat of scenarioPreferredSeats(state)) {
-      if (seat < cap && !seatTaken(state, seat)) return seat;
+    const prefs = scenarioPreferredSeats(state);
+    for (const seat of prefs) {
+      if (seat < cap && !seatTaken(state, seat)) {
+        // TEMPORARY (ORDER 042 §3.3 diagnostic 2026-08-08): Vision
+        // Owner reports A and B look identical with no bar-stool puck.
+        // Log which preference list was consulted, which seats were
+        // already taken, and what got assigned. Remove once the
+        // A/B rendering divergence is understood.
+        // eslint-disable-next-line no-console
+        console.log('[SEAT-DIAG]', {
+          simTime: state.simTime.toFixed(2),
+          choice: state.scenario.choice,
+          preferenceList: prefs,
+          seatTaken: prefs.map((s) => ({ seat: s, taken: seatTaken(state, s) })),
+          assigned: seat
+        });
+        return seat;
+      }
     }
+    // Preference list exhausted — party guest falls through to default.
+    // eslint-disable-next-line no-console
+    console.log('[SEAT-DIAG] preference exhausted', {
+      simTime: state.simTime.toFixed(2),
+      choice: state.scenario.choice,
+      allTaken: prefs.every((s) => seatTaken(state, s))
+    });
   }
   for (const seat of SEATS_DEFAULT) {
     if (seat < cap && !seatTaken(state, seat)) return seat;
