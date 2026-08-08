@@ -1,6 +1,7 @@
 import { INTERIOR } from '../content/layout';
 import type { Guest, SimulationState, StaffMember, TaskType, Vec2 } from '../types';
 import { taskDurationTicks } from './economics';
+import { reputationEventDeparture, reputationEventGiveUp } from './reputation';
 
 const TICK_SECONDS = 0.2;
 
@@ -188,10 +189,13 @@ export function tickGuests(state: SimulationState) {
         state.waitingIds = state.waitingIds.filter((id) => id !== guest.id);
         setGuestSeated(state, guest, seat);
       } else if (now - guest.stateTime > 90 && guest.satisfaction < 0.2) {
-        // Give up.
+        // Give up. ORDER 043 v3 §4 reputation loop: a walkout from
+        // the queue is the loudest bad-reputation signal — a person
+        // waited long enough to be visibly unhappy and then left.
         guest.state = 'leaving';
         guest.stateTime = now;
         moveGuest(guest, { x: 0, z: 8 });
+        reputationEventGiveUp(state);
       }
       continue;
     }
@@ -209,9 +213,14 @@ export function tickGuests(state: SimulationState) {
     }
 
     if (guest.state === 'paying' && now - guest.stateTime > 8) {
-      // Free the seat, count as completed.
+      // Free the seat, count as completed. ORDER 043 v3 §4 reputation
+      // loop: read final satisfaction as a reputation signal — happy
+      // departures pull word-of-mouth up, unhappy departures pull it
+      // down, mediocre is neutral (a forgettable dinner is not
+      // remembered).
       state.completedGuests += 1;
       state.seatedIds = state.seatedIds.filter((id) => id !== guest.id);
+      reputationEventDeparture(state, guest.satisfaction);
       guest.state = 'leaving';
       guest.stateTime = now;
       moveGuest(guest, { x: 0, z: 8 });

@@ -40,13 +40,34 @@ export function periodArrivalMultiplier(period: DayPeriod): number {
 
 // Base arrival rate in guests per sim-minute, before any of the
 // modulators (period gate, service concept, pricing tier, economic
-// capital). Tuned at the ORDER 043 v3 room-flow retune from the old
-// 3.2/min baseline: at the previous rate a full 30-min dinner service
-// averaged ~5 seated at the peak, well under the 16-cover room. 12/min
-// combined with period gates (lunch 0.6, dinner 1.0) yields a lunch of
-// ~7 covers and a dinner that reliably fills the room, so the queue
-// carries a signal.
+// capital, reputation). Tuned at the ORDER 043 v3 room-flow retune
+// from the old 3.2/min baseline: at the previous rate a full 30-min
+// dinner service averaged ~5 seated at the peak, well under the
+// 16-cover room. 12/min combined with period gates (lunch 0.6, dinner
+// 1.0) yields a lunch of ~7 covers and a dinner that reliably fills
+// the room, so the queue carries a signal.
 const ARRIVAL_BASE_PER_MINUTE = 12;
+
+// ORDER 043 v3 §4 reputation loop — reputation raises demand. Linear
+// mapping so a weak reputation still pulls in some guests (the
+// restaurant is not empty on day one) and a strong reputation
+// amplifies pressure. At the default reputation 0.6 the multiplier is
+// 0.98, so day-one arrival pressure closely matches the pre-loop
+// tuning — the loop only bites once reputation drifts.
+//
+//   reputation = 0.0 → 0.6× arrivals (a bad name loses guests)
+//   reputation = 0.5 → 0.9× arrivals
+//   reputation = 1.0 → 1.4× arrivals (word-of-mouth full house)
+const REPUTATION_ARRIVAL_FLOOR = 0.6;
+const REPUTATION_ARRIVAL_CEIL = 1.4;
+
+export function reputationArrivalMultiplier(reputation: number): number {
+  const clamped = Math.max(0, Math.min(1, reputation));
+  return (
+    REPUTATION_ARRIVAL_FLOOR +
+    (REPUTATION_ARRIVAL_CEIL - REPUTATION_ARRIVAL_FLOOR) * clamped
+  );
+}
 
 // Maximum concurrent guests (seated + waiting + arriving + declined
 // pending removal). Raised from 12 → 24 alongside the base-rate lift so
@@ -56,14 +77,16 @@ const ACTIVE_GUEST_CAP = 24;
 
 // Very small arrival model. Expected guests per sim-minute is derived from
 // pricing and service concept, then modulated by the current economic
-// capital so a weak-economy period visibly thins the room.
+// capital and reputation so a weak-economy period visibly thins the
+// room and a strong-reputation restaurant pulls guests in.
 export function arrivalProbability(state: SimulationState): number {
   const perMinute =
     ARRIVAL_BASE_PER_MINUTE *
     periodArrivalMultiplier(state.day.period) *
     SERVICE_ARRIVAL_MULT[state.policies.service] *
     PRICE_ARRIVAL_MULT[state.policies.pricing] *
-    economicArrivalMultiplier(state.capitals.values.economic);
+    economicArrivalMultiplier(state.capitals.values.economic) *
+    reputationArrivalMultiplier(state.reputation);
   return perMinute / (60 * 5); // 5 Hz tick.
 }
 

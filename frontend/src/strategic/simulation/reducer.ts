@@ -20,6 +20,7 @@ import { maybeSpawnGuest, scenarioSpawnStep } from './arrivals';
 import { planScenariosForService } from './day';
 import { revenuePerGuest } from './economics';
 import { initialDay, makeInitialState, makeStaff } from './model';
+import { tickReputationDrift } from './reputation';
 import { tickGuests, tickStaff } from './service';
 import { tickSustainability } from './sustainability';
 
@@ -367,6 +368,12 @@ function advanceTick(state: SimulationState): SimulationState {
 
   // Sustainability.
   tickSustainability(draft);
+
+  // ORDER 043 v3 §4 reputation loop — continuous per-tick pressure
+  // from queue length + team strain. Runs after tickGuests so the
+  // waiting queue reflects this tick's arrivals + departures, not the
+  // previous tick's state.
+  tickReputationDrift(draft);
 
   // Auto-trigger scenario once.
   if (!draft.scenario.hasAutoTriggered && draft.simTime >= AUTO_SCENARIO_AT) {

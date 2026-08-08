@@ -4,6 +4,7 @@ import {
   economicArrivalMultiplier,
   maybeSpawnGuest,
   periodArrivalMultiplier,
+  reputationArrivalMultiplier,
   scenarioSpawnStep,
   walkAwayProbability
 } from '../arrivals';
@@ -57,17 +58,17 @@ describe('arrivalProbability', () => {
     expect(arrivalProbability(stateInPeriod(1, 'evening'))).toBe(0);
   });
 
-  it('matches base * periodMult * SERVICE_MULT * PRICE_MULT * economicMult / 300 (5 Hz)', () => {
+  it('matches base * periodMult * SERVICE_MULT * PRICE_MULT * economicMult * reputationMult / 300 (5 Hz)', () => {
     const s = stateInPeriod(1, 'dinner');
-    // ORDER 043 v3 room-flow retune: base rate is 12/min, gated by the
-    // period multiplier (dinner = 1.0). At initial economic capital 0.55,
-    // the economic multiplier is 0.73.
+    // ORDER 043 v3 §4 reputation loop wired into arrivalProbability:
+    // rate now also scales with reputation. Initial reputation = 0.6.
     const expected =
       (12 *
         periodArrivalMultiplier('dinner') *
         SERVICE_ARRIVAL_MULT[s.policies.service] *
         PRICE_ARRIVAL_MULT[s.policies.pricing] *
-        economicArrivalMultiplier(s.capitals.values.economic)) /
+        economicArrivalMultiplier(s.capitals.values.economic) *
+        reputationArrivalMultiplier(s.reputation)) /
       300;
     expect(arrivalProbability(s)).toBeCloseTo(expected, 10);
   });

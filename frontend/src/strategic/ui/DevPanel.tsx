@@ -61,6 +61,6 @@ export function DevPanel({ lastKey }: Props) {
           return `${m}:${s.toString().padStart(2, '0')} / ${d.currentServiceLengthMinutes}min`;
         })();
   const line1 = `DEV  day=${d.dayNumber} ${d.period.padEnd(9)}  service=${serviceReadout.padEnd(14)}  scenarios=${d.scenariosFiredThisService}/${d.scenariosPlanned}`;
-  const line2 = `     econ=${c.economic.toFixed(2)}  soc=${c.social.toFixed(2)}  eco=${c.ecological.toFixed(2)}  wager=${wager}  key=${lastKey || '-'}`;
+  const line2 = `     econ=${c.economic.toFixed(2)}  soc=${c.social.toFixed(2)}  eco=${c.ecological.toFixed(2)}  rep=${sim.reputation.toFixed(2)}  wager=${wager}  key=${lastKey || '-'}`;
   return <div style={PANEL_STYLE}>{`${line1}\n${line2}`}</div>;
 }
