@@ -6,6 +6,7 @@ import { useDesktopControls } from './camera/useDesktopControls';
 import { useTouchControls } from './camera/useTouchControls';
 import type { Landmark } from './content/world';
 import { LANDMARK_BY_ID } from './content/world';
+import { ScenarioOverlay } from './scenario/ScenarioOverlay';
 import { StrategicScene } from './scene/StrategicScene';
 import { SimulationProvider } from './simulation/SimulationProvider';
 import { AboutPanel } from './ui/AboutPanel';
@@ -83,6 +84,7 @@ function StrategicShell() {
         landmark={selected}
         onClose={() => setSelectedId(null)}
       />
+      <ScenarioOverlay />
       <AboutPanel open={aboutOpen} onClose={() => setAboutOpen(false)} />
     </div>
   );
