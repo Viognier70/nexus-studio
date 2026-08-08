@@ -22,7 +22,24 @@ const VILLAGE_FOCUS: [number, number] = [
   (TORGET[1] + CAMPUS[1]) / 2 + 20
 ];
 
-export const PRESETS: Record<'village' | 'district' | 'business', Preset> = {
+// ORDER 042 §3.1 developer preset — jumps the camera to the player-
+// business building (w869907975, centroid ≈ (31.6, −16.7)) at a
+// distance where the roof crossfade is actively fading. Camera bible
+// §4.1 puts the roof-fade midpoint at GRAY_BOX_CAMERA.restaurant
+// RoofFadeMid = 40 m with a ±12 m band, so distance = 40 lands the
+// roof at exactly 50 % opacity — a good starting point for the
+// Vision Owner to zoom in and out through the transition.
+//
+// Building corrected 2026-07-30 from `w869907963` (Candidate C, which
+// coincided with Guldkringlan's node-landmark rendered volume) to
+// `w869907975` (Candidate A, Torget south edge — spatially clean:
+// nearest landmark is Torget plaza at 13.9 m, no volumetric building
+// within 5 m). See the corresponding note in PLAYER_BUSINESS_
+// BUILDING_IDS in world.ts and the 2026-07-30 mechanism-note in
+// APPROXIMATION_REGISTER.md.
+const PLAYER_BUSINESS_CENTROID: [number, number] = [31.6, -16.7];
+
+export const PRESETS: Record<'village' | 'district' | 'business' | 'myBusiness', Preset> = {
   village: {
     label: 'grythyttan',
     // Composition, not overview. The camera sits lower and tilts further
@@ -67,6 +84,32 @@ export const PRESETS: Record<'village' | 'district' | 'business', Preset> = {
       distance: 55,
       yaw: 0.15,
       pitch: (34 * Math.PI) / 180
+    }
+  },
+  myBusiness: {
+    // Developer shortcut per ORDER 042 §3.1 review request. Centres on
+    // the player business (`w869907975`, centroid ≈ (31.6, −16.7)) and
+    // lands the camera INSIDE the interior-view threshold immediately
+    // — below the roof-fade band, so on first paint the roof is
+    // already invisible and the interior stub is fully visible. Vision
+    // Owner request 2026-08-08: this must use the same threshold
+    // constant as the PlayerBusiness fade logic so the two cannot
+    // drift apart.
+    //
+    // At dist = restaurantRoofFadeMid - restaurantRoofFadeHalf (28 m),
+    // roof opacity is exactly 0; the margin (4 m) makes sure a small
+    // manual zoom-out during play still keeps the roof invisible. Pitch
+    // 50° keeps the camera above the roof line but tilted enough to
+    // see the interior in perspective (not top-down plan view).
+    label: 'vinbaren',
+    target: {
+      focus: { x: PLAYER_BUSINESS_CENTROID[0], z: PLAYER_BUSINESS_CENTROID[1] },
+      distance:
+        GRAY_BOX_CAMERA.restaurantRoofFadeMid -
+        GRAY_BOX_CAMERA.restaurantRoofFadeHalf -
+        4,
+      yaw: 0.4,
+      pitch: (50 * Math.PI) / 180
     }
   }
 };

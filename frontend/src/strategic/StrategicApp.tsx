@@ -1,10 +1,14 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { BusinessProvider } from './business/BusinessContext';
+import { NameEntryOverlay } from './business/NameEntryOverlay';
 import { CameraProvider, useCamera } from './camera/CameraContext';
 import { useDesktopControls } from './camera/useDesktopControls';
 import { useTouchControls } from './camera/useTouchControls';
 import type { Landmark } from './content/world';
 import { LANDMARK_BY_ID } from './content/world';
+import { ScenarioOverlay } from './scenario/ScenarioOverlay';
 import { StrategicScene } from './scene/StrategicScene';
+import { SimulationProvider, useSimDispatch } from './simulation/SimulationProvider';
 import { AboutPanel } from './ui/AboutPanel';
 import { ControlsHint } from './ui/ControlsHint';
 import { ModeSwitchLink } from './ui/ModeSwitchLink';
@@ -21,9 +25,14 @@ export function StrategicApp() {
     return <WebGLFallback onRestart={() => window.location.reload()} />;
   }
   return (
-    <CameraProvider>
-      <StrategicShell />
-    </CameraProvider>
+    <BusinessProvider>
+      <CameraProvider>
+        <SimulationProvider>
+          <StrategicShell />
+          <NameEntryOverlay />
+        </SimulationProvider>
+      </CameraProvider>
+    </BusinessProvider>
   );
 }
 
@@ -32,6 +41,7 @@ function StrategicShell() {
   const [aboutOpen, setAboutOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const { focusOn, jumpToPreset } = useCamera();
+  const simDispatch = useSimDispatch();
 
   const getHost = useCallback(() => hostRef.current, []);
   useDesktopControls({
@@ -40,6 +50,33 @@ function StrategicShell() {
     onJumpPreset: jumpToPreset
   });
   useTouchControls({ enabled: true, targetElement: getHost });
+
+  // Dev shortcuts alongside the camera-preset digit keys 1–4:
+  //   5 — trigger the walk-in-of-five scenario now (bypasses the 30-s
+  //       auto-trigger; useful for one-and-done playtest)
+  //   R — reset the simulation only (scenario, guests, tick counter,
+  //       seatedIds). Explicitly scoped to simDispatch — this handler
+  //       does not touch BusinessContext, and there is no other code
+  //       path in the app that can null `business.name` once set (the
+  //       only mutator, BusinessContext.setName, filters empty inputs).
+  //       If a full reset including the business name is ever needed,
+  //       browser reload (Cmd+R / Ctrl+R) is the intended path.
+  // Modifier keys are ignored so that Cmd+R / Ctrl+R (browser reload)
+  // and any future keyboard chords aren't hijacked by the dev handler.
+  // Ignored when an <input> or <textarea> has focus (name-entry etc.)
+  // so typing a business name doesn't accidentally trigger scenarios.
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+      const target = event.target as HTMLElement | null;
+      const tag = target?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+      if (event.key === '5') simDispatch({ type: 'TRIGGER_SCENARIO' });
+      if (event.key === 'r' || event.key === 'R') simDispatch({ type: 'RESET' });
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [simDispatch]);
 
   const handleSelect = useCallback(
     (landmark: Landmark) => {
@@ -75,6 +112,7 @@ function StrategicShell() {
         landmark={selected}
         onClose={() => setSelectedId(null)}
       />
+      <ScenarioOverlay />
       <AboutPanel open={aboutOpen} onClose={() => setAboutOpen(false)} />
     </div>
   );

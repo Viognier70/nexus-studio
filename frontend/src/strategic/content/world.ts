@@ -313,6 +313,26 @@ const HANDCRAFTED_LANDMARK_IDS: ReadonlySet<string> = new Set([
   'gry-ingo'              // ORDER 032 — IngoCanopy in PublicRealm (building=roof + amenity=fuel; canopy not walls)
 ]);
 
+// Player-owned business — rendered by PlayerBusiness with a roof
+// crossfade so the interior becomes visible on zoom, per ORDER 042 §3.1
+// and CAMERA_AND_GAMEPLAY_BIBLE.md §4.1. Listed here as a
+// "handcrafted-like" building so OsmBuildings, ChimneySmoke,
+// OsmParcelBoundaries and OsmYardSurfaces skip it and PlayerBusiness
+// has the polygon to itself.
+//
+// Vision Owner initially picked `w869907963` per ORDER 042 §1 (Candidate
+// C, 252 m² historic-centre sit-down). Corrected 2026-07-30 to
+// `w869907975` (Candidate A, 146 m² Torget south edge café-scale)
+// after the ORDER 041 §6 candidate-filter miss surfaced: `w869907963`
+// coincides with the `gry-kringlan` (Guldkringlan) node landmark's
+// rendered volume and sits 4.6 m from Gästgivaregård. The filter only
+// excluded WAY-based landmarks and ran no landmark-proximity check;
+// node landmarks and adjacency slipped through. See the 2026-07-30
+// entry in APPROXIMATION_REGISTER.md for the mechanism-note.
+export const PLAYER_BUSINESS_BUILDING_IDS: ReadonlySet<string> = new Set([
+  'w869907975'   // Candidate A, Torget south edge café-scale
+]);
+
 export const LANDMARK_BUILDING_IDS: Set<string> = new Set([
   ...WORLD.landmarks
     .filter((l) =>
@@ -322,7 +342,8 @@ export const LANDMARK_BUILDING_IDS: Set<string> = new Set([
     )
     .map((l) => `w${l.source.osmId}`),
   ...SHARED_CONTAINER_BUILDING_IDS,
-  ...D2_HANDCRAFTED_BUILDING_IDS
+  ...D2_HANDCRAFTED_BUILDING_IDS,
+  ...PLAYER_BUSINESS_BUILDING_IDS
 ]);
 
 // Roads categorised for movement systems.

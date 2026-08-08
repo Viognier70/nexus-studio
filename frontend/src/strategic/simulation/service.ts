@@ -46,10 +46,59 @@ export function seatSlot(_state: SimulationState, index: number): Vec2 {
   return INTERIOR.seatOrder[index] ?? INTERIOR.seatOrder[0];
 }
 
-export function findFreeSeat(state: SimulationState): number | null {
+// Seat preferences per scenario response (ORDER 042 §3.3 walk-in-of-
+// five). The visual room reads only when the party actually lands in
+// the seats the response promises: choice A combines the 4-top with a
+// 2-top; choice B fills the 4-top and puts the fifth at the bar. If a
+// preferred seat is already taken (a regular got there first), the
+// next preference is tried; only after the whole preference list is
+// exhausted does the party fall back to the general seat sequence.
+//
+// Seat indices are the interiorLayout.ts flat seat order:
+//   0–1   Table t0 (2-top)   ← left-most on the west row
+//   2–3   Table t1 (2-top)
+//   4–7   Table t2 (4-top)   ← centre
+//   8–9   Table t3 (2-top)
+//   10–11 Table t4 (2-top)   ← right-most
+//   12–15 Bar stools
+const SEATS_CHOICE_A = [4, 5, 6, 7, 8]; // 4-top + t3 seat 0 (party of 5 split 4+1)
+const SEATS_CHOICE_B = [4, 5, 6, 7, 12]; // 4-top + first bar stool
+// Regular arrivals + fallback: fill front-to-back leaving the 4-top
+// alone so it stays available for future parties. Order puts the outer
+// 2-tops first, then bar stools, then the 4-top (least preferred).
+const SEATS_DEFAULT = [
+  0, 1, 2, 3,      // t0, t1 (left-side 2-tops)
+  8, 9, 10, 11,    // t3, t4 (right-side 2-tops)
+  12, 13, 14, 15,  // bar stools
+  4, 5, 6, 7       // 4-top (avoided unless nothing else free)
+];
+
+function scenarioPreferredSeats(state: SimulationState): number[] {
+  if (state.scenario.choice === 'A') return SEATS_CHOICE_A;
+  if (state.scenario.choice === 'B') return SEATS_CHOICE_B;
+  return SEATS_DEFAULT;
+}
+
+function seatTaken(state: SimulationState, seat: number): boolean {
+  return state.seatedIds.some((gid) => guestSeat(state, gid) === seat);
+}
+
+export function findFreeSeat(
+  state: SimulationState,
+  forScenarioGuest = false
+): number | null {
   const cap = isSeatedCapacity(state);
-  for (let i = 0; i < cap; i++) {
-    if (!state.seatedIds.some((gid) => guestSeat(state, gid) === i)) return i;
+  // Scenario guests walk the response-specific preference list first.
+  // A regular arrival got seat 4 before the party arrived? Try seat 5
+  // next, then 6, 7, 8; only after the preference list is exhausted
+  // fall back to the general sequence.
+  if (forScenarioGuest && state.scenario.choice) {
+    for (const seat of scenarioPreferredSeats(state)) {
+      if (seat < cap && !seatTaken(state, seat)) return seat;
+    }
+  }
+  for (const seat of SEATS_DEFAULT) {
+    if (seat < cap && !seatTaken(state, seat)) return seat;
   }
   return null;
 }
@@ -80,7 +129,7 @@ export function tickGuests(state: SimulationState) {
 
     if (guest.state === 'arriving') {
       if (guest.moveProgress >= 1) {
-        const seat = findFreeSeat(state);
+        const seat = findFreeSeat(state, guest.scenarioSource);
         if (seat !== null && !state.scenario.awaitingChoice) {
           setGuestSeated(state, guest, seat);
         } else {
@@ -106,7 +155,7 @@ export function tickGuests(state: SimulationState) {
       // Satisfaction decreases while waiting.
       const drop = 0.02 * TICK_SECONDS;
       guest.satisfaction = Math.max(0, guest.satisfaction - drop);
-      const seat = findFreeSeat(state);
+      const seat = findFreeSeat(state, guest.scenarioSource);
       if (seat !== null) {
         state.waitingIds = state.waitingIds.filter((id) => id !== guest.id);
         setGuestSeated(state, guest, seat);
@@ -314,7 +363,7 @@ function completeStaffTask(state: SimulationState, staff: StaffMember) {
     case 'seat': {
       // A guest sitting in the waiting queue is served here too.
       if (guest.state === 'arriving' || guest.state === 'waiting') {
-        const seat = findFreeSeat(state);
+        const seat = findFreeSeat(state, guest.scenarioSource);
         if (seat !== null) {
           state.waitingIds = state.waitingIds.filter((id) => id !== guest.id);
           guest.state = 'seated';
