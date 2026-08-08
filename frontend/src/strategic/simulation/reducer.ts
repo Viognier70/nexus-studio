@@ -24,7 +24,18 @@ import { initialDay, makeInitialState, makeStaff } from './model';
 import { tickReputationDrift } from './reputation';
 import { tickGuests, tickStaff } from './service';
 import { tickSustainability } from './sustainability';
-import { chargeStructuralCost, removeAgencyMembers } from './team';
+import {
+  AGENCY_DECLINE_SOCIAL_COST,
+  AGENCY_ECONOMIC_COST,
+  AGENCY_HIRE_COST,
+  AGENCY_OFFER_LOAD_THRESHOLD,
+  AGENCY_OFFER_SUSTAINED_SEC,
+  AGENCY_OFFER_WINDOW_SEC,
+  addAgencyMember,
+  chargeStructuralCost,
+  removeAgencyMembers,
+  teamCapacity
+} from './team';
 import { drawNextTheme, wagerPayout } from './themeSelection';
 
 // ORDER 043 §4 wager tuning — cycle-1 defaults, will be tuned against
@@ -104,6 +115,10 @@ export function reducer(state: SimulationState, action: SimAction): SimulationSt
       return openService(state, action.service, action.lengthMinutes);
     case 'SKIP_LUNCH':
       return skipLunch(state);
+    case 'ACCEPT_AGENCY':
+      return acceptAgency(state);
+    case 'DECLINE_AGENCY':
+      return declineAgency(state);
     case 'RESET':
       return makeInitialState(state.seed, state.policies);
     default:
@@ -261,6 +276,130 @@ function setCapital(
       ...state.capitals,
       values: { ...state.capitals.values, [capital]: clamped }
     }
+  };
+}
+
+// ---------- ORDER 043 v3 §10 step 5 — agency-offer machinery ------------
+
+function activeGuestCount(state: SimulationState): number {
+  return state.guests.filter(
+    (g) =>
+      g.state === 'arriving' ||
+      g.state === 'waiting' ||
+      g.state === 'seated' ||
+      g.state === 'ordering' ||
+      g.state === 'dining' ||
+      g.state === 'paying'
+  ).length;
+}
+
+// Runs inside advanceTick. Mutates draft in place — sets/clears the
+// strain tracker, fires an offer, or expires an unanswered offer
+// into an implicit decline.
+function tickAgencyStrain(draft: SimulationState): void {
+  const period = draft.day.period;
+
+  // Outside a service, reset the tracker and drop any orphaned offer.
+  if (period !== 'lunch' && period !== 'dinner') {
+    if (draft.team.strainSinceSimTime !== null) {
+      draft.team = { ...draft.team, strainSinceSimTime: null };
+    }
+    return;
+  }
+
+  const now = draft.simTime;
+  const load = activeGuestCount(draft) / teamCapacity(draft.team);
+  const tracker = draft.team.strainSinceSimTime;
+
+  // Expire an unanswered offer into an implicit decline. The social
+  // cost applies either way — the team read the silence.
+  if (draft.agencyOffer && now >= draft.agencyOffer.expiresAt) {
+    draft.capitals = {
+      ...draft.capitals,
+      values: {
+        ...draft.capitals.values,
+        social: Math.max(0, draft.capitals.values.social - AGENCY_DECLINE_SOCIAL_COST)
+      }
+    };
+    draft.agencyOffer = null;
+  }
+
+  if (load >= AGENCY_OFFER_LOAD_THRESHOLD) {
+    if (tracker === null) {
+      draft.team = { ...draft.team, strainSinceSimTime: now };
+    } else if (
+      now - tracker >= AGENCY_OFFER_SUSTAINED_SEC &&
+      draft.agencyOffer === null
+    ) {
+      // Fire the offer. Role is the axis the strain has been loudest
+      // on — cycle 1 keeps it simple and offers a lärling-shaped
+      // hire (generic hand). A future order could pick the role that
+      // best relieves the current bottleneck.
+      draft.agencyOffer = {
+        role: 'lärling',
+        moneyCost: AGENCY_HIRE_COST,
+        socialCostIfDeclined: AGENCY_DECLINE_SOCIAL_COST,
+        offeredAt: now,
+        expiresAt: now + AGENCY_OFFER_WINDOW_SEC
+      };
+      draft.team = { ...draft.team, strainSinceSimTime: null };
+    }
+  } else if (tracker !== null) {
+    // Load dropped below threshold — reset the tracker so a fresh
+    // sustained window is required before the next offer.
+    draft.team = { ...draft.team, strainSinceSimTime: null };
+  }
+}
+
+function acceptAgency(state: SimulationState): SimulationState {
+  if (state.agencyOffer === null) return state;
+  const team = addAgencyMember(state.team, state.day.dayNumber);
+  return {
+    ...state,
+    team,
+    agencyOffer: null,
+    // Cost is felt both in raw ledger (state.cost) and in the
+    // reading layer (economic capital). The capital hit is what
+    // the player watches; the ledger accumulates for later reports.
+    cost: state.cost + AGENCY_HIRE_COST,
+    capitals: {
+      ...state.capitals,
+      values: {
+        ...state.capitals.values,
+        economic: Math.max(0, state.capitals.values.economic - AGENCY_ECONOMIC_COST)
+      }
+    },
+    events: [
+      ...state.events,
+      {
+        at: state.simTime,
+        kind: 'system',
+        text: 'Hyrpersonal inkallad — laget växer för kvällen.'
+      }
+    ]
+  };
+}
+
+function declineAgency(state: SimulationState): SimulationState {
+  if (state.agencyOffer === null) return state;
+  return {
+    ...state,
+    agencyOffer: null,
+    capitals: {
+      ...state.capitals,
+      values: {
+        ...state.capitals.values,
+        social: Math.max(0, state.capitals.values.social - AGENCY_DECLINE_SOCIAL_COST)
+      }
+    },
+    events: [
+      ...state.events,
+      {
+        at: state.simTime,
+        kind: 'system',
+        text: 'Avstod hyrpersonal — laget märker att det inte kom hjälp.'
+      }
+    ]
   };
 }
 
@@ -427,6 +566,13 @@ function advanceTick(state: SimulationState): SimulationState {
   // and after reputation drift so a large queue that just triggered
   // rep drift also feeds this tick's ambient probability.
   tickEventStream(draft, rng);
+
+  // ORDER 043 v3 §10 step 5 — agency-offer strain tracking and
+  // offer expiry. Runs after tickEventStream so this tick's load
+  // reflects the current active guests. The offer itself is UI-
+  // driven (ACCEPT_AGENCY / DECLINE_AGENCY); this tick fires the
+  // offer and expires it into an implicit decline.
+  tickAgencyStrain(draft);
 
   // ORDER 043 v3 step 5b — scheduled scenario firing.
   //

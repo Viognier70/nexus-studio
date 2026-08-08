@@ -62,7 +62,32 @@ export const AGENCY_COMPETENCE: RoleCompetence = {
   practical: 0.40
 };
 export const AGENCY_HIRE_COST = 800;
+
+// ORDER 043 v3 §10 step 5 — the alternative-cost mechanic. Vision
+// Owner: "hyrpersonal under service med socialt kapital som
+// alternativkostnad om spelaren avstår." Declining an offer signals
+// to the team that management doesn't intervene when they're
+// drowning; social capital ticks down. Accepting spends money
+// (moderate economic hit) but relieves strain.
+//
+// AGENCY_ECONOMIC_COST is applied to the economic capital (0..1)
+// rather than to `state.cost` alone so the price is felt in the
+// reading layer the player watches — same principle as the ORDER
+// 042 walk-in-of-five reputation dip on choice C.
 export const AGENCY_DECLINE_SOCIAL_COST = 0.03;
+export const AGENCY_ECONOMIC_COST = 0.04;
+
+// Offer trigger. Sustained load above threshold for this many
+// continuous sim-seconds fires an offer. Cycle-1 tuning:
+//   threshold 1.2 = strain multiplier ≈ 0.8× (the shoulder of the
+//   strain curve — team is stressed but not broken)
+//   sustained 45 s so a brief spike doesn't fire an offer for a
+//   dip the team can absorb on its own
+//   window 60 s — offer sits on screen for a minute, then expires
+//   as an implicit decline (with the social cost applied)
+export const AGENCY_OFFER_LOAD_THRESHOLD = 1.2;
+export const AGENCY_OFFER_SUSTAINED_SEC = 45;
+export const AGENCY_OFFER_WINDOW_SEC = 60;
 
 // -------- initial team ----------------------------------------------------
 
@@ -94,7 +119,8 @@ export function initialTeam(): TeamState {
       makeTeamMember('servitör', 1),
       makeTeamMember('kock', 1)
     ],
-    paidStructuralCost: 0
+    paidStructuralCost: 0,
+    strainSinceSimTime: null
   };
 }
 

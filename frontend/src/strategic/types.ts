@@ -104,6 +104,12 @@ export interface TeamState {
   // Displayed nowhere for the player — the effect of cost is felt
   // via the economic capital, which absorbs the accumulation.
   paidStructuralCost: number;
+  // ORDER 043 v3 §10 step 5 agency-offer strain tracker. Null when
+  // load is below AGENCY_OFFER_LOAD_THRESHOLD; simTime of the
+  // first tick when strain crossed threshold otherwise. When
+  // (simTime − strainSinceSimTime) ≥ AGENCY_OFFER_SUSTAINED_SEC an
+  // offer fires and the tracker resets to null.
+  strainSinceSimTime: number | null;
 }
 
 // ORDER 043 v3 §10 step 5 agency staff offer. Fires when strain

@@ -133,6 +133,17 @@ export const strings = {
       C_high: 'Bestämt nej. Rummet håller sin form, tipsen blir mindre.'
     }
   },
+  // ORDER 043 v3 §10 step 5 — agency-staff offer. Appears mid-service
+  // when strain has been sustained above threshold. Player accepts
+  // (money cost, agency joins for the service) or declines (social
+  // capital cost — the team registers that no help came).
+  agency: {
+    heading: 'Hyrpersonal erbjuds',
+    body: 'Laget står under press. Vill du ta in en extra hand för resten av kvällen?',
+    accept: 'Ta in — kostar',
+    decline: 'Avstå',
+    kr: 'kr'
+  },
   // ORDER 043 v3 §7 wager — placed between scenarios on which
   // sustainability the next situation will concern. Optional; declining
   // is legitimate and progresses more slowly.

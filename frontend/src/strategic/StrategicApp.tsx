@@ -6,6 +6,7 @@ import { useDesktopControls } from './camera/useDesktopControls';
 import { useTouchControls } from './camera/useTouchControls';
 import type { Landmark } from './content/world';
 import { LANDMARK_BY_ID } from './content/world';
+import { AgencyOfferPanel } from './scenario/AgencyOfferPanel';
 import { ScenarioOverlay } from './scenario/ScenarioOverlay';
 import { ServiceLengthPicker } from './scenario/ServiceLengthPicker';
 import { WagerPanel } from './scenario/WagerPanel';
@@ -158,6 +159,7 @@ function StrategicShell() {
       <ScenarioOverlay />
       <ServiceLengthPicker />
       <WagerPanel />
+      <AgencyOfferPanel />
       <EventStreamPanel />
       <DevPanel lastKey={lastKey} />
       <AboutPanel open={aboutOpen} onClose={() => setAboutOpen(false)} />
