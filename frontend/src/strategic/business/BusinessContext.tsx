@@ -1,10 +1,13 @@
 // The player-owned business, wired into the strategic scene.
 //
-// ORDER 042 §3.1: one business, one building (w869907963 — the 252 m²
-// D01 historic-centre sit-down restaurant Vision Owner picked). The
-// business exists before time runs, before scenarios arrive, before any
-// investment. State captured here is the minimum the loop needs to
-// recognise the building as *yours*.
+// ORDER 042 §3.1: one business, one building. The current pick is
+// w869907975 (Candidate A, ~146 m² café-scale, Torget south edge);
+// corrected 2026-07-30 from the initial w869907963 (Candidate C,
+// 252 m²) pick after the ORDER 041 §6 filter-miss surfaced — see
+// world.ts PLAYER_BUSINESS_BUILDING_IDS and APPROXIMATION_REGISTER.
+// The business exists before time runs, before scenarios arrive,
+// before any investment. State captured here is the minimum the loop
+// needs to recognise the building as *yours*.
 //
 // Session-only. No persistence across reloads yet — LQ-04 (`what is a
 // unit of time / does the world run while the player is away`) is
@@ -21,17 +24,14 @@ import {
   type ReactNode
 } from 'react';
 
-// The building id is a compile-time constant, not a runtime setting —
-// Vision Owner picked it per ORDER 042 §1 and picking again is a
-// separate order.
-export const PLAYER_BUSINESS_BUILDING_ID = 'w869907963';
-
 // Initial defaults per ORDER 042 §3.1: "staff as a count and a
 // competence level, per EXECUTIVE_DESIGN_DIRECTIVE_001.md §7 — never
 // individuals the player commands". Capital + revenue + costs at
-// placeholder values until §3.5 investment lands.
+// placeholder values until §3.5 investment lands. The building id is
+// not stored here — PLAYER_BUSINESS_BUILDING_IDS in content/world.ts
+// is the single source of truth; anything that needs the id reads it
+// from there.
 export interface PlayerBusiness {
-  buildingId: typeof PLAYER_BUSINESS_BUILDING_ID;
   name: string | null;
   staff: {
     count: 2 | 3 | 4;
@@ -45,7 +45,6 @@ export interface PlayerBusiness {
 }
 
 const INITIAL_BUSINESS: PlayerBusiness = {
-  buildingId: PLAYER_BUSINESS_BUILDING_ID,
   name: null,
   staff: { count: 3, training: 1 },
   economy: { capital: 150, revenueMonthly: 0, costsMonthly: 0 }

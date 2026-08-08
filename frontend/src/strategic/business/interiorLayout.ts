@@ -21,6 +21,16 @@ export interface InteriorLayout {
   waitingSpot: [number, number];    // just outside the entrance
 }
 
+// Layout constants. The 2×3 = 6-table grid and 2.0 m X-spacing were
+// inherited from PlayerBusiness.tsx's pre-refactor interior stub,
+// which was authored for Candidate C (w869907963, 252 m² sit-down
+// restaurant). The current player business is Candidate A
+// (w869907975, ~146 m² café-scale, ~11.8 × 15.6 m outer envelope
+// per Vision Owner measurement). These constants have not been
+// re-verified for the smaller room; a future order should decide
+// whether six 2-tops still read as a café floor plan at that
+// footprint, or whether a smaller table count (a mix of 2-tops and
+// 4-tops seating ~12–16 covers) would be more legible.
 const BAR_WIDTH_M = 1.6;
 const BAR_OFFSET_M = 0.6;
 const TABLE_ROWS = 2;
