@@ -119,13 +119,15 @@ describe('reducer TRIGGER_SCENARIO', () => {
     expect(last.kind).toBe('scenario');
   });
 
-  it('auto-triggers exactly once when simTime crosses 120 s', () => {
+  it('auto-triggers exactly once when simTime crosses AUTO_SCENARIO_AT (30 s)', () => {
     let s = makeInitialState(1);
-    // Advance to just before the threshold. AUTO_SCENARIO_AT = 120 s;
-    // 599 ticks * 0.2 s = 119.8 s.
-    s = tick(s, 599);
+    // Advance to just before the threshold. AUTO_SCENARIO_AT = 30 s;
+    // 145 ticks * 0.2 s ≈ 29.0 s (a couple of ticks of slack to absorb
+    // IEEE 754 accumulator drift from repeated += 0.2).
+    s = tick(s, 145);
     expect(s.scenario.hasAutoTriggered).toBe(false);
-    s = tick(s, 1);
+    // 10 more ticks lands at ~31.0 s, well past the threshold.
+    s = tick(s, 10);
     expect(s.scenario.hasAutoTriggered).toBe(true);
     expect(s.scenario.phase).toBe('subject');
     // Further ticks must not re-trigger (event count stays flat over

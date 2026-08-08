@@ -13,7 +13,12 @@ import { makeInitialState, makeStaff } from './model';
 import { tickGuests, tickStaff } from './service';
 import { tickSustainability } from './sustainability';
 
-const AUTO_SCENARIO_AT = 120; // sim-seconds
+// Sim-seconds until the walk-in-of-five scenario auto-triggers if the
+// player takes no action. Kept short so a one-and-done playtest doesn't
+// have to sit through two minutes of ambient sim before the loop
+// engages; a manual key-5 trigger from the app shell is also wired for
+// the case where the player wants it now.
+const AUTO_SCENARIO_AT = 30;
 // Consequence window per ORDER 042 §3.4: "over 30–45 seconds of
 // compressed simulated time, the room changes in a way the player can
 // watch". After this many sim-seconds from the RESOLVE_SCENARIO, the
@@ -214,10 +219,14 @@ function describePolicyPatch(patch: Partial<Policies>): string {
 
 function triggerScenario(state: SimulationState, auto: boolean): SimulationState {
   // Enters phase 'subject' — the party is at the door, awaiting the
-  // player's difficulty wager (§4.3) and response (§4.2).
+  // player's difficulty wager (§4.3) and response (§4.2). `auto` is
+  // unused now; both manual and auto triggers set hasAutoTriggered
+  // to true so the auto-check in advanceTick can't re-fire and reset
+  // an in-progress scenario back to `subject`.
+  void auto;
   const scenario = {
     ...state.scenario,
-    hasAutoTriggered: state.scenario.hasAutoTriggered || auto,
+    hasAutoTriggered: true,
     active: true,
     phase: 'subject' as const,
     difficulty: null as null,
