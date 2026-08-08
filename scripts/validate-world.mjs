@@ -821,38 +821,20 @@ function mulberry32(state) {
 // Pair keys are the two building ids sorted lexicographically and
 // joined by `|`, so the check is order-independent.
 {
-  // ORDER 044 §2 — the church has been cleared of its eight vw-kyr-*
-  // intrusions. Thirteen entries below have been removed accordingly.
-  // Remaining entries will fall off as ORDER 040 §6's classification
-  // is applied in the follow-up commit.
-  const V21_ACCEPTED_OVERLAPS = new Set([
-    'vw-bv-lakeshore|vw-bv-lakeshore-boathouse',           //   9.18 m², 38.2 %
-    'vw-bv-tree-cluster|vw-bv-tree-garage',                //   5.31 m², 15.2 %
-    'vw-kyr-1|vw-kyr-torget-lh',                           //  20.00 m², 25.0 %
-    'vw-kyr-1-booth|vw-kyr-torget-lh',                     //  30.00 m², 100.0 %
-    'vw-kyr-12|vw-kyr-14',                                 //   8.00 m², 6.7 %
-    'vw-kyr-20|vw-kyr-20-garage',                          //  19.00 m², 23.8 %
-    'vw-kyr-20|vw-kyr-22',                                 //  40.00 m², 30.8 %
-    'vw-kyr-20-garage|vw-kyr-22',                          //  11.25 m², 14.1 %
-    'vw-kyr-22|vw-kyr-26',                                 //  28.00 m², 29.2 %
-    'vw-kyr-5|vw-kyr-5-barn',                              //  39.00 m², 55.7 %
-    'vw-kyr-torget-lh|vw-torget-bus-shelter',              //   8.75 m², 100.0 %
-    'vw-nyg-1|w869907972',                                 //  40.37 m², 25.6 %
-    'vw-nyg-20|w870510857',                                //  69.18 m², 32.0 %
-    'vw-pra-12s|w193810941',                               // 138.10 m², 89.7 %
-    'vw-pra-16|vw-pra-19n',                                //  36.00 m², 27.7 %
-    'vw-pra-20s|vw-pra-21',                                //  82.50 m², 83.3 %
-    'vw-pra-4n|vw-pra-6n',                                 //  48.75 m², 49.2 %
-    'vw-pra-4n|vw-pra-8',                                  //   8.00 m², 10.0 %
-    'vw-pra-6n|vw-pra-8',                                  //  35.75 m², 44.7 %
-    'vw-skg-11|w1250001245',                               //  56.37 m², 40.3 %   Tempo — await ground truth
-    'vw-skg-9|w1250001244',                                //  49.29 m², 35.2 %
-    'vw-stn-8|w870510842',                                 //  47.26 m², 44.7 %
-    'vw-torget-east-lh|w869907976',                        //  42.08 m², 41.4 %
-    'vw-torget-east-lh|w869907977',                        // 145.39 m², 42.8 %
-    'vw-torget-kyrkbacken-pair|vw-torget-north-lh',        //  63.25 m², 22.0 %
-    'vw-torget-north-lh|w869907971',                       // 123.39 m², 60.9 %
-  ]);
+  // ORDER 044 §2.3 — the exception list is empty. All 39 tier-3
+  // overlaps catalogued by ORDER 039 have been corrected:
+  //   • 8 church intrusions removed (first commit).
+  //   • 8 unambiguous removes applied (booth / bus-shelter / redundant-
+  //     with-OSM / one-of-two-vw × vw records).
+  //   • 7 nudges applied.
+  //   • 6 nudges rolled back to remove because they would have
+  //     introduced new tier-3 overlaps (see APPROXIMATION_REGISTER).
+  //   • 1 Tempo intrusion removed (default per proposal §4; awaits
+  //     ground-truth for possible re-add).
+  //
+  // The validator is now a real fence: any new tier-3 overlap
+  // introduced in future placement work fails V21 with no absorb.
+  const V21_ACCEPTED_OVERLAPS = new Set([]);
   const AREA_THRESHOLD_M2 = 5.0;
   const FRACTION_THRESHOLD = 0.05;
 
