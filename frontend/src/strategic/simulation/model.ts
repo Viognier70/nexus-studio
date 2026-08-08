@@ -1,5 +1,6 @@
 import { TOTAL_SEATS } from '../business/interiorLayout';
 import { INTERIOR, RESIDENT_SPLINES } from '../content/layout';
+import { initialTeam } from './team';
 import type {
   CapitalState,
   DayState,
@@ -239,6 +240,8 @@ export function makeInitialState(
     consequenceEvents: [],
     eventStream: [],
     pendingOutcomes: [],
+    team: initialTeam(),
+    agencyOffer: null,
     village: { residents: seedResidents(28) },
     district: { pedestrians: seedPedestrians(14) },
     delivery: initialDelivery(),

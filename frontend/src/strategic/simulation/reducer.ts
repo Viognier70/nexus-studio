@@ -24,6 +24,7 @@ import { initialDay, makeInitialState, makeStaff } from './model';
 import { tickReputationDrift } from './reputation';
 import { tickGuests, tickStaff } from './service';
 import { tickSustainability } from './sustainability';
+import { chargeStructuralCost, removeAgencyMembers } from './team';
 import { drawNextTheme, wagerPayout } from './themeSelection';
 
 // ORDER 043 §4 wager tuning — cycle-1 defaults, will be tuned against
@@ -187,8 +188,11 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
   if (day.period === 'lunch' && day.currentServiceLengthMinutes !== null) {
     const endsAt = day.periodStartAt + day.currentServiceLengthMinutes * 60;
     if (simTime >= endsAt) {
+      // Clear agency hires + offer at lunch close, same as dinner.
       return {
         ...state,
+        team: removeAgencyMembers(state.team),
+        agencyOffer: null,
         day: {
           ...day,
           period: 'afternoon',
@@ -204,8 +208,14 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
   if (day.period === 'dinner' && day.currentServiceLengthMinutes !== null) {
     const endsAt = day.periodStartAt + day.currentServiceLengthMinutes * 60;
     if (simTime >= endsAt) {
+      // ORDER 043 v3 §10 step 5 — clear any agency hires + any
+      // standing agency offer at service close. Agency members are
+      // scoped to the single service; the offer is stale after
+      // close and would surface next service if not cleared.
       return {
         ...state,
+        team: removeAgencyMembers(state.team),
+        agencyOffer: null,
         day: {
           ...day,
           period: 'evening',
@@ -220,8 +230,14 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
   }
   if (day.period === 'evening') {
     if (simTime - day.periodStartAt >= EVENING_TO_MORNING_PAUSE_SEC) {
+      // Day advance — charge structural cost for the closing day
+      // (every non-agency member pays their dailyCost) and roll to
+      // the next morning. §10 "structural cost locked over multiple
+      // days" is honoured by the per-day charge continuing for the
+      // contract duration.
       return {
         ...state,
+        team: chargeStructuralCost(state.team),
         day: {
           ...initialDay(),
           dayNumber: day.dayNumber + 1,
@@ -317,6 +333,8 @@ function advanceTick(state: SimulationState): SimulationState {
     events: state.events,
     eventStream: [...state.eventStream],
     pendingOutcomes: [...state.pendingOutcomes],
+    team: { ...state.team, members: state.team.members.map((m) => ({ ...m })) },
+    agencyOffer: state.agencyOffer ? { ...state.agencyOffer } : null,
     village: {
       residents: state.village.residents.map((r) => ({ ...r }))
     },

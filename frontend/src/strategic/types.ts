@@ -1,6 +1,25 @@
 export type ViewLabel = 'grythyttan' | 'kvarteret' | 'vinbaren';
 
-export type StaffRole = 'värd' | 'servitör' | 'kock';
+// ORDER 043 v3 §10 step 5 (per Addendum A §A.6 order): the team.
+// Four roles, three of them permanent (värd/servitör/kock) and one
+// junior (lärling) that plays a floor role but with low competence.
+// StaffMember (below) is the *visual* puck on the floor; TeamMember
+// (further down) is the *economic* record — cost, competence,
+// contract. The two layers are kept separate so a role swap or an
+// agency hire during service doesn't require re-shuffling positions.
+export type StaffRole = 'värd' | 'servitör' | 'kock' | 'lärling';
+
+// Competence axes per member. Mapped to the event stream's cause
+// sources: scientific → kitchen technique (kock reads high, others
+// low); cultural → hospitality + supplier relationships (värd high,
+// servitör mid); practical → house-standard execution (all
+// contribute). Deliberately three axes to keep the model legible
+// without collapsing into a single "skill" number.
+export interface RoleCompetence {
+  scientific: number;
+  cultural: number;
+  practical: number;
+}
 
 export type GuestState =
   | 'arriving'
@@ -53,6 +72,52 @@ export interface StaffMember {
   position: Vec2;
   targetPosition: Vec2;
   moveProgress: number;
+}
+
+// ORDER 043 team member — the economic record for hiring, cost,
+// competence, and contract. Runs alongside StaffMember (visual puck
+// on the floor). One TeamMember can correspond to one StaffMember,
+// but the two lifecycles are independent: agency staff mid-service
+// add a TeamMember without a StaffMember (no visual puck for cycle
+// 1), and a future scenario could remove a StaffMember for the
+// duration of a shift without cancelling the TeamMember's contract.
+export interface TeamMember {
+  id: string;
+  role: StaffRole;
+  competence: RoleCompetence;
+  // Structural cost — the business pays this amount per operating
+  // day (day-advance in reducer) for the duration of the contract.
+  // "Locked over multiple days" per Vision Owner: a hired role
+  // must be paid until contractEndsDay, even if you regret it.
+  dailyCost: number;
+  hiredOnDay: number;
+  contractEndsDay: number;
+  // Agency hires join for a single service and disappear at close.
+  // isAgency=true bypasses the day-advance cost accumulation (they
+  // have their own one-time cost paid at hire).
+  isAgency: boolean;
+}
+
+export interface TeamState {
+  members: TeamMember[];
+  // Structural cost paid so far (running total in "credits").
+  // Displayed nowhere for the player — the effect of cost is felt
+  // via the economic capital, which absorbs the accumulation.
+  paidStructuralCost: number;
+}
+
+// ORDER 043 v3 §10 step 5 agency staff offer. Fires when strain
+// (activeGuests / teamCapacity) exceeds AGENCY_OFFER_THRESHOLD for
+// AGENCY_OFFER_SUSTAINED_SEC continuous seconds. Player can accept
+// (costs money, adds a temporary TeamMember) or decline (costs
+// social capital — the team suffers under strain without help,
+// which is a legible cost even in the same evening).
+export interface AgencyOffer {
+  role: StaffRole;              // which role the strain read as needing
+  moneyCost: number;            // one-time hire cost
+  socialCostIfDeclined: number; // capital delta if player declines
+  offeredAt: number;            // simTime
+  expiresAt: number;            // simTime — offer window
 }
 
 export interface Guest {
@@ -371,6 +436,16 @@ export interface SimulationState {
   // holds scheduled outcome events waiting to fire at their dueAt.
   eventStream: EventStreamEntry[];
   pendingOutcomes: PendingOutcome[];
+  // ORDER 043 v3 §10 team layer — economic record for hiring, cost,
+  // competence. Runs alongside `staff` (visual pucks). Cost
+  // accumulates on day-advance; competence is read by the event
+  // stream weighting and the reputation loop's capacity denominator.
+  team: TeamState;
+  // ORDER 043 v3 §10 agency-staff mid-service offer. Set when
+  // sustained strain triggers an offer; cleared on accept / decline
+  // / service close. Player-facing UI reads this to show the offer
+  // panel and dispatch ACCEPT_AGENCY / DECLINE_AGENCY.
+  agencyOffer: AgencyOffer | null;
   village: {
     residents: Resident[];
   };
@@ -416,6 +491,9 @@ export type SimAction =
   // SKIP_LUNCH advances morning → afternoon without a lunch service.
   // Legitimate play — v3 §2: "not all businesses run lunch".
   | { type: 'SKIP_LUNCH' }
+  // ORDER 043 v3 §10 step 5 agency-staff mid-service offer response.
+  | { type: 'ACCEPT_AGENCY' }
+  | { type: 'DECLINE_AGENCY' }
   | { type: 'RESET' };
 
 export interface CameraTarget {
