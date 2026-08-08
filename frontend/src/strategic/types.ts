@@ -85,15 +85,37 @@ export interface SustainabilityCondition {
 
 export type ScenarioChoice = 'A' | 'B' | 'C';
 
+// ORDER 042 §3.3: the scenario walks through discrete phases so the
+// difficulty wager (§4.3) is captured before the situation is revealed
+// (§4.2). `awaitingChoice` is retained as a derived convenience for
+// the arrivals suspension check in the reducer and its existing tests;
+// it equals `phase === 'situation'`.
+export type ScenarioPhase =
+  | 'idle'
+  | 'subject'
+  | 'difficulty'
+  | 'situation'
+  | 'resolving'
+  | 'settled';
+
+export type ScenarioDifficulty = 1 | 2 | 3;
+
 export interface ScenarioState {
   hasAutoTriggered: boolean;
   active: boolean;
+  phase: ScenarioPhase;
+  difficulty: ScenarioDifficulty | null;
   awaitingChoice: boolean;
   choice: ScenarioChoice | null;
   choiceAt: number | null;
   spawnedRemaining: number;
   nextSpawnAt: number;
   visibleGuestIds: string[];
+  // Populated by the reducer when the scenario transitions to
+  // `settled`. Rendered as an in-world text bubble by MentorComment;
+  // per CAMERA_AND_GAMEPLAY_BIBLE §8.1 this must not be a modal.
+  mentorComment: string | null;
+  mentorCommentAt: number | null;
 }
 
 export interface Resident {
@@ -170,6 +192,8 @@ export type SimAction =
   | { type: 'SET_POLICY'; patch: Partial<Policies> }
   | { type: 'RESOLVE_SCENARIO'; choice: ScenarioChoice }
   | { type: 'TRIGGER_SCENARIO' }
+  | { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' }
+  | { type: 'SET_SCENARIO_DIFFICULTY'; difficulty: ScenarioDifficulty }
   | { type: 'RESET' };
 
 export interface CameraTarget {

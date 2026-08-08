@@ -112,12 +112,16 @@ export function initialScenario(): ScenarioState {
   return {
     hasAutoTriggered: false,
     active: false,
+    phase: 'idle',
+    difficulty: null,
     awaitingChoice: false,
     choice: null,
     choiceAt: null,
     spawnedRemaining: 0,
     nextSpawnAt: 0,
-    visibleGuestIds: []
+    visibleGuestIds: [],
+    mentorComment: null,
+    mentorCommentAt: null
   };
 }
 

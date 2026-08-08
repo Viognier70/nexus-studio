@@ -1,5 +1,12 @@
 import { createRng } from '../util/rng';
-import type { Policies, SimAction, SimulationState } from '../types';
+import type {
+  Policies,
+  ScenarioChoice,
+  ScenarioDifficulty,
+  SimAction,
+  SimulationState
+} from '../types';
+import { strings } from '../../content/strings.sv';
 import { maybeSpawnGuest, scenarioSpawnStep } from './arrivals';
 import { revenuePerGuest } from './economics';
 import { makeInitialState, makeStaff } from './model';
@@ -7,6 +14,16 @@ import { tickGuests, tickStaff } from './service';
 import { tickSustainability } from './sustainability';
 
 const AUTO_SCENARIO_AT = 120; // sim-seconds
+// Consequence window per ORDER 042 §3.4: "over 30–45 seconds of
+// compressed simulated time, the room changes in a way the player can
+// watch". After this many sim-seconds from the RESOLVE_SCENARIO, the
+// mentor comment surfaces in the world.
+const SCENARIO_SETTLE_AFTER = 35;
+
+// Party size for walk-in-of-five (ORDER 042 §1 rescaled 2026-08-08 to
+// the 146 m² café-scale Candidate A footprint). Choice A/B both seat
+// the party; choice C turns them away.
+const WALK_IN_PARTY_SIZE = 5;
 
 export function reducer(state: SimulationState, action: SimAction): SimulationState {
   switch (action.type) {
@@ -22,6 +39,10 @@ export function reducer(state: SimulationState, action: SimAction): SimulationSt
       return resolveScenario(state, action.choice);
     case 'TRIGGER_SCENARIO':
       return triggerScenario(state, /* auto */ false);
+    case 'ADVANCE_SCENARIO_TO_DIFFICULTY':
+      return advanceToDifficulty(state);
+    case 'SET_SCENARIO_DIFFICULTY':
+      return setDifficulty(state, action.difficulty);
     case 'RESET':
       return makeInitialState(state.seed, state.policies);
     default:
@@ -122,6 +143,27 @@ function advanceTick(state: SimulationState): SimulationState {
     return triggerScenario(draft, /* auto */ true);
   }
 
+  // Transition scenario from 'resolving' → 'settled' after the
+  // consequence window; surface the mentor comment as an event and on
+  // the scenario record so MentorComment can render it in-world.
+  if (
+    draft.scenario.phase === 'resolving' &&
+    draft.scenario.choiceAt !== null &&
+    draft.simTime - draft.scenario.choiceAt >= SCENARIO_SETTLE_AFTER
+  ) {
+    const comment = mentorCommentFor(draft.scenario.choice, draft.scenario.difficulty);
+    draft.scenario = {
+      ...draft.scenario,
+      phase: 'settled',
+      mentorComment: comment,
+      mentorCommentAt: draft.simTime
+    };
+    draft.events = [
+      ...draft.events,
+      { at: draft.simTime, kind: 'scenario', text: `Mentor: ${comment}` }
+    ];
+  }
+
   draft.rngState = rng.state;
   return draft;
 }
@@ -171,16 +213,22 @@ function describePolicyPatch(patch: Partial<Policies>): string {
 }
 
 function triggerScenario(state: SimulationState, auto: boolean): SimulationState {
+  // Enters phase 'subject' — the party is at the door, awaiting the
+  // player's difficulty wager (§4.3) and response (§4.2).
   const scenario = {
     ...state.scenario,
     hasAutoTriggered: state.scenario.hasAutoTriggered || auto,
     active: true,
-    awaitingChoice: true,
+    phase: 'subject' as const,
+    difficulty: null as null,
+    awaitingChoice: false,
     choice: null as null,
     choiceAt: null as null,
     spawnedRemaining: 0,
     nextSpawnAt: 0,
-    visibleGuestIds: []
+    visibleGuestIds: [],
+    mentorComment: null,
+    mentorCommentAt: null
   };
   return {
     ...state,
@@ -196,33 +244,66 @@ function triggerScenario(state: SimulationState, auto: boolean): SimulationState
   };
 }
 
+function advanceToDifficulty(state: SimulationState): SimulationState {
+  if (state.scenario.phase !== 'subject') return state;
+  return {
+    ...state,
+    scenario: { ...state.scenario, phase: 'difficulty' }
+  };
+}
+
+function setDifficulty(
+  state: SimulationState,
+  difficulty: ScenarioDifficulty
+): SimulationState {
+  if (state.scenario.phase !== 'difficulty') return state;
+  // Difficulty captured; situation now revealed. awaitingChoice flips
+  // to true so the arrivals suspension takes effect while the player
+  // decides. Legacy tests check this field, hence the mirror.
+  return {
+    ...state,
+    scenario: {
+      ...state.scenario,
+      difficulty,
+      phase: 'situation',
+      awaitingChoice: true
+    }
+  };
+}
+
 function resolveScenario(
   state: SimulationState,
-  choice: SimulationState['scenario']['choice'] extends infer T ? T : never
+  choice: ScenarioChoice
 ): SimulationState {
   const scenario = { ...state.scenario };
   scenario.awaitingChoice = false;
+  scenario.phase = 'resolving';
   scenario.choice = choice;
   scenario.choiceAt = state.simTime;
 
-  if (choice === 'A') {
-    scenario.spawnedRemaining = 8;
+  // Walk-in-of-five (ORDER 042 §1 rescaled 2026-08-08). A and B both
+  // seat the party; the mechanical difference is B flips welcomeDrink
+  // on, which lifts satisfaction but adds staff workload. C turns the
+  // party away — a couple visibly walk in and back out, then reputation
+  // dips a hair.
+  if (choice === 'A' || choice === 'B') {
+    scenario.spawnedRemaining = WALK_IN_PARTY_SIZE;
     scenario.nextSpawnAt = state.simTime + 0.4;
-  } else if (choice === 'B') {
-    scenario.spawnedRemaining = 8;
-    scenario.nextSpawnAt = state.simTime + 0.4;
-  } else if (choice === 'C') {
-    scenario.spawnedRemaining = 3; // A few walk to entrance and turn back.
+  } else {
+    // Choice C — a couple of the party still approach the door before
+    // being turned away, so the refusal is visible in the room, not
+    // just a state change.
+    scenario.spawnedRemaining = 2;
     scenario.nextSpawnAt = state.simTime + 0.3;
   }
 
-  // Immediate policy nudge for choice B (welcome drink flips on for wave).
+  // Immediate policy nudge for choice B (welcome drink flips on).
   let policies = state.policies;
   if (choice === 'B') {
     policies = { ...policies, welcomeDrink: true };
   }
 
-  // For choice C, existing guests get a small dip; reputation dips gently.
+  // Reputation nudge on refusal.
   let reputation = state.reputation;
   if (choice === 'C') reputation = Math.max(0, reputation - 0.03);
 
@@ -240,4 +321,18 @@ function resolveScenario(
       }
     ]
   };
+}
+
+function mentorCommentFor(
+  choice: ScenarioChoice | null,
+  difficulty: ScenarioDifficulty | null
+): string {
+  // Only one bank of comments; a null/unexpected combination falls back
+  // to a neutral line rather than throwing.
+  if (!choice || !difficulty) {
+    return 'Kvällen gick vidare — vi tittar på hur den utvecklade sig nästa gång.';
+  }
+  const rank = difficulty === 1 ? 'low' : difficulty === 2 ? 'mid' : 'high';
+  const key = `${choice}_${rank}` as keyof typeof strings.scenario.mentor;
+  return strings.scenario.mentor[key];
 }
