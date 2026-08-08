@@ -19,6 +19,7 @@ import { strings } from '../../content/strings.sv';
 import { maybeSpawnGuest, scenarioSpawnStep } from './arrivals';
 import { planScenariosForService, scheduleScenarioTriggerTimes } from './day';
 import { revenuePerGuest } from './economics';
+import { scheduleOutcomes, tickEventStream } from './eventStream';
 import { initialDay, makeInitialState, makeStaff } from './model';
 import { tickReputationDrift } from './reputation';
 import { tickGuests, tickStaff } from './service';
@@ -314,6 +315,8 @@ function advanceTick(state: SimulationState): SimulationState {
     },
     scenario: { ...state.scenario, visibleGuestIds: [...state.scenario.visibleGuestIds] },
     events: state.events,
+    eventStream: [...state.eventStream],
+    pendingOutcomes: [...state.pendingOutcomes],
     village: {
       residents: state.village.residents.map((r) => ({ ...r }))
     },
@@ -399,6 +402,13 @@ function advanceTick(state: SimulationState): SimulationState {
   // waiting queue reflects this tick's arrivals + departures, not the
   // previous tick's state.
   tickReputationDrift(draft);
+
+  // ORDER 043 Addendum A service event stream — ambient rolls +
+  // pending-outcome emission. Also runs after tickGuests so `loadOf`
+  // reads the current active-guest count for the strain multiplier,
+  // and after reputation drift so a large queue that just triggered
+  // rep drift also feeds this tick's ambient probability.
+  tickEventStream(draft, rng);
 
   // ORDER 043 v3 step 5b — scheduled scenario firing.
   //
@@ -658,6 +668,21 @@ function resolveScenario(
     };
   }
 
+  // ORDER 043 Addendum A outcome events. Fill the space that was
+  // empty in ORDER 042 — between choice and mentor comment — with 1–2
+  // authored lines describing what the choice did in the room. The
+  // scenario id is currently hard-coded to 'walk-in-of-five' because
+  // it is the only scenario shape wired; a future order that adds new
+  // scenarios must carry the id on ScenarioState so this lookup
+  // generalises.
+  const outcomeTheme = drawn ?? 'social';
+  const newOutcomes = scheduleOutcomes(
+    'walk-in-of-five',
+    choice,
+    state.simTime,
+    outcomeTheme
+  );
+
   return {
     ...state,
     scenario,
@@ -665,6 +690,7 @@ function resolveScenario(
     reputation,
     capitals,
     wager,
+    pendingOutcomes: [...state.pendingOutcomes, ...newOutcomes],
     events: [
       ...state.events,
       {

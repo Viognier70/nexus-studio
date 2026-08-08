@@ -14,6 +14,7 @@ import { SimulationProvider, useSimDispatch } from './simulation/SimulationProvi
 import { AboutPanel } from './ui/AboutPanel';
 import { ControlsHint } from './ui/ControlsHint';
 import { DevPanel } from './ui/DevPanel';
+import { EventStreamPanel } from './ui/EventStreamPanel';
 import { ModeSwitchLink } from './ui/ModeSwitchLink';
 import { OutwardButton } from './ui/OutwardButton';
 import { SelectionChrome } from './ui/SelectionChrome';
@@ -157,6 +158,7 @@ function StrategicShell() {
       <ScenarioOverlay />
       <ServiceLengthPicker />
       <WagerPanel />
+      <EventStreamPanel />
       <DevPanel lastKey={lastKey} />
       <AboutPanel open={aboutOpen} onClose={() => setAboutOpen(false)} />
     </div>

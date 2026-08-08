@@ -287,6 +287,38 @@ export interface WagerHistoryEntry {
   delta: number;                 // capital movement applied
 }
 
+// ORDER 043 Addendum A — the service event stream.
+//
+// Short written notices that appear as things happen in the room:
+// weighted by team competence (ignorance-events) and team load
+// (strain-events). See eventStream.ts for the mechanics and
+// eventStream.sv.ts for the sentence banks.
+//
+// Two categories:
+//   ambient — rolled per tick from base rates × ignorance × strain
+//   outcome — hand-authored per (scenario, choice), fires
+//             deterministically 6 s and 18 s after RESOLVE_SCENARIO
+//             to fill the space between choice and mentor comment.
+export type EventStreamCategory = 'ambient' | 'outcome';
+export type EventStreamCauseTag = 'ignorance' | 'strain' | 'both';
+
+export interface EventStreamEntry {
+  at: number;                 // simTime
+  text: string;               // hand-authored Swedish
+  category: EventStreamCategory;
+  causeTag: EventStreamCauseTag | null;   // null for outcome
+  sustainability: SustainabilityKey;
+  kind: string;               // ambient event kind name, or 'outcome'
+  scenarioId: string | null;  // set for outcome events
+}
+
+export interface PendingOutcome {
+  dueAt: number;              // simTime when this outcome should emit
+  text: string;
+  sustainability: SustainabilityKey;
+  scenarioId: string;
+}
+
 export interface SimulationState {
   seed: number;
   rngState: number;
@@ -334,6 +366,11 @@ export interface SimulationState {
   // History + active flag so the next scenario can be shaped by an
   // active event and mentor lines can reference recent history.
   consequenceEvents: ConsequenceEvent[];
+  // ORDER 043 Addendum A service event stream. `eventStream` is a
+  // ring-buffered recent-events list (bounded); `pendingOutcomes`
+  // holds scheduled outcome events waiting to fire at their dueAt.
+  eventStream: EventStreamEntry[];
+  pendingOutcomes: PendingOutcome[];
   village: {
     residents: Resident[];
   };

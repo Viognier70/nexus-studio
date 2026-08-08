@@ -237,6 +237,8 @@ export function makeInitialState(
     enablers: initialEnablers(),
     wager: null,
     consequenceEvents: [],
+    eventStream: [],
+    pendingOutcomes: [],
     village: { residents: seedResidents(28) },
     district: { pedestrians: seedPedestrians(14) },
     delivery: initialDelivery(),
