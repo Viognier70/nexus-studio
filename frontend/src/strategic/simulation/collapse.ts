@@ -36,6 +36,7 @@ import type {
 import { createRng } from '../util/rng';
 import { COLLAPSE_TEXTS } from '../../content/collapse.sv';
 import { loadOf, strainMultiplier, STREAM_KEEP } from './eventStream';
+import { computeEveningAccount } from './eveningAccount';
 
 // Per-tick constants. Sim ticks at 5 Hz (0.2 s / tick, TICK_SECONDS
 // in eventStream.ts). A 15-min service is 4500 ticks; the constants
@@ -180,6 +181,14 @@ export function fireCollapse(draft: SimulationState): void {
   };
   draft.consequenceEvents = [...draft.consequenceEvents, consequence];
 
+  // ORDER 046 §3 — snapshot the evening account BEFORE clearing day
+  // fields. computeEveningAccount reads serviceCollapsed + collapseAxis
+  // + revenueAtServiceStart etc, which we're about to reset. We set
+  // the collapse flags on the draft first so the account picks the
+  // 'collapsed' branch.
+  draft.day = { ...draft.day, serviceCollapsed: true, collapseAxis: axis };
+  draft.eveningAccount = computeEveningAccount(draft);
+
   // Force-close the service. Preserves serviceCollapsed + collapseAxis
   // so the evening-account panel can read them; clears the rest as if
   // the natural close ran. Agency members + offer cleared here rather
@@ -205,7 +214,10 @@ export function fireCollapse(draft: SimulationState): void {
     doorsOpenedThisService: false,
     worldFactors: [],
     serviceCollapsed: true,
-    collapseAxis: axis
+    collapseAxis: axis,
+    revenueAtServiceStart: null,
+    costAtServiceStart: null,
+    reputationAtServiceStart: null
   };
   draft.events = [
     ...draft.events,

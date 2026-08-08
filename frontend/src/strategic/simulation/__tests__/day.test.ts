@@ -185,8 +185,9 @@ describe('automatic tick transitions', () => {
     s = tick(s, 920);
     expect(s.day.period).toBe('evening');
     const eveningDayNumber = s.day.dayNumber;
-    // 15-sec close pause = 75 ticks. Add a few for slack.
-    s = tick(s, 90);
+    // ORDER 046 §3 — close pause bumped 15 → 30 s (150 ticks) to
+    // hold the evening account panel. Add a few for slack.
+    s = tick(s, 170);
     expect(s.day.period).toBe('morning');
     expect(s.day.dayNumber).toBe(eveningDayNumber + 1);
     expect(s.day.currentServiceLengthMinutes).toBeNull();

@@ -170,7 +170,10 @@ export function initialDay(): DayState {
     doorsOpenedThisService: false,
     worldFactors: [],
     serviceCollapsed: false,
-    collapseAxis: null
+    collapseAxis: null,
+    revenueAtServiceStart: null,
+    costAtServiceStart: null,
+    reputationAtServiceStart: null
   };
 }
 
@@ -256,7 +259,8 @@ export function makeInitialState(
     village: { residents: seedResidents(28) },
     district: { pedestrians: seedPedestrians(14) },
     delivery: initialDelivery(),
-    events: []
+    events: [],
+    eveningAccount: null
   };
 }
 

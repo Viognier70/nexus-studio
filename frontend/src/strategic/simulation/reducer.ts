@@ -43,6 +43,7 @@ import {
 export const OPENING_DURATION_SEC = 10;
 import { pickScenarioSpec, scenarioById } from './scenarios';
 import { tickCollapseRoll } from './collapse';
+import { computeEveningAccount } from './eveningAccount';
 import { initialDay, makeGuest, makeInitialState, makeStaff } from './model';
 import { tickReputationDrift } from './reputation';
 import { tickGuests, tickStaff } from './service';
@@ -240,7 +241,13 @@ function openService(
     worldFactors,
     // ORDER 046 §1 — new service opens with a clean collapse slate.
     serviceCollapsed: false,
-    collapseAxis: null
+    collapseAxis: null,
+    // ORDER 046 §3 — snapshot the ledger at service start so the
+    // evening account can compute this service's net by subtraction
+    // without needing to instrument revenue / cost accumulation.
+    revenueAtServiceStart: state.revenue,
+    costAtServiceStart: state.cost,
+    reputationAtServiceStart: state.reputation
   };
   return {
     ...state,
@@ -294,7 +301,10 @@ function skipLunch(state: SimulationState): SimulationState {
       doorsOpenedThisService: false,
       worldFactors: [],
       serviceCollapsed: false,
-      collapseAxis: null
+      collapseAxis: null,
+      revenueAtServiceStart: null,
+      costAtServiceStart: null,
+      reputationAtServiceStart: null
     }
   };
 }
@@ -307,7 +317,11 @@ function skipLunch(state: SimulationState): SimulationState {
 // morning + afternoon stay put until the player opens a service or
 // skips lunch. This satisfies v3 §2's rule that the player, not the
 // clock, decides how long each service runs.
-const EVENING_TO_MORNING_PAUSE_SEC = 15;
+//
+// ORDER 046 §3 — bumped 15 → 30 to hold the evening account panel.
+// The account fades in at evening start, holds for ~25 s, fades over
+// ~5 s; anything shorter would rush the reading.
+const EVENING_TO_MORNING_PAUSE_SEC = 30;
 
 export function tickDayTransitions(state: SimulationState): SimulationState {
   const { day, simTime } = state;
@@ -334,7 +348,12 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           weather: null,
           waitingAtOpening: 0,
           doorsOpenedThisService: false,
-          worldFactors: []
+          worldFactors: [],
+          serviceCollapsed: false,
+          collapseAxis: null,
+          revenueAtServiceStart: null,
+          costAtServiceStart: null,
+          reputationAtServiceStart: null
         }
       };
     }
@@ -342,6 +361,11 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
   if (day.period === 'dinner' && day.currentServiceLengthMinutes !== null) {
     const endsAt = day.periodStartAt + day.currentServiceLengthMinutes * 60;
     if (simTime >= endsAt) {
+      // ORDER 046 §3 — snapshot the evening account BEFORE the day
+      // fields are cleared. The account reads day.revenueAtServiceStart
+      // and friends; if we cleared them first, every account would
+      // fall to the mediocre-by-default branch.
+      const eveningAccount = computeEveningAccount(state);
       // ORDER 043 v3 §10 step 5 — clear any agency hires + any
       // standing agency offer at service close. Agency members are
       // scoped to the single service; the offer is stale after
@@ -350,6 +374,7 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
         ...state,
         team: removeAgencyMembers(state.team),
         agencyOffer: null,
+        eveningAccount,
         day: {
           ...day,
           period: 'evening',
@@ -365,7 +390,12 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           weather: null,
           waitingAtOpening: 0,
           doorsOpenedThisService: false,
-          worldFactors: []
+          worldFactors: [],
+          serviceCollapsed: false,
+          collapseAxis: null,
+          revenueAtServiceStart: null,
+          costAtServiceStart: null,
+          reputationAtServiceStart: null
         }
       };
     }
@@ -380,6 +410,10 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       return {
         ...state,
         team: chargeStructuralCost(state.team),
+        // ORDER 046 §3 — evening account is scoped to a single evening;
+        // clear when the new day begins so the panel doesn't linger
+        // into morning where the investment panel needs the room.
+        eveningAccount: null,
         day: {
           ...initialDay(),
           dayNumber: day.dayNumber + 1,

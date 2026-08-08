@@ -361,6 +361,15 @@ export interface DayState {
   // fired this service. Consumed by the evening-account panel and
   // future scenarios that want to reference the specific failure.
   collapseAxis: 'scientific' | 'cultural' | 'practical' | null;
+  // ORDER 046 §3 — snapshots of state.revenue and state.cost at
+  // OPEN_SERVICE, so the evening-account panel can compute this
+  // service's net take by subtraction. Null between services.
+  revenueAtServiceStart: number | null;
+  costAtServiceStart: number | null;
+  // Reputation at the moment OPEN_SERVICE was dispatched — the
+  // evening account uses this to say "kvällen bevarade ryktet" vs
+  // "ryktet gick tillbaka" without surfacing the number itself.
+  reputationAtServiceStart: number | null;
 }
 
 // ----- ORDER 043 two-layer capital model ----------------------------------
@@ -484,6 +493,23 @@ export interface EventStreamEntry {
   scenarioId: string | null;  // set for outcome events
 }
 
+// ORDER 046 §3 — evening account, captured at evening period start.
+export type EveningAccountBranch =
+  | 'collapsed'
+  | 'high_wager_win'
+  | 'high_wager_loss'
+  | 'good'
+  | 'thin'
+  | 'mediocre';
+
+export interface EveningAccount {
+  branch: EveningAccountBranch;
+  // 3–5 sentences, plain-authored Swedish in observer voice. Rendered
+  // in EveningAccountPanel as a block; no per-sentence styling.
+  paragraph: string;
+  presentedAt: number;   // simTime — start of fade-in
+}
+
 export interface PendingOutcome {
   dueAt: number;              // simTime when this outcome should emit
   text: string;
@@ -548,6 +574,12 @@ export interface SimulationState {
   // holds scheduled outcome events waiting to fire at their dueAt.
   eventStream: EventStreamEntry[];
   pendingOutcomes: PendingOutcome[];
+  // ORDER 046 §3 — the evening account. Non-null between the moment
+  // dinner/lunch ends (natural or collapse) and the moment morning
+  // begins. Captured once so the paragraph doesn't shift while the
+  // player reads it. `presentedAt` drives the fade-in / fade-out
+  // timing in EveningAccountPanel.
+  eveningAccount: EveningAccount | null;
   // ORDER 043 v3 §10 team layer — economic record for hiring, cost,
   // competence. Runs alongside `staff` (visual pucks). Cost
   // accumulates on day-advance; competence is read by the event
