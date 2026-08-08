@@ -277,3 +277,59 @@ describe('period gate — arrivals only fire during a running service', () => {
     expect(s.guests.length).toBeGreaterThan(0);
   });
 });
+
+// ORDER 043 v3 §5.1 — the invariant that keeps dinner's queue a
+// reading and not noise: peak queue length must grow monotonically as
+// social capital falls. Vision Owner (2026-08-08): "det är den enda
+// invariant som gör kön till en avläsning i stället för brus, och den
+// ska inte kunna glida bort i en framtida omställning."
+//
+// Method: simulate a full 10-min dinner service at five social values
+// [1.0, 0.7, 0.5, 0.3, 0.0] across N seeds. Track max waitingIds.length
+// per run, average across seeds per social value, assert the averaged
+// series is non-decreasing as social drops. Ties are allowed (small
+// samples land close together at adjacent points) but strict decreases
+// are not — a downtick means the retune has broken the reading.
+describe('dinner queue grows monotonically as social falls (regression)', () => {
+  function simulateDinnerPeakQueue(seed: number, socialValue: number): number {
+    let s = reducer(makeInitialState(seed), { type: 'SKIP_LUNCH' });
+    s = reducer(s, { type: 'SET_CAPITAL', capital: 'social', value: socialValue });
+    s = reducer(s, {
+      type: 'OPEN_SERVICE',
+      service: 'dinner',
+      lengthMinutes: 10
+    });
+    let peak = 0;
+    // 10 min = 600 sim-sec = 3000 ticks; stop just short of close.
+    for (let i = 0; i < 2900; i++) {
+      s = reducer(s, { type: 'TICK', dt: 1 / 5 });
+      if (s.waitingIds.length > peak) peak = s.waitingIds.length;
+    }
+    return peak;
+  }
+
+  it('peak queue grows as social drops (1.0 → 0.7 → 0.5 → 0.3 → 0.0)', () => {
+    const socials = [1.0, 0.7, 0.5, 0.3, 0.0];
+    const seeds = [11, 22, 33, 44, 55, 66, 77, 88];
+    const meanPeak = socials.map((sv) => {
+      const total = seeds.reduce(
+        (sum, seed) => sum + simulateDinnerPeakQueue(seed, sv),
+        0
+      );
+      return total / seeds.length;
+    });
+
+    // Assert monotonic non-decreasing across the social series.
+    for (let i = 1; i < meanPeak.length; i++) {
+      expect(
+        meanPeak[i],
+        `peak queue at social=${socials[i]} (${meanPeak[i]}) should be >= peak at social=${socials[i - 1]} (${meanPeak[i - 1]})`
+      ).toBeGreaterThanOrEqual(meanPeak[i - 1]);
+    }
+    // Endpoint sanity: high-social dinner should have a small peak,
+    // low-social dinner should have a visibly larger peak. Guards
+    // against a degenerate all-equal series (which would pass the
+    // monotonic check but tell us nothing).
+    expect(meanPeak[meanPeak.length - 1]).toBeGreaterThan(meanPeak[0]);
+  });
+});

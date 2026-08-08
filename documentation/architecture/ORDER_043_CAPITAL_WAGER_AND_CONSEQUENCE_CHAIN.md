@@ -101,6 +101,11 @@ A queue means one of two opposite things: you are understaffed, or you are popul
 
 A novice sees the queue and thinks business is good. Someone who knows the trade sees the queue *and* the room. **That is the competence the game teaches**, and it is why walk-aways must work — they are what distinguishes the cases.
 
+**Lunch and dinner are read differently — by design.** After the room-flow retune (arrival base 12/min, period multipliers 0.6/1.0, waiting cap 12, dining × (2 − social), walk-away ceiling 0.2), the projection showed lunch never produces a queue at any social value. That is the intended shape:
+
+- **Dinner is the queue reading.** Peak queue grows monotonically as social capital falls (2 → 4 → 4 → 5 → 7 across social 1.0 → 0.0). Pinned as a regression test — see `day.test.ts` "dinner queue grows monotonically as social falls." That invariant is what makes the queue a phenomenon, not noise; it must not slip in a future retune.
+- **Lunch is the seat + walk-away reading.** Mean seated rises as social falls (staff bottleneck slows turnover), and walk-away volume tracks economic. A lunch queue is not the signal — its absence is *not a bug.* Do not "fix" it by pushing lunch's multiplier up to dinner's; that would flatten the two services into one and lose the reading contrast.
+
 ### 5.2 Two hardcoded caps must be lifted
 
 Probing during v2 found two limits invisible from outside:
