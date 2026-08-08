@@ -1,5 +1,7 @@
 import { createRng } from '../util/rng';
 import type {
+  DayPeriod,
+  DayState,
   EnablerKey,
   Policies,
   Register,
@@ -9,10 +11,15 @@ import type {
   SimulationState,
   SustainabilityKey
 } from '../types';
+import {
+  SERVICE_LENGTH_MAX_MINUTES,
+  SERVICE_LENGTH_MIN_MINUTES
+} from '../types';
 import { strings } from '../../content/strings.sv';
 import { maybeSpawnGuest, scenarioSpawnStep } from './arrivals';
+import { planScenariosForService } from './day';
 import { revenuePerGuest } from './economics';
-import { makeInitialState, makeStaff } from './model';
+import { initialDay, makeInitialState, makeStaff } from './model';
 import { tickGuests, tickStaff } from './service';
 import { tickSustainability } from './sustainability';
 
@@ -75,11 +82,128 @@ export function reducer(state: SimulationState, action: SimAction): SimulationSt
       );
     case 'SET_CAPITAL':
       return setCapital(state, action.capital, action.value);
+    case 'OPEN_SERVICE':
+      return openService(state, action.service, action.lengthMinutes);
+    case 'SKIP_LUNCH':
+      return skipLunch(state);
     case 'RESET':
       return makeInitialState(state.seed, state.policies);
     default:
       return state;
   }
+}
+
+// ---------- ORDER 043 v3 §10 step 1 — day / period transitions ---------------
+
+function clampServiceLength(mins: number): number {
+  return Math.max(
+    SERVICE_LENGTH_MIN_MINUTES,
+    Math.min(SERVICE_LENGTH_MAX_MINUTES, Math.round(mins))
+  );
+}
+
+function openService(
+  state: SimulationState,
+  service: 'lunch' | 'dinner',
+  lengthMinutes: number
+): SimulationState {
+  // Guard: lunch can only open from morning, dinner from afternoon.
+  // Any other phase → no-op. Prevents the UI from opening dinner
+  // during a running lunch service etc.
+  const expectedPhase: DayPeriod = service === 'lunch' ? 'morning' : 'afternoon';
+  if (state.day.period !== expectedPhase) return state;
+  const length = clampServiceLength(lengthMinutes);
+  // Deterministic scenario count from the current rng state — same
+  // seed + same open sequence yields the same plan.
+  const rng = createRng(state.rngState);
+  const scenariosPlanned = planScenariosForService(length, rng);
+  const day: DayState = {
+    ...state.day,
+    period: service,
+    periodStartAt: state.simTime,
+    currentServiceLengthMinutes: length,
+    scenariosPlanned,
+    scenariosFiredThisService: 0
+  };
+  return {
+    ...state,
+    day,
+    rngState: rng.state
+  };
+}
+
+function skipLunch(state: SimulationState): SimulationState {
+  if (state.day.period !== 'morning') return state;
+  return {
+    ...state,
+    day: {
+      ...state.day,
+      period: 'afternoon',
+      periodStartAt: state.simTime,
+      currentServiceLengthMinutes: null,
+      scenariosPlanned: 0,
+      scenariosFiredThisService: 0
+    }
+  };
+}
+
+// Called from advanceTick — handles the automatic transitions that
+// don't require a player action:
+//   lunch     → afternoon (after chosen length elapses)
+//   dinner    → evening   (after chosen length elapses)
+//   evening   → morning of next day (after a short close pause)
+// morning + afternoon stay put until the player opens a service or
+// skips lunch. This satisfies v3 §2's rule that the player, not the
+// clock, decides how long each service runs.
+const EVENING_TO_MORNING_PAUSE_SEC = 15;
+
+export function tickDayTransitions(state: SimulationState): SimulationState {
+  const { day, simTime } = state;
+  if (day.period === 'lunch' && day.currentServiceLengthMinutes !== null) {
+    const endsAt = day.periodStartAt + day.currentServiceLengthMinutes * 60;
+    if (simTime >= endsAt) {
+      return {
+        ...state,
+        day: {
+          ...day,
+          period: 'afternoon',
+          periodStartAt: simTime,
+          currentServiceLengthMinutes: null,
+          scenariosPlanned: 0,
+          scenariosFiredThisService: 0
+        }
+      };
+    }
+  }
+  if (day.period === 'dinner' && day.currentServiceLengthMinutes !== null) {
+    const endsAt = day.periodStartAt + day.currentServiceLengthMinutes * 60;
+    if (simTime >= endsAt) {
+      return {
+        ...state,
+        day: {
+          ...day,
+          period: 'evening',
+          periodStartAt: simTime,
+          currentServiceLengthMinutes: null,
+          scenariosPlanned: 0,
+          scenariosFiredThisService: 0
+        }
+      };
+    }
+  }
+  if (day.period === 'evening') {
+    if (simTime - day.periodStartAt >= EVENING_TO_MORNING_PAUSE_SEC) {
+      return {
+        ...state,
+        day: {
+          ...initialDay(),
+          dayNumber: day.dayNumber + 1,
+          periodStartAt: simTime
+        }
+      };
+    }
+  }
+  return state;
 }
 
 function setCapital(
@@ -271,7 +395,10 @@ function advanceTick(state: SimulationState): SimulationState {
   }
 
   draft.rngState = rng.state;
-  return draft;
+  // ORDER 043 v3 step 1 — auto-transition day periods based on
+  // elapsed sim-time in a running service. Runs last so scenario /
+  // sustainability side-effects for the tick have already landed.
+  return tickDayTransitions(draft);
 }
 
 function costPerMinuteToTick(state: SimulationState): number {

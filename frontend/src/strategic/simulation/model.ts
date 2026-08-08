@@ -2,6 +2,7 @@ import { TOTAL_SEATS } from '../business/interiorLayout';
 import { INTERIOR, RESIDENT_SPLINES } from '../content/layout';
 import type {
   CapitalState,
+  DayState,
   DeliveryVehicle,
   EnablerKey,
   EnablerRecord,
@@ -147,6 +148,20 @@ export function initialEnablers(): Record<EnablerKey, EnablerRecord> {
   };
 }
 
+// ORDER 043 v3 §2 initial day state. Day 1 begins in the morning —
+// business closed, player yet to open any service. simTime starts at
+// 0 so periodStartAt = 0 for the initial morning.
+export function initialDay(): DayState {
+  return {
+    dayNumber: 1,
+    period: 'morning',
+    periodStartAt: 0,
+    currentServiceLengthMinutes: null,
+    scenariosPlanned: 0,
+    scenariosFiredThisService: 0
+  };
+}
+
 export function initialScenario(): ScenarioState {
   return {
     hasAutoTriggered: false,
@@ -215,6 +230,7 @@ export function makeInitialState(
       waste: []
     },
     scenario: initialScenario(),
+    day: initialDay(),
     capitals: initialCapitals(),
     enablers: initialEnablers(),
     wager: null,

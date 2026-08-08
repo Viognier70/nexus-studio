@@ -148,6 +148,44 @@ export interface DeliveryVehicle {
   cooldown: number;
 }
 
+// ORDER 043 v3 §2 — the day as the unit of play. Cycle-1 scope
+// (v3 §10 step 1): morning / lunch / dinner only; night deferred.
+//
+// Five phases so each service has its own bracket:
+//   morning   — pre-lunch, player picks lunch length (or skips)
+//   lunch     — service running
+//   afternoon — pre-dinner, player picks dinner length
+//   dinner    — service running
+//   evening   — brief close, auto-advances to next day's morning
+export type DayPeriod =
+  | 'morning'
+  | 'lunch'
+  | 'afternoon'
+  | 'dinner'
+  | 'evening';
+
+// Player-chosen service length range per v3 §2 ("between roughly 3
+// and 30 minutes"). Kept as a min/max pair here rather than a fixed
+// step set so a future order can loosen or step the picker without
+// touching the reducer's clamping.
+export const SERVICE_LENGTH_MIN_MINUTES = 3;
+export const SERVICE_LENGTH_MAX_MINUTES = 30;
+
+export interface DayState {
+  dayNumber: number;               // 1-indexed
+  period: DayPeriod;
+  periodStartAt: number;           // simTime when this period began
+  // Set at OPEN_SERVICE; cleared at close. Null between services and
+  // during morning/afternoon/evening.
+  currentServiceLengthMinutes: number | null;
+  // Random count computed at OPEN_SERVICE, weighted by service length
+  // (v3 §2 "scenario count is random, weighted by service length —
+  // never a fixed cadence"). This cycle's step 1 stores the count
+  // but doesn't fire scenarios; step 5 will consume it.
+  scenariosPlanned: number;
+  scenariosFiredThisService: number;
+}
+
 // ----- ORDER 043 two-layer capital model ----------------------------------
 //
 // Outcomes vs enablers per ORDER_043_CAPITAL_WAGER_AND_CONSEQUENCE_CHAIN.md §3.
@@ -267,6 +305,9 @@ export interface SimulationState {
     waste: number[];
   };
   scenario: ScenarioState;
+  // ORDER 043 v3 §2 day model. Rounds gate services, service length
+  // gates scenario cadence, periods gate what the player can do.
+  day: DayState;
   // ORDER 043 outcome layer — capitals the player wagers on and
   // scenarios move (§3.1). Separate from `eco` above (§8.2's visible
   // sustainability *reading*), which stays as-is for the room-cue
@@ -320,6 +361,14 @@ export type SimAction =
   // Vision Owner can verify the room reads capital state without
   // waiting for scenario-driven capital movement (Phase B.2+).
   | { type: 'SET_CAPITAL'; capital: SustainabilityKey; value: number }
+  // ORDER 043 v3 §10 step 1 — the round.
+  // OPEN_SERVICE is dispatched from the morning/afternoon UI when the
+  // player commits to a service length. lengthMinutes clamped to
+  // [SERVICE_LENGTH_MIN_MINUTES, SERVICE_LENGTH_MAX_MINUTES].
+  | { type: 'OPEN_SERVICE'; service: 'lunch' | 'dinner'; lengthMinutes: number }
+  // SKIP_LUNCH advances morning → afternoon without a lunch service.
+  // Legitimate play — v3 §2: "not all businesses run lunch".
+  | { type: 'SKIP_LUNCH' }
   | { type: 'RESET' };
 
 export interface CameraTarget {
