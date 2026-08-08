@@ -142,6 +142,97 @@ export interface DeliveryVehicle {
   cooldown: number;
 }
 
+// ----- ORDER 043 two-layer capital model ----------------------------------
+//
+// Outcomes vs enablers per ORDER_043_CAPITAL_WAGER_AND_CONSEQUENCE_CHAIN.md §3.
+//
+// **Portability contract.** All types below must round-trip through
+// JSON without loss (`LEARNING_AND_SCENARIO_ARCHITECTURE.md` §11.1
+// "portfolio is a portable format from the outset"). No Map, no class
+// instances, no function fields, no ref cycles. Plain-object records
+// only. Timestamps use `simTime` (a monotonic sim-seconds counter),
+// never `Date.now()` or `performance.now()` — see §11.1 constraint 4
+// (time does not depend on the player being logged in) and LQ-04.
+
+// The three outcomes — what is earned, staked, lost, invested (§3.1).
+export type SustainabilityKey = 'economic' | 'social' | 'ecological';
+
+// The two enablers — derived from behaviour, never purchased (§3.2, §3.3).
+export type EnablerKey = 'scientific' | 'cultural';
+
+// Aristotelian registers scored on every scenario response (§5).
+export type Register = 'episteme' | 'techne' | 'phronesis';
+
+// A single write into an enabler's behavioural evidence — the primary
+// unit of the portfolio (§8: "a portfolio may later show what the
+// player has done — as a history to revisit, never as a dashboard").
+// Running tallies are derived from this log; the log is authoritative.
+export interface EnablerEvent {
+  at: number;                    // simTime — see portability contract above
+  register: Register;
+  amount: number;                // magnitude of the exercise (small positive)
+  scenarioId: string | null;     // the scenario that generated it, or null
+}
+
+export interface EnablerRecord {
+  // Derived running tally per register, computed from `history`.
+  // NEVER shown to the player as scores (§8). Present in state so the
+  // reducer + tests can read the current level cheaply without
+  // re-summing the history each frame.
+  episteme: number;
+  techne: number;
+  phronesis: number;
+  history: EnablerEvent[];
+}
+
+// Wager state. Fixed unit stake for cycle 1 (§4 numbers-to-be-tuned).
+export interface WagerState {
+  capital: SustainabilityKey;    // what the player pointed at
+  placedAt: number;              // simTime
+  amount: number;                // stake magnitude
+}
+
+// One consequence event per sustainability in cycle 1 (§6, §10).
+// `staff_resigns` fires when social ≤ threshold, `supplier_drops` when
+// ecological ≤ threshold, `regulars_stop` when economic ≤ threshold.
+// The kind names the physical event in the room; the trigger is
+// purely capital-value driven.
+export type ConsequenceEventKind =
+  | 'staff_resigns'
+  | 'supplier_drops'
+  | 'regulars_stop';
+
+export interface ConsequenceEvent {
+  kind: ConsequenceEventKind;
+  capital: SustainabilityKey;    // which capital drove it (redundant with kind but explicit)
+  firedAt: number;               // simTime
+  active: boolean;               // still shaping the next scenario?
+}
+
+export interface CapitalState {
+  // Outcome values in [0, 1]. Meaning per §3.1:
+  //   economic  — margin, cash, evening's takings — normalised vs a
+  //               baseline so a shared-economy future doesn't force a
+  //               refactor (see §11.1 constraint 6 handling).
+  //   social    — staff, guests, village regard.
+  //   ecological — sourcing, waste, seasons.
+  values: Record<SustainabilityKey, number>;
+  // Per-capital lifetime deltas from wagers + scenario outcomes. The
+  // portfolio-visible history of stakes and their results.
+  wagerHistory: WagerHistoryEntry[];
+  // Themes drawn by the last N scenarios — needed for the §4 damping
+  // rule (consecutive-recurrence cap). Kept short (~6 entries).
+  themeHistory: SustainabilityKey[];
+}
+
+export interface WagerHistoryEntry {
+  at: number;                    // simTime the wager was resolved
+  staked: SustainabilityKey;     // what the player pointed at
+  drew: SustainabilityKey;       // what the next scenario actually was
+  outcome: 'win' | 'loss' | 'no_wager';
+  delta: number;                 // capital movement applied
+}
+
 export interface SimulationState {
   seed: number;
   rngState: number;
@@ -170,6 +261,22 @@ export interface SimulationState {
     waste: number[];
   };
   scenario: ScenarioState;
+  // ORDER 043 outcome layer — capitals the player wagers on and
+  // scenarios move (§3.1). Separate from `eco` above (§8.2's visible
+  // sustainability *reading*), which stays as-is for the room-cue
+  // prose and is fed by tickSustainability.
+  capitals: CapitalState;
+  // ORDER 043 enabler layer — competences derived from behaviour,
+  // never purchased (§3.2, §3.3). Rendered growth only via §8: a
+  // fourth response option, a mentor line reflecting behaviour.
+  enablers: Record<EnablerKey, EnablerRecord>;
+  // Current wager placed by the player between scenarios, or null if
+  // none is standing (§4).
+  wager: WagerState | null;
+  // Consequence events fired when a capital crossed its threshold (§6).
+  // History + active flag so the next scenario can be shaped by an
+  // active event and mentor lines can reference recent history.
+  consequenceEvents: ConsequenceEvent[];
   village: {
     residents: Resident[];
   };
@@ -194,6 +301,14 @@ export type SimAction =
   | { type: 'TRIGGER_SCENARIO' }
   | { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' }
   | { type: 'SET_SCENARIO_DIFFICULTY'; difficulty: ScenarioDifficulty }
+  // ORDER 043 wager actions (§4). Cycle-1 stake is fixed magnitude
+  // (see reducer WAGER_UNIT_STAKE); a future order can vary it.
+  | { type: 'PLACE_WAGER'; capital: SustainabilityKey }
+  | { type: 'CLEAR_WAGER' }
+  // ORDER 043 enabler write (§3.3, §5). Records behavioural evidence
+  // against a register + enabler as a small positive amount. Only
+  // scenario responses generate these; nothing else may.
+  | { type: 'RECORD_ENABLER_EVENT'; enabler: EnablerKey; register: Register; amount: number; scenarioId: string | null }
   | { type: 'RESET' };
 
 export interface CameraTarget {

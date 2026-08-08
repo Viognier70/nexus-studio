@@ -1,7 +1,10 @@
 import { TOTAL_SEATS } from '../business/interiorLayout';
 import { INTERIOR, RESIDENT_SPLINES } from '../content/layout';
 import type {
+  CapitalState,
   DeliveryVehicle,
+  EnablerKey,
+  EnablerRecord,
   Guest,
   Pedestrian,
   Policies,
@@ -108,6 +111,42 @@ export function initialDelivery(): DeliveryVehicle {
   };
 }
 
+// ORDER 043 outcome-layer defaults (§3.1). Starting values are neutral-
+// positive so the room reads as "working" at first contact rather than
+// as an emergency; wager+scenario deltas nudge them from there.
+export const INITIAL_CAPITAL_VALUE = 0.55;
+
+export function initialCapitals(): CapitalState {
+  return {
+    values: {
+      economic: INITIAL_CAPITAL_VALUE,
+      social: INITIAL_CAPITAL_VALUE,
+      ecological: INITIAL_CAPITAL_VALUE
+    },
+    wagerHistory: [],
+    themeHistory: []
+  };
+}
+
+// ORDER 043 enabler-layer defaults (§3.2). Both enablers start at zero
+// — a first-time player has demonstrated nothing yet. Growth comes
+// only from behavioural evidence written by scenario responses.
+export function initialEnablerRecord(): EnablerRecord {
+  return {
+    episteme: 0,
+    techne: 0,
+    phronesis: 0,
+    history: []
+  };
+}
+
+export function initialEnablers(): Record<EnablerKey, EnablerRecord> {
+  return {
+    scientific: initialEnablerRecord(),
+    cultural: initialEnablerRecord()
+  };
+}
+
 export function initialScenario(): ScenarioState {
   return {
     hasAutoTriggered: false,
@@ -176,6 +215,10 @@ export function makeInitialState(
       waste: []
     },
     scenario: initialScenario(),
+    capitals: initialCapitals(),
+    enablers: initialEnablers(),
+    wager: null,
+    consequenceEvents: [],
     village: { residents: seedResidents(28) },
     district: { pedestrians: seedPedestrians(14) },
     delivery: initialDelivery(),

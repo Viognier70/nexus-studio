@@ -1,10 +1,13 @@
 import { createRng } from '../util/rng';
 import type {
+  EnablerKey,
   Policies,
+  Register,
   ScenarioChoice,
   ScenarioDifficulty,
   SimAction,
-  SimulationState
+  SimulationState,
+  SustainabilityKey
 } from '../types';
 import { strings } from '../../content/strings.sv';
 import { maybeSpawnGuest, scenarioSpawnStep } from './arrivals';
@@ -19,6 +22,16 @@ import { tickSustainability } from './sustainability';
 // engages; a manual key-5 trigger from the app shell is also wired for
 // the case where the player wants it now.
 const AUTO_SCENARIO_AT = 30;
+
+// ORDER 043 §4 wager tuning — cycle-1 defaults, will be tuned against
+// play. Report gate at §10 lands with these; scenario integration
+// (Phase B+) will exercise them for the first time.
+export const WAGER_UNIT_STAKE = 0.10; // fixed magnitude per wager
+export const WAGER_WEAK_THRESHOLD = 0.4; // capital ≤ this is "weak"
+export const WAGER_WEAK_WIN_MULTIPLIER = 1.5; // extra payout on wins in weak capital
+export const CAPITAL_MIN = 0;
+export const CAPITAL_MAX = 1;
+export const THEME_HISTORY_LIMIT = 6;
 // Consequence window per ORDER 042 §3.4: "over 30–45 seconds of
 // compressed simulated time, the room changes in a way the player can
 // watch". After this many sim-seconds from the RESOLVE_SCENARIO, the
@@ -48,11 +61,74 @@ export function reducer(state: SimulationState, action: SimAction): SimulationSt
       return advanceToDifficulty(state);
     case 'SET_SCENARIO_DIFFICULTY':
       return setDifficulty(state, action.difficulty);
+    case 'PLACE_WAGER':
+      return placeWager(state, action.capital);
+    case 'CLEAR_WAGER':
+      return clearWager(state);
+    case 'RECORD_ENABLER_EVENT':
+      return recordEnablerEvent(
+        state,
+        action.enabler,
+        action.register,
+        action.amount,
+        action.scenarioId
+      );
     case 'RESET':
       return makeInitialState(state.seed, state.policies);
     default:
       return state;
   }
+}
+
+// ---------- ORDER 043 wager + enabler transitions -------------------------
+
+function placeWager(state: SimulationState, capital: SustainabilityKey): SimulationState {
+  // Placing a new wager replaces any prior standing wager. Wagers are
+  // only meaningful between scenarios (§4 "after a scenario resolves
+  // and before the next arrives"); we permit the action in any phase
+  // so the UI is simpler, and Phase B's scenario integration will
+  // resolve or discard a standing wager appropriately.
+  return {
+    ...state,
+    wager: {
+      capital,
+      placedAt: state.simTime,
+      amount: WAGER_UNIT_STAKE
+    }
+  };
+}
+
+function clearWager(state: SimulationState): SimulationState {
+  return { ...state, wager: null };
+}
+
+function recordEnablerEvent(
+  state: SimulationState,
+  enabler: EnablerKey,
+  register: Register,
+  amount: number,
+  scenarioId: string | null
+): SimulationState {
+  // Amount clamped to a positive envelope so a scenario cannot silently
+  // burn an enabler downward — §3.3 says enabler competence grows from
+  // how the player plays; regression via the reducer is out of shape.
+  const clean = Math.max(0, Math.min(1, amount));
+  if (clean === 0) return state;
+  const previous = state.enablers[enabler];
+  const updated = {
+    ...previous,
+    // Derived tally kept in step with the history append (§8: growth
+    // never shown as a score; the tally exists only so reads are cheap).
+    [register]: previous[register] + clean,
+    history: [
+      ...previous.history,
+      { at: state.simTime, register, amount: clean, scenarioId }
+    ]
+  };
+  return {
+    ...state,
+    enablers: { ...state.enablers, [enabler]: updated }
+  };
 }
 
 function advanceTick(state: SimulationState): SimulationState {
