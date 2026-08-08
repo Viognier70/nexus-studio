@@ -119,23 +119,36 @@ describe('reducer TRIGGER_SCENARIO', () => {
     expect(last.kind).toBe('scenario');
   });
 
-  it('auto-triggers exactly once when simTime crosses AUTO_SCENARIO_AT (30 s)', () => {
+  it('does NOT auto-trigger outside a running service (period gate)', () => {
+    // v3 §2 gate: scenarios only fire during lunch / dinner. Sitting
+    // in morning for a long time must not fire a scenario.
     let s = makeInitialState(1);
-    // Advance to just before the threshold. AUTO_SCENARIO_AT = 30 s;
-    // 145 ticks * 0.2 s ≈ 29.0 s (a couple of ticks of slack to absorb
-    // IEEE 754 accumulator drift from repeated += 0.2).
-    s = tick(s, 145);
-    expect(s.scenario.hasAutoTriggered).toBe(false);
-    // 10 more ticks lands at ~31.0 s, well past the threshold.
-    s = tick(s, 10);
-    expect(s.scenario.hasAutoTriggered).toBe(true);
+    s = tick(s, 900); // 3 min of morning
+    expect(s.scenario.phase).toBe('idle');
+    expect(s.day.scenariosFiredThisService).toBe(0);
+  });
+
+  it('auto-fires the first scheduled scenario during service (schedule-based, not fixed 30 s)', () => {
+    // v3 step 5b: at OPEN_SERVICE a schedule is built; the head time
+    // fires when simTime crosses it. The head has ~12 s of head-space
+    // per SCHEDULE_HEAD_SEC to give the room time to establish before
+    // the first scenario.
+    let s = reducer(makeInitialState(1), {
+      type: 'OPEN_SERVICE',
+      service: 'lunch',
+      lengthMinutes: 10
+    });
+    expect(s.day.scenariosPlanned).toBeGreaterThanOrEqual(1);
+    expect(s.day.scenarioTriggerTimes.length).toBe(s.day.scenariosPlanned);
+    expect(s.scenario.phase).toBe('idle');
+    // Advance well past the first scheduled fire.
+    const firstFireAt = s.day.scenarioTriggerTimes[0];
+    const ticksNeeded = Math.ceil((firstFireAt - s.simTime) / 0.2) + 5;
+    s = tick(s, ticksNeeded);
     expect(s.scenario.phase).toBe('subject');
-    // Further ticks must not re-trigger (event count stays flat over
-    // subject/difficulty phases, since neither of those emits events).
-    const eventsAfterTrigger = s.events.filter((e) => e.kind === 'scenario').length;
-    s = tick(s, 5);
-    const eventsAfterMore = s.events.filter((e) => e.kind === 'scenario').length;
-    expect(eventsAfterMore).toBe(eventsAfterTrigger);
+    expect(s.day.scenariosFiredThisService).toBe(1);
+    // The head of the schedule was consumed.
+    expect(s.day.scenarioTriggerTimes.length).toBe(s.day.scenariosPlanned - 1);
   });
 });
 

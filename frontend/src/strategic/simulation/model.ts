@@ -1,7 +1,12 @@
 import { TOTAL_SEATS } from '../business/interiorLayout';
 import { INTERIOR, RESIDENT_SPLINES } from '../content/layout';
+import { initialTeam } from './team';
 import type {
+  CapitalState,
+  DayState,
   DeliveryVehicle,
+  EnablerKey,
+  EnablerRecord,
   Guest,
   Pedestrian,
   Policies,
@@ -108,6 +113,59 @@ export function initialDelivery(): DeliveryVehicle {
   };
 }
 
+// ORDER 043 outcome-layer defaults (§3.1). Starting values are neutral-
+// positive so the room reads as "working" at first contact rather than
+// as an emergency; wager+scenario deltas nudge them from there.
+export const INITIAL_CAPITAL_VALUE = 0.55;
+
+export function initialCapitals(): CapitalState {
+  return {
+    values: {
+      economic: INITIAL_CAPITAL_VALUE,
+      social: INITIAL_CAPITAL_VALUE,
+      ecological: INITIAL_CAPITAL_VALUE
+    },
+    wagerHistory: [],
+    themeHistory: []
+  };
+}
+
+// ORDER 043 enabler-layer defaults (§3.2). Both enablers start at zero
+// — a first-time player has demonstrated nothing yet. Growth comes
+// only from behavioural evidence written by scenario responses.
+export function initialEnablerRecord(): EnablerRecord {
+  return {
+    episteme: 0,
+    techne: 0,
+    phronesis: 0,
+    history: []
+  };
+}
+
+export function initialEnablers(): Record<EnablerKey, EnablerRecord> {
+  return {
+    scientific: initialEnablerRecord(),
+    cultural: initialEnablerRecord()
+  };
+}
+
+// ORDER 043 v3 §2 initial day state. Day 1 begins in the morning —
+// business closed, player yet to open any service. simTime starts at
+// 0 so periodStartAt = 0 for the initial morning.
+export function initialDay(): DayState {
+  return {
+    dayNumber: 1,
+    period: 'morning',
+    periodStartAt: 0,
+    currentServiceLengthMinutes: null,
+    scenariosPlanned: 0,
+    scenariosFiredThisService: 0,
+    scenarioTriggerTimes: [],
+    prepEndsAt: null,
+    prepIgnoranceCount: 0
+  };
+}
+
 export function initialScenario(): ScenarioState {
   return {
     hasAutoTriggered: false,
@@ -120,6 +178,8 @@ export function initialScenario(): ScenarioState {
     spawnedRemaining: 0,
     nextSpawnAt: 0,
     visibleGuestIds: [],
+    drawnTheme: null,
+    scenarioId: null,
     mentorComment: null,
     mentorCommentAt: null
   };
@@ -176,6 +236,15 @@ export function makeInitialState(
       waste: []
     },
     scenario: initialScenario(),
+    day: initialDay(),
+    capitals: initialCapitals(),
+    enablers: initialEnablers(),
+    wager: null,
+    consequenceEvents: [],
+    eventStream: [],
+    pendingOutcomes: [],
+    team: initialTeam(),
+    agencyOffer: null,
     village: { residents: seedResidents(28) },
     district: { pedestrians: seedPedestrians(14) },
     delivery: initialDelivery(),
@@ -189,7 +258,11 @@ export function nextGuestId(scenario = false): string {
   return `${scenario ? 'grp' : 'gst'}-${guestCounter}`;
 }
 
-export function makeGuest(simTime: number, scenario = false): Guest {
+export function makeGuest(
+  simTime: number,
+  scenario = false,
+  walkAwayOnArrival = false
+): Guest {
   return {
     id: nextGuestId(scenario),
     state: 'arriving',
@@ -201,6 +274,7 @@ export function makeGuest(simTime: number, scenario = false): Guest {
     position: { x: 0, z: 8 },
     targetPosition: { x: INTERIOR.entrance.x, z: INTERIOR.entrance.z },
     moveProgress: 0,
-    hadWelcomeDrink: false
+    hadWelcomeDrink: false,
+    walkAwayOnArrival
   };
 }

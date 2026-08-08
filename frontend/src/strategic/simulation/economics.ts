@@ -64,9 +64,27 @@ export function costPerSimMinute(policies: Policies, waste: number): number {
   );
 }
 
-export function taskDurationTicks(policies: Policies, taskType: string): number {
+// ORDER 043 §6 social phenomenon: task durations stretch when the
+// social capital is low. High social = staff moves in sync, tasks
+// complete briskly; low social = strained, hesitant, slow. Applied
+// multiplicatively as socialMultiplier ∈ [1.0, 2.0], so at social = 1
+// tasks match their pre-ORDER-043 durations exactly (no regression),
+// and at social = 0 they take twice as long. The resulting slower
+// seat clearance is what causes the waiting queue to grow — the queue
+// itself is emergent.
+export function socialThroughputMultiplier(social: number): number {
+  const clamped = Math.max(0, Math.min(1, social));
+  return 2 - clamped;
+}
+
+export function taskDurationTicks(
+  policies: Policies,
+  taskType: string,
+  social = 1
+): number {
   const base = TASK_BASE_TICKS[taskType] ?? 8;
   const training = 1.6 - 0.3 * policies.trainingLevel;
   const concept = SERVICE_DURATION_MULT[policies.service];
-  return Math.max(2, Math.round(base * training * concept));
+  const socialMult = socialThroughputMultiplier(social);
+  return Math.max(2, Math.round(base * training * concept * socialMult));
 }

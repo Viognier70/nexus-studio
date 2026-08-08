@@ -19,6 +19,11 @@ const BUBBLE_HOLD_SIM_S = 15;
 const BUBBLE_FADE_SIM_S = 3;
 const BUBBLE_HEIGHT_M = 7.6;
 
+// Bubble sizing: constant screen-space (see distanceFactor comment
+// below). `width` fixed rather than `maxWidth` so the wrap point does
+// not drift with content length — the bubble always occupies the same
+// footprint over the room. 380 px + 14 px padding fits typical Swedish
+// mentor lines on 2–3 rows without breaking words.
 const BUBBLE_STYLE: React.CSSProperties = {
   color: '#f5f0e0',
   background: 'rgba(30, 22, 16, 0.86)',
@@ -30,11 +35,13 @@ const BUBBLE_STYLE: React.CSSProperties = {
   lineHeight: 1.35,
   fontWeight: 500,
   letterSpacing: 0.2,
-  maxWidth: 340,
+  width: 380,
   textAlign: 'center',
   boxShadow: '0 6px 20px rgba(0,0,0,0.35)',
   pointerEvents: 'none',
-  whiteSpace: 'normal'
+  whiteSpace: 'normal',
+  wordBreak: 'normal',
+  overflowWrap: 'normal'
 };
 
 export function MentorComment() {
@@ -56,11 +63,16 @@ export function MentorComment() {
   if (!layout || !mentorComment || opacity <= 0) return null;
 
   const [cx, cz] = layout.centre;
+  // No distanceFactor: keeps the bubble at constant DOM pixel size
+  // regardless of camera distance. With distanceFactor the bubble was
+  // scaled down at interior zoom until DOM width (~340 px) mapped to
+  // ~50 visual px, forcing one-word-per-line and covering the room
+  // during the consequence window — exactly when the room needs to
+  // be readable (2026-08-08 Vision Owner sighting).
   return (
     <Html
       position={[cx, BUBBLE_HEIGHT_M, cz]}
       center
-      distanceFactor={30}
       style={{ pointerEvents: 'none' }}
     >
       <div style={{ ...BUBBLE_STYLE, opacity }}>{mentorComment}</div>

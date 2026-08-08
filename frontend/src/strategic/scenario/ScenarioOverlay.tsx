@@ -11,6 +11,7 @@
 // not here.
 
 import { strings } from '../../content/strings.sv';
+import { scenarioById } from '../simulation/scenarios';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 
 const OVERLAY_STYLE: React.CSSProperties = {
@@ -70,21 +71,32 @@ const SUBJECT_CTA_STYLE: React.CSSProperties = {
 export function ScenarioOverlay() {
   const sim = useSimState();
   const dispatch = useSimDispatch();
-  const { phase } = sim.scenario;
+  const { phase, scenarioId } = sim.scenario;
 
   if (phase === 'idle' || phase === 'resolving' || phase === 'settled') return null;
+
+  // Prefer the spec (post-ORDER 043 v3 §10 step 5). Falls back to the
+  // legacy strings.scenario keys for pre-refactor tests / manual
+  // TRIGGER_SCENARIO without a scenarioId set.
+  const spec = scenarioId ? scenarioById(scenarioId) : null;
+  const subjectBody = spec?.subjectBody ?? strings.scenario.subject.body;
+  const subjectCta = spec?.subjectCta ?? strings.scenario.subject.cta;
+  const situationBody = spec?.situationBody ?? strings.scenario.situation.body;
+  const labelA = spec?.choices.A.label ?? strings.scenario.situation.options.A;
+  const labelB = spec?.choices.B.label ?? strings.scenario.situation.options.B;
+  const labelC = spec?.choices.C.label ?? strings.scenario.situation.options.C;
 
   if (phase === 'subject') {
     return (
       <div style={OVERLAY_STYLE}>
-        <div style={BODY_STYLE}>{strings.scenario.subject.body}</div>
+        <div style={BODY_STYLE}>{subjectBody}</div>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <button
             type="button"
             style={SUBJECT_CTA_STYLE}
             onClick={() => dispatch({ type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' })}
           >
-            {strings.scenario.subject.cta}
+            {subjectCta}
           </button>
         </div>
       </div>
@@ -125,28 +137,28 @@ export function ScenarioOverlay() {
   // phase === 'situation'
   return (
     <div style={OVERLAY_STYLE}>
-      <div style={BODY_STYLE}>{strings.scenario.situation.body}</div>
+      <div style={BODY_STYLE}>{situationBody}</div>
       <div style={{ ...BUTTON_ROW_STYLE, flexDirection: 'column', alignItems: 'stretch' }}>
         <button
           type="button"
           style={BUTTON_STYLE}
           onClick={() => dispatch({ type: 'RESOLVE_SCENARIO', choice: 'A' })}
         >
-          {strings.scenario.situation.options.A}
+          {labelA}
         </button>
         <button
           type="button"
           style={BUTTON_STYLE}
           onClick={() => dispatch({ type: 'RESOLVE_SCENARIO', choice: 'B' })}
         >
-          {strings.scenario.situation.options.B}
+          {labelB}
         </button>
         <button
           type="button"
           style={BUTTON_STYLE}
           onClick={() => dispatch({ type: 'RESOLVE_SCENARIO', choice: 'C' })}
         >
-          {strings.scenario.situation.options.C}
+          {labelC}
         </button>
       </div>
     </div>

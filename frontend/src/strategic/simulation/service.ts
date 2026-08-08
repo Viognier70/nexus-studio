@@ -1,8 +1,16 @@
 import { INTERIOR } from '../content/layout';
 import type { Guest, SimulationState, StaffMember, TaskType, Vec2 } from '../types';
 import { taskDurationTicks } from './economics';
+import { reputationEventDeparture, reputationEventGiveUp } from './reputation';
 
 const TICK_SECONDS = 0.2;
+
+// ORDER 043 v3 §5.2 — the waiting queue is a phenomenon, not a
+// furniture list. The room's painted waiting spots (INTERIOR.waitingSpots)
+// stay at 4 for cycle 1, but the queue itself can grow to 12 before a
+// guest is turned away; overflow guests re-render on the same pucks via
+// modulo. Signal path: peakQueue is the reading, floor pucks are chrome.
+const WAITING_QUEUE_CAP = 12;
 
 function distance(a: Vec2, b: Vec2): number {
   const dx = a.x - b.x;
@@ -129,13 +137,32 @@ export function tickGuests(state: SimulationState) {
 
     if (guest.state === 'arriving') {
       if (guest.moveProgress >= 1) {
+        // ORDER 043 §6 walk-away: guests whose economic-at-spawn said
+        // "refuse entry" turn back without checking for a seat. Visible
+        // reading: at low economic, more pucks approach the door and
+        // walk out again — "guests leaving without sitting."
+        if (guest.walkAwayOnArrival && !guest.scenarioSource) {
+          guest.state = 'declined';
+          guest.stateTime = now;
+          moveGuest(guest, { x: 0, z: 8 });
+          continue;
+        }
         const seat = findFreeSeat(state, guest.scenarioSource);
         if (seat !== null && !state.scenario.awaitingChoice) {
           setGuestSeated(state, guest, seat);
         } else {
-          // Queue at waiting spot.
+          // Queue at waiting spot. The waiting cap (WAITING_QUEUE_CAP)
+          // is decoupled from the number of physical waiting-spot pucks
+          // in INTERIOR.waitingSpots: at cycle-1 the room only has 4
+          // painted spots but the queue needs headroom for the dinner
+          // signal (peak 5–7 at low social) — otherwise every extra
+          // guest is a walk-away and the queue length collapses to a
+          // step function. Overflow guests re-use the visible spots via
+          // modulo; the "extra" arrivals stack on the same pucks in
+          // rendering, which is fine for now — the phenomenon-of-record
+          // is the count, not the individual placement.
           const idx = state.waitingIds.length;
-          if (idx >= INTERIOR.waitingSpots.length) {
+          if (idx >= WAITING_QUEUE_CAP) {
             // No waiting room — leave.
             guest.state = 'declined';
             guest.stateTime = now;
@@ -144,7 +171,9 @@ export function tickGuests(state: SimulationState) {
             state.waitingIds.push(guest.id);
             guest.state = 'waiting';
             guest.stateTime = now;
-            moveGuest(guest, INTERIOR.waitingSpots[idx]);
+            const spot =
+              INTERIOR.waitingSpots[idx % INTERIOR.waitingSpots.length];
+            moveGuest(guest, spot);
           }
         }
       }
@@ -160,10 +189,13 @@ export function tickGuests(state: SimulationState) {
         state.waitingIds = state.waitingIds.filter((id) => id !== guest.id);
         setGuestSeated(state, guest, seat);
       } else if (now - guest.stateTime > 90 && guest.satisfaction < 0.2) {
-        // Give up.
+        // Give up. ORDER 043 v3 §4 reputation loop: a walkout from
+        // the queue is the loudest bad-reputation signal — a person
+        // waited long enough to be visibly unhappy and then left.
         guest.state = 'leaving';
         guest.stateTime = now;
         moveGuest(guest, { x: 0, z: 8 });
+        reputationEventGiveUp(state);
       }
       continue;
     }
@@ -181,9 +213,14 @@ export function tickGuests(state: SimulationState) {
     }
 
     if (guest.state === 'paying' && now - guest.stateTime > 8) {
-      // Free the seat, count as completed.
+      // Free the seat, count as completed. ORDER 043 v3 §4 reputation
+      // loop: read final satisfaction as a reputation signal — happy
+      // departures pull word-of-mouth up, unhappy departures pull it
+      // down, mediocre is neutral (a forgettable dinner is not
+      // remembered).
       state.completedGuests += 1;
       state.seatedIds = state.seatedIds.filter((id) => id !== guest.id);
+      reputationEventDeparture(state, guest.satisfaction);
       guest.state = 'leaving';
       guest.stateTime = now;
       moveGuest(guest, { x: 0, z: 8 });
@@ -225,7 +262,16 @@ function setGuestSeated(state: SimulationState, guest: Guest, seat: number) {
 }
 
 function diningDuration(state: SimulationState): number {
-  return state.policies.service === 'formell' ? 55 : 34;
+  const base = state.policies.service === 'formell' ? 55 : 34;
+  // ORDER 043 v3 §5.2 — low social capital lingers, high social capital
+  // turns tables. Scale factor (2 − social) with social clamped [0, 1]:
+  //   social = 1 → factor 1.0  (normal linger)
+  //   social = 0.5 → factor 1.5 (~50 % longer)
+  //   social = 0  → factor 2.0  (double linger, staff bottleneck)
+  // The queue reading depends on this: without slower turnover at low
+  // social, the room drains fast enough that a queue never forms.
+  const social = Math.max(0, Math.min(1, state.capitals.values.social));
+  return base * (2 - social);
 }
 
 // -------------------------------------------------------------------------
@@ -337,7 +383,11 @@ function beginStaffTask(
 ) {
   staff.taskType = type;
   staff.taskProgress = 0;
-  staff.taskDuration = taskDurationTicks(state.policies, type);
+  staff.taskDuration = taskDurationTicks(
+    state.policies,
+    type,
+    state.capitals.values.social
+  );
   staff.targetGuestId = targetGuestId;
   const guest = state.guests.find((g) => g.id === targetGuestId);
   if (guest) {

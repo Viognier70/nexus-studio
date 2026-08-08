@@ -1,34 +1,92 @@
 import { createRng } from '../util/rng';
 import type {
+  DayPeriod,
+  DayState,
+  EnablerKey,
   Policies,
+  Register,
   ScenarioChoice,
   ScenarioDifficulty,
   SimAction,
-  SimulationState
+  SimulationState,
+  StaffRole,
+  SustainabilityKey
+} from '../types';
+import {
+  SERVICE_LENGTH_MAX_MINUTES,
+  SERVICE_LENGTH_MIN_MINUTES
 } from '../types';
 import { strings } from '../../content/strings.sv';
 import { maybeSpawnGuest, scenarioSpawnStep } from './arrivals';
+import { planScenariosForService, scheduleScenarioTriggerTimes } from './day';
 import { revenuePerGuest } from './economics';
-import { makeInitialState, makeStaff } from './model';
+import {
+  PREP_CARRYOVER_OFFSET_SEC,
+  PREP_CARRYOVER_THRESHOLD,
+  PREP_DURATION_SEC,
+  scheduleOutcomes,
+  tickEventStream
+} from './eventStream';
+import { PREP_CARRYOVER_TEXT } from '../../content/eventStream.sv';
+import { pickScenarioSpec, scenarioById } from './scenarios';
+import { initialDay, makeInitialState, makeStaff } from './model';
+import { tickReputationDrift } from './reputation';
 import { tickGuests, tickStaff } from './service';
 import { tickSustainability } from './sustainability';
+import {
+  AGENCY_DECLINE_SOCIAL_COST,
+  AGENCY_ECONOMIC_COST,
+  AGENCY_HIRE_COST,
+  AGENCY_OFFER_LOAD_THRESHOLD,
+  AGENCY_OFFER_SUSTAINED_SEC,
+  AGENCY_OFFER_WINDOW_SEC,
+  addAgencyMember,
+  chargeStructuralCost,
+  makeTeamMember,
+  removeAgencyMembers,
+  teamCapacity
+} from './team';
+import { drawNextTheme, wagerPayout } from './themeSelection';
 
-// Sim-seconds until the walk-in-of-five scenario auto-triggers if the
-// player takes no action. Kept short so a one-and-done playtest doesn't
-// have to sit through two minutes of ambient sim before the loop
-// engages; a manual key-5 trigger from the app shell is also wired for
-// the case where the player wants it now.
-const AUTO_SCENARIO_AT = 30;
+// ORDER 043 §4 wager tuning — cycle-1 defaults, will be tuned against
+// play. Report gate at §10 lands with these; scenario integration
+// (Phase B+) will exercise them for the first time.
+export const WAGER_UNIT_STAKE = 0.10; // fixed magnitude per wager
+export const WAGER_WEAK_THRESHOLD = 0.4; // capital ≤ this is "weak"
+export const WAGER_WEAK_WIN_MULTIPLIER = 1.5; // extra payout on wins in weak capital
+export const CAPITAL_MIN = 0;
+export const CAPITAL_MAX = 1;
+export const THEME_HISTORY_LIMIT = 6;
 // Consequence window per ORDER 042 §3.4: "over 30–45 seconds of
 // compressed simulated time, the room changes in a way the player can
 // watch". After this many sim-seconds from the RESOLVE_SCENARIO, the
 // mentor comment surfaces in the world.
 const SCENARIO_SETTLE_AFTER = 35;
 
-// Party size for walk-in-of-five (ORDER 042 §1 rescaled 2026-08-08 to
-// the 146 m² café-scale Candidate A footprint). Choice A/B both seat
-// the party; choice C turns them away.
-const WALK_IN_PARTY_SIZE = 5;
+// Party size for walk-in-of-five now lives on the scenario spec
+// (scenarios.ts WALK_IN_OF_FIVE.choices.*.spawnedRemaining). Kept
+// out of the reducer to keep authoring in one file.
+
+// ORDER 043 v3 §7 chain — magnitude of the capital movement produced
+// by a scenario resolution on its drawn theme. Choice A/B are the
+// generous / demanding responses that move the themed capital up;
+// choice C is the refusal that moves it down. Cycle-1 default —
+// deliberately smaller than the wager stake (0.10) so a scenario
+// outcome + wager payout compose without one dominating the other.
+export const SCENARIO_CAPITAL_DELTA = 0.06;
+
+// Per-choice signed multiplier on SCENARIO_CAPITAL_DELTA. Chosen so
+// that A and B differ only in what they cost — both engage the
+// capital, one via the demanding response and one via the generous
+// response. C's magnitude is smaller (halved) because the loss is
+// already carried by the reputation dip in the walk-in-of-five
+// specific handler; letting C also cost a full capital would double-
+// count the refusal.
+const CHOICE_CAPITAL_SIGN: Record<ScenarioChoice, number> = {
+  A: 1,
+  B: 1,
+  C: -0.5
+};
 
 export function reducer(state: SimulationState, action: SimAction): SimulationState {
   switch (action.type) {
@@ -48,11 +106,446 @@ export function reducer(state: SimulationState, action: SimAction): SimulationSt
       return advanceToDifficulty(state);
     case 'SET_SCENARIO_DIFFICULTY':
       return setDifficulty(state, action.difficulty);
+    case 'PLACE_WAGER':
+      return placeWager(state, action.capital);
+    case 'CLEAR_WAGER':
+      return clearWager(state);
+    case 'RECORD_ENABLER_EVENT':
+      return recordEnablerEvent(
+        state,
+        action.enabler,
+        action.register,
+        action.amount,
+        action.scenarioId
+      );
+    case 'SET_CAPITAL':
+      return setCapital(state, action.capital, action.value);
+    case 'OPEN_SERVICE':
+      return openService(state, action.service, action.lengthMinutes);
+    case 'SKIP_LUNCH':
+      return skipLunch(state);
+    case 'ACCEPT_AGENCY':
+      return acceptAgency(state);
+    case 'DECLINE_AGENCY':
+      return declineAgency(state);
+    case 'HIRE_TEAM_MEMBER':
+      return hireTeamMember(state, action.role);
+    case 'FIRE_TEAM_MEMBER':
+      return fireTeamMember(state, action.memberId);
     case 'RESET':
       return makeInitialState(state.seed, state.policies);
     default:
       return state;
   }
+}
+
+// ---------- ORDER 043 v3 §10 step 1 — day / period transitions ---------------
+
+function clampServiceLength(mins: number): number {
+  return Math.max(
+    SERVICE_LENGTH_MIN_MINUTES,
+    Math.min(SERVICE_LENGTH_MAX_MINUTES, Math.round(mins))
+  );
+}
+
+function openService(
+  state: SimulationState,
+  service: 'lunch' | 'dinner',
+  lengthMinutes: number
+): SimulationState {
+  // Guard: lunch can only open from morning, dinner from afternoon.
+  // Any other phase → no-op. Prevents the UI from opening dinner
+  // during a running lunch service etc.
+  const expectedPhase: DayPeriod = service === 'lunch' ? 'morning' : 'afternoon';
+  if (state.day.period !== expectedPhase) return state;
+  const length = clampServiceLength(lengthMinutes);
+  // Deterministic scenario count + schedule from the current rng
+  // state — same seed + same open sequence yields the same rhythm.
+  // The schedule is shifted by PREP_DURATION_SEC so no scenario
+  // fires during the mise en place window; the head-space buffer
+  // in scheduleScenarioTriggerTimes then applies on top.
+  const rng = createRng(state.rngState);
+  const scenariosPlanned = planScenariosForService(length, rng);
+  const scenarioTriggerTimes = scheduleScenarioTriggerTimes(
+    scenariosPlanned,
+    state.simTime + PREP_DURATION_SEC,
+    Math.max(1, length - PREP_DURATION_SEC / 60),
+    rng
+  );
+  const day: DayState = {
+    ...state.day,
+    period: service,
+    periodStartAt: state.simTime,
+    currentServiceLengthMinutes: length,
+    scenariosPlanned,
+    scenariosFiredThisService: 0,
+    scenarioTriggerTimes,
+    // Prep window opens for PREP_DURATION_SEC starting now. Arrivals
+    // + scenario firing are gated until prep ends (see advanceTick).
+    prepEndsAt: state.simTime + PREP_DURATION_SEC,
+    prepIgnoranceCount: 0
+  };
+  return {
+    ...state,
+    day,
+    rngState: rng.state
+  };
+}
+
+function skipLunch(state: SimulationState): SimulationState {
+  if (state.day.period !== 'morning') return state;
+  return {
+    ...state,
+    day: {
+      ...state.day,
+      period: 'afternoon',
+      periodStartAt: state.simTime,
+      currentServiceLengthMinutes: null,
+      scenariosPlanned: 0,
+      scenariosFiredThisService: 0,
+      scenarioTriggerTimes: [],
+      prepEndsAt: null,
+      prepIgnoranceCount: 0
+    }
+  };
+}
+
+// Called from advanceTick — handles the automatic transitions that
+// don't require a player action:
+//   lunch     → afternoon (after chosen length elapses)
+//   dinner    → evening   (after chosen length elapses)
+//   evening   → morning of next day (after a short close pause)
+// morning + afternoon stay put until the player opens a service or
+// skips lunch. This satisfies v3 §2's rule that the player, not the
+// clock, decides how long each service runs.
+const EVENING_TO_MORNING_PAUSE_SEC = 15;
+
+export function tickDayTransitions(state: SimulationState): SimulationState {
+  const { day, simTime } = state;
+  if (day.period === 'lunch' && day.currentServiceLengthMinutes !== null) {
+    const endsAt = day.periodStartAt + day.currentServiceLengthMinutes * 60;
+    if (simTime >= endsAt) {
+      // Clear agency hires + offer at lunch close, same as dinner.
+      return {
+        ...state,
+        team: removeAgencyMembers(state.team),
+        agencyOffer: null,
+        day: {
+          ...day,
+          period: 'afternoon',
+          periodStartAt: simTime,
+          currentServiceLengthMinutes: null,
+          scenariosPlanned: 0,
+          scenariosFiredThisService: 0,
+          scenarioTriggerTimes: [],
+          prepEndsAt: null,
+          prepIgnoranceCount: 0
+        }
+      };
+    }
+  }
+  if (day.period === 'dinner' && day.currentServiceLengthMinutes !== null) {
+    const endsAt = day.periodStartAt + day.currentServiceLengthMinutes * 60;
+    if (simTime >= endsAt) {
+      // ORDER 043 v3 §10 step 5 — clear any agency hires + any
+      // standing agency offer at service close. Agency members are
+      // scoped to the single service; the offer is stale after
+      // close and would surface next service if not cleared.
+      return {
+        ...state,
+        team: removeAgencyMembers(state.team),
+        agencyOffer: null,
+        day: {
+          ...day,
+          period: 'evening',
+          periodStartAt: simTime,
+          currentServiceLengthMinutes: null,
+          scenariosPlanned: 0,
+          scenariosFiredThisService: 0,
+          scenarioTriggerTimes: [],
+          prepEndsAt: null,
+          prepIgnoranceCount: 0
+        }
+      };
+    }
+  }
+  if (day.period === 'evening') {
+    if (simTime - day.periodStartAt >= EVENING_TO_MORNING_PAUSE_SEC) {
+      // Day advance — charge structural cost for the closing day
+      // (every non-agency member pays their dailyCost) and roll to
+      // the next morning. §10 "structural cost locked over multiple
+      // days" is honoured by the per-day charge continuing for the
+      // contract duration.
+      return {
+        ...state,
+        team: chargeStructuralCost(state.team),
+        day: {
+          ...initialDay(),
+          dayNumber: day.dayNumber + 1,
+          periodStartAt: simTime
+        }
+      };
+    }
+  }
+  return state;
+}
+
+function setCapital(
+  state: SimulationState,
+  capital: SustainabilityKey,
+  value: number
+): SimulationState {
+  const clamped = Math.max(0, Math.min(1, value));
+  return {
+    ...state,
+    capitals: {
+      ...state.capitals,
+      values: { ...state.capitals.values, [capital]: clamped }
+    }
+  };
+}
+
+// ---------- ORDER 043 v3 §10 step 5 — agency-offer machinery ------------
+
+function activeGuestCount(state: SimulationState): number {
+  return state.guests.filter(
+    (g) =>
+      g.state === 'arriving' ||
+      g.state === 'waiting' ||
+      g.state === 'seated' ||
+      g.state === 'ordering' ||
+      g.state === 'dining' ||
+      g.state === 'paying'
+  ).length;
+}
+
+// Runs inside advanceTick. Mutates draft in place — sets/clears the
+// strain tracker, fires an offer, or expires an unanswered offer
+// into an implicit decline.
+function tickAgencyStrain(draft: SimulationState): void {
+  const period = draft.day.period;
+
+  // Outside a service, reset the tracker and drop any orphaned offer.
+  if (period !== 'lunch' && period !== 'dinner') {
+    if (draft.team.strainSinceSimTime !== null) {
+      draft.team = { ...draft.team, strainSinceSimTime: null };
+    }
+    return;
+  }
+
+  const now = draft.simTime;
+  const load = activeGuestCount(draft) / teamCapacity(draft.team);
+  const tracker = draft.team.strainSinceSimTime;
+
+  // Expire an unanswered offer into an implicit decline. The social
+  // cost applies either way — the team read the silence.
+  if (draft.agencyOffer && now >= draft.agencyOffer.expiresAt) {
+    draft.capitals = {
+      ...draft.capitals,
+      values: {
+        ...draft.capitals.values,
+        social: Math.max(0, draft.capitals.values.social - AGENCY_DECLINE_SOCIAL_COST)
+      }
+    };
+    draft.agencyOffer = null;
+  }
+
+  if (load >= AGENCY_OFFER_LOAD_THRESHOLD) {
+    if (tracker === null) {
+      draft.team = { ...draft.team, strainSinceSimTime: now };
+    } else if (
+      now - tracker >= AGENCY_OFFER_SUSTAINED_SEC &&
+      draft.agencyOffer === null
+    ) {
+      // Fire the offer. Role is the axis the strain has been loudest
+      // on — cycle 1 keeps it simple and offers a lärling-shaped
+      // hire (generic hand). A future order could pick the role that
+      // best relieves the current bottleneck.
+      draft.agencyOffer = {
+        role: 'lärling',
+        moneyCost: AGENCY_HIRE_COST,
+        socialCostIfDeclined: AGENCY_DECLINE_SOCIAL_COST,
+        offeredAt: now,
+        expiresAt: now + AGENCY_OFFER_WINDOW_SEC
+      };
+      draft.team = { ...draft.team, strainSinceSimTime: null };
+    }
+  } else if (tracker !== null) {
+    // Load dropped below threshold — reset the tracker so a fresh
+    // sustained window is required before the next offer.
+    draft.team = { ...draft.team, strainSinceSimTime: null };
+  }
+}
+
+function acceptAgency(state: SimulationState): SimulationState {
+  if (state.agencyOffer === null) return state;
+  const team = addAgencyMember(state.team, state.day.dayNumber);
+  return {
+    ...state,
+    team,
+    agencyOffer: null,
+    // Cost is felt both in raw ledger (state.cost) and in the
+    // reading layer (economic capital). The capital hit is what
+    // the player watches; the ledger accumulates for later reports.
+    cost: state.cost + AGENCY_HIRE_COST,
+    capitals: {
+      ...state.capitals,
+      values: {
+        ...state.capitals.values,
+        economic: Math.max(0, state.capitals.values.economic - AGENCY_ECONOMIC_COST)
+      }
+    },
+    events: [
+      ...state.events,
+      {
+        at: state.simTime,
+        kind: 'system',
+        text: 'Hyrpersonal inkallad — laget växer för kvällen.'
+      }
+    ]
+  };
+}
+
+function declineAgency(state: SimulationState): SimulationState {
+  if (state.agencyOffer === null) return state;
+  return {
+    ...state,
+    agencyOffer: null,
+    capitals: {
+      ...state.capitals,
+      values: {
+        ...state.capitals.values,
+        social: Math.max(0, state.capitals.values.social - AGENCY_DECLINE_SOCIAL_COST)
+      }
+    },
+    events: [
+      ...state.events,
+      {
+        at: state.simTime,
+        kind: 'system',
+        text: 'Avstod hyrpersonal — laget märker att det inte kom hjälp.'
+      }
+    ]
+  };
+}
+
+// ---------- ORDER 043 v3 §10 step 5 — morning hire / fire ---------------
+//
+// §11 point 1's acceptance criterion — "the team decision mattered,
+// and its cost was felt during service" — requires a hiring surface.
+// This is it. Only fires during the morning phase; hires start with
+// their role's default competence and a fresh 7-day contract. Firing
+// pays out remaining contract days as a lump-sum buyout so a spam
+// hire-then-fire chain isn't free.
+//
+// No hard team-size cap; economic capital + ongoing dailyCost are
+// the natural bounds. A 6-role team is expensive; a lärling-only
+// team is cheap but reads badly in the stream (kock competence
+// collapses).
+
+const TEAM_MAX_MEMBERS = 6; // guard against absurd hiring
+
+function hireTeamMember(state: SimulationState, role: StaffRole): SimulationState {
+  if (state.day.period !== 'morning') return state;
+  if (state.team.members.length >= TEAM_MAX_MEMBERS) return state;
+  const member = makeTeamMember(role, state.day.dayNumber);
+  return {
+    ...state,
+    team: {
+      ...state.team,
+      members: [...state.team.members, member]
+    },
+    events: [
+      ...state.events,
+      {
+        at: state.simTime,
+        kind: 'system',
+        text: `Anställde ${role} — kontrakt till dag ${member.contractEndsDay}.`
+      }
+    ]
+  };
+}
+
+function fireTeamMember(state: SimulationState, memberId: string): SimulationState {
+  if (state.day.period !== 'morning') return state;
+  const member = state.team.members.find((m) => m.id === memberId);
+  if (!member) return state;
+  // Buyout = remaining contract days × dailyCost. Fired the day
+  // after the contract ends → buyout 0. Fired mid-contract → the
+  // days you promised to pay for are paid up-front.
+  const remainingDays = Math.max(0, member.contractEndsDay - state.day.dayNumber);
+  const buyout = remainingDays * member.dailyCost;
+  return {
+    ...state,
+    team: {
+      ...state.team,
+      members: state.team.members.filter((m) => m.id !== memberId),
+      paidStructuralCost: state.team.paidStructuralCost + buyout
+    },
+    cost: state.cost + buyout,
+    events: [
+      ...state.events,
+      {
+        at: state.simTime,
+        kind: 'system',
+        text:
+          buyout > 0
+            ? `Sa upp ${member.role} — buyout ${buyout} kr (${remainingDays} dagar kvar av kontraktet).`
+            : `Sa upp ${member.role} — kontraktet var slut.`
+      }
+    ]
+  };
+}
+
+// ---------- ORDER 043 wager + enabler transitions -------------------------
+
+function placeWager(state: SimulationState, capital: SustainabilityKey): SimulationState {
+  // Placing a new wager replaces any prior standing wager. Wagers are
+  // only meaningful between scenarios (§4 "after a scenario resolves
+  // and before the next arrives"); we permit the action in any phase
+  // so the UI is simpler, and Phase B's scenario integration will
+  // resolve or discard a standing wager appropriately.
+  return {
+    ...state,
+    wager: {
+      capital,
+      placedAt: state.simTime,
+      amount: WAGER_UNIT_STAKE
+    }
+  };
+}
+
+function clearWager(state: SimulationState): SimulationState {
+  return { ...state, wager: null };
+}
+
+function recordEnablerEvent(
+  state: SimulationState,
+  enabler: EnablerKey,
+  register: Register,
+  amount: number,
+  scenarioId: string | null
+): SimulationState {
+  // Amount clamped to a positive envelope so a scenario cannot silently
+  // burn an enabler downward — §3.3 says enabler competence grows from
+  // how the player plays; regression via the reducer is out of shape.
+  const clean = Math.max(0, Math.min(1, amount));
+  if (clean === 0) return state;
+  const previous = state.enablers[enabler];
+  const updated = {
+    ...previous,
+    // Derived tally kept in step with the history append (§8: growth
+    // never shown as a score; the tally exists only so reads are cheap).
+    [register]: previous[register] + clean,
+    history: [
+      ...previous.history,
+      { at: state.simTime, register, amount: clean, scenarioId }
+    ]
+  };
+  return {
+    ...state,
+    enablers: { ...state.enablers, [enabler]: updated }
+  };
 }
 
 function advanceTick(state: SimulationState): SimulationState {
@@ -71,6 +564,10 @@ function advanceTick(state: SimulationState): SimulationState {
     },
     scenario: { ...state.scenario, visibleGuestIds: [...state.scenario.visibleGuestIds] },
     events: state.events,
+    eventStream: [...state.eventStream],
+    pendingOutcomes: [...state.pendingOutcomes],
+    team: { ...state.team, members: state.team.members.map((m) => ({ ...m })) },
+    agencyOffer: state.agencyOffer ? { ...state.agencyOffer } : null,
     village: {
       residents: state.village.residents.map((r) => ({ ...r }))
     },
@@ -102,7 +599,15 @@ function advanceTick(state: SimulationState): SimulationState {
     if (draft.delivery.progress >= 1) {
       draft.delivery.active = false;
       draft.delivery.progress = 0;
-      draft.delivery.cooldown = 60 + rng.range(0, 30);
+      // ORDER 043 §6 ecological phenomenon: cooldown between deliveries
+      // stretches when ecological capital is low. Formula chosen so
+      // ecological ≈ 0.55 (initial) reproduces the pre-ORDER-043 60-sec
+      // baseline, ecological = 1 halves it to ~36 sec, ecological = 0
+      // extends to ~84 sec. The van's absence between arrivals IS the
+      // reading; the rhythm of appearance is what the player watches.
+      const ecological = draft.capitals.values.ecological;
+      const cooldownBase = 60 * (1.4 - 0.8 * ecological);
+      draft.delivery.cooldown = cooldownBase + rng.range(0, 30);
     }
   } else {
     draft.delivery.cooldown -= tickSeconds;
@@ -143,9 +648,78 @@ function advanceTick(state: SimulationState): SimulationState {
   // Sustainability.
   tickSustainability(draft);
 
-  // Auto-trigger scenario once.
-  if (!draft.scenario.hasAutoTriggered && draft.simTime >= AUTO_SCENARIO_AT) {
-    return triggerScenario(draft, /* auto */ true);
+  // ORDER 043 v3 §4 reputation loop — continuous per-tick pressure
+  // from queue length + team strain. Runs after tickGuests so the
+  // waiting queue reflects this tick's arrivals + departures, not the
+  // previous tick's state.
+  tickReputationDrift(draft);
+
+  // ORDER 043 Addendum A service event stream — ambient rolls +
+  // pending-outcome emission. Also runs after tickGuests so `loadOf`
+  // reads the current active-guest count for the strain multiplier,
+  // and after reputation drift so a large queue that just triggered
+  // rep drift also feeds this tick's ambient probability.
+  tickEventStream(draft, rng);
+
+  // ORDER 043 Addendum A prep-window end. Runs after tickEventStream
+  // so this tick's prep events are already counted. If prep just
+  // ended AND the team fumbled enough during it, schedule a
+  // carryover bottleneck ~13 min into service — the mise en place
+  // sin coming home to roost.
+  if (
+    draft.day.prepEndsAt !== null &&
+    draft.simTime >= draft.day.prepEndsAt
+  ) {
+    if (draft.day.prepIgnoranceCount >= PREP_CARRYOVER_THRESHOLD) {
+      draft.pendingOutcomes = [
+        ...draft.pendingOutcomes,
+        {
+          dueAt: draft.simTime + PREP_CARRYOVER_OFFSET_SEC,
+          text: PREP_CARRYOVER_TEXT,
+          sustainability: 'social',
+          scenarioId: 'prep-carryover',
+          flavor: 'prep-carryover'
+        }
+      ];
+    }
+    draft.day = { ...draft.day, prepEndsAt: null };
+  }
+
+  // ORDER 043 v3 §10 step 5 — agency-offer strain tracking and
+  // offer expiry. Runs after tickEventStream so this tick's load
+  // reflects the current active guests. The offer itself is UI-
+  // driven (ACCEPT_AGENCY / DECLINE_AGENCY); this tick fires the
+  // offer and expires it into an implicit decline.
+  tickAgencyStrain(draft);
+
+  // ORDER 043 v3 step 5b — scheduled scenario firing.
+  //
+  // Fires when: service is running (lunch / dinner), there are still
+  // fires remaining in the schedule, the head fire time is due, and
+  // the previous scenario has settled (or none has ever fired). The
+  // last gate means resolve → settle → next-trigger is serialised;
+  // scenarios never overlap the response window.
+  //
+  // hasAutoTriggered is retained for backward compat with tests but
+  // no longer gates: the schedule is the authority now.
+  const scheduled = draft.day.scenarioTriggerTimes;
+  const period = draft.day.period;
+  const canFire = period === 'lunch' || period === 'dinner';
+  const scenarioIdle =
+    draft.scenario.phase === 'idle' || draft.scenario.phase === 'settled';
+  if (
+    canFire &&
+    scenarioIdle &&
+    scheduled.length > 0 &&
+    draft.simTime >= scheduled[0]
+  ) {
+    const nextDraft = triggerScenario(draft, /* auto */ true);
+    nextDraft.day = {
+      ...nextDraft.day,
+      scenarioTriggerTimes: scheduled.slice(1),
+      scenariosFiredThisService: draft.day.scenariosFiredThisService + 1
+    };
+    return nextDraft;
   }
 
   // Transition scenario from 'resolving' → 'settled' after the
@@ -156,7 +730,11 @@ function advanceTick(state: SimulationState): SimulationState {
     draft.scenario.choiceAt !== null &&
     draft.simTime - draft.scenario.choiceAt >= SCENARIO_SETTLE_AFTER
   ) {
-    const comment = mentorCommentFor(draft.scenario.choice, draft.scenario.difficulty);
+    const comment = mentorCommentFor(
+      draft.scenario.scenarioId,
+      draft.scenario.choice,
+      draft.scenario.difficulty
+    );
     draft.scenario = {
       ...draft.scenario,
       phase: 'settled',
@@ -170,7 +748,10 @@ function advanceTick(state: SimulationState): SimulationState {
   }
 
   draft.rngState = rng.state;
-  return draft;
+  // ORDER 043 v3 step 1 — auto-transition day periods based on
+  // elapsed sim-time in a running service. Runs last so scenario /
+  // sustainability side-effects for the tick have already landed.
+  return tickDayTransitions(draft);
 }
 
 function costPerMinuteToTick(state: SimulationState): number {
@@ -224,6 +805,19 @@ function triggerScenario(state: SimulationState, auto: boolean): SimulationState
   // to true so the auto-check in advanceTick can't re-fire and reset
   // an in-progress scenario back to `subject`.
   void auto;
+  // ORDER 043 v3 §7 chain — draw the theme *before* the player sees
+  // the scenario. Weakness-weighted with damping (see themeSelection.ts).
+  // Consumes rng state so the same seed + same open sequence yields
+  // the same chain.
+  const rng = createRng(state.rngState);
+  const drawnTheme = drawNextTheme(
+    state.capitals.values,
+    state.capitals.themeHistory,
+    rng
+  );
+  // Look up the scenario spec for the drawn theme. Cycle-1: one
+  // spec per theme (see scenarios.ts SCENARIO_BY_THEME).
+  const scenarioSpec = pickScenarioSpec(drawnTheme);
   const scenario = {
     ...state.scenario,
     hasAutoTriggered: true,
@@ -236,18 +830,23 @@ function triggerScenario(state: SimulationState, auto: boolean): SimulationState
     spawnedRemaining: 0,
     nextSpawnAt: 0,
     visibleGuestIds: [],
+    drawnTheme,
+    scenarioId: scenarioSpec.id,
     mentorComment: null,
     mentorCommentAt: null
   };
   return {
     ...state,
     scenario,
+    rngState: rng.state,
     events: [
       ...state.events,
       {
         at: state.simTime,
         kind: 'scenario' as const,
-        text: auto ? 'Sällskapet står i entrén' : 'Scenariot replays (utvecklarläge)'
+        text: auto
+          ? scenarioSpec.subjectBody
+          : 'Scenariot replays (utvecklarläge)'
       }
     ]
   };
@@ -290,37 +889,135 @@ function resolveScenario(
   scenario.choice = choice;
   scenario.choiceAt = state.simTime;
 
-  // Walk-in-of-five (ORDER 042 §1 rescaled 2026-08-08). A and B both
-  // seat the party; the mechanical difference is B flips welcomeDrink
-  // on, which lifts satisfaction but adds staff workload. C turns the
-  // party away — a couple visibly walk in and back out, then reputation
-  // dips a hair.
-  if (choice === 'A' || choice === 'B') {
-    scenario.spawnedRemaining = WALK_IN_PARTY_SIZE;
-    scenario.nextSpawnAt = state.simTime + 0.4;
-  } else {
-    // Choice C — a couple of the party still approach the door before
-    // being turned away, so the refusal is visible in the room, not
-    // just a state change.
-    scenario.spawnedRemaining = 2;
-    scenario.nextSpawnAt = state.simTime + 0.3;
-  }
+  // Look up the scenario spec chosen at trigger. Falls back to
+  // walk-in-of-five if for some legacy reason scenarioId wasn't
+  // set — cycle-1 tests pre-dating the spec pattern rely on this.
+  const spec = scenario.scenarioId
+    ? scenarioById(scenario.scenarioId)
+    : scenarioById('walk-in-of-five');
+  const choiceSpec = spec?.choices[choice] ?? null;
 
-  // Immediate policy nudge for choice B (welcome drink flips on).
+  // Spawn effects from spec (party arriving, refusal partial-approach
+  // etc). Zero-spawn scenarios (time-pressure, moral-dilemma) leave
+  // the room's puck layer untouched.
+  scenario.spawnedRemaining = choiceSpec?.spawnedRemaining ?? 0;
+  scenario.nextSpawnAt = state.simTime + (choiceSpec?.nextSpawnAtOffset ?? 0);
+
+  // Walk-in-of-five's B flips welcomeDrink on (adds staff task /
+  // satisfaction lift). Kept inline as it's a scenario-specific
+  // policy nudge — a future order could generalise via a
+  // policyPatch field on ScenarioChoiceSpec.
   let policies = state.policies;
-  if (choice === 'B') {
+  if (spec?.id === 'walk-in-of-five' && choice === 'B') {
     policies = { ...policies, welcomeDrink: true };
   }
 
-  // Reputation nudge on refusal.
+  // Reputation nudge for walk-in-of-five's C (refusal in front of
+  // the entrance registers publicly). Other scenarios' refusals
+  // don't have this specific rep hit — their consequence flows
+  // through the capital delta + wager loop instead.
   let reputation = state.reputation;
-  if (choice === 'C') reputation = Math.max(0, reputation - 0.03);
+  if (spec?.id === 'walk-in-of-five' && choice === 'C') {
+    reputation = Math.max(0, reputation - 0.03);
+  }
+
+  // ORDER 043 v3 §7 chain — capital movement on the drawn theme +
+  // wager payout. capitalSign now comes from the spec so scenarios
+  // can weight A/B/C differently (a moral-dilemma A might read as
+  // -1 while walk-in-of-five A reads as +1).
+  let capitals = state.capitals;
+  let wagerHistory = state.capitals.wagerHistory;
+  let themeHistory = state.capitals.themeHistory;
+  let wager = state.wager;
+  const drawn = scenario.drawnTheme;
+  if (drawn) {
+    const capitalSign = choiceSpec?.capitalSign ?? CHOICE_CAPITAL_SIGN[choice];
+    const themedDelta = SCENARIO_CAPITAL_DELTA * capitalSign;
+    const capitalAtPlacement = wager
+      ? state.capitals.values[wager.capital]
+      : 0;
+    const payout = wagerPayout(drawn, wager, capitalAtPlacement);
+    const nextValues = { ...state.capitals.values };
+    nextValues[drawn] = clampCapital(nextValues[drawn] + themedDelta);
+    if (payout.targetCapital) {
+      nextValues[payout.targetCapital] = clampCapital(
+        nextValues[payout.targetCapital] + payout.delta
+      );
+    }
+    themeHistory = [...themeHistory, drawn].slice(-THEME_HISTORY_LIMIT);
+    if (payout.outcome !== 'no_wager') {
+      wagerHistory = [
+        ...wagerHistory,
+        {
+          at: state.simTime,
+          staked: wager!.capital,
+          drew: drawn,
+          outcome: payout.outcome,
+          delta: payout.delta
+        }
+      ];
+      // Wager is spent on resolution — cleared regardless of outcome.
+      wager = null;
+    }
+    capitals = {
+      ...state.capitals,
+      values: nextValues,
+      themeHistory,
+      wagerHistory
+    };
+  }
+
+  // ORDER 043 v3 §10 step 5 hand-authored register writes per
+  // response. Enabler-history evidence is the primary unit of the
+  // portfolio (§8); it's what a future scenario will draw from,
+  // never a numeric readout. Amounts clamped by the enabler write
+  // logic below (mirrors recordEnablerEvent behaviour).
+  let enablers = state.enablers;
+  if (choiceSpec) {
+    enablers = { ...enablers };
+    for (const w of choiceSpec.registerWrites) {
+      const amount = Math.max(0, Math.min(1, w.amount));
+      if (amount === 0) continue;
+      const previous = enablers[w.enabler];
+      enablers[w.enabler] = {
+        ...previous,
+        [w.register]: previous[w.register] + amount,
+        history: [
+          ...previous.history,
+          {
+            at: state.simTime,
+            register: w.register,
+            amount,
+            scenarioId: spec?.id ?? null
+          }
+        ]
+      };
+    }
+  }
+
+  // ORDER 043 Addendum A outcome events — 1–2 hand-authored lines
+  // from the spec's choice, fired at t+6 s and t+18 s to fill the
+  // space between choice and mentor. Empty outcomes list = no
+  // stream fill for this choice.
+  const outcomeTheme = drawn ?? spec?.sustainability ?? 'social';
+  const newOutcomes = choiceSpec
+    ? scheduleOutcomes(
+        choiceSpec.outcomes,
+        state.simTime,
+        outcomeTheme,
+        spec?.id ?? 'unknown'
+      )
+    : [];
 
   return {
     ...state,
     scenario,
     policies,
     reputation,
+    capitals,
+    enablers,
+    wager,
+    pendingOutcomes: [...state.pendingOutcomes, ...newOutcomes],
     events: [
       ...state.events,
       {
@@ -332,15 +1029,27 @@ function resolveScenario(
   };
 }
 
+function clampCapital(v: number): number {
+  return Math.max(CAPITAL_MIN, Math.min(CAPITAL_MAX, v));
+}
+
 function mentorCommentFor(
+  scenarioId: string | null,
   choice: ScenarioChoice | null,
   difficulty: ScenarioDifficulty | null
 ): string {
-  // Only one bank of comments; a null/unexpected combination falls back
-  // to a neutral line rather than throwing.
+  // Null/unexpected combination falls back to a neutral line rather
+  // than throwing — a scenario that resolved with an odd state
+  // shouldn't kill the render.
   if (!choice || !difficulty) {
     return 'Kvällen gick vidare — vi tittar på hur den utvecklade sig nästa gång.';
   }
+  const spec = scenarioId ? scenarioById(scenarioId) : null;
+  if (spec) {
+    return spec.choices[choice].mentor[difficulty];
+  }
+  // Fallback: legacy walk-in-of-five strings for pre-refactor tests
+  // that trigger a scenario without a scenarioId.
   const rank = difficulty === 1 ? 'low' : difficulty === 2 ? 'mid' : 'high';
   const key = `${choice}_${rank}` as keyof typeof strings.scenario.mentor;
   return strings.scenario.mentor[key];

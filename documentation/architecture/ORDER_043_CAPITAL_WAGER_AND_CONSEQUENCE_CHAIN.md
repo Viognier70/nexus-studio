@@ -1,6 +1,6 @@
-# ORDER 043 — The Capital Wager and the Consequence Chain
+# ORDER 043 — The Service Round: Team, Wager and Consequence
 
-**Version:** 2.0
+**Version:** 3.0
 **Status:** Awaiting Vision Owner approval. Not in force until approved.
 **Class:** Sprint order — production (precedence level 7)
 **Parent:** `ORDER_042_BUILD_FIRST_PLAYABLE_LOOP.md` §3.5
@@ -11,173 +11,194 @@
 
 ## 0. Prerequisites
 
-Verify the order number against `ORDER_REGISTRY.md`. If 043 is taken, stop and report.
+Verify the order number against `ORDER_REGISTRY.md`. ORDER 042 must be merged to `main`. `LOOP_STATUS.md` rows 1–4 must read DONE on `main`.
 
-ORDER 042 must be merged to `main`. `LOOP_STATUS.md` rows 1–4 must read DONE on `main`.
+**Supersedes ORDER 043 v2 entirely.** Phase A (two-layer capital state model, commit `0be34f3`) and the §4 theme-selection mechanics (`dd20fc1`, `d93241d`) remain valid and are carried forward. B.1's phenomena work is superseded by §5 below.
 
 ---
 
 ## 1. Why this order exists
 
-ORDER 042 built the loop and it was played on 2026-08-08. The Vision Owner's verdict, verbatim in substance:
+ORDER 042 was played on 2026-08-08. The verdict: *the decision felt given — A was obvious — and since nothing else happens, it isn't much fun to play.*
 
-> The decision felt given — A was obvious — and since nothing else happens, it isn't much fun to play.
+Two things were missing: a stake, and consequence with weight. v2 added the wager and the chain. Playtesting v2's B.1 phenomena then exposed a deeper gap — **there was no business to stake anything in.** No round, no shift, no team, no end to the evening. The simulation ran forever at a constant, gentle rate; nothing could build, so nothing could break.
 
-Both halves are correct and neither is an implementation defect.
-
-**A dominates because there is no stake.** Seating five guests reads as pure revenue. The cost exists in the simulation but the player never feels it. A choice with no risk is a form, not a judgement.
-
-**Nothing else happens because the outcome is one guest puck two metres away.** Choices A and B render as visually identical rooms.
-
-Enriching the visible consequence would not fix the first problem. A scenario with three outcomes and no stake cannot become tense however well it renders. **The missing elements are the wager and the chain**, and this order builds them.
+This version builds the round.
 
 ---
 
-## 2. The loop, as the Vision Owner specified it
+## 2. The day as the unit of play
 
-1. The player goes to their restaurant and opens for service.
-2. Something happens — guests arrive, the evening takes shape.
-3. Scenarios play out; the player's knowledge is tested.
-4. **After a scenario resolves, the player may wager on what the next scenario will concern.** The cue must not be obvious.
-5. Depending on how the player acts and answers — across *episteme*, *techne*, *phronesis* — the player wins or loses credits.
-6. Won credits may be invested. Lost credits degrade a sustainability, and **the degraded state shapes the next scenario**: answer poorly on a staffing matter and social sustainability falls, raising the risk that staff resign — which becomes the next problem.
+A round is a day. Four periods:
 
----
+| Period | What happens | Light |
+|---|---|---|
+| **Morning** | Business closed. The player holds funds, reviews the previous day, invests. | Bright, green |
+| **Lunch** | Service, if the business runs lunch. | Full daylight |
+| **Dinner** | Service. The principal period. | Dimming |
+| **Night** | Service, for businesses that run it. Not all do. | Dark |
 
-## 3. Two layers, not one list
+**The player chooses the length of each service, between roughly 3 and 30 minutes.** This is itself a wager: longer service yields more scenarios and more credit, and more chances to lose — and with a locked team, a long service runs the staff harder. Choosing a short service when the team is thin is a professionally correct decision, not a shortcut.
 
-The five capitals of `GAME_DESIGN_CONSTITUTION.md` are **not one flat resource pool.** They divide by function.
+**Scenario count is random, weighted by service length.** Never a fixed cadence. There must be air between scenarios — stretches where the player simply watches the room work or fail to work. A scenario every ninety seconds is a quiz with a restaurant painted behind it. One problem may lead directly to another; that is a chain within the evening, distinct from the between-day chain in §8.
 
-### 3.1 Outcomes — what is earned, staked and lost
-
-Three sustainabilities. These carry credits and decide whether the business survives.
-
-| Sustainability | What it covers in the business |
-|---|---|
-| Economic | Margin, cash, the evening's takings |
-| Social | Staff, guests, the village's regard |
-| Ecological | Sourcing, waste, the seasons |
-
-These are what the player wagers on (§4), what scenario outcomes move (§5), what the consequence chain runs through (§6), and what investment spends (§7).
-
-**Constraint:** none may be optimised in isolation without cost to another. No dominant strategy. This is the constitution's requirement and an acceptance criterion in §9.
-
-### 3.2 Enablers — what makes the three possible
-
-**Scientific knowledge** (method, technique, what the kitchen knows) and **cultural understanding** (the place's tradition, the room, what the house stands for) are *not* outcomes. They are competences that enable the three sustainabilities.
-
-The player does not earn cultural capital. The player uses cultural understanding to make a decision that earns social credit. A restaurateur who does not understand the place's tradition makes worse guest decisions — but "tradition" does not appear in the accounts.
-
-Both enablers carry all three Aristotelian registers:
-
-- **Episteme** — is the fact known?
-- **Techne** — can it be done?
-- **Phronesis** — given this room, this evening, these people, what should be done?
-
-### 3.3 Competence is derived from behaviour, never purchased
-
-**Enabler competence grows from how the player plays.** Consistently trying methods grows techne. Reading the room and departing from the rule when the situation demands it grows phronesis. Nothing may be bought: credits buy changes to the business (§7), never competence.
-
-This is `GAME_DESIGN_CONSTITUTION.md`'s evidence-based portfolio given a mechanism at last — the player *demonstrates* competence and it is derived from behaviour.
-
-It also makes the game unoptimisable around a weakness. To get better at staffing you must make staffing decisions, and some will go wrong.
+Night is a different kind of business — different staff, different economics, different social pressure. **Out of scope for this cycle.** Build morning, lunch and dinner.
 
 ---
 
-## 4. The wager
+## 3. The team
 
-After a scenario resolves and before the next arrives, the player may stake credits on **what the next scenario will concern**.
+The player assembles a team and pays for it. Four roles this cycle — two front of house, two kitchen:
 
-- The stake is placed in a sustainability. Correct reading returns more than it cost; wrong reading loses the stake.
-- The wager is optional. A player who never wagers must still progress — more slowly.
-- The wager is placed in the world, not in a menu (§8).
+| Role | Cost | Competence |
+|---|---|---|
+| Runner | Low | Minimal experience, no training |
+| Waiter | Medium | Experienced |
+| Apprentice cook | Low | In training |
+| Chef | High | Experienced, trained |
 
-**Theme selection is weighted toward weakness.** The next scenario is drawn at random, weighted toward the sustainability the player is weakest in. This is pedagogically correct — the game seeks out what the player cannot do — and it makes the wager a real decision: stake on a strong area where you would likely win but are rarely asked, or on the weak one where the question comes often and you more often lose.
+Cost is per hour of service, so a long service costs more in wages as well as in strain.
 
-**Damping is mandatory.** Pure weakness-weighting is punitive: the weakest area always draws the question, the player loses there, it grows weaker still. Implement both:
+**This is a structural cost, locked for a set number of days.** The player cannot re-optimise between scenarios; the team stands, and the player lives with it. Locking is what makes the choice a choice.
 
-- a cap on consecutive recurrence of the same theme;
-- a larger return on a win in a weak area, so the spiral breaks by skill rather than luck.
+**Per `EXECUTIVE_DESIGN_DIRECTIVE_001.md` §7, the player never commands individuals.** Assembling a team is not directing staff: the player hires a chef and does not decide what she does on Tuesday evening. Staff act autonomously under current conditions. What the player buys is capacity and competence. Any interface that reads as "place your staff" violates the directive and must not be built.
 
-Report the numbers chosen. They will need tuning against play, not theory.
+### 3.1 Agency staff — the decision inside the evening
 
----
+When pressure rises mid-service, the player may bring in agency staff. Expensive — several times the standing hourly rate — and available immediately.
 
-## 5. Scoring a response
+**Declining is not "nothing happens".** The existing staff absorb the load, and social sustainability falls. The choice is not whether to solve the problem but **whether to pay in money or in people.**
 
-A response is scored on two axes:
+This is also a blind wager: the player does not know whether the pressure will hold or ease in ten minutes.
 
-**Which sustainability it moves, and by how much** — the credit outcome.
-
-**Which register it exercised** — recorded against the relevant enabler, feeding §3.3's derivation. Not shown as a score.
-
-Phronesis must never reduce to a correct answer. A phronesis outcome is a trade-off with costs on both sides, and what is recorded is the quality of the weighing, not a match against a key.
+The cost appears in tonight's accounts. The other cost appears three weeks later, when someone resigns.
 
 ---
 
-## 6. The consequence chain
+## 4. The reputation loop
 
-A sustainability falling below a threshold produces a concrete event in the business: staff resign, a supplier drops the house, regulars stop coming. The event becomes the next scenario's situation.
+The central dynamic. It must emerge from the mechanics, not be asserted by a rule:
 
-One consequence event per sustainability in this cycle. Simple threshold triggers are acceptable; the chain matters more than the sophistication of any link.
+> Reputation raises demand → demand strains the staff → understaffing degrades service → degraded service lowers reputation.
 
----
+And the temptation to understaff is economic — so **optimising the economy destroys its own basis.** This satisfies the constitution's requirement that no capital may be optimised in isolation without cost to another, and it satisfies it structurally rather than by decree.
 
-## 7. Investment
-
-Won credits may be invested per the `Policies` schema already typed in `types.ts`: staffing, training level, pricing, sourcing tier.
-
-**Investment changes the business's conditions — never the player's competence.** Changed conditions change what scenarios arrive, which changes what may be wagered. This closes the constitution's core loop.
+**The delay is the point.** A decision made this morning punishes the player three evenings from now.
 
 ---
 
-## 8. What the player sees
+## 5. Reading the room
 
-**No competence meters.** A visible bar becomes a target to farm, and the moment a player optimises a judgement bar, it stops being judgement.
+Phenomena must be legible before a wager is placed, and must be continuous functions of live state — never elements that appear when a scenario fires.
 
-Growth must be **noticeable but not measurable**:
+### 5.1 The queue is deliberately ambiguous
 
-- A fourth response option appears where there were three, without explanation. The player notices it when it happens.
-- The mentor's remark after a scenario reflects *how the player acted*, not how many points were scored.
-- A situation that previously cost staff becomes manageable.
+A queue means one of two opposite things: you are understaffed, or you are popular. **This ambiguity is correct and must be preserved.** Resolving it requires reading two quantities, not one:
 
-Cues for the wager live in the room. Strained staff show. Tired sourcing shows. A thinning regular crowd shows. **The player reads what is about to break** — they do not pick a category from a menu. A stake token dragged onto a themed symbol is a menu with different graphics; that is not what this order asks for.
+- Queue long, room full → success.
+- Queue long, room half empty → service is too slow.
+- Queue long, people abandoning it → the evening is already lost.
 
-This supersedes ORDER 042 §3.3's difficulty selector, which read as a form rather than as part of the evening. **The difficulty selector is removed.**
+A novice sees the queue and thinks business is good. Someone who knows the trade sees the queue *and* the room. **That is the competence the game teaches**, and it is why walk-aways must work — they are what distinguishes the cases.
 
-Per `EXECUTIVE_DESIGN_DIRECTIVE_001.md`: no avatar, no mode picker, no numeric HUD dominating the view, no result popup, no individual move-orders on staff or guests, no XP or levels.
+**Lunch and dinner are read differently — by design.** After the room-flow retune (arrival base 12/min, period multipliers 0.6/1.0, waiting cap 12, dining × (2 − social), walk-away ceiling 0.2), the projection showed lunch never produces a queue at any social value. That is the intended shape:
 
-A portfolio may later show what the player has done — as a history to revisit, never as a dashboard to play against.
+- **Dinner is the queue reading.** Peak queue grows monotonically as social capital falls (2 → 4 → 4 → 5 → 7 across social 1.0 → 0.0). Pinned as a regression test — see `day.test.ts` "dinner queue grows monotonically as social falls." That invariant is what makes the queue a phenomenon, not noise; it must not slip in a future retune.
+- **Lunch is the seat + walk-away reading.** Mean seated rises as social falls (staff bottleneck slows turnover), and walk-away volume tracks economic. A lunch queue is not the signal — its absence is *not a bug.* Do not "fix" it by pushing lunch's multiplier up to dinner's; that would flatten the two services into one and lose the reading contrast.
 
----
+**The queue has been demoted from the primary social reading (2026-08-08).** The queue-persistence probe (`frontend/reports/queue-persistence.probe.ts`) measured mean dwell < 2 s at any social ≥ 0.3 — below the "buildable phenomenon" threshold. The event stream introduced by **Addendum A** now carries the primary social reading; the queue remains a *secondary signal* at very low social capital (~≤ 0.3) where dwell rises to 4–9 s and the standing line becomes visible. Do not tune diningDuration further to try to force the queue back — the fix is the event stream, not more turnover slowdown.
 
-## 9. Acceptance
+### 5.2 Two hardcoded caps must be lifted
 
-Complete when the Vision Owner can play **four scenarios in sequence** and report:
+Probing during v2 found two limits invisible from outside:
 
-1. That the wager was a real decision — reading the room mattered, and the theme was neither obvious nor arbitrary.
-2. That a loss in one scenario visibly shaped a later one.
-3. That no single response dominated across the four.
+- `arrivals.ts` caps concurrent guests at 12.
+- `service.ts` caps queue depth at 4 — arrival five is immediately marked declined.
 
-One scenario proves nothing. The chain is what is being tested, and a session must run long enough for a consequence to arrive.
+**The second made the specification unsatisfiable**: a queue with a hard ceiling of four can never be a continuous function of anything. Record both in `APPROXIMATION_REGISTER` as the seventh occurrence of *"a simplified representation is not the structure"*.
 
-**Do not build a fifth scenario, a second business, or any world work until §9 is answered.**
+### 5.3 Ecological — delivery rhythm
 
----
-
-## 10. Scope for this cycle
-
-- **Three sustainabilities**, all of them: economic, social, ecological. They are the outcome layer and cannot be partially built.
-- **Both enablers** in the derivation model, but scenarios need not exercise every register evenly in the first cycle.
-- **One scenario per sustainability** minimum. Four plays means one theme recurs — which tests the weakness-weighting.
-- **One consequence event per sustainability.**
-
-Report after the state model and reducer wiring, before building scenarios.
+Delivery cadence as a function of ecological capital. Absence and rhythm cannot become symbols, and the slowness matches the fact that a poor supplier relationship does not show in one evening. Already built; carried forward.
 
 ---
 
-## 11. What this order is for
+## 6. Service can collapse
 
-ORDER 042 proved the loop runs and the room renders. It also proved the loop is not yet a game. This order adds the stake, the chain, and the distinction between what is earned and what is learned — all three identified by playing, not by specification.
+A service may end early.
 
-Everything here is reversible. If the wager reads as gambling rather than as professional judgement, change what is staked and what is read — do not abandon the stake. A scenario without risk has already been tested, and the verdict is recorded in §1.
+The failures that end an evening are **consequences of staffing, never random accidents**:
+
+- A runner with no training serves a Waldorf salad to a guest with a nut allergy.
+- An apprentice pushed to the pass misses that the salmon is badly filleted.
+- A contaminated board goes unnoticed; guests are poisoned.
+
+Each is traceable to a morning decision. This teaches what actually goes wrong when competence is absent — which is the content of a culinary education — rather than teaching "train your staff" as a rule.
+
+**Collapse must be rare and clearly traceable.** If every failure ends in a closed restaurant the player becomes risk-averse in the wrong way. There must be bad evenings that are merely bad.
+
+---
+
+## 7. The wager (carried from v2)
+
+After a scenario resolves and before the next arrives, the player may stake credits on what the next scenario will concern. Optional; declining is legitimate and progresses more slowly.
+
+Theme selection is weighted toward the player's weakest sustainability, with mandatory damping: a cap on consecutive recurrence, and a larger return on wins in weak areas. Formula and distribution already landed (`d93241d`): `weight = (1 − v)² + 0.05`, verified across 100 seeds.
+
+The wager attaches to what is about to break in the room. **A stake token dragged onto a themed symbol is a menu with different graphics and is out of scope.**
+
+---
+
+## 8. Capitals, enablers, chain
+
+Unchanged from v2 §3, §5, §6. Three sustainabilities (economic, social, ecological) are the outcome layer — staked, won, lost, invested. Two enablers (scientific, cultural) carry the Aristotelian registers and are **derived from behaviour, never purchased.**
+
+Responses are scored on two axes: which sustainability moved, and which register was exercised. Register writes are hand-authored per response; deriving them from scenario shape would make the register a function of structure, which §5 of v2 explicitly warns against.
+
+A sustainability crossing a threshold produces a concrete event that becomes a later scenario's situation.
+
+---
+
+## 9. What the player sees
+
+**No competence meters.** A visible bar becomes a target to farm, and a farmed judgement bar is no longer judgement. Growth is **noticeable but not measurable**: a fourth response option appears where there were three; the mentor's remark reflects how the player acted; a situation that once cost staff becomes manageable.
+
+Per `EXECUTIVE_DESIGN_DIRECTIVE_001.md`: no avatar, no mode picker, no numeric HUD dominating the view, no result popup, no XP or levels. Swedish player text via `strings.sv.ts`.
+
+A portfolio may later show what the player has done — a history to revisit, never a dashboard to play against.
+
+---
+
+## 10. Build order
+
+1. **The round.** Morning / lunch / dinner, player-chosen service length, random scenario count weighted by length, light shifting with the period.
+2. **The team.** Four roles, structural cost, locking period, agency staff mid-service with the social cost of declining.
+3. **The room reads.** Lift the two caps, tune arrival pressure against service period, make walk-aways legible.
+4. **The reputation loop.** Demand as a function of reputation; strain as a function of demand against team capacity.
+5. **Wager and chain** on top of the above.
+6. **Collapse**, last — it needs everything else to be traceable.
+
+**Report at each step.** Steps 1 and 2 change what the game is; do not proceed past either without the Vision Owner seeing it run.
+
+---
+
+## 11. Acceptance
+
+Complete when the Vision Owner can play **a full day — morning investment, one service, closing** and report:
+
+1. That the team decision mattered, and that its cost was felt during service.
+2. That the wager was a real decision — reading the room mattered.
+3. That a loss visibly shaped something later.
+4. That no single response dominated.
+
+Then a second and third day, to test whether the reputation loop and the between-day chain are felt.
+
+---
+
+## 12. What this order is for
+
+ORDER 042 proved the loop runs. Playing it proved the loop is not yet a game, and building v2's phenomena proved there was no business for a game to happen in.
+
+This order builds the business: a day, a team, a service that can be chosen and can collapse. The wager and the chain were already right — they had nowhere to live.
+
+Everything here came from playing, not from specification. If a mechanic reads wrong, change what is staked and what is read; do not remove the stake. A restaurant without risk has been tested, and the verdict is in §1.

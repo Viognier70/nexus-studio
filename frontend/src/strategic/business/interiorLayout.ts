@@ -76,6 +76,36 @@ const TABLE_SPECS: readonly TableSpec[] = [
 const BAR_STOOL_LOCAL_X: readonly number[] = [-3, -1, 1, 3];
 const BAR_STOOL_COUNT = BAR_STOOL_LOCAL_X.length;
 
+// ORDER 043 §6 ecological anchor placement. Bay sits 2 m outside the
+// -X wall (opposite the entrance); approach 6 m beyond the bay, so
+// the van's approach point stays visually related to the building
+// (early build had 15 m and the van appeared in a strange far-south
+// spot from the myBusiness preset camera). Local Z = 0 keeps the
+// approach along the OBB centre line — the van comes straight in.
+const DELIVERY_BAY_OFFSET_M = 2;
+const DELIVERY_APPROACH_OFFSET_M = 6;
+
+// ORDER 043 §6 queue/walk-away/arriving slot layouts. All coordinates
+// are OBB local (X = along-long-axis, Z = across-short-axis). The
+// entrance sits at (+halfW − ENTRANCE_INSET_M, 0), so slots extending
+// out from the door use local +X.
+//
+// Waiting slots: 2 columns × 4 rows extending straight out from the
+// entrance. Guests stand facing the door in pairs.
+const WAITING_SLOT_LATERALS: readonly number[] = [-0.6, 0.6];
+const WAITING_SLOT_DEPTHS: readonly number[] = [2.5, 3.4, 4.3, 5.2];
+// Declined (walk-away) slots: laterally offset from the waiting line
+// so a walk-away puck reads as "walking past the queue back out",
+// not "adding to the queue". Colours already differ (waiting =
+// warm amber, declined = dim brown).
+const DECLINED_SLOT_LATERALS: readonly number[] = [-1.8, 1.8];
+const DECLINED_SLOT_DEPTHS: readonly number[] = [2.5, 3.4, 4.3, 5.2];
+// Approach arc: 6 positions on a shallow arc further out than the
+// waiting line, so arriving pucks read as "coming from Torget toward
+// the door" rather than "already in queue".
+const ARRIVAL_SLOT_ANGLES: readonly number[] = [-1.2, -0.7, -0.25, 0.25, 0.7, 1.2];
+const ARRIVAL_SLOT_RADIUS = 6.0;
+
 // Compile-time seat count — single source of truth for reducer capacity.
 export const TOTAL_SEATS: number =
   TABLE_SPECS.reduce((n, t) => n + t.seats, 0) + BAR_STOOL_COUNT;
@@ -111,6 +141,19 @@ export interface InteriorLayout {
   barStoolPositions: [number, number][]; // world XZ per bar stool
   entrance: [number, number];            // world XZ, inside the entrance wall
   waitingSpot: [number, number];         // world XZ, outside the entrance
+  // ORDER 043 §6 pre-computed puck slot positions in world XZ, laid
+  // out in the OBB local frame at build time so InteriorGuests never
+  // applies offsets in world coords (which stretched queues down the
+  // street on rotated buildings before this cycle).
+  waitingSlots: [number, number][];      // where waiting guests stand, pairs facing the door
+  declinedSlots: [number, number][];     // where walk-aways stand as they turn back out
+  arrivalSlots: [number, number][];      // where arriving guests appear on approach
+  // ORDER 043 §6 ecological anchor. Delivery bay sits at the opposite
+  // end of the OBB long axis from the entrance — physically at the
+  // "back" of the building where suppliers arrive, thematically the
+  // far side of the room from the guest queue.
+  deliveryBay: [number, number];         // world XZ where the van parks
+  deliveryApproach: [number, number];    // world XZ ~6 m off the bay, where the van enters/exits
   // Flat list of every seat in the room, indexed by the reducer's
   // seatIndex.  Order: table 0 seats, table 1 seats, ..., bar stools.
   seats: [number, number][];
@@ -200,6 +243,39 @@ export function computePlayerBusinessInterior(): InteriorLayout | null {
   // encode the entrance side in the building record itself.
   const entrance = obbLocalToWorld(obb, halfW - ENTRANCE_INSET_M, 0);
   const waitingSpot = obbLocalToWorld(obb, halfW + WAITING_STANDOFF_M, 0);
+  // Delivery bay at the -X end (opposite the entrance).  For w869907975
+  // this is the "back" of the building.  Approach 6 m further out.
+  const deliveryBay = obbLocalToWorld(obb, -halfW - DELIVERY_BAY_OFFSET_M, 0);
+  const deliveryApproach = obbLocalToWorld(
+    obb,
+    -halfW - DELIVERY_BAY_OFFSET_M - DELIVERY_APPROACH_OFFSET_M,
+    0
+  );
+
+  // ORDER 043 §6 pre-computed slot positions in OBB local frame,
+  // mapped once to world XZ. InteriorGuests indices into these arrays
+  // (with modulo wrap) so no puck placement uses world-frame offsets
+  // that would misalign on rotated buildings.
+  const waitingSlots: [number, number][] = [];
+  for (const depth of WAITING_SLOT_DEPTHS) {
+    for (const lateral of WAITING_SLOT_LATERALS) {
+      waitingSlots.push(obbLocalToWorld(obb, halfW + depth, lateral));
+    }
+  }
+  const declinedSlots: [number, number][] = [];
+  for (const depth of DECLINED_SLOT_DEPTHS) {
+    for (const lateral of DECLINED_SLOT_LATERALS) {
+      declinedSlots.push(obbLocalToWorld(obb, halfW + depth, lateral));
+    }
+  }
+  // Arrival arc: fixed radius from the entrance, laterally spread. The
+  // angles are OBB-local angular offsets from local +X, so the arc
+  // wraps *away* from the door on the entrance side.
+  const arrivalSlots: [number, number][] = ARRIVAL_SLOT_ANGLES.map((theta) => {
+    const localX = halfW + ARRIVAL_SLOT_RADIUS * Math.cos(theta);
+    const localZ = ARRIVAL_SLOT_RADIUS * Math.sin(theta);
+    return obbLocalToWorld(obb, localX, localZ);
+  });
 
   return {
     building,
@@ -213,6 +289,11 @@ export function computePlayerBusinessInterior(): InteriorLayout | null {
     barStoolPositions,
     entrance,
     waitingSpot,
+    waitingSlots,
+    declinedSlots,
+    arrivalSlots,
+    deliveryBay,
+    deliveryApproach,
     seats,
     totalSeats: TOTAL_SEATS
   };

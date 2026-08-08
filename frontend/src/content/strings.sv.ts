@@ -74,6 +74,23 @@ export const strings = {
     firstRunHint: 'Namnet kan du inte ändra senare.',
     labelPrefix: 'Restaurang'
   },
+  day: {
+    // ORDER 043 v3 §2 — day-period player-facing text. Cycle-1 scope:
+    // morning + afternoon are the two picker phases; lunch/dinner/
+    // evening are running or transitional.
+    morning: {
+      heading: 'Morgon',
+      body: 'Öppna lunch eller hoppa över.',
+      openLunch: 'Öppna lunch',
+      skipLunch: 'Hoppa över lunch'
+    },
+    afternoon: {
+      heading: 'Eftermiddag',
+      body: 'Öppna middag.',
+      openDinner: 'Öppna middag'
+    },
+    minutesSuffix: 'min'
+  },
   scenario: {
     // ORDER 042 §3.3 walk-in-of-five. Difficulty is chosen BEFORE the
     // situation is revealed (LEARNING_AND_SCENARIO_ARCHITECTURE §4.3).
@@ -115,5 +132,58 @@ export const strings = {
       C_mid:  'Att neka är också ett val. Kvällens rytm bevaras — men ryktet noteras.',
       C_high: 'Bestämt nej. Rummet håller sin form, tipsen blir mindre.'
     }
+  },
+  // ORDER 043 v3 §10 step 5 — the morning team panel. Player-facing
+  // labels for the hire/fire surface, keyed by role for a compact
+  // switch in TeamPanel. Role labels are capitalized display forms
+  // of the internal StaffRole (which stays lowercase for code-side).
+  team: {
+    heading: 'Laget',
+    body: 'Anställ och säg upp inför dagen. Kontrakt löper i sju dagar.',
+    contractLabel: 'kontrakt t.o.m. dag',
+    dailyCostLabel: 'kr/dag',
+    fireButton: 'Säg upp',
+    buyoutLabel: 'buyout',
+    kr: 'kr',
+    hireHeading: 'Anställ',
+    roleLabel: {
+      'värd':     'Värd',
+      'servitör': 'Servitör',
+      'kock':     'Kock',
+      'lärling':  'Lärling'
+    },
+    roleDescription: {
+      'värd':     'Hälsar och styr rummet — hög kulturell kompetens.',
+      'servitör': 'Bär order och håller flöde — balanserad rustning.',
+      'kock':     'Håller köket — hög vetenskaplig kompetens.',
+      'lärling':  'Lärling som avlastar överallt — låg kompetens, låg kostnad.'
+    }
+  },
+  // ORDER 043 v3 §10 step 5 — agency-staff offer. Appears mid-service
+  // when strain has been sustained above threshold. Player accepts
+  // (money cost, agency joins for the service) or declines (social
+  // capital cost — the team registers that no help came).
+  agency: {
+    heading: 'Hyrpersonal erbjuds',
+    body: 'Laget står under press. Vill du ta in en extra hand för resten av kvällen?',
+    accept: 'Ta in — kostar',
+    decline: 'Avstå',
+    kr: 'kr'
+  },
+  // ORDER 043 v3 §7 wager — placed between scenarios on which
+  // sustainability the next situation will concern. Optional; declining
+  // is legitimate and progresses more slowly.
+  wager: {
+    heading: 'Läs rummet',
+    body: 'Vilken hållbarhet handlar nästa situation om?',
+    capitals: {
+      economic:   'Ekonomiskt',
+      social:     'Socialt',
+      ecological: 'Ekologiskt'
+    },
+    decline: 'Avstå',
+    standing: 'Satsat:',
+    clear: 'Ångra',
+    placed: 'Insatsen står.'
   }
 } as const;
