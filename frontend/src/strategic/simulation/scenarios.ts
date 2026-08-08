@@ -203,14 +203,90 @@ const TIME_PRESSURE: ScenarioSpec = {
   }
 };
 
-// ---------- (ecological scenario added in following commit) --------------
+// ---------- moral-dilemma (ecological) -----------------------------------
+//
+// A supplier phone call: today's fish arrived via a broken cold chain.
+// Probably fine but not traceable. Byte until Thursday if refused.
+// The choice is what to weigh: short-term service continuity, safer
+// substitution, or transforming the disruption into a menu shift
+// that lifts the seasonal alternatives.
+//
+// Reads the ecological axis. Choice A is the shortcut (dishonest but
+// invisible); B is the safe swap; C is the transformative move that
+// makes ecology legible in the room.
+
+const MORAL_DILEMMA: ScenarioSpec = {
+  id: 'moral-dilemma',
+  sustainability: 'ecological',
+  subjectBody:
+    'Leverantören ringer — dagens fisk finns bara som osäkerhet.',
+  subjectCta: 'Fortsätt',
+  situationBody:
+    'Fisken kom via en bruten kylkedja — troligen ok men inte spårbar. Byte till torsdag om du säger nej. Vad gör du?',
+  choices: {
+    A: {
+      label: 'Ta fisken — laget märker den ordentligt och hoppas.',
+      registerWrites: [{ enabler: 'scientific', register: 'techne', amount: 0.05 }],
+      spawnedRemaining: 0,
+      nextSpawnAtOffset: 0,
+      // Negative sign — the drawn theme (ecological) moves DOWN.
+      // Taking the shortcut is the ecological hit, even if the room
+      // never learns it.
+      capitalSign: -1,
+      outcomes: [
+        'Två av förrätterna kommer utan certifikat — värden viker undan frågor från stamgäster.',
+        'En gäst frågar om fiskens ursprung — servitören blir tyst en sekund för länge.'
+      ],
+      mentor: {
+        1: 'Ett risktagande utan säkerhet. Servisen hoppas att inget märks — som ofta är fallet, men inte alltid.',
+        2: 'Väljer tempot över spårbarheten. Det märks först om något går fel.',
+        3: 'Bestämt att köra vidare. Rummet vet inget — laget vet.'
+      }
+    },
+    B: {
+      label: 'Byt menyn i kväll — ta annat protein.',
+      registerWrites: [{ enabler: 'cultural', register: 'phronesis', amount: 0.05 }],
+      spawnedRemaining: 0,
+      nextSpawnAtOffset: 0,
+      // Small positive — safe reroute, ecological unaffected in a
+      // way that reads a shade favourable (the supplier chain took a
+      // hit but the room stayed honest).
+      capitalSign: 0.5,
+      outcomes: [
+        'Menytavlan skrivs om i sista stund — köket skiftar utan gnäll.',
+        'Alternativet presenteras utan ursäkter — bordet fortsätter obemärkt.'
+      ],
+      mentor: {
+        1: 'Trygg justering. Bytet stör men skyddar.',
+        2: 'Klok kompromiss. Menyn ger vika för säkerheten utan att brytas.',
+        3: 'Kalibrerad reaktion. Kvällen fortsätter med annan protein.'
+      }
+    },
+    C: {
+      label: 'Skriv om menyn helt — passa på att lyfta säsongens gröna.',
+      registerWrites: [{ enabler: 'cultural', register: 'episteme', amount: 0.06 }],
+      spawnedRemaining: 0,
+      nextSpawnAtOffset: 0,
+      // Full positive — transformative choice that makes ecology
+      // legible to the room. Largest ecological lift of the three.
+      capitalSign: 1,
+      outcomes: [
+        'Gröna alternativen presenteras med sin egen berättelse — bordsprat stiger.',
+        'En gäst noterar att kvällens meny ändrades och nickar uppskattande.'
+      ],
+      mentor: {
+        1: 'Djärvt val — förvandlar en risk till en möjlighet. Kräver att köket är med.',
+        2: 'Ekologiskt drag. Menyn får ny riktning och säsongen blir läslig.',
+        3: 'Radikal linje. Om laget klarar den blir det en kväll som räknas som skifte, inte ersättning.'
+      }
+    }
+  }
+};
 
 export const SCENARIO_BY_THEME: Record<SustainabilityKey, ScenarioSpec> = {
   social: WALK_IN_OF_FIVE,
   economic: TIME_PRESSURE,
-  // Placeholder for ecological until the commit lands. Falls back
-  // to walk-in-of-five so a themed draw doesn't crash mid-play.
-  ecological: WALK_IN_OF_FIVE
+  ecological: MORAL_DILEMMA
 };
 
 export function pickScenarioSpec(theme: SustainabilityKey): ScenarioSpec {
@@ -218,7 +294,11 @@ export function pickScenarioSpec(theme: SustainabilityKey): ScenarioSpec {
 }
 
 // Convenience export: array form for iteration / spec-lookup by id.
-export const ALL_SCENARIOS: readonly ScenarioSpec[] = [WALK_IN_OF_FIVE, TIME_PRESSURE];
+export const ALL_SCENARIOS: readonly ScenarioSpec[] = [
+  WALK_IN_OF_FIVE,
+  TIME_PRESSURE,
+  MORAL_DILEMMA
+];
 
 export function scenarioById(id: string): ScenarioSpec | null {
   return ALL_SCENARIOS.find((s) => s.id === id) ?? null;
