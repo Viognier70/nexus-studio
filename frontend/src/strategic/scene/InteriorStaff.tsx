@@ -28,6 +28,7 @@ import { GRAY_BOX_CAMERA } from '../content/grythyttan';
 import { useSimState } from '../simulation/SimulationProvider';
 import { COVERS_PER_MEMBER } from '../simulation/team';
 import type { StaffRole, TeamMember } from '../types';
+import { staffPositionsRef } from './interiorSharedState';
 
 const STAFF_RADIUS_M = 0.24;         // slimmer than guests (0.32)
 const STAFF_HEIGHT_M = 1.75;         // taller than guests (1.6)
@@ -190,11 +191,22 @@ export function InteriorStaff() {
           }
         }
       }
+
+      // Publish position for the seat-attention system in
+      // InteriorGuests to read this frame.
+      staffPositionsRef.current.set(member.id, {
+        x: pos.cx,
+        z: pos.cz,
+        role: member.role
+      });
     }
 
     // Prune positions for members that left (fire / contract end).
     for (const id of Array.from(positionsRef.current.keys())) {
-      if (!seenIds.has(id)) positionsRef.current.delete(id);
+      if (!seenIds.has(id)) {
+        positionsRef.current.delete(id);
+        staffPositionsRef.current.delete(id);
+      }
     }
   });
 

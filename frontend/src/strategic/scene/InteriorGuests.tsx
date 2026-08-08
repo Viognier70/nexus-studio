@@ -21,6 +21,7 @@ import { usePlayerBusinessInterior } from '../business/interiorLayout';
 import { GRAY_BOX_CAMERA } from '../content/grythyttan';
 import { useSimState } from '../simulation/SimulationProvider';
 import type { Guest, GuestState } from '../types';
+import { staffPositionsRef } from './interiorSharedState';
 
 const GUEST_RADIUS_M = 0.32;
 const GUEST_HEIGHT_M = 1.6;
@@ -41,6 +42,35 @@ const SPAWN_OUTER_OFFSET_M = 4;
 // state's slot, continue outward this many metres before their puck
 // is pruned from the scene. Creates a natural "walked away" trail.
 const EXIT_OUTER_OFFSET_M = 6;
+
+// ORDER 044 §3.3 seat-attention system — one mechanic, two readings.
+//
+// Physical alternative to an opacity pulse (Vision Owner 2026-08-08:
+// "opacitetspuls är gränsfall mot symbol"): the guest puck's
+// rendered position leans by up to LEAN_MAX_XZ_M toward a source of
+// attention, plus a small Y dip to sell "leaning forward" from the
+// isometric camera. Two polarities from one lean vector:
+//
+//   Wait polarity — a seated guest without staff nearby for
+//   WAIT_LEAN_START_SEC accrues attention, and the puck leans toward
+//   the room's centre-of-service (bar). Reading: "looking for
+//   someone."  Grows linearly with wait time, saturating at
+//   WAIT_LEAN_FULL_SEC.
+//
+//   Positive polarity — a seated guest with a staff puck within
+//   STAFF_NEAR_RADIUS_M eases the lean toward the staff puck.
+//   Reading: "the diner turned toward the server." Applies while the
+//   staff puck stays close; fades back to neutral when they leave.
+//
+// Because both polarities modulate the same physical offset, there
+// is no new symbol — just where the guest is sitting.
+const LEAN_MAX_XZ_M = 0.22;
+const LEAN_MAX_Y_M = 0.05;             // small forward-dip
+const LEAN_EASE_PER_SEC = 1.5;         // how fast the lean glides to target
+const STAFF_NEAR_RADIUS_M = 1.8;       // "attending" distance
+const WAIT_LEAN_START_SEC = 8;         // how long unattended before lean starts
+const WAIT_LEAN_FULL_SEC = 45;         // lean saturates at this wait duration
+const SEATED_STATES: readonly GuestState[] = ['seated', 'ordering', 'dining', 'paying'];
 
 const GUEST_COLOUR: Record<GuestState, string> = {
   arriving: '#e6d4a0',
@@ -70,6 +100,11 @@ interface GuestTarget {
 interface AnimatedPos {
   cx: number;
   cz: number;
+  // Current lean offset (added on top of cx/cz + Y at render time).
+  // Eases toward leanTargetX/Z/Y each frame at LEAN_EASE_PER_SEC.
+  leanX: number;
+  leanZ: number;
+  leanY: number;
 }
 
 export function InteriorGuests() {
@@ -143,7 +178,7 @@ export function InteriorGuests() {
       let pos = positionsRef.current.get(guest.id);
       if (!pos) {
         const spawn = spawnPoints[slots.arrival];
-        pos = { cx: spawn[0], cz: spawn[1] };
+        pos = { cx: spawn[0], cz: spawn[1], leanX: 0, leanZ: 0, leanY: 0 };
         positionsRef.current.set(guest.id, pos);
       }
       // Ease toward target at walking pace.
@@ -159,10 +194,18 @@ export function InteriorGuests() {
         pos.cx = target.x;
         pos.cz = target.z;
       }
+
+      // ORDER 044 §3.3 lean — physical seat-attention.
+      const lean = computeLeanTarget(guest, target, layout, sim.simTime);
+      const leanEase = LEAN_EASE_PER_SEC * delta;
+      pos.leanX += (lean.tx - pos.leanX) * Math.min(1, leanEase);
+      pos.leanZ += (lean.tz - pos.leanZ) * Math.min(1, leanEase);
+      pos.leanY += (lean.ty - pos.leanY) * Math.min(1, leanEase);
+
       // Push to mesh.
       const mesh = meshRefs.current.get(guest.id);
       if (mesh) {
-        mesh.position.set(pos.cx, GUEST_Y, pos.cz);
+        mesh.position.set(pos.cx + pos.leanX, GUEST_Y + pos.leanY, pos.cz + pos.leanZ);
         const mat = mesh.material as THREE.MeshStandardMaterial;
         if (mat) {
           mat.color.set(target.colour);
@@ -281,4 +324,77 @@ function extendedExit(
     sx + (dx / d) * EXIT_OUTER_OFFSET_M,
     sz + (dz / d) * EXIT_OUTER_OFFSET_M
   ];
+}
+
+// ORDER 044 §3.3 seat-attention lean target computation.
+//
+// Physical alternative to a symbolic pulse: return the (tx, tz, ty)
+// offset the guest puck should ease its rendered position toward.
+// Two polarities from one lean vector:
+//
+//   Positive (staff nearby): lean toward the staff puck. Reading:
+//   "the diner turned toward the server as they arrived."
+//
+//   Wait (no staff, seated too long): lean toward the bar (the room's
+//   centre-of-service). Amplitude grows from 0 at WAIT_LEAN_START_SEC
+//   to full at WAIT_LEAN_FULL_SEC. Reading: "looking for someone."
+//
+// For non-seated guests, lean returns to zero (they're already
+// walking; a lean on top would read as instability).
+function computeLeanTarget(
+  guest: Guest,
+  currentTarget: GuestTarget,
+  layout: NonNullable<ReturnType<typeof usePlayerBusinessInterior>>,
+  now: number
+): { tx: number; tz: number; ty: number } {
+  if (!SEATED_STATES.includes(guest.state)) {
+    return { tx: 0, tz: 0, ty: 0 };
+  }
+  const seatX = currentTarget.x;
+  const seatZ = currentTarget.z;
+
+  // Nearest staff puck.
+  let nearestDx = 0, nearestDz = 0, nearestDist = Infinity;
+  for (const sp of staffPositionsRef.current.values()) {
+    const dx = sp.x - seatX;
+    const dz = sp.z - seatZ;
+    const d = Math.hypot(dx, dz);
+    if (d < nearestDist) {
+      nearestDist = d;
+      nearestDx = dx;
+      nearestDz = dz;
+    }
+  }
+
+  if (nearestDist <= STAFF_NEAR_RADIUS_M && nearestDist > 1e-3) {
+    // Positive polarity — lean toward the staff puck. Full LEAN_MAX
+    // amplitude; a diner turning to acknowledge the server.
+    const invd = 1 / nearestDist;
+    return {
+      tx: nearestDx * invd * LEAN_MAX_XZ_M,
+      tz: nearestDz * invd * LEAN_MAX_XZ_M,
+      ty: -LEAN_MAX_Y_M * 0.5   // small forward-dip
+    };
+  }
+
+  // Wait polarity — how long has the guest been at this seat without
+  // attention?
+  const dwell = now - guest.stateTime;
+  if (dwell < WAIT_LEAN_START_SEC) return { tx: 0, tz: 0, ty: 0 };
+  const t = Math.min(
+    1,
+    (dwell - WAIT_LEAN_START_SEC) / (WAIT_LEAN_FULL_SEC - WAIT_LEAN_START_SEC)
+  );
+  // Direction: toward the bar (the pass — where a server would come from).
+  const [barX, barZ] = layout.bar.worldPosition;
+  const dx = barX - seatX;
+  const dz = barZ - seatZ;
+  const d = Math.hypot(dx, dz);
+  if (d < 1e-3) return { tx: 0, tz: 0, ty: 0 };
+  const invd = 1 / d;
+  return {
+    tx: dx * invd * LEAN_MAX_XZ_M * t,
+    tz: dz * invd * LEAN_MAX_XZ_M * t,
+    ty: -LEAN_MAX_Y_M * t
+  };
 }
