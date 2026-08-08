@@ -82,7 +82,14 @@ function StrategicShell() {
     };
     const cycle = (cap: 'economic' | 'social' | 'ecological') => {
       cyclePosition[cap] = (cyclePosition[cap] + 1) % cycleSteps.length;
-      simDispatch({ type: 'SET_CAPITAL', capital: cap, value: cycleSteps[cyclePosition[cap]] });
+      const value = cycleSteps[cyclePosition[cap]];
+      // Dev-only log: without the value in the console the Vision
+      // Owner can't distinguish "phenomenon not working" from "value
+      // I didn't set". Removed at B.3 with the rest of the dev
+      // cycle shortcuts.
+      // eslint-disable-next-line no-console
+      console.log(`[CAPITAL] ${cap} = ${value.toFixed(2)}`);
+      simDispatch({ type: 'SET_CAPITAL', capital: cap, value });
     };
     const onKey = (event: KeyboardEvent) => {
       if (event.metaKey || event.ctrlKey || event.altKey) return;
