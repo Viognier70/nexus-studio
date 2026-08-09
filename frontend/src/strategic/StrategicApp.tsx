@@ -20,6 +20,7 @@ import { AboutPanel } from './ui/AboutPanel';
 import { ControlsHint } from './ui/ControlsHint';
 import { DevPanel } from './ui/DevPanel';
 import { EventStreamPanel } from './ui/EventStreamPanel';
+import { InstrumentsPanel } from './ui/InstrumentsPanel';
 import { ModeSwitchLink } from './ui/ModeSwitchLink';
 import { OutwardButton } from './ui/OutwardButton';
 import { SpeedToggle } from './ui/SpeedToggle';
@@ -189,6 +190,7 @@ function StrategicShell() {
       <OpeningPanel />
       <EveningAccountPanel />
       <EventStreamPanel />
+      <InstrumentsPanel />
       <DevPanel lastKey={lastKey} />
       <AboutPanel open={aboutOpen} onClose={() => setAboutOpen(false)} />
     </div>
