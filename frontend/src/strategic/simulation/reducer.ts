@@ -42,7 +42,7 @@ import {
 // waiting count, short enough not to become its own act.
 export const OPENING_DURATION_SEC = 10;
 import { pickScenarioSpecFiltered, scenarioById } from './scenarios';
-import { tickCollapseRoll } from './collapse';
+import { fireCollapse, tickCollapseRoll } from './collapse';
 import { computeEveningAccount } from './eveningAccount';
 import {
   MORALE_AGENCY_ACCEPT_BUMP,
@@ -166,9 +166,36 @@ export function reducer(state: SimulationState, action: SimAction): SimulationSt
       return fireTeamMember(state, action.memberId);
     case 'RESET':
       return makeInitialState(state.seed, state.policies);
+    case 'FORCE_COLLAPSE':
+      return forceCollapseAction(state);
     default:
       return state;
   }
+}
+
+// ORDER 047 §8 — dev-only shortcut. Fires fireCollapse if we're in a
+// running service post-prep with no collapse already latched. No-op
+// otherwise (during morning/afternoon/evening/opening/prep the
+// collapse mechanic doesn't apply, so this action does nothing).
+function forceCollapseAction(state: SimulationState): SimulationState {
+  const period = state.day.period;
+  if (period !== 'lunch' && period !== 'dinner') return state;
+  if (state.day.openingEndsAt !== null) return state;
+  if (state.day.prepEndsAt !== null) return state;
+  if (state.day.serviceCollapsed) return state;
+  // fireCollapse mutates the draft in place; give it a shallow copy
+  // of everything it touches so the reducer stays pure at the outer
+  // boundary. Same pattern advanceTick uses.
+  const draft: SimulationState = {
+    ...state,
+    day: { ...state.day },
+    team: { ...state.team, members: state.team.members.map((m) => ({ ...m })) },
+    eventStream: [...state.eventStream],
+    events: [...state.events],
+    consequenceEvents: [...state.consequenceEvents]
+  };
+  fireCollapse(draft);
+  return draft;
 }
 
 // ---------- ORDER 043 v3 §10 step 1 — day / period transitions ---------------

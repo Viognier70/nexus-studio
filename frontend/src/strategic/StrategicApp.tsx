@@ -108,6 +108,24 @@ function StrategicShell() {
       });
     };
     const onKey = (event: KeyboardEvent) => {
+      // ORDER 047 §8 — Shift+C forces a service collapse (DEV only).
+      // Handled BEFORE the meta/ctrl/alt guard so Shift stays allowed;
+      // other modifier chords still short-circuit. Guarded by
+      // import.meta.env.DEV so it never ships in a prod build (Vite
+      // tree-shakes the branch away).
+      if (
+        import.meta.env.DEV &&
+        event.shiftKey &&
+        (event.key === 'C' || event.key === 'c')
+      ) {
+        const t = event.target as HTMLElement | null;
+        if (t?.tagName !== 'INPUT' && t?.tagName !== 'TEXTAREA') {
+          setLastKey('Shift+C');
+          simDispatch({ type: 'FORCE_COLLAPSE' });
+          event.preventDefault();
+          return;
+        }
+      }
       if (event.metaKey || event.ctrlKey || event.altKey) return;
       const target = event.target as HTMLElement | null;
       const tag = target?.tagName;

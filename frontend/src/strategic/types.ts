@@ -664,7 +664,14 @@ export type SimAction =
   // a buyout so quitting is not free while the contract runs.
   | { type: 'HIRE_TEAM_MEMBER'; role: StaffRole }
   | { type: 'FIRE_TEAM_MEMBER'; memberId: string }
-  | { type: 'RESET' };
+  | { type: 'RESET' }
+  // ORDER 047 §8 dev-only — force the current service to collapse on
+  // the next tick, so the mechanic can be seen, judged and tuned
+  // without waiting for the rare RNG roll. Guarded at the caller
+  // (StrategicApp keydown handler is import.meta.env.DEV-only);
+  // reducer treats it as a normal action so tests can exercise the
+  // force path deterministically.
+  | { type: 'FORCE_COLLAPSE' };
 
 export interface CameraTarget {
   focus: Vec2;
