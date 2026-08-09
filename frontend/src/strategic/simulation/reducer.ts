@@ -41,7 +41,7 @@ import {
 // anticipation moment — long enough to notice the weather and the
 // waiting count, short enough not to become its own act.
 export const OPENING_DURATION_SEC = 10;
-import { pickScenarioSpec, scenarioById } from './scenarios';
+import { pickScenarioSpecFiltered, scenarioById } from './scenarios';
 import { tickCollapseRoll } from './collapse';
 import { computeEveningAccount } from './eveningAccount';
 import {
@@ -1055,9 +1055,15 @@ function triggerScenario(state: SimulationState, auto: boolean): SimulationState
     rng,
     state.streamThemeCounts
   );
-  // Look up the scenario spec for the drawn theme. Cycle-1: one
-  // spec per theme (see scenarios.ts SCENARIO_BY_THEME).
-  const scenarioSpec = pickScenarioSpec(drawnTheme);
+  // ORDER 047 §4 — dedup within service, avoid the previous service's
+  // opener. pickScenarioSpecFiltered falls back to the preferred spec
+  // if the pool exhausts (density > pool size), so the wager loop
+  // never stalls.
+  const scenarioSpec = pickScenarioSpecFiltered(
+    drawnTheme,
+    state.firedScenarioIds,
+    state.lastServiceOpenerId
+  );
   const scenario = {
     ...state.scenario,
     hasAutoTriggered: true,
@@ -1075,10 +1081,16 @@ function triggerScenario(state: SimulationState, auto: boolean): SimulationState
     mentorComment: null,
     mentorCommentAt: null
   };
+  // First scenario of the service becomes next service's opener-to-avoid.
+  const isFirstOfService = state.firedScenarioIds.length === 0;
   return {
     ...state,
     scenario,
     rngState: rng.state,
+    firedScenarioIds: [...state.firedScenarioIds, scenarioSpec.id],
+    lastServiceOpenerId: isFirstOfService
+      ? scenarioSpec.id
+      : state.lastServiceOpenerId,
     events: [
       ...state.events,
       {

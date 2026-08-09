@@ -22,7 +22,13 @@
 
 import type { Rng } from '../util/rng';
 
-const SCENARIO_DENSITY_PER_MINUTE = 0.15;
+// ORDER 047 §4 — density raised from 0.15 → 0.22 per sim-minute so a
+// 15-min dinner carries 3–4 scenarios rather than 1–2. Vision Owner
+// observation 2026-08-09: "för få scenarier och alltid samma." Bigger
+// count also gives §5's stream-driven weighting more data points to
+// work against — the connection between what happened and what came
+// next reads better across 3–4 scenarios than across 1–2.
+const SCENARIO_DENSITY_PER_MINUTE = 0.22;
 const SCENARIO_VARIANCE = 0.6; // ±60 % of the density-based expectation
 
 export function planScenariosForService(

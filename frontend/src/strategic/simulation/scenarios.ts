@@ -293,6 +293,42 @@ export function pickScenarioSpec(theme: SustainabilityKey): ScenarioSpec {
   return SCENARIO_BY_THEME[theme] ?? WALK_IN_OF_FIVE;
 }
 
+// ORDER 047 §4 — filtered pick: return a spec for the drawn theme,
+// avoiding any scenarioId in `firedIds` and (when possible) avoiding
+// `avoidOpenerId`. Cycle-1 has only one spec per theme, so the filter
+// is effectively a single-slot dedup — if this service already fired
+// the drawn theme's scenario, fall back to the least-recently-used
+// alternative regardless of theme. When more variants land per theme
+// (see ORDER 047 out-of-scope note), this pool logic scales up.
+export function pickScenarioSpecFiltered(
+  theme: SustainabilityKey,
+  firedIds: readonly string[],
+  avoidOpenerId: string | null
+): ScenarioSpec {
+  const preferred = SCENARIO_BY_THEME[theme] ?? WALK_IN_OF_FIVE;
+  const isFired = (id: string) => firedIds.includes(id);
+  // First choice: the drawn-theme spec if it hasn't fired this service
+  // and isn't the previous service's opener.
+  if (!isFired(preferred.id) && preferred.id !== avoidOpenerId) {
+    return preferred;
+  }
+  // Second: any spec that hasn't fired this service, biased away from
+  // avoidOpenerId if possible.
+  const unfired = ALL_SCENARIOS.filter((s) => !isFired(s.id));
+  if (unfired.length > 0) {
+    const nonOpener = unfired.filter((s) => s.id !== avoidOpenerId);
+    if (nonOpener.length > 0) return nonOpener[0];
+    return unfired[0];
+  }
+  // Third: everything has fired this service — the pool is exhausted.
+  // Fall back to the preferred spec anyway (a repeat is better than
+  // no fire; the wager loop must not stall). This only happens when
+  // the density × service length exceeds ALL_SCENARIOS.length, which
+  // at 0.22/min × 15 min ≈ 3.3 scenarios and ALL_SCENARIOS.length = 3
+  // is exactly on the boundary.
+  return preferred;
+}
+
 // Convenience export: array form for iteration / spec-lookup by id.
 export const ALL_SCENARIOS: readonly ScenarioSpec[] = [
   WALK_IN_OF_FIVE,
