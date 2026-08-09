@@ -3,6 +3,7 @@ import type {
   DayPeriod,
   DayState,
   EnablerKey,
+  IngredientTier,
   Policies,
   Register,
   ScenarioChoice,
@@ -179,6 +180,12 @@ export function reducer(state: SimulationState, action: SimAction): SimulationSt
       return forceCollapseAction(state);
     case 'ANSWER_QUESTION':
       return answerProfessionalQuestion(state, action.index);
+    case 'SHORTEN_MENU':
+      return shortenMenuAction(state);
+    case 'THIN_WINE_LIST':
+      return thinWineListAction(state);
+    case 'CLOSE_SERVICE':
+      return closeServiceAction(state, action.service);
     default:
       return state;
   }
@@ -209,6 +216,67 @@ function forceCollapseAction(state: SimulationState): SimulationState {
   return draft;
 }
 
+// ---------- ORDER 049 §5.3 — scale-down actions ------------------------
+//
+// All three are morning-only (per Vision Owner) so the player commits
+// to the scale-down as a considered morning decision, not a mid-service
+// panic. Reversible — dispatching the same action while active un-scales.
+// Cost (quality drift down) is applied continuously via targetQuality*
+// in quality.ts reading state.scaleDown flags + policies.
+
+const INGREDIENT_STEP_DOWN: Record<IngredientTier, IngredientTier> = {
+  premium: 'utvald',
+  utvald:  'grund',
+  grund:   'grund'   // already at floor — no-op
+};
+
+function shortenMenuAction(state: SimulationState): SimulationState {
+  if (state.day.period !== 'morning') return state;
+  // If already shortened, restore the pre-shorten tier.
+  if (state.scaleDown.menuShortenedFrom !== null) {
+    return {
+      ...state,
+      policies: { ...state.policies, ingredientTier: state.scaleDown.menuShortenedFrom },
+      scaleDown: { ...state.scaleDown, menuShortenedFrom: null }
+    };
+  }
+  // Not shortened yet — step down and stash the original.
+  const from = state.policies.ingredientTier;
+  const to = INGREDIENT_STEP_DOWN[from];
+  if (to === from) return state; // already at floor
+  return {
+    ...state,
+    policies: { ...state.policies, ingredientTier: to },
+    scaleDown: { ...state.scaleDown, menuShortenedFrom: from }
+  };
+}
+
+function thinWineListAction(state: SimulationState): SimulationState {
+  if (state.day.period !== 'morning') return state;
+  const currentlyReduced = state.scaleDown.wineListReduced;
+  return {
+    ...state,
+    policies: {
+      ...state.policies,
+      // Restoring? Turn welcomeDrink back on. Reducing? Turn it off.
+      welcomeDrink: currentlyReduced ? true : false
+    },
+    scaleDown: { ...state.scaleDown, wineListReduced: !currentlyReduced }
+  };
+}
+
+function closeServiceAction(
+  state: SimulationState,
+  service: 'lunch' | 'dinner'
+): SimulationState {
+  if (state.day.period !== 'morning') return state;
+  const key = service === 'lunch' ? 'closedLunch' : 'closedDinner';
+  return {
+    ...state,
+    scaleDown: { ...state.scaleDown, [key]: !state.scaleDown[key] }
+  };
+}
+
 // ---------- ORDER 043 v3 §10 step 1 — day / period transitions ---------------
 
 function clampServiceLength(mins: number): number {
@@ -228,6 +296,11 @@ function openService(
   // during a running lunch service etc.
   const expectedPhase: DayPeriod = service === 'lunch' ? 'morning' : 'afternoon';
   if (state.day.period !== expectedPhase) return state;
+  // ORDER 049 §5.3 — refuse OPEN_SERVICE when the corresponding
+  // scale-down flag is set. The player must restore the service
+  // (dispatch CLOSE_SERVICE again with the same key) before opening.
+  if (service === 'lunch'  && state.scaleDown.closedLunch)  return state;
+  if (service === 'dinner' && state.scaleDown.closedDinner) return state;
   const length = clampServiceLength(lengthMinutes);
   // Deterministic scenario count + schedule from the current rng
   // state — same seed + same open sequence yields the same rhythm.

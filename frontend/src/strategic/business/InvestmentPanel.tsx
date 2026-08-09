@@ -167,6 +167,68 @@ export function InvestmentPanel() {
           </button>
         );
       })}
+
+      {/*
+        ORDER 049 §5.3 — scale-down actions. Morning-only (same
+        visibility gate as the whole panel). Each is a toggle:
+        when active, the button reads as "restore" and dispatching
+        again un-scales. Costs (quality drift down while active)
+        land through quality.ts targets reading state.scaleDown.
+      */}
+      <div style={GROUP_HEADING_STYLE}>Skala ner</div>
+      <button
+        type="button"
+        style={sim.scaleDown.menuShortenedFrom !== null ? OPTION_BUTTON_ACTIVE_STYLE : OPTION_BUTTON_STYLE}
+        onClick={() => dispatch({ type: 'SHORTEN_MENU' })}
+        disabled={
+          sim.scaleDown.menuShortenedFrom === null && sim.policies.ingredientTier === 'grund'
+        }
+      >
+        <div>
+          {sim.scaleDown.menuShortenedFrom !== null ? 'Återställ menyn' : 'Korta menyn'}
+        </div>
+        <div style={OPTION_DESC_STYLE}>
+          {sim.scaleDown.menuShortenedFrom !== null
+            ? 'Höj tillbaka råvarunivån till där den var.'
+            : 'Sänk råvarunivån ett steg. Sparar per gäst, dämpar mat-kvaliteten över tid.'}
+        </div>
+      </button>
+      <button
+        type="button"
+        style={sim.scaleDown.wineListReduced ? OPTION_BUTTON_ACTIVE_STYLE : OPTION_BUTTON_STYLE}
+        onClick={() => dispatch({ type: 'THIN_WINE_LIST' })}
+      >
+        <div>{sim.scaleDown.wineListReduced ? 'Återställ vinlistan' : 'Tunna vinlistan'}</div>
+        <div style={OPTION_DESC_STYLE}>
+          {sim.scaleDown.wineListReduced
+            ? 'Öppna listan igen. Kvalitetsläsningen börjar återhämta sig.'
+            : 'Dra ner drycksidan. Servicen får mindre att bära, dryck-kvaliteten faller över tid.'}
+        </div>
+      </button>
+      <button
+        type="button"
+        style={sim.scaleDown.closedLunch ? OPTION_BUTTON_ACTIVE_STYLE : OPTION_BUTTON_STYLE}
+        onClick={() => dispatch({ type: 'CLOSE_SERVICE', service: 'lunch' })}
+      >
+        <div>{sim.scaleDown.closedLunch ? 'Öppna lunch igen' : 'Stäng lunchen'}</div>
+        <div style={OPTION_DESC_STYLE}>
+          {sim.scaleDown.closedLunch
+            ? 'Ta upp lunchen igen. Ryktet börjar återhämta sig.'
+            : 'Ingen lunch tills du öppnar igen. Sparar personal + råvaror; rummets stambord noterar dörren.'}
+        </div>
+      </button>
+      <button
+        type="button"
+        style={sim.scaleDown.closedDinner ? OPTION_BUTTON_ACTIVE_STYLE : OPTION_BUTTON_STYLE}
+        onClick={() => dispatch({ type: 'CLOSE_SERVICE', service: 'dinner' })}
+      >
+        <div>{sim.scaleDown.closedDinner ? 'Öppna middagen igen' : 'Stäng middagen'}</div>
+        <div style={OPTION_DESC_STYLE}>
+          {sim.scaleDown.closedDinner
+            ? 'Ta upp middagen igen.'
+            : 'Ingen middag tills du öppnar igen. Största besparingen, största rykteskostnaden.'}
+        </div>
+      </button>
     </div>
   );
 }

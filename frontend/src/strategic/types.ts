@@ -758,7 +758,21 @@ export type SimAction =
   // held in state.scenario.pendingQuestion. `index` picks one of
   // the pending options; the reducer looks up correctness against
   // the pending options and fires the right/wrong effects.
-  | { type: 'ANSWER_QUESTION'; index: number };
+  | { type: 'ANSWER_QUESTION'; index: number }
+  // ORDER 049 §5.3 — scale-down actions. Morning-only. Reversible;
+  // dispatching the same action while active un-scales.
+  //   SHORTEN_MENU toggles the ingredient tier down one step
+  //     (premium → utvald, utvald → grund, grund = no-op) and stashes
+  //     the pre-shorten value on state.scaleDown.menuShortenedFrom;
+  //     dispatching again restores from that stash.
+  //   THIN_WINE_LIST toggles state.scaleDown.wineListReduced and turns
+  //     policies.welcomeDrink off when engaging (restoring on off).
+  //   CLOSE_SERVICE with service='lunch'|'dinner' toggles the
+  //     corresponding closed flag; reducer refuses OPEN_SERVICE while
+  //     the flag is set.
+  | { type: 'SHORTEN_MENU' }
+  | { type: 'THIN_WINE_LIST' }
+  | { type: 'CLOSE_SERVICE'; service: 'lunch' | 'dinner' };
 
 export interface CameraTarget {
   focus: Vec2;
