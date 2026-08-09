@@ -33,6 +33,7 @@ import type { Rng } from '../util/rng';
 import {
   AMBIENT_TEXTS,
   POSITIVE_TEXTS,
+  PREP_POSITIVE_TEXTS,
   PREP_TEXTS,
   type AmbientEventKind,
   type PrepEventKind
@@ -140,8 +141,8 @@ export interface PrepEventDef {
 }
 
 export const PREP_EVENT_DEFS: readonly PrepEventDef[] = [
-  { kind: 'prep_kitchen',  competenceSource: 'scientific',    baseRatePerMin: 0.6 },
-  { kind: 'prep_room',     competenceSource: 'trainingLevel', baseRatePerMin: 0.6 },
+  { kind: 'prep_kitchen',  competenceSource: 'scientific',    baseRatePerMin: 0.3 },
+  { kind: 'prep_room',     competenceSource: 'trainingLevel', baseRatePerMin: 0.3 },
   { kind: 'prep_delivery', competenceSource: 'cultural',      baseRatePerMin: 0.6 }
 ];
 
@@ -154,42 +155,42 @@ export const EVENT_DEFS: readonly EventDef[] = [
     causeTag: 'ignorance',
     competenceSource: 'scientific',
     sustainability: 'social',
-    baseRatePerMin: 0.15
+    baseRatePerMin: 0.075
   },
   {
     kind: 'service_slip',
     causeTag: 'ignorance',
     competenceSource: 'cultural',
     sustainability: 'social',
-    baseRatePerMin: 0.15
+    baseRatePerMin: 0.075
   },
   {
     kind: 'delivery_short',
     causeTag: 'ignorance',
     competenceSource: 'cultural',
     sustainability: 'ecological',
-    baseRatePerMin: 0.15
+    baseRatePerMin: 0.075
   },
   {
     kind: 'bottleneck',
     causeTag: 'strain',
     competenceSource: null,
     sustainability: 'social',
-    baseRatePerMin: 0.20
+    baseRatePerMin: 0.10
   },
   {
     kind: 'wait_stretched',
     causeTag: 'strain',
     competenceSource: null,
     sustainability: 'social',
-    baseRatePerMin: 0.20
+    baseRatePerMin: 0.10
   },
   {
     kind: 'turnover_stumble',
     causeTag: 'both',
     competenceSource: 'trainingLevel',
     sustainability: 'economic',
-    baseRatePerMin: 0.15
+    baseRatePerMin: 0.075
   }
 ];
 
@@ -305,7 +306,7 @@ function prepEventProbabilityPerTick(
 // Base rate chosen so a strong-team + calm dinner produces ~3–4
 // positive events over 15 sim-minutes (one every 4–5 min); at
 // mid competence and load, ~1–2; at weak+strained, near zero.
-export const POSITIVE_BASE_RATE_PER_MIN = 0.30;
+export const POSITIVE_BASE_RATE_PER_MIN = 0.15;
 
 // Calmness curve. Load ≤ 0.6 reads as calm (multiplier ~1.4);
 // load 1.0 reads as busy but flowing (~0.5); load ≥ 1.4 reads as
@@ -419,6 +420,61 @@ export function tickEventStream(state: SimulationState, rng: Rng): void {
   const inPrep = inService && state.day.prepEndsAt !== null && state.simTime < state.day.prepEndsAt;
 
   if (inPrep) {
+    // ORDER 043 Addendum B prep floor — fire any scheduled floor
+    // slot whose dueAt has passed. Polarity picked from team
+    // competence for the kind's axis (>0.5 → positive prep, else
+    // ignorance prep). Ignorance floor lines still count toward
+    // prepIgnoranceCount; positive floor lines do not.
+    let ignoranceFromFloor = 0;
+    if (state.day.prepFloorSchedule.length > 0) {
+      const stillPendingFloor: typeof state.day.prepFloorSchedule = [];
+      for (const slot of state.day.prepFloorSchedule) {
+        if (state.simTime >= slot.dueAt) {
+          const axis =
+            slot.kind === 'prep_kitchen' ? 'scientific' :
+            slot.kind === 'prep_delivery' ? 'cultural' : 'practical';
+          // Prep is a single-station activity — one competent
+          // person at the axis covers it. Read the MAX across the
+          // team, not the average (ambient events use the average
+          // because the whole team touches each guest). Threshold
+          // 0.55 = "is anyone actually qualified for this axis?"
+          let maxComp = 0;
+          for (const m of state.team.members) {
+            if (m.competence[axis] > maxComp) maxComp = m.competence[axis];
+          }
+          if (maxComp > 0.55) {
+            // Positive polarity — prep going well.
+            emitted.push({
+              at: state.simTime,
+              text: pickTextWithRepeatGuard(PREP_POSITIVE_TEXTS[slot.kind], state, rng),
+              category: 'positive',
+              causeTag: null,
+              sustainability: 'social',
+              kind: slot.kind,
+              scenarioId: null
+            });
+          } else {
+            // Ignorance polarity — prep going wrong.
+            emitted.push({
+              at: state.simTime,
+              text: pickTextWithRepeatGuard(PREP_TEXTS[slot.kind], state, rng),
+              category: 'ambient',
+              causeTag: 'ignorance',
+              sustainability: 'social',
+              kind: slot.kind,
+              scenarioId: null
+            });
+            ignoranceFromFloor += 1;
+          }
+        } else {
+          stillPendingFloor.push(slot);
+        }
+      }
+      if (stillPendingFloor.length !== state.day.prepFloorSchedule.length) {
+        state.day = { ...state.day, prepFloorSchedule: stillPendingFloor };
+      }
+    }
+
     // Prep rolls — competence-weighted, no strain. Bump the day's
     // prepIgnoranceCount for each fired event so the carryover
     // decision at prep-end can read a running total.
@@ -430,10 +486,11 @@ export function tickEventStream(state: SimulationState, rng: Rng): void {
         prepFired += 1;
       }
     }
-    if (prepFired > 0) {
+    if (prepFired + ignoranceFromFloor > 0) {
       state.day = {
         ...state.day,
-        prepIgnoranceCount: state.day.prepIgnoranceCount + prepFired
+        prepIgnoranceCount:
+          state.day.prepIgnoranceCount + prepFired + ignoranceFromFloor
       };
     }
   } else if (inService) {

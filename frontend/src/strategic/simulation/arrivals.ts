@@ -3,6 +3,8 @@ import type { DayPeriod, Guest, SimulationState } from '../types';
 import { makeGuest } from './model';
 import { PRICE_ARRIVAL_MULT, SERVICE_ARRIVAL_MULT } from './economics';
 import { currentRhythmMultiplier } from './rhythm';
+import { weatherArrivalMultiplier } from './weather';
+import { worldFactorArrivalMultiplier } from './worldFactors';
 
 // ORDER 043 §6 phenomena constants.
 //
@@ -86,16 +88,24 @@ const ACTIVE_GUEST_CAP = 24;
 // arrivals, no queue. The prep event stream carries the reading
 // during this window.
 export function arrivalProbability(state: SimulationState): number {
+  // ORDER 045 opening image — no arrivals during the 10-s opening
+  // panel either (doors haven't opened yet).
+  if (
+    state.day.openingEndsAt !== null &&
+    state.simTime < state.day.openingEndsAt
+  ) {
+    return 0;
+  }
   if (
     state.day.prepEndsAt !== null &&
     state.simTime < state.day.prepEndsAt
   ) {
     return 0;
   }
-  // ORDER 043 Addendum A rhythm — the service has an opening, a
-  // buildup, a rush and a decline. Multiplier applied to both
-  // arrivals and event probability so the room's pace and the
-  // stream's cadence rise and fall together.
+  // ORDER 043 Addendum A rhythm + ORDER 045 weather. Weather is a
+  // reading: warm + still + clear lifts to ~1.28×; cold + windy +
+  // drizzle drops to ~0.55×. The reading shows up in the room by
+  // shaping how full it gets.
   const perMinute =
     ARRIVAL_BASE_PER_MINUTE *
     periodArrivalMultiplier(state.day.period) *
@@ -103,6 +113,8 @@ export function arrivalProbability(state: SimulationState): number {
     PRICE_ARRIVAL_MULT[state.policies.pricing] *
     economicArrivalMultiplier(state.capitals.values.economic) *
     reputationArrivalMultiplier(state.reputation) *
+    weatherArrivalMultiplier(state.day.weather) *
+    worldFactorArrivalMultiplier(state.day.worldFactors) *
     currentRhythmMultiplier(state);
   return perMinute / (60 * 5); // 5 Hz tick.
 }

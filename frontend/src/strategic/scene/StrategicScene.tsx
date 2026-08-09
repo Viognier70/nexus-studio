@@ -28,6 +28,7 @@ import { OsmWater } from './OsmWater';
 import { DayLighting } from './DayLighting';
 import { DeliveryVan } from './DeliveryVan';
 import { InteriorGuests } from './InteriorGuests';
+import { InteriorStaff } from './InteriorStaff';
 import { MentorComment } from './MentorComment';
 import { PlayerBusiness } from './PlayerBusiness';
 import { Sky } from './Sky';
@@ -110,6 +111,7 @@ export function StrategicScene({ onSelect, selectedId }: Props) {
         <CraftedLandmarksD2 />
         <PlayerBusiness />
         <InteriorGuests />
+        <InteriorStaff />
         <DeliveryVan />
         <MentorComment />
         <OsmLandmarks onSelect={onSelect} selectedId={selectedId} />

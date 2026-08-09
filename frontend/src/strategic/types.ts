@@ -252,6 +252,52 @@ export type DayPeriod =
 export const SERVICE_LENGTH_MIN_MINUTES = 3;
 export const SERVICE_LENGTH_MAX_MINUTES = 30;
 
+// ORDER 045 — weather conditions for a service window. Deterministic
+// per (rngState + dayNumber + service) so the same seed yields the
+// same evening. Affects arrivals (warm & still lifts demand, cold &
+// windy drops it), the derivation of guests already-waiting at the
+// doors, and the outdoor-terrace viability call.
+export type PrecipitationKind = 'none' | 'drizzle' | 'rain' | 'snow';
+export type CloudCover = 'clear' | 'partly' | 'overcast';
+
+export interface WeatherConditions {
+  tempC: number;                  // rounded to whole degrees
+  windMS: number;                 // rounded to 1 decimal
+  precipitation: PrecipitationKind;
+  cloudCover: CloudCover;
+  // Derived: outdoor terrace viable if warm-ish + not too windy + no rain.
+  outdoorViable: boolean;
+}
+
+// ORDER 045 outer-world factors. Rare per-service events that
+// modulate arrivals, waiting count, revenue, or delivery cadence.
+// Each factor has a fire rate (Bernoulli per service) and one or
+// two realisations picked when it fires. Kind alone is stored on
+// state; labels + multipliers live in worldFactors.ts so state
+// stays portable (§11.1).
+export type WorldFactorKind =
+  | 'konjunktur_uppgang'
+  | 'konjunktur_nedgang'
+  | 'vagarbeten'
+  | 'sasong_turism'
+  | 'sasong_semester'
+  | 'evenemang_festival'
+  | 'evenemang_hockey';
+
+export interface ActiveWorldFactor {
+  kind: WorldFactorKind;
+}
+
+// ORDER 043 Addendum B — one guaranteed prep event slot. Two of
+// these are scheduled per service at fixed offsets into the prep
+// window. `kind` is chosen at OPEN_SERVICE (round-robin across the
+// three prep kinds); polarity is decided at fire time from team
+// competence for that kind's axis.
+export interface PrepFloorSlot {
+  dueAt: number;
+  kind: 'prep_kitchen' | 'prep_room' | 'prep_delivery';
+}
+
 export interface DayState {
   dayNumber: number;               // 1-indexed
   period: DayPeriod;
@@ -270,7 +316,12 @@ export interface DayState {
   // from scenariosPlanned; consumed head-first as advanceTick fires
   // each scenario. Cleared on any period transition + on SKIP_LUNCH.
   scenarioTriggerTimes: number[];
-  // ORDER 043 Addendum A prep window — set at OPEN_SERVICE to
+  // ORDER 045 opening image — set at OPEN_SERVICE to simTime +
+  // OPENING_DURATION_SEC. Weather + waiting-count briefing sits
+  // over the room during this window. When simTime crosses this
+  // timestamp, the opening ends and prep begins.
+  openingEndsAt: number | null;
+  // ORDER 043 Addendum A prep window — set when opening ends, to
   // simTime + PREP_DURATION_SEC. While non-null the service is
   // "in mise en place": no arrivals, no scenarios, prep events fire
   // on the stream instead. Cleared (set to null) when the prep
@@ -280,6 +331,26 @@ export interface DayState {
   // prep window. Read at prep-end to decide whether to schedule a
   // carryover bottleneck event ~13 min into service.
   prepIgnoranceCount: number;
+  // ORDER 043 Addendum B — the prep floor. Two guaranteed prep
+  // events per service, scheduled at fixed offsets into the prep
+  // window. Polarity picked at fire time from team competence for
+  // the kind's axis: > 0.5 → positive (prep going well), else →
+  // ignorance (prep going wrong). Ensures a strong team's mise en
+  // place doesn't read as silent. Consumed head-first.
+  prepFloorSchedule: PrepFloorSlot[];
+  // ORDER 045 — the evening's weather. Generated at OPEN_SERVICE.
+  weather: WeatherConditions | null;
+  // Number of guests already outside when the opening panel appears,
+  // derived from reputation × weather × world factors. They spawn as
+  // arrivals the moment the prep window closes ("doors open").
+  waitingAtOpening: number;
+  // Set once at prep-end so the door-opening waiting-spawn only fires
+  // once, not every tick after prep closes.
+  doorsOpenedThisService: boolean;
+  // ORDER 045 outer-world factors — 0-N per service, rolled at
+  // OPEN_SERVICE. Empty on most evenings; the outer world reports
+  // in ~37 % of services (any factor firing). Cleared on close.
+  worldFactors: ActiveWorldFactor[];
 }
 
 // ----- ORDER 043 two-layer capital model ----------------------------------

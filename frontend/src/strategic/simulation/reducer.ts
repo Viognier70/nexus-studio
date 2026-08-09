@@ -17,7 +17,7 @@ import {
   SERVICE_LENGTH_MIN_MINUTES
 } from '../types';
 import { strings } from '../../content/strings.sv';
-import { maybeSpawnGuest, scenarioSpawnStep } from './arrivals';
+import { maybeSpawnGuest, scenarioSpawnStep, walkAwayProbability } from './arrivals';
 import { planScenariosForService, scheduleScenarioTriggerTimes } from './day';
 import { revenuePerGuest } from './economics';
 import {
@@ -28,8 +28,21 @@ import {
   tickEventStream
 } from './eventStream';
 import { PREP_CARRYOVER_TEXT } from '../../content/eventStream.sv';
+import { generateWeather, waitingAtOpeningCount } from './weather';
+import {
+  generateWorldFactors,
+  worldFactorDeliveryMultiplier,
+  worldFactorRevenueMultiplier,
+  worldFactorWaitingMultiplier
+} from './worldFactors';
+
+// ORDER 045 — the opening image sits over the room for this long
+// after OPEN_SERVICE, before prep begins. Ten seconds reads as an
+// anticipation moment — long enough to notice the weather and the
+// waiting count, short enough not to become its own act.
+export const OPENING_DURATION_SEC = 10;
 import { pickScenarioSpec, scenarioById } from './scenarios';
-import { initialDay, makeInitialState, makeStaff } from './model';
+import { initialDay, makeGuest, makeInitialState, makeStaff } from './model';
 import { tickReputationDrift } from './reputation';
 import { tickGuests, tickStaff } from './service';
 import { tickSustainability } from './sustainability';
@@ -165,12 +178,36 @@ function openService(
   // fires during the mise en place window; the head-space buffer
   // in scheduleScenarioTriggerTimes then applies on top.
   const rng = createRng(state.rngState);
+  // ORDER 045 — generate the evening's weather first so subsequent
+  // calculations (waiting count, scenario schedule) see a stable
+  // weather record. World factors roll after weather; both feed
+  // waitingAtOpening below.
+  const weather = generateWeather(rng);
+  const worldFactors = generateWorldFactors(rng);
   const scenariosPlanned = planScenariosForService(length, rng);
+  // Opening runs first, then prep, then service. Scenario schedule
+  // shifted by opening + prep so no scenario fires while the doors
+  // are still closed.
+  const doorsOpenAt =
+    state.simTime + OPENING_DURATION_SEC + PREP_DURATION_SEC;
+  const serviceWindowMinutes = Math.max(
+    1,
+    length - (OPENING_DURATION_SEC + PREP_DURATION_SEC) / 60
+  );
   const scenarioTriggerTimes = scheduleScenarioTriggerTimes(
     scenariosPlanned,
-    state.simTime + PREP_DURATION_SEC,
-    Math.max(1, length - PREP_DURATION_SEC / 60),
+    doorsOpenAt,
+    serviceWindowMinutes,
     rng
+  );
+  // Waiting count stacks reputation × weather (in waitingAtOpeningCount)
+  // × world-factor waiting mult (here), capped again at the same 6-guest
+  // ceiling.
+  const waitingCap = 6;
+  const baseWaiting = waitingAtOpeningCount(state.reputation, weather);
+  const waitingAtOpening = Math.min(
+    waitingCap,
+    Math.round(baseWaiting * worldFactorWaitingMultiplier(worldFactors))
   );
   const day: DayState = {
     ...state.day,
@@ -180,16 +217,56 @@ function openService(
     scenariosPlanned,
     scenariosFiredThisService: 0,
     scenarioTriggerTimes,
-    // Prep window opens for PREP_DURATION_SEC starting now. Arrivals
-    // + scenario firing are gated until prep ends (see advanceTick).
-    prepEndsAt: state.simTime + PREP_DURATION_SEC,
-    prepIgnoranceCount: 0
+    // Opening panel for OPENING_DURATION_SEC, then prep for
+    // PREP_DURATION_SEC. Arrivals + scenarios gated until both close
+    // (see advanceTick + arrivalProbability).
+    openingEndsAt: state.simTime + OPENING_DURATION_SEC,
+    prepEndsAt: state.simTime + OPENING_DURATION_SEC + PREP_DURATION_SEC,
+    prepIgnoranceCount: 0,
+    // ORDER 043 Addendum B prep floor — two guaranteed prep events
+    // per service, at ~35 s and ~85 s past prep-start (~45 s and
+    // ~95 s past OPEN_SERVICE, which sits before opening). Kinds
+    // rotate across services via a coarse dayNumber+service mod so
+    // consecutive services don't spotlight the same axis.
+    prepFloorSchedule: buildPrepFloorSchedule(
+      state.simTime + OPENING_DURATION_SEC,
+      state.day.dayNumber,
+      service
+    ),
+    weather,
+    waitingAtOpening,
+    doorsOpenedThisService: false,
+    worldFactors
   };
   return {
     ...state,
     day,
     rngState: rng.state
   };
+}
+
+// ORDER 043 Addendum B — two guaranteed prep events per service.
+// Slot times are fixed at 35 s and 85 s past prep-start (leaving
+// 30 s of "quiet" head and tail so the floor doesn't feel metronomic).
+// Kinds are rotated across services by (dayNumber + service parity)
+// so consecutive services don't foreground the same axis.
+const PREP_FLOOR_OFFSETS_SEC = [35, 85] as const;
+const PREP_KINDS: readonly ('prep_kitchen' | 'prep_room' | 'prep_delivery')[] = [
+  'prep_kitchen',
+  'prep_room',
+  'prep_delivery'
+];
+function buildPrepFloorSchedule(
+  prepStartAt: number,
+  dayNumber: number,
+  service: 'lunch' | 'dinner'
+): { dueAt: number; kind: 'prep_kitchen' | 'prep_room' | 'prep_delivery' }[] {
+  const parity = service === 'lunch' ? 0 : 1;
+  const baseIdx = (dayNumber - 1) * 2 + parity;
+  return PREP_FLOOR_OFFSETS_SEC.map((offset, i) => ({
+    dueAt: prepStartAt + offset,
+    kind: PREP_KINDS[(baseIdx + i) % PREP_KINDS.length]
+  }));
 }
 
 function skipLunch(state: SimulationState): SimulationState {
@@ -204,8 +281,14 @@ function skipLunch(state: SimulationState): SimulationState {
       scenariosPlanned: 0,
       scenariosFiredThisService: 0,
       scenarioTriggerTimes: [],
+      openingEndsAt: null,
       prepEndsAt: null,
-      prepIgnoranceCount: 0
+      prepIgnoranceCount: 0,
+      prepFloorSchedule: [],
+      weather: null,
+      waitingAtOpening: 0,
+      doorsOpenedThisService: false,
+      worldFactors: []
     }
   };
 }
@@ -238,8 +321,14 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           scenariosPlanned: 0,
           scenariosFiredThisService: 0,
           scenarioTriggerTimes: [],
+          openingEndsAt: null,
           prepEndsAt: null,
-          prepIgnoranceCount: 0
+          prepIgnoranceCount: 0,
+          prepFloorSchedule: [],
+          weather: null,
+          waitingAtOpening: 0,
+          doorsOpenedThisService: false,
+          worldFactors: []
         }
       };
     }
@@ -263,8 +352,14 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           scenariosPlanned: 0,
           scenariosFiredThisService: 0,
           scenarioTriggerTimes: [],
+          openingEndsAt: null,
           prepEndsAt: null,
-          prepIgnoranceCount: 0
+          prepIgnoranceCount: 0,
+          prepFloorSchedule: [],
+          weather: null,
+          waitingAtOpening: 0,
+          doorsOpenedThisService: false,
+          worldFactors: []
         }
       };
     }
@@ -500,11 +595,11 @@ function fireTeamMember(state: SimulationState, memberId: string): SimulationSta
 // ---------- ORDER 043 wager + enabler transitions -------------------------
 
 function placeWager(state: SimulationState, capital: SustainabilityKey): SimulationState {
-  // Placing a new wager replaces any prior standing wager. Wagers are
-  // only meaningful between scenarios (§4 "after a scenario resolves
-  // and before the next arrives"); we permit the action in any phase
-  // so the UI is simpler, and Phase B's scenario integration will
-  // resolve or discard a standing wager appropriately.
+  // ORDER 043 Addendum B — the stake is locked the moment it is
+  // placed. No withdrawal, no time window. Once a wager stands,
+  // PLACE_WAGER is a no-op; the only way out is the next scenario
+  // resolving (which clears the wager as part of payout).
+  if (state.wager !== null) return state;
   return {
     ...state,
     wager: {
@@ -515,6 +610,11 @@ function placeWager(state: SimulationState, capital: SustainabilityKey): Simulat
   };
 }
 
+// CLEAR_WAGER intentionally retired at Addendum B. The stake locks
+// at placement; the wager is cleared only by RESOLVE_SCENARIO after
+// payout. Kept as a helper for backward compat if a future order
+// needs a system-side retract (e.g. a service that ends before a
+// scenario fires); currently unused.
 function clearWager(state: SimulationState): SimulationState {
   return { ...state, wager: null };
 }
@@ -605,8 +705,14 @@ function advanceTick(state: SimulationState): SimulationState {
       // baseline, ecological = 1 halves it to ~36 sec, ecological = 0
       // extends to ~84 sec. The van's absence between arrivals IS the
       // reading; the rhythm of appearance is what the player watches.
+      // ORDER 043 §6 ecological cadence + ORDER 045 world factor —
+      // vägarbeten multiplies the cooldown base by 1.4× (the
+      // supplier's route is disrupted).
       const ecological = draft.capitals.values.ecological;
-      const cooldownBase = 60 * (1.4 - 0.8 * ecological);
+      const cooldownBase =
+        60 *
+        (1.4 - 0.8 * ecological) *
+        worldFactorDeliveryMultiplier(draft.day.worldFactors);
       draft.delivery.cooldown = cooldownBase + rng.range(0, 30);
     }
   } else {
@@ -636,10 +742,13 @@ function advanceTick(state: SimulationState): SimulationState {
   tickGuests(draft);
   tickStaff(draft);
 
-  // Payment triggers revenue.
+  // Payment triggers revenue. ORDER 045 world-factor revenue mult
+  // (betalningsvilja): konjunktur uppgång/nedgång shifts +10 / −15 %,
+  // festival crowd +5 %, hockey crowd −10 % (casual + price-sensitive).
+  const revenueMult = worldFactorRevenueMultiplier(draft.day.worldFactors);
   for (const guest of draft.guests) {
     if (guest.state === 'paying' && guest.stateTime === draft.simTime) {
-      draft.revenue += revenuePerGuest(draft.policies);
+      draft.revenue += revenuePerGuest(draft.policies) * revenueMult;
     }
   }
   // Accumulate cost.
@@ -661,11 +770,29 @@ function advanceTick(state: SimulationState): SimulationState {
   // rep drift also feeds this tick's ambient probability.
   tickEventStream(draft, rng);
 
+  // ORDER 045 opening-window end. When the 10-s opening panel expires
+  // the day rolls into prep — no visible state change other than the
+  // opening panel closing; arrivals + scenarios are still gated by
+  // prepEndsAt (see arrivalProbability + the scheduled-scenario
+  // check below).
+  if (
+    draft.day.openingEndsAt !== null &&
+    draft.simTime >= draft.day.openingEndsAt
+  ) {
+    draft.day = { ...draft.day, openingEndsAt: null };
+  }
+
   // ORDER 043 Addendum A prep-window end. Runs after tickEventStream
   // so this tick's prep events are already counted. If prep just
   // ended AND the team fumbled enough during it, schedule a
   // carryover bottleneck ~13 min into service — the mise en place
   // sin coming home to roost.
+  //
+  // ORDER 045 — doors open at prep-end. The guests who were waiting
+  // outside during the opening + prep window spawn now, as arrivals.
+  // They start at their arrival slots (the "waiting outside"
+  // vocabulary) and the room's normal state machine takes them from
+  // there.
   if (
     draft.day.prepEndsAt !== null &&
     draft.simTime >= draft.day.prepEndsAt
@@ -682,7 +809,20 @@ function advanceTick(state: SimulationState): SimulationState {
         }
       ];
     }
-    draft.day = { ...draft.day, prepEndsAt: null };
+    // Doors-open guest spawn — fires exactly once per service via
+    // the doorsOpenedThisService flag.
+    if (!draft.day.doorsOpenedThisService && draft.day.waitingAtOpening > 0) {
+      const walkAwayCeil = walkAwayProbability(draft.capitals.values.economic);
+      for (let i = 0; i < draft.day.waitingAtOpening; i++) {
+        const walkAway = rng.chance(walkAwayCeil);
+        draft.guests.push(makeGuest(draft.simTime, false, walkAway));
+      }
+    }
+    draft.day = {
+      ...draft.day,
+      prepEndsAt: null,
+      doorsOpenedThisService: true
+    };
   }
 
   // ORDER 043 v3 §10 step 5 — agency-offer strain tracking and

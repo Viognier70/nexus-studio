@@ -76,7 +76,7 @@ describe('ORDER 043 initial state', () => {
   });
 });
 
-describe('ORDER 043 PLACE_WAGER + CLEAR_WAGER', () => {
+describe('ORDER 043 PLACE_WAGER (locked at placement per Addendum B)', () => {
   it('PLACE_WAGER stores the capital, simTime, and the fixed unit stake', () => {
     const s0 = makeInitialState(1);
     const s = reducer(s0, { type: 'PLACE_WAGER', capital: 'social' });
@@ -86,25 +86,35 @@ describe('ORDER 043 PLACE_WAGER + CLEAR_WAGER', () => {
     expect(s.wager?.placedAt).toBe(s0.simTime);
   });
 
-  it('PLACE_WAGER replaces a prior standing wager rather than stacking', () => {
+  it('PLACE_WAGER is a no-op when a wager already stands (locked)', () => {
+    // Addendum B §5A.5 — the stake is locked the moment it is placed.
+    // A second PLACE_WAGER must not overwrite the first.
     let s = makeInitialState(1);
     s = reducer(s, { type: 'PLACE_WAGER', capital: 'social' });
+    const firstWager = s.wager;
     s = reducer(s, { type: 'PLACE_WAGER', capital: 'ecological' });
-    expect(s.wager?.capital).toBe('ecological');
+    expect(s.wager).toEqual(firstWager);
   });
 
-  it('CLEAR_WAGER returns to no standing wager', () => {
+  it('CLEAR_WAGER still returns to no standing wager if dispatched (kept for internal use)', () => {
+    // Player UI no longer surfaces this action per Addendum B, but
+    // the reducer path is kept for programmatic clearance (e.g. a
+    // future "service ended before scenario fired" flow).
     let s = makeInitialState(1);
     s = reducer(s, { type: 'PLACE_WAGER', capital: 'economic' });
     s = reducer(s, { type: 'CLEAR_WAGER' });
     expect(s.wager).toBeNull();
   });
 
-  it('PLACE_WAGER on all three capitals in turn all succeed', () => {
+  it('after CLEAR_WAGER, a fresh PLACE_WAGER succeeds', () => {
     let s = makeInitialState(1);
+    s = reducer(s, { type: 'PLACE_WAGER', capital: 'social' });
+    s = reducer(s, { type: 'CLEAR_WAGER' });
     for (const k of SUSTAINABILITIES) {
-      s = reducer(s, { type: 'PLACE_WAGER', capital: k });
-      expect(s.wager?.capital).toBe(k);
+      // Only the FIRST post-clear placement takes; subsequent
+      // placements without a clear are locked out.
+      let s2 = reducer(s, { type: 'PLACE_WAGER', capital: k });
+      expect(s2.wager?.capital).toBe(k);
     }
   });
 });
