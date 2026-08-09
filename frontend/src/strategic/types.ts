@@ -188,6 +188,8 @@ export interface ScenarioState {
   spawnedRemaining: number;
   nextSpawnAt: number;
   visibleGuestIds: string[];
+  // ORDER 047 §6 unused reservation; the actual policy-change list
+  // lives on DayState (see morningPolicyChanges).
   // ORDER 043 v3 §7 chain — theme drawn at trigger time (before the
   // player sees the scenario), consumed at resolve to move the themed
   // capital and pay out any standing wager. Null between scenarios
@@ -351,6 +353,15 @@ export interface DayState {
   // OPEN_SERVICE. Empty on most evenings; the outer world reports
   // in ~37 % of services (any factor firing). Cleared on close.
   worldFactors: ActiveWorldFactor[];
+  // ORDER 047 §6 — policy changes made during THIS morning (cleared
+  // on day advance, kept alive through the day's services so the
+  // evening account can reference them). Each entry is a hand-written
+  // observer-voice line synthesised at SET_POLICY time. Consumed:
+  //   - at OPEN_SERVICE, one pendingOutcome per change fires ~5 s
+  //     past prep-end so the stream names the change when it lands.
+  //   - at evening account, prepends a sentence about the morning
+  //     change (if any) to the branch's paragraph.
+  morningPolicyChanges: string[];
   // ORDER 046 §1 — set true when a collapse roll fires during this
   // service. Blocks the collapse tick from firing twice in the same
   // service; read by the evening-account panel to pick the collapsed

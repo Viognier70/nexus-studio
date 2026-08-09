@@ -174,7 +174,8 @@ export function initialDay(): DayState {
     collapseAxis: null,
     revenueAtServiceStart: null,
     costAtServiceStart: null,
-    reputationAtServiceStart: null
+    reputationAtServiceStart: null,
+    morningPolicyChanges: []
   };
 }
 

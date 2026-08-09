@@ -112,12 +112,21 @@ export function computeEveningAccount(state: SimulationState): EveningAccount {
   const wager = lastWagerThisService(state);
   const wagerCapital: SustainabilityKey | null = wager ? wager.staked : null;
   const drewCapital: SustainabilityKey | null = wager ? wager.drew : null;
-  const paragraph = pickParagraph({
+  let paragraph = pickParagraph({
     branch,
     collapseAxis: state.day.collapseAxis,
     wagerCapital,
     drewCapital
   });
+  // ORDER 047 §6 — if a morning policy change was made this day, name
+  // it once at the head of the paragraph so the investment reads
+  // through to the evening. The change lines are already
+  // observer-voice per applyPolicyPatch's synthesis; we just join
+  // them with the paragraph.
+  const changes = state.day.morningPolicyChanges;
+  if (changes.length > 0) {
+    paragraph = changes.join(' ') + ' ' + paragraph;
+  }
   return {
     branch,
     paragraph,

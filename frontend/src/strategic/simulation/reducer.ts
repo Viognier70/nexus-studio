@@ -291,18 +291,35 @@ function openService(
     // without needing to instrument revenue / cost accumulation.
     revenueAtServiceStart: state.revenue,
     costAtServiceStart: state.cost,
-    reputationAtServiceStart: state.reputation
+    reputationAtServiceStart: state.reputation,
+    // ORDER 047 §6 — preserve morningPolicyChanges through the service
+    // so the evening account can read them. Cleared on evening→morning
+    // transition. Passed through explicitly since {...state.day} would
+    // preserve them anyway, but this is the anchor point for the note.
+    morningPolicyChanges: state.day.morningPolicyChanges
   };
   // ORDER 047 §5/§4 — reset per-service tallies at service open. The
   // stream-count reading is per-evening; the fired-scenario dedup is
   // per-service. lastServiceOpenerId carries across services (set at
   // first fire in this service, read at the next service's first draw).
+  //
+  // ORDER 047 §6 — schedule a pendingOutcome per morningPolicyChange
+  // to fire ~4 s past doors-open so the stream names the change as it
+  // lands. Uses the same pendingOutcome machinery as scenario outcomes.
+  const doorsOpenAtAbs = state.simTime + OPENING_DURATION_SEC + PREP_DURATION_SEC;
+  const policyOutcomes = state.day.morningPolicyChanges.map((text) => ({
+    dueAt: doorsOpenAtAbs + 4,
+    text,
+    sustainability: 'social' as const,
+    scenarioId: 'morning-policy'
+  }));
   return {
     ...state,
     day,
     rngState: rng.state,
     streamThemeCounts: { economic: 0, social: 0, ecological: 0 },
-    firedScenarioIds: []
+    firedScenarioIds: [],
+    pendingOutcomes: [...state.pendingOutcomes, ...policyOutcomes]
   };
 }
 
@@ -1038,12 +1055,59 @@ function applyPolicyPatch(state: SimulationState, patch: Partial<Policies>): Sim
     kind: 'policy' as const,
     text: describePolicyPatch(patch)
   };
+  // ORDER 047 §6 — if the change lands during morning, remember it
+  // as an observer-voice sentence so tonight's stream can name it and
+  // the evening account can reference it. Actual policy changes only;
+  // no-op patches (setting the same value) are filtered.
+  const changeLine =
+    state.day.period === 'morning'
+      ? observerVoiceForPolicyChange(state.policies, patch)
+      : null;
+  const morningPolicyChanges = changeLine
+    ? [...state.day.morningPolicyChanges, changeLine]
+    : state.day.morningPolicyChanges;
   return {
     ...state,
     policies,
     staff: nextStaff,
-    events: [...state.events, event]
+    events: [...state.events, event],
+    day: { ...state.day, morningPolicyChanges }
   };
+}
+
+// ORDER 047 §6 — synthesise a one-line observer-voice sentence for a
+// meaningful policy change. Returns null when the change is a no-op
+// (setting the same value) or when the patch doesn't include a field
+// the player recognises as an investment axis.
+function observerVoiceForPolicyChange(
+  before: Policies,
+  patch: Partial<Policies>
+): string | null {
+  const lines: string[] = [];
+  if (patch.trainingLevel !== undefined && patch.trainingLevel !== before.trainingLevel) {
+    const direction = patch.trainingLevel > before.trainingLevel ? 'höjde' : 'sänkte';
+    lines.push(`Du ${direction} utbildningsnivån inför i dag`);
+  }
+  if (patch.pricing && patch.pricing !== before.pricing) {
+    const to = patch.pricing;
+    const map: Record<typeof to, string> = {
+      'låg': 'sänkte prislägen',
+      'medel': 'la prislägen på medel',
+      'hög': 'höjde prislägen'
+    };
+    lines.push(`Du ${map[to]} inför i dag`);
+  }
+  if (patch.ingredientTier && patch.ingredientTier !== before.ingredientTier) {
+    const to = patch.ingredientTier;
+    const map: Record<typeof to, string> = {
+      'grund': 'gick ner till grundleverantören',
+      'utvald': 'valde utvalda leverantörer',
+      'premium': 'gick över till premiumleverans'
+    };
+    lines.push(`Du ${map[to]} inför i dag`);
+  }
+  if (lines.length === 0) return null;
+  return lines.join(', ') + '.';
 }
 
 function describePolicyPatch(patch: Partial<Policies>): string {
