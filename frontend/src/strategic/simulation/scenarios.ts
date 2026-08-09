@@ -20,9 +20,12 @@
 import type {
   EnablerKey,
   Register,
+  RoleCompetence,
   ScenarioChoice,
   ScenarioDifficulty,
-  SustainabilityKey
+  StaffRole,
+  SustainabilityKey,
+  TeamState
 } from '../types';
 
 // Register write for one scenario response. Applied via
@@ -85,6 +88,18 @@ export interface ScenarioSpec {
   // Situation phase — the framing paragraph, revealed after difficulty.
   situationBody: string;
   choices: Record<ScenarioChoice, ScenarioChoiceSpec>;
+  // ORDER 048 §4 — ranked roles that best fit this scenario as the
+  // sender. Selection uses the FIRST role in this list that has a
+  // team member (70 % of the time, per pickScenarioSender), or the
+  // team's weakest member on the scenario's relevant axis (30 %).
+  // The winning member's role becomes the prefix on subject-body:
+  // "Värden: Ett sällskap står i entrén — utan bokning."
+  preferredSenderRoles: readonly StaffRole[];
+  // Which competence axis the scenario is fundamentally about; used
+  // by the weakness-selection path. For social scenarios it is
+  // typically 'cultural'; for economic 'practical'; for ecological
+  // 'scientific' (kitchen technique + supplier knowledge).
+  senderWeaknessAxis: keyof RoleCompetence;
 }
 
 // ---------- walk-in-of-five (social) --------------------------------------
@@ -96,6 +111,8 @@ const WALK_IN_OF_FIVE: ScenarioSpec = {
   subjectCta: 'Fortsätt',
   situationBody:
     'Fem personer i sällskapet. Kvällens service börjar snart och rummet är delvis bokat. Vad gör du?',
+  preferredSenderRoles: ['värd', 'servitör'],
+  senderWeaknessAxis: 'cultural',
   choices: {
     A: {
       label: 'Sätt alla fem — slå ihop fyran och ett tvåbord.',
@@ -174,6 +191,8 @@ const TIME_PRESSURE: ScenarioSpec = {
   subjectCta: 'Fortsätt',
   situationBody:
     'Bokningen kräver att köket byter menyn i kväll för att smaka igenom rätterna. Ekonomiskt lyft imorgon, men laget hinner knappt planera. Vad gör du?',
+  preferredSenderRoles: ['servitör', 'värd'],
+  senderWeaknessAxis: 'practical',
   choices: {
     A: {
       label: 'Ta bokningen och kör nya menyn direkt.',
@@ -251,6 +270,8 @@ const MORAL_DILEMMA: ScenarioSpec = {
   subjectCta: 'Fortsätt',
   situationBody:
     'Fisken kom via en bruten kylkedja — troligen ok men inte spårbar. Byte till torsdag om du säger nej. Vad gör du?',
+  preferredSenderRoles: ['kock', 'lärling'],
+  senderWeaknessAxis: 'scientific',
   choices: {
     A: {
       label: 'Ta fisken — laget märker den ordentligt och hoppas.',
@@ -375,3 +396,72 @@ export const ALL_SCENARIOS: readonly ScenarioSpec[] = [
 export function scenarioById(id: string): ScenarioSpec | null {
   return ALL_SCENARIOS.find((s) => s.id === id) ?? null;
 }
+
+// ORDER 048 §4 — pick which team member "sends" the scenario. The
+// question the player is asked comes from a specific person on
+// staff, and their role appears as a prefix on the subject-body:
+//   "Värden: Ett sällskap står i entrén — utan bokning."
+//
+// Two paths:
+//   - Role-fit (70 %): pick the first role in spec.preferredSenderRoles
+//     that has a team member. The most natural sender for the theme.
+//   - Weakness (30 %): pick the team member with the LOWEST competence
+//     on the scenario's sender-weakness axis. Reads as "they need you
+//     because no-one else knows." A thin team is audible here — a
+//     lärling ends up sending the culturally-loaded question when no
+//     värd is on the roster.
+//
+// Selection uses the passed Rng so a fresh (state.seed × state.tick)
+// derivation stays deterministic per (scenario fire, team roster).
+// Returns null when the team is empty (defensive; no scenario should
+// fire with zero members, but the caller must handle it).
+//
+// The Vision Owner's B-004 expansion (eight roles including bartender
+// and sous-chef) will slot in naturally — extend StaffRole and the
+// preferredSenderRoles lists per scenario. Cycle-1 uses the existing
+// four (värd, servitör, kock, lärling).
+
+const WEAKNESS_PATH_PROBABILITY = 0.3;
+
+export interface ScenarioSender {
+  role: StaffRole;
+  memberId: string;
+}
+
+export function pickScenarioSender(
+  spec: ScenarioSpec,
+  team: TeamState,
+  rng: { next(): number }
+): ScenarioSender | null {
+  if (team.members.length === 0) return null;
+  const roll = rng.next();
+  if (roll < WEAKNESS_PATH_PROBABILITY) {
+    // Weakness path — pick the LOWEST competence on the axis. Reads
+    // as the team member who most needs help hearing the question.
+    let weakest = team.members[0];
+    for (const m of team.members) {
+      if (m.competence[spec.senderWeaknessAxis] < weakest.competence[spec.senderWeaknessAxis]) {
+        weakest = m;
+      }
+    }
+    return { role: weakest.role, memberId: weakest.id };
+  }
+  // Role-fit path — first preferred role that has a member.
+  for (const preferred of spec.preferredSenderRoles) {
+    const found = team.members.find((m) => m.role === preferred);
+    if (found) return { role: found.role, memberId: found.id };
+  }
+  // Nothing preferred — fall back to the first member on staff.
+  const fallback = team.members[0];
+  return { role: fallback.role, memberId: fallback.id };
+}
+
+// Role → sender prefix (Swedish, capitalised, colon-suffix). Kept
+// as a small map here rather than in strings.sv.ts so the scenario
+// spec stays authorable in one place.
+export const SENDER_PREFIX: Record<StaffRole, string> = {
+  'värd':     'Värden',
+  'servitör': 'Servitören',
+  'kock':     'Kocken',
+  'lärling':  'Lärlingen'
+};

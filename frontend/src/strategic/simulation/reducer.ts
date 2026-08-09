@@ -41,7 +41,12 @@ import {
 // anticipation moment — long enough to notice the weather and the
 // waiting count, short enough not to become its own act.
 export const OPENING_DURATION_SEC = 10;
-import { pickScenarioSpecFiltered, scenarioById } from './scenarios';
+import {
+  SENDER_PREFIX,
+  pickScenarioSender,
+  pickScenarioSpecFiltered,
+  scenarioById
+} from './scenarios';
 import { fireCollapse, tickCollapseRoll } from './collapse';
 import { computeEveningAccount } from './eveningAccount';
 import {
@@ -1155,6 +1160,18 @@ function triggerScenario(state: SimulationState, auto: boolean): SimulationState
     state.firedScenarioIds,
     state.lastServiceOpenerId
   );
+  // ORDER 048 §4 — pick the sender at trigger time. Uses a DERIVED
+  // rng (hashed from state.seed × state.tick × scenario spec id) so
+  // downstream arrival randomness is not shifted — the queue-monotonicity
+  // regression in day.test.ts is sensitive to a single extra rng draw.
+  // Deterministic per (seed, tick, spec).
+  const senderSeed =
+    ((state.tick + 1) * 2654435761) ^ (state.seed * 2246822519);
+  const specIdHash = scenarioSpec.id
+    .split('')
+    .reduce((acc, ch) => (acc * 31 + ch.charCodeAt(0)) | 0, 0);
+  const senderRng = createRng((senderSeed ^ specIdHash) >>> 0);
+  const sender = pickScenarioSender(scenarioSpec, state.team, senderRng);
   const scenario = {
     ...state.scenario,
     hasAutoTriggered: true,
@@ -1169,6 +1186,8 @@ function triggerScenario(state: SimulationState, auto: boolean): SimulationState
     visibleGuestIds: [],
     drawnTheme,
     scenarioId: scenarioSpec.id,
+    senderRole: sender ? sender.role : null,
+    senderMemberId: sender ? sender.memberId : null,
     mentorComment: null,
     mentorCommentAt: null
   };
@@ -1187,8 +1206,13 @@ function triggerScenario(state: SimulationState, auto: boolean): SimulationState
       {
         at: state.simTime,
         kind: 'scenario' as const,
+        // ORDER 048 §4 — subject-body prefixed with the sender's role
+        // ("Värden: ..."). Non-auto (dev-triggered) replays keep the
+        // debug marker so it reads distinctly from a real fire.
         text: auto
-          ? scenarioSpec.subjectBody
+          ? sender
+            ? `${SENDER_PREFIX[sender.role]}: ${scenarioSpec.subjectBody}`
+            : scenarioSpec.subjectBody
           : 'Scenariot replays (utvecklarläge)'
       }
     ]

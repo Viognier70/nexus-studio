@@ -200,6 +200,13 @@ export interface ScenarioState {
   // reads strings, choice labels, mentor lines, etc. from the spec.
   // Null between scenarios; set at triggerScenario.
   scenarioId: string | null;
+  // ORDER 048 §4 — the team member "sending" this scenario. Role
+  // determines the sender-prefix on the subject-body; memberId lets
+  // future work (professional questions, evaluate-answer per role)
+  // attribute the interaction to a specific person. Null between
+  // scenarios and when the team is empty.
+  senderRole: StaffRole | null;
+  senderMemberId: string | null;
   // Populated by the reducer when the scenario transitions to
   // `settled`. Rendered as an in-world text bubble by MentorComment;
   // per CAMERA_AND_GAMEPLAY_BIBLE §8.1 this must not be a modal.

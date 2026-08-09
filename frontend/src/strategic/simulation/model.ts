@@ -193,6 +193,8 @@ export function initialScenario(): ScenarioState {
     visibleGuestIds: [],
     drawnTheme: null,
     scenarioId: null,
+    senderRole: null,
+    senderMemberId: null,
     mentorComment: null,
     mentorCommentAt: null
   };

@@ -11,7 +11,7 @@
 // not here.
 
 import { strings } from '../../content/strings.sv';
-import { scenarioById } from '../simulation/scenarios';
+import { SENDER_PREFIX, scenarioById } from '../simulation/scenarios';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 
 const OVERLAY_STYLE: React.CSSProperties = {
@@ -71,7 +71,7 @@ const SUBJECT_CTA_STYLE: React.CSSProperties = {
 export function ScenarioOverlay() {
   const sim = useSimState();
   const dispatch = useSimDispatch();
-  const { phase, scenarioId } = sim.scenario;
+  const { phase, scenarioId, senderRole } = sim.scenario;
 
   if (phase === 'idle' || phase === 'resolving' || phase === 'settled') return null;
 
@@ -79,7 +79,12 @@ export function ScenarioOverlay() {
   // legacy strings.scenario keys for pre-refactor tests / manual
   // TRIGGER_SCENARIO without a scenarioId set.
   const spec = scenarioId ? scenarioById(scenarioId) : null;
-  const subjectBody = spec?.subjectBody ?? strings.scenario.subject.body;
+  // ORDER 048 §4 — prefix the subject-body with the sender's role
+  // ("Värden: ..."). When no sender was assigned (dev trigger with
+  // an empty team, defensive fallback) the plain body is used.
+  const senderPrefix = senderRole ? `${SENDER_PREFIX[senderRole]}: ` : '';
+  const rawSubjectBody = spec?.subjectBody ?? strings.scenario.subject.body;
+  const subjectBody = senderPrefix + rawSubjectBody;
   const subjectCta = spec?.subjectCta ?? strings.scenario.subject.cta;
   const situationBody = spec?.situationBody ?? strings.scenario.situation.body;
   const labelA = spec?.choices.A.label ?? strings.scenario.situation.options.A;
