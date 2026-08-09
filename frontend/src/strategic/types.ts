@@ -580,6 +580,25 @@ export interface SimulationState {
   // player reads it. `presentedAt` drives the fade-in / fade-out
   // timing in EveningAccountPanel.
   eveningAccount: EveningAccount | null;
+  // ORDER 047 §2 — staff morale scalar in [0, 1]. Live feedback layer
+  // that couples the room's satisfaction back into the sim's
+  // competence: effectiveCompetence(axis) = teamCompetence(axis) ×
+  // (0.65 + 0.35 × morale), consumed by event-stream ignorance rates
+  // and the collapse formula's `weakest`. Written by scenario
+  // resolution, agency accept/decline, stream events, departures,
+  // collapse, and a per-tick drift toward `0.5 + 0.5 × meanSat`.
+  morale: number;
+  // ORDER 047 §5 — per-service running tally of which theme axis the
+  // ambient stream has been reporting on. Feeds a stream-weight term
+  // into drawNextTheme so the next scenario tends (but is not forced)
+  // to match what the room has been showing. Reset at OPEN_SERVICE.
+  streamThemeCounts: Record<SustainabilityKey, number>;
+  // ORDER 047 §4 — scenario ids fired during the current service, and
+  // the opener id from the previous service. Consumed by the scenario
+  // selector to avoid repeating within a service and to avoid opening
+  // two services in a row on the same content. Cleared at OPEN_SERVICE.
+  firedScenarioIds: string[];
+  lastServiceOpenerId: string | null;
   // ORDER 043 v3 §10 team layer — economic record for hiring, cost,
   // competence. Runs alongside `staff` (visual pucks). Cost
   // accumulates on day-advance; competence is read by the event

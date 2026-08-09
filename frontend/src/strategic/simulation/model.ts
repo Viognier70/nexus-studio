@@ -1,5 +1,6 @@
 import { TOTAL_SEATS } from '../business/interiorLayout';
 import { INTERIOR, RESIDENT_SPLINES } from '../content/layout';
+import { MORALE_INITIAL } from './morale';
 import { initialTeam } from './team';
 import type {
   CapitalState,
@@ -260,7 +261,12 @@ export function makeInitialState(
     district: { pedestrians: seedPedestrians(14) },
     delivery: initialDelivery(),
     events: [],
-    eveningAccount: null
+    eveningAccount: null,
+    // ORDER 047 §2/§4/§5 — fresh morale + empty per-service tallies.
+    morale: MORALE_INITIAL,
+    streamThemeCounts: { economic: 0, social: 0, ecological: 0 },
+    firedScenarioIds: [],
+    lastServiceOpenerId: null
   };
 }
 

@@ -108,11 +108,15 @@ describe('weakestAxis — MIN over axis-max', () => {
 describe('collapseProbabilityPerTick — formula shape', () => {
   const base = makeInitialState(42);
 
-  it('at rest (load 0) equals floor + (1 − weakest) × 0.30 × gain', () => {
+  it('at rest (load 0) equals floor + (1 − morale-scaled weakest) × 0.30 × gain', () => {
+    // ORDER 047 §2 — weakest is morale-scaled. `state.morale` starts
+    // at MORALE_INITIAL (0.85), so multiplier = 0.65 + 0.35 × 0.85 = 0.9475.
     const state = inRunningService(base);
     const p = collapseProbabilityPerTick(state);
-    const w = weakestAxis(state.team).value;
-    const expected = COLLAPSE_FLOOR + (1 - w) * strainMultiplier(0) * COLLAPSE_STRAIN_GAIN;
+    const wBase = weakestAxis(state.team).value;
+    const moraleMult = 0.65 + 0.35 * state.morale;
+    const wEff = wBase * moraleMult;
+    const expected = COLLAPSE_FLOOR + (1 - wEff) * strainMultiplier(0) * COLLAPSE_STRAIN_GAIN;
     expect(p).toBeCloseTo(expected, 8);
   });
 

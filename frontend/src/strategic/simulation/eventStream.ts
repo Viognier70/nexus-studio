@@ -40,6 +40,12 @@ import {
 } from '../../content/eventStream.sv';
 import { currentRhythmMultiplier } from './rhythm';
 import { teamCapacity, teamCompetence } from './team';
+import {
+  MORALE_POSITIVE_EVENT_BUMP,
+  MORALE_STRAIN_EVENT_HIT,
+  bumpMorale,
+  effectiveTeamCompetence
+} from './morale';
 
 const TICK_SECONDS = 0.2;
 
@@ -88,8 +94,12 @@ export function competenceFor(
   state: SimulationState
 ): number {
   if (source === null) return 1; // strain-only events pass through 1×
-  if (source === 'trainingLevel') return teamCompetence(state.team, 'practical');
-  return teamCompetence(state.team, source);
+  // ORDER 047 §2 — route through effectiveTeamCompetence so the
+  // ambient stream's ignorance weighting is the morale-scaled read of
+  // the team, not the raw. A specialist under bad morale reads as
+  // partly present; a competent team on a good day reads at full.
+  const axis = source === 'trainingLevel' ? 'practical' : source;
+  return effectiveTeamCompetence(state.team, axis, state.morale);
 }
 
 // Load = active guests / teamCapacity(state.team). Reads the same
@@ -285,12 +295,14 @@ function prepEventProbabilityPerTick(
   def: PrepEventDef,
   state: SimulationState
 ): number {
-  // Prep rate = base * ignoranceMultiplier(competenceForAxis).
+  // Prep rate = base * ignoranceMultiplier(effectiveCompetence).
   // No strain component during prep — the guests aren't in yet.
+  // ORDER 047 §2: routes through effectiveTeamCompetence so a bad-
+  // morale team preps badly regardless of the roster's competence.
   const source = def.competenceSource;
   const axis: 'scientific' | 'cultural' | 'practical' =
     source === 'trainingLevel' ? 'practical' : source;
-  const c = teamCompetence(state.team, axis);
+  const c = effectiveTeamCompetence(state.team, axis, state.morale);
   const perMinute = def.baseRatePerMin * ignoranceMultiplier(c);
   return Math.min(1, (perMinute * TICK_SECONDS) / 60);
 }
@@ -438,11 +450,15 @@ export function tickEventStream(state: SimulationState, rng: Rng): void {
           // team, not the average (ambient events use the average
           // because the whole team touches each guest). Threshold
           // 0.55 = "is anyone actually qualified for this axis?"
+          // ORDER 047 §2 — MAX competence is morale-scaled here too
+          // so a specialist under bad morale can trip the polarity
+          // down. Same shape as ambient competenceFor.
           let maxComp = 0;
           for (const m of state.team.members) {
             if (m.competence[axis] > maxComp) maxComp = m.competence[axis];
           }
-          if (maxComp > 0.55) {
+          const moraleScale = 0.65 + 0.35 * state.morale;
+          if (maxComp * moraleScale > 0.55) {
             // Positive polarity — prep going well.
             emitted.push({
               at: state.simTime,
@@ -512,4 +528,48 @@ export function tickEventStream(state: SimulationState, rng: Rng): void {
 
   if (emitted.length === 0) return;
   state.eventStream = [...state.eventStream, ...emitted].slice(-STREAM_KEEP);
+
+  // ORDER 047 §2 — morale bumps for each newly emitted entry. Strain
+  // events drag morale down; positive events lift it. Runs after the
+  // slice so the emitted list reflects what actually landed on the
+  // panel.
+  //
+  // ORDER 047 §5 — accumulate per-service streamThemeCounts on ambient
+  // + prep entries so drawNextTheme can weight the next scenario toward
+  // what the room has been showing. Positive events are excluded (they
+  // are the absence of a problem, not a signal about which axis is
+  // stressed); outcome events are excluded (the scenario itself sets
+  // its own signal).
+  const streamCountDelta: Record<SustainabilityKey, number> = {
+    economic: 0,
+    social: 0,
+    ecological: 0
+  };
+  let moraleAccum = 0;
+  for (const entry of emitted) {
+    if (entry.category === 'positive') {
+      moraleAccum += MORALE_POSITIVE_EVENT_BUMP;
+    } else if (entry.category === 'ambient') {
+      // Ignorance + strain both drag. 'both' events (turnover_stumble)
+      // count as a strain hit — they read to the player as the room
+      // failing under pressure, not as a slow technique slip.
+      if (entry.causeTag === 'strain' || entry.causeTag === 'both') {
+        moraleAccum -= MORALE_STRAIN_EVENT_HIT;
+      }
+      streamCountDelta[entry.sustainability] += 1;
+    }
+  }
+  if (moraleAccum !== 0) bumpMorale(state, moraleAccum);
+  if (
+    streamCountDelta.economic > 0 ||
+    streamCountDelta.social > 0 ||
+    streamCountDelta.ecological > 0
+  ) {
+    state.streamThemeCounts = {
+      economic: state.streamThemeCounts.economic + streamCountDelta.economic,
+      social: state.streamThemeCounts.social + streamCountDelta.social,
+      ecological:
+        state.streamThemeCounts.ecological + streamCountDelta.ecological
+    };
+  }
 }

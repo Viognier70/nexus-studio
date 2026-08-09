@@ -1,7 +1,18 @@
 import { INTERIOR } from '../content/layout';
 import type { Guest, SimulationState, StaffMember, TaskType, Vec2 } from '../types';
 import { taskDurationTicks } from './economics';
-import { reputationEventDeparture, reputationEventGiveUp } from './reputation';
+import {
+  HAPPY_THRESHOLD,
+  UNHAPPY_THRESHOLD,
+  reputationEventDeparture,
+  reputationEventGiveUp
+} from './reputation';
+import {
+  MORALE_GIVE_UP_HIT,
+  MORALE_HAPPY_DEPARTURE_BUMP,
+  MORALE_UNHAPPY_DEPARTURE_HIT,
+  bumpMorale
+} from './morale';
 
 const TICK_SECONDS = 0.2;
 
@@ -192,10 +203,13 @@ export function tickGuests(state: SimulationState) {
         // Give up. ORDER 043 v3 §4 reputation loop: a walkout from
         // the queue is the loudest bad-reputation signal — a person
         // waited long enough to be visibly unhappy and then left.
+        // ORDER 047 §2: same event drags morale — the team registers
+        // that someone waited too long and gave up.
         guest.state = 'leaving';
         guest.stateTime = now;
         moveGuest(guest, { x: 0, z: 8 });
         reputationEventGiveUp(state);
+        bumpMorale(state, -MORALE_GIVE_UP_HIT);
       }
       continue;
     }
@@ -221,6 +235,14 @@ export function tickGuests(state: SimulationState) {
       state.completedGuests += 1;
       state.seatedIds = state.seatedIds.filter((id) => id !== guest.id);
       reputationEventDeparture(state, guest.satisfaction);
+      // ORDER 047 §2 — same satisfaction band drives morale. A happy
+      // departure lifts; an unhappy one drags; a mediocre departure is
+      // silent (the team doesn't register a neutral customer).
+      if (guest.satisfaction >= HAPPY_THRESHOLD) {
+        bumpMorale(state, MORALE_HAPPY_DEPARTURE_BUMP);
+      } else if (guest.satisfaction <= UNHAPPY_THRESHOLD) {
+        bumpMorale(state, -MORALE_UNHAPPY_DEPARTURE_HIT);
+      }
       guest.state = 'leaving';
       guest.stateTime = now;
       moveGuest(guest, { x: 0, z: 8 });

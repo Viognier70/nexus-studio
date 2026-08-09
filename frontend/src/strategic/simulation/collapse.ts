@@ -37,6 +37,11 @@ import { createRng } from '../util/rng';
 import { COLLAPSE_TEXTS } from '../../content/collapse.sv';
 import { loadOf, strainMultiplier, STREAM_KEEP } from './eventStream';
 import { computeEveningAccount } from './eveningAccount';
+import {
+  MORALE_COLLAPSE_HIT,
+  bumpMorale,
+  moraleCompetenceMultiplier
+} from './morale';
 
 // Per-tick constants. Sim ticks at 5 Hz (0.2 s / tick, TICK_SECONDS
 // in eventStream.ts). A 15-min service is 4500 ticks; the constants
@@ -100,9 +105,14 @@ export function weakestAxis(team: TeamState): {
 // -------- per-tick probability ------------------------------------------
 
 export function collapseProbabilityPerTick(state: SimulationState): number {
+  // ORDER 047 §2 — morale-scale the weakest axis. A specialist under
+  // bad morale reads as less present at their station; a well-morale
+  // apprentice is still weak but less so. Same shape as ambient
+  // competenceFor (65 % floor, 100 % ceiling).
   const { value } = weakestAxis(state.team);
+  const effectiveWeakest = value * moraleCompetenceMultiplier(state.morale);
   const strain = strainMultiplier(loadOf(state));
-  const p = COLLAPSE_FLOOR + (1 - value) * strain * COLLAPSE_STRAIN_GAIN;
+  const p = COLLAPSE_FLOOR + (1 - effectiveWeakest) * strain * COLLAPSE_STRAIN_GAIN;
   // Clamp to [0, 1]; the analytical max at strain 3.0, weakest 0 is
   // 0.00003 + 3 × 0.00025 = 0.00078, well below 1 — clamp is defensive.
   return Math.max(0, Math.min(1, p));
@@ -180,6 +190,10 @@ export function fireCollapse(draft: SimulationState): void {
     active: true
   };
   draft.consequenceEvents = [...draft.consequenceEvents, consequence];
+
+  // ORDER 047 §2 — morale takes a real hit. The team read the
+  // failure; the next service starts under that weight.
+  bumpMorale(draft, -MORALE_COLLAPSE_HIT);
 
   // ORDER 046 §3 — snapshot the evening account BEFORE clearing day
   // fields. computeEveningAccount reads serviceCollapsed + collapseAxis

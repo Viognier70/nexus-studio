@@ -44,6 +44,15 @@ export const OPENING_DURATION_SEC = 10;
 import { pickScenarioSpec, scenarioById } from './scenarios';
 import { tickCollapseRoll } from './collapse';
 import { computeEveningAccount } from './eveningAccount';
+import {
+  MORALE_AGENCY_ACCEPT_BUMP,
+  MORALE_AGENCY_DECLINE_HIT,
+  MORALE_DAILY_REGRESSION_TARGET,
+  MORALE_SCENARIO_ENGAGE_BUMP,
+  MORALE_SCENARIO_REFUSE_HIT,
+  bumpMorale,
+  tickMoraleDrift
+} from './morale';
 import { initialDay, makeGuest, makeInitialState, makeStaff } from './model';
 import { tickReputationDrift } from './reputation';
 import { tickGuests, tickStaff } from './service';
@@ -415,6 +424,13 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       // the next morning. §10 "structural cost locked over multiple
       // days" is honoured by the per-day charge continuing for the
       // contract duration.
+      // ORDER 047 §2 — half-regression toward the baseline morale.
+      // A run of good evenings stays high; a bad run doesn't spiral
+      // permanently. Formula: morale = baseline + (morale - baseline)
+      // × 0.5. From 1.0 → 0.875; from 0.0 → 0.375; from 0.75 stays.
+      const regressed =
+        MORALE_DAILY_REGRESSION_TARGET +
+        (state.morale - MORALE_DAILY_REGRESSION_TARGET) * 0.5;
       return {
         ...state,
         team: chargeStructuralCost(state.team),
@@ -422,6 +438,10 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
         // clear when the new day begins so the panel doesn't linger
         // into morning where the investment panel needs the room.
         eveningAccount: null,
+        morale: regressed,
+        // Per-service tallies reset with the day.
+        streamThemeCounts: { economic: 0, social: 0, ecological: 0 },
+        firedScenarioIds: [],
         day: {
           ...initialDay(),
           dayNumber: day.dayNumber + 1,
@@ -523,7 +543,9 @@ function tickAgencyStrain(draft: SimulationState): void {
 function acceptAgency(state: SimulationState): SimulationState {
   if (state.agencyOffer === null) return state;
   const team = addAgencyMember(state.team, state.day.dayNumber);
-  return {
+  // ORDER 047 §2 — accepting help lifts morale; the team registers
+  // that management moves when they're drowning.
+  const next: SimulationState = {
     ...state,
     team,
     agencyOffer: null,
@@ -547,11 +569,15 @@ function acceptAgency(state: SimulationState): SimulationState {
       }
     ]
   };
+  bumpMorale(next, MORALE_AGENCY_ACCEPT_BUMP);
+  return next;
 }
 
 function declineAgency(state: SimulationState): SimulationState {
   if (state.agencyOffer === null) return state;
-  return {
+  // ORDER 047 §2 — declining help drops morale, mirroring the
+  // existing social-capital cost.
+  const next: SimulationState = {
     ...state,
     agencyOffer: null,
     capitals: {
@@ -570,6 +596,8 @@ function declineAgency(state: SimulationState): SimulationState {
       }
     ]
   };
+  bumpMorale(next, -MORALE_AGENCY_DECLINE_HIT);
+  return next;
 }
 
 // ---------- ORDER 043 v3 §10 step 5 — morning hire / fire ---------------
@@ -888,6 +916,12 @@ function advanceTick(state: SimulationState): SimulationState {
   // Uses a tick-derived RNG so downstream random draws aren't shifted.
   tickCollapseRoll(draft);
 
+  // ORDER 047 §2 — morale drift toward mean-satisfaction-derived
+  // target. Guarded internally to post-opening + post-prep service
+  // with active seated guests; a dead room applies no drift so an
+  // empty evening doesn't reset morale to a neutral middle.
+  tickMoraleDrift(draft);
+
   // ORDER 043 v3 step 5b — scheduled scenario firing.
   //
   // Fires when: service is running (lunch / dinner), there are still
@@ -1205,7 +1239,19 @@ function resolveScenario(
       )
     : [];
 
-  return {
+  // ORDER 047 §2 — scenario answer moves morale. A/B (engage) lifts;
+  // C on a demanding scenario (refuse in a way that costs) drops.
+  // capitalSign carries the intent: +1 = engage, −0.5 = refuse. A
+  // future scenario spec can override via a per-choice moraleDelta.
+  const capitalSign = choiceSpec?.capitalSign ?? 0;
+  const moraleDelta =
+    capitalSign > 0
+      ? MORALE_SCENARIO_ENGAGE_BUMP
+      : capitalSign < 0
+        ? -MORALE_SCENARIO_REFUSE_HIT
+        : 0;
+
+  const nextState: SimulationState = {
     ...state,
     scenario,
     policies,
@@ -1223,6 +1269,8 @@ function resolveScenario(
       }
     ]
   };
+  bumpMorale(nextState, moraleDelta);
+  return nextState;
 }
 
 function clampCapital(v: number): number {
