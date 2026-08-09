@@ -48,6 +48,27 @@ export interface SustainabilityWrite {
   delta: number;   // signed; typically ±0.02 to ±0.05
 }
 
+// ORDER 048 §6 — depth via meter-threshold-dependent consequences.
+// When a scenario choice has a `belowThreshold` clause and the
+// specified capital is BELOW `min` at resolve time, the amplifier
+// applies: the choice's theme delta is multiplied by
+// `amplifyThemeDelta` (typically 2 or 3), and the secondaryWrites'
+// deltas are multiplied by `amplifySecondary`. Reads as "you took
+// the shortcut when the capital could least afford it."
+//
+// Example: moral-dilemma A (ta fisken) is a normal ecological hit
+// when ecological ≥ 0.4; below that threshold the hit doubles.
+export interface BelowThresholdAmplifier {
+  capital: SustainabilityKey;
+  min: number;                    // amplifier fires when value < min
+  amplifyThemeDelta: number;      // ×N on themedDelta
+  amplifySecondary: number;       // ×N on each secondaryWrites entry
+  // Optional flavour line inserted into pendingOutcomes when the
+  // amplifier fires. Empty/omitted → no extra stream line, only
+  // the numeric amplification.
+  extraOutcome?: string;
+}
+
 export interface ScenarioChoiceSpec {
   // Player-facing choice label (Swedish).
   label: string;
@@ -70,6 +91,13 @@ export interface ScenarioChoiceSpec {
   // economic (extra covers = revenue) AND drops ecological (crammed
   // kitchen = more waste). Empty = no secondary writes.
   secondaryWrites?: readonly SustainabilityWrite[];
+  // ORDER 048 §6 — depth via meter-threshold amplification. Optional.
+  // See BelowThresholdAmplifier docs; used to make a choice's
+  // consequence larger when a specific capital is already weak, so
+  // the same choice reads differently depending on the state of the
+  // room. This is what turns a three-choice pick into "depending on
+  // where you are, one of these is much worse than the other two."
+  belowThreshold?: BelowThresholdAmplifier;
   // Outcome events fired at t+6 s and t+18 s after resolve (per
   // Addendum A). Empty = no outcome events for this choice.
   outcomes: readonly string[];
@@ -127,6 +155,18 @@ const WALK_IN_OF_FIVE: ScenarioSpec = {
         { capital: 'economic',   delta: 0.03 },
         { capital: 'ecological', delta: -0.02 }
       ],
+      // ORDER 048 §6 depth — cramming a strained room compounds the
+      // ecological hit. The kitchen's waste gets worse under load;
+      // taking the party when the team is already at the edge is a
+      // bigger ecological hit than taking it in a calm evening.
+      belowThreshold: {
+        capital: 'social',
+        min: 0.4,
+        amplifyThemeDelta: 1,
+        amplifySecondary: 2,
+        extraOutcome:
+          'Diskstationen svämmade över med tallrikar från sammanslagningen — halva restpartierna gick till spillo utan att någon hann sortera. Hm, den där sortens svinn kommer inte tillbaka.'
+      },
       outcomes: [
         'Fyran och tvåan har slagits ihop — grannbordet får hasa in mot väggen för att hämta besticket. Ingen sa något men jag såg blicken; undrar om vi skulle ha lämnat en förklaring innan de fick lista ut det själva.',
         'Sällskapets ordering kom in i klump på passet — köket har fem huvudrätter samtidigt istället för spridda i tid. Kocken vid grillen ser sammanbiten ut; hm, det var vi som valde det när vi sa ja.'
@@ -205,6 +245,16 @@ const TIME_PRESSURE: ScenarioSpec = {
       secondaryWrites: [
         { capital: 'social', delta: -0.02 }
       ],
+      // ORDER 048 §6 depth — pushing the team when social is already
+      // low doubles the hit. Bad morale + tempo hit compounds.
+      belowThreshold: {
+        capital: 'social',
+        min: 0.4,
+        amplifyThemeDelta: 1,
+        amplifySecondary: 2,
+        extraOutcome:
+          'Kocken vände sig bort utan att svara när jag nämnde bokningen — jag har sett den blicken innan. Hm, den där sortens tystnad kostar mer än en kväll.'
+      },
       outcomes: [
         'Menyn byts mitt på passet — köket noterar med en nick och börjar tömma om stationerna. Två pågående beställningar får läggas ner halvfärdiga och tas om. Undrar om vi förklarade tydligt nog för dem att detta var mitt beslut, inte deras.',
         'Notan svullnar snabbt när delegationen bokas för imorgon — men resten av kvällen betalar i tempo. Två stambord får sitt bröd senare än vanligt; hm, det är räkningen för morgondagens seger, betald i kvällens andrum.'
@@ -290,6 +340,18 @@ const MORAL_DILEMMA: ScenarioSpec = {
         { capital: 'economic', delta: 0.02 },
         { capital: 'social',   delta: -0.01 }
       ],
+      // ORDER 048 §6 depth — a shortcut on ecological when the
+      // capital is already weak doubles the hit. Reads as "you took
+      // the shortcut when the supplier trust could least afford it";
+      // the room noticed once, this time the pattern is showing.
+      belowThreshold: {
+        capital: 'ecological',
+        min: 0.4,
+        amplifyThemeDelta: 2,
+        amplifySecondary: 1.5,
+        extraOutcome:
+          'Två stamgäster har lagt märke till att ursprunget aldrig nämns längre — jag hörde dem prata om det vid utpasseringen. Hm, den där tystnaden är svår att hämta tillbaka.'
+      },
       outcomes: [
         'Två av förrätterna gick ut utan att någon nämnde att spårbarheten fattades — värden viker undan frågor från stamgäster på bord tre. Han svarar utan att svara. Undrar om han vet att den där ovilligheten själv säger något som gästen läser utan att formulera det.',
         'En gäst frågade rakt ut om fiskens ursprung — servitören blev tyst en sekund för länge innan hon svarade "från vår vanliga leverantör". Bordet nöjde sig med det men växlade en blick. Hm, den där sekunden är den enda tid vi kommer att kunna ta tillbaka det på.'

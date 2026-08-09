@@ -1288,6 +1288,16 @@ function resolveScenario(
     reputation = Math.max(0, reputation - 0.03);
   }
 
+  // ORDER 048 §6 — meter-threshold amplifier. Hoisted above the
+  // capital-write block so the outcome-scheduling block (below) can
+  // also read amplifierFires + amp.extraOutcome. Reads as "you took
+  // this shortcut when the capital could least afford it."
+  const amp = choiceSpec?.belowThreshold;
+  const amplifierFires =
+    !!amp && state.capitals.values[amp.capital] < amp.min;
+  const themeMult = amplifierFires ? amp!.amplifyThemeDelta : 1;
+  const secondaryMult = amplifierFires ? amp!.amplifySecondary : 1;
+
   // ORDER 043 v3 §7 chain — capital movement on the drawn theme +
   // wager payout. capitalSign now comes from the spec so scenarios
   // can weight A/B/C differently (a moral-dilemma A might read as
@@ -1305,7 +1315,7 @@ function resolveScenario(
       : 0;
     const payout = wagerPayout(drawn, wager, capitalAtPlacement);
     const nextValues = { ...state.capitals.values };
-    nextValues[drawn] = clampCapital(nextValues[drawn] + themedDelta);
+    nextValues[drawn] = clampCapital(nextValues[drawn] + themedDelta * themeMult);
     // ORDER 048 §3 — apply secondary sustainability writes. Two-way
     // trades (a choice that lifts one capital while dropping another)
     // land here as separate ± deltas on distinct capitals. Fired
@@ -1313,7 +1323,7 @@ function resolveScenario(
     // on a secondary-write capital reads the pre-payout value.
     if (choiceSpec?.secondaryWrites) {
       for (const w of choiceSpec.secondaryWrites) {
-        nextValues[w.capital] = clampCapital(nextValues[w.capital] + w.delta);
+        nextValues[w.capital] = clampCapital(nextValues[w.capital] + w.delta * secondaryMult);
       }
     }
     if (payout.targetCapital) {
@@ -1385,6 +1395,19 @@ function resolveScenario(
         spec?.id ?? 'unknown'
       )
     : [];
+  // ORDER 048 §6 — when the amplifier fires and the spec provided an
+  // extraOutcome line, append it to newOutcomes at t+12 s (between
+  // the standard two outcome slots at 6 and 18) so the depth reads
+  // as a distinct beat: "and here is why this particular choice bit
+  // harder than usual."
+  if (amplifierFires && amp?.extraOutcome) {
+    newOutcomes.push({
+      dueAt: state.simTime + 12,
+      text: amp.extraOutcome,
+      sustainability: outcomeTheme,
+      scenarioId: spec?.id ?? 'unknown'
+    });
+  }
 
   // ORDER 047 §2 — scenario answer moves morale. A/B (engage) lifts;
   // C on a demanding scenario (refuse in a way that costs) drops.
