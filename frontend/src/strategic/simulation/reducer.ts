@@ -266,10 +266,16 @@ function openService(
     costAtServiceStart: state.cost,
     reputationAtServiceStart: state.reputation
   };
+  // ORDER 047 §5/§4 — reset per-service tallies at service open. The
+  // stream-count reading is per-evening; the fired-scenario dedup is
+  // per-service. lastServiceOpenerId carries across services (set at
+  // first fire in this service, read at the next service's first draw).
   return {
     ...state,
     day,
-    rngState: rng.state
+    rngState: rng.state,
+    streamThemeCounts: { economic: 0, social: 0, ecological: 0 },
+    firedScenarioIds: []
   };
 }
 
@@ -1040,10 +1046,14 @@ function triggerScenario(state: SimulationState, auto: boolean): SimulationState
   // Consumes rng state so the same seed + same open sequence yields
   // the same chain.
   const rng = createRng(state.rngState);
+  // ORDER 047 §5 — pass streamThemeCounts so the theme draw is biased
+  // (not forced) toward what the ambient stream has been reporting on
+  // during this service. Reset at OPEN_SERVICE (in openService).
   const drawnTheme = drawNextTheme(
     state.capitals.values,
     state.capitals.themeHistory,
-    rng
+    rng,
+    state.streamThemeCounts
   );
   // Look up the scenario spec for the drawn theme. Cycle-1: one
   // spec per theme (see scenarios.ts SCENARIO_BY_THEME).

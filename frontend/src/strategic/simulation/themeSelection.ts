@@ -66,44 +66,96 @@ export function isThemeCappedOut(
   return recent.every((t) => t === theme);
 }
 
+// ORDER 047 §5 — stream weight coefficient. λ = 0.6 gives the stream
+// meaningful pull toward what the room has been reporting without
+// making the draw deterministic (Vision Owner constraint: "vikta mot
+// det strömmen visat, inte bestäm av det — ibland kommer problemet
+// från annat håll"). See streamThemeWeight below for the cap.
+export const STREAM_WEIGHT_LAMBDA = 0.6;
+
+// Distribution target (streamDrawnTheme.test.ts): a service with 100 %
+// of stream events on one axis draws that theme ~55–65 % of the time at
+// λ = 0.6 — dominant but not monopolising. Adjust λ if the observed
+// distribution reads too rigid or too loose.
+
 export interface ThemeWeightRow {
   theme: SustainabilityKey;
   capital: number;      // capital value that produced the weight
-  weight: number;       // final weight after damping
+  streamShare: number;  // stream-count share for this theme in [0, 1]
+  weight: number;       // final weight after damping (post-cap, post-cycle)
   cappedOut: boolean;   // consecutive-recurrence cap fired?
+}
+
+// Given the running per-service stream-theme counts, return the share
+// each theme has of the total. If no stream events yet fired this
+// service, returns uniform 1/3 across all themes.
+function streamShares(
+  streamCounts: Record<SustainabilityKey, number>
+): Record<SustainabilityKey, number> {
+  const total = THEMES.reduce((n, t) => n + streamCounts[t], 0);
+  // No stream signal yet → zeroes so the added term is zero and the
+  // pre-ORDER-047 weighting shape is preserved for callers that pass
+  // no counts (or an empty one). A uniform fallback would add a
+  // constant bias to every row that shifts absolute weights without
+  // changing rankings — cleaner to add nothing.
+  if (total <= 0) {
+    return { economic: 0, social: 0, ecological: 0 };
+  }
+  return {
+    economic: streamCounts.economic / total,
+    social: streamCounts.social / total,
+    ecological: streamCounts.ecological / total
+  };
 }
 
 // Exposes the intermediate weighting so tests + diagnostics can inspect
 // what the selector is doing without re-computing.
 export function weightTable(
   capitals: Record<SustainabilityKey, number>,
-  themeHistory: readonly SustainabilityKey[]
+  themeHistory: readonly SustainabilityKey[],
+  streamCounts?: Record<SustainabilityKey, number>
 ): ThemeWeightRow[] {
+  const shares = streamShares(
+    streamCounts ?? { economic: 0, social: 0, ecological: 0 }
+  );
   return THEMES.map((theme) => {
     const cappedOut = isThemeCappedOut(themeHistory, theme);
-    const raw = weightForCapital(capitals[theme]);
+    const capitalWeight = weightForCapital(capitals[theme]);
+    const streamWeight = shares[theme] * STREAM_WEIGHT_LAMBDA;
+    // Blend: capital weakness base + stream-driven bias. Capped share
+    // of the total is enforced globally by re-normalising below in
+    // drawNextTheme — here we just report the additive raw.
+    const raw = capitalWeight + streamWeight;
     return {
       theme,
       capital: capitals[theme],
+      streamShare: shares[theme],
       weight: cappedOut ? 0 : raw,
       cappedOut
     };
   });
 }
 
-// Draw a next theme, weighted by weakness and damped by the recurrence
-// cap. Deterministic in the rng — same rng state + same inputs → same
-// draw, so distribution tests can be seeded.
+// Draw a next theme, weighted by weakness + stream signal, damped by
+// the recurrence cap. Deterministic in the rng — same rng state + same
+// inputs → same draw, so distribution tests can be seeded.
 //
-// Falls back to a uniform draw over uncapped themes when every capital
-// has zero weight (e.g. all capitals at 1.0). Preserves the invariant
-// that a theme is always drawable — the wager loop never stalls.
+// The stream term contributes `share × λ` (max 0.6) to each theme's
+// raw weight. Capital weakness base is `(1-v)² + 0.05` per theme
+// (~0.05 to ~1.05). At λ = 0.6, a fully-dominant stream still only
+// biases the draw — the base weakness weighting keeps enough mass on
+// other themes that the reading pulls, doesn't decide.
+//
+// Falls back to a uniform draw over uncapped themes when every weight
+// is zero (e.g. all capitals at 1.0 with no stream signal). Preserves
+// the invariant that a theme is always drawable.
 export function drawNextTheme(
   capitals: Record<SustainabilityKey, number>,
   themeHistory: readonly SustainabilityKey[],
-  rng: Rng
+  rng: Rng,
+  streamCounts?: Record<SustainabilityKey, number>
 ): SustainabilityKey {
-  const rows = weightTable(capitals, themeHistory);
+  const rows = weightTable(capitals, themeHistory, streamCounts);
   const total = rows.reduce((n, r) => n + r.weight, 0);
   if (total > 0) {
     const roll = rng.next() * total;
