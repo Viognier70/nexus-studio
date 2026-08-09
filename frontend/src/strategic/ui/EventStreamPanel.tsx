@@ -27,9 +27,11 @@ import { playStreamArrivalCue } from './streamArrivalCue';
 
 // Show at most this many recent entries. Anything older is still in
 // state.eventStream (bounded by STREAM_KEEP = 40) but off-screen.
-// Halved rates (Addendum B) mean fewer entries per service — the
-// same 8-line window now carries a wider time span.
-const VISIBLE_ENTRIES = 8;
+// ORDER 047 §3 reduction — Vision Owner 2026-08-09: "strömmen är nu
+// en vägg." Four entries fit the reading eye better than eight; the
+// older ones recede via the tighter opacity curve below rather than
+// stacking. The panel becomes a moment-of-recent-attention, not a log.
+const VISIBLE_ENTRIES = 4;
 
 // Arrival animation window: how long the newest entry visibly slides
 // into place. Longer than a UI fade so the eye can catch it from
@@ -122,11 +124,13 @@ export function EventStreamPanel() {
   return (
     <div style={PANEL_STYLE}>
       {entries.map((e, i) => {
-        // Fade older entries. Newest (bottom, last in array) at full
-        // opacity; each step back drops by ~9 %. The oldest of eight
-        // sits at ~0.35 — legible but clearly receding.
+        // ORDER 047 §3 — tighter fade curve for the smaller window.
+        // Newest at 1.0, then 0.72, 0.44, 0.22. The tail entry sits
+        // faded enough to feel receding but still readable if the
+        // eye lands on it. Anything older than four is off-panel
+        // entirely (still in state.eventStream for the reducer).
         const stepsFromNewest = entries.length - 1 - i;
-        const opacity = Math.max(0.35, 1 - stepsFromNewest * 0.09);
+        const opacity = Math.max(0.22, 1 - stepsFromNewest * 0.28);
         const key = `${e.at.toFixed(3)}-${e.kind}-${i}`;
         const isArriving =
           !reduceMotion &&
