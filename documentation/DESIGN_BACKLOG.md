@@ -128,6 +128,23 @@ This is the limb that makes Nexus an education rather than a restaurant simulato
 
 ---
 
+### B-011 · Player-to-player economy
+**Recorded:** 2026-08-09 · **Status:** open · **Priority:** 8 or later per `DESIGN_DECISIONS_001.md`
+
+Cross-account financial primitives between players — the economy stops being solitaire and starts being a small market:
+
+- **Liquidation with capital parked at the bank as a pause mechanism.** A player who sells their venture (per ORDER 049 §5.2) may choose to leave the proceeds on deposit at the bank rather than immediately reinvest. The account remains theirs; they can return, take a bank meeting, and reactivate a venture from that capital when they are ready. Effectively an in-fiction "log out with your winnings intact" that is not persistence-as-savefile but persistence-as-account.
+- **Financing of other players' ventures.** A player with capital on deposit can back another player's application — either supplementing what the bank offers (letting the receiving player reach a higher tier than the bank alone would fund) or offering financing when the bank has refused.
+- **Direct messages and transfers between players.** Amount, interest rate, term, share (equity vs. straight loan vs. revenue share) all negotiated freely by the players themselves. The system holds the ledger and enforces the contract; it does not set the terms.
+
+**Preconditions.** This presupposes `LEARNING_AND_SCENARIO_ARCHITECTURE.md` §11.1's six conditions in their entirety: persistent state, real accounts, a shared world, time that advances independently of any single player being logged in, portable state, and the portfolio format already required for other reasons. `B-005` (persistence + time between sessions) is a strict prerequisite — this backlog entry cannot be built until §11.1 lands as a whole.
+
+**Own order when the knowledge engine bears.** The knowledge engine (ORDER 049) is the loop's current centre of gravity; the between-player market layers on top of it once single-player play has been judged to hold across a run of days. Deserves its own order at that point — comparable in scope to ORDER 043.
+
+**Not decided by this entry:** whether financing another player creates a legible in-fiction relationship (a named backer whose reputation is tied to the venture's outcome) or whether it is a pure ledger transaction. The former is truer to the game's overall grammar; the latter is much cheaper to build. Report before building.
+
+---
+
 ## How to use this file
 
 Add an entry the day a decision is made outside an order. When an entry is folded into an order, change its status and cite the order — do not delete it. The record of *when* something was decided is worth as much as the decision.
