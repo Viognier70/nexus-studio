@@ -13,7 +13,7 @@
 // no capital ever falls below its own square-of-slack.
 //
 // Numbers land here as tunable constants (WAGER_UNIT_STAKE et al. in
-// reducer.ts, TWICE_IN_A_ROW_CAP here) so a future order can revise
+// ./constants, TWICE_IN_A_ROW_CAP here) so a future order can revise
 // them from play evidence without touching the shape of the code.
 
 import type { Rng } from '../util/rng';
@@ -22,7 +22,7 @@ import {
   WAGER_UNIT_STAKE,
   WAGER_WEAK_THRESHOLD,
   WAGER_WEAK_WIN_MULTIPLIER
-} from './reducer';
+} from './constants';
 
 export const THEMES: readonly SustainabilityKey[] = [
   'economic',

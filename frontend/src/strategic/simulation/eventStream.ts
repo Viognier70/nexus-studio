@@ -59,10 +59,10 @@ export const OUTCOME_OFFSETS_SEC: readonly number[] = [6, 18];
 // bank — a repeat is better than a silent tick.
 export const REPEAT_GUARD_SEC = 240;
 
-// ORDER 043 Addendum A prep window (Vision Owner 2026-08-08):
-// "Håll den kort — ett par minuter, inte fem." Two minutes reads as
-// a busy prep beat without becoming its own act.
-export const PREP_DURATION_SEC = 120;
+// ORDER 043 Addendum A prep window — moved to ./constants 2026-08-09
+// to break the rhythm ↔ eventStream cycle. Re-exported here so
+// existing callers (reducer.ts) keep working via the barrel import.
+export { PREP_DURATION_SEC } from './constants';
 
 // Carryover trigger: if the prep window fires this many ignorance
 // events, a bottleneck line is scheduled ~13 min into service — the

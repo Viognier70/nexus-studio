@@ -63,15 +63,31 @@ import {
 } from './team';
 import { drawNextTheme, wagerPayout } from './themeSelection';
 
-// ORDER 043 §4 wager tuning — cycle-1 defaults, will be tuned against
-// play. Report gate at §10 lands with these; scenario integration
-// (Phase B+) will exercise them for the first time.
-export const WAGER_UNIT_STAKE = 0.10; // fixed magnitude per wager
-export const WAGER_WEAK_THRESHOLD = 0.4; // capital ≤ this is "weak"
-export const WAGER_WEAK_WIN_MULTIPLIER = 1.5; // extra payout on wins in weak capital
-export const CAPITAL_MIN = 0;
-export const CAPITAL_MAX = 1;
-export const THEME_HISTORY_LIMIT = 6;
+// Wager + capital tuning constants live in ./constants (no imports,
+// no cycle). Imported for local use AND re-exported here so callers
+// that pull them from the reducer barrel keep working. Introduced
+// 2026-08-09 to break the reducer ↔ eveningAccount ↔ themeSelection
+// TDZ cycle that crashed the browser bundle (Vitest happened to
+// resolve the cycle safely; the browser's entry order did not).
+import {
+  WAGER_UNIT_STAKE,
+  WAGER_WEAK_THRESHOLD,
+  WAGER_WEAK_WIN_MULTIPLIER,
+  CAPITAL_MIN,
+  CAPITAL_MAX,
+  THEME_HISTORY_LIMIT,
+  SCENARIO_CAPITAL_DELTA
+} from './constants';
+export {
+  WAGER_UNIT_STAKE,
+  WAGER_WEAK_THRESHOLD,
+  WAGER_WEAK_WIN_MULTIPLIER,
+  CAPITAL_MIN,
+  CAPITAL_MAX,
+  THEME_HISTORY_LIMIT,
+  SCENARIO_CAPITAL_DELTA
+};
+
 // Consequence window per ORDER 042 §3.4: "over 30–45 seconds of
 // compressed simulated time, the room changes in a way the player can
 // watch". After this many sim-seconds from the RESOLVE_SCENARIO, the
@@ -81,14 +97,6 @@ const SCENARIO_SETTLE_AFTER = 35;
 // Party size for walk-in-of-five now lives on the scenario spec
 // (scenarios.ts WALK_IN_OF_FIVE.choices.*.spawnedRemaining). Kept
 // out of the reducer to keep authoring in one file.
-
-// ORDER 043 v3 §7 chain — magnitude of the capital movement produced
-// by a scenario resolution on its drawn theme. Choice A/B are the
-// generous / demanding responses that move the themed capital up;
-// choice C is the refusal that moves it down. Cycle-1 default —
-// deliberately smaller than the wager stake (0.10) so a scenario
-// outcome + wager payout compose without one dominating the other.
-export const SCENARIO_CAPITAL_DELTA = 0.06;
 
 // Per-choice signed multiplier on SCENARIO_CAPITAL_DELTA. Chosen so
 // that A and B differ only in what they cost — both engage the

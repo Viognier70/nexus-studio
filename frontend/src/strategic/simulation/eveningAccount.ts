@@ -31,7 +31,12 @@ import type {
   WagerHistoryEntry
 } from '../types';
 import { pickParagraph } from '../../content/eveningAccount.sv';
-import { WAGER_UNIT_STAKE } from './themeSelection';
+// Import from ./constants (no imports there) to keep this module
+// out of the reducer ↔ themeSelection cycle. Previously imported
+// from ./themeSelection, which pulled in reducer.ts and triggered
+// a TDZ crash when the browser bundle evaluated this line before
+// reducer.ts finished defining WAGER_UNIT_STAKE.
+import { WAGER_UNIT_STAKE } from './constants';
 
 // Threshold for "the wager was resolved this service" — the last
 // wagerHistory entry must have landed after the current service
