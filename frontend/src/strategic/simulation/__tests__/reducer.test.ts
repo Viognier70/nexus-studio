@@ -200,7 +200,12 @@ describe('reducer RESOLVE_SCENARIO (walk-in-of-five)', () => {
   it('choice A seats the party of five (5 scenario spawns)', () => {
     const s = reducer(inSituation(), { type: 'RESOLVE_SCENARIO', choice: 'A' });
     expect(s.scenario.awaitingChoice).toBe(false);
-    expect(s.scenario.phase).toBe('resolving');
+    // ORDER 048 §5 — walk-in-of-five A now attaches a
+    // professionalQuestion, so phase steps through 'question' before
+    // reaching 'resolving' (via ANSWER_QUESTION). Party spawn shape
+    // still lands at RESOLVE_SCENARIO regardless of the question.
+    expect(s.scenario.phase).toBe('question');
+    expect(s.scenario.pendingQuestion).not.toBeNull();
     expect(s.scenario.choice).toBe('A');
     expect(s.scenario.spawnedRemaining).toBe(5);
   });
@@ -359,7 +364,14 @@ describe('reducer scenario resolves in the room (§3.4 mentor comment)', () => {
     s = reducer(s, { type: 'TRIGGER_SCENARIO' });
     s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
     s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty });
-    return reducer(s, { type: 'RESOLVE_SCENARIO', choice });
+    s = reducer(s, { type: 'RESOLVE_SCENARIO', choice });
+    // ORDER 048 §5 — some choices attach a professionalQuestion that
+    // steps phase through 'question'. Answer it so the mentor-settle
+    // window can be measured from the same anchor (choiceAt).
+    if (s.scenario.phase === 'question') {
+      s = reducer(s, { type: 'ANSWER_QUESTION', index: 0 });
+    }
+    return s;
   }
 
   it('does not surface a mentor comment before the settle window elapses', () => {

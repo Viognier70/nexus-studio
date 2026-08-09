@@ -71,7 +71,7 @@ const SUBJECT_CTA_STYLE: React.CSSProperties = {
 export function ScenarioOverlay() {
   const sim = useSimState();
   const dispatch = useSimDispatch();
-  const { phase, scenarioId, senderRole } = sim.scenario;
+  const { phase, scenarioId, senderRole, pendingQuestion } = sim.scenario;
 
   if (phase === 'idle' || phase === 'resolving' || phase === 'settled') return null;
 
@@ -134,6 +134,34 @@ export function ScenarioOverlay() {
           >
             {strings.scenario.difficulty.options.high}
           </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ORDER 048 §5 — professional question phase. Appears AFTER a
+  // scenario choice with an attached question. Same overlay shape
+  // as the situation phase, prefixed with the question's own
+  // sender (typically the specialist role, e.g. Kocken for a
+  // kitchen-technique question, Värden for a hospitality one).
+  if (phase === 'question' && pendingQuestion) {
+    const qPrefix = pendingQuestion.senderRole
+      ? `${SENDER_PREFIX[pendingQuestion.senderRole]}: `
+      : '';
+    return (
+      <div style={OVERLAY_STYLE}>
+        <div style={BODY_STYLE}>{qPrefix + pendingQuestion.body}</div>
+        <div style={{ ...BUTTON_ROW_STYLE, flexDirection: 'column', alignItems: 'stretch' }}>
+          {pendingQuestion.options.map((o, i) => (
+            <button
+              key={i}
+              type="button"
+              style={BUTTON_STYLE}
+              onClick={() => dispatch({ type: 'ANSWER_QUESTION', index: i })}
+            >
+              {o.label}
+            </button>
+          ))}
         </div>
       </div>
     );

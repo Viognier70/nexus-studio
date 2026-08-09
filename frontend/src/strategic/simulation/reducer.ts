@@ -173,6 +173,8 @@ export function reducer(state: SimulationState, action: SimAction): SimulationSt
       return makeInitialState(state.seed, state.policies);
     case 'FORCE_COLLAPSE':
       return forceCollapseAction(state);
+    case 'ANSWER_QUESTION':
+      return answerProfessionalQuestion(state, action.index);
     default:
       return state;
   }
@@ -1252,6 +1254,9 @@ function resolveScenario(
 ): SimulationState {
   const scenario = { ...state.scenario };
   scenario.awaitingChoice = false;
+  // ORDER 048 §5 — phase decided AFTER we look up the choiceSpec
+  // below. If a professionalQuestion is attached, the flow inserts
+  // a 'question' phase between 'resolving' and 'settled'.
   scenario.phase = 'resolving';
   scenario.choice = choice;
   scenario.choiceAt = state.simTime;
@@ -1421,6 +1426,27 @@ function resolveScenario(
         ? -MORALE_SCENARIO_REFUSE_HIT
         : 0;
 
+  // ORDER 048 §5 — if the choice attached a professionalQuestion,
+  // switch phase to 'question' and stash a PendingQuestion for the
+  // overlay to render. The scenario's normal outcome pending events
+  // still schedule; the mentor comment (via SCENARIO_SETTLE_AFTER)
+  // still fires. The question is a beat on top, not a replacement.
+  const pq = choiceSpec?.professionalQuestion ?? null;
+  if (pq && spec) {
+    scenario.phase = 'question';
+    scenario.pendingQuestion = {
+      body: pq.body,
+      options: pq.options.map((o) => ({
+        label: o.label,
+        correct: o.correct,
+        consequenceLine: o.consequenceLine
+      })),
+      senderRole: pq.senderRole ?? scenario.senderRole,
+      scenarioId: spec.id,
+      choice
+    };
+  }
+
   const nextState: SimulationState = {
     ...state,
     scenario,
@@ -1441,6 +1467,94 @@ function resolveScenario(
   };
   bumpMorale(nextState, moraleDelta);
   return nextState;
+}
+
+// ORDER 048 §5 — answer to the current professional question. Right
+// answer: enabler write + short positive line at t+4 s. Wrong answer:
+// per-option consequenceLine as an ambient bottleneck at t+4 s, plus
+// the choice-level wrongDelta write to the specified capital.
+function answerProfessionalQuestion(
+  state: SimulationState,
+  index: number
+): SimulationState {
+  const pq = state.scenario.pendingQuestion;
+  if (state.scenario.phase !== 'question' || !pq) return state;
+  const opt = pq.options[index];
+  if (!opt) return state;
+
+  const spec = scenarioById(pq.scenarioId);
+  const questionSpec = spec?.choices[pq.choice]?.professionalQuestion ?? null;
+
+  let capitals = state.capitals;
+  let enablers = state.enablers;
+  const newOutcomes: typeof state.pendingOutcomes = [];
+
+  if (opt.correct) {
+    // Enabler write for the correct answer.
+    if (questionSpec?.correctEnablerWrite) {
+      const w = questionSpec.correctEnablerWrite;
+      const amount = Math.max(0, Math.min(1, w.amount));
+      if (amount > 0) {
+        const prev = enablers[w.enabler];
+        enablers = {
+          ...enablers,
+          [w.enabler]: {
+            ...prev,
+            [w.register]: prev[w.register] + amount,
+            history: [
+              ...prev.history,
+              { at: state.simTime, register: w.register, amount, scenarioId: pq.scenarioId }
+            ]
+          }
+        };
+      }
+    }
+    // Positive outcome line for the room, if the spec provided one.
+    if (questionSpec?.correctLine) {
+      newOutcomes.push({
+        dueAt: state.simTime + 4,
+        text: questionSpec.correctLine,
+        sustainability: spec?.sustainability ?? 'social',
+        scenarioId: pq.scenarioId
+      });
+    }
+  } else {
+    // Wrong. Per-option consequence line first (specific room
+    // consequence of the exact wrong answer), then the choice-level
+    // capital hit.
+    if (opt.consequenceLine) {
+      newOutcomes.push({
+        dueAt: state.simTime + 4,
+        text: opt.consequenceLine,
+        sustainability: spec?.sustainability ?? 'social',
+        scenarioId: pq.scenarioId
+      });
+    }
+    if (questionSpec?.wrongCapital && questionSpec.wrongDelta) {
+      const nextValues = { ...capitals.values };
+      nextValues[questionSpec.wrongCapital] = clampCapital(
+        nextValues[questionSpec.wrongCapital] + questionSpec.wrongDelta
+      );
+      capitals = { ...capitals, values: nextValues };
+    }
+  }
+
+  // Phase back to 'resolving' so the standard settle → 'settled'
+  // continues. Clear pendingQuestion. `choiceAt` is unchanged so the
+  // SCENARIO_SETTLE_AFTER window continues from the original choice
+  // — the question is part of the resolve, not a reset.
+  const scenario = {
+    ...state.scenario,
+    phase: 'resolving' as const,
+    pendingQuestion: null
+  };
+  return {
+    ...state,
+    scenario,
+    capitals,
+    enablers,
+    pendingOutcomes: [...state.pendingOutcomes, ...newOutcomes]
+  };
 }
 
 function clampCapital(v: number): number {

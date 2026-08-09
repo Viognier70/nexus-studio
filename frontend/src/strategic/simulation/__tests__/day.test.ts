@@ -289,6 +289,9 @@ describe('scheduled scenario firing during service', () => {
     const planned = s.day.scenariosPlanned;
     // Tick through the whole service. Each scenario that reaches
     // 'subject' phase gets advanced + resolved so the next can fire.
+    // ORDER 048 §5 — choices with a professionalQuestion step through
+    // 'question' phase after RESOLVE_SCENARIO; the loop answers with
+    // index 0 so the sim unblocks and the next scenario can auto-fire.
     for (let i = 0; i < 3000; i++) {
       s = reducer(s, { type: 'TICK', dt: 0.2 });
       if (s.scenario.phase === 'subject') {
@@ -298,6 +301,9 @@ describe('scheduled scenario firing during service', () => {
           difficulty: 2
         });
         s = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'A' });
+      }
+      if (s.scenario.phase === 'question') {
+        s = reducer(s, { type: 'ANSWER_QUESTION', index: 0 });
       }
     }
     expect(s.day.scenariosFiredThisService).toBe(planned);

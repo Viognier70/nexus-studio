@@ -195,6 +195,7 @@ export function initialScenario(): ScenarioState {
     scenarioId: null,
     senderRole: null,
     senderMemberId: null,
+    pendingQuestion: null,
     mentorComment: null,
     mentorCommentAt: null
   };

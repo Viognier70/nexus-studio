@@ -58,6 +58,47 @@ export interface SustainabilityWrite {
 //
 // Example: moral-dilemma A (ta fisken) is a normal ecological hit
 // when ecological ≥ 0.4; below that threshold the hit doubles.
+// ORDER 048 §5 — a concrete professional question the scenario's
+// sender (or a specific role) asks the player after a scenario
+// choice lands. Reverses Addendum A's rejection of quiz questions:
+// that rejection was aimed at quiz-as-side-panel, judged for
+// points. This is knowledge tested AT THE MOMENT IT IS NEEDED,
+// by the person who needs it, about a guest who is waiting.
+//
+// Attached to a specific ScenarioChoiceSpec — a question exists
+// because that choice produced it. Three options, exactly one
+// correct. Wrong choice = a room consequence (stream line + capital
+// write). Right choice = an enabler tally + short positive line.
+//
+// The rendering is a follow-up modal on ScenarioOverlay, phase
+// 'question', after 'resolving' but before 'settled'.
+export interface QuestionOption {
+  label: string;
+  correct: boolean;
+  // Optional per-option consequence line — used mainly for wrong
+  // options ("the drink went out with sugar syrup; the guest
+  // returned it"). Right option can use a small positive line.
+  consequenceLine?: string;
+}
+
+export interface ProfessionalQuestion {
+  // Optional prefix override — if the question best fits a
+  // specialist different from the scenario's main sender (e.g. main
+  // sender is Värden but the question is a wine-pairing question
+  // that better fits Servitören or a future sommelier), specify the
+  // role here. Falls back to the scenario's main sender.
+  senderRole?: StaffRole;
+  body: string;
+  options: readonly QuestionOption[];   // exactly 3 with one correct
+  // Fired when the player picks the correct option.
+  correctEnablerWrite?: EnablerWrite;
+  correctLine?: string;
+  // Fired when the player picks a wrong option. The stream line
+  // arrives ~4 s later so the room-consequence reads as a beat.
+  wrongCapital?: SustainabilityKey;
+  wrongDelta?: number;              // signed; typically negative
+}
+
 export interface BelowThresholdAmplifier {
   capital: SustainabilityKey;
   min: number;                    // amplifier fires when value < min
@@ -98,6 +139,11 @@ export interface ScenarioChoiceSpec {
   // room. This is what turns a three-choice pick into "depending on
   // where you are, one of these is much worse than the other two."
   belowThreshold?: BelowThresholdAmplifier;
+  // ORDER 048 §5 — optional professional question fired AFTER the
+  // player picks this choice. See ProfessionalQuestion for shape.
+  // Cycle-1 attaches one per scenario, on the highest-competence
+  // choice, so proving the format doesn't require a copy explosion.
+  professionalQuestion?: ProfessionalQuestion;
   // Outcome events fired at t+6 s and t+18 s after resolve (per
   // Addendum A). Empty = no outcome events for this choice.
   outcomes: readonly string[];
@@ -166,6 +212,36 @@ const WALK_IN_OF_FIVE: ScenarioSpec = {
         amplifySecondary: 2,
         extraOutcome:
           'Diskstationen svämmade över med tallrikar från sammanslagningen — halva restpartierna gick till spillo utan att någon hann sortera. Hm, den där sortens svinn kommer inte tillbaka.'
+      },
+      // ORDER 048 §5 — concrete professional question at the moment
+      // it matters. Sammanslagningen är gjord; hur ducka man den
+      // så grannbordet inte känner sig trängt är ett värdsansvar.
+      professionalQuestion: {
+        senderRole: 'värd',
+        body: 'När du slår ihop fyran och tvåan — vad gör du med grannbordets bestick och glas?',
+        options: [
+          {
+            label: 'Flyttar dem försiktigt till grannens plats i samma rörelse som jag hämtar extra bestick.',
+            correct: true
+          },
+          {
+            label: 'Ber grannbordet flytta sig så du kan ställa i ordning ostört.',
+            correct: false,
+            consequenceLine:
+              'Grannbordet flyttades bort utan att någon frågade dem först — de reste sig försiktigt och satte sig igen med ryggen mot rummet. Blicken de växlade räknas inte i notan, men de kom inte tillbaka nästa vecka.'
+          },
+          {
+            label: 'Rör dem inte — låter grannbordet själva stuva undan när sällskapet kommer fram.',
+            correct: false,
+            consequenceLine:
+              'Grannbordet fick själva ordna undan sina glas — de gjorde det tyst men servitören noterade det för sent. Hm, den där lilla omtanken var det bara vi som märkte att vi hoppade över.'
+          }
+        ],
+        correctEnablerWrite: { enabler: 'cultural', register: 'phronesis', amount: 0.05 },
+        correctLine:
+          'Värden gled förbi grannbordet med en gest och besticken flyttades utan att någon behövde be — bordet log utan att veta varför det var lugnare på plats efter.',
+        wrongCapital: 'social',
+        wrongDelta: -0.03
       },
       outcomes: [
         'Fyran och tvåan har slagits ihop — grannbordet får hasa in mot väggen för att hämta besticket. Ingen sa något men jag såg blicken; undrar om vi skulle ha lämnat en förklaring innan de fick lista ut det själva.',
@@ -254,6 +330,36 @@ const TIME_PRESSURE: ScenarioSpec = {
         amplifySecondary: 2,
         extraOutcome:
           'Kocken vände sig bort utan att svara när jag nämnde bokningen — jag har sett den blicken innan. Hm, den där sortens tystnad kostar mer än en kväll.'
+      },
+      // ORDER 048 §5 — professional question. Menybytet är gjort;
+      // hur man tempererar upp en reduktion utan att den skär sig
+      // är ett köksansvar. Kocken frågar den som är på pass.
+      professionalQuestion: {
+        senderRole: 'kock',
+        body: 'När du ska temperera upp den kalla reduktionen till serveringstemperatur — hur gör du för att den inte ska skära sig?',
+        options: [
+          {
+            label: 'Värmer långsamt i vattenbad under omrörning tills den släpper från kanten.',
+            correct: true
+          },
+          {
+            label: 'Kokar upp den på hög värme så bakterierna dör och smaken samlar ihop sig.',
+            correct: false,
+            consequenceLine:
+              'Reduktionen skar sig på grillen — såsen som gick ut var kornig i strukturen. Två av bordens fyra huvudrätter kom tillbaka; kocken svor tyst men bytte utan att kommentera.'
+          },
+          {
+            label: 'Rör i lite smör direkt så emulsion håller ihop den när den värms.',
+            correct: false,
+            consequenceLine:
+              'Smöret rördes in för tidigt och emulsionen brast under värmen — såsen skar sig och tappade sin balans. Servitören bar den ut men gjorde en grimas när hon vände.'
+          }
+        ],
+        correctEnablerWrite: { enabler: 'scientific', register: 'episteme', amount: 0.05 },
+        correctLine:
+          'Kocken satte reduktionen i vattenbad och rörde varsamt tills den slappnade — såsen som gick ut satt som den ska på tallriken.',
+        wrongCapital: 'social',
+        wrongDelta: -0.02
       },
       outcomes: [
         'Menyn byts mitt på passet — köket noterar med en nick och börjar tömma om stationerna. Två pågående beställningar får läggas ner halvfärdiga och tas om. Undrar om vi förklarade tydligt nog för dem att detta var mitt beslut, inte deras.',
@@ -397,6 +503,36 @@ const MORAL_DILEMMA: ScenarioSpec = {
         1: 'Djärvt val — förvandlar en risk till en möjlighet. Kräver att köket är med.',
         2: 'Ekologiskt drag. Menyn får ny riktning och säsongen blir läslig.',
         3: 'Radikal linje. Om laget klarar den blir det en kväll som räknas som skifte, inte ersättning.'
+      },
+      // ORDER 048 §5 — professional question. Menyn skrivs om;
+      // vilken svamp håller sin form bäst under rostning vid hög
+      // temperatur är ett köksansvar när sammansättningen väljs.
+      professionalQuestion: {
+        senderRole: 'kock',
+        body: 'När du väljer svamp för rostning vid hög temperatur — vilken håller sin form bäst utan att vattna ur sig?',
+        options: [
+          {
+            label: 'Kantarell — den släpper minst vätska och behåller strukturen.',
+            correct: true
+          },
+          {
+            label: 'Champinjon — den är kompakt och tål hög värme rakt av.',
+            correct: false,
+            consequenceLine:
+              'Champinjonerna släppte sin vätska på pannan och kokade snarare än rostade — färgen blev grå och strukturen slaka. Två av tallrikarna gick ut med det som skulle ha varit crunch men blev sladd.'
+          },
+          {
+            label: 'Skogschampinjon — den är mest smakintensiv och står emot hetta.',
+            correct: false,
+            consequenceLine:
+              'Skogschampinjonerna kollapsade i pannan — de har för hög vattenhalt för torr rostning. Gästerna åt utan att kommentera; kocken noterade det utan att förklara vidare.'
+          }
+        ],
+        correctEnablerWrite: { enabler: 'scientific', register: 'episteme', amount: 0.05 },
+        correctLine:
+          'Kantarellerna rostade upp med behållen form och en gyllene yta — pass 4 nämnde smaken utan att fråga vidare.',
+        wrongCapital: 'social',
+        wrongDelta: -0.02
       }
     }
   }

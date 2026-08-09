@@ -167,15 +167,36 @@ export type ScenarioChoice = 'A' | 'B' | 'C';
 // (§4.2). `awaitingChoice` is retained as a derived convenience for
 // the arrivals suspension check in the reducer and its existing tests;
 // it equals `phase === 'situation'`.
+//
+// ORDER 048 §5 — new 'question' phase inserted BETWEEN 'resolving' and
+// 'settled' when the chosen choiceSpec has a professionalQuestion. On
+// ANSWER_QUESTION the phase drops back to 'resolving' and continues
+// through the normal settle window.
 export type ScenarioPhase =
   | 'idle'
   | 'subject'
   | 'difficulty'
   | 'situation'
   | 'resolving'
+  | 'question'
   | 'settled';
 
 export type ScenarioDifficulty = 1 | 2 | 3;
+
+// ORDER 048 §5 — the professional question currently awaiting a
+// player answer. A subset of the spec's ProfessionalQuestion so
+// state stays portable (no function refs, plain-object per §11.1).
+export interface PendingQuestion {
+  body: string;
+  options: readonly {
+    label: string;
+    correct: boolean;
+    consequenceLine?: string;
+  }[];
+  senderRole: StaffRole | null;   // overrides scenario sender for the question
+  scenarioId: string;
+  choice: ScenarioChoice;
+}
 
 export interface ScenarioState {
   hasAutoTriggered: boolean;
@@ -207,6 +228,12 @@ export interface ScenarioState {
   // scenarios and when the team is empty.
   senderRole: StaffRole | null;
   senderMemberId: string | null;
+  // ORDER 048 §5 — set when the chosen choiceSpec had a
+  // professionalQuestion. Non-null during phase 'question'; cleared
+  // on ANSWER_QUESTION. `senderRole` here overrides the scenario
+  // sender for the question (e.g. main scenario sender Värden,
+  // question sender Kocken for a kitchen question).
+  pendingQuestion: PendingQuestion | null;
   // Populated by the reducer when the scenario transitions to
   // `settled`. Rendered as an in-world text bubble by MentorComment;
   // per CAMERA_AND_GAMEPLAY_BIBLE §8.1 this must not be a modal.
@@ -689,7 +716,12 @@ export type SimAction =
   // (StrategicApp keydown handler is import.meta.env.DEV-only);
   // reducer treats it as a normal action so tests can exercise the
   // force path deterministically.
-  | { type: 'FORCE_COLLAPSE' };
+  | { type: 'FORCE_COLLAPSE' }
+  // ORDER 048 §5 — answer to the professional question currently
+  // held in state.scenario.pendingQuestion. `index` picks one of
+  // the pending options; the reducer looks up correctness against
+  // the pending options and fires the right/wrong effects.
+  | { type: 'ANSWER_QUESTION'; index: number };
 
 export interface CameraTarget {
   focus: Vec2;
