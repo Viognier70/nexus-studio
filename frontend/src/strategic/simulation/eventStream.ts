@@ -30,14 +30,18 @@ import type {
   SustainabilityKey
 } from '../types';
 import type { Rng } from '../util/rng';
+// ORDER 048 §2.1 — the plain-voice service report replaces the
+// observer-voice ambient banks during service. Observer voice
+// (AMBIENT_TEXTS et al.) is now used ONLY in the evening account
+// (already there via computeEveningAccount). The plain banks stay
+// station-tagged, present-tense, no interpretation.
 import {
-  AMBIENT_TEXTS,
-  POSITIVE_TEXTS,
-  PREP_POSITIVE_TEXTS,
-  PREP_TEXTS,
-  type AmbientEventKind,
-  type PrepEventKind
-} from '../../content/eventStream.sv';
+  SERVICE_REPORT_AMBIENT,
+  SERVICE_REPORT_POSITIVE,
+  SERVICE_REPORT_PREP,
+  SERVICE_REPORT_PREP_POSITIVE
+} from '../../content/serviceReport.sv';
+import type { AmbientEventKind, PrepEventKind } from '../../content/eventStream.sv';
 import { currentRhythmMultiplier } from './rhythm';
 import { teamCapacity, teamCompetence } from './team';
 import {
@@ -262,7 +266,7 @@ function makeAmbientEntry(
 ): EventStreamEntry {
   return {
     at: state.simTime,
-    text: pickTextWithRepeatGuard(AMBIENT_TEXTS[def.kind], state, rng),
+    text: pickTextWithRepeatGuard(SERVICE_REPORT_AMBIENT[def.kind], state, rng),
     category: 'ambient',
     causeTag: def.causeTag,
     sustainability: def.sustainability,
@@ -282,7 +286,7 @@ function makePrepEntry(
   // reading), matching the ambient convention for team-strain events.
   return {
     at: state.simTime,
-    text: pickTextWithRepeatGuard(PREP_TEXTS[def.kind], state, rng),
+    text: pickTextWithRepeatGuard(SERVICE_REPORT_PREP[def.kind], state, rng),
     category: 'ambient',
     causeTag: 'ignorance',
     sustainability: 'social',
@@ -342,7 +346,7 @@ function makePositiveEntry(
 ): EventStreamEntry {
   return {
     at: state.simTime,
-    text: pickTextWithRepeatGuard(POSITIVE_TEXTS, state, rng),
+    text: pickTextWithRepeatGuard(SERVICE_REPORT_POSITIVE, state, rng),
     category: 'positive',
     causeTag: null,
     sustainability: 'social',
@@ -462,7 +466,7 @@ export function tickEventStream(state: SimulationState, rng: Rng): void {
             // Positive polarity — prep going well.
             emitted.push({
               at: state.simTime,
-              text: pickTextWithRepeatGuard(PREP_POSITIVE_TEXTS[slot.kind], state, rng),
+              text: pickTextWithRepeatGuard(SERVICE_REPORT_PREP_POSITIVE[slot.kind], state, rng),
               category: 'positive',
               causeTag: null,
               sustainability: 'social',
@@ -473,7 +477,7 @@ export function tickEventStream(state: SimulationState, rng: Rng): void {
             // Ignorance polarity — prep going wrong.
             emitted.push({
               at: state.simTime,
-              text: pickTextWithRepeatGuard(PREP_TEXTS[slot.kind], state, rng),
+              text: pickTextWithRepeatGuard(SERVICE_REPORT_PREP[slot.kind], state, rng),
               category: 'ambient',
               causeTag: 'ignorance',
               sustainability: 'social',

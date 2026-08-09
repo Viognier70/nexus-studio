@@ -24,10 +24,12 @@ import {
   PREP_CARRYOVER_OFFSET_SEC,
   PREP_CARRYOVER_THRESHOLD,
   PREP_DURATION_SEC,
-  scheduleOutcomes,
   tickEventStream
 } from './eventStream';
-import { PREP_CARRYOVER_TEXT } from '../../content/eventStream.sv';
+// ORDER 048 §2.1 — carryover text switched to the plain-voice service
+// report per the three-voices split. Observer voice moved out of
+// during-service into the evening account only.
+import { SERVICE_REPORT_PREP_CARRYOVER } from '../../content/serviceReport.sv';
 import { generateWeather, waitingAtOpeningCount } from './weather';
 import {
   generateWorldFactors,
@@ -935,7 +937,7 @@ function advanceTick(state: SimulationState): SimulationState {
         ...draft.pendingOutcomes,
         {
           dueAt: draft.simTime + PREP_CARRYOVER_OFFSET_SEC,
-          text: PREP_CARRYOVER_TEXT,
+          text: SERVICE_REPORT_PREP_CARRYOVER,
           sustainability: 'social',
           scenarioId: 'prep-carryover',
           flavor: 'prep-carryover'
@@ -1387,24 +1389,26 @@ function resolveScenario(
     }
   }
 
-  // ORDER 043 Addendum A outcome events — 1–2 hand-authored lines
-  // from the spec's choice, fired at t+6 s and t+18 s to fill the
-  // space between choice and mentor. Empty outcomes list = no
-  // stream fill for this choice.
+  // ORDER 048 §2.2 — immediate plain-voice outcome fired ~0.5 s
+  // after the player answers. The connection between choice and
+  // effect must be visible; the plain sentence names the specific
+  // consequence in the room. Observer-voice `outcomes[]` array is
+  // no longer scheduled during service (§2.3 relocation).
   const outcomeTheme = drawn ?? spec?.sustainability ?? 'social';
-  const newOutcomes = choiceSpec
-    ? scheduleOutcomes(
-        choiceSpec.outcomes,
-        state.simTime,
-        outcomeTheme,
-        spec?.id ?? 'unknown'
-      )
-    : [];
+  const newOutcomes: typeof state.pendingOutcomes = [];
+  if (choiceSpec?.immediateOutcome) {
+    newOutcomes.push({
+      dueAt: state.simTime + 0.5,
+      text: choiceSpec.immediateOutcome,
+      sustainability: outcomeTheme,
+      scenarioId: spec?.id ?? 'unknown'
+    });
+  }
   // ORDER 048 §6 — when the amplifier fires and the spec provided an
-  // extraOutcome line, append it to newOutcomes at t+12 s (between
-  // the standard two outcome slots at 6 and 18) so the depth reads
-  // as a distinct beat: "and here is why this particular choice bit
-  // harder than usual."
+  // extraOutcome line, append it at t+12 s. Amplifier lines are still
+  // observer voice by design — they read as the proprietor noticing
+  // "this particular choice bit harder than usual", which is
+  // reflective, not a report. Marginal exception to §2's relocation.
   if (amplifierFires && amp?.extraOutcome) {
     newOutcomes.push({
       dueAt: state.simTime + 12,

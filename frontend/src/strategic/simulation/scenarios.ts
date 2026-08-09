@@ -144,8 +144,19 @@ export interface ScenarioChoiceSpec {
   // Cycle-1 attaches one per scenario, on the highest-competence
   // choice, so proving the format doesn't require a copy explosion.
   professionalQuestion?: ProfessionalQuestion;
-  // Outcome events fired at t+6 s and t+18 s after resolve (per
-  // Addendum A). Empty = no outcome events for this choice.
+  // ORDER 048 §2.2 — immediate plain-voice consequence line fired
+  // ~0.5 s after RESOLVE_SCENARIO. Not observer voice; a plain
+  // "this is what followed from the answer" statement. This is what
+  // makes the connection between choice and effect visible.
+  // Optional; when absent the scenario resolves silently in the
+  // stream (mentor comment still fires at t+35 s).
+  immediateOutcome?: string;
+  // Outcome events fired at t+6 s and t+18 s after resolve. Observer
+  // voice. ORDER 048 §2.3 relocated this voice to the evening account
+  // only — the `outcomes` field is no longer scheduled to the service
+  // stream. Retained on the spec so evening-account synthesis can
+  // read from it in future work. Empty = no evening-account
+  // synthesis material for this choice.
   outcomes: readonly string[];
   // Mentor bank keyed by chosen difficulty. Nine lines per scenario
   // (3 choices × 3 difficulties) exists at scenario level; per-choice
@@ -243,6 +254,7 @@ const WALK_IN_OF_FIVE: ScenarioSpec = {
         wrongCapital: 'social',
         wrongDelta: -0.03
       },
+      immediateOutcome: 'Sällskapet fick fyran och tvåan ihopslagna. Grannbordet flyttades.',
       outcomes: [
         'Fyran och tvåan har slagits ihop — grannbordet får hasa in mot väggen för att hämta besticket. Ingen sa något men jag såg blicken; undrar om vi skulle ha lämnat en förklaring innan de fick lista ut det själva.',
         'Sällskapets ordering kom in i klump på passet — köket har fem huvudrätter samtidigt istället för spridda i tid. Kocken vid grillen ser sammanbiten ut; hm, det var vi som valde det när vi sa ja.'
@@ -259,6 +271,7 @@ const WALK_IN_OF_FIVE: ScenarioSpec = {
       spawnedRemaining: 5,
       nextSpawnAtOffset: 0.4,
       capitalSign: 1,
+      immediateOutcome: 'Fyra vid fyran, en vid baren. Bartendern hälsar den femte.',
       outcomes: [
         'Fyra sitter vid fyran och en sitter vid baren — den femte hänger jackan över barstolen och försöker se avslappnad ut. Sällskapet vid bordet tittar dit lite för ofta; undrar om han vet att vi vet att vi delade honom.',
         'Bartendern hälsade sent på den femte — han hann vänta ut sin egen tystnad först. Nu står drinken framför honom men samtalet vid bordet har gått vidare utan honom. Hm, den där ensamheten är svår att ta tillbaka i efterhand.'
@@ -275,6 +288,7 @@ const WALK_IN_OF_FIVE: ScenarioSpec = {
       spawnedRemaining: 2,
       nextSpawnAtOffset: 0.3,
       capitalSign: -0.5,
+      immediateOutcome: 'Sällskapet nekades. Två stod kvar i entrén, tre vände.',
       outcomes: [
         'Två av sällskapet vände redan i entrén innan värden hade sagt hela meningen — de andra tre följde efter utan att fråga varför. Kvar står värden med en artighet på tungan som ingen tog emot; hm, den där ansiktet är svårare att glömma än beslutet var att fatta.',
         'En stamgäst vid fönsterbordet såg hela utbytet och höjde på ögonbrynen mot sin sällskapare. De sa inget till oss men växlade en blick. Undrar hur många kvällar det tar innan den blicken kommer tillbaka som en avbokning.'
@@ -361,6 +375,7 @@ const TIME_PRESSURE: ScenarioSpec = {
         wrongCapital: 'social',
         wrongDelta: -0.02
       },
+      immediateOutcome: 'Menyn byts mitt i passet. Två pågående order läggs om.',
       outcomes: [
         'Menyn byts mitt på passet — köket noterar med en nick och börjar tömma om stationerna. Två pågående beställningar får läggas ner halvfärdiga och tas om. Undrar om vi förklarade tydligt nog för dem att detta var mitt beslut, inte deras.',
         'Notan svullnar snabbt när delegationen bokas för imorgon — men resten av kvällen betalar i tempo. Två stambord får sitt bröd senare än vanligt; hm, det är räkningen för morgondagens seger, betald i kvällens andrum.'
@@ -377,6 +392,7 @@ const TIME_PRESSURE: ScenarioSpec = {
       spawnedRemaining: 0,
       nextSpawnAtOffset: 0,
       capitalSign: 1,
+      immediateOutcome: 'Bokning skriven för imorgon. Kvällen fortsätter oförändrad.',
       outcomes: [
         'Bokningen skrevs för morgondagen — kvällen fick andas ut. Servitören sa till köket och båda log lätt utan att kommentera. Undrar om det är den där sortens signal som håller ett lag ihop längre än en bonus gör.',
         'Kocken började planera imorgondagens meny i huvudet mitt i pass 5 — han var redan hemma i tanken. Hm, det är den luxuösa sortens uppmärksamhet vi köpte oss med att säga nej ikväll och ja i morgon.'
@@ -393,6 +409,7 @@ const TIME_PRESSURE: ScenarioSpec = {
       spawnedRemaining: 0,
       nextSpawnAtOffset: 0,
       capitalSign: -0.5,
+      immediateOutcome: 'Bokningen nekades. Delegationen la på utan att vidare försöka.',
       outcomes: [
         'Delegationen tackade artigt och la på — inom en halvtimme såg vi via en av stamgästerna att de bokat sig på hotellrestaurangen istället. Undrar om vår rytm värderas till vad vi tror den värderas till, eller om vi lagt ett golv där ingen annan skulle ha lagt det.',
         'Kvällens takt behölls — inga fler överraskningar nådde passet. Servitörerna rör sig som om de vet vad de gör i två timmar till. Hm, det är den där stillheten som är svår att räkna in i kassan men lätt att räkna in i vem som orkar komma i morgon.'
@@ -458,6 +475,7 @@ const MORAL_DILEMMA: ScenarioSpec = {
         extraOutcome:
           'Två stamgäster har lagt märke till att ursprunget aldrig nämns längre — jag hörde dem prata om det vid utpasseringen. Hm, den där tystnaden är svår att hämta tillbaka.'
       },
+      immediateOutcome: 'Fisken går ut. Spårbarheten nämns inte.',
       outcomes: [
         'Två av förrätterna gick ut utan att någon nämnde att spårbarheten fattades — värden viker undan frågor från stamgäster på bord tre. Han svarar utan att svara. Undrar om han vet att den där ovilligheten själv säger något som gästen läser utan att formulera det.',
         'En gäst frågade rakt ut om fiskens ursprung — servitören blev tyst en sekund för länge innan hon svarade "från vår vanliga leverantör". Bordet nöjde sig med det men växlade en blick. Hm, den där sekunden är den enda tid vi kommer att kunna ta tillbaka det på.'
@@ -477,6 +495,7 @@ const MORAL_DILEMMA: ScenarioSpec = {
       // way that reads a shade favourable (the supplier chain took a
       // hit but the room stayed honest).
       capitalSign: 0.5,
+      immediateOutcome: 'Menyn byts. Köket plockar fram kyckling istället för fisken.',
       outcomes: [
         'Menytavlan skrevs om i sista stund — köket bytte till kyckling utan gnäll och började plocka fram vad som fanns. Ingen kommenterade förändringen. Undrar om det där lugnet är en effekt av att beslutet var mitt att fatta och deras att verkställa.',
         'Alternativet presenterades utan ursäkter — servitören sa "vi har justerat menyn efter dagens leverans" och bordet nickade utan att fråga vidare. Hm, det är det där språket som gör en substitution till ett val istället för ett problem.'
@@ -495,6 +514,7 @@ const MORAL_DILEMMA: ScenarioSpec = {
       // Full positive — transformative choice that makes ecology
       // legible to the room. Largest ecological lift of the three.
       capitalSign: 1,
+      immediateOutcome: 'Menyn skrivs om helt. Säsongens gröna lyfts fram.',
       outcomes: [
         'De gröna alternativen presenterades med sin egen berättelse — servitören berättade om odlaren och veckans skörd. Bordspratet steg märkbart över tre bord. Undrar om vi kommer att se det här som en punkt där menyn ändrades permanent, eller som en engångskväll.',
         'En gäst vid pass 4 noterade uttryckligen att kvällens meny hade ändrats och nickade uppskattande — hon frågade var grönsakerna kom ifrån. Servitören visste svaret. Hm, det där svaret är resultatet av morgonens beslut att inte ta genvägen.'

@@ -133,19 +133,21 @@ describe('ambient rolls are gated by period', () => {
 });
 
 describe('outcome events fire deterministically after RESOLVE', () => {
-  it('schedules two outcomes at ~6 s and ~18 s and emits them at those times', () => {
+  it('schedules an immediate plain-voice outcome at ~0.5 s and emits it', () => {
+    // ORDER 048 §2.2 rewired scenario outcomes: only ONE immediate
+    // plain-voice line fires at t+0.5 s per resolve. The two observer-
+    // voice outcomes at +6 s and +18 s were relocated out of during-
+    // service (§2.3 observer voice → evening account only). See
+    // reducer.ts resolveScenario for the current wiring.
     let s = reducer(makeInitialState(9), {
       type: 'OPEN_SERVICE',
       service: 'lunch',
       lengthMinutes: 10
     });
-    // Advance until the first scheduled scenario has fired (up to the
-    // full service length, plenty of headroom regardless of seed).
     for (let i = 0; i < 3000 && s.scenario.phase !== 'subject'; i++) {
       s = reducer(s, { type: 'TICK', dt: 0.2 });
     }
     expect(s.scenario.phase).toBe('subject');
-    // Advance through the scenario.
     s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
     s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
     const resolveAt = s.simTime;
@@ -155,25 +157,15 @@ describe('outcome events fire deterministically after RESOLVE', () => {
     const scenarioOutcomes = s.pendingOutcomes.filter(
       (p) => p.flavor !== 'prep-carryover'
     );
-    expect(scenarioOutcomes).toHaveLength(2);
-    expect(scenarioOutcomes[0].dueAt).toBeCloseTo(resolveAt + 6, 5);
-    expect(scenarioOutcomes[1].dueAt).toBeCloseTo(resolveAt + 18, 5);
+    expect(scenarioOutcomes.length).toBeGreaterThanOrEqual(1);
+    expect(scenarioOutcomes[0].dueAt).toBeCloseTo(resolveAt + 0.5, 5);
 
-    // Advance ~7 s — first outcome should have emitted, second still pending.
-    for (let i = 0; i < 40; i++) s = reducer(s, { type: 'TICK', dt: 0.2 });
+    // Advance ~1 s — the immediate outcome should have emitted.
+    for (let i = 0; i < 6; i++) s = reducer(s, { type: 'TICK', dt: 0.2 });
     const outcomes1 = s.eventStream.filter((e) => e.category === 'outcome');
-    expect(outcomes1.length).toBe(1);
-    // Only the second scenario outcome should still be pending;
-    // prep-carryover may also be pending (fires 13 min after prep-end).
-    const stillPendingScenario = s.pendingOutcomes.filter(
-      (p) => p.flavor !== 'prep-carryover'
-    );
-    expect(stillPendingScenario).toHaveLength(1);
-
-    // Advance to ~20 s past resolve — both outcomes should have emitted.
-    for (let i = 0; i < 65; i++) s = reducer(s, { type: 'TICK', dt: 0.2 });
-    const outcomes2 = s.eventStream.filter((e) => e.category === 'outcome');
-    expect(outcomes2.length).toBe(2);
+    expect(outcomes1.length).toBeGreaterThanOrEqual(1);
+    // Zero remaining scenario outcomes; prep-carryover may still
+    // be pending (fires 13 min after prep-end).
     const stillPendingScenarioAfter = s.pendingOutcomes.filter(
       (p) => p.flavor !== 'prep-carryover'
     );
