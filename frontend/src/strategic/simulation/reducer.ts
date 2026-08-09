@@ -64,7 +64,12 @@ import {
 import { tickQualityDrift } from './quality';
 import { ROLLING_WINDOW } from './valuation';
 import { initialDay, makeGuest, makeInitialState, makeStaff } from './model';
-import { tickReputationDrift } from './reputation';
+import {
+  decayEnablersOvernight,
+  phronesisSofteningGeneral,
+  tickReputationCeilingDrift,
+  tickReputationDrift
+} from './reputation';
 import { tickGuests, tickStaff } from './service';
 import { tickSustainability } from './sustainability';
 import {
@@ -591,6 +596,10 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
         // ORDER 049 §5.2 — rolling revenue flush.
         serviceRevenueToday: { lunch: 0, dinner: 0 },
         serviceRevenueRolling: { lunch: nextRollingLunch, dinner: nextRollingDinner },
+        // ORDER 049 §2.1 knowledge decay — every enabler tally drops
+        // a fixed % per night. Rhythm not reaction: the player must
+        // refill via questions to hold the ceiling.
+        enablers: decayEnablersOvernight(state.enablers),
         day: {
           ...initialDay(),
           dayNumber: day.dayNumber + 1,
@@ -1020,6 +1029,12 @@ function advanceTick(state: SimulationState): SimulationState {
   // previous tick's state.
   tickReputationDrift(draft);
 
+  // ORDER 049 §2.1 knowledge-ceiling drift — recomputes reputation
+  // ceiling from episteme enablers and pulls the live reading toward
+  // it. Runs every period so morning study visibly lifts the ceiling
+  // before the doors open.
+  tickReputationCeilingDrift(draft);
+
   // ORDER 043 Addendum A service event stream — ambient rolls +
   // pending-outcome emission. Also runs after tickGuests so `loadOf`
   // reads the current active-guest count for the strain multiplier,
@@ -1424,8 +1439,15 @@ function resolveScenario(
   const amp = choiceSpec?.belowThreshold;
   const amplifierFires =
     !!amp && state.capitals.values[amp.capital] < amp.min;
-  const themeMult = amplifierFires ? amp!.amplifyThemeDelta : 1;
-  const secondaryMult = amplifierFires ? amp!.amplifySecondary : 1;
+  const rawThemeMult = amplifierFires ? amp!.amplifyThemeDelta : 1;
+  const rawSecondaryMult = amplifierFires ? amp!.amplifySecondary : 1;
+  // ORDER 049 §2.1: phronesis softens only the amplifier EXCESS
+  // (the multiplier over the nominal ×1). "Att döma rätt räddar dig
+  // när det brister" — the nominal consequence of the choice stands,
+  // but the pressed-below-threshold penalty is what wisdom mitigates.
+  const soften = amplifierFires ? phronesisSofteningGeneral(state) : 1;
+  const themeMult = 1 + (rawThemeMult - 1) * soften;
+  const secondaryMult = 1 + (rawSecondaryMult - 1) * soften;
 
   // ORDER 043 v3 §7 chain — capital movement on the drawn theme +
   // wager payout. capitalSign now comes from the spec so scenarios
@@ -1596,9 +1618,11 @@ function resolveScenario(
 }
 
 // ORDER 048 §5 — answer to the current professional question. Right
-// answer: enabler write + short positive line at t+4 s. Wrong answer:
-// per-option consequenceLine as an ambient bottleneck at t+4 s, plus
-// the choice-level wrongDelta write to the specified capital.
+// answer: enabler write (+ optional correctLine at t+4 s). Wrong
+// answer: per-option consequenceLine at t+4 s, plus a decay to the
+// same enabler tally the correct answer would have paid (ORDER 049
+// §2.1, 2026-08-09: knowledge that failed is the knowledge that
+// regresses; capital falls indirectly via the ceiling chain).
 function answerProfessionalQuestion(
   state: SimulationState,
   index: number
@@ -1656,12 +1680,33 @@ function answerProfessionalQuestion(
         scenarioId: pq.scenarioId
       });
     }
-    if (questionSpec?.wrongCapital && questionSpec.wrongDelta) {
-      const nextValues = { ...capitals.values };
-      nextValues[questionSpec.wrongCapital] = clampCapital(
-        nextValues[questionSpec.wrongCapital] + questionSpec.wrongDelta
-      );
-      capitals = { ...capitals, values: nextValues };
+    // ORDER 049 §2.1 (Vision Owner 2026-08-09): wrong answers now
+    // decay the same enabler tally the question was probing, not
+    // capital. Capital falls indirectly — the ceiling drops, drift
+    // pulls quality and reputation with it, revenue follows. This
+    // makes "brister kan inte kompenseras mellan områden" mechanical:
+    // knowledge that failed is precisely the knowledge that regresses.
+    if (questionSpec?.correctEnablerWrite) {
+      const w = questionSpec.correctEnablerWrite;
+      // Symmetric magnitude: a wrong answer costs the same tally the
+      // right answer would have paid. Kept simple; §5 tuning may
+      // later scale wrong-costs to be steeper than right-gains once
+      // playtest shows the shape.
+      const cost = Math.max(0, Math.min(1, w.amount));
+      if (cost > 0) {
+        const prev = enablers[w.enabler];
+        enablers = {
+          ...enablers,
+          [w.enabler]: {
+            ...prev,
+            [w.register]: Math.max(0, prev[w.register] - cost),
+            history: [
+              ...prev.history,
+              { at: state.simTime, register: w.register, amount: -cost, scenarioId: pq.scenarioId }
+            ]
+          }
+        };
+      }
     }
   }
 

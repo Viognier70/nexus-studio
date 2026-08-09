@@ -18,7 +18,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSimState } from '../simulation/SimulationProvider';
 import { computeValuation, revenueReading, TIER_DATA } from '../simulation/valuation';
-import { qualityBand } from '../simulation/quality';
+import {
+  qualityBand,
+  targetQualityDrink,
+  targetQualityFood,
+  targetQualityService
+} from '../simulation/quality';
 
 // Same word-band pattern as the four instruments panel.
 function reputationBand(v: number): string {
@@ -115,18 +120,36 @@ const READING_STYLE: React.CSSProperties = {
 };
 
 const BAR_TRACK_STYLE: React.CSSProperties = {
+  position: 'relative',
   width: 90,
   height: 3,
   background: 'rgba(168, 146, 106, 0.22)',
   borderRadius: 2,
-  overflow: 'hidden'
+  overflow: 'visible'
 };
 
 const barFill = (fraction: number): React.CSSProperties => ({
   width: `${Math.max(0, Math.min(1, fraction)) * 100}%`,
   height: '100%',
   background: 'rgba(216, 190, 130, 0.75)',
-  transition: 'width 0.35s ease-out'
+  transition: 'width 0.35s ease-out',
+  borderRadius: 2
+});
+
+// A ceiling tick: a short vertical stroke sitting above the bar at
+// the ceiling position, so the eye reads "here is what the house
+// could be." Two pixels wide, four pixels tall, offset upward so it
+// doesn't crowd the fill.
+const ceilingTick = (fraction: number): React.CSSProperties => ({
+  position: 'absolute',
+  left: `${Math.max(0, Math.min(1, fraction)) * 100}%`,
+  top: -3,
+  width: 2,
+  height: 9,
+  marginLeft: -1,
+  background: 'rgba(216, 190, 130, 0.85)',
+  transition: 'left 0.35s ease-out',
+  pointerEvents: 'none'
 });
 
 const SPLIT_STYLE: React.CSSProperties = {
@@ -238,10 +261,10 @@ export function PlayerPanel() {
 
           <div style={HEADING_STYLE}>Driftskapital</div>
 
-          <Reading label="Rykte"            band={reputationBand(sim.reputation)} fraction={sim.reputation} />
-          <Reading label="Mat-kvalitet"     band={qualityBand(sim.qualityFood)}    fraction={sim.qualityFood} />
-          <Reading label="Dryck-kvalitet"   band={qualityBand(sim.qualityDrink)}   fraction={sim.qualityDrink} />
-          <Reading label="Service-kvalitet" band={qualityBand(sim.qualityService)} fraction={sim.qualityService} />
+          <Reading label="Rykte"            band={reputationBand(sim.reputation)} fraction={sim.reputation} ceiling={sim.reputationCeiling} />
+          <Reading label="Mat-kvalitet"     band={qualityBand(sim.qualityFood)}    fraction={sim.qualityFood}    ceiling={targetQualityFood(sim)} />
+          <Reading label="Dryck-kvalitet"   band={qualityBand(sim.qualityDrink)}   fraction={sim.qualityDrink}   ceiling={targetQualityDrink(sim)} />
+          <Reading label="Service-kvalitet" band={qualityBand(sim.qualityService)} fraction={sim.qualityService} ceiling={targetQualityService(sim)} />
 
           <div style={SECTION_DIVIDER} />
 
@@ -281,15 +304,25 @@ interface ReadingProps {
   label: string;
   band: string;
   fraction: number;
+  // ORDER 049 §2.1: the ceiling knowledge sets. Rendered as a small
+  // tick above the bar so the eye reads value vs. possible without
+  // extra text. Aria-label carries both numbers for screen readers.
+  ceiling?: number;
 }
 
-function Reading({ label, band, fraction }: ReadingProps) {
+function Reading({ label, band, fraction, ceiling }: ReadingProps) {
+  const ariaLabel = ceiling !== undefined
+    ? `${label}: ${band}. Möjligt tak vid ${Math.round(ceiling * 100)} procent, aktuellt ${Math.round(fraction * 100)} procent.`
+    : `${label}: ${band}.`;
   return (
-    <div style={READING_STYLE}>
+    <div style={READING_STYLE} aria-label={ariaLabel}>
       <span style={{ opacity: 0.72, flex: 1 }}>{label}</span>
       <span style={{ fontSize: 11, opacity: 0.85 }}>{band}</span>
       <div style={BAR_TRACK_STYLE}>
         <div style={barFill(fraction)} />
+        {ceiling !== undefined && ceiling > fraction && (
+          <div style={ceilingTick(ceiling)} aria-hidden />
+        )}
       </div>
     </div>
   );

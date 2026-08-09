@@ -583,6 +583,13 @@ export interface SimulationState {
   cost: number;
   waste: number;
   reputation: number;
+  // ORDER 049 §2.1 knowledge-ceiling model — reputation has a soft
+  // ceiling raised by episteme enablers (culinary + hospitality
+  // theory learned). The current `reputation` value drifts toward
+  // this ceiling at a rate modulated by techne enablers. Direct
+  // writes (queue strain, happy/unhappy departure) may still push
+  // above the ceiling briefly; drift pulls back. See reputation.ts.
+  reputationCeiling: number;
   eco: {
     econ: SustainabilityCondition;
     social: SustainabilityCondition;

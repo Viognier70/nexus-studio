@@ -19,6 +19,7 @@
 
 import type { SimulationState } from '../types';
 import { moraleCompetenceMultiplier } from './morale';
+import { epistemeLiftForAxis, techneDriftMultiplier } from './reputation';
 import { teamCompetence } from './team';
 
 // Drift constant. rate = 1 − exp(-ln(2) · dt / halfLife). For a
@@ -62,7 +63,11 @@ export function targetQualityFood(state: SimulationState): number {
   // Ingredient carries 55 % weight; kitchen technique carries 45 %.
   // Morale scales the whole thing (a bad-morale team's food IS worse).
   const base = ingredient * 0.55 + kitchenSci * 0.45;
-  return clamp01(base * morale - menuPenalty);
+  // ORDER 049 §2.1: scientific episteme lifts the ceiling — knowing
+  // the chemistry lets the same ingredient/team reach a higher target
+  // (the actual reading drifts toward it; the reading doesn't jump).
+  const epistemeLift = epistemeLiftForAxis(state, 'scientific');
+  return clamp01(base * morale + epistemeLift - menuPenalty);
 }
 
 export function targetQualityDrink(state: SimulationState): number {
@@ -74,7 +79,8 @@ export function targetQualityDrink(state: SimulationState): number {
   // Cultural competence carries more weight for drink than food
   // (sommelier knowledge lives here). Ingredient tier still counts.
   const base = ingredient * 0.30 + cultural * 0.55 + welcomeLift;
-  return clamp01(base * morale - winePenalty);
+  const epistemeLift = epistemeLiftForAxis(state, 'cultural');
+  return clamp01(base * morale + epistemeLift - winePenalty);
 }
 
 export function targetQualityService(state: SimulationState): number {
@@ -86,7 +92,10 @@ export function targetQualityService(state: SimulationState): number {
   // trim this further — a future rolling-events reader can layer on
   // top, but the drift + morale-scaling captures the shape for now.
   const base = practical * 0.60 + cultural * 0.30;
-  return clamp01(base * morale);
+  // No `practical` enabler exists; service knowledge lives in
+  // cultural episteme (guest psychology, service theory).
+  const epistemeLift = epistemeLiftForAxis(state, 'cultural') * 0.6;
+  return clamp01(base * morale + epistemeLift);
 }
 
 // -------- per-tick drift -----------------------------------------------
@@ -101,9 +110,16 @@ export function tickQualityDrift(draft: SimulationState): void {
   const tF = targetQualityFood(draft);
   const tD = targetQualityDrink(draft);
   const tS = targetQualityService(draft);
-  draft.qualityFood += (tF - draft.qualityFood) * DRIFT_RATE_PER_TICK;
-  draft.qualityDrink += (tD - draft.qualityDrink) * DRIFT_RATE_PER_TICK;
-  draft.qualityService += (tS - draft.qualityService) * DRIFT_RATE_PER_TICK;
+  // ORDER 049 §2.1: techne enablers speed the drift toward target —
+  // hantverk gör vägen till taket kortare, not the ceiling itself.
+  // Each quality reads its own axis's techne (food: scientific,
+  // drink+service: cultural).
+  const rateFood = DRIFT_RATE_PER_TICK * techneDriftMultiplier(draft, 'scientific');
+  const rateDrink = DRIFT_RATE_PER_TICK * techneDriftMultiplier(draft, 'cultural');
+  const rateService = DRIFT_RATE_PER_TICK * techneDriftMultiplier(draft, 'cultural');
+  draft.qualityFood += (tF - draft.qualityFood) * rateFood;
+  draft.qualityDrink += (tD - draft.qualityDrink) * rateDrink;
+  draft.qualityService += (tS - draft.qualityService) * rateService;
   draft.qualityFood = clamp01(draft.qualityFood);
   draft.qualityDrink = clamp01(draft.qualityDrink);
   draft.qualityService = clamp01(draft.qualityService);

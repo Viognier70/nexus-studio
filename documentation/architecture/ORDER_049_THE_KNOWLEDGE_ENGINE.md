@@ -1,6 +1,6 @@
 # ORDER 049 — The Knowledge Engine
 
-**Version:** 1.0
+**Version:** 1.0 (Vision Owner amendments 2026-08-09: §2 item 5 rewired to enabler-decay, §2.1 §2.1.a ceiling chain added — reflects the shipped mechanics in `frontend/src/strategic/simulation/{reputation,quality,reducer}.ts` and the PlayerPanel value/ceiling display; approximation for service-quality → cultural episteme recorded in `documentation/world/APPROXIMATION_REGISTER.md`)
 **Status:** Awaiting Vision Owner approval. Not in force until approved.
 **Class:** Sprint order — production (precedence level 7)
 **Parent:** `ORDER_048_THREE_VOICES_AND_THE_QUESTION.md` §5; `DESIGN_BACKLOG.md` B-010
@@ -33,7 +33,7 @@ Two further comparisons drove this order. `somm.upcycledby.com` demonstrated con
 2. **Ten-second countdown.**
 3. **A scenario arrives, drawn from the area invested in.** The stake and the question are connected: study the kitchen, get asked about the kitchen.
 4. **Answer well and credits are earned in that subject.** This is the motivation to learn more, and it rewards depth over spread.
-5. **Answer badly and credits are lost.**
+5. **Answer badly and credits are lost** — Vision Owner amendment 2026-08-09: *the credits lost are the same enabler tally the correct answer would have paid, not capital*. Knowledge that failed is precisely the knowledge that regresses; capital falls indirectly through the §2.1 ceiling chain. This makes §5's "deficits cannot be compensated between areas" mechanical — a wrong sommelier question does not cost money, it costs cultural episteme, which lowers the drink-quality ceiling, which the drift pulls the reading down toward, which lowers what a buyer will pay for the venture.
 6. **Running a business requires all areas.** Neglect one and revenue fails, because the three sustainabilities and their sub-areas hold each other up.
 7. **Bankruptcy sends the player back to school** — Sevilla, to earn the means for a new venture.
 
@@ -44,6 +44,24 @@ Questions grow harder, and more of the alternatives become defensible, **until h
 This is the order's hardest requirement and its whole point. The failure mode in both directions is real: too easy and it is a quiz with scenery; too hard too early and it is an exam. **Progression must begin where a newly graduated student stands and rise from there.**
 
 Report the difficulty model before building it. `9/10 · Chef` in the source data may carry relevance, difficulty, or both — establish which.
+
+**Vision Owner note 2026-08-09:** the `9/10 · Chef` figure turned out to be *relevance* (`relevance_sci_culinary_pro`), not difficulty. Difficulty is now taken from `articles.study_type` (`review → introductory`, `qualitative/observational/mixed-methods → professional-standard`, `experimental/quantitative/meta-analysis → specialist`), overriding the model's own guess when the field is set. Grep-findable in `scripts/knowledge-generate.mjs::STUDY_TYPE_TO_DIFFICULTY`.
+
+#### 2.1.a The ceiling chain (Vision Owner amendment 2026-08-09)
+
+**The difficulty ramp is not a slider. It emerges from the room getting harder while knowledge is what sets the reachable ceiling.** The mechanism has four moving parts, all shipped in `frontend/src/strategic/simulation/{reputation,quality,reducer}.ts`:
+
+1. **Episteme raises the ceiling.** Reputation and each of the three quality axes now carry a ceiling separate from the live value. Base ceilings are what an operator with zero recorded knowledge can approach; `enablers.{scientific,cultural}.episteme` add lift above that. *Knowing sets what is possible.* Value ≠ ceiling — the panel shows both (§5.2), so the gap between "what the house is" and "what the house can be" is legible at a glance.
+
+2. **The live value drifts toward the ceiling** at a rate modulated by **techne**. Techne is *hantverk*: applied craft that shortens the road to what knowledge affords. A high `techne` tally roughly doubles the drift rate; a zero tally leaves it at its baseline half-life. *Being able to execute takes you there sooner.* Reputation drift toward its ceiling is scoped to non-service periods only (morning / afternoon / evening) — during lunch and dinner the room's operation drives reputation exclusively, because letting a passive drift also fire during service would blur the operational signal the queue-monotonicity invariant depends on.
+
+3. **Phronesis softens amplifier excess** when a choice lands under pressure. The below-threshold amplifier in `resolveScenario` reads *"you took this shortcut when the capital could least afford it"* and multiplies the penalty. `phronesisSofteningGeneral(state)` mitigates *only the multiplier's excess above ×1* — the nominal consequence of the choice stands; the pressed-below-threshold penalty is what wisdom mitigates. *Judging rightly saves you when it breaks.*
+
+4. **Nightly enabler decay: 5 % of every tally, every night.** *"Per natt, fast procent. Förutsägbart, och det gör påfyllning till en rytm snarare än en reaktion."* Applied in the reducer's evening→morning transition (`decayEnablersOvernight` in `reputation.ts`). The `history` log is authoritative and untouched — decay is a reading-side pull-back, not a rewrite of what was earned. Without refill via questions, the ceiling drops, the drift pulls quality and reputation with it, revenue falls, and eventually §5 bankruptcy is not a difficulty slider — it is a consequence of a real deficit.
+
+**What the panel shows** (§5.2): each reading now renders both value and ceiling — a filled bar for the value, a small tick above it at the ceiling. Aria-label carries both numbers. The ceiling tick is where knowledge becomes visible as possibility.
+
+**One approximation to note**: the three quality axes read team-competence on three axes (scientific / cultural / practical), but the enabler layer only has two (`type EnablerKey = 'scientific' | 'cultural'`). Service-quality's episteme lift therefore takes cultural episteme scaled by 0.6 — an approximation, not a model. Recorded in `documentation/world/APPROXIMATION_REGISTER.md` (2026-08-09 entry). A future order that promotes `practical` to a third enabler is the eventual fix.
 
 ---
 

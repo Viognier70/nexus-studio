@@ -90,13 +90,12 @@ export interface ProfessionalQuestion {
   senderRole?: StaffRole;
   body: string;
   options: readonly QuestionOption[];   // exactly 3 with one correct
-  // Fired when the player picks the correct option.
+  // Fired when the player picks the correct option. The same
+  // enabler+register field also carries the tally decayed on a wrong
+  // answer per ORDER 049 §2.1 (2026-08-09) — wrong answers cost the
+  // same knowledge they would have paid, not capital.
   correctEnablerWrite?: EnablerWrite;
   correctLine?: string;
-  // Fired when the player picks a wrong option. The stream line
-  // arrives ~4 s later so the room-consequence reads as a beat.
-  wrongCapital?: SustainabilityKey;
-  wrongDelta?: number;              // signed; typically negative
 }
 
 export interface BelowThresholdAmplifier {
@@ -250,9 +249,7 @@ const WALK_IN_OF_FIVE: ScenarioSpec = {
         ],
         correctEnablerWrite: { enabler: 'cultural', register: 'phronesis', amount: 0.05 },
         correctLine:
-          'Värden gled förbi grannbordet med en gest och besticken flyttades utan att någon behövde be — bordet log utan att veta varför det var lugnare på plats efter.',
-        wrongCapital: 'social',
-        wrongDelta: -0.03
+          'Värden gled förbi grannbordet med en gest och besticken flyttades utan att någon behövde be — bordet log utan att veta varför det var lugnare på plats efter.'
       },
       immediateOutcome: 'Sällskapet fick fyran och tvåan ihopslagna. Grannbordet flyttades.',
       outcomes: [
@@ -371,9 +368,7 @@ const TIME_PRESSURE: ScenarioSpec = {
         ],
         correctEnablerWrite: { enabler: 'scientific', register: 'episteme', amount: 0.05 },
         correctLine:
-          'Kocken satte reduktionen i vattenbad och rörde varsamt tills den slappnade — såsen som gick ut satt som den ska på tallriken.',
-        wrongCapital: 'social',
-        wrongDelta: -0.02
+          'Kocken satte reduktionen i vattenbad och rörde varsamt tills den slappnade — såsen som gick ut satt som den ska på tallriken.'
       },
       immediateOutcome: 'Menyn byts mitt i passet. Två pågående order läggs om.',
       outcomes: [
@@ -550,9 +545,7 @@ const MORAL_DILEMMA: ScenarioSpec = {
         ],
         correctEnablerWrite: { enabler: 'scientific', register: 'episteme', amount: 0.05 },
         correctLine:
-          'Kantarellerna rostade upp med behållen form och en gyllene yta — pass 4 nämnde smaken utan att fråga vidare.',
-        wrongCapital: 'social',
-        wrongDelta: -0.02
+          'Kantarellerna rostade upp med behållen form och en gyllene yta — pass 4 nämnde smaken utan att fråga vidare.'
       }
     }
   }

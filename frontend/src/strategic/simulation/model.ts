@@ -226,6 +226,12 @@ export function makeInitialState(
     cost: 0,
     waste: 0,
     reputation: 0.6,
+    // Starts above the base ceiling (0.55) so day-1 shows a small
+    // visible gap between "what the house is" (0.6) and "what the
+    // house can be" (0.75). Ceiling recomputes each tick from
+    // enablers; 0.75 is a benign starting point that lets the drift
+    // system settle without forcing an immediate crash.
+    reputationCeiling: 0.75,
     eco: {
       econ: {
         value: 0.55,
