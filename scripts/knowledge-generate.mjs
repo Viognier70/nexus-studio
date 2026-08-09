@@ -46,7 +46,7 @@
 //   ANTHROPIC_API_KEY                  - required if OPENAI_API_KEY not set
 //   OPENAI_API_KEY                     - fallback if ANTHROPIC_API_KEY not set
 //   KNOWLEDGE_MODEL                    - optional; defaults to
-//                                        "claude-3-5-sonnet-latest" or
+//                                        "claude-sonnet-4-6" or
 //                                        "gpt-4o" depending on provider
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
@@ -98,27 +98,102 @@ function parseArgs(argv) {
 
 // -------- Supabase read ----------------------------------------------
 //
-// **DATA-SHAPE ASSUMPTIONS (awaiting Vision Owner confirmation before
-// first real run).** The column names below are placeholders; adjust
-// after the Vision Owner confirms the schema:
+// The gusto.science `articles` table stores TRIAD content per
+// professional role. First pilot runs only the `culinary_pro`
+// dimension; other roles will run as separate passes.
 //
-//   id            - article uuid
-//   title         - article title
-//   citation      - author, year, journal, volume (already formatted on gusto.science)
-//   role          - primary role tag (e.g. "Chef", "Sommelier", "Servitör")
-//   role_score    - numeric score attached to the role (e.g. 9 in "9/10 · Chef").
-//                   INTERPRETATION PENDING: relevance vs difficulty vs combined.
-//                   Treated as advisory in this cycle; not gating.
-//   episteme      - the ε EPISTEME body (markdown or plain text)
-//   techne        - the τ TECHNE body
-//   phronesis     - the φ PHRONESIS body (scene, no key)
-//
-// Adjust SELECT + the article-shape reader once the real schema lands.
+// Columns used (all others in the table are ignored by this script):
+//   id                        - article uuid
+//   title, authors, year, journal, url
+//                             - composed into `citation` below; no
+//                               pre-formatted citation column exists
+//   episteme_culinary_pro     - the ε EPISTEME body for chefs
+//   techne_culinary_pro       - the τ TECHNE body for chefs
+//   phronesis_culinary_pro    - the φ PHRONESIS body for chefs (used
+//                               only when scenario_chef is null)
+//   scenario_chef             - a pre-written phronesis scene with
+//                               role embedded. When present, we use
+//                               it verbatim and skip LLM generation
+//                               for phronesis (per Vision Owner).
+//   study_type                - "experimental" | "review" | ... —
+//                               maps to a difficulty hint the model
+//                               would otherwise have to guess.
+//   limit_type                - stored on entry for reviewer context;
+//                               not currently used for difficulty.
+//   relevance_sci_culinary_pro
+//                             - the 0-10 relevance score (previously
+//                               mistaken for a role difficulty score;
+//                               kept in entry for reviewer, not gating)
+//   triad_completed_at, irrelevant
+//                             - filters: only completed, not-flagged
+//                               articles enter generation
+
+const ROLE_DIMENSION = {
+  key: 'culinary_pro',
+  senderRole: 'chef',
+  scenarioColumn: 'scenario_chef',
+  epistemeColumn: 'episteme_culinary_pro',
+  techneColumn: 'techne_culinary_pro',
+  phronesisColumn: 'phronesis_culinary_pro',
+  relevanceColumn: 'relevance_sci_culinary_pro'
+};
+
+const ARTICLE_SELECT = [
+  'id', 'title', 'authors', 'year', 'journal', 'url',
+  'study_type', 'limit_type',
+  ROLE_DIMENSION.epistemeColumn,
+  ROLE_DIMENSION.techneColumn,
+  ROLE_DIMENSION.phronesisColumn,
+  ROLE_DIMENSION.scenarioColumn,
+  ROLE_DIMENSION.relevanceColumn
+].join(',');
+
+// study_type is a controlled-vocabulary field on gusto.science but
+// often blank. When present it lets the model skip its own
+// difficulty guess; when absent the model's own hint stands.
+const STUDY_TYPE_TO_DIFFICULTY = {
+  'review': 'introductory',
+  'qualitative': 'professional-standard',
+  'observational': 'professional-standard',
+  'mixed methods': 'professional-standard',
+  'experimental': 'specialist',
+  'quasi-experimental': 'specialist',
+  'quantitative': 'specialist',
+  'meta-analysis': 'specialist'
+};
+
+function unescapeHtml(s) {
+  if (typeof s !== 'string') return s;
+  return s
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'");
+}
+
+function composeCitation(a) {
+  const parts = [];
+  if (a.authors) parts.push(unescapeHtml(a.authors));
+  if (a.year) parts.push(`(${a.year})`);
+  if (a.title) parts.push(unescapeHtml(a.title));
+  if (a.journal) parts.push(unescapeHtml(a.journal));
+  if (a.url) parts.push(a.url);
+  return parts.join('. ');
+}
 
 async function fetchArticles({ url, key, table, article, limit }) {
-  const select = 'id,title,citation,role,role_score,episteme,techne,phronesis';
-  const qs = new URLSearchParams({ select });
-  if (article) qs.set('id', `eq.${article}`);
+  const qs = new URLSearchParams({ select: ARTICLE_SELECT });
+  if (article) {
+    qs.set('id', `eq.${article}`);
+  } else {
+    // Only pull articles that actually have TRIAD content for this
+    // role dimension, and haven't been rejected as irrelevant.
+    qs.set('triad_completed_at', 'not.is.null');
+    qs.set('irrelevant', 'eq.false');
+    qs.set(ROLE_DIMENSION.epistemeColumn, 'not.is.null');
+    qs.set(ROLE_DIMENSION.techneColumn, 'not.is.null');
+  }
   if (limit) qs.set('limit', String(limit));
   const endpoint = `${url}/rest/v1/${table}?${qs.toString()}`;
   const res = await fetch(endpoint, {
@@ -131,7 +206,20 @@ async function fetchArticles({ url, key, table, article, limit }) {
   if (!res.ok) {
     throw new Error(`Supabase read failed: ${res.status} ${await res.text()}`);
   }
-  return (await res.json()) ?? [];
+  const rows = (await res.json()) ?? [];
+  return rows.map((a) => ({
+    id: a.id,
+    title: a.title,
+    citation: composeCitation(a),
+    role: ROLE_DIMENSION.senderRole,
+    role_score: a[ROLE_DIMENSION.relevanceColumn],
+    episteme: a[ROLE_DIMENSION.epistemeColumn],
+    techne: a[ROLE_DIMENSION.techneColumn],
+    phronesis: a[ROLE_DIMENSION.phronesisColumn],
+    scenario: a[ROLE_DIMENSION.scenarioColumn],
+    study_type: a.study_type || null,
+    limit_type: a.limit_type || null
+  }));
 }
 
 // -------- prompt ------------------------------------------------------
@@ -141,53 +229,58 @@ async function fetchArticles({ url, key, table, article, limit }) {
 // negative — "do not do X" is often more reliable than "do Y" for
 // this class of task.
 
-const SYSTEM_PROMPT = `Du är en generator för professionella kunskapsfrågor för spelet Nexus, en gastronomiutbildning i spelform.
+const SYSTEM_PROMPT = `You generate professional knowledge questions for the game Nexus, a gastronomy education in game form. The game is played in English by an international audience; Swedish place names (Grythyttan, Torget, Kyrkbacken) are preserved as they appear.
 
-För ARTIKEL nedan ska du producera EN fråga för REGISTER som anges. Reglerna är absoluta:
+For the ARTICLE below produce ONE question for the REGISTER specified. These rules are absolute:
 
-1. Frågan får ALDRIG påstå mer än artikeln påstår. Om artikeln säger "ingen exakt siffra" så får din fråga inte tillhandahålla en. Om artikeln flaggar osäkerhet så måste din fråga göra det också.
+1. The question may NEVER claim more than the article claims. If the article says "no exact figure", your question must not supply one. If the article flags uncertainty, your question must flag it too.
 
-2. Alla svarsalternativ — det korrekta OCH distraktorerna — måste kunna spåras till artikelns text. Distraktorer får inte hitta på egen kunskap som artikeln inte diskuterar; de ska vara plausibla FEL som artikeln själv nämner eller som en yrkesutövare skulle överväga innan de läser texten.
+2. Every option — the correct one AND the distractors — must be traceable to the article's text. Distractors may not invent knowledge the article does not discuss; they should be plausible ERRORS the article itself mentions, or that a practitioner would consider before reading the text.
 
-3. Registret bestämmer frågans form:
-   - ε EPISTEME: faktafråga med exakt ett korrekt alternativ. Justification måste vara ett nästan ordagrant citat från EPISTEME-avsnittet.
-   - τ TECHNE: metod/protokoll-fråga med exakt ett korrekt alternativ. Justification citerar TECHNE-avsnittet. OM artikeln explicit säger att inget bestämt protokoll finns för denna fråga: skriv "{\\"skip\\": true, \\"reason\\": \\"artikeln stöder inget bestämt protokoll\\"}".
-   - φ PHRONESIS: en scen med rollen inbäddad, en avvägning, INGEN nyckel. correct-fältet ska vara null. Justification citerar PHRONESIS-scenen.
+3. The register determines the question's form:
+   - ε EPISTEME: fact question with exactly one correct option. Justification must be a near-verbatim quote from the EPISTEME section.
+   - τ TECHNE: method/protocol question with exactly one correct option. Justification quotes the TECHNE section. IF the article explicitly says no definite protocol exists for this question: emit "{\\"skip\\": true, \\"reason\\": \\"article supports no definite protocol\\"}".
+   - φ PHRONESIS: a scene with the role embedded, a genuine tradeoff, NO answer key. The correct field is null. Justification quotes the PHRONESIS scene.
 
-4. Om du inte kan formulera en fråga vars svar entydigt stöds av artikeln: skriv "{\\"skip\\": true, \\"reason\\": \\"<kort skäl>\\"}" istället för att chansa.
+4. If you cannot formulate a question whose answer is unambiguously supported by the article: emit "{\\"skip\\": true, \\"reason\\": \\"<brief reason>\\"}" rather than guess.
 
-5. Alla frågor och alternativ på svenska. Yrkessvenska, inte skoltyska. Inga känslostyrda ord. Neutralt, precist.
+5. All questions and options in English. Professional English, not academic register. No emotive language. Neutral, precise.
 
-6. Formulera för den person i restaurangen som skulle behöva veta detta — inte för en tentamen. Frågan ska passa i ett scenariomoment där någon står bredvid en gäst.
+6. Write for the person in the restaurant who would need to know this — not for an exam. The question must fit a scenario moment where someone is standing next to a guest.
 
-Output: ett JSON-objekt eller ett skip-objekt. Inga kommentarer, ingen markdown, ingen prolog.`;
+Output: a single JSON object or a skip object. No comments, no markdown, no prologue.`;
 
-const USER_TEMPLATE = ({ article, register, section }) => `ARTIKEL
-Titel: ${article.title}
-Källa: ${article.citation}
-Roll: ${article.role} (${article.role_score}/10)
+const USER_TEMPLATE = ({ article, register, section }) => `ARTICLE
+Title: ${article.title}
+Source: ${article.citation}
+Professional role: ${article.role}
+Scientific relevance to the role: ${article.role_score ?? 'unknown'}/10${
+  article.study_type ? `\nStudy type: ${article.study_type}` : ''
+}${
+  article.limit_type ? `\nDominant limitation type: ${article.limit_type}` : ''
+}
 
-${register.toUpperCase()}-AVSNITT (exakt text från artikeln):
+${register.toUpperCase()} SECTION (exact text from the article):
 """
 ${section}
 """
 
-Generera EN fråga för registret ${register}. Output-schema (om skip=false):
+Generate ONE question for the ${register} register. Output schema (if skip=false):
 
 {
   "register": "${register}",
-  "sender_role": "<en av: kock, servitör, sommelier, värd, lärling — vald efter vem som skulle ställa frågan>",
-  "question": "<frågan på svenska>",
+  "sender_role": "<one of: chef, waiter, sommelier, host, apprentice — chosen by who would ask the question>",
+  "question": "<the question in English>",
   ${register === 'phronesis'
-    ? '"options": [{"label": "<alternativ 1>"}, {"label": "<alt 2>"}, {"label": "<alt 3>"}],\n  "correct": null,'
-    : '"options": [{"label": "<alt 1>", "correct": true|false}, ...],\n  "correct_index": <index på det korrekta>,'}
-  "justification": "<nära-ordagrant citat från artikelavsnittet ovan som stöder svaret>",
-  "difficulty_hint": "<en av: introducerande, yrkes-standard, specialist — din bedömning från artikelns nivå>"
+    ? '"options": [{"label": "<option 1>"}, {"label": "<option 2>"}, {"label": "<option 3>"}],\n  "correct": null,'
+    : '"options": [{"label": "<option 1>", "correct": true|false}, ...],\n  "correct_index": <index of the correct one>,'}
+  "justification": "<near-verbatim quote from the article section above that supports the answer>",
+  "difficulty_hint": "<one of: introductory, professional-standard, specialist — your assessment of the article's level>"
 }
 
-Om skip=true: {"skip": true, "reason": "<kort skäl på svenska>"}.
+If skip=true: {"skip": true, "reason": "<brief reason in English>"}.
 
-Endast JSON. Ingen förklaring runt om.`;
+JSON only. No prose around it.`;
 
 // -------- LLM call ----------------------------------------------------
 
@@ -236,7 +329,7 @@ function pickProvider() {
   if (process.env.ANTHROPIC_API_KEY) {
     return {
       name: 'anthropic',
-      model: process.env.KNOWLEDGE_MODEL ?? 'claude-3-5-sonnet-latest',
+      model: process.env.KNOWLEDGE_MODEL ?? 'claude-sonnet-4-6',
       call: (opts) =>
         callAnthropic({ ...opts, apiKey: process.env.ANTHROPIC_API_KEY })
     };
@@ -389,12 +482,42 @@ async function main() {
 
   const REGISTERS = /** @type {const} */ (['episteme', 'techne', 'phronesis']);
   const emitted = [...existing.entries];
-  let generated = 0, skipped = 0, held = 0;
+  let generated = 0, skipped = 0, held = 0, prewritten = 0;
 
   for (const article of articles) {
+    const studyDifficulty = STUDY_TYPE_TO_DIFFICULTY[article.study_type] ?? null;
+
     for (const register of REGISTERS) {
       const k = keyOf(article.id, register);
       if (!args.force && existingKeys.has(k)) continue;
+
+      // Phronesis short-circuit: if the article has a pre-written
+      // role-specific scenario, use it verbatim. Same review flow
+      // (§3.2) still applies — status stays 'pending' — but no LLM
+      // call, no fabrication risk, and the scene keeps its author's
+      // narrative voice.
+      if (register === 'phronesis' && article.scenario && article.scenario.length >= 30) {
+        emitted.push({
+          article_id: article.id,
+          citation: article.citation,
+          role: article.role,
+          role_score: article.role_score,
+          study_type: article.study_type,
+          limit_type: article.limit_type,
+          register,
+          status: 'pending',
+          source: 'scenario_prewritten',
+          sender_role: article.role,
+          question: article.scenario,
+          options: [],
+          correct: null,
+          justification: `Pre-written scene from articles.${ROLE_DIMENSION.scenarioColumn} — used verbatim, not LLM-generated.`,
+          difficulty_hint: studyDifficulty,
+          generated_at: new Date().toISOString()
+        });
+        prewritten++;
+        continue;
+      }
 
       const section =
         register === 'episteme' ? article.episteme :
@@ -476,16 +599,19 @@ async function main() {
         citation: article.citation,
         role: article.role,
         role_score: article.role_score,
+        study_type: article.study_type,
+        limit_type: article.limit_type,
         register,
         status: grounded ? 'pending' : 'held',
         reason: grounded ? undefined : 'justification not found in article section',
+        source: 'llm',
         question: parsed.question,
         sender_role: parsed.sender_role,
         options: parsed.options,
         correct_index: register === 'phronesis' ? undefined : parsed.correct_index,
         correct: register === 'phronesis' ? null : undefined,
         justification: parsed.justification,
-        difficulty_hint: parsed.difficulty_hint,
+        difficulty_hint: studyDifficulty ?? parsed.difficulty_hint,
         generated_at: new Date().toISOString()
       };
       if (grounded) generated++; else held++;
@@ -500,7 +626,7 @@ async function main() {
   };
   saveOutput(args.out, out);
   console.log(
-    `wrote ${args.out}: ${emitted.length} total (${generated} new pending, ${held} held, ${skipped} skipped).`
+    `wrote ${args.out}: ${emitted.length} total (${generated} new pending, ${prewritten} prewritten phronesis, ${held} held, ${skipped} skipped).`
   );
 }
 

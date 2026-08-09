@@ -58,7 +58,7 @@ npm run preview    # förhandsgranska bygget
 4. **Ändra inte** `documentation/foundation/` eller `documentation/world/` på eget initiativ — det är projektledningens domän. Föreslå ändringar istället.
 5. **Fråga före** nya beroenden i `package.json`. Stacken hålls medvetet minimal.
 6. **Bevara prestandabudgeten:** procedurell geometri, ingen tung post-processing utan beslut, testa mentalt mot mobil/touch.
-7. **Svenska i spelet, engelska i koden.** Kodkommentarer, variabelnamn och commits på engelska; spelartext på svenska via `strings.sv.ts`.
+7. **Engelska i spelet, engelska i koden.** Spelartext på engelska. Platsnamn behålls på svenska (Grythyttan, Torget, Kyrkbacken). Beslutet är loggat som `ORDER_REGISTRY.md` Observation 6 (2026-08-09) — det upphäver tidigare regel om svensk spelartext via `strings.sv.ts`. Filnamnet `strings.sv.ts` byts i egen omgång; värdena är engelska nu. Befintlig svensk text översätts i en dedikerad omgång, observatörens röst i strömmen skrivs om (inte översätts).
 8. När en uppgift är klar: sammanfatta vad som gjordes, vilka filer som ändrades och vad som återstår — kort och konkret.
 9. **Inget ORDER-nummer utfärdas utan en post i `documentation/architecture/ORDER_REGISTRY.md`.** Registret är källan till sanning för nummerbruk; renumrera innan filen skrivs om en kollision hittas.
 

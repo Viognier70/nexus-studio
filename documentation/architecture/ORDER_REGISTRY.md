@@ -94,6 +94,17 @@ Every ORDER number that appears anywhere in the repository — filename, documen
 
 **Observation 5 — ORDER 001 is memory-only.** Cited in `nexus_framework_governance.md` (agent memory) as the parent of a "Director's Addendum". Not evidenced in the repository. Under `ADR_002_SYNTHESIS_POLICY.md` §7.5 this is a documentation defect, not a memory feature.
 
+**Observation 6 — Game language switched from Swedish to English (2026-08-09).** Vision Owner decision during ORDER 049 §3 execution: the game ships in English, not Swedish. Rationale — international target audience; the source corpus (gusto.science TRIAD articles, `scenario_chef` and its sister columns) is already English; translation adds distortion and cost without reaching more of the intended players. This is a **conscious revocation**, not drift.
+
+- **Rule affected:** `CLAUDE.md` rule 7 ("Svenska i spelet, engelska i koden") is revoked. Replacement: game text in English, code in English, place names retained in Swedish (Grythyttan, Torget, Kyrkbacken — an international culinary school located in Sweden still carries its Swedish placenames).
+- **Content of type "translate":** existing Swedish game text (`frontend/src/content/strings.sv.ts` and callers) is translated in its own dedicated pass, not conflated with feature work.
+- **Content of type "rewrite":** the observer's voice in the event stream is **rewritten in English**, not translated — the tone is what carries it, and a literal translation kills it.
+- **Content of type "verbatim":** pre-written scenarios in `articles.scenario_chef` (and sister columns) are used as-is; no translation, no adaptation.
+- **Orders touched by this decision:**
+  - ORDER 042 §4 constraint "text via `strings.sv.ts` per CLAUDE.md rule 7" — superseded; text remains in `strings.sv.ts` filename for now (rename is a separate pass), values become English strings.
+  - ORDER 049 §3.1 — knowledge-generation prompt rewritten for English output; `scenario_chef` used verbatim (§3, phronesis short-circuit) unchanged in scope but now aligned with target language.
+- **Not affected:** code identifiers, commit prefixes, documentation in `documentation/` (English already), file paths.
+
 ## 5. Maintenance
 
 - New ORDER: reserve the next number in this registry with title, date and status *before* the order text is written. Update to "Own document" when the file lands.
