@@ -644,6 +644,43 @@ export interface SimulationState {
   // two services in a row on the same content. Cleared at OPEN_SERVICE.
   firedScenarioIds: string[];
   lastServiceOpenerId: string | null;
+  // ORDER 049 §5.2 — three slow-rolling quality readings in [0, 1].
+  // Each drifts toward its own target derived from policies, team
+  // competence and morale. Half-life ~15 sim-minutes. Written to
+  // player panel as a word band; consumed by computeValuation via
+  // the weakest-link (min) rule per Vision Owner gate 2 answer.
+  qualityFood: number;
+  qualityDrink: number;
+  qualityService: number;
+  // ORDER 049 §5.2 — rolling revenue split by service type. Two
+  // per-day accumulators flushed to the rolling arrays on
+  // evening→morning transition. Rolling arrays capped at 14 entries;
+  // consumed by valuation (monthly run-rate) and by the panel
+  // (lunch/dinner split).
+  serviceRevenueToday: { lunch: number; dinner: number };
+  serviceRevenueRolling: { lunch: number[]; dinner: number[] };
+  // ORDER 049 §5.2 — the bank loan. principal + daily interest rate.
+  // Interest accrues to state.cost each sim-day. Subtracted from
+  // valuation. Cycle-1: no repayment schedule — the player owns the
+  // debt until they pay it off (button not yet wired; the sell flow
+  // will settle it). Initial loan values grandfathered until §5.1
+  // bank meeting lands.
+  loan: {
+    principal: number;                // in kSEK-scale units matching revenue/cost
+    interestRatePerDay: number;       // e.g. 0.00025 = ~9 % APR
+    lastAccrualDay: number;           // dayNumber; guards double-charge in a tick
+  };
+  // ORDER 049 §5.3 — scale-down flags. Each is reversible; each
+  // costs quality + rep while active. The reducer refuses OPEN_SERVICE
+  // when the corresponding closed flag is set. `menuShortenedFrom`
+  // records the pre-shorten ingredient tier so the restore knows
+  // where to go back to.
+  scaleDown: {
+    menuShortenedFrom: IngredientTier | null;
+    wineListReduced: boolean;
+    closedLunch: boolean;
+    closedDinner: boolean;
+  };
   // ORDER 043 v3 §10 team layer — economic record for hiring, cost,
   // competence. Runs alongside `staff` (visual pucks). Cost
   // accumulates on day-advance; competence is read by the event

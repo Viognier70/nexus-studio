@@ -274,7 +274,27 @@ export function makeInitialState(
     morale: MORALE_INITIAL,
     streamThemeCounts: { economic: 0, social: 0, ecological: 0 },
     firedScenarioIds: [],
-    lastServiceOpenerId: null
+    lastServiceOpenerId: null,
+    // ORDER 049 §5.2 — quality readings start at "godtagbar" (0.55),
+    // rolling revenue empty (venture just opened), loan grandfathered
+    // to a T2-shaped default until §5.1 bank meeting is built,
+    // scale-down all off.
+    qualityFood: 0.55,
+    qualityDrink: 0.55,
+    qualityService: 0.55,
+    serviceRevenueToday: { lunch: 0, dinner: 0 },
+    serviceRevenueRolling: { lunch: [], dinner: [] },
+    loan: {
+      principal: 2400,               // T2 ceiling grandfather until bank meeting lands
+      interestRatePerDay: 0.00025,   // ~9 % APR baseline (post-bankruptcy raises this)
+      lastAccrualDay: 1
+    },
+    scaleDown: {
+      menuShortenedFrom: null,
+      wineListReduced: false,
+      closedLunch: false,
+      closedDinner: false
+    }
   };
 }
 

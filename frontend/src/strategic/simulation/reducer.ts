@@ -60,6 +60,8 @@ import {
   bumpMorale,
   tickMoraleDrift
 } from './morale';
+import { tickQualityDrift } from './quality';
+import { ROLLING_WINDOW } from './valuation';
 import { initialDay, makeGuest, makeInitialState, makeStaff } from './model';
 import { tickReputationDrift } from './reputation';
 import { tickGuests, tickStaff } from './service';
@@ -490,6 +492,18 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       const regressed =
         MORALE_DAILY_REGRESSION_TARGET +
         (state.morale - MORALE_DAILY_REGRESSION_TARGET) * 0.5;
+      // ORDER 049 §5.2 — flush the day's lunch/dinner buckets into
+      // the rolling arrays and reset today. Kept at ROLLING_WINDOW
+      // entries so the valuation.monthlyNetRunRate reads a stable
+      // 14-day (approx) window regardless of session length.
+      const nextRollingLunch = [
+        ...state.serviceRevenueRolling.lunch,
+        state.serviceRevenueToday.lunch
+      ].slice(-ROLLING_WINDOW);
+      const nextRollingDinner = [
+        ...state.serviceRevenueRolling.dinner,
+        state.serviceRevenueToday.dinner
+      ].slice(-ROLLING_WINDOW);
       return {
         ...state,
         team: chargeStructuralCost(state.team),
@@ -501,6 +515,9 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
         // Per-service tallies reset with the day.
         streamThemeCounts: { economic: 0, social: 0, ecological: 0 },
         firedScenarioIds: [],
+        // ORDER 049 §5.2 — rolling revenue flush.
+        serviceRevenueToday: { lunch: 0, dinner: 0 },
+        serviceRevenueRolling: { lunch: nextRollingLunch, dinner: nextRollingDinner },
         day: {
           ...initialDay(),
           dayNumber: day.dayNumber + 1,
@@ -880,14 +897,46 @@ function advanceTick(state: SimulationState): SimulationState {
   // Payment triggers revenue. ORDER 045 world-factor revenue mult
   // (betalningsvilja): konjunktur uppgång/nedgång shifts +10 / −15 %,
   // festival crowd +5 %, hockey crowd −10 % (casual + price-sensitive).
+  //
+  // ORDER 049 §5.2 — also accumulate the payment into the day's
+  // service-type bucket (lunch or dinner) so the rolling arrays can
+  // report the split for the panel + goodwill run-rate. Same event,
+  // no extra tick cost.
   const revenueMult = worldFactorRevenueMultiplier(draft.day.worldFactors);
+  const inLunch = draft.day.period === 'lunch';
+  const inDinner = draft.day.period === 'dinner';
   for (const guest of draft.guests) {
     if (guest.state === 'paying' && guest.stateTime === draft.simTime) {
-      draft.revenue += revenuePerGuest(draft.policies) * revenueMult;
+      const rev = revenuePerGuest(draft.policies) * revenueMult;
+      draft.revenue += rev;
+      // kSEK-scale conversion for the panel readouts (state.revenue
+      // is raw kr; the valuation math and panel operate in kSEK).
+      const revKsek = rev / 1000;
+      if (inLunch) draft.serviceRevenueToday.lunch += revKsek;
+      else if (inDinner) draft.serviceRevenueToday.dinner += revKsek;
     }
   }
   // Accumulate cost.
   draft.cost += (costPerMinuteToTick(draft) * tickSeconds) / 60;
+
+  // ORDER 049 §5.2 — daily loan interest. Accrues once per calendar
+  // day (guarded by lastAccrualDay so the same tick can't charge it
+  // twice). Interest is added straight to state.cost so the existing
+  // valuation.monthlyNetRunRate reads it as part of daily net.
+  if (draft.loan.principal > 0 && draft.day.dayNumber > draft.loan.lastAccrualDay) {
+    const daysToCharge = draft.day.dayNumber - draft.loan.lastAccrualDay;
+    // principal is in kSEK-scale; convert to raw kr for the cost
+    // ledger which sits in kr.
+    const interestKr =
+      draft.loan.principal * draft.loan.interestRatePerDay * daysToCharge * 1000;
+    draft.cost += interestKr;
+    draft.loan = { ...draft.loan, lastAccrualDay: draft.day.dayNumber };
+  }
+
+  // ORDER 049 §5.2 — quality drift. Runs every tick in every period;
+  // half-life ~15 sim-min so a bad service dents but doesn't sink,
+  // and a good week visibly climbs.
+  tickQualityDrift(draft);
 
   // Sustainability.
   tickSustainability(draft);
