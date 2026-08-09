@@ -25,6 +25,8 @@
 // imports with top-level side effects, undefined imported values,
 // missing exports.
 
+import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { build, type Rollup } from 'vite';
 
@@ -141,6 +143,49 @@ describe('module graph smoke — imports resolve without throwing', () => {
       ).toEqual([]);
     }
   );
+
+  it('no test-only sabotage markers ship in production source', () => {
+    // ORDER 047 §0 — a synthetic `throw new Error('SYNTHETIC MOUNT-TEST
+    // SABOTAGE')` was once introduced in a real production component to
+    // verify that the mount test would catch a render throw. The revert
+    // succeeded, but this guard makes any future recurrence — or any
+    // similar marker string — surface as a smoke failure rather than
+    // ship silently. Scans src/ recursively, skipping the test folder
+    // (this file itself contains the markers as string literals).
+    const FORBIDDEN = [
+      'SYNTHETIC MOUNT-TEST SABOTAGE',
+      'SYNTHETIC-TEST-SABOTAGE',
+      'REMOVE BEFORE COMMIT',
+      'DO NOT SHIP'
+    ] as const;
+    const SRC = join(__dirname, '..', '..');   // frontend/src
+    const hits: string[] = [];
+
+    const walk = (dir: string) => {
+      for (const name of readdirSync(dir)) {
+        const p = join(dir, name);
+        const st = statSync(p);
+        if (st.isDirectory()) {
+          // Skip test folders — this file's own literals would match.
+          if (name === '__tests__' || name === 'node_modules') continue;
+          walk(p);
+          continue;
+        }
+        if (!/\.(ts|tsx|js|jsx|css)$/.test(name)) continue;
+        const content = readFileSync(p, 'utf8');
+        for (const marker of FORBIDDEN) {
+          if (content.includes(marker)) {
+            hits.push(`${p.replace(SRC + '/', '')}: ${marker}`);
+          }
+        }
+      }
+    };
+    walk(SRC);
+    expect(
+      hits,
+      `Test-only sabotage markers found in production source:\n${hits.join('\n')}`
+    ).toEqual([]);
+  });
 
   it('top-level UI components import cleanly', async () => {
     // Each panel pulls its own slice of the graph. If any of them
