@@ -207,7 +207,11 @@ export function makeInitialState(
     rngState: seed >>> 0,
     tick: 0,
     simTime: 0,
-    speed: 1,
+    // ORDER 047 §7 — default sim speed 2× so a full evening fits
+    // in half the real time. Scenario overlays + evening-account
+    // fade use wall-clock timing (below), so speed does not
+    // shrink the player's reading window.
+    speed: 2,
     policies,
     staff,
     guests: [],

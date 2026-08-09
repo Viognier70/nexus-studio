@@ -22,6 +22,7 @@ import { DevPanel } from './ui/DevPanel';
 import { EventStreamPanel } from './ui/EventStreamPanel';
 import { ModeSwitchLink } from './ui/ModeSwitchLink';
 import { OutwardButton } from './ui/OutwardButton';
+import { SpeedToggle } from './ui/SpeedToggle';
 import { SelectionChrome } from './ui/SelectionChrome';
 import { VerifyBadge } from './ui/VerifyBadge';
 import { ViewLabel } from './ui/ViewLabel';
@@ -162,6 +163,7 @@ function StrategicShell() {
       <ViewLabel />
       <VerifyBadge />
       <div className="gb-topright">
+        <SpeedToggle />
         <ModeSwitchLink />
         <button
           type="button"

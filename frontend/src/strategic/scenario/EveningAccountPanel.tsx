@@ -2,15 +2,24 @@
 //
 // Renders state.eveningAccount as a centred paragraph over the room,
 // visible from the moment the service closes (natural or collapse)
-// until the day advances to the next morning. Fade-in over ~1.5 s,
+// until the day advances to the next morning. Fade-in over ~2 s,
 // hold for ~23 s, fade-out over ~5 s — the last fraction of the
 // evening pause bleeds into morning silence.
+//
+// ORDER 047 §7 — the fade envelope uses **wall-clock time**, not
+// sim time. Sim speed defaults to 2× and can be toggled to 4×;
+// tying the fade to simTime would shrink the reading window as
+// the player speeds up, which is exactly backwards ("faster clock,
+// not shorter service"). The panel's arrival is triggered by
+// state.eveningAccount becoming non-null; from that moment forward
+// the countdown is real seconds.
 //
 // Layout: centre viewport, ~640 px wide, warm-beige paper against a
 // dark overlay. Non-modal — the sim continues to tick (village
 // residents, delivery cycle, day advance) behind it. No dismiss
 // button; the panel goes with the transition.
 
+import { useEffect, useRef, useState } from 'react';
 import { useSimState } from '../simulation/SimulationProvider';
 
 const PANEL_WRAPPER_STYLE: React.CSSProperties = {
@@ -70,11 +79,37 @@ function envelope(elapsed: number): number {
 export function EveningAccountPanel() {
   const sim = useSimState();
   const account = sim.eveningAccount;
-  if (!account) return null;
 
-  const elapsed = sim.simTime - account.presentedAt;
-  const opacity = envelope(elapsed);
-  if (opacity <= 0) return null;
+  // Latch the wall-clock start when the account arrives; clear on
+  // disappearance. Using wall-clock (performance.now) rather than
+  // sim time so the fade takes real seconds regardless of speed.
+  const startAtRef = useRef<number | null>(null);
+  const [opacity, setOpacity] = useState(0);
+
+  useEffect(() => {
+    if (!account) {
+      startAtRef.current = null;
+      setOpacity(0);
+      return;
+    }
+    startAtRef.current = performance.now();
+    let raf = 0;
+    const tick = () => {
+      if (startAtRef.current === null) return;
+      const elapsedMs = performance.now() - startAtRef.current;
+      const o = envelope(elapsedMs / 1000);
+      setOpacity(o);
+      if (o > 0) {
+        raf = window.requestAnimationFrame(tick);
+      }
+    };
+    raf = window.requestAnimationFrame(tick);
+    return () => {
+      if (raf) window.cancelAnimationFrame(raf);
+    };
+  }, [account]);
+
+  if (!account || opacity <= 0) return null;
 
   return (
     <div style={{ ...PANEL_WRAPPER_STYLE, opacity }}>
