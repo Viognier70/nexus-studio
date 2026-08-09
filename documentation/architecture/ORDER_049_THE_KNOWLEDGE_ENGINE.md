@@ -98,7 +98,19 @@ Reaching zero in a sustainability ends the venture. The restaurant closes.
 
 **The player returns to school in Sevilla to earn the means for a new business.** This is not a game-over screen: it is the loop's honest shape. You lost the restaurant because you did not know enough, and the way back is to learn.
 
-Report how much is carried across a bankruptcy — competence, portfolio, reputation — and what is lost. If nothing carries, the player restarts from nothing and the education was wasted. If everything carries, the failure cost nothing.
+Vision Owner (2026-08-09): after bankruptcy the portfolio loses competence points, weighted heaviest in the areas where knowledge failed. The next premises purchase requires higher capital — the bank has seen the failure. **Deficits cannot be compensated between areas:** high food/drink competence does not offset a bankruptcy caused by lacking economics. The bank wants to see that the specific deficit has been addressed, which forces the player to study what they were weakest at.
+
+### 5.1 The bank meeting
+
+Vision Owner (2026-08-09): every venture application — the first business at game start, and every application after a failed one — begins with a meeting with the bank director.
+
+**A scene, not a form.** One person, animated, on the other side of a desk. The director asks relevant, tricky questions drawn from the knowledge bank (§3), chosen for the business type applied for. Answers are scored, and the composite decides the loan tier — which decides which premises the player can afford.
+
+- Good answers open the largest tier of financing.
+- Poor answers get a refusal for the tier applied for, and a referral to a smaller opportunity — a foodtruck in Grythyttan is the floor and is always offered.
+- **After a bankruptcy the bank knows what failed** — the meeting weights the failed area's questions more heavily and lifts its threshold. Excellence in all subjects is the only path to full financing.
+
+Report the mapping from answers to loan amount before building. The mapping is the mechanic's centre: it must let a diligent player earn full financing over time, and must not let a weak area be papered over by a strong one.
 
 ---
 
@@ -122,14 +134,15 @@ Per `EXECUTIVE_DESIGN_DIRECTIVE_001.md` §11 nothing may dominate the view, and 
 
 1. **Generation script** — Supabase read, question generation, JSON output. Report the prompt and twenty sample questions before generating at volume.
 2. **Review flow** — approve/reject, reasons retained.
-3. **The bank** — approved questions in the game, replacing the three hand-authored questions from ORDER 048 §5.
+3. **The bank of questions** — approved questions in the game, replacing the three hand-authored questions from ORDER 048 §5.
 4. **Invest → countdown → themed scenario** — the loop in §2.
 5. **Readiness display** — §4.
 6. **Difficulty progression** — §2.1, after the model is reported.
 7. **Bankruptcy and return** — §5.
-8. **Animation** — §6, throughout, last.
+8. **The bank meeting** — §5.1, the scene at first application and after each bankruptcy. Report the answer-to-loan mapping before building.
+9. **Animation** — §6, throughout, last.
 
-Report after steps 1, 2 and 4.
+Report after steps 1, 2, 4 and 8's mapping proposal.
 
 ---
 
