@@ -13,13 +13,19 @@
 ## Entries
 
 ### B-001 · The ambition wager
-**Recorded:** 2026-08-08 · **Status:** open
+**Recorded:** 2026-08-08 · **Status:** open — overlap evaluation 2026-08-09
 
 A stake placed *before* service rather than between scenarios: the player sets the evening's ambition — mise en place, staffing, menu — which costs money before a single guest arrives and returns more if the evening holds. A blind bet on one's own capability.
 
 Discussed at length as the alternative to the difficulty selector, then set aside when the theme wager (ORDER 043 §4) took its place. It is not the same mechanic: the theme wager is a reading between scenarios, this is a commitment before the service.
 
 **Before it can be built:** it overlaps with the team system (ORDER 043 §3) and service-length choice (§2), which already carry some of this weight. Decide whether it adds a distinct decision or duplicates one.
+
+**Overlap evaluation, 2026-08-09 (post-ORDER-046).** The service-length picker sets the shape of the evening but does not stake money — a 15-minute dinner and a 30-minute dinner cost the same up-front and differ only in what they can hold. The investment panel (ORDER 046 §2) and team hiring (ORDER 043 §10 step 5) do stake money: ingredient tier + team dailyCost + agency spend all draw against economic capital before revenue arrives, and the evening account (ORDER 046 §3) is what tells the player whether they were right to. That covers three of the four movements of the proposed ambition wager (spend, wait, read the evening).
+
+**What remains distinct.** The specific "returns *more* if the evening holds" bonus layer — a payout multiplier on top of the natural revenue, contingent on a self-declared ambition level. Cycle-1 has no such multiplier: raising ingredient tier costs more and yields the same per-guest revenue (revenuePerGuest reads pricing tier only). Adding an ambition-wager would need a distinct scoring gate ("did the evening meet the declared level?") and a bonus payout, neither of which the current ledger has.
+
+**Verdict.** The mechanic is not duplicated by what has landed, but its motivating decisions largely are. Before building, the Vision Owner should confirm whether the ambition wager is (a) the missing bonus multiplier that turns morning spend into an actual bet — worth building — or (b) a fifth morning surface stacked on top of team + investment + service length + wager, which risks the morning becoming a spreadsheet. If (b), fold into ORDER 046's investment panel by adding a fourth dial ("ambition"). If (a), it deserves its own order and its own scoring gate.
 
 ---
 
@@ -37,7 +43,7 @@ Strong because the stream already exists: a competitor becomes legible for free 
 ---
 
 ### B-003 · The evening's account
-**Recorded:** 2026-08-08 · **Status:** next
+**Recorded:** 2026-08-08 · **Status:** folded in — ORDER 046 §3, commit `7b6abc8` (PR #10, 2026-08-09)
 
 Service ends, cost is charged, morning arrives — and the player is shown nothing. No summary of what the night gave: revenue, cost, how the sustainabilities moved, what credits were earned.
 
@@ -45,7 +51,9 @@ Without it the player invests without knowing what they are investing on the bas
 
 **Should be in the observer's voice** (ORDER 043 Addendum B), not a table. What a proprietor tells themselves after closing.
 
-**Pairs with:** the investment panel (ORDER 043 §7, specified but unbuilt). Together they turn the day into a cycle rather than a series of evenings.
+**Pairs with:** the investment panel (ORDER 043 §7, specified but unbuilt).
+
+**As built (ORDER 046 §3):** paragraph in the observer's voice at evening-period-start, snapshotted at close so drift during the fade doesn't re-pick a branch mid-read. Six branches keyed off state: `collapsed` (preempts all), `high_wager_win` (weak-capital win, delta ≥ 0.14), `high_wager_loss`, `good` (rep held, net revenue > cost × 1.15), `thin` (revenue < cost × 0.90), `mediocre` (fallback, per Vision Owner's explicit ask: "kvällen bara var medioker — inte varje kväll ska ha en poäng"). Money named as "täckte kostnaderna" / "gick back" / "gick över" — no figures. `EVENING_TO_MORNING_PAUSE_SEC` bumped 15 → 30 to hold the fade. Investment panel landed alongside in ORDER 046 §2 (`cd311d4`), realising the "pairs with" note above.
 
 ---
 
