@@ -112,6 +112,34 @@ Vision Owner (2026-08-09): every venture application — the first business at g
 
 Report the mapping from answers to loan amount before building. The mapping is the mechanic's centre: it must let a diligent player earn full financing over time, and must not let a weak area be papered over by a strong one.
 
+### 5.2 The player panel — business value + operating readings
+
+Vision Owner (2026-08-09): the player panel must show:
+
+- **Business value in kronor**, realisable through sale. The player may sell at any time and take the proceeds into a new or expanded venture.
+- **Operating capital breakdown** shown as separate readings:
+  - Reputation
+  - Quality of food
+  - Quality of drink
+  - Quality of service
+  - Revenue per seat
+  - Revenue split into lunch and dinner
+- A **sell** action that liquidates at valuation and returns the player to §5.1 for the next application.
+
+**Report the valuation formula before building.** The number is what makes selling a real decision instead of a menu choice; it must reflect what a buyer would actually pay for a going concern (tangible + goodwill), and it must move visibly with the operating readings so the player can watch effort become value.
+
+### 5.3 Scale-down — when a service runs at a loss
+
+Vision Owner (2026-08-09): a player whose service is bleeding must be able to scale down without closing the whole venture.
+
+Three actions, available in morning:
+
+- **Korta menyn** — reduce ingredient tier by one step for coming services. Saves cost per cover. Costs food-quality reading and, over sustained use, reputation.
+- **Tunna vinlistan** — reduce drink offering. Saves inventory + service load. Costs drink-quality reading and reputation.
+- **Stäng en service** — skip lunch or dinner for N days. Saves labour + ingredients on those services entirely. Costs reputation heaviest of the three; the room's regulars notice the closed door.
+
+Each is reversible; the player can restore when cash allows. **The point is that passivity costs and active retreat is available.** A player who never scales down when they should watches the venture die of a slow drain; a player who scales down forever never rebuilds enough quality to reach a higher tier again.
+
 ---
 
 ## 6. Animation and tension
@@ -140,9 +168,11 @@ Per `EXECUTIVE_DESIGN_DIRECTIVE_001.md` §11 nothing may dominate the view, and 
 6. **Difficulty progression** — §2.1, after the model is reported.
 7. **Bankruptcy and return** — §5.
 8. **The bank meeting** — §5.1, the scene at first application and after each bankruptcy. Report the answer-to-loan mapping before building.
-9. **Animation** — §6, throughout, last.
+9. **The player panel — value + operating readings + sell** — §5.2. Report the valuation formula before building.
+10. **Scale-down actions** — §5.3.
+11. **Animation** — §6, throughout, last.
 
-Report after steps 1, 2, 4 and 8's mapping proposal.
+Report after steps 1, 2, 4, 8's mapping proposal, and 9's valuation formula.
 
 ---
 
