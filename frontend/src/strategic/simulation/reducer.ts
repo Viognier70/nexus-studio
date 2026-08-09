@@ -1282,6 +1282,16 @@ function resolveScenario(
     const payout = wagerPayout(drawn, wager, capitalAtPlacement);
     const nextValues = { ...state.capitals.values };
     nextValues[drawn] = clampCapital(nextValues[drawn] + themedDelta);
+    // ORDER 048 §3 — apply secondary sustainability writes. Two-way
+    // trades (a choice that lifts one capital while dropping another)
+    // land here as separate ± deltas on distinct capitals. Fired
+    // AFTER the themed delta and BEFORE the wager payout so a wager
+    // on a secondary-write capital reads the pre-payout value.
+    if (choiceSpec?.secondaryWrites) {
+      for (const w of choiceSpec.secondaryWrites) {
+        nextValues[w.capital] = clampCapital(nextValues[w.capital] + w.delta);
+      }
+    }
     if (payout.targetCapital) {
       nextValues[payout.targetCapital] = clampCapital(
         nextValues[payout.targetCapital] + payout.delta

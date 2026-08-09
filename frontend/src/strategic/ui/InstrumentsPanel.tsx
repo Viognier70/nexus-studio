@@ -15,8 +15,10 @@
 // propagate into the sim — morale in particular is the connective
 // tissue (see simulation/morale.ts).
 
+import { useEffect, useRef, useState } from 'react';
 import { useSimState } from '../simulation/SimulationProvider';
 import { COVERS_PER_MEMBER } from '../simulation/team';
+import type { SustainabilityKey } from '../types';
 
 // -------- panel styles ---------------------------------------------------
 
@@ -123,9 +125,133 @@ function revenueReading(netRev: number, netCost: number): Reading {
 
 // -------- component -------------------------------------------------------
 
+// ORDER 048 §3 — sustainability triad ("trade strip") that flashes
+// when a capital moves. Three labeled cells above the four
+// instruments; on a write, the affected cell gets a warm-gold
+// border + direction glyph (↑ / ↓) that fades over ~1.8 s. Two
+// simultaneous writes = two flashes in the same beat = the player
+// sees the trade.
+
+interface SustainabilityFlash {
+  direction: 'up' | 'down';
+  triggeredAtMs: number;   // wall-clock, not simTime — the flash
+                           // envelope should run in real seconds so
+                           // it stays perceptible at 2× / 4× speed.
+}
+
+const FLASH_DURATION_MS = 1800;
+// Short labels — full "Ekologiskt" doesn't fit at 10 px in a ~70 px
+// cell without wrapping. "Ekologi" reads as the same axis, matches
+// the wager panel's noun form.
+const SUSTAINABILITY_LABEL: Record<SustainabilityKey, string> = {
+  economic:   'Ekonomi',
+  social:     'Socialt',
+  ecological: 'Ekologi'
+};
+const SUSTAINABILITY_ORDER: readonly SustainabilityKey[] = ['economic', 'social', 'ecological'];
+
+const TRIAD_STYLE: React.CSSProperties = {
+  display: 'flex',
+  gap: 4,
+  marginBottom: 4
+};
+
+const CELL_STYLE: React.CSSProperties = {
+  flex: 1,
+  padding: '5px 6px 5px 7px',
+  background: 'rgba(20, 14, 10, 0.62)',
+  border: '1px solid rgba(168, 146, 106, 0.35)',
+  borderRadius: 3,
+  fontFamily: 'system-ui, sans-serif',
+  fontSize: 9,
+  letterSpacing: 0.6,
+  textTransform: 'uppercase',
+  color: '#f0e8d4',
+  opacity: 0.62,
+  transition: 'opacity 0.6s ease-out, border-color 0.6s ease-out',
+  position: 'relative',
+  minHeight: 20,
+  boxSizing: 'border-box'
+};
+
+const CELL_FLASH_STYLE: React.CSSProperties = {
+  ...CELL_STYLE,
+  opacity: 1,
+  borderColor: 'rgba(240, 214, 152, 0.95)',
+  transition: 'none'
+};
+
+const GLYPH_STYLE: React.CSSProperties = {
+  position: 'absolute',
+  top: 4,
+  right: 6,
+  fontSize: 12,
+  fontWeight: 700,
+  letterSpacing: 0,
+  color: '#f7ecd0'
+};
+
 export function InstrumentsPanel() {
   const sim = useSimState();
   const period = sim.day.period;
+
+  // Track sustainability flash state — one entry per capital, or null
+  // if no recent write. Wall-clock timestamps so the fade holds real
+  // seconds regardless of sim speed. See ORDER 048 §3 flash design.
+  const [flashes, setFlashes] = useState<Record<SustainabilityKey, SustainabilityFlash | null>>({
+    economic: null,
+    social: null,
+    ecological: null
+  });
+  const lastValuesRef = useRef<Record<SustainabilityKey, number>>({
+    economic: sim.capitals.values.economic,
+    social: sim.capitals.values.social,
+    ecological: sim.capitals.values.ecological
+  });
+
+  // On every render, detect capital-value changes and fire a flash.
+  // Uses a small epsilon to filter float noise from clamp arithmetic.
+  useEffect(() => {
+    const EPSILON = 1e-4;
+    const now = performance.now();
+    const changes: Partial<Record<SustainabilityKey, SustainabilityFlash>> = {};
+    for (const key of SUSTAINABILITY_ORDER) {
+      const prev = lastValuesRef.current[key];
+      const curr = sim.capitals.values[key];
+      const delta = curr - prev;
+      if (Math.abs(delta) > EPSILON) {
+        changes[key] = { direction: delta > 0 ? 'up' : 'down', triggeredAtMs: now };
+        lastValuesRef.current[key] = curr;
+      }
+    }
+    if (Object.keys(changes).length > 0) {
+      setFlashes((prev) => ({ ...prev, ...changes }));
+    }
+  }, [sim.capitals.values]);
+
+  // Expire flashes past the duration — request one animation tick
+  // once we know a flash is running.
+  useEffect(() => {
+    const anyActive = SUSTAINABILITY_ORDER.some((k) => flashes[k] !== null);
+    if (!anyActive) return;
+    const now = performance.now();
+    const cleared: Partial<Record<SustainabilityKey, null>> = {};
+    for (const key of SUSTAINABILITY_ORDER) {
+      const f = flashes[key];
+      if (f && now - f.triggeredAtMs > FLASH_DURATION_MS) {
+        cleared[key] = null;
+      }
+    }
+    if (Object.keys(cleared).length > 0) {
+      setFlashes((prev) => ({ ...prev, ...cleared }));
+      return;
+    }
+    const raf = window.requestAnimationFrame(() => {
+      // Force a re-render so the anyActive check re-evaluates.
+      setFlashes((prev) => ({ ...prev }));
+    });
+    return () => window.cancelAnimationFrame(raf);
+  }, [flashes]);
 
   // Visible only during service post-prep. During opening + prep the
   // panels would show pre-service state, which is not the reading the
@@ -174,6 +300,23 @@ export function InstrumentsPanel() {
 
   return (
     <div style={PANEL_STYLE} role="region" aria-label="Kvällens mätare">
+      <div style={TRIAD_STYLE} role="group" aria-label="Hållbarheter">
+        {SUSTAINABILITY_ORDER.map((key) => {
+          const flash = flashes[key];
+          const active = flash !== null;
+          const style = active ? CELL_FLASH_STYLE : CELL_STYLE;
+          return (
+            <div key={key} style={style}>
+              {SUSTAINABILITY_LABEL[key]}
+              {flash && (
+                <span style={GLYPH_STYLE} aria-hidden>
+                  {flash.direction === 'up' ? '↑' : '↓'}
+                </span>
+              )}
+            </div>
+          );
+        })}
+      </div>
       <Instrument name="Rummets tempo" reading={tempo} />
       <Instrument name="Bordens läge" reading={satisfaction} />
       <Instrument name="Lagets ork" reading={morale} />

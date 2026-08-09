@@ -35,6 +35,16 @@ export interface EnablerWrite {
   amount: number;
 }
 
+// ORDER 048 §3 — a signed write to a specific sustainability capital,
+// separate from the theme-driven `capitalSign`. Used for two-way
+// trades: a choice that lifts economic while dropping ecological
+// writes both in the same beat, so the player can watch the trade.
+// Multiple entries allowed per choice; each fires at RESOLVE_SCENARIO.
+export interface SustainabilityWrite {
+  capital: SustainabilityKey;
+  delta: number;   // signed; typically ±0.02 to ±0.05
+}
+
 export interface ScenarioChoiceSpec {
   // Player-facing choice label (Swedish).
   label: string;
@@ -51,6 +61,12 @@ export interface ScenarioChoiceSpec {
   // Same convention as CHOICE_CAPITAL_SIGN in reducer: +1 for
   // engaging (A/B), −0.5 for refusal-shaped (C).
   capitalSign: number;
+  // ORDER 048 §3 — extra signed writes to specific sustainability
+  // capitals beyond the drawn-theme primary. Use this for two-way
+  // trades: e.g. walk-in-of-five choice A lifts social (theme) AND
+  // economic (extra covers = revenue) AND drops ecological (crammed
+  // kitchen = more waste). Empty = no secondary writes.
+  secondaryWrites?: readonly SustainabilityWrite[];
   // Outcome events fired at t+6 s and t+18 s after resolve (per
   // Addendum A). Empty = no outcome events for this choice.
   outcomes: readonly string[];
@@ -87,6 +103,13 @@ const WALK_IN_OF_FIVE: ScenarioSpec = {
       spawnedRemaining: 5,
       nextSpawnAtOffset: 0.4,
       capitalSign: 1,
+      // ORDER 048 §3 trade — five extra covers lifts economic;
+      // crammed kitchen produces more waste, drops ecological. Two-
+      // way movement the player watches happen in the same beat.
+      secondaryWrites: [
+        { capital: 'economic',   delta: 0.03 },
+        { capital: 'ecological', delta: -0.02 }
+      ],
       outcomes: [
         'Fyran och tvåan har slagits ihop — grannbordet får hasa in mot väggen för att hämta besticket. Ingen sa något men jag såg blicken; undrar om vi skulle ha lämnat en förklaring innan de fick lista ut det själva.',
         'Sällskapets ordering kom in i klump på passet — köket har fem huvudrätter samtidigt istället för spridda i tid. Kocken vid grillen ser sammanbiten ut; hm, det var vi som valde det när vi sa ja.'
@@ -158,6 +181,11 @@ const TIME_PRESSURE: ScenarioSpec = {
       spawnedRemaining: 0,
       nextSpawnAtOffset: 0,
       capitalSign: 1,
+      // ORDER 048 §3 trade — the delegation's revenue landed but the
+      // team's evening tempo took the hit. Economic + , social − .
+      secondaryWrites: [
+        { capital: 'social', delta: -0.02 }
+      ],
       outcomes: [
         'Menyn byts mitt på passet — köket noterar med en nick och börjar tömma om stationerna. Två pågående beställningar får läggas ner halvfärdiga och tas om. Undrar om vi förklarade tydligt nog för dem att detta var mitt beslut, inte deras.',
         'Notan svullnar snabbt när delegationen bokas för imorgon — men resten av kvällen betalar i tempo. Två stambord får sitt bröd senare än vanligt; hm, det är räkningen för morgondagens seger, betald i kvällens andrum.'
@@ -233,6 +261,14 @@ const MORAL_DILEMMA: ScenarioSpec = {
       // Taking the shortcut is the ecological hit, even if the room
       // never learns it.
       capitalSign: -1,
+      // ORDER 048 §3 trade — cost of the shortcut lands ecologically;
+      // the immediate revenue holds (economic +) but if the story
+      // reaches a guest the room reads it (social −). The room seldom
+      // does — this is the "invisible cost" reading.
+      secondaryWrites: [
+        { capital: 'economic', delta: 0.02 },
+        { capital: 'social',   delta: -0.01 }
+      ],
       outcomes: [
         'Två av förrätterna gick ut utan att någon nämnde att spårbarheten fattades — värden viker undan frågor från stamgäster på bord tre. Han svarar utan att svara. Undrar om han vet att den där ovilligheten själv säger något som gästen läser utan att formulera det.',
         'En gäst frågade rakt ut om fiskens ursprung — servitören blev tyst en sekund för länge innan hon svarade "från vår vanliga leverantör". Bordet nöjde sig med det men växlade en blick. Hm, den där sekunden är den enda tid vi kommer att kunna ta tillbaka det på.'
