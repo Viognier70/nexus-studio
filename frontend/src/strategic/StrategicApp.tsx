@@ -21,6 +21,7 @@ import { ControlsHint } from './ui/ControlsHint';
 import { DevPanel } from './ui/DevPanel';
 import { EventStreamPanel } from './ui/EventStreamPanel';
 import { InstrumentsPanel } from './ui/InstrumentsPanel';
+import { primeStreamAudio } from './ui/streamArrivalCue';
 import { ModeSwitchLink } from './ui/ModeSwitchLink';
 import { OutwardButton } from './ui/OutwardButton';
 import { SpeedToggle } from './ui/SpeedToggle';
@@ -66,6 +67,15 @@ function StrategicShell() {
     onJumpPreset: jumpToPreset
   });
   useTouchControls({ enabled: true, targetElement: getHost });
+
+  // ORDER 048 §8 — install the audio-unlock listeners at mount so the
+  // first real user gesture (any click, key, or touch) resumes the
+  // AudioContext. Without this the stream arrival cue is silent for
+  // the entire session because browsers keep the context suspended
+  // until an actual gesture. Idempotent — safe to call every render.
+  useEffect(() => {
+    primeStreamAudio();
+  }, []);
 
   // Dev shortcuts alongside the camera-preset digit keys 1–4:
   //   5 — trigger the walk-in-of-five scenario now (bypasses the 30-s

@@ -34,9 +34,11 @@ import { playStreamArrivalCue } from './streamArrivalCue';
 const VISIBLE_ENTRIES = 4;
 
 // Arrival animation window: how long the newest entry visibly slides
-// into place. Longer than a UI fade so the eye can catch it from
-// across the room without staring at the panel.
-const ARRIVAL_ANIM_MS = 420;
+// into place. ORDER 048 §8 — bumped from 420 → 560 ms and the slide
+// distance from 12 → 24 px so the arrival is caught in peripheral
+// vision at 2× and 4× speed (where lines fire more frequently).
+const ARRIVAL_ANIM_MS = 560;
+const ARRIVAL_SLIDE_PX = 24;
 
 // Anchor inside the viewport with a right margin that survives narrow
 // widths. `width` clamps to `calc(100vw - 40px)` so the panel is never
@@ -80,8 +82,16 @@ const ENTRY_BASE_STYLE: React.CSSProperties = {
   wordBreak: 'normal',
   overflowWrap: 'normal',
   hyphens: 'none',
-  transition: `transform ${ARRIVAL_ANIM_MS}ms ease-out, opacity ${ARRIVAL_ANIM_MS}ms ease-out`
+  transition: `transform ${ARRIVAL_ANIM_MS}ms ease-out, opacity ${ARRIVAL_ANIM_MS}ms ease-out, border-left-color ${ARRIVAL_ANIM_MS}ms ease-out`
 };
+
+// ORDER 048 §8 — the newest entry starts with a warm-gold left
+// border that eases back to the muted border colour over the
+// arrival window. Runs alongside the slide + fade so an eye
+// glancing away from the panel still catches the flick of colour
+// where the new line landed.
+const ARRIVAL_BORDER_COLOUR = 'rgba(240, 214, 152, 1)';
+const SETTLED_BORDER_COLOUR = 'rgba(168, 146, 106, 0.55)';
 
 export function EventStreamPanel() {
   const sim = useSimState();
@@ -142,10 +152,12 @@ export function EventStreamPanel() {
         const style: React.CSSProperties = {
           ...ENTRY_BASE_STYLE,
           opacity: isArriving ? 0 : opacity,
-          transform: isArriving ? 'translateX(12px)' : 'translateX(0)'
+          transform: isArriving ? `translateX(${ARRIVAL_SLIDE_PX}px)` : 'translateX(0)',
+          borderLeftColor: isArriving ? ARRIVAL_BORDER_COLOUR : SETTLED_BORDER_COLOUR
         };
         // Force a second render one frame later so the CSS transition
-        // eases from (0, translateX(12px)) to (opacity, translateX(0)).
+        // eases from (0, offset, gold-border) to (opacity, 0,
+        // muted-border) over ARRIVAL_ANIM_MS.
         return (
           <ArrivalEntry
             key={key}
@@ -154,7 +166,8 @@ export function EventStreamPanel() {
             settledStyle={{
               ...ENTRY_BASE_STYLE,
               opacity,
-              transform: 'translateX(0)'
+              transform: 'translateX(0)',
+              borderLeftColor: SETTLED_BORDER_COLOUR
             }}
             isArriving={isArriving}
           />
