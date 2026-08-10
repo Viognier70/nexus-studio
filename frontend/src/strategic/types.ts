@@ -418,6 +418,11 @@ export interface DayState {
   // reset. Distinct from state.cost (which also carries agency,
   // wage, interest, buyout) so the ledger line is clean.
   serviceIngredientAccrued: number;
+  // ORDER 050 §7 step 3 (2026-08-10) — cover count for the current
+  // service. Incremented each time a guest transitions into 'paying';
+  // read at service close to enrich the revenue ledger line's cause
+  // text ("Lunch revenue (28 covers)"). Reset with serviceIngredientAccrued.
+  serviceCovers: number;
   // Reputation at the moment OPEN_SERVICE was dispatched — the
   // evening account uses this to say "kvällen bevarade ryktet" vs
   // "ryktet gick tillbaka" without surfacing the number itself.

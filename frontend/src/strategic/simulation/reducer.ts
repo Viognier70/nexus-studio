@@ -379,9 +379,10 @@ function openService(
     revenueAtServiceStart: state.revenue,
     costAtServiceStart: state.cost,
     reputationAtServiceStart: state.reputation,
-    // ORDER 050 §7 step 3 (2026-08-10) — fresh ingredient accumulator
-    // for this service; posted + reset at service-close transition.
+    // ORDER 050 §7 step 3 (2026-08-10) — fresh accumulators for this
+    // service; posted + reset at service-close transition.
     serviceIngredientAccrued: 0,
+    serviceCovers: 0,
     // ORDER 047 §6 — preserve morningPolicyChanges through the service
     // so the evening account can read them. Cleared on evening→morning
     // transition. Passed through explicitly since {...state.day} would
@@ -462,7 +463,8 @@ function skipLunch(state: SimulationState): SimulationState {
       revenueAtServiceStart: null,
       costAtServiceStart: null,
       reputationAtServiceStart: null,
-      serviceIngredientAccrued: 0
+      serviceIngredientAccrued: 0,
+      serviceCovers: 0
     }
   };
 }
@@ -489,26 +491,73 @@ const EVENING_TO_MORNING_PAUSE_SEC = 30;
 // alone appends the row. `prev` is the pre-transition state, read
 // for the accumulators (which the transition just reset on the
 // next.day object).
+// ORDER 050 §7 step 3 (2026-08-10) — self-explanatory scenario
+// ledger cause. The row should read as English prose the player
+// recognises from the room ("Walk-in of five: seated the party"),
+// not as a code identifier ("Scenario: walk-in-of-five (A)"). The
+// mapping is per (scenarioId, choice) for cycle-1's three scenarios;
+// unmapped combinations fall back to a legible generic form.
+const SCENARIO_LEDGER_TITLE: Record<string, string> = {
+  'walk-in-of-five': 'Walk-in of five',
+  'time-pressure': 'Late delegation booking',
+  'moral-dilemma': 'Fish with a broken cold chain'
+};
+
+const SCENARIO_LEDGER_CHOICE: Record<string, string> = {
+  'walk-in-of-five|A': 'seated the party',
+  'walk-in-of-five|B': 'seated four plus a bar seat',
+  'walk-in-of-five|C': 'refused at the door',
+  'time-pressure|A': 'ran the menu tonight',
+  'time-pressure|B': 'deferred to tomorrow',
+  'time-pressure|C': 'declined the booking',
+  'moral-dilemma|A': 'served the fish',
+  'moral-dilemma|B': 'swapped the dish',
+  'moral-dilemma|C': 'transformed the plate'
+};
+
+function scenarioLedgerCause(
+  scenarioId: string | undefined,
+  choice: 'A' | 'B' | 'C'
+): string {
+  const title = scenarioId && SCENARIO_LEDGER_TITLE[scenarioId]
+    ? SCENARIO_LEDGER_TITLE[scenarioId]
+    : scenarioId
+      ? `Scenario: ${scenarioId}`
+      : 'Scenario';
+  const choiceKey = scenarioId ? `${scenarioId}|${choice}` : '';
+  const choiceLabel = SCENARIO_LEDGER_CHOICE[choiceKey] ?? `choice ${choice}`;
+  return `${title}: ${choiceLabel}`;
+}
+
 function postServiceSummaryLines(
   draft: SimulationState,
   service: 'lunch' | 'dinner',
   prev: SimulationState
 ): void {
+  const serviceLabel = service === 'lunch' ? 'Lunch' : 'Dinner';
   const revenueKsek = prev.serviceRevenueToday[service];
+  const covers = prev.day.serviceCovers;
   if (revenueKsek > 0) {
+    // ORDER 050 §7 step 3 (2026-08-10) — cover count enriches the
+    // revenue line so the book row is self-explanatory: "Lunch
+    // revenue (28 covers)" instead of just "Lunch revenue".
+    const coverSuffix = covers > 0
+      ? ` (${covers} cover${covers === 1 ? '' : 's'})`
+      : '';
     postLedger(draft, {
       category: 'revenue',
       amount: revenueKsek * 1000,
-      cause: `${service === 'lunch' ? 'Lunch' : 'Dinner'} revenue`,
+      cause: `${serviceLabel} revenue${coverSuffix}`,
       causeId: service
     });
   }
   const ingredientSek = prev.day.serviceIngredientAccrued;
   if (ingredientSek > 0) {
+    const coverSuffix = covers > 0 ? ` — ${covers} cover${covers === 1 ? '' : 's'}` : '';
     postLedger(draft, {
       category: 'ingredient',
       amount: -ingredientSek,
-      cause: `Ingredients — ${service === 'lunch' ? 'lunch' : 'dinner'}`,
+      cause: `Ingredients — ${serviceLabel.toLowerCase()}${coverSuffix}`,
       causeId: service
     });
   }
@@ -545,7 +594,8 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           revenueAtServiceStart: null,
           costAtServiceStart: null,
           reputationAtServiceStart: null,
-          serviceIngredientAccrued: 0
+          serviceIngredientAccrued: 0,
+          serviceCovers: 0
         }
       };
       // ORDER 050 §7 step 3 (2026-08-10) — post per-service summary
@@ -594,7 +644,8 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           revenueAtServiceStart: null,
           costAtServiceStart: null,
           reputationAtServiceStart: null,
-          serviceIngredientAccrued: 0
+          serviceIngredientAccrued: 0,
+          serviceCovers: 0
         }
       };
       postServiceSummaryLines(next, 'dinner', state);
@@ -1054,6 +1105,10 @@ function advanceTick(state: SimulationState): SimulationState {
       const revKsek = rev / 1000;
       if (inLunch) draft.serviceRevenueToday.lunch += revKsek;
       else if (inDinner) draft.serviceRevenueToday.dinner += revKsek;
+      // ORDER 050 §7 step 3 (2026-08-10) — cover count for the
+      // per-service ledger summary. One increment per completed
+      // payment during a service; enriches the revenue line's cause.
+      if (inLunch || inDinner) draft.day.serviceCovers += 1;
     }
   }
   // Accumulate cost — paired write to till.
@@ -1680,16 +1735,14 @@ function resolveScenario(
   // scenario movement to the till. Positive = revenue-shaped (five
   // extra covers), negative = cost-shaped (the wine that broke).
   // §7 step 3 — one ledger line per scenario resolution so the book
-  // names what shifted and by how much.
+  // names what shifted and by how much. The cause reads as English
+  // prose the player recognises rather than a code identifier.
   if (themedCashDelta !== 0) {
     applyCashDelta(nextState, themedCashDelta);
-    const scenarioLabel = spec?.id
-      ? `${spec.id} (${choice})`
-      : `scenario (${choice})`;
     postLedger(nextState, {
       category: 'scenario',
       amount: themedCashDelta,
-      cause: `Scenario: ${scenarioLabel}`,
+      cause: scenarioLedgerCause(spec?.id, choice),
       ...(spec?.id ? { causeId: spec.id } : {})
     });
   }

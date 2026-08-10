@@ -175,6 +175,7 @@ export function initialDay(): DayState {
     costAtServiceStart: null,
     reputationAtServiceStart: null,
     serviceIngredientAccrued: 0,
+    serviceCovers: 0,
     morningPolicyChanges: []
   };
 }
