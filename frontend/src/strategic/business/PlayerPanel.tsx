@@ -1,15 +1,18 @@
-// ORDER 049 §5.2 + ORDER 050 §7 step 3 — the player panel.
+// ORDER 049 §5.2 + ORDER 050 §7 step 3 + §7 step 6 — the player panel.
 //
 // Vision Owner gate 10 (2026-08-09): "Pillret i övre högra hörnet
 // som fälls ut. En ständigt synlig panel konkurrerar med rummet, och
 // EDD §11 förbjuder dominerande HUD."
 //
 // ORDER 050 Addendum A §6.4 (2026-08-10): "Cash always visible;
-// everything else on request." The pill now shows CASH in kSEK
-// (the business's pulse). Clicking it expands the panel — which
-// now also carries the ORDER 050 §7 step 3 ledger as its bottom
-// section (the "business account" the player opens to see where
-// the money went).
+// everything else on request." The pill shows CASH in kSEK (the
+// business's pulse). Clicking it expands the panel with valuation
+// + operating readings.
+//
+// §7 step 6 (2026-08-10): the ledger moved to EveningAccountPanel —
+// per Addendum A §6.3, "evening tells you what happened." The
+// morning panel shows valuation and cash; the book of transactions
+// belongs to the evening account (same event, other side).
 //
 // Collapsed when idle, expanded on click, click-outside collapses.
 // No dominant HUD; the pill itself is one line of monospace.
@@ -23,23 +26,6 @@ import {
   targetQualityFood,
   targetQualityService
 } from '../simulation/quality';
-import type { LedgerCategory, LedgerLine } from '../types';
-
-// ORDER 050 §7 step 3 (2026-08-10) — the number of ledger rows shown
-// in the panel's transactions section. The underlying ring buffer
-// holds 1000; the visible slice is a scrollable recap.
-const LEDGER_VISIBLE_ROWS = 12;
-
-const LEDGER_CATEGORY_LABEL: Record<LedgerCategory, string> = {
-  revenue:    'Rev.',
-  wage:       'Wage',
-  agency:     'Agcy',
-  ingredient: 'Ingr.',
-  interest:   'Int.',
-  scenario:   'Scen.',
-  buyout:     'Buy.',
-  other:      '—'
-};
 
 // Same word-band pattern as the four instruments panel.
 function reputationBand(v: number): string {
@@ -300,11 +286,6 @@ export function PlayerPanel() {
             </div>
           )}
 
-          <div style={SECTION_DIVIDER} />
-
-          <div style={HEADING_STYLE}>Transactions</div>
-          <LedgerSection lines={sim.ledger} />
-
           <button type="button" style={SELL_BUTTON_STYLE} onClick={() => setOpen(false)}>
             Sälj verksamheten
           </button>
@@ -313,82 +294,6 @@ export function PlayerPanel() {
           </div>
         </div>
       )}
-    </div>
-  );
-}
-
-// -------- ledger section ------------------------------------------------
-
-const LEDGER_LIST_STYLE: React.CSSProperties = {
-  fontFamily: 'ui-monospace, "SF Mono", Menlo, Consolas, monospace',
-  fontSize: 11,
-  lineHeight: 1.5,
-  maxHeight: 200,
-  overflowY: 'auto',
-  paddingRight: 4,
-  marginTop: 4
-};
-
-const LEDGER_ROW_STYLE: React.CSSProperties = {
-  display: 'grid',
-  gridTemplateColumns: '32px 1fr 68px',
-  gap: 6,
-  alignItems: 'baseline',
-  padding: '2px 0',
-  borderBottom: '1px dashed rgba(168, 146, 106, 0.14)'
-};
-
-const LEDGER_EMPTY_STYLE: React.CSSProperties = {
-  fontSize: 11,
-  opacity: 0.55,
-  fontStyle: 'italic',
-  padding: '6px 0'
-};
-
-function formatLedgerAmount(sek: number): string {
-  const abs = Math.abs(sek);
-  // Under 10 000 SEK: SEK; above: kSEK. Keeps small entries readable.
-  if (abs < 10_000) {
-    return `${sek >= 0 ? '+' : '−'}${Math.round(abs).toLocaleString('en-GB')}`;
-  }
-  return `${sek >= 0 ? '+' : '−'}${(abs / 1000).toFixed(1)}k`;
-}
-
-interface LedgerSectionProps {
-  lines: readonly LedgerLine[];
-}
-
-function LedgerSection({ lines }: LedgerSectionProps) {
-  if (lines.length === 0) {
-    return <div style={LEDGER_EMPTY_STYLE}>No transactions yet.</div>;
-  }
-  // Most recent first, up to LEDGER_VISIBLE_ROWS. Ring buffer already
-  // caps upstream at LEDGER_MAX_LINES; here we render the tail.
-  const visible = lines.slice(-LEDGER_VISIBLE_ROWS).reverse();
-  return (
-    <div style={LEDGER_LIST_STYLE} role="log" aria-label="Recent transactions">
-      {visible.map((line, i) => (
-        <div
-          key={`${line.at}-${line.category}-${i}`}
-          style={LEDGER_ROW_STYLE}
-          aria-label={`${line.cause}: ${formatLedgerAmount(line.amount)} SEK, running cash ${Math.round(line.runningCash).toLocaleString('en-GB')} SEK on day ${line.day}`}
-        >
-          <span style={{ opacity: 0.55, fontSize: 9, letterSpacing: 0.5 }}>
-            {LEDGER_CATEGORY_LABEL[line.category]}
-          </span>
-          <span style={{ opacity: 0.85, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            {line.cause}
-          </span>
-          <span
-            style={{
-              textAlign: 'right',
-              color: line.amount >= 0 ? '#d8be82' : '#e8b498'
-            }}
-          >
-            {formatLedgerAmount(line.amount)}
-          </span>
-        </div>
-      ))}
     </div>
   );
 }
