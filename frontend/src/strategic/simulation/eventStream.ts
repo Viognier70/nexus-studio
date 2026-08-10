@@ -35,12 +35,19 @@ import type { Rng } from '../util/rng';
 // (AMBIENT_TEXTS et al.) is now used ONLY in the evening account
 // (already there via computeEveningAccount). The plain banks stay
 // station-tagged, present-tense, no interpretation.
+//
+// ORDER 052 §9 step 1 (2026-08-10): the plain banks are cause-aware.
+// Each event kind now carries sub-banks per cause + an ambient
+// fallback; detectCause() reads state and picks the dominant one.
 import {
+  CAUSE_PRIORITY,
+  type CauseBank,
+  type CauseKey,
   SERVICE_REPORT_AMBIENT,
   SERVICE_REPORT_POSITIVE,
   SERVICE_REPORT_PREP,
   SERVICE_REPORT_PREP_POSITIVE
-} from '../../content/serviceReport.sv';
+} from '../../content/serviceReport';
 import type { AmbientEventKind, PrepEventKind } from '../../content/eventStream.sv';
 import { currentRhythmMultiplier } from './rhythm';
 import { teamCapacity, teamCompetence } from './team';
@@ -259,6 +266,102 @@ function pickTextWithRepeatGuard(
   return pool[Math.floor(rng.next() * pool.length)];
 }
 
+// ORDER 052 §9 step 1 (2026-08-10) — cause detection for the plain
+// service report. Priority order (Vision Owner-approved 2026-08-10):
+// scale_down > morning_change > short_prep > thin_team > low_competence
+// > ingredient_tier_grund > poor_morale > ambient. First cause that
+// matches wins; the picker then reads that sub-bank if the kind has
+// variants for it, otherwise falls back to the kind's `ambient` array.
+//
+// The `axis` argument names the competence axis the kind reads —
+// 'scientific' for kitchen_slip / prep_kitchen; 'cultural' for
+// service_slip / delivery_short / wait_stretched / prep_room /
+// prep_delivery; 'practical' for turnover_stumble; null for kinds
+// that don't cleanly attach to one axis (bottleneck is strain-only,
+// but we still gate low_competence on scientific since a bottleneck
+// most often lives at the pass).
+
+const THIN_TEAM_THRESHOLD = 2;
+const LOW_COMPETENCE_THRESHOLD = 0.35;
+const POOR_MORALE_THRESHOLD = 0.4;
+const SHORT_PREP_IGNORANCE_THRESHOLD = 2;
+
+function scaleDownActive(state: SimulationState): boolean {
+  const s = state.scaleDown;
+  return (
+    s.menuShortenedFrom !== null ||
+    s.wineListReduced ||
+    s.closedLunch ||
+    s.closedDinner
+  );
+}
+
+function detectCause(
+  state: SimulationState,
+  axis: 'scientific' | 'cultural' | 'practical' | null,
+  kindReadsIngredient: boolean
+): CauseKey {
+  if (scaleDownActive(state)) return 'scale_down';
+  if (state.day.morningPolicyChanges.length > 0) return 'morning_change';
+  if (state.day.prepIgnoranceCount >= SHORT_PREP_IGNORANCE_THRESHOLD) return 'short_prep';
+  if (state.team.members.filter((m) => !m.isAgency).length <= THIN_TEAM_THRESHOLD) {
+    return 'thin_team';
+  }
+  if (axis && teamCompetence(state.team, axis) < LOW_COMPETENCE_THRESHOLD) {
+    return 'low_competence';
+  }
+  if (kindReadsIngredient && state.policies.ingredientTier === 'grund') {
+    return 'ingredient_tier_grund';
+  }
+  if (state.morale < POOR_MORALE_THRESHOLD) return 'poor_morale';
+  return 'ambient';
+}
+
+// Kinds where ingredient tier is a plausible cause (kitchen quality
+// + supplier receiving + prep-time supplier check). Other kinds
+// skip that priority step and fall through to poor_morale / ambient.
+const KIND_READS_INGREDIENT: Record<string, boolean> = {
+  kitchen_slip: true,
+  delivery_short: true,
+  prep_delivery: true
+};
+
+// Axis the kind reads for the low_competence check. `null` for kinds
+// where no single axis fits; those never trigger low_competence and
+// fall through.
+const KIND_COMPETENCE_AXIS: Record<
+  string,
+  'scientific' | 'cultural' | 'practical' | null
+> = {
+  kitchen_slip: 'scientific',
+  service_slip: 'cultural',
+  delivery_short: 'cultural',
+  bottleneck: 'scientific',
+  wait_stretched: 'cultural',
+  turnover_stumble: 'practical',
+  prep_kitchen: 'scientific',
+  prep_room: 'cultural',
+  prep_delivery: 'cultural'
+};
+
+function pickCausedText(
+  bank: CauseBank,
+  kind: string,
+  state: SimulationState,
+  rng: Rng
+): string {
+  const axis = KIND_COMPETENCE_AXIS[kind] ?? null;
+  const readsIngredient = KIND_READS_INGREDIENT[kind] ?? false;
+  const cause = detectCause(state, axis, readsIngredient);
+  const causeBank = cause === 'ambient' ? undefined : bank[cause];
+  const pool = causeBank && causeBank.length > 0 ? causeBank : bank.ambient;
+  return pickTextWithRepeatGuard(pool, state, rng);
+}
+
+// Re-export for tests that want to exercise the priority ladder.
+export { detectCause as detectStreamCause };
+export { CAUSE_PRIORITY };
+
 function makeAmbientEntry(
   def: EventDef,
   state: SimulationState,
@@ -266,7 +369,7 @@ function makeAmbientEntry(
 ): EventStreamEntry {
   return {
     at: state.simTime,
-    text: pickTextWithRepeatGuard(SERVICE_REPORT_AMBIENT[def.kind], state, rng),
+    text: pickCausedText(SERVICE_REPORT_AMBIENT[def.kind], def.kind, state, rng),
     category: 'ambient',
     causeTag: def.causeTag,
     sustainability: def.sustainability,
@@ -286,7 +389,7 @@ function makePrepEntry(
   // reading), matching the ambient convention for team-strain events.
   return {
     at: state.simTime,
-    text: pickTextWithRepeatGuard(SERVICE_REPORT_PREP[def.kind], state, rng),
+    text: pickCausedText(SERVICE_REPORT_PREP[def.kind], def.kind, state, rng),
     category: 'ambient',
     causeTag: 'ignorance',
     sustainability: 'social',
@@ -474,10 +577,11 @@ export function tickEventStream(state: SimulationState, rng: Rng): void {
               scenarioId: null
             });
           } else {
-            // Ignorance polarity — prep going wrong.
+            // Ignorance polarity — prep going wrong. Cause-aware
+            // picker per ORDER 052 §9 step 1.
             emitted.push({
               at: state.simTime,
-              text: pickTextWithRepeatGuard(SERVICE_REPORT_PREP[slot.kind], state, rng),
+              text: pickCausedText(SERVICE_REPORT_PREP[slot.kind], slot.kind, state, rng),
               category: 'ambient',
               causeTag: 'ignorance',
               sustainability: 'social',

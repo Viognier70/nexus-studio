@@ -29,7 +29,7 @@ import {
 // ORDER 048 §2.1 — carryover text switched to the plain-voice service
 // report per the three-voices split. Observer voice moved out of
 // during-service into the evening account only.
-import { SERVICE_REPORT_PREP_CARRYOVER } from '../../content/serviceReport.sv';
+import { SERVICE_REPORT_PREP_CARRYOVER } from '../../content/serviceReport';
 import { generateWeather, waitingAtOpeningCount } from './weather';
 import {
   generateWorldFactors,
