@@ -17,21 +17,26 @@ import {
   initialEnablers,
   makeInitialState
 } from '../model';
-import { WAGER_UNIT_STAKE, reducer } from '../reducer';
-import type { EnablerKey, SustainabilityKey } from '../../types';
+import { reducer } from '../reducer';
+import type {
+  EnablerKey,
+  StoredCapitalKey,
+  SustainabilityKey
+} from '../../types';
 
 const SUSTAINABILITIES: readonly SustainabilityKey[] = [
   'economic',
   'social',
   'ecological'
 ];
+const STORED_CAPITALS: readonly StoredCapitalKey[] = ['social', 'ecological'];
 const ENABLERS: readonly EnablerKey[] = ['scientific', 'cultural'];
 
 describe('ORDER 043 initial state', () => {
   const s = makeInitialState(1);
 
-  it('has all three sustainabilities at INITIAL_CAPITAL_VALUE', () => {
-    for (const k of SUSTAINABILITIES) {
+  it('has social + ecological at INITIAL_CAPITAL_VALUE (economic moved to state.cash per ORDER 050 §3)', () => {
+    for (const k of STORED_CAPITALS) {
       expect(s.capitals.values[k]).toBe(INITIAL_CAPITAL_VALUE);
     }
   });
@@ -46,16 +51,11 @@ describe('ORDER 043 initial state', () => {
     }
   });
 
-  it('has no standing wager', () => {
-    expect(s.wager).toBeNull();
-  });
-
   it('has no consequence events yet', () => {
     expect(s.consequenceEvents).toEqual([]);
   });
 
-  it('has empty wager and theme histories', () => {
-    expect(s.capitals.wagerHistory).toEqual([]);
+  it('has empty theme history', () => {
     expect(s.capitals.themeHistory).toEqual([]);
   });
 
@@ -65,7 +65,6 @@ describe('ORDER 043 initial state', () => {
     const b = initialCapitals();
     expect(a).not.toBe(b);
     expect(a.values).not.toBe(b.values);
-    expect(a.wagerHistory).not.toBe(b.wagerHistory);
     expect(a.themeHistory).not.toBe(b.themeHistory);
 
     const ea = initialEnablers();
@@ -76,48 +75,9 @@ describe('ORDER 043 initial state', () => {
   });
 });
 
-describe('ORDER 043 PLACE_WAGER (locked at placement per Addendum B)', () => {
-  it('PLACE_WAGER stores the capital, simTime, and the fixed unit stake', () => {
-    const s0 = makeInitialState(1);
-    const s = reducer(s0, { type: 'PLACE_WAGER', capital: 'social' });
-    expect(s.wager).not.toBeNull();
-    expect(s.wager?.capital).toBe('social');
-    expect(s.wager?.amount).toBe(WAGER_UNIT_STAKE);
-    expect(s.wager?.placedAt).toBe(s0.simTime);
-  });
-
-  it('PLACE_WAGER is a no-op when a wager already stands (locked)', () => {
-    // Addendum B §5A.5 — the stake is locked the moment it is placed.
-    // A second PLACE_WAGER must not overwrite the first.
-    let s = makeInitialState(1);
-    s = reducer(s, { type: 'PLACE_WAGER', capital: 'social' });
-    const firstWager = s.wager;
-    s = reducer(s, { type: 'PLACE_WAGER', capital: 'ecological' });
-    expect(s.wager).toEqual(firstWager);
-  });
-
-  it('CLEAR_WAGER still returns to no standing wager if dispatched (kept for internal use)', () => {
-    // Player UI no longer surfaces this action per Addendum B, but
-    // the reducer path is kept for programmatic clearance (e.g. a
-    // future "service ended before scenario fired" flow).
-    let s = makeInitialState(1);
-    s = reducer(s, { type: 'PLACE_WAGER', capital: 'economic' });
-    s = reducer(s, { type: 'CLEAR_WAGER' });
-    expect(s.wager).toBeNull();
-  });
-
-  it('after CLEAR_WAGER, a fresh PLACE_WAGER succeeds', () => {
-    let s = makeInitialState(1);
-    s = reducer(s, { type: 'PLACE_WAGER', capital: 'social' });
-    s = reducer(s, { type: 'CLEAR_WAGER' });
-    for (const k of SUSTAINABILITIES) {
-      // Only the FIRST post-clear placement takes; subsequent
-      // placements without a clear are locked out.
-      let s2 = reducer(s, { type: 'PLACE_WAGER', capital: k });
-      expect(s2.wager?.capital).toBe(k);
-    }
-  });
-});
+// ORDER 050 §5 (2026-08-10) — PLACE_WAGER / CLEAR_WAGER retired.
+// The theme-wager mechanic is gone; the stake now lives in each
+// activity's own three-column effects.
 
 describe('ORDER 043 RECORD_ENABLER_EVENT', () => {
   it('appends an event to the history and bumps the derived tally', () => {
@@ -227,11 +187,7 @@ describe('ORDER 043 RECORD_ENABLER_EVENT', () => {
 
 describe('ORDER 043 §11.1 portability contract', () => {
   it('the whole state round-trips through JSON without loss', () => {
-    // §11.1 constraint 5 (portfolio portable): no field may use a type
-    // that doesn't survive JSON.stringify + JSON.parse. If a Map, a
-    // Set, a function, or a ref cycle sneaks in, this fails.
     let s = makeInitialState(1);
-    s = reducer(s, { type: 'PLACE_WAGER', capital: 'social' });
     s = reducer(s, {
       type: 'RECORD_ENABLER_EVENT',
       enabler: 'scientific',
@@ -248,25 +204,17 @@ describe('ORDER 043 §11.1 portability contract', () => {
     });
     const json = JSON.stringify(s);
     const restored = JSON.parse(json);
-    // Deep-equal on the round trip catches any lost type.
     expect(restored.capitals).toEqual(s.capitals);
     expect(restored.enablers).toEqual(s.enablers);
-    expect(restored.wager).toEqual(s.wager);
     expect(restored.consequenceEvents).toEqual(s.consequenceEvents);
+    expect(restored.cash).toBe(s.cash);
   });
 
-  it('all wager and enabler-event timestamps use simTime, not Date.now', () => {
-    // §11.1 constraint 4 (time-independent of player logged-in state):
-    // real-world timestamps in state would foreclose that. simTime is a
-    // seed-reconstructible sim-seconds counter; it survives session
-    // resume. Guard by asserting that placedAt / at match simTime.
+  it('enabler-event timestamps use simTime, not Date.now', () => {
     const s0 = makeInitialState(1);
-    // Advance simTime a few ticks so 0 vs Date.now can't accidentally match.
     let s = s0;
     for (let i = 0; i < 5; i++) s = reducer(s, { type: 'TICK', dt: 1 / 5 });
     const simTimeThen = s.simTime;
-    s = reducer(s, { type: 'PLACE_WAGER', capital: 'ecological' });
-    expect(s.wager?.placedAt).toBe(simTimeThen);
     s = reducer(s, {
       type: 'RECORD_ENABLER_EVENT',
       enabler: 'scientific',
@@ -279,7 +227,7 @@ describe('ORDER 043 §11.1 portability contract', () => {
   });
 });
 
-describe('ORDER 043 v3 §7 chain — theme draw + capital movement + wager payout', () => {
+describe('ORDER 043 v3 §7 chain — theme draw + capital movement (wager payout retired)', () => {
   it('triggerScenario draws a theme and stores it on scenario.drawnTheme', () => {
     let s = makeInitialState(42);
     s = reducer(s, { type: 'TRIGGER_SCENARIO' });
@@ -295,16 +243,29 @@ describe('ORDER 043 v3 §7 chain — theme draw + capital movement + wager payou
     expect(a.scenario.drawnTheme).toBe(b.scenario.drawnTheme);
   });
 
-  it('choice A/B moves the drawn theme capital up; choice C moves it down', () => {
+  it('choice A/B moves the drawn theme up; choice C moves it down (read via cash for economic)', () => {
     const run = (choice: 'A' | 'B' | 'C') => {
       let s = makeInitialState(42);
+      // Pin social weakest so the draw reliably lands on
+      // walk-in-of-five, whose A/B move the drawn (social) capital
+      // up and C moves it down. Other themes have different sign
+      // conventions (moral-dilemma A is capitalSign=-1) that would
+      // invalidate the shared A>0/B>0/C<0 assertion.
+      s = reducer(s, { type: 'SET_CAPITAL', capital: 'social', value: 0.05 });
+      s = reducer(s, { type: 'SET_CAPITAL', capital: 'ecological', value: 0.95 });
+      s = reducer(s, { type: 'SET_CASH', valueSek: 500_000 });
       s = reducer(s, { type: 'TRIGGER_SCENARIO' });
       const theme = s.scenario.drawnTheme!;
-      const before = s.capitals.values[theme];
+      const readerBefore = theme === 'economic'
+        ? s.cash
+        : s.capitals.values[theme];
       s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
       s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
       s = reducer(s, { type: 'RESOLVE_SCENARIO', choice });
-      return s.capitals.values[theme] - before;
+      const readerAfter = theme === 'economic'
+        ? s.cash
+        : s.capitals.values[theme];
+      return readerAfter - readerBefore;
     };
     expect(run('A')).toBeGreaterThan(0);
     expect(run('B')).toBeGreaterThan(0);
@@ -321,65 +282,11 @@ describe('ORDER 043 v3 §7 chain — theme draw + capital movement + wager payou
     expect(s.capitals.themeHistory).toContain(drawn);
     expect(s.capitals.themeHistory.length).toBeLessThanOrEqual(6);
   });
-
-  it('wager on the drawn theme is a WIN and appends to wagerHistory', () => {
-    let s = makeInitialState(42);
-    s = reducer(s, { type: 'TRIGGER_SCENARIO' });
-    const drawn = s.scenario.drawnTheme!;
-    // Stake on the drawn theme — should win.
-    s = reducer(s, { type: 'PLACE_WAGER', capital: drawn });
-    const before = s.capitals.values[drawn];
-    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
-    s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
-    s = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'A' });
-    // Themed delta (+SCENARIO_CAPITAL_DELTA) plus wager win (positive) →
-    // capital moved by more than SCENARIO_CAPITAL_DELTA alone.
-    expect(s.capitals.values[drawn]).toBeGreaterThan(before + 0.06);
-    // Wager consumed.
-    expect(s.wager).toBeNull();
-    // History logged.
-    expect(s.capitals.wagerHistory).toHaveLength(1);
-    const entry = s.capitals.wagerHistory[0];
-    expect(entry.outcome).toBe('win');
-    expect(entry.staked).toBe(drawn);
-    expect(entry.drew).toBe(drawn);
-    expect(entry.delta).toBeGreaterThan(0);
-  });
-
-  it('wager on the WRONG capital is a LOSS: staked capital loses; drawn capital moves via scenario delta', () => {
-    let s = makeInitialState(42);
-    s = reducer(s, { type: 'TRIGGER_SCENARIO' });
-    const drawn = s.scenario.drawnTheme!;
-    // Pick a capital that was NOT drawn to stake on.
-    const wrongCapital = SUSTAINABILITIES.find((k) => k !== drawn)!;
-    s = reducer(s, { type: 'PLACE_WAGER', capital: wrongCapital });
-    const wrongBefore = s.capitals.values[wrongCapital];
-    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
-    s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
-    s = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'A' });
-    // Wrong capital: dropped by the stake amount.
-    expect(s.capitals.values[wrongCapital]).toBeLessThan(wrongBefore);
-    expect(s.wager).toBeNull();
-    const entry = s.capitals.wagerHistory[0];
-    expect(entry.outcome).toBe('loss');
-    expect(entry.staked).toBe(wrongCapital);
-    expect(entry.drew).toBe(drawn);
-  });
-
-  it('no wager placed → resolve does not append to wagerHistory', () => {
-    let s = makeInitialState(42);
-    s = reducer(s, { type: 'TRIGGER_SCENARIO' });
-    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
-    s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
-    s = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'A' });
-    expect(s.capitals.wagerHistory).toHaveLength(0);
-  });
 });
 
 describe('ORDER 043 RESET behaviour', () => {
-  it('RESET returns capitals, enablers, wager, consequence events to initial', () => {
+  it('RESET returns capitals, enablers, consequence events to initial', () => {
     let s = makeInitialState(1);
-    s = reducer(s, { type: 'PLACE_WAGER', capital: 'social' });
     s = reducer(s, {
       type: 'RECORD_ENABLER_EVENT',
       enabler: 'scientific',
@@ -388,7 +295,6 @@ describe('ORDER 043 RESET behaviour', () => {
       scenarioId: 'x'
     });
     s = reducer(s, { type: 'RESET' });
-    expect(s.wager).toBeNull();
     expect(s.capitals).toEqual(initialCapitals());
     expect(s.enablers).toEqual(initialEnablers());
     expect(s.consequenceEvents).toEqual([]);

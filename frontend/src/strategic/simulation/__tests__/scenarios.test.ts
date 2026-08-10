@@ -123,17 +123,21 @@ describe('capitalSign per choice drives the drawn-theme capital direction', () =
     // choices for whichever theme is drawn.
     let s = reducer(makeInitialState(42), { type: 'TRIGGER_SCENARIO' });
     const drawn = s.scenario.drawnTheme!;
-    const before = s.capitals.values[drawn];
+    // ORDER 050 §3 (2026-08-10) — economic-themed scenarios move
+    // state.cash (SEK) rather than a [0,1] capital. Read whichever
+    // is the store for the drawn theme.
+    const readBefore = drawn === 'economic'
+      ? s.cash
+      : s.capitals.values[drawn];
     s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
     s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
     const sA = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'A' });
     const sC = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'C' });
-    // A's capitalSign is +1 across all three cycle-1 scenarios except
-    // moral-dilemma A (which is -1). Both directions should be
-    // detectable; we assert |Δ| > 0 and that A + C don't move the
-    // capital in identical directions.
-    const deltaA = sA.capitals.values[drawn] - before;
-    const deltaC = sC.capitals.values[drawn] - before;
+    const readAfter = (st: typeof sA) => drawn === 'economic'
+      ? st.cash
+      : st.capitals.values[drawn];
+    const deltaA = readAfter(sA) - readBefore;
+    const deltaC = readAfter(sC) - readBefore;
     expect(Math.abs(deltaA)).toBeGreaterThan(0);
     expect(Math.abs(deltaC)).toBeGreaterThan(0);
     // Same theme, A and C should NOT land on the same value.

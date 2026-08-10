@@ -43,9 +43,25 @@ export interface EnablerWrite {
 // trades: a choice that lifts economic while dropping ecological
 // writes both in the same beat, so the player can watch the trade.
 // Multiple entries allowed per choice; each fires at RESOLVE_SCENARIO.
+//
+// ORDER 050 §3 (2026-08-10) — restricted to non-economic axes under
+// the cash refactor. Economic effects live on `cashWrites` below in
+// SEK units. The type restriction is deliberate: ambiguous `delta`
+// fields where the unit depends on the key would be exactly the
+// two-numbers-for-one-thing drift the register documents (memory
+// `feedback_citation_is_not_endorsement.md`).
 export interface SustainabilityWrite {
-  capital: SustainabilityKey;
-  delta: number;   // signed; typically ±0.02 to ±0.05
+  capital: 'social' | 'ecological';
+  delta: number;   // signed [0,1] capital delta; typically ±0.02 to ±0.05
+}
+
+// ORDER 050 §3 (2026-08-10) — a signed cash delta in SEK, applied
+// directly to `state.cash` at RESOLVE_SCENARIO. Replaces the previous
+// `{capital: 'economic', delta: <0..1>}` shape for two-way trades.
+// Scale: ±3 000 SEK ≈ half a lunch's revenue; ±6 000 SEK ≈ one lunch.
+// Anchored to SCENARIO_CASH_DELTA_SEK per constants.ts.
+export interface CashWrite {
+  amount: number;   // signed SEK
 }
 
 // ORDER 048 §6 — depth via meter-threshold-dependent consequences.
@@ -125,12 +141,17 @@ export interface ScenarioChoiceSpec {
   // Same convention as CHOICE_CAPITAL_SIGN in reducer: +1 for
   // engaging (A/B), −0.5 for refusal-shaped (C).
   capitalSign: number;
-  // ORDER 048 §3 — extra signed writes to specific sustainability
+  // ORDER 048 §3 — extra signed writes to non-economic sustainability
   // capitals beyond the drawn-theme primary. Use this for two-way
-  // trades: e.g. walk-in-of-five choice A lifts social (theme) AND
-  // economic (extra covers = revenue) AND drops ecological (crammed
-  // kitchen = more waste). Empty = no secondary writes.
+  // trades on social/ecological. Economic effects go on `cashWrites`
+  // (post-ORDER-050 §3, 2026-08-10).
   secondaryWrites?: readonly SustainabilityWrite[];
+  // ORDER 050 §3 (2026-08-10) — cash effects in SEK for two-way
+  // trades that touch money. E.g. walk-in-of-five choice A lifts
+  // social (theme) AND the till (five extra covers) AND drops
+  // ecological (crammed kitchen). The till entry lives here so its
+  // unit is unambiguous.
+  cashWrites?: readonly CashWrite[];
   // ORDER 048 §6 — depth via meter-threshold amplification. Optional.
   // See BelowThresholdAmplifier docs; used to make a choice's
   // consequence larger when a specific capital is already weak, so
@@ -204,12 +225,19 @@ const WALK_IN_OF_FIVE: ScenarioSpec = {
       spawnedRemaining: 5,
       nextSpawnAtOffset: 0.4,
       capitalSign: 1,
-      // ORDER 048 §3 trade — five extra covers lifts economic;
-      // crammed kitchen produces more waste, drops ecological. Two-
-      // way movement the player watches happen in the same beat.
+      // ORDER 048 §3 trade — five extra covers lifts the till (an
+      // extra cover at medium/utvald yields ~360 SEK, so five is a
+      // small-lunch-sized bump); crammed kitchen produces more waste,
+      // drops ecological. Two-way movement the player watches happen
+      // in the same beat.
       secondaryWrites: [
-        { capital: 'economic',   delta: 0.03 },
         { capital: 'ecological', delta: -0.02 }
+      ],
+      cashWrites: [
+        // ORDER 050 §3 (2026-08-10) — the economic secondaryWrite
+        // (delta 0.03) migrated to a cashWrite. 3 000 SEK ≈ five
+        // extra covers at medium/utvald: half a lunch of found revenue.
+        { amount: 3000 }
       ],
       // ORDER 048 §6 depth — cramming a strained room compounds the
       // ecological hit. The kitchen's waste gets worse under load;
@@ -451,12 +479,18 @@ const MORAL_DILEMMA: ScenarioSpec = {
       // never learns it.
       capitalSign: -1,
       // ORDER 048 §3 trade — cost of the shortcut lands ecologically;
-      // the immediate revenue holds (economic +) but if the story
-      // reaches a guest the room reads it (social −). The room seldom
-      // does — this is the "invisible cost" reading.
+      // the immediate revenue holds (till up) but if the story reaches
+      // a guest the room reads it (social −). The room seldom does —
+      // this is the "invisible cost" reading.
       secondaryWrites: [
-        { capital: 'economic', delta: 0.02 },
-        { capital: 'social',   delta: -0.01 }
+        { capital: 'social', delta: -0.01 }
+      ],
+      cashWrites: [
+        // ORDER 050 §3 (2026-08-10) — the economic secondaryWrite
+        // (delta 0.02) migrated to a cashWrite. 2 000 SEK ≈ the
+        // portioned fish that would otherwise have been re-bought:
+        // the shortcut's found money.
+        { amount: 2000 }
       ],
       // ORDER 048 §6 depth — a shortcut on ecological when the
       // capital is already weak doubles the hit. Reads as "you took

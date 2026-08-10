@@ -14,7 +14,6 @@ import { EveningAccountPanel } from './scenario/EveningAccountPanel';
 import { OpeningPanel } from './scenario/OpeningPanel';
 import { ScenarioOverlay } from './scenario/ScenarioOverlay';
 import { ServiceLengthPicker } from './scenario/ServiceLengthPicker';
-import { WagerPanel } from './scenario/WagerPanel';
 import { StrategicScene } from './scene/StrategicScene';
 import { SimulationProvider, useSimDispatch } from './simulation/SimulationProvider';
 import { AboutPanel } from './ui/AboutPanel';
@@ -112,13 +111,25 @@ function StrategicShell() {
     const cyclePosition: Record<'economic' | 'social' | 'ecological', number> = {
       economic: 0, social: 0, ecological: 0
     };
+    // ORDER 050 §3 (2026-08-10) — economic now dispatches SET_CASH
+    // (SEK) rather than SET_CAPITAL (0..1). The cycle step maps to
+    // 0..2× starting cash so keyboard sweeps still visibly move the
+    // arrivals/walk-away curves.
+    const CASH_CYCLE_SEK = [240_000, 168_000, 96_000, 36_000, 0];
     const cycle = (cap: 'economic' | 'social' | 'ecological') => {
       cyclePosition[cap] = (cyclePosition[cap] + 1) % cycleSteps.length;
-      simDispatch({
-        type: 'SET_CAPITAL',
-        capital: cap,
-        value: cycleSteps[cyclePosition[cap]]
-      });
+      if (cap === 'economic') {
+        simDispatch({
+          type: 'SET_CASH',
+          valueSek: CASH_CYCLE_SEK[cyclePosition[cap]]
+        });
+      } else {
+        simDispatch({
+          type: 'SET_CAPITAL',
+          capital: cap,
+          value: cycleSteps[cyclePosition[cap]]
+        });
+      }
     };
     const onKey = (event: KeyboardEvent) => {
       // ORDER 047 §8 — Shift+C forces a service collapse (DEV only).
@@ -197,7 +208,6 @@ function StrategicShell() {
       <ServiceLengthPicker />
       <TeamPanel />
       <InvestmentPanel />
-      <WagerPanel />
       <AgencyOfferPanel />
       <OpeningPanel />
       <EveningAccountPanel />

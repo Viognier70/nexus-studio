@@ -11,7 +11,7 @@ import type {
   SimAction,
   SimulationState,
   StaffRole,
-  SustainabilityKey
+  StoredCapitalKey
 } from '../types';
 import {
   SERVICE_LENGTH_MAX_MINUTES,
@@ -74,7 +74,6 @@ import { tickGuests, tickStaff } from './service';
 import { tickSustainability } from './sustainability';
 import {
   AGENCY_DECLINE_SOCIAL_COST,
-  AGENCY_ECONOMIC_COST,
   AGENCY_HIRE_COST,
   AGENCY_OFFER_LOAD_THRESHOLD,
   AGENCY_OFFER_SUSTAINED_SEC,
@@ -85,31 +84,31 @@ import {
   removeAgencyMembers,
   teamCapacity
 } from './team';
-import { drawNextTheme, wagerPayout } from './themeSelection';
-
-// Wager + capital tuning constants live in ./constants (no imports,
-// no cycle). Imported for local use AND re-exported here so callers
-// that pull them from the reducer barrel keep working. Introduced
-// 2026-08-09 to break the reducer ↔ eveningAccount ↔ themeSelection
-// TDZ cycle that crashed the browser bundle (Vitest happened to
-// resolve the cycle safely; the browser's entry order did not).
 import {
-  WAGER_UNIT_STAKE,
-  WAGER_WEAK_THRESHOLD,
-  WAGER_WEAK_WIN_MULTIPLIER,
+  applyCashCost,
+  applyCashDelta,
+  applyCashRevenue,
+  capitalReadingFor
+} from './cashReading';
+import { drawNextTheme } from './themeSelection';
+
+// Capital tuning constants live in ./constants (no imports, no
+// cycle). Re-exported here so callers pulling from the reducer
+// barrel keep working. ORDER 050 §5 (2026-08-10) retired the WAGER_*
+// constants alongside the theme-wager mechanic.
+import {
   CAPITAL_MIN,
   CAPITAL_MAX,
   THEME_HISTORY_LIMIT,
-  SCENARIO_CAPITAL_DELTA
+  SCENARIO_CAPITAL_DELTA,
+  SCENARIO_CASH_DELTA_SEK
 } from './constants';
 export {
-  WAGER_UNIT_STAKE,
-  WAGER_WEAK_THRESHOLD,
-  WAGER_WEAK_WIN_MULTIPLIER,
   CAPITAL_MIN,
   CAPITAL_MAX,
   THEME_HISTORY_LIMIT,
-  SCENARIO_CAPITAL_DELTA
+  SCENARIO_CAPITAL_DELTA,
+  SCENARIO_CASH_DELTA_SEK
 };
 
 // Consequence window per ORDER 042 §3.4: "over 30–45 seconds of
@@ -153,10 +152,6 @@ export function reducer(state: SimulationState, action: SimAction): SimulationSt
       return advanceToDifficulty(state);
     case 'SET_SCENARIO_DIFFICULTY':
       return setDifficulty(state, action.difficulty);
-    case 'PLACE_WAGER':
-      return placeWager(state, action.capital);
-    case 'CLEAR_WAGER':
-      return clearWager(state);
     case 'RECORD_ENABLER_EVENT':
       return recordEnablerEvent(
         state,
@@ -167,6 +162,8 @@ export function reducer(state: SimulationState, action: SimAction): SimulationSt
       );
     case 'SET_CAPITAL':
       return setCapital(state, action.capital, action.value);
+    case 'SET_CASH':
+      return { ...state, cash: action.valueSek };
     case 'OPEN_SERVICE':
       return openService(state, action.service, action.lengthMinutes);
     case 'SKIP_LUNCH':
@@ -582,7 +579,15 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
         ...state.serviceRevenueRolling.dinner,
         state.serviceRevenueToday.dinner
       ].slice(-ROLLING_WINDOW);
-      return {
+      // ORDER 050 §3 (2026-08-10) — daily wages paired with the till.
+      // Preexisting gap: `chargeStructuralCost` only updated
+      // `team.paidStructuralCost`, leaving state.cash/state.cost
+      // ignorant of the wage bill. Fixed here as part of the cash
+      // refactor: sum non-agency dailyCost and post via applyCashCost.
+      const wageTotal = state.team.members
+        .filter((m) => !m.isAgency)
+        .reduce((s, m) => s + m.dailyCost, 0);
+      const nextForDay: SimulationState = {
         ...state,
         team: chargeStructuralCost(state.team),
         // ORDER 046 §3 — evening account is scoped to a single evening;
@@ -606,6 +611,8 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           periodStartAt: simTime
         }
       };
+      if (wageTotal > 0) applyCashCost(nextForDay, wageTotal);
+      return nextForDay;
     }
   }
   return state;
@@ -613,7 +620,7 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
 
 function setCapital(
   state: SimulationState,
-  capital: SustainabilityKey,
+  capital: StoredCapitalKey,
   value: number
 ): SimulationState {
   const clamped = Math.max(0, Math.min(1, value));
@@ -703,21 +710,14 @@ function acceptAgency(state: SimulationState): SimulationState {
   const team = addAgencyMember(state.team, state.day.dayNumber);
   // ORDER 047 §2 — accepting help lifts morale; the team registers
   // that management moves when they're drowning.
+  // ORDER 050 §3 (2026-08-10) — single money line, paired write via
+  // applyCashCost so revenue/cost/cash stay in sync. The previous
+  // double-hit (state.cost += 800 AND capitals.values.economic -= 0.04)
+  // collapsed here into one honest number.
   const next: SimulationState = {
     ...state,
     team,
     agencyOffer: null,
-    // Cost is felt both in raw ledger (state.cost) and in the
-    // reading layer (economic capital). The capital hit is what
-    // the player watches; the ledger accumulates for later reports.
-    cost: state.cost + AGENCY_HIRE_COST,
-    capitals: {
-      ...state.capitals,
-      values: {
-        ...state.capitals.values,
-        economic: Math.max(0, state.capitals.values.economic - AGENCY_ECONOMIC_COST)
-      }
-    },
     events: [
       ...state.events,
       {
@@ -727,6 +727,7 @@ function acceptAgency(state: SimulationState): SimulationState {
       }
     ]
   };
+  applyCashCost(next, AGENCY_HIRE_COST);
   bumpMorale(next, MORALE_AGENCY_ACCEPT_BUMP);
   return next;
 }
@@ -804,14 +805,13 @@ function fireTeamMember(state: SimulationState, memberId: string): SimulationSta
   // days you promised to pay for are paid up-front.
   const remainingDays = Math.max(0, member.contractEndsDay - state.day.dayNumber);
   const buyout = remainingDays * member.dailyCost;
-  return {
+  const next: SimulationState = {
     ...state,
     team: {
       ...state.team,
       members: state.team.members.filter((m) => m.id !== memberId),
       paidStructuralCost: state.team.paidStructuralCost + buyout
     },
-    cost: state.cost + buyout,
     events: [
       ...state.events,
       {
@@ -824,34 +824,13 @@ function fireTeamMember(state: SimulationState, memberId: string): SimulationSta
       }
     ]
   };
+  // ORDER 050 §3 (2026-08-10) — paired cash write via applyCashCost.
+  if (buyout > 0) applyCashCost(next, buyout);
+  return next;
 }
 
-// ---------- ORDER 043 wager + enabler transitions -------------------------
-
-function placeWager(state: SimulationState, capital: SustainabilityKey): SimulationState {
-  // ORDER 043 Addendum B — the stake is locked the moment it is
-  // placed. No withdrawal, no time window. Once a wager stands,
-  // PLACE_WAGER is a no-op; the only way out is the next scenario
-  // resolving (which clears the wager as part of payout).
-  if (state.wager !== null) return state;
-  return {
-    ...state,
-    wager: {
-      capital,
-      placedAt: state.simTime,
-      amount: WAGER_UNIT_STAKE
-    }
-  };
-}
-
-// CLEAR_WAGER intentionally retired at Addendum B. The stake locks
-// at placement; the wager is cleared only by RESOLVE_SCENARIO after
-// payout. Kept as a helper for backward compat if a future order
-// needs a system-side retract (e.g. a service that ends before a
-// scenario fires); currently unused.
-function clearWager(state: SimulationState): SimulationState {
-  return { ...state, wager: null };
-}
+// ---------- ORDER 043 enabler transitions ---------------------------------
+// (placeWager / clearWager retired under ORDER 050 §5, 2026-08-10.)
 
 function recordEnablerEvent(
   state: SimulationState,
@@ -990,28 +969,28 @@ function advanceTick(state: SimulationState): SimulationState {
   for (const guest of draft.guests) {
     if (guest.state === 'paying' && guest.stateTime === draft.simTime) {
       const rev = revenuePerGuest(draft.policies) * revenueMult;
-      draft.revenue += rev;
-      // kSEK-scale conversion for the panel readouts (state.revenue
-      // is raw kr; the valuation math and panel operate in kSEK).
+      // ORDER 050 §3 (2026-08-10) — paired write: revenue accumulator
+      // + cash till stay in sync via applyCashRevenue. serviceRevenue
+      // panel arrays continue to receive the kSEK share.
+      applyCashRevenue(draft, rev);
       const revKsek = rev / 1000;
       if (inLunch) draft.serviceRevenueToday.lunch += revKsek;
       else if (inDinner) draft.serviceRevenueToday.dinner += revKsek;
     }
   }
-  // Accumulate cost.
-  draft.cost += (costPerMinuteToTick(draft) * tickSeconds) / 60;
+  // Accumulate cost — paired write to till.
+  applyCashCost(draft, (costPerMinuteToTick(draft) * tickSeconds) / 60);
 
   // ORDER 049 §5.2 — daily loan interest. Accrues once per calendar
   // day (guarded by lastAccrualDay so the same tick can't charge it
-  // twice). Interest is added straight to state.cost so the existing
-  // valuation.monthlyNetRunRate reads it as part of daily net.
+  // twice). ORDER 050 §3 (2026-08-10) — paired write to till.
   if (draft.loan.principal > 0 && draft.day.dayNumber > draft.loan.lastAccrualDay) {
     const daysToCharge = draft.day.dayNumber - draft.loan.lastAccrualDay;
     // principal is in kSEK-scale; convert to raw kr for the cost
     // ledger which sits in kr.
     const interestKr =
       draft.loan.principal * draft.loan.interestRatePerDay * daysToCharge * 1000;
-    draft.cost += interestKr;
+    applyCashCost(draft, interestKr);
     draft.loan = { ...draft.loan, lastAccrualDay: draft.day.dayNumber };
   }
 
@@ -1084,7 +1063,7 @@ function advanceTick(state: SimulationState): SimulationState {
     // Doors-open guest spawn — fires exactly once per service via
     // the doorsOpenedThisService flag.
     if (!draft.day.doorsOpenedThisService && draft.day.waitingAtOpening > 0) {
-      const walkAwayCeil = walkAwayProbability(draft.capitals.values.economic);
+      const walkAwayCeil = walkAwayProbability(draft);
       for (let i = 0; i < draft.day.waitingAtOpening; i++) {
         const walkAway = rng.chance(walkAwayCeil);
         draft.guests.push(makeGuest(draft.simTime, false, walkAway));
@@ -1286,12 +1265,7 @@ function triggerScenario(state: SimulationState, auto: boolean): SimulationState
   // ORDER 047 §5 — pass streamThemeCounts so the theme draw is biased
   // (not forced) toward what the ambient stream has been reporting on
   // during this service. Reset at OPEN_SERVICE (in openService).
-  const drawnTheme = drawNextTheme(
-    state.capitals.values,
-    state.capitals.themeHistory,
-    rng,
-    state.streamThemeCounts
-  );
+  const drawnTheme = drawNextTheme(state, rng, state.streamThemeCounts);
   // ORDER 047 §4 — dedup within service, avoid the previous service's
   // opener. pickScenarioSpecFiltered falls back to the preferred spec
   // if the pool exhausts (density > pool size), so the wager loop
@@ -1437,8 +1411,11 @@ function resolveScenario(
   // also read amplifierFires + amp.extraOutcome. Reads as "you took
   // this shortcut when the capital could least afford it."
   const amp = choiceSpec?.belowThreshold;
+  // ORDER 050 §3 (2026-08-10) — belowThreshold reads through the
+  // axis-agnostic capitalReadingFor helper so an amplifier tied to
+  // economic looks at the derived [0,1] view over state.cash.
   const amplifierFires =
-    !!amp && state.capitals.values[amp.capital] < amp.min;
+    !!amp && capitalReadingFor(state, amp.capital) < amp.min;
   const rawThemeMult = amplifierFires ? amp!.amplifyThemeDelta : 1;
   const rawSecondaryMult = amplifierFires ? amp!.amplifySecondary : 1;
   // ORDER 049 §2.1: phronesis softens only the amplifier EXCESS
@@ -1454,54 +1431,47 @@ function resolveScenario(
   // can weight A/B/C differently (a moral-dilemma A might read as
   // -1 while walk-in-of-five A reads as +1).
   let capitals = state.capitals;
-  let wagerHistory = state.capitals.wagerHistory;
   let themeHistory = state.capitals.themeHistory;
-  let wager = state.wager;
+  // Themed delta accumulator in SEK — applied via applyCashDelta on
+  // the returned draft below when the drawn theme is 'economic'.
+  let themedCashDelta = 0;
   const drawn = scenario.drawnTheme;
   if (drawn) {
     const capitalSign = choiceSpec?.capitalSign ?? CHOICE_CAPITAL_SIGN[choice];
-    const themedDelta = SCENARIO_CAPITAL_DELTA * capitalSign;
-    const capitalAtPlacement = wager
-      ? state.capitals.values[wager.capital]
-      : 0;
-    const payout = wagerPayout(drawn, wager, capitalAtPlacement);
     const nextValues = { ...state.capitals.values };
-    nextValues[drawn] = clampCapital(nextValues[drawn] + themedDelta * themeMult);
-    // ORDER 048 §3 — apply secondary sustainability writes. Two-way
-    // trades (a choice that lifts one capital while dropping another)
-    // land here as separate ± deltas on distinct capitals. Fired
-    // AFTER the themed delta and BEFORE the wager payout so a wager
-    // on a secondary-write capital reads the pre-payout value.
+    if (drawn === 'economic') {
+      // ORDER 050 §3 (2026-08-10) — economic-themed scenarios move
+      // the till in SEK, not a [0,1] scalar. Signed by capitalSign
+      // and scaled by the phronesis-softened themeMult.
+      themedCashDelta += SCENARIO_CASH_DELTA_SEK * capitalSign * themeMult;
+    } else {
+      const themedDelta = SCENARIO_CAPITAL_DELTA * capitalSign;
+      nextValues[drawn] = clampCapital(nextValues[drawn] + themedDelta * themeMult);
+    }
+    // ORDER 048 §3 — apply secondary sustainability writes to social/
+    // ecological (economic writes moved to cashWrites under ORDER 050
+    // §3, 2026-08-10). Fired AFTER the themed delta so a scenario
+    // whose theme AND secondary both touch the same capital compose
+    // in the right order.
     if (choiceSpec?.secondaryWrites) {
       for (const w of choiceSpec.secondaryWrites) {
         nextValues[w.capital] = clampCapital(nextValues[w.capital] + w.delta * secondaryMult);
       }
     }
-    if (payout.targetCapital) {
-      nextValues[payout.targetCapital] = clampCapital(
-        nextValues[payout.targetCapital] + payout.delta
-      );
+    // ORDER 050 §3 — cash writes for two-way trades that touch money.
+    // Amplifier (secondaryMult) applies to the excess above ×1 same
+    // shape as the [0,1] axes so pressed scenarios feel expensive on
+    // the till too.
+    if (choiceSpec?.cashWrites) {
+      for (const w of choiceSpec.cashWrites) {
+        themedCashDelta += w.amount * secondaryMult;
+      }
     }
     themeHistory = [...themeHistory, drawn].slice(-THEME_HISTORY_LIMIT);
-    if (payout.outcome !== 'no_wager') {
-      wagerHistory = [
-        ...wagerHistory,
-        {
-          at: state.simTime,
-          staked: wager!.capital,
-          drew: drawn,
-          outcome: payout.outcome,
-          delta: payout.delta
-        }
-      ];
-      // Wager is spent on resolution — cleared regardless of outcome.
-      wager = null;
-    }
     capitals = {
       ...state.capitals,
       values: nextValues,
-      themeHistory,
-      wagerHistory
+      themeHistory
     };
   }
 
@@ -1602,7 +1572,6 @@ function resolveScenario(
     reputation,
     capitals,
     enablers,
-    wager,
     pendingOutcomes: [...state.pendingOutcomes, ...newOutcomes],
     events: [
       ...state.events,
@@ -1613,6 +1582,13 @@ function resolveScenario(
       }
     ]
   };
+  // ORDER 050 §3 (2026-08-10) — apply the accumulated economic
+  // scenario movement to the till. Positive = revenue-shaped (five
+  // extra covers), negative = cost-shaped (the wine that broke).
+  // Cash-only category — neither a lifetime revenue nor a lifetime
+  // cost in the bookkeeping sense; a category the ledger phase (§7
+  // step 3) will surface as `scenario` in the transaction list.
+  if (themedCashDelta !== 0) applyCashDelta(nextState, themedCashDelta);
   bumpMorale(nextState, moraleDelta);
   return nextState;
 }

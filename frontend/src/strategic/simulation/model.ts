@@ -1,5 +1,6 @@
 import { TOTAL_SEATS } from '../business/interiorLayout';
 import { INTERIOR, RESIDENT_SPLINES } from '../content/layout';
+import { INITIAL_CASH_SEK } from './constants';
 import { MORALE_INITIAL } from './morale';
 import { initialTeam } from './team';
 import type {
@@ -122,11 +123,9 @@ export const INITIAL_CAPITAL_VALUE = 0.55;
 export function initialCapitals(): CapitalState {
   return {
     values: {
-      economic: INITIAL_CAPITAL_VALUE,
       social: INITIAL_CAPITAL_VALUE,
       ecological: INITIAL_CAPITAL_VALUE
     },
-    wagerHistory: [],
     themeHistory: []
   };
 }
@@ -224,6 +223,13 @@ export function makeInitialState(
     seatedIds: [],
     revenue: 0,
     cost: 0,
+    // ORDER 050 §3 (2026-08-10) — literal cash in kronor. Starts at
+    // 120 kSEK (T2 grandfather; see loan below) so ~three weeks of
+    // runway is on the till on day 1. Cash writes are paired with
+    // revenue/cost writes at every mechanic so the invariant
+    // `cash = INITIAL_CASH_SEK + revenue − cost + scenario deltas`
+    // holds by construction.
+    cash: INITIAL_CASH_SEK,
     waste: 0,
     reputation: 0.6,
     // Starts above the base ceiling (0.55) so day-1 shows a small
@@ -265,7 +271,6 @@ export function makeInitialState(
     day: initialDay(),
     capitals: initialCapitals(),
     enablers: initialEnablers(),
-    wager: null,
     consequenceEvents: [],
     eventStream: [],
     pendingOutcomes: [],

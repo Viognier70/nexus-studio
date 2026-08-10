@@ -199,8 +199,10 @@ describe('stream does not move capital', () => {
     for (let i = 0; i < 3000; i++) s = reducer(s, { type: 'TICK', dt: 0.2 });
     const ambient = s.eventStream.filter((e) => e.category === 'ambient');
     expect(ambient.length).toBeGreaterThan(0);
-    // Ambient events did not touch capitals directly.
-    for (const key of ['economic', 'social', 'ecological'] as const) {
+    // Ambient events did not touch capitals directly (social/ecological).
+    // Economic moved to state.cash under ORDER 050 §3 — checked
+    // separately by the cash tests.
+    for (const key of ['social', 'ecological'] as const) {
       expect(s.capitals.values[key]).toBe(before[key]);
     }
   });

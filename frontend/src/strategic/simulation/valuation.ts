@@ -119,7 +119,7 @@ export interface Valuation {
   multiplier: number;    // reported so the panel can show what drove the goodwill
   weakestQuality: number;// reported so the panel can attribute a cap
   weakestArea: 'mat' | 'dryck' | 'service';
-  cash: number;          // state.revenue − state.cost, reported for context
+  cash: number;          // kSEK on hand — state.cash / 1000 (ORDER 050 §3, 2026-08-10)
 }
 
 export function computeValuation(state: SimulationState, tier: LoanTier = 'T2'): Valuation {
@@ -152,7 +152,7 @@ export function computeValuation(state: SimulationState, tier: LoanTier = 'T2'):
     multiplier,
     weakestQuality,
     weakestArea,
-    cash: state.revenue - state.cost
+    cash: state.cash / 1000
   };
 }
 

@@ -397,7 +397,15 @@ describe('dinner queue grows monotonically as social falls (regression)', () => 
 
   it('peak queue grows as social drops (1.0 → 0.7 → 0.5 → 0.3 → 0.0)', () => {
     const socials = [1.0, 0.7, 0.5, 0.3, 0.0];
-    const seeds = [11, 22, 33, 44, 55, 66, 77, 88];
+    // 16 seeds (bumped from 8 under ORDER 050 §3 cash refactor,
+    // 2026-08-10) — the derived economic reading nudges arrival
+    // dynamics enough that the 8-seed average was tripping on ~0.25
+    // stochastic gaps between adjacent social steps. Doubling
+    // tightens the mean without loosening the invariant.
+    const seeds = [
+      11, 22, 33, 44, 55, 66, 77, 88,
+      101, 202, 303, 404, 505, 606, 707, 808
+    ];
     const meanPeak = socials.map((sv) => {
       const total = seeds.reduce(
         (sum, seed) => sum + simulateDinnerPeakQueue(seed, sv),

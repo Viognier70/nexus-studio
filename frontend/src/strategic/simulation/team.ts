@@ -61,21 +61,20 @@ export const AGENCY_COMPETENCE: RoleCompetence = {
   cultural: 0.40,
   practical: 0.40
 };
-export const AGENCY_HIRE_COST = 800;
+// ORDER 050 §3 (2026-08-10) — bumped from 800 to 5000 SEK under the
+// cash refactor. Absorbs the retired AGENCY_ECONOMIC_COST which used
+// to apply an additional 0.04 capital hit alongside the 800-kr wage.
+// Post-refactor: one line, real money, ~a Friday-night agency waiter
+// in Sweden. Consumed by reducer.acceptAgency via applyCashCost.
+export const AGENCY_HIRE_COST = 5000;
 
 // ORDER 043 v3 §10 step 5 — the alternative-cost mechanic. Vision
 // Owner: "hyrpersonal under service med socialt kapital som
 // alternativkostnad om spelaren avstår." Declining an offer signals
 // to the team that management doesn't intervene when they're
 // drowning; social capital ticks down. Accepting spends money
-// (moderate economic hit) but relieves strain.
-//
-// AGENCY_ECONOMIC_COST is applied to the economic capital (0..1)
-// rather than to `state.cost` alone so the price is felt in the
-// reading layer the player watches — same principle as the ORDER
-// 042 walk-in-of-five reputation dip on choice C.
+// (see AGENCY_HIRE_COST above) and relieves strain.
 export const AGENCY_DECLINE_SOCIAL_COST = 0.03;
-export const AGENCY_ECONOMIC_COST = 0.04;
 
 // Offer trigger. Sustained load above threshold for this many
 // continuous sim-seconds fires an offer. Cycle-1 tuning:

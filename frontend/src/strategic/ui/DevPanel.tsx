@@ -15,6 +15,7 @@
 // the wager UI + scenario-driven capital movement replace the manual
 // cycle keys.
 
+import { economicReadingNormalised } from '../simulation/cashReading';
 import { useSimState } from '../simulation/SimulationProvider';
 
 const PANEL_STYLE: React.CSSProperties = {
@@ -43,7 +44,7 @@ export function DevPanel({ lastKey }: Props) {
   if (!import.meta.env.DEV) return null;
   const sim = useSimState();
   const c = sim.capitals.values;
-  const wager = sim.wager ? `${sim.wager.capital[0].toUpperCase()}` : '-';
+  const econReading = economicReadingNormalised(sim);
   const d = sim.day;
   // Service progress readout: "5:23 / 10 min" when a service is
   // running, "-" otherwise. Player-facing text never shows numbers
@@ -70,7 +71,8 @@ export function DevPanel({ lastKey }: Props) {
     ? '  factors=' + d.worldFactors.map((f) => f.kind).join(',')
     : '';
   const line1 = `DEV  day=${d.dayNumber} ${d.period.padEnd(9)}  service=${serviceReadout.padEnd(14)}  scenarios=${d.scenariosFiredThisService}/${d.scenariosPlanned}`;
-  const line2 = `     econ=${c.economic.toFixed(2)}  soc=${c.social.toFixed(2)}  eco=${c.ecological.toFixed(2)}  rep=${sim.reputation.toFixed(2)}  wager=${wager}  key=${lastKey || '-'}`;
+  const cashK = Math.round(sim.cash / 1000);
+  const line2 = `     cash=${cashK.toString().padStart(4, ' ')}k  econR=${econReading.toFixed(2)}  soc=${c.social.toFixed(2)}  eco=${c.ecological.toFixed(2)}  rep=${sim.reputation.toFixed(2)}  key=${lastKey || '-'}`;
   const line3 = `     ${weather}${factors}`;
   return <div style={PANEL_STYLE}>{`${line1}\n${line2}\n${line3}`}</div>;
 }

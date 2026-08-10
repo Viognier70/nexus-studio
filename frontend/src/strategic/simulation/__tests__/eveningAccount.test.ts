@@ -1,14 +1,14 @@
 // ORDER 046 §3 — evening-account invariants.
 //
-// Pinned:
+// Pinned (post-ORDER-050 §5 wager retirement, 2026-08-10):
 //   * pickBranch collapses take precedence over every other branch.
-//   * A weak-win wager picks high_wager_win (delta ≥ 0.14).
-//   * A wager loss picks high_wager_loss.
 //   * A good night (rep held, revenue > cost × 1.15) picks 'good'.
 //   * A thin night (revenue < cost × 0.90) picks 'thin'.
 //   * Everything else is 'mediocre' (Vision Owner's explicit ask).
 //   * Missing snapshots (defensive) → mediocre.
-//   * pickParagraph returns non-empty text for every branch.
+//   * pickParagraph returns non-empty text for every branch (unreachable
+//     high_wager_* included — copy shape kept for a possible future
+//     activity-anchored wager).
 //   * computeEveningAccount stamps presentedAt = state.simTime.
 //   * Full-loop: opening a dinner, ticking it through natural close,
 //     produces a non-null state.eveningAccount at evening start.
@@ -21,9 +21,7 @@ import { makeInitialState } from '../model';
 import { reducer } from '../reducer';
 import type {
   EveningAccountBranch,
-  SimulationState,
-  SustainabilityKey,
-  WagerHistoryEntry
+  SimulationState
 } from '../../types';
 
 // -------- helpers -------------------------------------------------------
@@ -57,64 +55,17 @@ function withRevenueAndCost(
   return { ...state, revenue: netRev, cost: netCost, reputation: rep };
 }
 
-function pushWager(
-  state: SimulationState,
-  staked: SustainabilityKey,
-  drew: SustainabilityKey,
-  outcome: 'win' | 'loss',
-  delta: number,
-  at: number = state.day.periodStartAt + 30
-): SimulationState {
-  const entry: WagerHistoryEntry = { at, staked, drew, outcome, delta };
-  return {
-    ...state,
-    capitals: {
-      ...state.capitals,
-      wagerHistory: [...state.capitals.wagerHistory, entry]
-    }
-  };
-}
-
 // -------- pickBranch — branch selection ---------------------------------
 
 describe('pickBranch — collapsed preempts everything', () => {
-  it('serviceCollapsed → collapsed even with a winning wager', () => {
+  it('serviceCollapsed → collapsed regardless of revenue', () => {
     const base = midService(makeInitialState(1));
-    const withWin = pushWager(base, 'social', 'social', 'win', 0.15);
+    const withRev = withRevenueAndCost(base, 400, 300, 0.60);
     const collapsed = {
-      ...withWin,
-      day: { ...withWin.day, serviceCollapsed: true, collapseAxis: 'cultural' as const }
+      ...withRev,
+      day: { ...withRev.day, serviceCollapsed: true, collapseAxis: 'cultural' as const }
     };
     expect(pickBranch(collapsed)).toBe('collapsed');
-  });
-});
-
-describe('pickBranch — wager branches', () => {
-  it('win with delta ≥ HIGH_WAGER_WIN_DELTA → high_wager_win', () => {
-    const base = midService(makeInitialState(1));
-    // WAGER_UNIT_STAKE × WAGER_WEAK_WIN_MULTIPLIER = 0.10 × 1.5 = 0.15.
-    const s = pushWager(base, 'social', 'social', 'win', 0.15);
-    expect(pickBranch(s)).toBe('high_wager_win');
-  });
-
-  it('normal-multiplier win (delta 0.10) → not high_wager_win', () => {
-    const base = midService(makeInitialState(1));
-    const s = pushWager(base, 'social', 'social', 'win', 0.10);
-    expect(pickBranch(s)).not.toBe('high_wager_win');
-  });
-
-  it('loss → high_wager_loss', () => {
-    const base = midService(makeInitialState(1));
-    const s = pushWager(base, 'social', 'economic', 'loss', -0.10);
-    expect(pickBranch(s)).toBe('high_wager_loss');
-  });
-
-  it('wager from a previous service does not trigger the wager branch', () => {
-    const base = midService(makeInitialState(1));
-    // Old wager at simTime = 5, before service opened at 100.
-    const s = pushWager(base, 'social', 'social', 'win', 0.15, 5);
-    expect(pickBranch(s)).not.toBe('high_wager_win');
-    expect(pickBranch(s)).not.toBe('high_wager_loss');
   });
 });
 

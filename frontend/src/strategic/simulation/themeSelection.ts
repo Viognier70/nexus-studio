@@ -1,28 +1,19 @@
-// ORDER 043 §4 — theme selection and wager payout.
+// ORDER 043 §4 — theme selection (wager payout retired under
+// ORDER 050 §5, 2026-08-10).
 //
-// Two mandatory damping mechanisms, per the order:
+// One mandatory damping mechanism remains:
 //   1. Cap on consecutive recurrence: the same theme cannot draw
 //      three times in a row. Applied here in `drawNextTheme`.
-//   2. Larger return on a win in a weak capital, so a downward spiral
-//      can break by skill rather than luck. Applied in `wagerPayout`.
 //
 // Weakness weighting formula: weight(c) = (1 - v_c)^2.
 // At v = 0.9 the weight is 0.01; at v = 0.5 it is 0.25; at v = 0.2 it is 0.64.
 // The squaring makes weak capitals attract questions strongly without
 // starving strong ones — the ratio at v = 0.9 vs v = 0.2 is 64:1, but
 // no capital ever falls below its own square-of-slack.
-//
-// Numbers land here as tunable constants (WAGER_UNIT_STAKE et al. in
-// ./constants, TWICE_IN_A_ROW_CAP here) so a future order can revise
-// them from play evidence without touching the shape of the code.
 
 import type { Rng } from '../util/rng';
-import type { SustainabilityKey, WagerState } from '../types';
-import {
-  WAGER_UNIT_STAKE,
-  WAGER_WEAK_THRESHOLD,
-  WAGER_WEAK_WIN_MULTIPLIER
-} from './constants';
+import type { SimulationState, SustainabilityKey } from '../types';
+import { capitalReadingFor } from './cashReading';
 
 export const THEMES: readonly SustainabilityKey[] = [
   'economic',
@@ -110,17 +101,21 @@ function streamShares(
 
 // Exposes the intermediate weighting so tests + diagnostics can inspect
 // what the selector is doing without re-computing.
+//
+// ORDER 050 §3 (2026-08-10): reads through `capitalReadingFor(state)`
+// so the economic axis pulls from the derived [0,1] view over
+// state.cash while social/ecological pull from the stored capitals.
 export function weightTable(
-  capitals: Record<SustainabilityKey, number>,
-  themeHistory: readonly SustainabilityKey[],
+  state: SimulationState,
   streamCounts?: Record<SustainabilityKey, number>
 ): ThemeWeightRow[] {
   const shares = streamShares(
     streamCounts ?? { economic: 0, social: 0, ecological: 0 }
   );
   return THEMES.map((theme) => {
-    const cappedOut = isThemeCappedOut(themeHistory, theme);
-    const capitalWeight = weightForCapital(capitals[theme]);
+    const cappedOut = isThemeCappedOut(state.capitals.themeHistory, theme);
+    const capital = capitalReadingFor(state, theme);
+    const capitalWeight = weightForCapital(capital);
     const streamWeight = shares[theme] * STREAM_WEIGHT_LAMBDA;
     // Blend: capital weakness base + stream-driven bias. Capped share
     // of the total is enforced globally by re-normalising below in
@@ -128,7 +123,7 @@ export function weightTable(
     const raw = capitalWeight + streamWeight;
     return {
       theme,
-      capital: capitals[theme],
+      capital,
       streamShare: shares[theme],
       weight: cappedOut ? 0 : raw,
       cappedOut
@@ -150,12 +145,11 @@ export function weightTable(
 // is zero (e.g. all capitals at 1.0 with no stream signal). Preserves
 // the invariant that a theme is always drawable.
 export function drawNextTheme(
-  capitals: Record<SustainabilityKey, number>,
-  themeHistory: readonly SustainabilityKey[],
+  state: SimulationState,
   rng: Rng,
   streamCounts?: Record<SustainabilityKey, number>
 ): SustainabilityKey {
-  const rows = weightTable(capitals, themeHistory, streamCounts);
+  const rows = weightTable(state, streamCounts);
   const total = rows.reduce((n, r) => n + r.weight, 0);
   if (total > 0) {
     const roll = rng.next() * total;
@@ -178,49 +172,7 @@ export function drawNextTheme(
   return uncapped[Math.floor(rng.next() * uncapped.length)];
 }
 
-// -------- wager payout ----------------------------------------------------
-
-export type WagerOutcome = 'win' | 'loss' | 'no_wager';
-
-export interface WagerPayout {
-  outcome: WagerOutcome;
-  targetCapital: SustainabilityKey | null;
-  delta: number;   // signed value to add to the target capital
-  multiplier: number; // 1.0 for standard, WAGER_WEAK_WIN_MULTIPLIER for weak-win
-}
-
-// §4 mandatory damping: "a larger return on a win in a weak capital,
-// so the spiral can be broken by skill rather than luck."
-//
-// `capitalAtPlacement` is the capital value at the moment the wager
-// was placed, not at scoring — a player who staked when a capital was
-// weak and then correctly read the theme deserves the weak-win bonus
-// even if the capital has since moved.
-export function wagerPayout(
-  drewTheme: SustainabilityKey,
-  wager: WagerState | null,
-  capitalAtPlacement: number
-): WagerPayout {
-  if (!wager) {
-    return { outcome: 'no_wager', targetCapital: null, delta: 0, multiplier: 1 };
-  }
-  if (wager.capital === drewTheme) {
-    const multiplier =
-      capitalAtPlacement <= WAGER_WEAK_THRESHOLD ? WAGER_WEAK_WIN_MULTIPLIER : 1;
-    return {
-      outcome: 'win',
-      targetCapital: wager.capital,
-      delta: wager.amount * multiplier,
-      multiplier
-    };
-  }
-  return {
-    outcome: 'loss',
-    targetCapital: wager.capital,
-    delta: -wager.amount,
-    multiplier: 1
-  };
-}
-
-// Re-exported for callers that want the constants in one import.
-export { WAGER_UNIT_STAKE, WAGER_WEAK_THRESHOLD, WAGER_WEAK_WIN_MULTIPLIER };
+// Wager payout retired under ORDER 050 §5 (2026-08-10). The stake
+// now lives in each activity's own three-column effects — no separate
+// theme-wager, no weak-win multiplier. Grep history for `wagerPayout`
+// if archaeology is needed.

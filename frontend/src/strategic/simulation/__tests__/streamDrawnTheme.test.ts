@@ -12,19 +12,42 @@
 // in themeSelection.ts and re-run.
 
 import { describe, expect, it } from 'vitest';
+import { makeInitialState } from '../model';
 import {
   STREAM_WEIGHT_LAMBDA,
   drawNextTheme,
   weightTable
 } from '../themeSelection';
 import { createRng } from '../../util/rng';
-import type { SustainabilityKey } from '../../types';
+import type { SimulationState, SustainabilityKey } from '../../types';
 
 const NEUTRAL_CAPITALS: Record<SustainabilityKey, number> = {
   economic: 0.55,
   social: 0.55,
   ecological: 0.55
 };
+
+// ORDER 050 §3 (2026-08-10) — drawNextTheme now takes SimulationState;
+// economic reads via cash/weekly-ops. Helper builds a state at the
+// requested [0,1] readings by setting social/ecological directly and
+// picking a cash figure that lands the derived economic reading at
+// the target. Team of three (default) → ~25.2 kSEK/week ops, 4-week
+// cap → ~100.8 kSEK for reading 1.0.
+function stateWithCapitalReadings(
+  capitals: Record<SustainabilityKey, number>
+): SimulationState {
+  const s = makeInitialState(1);
+  s.capitals.values.social = capitals.social;
+  s.capitals.values.ecological = capitals.ecological;
+  // Invert the reading formula: cash = reading × 4 × weeklyOps.
+  // weeklyOps mirrors cashReading.ts: max(team wages × 7, floor).
+  const dailyWages = s.team.members
+    .filter((m) => !m.isAgency)
+    .reduce((sum, m) => sum + m.dailyCost, 0);
+  const weekly = Math.max(dailyWages * 7, 40_000);
+  s.cash = capitals.economic * 4 * weekly;
+  return s;
+}
 
 // Helper — draw N themes with the same stream + capital shape, seeded
 // deterministically so the distribution is reproducible.
@@ -39,11 +62,10 @@ function drawMany(
     social: 0,
     ecological: 0
   };
+  const state = stateWithCapitalReadings(capitals);
   for (let i = 0; i < n; i++) {
     const rng = createRng((startSeed + i * 2654435761) >>> 0);
-    // Fresh themeHistory each draw so the cap doesn't kick in — we're
-    // measuring the raw weighting, not the recurrence damper.
-    const theme = drawNextTheme(capitals, [], rng, stream);
+    const theme = drawNextTheme(state, rng, stream);
     counts[theme] += 1;
   }
   return counts;
@@ -158,8 +180,7 @@ describe('drawNextTheme — capital weakness still matters under stream', () => 
 describe('weightTable exposes intermediate shape', () => {
   it('reports streamShare per row and includes both capital and stream weight in `weight`', () => {
     const rows = weightTable(
-      NEUTRAL_CAPITALS,
-      [],
+      stateWithCapitalReadings(NEUTRAL_CAPITALS),
       { economic: 0, social: 10, ecological: 0 }
     );
     const social = rows.find((r) => r.theme === 'social')!;

@@ -460,12 +460,9 @@ export interface EnablerRecord {
   history: EnablerEvent[];
 }
 
-// Wager state. Fixed unit stake for cycle 1 (§4 numbers-to-be-tuned).
-export interface WagerState {
-  capital: SustainabilityKey;    // what the player pointed at
-  placedAt: number;              // simTime
-  amount: number;                // stake magnitude
-}
+// ORDER 050 §5 (2026-08-10) — WagerState + WagerHistoryEntry retired
+// with the theme-wager mechanic. Grep history for `WagerState` if
+// archaeology is needed.
 
 // One consequence event per sustainability in cycle 1 (§6, §10).
 // `staff_resigns` fires when social ≤ threshold, `supplier_drops` when
@@ -484,28 +481,21 @@ export interface ConsequenceEvent {
   active: boolean;               // still shaping the next scenario?
 }
 
-export interface CapitalState {
-  // Outcome values in [0, 1]. Meaning per §3.1:
-  //   economic  — margin, cash, evening's takings — normalised vs a
-  //               baseline so a shared-economy future doesn't force a
-  //               refactor (see §11.1 constraint 6 handling).
-  //   social    — staff, guests, village regard.
-  //   ecological — sourcing, waste, seasons.
-  values: Record<SustainabilityKey, number>;
-  // Per-capital lifetime deltas from wagers + scenario outcomes. The
-  // portfolio-visible history of stakes and their results.
-  wagerHistory: WagerHistoryEntry[];
-  // Themes drawn by the last N scenarios — needed for the §4 damping
-  // rule (consecutive-recurrence cap). Kept short (~6 entries).
-  themeHistory: SustainabilityKey[];
-}
+// Non-economic capitals stored as [0,1] scalars. Economic is no
+// longer stored — see state.cash (SEK). SustainabilityKey stays as
+// three entries because scenarios still draw a theme from all three;
+// the economic case reads through `economicReadingNormalised(state)`
+// per ORDER 050 §3 (2026-08-10).
+export type StoredCapitalKey = 'social' | 'ecological';
 
-export interface WagerHistoryEntry {
-  at: number;                    // simTime the wager was resolved
-  staked: SustainabilityKey;     // what the player pointed at
-  drew: SustainabilityKey;       // what the next scenario actually was
-  outcome: 'win' | 'loss' | 'no_wager';
-  delta: number;                 // capital movement applied
+export interface CapitalState {
+  // Outcome values in [0, 1] for social and ecological. Economic
+  // moved to state.cash (SEK) under ORDER 050 §3.
+  values: Record<StoredCapitalKey, number>;
+  // Themes drawn by the last N scenarios — needed for the ORDER 043
+  // §4 damping rule (consecutive-recurrence cap). Kept short (~6
+  // entries).
+  themeHistory: SustainabilityKey[];
 }
 
 // ORDER 043 Addendum A — the service event stream.
@@ -605,18 +595,23 @@ export interface SimulationState {
   // ORDER 043 v3 §2 day model. Rounds gate services, service length
   // gates scenario cadence, periods gate what the player can do.
   day: DayState;
-  // ORDER 043 outcome layer — capitals the player wagers on and
-  // scenarios move (§3.1). Separate from `eco` above (§8.2's visible
-  // sustainability *reading*), which stays as-is for the room-cue
-  // prose and is fed by tickSustainability.
+  // ORDER 050 §3 (2026-08-10) — literal cash in kronor. Authoritative
+  // for economic capital. Every mechanic that used to write
+  // capitals.values.economic (scenarios, agency, wager-was) now
+  // writes here in SEK. state.revenue and state.cost remain as
+  // categorized flow accumulators (revenue-only-writes and cost-only-
+  // writes respectively) — paired with cash writes at every mutation
+  // so cash = INITIAL_CASH_SEK + revenue - cost + non-flow deltas.
+  cash: number;
+  // ORDER 043 outcome layer — non-economic capitals the scenarios
+  // move (§3.1). Economic moved to `state.cash`. Separate from `eco`
+  // above (§8.2's visible sustainability *reading*), which stays
+  // as-is for the room-cue prose and is fed by tickSustainability.
   capitals: CapitalState;
   // ORDER 043 enabler layer — competences derived from behaviour,
   // never purchased (§3.2, §3.3). Rendered growth only via §8: a
   // fourth response option, a mentor line reflecting behaviour.
   enablers: Record<EnablerKey, EnablerRecord>;
-  // Current wager placed by the player between scenarios, or null if
-  // none is standing (§4).
-  wager: WagerState | null;
   // Consequence events fired when a capital crossed its threshold (§6).
   // History + active flag so the next scenario can be shaped by an
   // active event and mentor lines can reference recent history.
@@ -722,19 +717,20 @@ export type SimAction =
   | { type: 'TRIGGER_SCENARIO' }
   | { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' }
   | { type: 'SET_SCENARIO_DIFFICULTY'; difficulty: ScenarioDifficulty }
-  // ORDER 043 wager actions (§4). Cycle-1 stake is fixed magnitude
-  // (see reducer WAGER_UNIT_STAKE); a future order can vary it.
-  | { type: 'PLACE_WAGER'; capital: SustainabilityKey }
-  | { type: 'CLEAR_WAGER' }
+  // ORDER 050 §5 (2026-08-10) — the wager actions are retired with
+  // the theme-wager mechanic; the stake now lives in each activity's
+  // own three-column effects. Grep history for `PLACE_WAGER` if
+  // archaeology is needed.
   // ORDER 043 enabler write (§3.3, §5). Records behavioural evidence
   // against a register + enabler as a small positive amount. Only
   // scenario responses generate these; nothing else may.
   | { type: 'RECORD_ENABLER_EVENT'; enabler: EnablerKey; register: Register; amount: number; scenarioId: string | null }
-  // ORDER 043 dev-only capital nudge. Not for player use — only wired
-  // to the B.1 gate playtest shortcuts (StrategicApp.tsx) so the
-  // Vision Owner can verify the room reads capital state without
-  // waiting for scenario-driven capital movement (Phase B.2+).
-  | { type: 'SET_CAPITAL'; capital: SustainabilityKey; value: number }
+  // ORDER 043 dev-only capital nudge, restricted to non-economic
+  // capitals after the ORDER 050 §3 cash refactor. Economic is set
+  // via SET_CASH now (also dev-only). Only wired to StrategicApp
+  // playtest shortcuts.
+  | { type: 'SET_CAPITAL'; capital: StoredCapitalKey; value: number }
+  | { type: 'SET_CASH'; valueSek: number }
   // ORDER 043 v3 §10 step 1 — the round.
   // OPEN_SERVICE is dispatched from the morning/afternoon UI when the
   // player commits to a service length. lengthMinutes clamped to

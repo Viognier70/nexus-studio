@@ -25,10 +25,16 @@
 // imports with top-level side effects, undefined imported values,
 // missing exports.
 
+/// <reference types="node" />
 import { readFileSync, readdirSync, statSync } from 'node:fs';
-import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { build, type Rollup } from 'vite';
+
+// ESM-safe __dirname replacement — the tsconfig doesn't pull @types/node
+// globals, so `__dirname` isn't declared. `import.meta.url` is ESM-standard.
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('module graph smoke — imports resolve without throwing', () => {
   it(
@@ -56,14 +62,17 @@ describe('module graph smoke — imports resolve without throwing', () => {
     const mod = await import('../simulation/constants');
     // Every exported value must be a number, not undefined. A TDZ
     // hit at module-init would surface as undefined here.
+    // ORDER 050 §5 (2026-08-10) removed WAGER_* constants alongside
+    // the theme-wager retirement.
     for (const key of [
-      'WAGER_UNIT_STAKE',
-      'WAGER_WEAK_THRESHOLD',
-      'WAGER_WEAK_WIN_MULTIPLIER',
       'CAPITAL_MIN',
       'CAPITAL_MAX',
       'THEME_HISTORY_LIMIT',
-      'SCENARIO_CAPITAL_DELTA'
+      'SCENARIO_CAPITAL_DELTA',
+      'SCENARIO_CASH_DELTA_SEK',
+      'INITIAL_CASH_SEK',
+      'ECONOMIC_READING_RUNWAY_WEEKS',
+      'WEEKLY_OPERATING_BASELINE_SEK'
     ] as const) {
       expect(
         (mod as Record<string, unknown>)[key],
@@ -191,9 +200,10 @@ describe('module graph smoke — imports resolve without throwing', () => {
     // Each panel pulls its own slice of the graph. If any of them
     // acquires a circular top-level side effect in a future refactor,
     // one of these will throw.
+    // ORDER 050 §5 (2026-08-10) — WagerPanel dropped with the theme-
+    // wager retirement.
     const modules = await Promise.all([
       import('../scenario/EveningAccountPanel'),
-      import('../scenario/WagerPanel'),
       import('../scenario/OpeningPanel'),
       import('../scenario/AgencyOfferPanel'),
       import('../scenario/ScenarioOverlay'),

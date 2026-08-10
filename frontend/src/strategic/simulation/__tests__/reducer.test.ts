@@ -191,6 +191,14 @@ describe('reducer RESOLVE_SCENARIO (walk-in-of-five)', () => {
     // actually applied — see the specific test bodies.
     void choice;
     let s = makeInitialState(1);
+    // ORDER 050 §3 (2026-08-10): weight social to dominate so the
+    // draw reliably lands on walk-in-of-five (the scenario these
+    // tests were written against). The cash refactor shifted the
+    // baseline weightForCapital ratios; without pinning social weak
+    // here the seeded draw can flip to a different theme.
+    s = reducer(s, { type: 'SET_CAPITAL', capital: 'social', value: 0.05 });
+    s = reducer(s, { type: 'SET_CAPITAL', capital: 'ecological', value: 0.95 });
+    s = reducer(s, { type: 'SET_CASH', valueSek: 500_000 }); // strong economic → weak draw
     s = reducer(s, { type: 'TRIGGER_SCENARIO' });
     s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
     s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
@@ -303,6 +311,11 @@ describe('seat allocation invariants', () => {
     // are all free). Manual trigger, choice A, then advance until all 5
     // scenario guests have arrived and been seated.
     let s = makeInitialState(1);
+    // ORDER 050 §3 (2026-08-10): pin social weakest so the draw
+    // reliably lands on walk-in-of-five (see the fixture upstream).
+    s = reducer(s, { type: 'SET_CAPITAL', capital: 'social', value: 0.05 });
+    s = reducer(s, { type: 'SET_CAPITAL', capital: 'ecological', value: 0.95 });
+    s = reducer(s, { type: 'SET_CASH', valueSek: 500_000 });
     s = reducer(s, { type: 'TRIGGER_SCENARIO' });
     s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
     s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
@@ -326,6 +339,10 @@ describe('seat allocation invariants', () => {
 
   it('choice B: party of five fills the 4-top + one bar stool', () => {
     let s = makeInitialState(1);
+    // ORDER 050 §3 (2026-08-10) — social pinned weak, see fixture.
+    s = reducer(s, { type: 'SET_CAPITAL', capital: 'social', value: 0.05 });
+    s = reducer(s, { type: 'SET_CAPITAL', capital: 'ecological', value: 0.95 });
+    s = reducer(s, { type: 'SET_CASH', valueSek: 500_000 });
     s = reducer(s, { type: 'TRIGGER_SCENARIO' });
     s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
     s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });

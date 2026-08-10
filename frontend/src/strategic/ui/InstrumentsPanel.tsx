@@ -16,6 +16,7 @@
 // tissue (see simulation/morale.ts).
 
 import { useEffect, useRef, useState } from 'react';
+import { economicReadingNormalised } from '../simulation/cashReading';
 import { useSimState } from '../simulation/SimulationProvider';
 import { COVERS_PER_MEMBER } from '../simulation/team';
 import type { SustainabilityKey } from '../types';
@@ -203,11 +204,14 @@ export function InstrumentsPanel() {
     social: null,
     ecological: null
   });
-  const lastValuesRef = useRef<Record<SustainabilityKey, number>>({
-    economic: sim.capitals.values.economic,
+  // ORDER 050 §3 (2026-08-10) — economic now derives from state.cash
+  // via the shared reading helper; social/ecological remain stored.
+  const currentReadings: Record<SustainabilityKey, number> = {
+    economic: economicReadingNormalised(sim),
     social: sim.capitals.values.social,
     ecological: sim.capitals.values.ecological
-  });
+  };
+  const lastValuesRef = useRef<Record<SustainabilityKey, number>>(currentReadings);
 
   // On every render, detect capital-value changes and fire a flash.
   // Uses a small epsilon to filter float noise from clamp arithmetic.
@@ -217,7 +221,7 @@ export function InstrumentsPanel() {
     const changes: Partial<Record<SustainabilityKey, SustainabilityFlash>> = {};
     for (const key of SUSTAINABILITY_ORDER) {
       const prev = lastValuesRef.current[key];
-      const curr = sim.capitals.values[key];
+      const curr = currentReadings[key];
       const delta = curr - prev;
       if (Math.abs(delta) > EPSILON) {
         changes[key] = { direction: delta > 0 ? 'up' : 'down', triggeredAtMs: now };
@@ -227,7 +231,7 @@ export function InstrumentsPanel() {
     if (Object.keys(changes).length > 0) {
       setFlashes((prev) => ({ ...prev, ...changes }));
     }
-  }, [sim.capitals.values]);
+  }, [sim.capitals.values, sim.cash]);
 
   // Expire flashes past the duration — request one animation tick
   // once we know a flash is running.

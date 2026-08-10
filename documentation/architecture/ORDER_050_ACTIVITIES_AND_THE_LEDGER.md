@@ -65,6 +65,8 @@ Economic capital stops being an abstract score. **It is kronor, and it is the re
 
 Every economic effect the player sees is the same number that moves the bank balance. There is no separate economic meter that behaves differently from the till.
 
+**Start sequence deferred to ORDER 049 §5.1.** Cycle-1 grandfathers a T2 venture at game start (120 kSEK cash, 2 400 kSEK T2 loan). The naming of the venture, the bank meeting itself, the loan-tier mapping from question-answers, and the choice of premises all belong to `ORDER_049_THE_KNOWLEDGE_ENGINE.md` §5.1, not here. This order changes what the money *does* once a venture exists — not how it comes into being. When §5.1 lands the T2 grandfather can go and every new venture gets its tier stamped at creation from the bank scene.
+
 ### 3.1 The business account
 
 A view of its own, in the manner of a bookkeeping landing page — the Vision Owner names Fortnox as the reference:

@@ -254,7 +254,7 @@ export function PlayerPanel() {
           </div>
           <div style={ROW_STYLE}>
             <span style={{ opacity: 0.72 }}>Kontanter</span>
-            <span>{formatKSEK(val.cash / 1000)}</span>
+            <span>{formatKSEK(val.cash)}</span>
           </div>
 
           <div style={SECTION_DIVIDER} />
