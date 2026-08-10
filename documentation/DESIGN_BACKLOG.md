@@ -158,6 +158,22 @@ The current cost of passivity comes entirely from ORDER 049 §2.1's nightly enab
 
 ---
 
+### B-013 · Service-ending warning is missing
+**Recorded:** 2026-08-10 · **Status:** open — surfaced during ORDER 050 §7 step 6 UX inventory
+
+The player picks a service length in the morning (5 / 10 / 15 / 30 min) and the service closes silently when the timer expires. `EventStreamPanel` and `InstrumentsPanel` provide read-only moment-of-attention during service; `EveningAccountPanel` arrives after. Nothing warns the player that the service is about to end.
+
+Vision Owner (2026-08-10): *"att servicen tar slut utan förvarning är en läslucka som märks först när någon spelar en lång middag."* On a 3-minute service this is invisible; on a 30-minute service the close is a surprise.
+
+**Before it can be built:** design a warning surface that reads inside Addendum A §6.3 ("service asks what you do now"). A late-service warning is not asking for action — it is information about the state of the room. Two candidate shapes:
+
+- **Ambient stream line** (cheapest, matches the existing observer voice): fire a stream entry at T-2 min / T-1 min / T-30 s reading as *"servicen närmar sig slutet"*. Fits current EventStream pattern; no new surface. Risk: stream fatigue, and the entry can be missed if the player is in a scenario overlay.
+- **Countdown overlay** (heavier, harder to miss): a small countdown pill near the SpeedToggle showing the remaining service time, appearing only in the last N minutes. Its own tiny surface — a §6.3 candidate as long as it reads as *"how long the room has left"*, not as another instrument.
+
+**Not decided:** whether the warning surface should also nudge the player to pre-consider dinner-planning (afternoon decision) so the transition feels less abrupt. That may be scope creep or the right thing — worth reporting when the surface itself is being designed.
+
+---
+
 ## How to use this file
 
 Add an entry the day a decision is made outside an order. When an entry is folded into an order, change its status and cite the order — do not delete it. The record of *when* something was decided is worth as much as the decision.
