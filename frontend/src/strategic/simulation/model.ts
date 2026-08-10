@@ -185,7 +185,6 @@ export function initialScenario(): ScenarioState {
     hasAutoTriggered: false,
     active: false,
     phase: 'idle',
-    difficulty: null,
     awaitingChoice: false,
     choice: null,
     choiceAt: null,

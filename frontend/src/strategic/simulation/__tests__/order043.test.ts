@@ -259,8 +259,7 @@ describe('ORDER 043 v3 §7 chain — theme draw + capital movement (wager payout
       const readerBefore = theme === 'economic'
         ? s.cash
         : s.capitals.values[theme];
-      s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
-      s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
+      s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_SITUATION' });
       s = reducer(s, { type: 'RESOLVE_SCENARIO', choice });
       const readerAfter = theme === 'economic'
         ? s.cash
@@ -276,8 +275,7 @@ describe('ORDER 043 v3 §7 chain — theme draw + capital movement (wager payout
     let s = makeInitialState(42);
     s = reducer(s, { type: 'TRIGGER_SCENARIO' });
     const drawn = s.scenario.drawnTheme!;
-    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
-    s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
+    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_SITUATION' });
     s = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'A' });
     expect(s.capitals.themeHistory).toContain(drawn);
     expect(s.capitals.themeHistory.length).toBeLessThanOrEqual(6);

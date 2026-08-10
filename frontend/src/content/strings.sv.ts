@@ -100,14 +100,11 @@ export const strings = {
       body: 'Ett sällskap står i entrén — utan bokning.',
       cta: 'Fortsätt'
     },
-    difficulty: {
-      body: 'Hur säker känner du dig inför det här?',
-      options: {
-        low:  'Osäker',
-        mid:  'Ganska säker',
-        high: 'Säker'
-      }
-    },
+    // ORDER 048 §5 (2026-08-10 amendment) — the difficulty block
+    // (self-reported confidence "Hur säker känner du dig inför det
+    // här?") is retired. It asked about feeling instead of knowledge
+    // and produced no outcome. The slot between subject and situation
+    // is reserved for ORDER 049 §5.1's professional questions.
     situation: {
       body:
         'Fem personer i sällskapet. Kvällens service börjar snart och rummet är delvis bokat. Vad gör du?',
@@ -119,18 +116,13 @@ export const strings = {
     },
     // Mentor comments are non-modal — they surface as an in-world text
     // bubble above the room after the response has begun to play out.
-    // Keys: `{choice}_{difficulty}`. Kept short so the bubble stays
-    // readable without dominating the interior view.
+    // Keyed by choice only after the ORDER 048 §5 confidence-question
+    // retirement (2026-08-10); the mid-difficulty variants survive as
+    // the neutral base.
     mentor: {
-      A_low:  'Djärvt val för första kvällen. Låt köket få tempo.',
-      A_mid:  'Sammanslagning fungerar när servisen är med. Håll ett öga på tvåan bredvid.',
-      A_high: 'Full sittning. Om servisen håller blir det en bra kväll för alla fem.',
-      B_low:  'Bra kompromiss. Femte vid baren får en annan upplevelse — se till att någon hälsar.',
-      B_mid:  'Klok fördelning. Barsätet kräver dock att någon i personalen hinner dit.',
-      B_high: 'Trygg linje. Håll värmen — femte gästen ska inte känna sig sekundär.',
-      C_low:  'Rätt att skydda kvällen. Nästa gång kanske servisen är redo.',
-      C_mid:  'Att neka är också ett val. Kvällens rytm bevaras — men ryktet noteras.',
-      C_high: 'Bestämt nej. Rummet håller sin form, tipsen blir mindre.'
+      A: 'Sammanslagning fungerar när servisen är med. Håll ett öga på tvåan bredvid.',
+      B: 'Klok fördelning. Barsätet kräver dock att någon i personalen hinner dit.',
+      C: 'Att neka är också ett val. Kvällens rytm bevaras — men ryktet noteras.'
     }
   },
   // ORDER 043 v3 §10 step 5 — the morning team panel. Player-facing

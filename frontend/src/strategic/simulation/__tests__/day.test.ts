@@ -295,11 +295,7 @@ describe('scheduled scenario firing during service', () => {
     for (let i = 0; i < 3000; i++) {
       s = reducer(s, { type: 'TICK', dt: 0.2 });
       if (s.scenario.phase === 'subject') {
-        s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
-        s = reducer(s, {
-          type: 'SET_SCENARIO_DIFFICULTY',
-          difficulty: 2
-        });
+        s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_SITUATION' });
         s = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'A' });
       }
       if (s.scenario.phase === 'question') {

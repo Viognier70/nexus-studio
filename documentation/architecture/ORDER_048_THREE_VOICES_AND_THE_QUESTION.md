@@ -106,6 +106,10 @@ Requirements:
 
 Report the question format and how many are needed for one cycle before writing them.
 
+**Vision Owner amendment 2026-08-10 — the confidence question retires.** The scenario chain used to open with a self-report step (*"Hur säker känner du dig inför det här?"* with three options osäker / ganska säker / säker), landing between the subject line and the situation. Vision Owner played and reported: it asks about feeling instead of knowledge, arrives without context, and produces no outcome — the answer never mattered to anything the room did.
+
+The step is retired. The scenario now runs `subject → situation → resolving → question → settled`; `ADVANCE_SCENARIO_TO_SITUATION` replaces the two-step advance. The nine-line mentor bank collapses to three (one per choice). The slot between subject and situation is not repurposed for scenery — **it is reserved for the real professional questions coming from `ORDER_049` §5.1's bank**: a knowledge question asked before the situation reveals its options, so the answer changes what the player brings to the choice rather than after. Same shape as the retired step (a beat between framing and choosing), replaced by something that actually reads what the player knows.
+
 ---
 
 ## 6. Scenarios must be complex enough to be worth answering

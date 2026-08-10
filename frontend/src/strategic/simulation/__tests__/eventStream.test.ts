@@ -148,8 +148,7 @@ describe('outcome events fire deterministically after RESOLVE', () => {
       s = reducer(s, { type: 'TICK', dt: 0.2 });
     }
     expect(s.scenario.phase).toBe('subject');
-    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
-    s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
+    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_SITUATION' });
     const resolveAt = s.simTime;
     s = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'A' });
     // Filter to scenario outcomes — a prep-carryover from mise en
@@ -288,8 +287,7 @@ describe('repeat guard — no ambient sentence repeats within 4 min', () => {
     for (let i = 0; i < 4500; i++) {
       s = reducer(s, { type: 'TICK', dt: 0.2 });
       if (s.scenario.phase === 'subject') {
-        s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
-        s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
+        s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_SITUATION' });
         s = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'A' });
       }
     }

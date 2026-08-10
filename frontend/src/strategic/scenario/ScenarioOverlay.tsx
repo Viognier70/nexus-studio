@@ -99,7 +99,7 @@ export function ScenarioOverlay() {
           <button
             type="button"
             style={SUBJECT_CTA_STYLE}
-            onClick={() => dispatch({ type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' })}
+            onClick={() => dispatch({ type: 'ADVANCE_SCENARIO_TO_SITUATION' })}
           >
             {subjectCta}
           </button>
@@ -108,36 +108,10 @@ export function ScenarioOverlay() {
     );
   }
 
-  if (phase === 'difficulty') {
-    return (
-      <div style={OVERLAY_STYLE}>
-        <div style={BODY_STYLE}>{strings.scenario.difficulty.body}</div>
-        <div style={BUTTON_ROW_STYLE}>
-          <button
-            type="button"
-            style={BUTTON_STYLE}
-            onClick={() => dispatch({ type: 'SET_SCENARIO_DIFFICULTY', difficulty: 1 })}
-          >
-            {strings.scenario.difficulty.options.low}
-          </button>
-          <button
-            type="button"
-            style={BUTTON_STYLE}
-            onClick={() => dispatch({ type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 })}
-          >
-            {strings.scenario.difficulty.options.mid}
-          </button>
-          <button
-            type="button"
-            style={BUTTON_STYLE}
-            onClick={() => dispatch({ type: 'SET_SCENARIO_DIFFICULTY', difficulty: 3 })}
-          >
-            {strings.scenario.difficulty.options.high}
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // ORDER 048 §5 (2026-08-10 amendment) — the 'difficulty' phase
+  // (self-reported confidence) is retired. Subject → situation
+  // directly. The slot is reserved for the professional questions
+  // ORDER 049 §5.1 will land here.
 
   // ORDER 048 §5 — professional question phase. Appears AFTER a
   // scenario choice with an attached question. Same overlay shape

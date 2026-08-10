@@ -7,7 +7,6 @@ import type {
   Policies,
   Register,
   ScenarioChoice,
-  ScenarioDifficulty,
   SimAction,
   SimulationState,
   StaffRole,
@@ -149,10 +148,8 @@ export function reducer(state: SimulationState, action: SimAction): SimulationSt
       return resolveScenario(state, action.choice);
     case 'TRIGGER_SCENARIO':
       return triggerScenario(state, /* auto */ false);
-    case 'ADVANCE_SCENARIO_TO_DIFFICULTY':
-      return advanceToDifficulty(state);
-    case 'SET_SCENARIO_DIFFICULTY':
-      return setDifficulty(state, action.difficulty);
+    case 'ADVANCE_SCENARIO_TO_SITUATION':
+      return advanceToSituation(state);
     case 'RECORD_ENABLER_EVENT':
       return recordEnablerEvent(
         state,
@@ -1286,8 +1283,7 @@ function advanceTick(state: SimulationState): SimulationState {
   ) {
     const comment = mentorCommentFor(
       draft.scenario.scenarioId,
-      draft.scenario.choice,
-      draft.scenario.difficulty
+      draft.scenario.choice
     );
     draft.scenario = {
       ...draft.scenario,
@@ -1483,27 +1479,18 @@ function triggerScenario(state: SimulationState, auto: boolean): SimulationState
   };
 }
 
-function advanceToDifficulty(state: SimulationState): SimulationState {
+// ORDER 048 §5 (2026-08-10 amendment) — the previous two-step
+// advance (subject → difficulty → situation) was collapsed when the
+// confidence question was retired. Now the CTA on the subject card
+// takes the scenario straight to situation. awaitingChoice flips to
+// true so the arrivals suspension takes effect while the player
+// decides.
+function advanceToSituation(state: SimulationState): SimulationState {
   if (state.scenario.phase !== 'subject') return state;
-  return {
-    ...state,
-    scenario: { ...state.scenario, phase: 'difficulty' }
-  };
-}
-
-function setDifficulty(
-  state: SimulationState,
-  difficulty: ScenarioDifficulty
-): SimulationState {
-  if (state.scenario.phase !== 'difficulty') return state;
-  // Difficulty captured; situation now revealed. awaitingChoice flips
-  // to true so the arrivals suspension takes effect while the player
-  // decides. Legacy tests check this field, hence the mirror.
   return {
     ...state,
     scenario: {
       ...state.scenario,
-      difficulty,
       phase: 'situation',
       awaitingChoice: true
     }
@@ -1865,24 +1852,20 @@ function clampCapital(v: number): number {
   return Math.max(CAPITAL_MIN, Math.min(CAPITAL_MAX, v));
 }
 
+// ORDER 048 §5 (2026-08-10 amendment) — mentor comment simplified
+// after the confidence question retired. One line per choice, no
+// difficulty-keyed variants. Fallback holds a legacy per-choice
+// string for tests that trigger without a scenarioId.
 function mentorCommentFor(
   scenarioId: string | null,
-  choice: ScenarioChoice | null,
-  difficulty: ScenarioDifficulty | null
+  choice: ScenarioChoice | null
 ): string {
-  // Null/unexpected combination falls back to a neutral line rather
-  // than throwing — a scenario that resolved with an odd state
-  // shouldn't kill the render.
-  if (!choice || !difficulty) {
+  if (!choice) {
     return 'Kvällen gick vidare — vi tittar på hur den utvecklade sig nästa gång.';
   }
   const spec = scenarioId ? scenarioById(scenarioId) : null;
   if (spec) {
-    return spec.choices[choice].mentor[difficulty];
+    return spec.choices[choice].mentor;
   }
-  // Fallback: legacy walk-in-of-five strings for pre-refactor tests
-  // that trigger a scenario without a scenarioId.
-  const rank = difficulty === 1 ? 'low' : difficulty === 2 ? 'mid' : 'high';
-  const key = `${choice}_${rank}` as keyof typeof strings.scenario.mentor;
-  return strings.scenario.mentor[key];
+  return strings.scenario.mentor[choice];
 }

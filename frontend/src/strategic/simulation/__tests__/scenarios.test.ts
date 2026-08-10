@@ -43,15 +43,17 @@ describe('scenario spec table', () => {
     }
   });
 
-  it('every choice on every spec has register writes + outcomes + mentor for all difficulties', () => {
+  it('every choice on every spec has register writes + outcomes + a mentor line', () => {
+    // ORDER 048 §5 (2026-08-10 amendment) — mentor is one line per
+    // choice now; the 3-difficulty variants retired with the
+    // confidence question.
     for (const spec of ALL_SCENARIOS) {
       for (const choice of ['A', 'B', 'C'] as ScenarioChoice[]) {
         const c = spec.choices[choice];
         expect(c.registerWrites.length).toBeGreaterThan(0);
         expect(c.outcomes.length).toBeGreaterThan(0);
-        expect(c.mentor[1]).toBeTruthy();
-        expect(c.mentor[2]).toBeTruthy();
-        expect(c.mentor[3]).toBeTruthy();
+        expect(c.mentor).toBeTruthy();
+        expect(typeof c.mentor).toBe('string');
       }
     }
   });
@@ -94,8 +96,7 @@ describe('resolveScenario writes enabler history from the spec', () => {
         scientific: { ...s.enablers.scientific },
         cultural: { ...s.enablers.cultural }
       };
-      s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
-      s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
+      s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_SITUATION' });
       s = reducer(s, { type: 'RESOLVE_SCENARIO', choice });
       // Every write in the spec must have moved the tally + appended
       // to history.
@@ -129,8 +130,7 @@ describe('capitalSign per choice drives the drawn-theme capital direction', () =
     const readBefore = drawn === 'economic'
       ? s.cash
       : s.capitals.values[drawn];
-    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
-    s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
+    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_SITUATION' });
     const sA = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'A' });
     const sC = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'C' });
     const readAfter = (st: typeof sA) => drawn === 'economic'

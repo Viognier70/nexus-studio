@@ -172,16 +172,21 @@ export type ScenarioChoice = 'A' | 'B' | 'C';
 // 'settled' when the chosen choiceSpec has a professionalQuestion. On
 // ANSWER_QUESTION the phase drops back to 'resolving' and continues
 // through the normal settle window.
+//
+// ORDER 048 §5 amendment (2026-08-10): the previous 'difficulty' phase
+// (self-reported confidence) is retired. It asked about feeling
+// instead of knowledge, arrived without context, and produced no
+// outcome. The slot between subject and situation is reserved for
+// the real professional questions coming from ORDER 049 §5.1's bank —
+// same shape (a beat between framing and choosing), replaced by
+// something that actually reads what the player knows.
 export type ScenarioPhase =
   | 'idle'
   | 'subject'
-  | 'difficulty'
   | 'situation'
   | 'resolving'
   | 'question'
   | 'settled';
-
-export type ScenarioDifficulty = 1 | 2 | 3;
 
 // ORDER 048 §5 — the professional question currently awaiting a
 // player answer. A subset of the spec's ProfessionalQuestion so
@@ -202,7 +207,6 @@ export interface ScenarioState {
   hasAutoTriggered: boolean;
   active: boolean;
   phase: ScenarioPhase;
-  difficulty: ScenarioDifficulty | null;
   awaitingChoice: boolean;
   choice: ScenarioChoice | null;
   choiceAt: number | null;
@@ -765,8 +769,7 @@ export type SimAction =
   | { type: 'SET_POLICY'; patch: Partial<Policies> }
   | { type: 'RESOLVE_SCENARIO'; choice: ScenarioChoice }
   | { type: 'TRIGGER_SCENARIO' }
-  | { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' }
-  | { type: 'SET_SCENARIO_DIFFICULTY'; difficulty: ScenarioDifficulty }
+  | { type: 'ADVANCE_SCENARIO_TO_SITUATION' }
   // ORDER 050 §5 (2026-08-10) — the wager actions are retired with
   // the theme-wager mechanic; the stake now lives in each activity's
   // own three-column effects. Grep history for `PLACE_WAGER` if
