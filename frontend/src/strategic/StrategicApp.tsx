@@ -23,9 +23,9 @@ import { DevPanel } from './ui/DevPanel';
 import { EventStreamPanel } from './ui/EventStreamPanel';
 import { InstrumentsPanel } from './ui/InstrumentsPanel';
 import { primeStreamAudio } from './ui/streamArrivalCue';
-import { ModeSwitchLink } from './ui/ModeSwitchLink';
 import { OutwardButton } from './ui/OutwardButton';
 import { SpeedToggle } from './ui/SpeedToggle';
+import { TopRightMenu } from './ui/TopRightMenu';
 import { SelectionChrome } from './ui/SelectionChrome';
 import { VerifyBadge } from './ui/VerifyBadge';
 import { ViewLabel } from './ui/ViewLabel';
@@ -189,15 +189,7 @@ function StrategicShell() {
       <div className="gb-topright">
         <PlayerPanel />
         <SpeedToggle />
-        <ModeSwitchLink />
-        <button
-          type="button"
-          className="gb-btn"
-          onClick={() => setAboutOpen(true)}
-          aria-label="Om denna prototyp"
-        >
-          Om
-        </button>
+        <TopRightMenu onOpenAbout={() => setAboutOpen(true)} />
       </div>
       <OutwardButton />
       <ControlsHint />

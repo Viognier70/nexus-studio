@@ -4,7 +4,7 @@
 // 4× (compressed observation). 0× (pause) is available in state but
 // intentionally not exposed here — pause on demand blurs the reading
 // of "how the evening is going." The buttons sit in the top-right
-// chrome next to ModeSwitchLink + Om.
+// chrome next to the cash pill + utility (⋯) menu.
 //
 // State model: state.speed is a plain number, mutated via SET_SPEED.
 // No new state is added; this is a thin UI surface over the existing
