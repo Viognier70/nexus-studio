@@ -174,6 +174,35 @@ Vision Owner (2026-08-10): *"att servicen tar slut utan förvarning är en läsl
 
 ---
 
+### B-014 · The foodtruck tier and rivalry
+**Recorded:** 2026-08-10 · **Status:** open — own order when `ORDER 049` §5.1 (the bank meeting) lands
+
+Vision Owner idea, 2026-08-10. Turns `ORDER 049` §5.1's floor offer from a consolation prize into a genuine path with its own strategy.
+
+**Getting the truck is itself a threshold.** A player refused full financing may still be offered a foodtruck — but not automatically. The bank's panel puts critical questions and a minimum result is required. *"Alla får inte det."*
+
+**Placement is the decision.** The truck is placed somewhere in Grythyttan, with positions near the existing restaurants. Standing next to an establishment invites competition for its guests.
+
+**Rivalry requires similarity.** A truck only threatens a restaurant with a comparable concept. Park a Texas-grill truck beside a Texas-grill restaurant and the fight is real; beside a fine-dining room it is two different businesses on the same street. This forces the player to read the market before choosing a spot — and to have read up on that concept: its recipes, the wines that suit it. The truck may apply for an outdoor licence including alcohol rights.
+
+**The cost structures are asymmetric, and that is the teaching.** The restaurant offers table service, a lavatory, linen napkins, silver, proper glassware. The truck has a counter, simpler tables and chairs, paper napkins, guests ordering and carrying their own — and much lower labour and premises costs, so it can compete on price. Weather decides how well that trade works: an outdoor terrace in fine weather is a strong position, in rain it is not. `ORDER 045`'s weather model already exists to carry this.
+
+**Guests are autonomous.** Neither side can compel anyone. Guest movement is weighted probability against what the two businesses actually offer — price, quality, reputation, weather, comfort — plus chance so nothing is determined. **Competence sets the weights**: knowledge raises the ceilings (`ORDER 049` §2.1), the ceilings bound what the house can charge (`ORDER 050` Addendum A §11), and those figures feed the guest's choice. The player who knows more wins more often, but never always.
+
+**The competitor plays the same game.** It acquires knowledge, raises its own ceilings, improves what it offers — by the same means available to the player, and it can no more compel a guest than the player can. *"Du vinner inte genom att slå ut någon, utan genom att bli bättre än dem."* Open question at build time: how fast it learns. Fast enough that a lazy player loses; slow enough that an attentive one can win.
+
+**Two strategies, both playable, one durable.**
+- **The price shock** — cut hard to push the rival toward insolvency. Real risk: you earn less while you do it, and if their cash outlasts yours it is you who goes under.
+- **The returning clientele** — satisfied guests come back, and that is a central factor in this game. Slower, steadier, and it survives the other side's price cuts.
+
+**Each side reads the other through the guests.** No competitor panel, no report: revenue, plates sold, guest count, and the queue outside. You see their line grow and yours shrink, and you draw the conclusion. Same principle as `ORDER 050` §4 — show what happens, never what it means.
+
+**Preconditions.** `ORDER 049` §5.1 (the bank meeting) must land first — the threshold to the truck is meaningless without the examination that sets it. Also wants `ORDER 051` (concepts, menus, pricing) so that "comparable concept" has something to compare.
+
+**Not decided:** whether the rival is an AI operator only, or the same slot another player could occupy (`B-011`).
+
+---
+
 ## How to use this file
 
 Add an entry the day a decision is made outside an order. When an entry is folded into an order, change its status and cite the order — do not delete it. The record of *when* something was decided is worth as much as the decision.
