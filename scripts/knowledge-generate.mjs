@@ -86,6 +86,7 @@ function parseArgs(argv) {
     dryRun: false,
     scenarioChef: false,
     rescore: false,
+    approveAll: false,
     out: DEFAULT_OUT
   };
   for (let i = 2; i < argv.length; i++) {
@@ -96,6 +97,7 @@ function parseArgs(argv) {
     else if (a === '--dry-run') args.dryRun = true;
     else if (a === '--scenario-chef') args.scenarioChef = true;
     else if (a === '--rescore') args.rescore = true;
+    else if (a === '--approve-all') args.approveAll = true;
     else if (a === '--out') args.out = argv[++i];
     else if (a === '--help' || a === '-h') {
       console.log(readFileSync(fileURLToPath(import.meta.url), 'utf8')
@@ -607,6 +609,27 @@ async function main() {
     const updated = await rescoreEntries({ url, key, table, doc: existing });
     saveOutput(args.out, updated);
     console.log(`wrote ${args.out}: ${updated.entries.length} entries (re-sorted).`);
+    return;
+  }
+
+  // ORDER 049 §7 step 2 (2026-08-10) — --approve-all is a standalone
+  // mode: flip every 'pending' status to 'approved'. Vision Owner
+  // reviewed the bank; the marginal entries hold, so the rest hold.
+  // Rejections (per §3.2 "rejections kept with their reason") would
+  // use a per-entry --reject <articleId> <register> --reason "..."
+  // path once patterns emerge — not yet needed since none rejected.
+  if (args.approveAll) {
+    const existing = loadExisting(args.out);
+    let flipped = 0;
+    for (const e of existing.entries) {
+      if (e.status === 'pending') {
+        e.status = 'approved';
+        e.approved_at = new Date().toISOString();
+        flipped++;
+      }
+    }
+    saveOutput(args.out, existing);
+    console.log(`approved ${flipped} pending entries. wrote ${args.out}.`);
     return;
   }
 

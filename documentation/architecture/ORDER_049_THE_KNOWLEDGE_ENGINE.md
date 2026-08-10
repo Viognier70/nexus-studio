@@ -89,6 +89,20 @@ Approved questions land in the game's own local bank. **Nexus never queries Supa
 
 **This supersedes `VERTICAL_SLICE_002.md`'s "no backend, no Supabase" exclusion — for the generation script only.** The running game remains backend-free. Record the supersession in `ORDER_REGISTRY.md`; do not let it quietly widen.
 
+#### 3.3.a Context framing — the question is fixed, the frame varies (Vision Owner amendment 2026-08-10)
+
+The bank question is fixed: **text, options, correct answer, citation.** What varies is the frame around it — a leading sentence that places the same question in a place it plausibly comes from.
+
+Three contexts:
+
+- **The bank meeting** — the director tests before she names an amount. *"Before we talk about numbers — …"* The frame lives on the director's turn.
+- **Service** — someone on the team needs to know now, with a guest waiting. Sender follows §48.4: chef asks about the kitchen, sommelier about wine, host about the room. The frame is the sender opening the sentence in their own voice.
+- **Morning** — the player is reading up. No frame; the question stands as it is.
+
+**The frame is a leading sentence, not a rewrite.** Regenerating the question after context would let the answer drift from what the article supports; that breaks the §3.1 faithfulness contract. The bank ships the naked question; the game wraps it at consumption time.
+
+Use the article's `topic` field to decide who plausibly asks. The mapping between topic and sender must be **reported and approved before build** — if a sommelier asks about dishwashing routines, the illusion breaks faster than a bad question would. Bank the topic on every entry alongside the fixed fields so the runtime frame doesn't have to guess.
+
 ### 3.4 Registers become visible
 
 Nexus has typed episteme, techne and phronesis since ORDER 043 and never shown them. On answering, **name the knowledge form the answer exercised, with the source**. Not as a score — as an attribution. `somm.upcycledby.com` does this well: knowledge form, key concepts, citation.
