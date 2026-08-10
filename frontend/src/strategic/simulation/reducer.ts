@@ -88,7 +88,8 @@ import {
   applyCashCost,
   applyCashDelta,
   applyCashRevenue,
-  capitalReadingFor
+  capitalReadingFor,
+  postLedger
 } from './cashReading';
 import { drawNextTheme } from './themeSelection';
 
@@ -378,6 +379,9 @@ function openService(
     revenueAtServiceStart: state.revenue,
     costAtServiceStart: state.cost,
     reputationAtServiceStart: state.reputation,
+    // ORDER 050 §7 step 3 (2026-08-10) — fresh ingredient accumulator
+    // for this service; posted + reset at service-close transition.
+    serviceIngredientAccrued: 0,
     // ORDER 047 §6 — preserve morningPolicyChanges through the service
     // so the evening account can read them. Cleared on evening→morning
     // transition. Passed through explicitly since {...state.day} would
@@ -457,7 +461,8 @@ function skipLunch(state: SimulationState): SimulationState {
       collapseAxis: null,
       revenueAtServiceStart: null,
       costAtServiceStart: null,
-      reputationAtServiceStart: null
+      reputationAtServiceStart: null,
+      serviceIngredientAccrued: 0
     }
   };
 }
@@ -476,13 +481,46 @@ function skipLunch(state: SimulationState): SimulationState {
 // ~5 s; anything shorter would rush the reading.
 const EVENING_TO_MORNING_PAUSE_SEC = 30;
 
+// ORDER 050 §7 step 3 (2026-08-10) — post the per-service summary
+// lines that aggregate mid-service per-guest revenue and per-tick
+// ingredient into single readable book entries. Cash has already
+// moved during the service; these lines are book recaps, not
+// movers, so we do NOT call any applyCash* helper here — postLedger
+// alone appends the row. `prev` is the pre-transition state, read
+// for the accumulators (which the transition just reset on the
+// next.day object).
+function postServiceSummaryLines(
+  draft: SimulationState,
+  service: 'lunch' | 'dinner',
+  prev: SimulationState
+): void {
+  const revenueKsek = prev.serviceRevenueToday[service];
+  if (revenueKsek > 0) {
+    postLedger(draft, {
+      category: 'revenue',
+      amount: revenueKsek * 1000,
+      cause: `${service === 'lunch' ? 'Lunch' : 'Dinner'} revenue`,
+      causeId: service
+    });
+  }
+  const ingredientSek = prev.day.serviceIngredientAccrued;
+  if (ingredientSek > 0) {
+    postLedger(draft, {
+      category: 'ingredient',
+      amount: -ingredientSek,
+      cause: `Ingredients — ${service === 'lunch' ? 'lunch' : 'dinner'}`,
+      causeId: service
+    });
+  }
+}
+
 export function tickDayTransitions(state: SimulationState): SimulationState {
   const { day, simTime } = state;
   if (day.period === 'lunch' && day.currentServiceLengthMinutes !== null) {
     const endsAt = day.periodStartAt + day.currentServiceLengthMinutes * 60;
     if (simTime >= endsAt) {
       // Clear agency hires + offer at lunch close, same as dinner.
-      return {
+      const next: SimulationState = {
         ...state,
         team: removeAgencyMembers(state.team),
         agencyOffer: null,
@@ -506,9 +544,16 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           collapseAxis: null,
           revenueAtServiceStart: null,
           costAtServiceStart: null,
-          reputationAtServiceStart: null
+          reputationAtServiceStart: null,
+          serviceIngredientAccrued: 0
         }
       };
+      // ORDER 050 §7 step 3 (2026-08-10) — post per-service summary
+      // lines. Revenue in raw SEK (serviceRevenueToday is in kSEK
+      // for the panel; multiply back). Both cash-recap lines, not
+      // cash movers (the till already moved per-guest / per-tick).
+      postServiceSummaryLines(next, 'lunch', state);
+      return next;
     }
   }
   if (day.period === 'dinner' && day.currentServiceLengthMinutes !== null) {
@@ -523,7 +568,7 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       // standing agency offer at service close. Agency members are
       // scoped to the single service; the offer is stale after
       // close and would surface next service if not cleared.
-      return {
+      const next: SimulationState = {
         ...state,
         team: removeAgencyMembers(state.team),
         agencyOffer: null,
@@ -548,9 +593,12 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           collapseAxis: null,
           revenueAtServiceStart: null,
           costAtServiceStart: null,
-          reputationAtServiceStart: null
+          reputationAtServiceStart: null,
+          serviceIngredientAccrued: 0
         }
       };
+      postServiceSummaryLines(next, 'dinner', state);
+      return next;
     }
   }
   if (day.period === 'evening') {
@@ -584,9 +632,10 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       // `team.paidStructuralCost`, leaving state.cash/state.cost
       // ignorant of the wage bill. Fixed here as part of the cash
       // refactor: sum non-agency dailyCost and post via applyCashCost.
-      const wageTotal = state.team.members
-        .filter((m) => !m.isAgency)
-        .reduce((s, m) => s + m.dailyCost, 0);
+      // §7 step 3 — one ledger line per non-agency member per day so
+      // the book names who was paid.
+      const nonAgencyMembers = state.team.members.filter((m) => !m.isAgency);
+      const wageTotal = nonAgencyMembers.reduce((s, m) => s + m.dailyCost, 0);
       const nextForDay: SimulationState = {
         ...state,
         team: chargeStructuralCost(state.team),
@@ -611,7 +660,20 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           periodStartAt: simTime
         }
       };
-      if (wageTotal > 0) applyCashCost(nextForDay, wageTotal);
+      if (wageTotal > 0) {
+        applyCashCost(nextForDay, wageTotal);
+        // §7 step 3 — one line per member per day so the book names
+        // who was paid, not just the aggregate.
+        for (const m of nonAgencyMembers) {
+          if (m.dailyCost <= 0) continue;
+          postLedger(nextForDay, {
+            category: 'wage',
+            amount: -m.dailyCost,
+            cause: `Wage: ${m.role}`,
+            causeId: m.id
+          });
+        }
+      }
       return nextForDay;
     }
   }
@@ -728,6 +790,12 @@ function acceptAgency(state: SimulationState): SimulationState {
     ]
   };
   applyCashCost(next, AGENCY_HIRE_COST);
+  postLedger(next, {
+    category: 'agency',
+    amount: -AGENCY_HIRE_COST,
+    cause: `Agency: ${state.agencyOffer.role} for tonight`,
+    causeId: state.agencyOffer.role
+  });
   bumpMorale(next, MORALE_AGENCY_ACCEPT_BUMP);
   return next;
 }
@@ -825,7 +893,17 @@ function fireTeamMember(state: SimulationState, memberId: string): SimulationSta
     ]
   };
   // ORDER 050 §3 (2026-08-10) — paired cash write via applyCashCost.
-  if (buyout > 0) applyCashCost(next, buyout);
+  // §7 step 3 — one ledger line per buyout so the book shows what
+  // was paid to whom for how many days remaining.
+  if (buyout > 0) {
+    applyCashCost(next, buyout);
+    postLedger(next, {
+      category: 'buyout',
+      amount: -buyout,
+      cause: `Buyout: ${member.role} (${remainingDays} days remaining)`,
+      causeId: member.id
+    });
+  }
   return next;
 }
 
@@ -979,11 +1057,19 @@ function advanceTick(state: SimulationState): SimulationState {
     }
   }
   // Accumulate cost — paired write to till.
-  applyCashCost(draft, (costPerMinuteToTick(draft) * tickSeconds) / 60);
+  const tickCost = (costPerMinuteToTick(draft) * tickSeconds) / 60;
+  applyCashCost(draft, tickCost);
+  // ORDER 050 §7 step 3 (2026-08-10) — per-service ingredient
+  // accumulator; posted as one 'ingredient' ledger line at
+  // service close (lunch→afternoon or dinner→evening).
+  if (draft.day.period === 'lunch' || draft.day.period === 'dinner') {
+    draft.day.serviceIngredientAccrued += tickCost;
+  }
 
   // ORDER 049 §5.2 — daily loan interest. Accrues once per calendar
   // day (guarded by lastAccrualDay so the same tick can't charge it
   // twice). ORDER 050 §3 (2026-08-10) — paired write to till.
+  // §7 step 3 — one ledger line per accrual day.
   if (draft.loan.principal > 0 && draft.day.dayNumber > draft.loan.lastAccrualDay) {
     const daysToCharge = draft.day.dayNumber - draft.loan.lastAccrualDay;
     // principal is in kSEK-scale; convert to raw kr for the cost
@@ -991,6 +1077,14 @@ function advanceTick(state: SimulationState): SimulationState {
     const interestKr =
       draft.loan.principal * draft.loan.interestRatePerDay * daysToCharge * 1000;
     applyCashCost(draft, interestKr);
+    postLedger(draft, {
+      category: 'interest',
+      amount: -interestKr,
+      cause:
+        daysToCharge === 1
+          ? `Loan interest (day ${draft.day.dayNumber})`
+          : `Loan interest (days ${draft.loan.lastAccrualDay + 1}–${draft.day.dayNumber})`
+    });
     draft.loan = { ...draft.loan, lastAccrualDay: draft.day.dayNumber };
   }
 
@@ -1585,10 +1679,20 @@ function resolveScenario(
   // ORDER 050 §3 (2026-08-10) — apply the accumulated economic
   // scenario movement to the till. Positive = revenue-shaped (five
   // extra covers), negative = cost-shaped (the wine that broke).
-  // Cash-only category — neither a lifetime revenue nor a lifetime
-  // cost in the bookkeeping sense; a category the ledger phase (§7
-  // step 3) will surface as `scenario` in the transaction list.
-  if (themedCashDelta !== 0) applyCashDelta(nextState, themedCashDelta);
+  // §7 step 3 — one ledger line per scenario resolution so the book
+  // names what shifted and by how much.
+  if (themedCashDelta !== 0) {
+    applyCashDelta(nextState, themedCashDelta);
+    const scenarioLabel = spec?.id
+      ? `${spec.id} (${choice})`
+      : `scenario (${choice})`;
+    postLedger(nextState, {
+      category: 'scenario',
+      amount: themedCashDelta,
+      cause: `Scenario: ${scenarioLabel}`,
+      ...(spec?.id ? { causeId: spec.id } : {})
+    });
+  }
   bumpMorale(nextState, moraleDelta);
   return nextState;
 }

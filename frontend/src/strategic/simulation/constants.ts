@@ -51,6 +51,14 @@ export const INITIAL_CASH_SEK = 120_000;
 // lower makes it feel jumpy. Cycle-1 tuning per Vision Owner 2026-08-10.
 export const ECONOMIC_READING_RUNWAY_WEEKS = 4;
 
+// ORDER 050 §7 step 3 — the ledger's ring-buffer size. 1 000 lines
+// ≈ 10–15 in-game days at cycle-1 tempo (per-service revenue + per-
+// service ingredient + per-member per-day wages + daily interest +
+// scenario cash lines). Enough for the player to trace "where did
+// the money go" without unbounded memory growth (Vision Owner
+// 2026-08-10). Adjustable from playtest.
+export const LEDGER_MAX_LINES = 1000;
+
 // Weekly operating baseline used by the derived economic reading.
 // A mid-tier venture with a three-person team burns ~25 kSEK/week
 // in wages alone, plus ~5 kSEK ingredients and ~4 kSEK interest —

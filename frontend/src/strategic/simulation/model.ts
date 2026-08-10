@@ -174,6 +174,7 @@ export function initialDay(): DayState {
     revenueAtServiceStart: null,
     costAtServiceStart: null,
     reputationAtServiceStart: null,
+    serviceIngredientAccrued: 0,
     morningPolicyChanges: []
   };
 }
@@ -230,6 +231,10 @@ export function makeInitialState(
     // `cash = INITIAL_CASH_SEK + revenue − cost + scenario deltas`
     // holds by construction.
     cash: INITIAL_CASH_SEK,
+    // ORDER 050 §7 step 3 (2026-08-10) — ledger starts empty; the
+    // first line usually appears on day 1's first daily loan-interest
+    // accrual or first scenario resolution.
+    ledger: [],
     waste: 0,
     reputation: 0.6,
     // Starts above the base ceiling (0.55) so day-1 shows a small

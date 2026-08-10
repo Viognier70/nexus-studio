@@ -27,11 +27,18 @@
 // paired writes collapse into a single `postLedger()`. Until then
 // the helpers below are the interface.
 
-import type { SimulationState, StoredCapitalKey, SustainabilityKey } from '../types';
+import type {
+  LedgerCategory,
+  LedgerLine,
+  SimulationState,
+  StoredCapitalKey,
+  SustainabilityKey
+} from '../types';
 import {
   CAPITAL_MAX,
   CAPITAL_MIN,
   ECONOMIC_READING_RUNWAY_WEEKS,
+  LEDGER_MAX_LINES,
   WEEKLY_OPERATING_BASELINE_SEK
 } from './constants';
 
@@ -101,4 +108,41 @@ export function applyCashDelta(draft: SimulationState, sek: number): void {
 
 function clamp01(v: number): number {
   return Math.max(CAPITAL_MIN, Math.min(CAPITAL_MAX, v));
+}
+
+// -------- ledger --------------------------------------------------------
+
+// ORDER 050 §7 step 3 (2026-08-10) — append a book entry for the
+// business account (§3.1). Does NOT move cash — call sites are
+// expected to have already moved cash via applyCash* (for immediate
+// events) or accumulated it silently (for per-guest revenue /
+// per-tick ingredient), and postLedger records the book entry
+// separately. The runningCash field stamps the till balance AFTER
+// the associated cash movement so each row is readable out of
+// context (Vision Owner 2026-08-10).
+//
+// Ring-trimmed to LEDGER_MAX_LINES so a long session doesn't grow
+// state without bound; the ledger is a rolling reading, not an
+// audit archive. The .slice() rewrites the array (still O(N) but
+// N ≤ 1000 — negligible per tick).
+export function postLedger(
+  draft: SimulationState,
+  entry: {
+    category: LedgerCategory;
+    amount: number;
+    cause: string;
+    causeId?: string;
+  }
+): void {
+  const line: LedgerLine = {
+    at: draft.simTime,
+    day: draft.day.dayNumber,
+    period: draft.day.period,
+    category: entry.category,
+    amount: entry.amount,
+    cause: entry.cause,
+    ...(entry.causeId !== undefined ? { causeId: entry.causeId } : {}),
+    runningCash: draft.cash
+  };
+  draft.ledger = [...draft.ledger, line].slice(-LEDGER_MAX_LINES);
 }

@@ -411,6 +411,13 @@ export interface DayState {
   // service's net take by subtraction. Null between services.
   revenueAtServiceStart: number | null;
   costAtServiceStart: number | null;
+  // ORDER 050 §7 step 3 (2026-08-10) — running total of tick-driven
+  // ingredient/staff-per-minute cost accrued during the current
+  // service. Reset to 0 at OPEN_SERVICE; posted as one 'ingredient'
+  // ledger line at lunch→afternoon / dinner→evening close, then
+  // reset. Distinct from state.cost (which also carries agency,
+  // wage, interest, buyout) so the ledger line is clean.
+  serviceIngredientAccrued: number;
   // Reputation at the moment OPEN_SERVICE was dispatched — the
   // evening account uses this to say "kvällen bevarade ryktet" vs
   // "ryktet gick tillbaka" without surfacing the number itself.
@@ -463,6 +470,37 @@ export interface EnablerRecord {
 // ORDER 050 §5 (2026-08-10) — WagerState + WagerHistoryEntry retired
 // with the theme-wager mechanic. Grep history for `WagerState` if
 // archaeology is needed.
+
+// ORDER 050 §7 step 3 — the ledger. Every discrete money-touching
+// mechanic appends a line so the player can open the business account
+// (Fortnox-analogue view) and see "where did the money go" without
+// help. Per-service revenue and ingredient posts happen ONCE per
+// completed service (Vision Owner 2026-08-10: "Ledgern är en bok,
+// inte en logg. Per service.") — per-guest granularity would flood
+// the book. Fine-grained cash mutations (per-guest revenue, per-tick
+// ingredient cost) still move state.cash immediately; only the
+// summary posts to the ledger, so the ledger view has readable
+// rhythm without losing cash accuracy at any moment.
+export type LedgerCategory =
+  | 'revenue'             // guest payments, aggregated per completed service
+  | 'wage'                // team member daily cost, one line per member per day
+  | 'agency'              // agency staff for tonight, at accept
+  | 'ingredient'          // per-service tick-cost aggregate
+  | 'interest'            // daily loan interest accrual
+  | 'scenario'            // scenario cash writes (themed + secondary)
+  | 'buyout'              // fired team member contract buyout
+  | 'other';              // fallback with mandatory descriptive cause
+
+export interface LedgerLine {
+  at: number;             // simTime (monotonic seconds; portable per §11.1)
+  day: number;            // state.day.dayNumber at post time
+  period: DayPeriod;      // period at post time
+  category: LedgerCategory;
+  amount: number;         // signed SEK (positive = into the till, negative = out)
+  cause: string;          // human-readable, English (e.g. "Lunch revenue (28 covers)")
+  causeId?: string;       // stable identifier: member id, scenario id, etc.
+  runningCash: number;    // cash on hand AFTER this line — makes each row self-explanatory when read out of context
+}
 
 // One consequence event per sustainability in cycle 1 (§6, §10).
 // `staff_resigns` fires when social ≤ threshold, `supplier_drops` when
@@ -603,6 +641,13 @@ export interface SimulationState {
   // writes respectively) — paired with cash writes at every mutation
   // so cash = INITIAL_CASH_SEK + revenue - cost + non-flow deltas.
   cash: number;
+  // ORDER 050 §7 step 3 — chronological append-only ledger, ring-
+  // buffered at LEDGER_MAX_LINES. Feeds the business-account modal
+  // (§3.1). Per-service revenue + ingredient lines aggregate the
+  // per-tick cash movements; agency / wage / interest / scenario
+  // post one line per event. Cash-authoritative — the ledger is a
+  // reading of the book, not the source of the till balance.
+  ledger: LedgerLine[];
   // ORDER 043 outcome layer — non-economic capitals the scenarios
   // move (§3.1). Economic moved to `state.cash`. Separate from `eco`
   // above (§8.2's visible sustainability *reading*), which stays
