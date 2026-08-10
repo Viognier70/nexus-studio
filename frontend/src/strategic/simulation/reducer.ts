@@ -49,6 +49,8 @@ import {
   pickScenarioSpecFiltered,
   scenarioById
 } from './scenarios';
+import { pickBankQuestion } from '../../content/knowledgeBank';
+import type { BankSender } from '../../content/knowledgeBank';
 import { fireCollapse, tickCollapseRoll } from './collapse';
 import { computeEveningAccount } from './eveningAccount';
 import {
@@ -1685,20 +1687,64 @@ function resolveScenario(
   // overlay to render. The scenario's normal outcome pending events
   // still schedule; the mentor comment (via SCENARIO_SETTLE_AFTER)
   // still fires. The question is a beat on top, not a replacement.
-  const pq = choiceSpec?.professionalQuestion ?? null;
-  if (pq && spec) {
-    scenario.phase = 'question';
-    scenario.pendingQuestion = {
-      body: pq.body,
-      options: pq.options.map((o) => ({
-        label: o.label,
-        correct: o.correct,
-        consequenceLine: o.consequenceLine
-      })),
-      senderRole: pq.senderRole ?? scenario.senderRole,
-      scenarioId: spec.id,
-      choice
-    };
+  //
+  // ORDER 049 §7 step 3 (2026-08-10) — the choice may carry either a
+  // hand-authored ProfessionalQuestion or a BankQuestionRef. Bank
+  // refs resolve here via pickBankQuestion; the deterministic index
+  // is state.seed × state.tick × choice so replays of the same fire
+  // pull the same bank entry.
+  const pqSpec = choiceSpec?.professionalQuestion ?? null;
+  if (pqSpec && spec) {
+    if ('fromBank' in pqSpec) {
+      const senderFilter = pqSpec.fromBank.senderRole;
+      // Bank pool restricted to non-lärling senders. If the spec
+      // requested lärling (rare/none in cycle 1) the pool falls back
+      // to any sender — see pickBankQuestion's filter behaviour.
+      const bankSender: BankSender | null =
+        senderFilter && senderFilter !== 'lärling'
+          ? (senderFilter as BankSender)
+          : null;
+      const idx =
+        (state.seed | 0) ^
+        (state.tick | 0) ^
+        (choice.charCodeAt(0) | 0) ^
+        (spec.id.length | 0);
+      const bankQ = pickBankQuestion(pqSpec.fromBank.register, bankSender, idx);
+      if (bankQ) {
+        scenario.phase = 'question';
+        scenario.pendingQuestion = {
+          body: bankQ.question,
+          options: bankQ.options.map((o) => ({
+            label: o.label,
+            // Phronesis options lack `correct` (see BankOption docs);
+            // scenario slots only draw episteme/techne so this fallback
+            // is defensive — if a phronesis pick slipped through, the
+            // player would find all options counted as wrong.
+            correct: o.correct ?? false
+          })),
+          senderRole: bankQ.sender,
+          scenarioId: spec.id,
+          choice,
+          sourceBankId: bankQ.id,
+          sourceArticleTitle: bankQ.articleTitle,
+          sourceArticleUrl: bankQ.articleUrl,
+          sourceCitation: bankQ.citation
+        };
+      }
+    } else {
+      scenario.phase = 'question';
+      scenario.pendingQuestion = {
+        body: pqSpec.body,
+        options: pqSpec.options.map((o) => ({
+          label: o.label,
+          correct: o.correct,
+          consequenceLine: o.consequenceLine
+        })),
+        senderRole: pqSpec.senderRole ?? scenario.senderRole,
+        scenarioId: spec.id,
+        choice
+      };
+    }
   }
 
   const nextState: SimulationState = {
@@ -1754,6 +1800,22 @@ function answerProfessionalQuestion(
 
   const spec = scenarioById(pq.scenarioId);
   const questionSpec = spec?.choices[pq.choice]?.professionalQuestion ?? null;
+  // ORDER 049 §7 step 3 (2026-08-10) — hand-authored questions carry
+  // a correctLine on the spec; bank picks do not (the citation stream
+  // line does the equivalent work). Detect by shape.
+  const authoredCorrectLine =
+    questionSpec && !('fromBank' in questionSpec)
+      ? questionSpec.correctLine
+      : undefined;
+  const enablerWrite = questionSpec?.correctEnablerWrite ?? null;
+  // ORDER 049 §7 step 3 (2026-08-10) — citation stream line for bank
+  // picks. Fires regardless of right/wrong so the player sees where
+  // the answer comes from and can follow the link. Skipped for
+  // hand-authored questions (no citation to show).
+  const citationLine =
+    pq.sourceArticleTitle && pq.sourceArticleUrl
+      ? `Source: ${pq.sourceArticleTitle} — ${pq.sourceArticleUrl}`
+      : null;
 
   let capitals = state.capitals;
   let enablers = state.enablers;
@@ -1761,8 +1823,8 @@ function answerProfessionalQuestion(
 
   if (opt.correct) {
     // Enabler write for the correct answer.
-    if (questionSpec?.correctEnablerWrite) {
-      const w = questionSpec.correctEnablerWrite;
+    if (enablerWrite) {
+      const w = enablerWrite;
       const amount = Math.max(0, Math.min(1, w.amount));
       if (amount > 0) {
         const prev = enablers[w.enabler];
@@ -1780,10 +1842,10 @@ function answerProfessionalQuestion(
       }
     }
     // Positive outcome line for the room, if the spec provided one.
-    if (questionSpec?.correctLine) {
+    if (authoredCorrectLine) {
       newOutcomes.push({
         dueAt: state.simTime + 4,
-        text: questionSpec.correctLine,
+        text: authoredCorrectLine,
         sustainability: spec?.sustainability ?? 'social',
         scenarioId: pq.scenarioId
       });
@@ -1806,8 +1868,8 @@ function answerProfessionalQuestion(
     // pulls quality and reputation with it, revenue follows. This
     // makes "brister kan inte kompenseras mellan områden" mechanical:
     // knowledge that failed is precisely the knowledge that regresses.
-    if (questionSpec?.correctEnablerWrite) {
-      const w = questionSpec.correctEnablerWrite;
+    if (enablerWrite) {
+      const w = enablerWrite;
       // Symmetric magnitude: a wrong answer costs the same tally the
       // right answer would have paid. Kept simple; §5 tuning may
       // later scale wrong-costs to be steeper than right-gains once
@@ -1828,6 +1890,17 @@ function answerProfessionalQuestion(
         };
       }
     }
+  }
+
+  // Citation follow-up, right or wrong. Sits ~2 s after the outcome
+  // line so the player reads the answer before the source.
+  if (citationLine) {
+    newOutcomes.push({
+      dueAt: state.simTime + 6,
+      text: citationLine,
+      sustainability: spec?.sustainability ?? 'social',
+      scenarioId: pq.scenarioId
+    });
   }
 
   // Phase back to 'resolving' so the standard settle → 'settled'

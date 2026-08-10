@@ -191,6 +191,11 @@ export type ScenarioPhase =
 // ORDER 048 §5 — the professional question currently awaiting a
 // player answer. A subset of the spec's ProfessionalQuestion so
 // state stays portable (no function refs, plain-object per §11.1).
+//
+// ORDER 049 §7 step 3 (2026-08-10) — extended with source-of-truth
+// fields so bank-drawn questions carry their citation into the
+// overlay and the post-answer stream line. Hand-authored questions
+// leave the source-* fields undefined; bank picks populate them.
 export interface PendingQuestion {
   body: string;
   options: readonly {
@@ -201,6 +206,12 @@ export interface PendingQuestion {
   senderRole: StaffRole | null;   // overrides scenario sender for the question
   scenarioId: string;
   choice: ScenarioChoice;
+  // Bank-only fields. When the question was drawn from the bank,
+  // these carry the citation the answer is grounded in per §3.1.
+  sourceBankId?: string;
+  sourceArticleTitle?: string;
+  sourceArticleUrl?: string;
+  sourceCitation?: string;
 }
 
 export interface ScenarioState {

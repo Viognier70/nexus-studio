@@ -113,6 +113,29 @@ export interface ProfessionalQuestion {
   correctLine?: string;
 }
 
+// ORDER 049 §7 step 3 (2026-08-10) — a bank-drawn question replaces
+// the hand-authored one at RESOLVE_SCENARIO time. The bank question
+// is fixed (text/options/answer/citation per §3.3.a); the reducer
+// picks a fresh entry per fire from state.seed × state.tick so the
+// same choice doesn't loop the same question. Sender comes from
+// the bank entry's topic-derived role; the scenario spec's
+// senderRole is used as a filter hint. correctEnablerWrite stays
+// on the spec side — the register is a scenario-shape decision,
+// not a bank-entry decision.
+export interface BankQuestionRef {
+  fromBank: {
+    // Which register to draw from. Cycle-1 uses episteme for the
+    // three existing slots; techne and phronesis fire from the
+    // service loop, not from scenario resolutions.
+    register: 'episteme' | 'techne' | 'phronesis';
+    // Restrict the bank pool to entries whose topic-derived sender
+    // matches. When null, any sender qualifies (rare; used only
+    // when the scenario is topic-agnostic).
+    senderRole: StaffRole | null;
+  };
+  correctEnablerWrite: EnablerWrite;
+}
+
 export interface BelowThresholdAmplifier {
   capital: SustainabilityKey;
   min: number;                    // amplifier fires when value < min
@@ -162,7 +185,12 @@ export interface ScenarioChoiceSpec {
   // player picks this choice. See ProfessionalQuestion for shape.
   // Cycle-1 attaches one per scenario, on the highest-competence
   // choice, so proving the format doesn't require a copy explosion.
-  professionalQuestion?: ProfessionalQuestion;
+  //
+  // ORDER 049 §7 step 3 (2026-08-10) — a BankQuestionRef is the
+  // canonical shape; ProfessionalQuestion remains as a legacy
+  // hand-authored escape hatch (tests + backwards-compat). The
+  // reducer resolves either into PendingQuestion.
+  professionalQuestion?: ProfessionalQuestion | BankQuestionRef;
   // ORDER 048 §2.2 — immediate plain-voice consequence line fired
   // ~0.5 s after RESOLVE_SCENARIO. Not observer voice; a plain
   // "this is what followed from the answer" statement. This is what
@@ -251,33 +279,16 @@ const WALK_IN_OF_FIVE: ScenarioSpec = {
         extraOutcome:
           'Diskstationen svämmade över med tallrikar från sammanslagningen — halva restpartierna gick till spillo utan att någon hann sortera. Hm, den där sortens svinn kommer inte tillbaka.'
       },
-      // ORDER 048 §5 — concrete professional question at the moment
-      // it matters. Sammanslagningen är gjord; hur ducka man den
-      // så grannbordet inte känner sig trängt är ett värdsansvar.
+      // ORDER 049 §7 step 3 (2026-08-10) — bank-drawn question at
+      // the moment it matters. Host-side topic (guest reading /
+      // hospitality / gastronomy) filters via senderRole='värd'.
+      // Register was cultural/phronesis when hand-authored; per
+      // Vision Owner 2026-08-10 all three scenario slots draw
+      // episteme (bank composition mirrors that: 118 episteme,
+      // 24 techne, 130 phronesis).
       professionalQuestion: {
-        senderRole: 'värd',
-        body: 'När du slår ihop fyran och tvåan — vad gör du med grannbordets bestick och glas?',
-        options: [
-          {
-            label: 'Flyttar dem försiktigt till grannens plats i samma rörelse som jag hämtar extra bestick.',
-            correct: true
-          },
-          {
-            label: 'Ber grannbordet flytta sig så du kan ställa i ordning ostört.',
-            correct: false,
-            consequenceLine:
-              'Grannbordet flyttades bort utan att någon frågade dem först — de reste sig försiktigt och satte sig igen med ryggen mot rummet. Blicken de växlade räknas inte i notan, men de kom inte tillbaka nästa vecka.'
-          },
-          {
-            label: 'Rör dem inte — låter grannbordet själva stuva undan när sällskapet kommer fram.',
-            correct: false,
-            consequenceLine:
-              'Grannbordet fick själva ordna undan sina glas — de gjorde det tyst men servitören noterade det för sent. Hm, den där lilla omtanken var det bara vi som märkte att vi hoppade över.'
-          }
-        ],
-        correctEnablerWrite: { enabler: 'cultural', register: 'phronesis', amount: 0.05 },
-        correctLine:
-          'Värden gled förbi grannbordet med en gest och besticken flyttades utan att någon behövde be — bordet log utan att veta varför det var lugnare på plats efter.'
+        fromBank: { register: 'episteme', senderRole: 'värd' },
+        correctEnablerWrite: { enabler: 'cultural', register: 'episteme', amount: 0.05 }
       },
       immediateOutcome: 'Sällskapet fick fyran och tvåan ihopslagna. Grannbordet flyttades.',
       outcomes: [
@@ -358,33 +369,15 @@ const TIME_PRESSURE: ScenarioSpec = {
         extraOutcome:
           'Kocken vände sig bort utan att svara när jag nämnde bokningen — jag har sett den blicken innan. Hm, den där sortens tystnad kostar mer än en kväll.'
       },
-      // ORDER 048 §5 — professional question. Menybytet är gjort;
-      // hur man tempererar upp en reduktion utan att den skär sig
-      // är ett köksansvar. Kocken frågar den som är på pass.
+      // ORDER 049 §7 step 3 (2026-08-10) — bank-drawn question.
+      // Kitchen-technical topics (food_science, fermentation_science,
+      // flavor_science, nutritional_science, sensory_evaluation, etc.)
+      // filter via senderRole='kock'. Same register keeps the
+      // ceiling-chain mechanics identical to the hand-authored
+      // slot — scientific/episteme.
       professionalQuestion: {
-        senderRole: 'kock',
-        body: 'När du ska temperera upp den kalla reduktionen till serveringstemperatur — hur gör du för att den inte ska skära sig?',
-        options: [
-          {
-            label: 'Värmer långsamt i vattenbad under omrörning tills den släpper från kanten.',
-            correct: true
-          },
-          {
-            label: 'Kokar upp den på hög värme så bakterierna dör och smaken samlar ihop sig.',
-            correct: false,
-            consequenceLine:
-              'Reduktionen skar sig på grillen — såsen som gick ut var kornig i strukturen. Två av bordens fyra huvudrätter kom tillbaka; kocken svor tyst men bytte utan att kommentera.'
-          },
-          {
-            label: 'Rör i lite smör direkt så emulsion håller ihop den när den värms.',
-            correct: false,
-            consequenceLine:
-              'Smöret rördes in för tidigt och emulsionen brast under värmen — såsen skar sig och tappade sin balans. Servitören bar den ut men gjorde en grimas när hon vände.'
-          }
-        ],
-        correctEnablerWrite: { enabler: 'scientific', register: 'episteme', amount: 0.05 },
-        correctLine:
-          'Kocken satte reduktionen i vattenbad och rörde varsamt tills den slappnade — såsen som gick ut satt som den ska på tallriken.'
+        fromBank: { register: 'episteme', senderRole: 'kock' },
+        correctEnablerWrite: { enabler: 'scientific', register: 'episteme', amount: 0.05 }
       },
       immediateOutcome: 'Menyn byts mitt i passet. Två pågående order läggs om.',
       outcomes: [
@@ -517,33 +510,12 @@ const MORAL_DILEMMA: ScenarioSpec = {
         'En gäst vid pass 4 noterade uttryckligen att kvällens meny hade ändrats och nickade uppskattande — hon frågade var grönsakerna kom ifrån. Servitören visste svaret. Hm, det där svaret är resultatet av morgonens beslut att inte ta genvägen.'
       ],
       mentor: 'Ekologiskt drag. Menyn får ny riktning och säsongen blir läslig.',
-      // ORDER 048 §5 — professional question. Menyn skrivs om;
-      // vilken svamp håller sin form bäst under rostning vid hög
-      // temperatur är ett köksansvar när sammansättningen väljs.
+      // ORDER 049 §7 step 3 (2026-08-10) — bank-drawn question.
+      // Menu rewrite calls for kitchen judgement rooted in produce
+      // knowledge — same route as time-pressure A.
       professionalQuestion: {
-        senderRole: 'kock',
-        body: 'När du väljer svamp för rostning vid hög temperatur — vilken håller sin form bäst utan att vattna ur sig?',
-        options: [
-          {
-            label: 'Kantarell — den släpper minst vätska och behåller strukturen.',
-            correct: true
-          },
-          {
-            label: 'Champinjon — den är kompakt och tål hög värme rakt av.',
-            correct: false,
-            consequenceLine:
-              'Champinjonerna släppte sin vätska på pannan och kokade snarare än rostade — färgen blev grå och strukturen slaka. Två av tallrikarna gick ut med det som skulle ha varit crunch men blev sladd.'
-          },
-          {
-            label: 'Skogschampinjon — den är mest smakintensiv och står emot hetta.',
-            correct: false,
-            consequenceLine:
-              'Skogschampinjonerna kollapsade i pannan — de har för hög vattenhalt för torr rostning. Gästerna åt utan att kommentera; kocken noterade det utan att förklara vidare.'
-          }
-        ],
-        correctEnablerWrite: { enabler: 'scientific', register: 'episteme', amount: 0.05 },
-        correctLine:
-          'Kantarellerna rostade upp med behållen form och en gyllene yta — pass 4 nämnde smaken utan att fråga vidare.'
+        fromBank: { register: 'episteme', senderRole: 'kock' },
+        correctEnablerWrite: { enabler: 'scientific', register: 'episteme', amount: 0.05 }
       }
     }
   }
@@ -665,12 +637,13 @@ export function pickScenarioSender(
   return { role: fallback.role, memberId: fallback.id };
 }
 
-// Role → sender prefix (Swedish, capitalised, colon-suffix). Kept
-// as a small map here rather than in strings.sv.ts so the scenario
-// spec stays authorable in one place.
+// Role → sender prefix (English, capitalised, colon-suffix). Per
+// Vision Owner 2026-08-10: prefix must match the question language,
+// so it flipped to English when the bank picks (§7 step 3) landed
+// English-only questions in front of the player.
 export const SENDER_PREFIX: Record<StaffRole, string> = {
-  'värd':     'Värden',
-  'servitör': 'Servitören',
-  'kock':     'Kocken',
-  'lärling':  'Lärlingen'
+  'värd':     'The host',
+  'servitör': 'The waiter',
+  'kock':     'The chef',
+  'lärling':  'The apprentice'
 };
