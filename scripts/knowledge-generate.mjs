@@ -79,13 +79,21 @@ function loadEnv() {
 }
 
 function parseArgs(argv) {
-  const args = { limit: null, article: null, force: false, dryRun: false, out: DEFAULT_OUT };
+  const args = {
+    limit: null,
+    article: null,
+    force: false,
+    dryRun: false,
+    scenarioChef: false,
+    out: DEFAULT_OUT
+  };
   for (let i = 2; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--limit') args.limit = parseInt(argv[++i], 10);
     else if (a === '--article') args.article = argv[++i];
     else if (a === '--force') args.force = true;
     else if (a === '--dry-run') args.dryRun = true;
+    else if (a === '--scenario-chef') args.scenarioChef = true;
     else if (a === '--out') args.out = argv[++i];
     else if (a === '--help' || a === '-h') {
       console.log(readFileSync(fileURLToPath(import.meta.url), 'utf8')
@@ -182,7 +190,7 @@ function composeCitation(a) {
   return parts.join('. ');
 }
 
-async function fetchArticles({ url, key, table, article, limit }) {
+async function fetchArticles({ url, key, table, article, limit, scenarioChef }) {
   const qs = new URLSearchParams({ select: ARTICLE_SELECT });
   if (article) {
     qs.set('id', `eq.${article}`);
@@ -193,6 +201,13 @@ async function fetchArticles({ url, key, table, article, limit }) {
     qs.set('irrelevant', 'eq.false');
     qs.set(ROLE_DIMENSION.epistemeColumn, 'not.is.null');
     qs.set(ROLE_DIMENSION.techneColumn, 'not.is.null');
+    // ORDER 049 §3.1 (2026-08-10) — optional filter to the subset
+    // that carries a pre-written scenario_chef. Only ~878 articles
+    // have one; use this flag to exercise the phronesis-verbatim
+    // path without diluting the pool with LLM-only phronesis.
+    if (scenarioChef) {
+      qs.set(ROLE_DIMENSION.scenarioColumn, 'not.is.null');
+    }
   }
   if (limit) qs.set('limit', String(limit));
   const endpoint = `${url}/rest/v1/${table}?${qs.toString()}`;
@@ -473,9 +488,14 @@ async function main() {
   const articles = await fetchArticles({
     url, key, table,
     article: args.article,
-    limit: args.limit
+    limit: args.limit,
+    scenarioChef: args.scenarioChef
   });
-  console.log(`fetched ${articles.length} article(s) from ${table}.`);
+  console.log(
+    `fetched ${articles.length} article(s) from ${table}` +
+    (args.scenarioChef ? ' [filtered to scenario_chef=not.is.null]' : '') +
+    '.'
+  );
 
   const existing = loadExisting(args.out);
   const existingKeys = new Set(existing.entries.map((e) => keyOf(e.article_id, e.register)));
