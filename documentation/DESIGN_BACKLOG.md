@@ -145,6 +145,19 @@ Cross-account financial primitives between players — the economy stops being s
 
 ---
 
+### B-012 · Cash-hoarding as dominant strategy (watch during ORDER 050 playtest)
+**Recorded:** 2026-08-10 · **Status:** open — flag for playtest observation
+
+ORDER 050 §7 step 2 (2026-08-10) fixed the allocation surface as **fixed-cost activities with cash as the only cap** — no count cap. Saving becomes a move; passivity has to actually cost something.
+
+The current cost of passivity comes entirely from ORDER 049 §2.1's nightly enabler decay (5 %/night on every tally), which pulls the reputation and quality ceilings down. The Vision Owner's read (2026-08-10) is that this pressure is *probably* enough — a player who hoards for a month sees their ceilings collapse and cash becomes worthless as the venture bleeds beneath the falling right-to-charge. An extra decay layer (e.g., a slower reputation drag on runs of zero-activity mornings) was considered and rejected: *"en extra ryktesdragning vore ett straff utan orsak i fiktionen."*
+
+**What would move this to `next` or `folded in`:** playtest evidence that a hoarding-then-splurge run (save cash for N mornings, buy R1 + D1 + O1 + O2 in a single morning at T3) actually wins more reliably than a paced investment run. If it does, add whatever fiction-grounded pressure closes the gap — likely candidates: (a) supplier attrition (a season without orders and the day-boat fisher signs up someone else), (b) team drift (a run of mornings with no activity read as management absence and the team's morale regressed a step), (c) both. Do not add abstract decay without a room-cause.
+
+**Do not fix pre-emptively.** The mechanic is teachable — a hoarder who watches their food-quality ceiling drop knows what happened. Solve if playtest shows the strategy dominating, not before.
+
+---
+
 ## How to use this file
 
 Add an entry the day a decision is made outside an order. When an entry is folded into an order, change its status and cite the order — do not delete it. The record of *when* something was decided is worth as much as the decision.
