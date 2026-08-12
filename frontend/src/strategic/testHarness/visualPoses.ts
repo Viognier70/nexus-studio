@@ -168,6 +168,16 @@ export const VISUAL_POSES: readonly VisualPose[] = [
   // 18–40°; ~5% of canvas is sky and even that is occluded by
   // hills). The quad is dev-only, position-locked, and its expected
   // value is computed analytically — see calibration.ts.
+  //
+  // SCOPE: the quad is UNLIT (MeshBasicMaterial, no shading).
+  // Passing this pose validates only the output chain (material →
+  // toneMappingExposure → ACES → sRGB → readPixels). It does NOT
+  // validate directional-light intensity, hemisphere ambient,
+  // shadow maps, or per-face normals. Those are what the six lit
+  // poses below exist to probe. A green calibration-quad + a red
+  // lit pose narrows the fault to lighting / material / normal
+  // configuration; a red calibration-quad narrows it to the
+  // output chain.
   {
     id: 'calibration-quad',
     purpose: 'Dev-only calibration quad, known authored colour rendered through ACES + sRGB.',
@@ -185,15 +195,18 @@ export const VISUAL_POSES: readonly VisualPose[] = [
     // 60×60 CSS-pixel sample well inside the ~144×144-px quad
     // centred on-screen at (640, 360). See CalibrationQuad.tsx.
     roi: { x: 610, y: 330, w: 60, h: 60 },
-    // Placeholder — actual expected value is imported from
-    // calibration.ts at runtime (CALIBRATION_EXPECTED_RGB). The
-    // literal below matches the current computed value; a
-    // three.js version bump that shifts the ACES fit may change
-    // it and the analytic recomputation will move too.
+    // ORDER 067 approved range: measured & analytically predicted
+    // R=G=B=160. Tolerance ±2 covers subpixel jitter on ROI edges
+    // (if canvas isn't exactly 1280×720) and LSB rounding of the
+    // linear→sRGB encode. It does NOT cover future three.js ACES
+    // implementation changes — those are exactly the regressions
+    // this pose is here to catch. If a three.js upgrade shifts
+    // this value: fail, investigate, re-derive expected consciously
+    // — do not widen to survive.
     expected: {
-      r: [118, 128],
-      g: [118, 128],
-      b: [118, 128]
+      r: [158, 162],
+      g: [158, 162],
+      b: [158, 162]
     }
   }
 ];

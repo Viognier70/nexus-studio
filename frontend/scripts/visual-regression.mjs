@@ -132,13 +132,14 @@ const VISUAL_POSES = [
   // ORDER 066 — replaces sky-morning. Dev-only calibration quad
   // rendered through the full pipeline. Camera pose irrelevant
   // (the quad is attached to camera view-space).
+  // ORDER 067 approved range [158, 162] per channel.
   {
     id: 'calibration-quad',
     purpose: 'Dev-only calibration quad — known authored colour through material → ACES → sRGB.',
     camera: { focus: { x: 100, z: 0 }, distance: 380, yaw: 0.0, pitch: 0.56 },
     period: 'lunch',
     roi: { x: 610, y: 330, w: 60, h: 60 },
-    expected: { r: [118, 128], g: [118, 128], b: [118, 128] }
+    expected: { r: [158, 162], g: [158, 162], b: [158, 162] }
   }
 ];
 
@@ -298,14 +299,28 @@ async function main() {
   try {
     const browser = await chromium.launch({ headless: true });
     const context = await browser.newContext({ viewport: { width: 1280, height: 720 } });
-    const page = await context.newPage();
+
+    // Fresh page per pose. Hash-only URL changes don't reload the
+    // module tree — harnessParams parses `location.hash` once at
+    // module load, so a single reused page would carry the first
+    // pose's URL params into every subsequent pose. Building a new
+    // page per pose forces a fresh app boot and a fresh harness
+    // params parse.
+    const runPose = async (pose) => {
+      const p = await context.newPage();
+      try {
+        return await measurePose(p, url, pose);
+      } finally {
+        await p.close();
+      }
+    };
 
     // Calibration-quad always first — dev-only known-colour pose
     // (ORDER 066). If it fails, the remaining six are meaningless
     // per the ORDER 064 rule.
     const calibration = VISUAL_POSES.find((p) => p.id === 'calibration-quad');
     console.log('[visual-regression] calibration-quad...');
-    const skyResult = await measurePose(page, url, calibration);
+    const skyResult = await runPose(calibration);
     const skyPass = skyResult.measured ? inRange(skyResult.measured, calibration.expected) : false;
 
     if (!skyPass) {
@@ -338,7 +353,7 @@ async function main() {
       const toRun = onlyPoseId ? rest.filter((p) => p.id === onlyPoseId) : rest;
       for (const pose of toRun) {
         console.log(`[visual-regression] pose ${pose.id}...`);
-        const r = await measurePose(page, url, pose);
+        const r = await runPose(pose);
         results.push(r);
       }
       printTable(results);
