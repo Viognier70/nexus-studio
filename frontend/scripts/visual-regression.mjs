@@ -55,10 +55,12 @@ const onlyPoseId = onlyIdx !== -1 ? args[onlyIdx + 1] : null;
 // and computing the URL from a mirrored function is cheaper.
 
 // Mirror of poseToHash() from visualPoses.ts. Kept in sync manually;
-// the format is deliberately simple.
+// the format is deliberately simple. Poses whose id starts with
+// `calibration-` additionally set `calibrationQuad=1`.
 function poseToHash(pose) {
   const p = pose.camera;
   const roi = pose.roi;
+  const calibrationParam = pose.id.startsWith('calibration-') ? '&calibrationQuad=1' : '';
   return (
     `#poseId=${pose.id}` +
     `&focus=${p.focus.x},${p.focus.z}` +
@@ -66,7 +68,8 @@ function poseToHash(pose) {
     `&yaw=${p.yaw}` +
     `&pitch=${p.pitch}` +
     `&period=${pose.period}` +
-    `&roi=${roi.x},${roi.y},${roi.w},${roi.h}`
+    `&roi=${roi.x},${roi.y},${roi.w},${roi.h}` +
+    calibrationParam
   );
 }
 
@@ -126,13 +129,16 @@ const VISUAL_POSES = [
     roi: { x: 620, y: 340, w: 40, h: 40 },
     expected: { r: [80, 255], g: [50, 220], b: [30, 180] }
   },
+  // ORDER 066 — replaces sky-morning. Dev-only calibration quad
+  // rendered through the full pipeline. Camera pose irrelevant
+  // (the quad is attached to camera view-space).
   {
-    id: 'sky-morning',
-    purpose: 'Sky calibration — probe verification against known atmosphere colour.',
-    camera: { focus: { x: 100, z: 0 }, distance: 100, yaw: 0.0, pitch: 0.05 },
-    period: 'morning',
-    roi: { x: 620, y: 200, w: 40, h: 40 },
-    expected: { r: [140, 230], g: [110, 200], b: [80, 180] }
+    id: 'calibration-quad',
+    purpose: 'Dev-only calibration quad — known authored colour through material → ACES → sRGB.',
+    camera: { focus: { x: 100, z: 0 }, distance: 380, yaw: 0.0, pitch: 0.56 },
+    period: 'lunch',
+    roi: { x: 610, y: 330, w: 60, h: 60 },
+    expected: { r: [118, 128], g: [118, 128], b: [118, 128] }
   }
 ];
 
@@ -294,15 +300,16 @@ async function main() {
     const context = await browser.newContext({ viewport: { width: 1280, height: 720 } });
     const page = await context.newPage();
 
-    // Sky-morning always first — calibration pose. If it fails, the
-    // remaining six are meaningless per the ORDER 064 rule.
-    const sky = VISUAL_POSES.find((p) => p.id === 'sky-morning');
-    console.log('[visual-regression] sky-morning calibration...');
-    const skyResult = await measurePose(page, url, sky);
-    const skyPass = skyResult.measured ? inRange(skyResult.measured, sky.expected) : false;
+    // Calibration-quad always first — dev-only known-colour pose
+    // (ORDER 066). If it fails, the remaining six are meaningless
+    // per the ORDER 064 rule.
+    const calibration = VISUAL_POSES.find((p) => p.id === 'calibration-quad');
+    console.log('[visual-regression] calibration-quad...');
+    const skyResult = await measurePose(page, url, calibration);
+    const skyPass = skyResult.measured ? inRange(skyResult.measured, calibration.expected) : false;
 
     if (!skyPass) {
-      console.log('\n=== sky-morning calibration FAILED ===');
+      console.log('\n=== calibration-quad FAILED ===');
       printTable([skyResult]);
       if (skyResult.diag) {
         console.log('\nDiagnostics for the read failure:');
@@ -317,7 +324,7 @@ async function main() {
         for (const l of skyResult.pageErrors) console.log('  ' + l);
       }
       console.log(
-        '\nSky-morning is out of expected range (or read failed). ' +
+        '\nCalibration-quad is out of expected range (or read failed). ' +
         'Per ORDER 064, the other six poses are meaningless without a ' +
         'valid calibration and are not run. NOT auto-adjusting thresholds — ' +
         'the values in visualPoses.ts are placeholders and require Vision ' +
@@ -325,9 +332,9 @@ async function main() {
       );
       exitCode = 1;
     } else {
-      console.log('[visual-regression] sky-morning OK, running remaining poses...');
+      console.log('[visual-regression] calibration-quad OK, running remaining poses...');
       const results = [skyResult];
-      const rest = VISUAL_POSES.filter((p) => p.id !== 'sky-morning');
+      const rest = VISUAL_POSES.filter((p) => p.id !== 'calibration-quad');
       const toRun = onlyPoseId ? rest.filter((p) => p.id === onlyPoseId) : rest;
       for (const pose of toRun) {
         console.log(`[visual-regression] pose ${pose.id}...`);

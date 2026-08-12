@@ -62,6 +62,11 @@ interface ParsedParams {
   camera: CameraOverride | null;
   roi: RoiRect | null;
   poseId: string | null;
+  // ORDER 066 — dev-only visible calibration quad. When true, a
+  // known-colour mesh renders through the full pipeline and covers
+  // the screen centre so the pixel sampler has a deterministic
+  // ground-truth target that doesn't depend on scene lighting.
+  calibrationQuad: boolean;
 }
 
 function parseHash(): ParsedParams {
@@ -70,7 +75,8 @@ function parseHash(): ParsedParams {
       period: DEFAULT_PERIOD_OVERRIDE,
       camera: DEFAULT_CAMERA_OVERRIDE,
       roi: DEFAULT_ROI,
-      poseId: DEFAULT_POSE_ID
+      poseId: DEFAULT_POSE_ID,
+      calibrationQuad: false
     };
   }
   const hash = window.location.hash.replace('#', '');
@@ -88,7 +94,8 @@ function parseHash(): ParsedParams {
   );
   const roi = parseRoi(params.get('roi') ?? null);
   const poseId = params.get('poseId') ?? null;
-  return { period, camera, roi, poseId };
+  const calibrationQuad = params.get('calibrationQuad') === '1';
+  return { period, camera, roi, poseId, calibrationQuad };
 }
 
 function parsePeriod(s: string | null): PeriodOverride {

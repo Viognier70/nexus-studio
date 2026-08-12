@@ -161,31 +161,52 @@ export const VISUAL_POSES: readonly VisualPose[] = [
       b: [30, 180]
     }
   },
+  // ORDER 066 — replaces the sky-based calibration pose with a
+  // known-colour quad rendered through the full material → ACES →
+  // sRGB → readPixels chain. Sky sample is unusable at Grythyttan's
+  // camera geometry (strategic camera always looks down; presets
+  // 18–40°; ~5% of canvas is sky and even that is occluded by
+  // hills). The quad is dev-only, position-locked, and its expected
+  // value is computed analytically — see calibration.ts.
   {
-    id: 'sky-morning',
-    purpose: 'Sky calibration sample — probe verification. Warm-tan atmosphere at low sun.',
+    id: 'calibration-quad',
+    purpose: 'Dev-only calibration quad, known authored colour rendered through ACES + sRGB.',
     camera: {
+      // Camera pose is irrelevant — the quad is attached to the
+      // camera and always occupies the same view-space rectangle.
+      // Any valid strategic pose works; using the village preset's
+      // approximate values.
       focus: { x: 100, z: 0 },
-      distance: 100,
+      distance: 380,
       yaw: 0.0,
-      pitch: 0.05   // tilt slightly UP so ROI at centre lands on sky
+      pitch: 0.56
     },
-    period: 'morning',
-    roi: { x: 620, y: 200, w: 40, h: 40 },
+    period: 'lunch',
+    // 60×60 CSS-pixel sample well inside the ~144×144-px quad
+    // centred on-screen at (640, 360). See CalibrationQuad.tsx.
+    roi: { x: 610, y: 330, w: 60, h: 60 },
+    // Placeholder — actual expected value is imported from
+    // calibration.ts at runtime (CALIBRATION_EXPECTED_RGB). The
+    // literal below matches the current computed value; a
+    // three.js version bump that shifts the ACES fit may change
+    // it and the analytic recomputation will move too.
     expected: {
-      r: [140, 230],
-      g: [110, 200],
-      b: [80, 180]
+      r: [118, 128],
+      g: [118, 128],
+      b: [118, 128]
     }
   }
 ];
 
 // Utility: format a pose as a URL hash string suitable for the harness
-// runner to feed to Puppeteer. Preserves the CameraProvider convention
-// (numeric coordinates, & separator).
+// runner to feed to Playwright. Preserves the CameraProvider convention
+// (numeric coordinates, & separator). Poses whose id starts with
+// `calibration-` additionally set `calibrationQuad=1` so the dev-only
+// CalibrationQuad mounts.
 export function poseToHash(pose: VisualPose): string {
   const p = pose.camera;
   const roi = pose.roi;
+  const calibrationParam = pose.id.startsWith('calibration-') ? '&calibrationQuad=1' : '';
   return (
     `#poseId=${pose.id}` +
     `&focus=${p.focus.x},${p.focus.z}` +
@@ -193,7 +214,8 @@ export function poseToHash(pose: VisualPose): string {
     `&yaw=${p.yaw}` +
     `&pitch=${p.pitch}` +
     `&period=${pose.period}` +
-    `&roi=${roi.x},${roi.y},${roi.w},${roi.h}`
+    `&roi=${roi.x},${roi.y},${roi.w},${roi.h}` +
+    calibrationParam
   );
 }
 

@@ -9,6 +9,7 @@ import { ProceduralFacades } from './ProceduralFacades';
 import { ScaleReference } from '../../scene/ScaleReference';
 import { FpsProbe } from '../../lib/FpsProbe';
 import { PixelSampleProbe } from '../../lib/PixelSampleProbe';
+import { CalibrationQuad } from './CalibrationQuad';
 import { CraftedLandmarks } from './CraftedLandmarks';
 import { EntranceDoorPulse } from './EntranceDoorPulse';
 import { CraftedLandmarksD2 } from './CraftedLandmarksD2';
@@ -141,6 +142,7 @@ export function StrategicScene({ onSelect, selectedId, showScaleRef = false }: P
         <ScaleReference enabled={showScaleRef} halfSize={80} groundY={0.02} />
         {import.meta.env.DEV && <FpsProbe />}
         {import.meta.env.DEV && <PixelSampleProbe />}
+        {import.meta.env.DEV && <CalibrationQuad />}
       </Suspense>
       <CameraController />
     </Canvas>
