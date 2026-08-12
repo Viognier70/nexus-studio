@@ -37,6 +37,7 @@ import { createRng } from '../util/rng';
 import { COLLAPSE_TEXTS } from '../../content/collapse.sv';
 import { loadOf, strainMultiplier, STREAM_KEEP } from './eventStream';
 import { computeEveningAccount } from './eveningAccount';
+import { postServiceSummaryLines } from './cashReading';
 import {
   MORALE_COLLAPSE_HIT,
   bumpMorale,
@@ -203,6 +204,19 @@ export function fireCollapse(draft: SimulationState): void {
   draft.day = { ...draft.day, serviceCollapsed: true, collapseAxis: axis };
   draft.eveningAccount = computeEveningAccount(draft);
 
+  // ORDER 074 — post the service summary lines BEFORE the day
+  // reset. Previously this path silently skipped it: only the
+  // natural-close branch in tickDayTransitions called
+  // postServiceSummaryLines, so every collapsed service dropped
+  // its revenue + ingredient ledger entries and the M3 test's
+  // reconciliation ratio fell to ~65%. Rare-collapse
+  // (COLLAPSE_FLOOR + strain) is easy to hit on M1 team defaults
+  // and this dropped 2 of 3 dinners on a 3-day script.
+  // `prev` = `draft` here; the collapse hasn't cleared the
+  // service-scoped fields yet.
+  const collapsedService: 'lunch' | 'dinner' = draft.day.period === 'lunch' ? 'lunch' : 'dinner';
+  postServiceSummaryLines(draft, collapsedService, draft);
+
   // Force-close the service. Preserves serviceCollapsed + collapseAxis
   // so the evening-account panel can read them; clears the rest as if
   // the natural close ran. Agency members + offer cleared here rather
@@ -231,7 +245,19 @@ export function fireCollapse(draft: SimulationState): void {
     collapseAxis: axis,
     revenueAtServiceStart: null,
     costAtServiceStart: null,
-    reputationAtServiceStart: null
+    reputationAtServiceStart: null,
+    // ORDER 074 — reset per-service accumulators after the
+    // summary lines were posted above. Parity with the natural-
+    // close reset in reducer.ts.
+    serviceIngredientAccrued: 0,
+    idleCostAccrued: 0,
+    serviceCovers: 0
+  };
+  // Also reset the top-level serviceRevenueToday bucket for the
+  // service that just closed.
+  draft.serviceRevenueToday = {
+    ...draft.serviceRevenueToday,
+    [collapsedService]: 0
   };
   draft.events = [
     ...draft.events,

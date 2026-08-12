@@ -90,7 +90,8 @@ import {
   applyCashDelta,
   applyCashRevenue,
   capitalReadingFor,
-  postLedger
+  postLedger,
+  postServiceSummaryLines
 } from './cashReading';
 import { drawNextTheme } from './themeSelection';
 
@@ -530,39 +531,11 @@ function scenarioLedgerCause(
   return `${title}: ${choiceLabel}`;
 }
 
-function postServiceSummaryLines(
-  draft: SimulationState,
-  service: 'lunch' | 'dinner',
-  prev: SimulationState
-): void {
-  const serviceLabel = service === 'lunch' ? 'Lunch' : 'Dinner';
-  const revenueKsek = prev.serviceRevenueToday[service];
-  const covers = prev.day.serviceCovers;
-  if (revenueKsek > 0) {
-    // ORDER 050 §7 step 3 (2026-08-10) — cover count enriches the
-    // revenue line so the book row is self-explanatory: "Lunch
-    // revenue (28 covers)" instead of just "Lunch revenue".
-    const coverSuffix = covers > 0
-      ? ` (${covers} cover${covers === 1 ? '' : 's'})`
-      : '';
-    postLedger(draft, {
-      category: 'revenue',
-      amount: revenueKsek * 1000,
-      cause: `${serviceLabel} revenue${coverSuffix}`,
-      causeId: service
-    });
-  }
-  const ingredientSek = prev.day.serviceIngredientAccrued;
-  if (ingredientSek > 0) {
-    const coverSuffix = covers > 0 ? ` — ${covers} cover${covers === 1 ? '' : 's'}` : '';
-    postLedger(draft, {
-      category: 'ingredient',
-      amount: -ingredientSek,
-      cause: `Ingredients — ${serviceLabel.toLowerCase()}${coverSuffix}`,
-      causeId: service
-    });
-  }
-}
+// postServiceSummaryLines moved to cashReading.ts under ORDER 074 so
+// both the natural-close path (this file's tickDayTransitions) and
+// the collapse-close path (collapse.ts:fireCollapse) can share it.
+// Previously duplicated logic omission in collapse silently dropped
+// revenue + ingredient ledger lines for every collapsed service.
 
 export function tickDayTransitions(state: SimulationState): SimulationState {
   const { day, simTime } = state;

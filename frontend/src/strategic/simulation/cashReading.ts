@@ -146,3 +146,44 @@ export function postLedger(
   };
   draft.ledger = [...draft.ledger, line].slice(-LEDGER_MAX_LINES);
 }
+
+// ORDER 073 (M3) / ORDER 074 (fix) — service-close summary lines.
+// Reads the accumulated per-service revenue and ingredient totals
+// from `prev` (which may equal `draft` in the collapse path) and
+// posts one 'revenue' + one 'ingredient' ledger line. Called at
+// BOTH natural service close (tickDayTransitions in reducer.ts)
+// AND collapse close (fireCollapse in collapse.ts). Previously
+// lived in reducer.ts only, which meant the collapse path silently
+// skipped it and every service that collapsed produced no ledger
+// lines. Moved here to give both callers access without a circular
+// import between reducer and collapse.
+export function postServiceSummaryLines(
+  draft: SimulationState,
+  service: 'lunch' | 'dinner',
+  prev: SimulationState
+): void {
+  const serviceLabel = service === 'lunch' ? 'Lunch' : 'Dinner';
+  const revenueKsek = prev.serviceRevenueToday[service];
+  const covers = prev.day.serviceCovers;
+  if (revenueKsek > 0) {
+    const coverSuffix = covers > 0
+      ? ` (${covers} cover${covers === 1 ? '' : 's'})`
+      : '';
+    postLedger(draft, {
+      category: 'revenue',
+      amount: revenueKsek * 1000,
+      cause: `${serviceLabel} revenue${coverSuffix}`,
+      causeId: service
+    });
+  }
+  const ingredientSek = prev.day.serviceIngredientAccrued;
+  if (ingredientSek > 0) {
+    const coverSuffix = covers > 0 ? ` — ${covers} cover${covers === 1 ? '' : 's'}` : '';
+    postLedger(draft, {
+      category: 'ingredient',
+      amount: -ingredientSek,
+      cause: `Ingredients — ${serviceLabel.toLowerCase()}${coverSuffix}`,
+      causeId: service
+    });
+  }
+}
