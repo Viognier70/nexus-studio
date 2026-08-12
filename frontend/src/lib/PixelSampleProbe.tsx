@@ -29,7 +29,13 @@ import { pixelSamplerWrite } from './pixelSampler';
 import { harnessParams } from '../strategic/testHarness/urlParams';
 
 const SAMPLE_SIZE_PX = 7;
-const THROTTLE_FRAMES = 8;   // ~7 Hz at 60 fps
+// ORDER 071 — throttle lowered from every 8th frame to every 2nd
+// frame so the visual-regression harness gets timely ticks on CI's
+// software-rasterised Chromium (which renders complex close-up
+// scenes at ~1 fps). At 60 fps local: 30 samples/s instead of ~7 —
+// higher DevPanel refresh rate; the readPixels cost is negligible
+// compared to the render cost.
+const THROTTLE_FRAMES = 2;
 
 // Module-level flag: log once per page load so HMR doesn't spam.
 let moduleLoggedLoad = false;

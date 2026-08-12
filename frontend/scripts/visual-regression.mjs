@@ -203,17 +203,19 @@ async function measurePose(page, baseUrl, pose) {
     // clears the pose transition + camera damping settle without
     // sitting on a fixed sleep.
     // Headless Chromium falls back to software rasterisation for
-    // WebGL — the strategic scene renders at ~1 fps, so the probe's
-    // 8-frame throttle publishes a sample only every ~8 seconds.
-    // Wait for 2 ticks (deterministic post-navigation settle) with
-    // a generous timeout that accommodates the slow render.
+    // WebGL. The strategic scene renders at ~1 fps for LOD 0
+    // close-ups; probe throttle now lowered to every 2nd frame
+    // (ORDER 071 PixelSampleProbe). Wait for at least 2 ticks
+    // (deterministic post-navigation settle) with a 180 s per-pose
+    // timeout for close-zoom poses where render frame budget is
+    // tightest.
     try {
       await page.waitForFunction(
         () => {
           const h = /** @type {any} */ (window).__nxHarness;
           return h && h.ticks >= 2;
         },
-        { timeout: 60000 }
+        { timeout: 180000 }
       );
     } catch (e) {
       // Deep diagnostics on timeout: what state IS window in?
@@ -336,6 +338,23 @@ function printTable(rows) {
     );
   }
   console.log(`\nScreenshots with ROI drawn: ${REPORT_DIR}/*.png`);
+  // ORDER 071 — surface diagnostics for any pose that ERR'd, not
+  // only for the calibration pose. Otherwise a stability-wait
+  // failure on a downstream pose shows only "ERR" in the summary
+  // table and buries the harness state / page-console lines.
+  for (const r of rows) {
+    if (r.measured) continue;
+    console.log(`\n--- diagnostics for ${r.pose.id} ---`);
+    if (r.error) console.log(`error: ${r.error}`);
+    if (r.diag) console.log('harness state:', JSON.stringify(r.diag, null, 2));
+    if (r.pageErrors && r.pageErrors.length > 0) {
+      console.log('page errors:', r.pageErrors);
+    }
+    if (r.consoleLines && r.consoleLines.length > 0) {
+      console.log('page console (last 20):');
+      for (const l of r.consoleLines) console.log('  ' + l);
+    }
+  }
 }
 
 // ---------- main ------------------------------------------------------
