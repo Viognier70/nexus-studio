@@ -219,11 +219,19 @@ async function measurePose(page, baseUrl, pose) {
     // window pose. 6 ticks = ~12 render frames, comfortably past
     // the swap on both platforms).
     try {
+      // page.waitForFunction(pageFunction, arg, options). The
+      // second positional arg is `arg` (data passed into the page
+      // function), NOT options. Passing `{ timeout: ... }` there
+      // silently gets ignored and playwright falls back to its
+      // 30 s default — exact bug that let ORDER 072's first CI
+      // run report "Timeout 30000ms exceeded" even though ticks
+      // had reached 6. Pass `null` for arg, options third.
       await page.waitForFunction(
         () => {
           const h = /** @type {any} */ (window).__nxHarness;
           return h && h.ticks >= 6;
         },
+        null,
         { timeout: 180000 }
       );
     } catch (e) {
