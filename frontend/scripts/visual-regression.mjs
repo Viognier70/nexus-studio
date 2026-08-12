@@ -1,0 +1,358 @@
+#!/usr/bin/env node
+// ORDER 064 INFRA-1 runner — visual regression via Playwright + Vite dev.
+//
+// Boots `vite dev` in a child process, drives Chromium (headless) to
+// each canonical pose in visualPoses.ts, waits for the pixel sampler
+// to publish N stable ticks, reads window.__nxHarness, and prints a
+// comparison table against the expected sRGB range per pose.
+//
+// NOT part of `npm test`. Deliberate: full pose × period rendering is
+// too slow to run alongside unit tests. Exposed as `npm run test:visual`
+// and intended as an own CI step separate from typecheck + unit tests.
+//
+// Usage:
+//   npm run test:visual                   -- run all seven poses
+//   npm run test:visual -- --only sky-morning
+//                                         -- run one pose (sky-morning
+//                                            is the calibration pose;
+//                                            if it fails, the other
+//                                            six are meaningless).
+//
+// Design decisions:
+//   - Vite DEV (not preview) — INFRA-1 URL params + PixelSampleProbe
+//     are gated on `import.meta.env.DEV`, and preserveDrawingBuffer=true
+//     is only set in DEV. Preview would give us a black framebuffer.
+//   - Stability signal: `window.__nxHarness.ticks >= 3` — three sample
+//     ticks means ≥ 24 rendered frames (probe runs every 8th frame),
+//     which comfortably clears the pose transition. NOT a fixed timeout.
+//   - Exit code non-zero if the sky-morning calibration pose fails or
+//     if any pose's measured RGB falls outside its expected range.
+//     Individual pose failures do not abort — the whole table is
+//     printed so the Vision Owner can see the pattern.
+
+import { chromium } from 'playwright';
+import { spawn } from 'node:child_process';
+import { setTimeout as delay } from 'node:timers/promises';
+import { fileURLToPath } from 'node:url';
+import { dirname, resolve } from 'node:path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const FRONTEND_ROOT = resolve(__dirname, '..');
+
+// ---------- args -------------------------------------------------------
+
+const args = process.argv.slice(2);
+const onlyIdx = args.indexOf('--only');
+const onlyPoseId = onlyIdx !== -1 ? args[onlyIdx + 1] : null;
+
+// ---------- pose catalogue (loaded from source) ------------------------
+//
+// visualPoses.ts is TS — we can't import it directly from an mjs
+// runner. Rather than add a build step, we inline the poseToHash
+// convention (short function) and load the pose list via a tiny
+// dynamic loader. The alternative — a JSON export of the catalogue —
+// would drift from the TS source. Keeping the source of truth in TS
+// and computing the URL from a mirrored function is cheaper.
+
+// Mirror of poseToHash() from visualPoses.ts. Kept in sync manually;
+// the format is deliberately simple.
+function poseToHash(pose) {
+  const p = pose.camera;
+  const roi = pose.roi;
+  return (
+    `#poseId=${pose.id}` +
+    `&focus=${p.focus.x},${p.focus.z}` +
+    `&distance=${p.distance}` +
+    `&yaw=${p.yaw}` +
+    `&pitch=${p.pitch}` +
+    `&period=${pose.period}` +
+    `&roi=${roi.x},${roi.y},${roi.w},${roi.h}`
+  );
+}
+
+// Load VISUAL_POSES from the source. Reads the TS file and evaluates
+// the exported array via a small transpile-through-tsx trick — but the
+// simpler path is to write a plain-JS mirror. Given the file is
+// authored (not generated) and short, we compile through tsx in-process.
+// Simpler still: just re-declare the seven poses here, matched line-for-
+// line against visualPoses.ts. Drift risk is low (both authored by hand;
+// pixel test failures will surface any divergence).
+const VISUAL_POSES = [
+  {
+    id: 'roof-tegel-lunch',
+    purpose: 'Tegel roof at solar noon.',
+    camera: { focus: { x: 190, z: 45 }, distance: 60, yaw: 0.6, pitch: -0.45 },
+    period: 'lunch',
+    roi: { x: 620, y: 340, w: 40, h: 40 },
+    expected: { r: [110, 220], g: [60, 160], b: [40, 130] }
+  },
+  {
+    id: 'roof-tegel-morning',
+    purpose: 'Same roof at morning low-sun.',
+    camera: { focus: { x: 190, z: 45 }, distance: 60, yaw: 0.6, pitch: -0.45 },
+    period: 'morning',
+    roi: { x: 620, y: 340, w: 40, h: 40 },
+    expected: { r: [70, 200], g: [40, 150], b: [30, 120] }
+  },
+  {
+    id: 'village-strategic-lunch',
+    purpose: 'Wide strategic view at lunch.',
+    camera: { focus: { x: 100, z: 0 }, distance: 380, yaw: 0.0, pitch: -0.60 },
+    period: 'lunch',
+    roi: { x: 640, y: 360, w: 40, h: 40 },
+    expected: { r: [50, 220], g: [50, 220], b: [40, 210] }
+  },
+  {
+    id: 'village-strategic-dinner',
+    purpose: 'Wide strategic view at dinner.',
+    camera: { focus: { x: 100, z: 0 }, distance: 380, yaw: 0.0, pitch: -0.60 },
+    period: 'dinner',
+    roi: { x: 640, y: 360, w: 40, h: 40 },
+    expected: { r: [20, 190], g: [15, 170], b: [10, 160] }
+  },
+  {
+    id: 'village-strategic-evening',
+    purpose: 'Wide strategic view at evening.',
+    camera: { focus: { x: 100, z: 0 }, distance: 380, yaw: 0.0, pitch: -0.60 },
+    period: 'evening',
+    roi: { x: 640, y: 360, w: 40, h: 40 },
+    expected: { r: [5, 160], g: [5, 150], b: [5, 160] }
+  },
+  {
+    id: 'lit-window-dinner',
+    purpose: 'Close-up of a lit-window band at dinner.',
+    camera: { focus: { x: 190, z: 45 }, distance: 20, yaw: 0.6, pitch: -0.25 },
+    period: 'dinner',
+    roi: { x: 620, y: 340, w: 40, h: 40 },
+    expected: { r: [80, 255], g: [50, 220], b: [30, 180] }
+  },
+  {
+    id: 'sky-morning',
+    purpose: 'Sky calibration — probe verification against known atmosphere colour.',
+    camera: { focus: { x: 100, z: 0 }, distance: 100, yaw: 0.0, pitch: 0.05 },
+    period: 'morning',
+    roi: { x: 620, y: 200, w: 40, h: 40 },
+    expected: { r: [140, 230], g: [110, 200], b: [80, 180] }
+  }
+];
+
+// ---------- preview + browser -----------------------------------------
+
+async function startVite() {
+  const proc = spawn('npx', ['vite', '--port', '5173', '--strictPort'], {
+    cwd: FRONTEND_ROOT,
+    stdio: ['ignore', 'pipe', 'pipe']
+  });
+  const url = await new Promise((res, rej) => {
+    let buf = '';
+    const onData = (chunk) => {
+      buf += chunk.toString();
+      const m = /Local:\s+(https?:\/\/\S+)/.exec(buf);
+      if (m) {
+        proc.stdout.off('data', onData);
+        res(m[1].replace(/\/$/, ''));
+      }
+    };
+    proc.stdout.on('data', onData);
+    proc.stderr.on('data', (c) => process.stderr.write(`[vite] ${c}`));
+    proc.on('exit', (code) => rej(new Error(`vite exited early (${code}) before ready`)));
+    setTimeout(() => rej(new Error('vite dev did not report ready within 30s')), 30000);
+  });
+  return { proc, url };
+}
+
+async function stopVite(proc) {
+  return new Promise((res) => {
+    proc.on('exit', () => res(undefined));
+    proc.kill('SIGTERM');
+    setTimeout(() => { proc.kill('SIGKILL'); res(undefined); }, 3000);
+  });
+}
+
+// ---------- measurement -----------------------------------------------
+
+/** Navigate, wait for stability, read window.__nxHarness. */
+async function measurePose(page, baseUrl, pose) {
+  const url = `${baseUrl}/${poseToHash(pose)}`;
+  const consoleLines = [];
+  const pageErrors = [];
+  const onConsole = (msg) => consoleLines.push(`[${msg.type()}] ${msg.text()}`);
+  const onError = (err) => pageErrors.push(err.message);
+  page.on('console', onConsole);
+  page.on('pageerror', onError);
+  try {
+    await page.goto(url, { waitUntil: 'load' });
+    // Wait for the pixel sampler to publish at least 3 stable ticks.
+    // Each tick = 8 rendered frames (~130 ms at 60 fps). 3 ticks
+    // clears the pose transition + camera damping settle without
+    // sitting on a fixed sleep.
+    // Headless Chromium falls back to software rasterisation for
+    // WebGL — the strategic scene renders at ~1 fps, so the probe's
+    // 8-frame throttle publishes a sample only every ~8 seconds.
+    // Wait for 2 ticks (deterministic post-navigation settle) with
+    // a generous timeout that accommodates the slow render.
+    try {
+      await page.waitForFunction(
+        () => {
+          const h = /** @type {any} */ (window).__nxHarness;
+          return h && h.ticks >= 2;
+        },
+        { timeout: 60000 }
+      );
+    } catch (e) {
+      // Deep diagnostics on timeout: what state IS window in?
+      const diag = await page.evaluate(() => ({
+        hasHarness: typeof (/** @type {any} */ (window)).__nxHarness !== 'undefined',
+        harness: (/** @type {any} */ (window)).__nxHarness ?? null,
+        hasCanvas: !!document.querySelector('canvas'),
+        canvasSize: (() => {
+          const c = document.querySelector('canvas');
+          return c ? { w: c.width, h: c.height } : null;
+        })(),
+        hash: window.location.hash,
+        docReadyState: document.readyState,
+        bodyTextLen: document.body?.innerText.length ?? 0
+      }));
+      return {
+        pose,
+        measured: null,
+        error: `stability wait failed: ${e instanceof Error ? e.message : String(e)}`,
+        diag,
+        consoleLines: consoleLines.slice(-20),
+        pageErrors
+      };
+    }
+    // Extra settle so camera damping + tone-map + shadow map all resolve.
+    await delay(1000);
+    const rgb = await page.evaluate(() => {
+      const h = /** @type {any} */ (window).__nxHarness;
+      return h ? { r: h.r, g: h.g, b: h.b, samples: h.samples, ticks: h.ticks } : null;
+    });
+    return { pose, measured: rgb };
+  } finally {
+    page.off('console', onConsole);
+    page.off('pageerror', onError);
+  }
+}
+
+function inRange(m, exp) {
+  if (!m) return false;
+  return (
+    m.r >= exp.r[0] && m.r <= exp.r[1] &&
+    m.g >= exp.g[0] && m.g <= exp.g[1] &&
+    m.b >= exp.b[0] && m.b <= exp.b[1]
+  );
+}
+
+function fmtRange(exp) {
+  return `R[${exp.r[0]},${exp.r[1]}] G[${exp.g[0]},${exp.g[1]}] B[${exp.b[0]},${exp.b[1]}]`;
+}
+
+function fmtDeviation(m, exp) {
+  if (!m) return '—';
+  const dev = (v, [lo, hi]) => {
+    if (v < lo) return `-${lo - v}`;
+    if (v > hi) return `+${v - hi}`;
+    return '0';
+  };
+  return `R${dev(m.r, exp.r)} G${dev(m.g, exp.g)} B${dev(m.b, exp.b)}`;
+}
+
+function printTable(rows) {
+  const w = { pose: 28, period: 10, measured: 22, expected: 40, dev: 20, pass: 4 };
+  const pad = (s, n) => (s + ' '.repeat(n)).slice(0, n);
+  const header =
+    pad('pose', w.pose) + pad('period', w.period) +
+    pad('measured', w.measured) + pad('expected', w.expected) +
+    pad('deviation', w.dev) + pad('ok?', w.pass);
+  console.log('\n' + header);
+  console.log('-'.repeat(header.length));
+  for (const r of rows) {
+    const m = r.measured;
+    const measuredStr = m ? `R=${m.r} G=${m.g} B=${m.b}` : (r.error ?? 'no read');
+    const ok = m ? (inRange(m, r.pose.expected) ? 'yes' : 'NO') : 'ERR';
+    console.log(
+      pad(r.pose.id, w.pose) +
+      pad(r.pose.period, w.period) +
+      pad(measuredStr, w.measured) +
+      pad(fmtRange(r.pose.expected), w.expected) +
+      pad(m ? fmtDeviation(m, r.pose.expected) : '—', w.dev) +
+      pad(ok, w.pass)
+    );
+  }
+}
+
+// ---------- main ------------------------------------------------------
+
+async function main() {
+  console.log('[visual-regression] starting Vite dev server...');
+  const { proc, url } = await startVite();
+  console.log(`[visual-regression] Vite ready at ${url}`);
+  let exitCode = 0;
+  try {
+    const browser = await chromium.launch({ headless: true });
+    const context = await browser.newContext({ viewport: { width: 1280, height: 720 } });
+    const page = await context.newPage();
+
+    // Sky-morning always first — calibration pose. If it fails, the
+    // remaining six are meaningless per the ORDER 064 rule.
+    const sky = VISUAL_POSES.find((p) => p.id === 'sky-morning');
+    console.log('[visual-regression] sky-morning calibration...');
+    const skyResult = await measurePose(page, url, sky);
+    const skyPass = skyResult.measured ? inRange(skyResult.measured, sky.expected) : false;
+
+    if (!skyPass) {
+      console.log('\n=== sky-morning calibration FAILED ===');
+      printTable([skyResult]);
+      if (skyResult.diag) {
+        console.log('\nDiagnostics for the read failure:');
+        console.log(JSON.stringify(skyResult.diag, null, 2));
+      }
+      if (skyResult.consoleLines && skyResult.consoleLines.length > 0) {
+        console.log('\nPage console (last 20 lines):');
+        for (const l of skyResult.consoleLines) console.log('  ' + l);
+      }
+      if (skyResult.pageErrors && skyResult.pageErrors.length > 0) {
+        console.log('\nPage errors:');
+        for (const l of skyResult.pageErrors) console.log('  ' + l);
+      }
+      console.log(
+        '\nSky-morning is out of expected range (or read failed). ' +
+        'Per ORDER 064, the other six poses are meaningless without a ' +
+        'valid calibration and are not run. NOT auto-adjusting thresholds — ' +
+        'the values in visualPoses.ts are placeholders and require Vision ' +
+        'Owner approval before change.'
+      );
+      exitCode = 1;
+    } else {
+      console.log('[visual-regression] sky-morning OK, running remaining poses...');
+      const results = [skyResult];
+      const rest = VISUAL_POSES.filter((p) => p.id !== 'sky-morning');
+      const toRun = onlyPoseId ? rest.filter((p) => p.id === onlyPoseId) : rest;
+      for (const pose of toRun) {
+        console.log(`[visual-regression] pose ${pose.id}...`);
+        const r = await measurePose(page, url, pose);
+        results.push(r);
+      }
+      printTable(results);
+      const anyOut = results.some((r) => !r.measured || !inRange(r.measured, r.pose.expected));
+      if (anyOut) {
+        console.log('\nOne or more poses fell outside expected ranges. NOT auto-adjusting thresholds; awaiting Vision Owner review of measured values.');
+        exitCode = 1;
+      } else {
+        console.log('\nAll poses within expected ranges.');
+      }
+    }
+
+    await browser.close();
+  } finally {
+    console.log('[visual-regression] stopping Vite...');
+    await stopVite(proc);
+  }
+  process.exit(exitCode);
+}
+
+main().catch((e) => {
+  console.error('[visual-regression] fatal:', e);
+  process.exit(2);
+});

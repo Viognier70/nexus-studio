@@ -33,6 +33,16 @@ export const pixelSampler = {
   get cy(): number { return state.cy; }
 };
 
+// ORDER 064 — expose a monotonic tick counter for the visual-regression
+// runner. Playwright waits for `window.__nxHarness.ticks >= N` before
+// reading pixels, which is a deterministic frame-stability condition
+// (each tick is a completed sample; N=3 ≈ 3 × 8 frames = ~24 rendered
+// frames after navigation). Dev-only in effect: the pixel sampler
+// itself only runs when import.meta.env.DEV — but the module lives
+// under `src/lib/` and the runtime hook is unconditional so the
+// runner's `waitForFunction` doesn't need env awareness.
+let ticks = 0;
+
 export function pixelSamplerWrite(r: number, g: number, b: number, samples: number, cx: number, cy: number): void {
   state.r = r;
   state.g = g;
@@ -40,4 +50,10 @@ export function pixelSamplerWrite(r: number, g: number, b: number, samples: numb
   state.samples = samples;
   state.cx = cx;
   state.cy = cy;
+  ticks += 1;
+  if (typeof window !== 'undefined') {
+    (window as unknown as { __nxHarness?: unknown }).__nxHarness = {
+      r, g, b, samples, cx, cy, ticks
+    };
+  }
 }
