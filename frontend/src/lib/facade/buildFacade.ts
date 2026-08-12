@@ -84,11 +84,21 @@ export interface BuildFacadeOptions {
  * variations are stable per building.
  */
 export function buildFacade(
-  footprint: readonly (readonly [number, number])[],
+  rawFootprint: readonly (readonly [number, number])[],
   params: FacadeParams,
   seed: number,
   options: BuildFacadeOptions = {}
 ): FacadeGeometry {
+  // ORDER 059 §3 — normalise polygon winding to CCW. My wall / roof /
+  // window code assumes CCW throughout (outward normal = right of
+  // edge direction, quad winding calibrated for outward-facing
+  // triangles). OSM polygons ship in either winding — 31 of 138
+  // eligible Grythyttan houses ship as CW. Under CW input the wall
+  // triangles' normals point INWARD and three.js's default frontface
+  // culling hides the walls (leaving only the windows floating in
+  // the air, which was the Vision Owner's sighting).
+  const footprint = ensureCCW(rawFootprint);
+
   const baseY = options.baseY ?? 0;
   const lod: LodLevel = options.lod ?? 0;
 
@@ -252,6 +262,27 @@ export function buildFacade(
 }
 
 // ---------- helpers ----------------------------------------------------
+
+// ORDER 059 §3 — return the footprint in CCW winding. The signed
+// shoelace area is positive for CCW polygons in the XZ plane under
+// this file's outward-normal convention (which was calibrated
+// against a positive-shoelace test polygon). CW polygons produce
+// inward-facing wall normals that three.js's default frontface
+// culling hides — the "windows in the air, no wall" bug. Reversing
+// the vertex order flips the winding to CCW so all downstream code
+// (walls, roof, corners, windows, sockel) generates outward-facing
+// geometry.
+function ensureCCW(
+  poly: readonly (readonly [number, number])[]
+): readonly (readonly [number, number])[] {
+  let s = 0;
+  for (let i = 0; i < poly.length; i++) {
+    const [x1, z1] = poly[i];
+    const [x2, z2] = poly[(i + 1) % poly.length];
+    s += x1 * z2 - x2 * z1;
+  }
+  return s >= 0 ? poly : [...poly].reverse();
+}
 
 function mergeOrEmpty(list: THREE.BufferGeometry[]): THREE.BufferGeometry {
   if (list.length === 0) return new THREE.BufferGeometry();

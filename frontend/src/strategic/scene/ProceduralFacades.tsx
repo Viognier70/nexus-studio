@@ -100,16 +100,26 @@ function centroidOf(poly: readonly [number, number][]): [number, number] {
 
 // Shared material cache — one material per unique tone across all
 // facades. Cuts draw-call count when many buildings share a colour.
+//
+// ORDER 059 §3 — `side` is now part of the cache key. Walls need
+// DoubleSide because the wall triangle winding in buildFacade
+// doesn't guarantee outward-facing face normals for both polygon
+// windings (matches the pattern PlayerBusiness's sideWallGeometry
+// uses for the same reason: OSM polygons ship in either winding and
+// the exterior face flips accordingly). Roofs / corners / sockel /
+// window frames stay on FrontSide (default) — they're horizontal
+// or well-defined per vertex offset and never seen from inside.
 const materialCache = new Map<string, THREE.MeshStandardMaterial>();
 function getMaterial(
   color: string,
   roughness: number,
-  metalness: number
+  metalness: number,
+  side: THREE.Side = THREE.FrontSide
 ): THREE.MeshStandardMaterial {
-  const key = `${color}|${roughness}|${metalness}`;
+  const key = `${color}|${roughness}|${metalness}|${side}`;
   let m = materialCache.get(key);
   if (!m) {
-    m = new THREE.MeshStandardMaterial({ color, roughness, metalness });
+    m = new THREE.MeshStandardMaterial({ color, roughness, metalness, side });
     materialCache.set(key, m);
   }
   return m;
@@ -305,7 +315,8 @@ function BuildingGroup({ data, registerGroups, registerLitGlass }: BuildingGroup
     }
   }, [registerGroups]);
 
-  const wallMat = getMaterial(KULOR_HEX[data.params.kulor], 0.75, 0);
+  // ORDER 059 §3 — walls always DoubleSide so both windings render.
+  const wallMat = getMaterial(KULOR_HEX[data.params.kulor], 0.75, 0, THREE.DoubleSide);
   const cornerMat = getMaterial(KNUT_HEX[data.params.knutar], 0.85, 0);
   const roofMat = getMaterial(
     TAKTACKNING_HEX[data.params.taktackning],

@@ -388,6 +388,46 @@ describe('buildFacade — roof follows polygon (ORDER 058)', () => {
     }
   });
 
+  it('CW-wound OSM polygon produces equivalent wall geometry to CCW input (ORDER 059 §3)', () => {
+    // 31 of 138 eligible Grythyttan houses ship as CW polygons in
+    // WORLD.buildings. Under CW input the code's outward-normal
+    // convention flipped, which:
+    //   (a) rendered wall face-normals inward (three.js FrontSide
+    //       culling hid them — the "windows in the air" bug)
+    //   (b) offset eaves INTO the polygon instead of over the walls
+    //   (c) placed window frame/sill outward-offsets on the wrong side
+    // Fix: `ensureCCW` normalises polygon winding at entry to
+    // buildFacade so all downstream code sees a CCW polygon. This
+    // test verifies determinism across windings: CW input produces
+    // the same wall-triangle count as CCW input, meaning the wall
+    // bucket is populated identically.
+    const rectCCW: readonly (readonly [number, number])[] = [
+      [-5, -3], [5, -3], [5, 3], [-5, 3]
+    ];
+    const rectCW = [...rectCCW].reverse();
+    const gCCW = buildFacade(rectCCW, baseParams(), 1);
+    const gCW  = buildFacade(rectCW,  baseParams(), 1);
+    // Wall bucket must have the same triangle count for both windings.
+    expect(gCW.walls.getIndex()?.count).toBe(gCCW.walls.getIndex()?.count);
+    // Eave points must sit OUTSIDE the polygon in both cases (not
+    // retracted inward — the CW-without-fix regression). Both eave
+    // rings are the same set of points up to ordering.
+    const eaveYFor = (g: typeof gCCW) => {
+      const pos = g.roof.attributes.position;
+      const eave = new Set<string>();
+      for (let i = 0; i < pos.count; i++) {
+        if (Math.abs(pos.getY(i) - g.wallTopY) < 1e-3) {
+          eave.add(`${pos.getX(i).toFixed(2)},${pos.getZ(i).toFixed(2)}`);
+        }
+      }
+      return eave;
+    };
+    const eaveCCW = eaveYFor(gCCW);
+    const eaveCW = eaveYFor(gCW);
+    expect(eaveCW.size).toBe(eaveCCW.size);
+    for (const p of eaveCW) expect(eaveCCW.has(p)).toBe(true);
+  });
+
   it('walls are never empty for a valid polygon (no floating roof)', () => {
     // If this ever fails, some polygon is producing zero wall geometry
     // and the roof would render unsupported — the "red-roof no walls"
