@@ -1934,7 +1934,7 @@ function mentorCommentFor(
   choice: ScenarioChoice | null
 ): string {
   if (!choice) {
-    return 'Kvällen gick vidare — vi tittar på hur den utvecklade sig nästa gång.';
+    return 'The evening moved on — we\'ll look at how it played out next time.';
   }
   const spec = scenarioId ? scenarioById(scenarioId) : null;
   if (spec) {

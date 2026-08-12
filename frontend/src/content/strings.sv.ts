@@ -96,9 +96,14 @@ export const strings = {
     // situation is revealed (LEARNING_AND_SCENARIO_ARCHITECTURE §4.3).
     // No response is marked correct (§4.2). No result popup — the
     // response resolves in the room (CAMERA_AND_GAMEPLAY_BIBLE §8.1).
+    //
+    // These fields are legacy fallbacks — the live spec text lives in
+    // strategic/simulation/scenarios.ts and is what the overlay uses
+    // in practice. Kept in English so any drop-through fallback still
+    // reads in the game's language.
     subject: {
-      body: 'Ett sällskap står i entrén — utan bokning.',
-      cta: 'Fortsätt'
+      body: 'A party is at the door — no booking.',
+      cta: 'Continue'
     },
     // ORDER 048 §5 (2026-08-10 amendment) — the difficulty block
     // (self-reported confidence "Hur säker känner du dig inför det
@@ -107,11 +112,11 @@ export const strings = {
     // is reserved for ORDER 049 §5.1's professional questions.
     situation: {
       body:
-        'Fem personer i sällskapet. Kvällens service börjar snart och rummet är delvis bokat. Vad gör du?',
+        'Five in the party. Service starts soon and the room is partly booked. What do you do?',
       options: {
-        A: 'Sätt alla fem — slå ihop fyran och ett tvåbord.',
-        B: 'Sätt fyra vid fyran, den femte vid baren.',
-        C: 'Neka sällskapet.'
+        A: 'Seat all five — join the four-top and a two-top.',
+        B: 'Seat four at the four-top, the fifth at the bar.',
+        C: 'Turn the party away.'
       }
     },
     // Mentor comments are non-modal — they surface as an in-world text
@@ -120,9 +125,9 @@ export const strings = {
     // retirement (2026-08-10); the mid-difficulty variants survive as
     // the neutral base.
     mentor: {
-      A: 'Sammanslagning fungerar när servisen är med. Håll ett öga på tvåan bredvid.',
-      B: 'Klok fördelning. Barsätet kräver dock att någon i personalen hinner dit.',
-      C: 'Att neka är också ett val. Kvällens rytm bevaras — men ryktet noteras.'
+      A: 'Joining tables works when the floor is with you. Keep an eye on the two-top next door.',
+      B: 'Sensible split. The bar seat only works if a staff member gets there in time.',
+      C: 'Declining is a choice too. The evening keeps its rhythm — but the room notes it.'
     }
   },
   // ORDER 043 v3 §10 step 5 — the morning team panel. Player-facing

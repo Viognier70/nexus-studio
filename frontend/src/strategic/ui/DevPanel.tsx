@@ -15,8 +15,10 @@
 // the wager UI + scenario-driven capital movement replace the manual
 // cycle keys.
 
+import { useEffect, useState } from 'react';
 import { economicReadingNormalised } from '../simulation/cashReading';
 import { useSimState } from '../simulation/SimulationProvider';
+import { fpsMeter } from '../../lib/fpsMeter';
 
 const PANEL_STYLE: React.CSSProperties = {
   position: 'absolute',
@@ -46,6 +48,14 @@ export function DevPanel({ lastKey }: Props) {
   const c = sim.capitals.values;
   const econReading = economicReadingNormalised(sim);
   const d = sim.day;
+  // ORDER 055 Del F — pull FPS from the shared meter every 250 ms so
+  // the readout ticks visibly without triggering a re-render on every
+  // frame. The FpsProbe inside Canvas writes to the meter at ~2 Hz.
+  const [fps, setFps] = useState(0);
+  useEffect(() => {
+    const id = window.setInterval(() => setFps(fpsMeter.fps), 250);
+    return () => window.clearInterval(id);
+  }, []);
   // Service progress readout: "5:23 / 10 min" when a service is
   // running, "-" otherwise. Player-facing text never shows numbers
   // (§9), but the dev strip does — it's the only surface where a
@@ -70,7 +80,10 @@ export function DevPanel({ lastKey }: Props) {
   const factors = d.worldFactors.length > 0
     ? '  factors=' + d.worldFactors.map((f) => f.kind).join(',')
     : '';
-  const line1 = `DEV  day=${d.dayNumber} ${d.period.padEnd(9)}  service=${serviceReadout.padEnd(14)}  scenarios=${d.scenariosFiredThisService}/${d.scenariosPlanned}`;
+  // ORDER 056 Del A — label "strat" so the strategic FPS is
+  // distinguishable from the first-person view's separate overlay.
+  const fpsStr = fps > 0 ? `${fps.toString().padStart(3, ' ')}fps(strat)` : ' - fps(strat)';
+  const line1 = `DEV  ${fpsStr}  day=${d.dayNumber} ${d.period.padEnd(9)}  service=${serviceReadout.padEnd(14)}  scenarios=${d.scenariosFiredThisService}/${d.scenariosPlanned}`;
   const cashK = Math.round(sim.cash / 1000);
   const line2 = `     cash=${cashK.toString().padStart(4, ' ')}k  econR=${econReading.toFixed(2)}  soc=${c.social.toFixed(2)}  eco=${c.ecological.toFixed(2)}  rep=${sim.reputation.toFixed(2)}  key=${lastKey || '-'}`;
   const line3 = `     ${weather}${factors}`;

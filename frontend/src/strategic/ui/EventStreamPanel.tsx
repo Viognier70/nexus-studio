@@ -1,9 +1,14 @@
 // ORDER 043 Addendum A + B — the service event stream panel.
 //
 // Player-facing text strip on the right of the viewport. Shows the
-// last N events in chronological order (newest at the bottom, so new
-// entries appear at the reading eye's endpoint rather than pushing
-// older lines down like a scrolling log).
+// last N events in reverse-chronological order (newest at the top).
+//
+// ORDER 052 §5 (2026-08-10): direction picked = newest-at-top,
+// panel-sized-to-contents. Rationale: the panel anchors at a fixed
+// top-right point, so the reading eye lands at the same place every
+// arrival regardless of how many entries are present. Older entries
+// slide DOWN and fade, so the panel never presents a fixed-height
+// rectangle that reads empty when only one entry has fired.
 //
 // Per §A.3, no colour-coding, no severity badges — vocabulary and
 // cadence carry the reading, not styling. Older entries fade to keep
@@ -40,18 +45,19 @@ const VISIBLE_ENTRIES = 4;
 const ARRIVAL_ANIM_MS = 560;
 const ARRIVAL_SLIDE_PX = 24;
 
-// Anchor inside the viewport with a right margin that survives narrow
-// widths. `width` clamps to `calc(100vw - 40px)` so the panel is never
-// wider than the visible area minus its own 20 px gutters. `boxSizing:
-// border-box` folds padding into the width so the panel cannot spill
-// past the clamp. `wordBreak: normal` + `overflowWrap: normal` +
-// `hyphens: none` block the browser from splitting a Swedish word
-// across a line at the right edge.
+// Anchor inside the viewport at a single fixed point (top-right). The
+// panel's height comes from its contents — no reserved rectangle — so
+// a one-entry stream reads as one entry, not an empty box. `width`
+// clamps to `calc(100vw - 40px)` so the panel is never wider than the
+// visible area minus its own 20 px gutters. `boxSizing: border-box`
+// folds padding into the width so the panel cannot spill past the
+// clamp. `wordBreak: normal` + `overflowWrap: normal` + `hyphens:
+// none` block the browser from splitting a word across a line at the
+// right edge.
 const PANEL_STYLE: React.CSSProperties = {
   position: 'absolute',
   right: 20,
   top: 96,
-  bottom: 120,
   width: 'min(320px, calc(100vw - 40px))',
   minWidth: 220,
   boxSizing: 'border-box',
@@ -66,10 +72,6 @@ const PANEL_STYLE: React.CSSProperties = {
   letterSpacing: 0.15,
   pointerEvents: 'none',
   zIndex: 30,
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'flex-end',
-  overflow: 'hidden',
   wordBreak: 'normal',
   overflowWrap: 'normal',
   hyphens: 'none'
@@ -128,7 +130,10 @@ export function EventStreamPanel() {
   const period = sim.day.period;
   if (period !== 'lunch' && period !== 'dinner') return null;
 
-  const entries = sim.eventStream.slice(-VISIBLE_ENTRIES);
+  // ORDER 052 §5 (2026-08-10): newest-at-top. sim.eventStream is
+  // oldest→newest; slice the tail, then reverse so index 0 is the
+  // newest arrival and older entries appear below it.
+  const entries = sim.eventStream.slice(-VISIBLE_ENTRIES).reverse();
   if (entries.length === 0) return null;
 
   return (
@@ -139,7 +144,8 @@ export function EventStreamPanel() {
         // faded enough to feel receding but still readable if the
         // eye lands on it. Anything older than four is off-panel
         // entirely (still in state.eventStream for the reducer).
-        const stepsFromNewest = entries.length - 1 - i;
+        // Post-§5 reversal: index 0 = newest, so steps-from-newest = i.
+        const stepsFromNewest = i;
         const opacity = Math.max(0.22, 1 - stepsFromNewest * 0.28);
         const key = `${e.at.toFixed(3)}-${e.kind}-${i}`;
         const isArriving =

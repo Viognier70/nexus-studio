@@ -30,8 +30,17 @@ import { COVERS_PER_MEMBER } from '../simulation/team';
 import type { StaffRole, TeamMember } from '../types';
 import { staffPositionsRef } from './interiorSharedState';
 
-const STAFF_RADIUS_M = 0.24;         // slimmer than guests (0.32)
-const STAFF_HEIGHT_M = 1.75;         // taller than guests (1.6)
+// ORDER 054 Del A — staff height matches guest (1.70 m per ORDER 053
+// unit contract). The previous 1.75 m came from ORDER 053's silhouette-
+// differentiation motivation: at the bird's-eye strategic camera,
+// slightly taller pucks let the eye separate staff from guests at a
+// glance. That job is now carried by radius (slim 0.24 vs guest 0.32)
+// and uniform tone (dark, low-chroma via ROLE_COLOUR) — form and
+// colour, not height. (ORDER 055 Del E corrects the earlier comment
+// that mislabelled the 1.75 m as a "body-type stereotype cheat" —
+// that framing did not match what ORDER 053 recorded.)
+const STAFF_RADIUS_M = 0.24;
+const STAFF_HEIGHT_M = 1.70;
 const STAFF_Y = STAFF_HEIGHT_M / 2 + 0.06;
 
 // Movement pace — a little brisker than guests. Staff working under

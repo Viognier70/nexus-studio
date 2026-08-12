@@ -24,7 +24,8 @@ import type { Guest, GuestState } from '../types';
 import { staffPositionsRef } from './interiorSharedState';
 
 const GUEST_RADIUS_M = 0.32;
-const GUEST_HEIGHT_M = 1.6;
+// ORDER 053 Del B — guest standing height, exact.
+const GUEST_HEIGHT_M = 1.70;
 const GUEST_Y = GUEST_HEIGHT_M / 2 + 0.06;
 
 // Walking pace — 1.2 m/s is a comfortable indoor stroll. Guests moving

@@ -39,15 +39,32 @@ import { useCamera } from '../camera/CameraContext';
 import { GRAY_BOX_CAMERA } from '../content/grythyttan';
 import { useBusiness } from '../business/BusinessContext';
 import { usePlayerBusinessInterior } from '../business/interiorLayout';
+import { useSimState } from '../simulation/SimulationProvider';
+import { skyState } from '../../lib/lighting/skyState';
 import { strings } from '../../content/strings.sv';
 
 // Business volume constants — the D01 historic-centre building is a
-// two-storey sit-down restaurant per ORDER 042 §1. Height matches
-// heightFor's `commercial` default (6.0) rounded up so the roof line
-// reads distinct from surrounding houses.
-const WALL_HEIGHT_M = 6.5;
+// two-storey sit-down restaurant per ORDER 042 §1.
+// ORDER 054 Del A — the 6.5 m wall is decomposed into the parts a real
+// façade carries, so a reader can see what the number means and adjust
+// one piece without touching the others:
+//   sockel (grundmur, water-table)                    0.35 m
+//   floor 1 (våningshöjd per ORDER 053 unit contract) 2.70 m
+//   floor 2 (våningshöjd per ORDER 053 unit contract) 2.70 m
+//   takfot (eaves + gutter band)                      0.75 m
+//   ---------------------------------------------------
+//   total (WALL_HEIGHT_M)                             6.50 m
+const WALL_SOCKEL_M     = 0.35;
+const WALL_FLOOR_HEIGHT_M = 2.70;
+const WALL_FLOOR_COUNT  = 2;
+const WALL_TAKFOT_M     = 0.75;
+const WALL_HEIGHT_M     =
+  WALL_SOCKEL_M + WALL_FLOOR_HEIGHT_M * WALL_FLOOR_COUNT + WALL_TAKFOT_M;
 const ROOF_RIDGE_ADD_M = 2.4;
-const WALL_COLOUR = '#8f4a34';   // faded burgundy — restaurant, not house
+// ORDER 054 Del D — Falu red baseline (~#7C2E24 per spec), keeping the
+// restaurant a shade cooler-darker than the residential palette so the
+// building reads as "public house / krog" not "villa".
+const WALL_COLOUR = '#7c2e24';
 const ROOF_COLOUR = '#3a2e20';
 const TRIM_COLOUR = '#efe6d4';
 
@@ -131,9 +148,19 @@ export function PlayerBusiness() {
   const { business, hasName } = useBusiness();
   const { actualRef } = useCamera();
   const layout = usePlayerBusinessInterior();
+  // ORDER 057 Del B — restaurant glow. During service (lunch/dinner)
+  // the wall picks up a warm emissive tint at night; outside service
+  // it still glows a little to read as "the venue is here" but less.
+  const sim = useSimState();
 
   const wallMaterialRef = useRef<THREE.MeshStandardMaterial>(null);
   const roofMaterialRef = useRef<THREE.MeshStandardMaterial>(null);
+  // ORDER 055 Del A — mesh refs so we can toggle castShadow alongside
+  // opacity. A shadow-caster with opacity=0 still stamps the shadow
+  // map (the depth pass ignores alpha), which is exactly what we saw:
+  // a fully-faded roof projected a rectangle on the plaza.
+  const wallMeshRef = useRef<THREE.Mesh>(null);
+  const roofMeshRef = useRef<THREE.Mesh>(null);
   const interiorGroupRef = useRef<THREE.Group>(null);
 
   // Wall + roof geometry from the shared building polygon.
@@ -177,6 +204,13 @@ export function PlayerBusiness() {
       GRAY_BOX_CAMERA.restaurantInteriorFadeMid + GRAY_BOX_CAMERA.restaurantInteriorFadeHalf,
       dist
     );
+    // ORDER 055 Del A — castShadow is toggled alongside opacity because
+    // the shadow-map depth pass ignores material alpha. A fully-faded
+    // mesh still stamps its silhouette on the ground unless castShadow
+    // is off. Threshold matches depthWrite (opacity > 0.5) so shadow
+    // and depth agree about whether a surface "exists" this frame.
+    const castsShadow = (op: number) => op > 0.5;
+
     if (roofMaterialRef.current) {
       const mat = roofMaterialRef.current;
       mat.opacity = roofOpacity;
@@ -191,6 +225,7 @@ export function PlayerBusiness() {
       }
       mat.depthWrite = roofOpacity > 0.5;
     }
+    if (roofMeshRef.current) roofMeshRef.current.castShadow = castsShadow(roofOpacity);
     if (wallMaterialRef.current) {
       // Walls fade with the same curve as the roof. Vision Owner
       // decision 2026-08-08: at close zoom the walls should disappear
@@ -212,10 +247,30 @@ export function PlayerBusiness() {
         mat.needsUpdate = true;
       }
       mat.depthWrite = wallOpacity > 0.5;
+      if (wallMeshRef.current) wallMeshRef.current.castShadow = castsShadow(wallOpacity);
+
+      // ORDER 057 Del B — restaurant glow. Warm interior tint that
+      // ramps in with skyState.nightFactor. During service (lunch or
+      // dinner) it's boosted so the restaurant reads as "open" from
+      // across the plaza; outside service it holds a small baseline
+      // so the building still says "there's a room in here" at night.
+      const period = sim.day.period;
+      const inService = period === 'lunch' || period === 'dinner';
+      const serviceGain = inService ? 1.0 : 0.35;
+      const glow = skyState.nightFactor * serviceGain;
+      if (glow > 0.001) {
+        mat.emissive.setHex(0xffb460);   // warm tungsten
+        mat.emissiveIntensity = glow * 0.22;
+      } else {
+        mat.emissiveIntensity = 0;
+      }
     }
     if (interiorGroupRef.current) {
       interiorGroupRef.current.visible = interiorVisibility > 0.02;
       // Fade interior in through its own group opacity by scaling material alpha.
+      // Same rule for castShadow — no shadow-stamping from interior
+      // furniture when the whole interior is faded to transparent.
+      const interiorCasts = castsShadow(interiorVisibility);
       interiorGroupRef.current.traverse((obj) => {
         const mesh = obj as THREE.Mesh;
         if (mesh.isMesh) {
@@ -228,6 +283,10 @@ export function PlayerBusiness() {
               mat.needsUpdate = true;
             }
           }
+          // All interior meshes were authored to cast shadow under
+          // Del E of 054; here we gate the whole set by the fade so
+          // nothing stamps a shadow while invisible.
+          mesh.castShadow = interiorCasts;
         }
       });
     }
@@ -259,26 +318,26 @@ export function PlayerBusiness() {
           inside, so the DoubleSide inside-face handling from the earlier
           cutaway attempt isn't needed. useFrame keeps opacity +
           depthWrite in sync with the roof crossfade. */}
-      <mesh geometry={geom.wallGeo}>
+      <mesh ref={wallMeshRef} geometry={geom.wallGeo} receiveShadow>
         <meshStandardMaterial
           ref={wallMaterialRef}
           color={WALL_COLOUR}
-          roughness={0.85}
-          metalness={0.02}
+          roughness={0.75}
+          metalness={0}
           transparent
         />
       </mesh>
 
-      {/* Roof cap — fades on zoom. transparent set here so THREE places
-          the material in the transparent render bucket from mount; the
-          useFrame toggle above still refreshes it (with needsUpdate) if
-          the fade lands fully opaque at large distances. */}
-      <mesh geometry={geom.capGeo}>
+      {/* Roof cap — fades on zoom. Metalness 0.55/0.6 reads as painted
+          sheet metal (ORDER 054 Del E). ORDER 055 Del A — castShadow
+          is toggled in useFrame per fade; static castShadow removed.
+          A faded roof otherwise stamps a rectangle on the plaza. */}
+      <mesh ref={roofMeshRef} geometry={geom.capGeo}>
         <meshStandardMaterial
           ref={roofMaterialRef}
           color={ROOF_COLOUR}
-          roughness={0.9}
-          metalness={0.05}
+          roughness={0.55}
+          metalness={0.6}
           transparent
         />
       </mesh>
@@ -292,18 +351,28 @@ export function PlayerBusiness() {
         {/* Floor — planeGeometry is in the mesh's local XY; after
             rotation-X = -π/2 (to lie flat) and rotation-Y = roomRotY the
             plane's local X sits along the OBB's long axis. */}
-        <mesh position={[cx, 0.06, cz]} rotation={[-Math.PI / 2, 0, roomRotY]}>
+        {/* ORDER 054 Del E interior materials — plaster/painted wood
+            roughness family; no metalness on furniture.
+            ORDER 055 Del A — castShadow is NOT set statically here.
+            The useFrame block above toggles it on every mesh in this
+            group based on interiorVisibility, so nothing stamps a
+            shadow while the interior is faded out. receiveShadow is
+            fine statically (a shadow receiver with no light hitting
+            it is a no-op). */}
+        <mesh position={[cx, 0.06, cz]} rotation={[-Math.PI / 2, 0, roomRotY]} receiveShadow>
           <planeGeometry args={[layout.width - 0.4, layout.depth - 0.4]} />
-          <meshStandardMaterial color={INTERIOR_FLOOR_COLOUR} transparent opacity={0} />
+          <meshStandardMaterial color={INTERIOR_FLOOR_COLOUR} roughness={0.85} metalness={0} transparent opacity={0} />
         </mesh>
         {/* Bar strip — long axis along OBB local +X, so mesh args =
-            [lengthAlongX, height, widthAlongZ]. */}
+            [lengthAlongX, height, widthAlongZ]. ORDER 053 Del B — bar
+            counter height 1.10 m (position y = height/2). */}
         <mesh
           position={[layout.bar.worldPosition[0], 0.55, layout.bar.worldPosition[1]]}
           rotation={[0, roomRotY, 0]}
+          receiveShadow
         >
-          <boxGeometry args={[layout.bar.lengthM, 1.05, layout.bar.widthM]} />
-          <meshStandardMaterial color={BAR_COLOUR} transparent opacity={0} />
+          <boxGeometry args={[layout.bar.lengthM, 1.10, layout.bar.widthM]} />
+          <meshStandardMaterial color={BAR_COLOUR} roughness={0.75} metalness={0} transparent opacity={0} />
         </mesh>
         {/* Tables — each rotated to the OBB angle so the box sides align
             with the room's walls. The 4-top uses a distinct colour so
@@ -313,21 +382,26 @@ export function PlayerBusiness() {
             key={t.id}
             position={[t.worldPosition[0], 0.45, t.worldPosition[1]]}
             rotation={[0, roomRotY, 0]}
+            receiveShadow
           >
             <boxGeometry args={[t.sizeM, 0.75, t.sizeM]} />
             <meshStandardMaterial
               color={t.kind === 'four' ? FOURTOP_COLOUR : TABLE_COLOUR}
+              roughness={0.75}
+              metalness={0}
               transparent
               opacity={0}
             />
           </mesh>
         ))}
         {/* Bar stools — small pucks at each seat position in front of
-            the bar. Round so no rotation needed. */}
+            the bar. Round so no rotation needed. ORDER 053 Del B —
+            stool seat at 0.75 m (paired with a 1.10 m bar counter,
+            the typical bar-to-stool drop is ~0.30–0.35 m). */}
         {layout.barStoolPositions.map((p, i) => (
-          <mesh key={`stool-${i}`} position={[p[0], 0.5, p[1]]}>
-            <cylinderGeometry args={[0.28, 0.28, 0.9, 10]} />
-            <meshStandardMaterial color={BAR_COLOUR} transparent opacity={0} />
+          <mesh key={`stool-${i}`} position={[p[0], 0.375, p[1]]}>
+            <cylinderGeometry args={[0.28, 0.28, 0.75, 10]} />
+            <meshStandardMaterial color={BAR_COLOUR} roughness={0.75} metalness={0} transparent opacity={0} />
           </mesh>
         ))}
         {/* Entrance marker — small step at the entrance-side wall,
@@ -338,7 +412,7 @@ export function PlayerBusiness() {
           rotation={[0, roomRotY, 0]}
         >
           <boxGeometry args={[0.4, 0.2, 2.2]} />
-          <meshStandardMaterial color={TRIM_COLOUR} transparent opacity={0} />
+          <meshStandardMaterial color={TRIM_COLOUR} roughness={0.9} metalness={0} transparent opacity={0} />
         </mesh>
       </group>
 

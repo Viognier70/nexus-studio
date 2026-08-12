@@ -10,6 +10,7 @@ import {
 } from '../content/world';
 import type { RawBuilding, Vec2Tuple } from '../content/world';
 import { nearestStreetProfile } from '../content/streetProfiles';
+import { SKIP_PROCEDURAL_IDS } from './ProceduralFacades';
 
 type WealthTier = 'modest' | 'standard' | 'prosperous';
 
@@ -1113,7 +1114,10 @@ function StoreyBands({
   for (let y = 3.0; y < height - 1.2; y += 3.0) bandYs.push(y);
   if (bandYs.length === 0) return null;
   // A darker version of the wall colour so the band reads as shadow.
-  const bandColour = tintColour(wallColour, '#000000', 0.35);
+  // ORDER 054 Del D — near-black tint instead of pure #000000 for
+  // the tint mix. Nothing in reality is pure black; a deep shadow
+  // still carries scene tone.
+  const bandColour = tintColour(wallColour, '#141210', 0.35);
   return (
     <>
       {bandYs.map((y, i) => (
@@ -1242,6 +1246,12 @@ export function OsmBuildings() {
       WORLD.buildings
         .filter((b) => !LANDMARK_BUILDING_IDS.has(b.id))
         .filter((b) => b.kind !== 'church')
+        // ORDER 056 Del F — buildings owned by ProceduralFacades render
+        // through the parametric generator (LOD 0/1) or fall through to
+        // this box (LOD 2) via visibility switching on the procedural
+        // group. Either way the OSM box shouldn't compete for pixels
+        // at the same position — skip them here.
+        .filter((b) => !SKIP_PROCEDURAL_IDS.has(b.id))
         .map(toExtruded)
         .filter((b): b is Extruded => b !== null),
     []

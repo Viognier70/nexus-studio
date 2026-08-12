@@ -81,8 +81,8 @@ const BAR_FILL_STYLE = (fraction: number): React.CSSProperties => ({
 
 // -------- readouts -------------------------------------------------------
 
-// Rummets tempo — inverse of load. Load = active guests / capacity.
-// Low load = "Lugnt"; mid = "Ihop"; high = "Under press"; overload = "Ur takt".
+// Room pace — inverse of load. Load = active guests / capacity.
+// Low load = "Calm"; mid = "Together"; high = "Under pressure"; overload = "Off tempo".
 interface Reading {
   band: string;
   fraction: number;   // 0 = low, 1 = high — used to fill the bar
@@ -92,25 +92,25 @@ function tempoReading(activeGuests: number, teamCap: number): Reading {
   const load = activeGuests / Math.max(1, teamCap);
   // fraction climbs with load so a fuller bar reads as more strained.
   const fraction = Math.max(0, Math.min(1, load / 1.6));
-  if (load < 0.4) return { band: 'Lugnt', fraction };
-  if (load < 0.9) return { band: 'Ihop', fraction };
-  if (load < 1.3) return { band: 'Under press', fraction };
-  return { band: 'Ur takt', fraction };
+  if (load < 0.4) return { band: 'Calm', fraction };
+  if (load < 0.9) return { band: 'Together', fraction };
+  if (load < 1.3) return { band: 'Under pressure', fraction };
+  return { band: 'Off tempo', fraction };
 }
 
 function satisfactionReading(meanSat: number, hasSeated: boolean): Reading {
-  if (!hasSeated) return { band: 'Väntar', fraction: 0 };
-  if (meanSat >= 0.75) return { band: 'Nöjda', fraction: meanSat };
-  if (meanSat >= 0.55) return { band: 'Balanserade', fraction: meanSat };
-  if (meanSat >= 0.35) return { band: 'Otåliga', fraction: meanSat };
-  return { band: 'Missnöjda', fraction: meanSat };
+  if (!hasSeated) return { band: 'Waiting', fraction: 0 };
+  if (meanSat >= 0.75) return { band: 'Happy', fraction: meanSat };
+  if (meanSat >= 0.55) return { band: 'Balanced', fraction: meanSat };
+  if (meanSat >= 0.35) return { band: 'Restless', fraction: meanSat };
+  return { band: 'Unhappy', fraction: meanSat };
 }
 
 function moraleReading(morale: number): Reading {
-  if (morale >= 0.85) return { band: 'På topp', fraction: morale };
-  if (morale >= 0.65) return { band: 'Håller', fraction: morale };
-  if (morale >= 0.40) return { band: 'Trötta', fraction: morale };
-  return { band: 'Utmattade', fraction: morale };
+  if (morale >= 0.85) return { band: 'Peaking', fraction: morale };
+  if (morale >= 0.65) return { band: 'Holding', fraction: morale };
+  if (morale >= 0.40) return { band: 'Tired', fraction: morale };
+  return { band: 'Spent', fraction: morale };
 }
 
 function revenueReading(netRev: number, netCost: number): Reading {
@@ -119,9 +119,9 @@ function revenueReading(netRev: number, netCost: number): Reading {
   // readable). At ratio < 1 the bar is low (going back); at ratio ≥ 1
   // it's around half; at ratio 2 it's full.
   const fraction = Math.max(0, Math.min(1, ratio / 2));
-  if (ratio < 0.9) return { band: 'Går back', fraction };
-  if (ratio < 1.15) return { band: 'Täcker', fraction };
-  return { band: 'Går över', fraction };
+  if (ratio < 0.9) return { band: 'Losing ground', fraction };
+  if (ratio < 1.15) return { band: 'Covering', fraction };
+  return { band: 'Ahead', fraction };
 }
 
 // -------- component -------------------------------------------------------
@@ -141,13 +141,11 @@ interface SustainabilityFlash {
 }
 
 const FLASH_DURATION_MS = 1800;
-// Short labels — full "Ekologiskt" doesn't fit at 10 px in a ~70 px
-// cell without wrapping. "Ekologi" reads as the same axis, matches
-// the wager panel's noun form.
+// Short labels — noun form to fit the ~70 px cell.
 const SUSTAINABILITY_LABEL: Record<SustainabilityKey, string> = {
-  economic:   'Ekonomi',
-  social:     'Socialt',
-  ecological: 'Ekologi'
+  economic:   'Economy',
+  social:     'Social',
+  ecological: 'Ecology'
 };
 const SUSTAINABILITY_ORDER: readonly SustainabilityKey[] = ['economic', 'social', 'ecological'];
 
@@ -303,8 +301,8 @@ export function InstrumentsPanel() {
   const revenue = revenueReading(netRev, netCost);
 
   return (
-    <div style={PANEL_STYLE} role="region" aria-label="Kvällens mätare">
-      <div style={TRIAD_STYLE} role="group" aria-label="Hållbarheter">
+    <div style={PANEL_STYLE} role="region" aria-label="Tonight's dials">
+      <div style={TRIAD_STYLE} role="group" aria-label="Sustainabilities">
         {SUSTAINABILITY_ORDER.map((key) => {
           const flash = flashes[key];
           const active = flash !== null;
@@ -321,10 +319,10 @@ export function InstrumentsPanel() {
           );
         })}
       </div>
-      <Instrument name="Rummets tempo" reading={tempo} />
-      <Instrument name="Bordens läge" reading={satisfaction} />
-      <Instrument name="Lagets ork" reading={morale} />
-      <Instrument name="Kvällens intäkt" reading={revenue} />
+      <Instrument name="Room pace" reading={tempo} />
+      <Instrument name="Guest mood" reading={satisfaction} />
+      <Instrument name="Team stamina" reading={morale} />
+      <Instrument name="Tonight's take" reading={revenue} />
     </div>
   );
 }

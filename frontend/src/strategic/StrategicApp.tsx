@@ -30,6 +30,7 @@ import { SelectionChrome } from './ui/SelectionChrome';
 import { VerifyBadge } from './ui/VerifyBadge';
 import { ViewLabel } from './ui/ViewLabel';
 import { detectWebGL, WebGLFallback } from '../webgl/WebGLFallback';
+import { devToggles } from '../lib/devToggles';
 import './strategic.css';
 
 export function StrategicApp() {
@@ -58,6 +59,8 @@ function StrategicShell() {
   // verify a keypress actually reached the handler without opening
   // browser dev tools.
   const [lastKey, setLastKey] = useState('');
+  // ORDER 053 Del D — dev-only scale-reference toggle (G).
+  const [showScaleRef, setShowScaleRef] = useState(false);
   const { focusOn, jumpToPreset } = useCamera();
   const simDispatch = useSimDispatch();
 
@@ -164,6 +167,23 @@ function StrategicShell() {
       if (event.key === ',') cycle('social');
       if (event.key === '.') cycle('economic');
       if (event.key === '/') cycle('ecological');
+      // ORDER 053 Del D — G toggles the scale reference. Guarded by
+      // import.meta.env.DEV so it never fires in production.
+      if (
+        import.meta.env.DEV &&
+        (event.key === 'g' || event.key === 'G')
+      ) {
+        setShowScaleRef((v) => !v);
+      }
+      // ORDER 056 Del A — H toggles the season dev override so 21 Jun
+      // and 25 Sep sun paths can be compared in the browser. Default
+      // is autumn (25 Sep); the toggle flips summer/autumn.
+      if (
+        import.meta.env.DEV &&
+        (event.key === 'h' || event.key === 'H')
+      ) {
+        devToggles.toggleSeason();
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -182,7 +202,11 @@ function StrategicShell() {
   return (
     <div className="gb-root">
       <div ref={hostRef} className="gb-canvas-host">
-        <StrategicScene onSelect={handleSelect} selectedId={selectedId} />
+        <StrategicScene
+          onSelect={handleSelect}
+          selectedId={selectedId}
+          showScaleRef={showScaleRef}
+        />
       </div>
       <ViewLabel />
       <VerifyBadge />

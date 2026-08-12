@@ -1,100 +1,61 @@
-// ORDER 043 v3 §10 step 1 — light shifts with the day period.
+// ORDER 054 Del C — day-period lighting via SunLightRig.
 //
-// Replaces StrategicScene's static hemisphere + directional + ambient
-// lights with a period-driven config table. State drives the light:
-// state.day.period → LIGHTING_BY_PERIOD entry → light args.
+// The whole lighting rig (sun colour + intensity + sky sun position +
+// hemisphere ambient) is derived from the sun's position in the sky
+// via `solarPosition()`. We no longer hand-author RGB triples per
+// period; instead we hand the rig an hour-of-day appropriate to each
+// game period and the astronomy does the rest.
 //
-// Cycle-1 pacing: transitions snap on period change rather than
-// interpolate. The period boundaries are minutes apart (a lunch
-// service is 3–30 sim-min plus the 15-sec close pause before
-// afternoon), so a snap is visible but not jarring. If a future
-// order needs smooth dusk / dawn, add a useFrame lerp between the
-// current and target configs.
-//
-// Colour + intensity values chosen to match the ORDER 042 baseline
-// at 'lunch' — no regression at full daylight — and shift both
-// directions from there. Morning is cooler and higher-sun; dinner
-// is warmer and lower-sun; evening dims to a cool blue after close.
+// The hour choices are calibrated to autumn Grythyttan, where the
+// game is set. In autumn (equinox → early October) the sun rises
+// around 06:30, peaks around 12:30 at ~30° elevation, and sets around
+// 18:30. The "dinner" and "evening" periods therefore land in dusk /
+// deep dusk / night territory — which is the reading we want (a
+// warm, low sun in dinner, a nearly-set sun in evening).
 
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSimState } from '../simulation/SimulationProvider';
+import { SunLightRig } from '../../lib/lighting/SunLightRig';
+import { devToggles, SEASON_DATE, type SeasonKey } from '../../lib/devToggles';
 import type { DayPeriod } from '../types';
 
-interface LightingConfig {
-  hemiSky: string;
-  hemiGround: string;
-  hemiIntensity: number;
-  sunColor: string;
-  sunIntensity: number;
-  sunPosition: [number, number, number];
-  ambientIntensity: number;
-}
-
-// Lunch mirrors StrategicScene's ORDER 042 values so full daylight
-// is unchanged. The other periods depart from that baseline in
-// consistent directions.
-const LIGHTING_BY_PERIOD: Record<DayPeriod, LightingConfig> = {
-  morning: {
-    hemiSky: '#f5efdd',
-    hemiGround: '#5d6553',
-    hemiIntensity: 1.0,
-    sunColor: '#ffe6b8',
-    sunIntensity: 1.05,
-    sunPosition: [260, 420, -60], // east + high
-    ambientIntensity: 0.36
-  },
-  lunch: {
-    hemiSky: '#f5efdd',
-    hemiGround: '#5d6553',
-    hemiIntensity: 0.95,
-    sunColor: '#f7ecd0',
-    sunIntensity: 1.05,
-    sunPosition: [200, 380, 200], // baseline
-    ambientIntensity: 0.32
-  },
-  afternoon: {
-    hemiSky: '#f2e4c8',
-    hemiGround: '#584d3f',
-    hemiIntensity: 0.9,
-    sunColor: '#f0d4a0',
-    sunIntensity: 1.0,
-    sunPosition: [80, 320, 260], // south-west
-    ambientIntensity: 0.30
-  },
-  dinner: {
-    hemiSky: '#f0c890',
-    hemiGround: '#4a3c2c',
-    hemiIntensity: 0.75,
-    sunColor: '#e8a878',
-    sunIntensity: 0.85,
-    sunPosition: [-160, 180, 320], // west + low (golden hour)
-    ambientIntensity: 0.26
-  },
-  evening: {
-    hemiSky: '#5a6a80',
-    hemiGround: '#25272c',
-    hemiIntensity: 0.5,
-    sunColor: '#7086a0',
-    sunIntensity: 0.45,
-    sunPosition: [-100, 90, 220], // west, very low, cool
-    ambientIntensity: 0.20
-  }
+// Hour-of-day per game period. Local civil time. Autumn-calibrated
+// so the sun tracks the season the game is set in.
+const HOUR_BY_PERIOD: Record<DayPeriod, number> = {
+  morning:   8.0,   // low warm sun in the east
+  lunch:    12.5,   // near solar noon
+  afternoon: 15.0,  // sun descending
+  dinner:   18.5,   // grazing, warm — start of golden hour in autumn
+  evening:  21.5    // below horizon in autumn — night lighting
 };
+
+// Village-scale fog range. Fog starts far out (1 km) so nothing
+// mid-distance gets washed, and hits full attenuation at 3.6 km so
+// the fog envelope sits inside the sky sphere.
+const STRATEGIC_FOG_RANGE: [number, number] = [1000, 3600];
+
+// Small dev-only subscriber hook — reads the current season and
+// re-renders when the toggle flips. Tree-shakes cleanly in prod (the
+// module is imported but the subscription runs only after mount).
+function useDevSeason(): SeasonKey {
+  const [season, setSeason] = useState<SeasonKey>(() => devToggles.season);
+  useEffect(() => devToggles.subscribe((s) => setSeason(s.season)), []);
+  return season;
+}
 
 export function DayLighting() {
   const sim = useSimState();
-  const config = useMemo(() => LIGHTING_BY_PERIOD[sim.day.period], [sim.day.period]);
+  const hour = useMemo(() => HOUR_BY_PERIOD[sim.day.period], [sim.day.period]);
+  // ORDER 056 Del A — season is a dev-toggle (default autumn = 25 Sep
+  // per ORDER 054). Summer selects 21 Jun for comparison. Non-dev
+  // builds always read 'autumn' (the module default).
+  const season = useDevSeason();
+  const date = SEASON_DATE[season];
   return (
-    <>
-      <hemisphereLight
-        args={[config.hemiSky, config.hemiGround, config.hemiIntensity]}
-      />
-      <directionalLight
-        position={config.sunPosition}
-        intensity={config.sunIntensity}
-        color={config.sunColor}
-      />
-      <ambientLight intensity={config.ambientIntensity} />
-    </>
+    <SunLightRig
+      hourOfDay={hour}
+      date={date}
+      fogRange={STRATEGIC_FOG_RANGE}
+    />
   );
 }

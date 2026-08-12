@@ -240,15 +240,15 @@ export interface ScenarioSpec {
 const WALK_IN_OF_FIVE: ScenarioSpec = {
   id: 'walk-in-of-five',
   sustainability: 'social',
-  subjectBody: 'Ett sällskap står i entrén — utan bokning.',
-  subjectCta: 'Fortsätt',
+  subjectBody: 'A party is at the door — no booking.',
+  subjectCta: 'Continue',
   situationBody:
-    'Fem personer i sällskapet. Kvällens service börjar snart och rummet är delvis bokat. Vad gör du?',
+    'Five in the party. Service starts soon and the room is partly booked. What do you do?',
   preferredSenderRoles: ['värd', 'servitör'],
   senderWeaknessAxis: 'cultural',
   choices: {
     A: {
-      label: 'Sätt alla fem — slå ihop fyran och ett tvåbord.',
+      label: 'Seat all five — join the four-top and a two-top.',
       registerWrites: [{ enabler: 'cultural', register: 'techne', amount: 0.05 }],
       spawnedRemaining: 5,
       nextSpawnAtOffset: 0.4,
@@ -290,38 +290,38 @@ const WALK_IN_OF_FIVE: ScenarioSpec = {
         fromBank: { register: 'episteme', senderRole: 'värd' },
         correctEnablerWrite: { enabler: 'cultural', register: 'episteme', amount: 0.05 }
       },
-      immediateOutcome: 'Sällskapet fick fyran och tvåan ihopslagna. Grannbordet flyttades.',
+      immediateOutcome: 'The party got the four-top and two-top joined. The neighbouring table shifted.',
       outcomes: [
         'Fyran och tvåan har slagits ihop — grannbordet får hasa in mot väggen för att hämta besticket. Ingen sa något men jag såg blicken; undrar om vi skulle ha lämnat en förklaring innan de fick lista ut det själva.',
         'Sällskapets ordering kom in i klump på passet — köket har fem huvudrätter samtidigt istället för spridda i tid. Kocken vid grillen ser sammanbiten ut; hm, det var vi som valde det när vi sa ja.'
       ],
-      mentor: 'Sammanslagning fungerar när servisen är med. Håll ett öga på tvåan bredvid.'
+      mentor: 'Joining tables works when the floor is with you. Keep an eye on the two-top next door.'
     },
     B: {
-      label: 'Sätt fyra vid fyran, den femte vid baren.',
+      label: 'Seat four at the four-top, the fifth at the bar.',
       registerWrites: [{ enabler: 'cultural', register: 'phronesis', amount: 0.05 }],
       spawnedRemaining: 5,
       nextSpawnAtOffset: 0.4,
       capitalSign: 1,
-      immediateOutcome: 'Fyra vid fyran, en vid baren. Bartendern hälsar den femte.',
+      immediateOutcome: 'Four at the four-top, one at the bar. The bartender greets the fifth.',
       outcomes: [
         'Fyra sitter vid fyran och en sitter vid baren — den femte hänger jackan över barstolen och försöker se avslappnad ut. Sällskapet vid bordet tittar dit lite för ofta; undrar om han vet att vi vet att vi delade honom.',
         'Bartendern hälsade sent på den femte — han hann vänta ut sin egen tystnad först. Nu står drinken framför honom men samtalet vid bordet har gått vidare utan honom. Hm, den där ensamheten är svår att ta tillbaka i efterhand.'
       ],
-      mentor: 'Klok fördelning. Barsätet kräver dock att någon i personalen hinner dit.'
+      mentor: 'Sensible split. The bar seat only works if a staff member gets there in time.'
     },
     C: {
-      label: 'Neka sällskapet.',
+      label: 'Turn the party away.',
       registerWrites: [{ enabler: 'cultural', register: 'phronesis', amount: 0.03 }],
       spawnedRemaining: 2,
       nextSpawnAtOffset: 0.3,
       capitalSign: -0.5,
-      immediateOutcome: 'Sällskapet nekades. Två stod kvar i entrén, tre vände.',
+      immediateOutcome: 'The party was turned away. Two lingered in the entrance, three left.',
       outcomes: [
         'Två av sällskapet vände redan i entrén innan värden hade sagt hela meningen — de andra tre följde efter utan att fråga varför. Kvar står värden med en artighet på tungan som ingen tog emot; hm, den där ansiktet är svårare att glömma än beslutet var att fatta.',
         'En stamgäst vid fönsterbordet såg hela utbytet och höjde på ögonbrynen mot sin sällskapare. De sa inget till oss men växlade en blick. Undrar hur många kvällar det tar innan den blicken kommer tillbaka som en avbokning.'
       ],
-      mentor: 'Att neka är också ett val. Kvällens rytm bevaras — men ryktet noteras.'
+      mentor: 'Declining is a choice too. The evening keeps its rhythm — but the room notes it.'
     }
   }
 };
@@ -341,15 +341,15 @@ const TIME_PRESSURE: ScenarioSpec = {
   id: 'time-pressure',
   sustainability: 'economic',
   subjectBody:
-    'En delegation ringer — vill boka i morgon, men förutsätter att specialmenyn provkörs i kväll.',
-  subjectCta: 'Fortsätt',
+    'A delegation calls — wants to book tomorrow, but expects the special menu to be trialled tonight.',
+  subjectCta: 'Continue',
   situationBody:
-    'Bokningen kräver att köket byter menyn i kväll för att smaka igenom rätterna. Ekonomiskt lyft imorgon, men laget hinner knappt planera. Vad gör du?',
+    'The booking asks the kitchen to swap in the new menu tonight to taste the dishes through. An economic lift tomorrow, but the team has almost no time to plan. What do you do?',
   preferredSenderRoles: ['servitör', 'värd'],
   senderWeaknessAxis: 'practical',
   choices: {
     A: {
-      label: 'Ta bokningen och kör nya menyn direkt.',
+      label: 'Take the booking and run the new menu tonight.',
       registerWrites: [{ enabler: 'cultural', register: 'techne', amount: 0.05 }],
       spawnedRemaining: 0,
       nextSpawnAtOffset: 0,
@@ -379,38 +379,38 @@ const TIME_PRESSURE: ScenarioSpec = {
         fromBank: { register: 'episteme', senderRole: 'kock' },
         correctEnablerWrite: { enabler: 'scientific', register: 'episteme', amount: 0.05 }
       },
-      immediateOutcome: 'Menyn byts mitt i passet. Två pågående order läggs om.',
+      immediateOutcome: 'The menu is swapped mid-service. Two in-flight orders are reset.',
       outcomes: [
         'Menyn byts mitt på passet — köket noterar med en nick och börjar tömma om stationerna. Två pågående beställningar får läggas ner halvfärdiga och tas om. Undrar om vi förklarade tydligt nog för dem att detta var mitt beslut, inte deras.',
         'Notan svullnar snabbt när delegationen bokas för imorgon — men resten av kvällen betalar i tempo. Två stambord får sitt bröd senare än vanligt; hm, det är räkningen för morgondagens seger, betald i kvällens andrum.'
       ],
-      mentor: 'Vinst i syfte, spänning i praktik. Öka planeringstiden nästa gång.'
+      mentor: 'Gain in aim, strain in practice. Give the team more planning time next round.'
     },
     B: {
-      label: 'Ta bokningen — bara imorgon, ingen provkörning i kväll.',
+      label: 'Take the booking — tomorrow only, no trial tonight.',
       registerWrites: [{ enabler: 'scientific', register: 'phronesis', amount: 0.05 }],
       spawnedRemaining: 0,
       nextSpawnAtOffset: 0,
       capitalSign: 1,
-      immediateOutcome: 'Bokning skriven för imorgon. Kvällen fortsätter oförändrad.',
+      immediateOutcome: 'Booking written for tomorrow. Tonight carries on unchanged.',
       outcomes: [
         'Bokningen skrevs för morgondagen — kvällen fick andas ut. Servitören sa till köket och båda log lätt utan att kommentera. Undrar om det är den där sortens signal som håller ett lag ihop längre än en bonus gör.',
         'Kocken började planera imorgondagens meny i huvudet mitt i pass 5 — han var redan hemma i tanken. Hm, det är den luxuösa sortens uppmärksamhet vi köpte oss med att säga nej ikväll och ja i morgon.'
       ],
-      mentor: 'Bra bedömning. Delegationen kommer imorgon utan att kvällen tar smäll.'
+      mentor: 'Good judgement. The delegation comes tomorrow without the evening taking a hit.'
     },
     C: {
-      label: 'Neka — behåll kvällens rytm.',
+      label: 'Decline — keep the evening\'s rhythm.',
       registerWrites: [{ enabler: 'cultural', register: 'phronesis', amount: 0.03 }],
       spawnedRemaining: 0,
       nextSpawnAtOffset: 0,
       capitalSign: -0.5,
-      immediateOutcome: 'Bokningen nekades. Delegationen la på utan att vidare försöka.',
+      immediateOutcome: 'The booking was declined. The delegation hung up without pressing further.',
       outcomes: [
         'Delegationen tackade artigt och la på — inom en halvtimme såg vi via en av stamgästerna att de bokat sig på hotellrestaurangen istället. Undrar om vår rytm värderas till vad vi tror den värderas till, eller om vi lagt ett golv där ingen annan skulle ha lagt det.',
         'Kvällens takt behölls — inga fler överraskningar nådde passet. Servitörerna rör sig som om de vet vad de gör i två timmar till. Hm, det är den där stillheten som är svår att räkna in i kassan men lätt att räkna in i vem som orkar komma i morgon.'
       ],
-      mentor: 'Att avstå är också ett svar. Kvällen bevaras, men intäkten går till någon annan.'
+      mentor: 'Declining is an answer too. The evening holds, but the revenue goes to someone else.'
     }
   }
 };
@@ -431,15 +431,15 @@ const MORAL_DILEMMA: ScenarioSpec = {
   id: 'moral-dilemma',
   sustainability: 'ecological',
   subjectBody:
-    'Leverantören ringer — dagens fisk finns bara som osäkerhet.',
-  subjectCta: 'Fortsätt',
+    'The supplier calls — today\'s fish exists only as uncertainty.',
+  subjectCta: 'Continue',
   situationBody:
-    'Fisken kom via en bruten kylkedja — troligen ok men inte spårbar. Byte till torsdag om du säger nej. Vad gör du?',
+    'The fish came via a broken cold chain — probably fine but not traceable. Replacement by Thursday if you say no. What do you do?',
   preferredSenderRoles: ['kock', 'lärling'],
   senderWeaknessAxis: 'scientific',
   choices: {
     A: {
-      label: 'Ta fisken — laget märker den ordentligt och hoppas.',
+      label: 'Take the fish — the team labels it carefully and hopes.',
       registerWrites: [{ enabler: 'scientific', register: 'techne', amount: 0.05 }],
       spawnedRemaining: 0,
       nextSpawnAtOffset: 0,
@@ -473,15 +473,15 @@ const MORAL_DILEMMA: ScenarioSpec = {
         extraOutcome:
           'Två stamgäster har lagt märke till att ursprunget aldrig nämns längre — jag hörde dem prata om det vid utpasseringen. Hm, den där tystnaden är svår att hämta tillbaka.'
       },
-      immediateOutcome: 'Fisken går ut. Spårbarheten nämns inte.',
+      immediateOutcome: 'The fish goes out. Traceability is not mentioned.',
       outcomes: [
         'Två av förrätterna gick ut utan att någon nämnde att spårbarheten fattades — värden viker undan frågor från stamgäster på bord tre. Han svarar utan att svara. Undrar om han vet att den där ovilligheten själv säger något som gästen läser utan att formulera det.',
         'En gäst frågade rakt ut om fiskens ursprung — servitören blev tyst en sekund för länge innan hon svarade "från vår vanliga leverantör". Bordet nöjde sig med det men växlade en blick. Hm, den där sekunden är den enda tid vi kommer att kunna ta tillbaka det på.'
       ],
-      mentor: 'Väljer tempot över spårbarheten. Det märks först om något går fel.'
+      mentor: 'Choosing tempo over traceability. It only shows if something goes wrong.'
     },
     B: {
-      label: 'Byt menyn i kväll — ta annat protein.',
+      label: 'Change the menu tonight — take a different protein.',
       registerWrites: [{ enabler: 'cultural', register: 'phronesis', amount: 0.05 }],
       spawnedRemaining: 0,
       nextSpawnAtOffset: 0,
@@ -489,27 +489,27 @@ const MORAL_DILEMMA: ScenarioSpec = {
       // way that reads a shade favourable (the supplier chain took a
       // hit but the room stayed honest).
       capitalSign: 0.5,
-      immediateOutcome: 'Menyn byts. Köket plockar fram kyckling istället för fisken.',
+      immediateOutcome: 'The menu is swapped. The kitchen pulls out chicken instead of the fish.',
       outcomes: [
         'Menytavlan skrevs om i sista stund — köket bytte till kyckling utan gnäll och började plocka fram vad som fanns. Ingen kommenterade förändringen. Undrar om det där lugnet är en effekt av att beslutet var mitt att fatta och deras att verkställa.',
         'Alternativet presenterades utan ursäkter — servitören sa "vi har justerat menyn efter dagens leverans" och bordet nickade utan att fråga vidare. Hm, det är det där språket som gör en substitution till ett val istället för ett problem.'
       ],
-      mentor: 'Klok kompromiss. Menyn ger vika för säkerheten utan att brytas.'
+      mentor: 'Sensible compromise. The menu yields to safety without breaking.'
     },
     C: {
-      label: 'Skriv om menyn helt — passa på att lyfta säsongens gröna.',
+      label: 'Rewrite the menu — bring the season\'s greens forward.',
       registerWrites: [{ enabler: 'cultural', register: 'episteme', amount: 0.06 }],
       spawnedRemaining: 0,
       nextSpawnAtOffset: 0,
       // Full positive — transformative choice that makes ecology
       // legible to the room. Largest ecological lift of the three.
       capitalSign: 1,
-      immediateOutcome: 'Menyn skrivs om helt. Säsongens gröna lyfts fram.',
+      immediateOutcome: 'The menu is fully rewritten. The season\'s greens take the front.',
       outcomes: [
         'De gröna alternativen presenterades med sin egen berättelse — servitören berättade om odlaren och veckans skörd. Bordspratet steg märkbart över tre bord. Undrar om vi kommer att se det här som en punkt där menyn ändrades permanent, eller som en engångskväll.',
         'En gäst vid pass 4 noterade uttryckligen att kvällens meny hade ändrats och nickade uppskattande — hon frågade var grönsakerna kom ifrån. Servitören visste svaret. Hm, det där svaret är resultatet av morgonens beslut att inte ta genvägen.'
       ],
-      mentor: 'Ekologiskt drag. Menyn får ny riktning och säsongen blir läslig.',
+      mentor: 'An ecological move. The menu gains a direction and the season becomes readable.',
       // ORDER 049 §7 step 3 (2026-08-10) — bank-drawn question.
       // Menu rewrite calls for kitchen judgement rooted in produce
       // knowledge — same route as time-pressure A.

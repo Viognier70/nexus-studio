@@ -25,3 +25,13 @@ frontend/dist/
 
 # Lokala arkiv
 *.zip
+
+# ORDER 057 §4 — humanoid character assets are checked into
+# public/assets/characters/ locally but NOT committed to git.
+# Repo is public and the 20 Quaternius .glb files total 30 MB;
+# permanent history bloat isn't worth it. LICENSE.md is committed
+# so provenance is versioned; drop the .glb files back in from the
+# Quaternius download to run locally.
+frontend/public/assets/characters/*
+!frontend/public/assets/characters/LICENSE.md
+!frontend/public/assets/characters/animations

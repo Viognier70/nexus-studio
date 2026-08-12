@@ -32,12 +32,57 @@ Detta dokument styr hur Claude Code arbetar i det här repot. Läs det i början
 ## Frontend — teknisk stack
 
 - **Vite + React 18 + TypeScript**, rendering med **React Three Fiber + drei** (three.js)
-- **Inga externa assets:** geometri är procedurell, ljud via Web Audio (`AmbienceEngine`), typografi via systemfonter. Behåll den principen — introducera inte binära assets utan uttryckligt beslut.
 - Node.js 18+, WebGL-krav med fallback i `src/webgl/WebGLFallback.tsx`
 - Spelinnehåll/text ligger i `src/content/` (`dialogue.ts`, `strings.sv.ts`) — all spelartext på svenska går via strings-filen, hårdkoda aldrig UI-text i komponenter
 - Globalt speltillstånd i `src/state/gameState.ts`
 - Scenen är uppdelad i komponenter under `src/scene/`, spelfaser under `src/stages/` (Title → Bus → End)
 - Tillgänglighet: respektera `usePrefersReducedMotion`, touch-stöd via `src/controls/MobileControls.tsx` + `useIsTouch`
+
+## Enhetskontrakt (ORDER 053 Del B)
+
+**1 world unit = 1 meter. Undantagslöst.** Alla Three-koordinater, geometrimått, kameraavstånd och avstånd i spelet är i meter. Skalfaktorer får inte kompensera för fel enhetsantagande — rätta geometrin i stället.
+
+Referensmåtten nedan är kalibreringsvärden — vad geometri för byggnader och inredning ska sikta mot när den byggs i kod. **Externa humanoider skalas inte** för att träffa referensen; de används som författade så länge de ligger inom det angivna tolerensbandet (ORDER 057 §3). Modeller utanför bandet exkluderas från spel-casten i stället för att skalas.
+
+Referensmått som verkligheten kalibreras mot (ORDER 053):
+
+| Objekt | Storlek |
+|---|---|
+| Våningshöjd | 2,70 m |
+| Dörr, standard | 0,90 × 2,05 m |
+| Dörr, institutionell (skola / offentlig entré) | 1,05 × 2,65 m |
+| Bordshöjd | 0,74 m |
+| Stolssits | 0,45 m |
+| Gäst (stående) | 1,70 m *(referens för ergonomikontroll, inte krav)* |
+| Personal (stående) | 1,70 m — samma som gäst; silhuettskillnad görs med form/färg, inte höjd |
+| Humanoider (tolerensband, ORDER 057 §3) | **1,55 – 1,90 m** — externa `.glb`-modeller används som de är; värden utanför bandet exkluderas från casten |
+| Bardisk | 1,10 m |
+| Tallriksdiameter | 0,27 m |
+
+Inventering + avvikelser: `documentation/architecture/skala-inventering.md` — kör inventeringen om innan orderna påstår avvikelse 0.
+
+## Assetpolicy (ORDER 053 Del A)
+
+**Motivering:** miljö och arkitektur är parametriserbart och byggs i kod, humanoider är det inte.
+
+**Tillåtet externt**, incheckat i repot under `frontend/public/assets/characters/`:
+- humanoid geometri (`.glb`)
+- skelettrigg
+- animationsklipp
+- Licens: CC0 eller Mixamo. Licensfil per tillgång i samma mapp.
+
+**Fortsatt förbjudet externt:**
+- byggnader, inredning, terräng, vegetation
+- texturer och materialbibliotek
+- HDRI-filer
+
+**Absolut förbjudet, oavsett typ:**
+- **Nätverkshämtning i runtime.** Ingen `fetch` av assets, ingen CDN, ingen extern URL i en asset-loader. Allt måste ligga i repot när `vite build` körs.
+- OBS: `drei`:s `<Environment preset="...">` hämtar HDRI från CDN. Använd inte den. Himmel görs procedurellt med `<Sky>`.
+
+**Uttryckligen TILLÅTET (för att inte flaggas som brott):**
+- `useGLTF('/assets/characters/…')`, `useTexture('/assets/…')`, `useLoader(GLTFLoader, '/assets/…')` — dessa hämtar från `frontend/public/`, som Vite kopierar in i bygget. Ingen runtime-nätverkshämtning inblandad. `public/`-URL:er börjar med `/` och löses relativt bygget.
+- **Regel för asset-audit:** en `fetch` / `useLoader` / `useGLTF` är endast policybrott om argumentet är en absolut extern URL (`http://…`, `https://…`) eller en drei-`preset`-nyckel som hämtas från en CDN. Argument som börjar med `/` eller `./` pekar på lokal `public/`-katalog och är OK.
 
 ## Kommandon
 
@@ -49,6 +94,10 @@ npm run typecheck  # tsc --noEmit — kör ALLTID före commit
 npm run build      # typecheck + produktionsbygge till dist/
 npm run preview    # förhandsgranska bygget
 ```
+
+## Renderregler
+
+- **Skuggor och opacity (ORDER 055 Del A).** Geometri med `transparent` opacity som kan nå 0 får aldrig ha statiskt `castShadow`. Skuggkartans depth-pass ignorerar alpha, så en fullt ut-fejdad mesh stämplar sin silhuett på marken. Toggla `mesh.castShadow` i samma `useFrame` som styr opacity, med samma tröskel som `depthWrite` (typiskt `opacity > 0.5`).
 
 ## Regler för Claude Code
 
