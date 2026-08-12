@@ -210,6 +210,13 @@ export function ProceduralFacades() {
   // the physical glass at all times.
   const litGlassMeshesRef = useRef<Map<string, THREE.Mesh>>(new Map());
   const litSwapStateRef = useRef<'day' | 'night'>('day');
+  // ORDER 061 Thread A — per-building LOD 1 emissive band mesh ref.
+  // Populated only for `windowsLit` buildings. Kept hidden during the
+  // day and made visible when nightFactor crosses the twilight
+  // threshold. Rendering the band always would leave a bright warm
+  // stripe in sunlight — the ramp is on visibility, not intensity, so
+  // the material's constant emissive doesn't need re-writing.
+  const lod1EmissiveMeshesRef = useRef<Map<string, THREE.Mesh>>(new Map());
 
   // Throttled distance check — every 4 frames is enough (~15 Hz at
   // 60 fps); LOD transitions don't need to be sub-frame precise.
@@ -258,6 +265,12 @@ export function ProceduralFacades() {
       for (const mesh of litGlassMeshesRef.current.values()) {
         mesh.material = targetMat;
       }
+      // ORDER 061 Thread A — LOD 1 emissive bands share the same
+      // day/night gate. Toggle visibility rather than swap material
+      // (the band has no daytime counterpart).
+      for (const mesh of lod1EmissiveMeshesRef.current.values()) {
+        mesh.visible = wantsNight === 'night';
+      }
     }
   });
 
@@ -277,6 +290,7 @@ export function ProceduralFacades() {
         b.lod1.corners?.dispose();
         b.lod1.roof.dispose();
         b.lod1.sockel?.dispose();
+        b.lod1.lod1Emissive?.dispose();
       }
     };
   }, [built]);
@@ -296,6 +310,14 @@ export function ProceduralFacades() {
                 }
               : undefined
           }
+          registerLod1Emissive={
+            b.windowsLit
+              ? (m) => {
+                  if (m) lod1EmissiveMeshesRef.current.set(b.building.id, m);
+                  else lod1EmissiveMeshesRef.current.delete(b.building.id);
+                }
+              : undefined
+          }
         />
       ))}
     </group>
@@ -309,9 +331,12 @@ interface BuildingGroupProps {
   // for unlit; the mesh's material stays on the plain transmission
   // glass at all times.
   registerLitGlass?: (mesh: THREE.Mesh | null) => void;
+  // ORDER 061 Thread A — set for lit buildings so the LOD 1 emissive
+  // band toggles with the day/night boundary. Undefined for unlit.
+  registerLod1Emissive?: (mesh: THREE.Mesh | null) => void;
 }
 
-function BuildingGroup({ data, registerGroups, registerLitGlass }: BuildingGroupProps) {
+function BuildingGroup({ data, registerGroups, registerLitGlass, registerLod1Emissive }: BuildingGroupProps) {
   const lod0Ref = useRef<THREE.Group>(null);
   const lod1Ref = useRef<THREE.Group>(null);
   useEffect(() => {
@@ -387,6 +412,19 @@ function BuildingGroup({ data, registerGroups, registerLitGlass }: BuildingGroup
           <mesh geometry={data.lod1.sockel} material={sockelMat} castShadow receiveShadow />
         )}
         <mesh geometry={data.lod1.roof} material={roofMat} castShadow receiveShadow />
+        {/* ORDER 061 Thread A — emissive band per facade. Reads as
+            "lit windows" at village zoom. Rendered only for lit
+            buildings (registerLod1Emissive undefined otherwise), and
+            starts hidden — the day/night gate in useFrame toggles
+            visibility at the twilight crossing. */}
+        {data.lod1.lod1Emissive && registerLod1Emissive && (
+          <mesh
+            ref={registerLod1Emissive}
+            geometry={data.lod1.lod1Emissive}
+            material={getLitGlassMaterial()}
+            visible={false}
+          />
+        )}
       </group>
     </>
   );

@@ -55,6 +55,15 @@ export interface FacadeGeometry {
   windowFrames: THREE.BufferGeometry | null;
   windowGlass: THREE.BufferGeometry | null;
   windowSills: THREE.BufferGeometry | null;
+  // ORDER 061 Thread A — LOD 1 emissive-quad-per-facade fallback.
+  // At strategic zoom every eligible house is LOD 1 (no real window
+  // geometry). This bucket holds a simple emissive band per wall edge
+  // so night lighting reads as "lit windows glowing in the village"
+  // rather than a dark blob. Null at LOD 0 (real windows do the job)
+  // and at LOD 1 when the building isn't flagged windowsLit at the
+  // wiring layer, but populated for all LOD 1 builds — the wiring
+  // layer skips it via material/mesh gating.
+  lod1Emissive: THREE.BufferGeometry | null;
   // Derived geometry the caller may want to place lights or gameplay
   // markers against (e.g. "the door is here", "the first-floor window
   // faces southeast so a shaft of sun can land on the floor at 10:00").
@@ -113,6 +122,7 @@ export function buildFacade(
   const windowGlassGeos: THREE.BufferGeometry[] = [];
   const windowSillGeos: THREE.BufferGeometry[] = [];
   const sockelGeos: THREE.BufferGeometry[] = [];
+  const lod1EmissiveGeos: THREE.BufferGeometry[] = [];
 
   // Seed is retained on the API for future per-wall variation (window-
   // rhythm phase offsets, panel-list jitter, etc.). Currently unused
@@ -200,6 +210,39 @@ export function buildFacade(
       const sock = quadFromEdgeToTop(a, b, baseY, baseY + sockelH);
       sockelGeos.push(sock);
     }
+
+    // ORDER 061 Thread A — LOD 1 emissive band per facade.
+    // At mid distance we don't emit real window geometry (frames /
+    // glass / sills are LOD 0-only). Instead we emit a single
+    // horizontal band per wall edge, ε outside the wall face, at
+    // approximate first-floor window sill height. The wiring layer
+    // paints it with the lit-glass emissive material, ramping via
+    // skyState.nightFactor. Reading is "each house has a warm strip
+    // of lit windows" from village zoom — enough of a sighting to
+    // read the settlement as inhabited at night.
+    //
+    // Skipped when the edge is too short to host a plausible window
+    // band (avoids dust on cottages' end-walls). Only emitted at
+    // LOD 1 — at LOD 0 the real windows do the job; at LOD 2 the
+    // building falls through to OsmBuildings.
+    if (lod === 1 && len >= FONSTER_BREDD_M + FODER_BREDD_M * 4) {
+      const bandY0 = baseY + sockelH + FONSTER_SILL_M;
+      const bandY1 = bandY0 + FONSTER_HOJD_M;
+      const margin = 0.4;
+      const along0 = margin;
+      const along1 = len - margin;
+      // Two points along the edge, offset ε OUTWARD from the wall
+      // face so the band renders in front of the wall (no z-fighting
+      // with the LOD 1 wall mesh).
+      const off = 0.02;
+      const p0x = a[0] + tx * along0 + nx * off;
+      const p0z = a[1] + tz * along0 + nz * off;
+      const p1x = a[0] + tx * along1 + nx * off;
+      const p1z = a[1] + tz * along1 + nz * off;
+      lod1EmissiveGeos.push(
+        quadFromEdgeToTop([p0x, p0z], [p1x, p1z], bandY0, bandY1)
+      );
+    }
   }
 
   // ---------- corner boards ------------------------------------------
@@ -248,6 +291,8 @@ export function buildFacade(
     );
   }
 
+  const lod1Emissive = mergeOrNull(lod1EmissiveGeos);
+
   return {
     walls,
     corners,
@@ -256,6 +301,7 @@ export function buildFacade(
     windowFrames,
     windowGlass,
     windowSills,
+    lod1Emissive,
     wallTopY,
     ridgeY
   };
@@ -888,20 +934,28 @@ function buildRoof(
     positions.push(eB[0], wallTopY, eB[1]);
     positions.push(rB[0], ridgeY,   rB[1]);
     positions.push(rA[0], ridgeY,   rA[1]);
-    // Face normal = plane-fit of the two diagonals (eA→rB and eB→rA).
-    // Cross product of those diagonals gives a stable normal for the
-    // face's best-fit plane even when the four corners aren't
-    // coplanar. Points up-and-outward for CCW winding.
+    // ORDER 061 §B — face normal points up-and-outward for CCW winding.
+    // Cross product `d2 × d1` (NOT `d1 × d2`) gives the plane-fit
+    // normal with POSITIVE Y (skyward) and horizontal component
+    // pointing AWAY from the polygon. Old `d1 × d2` produced a normal
+    // aimed DOWN into the attic and INWARD toward the ridge — sun
+    // overhead → dot(normal, -lightDir) < 0 → diffuse clamped to zero
+    // → roof read black regardless of taktackning tone. Verified by
+    // `roof face normals point OUTWARD` test.
+    //
+    // Triangle winding swapped to `[0, 2, 1, 0, 3, 2]` to match — the
+    // winding-derived cross must agree with the written normal for
+    // shadow-map + backface culling to behave.
     const d1x = rB[0] - eA[0], d1y = ridgeY - wallTopY, d1z = rB[1] - eA[1];
     const d2x = rA[0] - eB[0], d2y = ridgeY - wallTopY, d2z = rA[1] - eB[1];
-    let nx = d1y * d2z - d1z * d2y;
-    let ny = d1z * d2x - d1x * d2z;
-    let nz = d1x * d2y - d1y * d2x;
+    let nx = d2y * d1z - d2z * d1y;
+    let ny = d2z * d1x - d2x * d1z;
+    let nz = d2x * d1y - d2y * d1x;
     const nl = Math.hypot(nx, ny, nz) || 1;
     nx /= nl; ny /= nl; nz /= nl;
     for (let k = 0; k < 4; k++) normals.push(nx, ny, nz);
-    indices.push(base + 0, base + 1, base + 2);
-    indices.push(base + 0, base + 2, base + 3);
+    indices.push(base + 0, base + 2, base + 1);
+    indices.push(base + 0, base + 3, base + 2);
   }
   // Cap (flat top of the ridge polygon). For a rectangle where two
   // pairs of ridge vertices collapse onto a single line, the cap is

@@ -515,6 +515,106 @@ describe('buildFacade — roof follows polygon (ORDER 058)', () => {
     }
   });
 
+  it('roof face normals point OUTWARD (upward + ridge-to-eave direction) for CCW and CW input (ORDER 061 §B)', () => {
+    // Mirror of the wall-normal test at §2 above, adapted for the
+    // sloped roof geometry produced by `buildRoof`. Each sloped roof
+    // face has an explicitly-written normal (four vertices per face,
+    // all sharing the same face normal — see buildFacade.ts
+    // §buildRoof). For a correctly-wound roof:
+    //   1. The face-normal's Y component must be POSITIVE (upward —
+    //      a roof face turned skyward, not into the attic).
+    //   2. The face-normal's XZ component must point from the ridge
+    //      toward the eave. This is the natural outward direction of
+    //      a sloped roof face: it points down-slope, away from the
+    //      building's central axis, over the wall. On a rectangle-
+    //      shaped roof it corresponds directly to the outward normal
+    //      of the wall edge beneath it; on L-shape reflex corners it
+    //      still points into the notch (the eave outlet direction),
+    //      which is correct for that face.
+    // The buggy `d1 × d2` cross-product inverts both conditions: for
+    // the south face of a CCW rectangle the normal evaluates to
+    // (0, -42, +14H) — Y negative (DOWN into the attic) and Z
+    // positive (NORTH, ridge-ward, away from eave) when "south face"
+    // outward = (0, +, -). Sun overhead → dot(normal, -sunDir)
+    // clamps to zero → no diffuse contribution → roof reads black.
+    // This test locks in the outward convention so a future edit
+    // can't silently break it again.
+    const cases: readonly [string, readonly (readonly [number, number])[]][] = [
+      ['rect-CCW', [[-5, -3], [5, -3], [5, 3], [-5, 3]] as const],
+      ['rect-CW',  [[-5, 3], [5, 3], [5, -3], [-5, -3]] as const],
+      ['pentagon-CCW', [[0, 0], [10, 0], [12, 3], [8, 8], [0, 8]] as const],
+      ['L-CCW', [[0, 0], [10, 0], [10, 4], [4, 4], [4, 8], [0, 8]] as const]
+    ];
+    for (const [label, poly] of cases) {
+      const g = buildFacade(poly, baseParams({ takvinkel: 30 }), 1);
+      const pos = g.roof.attributes.position;
+      const norms = g.roof.attributes.normal;
+      const idx = g.roof.getIndex();
+      expect(idx, `${label}: roof bucket has no index`).not.toBeNull();
+      expect(norms, `${label}: roof bucket has no normals`).not.toBeUndefined();
+      if (!idx || !norms) continue;
+      const wallTopY = g.wallTopY;
+      const ridgeY = g.ridgeY;
+      const triCount = idx.count / 3;
+      let slopedChecked = 0;
+      for (let t = 0; t < triCount; t++) {
+        const i0 = idx.getX(t * 3);
+        const i1 = idx.getX(t * 3 + 1);
+        const i2 = idx.getX(t * 3 + 2);
+        const nx = norms.getX(i0);
+        const ny = norms.getY(i0);
+        const nz = norms.getZ(i0);
+        // Skip the horizontal cap triangles (normal is (0, 1, 0)).
+        if (Math.abs(ny - 1) < 1e-3 && Math.abs(nx) < 1e-3 && Math.abs(nz) < 1e-3) continue;
+        slopedChecked += 1;
+        // Condition 1 — Y component positive (face turned skyward).
+        expect(
+          ny,
+          `${label} tri ${t}: face normal Y = ${ny.toFixed(3)} — roof face points DOWNWARD (into building attic)`
+        ).toBeGreaterThan(0);
+        // Condition 2 — XZ component points from ridge toward eave.
+        // Classify the triangle's three vertices by their Y coord:
+        // eave vertices sit at wallTopY, ridge vertices at ridgeY.
+        // The ridge → eave direction in XZ is the natural outward
+        // direction for the face.
+        let eaveXsum = 0, eaveZsum = 0, eaveN = 0;
+        let ridgeXsum = 0, ridgeZsum = 0, ridgeN = 0;
+        for (const vi of [i0, i1, i2]) {
+          const y = pos.getY(vi);
+          const x = pos.getX(vi);
+          const z = pos.getZ(vi);
+          if (Math.abs(y - wallTopY) < 1e-3) { eaveXsum += x; eaveZsum += z; eaveN++; }
+          else if (Math.abs(y - ridgeY) < 1e-3) { ridgeXsum += x; ridgeZsum += z; ridgeN++; }
+        }
+        if (eaveN === 0 || ridgeN === 0) continue;   // degenerate face
+        const eaveX = eaveXsum / eaveN, eaveZ = eaveZsum / eaveN;
+        const ridgeX = ridgeXsum / ridgeN, ridgeZ = ridgeZsum / ridgeN;
+        const rex = eaveX - ridgeX, rez = eaveZ - ridgeZ;
+        const relen = Math.hypot(rex, rez);
+        if (relen < 1e-6) continue;   // ridge and eave XZ coincide
+        const rexN = rex / relen, rezN = rez / relen;
+        const nlenXZ = Math.hypot(nx, nz);
+        if (nlenXZ < 1e-6) continue;
+        const nxN = nx / nlenXZ, nzN = nz / nlenXZ;
+        const dot = nxN * rexN + nzN * rezN;
+        // Threshold 0 catches the bug (which produces dot ≈ -1) while
+        // tolerating reflex-corner faces on L-shapes where the ridge
+        // point is pinned to the corner vertex — its ridge→eave XZ
+        // direction is dominated by the neighbouring vertex's offset
+        // and reads at 60-70° off the local face-normal, but always
+        // in the correct hemisphere.
+        expect(
+          dot,
+          `${label} tri ${t}: face-normal XZ (${nxN.toFixed(2)}, ${nzN.toFixed(2)}) vs ridge→eave dir (${rexN.toFixed(2)}, ${rezN.toFixed(2)}) dot = ${dot.toFixed(3)} — normal XZ points backward (toward ridge, into the building)`
+        ).toBeGreaterThan(0);
+      }
+      expect(
+        slopedChecked,
+        `${label}: no sloped roof triangles checked`
+      ).toBeGreaterThan(2);
+    }
+  });
+
   it('walls are never empty for a valid polygon (no floating roof)', () => {
     // If this ever fails, some polygon is producing zero wall geometry
     // and the roof would render unsupported — the "red-roof no walls"
