@@ -59,17 +59,26 @@ export interface VisualPose {
 // canvas; the harness runner is expected to set the viewport to a
 // stable size before capture.
 export const VISUAL_POSES: readonly VisualPose[] = [
+  // ORDER 069 — roof ROIs shrunk from 40×40 to 12×24 so the whole
+  // sample sits inside a single uniform sunlit tegel face (see
+  // reports/visual-regression/roof-tegel-lunch.png with previous ROI:
+  // the 40×40 box straddled a ridge, a shadow band and building
+  // edges, and the 60×60-pixel-average was diluted by mixed
+  // surfaces). Coordinates verified against both roof-tegel-lunch
+  // and roof-tegel-morning PNGs: x=626..637 y=350..373 is uniform
+  // R=121 at lunch and uniform R=62 at morning — no ridge, no
+  // shadow, no edge.
   {
     id: 'roof-tegel-lunch',
-    purpose: 'Tegel roof at solar noon — south face should read as warm red-brown, not black.',
+    purpose: 'Tegel roof — sunlit south face at solar noon. Must read warm red-brown, not black.',
     camera: {
-      focus: { x: 190, z: 45 },   // approximate Vinbaren area
+      focus: { x: 190, z: 45 },
       distance: 60,
       yaw: 0.6,
       pitch: 0.45
     },
     period: 'lunch',
-    roi: { x: 620, y: 340, w: 40, h: 40 },
+    roi: { x: 626, y: 350, w: 12, h: 24 },
     expected: {
       r: [110, 220],
       g: [60, 160],
@@ -78,7 +87,7 @@ export const VISUAL_POSES: readonly VisualPose[] = [
   },
   {
     id: 'roof-tegel-morning',
-    purpose: 'Same tegel roof at morning low-sun — must not read as black; hemi ambient carries it.',
+    purpose: 'Tegel roof — same sunlit face at morning low-sun. Hemi ambient must carry it.',
     camera: {
       focus: { x: 190, z: 45 },
       distance: 60,
@@ -86,30 +95,22 @@ export const VISUAL_POSES: readonly VisualPose[] = [
       pitch: 0.45
     },
     period: 'morning',
-    roi: { x: 620, y: 340, w: 40, h: 40 },
+    roi: { x: 626, y: 350, w: 12, h: 24 },
     expected: {
       r: [70, 200],
       g: [40, 150],
       b: [30, 120]
     }
   },
-  {
-    id: 'village-strategic-lunch',
-    purpose: 'Wide strategic view at lunch. Guards against whole-village black-out regression.',
-    camera: {
-      focus: { x: 100, z: 0 },
-      distance: 380,
-      yaw: 0.0,
-      pitch: 0.60
-    },
-    period: 'lunch',
-    roi: { x: 640, y: 360, w: 40, h: 40 },
-    expected: {
-      r: [50, 220],
-      g: [50, 220],
-      b: [40, 210]
-    }
-  },
+  // ORDER 069 — village-strategic-lunch REMOVED. At distance=380
+  // no single pixel corresponds to a named surface (individual
+  // buildings are 3-4 px wide from that altitude), so any ROI
+  // averages a random mix of roofs / ground / roads / edges. A
+  // green measurement on a mixed ROI is a false pass. The two
+  // village-strategic dark poses (dinner, evening) below survive
+  // because they test hemi-baseline-only illumination at night —
+  // "the whole village should read near-black" is a whole-canvas
+  // property, not a per-surface one.
   {
     id: 'village-strategic-dinner',
     purpose: 'Wide strategic view at dinner (sun grazing). Night-lit bands should raise average R.',
@@ -154,7 +155,10 @@ export const VISUAL_POSES: readonly VisualPose[] = [
       pitch: 0.35
     },
     period: 'dinner',
-    roi: { x: 620, y: 340, w: 40, h: 40 },
+    // ORDER 069 — ROI moved from (620, 340) to (260, 400) per
+    // Vision Owner direction. Position verification pending in
+    // the run below.
+    roi: { x: 260, y: 400, w: 40, h: 40 },
     expected: {
       r: [80, 255],
       g: [50, 220],

@@ -84,33 +84,28 @@ function poseToHash(pose) {
 // line against visualPoses.ts. Drift risk is low (both authored by hand;
 // pixel test failures will surface any divergence).
 const VISUAL_POSES = [
+  // ORDER 069 — roof ROIs shrunk to uniform sunlit face (12×24 at
+  // (626, 350)); village-strategic-lunch removed (mixed surfaces
+  // at wide zoom); lit-window ROI moved to (260, 400).
   {
     id: 'roof-tegel-lunch',
-    purpose: 'Tegel roof at solar noon.',
+    purpose: 'Tegel roof — sunlit south face at solar noon.',
     camera: { focus: { x: 190, z: 45 }, distance: 60, yaw: 0.6, pitch: 0.45 },
     period: 'lunch',
-    roi: { x: 620, y: 340, w: 40, h: 40 },
+    roi: { x: 626, y: 350, w: 12, h: 24 },
     expected: { r: [110, 220], g: [60, 160], b: [40, 130] }
   },
   {
     id: 'roof-tegel-morning',
-    purpose: 'Same roof at morning low-sun.',
+    purpose: 'Tegel roof — same face at morning low-sun.',
     camera: { focus: { x: 190, z: 45 }, distance: 60, yaw: 0.6, pitch: 0.45 },
     period: 'morning',
-    roi: { x: 620, y: 340, w: 40, h: 40 },
+    roi: { x: 626, y: 350, w: 12, h: 24 },
     expected: { r: [70, 200], g: [40, 150], b: [30, 120] }
   },
   {
-    id: 'village-strategic-lunch',
-    purpose: 'Wide strategic view at lunch.',
-    camera: { focus: { x: 100, z: 0 }, distance: 380, yaw: 0.0, pitch: 0.60 },
-    period: 'lunch',
-    roi: { x: 640, y: 360, w: 40, h: 40 },
-    expected: { r: [50, 220], g: [50, 220], b: [40, 210] }
-  },
-  {
     id: 'village-strategic-dinner',
-    purpose: 'Wide strategic view at dinner.',
+    purpose: 'Wide strategic view at dinner — hemi baseline near-black.',
     camera: { focus: { x: 100, z: 0 }, distance: 380, yaw: 0.0, pitch: 0.60 },
     period: 'dinner',
     roi: { x: 640, y: 360, w: 40, h: 40 },
@@ -118,7 +113,7 @@ const VISUAL_POSES = [
   },
   {
     id: 'village-strategic-evening',
-    purpose: 'Wide strategic view at evening.',
+    purpose: 'Wide strategic view at evening — hemi baseline near-black.',
     camera: { focus: { x: 100, z: 0 }, distance: 380, yaw: 0.0, pitch: 0.60 },
     period: 'evening',
     roi: { x: 640, y: 360, w: 40, h: 40 },
@@ -126,10 +121,10 @@ const VISUAL_POSES = [
   },
   {
     id: 'lit-window-dinner',
-    purpose: 'Close-up of a lit-window band at dinner.',
+    purpose: 'Close-up of a lit-window band at dinner — emissive amber.',
     camera: { focus: { x: 190, z: 45 }, distance: 20, yaw: 0.6, pitch: 0.35 },
     period: 'dinner',
-    roi: { x: 620, y: 340, w: 40, h: 40 },
+    roi: { x: 260, y: 400, w: 40, h: 40 },
     expected: { r: [80, 255], g: [50, 220], b: [30, 180] }
   },
   // ORDER 066 — replaces sky-morning. Dev-only calibration quad
