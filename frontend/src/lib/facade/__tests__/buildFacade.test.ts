@@ -428,6 +428,93 @@ describe('buildFacade — roof follows polygon (ORDER 058)', () => {
     for (const p of eaveCW) expect(eaveCCW.has(p)).toBe(true);
   });
 
+  it('wall face normals point OUTWARD for CCW and CW input (ORDER 060 §2)', () => {
+    // Reinstates the assertion softened during the ORDER 059 fix
+    // pass. After ORDER 060 §1 fixed the `quadFromEdgeToTop`
+    // winding, every wall-face triangle's face normal must point
+    // OUTWARD from the polygon.
+    //
+    // "Outward" verified by stepping the triangle centroid a small
+    // ε along the face normal (in XZ) and asking whether the new
+    // point is INSIDE the polygon. If ε · normal moves us into the
+    // interior, the normal points inward (fail); if it moves us
+    // outside, the normal points outward (pass). This works on
+    // convex, reflex, and non-convex polygons where a centroid-
+    // based "outward-direction" heuristic breaks down (e.g. the
+    // notch edge of an L-shape whose outward normal is orthogonal
+    // to the polygon centroid → triangle centroid vector).
+    //
+    // NOTE — the wall bucket also contains panel-relief boxes
+    // (locklist strips) when `panel === 'locklist'`. Each strip is
+    // a full BoxGeometry, half of whose faces are inward-facing by
+    // construction. To isolate the flat wall-face quads produced by
+    // quadFromEdgeToTop, this test uses `panel: 'staende_lockpanel'`
+    // which skips locklist strip emission.
+    function pointInPoly(px: number, pz: number, poly: readonly (readonly [number, number])[]): boolean {
+      let inside = false;
+      for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+        const [xi, zi] = poly[i];
+        const [xj, zj] = poly[j];
+        const hit = (zi > pz) !== (zj > pz) &&
+          px < ((xj - xi) * (pz - zi)) / ((zj - zi) || 1e-12) + xi;
+        if (hit) inside = !inside;
+      }
+      return inside;
+    }
+    const cases: readonly [string, readonly (readonly [number, number])[]][] = [
+      ['rect-CCW', [[-5, -3], [5, -3], [5, 3], [-5, 3]] as const],
+      ['rect-CW',  [[-5, 3], [5, 3], [5, -3], [-5, -3]] as const],
+      ['pentagon-CCW', [[0, 0], [10, 0], [12, 3], [8, 8], [0, 8]] as const],
+      // L-shape CCW — includes a reflex vertex on the concave corner
+      ['L-CCW', [[0, 0], [10, 0], [10, 4], [4, 4], [4, 8], [0, 8]] as const]
+    ];
+    for (const [label, poly] of cases) {
+      const g = buildFacade(
+        poly,
+        baseParams({ panel: 'staende_lockpanel' }),
+        1
+      );
+      const pos = g.walls.attributes.position;
+      const idx = g.walls.getIndex();
+      expect(idx, `${label}: wall bucket has no index`).not.toBeNull();
+      if (!idx) continue;
+      const triCount = idx.count / 3;
+      // Require a meaningful sample so a future refactor that empties
+      // the wall bucket doesn't turn this into a vacuous pass.
+      expect(triCount, `${label}: too few wall triangles to test`).toBeGreaterThan(4);
+      const EPS = 0.01;
+      for (let t = 0; t < triCount; t++) {
+        const i0 = idx.getX(t * 3);
+        const i1 = idx.getX(t * 3 + 1);
+        const i2 = idx.getX(t * 3 + 2);
+        const v0 = [pos.getX(i0), pos.getY(i0), pos.getZ(i0)];
+        const v1 = [pos.getX(i1), pos.getY(i1), pos.getZ(i1)];
+        const v2 = [pos.getX(i2), pos.getY(i2), pos.getZ(i2)];
+        // Face normal via right-hand rule.
+        const e1 = [v1[0] - v0[0], v1[1] - v0[1], v1[2] - v0[2]];
+        const e2 = [v2[0] - v0[0], v2[1] - v0[1], v2[2] - v0[2]];
+        const nx = e1[1] * e2[2] - e1[2] * e2[1];
+        const ny = e1[2] * e2[0] - e1[0] * e2[2];
+        const nz = e1[0] * e2[1] - e1[1] * e2[0];
+        const nlenXZ = Math.hypot(nx, nz);
+        if (nlenXZ < 1e-6) continue;   // horizontal triangle (top / bottom face)
+        void ny;
+        // Normalise XZ + step ε from triangle centroid along it.
+        const nxN = nx / nlenXZ;
+        const nzN = nz / nlenXZ;
+        const tcx = (v0[0] + v1[0] + v2[0]) / 3;
+        const tcz = (v0[2] + v1[2] + v2[2]) / 3;
+        const px = tcx + nxN * EPS;
+        const pz = tcz + nzN * EPS;
+        const insideOut = pointInPoly(px, pz, poly);
+        expect(
+          insideOut,
+          `${label} triangle ${t}: stepping ε along face-normal (${nxN.toFixed(2)}, ${nzN.toFixed(2)}) from (${tcx.toFixed(2)}, ${tcz.toFixed(2)}) landed INSIDE polygon — normal points inward`
+        ).toBe(false);
+      }
+    }
+  });
+
   it('walls are never empty for a valid polygon (no floating roof)', () => {
     // If this ever fails, some polygon is producing zero wall geometry
     // and the roof would render unsupported — the "red-roof no walls"

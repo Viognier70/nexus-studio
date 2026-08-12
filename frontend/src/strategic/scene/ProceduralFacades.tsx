@@ -101,14 +101,19 @@ function centroidOf(poly: readonly [number, number][]): [number, number] {
 // Shared material cache — one material per unique tone across all
 // facades. Cuts draw-call count when many buildings share a colour.
 //
-// ORDER 059 §3 — `side` is now part of the cache key. Walls need
-// DoubleSide because the wall triangle winding in buildFacade
-// doesn't guarantee outward-facing face normals for both polygon
-// windings (matches the pattern PlayerBusiness's sideWallGeometry
-// uses for the same reason: OSM polygons ship in either winding and
-// the exterior face flips accordingly). Roofs / corners / sockel /
-// window frames stay on FrontSide (default) — they're horizontal
-// or well-defined per vertex offset and never seen from inside.
+// ORDER 060 §3 — DoubleSide bandage removed. buildFacade's
+// quadFromEdgeToTop now winds triangles so face normals point
+// outward for CCW input (see the comment on that function), and
+// ensureCCW normalises OSM polygons at entry. With those two in
+// place FrontSide renders walls correctly on all 138 houses and
+// diffuse lighting evaluates against the true outward normal —
+// which restores expected shading on sun-facing walls (DoubleSide
+// flipped the normal at shading time, producing the wrong
+// hemisphere response).
+//
+// `side` parameter kept in the signature because glass / cutouts
+// / future two-sided decoration may still need it; nothing is
+// currently passing it.
 const materialCache = new Map<string, THREE.MeshStandardMaterial>();
 function getMaterial(
   color: string,
@@ -315,8 +320,10 @@ function BuildingGroup({ data, registerGroups, registerLitGlass }: BuildingGroup
     }
   }, [registerGroups]);
 
-  // ORDER 059 §3 — walls always DoubleSide so both windings render.
-  const wallMat = getMaterial(KULOR_HEX[data.params.kulor], 0.75, 0, THREE.DoubleSide);
+  // ORDER 060 §3 — FrontSide is enough now that quadFromEdgeToTop
+  // produces outward-facing normals for CCW input (verified by the
+  // `wall face normals point OUTWARD for CCW and CW input` test).
+  const wallMat = getMaterial(KULOR_HEX[data.params.kulor], 0.75, 0);
   const cornerMat = getMaterial(KNUT_HEX[data.params.knutar], 0.85, 0);
   const roofMat = getMaterial(
     TAKTACKNING_HEX[data.params.taktackning],

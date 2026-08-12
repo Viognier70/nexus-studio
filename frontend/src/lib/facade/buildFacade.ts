@@ -295,6 +295,26 @@ function mergeOrNull(list: THREE.BufferGeometry[]): THREE.BufferGeometry | null 
 }
 
 // A flat quad spanning edge (a → b) from y0 to y1, outward-facing.
+//
+// Vertex order (positions):
+//   0 = a-bot   (a.x, y0, a.z)
+//   1 = b-bot   (b.x, y0, b.z)
+//   2 = b-top   (b.x, y1, b.z)
+//   3 = a-top   (a.x, y1, a.z)
+//
+// ORDER 060 §1 — index pattern `[0, 2, 1, 0, 3, 2]` winds each
+// triangle CW as seen from the polygon INTERIOR, which puts the
+// face normal on the EXTERIOR side. For a CCW polygon (which is
+// what `ensureCCW` guarantees at buildFacade entry), the outward
+// normal per edge is `(dz, 0, -dx) / len` — the right-hand-rule
+// cross product of the edges of triangle (a-bot, b-top, b-bot)
+// evaluates to `(y1-y0) × (dz, 0, -dx)`, which matches. Verified
+// by the reinstated §2 test asserting positive dot with
+// `(triangle-centroid − polygon-centroid)`.
+//
+// Old winding `[0, 1, 2, 0, 2, 3]` produced INWARD-facing normals
+// and was masked by DoubleSide on wallMat (ORDER 059 bandage).
+// Removed under ORDER 060 §3.
 function quadFromEdgeToTop(
   a: readonly [number, number],
   b: readonly [number, number],
@@ -308,7 +328,7 @@ function quadFromEdgeToTop(
     b[0], y1, b[1],
     a[0], y1, a[1]
   ]);
-  const indices = new Uint16Array([0, 1, 2, 0, 2, 3]);
+  const indices = new Uint16Array([0, 2, 1, 0, 3, 2]);
   g.setAttribute('position', new THREE.BufferAttribute(positions, 3));
   g.setIndex(new THREE.BufferAttribute(indices, 1));
   g.computeVertexNormals();
