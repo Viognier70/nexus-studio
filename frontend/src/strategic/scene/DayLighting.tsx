@@ -17,6 +17,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSimState } from '../simulation/SimulationProvider';
 import { SunLightRig } from '../../lib/lighting/SunLightRig';
 import { devToggles, SEASON_DATE, type SeasonKey } from '../../lib/devToggles';
+import { harnessParams } from '../testHarness/urlParams';
 import type { DayPeriod } from '../types';
 
 // Hour-of-day per game period. Local civil time. Autumn-calibrated
@@ -45,7 +46,14 @@ function useDevSeason(): SeasonKey {
 
 export function DayLighting() {
   const sim = useSimState();
-  const hour = useMemo(() => HOUR_BY_PERIOD[sim.day.period], [sim.day.period]);
+  // ORDER 063 INFRA-1 — dev URL param `#period=…` pins the lighting
+  // period regardless of sim state. Used by the visual-regression
+  // harness to sample known poses at known sun angles without needing
+  // to advance sim time. No effect in prod (harness params are only
+  // read from the URL hash, which is empty in a player build).
+  const effectivePeriod: DayPeriod =
+    (import.meta.env.DEV && harnessParams.period) ? harnessParams.period : sim.day.period;
+  const hour = useMemo(() => HOUR_BY_PERIOD[effectivePeriod], [effectivePeriod]);
   // ORDER 056 Del A — season is a dev-toggle (default autumn = 25 Sep
   // per ORDER 054). Summer selects 21 Jun for comparison. Non-dev
   // builds always read 'autumn' (the module default).

@@ -10,6 +10,7 @@ import {
   type ReactNode
 } from 'react';
 import { GRAY_BOX_CAMERA as CAMERA } from '../content/grythyttan';
+import { harnessParams } from '../testHarness/urlParams';
 import type { CameraTarget, Selection, ViewLabel, Vec2 } from '../types';
 import { labelForDistance, PRESETS, clampTarget } from './viewLevels';
 
@@ -59,7 +60,18 @@ function initialPreset(): keyof typeof PRESETS {
 
 export function CameraProvider({ children }: Props) {
   const startPreset = initialPreset();
-  const start = PRESETS[startPreset].target;
+  // ORDER 063 INFRA-1 — explicit camera coordinates from URL params
+  // override any preset. Enables the visual-regression harness to pin
+  // camera state without a preset entry per pose. Dev-only.
+  const harnessCamera = import.meta.env.DEV ? harnessParams.camera : null;
+  const start: CameraTarget = harnessCamera
+    ? {
+        focus: { x: harnessCamera.focus.x, z: harnessCamera.focus.z },
+        distance: harnessCamera.distance,
+        yaw: harnessCamera.yaw,
+        pitch: harnessCamera.pitch
+      }
+    : PRESETS[startPreset].target;
   const targetRef = useRef<CameraTarget>(cloneTarget(start));
   const actualRef = useRef<CameraTarget>(cloneTarget(start));
   const labelRef = useRef<ViewLabel>(PRESETS[startPreset].label);
