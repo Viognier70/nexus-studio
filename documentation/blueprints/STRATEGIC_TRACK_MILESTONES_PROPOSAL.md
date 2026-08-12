@@ -257,7 +257,195 @@ Reasons *against* merge (and why they don't win):
 
 ---
 
-## 6. Open questions this proposal does not answer
+## 6. Verifiability — AUTONOMOUS vs GATE
+
+Every DoD in §2 is classified below as either **AUTONOMOUS** (verifiable
+without a human looking at the browser — typecheck, unit tests,
+deterministic headless simulation runs, DOM assertions, pixel-value
+tests) or **GATE** (Vision Owner or other human must observe the
+running product to sign off).
+
+The goal of this section is twofold: (a) surface how much of the
+existing DoD language reduces to autonomous verification if written
+against measurable quantities rather than perceptions, and (b)
+propose the sort of execution order that pushes the residual gates
+as late and as few as possible.
+
+### 6.1 Summary table
+
+| # | Name | Original class | Rewrite feasible? | Class after rewrite |
+|---|---|---|---|---|
+| M0 | Village + room baseline | GATE (five sightings) | YES — headless render harness + pixel sampling | AUTONOMOUS |
+| M1 | First playable loop | MIXED (DoD 1–3 autonomous, DoD 4 gate) | Partial — DoD 4 is real judgment | MIXED |
+| M2 | Morning legibility | AUTONOMOUS | — | AUTONOMOUS |
+| M3 | Evening ledger visible | AUTONOMOUS | — | AUTONOMOUS |
+| M4 | Menu + kitchen + stock | MIXED (DoD 3 "audible") | YES — downgrade to "audio event dispatched" | AUTONOMOUS |
+| M5 | Prep + cadence | MIXED (DoD 2 "reads at a glance") | Partial — bundle residual into M8 | AUTONOMOUS with residual moved to M8 |
+| M6 | Cause-aware texture | GATE (DoD 3 "trace a causal chain") | YES — add cause-tag data model to stream events | AUTONOMOUS |
+| M7 | Knowledge engine → bank | AUTONOMOUS | — | AUTONOMOUS |
+| M8 | Playthrough acceptance | GATE (by design) | NO — this IS the human acceptance step | GATE |
+
+**Net result: with the four proposed rewrites, exactly one milestone
+(M8) remains a gate.** M8 is the intended acceptance moment; every
+other milestone can close on green CI.
+
+### 6.2 Per-milestone verification detail
+
+**M0 — Village + room baseline.**
+Original DoD 1–3 are visual sightings. Rewrite to headless pixel
+sampling: define ~10 canonical camera poses (village NW, village SE,
+plaza, restaurant close-up, roof close-up at each of five periods,
+lit window at dinner). At CI time, boot Vite in preview mode, drive
+Puppeteer to each pose + period, sample the existing
+PixelSampleProbe values (or a per-pose ROI). Assert:
+- Roof pixels at each period have R + G + B ≥ empirical threshold
+  derived from the calibration in ORDER 061 point 3 measurement
+  (e.g. tegel-south at lunch: R ≥ 150, G ≥ 90, B ≥ 60).
+- Emissive-band pixels at dinner have R > 80 on flagged houses, R < 40
+  on unflagged houses.
+- No pixel in a curated roof-ROI set reads (0, 0, 0) at any period
+  (the "roof is black" regression guard).
+- Tegel-roof-ROI R > plåt-roof-ROI R (material distinguishability).
+DoD 4 (no building intersects an OSM-attested road) is already a
+data check — promote the ad-hoc script from ORDER 061 point 1 into a
+unit test that runs against `grythyttan-world.json` on every commit.
+DoD 5 is already CI-green.
+**Cost of rewrite:** Puppeteer + preview server + ROI catalogue.
+Real investment (~1 day) but pays back on every subsequent milestone
+that depends on rendering not regressing.
+
+**M1 — First playable loop.**
+DoD 1 (three days without desync) → headless simulation harness with
+a fixed seed dispatches scripted actions across three sim-days,
+asserts state remains internally consistent (no negative cash without
+explanation, no NaN reputation, no orphaned event references).
+DoD 2 (evening account text differs meaningfully) → same harness runs
+three variants with different scripted choices, hashes the evening
+account text, asserts ≥ N-token diff (concrete: Jaccard token
+distance ≥ 0.3 between any two days).
+DoD 3 (the three ORDER 052 §8 defects resolved or documented) → part
+governance (the "or documented" branch), part autonomous (assert
+day-one valuation > 0, assert quality-reading fields non-placeholder,
+assert morning-panel DOM elements have no bounding-box overlap).
+DoD 4 (player can articulate what they want to try differently) →
+genuine human judgment. **Not rewritable.** Move to M8's acceptance
+bundle.
+**Class after rewrite:** MIXED — DoD 1–3 autonomous, DoD 4 becomes
+part of M8.
+
+**M2 — Morning legibility.**
+Already AUTONOMOUS as written. DoD 2 ("every card shows econ / social
+/ eco effect visually") is a DOM assertion via testing-library:
+render the panel, assert three effect elements per activity card.
+DoD 4 (no activity states which sustainability it "serves") is a
+grep-check against the content bank + a DOM string-absence assertion.
+
+**M3 — Evening ledger visible.**
+Already AUTONOMOUS. DoD 1 is a click-event test. DoD 3 (sum
+reconciles) is a pure deterministic simulation test.
+
+**M4 — Menu + kitchen + stock.**
+DoD 1–2, 4 are AUTONOMOUS (state + DOM assertions).
+DoD 3 (running-out event, "audible + written") — the "written" half
+is a stream-event trace + string match; the "audible" half is
+trickier. Rewrite to *"an audio event is dispatched with kind
+`ingredient_ran_out`"*. That's an autonomous check (subscribe to the
+event bus in the test harness). Actual audio playback fidelity moves
+to M8's acceptance bundle if the Vision Owner wants it explicitly
+verified.
+**Class after rewrite:** AUTONOMOUS.
+
+**M5 — Prep + cadence in the room.**
+DoD 1, 3, 4 are AUTONOMOUS (DOM + event + panel-height CSS
+assertion).
+DoD 2 ("rhythm reads in room at a glance without opening a panel")
+is a perception question. Two rewrites available:
+- **Weaker autonomous:** assert that a rhythm indicator element
+  exists in the R3F scene at expected coordinates with expected
+  update rate. Verifies presence, not perception.
+- **Move to M8:** the "at a glance" claim is a discoverability
+  property; it's the same species of judgment as M8's "player reads
+  state without reading every line" (ORDER 047 §9). Bundle it there.
+**Class after rewrite:** AUTONOMOUS with the residual "at a glance"
+claim absorbed into M8.
+
+**M6 — Cause-aware texture.**
+DoD 1–2 are AUTONOMOUS (headless run + regex/token check that every
+non-ambient line contains at least one of the cause tokens from a
+declared vocabulary).
+DoD 3 ("trace three consecutive events back to a causal chain") is
+prose-driven today. Rewrite: add a `causeId` (or `causes: string[]`)
+field to every stream event as a structured data model. Then DoD 3
+becomes an autonomous check: fire a service, assert there exists a
+chain of ≥ 3 events where each references the previous by causeId.
+The prose still reads as text to the player; the data model exists
+only to permit autonomous verification.
+**Cost of rewrite:** small data-model extension in `eventStream.ts`.
+**Class after rewrite:** AUTONOMOUS.
+
+**M7 — Knowledge engine → bank meeting.**
+Already AUTONOMOUS. All three DoD reduce to state assertions on
+`state.enablers`, `state.bankMeeting`, and `state.menuPricingCeiling`.
+
+**M8 — Playthrough acceptance.**
+GATE by design. This milestone exists to absorb every remaining
+human-judgment claim (M1 DoD 4, M5 residual "at a glance", plus the
+original ORDER 047 §9 six sightings). No rewrite proposed — the
+Vision Owner's sign-off IS the DoD.
+
+### 6.3 Sort recommendation
+
+Grouped by class for execution order. Design dependencies still hold
+(M2 depends on M1 existing, M3 depends on the ledger backend that
+already lives in M1, etc.) — this sort respects them.
+
+**Infrastructure block (build once, benefits every subsequent
+milestone):**
+- **INFRA-1 — Headless render + pixel sampling harness.** Puppeteer
+  + preview server + canonical camera poses + ROI catalogue. Unlocks
+  autonomous verification of M0 today and of any future visual
+  milestone. Estimated cost: 1 day. **Not itself a milestone but a
+  prerequisite of moving M0 into the autonomous bucket.**
+- **INFRA-2 — Headless simulation harness.** Fixed-seed action
+  scripter that dispatches through the sim reducer and asserts state
+  invariants. Unlocks autonomous verification of M1, M4, M6, M7.
+  Estimated cost: 0.5 day.
+
+**Autonomous milestones (verify entirely on green CI, sort by design
+dependency):**
+1. **M0** — verified via INFRA-1 pixel sampling.
+2. **M1** — verified via INFRA-2 with three fixed-seed days;
+   ORDER 052 §8 defects resolved or docs updated.
+3. **M3** — evening ledger UI (backend already ships in M1; DoD is
+   pure DOM + reconciliation tests).
+4. **M2** — activities visible (depends on M1 loop; posts to ledger
+   from M3).
+5. **M6** — cause-aware texture (requires INFRA-2 + causeId data
+   model; no other dependency).
+6. **M7** — knowledge → bank (requires INFRA-2; runs in parallel
+   with M4).
+7. **M4** — menu + kitchen + stock (largest single milestone; can
+   land in parallel with M6/M7).
+8. **M5** — prep + cadence (residual "at a glance" moved to M8).
+
+**Single remaining gate:**
+
+9. **M8** — Vision Owner acceptance across the six ORDER 047 §9
+   points + the four residual human-judgment items (M1 DoD 4, M4
+   audio-fidelity if requested, M5 "at a glance", the collapse-as-
+   consequence reading). One playthrough of three sim-days from a
+   fresh state.
+
+**Net.** With INFRA-1 and INFRA-2 built once as prerequisites, the
+strategic slice moves from *"nine milestones, five gates"* to *"nine
+milestones, one gate at the very end."* The intermediate execution
+becomes green-CI-driven; the Vision Owner's attention is preserved
+for the one moment where perception is what is actually being
+measured.
+
+---
+
+## 7. Open questions this proposal does not answer
 
 - Which of the six report gates blocking M2–M7 does the Vision Owner want to open first? Recommend M3 (Evening ledger visible) — it is UI-only on a built backend, produces immediately visible player value, and unblocks M2's evening-account activity referencing.
 - Should ORDER 052 §8's three defects be M1 closure work or absorbed into later milestones?
