@@ -433,6 +433,13 @@ export interface DayState {
   // reset. Distinct from state.cost (which also carries agency,
   // wage, interest, buyout) so the ledger line is clean.
   serviceIngredientAccrued: number;
+  // ORDER 073 (M3) — idle-period ingredient/staff cost accrued
+  // outside service (morning, opening, prep, afternoon, evening).
+  // Posted as one 'other' ledger line at day rollover and reset.
+  // Necessary for DoD 3 reconciliation: state.cost accumulates all
+  // tick cost regardless of period; without this the ledger would
+  // undercount by the per-day idle cost (~100-200 SEK/day).
+  idleCostAccrued: number;
   // ORDER 050 §7 step 3 (2026-08-10) — cover count for the current
   // service. Incremented each time a guest transitions into 'paying';
   // read at service close to enrich the revenue ledger line's cause

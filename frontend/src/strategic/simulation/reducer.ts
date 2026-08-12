@@ -381,6 +381,7 @@ function openService(
     // ORDER 050 §7 step 3 (2026-08-10) — fresh accumulators for this
     // service; posted + reset at service-close transition.
     serviceIngredientAccrued: 0,
+    idleCostAccrued: 0,
     serviceCovers: 0,
     // ORDER 047 §6 — preserve morningPolicyChanges through the service
     // so the evening account can read them. Cleared on evening→morning
@@ -463,6 +464,7 @@ function skipLunch(state: SimulationState): SimulationState {
       costAtServiceStart: null,
       reputationAtServiceStart: null,
       serviceIngredientAccrued: 0,
+      idleCostAccrued: 0,
       serviceCovers: 0
     }
   };
@@ -594,6 +596,7 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           costAtServiceStart: null,
           reputationAtServiceStart: null,
           serviceIngredientAccrued: 0,
+          idleCostAccrued: 0,
           serviceCovers: 0
         }
       };
@@ -644,6 +647,7 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           costAtServiceStart: null,
           reputationAtServiceStart: null,
           serviceIngredientAccrued: 0,
+          idleCostAccrued: 0,
           serviceCovers: 0
         }
       };
@@ -723,6 +727,20 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
             causeId: m.id
           });
         }
+      }
+      // ORDER 073 (M3) — post the day's accumulated idle-period cost
+      // (staff cost during morning / opening / prep / afternoon /
+      // evening) as one 'other' line. Bookkeeping is idle-period cost
+      // is the same crew getting paid; only the service-period portion
+      // is in the 'ingredient' line. Without this the ledger under-
+      // counts by ~100-200 SEK/day and DoD 3 reconciliation fails.
+      const idleAccrued = state.day.idleCostAccrued ?? 0;
+      if (idleAccrued > 0.5) {
+        postLedger(nextForDay, {
+          category: 'other',
+          amount: -idleAccrued,
+          cause: `Idle-period staff cost (day ${state.day.dayNumber})`
+        });
       }
       return nextForDay;
     }
@@ -1108,6 +1126,22 @@ function advanceTick(state: SimulationState): SimulationState {
       // per-service ledger summary. One increment per completed
       // payment during a service; enriches the revenue line's cause.
       if (inLunch || inDinner) draft.day.serviceCovers += 1;
+      // ORDER 073 (M3) — post-service straggler payments. A guest
+      // whose 'paying' transition lands on the very tick that
+      // period flipped to evening still has applyCashRevenue fire,
+      // but serviceRevenueToday no longer accumulates for them
+      // (inLunch / inDinner false). Without this ledger line the
+      // aggregate 'revenue' line at the next service close would
+      // undercount the straggler's contribution, breaking DoD 3
+      // reconciliation. Posts one 'other' line per straggler.
+      if (!inLunch && !inDinner) {
+        postLedger(draft, {
+          category: 'other',
+          amount: rev,
+          cause: `Late guest payment (${draft.day.period})`,
+          causeId: guest.id
+        });
+      }
     }
   }
   // Accumulate cost — paired write to till.
@@ -1115,9 +1149,15 @@ function advanceTick(state: SimulationState): SimulationState {
   applyCashCost(draft, tickCost);
   // ORDER 050 §7 step 3 (2026-08-10) — per-service ingredient
   // accumulator; posted as one 'ingredient' ledger line at
-  // service close (lunch→afternoon or dinner→evening).
+  // service close (lunch→afternoon or dinner→evening). ORDER 073
+  // (M3): cost outside service is also accumulated, posted as a
+  // single 'other' line at day rollover, so state.cost is fully
+  // ledger-attributable (was drifting per-day previously; test
+  // caught it).
   if (draft.day.period === 'lunch' || draft.day.period === 'dinner') {
     draft.day.serviceIngredientAccrued += tickCost;
+  } else {
+    draft.day.idleCostAccrued = (draft.day.idleCostAccrued ?? 0) + tickCost;
   }
 
   // ORDER 049 §5.2 — daily loan interest. Accrues once per calendar

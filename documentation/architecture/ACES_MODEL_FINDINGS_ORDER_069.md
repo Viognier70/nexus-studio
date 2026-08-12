@@ -161,6 +161,51 @@ tolerances to accommodate it would erode the value of ±3 as a
 regression signal. Better to require ROIs land firmly on uniform
 surfaces, and let the variance metric enforce that rule.
 
+## M6 baseline — pickParagraph divergence (ORDER 073, 2026-08-12)
+
+Recorded here so the number is a moving target with a known start,
+not a re-discovery at M6 planning time.
+
+**M1 verification pass 2026-08-12.** The M1 DoD 2 test in
+`frontend/src/strategic/simulation/__tests__/m1.test.ts` runs three
+parallel 3-day scripts with different scenario-response strategies
+(A/B/C, fixed seed) and hashes the concatenated evening-account
+paragraphs. Current maximum Jaccard token distance across the three
+paragraph strings:
+
+- **Baseline (2026-08-12): 0.000** — evening-account paragraphs are
+  byte-identical across scenario-choice variants.
+
+**Cause.** `computeEveningAccount` passes `drewCapital: null` to
+`pickParagraph` (frontend/src/strategic/simulation/eveningAccount.ts:73).
+The paragraph selector only reads `drewCapital` in the retired
+`high_wager_win` / `high_wager_loss` branches (ORDER 050 §5 retired
+the theme-wager mechanic). All other branches (`thin`, `mediocre`,
+`good`, `collapsed`) select their paragraph without any signal from
+the scenario theme — so different scenario choices resolve to the
+same branch and pick the same paragraph.
+
+**M6 target: 0.30 Jaccard distance.** That's what the proposal §6.2
+DoD 2 rewrite named as the "meaningfully different" bar.
+
+**M6 scope required to hit target.** ORDER 052 §9 step 1 (cause-
+aware sentence banks) is the load-bearing piece. Once each stream
+event carries its cause and evening-account paragraph pulls from
+that cause chain, the paragraph will diverge naturally with choice
+history. `pickParagraph` also needs the missing wiring: pass
+`drewCapital` (state.day.drawnCapital or equivalent, propagated
+from the last scenario) into every branch, and add branch-varying
+sub-paragraphs keyed on it.
+
+**Progress checkpoint.** The M1 test emits the current baseline as
+a stdout log at the end of the DoD 2 case:
+
+```
+[M1] evening account text max cross-strategy divergence: 0.000 (target 0.3 at M6)
+```
+
+M6 work should track this number, not re-derive it.
+
 ## References
 
 - `frontend/src/strategic/testHarness/calibration.ts` — analytic
