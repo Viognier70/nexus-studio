@@ -63,7 +63,40 @@ export function CameraProvider({ children }: Props) {
   // ORDER 063 INFRA-1 — explicit camera coordinates from URL params
   // override any preset. Enables the visual-regression harness to pin
   // camera state without a preset entry per pose. Dev-only.
+  //
+  // ORDER 068 — harness poses must respect the same clamp bounds as
+  // the game (GRAY_BOX_CAMERA.pitchMin/pitchMax/minDistance/maxDistance).
+  // Silently clamping like the interactive controls would hide pose-
+  // authoring bugs (ORDER 067 §pitch: -0.45 put the harness camera
+  // 26 m underground looking up at sky, and every downstream pixel
+  // measurement was a lie because the ROI never landed on the
+  // intended surface). Loud failure at mount instead — the runner
+  // catches the pageerror and reports the pose as ERR.
   const harnessCamera = import.meta.env.DEV ? harnessParams.camera : null;
+  if (harnessCamera) {
+    const invalid: string[] = [];
+    if (harnessCamera.pitch < CAMERA.pitchMin || harnessCamera.pitch > CAMERA.pitchMax) {
+      invalid.push(
+        `pitch=${harnessCamera.pitch.toFixed(3)} outside allowed ` +
+        `[${CAMERA.pitchMin.toFixed(3)}, ${CAMERA.pitchMax.toFixed(3)}] rad ` +
+        `(${((CAMERA.pitchMin * 180) / Math.PI).toFixed(0)}° - ` +
+        `${((CAMERA.pitchMax * 180) / Math.PI).toFixed(0)}°)`
+      );
+    }
+    if (harnessCamera.distance < CAMERA.minDistance || harnessCamera.distance > CAMERA.maxDistance) {
+      invalid.push(
+        `distance=${harnessCamera.distance.toFixed(1)} outside allowed ` +
+        `[${CAMERA.minDistance}, ${CAMERA.maxDistance}] m`
+      );
+    }
+    if (invalid.length > 0) {
+      throw new Error(
+        `[harness camera] invalid pose parameters: ${invalid.join('; ')}. ` +
+        `Poses must respect the game's CameraProvider clamps. ` +
+        `Fix the pose in visualPoses.ts; do not bypass the clamp.`
+      );
+    }
+  }
   const start: CameraTarget = harnessCamera
     ? {
         focus: { x: harnessCamera.focus.x, z: harnessCamera.focus.z },

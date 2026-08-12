@@ -35,3 +35,8 @@ frontend/dist/
 frontend/public/assets/characters/*
 !frontend/public/assets/characters/LICENSE.md
 !frontend/public/assets/characters/animations
+
+# ORDER 068 — visual-regression PNG output from `npm run test:visual`.
+# One screenshot per pose with the ROI drawn on top; regenerated on
+# every run. Kept out of history to avoid churn.
+frontend/reports/visual-regression/

@@ -35,9 +35,12 @@ import { spawn } from 'node:child_process';
 import { setTimeout as delay } from 'node:timers/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
+import { mkdirSync } from 'node:fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const FRONTEND_ROOT = resolve(__dirname, '..');
+const REPORT_DIR = resolve(FRONTEND_ROOT, 'reports', 'visual-regression');
+mkdirSync(REPORT_DIR, { recursive: true });
 
 // ---------- args -------------------------------------------------------
 
@@ -84,7 +87,7 @@ const VISUAL_POSES = [
   {
     id: 'roof-tegel-lunch',
     purpose: 'Tegel roof at solar noon.',
-    camera: { focus: { x: 190, z: 45 }, distance: 60, yaw: 0.6, pitch: -0.45 },
+    camera: { focus: { x: 190, z: 45 }, distance: 60, yaw: 0.6, pitch: 0.45 },
     period: 'lunch',
     roi: { x: 620, y: 340, w: 40, h: 40 },
     expected: { r: [110, 220], g: [60, 160], b: [40, 130] }
@@ -92,7 +95,7 @@ const VISUAL_POSES = [
   {
     id: 'roof-tegel-morning',
     purpose: 'Same roof at morning low-sun.',
-    camera: { focus: { x: 190, z: 45 }, distance: 60, yaw: 0.6, pitch: -0.45 },
+    camera: { focus: { x: 190, z: 45 }, distance: 60, yaw: 0.6, pitch: 0.45 },
     period: 'morning',
     roi: { x: 620, y: 340, w: 40, h: 40 },
     expected: { r: [70, 200], g: [40, 150], b: [30, 120] }
@@ -100,7 +103,7 @@ const VISUAL_POSES = [
   {
     id: 'village-strategic-lunch',
     purpose: 'Wide strategic view at lunch.',
-    camera: { focus: { x: 100, z: 0 }, distance: 380, yaw: 0.0, pitch: -0.60 },
+    camera: { focus: { x: 100, z: 0 }, distance: 380, yaw: 0.0, pitch: 0.60 },
     period: 'lunch',
     roi: { x: 640, y: 360, w: 40, h: 40 },
     expected: { r: [50, 220], g: [50, 220], b: [40, 210] }
@@ -108,7 +111,7 @@ const VISUAL_POSES = [
   {
     id: 'village-strategic-dinner',
     purpose: 'Wide strategic view at dinner.',
-    camera: { focus: { x: 100, z: 0 }, distance: 380, yaw: 0.0, pitch: -0.60 },
+    camera: { focus: { x: 100, z: 0 }, distance: 380, yaw: 0.0, pitch: 0.60 },
     period: 'dinner',
     roi: { x: 640, y: 360, w: 40, h: 40 },
     expected: { r: [20, 190], g: [15, 170], b: [10, 160] }
@@ -116,7 +119,7 @@ const VISUAL_POSES = [
   {
     id: 'village-strategic-evening',
     purpose: 'Wide strategic view at evening.',
-    camera: { focus: { x: 100, z: 0 }, distance: 380, yaw: 0.0, pitch: -0.60 },
+    camera: { focus: { x: 100, z: 0 }, distance: 380, yaw: 0.0, pitch: 0.60 },
     period: 'evening',
     roi: { x: 640, y: 360, w: 40, h: 40 },
     expected: { r: [5, 160], g: [5, 150], b: [5, 160] }
@@ -124,7 +127,7 @@ const VISUAL_POSES = [
   {
     id: 'lit-window-dinner',
     purpose: 'Close-up of a lit-window band at dinner.',
-    camera: { focus: { x: 190, z: 45 }, distance: 20, yaw: 0.6, pitch: -0.25 },
+    camera: { focus: { x: 190, z: 45 }, distance: 20, yaw: 0.6, pitch: 0.35 },
     period: 'dinner',
     roi: { x: 620, y: 340, w: 40, h: 40 },
     expected: { r: [80, 255], g: [50, 220], b: [30, 180] }
@@ -235,7 +238,46 @@ async function measurePose(page, baseUrl, pose) {
       const h = /** @type {any} */ (window).__nxHarness;
       return h ? { r: h.r, g: h.g, b: h.b, samples: h.samples, ticks: h.ticks } : null;
     });
-    return { pose, measured: rgb };
+    // ORDER 068 — save a PNG per pose with the ROI drawn on top.
+    // Two invisible-DOM tricks are needed to make the screenshot
+    // faithful to what the pixel sampler reads:
+    //   (1) The pixel sampler reads the WebGL canvas framebuffer
+    //       directly. DOM panels overlaying the canvas do NOT
+    //       affect the sampled RGB — but they DO appear in a plain
+    //       page.screenshot(). First calibration run showed the
+    //       "Din verksamhet" onboarding modal covering the canvas
+    //       in the PNG even though the underlying WebGL read was
+    //       the calibration quad. So we must hide the DOM UI
+    //       before screenshotting.
+    //   (2) Setting `visibility: hidden` on <body> hides everything
+    //       inherited; then explicitly re-enabling `visibility:
+    //       visible` on the canvas and the ROI overlay puts them
+    //       back in the picture. Children of a `visibility:hidden`
+    //       ancestor can override with their own `visible`.
+    const roi = pose.roi;
+    await page.evaluate((r) => {
+      const el = document.createElement('div');
+      el.id = '__nxRoiOverlay';
+      el.style.cssText =
+        `position:fixed;left:${r.x}px;top:${r.y}px;width:${r.w}px;height:${r.h}px;` +
+        `border:2px solid red;box-sizing:border-box;pointer-events:none;z-index:99999;` +
+        `visibility:visible;`;
+      document.body.appendChild(el);
+      // Hide DOM UI, re-show canvas + overlay.
+      document.body.style.visibility = 'hidden';
+      const canvas = document.querySelector('canvas');
+      if (canvas) canvas.style.visibility = 'visible';
+    }, roi);
+    const pngPath = `${REPORT_DIR}/${pose.id}.png`;
+    await page.screenshot({ path: pngPath, fullPage: false });
+    await page.evaluate(() => {
+      const el = document.getElementById('__nxRoiOverlay');
+      if (el) el.remove();
+      document.body.style.visibility = '';
+      const canvas = document.querySelector('canvas');
+      if (canvas) canvas.style.visibility = '';
+    });
+    return { pose, measured: rgb, pngPath };
   } finally {
     page.off('console', onConsole);
     page.off('pageerror', onError);
@@ -287,6 +329,7 @@ function printTable(rows) {
       pad(ok, w.pass)
     );
   }
+  console.log(`\nScreenshots with ROI drawn: ${REPORT_DIR}/*.png`);
 }
 
 // ---------- main ------------------------------------------------------

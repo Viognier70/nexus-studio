@@ -66,7 +66,7 @@ export const VISUAL_POSES: readonly VisualPose[] = [
       focus: { x: 190, z: 45 },   // approximate Vinbaren area
       distance: 60,
       yaw: 0.6,
-      pitch: -0.45
+      pitch: 0.45
     },
     period: 'lunch',
     roi: { x: 620, y: 340, w: 40, h: 40 },
@@ -83,7 +83,7 @@ export const VISUAL_POSES: readonly VisualPose[] = [
       focus: { x: 190, z: 45 },
       distance: 60,
       yaw: 0.6,
-      pitch: -0.45
+      pitch: 0.45
     },
     period: 'morning',
     roi: { x: 620, y: 340, w: 40, h: 40 },
@@ -100,7 +100,7 @@ export const VISUAL_POSES: readonly VisualPose[] = [
       focus: { x: 100, z: 0 },
       distance: 380,
       yaw: 0.0,
-      pitch: -0.60
+      pitch: 0.60
     },
     period: 'lunch',
     roi: { x: 640, y: 360, w: 40, h: 40 },
@@ -117,7 +117,7 @@ export const VISUAL_POSES: readonly VisualPose[] = [
       focus: { x: 100, z: 0 },
       distance: 380,
       yaw: 0.0,
-      pitch: -0.60
+      pitch: 0.60
     },
     period: 'dinner',
     roi: { x: 640, y: 360, w: 40, h: 40 },
@@ -134,7 +134,7 @@ export const VISUAL_POSES: readonly VisualPose[] = [
       focus: { x: 100, z: 0 },
       distance: 380,
       yaw: 0.0,
-      pitch: -0.60
+      pitch: 0.60
     },
     period: 'evening',
     roi: { x: 640, y: 360, w: 40, h: 40 },
@@ -151,7 +151,7 @@ export const VISUAL_POSES: readonly VisualPose[] = [
       focus: { x: 190, z: 45 },
       distance: 20,
       yaw: 0.6,
-      pitch: -0.25
+      pitch: 0.35
     },
     period: 'dinner',
     roi: { x: 620, y: 340, w: 40, h: 40 },
