@@ -54,6 +54,12 @@ import { TorgetPlaza } from './TorgetPlaza';
 // * ORDER 054 Del D — ACES filmic tone map + sRGB output. This step
 //   alone changes the whole image; do material work AFTER this or
 //   you'll be tuning materials against the wrong picture.
+// ORDER 061 point 3 — DEV builds need `preserveDrawingBuffer: true`
+// so the PixelSampleProbe can readPixels off the default framebuffer.
+// With the WebGL default `preserveDrawingBuffer: false`, the browser
+// is free to discard the backbuffer after present() — subsequent
+// readPixels returns zeros regardless of what was rendered. Prod
+// builds stay on the default so the browser can do zero-copy present.
 const CANVAS_GL = {
   antialias: true,
   powerPreference: 'high-performance' as const,
@@ -63,7 +69,8 @@ const CANVAS_GL = {
   // intensity ramp gave dusk-at-noon. Raised to 1.3 alongside the
   // sun intensity bump so mid-day reads as clear light.
   toneMappingExposure: 1.3,
-  outputColorSpace: THREE.SRGBColorSpace
+  outputColorSpace: THREE.SRGBColorSpace,
+  preserveDrawingBuffer: import.meta.env.DEV
 };
 const CANVAS_DPR: [number, number] = [1, 2];
 const CANVAS_CAMERA = { fov: 42, near: 2, far: 5000 };
