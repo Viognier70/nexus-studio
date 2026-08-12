@@ -163,7 +163,11 @@ async function startVite() {
     proc.stdout.on('data', onData);
     proc.stderr.on('data', (c) => process.stderr.write(`[vite] ${c}`));
     proc.on('exit', (code) => rej(new Error(`vite exited early (${code}) before ready`)));
-    setTimeout(() => rej(new Error('vite dev did not report ready within 30s')), 30000);
+    // ORDER 071 — bumped from 30 s to 120 s. On ubuntu-latest CI
+    // with a cold cache, `vite dev` first-boot takes ~40 s (dep
+    // pre-bundle, initial transform pass). Local M-series Mac
+    // reports ready in <100 ms.
+    setTimeout(() => rej(new Error('vite dev did not report ready within 120s')), 120000);
   });
   return { proc, url };
 }

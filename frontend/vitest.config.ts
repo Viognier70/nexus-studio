@@ -13,6 +13,11 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   test: {
-    testTimeout: 15000
+    // ORDER 071 — bumped from 15 000 to 60 000 after CI still
+    // timed out on day.test.ts's 5-social × 16-seed matrix. Locally
+    // finishes in <2 s; ubuntu-latest with 2 vCPUs and vitest's
+    // reduced parallelism takes longer than 15 s. 60 s is generous
+    // enough that any real "test hangs" regression still surfaces.
+    testTimeout: 60000
   }
 });
