@@ -150,26 +150,31 @@ async function startVite() {
     cwd: FRONTEND_ROOT,
     stdio: ['ignore', 'pipe', 'pipe']
   });
-  const url = await new Promise((res, rej) => {
-    let buf = '';
-    const onData = (chunk) => {
-      buf += chunk.toString();
-      const m = /Local:\s+(https?:\/\/\S+)/.exec(buf);
-      if (m) {
-        proc.stdout.off('data', onData);
-        res(m[1].replace(/\/$/, ''));
+  const url = 'http://localhost:5173';
+  // Log stdout/stderr for diagnostic (helps read the CI log if we
+  // ever time out again).
+  proc.stdout.on('data', (c) => process.stdout.write(`[vite] ${c}`));
+  proc.stderr.on('data', (c) => process.stderr.write(`[vite:err] ${c}`));
+  // Poll HTTP until vite responds. More robust than parsing stdout —
+  // vite banner format changes between versions and CI can be slow
+  // enough that on-cold-cache dep pre-bundling delays the banner
+  // beyond any reasonable stdout-watch timeout.
+  const deadline = Date.now() + 300000;   // 5 min
+  while (Date.now() < deadline) {
+    if (proc.exitCode !== null) {
+      throw new Error(`vite exited early (code ${proc.exitCode}) before ready`);
+    }
+    try {
+      const res = await fetch(url + '/');
+      if (res.ok || res.status === 304) {
+        return { proc, url };
       }
-    };
-    proc.stdout.on('data', onData);
-    proc.stderr.on('data', (c) => process.stderr.write(`[vite] ${c}`));
-    proc.on('exit', (code) => rej(new Error(`vite exited early (${code}) before ready`)));
-    // ORDER 071 — bumped from 30 s to 120 s. On ubuntu-latest CI
-    // with a cold cache, `vite dev` first-boot takes ~40 s (dep
-    // pre-bundle, initial transform pass). Local M-series Mac
-    // reports ready in <100 ms.
-    setTimeout(() => rej(new Error('vite dev did not report ready within 120s')), 120000);
-  });
-  return { proc, url };
+    } catch {
+      // ECONNREFUSED etc — server not up yet
+    }
+    await delay(500);
+  }
+  throw new Error('vite dev did not respond within 300s');
 }
 
 async function stopVite(proc) {
