@@ -1,0 +1,89 @@
+# CI — Nexus Studio
+#
+# Two jobs, run on push to any branch and on PRs to main:
+#
+#   build         — typecheck, unit tests, production build.
+#                   Fast; runs on every push. Guards day-to-day
+#                   development against type errors / broken reducers
+#                   / broken build.
+#
+#   visual-regression  (ORDER 070 §5)
+#                 — playwright + vite dev, drives the seven visual
+#                   poses defined in `frontend/src/strategic/testHarness/
+#                   visualPoses.ts`, asserts each ROI's sampled sRGB
+#                   value falls in the approved range. Fails the
+#                   whole build when any pose is out of range.
+#                   Slower (~1 min in headless Chromium with software
+#                   rasterisation); own job so it doesn't drag down
+#                   the fast build step.
+#
+# The visual-regression job is what makes the M0 milestone
+# (village + room baseline) enforceable on CI rather than only
+# locally — the "roofs must not read black at any period" and
+# "night-lit windows must actually light up" claims land as
+# per-pose pixel-range assertions.
+
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: Build (typecheck + unit tests + vite build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install
+        working-directory: frontend
+        run: npm ci
+      - name: Typecheck
+        working-directory: frontend
+        run: npm run typecheck
+      - name: Unit tests
+        working-directory: frontend
+        run: npm test
+      - name: Production build
+        working-directory: frontend
+        run: npm run build
+
+  visual-regression:
+    name: Visual regression (test:visual)
+    runs-on: ubuntu-latest
+    # Own job so failure here doesn't block a fast red-green on
+    # `build`, and so we can see at a glance which class of test
+    # failed. Same trigger, but independent.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install
+        working-directory: frontend
+        run: npm ci
+      - name: Install Playwright Chromium (with system deps)
+        working-directory: frontend
+        # `--with-deps` pulls the system libs Chromium needs on
+        # ubuntu-latest (fonts, libnss, etc.). Skipping this yields
+        # a cryptic "cannot open shared object file" at launch.
+        run: npx playwright install --with-deps chromium
+      - name: Visual regression
+        working-directory: frontend
+        run: npm run test:visual
+      - name: Upload pose screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-regression-poses
+          path: frontend/reports/visual-regression/*.png
+          if-no-files-found: warn

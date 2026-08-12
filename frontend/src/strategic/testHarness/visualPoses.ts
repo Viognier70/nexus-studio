@@ -79,10 +79,14 @@ export const VISUAL_POSES: readonly VisualPose[] = [
     },
     period: 'lunch',
     roi: { x: 626, y: 350, w: 12, h: 24 },
+    // ORDER 070 approved: measured R=121 G=34 B=21 (288 pixels
+    // uniform, zero variance across ROI). ±3 per channel — patch-
+    // drift + minor DPR variance. Not for material-colour changes
+    // (those are the regressions to catch).
     expected: {
-      r: [110, 220],
-      g: [60, 160],
-      b: [40, 130]
+      r: [118, 124],
+      g: [31, 37],
+      b: [18, 24]
     }
   },
   {
@@ -96,10 +100,15 @@ export const VISUAL_POSES: readonly VisualPose[] = [
     },
     period: 'morning',
     roi: { x: 626, y: 350, w: 12, h: 24 },
+    // ORDER 070 approved: measured R=62 G=11 B=7. ±3 per channel,
+    // SAME tolerance as roof-tegel-lunch — solar angle is locked
+    // by period='morning' (no clock drift) and the sample is pixel-
+    // identical over all 288 pixels. Wider tolerance here would
+    // hide regressions in the pose most sensitive to lighting faults.
     expected: {
-      r: [70, 200],
-      g: [40, 150],
-      b: [30, 120]
+      r: [59, 65],
+      g: [8, 14],
+      b: [4, 10]
     }
   },
   // ORDER 069 — village-strategic-lunch REMOVED. At distance=380
@@ -122,10 +131,14 @@ export const VISUAL_POSES: readonly VisualPose[] = [
     },
     period: 'dinner',
     roi: { x: 640, y: 360, w: 40, h: 40 },
+    // ORDER 070 approved: measured R=7 G=10 B=11 (hemi baseline at
+    // near-night, mixed-surface ROI at wide zoom). Slightly
+    // asymmetric range gives room for moonlight bump upward
+    // without failing on the current baseline.
     expected: {
-      r: [20, 190],
-      g: [15, 170],
-      b: [10, 160]
+      r: [3, 15],
+      g: [5, 15],
+      b: [6, 16]
     }
   },
   {
@@ -139,15 +152,17 @@ export const VISUAL_POSES: readonly VisualPose[] = [
     },
     period: 'evening',
     roi: { x: 640, y: 360, w: 40, h: 40 },
+    // ORDER 070 approved: measured R=7 G=10 B=11 (sun below horizon,
+    // same hemi baseline as dinner in autumn).
     expected: {
-      r: [5, 160],
-      g: [5, 150],
-      b: [5, 160]
+      r: [3, 15],
+      g: [5, 15],
+      b: [6, 16]
     }
   },
   {
     id: 'lit-window-dinner',
-    purpose: 'Close-up of a lit-window band at dinner. Emissive should push R well above ambient.',
+    purpose: 'Close-up of a lit-window pane at dinner — emissive amber, sampled inside a single sub-pane (no muntins).',
     camera: {
       focus: { x: 190, z: 45 },
       distance: 20,
@@ -155,14 +170,19 @@ export const VISUAL_POSES: readonly VisualPose[] = [
       pitch: 0.35
     },
     period: 'dinner',
-    // ORDER 069 — ROI moved from (620, 340) to (260, 400) per
-    // Vision Owner direction. Position verification pending in
-    // the run below.
-    roi: { x: 260, y: 400, w: 40, h: 40 },
+    // ORDER 070 — ROI moved to (296, 362, 8, 8) per Vision Owner
+    // direction. Sample sits inside a single LOD 0 glass sub-pane
+    // between muntins. Smaller (64 px) than earlier ROIs but
+    // pixel-identical inside the pane, no muntin dilution.
+    // Position verified in reports/visual-regression/lit-window-dinner.png.
+    roi: { x: 296, y: 362, w: 8, h: 8 },
+    // ORDER 070 approved: measured R=245 G=222 B=169 (uniform 64
+    // pixels inside a single glass sub-pane, zero variance). ±3
+    // per channel.
     expected: {
-      r: [80, 255],
-      g: [50, 220],
-      b: [30, 180]
+      r: [242, 248],
+      g: [219, 225],
+      b: [166, 172]
     }
   },
   // ORDER 066 — replaces the sky-based calibration pose with a
