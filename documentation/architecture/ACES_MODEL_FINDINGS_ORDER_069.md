@@ -123,6 +123,44 @@ during this order. Two reasons:
    The right time to revisit the palette is at M0 acceptance
    (Vision Owner sighting pass) with the harness green.
 
+## Known cross-platform: sub-pixel positioning drift (ORDER 072)
+
+First CI-vs-local comparison of INFRA-1 (ORDER 071) matched five of
+six poses byte-identical between macOS-M Metal and ubuntu-latest
+software-rasterised Chromium. The sixth (`lit-window-dinner` with
+an 8×8 ROI at (296, 362)) diverged completely: local R=245 G=222
+B=169, CI R=2 G=0 B=0.
+
+**Cause**: not a rendering fault. Same window layout, same colours,
+same building. The 8×8 ROI landed inside a lit sub-pane on macOS
+but on the vertical muntin between two panes on ubuntu — a ~4–8 px
+cross-platform sub-pixel positioning shift. Muntins are ~2 px wide
+and dark; panes are ~10 px wide and bright. An 8-pixel ROI sitting
+one muntin-width off centre reads the wrong material.
+
+**Suspected mechanism**: precision differences in matrix multiplies
+between Metal and SwiftShader propagate through the vertex pipeline
+so an object's projected pixel coordinates can shift by 1-4 px
+across platforms — not enough to break coarse layout, enough to
+move a small ROI onto or off a specific texel-scale feature.
+
+**Fix in place** — not a workaround, a permanent guard:
+1. `lit-window-dinner` ROI moved to a 25×25 rectangle at (506, 409),
+   verified 100% uniform lit in both PNGs (625 sampled pixels each,
+   zero max−min variance on both platforms).
+2. `PixelSampleProbe` now publishes per-channel variance
+   (max − min inside the ROI) alongside the mean. `runner`
+   surfaces variance in the table and issues a stdout warning
+   for any pose reporting non-zero variance greater than 2 per
+   channel — that means the ROI is close to a colour edge and
+   is a latent cross-platform failure waiting to happen. Variance
+   catches the failure mode BEFORE the mean crosses the threshold.
+
+Not investigating the shader precision difference itself. Widening
+tolerances to accommodate it would erode the value of ±3 as a
+regression signal. Better to require ROIs land firmly on uniform
+surfaces, and let the variance metric enforce that rule.
+
 ## References
 
 - `frontend/src/strategic/testHarness/calibration.ts` — analytic

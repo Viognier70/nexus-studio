@@ -21,7 +21,17 @@ const state = {
   // Screen-space centre of the sample region (for the on-screen
   // crosshair — probe reads it as a hint but centres by default).
   cx: 0,
-  cy: 0
+  cy: 0,
+  // ORDER 072 — per-channel variance within the ROI, computed as
+  // max − min. Zero variance = the sample sits entirely on one
+  // uniform surface (correct for a well-authored pose). Non-zero
+  // variance on a supposedly-uniform pose is a warning even if
+  // the mean is inside the threshold — it means the ROI is close
+  // to a colour edge and will drift onto the other side of that
+  // edge under future cross-platform sub-pixel differences.
+  varR: 0,
+  varG: 0,
+  varB: 0
 };
 
 export const pixelSampler = {
@@ -30,7 +40,10 @@ export const pixelSampler = {
   get b(): number { return state.b; },
   get samples(): number { return state.samples; },
   get cx(): number { return state.cx; },
-  get cy(): number { return state.cy; }
+  get cy(): number { return state.cy; },
+  get varR(): number { return state.varR; },
+  get varG(): number { return state.varG; },
+  get varB(): number { return state.varB; }
 };
 
 // ORDER 064 — expose a monotonic tick counter for the visual-regression
@@ -43,17 +56,25 @@ export const pixelSampler = {
 // runner's `waitForFunction` doesn't need env awareness.
 let ticks = 0;
 
-export function pixelSamplerWrite(r: number, g: number, b: number, samples: number, cx: number, cy: number): void {
+export function pixelSamplerWrite(
+  r: number, g: number, b: number,
+  samples: number, cx: number, cy: number,
+  varR: number, varG: number, varB: number
+): void {
   state.r = r;
   state.g = g;
   state.b = b;
   state.samples = samples;
   state.cx = cx;
   state.cy = cy;
+  state.varR = varR;
+  state.varG = varG;
+  state.varB = varB;
   ticks += 1;
   if (typeof window !== 'undefined') {
     (window as unknown as { __nxHarness?: unknown }).__nxHarness = {
-      r, g, b, samples, cx, cy, ticks
+      r, g, b, samples, cx, cy, ticks,
+      varR, varG, varB
     };
   }
 }

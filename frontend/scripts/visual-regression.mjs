@@ -95,7 +95,8 @@ const VISUAL_POSES = [
     camera: { focus: { x: 190, z: 45 }, distance: 60, yaw: 0.6, pitch: 0.45 },
     period: 'lunch',
     roi: { x: 626, y: 350, w: 12, h: 24 },
-    expected: { r: [118, 124], g: [31, 37], b: [18, 24] }
+    expected: { r: [118, 124], g: [31, 37], b: [18, 24] },
+    expectUniform: true
   },
   {
     id: 'roof-tegel-morning',
@@ -103,7 +104,8 @@ const VISUAL_POSES = [
     camera: { focus: { x: 190, z: 45 }, distance: 60, yaw: 0.6, pitch: 0.45 },
     period: 'morning',
     roi: { x: 626, y: 350, w: 12, h: 24 },
-    expected: { r: [59, 65], g: [8, 14], b: [4, 10] }
+    expected: { r: [59, 65], g: [8, 14], b: [4, 10] },
+    expectUniform: true
   },
   {
     id: 'village-strategic-dinner',
@@ -111,7 +113,8 @@ const VISUAL_POSES = [
     camera: { focus: { x: 100, z: 0 }, distance: 380, yaw: 0.0, pitch: 0.60 },
     period: 'dinner',
     roi: { x: 640, y: 360, w: 40, h: 40 },
-    expected: { r: [3, 15], g: [5, 15], b: [6, 16] }
+    expected: { r: [3, 15], g: [5, 15], b: [6, 16] },
+    expectUniform: false
   },
   {
     id: 'village-strategic-evening',
@@ -119,15 +122,17 @@ const VISUAL_POSES = [
     camera: { focus: { x: 100, z: 0 }, distance: 380, yaw: 0.0, pitch: 0.60 },
     period: 'evening',
     roi: { x: 640, y: 360, w: 40, h: 40 },
-    expected: { r: [3, 15], g: [5, 15], b: [6, 16] }
+    expected: { r: [3, 15], g: [5, 15], b: [6, 16] },
+    expectUniform: false
   },
   {
     id: 'lit-window-dinner',
-    purpose: 'Close-up of a lit-window pane at dinner — sample inside a single LOD 0 sub-pane.',
+    purpose: 'Close-up of a lit-window pane at dinner — 25×25 sample inside a uniform lit pane (ORDER 072).',
     camera: { focus: { x: 190, z: 45 }, distance: 20, yaw: 0.6, pitch: 0.35 },
     period: 'dinner',
-    roi: { x: 296, y: 362, w: 8, h: 8 },
-    expected: { r: [242, 248], g: [219, 225], b: [166, 172] }
+    roi: { x: 506, y: 409, w: 25, h: 25 },
+    expected: { r: [242, 248], g: [219, 225], b: [166, 172] },
+    expectUniform: true
   },
   // ORDER 066 — replaces sky-morning. Dev-only calibration quad
   // rendered through the full pipeline. Camera pose irrelevant
@@ -139,7 +144,8 @@ const VISUAL_POSES = [
     camera: { focus: { x: 100, z: 0 }, distance: 380, yaw: 0.0, pitch: 0.56 },
     period: 'lunch',
     roi: { x: 610, y: 330, w: 60, h: 60 },
-    expected: { r: [158, 162], g: [158, 162], b: [158, 162] }
+    expected: { r: [158, 162], g: [158, 162], b: [158, 162] },
+    expectUniform: true
   }
 ];
 
@@ -205,15 +211,18 @@ async function measurePose(page, baseUrl, pose) {
     // Headless Chromium falls back to software rasterisation for
     // WebGL. The strategic scene renders at ~1 fps for LOD 0
     // close-ups; probe throttle now lowered to every 2nd frame
-    // (ORDER 071 PixelSampleProbe). Wait for at least 2 ticks
-    // (deterministic post-navigation settle) with a 180 s per-pose
-    // timeout for close-zoom poses where render frame budget is
-    // tightest.
+    // (ORDER 071 PixelSampleProbe). Wait for at least 6 ticks
+    // (ORDER 072: bumped from 2 because ProceduralFacades' lit-
+    // glass day→night material swap runs on a separate 4-frame
+    // throttle inside its own useFrame, so 2 pixelSampler ticks
+    // aren't enough to guarantee the swap has fired for the lit-
+    // window pose. 6 ticks = ~12 render frames, comfortably past
+    // the swap on both platforms).
     try {
       await page.waitForFunction(
         () => {
           const h = /** @type {any} */ (window).__nxHarness;
-          return h && h.ticks >= 2;
+          return h && h.ticks >= 6;
         },
         { timeout: 180000 }
       );
@@ -244,7 +253,7 @@ async function measurePose(page, baseUrl, pose) {
     await delay(1000);
     const rgb = await page.evaluate(() => {
       const h = /** @type {any} */ (window).__nxHarness;
-      return h ? { r: h.r, g: h.g, b: h.b, samples: h.samples, ticks: h.ticks } : null;
+      return h ? { r: h.r, g: h.g, b: h.b, samples: h.samples, ticks: h.ticks, varR: h.varR ?? 0, varG: h.varG ?? 0, varB: h.varB ?? 0 } : null;
     });
     // ORDER 068 — save a PNG per pose with the ROI drawn on top.
     // Two invisible-DOM tricks are needed to make the screenshot
@@ -316,26 +325,46 @@ function fmtDeviation(m, exp) {
 }
 
 function printTable(rows) {
-  const w = { pose: 28, period: 10, measured: 22, expected: 40, dev: 20, pass: 4 };
+  const w = { pose: 28, period: 10, measured: 22, expected: 32, dev: 20, variance: 14, pass: 4 };
   const pad = (s, n) => (s + ' '.repeat(n)).slice(0, n);
   const header =
     pad('pose', w.pose) + pad('period', w.period) +
     pad('measured', w.measured) + pad('expected', w.expected) +
-    pad('deviation', w.dev) + pad('ok?', w.pass);
+    pad('deviation', w.dev) + pad('variance', w.variance) + pad('ok?', w.pass);
   console.log('\n' + header);
   console.log('-'.repeat(header.length));
+  const warnings = [];
   for (const r of rows) {
     const m = r.measured;
     const measuredStr = m ? `R=${m.r} G=${m.g} B=${m.b}` : (r.error ?? 'no read');
     const ok = m ? (inRange(m, r.pose.expected) ? 'yes' : 'NO') : 'ERR';
+    const varStr = m ? `${m.varR}/${m.varG}/${m.varB}` : '—';
     console.log(
       pad(r.pose.id, w.pose) +
       pad(r.pose.period, w.period) +
       pad(measuredStr, w.measured) +
       pad(fmtRange(r.pose.expected), w.expected) +
       pad(m ? fmtDeviation(m, r.pose.expected) : '—', w.dev) +
+      pad(varStr, w.variance) +
       pad(ok, w.pass)
     );
+    // ORDER 072 — variance warning applies only to poses that
+    // DECLARE themselves as targeting a uniform surface. Wide-
+    // zoom mixed-surface poses (village-strategic dinner/evening)
+    // have huge variance by design; that's fine because their
+    // point IS to average many surfaces to a whole-canvas hemi
+    // baseline. For uniform-target poses, non-zero variance
+    // signals ROI-near-an-edge fragility ahead of a real cross-
+    // platform failure.
+    if (m && r.pose.expectUniform && (m.varR > 2 || m.varG > 2 || m.varB > 2)) {
+      warnings.push(
+        `${r.pose.id}: non-zero variance R=${m.varR} G=${m.varG} B=${m.varB} — ROI likely near a colour edge; pose may fail on future cross-platform runs even if mean is in range now.`
+      );
+    }
+  }
+  if (warnings.length > 0) {
+    console.log('\n[variance warnings]');
+    for (const w of warnings) console.log('  ! ' + w);
   }
   console.log(`\nScreenshots with ROI drawn: ${REPORT_DIR}/*.png`);
   // ORDER 071 — surface diagnostics for any pose that ERR'd, not

@@ -51,6 +51,15 @@ export interface VisualPose {
   // "roof is black" (R < 40) without failing on legitimate
   // day-to-day variation.
   expected: RgbRange;
+  // ORDER 072 — set true if this pose's ROI is deliberately
+  // targeted at one uniform surface (single roof face, one lit
+  // pane, one calibration quad). Non-zero variance on a
+  // uniform-target pose is a warning: the ROI is near a colour
+  // edge and will drift onto the other side under future cross-
+  // platform sub-pixel positioning shifts. False for poses that
+  // deliberately sample mixed surfaces (e.g. wide village-strategic
+  // hemi baseline where the whole canvas is the "surface").
+  expectUniform: boolean;
 }
 
 // Note: camera focus coordinates below use OSM local frame (+X east,
@@ -87,7 +96,8 @@ export const VISUAL_POSES: readonly VisualPose[] = [
       r: [118, 124],
       g: [31, 37],
       b: [18, 24]
-    }
+    },
+    expectUniform: true
   },
   {
     id: 'roof-tegel-morning',
@@ -109,7 +119,8 @@ export const VISUAL_POSES: readonly VisualPose[] = [
       r: [59, 65],
       g: [8, 14],
       b: [4, 10]
-    }
+    },
+    expectUniform: true
   },
   // ORDER 069 — village-strategic-lunch REMOVED. At distance=380
   // no single pixel corresponds to a named surface (individual
@@ -139,7 +150,10 @@ export const VISUAL_POSES: readonly VisualPose[] = [
       r: [3, 15],
       g: [5, 15],
       b: [6, 16]
-    }
+    },
+    // Mixed-surface by design (wide village zoom, whole-canvas
+    // hemi-baseline test). Variance is expected.
+    expectUniform: false
   },
   {
     id: 'village-strategic-evening',
@@ -158,7 +172,8 @@ export const VISUAL_POSES: readonly VisualPose[] = [
       r: [3, 15],
       g: [5, 15],
       b: [6, 16]
-    }
+    },
+    expectUniform: false
   },
   {
     id: 'lit-window-dinner',
@@ -170,20 +185,23 @@ export const VISUAL_POSES: readonly VisualPose[] = [
       pitch: 0.35
     },
     period: 'dinner',
-    // ORDER 070 — ROI moved to (296, 362, 8, 8) per Vision Owner
-    // direction. Sample sits inside a single LOD 0 glass sub-pane
-    // between muntins. Smaller (64 px) than earlier ROIs but
-    // pixel-identical inside the pane, no muntin dilution.
-    // Position verified in reports/visual-regression/lit-window-dinner.png.
-    roi: { x: 296, y: 362, w: 8, h: 8 },
-    // ORDER 070 approved: measured R=245 G=222 B=169 (uniform 64
-    // pixels inside a single glass sub-pane, zero variance). ±3
-    // per channel.
+    // ORDER 072 — ROI moved from (296, 362, 8, 8) to (506, 409, 25, 25).
+    // The 8×8 pick landed inside a lit sub-pane on macOS-M Metal
+    // but on the vertical muntin between two panes on ubuntu-latest
+    // software-rasterised Chromium — a ~4-8 px cross-platform sub-
+    // pixel positioning drift that ±3 tolerance couldn't hide.
+    // The new (506, 409, 25, 25) rectangle is verified 100% uniform
+    // lit R=245 G=222 B=169 in BOTH local and CI PNGs (625 sampled
+    // pixels each, zero variance on both platforms).
+    roi: { x: 506, y: 409, w: 25, h: 25 },
+    // ORDER 072 approved: measured R=245 G=222 B=169 (uniform 625
+    // pixels, zero variance both platforms). ±3 per channel.
     expected: {
       r: [242, 248],
       g: [219, 225],
       b: [166, 172]
-    }
+    },
+    expectUniform: true
   },
   // ORDER 066 — replaces the sky-based calibration pose with a
   // known-colour quad rendered through the full material → ACES →
@@ -231,7 +249,8 @@ export const VISUAL_POSES: readonly VisualPose[] = [
       r: [158, 162],
       g: [158, 162],
       b: [158, 162]
-    }
+    },
+    expectUniform: true
   }
 ];
 

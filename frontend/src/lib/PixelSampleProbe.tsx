@@ -107,6 +107,8 @@ export function PixelSampleProbe() {
     ctx.readPixels(x, y, sW, sH, ctx.RGBA, ctx.UNSIGNED_BYTE, pixels);
 
     let rs = 0, gs = 0, bs = 0;
+    let rMin = 255, gMin = 255, bMin = 255;
+    let rMax = 0, gMax = 0, bMax = 0;
     const n = sW * sH;
     let anyNonZero = false;
     for (let i = 0; i < n; i++) {
@@ -114,16 +116,25 @@ export function PixelSampleProbe() {
       const pg = pixels[i * 4 + 1];
       const pb = pixels[i * 4 + 2];
       rs += pr; gs += pg; bs += pb;
+      if (pr < rMin) rMin = pr; if (pr > rMax) rMax = pr;
+      if (pg < gMin) gMin = pg; if (pg > gMax) gMax = pg;
+      if (pb < bMin) bMin = pb; if (pb > bMax) bMax = pb;
       if (pr > 0 || pg > 0 || pb > 0) anyNonZero = true;
     }
     const r = Math.round(rs / n);
     const g = Math.round(gs / n);
     const b = Math.round(bs / n);
+    // ORDER 072 — publish per-channel max−min variance. Zero = ROI
+    // fully on a uniform surface; non-zero = ROI is close to a
+    // colour edge (probable cross-platform failure mode).
+    const varR = rMax - rMin;
+    const varG = gMax - gMin;
+    const varB = bMax - bMin;
     // Publish the CSS-pixel coord of the ROI centre (top-left origin)
     // so DOM overlays render a crosshair in the right place.
     const cxCss = roi ? Math.round(roi.x + roi.w / 2) : Math.round(size.width / 2);
     const cyCss = roi ? Math.round(roi.y + roi.h / 2) : Math.round(size.height / 2);
-    pixelSamplerWrite(r, g, b, n, cxCss, cyCss);
+    pixelSamplerWrite(r, g, b, n, cxCss, cyCss, varR, varG, varB);
 
     // Log the first few ticks unconditionally so we can see what the
     // probe is doing regardless of whether pixels are non-zero. If
