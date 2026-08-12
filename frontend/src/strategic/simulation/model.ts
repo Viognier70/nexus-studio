@@ -295,6 +295,14 @@ export function makeInitialState(
     // rolling revenue empty (venture just opened), loan grandfathered
     // to a T2-shaped default until §5.1 bank meeting is built,
     // scale-down all off.
+    //
+    // ORDER 052 §8 → M1 accepted 2026-08-12: the "all three quality
+    // axes read identical" complaint is not a bug in the initial
+    // state (0.55 mid-band is honest for a brand-new venture) but a
+    // rendering-density concern once the axes remain identical past
+    // day 1. Axes will diverge from the first service tick onward
+    // (quality.ts:tickQuality drives food/drink/service on their
+    // own inputs). Deferred as a UI-legibility refinement.
     qualityFood: 0.55,
     qualityDrink: 0.55,
     qualityService: 0.55,

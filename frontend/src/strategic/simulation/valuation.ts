@@ -122,6 +122,17 @@ export interface Valuation {
   cash: number;          // kSEK on hand — state.cash / 1000 (ORDER 050 §3, 2026-08-10)
 }
 
+// Day-1 value is negative by design (ORDER 052 §8 → M1 accepted, 2026-08-12).
+// Under the T2 grandfather loan (2400 kSEK) the tangible side
+// evaluates to premises 1680 + fitout 504 + inventory 5 - team
+// buyout ≈25 = ≈2164 kSEK. With zero goodwill (no service history
+// on day 1), value = tangible - debt ≈ -236 kSEK. That is not a
+// bug; it is what the venture would sell for if the player quit
+// on day 1 without ever opening service — the loan exceeds the
+// hardware. The teaching point: build goodwill through the
+// service loop to bring value positive. §5.1 bank meeting will
+// eventually let the player choose a tier that matches their
+// premises intent; until then the T2 grandfather is the given.
 export function computeValuation(state: SimulationState, tier: LoanTier = 'T2'): Valuation {
   const base = premisesBaseline(tier);
   const fitout = fitoutValue(tier);

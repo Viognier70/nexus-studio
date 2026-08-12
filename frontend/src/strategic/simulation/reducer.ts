@@ -1318,7 +1318,27 @@ function costPerMinuteToTick(state: SimulationState): number {
   return base + ingredients + wastePenalty;
 }
 
+// ORDER 072 → M1 defence — validate patch enum fields before merging.
+// Test harnesses can (and did — the M1 verification test hit this in
+// its first run) accidentally pass a legal-looking-but-unrecognised
+// value like `pricing: 'mellan'` instead of `'medel'`, and the whole
+// cost / revenue chain silently NaN-poisons via
+// `REVENUE_BASE[undefined] × INGREDIENT_MULT[…] = NaN`. Guard here
+// so invalid patches throw at dispatch time.
+const VALID_PRICING: readonly string[] = ['låg', 'medel', 'hög'];
+const VALID_INGREDIENT: readonly string[] = ['grund', 'utvald', 'premium'];
+const VALID_TRAINING: readonly number[] = [1, 2, 3];
+
 function applyPolicyPatch(state: SimulationState, patch: Partial<Policies>): SimulationState {
+  if (patch.pricing !== undefined && !VALID_PRICING.includes(patch.pricing)) {
+    throw new Error(`SET_POLICY invalid pricing="${patch.pricing}"; expected one of ${VALID_PRICING.join(' | ')}`);
+  }
+  if (patch.ingredientTier !== undefined && !VALID_INGREDIENT.includes(patch.ingredientTier)) {
+    throw new Error(`SET_POLICY invalid ingredientTier="${patch.ingredientTier}"; expected one of ${VALID_INGREDIENT.join(' | ')}`);
+  }
+  if (patch.trainingLevel !== undefined && !VALID_TRAINING.includes(patch.trainingLevel)) {
+    throw new Error(`SET_POLICY invalid trainingLevel="${patch.trainingLevel}"; expected one of ${VALID_TRAINING.join(' | ')}`);
+  }
   const policies = { ...state.policies, ...patch };
   const needsStaffRebuild = patch.staffCount && patch.staffCount !== state.policies.staffCount;
   const nextStaff = needsStaffRebuild ? makeStaff(policies.staffCount) : state.staff;
