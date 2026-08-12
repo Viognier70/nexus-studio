@@ -23,10 +23,17 @@ import type { SustainabilityKey } from '../types';
 
 // -------- panel styles ---------------------------------------------------
 
+// ORDER 061 UX (Vision Owner 2026-08-12) — the two service panels
+// (instruments + stream) sat on opposite sides of the screen, forcing
+// the eye to jump across the whole viewport to correlate "what the
+// business is doing" with "what just happened". Consolidated on the
+// right side: stream at top:96 (arrival cue anchor unchanged), this
+// panel below it. Top offset 400 clears the stream at its typical
+// 4-entry maximum height (~280 px) plus a breathing gap.
 const PANEL_STYLE: React.CSSProperties = {
   position: 'absolute',
-  top: 96,
-  left: 16,
+  top: 400,
+  right: 20,
   width: 220,
   display: 'flex',
   flexDirection: 'column',

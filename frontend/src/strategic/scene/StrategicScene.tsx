@@ -8,6 +8,7 @@ import { ChimneySmoke } from './ChimneySmoke';
 import { ProceduralFacades } from './ProceduralFacades';
 import { ScaleReference } from '../../scene/ScaleReference';
 import { FpsProbe } from '../../lib/FpsProbe';
+import { PixelSampleProbe } from '../../lib/PixelSampleProbe';
 import { CraftedLandmarks } from './CraftedLandmarks';
 import { EntranceDoorPulse } from './EntranceDoorPulse';
 import { CraftedLandmarksD2 } from './CraftedLandmarksD2';
@@ -132,6 +133,7 @@ export function StrategicScene({ onSelect, selectedId, showScaleRef = false }: P
         <StreetLabels />
         <ScaleReference enabled={showScaleRef} halfSize={80} groundY={0.02} />
         {import.meta.env.DEV && <FpsProbe />}
+        {import.meta.env.DEV && <PixelSampleProbe />}
       </Suspense>
       <CameraController />
     </Canvas>

@@ -19,6 +19,7 @@ import { useEffect, useState } from 'react';
 import { economicReadingNormalised } from '../simulation/cashReading';
 import { useSimState } from '../simulation/SimulationProvider';
 import { fpsMeter } from '../../lib/fpsMeter';
+import { pixelSampler } from '../../lib/pixelSampler';
 
 const PANEL_STYLE: React.CSSProperties = {
   position: 'absolute',
@@ -52,8 +53,14 @@ export function DevPanel({ lastKey }: Props) {
   // the readout ticks visibly without triggering a re-render on every
   // frame. The FpsProbe inside Canvas writes to the meter at ~2 Hz.
   const [fps, setFps] = useState(0);
+  // ORDER 061 point 3 — pixel sample readout at screen centre. Same
+  // 250 ms poll cadence as FPS so both readouts stay in sync.
+  const [rgb, setRgb] = useState<{ r: number; g: number; b: number }>({ r: 0, g: 0, b: 0 });
   useEffect(() => {
-    const id = window.setInterval(() => setFps(fpsMeter.fps), 250);
+    const id = window.setInterval(() => {
+      setFps(fpsMeter.fps);
+      setRgb({ r: pixelSampler.r, g: pixelSampler.g, b: pixelSampler.b });
+    }, 250);
     return () => window.clearInterval(id);
   }, []);
   // Service progress readout: "5:23 / 10 min" when a service is
@@ -87,5 +94,48 @@ export function DevPanel({ lastKey }: Props) {
   const cashK = Math.round(sim.cash / 1000);
   const line2 = `     cash=${cashK.toString().padStart(4, ' ')}k  econR=${econReading.toFixed(2)}  soc=${c.social.toFixed(2)}  eco=${c.ecological.toFixed(2)}  rep=${sim.reputation.toFixed(2)}  key=${lastKey || '-'}`;
   const line3 = `     ${weather}${factors}`;
-  return <div style={PANEL_STYLE}>{`${line1}\n${line2}\n${line3}`}</div>;
+  // ORDER 061 point 3 — post-tone-map pixel at screen centre.
+  // Vision Owner aims the crosshair at a roof face; this reads the
+  // sRGB value being displayed. R170 G120 B100 → math is right and
+  // atmosphere/fog is muting saturation; <R100 → shadow or normal
+  // still wrong.
+  const line4 = `     pixel(centre) R=${rgb.r.toString().padStart(3, ' ')} G=${rgb.g.toString().padStart(3, ' ')} B=${rgb.b.toString().padStart(3, ' ')}`;
+  return (
+    <>
+      <div style={PANEL_STYLE}>{`${line1}\n${line2}\n${line3}\n${line4}`}</div>
+      <CenterCrosshair />
+    </>
+  );
+}
+
+// ORDER 061 point 3 — 12 px crosshair centred on the viewport so the
+// Vision Owner sees exactly where the pixel sample lands. Pointer-
+// events off — never interferes with camera drag.
+const CROSS_H_STYLE: React.CSSProperties = {
+  position: 'absolute',
+  left: 'calc(50% - 6px)',
+  top: 'calc(50% - 1px)',
+  width: 12,
+  height: 2,
+  background: 'rgba(255, 240, 100, 0.85)',
+  pointerEvents: 'none',
+  zIndex: 46
+};
+const CROSS_V_STYLE: React.CSSProperties = {
+  position: 'absolute',
+  left: 'calc(50% - 1px)',
+  top: 'calc(50% - 6px)',
+  width: 2,
+  height: 12,
+  background: 'rgba(255, 240, 100, 0.85)',
+  pointerEvents: 'none',
+  zIndex: 46
+};
+function CenterCrosshair() {
+  return (
+    <>
+      <div style={CROSS_H_STYLE} />
+      <div style={CROSS_V_STYLE} />
+    </>
+  );
 }
