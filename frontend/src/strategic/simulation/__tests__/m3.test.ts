@@ -131,6 +131,12 @@ describe('M3 DoD — evening ledger visible', () => {
       }
     }
     perDayLines.push(`  total: ratio=${(overallRatio * 100).toFixed(1)}%, drift=${overallDrift.toFixed(0)} SEK`);
+    // ORDER 075 — track absolute drift as a stable metric alongside
+    // pickParagraph divergence (see ACES_MODEL_FINDINGS §M3). 3-day
+    // baseline recorded 2026-08-13: 1135 SEK. 7-day scaling probe:
+    // 25 777 SEK (non-linear jump at day 5). Follow the number,
+    // don't re-derive.
+    perDayLines.push(`[M3] absolute drift baseline (3-day fixed script): ${overallDrift.toFixed(0)} SEK (target: <1500 for this script; see ACES_MODEL_FINDINGS §M3 for 7-day scaling behaviour)`);
     console.log(perDayLines.join('\n'));
 
     // Overall ratio must land within ±2% of a perfect reconciliation

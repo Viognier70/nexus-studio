@@ -206,6 +206,66 @@ a stdout log at the end of the DoD 2 case:
 
 M6 work should track this number, not re-derive it.
 
+## M3 reconciliation drift baseline (ORDER 074, tracked from 2026-08-13)
+
+Same pattern as the pickParagraph baseline above: record the number
+now, follow it forward, do not re-derive it at each milestone.
+
+**M3 3-day baseline (ORDER 074 CI run 31642553749):**
+- overall ratio = 101.4 %
+- absolute drift = 1135 SEK
+
+Three motivating explanations (test comment carries them, this doc
+carries the audit trail):
+1. Wages, interest, and idle-cost lines for day N are posted at
+   day N+1 morning START, not at day N evening close. Per-day
+   ledger partitioning is ~24 h misaligned with per-day cash-
+   movement partitioning.
+2. Straggler payments landing on the exact tick a period transitions
+   have small ordering ambiguity with idle-cost posting on that
+   tick.
+3. Guest revenue floats through `rev / 1000 × 1000` once per guest
+   (kSEK bucket → SEK ledger line); the round-trip introduces
+   sub-SEK per-guest drift that compounds to a few hundred SEK over
+   100+ guests.
+
+**Scaling probe — 7-day run (ORDER 075, 2026-08-13):**
+| days | drift (SEK) | revenue (SEK) | guests | drift/day | drift/guest |
+|------|-------------|---------------|--------|-----------|-------------|
+| 1    | −142        | 51 408        | 168    | −142      | −0.84       |
+| 3    | −557        | 131 019       | 428    | −186      | −1.30       |
+| 5    | **+43 155** | 231 800       | 758    | +8 631    | +56.93      |
+| 7    | +25 777     | 306 020       | 1 000  | +3 682    | +25.78      |
+
+**Interpretation.** Drift is **not linear in either dimension**. It
+stays small and negative (ledger overcounts) at days 1–3, jumps
+positive by day 5 (ledger under-counts by 43 kSEK), then partially
+recovers by day 7. This is a systematic sign-flip around day 4-5,
+not floating-point drift. The three explanations above account
+for the sub-thousand-SEK range on 1–3 days; the day-5 spike is
+a separate mechanism that hasn't been root-caused.
+
+Suspected mechanisms (not investigated per ORDER 075 "ingen åtgärd
+nu, bara siffran"):
+- Game-state degradation at longer runs. Reputation drops → arrivals
+  fall → cost per revenue-SEK rises, but different accounting
+  pathways for cost vs revenue may treat this asymmetrically.
+- Ledger ring buffer bound `LEDGER_MAX_LINES = 1000`. By day 5-7 the
+  ledger has 100+ lines/day and may be truncating early lines.
+  Truncated lines would produce a systematic positive drift
+  (older negative cost lines dropped first if append-order matches
+  tick order → still-recorded revenue with dropped cost = positive).
+- Collapse-frequency change at longer runs (morale regresses across
+  days per ORDER 047 §2; morale ↓ increases collapse probability).
+  If collapse still leaks somewhere despite ORDER 074, the leak
+  gets bigger.
+
+**Threshold policy.** M3 test asserts ±2% band + <1500 SEK absolute
+on the 3-day script only. A longer-run test would fail against that
+bound today — expected, since the day-5 behavior isn't accounted for.
+Do not widen the bound to survive longer runs; fix the day-5
+mechanism when we get there.
+
 ## References
 
 - `frontend/src/strategic/testHarness/calibration.ts` — analytic
