@@ -1,9 +1,11 @@
 # Strategic Track — Milestone Proposal
 
-**Status:** Proposal — awaiting Vision Owner approval.
-**Version:** 1.0 (2026-08-12)
-**Author:** Claude Code, under ORDER 063.
+**Status:** Living document. Original proposal filed under ORDER 063 (2026-08-12); status rows reconciled against commits + test files under ORDER 084 (2026-08-13). Autonomous DoDs on each landed milestone reference the commit hash and test file that verified them.
+**Version:** 1.1 (2026-08-13 — ORDER 084 reconciliation)
+**Author:** Claude Code, under ORDER 063; ORDER 084 audit and status corrections by Claude Code.
 **Scope:** The strategic view of Grythyttan + the restaurant service simulation running on top of it. Everything ORDER 043–062 has touched *except* the first-person prologue (VERTICAL_SLICE_001), which is treated separately in §5.
+
+**ORDER 084 audit summary (2026-08-13).** Before this pass the summary table below asserted M1 had three open defects, M2 was "Not started", and M3 was "no UI". All three landed 2026-08-13 with green DoD tests and were left unmarked. Status column now cites the landing commit for every closed milestone. One follow-on finding: **M1 DoD 3 Defect B (morning panels overlap) is REOPENED** — the original closure under commit `bebac5c` inspected the layout only at 1280×720 and declared "no spatial overlap"; the first M8 playtest pass (2026-08-13, `#playtest=1`) reproduces overlap on a wider viewport. See §M1 for detail.
 
 ---
 
@@ -21,22 +23,22 @@ The proposal changes no code and merges no orders. It offers a structure to plan
 
 | # | Name | Kind | Status | Blocking open threads |
 |---|---|---|---|---|
-| M0 | Village + room baseline | RENDER | ~95 % (2 tail items) | 057 Del D, 061 pt3 fog verification |
-| M1 | First playable loop | MIXED | LOOP FIRES; 3 readability defects | 052 §8 (three defects) |
-| M2 | Morning legibility (activities visible) | MECHANIC + UI | Not started, backend absent | 050 §7 step 1 |
-| M3 | Evening ledger visible | MECHANIC + UI | Backend built, no UI | 050 §7 step 3 UI |
-| M4 | Menu + kitchen + stock | MECHANIC + UI | Landed 2026-08-13 (ORDER 077 §4); DoD 1–4 verified; wine / packages / ingredientTier retirement rolled to M4b |
-| M5 | Prep + cadence in the room | MECHANIC + RENDER | Landed 2026-08-13 (ORDER 078); DoD 1 + 3 + 4 verified autonomously, DoD 2 mechanic verified (sight-read remains M8) |
-| M6 | Cause-aware texture (mechanic) | MECHANIC | Landed 2026-08-12 (ORDER 076); divergence 0.219, first-cut floor cleared | — |
+| M0 | Village + room baseline | RENDER | ~95 % (2 tail items). Adjacent ORDER 083 pitch-probe measurement filed 2026-08-13 as `M0_CAMERA_PITCH_PROBE_REPORT_ORDER_083.md` — finding: actors are cylinders, pitch is not the bottleneck; two paths (rig the puck / add presentation mode) both ORDER-sized and unopened. | 057 Del D, 061 pt3 fog verification, pitch/actor-legibility decision from ORDER 083 |
+| M1 | First playable loop | MIXED | **Landed 2026-08-13 (commit `bebac5c`); verified via `m1.test.ts`.** DoD 1 (3 days no desync), DoD 3 defect A (valuation math documented in `valuation.ts`), DoD 3 defect C (initial mid-band quality documented) all green. DoD 2 relaxed to state-divergence per proposal §6.2; text divergence deferred to M6. DoD 4 → M8. **DoD 3 Defect B REOPENED 2026-08-13** — original closure only inspected 1280×720; wide-viewport overlap reproduces per M8 pass 1. | Reopened defect B (panel overlap on wide viewport) |
+| M2 | Morning legibility (activities visible) | MECHANIC + UI | **Landed 2026-08-13 (commit `609eaf1`); verified via `m2.test.ts`.** DoD 1 (pick 1–3 activities, weekly-gate, cash + ledger flow), DoD 3 (evening account names picked activity), DoD 4 (no card labels its capital) all green. DoD 2 (three-column visual on card) is a DOM assertion — landing commit ships the panel; DOM test lives with the panel test suite. Report gate opened under ORDER 075 (`M2_ACTIVITY_MODEL_REPORT_ORDER_075.md`). | — |
+| M3 | Evening ledger visible | MECHANIC + UI | **Landed 2026-08-13 (commit `9855a6c`; ORDER 074 follow-up `48a9d29` closed collapse-close reconciliation hole); verified via `m3.test.ts`.** DoD 2 (every mover posts labelled line, categories revenue/ingredient/wage/interest/scenario present), DoD 3 (overall reconciliation within ±2 %, drift < 1500 SEK on 3-day script), deliverable (ledger persists across day boundaries) all green. DoD 1 (single-click open) satisfied inline — panel embeds ledger table directly under paragraph; zero clicks. | — |
+| M4 | Menu + kitchen + stock | MECHANIC + UI | Landed 2026-08-13 (ORDER 077 §4, commit `db639d5`); DoD 1–4 verified via `m4.test.ts`; wine / packages / ingredientTier retirement rolled to M4b | — |
+| M5 | Prep + cadence in the room | MECHANIC + RENDER | Landed 2026-08-13 (ORDER 078, commit `b21eda2`); DoD 1 + 3 + 4 verified via `m5.test.ts`, DoD 2 mechanic verified (colour-transition sampling); sight-read remains M8 | — |
+| M6 | Cause-aware texture (mechanic) | MECHANIC | Landed 2026-08-12 (ORDER 076, commit `0b4eb89`); verified via `m6.test.ts`; divergence 0.219, first-cut floor cleared | — |
 | M6b | Cause-aware texture (sentence-bank rewrite) | CONTENT | Not started (split out from M6 per ORDER 077) | 052 §9 step 1 |
-| M4a | Attractiveness weighting + substitute/walkout split | MECHANIC | Landed 2026-08-13 (ORDER 079); DoD 1 + 2 verified — closes ORDER 051 §8 acceptance items #2 and #4 that M4 as filed cannot satisfy | — |
+| M4a | Attractiveness weighting + substitute/walkout split | MECHANIC | Landed 2026-08-13 (ORDER 079, commit `e649f2a`; DoD 1 tightened by ORDER 080 `b255cad`); DoD 1 + 1b + 2 verified via `m4a.test.ts` — closes ORDER 051 §8 acceptance items #2 and #4 that M4 as filed cannot satisfy | — |
 | M4b | Menu + kitchen + stock (residuals) | CONTENT + MECHANIC | Not started (attractiveness split out to M4a per ORDER 078 §8); residuals = wine list, package menus, ingredientTier retirement, stock ageing | 051 §7 steps 5–7 + §4 ageing |
-| M7a | Chef service-questions (end-to-end flow verified) | MECHANIC | Landed 2026-08-13 (ORDER 080); DoD 1 + 2 + 3 verified — mechanism was already built, M7a proves it end-to-end | — |
+| M7a | Chef service-questions (end-to-end flow verified) | MECHANIC | Landed 2026-08-13 (ORDER 080, commit `84d24dc`); DoD 1 + 2 + 3 verified via `m7a.test.ts` — mechanism was already built, M7a proves it end-to-end | — |
 | M7b | Bank meeting scene | MECHANIC + UI | Blocked pending ORDER 049 §7 step 8 answer-to-loan mapping report | 049 §5.1, §7 step 8 |
 | M7c | Multi-role question coverage (sommelier / värd / servitör) | CONTENT | Blocked pending three knowledge-generate script runs | 049 §1 volume across roles |
-| M8 | Playthrough acceptance | GOVERNANCE | Not scheduled | — |
+| M8 | Playthrough acceptance | GOVERNANCE | **In execution — pass 1 completed 2026-08-13 (`#playtest=1` day 1).** Four Vision-Owner findings filed to `M8_PERCEPTION_PUNCH_LIST.md` (rows 22–25). ORDER 081 brief (`M8_PLAYTEST_BRIEF_ORDER_081.md`) is the operating reference. Sign-off deferred pending fixes for the four findings and reopened M1 defect B. | Four playtest findings + reopened M1 defect B; typically ≥ 2 passes before clean sign-off |
 
-**M1 is the first milestone at which the "act → see consequence → want to repeat" bar is met.** See §3.
+**With M1/M2/M3 landed, the "act → see consequence → want to repeat" bar is met end-to-end.** M8 pass 1 opened 2026-08-13; see §3 for what pass 1 surfaced.
 
 ---
 
@@ -66,6 +68,8 @@ The proposal changes no code and merges no orders. It offers a structure to plan
 
 **Purpose:** the player can open a service, answer scenarios, and see an evening account that reads as consequence — and want to open the next service.
 
+**Status:** Landed 2026-08-13 (commit `bebac5c` "feat: M1 — first playable loop, DoD verified via INFRA-2"). Verified via `frontend/src/strategic/simulation/__tests__/m1.test.ts` — 4 DoD-shaped tests, all green.
+
 **Deliverables (all present unless flagged):**
 - SET_POLICY morning action (training, pricing, ingredient tier) — built (ORDER 046)
 - OPEN_SERVICE with 3–30 min length choice — built (ORDER 047)
@@ -77,49 +81,55 @@ The proposal changes no code and merges no orders. It offers a structure to plan
 - Evening account paragraph (six branches incl. mediocre) — built (ORDER 046 §3)
 - Skala-ner reversible retreat — built (ORDER 043)
 - Guests + staff render with attention-lean, arrival/departure — built (ORDER 044)
-- **Defect A (ORDER 052 §8):** day-one valuation −229 kSEK (T2 loan too large for premises OR missing valuation input; report before fixing)
-- **Defect B (ORDER 052 §8):** morning panels overlap spatially
-- **Defect C (ORDER 052 §8):** all four quality readings show "Godtagbar" placeholder + revenue-per-seat dashes
+- **Defect A (ORDER 052 §8) — CLOSED as accepted math (bebac5c).** Day-one valuation ≈ −236 kSEK: tangible 2164 kSEK (premises 1680 + fitout 504 + inventory 5 − buyout ≈ 25) minus loan 2400 (T2 grandfather) minus zero goodwill. Documented in `valuation.ts` and asserted by `m1.test.ts` DoD 3 A so a future refactor cannot silently shift the numbers. The venture *is* underwater on day 1 — that's the teaching point the player builds goodwill against.
+- **Defect B (ORDER 052 §8) — REOPENED 2026-08-13.** Original closure under `bebac5c` inspected the layout only at 1280×720 (TeamPanel `left:16 w:320` ends x=336; ScaleDownPanel `left:352` — 16 px gap; InvestmentPanel below with `top:500`) and declared "no spatial overlap in 1280×720 viewport. No fix needed; not testing static CSS constants." The 2026-08-13 first M8 playtest pass (`#playtest=1`, day 1) reproduces overlap on a wider viewport — the fixed-`left`/`top` layout does not adapt. Fix requires actual responsive layout (flex or grid on the morning surfaces per ORDER 050 Addendum A §6.3 "one-thing-per-surface"), not a viewport-specific pixel check. New closure requires either (a) a DOM regression test in `EventStreamPanel.test.tsx`-style testing-library covering multiple viewport widths, or (b) the surfaces collapsing into a single scrolling column above a breakpoint. Blocks M8 sign-off on punch-list row 22.
+- **Defect C (ORDER 052 §8) — CLOSED as accepted state (bebac5c).** All three quality axes start at 0.55 mid-band for a brand-new venture and diverge from the first service tick onward as `tickQuality` drives each on its own inputs. Asserted by `m1.test.ts` DoD 3 C. The "revenue-per-seat dashes" rendering-density concern is a UI-polish item deferred out of M1 closure.
 
 **DoD (objective, tickable):**
-1. From a fresh state, the player runs three consecutive days without desync.
-2. Evening account text differs meaningfully across the three days based on the player's choices (not templated repetition).
-3. The three ORDER 052 §8 defects are resolved or documented as accepted.
-4. At the end of day 3 the player can articulate one thing the game asked them to try that they now want to try differently.
+1. **PASS** — From a fresh state, the player runs three consecutive days without desync. Verified: `m1.test.ts` "DoD 1 — three consecutive days without desync (invariants hold)" runs 1500 sim-seconds through a 3-day script and asserts every invariant (cash finite, reputation and capitals in [0,1], team size non-negative) holds across ~7500 ticks. Caught + fixed a real NaN bug from an unrecognised pricing enum along the way (enum validation added to `applyPolicyPatch`).
+2. **PASS (relaxed)** — Evening account text differs meaningfully across days. Rewritten in landing commit per proposal §6.2 acknowledgement: the current `pickParagraph` only reads `drewCapital` in the retired high_wager branches, so text divergence is ~0 at M1. Assertion tightened to state-divergence: three parallel A/B/C strategy runs produce different final `{social, ecological, cash, reputation}`. Text-variation-by-choice is M6/M6b scope, not M1.
+3. **PASS (mixed)** — Three ORDER 052 §8 defects. **A CLOSED, B REOPENED (see above), C CLOSED.**
+4. → M8. Player-articulation is human judgment; absorbed into M8 punch-list row 7.
 
 ### M2 — Morning legibility (activities visible)
 
 **Purpose:** what the player wagers each morning is concrete, named work — not abstract "social capital" — with three visible effect columns per activity.
 
-**Deliverables:**
-- Activity model + schema (name, three-column effect: economic / social / ecological)
-- Activity allocation surface — morning panel adjacent to TeamPanel
-- Reducer wiring: chosen activities post to enablers and to ledger
-- Evening account references chosen activities by name
-- Retirement or re-anchoring of the abstract theme-wager (ORDER 050 §5)
+**Status:** Landed 2026-08-13 (commit `609eaf1` "feat: M2 — morning legibility (activities visible), DoD verified"). Report gate opened 2026-08-13 under ORDER 075 (commit `1f16fc7`), landing followed same day. Verified via `frontend/src/strategic/simulation/__tests__/m2.test.ts` and the activity catalogue in `activities.ts`.
+
+**Deliverables (all present):**
+- Activity model + schema (`ACTIVITY_CATALOGUE`, name + three-column effect economic/social/ecological) — built
+- Activity allocation surface — MorningActivitiesPanel adjacent to TeamPanel — built
+- Reducer wiring: `PICK_ACTIVITY` / `UNPICK_ACTIVITY` deducts cash immediately, posts to ledger, applies effect at day rollover — built
+- Evening account paragraph prepends `"Today you picked: <name(s)>"` line — built (`eveningAccount.ts`)
+- Weekly-gate for gated activities (`guest-chef` and similar) rejects re-pick within 7 days — built
+- Theme-wager retirement not touched in this order (reference gate stays; ORDER 050 §5 remains for a future pass)
 - **Feeds:** ORDER 050 §7 step 1 (activity model with three-column effects)
 
 **DoD:**
-1. Player picks 1–3 activities morning of day 1.
-2. Every card shows econ / social / ecological effect visually (icons, numbers, or bars).
-3. Evening account at end of day 1 names at least one chosen activity by name.
-4. No activity states which sustainability it "serves"; the three numbers are the teaching (ORDER 050 §4 constraint).
+1. **PASS** — `m2.test.ts` "DoD 1 — player can pick 1–3 activities in the morning" verifies pick / unpick / cash deduction / ledger line / 3-cap / off-morning rejection / weekly-gate refusal + honour after window.
+2. Every card shows econ / social / ecological effect visually. This is a DOM assertion. Verified structurally: the activity records carry `effectEconomic / effectSocial / effectEcological` fields consumed by the panel component; the M8 playtest brief item A2/A3 covers the sight-read.
+3. **PASS** — `m2.test.ts` "DoD 3 — evening account paragraph names at least one picked activity" runs a scripted 1-day INFRA-2 harness with two picks (`local-sourcing` + `wine-tasting`) and asserts the paragraph contains both activity names, prepended (`startsWith('Today you picked:')`).
+4. **PASS** — `m2.test.ts` "DoD 4 — no activity name/description labels a sustainability capital" greps the whole `ACTIVITY_CATALOGUE` for forbidden tokens (`social`, `ekolog`, `ecolog`, `ekonom`, `econom`, `hållbarhet`, `sustainab`, `capital`) — none appear.
 
 ### M3 — Evening ledger visible
 
 **Purpose:** the player can inspect what actually hit cash tonight; every money-mover names its own line (Fortnox-analogue).
 
-**Deliverables:**
-- LedgerPanel UI reading `state.ledger` ring buffer (backend built, ORDER 050 §3 wired)
-- Income / expense grouping; sortable by amount and time
-- Click-through from evening account paragraph to relevant ledger line(s)
-- Ledger persists across day boundaries within the same session
-- **Feeds:** ORDER 050 §7 step 3 UI surface (backend already built)
+**Status:** Landed 2026-08-13 (commit `9855a6c` "feat: M3 — evening ledger visible, DoD verified via INFRA-2"). Follow-up bug closure under ORDER 074 (commit `48a9d29` "fix: ORDER 074 — collapse close now posts service summary ledger lines") moved `postServiceSummaryLines` to `cashReading.ts` and called it from both natural-close and collapse-close paths, closing a hole where collapsed services dropped their revenue + ingredient lines. Verified via `frontend/src/strategic/simulation/__tests__/m3.test.ts`.
+
+**Deliverables (all present):**
+- LedgerPanel embedded directly under the evening paragraph in `EveningAccountPanel` — built (per ORDER 050 §7 step 6 V2, 2026-08-10); zero-click inline table rather than a separate panel
+- Every money-mover posts a labelled line — verified across categories `revenue / ingredient / wage / interest / scenario / stock / other / agency / buyout`
+- Ledger persists across day boundaries within the ring buffer (`LEDGER_MAX_LINES`); `state.ledger` retains lines with `day: N` from prior days
+- Amount signing enforced per category (positive = into till for `revenue`; negative for `wage / ingredient / interest / agency / buyout`); asserted per line
+- **Feeds:** ORDER 050 §7 step 3 UI surface — closed inline rather than as a separate click-through
 
 **DoD:**
-1. Player opens ledger from evening panel with one click.
-2. Every scenario choice, wage payout, ingredient purchase, interest movement produces a labelled line.
-3. Sum of ledger lines from a service reconciles with cash movement for that service (deterministic test).
+1. **PASS (satisfied by zero-click design)** — Ledger visible without navigating away from the evening panel. Interpretation per landing test comment: "Any value ≤ 1 satisfies the DoD; zero is better than one." Not asserted as a DOM click count; satisfied by inspection of `EveningAccountPanel.tsx`.
+2. **PASS** — `m3.test.ts` "DoD 2 — every money-mover posts a labelled ledger line" scripted 3-day dinner run asserts every ledger entry has a non-empty `cause` string, `runningCash` is finite, and the required categories `revenue / ingredient / wage / interest / scenario` all appear.
+3. **PASS** — `m3.test.ts` "DoD 3 — sum of ledger lines reconciles with cash movement" asserts overall ratio ∈ [0.98, 1.02] and absolute drift < 1500 SEK on the 3-day fixed script. ORDER 075 tracks the drift baseline as a stable metric alongside `pickParagraph` divergence (see `ACES_MODEL_FINDINGS §M3`; 3-day baseline 1135 SEK, 7-day scaling non-linear at day 5 — 25 777 SEK — noted for future investigation, does not block M3).
+4. **PASS (deliverable)** — `m3.test.ts` "deliverable — ledger persists across day boundaries" asserts the ledger contains lines from ≥ 2 distinct `day` values by the end of a 3-day run.
 
 ### M4 — Menu + kitchen + stock
 
@@ -247,17 +257,18 @@ The proposal changes no code and merges no orders. It offers a structure to plan
 
 ---
 
-## 3. First playable milestone
+## 3. First playable milestone — landed; what pass 1 surfaced
 
-**M1 is the first milestone at which the player can perform an action, see a consequence, and want to do it again.** This bar is *literally* met right now — the loop fires end-to-end (open → scenarios → evening account → next morning) and reputation feedback across days changes what the game asks of the player next.
+**M1 landed 2026-08-13 (commit `bebac5c`).** The "act → see consequence → want to repeat" bar is met end-to-end: the loop fires (open → scenarios → evening account → next morning), reputation feedback across days changes what the game asks of the player next, and by the same landing sequence M2 (`609eaf1`) and M3 (`9855a6c`) shipped alongside — activities visible at morning, ledger visible at evening.
 
-**What is missing for M1 specifically, and nothing else:**
-- **The three ORDER 052 §8 defects.** Not features — quality gaps in the loop that is already firing:
-  - Day-one valuation displays −229 kSEK. Either the T2 loan sizing is wrong for the starting premises, or the valuation formula is missing an input. ORDER 052 §8 requires a report before touching it.
-  - Morning panels overlap spatially (§6.3 separated them logically, not visually).
-  - All four quality readings show the placeholder text "Godtagbar" and revenue-per-seat displays dashes. Identical readings read as decoration; unfilled ones read worse.
+The first M8 playthrough pass ran 2026-08-13 under ORDER 081 (`M8_PLAYTEST_BRIEF_ORDER_081.md`, `#playtest=1`, day 1). It surfaced four Vision-Owner findings + confirmed one prematurely-closed M1 defect:
 
-Everything above is scope for M1 closure. M2 and later are *additions*, not fixes for M1. The Vision Owner may choose to defer M1's three defects into M2 rather than address them separately — that is a scope call, not a milestone-definition question.
+1. **Panel overlap on wide viewport (M1 DoD 3 Defect B REOPENED).** The morning panel row (Team / Investment / Scale-down / Activities / Menu) has fixed `left` / `top` pixel constants tuned at 1280×720. On a wider viewport the surfaces do not adapt; overlap and text-hidden-under-panel returns. This defect was closed under `bebac5c` on the strength of a single-viewport inspection; the reopen requires actual responsive layout, not another one-off pixel check. Also filed as M8 punch-list row 22.
+2. **OPEN_SERVICE allowed with empty stock, no warning.** The player can open dinner with no stock bought and no menu composed; the game does not surface this before opening. Consequences appear later (guests walk, revenue floors) but not at the decision moment where the M8 brief §A2/A3 expects the mechanic to teach. Filed as M8 punch-list row 23.
+3. **Reputation floors at 0.00 with no visible recovery path.** Once `state.reputation` reaches 0.00 the reputation loop (ORDER 043 §4) has no visible route back up — the display doesn't tell the player what would lift it. May be an actual mechanic gap (recovery formula missing) or a display gap (recovery firing but not shown); the M8 pass could not distinguish from the outside. Filed as M8 punch-list row 24.
+4. **Chef-question tone reads as research prose mid-service.** Bank-drawn questions from the 272-approved chef corpus (ORDER 049 §7 step 3) carry the source register — extended clinical/academic prose — into a moment where the player is inside a pass with an ongoing scenario. The tone doesn't fit the register the M8 brief §C7 expects ("the question reads as real — answerable from professional knowledge"). Filed as M8 punch-list row 25.
+
+**None of the four findings are M1-scope in the milestone sense** — they are M8 gate items that require touching M1, M4, M7a code respectively. Track them on the M8 punch-list; whether each fix ships as its own ORDER or bundled is a Vision Owner scope call.
 
 ---
 
@@ -504,9 +515,10 @@ measured.
 
 ## 7. Open questions this proposal does not answer
 
-- Which of the six report gates blocking M2–M7 does the Vision Owner want to open first? Recommend M3 (Evening ledger visible) — it is UI-only on a built backend, produces immediately visible player value, and unblocks M2's evening-account activity referencing.
-- Should ORDER 052 §8's three defects be M1 closure work or absorbed into later milestones?
-- Does the Vision Owner accept the merge recommendation for VS001, or prefer archive?
+- The three-report-gate stack that this section originally listed (M3 first, then M2 unblocking on its evening-account tie-in) is closed: M2 and M3 both landed 2026-08-13. Remaining gates are M6b (sentence-bank rewrite), M7b (bank meeting scene, blocked on the ORDER 049 §7 step 8 answer-to-loan mapping report), M7c (three additional knowledge-generate runs for sommelier / värd / servitör). Which of the three does the Vision Owner open next?
+- The four M8 pass-1 findings (§3) each require touching landed code (M1 for panel layout, M4 for open-with-empty-stock, M1/M3 for reputation-floor recovery, M7a/M6b for chef-question tone). Should each ship as its own ORDER or bundled into the next M8-preparation pass?
+- ORDER 083's `M0_CAMERA_PITCH_PROBE_REPORT_ORDER_083.md` finding — actors are cylinders, low pitch alone doesn't solve action legibility — offers Path A (rig the puck) and Path B (presentation-mode second view), both ORDER-sized. Neither is opened. Does the Vision Owner want a report gate on one, both, or neither before this decision?
+- Does the Vision Owner accept the merge recommendation for VS001, or prefer archive? Now that M4 has landed, the "merge at end of M4" trigger from §5 is met.
 - Is there a target session count per milestone (e.g. M3 must be playable within one day of a player picking up the game) that should be added to each DoD as a discoverability target?
 
 ---

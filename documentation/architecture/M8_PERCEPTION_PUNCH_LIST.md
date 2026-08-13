@@ -2,9 +2,9 @@
 
 **Purpose.** Every perception item that will land on the Vision Owner's plate at M8. One row per point: where it came from, what specifically is being assessed, and in what game state it appears when the Vision Owner is looking for it. Read this before entering M8 so the length of the gate is visible.
 
-**Sources.** ORDER 047 §9 (the six items M8 was built around), ORDER 052 §10, ORDER 051 §8, ORDER 049 §8, ORDER 046 §6, plus milestone-specific residuals routed to M8 in `STRATEGIC_TRACK_MILESTONES_PROPOSAL.md` §6.3.
+**Sources.** ORDER 047 §9 (the six items M8 was built around), ORDER 052 §10, ORDER 051 §8, ORDER 049 §8, ORDER 046 §6, plus milestone-specific residuals routed to M8 in `STRATEGIC_TRACK_MILESTONES_PROPOSAL.md` §6.3. **Rows 22–25 added 2026-08-13 under ORDER 084** from the first M8 playthrough pass (`#playtest=1`, day 1).
 
-**Total: 21 items.** Split by shape at §3.
+**Total: 25 items** (21 original + 4 from M8 pass 1). Split by shape at §3.
 
 ---
 
@@ -33,6 +33,10 @@
 | 19 | ORDER 049 §8 #6 (M7 acceptance) | The moments where something was at stake felt like moments | Any scenario with a wager or a bank-meeting decision | Requires M7b + subjective judgment |
 | 20 | ORDER 052 §10 #4 (M5 acceptance) | Room's rhythm was visible while it was happening | Mid-service with the puck rings visible | Same as row 8 — M5 mechanic + M8 sight-read (this is the same claim from the M5-source side) |
 | 21 | ORDER 052 §10 #5 (M5 acceptance) | Short prep produced running about the player could see | Mid-service after a scripted SKIP_PREP or morning changes | Staff-puck load reading + prep-readiness panel installed under ORDER 078; "running about you could see" is the sight-read |
+| 22 | ORDER 084 — M8 pass 1 finding (2026-08-13) | **Morning panel row does not adapt to wider viewports.** Overlap between Team / Investment / Scale-down / Activities / Menu returns above the layout's tuned 1280×720. Also **reopens M1 DoD 3 Defect B** — original closure in commit `bebac5c` only inspected 1280×720. | Morning of any day on a viewport wider than the developer's default (e.g. 1920×1080). | Nothing autonomous yet — fix requires responsive layout (flex/grid on morning surfaces per ORDER 050 Addendum A §6.3), plus a DOM regression test at multiple viewport widths. Row is BOTH an M1 defect-B reopen and an M8 sight-read item. |
+| 23 | ORDER 084 — M8 pass 1 finding (2026-08-13) | **Game allows OPEN_SERVICE with empty stock and no warning.** The player can open dinner with no menu composed and no stock bought; nothing surfaces the state at the decision moment. Consequences appear later (guests walk, revenue floors) but not where the mechanic should teach. | Morning → OPEN_SERVICE dispatch, without a prior COMPOSE_MENU or BUY_STOCK. | Mechanic-level: the reducer already knows `state.menu.length === 0` and `Object.values(state.stock).every(v => v === 0)`. Missing: a UI-level pre-open confirmation or a stream-line at t=0 ("Doors open — pantry is empty"). Autonomous check possible once the guard exists (assert an event or a blocking dialog appears). |
+| 24 | ORDER 084 — M8 pass 1 finding (2026-08-13) | **Reputation floors at 0.00 with no visible recovery path.** Once `state.reputation` hits 0.00 the reputation loop (ORDER 043 §4) offers no legible route back up. Cannot distinguish from outside whether recovery is missing (mechanic gap) or firing invisibly (display gap). | Any day after a run of collapsed services or repeated bad-scenario answers has driven reputation to 0.00. | Diagnostic first, then design decision: measure whether `state.reputationCeiling` and `state.reputationTarget` lift under any conditions from a 0.00 floor across a scripted N-day run. If yes → display gap (surface a "how do I lift this" reading). If no → mechanic gap (recovery function needs a non-zero source when reputation itself is zero). |
+| 25 | ORDER 084 — M8 pass 1 finding (2026-08-13) | **Chef-question tone reads as research prose mid-service.** Bank-drawn questions from the 272-approved chef corpus (ORDER 049 §7 step 3, verbatim from gusto.science TRIAD articles per §3) carry the source register — extended clinical/academic sentences — into a moment where the player is inside a pass. Tone doesn't fit ORDER 048 §5's intent of "knowledge tested at the moment it is needed by the person who needs it." | Any dinner where walk-in-of-five (A) / time-pressure (A) / moral-dilemma (A) fires and its `professionalQuestion` overlay appears. | Verbatim-source policy is a governance decision (ORDER_REGISTRY Observation 6: "Content of type 'verbatim': pre-written scenarios in `articles.scenario_chef` and sister columns are used as-is; no translation, no adaptation"). Fix either (a) revises the verbatim policy for the service-question surface — allow tone-adjustment per sender role, or (b) filters the bank to the subset whose source register already reads as a spoken question. Whichever path, needs a Vision Owner report gate before build. |
 
 ---
 
@@ -47,7 +51,7 @@ These are here for the receipt trail — they are NOT part of the M8 punch-list.
 
 ## 3. Shape of the gate
 
-**21 items total, grouped by how they close:**
+**25 items total, grouped by how they close:**
 
 - **6 items** — ORDER 047 §9's original list (rows 1–6). These are M8's founding purpose; unavoidable.
 - **1 item** — M1 DoD 4 (row 7). Pure articulation test — not rewritable, not reducible to any mechanic.
@@ -56,10 +60,11 @@ These are here for the receipt trail — they are NOT part of the M8 punch-list.
 - **4 items** — ORDER 051 §8 items 1, 3, 5, 6 (rows 11–14). All about M4's material feel. Panels shipped; Vision Owner reads whether they carry weight.
 - **5 items** — ORDER 049 §8 items 1, 2, 3, 5, 6 (rows 15–19). All M7-tier; some blocked pending M7b/M7c. Half will be gated by M7 landing, not by M8 itself.
 - **1 item** — ORDER 052 §10 #5 (row 21). Prep-readiness reading visible in the room.
+- **4 items — M8 pass 1 findings, ORDER 084 (rows 22–25).** Panel overlap on wide viewport (also M1 defect-B reopen), OPEN_SERVICE with empty stock, reputation floors at 0.00, chef-question tone. Each requires either an ORDER-sized fix or a Vision Owner scope call before pass 2.
 
-**Bundling recommendation.** Treat rows 8 + 20 as one item and rows 9 + 10 as one closely-related pair. That collapses the effective count from 21 to ~18 distinct perception checks. Rows 15–19 (M7-tier, five items) only enter M8 after M7 lands; if the strategic slice ships without a working bank meeting they drop from the list entirely.
+**Bundling recommendation.** Treat rows 8 + 20 as one item and rows 9 + 10 as one closely-related pair. Row 22 double-counts as an M1 defect reopen but only requires one sight-read. That collapses the effective count from 25 to ~21 distinct perception checks. Rows 15–19 (M7-tier, five items) only enter M8 after M7 lands; if the strategic slice ships without a working bank meeting they drop from the list entirely. Rows 22–25 are pass-1 blockers — none of them close by re-reading, all four need a fix or a scope decision before pass 2.
 
-**Practical M8 length.** Under the bundling above, a fresh three-day playthrough that touches every mechanic and lets the Vision Owner sit with the reading will run ~30–45 minutes plus debrief time per pass. Expect two or three passes before a clean sign-off — first pass will surface adjustments (colour thresholds, aside sentences, panel positions), subsequent passes verify.
+**Practical M8 length.** Under the bundling above, a fresh three-day playthrough that touches every mechanic and lets the Vision Owner sit with the reading will run ~30–45 minutes plus debrief time per pass. Pass 1 (2026-08-13) surfaced 4 blockers; expect a second pass after they're addressed, then likely a third pass to verify.
 
 ## 4. What's *not* in the punch-list
 
