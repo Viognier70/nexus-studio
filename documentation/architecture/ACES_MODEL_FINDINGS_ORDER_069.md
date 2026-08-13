@@ -229,42 +229,72 @@ carries the audit trail):
    sub-SEK per-guest drift that compounds to a few hundred SEK over
    100+ guests.
 
-**Scaling probe — 7-day run (ORDER 075, 2026-08-13):**
-| days | drift (SEK) | revenue (SEK) | guests | drift/day | drift/guest |
-|------|-------------|---------------|--------|-----------|-------------|
-| 1    | −142        | 51 408        | 168    | −142      | −0.84       |
-| 3    | −557        | 131 019       | 428    | −186      | −1.30       |
-| 5    | **+43 155** | 231 800       | 758    | +8 631    | +56.93      |
-| 7    | +25 777     | 306 020       | 1 000  | +3 682    | +25.78      |
+**Initial scaling probe — 7-day run (ORDER 075, 2026-08-13):**
+| days | drift (SEK) | revenue (SEK) | guests | drift/guest |
+|------|-------------|---------------|--------|-------------|
+| 1    | −142        | 51 408        | 168    | −0.84       |
+| 3    | −557        | 131 019       | 428    | −1.30       |
+| 5    | **+43 155** | 231 800       | 758    | +56.93      |
+| 7    | +25 777     | 306 020       | 1 000  | +25.78      |
 
-**Interpretation.** Drift is **not linear in either dimension**. It
-stays small and negative (ledger overcounts) at days 1–3, jumps
-positive by day 5 (ledger under-counts by 43 kSEK), then partially
-recovers by day 7. This is a systematic sign-flip around day 4-5,
-not floating-point drift. The three explanations above account
-for the sub-thousand-SEK range on 1–3 days; the day-5 spike is
-a separate mechanism that hasn't been root-caused.
+**Initial interpretation (2026-08-13, WRONG).** I recorded this as
+"non-linear, systematic sign-flip at day 5." Three hypotheses were
+filed: ring-buffer truncation, reputation-degradation asymmetry,
+collapse leak.
 
-Suspected mechanisms (not investigated per ORDER 075 "ingen åtgärd
-nu, bara siffran"):
-- Game-state degradation at longer runs. Reputation drops → arrivals
-  fall → cost per revenue-SEK rises, but different accounting
-  pathways for cost vs revenue may treat this asymmetrically.
-- Ledger ring buffer bound `LEDGER_MAX_LINES = 1000`. By day 5-7 the
-  ledger has 100+ lines/day and may be truncating early lines.
-  Truncated lines would produce a systematic positive drift
-  (older negative cost lines dropped first if append-order matches
-  tick order → still-recorded revenue with dropped cost = positive).
-- Collapse-frequency change at longer runs (morale regresses across
-  days per ORDER 047 §2; morale ↓ increases collapse probability).
-  If collapse still leaks somewhere despite ORDER 074, the leak
-  gets bigger.
+**Corrected interpretation (ORDER 076, 2026-08-13).** The
+"systematic day-5 spike" was a **test-methodology artifact**, not
+a sim behavior. My `runUntilSec = 30 + 1050 * days + 100` formula
+assumed each day fits in 1050 s; the actual full-day cycle is
+~1080 s (opening 10 + prep 120 + service 900 + evening 30 +
+margin). For days ≥ 3, the LAST day's dinner service was still
+running when the harness stopped — accumulated in-service revenue
+had hit `state.cash` via `applyCashRevenue` per guest, but the
+aggregate `revenue` ledger line for that service hadn't posted
+yet (posts at service close). The huge +43 kSEK "spike" on day 5
+was a whole day's worth of in-flight guest revenue trapped in cash
+without a matching ledger line.
 
-**Threshold policy.** M3 test asserts ±2% band + <1500 SEK absolute
-on the 3-day script only. A longer-run test would fail against that
-bound today — expected, since the day-5 behavior isn't accounted for.
-Do not widen the bound to survive longer runs; fix the day-5
-mechanism when we get there.
+**Confirmed via three independent checks:**
+1. Bumping `LEDGER_MAX_LINES` 1000 → 100 000: **drift unchanged**
+   (same numbers to the SEK). Ring-buffer never fired anyway —
+   max ledger length was 91 lines for the 7-day run. Truncation
+   hypothesis refuted directly.
+2. Runningcash-vs-previous-line diff on the 5-day trace revealed
+   a big gap at the final unread lines: last ledger line ran with
+   runningCash ≈ 270 kSEK; state.cash at run-end was ≈ 295 kSEK.
+   The 25 kSEK gap = in-service revenue applied to cash but not
+   yet aggregated to ledger.
+3. Rerun with proper `runUntilSec = 1260 * days + 200` (guarantees
+   each day's dinner close + evening + wage-post finish):
+
+   | days | drift (SEK) | guests | drift/guest |
+   |------|-------------|--------|-------------|
+   | 1    | −300        | 166    | −1.81       |
+   | 3    | −1027       | 371    | −2.77       |
+   | 5    | −1401       | 678    | −2.07       |
+   | 7    | −1859       | 960    | −1.94       |
+
+   Drift is now **linear in guests, all negative, ~2 SEK/guest** —
+   exactly consistent with the three original motivations
+   (round-trip fp compound per guest is the dominant term).
+
+**All three hypotheses REFUTED.** The residual ~2 SEK/guest drift
+is what the ACES-model-style explanations above cover. Nothing
+more to fix.
+
+**Threshold policy holds unchanged.** M3 test asserts ±2% band +
+<1500 SEK absolute on the 3-day script. That fits the corrected
+drift (1027 SEK for 3-day). A longer-run test with proper timing
+would ALSO fit if the absolute bound scales linearly with guests
+(~2 SEK/guest × guest count) — trivial extension when needed.
+
+**Lesson learned.** Test scaffolding artifacts can mimic real
+sim bugs. Before hypothesising a mechanism from a scaling curve,
+verify the test itself is capturing what it claims to capture.
+The day-5 "sign flip" was an obvious tell in retrospect (a real
+per-day accounting fault wouldn't unwind by day 7); reading the
+runningCash gaps ruled it out in one probe.
 
 ## References
 
