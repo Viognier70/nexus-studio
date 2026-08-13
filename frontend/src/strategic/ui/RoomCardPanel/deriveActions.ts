@@ -217,7 +217,7 @@ export function deriveGuestAction(
         // reel IMPATIENT (foot-tap)
         return { text: `Waiting — ${formatWait(inState)}`, iconKey: 'waiting-impatient' };
       }
-      // reel IDLE (door) → WALK (in)
+      // reel IDLE (door) transitioning to reel WALK (in)
       return { text: 'Waiting to be seated', iconKey: 'waiting' };
     case 'seated':
       // G6 / G7 — welcome drink split.

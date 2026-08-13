@@ -26,6 +26,7 @@ import { ControlsHint } from './ui/ControlsHint';
 import { DevPanel } from './ui/DevPanel';
 import { EventStreamPanel } from './ui/EventStreamPanel';
 import { InstrumentsPanel } from './ui/InstrumentsPanel';
+import { RoomCardPanel } from './ui/RoomCardPanel/RoomCardPanel';
 import { primeStreamAudio } from './ui/streamArrivalCue';
 import { OutwardButton } from './ui/OutwardButton';
 import { SpeedToggle } from './ui/SpeedToggle';
@@ -239,6 +240,7 @@ function StrategicShell() {
       <EveningAccountPanel />
       <EventStreamPanel />
       <InstrumentsPanel />
+      <RoomCardPanel />
       <DevPanel lastKey={lastKey} />
       <AboutPanel open={aboutOpen} onClose={() => setAboutOpen(false)} />
     </div>
