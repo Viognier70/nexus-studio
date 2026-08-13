@@ -14,7 +14,16 @@ import { runHarness } from './harness';
 import type { SimAction } from '../../types';
 
 describe('M4a DoD — attractiveness weighting + substitute/walkout', () => {
-  it('DoD 1 — cheap dish sells ≥ 2× the count of expensive dish', () => {
+  // ORDER 080 §3 — direction-only floor (2× ratio) was insufficient:
+  // it passes even when the expensive dish never sells (0 units), so
+  // it can't detect a regression where the demand curve has collapsed
+  // to "cheap dish always wins by default". The measurement in
+  // ORDER 080 §1 (see M4A landing amendment) gave chicken@263 (1.5×
+  // suggested 175) selling 9 units against pork@195 selling 20 —
+  // proving that 1.5× is a real pricing point where the dish survives
+  // meaningfully. This test now asserts both directions AND the 1.5×
+  // survival floor to catch a curve that has flattened either way.
+  it('DoD 1 — attractiveness weighting: direction + 1.5× survival floor', () => {
     // Two dishes on the menu with ample stock (no run-outs). One
     // priced well below its suggestedPrice, one well above. Over a
     // 15-min dinner the cheap dish's revenue count must exceed the
@@ -56,6 +65,39 @@ describe('M4a DoD — attractiveness weighting + substitute/walkout', () => {
     // expected ratio at K=2 is ~19× (see report gate §2 math).
     expect(chickenCount, `expected cheap dish to outsell expensive by ≥ 2×; got chicken=${chickenCount} pork=${porkCount}`)
       .toBeGreaterThanOrEqual(porkCount * 2);
+  });
+
+  it('DoD 1b — 1.5× suggested still sells at least 6 units (curve not too steep)', () => {
+    // ORDER 080 §3 tightening. Direction alone isn't enough — a curve
+    // that punishes any deviation from suggested passes the 2× ratio
+    // trivially (expensive dish → 0 units). This case pins the *upper*
+    // shape of the curve: at 1.5× suggested (chicken 263 vs suggested
+    // 175) the dish must still sell meaningfully. Measurement 2026-08-13
+    // gave 9 units for seed 42; floor at 6 leaves room for cross-seed
+    // variance and future stock/timing tweaks while catching a
+    // regression that flattens demand above 1×.
+    const script: { atSec: number; action: SimAction }[] = [
+      { atSec: 1, action: { type: 'BUY_STOCK', supplierId: 'wholesaler', ingredientId: 'chicken',  units: 30 } },
+      { atSec: 2, action: { type: 'BUY_STOCK', supplierId: 'wholesaler', ingredientId: 'pork',     units: 30 } },
+      { atSec: 3, action: { type: 'BUY_STOCK', supplierId: 'wholesaler', ingredientId: 'root-veg', units: 60 } },
+      { atSec: 4, action: { type: 'BUY_STOCK', supplierId: 'local-veg',  ingredientId: 'herbs',    units: 30 } },
+      // chicken-plate suggestedPrice = 175 → 1.5× = 263
+      // pork-plate    at suggestedPrice = 195 (baseline alternative)
+      { atSec: 5, action: { type: 'COMPOSE_MENU', dishes: [
+          { dishId: 'chicken-plate', price: 263 },
+          { dishId: 'pork-plate',    price: 195 }
+      ] } },
+      { atSec: 6, action: { type: 'SKIP_LUNCH' } },
+      { atSec: 60, action: { type: 'OPEN_SERVICE', service: 'dinner', lengthMinutes: 15 } }
+    ];
+    const r = runHarness({ seed: 42, script, runUntilSec: 1100 });
+    const chickenSold = 30 - (r.finalState.stock['chicken'] ?? 0);
+    const porkSold    = 30 - (r.finalState.stock['pork']    ?? 0);
+    console.log(`[M4a] 1.5× survival — chicken@263: ${chickenSold} units, pork@195: ${porkSold} units`);
+    expect(chickenSold,
+      `chicken-plate at 1.5× suggested sold only ${chickenSold} units; ORDER 080 §1 measurement gave 9 with seed 42. ` +
+      `If below 6, the demand curve has become too steep between 1× and 1.5× — pricing is no longer a survivable bet.`
+    ).toBeGreaterThanOrEqual(6);
   });
 
   it('DoD 2 — guest_substituted AND guest_walked events both fire', () => {

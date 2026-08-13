@@ -112,6 +112,29 @@ Reputation trace: starts at 0.6, drops to 0 by end-of-service — the 5 subs × 
 
 Full sim suite 33 files / 444 tests green; typecheck + build green.
 
+## 7.b. Demand curve measurement + DoD 1 tightening (ORDER 080, 2026-08-13)
+
+The direction-only DoD 1 (cheap dish outsells expensive by ≥ 2×) turned out to be too loose — it passes even when the expensive dish never sells (zero units), because 0 × 2 = 0. The Vision Owner asked for a demand-curve measurement to check whether pricing is genuinely a bet or a trap.
+
+**Measurement setup.** Same 15-min dinner, seed 42, menu-of-two, pork-plate fixed at suggested (195 SEK) as the baseline alternative. Chicken-plate varied at 0.75× / 1.0× / 1.25× / 1.5× / 2.0× / 3.0× of its suggested 175 SEK. Stock plentiful (no run-outs). Units sold and revenue recorded per price point.
+
+| × suggested | chicken price | chicken sold | pork sold | chicken rev | pork rev | **total rev** |
+|---|---:|---:|---:|---:|---:|---:|
+| 0.75× | 131 | 14 | 15 | 1 834 | 2 925 | **4 759** |
+| 1.00× | 175 | 11 | 18 | 1 925 | 3 510 | **5 435** |
+| 1.25× | 219 | 10 | 19 | 2 190 | 3 705 | **5 895** |
+| 1.50× | 263 | **9** | 20 | 2 367 | 3 900 | **6 267** ← peak |
+| 2.00× | 350 | 3 | 26 | 1 050 | 5 070 | **6 120** |
+| 3.00× | 525 | 0 | 29 | 0 | 5 655 | **5 655** |
+
+**Both curves peak at 1.5×.** Chicken's own revenue peaks at 1.5× (2 367 SEK, +23% over pricing at suggested). Total service revenue also peaks at 1.5× (6 267 SEK, +15% over suggested). Above 2× the expensive dish collapses (3 units at 2×, 0 at 3×) and the baseline dish absorbs the residual demand.
+
+**Answer to ORDER 080 §1.** The revenue maximum exists above suggested at 1.5×. Pricing is a genuine bet, not a trap — the anchor is not the ceiling.
+
+**Answer to ORDER 080 §2 (steepness).** The curve is NOT too steep at 1.5×. Chicken still sells 9 units (31% of demand) at 1.5×. K = 2 delivers on ORDER 051 §8 #2 as it stands. The curve does turn steep between 1.5× and 2× (9 → 3 units, a 67% collapse for a 33% price rise) — but that's the correct shape: doubling the price should be a big bet. **Recommendation: hold K = 2 unchanged.**
+
+**Answer to ORDER 080 §3 (DoD 1 tightening).** Added DoD 1b — at 1.5× suggested chicken must sell at least 6 units (measurement gave 9; 6 leaves cross-seed variance margin). Direction-only floor (2× ratio) alone can no longer regress to "expensive dish never sells" without failing this second case.
+
 ## 8. What "opens" this gate
 
 Under ORDER 079 cohesive-block execution the report gate opens when this file is committed. Implementation proceeds against the K = 2, 30 / 70, −0.02 / −0.05 values above unless the Vision Owner course-corrects. All four numbers are tuning knobs; the mechanic is what matters.
