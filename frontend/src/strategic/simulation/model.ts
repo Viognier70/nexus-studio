@@ -178,7 +178,9 @@ export function initialDay(): DayState {
     idleCostAccrued: 0,
     serviceCovers: 0,
     morningPolicyChanges: [],
-    pickedActivityIds: []
+    pickedActivityIds: [],
+    drawnCapital: null,
+    lastScenarioChoice: null
   };
 }
 
@@ -239,6 +241,8 @@ export function makeInitialState(
     ledger: [],
     // ORDER 075 (M2) — activity pick history (weekly-availability gate).
     activityHistory: [],
+    // ORDER 076 (M6) — active event-stream cause chains.
+    activeCauseChains: [],
     waste: 0,
     reputation: 0.6,
     // Starts above the base ceiling (0.55) so day-1 shows a small

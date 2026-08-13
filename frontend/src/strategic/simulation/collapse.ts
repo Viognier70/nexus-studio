@@ -176,6 +176,7 @@ export function fireCollapse(draft: SimulationState): void {
     text,
     category: 'ambient',
     causeTag: 'ignorance',
+    causeChainId: null,
     sustainability,
     kind: 'collapse',
     scenarioId: null

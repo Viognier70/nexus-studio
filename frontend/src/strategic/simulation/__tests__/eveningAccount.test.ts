@@ -113,7 +113,8 @@ describe('pickParagraph — content shape', () => {
         branch: b,
         collapseAxis: 'cultural',
         wagerCapital: 'social',
-        drewCapital: 'economic'
+        drewCapital: 'economic',
+        lastChoice: null
       });
       expect(p.length).toBeGreaterThan(40);
       expect(/[.!?]$/.test(p)).toBe(true);

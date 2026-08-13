@@ -453,6 +453,16 @@ export interface DayState {
   // via PICK_ACTIVITY; cleared at day rollover. Length capped at
   // MAX_ACTIVITIES_PER_DAY = 3 in the reducer.
   pickedActivityIds: string[];
+  // ORDER 076 (M6) — capital drawn by the last resolved scenario
+  // this day. Read by computeEveningAccount → pickParagraph so
+  // the evening account paragraph reflects which theme moved.
+  drawnCapital: SustainabilityKey | null;
+  // ORDER 076 (M6) — choice made on the last resolved scenario this
+  // day. Same drawn capital reads differently depending on whether
+  // the proprietor engaged the demanding way (A), the generous way
+  // (B), or sidestepped (C); the paragraph selector uses this to
+  // produce A/B/C textual divergence at same seed.
+  lastScenarioChoice: 'A' | 'B' | 'C' | null;
 }
 
 // ----- ORDER 043 two-layer capital model ----------------------------------
@@ -585,13 +595,40 @@ export interface CapitalState {
 //              Fires only during service, gated by calmness × team
 //              competence — a weak or strained team gets no positives.
 export type EventStreamCategory = 'ambient' | 'outcome' | 'positive';
-export type EventStreamCauseTag = 'ignorance' | 'strain' | 'both';
+// ORDER 076 (M6) — expanded from 3-value tag to a labelled cause
+// vocabulary. Names aligned to the pre-existing `CauseKey` in
+// content/serviceReport.ts (ORDER 052 §9 step 1) so
+// eventStream.ts's `detectCause` output can be assigned directly.
+// The three legacy values (`ignorance`, `strain`, `both`) are
+// retained as fallbacks so existing wiring keeps firing during
+// migration.
+// See M6_CAUSE_AWARE_TEXTURE_REPORT_ORDER_076.md §1.
+export type EventStreamCauseTag =
+  | 'scale_down'
+  | 'morning_change'
+  | 'short_prep'
+  | 'thin_team'
+  | 'low_competence'
+  | 'ingredient_tier_grund'
+  | 'poor_morale'
+  // New M6 conditions not detected by the pre-existing detectCause
+  | 'weather_adverse'
+  | 'world_factor_negative'
+  // Legacy fallbacks (three-value tag from earlier eventStream defs)
+  | 'ignorance'
+  | 'strain'
+  | 'both';
 
 export interface EventStreamEntry {
   at: number;                 // simTime
   text: string;               // hand-authored Swedish
   category: EventStreamCategory;
   causeTag: EventStreamCauseTag | null;   // null for outcome
+  // ORDER 076 (M6) — short opaque id linking consecutive events
+  // triggered by the same underlying condition within ≤ 20 sim-s.
+  // Enables the autonomous DoD 3 assertion "chain of ≥ 3 events
+  // shares one causeChainId." Null for legacy / one-off events.
+  causeChainId: string | null;
   sustainability: SustainabilityKey;
   kind: string;               // ambient event kind name, or 'outcome'
   scenarioId: string | null;  // set for outcome events
@@ -683,6 +720,11 @@ export interface SimulationState {
   // each pick; consulted at PICK_ACTIVITY time to enforce weekly
   // availability. Uncapped — 1 entry per activity pick, small.
   activityHistory: { id: string; pickedOnDay: number }[];
+  // ORDER 076 (M6) — active cause chains for the eventStream.
+  // Each entry: `causeTag` (which condition), `chainId` (opaque
+  // id, base36 tick), `startedAt` (simTime the chain started).
+  // Reused within a 20 s window; expire on condition change.
+  activeCauseChains: { causeTag: EventStreamCauseTag; chainId: string; startedAt: number }[];
   // ORDER 043 outcome layer — non-economic capitals the scenarios
   // move (§3.1). Economic moved to `state.cash`. Separate from `eco`
   // above (§8.2's visible sustainability *reading*), which stays

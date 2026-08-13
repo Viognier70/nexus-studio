@@ -71,7 +71,14 @@ export function computeEveningAccount(state: SimulationState): EveningAccount {
     branch,
     collapseAxis: state.day.collapseAxis,
     wagerCapital: null,
-    drewCapital: null
+    // ORDER 076 (M6) — pass the last-resolved scenario's drawn
+    // capital so the paragraph selector can pick a capital-
+    // flavoured variant. This is the wiring that closes the
+    // pickParagraph divergence baseline (0.000 → target 0.30).
+    drewCapital: state.day.drawnCapital,
+    // ORDER 076 (M6) — the day's last scenario choice; feeds the
+    // per-choice aside sentence so parallel A/B/C runs diverge.
+    lastChoice: state.day.lastScenarioChoice
   });
   // ORDER 047 §6 — if a morning policy change was made this day, name
   // it once at the head of the paragraph so the investment reads

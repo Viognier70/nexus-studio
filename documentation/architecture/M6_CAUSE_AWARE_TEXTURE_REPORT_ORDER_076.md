@@ -176,6 +176,30 @@ Rewriting the sentence banks themselves to name causes textually
 CONTINUATION of this order, not part of M6 close. M6 gives the
 mechanic; content evolves per Vision Owner review.
 
+## 6.a. Landing amendment (2026-08-12) — per-choice aside
+
+While wiring §4, the divergence check landed at exactly 0.000: with
+the same seed, `state.scenario.drawnTheme` is drawn from the same
+RNG stream regardless of choice A/B/C, so all three strategies read
+the same `state.day.drawnCapital` at evening and thus the same
+capital-flavoured lead sentence. The drawn-capital mechanism is
+correct — it just doesn't carry choice information.
+
+Amendment: `state.day.lastScenarioChoice` is now also set at
+`RESOLVE_SCENARIO`, threaded into `pickParagraph`, and consumed by
+one per-choice aside sentence (`CHOICE_ASIDE` in
+`content/eveningAccount.sv.ts`) appended to the branch paragraph.
+Three short observer-voice asides — demanding read (A), generous
+read (B), sidestep (C) — provide the textual variance the
+divergence check measures without exploding the sentence bank into
+27 variants. Deeper textual weaving of the specific scenario named
+by name remains the deferred continuation of §6.
+
+Measured landing 2026-08-12: `dAB=0.219 dAC=0.202 dBC=0.212
+max=0.219`. Clears the ≥ 0.15 first-cut floor; ~0.08 below the
+0.30 eventual target, which is expected to close as the sentence
+banks themselves are rewritten under future orders.
+
 ## 7. Out of scope
 
 - Rewriting all existing sentence banks (deferred, iterative).

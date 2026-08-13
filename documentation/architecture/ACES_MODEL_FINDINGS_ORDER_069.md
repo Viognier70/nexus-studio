@@ -206,6 +206,25 @@ a stdout log at the end of the DoD 2 case:
 
 M6 work should track this number, not re-derive it.
 
+**M6 landing (ORDER 076, 2026-08-12): dAB=0.219 dAC=0.202 dBC=0.212
+max=0.219.** The wiring closed as follows:
+
+1. `state.day.drawnCapital` is populated at `RESOLVE_SCENARIO` from
+   `scenario.drawnTheme` and read by `computeEveningAccount`.
+2. `pickParagraph` (`content/eveningAccount.sv.ts`) now carries
+   `GOOD_LEAD_BY_CAPITAL`, `THIN_LEAD_BY_CAPITAL`, and
+   `MEDIOCRE_LEAD_BY_CAPITAL` variant maps for the three capitals.
+3. Because same-seed A/B/C runs draw the same theme, drawnCapital
+   alone did not divide them; `state.day.lastScenarioChoice` is now
+   also populated at `RESOLVE_SCENARIO` and fed to `pickParagraph`,
+   which appends one per-choice aside sentence (`CHOICE_ASIDE`)
+   with distinct vocabulary per A / B / C.
+
+Cleared the ≥ 0.15 first-cut floor from M6 §5 DoD 4. The 0.30
+eventual target is ~0.08 away and will close as the sentence banks
+themselves are rewritten to name their causes (a separately-scoped
+continuation of ORDER 076 §6).
+
 ## M3 reconciliation drift baseline (ORDER 074, tracked from 2026-08-13)
 
 Same pattern as the pickParagraph baseline above: record the number

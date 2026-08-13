@@ -1942,6 +1942,16 @@ function resolveScenario(
     });
   }
   bumpMorale(nextState, moraleDelta);
+  // ORDER 076 (M6) — record the drawn capital on the day so the
+  // evening account paragraph can pick a capital-flavoured variant.
+  // Last-scenario-wins if multiple resolve in one day; that's the
+  // right reading (the last theme is the one still in the room's
+  // head at close).
+  if (drawn) {
+    nextState.day = { ...nextState.day, drawnCapital: drawn, lastScenarioChoice: choice };
+  } else {
+    nextState.day = { ...nextState.day, lastScenarioChoice: choice };
+  }
   return nextState;
 }
 

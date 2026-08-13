@@ -24,6 +24,7 @@
 // capital nudges here; the stream is read-only against state.
 
 import type {
+  EventStreamCauseTag,
   EventStreamEntry,
   PendingOutcome,
   SimulationState,
@@ -362,16 +363,77 @@ function pickCausedText(
 export { detectCause as detectStreamCause };
 export { CAUSE_PRIORITY };
 
+// ORDER 076 (M6) — chain-window constants. A chain reuses its id
+// for entries of the same causeTag emitted within CAUSE_CHAIN_WINDOW_SEC.
+// Beyond that window a fresh chainId is minted. Chains not touched
+// for longer than the window are pruned in the same pass.
+const CAUSE_CHAIN_WINDOW_SEC = 20;
+
+/** Assign / update the causeChainId for an event of `causeTag`
+ *  emitted at `at`. Mutates `state.activeCauseChains` in place.
+ *  Returns the chainId to attach to the emitted entry. */
+export function assignCauseChain(
+  state: SimulationState,
+  causeTag: EventStreamCauseTag,
+  at: number
+): string {
+  // Prune expired chains first (any chain not touched in the window).
+  state.activeCauseChains = state.activeCauseChains.filter(
+    (c) => at - c.startedAt <= CAUSE_CHAIN_WINDOW_SEC
+  );
+  // Reuse if an active chain matches the tag.
+  const existing = state.activeCauseChains.find((c) => c.causeTag === causeTag);
+  if (existing) {
+    // Refresh the chain's start time so subsequent entries within
+    // the window continue to share it.
+    existing.startedAt = at;
+    return existing.chainId;
+  }
+  // Mint a new chain (base36 tick keeps id short and stable).
+  const chainId = state.tick.toString(36);
+  state.activeCauseChains.push({ causeTag, chainId, startedAt: at });
+  return chainId;
+}
+
+// ORDER 076 (M6) — the eventStream entry's causeTag is now the
+// DETECTED cause condition (from detectCause), not the architectural
+// probability-model tag (which stays on `EventDef.causeTag`, used
+// only to compute probability). When detectCause returns 'ambient'
+// (no specific condition applies), fall back to the architectural
+// tag so the legacy 3-value vocabulary continues to attach.
+function entryCauseTagFor(
+  def: EventDef,
+  state: SimulationState
+): 'scale_down' | 'morning_change' | 'short_prep' | 'thin_team' | 'low_competence' | 'ingredient_tier_grund' | 'poor_morale' | 'weather_adverse' | 'world_factor_negative' | 'ignorance' | 'strain' | 'both' {
+  const axis = KIND_COMPETENCE_AXIS[def.kind] ?? null;
+  const readsIngredient = KIND_READS_INGREDIENT[def.kind] ?? false;
+  const detected = detectCause(state, axis, readsIngredient);
+  if (detected !== 'ambient') return detected;
+  // Beyond the pre-existing detectCause list, check the M6-new
+  // conditions before falling back to the legacy architectural
+  // tag. Weather + world-factor detection is only sensible for
+  // events that could plausibly reflect them.
+  if (state.day.weather && (state.day.weather.precipitation !== 'none' || state.day.weather.windMS > 8)) {
+    return 'weather_adverse';
+  }
+  if (state.day.worldFactors.some((f) => f.kind === 'konjunktur_nedgang' || f.kind === 'vagarbeten' || f.kind === 'evenemang_hockey')) {
+    return 'world_factor_negative';
+  }
+  return def.causeTag;
+}
+
 function makeAmbientEntry(
   def: EventDef,
   state: SimulationState,
   rng: Rng
 ): EventStreamEntry {
+  const causeTag = entryCauseTagFor(def, state);
   return {
     at: state.simTime,
     text: pickCausedText(SERVICE_REPORT_AMBIENT[def.kind], def.kind, state, rng),
     category: 'ambient',
-    causeTag: def.causeTag,
+    causeTag,
+    causeChainId: null,   // assigned at push-to-state time (see assignCauseChain)
     sustainability: def.sustainability,
     kind: def.kind,
     scenarioId: null
@@ -383,15 +445,19 @@ function makePrepEntry(
   state: SimulationState,
   rng: Rng
 ): EventStreamEntry {
-  // Prep events all carry causeTag: 'ignorance' — a competent team
-  // barely leaks them; an incompetent one does. Sustainability is
-  // 'social' as a stand-in (the team's readiness is a social
-  // reading), matching the ambient convention for team-strain events.
+  // Prep events used to hardcode causeTag='ignorance'. Under M6 we
+  // consult the same detection ladder so a prep leak on a scale-
+  // down morning names its condition properly.
+  const axis: 'scientific' | 'cultural' | 'practical' =
+    def.competenceSource === 'trainingLevel' ? 'practical' : def.competenceSource;
+  const detected = detectCause(state, axis, false);
+  const causeTag = detected !== 'ambient' ? detected : 'ignorance';
   return {
     at: state.simTime,
     text: pickCausedText(SERVICE_REPORT_PREP[def.kind], def.kind, state, rng),
     category: 'ambient',
-    causeTag: 'ignorance',
+    causeTag,
+    causeChainId: null,
     sustainability: 'social',
     kind: def.kind,
     scenarioId: null
@@ -452,6 +518,7 @@ function makePositiveEntry(
     text: pickTextWithRepeatGuard(SERVICE_REPORT_POSITIVE, state, rng),
     category: 'positive',
     causeTag: null,
+    causeChainId: null,
     sustainability: 'social',
     kind: 'positive',
     scenarioId: null
@@ -493,6 +560,7 @@ function outcomeToEntry(p: PendingOutcome, at: number): EventStreamEntry {
       text: p.text,
       category: 'ambient',
       causeTag: 'strain',
+      causeChainId: null,
       sustainability: p.sustainability,
       kind: 'bottleneck',
       scenarioId: p.scenarioId
@@ -503,6 +571,7 @@ function outcomeToEntry(p: PendingOutcome, at: number): EventStreamEntry {
     text: p.text,
     category: 'outcome',
     causeTag: null,
+    causeChainId: null,
     sustainability: p.sustainability,
     kind: 'outcome',
     scenarioId: p.scenarioId
@@ -572,6 +641,7 @@ export function tickEventStream(state: SimulationState, rng: Rng): void {
               text: pickTextWithRepeatGuard(SERVICE_REPORT_PREP_POSITIVE[slot.kind], state, rng),
               category: 'positive',
               causeTag: null,
+              causeChainId: null,
               sustainability: 'social',
               kind: slot.kind,
               scenarioId: null
@@ -584,6 +654,7 @@ export function tickEventStream(state: SimulationState, rng: Rng): void {
               text: pickCausedText(SERVICE_REPORT_PREP[slot.kind], slot.kind, state, rng),
               category: 'ambient',
               causeTag: 'ignorance',
+              causeChainId: null,
               sustainability: 'social',
               kind: slot.kind,
               scenarioId: null
@@ -635,6 +706,14 @@ export function tickEventStream(state: SimulationState, rng: Rng): void {
   }
 
   if (emitted.length === 0) return;
+  // ORDER 076 (M6) — assign causeChainId to each emitted entry
+  // before it lands on the stream. Chain reuses within a 20 s
+  // window when a subsequent entry names the same causeTag.
+  for (const entry of emitted) {
+    if (entry.causeTag !== null) {
+      entry.causeChainId = assignCauseChain(state, entry.causeTag, state.simTime);
+    }
+  }
   state.eventStream = [...state.eventStream, ...emitted].slice(-STREAM_KEEP);
 
   // ORDER 047 §2 — morale bumps for each newly emitted entry. Strain
