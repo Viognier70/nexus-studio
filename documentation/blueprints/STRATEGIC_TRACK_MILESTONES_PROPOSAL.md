@@ -27,7 +27,8 @@ The proposal changes no code and merges no orders. It offers a structure to plan
 | M3 | Evening ledger visible | MECHANIC + UI | Backend built, no UI | 050 §7 step 3 UI |
 | M4 | Menu + kitchen + stock | MECHANIC + UI | Not started | 051 §7 all steps |
 | M5 | Prep + cadence in the room | MECHANIC + RENDER | Not started | 052 §9 steps 2, 3, 5, 6 |
-| M6 | Cause-aware texture | CONTENT + MECHANIC | Not started | 052 §9 step 1 (rewrite banks) |
+| M6 | Cause-aware texture (mechanic) | MECHANIC | Landed 2026-08-12 (ORDER 076); divergence 0.219, first-cut floor cleared | — |
+| M6b | Cause-aware texture (sentence-bank rewrite) | CONTENT | Not started (split out from M6 per ORDER 077) | 052 §9 step 1 |
 | M7 | Knowledge engine → bank meeting | MECHANIC + UI + CONTENT | Blocked upstream | 049 §5.1, §5.2, §1 volume review |
 | M8 | Playthrough acceptance | GOVERNANCE | Not scheduled | — |
 
@@ -153,20 +154,41 @@ The proposal changes no code and merges no orders. It offers a structure to plan
 3. First door-open in a service always fires the after-countdown line in the plain register.
 4. Stream panel never renders taller than its contents.
 
-### M6 — Cause-aware texture
+### M6 — Cause-aware texture (mechanic)
 
 **Purpose:** every stream line names its condition so consequences read as causal, not decorative.
 
+**Landed 2026-08-12 under ORDER 076** — this is the metadata mechanic only. The sentence-bank rewrite (originally §9 step 1 of ORDER 052, cited as the load-bearing content piece for the 0.30 divergence target) is split out as **M6b** below per ORDER 077 §2, because M6 as filed only clears the ≥ 0.15 first-cut floor (measured `dAB=0.219 dAC=0.202 dBC=0.212 max=0.219`), not the 0.30 target.
+
+**Deliverables landed:**
+- Every `eventStream` entry carries a `causeTag` in a 12-value vocabulary (scale_down, morning_change, short_prep, thin_team, low_competence, ingredient_tier_grund, poor_morale, weather_adverse, world_factor_negative, ignorance, strain, both)
+- Chains of same-cause entries within a 20 s window share one `causeChainId`
+- `computeEveningAccount` reads `state.day.drawnCapital` and `state.day.lastScenarioChoice`, both set at `RESOLVE_SCENARIO`
+- `pickParagraph` has capital-flavoured lead sentences (good / thin / mediocre × 3 capitals) and a per-choice aside sentence (A demanding / B generous / C sidestep)
+
+**DoD (per proposal §6.2 rewrite, all verified by `__tests__/m6.test.ts`):**
+1. Sample 20 lines from a real dinner service across three days.
+2. Every consequence line names its condition — assertion: `causeTag !== null` AND not a legacy fallback for ≥ 80 % of ambient events. **Measured: 82.1 % (23/28).**
+3. A chain of ≥ 3 events shares one `causeChainId`. **Measured: 3-event chain found.**
+4. Three parallel runs with different scenario-response strategies (A/B/C) at the same seed produce evening-account paragraphs with pairwise Jaccard token distance ≥ 0.15. **Measured: max = 0.219.**
+
+### M6b — Cause-aware texture (sentence-bank rewrite)
+
+**Purpose:** the residual ~0.08 of Jaccard divergence between the M6 landing (0.219) and the M6 target (0.30) is the content-quality bar. M6 gave the plumbing; M6b is the writing.
+
 **Deliverables:**
-- Rewrite sentence banks in `eventStream.ts` so each symptom carries its cause (thin team, low competence, poor morale, short prep, morning change, ingredient tier, active scale-down, supplier short-delivery)
-- Ambient texture stays ambient; consequence lines must say what of
-- Plain-register vocabulary rules preserved (ORDER 048 §2)
-- **Feeds:** ORDER 052 §9 step 1 (biggest effect, no new systems)
+- Rewrite sentence banks in `eventStream.ts` so each symptom names its cause textually — the butter-knife example from the Vision Owner: "Kocken tappade en tallrik" reads differently when the cause is `short_prep` ("Prepen räckte inte till stationens tempo — kocken hann inte greppa tallriken") versus `poor_morale` ("Kocken bär veckans humör i händerna — tallriken landade fel"). Same causeTag, different textual weave.
+- Ambient texture stays ambient; consequence lines must say what of.
+- Plain-register vocabulary rules preserved (ORDER 048 §2).
+- Expand `content/eveningAccount.sv.ts` from three capital-flavoured lead sentences per branch (nine total) toward a small textual weave that names the scenario by its topic, not only by capital + choice.
+- **Feeds:** ORDER 052 §9 step 1 (the piece originally cited as load-bearing).
 
 **DoD:**
 1. Sample 20 lines from a real dinner service across three days.
-2. Every consequence line (not ambient) names its condition.
-3. Vision Owner can trace at least three consecutive stream events back to a causal chain (choice → strain → symptom → collapse or recovery).
+2. Every consequence line's TEXT (not only its causeTag) names its condition — Vision Owner sample-read confirms textual specificity.
+3. Three parallel A/B/C runs at the same seed produce evening-account paragraphs with pairwise Jaccard token distance **≥ 0.30** (proposal §6.2 eventual target — the M6 mechanic cleared 0.15; M6b must clear 0.30).
+
+**Kind:** AUTONOMOUS on DoD 3 (Jaccard distance is measurable); GATE on DoDs 1–2 (Vision Owner sample-read remains the acceptance moment for prose).
 
 ### M7 — Knowledge engine → bank meeting
 
@@ -281,7 +303,8 @@ as late and as few as possible.
 | M3 | Evening ledger visible | AUTONOMOUS | — | AUTONOMOUS |
 | M4 | Menu + kitchen + stock | MIXED (DoD 3 "audible") | YES — downgrade to "audio event dispatched" | AUTONOMOUS |
 | M5 | Prep + cadence | MIXED (DoD 2 "reads at a glance") | Partial — bundle residual into M8 | AUTONOMOUS with residual moved to M8 |
-| M6 | Cause-aware texture | GATE (DoD 3 "trace a causal chain") | YES — add cause-tag data model to stream events | AUTONOMOUS |
+| M6 | Cause-aware texture (mechanic) | GATE (DoD 3 "trace a causal chain") | YES — cause-tag + causeChainId data model added under ORDER 076 | AUTONOMOUS — landed 2026-08-12 |
+| M6b | Cause-aware texture (sentence-bank rewrite) | GATE on DoDs 1–2 (sample-read prose); AUTONOMOUS on DoD 3 (Jaccard ≥ 0.30) | Partial — Jaccard measurable; sample-read still requires Vision Owner | MIXED (autonomous 0.30 metric + Vision Owner prose gate) |
 | M7 | Knowledge engine → bank | AUTONOMOUS | — | AUTONOMOUS |
 | M8 | Playthrough acceptance | GATE (by design) | NO — this IS the human acceptance step | GATE |
 
@@ -369,7 +392,7 @@ is a perception question. Two rewrites available:
 **Class after rewrite:** AUTONOMOUS with the residual "at a glance"
 claim absorbed into M8.
 
-**M6 — Cause-aware texture.**
+**M6 — Cause-aware texture (mechanic).**
 DoD 1–2 are AUTONOMOUS (headless run + regex/token check that every
 non-ambient line contains at least one of the cause tokens from a
 declared vocabulary).
@@ -381,7 +404,17 @@ chain of ≥ 3 events where each references the previous by causeId.
 The prose still reads as text to the player; the data model exists
 only to permit autonomous verification.
 **Cost of rewrite:** small data-model extension in `eventStream.ts`.
-**Class after rewrite:** AUTONOMOUS.
+**Class after rewrite:** AUTONOMOUS. **Landed under ORDER 076 (2026-08-12);** clears the ≥ 0.15 divergence floor at 0.219 but not the 0.30 target — sentence-bank rewrite split out to M6b per ORDER 077 §2.
+
+**M6b — Cause-aware texture (sentence-bank rewrite).**
+DoD 3 ("Jaccard ≥ 0.30") is AUTONOMOUS (same measurement pipe as M6
+DoD 4, threshold raised). DoDs 1–2 remain prose-driven: whether the
+rewritten lines textually name their cause is a judgment about
+prose quality, not one about token presence — that stays as a
+Vision Owner sample-read.
+**Class:** MIXED. AUTONOMOUS on 0.30 threshold, GATE on textual
+specificity. The 0.30 metric is the objective floor; passing it is
+necessary but not sufficient for closure.
 
 **M7 — Knowledge engine → bank meeting.**
 Already AUTONOMOUS. All three DoD reduce to state assertions on
@@ -421,16 +454,19 @@ dependency):**
 4. **M2** — activities visible (depends on M1 loop; posts to ledger
    from M3).
 5. **M6** — cause-aware texture (requires INFRA-2 + causeId data
-   model; no other dependency).
-6. **M7** — knowledge → bank (requires INFRA-2; runs in parallel
+   model; no other dependency). **Landed ORDER 076 2026-08-12.**
+6. **M6b** — cause-aware texture sentence-bank rewrite (Jaccard
+   ≥ 0.30 metric + Vision Owner prose read; split from M6 per
+   ORDER 077 §2).
+7. **M7** — knowledge → bank (requires INFRA-2; runs in parallel
    with M4).
-7. **M4** — menu + kitchen + stock (largest single milestone; can
-   land in parallel with M6/M7).
-8. **M5** — prep + cadence (residual "at a glance" moved to M8).
+8. **M4** — menu + kitchen + stock (largest single milestone; can
+   land in parallel with M6b/M7).
+9. **M5** — prep + cadence (residual "at a glance" moved to M8).
 
 **Single remaining gate:**
 
-9. **M8** — Vision Owner acceptance across the six ORDER 047 §9
+10. **M8** — Vision Owner acceptance across the six ORDER 047 §9
    points + the four residual human-judgment items (M1 DoD 4, M4
    audio-fidelity if requested, M5 "at a glance", the collapse-as-
    consequence reading). One playthrough of three sim-days from a

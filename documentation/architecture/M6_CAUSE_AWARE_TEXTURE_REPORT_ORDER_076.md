@@ -196,9 +196,16 @@ divergence check measures without exploding the sentence bank into
 by name remains the deferred continuation of §6.
 
 Measured landing 2026-08-12: `dAB=0.219 dAC=0.202 dBC=0.212
-max=0.219`. Clears the ≥ 0.15 first-cut floor; ~0.08 below the
-0.30 eventual target, which is expected to close as the sentence
-banks themselves are rewritten under future orders.
+max=0.219`. Clears the ≥ 0.15 first-cut floor.
+
+**The 0.30 target is NOT met.** 0.219 is a partial result, not
+closure. The remaining ~0.08 is what the sentence-bank rewrite has
+to buy. Per ORDER 077 point 2, that rewrite is NOT filed as a
+deferred continuation of M6 — it is its own milestone (see
+`STRATEGIC_TRACK_MILESTONES_PROPOSAL.md` M6b, added under ORDER
+077) with the 0.30 divergence as its DoD. M6 as filed here closes
+only the metadata mechanic (causeTag + causeChainId + per-choice
+aside plumbing).
 
 ## 7. Out of scope
 
