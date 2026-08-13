@@ -28,6 +28,16 @@ export function SimulationProvider({ children, seed = DEFAULT_SEED }: Props) {
   const speedRef = useRef(state.speed);
   speedRef.current = state.speed;
 
+  // ORDER 083 — dev-only hooks for the pitch-probe measurement.
+  // Publishes the dispatch and current state on window so a headless
+  // playwright probe can seed the sim to mid-service before taking
+  // camera-pose screenshots. Not for gameplay; tree-shakes at prod
+  // build time via the import.meta.env.DEV guard.
+  if (import.meta.env.DEV && typeof window !== 'undefined') {
+    (window as unknown as { __nxSimDispatch?: unknown }).__nxSimDispatch = dispatch;
+    (window as unknown as { __nxSimState?: unknown }).__nxSimState = state;
+  }
+
   useEffect(() => {
     let cancelled = false;
     let acc = 0;

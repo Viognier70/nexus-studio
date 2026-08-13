@@ -67,6 +67,13 @@ export function BusinessProvider({ children }: { children: ReactNode }) {
     setBusiness((prev) => ({ ...prev, name: trimmed }));
   }, []);
 
+  // ORDER 083 — dev-only hook so the pitch-probe script can bypass
+  // the name-entry overlay in headless playwright. Same tree-shaken-
+  // at-prod-build guard as the sim dispatch hook.
+  if (import.meta.env.DEV && typeof window !== 'undefined') {
+    (window as unknown as { __nxSetBusinessName?: (n: string) => void }).__nxSetBusinessName = setName;
+  }
+
   const value = useMemo<BusinessApi>(
     () => ({ business, hasName: business.name !== null, setName }),
     [business, setName]
