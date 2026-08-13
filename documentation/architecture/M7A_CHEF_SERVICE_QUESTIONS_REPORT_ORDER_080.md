@@ -42,6 +42,20 @@ Autonomous tests in `src/strategic/simulation/__tests__/m7a.test.ts` via INFRA-2
 
 Plus typecheck + build green; full sim suite unchanged.
 
+## 5.a. Landing (2026-08-13)
+
+DoD tests committed under ORDER 080. All three pass:
+
+- **DoD 1** — walk-in-of-five (choice A) drew a värd-tagged bank question (`sourceBankId=fe0f64f9-…::episteme::13`) at the first triggered scenario in the scripted dinner. Question overlay-shaped payload — non-empty body, options with the correct-flag set.
+- **DoD 2** — one correct answer dispatched. Cultural episteme delta +0.048 (matches the `amount: 0.05` write on walk-in-of-five's `correctEnablerWrite` minus a tick or two of overnight decay). Scientific episteme delta 0.000 — time-pressure didn't fire this run because the RNG picked walk-in-of-five first, but the mechanic proved on the register that was fired.
+- **DoD 3** — reputationCeiling with answers 0.5548 vs without 0.5519 — the ceiling drift is slow but the direction is right (episteme write → higher target → ceiling drifts up). The comparison holds even when both runs cross the day rollover's overnight-decay step because decay applies to both equally.
+
+The test file (`__tests__/m7a.test.ts`) drives the reducer directly rather than through `runHarness` because ANSWER_QUESTION needs to fire reactively when `pendingQuestion` becomes non-null. Introduced a small local `driveUntil` helper that behaves like the harness but also dispatches ANSWER_QUESTION on each tick where a pending question is present.
+
+M7a closes. M7b (bank meeting) and M7c (multi-role coverage) remain per §4.
+
+Full sim suite 34 files / 448 tests green; typecheck + build green.
+
 ## 6. What "opens" this gate
 
 Under ORDER 080 §4 cohesive-block execution the report gate opens when this file is committed. Implementation proceeds as DoD tests only. If the flow is broken end-to-end, the tests will surface where — and the fix goes into the existing mechanism, not into M7a's scope.

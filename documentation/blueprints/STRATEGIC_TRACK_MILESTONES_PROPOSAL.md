@@ -31,7 +31,9 @@ The proposal changes no code and merges no orders. It offers a structure to plan
 | M6b | Cause-aware texture (sentence-bank rewrite) | CONTENT | Not started (split out from M6 per ORDER 077) | 052 §9 step 1 |
 | M4a | Attractiveness weighting + substitute/walkout split | MECHANIC | Landed 2026-08-13 (ORDER 079); DoD 1 + 2 verified — closes ORDER 051 §8 acceptance items #2 and #4 that M4 as filed cannot satisfy | — |
 | M4b | Menu + kitchen + stock (residuals) | CONTENT + MECHANIC | Not started (attractiveness split out to M4a per ORDER 078 §8); residuals = wine list, package menus, ingredientTier retirement, stock ageing | 051 §7 steps 5–7 + §4 ageing |
-| M7 | Knowledge engine → bank meeting | MECHANIC + UI + CONTENT | Blocked upstream | 049 §5.1, §5.2, §1 volume review |
+| M7a | Chef service-questions (end-to-end flow verified) | MECHANIC | Landed 2026-08-13 (ORDER 080); DoD 1 + 2 + 3 verified — mechanism was already built, M7a proves it end-to-end | — |
+| M7b | Bank meeting scene | MECHANIC + UI | Blocked pending ORDER 049 §7 step 8 answer-to-loan mapping report | 049 §5.1, §7 step 8 |
+| M7c | Multi-role question coverage (sommelier / värd / servitör) | CONTENT | Blocked pending three knowledge-generate script runs | 049 §1 volume across roles |
 | M8 | Playthrough acceptance | GOVERNANCE | Not scheduled | — |
 
 **M1 is the first milestone at which the "act → see consequence → want to repeat" bar is met.** See §3.
@@ -192,23 +194,40 @@ The proposal changes no code and merges no orders. It offers a structure to plan
 
 **Kind:** AUTONOMOUS on DoD 3 (Jaccard distance is measurable); GATE on DoDs 1–2 (Vision Owner sample-read remains the acceptance moment for prose).
 
-### M7 — Knowledge engine → bank meeting
+### M7a — Chef service-questions (end-to-end flow verified)
 
-**Purpose:** the player's episteme accumulates through professional-question moments and unlocks capital via bank meeting scenes.
+**Landed 2026-08-13 under ORDER 080.** Mechanism was already built across ORDERs 048 §5 + 049 §7 step 3; M7a is the DoD trail proving the flow scenario → question → correct-answer → enabler write → ceiling chain fires end-to-end. See `M7A_CHEF_SERVICE_QUESTIONS_REPORT_ORDER_080.md`.
+
+**Deliverables (all built, verified under M7a):**
+- 272 approved chef questions in `reports/knowledge/questions.json` (ORDER 049 §7 step 2)
+- `pickBankQuestion` in `src/content/knowledgeBank.ts`
+- 3/6 scenario choices carry `professionalQuestion` (walk-in-of-five A, time-pressure A, moral-dilemma A)
+- `answerProfessionalQuestion` writes to enabler on correct answer, decays on wrong
+- Ceiling drift in `reputation.ts` §193
+
+**DoD (all autonomous via `__tests__/m7a.test.ts`):**
+1. A professional question fires during a scripted dinner.
+2. A correct answer writes to the target enabler (measured Δ +0.048 for cultural episteme on walk-in-of-five A).
+3. The ceiling chain moves (answered run's `reputationCeiling` ≥ unanswered run's; direction is up).
+
+### M7b — Bank meeting scene
+
+**Blocked** pending ORDER 049 §7 step 8 answer-to-loan mapping report. The scene at first application + post-bankruptcy carries the loan tier decision from a Vision Owner–reviewed mapping. Report gate must open before build.
 
 **Deliverables:**
-- Knowledge generation script reviewed + run at volume (ORDER 049 §1 gate)
-- Question corpus in runtime bank (≥ 50 questions)
-- Scenarios attach 1–3 questions during service; player answers write to enablers
-- Bank meeting scene with concrete allocation options (ORDER 049 §5.1)
-- Ceiling-lift: episteme → pricing ceiling → menu (integrates with M4)
-- Difficulty tuning per axis (scientific / cultural / practical — practical currently drawn from cultural × 0.6, see APPROXIMATION_REGISTER)
-- **Feeds:** ORDER 049 §1, §5.1, §5.2
+- Answer-to-loan mapping report (ORDER 049 §7 step 8 gate)
+- Bank director scene at loan application
+- Loan tier decision from composite answer scoring
+- Bankruptcy return loop (ORDER 049 §5)
+
+### M7c — Multi-role question coverage
+
+**Blocked** pending three additional knowledge-generate script runs. Current bank is chef-only (272 approved); sommelier, värd, and servitör need at least one authoring pass each to open the "question from area you invested in" mechanic across all four staff roles.
 
 **DoD:**
-1. Player answers at least one professional question during a service.
-2. Bank meeting fires at appropriate trigger and offers concrete numbers.
-3. Rising episteme visibly changes what the player is permitted to charge for a dish (integrates with M4 menu pricing).
+1. Approved questions for sommelier, värd, servitör roles (≥ 30 each).
+2. Scenarios can attach questions filtered to any of the four sender roles.
+3. Investing in the värd role (via hire / training) makes the next fired scenario's question more likely to be värd-tagged (a lightweight coupling to demonstrate the "invested in an area produced a question from that area" acceptance item from ORDER 049 §8 #1).
 
 ### M8 — Playthrough acceptance
 
