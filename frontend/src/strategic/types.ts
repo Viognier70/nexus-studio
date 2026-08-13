@@ -471,6 +471,18 @@ export interface DayState {
   // stop the running-out event firing more than once per dish per
   // service (§7 report gate). Cleared at OPEN_SERVICE.
   stockOutEvents: string[];
+  // ORDER 078 (M5) — per-item mise en place readiness in [0, 1],
+  // fixed at doors-open per the report gate §2 formula. Empty
+  // before doors open (morning / opening / prep); populated for
+  // the whole service. Cleared at OPEN_SERVICE. Five items:
+  // ice, napkins, cutlery, stations, garnish.
+  prepReadiness: Record<string, number>;
+  // ORDER 078 (M5) — service rhythm reading in {green, amber, red},
+  // recomputed each tick during service as the worst puck this
+  // tick (min-over-staff loads mapped to colour). Read by the
+  // staff-puck colour ring in the room, not by any panel. Null
+  // outside service.
+  serviceRhythm: 'green' | 'amber' | 'red' | null;
 }
 
 // ORDER 077 §4 (M4) — supplier, ingredient, and dish domain types.
@@ -668,6 +680,10 @@ export type EventStreamCauseTag =
   // Fires per-dish, once per service (dish is removed from the
   // running menu after firing so it does not spam).
   | 'stock_out'
+  // ORDER 078 (M5) — the door-open marker line. Not a symptom;
+  // the event names its own condition (service just started).
+  // Counts as specific under M6 DoD 2 coverage.
+  | 'doors_open'
   // Legacy fallbacks (three-value tag from earlier eventStream defs)
   | 'ignorance'
   | 'strain'

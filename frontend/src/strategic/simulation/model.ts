@@ -182,7 +182,9 @@ export function initialDay(): DayState {
     drawnCapital: null,
     lastScenarioChoice: null,
     platesRemaining: {},
-    stockOutEvents: []
+    stockOutEvents: [],
+    prepReadiness: {},
+    serviceRhythm: null
   };
 }
 

@@ -104,6 +104,12 @@ import {
   findIngredient,
   findSupplier
 } from './m4Catalogue';
+import {
+  afterCountdownLine,
+  computePrepReadinessFromState,
+  computeServiceRhythm,
+  weakestPrepItem
+} from './miseEnPlace';
 
 // Capital tuning constants live in ./constants (no imports, no
 // cycle). Re-exported here so callers pulling from the reducer
@@ -1403,6 +1409,19 @@ function advanceTick(state: SimulationState): SimulationState {
   tickGuests(draft);
   tickStaff(draft);
 
+  // ORDER 078 (M5) — service rhythm reading, refreshed each tick
+  // during lunch/dinner. Read by the staff-puck colour ring in
+  // the room (not a numeric panel). Null outside service so the
+  // ring only appears when the room is actually serving.
+  if (draft.day.period === 'lunch' || draft.day.period === 'dinner') {
+    draft.day = {
+      ...draft.day,
+      serviceRhythm: computeServiceRhythm(draft.staff.map((s) => s.workload ?? 0))
+    };
+  } else if (draft.day.serviceRhythm !== null) {
+    draft.day = { ...draft.day, serviceRhythm: null };
+  }
+
   // Payment triggers revenue. ORDER 045 world-factor revenue mult
   // (betalningsvilja): konjunktur uppgång/nedgång shifts +10 / −15 %,
   // festival crowd +5 %, hockey crowd −10 % (casual + price-sensitive).
@@ -1577,6 +1596,35 @@ function advanceTick(state: SimulationState): SimulationState {
         const walkAway = rng.chance(walkAwayCeil);
         draft.guests.push(makeGuest(draft.simTime, false, walkAway));
       }
+    }
+    // ORDER 078 (M5) — mise en place readiness fixed at doors-open,
+    // plus the after-countdown line. Fires exactly once per service
+    // via the same doorsOpenedThisService flag; §2 + §4 of the
+    // report gate.
+    const firstDoorOpen = !draft.day.doorsOpenedThisService;
+    if (firstDoorOpen) {
+      const readiness = computePrepReadinessFromState(draft);
+      const weakest = weakestPrepItem(readiness);
+      const line = afterCountdownLine(readiness);
+      draft.day = { ...draft.day, prepReadiness: readiness };
+      // causeTag priority: if the prep was thin, tag 'short_prep'
+      // (the door-open line names why); otherwise tag 'doors_open'
+      // (the line names the transition itself). Both count as
+      // specific under M6 DoD 2.
+      const doorTag = weakest && weakest.readiness < 0.4 ? 'short_prep' : 'doors_open';
+      draft.eventStream = [
+        ...draft.eventStream,
+        {
+          at: draft.simTime,
+          text: line,
+          category: 'ambient',
+          causeTag: doorTag,
+          causeChainId: null,
+          sustainability: 'social',
+          kind: 'doors_open',
+          scenarioId: null
+        }
+      ];
     }
     draft.day = {
       ...draft.day,

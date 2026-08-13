@@ -167,6 +167,28 @@ Same shape as the M6/M6b split done under ORDER 077 §2: a block that can land n
 - Any per-item recovery mechanic mid-service (readiness is fixed at doors-open; a low ice reading stays low all service).
 - Rhythm visualisation for kitchen or non-visible staff (only the pucks in the room get the ring).
 
+## 10.a. Landing (2026-08-13)
+
+Cohesive-block implementation committed under ORDER 078:
+
+- `frontend/src/strategic/simulation/miseEnPlace.ts` — `PREP_ITEMS` catalogue, `computePrepReadiness` formula, `weakestPrepItem`, `afterCountdownLine`, `computeServiceRhythm` (rhythm takes a `readonly number[]` of loads).
+- `frontend/src/strategic/simulation/reducer.ts` — at the doors-open tick, computes `state.day.prepReadiness` from the current team + prep length + morale + morning changes + capacity, and posts one `kind='doors_open'` ambient event with the composed line. Per-tick during `lunch`/`dinner` sets `state.day.serviceRhythm` from the staff-load min-over-loads; null otherwise.
+- `frontend/src/strategic/types.ts` — `EventStreamCauseTag` extended with `doors_open` (13 → 14 values). Door-open marker is its own specific tag; `short_prep` still fires when weakest readiness < 0.4.
+- `frontend/src/strategic/scene/InteriorStaff.tsx` — colour ring at each puck's base, driven by `state.day.serviceRhythm`; the whole puck-plus-ring group moves as one via a new `groupRefs` map so the ring tracks the puck around the floor.
+- `frontend/src/strategic/business/PrepPanel.tsx` — in-room panel with five items + per-item readiness bars, coloured green/amber/red at the same 0.7 / 0.4 thresholds as the ring.
+
+Landing simplifications versus the report gate:
+- The staff-puck ring uses the AGGREGATE `state.day.serviceRhythm` (min-over-staff-loads) rather than a per-puck colour. Simpler wiring for M5 close; the aggregate matches "the worst puck this tick" reading from §3. Per-puck refinement filed as a nice-to-have follow-up if the Vision Owner reads the aggregate as too coarse.
+
+Test landing:
+- DoD 1 — `PREP_ITEMS.length = 5`; sampling `state.day.prepReadiness` at mid-dinner (t=500 s after OPEN_SERVICE at t=60 s) yields all five items in `[0, 1]` (measured: `ice=0.81 napkins=0.65 cutlery=0.65 stations=0.81 garnish=0.81`).
+- DoD 2 (mechanic portion) — five cuts through the service window show colours `{green, red, null}` — at least two distinct readings.
+- DoD 3 — first door-open produces the ambient line `"Doors open — service begins."` with `kind='doors_open'`, `category='ambient'`.
+- DoD 4 — `EventStreamPanel.tsx` `PANEL_STYLE` verified free of `height`, `minHeight`, `maxHeight`, `overflow`; renders exactly `min(N, 4)` entry rows for N-entry streams; empty → nothing.
+- Regression check — M6 DoD 2 specific-tag coverage was 82.1 % before M5; adding one `doors_open` line per day dipped it to 72.4 %; promoting `doors_open` to a specific tag brought it back above 80 %.
+
+Full sim + DOM suite 442/442; typecheck + build green.
+
 ## 11. What "opens" this gate
 
 Under ORDER 078 cohesive-block execution the report gate opens when this file is committed. Implementation proceeds against the values above unless Vision Owner course-corrects on:

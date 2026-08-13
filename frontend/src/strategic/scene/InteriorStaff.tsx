@@ -76,6 +76,19 @@ const ROLE_COLOUR: Record<StaffRole, string> = {
   'lärling':  '#4a4744'    // apprentice — mid-grey
 };
 
+// ORDER 078 (M5) — service-rhythm colour ring. Thin cylinder at the
+// puck's base with per-tick colour driven by state.day.serviceRhythm.
+// Only visible during service (green/amber/red); reducer sets
+// rhythm=null outside service so the ring hides itself.
+const RHYTHM_COLOUR: Record<'green' | 'amber' | 'red', string> = {
+  green: '#7bce8f',
+  amber: '#e8c169',
+  red:   '#d97070'
+};
+const RHYTHM_RING_INNER_M = STAFF_RADIUS_M;
+const RHYTHM_RING_OUTER_M = STAFF_RADIUS_M + 0.08;
+const RHYTHM_RING_Y = 0.03;   // just above the floor, under the puck body
+
 function smoothstep(a: number, b: number, x: number): number {
   const t = Math.max(0, Math.min(1, (x - a) / (b - a)));
   return t * t * (3 - 2 * t);
@@ -141,6 +154,9 @@ export function InteriorStaff() {
 
   const positionsRef = useRef<Map<string, AnimatedStaff>>(new Map());
   const meshRefs = useRef<Map<string, THREE.Mesh>>(new Map());
+  // ORDER 078 (M5) — group refs so the whole puck-plus-ring subtree
+  // moves as one when tickStaff writes a new position each frame.
+  const groupRefs = useRef<Map<string, THREE.Group>>(new Map());
 
   const stations = useMemo(() => (layout ? computeStations(layout) : null), [layout]);
 
@@ -237,8 +253,13 @@ export function InteriorStaff() {
        }
 
       const mesh = meshRefs.current.get(member.id);
+      const grp = groupRefs.current.get(member.id);
+      if (grp) {
+        // ORDER 078 (M5) — group moves; puck + ring stay in local
+        // frame (puck at STAFF_Y + bobY, ring at RHYTHM_RING_Y).
+        grp.position.set(pos.cx, bobY, pos.cz);
+      }
       if (mesh) {
-        mesh.position.set(pos.cx, STAFF_Y + bobY, pos.cz);
         const mat = mesh.material as THREE.MeshStandardMaterial;
         if (mat) {
           // Colour is stable per role; only opacity ticks with visibility.
@@ -271,25 +292,47 @@ export function InteriorStaff() {
 
   if (!layout || !stations) return null;
 
+  const rhythm = sim.day.serviceRhythm;
+  const showRing = rhythm !== null;
+  const ringColour = rhythm ? RHYTHM_COLOUR[rhythm] : '#000000';
+
   return (
     <group ref={groupRef} visible={false}>
       {sim.team.members.map((m: TeamMember) => (
-        <mesh
+        <group
           key={m.id}
-          ref={(mesh) => {
-            if (mesh) meshRefs.current.set(m.id, mesh);
-            else meshRefs.current.delete(m.id);
+          ref={(g) => {
+            if (g) groupRefs.current.set(m.id, g);
+            else groupRefs.current.delete(m.id);
           }}
-          position={[0, STAFF_Y, 0]}
         >
-          <cylinderGeometry args={[STAFF_RADIUS_M, STAFF_RADIUS_M, STAFF_HEIGHT_M, 8]} />
-          <meshStandardMaterial
-            color={ROLE_COLOUR[m.role]}
-            roughness={0.85}
-            transparent
-            opacity={0}
-          />
-        </mesh>
+          <mesh
+            position={[0, STAFF_Y, 0]}
+            ref={(mesh) => {
+              if (mesh) meshRefs.current.set(m.id, mesh);
+              else meshRefs.current.delete(m.id);
+            }}
+          >
+            <cylinderGeometry args={[STAFF_RADIUS_M, STAFF_RADIUS_M, STAFF_HEIGHT_M, 8]} />
+            <meshStandardMaterial
+              color={ROLE_COLOUR[m.role]}
+              roughness={0.85}
+              transparent
+              opacity={0}
+            />
+          </mesh>
+          {showRing && (
+            <mesh position={[0, RHYTHM_RING_Y, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+              <ringGeometry args={[RHYTHM_RING_INNER_M, RHYTHM_RING_OUTER_M, 24]} />
+              <meshBasicMaterial
+                color={ringColour}
+                transparent
+                opacity={0.85}
+                side={THREE.DoubleSide}
+              />
+            </mesh>
+          )}
+        </group>
       ))}
     </group>
   );
