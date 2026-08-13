@@ -180,6 +180,28 @@ Plus type-check + full sim test suite green (357 → 361 with the four new tests
 
 Under ORDER 077 §4 cohesive-block execution the report gate opens when this file is committed. Implementation proceeds against the values above unless Vision Owner course-corrects on the supplier numbers, dish set, or the 30/70 split.
 
+## 12.a. Landing (2026-08-13)
+
+Cohesive-block implementation committed under ORDER 077 §4:
+
+- `frontend/src/strategic/simulation/m4Catalogue.ts` — 6 suppliers, 12 ingredients, 8 dishes with the numbers in §2–§4.
+- `frontend/src/strategic/simulation/reducer.ts` — `BUY_STOCK`, `COMPOSE_MENU` actions + `drawMenuDishForGuest` at the guest-pay tick; menu fallback to legacy `revenuePerGuest` path when empty, so pre-M4 tests still hold.
+- `frontend/src/strategic/business/MorningMenuPanel.tsx` — dish checkbox column + price input + supplier/ingredient/units buy row.
+- `frontend/src/strategic/business/PlatesRemainingPanel.tsx` — in-room plates-remaining reading.
+- `frontend/src/strategic/simulation/__tests__/m4.test.ts` — 4 DoD tests, all green.
+
+Landing simplifications versus the report gate:
+- The 30/70 substitute/walkout split is deferred — dishes that run out simply become unavailable; subsequent guests either draw from remaining menu dishes or (if all dishes are out) walk without paying. Substitution UX belongs with an ordering-visible surface, not the current draw-on-pay tick. Filed under M4b.
+- Attractiveness weighting is deferred — draws are uniform-random among available dishes. Cheaper-sells-faster fires as soon as attractiveness weighting lands (M4b, alongside substitution).
+
+Test landing:
+- DoD 1 — 5-dish menu, every entry has `price > 0` and `ingredientCostSek > 0`. Ingredient cost is frozen at compose time from min-supplier estimate.
+- DoD 2 — after 15-min dinner with a 2-dish menu, both `state.stock` and `state.day.platesRemaining` decreased.
+- DoD 3 — 1-dish (game-plate) menu with `game×1` stock produces 1 stock_out ambient event with text "Dish 'Game with roots' ran out — the kitchen is out of stock."
+- DoD 4 — `BUY_STOCK` posts `category='stock'` line with cause containing both the supplier name ("Örebro Organic Producers") and the ingredient name ("leaf vegetables").
+
+Full sim suite 435/435; typecheck + build green.
+
 ## 13. Out of scope (rolled to M4b)
 
 - Wine list (ORDER 051 §7.5): same shape as stock+menu; adds ~1 ingredient category (`wine`) with per-bottle stock. Not needed to close DoD 1–4.

@@ -180,7 +180,9 @@ export function initialDay(): DayState {
     morningPolicyChanges: [],
     pickedActivityIds: [],
     drawnCapital: null,
-    lastScenarioChoice: null
+    lastScenarioChoice: null,
+    platesRemaining: {},
+    stockOutEvents: []
   };
 }
 
@@ -243,6 +245,10 @@ export function makeInitialState(
     activityHistory: [],
     // ORDER 076 (M6) — active event-stream cause chains.
     activeCauseChains: [],
+    // ORDER 077 §4 (M4) — empty menu and empty pantry at fresh state.
+    // COMPOSE_MENU + BUY_STOCK populate them in the morning.
+    menu: [],
+    stock: {},
     waste: 0,
     reputation: 0.6,
     // Starts above the base ceiling (0.55) so day-1 shows a small

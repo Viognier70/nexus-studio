@@ -25,10 +25,11 @@ The proposal changes no code and merges no orders. It offers a structure to plan
 | M1 | First playable loop | MIXED | LOOP FIRES; 3 readability defects | 052 §8 (three defects) |
 | M2 | Morning legibility (activities visible) | MECHANIC + UI | Not started, backend absent | 050 §7 step 1 |
 | M3 | Evening ledger visible | MECHANIC + UI | Backend built, no UI | 050 §7 step 3 UI |
-| M4 | Menu + kitchen + stock | MECHANIC + UI | Not started | 051 §7 all steps |
+| M4 | Menu + kitchen + stock | MECHANIC + UI | Landed 2026-08-13 (ORDER 077 §4); DoD 1–4 verified; wine / packages / ingredientTier retirement rolled to M4b |
 | M5 | Prep + cadence in the room | MECHANIC + RENDER | Not started | 052 §9 steps 2, 3, 5, 6 |
 | M6 | Cause-aware texture (mechanic) | MECHANIC | Landed 2026-08-12 (ORDER 076); divergence 0.219, first-cut floor cleared | — |
 | M6b | Cause-aware texture (sentence-bank rewrite) | CONTENT | Not started (split out from M6 per ORDER 077) | 052 §9 step 1 |
+| M4b | Menu + kitchen + stock (residuals) | CONTENT + MECHANIC | Not started (split out from M4 per ORDER 077 §4 §13); wine list, package menus, ingredientTier retirement, stock ageing | 051 §7 steps 5–7 + §4 ageing |
 | M7 | Knowledge engine → bank meeting | MECHANIC + UI + CONTENT | Blocked upstream | 049 §5.1, §5.2, §1 volume review |
 | M8 | Playthrough acceptance | GOVERNANCE | Not scheduled | — |
 

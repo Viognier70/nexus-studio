@@ -463,6 +463,55 @@ export interface DayState {
   // (B), or sidestepped (C); the paragraph selector uses this to
   // produce A/B/C textual divergence at same seed.
   lastScenarioChoice: 'A' | 'B' | 'C' | null;
+  // ORDER 077 §4 (M4) — plates-remaining reading per dish on today's
+  // menu. Recomputed after every stock draw. Read by
+  // PlatesRemainingPanel + the running-out check at guest-pay tick.
+  platesRemaining: Record<string, number>;
+  // ORDER 077 §4 (M4) — dish ids that ran out this service. Used to
+  // stop the running-out event firing more than once per dish per
+  // service (§7 report gate). Cleared at OPEN_SERVICE.
+  stockOutEvents: string[];
+}
+
+// ORDER 077 §4 (M4) — supplier, ingredient, and dish domain types.
+// See M4_MENU_KITCHEN_STOCK_REPORT_ORDER_077.md §2–§4 for the
+// authored catalogues and axis semantics.
+export interface Supplier {
+  id: string;
+  name: string;
+  priceIndex: number;      // multiplier on ingredient base cost
+  quality: number;         // [0,1]
+  reliability: number;     // [0,1]; P(short-delivery) = 1 - reliability
+  ecoDelta: number;        // signed additive delta on ecological cap per unit
+}
+
+export interface Ingredient {
+  id: string;
+  name: string;
+  baseCostSek: number;
+  unit: string;
+  suppliers: readonly string[];   // supplier ids this ingredient can be sourced from
+}
+
+export interface DishRecipe {
+  ingredientId: string;
+  units: number;
+}
+
+export interface Dish {
+  id: string;
+  name: string;
+  recipe: readonly DishRecipe[];
+  suggestedPrice: number;         // SEK
+}
+
+// One entry per dish on today's menu. `ingredientCostSek` frozen at
+// COMPOSE_MENU time so mid-day supplier changes don't shift the
+// plate's economics retroactively.
+export interface MenuEntry {
+  dishId: string;
+  price: number;
+  ingredientCostSek: number;
 }
 
 // ----- ORDER 043 two-layer capital model ----------------------------------
@@ -530,6 +579,7 @@ export type LedgerCategory =
   | 'interest'            // daily loan interest accrual
   | 'scenario'            // scenario cash writes (themed + secondary)
   | 'buyout'              // fired team member contract buyout
+  | 'stock'               // ORDER 077 §4 (M4) — ingredient purchase from a supplier
   | 'other';              // fallback with mandatory descriptive cause
 
 export interface LedgerLine {
@@ -614,6 +664,10 @@ export type EventStreamCauseTag =
   // New M6 conditions not detected by the pre-existing detectCause
   | 'weather_adverse'
   | 'world_factor_negative'
+  // ORDER 077 §4 (M4) — stock ran out for a dish on the menu.
+  // Fires per-dish, once per service (dish is removed from the
+  // running menu after firing so it does not spam).
+  | 'stock_out'
   // Legacy fallbacks (three-value tag from earlier eventStream defs)
   | 'ignorance'
   | 'strain'
@@ -725,6 +779,16 @@ export interface SimulationState {
   // id, base36 tick), `startedAt` (simTime the chain started).
   // Reused within a 20 s window; expire on condition change.
   activeCauseChains: { causeTag: EventStreamCauseTag; chainId: string; startedAt: number }[];
+  // ORDER 077 §4 (M4) — today's menu. Set at COMPOSE_MENU; cleared
+  // at day rollover so tomorrow's morning is a fresh compose. Each
+  // entry freezes the ingredient cost at compose time so a mid-day
+  // supplier swap doesn't retroactively shift the plate's economics.
+  menu: MenuEntry[];
+  // ORDER 077 §4 (M4) — pantry state. Ingredient id → units. Non-
+  // negative; drawn down at guest-pay tick when a dish is picked.
+  // Unbounded across days (§13 defers ageing to M4b); a slow leak
+  // will show up on the reconciliation baseline.
+  stock: Record<string, number>;
   // ORDER 043 outcome layer — non-economic capitals the scenarios
   // move (§3.1). Economic moved to `state.cash`. Separate from `eco`
   // above (§8.2's visible sustainability *reading*), which stays
@@ -901,7 +965,15 @@ export type SimAction =
   //     the flag is set.
   | { type: 'SHORTEN_MENU' }
   | { type: 'THIN_WINE_LIST' }
-  | { type: 'CLOSE_SERVICE'; service: 'lunch' | 'dinner' };
+  | { type: 'CLOSE_SERVICE'; service: 'lunch' | 'dinner' }
+  // ORDER 077 §4 (M4) — morning stock purchase. Cost posts to cash
+  // immediately + a labelled ledger line (DoD 4). Short-delivery
+  // rolled per supplier reliability (§7 report gate).
+  | { type: 'BUY_STOCK'; supplierId: string; ingredientId: string; units: number }
+  // ORDER 077 §4 (M4) — morning menu composition. Freezes today's
+  // dish list + pricing + ingredient cost per entry. Blocked once
+  // service opens (§6 report gate: "set in the morning and stands").
+  | { type: 'COMPOSE_MENU'; dishes: readonly { dishId: string; price: number }[] };
 
 export interface CameraTarget {
   focus: Vec2;

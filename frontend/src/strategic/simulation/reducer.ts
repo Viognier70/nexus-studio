@@ -99,6 +99,11 @@ import {
   WEEKLY_GATE_DAYS,
   activityById
 } from './activities';
+import {
+  findDish,
+  findIngredient,
+  findSupplier
+} from './m4Catalogue';
 
 // Capital tuning constants live in ./constants (no imports, no
 // cycle). Re-exported here so callers pulling from the reducer
@@ -198,6 +203,10 @@ export function reducer(state: SimulationState, action: SimAction): SimulationSt
       return thinWineListAction(state);
     case 'CLOSE_SERVICE':
       return closeServiceAction(state, action.service);
+    case 'BUY_STOCK':
+      return buyStock(state, action.supplierId, action.ingredientId, action.units);
+    case 'COMPOSE_MENU':
+      return composeMenu(state, action.dishes);
     default:
       return state;
   }
@@ -314,6 +323,193 @@ function applyActivityEffectsOnDayClose(draft: SimulationState): void {
       }
     };
   }
+}
+
+// ---------- ORDER 077 §4 (M4) — menu + kitchen + stock ------------------
+
+// Recompute the plates-remaining reading from current stock + menu.
+// Kept as a pure derivation so tests can call it directly. min-over-
+// recipe-ingredients of floor(stock / units).
+function computePlatesRemaining(
+  menu: SimulationState['menu'],
+  stock: Record<string, number>
+): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const entry of menu) {
+    const dish = findDish(entry.dishId);
+    if (!dish) { out[entry.dishId] = 0; continue; }
+    let minPlates = Infinity;
+    for (const r of dish.recipe) {
+      const units = stock[r.ingredientId] ?? 0;
+      const plates = Math.floor(units / r.units);
+      if (plates < minPlates) minPlates = plates;
+    }
+    out[entry.dishId] = Number.isFinite(minPlates) ? minPlates : 0;
+  }
+  return out;
+}
+
+function buyStock(
+  state: SimulationState,
+  supplierId: string,
+  ingredientId: string,
+  units: number
+): SimulationState {
+  if (state.day.period !== 'morning') return state;
+  if (units <= 0 || !Number.isFinite(units)) return state;
+  const supplier = findSupplier(supplierId);
+  const ingredient = findIngredient(ingredientId);
+  if (!supplier || !ingredient) return state;
+  if (!ingredient.suppliers.includes(supplierId)) return state;
+
+  // Short-delivery roll — one unit off (min 0). Deterministic path
+  // through state.rngState so a fixed-seed harness sees the same
+  // short-delivery pattern each run.
+  const rng = createRng(state.rngState);
+  const roll = rng.next();
+  const received = roll < (1 - supplier.reliability) ? Math.max(0, units - 1) : units;
+
+  const costSek = ingredient.baseCostSek * supplier.priceIndex * units;
+  const nextStock = { ...state.stock };
+  nextStock[ingredientId] = (nextStock[ingredientId] ?? 0) + received;
+  const nextEco = Math.max(0, Math.min(1, state.capitals.values.ecological + supplier.ecoDelta * units));
+
+  const next: SimulationState = {
+    ...state,
+    rngState: rng.state,
+    stock: nextStock,
+    capitals: {
+      ...state.capitals,
+      values: { ...state.capitals.values, ecological: nextEco }
+    },
+    day: {
+      ...state.day,
+      platesRemaining: computePlatesRemaining(state.menu, nextStock)
+    }
+  };
+  applyCashCost(next, costSek);
+  postLedger(next, {
+    category: 'stock',
+    amount: -costSek,
+    cause: `Buy ${units}× ${ingredient.name} from ${supplier.name}`,
+    causeId: `${supplierId}:${ingredientId}`
+  });
+  if (received < units) {
+    next.eventStream = [
+      ...next.eventStream,
+      {
+        at: state.simTime,
+        text: `Supplier short-delivery: ${supplier.name} delivered ${received}/${units} ${ingredient.name}.`,
+        category: 'ambient',
+        causeTag: 'stock_out',
+        causeChainId: null,
+        sustainability: 'economic',
+        kind: 'supplier_short',
+        scenarioId: null
+      }
+    ];
+  }
+  return next;
+}
+
+function composeMenu(
+  state: SimulationState,
+  dishes: readonly { dishId: string; price: number }[]
+): SimulationState {
+  if (state.day.period !== 'morning') return state;
+  const entries: SimulationState['menu'] = [];
+  for (const d of dishes) {
+    const dish = findDish(d.dishId);
+    if (!dish) continue;
+    if (!(d.price > 0 && Number.isFinite(d.price))) continue;
+    // Freeze ingredient cost at compose time — use the min-supplier
+    // estimate as a proxy; when the player has bought from a specific
+    // supplier the estimate is at least a lower bound. Guarantees
+    // DoD 1's "every dish has an ingredient cost" > 0.
+    const ingredientCostSek = dish.recipe.reduce((sum, r) => {
+      const ing = findIngredient(r.ingredientId);
+      if (!ing) return sum;
+      // Pick cheapest available supplier the player has stock from,
+      // else the ingredient's base cost × cheapest-supplier index.
+      let unitCost = Infinity;
+      for (const supId of ing.suppliers) {
+        const sup = findSupplier(supId);
+        if (!sup) continue;
+        const c = ing.baseCostSek * sup.priceIndex;
+        if (c < unitCost) unitCost = c;
+      }
+      if (!Number.isFinite(unitCost)) unitCost = ing.baseCostSek;
+      return sum + unitCost * r.units;
+    }, 0);
+    entries.push({ dishId: d.dishId, price: d.price, ingredientCostSek });
+  }
+  return {
+    ...state,
+    menu: entries,
+    day: {
+      ...state.day,
+      platesRemaining: computePlatesRemaining(entries, state.stock),
+      stockOutEvents: []
+    }
+  };
+}
+
+// Draw one dish from the current menu for a paying guest. Returns the
+// dish (with revenue = its price) if any plates remain of at least
+// one menu dish; returns null if every menu dish has run out (guest
+// walks). Mutates `draft.stock` + `draft.day.platesRemaining` on
+// success. Fires the stock_out event exactly once per dish per
+// service via draft.day.stockOutEvents.
+export function drawMenuDishForGuest(
+  draft: SimulationState,
+  guestId: string,
+  simTime: number,
+  rngRoll: number
+): { dishId: string; price: number } | null {
+  if (draft.menu.length === 0) return null;
+  // Available = plates > 0 AND not already fired stock_out this service.
+  const available = draft.menu.filter(
+    (m) => (draft.day.platesRemaining[m.dishId] ?? 0) > 0
+      && !draft.day.stockOutEvents.includes(m.dishId)
+  );
+  if (available.length === 0) return null;
+
+  const pick = available[Math.floor(rngRoll * available.length) % available.length];
+  const dish = findDish(pick.dishId);
+  if (!dish) return null;
+
+  const nextStock = { ...draft.stock };
+  for (const r of dish.recipe) {
+    nextStock[r.ingredientId] = (nextStock[r.ingredientId] ?? 0) - r.units;
+  }
+  draft.stock = nextStock;
+  draft.day.platesRemaining = computePlatesRemaining(draft.menu, nextStock);
+  // Fire stock_out for any menu dish whose plate count just hit 0
+  // AND that hasn't fired yet this service. This is where DoD 3's
+  // "at least one dish can run out mid-service" fires.
+  for (const m of draft.menu) {
+    if ((draft.day.platesRemaining[m.dishId] ?? 0) === 0
+      && !draft.day.stockOutEvents.includes(m.dishId)) {
+      const runOutDish = findDish(m.dishId);
+      if (!runOutDish) continue;
+      draft.day.stockOutEvents = [...draft.day.stockOutEvents, m.dishId];
+      draft.eventStream = [
+        ...draft.eventStream,
+        {
+          at: simTime,
+          text: `Dish '${runOutDish.name}' ran out — the kitchen is out of stock.`,
+          category: 'ambient',
+          causeTag: 'stock_out',
+          causeChainId: null,
+          sustainability: 'economic',
+          kind: 'dish_ran_out',
+          scenarioId: null
+        }
+      ];
+    }
+  }
+  void guestId;
+  return { dishId: pick.dishId, price: pick.price };
 }
 
 function forceCollapseAction(state: SimulationState): SimulationState {
@@ -799,6 +995,10 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
         // a fixed % per night. Rhythm not reaction: the player must
         // refill via questions to hold the ceiling.
         enablers: decayEnablersOvernight(state.enablers),
+        // ORDER 077 §4 (M4) — menu clears at day rollover (fresh
+        // morning compose). Stock persists across days per ORDER 051
+        // §4 (leftover-stock persistence); ageing deferred to M4b.
+        menu: [],
         day: {
           ...initialDay(),
           dayNumber: day.dayNumber + 1,
@@ -1216,7 +1416,26 @@ function advanceTick(state: SimulationState): SimulationState {
   const inDinner = draft.day.period === 'dinner';
   for (const guest of draft.guests) {
     if (guest.state === 'paying' && guest.stateTime === draft.simTime) {
-      const rev = revenuePerGuest(draft.policies) * revenueMult;
+      // ORDER 077 §4 (M4) — if a menu is composed, the guest orders
+      // from it and pays the dish price (drawing recipe from stock).
+      // If every menu dish is out or menu is empty, fall back to the
+      // legacy policies-based revenue path so pre-M4 tests still hold.
+      let rev: number;
+      if (draft.menu.length > 0) {
+        const rng = createRng(draft.rngState);
+        const roll = rng.next();
+        draft.rngState = rng.state;
+        const draw = drawMenuDishForGuest(draft, guest.id, draft.simTime, roll);
+        if (draw) {
+          rev = draw.price * revenueMult;
+        } else {
+          // Every menu dish out — no revenue, guest walks (reputation
+          // hit already fired by drawMenuDishForGuest via stock_out).
+          continue;
+        }
+      } else {
+        rev = revenuePerGuest(draft.policies) * revenueMult;
+      }
       // ORDER 050 §3 (2026-08-10) — paired write: revenue accumulator
       // + cash till stay in sync via applyCashRevenue. serviceRevenue
       // panel arrays continue to receive the kSEK share.

@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { BusinessProvider } from './business/BusinessContext';
 import { InvestmentPanel } from './business/InvestmentPanel';
 import { MorningActivityPanel } from './business/MorningActivityPanel';
+import { MorningMenuPanel } from './business/MorningMenuPanel';
+import { PlatesRemainingPanel } from './business/PlatesRemainingPanel';
 import { ScaleDownPanel } from './business/ScaleDownPanel';
 import { NameEntryOverlay } from './business/NameEntryOverlay';
 import { PlayerPanel } from './business/PlayerPanel';
@@ -228,6 +230,8 @@ function StrategicShell() {
       <InvestmentPanel />
       <ScaleDownPanel />
       <MorningActivityPanel />
+      <MorningMenuPanel />
+      <PlatesRemainingPanel />
       <AgencyOfferPanel />
       <OpeningPanel />
       <EveningAccountPanel />
