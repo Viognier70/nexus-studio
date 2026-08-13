@@ -20,6 +20,7 @@ import { economicReadingNormalised } from '../simulation/cashReading';
 import { useSimState } from '../simulation/SimulationProvider';
 import { fpsMeter } from '../../lib/fpsMeter';
 import { pixelSampler } from '../../lib/pixelSampler';
+import { harnessParams } from '../testHarness/urlParams';
 
 const PANEL_STYLE: React.CSSProperties = {
   position: 'absolute',
@@ -100,10 +101,18 @@ export function DevPanel({ lastKey }: Props) {
   // atmosphere/fog is muting saturation; <R100 → shadow or normal
   // still wrong.
   const line4 = `     pixel(centre) R=${rgb.r.toString().padStart(3, ' ')} G=${rgb.g.toString().padStart(3, ' ')} B=${rgb.b.toString().padStart(3, ' ')}`;
+  // ORDER 081 — playtest mode hides the aiming reticle and the
+  // pixel-probe line. The day/period/cash lines stay because they
+  // are useful in a debrief; the diagnostic aim + colour readout
+  // add noise to a "does it feel good" assessment.
+  const hideDiagnostic = harnessParams.playtest;
+  const panelText = hideDiagnostic
+    ? `${line1}\n${line2}\n${line3}`
+    : `${line1}\n${line2}\n${line3}\n${line4}`;
   return (
     <>
-      <div style={PANEL_STYLE}>{`${line1}\n${line2}\n${line3}\n${line4}`}</div>
-      <CenterCrosshair />
+      <div style={PANEL_STYLE}>{panelText}</div>
+      {!hideDiagnostic && <CenterCrosshair />}
     </>
   );
 }

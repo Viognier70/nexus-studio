@@ -67,6 +67,13 @@ interface ParsedParams {
   // the screen centre so the pixel sampler has a deterministic
   // ground-truth target that doesn't depend on scene lighting.
   calibrationQuad: boolean;
+  // ORDER 081 — playtest mode. When true, hides diagnostic overlays
+  // (crosshair + pixel-sample probe line) so the Vision Owner can
+  // judge whether the game feels good without dev noise on top.
+  // CalibrationQuad is already default-off (requires its own param).
+  // DevPanel's day/period/cash lines stay — those are useful in a
+  // debrief. Only the aiming reticle + pixel readout drop.
+  playtest: boolean;
 }
 
 function parseHash(): ParsedParams {
@@ -76,7 +83,8 @@ function parseHash(): ParsedParams {
       camera: DEFAULT_CAMERA_OVERRIDE,
       roi: DEFAULT_ROI,
       poseId: DEFAULT_POSE_ID,
-      calibrationQuad: false
+      calibrationQuad: false,
+      playtest: false
     };
   }
   const hash = window.location.hash.replace('#', '');
@@ -95,7 +103,8 @@ function parseHash(): ParsedParams {
   const roi = parseRoi(params.get('roi') ?? null);
   const poseId = params.get('poseId') ?? null;
   const calibrationQuad = params.get('calibrationQuad') === '1';
-  return { period, camera, roi, poseId, calibrationQuad };
+  const playtest = params.get('playtest') === '1';
+  return { period, camera, roi, poseId, calibrationQuad, playtest };
 }
 
 function parsePeriod(s: string | null): PeriodOverride {
