@@ -29,6 +29,7 @@ import type {
   SimulationState
 } from '../types';
 import { pickParagraph } from '../../content/eveningAccount.sv';
+import { ACTIVITY_CATALOGUE } from './activities';
 
 // "Good night" thresholds. Net revenue = (current revenue − snapshot).
 // Rep "held or grew" = current reputation ≥ snapshot − 0.02 (allowing
@@ -80,6 +81,26 @@ export function computeEveningAccount(state: SimulationState): EveningAccount {
   const changes = state.day.morningPolicyChanges;
   if (changes.length > 0) {
     paragraph = changes.join(' ') + ' ' + paragraph;
+  }
+  // ORDER 075 (M2 DoD 3) — name today's picked activities at the head
+  // of the paragraph so the morning's choices read through to the
+  // evening. Localise later; English lead sentence matches the
+  // observer's paragraph tone.
+  if (state.day.pickedActivityIds.length > 0) {
+    const names = state.day.pickedActivityIds
+      .map((id) => {
+        const a = ACTIVITY_CATALOGUE.find((x) => x.id === id);
+        return a ? a.name : null;
+      })
+      .filter((n): n is string => n !== null);
+    if (names.length > 0) {
+      const list = names.length === 1
+        ? names[0]
+        : names.length === 2
+          ? `${names[0]} and ${names[1]}`
+          : `${names.slice(0, -1).join(', ')}, and ${names[names.length - 1]}`;
+      paragraph = `Today you picked: ${list}. ` + paragraph;
+    }
   }
   return {
     branch,

@@ -94,6 +94,11 @@ import {
   postServiceSummaryLines
 } from './cashReading';
 import { drawNextTheme } from './themeSelection';
+import {
+  MAX_ACTIVITIES_PER_DAY,
+  WEEKLY_GATE_DAYS,
+  activityById
+} from './activities';
 
 // Capital tuning constants live in ./constants (no imports, no
 // cycle). Re-exported here so callers pulling from the reducer
@@ -183,6 +188,10 @@ export function reducer(state: SimulationState, action: SimAction): SimulationSt
       return forceCollapseAction(state);
     case 'ANSWER_QUESTION':
       return answerProfessionalQuestion(state, action.index);
+    case 'PICK_ACTIVITY':
+      return pickActivity(state, action.id);
+    case 'UNPICK_ACTIVITY':
+      return unpickActivity(state, action.id);
     case 'SHORTEN_MENU':
       return shortenMenuAction(state);
     case 'THIN_WINE_LIST':
@@ -198,6 +207,115 @@ export function reducer(state: SimulationState, action: SimAction): SimulationSt
 // running service post-prep with no collapse already latched. No-op
 // otherwise (during morning/afternoon/evening/opening/prep the
 // collapse mechanic doesn't apply, so this action does nothing).
+// ORDER 075 (M2) — pick a morning activity. Refuses unless period
+// is 'morning' AND under the per-day cap AND the activity is
+// available (not repeated within the weekly-availability window).
+// Cost posts immediately as a negative 'other' ledger line so the
+// player sees the till move at pick time; the CapitalDelta effect
+// applies at end-of-day.
+function pickActivity(state: SimulationState, id: string): SimulationState {
+  if (state.day.period !== 'morning') return state;
+  if (state.day.pickedActivityIds.includes(id)) return state;
+  if (state.day.pickedActivityIds.length >= MAX_ACTIVITIES_PER_DAY) return state;
+  const activity = activityById(id);
+  if (!activity) return state;
+  // Weekly gate — reject if this activity was picked within the last
+  // WEEKLY_GATE_DAYS days.
+  if (activity.availability === 'weekly') {
+    const cutoff = state.day.dayNumber - WEEKLY_GATE_DAYS;
+    if (state.activityHistory.some((h) => h.id === id && h.pickedOnDay > cutoff)) {
+      return state;
+    }
+  }
+  const next: SimulationState = {
+    ...state,
+    day: {
+      ...state.day,
+      pickedActivityIds: [...state.day.pickedActivityIds, id]
+    },
+    activityHistory: [
+      ...state.activityHistory,
+      { id, pickedOnDay: state.day.dayNumber }
+    ]
+  };
+  // Post upfront cost.
+  if (activity.costSek > 0) {
+    applyCashCost(next, activity.costSek);
+    postLedger(next, {
+      category: 'other',
+      amount: -activity.costSek,
+      cause: `Activity cost: ${activity.name}`,
+      causeId: id
+    });
+  }
+  return next;
+}
+
+// ORDER 075 (M2) — unpick a morning activity. Refunds the upfront
+// cost (posts a positive 'other' line balancing the pick-cost line).
+// Only allowed during morning (once the day advances past morning
+// the pick is committed).
+function unpickActivity(state: SimulationState, id: string): SimulationState {
+  if (state.day.period !== 'morning') return state;
+  if (!state.day.pickedActivityIds.includes(id)) return state;
+  const activity = activityById(id);
+  if (!activity) return state;
+  const next: SimulationState = {
+    ...state,
+    day: {
+      ...state.day,
+      pickedActivityIds: state.day.pickedActivityIds.filter((x) => x !== id)
+    },
+    activityHistory: state.activityHistory.filter(
+      (h) => !(h.id === id && h.pickedOnDay === state.day.dayNumber)
+    )
+  };
+  if (activity.costSek > 0) {
+    // Refund via cash-delta (not a revenue event); post the balancing
+    // ledger line.
+    applyCashDelta(next, activity.costSek);
+    postLedger(next, {
+      category: 'other',
+      amount: activity.costSek,
+      cause: `Activity refund: ${activity.name}`,
+      causeId: id
+    });
+  }
+  return next;
+}
+
+// ORDER 075 (M2) — apply each picked activity's end-of-day effect.
+// Called at day rollover just after wages so the ledger reads
+// "wage lines → activity effect lines → next morning". Capital
+// deltas mutate capitals directly (not via enablers — enabler
+// routing is M6/M7 scope).
+function applyActivityEffectsOnDayClose(draft: SimulationState): void {
+  for (const id of draft.day.pickedActivityIds) {
+    const activity = activityById(id);
+    if (!activity) continue;
+    // Economic effect posts as a signed 'other' ledger line.
+    if (activity.effect.economic !== 0) {
+      applyCashDelta(draft, activity.effect.economic);
+      postLedger(draft, {
+        category: 'other',
+        amount: activity.effect.economic,
+        cause: `Activity effect: ${activity.name}`,
+        causeId: id
+      });
+    }
+    // Social and ecological effects move capitals directly, clamped.
+    const s = draft.capitals.values.social + activity.effect.social;
+    const e = draft.capitals.values.ecological + activity.effect.ecological;
+    draft.capitals = {
+      ...draft.capitals,
+      values: {
+        social: Math.max(0, Math.min(1, s)),
+        ecological: Math.max(0, Math.min(1, e))
+      }
+    };
+  }
+}
+
 function forceCollapseAction(state: SimulationState): SimulationState {
   const period = state.day.period;
   if (period !== 'lunch' && period !== 'dinner') return state;
@@ -715,6 +833,17 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           cause: `Idle-period staff cost (day ${state.day.dayNumber})`
         });
       }
+      // ORDER 075 (M2) — apply picked-activity end-of-day effects.
+      // Uses state.day.pickedActivityIds (pre-rollover) since
+      // initialDay() reset them on nextForDay. Effects post to
+      // ledger + move capitals.
+      const preRolloverDay = state.day;
+      // Mutate nextForDay in place — same pattern as postLedger.
+      nextForDay.day = { ...nextForDay.day, pickedActivityIds: preRolloverDay.pickedActivityIds };
+      applyActivityEffectsOnDayClose(nextForDay);
+      // Clear again after effect application so the new day starts
+      // clean.
+      nextForDay.day = { ...nextForDay.day, pickedActivityIds: [] };
       return nextForDay;
     }
   }

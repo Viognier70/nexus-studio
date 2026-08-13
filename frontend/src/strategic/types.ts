@@ -449,6 +449,10 @@ export interface DayState {
   // evening account uses this to say "kvällen bevarade ryktet" vs
   // "ryktet gick tillbaka" without surfacing the number itself.
   reputationAtServiceStart: number | null;
+  // ORDER 075 (M2) — today's picked activity ids. Set in the morning
+  // via PICK_ACTIVITY; cleared at day rollover. Length capped at
+  // MAX_ACTIVITIES_PER_DAY = 3 in the reducer.
+  pickedActivityIds: string[];
 }
 
 // ----- ORDER 043 two-layer capital model ----------------------------------
@@ -675,6 +679,10 @@ export interface SimulationState {
   // post one line per event. Cash-authoritative — the ledger is a
   // reading of the book, not the source of the till balance.
   ledger: LedgerLine[];
+  // ORDER 075 (M2) — weekly-gate history for activities. Records
+  // each pick; consulted at PICK_ACTIVITY time to enforce weekly
+  // availability. Uncapped — 1 entry per activity pick, small.
+  activityHistory: { id: string; pickedOnDay: number }[];
   // ORDER 043 outcome layer — non-economic capitals the scenarios
   // move (§3.1). Economic moved to `state.cash`. Separate from `eco`
   // above (§8.2's visible sustainability *reading*), which stays
@@ -833,6 +841,11 @@ export type SimAction =
   // the pending options; the reducer looks up correctness against
   // the pending options and fires the right/wrong effects.
   | { type: 'ANSWER_QUESTION'; index: number }
+  // ORDER 075 (M2) — morning activity pick / unpick. Only fires
+  // during period='morning'. Cost posts immediately; effect posts
+  // at end-of-day alongside wages. Max 3 picks per day.
+  | { type: 'PICK_ACTIVITY'; id: string }
+  | { type: 'UNPICK_ACTIVITY'; id: string }
   // ORDER 049 §5.3 — scale-down actions. Morning-only. Reversible;
   // dispatching the same action while active un-scales.
   //   SHORTEN_MENU toggles the ingredient tier down one step

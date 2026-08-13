@@ -177,7 +177,8 @@ export function initialDay(): DayState {
     serviceIngredientAccrued: 0,
     idleCostAccrued: 0,
     serviceCovers: 0,
-    morningPolicyChanges: []
+    morningPolicyChanges: [],
+    pickedActivityIds: []
   };
 }
 
@@ -236,6 +237,8 @@ export function makeInitialState(
     // first line usually appears on day 1's first daily loan-interest
     // accrual or first scenario resolution.
     ledger: [],
+    // ORDER 075 (M2) — activity pick history (weekly-availability gate).
+    activityHistory: [],
     waste: 0,
     reputation: 0.6,
     // Starts above the base ceiling (0.55) so day-1 shows a small
