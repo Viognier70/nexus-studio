@@ -483,6 +483,13 @@ export interface DayState {
   // staff-puck colour ring in the room, not by any panel. Null
   // outside service.
   serviceRhythm: 'green' | 'amber' | 'red' | null;
+  // ORDER 079 §3 (M4a) — per-service counters for substitute and
+  // walkout events. Persistent across the ring-buffered eventStream
+  // (which purges at 40 entries) so the DoD assertion and any
+  // future ledger/analytics panel can read a stable count. Reset
+  // at day rollover with the rest of DayState.
+  substitutedCount: number;
+  walkedCount: number;
 }
 
 // ORDER 077 §4 (M4) — supplier, ingredient, and dish domain types.

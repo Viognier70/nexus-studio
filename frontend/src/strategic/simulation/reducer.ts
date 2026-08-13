@@ -460,62 +460,212 @@ function composeMenu(
   };
 }
 
-// Draw one dish from the current menu for a paying guest. Returns the
-// dish (with revenue = its price) if any plates remain of at least
-// one menu dish; returns null if every menu dish has run out (guest
-// walks). Mutates `draft.stock` + `draft.day.platesRemaining` on
-// success. Fires the stock_out event exactly once per dish per
-// service via draft.day.stockOutEvents.
+// ORDER 079 §2 (M4a) — attractiveness-weighting constant. K = 2 gives
+// ±50 % pricing swings producing ~⅓ / ~3× demand swings. Named so a
+// future retune touches one place.
+const ATTRACTIVENESS_K = 2;
+
+// ORDER 079 §3 (M4a) — probability a guest whose target dish is out
+// substitutes to the cheapest still-available dish, versus walking.
+// 30/70 split; harsher than a real restaurant so DoD 2 can force both
+// outcomes in a modest-length script.
+const SUBSTITUTE_PROBABILITY = 0.30;
+
+// ORDER 079 §4 (M4a) — reputation hits on the two out-of-stock outcomes.
+const REP_HIT_SUBSTITUTE = 0.02;
+const REP_HIT_WALKOUT    = 0.05;
+
+// Attractiveness weight per menu entry: exp(−(Δprice / suggested) × K).
+// Zero-safe if suggestedPrice is 0 (returns 1 = neutral).
+function attractivenessWeight(price: number, suggestedPrice: number): number {
+  if (!(suggestedPrice > 0)) return 1;
+  const delta = (price - suggestedPrice) / suggestedPrice;
+  return Math.exp(-delta * ATTRACTIVENESS_K);
+}
+
+// Pick a dish from the full menu, weighted by attractiveness. Returns
+// the picked MenuEntry (regardless of whether stock is available for
+// it — the "wanted" dish; the stock check happens in the caller).
+function pickTargetDish(
+  menu: SimulationState['menu'],
+  rngRoll: number
+): SimulationState['menu'][number] | null {
+  if (menu.length === 0) return null;
+  const weights: number[] = [];
+  let total = 0;
+  for (const m of menu) {
+    const dish = findDish(m.dishId);
+    const w = dish ? attractivenessWeight(m.price, dish.suggestedPrice) : 1;
+    weights.push(w);
+    total += w;
+  }
+  if (!(total > 0)) return menu[0];
+  let x = rngRoll * total;
+  for (let i = 0; i < menu.length; i++) {
+    x -= weights[i];
+    if (x <= 0) return menu[i];
+  }
+  return menu[menu.length - 1];
+}
+
+// The four possible outcomes at the pay tick under M4 + M4a.
+export type DrawOutcome =
+  | { kind: 'served';    dishId: string; price: number }
+  | { kind: 'substituted'; targetDishId: string; servedDishId: string; price: number }
+  | { kind: 'walked';    targetDishId: string }
+  | { kind: 'no-menu'    };
+
+// Draw one dish for a paying guest under M4 + M4a. Picks a target
+// dish via attractiveness weighting over the full menu, then routes
+// to serve / substitute / walk based on stock. Mutates draft.stock,
+// draft.day.platesRemaining, and fires the stock_out ambient line
+// exactly once per dish per service via draft.day.stockOutEvents.
+//
+// Two independent RNG rolls per call:
+//   - `targetRoll` picks which dish the guest wants (attractiveness
+//     weighting over the full menu).
+//   - `substituteRoll` decides substitute-vs-walk when the target is
+//     out of stock. Independent from targetRoll so the 30/70 split
+//     converges to its actual probabilities over a sample.
 export function drawMenuDishForGuest(
   draft: SimulationState,
   guestId: string,
   simTime: number,
-  rngRoll: number
-): { dishId: string; price: number } | null {
-  if (draft.menu.length === 0) return null;
-  // Available = plates > 0 AND not already fired stock_out this service.
-  const available = draft.menu.filter(
-    (m) => (draft.day.platesRemaining[m.dishId] ?? 0) > 0
-      && !draft.day.stockOutEvents.includes(m.dishId)
-  );
-  if (available.length === 0) return null;
+  targetRoll: number,
+  substituteRoll: number
+): DrawOutcome {
+  if (draft.menu.length === 0) return { kind: 'no-menu' };
 
-  const pick = available[Math.floor(rngRoll * available.length) % available.length];
-  const dish = findDish(pick.dishId);
-  if (!dish) return null;
+  // ORDER 079 §2 — weighted target pick over the full menu.
+  const target = pickTargetDish(draft.menu, targetRoll);
+  if (!target) return { kind: 'no-menu' };
+  const targetDish = findDish(target.dishId);
+  if (!targetDish) return { kind: 'no-menu' };
 
-  const nextStock = { ...draft.stock };
-  for (const r of dish.recipe) {
-    nextStock[r.ingredientId] = (nextStock[r.ingredientId] ?? 0) - r.units;
-  }
-  draft.stock = nextStock;
-  draft.day.platesRemaining = computePlatesRemaining(draft.menu, nextStock);
-  // Fire stock_out for any menu dish whose plate count just hit 0
-  // AND that hasn't fired yet this service. This is where DoD 3's
-  // "at least one dish can run out mid-service" fires.
-  for (const m of draft.menu) {
-    if ((draft.day.platesRemaining[m.dishId] ?? 0) === 0
-      && !draft.day.stockOutEvents.includes(m.dishId)) {
-      const runOutDish = findDish(m.dishId);
-      if (!runOutDish) continue;
-      draft.day.stockOutEvents = [...draft.day.stockOutEvents, m.dishId];
-      draft.eventStream = [
-        ...draft.eventStream,
-        {
-          at: simTime,
-          text: `Dish '${runOutDish.name}' ran out — the kitchen is out of stock.`,
-          category: 'ambient',
-          causeTag: 'stock_out',
-          causeChainId: null,
-          sustainability: 'economic',
-          kind: 'dish_ran_out',
-          scenarioId: null
-        }
-      ];
+  const targetOut = (draft.day.platesRemaining[target.dishId] ?? 0) === 0;
+
+  // Helper: serve the dish, decrement stock, fire stock_out if the
+  // draw hits zero. Shared between the target-available and
+  // substitute paths.
+  const serve = (entry: SimulationState['menu'][number]): void => {
+    const dish = findDish(entry.dishId);
+    if (!dish) return;
+    const nextStock = { ...draft.stock };
+    for (const r of dish.recipe) {
+      nextStock[r.ingredientId] = (nextStock[r.ingredientId] ?? 0) - r.units;
     }
+    draft.stock = nextStock;
+    draft.day.platesRemaining = computePlatesRemaining(draft.menu, nextStock);
+    // Fire stock_out (M4 DoD 3 mechanic) for any menu dish whose plate
+    // count just hit 0 and hasn't fired yet this service.
+    for (const m of draft.menu) {
+      if ((draft.day.platesRemaining[m.dishId] ?? 0) === 0
+        && !draft.day.stockOutEvents.includes(m.dishId)) {
+        const runOutDish = findDish(m.dishId);
+        if (!runOutDish) continue;
+        draft.day.stockOutEvents = [...draft.day.stockOutEvents, m.dishId];
+        draft.eventStream = [
+          ...draft.eventStream,
+          {
+            at: simTime,
+            text: `Dish '${runOutDish.name}' ran out — the kitchen is out of stock.`,
+            category: 'ambient',
+            causeTag: 'stock_out',
+            causeChainId: null,
+            sustainability: 'economic',
+            kind: 'dish_ran_out',
+            scenarioId: null
+          }
+        ];
+      }
+    }
+  };
+
+  if (!targetOut) {
+    serve(target);
+    void guestId;
+    return { kind: 'served', dishId: target.dishId, price: target.price };
   }
-  void guestId;
-  return { dishId: pick.dishId, price: pick.price };
+
+  // Target is out. Substitute vs walk per §3.
+  // Substitute candidates = available dishes (plates > 0) EXCLUDING
+  // the target. Pick the cheapest.
+  const candidates = draft.menu.filter(
+    (m) => m.dishId !== target.dishId
+      && (draft.day.platesRemaining[m.dishId] ?? 0) > 0
+  );
+
+  // No available substitute → forced walkout.
+  if (candidates.length === 0) {
+    draft.reputation = Math.max(0, draft.reputation - REP_HIT_WALKOUT);
+    draft.day.walkedCount = (draft.day.walkedCount ?? 0) + 1;
+    draft.eventStream = [
+      ...draft.eventStream,
+      {
+        at: simTime,
+        text: `Guest left — no ${targetDish.name} tonight.`,
+        category: 'ambient',
+        causeTag: 'stock_out',
+        causeChainId: null,
+        sustainability: 'social',
+        kind: 'guest_walked',
+        scenarioId: null
+      }
+    ];
+    return { kind: 'walked', targetDishId: target.dishId };
+  }
+
+  // Substitute-vs-walk roll — independent RNG draw supplied by the
+  // caller so the 30/70 split converges to its actual probabilities.
+  if (substituteRoll < SUBSTITUTE_PROBABILITY) {
+    // Substitute to cheapest available.
+    const cheapest = candidates.reduce(
+      (acc, m) => (m.price < acc.price ? m : acc),
+      candidates[0]
+    );
+    const cheapestDish = findDish(cheapest.dishId);
+    if (!cheapestDish) return { kind: 'walked', targetDishId: target.dishId };
+    serve(cheapest);
+    draft.reputation = Math.max(0, draft.reputation - REP_HIT_SUBSTITUTE);
+    draft.day.substitutedCount = (draft.day.substitutedCount ?? 0) + 1;
+    draft.eventStream = [
+      ...draft.eventStream,
+      {
+        at: simTime,
+        text: `Guest wanted ${targetDish.name}; kitchen substituted ${cheapestDish.name}.`,
+        category: 'ambient',
+        causeTag: 'stock_out',
+        causeChainId: null,
+        sustainability: 'social',
+        kind: 'guest_substituted',
+        scenarioId: null
+      }
+    ];
+    return {
+      kind: 'substituted',
+      targetDishId: target.dishId,
+      servedDishId: cheapest.dishId,
+      price: cheapest.price
+    };
+  }
+
+  // Walk.
+  draft.reputation = Math.max(0, draft.reputation - REP_HIT_WALKOUT);
+  draft.day.walkedCount = (draft.day.walkedCount ?? 0) + 1;
+  draft.eventStream = [
+    ...draft.eventStream,
+    {
+      at: simTime,
+      text: `Guest left — no ${targetDish.name} tonight.`,
+      category: 'ambient',
+      causeTag: 'stock_out',
+      causeChainId: null,
+      sustainability: 'social',
+      kind: 'guest_walked',
+      scenarioId: null
+    }
+  ];
+  return { kind: 'walked', targetDishId: target.dishId };
 }
 
 function forceCollapseAction(state: SimulationState): SimulationState {
@@ -1442,14 +1592,17 @@ function advanceTick(state: SimulationState): SimulationState {
       let rev: number;
       if (draft.menu.length > 0) {
         const rng = createRng(draft.rngState);
-        const roll = rng.next();
+        const targetRoll = rng.next();
+        const substituteRoll = rng.next();
         draft.rngState = rng.state;
-        const draw = drawMenuDishForGuest(draft, guest.id, draft.simTime, roll);
-        if (draw) {
+        const draw = drawMenuDishForGuest(draft, guest.id, draft.simTime, targetRoll, substituteRoll);
+        // ORDER 079 §3 (M4a) — four outcomes: served / substituted /
+        // walked / no-menu. Served + substituted pay a price; walked
+        // + no-menu produce no revenue (and drawMenuDishForGuest
+        // already fired the ambient line + rep hit).
+        if (draw.kind === 'served' || draw.kind === 'substituted') {
           rev = draw.price * revenueMult;
         } else {
-          // Every menu dish out — no revenue, guest walks (reputation
-          // hit already fired by drawMenuDishForGuest via stock_out).
           continue;
         }
       } else {

@@ -184,7 +184,9 @@ export function initialDay(): DayState {
     platesRemaining: {},
     stockOutEvents: [],
     prepReadiness: {},
-    serviceRhythm: null
+    serviceRhythm: null,
+    substitutedCount: 0,
+    walkedCount: 0
   };
 }
 

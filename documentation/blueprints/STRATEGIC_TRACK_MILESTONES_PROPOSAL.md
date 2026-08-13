@@ -29,7 +29,7 @@ The proposal changes no code and merges no orders. It offers a structure to plan
 | M5 | Prep + cadence in the room | MECHANIC + RENDER | Landed 2026-08-13 (ORDER 078); DoD 1 + 3 + 4 verified autonomously, DoD 2 mechanic verified (sight-read remains M8) |
 | M6 | Cause-aware texture (mechanic) | MECHANIC | Landed 2026-08-12 (ORDER 076); divergence 0.219, first-cut floor cleared | — |
 | M6b | Cause-aware texture (sentence-bank rewrite) | CONTENT | Not started (split out from M6 per ORDER 077) | 052 §9 step 1 |
-| M4a | Attractiveness weighting + substitute/walkout split | MECHANIC | Not started (split from M4b onto M8 critical path per ORDER 078 §8) | Report gate `M4A_ATTRACTIVENESS_AND_SUBSTITUTION_REPORT_ORDER_079.md` |
+| M4a | Attractiveness weighting + substitute/walkout split | MECHANIC | Landed 2026-08-13 (ORDER 079); DoD 1 + 2 verified — closes ORDER 051 §8 acceptance items #2 and #4 that M4 as filed cannot satisfy | — |
 | M4b | Menu + kitchen + stock (residuals) | CONTENT + MECHANIC | Not started (attractiveness split out to M4a per ORDER 078 §8); residuals = wine list, package menus, ingredientTier retirement, stock ageing | 051 §7 steps 5–7 + §4 ageing |
 | M7 | Knowledge engine → bank meeting | MECHANIC + UI + CONTENT | Blocked upstream | 049 §5.1, §5.2, §1 volume review |
 | M8 | Playthrough acceptance | GOVERNANCE | Not scheduled | — |

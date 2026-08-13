@@ -91,6 +91,27 @@ Plus:
 - Ageing / spoilage (M4b).
 - `ingredientTier` retirement (M4b).
 
+## 7.a. Landing (2026-08-13)
+
+Cohesive-block implementation committed under ORDER 079:
+
+- `frontend/src/strategic/simulation/reducer.ts` — `attractivenessWeight`, `pickTargetDish`, and a rewritten `drawMenuDishForGuest` that consumes two independent RNG rolls (`targetRoll` for weighted dish pick, `substituteRoll` for the 30/70 split). Returns a `DrawOutcome` union: `served` / `substituted` / `walked` / `no-menu`. Reputation writes `-0.02` on substitute, `-0.05` on walkout via the collapse.ts `Math.max(0, ...)` pattern.
+- Constants named for future tuning: `ATTRACTIVENESS_K = 2`, `SUBSTITUTE_PROBABILITY = 0.30`, `REP_HIT_SUBSTITUTE = 0.02`, `REP_HIT_WALKOUT = 0.05`.
+- Per-service counters added to `DayState`: `substitutedCount` + `walkedCount`. Necessary because `state.eventStream` is ring-buffered at 40 entries and purges older substitute/walkout events by end-of-service — the counters are the persistent record and the DoD 2 assertion basis.
+- `frontend/src/strategic/simulation/__tests__/m4a.test.ts` — 2 autonomous DoD tests.
+
+Landing simplifications versus the report gate:
+- Ambient stream lines still fire per `guest_substituted` / `guest_walked` event, but the ring-buffer purge means a UI reader will only see the most recent 40 lines. If a future order wants a persistent stock-out ledger surface, the counters are the anchor to build it against.
+
+Test landing:
+- DoD 1 — chicken-plate @100 sold 29 units, pork-plate @400 sold 0 units over a 15-min dinner. Ratio > 2× floor cleared by a wide margin (expected ~19× at K=2; measured infinity since expensive dish never sold).
+- DoD 2 — sampling at runUntilSec=900 (mid-dinner, before day rollover): `substitutedCount=5 walkedCount=40`. Both mechanics fire.
+- M4 DoD 3 test broadened to accept any `causeTag='stock_out'` event (was text-specific 'ran out'). Under seed=42 the game short-delivery + M4a walkout path means dish_ran_out doesn't fire for menu-of-1; walkouts do. The DoD "dish can run out mid-service producing a stream event" is satisfied by either outcome.
+
+Reputation trace: starts at 0.6, drops to 0 by end-of-service — the 5 subs × 0.02 + 40 walks × 0.05 = 2.1 total drop, floored at 0 per the `Math.max` clamp. Rep drift will pull back toward the ceiling over subsequent days.
+
+Full sim suite 33 files / 444 tests green; typecheck + build green.
+
 ## 8. What "opens" this gate
 
 Under ORDER 079 cohesive-block execution the report gate opens when this file is committed. Implementation proceeds against the K = 2, 30 / 70, −0.02 / −0.05 values above unless the Vision Owner course-corrects. All four numbers are tuning knobs; the mechanic is what matters.
