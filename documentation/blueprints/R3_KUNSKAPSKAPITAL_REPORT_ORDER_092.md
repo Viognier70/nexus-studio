@@ -104,13 +104,137 @@ Fyra gränsfall som varje väg måste hantera:
 3. **Enbart episteme** (`e=0.90, t=p=0.05`) — inget lån (varken techne eller phronesis närvarande), trots hög magnitud i en axel?
 4. **Techne + episteme** utan phronesis (`e=0.70, t=0.70, p=0.10`) — food truck (techne-tyngd + episteme förstärker driften) eller inget lån (phronesis krävs eventuellt även för food truck)?
 
-### 3.4 Rekommendation för mätning
+### 3.4 Mätning — utfallsfördelning över (e, t, p)-kuben
 
-Innan väg väljs: bygg ett INFRA-2-verktyg som genererar syntetiska profiler över (e, t, p)-kuben (t.ex. 21³ = 9261 profiler mellan 0 och 1 i steg om 0.05), applicerar varje väg och plottar utfallsfördelningen. Vision Owner ser förhållandet mellan **andel food truck**, **andel restaurang**, **andel inget lån** och kan välja väg mot ett designintryck ("food truck ska vara den vanligaste ingången" eller "restaurangen är standard, food truck är för specialistprofiler").
+**Kört under ORDER 092 §3.4 den 2026-08-14** via `frontend/scripts/order092-profile-measurement.mjs` (standalone Node, inga repo-imports). 21³ = 9 261 syntetiska profiler i steg om 0.05 över [0, 1]³. JSON-utdata vid `frontend/reports/order092/profile-measurement.json` när scriptet körs med `ORDER_092_WRITE_JSON=1`.
 
-### 3.5 Beslutspunkt
+Trösklarna nedan är **mätgrundsvärden**, inte designbeslut — de är valda så att varje väg får en konkret första läsning som Vision Owner kan flytta på.
 
-Vision Owner: väg A / B / C, och de fyra gränsfallens svar. Rekommendation från denna rapport är **Väg C** — vinkel över sfären — därför att den håller magnitud och form frikopplade, vilket är den enda vägen som teoretiskt tillåter en spelare att "öva upp sig genom" en klass utan att byta klass. Men mätningen ovan bör köras först.
+**Utfallsfördelning (procent av 9 261 profiler):**
+
+| Väg | Trösklar/parametrar | Restaurang | Food truck | Inget lån |
+|---|---|---:|---:|---:|
+| A (trösklar per axel) | `noneOfAll=0.20`, `phronesisPresent=0.50`, `techneWeight=0.40` | **52.4 %** | 29.5 % | 18.1 % |
+| B (kvoter mellan axlar) | `phronesisRatio=0.50`, `techneRatio=0.90`, `magnitudeFloor=0.10` | **48.8 %** | 17.3 % | 33.9 % |
+| C (vinkel över sfären) | `phronesisConeDeg=25`, `techneConeDeg=25`, `magnitudeFloor=0.10` | 6.4 % | 6.4 % | **87.3 %** |
+
+**De fyra gränsfallen från §3.3 per väg:**
+
+| Gränsfall | Profil (e, t, p) | Väg A | Väg B | Väg C |
+|---|---|---|---|---|
+| Jämnstark på låg nivå | (0.10, 0.10, 0.10) | inget lån | inget lån | inget lån |
+| Jämnstark på hög nivå | (0.80, 0.80, 0.80) | **restaurang** | inget lån | inget lån |
+| Enbart episteme | (0.90, 0.05, 0.05) | inget lån | inget lån | inget lån |
+| Techne + episteme utan phronesis | (0.70, 0.70, 0.10) | **food truck** | inget lån | inget lån |
+
+### 3.5 Läsning av mätningen
+
+**Väg A** ger den mest generösa fördelningen (82 % får något slags lån) och är den enda vägen där de tre "informativa" gränsfallen (icke-noll-magnitud) landar där §3.3:s namn antyder — jämnstark-hög → restaurang, techne-tyngd utan phronesis → food truck. **Nackdel:** trösklarna är räknbara, spelaren räknar mot dem så snart hen genomskådat mönstret; §3.2:s designinvändning står kvar.
+
+**Väg B** landar mittemellan i fördelning men **kollapsar tre av fyra gränsfall till inget lån** under de valda trösklarna. Det är inte ett fel i vägen — det avslöjar att kvoter under `phronesisRatio 0.5` läser jämnstark-hög (p/(e+t) = 0.5 exakt) som *just under* tröskeln, och att `techneRatio 0.9` är mer selektiv än designintuitionen bar. Väg B kan bli användbar först om Vision Owner accepterar att kvot-trösklarna ska ligga där de ligger även för mätgränsfallen — det blir en explicit designdiskussion, inte en bugg.
+
+**Väg C** ger den strikta fördelningen (87 % inget lån under 25°-koner) och **avslår alla fyra gränsfall**. Detta är inte en falsifikation av vägen — det är exakt vad sfärgeometrin *ska* göra: `jämnstark-hög` sitter i sfärens centrum (arccos(0.577) ≈ 55° från varje axel), långt utanför alla koner. Väg C läser då: "denna spelare har inget uttalat kunskapsprogram — ingen klass tilldelas automatiskt". Det matchar §3.3:s andra läsning av det gränsfallet ("val — spelaren tilldelas inte, utan väljer") men behöver en explicit *val-yta* i bankmötet för de balanserade profilerna. Om vägen väljs behöver `techneConeDeg` och `phronesisConeDeg` kalibreras — mätningen visar att 25° är för snävt för §3.3:s "techne + episteme utan phronesis" (vinkeln till techne-axeln där är 45°, alltså skulle en 45°-kon inkludera det gränsfallet).
+
+### 3.6 Beslutat under ORDER 093 §2 — Väg C-utökad
+
+**Väg A och B avförs**, Väg C behålls som *fyra-sektor-läsare*: tre axelkoner (techne / phronesis / episteme) plus en centrumsektor som fångar profiler utanför samtliga koner men över magnitudgolvet. Magnitudgolvet fångar profiler för svaga för någon klass. Motiveringen är sammanhållen i ORDER 093 §1: A är räknbar även utan siffror i UI, B kollapsar sina egna gränsfall vid rimliga trösklar, C-ren avvisar all bredd som inget lån. C-utökad ger centrum ett eget utfall och löser C:s problem utan att offra dess styrka.
+
+**Fyra sektorer, plus ett golv:**
+
+| Sektor på sfären | Verksamhet |
+| --- | --- |
+| Nära techne-axeln | food truck — hantverk och tempo |
+| Nära phronesis-axeln | restaurang — omdöme, gäster, rum |
+| Nära episteme-axeln | *fjärde klassens sektor — utreds i §3.7 punkt 3* |
+| Centrum (utanför alla koner, över magnitudgolv) | fjärde klassen — utreds i §3.7 punkt 2 |
+| Under magnitudgolv | inget lån |
+
+Precedens vid överlappande koner (relevant först runt cone ≥ 45°): phronesis > techne > episteme > centrum > inget-lån. Matchar ORDER 092 §3.2:s "restaurang är den rikare klassen"-motivering.
+
+### 3.6.1 Konsvep — mätgrind, ORDER 093 §3
+
+Kört 2026-08-14 via `frontend/scripts/order093-cone-sweep.mjs`. Utökad Väg C körd över samma 9 261-profils-kub som ORDER 092 med konhalvvinkel 20°–50° i 5°-steg. Magnitudgolv 0.10 (som ORDER 092:s Väg C).
+
+**Utfallsfördelning över 9 261 profiler per konvidd:**
+
+| Kon | Restaurang | Food truck | Near-episteme | Centrum | Inget lån |
+|---:|---:|---:|---:|---:|---:|
+| 20° | 4.1 % | 4.1 % | 4.1 % | **87.6 %** | 0.1 % |
+| 25° | 6.4 % | 6.4 % | 6.4 % | **80.8 %** | 0.1 % |
+| 30° | 9.5 % | 9.5 % | 9.5 % | **71.4 %** | 0.1 % |
+| 35° | 13.5 % | 13.5 % | 13.5 % | **59.5 %** | 0.1 % |
+| 40° | 19.1 % | 19.1 % | 19.1 % | **42.5 %** | 0.1 % |
+| 45° | 26.3 % | 26.2 % | 26.1 % | **21.3 %** | 0.1 % |
+| 50° | 36.2 % | 31.6 % | 27.0 % | 5.2 % | 0.1 % |
+
+**Symmetri och precedens.** Upp till 45° håller de tre axel-sektorerna nära identisk andel (~26 % var) — konerna rör inte varandra, precedensregeln aktiveras inte. Vid 50° börjar konerna överlappa längs axel-halvplanen och precedensen syns: phronesis (restaurang) klipper från både techne och episteme.
+
+**Centrums storlek** faller från 88 % (20°) till 5 % (50°). Vid 45° är centrum ungefär lika stort som varje specialistsektor — geometriskt "en klass bland andra". Vid 40° är centrum dubbelt så stort som varje specialist — bredd är förstahandsval, specialister är minoritet. Vid 50° är centrum försumbart — sfären är delad tre-vägs mellan specialisterna, bredd finns knappt kvar. Detta är den enda dimension konvidden styr.
+
+### 3.6.2 Episteme-sektorns storlek per konvidd (ORDER 093 §4)
+
+`near-episteme` är exponerad som distinkt kategori eftersom verksamheten den ska ge inte är beslutad. Andelen växer symmetriskt med techne/phronesis upp till 45°; vid 50° klipper phronesis-precedensen 3–9 %-enheter av den. Vid en tänkt konvidd på 40° är 19.1 % av kuben en profil "tung i episteme, svag i både techne och phronesis" — någon som vet mycket men aldrig gjort och aldrig mött en gäst. Det är den andelen §3.7 punkt 3 beslutar om.
+
+### 3.6.3 Gränsfallen från §3.3 under svepet
+
+| Gränsfall | Profil | 20° | 25° | 30° | 35° | 40° | 45° | 50° |
+|---|---|---|---|---|---|---|---|---|
+| Jämnstark på låg nivå | (0.10, 0.10, 0.10) | centrum | centrum | centrum | centrum | centrum | centrum | centrum |
+| Jämnstark på hög nivå | (0.80, 0.80, 0.80) | centrum | centrum | centrum | centrum | centrum | centrum | centrum |
+| Enbart episteme | (0.90, 0.05, 0.05) | near-episteme | near-episteme | near-episteme | near-episteme | near-episteme | near-episteme | near-episteme |
+| Techne + episteme utan phronesis | (0.70, 0.70, 0.10) | centrum | centrum | centrum | centrum | centrum | centrum | food-truck |
+
+**Analytisk tippunkt per gränsfall** (vinkeln vid vilken profilen lämnar centrum och blir specialist):
+
+- Jämnstark låg och hög: **54.74°** — sfärens centrum ligger exakt arccos(1/√3) från varje axel. Ingen konvidd i svepet 20°–50° flyttar dessa till en specialistsektor.
+- Enbart episteme: **4.5°** — profilen är i praktiken axeljusterad, faller in i near-episteme redan vid tightaste konen.
+- Techne + episteme utan phronesis: **45.3°** — profilen sitter exakt på halvplanet mellan e och t. Vid 50° klipps den till food-truck (techne vinner över episteme per precedens).
+
+### 3.6.4 Designgräns — "bredd är en egen väg" (ORDER 093 §3.4)
+
+Jämnstark-hög (e=t=p=0.80) tippar från centrum till specialist vid **cone = 54.74°**. Det är den geometriska gränsen mellan två läsningar:
+
+- **Konvidd < 54.74°:** bredd är en egen klass. En balanserad hög-profil får fjärde-klassen — sitt eget verksamhetsyrke.
+- **Konvidd ≥ 54.74°:** bredd är ingen klass. En balanserad hög-profil klipps av precedensregeln till specialist (restaurang först). "Fjärde klassen" krymper då till praktiskt taget noll.
+
+Svepet 20°–50° håller sig därför inom den första regimen — under vardera konvidd är bredd en egen väg. **Vision Owners val i §3.7 punkt 1 är alltså kalibreringen av HUR mycket väg bredd är** (5 % vid 50°, 42 % vid 40°, 88 % vid 20°), inte om bredd är en väg alls.
+
+### 3.6.5 Sidobservation — magnitudgolvet
+
+Vid MAGNITUDE_FLOOR = 0.10 fångas endast 8 profiler (0.1 %) — de i den lilla klungan kring origo där varje axel är 0 eller 0.05. Konsekvens: en profil som (0.10, 0.10, 0.10), *jämnstark på låg nivå*, klassas som centrum → fjärde klassen. Frågan är om Vision Owner vill att en spelare med minimal bred kunskap tilldelas en fullservicerestaurang (den nuvarande §3.7 punkt 2-hypotesen för fjärde klassen), eller om centrum ska kräva större magnitud än specialister. Två sätt att hantera:
+
+- **Höj magnitudgolvet** (t.ex. 0.20 eller 0.30). En jämnstark-låg-profil blir inget lån, jämnstark-hög blir centrum. Löser problemet direkt; kostar inget kognitivt eftersom golvet bara är "för lite av allt".
+- **Separat centrumgolv.** Håll magnitudgolvet 0.10 för specialister, men kräv `norm ≥ 0.4` för centrum. Balanserad bredd förutsätter faktisk bredd, inte bara närvaro. Speldesignen "generalisten måste ha erfarenhet" faller ut naturligt.
+
+Flaggas till §3.7 som **punkt 5** — inte i ORDER 093 §5:s lista men det svepet avslöjade och behöver besvaras innan R1 skrivs.
+
+### 3.7 Beslutspunkter — ORDER 093 §5 + §3.6.5
+
+Fyra val Vision Owner behöver göra, plus ett femte som ORDER 093 §3.6.5-observationen reste:
+
+**1. Konvidden.** Mot fördelningarna i §3.6.1. Praktiska landmärken:
+
+- **40°** — centrum ~42 %, specialister ~19 % var. Bredd är förstahandsval; spelet handlar mest om generalister. Passar en tolkning där paviljongerna belönar bredd som huvudsakligt utfall.
+- **45°** — centrum ~21 %, specialister ~26 % var. Bredd är *en klass bland fyra*. Passar en tolkning där de fyra verksamheterna är likvärdiga vägar. **Rekommendation** — symmetri- och läsbarhetsmässigt tydligaste punkten.
+- **50°** — centrum ~5 %, specialister 27–36 %. Bredd finns knappt kvar; precedensregeln syns i asymmetrin. Passar en tolkning där bredd är hedersutfall för de riktigt allsidiga men inte en huvudväg.
+
+Ingen ytterligare mätning; siffrorna kalibrerar direkt hur ovanlig bredd blir.
+
+**2. Den fjärde klassen.** Vad är verksamheten för en balanserad profil? Rapporten ger inte ett namn; ORDER 093 §5.2 föreslår "ligger nära en fullservicerestaurang där bredd är kravet". Andra alternativ värda att pröva innan R4 bygger:
+
+- **Vinbar** (referens: `PRESETS.business` label i `viewLevels.ts` — redan namngiven i repot). Bredd inom mat + dryck + gäst kombinerat på liten yta.
+- **Bistro / café** — mindre skala än restaurang men mer bredd än food truck.
+- **Konsultverksamhet / cateringstöd** — ingen fast yta; bredd säljs som tjänst till andra verksamheter. Skiljer sig från alla tre andra klasser i formkategori.
+
+**3. Episteme-sektorn.** Vid vald konvidd är sektorn 4 %–27 % av kuben. Tre alternativ:
+
+- **Egen verksamhet** — namngiven yrkesroll där episteme är kärnan (forskare, journalist, konsult, provsmakare på hög nivå). Ger paviljong-forskningsdatabasen en verklig ändstation.
+- **Sammanslagen med restaurang** — episteme + phronesis läses som samma sektor (båda är "kunskap uttryckt via andra"). Reducerar antalet klasser med en.
+- **Inget lån med motivering** — kunskap utan hantverk och omdöme driver inget. Spelaren pekas tillbaka till paviljongerna för att bygga en av de andra axlarna.
+
+**4. Gränsfallen** — deras klassning följer av (1) och (2)/(3). Ingen separat beslutspunkt; avgörs implicit av valen ovan. Under svepets aktuella intervall står jämnstark-hög = centrum = fjärde klass; enbart-episteme = near-episteme (verksamheten enligt punkt 3); techne+episteme = centrum vid 20°–45°, food-truck vid 50°.
+
+**5. Magnitudgolvet — ORDER 093 §3.6.5-flagga.** Höj golvet till ~0.20/0.30, ELLER inför separat centrumgolv (t.ex. `norm ≥ 0.4` för centrum medan specialister behåller 0.10). **Rekommendation:** separat centrumgolv — matchar designintuitionen att bredd förutsätter faktisk bredd, ger jämnstark-låg = inget lån utan att röra specialisternas magnituder.
 
 ---
 

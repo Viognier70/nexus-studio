@@ -1,0 +1,231 @@
+{
+  "step": 0.05,
+  "stepsPerAxis": 21,
+  "totalProfiles": 9261,
+  "magnitudeFloor": 0.1,
+  "coneWidths": [
+    20,
+    25,
+    30,
+    35,
+    40,
+    45,
+    50
+  ],
+  "sweep": {
+    "20": {
+      "total": 9261,
+      "counts": {
+        "restaurang": 380,
+        "food-truck": 380,
+        "near-episteme": 380,
+        "centrum": 8113,
+        "inget-lån": 8
+      },
+      "pct": {
+        "restaurang": 4.103228593024511,
+        "food-truck": 4.103228593024511,
+        "near-episteme": 4.103228593024511,
+        "centrum": 87.60393046107332,
+        "inget-lån": 0.08638375985314761
+      }
+    },
+    "25": {
+      "total": 9261,
+      "counts": {
+        "restaurang": 590,
+        "food-truck": 590,
+        "near-episteme": 590,
+        "centrum": 7483,
+        "inget-lån": 8
+      },
+      "pct": {
+        "restaurang": 6.370802289169636,
+        "food-truck": 6.370802289169636,
+        "near-episteme": 6.370802289169636,
+        "centrum": 80.80120937263794,
+        "inget-lån": 0.08638375985314761
+      }
+    },
+    "30": {
+      "total": 9261,
+      "counts": {
+        "restaurang": 879,
+        "food-truck": 879,
+        "near-episteme": 879,
+        "centrum": 6616,
+        "inget-lån": 8
+      },
+      "pct": {
+        "restaurang": 9.491415613864595,
+        "food-truck": 9.491415613864595,
+        "near-episteme": 9.491415613864595,
+        "centrum": 71.43936939855308,
+        "inget-lån": 0.08638375985314761
+      }
+    },
+    "35": {
+      "total": 9261,
+      "counts": {
+        "restaurang": 1247,
+        "food-truck": 1247,
+        "near-episteme": 1247,
+        "centrum": 5512,
+        "inget-lån": 8
+      },
+      "pct": {
+        "restaurang": 13.465068567109384,
+        "food-truck": 13.465068567109384,
+        "near-episteme": 13.465068567109384,
+        "centrum": 59.5184105388187,
+        "inget-lån": 0.08638375985314761
+      }
+    },
+    "40": {
+      "total": 9261,
+      "counts": {
+        "restaurang": 1773,
+        "food-truck": 1773,
+        "near-episteme": 1773,
+        "centrum": 3934,
+        "inget-lån": 8
+      },
+      "pct": {
+        "restaurang": 19.14480077745384,
+        "food-truck": 19.14480077745384,
+        "near-episteme": 19.14480077745384,
+        "centrum": 42.479213907785336,
+        "inget-lån": 0.08638375985314761
+      }
+    },
+    "45": {
+      "total": 9261,
+      "counts": {
+        "restaurang": 2434,
+        "food-truck": 2427,
+        "near-episteme": 2420,
+        "centrum": 1972,
+        "inget-lån": 8
+      },
+      "pct": {
+        "restaurang": 26.282258935320158,
+        "food-truck": 26.206673145448654,
+        "near-episteme": 26.131087355577154,
+        "centrum": 21.293596803800884,
+        "inget-lån": 0.08638375985314761
+      }
+    },
+    "50": {
+      "total": 9261,
+      "counts": {
+        "restaurang": 3354,
+        "food-truck": 2925,
+        "near-episteme": 2496,
+        "centrum": 478,
+        "inget-lån": 8
+      },
+      "pct": {
+        "restaurang": 36.21639131843214,
+        "food-truck": 31.584062196307094,
+        "near-episteme": 26.951733074182055,
+        "centrum": 5.1614296512255695,
+        "inget-lån": 0.08638375985314761
+      }
+    }
+  },
+  "gransfall": [
+    {
+      "name": "Jämnstark på låg nivå",
+      "profile": {
+        "e": 0.1,
+        "t": 0.1,
+        "p": 0.1
+      },
+      "perCone": {
+        "20": "centrum",
+        "25": "centrum",
+        "30": "centrum",
+        "35": "centrum",
+        "40": "centrum",
+        "45": "centrum",
+        "50": "centrum"
+      },
+      "tippingConeDeg": {
+        "min": 54.735610317245346,
+        "angE": 54.735610317245346,
+        "angT": 54.735610317245346,
+        "angP": 54.735610317245346
+      }
+    },
+    {
+      "name": "Jämnstark på hög nivå",
+      "profile": {
+        "e": 0.8,
+        "t": 0.8,
+        "p": 0.8
+      },
+      "perCone": {
+        "20": "centrum",
+        "25": "centrum",
+        "30": "centrum",
+        "35": "centrum",
+        "40": "centrum",
+        "45": "centrum",
+        "50": "centrum"
+      },
+      "tippingConeDeg": {
+        "min": 54.735610317245346,
+        "angE": 54.735610317245346,
+        "angT": 54.735610317245346,
+        "angP": 54.735610317245346
+      }
+    },
+    {
+      "name": "Enbart episteme",
+      "profile": {
+        "e": 0.9,
+        "t": 0.05,
+        "p": 0.05
+      },
+      "perCone": {
+        "20": "near-episteme",
+        "25": "near-episteme",
+        "30": "near-episteme",
+        "35": "near-episteme",
+        "40": "near-episteme",
+        "45": "near-episteme",
+        "50": "near-episteme"
+      },
+      "tippingConeDeg": {
+        "min": 4.4923532223138105,
+        "angE": 4.4923532223138105,
+        "angT": 86.82505567169704,
+        "angP": 86.82505567169704
+      }
+    },
+    {
+      "name": "Techne + episteme utan phronesis",
+      "profile": {
+        "e": 0.7,
+        "t": 0.7,
+        "p": 0.1
+      },
+      "perCone": {
+        "20": "centrum",
+        "25": "centrum",
+        "30": "centrum",
+        "35": "centrum",
+        "40": "centrum",
+        "45": "centrum",
+        "50": "food-truck"
+      },
+      "tippingConeDeg": {
+        "min": 45.289377544830394,
+        "angE": 45.289377544830394,
+        "angT": 45.289377544830394,
+        "angP": 84.23181881381178
+      }
+    }
+  ],
+  "jamnstarkHogTippingDeg": 54.735610317245346
+}
