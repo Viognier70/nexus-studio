@@ -1,0 +1,134 @@
+{
+  "step": 0.05,
+  "stepsPerAxis": 21,
+  "totalProfiles": 9261,
+  "generatedAt": "ORDER 092 §3.4 run",
+  "paths": {
+    "A": {
+      "thresholds": {
+        "noneOfAll": 0.2,
+        "phronesisPresent": 0.5,
+        "techneWeight": 0.4
+      },
+      "distribution": {
+        "total": 9261,
+        "counts": {
+          "restaurang": 4851,
+          "food-truck": 2730,
+          "inget-lån": 1680
+        },
+        "pct": {
+          "restaurang": 52.38095238095239,
+          "food-truck": 29.47845804988662,
+          "inget-lån": 18.140589569160998
+        }
+      },
+      "gransfall": [
+        {
+          "name": "Jämnstark på låg nivå",
+          "profile": "(e=0.10, t=0.10, p=0.10)",
+          "outcome": "inget-lån"
+        },
+        {
+          "name": "Jämnstark på hög nivå",
+          "profile": "(e=0.80, t=0.80, p=0.80)",
+          "outcome": "restaurang"
+        },
+        {
+          "name": "Enbart episteme",
+          "profile": "(e=0.90, t=0.05, p=0.05)",
+          "outcome": "inget-lån"
+        },
+        {
+          "name": "Techne + episteme utan phronesis",
+          "profile": "(e=0.70, t=0.70, p=0.10)",
+          "outcome": "food-truck"
+        }
+      ]
+    },
+    "B": {
+      "thresholds": {
+        "techneRatio": 0.9,
+        "phronesisRatio": 0.5,
+        "magnitudeFloor": 0.1
+      },
+      "distribution": {
+        "total": 9261,
+        "counts": {
+          "restaurang": 4517,
+          "food-truck": 1600,
+          "inget-lån": 3144
+        },
+        "pct": {
+          "restaurang": 48.77443040708347,
+          "food-truck": 17.276751970629523,
+          "inget-lån": 33.94881762228701
+        }
+      },
+      "gransfall": [
+        {
+          "name": "Jämnstark på låg nivå",
+          "profile": "(e=0.10, t=0.10, p=0.10)",
+          "outcome": "inget-lån"
+        },
+        {
+          "name": "Jämnstark på hög nivå",
+          "profile": "(e=0.80, t=0.80, p=0.80)",
+          "outcome": "inget-lån"
+        },
+        {
+          "name": "Enbart episteme",
+          "profile": "(e=0.90, t=0.05, p=0.05)",
+          "outcome": "inget-lån"
+        },
+        {
+          "name": "Techne + episteme utan phronesis",
+          "profile": "(e=0.70, t=0.70, p=0.10)",
+          "outcome": "inget-lån"
+        }
+      ]
+    },
+    "C": {
+      "thresholds": {
+        "techneConeDeg": 25,
+        "phronesisConeDeg": 25,
+        "magnitudeFloor": 0.1
+      },
+      "distribution": {
+        "total": 9261,
+        "counts": {
+          "restaurang": 590,
+          "food-truck": 590,
+          "inget-lån": 8081
+        },
+        "pct": {
+          "restaurang": 6.370802289169636,
+          "food-truck": 6.370802289169636,
+          "inget-lån": 87.25839542166072
+        }
+      },
+      "gransfall": [
+        {
+          "name": "Jämnstark på låg nivå",
+          "profile": "(e=0.10, t=0.10, p=0.10)",
+          "outcome": "inget-lån"
+        },
+        {
+          "name": "Jämnstark på hög nivå",
+          "profile": "(e=0.80, t=0.80, p=0.80)",
+          "outcome": "inget-lån"
+        },
+        {
+          "name": "Enbart episteme",
+          "profile": "(e=0.90, t=0.05, p=0.05)",
+          "outcome": "inget-lån"
+        },
+        {
+          "name": "Techne + episteme utan phronesis",
+          "profile": "(e=0.70, t=0.70, p=0.10)",
+          "outcome": "inget-lån"
+        }
+      ]
+    }
+  }
+}
