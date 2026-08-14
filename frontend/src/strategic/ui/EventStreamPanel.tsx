@@ -54,10 +54,12 @@ const ARRIVAL_SLIDE_PX = 24;
 // clamp. `wordBreak: normal` + `overflowWrap: normal` + `hyphens:
 // none` block the browser from splitting a word across a line at the
 // right edge.
+// ORDER 090 §6 — was `top: 96, right: 20`; parent RIGHT PanelColumn
+// owns positioning. Width still clamps to `calc(100vw - 40px)` so a
+// narrow viewport doesn't spill the panel past the gutter, but the
+// arrival-cue anchor is now the column's flow position rather than
+// a hardcoded top offset.
 const PANEL_STYLE: React.CSSProperties = {
-  position: 'absolute',
-  right: 20,
-  top: 96,
   width: 'min(320px, calc(100vw - 40px))',
   minWidth: 220,
   boxSizing: 'border-box',

@@ -16,6 +16,8 @@
 // cycle keys.
 
 import { useEffect, useState } from 'react';
+import { useCamera } from '../camera/CameraContext';
+import { GRAY_BOX_CAMERA } from '../content/grythyttan';
 import { economicReadingNormalised } from '../simulation/cashReading';
 import { useSimState } from '../simulation/SimulationProvider';
 import { fpsMeter } from '../../lib/fpsMeter';
@@ -47,6 +49,16 @@ interface Props {
 export function DevPanel({ lastKey }: Props) {
   if (!import.meta.env.DEV) return null;
   const sim = useSimState();
+  // ORDER 090 §5 (finding 3) — camera distance polled on the same
+  // 250 ms cadence as FPS. Interior scene (guests, staff, tables)
+  // is culled outside restaurantInteriorFade [mid−half, mid+half],
+  // i.e. 35–75 m at current constants. Playtest 2026-08-14 reported
+  // "waiting=5 but no guests visible" — the camera was at the
+  // village preset (900 m), far outside the fade band, so nothing
+  // interior renders. Making the distance visible directly on the
+  // dev strip means "why is the room empty?" is answered without
+  // opening the console.
+  const camera = useCamera();
   const c = sim.capitals.values;
   const econReading = economicReadingNormalised(sim);
   const d = sim.day;
@@ -57,13 +69,15 @@ export function DevPanel({ lastKey }: Props) {
   // ORDER 061 point 3 — pixel sample readout at screen centre. Same
   // 250 ms poll cadence as FPS so both readouts stay in sync.
   const [rgb, setRgb] = useState<{ r: number; g: number; b: number }>({ r: 0, g: 0, b: 0 });
+  const [camDist, setCamDist] = useState(0);
   useEffect(() => {
     const id = window.setInterval(() => {
       setFps(fpsMeter.fps);
       setRgb({ r: pixelSampler.r, g: pixelSampler.g, b: pixelSampler.b });
+      setCamDist(camera.actualRef.current.distance);
     }, 250);
     return () => window.clearInterval(id);
-  }, []);
+  }, [camera]);
   // Service progress readout: "5:23 / 10 min" when a service is
   // running, "-" otherwise. Player-facing text never shows numbers
   // (§9), but the dev strip does — it's the only surface where a
@@ -91,7 +105,20 @@ export function DevPanel({ lastKey }: Props) {
   // ORDER 056 Del A — label "strat" so the strategic FPS is
   // distinguishable from the first-person view's separate overlay.
   const fpsStr = fps > 0 ? `${fps.toString().padStart(3, ' ')}fps(strat)` : ' - fps(strat)';
-  const line1 = `DEV  ${fpsStr}  day=${d.dayNumber} ${d.period.padEnd(9)}  service=${serviceReadout.padEnd(14)}  scenarios=${d.scenariosFiredThisService}/${d.scenariosPlanned}`;
+  // ORDER 090 §5 (finding 3) — interior visibility uses
+  // `visibility = 1 − smoothstep(mid−half, mid+half, dist)`; the
+  // group's `visible = visibility > 0.02`. So the interior is fully
+  // visible below `mid − half`, fades through the band, and is
+  // fully culled at/above `mid + half`. A `*` suffix on the readout
+  // flags "camera is close enough that the interior renders at all"
+  // — no suffix = camera is past the fade band's far edge and
+  // seated guests / staff / tables are silently gone regardless of
+  // sim state. The band bounds are printed alongside for context.
+  const interiorMin = GRAY_BOX_CAMERA.restaurantInteriorFadeMid - GRAY_BOX_CAMERA.restaurantInteriorFadeHalf;
+  const interiorMax = GRAY_BOX_CAMERA.restaurantInteriorFadeMid + GRAY_BOX_CAMERA.restaurantInteriorFadeHalf;
+  const interiorRenders = camDist < interiorMax;
+  const camStr = `cam=${camDist.toFixed(0).padStart(3, ' ')}m${interiorRenders ? '*' : ' '}[${interiorMin}-${interiorMax}]`;
+  const line1 = `DEV  ${fpsStr}  ${camStr}  day=${d.dayNumber} ${d.period.padEnd(9)}  service=${serviceReadout.padEnd(14)}  scenarios=${d.scenariosFiredThisService}/${d.scenariosPlanned}`;
   const cashK = Math.round(sim.cash / 1000);
   const line2 = `     cash=${cashK.toString().padStart(4, ' ')}k  econR=${econReading.toFixed(2)}  soc=${c.social.toFixed(2)}  eco=${c.ecological.toFixed(2)}  rep=${sim.reputation.toFixed(2)}  key=${lastKey || '-'}`;
   const line3 = `     ${weather}${factors}`;

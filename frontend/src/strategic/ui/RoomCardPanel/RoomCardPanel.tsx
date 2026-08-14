@@ -2,16 +2,25 @@
 //
 // Right column, below InstrumentsPanel. One card per staff + one card
 // per living guest. Attention-priority sort with seatIndex tiebreak
-// (ORDER 086 pick 2). Responsive layout from first commit — no fixed
-// left/top pixel constants (that's M1 Defect B's failure mode).
+// (ORDER 086 pick 2).
 //
-// Layout contract (must hold at 1280×720, 1920×1080, 2560×1440):
-//   - anchored right:20, top set to clear InstrumentsPanel + gap
-//   - max-height uses viewport height so tall viewports get more
-//     visible cards, short viewports scroll internally
-//   - width fixed 260px so text wraps predictably; content-flow does
-//     not grow the panel off-canvas
-//   - overflow-y: auto — cards scroll within the panel, never spill
+// ORDER 090 §6 — position + top offset dropped; parent RIGHT
+// PanelColumn (see ui/PanelColumn.tsx) owns anchor + max-height +
+// overflow. Previously this file picked top: 680 to clear
+// InstrumentsPanel — a constant that had to be kept in lockstep with
+// InstrumentsPanel's own picked top, its content height, and the
+// EventStream above it. At 1280×720 the calc(100vh - 700px) max
+// left the panel 20 px tall (effectively invisible). Under the
+// PanelColumn the panel takes its natural height, siblings shift
+// automatically, and the column scrolls if the total ever exceeds
+// the viewport.
+//
+// Width still fixed 260 px so text wraps predictably; overflow-y:
+// auto retained so a service with many guests scrolls INSIDE the
+// panel (keeps the "In the room" header visible while scrolling).
+//
+// Layout contract still holds at 1280×720, 1920×1080, 2560×1440;
+// verified by scene.panelLayout.test.tsx.
 
 import { useMemo } from 'react';
 import { useSimState } from '../../simulation/SimulationProvider';
@@ -25,23 +34,12 @@ import {
 import { deriveGuestFace, deriveStaffFace, recentAnswerHit } from './deriveFaces';
 import { FaceCard, type CardTone, type FaceCardModel } from './FaceCard';
 
-// InstrumentsPanel sits at top:400 (see ui/InstrumentsPanel.tsx §26–43),
-// max 6 rows × ~44 px each = ~260 px height + gaps. Clear it with a
-// small gap. If the InstrumentsPanel's block count changes materially,
-// the constant here needs a bump — kept out of a shared file so grep
-// finds one place.
-const PANEL_TOP_PX = 680;
-const PANEL_BOTTOM_GAP_PX = 20;
-
 const PANEL_STYLE: React.CSSProperties = {
-  position: 'absolute',
-  top: PANEL_TOP_PX,
-  right: 20,
   width: 260,
-  maxHeight: `calc(100vh - ${PANEL_TOP_PX + PANEL_BOTTOM_GAP_PX}px)`,
   display: 'flex',
   flexDirection: 'column',
   gap: 6,
+  minHeight: 0,
   overflowY: 'auto',
   pointerEvents: 'auto',
   zIndex: 34

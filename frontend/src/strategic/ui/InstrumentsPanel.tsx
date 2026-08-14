@@ -23,17 +23,13 @@ import type { SustainabilityKey } from '../types';
 
 // -------- panel styles ---------------------------------------------------
 
-// ORDER 061 UX (Vision Owner 2026-08-12) — the two service panels
-// (instruments + stream) sat on opposite sides of the screen, forcing
-// the eye to jump across the whole viewport to correlate "what the
-// business is doing" with "what just happened". Consolidated on the
-// right side: stream at top:96 (arrival cue anchor unchanged), this
-// panel below it. Top offset 400 clears the stream at its typical
-// 4-entry maximum height (~280 px) plus a breathing gap.
+// ORDER 090 §6 — was `top: 400, right: 20`; parent RIGHT PanelColumn
+// now owns anchor + flow. The ORDER 061 UX intent (instruments +
+// stream on the same side, stream above instruments) is now
+// expressed by the column child order in StrategicApp — no fragile
+// "top: 400 clears the stream" arithmetic to keep in sync when the
+// stream's max entry count changes.
 const PANEL_STYLE: React.CSSProperties = {
-  position: 'absolute',
-  top: 400,
-  right: 20,
   width: 220,
   display: 'flex',
   flexDirection: 'column',

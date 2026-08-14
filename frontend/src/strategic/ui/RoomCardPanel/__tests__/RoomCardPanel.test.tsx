@@ -17,6 +17,7 @@ import {
   SimulationProvider,
   useSimState
 } from '../../../simulation/SimulationProvider';
+import { PanelColumn } from '../../PanelColumn';
 import { RoomCardPanel } from '../RoomCardPanel';
 import type { SimulationState } from '../../../types';
 import { WAIT_HAIL_SEC, guestAttentionPriority } from '../deriveActions';
@@ -28,29 +29,45 @@ beforeEach(() => {
 
 // -------- responsive layout regression ---------------------------------
 
-describe('RoomCardPanel — responsive layout (M1 Defect B guard)', () => {
+// ORDER 090 §6 — M1 Defect B guard now runs against the parent
+// PanelColumn, not the RoomCardPanel itself. Since the ORDER 090
+// refactor, the panel owns width + inner overflow; the column owns
+// anchor + top + max-height. Both halves are asserted.
+describe('RoomCardPanel + PanelColumn — responsive layout (M1 Defect B guard)', () => {
   for (const width of [1280, 1920, 2560]) {
     it(`renders anchored right at viewport ${width}px, never sets fixed left`, () => {
       Object.defineProperty(window, 'innerWidth', { value: width, writable: true });
-      const { getByTestId } = render(
+      const { getByTestId, container } = render(
         <SimulationProvider>
-          <RoomCardPanel />
+          <PanelColumn side="right">
+            <RoomCardPanel />
+          </PanelColumn>
         </SimulationProvider>
       );
       const panel = getByTestId('room-card-panel') as HTMLElement;
-      const cs = getComputedStyle(panel);
-      // The panel MUST NOT set a fixed `left` in pixels — that would
-      // be M1 Defect B's failure mode. jsdom returns '' or 'auto'
-      // when the property is unset; both count as "no fixed anchor".
-      expect(cs.left).not.toMatch(/px$/);
-      // right and top must be set as anchor points.
-      expect(cs.right).toBe('20px');
-      expect(cs.top).not.toBe('');
-      // width fixed so the text wraps predictably regardless of viewport
-      expect(cs.width).toBe('260px');
-      // max-height uses calc() so short viewports scroll rather than
-      // pushing off-screen; jsdom returns the source value.
-      expect(cs.maxHeight.length).toBeGreaterThan(0);
+      const column = container.querySelector(
+        '[data-panel-column="right"]'
+      ) as HTMLElement;
+      expect(column).toBeTruthy();
+
+      const cCol = getComputedStyle(column);
+      const cPanel = getComputedStyle(panel);
+
+      // Column owns the anchor. Right anchored, no fixed left.
+      expect(cCol.position).toBe('absolute');
+      expect(cCol.right).toBe('20px');
+      expect(cCol.top).toBe('72px');
+      expect(cCol.left).not.toMatch(/px$/);
+      expect(cCol.maxHeight.length).toBeGreaterThan(0);
+
+      // Panel owns the fixed width + internal overflow. It must NOT
+      // set its own anchor — that would double-position and reintroduce
+      // M1 Defect B.
+      expect(cPanel.width).toBe('260px');
+      expect(cPanel.position).not.toBe('absolute');
+      expect(cPanel.top).not.toMatch(/px$/);
+      expect(cPanel.left).not.toMatch(/px$/);
+      expect(cPanel.right).not.toMatch(/px$/);
     });
   }
 });

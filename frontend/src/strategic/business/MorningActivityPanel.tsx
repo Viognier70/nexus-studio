@@ -16,10 +16,12 @@ import {
 } from '../simulation/activities';
 import type { Activity } from '../simulation/activities';
 
+// ORDER 090 §6 — was `top: 72, right: 20`; parent RIGHT PanelColumn
+// now owns the anchor. Morning-only, first child of the right column
+// during the morning; unmounts at service start so EventStream /
+// Instruments / RoomCard slide up into the same anchor without any
+// hardcoded top offset to reconcile.
 const PANEL_STYLE: React.CSSProperties = {
-  position: 'absolute',
-  top: 72,
-  right: 20,
   width: 340,
   padding: '10px 14px',
   background: 'rgba(20, 14, 10, 0.62)',

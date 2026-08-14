@@ -15,15 +15,14 @@
 import type { CSSProperties } from 'react';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 
-// Second column at the same top offset as InvestmentPanel so the eye
-// reads a paired morning surface (grow-forward on the left, retreat
-// on the right) rather than a stacked list. Kept narrower than the
-// investment column so the right-side chrome / player panel still
-// dominates the top-right cluster.
+// ORDER 090 §6 — the "grow-forward on the left, retreat on the right"
+// pairing with InvestmentPanel is preserved by putting both panels
+// inside a PanelRow within the LEFT PanelColumn. Previously this
+// panel picked top:500, left:352 by hand — the same offset
+// InvestmentPanel picked — so any TeamPanel growth pushed
+// InvestmentPanel down but left this one behind, breaking the pair.
+// The row wrapper now shifts both together.
 const PANEL_STYLE: CSSProperties = {
-  position: 'absolute',
-  top: 500,
-  left: 352,
   width: 300,
   padding: '14px 16px 16px',
   background: 'rgba(30, 22, 16, 0.82)',
@@ -38,9 +37,7 @@ const PANEL_STYLE: CSSProperties = {
   letterSpacing: 0.2,
   boxShadow: '0 6px 20px rgba(0,0,0,0.35)',
   pointerEvents: 'auto',
-  zIndex: 35,
-  maxHeight: 'calc(100vh - 520px)',
-  overflowY: 'auto'
+  zIndex: 35
 };
 
 const HEADING_STYLE: CSSProperties = {

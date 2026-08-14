@@ -26,6 +26,7 @@ import { ControlsHint } from './ui/ControlsHint';
 import { DevPanel } from './ui/DevPanel';
 import { EventStreamPanel } from './ui/EventStreamPanel';
 import { InstrumentsPanel } from './ui/InstrumentsPanel';
+import { PanelColumn, PanelRow } from './ui/PanelColumn';
 import { RoomCardPanel } from './ui/RoomCardPanel/RoomCardPanel';
 import { primeStreamAudio } from './ui/streamArrivalCue';
 import { OutwardButton } from './ui/OutwardButton';
@@ -228,19 +229,41 @@ function StrategicShell() {
       />
       <ScenarioOverlay />
       <ServiceLengthPicker />
-      <TeamPanel />
-      <InvestmentPanel />
-      <ScaleDownPanel />
-      <MorningActivityPanel />
+      {/*
+        ORDER 090 §6 — panels flow inside two PanelColumns instead of
+        each picking its own `position: absolute; top: N` value. See
+        ui/PanelColumn.tsx for the anchor/flow contract and
+        scene/__tests__/panelLayout.smoke.test.tsx for the
+        no-overlap regression across 1280×720, 1920×1080, 2560×1440.
+
+        Left column: TeamPanel above the InvestmentPanel + ScaleDownPanel
+        pair (row wrapper keeps the "grow-forward / retreat" side-by-side
+        design from ORDER 049 §5.3 intact when TeamPanel grows).
+
+        Right column: single stack, period-mutually-exclusive children.
+        MorningActivityPanel shows during morning; EventStream +
+        Instruments + RoomCardPanel show during service. They never
+        render at the same time.
+      */}
+      <PanelColumn side="left">
+        <TeamPanel />
+        <PanelRow>
+          <InvestmentPanel />
+          <ScaleDownPanel />
+        </PanelRow>
+      </PanelColumn>
+      <PanelColumn side="right">
+        <MorningActivityPanel />
+        <EventStreamPanel />
+        <InstrumentsPanel />
+        <RoomCardPanel />
+      </PanelColumn>
       <MorningMenuPanel />
       <PlatesRemainingPanel />
       <PrepPanel />
       <AgencyOfferPanel />
       <OpeningPanel />
       <EveningAccountPanel />
-      <EventStreamPanel />
-      <InstrumentsPanel />
-      <RoomCardPanel />
       <DevPanel lastKey={lastKey} />
       <AboutPanel open={aboutOpen} onClose={() => setAboutOpen(false)} />
     </div>

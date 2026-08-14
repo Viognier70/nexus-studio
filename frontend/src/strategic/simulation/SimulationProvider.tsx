@@ -12,8 +12,12 @@ import type { SimAction, SimulationState } from '../types';
 import { DEFAULT_SEED, makeInitialState } from './model';
 import { reducer } from './reducer';
 
-const SimStateCtx = createContext<SimulationState | null>(null);
-const SimDispatchCtx = createContext<Dispatch<SimAction> | null>(null);
+// ORDER 090 §5 — exported so the scene-mount smoke test can wrap
+// InteriorStaff / InteriorGuests in a hand-crafted state (one team
+// member + one guest) without ticking a real reducer forward. Not
+// intended for production callers — use `SimulationProvider`.
+export const SimStateCtx = createContext<SimulationState | null>(null);
+export const SimDispatchCtx = createContext<Dispatch<SimAction> | null>(null);
 
 interface Props {
   children: ReactNode;

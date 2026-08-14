@@ -17,15 +17,14 @@ import { strings } from '../../content/strings.sv';
 import type { IngredientTier, PricingTier } from '../types';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 
-// Top offset accounts for TeamPanel: TeamPanel top 72 + its natural
-// height varies by team size, but a comfortable min gap sits at 420 px
-// (TeamPanel with 4 members + hire buttons ≈ 400 px). If TeamPanel
-// overflows into this space the browser resolves the layer order via
-// zIndex + pointerEvents — both panels sit on the same overlay layer.
+// ORDER 090 §6 — was `top: 500, left: 16` next to TeamPanel; both are
+// now inside the LEFT PanelColumn (see ui/PanelColumn.tsx). The old
+// hardcoded top:500 assumed TeamPanel stayed ≤ 428 px; TeamPanel's
+// own maxHeight of calc(100vh - 120px) contradicted that at every
+// viewport tall enough for a real team, hence the reported overlap.
+// InvestmentPanel now sits under TeamPanel via DOM flow — no top
+// offset can drift out of sync again.
 const PANEL_STYLE: React.CSSProperties = {
-  position: 'absolute',
-  top: 500,
-  left: 16,
   width: 320,
   padding: '14px 16px 16px',
   background: 'rgba(30, 22, 16, 0.86)',
@@ -38,9 +37,7 @@ const PANEL_STYLE: React.CSSProperties = {
   letterSpacing: 0.2,
   boxShadow: '0 6px 20px rgba(0,0,0,0.35)',
   pointerEvents: 'auto',
-  zIndex: 35,
-  maxHeight: 'calc(100vh - 520px)',
-  overflowY: 'auto'
+  zIndex: 35
 };
 
 const HEADING_STYLE: React.CSSProperties = {
