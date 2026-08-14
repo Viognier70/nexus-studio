@@ -22,6 +22,16 @@ import { GRAY_BOX_CAMERA } from '../content/grythyttan';
 import { useSimState } from '../simulation/SimulationProvider';
 import type { Guest, GuestState } from '../types';
 import { staffPositionsRef } from './interiorSharedState';
+import {
+  derivePipCarriers,
+  patternForGuest
+} from '../ui/RoomCardPanel/guestPatterns';
+import {
+  PIP_COLOUR,
+  PIP_OFFSET_ABOVE_PUCK_TOP_M,
+  PIP_SIZE_M,
+  computePatternTransform
+} from './patternTransform';
 
 const GUEST_RADIUS_M = 0.32;
 // ORDER 053 Del B — guest standing height, exact.
@@ -80,7 +90,15 @@ const SEATED_STATES: readonly GuestState[] = ['seated', 'ordering', 'dining', 'p
 // On 'paying' → 'leaving', rise Y from the dip back to standing.
 // The Y offset composes on top of the lean-Y so a seated-and-leaning
 // guest still leans normally.
-const SIT_DIP_M = 0.15;
+//
+// ORDER 088 §2.3 — SIT_DIP_M raised from 0.15 to 0.27 m against the
+// legibility criterion: at pitch 58° / distance 8.4 m, a 0.15 m dip
+// projects to ~13 screen pixels — a seated puck read as "same as
+// standing." 0.27 m projects to ~24 px, distinctly seated. Head
+// clearance over table is still 0.69 m (crown Y = 1.70 − 0.27 = 1.43,
+// table Y = 0.74). Measurement + rationale in
+// UNDERLAG_003_MEASUREMENTS.md §0.1 (ORDER 088 amendment).
+const SIT_DIP_M = 0.27;
 const SIT_STAND_DURATION_SEC = 0.5;
 
 const GUEST_COLOUR: Record<GuestState, string> = {
@@ -127,6 +145,21 @@ interface AnimatedPos {
   sitStandPhase: number;
   // Direction: -1 for sit (dip and stay), +1 for stand (rise back).
   sitStandDir: -1 | 0 | 1;
+  // ORDER 088 §3 — stable phase seed so per-puck bob/microYaw don't
+  // sync. Deterministic per guest id.
+  phaseSeed: number;
+}
+
+// ORDER 088 §3 — hash guest id to a stable [0, 2π) phase seed. Same
+// id yields the same seed every mount — no Math.random. Small
+// FNV-1a variant.
+function phaseSeedFor(id: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < id.length; i += 1) {
+    h ^= id.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return ((h >>> 0) % 10000) / 10000 * Math.PI * 2;
 }
 
 export function InteriorGuests() {
@@ -140,6 +173,13 @@ export function InteriorGuests() {
   const positionsRef = useRef<Map<string, AnimatedPos>>(new Map());
   // Mesh refs keyed by guest id, so useFrame can set position + colour.
   const meshRefs = useRef<Map<string, THREE.Mesh>>(new Map());
+  // ORDER 088 §3 — group refs so the pattern-driven lean/microYaw
+  // pivot at ground level (top tilts, base stays planted). Group holds
+  // the puck mesh + the pip mesh.
+  const groupRefs = useRef<Map<string, THREE.Group>>(new Map());
+  // ORDER 088 §4 — pip mesh refs so visibility can be toggled per
+  // tick from derivePipCarriers.
+  const pipRefs = useRef<Map<string, THREE.Mesh>>(new Map());
 
   // Stable arrival-slot picker per guest. Assigned on first sighting
   // so a guest that arrives at slot 2 does not visually swap to slot 0
@@ -180,6 +220,14 @@ export function InteriorGuests() {
     const g = groupRef.current;
     g.visible = visibility > 0.02;
 
+    // ORDER 088 §4 — derive pip carriers this tick. `sim.staff` is
+    // the visual layer (StaffMember[] with targetGuestId); passing it
+    // to derivePipCarriers returns the (guestIds, staffIds) that both
+    // raise the pip. Guest ids consumed here; staff ids consumed in
+    // InteriorStaff via the same call.
+    const pipCarriers = derivePipCarriers(sim.guests, sim.staff, sim.simTime);
+    const pipCarrierGuestIds = new Set(pipCarriers.guestIds);
+
     // Compute per-guest target for this frame.
     const idsSeen = new Set<string>();
     for (const guest of sim.guests) {
@@ -203,7 +251,8 @@ export function InteriorGuests() {
         pos = {
           cx: spawn[0], cz: spawn[1],
           leanX: 0, leanZ: 0, leanY: 0,
-          prevState: null, sitStandPhase: -1, sitStandDir: 0
+          prevState: null, sitStandPhase: -1, sitStandDir: 0,
+          phaseSeed: phaseSeedFor(guest.id)
         };
         positionsRef.current.set(guest.id, pos);
       }
@@ -272,15 +321,34 @@ export function InteriorGuests() {
       pos.leanZ += (lean.tz - pos.leanZ) * Math.min(1, leanEase);
       pos.leanY += (lean.ty - pos.leanY) * Math.min(1, leanEase);
 
-      // Push to mesh. sit-stand Y composes on top of lean-Y so a
-      // seated-and-leaning guest still leans normally.
-      const mesh = meshRefs.current.get(guest.id);
-      if (mesh) {
-        mesh.position.set(
+      // ORDER 088 §3 — pattern-driven transform. Lean, bob, microYaw
+      // derived from the pattern label selected in guestPatterns.ts.
+      // Same input tuple returns the same transform (pure function —
+      // no Math.random, no Date.now).
+      const pattern = patternForGuest(guest, sim.simTime);
+      const patternTx = computePatternTransform(
+        pattern, 'guest', sim.simTime, pos.phaseSeed
+      );
+
+      // Push to mesh + group. Group carries the ground-planted lean
+      // rotation and microYaw so the puck's base stays grounded while
+      // the top tilts. Mesh carries the sit-stand Y offset (composes
+      // on top of the group's Y) so a seated-and-leaning guest still
+      // leans from the seated position.
+      const group = groupRefs.current.get(guest.id);
+      if (group) {
+        group.position.set(
           pos.cx + pos.leanX,
-          GUEST_Y + pos.leanY + sitStandY,
+          pos.leanY + patternTx.bobY,   // bob + lean-Y at group level
           pos.cz + pos.leanZ
         );
+        group.rotation.x = patternTx.leanRad;
+        group.rotation.y = patternTx.microYawRad;
+      }
+      const mesh = meshRefs.current.get(guest.id);
+      if (mesh) {
+        // Local Y within the group: base at 0, mesh centre at GUEST_Y.
+        mesh.position.set(0, GUEST_Y + sitStandY, 0);
         const mat = mesh.material as THREE.MeshStandardMaterial;
         if (mat) {
           mat.color.set(target.colour);
@@ -290,6 +358,24 @@ export function InteriorGuests() {
             mat.transparent = wantTransparent;
             mat.needsUpdate = true;
           }
+        }
+      }
+      // ORDER 088 §4 — pip: visible when this guest is a pip carrier
+      // (HAIL / IMPATIENT). Positioned above the puck's top, +sit-stand
+      // Y so the pip follows a seated guest down.
+      const pipMesh = pipRefs.current.get(guest.id);
+      if (pipMesh) {
+        const isCarrier = pipCarrierGuestIds.has(guest.id);
+        pipMesh.visible = isCarrier && visibility > 0.02;
+        pipMesh.position.set(
+          0,
+          GUEST_Y + sitStandY + GUEST_HEIGHT_M / 2 + PIP_OFFSET_ABOVE_PUCK_TOP_M,
+          0
+        );
+        const pMat = pipMesh.material as THREE.MeshStandardMaterial;
+        if (pMat) {
+          pMat.opacity = visibility;
+          pMat.transparent = visibility < 0.99;
         }
       }
     }
@@ -308,17 +394,38 @@ export function InteriorGuests() {
   return (
     <group ref={groupRef} visible={false}>
       {sim.guests.map((g) => (
-        <mesh
+        <group
           key={g.id}
-          ref={(m) => {
-            if (m) meshRefs.current.set(g.id, m);
-            else meshRefs.current.delete(g.id);
+          ref={(grp) => {
+            if (grp) groupRefs.current.set(g.id, grp);
+            else groupRefs.current.delete(g.id);
           }}
-          position={[0, GUEST_Y, 0]}
         >
-          <cylinderGeometry args={[GUEST_RADIUS_M, GUEST_RADIUS_M, GUEST_HEIGHT_M, 10]} />
-          <meshStandardMaterial color={GUEST_COLOUR[g.state]} roughness={0.9} transparent opacity={0} />
-        </mesh>
+          <mesh
+            ref={(m) => {
+              if (m) meshRefs.current.set(g.id, m);
+              else meshRefs.current.delete(g.id);
+            }}
+            position={[0, GUEST_Y, 0]}
+          >
+            <cylinderGeometry args={[GUEST_RADIUS_M, GUEST_RADIUS_M, GUEST_HEIGHT_M, 10]} />
+            <meshStandardMaterial color={GUEST_COLOUR[g.state]} roughness={0.9} transparent opacity={0} />
+          </mesh>
+          {/* ORDER 088 §4 — pip cube. Hidden by default; visibility
+              toggled per tick from derivePipCarriers. No text, no
+              number — the cube itself is the reading. */}
+          <mesh
+            ref={(m) => {
+              if (m) pipRefs.current.set(g.id, m);
+              else pipRefs.current.delete(g.id);
+            }}
+            visible={false}
+            userData={{ testid: `guest-pip-${g.id}` }}
+          >
+            <boxGeometry args={[PIP_SIZE_M, PIP_SIZE_M, PIP_SIZE_M]} />
+            <meshStandardMaterial color={PIP_COLOUR} emissive={PIP_COLOUR} emissiveIntensity={0.6} transparent opacity={0} />
+          </mesh>
+        </group>
       ))}
     </group>
   );

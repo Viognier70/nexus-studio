@@ -40,3 +40,22 @@ frontend/public/assets/characters/*
 # One screenshot per pose with the ROI drawn on top; regenerated on
 # every run. Kept out of history to avoid churn.
 frontend/reports/visual-regression/
+
+# ORDER 094 — visual-regression scratch outputs from earlier vertical
+# slices, kept out of history for the same churn reason. `order088/`
+# and `order092/` / `order093/` do carry order-attested artefacts and
+# are committed on their respective ORDER commits.
+frontend/reports/vs-*.png
+frontend/reports/vs-milestone2/
+frontend/reports/vs-milestone3/
+frontend/reports/order3/
+
+# ORDER 094 — sibling repos + local build artefacts unrelated to the
+# game project itself. Not order-attested; leave them local.
+/gastronoma-sim-main/
+/the-championship-home-main/
+/node_modules/
+/production
+/infrastructure
+/reports/
+

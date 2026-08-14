@@ -135,9 +135,9 @@ describe('deriveStaffFace — every rule row', () => {
       simTime: 100, recentAnswerHitFlag: false, targetGuestSatisfaction: null
     })).toBe('tense');
   });
-  it('SF8 workload ≥ 0.85 → hurried', () => {
+  it('SF6 workload ≥ 0.95 → hurried (ORDER 088 §2.1 — threshold moved from 0.85)', () => {
     expect(deriveStaffFace({
-      staff: makeStaff({ workload: 0.9 }), day: makeDay(),
+      staff: makeStaff({ workload: 0.96 }), day: makeDay(),
       simTime: 100, recentAnswerHitFlag: false, targetGuestSatisfaction: null
     })).toBe('hurried');
   });
@@ -164,8 +164,8 @@ describe('deriveGuestFace', () => {
   it('walkAwayOnArrival + leaving → strained', () => {
     expect(deriveGuestFace(makeGuest({ state: 'leaving', walkAwayOnArrival: true }), 10)).toBe('strained');
   });
-  it('GF2 leaving + satisfied → proud', () => {
-    expect(deriveGuestFace(makeGuest({ state: 'leaving', satisfaction: 0.9 }), 10)).toBe('proud');
+  it('GF2 leaving + satisfied → smiling (ORDER 087 §3 — proud is staff-exclusive)', () => {
+    expect(deriveGuestFace(makeGuest({ state: 'leaving', satisfaction: 0.9 }), 10)).toBe('smiling');
   });
   it('GF3 leaving + dissatisfied → irritated', () => {
     expect(deriveGuestFace(makeGuest({ state: 'leaving', satisfaction: 0.2 }), 10)).toBe('irritated');
@@ -179,8 +179,8 @@ describe('deriveGuestFace', () => {
   it('GF6 paying + neutral → neutral', () => {
     expect(deriveGuestFace(makeGuest({ state: 'paying', satisfaction: 0.5 }), 10)).toBe('neutral');
   });
-  it('GF7 dining + satisfied → proud', () => {
-    expect(deriveGuestFace(makeGuest({ state: 'dining', satisfaction: 0.9 }), 10)).toBe('proud');
+  it('GF7 dining + satisfied → smiling (ORDER 087 §3 — proud is staff-exclusive)', () => {
+    expect(deriveGuestFace(makeGuest({ state: 'dining', satisfaction: 0.9 }), 10)).toBe('smiling');
   });
   it('GF8 dining + neutral → focused', () => {
     expect(deriveGuestFace(makeGuest({ state: 'dining', satisfaction: 0.5 }), 10)).toBe('focused');

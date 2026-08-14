@@ -1,8 +1,15 @@
 // ORDER 086 §6 step 1 — pure derivation of card action from state.
+// ORDER 087 §5.3 — guest card action now flows through the pattern
+// selector (guestPatterns.ts). Card text remains here so the ORDER 086
+// row grammar is preserved; pattern label picks the row, so kort och
+// rum can't say different things (ORDER 087 §5.3).
 //
 // Two functions, one shape { text, iconKey }, no side effects, no
 // random, no Date.now. Every row of both tables traceable to the
-// reel state that inspired it (grep audit under ORDER 085 §7).
+// reel state that inspired it (grep audit under ORDER 085 §7 +
+// ORDER 087 §6.6 — the eight guest labels below must remain grep-
+// visible in this file: IDLE, WALK, SIT DOWN, READ MENU, HAIL,
+// IMPATIENT, EAT, EXIT).
 //
 // The staff table has 15 rows, the guest table has 15 rows. First
 // matching row wins — this is a switch dressed as a table, not
@@ -13,12 +20,16 @@ import type {
   DayPeriod,
   DayState,
   Guest,
-  GuestState,
   MenuEntry,
   StaffMember,
   StaffRole,
   TaskType
 } from '../../types';
+// ORDER 087 §5.3 — the card action for a guest is derived from the
+// pattern label (13..20). Card text lives in this file (existing row
+// grammar preserved) but the pattern label chooses the row, so a card
+// and a rendered puck can never say different things.
+import { patternForGuest } from './guestPatterns';
 
 export type StaffIconKey =
   | 'plan' | 'pause' | 'chase' | 'prep'
@@ -197,57 +208,71 @@ export function deriveGuestAction(
 ): GuestCardAction {
   const inState = Math.max(0, simTime - guest.stateTime);
 
-  // G1 — turned away at the door.
-  // reel EXIT (walk-away variant)
-  if (guest.walkAwayOnArrival && guest.state === 'leaving') {
-    return { text: 'Turned away at the door', iconKey: 'walk-away' };
-  }
+  // ORDER 087 §5.3 — pattern is the source of truth for what the guest
+  // is doing. Card text still lives here (existing row grammar), but
+  // the pattern selects the row. `walkAwayOnArrival + leaving` is
+  // still routed through pattern EXIT — the walk-away polarity picks
+  // the row below. Ordering-past-hail routes through pattern HAIL so
+  // the ordering-guest row for "catching someone's eye" reads the
+  // same as a waiting-guest hail (kort och rum: one signal).
+  const pattern = patternForGuest(guest, simTime);
 
-  switch (guest.state as GuestState) {
-    case 'arriving':
-      // reel IDLE (doorway)
+  switch (pattern) {
+    case 'WALK':
+      // reel IDLE (doorway) → reel WALK (arriving arc)
       return { text: 'Arriving', iconKey: 'arriving' };
-    case 'waiting':
-      // G3 / G4 / G5 — waiting rows escalate with time.
-      if (inState >= WAIT_HAIL_SEC) {
-        // reel HAIL
-        return { text: "Trying to catch someone's eye", iconKey: 'hail' };
-      }
-      if (inState >= WAIT_IMPATIENT_SEC) {
-        // reel IMPATIENT (foot-tap)
+    case 'HAIL':
+      // reel HAIL — same row for waiting-hail and ordering-hail so the
+      // room reads a single "trying to catch someone's eye" polarity.
+      return { text: "Trying to catch someone's eye", iconKey: 'hail' };
+    case 'IMPATIENT':
+      // reel IMPATIENT (foot-tap). Waiting-past-impatient shows the
+      // formatted wait so the card reads the accrued time.
+      if (guest.state === 'waiting') {
         return { text: `Waiting — ${formatWait(inState)}`, iconKey: 'waiting-impatient' };
       }
-      // reel IDLE (door) transitioning to reel WALK (in)
-      return { text: 'Waiting to be seated', iconKey: 'waiting' };
-    case 'seated':
-      // G6 / G7 — welcome drink split.
-      if (guest.hadWelcomeDrink) {
+      // Ordering-past-impatient — ready-to-order row (row G9 in the
+      // pre-ORDER 087 numbering).
+      return { text: 'Ready to order', iconKey: 'ready-to-order' };
+    case 'IDLE':
+      // reel IDLE covers multiple beats — split by state so the
+      // player sees the specific rest.
+      if (guest.state === 'waiting') {
+        return { text: 'Waiting to be seated', iconKey: 'waiting' };
+      }
+      if (guest.state === 'seated' && guest.hadWelcomeDrink) {
         return { text: 'Sipping welcome drink', iconKey: 'drink' };
       }
+      if (guest.state === 'paying') {
+        // Row G12/G13 preserved for the paying beat routed via IDLE.
+        if (guest.satisfaction >= 0.7) {
+          return { text: 'Paying — happy', iconKey: 'pay-good' };
+        }
+        return { text: 'Paying — quietly', iconKey: 'pay-neutral' };
+      }
+      // Default IDLE row.
+      return { text: 'At the table', iconKey: 'waiting' };
+    case 'SIT DOWN':
       // reel SIT DOWN completed
       return { text: 'Just seated', iconKey: 'seated' };
-    case 'ordering':
-      if (inState >= WAIT_IMPATIENT_SEC) {
-        return { text: 'Ready to order', iconKey: 'ready-to-order' };
-      }
+    case 'READ MENU':
       // reel READ MENU
       return { text: 'Reading the menu', iconKey: 'read-menu' };
-    case 'dining':
+    case 'EAT':
       // reel EAT
       if (guest.satisfaction >= 0.7) {
         return { text: `Enjoying the ${dishName(menu)}`, iconKey: 'eat-good' };
       }
       return { text: 'Eating quietly', iconKey: 'eat-neutral' };
-    case 'paying':
-      if (guest.satisfaction >= 0.7) {
-        return { text: 'Paying — happy', iconKey: 'pay-good' };
+    case 'EXIT':
+      // reel EXIT — walk-away polarity vs regular exit.
+      if (guest.walkAwayOnArrival && guest.state === 'leaving') {
+        return { text: 'Turned away at the door', iconKey: 'walk-away' };
       }
-      return { text: 'Paying — quietly', iconKey: 'pay-neutral' };
-    case 'leaving':
-      // reel EXIT
+      if (guest.state === 'declined') {
+        return { text: 'Left before being seated', iconKey: 'declined' };
+      }
       return { text: 'Leaving', iconKey: 'exit' };
-    case 'declined':
-      return { text: 'Left before being seated', iconKey: 'declined' };
   }
 }
 
