@@ -249,6 +249,7 @@ describe('agency offer machinery', () => {
         targetPosition: { x: 0, z: 0 },
         moveProgress: 1,
         hadWelcomeDrink: false,
+        lastCheckbackAt: null,
         walkAwayOnArrival: false
       });
     }
@@ -277,6 +278,7 @@ describe('agency offer machinery', () => {
             targetPosition: { x: 0, z: 0 },
             moveProgress: 1,
             hadWelcomeDrink: false,
+            lastCheckbackAt: null,
             walkAwayOnArrival: false
           });
         }

@@ -102,7 +102,11 @@ export function RoomCardPanel() {
         iconKey: action.iconKey,
         tone: toneFromRhythm(rhythm),
         sideBarValue: s.workload,
-        sideBarLabel: 'load',
+        // ORDER 098 §5 — etiketten följer fältnamnet. `StaffMember.workload`
+        // är källan (service.ts:349/354); tidigare etikett `load` antydde
+        // ett annat fält (`TeamMember.load` existerar inte). Se
+        // LOAD_CHAIN_TRACE_2026-08-15.md för spårningen bakom valet.
+        sideBarLabel: 'workload',
         // priority + seatIndex-esque tiebreak; staff have no seatIndex,
         // so use a stable id hash via string compare in the sort.
         __priority: priority

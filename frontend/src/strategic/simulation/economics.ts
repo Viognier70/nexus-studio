@@ -49,7 +49,13 @@ export const TASK_BASE_TICKS: Record<string, number> = {
   decant: 18,
   flambe: 20,
   clear: 8,
-  welcomeDrink: 12
+  welcomeDrink: 12,
+  // ORDER 098 — checkback är avsiktligt kort. Ett verkligt "hur går det?
+  // behöver ni mer vatten?" tar sekunder, inte en full servering. 6 ticks
+  // vid 5 Hz + training/concept-skalning ger ~1.5–2 s slutlig varaktighet
+  // vid default policies. Frekvensen (cooldown 15 s per gäst) sätter den
+  // faktiska work-belastningen, inte varaktigheten per tillfälle.
+  checkback: 6
 };
 
 export function revenuePerGuest(policies: Policies): number {

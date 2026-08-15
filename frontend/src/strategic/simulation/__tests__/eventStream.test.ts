@@ -95,6 +95,7 @@ describe('eventMultiplier composition per cause tag', () => {
         targetPosition: { x: 0, z: 0 },
         moveProgress: 1,
         hadWelcomeDrink: false,
+        lastCheckbackAt: null,
         walkAwayOnArrival: false
       });
     }
@@ -237,6 +238,7 @@ describe('positive category — verksamhet som går bra', () => {
         targetPosition: { x: 0, z: 0 },
         moveProgress: 1,
         hadWelcomeDrink: false,
+        lastCheckbackAt: null,
         walkAwayOnArrival: false
       });
     }
@@ -330,6 +332,7 @@ describe('eventProbabilityPerTick stays inside [0, 1]', () => {
         targetPosition: { x: 0, z: 0 },
         moveProgress: 1,
         hadWelcomeDrink: false,
+        lastCheckbackAt: null,
         walkAwayOnArrival: false
       });
     }

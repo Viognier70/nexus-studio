@@ -39,7 +39,12 @@ export type TaskType =
   | 'decant'
   | 'flambe'
   | 'clear'
-  | 'welcomeDrink';
+  | 'welcomeDrink'
+  // ORDER 098 — kort besök vid bordet under dining. Löser dining-hålet:
+  // gästen sitter och äter genererar återkommande tillsyn, så personalen
+  // står inte idle med fullt rum. Inte låst bakom `service='formell'` —
+  // hela poängen med ordern (LOAD_CHAIN_TRACE_2026-08-15.md §rotorsak).
+  | 'checkback';
 
 export type ServiceConcept = 'vardaglig' | 'formell';
 export type PricingTier = 'låg' | 'medel' | 'hög';
@@ -138,6 +143,13 @@ export interface Guest {
   targetPosition: Vec2;
   moveProgress: number;
   hadWelcomeDrink: boolean;
+  // ORDER 098 — simTime för senast utförd checkback (tillsyn) under
+  // dining. `null` innan första besöket. `findTaskTarget('checkback')`
+  // väljer dining-gäster där `simTime - (lastCheckbackAt ?? stateTime)
+  // > CHECKBACK_COOLDOWN_SEC`, så en gäst blir behörig ~var 15:e
+  // sekund från dining-inträdet. Nollas inte vid tillståndsbyte —
+  // relevant bara i dining, ignoreras av andra staters logik.
+  lastCheckbackAt: number | null;
   // ORDER 043 §6 economic-phenomenon flag. When true, the guest walks
   // to the entrance and turns back without sitting — the visible
   // reading of low economic capital ("guests leaving without sitting").
