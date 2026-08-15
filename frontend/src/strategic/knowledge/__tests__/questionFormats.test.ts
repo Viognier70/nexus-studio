@@ -34,7 +34,6 @@ import {
   SITUATION_EXAMPLE
 } from '../questionTemplates';
 import {
-  BUILT_PAVILIONS,
   coverageErrors,
   coverageReport
 } from '../questionCoverage';
@@ -239,9 +238,12 @@ describe('ORDER 107 §4.2 — score guardar mot format-mismatch', () => {
 // -----------------------------------------------------------------------------
 
 describe('ORDER 107 §4.4 — coverage report och errors', () => {
-  it('tom BUILT_PAVILIONS ger inga fel oavsett frågeuppsättning', () => {
-    // R2 inte byggd än → BUILT_PAVILIONS = []. Inga tomma-paviljong-fel.
-    expect(BUILT_PAVILIONS).toEqual([]);
+  it('tom builtPavilions-parameter ger inga fel oavsett frågeuppsättning', () => {
+    // Logik-test som är stabilt oavsett vad BUILT_PAVILIONS-konstanten
+    // innehåller. Vid ORDER 107 var BUILT_PAVILIONS = []; efter ORDER 104
+    // är den populerad med de fem paviljongerna. Ordningsföljd-testet
+    // för konstanten själv flyttat till coverage-testet under ORDER 104
+    // (BUILT_PAVILIONS ska ha alla fem, alla ska ha frågor).
     const errors = coverageErrors(ALL_TEMPLATE_EXAMPLES, []);
     expect(errors).toEqual([]);
   });

@@ -271,6 +271,11 @@ export function makeInitialState(
       techne: { untagged: 0, sommellerie: 0, kok: 0 },
       phronesis: { untagged: 0, sommellerie: 0, kok: 0 }
     },
+    // ORDER 104 — R2 prov-state. Inget aktivt prov vid start;
+    // examSlotsUsed återställs när R7 (omgångsslingan) landar och
+    // definierar när ett nytt varv börjar.
+    currentExam: null,
+    examSlotsUsed: 0,
     eco: {
       econ: {
         value: 0.55,

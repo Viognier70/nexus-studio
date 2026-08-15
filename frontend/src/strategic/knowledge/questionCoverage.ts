@@ -12,12 +12,14 @@
 // full statistik, oavsett byggnadsstatus.
 
 import type { KnowledgeAxis, YrkesSpar } from '../types';
+import { ALL_PAVILION_IDS } from './pavilions';
 import type { Question, QuestionFormat } from './questionFormats';
 
-// Paviljong-id som R2 bygger. Tomt tills ORDER 104 landar; det testet
-// som kontrollerar täckning kommer då att börja peka på tomma
-// paviljonger som `coverageErrors()` returnerar.
-export const BUILT_PAVILIONS: readonly string[] = [] as const;
+// Paviljong-id som R2 bygger. Populeras av ORDER 104 via pavilions.ts.
+// Coverage-testet (coverageErrors) failar om någon paviljong har noll
+// frågor — vilket ORDER 104 undviker genom att seed:a alla fem med
+// minst en fråga i questionTemplates.ts.
+export const BUILT_PAVILIONS: readonly string[] = ALL_PAVILION_IDS;
 
 // Rapportmodell. Per paviljong: totalt antal frågor + nedbrytning
 // per axel/spår/format. `perAxis`/`perSpar`/`perFormat` är över hela
