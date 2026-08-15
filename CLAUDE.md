@@ -122,6 +122,16 @@ Bindande. Reglerna finns för att fyra ordrars arbete legat ocommitterat i huvud
 
 Ingen pre-commit-hook, inget skript som städar arbetsträdet, ingen automatik som committar åt agenten. Verifieringen är synlig i rapporten.
 
+## Grenar är kortlivade
+
+**En order = en gren från `main`, mergad tillbaka när DoD är uppfylld. Ingen gren lever över mer än en order.** Införd per ORDER 103 §5 efter en långlivad linjegren (`order-049`) som kostade två felsökningsomgångar, en registerdivergens och fyra ordrars arbete som låg osparat i huvudworktreets arbetsträd. Långlivade grenar är den strukturella grunden till samma sortens fel Commit-verifiering-avsnittet ovan adresserar.
+
+- Grenens namn följer ordernumret (`order-102`, `order-103`, …).
+- Grenen skapas från `main` när ordern startas.
+- Grenen mergas tillbaka till `main` (utan squash — historiken per order är projektets spårbarhet) när DoD är uppfylld.
+- Grenen och worktreet avvecklas direkt efter mergen (`git worktree remove` + `git branch -d` + `git push origin --delete`).
+- Om två ordrar bygger på varandra: den andra skapas från `main` *efter* den första mergats, inte som fortsättning på den första.
+
 ## Definition of Done (Vertical Slice 001)
 
 En ändring är klar när:
