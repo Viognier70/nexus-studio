@@ -16,6 +16,10 @@ import type {
 } from '../types';
 import { resolveBankMeeting } from './bankMeeting';
 import {
+  businessFromBankKlass,
+  capacityForBusiness
+} from '../business/businessClass';
+import {
   SERVICE_LENGTH_MAX_MINUTES,
   SERVICE_LENGTH_MIN_MINUTES
 } from '../types';
@@ -865,6 +869,19 @@ function requestBankLoan(state: SimulationState): SimulationState {
     cause: `Bank loan (${outcome.loanTier})`,
     causeId: `bank-loan-${outcome.loanTier}`
   });
+  // ORDER 110 — R4 realiserar bankmötets tilldelning. Byt verksamhet om
+  // outcome:t pekar på en annan än den aktuella; capacity följer med enligt
+  // capacityForBusiness(). `nearEpisteme`/`noLoan` mappar till null (spelaren
+  // stannar där hen är) men når inte denna gren eftersom avslag returnerats
+  // ovan. Samma dispatch två gånger på samma profil = no-op på businessClass.
+  const nextBusiness = businessFromBankKlass(outcome.klass);
+  if (nextBusiness !== null && nextBusiness !== draft.businessClass) {
+    draft.businessClass = nextBusiness;
+    draft.policies = {
+      ...draft.policies,
+      capacity: capacityForBusiness(nextBusiness, draft.policies.staffCount)
+    };
+  }
   return draft;
 }
 
