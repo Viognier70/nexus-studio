@@ -154,6 +154,14 @@ export interface BankMeetingOutcomeState {
   heldAt: number;
 }
 
+// ORDER 110 — R4: verksamhetsklassen. En klass ovanför Restaurant.tsx
+// som avgör vad som byggs och simuleras. Full config-katalog i
+// strategic/business/businessClass.ts; typen ligger här för att
+// SimulationState och SimAction kan referera den utan cirkulär import.
+// `'värdshus'` = fjärde klassen (från bankmötets internal 'balanced',
+// spelartext "Värdshuset") per §2.
+export type BusinessClass = 'restaurant' | 'foodtruck' | 'värdshus';
+
 export type ServiceConcept = 'vardaglig' | 'formell';
 export type PricingTier = 'låg' | 'medel' | 'hög';
 export type IngredientTier = 'grund' | 'utvald' | 'premium';
@@ -911,6 +919,17 @@ export interface SimulationState {
   // dra in businessProfile/bankMeeting-import i types.ts. Se
   // simulation/bankMeeting.ts:BankMeetingOutcome för fullständig form.
   bankMeetingOutcome: BankMeetingOutcomeState | null;
+  // ORDER 110 — R4: den realiserade verksamheten. Default 'restaurant'
+  // (spelet börjar som en restaurang; existerande simulation antar det).
+  // Ändras när REQUEST_BANK_LOAN dispatchas och bankmötet ger ett utfall
+  // som mappas till en annan verksamhet: 'phronesis' → 'restaurant',
+  // 'techne' → 'foodtruck', 'balanced' → 'värdshus'. `nearEpisteme` och
+  // `noLoan` ger ingen förändring — spelaren stannar där hen var.
+  //
+  // Reducern uppdaterar samtidigt policies.capacity via capacityForBusiness()
+  // så bemanning + verksamhet enas i ett värde som hela simulationen
+  // (mise en place, checkback, rytm) redan läser.
+  businessClass: BusinessClass;
   eco: {
     econ: SustainabilityCondition;
     social: SustainabilityCondition;

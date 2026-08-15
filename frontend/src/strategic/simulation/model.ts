@@ -280,6 +280,11 @@ export function makeInitialState(
     // REQUEST_BANK_LOAN; sätts av reducern via resolveBankMeeting.
     // Repeat-request skriver över.
     bankMeetingOutcome: null,
+    // ORDER 110 — R4 verksamhetsklassen. Default 'restaurant' matchar
+    // existerande sim-antaganden (TOTAL_SEATS = 16, matsal, mise en
+    // place). Bankmötet mappar techne → 'foodtruck' och balanced →
+    // 'värdshus' vid beviljande.
+    businessClass: 'restaurant',
     eco: {
       econ: {
         value: 0.55,

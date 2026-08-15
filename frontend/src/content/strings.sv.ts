@@ -282,5 +282,15 @@ export const strings = {
       metodkoket: 'Metodköket',
       gastronomiskateatern: 'Gastronomiska Teatern'
     }
+  },
+  // ORDER 110 — R4 verksamhetsklassen som spelartext. Interna nycklar
+  // (`restaurant`, `foodtruck`, `värdshus`) hålls samma här som i koden;
+  // spelartexten är utpekad. Bankmötets intern-nyckel för den fjärde
+  // klassen mappas till `'värdshus'` innan spelartexten läses — den
+  // förbjudna nyckeln får aldrig läcka hit (grep-test i ORDER 109 §5).
+  businessClass: {
+    restaurant: 'Restaurang',
+    foodtruck: 'Food truck',
+    värdshus: 'Värdshuset'
   }
 } as const;

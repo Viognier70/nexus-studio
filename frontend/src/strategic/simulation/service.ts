@@ -1,4 +1,5 @@
 import { INTERIOR } from '../content/layout';
+import { businessHasSeats } from '../business/businessClass';
 import type { Guest, SimulationState, StaffMember, TaskType, Vec2 } from '../types';
 import { taskDurationTicks } from './economics';
 import {
@@ -276,6 +277,19 @@ export function tickGuests(state: SimulationState) {
 }
 
 function setGuestSeated(state: SimulationState, guest: Guest, seat: number) {
+  // ORDER 110 — R4: verksamheter utan matsal (food truck) placerar
+  // aldrig gäster på stolar. Guarden här kompletterar samma guard i
+  // completeStaffTask 'greet'/'seat'-grenen; det finns två write-sites
+  // så guarden måste finnas på båda för att flaggan `hasSeats: false`
+  // ska hålla i alla anropsvägar (DoD 6).
+  if (!businessHasSeats(state.businessClass)) {
+    // Food truck-branchen: hoppa över sittande, gå direkt till ordering
+    // (gäst vid luckan tar sin order). Ingen seatIndex, ingen seatSlot.
+    guest.state = 'ordering';
+    guest.seatIndex = null;
+    guest.stateTime = state.simTime;
+    return;
+  }
   guest.state = 'seated';
   guest.seatIndex = seat;
   guest.stateTime = state.simTime;
@@ -467,6 +481,18 @@ function completeStaffTask(state: SimulationState, staff: StaffMember) {
     case 'seat': {
       // A guest sitting in the waiting queue is served here too.
       if (guest.state === 'arriving' || guest.state === 'waiting') {
+        // ORDER 110 — R4: food truck saknar matsal. Hoppa över
+        // findFreeSeat och sittandet; gästen övergår direkt till
+        // ordering (vid luckan) och plockas ur waiting-listan.
+        // Guarden speglar den i setGuestSeated ovan så flaggan
+        // `hasSeats: false` håller i båda write-sites (DoD 6).
+        if (!businessHasSeats(state.businessClass)) {
+          state.waitingIds = state.waitingIds.filter((id) => id !== guest.id);
+          guest.state = 'ordering';
+          guest.seatIndex = null;
+          guest.stateTime = now;
+          break;
+        }
         const seat = findFreeSeat(state, guest.scenarioSource);
         if (seat !== null) {
           state.waitingIds = state.waitingIds.filter((id) => id !== guest.id);
