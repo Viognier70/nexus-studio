@@ -46,6 +46,17 @@ export type TaskType =
   // hela poängen med ordern (LOAD_CHAIN_TRACE_2026-08-15.md §rotorsak).
   | 'checkback';
 
+// ORDER 102 — R1 kunskapskapital. Vektor (episteme/techne/phronesis),
+// inte skalär, per R3-rapport §1.2. Byggs upp av paviljongerna (R2) och
+// post-service-quiz (R6); läses av bankmötet (M7b) via businessProfile.ts.
+export type KnowledgeAxis = 'episteme' | 'techne' | 'phronesis';
+
+export interface KnowledgeCredits {
+  episteme: number;
+  techne: number;
+  phronesis: number;
+}
+
 export type ServiceConcept = 'vardaglig' | 'formell';
 export type PricingTier = 'låg' | 'medel' | 'hög';
 export type IngredientTier = 'grund' | 'utvald' | 'premium';
@@ -775,6 +786,10 @@ export interface SimulationState {
   // writes (queue strain, happy/unhappy departure) may still push
   // above the ceiling briefly; drift pulls back. See reputation.ts.
   reputationCeiling: number;
+  // ORDER 102 — R1 kunskapskapital. Vektor med tre axlar; skrivs bara
+  // via ACCUMULATE_KNOWLEDGE. Ingen summa/genomsnitt exponeras — formen
+  // läses som helhet i businessProfile.ts:readProfile().
+  knowledgeCredits: KnowledgeCredits;
   eco: {
     econ: SustainabilityCondition;
     social: SustainabilityCondition;
@@ -951,6 +966,10 @@ export type SimAction =
   // playtest shortcuts.
   | { type: 'SET_CAPITAL'; capital: StoredCapitalKey; value: number }
   | { type: 'SET_CASH'; valueSek: number }
+  // ORDER 102 — R1 kunskapskapital. Skriver på angiven axel; amount
+  // klämmas ≥ 0 i reducern. Inget tak i R1 (öppen fråga hör till R3
+  // kreditekonomi + svårighetskurva).
+  | { type: 'ACCUMULATE_KNOWLEDGE'; axis: KnowledgeAxis; amount: number }
   // ORDER 043 v3 §10 step 1 — the round.
   // OPEN_SERVICE is dispatched from the morning/afternoon UI when the
   // player commits to a service length. lengthMinutes clamped to

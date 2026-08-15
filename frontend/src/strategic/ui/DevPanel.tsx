@@ -168,7 +168,13 @@ export function DevPanel({ lastKey }: Props) {
   const camStr = `cam=${camDist.toFixed(0).padStart(3, ' ')}m${interiorRenders ? '*' : ' '}[${interiorMin}-${interiorMax}]`;
   const line1 = `DEV  ${fpsStr}  ${camStr}  day=${d.dayNumber} ${d.period.padEnd(9)}  service=${serviceReadout.padEnd(14)}  scenarios=${d.scenariosFiredThisService}/${d.scenariosPlanned}`;
   const cashK = Math.round(sim.cash / 1000);
-  const line2 = `     cash=${cashK.toString().padStart(4, ' ')}k  econR=${econReading.toFixed(2)}  soc=${c.social.toFixed(2)}  eco=${c.ecological.toFixed(2)}  rep=${sim.reputation.toFixed(2)}  key=${lastKey || '-'}`;
+  // ORDER 102 — R1 kunskapskapital dev-readout. Läses under `capitals`-
+  // raden så det syns bredvid soc/eco/rep. Ingen siffra visas i spelar-
+  // UI (R3 §1.4 / EDD §7); detta är enbart dev-diagnos, samma pattern
+  // som queue=/seated= i ORDER 097.
+  const kc = sim.knowledgeCredits;
+  const creditsStr = `credits=E${kc.episteme.toFixed(2)} T${kc.techne.toFixed(2)} P${kc.phronesis.toFixed(2)}`;
+  const line2 = `     cash=${cashK.toString().padStart(4, ' ')}k  econR=${econReading.toFixed(2)}  soc=${c.social.toFixed(2)}  eco=${c.ecological.toFixed(2)}  rep=${sim.reputation.toFixed(2)}  ${creditsStr}  key=${lastKey || '-'}`;
   const line3 = `     ${weather}${factors}${seatStr}`;
   // ORDER 061 point 3 — post-tone-map pixel at screen centre.
   // Vision Owner aims the crosshair at a roof face; this reads the

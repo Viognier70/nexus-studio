@@ -261,6 +261,9 @@ export function makeInitialState(
     // enablers; 0.75 is a benign starting point that lets the drift
     // system settle without forcing an immediate crash.
     reputationCeiling: 0.75,
+    // ORDER 102 — R1 kunskapskapital. Alla tre axlar noll vid start.
+    // Byggs upp av R2 paviljongerna och R6 post-service-quiz.
+    knowledgeCredits: { episteme: 0, techne: 0, phronesis: 0 },
     eco: {
       econ: {
         value: 0.55,

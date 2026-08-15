@@ -181,6 +181,21 @@ export function reducer(state: SimulationState, action: SimAction): SimulationSt
       return setCapital(state, action.capital, action.value);
     case 'SET_CASH':
       return { ...state, cash: action.valueSek };
+    case 'ACCUMULATE_KNOWLEDGE': {
+      // ORDER 102 — R1 kunskapskapital. amount klämmas ≥ 0 (krediter
+      // dras aldrig via R1; förlust hanteras i R7 via ny profil per varv).
+      // Inget tak i R1 — frågan hör till R3 kreditekonomi + svårighetskurva.
+      const amount = Math.max(0, action.amount);
+      if (amount === 0) return state;
+      const current = state.knowledgeCredits;
+      return {
+        ...state,
+        knowledgeCredits: {
+          ...current,
+          [action.axis]: current[action.axis] + amount
+        }
+      };
+    }
     case 'OPEN_SERVICE':
       return openService(state, action.service, action.lengthMinutes);
     case 'SKIP_LUNCH':
