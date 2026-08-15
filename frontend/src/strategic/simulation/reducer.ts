@@ -1,6 +1,7 @@
 import { createRng } from '../util/rng';
 import type {
   AxisTracks,
+  BankMeetingOutcomeState,
   DayPeriod,
   DayState,
   EnablerKey,
@@ -13,6 +14,7 @@ import type {
   StaffRole,
   StoredCapitalKey
 } from '../types';
+import { resolveBankMeeting } from './bankMeeting';
 import {
   SERVICE_LENGTH_MAX_MINUTES,
   SERVICE_LENGTH_MIN_MINUTES
@@ -264,6 +266,8 @@ export function reducer(state: SimulationState, action: SimAction): SimulationSt
       return answerExamQuestion(state, action.questionId, action.correct, action.score);
     case 'COMPLETE_EXAM':
       return completeExam(state);
+    case 'REQUEST_BANK_LOAN':
+      return requestBankLoan(state);
     case 'PICK_ACTIVITY':
       return pickActivity(state, action.id);
     case 'UNPICK_ACTIVITY':
@@ -822,6 +826,46 @@ function completeExam(state: SimulationState): SimulationState {
     });
   }
   return next;
+}
+
+// ORDER 109 — M7b bankmötet. Läser knowledgeCredits genom
+// resolveBankMeeting, skriver outcome:t till state.bankMeetingOutcome
+// (repeat-dispatch skriver över — spelaren kan ha ackumulerat mer)
+// och adderar loanAmountSek till state.cash + ledger vid beviljande.
+//
+// §4.5 upprätthålls: enda gränssnittet mellan krediter och cash. Vi
+// LÄSER credits, vi SKRIVER cash. Ingen omvandling åt andra hållet,
+// ingen kredit-siffra i ledger-cause (bara business-tier + belopp).
+function requestBankLoan(state: SimulationState): SimulationState {
+  const outcome = resolveBankMeeting(state.knowledgeCredits);
+  const outcomeState: BankMeetingOutcomeState = {
+    klass: outcome.klass,
+    loanTier: outcome.loanTier,
+    loanAmountSek: outcome.loanAmountSek,
+    granted: outcome.granted,
+    noLoanReason: outcome.noLoanReason,
+    pointedPavilion: outcome.pointedPavilion,
+    messageKey: outcome.messageKey,
+    heldAt: state.simTime
+  };
+  if (!outcome.granted) {
+    // Avslag: skriv bara outcome. Ingen cash-rörelse, ingen ledger-rad
+    // (banken har inte flyttat pengar). Spelaren går tillbaka till
+    // paviljongerna via outcome.pointedPavilion; UI läser fältet.
+    return { ...state, bankMeetingOutcome: outcomeState };
+  }
+  // Beviljande: cash + ledger. Vi jobbar mot ett draft-objekt eftersom
+  // postLedger + applyCashDelta muterar in-place; samma pattern som
+  // buyStock och scenariernas ekonomilinjer.
+  const draft: SimulationState = { ...state, bankMeetingOutcome: outcomeState };
+  applyCashDelta(draft, outcome.loanAmountSek);
+  postLedger(draft, {
+    category: 'other',
+    amount: outcome.loanAmountSek,
+    cause: `Bank loan (${outcome.loanTier})`,
+    causeId: `bank-loan-${outcome.loanTier}`
+  });
+  return draft;
 }
 
 function forceCollapseAction(state: SimulationState): SimulationState {
