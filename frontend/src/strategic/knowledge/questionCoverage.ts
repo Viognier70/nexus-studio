@@ -61,12 +61,24 @@ export interface AxisGap {
   missingAxis: KnowledgeAxis;
 }
 
+// ORDER 108 — episteme-frågor utan källhänvisning. Rapporteras som
+// varning, inte fel (parallellt med thinPavilions/axisGaps). Bara
+// episteme flaggas — techne bygger på hantverkstradition, phronesis
+// på omdöme, och en källa på båda vore vilseledande. Frågan är
+// designavsedd: att episteme MÅSTE härledas ur ett arbete som kan
+// slås upp, techne och phronesis MÅSTE INTE.
+export interface EpistemeWithoutSource {
+  questionId: string;
+  pavilion: string | null;   // null = paviljong-agnostisk fråga
+}
+
 export interface CoverageReport {
   builtPavilions: readonly string[];
   perPavilion: Record<string, PavilionCoverage>;
   emptyPavilions: string[];      // byggda paviljonger med noll frågor
   thinPavilions: ThinPavilion[]; // tunna-paviljong-varning: < QUESTIONS_PER_EXAM
   axisGaps: AxisGap[];           // multi-axel-paviljongs axel-luckor (Vision Owner 2026-08-15)
+  epistemeWithoutSource: EpistemeWithoutSource[]; // ORDER 108 — episteme utan källa
   unattachedQuestions: number;   // frågor utan `pavilion`-fält, ej räknade in
 }
 
@@ -168,12 +180,27 @@ export function coverageReport(
     }
   }
 
+  // ORDER 108 — episteme-frågor utan källa. Skanning över alla frågor
+  // (inte bara paviljong-attackerade — en föräldralös episteme-fråga
+  // ska också flaggas, eftersom den kan bindas till en paviljong senare
+  // och då kommer haltandes). `pavilion: null` = föräldralös i rapporten.
+  const epistemeWithoutSource: EpistemeWithoutSource[] = [];
+  for (const q of questions) {
+    if (q.axis !== 'episteme') continue;
+    if (q.sources && q.sources.length > 0) continue;
+    epistemeWithoutSource.push({
+      questionId: q.id,
+      pavilion: q.pavilion ?? null
+    });
+  }
+
   return {
     builtPavilions: [...builtPavilions],
     perPavilion,
     emptyPavilions,
     thinPavilions,
     axisGaps,
+    epistemeWithoutSource,
     unattachedQuestions: unattached
   };
 }
