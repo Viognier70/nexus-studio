@@ -74,6 +74,14 @@ interface ParsedParams {
   // DevPanel's day/period/cash lines stay — those are useful in a
   // debrief. Only the aiming reticle + pixel readout drop.
   playtest: boolean;
+  // TEMPORÄR växel (SD-003 rev. 2 rekognosering, Vision Owner-begäran
+  // 2026-08-15) — bara för att se DollhouseFrame utan att ha byggt
+  // riktig montering. Aktiveras med `#playtest=1&dollhouse=1`. Ingen
+  // permanent koppling; den riktiga inflätningen hör till food truck-
+  // ordern (SD-003 §8 följdorder 3). Kräver playtest=1 för att fungera
+  // — annars ignoreras flaggan, så vanliga URL:er inte kan snubbla in
+  // i dockskåpsvyn av misstag.
+  dollhouse: boolean;
 }
 
 function parseHash(): ParsedParams {
@@ -84,7 +92,8 @@ function parseHash(): ParsedParams {
       roi: DEFAULT_ROI,
       poseId: DEFAULT_POSE_ID,
       calibrationQuad: false,
-      playtest: false
+      playtest: false,
+      dollhouse: false
     };
   }
   const hash = window.location.hash.replace('#', '');
@@ -104,7 +113,9 @@ function parseHash(): ParsedParams {
   const poseId = params.get('poseId') ?? null;
   const calibrationQuad = params.get('calibrationQuad') === '1';
   const playtest = params.get('playtest') === '1';
-  return { period, camera, roi, poseId, calibrationQuad, playtest };
+  // dollhouse-växeln kräver playtest=1 — annars ignoreras den.
+  const dollhouse = playtest && params.get('dollhouse') === '1';
+  return { period, camera, roi, poseId, calibrationQuad, playtest, dollhouse };
 }
 
 function parsePeriod(s: string | null): PeriodOverride {

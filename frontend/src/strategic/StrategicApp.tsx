@@ -20,6 +20,8 @@ import { OpeningPanel } from './scenario/OpeningPanel';
 import { ScenarioOverlay } from './scenario/ScenarioOverlay';
 import { ServiceLengthPicker } from './scenario/ServiceLengthPicker';
 import { StrategicScene } from './scene/StrategicScene';
+import { DollhouseFrame } from './ui/DollhouseFrame';
+import { harnessParams } from './testHarness/urlParams';
 import { SimulationProvider, useSimDispatch } from './simulation/SimulationProvider';
 import { AboutPanel } from './ui/AboutPanel';
 import { ControlsHint } from './ui/ControlsHint';
@@ -213,6 +215,16 @@ function StrategicShell() {
           selectedId={selectedId}
           showScaleRef={showScaleRef}
         />
+        {/*
+          TEMPORÄR växel (Vision Owner-begäran 2026-08-15): #playtest=1&
+          dollhouse=1 lägger DollhouseFrame ovanpå 3D-canvasen för att
+          rekognosera SD-003 rev. 2:s form. Ingen permanent koppling —
+          den riktiga inflätningen (fokusrum-swap, klickytor, karta,
+          paneler) hör till food truck-ordern (SD-003 §8 följdorder 3).
+          Kravet playtest=1 i urlParams förhindrar att en vanlig URL
+          snubblar in i vyn av misstag.
+        */}
+        {harnessParams.dollhouse && <DollhouseFrame />}
       </div>
       <ViewLabel />
       <VerifyBadge />
