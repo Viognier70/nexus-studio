@@ -15,11 +15,12 @@
 // the wager UI + scenario-driven capital movement replace the manual
 // cycle keys.
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useCamera } from '../camera/CameraContext';
 import { GRAY_BOX_CAMERA } from '../content/grythyttan';
 import { economicReadingNormalised } from '../simulation/cashReading';
 import { useSimState } from '../simulation/SimulationProvider';
+import { usePlayerBusinessInterior } from '../business/interiorLayout';
 import { fpsMeter } from '../../lib/fpsMeter';
 import { pixelSampler } from '../../lib/pixelSampler';
 import { harnessParams } from '../testHarness/urlParams';
@@ -49,6 +50,16 @@ interface Props {
 export function DevPanel({ lastKey }: Props) {
   if (!import.meta.env.DEV) return null;
   const sim = useSimState();
+  // Vision Owner 2026-08-15 — seat-diagnos next to the waiting
+  // readout. Same reason the camera distance got its own suffix in
+  // ORDER 090 §5: when the room reports "waiting=N" and nothing
+  // appears to be happening, the answer is usually "capacity is
+  // already full" or "the flat-seat list drifted from the reducer's
+  // capacity." Making both visible on the same strip skips a console
+  // dive. `layout.seats.length` is the runtime echo of TOTAL_SEATS —
+  // if it disagrees with policies.capacity, a `!` suffix flags the
+  // drift so the mismatch cannot be silently missed.
+  const layout = usePlayerBusinessInterior();
   // ORDER 090 §5 (finding 3) — camera distance polled on the same
   // 250 ms cadence as FPS. Interior scene (guests, staff, tables)
   // is culled outside restaurantInteriorFade [mid−half, mid+half],
@@ -93,6 +104,18 @@ export function DevPanel({ lastKey }: Props) {
           const s = Math.floor(rem % 60);
           return `${m}:${s.toString().padStart(2, '0')} / ${d.currentServiceLengthMinutes}min`;
         })();
+  // Live interior counts. `waiting=` on the weather line is the
+  // *forecast* (waitingAtOpening) — the queue-length prediction fed
+  // by reputation × weather at doors-open. That number is stable
+  // across a service. What actually matters when the room reads as
+  // empty is the LIVE queue, live seated count, and the capacity
+  // ceiling that stops seating even when guests are queued.
+  const queueLive = sim.waitingIds.length;
+  const seatedLive = sim.seatedIds.length;
+  const capacity = sim.policies.capacity;
+  const layoutSeats = layout?.seats.length ?? 0;
+  const seatDrift = layout != null && layoutSeats !== capacity;
+
   // ORDER 045 weather + world-factor line. Kept compact so the dev
   // panel stays a two-liner most of the time and grows to three
   // only on services where the outer world reports in.
@@ -102,6 +125,31 @@ export function DevPanel({ lastKey }: Props) {
   const factors = d.worldFactors.length > 0
     ? '  factors=' + d.worldFactors.map((f) => f.kind).join(',')
     : '';
+  // Seat-diagnos suffix (see comment on `layout` above). Always
+  // present — even out-of-service, queueLive/seatedLive are the
+  // authoritative "is anyone in the room right now" readout.
+  const seatStr = ` queue=${queueLive} seated=${seatedLive}/${capacity}${
+    seatDrift ? `!layout=${layoutSeats}` : ''
+  }`;
+
+  // Log on-change when the live queue is non-empty. Vision Owner
+  // 2026-08-15: "waiting=4, ingen sitter" → the console needs to
+  // show at which tuple (queue, seated, capacity, layoutSeats) the
+  // room stops seating. Fires only in DEV, ratelimited by tuple
+  // change (identity, not time), so a stable state doesn't spam.
+  const lastLoggedRef = useRef<string>('');
+  useEffect(() => {
+    if (queueLive === 0) return;
+    const key = `${queueLive}|${seatedLive}|${capacity}|${layoutSeats}`;
+    if (key === lastLoggedRef.current) return;
+    lastLoggedRef.current = key;
+    // eslint-disable-next-line no-console
+    console.info(
+      '[interior] queue=%d seated=%d/%d layout.seats=%d%s',
+      queueLive, seatedLive, capacity, layoutSeats,
+      seatDrift ? '  (DRIFT)' : ''
+    );
+  }, [queueLive, seatedLive, capacity, layoutSeats, seatDrift]);
   // ORDER 056 Del A — label "strat" so the strategic FPS is
   // distinguishable from the first-person view's separate overlay.
   const fpsStr = fps > 0 ? `${fps.toString().padStart(3, ' ')}fps(strat)` : ' - fps(strat)';
@@ -121,7 +169,7 @@ export function DevPanel({ lastKey }: Props) {
   const line1 = `DEV  ${fpsStr}  ${camStr}  day=${d.dayNumber} ${d.period.padEnd(9)}  service=${serviceReadout.padEnd(14)}  scenarios=${d.scenariosFiredThisService}/${d.scenariosPlanned}`;
   const cashK = Math.round(sim.cash / 1000);
   const line2 = `     cash=${cashK.toString().padStart(4, ' ')}k  econR=${econReading.toFixed(2)}  soc=${c.social.toFixed(2)}  eco=${c.ecological.toFixed(2)}  rep=${sim.reputation.toFixed(2)}  key=${lastKey || '-'}`;
-  const line3 = `     ${weather}${factors}`;
+  const line3 = `     ${weather}${factors}${seatStr}`;
   // ORDER 061 point 3 — post-tone-map pixel at screen centre.
   // Vision Owner aims the crosshair at a roof face; this reads the
   // sRGB value being displayed. R170 G120 B100 → math is right and

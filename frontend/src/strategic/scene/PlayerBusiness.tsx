@@ -162,6 +162,16 @@ export function PlayerBusiness() {
   const wallMeshRef = useRef<THREE.Mesh>(null);
   const roofMeshRef = useRef<THREE.Mesh>(null);
   const interiorGroupRef = useRef<THREE.Group>(null);
+  // Vision Owner 2026-08-15 — interior fill light. At dinner the
+  // sun is at −5° elevation in autumn Grythyttan, so SunLightRig
+  // contributes 0; only hemi (0.55) + moon (0.35) reach the room.
+  // Guests read as dark blobs against a dark room. The fix is a
+  // warm pointLight inside the building, gated on the same
+  // nightFactor × serviceGain ramp as the wall emissive — the room
+  // is *tänd* and the guests are lit by it. Not an emissive on the
+  // guest material: a self-lit puck reads as symbol (same objection
+  // that fell the opacity pulse in ORDER 044 §3.3).
+  const interiorLightRef = useRef<THREE.PointLight>(null);
 
   // Wall + roof geometry from the shared building polygon.
   const geom = useMemo(() => {
@@ -264,6 +274,20 @@ export function PlayerBusiness() {
       } else {
         mat.emissiveIntensity = 0;
       }
+
+      // Interior pointLight rides the same ramp × interiorVisibility
+      // so it only contributes when the camera is close enough to
+      // render the interior at all. Full intensity chosen to lift
+      // the puck material (roughness=0.9, no emissive) off the
+      // hemi+moon floor without blowing out the walls it also lights.
+      // Peak-tested at 22 with `distance=9, decay=2` — a guest at
+      // radius 4–5 m gets ~1.0 units of direct light on top of the
+      // ~0.9 units of ambient, taking the puck from "reads black"
+      // to "reads material colour".
+      if (interiorLightRef.current) {
+        interiorLightRef.current.intensity =
+          22 * glow * interiorVisibility;
+      }
     }
     if (interiorGroupRef.current) {
       interiorGroupRef.current.visible = interiorVisibility > 0.02;
@@ -348,6 +372,26 @@ export function PlayerBusiness() {
           of the rotated OSM footprint. Positions come from layout, which
           runs obbLocalToWorld internally. */}
       <group ref={interiorGroupRef} visible={false}>
+        {/* Interior fill light. Warm tungsten pointLight at ceiling
+            height (2.0 m — below the WALL_FLOOR_HEIGHT_M eave line so
+            it stays "inside" the room). Intensity is driven each frame
+            from useFrame above (skyState.nightFactor × serviceGain ×
+            interiorVisibility × 22). `distance = 9 m` covers the full
+            room diagonal at falloff = 0 so the far corners still get
+            lit; decay = 2 is physically correct (three.js default for
+            realistic photometry). castShadow left off — one shadow
+            pass per pointLight is expensive on a per-frame budget,
+            and the interior stub geometry doesn't produce the kind
+            of hard shadow that carries reading value. */}
+        <pointLight
+          ref={interiorLightRef}
+          position={[cx, 2.0, cz]}
+          color="#ffb460"
+          intensity={0}
+          distance={9}
+          decay={2}
+          castShadow={false}
+        />
         {/* Floor — planeGeometry is in the mesh's local XY; after
             rotation-X = -π/2 (to lie flat) and rotation-Y = roomRotY the
             plane's local X sits along the OBB's long axis. */}
