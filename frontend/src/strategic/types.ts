@@ -111,6 +111,49 @@ export interface ExamState {
   startedAt: number;   // simTime när START_EXAM dispatchades
 }
 
+// ORDER 109 — M7b bankmötet. Outcome-formen lever i types.ts så
+// SimulationState kan referera den utan att dra in bankMeeting.ts
+// (som i sin tur importerar KnowledgeCredits härifrån — cirkulär
+// import annars). Den fulla logiken för hur outcome:t byggs finns i
+// simulation/bankMeeting.ts:resolveBankMeeting.
+export type BankMeetingKlass =
+  | 'restaurant'
+  | 'foodtruck'
+  | 'nearEpisteme'
+  | 'balanced'
+  | 'noLoan';
+
+export type BankLoanTier =
+  | 'none'
+  | 'foodtruck'
+  | 'restaurant-small'
+  | 'restaurant-full';
+
+export type BankNoLoanReason = 'under-floor' | 'episteme-sector';
+
+export type BankMessageKey =
+  | 'grantRestaurant'
+  | 'grantFoodtruck'
+  | 'grantWide'
+  | 'rejectPractice'
+  | 'rejectField';
+
+export interface BankMeetingOutcomeState {
+  klass: BankMeetingKlass;
+  loanTier: BankLoanTier;
+  loanAmountSek: number;
+  granted: boolean;
+  noLoanReason: BankNoLoanReason | null;
+  // Paviljong-id som sträng (paviljong-katalogen deklarerar `PavilionId`
+  // som mängd av strängar; typkontroll upprätthålls där outcome:t byggs
+  // — types.ts håller sig fri från knowledge/-mappen).
+  pointedPavilion: string | null;
+  messageKey: BankMessageKey;
+  // simTime när mötet hölls, så en repeat-request kan sortera / avgöra
+  // om outcome:t är "färskt". Skrivs av reducern.
+  heldAt: number;
+}
+
 export type ServiceConcept = 'vardaglig' | 'formell';
 export type PricingTier = 'låg' | 'medel' | 'hög';
 export type IngredientTier = 'grund' | 'utvald' | 'premium';
@@ -859,6 +902,15 @@ export interface SimulationState {
   // svaras.
   currentExam: ExamState | null;
   examSlotsUsed: number;
+  // ORDER 109 — M7b bankmötet. Sätts av REQUEST_BANK_LOAN via
+  // `resolveBankMeeting`. Persistar tills mötet hålls igen (repeat-
+  // dispatch skriver över). Null tills spelaren gått in i mötet.
+  // R4 läser fältet för att veta vilken verksamhet spelaren tilldelats.
+  //
+  // Typen är löst kopplad (importeras separat i callers) för att inte
+  // dra in businessProfile/bankMeeting-import i types.ts. Se
+  // simulation/bankMeeting.ts:BankMeetingOutcome för fullständig form.
+  bankMeetingOutcome: BankMeetingOutcomeState | null;
   eco: {
     econ: SustainabilityCondition;
     social: SustainabilityCondition;
@@ -1056,6 +1108,12 @@ export type SimAction =
   | { type: 'START_EXAM'; pavilionId: string; seed: number }
   | { type: 'ANSWER_EXAM_QUESTION'; questionId: string; correct: boolean; score: number }
   | { type: 'COMPLETE_EXAM' }
+  // ORDER 109 — M7b bankmötet. Läser knowledgeCredits genom
+  // resolveBankMeeting, skriver outcome till state.bankMeetingOutcome
+  // och adderar loanAmountSek till state.cash + ledger vid beviljande.
+  // Idempotent: kan dispatchas flera gånger — skriver alltid ny outcome
+  // (spelaren kan ha ackumulerat mer sedan sist).
+  | { type: 'REQUEST_BANK_LOAN' }
   // ORDER 043 v3 §10 step 1 — the round.
   // OPEN_SERVICE is dispatched from the morning/afternoon UI when the
   // player commits to a service length. lengthMinutes clamped to
