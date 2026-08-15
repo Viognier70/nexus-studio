@@ -120,7 +120,16 @@ export const MALTIDBIBLIOTEKET_SEED: FlervalQuestion = {
     'Kockyrkets professionalisering från 1800-talets slut.',
     'Restaurangkulturens spridning från franska revolutionen.'
   ],
-  correctIndex: 1
+  correctIndex: 1,
+  sources: [
+    {
+      author: 'Gustafsson, I.-B., Öström, Å., Johansson, J., & Mossberg, L.',
+      year: 2006,
+      title: 'The Five Aspects Meal Model: A tool for developing meal services in restaurants',
+      publication: 'Journal of Foodservice',
+      doi: '10.1111/j.1745-4506.2006.00023.x'
+    }
+  ]
 };
 
 export const GASTRONOMISKA_TEATERN_SEED: SituationQuestion = {

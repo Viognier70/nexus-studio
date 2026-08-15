@@ -20,6 +20,21 @@ import type { KnowledgeAxis, YrkesSpar } from '../types';
 // välja mellan dem (i stället för fritext, §3.4).
 export type QuestionFormat = 'flerval' | 'situation' | 'parning' | 'gestaltning';
 
+// ORDER 108 — källhänvisning per fråga. Strukturerad (inte fritext) så
+// APA-strängen kan formateras deterministiskt och paviljongen kan visa
+// källan separat från förklaringen. Avsiktligt endast obligatorisk för
+// episteme (§coverage nedan); techne bygger på hantverkstradition som
+// inte alltid har publicerad källa, phronesis på omdöme där en källa
+// vore vilseledande.
+export interface QuestionSource {
+  author: string;              // 'Gustafsson, I.-B.' eller 'Gustafsson, I.-B., & Öström, Å.'
+  year: number;                // 2006
+  title: string;               // 'Måltidens fem aspekter — FAMM-modellen'
+  publication?: string;        // journal- eller bok-namn; utelämnat för självständiga verk
+  doi?: string;                // '10.1080/xxx' — utan URL-prefix
+  url?: string;                // fallback när DOI saknas
+}
+
 // Gemensamma fält för alla fråge-typer. Spårlöst = `spar: null`
 // (Måltidbiblioteket + Kalastorget). Paviljong-id är valfritt eftersom
 // samma fråga kan användas av flera paviljonger (t.ex. en episteme-fråga
@@ -34,6 +49,11 @@ interface BaseQuestion {
   // techne-frågor efterfrågas). Ifylld = frågan är avsedd för den
   // specifika paviljongen.
   pavilion?: string;
+  // ORDER 108 — källor. Obligatoriskt i praktiken bara för episteme
+  // (coverageReport varnar när tomt); techne/phronesis får ha källor
+  // men förväntas inte. En lista eftersom en episteme-fråga kan vila
+  // på flera arbeten.
+  sources?: readonly QuestionSource[];
 }
 
 // §3.1 — flerval. M7a:s befintliga form. Ett rätt alternativ.
