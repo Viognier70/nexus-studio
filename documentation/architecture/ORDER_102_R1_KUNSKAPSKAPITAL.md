@@ -1,7 +1,7 @@
 # ORDER 102 — R1 Kunskapskapital
 
-**Repo** `Viognier70/nexus-studio` · **Gren** öppen (branch skapas när ordern godkänns)
-**Klass** UTKAST — kräver Vision Owner-godkännande innan execution
+**Repo** `Viognier70/nexus-studio` · **Gren** `order-049`
+**Klass** AUTONOM — Vision Owner-beslut inkommet 2026-08-15 (chat); tre av fyra §6-frågor besvarade
 **Datum** 2026-08-15
 **Bygger på** `documentation/blueprints/R3_KUNSKAPSKAPITAL_REPORT_ORDER_092.md` §§ 1, 3.6.5, 3.7, 8.2, 12
 **Ersätter** ORDER 095 (som aldrig kördes; utfärdades och referenser­ades men producerade inga commits)
@@ -66,9 +66,10 @@ Ren funktion som läser vektorn och returnerar en klass. R3 §3.6:s fyra-sektor-
 type KnowledgeClass =
   | 'restaurant'      // phronesis dominant
   | 'foodtruck'       // techne dominant
-  | 'nearEpisteme'    // episteme dominant (klass för R4 att besluta om)
-  | 'centre'          // bredd — utanför alla axelkoner, över centrumgolv
-  | 'noLoan';         // under specialistgolv — inget lån
+  | 'nearEpisteme'    // episteme dominant → loanTier 'none' per Vision Owner 2026-08-15
+  | 'balanced'        // bredd — utanför alla axelkoner, över centrumgolv (intern nyckel;
+                      // player-visible namn för fjärde klassen beslutas i R4)
+  | 'noLoan';         // under magnitudgolv — inget lån
 
 function readProfile(credits: KnowledgeCredits): KnowledgeClass
 ```
@@ -80,15 +81,15 @@ function readProfile(credits: KnowledgeCredits): KnowledgeClass
 | `CONE_HALF_ANGLE_DEG` | 45 | ORDER 093 §5 punkt 1 |
 | `SPECIALIST_MAGNITUDE_FLOOR` | 0.10 | ORDER 093 §3.6.5 |
 | `CENTRE_MAGNITUDE_FLOOR` | 0.40 | ORDER 093 §3.6.5 |
-| Precedens vid överlapp | `phronesis > techne > episteme > centre > noLoan` | R3 §3.6 tabell |
+| Precedens vid överlapp | `phronesis > techne > episteme > balanced > noLoan` | R3 §3.6 tabell |
 
 **Algoritm:**
 
 1. Om `‖credits‖ < SPECIALIST_MAGNITUDE_FLOOR` → `noLoan`.
-2. För varje axel: beräkna vinkel `θ_axis = arccos(dot(credits, axis) / ‖credits‖)`.
-3. Samla axlar där `θ_axis ≤ CONE_HALF_ANGLE_DEG`.
-4. Om flera axlar matchar: precedens (phronesis > techne > episteme).
-5. Om ingen axel matchar OCH `‖credits‖ ≥ CENTRE_MAGNITUDE_FLOOR` → `centre`.
+2. För varje axel: beräkna `cos(θ_axis) = dot(credits, axis) / ‖credits‖`, vilket är samma sak som axel-värdet delat med magnituden.
+3. Axeln matchar konen om `cos(θ_axis) ≥ cos(CONE_HALF_ANGLE_DEG)` (dvs vinkeln är inom halva konvidden).
+4. Precedens vid överlapp: phronesis wins over techne wins over episteme. Första match returnerar (`restaurant` / `foodtruck` / `nearEpisteme`).
+5. Om ingen axel matchar OCH `‖credits‖ ≥ CENTRE_MAGNITUDE_FLOOR` → `balanced`.
 6. Om ingen axel matchar OCH under centrumgolv men över specialistgolv → `noLoan`.
 
 Ingen fuzzy edges, inga viktade blends. Renaste möjliga geometri på sfären.
@@ -107,17 +108,19 @@ export interface LoanOutcome {
 export function resolveLoanOutcome(credits: KnowledgeCredits): LoanOutcome
 ```
 
-Mappning (per R3 §3.6 tabell + §8.4):
+Mappning (per R3 §3.6 tabell + §8.4, med Vision Owner-beslut 2026-08-15):
 
-| Klass | Loan tier | Diagnostisk röst (exempel — R4 finslipar) |
+| Klass | Loan tier | Diagnostisk röst (test-fixtur — R4/M7b finslipar för UI) |
 |---|---|---|
 | `restaurant` (phronesis dominant) | `restaurant-full` | "Du har omdömet för matsalen. Vi ger dig fulla medel." |
 | `foodtruck` (techne dominant) | `foodtruck` | "Du har händerna. Börja mindre, växla upp." |
-| `nearEpisteme` (episteme dominant) | *öppen — beslutas i R4* | R4 §3.7 punkt 3 (egen klass / restaurang / inget lån) |
-| `centre` (bredd) | `restaurant-small` | *fjärde klassen — namn/mekanik beslutas i R4 §3.7 punkt 2* |
+| `nearEpisteme` (episteme dominant) | `none` (Vision Owner 2026-08-15) | "Du vet men har inte gjort. Vi kan inte finansiera." (26 % av kuben vid 45°/45°/45° per ORDER 093 §3.6.2 — avsiktligt utan lån) |
+| `balanced` (bredd) | `restaurant-small` (placeholder tills R4) | "Ett brett kunnande. Vi ger dig en start." (fjärde klassens namn/mekanik beslutas i R4 §3.7 punkt 2) |
 | `noLoan` (under golv) | `none` | "Vi ser inget bärande kunnande. Kom tillbaka när du kan mer." |
 
 **Ingen siffra visas i bankmötet** per R3 §1.4 / EDD §7. `message` bär läsningen som text; UI visar inte kreditvektorn.
+
+**Textkälla:** meddelandena är test-fixturer inline i `businessProfile.ts`, **inte** genom `strings.sv.ts` (Vision Owner 2026-08-15). M7b bär den slutliga författningen i sin egen ordertext när scenen byggs; R1:s meddelanden är för test-verifiering och dev-panel-läsbarhet, inte för spelar-UI.
 
 ### 2.5 Fyra gränsfall — utfall dokumenterade
 
@@ -125,10 +128,10 @@ Från R3 §3.6.3 och §3.7 (fyra profiler som ORDER 093 konsvep körde):
 
 | Gränsfall | (e, t, p) | Klass vid 45° | Loan tier |
 |---|---|---|---|
-| Jämnstark låg | (0.10, 0.10, 0.10) | `centre` (över specialistgolv, under centrumgolv → korrekt: `noLoan`) | none |
-| Jämnstark hög | (0.70, 0.70, 0.70) | `centre` (över alla golv, utanför alla koner) | fjärde klassen |
-| Enbart episteme | (0.90, 0.05, 0.05) | `nearEpisteme` | R4-beslut |
-| Techne+episteme | (0.70, 0.70, 0.10) | `centre` (utanför alla koner vid 45°; tippunkt 45.3° per ORDER 093 §3.6.3 så precis över) | fjärde klassen |
+| Jämnstark låg | (0.10, 0.10, 0.10) | `noLoan` (magnitud ≈ 0.173: över specialistgolv, under centrumgolv 0.40 → korrekt: `noLoan`) | none |
+| Jämnstark hög | (0.70, 0.70, 0.70) | `balanced` (magnitud ≈ 1.212: över alla golv, utanför alla koner) | restaurant-small (placeholder) |
+| Enbart episteme | (0.90, 0.05, 0.05) | `nearEpisteme` | none (Vision Owner 2026-08-15) |
+| Techne+episteme | (0.70, 0.70, 0.10) | `balanced` (utanför alla koner vid 45°; tippunkt 45.3° per ORDER 093 §3.6.3 så precis över) | restaurant-small (placeholder) |
 
 Testerna i §4 nedan täcker alla fyra.
 
@@ -138,8 +141,8 @@ Testerna i §4 nedan täcker alla fyra.
 
 - **Paviljongernas kod (R2).** Bara `ACCUMULATE_KNOWLEDGE`-actionen och reducer-hanteringen. Var actionen fyras beslutas i R2.
 - **Bankmötets scen (M7b).** `resolveLoanOutcome()` är ren funktion; scenen som visar den är M7b.
-- **Fjärde klassens namn.** `centre` är algoritmisk klassificering — namnet ("vinbar" / "bistro" / "konsult") beslutas i R4 §3.7 punkt 2.
-- **`nearEpisteme`s verksamhet.** Klassen finns i mappningen; vad den ger (egen klass / restaurang / inget lån) beslutas i R4 §3.7 punkt 3.
+- **Fjärde klassens player-visible namn.** `balanced` är algoritmisk intern nyckel — namnet ("vinbar" / "bistro" / "konsult") beslutas i R4 §3.7 punkt 2. R1 använder `'balanced'` i typerna.
+- **`nearEpisteme`s verksamhet.** Klassen finns i mappningen; loanTier är `'none'` per Vision Owner 2026-08-15 (avsiktligt utan lån — cirka 26 % av kuben vid ORDER 093:s konvidder). Om R4 beslutar annat uppdateras `resolveLoanOutcome` då.
 - **Diagnostisk röst — text.** Placeholder-strängar i `resolveLoanOutcome` är för test/exempel. Slutlig författning görs i M7b-ordern.
 - **UI-panel för att visa `knowledgeCredits`.** Regeln "ingen siffra visas" (§1.4) står. Ingen HUD, ingen debug-panel utom en dev-only readout i `DevPanel.tsx` (samma pattern som `queue=N seated=S/C` från ORDER 097).
 
@@ -172,14 +175,16 @@ Testerna i §4 nedan täcker alla fyra.
 
 ---
 
-## 6. Öppna frågor Vision Owner måste svara på innan execution
+## 6. Frågor — status 2026-08-15
 
-1. **`centre`-klassens `loanTier`.** Utkastet föreslår `restaurant-small` för "fjärde klassen" men R4 §3.7 punkt 2 gör detta beroende av vad klassen faktiskt är. Ska R1 tilldela `restaurant-small` som placeholder, eller ska `resolveLoanOutcome` returnera `class: 'centre', loanTier: 'pending-r4'` tills R4 landar?
-2. **`nearEpisteme`s `loanTier`.** Samma fråga. R4 §3.7 punkt 3 är tre kandidater (egen klass / sammanslagen med restaurang / inget lån). Ska R1 lämna `loanTier: 'pending-r4'`?
-3. **Diagnostisk röst — placeholder-format.** Testerna behöver *något* att jämföra mot. Är exemplen i §2.4-tabellen acceptabla som testfixturer tills M7b finslipar dem?
-4. **`ACCUMULATE_KNOWLEDGE` — tak per axel?** Utkastet klämmer negativt men inte överkant. R2 paviljongerna kan i teorin ackumulera oändligt. Ska varje axel ha ett tak (t.ex. 1.0)? Om ja, normaliserar `readProfile` mot taket eller mot faktisk magnitud?
+Tre av fyra besvarade av Vision Owner (chat 2026-08-15). En kvarstår öppen.
 
-Godkännande av dessa fyra + `Ja, kör` från Vision Owner utlöser execution.
+1. ✅ **`balanced`-klassens `loanTier` (tidigare "centre")** — Intern nyckel är `'balanced'`, `loanTier` sätts till `'restaurant-small'` som placeholder. Player-visible namn för fjärde klassen väntar på R4 §3.7 punkt 2. Placeholder är OK för R1; R4 uppdaterar mappningen när namn/mekanik landar.
+2. ✅ **`nearEpisteme`s `loanTier`** — `'none'`. Ingen lån. Motivering: cirka 26 % av kuben vid ORDER 093:s konvidder — avsiktligt lämnad utan lån. Om R4 §3.7 punkt 3 senare bestämmer egen klass eller sammanslagning uppdateras `resolveLoanOutcome` då.
+3. ✅ **Diagnostisk röst — placeholder-format** — Exempeltexterna i §2.4-tabellen accepterade som test-fixturer, **inline i `businessProfile.ts`, ej i `strings.sv.ts`**. M7b bär den slutliga författningen i sin egen ordertext när scenen byggs.
+4. ⏳ **`ACCUMULATE_KNOWLEDGE` — tak per axel** — **Fortsatt öppen.** R1 implementerar utan tak (endast negativ-klämning). Frågan hör ihop med R3:s kreditekonomi (§4) och svårighetskurva (§5) — hur mycket kredit kan en spelare rimligt ackumulera per varv, och hur påverkar det bankmötets läsning över tid? Utreds separat under R3-mätningen; ingen tak-mekanik i R1 för att inte prejudicera beslutet.
+
+Execution kör mot besluten 1–3; öppen fråga 4 följer med som notering i R3-uppgift.
 
 ---
 
