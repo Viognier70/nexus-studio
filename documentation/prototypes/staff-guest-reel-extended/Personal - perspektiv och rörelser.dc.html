@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/modernist-fa2a5900-708d-4668-979a-71ad6a03542a/styles.css">
+<script src="_ds/modernist-fa2a5900-708d-4668-979a-71ad6a03542a/_ds_bundle.js"></script>
+<style>
+  html, body { margin: 0; background: var(--color-bg); }
+  a { color: var(--color-accent); text-decoration: none; }
+  a:hover { color: var(--color-accent-700); }
+  @keyframes sway { 0%, 100% { transform: translateX(-5px); } 50% { transform: translateX(5px); } }
+  @keyframes pathX { 0% { transform: translateX(-52px); } 100% { transform: translateX(52px); } }
+  @keyframes flipX { 0%, 49.9% { transform: scaleX(1); } 50%, 100% { transform: scaleX(-1); } }
+  @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+  @keyframes bobFast { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+  @keyframes approach { 0% { transform: translateX(-54px); } 30%, 85% { transform: translateX(-4px); } 100% { transform: translateX(-54px); } }
+  @keyframes nod { 0%, 100% { transform: rotate(0deg); } 40% { transform: rotate(7deg); } 60% { transform: rotate(4deg); } }
+  @keyframes serveRun { 0% { transform: translateX(-56px); } 35%, 55% { transform: translateX(16px); } 100% { transform: translateX(-56px); } }
+  @keyframes dip { 0%, 30%, 70%, 100% { transform: translateY(0) scaleY(1); } 45%, 55% { transform: translateY(9px) scaleY(0.93); } }
+  @keyframes busRun { 0% { transform: translateX(54px); } 35%, 60% { transform: translateX(-8px); } 100% { transform: translateX(54px); } }
+  @keyframes microOsc { 0% { transform: translateX(-14px); } 100% { transform: translateX(14px); } }
+  @keyframes quickOsc { 0% { transform: translateX(-6px); } 100% { transform: translateX(6px); } }
+  @keyframes shakeRot { 0% { transform: rotate(-13deg); } 100% { transform: rotate(13deg); } }
+  @keyframes fig8 { 0% { transform: translate(-48px, 12px); } 25% { transform: translate(-16px, -16px); } 50% { transform: translate(18px, 12px); } 75% { transform: translate(48px, -16px); } 100% { transform: translate(-48px, 12px); } }
+  @keyframes slump { 0%, 8% { transform: translateY(0) rotate(0deg); } 26%, 74% { transform: translateY(15px) rotate(9deg); } 96%, 100% { transform: translateY(0) rotate(0deg); } }
+  @keyframes pipPulse { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
+  @keyframes tick { 0% { transform: translateX(0); } 100% { transform: translateX(64px); } }
+</style>
+</helmet>
+
+<div style="min-height: 100vh; background: var(--color-bg); color: var(--color-text); font-family: var(--font-body); padding: 64px 80px 120px; display: flex; flex-direction: column; gap: 72px; max-width: 1720px; margin: 0 auto;">
+
+  <header style="display: flex; flex-direction: column; gap: 28px;">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 4px solid var(--color-text); padding-bottom: 14px;">
+      <div style="font-family: var(--font-heading); font-weight: 800; font-size: 15px; letter-spacing: 0.18em; text-transform: uppercase;">Nexus Studio · Vinbaren · Matsalen</div>
+      <div style="font-family: var(--font-heading); font-weight: 800; font-size: 15px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-accent);">Underlag 001 · rörelse &amp; uttryck</div>
+    </div>
+    <div style="display: grid; grid-template-columns: 1.15fr 1fr; gap: 64px; align-items: start;">
+      <h1 style="font-family: var(--font-heading); font-weight: 800; font-size: 88px; line-height: 0.94; letter-spacing: -0.035em; margin: 0; text-wrap: pretty;">Personal i rummet: vilket perspektiv de måste tåla</h1>
+      <p style="margin: 0; font-size: 19px; line-height: 1.55; max-width: 52ch; text-wrap: pretty;">Läst mot <a href="https://github.com/Viognier70/nexus-studio">Viognier70/nexus-studio@main</a> — <em>CAMERA_AND_VIEW_SYSTEM.md</em>, <em>InteriorStaff.tsx</em>, <em>RestaurantActors.tsx</em> och <em>CLAUDE.md</em>. Slutsatsen styr allt annat på sidan: personalen ses vinklat uppifrån, från godtycklig yaw, i procedurell geometri utan assets. Det utesluter sidovy, sprites och skinnade riggar — och det flyttar ansiktsuttrycken från rummet till personkortet.</p>
+    </div>
+  </header>
+
+  <section style="display: flex; flex-direction: column; gap: 32px;">
+    <div style="display: flex; gap: 18px; align-items: baseline; border-bottom: 3px solid var(--color-text); padding-bottom: 12px;">
+      <span style="font-family: var(--font-heading); font-weight: 800; font-size: 20px; letter-spacing: 0.16em; color: var(--color-accent);">01</span>
+      <h2 style="font-family: var(--font-heading); font-weight: 800; font-size: 34px; margin: 0; letter-spacing: -0.02em;">Perspektivbeslutet</h2>
+      <span style="margin-left: auto; font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800;">Vinklad top-down · fri yaw · pitch 20–78°</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start;">
+      <div style="position: relative; height: 420px; border: 3px solid var(--color-text); background: linear-gradient(180deg, #eae9e9 0%, var(--color-bg) 100%); overflow: hidden;">
+        <div style="position: absolute; left: 0; right: 0; bottom: 96px; height: 3px; background: var(--color-text);"></div>
+        <div style="position: absolute; left: 5%; bottom: 62px; font-family: var(--font-heading); font-weight: 800; font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase;">Golvplan · matsalen</div>
+        <div style="position: absolute; left: 50%; bottom: 99px; width: 3px; height: 250px; background: var(--color-divider); transform-origin: bottom center; transform: rotate(-70deg);"></div>
+        <div style="position: absolute; left: 50%; bottom: 99px; width: 3px; height: 250px; background: var(--color-accent); transform-origin: bottom center; transform: rotate(-45deg);"></div>
+        <div style="position: absolute; left: 50%; bottom: 99px; width: 3px; height: 250px; background: var(--color-divider); transform-origin: bottom center; transform: rotate(-20deg);"></div>
+        <div style="position: absolute; left: 50%; bottom: 99px; width: 250px; height: 250px; border: 3px dashed var(--color-divider); border-right: none; border-bottom: none; border-radius: 0;"></div>
+        <div style="position: absolute; right: 5%; bottom: 300px; font-family: var(--font-heading); font-weight: 800; font-size: 14px; letter-spacing: 0.12em; text-align: right;">78°</div>
+        <div style="position: absolute; right: 5%; bottom: 246px; font-family: var(--font-heading); font-weight: 800; font-size: 14px; letter-spacing: 0.12em; color: var(--color-accent); text-align: right;">≈45° — arbetsläget</div>
+        <div style="position: absolute; right: 5%; bottom: 152px; font-family: var(--font-heading); font-weight: 800; font-size: 14px; letter-spacing: 0.12em; text-align: right;">20°</div>
+        <div style="position: absolute; left: 50%; bottom: 96px; margin-left: -48px;">
+          <dc-import name="StaffPuck" color="#33383f" prop="tray" hint-size="96px,128px"></dc-import>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 26px;">
+        <div style="display: flex; flex-direction: column; gap: 8px; border-top: 3px solid var(--color-text); padding-top: 14px;">
+          <div style="font-family: var(--font-heading); font-weight: 800; font-size: 19px;">Interiören syns först under 15 m</div>
+          <p style="margin: 0; font-size: 16px; line-height: 1.55; max-width: 60ch;">Yaw är obegränsad — figuren får aldrig ha en “framsida” som bara fungerar från ett håll. Diagrammet till vänster visar arbetsläget: kameran vilar kring 45°, men måste fungera hela vägen ner till 20°.</p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; border-top: 2px solid var(--color-divider); padding-top: 14px;">
+          <div style="font-family: var(--font-heading); font-weight: 800; font-size: 19px;">Ingen sidovy, inga sprites</div>
+          <p style="margin: 0; font-size: 16px; line-height: 1.55; max-width: 60ch;">Kameran orbiterar fritt i yaw och lutar mellan 20° och 78°. En billboardad sidovy-figur (som gästanimationen) skulle vridas med kameran och tappa riktning. Kroppen måste vara rotationssymmetrisk och riktningen bäras av en egen markör.</p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; border-top: 2px solid var(--color-divider); padding-top: 14px;">
+          <div style="font-family: var(--font-heading); font-weight: 800; font-size: 19px;">Rörelse är transform, inte skinning</div>
+          <p style="margin: 0; font-size: 16px; line-height: 1.55; max-width: 60ch;">CLAUDE.md: procedurell geometri, inga binära assets. Varje rörelse nedan är därför uttryckt som translate / rotate / scale på 3–5 primitiver — direkt implementerbart i <em>InteriorStaff.tsx</em> utan att bryta principen.</p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; border-top: 2px solid var(--color-divider); padding-top: 14px;">
+          <div style="font-family: var(--font-heading); font-weight: 800; font-size: 19px;">Ansiktet syns inte i rummet</div>
+          <p style="margin: 0; font-size: 16px; line-height: 1.55; max-width: 60ch;">Vid 0,24 m radie och 1,75 m höjd, sedd på 8–15 m avstånd, är huvudet några pixlar. Uttryck kan alltså inte bära information i matsalen. De hör hemma i personkortet (Roll / Just nu / På väg mot) — i rummet bär <strong>tempo, lutning och avstånd</strong> känslan.</p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; border-top: 2px solid var(--color-divider); padding-top: 14px;">
+          <div style="font-family: var(--font-heading); font-weight: 800; font-size: 19px;">Rörelsen måste berätta ensam</div>
+          <p style="margin: 0; font-size: 16px; line-height: 1.55; max-width: 60ch;">Personalen är inte valbar för order. Spelaren kan inte fråga vad någon gör — därför måste varje mönster nedan vara igenkännbart på under en sekund, utan text.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 32px;">
+    <div style="display: flex; gap: 18px; align-items: baseline; border-bottom: 3px solid var(--color-text); padding-bottom: 12px;">
+      <span style="font-family: var(--font-heading); font-weight: 800; font-size: 20px; letter-spacing: 0.16em; color: var(--color-accent);">02</span>
+      <h2 style="font-family: var(--font-heading); font-weight: 800; font-size: 34px; margin: 0; letter-spacing: -0.02em;">Riggen: puck+</h2>
+      <span style="margin-left: auto; font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800;">Behåller måtten i InteriorStaff.tsx</span>
+    </div>
+    <div style="display: grid; grid-template-columns: 380px 1fr; gap: 56px; align-items: start;">
+      <div style="border: 3px solid var(--color-text); height: 380px; position: relative; background: var(--color-bg);">
+        <div style="position: absolute; left: 50%; margin-left: -48px; top: 110px; transform: scale(1.55); transform-origin: top center;">
+          <dc-import name="StaffPuck" color="#33383f" prop="tray" alert="{{ true }}" hint-size="96px,128px"></dc-import>
+        </div>
+        <div style="position: absolute; left: 20px; top: 26px; font-family: var(--font-heading); font-weight: 800; font-size: 12px; letter-spacing: 0.14em; color: var(--color-accent);">STATUSPIP 0,06 m</div>
+        <div style="position: absolute; left: 20px; top: 104px; font-family: var(--font-heading); font-weight: 800; font-size: 12px; letter-spacing: 0.14em;">HUVUD r 0,11 m</div>
+        <div style="position: absolute; right: 20px; top: 150px; font-family: var(--font-heading); font-weight: 800; font-size: 12px; letter-spacing: 0.14em; color: var(--color-accent); text-align: right;">RIKTNINGSKIL<br>0,10 m</div>
+        <div style="position: absolute; right: 20px; top: 214px; font-family: var(--font-heading); font-weight: 800; font-size: 12px; letter-spacing: 0.14em; text-align: right;">PROP = ROLLENS VERB</div>
+        <div style="position: absolute; left: 20px; bottom: 96px; font-family: var(--font-heading); font-weight: 800; font-size: 12px; letter-spacing: 0.14em;">KROPP Ø0,48 × 1,75 m</div>
+        <div style="position: absolute; left: 20px; bottom: 40px; font-family: var(--font-heading); font-weight: 800; font-size: 12px; letter-spacing: 0.14em;">SKUGGRING Ø0,64 m</div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 0;">
+        <div style="display: grid; grid-template-columns: 1.1fr 0.9fr 1.4fr; gap: 24px; border-bottom: 3px solid var(--color-text); padding-bottom: 10px; font-family: var(--font-heading); font-weight: 800; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase;">
+          <div>Tillägg</div><div>Mått</div><div>Varför</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1.1fr 0.9fr 1.4fr; gap: 24px; border-bottom: 2px solid var(--color-divider); padding: 14px 0; font-size: 16px; line-height: 1.45;">
+          <div style="font-weight: 800;">Riktningskil</div><div>0,10 m, på toppytan</div><div>Yaw blir läsbar uppifrån. Utan den vet spelaren aldrig vem som är på väg mot bordet.</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1.1fr 0.9fr 1.4fr; gap: 24px; border-bottom: 2px solid var(--color-divider); padding: 14px 0; font-size: 16px; line-height: 1.45;">
+          <div style="font-weight: 800;">Huvud</div><div>sfär r 0,11 m</div><div>Silhuetten får en topp — personal skiljs från möbler även i skugga. Färg <em>#c8b39a</em> som i RestaurantActors.</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1.1fr 0.9fr 1.4fr; gap: 24px; border-bottom: 2px solid var(--color-divider); padding: 14px 0; font-size: 16px; line-height: 1.45;">
+          <div style="font-weight: 800;">Prop</div><div>0,34 × 0,02 × 0,24 m</div><div>Bricka, stapel, panna, shaker, mopp, glas, block. Verbet syns innan rörelsen hinner läsas.</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1.1fr 0.9fr 1.4fr; gap: 24px; border-bottom: 2px solid var(--color-divider); padding: 14px 0; font-size: 16px; line-height: 1.45;">
+          <div style="font-weight: 800;">Skuggring</div><div>Ø0,64 m, opacity 0,18</div><div>Förankrar pucken i golvet vid låg pitch (20°), där fötterna annars ser ut att sväva.</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1.1fr 0.9fr 1.4fr; gap: 24px; border-bottom: 2px solid var(--color-divider); padding: 14px 0; font-size: 16px; line-height: 1.45;">
+          <div style="font-weight: 800;">Statuspip</div><div>0,06 m kub, +0,15 m</div><div>Endast tre lägen: <em>behöver hjälp</em>, <em>fel begånget</em>, <em>gäst väntar</em>. Aldrig en siffra — det bryter mot “inga stat-paneler”.</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1.1fr 0.9fr 1.4fr; gap: 24px; padding: 14px 0; font-size: 16px; line-height: 1.45;">
+          <div style="font-weight: 800;">Lutning + bob</div><div>0–6° / 2–7 cm</div><div>Kopplas till pace. Lugn service = upprätt och stilla; press = framåtlutad och studsig. Det är stressmätaren.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 32px;">
+    <div style="display: flex; gap: 18px; align-items: baseline; border-bottom: 3px solid var(--color-text); padding-bottom: 12px;">
+      <span style="font-family: var(--font-heading); font-weight: 800; font-size: 20px; letter-spacing: 0.16em; color: var(--color-accent);">03</span>
+      <h2 style="font-family: var(--font-heading); font-weight: 800; font-size: 34px; margin: 0; letter-spacing: -0.02em;">Rörelsebibliotek</h2>
+      <span style="margin-left: auto; font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800;">12 mönster · delade av alla roller</span>
+    </div>
+    <p style="margin: -12px 0 0; font-size: 17px; line-height: 1.55; max-width: 92ch;">Rörelsen tillhör inte rollen — den tillhör uppgiften. Elva roller delar tolv mönster; det som skiljer dem åt är station, färg, prop och tempo (tabellen i avsnitt 05). Varje ruta nedan visar mönstret sett i spelets kameravinkel, med parametrarna som ska in i koden.</p>
+
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px 32px;">
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; gap: 12px; align-items: baseline; border-top: 3px solid var(--color-text); padding-top: 12px;"><span style="font-family: var(--font-heading); font-weight: 800; font-size: 17px; color: var(--color-accent); letter-spacing: 0.1em;">01</span><span style="font-family: var(--font-heading); font-weight: 800; font-size: 19px;">Station / idle</span></div>
+        <div style="position: relative; height: 210px; border: 2px solid var(--color-divider); overflow: hidden; background-color: #eeecec; background-image: repeating-linear-gradient(28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px), repeating-linear-gradient(-28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px);">
+          <div style="position: absolute; left: 50%; bottom: 30px; margin-left: -48px; animation: sway 4.4s ease-in-out infinite alternate;"><dc-import name="StaffPuck" color="#2a2f3a" prop="none" hint-size="96px,128px"></dc-import></div>
+        </div>
+        <div style="font-size: 14px; line-height: 1.5;">0 m/s · sway ±0,03 m @ 0,25 Hz · lutning 0° · blicken mot dörren var 6:e sekund.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; gap: 12px; align-items: baseline; border-top: 3px solid var(--color-text); padding-top: 12px;"><span style="font-family: var(--font-heading); font-weight: 800; font-size: 17px; color: var(--color-accent); letter-spacing: 0.1em;">02</span><span style="font-family: var(--font-heading); font-weight: 800; font-size: 19px;">Gå</span></div>
+        <div style="position: relative; height: 210px; border: 2px solid var(--color-divider); overflow: hidden; background-color: #eeecec; background-image: repeating-linear-gradient(28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px), repeating-linear-gradient(-28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px);">
+          <div style="position: absolute; left: 50%; bottom: 30px; margin-left: -48px; animation: pathX 3.4s linear infinite alternate;">
+            <div style="animation: flipX 6.8s steps(1, end) infinite;"><div style="animation: bob 0.54s ease-in-out infinite;"><dc-import name="StaffPuck" color="#33383f" prop="none" hint-size="96px,128px"></dc-import></div></div>
+          </div>
+        </div>
+        <div style="font-size: 14px; line-height: 1.5;">1,4 m/s (befintlig konstant) · bob 3 cm @ 1,9 Hz · lutning 2° · svängradie 0,6 m.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; gap: 12px; align-items: baseline; border-top: 3px solid var(--color-text); padding-top: 12px;"><span style="font-family: var(--font-heading); font-weight: 800; font-size: 17px; color: var(--color-accent); letter-spacing: 0.1em;">03</span><span style="font-family: var(--font-heading); font-weight: 800; font-size: 19px;">Skynda</span></div>
+        <div style="position: relative; height: 210px; border: 2px solid var(--color-divider); overflow: hidden; background-color: #eeecec; background-image: repeating-linear-gradient(28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px), repeating-linear-gradient(-28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px);">
+          <div style="position: absolute; left: 50%; bottom: 30px; margin-left: -48px; animation: pathX 1.85s linear infinite alternate;">
+            <div style="animation: flipX 3.7s steps(1, end) infinite;"><div style="animation: bobFast 0.34s ease-in-out infinite; transform-origin: bottom center;"><div style="transform: rotate(6deg); transform-origin: bottom center;"><dc-import name="StaffPuck" color="#33383f" prop="none" hint-size="96px,128px"></dc-import></div></div></div>
+          </div>
+        </div>
+        <div style="font-size: 14px; line-height: 1.5;">2,3 m/s (1,4 × prep-multiplikatorn 1,8 avrundat) · bob 5 cm @ 2,8 Hz · lutning 6° · snävare svängar.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; gap: 12px; align-items: baseline; border-top: 3px solid var(--color-text); padding-top: 12px;"><span style="font-family: var(--font-heading); font-weight: 800; font-size: 17px; color: var(--color-accent); letter-spacing: 0.1em;">04</span><span style="font-family: var(--font-heading); font-weight: 800; font-size: 19px;">Bära bricka</span></div>
+        <div style="position: relative; height: 210px; border: 2px solid var(--color-divider); overflow: hidden; background-color: #eeecec; background-image: repeating-linear-gradient(28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px), repeating-linear-gradient(-28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px);">
+          <div style="position: absolute; left: 50%; bottom: 30px; margin-left: -48px; animation: pathX 4.2s linear infinite alternate;">
+            <div style="animation: flipX 8.4s steps(1, end) infinite;"><div style="animation: bob 0.62s ease-in-out infinite;"><dc-import name="StaffPuck" color="#33383f" prop="tray" hint-size="96px,128px"></dc-import></div></div>
+          </div>
+        </div>
+        <div style="font-size: 14px; line-height: 1.5;">1,2 m/s · brickan motroterar bobben (håller planet vågrätt) · max girhastighet 40°/s.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; gap: 12px; align-items: baseline; border-top: 3px solid var(--color-text); padding-top: 12px;"><span style="font-family: var(--font-heading); font-weight: 800; font-size: 17px; color: var(--color-accent); letter-spacing: 0.1em;">05</span><span style="font-family: var(--font-heading); font-weight: 800; font-size: 19px;">Ta order</span></div>
+        <div style="position: relative; height: 210px; border: 2px solid var(--color-divider); overflow: hidden; background-color: #eeecec; background-image: repeating-linear-gradient(28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px), repeating-linear-gradient(-28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px);">
+          <div style="position: absolute; right: 44px; bottom: 44px; width: 74px; height: 30px; border-radius: 50%; background: #8b8477; border: 3px solid var(--color-text);"></div>
+          <div style="position: absolute; left: 50%; bottom: 30px; margin-left: -48px; animation: approach 6s ease-in-out infinite;">
+            <div style="animation: nod 1.5s ease-in-out infinite; transform-origin: bottom center;"><dc-import name="StaffPuck" color="#33383f" prop="pad" hint-size="96px,128px"></dc-import></div>
+          </div>
+        </div>
+        <div style="font-size: 14px; line-height: 1.5;">Stannar 0,9 m från bordet · håller i 4 s · nick 7° var 1,4 s · vänder aldrig ryggen mot bordet.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; gap: 12px; align-items: baseline; border-top: 3px solid var(--color-text); padding-top: 12px;"><span style="font-family: var(--font-heading); font-weight: 800; font-size: 17px; color: var(--color-accent); letter-spacing: 0.1em;">06</span><span style="font-family: var(--font-heading); font-weight: 800; font-size: 19px;">Servera</span></div>
+        <div style="position: relative; height: 210px; border: 2px solid var(--color-divider); overflow: hidden; background-color: #eeecec; background-image: repeating-linear-gradient(28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px), repeating-linear-gradient(-28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px);">
+          <div style="position: absolute; right: 40px; bottom: 44px; width: 74px; height: 30px; border-radius: 50%; background: #8b8477; border: 3px solid var(--color-text);"></div>
+          <div style="position: absolute; left: 50%; bottom: 30px; margin-left: -48px; animation: serveRun 5.2s ease-in-out infinite;">
+            <div style="animation: dip 5.2s ease-in-out infinite;"><dc-import name="StaffPuck" color="#33383f" prop="tray" hint-size="96px,128px"></dc-import></div>
+          </div>
+        </div>
+        <div style="font-size: 14px; line-height: 1.5;">Inbromsning 0,8 s · dopp 0,12 m · propen lämnas kvar på bordet · retur i 1,4 m/s.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; gap: 12px; align-items: baseline; border-top: 3px solid var(--color-text); padding-top: 12px;"><span style="font-family: var(--font-heading); font-weight: 800; font-size: 17px; color: var(--color-accent); letter-spacing: 0.1em;">07</span><span style="font-family: var(--font-heading); font-weight: 800; font-size: 19px;">Duka av</span></div>
+        <div style="position: relative; height: 210px; border: 2px solid var(--color-divider); overflow: hidden; background-color: #eeecec; background-image: repeating-linear-gradient(28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px), repeating-linear-gradient(-28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px);">
+          <div style="position: absolute; left: 40px; bottom: 44px; width: 74px; height: 30px; border-radius: 50%; background: #8b8477; border: 3px solid var(--color-text);"></div>
+          <div style="position: absolute; left: 50%; bottom: 30px; margin-left: -48px; animation: busRun 5.6s ease-in-out infinite;">
+            <div style="animation: dip 2.8s ease-in-out infinite;"><dc-import name="StaffPuck" color="#4a4744" prop="stack" hint-size="96px,128px"></dc-import></div>
+          </div>
+        </div>
+        <div style="font-size: 14px; line-height: 1.5;">Två dopp à 0,10 m · stapeln växer per dopp · går mot disken, aldrig mot passet.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; gap: 12px; align-items: baseline; border-top: 3px solid var(--color-text); padding-top: 12px;"><span style="font-family: var(--font-heading); font-weight: 800; font-size: 17px; color: var(--color-accent); letter-spacing: 0.1em;">08</span><span style="font-family: var(--font-heading); font-weight: 800; font-size: 19px;">Laga mat</span></div>
+        <div style="position: relative; height: 210px; border: 2px solid var(--color-divider); overflow: hidden; background-color: #eeecec; background-image: repeating-linear-gradient(28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px), repeating-linear-gradient(-28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px);">
+          <div style="position: absolute; left: 0; right: 0; bottom: 26px; height: 26px; background: #767268; border-top: 3px solid var(--color-text);"></div>
+          <div style="position: absolute; left: 50%; bottom: 46px; margin-left: -48px; animation: microOsc 2.6s ease-in-out infinite alternate;">
+            <div style="animation: bob 0.8s ease-in-out infinite;"><dc-import name="StaffPuck" color="#3d3835" prop="pan" hint-size="96px,128px"></dc-import></div>
+          </div>
+        </div>
+        <div style="font-size: 14px; line-height: 1.5;">Stationsbunden · ±0,12 m @ 0,8 Hz · vänd mot passet 20 % av tiden · lämnar aldrig linjen under service.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; gap: 12px; align-items: baseline; border-top: 3px solid var(--color-text); padding-top: 12px;"><span style="font-family: var(--font-heading); font-weight: 800; font-size: 17px; color: var(--color-accent); letter-spacing: 0.1em;">09</span><span style="font-family: var(--font-heading); font-weight: 800; font-size: 19px;">Diska</span></div>
+        <div style="position: relative; height: 210px; border: 2px solid var(--color-divider); overflow: hidden; background-color: #eeecec; background-image: repeating-linear-gradient(28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px), repeating-linear-gradient(-28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px);">
+          <div style="position: absolute; left: 0; right: 0; bottom: 26px; height: 26px; background: #767268; border-top: 3px solid var(--color-text);"></div>
+          <div style="position: absolute; left: 50%; bottom: 46px; margin-left: -48px; animation: quickOsc 0.8s ease-in-out infinite alternate;">
+            <div style="animation: bob 0.4s ease-in-out infinite;"><dc-import name="StaffPuck" color="#4a4744" prop="stack" alert="{{ true }}" hint-size="96px,128px"></dc-import></div>
+          </div>
+        </div>
+        <div style="font-size: 14px; line-height: 1.5;">Ingen förflyttning · ±0,06 m @ 1,6 Hz · stapeln växer med kön — pip tänds när den når taket.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; gap: 12px; align-items: baseline; border-top: 3px solid var(--color-text); padding-top: 12px;"><span style="font-family: var(--font-heading); font-weight: 800; font-size: 17px; color: var(--color-accent); letter-spacing: 0.1em;">10</span><span style="font-family: var(--font-heading); font-weight: 800; font-size: 19px;">Blanda drink</span></div>
+        <div style="position: relative; height: 210px; border: 2px solid var(--color-divider); overflow: hidden; background-color: #eeecec; background-image: repeating-linear-gradient(28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px), repeating-linear-gradient(-28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px);">
+          <div style="position: absolute; left: 0; right: 0; bottom: 26px; height: 30px; background: #6b5b47; border-top: 3px solid var(--color-text);"></div>
+          <div style="position: absolute; left: 50%; bottom: 50px; margin-left: -48px;">
+            <div style="animation: shakeRot 0.9s ease-in-out infinite alternate; transform-origin: bottom center;"><dc-import name="StaffPuck" color="#2a2f3a" prop="shaker" hint-size="96px,128px"></dc-import></div>
+          </div>
+        </div>
+        <div style="font-size: 14px; line-height: 1.5;">Rotation ±13° @ 1,2 Hz i 3 s · sedan 2 s stillastående häll · bakom bardisken, aldrig framför.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; gap: 12px; align-items: baseline; border-top: 3px solid var(--color-text); padding-top: 12px;"><span style="font-family: var(--font-heading); font-weight: 800; font-size: 17px; color: var(--color-accent); letter-spacing: 0.1em;">11</span><span style="font-family: var(--font-heading); font-weight: 800; font-size: 19px;">Städa / moppa</span></div>
+        <div style="position: relative; height: 210px; border: 2px solid var(--color-divider); overflow: hidden; background-color: #eeecec; background-image: repeating-linear-gradient(28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px), repeating-linear-gradient(-28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px);">
+          <div style="position: absolute; left: 50%; bottom: 30px; margin-left: -48px; animation: fig8 7s ease-in-out infinite;">
+            <div style="animation: sway 1.6s ease-in-out infinite alternate;"><dc-import name="StaffPuck" color="#4a4744" prop="mop" hint-size="96px,128px"></dc-import></div>
+          </div>
+        </div>
+        <div style="font-size: 14px; line-height: 1.5;">Figur-8 över golvytan · 1,0 m/s · svep 0,8 m · pausar och backar när en gäst korsar banan.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; gap: 12px; align-items: baseline; border-top: 3px solid var(--color-text); padding-top: 12px;"><span style="font-family: var(--font-heading); font-weight: 800; font-size: 17px; color: var(--color-accent); letter-spacing: 0.1em;">12</span><span style="font-family: var(--font-heading); font-weight: 800; font-size: 19px;">Kollapsa av stress</span></div>
+        <div style="position: relative; height: 210px; border: 2px solid var(--color-accent); overflow: hidden; background-color: #eeecec; background-image: repeating-linear-gradient(28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px), repeating-linear-gradient(-28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px);">
+          <div style="position: absolute; left: 50%; bottom: 30px; margin-left: -48px;">
+            <div style="animation: slump 6.4s ease-in-out infinite; transform-origin: bottom center;"><div style="animation: pipPulse 1.1s ease-in-out infinite;"><dc-import name="StaffPuck" color="#33383f" prop="none" alert="{{ true }}" hint-size="96px,128px"></dc-import></div></div>
+          </div>
+        </div>
+        <div style="font-size: 14px; line-height: 1.5;">Hastighet → 0 på 1,2 s · lutning 9° · sjunker 0,15 m i 6 s · pip = <em>behöver hjälp</em>. Utlöses vid load &gt; 1,2.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 32px;">
+    <div style="display: flex; gap: 18px; align-items: baseline; border-bottom: 3px solid var(--color-text); padding-bottom: 12px;">
+      <span style="font-family: var(--font-heading); font-weight: 800; font-size: 20px; letter-spacing: 0.16em; color: var(--color-accent);">04</span>
+      <h2 style="font-family: var(--font-heading); font-weight: 800; font-size: 34px; margin: 0; letter-spacing: -0.02em;">Ansiktsuttryck — tio lägen</h2>
+      <span style="margin-left: auto; font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800;">10 uttryck · för kortet och ansiktsraden</span>
+    </div>
+    <p style="margin: -12px 0 0; font-size: 17px; line-height: 1.55; max-width: 92ch;">Uttrycken ritas i samma procedurella vokabulär som pucken — raka rektanglar, inga kurvor — så att de kan renderas som UI eller som en liten plan i kortet utan nya assets. Varje uttryck har exakt en avläsare i simuleringen; två uttryck får aldrig utlösas av samma tillstånd.</p>
+    <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 36px 28px;">
+
+      <div style="display: flex; flex-direction: column; gap: 12px; border-top: 3px solid var(--color-text); padding-top: 14px;">
+        <div style="height: 150px; display: flex; align-items: flex-end; justify-content: flex-start;">
+          <div style="position: relative; width: 118px; height: 132px; border: 4px solid var(--color-text); background: #c8b39a;">
+            <div style="position: absolute; left: 24px; top: 34px; width: 12px; height: 5px; background: var(--color-text);"></div>
+            <div style="position: absolute; right: 24px; top: 34px; width: 12px; height: 5px; background: var(--color-text);"></div>
+            <div style="position: absolute; left: 24px; top: 52px; width: 12px; height: 16px; background: var(--color-text);"></div>
+            <div style="position: absolute; right: 24px; top: 52px; width: 12px; height: 16px; background: var(--color-text);"></div>
+            <div style="position: absolute; left: 34px; bottom: 26px; width: 42px; height: 5px; background: var(--color-text);"></div>
+          </div>
+        </div>
+        <div style="font-family: var(--font-heading); font-weight: 800; font-size: 18px;">Neutral</div>
+        <div style="font-size: 14px; line-height: 1.5;">Grundläge. Load under 0,4 och inga öppna händelser.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px; border-top: 3px solid var(--color-text); padding-top: 14px;">
+        <div style="height: 150px; display: flex; align-items: flex-end; justify-content: flex-start;">
+          <div style="position: relative; width: 118px; height: 132px; border: 4px solid var(--color-text); background: #c8b39a;">
+            <div style="position: absolute; left: 22px; top: 30px; width: 14px; height: 5px; background: var(--color-text); transform: rotate(-8deg);"></div>
+            <div style="position: absolute; right: 22px; top: 30px; width: 14px; height: 5px; background: var(--color-text); transform: rotate(8deg);"></div>
+            <div style="position: absolute; left: 24px; top: 52px; width: 12px; height: 10px; background: var(--color-text);"></div>
+            <div style="position: absolute; right: 24px; top: 52px; width: 12px; height: 10px; background: var(--color-text);"></div>
+            <div style="position: absolute; left: 28px; bottom: 22px; width: 54px; height: 14px; border-bottom: 5px solid var(--color-text); border-left: 5px solid var(--color-text); border-right: 5px solid var(--color-text);"></div>
+          </div>
+        </div>
+        <div style="font-family: var(--font-heading); font-weight: 800; font-size: 18px;">Glad</div>
+        <div style="font-size: 14px; line-height: 1.5;">Positiv händelse i strömmen — ett bord som stannar kvar, en lyckad rekommendation.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px; border-top: 3px solid var(--color-text); padding-top: 14px;">
+        <div style="height: 150px; display: flex; align-items: flex-end; justify-content: flex-start;">
+          <div style="position: relative; width: 118px; height: 132px; border: 4px solid var(--color-text); background: #c8b39a;">
+            <div style="position: absolute; left: 24px; top: 32px; width: 12px; height: 5px; background: var(--color-text);"></div>
+            <div style="position: absolute; right: 24px; top: 32px; width: 12px; height: 5px; background: var(--color-text);"></div>
+            <div style="position: absolute; left: 24px; top: 52px; width: 12px; height: 8px; background: var(--color-text);"></div>
+            <div style="position: absolute; right: 24px; top: 52px; width: 12px; height: 8px; background: var(--color-text);"></div>
+            <div style="position: absolute; left: 32px; bottom: 26px; width: 46px; height: 5px; background: var(--color-text); transform: rotate(-5deg);"></div>
+          </div>
+        </div>
+        <div style="font-family: var(--font-heading); font-weight: 800; font-size: 18px;">Artigt leende</div>
+        <div style="font-size: 14px; line-height: 1.5;">Vid bordet. Yrkesmasken — visas alltid under <em>ta order</em> och <em>servera</em>, oavsett load.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px; border-top: 3px solid var(--color-text); padding-top: 14px;">
+        <div style="height: 150px; display: flex; align-items: flex-end; justify-content: flex-start;">
+          <div style="position: relative; width: 118px; height: 132px; border: 4px solid var(--color-text); background: #c8b39a;">
+            <div style="position: absolute; left: 22px; top: 36px; width: 16px; height: 5px; background: var(--color-text); transform: rotate(9deg);"></div>
+            <div style="position: absolute; right: 22px; top: 36px; width: 16px; height: 5px; background: var(--color-text); transform: rotate(-9deg);"></div>
+            <div style="position: absolute; left: 26px; top: 54px; width: 10px; height: 12px; background: var(--color-text);"></div>
+            <div style="position: absolute; right: 26px; top: 54px; width: 10px; height: 12px; background: var(--color-text);"></div>
+            <div style="position: absolute; left: 40px; bottom: 26px; width: 30px; height: 5px; background: var(--color-text);"></div>
+          </div>
+        </div>
+        <div style="font-family: var(--font-heading); font-weight: 800; font-size: 18px;">Fokuserad</div>
+        <div style="font-size: 14px; line-height: 1.5;">Stationsarbete: laga mat, diska, blanda. Load 0,4–0,9.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px; border-top: 3px solid var(--color-text); padding-top: 14px;">
+        <div style="height: 150px; display: flex; align-items: flex-end; justify-content: flex-start;">
+          <div style="position: relative; width: 118px; height: 132px; border: 4px solid var(--color-text); background: #c8b39a;">
+            <div style="position: absolute; left: 22px; top: 30px; width: 16px; height: 5px; background: var(--color-text); transform: rotate(14deg);"></div>
+            <div style="position: absolute; right: 22px; top: 30px; width: 16px; height: 5px; background: var(--color-text); transform: rotate(-14deg);"></div>
+            <div style="position: absolute; left: 24px; top: 52px; width: 12px; height: 18px; background: var(--color-text);"></div>
+            <div style="position: absolute; right: 24px; top: 52px; width: 12px; height: 18px; background: var(--color-text);"></div>
+            <div style="position: absolute; left: 38px; bottom: 20px; width: 34px; height: 16px; border: 5px solid var(--color-text);"></div>
+            <div style="position: absolute; right: 10px; top: 22px; width: 9px; height: 16px; background: var(--color-accent);"></div>
+          </div>
+        </div>
+        <div style="font-family: var(--font-heading); font-weight: 800; font-size: 18px;">Stressad</div>
+        <div style="font-size: 14px; line-height: 1.5;">Load &gt; 1,0. Följer alltid med lutning 6° och snabbare bob i rummet.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px; border-top: 3px solid var(--color-text); padding-top: 14px;">
+        <div style="height: 150px; display: flex; align-items: flex-end; justify-content: flex-start;">
+          <div style="position: relative; width: 118px; height: 132px; border: 4px solid var(--color-text); background: #c8b39a;">
+            <div style="position: absolute; left: 22px; top: 40px; width: 18px; height: 5px; background: var(--color-text); transform: rotate(18deg);"></div>
+            <div style="position: absolute; right: 22px; top: 40px; width: 18px; height: 5px; background: var(--color-text); transform: rotate(-18deg);"></div>
+            <div style="position: absolute; left: 26px; top: 58px; width: 12px; height: 9px; background: var(--color-text);"></div>
+            <div style="position: absolute; right: 26px; top: 58px; width: 12px; height: 9px; background: var(--color-text);"></div>
+            <div style="position: absolute; left: 34px; bottom: 24px; width: 46px; height: 5px; background: var(--color-text); transform: rotate(6deg);"></div>
+          </div>
+        </div>
+        <div style="font-family: var(--font-heading); font-weight: 800; font-size: 18px;">Irriterad</div>
+        <div style="font-size: 14px; line-height: 1.5;">Efter en händelse i kategorin “fel i kedjan” där personen själv var sista ledet.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px; border-top: 3px solid var(--color-text); padding-top: 14px;">
+        <div style="height: 150px; display: flex; align-items: flex-end; justify-content: flex-start;">
+          <div style="position: relative; width: 118px; height: 132px; border: 4px solid var(--color-text); background: #c8b39a;">
+            <div style="position: absolute; left: 22px; top: 40px; width: 16px; height: 5px; background: var(--color-text); transform: rotate(-6deg);"></div>
+            <div style="position: absolute; right: 22px; top: 40px; width: 16px; height: 5px; background: var(--color-text); transform: rotate(6deg);"></div>
+            <div style="position: absolute; left: 24px; top: 58px; width: 12px; height: 5px; background: var(--color-text);"></div>
+            <div style="position: absolute; right: 24px; top: 58px; width: 12px; height: 5px; background: var(--color-text);"></div>
+            <div style="position: absolute; left: 36px; bottom: 24px; width: 40px; height: 5px; background: var(--color-text);"></div>
+          </div>
+        </div>
+        <div style="font-family: var(--font-heading); font-weight: 800; font-size: 18px;">Utmattad</div>
+        <div style="font-size: 14px; line-height: 1.5;">Sista passtimmen, eller efter mönster 12. Ögonen halvslutna, allt sjunker 2 px.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px; border-top: 3px solid var(--color-text); padding-top: 14px;">
+        <div style="height: 150px; display: flex; align-items: flex-end; justify-content: flex-start;">
+          <div style="position: relative; width: 118px; height: 132px; border: 4px solid var(--color-text); background: #c8b39a;">
+            <div style="position: absolute; left: 22px; top: 28px; width: 16px; height: 5px; background: var(--color-text); transform: rotate(-16deg);"></div>
+            <div style="position: absolute; right: 22px; top: 36px; width: 16px; height: 5px; background: var(--color-text);"></div>
+            <div style="position: absolute; left: 24px; top: 52px; width: 12px; height: 14px; background: var(--color-text);"></div>
+            <div style="position: absolute; right: 24px; top: 54px; width: 12px; height: 11px; background: var(--color-text);"></div>
+            <div style="position: absolute; left: 42px; bottom: 24px; width: 22px; height: 12px; border: 5px solid var(--color-text);"></div>
+          </div>
+        </div>
+        <div style="font-family: var(--font-heading); font-weight: 800; font-size: 18px;">Förvirrad</div>
+        <div style="font-size: 14px; line-height: 1.5;">Ny i rollen (training 0) och en uppgift utanför stationen. Lärlingens standarduttryck vecka ett.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px; border-top: 3px solid var(--color-text); padding-top: 14px;">
+        <div style="height: 150px; display: flex; align-items: flex-end; justify-content: flex-start;">
+          <div style="position: relative; width: 118px; height: 132px; border: 4px solid var(--color-text); background: #c8b39a;">
+            <div style="position: absolute; left: 22px; top: 24px; width: 16px; height: 5px; background: var(--color-text);"></div>
+            <div style="position: absolute; right: 22px; top: 24px; width: 16px; height: 5px; background: var(--color-text);"></div>
+            <div style="position: absolute; left: 22px; top: 46px; width: 16px; height: 20px; background: var(--color-text);"></div>
+            <div style="position: absolute; right: 22px; top: 46px; width: 16px; height: 20px; background: var(--color-text);"></div>
+            <div style="position: absolute; left: 44px; bottom: 20px; width: 24px; height: 22px; background: var(--color-text);"></div>
+          </div>
+        </div>
+        <div style="font-family: var(--font-heading); font-weight: 800; font-size: 18px;">Förvånad</div>
+        <div style="font-size: 14px; line-height: 1.5;">En händelse som bryter förväntan: retur från passet, oanmäld leverans, gäst som reser sig.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px; border-top: 3px solid var(--color-text); padding-top: 14px;">
+        <div style="height: 150px; display: flex; align-items: flex-end; justify-content: flex-start;">
+          <div style="position: relative; width: 118px; height: 132px; border: 4px solid var(--color-text); background: #c8b39a;">
+            <div style="position: absolute; left: 22px; top: 32px; width: 15px; height: 5px; background: var(--color-text); transform: rotate(-6deg);"></div>
+            <div style="position: absolute; right: 22px; top: 32px; width: 15px; height: 5px; background: var(--color-text); transform: rotate(6deg);"></div>
+            <div style="position: absolute; left: 24px; top: 54px; width: 12px; height: 9px; background: var(--color-text);"></div>
+            <div style="position: absolute; right: 24px; top: 54px; width: 12px; height: 9px; background: var(--color-text);"></div>
+            <div style="position: absolute; left: 30px; bottom: 24px; width: 50px; height: 10px; border-bottom: 5px solid var(--color-text); border-left: 5px solid var(--color-text); border-right: 5px solid var(--color-text);"></div>
+            <div style="position: absolute; left: 8px; bottom: 14px; width: 14px; height: 14px; background: var(--color-accent);"></div>
+          </div>
+        </div>
+        <div style="font-family: var(--font-heading); font-weight: 800; font-size: 18px;">Stolt</div>
+        <div style="font-size: 14px; line-height: 1.5;">Efter en positiv händelse där personen namnges i strömmen. Håller i en hel service.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 32px;">
+    <div style="display: flex; gap: 18px; align-items: baseline; border-bottom: 3px solid var(--color-text); padding-bottom: 12px;">
+      <span style="font-family: var(--font-heading); font-weight: 800; font-size: 20px; letter-spacing: 0.16em; color: var(--color-accent);">05</span>
+      <h2 style="font-family: var(--font-heading); font-weight: 800; font-size: 34px; margin: 0; letter-spacing: -0.02em;">Syns uttrycken i rummet?</h2>
+      <span style="margin-left: auto; font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800;">Kort svar: bara om vi bygger tre kanaler</span>
+    </div>
+    <p style="margin: -12px 0 0; font-size: 17px; line-height: 1.55; max-width: 92ch;">Uttrycken är själva kvittot på spelarens drift — så de får inte gömmas i ett kort man måste klicka fram. Men de kan heller inte bara ligga på huvudet och hoppas: kameran lutar 20–78° och rör sig fritt i yaw, så halva tiden tittar spelaren på hjässor. Tabellen visar vad kameran faktiskt kan upplösa; korten under visar de tre kanalerna som tillsammans gör uttrycket avläsbart hela tiden.</p>
+
+    <div style="display: flex; flex-direction: column;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1.3fr 1.3fr; gap: 24px; border-bottom: 3px solid var(--color-text); padding-bottom: 10px; font-family: var(--font-heading); font-weight: 800; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase;">
+        <div>Kameraavstånd</div><div>Huvudet på skärmen</div><div>Vid 45° (arbetsläget)</div><div>Vid 20° (lågt)</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1.3fr 1.3fr; gap: 24px; border-bottom: 2px solid var(--color-divider); padding: 13px 0; font-size: 16px;">
+        <div style="font-weight: 800;">15 m</div><div>~17 px</div><div>hjässa — inget ansikte</div><div>profil, otydlig</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1.3fr 1.3fr; gap: 24px; border-bottom: 2px solid var(--color-divider); padding: 13px 0; font-size: 16px;">
+        <div style="font-weight: 800;">10 m</div><div>~25 px</div><div>hjässa och panna</div><div>ansikte, gränsfall</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1.3fr 1.3fr; gap: 24px; border-bottom: 2px solid var(--color-divider); padding: 13px 0; font-size: 16px;">
+        <div style="font-weight: 800;">6 m</div><div>~42 px</div><div>panna, munnen skyms</div><div style="color: var(--color-accent); font-weight: 800;">ansikte, grovt läsbart</div>
+      </div>
+      <div style="padding: 10px 0 0; font-size: 13px; line-height: 1.5;">Räknat på 1080p och 50° vertikalt synfält, huvud 0,22 m. Vid 42 px bär ett ansikte tre lägen — <em>upp</em>, <em>rakt</em>, <em>ned</em> — inte tio nyanser.</div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: start;">
+
+      <div style="min-width: 0; display: flex; flex-direction: column; gap: 14px; border-top: 4px solid var(--color-accent); padding-top: 14px;">
+        <div style="display: flex; gap: 12px; align-items: baseline;"><span style="font-family: var(--font-heading); font-weight: 800; font-size: 17px; color: var(--color-accent); letter-spacing: 0.1em;">A</span><span style="font-family: var(--font-heading); font-weight: 800; font-size: 21px;">Ansiktsraden</span></div>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55;">Primärkanalen, och den enda som alltid syns: en remsa nederst på Vinbaren-nivån med ett porträtt per anställd, uppdaterat i realtid. Det är här spelaren läser sitt eget omdöme — fyra fokuserade ansikten är ett pass under kontroll; två stressade och en utmattad betyder att du bemannade fel i morse.</p>
+        <div style="border: 3px solid var(--color-text); background: #eae9e9; padding: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(112px, 1fr)); gap: 18px;">
+          <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start; min-width: 0;">
+            <div style="width: 74px; height: 82px; overflow: hidden;"><div style="transform: scale(0.62); transform-origin: top left;"><dc-import name="StaffFace" expression="fokuserad" hint-size="118px,132px"></dc-import></div></div>
+            <div style="font-family: var(--font-heading); font-weight: 800; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;">Värd</div>
+            <div style="font-size: 12px; line-height: 1.35;">Tar emot vid dörren</div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start; min-width: 0;">
+            <div style="width: 74px; height: 82px; overflow: hidden;"><div style="transform: scale(0.62); transform-origin: top left;"><dc-import name="StaffFace" expression="stressad" hint-size="118px,132px"></dc-import></div></div>
+            <div style="font-family: var(--font-heading); font-weight: 800; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;">Servitör</div>
+            <div style="font-size: 12px; line-height: 1.35;">Fyra bord samtidigt</div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start; min-width: 0;">
+            <div style="width: 74px; height: 82px; overflow: hidden;"><div style="transform: scale(0.62); transform-origin: top left;"><dc-import name="StaffFace" expression="irriterad" hint-size="118px,132px"></dc-import></div></div>
+            <div style="font-family: var(--font-heading); font-weight: 800; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;">Kock</div>
+            <div style="font-size: 12px; line-height: 1.35;">Retur från passet</div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start; min-width: 0;">
+            <div style="width: 74px; height: 82px; overflow: hidden;"><div style="transform: scale(0.62); transform-origin: top left;"><dc-import name="StaffFace" expression="förvirrad" hint-size="118px,132px"></dc-import></div></div>
+            <div style="font-family: var(--font-heading); font-weight: 800; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;">Lärling</div>
+            <div style="font-size: 12px; line-height: 1.35;">Vet inte var glasen står</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="min-width: 0; display: flex; flex-direction: column; gap: 14px; border-top: 3px solid var(--color-text); padding-top: 14px;">
+        <div style="display: flex; gap: 12px; align-items: baseline;"><span style="font-family: var(--font-heading); font-weight: 800; font-size: 17px; color: var(--color-accent); letter-spacing: 0.1em;">B</span><span style="font-family: var(--font-heading); font-weight: 800; font-size: 21px;">Billboardat ansikte</span></div>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55;">En liten plan på huvudet som alltid vrider sig mot kameran och tonas in mellan 8 och 5 m. Den löser pitch och yaw på en gång, kostar tre quads och noll assets — men upplösningen är vad den är: här visas uttrycken i verklig storlek vid 6 m.</p>
+        <div style="border: 3px solid var(--color-text); padding: 16px; display: flex; gap: 22px; align-items: flex-end; background-color: #eeecec; background-image: repeating-linear-gradient(28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px), repeating-linear-gradient(-28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px);">
+          <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
+            <div style="width: 43px; height: 48px; overflow: hidden;"><div style="transform: scale(0.36); transform-origin: top left;"><dc-import name="StaffFace" expression="glad" hint-size="118px,132px"></dc-import></div></div>
+            <div style="font-family: var(--font-heading); font-weight: 800; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;">Upp</div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
+            <div style="width: 43px; height: 48px; overflow: hidden;"><div style="transform: scale(0.36); transform-origin: top left;"><dc-import name="StaffFace" expression="neutral" hint-size="118px,132px"></dc-import></div></div>
+            <div style="font-family: var(--font-heading); font-weight: 800; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;">Rakt</div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
+            <div style="width: 43px; height: 48px; overflow: hidden;"><div style="transform: scale(0.36); transform-origin: top left;"><dc-import name="StaffFace" expression="stressad" hint-size="118px,132px"></dc-import></div></div>
+            <div style="font-family: var(--font-heading); font-weight: 800; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;">Ned</div>
+          </div>
+        </div>
+        <div style="font-size: 14px; line-height: 1.5;">Tio uttryck måste därför kollapsa till tre i rummet. Nyanserna lever i ansiktsraden och i kortet.</div>
+      </div>
+
+      <div style="min-width: 0; display: flex; flex-direction: column; gap: 14px; border-top: 3px solid var(--color-text); padding-top: 14px;">
+        <div style="display: flex; gap: 12px; align-items: baseline;"><span style="font-family: var(--font-heading); font-weight: 800; font-size: 17px; color: var(--color-accent); letter-spacing: 0.1em;">C</span><span style="font-family: var(--font-heading); font-weight: 800; font-size: 21px;">Kroppen</span></div>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55;">Den kanal kameran aldrig kan gömma: lutning, tempo, avstånd till bordet, hur länge någon står still. En stressad servitör syns på tio meters håll — inte för att man ser hennes ansikte, utan för att hon lutar 6° framåt och byter riktning två gånger i minuten.</p>
+        <div style="border: 3px solid var(--color-text); padding: 16px; display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; justify-content: center; overflow: hidden; background-color: #eeecec; background-image: repeating-linear-gradient(28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px), repeating-linear-gradient(-28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px);">
+          <div style="animation: sway 4.4s ease-in-out infinite alternate;"><dc-import name="StaffPuck" color="#2a2f3a" prop="none" hint-size="96px,128px"></dc-import></div>
+          <div style="animation: bobFast 0.34s ease-in-out infinite;"><div style="transform: rotate(6deg); transform-origin: bottom center;"><dc-import name="StaffPuck" color="#33383f" prop="tray" alert="{{ true }}" hint-size="96px,128px"></dc-import></div></div>
+        </div>
+        <div style="font-size: 14px; line-height: 1.5;">Lugn till vänster, pressad till höger — samma figur, bara tempo och lutning.</div>
+      </div>
+
+    </div>
+
+    <div style="border-top: 4px solid var(--color-text); padding-top: 18px; font-size: 17px; line-height: 1.55; max-width: 92ch;"><strong>Rekommendation:</strong> bygg A först — den syns alltid och är där spelaren läser sin egen förmåga. B är belöningen för att zooma in i rummet. C är grunden och ska finnas oavsett. Då syns uttrycken — på tre avstånd, med tre olika upplösningar av samma sanning.</div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 32px;">
+    <div style="display: flex; gap: 18px; align-items: baseline; border-bottom: 3px solid var(--color-text); padding-bottom: 12px;">
+      <span style="font-family: var(--font-heading); font-weight: 800; font-size: 20px; letter-spacing: 0.16em; color: var(--color-accent);">06</span>
+      <h2 style="font-family: var(--font-heading); font-weight: 800; font-size: 34px; margin: 0; letter-spacing: -0.02em;">Rollkarta</h2>
+      <span style="margin-left: auto; font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800;">4 i typen StaffRole · 7 föreslagna</span>
+    </div>
+    <p style="margin: -12px 0 0; font-size: 17px; line-height: 1.55; max-width: 92ch;">Repot har idag fyra roller i <em>StaffRole</em>: värd, servitör, kock, lärling — och fyra uniformsfärger i <em>InteriorStaff.tsx</em>. De sju övriga du listade finns inte i typen. Förslaget: låt dem vara <strong>uppgifter</strong> som befintliga roller utför tills teamet växer, och lyft in dem i typen först när anställningspanelen får fler platser.</p>
+    <div style="display: flex; flex-direction: column;">
+      <div style="display: grid; grid-template-columns: 1.1fr 1fr 1.2fr 1.5fr; gap: 24px; border-bottom: 3px solid var(--color-text); padding-bottom: 10px; font-family: var(--font-heading); font-weight: 800; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase;">
+        <div>Roll</div><div>StaffRole</div><div>Station</div><div>Mönster</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1.1fr 1fr 1.2fr 1.5fr; gap: 24px; border-bottom: 2px solid var(--color-divider); padding: 13px 0; font-size: 16px;">
+        <div style="font-weight: 800; display: flex; align-items: center; gap: 12px;"><span style="width: 16px; height: 16px; background: #2a2f3a; display: inline-block;"></span>Hovmästare / värd</div><div>värd</div><div>1,5 m innanför entrén</div><div>01 · 02 · 05 · 07</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1.1fr 1fr 1.2fr 1.5fr; gap: 24px; border-bottom: 2px solid var(--color-divider); padding: 13px 0; font-size: 16px;">
+        <div style="font-weight: 800; display: flex; align-items: center; gap: 12px;"><span style="width: 16px; height: 16px; background: #33383f; display: inline-block;"></span>Servitör</div><div>servitör</div><div>golvets mitt</div><div>02 · 03 · 04 · 05 · 06 · 12</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1.1fr 1fr 1.2fr 1.5fr; gap: 24px; border-bottom: 2px solid var(--color-divider); padding: 13px 0; font-size: 16px;">
+        <div style="font-weight: 800; display: flex; align-items: center; gap: 12px;"><span style="width: 16px; height: 16px; background: #3d3835; display: inline-block;"></span>Kökschef</div><div>kock</div><div>passet, mot matsalen</div><div>08 · 01 · 03 — vänder sig mot passet oftare</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1.1fr 1fr 1.2fr 1.5fr; gap: 24px; border-bottom: 2px solid var(--color-divider); padding: 13px 0; font-size: 16px;">
+        <div style="font-weight: 800; display: flex; align-items: center; gap: 12px;"><span style="width: 16px; height: 16px; background: #3d3835; display: inline-block;"></span>Kock</div><div>kock</div><div>bardisk / kökslinje</div><div>08 · 12</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1.1fr 1fr 1.2fr 1.5fr; gap: 24px; border-bottom: 2px solid var(--color-divider); padding: 13px 0; font-size: 16px;">
+        <div style="font-weight: 800; display: flex; align-items: center; gap: 12px;"><span style="width: 16px; height: 16px; background: #4a4744; display: inline-block;"></span>Lärling</div><div>lärling</div><div>mellan golv och pass</div><div>02 · 07 · 09 — långsammare och med fler stopp</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1.1fr 1fr 1.2fr 1.5fr; gap: 24px; border-bottom: 2px solid var(--color-divider); padding: 13px 0; font-size: 16px; color: var(--color-neutral-700);">
+        <div style="font-weight: 800; display: flex; align-items: center; gap: 12px;"><span style="width: 16px; height: 16px; background: #4a4744; display: inline-block;"></span>Bussare</div><div style="color: var(--color-accent);">föreslagen</div><div>disk ↔ bord</div><div>07 · 02 · 09</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1.1fr 1fr 1.2fr 1.5fr; gap: 24px; border-bottom: 2px solid var(--color-divider); padding: 13px 0; font-size: 16px; color: var(--color-neutral-700);">
+        <div style="font-weight: 800; display: flex; align-items: center; gap: 12px;"><span style="width: 16px; height: 16px; background: #2a2f3a; display: inline-block;"></span>Bartender</div><div style="color: var(--color-accent);">föreslagen</div><div>bakom bardisken</div><div>10 · 01 · 06</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1.1fr 1fr 1.2fr 1.5fr; gap: 24px; border-bottom: 2px solid var(--color-divider); padding: 13px 0; font-size: 16px; color: var(--color-neutral-700);">
+        <div style="font-weight: 800; display: flex; align-items: center; gap: 12px;"><span style="width: 16px; height: 16px; background: #2a2f3a; display: inline-block;"></span>Barista</div><div style="color: var(--color-accent);">föreslagen</div><div>barens kortända</div><div>10 · 08 (kort cykel) · 06</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1.1fr 1fr 1.2fr 1.5fr; gap: 24px; border-bottom: 2px solid var(--color-divider); padding: 13px 0; font-size: 16px; color: var(--color-neutral-700);">
+        <div style="font-weight: 800; display: flex; align-items: center; gap: 12px;"><span style="width: 16px; height: 16px; background: #4a4744; display: inline-block;"></span>Diskare</div><div style="color: var(--color-accent);">föreslagen</div><div>diskstationen, utanför synfältet</div><div>09 · 12 — syns bara när stapeln växer</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1.1fr 1fr 1.2fr 1.5fr; gap: 24px; border-bottom: 2px solid var(--color-divider); padding: 13px 0; font-size: 16px; color: var(--color-neutral-700);">
+        <div style="font-weight: 800; display: flex; align-items: center; gap: 12px;"><span style="width: 16px; height: 16px; background: #4a4744; display: inline-block;"></span>Städare</div><div style="color: var(--color-accent);">föreslagen</div><div>hela golvet, före öppning</div><div>11 · 02 — bara i prep-fönstret</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1.1fr 1fr 1.2fr 1.5fr; gap: 24px; border-bottom: 2px solid var(--color-divider); padding: 13px 0; font-size: 16px; color: var(--color-neutral-700);">
+        <div style="font-weight: 800; display: flex; align-items: center; gap: 12px;"><span style="width: 16px; height: 16px; background: #33383f; display: inline-block;"></span>Restaurangchef</div><div style="color: var(--color-accent);">föreslagen</div><div>rör sig mellan stationer</div><div>02 · 05 · 01 — stannar vid den som har pip</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1.1fr 1fr 1.2fr 1.5fr; gap: 24px; padding: 13px 0; font-size: 16px; color: var(--color-neutral-700);">
+        <div style="font-weight: 800; display: flex; align-items: center; gap: 12px;"><span style="width: 16px; height: 16px; background: #4a4744; display: inline-block;"></span>Utkörare</div><div style="color: var(--color-accent);">föreslagen</div><div>entré ↔ gården</div><div>02 · 03 · 04 — lämnar rummet, syns i DeliveryVan</div>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 28px;">
+    <div style="display: flex; gap: 18px; align-items: baseline; border-bottom: 3px solid var(--color-text); padding-bottom: 12px;">
+      <span style="font-family: var(--font-heading); font-weight: 800; font-size: 20px; letter-spacing: 0.16em; color: var(--color-accent);">07</span>
+      <h2 style="font-family: var(--font-heading); font-weight: 800; font-size: 34px; margin: 0; letter-spacing: -0.02em;">Vägen in i koden</h2>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px;">
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div style="font-family: var(--font-heading); font-weight: 800; font-size: 19px;">1 · Silhuetten</div>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55;">Byt <em>cylinderGeometry</em>-pucken i <em>InteriorStaff.tsx</em> mot en grupp: kropp, huvud, kil, prop, skuggring. Alla mått finns i avsnitt 02; ingen ny asset, samma materialbudget.</p>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div style="font-family: var(--font-heading); font-weight: 800; font-size: 19px;">2 · Rörelsen</div>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55;">Idag drivs pucken av station + jitter + load-drift. Lägg ett <em>task</em>-fält på TeamMember och låt mönstren 01–12 vara rena funktioner av (task, load, simTime) — driften finns redan, den behöver bara ett verb att lyda.</p>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div style="font-family: var(--font-heading); font-weight: 800; font-size: 19px;">3 · Uttrycket</div>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55;">Uttrycken hör till personkortet, inte scenen. En ren avbildning tillstånd → uttryck, med etiketterna i <em>strings.sv.ts</em>, håller regeln om att kortet aldrig visar siffror.</p>
+      </div>
+    </div>
+    <div style="border-top: 4px solid var(--color-text); padding-top: 20px; display: flex; justify-content: space-between; align-items: baseline;">
+      <div style="font-family: var(--font-heading); font-weight: 800; font-size: 15px; letter-spacing: 0.16em; text-transform: uppercase;">Nästa steg: en reel per roll i den här vinkeln</div>
+      <div style="font-family: var(--font-heading); font-weight: 800; font-size: 15px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-accent);">Underlag 001</div>
+    </div>
+  </section>
+
+</div>
+</x-dc>
+</body>
+</html>

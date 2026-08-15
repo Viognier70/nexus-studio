@@ -19,7 +19,7 @@
 // felt rather than smoothed out.
 
 import type { SimulationState } from '../types';
-import { PREP_DURATION_SEC } from './eventStream';
+import { PREP_DURATION_SEC } from './constants';
 
 export function serviceRhythmMultiplier(fraction: number): number {
   const f = Math.max(0, Math.min(1, fraction));

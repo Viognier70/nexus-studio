@@ -29,9 +29,25 @@ import { useSimState } from '../simulation/SimulationProvider';
 import { COVERS_PER_MEMBER } from '../simulation/team';
 import type { StaffRole, TeamMember } from '../types';
 import { staffPositionsRef } from './interiorSharedState';
+import { derivePipCarriers } from '../ui/RoomCardPanel/guestPatterns';
+import {
+  PIP_COLOUR,
+  PIP_OFFSET_ABOVE_PUCK_TOP_M,
+  PIP_SIZE_M
+} from './patternTransform';
+import { teamPipCarriersFromStaffPipCarriers } from './teamStaffBridge';
 
-const STAFF_RADIUS_M = 0.24;         // slimmer than guests (0.32)
-const STAFF_HEIGHT_M = 1.75;         // taller than guests (1.6)
+// ORDER 054 Del A — staff height matches guest (1.70 m per ORDER 053
+// unit contract). The previous 1.75 m came from ORDER 053's silhouette-
+// differentiation motivation: at the bird's-eye strategic camera,
+// slightly taller pucks let the eye separate staff from guests at a
+// glance. That job is now carried by radius (slim 0.24 vs guest 0.32)
+// and uniform tone (dark, low-chroma via ROLE_COLOUR) — form and
+// colour, not height. (ORDER 055 Del E corrects the earlier comment
+// that mislabelled the 1.75 m as a "body-type stereotype cheat" —
+// that framing did not match what ORDER 053 recorded.)
+const STAFF_RADIUS_M = 0.24;
+const STAFF_HEIGHT_M = 1.70;
 const STAFF_Y = STAFF_HEIGHT_M / 2 + 0.06;
 
 // Movement pace — a little brisker than guests. Staff working under
@@ -48,6 +64,15 @@ const PREP_PACE_MULTIPLIER = 1.8;
 const PREP_DRIFT_AMPLITUDE_M = 1.5;   // vs the 0.5 m service-time idle drift
 const PREP_DRIFT_FREQ_HZ = 1.1;       // vs the ~0.4 Hz service-time frequency
 
+// ORDER 046 §4 — task bob. When guests are in the room, staff pucks
+// bob subtly in Y to read as "doing something at their station"
+// rather than "standing still." Amplitude scales with load so a
+// calm room reads different from a busy one; during prep the pucks
+// already bob larger via the drift amplitude so this is a service-
+// time-only overlay.
+const TASK_BOB_AMPLITUDE_M = 0.05;
+const TASK_BOB_FREQ_HZ = 2.0;
+
 // Uniform tones per role — kept dark and low-chroma so staff never
 // blend with the warm-beige guest palette. Same shape difference
 // (slim + tall) reinforces the distinction from the top-down camera.
@@ -57,6 +82,19 @@ const ROLE_COLOUR: Record<StaffRole, string> = {
   'kock':     '#3d3835',   // cook — warm dark brown
   'lärling':  '#4a4744'    // apprentice — mid-grey
 };
+
+// ORDER 078 (M5) — service-rhythm colour ring. Thin cylinder at the
+// puck's base with per-tick colour driven by state.day.serviceRhythm.
+// Only visible during service (green/amber/red); reducer sets
+// rhythm=null outside service so the ring hides itself.
+const RHYTHM_COLOUR: Record<'green' | 'amber' | 'red', string> = {
+  green: '#7bce8f',
+  amber: '#e8c169',
+  red:   '#d97070'
+};
+const RHYTHM_RING_INNER_M = STAFF_RADIUS_M;
+const RHYTHM_RING_OUTER_M = STAFF_RADIUS_M + 0.08;
+const RHYTHM_RING_Y = 0.03;   // just above the floor, under the puck body
 
 function smoothstep(a: number, b: number, x: number): number {
   const t = Math.max(0, Math.min(1, (x - a) / (b - a)));
@@ -123,6 +161,11 @@ export function InteriorStaff() {
 
   const positionsRef = useRef<Map<string, AnimatedStaff>>(new Map());
   const meshRefs = useRef<Map<string, THREE.Mesh>>(new Map());
+  // ORDER 078 (M5) — group refs so the whole puck-plus-ring subtree
+  // moves as one when tickStaff writes a new position each frame.
+  const groupRefs = useRef<Map<string, THREE.Group>>(new Map());
+  // ORDER 088 §4 — pip mesh refs per TeamMember id, toggled per tick.
+  const pipRefs = useRef<Map<string, THREE.Mesh>>(new Map());
 
   const stations = useMemo(() => (layout ? computeStations(layout) : null), [layout]);
 
@@ -163,6 +206,26 @@ export function InteriorStaff() {
     const now = sim.simTime;
     const [gcx, gcz] = layout.centre; // room's centre-of-gravity for load drift
     const seenIds = new Set<string>();
+
+    // ORDER 088 §4 + ORDER 090 §3 — pip carriers this tick.
+    // StaffMember.targetGuestId is the "responsibility" edge, so a
+    // hailing guest's carrier is its owning StaffMember. Because the
+    // room renders TeamMember pucks (economic layer) rather than
+    // StaffMember pucks (task layer), we bridge via
+    // `bridgeTeamToStaff`: bipartite role-match in list order.
+    //
+    // Pre-090 this was a role-only match ("any servitör with a hail
+    // lights ALL servitör pucks"), which was ambiguous the moment a
+    // second servitör hired in — pip could land on the wrong puck.
+    // The bridge fixes that: TeamMember at index k of role R maps to
+    // StaffMember at index k of role R, so pip lands on the specific
+    // puck whose owning task edge fired.
+    const pipCarriers = derivePipCarriers(sim.guests, sim.staff, sim.simTime);
+    const teamPipCarrierIds = teamPipCarriersFromStaffPipCarriers(
+      sim.team.members,
+      sim.staff,
+      new Set(pipCarriers.staffIds)
+    );
 
     for (const member of sim.team.members) {
       seenIds.add(member.id);
@@ -205,9 +268,27 @@ export function InteriorStaff() {
         pos.cz = targetZ;
       }
 
+      // ORDER 046 §4 — task-bob overlay. Applies during service
+       // (post-prep) when there are active guests; scales with load
+       // so a calm room bobs subtly and a busy one more visibly.
+       // Per-puck phase from jitterSeed so the pucks don't bob in
+       // lockstep. During prep the pucks are already bobbing on the
+       // drift; adding this would smear the two reads together, so
+       // suppress during prep.
+       let bobY = 0;
+       if (!inPrep && (sim.day.period === 'lunch' || sim.day.period === 'dinner') && load > 0.05) {
+         const bobAmp = TASK_BOB_AMPLITUDE_M * Math.min(1, load);
+         bobY = Math.sin(now * TASK_BOB_FREQ_HZ * 2 * Math.PI + pos.jitterSeed * 3) * bobAmp;
+       }
+
       const mesh = meshRefs.current.get(member.id);
+      const grp = groupRefs.current.get(member.id);
+      if (grp) {
+        // ORDER 078 (M5) — group moves; puck + ring stay in local
+        // frame (puck at STAFF_Y + bobY, ring at RHYTHM_RING_Y).
+        grp.position.set(pos.cx, bobY, pos.cz);
+      }
       if (mesh) {
-        mesh.position.set(pos.cx, STAFF_Y, pos.cz);
         const mat = mesh.material as THREE.MeshStandardMaterial;
         if (mat) {
           // Colour is stable per role; only opacity ticks with visibility.
@@ -227,6 +308,22 @@ export function InteriorStaff() {
         z: pos.cz,
         role: member.role
       });
+
+      // ORDER 088 §4 + ORDER 090 §3 — pip on this specific staff
+      // puck if the id bridge maps this TeamMember to a pip-carrier
+      // StaffMember. Cube, no number. With two servitörs in play the
+      // pip lands only on the one whose bridged StaffMember owns the
+      // hailing guest.
+      const pipMesh = pipRefs.current.get(member.id);
+      if (pipMesh) {
+        const isCarrier = teamPipCarrierIds.has(member.id);
+        pipMesh.visible = isCarrier && visibility > 0.02;
+        const pMat = pipMesh.material as THREE.MeshStandardMaterial;
+        if (pMat) {
+          pMat.opacity = visibility;
+          pMat.transparent = visibility < 0.99;
+        }
+      }
     }
 
     // Prune positions for members that left (fire / contract end).
@@ -240,25 +337,69 @@ export function InteriorStaff() {
 
   if (!layout || !stations) return null;
 
+  const rhythm = sim.day.serviceRhythm;
+  const showRing = rhythm !== null;
+  const ringColour = rhythm ? RHYTHM_COLOUR[rhythm] : '#000000';
+
   return (
     <group ref={groupRef} visible={false}>
       {sim.team.members.map((m: TeamMember) => (
-        <mesh
+        <group
           key={m.id}
-          ref={(mesh) => {
-            if (mesh) meshRefs.current.set(m.id, mesh);
-            else meshRefs.current.delete(m.id);
+          ref={(g) => {
+            if (g) groupRefs.current.set(m.id, g);
+            else groupRefs.current.delete(m.id);
           }}
-          position={[0, STAFF_Y, 0]}
         >
-          <cylinderGeometry args={[STAFF_RADIUS_M, STAFF_RADIUS_M, STAFF_HEIGHT_M, 8]} />
-          <meshStandardMaterial
-            color={ROLE_COLOUR[m.role]}
-            roughness={0.85}
-            transparent
-            opacity={0}
-          />
-        </mesh>
+          <mesh
+            position={[0, STAFF_Y, 0]}
+            ref={(mesh) => {
+              if (mesh) meshRefs.current.set(m.id, mesh);
+              else meshRefs.current.delete(m.id);
+            }}
+          >
+            <cylinderGeometry args={[STAFF_RADIUS_M, STAFF_RADIUS_M, STAFF_HEIGHT_M, 8]} />
+            <meshStandardMaterial
+              color={ROLE_COLOUR[m.role]}
+              roughness={0.85}
+              transparent
+              opacity={0}
+            />
+          </mesh>
+          {showRing && (
+            <mesh position={[0, RHYTHM_RING_Y, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+              <ringGeometry args={[RHYTHM_RING_INNER_M, RHYTHM_RING_OUTER_M, 24]} />
+              <meshBasicMaterial
+                color={ringColour}
+                transparent
+                opacity={0.85}
+                side={THREE.DoubleSide}
+              />
+            </mesh>
+          )}
+          {/* ORDER 088 §4 — pip cube on staff puck. Hidden by default;
+              visibility toggled per tick from role-matched pip
+              carriers. No text, no number — same primitive as guest
+              pip. */}
+          <mesh
+            ref={(mesh) => {
+              if (mesh) pipRefs.current.set(m.id, mesh);
+              else pipRefs.current.delete(m.id);
+            }}
+            position={[0, STAFF_Y + STAFF_HEIGHT_M / 2 + PIP_OFFSET_ABOVE_PUCK_TOP_M, 0]}
+            visible={false}
+            userData={{ testid: `staff-pip-${m.id}` }}
+          >
+            <boxGeometry args={[PIP_SIZE_M, PIP_SIZE_M, PIP_SIZE_M]} />
+            <meshStandardMaterial
+              color={PIP_COLOUR}
+              emissive={PIP_COLOUR}
+              emissiveIntensity={0.6}
+              transparent
+              opacity={0}
+            />
+          </mesh>
+        </group>
       ))}
     </group>
   );

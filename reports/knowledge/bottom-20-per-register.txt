@@ -1,0 +1,728 @@
+====================================================================
+BOTTOM-20 PER REGISTER — ORDER 049 §3.2 reviewer view
+Generated: 2026-08-10T20:05:41.960Z
+====================================================================
+Bank state: 390 entries total. Reviewer pool per register (LLM pending, sorted ascending):
+  episteme:  bottom 20 of 118
+  techne:    bottom 20 of 24
+  phronesis: bottom 20 of 100  (prewritten scenario_chef excluded — no citation to score)
+
+REVIEW CRITERIA
+  episteme + techne  —  does the answer follow from the citation?
+  phronesis (LLM)    —  does the scene come from the article's phronesis section?
+====================================================================
+
+####################################################################
+##   EPISTEME  —  20 lowest faithfulness scores
+####################################################################
+
+━━━━━ # 1   score 0.667   episteme ━━━━━
+Article: Species-Level Monitoring of Key Bacteria in Fermentation Processes Using Single-Nucleotide Resolved Nucleic Acid Assays Based on CRISPR/Cas12
+URL:     https://doi.org/10.1021/acs.jafc.3c04775
+
+Q: In Daqu fermentation, which bacterium is linked to the production of 2,3,5,6-tetramethylpyrazine, a flavor-active compound?
+      Bacillus subtilis
+    ✓ Bacillus amyloliquefaciens
+      Lactobacillus plantarum
+      Acetobacter pasteurianus
+
+Citation: "Bacillus amyloliquefaciens is a key microorganism in Daqu fermentation and its relative abundance is linked to the production of 2,3,5,6-tetramethylpyrazine, a flavor-active compound."
+
+━━━━━ # 2   score 0.667   episteme ━━━━━
+Article: Watson, Yaozheng Liu. (2023). Sensory Analysis and Consumer Preference: Best Practices
+URL:     https://doi.org/10.1146/annurev-food-060721-023619
+
+Q: When sensory feedback is gathered in a kitchen or production setting, what determines whether the results are actionable rather than anecdotal?
+      The number of tasters involved in the evaluation
+    ✓ Applying the right test from a structured typology of sensory tests
+      Using only consumer-focused tests rather than product-focused ones
+      Recording responses in a standardized written format
+
+Citation: "when the right test is applied, can yield actionable rather than anecdotal results — drawn from a structured typology of tests, divided between those focused on the product itself and those focused on consumer experience."
+
+━━━━━ # 3   score 0.667   episteme ━━━━━
+Article: (2010). Science for Food Safety, Security and Quality: a Review - Part 1
+URL:     https://doi.org/10.7251/qol1001026g
+
+Q: According to current food science, how is fermentation — including bio-fermentation informed by gene science — best described in terms of its industrial role?
+      A traditional craft with limited scalability, mainly used for preserving foods.
+    ✓ A scientifically validated, industrially scalable platform for generating functional food ingredients and modifying food composition at reduced cost and environmental impact.
+      A niche processing technique valued primarily for its cultural heritage rather than scientific merit.
+      An emerging method still awaiting industrial validation before it can be applied at scale.
+
+Citation: "Fermentation is positioned not merely as a traditional craft but as a scientifically validated and industrially scalable platform for generating functional food ingredients and modifying food composition, with reduced cost and reduced environmental impact."
+
+━━━━━ # 4   score 0.682   episteme ━━━━━
+Article: "Salt is the Soul of Hakka Baked Chicken": Reimagining Traditional Chinese Culinary ICH for Modern Contexts Without Losing Tradition
+URL:     http://arxiv.org/abs/2505.02542v1
+
+Q: Hakka Baked Chicken is classified under which cultural designation, and what ingredient defines it above all others?
+      UNESCO World Heritage site dish, defined by its specific clay-pot cooking vessel
+    ✓ Intangible Cultural Heritage, with salt as its defining characteristic
+      Intangible Cultural Heritage, with smoke as its defining characteristic
+      A protected geographical indication product, defined by the breed of chicken used
+
+Citation: "Hakka Baked Chicken is a centuries-old Chinese culinary tradition classified as Intangible Cultural Heritage, and its defining characteristic — as named in the study's title — centers on salt."
+
+━━━━━ # 5   score 0.708   episteme ━━━━━
+Article: Being one while being many–social and culinary parts and wholes in Western Kenya
+URL:     https://doi.org/10.1080/15528014.2020.1775410
+
+Q: According to research on cooking practices in Western Kenyan marketplaces, what does the act of combining culinary parts into wholes primarily reflect?
+      Specific temperature and timing protocols developed within local homesteads
+    ✓ The relational and structural dimension of social relations within homesteads
+      A set of ingredient pairings unique to the regional market economy
+      Technical execution methods passed down through formal culinary training
+
+Citation: "the finding concerns the relational and structural dimension of culinary combination, not its technical execution … a structured way of assembling parts into wholes — that mirrors and enacts social relations within homesteads"
+
+━━━━━ # 6   score 0.708   episteme ━━━━━
+Article: Sodium Reduction Through Sensory Interactions With NaCl: Strategies and Underlying Mechanisms.
+URL:     https://doi.org/10.1002/fsn3.70548
+
+Q: When you add soy sauce, herbs, or spices to a dish to make it taste saltier without adding more salt, which pathway is primarily responsible for that enhanced saltiness perception?
+      Peripheral taste receptors on the tongue responding directly to sodium ions
+    ✓ Central nervous system pathways triggered by retronasal olfaction
+      Salivary enzyme activity breaking down flavor compounds into sodium precursors
+      Chemesthetic sensations such as tingling overriding bitterness at the receptor level
+
+Citation: "The underlying mechanism involves central nervous system pathways, not merely peripheral taste receptor activity. Flavor stimuli such as soy sauce, herbs, and spices — operating through retronasal olfaction — can enhance saltiness perception."
+
+━━━━━ # 7   score 0.750   episteme ━━━━━
+Article: How Important is Atmosphere to the Perfect Meal?
+URL:     https://doi.org/10.1002/9781118491003.ch9
+
+Q: According to current research, how should a restaurant be understood in relation to the dining experience?
+    ✓ As a holistic sensory system, where elements like music, lighting, aroma, and temperature contribute to the overall experience and potentially to taste itself.
+      As a delivery mechanism for food, where the quality of the dish is the sole determinant of the dining experience.
+      As a social environment where guest interaction is the primary factor shaping perceived taste.
+      As a controlled setting where temperature and lighting are managed primarily for food safety, not sensory impact.
+
+Citation: "This frames the restaurant as a holistic sensory system, not merely a delivery mechanism for food. The environment — defined here by music, lighting, aroma/fragrance, and temperature — is understood as a contributing factor to the overall dining experience and potentially to taste itself."
+
+━━━━━ # 8   score 0.759   episteme ━━━━━
+Article: Kennedy. (2011). Wine and Grape Tannin Interactions with Salivary Proteins and Their Impact on Astringency: A Review of Current Research
+URL:     https://doi.org/10.3390/molecules16032348
+
+Q: You're finishing a braise with a red wine reduction and notice a drying, coating sensation on the palate. What actually drives the quality of that astringent effect — tannin concentration or tannin structure?
+      Tannin concentration alone determines the intensity and quality of astringency.
+    ✓ Tannin structure determines the quality of the astringent effect, independently of concentration alone.
+      Astringency is driven by the alcohol content interacting with salivary proteins, not by tannins directly.
+      The aggregation of tannin complexes is caused by heat during cooking, not by tannin type.
+
+Citation: "Tannin structure — not simply its presence — determines the quality of this effect... the type of tannin introduced or developed during a process has direct, structurally mediated consequences for mouthfeel, distinguishable from effects of tannin concentration alone."
+
+━━━━━ # 9   score 0.774   episteme ━━━━━
+Article: Champagne Bubbles : Isolation and Characterization of amphiphilic macromolecules responsible for the stability of the collar at the Champagne / air interface
+URL:     http://arxiv.org/abs/1904.09194v1
+
+Q: What does current research identify as the primary driver of foam collar stability in Champagne?
+      The level of carbonation and serving temperature
+    ✓ Amphiphilic macromolecules acting at the liquid-air interface
+      The sugar content introduced during dosage
+      The pressure maintained during secondary fermentation
+
+Citation: "foaming stability in Champagne derives from amphiphilic macromolecules operating at the liquid-air interface … collar quality as a surface-chemistry outcome of the wine's macromolecular composition, not merely a function of carbonation level or serving conditions alone."
+
+━━━━━ #10   score 0.781   episteme ━━━━━
+Article: Probiotic Potential of Indian Traditional Fermented Foods to Combat Listeriosis
+URL:     https://doi.org/10.36959/958/587
+
+Q: According to current research, how are fermented pickles and bamboo beverages from northeast India now classified beyond their traditional culinary role?
+      As heritage ingredients protected under regional food law
+    ✓ As functional fermented foods with probiotic potential worth scientific investigation
+      As medicinal preparations requiring pharmaceutical regulation
+      As standard fermented condiments with no distinguished health claim
+
+Citation: "fermented foods from northeast India, specifically pickles and bamboo beverages, carry sufficient nutritional recognition globally to warrant scientific investigation of their probiotic potential… This positions these traditional preparations within the domain of functional fermented foods, not merely culinary traditions."
+
+━━━━━ #11   score 0.781   episteme ━━━━━
+Article: Camera eats first: exploring food aesthetics portrayed on social media using deep learning
+URL:     https://doi.org/10.1108/ijchm-09-2021-1206
+
+Q: According to research on food images shared by diners on social media, what does the visual output of a kitchen signal?
+      It reflects the chef's plating technique too inconsistently to be classified by automated tools.
+    ✓ It carries a signal distinctive enough to be classified by a deep learning model, with different restaurant types producing measurably different aesthetic qualities.
+      It is indistinguishable across restaurant types once images are filtered through social media compression.
+      It primarily signals the diner's photography skill rather than any quality originating in the kitchen.
+
+Citation: "The visual output of a kitchen — as documented by diners — carries a signal distinctive enough to be classified by a deep learning model; different restaurant types produce or attract food images with measurably different aesthetic qualities on social media."
+
+━━━━━ #12   score 0.788   episteme ━━━━━
+Article: Osaili, Ahmad Albloush, Walid M. Al‐Rousan, Radwan Ajo, Richard A. Holley, Arif Fadhel, Omar Alboqai. (2024). Improving food safety compliance of potential employees through a novel model of knowledge, attitude, commitment, and practice
+URL:     https://doi.org/10.1111/1750-3841.17536
+
+Q: A cook on your team has strong food safety knowledge and a positive attitude but still cuts corners on hygiene. According to recent research on food safety compliance, what best explains the gap between knowing the right thing and actually doing it?
+      Insufficient technical training in hygiene procedures
+    ✓ Affective and normative commitment — emotional investment and felt obligation — only partially mediate the link between knowledge, attitude, and hygienic practice
+      Lack of knowledge about food safety standards
+      Poor attitude toward food safety as the primary driver of non-compliance
+
+Citation: "affective commitment — an emotional investment in food safety — and normative commitment — a felt obligation — partially mediate the translation of knowledge and positive attitude into hygienic practice… safe kitchen behavior is a motivational and ethical phenomenon, not merely a technical one."
+
+━━━━━ #13   score 0.794   episteme ━━━━━
+Article: Minding your manners in the Gilded Age
+URL:     https://doi.org/10.1080/15528014.2023.2300105
+
+Q: What primary social function did dinner party menus serve during the Gilded Age, beyond expressing culinary preference?
+    ✓ They served as a test of cultural legitimacy, used to assess newcomers and perform elite identity.
+      They functioned mainly as logistical tools to coordinate kitchen staff and service timing.
+      They were primarily designed to showcase the chef's technical range to a professional audience.
+      They acted as neutral culinary documents reflecting regional ingredient availability.
+
+Citation: "menus during the Gilded Age were not neutral culinary documents but socially loaded instruments through which elite identity was performed and newcomers were assessed … dinner parties functioned as a test of cultural legitimacy rather than simply an expression of culinary preference."
+
+━━━━━ #14   score 0.811   episteme ━━━━━
+Article: Rehabilitating the "Stinking Herbe": A Case Study of Culinary Prejudice
+URL:     https://doi.org/10.1525/gfc.2001.1.2.10
+
+Q: A guest challenges you on why an herb considered 'stinking' in one culinary tradition might still have genuine kitchen value. What is the most accurate way to frame the situation?
+    ✓ The 'stinking' label reflects a social and historical inheritance, not a verdict on the ingredient's actual culinary value.
+      The label is accurate because malodorous herbs have been consistently rejected across all cultures for the same aromatic reasons.
+      Cultural rejection of an herb always corresponds to a measurable defect in its flavor profile.
+      An herb's reputation is fixed once established in a culinary tradition and cannot be separated from its intrinsic quality.
+
+Citation: "An herb's culinary reputation — including its rejection as malodorous — is shaped by historical and cultural forces that are separable from its actual aromatic or flavor profile. The rejection is a social inheritance rather than a verdict on the ingredient's intrinsic culinary value."
+
+━━━━━ #15   score 0.825   episteme ━━━━━
+Article: The influence of audiovisual stimuli cuing temperature, carbonation, and color on the categorization of freshness in beverages
+URL:     https://doi.org/10.1111/joss.12469
+
+Q: A study on beverage freshness found that audiovisual cues — such as visible effervescence and ambient sound — act on freshness perception in which way?
+      They override chemosensory cues entirely, making chemical composition irrelevant.
+    ✓ They add to one another in shaping freshness categorization, independently of the drink's chemical or fermentation profile.
+      They only influence freshness perception when chemosensory cues are absent.
+      Their effect depends on the drink's carbonation level as measured chemically.
+
+Citation: "freshness categorization in beverages is substantially shaped by audiovisual — not chemosensory — cues, and that these cues act additively … the perceptual freshness of a beverage can be modulated through presentation-layer decisions involving visual effervescence and auditory environment, independent of the drink's actual chemical or fermentation profile."
+
+━━━━━ #16   score 0.913   episteme ━━━━━
+Article: Eating what you like induces a stronger decrease of 'wanting' to eat.
+URL:     https://doi.org/10.1016/j.physbeh.2009.06.008
+
+Q: A guest has just finished a chocolate mousse. Compared to a calorie-matched portion of cottage cheese, how broadly does the chocolate mousse suppress their desire to eat?
+    ✓ It suppresses 'wanting' across several food categories, while cottage cheese suppresses it only in the bread category.
+      It suppresses 'wanting' only in the dessert category, while cottage cheese suppresses it across several categories.
+      Both suppress 'wanting' equally broadly, because they are matched for caloric content.
+      It suppresses 'wanting' only in the bread category, the same as cottage cheese.
+
+Citation: "Chocolate mousse suppressed 'wanting' across several food categories and reduced dessert-category 'liking,' while cottage cheese, the neutral comparator matched for energy density, suppressed 'wanting' only in the bread category."
+
+━━━━━ #17   score 1.000   episteme ━━━━━
+Article: Fermentation of chickpea flour with selected lactic acid bacteria for improving its nutritional and functional properties
+URL:     https://doi.org/10.1111/jam.15401
+
+Q: You are comparing processing methods for chickpea flour — soaking, germination, cooking, and lactic acid bacteria fermentation. Which method most effectively reduces trypsin inhibitors and tannins while also increasing total phenolic content?
+      Soaking
+      Germination
+      Cooking
+    ✓ Fermentation with Lactiplantibacillus plantarum CRL2211 and Weissella paramesenteroides CRL2182 for 24 hours at 37°C
+
+Citation: "Fermentation of chickpea flour with Lactiplantibacillus plantarum CRL2211 and Weissella paramesenteroides CRL2182 for 24 hours at 37°C outperforms soaking, germination, and cooking in reducing trypsin inhibitors and tannins while increasing total phenolic content and techno-functional properties."
+
+━━━━━ #18   score 1.000   episteme ━━━━━
+Article: King, Shirin Kazemzadeh Pournaki, Roberta Targino Hoskin, Marvin Moncada. (2023). Novel Liquor-Based Hot Sauce: Physicochemical Attributes, Volatile Compounds, Sensory Evaluation, Consumer Perception, Emotions, and Purchase Intent
+URL:     https://doi.org/10.3390/foods12020369
+
+Q: Compared to a standard vinegar-based hot sauce, what happens to pH and viscosity when you swap in a liquor — tequila, rum, vodka, or bourbon — as the base preservative?
+      pH drops and viscosity decreases
+    ✓ pH rises and viscosity increases
+      pH drops and viscosity increases
+      pH and viscosity remain unchanged
+
+Citation: "substituting tequila, rum, vodka, or bourbon for vinegar as the base preservative in hot sauce formulation produces sauces with higher pH, higher viscosity, greater paste formation as indicated by rheological measures, and lighter color compared to vinegar-based equivalents."
+
+━━━━━ #19   score 1.000   episteme ━━━━━
+Article: Product Development Considerations of Flaxseed Supplementation for the Aging Population: A Pilot Study
+URL:     https://doi.org/10.5539/jfr.v8n3p42
+
+Q: At what flaxseed inclusion level did a bagel show no statistically significant difference from a control bagel in sensory attributes — including texture — when rated by adults aged 50 and older?
+      10%
+      15%
+    ✓ 23%
+      30%
+
+Citation: "a bagel incorporating 23% flaxseed achieved no statistically significant difference from a control bagel in sensory attributes — including texture — as rated by adults aged 50 and older"
+
+━━━━━ #20   score 1.000   episteme ━━━━━
+Article: Van Mulders, Daan Saison, Stijn D. M. Van Laere, Filip Delvaux, Freddy R. Delvaux. (2008). Characteristics of High Cell Density Fermentations with Different Lager Yeast Strains
+URL:     https://doi.org/10.1002/j.2050-0416.2008.tb00317.x
+
+Q: When you pitch yeast at a higher initial cell density, what happens to the timeline for secondary metabolite formation and reabsorption?
+      It extends, giving secondary metabolites more time to develop
+    ✓ It is compressed, shortening the window for secondary metabolites to form and be reabsorbed
+      It remains unchanged because secondary metabolites depend on temperature, not cell density
+      It becomes unpredictable and cannot be managed as a production variable
+
+Citation: "a denser initial population accelerates sugar uptake and ethanol production while compressing the timeline for secondary metabolite formation and reabsorption"
+
+
+####################################################################
+##   TECHNE  —  20 lowest faithfulness scores
+####################################################################
+
+━━━━━ # 1   score 0.696   techne ━━━━━
+Article: The influence of audiovisual stimuli cuing temperature, carbonation, and color on the categorization of freshness in beverages
+URL:     https://doi.org/10.1111/joss.12469
+
+Q: You are plating a sparkling water service and want to maximise the guest's perception of freshness before they taste anything. Which presentation approach is most directly supported by research on audiovisual cues?
+      Serve in an opaque vessel to keep carbonation contained longer, preserving freshness for the palate.
+    ✓ Make effervescence both visible and audible at the moment of service, treating those two cues as deliberate craft variables.
+      Chill the glass as low as possible and say nothing, letting temperature alone signal freshness.
+      Pour tableside only after the bubbles have settled, so the guest focuses on colour rather than carbonation.
+
+Citation: "visible bubbles and carbonation sounds additively increase fresh categorization, signaling that how effervescence is made visible and audible at the moment of service is a craft variable worth deliberate attention."
+
+━━━━━ # 2   score 0.750   techne ━━━━━
+Article: Defatted Soybean Meal-Based Koji Promotes Flavor Development in Deyang Baiwo Soy Sauce: A Comparative Multi-Omics Study
+URL:     https://doi.org/10.3390/fermentation11120685
+
+Q: You are sourcing a soy sauce for a dish where deep umami and aroma complexity are the priority. Which substrate characteristic should guide your selection?
+    ✓ Whether the koji was made with defatted soybean meal and wheat bran, as this substrate yields higher amino nitrogen and reducing sugars, indicating greater savory intensity.
+      Whether the soy sauce was aged for the longest available period, since fermentation time is the primary driver of amino nitrogen content regardless of substrate.
+      Whether whole soybeans were used, since their higher fat content converts directly into aroma compounds during fermentation.
+      Whether salt concentration during moromi was kept at the minimum threshold, as lower salinity maximises umami compound production across all substrate types.
+
+Citation: "The study shows that defatted soybean–wheat bran koji yields higher amino nitrogen and reducing sugars, dimensions that inform savory intensity. The applicable craft dimension is umami depth and aroma complexity relative to substrate type."
+
+━━━━━ # 3   score 1.000   techne ━━━━━
+Article: Fermentation of chickpea flour with selected lactic acid bacteria for improving its nutritional and functional properties
+URL:     https://doi.org/10.1111/jam.15401
+
+Q: You are fermenting chickpea flour with lactic acid bacteria to improve its nutritional profile. According to the research, which conditions are reported as optimal for this process?
+      25°C for 48 hours
+    ✓ 37°C for 24 hours
+      42°C for 12 hours
+      30°C for 72 hours
+
+Citation: "You should direct attention to the fermentation temperature of 37°C and the 24-hour duration as the reported optimal conditions."
+
+━━━━━ # 4   score 1.000   techne ━━━━━
+Article: King, Shirin Kazemzadeh Pournaki, Roberta Targino Hoskin, Marvin Moncada. (2023). Novel Liquor-Based Hot Sauce: Physicochemical Attributes, Volatile Compounds, Sensory Evaluation, Consumer Perception, Emotions, and Purchase Intent
+URL:     https://doi.org/10.3390/foods12020369
+
+Q: You are switching your hot sauce base from vinegar to a distilled liquor. Which quality indicator should you monitor most closely to distinguish how the two productions differ?
+      Acidity level, since the liquor base will produce a more acidic sauce than vinegar
+    ✓ Paste formation behavior, as a key rheological marker that sets liquor-based sauce apart from vinegar-based
+      Color deepening, because a liquor base will yield a darker product than vinegar
+      Fermentation temperature, which is the primary variable the article identifies for process control
+
+Citation: "You should monitor the rheological dimension — specifically paste formation behavior — as a key quality indicator distinguishing liquor-based from vinegar-based production."
+
+━━━━━ # 5   score 1.000   techne ━━━━━
+Article: Van Mulders, Daan Saison, Stijn D. M. Van Laere, Filip Delvaux, Freddy R. Delvaux. (2008). Characteristics of High Cell Density Fermentations with Different Lager Yeast Strains
+URL:     https://doi.org/10.1002/j.2050-0416.2008.tb00317.x
+
+Q: You're setting up a high-cell-density fermentation. You've confirmed your yeast viability is above 95% and you're pitching at 80 million cells per milliliter. What do you need to watch closely during fermentation because the faster activity compresses your working window?
+    ✓ Diacetyl rest timing, since the accelerated fermentation shortens the window for vicinal diketone reduction before conditioning begins.
+      Hop utilization rate, since higher cell counts extract more iso-alpha acids during fermentation.
+      Yeast autolysis risk, since pitching above 80 million cells per milliliter causes immediate cell death.
+      Clarification timing, since high cell density fermentations produce more protein haze that must be removed before conditioning.
+
+Citation: "Adjust your diacetyl rest timing accordingly, since the accelerated fermentation compresses your window for vicinal diketone reduction before conditioning begins."
+
+━━━━━ # 6   score 1.000   techne ━━━━━
+Article: How do sous‐vide treatment and herb spices addition improve sensory acceptance and antimicrobial attributes of organic oyster mushrooms ( Pleurotus ostreatus )?
+URL:     https://doi.org/10.1111/jfpp.17142
+
+Q: You are preparing herb-inclusive oyster mushroom pouches sous-vide. The study tested 60°C as its target temperature for these preparations — which durations at that temperature does the research specifically report for herb-inclusive treatments?
+      10 and 20 minutes
+    ✓ 20 and 30 minutes
+      30 and 45 minutes
+      15 and 25 minutes
+
+Citation: "the relevant parameters the abstract provides are a sous-vide temperature of 60°C with durations of 20 and 30 minutes for herb-inclusive preparations, using oregano and thyme."
+
+━━━━━ # 7   score 1.000   techne ━━━━━
+Article: Effect of the type of acetic fermentation process on the chemical composition of prickly pear vinegar (Opuntia ficus‐indica)
+URL:     https://doi.org/10.1002/jsfa.12138
+
+Q: You are developing a prickly pear vinegar in-house and want it to carry strong phenolic richness — noticeable bitterness, antioxidant character, and body. Which fermentation process does the research support for that goal?
+    ✓ Surface culture acetification
+      Submerged culture acetification
+      Either process delivers equivalent phenolic content
+      Spontaneous mixed fermentation without bacterial inoculation
+
+Citation: "If your culinary goal privileges phenolic richness — relevant to bitterness, antioxidant character, and mouthfeel — surface culture acetification is indicated by the study's findings."
+
+━━━━━ # 8   score 1.000   techne ━━━━━
+Article: Dissection of genetic and environmental factors involved in tomato organoleptic quality
+URL:     https://doi.org/10.1186/1471-2229-11-58
+
+Q: You are sourcing tomatoes for a dish where the flavour profile matters most. Which factor should you prioritise investigating alongside the variety name?
+    ✓ Growing conditions such as field environment, nutritional regime, and ripening stage at harvest
+      The variety name alone, since genetics are the primary driver of flavour
+      Post-harvest cold storage duration, as this overrides field conditions for flavour
+      Fruit size and colour at point of sale, as these are reliable proxies for flavour development
+
+Citation: "When sourcing tomatoes for a dish or a fermentation project, you should interrogate growing conditions — field environment, nutritional regime, ripening stage at harvest — as actively as you name the variety, because the study shows these environmental factors drive the taste and flavour cluster."
+
+━━━━━ # 9   score 1.000   techne ━━━━━
+Article: (2011). Effect of Enzymes on Strawberry Volatiles during Storage, at Different Ripeness Level, in Different Cultivars, and during Eating
+URL:     https://doi.org/10.1111/j.1750-3841.2010.01999.x
+
+Q: You are building a strawberry dish and need to decide between maximizing fruity, sweet aroma versus a fresher, green note. Which preparation lever most directly controls each outcome?
+    ✓ Ripeness level drives fruity ester expression; degree and timing of cell disruption drive fresh-green volatiles.
+      Degree of cell disruption drives fruity ester expression; ripeness level drives fresh-green volatiles.
+      Both outcomes are controlled primarily by storage temperature, not by ripeness or cutting method.
+      Ripeness level and cell disruption both target the same aromatic register, so either lever produces the same result.
+
+Citation: "If you want maximum fruity ester expression, prioritize ripeness selection; if you want fresh green volatiles, physical disruption matters, but that effect is transient."
+
+━━━━━ #10   score 1.000   techne ━━━━━
+Article: Characteristics of the enzyme-induced release of bitter peptides from wheat gluten hydrolysates
+URL:     https://doi.org/10.3389/fnut.2022.1022257
+
+Q: You are developing a wheat gluten hydrolysate for a savory dish and want to minimize bitterness. Which two controls does the article identify as your main levers?
+      Salt concentration and processing temperature
+    ✓ Enzyme selection and degree of hydrolysis
+      pH level and hydration time
+      Particle size and storage temperature
+
+Citation: "you should treat enzyme selection and degree of hydrolysis as controllable bitterness levers"
+
+━━━━━ #11   score 1.000   techne ━━━━━
+Article: Sulfur Supplementation Potentiates the Formation of Meat Aroma Compounds in Thermally Treated Chicken Carcass Hydrolysate
+URL:     https://doi.org/10.1111/1750-3841.70564
+
+Q: You are developing a chicken carcass hydrolysate-based sauce and want to push it toward a meaty rather than a garlic-onion profile. Which sulfur-precursor input is your best lever?
+    ✓ Add cysteine-rich inputs to the hydrolysate
+      Add onion to the hydrolysate
+      Add djenkol bean as the primary sulfur source
+      Increase thermal processing time without changing the sulfur source
+
+Citation: "Adding cysteine-rich inputs favors meaty-register volatiles; adding onion shifts the product toward garlic-onion character."
+
+━━━━━ #12   score 1.000   techne ━━━━━
+Article: Impact of Aspergillus Species on Microbial Community Dynamics and Their Associations with Fermentation Properties in Fermented Walnut-Based Soy Sauce
+URL:     https://doi.org/10.3390/foods14223921
+
+Q: You are developing a walnut-based soy sauce and your primary goal is maximum amino nitrogen development. Which starter selection does the research support?
+      A mixed starter combining Aspergillus oryzae with other Aspergillus species, as blending cultures consistently outperforms single inoculants.
+    ✓ Aspergillus oryzae as the primary inoculant, since the mixed starter does not outperform the single Aspergillus oryzae treatment in amino nitrogen metrics.
+      Aspergillus niger as the sole inoculant, known for its superior protease activity in nut-based substrates.
+      No inoculant; relying on ambient wild Aspergillus populations produces the highest amino nitrogen yield.
+
+Citation: "the abstract supports choosing Aspergillus oryzae as the primary inoculant when maximum amino nitrogen development is the goal for walnut-based soy sauce. The mixed starter does not outperform the single Aspergillus oryzae treatment in the metrics reported."
+
+━━━━━ #13   score 1.000   techne ━━━━━
+Article: Path Analysis for the Behavior of Traditional Olive Oil Consumer in Canakkale
+URL:     https://doi.org/10.3136/fstr.15.19
+
+Q: You are processing a new batch of olive oil and want to limit oxidative darkening during malaxation. What is the temperature ceiling you must stay strictly below?
+    ✓ 27°C
+      30°C
+      24°C
+      35°C
+
+Citation: "Control malaxation temperature strictly below 27°C to limit oxidative darkening."
+
+━━━━━ #14   score 1.000   techne ━━━━━
+Article: (2023). A Consumer Assessment of Fermented Green Coffee Beans with Common Beer/Wine Yeast Strains for Novel Flavor Properties
+URL:     https://doi.org/10.3390/fermentation9100865
+
+Q: You're planning a yeast-fermented green coffee project and want to carry specific flavor tendencies — fruity esters, lactic notes — reliably into the coffee. What does the research support as your practical leverage point?
+    ✓ Selecting yeast strains already engineered for those flavor outputs in beer or wine fermentation
+      Extending fermentation beyond 72 hours to amplify ester development
+      Controlling substrate preparation and inoculation rates as the primary flavor variables
+      Using a dry fermentation environment to concentrate lactic acid production
+
+Citation: "Your practical leverage point is yeast strain selection: the study demonstrates that strains engineered for specific flavor outputs in beer or wine (ester production, lactic acid, fruity esters) carry those tendencies into coffee fermentation."
+
+━━━━━ #15   score 1.000   techne ━━━━━
+Article: Sarcocornia perennis: A salt substitute in savory snacks
+URL:     https://doi.org/10.3390/foods10123110
+
+Q: You are developing a reduced-sodium baked snack using dried Sarcocornia perennis powder. As you increase the amount of the powder in your formulation, what visual change during baking signals its growing influence?
+      The snack becomes paler and softer, indicating moisture retention from the halophyte.
+    ✓ The snack becomes crispier and darker, which you can monitor as a practical browning signal.
+      The snack develops an uneven rise, reflecting disrupted gluten structure.
+      The snack shows surface cracking, indicating excess salt crystallization.
+
+Citation: "Expect your product to become crispier and darker as incorporation rises. Monitor color development during baking as a practical signal of the halophyte's influence on the Maillard or browning dimension."
+
+━━━━━ #16   score 1.000   techne ━━━━━
+Article: ADEBOWALE. (2006). QUALITIES OF EXTRUDED PUFFED SNACKS FROM MAIZE/SOYBEAN MIXTURE
+URL:     https://doi.org/10.1111/j.1745-4530.2006.00054.x
+
+Q: You are developing a puffed snack with soy protein added to a maize base and the expansion is coming out poor. Which adjustment should you make first before locking in your production formula?
+    ✓ Keep soybean inclusion below 15% and adjust screw speed and moisture content incrementally, checking expansion ratio at each step.
+      Raise soybean inclusion above 20% to maximize protein content, then compensate with higher barrel temperature.
+      Skip starch pre-gelatinization and rely solely on increased screw speed to recover expansion.
+      Fix moisture content at the standard maize extrusion level and only vary screw speed.
+
+Citation: "Target your soybean inclusion below 15% and adjust screw speed and moisture content incrementally, evaluating expansion ratio at each step before committing to a production formula."
+
+━━━━━ #17   score 1.000   techne ━━━━━
+Article: Eating what you like induces a stronger decrease of 'wanting' to eat.
+URL:     https://doi.org/10.1016/j.physbeh.2009.06.008
+
+Q: You are building a tasting menu and want to suppress overall appetite motivation as early as possible in the meal. Based on what is known about palatability and post-consumption appetite suppression, where should you place the course guests rate most highly?
+    ✓ Early in the sequence, so the most liked item suppresses appetite before subsequent courses are served.
+      At the end of the sequence, as a reward, so guests remain motivated through every preceding course.
+      In the middle of the sequence, to maintain even appetite levels throughout the meal.
+      Position does not matter; palatability affects appetite suppression equally regardless of placement.
+
+Citation: "You should consider where highly liked items — particularly dessert-type preparations — fall within a meal, because their placement will influence how much motivational appetite remains for subsequent courses."
+
+━━━━━ #18   score 1.000   techne ━━━━━
+Article: (2025). Influence of mixed microbial starter cultures and fermentation duration on the quality and shelf life of Ethiopian Injera
+URL:     https://doi.org/10.1016/j.afres.2025.101438
+
+Q: You are setting up an injera fermentation using mixed microbial starter cultures. What inoculation rate and LAB-to-yeast ratio does the research support?
+    ✓ 5% (v/w, flour basis) at a 1:1 LAB-to-yeast volume ratio
+      10% (v/w, flour basis) at a 2:1 LAB-to-yeast volume ratio
+      5% (v/w, flour basis) at a 2:1 LAB-to-yeast volume ratio
+      2% (v/w, flour basis) at a 1:1 LAB-to-yeast volume ratio
+
+Citation: "The study reports a 5% (v/w, flour basis) inoculation rate at a 1:1 LAB-to-yeast volume ratio; consult the source for exact preparation details."
+
+━━━━━ #19   score 1.000   techne ━━━━━
+Article: Sensory profile and contribution of major components of aroma in dry red wine quality
+URL:     https://doi.org/10.5935/1809-2667.20120040
+
+Q: You are reducing a red wine for a braise and notice a sharp vinegary smell coming off the pan. According to current understanding of red wine aroma compounds, what does that perception signal about how this wine will behave in the reduction?
+    ✓ It signals elevated acetic acid load, which can alter how the wine behaves in reductions or braises.
+      It signals high tannin concentration, which will soften and integrate during the reduction.
+      It signals residual sugar, which will caramelise and balance the acidity over heat.
+      It signals low alcohol content, meaning the wine will reduce more slowly than expected.
+
+Citation: "treat elevated vinegary or sulphur perception in a red wine destined for cooking or pairing as a flag for acetic acid and octanoic acid load, which alters how that wine will behave in reductions or braises."
+
+━━━━━ #20   score 1.000   techne ━━━━━
+Article: (2022). Effect of Traditional Cooking and Sous Vide Heat Treatment, Cold Storage Time and Muscle on Physicochemical and Sensory Properties of Beef Meat
+URL:     https://doi.org/10.3390/molecules27217307
+
+Q: You're planning a sous vide service for beef. The article supports one specific short-duration protocol with positive sensory results. What are the correct parameters?
+      60 °C for 4 hours
+    ✓ 65 °C for 2 hours
+      70 °C for 1 hour
+      65 °C for 4 hours
+
+Citation: "The study supports sous vide at 65 °C for 2 hours as a viable short-duration protocol yielding positive sensory results."
+
+
+####################################################################
+##   PHRONESIS  —  20 lowest faithfulness scores
+####################################################################
+
+━━━━━ # 1   score 0.731   phronesis ━━━━━
+Article: A. Fikri. (2011). A Biomimetic Sensor for the Classification of Honeys of Different Floral Origin and the Detection of Adulteration
+URL:     https://doi.org/10.3390/s110807799
+
+Q: You are sourcing honey for a mead that will ferment for eight months. A supplier offers a blend at a good price and assures you it passed standard sugar testing. What is the core tension in this decision?
+    • Standard sugar tests may clear an adulterated honey, but the floral character that defines your ferment's flavor architecture could still be absent or distorted — something only time and your palate will reveal.
+    • The blend is likely fine for a long ferment because sugar composition is the only variable that affects how honey expresses itself once fermentation begins.
+    • Sourcing from a blend is acceptable as long as the supplier can name the dominant floral variety, since the minor components won't survive eight months of fermentation anyway.
+
+Citation: "adulterated product would flatten or distort that character in ways that only emerge months later… even a laboratory sugar test on an adulterated sample may not catch the problem your palate eventually will."
+
+━━━━━ # 2   score 0.794   phronesis ━━━━━
+Article: Drake. (2011). EVALUATION OF KEY FLAVOR COMPOUNDS IN REDUCED- AND FULL-FAT CHEDDAR CHEESES USING SENSORY STUDIES ON MODEL SYSTEMS
+URL:     https://doi.org/10.1111/j.1745-459x.2011.00343.x
+
+Q: Your reduced-fat house Cheddar tastes thin and underdeveloped no matter how long you age it. A study you've read suggests fat reduction has restructured the aroma compound environment, not just slowed ripening. You could keep extending the aging time hoping the flavor fills in, adjust your fermentation or affinage conditions to favor the volatile compounds the study identifies as key, or pull the cheese earlier and compensate with accompaniments on the plate. Which approach addresses the root cause the study points to, and what are you giving up with each path?
+    • Extend aging further — it may simply need more time than a full-fat Cheddar, and patience is low-risk, though the study suggests time alone may not resolve a restructured aroma environment.
+    • Investigate adjustments to fermentation or affinage conditions to favor the key volatile compound class — this targets the mechanism the study identifies, though the full protocol requires consulting the primary source and may demand significant R&D investment.
+    • Accept the flavor gap and build the course around accompaniments that mask the thin profile — fastest solution, but sidesteps the cheese development problem entirely and may not satisfy a health-focused menu concept built on the Cheddar itself.
+
+Citation: "fat reduction has restructured the aroma compound environment, not just slowed ripening. Rather than extending aging indefinitely, you begin investigating whether the fermentation or affinage conditions can be adjusted to favor the class of volatile compounds the study identifies as key"
+
+━━━━━ # 3   score 0.816   phronesis ━━━━━
+Article: (2025). Nutritional, textural, and sensory properties of bread from wheat-, millet-, and sorghum-based composite flour
+URL:     https://doi.org/10.15586/ijfs.v37i4.2974
+
+Q: You are developing two bread lines for a client: one marketed as a high-fiber, mineral-rich functional loaf, the other as a premium soft sandwich bread where crumb texture is the main selling point. You have access to a wheat-millet-sorghum composite flour blend tested at several substitution levels. How do you approach the formulation decision differently for each product?
+    • Use the same substitution level for both products, since sensory panelists in the study did not distinguish between lower and higher composite ratios.
+    • Push the composite flour substitution higher in the nutritionally positioned loaf, where texture trade-offs are more acceptable, and stay closer to the lower end for the soft sandwich bread, where crumb softness is the market promise.
+    • Maximize composite flour in both products to fully leverage the fat, fiber, and mineral profiles of millet and sorghum, and adjust hydration alone to compensate for any texture loss.
+
+Citation: "A nutritionally positioned product can tolerate more composite flour than a product where crumb softness is the primary market promise. You recognize that pushing substitution toward the higher end of what the study tested risks moisture and texture trade-offs that sensory panelists will detect."
+
+━━━━━ # 4   score 0.833   phronesis ━━━━━
+Article: Minding your manners in the Gilded Age
+URL:     https://doi.org/10.1080/15528014.2023.2300105
+
+Q: You are designing a tasting menu for a corporate client who wants the evening to project authority and tradition. A colleague suggests anchoring the menu around familiar, conservative dishes to signal stability. Another pushes for bold, avant-garde courses to signal innovation and ambition. You are aware that guests will read your choices as social and cultural signals, not just culinary ones. How do you weigh these competing directions?
+    • Default to the conservative menu — guests in a corporate context are more likely to interpret familiar dishes as respectful and safe, which protects the client's social image even if it sacrifices culinary distinction.
+    • Lean toward the avant-garde menu — a bold selection signals that the client is forward-thinking, and the culinary risk is worth the cultural statement it makes on their behalf.
+    • Treat the menu as a deliberate communication tool, aligning dish choices with the specific message the client wants to send, since both conservative and bold choices carry cultural meaning that reflects on the host, not just the kitchen.
+
+Citation: "As you design menus or plan dining experiences, recognize that your choices are being read by guests as social and cultural cues, not only as culinary ones. The dinner table has long been a place where what you serve reveals who you are."
+
+━━━━━ # 5   score 1.000   phronesis ━━━━━
+Article: Economic sustainability of wine tourism services and direct sales performance – emergent profiles from Italy
+URL:     https://doi.org/10.1108/BFJ-08-2019-0651
+
+Q: The winery owner wants to evaluate whether your new fermentation dinner series is worth continuing. She pulls up direct sales numbers from the nights you ran it and sees no clear uplift. She asks you to make the case — or agree to cut the programme. How do you approach this conversation?
+    • Acknowledge the flat direct sales figures, then argue that the programme's value likely shows up in winery image and word-of-mouth, which are real but harder to capture in a single sales metric.
+    • Concede that direct sales are the only reliable measure of commercial value for an experience like this, and propose a redesign focused on upselling wine at the table.
+    • Request a longer trial period on the grounds that direct sales always lag behind hospitality investment, without addressing what the programme actually contributes in the meantime.
+
+Citation: "Your work likely supports winery image and word-of-mouth, factors the study identifies as relevant, even when their effect on direct sales is not straightforwardly measurable."
+
+━━━━━ # 6   score 1.000   phronesis ━━━━━
+Article: Fermentation of chickpea flour with selected lactic acid bacteria for improving its nutritional and functional properties
+URL:     https://doi.org/10.1111/jam.15401
+
+Q: You want to add a fermented chickpea cracker to a health-focused menu and the study shows LAB fermentation lowers antinutritional factors and raises antioxidant activity. Your kitchen runs at variable temperatures and you have no dedicated fermentation chamber. How do you weigh the decision to proceed?
+    • Proceed using your standard ambient conditions — the fermentation will happen regardless and the nutritional gains will follow.
+    • Pause and assess whether your kitchen can reliably hold the temperature and microbial conditions the study specifies before committing to the process.
+    • Skip fermentation entirely and rely on extended soaking and cooking, which the study indicates delivers equivalent results.
+
+Citation: "Your present decision is whether your kitchen environment can maintain the temperature and microbial conditions the study identifies — if not, the gains reported will not reliably transfer."
+
+━━━━━ # 7   score 1.000   phronesis ━━━━━
+Article: King, Shirin Kazemzadeh Pournaki, Roberta Targino Hoskin, Marvin Moncada. (2023). Novel Liquor-Based Hot Sauce: Physicochemical Attributes, Volatile Compounds, Sensory Evaluation, Consumer Perception, Emotions, and Purchase Intent
+URL:     https://doi.org/10.3390/foods12020369
+
+Q: You're developing a new bourbon-based hot sauce for the restaurant. Your apprentice asks whether it's safe to move forward with testing, pointing out that no one on the team has verified shelf stability or microbiological safety. You know a study tracked these properties over 20 weeks. How do you handle the tension between moving the project forward and ensuring the team works responsibly?
+    • Use the study's findings as a reasonable basis to continue developing the sauce, but require the team to review the full study data before locking in any production protocol.
+    • Halt development entirely until you commission your own independent microbiological testing, since published research cannot be applied directly to your kitchen's specific conditions.
+    • Proceed without additional review — a 20-week study tracking physicochemical and microbiological quality is sufficient validation to finalize the recipe and begin service.
+
+Citation: "microbiological quality was assessed alongside physicochemical properties over a 20-week period, giving you reasonable confidence to pursue the direction — while insisting your team consult the full study data before finalizing any production protocol."
+
+━━━━━ # 8   score 1.000   phronesis ━━━━━
+Article: Product Development Considerations of Flaxseed Supplementation for the Aging Population: A Pilot Study
+URL:     https://doi.org/10.5539/jfr.v8n3p42
+
+Q: You are developing a functional breakfast item for your senior dining program. A recent study shows a 23% flaxseed bagel was acceptable to older adults, but the study involved only twenty participants. You are considering whether to add it to the menu immediately, run your own tasting first, or drop the idea entirely because the evidence is too thin. How do you proceed?
+    • Roll the item out immediately — a peer-reviewed finding of acceptability is sufficient justification for a menu commitment.
+    • Treat the study finding as directional, run a small tasting with your actual guest population using sensory dimensions as your evaluation checklist, and then decide on a rollout.
+    • Discard the concept entirely — a sample of twenty provides no usable signal and the development cost is not worth the risk.
+
+Citation: "You treat the finding as directional rather than definitive. You run your own small tasting with your actual guest population before committing to a menu rollout, using the four correlated sensory dimensions as your evaluation checklist."
+
+━━━━━ # 9   score 1.000   phronesis ━━━━━
+Article: Species-Level Monitoring of Key Bacteria in Fermentation Processes Using Single-Nucleotide Resolved Nucleic Acid Assays Based on CRISPR/Cas12
+URL:     https://doi.org/10.1021/acs.jafc.3c04775
+
+Q: You are overseeing production of a Daqu-fermented condiment and notice that the depth of pyrazine character shifts unpredictably from one batch to the next, even though your time, temperature, and moisture parameters have not changed. A researcher suggests the cause may be shifts in Bacillus species composition rather than process drift. Your purchasing manager wants to continue using the current generic microbiological testing protocol because it is cheaper. Your quality lead wants to move to species-resolved microbial monitoring. How do you weigh these positions?
+    • Maintain the generic testing protocol, since process parameters are already controlled and the additional cost of species-resolved monitoring is not justified until batch failures become more frequent.
+    • Advocate for species-resolved microbial monitoring as a diagnostic tool, on the basis that generic testing cannot distinguish between Bacillus species and therefore cannot explain pyrazine variation that process parameters alone do not account for.
+    • Suspend Daqu-fermented production until the exact Bacillus species responsible for pyrazine development is isolated and a controlled inoculation protocol is established, rather than invest in ongoing monitoring.
+
+Citation: "batch-to-batch variation may reflect shifts in Bacillus species composition rather than changes in process parameters alone. You are now in a position to advocate for species-resolved microbial monitoring — not generic microbiological testing — as a quality diagnostic tool in your production workflow."
+
+━━━━━ #10   score 1.000   phronesis ━━━━━
+Article: Van Mulders, Daan Saison, Stijn D. M. Van Laere, Filip Delvaux, Freddy R. Delvaux. (2008). Characteristics of High Cell Density Fermentations with Different Lager Yeast Strains
+URL:     https://doi.org/10.1002/j.2050-0416.2008.tb00317.x
+
+Q: It's day three of a seven-day fermentation and your gravity readings show the beer is nearly done. The tank smells right, the numbers look solid, but the schedule says you still have four days to go. Do you trust the data and consider moving forward, hold and add a buffer day for safety, or split the difference and recheck every few hours before deciding?
+    • Trust the gravity readings and move forward — the yeast have done their work and waiting risks over-conditioning.
+    • Add a buffer day regardless — a single set of readings on day three isn't enough to override a seven-day protocol.
+    • Neither commit nor move on — recheck readings and sensory cues at short intervals and let the trend decide.
+
+Citation: "You are deciding whether to trust the numbers or add a buffer day for safety. This is where your accumulated fermentation knowledge — not just this study — tells you how to read the tank, the smell in the room, and the moment to act."
+
+━━━━━ #11   score 1.000   phronesis ━━━━━
+Article: Effect of kombucha SCOBY from different climatic sources on the microbial diversity and quality of kombucha
+URL:     https://doi.org/10.1093/ijfood/vvaf138
+
+Q: You are building a kombucha-forward pairing where a high, consistent acid profile is essential to the dish's balance. Research indicates that a subtropical SCOBY produces significantly elevated acetic, succinic, and glucuronic acids compared to other climatic sources. Your current supplier is local and reliable, but their SCOBY comes from a temperate region. Do you switch to a subtropical SCOBY source for chemical consistency, stay with the local temperate SCOBY and adjust the dish to fit what it delivers, or blend batches from both sources to seek a middle ground?
+    • Source the subtropical SCOBY specifically, accepting the supply complexity in order to lock in the elevated acid profile the dish requires.
+    • Stay with the locally available temperate SCOBY and redesign the pairing to work within its actual acid output rather than the target profile.
+    • Blend fermentation batches from both subtropical and temperate SCOBYs, aiming for a compromise between consistency and supply reliability.
+
+Citation: "The study tells you that the subtropical SCOBY produces significantly elevated acetic, succinic, and glucuronic acids. You are now weighing whether to source accordingly or to work with what is locally available, knowing the trade-off between chemical consistency and the practicality of supply."
+
+━━━━━ #12   score 1.000   phronesis ━━━━━
+Article: Youtube Yemek Kanallarının Tatma Davranışsal Niyeti Üzerine Etkisi
+URL:     https://doi.org/10.47140/kusbder.887291
+
+Q: You run a small restaurant and you're deciding where to put your energy on your new YouTube channel. You have limited time, so you must choose a focus. Your video editor says polish the visuals and make every recipe step crystal clear. Your front-of-house manager says stop worrying about production quality and just make the audience feel like they're part of something — share the real story behind each dish and build a community around it. Where do you put your limited hours, and what are you giving up?
+    • Invest in high-quality food shots and detailed recipe walkthroughs, accepting that the content may feel less personal and community-driven.
+    • Focus on authentic storytelling and fostering a sense of shared experience among viewers, accepting that production values and recipe clarity may suffer.
+    • Split time evenly between both, accepting that neither the production quality nor the community feel will be fully developed.
+
+Citation: "the effort you put into detailed recipe walkthroughs or polished food shots may matter less than whether your audience feels you are sharing a genuine experience with them and connecting them to others who care about the same food."
+
+━━━━━ #13   score 1.000   phronesis ━━━━━
+Article: Bridging the gap: linking Torulaspora delbrueckii genotypes to fermentation phenotypes and wine aroma
+URL:     https://doi.org/10.1093/femsyr/foae034
+
+Q: You're developing a wine-based sauce and sourcing a non-Saccharomyces yeast to keep volatile acidity low while adding body. A supplier offers you a Torulaspora delbrueckii product and assures you the species is well-documented for those traits. Do you commit to it, ask for more, or switch direction entirely?
+    • Commit to the product based on the species reputation alone — the directional evidence for low volatile acidity and glycerol production is consistent enough to proceed without strain-level detail.
+    • Request strain-specific fermentation data before committing — species-level confidence is useful but strain identity matters significantly, and you treat Torulaspora delbrueckii as a category, not a monolith.
+    • Drop the idea and use a conventional Saccharomyces cerevisiae starter — the variability within Torulaspora delbrueckii makes it too unpredictable for a controlled kitchen application.
+
+Citation: "The study gives you directional confidence in that choice but cautions you that strain identity matters significantly; you resist treating Torulaspora delbrueckii as a monolithic category and seek strain-specific data before committing."
+
+━━━━━ #14   score 1.000   phronesis ━━━━━
+Article: Screening and characterizing indigenous yeasts, lactic acid bacteria, and acetic acid bacteria from cocoa fermentation in Hainan for aroma Development
+URL:     https://doi.org/10.1111/1750-3841.17612
+
+Q: You are sourcing Hainan Trinitario beans and considering whether to specify spontaneous or inoculated fermentation to your producer. Research on this region's native microbiota shows that spontaneous fermentation already carries functionally valuable strains, but their individual contributions are uneven. How do you advise the producer?
+    • Keep spontaneous fermentation as-is — the native microbiota is sufficient and any intervention risks losing regional character.
+    • Move toward a curated starter cocktail that prioritizes strains shown to be both aromatically productive and acid-balanced, rather than relying on uncontrolled microbial succession.
+    • Abandon local strains entirely and import a standardized commercial starter to ensure batch consistency.
+
+Citation: "You now have reason to move toward a curated starter cocktail approach, prioritizing strains that the study identifies as both aromatically productive and acid-balanced rather than relying on uncontrolled microbial succession."
+
+━━━━━ #15   score 1.000   phronesis ━━━━━
+Article: Characterization of the Volatile Compounds of Zhenba Bacon at Different Process Stages Using GC–MS and GC–IMS
+URL:     https://doi.org/10.3390/foods10112869
+
+Q: You are developing a house-cured smoked bacon and the smokiness is burying the delicate ester notes your team worked hard to build during curing. You know from process analysis that phenolic compounds from smoking and esters from curing represent distinct aromatic registers tied to separate production phases. How do you approach the fix?
+    • Shorten the total process time equally across both curing and smoking to reduce all volatile intensity at once, accepting that ester complexity will also diminish.
+    • Treat smoking and curing as separable variables — adjust smoking parameters independently to pull back phenolic intensity without touching the curing phase that drives ester development.
+    • Switch wood type and simultaneously reduce salt concentration in the cure, reasoning that both changes together will rebalance the overall aromatic profile more efficiently.
+
+Citation: "those two aromatic registers originate in distinct process phases — smoking and curing respectively. You treat them as separable variables, adjusting each independently rather than making a single blanket change"
+
+━━━━━ #16   score 1.000   phronesis ━━━━━
+Article: How do sous‐vide treatment and herb spices addition improve sensory acceptance and antimicrobial attributes of organic oyster mushrooms ( Pleurotus ostreatus )?
+URL:     https://doi.org/10.1111/jfpp.17142
+
+Q: You are finalising a new oyster mushroom dish for a menu that emphasises both flavour complexity and food safety. You have read a study using oregano and thyme with sous-vide at 60°C for either 20 or 30 minutes, but the abstract does not identify a single optimal duration. A supplier is pushing you to lock in a recipe card tonight — herb choice, temperature, and exact time — for print tomorrow. How do you handle this?
+    • Commit to 60°C and pick 30 minutes as the default time, since longer cooking is generally safer, and proceed with oregano and thyme on the recipe card.
+    • Delay finalising the duration until you have reviewed the full study results, while confirming 60°C and the use of oregano and thyme as the studied agents.
+    • Substitute a broader herb blend for oregano and thyme to give the dish more flexibility, and set the time at 25 minutes as a midpoint between the two tested variables.
+
+Citation: "You hold the 60°C sous-vide window in mind but resist fixing duration until you consult the full results, because the abstract presents 20 and 30 minutes as variables, not as a single confirmed optimum."
+
+━━━━━ #17   score 1.000   phronesis ━━━━━
+Article: (2018). Food Culture of Wenzhou/Zhejiang and South India - A Comparative Study
+URL:     https://doi.org/10.31033/ijemr.8.5.13
+
+Q: You are building a fusion fermentation programme that pairs Wenzhou techniques with Indian ingredients. A colleague argues that because the study notes similarities between northeastern Indian and Chinese cuisines, you can apply the same assumptions to your South Indian suppliers and their guests. How do you respond?
+    • Accept the reasoning — if the similarity holds for northeastern India, it is a safe working assumption for South Indian cuisine until a guest complains.
+    • Reject the reasoning — the study explicitly treats northeastern Indian and South Indian cuisines as distinct cases, so the similarity finding does not transfer.
+    • Defer the decision — globalisation is already shifting what Indian diners in China accept, so preference hierarchies will converge quickly enough to make the distinction irrelevant.
+
+Citation: "Your situated judgment right now is to resist assuming that similarity between northeastern Indian and Chinese cuisines noted in the study extends to South Indian cuisine—the abstract explicitly treats these as distinct cases."
+
+━━━━━ #18   score 1.000   phronesis ━━━━━
+Article: Tuscan Wine: Tradition and Innovation
+URL:     https://doi.org/10.1525/gfc.2001.1.1.83
+
+Q: A wine-pairing dinner is being designed around a Tuscan theme. The producer you've worked with for years has shifted their style — moving away from traditional blends toward a more internationally influenced expression. Your menu was built around the old style. Mid-service, a well-informed guest asks whether the pairing still makes sense. What guides your response?
+    • Defend the original pairing on the grounds that tradition defines Tuscan identity, and the producer's shift is a temporary market response that doesn't alter the wine's fundamental character.
+    • Acknowledge that Tuscan wine identity is evolving, and frame the pairing as a dialogue between your culinary choices and where the wine currently sits — inviting the guest into that tension rather than resolving it with false certainty.
+    • Replace the wine immediately with a more traditional producer to preserve the integrity of the menu concept, treating stylistic consistency as the primary obligation to the guest.
+
+Citation: "The study's framing of tradition and innovation in Tuscan wine informs the dimension of culinary responsiveness to evolving regional wine identity, but no situated judgment protocol is derivable from the available record alone."
+
+━━━━━ #19   score 1.000   phronesis ━━━━━
+Article: Effect of the type of acetic fermentation process on the chemical composition of prickly pear vinegar (Opuntia ficus‐indica)
+URL:     https://doi.org/10.1002/jsfa.12138
+
+Q: You are developing a prickly pear vinegar in-house and need to lock in your acetification method before scaling production. The research shows that phenolic depth and volatile aromatic character pull in opposite directions depending on which process you choose. You have three planned uses: a hot reduction for a meat glaze, a cold dressing for a raw vegetable salad, and a pickling brine for preservation. Which use case most clearly dictates which chemical dimension to prioritize, and how does that drive your method choice?
+    • The hot reduction — volatile aromatics burn off during cooking anyway, so you prioritize phenolic depth and choose the method that maximizes it, accepting lower aromatic complexity.
+    • The cold dressing — aromatics are fully present on the palate and carry the dish, so you prioritize volatile aromatic character and choose the method that favors it, accepting lower phenolic concentration.
+    • The pickling brine — preservation relies on acidity and phenolic antimicrobial activity, so you prioritize phenolic depth and select the method that delivers it, treating aroma as secondary.
+
+Citation: "You weigh your intended culinary application — reduction, dressing, preservation — and let that end use drive which chemical dimension you optimize for."
+
+━━━━━ #20   score 1.000   phronesis ━━━━━
+Article: Physicochemical, microbiological and sensory characteristics of snacks developed from broken rice grains and turmeric powder
+URL:     https://doi.org/10.1111/ijfs.14525
+
+Q: You are developing a turmeric-enriched snack for the menu and a colleague suggests stopping at 6% turmeric because that is what the study recommends. Your production setup uses a different process than the extrusion parameters in the research. How do you approach the 6% figure?
+    • Use 6% as a fixed target — the study's finding is precise enough to apply directly regardless of process differences.
+    • Treat 6% as a directional signal and adjust through your own trials, since your setup differs from the study's extrusion parameters.
+    • Discard the figure entirely — turmeric levels from snack research have no relevance to professional kitchen development.
+
+Citation: "If your kitchen or production setup differs from the extrusion parameters in the study, treat the 6% figure as a directional signal, not a fixed recipe target."
+

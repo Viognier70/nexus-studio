@@ -39,7 +39,23 @@ export type TaskType =
   | 'decant'
   | 'flambe'
   | 'clear'
-  | 'welcomeDrink';
+  | 'welcomeDrink'
+  // ORDER 098 — kort besök vid bordet under dining. Löser dining-hålet:
+  // gästen sitter och äter genererar återkommande tillsyn, så personalen
+  // står inte idle med fullt rum. Inte låst bakom `service='formell'` —
+  // hela poängen med ordern (LOAD_CHAIN_TRACE_2026-08-15.md §rotorsak).
+  | 'checkback';
+
+// ORDER 102 — R1 kunskapskapital. Vektor (episteme/techne/phronesis),
+// inte skalär, per R3-rapport §1.2. Byggs upp av paviljongerna (R2) och
+// post-service-quiz (R6); läses av bankmötet (M7b) via businessProfile.ts.
+export type KnowledgeAxis = 'episteme' | 'techne' | 'phronesis';
+
+export interface KnowledgeCredits {
+  episteme: number;
+  techne: number;
+  phronesis: number;
+}
 
 export type ServiceConcept = 'vardaglig' | 'formell';
 export type PricingTier = 'låg' | 'medel' | 'hög';
@@ -138,6 +154,13 @@ export interface Guest {
   targetPosition: Vec2;
   moveProgress: number;
   hadWelcomeDrink: boolean;
+  // ORDER 098 — simTime för senast utförd checkback (tillsyn) under
+  // dining. `null` innan första besöket. `findTaskTarget('checkback')`
+  // väljer dining-gäster där `simTime - (lastCheckbackAt ?? stateTime)
+  // > CHECKBACK_COOLDOWN_SEC`, så en gäst blir behörig ~var 15:e
+  // sekund från dining-inträdet. Nollas inte vid tillståndsbyte —
+  // relevant bara i dining, ignoreras av andra staters logik.
+  lastCheckbackAt: number | null;
   // ORDER 043 §6 economic-phenomenon flag. When true, the guest walks
   // to the entrance and turns back without sitting — the visible
   // reading of low economic capital ("guests leaving without sitting").
@@ -167,27 +190,65 @@ export type ScenarioChoice = 'A' | 'B' | 'C';
 // (§4.2). `awaitingChoice` is retained as a derived convenience for
 // the arrivals suspension check in the reducer and its existing tests;
 // it equals `phase === 'situation'`.
+//
+// ORDER 048 §5 — new 'question' phase inserted BETWEEN 'resolving' and
+// 'settled' when the chosen choiceSpec has a professionalQuestion. On
+// ANSWER_QUESTION the phase drops back to 'resolving' and continues
+// through the normal settle window.
+//
+// ORDER 048 §5 amendment (2026-08-10): the previous 'difficulty' phase
+// (self-reported confidence) is retired. It asked about feeling
+// instead of knowledge, arrived without context, and produced no
+// outcome. The slot between subject and situation is reserved for
+// the real professional questions coming from ORDER 049 §5.1's bank —
+// same shape (a beat between framing and choosing), replaced by
+// something that actually reads what the player knows.
 export type ScenarioPhase =
   | 'idle'
   | 'subject'
-  | 'difficulty'
   | 'situation'
   | 'resolving'
+  | 'question'
   | 'settled';
 
-export type ScenarioDifficulty = 1 | 2 | 3;
+// ORDER 048 §5 — the professional question currently awaiting a
+// player answer. A subset of the spec's ProfessionalQuestion so
+// state stays portable (no function refs, plain-object per §11.1).
+//
+// ORDER 049 §7 step 3 (2026-08-10) — extended with source-of-truth
+// fields so bank-drawn questions carry their citation into the
+// overlay and the post-answer stream line. Hand-authored questions
+// leave the source-* fields undefined; bank picks populate them.
+export interface PendingQuestion {
+  body: string;
+  options: readonly {
+    label: string;
+    correct: boolean;
+    consequenceLine?: string;
+  }[];
+  senderRole: StaffRole | null;   // overrides scenario sender for the question
+  scenarioId: string;
+  choice: ScenarioChoice;
+  // Bank-only fields. When the question was drawn from the bank,
+  // these carry the citation the answer is grounded in per §3.1.
+  sourceBankId?: string;
+  sourceArticleTitle?: string;
+  sourceArticleUrl?: string;
+  sourceCitation?: string;
+}
 
 export interface ScenarioState {
   hasAutoTriggered: boolean;
   active: boolean;
   phase: ScenarioPhase;
-  difficulty: ScenarioDifficulty | null;
   awaitingChoice: boolean;
   choice: ScenarioChoice | null;
   choiceAt: number | null;
   spawnedRemaining: number;
   nextSpawnAt: number;
   visibleGuestIds: string[];
+  // ORDER 047 §6 unused reservation; the actual policy-change list
+  // lives on DayState (see morningPolicyChanges).
   // ORDER 043 v3 §7 chain — theme drawn at trigger time (before the
   // player sees the scenario), consumed at resolve to move the themed
   // capital and pay out any standing wager. Null between scenarios
@@ -198,6 +259,19 @@ export interface ScenarioState {
   // reads strings, choice labels, mentor lines, etc. from the spec.
   // Null between scenarios; set at triggerScenario.
   scenarioId: string | null;
+  // ORDER 048 §4 — the team member "sending" this scenario. Role
+  // determines the sender-prefix on the subject-body; memberId lets
+  // future work (professional questions, evaluate-answer per role)
+  // attribute the interaction to a specific person. Null between
+  // scenarios and when the team is empty.
+  senderRole: StaffRole | null;
+  senderMemberId: string | null;
+  // ORDER 048 §5 — set when the chosen choiceSpec had a
+  // professionalQuestion. Non-null during phase 'question'; cleared
+  // on ANSWER_QUESTION. `senderRole` here overrides the scenario
+  // sender for the question (e.g. main scenario sender Värden,
+  // question sender Kocken for a kitchen question).
+  pendingQuestion: PendingQuestion | null;
   // Populated by the reducer when the scenario transitions to
   // `settled`. Rendered as an in-world text bubble by MentorComment;
   // per CAMERA_AND_GAMEPLAY_BIBLE §8.1 this must not be a modal.
@@ -351,6 +425,135 @@ export interface DayState {
   // OPEN_SERVICE. Empty on most evenings; the outer world reports
   // in ~37 % of services (any factor firing). Cleared on close.
   worldFactors: ActiveWorldFactor[];
+  // ORDER 047 §6 — policy changes made during THIS morning (cleared
+  // on day advance, kept alive through the day's services so the
+  // evening account can reference them). Each entry is a hand-written
+  // observer-voice line synthesised at SET_POLICY time. Consumed:
+  //   - at OPEN_SERVICE, one pendingOutcome per change fires ~5 s
+  //     past prep-end so the stream names the change when it lands.
+  //   - at evening account, prepends a sentence about the morning
+  //     change (if any) to the branch's paragraph.
+  morningPolicyChanges: string[];
+  // ORDER 046 §1 — set true when a collapse roll fires during this
+  // service. Blocks the collapse tick from firing twice in the same
+  // service; read by the evening-account panel to pick the collapsed
+  // branch. Cleared on service open.
+  serviceCollapsed: boolean;
+  // Which competence axis was weakest at the moment of collapse
+  // (scientific / cultural / practical). Null when no collapse has
+  // fired this service. Consumed by the evening-account panel and
+  // future scenarios that want to reference the specific failure.
+  collapseAxis: 'scientific' | 'cultural' | 'practical' | null;
+  // ORDER 046 §3 — snapshots of state.revenue and state.cost at
+  // OPEN_SERVICE, so the evening-account panel can compute this
+  // service's net take by subtraction. Null between services.
+  revenueAtServiceStart: number | null;
+  costAtServiceStart: number | null;
+  // ORDER 050 §7 step 3 (2026-08-10) — running total of tick-driven
+  // ingredient/staff-per-minute cost accrued during the current
+  // service. Reset to 0 at OPEN_SERVICE; posted as one 'ingredient'
+  // ledger line at lunch→afternoon / dinner→evening close, then
+  // reset. Distinct from state.cost (which also carries agency,
+  // wage, interest, buyout) so the ledger line is clean.
+  serviceIngredientAccrued: number;
+  // ORDER 073 (M3) — idle-period ingredient/staff cost accrued
+  // outside service (morning, opening, prep, afternoon, evening).
+  // Posted as one 'other' ledger line at day rollover and reset.
+  // Necessary for DoD 3 reconciliation: state.cost accumulates all
+  // tick cost regardless of period; without this the ledger would
+  // undercount by the per-day idle cost (~100-200 SEK/day).
+  idleCostAccrued: number;
+  // ORDER 050 §7 step 3 (2026-08-10) — cover count for the current
+  // service. Incremented each time a guest transitions into 'paying';
+  // read at service close to enrich the revenue ledger line's cause
+  // text ("Lunch revenue (28 covers)"). Reset with serviceIngredientAccrued.
+  serviceCovers: number;
+  // Reputation at the moment OPEN_SERVICE was dispatched — the
+  // evening account uses this to say "kvällen bevarade ryktet" vs
+  // "ryktet gick tillbaka" without surfacing the number itself.
+  reputationAtServiceStart: number | null;
+  // ORDER 075 (M2) — today's picked activity ids. Set in the morning
+  // via PICK_ACTIVITY; cleared at day rollover. Length capped at
+  // MAX_ACTIVITIES_PER_DAY = 3 in the reducer.
+  pickedActivityIds: string[];
+  // ORDER 076 (M6) — capital drawn by the last resolved scenario
+  // this day. Read by computeEveningAccount → pickParagraph so
+  // the evening account paragraph reflects which theme moved.
+  drawnCapital: SustainabilityKey | null;
+  // ORDER 076 (M6) — choice made on the last resolved scenario this
+  // day. Same drawn capital reads differently depending on whether
+  // the proprietor engaged the demanding way (A), the generous way
+  // (B), or sidestepped (C); the paragraph selector uses this to
+  // produce A/B/C textual divergence at same seed.
+  lastScenarioChoice: 'A' | 'B' | 'C' | null;
+  // ORDER 077 §4 (M4) — plates-remaining reading per dish on today's
+  // menu. Recomputed after every stock draw. Read by
+  // PlatesRemainingPanel + the running-out check at guest-pay tick.
+  platesRemaining: Record<string, number>;
+  // ORDER 077 §4 (M4) — dish ids that ran out this service. Used to
+  // stop the running-out event firing more than once per dish per
+  // service (§7 report gate). Cleared at OPEN_SERVICE.
+  stockOutEvents: string[];
+  // ORDER 078 (M5) — per-item mise en place readiness in [0, 1],
+  // fixed at doors-open per the report gate §2 formula. Empty
+  // before doors open (morning / opening / prep); populated for
+  // the whole service. Cleared at OPEN_SERVICE. Five items:
+  // ice, napkins, cutlery, stations, garnish.
+  prepReadiness: Record<string, number>;
+  // ORDER 078 (M5) — service rhythm reading in {green, amber, red},
+  // recomputed each tick during service as the worst puck this
+  // tick (min-over-staff loads mapped to colour). Read by the
+  // staff-puck colour ring in the room, not by any panel. Null
+  // outside service.
+  serviceRhythm: 'green' | 'amber' | 'red' | null;
+  // ORDER 079 §3 (M4a) — per-service counters for substitute and
+  // walkout events. Persistent across the ring-buffered eventStream
+  // (which purges at 40 entries) so the DoD assertion and any
+  // future ledger/analytics panel can read a stable count. Reset
+  // at day rollover with the rest of DayState.
+  substitutedCount: number;
+  walkedCount: number;
+}
+
+// ORDER 077 §4 (M4) — supplier, ingredient, and dish domain types.
+// See M4_MENU_KITCHEN_STOCK_REPORT_ORDER_077.md §2–§4 for the
+// authored catalogues and axis semantics.
+export interface Supplier {
+  id: string;
+  name: string;
+  priceIndex: number;      // multiplier on ingredient base cost
+  quality: number;         // [0,1]
+  reliability: number;     // [0,1]; P(short-delivery) = 1 - reliability
+  ecoDelta: number;        // signed additive delta on ecological cap per unit
+}
+
+export interface Ingredient {
+  id: string;
+  name: string;
+  baseCostSek: number;
+  unit: string;
+  suppliers: readonly string[];   // supplier ids this ingredient can be sourced from
+}
+
+export interface DishRecipe {
+  ingredientId: string;
+  units: number;
+}
+
+export interface Dish {
+  id: string;
+  name: string;
+  recipe: readonly DishRecipe[];
+  suggestedPrice: number;         // SEK
+}
+
+// One entry per dish on today's menu. `ingredientCostSek` frozen at
+// COMPOSE_MENU time so mid-day supplier changes don't shift the
+// plate's economics retroactively.
+export interface MenuEntry {
+  dishId: string;
+  price: number;
+  ingredientCostSek: number;
 }
 
 // ----- ORDER 043 two-layer capital model ----------------------------------
@@ -396,11 +599,40 @@ export interface EnablerRecord {
   history: EnablerEvent[];
 }
 
-// Wager state. Fixed unit stake for cycle 1 (§4 numbers-to-be-tuned).
-export interface WagerState {
-  capital: SustainabilityKey;    // what the player pointed at
-  placedAt: number;              // simTime
-  amount: number;                // stake magnitude
+// ORDER 050 §5 (2026-08-10) — WagerState + WagerHistoryEntry retired
+// with the theme-wager mechanic. Grep history for `WagerState` if
+// archaeology is needed.
+
+// ORDER 050 §7 step 3 — the ledger. Every discrete money-touching
+// mechanic appends a line so the player can open the business account
+// (Fortnox-analogue view) and see "where did the money go" without
+// help. Per-service revenue and ingredient posts happen ONCE per
+// completed service (Vision Owner 2026-08-10: "Ledgern är en bok,
+// inte en logg. Per service.") — per-guest granularity would flood
+// the book. Fine-grained cash mutations (per-guest revenue, per-tick
+// ingredient cost) still move state.cash immediately; only the
+// summary posts to the ledger, so the ledger view has readable
+// rhythm without losing cash accuracy at any moment.
+export type LedgerCategory =
+  | 'revenue'             // guest payments, aggregated per completed service
+  | 'wage'                // team member daily cost, one line per member per day
+  | 'agency'              // agency staff for tonight, at accept
+  | 'ingredient'          // per-service tick-cost aggregate
+  | 'interest'            // daily loan interest accrual
+  | 'scenario'            // scenario cash writes (themed + secondary)
+  | 'buyout'              // fired team member contract buyout
+  | 'stock'               // ORDER 077 §4 (M4) — ingredient purchase from a supplier
+  | 'other';              // fallback with mandatory descriptive cause
+
+export interface LedgerLine {
+  at: number;             // simTime (monotonic seconds; portable per §11.1)
+  day: number;            // state.day.dayNumber at post time
+  period: DayPeriod;      // period at post time
+  category: LedgerCategory;
+  amount: number;         // signed SEK (positive = into the till, negative = out)
+  cause: string;          // human-readable, English (e.g. "Lunch revenue (28 covers)")
+  causeId?: string;       // stable identifier: member id, scenario id, etc.
+  runningCash: number;    // cash on hand AFTER this line — makes each row self-explanatory when read out of context
 }
 
 // One consequence event per sustainability in cycle 1 (§6, §10).
@@ -420,28 +652,21 @@ export interface ConsequenceEvent {
   active: boolean;               // still shaping the next scenario?
 }
 
-export interface CapitalState {
-  // Outcome values in [0, 1]. Meaning per §3.1:
-  //   economic  — margin, cash, evening's takings — normalised vs a
-  //               baseline so a shared-economy future doesn't force a
-  //               refactor (see §11.1 constraint 6 handling).
-  //   social    — staff, guests, village regard.
-  //   ecological — sourcing, waste, seasons.
-  values: Record<SustainabilityKey, number>;
-  // Per-capital lifetime deltas from wagers + scenario outcomes. The
-  // portfolio-visible history of stakes and their results.
-  wagerHistory: WagerHistoryEntry[];
-  // Themes drawn by the last N scenarios — needed for the §4 damping
-  // rule (consecutive-recurrence cap). Kept short (~6 entries).
-  themeHistory: SustainabilityKey[];
-}
+// Non-economic capitals stored as [0,1] scalars. Economic is no
+// longer stored — see state.cash (SEK). SustainabilityKey stays as
+// three entries because scenarios still draw a theme from all three;
+// the economic case reads through `economicReadingNormalised(state)`
+// per ORDER 050 §3 (2026-08-10).
+export type StoredCapitalKey = 'social' | 'ecological';
 
-export interface WagerHistoryEntry {
-  at: number;                    // simTime the wager was resolved
-  staked: SustainabilityKey;     // what the player pointed at
-  drew: SustainabilityKey;       // what the next scenario actually was
-  outcome: 'win' | 'loss' | 'no_wager';
-  delta: number;                 // capital movement applied
+export interface CapitalState {
+  // Outcome values in [0, 1] for social and ecological. Economic
+  // moved to state.cash (SEK) under ORDER 050 §3.
+  values: Record<StoredCapitalKey, number>;
+  // Themes drawn by the last N scenarios — needed for the ORDER 043
+  // §4 damping rule (consecutive-recurrence cap). Kept short (~6
+  // entries).
+  themeHistory: SustainabilityKey[];
 }
 
 // ORDER 043 Addendum A — the service event stream.
@@ -462,16 +687,68 @@ export interface WagerHistoryEntry {
 //              Fires only during service, gated by calmness × team
 //              competence — a weak or strained team gets no positives.
 export type EventStreamCategory = 'ambient' | 'outcome' | 'positive';
-export type EventStreamCauseTag = 'ignorance' | 'strain' | 'both';
+// ORDER 076 (M6) — expanded from 3-value tag to a labelled cause
+// vocabulary. Names aligned to the pre-existing `CauseKey` in
+// content/serviceReport.ts (ORDER 052 §9 step 1) so
+// eventStream.ts's `detectCause` output can be assigned directly.
+// The three legacy values (`ignorance`, `strain`, `both`) are
+// retained as fallbacks so existing wiring keeps firing during
+// migration.
+// See M6_CAUSE_AWARE_TEXTURE_REPORT_ORDER_076.md §1.
+export type EventStreamCauseTag =
+  | 'scale_down'
+  | 'morning_change'
+  | 'short_prep'
+  | 'thin_team'
+  | 'low_competence'
+  | 'ingredient_tier_grund'
+  | 'poor_morale'
+  // New M6 conditions not detected by the pre-existing detectCause
+  | 'weather_adverse'
+  | 'world_factor_negative'
+  // ORDER 077 §4 (M4) — stock ran out for a dish on the menu.
+  // Fires per-dish, once per service (dish is removed from the
+  // running menu after firing so it does not spam).
+  | 'stock_out'
+  // ORDER 078 (M5) — the door-open marker line. Not a symptom;
+  // the event names its own condition (service just started).
+  // Counts as specific under M6 DoD 2 coverage.
+  | 'doors_open'
+  // Legacy fallbacks (three-value tag from earlier eventStream defs)
+  | 'ignorance'
+  | 'strain'
+  | 'both';
 
 export interface EventStreamEntry {
   at: number;                 // simTime
   text: string;               // hand-authored Swedish
   category: EventStreamCategory;
   causeTag: EventStreamCauseTag | null;   // null for outcome
+  // ORDER 076 (M6) — short opaque id linking consecutive events
+  // triggered by the same underlying condition within ≤ 20 sim-s.
+  // Enables the autonomous DoD 3 assertion "chain of ≥ 3 events
+  // shares one causeChainId." Null for legacy / one-off events.
+  causeChainId: string | null;
   sustainability: SustainabilityKey;
   kind: string;               // ambient event kind name, or 'outcome'
   scenarioId: string | null;  // set for outcome events
+}
+
+// ORDER 046 §3 — evening account, captured at evening period start.
+export type EveningAccountBranch =
+  | 'collapsed'
+  | 'high_wager_win'
+  | 'high_wager_loss'
+  | 'good'
+  | 'thin'
+  | 'mediocre';
+
+export interface EveningAccount {
+  branch: EveningAccountBranch;
+  // 3–5 sentences, plain-authored Swedish in observer voice. Rendered
+  // in EveningAccountPanel as a block; no per-sentence styling.
+  paragraph: string;
+  presentedAt: number;   // simTime — start of fade-in
 }
 
 export interface PendingOutcome {
@@ -502,6 +779,17 @@ export interface SimulationState {
   cost: number;
   waste: number;
   reputation: number;
+  // ORDER 049 §2.1 knowledge-ceiling model — reputation has a soft
+  // ceiling raised by episteme enablers (culinary + hospitality
+  // theory learned). The current `reputation` value drifts toward
+  // this ceiling at a rate modulated by techne enablers. Direct
+  // writes (queue strain, happy/unhappy departure) may still push
+  // above the ceiling briefly; drift pulls back. See reputation.ts.
+  reputationCeiling: number;
+  // ORDER 102 — R1 kunskapskapital. Vektor med tre axlar; skrivs bara
+  // via ACCUMULATE_KNOWLEDGE. Ingen summa/genomsnitt exponeras — formen
+  // läses som helhet i businessProfile.ts:readProfile().
+  knowledgeCredits: KnowledgeCredits;
   eco: {
     econ: SustainabilityCondition;
     social: SustainabilityCondition;
@@ -517,18 +805,49 @@ export interface SimulationState {
   // ORDER 043 v3 §2 day model. Rounds gate services, service length
   // gates scenario cadence, periods gate what the player can do.
   day: DayState;
-  // ORDER 043 outcome layer — capitals the player wagers on and
-  // scenarios move (§3.1). Separate from `eco` above (§8.2's visible
-  // sustainability *reading*), which stays as-is for the room-cue
-  // prose and is fed by tickSustainability.
+  // ORDER 050 §3 (2026-08-10) — literal cash in kronor. Authoritative
+  // for economic capital. Every mechanic that used to write
+  // capitals.values.economic (scenarios, agency, wager-was) now
+  // writes here in SEK. state.revenue and state.cost remain as
+  // categorized flow accumulators (revenue-only-writes and cost-only-
+  // writes respectively) — paired with cash writes at every mutation
+  // so cash = INITIAL_CASH_SEK + revenue - cost + non-flow deltas.
+  cash: number;
+  // ORDER 050 §7 step 3 — chronological append-only ledger, ring-
+  // buffered at LEDGER_MAX_LINES. Feeds the business-account modal
+  // (§3.1). Per-service revenue + ingredient lines aggregate the
+  // per-tick cash movements; agency / wage / interest / scenario
+  // post one line per event. Cash-authoritative — the ledger is a
+  // reading of the book, not the source of the till balance.
+  ledger: LedgerLine[];
+  // ORDER 075 (M2) — weekly-gate history for activities. Records
+  // each pick; consulted at PICK_ACTIVITY time to enforce weekly
+  // availability. Uncapped — 1 entry per activity pick, small.
+  activityHistory: { id: string; pickedOnDay: number }[];
+  // ORDER 076 (M6) — active cause chains for the eventStream.
+  // Each entry: `causeTag` (which condition), `chainId` (opaque
+  // id, base36 tick), `startedAt` (simTime the chain started).
+  // Reused within a 20 s window; expire on condition change.
+  activeCauseChains: { causeTag: EventStreamCauseTag; chainId: string; startedAt: number }[];
+  // ORDER 077 §4 (M4) — today's menu. Set at COMPOSE_MENU; cleared
+  // at day rollover so tomorrow's morning is a fresh compose. Each
+  // entry freezes the ingredient cost at compose time so a mid-day
+  // supplier swap doesn't retroactively shift the plate's economics.
+  menu: MenuEntry[];
+  // ORDER 077 §4 (M4) — pantry state. Ingredient id → units. Non-
+  // negative; drawn down at guest-pay tick when a dish is picked.
+  // Unbounded across days (§13 defers ageing to M4b); a slow leak
+  // will show up on the reconciliation baseline.
+  stock: Record<string, number>;
+  // ORDER 043 outcome layer — non-economic capitals the scenarios
+  // move (§3.1). Economic moved to `state.cash`. Separate from `eco`
+  // above (§8.2's visible sustainability *reading*), which stays
+  // as-is for the room-cue prose and is fed by tickSustainability.
   capitals: CapitalState;
   // ORDER 043 enabler layer — competences derived from behaviour,
   // never purchased (§3.2, §3.3). Rendered growth only via §8: a
   // fourth response option, a mentor line reflecting behaviour.
   enablers: Record<EnablerKey, EnablerRecord>;
-  // Current wager placed by the player between scenarios, or null if
-  // none is standing (§4).
-  wager: WagerState | null;
   // Consequence events fired when a capital crossed its threshold (§6).
   // History + active flag so the next scenario can be shaped by an
   // active event and mentor lines can reference recent history.
@@ -538,6 +857,68 @@ export interface SimulationState {
   // holds scheduled outcome events waiting to fire at their dueAt.
   eventStream: EventStreamEntry[];
   pendingOutcomes: PendingOutcome[];
+  // ORDER 046 §3 — the evening account. Non-null between the moment
+  // dinner/lunch ends (natural or collapse) and the moment morning
+  // begins. Captured once so the paragraph doesn't shift while the
+  // player reads it. `presentedAt` drives the fade-in / fade-out
+  // timing in EveningAccountPanel.
+  eveningAccount: EveningAccount | null;
+  // ORDER 047 §2 — staff morale scalar in [0, 1]. Live feedback layer
+  // that couples the room's satisfaction back into the sim's
+  // competence: effectiveCompetence(axis) = teamCompetence(axis) ×
+  // (0.65 + 0.35 × morale), consumed by event-stream ignorance rates
+  // and the collapse formula's `weakest`. Written by scenario
+  // resolution, agency accept/decline, stream events, departures,
+  // collapse, and a per-tick drift toward `0.5 + 0.5 × meanSat`.
+  morale: number;
+  // ORDER 047 §5 — per-service running tally of which theme axis the
+  // ambient stream has been reporting on. Feeds a stream-weight term
+  // into drawNextTheme so the next scenario tends (but is not forced)
+  // to match what the room has been showing. Reset at OPEN_SERVICE.
+  streamThemeCounts: Record<SustainabilityKey, number>;
+  // ORDER 047 §4 — scenario ids fired during the current service, and
+  // the opener id from the previous service. Consumed by the scenario
+  // selector to avoid repeating within a service and to avoid opening
+  // two services in a row on the same content. Cleared at OPEN_SERVICE.
+  firedScenarioIds: string[];
+  lastServiceOpenerId: string | null;
+  // ORDER 049 §5.2 — three slow-rolling quality readings in [0, 1].
+  // Each drifts toward its own target derived from policies, team
+  // competence and morale. Half-life ~15 sim-minutes. Written to
+  // player panel as a word band; consumed by computeValuation via
+  // the weakest-link (min) rule per Vision Owner gate 2 answer.
+  qualityFood: number;
+  qualityDrink: number;
+  qualityService: number;
+  // ORDER 049 §5.2 — rolling revenue split by service type. Two
+  // per-day accumulators flushed to the rolling arrays on
+  // evening→morning transition. Rolling arrays capped at 14 entries;
+  // consumed by valuation (monthly run-rate) and by the panel
+  // (lunch/dinner split).
+  serviceRevenueToday: { lunch: number; dinner: number };
+  serviceRevenueRolling: { lunch: number[]; dinner: number[] };
+  // ORDER 049 §5.2 — the bank loan. principal + daily interest rate.
+  // Interest accrues to state.cost each sim-day. Subtracted from
+  // valuation. Cycle-1: no repayment schedule — the player owns the
+  // debt until they pay it off (button not yet wired; the sell flow
+  // will settle it). Initial loan values grandfathered until §5.1
+  // bank meeting lands.
+  loan: {
+    principal: number;                // in kSEK-scale units matching revenue/cost
+    interestRatePerDay: number;       // e.g. 0.00025 = ~9 % APR
+    lastAccrualDay: number;           // dayNumber; guards double-charge in a tick
+  };
+  // ORDER 049 §5.3 — scale-down flags. Each is reversible; each
+  // costs quality + rep while active. The reducer refuses OPEN_SERVICE
+  // when the corresponding closed flag is set. `menuShortenedFrom`
+  // records the pre-shorten ingredient tier so the restore knows
+  // where to go back to.
+  scaleDown: {
+    menuShortenedFrom: IngredientTier | null;
+    wineListReduced: boolean;
+    closedLunch: boolean;
+    closedDinner: boolean;
+  };
   // ORDER 043 v3 §10 team layer — economic record for hiring, cost,
   // competence. Runs alongside `staff` (visual pucks). Cost
   // accumulates on day-advance; competence is read by the event
@@ -570,21 +951,25 @@ export type SimAction =
   | { type: 'SET_POLICY'; patch: Partial<Policies> }
   | { type: 'RESOLVE_SCENARIO'; choice: ScenarioChoice }
   | { type: 'TRIGGER_SCENARIO' }
-  | { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' }
-  | { type: 'SET_SCENARIO_DIFFICULTY'; difficulty: ScenarioDifficulty }
-  // ORDER 043 wager actions (§4). Cycle-1 stake is fixed magnitude
-  // (see reducer WAGER_UNIT_STAKE); a future order can vary it.
-  | { type: 'PLACE_WAGER'; capital: SustainabilityKey }
-  | { type: 'CLEAR_WAGER' }
+  | { type: 'ADVANCE_SCENARIO_TO_SITUATION' }
+  // ORDER 050 §5 (2026-08-10) — the wager actions are retired with
+  // the theme-wager mechanic; the stake now lives in each activity's
+  // own three-column effects. Grep history for `PLACE_WAGER` if
+  // archaeology is needed.
   // ORDER 043 enabler write (§3.3, §5). Records behavioural evidence
   // against a register + enabler as a small positive amount. Only
   // scenario responses generate these; nothing else may.
   | { type: 'RECORD_ENABLER_EVENT'; enabler: EnablerKey; register: Register; amount: number; scenarioId: string | null }
-  // ORDER 043 dev-only capital nudge. Not for player use — only wired
-  // to the B.1 gate playtest shortcuts (StrategicApp.tsx) so the
-  // Vision Owner can verify the room reads capital state without
-  // waiting for scenario-driven capital movement (Phase B.2+).
-  | { type: 'SET_CAPITAL'; capital: SustainabilityKey; value: number }
+  // ORDER 043 dev-only capital nudge, restricted to non-economic
+  // capitals after the ORDER 050 §3 cash refactor. Economic is set
+  // via SET_CASH now (also dev-only). Only wired to StrategicApp
+  // playtest shortcuts.
+  | { type: 'SET_CAPITAL'; capital: StoredCapitalKey; value: number }
+  | { type: 'SET_CASH'; valueSek: number }
+  // ORDER 102 — R1 kunskapskapital. Skriver på angiven axel; amount
+  // klämmas ≥ 0 i reducern. Inget tak i R1 (öppen fråga hör till R3
+  // kreditekonomi + svårighetskurva).
+  | { type: 'ACCUMULATE_KNOWLEDGE'; axis: KnowledgeAxis; amount: number }
   // ORDER 043 v3 §10 step 1 — the round.
   // OPEN_SERVICE is dispatched from the morning/afternoon UI when the
   // player commits to a service length. lengthMinutes clamped to
@@ -603,7 +988,46 @@ export type SimAction =
   // a buyout so quitting is not free while the contract runs.
   | { type: 'HIRE_TEAM_MEMBER'; role: StaffRole }
   | { type: 'FIRE_TEAM_MEMBER'; memberId: string }
-  | { type: 'RESET' };
+  | { type: 'RESET' }
+  // ORDER 047 §8 dev-only — force the current service to collapse on
+  // the next tick, so the mechanic can be seen, judged and tuned
+  // without waiting for the rare RNG roll. Guarded at the caller
+  // (StrategicApp keydown handler is import.meta.env.DEV-only);
+  // reducer treats it as a normal action so tests can exercise the
+  // force path deterministically.
+  | { type: 'FORCE_COLLAPSE' }
+  // ORDER 048 §5 — answer to the professional question currently
+  // held in state.scenario.pendingQuestion. `index` picks one of
+  // the pending options; the reducer looks up correctness against
+  // the pending options and fires the right/wrong effects.
+  | { type: 'ANSWER_QUESTION'; index: number }
+  // ORDER 075 (M2) — morning activity pick / unpick. Only fires
+  // during period='morning'. Cost posts immediately; effect posts
+  // at end-of-day alongside wages. Max 3 picks per day.
+  | { type: 'PICK_ACTIVITY'; id: string }
+  | { type: 'UNPICK_ACTIVITY'; id: string }
+  // ORDER 049 §5.3 — scale-down actions. Morning-only. Reversible;
+  // dispatching the same action while active un-scales.
+  //   SHORTEN_MENU toggles the ingredient tier down one step
+  //     (premium → utvald, utvald → grund, grund = no-op) and stashes
+  //     the pre-shorten value on state.scaleDown.menuShortenedFrom;
+  //     dispatching again restores from that stash.
+  //   THIN_WINE_LIST toggles state.scaleDown.wineListReduced and turns
+  //     policies.welcomeDrink off when engaging (restoring on off).
+  //   CLOSE_SERVICE with service='lunch'|'dinner' toggles the
+  //     corresponding closed flag; reducer refuses OPEN_SERVICE while
+  //     the flag is set.
+  | { type: 'SHORTEN_MENU' }
+  | { type: 'THIN_WINE_LIST' }
+  | { type: 'CLOSE_SERVICE'; service: 'lunch' | 'dinner' }
+  // ORDER 077 §4 (M4) — morning stock purchase. Cost posts to cash
+  // immediately + a labelled ledger line (DoD 4). Short-delivery
+  // rolled per supplier reliability (§7 report gate).
+  | { type: 'BUY_STOCK'; supplierId: string; ingredientId: string; units: number }
+  // ORDER 077 §4 (M4) — morning menu composition. Freezes today's
+  // dish list + pricing + ingredient cost per entry. Blocked once
+  // service opens (§6 report gate: "set in the morning and stands").
+  | { type: 'COMPOSE_MENU'; dishes: readonly { dishId: string; price: number }[] };
 
 export interface CameraTarget {
   focus: Vec2;

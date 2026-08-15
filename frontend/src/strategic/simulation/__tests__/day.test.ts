@@ -185,8 +185,9 @@ describe('automatic tick transitions', () => {
     s = tick(s, 920);
     expect(s.day.period).toBe('evening');
     const eveningDayNumber = s.day.dayNumber;
-    // 15-sec close pause = 75 ticks. Add a few for slack.
-    s = tick(s, 90);
+    // ORDER 046 §3 — close pause bumped 15 → 30 s (150 ticks) to
+    // hold the evening account panel. Add a few for slack.
+    s = tick(s, 170);
     expect(s.day.period).toBe('morning');
     expect(s.day.dayNumber).toBe(eveningDayNumber + 1);
     expect(s.day.currentServiceLengthMinutes).toBeNull();
@@ -288,15 +289,17 @@ describe('scheduled scenario firing during service', () => {
     const planned = s.day.scenariosPlanned;
     // Tick through the whole service. Each scenario that reaches
     // 'subject' phase gets advanced + resolved so the next can fire.
+    // ORDER 048 §5 — choices with a professionalQuestion step through
+    // 'question' phase after RESOLVE_SCENARIO; the loop answers with
+    // index 0 so the sim unblocks and the next scenario can auto-fire.
     for (let i = 0; i < 3000; i++) {
       s = reducer(s, { type: 'TICK', dt: 0.2 });
       if (s.scenario.phase === 'subject') {
-        s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
-        s = reducer(s, {
-          type: 'SET_SCENARIO_DIFFICULTY',
-          difficulty: 2
-        });
+        s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_SITUATION' });
         s = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'A' });
+      }
+      if (s.scenario.phase === 'question') {
+        s = reducer(s, { type: 'ANSWER_QUESTION', index: 0 });
       }
     }
     expect(s.day.scenariosFiredThisService).toBe(planned);
@@ -390,7 +393,15 @@ describe('dinner queue grows monotonically as social falls (regression)', () => 
 
   it('peak queue grows as social drops (1.0 → 0.7 → 0.5 → 0.3 → 0.0)', () => {
     const socials = [1.0, 0.7, 0.5, 0.3, 0.0];
-    const seeds = [11, 22, 33, 44, 55, 66, 77, 88];
+    // 16 seeds (bumped from 8 under ORDER 050 §3 cash refactor,
+    // 2026-08-10) — the derived economic reading nudges arrival
+    // dynamics enough that the 8-seed average was tripping on ~0.25
+    // stochastic gaps between adjacent social steps. Doubling
+    // tightens the mean without loosening the invariant.
+    const seeds = [
+      11, 22, 33, 44, 55, 66, 77, 88,
+      101, 202, 303, 404, 505, 606, 707, 808
+    ];
     const meanPeak = socials.map((sv) => {
       const total = seeds.reduce(
         (sum, seed) => sum + simulateDinnerPeakQueue(seed, sv),

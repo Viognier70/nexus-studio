@@ -1,27 +1,46 @@
-// ORDER 043 §4 — theme selection + wager payout tests.
+// ORDER 043 §4 — theme selection tests.
+// (wagerPayout suite retired under ORDER 050 §5, 2026-08-10 —
+// the theme-wager mechanic is gone; stake lives in activity effects.)
 //
 // Two categories:
-//   1. Invariants — pure-function correctness (weight formula, cap
-//      logic, payout signs, weak-win multiplier).
+//   1. Invariants — pure-function correctness (weight formula, cap logic).
 //   2. Distribution — 100-draw simulations at several capital profiles,
 //      to demonstrate the mechanic feels fair before any scenario
-//      content is written. Reported to console during test runs; the
-//      committed report in the Phase B gate summarises them.
+//      content is written. Reported to console during test runs.
 
 import { describe, expect, it } from 'vitest';
+import { makeInitialState } from '../model';
 import { createRng } from '../../util/rng';
-import type { SustainabilityKey, WagerState } from '../../types';
+import type { SimulationState, SustainabilityKey } from '../../types';
 import {
   CONSECUTIVE_THEME_CAP,
   THEMES,
   WEAK_FLOOR,
   drawNextTheme,
   isThemeCappedOut,
-  wagerPayout,
   weightForCapital,
   weightTable
 } from '../themeSelection';
-import { WAGER_UNIT_STAKE, WAGER_WEAK_WIN_MULTIPLIER } from '../reducer';
+
+// ORDER 050 §3 (2026-08-10) — themeSelection now takes SimulationState;
+// economic reads via cash. Helper injects the requested [0,1] readings
+// into a base state (cash back-computed from the 4-week cap × weekly ops).
+function stateFromCapitals(
+  capitals: Record<SustainabilityKey, number>,
+  themeHistory: readonly SustainabilityKey[] = []
+): SimulationState {
+  const s = makeInitialState(1);
+  s.capitals.values.social = capitals.social;
+  s.capitals.values.ecological = capitals.ecological;
+  // Weekly ops mirrors cashReading.ts: max(team wages × 7, floor).
+  const dailyWages = s.team.members
+    .filter((m) => !m.isAgency)
+    .reduce((sum, m) => sum + m.dailyCost, 0);
+  const weekly = Math.max(dailyWages * 7, 40_000);
+  s.cash = capitals.economic * 4 * weekly;
+  s.capitals.themeHistory = [...themeHistory];
+  return s;
+}
 
 // -------- invariants ------------------------------------------------------
 
@@ -89,7 +108,7 @@ describe('weightTable', () => {
   it('marks the capped-out theme with weight 0 and cappedOut true', () => {
     const capitals = { economic: 0.5, social: 0.5, ecological: 0.5 };
     const history = new Array(CONSECUTIVE_THEME_CAP).fill('social') as SustainabilityKey[];
-    const rows = weightTable(capitals, history);
+    const rows = weightTable(stateFromCapitals(capitals, history));
     const social = rows.find((r) => r.theme === 'social')!;
     expect(social.cappedOut).toBe(true);
     expect(social.weight).toBe(0);
@@ -104,10 +123,10 @@ describe('weightTable', () => {
 
 describe('drawNextTheme', () => {
   it('always returns one of the three THEMES', () => {
-    const capitals = { economic: 0.5, social: 0.5, ecological: 0.5 };
+    const state = stateFromCapitals({ economic: 0.5, social: 0.5, ecological: 0.5 });
     const rng = createRng(1);
     for (let i = 0; i < 20; i++) {
-      const t = drawNextTheme(capitals, [], rng);
+      const t = drawNextTheme(state, rng);
       expect(THEMES.includes(t)).toBe(true);
     }
   });
@@ -115,110 +134,69 @@ describe('drawNextTheme', () => {
   it('never draws a theme capped by the recurrence rule', () => {
     // With a history of `social, social` and a subsequent draw, the
     // result must not be social — invariant regardless of capital state.
-    const capitals = { economic: 0.9, social: 0.1, ecological: 0.9 };
     // Deliberately weakest = social so pure weakness would pick it;
     // damping must override.
     const rng = createRng(7);
     for (let i = 0; i < 50; i++) {
-      const history: SustainabilityKey[] = ['social', 'social'];
-      const t = drawNextTheme(capitals, history, rng);
+      const state = stateFromCapitals(
+        { economic: 0.9, social: 0.1, ecological: 0.9 },
+        ['social', 'social']
+      );
+      const t = drawNextTheme(state, rng);
       expect(t).not.toBe('social');
     }
   });
 
   it('gives every theme a shot when capitals are all equal', () => {
     // 300 draws with uniform capitals should hit all three themes.
-    const capitals = { economic: 0.5, social: 0.5, ecological: 0.5 };
     const rng = createRng(11);
     const count: Record<SustainabilityKey, number> = {
       economic: 0, social: 0, ecological: 0
     };
     const history: SustainabilityKey[] = [];
     for (let i = 0; i < 300; i++) {
-      const t = drawNextTheme(capitals, history.slice(-CONSECUTIVE_THEME_CAP), rng);
+      const state = stateFromCapitals(
+        { economic: 0.5, social: 0.5, ecological: 0.5 },
+        history.slice(-CONSECUTIVE_THEME_CAP)
+      );
+      const t = drawNextTheme(state, rng);
       history.push(t);
       count[t]++;
     }
-    // Each theme should draw at least ~25% of the time.
     for (const t of THEMES) {
       expect(count[t]).toBeGreaterThan(50);
     }
   });
 
   it('is deterministic — same rng seed + same inputs = same output', () => {
-    const capitals = { economic: 0.3, social: 0.7, ecological: 0.5 };
     const rng1 = createRng(42);
     const rng2 = createRng(42);
     for (let i = 0; i < 30; i++) {
-      expect(drawNextTheme(capitals, [], rng1)).toBe(
-        drawNextTheme(capitals, [], rng2)
-      );
+      const s1 = stateFromCapitals({ economic: 0.3, social: 0.7, ecological: 0.5 });
+      const s2 = stateFromCapitals({ economic: 0.3, social: 0.7, ecological: 0.5 });
+      expect(drawNextTheme(s1, rng1)).toBe(drawNextTheme(s2, rng2));
     }
   });
 
   it('a weak capital is preferred over an equally-uncapped strong one', () => {
     // capitals: social weak (0.2), economic strong (0.9), ecological mid (0.55).
-    // Over 500 draws, social should dominate (roughly 60%+ share).
-    const capitals = { economic: 0.9, social: 0.2, ecological: 0.55 };
     const rng = createRng(2026);
     const count: Record<SustainabilityKey, number> = {
       economic: 0, social: 0, ecological: 0
     };
     const history: SustainabilityKey[] = [];
     for (let i = 0; i < 500; i++) {
-      const t = drawNextTheme(capitals, history.slice(-CONSECUTIVE_THEME_CAP), rng);
+      const state = stateFromCapitals(
+        { economic: 0.9, social: 0.2, ecological: 0.55 },
+        history.slice(-CONSECUTIVE_THEME_CAP)
+      );
+      const t = drawNextTheme(state, rng);
       history.push(t);
       count[t]++;
     }
-    // Social's raw weight is 0.64 out of ~0.9525 total — expected share
-    // roughly 67%, damped by the recurrence cap that fires every time
-    // social hits twice in a row. Actual share should be well over 50%
-    // but well under 100%.
     expect(count.social).toBeGreaterThan(250);
     expect(count.social).toBeLessThan(500);
-    // Strong capital should still see draws — no capital is starved.
     expect(count.economic).toBeGreaterThan(0);
-  });
-});
-
-// -------- wagerPayout invariants ------------------------------------------
-
-describe('wagerPayout', () => {
-  const social: SustainabilityKey = 'social';
-  const economic: SustainabilityKey = 'economic';
-
-  function makeWager(capital: SustainabilityKey): WagerState {
-    return { capital, placedAt: 100, amount: WAGER_UNIT_STAKE };
-  }
-
-  it('no_wager when the standing wager is null', () => {
-    const r = wagerPayout(social, null, 0.5);
-    expect(r.outcome).toBe('no_wager');
-    expect(r.delta).toBe(0);
-    expect(r.targetCapital).toBeNull();
-  });
-
-  it('win at standard multiplier when capital was above the weak threshold', () => {
-    const r = wagerPayout(social, makeWager(social), 0.6);
-    expect(r.outcome).toBe('win');
-    expect(r.multiplier).toBe(1);
-    expect(r.delta).toBeCloseTo(WAGER_UNIT_STAKE, 10);
-    expect(r.targetCapital).toBe(social);
-  });
-
-  it('win at weak-win multiplier when capital was at or below the weak threshold', () => {
-    const r = wagerPayout(social, makeWager(social), 0.4);
-    expect(r.outcome).toBe('win');
-    expect(r.multiplier).toBe(WAGER_WEAK_WIN_MULTIPLIER);
-    expect(r.delta).toBeCloseTo(WAGER_UNIT_STAKE * WAGER_WEAK_WIN_MULTIPLIER, 10);
-  });
-
-  it('loss loses exactly the staked amount regardless of capital value', () => {
-    const r = wagerPayout(economic, makeWager(social), 0.2);
-    expect(r.outcome).toBe('loss');
-    expect(r.multiplier).toBe(1);
-    expect(r.delta).toBe(-WAGER_UNIT_STAKE);
-    expect(r.targetCapital).toBe(social); // loss deducted from what was staked
   });
 });
 
@@ -280,11 +258,11 @@ function simulate(profile: Profile, seed: number, draws: number): Distribution {
   let currentRun = 0;
   let currentTheme: SustainabilityKey | null = null;
   for (let i = 0; i < draws; i++) {
-    const t = drawNextTheme(
+    const state = stateFromCapitals(
       profile.capitals,
-      history.slice(-CONSECUTIVE_THEME_CAP),
-      rng
+      history.slice(-CONSECUTIVE_THEME_CAP)
     );
+    const t = drawNextTheme(state, rng);
     history.push(t);
     count[t]++;
     if (t === currentTheme) {

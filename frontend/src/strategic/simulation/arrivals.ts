@@ -1,6 +1,7 @@
 import type { Rng } from '../util/rng';
 import type { DayPeriod, Guest, SimulationState } from '../types';
 import { makeGuest } from './model';
+import { economicReadingNormalised } from './cashReading';
 import { PRICE_ARRIVAL_MULT, SERVICE_ARRIVAL_MULT } from './economics';
 import { currentRhythmMultiplier } from './rhythm';
 import { weatherArrivalMultiplier } from './weather';
@@ -111,7 +112,7 @@ export function arrivalProbability(state: SimulationState): number {
     periodArrivalMultiplier(state.day.period) *
     SERVICE_ARRIVAL_MULT[state.policies.service] *
     PRICE_ARRIVAL_MULT[state.policies.pricing] *
-    economicArrivalMultiplier(state.capitals.values.economic) *
+    economicArrivalMultiplier(state) *
     reputationArrivalMultiplier(state.reputation) *
     weatherArrivalMultiplier(state.day.weather) *
     worldFactorArrivalMultiplier(state.day.worldFactors) *
@@ -119,25 +120,28 @@ export function arrivalProbability(state: SimulationState): number {
   return perMinute / (60 * 5); // 5 Hz tick.
 }
 
-export function economicArrivalMultiplier(economic: number): number {
-  const clamped = Math.max(0, Math.min(1, economic));
-  return ECONOMIC_ARRIVAL_FLOOR + (1 - ECONOMIC_ARRIVAL_FLOOR) * clamped;
+// ORDER 050 §3 (2026-08-10) — reads the derived economic [0,1] view
+// off state.cash rather than the retired capitals.values.economic
+// scalar. The curve shape is unchanged.
+export function economicArrivalMultiplier(state: SimulationState): number {
+  const normalised = economicReadingNormalised(state);
+  return ECONOMIC_ARRIVAL_FLOOR + (1 - ECONOMIC_ARRIVAL_FLOOR) * normalised;
 }
 
 // ORDER 043 §6 walk-away probability at spawn time. Guest's fate to
 // refuse entry is decided when they appear, not on arrival — so the
-// same-guest outcome is deterministic (a guest whose economic-at-spawn
+// same-guest outcome is deterministic (a guest whose reading-at-spawn
 // said "walk away" walks away, no re-roll on the way).
-export function walkAwayProbability(economic: number): number {
-  const clamped = Math.max(0, Math.min(1, economic));
-  return ECONOMIC_WALKAWAY_CEIL * (1 - clamped);
+export function walkAwayProbability(state: SimulationState): number {
+  const normalised = economicReadingNormalised(state);
+  return ECONOMIC_WALKAWAY_CEIL * (1 - normalised);
 }
 
 export function maybeSpawnGuest(state: SimulationState, rng: Rng): Guest | null {
   const active = state.guests.length;
   if (active >= ACTIVE_GUEST_CAP) return null;
   if (!rng.chance(arrivalProbability(state))) return null;
-  const walkAway = rng.chance(walkAwayProbability(state.capitals.values.economic));
+  const walkAway = rng.chance(walkAwayProbability(state));
   return makeGuest(state.simTime, false, walkAway);
 }
 

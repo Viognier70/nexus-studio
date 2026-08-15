@@ -337,7 +337,10 @@ const INGO_CANOPY_HEIGHT = 4.2;
 const INGO_CANOPY_THICKNESS = 0.5;
 const INGO_COLUMN_SIZE = 0.35;
 const INGO_ORANGE = '#e07a1f';       // INGO livery orange
-const INGO_TRIM = '#ffffff';          // white trim band on canopy edge
+// ORDER 054 Del D — off-white trim, not pure #ffffff (nothing in
+// reality reads as pure white; a painted trim band always carries
+// some warmth from the primer + weathering).
+const INGO_TRIM = '#efece4';
 const INGO_COLUMN_COLOUR = '#c0bcb3'; // pale steel
 const INGO_PUMP_COLOUR = '#c25a1f';   // pump machine tone
 

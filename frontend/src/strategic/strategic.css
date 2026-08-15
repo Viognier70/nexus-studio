@@ -133,7 +133,12 @@
   min-height: 52px;
   min-width: 56px;
   cursor: pointer;
-  z-index: 10;
+  /* ORDER 090 §6 — z-index raised from 10 to 50 so the Bakåt button
+     sits above RoomCardPanel (z-index 34). Playtest 2026-08-14
+     reported the button hidden behind the panel in the restaurant
+     view — the button is the always-reachable escape, it must
+     outrank overlay panels. */
+  z-index: 50;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 .gb-outward:hover {

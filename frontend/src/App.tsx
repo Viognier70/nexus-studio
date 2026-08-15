@@ -24,6 +24,8 @@ import { Dialogue } from './ui/Dialogue';
 import { Hud } from './ui/Hud';
 import { PauseMenu } from './ui/PauseMenu';
 import { detectWebGL, WebGLFallback } from './webgl/WebGLFallback';
+import { devToggles } from './lib/devToggles';
+import { FpsOverlay } from './lib/FpsOverlay';
 
 export default function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -33,6 +35,8 @@ export default function App() {
   const lookRef = useRef<LookDelta>({ dx: 0, dy: 0 });
   const [nearNpc, setNearNpc] = useState(false);
   const [nearTable, setNearTable] = useState(false);
+  // ORDER 053 Del D — dev-only scale-reference toggle (G key).
+  const [showScaleRef, setShowScaleRef] = useState(false);
 
   useEffect(() => {
     const start = () => {
@@ -77,6 +81,24 @@ export default function App() {
           dispatch({ type: 'TOGGLE_PAUSE' });
         }
         return;
+      }
+      // ORDER 053 Del D — G toggles the dev-only scale reference.
+      // Guarded by DEV so it never fires in production.
+      if (import.meta.env.DEV && (event.key === 'g' || event.key === 'G')) {
+        const t = event.target as HTMLElement | null;
+        if (t?.tagName !== 'INPUT' && t?.tagName !== 'TEXTAREA') {
+          setShowScaleRef((v) => !v);
+          return;
+        }
+      }
+      // ORDER 056 Del A — H toggles the season (summer/autumn) so
+      // sun paths can be compared. Dev-only.
+      if (import.meta.env.DEV && (event.key === 'h' || event.key === 'H')) {
+        const t = event.target as HTMLElement | null;
+        if (t?.tagName !== 'INPUT' && t?.tagName !== 'TEXTAREA') {
+          devToggles.toggleSeason();
+          return;
+        }
       }
       if (event.key === 'e' || event.key === 'E') {
         if (
@@ -176,6 +198,7 @@ export default function App() {
                 onNearTable={setNearTable}
                 moveRef={moveRef}
                 lookRef={lookRef}
+                showScaleRef={showScaleRef}
               />
               <Hud
                 objective={
@@ -220,6 +243,7 @@ export default function App() {
                   onRestart={() => dispatch({ type: 'RESET' })}
                 />
               )}
+              <FpsOverlay label="first-person" />
             </>
           )}
         </div>

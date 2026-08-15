@@ -21,10 +21,9 @@ import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 
 const HIRE_ROLES: readonly StaffRole[] = ['värd', 'servitör', 'kock', 'lärling'];
 
+// ORDER 090 §6 — anchor + top offset dropped; the parent PanelColumn
+// (see ui/PanelColumn.tsx) owns positioning + max-height + overflow.
 const PANEL_STYLE: React.CSSProperties = {
-  position: 'absolute',
-  top: 72,
-  left: 16,
   width: 320,
   padding: '14px 16px 16px',
   background: 'rgba(30, 22, 16, 0.86)',
@@ -37,9 +36,7 @@ const PANEL_STYLE: React.CSSProperties = {
   letterSpacing: 0.2,
   boxShadow: '0 6px 20px rgba(0,0,0,0.35)',
   pointerEvents: 'auto',
-  zIndex: 35,
-  maxHeight: 'calc(100vh - 120px)',
-  overflowY: 'auto'
+  zIndex: 35
 };
 
 const HEADING_STYLE: React.CSSProperties = {

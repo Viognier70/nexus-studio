@@ -43,15 +43,17 @@ describe('scenario spec table', () => {
     }
   });
 
-  it('every choice on every spec has register writes + outcomes + mentor for all difficulties', () => {
+  it('every choice on every spec has register writes + outcomes + a mentor line', () => {
+    // ORDER 048 §5 (2026-08-10 amendment) — mentor is one line per
+    // choice now; the 3-difficulty variants retired with the
+    // confidence question.
     for (const spec of ALL_SCENARIOS) {
       for (const choice of ['A', 'B', 'C'] as ScenarioChoice[]) {
         const c = spec.choices[choice];
         expect(c.registerWrites.length).toBeGreaterThan(0);
         expect(c.outcomes.length).toBeGreaterThan(0);
-        expect(c.mentor[1]).toBeTruthy();
-        expect(c.mentor[2]).toBeTruthy();
-        expect(c.mentor[3]).toBeTruthy();
+        expect(c.mentor).toBeTruthy();
+        expect(typeof c.mentor).toBe('string');
       }
     }
   });
@@ -94,8 +96,7 @@ describe('resolveScenario writes enabler history from the spec', () => {
         scientific: { ...s.enablers.scientific },
         cultural: { ...s.enablers.cultural }
       };
-      s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
-      s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
+      s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_SITUATION' });
       s = reducer(s, { type: 'RESOLVE_SCENARIO', choice });
       // Every write in the spec must have moved the tally + appended
       // to history.
@@ -123,17 +124,20 @@ describe('capitalSign per choice drives the drawn-theme capital direction', () =
     // choices for whichever theme is drawn.
     let s = reducer(makeInitialState(42), { type: 'TRIGGER_SCENARIO' });
     const drawn = s.scenario.drawnTheme!;
-    const before = s.capitals.values[drawn];
-    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
-    s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
+    // ORDER 050 §3 (2026-08-10) — economic-themed scenarios move
+    // state.cash (SEK) rather than a [0,1] capital. Read whichever
+    // is the store for the drawn theme.
+    const readBefore = drawn === 'economic'
+      ? s.cash
+      : s.capitals.values[drawn];
+    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_SITUATION' });
     const sA = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'A' });
     const sC = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'C' });
-    // A's capitalSign is +1 across all three cycle-1 scenarios except
-    // moral-dilemma A (which is -1). Both directions should be
-    // detectable; we assert |Δ| > 0 and that A + C don't move the
-    // capital in identical directions.
-    const deltaA = sA.capitals.values[drawn] - before;
-    const deltaC = sC.capitals.values[drawn] - before;
+    const readAfter = (st: typeof sA) => drawn === 'economic'
+      ? st.cash
+      : st.capitals.values[drawn];
+    const deltaA = readAfter(sA) - readBefore;
+    const deltaC = readAfter(sC) - readBefore;
     expect(Math.abs(deltaA)).toBeGreaterThan(0);
     expect(Math.abs(deltaC)).toBeGreaterThan(0);
     // Same theme, A and C should NOT land on the same value.

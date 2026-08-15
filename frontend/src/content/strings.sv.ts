@@ -96,41 +96,38 @@ export const strings = {
     // situation is revealed (LEARNING_AND_SCENARIO_ARCHITECTURE §4.3).
     // No response is marked correct (§4.2). No result popup — the
     // response resolves in the room (CAMERA_AND_GAMEPLAY_BIBLE §8.1).
+    //
+    // These fields are legacy fallbacks — the live spec text lives in
+    // strategic/simulation/scenarios.ts and is what the overlay uses
+    // in practice. Kept in English so any drop-through fallback still
+    // reads in the game's language.
     subject: {
-      body: 'Ett sällskap står i entrén — utan bokning.',
-      cta: 'Fortsätt'
+      body: 'A party is at the door — no booking.',
+      cta: 'Continue'
     },
-    difficulty: {
-      body: 'Hur säker känner du dig inför det här?',
-      options: {
-        low:  'Osäker',
-        mid:  'Ganska säker',
-        high: 'Säker'
-      }
-    },
+    // ORDER 048 §5 (2026-08-10 amendment) — the difficulty block
+    // (self-reported confidence "Hur säker känner du dig inför det
+    // här?") is retired. It asked about feeling instead of knowledge
+    // and produced no outcome. The slot between subject and situation
+    // is reserved for ORDER 049 §5.1's professional questions.
     situation: {
       body:
-        'Fem personer i sällskapet. Kvällens service börjar snart och rummet är delvis bokat. Vad gör du?',
+        'Five in the party. Service starts soon and the room is partly booked. What do you do?',
       options: {
-        A: 'Sätt alla fem — slå ihop fyran och ett tvåbord.',
-        B: 'Sätt fyra vid fyran, den femte vid baren.',
-        C: 'Neka sällskapet.'
+        A: 'Seat all five — join the four-top and a two-top.',
+        B: 'Seat four at the four-top, the fifth at the bar.',
+        C: 'Turn the party away.'
       }
     },
     // Mentor comments are non-modal — they surface as an in-world text
     // bubble above the room after the response has begun to play out.
-    // Keys: `{choice}_{difficulty}`. Kept short so the bubble stays
-    // readable without dominating the interior view.
+    // Keyed by choice only after the ORDER 048 §5 confidence-question
+    // retirement (2026-08-10); the mid-difficulty variants survive as
+    // the neutral base.
     mentor: {
-      A_low:  'Djärvt val för första kvällen. Låt köket få tempo.',
-      A_mid:  'Sammanslagning fungerar när servisen är med. Håll ett öga på tvåan bredvid.',
-      A_high: 'Full sittning. Om servisen håller blir det en bra kväll för alla fem.',
-      B_low:  'Bra kompromiss. Femte vid baren får en annan upplevelse — se till att någon hälsar.',
-      B_mid:  'Klok fördelning. Barsätet kräver dock att någon i personalen hinner dit.',
-      B_high: 'Trygg linje. Håll värmen — femte gästen ska inte känna sig sekundär.',
-      C_low:  'Rätt att skydda kvällen. Nästa gång kanske servisen är redo.',
-      C_mid:  'Att neka är också ett val. Kvällens rytm bevaras — men ryktet noteras.',
-      C_high: 'Bestämt nej. Rummet håller sin form, tipsen blir mindre.'
+      A: 'Joining tables works when the floor is with you. Keep an eye on the two-top next door.',
+      B: 'Sensible split. The bar seat only works if a staff member gets there in time.',
+      C: 'Declining is a choice too. The evening keeps its rhythm — but the room notes it.'
     }
   },
   // ORDER 043 v3 §10 step 5 — the morning team panel. Player-facing
@@ -169,6 +166,47 @@ export const strings = {
     accept: 'Ta in — kostar',
     decline: 'Avstå',
     kr: 'kr'
+  },
+  // ORDER 046 §2 — the morning investment panel. Sits alongside
+  // TeamPanel and surfaces the three policy dials that shape the
+  // service (training level, price positioning, ingredient tier).
+  // Not a scoreboard — the labels are the reading.
+  invest: {
+    heading: 'Investering',
+    body: 'Vad står laget inför i dag? Träning, prisläge och råvara sätter kvällens karaktär.',
+    trainingHeading: 'Utbildning',
+    trainingLevels: {
+      1: 'Grundnivå',
+      2: 'Erfaren',
+      3: 'Specialiserad'
+    },
+    trainingDescriptions: {
+      1: 'Räcker för att öppna dörrarna. Rummet får bära det som händer.',
+      2: 'Kockar och servitörer har rutin. Slag jämnas ut innan de syns.',
+      3: 'Alla vet mer än det som krävs i stunden. Servicen har djup att gå till.'
+    },
+    pricingHeading: 'Prisläge',
+    pricingLevels: {
+      'låg':   'Lågt',
+      'medel': 'Medel',
+      'hög':   'Högt'
+    },
+    pricingDescriptions: {
+      'låg':   'Fyllt hus, tunnare marginal. Krogen håller pulsen uppe.',
+      'medel': 'Balans mellan volym och intäkt. Kvällens standardläge.',
+      'hög':   'Färre gäster, mer per bord. Rummet måste bära förväntan.'
+    },
+    ingredientHeading: 'Råvara',
+    ingredientLevels: {
+      'grund':   'Grund',
+      'utvald':  'Utvald',
+      'premium': 'Premium'
+    },
+    ingredientDescriptions: {
+      'grund':   'Standardleverantör. Kvällen bygger på hantverket, inte på råvaran.',
+      'utvald':  'Utvalda leverantörer när det räknas. Något att prata om vid ett par bord.',
+      'premium': 'Det bästa av det som finns. Kvällen står och faller med det köket gör med det.'
+    }
   },
   // ORDER 043 v3 §7 wager — placed between scenarios on which
   // sustainability the next situation will concern. Optional; declining

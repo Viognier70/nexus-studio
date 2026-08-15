@@ -249,6 +249,7 @@ describe('agency offer machinery', () => {
         targetPosition: { x: 0, z: 0 },
         moveProgress: 1,
         hadWelcomeDrink: false,
+        lastCheckbackAt: null,
         walkAwayOnArrival: false
       });
     }
@@ -277,6 +278,7 @@ describe('agency offer machinery', () => {
             targetPosition: { x: 0, z: 0 },
             moveProgress: 1,
             hadWelcomeDrink: false,
+            lastCheckbackAt: null,
             walkAwayOnArrival: false
           });
         }
@@ -295,18 +297,20 @@ describe('agency offer machinery', () => {
     // Fabricate an offer directly.
     s.agencyOffer = {
       role: 'lärling',
-      moneyCost: 800,
+      moneyCost: 5000,
       socialCostIfDeclined: 0.03,
       offeredAt: 0,
       expiresAt: 60
     };
-    const econBefore = s.capitals.values.economic;
+    // ORDER 050 §3 (2026-08-10) — agency cost now hits the till in
+    // SEK directly, no separate 0..1 economic capital write.
+    const cashBefore = s.cash;
     const teamSizeBefore = s.team.members.length;
     s = reducer(s, { type: 'ACCEPT_AGENCY' });
     expect(s.agencyOffer).toBeNull();
     expect(s.team.members.length).toBe(teamSizeBefore + 1);
     expect(s.team.members[s.team.members.length - 1].isAgency).toBe(true);
-    expect(s.capitals.values.economic).toBeLessThan(econBefore);
+    expect(s.cash).toBeLessThan(cashBefore);
   });
 
   it('DECLINE_AGENCY drops social capital by AGENCY_DECLINE_SOCIAL_COST', () => {

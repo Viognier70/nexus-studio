@@ -13,13 +13,19 @@
 ## Entries
 
 ### B-001 · The ambition wager
-**Recorded:** 2026-08-08 · **Status:** open
+**Recorded:** 2026-08-08 · **Status:** open — overlap evaluation 2026-08-09
 
 A stake placed *before* service rather than between scenarios: the player sets the evening's ambition — mise en place, staffing, menu — which costs money before a single guest arrives and returns more if the evening holds. A blind bet on one's own capability.
 
 Discussed at length as the alternative to the difficulty selector, then set aside when the theme wager (ORDER 043 §4) took its place. It is not the same mechanic: the theme wager is a reading between scenarios, this is a commitment before the service.
 
 **Before it can be built:** it overlaps with the team system (ORDER 043 §3) and service-length choice (§2), which already carry some of this weight. Decide whether it adds a distinct decision or duplicates one.
+
+**Overlap evaluation, 2026-08-09 (post-ORDER-046).** The service-length picker sets the shape of the evening but does not stake money — a 15-minute dinner and a 30-minute dinner cost the same up-front and differ only in what they can hold. The investment panel (ORDER 046 §2) and team hiring (ORDER 043 §10 step 5) do stake money: ingredient tier + team dailyCost + agency spend all draw against economic capital before revenue arrives, and the evening account (ORDER 046 §3) is what tells the player whether they were right to. That covers three of the four movements of the proposed ambition wager (spend, wait, read the evening).
+
+**What remains distinct.** The specific "returns *more* if the evening holds" bonus layer — a payout multiplier on top of the natural revenue, contingent on a self-declared ambition level. Cycle-1 has no such multiplier: raising ingredient tier costs more and yields the same per-guest revenue (revenuePerGuest reads pricing tier only). Adding an ambition-wager would need a distinct scoring gate ("did the evening meet the declared level?") and a bonus payout, neither of which the current ledger has.
+
+**Verdict.** The mechanic is not duplicated by what has landed, but its motivating decisions largely are. Before building, the Vision Owner should confirm whether the ambition wager is (a) the missing bonus multiplier that turns morning spend into an actual bet — worth building — or (b) a fifth morning surface stacked on top of team + investment + service length + wager, which risks the morning becoming a spreadsheet. If (b), fold into ORDER 046's investment panel by adding a fourth dial ("ambition"). If (a), it deserves its own order and its own scoring gate.
 
 ---
 
@@ -37,7 +43,7 @@ Strong because the stream already exists: a competitor becomes legible for free 
 ---
 
 ### B-003 · The evening's account
-**Recorded:** 2026-08-08 · **Status:** next
+**Recorded:** 2026-08-08 · **Status:** folded in — ORDER 046 §3, commit `7b6abc8` (PR #10, 2026-08-09)
 
 Service ends, cost is charged, morning arrives — and the player is shown nothing. No summary of what the night gave: revenue, cost, how the sustainabilities moved, what credits were earned.
 
@@ -45,7 +51,9 @@ Without it the player invests without knowing what they are investing on the bas
 
 **Should be in the observer's voice** (ORDER 043 Addendum B), not a table. What a proprietor tells themselves after closing.
 
-**Pairs with:** the investment panel (ORDER 043 §7, specified but unbuilt). Together they turn the day into a cycle rather than a series of evenings.
+**Pairs with:** the investment panel (ORDER 043 §7, specified but unbuilt).
+
+**As built (ORDER 046 §3):** paragraph in the observer's voice at evening-period-start, snapshotted at close so drift during the fade doesn't re-pick a branch mid-read. Six branches keyed off state: `collapsed` (preempts all), `high_wager_win` (weak-capital win, delta ≥ 0.14), `high_wager_loss`, `good` (rep held, net revenue > cost × 1.15), `thin` (revenue < cost × 0.90), `mediocre` (fallback, per Vision Owner's explicit ask: "kvällen bara var medioker — inte varje kväll ska ha en poäng"). Money named as "täckte kostnaderna" / "gick back" / "gick över" — no figures. `EVENING_TO_MORNING_PAUSE_SEC` bumped 15 → 30 to hold the fade. Investment panel landed alongside in ORDER 046 §2 (`cd311d4`), realising the "pairs with" note above.
 
 ---
 
@@ -117,6 +125,81 @@ Competence now grows from behaviour (ORDER 043 §3.3) — the player learns by d
 This is the limb that makes Nexus an education rather than a restaurant simulator.
 
 **Before it can be built:** ORDER 043 must be complete and its loop judged to hold. Then it deserves its own order — probably the largest since 042.
+
+---
+
+### B-011 · Player-to-player economy
+**Recorded:** 2026-08-09 · **Status:** open · **Priority:** 8 or later per `DESIGN_DECISIONS_001.md`
+
+Cross-account financial primitives between players — the economy stops being solitaire and starts being a small market:
+
+- **Liquidation with capital parked at the bank as a pause mechanism.** A player who sells their venture (per ORDER 049 §5.2) may choose to leave the proceeds on deposit at the bank rather than immediately reinvest. The account remains theirs; they can return, take a bank meeting, and reactivate a venture from that capital when they are ready. Effectively an in-fiction "log out with your winnings intact" that is not persistence-as-savefile but persistence-as-account.
+- **Financing of other players' ventures.** A player with capital on deposit can back another player's application — either supplementing what the bank offers (letting the receiving player reach a higher tier than the bank alone would fund) or offering financing when the bank has refused.
+- **Direct messages and transfers between players.** Amount, interest rate, term, share (equity vs. straight loan vs. revenue share) all negotiated freely by the players themselves. The system holds the ledger and enforces the contract; it does not set the terms.
+
+**Preconditions.** This presupposes `LEARNING_AND_SCENARIO_ARCHITECTURE.md` §11.1's six conditions in their entirety: persistent state, real accounts, a shared world, time that advances independently of any single player being logged in, portable state, and the portfolio format already required for other reasons. `B-005` (persistence + time between sessions) is a strict prerequisite — this backlog entry cannot be built until §11.1 lands as a whole.
+
+**Own order when the knowledge engine bears.** The knowledge engine (ORDER 049) is the loop's current centre of gravity; the between-player market layers on top of it once single-player play has been judged to hold across a run of days. Deserves its own order at that point — comparable in scope to ORDER 043.
+
+**Not decided by this entry:** whether financing another player creates a legible in-fiction relationship (a named backer whose reputation is tied to the venture's outcome) or whether it is a pure ledger transaction. The former is truer to the game's overall grammar; the latter is much cheaper to build. Report before building.
+
+---
+
+### B-012 · Cash-hoarding as dominant strategy (watch during ORDER 050 playtest)
+**Recorded:** 2026-08-10 · **Status:** open — flag for playtest observation
+
+ORDER 050 §7 step 2 (2026-08-10) fixed the allocation surface as **fixed-cost activities with cash as the only cap** — no count cap. Saving becomes a move; passivity has to actually cost something.
+
+The current cost of passivity comes entirely from ORDER 049 §2.1's nightly enabler decay (5 %/night on every tally), which pulls the reputation and quality ceilings down. The Vision Owner's read (2026-08-10) is that this pressure is *probably* enough — a player who hoards for a month sees their ceilings collapse and cash becomes worthless as the venture bleeds beneath the falling right-to-charge. An extra decay layer (e.g., a slower reputation drag on runs of zero-activity mornings) was considered and rejected: *"en extra ryktesdragning vore ett straff utan orsak i fiktionen."*
+
+**What would move this to `next` or `folded in`:** playtest evidence that a hoarding-then-splurge run (save cash for N mornings, buy R1 + D1 + O1 + O2 in a single morning at T3) actually wins more reliably than a paced investment run. If it does, add whatever fiction-grounded pressure closes the gap — likely candidates: (a) supplier attrition (a season without orders and the day-boat fisher signs up someone else), (b) team drift (a run of mornings with no activity read as management absence and the team's morale regressed a step), (c) both. Do not add abstract decay without a room-cause.
+
+**Do not fix pre-emptively.** The mechanic is teachable — a hoarder who watches their food-quality ceiling drop knows what happened. Solve if playtest shows the strategy dominating, not before.
+
+---
+
+### B-013 · Service-ending warning is missing
+**Recorded:** 2026-08-10 · **Status:** open — surfaced during ORDER 050 §7 step 6 UX inventory
+
+The player picks a service length in the morning (5 / 10 / 15 / 30 min) and the service closes silently when the timer expires. `EventStreamPanel` and `InstrumentsPanel` provide read-only moment-of-attention during service; `EveningAccountPanel` arrives after. Nothing warns the player that the service is about to end.
+
+Vision Owner (2026-08-10): *"att servicen tar slut utan förvarning är en läslucka som märks först när någon spelar en lång middag."* On a 3-minute service this is invisible; on a 30-minute service the close is a surprise.
+
+**Before it can be built:** design a warning surface that reads inside Addendum A §6.3 ("service asks what you do now"). A late-service warning is not asking for action — it is information about the state of the room. Two candidate shapes:
+
+- **Ambient stream line** (cheapest, matches the existing observer voice): fire a stream entry at T-2 min / T-1 min / T-30 s reading as *"servicen närmar sig slutet"*. Fits current EventStream pattern; no new surface. Risk: stream fatigue, and the entry can be missed if the player is in a scenario overlay.
+- **Countdown overlay** (heavier, harder to miss): a small countdown pill near the SpeedToggle showing the remaining service time, appearing only in the last N minutes. Its own tiny surface — a §6.3 candidate as long as it reads as *"how long the room has left"*, not as another instrument.
+
+**Not decided:** whether the warning surface should also nudge the player to pre-consider dinner-planning (afternoon decision) so the transition feels less abrupt. That may be scope creep or the right thing — worth reporting when the surface itself is being designed.
+
+---
+
+### B-014 · The foodtruck tier and rivalry
+**Recorded:** 2026-08-10 · **Status:** open — own order when `ORDER 049` §5.1 (the bank meeting) lands
+
+Vision Owner idea, 2026-08-10. Turns `ORDER 049` §5.1's floor offer from a consolation prize into a genuine path with its own strategy.
+
+**Getting the truck is itself a threshold.** A player refused full financing may still be offered a foodtruck — but not automatically. The bank's panel puts critical questions and a minimum result is required. *"Alla får inte det."*
+
+**Placement is the decision.** The truck is placed somewhere in Grythyttan, with positions near the existing restaurants. Standing next to an establishment invites competition for its guests.
+
+**Rivalry requires similarity.** A truck only threatens a restaurant with a comparable concept. Park a Texas-grill truck beside a Texas-grill restaurant and the fight is real; beside a fine-dining room it is two different businesses on the same street. This forces the player to read the market before choosing a spot — and to have read up on that concept: its recipes, the wines that suit it. The truck may apply for an outdoor licence including alcohol rights.
+
+**The cost structures are asymmetric, and that is the teaching.** The restaurant offers table service, a lavatory, linen napkins, silver, proper glassware. The truck has a counter, simpler tables and chairs, paper napkins, guests ordering and carrying their own — and much lower labour and premises costs, so it can compete on price. Weather decides how well that trade works: an outdoor terrace in fine weather is a strong position, in rain it is not. `ORDER 045`'s weather model already exists to carry this.
+
+**Guests are autonomous.** Neither side can compel anyone. Guest movement is weighted probability against what the two businesses actually offer — price, quality, reputation, weather, comfort — plus chance so nothing is determined. **Competence sets the weights**: knowledge raises the ceilings (`ORDER 049` §2.1), the ceilings bound what the house can charge (`ORDER 050` Addendum A §11), and those figures feed the guest's choice. The player who knows more wins more often, but never always.
+
+**The competitor plays the same game.** It acquires knowledge, raises its own ceilings, improves what it offers — by the same means available to the player, and it can no more compel a guest than the player can. *"Du vinner inte genom att slå ut någon, utan genom att bli bättre än dem."* Open question at build time: how fast it learns. Fast enough that a lazy player loses; slow enough that an attentive one can win.
+
+**Two strategies, both playable, one durable.**
+- **The price shock** — cut hard to push the rival toward insolvency. Real risk: you earn less while you do it, and if their cash outlasts yours it is you who goes under.
+- **The returning clientele** — satisfied guests come back, and that is a central factor in this game. Slower, steadier, and it survives the other side's price cuts.
+
+**Each side reads the other through the guests.** No competitor panel, no report: revenue, plates sold, guest count, and the queue outside. You see their line grow and yours shrink, and you draw the conclusion. Same principle as `ORDER 050` §4 — show what happens, never what it means.
+
+**Preconditions.** `ORDER 049` §5.1 (the bank meeting) must land first — the threshold to the truck is meaningless without the examination that sets it. Also wants `ORDER 051` (concepts, menus, pricing) so that "comparable concept" has something to compare.
+
+**Not decided:** whether the rival is an AI operator only, or the same slot another player could occupy (`B-011`).
 
 ---
 

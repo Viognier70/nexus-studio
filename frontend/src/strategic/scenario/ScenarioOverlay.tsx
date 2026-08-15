@@ -11,7 +11,7 @@
 // not here.
 
 import { strings } from '../../content/strings.sv';
-import { scenarioById } from '../simulation/scenarios';
+import { SENDER_PREFIX, scenarioById } from '../simulation/scenarios';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 
 const OVERLAY_STYLE: React.CSSProperties = {
@@ -71,7 +71,7 @@ const SUBJECT_CTA_STYLE: React.CSSProperties = {
 export function ScenarioOverlay() {
   const sim = useSimState();
   const dispatch = useSimDispatch();
-  const { phase, scenarioId } = sim.scenario;
+  const { phase, scenarioId, senderRole, pendingQuestion } = sim.scenario;
 
   if (phase === 'idle' || phase === 'resolving' || phase === 'settled') return null;
 
@@ -79,7 +79,12 @@ export function ScenarioOverlay() {
   // legacy strings.scenario keys for pre-refactor tests / manual
   // TRIGGER_SCENARIO without a scenarioId set.
   const spec = scenarioId ? scenarioById(scenarioId) : null;
-  const subjectBody = spec?.subjectBody ?? strings.scenario.subject.body;
+  // ORDER 048 §4 — prefix the subject-body with the sender's role
+  // ("Värden: ..."). When no sender was assigned (dev trigger with
+  // an empty team, defensive fallback) the plain body is used.
+  const senderPrefix = senderRole ? `${SENDER_PREFIX[senderRole]}: ` : '';
+  const rawSubjectBody = spec?.subjectBody ?? strings.scenario.subject.body;
+  const subjectBody = senderPrefix + rawSubjectBody;
   const subjectCta = spec?.subjectCta ?? strings.scenario.subject.cta;
   const situationBody = spec?.situationBody ?? strings.scenario.situation.body;
   const labelA = spec?.choices.A.label ?? strings.scenario.situation.options.A;
@@ -94,7 +99,7 @@ export function ScenarioOverlay() {
           <button
             type="button"
             style={SUBJECT_CTA_STYLE}
-            onClick={() => dispatch({ type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' })}
+            onClick={() => dispatch({ type: 'ADVANCE_SCENARIO_TO_SITUATION' })}
           >
             {subjectCta}
           </button>
@@ -103,32 +108,34 @@ export function ScenarioOverlay() {
     );
   }
 
-  if (phase === 'difficulty') {
+  // ORDER 048 §5 (2026-08-10 amendment) — the 'difficulty' phase
+  // (self-reported confidence) is retired. Subject → situation
+  // directly. The slot is reserved for the professional questions
+  // ORDER 049 §5.1 will land here.
+
+  // ORDER 048 §5 — professional question phase. Appears AFTER a
+  // scenario choice with an attached question. Same overlay shape
+  // as the situation phase, prefixed with the question's own
+  // sender (typically the specialist role, e.g. Kocken for a
+  // kitchen-technique question, Värden for a hospitality one).
+  if (phase === 'question' && pendingQuestion) {
+    const qPrefix = pendingQuestion.senderRole
+      ? `${SENDER_PREFIX[pendingQuestion.senderRole]}: `
+      : '';
     return (
       <div style={OVERLAY_STYLE}>
-        <div style={BODY_STYLE}>{strings.scenario.difficulty.body}</div>
-        <div style={BUTTON_ROW_STYLE}>
-          <button
-            type="button"
-            style={BUTTON_STYLE}
-            onClick={() => dispatch({ type: 'SET_SCENARIO_DIFFICULTY', difficulty: 1 })}
-          >
-            {strings.scenario.difficulty.options.low}
-          </button>
-          <button
-            type="button"
-            style={BUTTON_STYLE}
-            onClick={() => dispatch({ type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 })}
-          >
-            {strings.scenario.difficulty.options.mid}
-          </button>
-          <button
-            type="button"
-            style={BUTTON_STYLE}
-            onClick={() => dispatch({ type: 'SET_SCENARIO_DIFFICULTY', difficulty: 3 })}
-          >
-            {strings.scenario.difficulty.options.high}
-          </button>
+        <div style={BODY_STYLE}>{qPrefix + pendingQuestion.body}</div>
+        <div style={{ ...BUTTON_ROW_STYLE, flexDirection: 'column', alignItems: 'stretch' }}>
+          {pendingQuestion.options.map((o, i) => (
+            <button
+              key={i}
+              type="button"
+              style={BUTTON_STYLE}
+              onClick={() => dispatch({ type: 'ANSWER_QUESTION', index: i })}
+            >
+              {o.label}
+            </button>
+          ))}
         </div>
       </div>
     );

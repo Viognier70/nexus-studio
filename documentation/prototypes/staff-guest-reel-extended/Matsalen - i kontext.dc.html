@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/modernist-fa2a5900-708d-4668-979a-71ad6a03542a/styles.css">
+<script src="_ds/modernist-fa2a5900-708d-4668-979a-71ad6a03542a/_ds_bundle.js"></script>
+<style>
+  html, body { margin: 0; background: var(--color-bg); }
+  a { color: var(--color-accent); text-decoration: none; }
+  a:hover { color: var(--color-accent-700); }
+  @keyframes ctxBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+  @keyframes ctxBobFast { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+  @keyframes ctxSway { 0% { transform: translateX(-4px); } 100% { transform: translateX(4px); } }
+  @keyframes ctxBreathe { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
+  @keyframes waiterRun { 0% { transform: translate(0px, 0px); } 40%, 58% { transform: translate(300px, 118px); } 100% { transform: translate(0px, 0px); } }
+  @keyframes busserRun { 0% { transform: translate(0px, 0px); } 45%, 62% { transform: translate(-186px, 74px); } 100% { transform: translate(0px, 0px); } }
+  @keyframes hostShift { 0% { transform: translate(0px, 0px); } 50% { transform: translate(26px, -14px); } 100% { transform: translate(0px, 0px); } }
+  @keyframes cookOsc { 0% { transform: translate(-12px, 0px); } 100% { transform: translate(12px, 0px); } }
+  @keyframes leader { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+</style>
+</helmet>
+
+<div style="min-height: 100vh; background: var(--color-bg); color: var(--color-text); font-family: var(--font-body); padding: 56px 64px 96px; display: flex; flex-direction: column; gap: 40px; max-width: 1680px; margin: 0 auto;">
+
+  <header style="display: flex; flex-direction: column; gap: 22px;">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 4px solid var(--color-text); padding-bottom: 14px;">
+      <div style="font-family: var(--font-heading); font-weight: 800; font-size: 15px; letter-spacing: 0.18em; text-transform: uppercase;">Nexus Studio · Vinbaren · Niv&aring; 3</div>
+      <div style="font-family: var(--font-heading); font-weight: 800; font-size: 15px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-accent);">Underlag 002 · i sitt sammanhang</div>
+    </div>
+    <div style="display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 56px; align-items: start;">
+      <h1 style="font-family: var(--font-heading); font-weight: 800; font-size: 72px; line-height: 0.95; letter-spacing: -0.035em; margin: 0; text-wrap: pretty;">Samma figurer, i matsalen</h1>
+      <p style="margin: 0; font-size: 18px; line-height: 1.55; max-width: 54ch; text-wrap: pretty;">Kameradistans 8,4 m, pitch 58&deg;, taket bortfadeat &mdash; s&aring; h&auml;r ser rummet ut n&auml;r spelaren har zoomat in till Vinbaren-niv&aring;n. Personalen &auml;r puck+ ur underlag 001, gästerna är de beigare puckarna, och chromet &auml;r repots eget: vylabel, <em>Bak&aring;t</em>, personkortet med Roll / Just nu / P&aring; v&auml;g mot &mdash; plus ansiktsraden.</p>
+    </div>
+  </header>
+
+  <div style="position: relative; height: 760px; border: 4px solid var(--color-text); background: #cfcac4; overflow: hidden;">
+
+    <div style="position: absolute; inset: 0; perspective: 1500px;">
+      <div style="position: absolute; left: 50%; top: 46%; width: 780px; height: 560px; margin-left: -390px; margin-top: -280px; transform: rotateX(58deg) rotateZ(-16deg); transform-style: preserve-3d; background-color: #a49b8a; background-image: repeating-linear-gradient(0deg, transparent 0 52px, rgba(32,30,29,0.10) 52px 54px), repeating-linear-gradient(90deg, transparent 0 52px, rgba(32,30,29,0.10) 52px 54px); border: 4px solid var(--color-text); box-shadow: 0 0 0 22px rgba(32,30,29,0.10);">
+
+        <div style="position: absolute; left: 14px; top: 60px; width: 66px; height: 430px; background: #6b5b47; border: 3px solid var(--color-text);"></div>
+        <div style="position: absolute; left: 14px; top: 14px; width: 132px; height: 132px; background: #767268; border: 3px solid var(--color-text);"></div>
+        <div style="position: absolute; left: 150px; top: 40px; width: 12px; height: 96px; background: var(--color-text);"></div>
+        <div style="position: absolute; left: 330px; top: 540px; width: 110px; height: 22px; background: #1a1815;"></div>
+
+        <div style="position: absolute; left: 226px; top: 152px; width: 62px; height: 62px; background: #8b8477; border: 3px solid var(--color-text);"></div>
+        <div style="position: absolute; left: 400px; top: 108px; width: 62px; height: 62px; background: #8b8477; border: 3px solid var(--color-text);"></div>
+        <div style="position: absolute; left: 556px; top: 228px; width: 62px; height: 62px; background: #8b8477; border: 3px solid var(--color-text);"></div>
+        <div style="position: absolute; left: 276px; top: 336px; width: 62px; height: 62px; background: #8b8477; border: 3px solid var(--color-text);"></div>
+        <div style="position: absolute; left: 512px; top: 408px; width: 62px; height: 62px; background: #8b8477; border: 3px solid var(--color-text);"></div>
+
+        <div style="position: absolute; left: 214px; top: 196px; width: 0; height: 0; transform-style: preserve-3d;">
+          <div style="position: absolute; left: -48px; bottom: 0; transform: rotateZ(16deg) rotateX(-58deg) scale(0.62); transform-origin: bottom center; animation: ctxBreathe 3.6s ease-in-out infinite;"><dc-import name="StaffPuck" color="#7a7168" prop="none" hint-size="96px,128px"></dc-import></div>
+        </div>
+        <div style="position: absolute; left: 302px; top: 196px; width: 0; height: 0; transform-style: preserve-3d;">
+          <div style="position: absolute; left: -48px; bottom: 0; transform: rotateZ(16deg) rotateX(-58deg) scale(0.62); transform-origin: bottom center; animation: ctxBreathe 4.4s ease-in-out infinite;"><dc-import name="StaffPuck" color="#7a7168" prop="glass" hint-size="96px,128px"></dc-import></div>
+        </div>
+        <div style="position: absolute; left: 432px; top: 96px; width: 0; height: 0; transform-style: preserve-3d;">
+          <div style="position: absolute; left: -48px; bottom: 0; transform: rotateZ(16deg) rotateX(-58deg) scale(0.62); transform-origin: bottom center; animation: ctxBreathe 5s ease-in-out infinite;"><dc-import name="StaffPuck" color="#7a7168" prop="none" hint-size="96px,128px"></dc-import></div>
+        </div>
+        <div style="position: absolute; left: 544px; top: 272px; width: 0; height: 0; transform-style: preserve-3d;">
+          <div style="position: absolute; left: -48px; bottom: 0; transform: rotateZ(16deg) rotateX(-58deg) scale(0.62); transform-origin: bottom center; animation: ctxBreathe 4s ease-in-out infinite;"><dc-import name="StaffPuck" color="#7a7168" prop="glass" hint-size="96px,128px"></dc-import></div>
+        </div>
+        <div style="position: absolute; left: 626px; top: 272px; width: 0; height: 0; transform-style: preserve-3d;">
+          <div style="position: absolute; left: -48px; bottom: 0; transform: rotateZ(16deg) rotateX(-58deg) scale(0.62); transform-origin: bottom center; animation: ctxBreathe 4.8s ease-in-out infinite;"><dc-import name="StaffPuck" color="#7a7168" prop="none" hint-size="96px,128px"></dc-import></div>
+        </div>
+        <div style="position: absolute; left: 500px; top: 452px; width: 0; height: 0; transform-style: preserve-3d;">
+          <div style="position: absolute; left: -48px; bottom: 0; transform: rotateZ(16deg) rotateX(-58deg) scale(0.62); transform-origin: bottom center; animation: ctxBreathe 3.8s ease-in-out infinite;"><dc-import name="StaffPuck" color="#7a7168" prop="none" hint-size="96px,128px"></dc-import></div>
+        </div>
+
+        <div style="position: absolute; left: 372px; top: 486px; width: 0; height: 0; transform-style: preserve-3d; animation: hostShift 9s ease-in-out infinite;">
+          <div style="position: absolute; left: -48px; bottom: 0; transform: rotateZ(16deg) rotateX(-58deg) scale(0.78); transform-origin: bottom center; animation: ctxSway 4.4s ease-in-out infinite alternate;"><dc-import name="StaffPuck" color="#2a2f3a" prop="pad" hint-size="96px,128px"></dc-import></div>
+        </div>
+
+        <div style="position: absolute; left: 176px; top: 300px; width: 0; height: 0; transform-style: preserve-3d; animation: waiterRun 9s ease-in-out infinite;">
+          <div style="position: absolute; left: -48px; bottom: 0; transform: rotateZ(16deg) rotateX(-58deg) scale(0.78); transform-origin: bottom center;">
+            <div style="animation: ctxBobFast 0.44s ease-in-out infinite;"><dc-import name="StaffPuck" color="#33383f" prop="tray" hint-size="96px,128px"></dc-import></div>
+          </div>
+        </div>
+
+        <div style="position: absolute; left: 108px; top: 156px; width: 0; height: 0; transform-style: preserve-3d; animation: cookOsc 2.8s ease-in-out infinite alternate;">
+          <div style="position: absolute; left: -48px; bottom: 0; transform: rotateZ(16deg) rotateX(-58deg) scale(0.78); transform-origin: bottom center;">
+            <div style="animation: ctxBob 0.8s ease-in-out infinite;"><dc-import name="StaffPuck" color="#3d3835" prop="pan" hint-size="96px,128px"></dc-import></div>
+          </div>
+        </div>
+
+        <div style="position: absolute; left: 288px; top: 386px; width: 0; height: 0; transform-style: preserve-3d; animation: busserRun 11s ease-in-out infinite;">
+          <div style="position: absolute; left: -48px; bottom: 0; transform: rotateZ(16deg) rotateX(-58deg) scale(0.78); transform-origin: bottom center;">
+            <div style="animation: ctxBob 0.62s ease-in-out infinite;"><dc-import name="StaffPuck" color="#4a4744" prop="stack" hint-size="96px,128px"></dc-import></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div style="position: absolute; left: 28px; top: 24px; display: flex; flex-direction: column; gap: 6px;">
+      <div style="font-family: var(--font-heading); font-weight: 800; font-size: 30px; letter-spacing: -0.01em;">Vinbaren</div>
+      <div style="font-family: var(--font-heading); font-weight: 800; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;">Kameradistans 8,4 m · pitch 58°</div>
+    </div>
+
+    <div style="position: absolute; right: 28px; top: 24px; display: flex; gap: 12px;">
+      <div style="border: 3px solid var(--color-text); background: transparent; padding: 9px 18px; font-family: var(--font-heading); font-weight: 800; font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase;">Bakåt</div>
+    </div>
+
+    <div style="position: absolute; right: 28px; top: 108px; width: 300px; border: 4px solid var(--color-text); background: var(--color-bg);">
+      <div style="background: var(--color-text); color: var(--color-bg); padding: 10px 16px; font-family: var(--font-heading); font-weight: 800; font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase;">Personkort</div>
+      <div style="padding: 16px; display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: flex; gap: 14px; align-items: flex-start;">
+          <div style="width: 74px; height: 82px; overflow: hidden; border: 3px solid var(--color-text);"><div style="transform: scale(0.62); transform-origin: top left;"><dc-import name="StaffFace" expression="stressad" hint-size="118px,132px"></dc-import></div></div>
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <div style="font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 800; color: var(--color-accent);">Roll</div>
+            <div style="font-family: var(--font-heading); font-weight: 800; font-size: 20px;">Servitör</div>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 3px; border-top: 2px solid var(--color-divider); padding-top: 10px;">
+          <div style="font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 800; color: var(--color-accent);">Just nu</div>
+          <div style="font-size: 16px;">serverar bordet</div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 3px; border-top: 2px solid var(--color-divider); padding-top: 10px;">
+          <div style="font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 800; color: var(--color-accent);">På väg mot</div>
+          <div style="font-size: 16px;">Bordet vid fönstret</div>
+        </div>
+      </div>
+    </div>
+    <div style="position: absolute; right: 328px; top: 258px; width: 104px; height: 3px; background: var(--color-accent); animation: leader 2.6s ease-in-out infinite;"></div>
+
+    <div style="position: absolute; left: 0; right: 0; bottom: 0; border-top: 4px solid var(--color-text); background: #eae9e9; padding: 14px 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; align-items: center;">
+      <div style="display: flex; gap: 12px; align-items: center; min-width: 0;">
+        <div style="width: 56px; height: 62px; overflow: hidden; border: 3px solid var(--color-text);"><div style="transform: scale(0.47); transform-origin: top left;"><dc-import name="StaffFace" expression="fokuserad" hint-size="118px,132px"></dc-import></div></div>
+        <div style="display: flex; flex-direction: column; gap: 3px; min-width: 0;">
+          <div style="font-family: var(--font-heading); font-weight: 800; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase;">Värd</div>
+          <div style="font-size: 13px;">ser över salen</div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 12px; align-items: center; min-width: 0;">
+        <div style="width: 56px; height: 62px; overflow: hidden; border: 3px solid var(--color-accent);"><div style="transform: scale(0.47); transform-origin: top left;"><dc-import name="StaffFace" expression="stressad" hint-size="118px,132px"></dc-import></div></div>
+        <div style="display: flex; flex-direction: column; gap: 3px; min-width: 0;">
+          <div style="font-family: var(--font-heading); font-weight: 800; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase;">Servitör</div>
+          <div style="font-size: 13px;">serverar bordet</div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 12px; align-items: center; min-width: 0;">
+        <div style="width: 56px; height: 62px; overflow: hidden; border: 3px solid var(--color-text);"><div style="transform: scale(0.47); transform-origin: top left;"><dc-import name="StaffFace" expression="irriterad" hint-size="118px,132px"></dc-import></div></div>
+        <div style="display: flex; flex-direction: column; gap: 3px; min-width: 0;">
+          <div style="font-family: var(--font-heading); font-weight: 800; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase;">Kock</div>
+          <div style="font-size: 13px;">retur från passet</div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 12px; align-items: center; min-width: 0;">
+        <div style="width: 56px; height: 62px; overflow: hidden; border: 3px solid var(--color-text);"><div style="transform: scale(0.47); transform-origin: top left;"><dc-import name="StaffFace" expression="förvirrad" hint-size="118px,132px"></dc-import></div></div>
+        <div style="display: flex; flex-direction: column; gap: 3px; min-width: 0;">
+          <div style="font-family: var(--font-heading); font-weight: 800; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase;">Lärling</div>
+          <div style="font-size: 13px;">dukar av</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 40px;">
+    <div style="display: flex; flex-direction: column; gap: 10px; border-top: 3px solid var(--color-text); padding-top: 14px;">
+      <div style="font-family: var(--font-heading); font-weight: 800; font-size: 19px;">Vad du ser i rummet</div>
+      <p style="margin: 0; font-size: 16px; line-height: 1.55;">Servitören går mönster 04 mellan passet och fönsterbordet, kocken står i mönster 08 vid linjen, lärlingen dukar av i mönster 07, värden håller entrén i mönster 01. Gästerna är samma puck i beige, en aning kortare.</p>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 10px; border-top: 3px solid var(--color-text); padding-top: 14px;">
+      <div style="font-family: var(--font-heading); font-weight: 800; font-size: 19px;">Vad du inte ser</div>
+      <p style="margin: 0; font-size: 16px; line-height: 1.55;">Ansiktena. På det här avståndet och den här lutningen är huvudena hjässor — precis som räknat i underlag 001. Därför bär raden nederst uttrycken, och kortet bär nyansen för den man valt.</p>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 10px; border-top: 3px solid var(--color-accent); padding-top: 14px;">
+      <div style="font-family: var(--font-heading); font-weight: 800; font-size: 19px;">Det är här spelaren dömer sig själv</div>
+      <p style="margin: 0; font-size: 16px; line-height: 1.55;">En röd ram i ansiktsraden och en puck som lutar 6° framåt säger samma sak på två avstånd: servitören hinner inte. Ingen siffra behövs — och ingen siffra är tillåten.</p>
+    </div>
+  </section>
+
+</div>
+</x-dc>
+</body>
+</html>

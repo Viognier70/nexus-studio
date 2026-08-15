@@ -1,7 +1,18 @@
 import { INTERIOR } from '../content/layout';
 import type { Guest, SimulationState, StaffMember, TaskType, Vec2 } from '../types';
 import { taskDurationTicks } from './economics';
-import { reputationEventDeparture, reputationEventGiveUp } from './reputation';
+import {
+  HAPPY_THRESHOLD,
+  UNHAPPY_THRESHOLD,
+  reputationEventDeparture,
+  reputationEventGiveUp
+} from './reputation';
+import {
+  MORALE_GIVE_UP_HIT,
+  MORALE_HAPPY_DEPARTURE_BUMP,
+  MORALE_UNHAPPY_DEPARTURE_HIT,
+  bumpMorale
+} from './morale';
 
 const TICK_SECONDS = 0.2;
 
@@ -192,10 +203,13 @@ export function tickGuests(state: SimulationState) {
         // Give up. ORDER 043 v3 §4 reputation loop: a walkout from
         // the queue is the loudest bad-reputation signal — a person
         // waited long enough to be visibly unhappy and then left.
+        // ORDER 047 §2: same event drags morale — the team registers
+        // that someone waited too long and gave up.
         guest.state = 'leaving';
         guest.stateTime = now;
         moveGuest(guest, { x: 0, z: 8 });
         reputationEventGiveUp(state);
+        bumpMorale(state, -MORALE_GIVE_UP_HIT);
       }
       continue;
     }
@@ -221,6 +235,14 @@ export function tickGuests(state: SimulationState) {
       state.completedGuests += 1;
       state.seatedIds = state.seatedIds.filter((id) => id !== guest.id);
       reputationEventDeparture(state, guest.satisfaction);
+      // ORDER 047 §2 — same satisfaction band drives morale. A happy
+      // departure lifts; an unhappy one drags; a mediocre departure is
+      // silent (the team doesn't register a neutral customer).
+      if (guest.satisfaction >= HAPPY_THRESHOLD) {
+        bumpMorale(state, MORALE_HAPPY_DEPARTURE_BUMP);
+      } else if (guest.satisfaction <= UNHAPPY_THRESHOLD) {
+        bumpMorale(state, -MORALE_UNHAPPY_DEPARTURE_HIT);
+      }
       guest.state = 'leaving';
       guest.stateTime = now;
       moveGuest(guest, { x: 0, z: 8 });
@@ -279,12 +301,31 @@ function diningDuration(state: SimulationState): number {
 // seat first, order and serve next, decant/flambé and clear last.
 // -------------------------------------------------------------------------
 
+// ORDER 098 — cooldown för checkback (tillsyn). En dining-gäst blir
+// behörig för en ny tillsyn ~15 sim-sekunder efter den senaste (eller
+// efter dining-inträdet, om ingen har utförts än). Vald så att en
+// 6-gästs dining genererar ~2.4 checkbacks per minut totalt — märkbar
+// last utan att sätta personalen på 100 % från en enda dining-topp.
+// Ordern tillåter kalibrering; siffran är ett rimligt utgångsläge som
+// mätning kommer att pröva.
+const CHECKBACK_COOLDOWN_SEC = 15;
+
+// ORDER 098 — satisfaction-bump vid genomförd checkback. Litet,
+// avsiktligt: tillsyn är underhåll, inte en händelse. Serve (+0.08)
+// och decant/flambe (+0.14) förblir de större satisfaction-drivarna.
+const CHECKBACK_SATISFACTION_BUMP = 0.03;
+
 const PRIORITY: TaskType[] = [
   'greet',
   'seat',
   'welcomeDrink',
   'order',
   'serve',
+  // ORDER 098 — checkback ligger efter serve (en nyss-serverad gäst
+  // ska inte få tillsyn samma tick) men före decant/flambe (rariteter
+  // under formell). Betyder att dining-hålet fylls först när
+  // greet/seat/order/serve inte har någon i kön.
+  'checkback',
   'decant',
   'flambe',
   'clear'
@@ -363,6 +404,19 @@ function findTaskTarget(state: SimulationState, type: TaskType): string | null {
       if (state.policies.service !== 'formell') return null;
       const guest = state.guests.find(
         (g) => g.state === 'dining' && state.simTime - g.stateTime < 4
+      );
+      return guest?.id ?? null;
+    }
+    case 'checkback': {
+      // ORDER 098 — tillsyn under dining. Behörig när
+      // simTime − (lastCheckbackAt ?? stateTime) > CHECKBACK_COOLDOWN_SEC.
+      // Väljer första matchande dining-gäst (ingen prioritering mellan
+      // dem — den som sitter längst utan tillsyn väljs indirekt genom
+      // ordningen i state.guests, som är stabil).
+      const guest = state.guests.find(
+        (g) =>
+          g.state === 'dining' &&
+          state.simTime - (g.lastCheckbackAt ?? g.stateTime) > CHECKBACK_COOLDOWN_SEC
       );
       return guest?.id ?? null;
     }
@@ -449,6 +503,13 @@ function completeStaffTask(state: SimulationState, staff: StaffMember) {
     case 'decant':
     case 'flambe': {
       guest.satisfaction = Math.min(1, guest.satisfaction + 0.14);
+      break;
+    }
+    case 'checkback': {
+      // ORDER 098 — tillsyn utförd. Timerstämpel så cooldown räknar från
+      // nu; liten satisfaction-bump — se CHECKBACK_SATISFACTION_BUMP.
+      guest.lastCheckbackAt = now;
+      guest.satisfaction = Math.min(1, guest.satisfaction + CHECKBACK_SATISFACTION_BUMP);
       break;
     }
     case 'clear': {

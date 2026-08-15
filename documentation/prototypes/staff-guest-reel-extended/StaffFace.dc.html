@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="position: relative; width: 118px; height: 132px; border: 4px solid var(--color-text); background: #c8b39a; box-sizing: border-box;">
+  <div style="position: absolute; left: 21px; width: 16px; height: 5px; background: var(--color-text); top: {{ browTopL }}px; transform: rotate({{ browRotL }}deg);"></div>
+  <div style="position: absolute; right: 21px; width: 16px; height: 5px; background: var(--color-text); top: {{ browTopR }}px; transform: rotate({{ browRotR }}deg);"></div>
+  <div style="position: absolute; left: 24px; width: 12px; background: var(--color-text); top: {{ eyeTopL }}px; height: {{ eyeHL }}px;"></div>
+  <div style="position: absolute; right: 24px; width: 12px; background: var(--color-text); top: {{ eyeTopR }}px; height: {{ eyeHR }}px;"></div>
+  <sc-if value="{{ isLine }}" hint-placeholder-val="{{ true }}">
+    <div style="position: absolute; left: 50%; bottom: 26px; height: 5px; background: var(--color-text); width: {{ mouthW }}px; margin-left: {{ mouthOffset }}px; transform: rotate({{ mouthRot }}deg);"></div>
+  </sc-if>
+  <sc-if value="{{ isSmile }}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; left: 28px; right: 28px; bottom: 22px; height: 13px; border-bottom: 5px solid var(--color-text); border-left: 5px solid var(--color-text); border-right: 5px solid var(--color-text);"></div>
+  </sc-if>
+  <sc-if value="{{ isBox }}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; left: 50%; bottom: 20px; height: 16px; border: 5px solid var(--color-text); width: {{ mouthW }}px; margin-left: {{ mouthOffset }}px;"></div>
+  </sc-if>
+  <sc-if value="{{ isO }}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; left: 44px; bottom: 20px; width: 24px; height: 22px; background: var(--color-text);"></div>
+  </sc-if>
+  <sc-if value="{{ hasDrop }}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; right: 8px; top: 20px; width: 9px; height: 16px; background: var(--color-accent);"></div>
+  </sc-if>
+  <sc-if value="{{ hasBadge }}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; left: 6px; bottom: 12px; width: 14px; height: 14px; background: var(--color-accent);"></div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:118,&quot;height&quot;:132},&quot;expression&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;neutral&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;neutral&quot;,&quot;glad&quot;,&quot;artigt&quot;,&quot;fokuserad&quot;,&quot;stressad&quot;,&quot;irriterad&quot;,&quot;utmattad&quot;,&quot;förvirrad&quot;,&quot;förvånad&quot;,&quot;stolt&quot;]}}">
+const FACES = {
+  neutral:   { browTopL: 34, browTopR: 34, browRotL: 0,   browRotR: 0,   eyeTopL: 52, eyeTopR: 52, eyeHL: 16, eyeHR: 16, mouth: 'line',  mouthW: 42, mouthRot: 0 },
+  glad:      { browTopL: 30, browTopR: 30, browRotL: -8,  browRotR: 8,   eyeTopL: 52, eyeTopR: 52, eyeHL: 10, eyeHR: 10, mouth: 'smile' },
+  artigt:    { browTopL: 32, browTopR: 32, browRotL: 0,   browRotR: 0,   eyeTopL: 52, eyeTopR: 52, eyeHL: 8,  eyeHR: 8,  mouth: 'line',  mouthW: 46, mouthRot: -5 },
+  fokuserad: { browTopL: 36, browTopR: 36, browRotL: 9,   browRotR: -9,  eyeTopL: 54, eyeTopR: 54, eyeHL: 12, eyeHR: 12, mouth: 'line',  mouthW: 30, mouthRot: 0 },
+  stressad:  { browTopL: 30, browTopR: 30, browRotL: 14,  browRotR: -14, eyeTopL: 52, eyeTopR: 52, eyeHL: 18, eyeHR: 18, mouth: 'box',   mouthW: 34, drop: true },
+  irriterad: { browTopL: 40, browTopR: 40, browRotL: 18,  browRotR: -18, eyeTopL: 58, eyeTopR: 58, eyeHL: 9,  eyeHR: 9,  mouth: 'line',  mouthW: 46, mouthRot: 6 },
+  utmattad:  { browTopL: 40, browTopR: 40, browRotL: -6,  browRotR: 6,   eyeTopL: 58, eyeTopR: 58, eyeHL: 5,  eyeHR: 5,  mouth: 'line',  mouthW: 40, mouthRot: 0 },
+  förvirrad: { browTopL: 28, browTopR: 36, browRotL: -16, browRotR: 0,   eyeTopL: 52, eyeTopR: 54, eyeHL: 14, eyeHR: 11, mouth: 'box',   mouthW: 22 },
+  förvånad:  { browTopL: 24, browTopR: 24, browRotL: 0,   browRotR: 0,   eyeTopL: 46, eyeTopR: 46, eyeHL: 20, eyeHR: 20, mouth: 'o' },
+  stolt:     { browTopL: 32, browTopR: 32, browRotL: -6,  browRotR: 6,   eyeTopL: 54, eyeTopR: 54, eyeHL: 9,  eyeHR: 9,  mouth: 'smile', badge: true },
+};
+
+class Component extends DCLogic {
+  renderVals() {
+    const f = FACES[this.props.expression] || FACES.neutral;
+    const w = f.mouthW || 42;
+    return Object.assign({}, f, {
+      mouthW: w,
+      mouthOffset: -Math.round(w / 2),
+      mouthRot: f.mouthRot || 0,
+      isLine: f.mouth === 'line',
+      isSmile: f.mouth === 'smile',
+      isBox: f.mouth === 'box',
+      isO: f.mouth === 'o',
+      hasDrop: !!f.drop,
+      hasBadge: !!f.badge,
+    });
+  }
+}
+</script>
+</body>
+</html>

@@ -107,7 +107,6 @@ describe('reducer TRIGGER_SCENARIO', () => {
     const s1 = reducer(s0, { type: 'TRIGGER_SCENARIO' });
     expect(s1.scenario.active).toBe(true);
     expect(s1.scenario.phase).toBe('subject');
-    expect(s1.scenario.difficulty).toBeNull();
     expect(s1.scenario.awaitingChoice).toBe(false); // not yet — situation not revealed
     expect(s1.scenario.choice).toBeNull();
   });
@@ -152,35 +151,25 @@ describe('reducer TRIGGER_SCENARIO', () => {
   });
 });
 
+// ORDER 048 §5 (2026-08-10 amendment) — confidence question retired.
+// subject → situation now runs in one step via ADVANCE_SCENARIO_TO_SITUATION.
+// The old 3-phase progression (subject → difficulty → situation) with
+// SET_SCENARIO_DIFFICULTY between them collapses into one transition.
 describe('reducer scenario phase progression', () => {
   function triggered(seed = 1): SimulationState {
     return reducer(makeInitialState(seed), { type: 'TRIGGER_SCENARIO' });
   }
 
-  it('subject → difficulty via ADVANCE_SCENARIO_TO_DIFFICULTY', () => {
-    const s = reducer(triggered(), { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
-    expect(s.scenario.phase).toBe('difficulty');
-    expect(s.scenario.awaitingChoice).toBe(false); // still not yet
-  });
-
-  it('ADVANCE_SCENARIO_TO_DIFFICULTY is a no-op outside subject phase', () => {
-    const s0 = makeInitialState(1); // idle
-    const s1 = reducer(s0, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
-    expect(s1.scenario.phase).toBe('idle');
-  });
-
-  it('SET_SCENARIO_DIFFICULTY captures the wager and reveals the situation', () => {
-    const s0 = reducer(triggered(), { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
-    const s = reducer(s0, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
-    expect(s.scenario.difficulty).toBe(2);
+  it('subject → situation via ADVANCE_SCENARIO_TO_SITUATION; awaitingChoice suspends arrivals', () => {
+    const s = reducer(triggered(), { type: 'ADVANCE_SCENARIO_TO_SITUATION' });
     expect(s.scenario.phase).toBe('situation');
-    expect(s.scenario.awaitingChoice).toBe(true); // now suspends arrivals
+    expect(s.scenario.awaitingChoice).toBe(true);
   });
 
-  it('SET_SCENARIO_DIFFICULTY is a no-op outside difficulty phase', () => {
-    const s = reducer(triggered(), { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 3 });
-    expect(s.scenario.phase).toBe('subject');
-    expect(s.scenario.difficulty).toBeNull();
+  it('ADVANCE_SCENARIO_TO_SITUATION is a no-op outside subject phase', () => {
+    const s0 = makeInitialState(1); // idle
+    const s1 = reducer(s0, { type: 'ADVANCE_SCENARIO_TO_SITUATION' });
+    expect(s1.scenario.phase).toBe('idle');
   });
 });
 
@@ -191,16 +180,28 @@ describe('reducer RESOLVE_SCENARIO (walk-in-of-five)', () => {
     // actually applied — see the specific test bodies.
     void choice;
     let s = makeInitialState(1);
+    // ORDER 050 §3 (2026-08-10): weight social to dominate so the
+    // draw reliably lands on walk-in-of-five (the scenario these
+    // tests were written against). The cash refactor shifted the
+    // baseline weightForCapital ratios; without pinning social weak
+    // here the seeded draw can flip to a different theme.
+    s = reducer(s, { type: 'SET_CAPITAL', capital: 'social', value: 0.05 });
+    s = reducer(s, { type: 'SET_CAPITAL', capital: 'ecological', value: 0.95 });
+    s = reducer(s, { type: 'SET_CASH', valueSek: 500_000 }); // strong economic → weak draw
     s = reducer(s, { type: 'TRIGGER_SCENARIO' });
-    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
-    s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
+    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_SITUATION' });
     return s;
   }
 
   it('choice A seats the party of five (5 scenario spawns)', () => {
     const s = reducer(inSituation(), { type: 'RESOLVE_SCENARIO', choice: 'A' });
     expect(s.scenario.awaitingChoice).toBe(false);
-    expect(s.scenario.phase).toBe('resolving');
+    // ORDER 048 §5 — walk-in-of-five A now attaches a
+    // professionalQuestion, so phase steps through 'question' before
+    // reaching 'resolving' (via ANSWER_QUESTION). Party spawn shape
+    // still lands at RESOLVE_SCENARIO regardless of the question.
+    expect(s.scenario.phase).toBe('question');
+    expect(s.scenario.pendingQuestion).not.toBeNull();
     expect(s.scenario.choice).toBe('A');
     expect(s.scenario.spawnedRemaining).toBe(5);
   });
@@ -262,8 +263,7 @@ describe('seat allocation invariants', () => {
       // Manual trigger fallback (auto shouldn't miss but be defensive)
       s = reducer(s, { type: 'TRIGGER_SCENARIO' });
     }
-    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
-    s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
+    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_SITUATION' });
     s = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'A' });
     // 120 sim-sec = 600 ticks of consequence to cover spawn + walk-in +
     // full dining cycle + leave for the party of five.
@@ -281,8 +281,7 @@ describe('seat allocation invariants', () => {
   it('every seated guest has a non-null seatIndex within layout range', () => {
     let s = makeInitialState(1);
     for (let t = 0; t < 155; t++) s = reducer(s, { type: 'TICK', dt: 1 / 5 });
-    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
-    s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
+    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_SITUATION' });
     s = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'A' });
     for (let t = 0; t < 300; t++) s = reducer(s, { type: 'TICK', dt: 1 / 5 });
     const seats = seatedGuests(s);
@@ -298,9 +297,13 @@ describe('seat allocation invariants', () => {
     // are all free). Manual trigger, choice A, then advance until all 5
     // scenario guests have arrived and been seated.
     let s = makeInitialState(1);
+    // ORDER 050 §3 (2026-08-10): pin social weakest so the draw
+    // reliably lands on walk-in-of-five (see the fixture upstream).
+    s = reducer(s, { type: 'SET_CAPITAL', capital: 'social', value: 0.05 });
+    s = reducer(s, { type: 'SET_CAPITAL', capital: 'ecological', value: 0.95 });
+    s = reducer(s, { type: 'SET_CASH', valueSek: 500_000 });
     s = reducer(s, { type: 'TRIGGER_SCENARIO' });
-    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
-    s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
+    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_SITUATION' });
     s = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'A' });
     for (let t = 0; t < 80; t++) s = reducer(s, { type: 'TICK', dt: 1 / 5 });
     // 4-top seat range is 4..7; one adjacent 2-top seat is 8 or 9.
@@ -321,9 +324,12 @@ describe('seat allocation invariants', () => {
 
   it('choice B: party of five fills the 4-top + one bar stool', () => {
     let s = makeInitialState(1);
+    // ORDER 050 §3 (2026-08-10) — social pinned weak, see fixture.
+    s = reducer(s, { type: 'SET_CAPITAL', capital: 'social', value: 0.05 });
+    s = reducer(s, { type: 'SET_CAPITAL', capital: 'ecological', value: 0.95 });
+    s = reducer(s, { type: 'SET_CASH', valueSek: 500_000 });
     s = reducer(s, { type: 'TRIGGER_SCENARIO' });
-    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
-    s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
+    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_SITUATION' });
     s = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'B' });
     for (let t = 0; t < 80; t++) s = reducer(s, { type: 'TICK', dt: 1 / 5 });
     const partySeats = s.guests
@@ -354,16 +360,24 @@ describe('seat allocation invariants', () => {
 });
 
 describe('reducer scenario resolves in the room (§3.4 mentor comment)', () => {
-  function inResolving(choice: 'A' | 'B' | 'C', difficulty: 1 | 2 | 3): SimulationState {
+  // ORDER 048 §5 (2026-08-10 amendment) — difficulty retired; the
+  // helper no longer takes a difficulty parameter.
+  function inResolving(choice: 'A' | 'B' | 'C'): SimulationState {
     let s = makeInitialState(1);
     s = reducer(s, { type: 'TRIGGER_SCENARIO' });
-    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
-    s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty });
-    return reducer(s, { type: 'RESOLVE_SCENARIO', choice });
+    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_SITUATION' });
+    s = reducer(s, { type: 'RESOLVE_SCENARIO', choice });
+    // ORDER 048 §5 — some choices attach a professionalQuestion that
+    // steps phase through 'question'. Answer it so the mentor-settle
+    // window can be measured from the same anchor (choiceAt).
+    if (s.scenario.phase === 'question') {
+      s = reducer(s, { type: 'ANSWER_QUESTION', index: 0 });
+    }
+    return s;
   }
 
   it('does not surface a mentor comment before the settle window elapses', () => {
-    let s = inResolving('A', 2);
+    let s = inResolving('A');
     // 34 sim-sec = 170 ticks. Still under SCENARIO_SETTLE_AFTER (35).
     s = tick(s, 170);
     expect(s.scenario.phase).toBe('resolving');
@@ -371,40 +385,39 @@ describe('reducer scenario resolves in the room (§3.4 mentor comment)', () => {
   });
 
   it('transitions resolving → settled after the settle window and surfaces a comment', () => {
-    let s = inResolving('A', 2);
+    let s = inResolving('A');
     // 36 sim-sec = 180 ticks. Past SCENARIO_SETTLE_AFTER (35).
     s = tick(s, 180);
     expect(s.scenario.phase).toBe('settled');
     expect(s.scenario.mentorComment).toBeTruthy();
-    // Non-null string; content is Swedish, no correctness marking.
     expect(typeof s.scenario.mentorComment).toBe('string');
     expect((s.scenario.mentorComment ?? '').length).toBeGreaterThan(5);
   });
 
-  it('comment varies with (choice, difficulty)', () => {
-    const s1 = tick(inResolving('A', 1), 180);
-    const s3 = tick(inResolving('A', 3), 180);
-    expect(s1.scenario.mentorComment).not.toBe(s3.scenario.mentorComment);
+  it('comment differs per choice (mentor now keyed by choice only)', () => {
+    // ORDER 048 §5 (2026-08-10 amendment) — mentor keyed by choice
+    // after the confidence-question retirement. Same choice → same
+    // comment; different choices → different comments.
+    const sA = tick(inResolving('A'), 180);
+    const sC = tick(inResolving('C'), 180);
+    expect(sA.scenario.mentorComment).not.toBe(sC.scenario.mentorComment);
   });
 });
 
 describe('arrivals suspended only while the situation is revealed', () => {
-  it('spawns continue during subject + difficulty phases (world keeps living)', () => {
+  it('spawns continue during the subject phase (world keeps living before the player reads on)', () => {
     let s = reducer(makeInitialState(1), { type: 'TRIGGER_SCENARIO' });
     const before = s.guests.length;
     // 300 ticks in subject phase (60 s) → some arrivals should fire
-    // because awaitingChoice is false while the player looks at "party
-    // at the door" but hasn't chosen difficulty yet.
+    // because awaitingChoice is false while the player looks at the
+    // subject line but hasn't advanced to the situation yet.
     s = tick(s, 300);
     expect(s.guests.length).toBeGreaterThanOrEqual(before);
-    // With arrivalProbability ~0.012/tick, expected arrivals over 300
-    // ticks ≈ 3.6 — usually at least 1 fires in practice.
   });
 
   it('spawns stop once the situation is revealed and awaitingChoice = true', () => {
     let s = reducer(makeInitialState(1), { type: 'TRIGGER_SCENARIO' });
-    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_DIFFICULTY' });
-    s = reducer(s, { type: 'SET_SCENARIO_DIFFICULTY', difficulty: 2 });
+    s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_SITUATION' });
     const before = s.guests.length;
     s = tick(s, 300);
     // In situation phase, awaitingChoice=true blocks arrivals. Scenario

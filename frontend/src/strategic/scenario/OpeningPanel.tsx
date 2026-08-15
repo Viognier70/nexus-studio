@@ -82,15 +82,29 @@ const WAITING_STYLE: React.CSSProperties = {
   opacity: 0.88
 };
 
-const COUNTDOWN_STYLE: React.CSSProperties = {
-  marginTop: 10,
-  paddingTop: 10,
-  borderTop: '1px solid rgba(168, 146, 106, 0.35)',
+// ORDER 048 §7 — the countdown must be unmissable. Bumped from a
+// subtle uppercase 12 px caption to a large centred digit with a
+// small label. The player should never wonder whether something is
+// about to happen; the number is the whole story.
+const COUNTDOWN_LABEL_STYLE: React.CSSProperties = {
+  marginTop: 14,
+  paddingTop: 12,
+  borderTop: '1px solid rgba(168, 146, 106, 0.45)',
   textAlign: 'center',
-  fontSize: 12,
-  letterSpacing: 0.8,
+  fontSize: 11,
+  letterSpacing: 1.4,
   textTransform: 'uppercase',
-  opacity: 0.78
+  opacity: 0.72
+};
+const COUNTDOWN_DIGIT_STYLE: React.CSSProperties = {
+  marginTop: 4,
+  textAlign: 'center',
+  fontSize: 42,
+  fontWeight: 700,
+  letterSpacing: 1,
+  color: '#f7ecd0',
+  fontFamily: 'ui-monospace, "SF Mono", Menlo, Consolas, monospace',
+  lineHeight: 1
 };
 
 export function OpeningPanel() {
@@ -126,8 +140,14 @@ export function OpeningPanel() {
         </div>
       ))}
       <div style={WAITING_STYLE}>{waitingLine}</div>
-      <div style={COUNTDOWN_STYLE}>
-        {strings.opening.countdownPrefix} {remainingSec}{strings.opening.countdownSecondsSuffix}
+      <div style={COUNTDOWN_LABEL_STYLE}>
+        {strings.opening.countdownPrefix}
+      </div>
+      <div style={COUNTDOWN_DIGIT_STYLE} aria-live="polite">
+        {remainingSec}
+        <span style={{ fontSize: 18, marginLeft: 2, fontWeight: 500 }}>
+          {strings.opening.countdownSecondsSuffix}
+        </span>
       </div>
     </div>
   );

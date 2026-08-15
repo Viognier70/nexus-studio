@@ -24,22 +24,40 @@
 // capital nudges here; the stream is read-only against state.
 
 import type {
+  EventStreamCauseTag,
   EventStreamEntry,
   PendingOutcome,
   SimulationState,
   SustainabilityKey
 } from '../types';
 import type { Rng } from '../util/rng';
+// ORDER 048 §2.1 — the plain-voice service report replaces the
+// observer-voice ambient banks during service. Observer voice
+// (AMBIENT_TEXTS et al.) is now used ONLY in the evening account
+// (already there via computeEveningAccount). The plain banks stay
+// station-tagged, present-tense, no interpretation.
+//
+// ORDER 052 §9 step 1 (2026-08-10): the plain banks are cause-aware.
+// Each event kind now carries sub-banks per cause + an ambient
+// fallback; detectCause() reads state and picks the dominant one.
 import {
-  AMBIENT_TEXTS,
-  POSITIVE_TEXTS,
-  PREP_POSITIVE_TEXTS,
-  PREP_TEXTS,
-  type AmbientEventKind,
-  type PrepEventKind
-} from '../../content/eventStream.sv';
+  CAUSE_PRIORITY,
+  type CauseBank,
+  type CauseKey,
+  SERVICE_REPORT_AMBIENT,
+  SERVICE_REPORT_POSITIVE,
+  SERVICE_REPORT_PREP,
+  SERVICE_REPORT_PREP_POSITIVE
+} from '../../content/serviceReport';
+import type { AmbientEventKind, PrepEventKind } from '../../content/eventStream.sv';
 import { currentRhythmMultiplier } from './rhythm';
 import { teamCapacity, teamCompetence } from './team';
+import {
+  MORALE_POSITIVE_EVENT_BUMP,
+  MORALE_STRAIN_EVENT_HIT,
+  bumpMorale,
+  effectiveTeamCompetence
+} from './morale';
 
 const TICK_SECONDS = 0.2;
 
@@ -59,10 +77,10 @@ export const OUTCOME_OFFSETS_SEC: readonly number[] = [6, 18];
 // bank — a repeat is better than a silent tick.
 export const REPEAT_GUARD_SEC = 240;
 
-// ORDER 043 Addendum A prep window (Vision Owner 2026-08-08):
-// "Håll den kort — ett par minuter, inte fem." Two minutes reads as
-// a busy prep beat without becoming its own act.
-export const PREP_DURATION_SEC = 120;
+// ORDER 043 Addendum A prep window — moved to ./constants 2026-08-09
+// to break the rhythm ↔ eventStream cycle. Re-exported here so
+// existing callers (reducer.ts) keep working via the barrel import.
+export { PREP_DURATION_SEC } from './constants';
 
 // Carryover trigger: if the prep window fires this many ignorance
 // events, a bottleneck line is scheduled ~13 min into service — the
@@ -88,8 +106,12 @@ export function competenceFor(
   state: SimulationState
 ): number {
   if (source === null) return 1; // strain-only events pass through 1×
-  if (source === 'trainingLevel') return teamCompetence(state.team, 'practical');
-  return teamCompetence(state.team, source);
+  // ORDER 047 §2 — route through effectiveTeamCompetence so the
+  // ambient stream's ignorance weighting is the morale-scaled read of
+  // the team, not the raw. A specialist under bad morale reads as
+  // partly present; a competent team on a good day reads at full.
+  const axis = source === 'trainingLevel' ? 'practical' : source;
+  return effectiveTeamCompetence(state.team, axis, state.morale);
 }
 
 // Load = active guests / teamCapacity(state.team). Reads the same
@@ -245,16 +267,173 @@ function pickTextWithRepeatGuard(
   return pool[Math.floor(rng.next() * pool.length)];
 }
 
+// ORDER 052 §9 step 1 (2026-08-10) — cause detection for the plain
+// service report. Priority order (Vision Owner-approved 2026-08-10):
+// scale_down > morning_change > short_prep > thin_team > low_competence
+// > ingredient_tier_grund > poor_morale > ambient. First cause that
+// matches wins; the picker then reads that sub-bank if the kind has
+// variants for it, otherwise falls back to the kind's `ambient` array.
+//
+// The `axis` argument names the competence axis the kind reads —
+// 'scientific' for kitchen_slip / prep_kitchen; 'cultural' for
+// service_slip / delivery_short / wait_stretched / prep_room /
+// prep_delivery; 'practical' for turnover_stumble; null for kinds
+// that don't cleanly attach to one axis (bottleneck is strain-only,
+// but we still gate low_competence on scientific since a bottleneck
+// most often lives at the pass).
+
+const THIN_TEAM_THRESHOLD = 2;
+const LOW_COMPETENCE_THRESHOLD = 0.35;
+const POOR_MORALE_THRESHOLD = 0.4;
+const SHORT_PREP_IGNORANCE_THRESHOLD = 2;
+
+function scaleDownActive(state: SimulationState): boolean {
+  const s = state.scaleDown;
+  return (
+    s.menuShortenedFrom !== null ||
+    s.wineListReduced ||
+    s.closedLunch ||
+    s.closedDinner
+  );
+}
+
+function detectCause(
+  state: SimulationState,
+  axis: 'scientific' | 'cultural' | 'practical' | null,
+  kindReadsIngredient: boolean
+): CauseKey {
+  if (scaleDownActive(state)) return 'scale_down';
+  if (state.day.morningPolicyChanges.length > 0) return 'morning_change';
+  if (state.day.prepIgnoranceCount >= SHORT_PREP_IGNORANCE_THRESHOLD) return 'short_prep';
+  if (state.team.members.filter((m) => !m.isAgency).length <= THIN_TEAM_THRESHOLD) {
+    return 'thin_team';
+  }
+  if (axis && teamCompetence(state.team, axis) < LOW_COMPETENCE_THRESHOLD) {
+    return 'low_competence';
+  }
+  if (kindReadsIngredient && state.policies.ingredientTier === 'grund') {
+    return 'ingredient_tier_grund';
+  }
+  if (state.morale < POOR_MORALE_THRESHOLD) return 'poor_morale';
+  return 'ambient';
+}
+
+// Kinds where ingredient tier is a plausible cause (kitchen quality
+// + supplier receiving + prep-time supplier check). Other kinds
+// skip that priority step and fall through to poor_morale / ambient.
+const KIND_READS_INGREDIENT: Record<string, boolean> = {
+  kitchen_slip: true,
+  delivery_short: true,
+  prep_delivery: true
+};
+
+// Axis the kind reads for the low_competence check. `null` for kinds
+// where no single axis fits; those never trigger low_competence and
+// fall through.
+const KIND_COMPETENCE_AXIS: Record<
+  string,
+  'scientific' | 'cultural' | 'practical' | null
+> = {
+  kitchen_slip: 'scientific',
+  service_slip: 'cultural',
+  delivery_short: 'cultural',
+  bottleneck: 'scientific',
+  wait_stretched: 'cultural',
+  turnover_stumble: 'practical',
+  prep_kitchen: 'scientific',
+  prep_room: 'cultural',
+  prep_delivery: 'cultural'
+};
+
+function pickCausedText(
+  bank: CauseBank,
+  kind: string,
+  state: SimulationState,
+  rng: Rng
+): string {
+  const axis = KIND_COMPETENCE_AXIS[kind] ?? null;
+  const readsIngredient = KIND_READS_INGREDIENT[kind] ?? false;
+  const cause = detectCause(state, axis, readsIngredient);
+  const causeBank = cause === 'ambient' ? undefined : bank[cause];
+  const pool = causeBank && causeBank.length > 0 ? causeBank : bank.ambient;
+  return pickTextWithRepeatGuard(pool, state, rng);
+}
+
+// Re-export for tests that want to exercise the priority ladder.
+export { detectCause as detectStreamCause };
+export { CAUSE_PRIORITY };
+
+// ORDER 076 (M6) — chain-window constants. A chain reuses its id
+// for entries of the same causeTag emitted within CAUSE_CHAIN_WINDOW_SEC.
+// Beyond that window a fresh chainId is minted. Chains not touched
+// for longer than the window are pruned in the same pass.
+const CAUSE_CHAIN_WINDOW_SEC = 20;
+
+/** Assign / update the causeChainId for an event of `causeTag`
+ *  emitted at `at`. Mutates `state.activeCauseChains` in place.
+ *  Returns the chainId to attach to the emitted entry. */
+export function assignCauseChain(
+  state: SimulationState,
+  causeTag: EventStreamCauseTag,
+  at: number
+): string {
+  // Prune expired chains first (any chain not touched in the window).
+  state.activeCauseChains = state.activeCauseChains.filter(
+    (c) => at - c.startedAt <= CAUSE_CHAIN_WINDOW_SEC
+  );
+  // Reuse if an active chain matches the tag.
+  const existing = state.activeCauseChains.find((c) => c.causeTag === causeTag);
+  if (existing) {
+    // Refresh the chain's start time so subsequent entries within
+    // the window continue to share it.
+    existing.startedAt = at;
+    return existing.chainId;
+  }
+  // Mint a new chain (base36 tick keeps id short and stable).
+  const chainId = state.tick.toString(36);
+  state.activeCauseChains.push({ causeTag, chainId, startedAt: at });
+  return chainId;
+}
+
+// ORDER 076 (M6) — the eventStream entry's causeTag is now the
+// DETECTED cause condition (from detectCause), not the architectural
+// probability-model tag (which stays on `EventDef.causeTag`, used
+// only to compute probability). When detectCause returns 'ambient'
+// (no specific condition applies), fall back to the architectural
+// tag so the legacy 3-value vocabulary continues to attach.
+function entryCauseTagFor(
+  def: EventDef,
+  state: SimulationState
+): 'scale_down' | 'morning_change' | 'short_prep' | 'thin_team' | 'low_competence' | 'ingredient_tier_grund' | 'poor_morale' | 'weather_adverse' | 'world_factor_negative' | 'ignorance' | 'strain' | 'both' {
+  const axis = KIND_COMPETENCE_AXIS[def.kind] ?? null;
+  const readsIngredient = KIND_READS_INGREDIENT[def.kind] ?? false;
+  const detected = detectCause(state, axis, readsIngredient);
+  if (detected !== 'ambient') return detected;
+  // Beyond the pre-existing detectCause list, check the M6-new
+  // conditions before falling back to the legacy architectural
+  // tag. Weather + world-factor detection is only sensible for
+  // events that could plausibly reflect them.
+  if (state.day.weather && (state.day.weather.precipitation !== 'none' || state.day.weather.windMS > 8)) {
+    return 'weather_adverse';
+  }
+  if (state.day.worldFactors.some((f) => f.kind === 'konjunktur_nedgang' || f.kind === 'vagarbeten' || f.kind === 'evenemang_hockey')) {
+    return 'world_factor_negative';
+  }
+  return def.causeTag;
+}
+
 function makeAmbientEntry(
   def: EventDef,
   state: SimulationState,
   rng: Rng
 ): EventStreamEntry {
+  const causeTag = entryCauseTagFor(def, state);
   return {
     at: state.simTime,
-    text: pickTextWithRepeatGuard(AMBIENT_TEXTS[def.kind], state, rng),
+    text: pickCausedText(SERVICE_REPORT_AMBIENT[def.kind], def.kind, state, rng),
     category: 'ambient',
-    causeTag: def.causeTag,
+    causeTag,
+    causeChainId: null,   // assigned at push-to-state time (see assignCauseChain)
     sustainability: def.sustainability,
     kind: def.kind,
     scenarioId: null
@@ -266,15 +445,19 @@ function makePrepEntry(
   state: SimulationState,
   rng: Rng
 ): EventStreamEntry {
-  // Prep events all carry causeTag: 'ignorance' — a competent team
-  // barely leaks them; an incompetent one does. Sustainability is
-  // 'social' as a stand-in (the team's readiness is a social
-  // reading), matching the ambient convention for team-strain events.
+  // Prep events used to hardcode causeTag='ignorance'. Under M6 we
+  // consult the same detection ladder so a prep leak on a scale-
+  // down morning names its condition properly.
+  const axis: 'scientific' | 'cultural' | 'practical' =
+    def.competenceSource === 'trainingLevel' ? 'practical' : def.competenceSource;
+  const detected = detectCause(state, axis, false);
+  const causeTag = detected !== 'ambient' ? detected : 'ignorance';
   return {
     at: state.simTime,
-    text: pickTextWithRepeatGuard(PREP_TEXTS[def.kind], state, rng),
+    text: pickCausedText(SERVICE_REPORT_PREP[def.kind], def.kind, state, rng),
     category: 'ambient',
-    causeTag: 'ignorance',
+    causeTag,
+    causeChainId: null,
     sustainability: 'social',
     kind: def.kind,
     scenarioId: null
@@ -285,12 +468,14 @@ function prepEventProbabilityPerTick(
   def: PrepEventDef,
   state: SimulationState
 ): number {
-  // Prep rate = base * ignoranceMultiplier(competenceForAxis).
+  // Prep rate = base * ignoranceMultiplier(effectiveCompetence).
   // No strain component during prep — the guests aren't in yet.
+  // ORDER 047 §2: routes through effectiveTeamCompetence so a bad-
+  // morale team preps badly regardless of the roster's competence.
   const source = def.competenceSource;
   const axis: 'scientific' | 'cultural' | 'practical' =
     source === 'trainingLevel' ? 'practical' : source;
-  const c = teamCompetence(state.team, axis);
+  const c = effectiveTeamCompetence(state.team, axis, state.morale);
   const perMinute = def.baseRatePerMin * ignoranceMultiplier(c);
   return Math.min(1, (perMinute * TICK_SECONDS) / 60);
 }
@@ -330,9 +515,10 @@ function makePositiveEntry(
 ): EventStreamEntry {
   return {
     at: state.simTime,
-    text: pickTextWithRepeatGuard(POSITIVE_TEXTS, state, rng),
+    text: pickTextWithRepeatGuard(SERVICE_REPORT_POSITIVE, state, rng),
     category: 'positive',
     causeTag: null,
+    causeChainId: null,
     sustainability: 'social',
     kind: 'positive',
     scenarioId: null
@@ -374,6 +560,7 @@ function outcomeToEntry(p: PendingOutcome, at: number): EventStreamEntry {
       text: p.text,
       category: 'ambient',
       causeTag: 'strain',
+      causeChainId: null,
       sustainability: p.sustainability,
       kind: 'bottleneck',
       scenarioId: p.scenarioId
@@ -384,6 +571,7 @@ function outcomeToEntry(p: PendingOutcome, at: number): EventStreamEntry {
     text: p.text,
     category: 'outcome',
     causeTag: null,
+    causeChainId: null,
     sustainability: p.sustainability,
     kind: 'outcome',
     scenarioId: p.scenarioId
@@ -438,28 +626,35 @@ export function tickEventStream(state: SimulationState, rng: Rng): void {
           // team, not the average (ambient events use the average
           // because the whole team touches each guest). Threshold
           // 0.55 = "is anyone actually qualified for this axis?"
+          // ORDER 047 §2 — MAX competence is morale-scaled here too
+          // so a specialist under bad morale can trip the polarity
+          // down. Same shape as ambient competenceFor.
           let maxComp = 0;
           for (const m of state.team.members) {
             if (m.competence[axis] > maxComp) maxComp = m.competence[axis];
           }
-          if (maxComp > 0.55) {
+          const moraleScale = 0.65 + 0.35 * state.morale;
+          if (maxComp * moraleScale > 0.55) {
             // Positive polarity — prep going well.
             emitted.push({
               at: state.simTime,
-              text: pickTextWithRepeatGuard(PREP_POSITIVE_TEXTS[slot.kind], state, rng),
+              text: pickTextWithRepeatGuard(SERVICE_REPORT_PREP_POSITIVE[slot.kind], state, rng),
               category: 'positive',
               causeTag: null,
+              causeChainId: null,
               sustainability: 'social',
               kind: slot.kind,
               scenarioId: null
             });
           } else {
-            // Ignorance polarity — prep going wrong.
+            // Ignorance polarity — prep going wrong. Cause-aware
+            // picker per ORDER 052 §9 step 1.
             emitted.push({
               at: state.simTime,
-              text: pickTextWithRepeatGuard(PREP_TEXTS[slot.kind], state, rng),
+              text: pickCausedText(SERVICE_REPORT_PREP[slot.kind], slot.kind, state, rng),
               category: 'ambient',
               causeTag: 'ignorance',
+              causeChainId: null,
               sustainability: 'social',
               kind: slot.kind,
               scenarioId: null
@@ -511,5 +706,57 @@ export function tickEventStream(state: SimulationState, rng: Rng): void {
   }
 
   if (emitted.length === 0) return;
+  // ORDER 076 (M6) — assign causeChainId to each emitted entry
+  // before it lands on the stream. Chain reuses within a 20 s
+  // window when a subsequent entry names the same causeTag.
+  for (const entry of emitted) {
+    if (entry.causeTag !== null) {
+      entry.causeChainId = assignCauseChain(state, entry.causeTag, state.simTime);
+    }
+  }
   state.eventStream = [...state.eventStream, ...emitted].slice(-STREAM_KEEP);
+
+  // ORDER 047 §2 — morale bumps for each newly emitted entry. Strain
+  // events drag morale down; positive events lift it. Runs after the
+  // slice so the emitted list reflects what actually landed on the
+  // panel.
+  //
+  // ORDER 047 §5 — accumulate per-service streamThemeCounts on ambient
+  // + prep entries so drawNextTheme can weight the next scenario toward
+  // what the room has been showing. Positive events are excluded (they
+  // are the absence of a problem, not a signal about which axis is
+  // stressed); outcome events are excluded (the scenario itself sets
+  // its own signal).
+  const streamCountDelta: Record<SustainabilityKey, number> = {
+    economic: 0,
+    social: 0,
+    ecological: 0
+  };
+  let moraleAccum = 0;
+  for (const entry of emitted) {
+    if (entry.category === 'positive') {
+      moraleAccum += MORALE_POSITIVE_EVENT_BUMP;
+    } else if (entry.category === 'ambient') {
+      // Ignorance + strain both drag. 'both' events (turnover_stumble)
+      // count as a strain hit — they read to the player as the room
+      // failing under pressure, not as a slow technique slip.
+      if (entry.causeTag === 'strain' || entry.causeTag === 'both') {
+        moraleAccum -= MORALE_STRAIN_EVENT_HIT;
+      }
+      streamCountDelta[entry.sustainability] += 1;
+    }
+  }
+  if (moraleAccum !== 0) bumpMorale(state, moraleAccum);
+  if (
+    streamCountDelta.economic > 0 ||
+    streamCountDelta.social > 0 ||
+    streamCountDelta.ecological > 0
+  ) {
+    state.streamThemeCounts = {
+      economic: state.streamThemeCounts.economic + streamCountDelta.economic,
+      social: state.streamThemeCounts.social + streamCountDelta.social,
+      ecological:
+        state.streamThemeCounts.ecological + streamCountDelta.ecological
+    };
+  }
 }

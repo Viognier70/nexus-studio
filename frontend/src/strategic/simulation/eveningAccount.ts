@@ -1,0 +1,117 @@
+// ORDER 046 §3 — the evening's account.
+//
+// Called at the moment a service ends (natural close or collapse) to
+// snapshot what happened, pick a branch, and produce a paragraph in
+// the observer's voice. Stored in state.eveningAccount so it doesn't
+// shift while the player reads it — capital drift during the evening
+// pause would otherwise re-pick a different branch mid-fade.
+//
+// Four branches after ORDER 050 §5 (2026-08-10) retired the two
+// wager-driven branches (high_wager_win, high_wager_loss). Content
+// bank still ships them so a future activity-anchored wager could
+// re-use the copy shape; they are unreachable until then.
+//
+//   collapsed  — day.serviceCollapsed. Preempts everything.
+//   good       — no collapse, net revenue > cost × 1.15, rep held or grew.
+//   thin       — no collapse, net revenue < cost × 0.90.
+//   mediocre   — everything else. Vision Owner's specific ask
+//                (2026-08-08): "kvällen bara var medioker — inte varje
+//                kväll ska ha en poäng." Deliberately non-committal.
+//
+// The service's net revenue and cost are computed as deltas from the
+// snapshots captured at OPEN_SERVICE (day.revenueAtServiceStart etc).
+// If the snapshots are null (defensive), the mediocre branch fires —
+// nothing else can be truthfully said.
+
+import type {
+  EveningAccount,
+  EveningAccountBranch,
+  SimulationState
+} from '../types';
+import { pickParagraph } from '../../content/eveningAccount.sv';
+import { ACTIVITY_CATALOGUE } from './activities';
+
+// "Good night" thresholds. Net revenue = (current revenue − snapshot).
+// Rep "held or grew" = current reputation ≥ snapshot − 0.02 (allowing
+// tiny drift so a stable evening still qualifies).
+const GOOD_MARGIN_RATIO = 1.15;
+const THIN_MARGIN_RATIO = 0.90;
+const REPUTATION_HELD_TOLERANCE = 0.02;
+
+// -------- branch selection --------------------------------------------
+
+export function pickBranch(state: SimulationState): EveningAccountBranch {
+  // Collapsed preempts everything.
+  if (state.day.serviceCollapsed) return 'collapsed';
+
+  const rStart = state.day.revenueAtServiceStart;
+  const cStart = state.day.costAtServiceStart;
+  const repStart = state.day.reputationAtServiceStart;
+  if (rStart === null || cStart === null || repStart === null) return 'mediocre';
+
+  const netRev = state.revenue - rStart;
+  const netCost = state.cost - cStart;
+  const repHeld = state.reputation >= repStart - REPUTATION_HELD_TOLERANCE;
+
+  // Cost baseline: if the service was so short cost barely moved,
+  // we compare against a floor to avoid inflating the ratio for a
+  // trivial denominator. 30 credits ≈ 3 min at the min-team cost floor.
+  const costFloor = Math.max(30, netCost);
+
+  if (repHeld && netRev > costFloor * GOOD_MARGIN_RATIO) return 'good';
+  if (netRev < costFloor * THIN_MARGIN_RATIO) return 'thin';
+  return 'mediocre';
+}
+
+// -------- compose ------------------------------------------------------
+
+export function computeEveningAccount(state: SimulationState): EveningAccount {
+  const branch = pickBranch(state);
+  let paragraph = pickParagraph({
+    branch,
+    collapseAxis: state.day.collapseAxis,
+    wagerCapital: null,
+    // ORDER 076 (M6) — pass the last-resolved scenario's drawn
+    // capital so the paragraph selector can pick a capital-
+    // flavoured variant. This is the wiring that closes the
+    // pickParagraph divergence baseline (0.000 → target 0.30).
+    drewCapital: state.day.drawnCapital,
+    // ORDER 076 (M6) — the day's last scenario choice; feeds the
+    // per-choice aside sentence so parallel A/B/C runs diverge.
+    lastChoice: state.day.lastScenarioChoice
+  });
+  // ORDER 047 §6 — if a morning policy change was made this day, name
+  // it once at the head of the paragraph so the investment reads
+  // through to the evening. The change lines are already
+  // observer-voice per applyPolicyPatch's synthesis; we just join
+  // them with the paragraph.
+  const changes = state.day.morningPolicyChanges;
+  if (changes.length > 0) {
+    paragraph = changes.join(' ') + ' ' + paragraph;
+  }
+  // ORDER 075 (M2 DoD 3) — name today's picked activities at the head
+  // of the paragraph so the morning's choices read through to the
+  // evening. Localise later; English lead sentence matches the
+  // observer's paragraph tone.
+  if (state.day.pickedActivityIds.length > 0) {
+    const names = state.day.pickedActivityIds
+      .map((id) => {
+        const a = ACTIVITY_CATALOGUE.find((x) => x.id === id);
+        return a ? a.name : null;
+      })
+      .filter((n): n is string => n !== null);
+    if (names.length > 0) {
+      const list = names.length === 1
+        ? names[0]
+        : names.length === 2
+          ? `${names[0]} and ${names[1]}`
+          : `${names.slice(0, -1).join(', ')}, and ${names[names.length - 1]}`;
+      paragraph = `Today you picked: ${list}. ` + paragraph;
+    }
+  }
+  return {
+    branch,
+    paragraph,
+    presentedAt: state.simTime
+  };
+}

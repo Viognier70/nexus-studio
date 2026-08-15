@@ -13,7 +13,8 @@ interface Props {
 
 const WALK_SPEED = 3.2;
 const RUN_SPEED = 5.4;
-const EYE_HEIGHT = 1.7;
+// ORDER 053 Del C — first-person eye height, exact.
+const EYE_HEIGHT = 1.65;
 const BOUNDS = { minX: -50, maxX: 50, minZ: -34, maxZ: 32 };
 
 export function PlayerController({ isTouch, paused, moveRef, lookRef }: Props) {

@@ -15,7 +15,15 @@
 // the wager UI + scenario-driven capital movement replace the manual
 // cycle keys.
 
+import { useEffect, useRef, useState } from 'react';
+import { useCamera } from '../camera/CameraContext';
+import { GRAY_BOX_CAMERA } from '../content/grythyttan';
+import { economicReadingNormalised } from '../simulation/cashReading';
 import { useSimState } from '../simulation/SimulationProvider';
+import { usePlayerBusinessInterior } from '../business/interiorLayout';
+import { fpsMeter } from '../../lib/fpsMeter';
+import { pixelSampler } from '../../lib/pixelSampler';
+import { harnessParams } from '../testHarness/urlParams';
 
 const PANEL_STYLE: React.CSSProperties = {
   position: 'absolute',
@@ -42,9 +50,45 @@ interface Props {
 export function DevPanel({ lastKey }: Props) {
   if (!import.meta.env.DEV) return null;
   const sim = useSimState();
+  // Vision Owner 2026-08-15 — seat-diagnos next to the waiting
+  // readout. Same reason the camera distance got its own suffix in
+  // ORDER 090 §5: when the room reports "waiting=N" and nothing
+  // appears to be happening, the answer is usually "capacity is
+  // already full" or "the flat-seat list drifted from the reducer's
+  // capacity." Making both visible on the same strip skips a console
+  // dive. `layout.seats.length` is the runtime echo of TOTAL_SEATS —
+  // if it disagrees with policies.capacity, a `!` suffix flags the
+  // drift so the mismatch cannot be silently missed.
+  const layout = usePlayerBusinessInterior();
+  // ORDER 090 §5 (finding 3) — camera distance polled on the same
+  // 250 ms cadence as FPS. Interior scene (guests, staff, tables)
+  // is culled outside restaurantInteriorFade [mid−half, mid+half],
+  // i.e. 35–75 m at current constants. Playtest 2026-08-14 reported
+  // "waiting=5 but no guests visible" — the camera was at the
+  // village preset (900 m), far outside the fade band, so nothing
+  // interior renders. Making the distance visible directly on the
+  // dev strip means "why is the room empty?" is answered without
+  // opening the console.
+  const camera = useCamera();
   const c = sim.capitals.values;
-  const wager = sim.wager ? `${sim.wager.capital[0].toUpperCase()}` : '-';
+  const econReading = economicReadingNormalised(sim);
   const d = sim.day;
+  // ORDER 055 Del F — pull FPS from the shared meter every 250 ms so
+  // the readout ticks visibly without triggering a re-render on every
+  // frame. The FpsProbe inside Canvas writes to the meter at ~2 Hz.
+  const [fps, setFps] = useState(0);
+  // ORDER 061 point 3 — pixel sample readout at screen centre. Same
+  // 250 ms poll cadence as FPS so both readouts stay in sync.
+  const [rgb, setRgb] = useState<{ r: number; g: number; b: number }>({ r: 0, g: 0, b: 0 });
+  const [camDist, setCamDist] = useState(0);
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      setFps(fpsMeter.fps);
+      setRgb({ r: pixelSampler.r, g: pixelSampler.g, b: pixelSampler.b });
+      setCamDist(camera.actualRef.current.distance);
+    }, 250);
+    return () => window.clearInterval(id);
+  }, [camera]);
   // Service progress readout: "5:23 / 10 min" when a service is
   // running, "-" otherwise. Player-facing text never shows numbers
   // (§9), but the dev strip does — it's the only surface where a
@@ -60,6 +104,18 @@ export function DevPanel({ lastKey }: Props) {
           const s = Math.floor(rem % 60);
           return `${m}:${s.toString().padStart(2, '0')} / ${d.currentServiceLengthMinutes}min`;
         })();
+  // Live interior counts. `waiting=` on the weather line is the
+  // *forecast* (waitingAtOpening) — the queue-length prediction fed
+  // by reputation × weather at doors-open. That number is stable
+  // across a service. What actually matters when the room reads as
+  // empty is the LIVE queue, live seated count, and the capacity
+  // ceiling that stops seating even when guests are queued.
+  const queueLive = sim.waitingIds.length;
+  const seatedLive = sim.seatedIds.length;
+  const capacity = sim.policies.capacity;
+  const layoutSeats = layout?.seats.length ?? 0;
+  const seatDrift = layout != null && layoutSeats !== capacity;
+
   // ORDER 045 weather + world-factor line. Kept compact so the dev
   // panel stays a two-liner most of the time and grows to three
   // only on services where the outer world reports in.
@@ -69,8 +125,107 @@ export function DevPanel({ lastKey }: Props) {
   const factors = d.worldFactors.length > 0
     ? '  factors=' + d.worldFactors.map((f) => f.kind).join(',')
     : '';
-  const line1 = `DEV  day=${d.dayNumber} ${d.period.padEnd(9)}  service=${serviceReadout.padEnd(14)}  scenarios=${d.scenariosFiredThisService}/${d.scenariosPlanned}`;
-  const line2 = `     econ=${c.economic.toFixed(2)}  soc=${c.social.toFixed(2)}  eco=${c.ecological.toFixed(2)}  rep=${sim.reputation.toFixed(2)}  wager=${wager}  key=${lastKey || '-'}`;
-  const line3 = `     ${weather}${factors}`;
-  return <div style={PANEL_STYLE}>{`${line1}\n${line2}\n${line3}`}</div>;
+  // Seat-diagnos suffix (see comment on `layout` above). Always
+  // present — even out-of-service, queueLive/seatedLive are the
+  // authoritative "is anyone in the room right now" readout.
+  const seatStr = ` queue=${queueLive} seated=${seatedLive}/${capacity}${
+    seatDrift ? `!layout=${layoutSeats}` : ''
+  }`;
+
+  // Log on-change when the live queue is non-empty. Vision Owner
+  // 2026-08-15: "waiting=4, ingen sitter" → the console needs to
+  // show at which tuple (queue, seated, capacity, layoutSeats) the
+  // room stops seating. Fires only in DEV, ratelimited by tuple
+  // change (identity, not time), so a stable state doesn't spam.
+  const lastLoggedRef = useRef<string>('');
+  useEffect(() => {
+    if (queueLive === 0) return;
+    const key = `${queueLive}|${seatedLive}|${capacity}|${layoutSeats}`;
+    if (key === lastLoggedRef.current) return;
+    lastLoggedRef.current = key;
+    // eslint-disable-next-line no-console
+    console.info(
+      '[interior] queue=%d seated=%d/%d layout.seats=%d%s',
+      queueLive, seatedLive, capacity, layoutSeats,
+      seatDrift ? '  (DRIFT)' : ''
+    );
+  }, [queueLive, seatedLive, capacity, layoutSeats, seatDrift]);
+  // ORDER 056 Del A — label "strat" so the strategic FPS is
+  // distinguishable from the first-person view's separate overlay.
+  const fpsStr = fps > 0 ? `${fps.toString().padStart(3, ' ')}fps(strat)` : ' - fps(strat)';
+  // ORDER 090 §5 (finding 3) — interior visibility uses
+  // `visibility = 1 − smoothstep(mid−half, mid+half, dist)`; the
+  // group's `visible = visibility > 0.02`. So the interior is fully
+  // visible below `mid − half`, fades through the band, and is
+  // fully culled at/above `mid + half`. A `*` suffix on the readout
+  // flags "camera is close enough that the interior renders at all"
+  // — no suffix = camera is past the fade band's far edge and
+  // seated guests / staff / tables are silently gone regardless of
+  // sim state. The band bounds are printed alongside for context.
+  const interiorMin = GRAY_BOX_CAMERA.restaurantInteriorFadeMid - GRAY_BOX_CAMERA.restaurantInteriorFadeHalf;
+  const interiorMax = GRAY_BOX_CAMERA.restaurantInteriorFadeMid + GRAY_BOX_CAMERA.restaurantInteriorFadeHalf;
+  const interiorRenders = camDist < interiorMax;
+  const camStr = `cam=${camDist.toFixed(0).padStart(3, ' ')}m${interiorRenders ? '*' : ' '}[${interiorMin}-${interiorMax}]`;
+  const line1 = `DEV  ${fpsStr}  ${camStr}  day=${d.dayNumber} ${d.period.padEnd(9)}  service=${serviceReadout.padEnd(14)}  scenarios=${d.scenariosFiredThisService}/${d.scenariosPlanned}`;
+  const cashK = Math.round(sim.cash / 1000);
+  // ORDER 102 — R1 kunskapskapital dev-readout. Läses under `capitals`-
+  // raden så det syns bredvid soc/eco/rep. Ingen siffra visas i spelar-
+  // UI (R3 §1.4 / EDD §7); detta är enbart dev-diagnos, samma pattern
+  // som queue=/seated= i ORDER 097.
+  const kc = sim.knowledgeCredits;
+  const creditsStr = `credits=E${kc.episteme.toFixed(2)} T${kc.techne.toFixed(2)} P${kc.phronesis.toFixed(2)}`;
+  const line2 = `     cash=${cashK.toString().padStart(4, ' ')}k  econR=${econReading.toFixed(2)}  soc=${c.social.toFixed(2)}  eco=${c.ecological.toFixed(2)}  rep=${sim.reputation.toFixed(2)}  ${creditsStr}  key=${lastKey || '-'}`;
+  const line3 = `     ${weather}${factors}${seatStr}`;
+  // ORDER 061 point 3 — post-tone-map pixel at screen centre.
+  // Vision Owner aims the crosshair at a roof face; this reads the
+  // sRGB value being displayed. R170 G120 B100 → math is right and
+  // atmosphere/fog is muting saturation; <R100 → shadow or normal
+  // still wrong.
+  const line4 = `     pixel(centre) R=${rgb.r.toString().padStart(3, ' ')} G=${rgb.g.toString().padStart(3, ' ')} B=${rgb.b.toString().padStart(3, ' ')}`;
+  // ORDER 081 — playtest mode hides the aiming reticle and the
+  // pixel-probe line. The day/period/cash lines stay because they
+  // are useful in a debrief; the diagnostic aim + colour readout
+  // add noise to a "does it feel good" assessment.
+  const hideDiagnostic = harnessParams.playtest;
+  const panelText = hideDiagnostic
+    ? `${line1}\n${line2}\n${line3}`
+    : `${line1}\n${line2}\n${line3}\n${line4}`;
+  return (
+    <>
+      <div style={PANEL_STYLE}>{panelText}</div>
+      {!hideDiagnostic && <CenterCrosshair />}
+    </>
+  );
+}
+
+// ORDER 061 point 3 — 12 px crosshair centred on the viewport so the
+// Vision Owner sees exactly where the pixel sample lands. Pointer-
+// events off — never interferes with camera drag.
+const CROSS_H_STYLE: React.CSSProperties = {
+  position: 'absolute',
+  left: 'calc(50% - 6px)',
+  top: 'calc(50% - 1px)',
+  width: 12,
+  height: 2,
+  background: 'rgba(255, 240, 100, 0.85)',
+  pointerEvents: 'none',
+  zIndex: 46
+};
+const CROSS_V_STYLE: React.CSSProperties = {
+  position: 'absolute',
+  left: 'calc(50% - 1px)',
+  top: 'calc(50% - 6px)',
+  width: 2,
+  height: 12,
+  background: 'rgba(255, 240, 100, 0.85)',
+  pointerEvents: 'none',
+  zIndex: 46
+};
+function CenterCrosshair() {
+  return (
+    <>
+      <div style={CROSS_H_STYLE} />
+      <div style={CROSS_V_STYLE} />
+    </>
+  );
 }

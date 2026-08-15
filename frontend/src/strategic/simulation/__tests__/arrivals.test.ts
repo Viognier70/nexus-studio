@@ -67,7 +67,7 @@ describe('arrivalProbability', () => {
         periodArrivalMultiplier('dinner') *
         SERVICE_ARRIVAL_MULT[s.policies.service] *
         PRICE_ARRIVAL_MULT[s.policies.pricing] *
-        economicArrivalMultiplier(s.capitals.values.economic) *
+        economicArrivalMultiplier(s) *
         reputationArrivalMultiplier(s.reputation)) /
       300;
     expect(arrivalProbability(s)).toBeCloseTo(expected, 10);
@@ -203,81 +203,98 @@ describe('scenarioSpawnStep', () => {
   });
 
   it('scenario-flagged guests never walk away', () => {
-    // Even at critically weak economic, scenario guests must reach the
-    // door — the whole point of a scenario is that the player responds
-    // to a specific arrival. Walk-away is for ambient regulars only.
+    // Even at critically weak economic reading, scenario guests must
+    // reach the door — the whole point of a scenario is that the
+    // player responds to a specific arrival. Walk-away is for
+    // ambient regulars only. ORDER 050 §3 (2026-08-10): the reading
+    // now derives from state.cash.
     const s = armedState(3, 5, 5);
-    s.capitals.values.economic = 0;
+    s.cash = 0;
     const g = scenarioSpawnStep(s) as Guest;
     expect(g.walkAwayOnArrival).toBe(false);
   });
 });
 
-describe('ORDER 043 §6 economic arrival multiplier', () => {
-  it('is ECONOMIC_ARRIVAL_FLOOR (0.4) at capital = 0 and 1 at capital = 1', () => {
-    expect(economicArrivalMultiplier(0)).toBeCloseTo(0.4, 10);
-    expect(economicArrivalMultiplier(1)).toBeCloseTo(1, 10);
+// ORDER 050 §3 (2026-08-10) — economicArrivalMultiplier and
+// walkAwayProbability now take SimulationState and derive the [0,1]
+// reading from state.cash / weekly-operating-baseline capped at 4
+// weeks. Tests reason in cash-SEK; a strong reading needs enough
+// cash to reach the cap, a weak reading needs cash → 0.
+describe('ORDER 043 §6 economic arrival multiplier (post-ORDER-050 cash refactor)', () => {
+  function stateWithCash(cash: number): SimulationState {
+    const s = stateInPeriod(1, 'dinner');
+    s.cash = cash;
+    return s;
+  }
+
+  it('is ECONOMIC_ARRIVAL_FLOOR (0.4) at cash = 0 and 1 at cash-past-the-cap', () => {
+    // Cap at 4 weeks × ~25.2 kSEK weekly ops (3 default team members
+    // dailyCost 1200 + 1000 + 1400 = 3600 × 7 = 25 200) ≈ 100 kSEK.
+    // 500 kSEK is comfortably past the cap.
+    expect(economicArrivalMultiplier(stateWithCash(0))).toBeCloseTo(0.4, 10);
+    expect(economicArrivalMultiplier(stateWithCash(500_000))).toBeCloseTo(1, 10);
   });
 
-  it('is monotonically increasing across [0, 1]', () => {
+  it('is monotonically increasing as cash rises', () => {
     let last = -Infinity;
-    for (let v = 0; v <= 1; v += 0.1) {
-      const m = economicArrivalMultiplier(v);
+    for (const cash of [0, 20_000, 40_000, 60_000, 80_000, 120_000, 200_000]) {
+      const m = economicArrivalMultiplier(stateWithCash(cash));
       expect(m).toBeGreaterThanOrEqual(last);
       last = m;
     }
   });
 
-  it('clamps out-of-range inputs', () => {
-    expect(economicArrivalMultiplier(-1)).toBeCloseTo(0.4, 10);
-    expect(economicArrivalMultiplier(2)).toBeCloseTo(1, 10);
+  it('clamps out-of-range inputs (negative cash reads as 0 floor)', () => {
+    expect(economicArrivalMultiplier(stateWithCash(-1000))).toBeCloseTo(0.4, 10);
+    expect(economicArrivalMultiplier(stateWithCash(9_999_999))).toBeCloseTo(1, 10);
   });
 
-  it('arrivalProbability visibly falls as economic drops', () => {
-    const strong = stateInPeriod(1, 'dinner');
-    strong.capitals.values.economic = 1;
-    const weak = stateInPeriod(1, 'dinner');
-    weak.capitals.values.economic = 0;
+  it('arrivalProbability visibly falls as cash drops', () => {
+    const strong = stateWithCash(500_000);
+    const weak = stateWithCash(0);
     // At floor 0.4 vs 1.0, weak should be 40% of strong's rate.
     expect(arrivalProbability(weak) / arrivalProbability(strong)).toBeCloseTo(0.4, 3);
   });
 });
 
-describe('ORDER 043 §6 walk-away probability', () => {
-  it('is 0 at economic = 1 (no walk-aways in a strong economy)', () => {
-    expect(walkAwayProbability(1)).toBe(0);
+describe('ORDER 043 §6 walk-away probability (post-ORDER-050 cash refactor)', () => {
+  function stateWithCash(cash: number): SimulationState {
+    const s = stateInPeriod(1, 'dinner');
+    s.cash = cash;
+    return s;
+  }
+
+  it('is 0 at cash past the runway cap (no walk-aways in a strong economy)', () => {
+    expect(walkAwayProbability(stateWithCash(500_000))).toBe(0);
   });
 
-  it('is ECONOMIC_WALKAWAY_CEIL (0.2) at economic = 0', () => {
-    // Halved from 0.4 at the room-flow retune. At economic = 0 one in
-    // five arrivals refuses entry; the previous 0.4 flooded lunch with
-    // vändare beyond what the arrival pressure could absorb.
-    expect(walkAwayProbability(0)).toBeCloseTo(0.2, 10);
+  it('is ECONOMIC_WALKAWAY_CEIL (0.2) at cash = 0', () => {
+    expect(walkAwayProbability(stateWithCash(0))).toBeCloseTo(0.2, 10);
   });
 
-  it('is monotonically decreasing across [0, 1]', () => {
+  it('is monotonically decreasing as cash rises', () => {
     let last = Infinity;
-    for (let v = 0; v <= 1; v += 0.1) {
-      const p = walkAwayProbability(v);
+    for (const cash of [0, 20_000, 40_000, 60_000, 80_000, 120_000, 200_000]) {
+      const p = walkAwayProbability(stateWithCash(cash));
       expect(p).toBeLessThanOrEqual(last);
       last = p;
     }
   });
 
-  it('maybeSpawnGuest flags walk-away when the second roll fires at low economic', () => {
-    const s = stateInPeriod(1, 'dinner');
-    s.capitals.values.economic = 0; // walk-away probability = 0.2
-    // First roll (arrival chance) at 0 → passes. Second roll (walk-away)
-    // at 0 → below 0.2 → walk-away flagged.
+  it('maybeSpawnGuest flags walk-away when the second roll fires at zero cash', () => {
+    const s = stateWithCash(0); // walk-away probability = 0.2
+    // First roll (arrival chance) at 0 → passes. Second roll
+    // (walk-away) at 0 → below 0.2 → walk-away flagged.
     const g = maybeSpawnGuest(s, fakeRng([0, 0]));
     expect(g).not.toBeNull();
     expect(g!.walkAwayOnArrival).toBe(true);
   });
 
-  it('maybeSpawnGuest does not flag walk-away when second roll misses', () => {
-    const s = stateInPeriod(1, 'dinner');
-    s.capitals.values.economic = 0.55; // walk-away probability = 0.09
-    // First roll 0 → arrival fires. Second roll 0.9 → above 0.09 → no walk-away.
+  it('maybeSpawnGuest does not flag walk-away at mid-cash when the second roll misses', () => {
+    // At ~55 kSEK cash on the default team (~25.2 kSEK/week ops),
+    // weeks-of-runway ≈ 2.2, reading ≈ 0.55, walk-away probability
+    // ≈ 0.09. Second roll of 0.9 misses that threshold.
+    const s = stateWithCash(55_000);
     const g = maybeSpawnGuest(s, fakeRng([0, 0.9]));
     expect(g).not.toBeNull();
     expect(g!.walkAwayOnArrival).toBe(false);
