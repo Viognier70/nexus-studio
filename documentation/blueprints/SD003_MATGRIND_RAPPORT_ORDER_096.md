@@ -26,7 +26,9 @@ Ingenting byggs in i spelet i den här ordern. Mätningen är ett fristående pr
 
 Mätskriptet (`frontend/scripts/order096-fps-benchmark.mjs`) är ett fristående Node/Playwright-skript. Riggkoden är lyft ur `documentation/prototypes/staff-guest-reel-extended/guest-reel.jsx` och portad till vanilla JS (inga ramverksberoenden, ingen React). Mätningen körs i headless Chromium vid 1920×1080 px.
 
-**Avvikelse att notera:** Vanilla JS SVG-uppdatering kostar inget React-reconciliation-overhead. Den faktiska dockskåp-komponenten i React kan förväntas vara 5–15 % långsammare. Benchmarken är alltså lätt optimistisk — men marginalerna är stora nog att slutsatsen håller.
+**Mätningen kör riggen isolerad — ingen simulering, inga paneler, ingen karta, ingen 3D-scen.** Det uppmätta talet är inte spelets tal. I spelet konkurrerar dockskåpets figurlager med det övriga frame-budgetet; beroende på hur mycket 3D-scenen och simuleringen tar av de 16,7 ms som ett 60 fps-frame kostar kan marginalen vara snävare än benchmarkens råtal antyder. Marginalen mot 60 fps-kravet är ~6× — det tål mycket, men förbehållet ska stå klart innan siffran citeras som beslutad.
+
+Utöver isolationen: vanilla JS SVG-uppdatering bär inget React-reconciliation-overhead. Den faktiska dockskåp-komponenten i React kan förväntas vara 5–15 % långsammare. De två avvikelserna pekar åt varsitt håll (isolation = optimistisk, vanilla JS = optimistisk) — sammanlagd bias är uppåt.
 
 Figurerna animeras med tre cyklande poser (gång/ätande/siluett-hälsning) med staggerade fasoffset så att alla ledvinklar räknas om varje bildruta.
 
@@ -143,6 +145,8 @@ Figurer i inspelningen är uppdelade tre-och-tre i gång / ätande / hälsande �
 Ingenting i produktionskoden rörs av den här ordern. `InteriorGuests`, `InteriorStaff`, `patternTransform` och kartans puckar är oförändrade. Beslut C gäller tills SD-003 revideras. SD-003 förblir pausad.
 
 Mätresultaten är Chrome-specifika och mätta på en stationär Mac (120 Hz skärm). En mobilmätning (Safari/WebKit, 60 Hz, lägre CPU) är inte genomförd och behövs om mobil-first-support är ett krav för dockskåpet.
+
+**`pointerEvents` på figurlagret — öppen implementationsfråga.** Benchmarkens SVG-figurer bär `pointer-events: none` på figurlagret, vilket är korrekt för figurer som bara ska animeras. SD-003 §4 kräver dock att ett klick på passluckan (öppningen mot köket respektive baren i bakväggen) byter fokusrum. Öppningarnas klickytor delar svaret med figurlagret om de läggs i samma SVG. Implementationen behöver antingen **(a)** lyfta öppningarnas klickytor ur figur-SVG:en och lägga dem i ett eget lager med normalt `pointer-events`, eller **(b)** sätta `pointer-events: auto` specifikt på öppningarnas `<g>`-element medan figur-rotelementet behåller `none`. Inget av detta påverkar bildfrekvensen; det är en layoutfråga SD-003:s revidering måste lösa innan passluckans interaktion specificeras.
 
 ---
 
