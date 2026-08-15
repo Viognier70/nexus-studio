@@ -12,6 +12,7 @@
 // full statistik, oavsett byggnadsstatus.
 
 import type { KnowledgeAxis, YrkesSpar } from '../types';
+import { QUESTIONS_PER_EXAM } from './examMechanic';
 import { ALL_PAVILION_IDS } from './pavilions';
 import type { Question, QuestionFormat } from './questionFormats';
 
@@ -32,10 +33,24 @@ export interface PavilionCoverage {
   perFormat: Record<QuestionFormat, number>;
 }
 
+// Paviljong med färre frågor än ett fullt prov (`QUESTIONS_PER_EXAM`).
+// Inte ett fel — spärrens noll-check biter fortfarande bara på tom
+// paviljong per ORDER 107 §4.4. Men rapporteras som varning så
+// tunna paviljonger inte är osynliga: `selectQuestionsForExam` gör
+// `slice(0, min(target, tillgängliga))` så spelaren får ett kortare
+// prov utan felmeddelande. Vision Owner-innehåll (ORDER 107 §5)
+// åtgärdar när riktiga frågor levereras.
+export interface ThinPavilion {
+  pavilion: string;
+  total: number;
+  target: number;   // = QUESTIONS_PER_EXAM (5 i R2)
+}
+
 export interface CoverageReport {
   builtPavilions: readonly string[];
   perPavilion: Record<string, PavilionCoverage>;
   emptyPavilions: string[];      // byggda paviljonger med noll frågor
+  thinPavilions: ThinPavilion[]; // ORDER 107 tunna-paviljong-varning: < QUESTIONS_PER_EXAM
   unattachedQuestions: number;   // frågor utan `pavilion`-fält, ej räknade in
 }
 
@@ -105,10 +120,25 @@ export function coverageReport(
     (p) => perPavilion[p].total === 0
   );
 
+  // Tunna paviljonger — har frågor, men färre än ett fullt prov.
+  // Rapporteras som varning, inte fel (spärren nedan biter fortfarande
+  // bara på 0). Vision Owner §5-arbete åtgärdar.
+  const thinPavilions: ThinPavilion[] = builtPavilions
+    .filter((p) => {
+      const total = perPavilion[p].total;
+      return total > 0 && total < QUESTIONS_PER_EXAM;
+    })
+    .map((p) => ({
+      pavilion: p,
+      total: perPavilion[p].total,
+      target: QUESTIONS_PER_EXAM
+    }));
+
   return {
     builtPavilions: [...builtPavilions],
     perPavilion,
     emptyPavilions,
+    thinPavilions,
     unattachedQuestions: unattached
   };
 }
