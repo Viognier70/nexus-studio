@@ -106,6 +106,66 @@ describe('coverage-thin-warn — thinPavilions rapporterar under QUESTIONS_PER_E
 });
 
 // -----------------------------------------------------------------------------
+// Axis-gaps för multi-axel-paviljonger (Vision Owner-direktiv 2026-08-15)
+// -----------------------------------------------------------------------------
+
+describe('coverage-thin-warn — axisGaps för multi-axel-paviljonger', () => {
+  it('Gastronomiska Teatern saknar episteme och techne (bara phronesis-fråga i banken)', () => {
+    // Nuvarande bank: GASTRONOMISKA_TEATERN_SEED är phronesis+sommellerie.
+    // Ingen episteme- eller techne-fråga är märkt för gastronomiskateatern.
+    // Enligt §2.2 ska paviljongen mata alla tre axlarna → vägen till
+    // readProfile 'balanced' i praktiken stängd på 2 av 3 axlar.
+    const report = coverageReport(EXAM_BANK);
+    const gapsForGT = report.axisGaps.filter(
+      (g: { pavilion: string }) => g.pavilion === 'gastronomiskateatern'
+    );
+    expect(gapsForGT.length).toBe(2);
+    const missingAxes = gapsForGT
+      .map((g: { missingAxis: string }) => g.missingAxis)
+      .sort();
+    expect(missingAxes).toEqual(['episteme', 'techne']);
+  });
+
+  it('enkel-axel-paviljonger rapporteras aldrig som axisGaps (t.ex. Metodköket)', () => {
+    // Metodköket har axis='techne' i config; ska aldrig ha episteme/
+    // phronesis-frågor, så "missing" är meningslöst för den.
+    const report = coverageReport(EXAM_BANK);
+    const nonGT = report.axisGaps.filter(
+      (g: { pavilion: string }) => g.pavilion !== 'gastronomiskateatern'
+    );
+    expect(nonGT).toEqual([]);
+  });
+
+  it('om Gastronomiska Teatern får en episteme-fråga försvinner den axeln ur gaps', () => {
+    const augmented = [
+      ...EXAM_BANK,
+      {
+        id: 'gt-episteme-fix',
+        format: 'flerval' as const,
+        axis: 'episteme' as const,
+        spar: null,
+        pavilion: 'gastronomiskateatern',
+        prompt: 'test',
+        options: ['a', 'b'],
+        correctIndex: 0
+      }
+    ];
+    const report = coverageReport(augmented);
+    const gapsForGT = report.axisGaps.filter(
+      (g: { pavilion: string }) => g.pavilion === 'gastronomiskateatern'
+    );
+    expect(gapsForGT.length).toBe(1);
+    expect(gapsForGT[0].missingAxis).toBe('techne');
+  });
+
+  it('coverageErrors påverkas inte av axisGaps — bara noll biter', () => {
+    // Spärrens semantik ändras inte: §4.4 står oförändrat.
+    const errors = coverageErrors(EXAM_BANK);
+    expect(errors).toEqual([]);
+  });
+});
+
+// -----------------------------------------------------------------------------
 // Fråge-selektion — determinism + axel-match
 // -----------------------------------------------------------------------------
 
