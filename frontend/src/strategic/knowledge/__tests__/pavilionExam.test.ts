@@ -18,7 +18,7 @@ import type { SimAction } from '../../types';
 import { ALL_PAVILION_IDS, PAVILION_CONFIGS } from '../pavilions';
 import { QUESTIONS_PER_EXAM, selectQuestionsForExam } from '../examMechanic';
 import { ALL_TEMPLATE_EXAMPLES, R2_SEED_QUESTIONS } from '../questionTemplates';
-import { BUILT_PAVILIONS, coverageErrors } from '../questionCoverage';
+import { BUILT_PAVILIONS, coverageErrors, coverageReport } from '../questionCoverage';
 
 const EXAM_BANK = [...ALL_TEMPLATE_EXAMPLES, ...R2_SEED_QUESTIONS];
 
@@ -53,6 +53,115 @@ describe('ORDER 104 §DoD 6.6 — coverage per paviljong', () => {
   it('varje byggd paviljong har minst en fråga (coverageErrors tom)', () => {
     const errors = coverageErrors(EXAM_BANK);
     expect(errors, `Tomma paviljonger: ${errors.join('; ')}`).toEqual([]);
+  });
+});
+
+// -----------------------------------------------------------------------------
+// Tunna-paviljong-varning (post-104 coverage-thin-warn)
+// -----------------------------------------------------------------------------
+
+describe('coverage-thin-warn — thinPavilions rapporterar under QUESTIONS_PER_EXAM', () => {
+  it('R2 seed-banken visar fyra tunna paviljonger (bara Kalastorget når 2 av 5)', () => {
+    // Faktum-test över nuvarande content-läge: paviljonger med
+    // 0 < total < QUESTIONS_PER_EXAM (5) rapporteras som `thinPavilions`.
+    // Vision Owner-innehåll per ORDER 107 §5 kommer att lösa detta.
+    const report = coverageReport(EXAM_BANK);
+    expect(report.emptyPavilions).toEqual([]);   // spärrens noll-check biter inte
+    // Kalastorget: 2 frågor. De andra fyra: 1 fråga vardera. Alla fem
+    // ligger under target = 5.
+    expect(report.thinPavilions.length).toBe(5);
+    const ids = report.thinPavilions.map((t: { pavilion: string }) => t.pavilion).sort();
+    expect(ids).toEqual(['gastronomiskateatern', 'kalastorget', 'maltidbiblioteket', 'metodkoket', 'stensota']);
+    // Varje thinPavilion bär total och target.
+    for (const thin of report.thinPavilions) {
+      expect(thin.total).toBeGreaterThan(0);
+      expect(thin.total).toBeLessThan(5);
+      expect(thin.target).toBe(5);
+    }
+  });
+
+  it('paviljong med >= QUESTIONS_PER_EXAM frågor listas inte som tunn', () => {
+    // Bygg en syntetisk bank där en paviljong har fem frågor.
+    const fatBank = [
+      ...EXAM_BANK,
+      // Fyra extra frågor för Kalastorget så den når 2 + 4 = 6 (över 5).
+      { ...EXAM_BANK.find((q) => q.pavilion === 'kalastorget' && q.format === 'situation')!, id: 'kal-extra-1' },
+      { ...EXAM_BANK.find((q) => q.pavilion === 'kalastorget' && q.format === 'situation')!, id: 'kal-extra-2' },
+      { ...EXAM_BANK.find((q) => q.pavilion === 'kalastorget' && q.format === 'situation')!, id: 'kal-extra-3' },
+      { ...EXAM_BANK.find((q) => q.pavilion === 'kalastorget' && q.format === 'situation')!, id: 'kal-extra-4' }
+    ];
+    const report = coverageReport(fatBank);
+    const thinIds = report.thinPavilions.map((t: { pavilion: string }) => t.pavilion);
+    expect(thinIds).not.toContain('kalastorget');
+    // De andra fyra ska fortfarande vara tunna.
+    expect(thinIds.length).toBe(4);
+  });
+
+  it('coverageErrors påverkas inte av tunna paviljonger — bara noll biter', () => {
+    // Spärrens semantik ändras inte per user-direktiv 2026-08-15:
+    // "Ingen ändring av spärrens noll-check — §4.4 står som den står."
+    const errors = coverageErrors(EXAM_BANK);
+    expect(errors).toEqual([]);
+  });
+});
+
+// -----------------------------------------------------------------------------
+// Axis-gaps för multi-axel-paviljonger (Vision Owner-direktiv 2026-08-15)
+// -----------------------------------------------------------------------------
+
+describe('coverage-thin-warn — axisGaps för multi-axel-paviljonger', () => {
+  it('Gastronomiska Teatern saknar episteme och techne (bara phronesis-fråga i banken)', () => {
+    // Nuvarande bank: GASTRONOMISKA_TEATERN_SEED är phronesis+sommellerie.
+    // Ingen episteme- eller techne-fråga är märkt för gastronomiskateatern.
+    // Enligt §2.2 ska paviljongen mata alla tre axlarna → vägen till
+    // readProfile 'balanced' i praktiken stängd på 2 av 3 axlar.
+    const report = coverageReport(EXAM_BANK);
+    const gapsForGT = report.axisGaps.filter(
+      (g: { pavilion: string }) => g.pavilion === 'gastronomiskateatern'
+    );
+    expect(gapsForGT.length).toBe(2);
+    const missingAxes = gapsForGT
+      .map((g: { missingAxis: string }) => g.missingAxis)
+      .sort();
+    expect(missingAxes).toEqual(['episteme', 'techne']);
+  });
+
+  it('enkel-axel-paviljonger rapporteras aldrig som axisGaps (t.ex. Metodköket)', () => {
+    // Metodköket har axis='techne' i config; ska aldrig ha episteme/
+    // phronesis-frågor, så "missing" är meningslöst för den.
+    const report = coverageReport(EXAM_BANK);
+    const nonGT = report.axisGaps.filter(
+      (g: { pavilion: string }) => g.pavilion !== 'gastronomiskateatern'
+    );
+    expect(nonGT).toEqual([]);
+  });
+
+  it('om Gastronomiska Teatern får en episteme-fråga försvinner den axeln ur gaps', () => {
+    const augmented = [
+      ...EXAM_BANK,
+      {
+        id: 'gt-episteme-fix',
+        format: 'flerval' as const,
+        axis: 'episteme' as const,
+        spar: null,
+        pavilion: 'gastronomiskateatern',
+        prompt: 'test',
+        options: ['a', 'b'],
+        correctIndex: 0
+      }
+    ];
+    const report = coverageReport(augmented);
+    const gapsForGT = report.axisGaps.filter(
+      (g: { pavilion: string }) => g.pavilion === 'gastronomiskateatern'
+    );
+    expect(gapsForGT.length).toBe(1);
+    expect(gapsForGT[0].missingAxis).toBe('techne');
+  });
+
+  it('coverageErrors påverkas inte av axisGaps — bara noll biter', () => {
+    // Spärrens semantik ändras inte: §4.4 står oförändrat.
+    const errors = coverageErrors(EXAM_BANK);
+    expect(errors).toEqual([]);
   });
 });
 
