@@ -111,6 +111,17 @@ npm run preview    # förhandsgranska bygget
 8. När en uppgift är klar: sammanfatta vad som gjordes, vilka filer som ändrades och vad som återstår — kort och konkret.
 9. **Inget ORDER-nummer utfärdas utan en post i `documentation/architecture/ORDER_REGISTRY.md`.** Registret är källan till sanning för nummerbruk; renumrera innan filen skrivs om en kollision hittas.
 
+## Commit-verifiering
+
+Bindande. Reglerna finns för att fyra ordrars arbete legat ocommitterat i huvudworktreets arbetsträd utan att det märkts, ORDER 097 rapporterades som committad två gånger innan den var det, och en registerrad dikterades och antogs vara inskriven medan den aldrig skrevs. Problemet är osynlighet — verifieringen måste synas i rapporten, inte gömmas i verktyg.
+
+- **En commit räknas inte som gjord förrän den är verifierad i historiken.** Efter varje commit: kör `git log --oneline -3` och visa utdata i svaret. Rapportera aldrig en commit som genomförd utan att ha visat att den finns.
+- **Vid början av varje order:** kör `git log --oneline -1` för grenen och visa den. Det gör det synligt om arbetet står på fel commit.
+- **Vid slutet av varje order:** kör `git status --short`. Är arbetsträdet inte rent ska rapporten säga vad som ligger kvar och varför.
+- **Registerrad och commit hör ihop.** En rad i `ORDER_REGISTRY.md` får inte skrivas för arbete som inte är committat, och ska ligga i samma commit som det arbete den beskriver.
+
+Ingen pre-commit-hook, inget skript som städar arbetsträdet, ingen automatik som committar åt agenten. Verifieringen är synlig i rapporten.
+
 ## Definition of Done (Vertical Slice 001)
 
 En ändring är klar när:
