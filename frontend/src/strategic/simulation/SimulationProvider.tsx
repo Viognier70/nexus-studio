@@ -11,6 +11,28 @@ import {
 import type { SimAction, SimulationState } from '../types';
 import { DEFAULT_SEED, makeInitialState } from './model';
 import { reducer } from './reducer';
+import { harnessParams } from '../testHarness/urlParams';
+import { capacityForBusiness } from '../business/businessClass';
+
+// TEMPORÄR dev-shortcut (Vision Owner-begäran 2026-08-16): tillämpa
+// `#playtest=1&business=<klass>` på initial-state:t. Sätter både
+// businessClass och policies.capacity via capacityForBusiness så
+// downstream sim-lagret får konsistenta värden. Ingen permanent
+// koppling; hör till dev-verktygsraden tills en riktig ny-spel-flow
+// bygg (senare order).
+function applyDevBusinessOverride(state: SimulationState): SimulationState {
+  const override = harnessParams.business;
+  if (!override) return state;
+  if (override === state.businessClass) return state;
+  return {
+    ...state,
+    businessClass: override,
+    policies: {
+      ...state.policies,
+      capacity: capacityForBusiness(override, state.policies.staffCount)
+    }
+  };
+}
 
 // ORDER 090 §5 — exported so the scene-mount smoke test can wrap
 // InteriorStaff / InteriorGuests in a hand-crafted state (one team
@@ -28,7 +50,9 @@ const TICK_HZ = 5;
 const TICK_MS = 1000 / TICK_HZ;
 
 export function SimulationProvider({ children, seed = DEFAULT_SEED }: Props) {
-  const [state, dispatch] = useReducer(reducer, undefined, () => makeInitialState(seed));
+  const [state, dispatch] = useReducer(reducer, undefined, () =>
+    applyDevBusinessOverride(makeInitialState(seed))
+  );
   const speedRef = useRef(state.speed);
   speedRef.current = state.speed;
 

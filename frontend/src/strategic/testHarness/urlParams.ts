@@ -82,6 +82,17 @@ interface ParsedParams {
   // — annars ignoreras flaggan, så vanliga URL:er inte kan snubbla in
   // i dockskåpsvyn av misstag.
   dollhouse: boolean;
+  // TEMPORÄR dev-shortcut (Vision Owner-begäran 2026-08-16): sätter
+  // `state.businessClass` direkt vid init i stället för att kräva att
+  // spelaren övar krediter i Metodköket och går via bankmötet. Läses
+  // av SimulationProvider och applyDevBusinessOverride. Aktiveras med
+  // `#playtest=1&business=foodtruck` (eller `restaurant`/`värdshus`).
+  // Kräver playtest=1 — utan den flaggan ignoreras business= så vanliga
+  // URL:er inte kan flippa verksamheten av misstag. `null` = ingen
+  // override, initial-state:t behåller sin default ('restaurant'). Ingen
+  // permanent koppling; hör till dev-verktygsraden tills en riktig
+  // ny-spel-flow bygg (senare order).
+  business: 'restaurant' | 'foodtruck' | 'värdshus' | null;
 }
 
 function parseHash(): ParsedParams {
@@ -93,7 +104,8 @@ function parseHash(): ParsedParams {
       poseId: DEFAULT_POSE_ID,
       calibrationQuad: false,
       playtest: false,
-      dollhouse: false
+      dollhouse: false,
+      business: null
     };
   }
   const hash = window.location.hash.replace('#', '');
@@ -115,7 +127,19 @@ function parseHash(): ParsedParams {
   const playtest = params.get('playtest') === '1';
   // dollhouse-växeln kräver playtest=1 — annars ignoreras den.
   const dollhouse = playtest && params.get('dollhouse') === '1';
-  return { period, camera, roi, poseId, calibrationQuad, playtest, dollhouse };
+  // business= dev-shortcut kräver också playtest=1 — vanliga URL:er
+  // ska inte kunna flippa verksamhetsklassen av misstag.
+  const business = parseBusiness(playtest ? params.get('business') ?? null : null);
+  return { period, camera, roi, poseId, calibrationQuad, playtest, dollhouse, business };
+}
+
+function parseBusiness(s: string | null): 'restaurant' | 'foodtruck' | 'värdshus' | null {
+  if (!s) return null;
+  const v = s.toLowerCase();
+  if (v === 'restaurant' || v === 'restaurang') return 'restaurant';
+  if (v === 'foodtruck' || v === 'food-truck' || v === 'food_truck') return 'foodtruck';
+  if (v === 'värdshus' || v === 'vardshus' || v === 'varshus') return 'värdshus';
+  return null;
 }
 
 function parsePeriod(s: string | null): PeriodOverride {
