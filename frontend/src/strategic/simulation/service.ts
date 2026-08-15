@@ -1,5 +1,5 @@
 import { INTERIOR } from '../content/layout';
-import { businessHasSeats } from '../business/businessClass';
+import { businessHasOvernight, businessHasSeats } from '../business/businessClass';
 import type { Guest, SimulationState, StaffMember, TaskType, Vec2 } from '../types';
 import { taskDurationTicks } from './economics';
 import {
@@ -244,6 +244,20 @@ export function tickGuests(state: SimulationState) {
       } else if (guest.satisfaction <= UNHAPPY_THRESHOLD) {
         bumpMorale(state, -MORALE_UNHAPPY_DEPARTURE_HIT);
       }
+      // ORDER 111 §4 — Värdshus: en andel av betalande gäster stannar
+      // över natten istället för att gå. Enkel rullning: en gäst med
+      // stateTime som är jämnt tal per konstant blir "sover över" —
+      // deterministisk (harnessen körs fixed-seed), ingen Math.random.
+      // 1/3 av gäster stannar över — låst tröskel, kalibrering hör till
+      // senare (§7 avgränsning: djupet får hållas nere).
+      if (businessHasOvernight(state.businessClass) && shouldStayOvernight(guest)) {
+        guest.state = 'sleeping';
+        guest.stateTime = now;
+        guest.stayingOvernight = true;
+        // Behåll seatIndex — gäst sover på plats i denna enkla form
+        // (rumsbokning hör till senare arbete). Ingen moveGuest.
+        continue;
+      }
       guest.state = 'leaving';
       guest.stateTime = now;
       moveGuest(guest, { x: 0, z: 8 });
@@ -274,6 +288,19 @@ export function tickGuests(state: SimulationState) {
     const g = state.guests.find((x) => x.id === id);
     return g && ['seated', 'ordering', 'dining', 'paying'].includes(g.state);
   });
+}
+
+// ORDER 111 §4 — deterministisk overnight-roll för värdshus. En tredjedel
+// av betalande gäster stannar över natten. Baseras på hash av guest.id
+// snarare än Math.random så fixed-seed-harnessen ger reproducerbara
+// mätningar per verksamhet (§5 mätkravet). guest.id sätts i model.ts av
+// en global counter — samma seed → samma ids → samma overnight-fördelning.
+function shouldStayOvernight(guest: Guest): boolean {
+  // Enkel numerisk hash på guest.id-suffixet. `gst-<n>` eller `grp-<n>`.
+  const suffix = guest.id.replace(/^(gst|grp)-/, '');
+  const n = parseInt(suffix, 10);
+  if (Number.isNaN(n)) return false;
+  return n % 3 === 0;
 }
 
 function setGuestSeated(state: SimulationState, guest: Guest, seat: number) {
@@ -513,8 +540,17 @@ function completeStaffTask(state: SimulationState, staff: StaffMember) {
     }
     case 'order': {
       if (guest.state === 'ordering') {
-        guest.state = 'dining';
-        guest.stateTime = now;
+        // ORDER 111 §3 — food truck-gästen får sin beställning över
+        // luckan och går rakt till betalning; ingen dining-fas (matsal
+        // saknas per hasSeats=false). Restaurant/Värdshus tar den
+        // vanliga vägen ordering → dining (55 s formell / 34 s vardaglig).
+        if (!businessHasSeats(state.businessClass)) {
+          guest.state = 'paying';
+          guest.stateTime = now;
+        } else {
+          guest.state = 'dining';
+          guest.stateTime = now;
+        }
       }
       break;
     }

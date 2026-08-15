@@ -24,6 +24,8 @@ import type { DayPeriod } from '../types';
 // so the sun tracks the season the game is set in.
 const HOUR_BY_PERIOD: Record<DayPeriod, number> = {
   morning:   8.0,   // low warm sun in the east
+  // ORDER 111 §4 — värdshusets frukost-pass, tidigt före lunch.
+  breakfast: 9.0,
   lunch:    12.5,   // near solar noon
   afternoon: 15.0,  // sun descending
   dinner:   18.5,   // grazing, warm — start of golden hour in autumn

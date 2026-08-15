@@ -7,6 +7,24 @@ import { currentRhythmMultiplier } from './rhythm';
 import { weatherArrivalMultiplier } from './weather';
 import { worldFactorArrivalMultiplier } from './worldFactors';
 
+// ORDER 111 §3 — food truck-specifika viktningar.
+//
+// **Konkurrens.** Food trucken konkurrerar med befintliga restauranger.
+// Enkel form (per ordertext §3 sista mening): en konstant faktor som drar
+// efterfrågan. 0.85 = 15 % lägre bas än restaurangens, motiverar att
+// spelaren själv måste dra folk till luckan.
+const FOODTRUCK_COMPETITION_MULTIPLIER = 0.85;
+
+// **Väder viktar efterfrågan skarpare.** Restaurangen har halvskyddad
+// entré; food trucken är gatuläge. `weatherArrivalMultiplier` returnerar
+// redan ett band ~0.55–1.28 för restaurang; för food truck sträcks det
+// ut. Regn/snö drar hårdare, klart/varmt lyfter mer. Enkelt: linjär
+// justering från 1.0 (multiplikatorn är 1.0 = neutralt) mot ytterlägena.
+function foodtruckWeatherAmplify(baseMultiplier: number): number {
+  // 1.0 mappar till 1.0 (neutralt förblir neutralt); avvikelser fördubblas.
+  return 1 + 2 * (baseMultiplier - 1);
+}
+
 // ORDER 043 §6 phenomena constants.
 //
 // ECONOMIC_ARRIVAL_FLOOR — at economic = 0, arrivals still fire at this
@@ -32,6 +50,11 @@ const ECONOMIC_WALKAWAY_CEIL = 0.2;
 // room fills when the doors are open, and only then.
 const PERIOD_ARRIVAL_MULTIPLIER: Record<DayPeriod, number> = {
   morning: 0,
+  // ORDER 111 §4 — frukost är ett värdshus-pass med egen liten ström
+  // (övernattande gäster är redan där, inga ambient-arrivals utifrån).
+  // 0 gör breakfast till en stängd period för spawn-vägen; övernattande
+  // gäster serveras via värdshusets egen breakfast-hantering.
+  breakfast: 0,
   lunch: 0.6,
   afternoon: 0,
   dinner: 1.0,
@@ -107,6 +130,18 @@ export function arrivalProbability(state: SimulationState): number {
   // reading: warm + still + clear lifts to ~1.28×; cold + windy +
   // drizzle drops to ~0.55×. The reading shows up in the room by
   // shaping how full it gets.
+  //
+  // ORDER 111 §3 — food truck-specifika modifierare:
+  //   * kö-gate: när kön är full slutar nya gäster ställa sig
+  //     (behandlas i maybeSpawnGuest via ACTIVE_GUEST_CAP-liknande check
+  //     mot policies.capacity — capacity varierar per verksamhet).
+  //   * väder-amplifiering: gatuläget dubblerar väderpåverkan.
+  //   * konkurrens: konstant nedjustering för att spegla att food trucken
+  //     tävlar med befintliga restauranger.
+  const isFoodtruck = state.businessClass === 'foodtruck';
+  const weatherBase = weatherArrivalMultiplier(state.day.weather);
+  const weatherMult = isFoodtruck ? foodtruckWeatherAmplify(weatherBase) : weatherBase;
+  const competitionMult = isFoodtruck ? FOODTRUCK_COMPETITION_MULTIPLIER : 1;
   const perMinute =
     ARRIVAL_BASE_PER_MINUTE *
     periodArrivalMultiplier(state.day.period) *
@@ -114,9 +149,10 @@ export function arrivalProbability(state: SimulationState): number {
     PRICE_ARRIVAL_MULT[state.policies.pricing] *
     economicArrivalMultiplier(state) *
     reputationArrivalMultiplier(state.reputation) *
-    weatherArrivalMultiplier(state.day.weather) *
+    weatherMult *
     worldFactorArrivalMultiplier(state.day.worldFactors) *
-    currentRhythmMultiplier(state);
+    currentRhythmMultiplier(state) *
+    competitionMult;
   return perMinute / (60 * 5); // 5 Hz tick.
 }
 
@@ -140,6 +176,14 @@ export function walkAwayProbability(state: SimulationState): number {
 export function maybeSpawnGuest(state: SimulationState, rng: Rng): Guest | null {
   const active = state.guests.length;
   if (active >= ACTIVE_GUEST_CAP) return null;
+  // ORDER 111 §3 — kögate för food truck: kön (waitingIds) är
+  // verksamheten. När kön nått verksamhetens capacity slutar nya
+  // gäster ställa sig — förbipasserande går vidare. Skiljer sig från
+  // ACTIVE_GUEST_CAP: den är en absolut sim-gräns; queue-gate är
+  // gatans läsning ("för lång kö = jag går").
+  if (state.businessClass === 'foodtruck') {
+    if (state.waitingIds.length >= state.policies.capacity) return null;
+  }
   if (!rng.chance(arrivalProbability(state))) return null;
   const walkAway = rng.chance(walkAwayProbability(state));
   return makeGuest(state.simTime, false, walkAway);

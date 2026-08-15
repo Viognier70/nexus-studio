@@ -190,6 +190,9 @@ export function deriveGuestFace(
       return 'neutral';
     case 'arriving':
     case 'seated':
+    // ORDER 111 §4 — sleeping-gäst (värdshus) läses som neutral;
+    // ingen aktiv service pågår, inget uttryck att förmedla.
+    case 'sleeping':
       // GF13 fallback
       return 'neutral';
   }
