@@ -257,5 +257,30 @@ export const strings = {
     waitingNone: 'Ingen står utanför ännu.',
     countdownPrefix: 'Dörrarna öppnar om',
     countdownSecondsSuffix: 's'
+  },
+  // ORDER 109 — M7b bankmötet. Player-visible text på engelska per
+  // CLAUDE.md Observation 6 (2026-08-09); paviljongnamn på svenska per
+  // samma regel (platsnamn behålls). {pavilion} substitueras vid render
+  // med `bank.pavilionNames[outcome.pointedPavilion]`. Interna
+  // outcome-nycklar från businessProfile.ts/bankMeeting.ts får inte
+  // förekomma i den här filen — DoD 6 grep-testet skannar hela filen.
+  bank: {
+    grantRestaurant:
+      'Your judgement carries the room. We are funding the full house.',
+    grantFoodtruck:
+      'You have the hands. Start smaller and grow into it.',
+    grantWide:
+      'A broad competence. We back a starting position.',
+    rejectPractice:
+      'We cannot see enough to fund. Practise at {pavilion} and come back.',
+    rejectField:
+      'You have read the field but never lived it. Come back once you have worked at {pavilion}.',
+    pavilionNames: {
+      maltidbiblioteket: 'Måltidbiblioteket',
+      kalastorget: 'Kalastorget',
+      stensota: 'Stensöta',
+      metodkoket: 'Metodköket',
+      gastronomiskateatern: 'Gastronomiska Teatern'
+    }
   }
 } as const;

@@ -276,6 +276,10 @@ export function makeInitialState(
     // definierar när ett nytt varv börjar.
     currentExam: null,
     examSlotsUsed: 0,
+    // ORDER 109 — M7b bankmötet. Null tills spelaren begär lån via
+    // REQUEST_BANK_LOAN; sätts av reducern via resolveBankMeeting.
+    // Repeat-request skriver över.
+    bankMeetingOutcome: null,
     eco: {
       econ: {
         value: 0.55,
