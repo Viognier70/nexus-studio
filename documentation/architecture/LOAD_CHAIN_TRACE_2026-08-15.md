@@ -189,3 +189,65 @@ dominerar de aktiva transitionerna, inte pauserna.
 Fix (om det ska bli en fix) tillhör egen order och rör
 `service.ts:PRIORITY` + `findTaskTarget`. Denna rapport namnger bara
 gapet.
+
+---
+
+## 5. Efterskrift: ORDER 098 (2026-08-15)
+
+Ordern som fyllde dining-hålet är verkställd. Två noter förs in här så
+spårningen förblir sann.
+
+### 5.1 Namngivning ensad
+
+`StaffMember.workload` är fältnamnet i `types.ts:67`; UI-etiketten på
+`RoomCardPanel`-staff-korten sa tidigare `load`. Etiketten ändrad till
+`workload` (ORDER 098 §5, `RoomCardPanel.tsx:109`) så att fält och
+etikett matchar. `TeamMember.load` refererades i tidigare
+sammanfattningar men existerar inte — den associationen faller nu
+bort av sig själv.
+
+### 5.2 Fördelningsförskjutning efter dining-hålets täckning
+
+Ansiktsfördelning på fast frö = 3, samma script som
+`order087.faceDistribution.test.ts §6.5`, sample size 25 047 (3 staff
+× 8 349 in-service ticks) — oförändrat mellan körningarna:
+
+| Uttryck | Före ORDER 098 | Efter ORDER 098 | Δ (procentenheter) |
+|---|---|---|---|
+| hurried | 20.7 % | **50.8 %** | +30.1 |
+| strained | 25.0 % | 5.9 % | −19.1 |
+| tense | 11.1 % | 0.7 % | −10.4 |
+| attentive | 30.7 % | 36.0 % | +5.3 |
+| neutral | 7.5 % | 0.8 % | −6.7 |
+| irritated | 3.4 % | 5.7 % | +2.3 |
+| focused | 1.5 % | 0.1 % | −1.4 |
+
+Workload-percentiler pressas kraftigt uppåt:
+
+| Percentil | Före | Efter |
+|---|---|---|
+| p10 | 0.350 | 0.958 |
+| p25 | 0.706 | 1.000 |
+| p50 | 0.916 | 1.000 |
+| p75 | 1.000 | 1.000 |
+
+Workload-bandet `>=0.85` växer från 59.3 % till 96.6 % av samplen.
+
+**Detta är en stor förskjutning.** Checkback-tasken (cooldown 15 s per
+gäst, varaktighet ~2 s) genererar mer arbete än de mätta banden 0.95
+(hurried) och 0.7 (strained) förutsatte. Ansiktsuttrycken hurried och
+strained dominerar nu där de tidigare var två av flera.
+
+### 5.3 Banden är avsiktligt orörda
+
+Per ORDER 098 §4 och §6.6: ingen tröskel omkalibrerad i den här
+ordern. Ansiktsbanden 0.95 och 0.7 rörs inte förrän `capacity`-frågan
+är avgjord i R4 (kapacitet följer inte bemanningen — sett i tidigare
+körningar där kön kan växa mot 16 platser utan att capacity-grinden
+stänger). Att kalibrera banden mot en fördelning där systemet
+fortfarande ändras skulle upprepa samma fel en fjärde gång — ORDER 088
+§2.1 kalibrerade en gång, den här ordern lyfter workload rejält, en
+ny kalibrering skulle omedelbart bli föråldrad när R4 landar.
+
+Förskjutningen redovisas här och i registerposten för ORDER 098 som
+ett **fynd**, inte som en tröskel att justera bort.

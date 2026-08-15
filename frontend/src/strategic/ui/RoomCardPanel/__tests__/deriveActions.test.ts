@@ -59,6 +59,7 @@ function makeGuest(overrides: Partial<Guest> = {}): Guest {
     targetPosition: { x: 0, z: 0 },
     moveProgress: 0,
     hadWelcomeDrink: false,
+    lastCheckbackAt: null,
     walkAwayOnArrival: false,
     ...overrides
   };

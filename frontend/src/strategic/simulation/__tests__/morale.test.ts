@@ -75,6 +75,7 @@ function makeSeated(id: string, sat: number) {
     targetPosition: { x: 0, z: 0 },
     moveProgress: 1,
     hadWelcomeDrink: false,
+    lastCheckbackAt: null,
     walkAwayOnArrival: false
   };
 }

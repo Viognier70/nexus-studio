@@ -131,7 +131,7 @@ describe('collapseProbabilityPerTick — formula shape', () => {
         id: `g${i}`, state: 'seated' as const, satisfaction: 0.5,
         seatIndex: 0, arrivalTime: 0, stateTime: 0, scenarioSource: false,
         position: { x: 0, z: 0 }, targetPosition: { x: 0, z: 0 },
-        moveProgress: 1, hadWelcomeDrink: false, walkAwayOnArrival: false
+        moveProgress: 1, hadWelcomeDrink: false, lastCheckbackAt: null, walkAwayOnArrival: false
       }))
     };
     expect(collapseProbabilityPerTick(strainedState)).toBeGreaterThan(
@@ -299,7 +299,7 @@ describe('calibration — Monte Carlo agrees with analytical', () => {
           id: `g${i}`, state: 'seated' as const, satisfaction: 0.5,
           seatIndex: 0, arrivalTime: 0, stateTime: 0, scenarioSource: false,
           position: { x: 0, z: 0 }, targetPosition: { x: 0, z: 0 },
-          moveProgress: 1, hadWelcomeDrink: false, walkAwayOnArrival: false
+          moveProgress: 1, hadWelcomeDrink: false, lastCheckbackAt: null, walkAwayOnArrival: false
         }))
       };
       const p = collapseProbabilityPerTick(stateTemplate);

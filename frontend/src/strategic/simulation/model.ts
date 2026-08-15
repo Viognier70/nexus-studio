@@ -363,6 +363,7 @@ export function makeGuest(
     targetPosition: { x: INTERIOR.entrance.x, z: INTERIOR.entrance.z },
     moveProgress: 0,
     hadWelcomeDrink: false,
+    lastCheckbackAt: null,
     walkAwayOnArrival
   };
 }

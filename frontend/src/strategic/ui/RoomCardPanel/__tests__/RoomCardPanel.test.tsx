@@ -125,6 +125,7 @@ describe('ORDER 086 pick 2 — attention-priority sort with seatIndex tiebreak',
       targetPosition: { x: 0, z: 0 },
       moveProgress: 0,
       hadWelcomeDrink: false,
+      lastCheckbackAt: null,
       walkAwayOnArrival: false
     };
     const hail = { ...base, id: 'a' };
