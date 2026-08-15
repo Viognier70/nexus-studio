@@ -1,0 +1,92 @@
+{
+  "order": "ORDER 096",
+  "date": "2026-08-15",
+  "section_51_fps": {
+    "renderer": "Chrome headless SVG (vanilla JS, no React)",
+    "viewport": "1920×1080",
+    "warmup_ms": 2000,
+    "measure_ms": 10000,
+    "note": "React reconciliation overhead not included; actual dockskåp will be 5–15% slower.",
+    "results": [
+      {
+        "count": 5,
+        "frames": 1200,
+        "mean": 120.49,
+        "p5": 107.53,
+        "p95": 135.14
+      },
+      {
+        "count": 10,
+        "frames": 1201,
+        "mean": 120.4,
+        "p5": 107.53,
+        "p95": 135.14
+      },
+      {
+        "count": 20,
+        "frames": 1201,
+        "mean": 120.23,
+        "p5": 109.89,
+        "p95": 131.58
+      },
+      {
+        "count": 30,
+        "frames": 1200,
+        "mean": 120.06,
+        "p5": 119.05,
+        "p95": 121.95
+      },
+      {
+        "count": 40,
+        "frames": 1201,
+        "mean": 120.35,
+        "p5": 107.53,
+        "p95": 135.14
+      }
+    ]
+  },
+  "section_52_room_widths": {
+    "layout": "alt C — 70% dining fraction, 30% kitchen+bar openings",
+    "figure_width_ref_px": 140,
+    "ref_height_px": 1080,
+    "results": [
+      {
+        "screenW": 1280,
+        "screenH": 720,
+        "diningW": 896,
+        "figW": 93,
+        "figuresAcross": 9
+      },
+      {
+        "screenW": 1920,
+        "screenH": 1080,
+        "diningW": 1344,
+        "figW": 140,
+        "figuresAcross": 9
+      },
+      {
+        "screenW": 2560,
+        "screenH": 1440,
+        "diningW": 1792,
+        "figW": 187,
+        "figuresAcross": 9
+      }
+    ]
+  },
+  "section_53_map_min_size": {
+    "puckDiameter": 8,
+    "rhythmRingOuter": 14,
+    "minGap": 4,
+    "cellSize": 18,
+    "coversAcross": 8,
+    "coverRows": 2,
+    "diningMinW": 144,
+    "diningMinH": 54,
+    "totalMinW": 206,
+    "totalMinH": 74
+  },
+  "section_54_artefacts": {
+    "screenshot": "frontend/reports/order096/bench-30.png",
+    "video": "frontend/reports/order096/bench-30.webm"
+  }
+}
