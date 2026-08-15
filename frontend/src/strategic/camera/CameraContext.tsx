@@ -19,6 +19,15 @@ export interface CameraApi {
   actualRef: MutableRefObject<CameraTarget>;
   labelRef: MutableRefObject<ViewLabel>;
   label: ViewLabel;
+  // TEMPORÄR (SD-003 rev. 2 rekognosering, Vision Owner 2026-08-15):
+  // reaktiv flagga som är true när kameran är i nivå 4-bandet
+  // (distance ≤ `restaurantRoofFadeMid - restaurantRoofFadeHalf` = 28 m —
+  // samma gräns som myBusiness-preset:et landar på). Nivå 3 ('vinbaren'-
+  // etiketten men roof-fade fortfarande i band) räknas som *inte* nivå 4.
+  // Läses av StrategicShell för att avgöra om dockskåpsväxeln ska trigga.
+  // Ingen permanent koppling; food truck-ordern (SD-003 §8 följdorder 3)
+  // gör sin egen upptäckt när den bygger den riktiga inflätningen.
+  atLevel4: boolean;
   selection: Selection | null;
   setSelection: (next: Selection | null) => void;
   zoomBy: (deltaLog: number) => void;
@@ -51,10 +60,22 @@ function initialPreset(): keyof typeof PRESETS {
   if (typeof window === 'undefined') return 'village';
   const hash = window.location.hash.replace('#', '');
   const m = /(?:^|&)preset=([a-z]+)/i.exec(hash);
-  if (!m) return 'village';
-  const v = m[1].toLowerCase();
-  if (v === 'kvarteret' || v === 'district') return 'district';
-  if (v === 'vinbaren' || v === 'business') return 'business';
+  if (m) {
+    const v = m[1].toLowerCase();
+    if (v === 'kvarteret' || v === 'district') return 'district';
+    if (v === 'vinbaren' || v === 'business') return 'business';
+    if (v === 'mybusiness' || v === 'myBusiness'.toLowerCase()) return 'myBusiness';
+    return 'village';
+  }
+  // TEMPORÄR (SD-003 rev. 2 rekognosering, Vision Owner 2026-08-15):
+  // när `dollhouse=1` (och därmed `playtest=1`) startar kameran vid
+  // nivå 4 (myBusiness-preset) så dockskåpet syns direkt utan att
+  // kräva att spelaren också måste sätta `preset=myBusiness`. Ingen
+  // permanent koppling — flaggan lever tills food truck-ordern (SD-003
+  // §8 följdorder 3) landar den riktiga inflätningen.
+  if (/(?:^|&)dollhouse=1(?:&|$)/.test(hash) && /(?:^|&)playtest=1(?:&|$)/.test(hash)) {
+    return 'myBusiness';
+  }
   return 'village';
 }
 
@@ -110,6 +131,12 @@ export function CameraProvider({ children }: Props) {
   const labelRef = useRef<ViewLabel>(PRESETS[startPreset].label);
   const [label, setLabel] = useState<ViewLabel>(PRESETS[startPreset].label);
   const [selection, setSelection] = useState<Selection | null>(null);
+  // TEMPORÄR nivå-4-tröskel. Samma värde som myBusiness-preset:et landar
+  // på (roof-fade-mid − roof-fade-half). Under detta = full interiör (nivå
+  // 4). Över = zoomar ut genom fade-bandet in i nivå 3.
+  const LEVEL_4_THRESHOLD = CAMERA.restaurantRoofFadeMid - CAMERA.restaurantRoofFadeHalf;
+  const level4Ref = useRef<boolean>(start.distance <= LEVEL_4_THRESHOLD);
+  const [atLevel4, setAtLevel4] = useState<boolean>(level4Ref.current);
 
   // Poll the label whenever the actual distance crosses a threshold. We do
   // this outside the R3F loop so the DOM UI updates cheaply.
@@ -120,6 +147,13 @@ export function CameraProvider({ children }: Props) {
       if (desired !== labelRef.current) {
         labelRef.current = desired;
         setLabel(desired);
+      }
+      // TEMPORÄR (SD-003 rev. 2) — same rAF-loop, poll atLevel4 med
+      // hysteres-fri boolean-transition. Ingen extra rAF-registrering.
+      const desiredLevel4 = actualRef.current.distance <= LEVEL_4_THRESHOLD;
+      if (desiredLevel4 !== level4Ref.current) {
+        level4Ref.current = desiredLevel4;
+        setAtLevel4(desiredLevel4);
       }
       raf = requestAnimationFrame(tick);
     };
@@ -185,6 +219,7 @@ export function CameraProvider({ children }: Props) {
       actualRef,
       labelRef,
       label,
+      atLevel4,
       selection,
       setSelection,
       zoomBy,
@@ -194,7 +229,7 @@ export function CameraProvider({ children }: Props) {
       rotate,
       pan
     }),
-    [label, selection, zoomBy, focusOn, outward, jumpToPreset, rotate, pan]
+    [label, atLevel4, selection, zoomBy, focusOn, outward, jumpToPreset, rotate, pan]
   );
 
   return <CameraCtx.Provider value={api}>{children}</CameraCtx.Provider>;
