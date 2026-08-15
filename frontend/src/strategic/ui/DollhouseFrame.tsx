@@ -3,91 +3,86 @@
 // **Placeringen i ui/** (inte scene/) är avsiktlig: komponenten är ren
 // DOM/SVG-overlay, inte R3F. `scene/`-mappen scannas av
 // scenePropShape.smoke.test.ts som förbjuder hyphenade JSX-attribut på
-// lowercase-element (för att R3F applyProps kraschar på dem). Data-
-// attribut som `data-opening` är korrekta på DOM/SVG men skulle failer
-// smoketest:et i scene/. Samma undantag som `ui/RoomCardPanel/` har.
+// lowercase-element. Data-attribut som `data-opening` är korrekta på
+// DOM/SVG men skulle failer smoketest:et i scene/.
 //
-// Vision Owner-begäran 2026-08-15: en tillfällig växel i playtest-läget
-// som renderar denna komponent i stället för det vanliga 3D-restaurang-
-// vyet. Ingen permanent koppling — den riktiga monteringen (patternTransform
-// på karta, mise-en-place-migration till PanelColumn, pixelbudget-fullt
-// panorering under 1 280 px) hör till food truck-ordern (SD-003 §8
-// följdorder 3).
+// Vision Owner-begäran 2026-08-15/16: en tillfällig växel i playtest-
+// läget som renderar denna komponent i stället för det vanliga 3D-
+// restaurangvyet. Ingen permanent koppling — den riktiga monteringen
+// (patternTransform på karta, mise-en-place-migration till PanelColumn,
+// pixelbudget-fullt panorering under 1 280 px) hör till food truck-
+// ordern (SD-003 §8 följdorder 3).
 //
-// **Vad denna form är (rev. 2, 2026-08-15):** SD-003 §2 alternativ C —
-// ett rum i genomskärning som fyller vyn. Fokusrummet ÄR SVG-scenens
-// synliga volym: golv, bakvägg, tak-lister. I bakväggen finns två
-// **öppningar** (passluckan mot kök, bardiskens öppning mot bar) som
-// glimtar in i angränsande rum. Klick på en öppning byter fokus — det
-// tidigare fokusrummet blir då en öppning i det nya fokusrummets bakvägg.
+// **SD-003 §2 alternativ C:**
+// - Ett fokusrum fyller vyn (bakvägg, golv, tak-list)
+// - De andra två syns som **öppningar i bakväggen** — inte som egna rum
+//   sida vid sida — utan som *passluckan mot köket* och *bardiskens
+//   öppning mot baren*. Båda är horisontella (bredare än höga) och
+//   sitter vid counter-höjd i bakväggen, inte som dörr-formade öppningar.
+// - Klick på en öppning byter fokus: det valda rummet blir fokusrum, det
+//   tidigare fokusrummet blir öppning i det nya rummets bakvägg.
 //
-// **Scenbredden räknas mot fri yta** (fönster minus panel-reserverade
-// gutters vänster + höger) — inte mot hela `window.innerWidth`. RoomCard-
-// Panel på 260 px + PanelColumn.gutter 20 px + margin på 24 px = 304 px
-// reserv i högerkanten; motsvarande på vänsterkanten där TeamPanel-
-// familjen kan bli 320 + 16 + 24 = 360 px bred. Under 1 280 px total
-// blir scenen så smal att panorering krävs — flagga för nu, panorering
-// hör till följdordern.
+// **Scenbredden mäts, inte antas.** `usePanelInsets()` läser den
+// faktiska bredden av `[data-panel-column="left"]` och
+// `[data-panel-column="right"]` via ResizeObserver och rAF-polling
+// (samma pattern som DevPanel använder för kamera-distansen). Faller
+// tillbaka till default-värden om kolumnerna inte finns i DOM:en (t.ex.
+// under jsdom-tester).
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 // SVG-scenen använder viewBox 2432×1080. Rendering skalar viewBox till
-// den css-storlek `<svg>` faktiskt får (`width: 100%; height: 100%`).
-// Scenens CSS-bredd däremot är beräknad från viewport minus panel-
-// reserv (se SCENE_LEFT_RESERVE_PX / SCENE_RIGHT_RESERVE_PX nedan).
+// den css-storlek `<svg>` faktiskt får. Scenens CSS-bredd är beräknad
+// från viewport minus panel-mätta reserver.
 const SCENE_VIEWBOX_W = 2432;
 const SCENE_VIEWBOX_H = 1080;
 
-// Panel-reserv i CSS-pixlar. TeamPanel + InvestmentPanel är 320 px
-// breda; RoomCardPanel 260, InstrumentsPanel 220, EventStreamPanel
-// upp till 320 px. Reserv = panel-bredd + PanelColumn.gutter + margin.
-// Sätt konservativt till 360 (vänster) och 340 (höger — panel-bredden
-// varierar per pass, EventStream är den värsta).
-const SCENE_LEFT_RESERVE_PX = 360;
-const SCENE_RIGHT_RESERVE_PX = 340;
+// Default panel-reserver — bara fallback när PanelColumn-elementen inte
+// finns i DOM:en. Vid vanlig körning ersätts av mätning.
+const DEFAULT_LEFT_INSET_PX = 360;
+const DEFAULT_RIGHT_INSET_PX = 340;
+const EXTRA_MARGIN_PX = 24;
 
-// ORDER 096 §5.2 pixelbudget-golv: 140 px per figur för att uttrycket
-// ska läsas. Under 1 280 px viewport blir sceneWidthPx = 1280 − 360 −
-// 340 = 580 px, vilket räcker till ~4 figurer utan panorering.
-// Panorerings-läge hör till följdordern; här visar vi bara en varnings-
-// markering när scenen blir smalare än ORDER 096:s 16-kuverts-räckvidd
-// (16 × 140 = 2 240 px).
+// ORDER 096 §5.2 pixelbudget-golv: 16 kuvert × 140 px/figur = 2 240 px.
+// Under detta blir scenen för smal för full räckvidd → panorering krävs.
+// Panorering själv hör till följdordern; här visar vi bara varning.
 const SCENE_MIN_FULL_WIDTH_PX = 2240;
 
-// Rumsproportioner i viewBox-enheter. Alt C = ett fokusrum i genomskärning.
-// Golv + tak-list ramar bilden vertikalt; bakvägg spänner hela bredden.
-// Golvet är hälften så tjockt som ORDER 096:s "kartans golv 180 px" —
-// olika koncept men samma pixelriktning: läsbara horisontella band.
-const FLOOR_H = 60;                 // golv-tjocklek
-const CEILING_H = 24;               // tunn tak-list
-const SIDE_MARGIN = 40;             // sido-marginal för bakväggen från viewBox-kant
+// Rumsproportioner i viewBox-enheter. Fokusrummet ÄR SVG-scenen.
+const FLOOR_H = 60;
+const CEILING_H = 24;
+const SIDE_MARGIN = 40;
 
-// Öppning-geometri (dörr-form). Bredd + höjd är per öppning; placering
-// beräknas per öppning (kok vänster, bar höger). Öppningarna sitter
-// vertikalt centrerade i bakväggen — en dörr som blickar in i angränsande
-// rum, inte en fönstruta.
-const OPENING_W = 180;
-const OPENING_H = 480;
-// Avstånd från fokusrummets sido-kant till öppningen. Denna avgränsar
-// hur brett fokusrummet läses som "eget rum" innan öppningen börjar.
-// 260 px = ~11% av viewBox = tydligt rums-band.
-const OPENING_INSET_X = 260;
+// Passluckan/bardiskens geometri — horisontella öppningar i bakväggen
+// vid counter-höjd. Bredare än höga (motsatsen till en dörr) så formen
+// läses som "fönster/lucka i bakvägg" istället för "dörr in i eget rum".
+// Storlek: ~16 % av bakväggens bredd × ~20 % av bakväggens höjd —
+// tillräckligt små för att bakväggen fortfarande dominerar visuellt.
+const OPENING_W = 380;
+const OPENING_H = 200;
+// Öppningarnas insättning från bakväggens sida-kant. Större insättning
+// gör att bakväggens fokusrums-band känns bredare i mitten.
+const OPENING_INSET_X = 300;
+// Vertikal placering — counter-höjd är typiskt mid-wall (~50 %) men vi
+// lyfter något så en förbipasserande figur i fokusrummet inte skymmer.
+const OPENING_CENTER_Y_FRAC = 0.55;
 
-// Färger. Bakvägg medium-varm, golv mörkare, öppning mörkare än vägg
-// (glimt in i angränsande rum), rumsbelysning-hint via ett svagt
-// gradient-fyllning i bottom av bakväggen.
-const COLOR_WALL = '#4a453d';       // bakvägg (fokusrummets bakre yta)
-const COLOR_FLOOR = '#3a352e';      // golv
-const COLOR_CEILING = '#2d2924';    // tak-list mörkare än vägg
-const COLOR_OPENING = '#1c1a17';    // öppning — mörkare glimt in i nästa rum
-const COLOR_OPENING_HOVER = '#2a2620'; // hover-fyllning
+// Färger.
+const COLOR_WALL = '#4a453d';
+const COLOR_FLOOR = '#3a352e';
+const COLOR_CEILING = '#2d2924';
+const COLOR_OPENING = '#1c1a17';
+const COLOR_OPENING_HOVER = '#2a2620';
+// Passluckans/bardiskens "counter-linje" — antytt via en tunn ljusare
+// linje längs öppningens nederkant, som visar var arbetsytan möts.
+const COLOR_COUNTER_LINE = '#6b6355';
 
 type FokusRum = 'fokusrum' | 'kok' | 'bar';
 
 // Vilka öppningar (kok/bar/fokusrum) som visas per fokusrum. När fokus
 // = 'fokusrum', ser vi öppningar mot 'kok' och 'bar'. När fokus = 'kok',
 // ser vi öppningar mot 'fokusrum' och 'bar' (det tidigare fokusrummet
-// blir öppning i det nya). Symmetriskt för 'bar'.
+// blir öppning i det nya rummets bakvägg).
 const OPENINGS_BY_FOCUS: Record<FokusRum, [FokusRum, FokusRum]> = {
   fokusrum: ['kok', 'bar'],
   kok:      ['fokusrum', 'bar'],
@@ -100,41 +95,143 @@ const ROOM_LABELS: Record<FokusRum, string> = {
   bar:      'Baren'
 };
 
-// Reaktiv scenbredd — läser window.innerWidth minus panel-reserv.
-// Uppdateras vid resize så DollhouseFrame anpassar sin CSS-bredd.
-function useSceneWidth(): { widthPx: number; panningNeeded: boolean } {
-  const [widthPx, setWidthPx] = useState(() => computeSceneWidth());
+// Öppningens beskrivning per målrum — passluckan för kök, bardisken för
+// bar, "matsalen" när fokus-swap gör matsalen till öppning.
+const OPENING_LABELS: Record<FokusRum, string> = {
+  kok:      'passluckan',
+  bar:      'bardisken',
+  fokusrum: 'matsalen'
+};
+
+interface PanelInsets {
+  left: number;
+  right: number;
+}
+
+// Mäter faktisk bredd på PanelColumn-elementen via ResizeObserver +
+// rAF-polling för att fånga initialt mount + resize. Faller tillbaka
+// till default när kolumnerna inte finns (jsdom-tester eller lager där
+// dockskåpet renderas utan panel-shell).
+function usePanelInsets(): PanelInsets {
+  const [insets, setInsets] = useState<PanelInsets>({
+    left: DEFAULT_LEFT_INSET_PX,
+    right: DEFAULT_RIGHT_INSET_PX
+  });
+
   useEffect(() => {
-    const handler = () => setWidthPx(computeSceneWidth());
+    let raf = 0;
+    let observer: ResizeObserver | null = null;
+    let observed: Element[] = [];
+
+    const measure = () => {
+      const leftCol = document.querySelector('[data-panel-column="left"]');
+      const rightCol = document.querySelector('[data-panel-column="right"]');
+      const leftW = leftCol
+        ? (leftCol as HTMLElement).getBoundingClientRect().width
+        : 0;
+      const rightW = rightCol
+        ? (rightCol as HTMLElement).getBoundingClientRect().width
+        : 0;
+      // Fall tillbaka till default när DOM-mätning ger 0 (t.ex. jsdom
+      // som inte gör layout, eller innan kolumnerna mount:at).
+      const next: PanelInsets = {
+        left: leftW > 0 ? leftW + EXTRA_MARGIN_PX : DEFAULT_LEFT_INSET_PX,
+        right: rightW > 0 ? rightW + EXTRA_MARGIN_PX : DEFAULT_RIGHT_INSET_PX
+      };
+      setInsets((prev) =>
+        prev.left === next.left && prev.right === next.right ? prev : next
+      );
+    };
+
+    const attachObserver = () => {
+      if (typeof ResizeObserver === 'undefined') return;
+      const leftCol = document.querySelector('[data-panel-column="left"]');
+      const rightCol = document.querySelector('[data-panel-column="right"]');
+      observer = new ResizeObserver(measure);
+      observed = [];
+      if (leftCol) {
+        observer.observe(leftCol);
+        observed.push(leftCol);
+      }
+      if (rightCol) {
+        observer.observe(rightCol);
+        observed.push(rightCol);
+      }
+    };
+
+    // Initial mätning + Observer-attach. Om kolumnerna inte finns än
+    // (mount-race) polla några frames tills de dyker upp.
+    let attachAttempts = 0;
+    const tryAttach = () => {
+      measure();
+      attachObserver();
+      if (observed.length === 0 && attachAttempts < 60) {
+        attachAttempts += 1;
+        raf = requestAnimationFrame(tryAttach);
+      }
+    };
+    tryAttach();
+
+    window.addEventListener('resize', measure);
+
+    return () => {
+      if (observer) observer.disconnect();
+      window.removeEventListener('resize', measure);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  return insets;
+}
+
+function useSceneWidth(insets: PanelInsets): {
+  widthPx: number;
+  panningNeeded: boolean;
+} {
+  const [innerWidth, setInnerWidth] = useState(() =>
+    typeof window === 'undefined' ? SCENE_MIN_FULL_WIDTH_PX : window.innerWidth
+  );
+  useEffect(() => {
+    const handler = () => setInnerWidth(window.innerWidth);
     window.addEventListener('resize', handler);
     return () => window.removeEventListener('resize', handler);
   }, []);
+  const widthPx = Math.max(320, innerWidth - insets.left - insets.right);
   return { widthPx, panningNeeded: widthPx < SCENE_MIN_FULL_WIDTH_PX };
-}
-
-function computeSceneWidth(): number {
-  if (typeof window === 'undefined') return SCENE_MIN_FULL_WIDTH_PX;
-  return Math.max(320, window.innerWidth - SCENE_LEFT_RESERVE_PX - SCENE_RIGHT_RESERVE_PX);
 }
 
 export function DollhouseFrame() {
   const [focus, setFocus] = useState<FokusRum>('fokusrum');
   const [hovered, setHovered] = useState<FokusRum | null>(null);
-  const { widthPx, panningNeeded } = useSceneWidth();
+  const insets = usePanelInsets();
+  const { widthPx, panningNeeded } = useSceneWidth(insets);
 
   const [leftRoom, rightRoom] = OPENINGS_BY_FOCUS[focus];
-  const wallLeft = SIDE_MARGIN;
-  const wallRight = SCENE_VIEWBOX_W - SIDE_MARGIN;
-  const wallWidth = wallRight - wallLeft;
-  const wallTop = CEILING_H;
-  const wallBottom = SCENE_VIEWBOX_H - FLOOR_H;
-  const wallHeight = wallBottom - wallTop;
 
-  // Öppning-placering i bakväggen. Vertikalt centrerad; horisontellt
-  // insatt från fokusrummets sido-kant med OPENING_INSET_X.
-  const openingY = wallTop + (wallHeight - OPENING_H) / 2;
-  const openingLeftX = wallLeft + OPENING_INSET_X;
-  const openingRightX = wallRight - OPENING_INSET_X - OPENING_W;
+  const geometry = useMemo(() => {
+    const wallLeft = SIDE_MARGIN;
+    const wallRight = SCENE_VIEWBOX_W - SIDE_MARGIN;
+    const wallTop = CEILING_H;
+    const wallBottom = SCENE_VIEWBOX_H - FLOOR_H;
+    const wallHeight = wallBottom - wallTop;
+    // Öppningarna centrerade vertikalt vid counter-höjd (55% ner i
+    // bakväggen).
+    const openingCenterY = wallTop + wallHeight * OPENING_CENTER_Y_FRAC;
+    const openingY = openingCenterY - OPENING_H / 2;
+    const openingLeftX = wallLeft + OPENING_INSET_X;
+    const openingRightX = wallRight - OPENING_INSET_X - OPENING_W;
+    return {
+      wallLeft,
+      wallRight,
+      wallWidth: wallRight - wallLeft,
+      wallTop,
+      wallBottom,
+      wallHeight,
+      openingY,
+      openingLeftX,
+      openingRightX
+    };
+  }, []);
 
   return (
     <div
@@ -144,14 +241,14 @@ export function DollhouseFrame() {
         inset: 0,
         zIndex: 5,
         background: '#1a1815',
-        // Layout: horisontellt centrerad scenyta, panel-reserv på båda
-        // sidor. `pointer-events: none` på ytterlagret så mushjul / drag
-        // fortfarande når panelerna över/under; öppningarna opt:ar in
-        // med sin egen `pointer-events: auto` för klick.
+        // Layout: horisontellt centrerad scenyta med panel-reserv på
+        // båda sidor via padding. `pointer-events: none` på yttre lagret
+        // så mushjul/drag når panelerna över/under; öppningarna opt:ar
+        // in med sin egen `pointer-events: auto` för klick.
         pointerEvents: 'none',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center'
+        paddingLeft: insets.left,
+        paddingRight: insets.right,
+        boxSizing: 'border-box'
       }}
     >
       <svg
@@ -173,17 +270,16 @@ export function DollhouseFrame() {
         />
         {/* Bakvägg (fokusrummets bakre yta — fyller nästan hela vyn) */}
         <rect
-          x={wallLeft}
-          y={wallTop}
-          width={wallWidth}
-          height={wallHeight}
+          x={geometry.wallLeft}
+          y={geometry.wallTop}
+          width={geometry.wallWidth}
+          height={geometry.wallHeight}
           fill={COLOR_WALL}
         />
-        {/* Rummets namn-etikett — läses på bakväggen så spelaren vet
-            vilket rum hen är i under rekognoseringen. */}
+        {/* Fokusrummets namn — läses stort på bakväggen. */}
         <text
           x={SCENE_VIEWBOX_W / 2}
-          y={wallTop + 96}
+          y={geometry.wallTop + 120}
           textAnchor="middle"
           fill="#f0e8d4"
           fontSize={72}
@@ -196,29 +292,27 @@ export function DollhouseFrame() {
         {/* Golv */}
         <rect
           x={0}
-          y={wallBottom}
+          y={geometry.wallBottom}
           width={SCENE_VIEWBOX_W}
           height={FLOOR_H}
           fill={COLOR_FLOOR}
         />
-        {/* Öppning vänster — leder in i `leftRoom` */}
+        {/* Vänster öppning i bakväggen — passluckan/bardisken beroende
+            på var fokus står. Horisontell (bredare än hög) — läses som
+            "fönster i bakvägg" inte "dörr in i eget rum". */}
         <Opening
-          x={openingLeftX}
-          y={openingY}
-          w={OPENING_W}
-          h={OPENING_H}
+          x={geometry.openingLeftX}
+          y={geometry.openingY}
           target={leftRoom}
           hovered={hovered === leftRoom}
           onEnter={() => setHovered(leftRoom)}
           onLeave={() => setHovered(null)}
           onClick={() => setFocus(leftRoom)}
         />
-        {/* Öppning höger — leder in i `rightRoom` */}
+        {/* Höger öppning i bakväggen */}
         <Opening
-          x={openingRightX}
-          y={openingY}
-          w={OPENING_W}
-          h={OPENING_H}
+          x={geometry.openingRightX}
+          y={geometry.openingY}
           target={rightRoom}
           hovered={hovered === rightRoom}
           onEnter={() => setHovered(rightRoom)}
@@ -226,7 +320,7 @@ export function DollhouseFrame() {
           onClick={() => setFocus(rightRoom)}
         />
         {/* Rekognoserings-metadata — dev-only markering + scen-mått för
-            att bekräfta att bredden räknas mot fri yta, inte fönstret. */}
+            att bekräfta att bredden räknas mot fri yta. */}
         <text
           x={SCENE_VIEWBOX_W / 2}
           y={SCENE_VIEWBOX_H - 12}
@@ -235,7 +329,9 @@ export function DollhouseFrame() {
           fontSize={18}
           fontFamily="system-ui, sans-serif"
         >
-          SD-003 rev. 2 — rekognosering · scene {widthPx} px · {panningNeeded ? 'panorering krävs (<2240 px)' : 'full bredd'}
+          SD-003 rev. 2 — rekognosering · scene {widthPx} px (viewport −{' '}
+          {Math.round(insets.left)} vä − {Math.round(insets.right)} hö){' '}
+          · {panningNeeded ? 'panorering krävs (<2240)' : 'full bredd'}
         </text>
       </svg>
     </div>
@@ -245,8 +341,6 @@ export function DollhouseFrame() {
 interface OpeningProps {
   x: number;
   y: number;
-  w: number;
-  h: number;
   target: FokusRum;
   hovered: boolean;
   onEnter: () => void;
@@ -254,10 +348,12 @@ interface OpeningProps {
   onClick: () => void;
 }
 
-function Opening({ x, y, w, h, target, hovered, onEnter, onLeave, onClick }: OpeningProps) {
+function Opening({ x, y, target, hovered, onEnter, onLeave, onClick }: OpeningProps) {
+  const w = OPENING_W;
+  const h = OPENING_H;
   return (
     <g>
-      {/* Själva öppningen (mörkare fyllning + ram) */}
+      {/* Öppningens fyllning — glimt in i angränsande rum */}
       <rect
         data-opening={target}
         x={x}
@@ -268,9 +364,17 @@ function Opening({ x, y, w, h, target, hovered, onEnter, onLeave, onClick }: Ope
         stroke="#6b6355"
         strokeWidth={2}
       />
-      {/* Klickyta — läggs OVANPÅ öppning, med pointer-events opt-in.
-          Separat rect så vi kan använda `cursor: pointer` utan att den
-          styling går ut över svg-fyllningen. */}
+      {/* Counter-linje längs nederkanten — visar var arbetsytan möts,
+          markerar öppningen som passluckan/bardisken snarare än dörr. */}
+      <line
+        x1={x}
+        y1={y + h}
+        x2={x + w}
+        y2={y + h}
+        stroke={COLOR_COUNTER_LINE}
+        strokeWidth={4}
+      />
+      {/* Klickyta — läggs OVANPÅ, med pointer-events opt-in. */}
       <rect
         x={x}
         y={y}
@@ -282,17 +386,19 @@ function Opening({ x, y, w, h, target, hovered, onEnter, onLeave, onClick }: Ope
         onMouseLeave={onLeave}
         onClick={onClick}
       />
-      {/* Etikett — vilket rum öppningen leder in i. */}
+      {/* Etikett under öppningen — "passluckan · Köket" eller
+          "bardisken · Baren". Tydliggör vilken sorts öppning det är
+          och vart klicket leder. */}
       <text
         x={x + w / 2}
         y={y + h + 32}
         textAnchor="middle"
         fill="#8a836e"
-        fontSize={22}
+        fontSize={20}
         fontFamily="system-ui, sans-serif"
         style={{ pointerEvents: 'none' }}
       >
-        {ROOM_LABELS[target]}
+        {OPENING_LABELS[target]} · {ROOM_LABELS[target]}
       </text>
     </g>
   );
