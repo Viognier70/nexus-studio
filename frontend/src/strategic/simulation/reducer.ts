@@ -18,6 +18,33 @@ import {
   SERVICE_LENGTH_MIN_MINUTES
 } from '../types';
 import { strings } from '../../content/strings.sv';
+import {
+  ALL_PAVILION_IDS,
+  type PavilionId
+} from '../knowledge/pavilions';
+import {
+  computeExamCredits,
+  selectQuestionsForExam
+} from '../knowledge/examMechanic';
+import { ALL_TEMPLATE_EXAMPLES, R2_SEED_QUESTIONS } from '../knowledge/questionTemplates';
+import type { Question } from '../knowledge/questionFormats';
+
+// ORDER 104 §Q3 — separat slot-mekanik för prov, inte återanvänd
+// activity-slot. Aktiviteter är driftdagens val, prov är mellan-varv-
+// övning ("gå och öva efter avslag"). Antal per varv default 3
+// (matchar M2:s MAX_ACTIVITIES_PER_DAY-pattern); kalibreras när R3 §7
+// (antal varv per spel) svaras. Konstant tills dess.
+export const MAX_EXAM_SLOTS_PER_ROUND = 3;
+
+// ORDER 104 — frågebanken för R2. Union av ORDER 107:s mall-exempel
+// (4) + R2 seed-frågor (2) för de paviljonger mallen inte råkade
+// träffa. Vision Owner §5-arbete tillför riktiga frågor senare;
+// denna array är källan för `selectQuestionsForExam` när START_EXAM
+// dispatchas.
+const EXAM_QUESTION_BANK: readonly Question[] = [
+  ...ALL_TEMPLATE_EXAMPLES,
+  ...R2_SEED_QUESTIONS
+];
 import { maybeSpawnGuest, scenarioSpawnStep, walkAwayProbability } from './arrivals';
 import { planScenariosForService, scheduleScenarioTriggerTimes } from './day';
 import { revenuePerGuest } from './economics';
@@ -231,6 +258,12 @@ export function reducer(state: SimulationState, action: SimAction): SimulationSt
       return forceCollapseAction(state);
     case 'ANSWER_QUESTION':
       return answerProfessionalQuestion(state, action.index);
+    case 'START_EXAM':
+      return startExam(state, action.pavilionId, action.seed);
+    case 'ANSWER_EXAM_QUESTION':
+      return answerExamQuestion(state, action.questionId, action.correct, action.score);
+    case 'COMPLETE_EXAM':
+      return completeExam(state);
     case 'PICK_ACTIVITY':
       return pickActivity(state, action.id);
     case 'UNPICK_ACTIVITY':
@@ -698,6 +731,97 @@ export function drawMenuDishForGuest(
     }
   ];
   return { kind: 'walked', targetDishId: target.dishId };
+}
+
+// ORDER 104 §Q1 — START_EXAM. Skapar currentExam om (a) inget aktivt
+// prov, (b) slot finns kvar, (c) paviljong-id är känd. Provet lever
+// tills COMPLETE_EXAM dispatchas — spelaren kan lämna paviljongen
+// och komma tillbaka (§Q1: "provet är rummet"). Slot förbrukas när
+// provet STARTAS, inte när det slutförs — annars kunde start-avbryt-
+// spam ge obegränsad övning.
+function startExam(
+  state: SimulationState,
+  pavilionId: string,
+  seed: number
+): SimulationState {
+  // Guards. Alla returnerar state oförändrat om något villkor bryts —
+  // no-op istället för Error, så UI-lager kan dispatcha optimistiskt
+  // utan try/catch.
+  if (state.currentExam !== null) return state;
+  if (state.examSlotsUsed >= MAX_EXAM_SLOTS_PER_ROUND) return state;
+  if (!(ALL_PAVILION_IDS as readonly string[]).includes(pavilionId)) return state;
+
+  const questions = selectQuestionsForExam(
+    pavilionId as PavilionId,
+    EXAM_QUESTION_BANK,
+    seed
+  );
+  // Paviljong utan matchande frågor: coverageErrors ska ha fångat det,
+  // men försvara även här — no-op så inget krasch/oanvändbart state.
+  if (questions.length === 0) return state;
+
+  return {
+    ...state,
+    currentExam: {
+      pavilionId,
+      questionIds: questions.map((q) => q.id),
+      answers: [],
+      startedAt: state.simTime
+    },
+    examSlotsUsed: state.examSlotsUsed + 1
+  };
+}
+
+// ORDER 104 §Q1 — ANSWER_EXAM_QUESTION. Lägger till svar på nästa
+// obesvarad fråga i provet. Refuseras om ingen currentExam eller om
+// alla frågor redan besvarats. `correct` + `score` är beräknade av
+// UI-lagret via scoreQuestion i questionFormats.ts.
+function answerExamQuestion(
+  state: SimulationState,
+  questionId: string,
+  correct: boolean,
+  score: number
+): SimulationState {
+  if (state.currentExam === null) return state;
+  const nextIndex = state.currentExam.answers.length;
+  if (nextIndex >= state.currentExam.questionIds.length) return state;
+  // Om questionId inte matchar nästa förväntade fråga (UI-lager
+  // trasslat) — no-op så state förblir konsistent.
+  if (state.currentExam.questionIds[nextIndex] !== questionId) return state;
+  return {
+    ...state,
+    currentExam: {
+      ...state.currentExam,
+      answers: [...state.currentExam.answers, { questionId, correct, score }]
+    }
+  };
+}
+
+// ORDER 104 §Q1 + §Q2 — COMPLETE_EXAM. Rensar currentExam och
+// dispatchar krediter för varje rätt svar via ACCUMULATE_KNOWLEDGE-
+// vägen (samma reducer, återanvänder logiken). Refuseras om ingen
+// currentExam eller om det finns obesvarade frågor.
+//
+// Kreditformeln är enkel per §Q2: 1 kredit per rätt svar på frågans
+// axel + spår. Inga trösklar, ingen bonus.
+function completeExam(state: SimulationState): SimulationState {
+  if (state.currentExam === null) return state;
+  if (state.currentExam.answers.length < state.currentExam.questionIds.length) {
+    return state;
+  }
+  const grants = computeExamCredits(state.currentExam.answers, EXAM_QUESTION_BANK);
+  // Applicera varje credit sekventiellt via reducern så invariant
+  // (knowledgeCredits[axis] = tracks-summan) hålls.
+  let next: SimulationState = { ...state, currentExam: null };
+  for (const grant of grants) {
+    next = reducer(next, {
+      type: 'ACCUMULATE_KNOWLEDGE',
+      axis: grant.axis,
+      amount: grant.amount,
+      ...(grant.track !== undefined ? { track: grant.track } : {})
+    });
+  }
+  return next;
 }
 
 function forceCollapseAction(state: SimulationState): SimulationState {

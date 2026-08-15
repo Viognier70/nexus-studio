@@ -100,10 +100,63 @@ export const GESTALTNING_EXAMPLE: GestaltningQuestion = {
   intendedIndex: 2
 };
 
-// Sammansatt export för test och coverage-verifikation.
+// ORDER 104 seed-frågor — för att coverageErrors ska passera med
+// BUILT_PAVILIONS = alla fem. Måltidbiblioteket (episteme, spårlöst)
+// och Gastronomiska Teatern (alla tre axlar, båda spåren) täcks inte
+// av ORDER 107:s mall-exempel; en seed-fråga vardera. Vision Owner
+// §5-arbete ersätter dessa när riktiga phronesis/episteme-frågor
+// författas.
+export const MALTIDBIBLIOTEKET_SEED: FlervalQuestion = {
+  id: 'r2-seed-maltidbiblioteket',
+  format: 'flerval',
+  axis: 'episteme',
+  spar: null,
+  pavilion: 'maltidbiblioteket',
+  prompt:
+    'Vilken av följande definitioner av gastronomins historiska utveckling är den mest accepterade inom svensk måltidsforskning?',
+  options: [
+    'En serie tekniska genombrott — kylkedja, industriell tillverkning, molekylär teknik.',
+    'En växelverkan mellan råvara, tradition, näring och sammanhang som förändras över tid.',
+    'Kockyrkets professionalisering från 1800-talets slut.',
+    'Restaurangkulturens spridning från franska revolutionen.'
+  ],
+  correctIndex: 1
+};
+
+export const GASTRONOMISKA_TEATERN_SEED: SituationQuestion = {
+  id: 'r2-seed-gastronomiska-teatern',
+  format: 'situation',
+  axis: 'phronesis',
+  spar: 'sommellerie',
+  pavilion: 'gastronomiskateatern',
+  scenario:
+    'Ett femrätters gästspel med kända producenter i salen. En rätt kommer ut fem minuter försenat och kockens presentation räcker inte till hela bordet. Rangordna handlingar från bäst till sämst.',
+  actions: [
+    'Ta över presentationen från kocken vid det tredje bordet, förklara producenten själv.',
+    'Vänta tills kocken kommer ut igen — det är hens presentation att hålla.',
+    'Be sommelieren fylla på vinet så samtalet fortsätter tills kocken är tillbaka.',
+    'Ursäkta förseningen till bordet och bjud på en förrätt-bonus.'
+  ],
+  intendedRanking: [0, 2, 3, 1]
+};
+
+// Sammansatt export för mall + test-verifikation. Håller precis fyra
+// element — ORDER 107 §4.3 DoD ("mall med ett komplett exempel per
+// format"). R2 seed-frågor för Måltidbiblioteket + Gastronomiska
+// Teatern ligger separat i R2_SEED_QUESTIONS nedan för att inte
+// bryta den regeln.
 export const ALL_TEMPLATE_EXAMPLES = [
   FLERVAL_EXAMPLE,
   SITUATION_EXAMPLE,
   PARNING_EXAMPLE,
   GESTALTNING_EXAMPLE
+] as const;
+
+// ORDER 104 — R2 seed-frågor för paviljonger som ORDER 107:s mall inte
+// råkade träffa (Måltidbiblioteket och Gastronomiska Teatern). Vision
+// Owner §5-arbete ersätter dessa när riktiga phronesis/episteme-frågor
+// författas. Håller coverage grön så länge.
+export const R2_SEED_QUESTIONS = [
+  MALTIDBIBLIOTEKET_SEED,
+  GASTRONOMISKA_TEATERN_SEED
 ] as const;

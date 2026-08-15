@@ -88,6 +88,29 @@ export interface KnowledgeTracks {
   phronesis: AxisTracks;
 }
 
+// ORDER 104 §Q1 — provstate. Provet är rummet: en spelare som lämnar
+// paviljongen mitt i provet kommer tillbaka till samma prov. State
+// persistar tills COMPLETE_EXAM dispatchas. Ingen ABORT_EXAM — provet
+// ligger kvar.
+//
+// `pavilionId` är strängen från `pavilions.ts:PavilionId` (håller
+// types-modulen fri från paviljong-katalogen; katalogen importerar
+// från typerna, inte tvärtom).
+export interface ExamState {
+  pavilionId: string;
+  questionIds: readonly string[];   // deterministiskt vald ordning
+  answers: readonly {
+    questionId: string;
+    correct: boolean;
+    // ORDER 104 §Q2 — 1 kredit per rätt svar. `score` kvar för
+    // framtida delpoäng (situations-format) — reducern läser bara
+    // `correct` i R2, men strukturen bär score också för R7:s
+    // svårighetskurva-arbete.
+    score: number;
+  }[];
+  startedAt: number;   // simTime när START_EXAM dispatchades
+}
+
 export type ServiceConcept = 'vardaglig' | 'formell';
 export type PricingTier = 'låg' | 'medel' | 'hög';
 export type IngredientTier = 'grund' | 'utvald' | 'premium';
@@ -826,6 +849,16 @@ export interface SimulationState {
   // vs restaurang) utan att växa vektorn ovan. Invariant: för varje axis,
   // knowledgeCredits[axis] = knowledgeTracks[axis].(untagged+sommellerie+kok).
   knowledgeTracks: KnowledgeTracks;
+  // ORDER 104 — R2 paviljongerna. Prov-mekanik.
+  // `currentExam` = null när inget prov pågår; ExamState när spelaren
+  // har startat ett prov (persistar mellan besök i paviljongen — provet
+  // är rummet). `examSlotsUsed` räknar konsumerade slots denna varv;
+  // återställs när R7 (omgångsslingan) landar och definierar när ett
+  // nytt varv börjar. R2 sätter MAX_EXAM_SLOTS_PER_ROUND = 3 som
+  // rimlig default per M2-pattern; kalibreras när R3 §7 (antal varv)
+  // svaras.
+  currentExam: ExamState | null;
+  examSlotsUsed: number;
   eco: {
     econ: SustainabilityCondition;
     social: SustainabilityCondition;
@@ -1009,6 +1042,20 @@ export type SimAction =
   // sommellerie, Metodköket → kok, Gastronomiska Teatern → båda om
   // dispatchas två gånger). Inget tak i R1.
   | { type: 'ACCUMULATE_KNOWLEDGE'; axis: KnowledgeAxis; amount: number; track?: YrkesSpar }
+  // ORDER 104 §Q1 — R2 prov-mekanik. Tre actions:
+  //   START_EXAM: skapar currentExam om (a) slot finns, (b) inget aktivt
+  //              prov, (c) paviljong-id är giltig. `seed` används för
+  //              deterministisk fråge-selektion.
+  //   ANSWER_QUESTION: sparar svar (correct + score) på nästa fråga i
+  //                    provet. Refuseras om ingen currentExam eller om
+  //                    alla frågor besvarade.
+  //   COMPLETE_EXAM: rensar currentExam och (i reducern) dispatchar
+  //                  ACCUMULATE_KNOWLEDGE per rätt svar via score-vägen.
+  //                  Refuseras om ingen currentExam eller om det finns
+  //                  obesvarade frågor.
+  | { type: 'START_EXAM'; pavilionId: string; seed: number }
+  | { type: 'ANSWER_EXAM_QUESTION'; questionId: string; correct: boolean; score: number }
+  | { type: 'COMPLETE_EXAM' }
   // ORDER 043 v3 §10 step 1 — the round.
   // OPEN_SERVICE is dispatched from the morning/afternoon UI when the
   // player commits to a service length. lengthMinutes clamped to
