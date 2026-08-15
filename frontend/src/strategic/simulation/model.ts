@@ -264,6 +264,13 @@ export function makeInitialState(
     // ORDER 102 — R1 kunskapskapital. Alla tre axlar noll vid start.
     // Byggs upp av R2 paviljongerna och R6 post-service-quiz.
     knowledgeCredits: { episteme: 0, techne: 0, phronesis: 0 },
+    // ORDER 105 — spårnedbrytning per axel. Noll vid start; hålls i
+    // synk med knowledgeCredits av reducern via ACCUMULATE_KNOWLEDGE.
+    knowledgeTracks: {
+      episteme: { untagged: 0, sommellerie: 0, kok: 0 },
+      techne: { untagged: 0, sommellerie: 0, kok: 0 },
+      phronesis: { untagged: 0, sommellerie: 0, kok: 0 }
+    },
     eco: {
       econ: {
         value: 0.55,

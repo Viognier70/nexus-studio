@@ -1,5 +1,6 @@
 import { createRng } from '../util/rng';
 import type {
+  AxisTracks,
   DayPeriod,
   DayState,
   EnablerKey,
@@ -185,14 +186,30 @@ export function reducer(state: SimulationState, action: SimAction): SimulationSt
       // ORDER 102 — R1 kunskapskapital. amount klämmas ≥ 0 (krediter
       // dras aldrig via R1; förlust hanteras i R7 via ny profil per varv).
       // Inget tak i R1 — frågan hör till R3 kreditekonomi + svårighetskurva.
+      // ORDER 105 — spårmärkning. `track` avgör vilken del av axeln som
+      // ackumuleras: 'untagged' (spårlöst, default) eller 'sommellerie'/
+      // 'kok' (paviljong-specifikt). Reducern håller invarianten att
+      // axis-total = tracks.untagged + tracks.sommellerie + tracks.kok
+      // så `readProfile` fortsätter läsa top-level axis-fältet oförändrat.
       const amount = Math.max(0, action.amount);
       if (amount === 0) return state;
-      const current = state.knowledgeCredits;
+      const trackKey: keyof AxisTracks = action.track ?? 'untagged';
+      const currentAxisTracks = state.knowledgeTracks[action.axis];
+      const nextAxisTracks: AxisTracks = {
+        ...currentAxisTracks,
+        [trackKey]: currentAxisTracks[trackKey] + amount
+      };
+      const nextAxisTotal =
+        nextAxisTracks.untagged + nextAxisTracks.sommellerie + nextAxisTracks.kok;
       return {
         ...state,
         knowledgeCredits: {
-          ...current,
-          [action.axis]: current[action.axis] + amount
+          ...state.knowledgeCredits,
+          [action.axis]: nextAxisTotal
+        },
+        knowledgeTracks: {
+          ...state.knowledgeTracks,
+          [action.axis]: nextAxisTracks
         }
       };
     }

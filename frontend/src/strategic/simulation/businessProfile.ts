@@ -14,7 +14,7 @@
 // centrum. Precedens vid överlapp: phronesis > techne > episteme >
 // balanced > noLoan (R3 §3.6 tabell).
 
-import type { KnowledgeCredits } from '../types';
+import type { KnowledgeCredits, KnowledgeTracks } from '../types';
 
 // ORDER 093 §5 punkt 1 — Vision Owner-beslut, symmetriskt tydligaste
 // punkten från konsvepet (26 % var per axel, precedens inaktiv).
@@ -125,4 +125,64 @@ export function resolveLoanOutcome(credits: KnowledgeCredits): LoanOutcome {
         message: 'Vi ser inget bärande kunnande. Kom tillbaka när du kan mer.'
       };
   }
+}
+
+// ORDER 105 — spårläsare. Aggregerar spårnedbrytningen över alla tre
+// axlar och avgör vilket yrkesspår dominerar. Ren funktion, samma form
+// som `readProfile`. Används av R4 för att skilja verksamheter med
+// identisk axelprofil (t.ex. vinbar vs restaurang) — inte av
+// `resolveLoanOutcome` som fortsätter läsa axel-profilen ensam.
+//
+// `noLoan` här har annan betydelse än i `readProfile`: här = "spelaren
+// har inte satsat något yrkesspår alls, alla krediter är spårlösa";
+// spelare kan alltså ha en dominant axel (t.ex. techne) via
+// Gastronomiska Teatern (som ger båda spåren) och ändå få 'both' eller
+// 'neither' från readSpar. Klasserna:
+//
+//   'kok'         — kok dominerar
+//   'sommellerie' — sommellerie dominerar
+//   'both'        — jämn fördelning mellan de två spåren över golv
+//   'neither'     — spårat totalt under golv (spelaren har bara
+//                   ackumulerat spårlöst via Bibliotek + Kalastorget,
+//                   eller inte alls)
+
+export type SparClass = 'kok' | 'sommellerie' | 'both' | 'neither';
+
+// Trösklar för spårläsningen. Speglar `SPECIALIST_MAGNITUDE_FLOOR`
+// i sin storlek — 0.10 är samma "under detta är signalen brus"-nivå
+// som axel-läsningen använder.
+const TRACK_MAGNITUDE_FLOOR = 0.10;
+
+// En sida "dominerar" när den är minst DOUBLE gånger den andra.
+// Motiv: symmetriskt (om båda är ~lika, ingen dominerar), och tydlig
+// tröskel — en spelare som övat 2/3 i ett spår och 1/3 i det andra
+// klassificeras entydigt.
+const DOMINANCE_RATIO = 2;
+
+// Summera respektive spår över alla tre axlar. Aggregeringen är
+// summering (inte sfärgeometri) — spår är inte ortogonala dimensioner,
+// bara märkningar av samma krediter.
+function aggregateTracks(tracks: KnowledgeTracks): {
+  sommellerie: number;
+  kok: number;
+} {
+  return {
+    sommellerie:
+      tracks.episteme.sommellerie +
+      tracks.techne.sommellerie +
+      tracks.phronesis.sommellerie,
+    kok:
+      tracks.episteme.kok +
+      tracks.techne.kok +
+      tracks.phronesis.kok
+  };
+}
+
+export function readSpar(tracks: KnowledgeTracks): SparClass {
+  const agg = aggregateTracks(tracks);
+  const total = agg.sommellerie + agg.kok;
+  if (total < TRACK_MAGNITUDE_FLOOR) return 'neither';
+  if (agg.sommellerie >= DOMINANCE_RATIO * agg.kok) return 'sommellerie';
+  if (agg.kok >= DOMINANCE_RATIO * agg.sommellerie) return 'kok';
+  return 'both';
 }

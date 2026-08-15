@@ -57,6 +57,37 @@ export interface KnowledgeCredits {
   phronesis: number;
 }
 
+// ORDER 105 — yrkesspår som märkning på befintliga krediter, inte som
+// nya axlar. Techne har två paviljonger (Stensöta = sommellerie,
+// Metodköket = kok) — två spelare med identisk axel-profil kan ha olika
+// kompetens beroende på var de övat. Måltidbiblioteket och Kalastorget
+// är spårlösa (ingen `track`-parameter till ACCUMULATE_KNOWLEDGE).
+//
+// Strukturvalet: `KnowledgeCredits` ovan behåller formen `{episteme,
+// techne, phronesis}` oförändrad (DoD 2: ORDER 102:s 23 tester ska
+// passera oförändrade), och spårnedbrytningen läggs som ett separat
+// top-level-fält `knowledgeTracks` på `SimulationState`. Reducern
+// håller invarianten att axis-totalen i `knowledgeCredits` = summan
+// untagged + sommellerie + kok i `knowledgeTracks`.
+export type YrkesSpar = 'sommellerie' | 'kok';
+
+// Per-axel-bruk: hur mycket av axeln som är spårlöst respektive märkt
+// per spår. Invariant: knowledgeCredits[axis] = untagged + sommellerie
+// + kok. Reducern håller invarianten via ACCUMULATE_KNOWLEDGE.
+export interface AxisTracks {
+  untagged: number;
+  sommellerie: number;
+  kok: number;
+}
+
+// Spårnedbrytning per axel. Lever bredvid `knowledgeCredits` på
+// `SimulationState`; läses av `readSpar()` i businessProfile.ts.
+export interface KnowledgeTracks {
+  episteme: AxisTracks;
+  techne: AxisTracks;
+  phronesis: AxisTracks;
+}
+
 export type ServiceConcept = 'vardaglig' | 'formell';
 export type PricingTier = 'låg' | 'medel' | 'hög';
 export type IngredientTier = 'grund' | 'utvald' | 'premium';
@@ -790,6 +821,11 @@ export interface SimulationState {
   // via ACCUMULATE_KNOWLEDGE. Ingen summa/genomsnitt exponeras — formen
   // läses som helhet i businessProfile.ts:readProfile().
   knowledgeCredits: KnowledgeCredits;
+  // ORDER 105 — spårnedbrytning per axel. Läses av readSpar(); används
+  // av R4 för att skilja verksamheter med identisk axel-profil (vinbar
+  // vs restaurang) utan att växa vektorn ovan. Invariant: för varje axis,
+  // knowledgeCredits[axis] = knowledgeTracks[axis].(untagged+sommellerie+kok).
+  knowledgeTracks: KnowledgeTracks;
   eco: {
     econ: SustainabilityCondition;
     social: SustainabilityCondition;
@@ -966,10 +1002,13 @@ export type SimAction =
   // playtest shortcuts.
   | { type: 'SET_CAPITAL'; capital: StoredCapitalKey; value: number }
   | { type: 'SET_CASH'; valueSek: number }
-  // ORDER 102 — R1 kunskapskapital. Skriver på angiven axel; amount
-  // klämmas ≥ 0 i reducern. Inget tak i R1 (öppen fråga hör till R3
-  // kreditekonomi + svårighetskurva).
-  | { type: 'ACCUMULATE_KNOWLEDGE'; axis: KnowledgeAxis; amount: number }
+  // ORDER 102/105 — R1 kunskapskapital + yrkesspår-märkning. Skriver på
+  // angiven axel; amount klämmas ≥ 0 i reducern. `track` är valfritt —
+  // spårlöst ackumulerar `untagged`-delen av axeln (Måltidbiblioteket +
+  // Kalastorget), spårat ackumulerar respektive spår-del (Stensöta →
+  // sommellerie, Metodköket → kok, Gastronomiska Teatern → båda om
+  // dispatchas två gånger). Inget tak i R1.
+  | { type: 'ACCUMULATE_KNOWLEDGE'; axis: KnowledgeAxis; amount: number; track?: YrkesSpar }
   // ORDER 043 v3 §10 step 1 — the round.
   // OPEN_SERVICE is dispatched from the morning/afternoon UI when the
   // player commits to a service length. lengthMinutes clamped to
