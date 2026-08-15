@@ -140,6 +140,11 @@ export function selectGuestPattern(input: GuestPatternInput): GuestPatternLabel 
       return 'EXIT';
     case 'declined':
       return 'EXIT';
+    // ORDER 111 §4 — sleeping-gäst (värdshus) läses som IDLE på plats:
+    // hen är kvar i värdshuset över natten men gör ingenting synligt
+    // förrän frukost-passet väcker hen.
+    case 'sleeping':
+      return 'IDLE';
   }
 }
 
@@ -182,6 +187,8 @@ export function deriveGuestPatience(guest: Guest, simTime: number): number {
       return guest.walkAwayOnArrival ? 1 : 0;
     case 'arriving':
     case 'seated':
+    // ORDER 111 §4 — sleeping-gäst har inget att uttrycka; nolltålighet.
+    case 'sleeping':
       return 0;
   }
 }

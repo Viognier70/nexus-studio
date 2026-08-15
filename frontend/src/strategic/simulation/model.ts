@@ -388,6 +388,9 @@ export function makeGuest(
     moveProgress: 0,
     hadWelcomeDrink: false,
     lastCheckbackAt: null,
-    walkAwayOnArrival
+    walkAwayOnArrival,
+    // ORDER 111 §4 — default false; sätts av reducern (paying-transitionen)
+    // när businessClass = 'värdshus' och gästen rullas att stanna över.
+    stayingOvernight: false
   };
 }

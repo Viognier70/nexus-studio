@@ -108,6 +108,9 @@ const GUEST_COLOUR: Record<GuestState, string> = {
   ordering: '#b9b394',
   dining: '#a89f7e',
   paying: '#9c9070',
+  // ORDER 111 §4 — sleeping-gäst (värdshus) läses lite dovare än seated:
+  // hen är på plats men inte i aktiv service, färgen viker mot leaving.
+  sleeping: '#7a7360',
   leaving: '#8a836e',
   declined: '#6a6455'
 };
@@ -459,7 +462,11 @@ function targetFor(
     case 'seated':
     case 'ordering':
     case 'dining':
-    case 'paying': {
+    case 'paying':
+    // ORDER 111 §4 — sleeping-gäst (värdshus) står på sin stol —
+    // enkel form: samma placering som seated. Riktig rumsvisualisering
+    // (sängar, etc.) hör till senare arbete med Värdshusets scen.
+    case 'sleeping': {
       const idx = guest.seatIndex ?? -1;
       const seat = idx >= 0 && idx < seats.length ? seats[idx] : seats[0];
       return { x: seat[0], z: seat[1], colour };

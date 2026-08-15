@@ -116,3 +116,17 @@ export function capacityForBusiness(business: BusinessClass, staffCount: number)
 export function businessHasSeats(business: BusinessClass): boolean {
   return BUSINESS_CLASS_CONFIG[business].hasSeats;
 }
+
+// ORDER 111 §3 + DoD 4 — helper-getters för hasMiseEnPlace och
+// hasOvernight. Följer samma mönster som businessHasSeats: en helper
+// per flagga håller anropssidorna oberoende av config-tabellens form.
+// Grep över src/ visar att båda flaggorna nu har konsumenter i sim
+// (reducer.ts:openService läser hasMiseEnPlace; day-rollover +
+// stayingOvernight-vägen läser hasOvernight) — inte längre död metadata.
+export function businessHasMiseEnPlace(business: BusinessClass): boolean {
+  return BUSINESS_CLASS_CONFIG[business].hasMiseEnPlace;
+}
+
+export function businessHasOvernight(business: BusinessClass): boolean {
+  return BUSINESS_CLASS_CONFIG[business].hasOvernight;
+}

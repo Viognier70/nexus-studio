@@ -28,6 +28,11 @@ export type GuestState =
   | 'ordering'
   | 'dining'
   | 'paying'
+  // ORDER 111 §4 — Värdshus. Gäst som stannar över får denna state
+  // efter paying, istället för att gå direkt till 'leaving'. Överlever
+  // dygnsrollovern och plockas upp av frukost-passet nästa morgon.
+  // Bara giltig när `state.businessClass === 'värdshus'`.
+  | 'sleeping'
   | 'leaving'
   | 'declined';
 
@@ -272,6 +277,14 @@ export interface Guest {
   // Decided at spawn time from the current economic capital value;
   // wired in arrivals.ts via maybeSpawnGuest.
   walkAwayOnArrival: boolean;
+  // ORDER 111 §4 — Värdshus-mekaniken. Sätts när en gäst under
+  // paying-transitionen (i värdshus) rullas som "stanna över natten".
+  // Gästen försätts i state 'sleeping' istället för 'leaving';
+  // dygnsrollovern behåller hen istället för att pruna; frukost-passet
+  // (nästa morgon) plockar upp hen och slussar till 'leaving'.
+  // Valfritt (undefined = false) så existerande testfixturer inte
+  // behöver ändras; reducern läser med `?? false`.
+  stayingOvernight?: boolean;
 }
 
 export type SustainabilityDirection =
@@ -419,6 +432,11 @@ export interface DeliveryVehicle {
 //   evening   — brief close, auto-advances to next day's morning
 export type DayPeriod =
   | 'morning'
+  // ORDER 111 §4 — Värdshus-pass mellan morning och lunch när det finns
+  // gäster som stannat över natten (guest.stayingOvernight === true).
+  // Enkel form: passet plockar upp sleeping-gäster och slussar dem till
+  // 'leaving'. Restaurant/foodtruck hoppar direkt från morning → lunch.
+  | 'breakfast'
   | 'lunch'
   | 'afternoon'
   | 'dinner'

@@ -17,6 +17,8 @@ import type {
 import { resolveBankMeeting } from './bankMeeting';
 import {
   businessFromBankKlass,
+  businessHasMiseEnPlace,
+  businessHasOvernight,
   capacityForBusiness
 } from '../business/businessClass';
 import {
@@ -1038,10 +1040,17 @@ function openService(
     scenariosFiredThisService: 0,
     scenarioTriggerTimes,
     // Opening panel for OPENING_DURATION_SEC, then prep for
-    // PREP_DURATION_SEC. Arrivals + scenarios gated until both close
-    // (see advanceTick + arrivalProbability).
+    // PREP_DURATION_SEC. Arrivals + scenarios gated until både close
+    // (se advanceTick + arrivalProbability).
+    // ORDER 111 — hasMiseEnPlace-konsument. Food truck (och andra
+    // verksamheter utan mise en place) hoppar över prep-fasen: kupén
+    // öppnar när opening-panelen är över, gäster kan komma direkt.
+    // Restaurant + Värdshus (hasMiseEnPlace=true) behåller det befintliga
+    // prep-fönstret.
     openingEndsAt: state.simTime + OPENING_DURATION_SEC,
-    prepEndsAt: state.simTime + OPENING_DURATION_SEC + PREP_DURATION_SEC,
+    prepEndsAt: businessHasMiseEnPlace(state.businessClass)
+      ? state.simTime + OPENING_DURATION_SEC + PREP_DURATION_SEC
+      : state.simTime + OPENING_DURATION_SEC,
     prepIgnoranceCount: 0,
     // ORDER 043 Addendum B prep floor — two guaranteed prep events
     // per service, at ~35 s and ~85 s past prep-start (~45 s and
@@ -1224,8 +1233,44 @@ function scenarioLedgerCause(
 // Previously duplicated logic omission in collapse silently dropped
 // revenue + ingredient ledger lines for every collapsed service.
 
+// ORDER 111 §4 — frukost-passets varaktighet (Värdshus). Enkel form:
+// 30 sim-sekunder efter dygnsrollover väcks sleeping-gästerna och
+// skickas till leaving; passet avslutas och period skiftar till morning.
+// Djupare mekanik (spelaraktivitet, prissättning per natt, service-events)
+// hör till senare arbete (§7 avgränsning).
+const BREAKFAST_DURATION_SEC = 30;
+
 export function tickDayTransitions(state: SimulationState): SimulationState {
   const { day, simTime } = state;
+  // ORDER 111 §4 — frukost-pass. Endast värdshus når hit (dygnsrollovern
+  // sätter period='breakfast' bara när businessHasOvernight + sleeping-
+  // gäster fanns). Efter fast varaktighet, väck alla sleeping-gäster
+  // (→ leaving) och skifta till morning.
+  if (day.period === 'breakfast') {
+    if (simTime - day.periodStartAt >= BREAKFAST_DURATION_SEC) {
+      const wokeGuests = state.guests.map((g) =>
+        g.state === 'sleeping'
+          ? { ...g, state: 'leaving' as const, stateTime: simTime, stayingOvernight: false }
+          : g
+      );
+      // Sleeping-gäster fanns i seatedIds (samma seat de betalade på);
+      // rensa dem när de går till leaving.
+      const wokeIds = state.guests
+        .filter((g) => g.state === 'sleeping')
+        .map((g) => g.id);
+      return {
+        ...state,
+        guests: wokeGuests,
+        seatedIds: state.seatedIds.filter((id) => !wokeIds.includes(id)),
+        day: {
+          ...day,
+          period: 'morning',
+          periodStartAt: simTime
+        }
+      };
+    }
+    return state;
+  }
   if (day.period === 'lunch' && day.currentServiceLengthMinutes !== null) {
     const endsAt = day.periodStartAt + day.currentServiceLengthMinutes * 60;
     if (simTime >= endsAt) {
@@ -1350,8 +1395,37 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       // the book names who was paid.
       const nonAgencyMembers = state.team.members.filter((m) => !m.isAgency);
       const wageTotal = nonAgencyMembers.reduce((s, m) => s + m.dailyCost, 0);
+      // ORDER 111 §4 — Värdshus: dygnsrollovern behåller gäster med
+      // stayingOvernight-flaggan; alla andra gäster (och andra
+      // verksamheter) rensas till en tom kväll så nya dagen börjar
+      // från en klar tavla. hasOvernight-konsumenten här: bara
+      // verksamheter med `businessHasOvernight` läser fältet.
+      // Restaurang/foodtruck: gäster rensas oavsett (deras
+      // stayingOvernight kan aldrig vara true — service.ts skriver den
+      // bara i värdshus-grenen).
+      const guestsAfterRollover = businessHasOvernight(state.businessClass)
+        ? state.guests.filter((g) => g.stayingOvernight === true)
+        : [];
+      // ORDER 111 §4 — Värdshus + övernattande gäster → morgon startar i
+      // frukost-passet istället för direkt morning. Restaurant/foodtruck
+      // (samt värdshus utan sleeping-gäster) startar som vanligt i
+      // 'morning'. Frukost avslutas när tickBreakfast fört alla sleeping-
+      // gäster till leaving (fast varaktighet BREAKFAST_DURATION_SEC).
+      const startInBreakfast =
+        businessHasOvernight(state.businessClass) &&
+        guestsAfterRollover.some((g) => g.state === 'sleeping');
       const nextForDay: SimulationState = {
         ...state,
+        guests: guestsAfterRollover,
+        // Rensa waitingIds + seatedIds för allt utom överlevande gäster.
+        // Sleeping-gäster behåller seatIndex och räknas som seated här
+        // (i den enkla formen — riktiga rum hör till senare arbete).
+        waitingIds: state.waitingIds.filter((id) =>
+          guestsAfterRollover.some((g) => g.id === id)
+        ),
+        seatedIds: state.seatedIds.filter((id) =>
+          guestsAfterRollover.some((g) => g.id === id)
+        ),
         team: chargeStructuralCost(state.team),
         // ORDER 046 §3 — evening account is scoped to a single evening;
         // clear when the new day begins so the panel doesn't linger
@@ -1375,6 +1449,7 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
         day: {
           ...initialDay(),
           dayNumber: day.dayNumber + 1,
+          period: startInBreakfast ? 'breakfast' : 'morning',
           periodStartAt: simTime
         }
       };
