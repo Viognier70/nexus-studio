@@ -122,6 +122,15 @@ Bindande. Reglerna finns för att fyra ordrars arbete legat ocommitterat i huvud
 
 Ingen pre-commit-hook, inget skript som städar arbetsträdet, ingen automatik som committar åt agenten. Verifieringen är synlig i rapporten.
 
+## DoD för synligt innehåll
+
+En DoD-punkt som rör något spelaren ska se ska kräva en grep-verifierbar artefakt, inte en beskrivning av avsikten.
+
+Inte: "figurer med lemmar och ansikten renderas"
+Utan: "grep visar limb-funktioner i skepnadsfilen; strängen `SKEPNAD EJ BYGGD` förekommer inte i produktionsvägen"
+
+Placeholder som uppfyller en DoD-punkt är inte uppfyllelse. Rapportera det som ofullständigt.
+
 ## Grenar är kortlivade
 
 **En order = en gren från `main`, mergad tillbaka när DoD är uppfylld. Ingen gren lever över mer än en order.** Införd per ORDER 103 §5 efter en långlivad linjegren (`order-049`) som kostade två felsökningsomgångar, en registerdivergens och fyra ordrars arbete som låg osparat i huvudworktreets arbetsträd. Långlivade grenar är den strukturella grunden till samma sortens fel Commit-verifiering-avsnittet ovan adresserar.
