@@ -30,6 +30,7 @@
 // under jsdom-tester).
 
 import { useEffect, useMemo, useState } from 'react';
+import { useSimState } from '../simulation/SimulationProvider';
 
 // SVG-scenen använder viewBox 2432×1080. Rendering skalar viewBox till
 // den css-storlek `<svg>` faktiskt får. Scenens CSS-bredd är beräknad
@@ -201,13 +202,14 @@ function useSceneWidth(insets: PanelInsets): {
 }
 
 export function DollhouseFrame() {
+  const sim = useSimState();
   const [focus, setFocus] = useState<FokusRum>('fokusrum');
   const [hovered, setHovered] = useState<FokusRum | null>(null);
   const insets = usePanelInsets();
   const { widthPx, panningNeeded } = useSceneWidth(insets);
 
-  const [leftRoom, rightRoom] = OPENINGS_BY_FOCUS[focus];
-
+  // Alla hooks ovan detta placement så Rules of Hooks håller när vi
+  // returnerar en placeholder tidigt för icke-restaurant-klasser.
   const geometry = useMemo(() => {
     const wallLeft = SIDE_MARGIN;
     const wallRight = SCENE_VIEWBOX_W - SIDE_MARGIN;
@@ -232,6 +234,23 @@ export function DollhouseFrame() {
       openingRightX
     };
   }, []);
+
+  // TEMPORÄR (Vision Owner-rapport 2026-08-16): tidigare version renderade
+  // restaurangens skepnad oavsett `state.businessClass`. Nu läses klassen
+  // och en placeholder visas för verksamheter vars skepnad inte är byggd
+  // än. Riktig skepnad-per-klass hör till ORDER 112 §4 (food truck) och
+  // följdordrar (Värdshuset).
+  if (sim.businessClass !== 'restaurant') {
+    return (
+      <UnbuiltShapeholder
+        businessClass={sim.businessClass}
+        widthPx={widthPx}
+        insets={insets}
+      />
+    );
+  }
+
+  const [leftRoom, rightRoom] = OPENINGS_BY_FOCUS[focus];
 
   return (
     <div
@@ -401,5 +420,95 @@ function Opening({ x, y, target, hovered, onEnter, onLeave, onClick }: OpeningPr
         {OPENING_LABELS[target]} · {ROOM_LABELS[target]}
       </text>
     </g>
+  );
+}
+
+// TEMPORÄR placeholder för verksamheter vars skepnad inte är byggd.
+// Kravet enligt SD-003 §3 för food truck: "vagn som bakvägg, luckan som
+// öppningen, kön som scenen" — helt annan visuell komposition än
+// restaurangens fokusrum. §4 för Värdshuset: "dygnet visas som markering
+// på tidsaxel i kartan". Ingen av dem är byggd. Denna komponent gör
+// gapet synligt i browsern så det inte upplevs som att restaurang-vyn
+// är rätt vy för alla klasser.
+
+interface PlaceholderProps {
+  businessClass: 'foodtruck' | 'värdshus';
+  widthPx: number;
+  insets: PanelInsets;
+}
+
+const PLACEHOLDER_LABELS: Record<PlaceholderProps['businessClass'], {
+  name: string;
+  waitingFor: string;
+}> = {
+  foodtruck: {
+    name: 'Food truck',
+    waitingFor:
+      'ORDER 112 §4 — vagn som bakvägg, luckan som öppning, kön på gatan som scen'
+  },
+  värdshus: {
+    name: 'Värdshuset',
+    waitingFor:
+      'SD-003 §4 följdorder — dygnsstruktur, gäster som stannar över, frukost'
+  }
+};
+
+function UnbuiltShapeholder({ businessClass, widthPx, insets }: PlaceholderProps) {
+  const info = PLACEHOLDER_LABELS[businessClass];
+  return (
+    <div
+      data-dollhouse-frame
+      data-placeholder-business={businessClass}
+      style={{
+        position: 'absolute',
+        inset: 0,
+        zIndex: 5,
+        background: '#1a1815',
+        pointerEvents: 'none',
+        paddingLeft: insets.left,
+        paddingRight: insets.right,
+        boxSizing: 'border-box',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+    >
+      <div
+        style={{
+          width: widthPx,
+          height: '100%',
+          border: '1px dashed #4a453d',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: '#8a836e',
+          fontFamily: 'system-ui, sans-serif',
+          padding: '48px',
+          textAlign: 'center',
+          gap: 12
+        }}
+      >
+        <div
+          style={{
+            fontSize: 12,
+            letterSpacing: 2,
+            textTransform: 'uppercase',
+            opacity: 0.6
+          }}
+        >
+          Skepnad ej byggd
+        </div>
+        <div style={{ fontSize: 42, letterSpacing: 3, color: '#f0e8d4' }}>
+          {info.name}
+        </div>
+        <div style={{ fontSize: 16, maxWidth: 640, lineHeight: 1.5 }}>
+          {info.waitingFor}
+        </div>
+        <div style={{ fontSize: 12, opacity: 0.5, marginTop: 16 }}>
+          scene {widthPx} px (viewport − {Math.round(insets.left)} vä − {Math.round(insets.right)} hö)
+        </div>
+      </div>
+    </div>
   );
 }

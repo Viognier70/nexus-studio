@@ -283,7 +283,14 @@ function StrategicShell() {
         <MorningActivityPanel />
         <EventStreamPanel />
         <InstrumentsPanel />
-        <RoomCardPanel />
+        {/*
+          ORDER 112 DoD 1 (delimplementation): RoomCardPanel renderas inte
+          i nivå 4 när dockskåpet är aktivt. Panelen byggdes i ORDER 085
+          som omväg runt att rummet inte kunde visa uttryck; dockskåpet
+          tar bort det skälet. Koden behålls — panelen visas fortfarande
+          i nivå 1-3 samt när dollhouse=1 inte är satt.
+        */}
+        {!(harnessParams.dollhouse && atLevel4) && <RoomCardPanel />}
       </PanelColumn>
       <MorningMenuPanel />
       <PlatesRemainingPanel />
