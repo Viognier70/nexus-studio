@@ -93,6 +93,12 @@ interface ParsedParams {
   // permanent koppling; hör till dev-verktygsraden tills en riktig
   // ny-spel-flow bygg (senare order).
   business: 'restaurant' | 'foodtruck' | 'värdshus' | null;
+  // ORDER 113 DoD 7/8 — dev-only seed för food truck-benchmark. När satt
+  // och business=foodtruck, injicerar SimulationProvider N fake "waiting"-
+  // gäster i initial-state:t så skärmdumpen och fps-mätningen har en
+  // fylld kö att arbeta med utan att simulera fram organiska arrivals.
+  // `null` = ingen seed. Kräver playtest=1.
+  foodtruckSeed: number | null;
 }
 
 function parseHash(): ParsedParams {
@@ -105,7 +111,8 @@ function parseHash(): ParsedParams {
       calibrationQuad: false,
       playtest: false,
       dollhouse: false,
-      business: null
+      business: null,
+      foodtruckSeed: null
     };
   }
   const hash = window.location.hash.replace('#', '');
@@ -130,7 +137,16 @@ function parseHash(): ParsedParams {
   // business= dev-shortcut kräver också playtest=1 — vanliga URL:er
   // ska inte kunna flippa verksamhetsklassen av misstag.
   const business = parseBusiness(playtest ? params.get('business') ?? null : null);
-  return { period, camera, roi, poseId, calibrationQuad, playtest, dollhouse, business };
+  const foodtruckSeed = playtest ? parseFoodtruckSeed(params.get('foodtruckSeed') ?? null) : null;
+  return { period, camera, roi, poseId, calibrationQuad, playtest, dollhouse, business, foodtruckSeed };
+}
+
+function parseFoodtruckSeed(s: string | null): number | null {
+  if (!s) return null;
+  const n = Number.parseInt(s, 10);
+  if (!Number.isFinite(n) || n <= 0) return null;
+  // Cap at capacity ceiling so a runaway URL doesn't spawn thousands.
+  return Math.min(n, 30);
 }
 
 function parseBusiness(s: string | null): 'restaurant' | 'foodtruck' | 'värdshus' | null {

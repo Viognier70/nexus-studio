@@ -8,7 +8,7 @@ import {
   type ReactNode,
   type Dispatch
 } from 'react';
-import type { SimAction, SimulationState } from '../types';
+import type { Guest, SimAction, SimulationState } from '../types';
 import { DEFAULT_SEED, makeInitialState } from './model';
 import { reducer } from './reducer';
 import { harnessParams } from '../testHarness/urlParams';
@@ -34,6 +34,53 @@ function applyDevBusinessOverride(state: SimulationState): SimulationState {
   };
 }
 
+// ORDER 113 DoD 7/8 — dev-only seed för food truck-benchmark. Aktiveras
+// med `#playtest=1&business=foodtruck&foodtruckSeed=<n>`. Injicerar N
+// fake "waiting"-gäster i initial-state:t så benchmark-scripten
+// (screenshot + fps-mätning) inte behöver simulera fram en organisk kö
+// för att få något att fotografera. Har ingen effekt utanför dev — vite
+// tree-shakar bort import.meta.env.DEV-grenar i produktionsbygget.
+function applyDevFoodtruckSeed(state: SimulationState): SimulationState {
+  const n = harnessParams.foodtruckSeed;
+  if (n === null || n <= 0) return state;
+  if (state.businessClass !== 'foodtruck') return state;
+  const now = state.simTime;
+  const fakeGuests: Guest[] = [];
+  const waitingIds: string[] = [];
+  for (let i = 0; i < n; i += 1) {
+    const id = `gst-bench-${i + 1}`;
+    fakeGuests.push({
+      id,
+      state: 'waiting',
+      satisfaction: 0.7,
+      seatIndex: null,
+      arrivalTime: now,
+      stateTime: now,
+      scenarioSource: false,
+      position: { x: 0, z: 0 },
+      targetPosition: { x: 0, z: 0 },
+      moveProgress: 1,
+      hadWelcomeDrink: false,
+      lastCheckbackAt: null,
+      walkAwayOnArrival: false,
+      stayingOvernight: false
+    });
+    waitingIds.push(id);
+  }
+  // Pausa sim-tickern (speed=0) så tick-lagret inte omedelbart flyttar
+  // gästerna från 'waiting' till 'ordering' via findFreeSeat (foodtruck
+  // routar waiting → ordering på första ticket eftersom layout.seats
+  // fortfarande är 16 default; setGuestSeated:s foodtruck-branch tar
+  // dem ur waitingIds). Ordermätningen mäter rig-fps och renderar
+  // scenen med kön intakt; ingen sim-progression behövs.
+  return {
+    ...state,
+    speed: 0,
+    guests: [...state.guests, ...fakeGuests],
+    waitingIds: [...state.waitingIds, ...waitingIds]
+  };
+}
+
 // ORDER 090 §5 — exported so the scene-mount smoke test can wrap
 // InteriorStaff / InteriorGuests in a hand-crafted state (one team
 // member + one guest) without ticking a real reducer forward. Not
@@ -51,7 +98,7 @@ const TICK_MS = 1000 / TICK_HZ;
 
 export function SimulationProvider({ children, seed = DEFAULT_SEED }: Props) {
   const [state, dispatch] = useReducer(reducer, undefined, () =>
-    applyDevBusinessOverride(makeInitialState(seed))
+    applyDevFoodtruckSeed(applyDevBusinessOverride(makeInitialState(seed)))
   );
   const speedRef = useRef(state.speed);
   speedRef.current = state.speed;

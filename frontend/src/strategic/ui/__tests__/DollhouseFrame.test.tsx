@@ -214,16 +214,20 @@ describe('DollhouseFrame — SD-003 §2 alt C (rev. 2, 2026-08-16)', () => {
   // Placeholder-fallback för icke-restaurant-skepnader (Vision Owner 2026-08-16)
   // ---------------------------------------------------------------------------
 
-  it('businessClass=foodtruck → placeholder (inte restaurang-skepnad)', () => {
+  it('businessClass=foodtruck → FoodtruckScene (ORDER 113, ersätter placeholder)', () => {
     const { container } = renderWithBusiness('foodtruck');
-    const placeholder = container.querySelector('[data-placeholder-business="foodtruck"]');
-    expect(placeholder).toBeTruthy();
+    // ORDER 113 §2 — den riktiga skepnaden. Ingen placeholder längre.
+    expect(container.querySelector('[data-placeholder-business]')).toBeNull();
     // Fokusrum-svg (bakvägg + passluckan) ska INTE finnas
     expect(container.querySelector('[data-opening="kok"]')).toBeNull();
-    // "Skepnad ej byggd"-markering syns
-    expect(container.textContent).toContain('Skepnad ej byggd');
-    expect(container.textContent).toContain('Food truck');
-    expect(container.textContent).toContain('ORDER 112 §4');
+    // FoodtruckScene renderas — vagn, lucka och personal i luckan syns
+    expect(container.querySelector('[data-foodtruck-scene]')).toBeTruthy();
+    expect(container.querySelector('[data-foodtruck-wagon]')).toBeTruthy();
+    expect(container.querySelector('[data-foodtruck-hatch]')).toBeTruthy();
+    expect(container.querySelector('[data-figure="staff-hatch"]')).toBeTruthy();
+    // "SKEPNAD EJ BYGGD" får inte läcka in i food truck-vägen (ORDER 113 DoD 1)
+    expect(container.textContent).not.toContain('SKEPNAD EJ BYGGD');
+    expect(container.textContent).not.toContain('Skepnad ej byggd');
   });
 
   it('businessClass=värdshus → placeholder med värdshus-specifik text', () => {

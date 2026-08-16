@@ -31,6 +31,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useSimState } from '../simulation/SimulationProvider';
+import { FoodtruckScene } from './foodtruck/FoodtruckScene';
 
 // SVG-scenen använder viewBox 2432×1080. Rendering skalar viewBox till
 // den css-storlek `<svg>` faktiskt får. Scenens CSS-bredd är beräknad
@@ -240,10 +241,22 @@ export function DollhouseFrame() {
   // och en placeholder visas för verksamheter vars skepnad inte är byggd
   // än. Riktig skepnad-per-klass hör till ORDER 112 §4 (food truck) och
   // följdordrar (Värdshuset).
-  if (sim.businessClass !== 'restaurant') {
+  // ORDER 113: food trucken har nu en riktig skepnad (FoodtruckScene).
+  // Restaurant → fokusrum (denna fils resterande JSX). Värdshus förblir
+  // placeholder tills egen skepnad byggs (SD-003 §4 följdorder).
+  if (sim.businessClass === 'foodtruck') {
+    return (
+      <FoodtruckScene
+        widthPx={widthPx}
+        leftInset={insets.left}
+        rightInset={insets.right}
+      />
+    );
+  }
+  if (sim.businessClass === 'värdshus') {
     return (
       <UnbuiltShapeholder
-        businessClass={sim.businessClass}
+        businessClass="värdshus"
         widthPx={widthPx}
         insets={insets}
       />
