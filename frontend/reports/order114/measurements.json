@@ -1,71 +1,31 @@
 {
   "scenePxWidth": 1216,
   "scenePxHeight": 1080,
-  "guestFigureCount": 13,
+  "guestFigureCount": 8,
   "figureRects": [
     {
       "id": "gst-bench-1",
       "archetype": "nattarbetaren",
-      "face": "nojd",
+      "face": "tacksam",
       "skinTone": "#7d5a3f",
-      "widthPx": 126,
-      "heightPx": 457.5
+      "widthPx": 148.5,
+      "heightPx": 460.4
     },
     {
       "id": "gst-bench-2",
       "archetype": "affarsgasten",
-      "face": "nojd",
+      "face": "tacksam",
       "skinTone": "#5a3d29",
-      "widthPx": 109,
-      "heightPx": 428.6
+      "widthPx": 109.4,
+      "heightPx": 431.3
     },
     {
       "id": "gst-bench-3",
       "archetype": "efter_skiftet",
-      "face": "nojd",
+      "face": "tacksam",
       "skinTone": "#f0d6b8",
-      "widthPx": 144.8,
-      "heightPx": 433.4
-    },
-    {
-      "id": "gst-bench-4",
-      "archetype": "turisten",
-      "face": "forvantansfull",
-      "skinTone": "#5a3d29",
-      "widthPx": 110.9,
-      "heightPx": 424.7
-    },
-    {
-      "id": "gst-bench-5",
-      "archetype": "stamgasten",
-      "face": "imponerad",
-      "skinTone": "#f0d6b8",
-      "widthPx": 104,
-      "heightPx": 414.8
-    },
-    {
-      "id": "gst-bench-6",
-      "archetype": "affarsgasten",
-      "face": "nojd",
-      "skinTone": "#e0be99",
-      "widthPx": 109,
-      "heightPx": 428.6
-    },
-    {
-      "id": "gst-bench-7",
-      "archetype": "efter_skiftet",
-      "face": "nojd",
-      "skinTone": "#c9a37b",
-      "widthPx": 144.8,
-      "heightPx": 433.4
-    },
-    {
-      "id": "gst-bench-8",
-      "archetype": "turisten",
-      "face": "forvantansfull",
-      "skinTone": "#5a3d29",
-      "widthPx": 110.9,
-      "heightPx": 424.7
+      "widthPx": 127.1,
+      "heightPx": 436.1
     },
     {
       "id": "gst-6",
@@ -80,7 +40,7 @@
       "archetype": "efter_skiftet",
       "face": "forvantansfull",
       "skinTone": "#a67c5c",
-      "widthPx": 136.8,
+      "widthPx": 119,
       "heightPx": 430.1
     },
     {
@@ -88,7 +48,7 @@
       "archetype": "efter_skiftet",
       "face": "forvantansfull",
       "skinTone": "#c9a37b",
-      "widthPx": 194.2,
+      "widthPx": 168.8,
       "heightPx": 438.7
     },
     {
@@ -96,7 +56,7 @@
       "archetype": "affarsgasten",
       "face": "forvantansfull",
       "skinTone": "#e0be99",
-      "widthPx": 163.6,
+      "widthPx": 163.7,
       "heightPx": 436.9
     },
     {
@@ -104,14 +64,14 @@
       "archetype": "turisten",
       "face": "nyfiken",
       "skinTone": "#a67c5c",
-      "widthPx": 160.3,
+      "widthPx": 160.2,
       "heightPx": 439.5
     }
   ],
-  "figureWidthMin": 104,
-  "figureWidthMax": 194.2,
-  "figureWidthMean": 132.7,
-  "figuresAt140pxThreshold": 5,
-  "figuresAt120pxLenience": 7,
+  "figureWidthMin": 109.4,
+  "figureWidthMax": 168.8,
+  "figureWidthMean": 138.4,
+  "figuresAt140pxThreshold": 4,
+  "figuresAt120pxLenience": 5,
   "figuresPer140px": 8
 }

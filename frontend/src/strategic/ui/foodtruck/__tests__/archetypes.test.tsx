@@ -20,7 +20,6 @@ import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { render, type RenderResult } from '@testing-library/react';
-import type { ReactNode } from 'react';
 import { FoodtruckScene } from '../FoodtruckScene';
 import { SimStateCtx } from '../../../simulation/SimulationProvider';
 import { makeInitialState } from '../../../simulation/model';

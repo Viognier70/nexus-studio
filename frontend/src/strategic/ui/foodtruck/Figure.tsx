@@ -313,13 +313,22 @@ export interface FigureProps {
 // komponentens layer-ordning från prototypen (rad 114-148).
 export function Figure({ pose, x, y, scale, variant, id, archetype, face, faceKey, skinTone }: FigureProps) {
   const p = pose;
-  // Arketyp-kroppsskala tillämpas som multiplikativ transform ovanpå
-  // scale-argumentet — så att FoodtruckScene:s QUEUE_FIGURE_SCALE
-  // fortsätter styra basen och arketyp lägger på breddad/kortad kropp.
-  const bodyH = archetype?.body.heightMult ?? 1;
-  const bodyW = archetype?.body.widthMult ?? 1;
-  const effectiveScaleX = scale * bodyW;
-  const effectiveScaleY = scale * bodyH;
+  // ORDER 114 rättning (2026-08-17) — UNIFORM scale bara.
+  // Tidigare version applicerade `scale(scale * widthMult, scale *
+  // heightMult)` non-uniformt, vilket bröt prototypens proportioner:
+  // efter_skiftets widthMult=1.15 → head 62 SVG-units bred (istället
+  // för 54) → head "nästan lika brett som kroppen" (Vision Owner-fynd
+  // 2026-08-17 mot faces.png). Prototypens Guest.tsx rad 115 använder
+  // uniform `scale(${scale})`.
+  //
+  // Nu: uniform skala med heightMult som overall-storleks-modifikator
+  // (barnet 0.72 = kort figur, nattarbetaren 1.05 = lång figur). Alla
+  // proportioner bevaras. widthMult behålls i archetype-data men rör
+  // INTE outer-scale längre — reserverad för framtida torso-only-width-
+  // variation (fat/thin) via t.ex. torso-rect-override, ej aspect-
+  // brytande scale-hack.
+  const heightMult = archetype?.body.heightMult ?? 1;
+  const uniformScale = scale * heightMult;
   const skin = skinTone ?? RIG_GROUND;
   return (
     <g
@@ -329,7 +338,7 @@ export function Figure({ pose, x, y, scale, variant, id, archetype, face, faceKe
       data-archetype={archetype?.id ?? ''}
       data-face={faceKey ?? ''}
       data-skin-tone={skinTone ?? ''}
-      transform={`translate(${x},${y}) scale(${effectiveScaleX}, ${effectiveScaleY})`}
+      transform={`translate(${x},${y}) scale(${uniformScale})`}
     >
       <g transform={`translate(0,${-122 + p.hipDrop}) rotate(${-p.lean})`}>
         {/* Bakre lem först — z-ordning så främre lem täcker */}

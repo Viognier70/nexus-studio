@@ -60,28 +60,36 @@ const HATCH_Y = WAGON_TOP + 120;
 // gäst. Slot 0 är närmast luckan, resten sträcker sig åt vänster.
 // ORDER 114 Steg 2 DoD 3 — skalning kalibrerad mot faktiskt CSS-bredd.
 //
+// **Rättad 2026-08-17** efter VO-fynd mot faces.png:
+//   1. Non-uniform x/y-skala i Figure.tsx bröt proportionerna (fixat
+//      i Figure.tsx — uniform scale bara).
+//   2. QUEUE_SLOT_SPACING = 280 räckte inte — figurbredder efter
+//      heightMult + arm-extension når 260-300 SVG-units → överlapp.
+//   3. Accent-remsan (röd halsring) syntes som obruten linje över
+//      alla figurer — konsekvens av överlapp (löser med spacing-fix).
+//
 // **Fynd per §6:** 140 CSS-px per figur kan INTE nås vid nuvarande
 // scen-bredd (1216 CSS-px när panelerna tar sitt) utan att figurerna
 // dominerar hela vertikal-axeln. Figur-aspect torso 62 : totalhöjd 250
-// betyder 140 px bred = 560 px hög = 52% av scen-höjden. Vid scale 3.5
-// mättes figurerna till 580-640 px höga och gav en skärmdump där
-// personerna trängde bort vagnen. Ordertexten §6 vill att detta
-// rapporteras rakt, inte lösas genom att krympa figurerna.
+// betyder 140 px bred = 560 px hög = 52% av scen-höjden. Ordertexten
+// §6 vill att detta rapporteras rakt, inte lösas genom att krympa
+// figurerna.
 //
-// Ansikts-läsbarhet nås ändå: ansiktsrutan är 54 SVG-units bred.
-// Vid scale 2.5 × CSS-ratio 0.5 = ~68 CSS-px ansikte, ögon på ~10 px.
-// Läsbara uttryck på det avstånd spelaren tittar på skärmen.
-//
-// **Beslut:** scale 2.5 som praktisk läsbarhetströskel. 140-px-DoD:n
-// får ett fynd i mätningen (reports/order114/measurements.json):
-// figurbredd ~77 CSS-px, ansiktsyta ~68 CSS-px, uttryck urskiljbara.
-// Full 140 CSS-px kräver bredare scen (mindre paneler eller större
-// viewport) — hänvisas till följdorder om Vision Owner bekräftar krav.
+// **Beslut:** scale 2.5 som praktisk läsbarhetströskel. Ansikts-yta
+// ~68 CSS-px, ögon på ~10 px — läsbara uttryck. Full 140 CSS-px kräver
+// bredare scen (följdorder).
 const QUEUE_FIGURE_SCALE = 2.5;
-// Slot-spacing: figur ~62×2.5=155 SVG-units bred. 280 units spacing
-// ger säker luft. 2432/280 ≈ 8-9 kö-slots får plats.
-const QUEUE_SLOT_SPACING = 280;
-const QUEUE_FIRST_X = WAGON_LEFT + WAGON_WIDTH * 0.35;  // första slotten
+// Slot-spacing måste tåla figurens FULLA bredd inklusive:
+//   * torso 62 SVG × scale 2.5 = 155 units
+//   * heightMult 1.05 (nattarbetaren) = +5%
+//   * arm-extension från walkPose/idlePose (armFar sticker ut ±20° ×
+//     armlängd 48 ≈ 30 units)
+//   * marginal så figurerna inte råkar tangera vid pose-frame-övergång
+// Total ≈ 155 + 30 + marginal → 300 units minimum för att undvika
+// visuell överlappning. 400 units ger tydlig luft mellan figurer och
+// bryter den obrutna accent-band-linjen VO flaggade.
+const QUEUE_SLOT_SPACING = 400;
+const QUEUE_FIRST_X = WAGON_LEFT + WAGON_WIDTH * 0.30;  // första slotten
 const QUEUE_Y = STREET_TOP + 380;                        // figurernas fot-y
 
 // Karta i nedre högra hörnet (§2.6 + DoD 9). 180 px är golvet under
@@ -123,15 +131,19 @@ const STAFF_SCALE = 1.6;
 const COUNTER_X = HATCH_X + HATCH_W / 2;
 const COUNTER_Y = QUEUE_Y;
 // Sido-offset så flera ordering/paying-gäster inte överlappar
-// vid luckan när staff-pipelinen serverar flera parallellt.
-// Skalat proportionellt mot QUEUE_FIGURE_SCALE 2.5.
-const COUNTER_STACK_OFFSET = 160;
-// Arriving-fältet — vänster om kö-back.
-const ARRIVING_START_X = 140;
-const ARRIVING_SPACING = 260;
+// vid luckan. Skalat proportionellt mot QUEUE_FIGURE_SCALE 2.5 +
+// samma marginal-hänsyn som QUEUE_SLOT_SPACING (200 = halva slot-
+// spacing, räcker eftersom counter-figurer inte gungar med
+// walkPose amp).
+const COUNTER_STACK_OFFSET = 200;
+// Arriving-fältet — vänster om kö-back. Spacing skalat proportionellt
+// mot QUEUE_SLOT_SPACING så överlapp inte uppstår mellan arriving-
+// figurer i motion.
+const ARRIVING_START_X = 100;
+const ARRIVING_SPACING = 380;
 // Leaving-fältet — höger om vagnen, gående ut.
-const LEAVING_START_X = SCENE_VIEWBOX_W - 200;
-const LEAVING_SPACING = 260;
+const LEAVING_START_X = SCENE_VIEWBOX_W - 220;
+const LEAVING_SPACING = 380;
 
 // -----------------------------------------------------------------------------
 // Animation-loop. requestAnimationFrame + tidsvariabel som pumpas till
@@ -342,10 +354,12 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
 
   // Sido-offset-hjälp för counter-stacken: 0, -1, +1, -2, +2, ... så
   // första gästen står centrerad, resten pendlar ut åt sidorna.
+  // Counter-stack sprider figurer TILL HÖGER först. Väster sida (mot
+  // kön) undviks aktivt så counter-figurer inte överlappar kö-slot 0.
+  // Ordning: 0 (mitt), +1 höger, +2 höger, +3 höger, ... — pendlar
+  // aldrig åt vänster där kön står.
   const counterOffset = (idx: number): number => {
-    if (idx === 0) return 0;
-    const step = Math.ceil(idx / 2);
-    return idx % 2 === 1 ? -step * COUNTER_STACK_OFFSET : step * COUNTER_STACK_OFFSET;
+    return idx * COUNTER_STACK_OFFSET;
   };
 
   for (const g of sim.guests) {

@@ -67,12 +67,14 @@ try {
   const page = await ctx.newPage();
   page.on('pageerror', (e) => console.error('[page error]', e.message));
 
-  // foodtruckSeed=8 fyller kön (8 gäster). speed=0 gör att scenen står
-  // still — perfekt för mätning + skärmdump. Vi tickar sedan några
-  // sim-sekunder så några gäster hinner byta state (ordering/paying)
-  // för visuell variation i skärmdumpen.
+  // foodtruckSeed=3 — färre gäster ger tydligare skärmdump utan
+  // överlapp. Tidigare version med seed=8 producerade 13 figurer i
+  // scenen vilket sprängde slot-budget (2432/400 = 6 slot-positioner
+  // synliga; överflöd renderades vid negativ X och överlappade
+  // varandra). Med seed=3 + några organiska arrivals landar totalt
+  // 4-6 figurer, alla inom synlig scen-yta.
   await page.goto(
-    `${url}/#playtest=1&business=foodtruck&dollhouse=1&foodtruckSeed=8`,
+    `${url}/#playtest=1&business=foodtruck&dollhouse=1&foodtruckSeed=3`,
     { waitUntil: 'load' }
   );
   await page.waitForFunction(
