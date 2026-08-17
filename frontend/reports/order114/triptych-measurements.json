@@ -1,0 +1,136 @@
+{
+  "inventory": [
+    {
+      "id": "gst-bench-2",
+      "archetype": "affarsgasten",
+      "face": "besviken",
+      "skinTone": "#5a3d29",
+      "rect": {
+        "x": 1347.30322265625,
+        "y": 385.54425048828125,
+        "width": 229.48388671875,
+        "height": 433.04638671875,
+        "top": 385.54425048828125,
+        "right": 1576.787109375,
+        "bottom": 818.5906372070312,
+        "left": 1347.30322265625
+      }
+    },
+    {
+      "id": "gst-bench-3",
+      "archetype": "efter_skiftet",
+      "face": "tacksam",
+      "skinTone": "#f0d6b8",
+      "rect": {
+        "x": 902.4083862304688,
+        "y": 386.94964599609375,
+        "width": 124.46234130859375,
+        "height": 416.2540283203125,
+        "top": 386.94964599609375,
+        "right": 1026.8707275390625,
+        "bottom": 803.2036743164062,
+        "left": 902.4083862304688
+      }
+    },
+    {
+      "id": "gst-6",
+      "archetype": "turisten",
+      "face": "forvantansfull",
+      "skinTone": "#7d5a3f",
+      "rect": {
+        "x": 913.2520141601562,
+        "y": 390.94842529296875,
+        "width": 109.60693359375,
+        "height": 411.78173828125,
+        "top": 390.94842529296875,
+        "right": 1022.8589477539062,
+        "bottom": 802.7301635742188,
+        "left": 913.2520141601562
+      }
+    },
+    {
+      "id": "gst-7",
+      "archetype": "efter_skiftet",
+      "face": "nojd",
+      "skinTone": "#a67c5c",
+      "rect": {
+        "x": 1041.703125,
+        "y": 386.128173828125,
+        "width": 119.6968994140625,
+        "height": 415.62249755859375,
+        "top": 386.128173828125,
+        "right": 1161.4000244140625,
+        "bottom": 801.7506713867188,
+        "left": 1041.703125
+      }
+    },
+    {
+      "id": "gst-8",
+      "archetype": "efter_skiftet",
+      "face": "nojd",
+      "skinTone": "#c9a37b",
+      "rect": {
+        "x": 1180.273193359375,
+        "y": 386.07720947265625,
+        "width": 116.193603515625,
+        "height": 414.60516357421875,
+        "top": 386.07720947265625,
+        "right": 1296.466796875,
+        "bottom": 800.682373046875,
+        "left": 1180.273193359375
+      }
+    },
+    {
+      "id": "gst-9",
+      "archetype": "affarsgasten",
+      "face": "nojd",
+      "skinTone": "#e0be99",
+      "rect": {
+        "x": 1329.272216796875,
+        "y": 392.575927734375,
+        "width": 107.35693359375,
+        "height": 408.63702392578125,
+        "top": 392.575927734375,
+        "right": 1436.629150390625,
+        "bottom": 801.2129516601562,
+        "left": 1329.272216796875
+      }
+    },
+    {
+      "id": "gst-10",
+      "archetype": "turisten",
+      "face": "forvantansfull",
+      "skinTone": "#a67c5c",
+      "rect": {
+        "x": 1460.5477294921875,
+        "y": 387.52166748046875,
+        "width": 108.8157958984375,
+        "height": 411.7921142578125,
+        "top": 387.52166748046875,
+        "right": 1569.363525390625,
+        "bottom": 799.3137817382812,
+        "left": 1460.5477294921875
+      }
+    }
+  ],
+  "selected": [
+    {
+      "id": "gst-bench-2",
+      "archetype": "affarsgasten",
+      "face": "besviken",
+      "skinTone": "#5a3d29"
+    },
+    {
+      "id": "gst-bench-3",
+      "archetype": "efter_skiftet",
+      "face": "tacksam",
+      "skinTone": "#f0d6b8"
+    },
+    {
+      "id": "gst-6",
+      "archetype": "turisten",
+      "face": "forvantansfull",
+      "skinTone": "#7d5a3f"
+    }
+  ]
+}

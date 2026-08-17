@@ -59,64 +59,123 @@ function Leg({ a, fill }: LegProps) {
 // Face — renderar FaceParams inuti huvudet
 // -----------------------------------------------------------------------------
 //
-// Face-geometri kopierad från StaffFace.dc.html. Prototypens tabell
-// har staff-vokabulär; VÄRDENA passas in via GuestFaces.GUEST_FACES
-// (10 författade uttryck per ORDER 114 §3.2).
+// **Omskriven 2026-08-17 (rev 3)** — VO-fynd: munnen syntes inte,
+// accent-remsan låg där munnen skulle vara. Rot-orsak: tidigare Face
+// hade origo på ansikts-mitten (translate 0,-40) och mun-y=-20 =
+// 17% från ansikts-toppen. Prototypens StaffFace.dc.html-mun sitter
+// vid `bottom: 26 px` av en 132-hög box = 80% ner från toppen.
 //
-// Origin: ansikts-lokalt koordinat-system centrerat på näsan.
-// Y-axel växer NED (SVG-konvention). Params.browTop, params.eyeTop
-// är i denna lokala frame. Skalas av föräldrar (huvud-rotation +
-// figur-scale).
+// Face renderas nu i prototypens **exakta 118×132 px koordinat-
+// system** och skalas via wrapper-transform till vår 54×58 ansiktsruta.
+// Alla FaceParams (browTopL, eyeTopL, mouthW, mouthRot) tolkas direkt
+// som prototype's `top: X px` / `bottom: X px` — inga koordinat-hack.
+//
+// Face-origo är TOPP-VÄNSTER av ansiktsrutan (Head-frame y=-70, x=-27).
+// Skala: 54/118 ≈ 0.458 (x), 58/132 ≈ 0.439 (y).
+
+const FACE_PROTO_W = 118;   // prototype StaffFace.dc.html width
+const FACE_PROTO_H = 132;   // prototype StaffFace.dc.html height
+const FACE_TARGET_W = 54;   // vår ansikts-rutas bredd (från Head)
+const FACE_TARGET_H = 58;   // vår ansikts-rutas höjd
 
 interface FaceProps {
   params: FaceParams;
-  ink?: string;   // linje-färg (defaults RIG_INK)
+  ink?: string;
 }
 
 function Face({ params: p, ink = RIG_INK }: FaceProps) {
-  const eyeXL = -13;
-  const eyeXR = 13;
-  const mouthY = -20;
+  const SX = FACE_TARGET_W / FACE_PROTO_W;
+  const SY = FACE_TARGET_H / FACE_PROTO_H;
   const mouthHalfW = p.mouthW / 2;
+  const mouthCenterX = FACE_PROTO_W / 2;
+
+  // Ögonbryn — prototypens CSS: `left: 21px width: 16px top: browTopL`.
+  // Ögonbrynet är centrerat vid x = 21 + 8 = 29 för vänster ögonbryn,
+  // och x = 118-21-8 = 89 för höger.
+  const browXL = 29;
+  const browXR = FACE_PROTO_W - 29;
+
+  // Ögon — prototypens CSS: `left: 24px width: 12px top: eyeTopL h: eyeHL`.
+  // Vi ritar rect direkt vid samma koordinater.
+
   return (
-    <g data-face-inner>
-      {/* Ögonbryn */}
-      <g transform={`translate(${eyeXL}, ${-p.browTopL}) rotate(${p.browRotL})`}>
-        <rect x={-10} y={-2} width={20} height={4} fill={ink} />
+    <g data-face-inner transform={`scale(${SX}, ${SY})`}>
+      {/* Ögonbryn — rotera kring bryn-mittpunkt så roterade bryn inte
+          "vandrar" bort från sin plats. */}
+      <g transform={`rotate(${p.browRotL}, ${browXL}, ${p.browTopL + 2.5})`}>
+        <rect x={browXL - 8} y={p.browTopL} width={16} height={5} fill={ink} />
       </g>
-      <g transform={`translate(${eyeXR}, ${-p.browTopR}) rotate(${p.browRotR})`}>
-        <rect x={-10} y={-2} width={20} height={4} fill={ink} />
+      <g transform={`rotate(${p.browRotR}, ${browXR}, ${p.browTopR + 2.5})`}>
+        <rect x={browXR - 8} y={p.browTopR} width={16} height={5} fill={ink} />
       </g>
-      {/* Ögon — höjd anger öppenhet (större = vidöppen, mindre = trött) */}
-      <rect x={eyeXL - 4} y={-p.eyeTopL} width={8} height={p.eyeHL} fill={ink} />
-      <rect x={eyeXR - 4} y={-p.eyeTopR} width={8} height={p.eyeHR} fill={ink} />
-      {/* Mun — form varierar per MouthKind */}
-      <g transform={`translate(0, ${mouthY}) rotate(${p.mouthRot})`}>
-        {p.mouth === 'line' && (
-          <rect x={-mouthHalfW} y={-1} width={p.mouthW} height={3} fill={ink} />
-        )}
-        {p.mouth === 'smile' && (
-          <path
-            d={`M ${-mouthHalfW} 0 Q 0 ${p.mouthW * 0.25} ${mouthHalfW} 0`}
-            fill="none" stroke={ink} strokeWidth={3} strokeLinecap="round"
-          />
-        )}
-        {p.mouth === 'frown' && (
-          <path
-            d={`M ${-mouthHalfW} 4 Q 0 ${-p.mouthW * 0.2} ${mouthHalfW} 4`}
-            fill="none" stroke={ink} strokeWidth={3} strokeLinecap="round"
-          />
-        )}
-        {p.mouth === 'box' && (
-          <rect x={-mouthHalfW} y={-3} width={p.mouthW} height={7} fill={ink} />
-        )}
-        {p.mouth === 'o' && (
-          <ellipse cx={0} cy={0} rx={mouthHalfW * 0.6} ry={mouthHalfW * 0.5} fill={ink} />
-        )}
-      </g>
-      {/* Svettdroppe (generad) */}
+      {/* Ögon — direkt-mappat från prototype (left:24 w:12, right:24 w:12) */}
+      <rect x={24} y={p.eyeTopL} width={12} height={p.eyeHL} fill={ink} />
+      <rect x={FACE_PROTO_W - 24 - 12} y={p.eyeTopR} width={12} height={p.eyeHR} fill={ink} />
+      {/* Mun — form + position varierar per MouthKind. Alla mun-formar
+          positionerade från BOTTEN av 132-frame (matchar prototypens
+          `bottom: N px` convention). Prototype-värden:
+            line:  bottom 26, height 5
+            smile: bottom 22, height 13
+            box:   bottom 20, height 16
+            o:     bottom 20, height 22
+          Munnen sitter ~75-80% ner från toppen — kritiskt för läsbarhet. */}
+      {p.mouth === 'line' && (
+        <g transform={`translate(${mouthCenterX}, ${FACE_PROTO_H - 26 - 2.5}) rotate(${p.mouthRot})`}>
+          <rect x={-mouthHalfW} y={0} width={p.mouthW} height={5} fill={ink} />
+        </g>
+      )}
+      {p.mouth === 'smile' && (
+        // Prototype: `bottom: 22 height: 13` med border-bottom+left+right
+        // (en "kopp"-form). Vi ritar det som Path för renare kant.
+        <path
+          d={`M ${mouthCenterX - mouthHalfW} ${FACE_PROTO_H - 22 - 13}
+              L ${mouthCenterX - mouthHalfW} ${FACE_PROTO_H - 22}
+              L ${mouthCenterX + mouthHalfW} ${FACE_PROTO_H - 22}
+              L ${mouthCenterX + mouthHalfW} ${FACE_PROTO_H - 22 - 13}`}
+          fill="none"
+          stroke={ink}
+          strokeWidth={5}
+          strokeLinecap="butt"
+          strokeLinejoin="miter"
+        />
+      )}
+      {p.mouth === 'frown' && (
+        // Spegel av smile — upp-och-ned "kopp" ("U" istället för "∩").
+        <path
+          d={`M ${mouthCenterX - mouthHalfW} ${FACE_PROTO_H - 22}
+              L ${mouthCenterX - mouthHalfW} ${FACE_PROTO_H - 22 - 13}
+              L ${mouthCenterX + mouthHalfW} ${FACE_PROTO_H - 22 - 13}
+              L ${mouthCenterX + mouthHalfW} ${FACE_PROTO_H - 22}`}
+          fill="none"
+          stroke={ink}
+          strokeWidth={5}
+          strokeLinecap="butt"
+          strokeLinejoin="miter"
+        />
+      )}
+      {p.mouth === 'box' && (
+        <rect
+          x={mouthCenterX - mouthHalfW}
+          y={FACE_PROTO_H - 20 - 16}
+          width={p.mouthW}
+          height={16}
+          fill="none"
+          stroke={ink}
+          strokeWidth={5}
+        />
+      )}
+      {p.mouth === 'o' && (
+        <rect
+          x={mouthCenterX - 12}
+          y={FACE_PROTO_H - 20 - 22}
+          width={24}
+          height={22}
+          fill={ink}
+        />
+      )}
+      {/* Svettdroppe (generad) — höger-topp per prototype (right:8 top:20). */}
       {p.drop && (
-        <ellipse cx={-24} cy={-22} rx={3} ry={5} fill={ink} opacity={0.6} />
+        <rect x={FACE_PROTO_W - 8 - 9} y={20} width={9} height={16} fill={RIG_ACCENT} />
       )}
     </g>
   );
@@ -278,11 +337,13 @@ function Head({ headAngle, mouth, variant, face, headTopping, skinTone }: HeadPr
       )}
       {/* Öra */}
       <rect x={17} y={-48} width={8} height={10} fill={RIG_INK} />
-      {/* Ansiktsuttryck — OM face passas in ritas den vid mitten av
-          ansiktsrutan; annars fall tillbaka på gammal mun-höjd-baserad
-          rendering (bakåtkompat). */}
+      {/* Ansiktsuttryck — OM face passas in ritas den från TOPP-VÄNSTER
+          av ansiktsrutan (x=-27, y=-70 i Head-frame) så prototypens
+          top/bottom-koordinater mappar direkt. Face-komponenten skalar
+          internt från prototypens 118×132-frame till vår 54×58 ruta.
+          Utan face: gammal mun-höjd-baserad rendering (bakåtkompat). */}
       {face !== undefined ? (
-        <g transform="translate(0, -40)">
+        <g transform="translate(-27, -70)">
           <Face params={face} />
         </g>
       ) : (
