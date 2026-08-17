@@ -59,22 +59,29 @@ const HATCH_Y = WAGON_TOP + 120;
 
 // Kö-slots — där gästerna står framför luckan. En slot per köande
 // gäst. Slot 0 är närmast luckan, resten sträcker sig åt vänster.
-// ORDER 114 Steg 2 DoD 3 — skalning kalibrerad mot faktiskt CSS-bredd.
+// ORDER 114 Steg 2 DoD 3 — skalning kalibrerad mot wagon-geometrin.
 //
-// **Rättad 2026-08-17 (rev 2)** efter VO-fynd mot faces.png:
-//   Härleder ALLA positions-mått ur `QUEUE_FIGURE_SCALE` +
-//   `RIG_PROTO_MAX_WIDTH_AT_SCALE_1` (definierad i rig.ts från
-//   prototypens uppmätta geometri). Inga hårdkodade pixel-värden
-//   för spacing/offset — ändras scale i framtiden följer allt annat
-//   automatiskt. Tidigare buggen "överlappande figurer" berodde på att
-//   QUEUE_SLOT_SPACING satts numeriskt (400) medan scale bumpades
-//   från 1.05 → 2.5 utan att spacing följde med.
+// **Rättad 2026-08-17 (rev 5)** efter VO-fynd mot faces.png:
+//   VO: "Gästen står framför vagnen och täcker luckan. Benen fortsätter
+//   under vagnens underkant. Kontrollera y-basen för kö- och order-
+//   positioner mot vagnens geometri."
 //
-// **Fynd per §6 (kvarstår):** 140 CSS-px per figur kan INTE nås vid
-// nuvarande scen-bredd (1216 CSS-px). Figur-aspect torso 62 : totalhöjd
-// 316 betyder 140 CSS-px bred = 630 CSS-px hög = 58% av scen-höjden.
-// Full 140 CSS-px kräver bredare scen (följdorder).
-const QUEUE_FIGURE_SCALE = 2.5;
+// Utredning: vid scale 2.5 var figuren 790 SVG-units hög (316 × 2.5),
+// medan wagon-höjden var 400 units. Figuren var **2× wagons höjd** →
+// omöjligt att stå framför utan att täcka den. Face-läsbarhet hade
+// prioriterats utan att kalibreras mot wagon-proportioner.
+//
+// **Ny kalibrering (scale 2.0):**
+//   * Figur-höjd: 316 × 2.0 = 632 units
+//   * Foot vid QUEUE_Y = 1020 → world-y 1044 (på gatan, under STREET_BOTTOM 1080)
+//   * Head-top-with-topping vid world-y 1020 - 314*2 = 392 (INUTI hatch 340-620) ✓
+//   * Face-region vid world-y 412-528 (helt inuti hatch) ✓
+//   * Face-bredd i CSS-px: 54 * 2.0 * 0.5 (CSS-ratio) = 54 CSS-px — läsbart
+//   * Ögon-bredd i CSS-px: 12 * 0.457 (Face-inner-SX) * 2.0 * 0.5 = 5.5 CSS-px
+//
+// Härleder ALLA positions-mått ur QUEUE_FIGURE_SCALE — spacing följer
+// automatiskt (rig.ts:RIG_PROTO_MAX_WIDTH_AT_SCALE_1).
+const QUEUE_FIGURE_SCALE = 2.0;
 
 // **Härledda spacing-konstanter** — allt skalas automatiskt med
 // `QUEUE_FIGURE_SCALE`.
@@ -100,13 +107,16 @@ const MAP_HEIGHT = 220;
 const MAP_MARGIN = 24;
 export const MAP_MIN_HEIGHT_PX = 180;
 
-// Personalens ansikte i luckan — mindre skala, en enda figur som
-// står stilla (idle-pose). ORDER 114 Steg 2 — bumpad till 1.6 så
-// luckans ansikte läses lika starkt som gäst-ansiktena (scale 2.5).
-// Y-position centrerad i luckan så personen står bakom counter.
+// Personalens ansikte i luckan — kalibrerad så att hela figuren får
+// plats INUTI hatch-öppningen (y=340-620, 280 units hög). Vid
+// STAFF_SCALE 0.85 blir total figur-höjd 316*0.85 = 269 units — nästan
+// exakt hatch-höjden. STAFF_Y = 607 placerar head-top vid y=340
+// (hatch-top) och feet vid y=617 (just innanför hatch-bottom).
+// Face-region hamnar vid y=348-398 (övre delen av hatch) — läses
+// som "personal-ansikte som tittar ut ur luckan".
 const STAFF_X = HATCH_X + HATCH_W / 2;
-const STAFF_Y = HATCH_Y + HATCH_H - 8;
-const STAFF_SCALE = 1.6;
+const STAFF_SCALE = 0.85;
+const STAFF_Y = HATCH_Y + Math.round(314 * STAFF_SCALE);  // = 340 + 267 = 607
 
 // ORDER 113 fel 2 — positioner för gäster i andra states än 'waiting'.
 // Före fel 2 renderade FoodtruckScene bara sim.waitingIds; gäster i

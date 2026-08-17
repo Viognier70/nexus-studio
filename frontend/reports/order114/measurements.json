@@ -8,70 +8,70 @@
       "archetype": "nattarbetaren",
       "face": "tacksam",
       "skinTone": "#7d5a3f",
-      "widthPx": 145.1,
-      "heightPx": 442.1
+      "widthPx": 116.1,
+      "heightPx": 353.7
     },
     {
       "id": "gst-bench-2",
       "archetype": "affarsgasten",
       "face": "tacksam",
       "skinTone": "#5a3d29",
-      "widthPx": 108.8,
-      "heightPx": 408.8
+      "widthPx": 87,
+      "heightPx": 327.1
     },
     {
       "id": "gst-bench-3",
       "archetype": "efter_skiftet",
       "face": "tacksam",
       "skinTone": "#f0d6b8",
-      "widthPx": 124.6,
-      "heightPx": 416.2
+      "widthPx": 99.7,
+      "heightPx": 333
     },
     {
       "id": "gst-6",
       "archetype": "turisten",
       "face": "nyfiken",
       "skinTone": "#7d5a3f",
-      "widthPx": 109.9,
-      "heightPx": 411.9
+      "widthPx": 87.9,
+      "heightPx": 329.5
     },
     {
       "id": "gst-7",
       "archetype": "efter_skiftet",
       "face": "forvantansfull",
       "skinTone": "#a67c5c",
-      "widthPx": 117.8,
-      "heightPx": 415.2
+      "widthPx": 94.2,
+      "heightPx": 332.2
     },
     {
       "id": "gst-8",
       "archetype": "efter_skiftet",
       "face": "forvantansfull",
       "skinTone": "#c9a37b",
-      "widthPx": 166.4,
-      "heightPx": 423.9
+      "widthPx": 133.1,
+      "heightPx": 339.1
     },
     {
       "id": "gst-9",
       "archetype": "affarsgasten",
       "face": "forvantansfull",
       "skinTone": "#e0be99",
-      "widthPx": 162,
-      "heightPx": 419.5
+      "widthPx": 129.6,
+      "heightPx": 335.6
     },
     {
       "id": "gst-10",
       "archetype": "turisten",
       "face": "nyfiken",
       "skinTone": "#a67c5c",
-      "widthPx": 157.9,
-      "heightPx": 424.5
+      "widthPx": 126.3,
+      "heightPx": 339.6
     }
   ],
-  "figureWidthMin": 108.8,
-  "figureWidthMax": 166.4,
-  "figureWidthMean": 136.6,
-  "figuresAt140pxThreshold": 4,
-  "figuresAt120pxLenience": 5,
+  "figureWidthMin": 87,
+  "figureWidthMax": 133.1,
+  "figureWidthMean": 109.2,
+  "figuresAt140pxThreshold": 0,
+  "figuresAt120pxLenience": 3,
   "figuresPer140px": 8
 }
