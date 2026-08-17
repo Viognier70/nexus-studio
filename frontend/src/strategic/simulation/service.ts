@@ -107,6 +107,19 @@ export function findFreeSeat(
   state: SimulationState,
   forScenarioGuest = false
 ): number | null {
+  // ORDER 113 fel 1 — verksamheter utan matsal har inga stolar att
+  // finna. Utan denna guard returnerar findFreeSeat en giltig index
+  // ur SEATS_DEFAULT (0..15) även för foodtruck, eftersom
+  // state.layout.seats fortfarande är 16 default. Det får arriving-tick
+  // (rad 162) och waiting-tick (rad 199) att alltid ta seat-vägen →
+  // setGuestSeated-genvägen skickar gästen till 'ordering' utan att
+  // sätta fot i waitingIds. Konsekvens: foodtruckens kö fylls aldrig,
+  // ORDER 111:s kögate + väder- och konkurrensmultiplikatorer gate:ar
+  // en tom port. Med guarden faller foodtruck-gäster in i else-branchen
+  // (rad 176) och pushas korrekt till waitingIds; staff-task-pipelinen
+  // (findTaskTarget → completeStaffTask 'greet'/'seat') tar dem sedan
+  // vidare till 'ordering'. Restaurant/Värdshus opåverkade.
+  if (!businessHasSeats(state.businessClass)) return null;
   const cap = isSeatedCapacity(state);
   // Scenario guests walk the response-specific preference list first.
   // A regular arrival got seat 4 before the party arrived? Try seat 5
@@ -420,6 +433,16 @@ function findTaskTarget(state: SimulationState, type: TaskType): string | null {
   switch (type) {
     case 'greet':
     case 'seat': {
+      // ORDER 113 fel 1 — foodtruck servar front-of-queue (FIFO).
+      // Utan denna gren skulle findTaskTarget bara leta efter arriving-
+      // gäster; foodtruck-gäster som redan pushats till waitingIds
+      // (via arriving-tick → findFreeSeat=null → else-branchen) skulle
+      // aldrig plockas upp. state.waitingIds[0] är front-of-queue —
+      // completeStaffTask('greet'/'seat') foodtruck-branchen filtrerar
+      // sedan bort den från waitingIds och sätter state='ordering'.
+      if (!businessHasSeats(state.businessClass) && state.waitingIds.length > 0) {
+        return state.waitingIds[0];
+      }
       const arriving = state.guests.find((g) => g.state === 'arriving' && g.moveProgress >= 1);
       return arriving?.id ?? null;
     }
