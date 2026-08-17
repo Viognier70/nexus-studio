@@ -347,6 +347,7 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
     face: FaceParams;
     faceKey: GuestFaceKey;
     skinTone: string;
+    facing: 1 | -1;   // -1 = titta höger (mot luckan), 1 = titta vänster (default figur-läge)
   }
   const positionedGuests: PositionedGuest[] = [];
   // Räknare per state-typ så flera gäster i samma tillstånd inte
@@ -381,6 +382,11 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
     let y: number;
     let basePose: Pose;
     let isWalking = false;
+    // Facing-riktning: -1 = titta HÖGER (mot luckan/counter).
+    // Default (1) = figuren i prototypens naturliga ansikts-riktning
+    // (öra på vår höger, läser som "vänder sig lite mot vänster").
+    // Ändras per state så figuren pekar mot rätt destination.
+    let facing: 1 | -1 = 1;
     switch (g.state) {
       case 'waiting': {
         const i = waitingIdxById.get(g.id) ?? 0;
@@ -395,12 +401,14 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
           basePose = walkPose((T * 0.4 + ph) % 1, 0.15);
           isWalking = true;
         }
+        facing = -1;   // kön står till vänster om luckan → titta höger
         break;
       }
       case 'ordering': {
         x = COUNTER_X + counterOffset(orderingIdx++);
         y = COUNTER_Y;
         basePose = idlePose(T + ph * 2);
+        facing = -1;   // vid counter, tittar in i luckan (höger)
         break;
       }
       case 'paying': {
@@ -408,6 +416,7 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
         y = COUNTER_Y;
         // Något mer aktiv puls än ordering — signalerar transaktion.
         basePose = idlePose(T * 1.4 + ph * 2);
+        facing = -1;   // samma — vid counter, tittar in i luckan
         break;
       }
       case 'arriving': {
@@ -416,6 +425,7 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
         y = QUEUE_Y;
         basePose = walkPose((T * 0.8 + ph) % 1, 1.0);
         isWalking = true;
+        facing = -1;   // går HÖGER mot kö-back (som är åt höger)
         break;
       }
       case 'leaving':
@@ -425,6 +435,7 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
         y = QUEUE_Y;
         basePose = walkPose((T * 0.9 + ph) % 1, 1.0);
         isWalking = true;
+        facing = 1;    // går ur scenen åt höger → default-facing
         break;
       }
       default:
@@ -437,7 +448,7 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
     // Applicera arketyp-hållning: bob-multiplikator, lean-offset,
     // head-tilt. Se archetypes.ts:applyArchetypeMod.
     const pose = applyArchetypeMod(basePose, archetype, isWalking);
-    positionedGuests.push({ id: g.id, x, y, pose, variant, archetype, face, faceKey, skinTone });
+    positionedGuests.push({ id: g.id, x, y, pose, variant, archetype, face, faceKey, skinTone, facing });
   }
 
   // Kö-räknare för karta + meta-rad — bevarat separat så DoD 5:s test
@@ -621,6 +632,7 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
             face={p.face}
             faceKey={p.faceKey}
             skinTone={p.skinTone}
+            facingDirection={p.facing}
           />
         ))}
 

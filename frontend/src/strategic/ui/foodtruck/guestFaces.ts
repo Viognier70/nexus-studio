@@ -63,56 +63,77 @@ export interface FaceParams {
 // läsbarhet vid figur-scale 1.0 (~140 px bred figur) och kalibrerade
 // mot varandra så förvantansfull tydligt skiljer sig från uttrakad
 // osv. Bör iterativt kalibreras mot bild.
+// **Kalibrerat 2026-08-17 (rev 4)** — VO-fynd: fyra positiva uttryck
+// använde alla `smile` med bara marginell mouthW-variation → såg
+// identiska ut vid CSS-scale. Nu större spread över alla parametrar:
+//   * mouthW variation 22-46 (nästan 2× spread bland smile-varianter)
+//   * mouthRot lägger asymmetrisk lutning för imponerad + skeptisk
+//   * ögon-höjd (eyeH) varieras 6-18 för att skilja "öppen förvåning"
+//     från "trött uttrakad" från "vidöppen imponerad"
+//   * ögonbryn-position + rotation för olika "affekt" i pannan
 export const GUEST_FACES: Record<GuestFaceKey, FaceParams> = {
   forvantansfull: {
-    browTopL: 30, browTopR: 30, browRotL: -6, browRotR: 6,
-    eyeTopL: 50, eyeTopR: 50, eyeHL: 13, eyeHR: 13,
-    mouth: 'smile', mouthW: 34, mouthRot: 0
+    // subtilt hopp — små ögonbryn upp, smalt leende, ögon halvöppna
+    browTopL: 28, browTopR: 28, browRotL: -8, browRotR: 8,
+    eyeTopL: 50, eyeTopR: 50, eyeHL: 12, eyeHR: 12,
+    mouth: 'smile', mouthW: 28, mouthRot: 0
   },
   nojd: {
-    browTopL: 32, browTopR: 32, browRotL: -4, browRotR: 4,
-    eyeTopL: 52, eyeTopR: 52, eyeHL: 10, eyeHR: 10,
-    mouth: 'smile', mouthW: 40, mouthRot: 0
+    // bred glädje — brett leende, ögon halvslutna av leendets tryck
+    browTopL: 34, browTopR: 34, browRotL: -4, browRotR: 4,
+    eyeTopL: 54, eyeTopR: 54, eyeHL: 8, eyeHR: 8,
+    mouth: 'smile', mouthW: 46, mouthRot: 0
   },
   otalig: {
-    browTopL: 38, browTopR: 38, browRotL: 14, browRotR: -14,
-    eyeTopL: 56, eyeTopR: 56, eyeHL: 10, eyeHR: 10,
-    mouth: 'line', mouthW: 40, mouthRot: 4
+    // rynkiga ögonbryn ner-inåt, sneda ögon, hopdragen mun med
+    // uppåt-vänster lutning (typ "skit också")
+    browTopL: 40, browTopR: 40, browRotL: 18, browRotR: -18,
+    eyeTopL: 58, eyeTopR: 58, eyeHL: 9, eyeHR: 9,
+    mouth: 'line', mouthW: 42, mouthRot: 6
   },
   besviken: {
-    browTopL: 34, browTopR: 34, browRotL: -10, browRotR: 10,
-    eyeTopL: 56, eyeTopR: 56, eyeHL: 8, eyeHR: 8,
-    mouth: 'frown', mouthW: 34, mouthRot: 0
+    // rakt-ner-mun, ögonbryn ovan-utåt, ögon halvslutna
+    browTopL: 32, browTopR: 32, browRotL: -12, browRotR: 12,
+    eyeTopL: 56, eyeTopR: 56, eyeHL: 7, eyeHR: 7,
+    mouth: 'frown', mouthW: 36, mouthRot: 0
   },
   imponerad: {
-    browTopL: 24, browTopR: 24, browRotL: -4, browRotR: 4,
-    eyeTopL: 48, eyeTopR: 48, eyeHL: 16, eyeHR: 16,
-    mouth: 'smile', mouthW: 32, mouthRot: 0
+    // "oh!" — höga ögonbryn, VIDÖPPNA ögon, litet smile med asymmetri
+    browTopL: 22, browTopR: 22, browRotL: -2, browRotR: 2,
+    eyeTopL: 46, eyeTopR: 46, eyeHL: 18, eyeHR: 18,
+    mouth: 'smile', mouthW: 30, mouthRot: -3
   },
   nyfiken: {
-    browTopL: 28, browTopR: 32, browRotL: -12, browRotR: 4,
-    eyeTopL: 50, eyeTopR: 52, eyeHL: 14, eyeHR: 12,
-    mouth: 'line', mouthW: 26, mouthRot: 0
+    // asymmetrisk — ett ögonbryn högre än det andra, lite skev mun
+    browTopL: 24, browTopR: 34, browRotL: -14, browRotR: 6,
+    eyeTopL: 48, eyeTopR: 52, eyeHL: 15, eyeHR: 11,
+    mouth: 'line', mouthW: 24, mouthRot: 0
   },
   uttrakad: {
-    browTopL: 36, browTopR: 36, browRotL: 0, browRotR: 0,
-    eyeTopL: 58, eyeTopR: 58, eyeHL: 6, eyeHR: 6,
-    mouth: 'line', mouthW: 30, mouthRot: 0
+    // släta ögonbryn, VÄLDIGT slutna ögon (halvsov), rak mun
+    browTopL: 38, browTopR: 38, browRotL: 0, browRotR: 0,
+    eyeTopL: 60, eyeTopR: 60, eyeHL: 4, eyeHR: 4,
+    mouth: 'line', mouthW: 32, mouthRot: 0
   },
   tacksam: {
-    browTopL: 34, browTopR: 34, browRotL: -6, browRotR: 6,
-    eyeTopL: 54, eyeTopR: 54, eyeHL: 9, eyeHR: 9,
-    mouth: 'smile', mouthW: 36, mouthRot: 0
+    // varmt leende, mjuka ögonbryn, avslappnade ögon (motsats till
+    // nojd:s bredare, tacksam är mer "innerlig")
+    browTopL: 30, browTopR: 30, browRotL: -8, browRotR: 8,
+    eyeTopL: 52, eyeTopR: 52, eyeHL: 10, eyeHR: 10,
+    mouth: 'smile', mouthW: 38, mouthRot: 0
   },
   skeptisk: {
-    browTopL: 26, browTopR: 40, browRotL: -10, browRotR: 12,
-    eyeTopL: 50, eyeTopR: 58, eyeHL: 12, eyeHR: 8,
-    mouth: 'line', mouthW: 34, mouthRot: -3
+    // TYDLIG asymmetri — ett ögonbryn högt uppe med skarp vinkel,
+    // andra normal. Ögon-skillnad. Mun med negativ rotation.
+    browTopL: 20, browTopR: 40, browRotL: -18, browRotR: 14,
+    eyeTopL: 46, eyeTopR: 58, eyeHL: 13, eyeHR: 7,
+    mouth: 'line', mouthW: 34, mouthRot: -6
   },
   generad: {
-    browTopL: 34, browTopR: 34, browRotL: 4, browRotR: -4,
-    eyeTopL: 56, eyeTopR: 56, eyeHL: 7, eyeHR: 7,
-    mouth: 'line', mouthW: 22, mouthRot: 0, drop: true
+    // små ögonbryn ner-inåt, hopdragna ögon, smal mun + svettdroppe
+    browTopL: 36, browTopR: 36, browRotL: 6, browRotR: -6,
+    eyeTopL: 58, eyeTopR: 58, eyeHL: 6, eyeHR: 6,
+    mouth: 'line', mouthW: 20, mouthRot: 0, drop: true
   }
 };
 

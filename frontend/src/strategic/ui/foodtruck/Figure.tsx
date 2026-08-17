@@ -124,35 +124,43 @@ function Face({ params: p, ink = RIG_INK }: FaceProps) {
           <rect x={-mouthHalfW} y={0} width={p.mouthW} height={5} fill={ink} />
         </g>
       )}
-      {p.mouth === 'smile' && (
-        // Prototype: `bottom: 22 height: 13` med border-bottom+left+right
-        // (en "kopp"-form). Vi ritar det som Path för renare kant.
-        <path
-          d={`M ${mouthCenterX - mouthHalfW} ${FACE_PROTO_H - 22 - 13}
-              L ${mouthCenterX - mouthHalfW} ${FACE_PROTO_H - 22}
-              L ${mouthCenterX + mouthHalfW} ${FACE_PROTO_H - 22}
-              L ${mouthCenterX + mouthHalfW} ${FACE_PROTO_H - 22 - 13}`}
-          fill="none"
-          stroke={ink}
-          strokeWidth={5}
-          strokeLinecap="butt"
-          strokeLinejoin="miter"
-        />
-      )}
-      {p.mouth === 'frown' && (
-        // Spegel av smile — upp-och-ned "kopp" ("U" istället för "∩").
-        <path
-          d={`M ${mouthCenterX - mouthHalfW} ${FACE_PROTO_H - 22}
-              L ${mouthCenterX - mouthHalfW} ${FACE_PROTO_H - 22 - 13}
-              L ${mouthCenterX + mouthHalfW} ${FACE_PROTO_H - 22 - 13}
-              L ${mouthCenterX + mouthHalfW} ${FACE_PROTO_H - 22}`}
-          fill="none"
-          stroke={ink}
-          strokeWidth={5}
-          strokeLinecap="butt"
-          strokeLinejoin="miter"
-        />
-      )}
+      {p.mouth === 'smile' && (() => {
+        // **Omskriven 2026-08-17 (rev 4)** — VO-fynd: fyra face-nycklar
+        // (forvantansfull, nojd, imponerad, tacksam) använde alla
+        // `smile` med bara mouthW-skillnad (32-40 units). Tidigare
+        // bracket-path (M-L-L-L) rendrade som platta rektangel-outlines
+        // som såg ut som streck vid små CSS-skalor. Nu quadratic-arc:
+        // ändarna sitter UPPE (smile-hörn), mitten SAKNAR nedåt =
+        // "leende bågen dippar ner mellan uppåtvinklade hörn". Djupet
+        // skalas mot mouthW så bredare mun = djupare båge = mer synlig.
+        const y = FACE_PROTO_H - 22 - 6;   // baseline (mitt av mun-region)
+        const arcDepth = Math.max(6, p.mouthW * 0.35);  // 11-14 units för mouthW 32-40
+        return (
+          <path
+            d={`M ${mouthCenterX - mouthHalfW} ${y} Q ${mouthCenterX} ${y + arcDepth} ${mouthCenterX + mouthHalfW} ${y}`}
+            fill="none"
+            stroke={ink}
+            strokeWidth={6}
+            strokeLinecap="round"
+          />
+        );
+      })()}
+      {p.mouth === 'frown' && (() => {
+        // Spegling av smile — samma arc men NEGATIV djup så bågen bågar
+        // UPPÅT (sad-arch) istället för nedåt. Skalning identisk med
+        // smile så mirror-relationen är exakt.
+        const y = FACE_PROTO_H - 22 - 6;
+        const arcDepth = Math.max(6, p.mouthW * 0.35);
+        return (
+          <path
+            d={`M ${mouthCenterX - mouthHalfW} ${y} Q ${mouthCenterX} ${y - arcDepth} ${mouthCenterX + mouthHalfW} ${y}`}
+            fill="none"
+            stroke={ink}
+            strokeWidth={6}
+            strokeLinecap="round"
+          />
+        );
+      })()}
       {p.mouth === 'box' && (
         <rect
           x={mouthCenterX - mouthHalfW}
@@ -368,11 +376,20 @@ export interface FigureProps {
   face?: FaceParams;
   faceKey?: string;     // enbart för data-attribut / debug
   skinTone?: string;
+  // ORDER 114 rev 4 — facing-riktning: 1 = default (öra på höger sida
+  // av vår vy, figur läses som "vänder sig lite mot vänster"), -1 =
+  // horisontell-flip (öra på vänster sida av vår vy, figur "vänder
+  // sig mot höger"). Foodtruck-kön står LÄNGE till vänster om luckan;
+  // figurer i kön ska titta höger (mot luckan) → -1. Leaving-figurer
+  // som går ut åt höger håller default (1) så de "vänder sig ut ur
+  // scenen". Alla varianter fortsätter fungera i sim-koordinater;
+  // flippen tillämpas som `scale(-1, 1)` på figur-transformen.
+  facingDirection?: 1 | -1;
 }
 
 // Huvudkomponenten — komponerar Arm/Leg/Head + torso enligt Guest-
 // komponentens layer-ordning från prototypen (rad 114-148).
-export function Figure({ pose, x, y, scale, variant, id, archetype, face, faceKey, skinTone }: FigureProps) {
+export function Figure({ pose, x, y, scale, variant, id, archetype, face, faceKey, skinTone, facingDirection = 1 }: FigureProps) {
   const p = pose;
   // ORDER 114 rättning (2026-08-17) — UNIFORM scale bara.
   // Tidigare version applicerade `scale(scale * widthMult, scale *
@@ -391,6 +408,10 @@ export function Figure({ pose, x, y, scale, variant, id, archetype, face, faceKe
   const heightMult = archetype?.body.heightMult ?? 1;
   const uniformScale = scale * heightMult;
   const skin = skinTone ?? RIG_GROUND;
+  // facingDirection=-1 speglar figuren horisontellt (öra + prop + pose-
+  // asymmetri byter sida). Applicerat i outer-scale så alla inre
+  // element följer med.
+  const scaleX = uniformScale * facingDirection;
   return (
     <g
       data-figure={id ?? 'anonymous'}
@@ -399,7 +420,8 @@ export function Figure({ pose, x, y, scale, variant, id, archetype, face, faceKe
       data-archetype={archetype?.id ?? ''}
       data-face={faceKey ?? ''}
       data-skin-tone={skinTone ?? ''}
-      transform={`translate(${x},${y}) scale(${uniformScale})`}
+      data-facing={facingDirection === -1 ? 'right' : 'left'}
+      transform={`translate(${x},${y}) scale(${scaleX}, ${uniformScale})`}
     >
       <g transform={`translate(0,${-122 + p.hipDrop}) rotate(${-p.lean})`}>
         {/* Bakre lem först — z-ordning så främre lem täcker */}

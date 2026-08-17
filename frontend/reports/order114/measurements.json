@@ -8,7 +8,7 @@
       "archetype": "nattarbetaren",
       "face": "tacksam",
       "skinTone": "#7d5a3f",
-      "widthPx": 145,
+      "widthPx": 145.1,
       "heightPx": 442.1
     },
     {
@@ -49,14 +49,14 @@
       "face": "forvantansfull",
       "skinTone": "#c9a37b",
       "widthPx": 166.4,
-      "heightPx": 423.8
+      "heightPx": 423.9
     },
     {
       "id": "gst-9",
       "archetype": "affarsgasten",
       "face": "forvantansfull",
       "skinTone": "#e0be99",
-      "widthPx": 162.1,
+      "widthPx": 162,
       "heightPx": 419.5
     },
     {
@@ -64,13 +64,13 @@
       "archetype": "turisten",
       "face": "nyfiken",
       "skinTone": "#a67c5c",
-      "widthPx": 157.8,
+      "widthPx": 157.9,
       "heightPx": 424.5
     }
   ],
   "figureWidthMin": 108.8,
   "figureWidthMax": 166.4,
-  "figureWidthMean": 136.5,
+  "figureWidthMean": 136.6,
   "figuresAt140pxThreshold": 4,
   "figuresAt120pxLenience": 5,
   "figuresPer140px": 8
