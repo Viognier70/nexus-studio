@@ -23,6 +23,11 @@ const TICK_SECONDS = 0.2;
 // guest is turned away; overflow guests re-render on the same pucks via
 // modulo. Signal path: peakQueue is the reading, floor pucks are chrome.
 const WAITING_QUEUE_CAP = 12;
+// ORDER 115 §4.5 — Food truck-uteplatsens eating-fas. 20 sim-sek
+// matchar "äta en portion foodtruck-mat vid en bänk". Kortare än
+// restaurangens dining-cykel (34-55 s). Bara relevant när
+// policies.hasUteplats är sann OCH businessClass === 'foodtruck'.
+const EATING_DURATION_SEC = 20;
 
 function distance(a: Vec2, b: Vec2): number {
   const dx = a.x - b.x;
@@ -271,6 +276,27 @@ export function tickGuests(state: SimulationState) {
         // (rumsbokning hör till senare arbete). Ingen moveGuest.
         continue;
       }
+      // ORDER 115 §4.5 — foodtruck-uteplats. Om policies.hasUteplats
+      // så går paying → eating (äter i bild) innan leaving. Utan
+      // uteplats: direkt till leaving som förut.
+      if (state.businessClass === 'foodtruck' && state.policies.hasUteplats === true) {
+        guest.state = 'eating';
+        guest.stateTime = now;
+        // Bär med sig maten till uteplatsen. Ingen moveGuest — renderaren
+        // placerar eating-gäster vid uteplats-position.
+        continue;
+      }
+      guest.state = 'leaving';
+      guest.stateTime = now;
+      moveGuest(guest, { x: 0, z: 8 });
+      continue;
+    }
+
+    // ORDER 115 §4.5 — eating-fas: äter en tid vid uteplats, sedan
+    // leaving. EATING_DURATION_SEC balanserad mot arrival-rate så
+    // uteplats-slots inte överfylls under peak. 20 sim-sek matchar
+    // grovt "äta en portion food-truck-mat" ute på bänken.
+    if (guest.state === 'eating' && now - guest.stateTime > EATING_DURATION_SEC) {
       guest.state = 'leaving';
       guest.stateTime = now;
       moveGuest(guest, { x: 0, z: 8 });
@@ -570,6 +596,11 @@ function completeStaffTask(state: SimulationState, staff: StaffMember) {
         if (!businessHasSeats(state.businessClass)) {
           guest.state = 'paying';
           guest.stateTime = now;
+          // ORDER 115 §2 — överlämningen. Foodtruck-gästen bär med
+          // sig maten härifrån och genom eating/leaving-faserna.
+          // 'foodtruckMeal' är den generiska matportionen; renderaren
+          // (Figure.tsx) tolkar värdet till en prop-SVG.
+          guest.carrying = 'foodtruckMeal';
         } else {
           guest.state = 'dining';
           guest.stateTime = now;

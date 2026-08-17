@@ -41,6 +41,16 @@ function applyDevBusinessOverride(state: SimulationState): SimulationState {
 // för att få något att fotografera. Har ingen effekt utanför dev — vite
 // tree-shakar bort import.meta.env.DEV-grenar i produktionsbygget.
 function applyDevFoodtruckSeed(state: SimulationState): SimulationState {
+  // ORDER 115 §4 — uteplats-flagga separat från seed. Kan sättas ensam
+  // (`#playtest=1&business=foodtruck&uteplats=1`) för att verifiera
+  // eating-fasen utan att seeda kön. Sätts på policies.hasUteplats
+  // som service.ts:tickGuests läser vid paying → eating/leaving.
+  if (harnessParams.uteplats && state.businessClass === 'foodtruck') {
+    state = {
+      ...state,
+      policies: { ...state.policies, hasUteplats: true }
+    };
+  }
   const n = harnessParams.foodtruckSeed;
   if (n === null || n <= 0) return state;
   if (state.businessClass !== 'foodtruck') return state;

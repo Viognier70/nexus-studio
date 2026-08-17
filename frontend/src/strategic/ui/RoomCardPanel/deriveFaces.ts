@@ -193,6 +193,11 @@ export function deriveGuestFace(
     // ORDER 111 §4 — sleeping-gäst (värdshus) läses som neutral;
     // ingen aktiv service pågår, inget uttryck att förmedla.
     case 'sleeping':
+    // ORDER 115 §4.5 — eating-gäst (foodtruck-uteplats). Foodtruck
+    // renderar sitt eget uttryck via guestFaces.ts; deriveFaces
+    // (staff-vokabulär) rörs inte per §7-avgränsning. Neutral fallback
+    // så typen täcker alla GuestState.
+    case 'eating':
       // GF13 fallback
       return 'neutral';
   }

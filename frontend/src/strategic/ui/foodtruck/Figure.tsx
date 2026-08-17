@@ -297,6 +297,48 @@ function renderProp(prop: HandProp) {
 }
 
 // -----------------------------------------------------------------------------
+// ORDER 115 §2 — carrying-prop (mat/paket från foodtruck-luckan)
+// -----------------------------------------------------------------------------
+//
+// När Guest.carrying är satt (via completeStaffTask 'order' för foodtruck
+// i service.ts) ritas en portion i gästens hand. Skiljer sig från
+// archetype-props: (a) alla foodtruck-gäster bär SAMMA form (portion är
+// generisk), (b) ritas i FRAMHANDEN (nära-arm), inte som "vid-magen"-
+// bältes-prop. Storleken är tydligt större än archetype-props så
+// överlämningen ska vara AVLÄSBAR — VO 2026-08-17 "överlämningen ÄR
+// verksamheten".
+//
+// Position: framför nära-armens hand (armNear:s ände). Nära-arm-transform
+// är translate(0,-96) rotate(-armNear[0]) translate(0,48) rotate(-armNear[1]),
+// med hand-rect ändande vid y=44+15=59 från armbågen. Vid IDLE-pose är
+// armen kort och nära kroppen, så prop hamnar vid x≈-15 y≈-40 relativt
+// figur-frame. Vi ritar propen som eget lager i Figure för att slippa
+// följa arm-rotationer (skulle bli visually rörigt).
+
+function renderCarrying(carrying: string | undefined) {
+  if (!carrying) return null;
+  switch (carrying) {
+    case 'foodtruckMeal':
+      // Generisk foodtruck-portion: brun/vit paket med accent-band,
+      // hållen vid mag-nivå med båda-händer-illusion. Större än
+      // archetype-props (30×20 vs ~20×14) så prop-överlämningen
+      // syns tydligt över scen-avstånd.
+      return (
+        <g transform="translate(0, -55)">
+          {/* Paketkropp — brun kartong */}
+          <rect x={-16} y={-10} width={32} height={22} fill="#8a6b4a" stroke={RIG_INK} strokeWidth={2.5} />
+          {/* Accent-band över paketet */}
+          <rect x={-16} y={-3} width={32} height={4} fill={RIG_ACCENT} />
+          {/* Locket ovanför */}
+          <rect x={-14} y={-14} width={28} height={4} fill={RIG_INK} />
+        </g>
+      );
+    default:
+      return null;
+  }
+}
+
+// -----------------------------------------------------------------------------
 // Head — utökat med Face-rendering + head-topping-parametrar
 // -----------------------------------------------------------------------------
 
@@ -391,11 +433,16 @@ export interface FigureProps {
   // scenen". Alla varianter fortsätter fungera i sim-koordinater;
   // flippen tillämpas som `scale(-1, 1)` på figur-transformen.
   facingDirection?: 1 | -1;
+  // ORDER 115 §2 — carrying-prop (mat/paket från foodtrucken). När
+  // satt ritas ett paket i gästens framhand-region. Genereras från
+  // Guest.carrying-fält i sim, som sätts vid completeStaffTask 'order'
+  // för foodtruck. Data-attribut `data-carrying` för test-grep.
+  carrying?: string;
 }
 
 // Huvudkomponenten — komponerar Arm/Leg/Head + torso enligt Guest-
 // komponentens layer-ordning från prototypen (rad 114-148).
-export function Figure({ pose, x, y, scale, variant, id, archetype, face, faceKey, skinTone, facingDirection = 1 }: FigureProps) {
+export function Figure({ pose, x, y, scale, variant, id, archetype, face, faceKey, skinTone, facingDirection = 1, carrying }: FigureProps) {
   const p = pose;
   // ORDER 114 rättning (2026-08-17) — UNIFORM scale bara.
   // Tidigare version applicerade `scale(scale * widthMult, scale *
@@ -427,6 +474,7 @@ export function Figure({ pose, x, y, scale, variant, id, archetype, face, faceKe
       data-face={faceKey ?? ''}
       data-skin-tone={skinTone ?? ''}
       data-facing={facingDirection === -1 ? 'right' : 'left'}
+      data-carrying={carrying ?? ''}
       transform={`translate(${x},${y}) scale(${scaleX}, ${uniformScale})`}
     >
       <g transform={`translate(0,${-122 + p.hipDrop}) rotate(${-p.lean})`}>
@@ -452,6 +500,10 @@ export function Figure({ pose, x, y, scale, variant, id, archetype, face, faceKe
         <Arm a={p.armNear} fill={RIG_INK} />
         {/* Prop — objekt i handen, sist så inget täcker den */}
         {archetype && renderProp(archetype.prop)}
+        {/* ORDER 115 §2 — carrying-prop (mat/paket från foodtrucken).
+            Ritas sist så den ligger framför både arm och archetype-prop
+            (gästen håller maten i FRAMHANDEN, prominent). */}
+        {renderCarrying(carrying)}
       </g>
     </g>
   );

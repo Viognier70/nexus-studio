@@ -341,7 +341,7 @@ describe('ORDER 114 §5 DoD 8 — sceneLive matchar antalet renderade figurer', 
     // de states som FoodtruckScene positionerar figurer för.
     const allStates: Guest['state'][] = [
       'arriving', 'waiting', 'seated', 'ordering', 'dining',
-      'paying', 'leaving', 'declined', 'sleeping'
+      'paying', 'eating', 'leaving', 'declined', 'sleeping'
     ];
     const state = stateWith(allStates.map((s, i) => makeGuest(`all-${i}`, s)));
     const { container } = renderScene(state);
@@ -350,9 +350,10 @@ describe('ORDER 114 §5 DoD 8 — sceneLive matchar antalet renderade figurer', 
       .length;
     // FoodtruckScene skippar seated/dining/sleeping defensivt
     // (ORDER 113 fel 2 comment). Räkna vad DEV-radens set:et säger:
-    const SCENE_RELEVANT_STATES = new Set(['arriving', 'waiting', 'ordering', 'paying', 'leaving', 'declined']);
+    // ORDER 115 §4.5 — 'eating' är nu ett scen-relevant state.
+    const SCENE_RELEVANT_STATES = new Set(['arriving', 'waiting', 'ordering', 'paying', 'eating', 'leaving', 'declined']);
     const sceneLive = state.guests.filter((g) => SCENE_RELEVANT_STATES.has(g.state)).length;
-    expect(sceneLive).toBe(6);   // 9 states - 3 skippade
+    expect(sceneLive).toBe(7);   // 10 states - 3 skippade (seated/dining/sleeping)
     expect(rendered).toBe(sceneLive);
   });
 });

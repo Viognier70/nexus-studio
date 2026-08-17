@@ -111,6 +111,9 @@ const GUEST_COLOUR: Record<GuestState, string> = {
   // ORDER 111 §4 — sleeping-gäst (värdshus) läses lite dovare än seated:
   // hen är på plats men inte i aktiv service, färgen viker mot leaving.
   sleeping: '#7a7360',
+  // ORDER 115 §4.5 — eating-gäst (foodtruck-uteplats) — inte i denna
+  // scene men typen kräver alla GuestState-nycklar. Ljus värdedag-ton.
+  eating: '#d4c088',
   leaving: '#8a836e',
   declined: '#6a6455'
 };
@@ -466,7 +469,12 @@ function targetFor(
     // ORDER 111 §4 — sleeping-gäst (värdshus) står på sin stol —
     // enkel form: samma placering som seated. Riktig rumsvisualisering
     // (sängar, etc.) hör till senare arbete med Värdshusets scen.
-    case 'sleeping': {
+    case 'sleeping':
+    // ORDER 115 §4.5 — eating-gäst (foodtruck-uteplats) syns aldrig
+    // i restaurangens InteriorGuests-scen (foodtruck har egen
+    // FoodtruckScene). Defensiv skip: samma placering som seated om
+    // det mot förmodan förekommer.
+    case 'eating': {
       const idx = guest.seatIndex ?? -1;
       const seat = idx >= 0 && idx < seats.length ? seats[idx] : seats[0];
       return { x: seat[0], z: seat[1], colour };

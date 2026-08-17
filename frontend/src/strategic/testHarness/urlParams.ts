@@ -99,6 +99,11 @@ interface ParsedParams {
   // fylld kö att arbeta med utan att simulera fram organiska arrivals.
   // `null` = ingen seed. Kräver playtest=1.
   foodtruckSeed: number | null;
+  // ORDER 115 §4 — dev-only flagga för att aktivera uteplats-fasen
+  // (paying → eating → leaving). Aktiveras med `#playtest=1&uteplats=1`.
+  // Riktig upplåsning väntar på VO-beslut om tröskelvärde (§4.3).
+  // Sätts på policies.hasUteplats i applyDevFoodtruckSeed.
+  uteplats: boolean;
 }
 
 function parseHash(): ParsedParams {
@@ -112,7 +117,8 @@ function parseHash(): ParsedParams {
       playtest: false,
       dollhouse: false,
       business: null,
-      foodtruckSeed: null
+      foodtruckSeed: null,
+      uteplats: false
     };
   }
   const hash = window.location.hash.replace('#', '');
@@ -138,7 +144,8 @@ function parseHash(): ParsedParams {
   // ska inte kunna flippa verksamhetsklassen av misstag.
   const business = parseBusiness(playtest ? params.get('business') ?? null : null);
   const foodtruckSeed = playtest ? parseFoodtruckSeed(params.get('foodtruckSeed') ?? null) : null;
-  return { period, camera, roi, poseId, calibrationQuad, playtest, dollhouse, business, foodtruckSeed };
+  const uteplats = playtest && params.get('uteplats') === '1';
+  return { period, camera, roi, poseId, calibrationQuad, playtest, dollhouse, business, foodtruckSeed, uteplats };
 }
 
 function parseFoodtruckSeed(s: string | null): number | null {

@@ -144,6 +144,11 @@ export function selectGuestPattern(input: GuestPatternInput): GuestPatternLabel 
     // hen är kvar i värdshuset över natten men gör ingenting synligt
     // förrän frukost-passet väcker hen.
     case 'sleeping':
+    // ORDER 115 §4.5 — eating-gäst (foodtruck-uteplats) hanteras
+    // i FoodtruckScene med egen positioning + pose. RoomCardPanel
+    // används bara i restaurang-läget; fallback IDLE så typen
+    // täcker alla GuestState.
+    case 'eating':
       return 'IDLE';
   }
 }
@@ -189,6 +194,10 @@ export function deriveGuestPatience(guest: Guest, simTime: number): number {
     case 'seated':
     // ORDER 111 §4 — sleeping-gäst har inget att uttrycka; nolltålighet.
     case 'sleeping':
+    // ORDER 115 §4.5 — eating-gäst (foodtruck) läses som nöjd närhet
+    // = nolltålighet. Faktiskt satisfaction bär den avläsningen som
+    // ansiktsuttryck via FoodtruckScene.
+    case 'eating':
       return 0;
   }
 }

@@ -115,18 +115,36 @@ export function DevPanel({ lastKey }: Props) {
   // across a service. What actually matters when the room reads as
   // empty is the LIVE queue, live seated count, and the capacity
   // ceiling that stops seating even when guests are queued.
-  const queueLive = sim.waitingIds.length;
-  const seatedLive = sim.seatedIds.length;
+  // ORDER 115 §3 DoD 5 — "queue= och seated= i DevPanel motsvarar
+  // antalet renderade figurer". Före ORDER 115 räknade queue endast
+  // waitingIds och seated endast seatedIds → i foodtruck-läge visade
+  // raden noll medan 4 gäster syntes i ordering/paying/eating-state.
+  //
+  // För foodtruck omdefinieras raden så den matcher vad
+  // FoodtruckScene faktiskt renderar:
+  //   * queue = alla vid vagnen (waiting + arriving + ordering + paying)
+  //     = "på gatan framför luckan, i kön eller vid disken"
+  //   * seated = alla vid uteplatsen (eating)
+  //     = "sitter/står vid ståborden och äter"
+  // Övriga verksamheter (restaurant, värdshus) behåller den gamla
+  // avläsningen: queue=waitingIds, seated=seatedIds.
+  const isFoodtruck = sim.businessClass === 'foodtruck';
+  const queueLive = isFoodtruck
+    ? sim.guests.filter((g) =>
+        g.state === 'waiting' || g.state === 'arriving' ||
+        g.state === 'ordering' || g.state === 'paying'
+      ).length
+    : sim.waitingIds.length;
+  const seatedLive = isFoodtruck
+    ? sim.guests.filter((g) => g.state === 'eating').length
+    : sim.seatedIds.length;
   const capacity = sim.policies.capacity;
   const layoutSeats = layout?.seats.length ?? 0;
-  // ORDER 114 §5 DoD 8 — "queue=" ska motsvara antalet synliga figurer.
-  // Före fel 2 var det trivialt uppfyllt: FoodtruckScene ritade bara
-  // waitingIds. Efter fel 2 ritar scenen alla sim.guests i scen-
-  // relevanta states (arriving/waiting/ordering/paying/leaving/declined),
-  // så waitingIds ≠ antal figurer. DoD 8 tolkas: lägg till en `scene=`-
-  // räknare bredvid `queue=` i DEV-raden så båda är synliga och
-  // Renderaren-vs-DevPanel-diskrepanser inte tolkas som bug.
-  const SCENE_RELEVANT_STATES = new Set(['arriving', 'waiting', 'ordering', 'paying', 'leaving', 'declined']);
+  // ORDER 114 §5 DoD 8 — `scene=` räknar ALLA scen-relevanta figurer
+  // (inklusive leaving/declined som är på väg ut). queue+seated
+  // motsvarar vad SPELAREN läser som "aktiva gäster"; scene motsvarar
+  // exakt antalet [data-figure]-noder som renderas.
+  const SCENE_RELEVANT_STATES = new Set(['arriving', 'waiting', 'ordering', 'paying', 'eating', 'leaving', 'declined']);
   const sceneLive = sim.guests.filter((g) => SCENE_RELEVANT_STATES.has(g.state)).length;
   // ORDER 113 fel 1 uppföljning — DRIFT-check gate:ad på verksamhet.
   // För foodtruck (`hasSeats=false`) är layout==null ett förväntat

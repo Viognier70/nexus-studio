@@ -160,6 +160,25 @@ const ARRIVING_SPACING = QUEUE_SLOT_SPACING;
 const LEAVING_START_X = SCENE_VIEWBOX_W - 220;
 const LEAVING_SPACING = QUEUE_SLOT_SPACING;
 
+// ORDER 115 §4 — Uteplatsen. Ståbord höger om vagnen där gäster med
+// `hasUteplats` går efter paying för att äta.
+//
+// Layout-räkning:
+//   * Scen 2432 bred. Vagn slutar vid WAGON_RIGHT=1952.
+//   * Tillgängligt höger om vagnen: ~480 units.
+//   * Bord skiva 120 wide vid tx. Gäst står 90 units HÖGER om bord
+//     (offset så bord + gäst inte överlappar visuellt).
+//   * Kapacitet 2 samtidiga ätande gäster.
+const UTEPLATS_X = WAGON_RIGHT + 60;      // första bordets x
+const UTEPLATS_TABLE_COUNT = 2;           // kapacitet 2 samtidiga
+const UTEPLATS_TABLE_SPACING = 220;       // avstånd mellan bord-par
+const UTEPLATS_GUEST_OFFSET_X = 100;      // gäst står så mycket höger om sitt bord
+// Bord-skiva vid mid-lår-höjd på gäst; benen på gatan.
+const UTEPLATS_TABLE_Y = 900;             // skiva topp
+const UTEPLATS_TABLE_LEG_H = 120;         // ben-höjd
+// Eating-gästens fot-y — samma som queue-y så de står på gatan.
+const EATING_Y = QUEUE_Y;
+
 // -----------------------------------------------------------------------------
 // Animation-loop. requestAnimationFrame + tidsvariabel som pumpas till
 // pose-funktionerna varje frame. Detta är DoD 4:s grep-artefakt.
@@ -359,6 +378,7 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
     faceKey: GuestFaceKey;
     skinTone: string;
     facing: 1 | -1;   // -1 = titta höger (mot luckan), 1 = titta vänster (default figur-läge)
+    carrying?: string;  // ORDER 115 §2 — mat/paket från foodtrucken
   }
   const positionedGuests: PositionedGuest[] = [];
   // Räknare per state-typ så flera gäster i samma tillstånd inte
@@ -367,6 +387,7 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
   let payingIdx = 0;
   let arrivingIdx = 0;
   let leavingIdx = 0;
+  let eatingIdx = 0;
 
   // ORDER 114 rev 6 — VO: "Bara den som beställer står vid luckan."
   // Räknas separat från waiting-slots så counter-figurer aldrig
@@ -463,10 +484,30 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
       case 'declined': {
         const i = leavingIdx++;
         x = LEAVING_START_X - i * LEAVING_SPACING;
-        y = QUEUE_Y;
-        basePose = walkPose((T * 0.9 + ph) % 1, 1.0);
+        y = EATING_Y;
+        // ORDER 115 §3 — "mönster 20" (walk med förhöjd amplitud) för
+        // avfärd. amp 1.15 matcher prototypens EXIT-mönster
+        // (guest-reel.jsx:239 `walkPose(T * 1.7, 1.15)`).
+        basePose = walkPose((T * 0.9 + ph) % 1, 1.15);
         isWalking = true;
         facing = 1;    // går ur scenen åt höger → default-facing
+        break;
+      }
+      case 'eating': {
+        // ORDER 115 §4.5 — foodtruck-uteplats. Gäst står vid ett ståbord
+        // höger om vagnen och äter i bild. Positioneras deterministiskt
+        // per eatingIdx över UTEPLATS_TABLE_COUNT bord. Gäst-x är
+        // OFFSET åt höger så bord + gäst inte överlappar (bord synlig
+        // till vänster om gäst).
+        const tableIdx = eatingIdx % UTEPLATS_TABLE_COUNT;
+        const tableX = UTEPLATS_X + tableIdx * UTEPLATS_TABLE_SPACING;
+        x = tableX + UTEPLATS_GUEST_OFFSET_X;
+        y = EATING_Y;
+        eatingIdx++;
+        // Låg-amplitud idle med litet bob — läser som "stående vid
+        // bord, äter". Halva idle-frekvensen så det inte ser stressat ut.
+        basePose = idlePose(T * 0.5 + ph * 2);
+        facing = -1;   // vänder tillbaka mot vagnen/gatan
         break;
       }
       default:
@@ -479,7 +520,12 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
     // Applicera arketyp-hållning: bob-multiplikator, lean-offset,
     // head-tilt. Se archetypes.ts:applyArchetypeMod.
     const pose = applyArchetypeMod(basePose, archetype, isWalking);
-    positionedGuests.push({ id: g.id, x, y, pose, variant, archetype, face, faceKey, skinTone, facing });
+    positionedGuests.push({
+      id: g.id, x, y, pose, variant, archetype, face, faceKey, skinTone, facing,
+      // Bär maten från paying och genom eating/leaving. Setts i
+      // sim (service.ts completeStaffTask 'order' foodtruck-branch).
+      carrying: g.carrying
+    });
   }
 
   // Kö-räknare för karta + meta-rad — bevarat separat så DoD 5:s test
@@ -630,6 +676,50 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
           </text>
         </g>
 
+        {/* ORDER 115 §4 — Uteplatsen (ståbord). Ritas ENDAST när
+            policies.hasUteplats är sann. Tre ståbord höger om vagnen
+            där eating-gäster står och äter. Ritas EFTER wagon men
+            FÖRE guest-figurer så eating-gäster syns framför borden.
+            Data-attribut `data-foodtruck-uteplats` för test-grep. */}
+        {sim.policies.hasUteplats && (
+          <g data-foodtruck-uteplats>
+            {Array.from({ length: UTEPLATS_TABLE_COUNT }).map((_, i) => {
+              const tx = UTEPLATS_X + i * UTEPLATS_TABLE_SPACING;
+              const ty = UTEPLATS_TABLE_Y;
+              return (
+                <g key={i}>
+                  {/* Bord-skiva (rektangel, hüftr höjd på gata-nivå) */}
+                  <rect
+                    x={tx - 60}
+                    y={ty}
+                    width={120}
+                    height={20}
+                    fill="#5a5044"
+                    stroke={RIG_INK}
+                    strokeWidth={3}
+                  />
+                  {/* Ben (två pinnar ner) */}
+                  <rect x={tx - 50} y={ty + 20} width={8} height={UTEPLATS_TABLE_LEG_H} fill={RIG_INK} />
+                  <rect x={tx + 42} y={ty + 20} width={8} height={UTEPLATS_TABLE_LEG_H} fill={RIG_INK} />
+                </g>
+              );
+            })}
+            {/* Etikett ovanför första bordet */}
+            <text
+              x={UTEPLATS_X}
+              y={UTEPLATS_TABLE_Y - 16}
+              textAnchor="middle"
+              fill="#8a836e"
+              fontSize={18}
+              fontFamily="system-ui, sans-serif"
+              letterSpacing={2}
+              style={{ textTransform: 'uppercase' }}
+            >
+              Uteplats
+            </text>
+          </g>
+        )}
+
         {/* Personalen — ett ansikte i luckan. Fast `nojd`-uttryck:
             personal-vokabulär (deriveFaces.ts) rörs inte per ORDER 114
             §7-avgränsningen, men Figure:s face-prop tar GUEST_FACES-
@@ -677,6 +767,7 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
             faceKey={p.faceKey}
             skinTone={p.skinTone}
             facingDirection={p.facing}
+            carrying={p.carrying}
           />
         ))}
 

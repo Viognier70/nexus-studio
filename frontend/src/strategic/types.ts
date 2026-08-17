@@ -33,6 +33,11 @@ export type GuestState =
   // dygnsrollovern och plockas upp av frukost-passet nästa morgon.
   // Bara giltig när `state.businessClass === 'värdshus'`.
   | 'sleeping'
+  // ORDER 115 §4.5 — Food truck. Gäst som fått sin mat vid uteplats
+  // äter i bild innan avfärd. Bara giltig när `policies.hasUteplats`
+  // är sann OCH `businessClass === 'foodtruck'`. Utan uteplats går
+  // gästen paying → leaving direkt.
+  | 'eating'
   | 'leaving'
   | 'declined';
 
@@ -180,6 +185,12 @@ export interface Policies {
   ingredientTier: IngredientTier;
   welcomeDrink: boolean;
   localSourcing: boolean;
+  // ORDER 115 §4 — Food truck-uteplats. När sann får paying-gäst
+  // gå till 'eating' innan 'leaving' (istället för direkt 'leaving').
+  // Tröskeln för att köpa uteplatsen sätts INTE av agenten — VO
+  // beslutar (§4.3). Valfri för bakåtkompat: existerande fixtures
+  // behöver inte omdefinieras.
+  hasUteplats?: boolean;
 }
 
 export interface Vec2 {
@@ -285,6 +296,13 @@ export interface Guest {
   // Valfritt (undefined = false) så existerande testfixturer inte
   // behöver ändras; reducern läser med `?? false`.
   stayingOvernight?: boolean;
+  // ORDER 115 §2 — Food truck. Sätts när staff-task 'order' fullbordas
+  // och maten lämnas över. Behåller värdet genom eating/leaving så
+  // renderaren kan rita propen i gästens hand hela vägen ut ur scen.
+  // Sträng-nyckel (matchar HandProp i ui/foodtruck/archetypes) så det
+  // kan matcha arketypens prop OR en generisk foodtruck-portion.
+  // Valfritt (undefined = ej mottaget) för bakåtkompat med tester.
+  carrying?: string;
 }
 
 export type SustainabilityDirection =
