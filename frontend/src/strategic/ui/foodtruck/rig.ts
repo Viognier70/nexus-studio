@@ -121,6 +121,79 @@ export function walkPose(ph: number, amp: number): Pose {
 }
 
 // -----------------------------------------------------------------------------
+// FIGUR-PROPORTIONER — härledda från prototypens Guest-komponent
+// -----------------------------------------------------------------------------
+//
+// Prototypens `Guest` (`guest-reel.jsx:87-148`) definierar figuren med
+// hårdkodade SVG-enheter i sitt lokala koordinatsystem. Referens-
+// punkterna nedan är avläst DIREKT ur prototypens rect-attribut, inte
+// gissade. Härledda mått (spacing, safety-margin, css-omvandling) i
+// FoodtruckScene.tsx MÅSTE använda dessa konstanter — inga magic
+// numbers om torso-bredd/höjd på anropssidan.
+//
+// **Prototypens grundgeometri** (från Guest-komponentens rad-nummer):
+//   * Torso: `rect x=-31 y=-112 width=62 height=112` → 62 wide, 112 tall
+//   * Head-face: `rect x=-27 y=-70 width=54 height=58` (i huvud-frame
+//     som är translate(0,-112)) → 54 wide, 58 tall
+//   * Nacke: rect x=-11 y=-16 width=22 height=18 → 22 wide, 18 tall
+//   * Ben (per ben): övre 60 + nedre 62 + fot 12 = 134 units totalt
+//   * Arm (per arm): övre 48 + nedre 44 + hand 15 = 107 units totalt
+//     (relevant för max-arm-swing-bredd)
+//   * Head-topping: sträcker sig från y=-70 upp till y=-86 (16 units
+//     ovanför face) → head-topping-topp vid y=-198 (i figure-frame:
+//     -112 - 86 = -198)
+//
+// **Total figur-höjd** från fot (y=0) till hattens/frisyrens topp:
+//   134 (ben) + 112 (torso) + 86 (head-topping ovanför torso) = 332 units
+//   Utan topping (t.ex. shortCut): 134 + 112 + 70 = 316 units
+//
+// **Kalibrering mot verkligheten:** VO 2026-08-17 anger att prototypens
+// referens-humanoid = 1,75 m vid ~304 SVG-units. Vår mätta figure-höjd
+// (316-332) är i samma härad — små avvikelser beror på topping-varianter
+// och prototypens stiliserade proportioner (huvudet är avsiktligt större
+// än realistiskt för läsbarhet på håll — se HEAD_STYLIZATION_RATIO
+// nedan).
+//
+// **Head:body-proportion är stiliserad — inte realistisk:**
+// Prototypens head 54 units wide vs torso 62 units wide = 0.87 ratio.
+// Verklig människa: skallbredd ~15 cm vs shoulder-bredd ~45 cm = 0.33.
+// Prototypens huvud är alltså ~2,6× större relativt kroppen än en
+// verklig människa. Detta är ett designval i prototypen (större huvud
+// = mer ansiktsyta att läsa uttryck på); INTE en bug i vår rendering.
+// Konsekvens: figurerna får "big-head-cartoon"-look som är avsiktlig.
+// Om VO senare vill korrigera mot realistisk proportion är det egen
+// order som ändrar Figure.tsx:s Head-komponent — inte något vår
+// spacing- eller scale-logik ska kompensera för.
+
+export const RIG_PROTO_TORSO_WIDTH = 62;
+export const RIG_PROTO_TORSO_HEIGHT = 112;
+export const RIG_PROTO_HEAD_WIDTH = 54;
+export const RIG_PROTO_HEAD_HEIGHT = 58;
+export const RIG_PROTO_LEG_HEIGHT = 134;              // 60 + 62 + 12
+export const RIG_PROTO_ARM_LENGTH = 107;              // 48 + 44 + 15
+export const RIG_PROTO_TOTAL_HEIGHT = 316;            // ben + torso + head (utan topping)
+export const RIG_PROTO_REFERENCE_METERS = 1.75;       // VO 2026-08-17: 1,75 m human
+export const RIG_PROTO_UNITS_PER_METER =
+  RIG_PROTO_TOTAL_HEIGHT / RIG_PROTO_REFERENCE_METERS;  // ~180.6
+
+// Max horisontell utsträckning inkl arm-swing. walkPose:s armNear[0]
+// når ±26° vid amp=1.0. En arm rooted vid shoulder (translate(0,-96))
+// med total arm-längd 107, roterad 26°, når horisontellt:
+//   107 * sin(26°) ≈ 47 units
+// Kombinerat med torso-halvbredd 31: figur-halvbredd i värsta fall =
+// 31 + 47 = 78. Full bredd = 156 units vid amp=1.0.
+// Idle-pose eller walkPose amp<0.5 minskar detta men vi budgeterar
+// för worst-case så spacing-heuristiken alltid håller.
+export const RIG_PROTO_MAX_WIDTH_AT_SCALE_1 = 156;
+
+// Head:body-stilisering — dokumenterad ratio (se kommentar ovan).
+// Exponerad som konstant så framtida test kan asserta att om vi
+// någonsin ändrar figure-geometrin, förhållandet bevaras (eller
+// medvetet ändras via egen order).
+export const HEAD_STYLIZATION_RATIO =
+  RIG_PROTO_HEAD_WIDTH / RIG_PROTO_TORSO_WIDTH;   // 0.87
+
+// -----------------------------------------------------------------------------
 // Färgpalett (från prototypen, rad 7-12)
 // -----------------------------------------------------------------------------
 

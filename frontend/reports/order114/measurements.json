@@ -8,7 +8,7 @@
       "archetype": "nattarbetaren",
       "face": "tacksam",
       "skinTone": "#7d5a3f",
-      "widthPx": 148.5,
+      "widthPx": 148.6,
       "heightPx": 460.4
     },
     {
@@ -48,7 +48,7 @@
       "archetype": "efter_skiftet",
       "face": "forvantansfull",
       "skinTone": "#c9a37b",
-      "widthPx": 168.8,
+      "widthPx": 168.9,
       "heightPx": 438.7
     },
     {
@@ -64,12 +64,12 @@
       "archetype": "turisten",
       "face": "nyfiken",
       "skinTone": "#a67c5c",
-      "widthPx": 160.2,
+      "widthPx": 160.3,
       "heightPx": 439.5
     }
   ],
   "figureWidthMin": 109.4,
-  "figureWidthMax": 168.8,
+  "figureWidthMax": 168.9,
   "figureWidthMean": 138.4,
   "figuresAt140pxThreshold": 4,
   "figuresAt120pxLenience": 5,

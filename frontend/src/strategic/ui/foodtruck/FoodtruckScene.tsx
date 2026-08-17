@@ -22,6 +22,7 @@ import { useSimState } from '../../simulation/SimulationProvider';
 import type { WeatherConditions } from '../../types';
 import { Figure } from './Figure';
 import { idlePose, walkPose, variantForId, RIG_INK, RIG_LINE, RIG_GROUND, RIG_ACCENT } from './rig';
+import { RIG_PROTO_MAX_WIDTH_AT_SCALE_1 } from './rig';
 import type { Pose, FigureVariant } from './rig';
 import { assignArchetype, assignSkinTone, FOODTRUCK_ARCHETYPES, applyArchetypeMod } from './archetypes';
 import type { FoodtruckArchetype } from './archetypes';
@@ -60,36 +61,35 @@ const HATCH_Y = WAGON_TOP + 120;
 // gäst. Slot 0 är närmast luckan, resten sträcker sig åt vänster.
 // ORDER 114 Steg 2 DoD 3 — skalning kalibrerad mot faktiskt CSS-bredd.
 //
-// **Rättad 2026-08-17** efter VO-fynd mot faces.png:
-//   1. Non-uniform x/y-skala i Figure.tsx bröt proportionerna (fixat
-//      i Figure.tsx — uniform scale bara).
-//   2. QUEUE_SLOT_SPACING = 280 räckte inte — figurbredder efter
-//      heightMult + arm-extension når 260-300 SVG-units → överlapp.
-//   3. Accent-remsan (röd halsring) syntes som obruten linje över
-//      alla figurer — konsekvens av överlapp (löser med spacing-fix).
+// **Rättad 2026-08-17 (rev 2)** efter VO-fynd mot faces.png:
+//   Härleder ALLA positions-mått ur `QUEUE_FIGURE_SCALE` +
+//   `RIG_PROTO_MAX_WIDTH_AT_SCALE_1` (definierad i rig.ts från
+//   prototypens uppmätta geometri). Inga hårdkodade pixel-värden
+//   för spacing/offset — ändras scale i framtiden följer allt annat
+//   automatiskt. Tidigare buggen "överlappande figurer" berodde på att
+//   QUEUE_SLOT_SPACING satts numeriskt (400) medan scale bumpades
+//   från 1.05 → 2.5 utan att spacing följde med.
 //
-// **Fynd per §6:** 140 CSS-px per figur kan INTE nås vid nuvarande
-// scen-bredd (1216 CSS-px när panelerna tar sitt) utan att figurerna
-// dominerar hela vertikal-axeln. Figur-aspect torso 62 : totalhöjd 250
-// betyder 140 px bred = 560 px hög = 52% av scen-höjden. Ordertexten
-// §6 vill att detta rapporteras rakt, inte lösas genom att krympa
-// figurerna.
-//
-// **Beslut:** scale 2.5 som praktisk läsbarhetströskel. Ansikts-yta
-// ~68 CSS-px, ögon på ~10 px — läsbara uttryck. Full 140 CSS-px kräver
-// bredare scen (följdorder).
+// **Fynd per §6 (kvarstår):** 140 CSS-px per figur kan INTE nås vid
+// nuvarande scen-bredd (1216 CSS-px). Figur-aspect torso 62 : totalhöjd
+// 316 betyder 140 CSS-px bred = 630 CSS-px hög = 58% av scen-höjden.
+// Full 140 CSS-px kräver bredare scen (följdorder).
 const QUEUE_FIGURE_SCALE = 2.5;
-// Slot-spacing måste tåla figurens FULLA bredd inklusive:
-//   * torso 62 SVG × scale 2.5 = 155 units
-//   * heightMult 1.05 (nattarbetaren) = +5%
-//   * arm-extension från walkPose/idlePose (armFar sticker ut ±20° ×
-//     armlängd 48 ≈ 30 units)
-//   * marginal så figurerna inte råkar tangera vid pose-frame-övergång
-// Total ≈ 155 + 30 + marginal → 300 units minimum för att undvika
-// visuell överlappning. 400 units ger tydlig luft mellan figurer och
-// bryter den obrutna accent-band-linjen VO flaggade.
-const QUEUE_SLOT_SPACING = 400;
-const QUEUE_FIRST_X = WAGON_LEFT + WAGON_WIDTH * 0.30;  // första slotten
+
+// **Härledda spacing-konstanter** — allt skalas automatiskt med
+// `QUEUE_FIGURE_SCALE`.
+//
+// FIGURE_MAX_WIDTH_UNITS = prototypens max-bredd (torso + arm-swing
+// vid walkPose amp=1.0) × scale. Se rig.ts:RIG_PROTO_MAX_WIDTH_AT_SCALE_1
+// för härledningen (torso 62 + arm-swing ±47 = 156 units).
+const FIGURE_MAX_WIDTH_UNITS = RIG_PROTO_MAX_WIDTH_AT_SCALE_1 * QUEUE_FIGURE_SCALE;
+// Safety-marginal: 40% extra luft mellan figurers ytterkanter så
+// arm-frame-övergångar aldrig ger visuell tangens. 1.4× är kalibrerat
+// mot att accent-remsan bryts synligt mellan slots.
+const SPACING_SAFETY_MARGIN = 1.4;
+// Slot-spacing = max-figur-bredd × safety-marginal. Härledd, INTE
+// hårdkodad. Vid scale 2.5: 156 × 2.5 × 1.4 = 546 units.
+const QUEUE_SLOT_SPACING = Math.round(FIGURE_MAX_WIDTH_UNITS * SPACING_SAFETY_MARGIN);
 const QUEUE_Y = STREET_TOP + 380;                        // figurernas fot-y
 
 // Karta i nedre högra hörnet (§2.6 + DoD 9). 180 px är golvet under
@@ -130,20 +130,24 @@ const STAFF_SCALE = 1.6;
 // TILLSTÅND, renderaren bestämmer VAR i scenen tillståndet visas.
 const COUNTER_X = HATCH_X + HATCH_W / 2;
 const COUNTER_Y = QUEUE_Y;
-// Sido-offset så flera ordering/paying-gäster inte överlappar
-// vid luckan. Skalat proportionellt mot QUEUE_FIGURE_SCALE 2.5 +
-// samma marginal-hänsyn som QUEUE_SLOT_SPACING (200 = halva slot-
-// spacing, räcker eftersom counter-figurer inte gungar med
-// walkPose amp).
-const COUNTER_STACK_OFFSET = 200;
-// Arriving-fältet — vänster om kö-back. Spacing skalat proportionellt
-// mot QUEUE_SLOT_SPACING så överlapp inte uppstår mellan arriving-
-// figurer i motion.
+// Counter-stack sprider figurer TILL HÖGER (bort från kön). Halva
+// slot-spacing räcker eftersom counter-figurer står stilla (idle-pose,
+// ingen arm-swing). Härledd, inte hårdkodad.
+const COUNTER_STACK_OFFSET = Math.round(QUEUE_SLOT_SPACING * 0.5);
+// Första kö-slotten härleds från COUNTER_X så att slot 0 är exakt
+// QUEUE_SLOT_SPACING vänster om counter-mitten. Utan denna härledning
+// (t.ex. tidigare `QUEUE_FIRST_X = WAGON_LEFT + WAGON_WIDTH * 0.30`)
+// blev avståndet mellan slot 0 och counter-figurer < slot-spacing →
+// counter-ordering-figurer överlappade första waiting-gästen. Med
+// härledning skjuts hela kön automatiskt när QUEUE_SLOT_SPACING bumpas.
+const QUEUE_FIRST_X = COUNTER_X - QUEUE_SLOT_SPACING;
+// Arriving-fältet — vänster om kö-back. Samma spacing som kön så
+// gående-in-figurer inte överlappar vid pose-frame-övergång.
 const ARRIVING_START_X = 100;
-const ARRIVING_SPACING = 380;
+const ARRIVING_SPACING = QUEUE_SLOT_SPACING;
 // Leaving-fältet — höger om vagnen, gående ut.
 const LEAVING_START_X = SCENE_VIEWBOX_W - 220;
-const LEAVING_SPACING = 380;
+const LEAVING_SPACING = QUEUE_SLOT_SPACING;
 
 // -----------------------------------------------------------------------------
 // Animation-loop. requestAnimationFrame + tidsvariabel som pumpas till
