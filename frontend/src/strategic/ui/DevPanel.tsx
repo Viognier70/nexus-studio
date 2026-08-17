@@ -21,6 +21,7 @@ import { GRAY_BOX_CAMERA } from '../content/grythyttan';
 import { economicReadingNormalised } from '../simulation/cashReading';
 import { useSimState } from '../simulation/SimulationProvider';
 import { usePlayerBusinessInterior } from '../business/interiorLayout';
+import { businessHasSeats } from '../business/businessClass';
 import { fpsMeter } from '../../lib/fpsMeter';
 import { pixelSampler } from '../../lib/pixelSampler';
 import { harnessParams } from '../testHarness/urlParams';
@@ -59,7 +60,11 @@ export function DevPanel({ lastKey }: Props) {
   // dive. `layout.seats.length` is the runtime echo of TOTAL_SEATS —
   // if it disagrees with policies.capacity, a `!` suffix flags the
   // drift so the mismatch cannot be silently missed.
-  const layout = usePlayerBusinessInterior();
+  // ORDER 113 fel 1 uppföljning — passera businessClass så foodtruck
+  // får `null` tillbaka (ingen matsal). Utan detta returnerade hooken
+  // restaurangens 16-stols-interior även för foodtruck och DRIFT-flaggan
+  // sköt permanent falskt larm eftersom layoutSeats=16 vs capacity=9.
+  const layout = usePlayerBusinessInterior(sim.businessClass);
   // ORDER 090 §5 (finding 3) — camera distance polled on the same
   // 250 ms cadence as FPS. Interior scene (guests, staff, tables)
   // is culled outside restaurantInteriorFade [mid−half, mid+half],
@@ -114,7 +119,18 @@ export function DevPanel({ lastKey }: Props) {
   const seatedLive = sim.seatedIds.length;
   const capacity = sim.policies.capacity;
   const layoutSeats = layout?.seats.length ?? 0;
-  const seatDrift = layout != null && layoutSeats !== capacity;
+  // ORDER 113 fel 1 uppföljning — DRIFT-check gate:ad på verksamhet.
+  // För foodtruck (`hasSeats=false`) är layout==null ett förväntat
+  // tillstånd, inte drift. Layout-seats-vs-capacity-jämförelsen är en
+  // restaurangs- / värdshusspecifik sanity-check: fysiska stolar i
+  // scenen ska matcha policies.capacity. Verksamheter utan matsal
+  // mäter kapacitet som kö-längd (se `seatsFree` i businessClass.ts),
+  // en dimension som layoutSeats inte försöker representera. Utan
+  // denna gate loggade DevPanel `layout.seats=16 (DRIFT)` permanent
+  // för foodtruck där capacity=9 — falsklarm som förblindade riktiga
+  // drift-signaler.
+  const hasSeats = businessHasSeats(sim.businessClass);
+  const seatDrift = hasSeats && layout != null && layoutSeats !== capacity;
 
   // ORDER 045 weather + world-factor line. Kept compact so the dev
   // panel stays a two-liner most of the time and grows to three

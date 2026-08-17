@@ -19,7 +19,7 @@
 // KnowledgeClass mappas till `'värdshus'` här och läcker aldrig till
 // spelaren (grep-testet i ORDER 109 §5 DoD 6 fångar det).
 
-import type { BankMeetingKlass } from '../types';
+import type { BankMeetingKlass, SimulationState } from '../types';
 import { TOTAL_SEATS } from './interiorLayout';
 
 export type BusinessClass = 'restaurant' | 'foodtruck' | 'värdshus';
@@ -129,4 +129,28 @@ export function businessHasMiseEnPlace(business: BusinessClass): boolean {
 
 export function businessHasOvernight(business: BusinessClass): boolean {
   return BUSINESS_CLASS_CONFIG[business].hasOvernight;
+}
+
+// ORDER 113 fel 1 uppföljning — per-verksamhet räknare för "hur många
+// fler gäster får plats?". Ersätter tidigare implicita antagande att
+// `layout.seats.length - seatedIds.length` gäller alla verksamheter.
+//
+// Restaurant/Värdshus: fysiska stolar minus sittande.
+//   `capacity - seatedIds.length`
+//
+// Food truck: kön ÄR verksamheten (SD-003 §3). "Fri plats" betyder
+// "kön är inte full än", inte "stol ledig". Foodtruck har `hasSeats
+// === false`, ingen matsal, ingen `seatedIds` att räkna.
+//   `capacity - waitingIds.length`
+//
+// Alla returer är klämpade ≥ 0 så anropssidan slipper värja mot
+// negativa värden när waiting/seated råkar överstiga capacity (kan
+// hända om capacity sänks mid-service via policy-ändring).
+export function seatsFree(state: SimulationState): number {
+  const cap = state.policies.capacity;
+  if (!businessHasSeats(state.businessClass)) {
+    // Foodtruck-kön: hur många fler platser i kön finns kvar
+    return Math.max(0, cap - state.waitingIds.length);
+  }
+  return Math.max(0, cap - state.seatedIds.length);
 }

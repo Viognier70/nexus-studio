@@ -1,0 +1,2025 @@
+{
+  "order": "ORDER 113 fel 1 diag",
+  "date": "2026-08-17",
+  "codeInDevServer": {
+    "hasGuard": true,
+    "hasFifoGate": true
+  },
+  "initial": {
+    "simTime": 1,
+    "businessClass": "foodtruck",
+    "capacity": 9,
+    "period": "morning",
+    "waiting": 0,
+    "seated": 0,
+    "totalGuests": 0,
+    "byState": {},
+    "awaitingScenarioChoice": false,
+    "scenarioId": null,
+    "scenarioPhase": "idle",
+    "doorsOpened": false,
+    "waitingAtOpening": 0,
+    "openingEndsAt": null,
+    "staff": [
+      {
+        "id": "staff-0",
+        "role": "värd",
+        "taskType": null,
+        "targetGuestId": null
+      },
+      {
+        "id": "staff-1",
+        "role": "servitör",
+        "taskType": null,
+        "targetGuestId": null
+      },
+      {
+        "id": "staff-2",
+        "role": "kock",
+        "taskType": null,
+        "targetGuestId": null
+      }
+    ]
+  },
+  "afterOpen": {
+    "simTime": 1,
+    "businessClass": "foodtruck",
+    "capacity": 9,
+    "period": "lunch",
+    "waiting": 0,
+    "seated": 0,
+    "totalGuests": 0,
+    "byState": {},
+    "awaitingScenarioChoice": false,
+    "scenarioId": null,
+    "scenarioPhase": "idle",
+    "doorsOpened": false,
+    "waitingAtOpening": 4,
+    "openingEndsAt": 11,
+    "staff": [
+      {
+        "id": "staff-0",
+        "role": "värd",
+        "taskType": null,
+        "targetGuestId": null
+      },
+      {
+        "id": "staff-1",
+        "role": "servitör",
+        "taskType": null,
+        "targetGuestId": null
+      },
+      {
+        "id": "staff-2",
+        "role": "kock",
+        "taskType": null,
+        "targetGuestId": null
+      }
+    ]
+  },
+  "summary": {
+    "simTimeStart": 6,
+    "simTimeEnd": 202.6,
+    "samples": 40,
+    "samplesWithGuestsPresent": 24,
+    "maxWaiting": 1,
+    "maxOrdering": 3,
+    "scenariosAutoResolved": 0,
+    "finalWaiting": 0,
+    "finalTotalGuests": 0
+  },
+  "scenarioAutoResolves": [],
+  "lastTenSnapshots": [
+    {
+      "simTime": 157.2,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {},
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null
+        }
+      ]
+    },
+    {
+      "simTime": 162.4,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {},
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null
+        }
+      ]
+    },
+    {
+      "simTime": 167.4,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 1,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "waiting": 1
+      },
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": "greet",
+          "targetGuestId": "gst-22"
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": "greet",
+          "targetGuestId": "gst-22"
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": "greet",
+          "targetGuestId": "gst-22"
+        }
+      ]
+    },
+    {
+      "simTime": 172.4,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "paying": 1
+      },
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null
+        }
+      ]
+    },
+    {
+      "simTime": 177.4,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "paying": 1
+      },
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null
+        }
+      ]
+    },
+    {
+      "simTime": 182.4,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "declined": 1,
+        "ordering": 1
+      },
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": "order",
+          "targetGuestId": "gst-24"
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": "order",
+          "targetGuestId": "gst-24"
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": "order",
+          "targetGuestId": "gst-24"
+        }
+      ]
+    },
+    {
+      "simTime": 187.4,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "paying": 1
+      },
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null
+        }
+      ]
+    },
+    {
+      "simTime": 192.6,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "declined": 1
+      },
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": "clear",
+          "targetGuestId": "gst-24"
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": "clear",
+          "targetGuestId": "gst-24"
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": "clear",
+          "targetGuestId": "gst-24"
+        }
+      ]
+    },
+    {
+      "simTime": 197.6,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {},
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null
+        }
+      ]
+    },
+    {
+      "simTime": 202.6,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {},
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null
+        }
+      ]
+    }
+  ],
+  "allSnapshots": [
+    {
+      "simTime": 6,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {},
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": false,
+      "waitingAtOpening": 4,
+      "openingEndsAt": 11,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null
+        }
+      ]
+    },
+    {
+      "simTime": 11.2,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 4,
+      "byState": {
+        "arriving": 4
+      },
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null
+        }
+      ]
+    },
+    {
+      "simTime": 16.2,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 1,
+      "seated": 0,
+      "totalGuests": 4,
+      "byState": {
+        "ordering": 3,
+        "waiting": 1
+      },
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": "greet",
+          "targetGuestId": "gst-8"
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": "greet",
+          "targetGuestId": "gst-8"
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": "greet",
+          "targetGuestId": "gst-8"
+        }
+      ]
+    },
+    {
+      "simTime": 21.4,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 4,
+      "byState": {
+        "paying": 2,
+        "ordering": 2
+      },
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": "order",
+          "targetGuestId": "gst-7"
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": "order",
+          "targetGuestId": "gst-7"
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": "order",
+          "targetGuestId": "gst-7"
+        }
+      ]
+    },
+    {
+      "simTime": 26.4,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 5,
+      "byState": {
+        "paying": 4,
+        "ordering": 1
+      },
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": "order",
+          "targetGuestId": "gst-10"
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": "order",
+          "targetGuestId": "gst-10"
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": "order",
+          "targetGuestId": "gst-10"
+        }
+      ]
+    },
+    {
+      "simTime": 31.4,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 4,
+      "byState": {
+        "declined": 1,
+        "leaving": 1,
+        "paying": 2
+      },
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": "clear",
+          "targetGuestId": "gst-7"
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": "clear",
+          "targetGuestId": "gst-7"
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": "clear",
+          "targetGuestId": "gst-7"
+        }
+      ]
+    },
+    {
+      "simTime": 36.4,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "declined": 1,
+        "leaving": 1
+      },
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": "clear",
+          "targetGuestId": "gst-10"
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": "clear",
+          "targetGuestId": "gst-10"
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": "clear",
+          "targetGuestId": "gst-10"
+        }
+      ]
+    },
+    {
+      "simTime": 41.4,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "ordering": 1
+      },
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": "order",
+          "targetGuestId": "gst-12"
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": "order",
+          "targetGuestId": "gst-12"
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": "order",
+          "targetGuestId": "gst-12"
+        }
+      ]
+    },
+    {
+      "simTime": 46.4,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "paying": 1
+      },
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null
+        }
+      ]
+    },
+    {
+      "simTime": 51.6,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "leaving": 1
+      },
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": "clear",
+          "targetGuestId": "gst-12"
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": "clear",
+          "targetGuestId": "gst-12"
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": "clear",
+          "targetGuestId": "gst-12"
+        }
+      ]
+    },
+    {
+      "simTime": 56.6,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {},
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null
+        }
+      ]
+    },
+    {
+      "simTime": 61.6,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {},
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null
+        }
+      ]
+    },
+    {
+      "simTime": 66.6,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {},
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null
+        }
+      ]
+    },
+    {
+      "simTime": 71.6,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {},
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null
+        }
+      ]
+    },
+    {
+      "simTime": 76.8,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {},
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null
+        }
+      ]
+    },
+    {
+      "simTime": 81.8,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {},
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null
+        }
+      ]
+    },
+    {
+      "simTime": 86.8,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {},
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null
+        }
+      ]
+    },
+    {
+      "simTime": 91.8,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 1,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "waiting": 1
+      },
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": "greet",
+          "targetGuestId": "gst-14"
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": "greet",
+          "targetGuestId": "gst-14"
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": "greet",
+          "targetGuestId": "gst-14"
+        }
+      ]
+    },
+    {
+      "simTime": 96.8,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "paying": 1
+      },
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null
+        }
+      ]
+    },
+    {
+      "simTime": 101.8,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "paying": 1,
+        "ordering": 1
+      },
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": "order",
+          "targetGuestId": "gst-16"
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": "order",
+          "targetGuestId": "gst-16"
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": "order",
+          "targetGuestId": "gst-16"
+        }
+      ]
+    },
+    {
+      "simTime": 107,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "paying": 1,
+        "ordering": 1
+      },
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": "order",
+          "targetGuestId": "gst-18"
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": "order",
+          "targetGuestId": "gst-18"
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": "order",
+          "targetGuestId": "gst-18"
+        }
+      ]
+    },
+    {
+      "simTime": 112,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "leaving": 1,
+        "paying": 1
+      },
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": "clear",
+          "targetGuestId": "gst-16"
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": "clear",
+          "targetGuestId": "gst-16"
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": "clear",
+          "targetGuestId": "gst-16"
+        }
+      ]
+    },
+    {
+      "simTime": 117,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "declined": 1
+      },
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null
+        }
+      ]
+    },
+    {
+      "simTime": 122,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "ordering": 1
+      },
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": "order",
+          "targetGuestId": "gst-20"
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": "order",
+          "targetGuestId": "gst-20"
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": "order",
+          "targetGuestId": "gst-20"
+        }
+      ]
+    },
+    {
+      "simTime": 127,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "paying": 1
+      },
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null
+        }
+      ]
+    },
+    {
+      "simTime": 132,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "declined": 1
+      },
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": "clear",
+          "targetGuestId": "gst-20"
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": "clear",
+          "targetGuestId": "gst-20"
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": "clear",
+          "targetGuestId": "gst-20"
+        }
+      ]
+    },
+    {
+      "simTime": 137.2,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {},
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null
+        }
+      ]
+    },
+    {
+      "simTime": 142.2,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {},
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null
+        }
+      ]
+    },
+    {
+      "simTime": 147.2,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {},
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null
+        }
+      ]
+    },
+    {
+      "simTime": 152.2,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {},
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null
+        }
+      ]
+    },
+    {
+      "simTime": 157.2,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {},
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null
+        }
+      ]
+    },
+    {
+      "simTime": 162.4,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {},
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null
+        }
+      ]
+    },
+    {
+      "simTime": 167.4,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 1,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "waiting": 1
+      },
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": "greet",
+          "targetGuestId": "gst-22"
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": "greet",
+          "targetGuestId": "gst-22"
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": "greet",
+          "targetGuestId": "gst-22"
+        }
+      ]
+    },
+    {
+      "simTime": 172.4,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "paying": 1
+      },
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null
+        }
+      ]
+    },
+    {
+      "simTime": 177.4,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "paying": 1
+      },
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null
+        }
+      ]
+    },
+    {
+      "simTime": 182.4,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "declined": 1,
+        "ordering": 1
+      },
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": "order",
+          "targetGuestId": "gst-24"
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": "order",
+          "targetGuestId": "gst-24"
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": "order",
+          "targetGuestId": "gst-24"
+        }
+      ]
+    },
+    {
+      "simTime": 187.4,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "paying": 1
+      },
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null
+        }
+      ]
+    },
+    {
+      "simTime": 192.6,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "declined": 1
+      },
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": "clear",
+          "targetGuestId": "gst-24"
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": "clear",
+          "targetGuestId": "gst-24"
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": "clear",
+          "targetGuestId": "gst-24"
+        }
+      ]
+    },
+    {
+      "simTime": 197.6,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {},
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null
+        }
+      ]
+    },
+    {
+      "simTime": 202.6,
+      "businessClass": "foodtruck",
+      "capacity": 9,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {},
+      "awaitingScenarioChoice": false,
+      "scenarioId": null,
+      "scenarioPhase": "idle",
+      "doorsOpened": true,
+      "waitingAtOpening": 4,
+      "openingEndsAt": null,
+      "staff": [
+        {
+          "id": "staff-0",
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-1",
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null
+        },
+        {
+          "id": "staff-2",
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null
+        }
+      ]
+    }
+  ],
+  "consoleEvents": [
+    {
+      "type": "debug",
+      "text": "[vite] connecting...",
+      "location": {
+        "url": "http://localhost:5173/@vite/client",
+        "line": 494,
+        "column": 8,
+        "lineNumber": 494,
+        "columnNumber": 8
+      }
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected.",
+      "location": {
+        "url": "http://localhost:5173/@vite/client",
+        "line": 617,
+        "column": 14,
+        "lineNumber": 617,
+        "columnNumber": 14
+      }
+    },
+    {
+      "type": "info",
+      "text": "%cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold",
+      "location": {
+        "url": "http://localhost:5173/node_modules/.vite/deps/chunk-YCOEJRGR.js?v=5caa0876",
+        "line": 21550,
+        "column": 24,
+        "lineNumber": 21550,
+        "columnNumber": 24
+      }
+    },
+    {
+      "type": "log",
+      "text": "[PixelSampleProbe] module loaded",
+      "location": {
+        "url": "http://localhost:5173/src/lib/PixelSampleProbe.tsx",
+        "line": 25,
+        "column": 10,
+        "lineNumber": 25,
+        "columnNumber": 10
+      }
+    },
+    {
+      "type": "info",
+      "text": "[interior] queue=%d seated=%d/%d layout.seats=%d%s 1 0 9 0 ",
+      "location": {
+        "url": "http://localhost:5173/src/strategic/ui/DevPanel.tsx?t=1786959795560",
+        "line": 87,
+        "column": 12,
+        "lineNumber": 87,
+        "columnNumber": 12
+      }
+    }
+  ],
+  "errorsAndWarnings": []
+}
