@@ -93,9 +93,20 @@ const FIGURE_MAX_WIDTH_UNITS = RIG_PROTO_MAX_WIDTH_AT_SCALE_1 * QUEUE_FIGURE_SCA
 // arm-frame-övergångar aldrig ger visuell tangens. 1.4× är kalibrerat
 // mot att accent-remsan bryts synligt mellan slots.
 const SPACING_SAFETY_MARGIN = 1.4;
-// Slot-spacing = max-figur-bredd × safety-marginal. Härledd, INTE
-// hårdkodad. Vid scale 2.5: 156 × 2.5 × 1.4 = 546 units.
+// Slot-spacing FÖR GÅENDE figurer (arriving, leaving) = max-figur-bredd
+// × safety-marginal. Vid scale 2.0: 156 × 2 × 1.4 = 437 units. Behövs
+// för walkPose eftersom arm-swing amp 1.0 sträcker figuren max-bredd.
 const QUEUE_SLOT_SPACING = Math.round(FIGURE_MAX_WIDTH_UNITS * SPACING_SAFETY_MARGIN);
+
+// ORDER 116 §2.3 fix — IDLE figurer (waiting, ordering, paying) står
+// stilla; arm-swing peakar inte. Effektiv bredd är torso ~62 + små
+// idle-svängar (~24 pixel) = ~86 units-mm × scale = 172 units vid
+// scale 2. Med samma 1.4× safety-marginal blir spacing 240 units —
+// nästan hälften av walking-spacingen. Det låter kön STÅ på gatan i
+// stället för att breda ut sig över hela scenen.
+const IDLE_TORSO_UNITS = 86;
+const IDLE_SPACING = Math.round(IDLE_TORSO_UNITS * QUEUE_FIGURE_SCALE * SPACING_SAFETY_MARGIN);
+
 const QUEUE_Y = STREET_TOP + 380;                        // figurernas fot-y
 
 // Karta i nedre högra hörnet (§2.6 + DoD 9). 180 px är golvet under
@@ -137,24 +148,56 @@ const STAFF_Y = HATCH_Y + Math.round(314 * STAFF_SCALE);  // = 340 + 267 = 607
 // wagon/hatch/queue-slot). Ingen mappning från sim.position (m) sker;
 // scen-positionering är rent state-baserad — sim-lagret bestämmer
 // TILLSTÅND, renderaren bestämmer VAR i scenen tillståndet visas.
-const COUNTER_X = HATCH_X + HATCH_W / 2;
+// ORDER 116 §2.3 — COUNTER_X borttagen som separat konstant; den
+// ersattes av ORDERING_X_CENTER (=samma värde) för att signalera
+// att positionen är EN AV TRE slots vid luckan, inte den enda.
 const COUNTER_Y = QUEUE_Y;
-// **ORDER 114 rev 6** — counter-stack borttagen: rendering-logiken i
-// FoodtruckScene placerar nu bara EN ordering-guest vid counter, resten
-// hamnar i queue-position. Paying-guests staplas höger om counter med
-// full QUEUE_SLOT_SPACING mellan varje.
+
+// ORDER 116 §2.3 fix — scenen delas i FASTA ZONER så state-typer
+// aldrig kollider. Före fix låg queue-first-x = COUNTER_X - spacing,
+// vilket överlappade med ordering[1..] som räknade "bakom slot 0".
+// Nu:
 //
-// Första kö-slotten härleds från COUNTER_X så att slot 0 är exakt
-// QUEUE_SLOT_SPACING vänster om counter-mitten. Utan denna härledning
-// (t.ex. tidigare `QUEUE_FIRST_X = WAGON_LEFT + WAGON_WIDTH * 0.30`)
-// blev avståndet mellan slot 0 och counter-figurer < slot-spacing →
-// counter-ordering-figurer överlappade första waiting-gästen. Med
-// härledning skjuts hela kön automatiskt när QUEUE_SLOT_SPACING bumpas.
-const QUEUE_FIRST_X = COUNTER_X - QUEUE_SLOT_SPACING;
-// Arriving-fältet — vänster om kö-back. Samma spacing som kön så
-// gående-in-figurer inte överlappar vid pose-frame-övergång.
-const ARRIVING_START_X = 100;
-const ARRIVING_SPACING = QUEUE_SLOT_SPACING;
+//   arriving   → x=[60..500], WALKING_SPACING, max 2 synliga
+//   waiting    → x=[?..HATCH_X-60], IDLE_SPACING, extending LEFT
+//   ordering   → tre slots ACROSS hatch (H_L, H_C, H_R)
+//   serving    → samma tre slots (ordering-figuren har hunnit vidare
+//                 när serving-figuren renderas — sim ger dem samma
+//                 x-slot över tiden, det syns i frame som en enda
+//                 pågående överlämning)
+//   paying     → höger om luckan, IDLE_SPACING åt höger
+//   leaving    → från LEAVING_START_X, WALKING_SPACING åt höger
+//   eating     → uteplats-borden (som förut)
+//
+// Waiting-kön är den enda som kan bli lång; övriga är kapade av
+// staff-count (3) eller är korta faser. Overflow-hantering per zon:
+// waiting-slot > 5 → 6:e ryms partiell vid vänsterkant (2432-bred
+// scen tål 5 kö + zon-header 200 units).
+
+// Ordering-slots ACROSS luckan så flera gäster ryms utan att stå
+// bakom varandra. Placerade på hatch-vidd så staffen inuti syns
+// mellan dem.
+const ORDERING_X_LEFT = HATCH_X + 100;
+const ORDERING_X_CENTER = HATCH_X + HATCH_W / 2;
+const ORDERING_X_RIGHT = HATCH_X + HATCH_W - 100;
+const ORDERING_SLOTS = [ORDERING_X_LEFT, ORDERING_X_CENTER, ORDERING_X_RIGHT] as const;
+
+// Kö-first-x: strax vänster om luckans vänsterkant. Kön extending
+// LEFT därifrån med IDLE_SPACING. Vid IDLE_SPACING 240: 6 slots
+// ryms mellan x=876 och x=-324 (5 helt på scen, 6:e partiell).
+const QUEUE_FIRST_X = HATCH_X - 60;
+
+// Arriving-fältet — vänster kant. Kort räckvidd så figurer inte
+// vandrar in i kö-zonen. Max 2 synliga; sim spawnar sällan >2
+// samtidigt så overflow är sällsynt.
+const ARRIVING_START_X = 60;
+const ARRIVING_SPACING = Math.round(QUEUE_SLOT_SPACING * 0.7);   // ~306 units, tätare än full walking
+const ARRIVING_END_X = HATCH_X - QUEUE_SLOT_SPACING;   // sluta innan kö-first
+
+// Paying-fältet — höger om luckan (steget efter serving är att kliva
+// åt sidan). IDLE-spacing eftersom paying inte går.
+const PAYING_START_X = HATCH_X + HATCH_W + 80;
+
 // Leaving-fältet — höger om vagnen, gående ut.
 const LEAVING_START_X = SCENE_VIEWBOX_W - 220;
 const LEAVING_SPACING = QUEUE_SLOT_SPACING;
@@ -402,8 +445,9 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
   // Innan denna fix trängdes alla ordering + paying vid counter med
   // halva slot-spacing (218 units) → visuellt kluster framför luckan.
 
-  // Räkna waiting-figurer först så vi vet var kö-back är.
-  const totalWaitingCount = sim.waitingIds.length;
+  // ORDER 116 §2.3 — `totalWaitingCount` togs bort tillsammans med
+  // den gamla ordering-behind-queue-logiken. Ordering använder nu
+  // ORDERING_SLOTS direkt och räknar inte in i waiting-slot-indexet.
 
   for (const g of sim.guests) {
     const ph = phaseFor(g.id);
@@ -428,7 +472,10 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
     switch (g.state) {
       case 'waiting': {
         const i = waitingIdxById.get(g.id) ?? 0;
-        x = QUEUE_FIRST_X - QUEUE_SLOT_SPACING * i;
+        // ORDER 116 §2.3 — IDLE_SPACING (240 units) i stället för
+        // QUEUE_SLOT_SPACING (437) så 5-6 gäster får plats på gatan
+        // utan att köden breder ut sig över hela scenen.
+        x = QUEUE_FIRST_X - IDLE_SPACING * i;
         y = QUEUE_Y;
         // De två närmaste ligger i idle (väntar sin tur); resten
         // "shufflar" lätt med walkPose vid låg amplitud för att
@@ -443,26 +490,43 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
         break;
       }
       case 'ordering': {
-        if (orderingIdx === 0) {
-          // Första ordering-guest: AT counter
-          x = COUNTER_X;
-          y = COUNTER_Y;
-        } else {
-          // Ytterligare ordering: bakom slot 0 i queue-position
-          // (representerar "nästa i tur"). Läggs efter alla waiting-
-          // figurer så överlapp med kö undviks.
-          x = QUEUE_FIRST_X - QUEUE_SLOT_SPACING * (totalWaitingCount + orderingIdx - 1);
-          y = QUEUE_Y;
-        }
+        // ORDER 116 §2.3 — tre slots ACROSS luckan (H_L, H_C, H_R)
+        // så flera ordering-figurer ryms utan att kluster:a bakom
+        // varandra. Sim har max ~staffCount ordering samtidigt (3);
+        // slotarna räcker. Overflow (orderingIdx > 2, sällsynt):
+        // klämpas till sista slot så figuren fortsatt renderas
+        // vid luckan snarare än att teleportera in i kön.
+        const slotIdx = Math.min(orderingIdx, ORDERING_SLOTS.length - 1);
+        x = ORDERING_SLOTS[slotIdx];
+        y = COUNTER_Y;
         orderingIdx++;
         basePose = idlePose(T + ph * 2);
         facing = -1;   // vid counter/kö, tittar in i luckan (höger)
         break;
       }
+      case 'serving': {
+        // ORDER 115 rev 2 — 2,5-sek överlämningsfas mellan ordering
+        // och paying. ORDER 116 §2.3 — hamna på SAMMA slot som
+        // ordering använder (gästen står stilla i övergången); i
+        // praktiken har ordering-figuren hunnit vidare, så scenen
+        // läses som EN pågående överlämning. Använder egen räknare
+        // så flera serving-gäster (sällsynt) delar slotarna med
+        // pending ordering-gäster (aldrig samtidigt eftersom sim
+        // aldrig har både ordering och serving på samma sim-guest).
+        const slotIdx = Math.min(orderingIdx, ORDERING_SLOTS.length - 1);
+        x = ORDERING_SLOTS[slotIdx];
+        y = COUNTER_Y;
+        orderingIdx++;   // fortsätt räkna så nästa ordering hamnar bortom
+        // Något mer aktiv puls än ordering — signalerar mottagande.
+        basePose = idlePose(T * 1.6 + ph * 2);
+        facing = -1;
+        break;
+      }
       case 'paying': {
-        // Paying: höger om counter (picked up food, stepping aside).
-        // Första paying: COUNTER_X + spacing. Andra: + 2*spacing. Osv.
-        x = COUNTER_X + QUEUE_SLOT_SPACING * (payingIdx + 1);
+        // ORDER 116 §2.3 — paying-zon: höger om luckan, IDLE_SPACING.
+        // paying-gäst har fått mat, kliver åt sidan för att gå. Tighter
+        // spacing eftersom de står stilla en kort stund.
+        x = PAYING_START_X + payingIdx * IDLE_SPACING;
         y = COUNTER_Y;
         payingIdx++;
         // Något mer aktiv puls än ordering — signalerar transaktion.
@@ -470,23 +534,14 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
         facing = -1;   // fortsatt titta vänster mot luckan / kön
         break;
       }
-      case 'serving': {
-        // ORDER 115 rev 2 — 2.5-sek överlämningsfas mellan ordering och
-        // paying. Gästen står EXAKT vid counter (COUNTER_X), samma
-        // position som ordering-slot 0 — men eftersom ordering har
-        // slutförts finns ingen kollision (gästen har flyttats vidare
-        // i sim-loopen). Personalen sträcker sig ut med servePose i
-        // samma bild → prop-överlämningen syns.
-        x = COUNTER_X;
-        y = COUNTER_Y;
-        // Något mer aktiv puls än ordering — signalerar mottagande.
-        basePose = idlePose(T * 1.6 + ph * 2);
-        facing = -1;
-        break;
-      }
       case 'arriving': {
         const i = arrivingIdx++;
-        x = ARRIVING_START_X + i * ARRIVING_SPACING;
+        // ORDER 116 §2.3 — klämpa arriving till ARRIVING_END_X så
+        // figuren aldrig hamnar i kö-zonen. Overflow (>2 samtidiga
+        // arriving) klämpas till zon-ände; sim spawnar sällan >2
+        // samtidigt så det syns knappt.
+        const rawX = ARRIVING_START_X + i * ARRIVING_SPACING;
+        x = Math.min(rawX, ARRIVING_END_X);
         y = QUEUE_Y;
         basePose = walkPose((T * 0.8 + ph) % 1, 1.0);
         isWalking = true;
@@ -541,11 +596,28 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
     });
   }
 
-  // Kö-räknare för karta + meta-rad — bevarat separat så DoD 5:s test
-  // (antalet renderade figurer följer state.waitingIds) håller för
-  // 'waiting'-figurerna specifikt, samt så kartan visar kö-djup inte
-  // total-scen-räknare (vilket vore missvisande).
-  const queueCount = sim.waitingIds.length;
+  // Kö-räknare för karta + meta-rad.
+  //
+  // ORDER 116 §2.3 fix — före denna order läste `queueCount` bara
+  // `sim.waitingIds.length`, vilket gav "kö 0" i meta-raden så snart
+  // sim.staff-pipelinen hunnit ta första gästen ur waiting (även om
+  // fem ordering/serving/paying-figurer stod i rutan). Föråldrat
+  // eftersom FoodtruckScene efter ORDER 113 fel 2 renderar ALLA
+  // scen-relevanta states, inte bara waiting.
+  //
+  // Ny läsning: räknar alla figurer som "står vid luckan just nu",
+  // vilket är det spelaren läser som kö. Waiting + ordering + serving
+  // + paying. Arriving är på väg IN, inte i kö än; leaving är på väg
+  // UT. Eating är vid uteplatsen. Samma set som DevPanel:s
+  // queueLive-räknare för foodtruck — kontraktet mellan meta-raden
+  // och DevPanel bevisas i test (`meta-rad kö motsvarar DevPanel
+  // queueLive för foodtruck`).
+  const queueCount = sim.guests.filter((g) =>
+    g.state === 'waiting' ||
+    g.state === 'ordering' ||
+    g.state === 'serving' ||
+    g.state === 'paying'
+  ).length;
 
   // Gata-namn (SD-003 §3 "vyn står på gatan"). Använder Grythyttans
   // riktiga gatunamn — Kyrkbacken går längs Torgets södra sida.
@@ -964,6 +1036,69 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
             carrying={p.carrying}
           />
         ))}
+
+        {/* ORDER 116 §2.1 fix — prop-i-transit under serving-fasen.
+            Före denna fix satt propen enbart i gästens hand (från
+            serving-entry). VO läste inte överlämningen: "Skärmdumpen
+            visar propen i handen, inte MELLAN personal och gäst."
+            Nu ritas en extra prop-node som interpoleras från staff-
+            reach (STAFF_X) mot gästen under den 2,5 sim-sek fasen —
+            propen flyger över counter-linjen. Läses som "just nu
+            sträcker personalen fram maten". */}
+        {sim.guests
+          .filter((g) => g.state === 'serving')
+          .map((g) => {
+            const p = positionedGuests.find((x) => x.id === g.id);
+            if (!p) return null;
+            const dtInState = Math.max(0, sim.simTime - g.stateTime);
+            const progress = Math.max(0, Math.min(1, dtInState / 2.5));
+            // Startpunkt: strax utanför luckan i staffens hand-höjd.
+            // Slutpunkt: guest x + hand-offset (fram-hand nära luckan).
+            const START_X = STAFF_X + 40;    // staff-hand ut ur luckan
+            const END_X = p.x + 30;          // guest fram-hand
+            const propX = START_X + (END_X - START_X) * progress;
+            // Y: LUCKANS överkant (HATCH_Y = 340) — där staff-figurens
+            // hand faktiskt sträcker sig UT ur luckan. Gästen sträcker
+            // sig UPP mot samma nivå. Propen läses som "reser sig ur
+            // luckan, byter händer, sänks mot gästens hand". Före
+            // denna kalibrering låg propen vid y=608 (counter-linjen)
+            // — MITT I gästens torso, dold. Höjs till HATCH_Y + 30
+            // (=370) så den är över alla figur-toppar (huvud slutar
+            // ~y=390 för guest at QUEUE_Y+380).
+            const HANDOFF_Y = HATCH_Y + 30;
+            const parabola = -20 * (4 * progress * (1 - progress));
+            const propY = HANDOFF_Y + parabola;
+            // Prop-storlek match:ar Figure.tsx:renderCarrying skalad
+            // som gästen: carrying är 32×22 units × QUEUE_FIGURE_SCALE
+            // (2.0) = 64×44. Transit-propen tas samma storlek så
+            // spelaren läser dem som ETT objekt när gästen faktiskt
+            // tar emot i sista tick.
+            const PROP_W = 32 * QUEUE_FIGURE_SCALE;
+            const PROP_H = 22 * QUEUE_FIGURE_SCALE;
+            return (
+              <g key={`transit-${g.id}`} data-foodtruck-prop-transit={g.id}>
+                {/* Brun kartong-låda + accent-band — samma form och
+                    storlek som Figure.tsx:renderCarrying så gästens
+                    hand-prop och transit-propen läses som SAMMA objekt. */}
+                <rect
+                  x={propX - PROP_W / 2}
+                  y={propY - PROP_H / 2}
+                  width={PROP_W}
+                  height={PROP_H}
+                  fill="#8a6b3c"
+                  stroke={RIG_INK}
+                  strokeWidth={3}
+                />
+                <rect
+                  x={propX - PROP_W / 2}
+                  y={propY - 4}
+                  width={PROP_W}
+                  height={8}
+                  fill={RIG_ACCENT}
+                />
+              </g>
+            );
+          })}
 
         <StreetMap queueCount={queueCount} />
 

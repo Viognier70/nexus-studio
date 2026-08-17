@@ -132,7 +132,7 @@ export function DevPanel({ lastKey }: Props) {
   const queueLive = isFoodtruck
     ? sim.guests.filter((g) =>
         g.state === 'waiting' || g.state === 'arriving' ||
-        g.state === 'ordering' || g.state === 'paying'
+        g.state === 'ordering' || g.state === 'serving' || g.state === 'paying'
       ).length
     : sim.waitingIds.length;
   const seatedLive = isFoodtruck

@@ -306,10 +306,17 @@ describe('ORDER 113 fel 2 — FoodtruckScene renderar alla sim.guests-states', (
     expect(ids).toContain('d1');
   });
 
-  it('waitingIds-baserad kö-siffra räknar bara waiting-state, inte hela scenen', () => {
-    // Kartan och meta-raden visar KÖ = waitingIds.length, inte totalt
-    // antal figurer på scenen. Om kartan råknade alla renderade figurer
-    // skulle "KÖ 5" visas när bara 1 faktiskt står i kön.
+  it('kö-siffra räknar waiting|ordering|serving|paying — matchar DevPanel', () => {
+    // ORDER 116 §2.3 fix — före denna order räknade meta-raden bara
+    // sim.waitingIds.length. Det gav "kö 0" när 4 gäster syntes i
+    // bild (VO-rapporterat playtest-fynd), eftersom staff-pipelinen
+    // hann ta första gästen ur waiting så snart servicen började.
+    // Ny räkning: waiting + ordering + serving + paying = alla figurer
+    // vid luckan just nu. Arriving (på väg IN) och leaving (på väg
+    // UT) räknas separat. Samma set som DevPanel:s queueLive.
+    //
+    // För detta blandade state: 1 waiting + 1 ordering + 1 paying = 3
+    // (leaving räknas EJ som kö).
     const { container } = renderScene(stateWithMixedGuests([
       { id: 'w1', state: 'waiting' },
       { id: 'o1', state: 'ordering' },
@@ -317,8 +324,8 @@ describe('ORDER 113 fel 2 — FoodtruckScene renderar alla sim.guests-states', (
       { id: 'l1', state: 'leaving' }
     ]));
     const mapText = Array.from(container.querySelectorAll('text'))
-      .find((el) => el.textContent?.includes('kö 1'));
-    expect(mapText, `karta ska visa "kö 1" (bara w1 är i waiting), ej "kö 4"`).toBeTruthy();
+      .find((el) => el.textContent?.includes('kö 3'));
+    expect(mapText, `karta ska visa "kö 3" (w1+o1+p1); l1 är på väg ut`).toBeTruthy();
   });
 
   it('gäster i seated/dining renderas INTE (defensiv skip — foodtruck saknar matsal)', () => {
