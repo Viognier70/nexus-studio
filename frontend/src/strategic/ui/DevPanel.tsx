@@ -119,6 +119,15 @@ export function DevPanel({ lastKey }: Props) {
   const seatedLive = sim.seatedIds.length;
   const capacity = sim.policies.capacity;
   const layoutSeats = layout?.seats.length ?? 0;
+  // ORDER 114 §5 DoD 8 — "queue=" ska motsvara antalet synliga figurer.
+  // Före fel 2 var det trivialt uppfyllt: FoodtruckScene ritade bara
+  // waitingIds. Efter fel 2 ritar scenen alla sim.guests i scen-
+  // relevanta states (arriving/waiting/ordering/paying/leaving/declined),
+  // så waitingIds ≠ antal figurer. DoD 8 tolkas: lägg till en `scene=`-
+  // räknare bredvid `queue=` i DEV-raden så båda är synliga och
+  // Renderaren-vs-DevPanel-diskrepanser inte tolkas som bug.
+  const SCENE_RELEVANT_STATES = new Set(['arriving', 'waiting', 'ordering', 'paying', 'leaving', 'declined']);
+  const sceneLive = sim.guests.filter((g) => SCENE_RELEVANT_STATES.has(g.state)).length;
   // ORDER 113 fel 1 uppföljning — DRIFT-check gate:ad på verksamhet.
   // För foodtruck (`hasSeats=false`) är layout==null ett förväntat
   // tillstånd, inte drift. Layout-seats-vs-capacity-jämförelsen är en
@@ -144,7 +153,7 @@ export function DevPanel({ lastKey }: Props) {
   // Seat-diagnos suffix (see comment on `layout` above). Always
   // present — even out-of-service, queueLive/seatedLive are the
   // authoritative "is anyone in the room right now" readout.
-  const seatStr = ` queue=${queueLive} seated=${seatedLive}/${capacity}${
+  const seatStr = ` queue=${queueLive} scene=${sceneLive} seated=${seatedLive}/${capacity}${
     seatDrift ? `!layout=${layoutSeats}` : ''
   }`;
 

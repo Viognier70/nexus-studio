@@ -8,6 +8,7 @@
 
 import { useSimState } from '../simulation/SimulationProvider';
 import { PREP_ITEMS } from '../simulation/miseEnPlace';
+import { businessHasMiseEnPlace } from './businessClass';
 
 const PANEL_STYLE: React.CSSProperties = {
   position: 'absolute',
@@ -61,6 +62,15 @@ function readinessColour(r: number): string {
 
 export function PrepPanel() {
   const sim = useSimState();
+  // ORDER 114 Steg 1 DoD 1 — verksamheter utan mise-en-place
+  // (foodtruck) ska inte visa MISE EN PLACE-panelen. Flaggan
+  // hasMiseEnPlace finns sedan ORDER 111 men konsumerades bara i
+  // simuleringens prep-fas (reducer.ts:openService); UI-panelen
+  // renderades oavsett verksamhet och visade 0% på alla items
+  // (readiness beräknas aldrig när prep-fasen hoppas över). Guarden
+  // här stänger den luckan — panelen försvinner för foodtruck och
+  // frigör scenbredden till gäst-figurerna.
+  if (!businessHasMiseEnPlace(sim.businessClass)) return null;
   const inService = sim.day.period === 'lunch' || sim.day.period === 'dinner';
   if (!inService) return null;
   const readiness = sim.day.prepReadiness;

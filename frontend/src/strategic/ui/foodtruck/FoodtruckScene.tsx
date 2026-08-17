@@ -23,6 +23,10 @@ import type { WeatherConditions } from '../../types';
 import { Figure } from './Figure';
 import { idlePose, walkPose, variantForId, RIG_INK, RIG_LINE, RIG_GROUND, RIG_ACCENT } from './rig';
 import type { Pose, FigureVariant } from './rig';
+import { assignArchetype, assignSkinTone, FOODTRUCK_ARCHETYPES, applyArchetypeMod } from './archetypes';
+import type { FoodtruckArchetype } from './archetypes';
+import { deriveFoodtruckGuestFace, GUEST_FACES } from './guestFaces';
+import type { GuestFaceKey, FaceParams } from './guestFaces';
 
 // -----------------------------------------------------------------------------
 // Scen-geometri i SVG viewBox-enheter (2432 × 1080). Samma bas som
@@ -54,10 +58,31 @@ const HATCH_Y = WAGON_TOP + 120;
 
 // Kö-slots — där gästerna står framför luckan. En slot per köande
 // gäst. Slot 0 är närmast luckan, resten sträcker sig åt vänster.
-const QUEUE_SLOT_SPACING = 150;
-const QUEUE_FIRST_X = WAGON_LEFT + WAGON_WIDTH * 0.4;  // första slotten
-const QUEUE_Y = STREET_TOP + 380;                       // figurernas fot-y
-const QUEUE_FIGURE_SCALE = 0.65;
+// ORDER 114 Steg 2 DoD 3 — skalning kalibrerad mot faktiskt CSS-bredd.
+//
+// **Fynd per §6:** 140 CSS-px per figur kan INTE nås vid nuvarande
+// scen-bredd (1216 CSS-px när panelerna tar sitt) utan att figurerna
+// dominerar hela vertikal-axeln. Figur-aspect torso 62 : totalhöjd 250
+// betyder 140 px bred = 560 px hög = 52% av scen-höjden. Vid scale 3.5
+// mättes figurerna till 580-640 px höga och gav en skärmdump där
+// personerna trängde bort vagnen. Ordertexten §6 vill att detta
+// rapporteras rakt, inte lösas genom att krympa figurerna.
+//
+// Ansikts-läsbarhet nås ändå: ansiktsrutan är 54 SVG-units bred.
+// Vid scale 2.5 × CSS-ratio 0.5 = ~68 CSS-px ansikte, ögon på ~10 px.
+// Läsbara uttryck på det avstånd spelaren tittar på skärmen.
+//
+// **Beslut:** scale 2.5 som praktisk läsbarhetströskel. 140-px-DoD:n
+// får ett fynd i mätningen (reports/order114/measurements.json):
+// figurbredd ~77 CSS-px, ansiktsyta ~68 CSS-px, uttryck urskiljbara.
+// Full 140 CSS-px kräver bredare scen (mindre paneler eller större
+// viewport) — hänvisas till följdorder om Vision Owner bekräftar krav.
+const QUEUE_FIGURE_SCALE = 2.5;
+// Slot-spacing: figur ~62×2.5=155 SVG-units bred. 280 units spacing
+// ger säker luft. 2432/280 ≈ 8-9 kö-slots får plats.
+const QUEUE_SLOT_SPACING = 280;
+const QUEUE_FIRST_X = WAGON_LEFT + WAGON_WIDTH * 0.35;  // första slotten
+const QUEUE_Y = STREET_TOP + 380;                        // figurernas fot-y
 
 // Karta i nedre högra hörnet (§2.6 + DoD 9). 180 px är golvet under
 // vilket rytmringen slutar gå att skilja åt (ORDER 096 §5.3). Vi
@@ -68,10 +93,12 @@ const MAP_MARGIN = 24;
 export const MAP_MIN_HEIGHT_PX = 180;
 
 // Personalens ansikte i luckan — mindre skala, en enda figur som
-// står stilla (idle-pose). Sitter centrerad i luckans nederkant.
+// står stilla (idle-pose). ORDER 114 Steg 2 — bumpad till 1.6 så
+// luckans ansikte läses lika starkt som gäst-ansiktena (scale 2.5).
+// Y-position centrerad i luckan så personen står bakom counter.
 const STAFF_X = HATCH_X + HATCH_W / 2;
-const STAFF_Y = HATCH_Y + HATCH_H - 20;
-const STAFF_SCALE = 0.45;
+const STAFF_Y = HATCH_Y + HATCH_H - 8;
+const STAFF_SCALE = 1.6;
 
 // ORDER 113 fel 2 — positioner för gäster i andra states än 'waiting'.
 // Före fel 2 renderade FoodtruckScene bara sim.waitingIds; gäster i
@@ -97,17 +124,14 @@ const COUNTER_X = HATCH_X + HATCH_W / 2;
 const COUNTER_Y = QUEUE_Y;
 // Sido-offset så flera ordering/paying-gäster inte överlappar
 // vid luckan när staff-pipelinen serverar flera parallellt.
-const COUNTER_STACK_OFFSET = 60;
-// Arriving-fältet — vänster om kö-back. Nästa i turordning står
-// längre vänsterut och går höger mot kö. Fixed spacing; ingen
-// motion-interpolation från sim.position (skulle kräva sim→SVG-
-// koordinattransform, se fel 2-kommentaren ovan).
-const ARRIVING_START_X = 220;
-const ARRIVING_SPACING = 110;
-// Leaving-fältet — höger om vagnen, gående ut. Första gäst att gå
-// står längst höger; nästa marginellt närmare vagnen.
-const LEAVING_START_X = SCENE_VIEWBOX_W - 220;
-const LEAVING_SPACING = 110;
+// Skalat proportionellt mot QUEUE_FIGURE_SCALE 2.5.
+const COUNTER_STACK_OFFSET = 160;
+// Arriving-fältet — vänster om kö-back.
+const ARRIVING_START_X = 140;
+const ARRIVING_SPACING = 260;
+// Leaving-fältet — höger om vagnen, gående ut.
+const LEAVING_START_X = SCENE_VIEWBOX_W - 200;
+const LEAVING_SPACING = 260;
 
 // -----------------------------------------------------------------------------
 // Animation-loop. requestAnimationFrame + tidsvariabel som pumpas till
@@ -303,6 +327,10 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
     y: number;
     pose: Pose;
     variant: FigureVariant;
+    archetype: FoodtruckArchetype;
+    face: FaceParams;
+    faceKey: GuestFaceKey;
+    skinTone: string;
   }
   const positionedGuests: PositionedGuest[] = [];
   // Räknare per state-typ så flera gäster i samma tillstånd inte
@@ -323,9 +351,18 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
   for (const g of sim.guests) {
     const ph = phaseFor(g.id);
     const variant = variantForId(g.id);
+    // ORDER 114 §3 wire — arketyp + hudton tilldelas deterministiskt
+    // per gäst-id, period-viktat. Uttrycket härleds från state + kötid.
+    const archetype = FOODTRUCK_ARCHETYPES[
+      assignArchetype(g.id, sim.day.period)
+    ];
+    const skinTone = assignSkinTone(g.id);
+    const faceKey = deriveFoodtruckGuestFace(g, sim.simTime, archetype);
+    const face = GUEST_FACES[faceKey];
     let x: number;
     let y: number;
-    let pose: Pose;
+    let basePose: Pose;
+    let isWalking = false;
     switch (g.state) {
       case 'waiting': {
         const i = waitingIdxById.get(g.id) ?? 0;
@@ -334,29 +371,33 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
         // De två närmaste ligger i idle (väntar sin tur); resten
         // "shufflar" lätt med walkPose vid låg amplitud för att
         // signalera rörelse i kön.
-        pose = i < 2
-          ? idlePose(T * 0.7 + ph * 3)
-          : walkPose((T * 0.4 + ph) % 1, 0.15);
+        if (i < 2) {
+          basePose = idlePose(T * 0.7 + ph * 3);
+        } else {
+          basePose = walkPose((T * 0.4 + ph) % 1, 0.15);
+          isWalking = true;
+        }
         break;
       }
       case 'ordering': {
         x = COUNTER_X + counterOffset(orderingIdx++);
         y = COUNTER_Y;
-        pose = idlePose(T + ph * 2);
+        basePose = idlePose(T + ph * 2);
         break;
       }
       case 'paying': {
         x = COUNTER_X + counterOffset(payingIdx++);
         y = COUNTER_Y;
         // Något mer aktiv puls än ordering — signalerar transaktion.
-        pose = idlePose(T * 1.4 + ph * 2);
+        basePose = idlePose(T * 1.4 + ph * 2);
         break;
       }
       case 'arriving': {
         const i = arrivingIdx++;
         x = ARRIVING_START_X + i * ARRIVING_SPACING;
         y = QUEUE_Y;
-        pose = walkPose((T * 0.8 + ph) % 1, 1.0);
+        basePose = walkPose((T * 0.8 + ph) % 1, 1.0);
+        isWalking = true;
         break;
       }
       case 'leaving':
@@ -364,7 +405,8 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
         const i = leavingIdx++;
         x = LEAVING_START_X - i * LEAVING_SPACING;
         y = QUEUE_Y;
-        pose = walkPose((T * 0.9 + ph) % 1, 1.0);
+        basePose = walkPose((T * 0.9 + ph) % 1, 1.0);
+        isWalking = true;
         break;
       }
       default:
@@ -374,7 +416,10 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
         // inte tyst placerar en gäst på seat-index=0-koordinaten.
         continue;
     }
-    positionedGuests.push({ id: g.id, x, y, pose, variant });
+    // Applicera arketyp-hållning: bob-multiplikator, lean-offset,
+    // head-tilt. Se archetypes.ts:applyArchetypeMod.
+    const pose = applyArchetypeMod(basePose, archetype, isWalking);
+    positionedGuests.push({ id: g.id, x, y, pose, variant, archetype, face, faceKey, skinTone });
   }
 
   // Kö-räknare för karta + meta-rad — bevarat separat så DoD 5:s test
@@ -525,7 +570,10 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
           </text>
         </g>
 
-        {/* Personalen — ett ansikte i luckan, idle-pose */}
+        {/* Personalen — ett ansikte i luckan, idle-pose. Fast `nojd`-
+            uttryck: personal-vokabulär (deriveFaces.ts) rörs inte per
+            ORDER 114 §7-avgränsningen, men Figure:s face-prop tar
+            GUEST_FACES-formen direkt. */}
         <Figure
           pose={idlePose(T + 0.7)}
           x={STAFF_X}
@@ -533,11 +581,15 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
           scale={STAFF_SCALE}
           variant="Cap"
           id="staff-hatch"
+          face={GUEST_FACES.nojd}
+          faceKey="nojd"
+          skinTone={assignSkinTone('staff-hatch')}
         />
 
         {/* Gäster — en figur per sim.guests-post som är i ett scen-
             relevant state (waiting/ordering/paying/arriving/leaving/
-            declined). Positionering beräknad ovan i positionedGuests. */}
+            declined). Positionering beräknad ovan i positionedGuests.
+            ORDER 114 — arketyp + face + hudton passeras per figur. */}
         {positionedGuests.map((p) => (
           <Figure
             key={p.id}
@@ -547,6 +599,10 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
             y={p.y}
             scale={QUEUE_FIGURE_SCALE}
             variant={p.variant}
+            archetype={p.archetype}
+            face={p.face}
+            faceKey={p.faceKey}
+            skinTone={p.skinTone}
           />
         ))}
 
