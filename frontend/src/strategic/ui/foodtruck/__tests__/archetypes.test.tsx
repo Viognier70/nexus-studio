@@ -327,7 +327,7 @@ describe('ORDER 114 §5 DoD 8 — sceneLive matchar antalet renderade figurer', 
       (el) => el.getAttribute('data-figure') !== 'staff-hatch'
     );
     // Räkna scen-relevanta sim.guests
-    const SCENE_RELEVANT_STATES = new Set(['arriving', 'waiting', 'ordering', 'paying', 'leaving', 'declined']);
+    const SCENE_RELEVANT_STATES = new Set(['arriving', 'waiting', 'ordering', 'serving', 'paying', 'leaving', 'declined']);
     const sceneLive = state.guests.filter((g) => SCENE_RELEVANT_STATES.has(g.state)).length;
     expect(sceneLive).toBe(6);
     expect(guestFigures).toHaveLength(sceneLive);
@@ -340,7 +340,7 @@ describe('ORDER 114 §5 DoD 8 — sceneLive matchar antalet renderade figurer', 
     // (som är samma i både DevPanel.tsx och renderaren) täcker exakt
     // de states som FoodtruckScene positionerar figurer för.
     const allStates: Guest['state'][] = [
-      'arriving', 'waiting', 'seated', 'ordering', 'dining',
+      'arriving', 'waiting', 'seated', 'ordering', 'serving', 'dining',
       'paying', 'eating', 'leaving', 'declined', 'sleeping'
     ];
     const state = stateWith(allStates.map((s, i) => makeGuest(`all-${i}`, s)));
@@ -351,9 +351,10 @@ describe('ORDER 114 §5 DoD 8 — sceneLive matchar antalet renderade figurer', 
     // FoodtruckScene skippar seated/dining/sleeping defensivt
     // (ORDER 113 fel 2 comment). Räkna vad DEV-radens set:et säger:
     // ORDER 115 §4.5 — 'eating' är nu ett scen-relevant state.
-    const SCENE_RELEVANT_STATES = new Set(['arriving', 'waiting', 'ordering', 'paying', 'eating', 'leaving', 'declined']);
+    // ORDER 115 rev 2 — 'serving' är också scen-relevant (2.5s prop-fas).
+    const SCENE_RELEVANT_STATES = new Set(['arriving', 'waiting', 'ordering', 'serving', 'paying', 'eating', 'leaving', 'declined']);
     const sceneLive = state.guests.filter((g) => SCENE_RELEVANT_STATES.has(g.state)).length;
-    expect(sceneLive).toBe(7);   // 10 states - 3 skippade (seated/dining/sleeping)
+    expect(sceneLive).toBe(8);   // 11 states - 3 skippade (seated/dining/sleeping)
     expect(rendered).toBe(sceneLive);
   });
 });

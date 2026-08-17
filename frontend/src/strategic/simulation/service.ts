@@ -28,6 +28,11 @@ const WAITING_QUEUE_CAP = 12;
 // restaurangens dining-cykel (34-55 s). Bara relevant när
 // policies.hasUteplats är sann OCH businessClass === 'foodtruck'.
 const EATING_DURATION_SEC = 20;
+// ORDER 115 rev 2 — Serving-fasens längd. VO 2026-08-17: "Bygg
+// serving-fas, 2-3 sekunder. En överlämning som inte syns är ingen
+// överlämning." 2,5 sek = 12-13 ticks vid 5 Hz — säkert flera
+// render-frames där prop är synlig och staff-servePose peak:ar.
+const SERVING_PHASE_SEC = 2.5;
 
 function distance(a: Vec2, b: Vec2): number {
   const dx = a.x - b.x;
@@ -235,6 +240,15 @@ export function tickGuests(state: SimulationState) {
 
     if (guest.state === 'seated' && now - guest.stateTime > 4) {
       guest.state = 'ordering';
+      guest.stateTime = now;
+      continue;
+    }
+
+    // ORDER 115 rev 2 — serving → paying efter SERVING_PHASE_SEC.
+    // Prop-överlämningen har hunnit synas i 2,5 sim-sek (12+ frames);
+    // gästen övergår till 'paying' som är transaktion + steg-åt-sidan.
+    if (guest.state === 'serving' && now - guest.stateTime > SERVING_PHASE_SEC) {
+      guest.state = 'paying';
       guest.stateTime = now;
       continue;
     }
@@ -590,16 +604,16 @@ function completeStaffTask(state: SimulationState, staff: StaffMember) {
     case 'order': {
       if (guest.state === 'ordering') {
         // ORDER 111 §3 — food truck-gästen får sin beställning över
-        // luckan och går rakt till betalning; ingen dining-fas (matsal
-        // saknas per hasSeats=false). Restaurant/Värdshus tar den
-        // vanliga vägen ordering → dining (55 s formell / 34 s vardaglig).
+        // luckan. ORDER 115 rev 2 — går nu via 'serving'-fas (2.5 s)
+        // så överlämningen är visuellt observerbar. Utan denna fas
+        // var ordering→paying instantant (< 1 tick) och prop-
+        // överlämningen fanns aldrig i en synlig ram.
+        // Restaurant/Värdshus tar den vanliga vägen ordering → dining.
         if (!businessHasSeats(state.businessClass)) {
-          guest.state = 'paying';
+          guest.state = 'serving';
           guest.stateTime = now;
-          // ORDER 115 §2 — överlämningen. Foodtruck-gästen bär med
-          // sig maten härifrån och genom eating/leaving-faserna.
-          // 'foodtruckMeal' är den generiska matportionen; renderaren
-          // (Figure.tsx) tolkar värdet till en prop-SVG.
+          // Carrying sätts VID INTRÄDE till serving så prop är
+          // synlig genom hela fasen (staff-servePose peak:as här).
           guest.carrying = 'foodtruckMeal';
         } else {
           guest.state = 'dining';

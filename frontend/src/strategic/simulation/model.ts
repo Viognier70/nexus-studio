@@ -230,6 +230,12 @@ export function makeInitialState(
     staff,
     guests: [],
     completedGuests: 0,
+    // ORDER 115 rev 2 — uteplats-tröskelmetrics
+    metrics: {
+      happyDeparturesTotal: 0,
+      giveUpsThisService: 0,
+      consecutiveCleanServices: 0
+    },
     waitingIds: [],
     seatedIds: [],
     revenue: 0,

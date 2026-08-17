@@ -149,6 +149,9 @@ export function selectGuestPattern(input: GuestPatternInput): GuestPatternLabel 
     // används bara i restaurang-läget; fallback IDLE så typen
     // täcker alla GuestState.
     case 'eating':
+    // ORDER 115 rev 2 — serving-gäst (foodtruck-överlämning) hanteras
+    // i FoodtruckScene. Fallback IDLE här.
+    case 'serving':
       return 'IDLE';
   }
 }
@@ -198,6 +201,9 @@ export function deriveGuestPatience(guest: Guest, simTime: number): number {
     // = nolltålighet. Faktiskt satisfaction bär den avläsningen som
     // ansiktsuttryck via FoodtruckScene.
     case 'eating':
+    // ORDER 115 rev 2 — serving-gäst (foodtruck) är i aktiv överlämning;
+    // ingen tålighet-mätning behövs (fasen är 2.5 sek).
+    case 'serving':
       return 0;
   }
 }

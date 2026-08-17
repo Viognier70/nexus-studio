@@ -198,6 +198,9 @@ export function deriveGuestFace(
     // (staff-vokabulär) rörs inte per §7-avgränsning. Neutral fallback
     // så typen täcker alla GuestState.
     case 'eating':
+    // ORDER 115 rev 2 — serving-gäst (foodtruck-överlämning). Samma
+    // fallback.
+    case 'serving':
       // GF13 fallback
       return 'neutral';
   }

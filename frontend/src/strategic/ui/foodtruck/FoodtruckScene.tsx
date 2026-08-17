@@ -48,7 +48,6 @@ const WAGON_RIGHT = 1952;
 const WAGON_WIDTH = WAGON_RIGHT - WAGON_LEFT;
 const WAGON_TOP = 220;
 const WAGON_BOTTOM = STREET_TOP - 20;   // hjulen står på gatan
-const WAGON_HEIGHT = WAGON_BOTTOM - WAGON_TOP;
 
 // Luckan (öppning i vagnens front). Placerad högt så gäster ser upp
 // i den; counter-höjd markerad med ljusare linje längs nederkanten.
@@ -471,6 +470,20 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
         facing = -1;   // fortsatt titta vänster mot luckan / kön
         break;
       }
+      case 'serving': {
+        // ORDER 115 rev 2 — 2.5-sek överlämningsfas mellan ordering och
+        // paying. Gästen står EXAKT vid counter (COUNTER_X), samma
+        // position som ordering-slot 0 — men eftersom ordering har
+        // slutförts finns ingen kollision (gästen har flyttats vidare
+        // i sim-loopen). Personalen sträcker sig ut med servePose i
+        // samma bild → prop-överlämningen syns.
+        x = COUNTER_X;
+        y = COUNTER_Y;
+        // Något mer aktiv puls än ordering — signalerar mottagande.
+        basePose = idlePose(T * 1.6 + ph * 2);
+        facing = -1;
+        break;
+      }
       case 'arriving': {
         const i = arrivingIdx++;
         x = ARRIVING_START_X + i * ARRIVING_SPACING;
@@ -603,43 +616,218 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
 
         <WeatherOverlay weather={sim.day.weather} />
 
-        {/* Vagnen — bakvägg + tak + hjul */}
+        {/* Vagnen — klassisk skåpbil-silhuett (Citroën HY-familj).
+            VO-referens 2026-08-16: front med sluttande huv, kupé,
+            rundad taklinje, hjulhus-bågar, kofångare. Sidvy — kupén
+            till vänster (kör-riktning), servicelucka till höger i
+            karossen. Måtten stannar på WAGON_LEFT/RIGHT/TOP/BOTTOM så
+            queue-positioner (COUNTER_X, QUEUE_FIRST_X) inte drivs
+            om; det som ändras är formen på ytorna.
+
+            Silhuett-uppdelning:
+              * CAB_END       = WAGON_LEFT + 340    kupé slut (huv/vindruta hit)
+              * BODY_START    = CAB_END + 20        kaross börjar (mindre glapp)
+              * ROOF_CURVE    = 60 units            rundning tak-hörn
+              * FENDER_R      = 80 units            hjulhus-radie */}
         <g data-foodtruck-wagon>
-          <rect
-            x={WAGON_LEFT}
-            y={WAGON_TOP}
-            width={WAGON_WIDTH}
-            height={WAGON_HEIGHT}
-            fill="#5a5044"
-            stroke={RIG_INK}
-            strokeWidth={4}
-          />
-          {/* Accent-list under taket — namn på vagnen */}
-          <rect
-            x={WAGON_LEFT}
-            y={WAGON_TOP}
-            width={WAGON_WIDTH}
-            height={64}
-            fill={RIG_ACCENT}
-          />
-          <text
-            x={WAGON_LEFT + WAGON_WIDTH / 2}
-            y={WAGON_TOP + 44}
-            textAnchor="middle"
-            fill={RIG_GROUND}
-            fontSize={32}
-            fontFamily="system-ui, sans-serif"
-            letterSpacing={6}
-            style={{ textTransform: 'uppercase' }}
-          >
-            Food truck
-          </text>
-          {/* Hjul */}
-          <circle cx={WAGON_LEFT + 120} cy={WAGON_BOTTOM + 24} r={40} fill={RIG_INK} />
-          <circle cx={WAGON_RIGHT - 120} cy={WAGON_BOTTOM + 24} r={40} fill={RIG_INK} />
-          {/* Hjul-nav */}
-          <circle cx={WAGON_LEFT + 120} cy={WAGON_BOTTOM + 24} r={10} fill={RIG_LINE} />
-          <circle cx={WAGON_RIGHT - 120} cy={WAGON_BOTTOM + 24} r={10} fill={RIG_LINE} />
+          {(() => {
+            const CAB_END = WAGON_LEFT + 340;
+            const BODY_START = CAB_END + 20;
+            const ROOF_CURVE = 60;
+            const FENDER_R = 80;
+            const WINDSHIELD_TOP = WAGON_TOP + 30;
+            const WINDSHIELD_BOT = WAGON_TOP + 180;
+            const HOOD_TOP = WAGON_TOP + 160;
+            const BUMPER_TOP = WAGON_BOTTOM - 30;
+            const BUMPER_LEFT = WAGON_LEFT - 20;
+            const FRONT_WHEEL_CX = WAGON_LEFT + 200;
+            const REAR_WHEEL_CX = WAGON_RIGHT - 200;
+            const WHEEL_CY = WAGON_BOTTOM + 24;
+            const WHEEL_R = 42;
+
+            // Karossens fyllnadsfärg — samma varma stål-blå som
+            // referensen, med en aning grönt i grå-tonen så det inte
+            // blir cyan.
+            const BODY_FILL = '#5a7684';
+            const BODY_STROKE = RIG_INK;
+            const GLASS_FILL = '#1e2a30';
+
+            // Karossens ram — en path som ger avrundade tak-hörn.
+            // Följer WAGON_LEFT..WAGON_RIGHT längs nederkanten, gårupp
+            // via höger kant, kröner taket från BODY_START till
+            // WAGON_RIGHT med två quadratiska bågar för rundningen.
+            const bodyPath = [
+              `M ${BODY_START} ${WAGON_BOTTOM}`,
+              `L ${WAGON_RIGHT - ROOF_CURVE} ${WAGON_BOTTOM}`,
+              // rear roof corner (rundning)
+              `L ${WAGON_RIGHT} ${WAGON_BOTTOM}`,
+              `L ${WAGON_RIGHT} ${WAGON_TOP + ROOF_CURVE}`,
+              `Q ${WAGON_RIGHT} ${WAGON_TOP} ${WAGON_RIGHT - ROOF_CURVE} ${WAGON_TOP}`,
+              // tak ovan kaross
+              `L ${BODY_START + ROOF_CURVE} ${WAGON_TOP}`,
+              // front roof corner (rundning) — kaross-fronten
+              `Q ${BODY_START} ${WAGON_TOP} ${BODY_START} ${WAGON_TOP + ROOF_CURVE}`,
+              `L ${BODY_START} ${WAGON_BOTTOM}`,
+              'Z'
+            ].join(' ');
+
+            // Kupén — separat form, kortare + med sluttande huv.
+            // Vindrutan är rektangulär överst; huven sluttar ner mot
+            // kofångare-höjd.
+            const cabPath = [
+              `M ${WAGON_LEFT + 40} ${WAGON_BOTTOM}`,       // längst bak-under vid kupé-slut
+              `L ${CAB_END} ${WAGON_BOTTOM}`,
+              `L ${CAB_END} ${WAGON_TOP + ROOF_CURVE}`,
+              `Q ${CAB_END} ${WAGON_TOP} ${CAB_END - ROOF_CURVE} ${WAGON_TOP}`,
+              `L ${WAGON_LEFT + 140} ${WAGON_TOP}`,          // tak-främre kant
+              `L ${WAGON_LEFT + 100} ${WINDSHIELD_TOP}`,    // vindrute-topp lutar bakåt
+              `L ${WAGON_LEFT + 100} ${WINDSHIELD_BOT}`,    // vindrute-bot
+              `L ${WAGON_LEFT + 40} ${HOOD_TOP}`,           // huv-topp (sluttar ner)
+              `L ${BUMPER_LEFT} ${BUMPER_TOP}`,             // vidare ner mot kofångare
+              `L ${BUMPER_LEFT} ${WAGON_BOTTOM}`,           // ner till mark
+              'Z'
+            ].join(' ');
+
+            return (
+              <>
+                {/* Karossen (bak) */}
+                <path
+                  d={bodyPath}
+                  fill={BODY_FILL}
+                  stroke={BODY_STROKE}
+                  strokeWidth={4}
+                  strokeLinejoin="round"
+                />
+                {/* Kupén (fram) */}
+                <path
+                  d={cabPath}
+                  fill={BODY_FILL}
+                  stroke={BODY_STROKE}
+                  strokeWidth={4}
+                  strokeLinejoin="round"
+                />
+                {/* Vindruta */}
+                <path
+                  d={[
+                    `M ${WAGON_LEFT + 140} ${WAGON_TOP + 14}`,
+                    `L ${CAB_END - 30} ${WAGON_TOP + 14}`,
+                    `L ${CAB_END - 30} ${WINDSHIELD_BOT - 14}`,
+                    `L ${WAGON_LEFT + 108} ${WINDSHIELD_BOT - 14}`,
+                    'Z'
+                  ].join(' ')}
+                  fill={GLASS_FILL}
+                  stroke={RIG_LINE}
+                  strokeWidth={2}
+                />
+                {/* Sidoruta i kupé (bakre kupédörr) */}
+                <rect
+                  x={CAB_END - 100}
+                  y={WAGON_TOP + 40}
+                  width={70}
+                  height={140}
+                  fill={GLASS_FILL}
+                  stroke={RIG_LINE}
+                  strokeWidth={2}
+                />
+                {/* Vertikal accent-list mellan kupé och kaross (dörrfog) */}
+                <line
+                  x1={CAB_END + 10}
+                  y1={WAGON_TOP + 20}
+                  x2={CAB_END + 10}
+                  y2={WAGON_BOTTOM - 20}
+                  stroke={RIG_LINE}
+                  strokeWidth={2}
+                />
+                {/* Korrugerings-linjer på karossen — subtila vertikala
+                    ränder som läser HY-familjens plåtprofil. Bara på
+                    karossen bakåt så luckan står ut. */}
+                {(() => {
+                  const lines: number[] = [];
+                  const startX = BODY_START + 40;
+                  const endX = WAGON_RIGHT - 40;
+                  const step = 60;
+                  for (let x = startX; x <= endX; x += step) {
+                    // hoppa över luckan-bandet så texten på hatchen syns
+                    if (x >= HATCH_X - 10 && x <= HATCH_X + HATCH_W + 10) continue;
+                    lines.push(x);
+                  }
+                  return lines.map((x, i) => (
+                    <line
+                      key={`corr-${i}`}
+                      x1={x}
+                      y1={WAGON_TOP + 20}
+                      x2={x}
+                      y2={WAGON_BOTTOM - 20}
+                      stroke={RIG_LINE}
+                      strokeOpacity={0.35}
+                      strokeWidth={1.5}
+                    />
+                  ));
+                })()}
+                {/* Namn-list — smalare + mer diskret än förr så
+                    silhuetten dominerar över typografin. */}
+                <rect
+                  x={BODY_START + 20}
+                  y={WAGON_TOP + ROOF_CURVE + 10}
+                  width={WAGON_RIGHT - BODY_START - 40}
+                  height={36}
+                  fill={RIG_ACCENT}
+                  opacity={0.85}
+                />
+                <text
+                  x={(BODY_START + WAGON_RIGHT) / 2}
+                  y={WAGON_TOP + ROOF_CURVE + 34}
+                  textAnchor="middle"
+                  fill={RIG_INK}
+                  fontSize={22}
+                  fontFamily="system-ui, sans-serif"
+                  letterSpacing={4}
+                  style={{ textTransform: 'uppercase' }}
+                >
+                  Food truck
+                </text>
+                {/* Kofångare fram */}
+                <rect
+                  x={BUMPER_LEFT}
+                  y={BUMPER_TOP}
+                  width={CAB_END - BUMPER_LEFT + 8}
+                  height={22}
+                  fill="#8a8a86"
+                  stroke={RIG_INK}
+                  strokeWidth={2}
+                />
+                {/* Strålkastare (rund, framhjulet nära) */}
+                <circle
+                  cx={WAGON_LEFT + 20}
+                  cy={HOOD_TOP + 30}
+                  r={16}
+                  fill="#f0e8c8"
+                  stroke={RIG_INK}
+                  strokeWidth={2}
+                />
+                {/* Hjulhus-bågar (halvcirklar över hjulen). Ritas
+                    innan hjulen så hjulens topp läser som "innanför"
+                    bågen. */}
+                <path
+                  d={`M ${FRONT_WHEEL_CX - FENDER_R} ${WHEEL_CY} A ${FENDER_R} ${FENDER_R} 0 0 1 ${FRONT_WHEEL_CX + FENDER_R} ${WHEEL_CY}`}
+                  fill="none"
+                  stroke={RIG_INK}
+                  strokeWidth={4}
+                />
+                <path
+                  d={`M ${REAR_WHEEL_CX - FENDER_R} ${WHEEL_CY} A ${FENDER_R} ${FENDER_R} 0 0 1 ${REAR_WHEEL_CX + FENDER_R} ${WHEEL_CY}`}
+                  fill="none"
+                  stroke={RIG_INK}
+                  strokeWidth={4}
+                />
+                {/* Hjul + nav */}
+                <circle cx={FRONT_WHEEL_CX} cy={WHEEL_CY} r={WHEEL_R} fill={RIG_INK} />
+                <circle cx={REAR_WHEEL_CX} cy={WHEEL_CY} r={WHEEL_R} fill={RIG_INK} />
+                <circle cx={FRONT_WHEEL_CX} cy={WHEEL_CY} r={12} fill="#8a8a86" />
+                <circle cx={REAR_WHEEL_CX} cy={WHEEL_CY} r={12} fill="#8a8a86" />
+              </>
+            );
+          })()}
         </g>
 
         {/* Luckan (öppningen i vagnens front) */}
@@ -732,7 +920,13 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
             överlämningen syns som ARBETE. Vid tom counter faller
             staff tillbaka på idle-andning. */}
         {(() => {
-          const anyAtCounter = sim.guests.some((g) => g.state === 'ordering' || g.state === 'paying');
+          // ORDER 115 rev 2 — 'serving' är den fas där överlämningen
+          // faktiskt sker; servePose ska definitivt köra då. Behåller
+          // ordering + paying så staff-rörelsen inte glappar mellan
+          // faserna.
+          const anyAtCounter = sim.guests.some(
+            (g) => g.state === 'ordering' || g.state === 'serving' || g.state === 'paying'
+          );
           const staffPose = anyAtCounter ? servePose(T) : idlePose(T + 0.7);
           return (
             <Figure

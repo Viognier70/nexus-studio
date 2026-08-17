@@ -26,6 +26,14 @@ export type GuestState =
   | 'waiting'
   | 'seated'
   | 'ordering'
+  // ORDER 115 rev 2 — Food truck. Mellan `ordering` (staff tar order)
+  // och `paying` (transaktion klar) ligger en 2,5-sekunders SERVING-
+  // fas där prop-överlämningen syns i bild. Personalens servePose
+  // peak:as här; carrying-fältet sätts vid inträde till 'serving'.
+  // Utan denna fas skulle överlämningen vara instantan — VO 2026-08-17
+  // "en överlämning som inte syns är ingen överlämning".
+  // Bara giltig när `businessClass === 'foodtruck'`.
+  | 'serving'
   | 'dining'
   | 'paying'
   // ORDER 111 §4 — Värdshus. Gäst som stannar över får denna state
@@ -914,6 +922,24 @@ export interface SimulationState {
   staff: StaffMember[];
   guests: Guest[];
   completedGuests: number;
+  // ORDER 115 rev 2 — Uteplats-tröskelmetrics. Tre kandidater för
+  // auto-upplåsning per §4.3; VO väljer via `DEFAULT_UTEPLATS_THRESHOLD`
+  // i businessClass.ts. Alla tre spåras oberoende så byte av kandidat
+  // inte kräver kod-ändring, bara constant-swap.
+  //   * happyDeparturesTotal — kumulativt antal happy-departures
+  //     (satisfaction ≥ HAPPY_THRESHOLD 0.75). Ackumuleras aldrig
+  //     nedåt; permanent räknare.
+  //   * giveUpsThisService — antal walk-outs under nuvarande service.
+  //     Nollställs vid OPEN_SERVICE. Läses av service-close för att
+  //     avgöra om servicen var "clean".
+  //   * consecutiveCleanServices — hur många service-omgångar i rad
+  //     utan give-ups. Nollställs vid varje service med give-ups > 0.
+  //     Uppdateras vid service-close.
+  metrics: {
+    happyDeparturesTotal: number;
+    giveUpsThisService: number;
+    consecutiveCleanServices: number;
+  };
   waitingIds: string[];
   seatedIds: string[];
   revenue: number;

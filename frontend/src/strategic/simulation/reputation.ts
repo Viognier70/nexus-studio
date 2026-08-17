@@ -251,6 +251,10 @@ export function tickReputationDrift(state: SimulationState): void {
 // only — not every tick the guest is in 'leaving' state.
 export function reputationEventGiveUp(state: SimulationState): void {
   applyReputationDelta(state, -GIVE_UP_COST);
+  // ORDER 115 rev 2 — spåra för uteplats-tröskel kandidat B
+  // (serviceomgångar utan missnöjda). Räknare nollställs vid
+  // service-close om > 0 (dvs. servicen var INTE clean).
+  state.metrics.giveUpsThisService += 1;
 }
 
 // Called from service.ts when a paying guest transitions to leaving.
@@ -261,6 +265,10 @@ export function reputationEventDeparture(
 ): void {
   if (satisfaction >= HAPPY_THRESHOLD) {
     applyReputationDelta(state, HAPPY_GAIN);
+    // ORDER 115 rev 2 — kumulativ räknare för uteplats-kandidat C
+    // (kumulativt antal nöjda gäster). Nollställs aldrig — permanent
+    // ackumulator för spelets livstid.
+    state.metrics.happyDeparturesTotal += 1;
   } else if (satisfaction <= UNHAPPY_THRESHOLD) {
     applyReputationDelta(state, -UNHAPPY_COST);
   }

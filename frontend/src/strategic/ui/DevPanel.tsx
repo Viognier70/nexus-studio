@@ -144,7 +144,11 @@ export function DevPanel({ lastKey }: Props) {
   // (inklusive leaving/declined som är på väg ut). queue+seated
   // motsvarar vad SPELAREN läser som "aktiva gäster"; scene motsvarar
   // exakt antalet [data-figure]-noder som renderas.
-  const SCENE_RELEVANT_STATES = new Set(['arriving', 'waiting', 'ordering', 'paying', 'eating', 'leaving', 'declined']);
+  // ORDER 115 rev 2 — 'serving' är 2.5-sek överlämningsfasen mellan
+  // ordering och paying; den ska räknas i scen-siffran precis som
+  // paying gör, annars droppar sceneLive under serving-fönstret även
+  // om FoodtruckScene renderar figuren.
+  const SCENE_RELEVANT_STATES = new Set(['arriving', 'waiting', 'ordering', 'serving', 'paying', 'eating', 'leaving', 'declined']);
   const sceneLive = sim.guests.filter((g) => SCENE_RELEVANT_STATES.has(g.state)).length;
   // ORDER 113 fel 1 uppföljning — DRIFT-check gate:ad på verksamhet.
   // För foodtruck (`hasSeats=false`) är layout==null ett förväntat
