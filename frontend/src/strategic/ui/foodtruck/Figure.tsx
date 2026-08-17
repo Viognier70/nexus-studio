@@ -213,11 +213,17 @@ function renderHeadTopping(topping: HeadTopping) {
       // Affärsgästen — kort hår som tunn linje
       return <rect x={-29} y={-76} width={58} height={8} fill={RIG_INK} />;
     case 'workCap':
-      // Efter skiftet — keps med skärm
+      // Efter skiftet — keps med skärm.
+      // **VO-fynd 2026-08-17 (rev 6):** brim var tidigare
+      // `x=-29 width=40` = ASYMMETRISK (bara vänster sida, extending
+      // x=-29 till x=+11). När figuren speglades via facing=-1
+      // hamnade brim:en på höger sida av head = "svart fyrkant vid
+      // ear-height". Nu symmetrisk: x=-24 width=48 → x=-24 till x=+24.
+      // Fungerar likadant för båda facing-riktningar.
       return (
         <g>
           <rect x={-29} y={-78} width={58} height={16} fill={RIG_INK} />
-          <rect x={-29} y={-64} width={40} height={7} fill={RIG_INK} />
+          <rect x={-24} y={-64} width={48} height={7} fill={RIG_INK} />
         </g>
       );
     case 'sunHat':

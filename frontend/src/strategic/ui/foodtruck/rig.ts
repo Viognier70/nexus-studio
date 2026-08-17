@@ -98,6 +98,54 @@ export function idlePose(T: number): Pose {
   };
 }
 
+// ORDER 114 rev 6 — servePose(T) för STAFF vid counter.
+//
+// VO-fynd 2026-08-17: "Serveringen syns inte. Personalen står stilla
+// i luckan, gästen står framför, ingen överlämning. I en food truck
+// ÄR överlämningen verksamheten."
+//
+// VO refererar till "mönster 06 servera" med "dopp 0,12 m" i ett
+// rörelsebibliotek som INTE finns i prototypen (grep verifierat).
+// Följande servePose är författad från beskrivningen — cyklisk
+// reach-and-retract där staff-figuren lutar fram över counter,
+// sträcker ut nära-armen (räcker fram tallrik/påse), håller kort,
+// drar tillbaka. Perioden är ~3 sim-sek så tempo läses som "aktiv
+// men inte stressat". Motsvarar "mönster 06" beskrivningens dopp
+// 0,12 m ≈ 22 SVG-units (vid RIG_PROTO_UNITS_PER_METER = 180.6).
+//
+// Notering: prototype `SIT`-poser har liknande "armFar/armNear når
+// framåt"-kod (guest-reel.jsx:75-83). servePose bygger på samma idé
+// men står upp (ingen hipDrop-sit-offset) och är tänkt för personal
+// bakom counter — inte gäster.
+
+export function servePose(T: number): Pose {
+  // Cykelfas: 0..1 vid 3 sim-sek period.
+  const period = 3;
+  const phase = ((T % period) / period);
+  // Reach-envelope: går från 0 → 1 → 0 över cykeln.
+  // Max reach vid mitten (phase=0.5), stilla vid ändarna (0 och 1).
+  // Använder halva sinus-vågen: sin(π * phase).
+  const reach = Math.sin(Math.PI * phase);
+  // Dopp ("nedsjunkning") i höften när armen sträcker sig — 22 units
+  // motsvarar VO-referensens 0,12 m.
+  const DIP_UNITS = 22;
+  return {
+    ...IDLE,
+    lean: 4 + 6 * reach,        // lutar fram över counter
+    head: 2 + 4 * reach,         // huvud tilltar när räcker fram
+    hipDrop: DIP_UNITS * reach,  // sjunker i knäna vid reach
+    mouth: 0,
+    // Nära-armen (den vi ser tydligast i luckan) sträcker sig framåt.
+    // Positivt värde = svänger framåt. 90° = rakt fram horisontellt.
+    armNear: [80 * reach, -15 - 20 * reach],
+    // Bortre armen mindre synligt aktiv (håller tallrik / stödjer sig
+    // mot counter).
+    armFar: [30 + 20 * reach, -25 - 10 * reach],
+    legNear: IDLE.legNear,
+    legFar: IDLE.legFar
+  };
+}
+
 // walkPose(ph, amp) — gång-cykel. `ph` = fas i [0, 1] (en full cykel).
 // `amp` = amplitud för lem-svängar (0 = ingen rörelse, 1 = full gång).
 // Prototypen rad 46-59.

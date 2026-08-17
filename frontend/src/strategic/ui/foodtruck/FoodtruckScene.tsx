@@ -21,7 +21,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useSimState } from '../../simulation/SimulationProvider';
 import type { WeatherConditions } from '../../types';
 import { Figure } from './Figure';
-import { idlePose, walkPose, variantForId, RIG_INK, RIG_LINE, RIG_GROUND, RIG_ACCENT } from './rig';
+import { idlePose, walkPose, servePose, variantForId, RIG_INK, RIG_LINE, RIG_GROUND, RIG_ACCENT } from './rig';
 import { RIG_PROTO_MAX_WIDTH_AT_SCALE_1 } from './rig';
 import type { Pose, FigureVariant } from './rig';
 import { assignArchetype, assignSkinTone, FOODTRUCK_ARCHETYPES, applyArchetypeMod } from './archetypes';
@@ -140,10 +140,11 @@ const STAFF_Y = HATCH_Y + Math.round(314 * STAFF_SCALE);  // = 340 + 267 = 607
 // TILLSTÅND, renderaren bestämmer VAR i scenen tillståndet visas.
 const COUNTER_X = HATCH_X + HATCH_W / 2;
 const COUNTER_Y = QUEUE_Y;
-// Counter-stack sprider figurer TILL HÖGER (bort från kön). Halva
-// slot-spacing räcker eftersom counter-figurer står stilla (idle-pose,
-// ingen arm-swing). Härledd, inte hårdkodad.
-const COUNTER_STACK_OFFSET = Math.round(QUEUE_SLOT_SPACING * 0.5);
+// **ORDER 114 rev 6** — counter-stack borttagen: rendering-logiken i
+// FoodtruckScene placerar nu bara EN ordering-guest vid counter, resten
+// hamnar i queue-position. Paying-guests staplas höger om counter med
+// full QUEUE_SLOT_SPACING mellan varje.
+//
 // Första kö-slotten härleds från COUNTER_X så att slot 0 är exakt
 // QUEUE_SLOT_SPACING vänster om counter-mitten. Utan denna härledning
 // (t.ex. tidigare `QUEUE_FIRST_X = WAGON_LEFT + WAGON_WIDTH * 0.30`)
@@ -367,15 +368,22 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
   let arrivingIdx = 0;
   let leavingIdx = 0;
 
-  // Sido-offset-hjälp för counter-stacken: 0, -1, +1, -2, +2, ... så
-  // första gästen står centrerad, resten pendlar ut åt sidorna.
-  // Counter-stack sprider figurer TILL HÖGER först. Väster sida (mot
-  // kön) undviks aktivt så counter-figurer inte överlappar kö-slot 0.
-  // Ordning: 0 (mitt), +1 höger, +2 höger, +3 höger, ... — pendlar
-  // aldrig åt vänster där kön står.
-  const counterOffset = (idx: number): number => {
-    return idx * COUNTER_STACK_OFFSET;
-  };
+  // ORDER 114 rev 6 — VO: "Bara den som beställer står vid luckan."
+  // Räknas separat från waiting-slots så counter-figurer aldrig
+  // kolliderar med kö-slot 0.
+  //
+  //   * Första ordering-guest: AT counter (COUNTER_X)
+  //   * Ytterligare ordering-guests: som queue-front (bakom slot 0
+  //     med QUEUE_SLOT_SPACING avstånd) — representerar "nästa i
+  //     tur, just stiger fram"
+  //   * Första paying-guest: höger om counter (COUNTER_X + spacing)
+  //   * Ytterligare paying: längre höger (fördelar mot leaving-region)
+  //
+  // Innan denna fix trängdes alla ordering + paying vid counter med
+  // halva slot-spacing (218 units) → visuellt kluster framför luckan.
+
+  // Räkna waiting-figurer först så vi vet var kö-back är.
+  const totalWaitingCount = sim.waitingIds.length;
 
   for (const g of sim.guests) {
     const ph = phaseFor(g.id);
@@ -415,18 +423,31 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
         break;
       }
       case 'ordering': {
-        x = COUNTER_X + counterOffset(orderingIdx++);
-        y = COUNTER_Y;
+        if (orderingIdx === 0) {
+          // Första ordering-guest: AT counter
+          x = COUNTER_X;
+          y = COUNTER_Y;
+        } else {
+          // Ytterligare ordering: bakom slot 0 i queue-position
+          // (representerar "nästa i tur"). Läggs efter alla waiting-
+          // figurer så överlapp med kö undviks.
+          x = QUEUE_FIRST_X - QUEUE_SLOT_SPACING * (totalWaitingCount + orderingIdx - 1);
+          y = QUEUE_Y;
+        }
+        orderingIdx++;
         basePose = idlePose(T + ph * 2);
-        facing = -1;   // vid counter, tittar in i luckan (höger)
+        facing = -1;   // vid counter/kö, tittar in i luckan (höger)
         break;
       }
       case 'paying': {
-        x = COUNTER_X + counterOffset(payingIdx++);
+        // Paying: höger om counter (picked up food, stepping aside).
+        // Första paying: COUNTER_X + spacing. Andra: + 2*spacing. Osv.
+        x = COUNTER_X + QUEUE_SLOT_SPACING * (payingIdx + 1);
         y = COUNTER_Y;
+        payingIdx++;
         // Något mer aktiv puls än ordering — signalerar transaktion.
         basePose = idlePose(T * 1.4 + ph * 2);
-        facing = -1;   // samma — vid counter, tittar in i luckan
+        facing = -1;   // fortsatt titta vänster mot luckan / kön
         break;
       }
       case 'arriving': {
@@ -609,21 +630,34 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
           </text>
         </g>
 
-        {/* Personalen — ett ansikte i luckan, idle-pose. Fast `nojd`-
-            uttryck: personal-vokabulär (deriveFaces.ts) rörs inte per
-            ORDER 114 §7-avgränsningen, men Figure:s face-prop tar
-            GUEST_FACES-formen direkt. */}
-        <Figure
-          pose={idlePose(T + 0.7)}
-          x={STAFF_X}
-          y={STAFF_Y}
-          scale={STAFF_SCALE}
-          variant="Cap"
-          id="staff-hatch"
-          face={GUEST_FACES.nojd}
-          faceKey="nojd"
-          skinTone={assignSkinTone('staff-hatch')}
-        />
+        {/* Personalen — ett ansikte i luckan. Fast `nojd`-uttryck:
+            personal-vokabulär (deriveFaces.ts) rörs inte per ORDER 114
+            §7-avgränsningen, men Figure:s face-prop tar GUEST_FACES-
+            formen direkt.
+            **ORDER 114 rev 6** — servePose när counter är upptagen:
+            VO 2026-08-17 "Serveringen syns inte. Personalen står
+            stilla i luckan, gästen står framför, ingen överlämning."
+            När någon gäst är i ordering/paying-tillstånd växlar staff
+            till reach-and-retract-cykeln (rig.ts:servePose) så
+            överlämningen syns som ARBETE. Vid tom counter faller
+            staff tillbaka på idle-andning. */}
+        {(() => {
+          const anyAtCounter = sim.guests.some((g) => g.state === 'ordering' || g.state === 'paying');
+          const staffPose = anyAtCounter ? servePose(T) : idlePose(T + 0.7);
+          return (
+            <Figure
+              pose={staffPose}
+              x={STAFF_X}
+              y={STAFF_Y}
+              scale={STAFF_SCALE}
+              variant="Cap"
+              id="staff-hatch"
+              face={GUEST_FACES.nojd}
+              faceKey="nojd"
+              skinTone={assignSkinTone('staff-hatch')}
+            />
+          );
+        })()}
 
         {/* Gäster — en figur per sim.guests-post som är i ett scen-
             relevant state (waiting/ordering/paying/arriving/leaving/

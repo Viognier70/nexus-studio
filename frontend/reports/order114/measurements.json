@@ -41,36 +41,36 @@
       "face": "forvantansfull",
       "skinTone": "#a67c5c",
       "widthPx": 94.2,
-      "heightPx": 332.2
+      "heightPx": 332.1
     },
     {
       "id": "gst-8",
       "archetype": "efter_skiftet",
       "face": "forvantansfull",
       "skinTone": "#c9a37b",
-      "widthPx": 133.1,
-      "heightPx": 339.1
+      "widthPx": 133.2,
+      "heightPx": 339.2
     },
     {
       "id": "gst-9",
       "archetype": "affarsgasten",
       "face": "forvantansfull",
       "skinTone": "#e0be99",
-      "widthPx": 129.6,
-      "heightPx": 335.6
+      "widthPx": 129.5,
+      "heightPx": 335.7
     },
     {
       "id": "gst-10",
       "archetype": "turisten",
       "face": "nyfiken",
       "skinTone": "#a67c5c",
-      "widthPx": 126.3,
+      "widthPx": 126.4,
       "heightPx": 339.6
     }
   ],
   "figureWidthMin": 87,
-  "figureWidthMax": 133.1,
-  "figureWidthMean": 109.2,
+  "figureWidthMax": 133.2,
+  "figureWidthMean": 109.3,
   "figuresAt140pxThreshold": 0,
   "figuresAt120pxLenience": 3,
   "figuresPer140px": 8
