@@ -1,0 +1,551 @@
+{
+  "order": "ORDER 113 fel 2 diag",
+  "date": "2026-08-17",
+  "initial": {
+    "simTime": 0,
+    "waitingIds": [
+      "gst-bench-1",
+      "gst-bench-2",
+      "gst-bench-3",
+      "gst-bench-4"
+    ],
+    "guestsByState": {
+      "waiting": 4
+    },
+    "totalGuestsInSim": 4,
+    "figuresInDom": 5,
+    "figureIds": [
+      "staff-hatch",
+      "gst-bench-1",
+      "gst-bench-2",
+      "gst-bench-3",
+      "gst-bench-4"
+    ],
+    "guestFiguresInDom": 4
+  },
+  "afterOpen": {
+    "simTime": 0,
+    "waitingIds": [
+      "gst-bench-1",
+      "gst-bench-2",
+      "gst-bench-3",
+      "gst-bench-4"
+    ],
+    "guestsByState": {
+      "waiting": 4
+    },
+    "totalGuestsInSim": 4,
+    "figuresInDom": 5,
+    "figureIds": [
+      "staff-hatch",
+      "gst-bench-1",
+      "gst-bench-2",
+      "gst-bench-3",
+      "gst-bench-4"
+    ],
+    "guestFiguresInDom": 4
+  },
+  "snapshots": [
+    {
+      "simTime": 5,
+      "guestsByState": {
+        "ordering": 4
+      },
+      "totalGuestsInSim": 4,
+      "figuresInDom": 5,
+      "figureIds": [
+        "staff-hatch",
+        "gst-bench-1",
+        "gst-bench-2",
+        "gst-bench-3",
+        "gst-bench-4"
+      ],
+      "guestFiguresInDom": 4
+    },
+    {
+      "simTime": 10,
+      "guestsByState": {
+        "paying": 1,
+        "ordering": 3
+      },
+      "totalGuestsInSim": 4,
+      "figuresInDom": 5,
+      "figureIds": [
+        "staff-hatch",
+        "gst-bench-1",
+        "gst-bench-2",
+        "gst-bench-3",
+        "gst-bench-4"
+      ],
+      "guestFiguresInDom": 4
+    },
+    {
+      "simTime": 15,
+      "guestsByState": {
+        "paying": 3,
+        "ordering": 2,
+        "waiting": 4
+      },
+      "totalGuestsInSim": 9,
+      "figuresInDom": 10,
+      "figureIds": [
+        "staff-hatch",
+        "gst-bench-1",
+        "gst-bench-2",
+        "gst-bench-3",
+        "gst-bench-4",
+        "gst-6",
+        "gst-7",
+        "gst-8",
+        "gst-9",
+        "gst-10"
+      ],
+      "guestFiguresInDom": 9
+    },
+    {
+      "simTime": 20,
+      "guestsByState": {
+        "declined": 1,
+        "leaving": 1,
+        "paying": 1,
+        "ordering": 6
+      },
+      "totalGuestsInSim": 9,
+      "figuresInDom": 10,
+      "figureIds": [
+        "staff-hatch",
+        "gst-bench-1",
+        "gst-bench-2",
+        "gst-bench-3",
+        "gst-bench-4",
+        "gst-6",
+        "gst-7",
+        "gst-8",
+        "gst-9",
+        "gst-10"
+      ],
+      "guestFiguresInDom": 9
+    },
+    {
+      "simTime": 25.2,
+      "guestsByState": {
+        "declined": 1,
+        "paying": 2,
+        "ordering": 4
+      },
+      "totalGuestsInSim": 7,
+      "figuresInDom": 8,
+      "figureIds": [
+        "staff-hatch",
+        "gst-bench-3",
+        "gst-bench-4",
+        "gst-6",
+        "gst-7",
+        "gst-8",
+        "gst-9",
+        "gst-10"
+      ],
+      "guestFiguresInDom": 7
+    },
+    {
+      "simTime": 30.2,
+      "guestsByState": {
+        "leaving": 1,
+        "paying": 2,
+        "ordering": 3,
+        "waiting": 1
+      },
+      "totalGuestsInSim": 7,
+      "figuresInDom": 8,
+      "figureIds": [
+        "staff-hatch",
+        "gst-bench-4",
+        "gst-6",
+        "gst-7",
+        "gst-8",
+        "gst-9",
+        "gst-10",
+        "gst-12"
+      ],
+      "guestFiguresInDom": 7
+    },
+    {
+      "simTime": 35.2,
+      "guestsByState": {
+        "declined": 2,
+        "paying": 3,
+        "ordering": 2
+      },
+      "totalGuestsInSim": 7,
+      "figuresInDom": 8,
+      "figureIds": [
+        "staff-hatch",
+        "gst-bench-4",
+        "gst-6",
+        "gst-7",
+        "gst-8",
+        "gst-9",
+        "gst-10",
+        "gst-12"
+      ],
+      "guestFiguresInDom": 7
+    },
+    {
+      "simTime": 40.2,
+      "guestsByState": {
+        "declined": 1,
+        "paying": 3
+      },
+      "totalGuestsInSim": 4,
+      "figuresInDom": 5,
+      "figureIds": [
+        "staff-hatch",
+        "gst-8",
+        "gst-9",
+        "gst-10",
+        "gst-12"
+      ],
+      "guestFiguresInDom": 4
+    },
+    {
+      "simTime": 45.2,
+      "guestsByState": {
+        "declined": 1,
+        "leaving": 1,
+        "paying": 1
+      },
+      "totalGuestsInSim": 3,
+      "figuresInDom": 4,
+      "figureIds": [
+        "staff-hatch",
+        "gst-9",
+        "gst-10",
+        "gst-12"
+      ],
+      "guestFiguresInDom": 3
+    },
+    {
+      "simTime": 50.2,
+      "guestsByState": {
+        "declined": 1
+      },
+      "totalGuestsInSim": 1,
+      "figuresInDom": 2,
+      "figureIds": [
+        "staff-hatch",
+        "gst-12"
+      ],
+      "guestFiguresInDom": 1
+    },
+    {
+      "simTime": 55.2,
+      "guestsByState": {},
+      "totalGuestsInSim": 0,
+      "figuresInDom": 1,
+      "figureIds": [
+        "staff-hatch"
+      ],
+      "guestFiguresInDom": 0
+    },
+    {
+      "simTime": 60.2,
+      "guestsByState": {},
+      "totalGuestsInSim": 0,
+      "figuresInDom": 1,
+      "figureIds": [
+        "staff-hatch"
+      ],
+      "guestFiguresInDom": 0
+    },
+    {
+      "simTime": 65.2,
+      "guestsByState": {},
+      "totalGuestsInSim": 0,
+      "figuresInDom": 1,
+      "figureIds": [
+        "staff-hatch"
+      ],
+      "guestFiguresInDom": 0
+    },
+    {
+      "simTime": 70.2,
+      "guestsByState": {
+        "ordering": 1
+      },
+      "totalGuestsInSim": 1,
+      "figuresInDom": 2,
+      "figureIds": [
+        "staff-hatch",
+        "gst-14"
+      ],
+      "guestFiguresInDom": 1
+    },
+    {
+      "simTime": 75.2,
+      "guestsByState": {
+        "paying": 1
+      },
+      "totalGuestsInSim": 1,
+      "figuresInDom": 2,
+      "figureIds": [
+        "staff-hatch",
+        "gst-14"
+      ],
+      "guestFiguresInDom": 1
+    },
+    {
+      "simTime": 80.4,
+      "guestsByState": {
+        "declined": 1,
+        "waiting": 2
+      },
+      "totalGuestsInSim": 3,
+      "figuresInDom": 4,
+      "figureIds": [
+        "staff-hatch",
+        "gst-14",
+        "gst-17",
+        "gst-18"
+      ],
+      "guestFiguresInDom": 3
+    },
+    {
+      "simTime": 85.4,
+      "guestsByState": {
+        "ordering": 2
+      },
+      "totalGuestsInSim": 2,
+      "figuresInDom": 3,
+      "figureIds": [
+        "staff-hatch",
+        "gst-17",
+        "gst-18"
+      ],
+      "guestFiguresInDom": 2
+    },
+    {
+      "simTime": 90.4,
+      "guestsByState": {
+        "paying": 2,
+        "arriving": 1
+      },
+      "totalGuestsInSim": 3,
+      "figuresInDom": 4,
+      "figureIds": [
+        "staff-hatch",
+        "gst-17",
+        "gst-18",
+        "gst-20"
+      ],
+      "guestFiguresInDom": 3
+    },
+    {
+      "simTime": 95.4,
+      "guestsByState": {
+        "declined": 1,
+        "paying": 1,
+        "ordering": 1
+      },
+      "totalGuestsInSim": 3,
+      "figuresInDom": 4,
+      "figureIds": [
+        "staff-hatch",
+        "gst-17",
+        "gst-18",
+        "gst-22"
+      ],
+      "guestFiguresInDom": 3
+    },
+    {
+      "simTime": 100.4,
+      "guestsByState": {
+        "declined": 1,
+        "paying": 1,
+        "ordering": 1,
+        "waiting": 2
+      },
+      "totalGuestsInSim": 5,
+      "figuresInDom": 6,
+      "figureIds": [
+        "staff-hatch",
+        "gst-18",
+        "gst-22",
+        "gst-26",
+        "gst-27",
+        "gst-28"
+      ],
+      "guestFiguresInDom": 5
+    },
+    {
+      "simTime": 105.4,
+      "guestsByState": {
+        "leaving": 1,
+        "paying": 1,
+        "ordering": 2,
+        "waiting": 1
+      },
+      "totalGuestsInSim": 5,
+      "figuresInDom": 6,
+      "figureIds": [
+        "staff-hatch",
+        "gst-22",
+        "gst-26",
+        "gst-27",
+        "gst-28",
+        "gst-30"
+      ],
+      "guestFiguresInDom": 5
+    },
+    {
+      "simTime": 110.4,
+      "guestsByState": {
+        "paying": 2,
+        "ordering": 2,
+        "arriving": 1
+      },
+      "totalGuestsInSim": 5,
+      "figuresInDom": 6,
+      "figureIds": [
+        "staff-hatch",
+        "gst-26",
+        "gst-27",
+        "gst-28",
+        "gst-30",
+        "gst-32"
+      ],
+      "guestFiguresInDom": 5
+    },
+    {
+      "simTime": 115.4,
+      "guestsByState": {
+        "declined": 1,
+        "paying": 2,
+        "ordering": 2
+      },
+      "totalGuestsInSim": 5,
+      "figuresInDom": 6,
+      "figureIds": [
+        "staff-hatch",
+        "gst-26",
+        "gst-27",
+        "gst-28",
+        "gst-30",
+        "gst-32"
+      ],
+      "guestFiguresInDom": 5
+    },
+    {
+      "simTime": 120.4,
+      "guestsByState": {
+        "declined": 1,
+        "leaving": 1,
+        "paying": 2
+      },
+      "totalGuestsInSim": 4,
+      "figuresInDom": 5,
+      "figureIds": [
+        "staff-hatch",
+        "gst-27",
+        "gst-28",
+        "gst-30",
+        "gst-32"
+      ],
+      "guestFiguresInDom": 4
+    },
+    {
+      "simTime": 125.4,
+      "guestsByState": {
+        "declined": 1,
+        "paying": 1
+      },
+      "totalGuestsInSim": 2,
+      "figuresInDom": 3,
+      "figureIds": [
+        "staff-hatch",
+        "gst-30",
+        "gst-32"
+      ],
+      "guestFiguresInDom": 2
+    },
+    {
+      "simTime": 130.4,
+      "guestsByState": {
+        "declined": 1,
+        "waiting": 1
+      },
+      "totalGuestsInSim": 2,
+      "figuresInDom": 3,
+      "figureIds": [
+        "staff-hatch",
+        "gst-32",
+        "gst-34"
+      ],
+      "guestFiguresInDom": 2
+    },
+    {
+      "simTime": 135.6,
+      "guestsByState": {
+        "paying": 1
+      },
+      "totalGuestsInSim": 1,
+      "figuresInDom": 2,
+      "figureIds": [
+        "staff-hatch",
+        "gst-34"
+      ],
+      "guestFiguresInDom": 1
+    },
+    {
+      "simTime": 140.6,
+      "guestsByState": {
+        "paying": 1
+      },
+      "totalGuestsInSim": 1,
+      "figuresInDom": 2,
+      "figureIds": [
+        "staff-hatch",
+        "gst-34"
+      ],
+      "guestFiguresInDom": 1
+    },
+    {
+      "simTime": 145.6,
+      "guestsByState": {
+        "declined": 1,
+        "ordering": 1
+      },
+      "totalGuestsInSim": 2,
+      "figuresInDom": 3,
+      "figureIds": [
+        "staff-hatch",
+        "gst-34",
+        "gst-36"
+      ],
+      "guestFiguresInDom": 2
+    },
+    {
+      "simTime": 150.6,
+      "guestsByState": {
+        "paying": 1
+      },
+      "totalGuestsInSim": 1,
+      "figuresInDom": 2,
+      "figureIds": [
+        "staff-hatch",
+        "gst-36"
+      ],
+      "guestFiguresInDom": 1
+    }
+  ],
+  "maxSimGuests": 9,
+  "maxDomGuestFig": 9,
+  "seenStates": [
+    "arriving",
+    "declined",
+    "leaving",
+    "ordering",
+    "paying",
+    "waiting"
+  ],
+  "mismatches": []
+}

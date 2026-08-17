@@ -226,3 +226,130 @@ describe('ORDER 113 §3 DoD 2 — grep-verifierbara rig-funktioner', () => {
     expect(rig.IDLE.armFar).toEqual([5, -9]);
   });
 });
+
+// -----------------------------------------------------------------------------
+// ORDER 113 fel 2 — renderaren ritar ALLA sim.guests, inte bara waitingIds.
+//
+// Motivering: fel 2 stängde luckan där FoodtruckScene kunde asserteras
+// "grön" på DoD 5 (waitingIds → figurer) medan komponenten samtidigt
+// missade att rendera gäster i ordering/paying/leaving-state. I browsern
+// syntes en flimrande scen: kön drainade snabbt via staff-pipelinen och
+// figurerna försvann istället för att synas i sin nästa fas vid luckan.
+// Detta test hävdar att alla scen-relevanta guest-states genererar en
+// figur — röd innan fel 2, grön efter.
+// -----------------------------------------------------------------------------
+
+function makeGuestInState(id: string, state: SimulationState['guests'][number]['state']): SimulationState['guests'][number] {
+  return {
+    id,
+    state,
+    satisfaction: 0.7,
+    seatIndex: null,
+    arrivalTime: 0,
+    stateTime: 0,
+    scenarioSource: false,
+    position: { x: 0, z: 0 },
+    targetPosition: { x: 0, z: 0 },
+    moveProgress: 1,
+    hadWelcomeDrink: false,
+    lastCheckbackAt: null,
+    walkAwayOnArrival: false,
+    stayingOvernight: false
+  };
+}
+
+function stateWithMixedGuests(specs: Array<{ id: string; state: SimulationState['guests'][number]['state'] }>): SimulationState {
+  const base = makeInitialState();
+  const guests = specs.map((s) => makeGuestInState(s.id, s.state));
+  const waitingIds = specs.filter((s) => s.state === 'waiting').map((s) => s.id);
+  return {
+    ...base,
+    businessClass: 'foodtruck',
+    policies: {
+      ...base.policies,
+      capacity: capacityForBusiness('foodtruck', base.policies.staffCount)
+    },
+    guests,
+    waitingIds
+  };
+}
+
+describe('ORDER 113 fel 2 — FoodtruckScene renderar alla sim.guests-states', () => {
+  it('gäster i ordering, paying, leaving och arriving renderas som figurer', () => {
+    // Mix som speglar mitten-av-service-momentet: 1 i kö, 1 vid luckan
+    // (ordering), 1 som betalar, 1 på väg ut, 1 som kommer in.
+    const { container } = renderScene(stateWithMixedGuests([
+      { id: 'w1', state: 'waiting' },
+      { id: 'o1', state: 'ordering' },
+      { id: 'p1', state: 'paying' },
+      { id: 'l1', state: 'leaving' },
+      { id: 'a1', state: 'arriving' }
+    ]));
+    const figures = container.querySelectorAll('[data-figure]');
+    const ids = Array.from(figures).map((el) => el.getAttribute('data-figure'));
+    // 5 gäst-figurer + 1 personal ('staff-hatch') = 6
+    expect(figures.length).toBe(6);
+    expect(ids).toContain('w1');
+    expect(ids).toContain('o1');
+    expect(ids).toContain('p1');
+    expect(ids).toContain('l1');
+    expect(ids).toContain('a1');
+    expect(ids).toContain('staff-hatch');
+  });
+
+  it('gäster i declined renderas (walkAway-läsning på gatan)', () => {
+    const { container } = renderScene(stateWithMixedGuests([
+      { id: 'd1', state: 'declined' }
+    ]));
+    const ids = Array.from(container.querySelectorAll('[data-figure]'))
+      .map((el) => el.getAttribute('data-figure'));
+    expect(ids).toContain('d1');
+  });
+
+  it('waitingIds-baserad kö-siffra räknar bara waiting-state, inte hela scenen', () => {
+    // Kartan och meta-raden visar KÖ = waitingIds.length, inte totalt
+    // antal figurer på scenen. Om kartan råknade alla renderade figurer
+    // skulle "KÖ 5" visas när bara 1 faktiskt står i kön.
+    const { container } = renderScene(stateWithMixedGuests([
+      { id: 'w1', state: 'waiting' },
+      { id: 'o1', state: 'ordering' },
+      { id: 'p1', state: 'paying' },
+      { id: 'l1', state: 'leaving' }
+    ]));
+    const mapText = Array.from(container.querySelectorAll('text'))
+      .find((el) => el.textContent?.includes('kö 1'));
+    expect(mapText, `karta ska visa "kö 1" (bara w1 är i waiting), ej "kö 4"`).toBeTruthy();
+  });
+
+  it('gäster i seated/dining renderas INTE (defensiv skip — foodtruck saknar matsal)', () => {
+    // Om ORDER 111:s sim-guards regresserades och lyckades sätta en
+    // foodtruck-gäst i 'seated', ska renderaren ändå inte teckna en
+    // figur för det state:t — annars gömmer scenen sim-buggen.
+    const { container } = renderScene(stateWithMixedGuests([
+      { id: 's1', state: 'seated' },
+      { id: 'd1', state: 'dining' },
+      { id: 'w1', state: 'waiting' }
+    ]));
+    const ids = Array.from(container.querySelectorAll('[data-figure]'))
+      .map((el) => el.getAttribute('data-figure'));
+    expect(ids).not.toContain('s1');
+    expect(ids).not.toContain('d1');
+    expect(ids).toContain('w1');
+    expect(ids).toContain('staff-hatch');
+  });
+
+  it('varje figur får unik position — ingen på exakt samma pixel', () => {
+    // Regression-guard: om counterOffset eller arriving-spacing skulle
+    // regressera till noll skulle flera ordering-gäster staplas på
+    // exakt STAFF_X/STAFF_Y och läsas som en enda figur.
+    const { container } = renderScene(stateWithMixedGuests([
+      { id: 'o1', state: 'ordering' },
+      { id: 'o2', state: 'ordering' },
+      { id: 'o3', state: 'ordering' }
+    ]));
+    const gs = Array.from(container.querySelectorAll('g[data-figure^="o"]'));
+    const transforms = gs.map((g) => g.getAttribute('transform'));
+    const uniqueTransforms = new Set(transforms);
+    expect(uniqueTransforms.size, `alla ${gs.length} ordering-gäster har samma transform: ${transforms.join(' | ')}`).toBe(gs.length);
+  });
+});

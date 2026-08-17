@@ -17,11 +17,12 @@
 // ui/RoomCardPanel/ och DollhouseFrame.tsx (scene/-mappen scannas av
 // scenePropShape.smoke.test.ts).
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSimState } from '../../simulation/SimulationProvider';
-import type { Guest, WeatherConditions } from '../../types';
+import type { WeatherConditions } from '../../types';
 import { Figure } from './Figure';
 import { idlePose, walkPose, variantForId, RIG_INK, RIG_LINE, RIG_GROUND, RIG_ACCENT } from './rig';
+import type { Pose, FigureVariant } from './rig';
 
 // -----------------------------------------------------------------------------
 // Scen-geometri i SVG viewBox-enheter (2432 × 1080). Samma bas som
@@ -71,6 +72,42 @@ export const MAP_MIN_HEIGHT_PX = 180;
 const STAFF_X = HATCH_X + HATCH_W / 2;
 const STAFF_Y = HATCH_Y + HATCH_H - 20;
 const STAFF_SCALE = 0.45;
+
+// ORDER 113 fel 2 — positioner för gäster i andra states än 'waiting'.
+// Före fel 2 renderade FoodtruckScene bara sim.waitingIds; gäster i
+// 'ordering'/'paying'/'arriving'/'leaving' försvann ur scenen så snart
+// staff-pipelinen tog dem ur kön, även om waitingIds momentant var > 0.
+// Nu positioneras alla sim.guests per state:
+//
+//   arriving  → vänsterkant på gatan, gående höger mot kö-back
+//   waiting   → kö-slot (som förut)
+//   ordering  → framför luckan (interagerar med personalen)
+//   paying    → framför luckan, marginellt förskjuten (transaktion)
+//   leaving   → höger om vagnen, gående ut ur scenen
+//   declined  → höger om vagnen (vände om), gående ut
+//   seated / dining / sleeping → skippas (foodtruck saknar matsal;
+//     ORDER 111:s guarder ska hindra detta men den defensiva skippen
+//     håller renderaren robust mot framtida sim-tillägg)
+//
+// Positionerna är i SVG viewBox-koordinater (samma frame som
+// wagon/hatch/queue-slot). Ingen mappning från sim.position (m) sker;
+// scen-positionering är rent state-baserad — sim-lagret bestämmer
+// TILLSTÅND, renderaren bestämmer VAR i scenen tillståndet visas.
+const COUNTER_X = HATCH_X + HATCH_W / 2;
+const COUNTER_Y = QUEUE_Y;
+// Sido-offset så flera ordering/paying-gäster inte överlappar
+// vid luckan när staff-pipelinen serverar flera parallellt.
+const COUNTER_STACK_OFFSET = 60;
+// Arriving-fältet — vänster om kö-back. Nästa i turordning står
+// längre vänsterut och går höger mot kö. Fixed spacing; ingen
+// motion-interpolation från sim.position (skulle kräva sim→SVG-
+// koordinattransform, se fel 2-kommentaren ovan).
+const ARRIVING_START_X = 220;
+const ARRIVING_SPACING = 110;
+// Leaving-fältet — höger om vagnen, gående ut. Första gäst att gå
+// står längst höger; nästa marginellt närmare vagnen.
+const LEAVING_START_X = SCENE_VIEWBOX_W - 220;
+const LEAVING_SPACING = 110;
 
 // -----------------------------------------------------------------------------
 // Animation-loop. requestAnimationFrame + tidsvariabel som pumpas till
@@ -241,19 +278,6 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
   const sim = useSimState();
   const T = useAnimationTime();
 
-  // Kö-gäster — matchar state.waitingIds i ordning. Använder guest.id
-  // för deterministisk variant (så samma gäst alltid får samma hatt)
-  // och för `data-figure`-attribut som testet kan grep:a på.
-  const queueGuests = useMemo<Guest[]>(() => {
-    const map = new Map(sim.guests.map((g) => [g.id, g]));
-    const queued: Guest[] = [];
-    for (const id of sim.waitingIds) {
-      const g = map.get(id);
-      if (g) queued.push(g);
-    }
-    return queued;
-  }, [sim.guests, sim.waitingIds]);
-
   // Fas-offset per gäst så alla inte andas i takt. Deterministisk från
   // guest.id-suffix.
   const phaseFor = (id: string): number => {
@@ -261,6 +285,103 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
     const n = parseInt(suffix, 10);
     return Number.isNaN(n) ? 0 : (n * 0.37) % 1;
   };
+
+  // ORDER 113 fel 2 — positionera ALLA sim.guests, inte bara waitingIds.
+  // Före fel 2 renderades bara kön; gäster i ordering/paying/leaving
+  // försvann ur scenen så snart de lämnade waitingIds. Kombinerat med
+  // fel 1-fixen (staff-pipelinen serverar snabbt) blinkade kön förbi
+  // och scenen såg död ut trots pågående service.
+  //
+  // Positioneringen är state-baserad, inte sim.position-baserad —
+  // se COUNTER_X-blocket för motivering.
+  const waitingIdxById = new Map<string, number>();
+  sim.waitingIds.forEach((id, i) => waitingIdxById.set(id, i));
+
+  interface PositionedGuest {
+    id: string;
+    x: number;
+    y: number;
+    pose: Pose;
+    variant: FigureVariant;
+  }
+  const positionedGuests: PositionedGuest[] = [];
+  // Räknare per state-typ så flera gäster i samma tillstånd inte
+  // överlappar exakt på samma pixel.
+  let orderingIdx = 0;
+  let payingIdx = 0;
+  let arrivingIdx = 0;
+  let leavingIdx = 0;
+
+  // Sido-offset-hjälp för counter-stacken: 0, -1, +1, -2, +2, ... så
+  // första gästen står centrerad, resten pendlar ut åt sidorna.
+  const counterOffset = (idx: number): number => {
+    if (idx === 0) return 0;
+    const step = Math.ceil(idx / 2);
+    return idx % 2 === 1 ? -step * COUNTER_STACK_OFFSET : step * COUNTER_STACK_OFFSET;
+  };
+
+  for (const g of sim.guests) {
+    const ph = phaseFor(g.id);
+    const variant = variantForId(g.id);
+    let x: number;
+    let y: number;
+    let pose: Pose;
+    switch (g.state) {
+      case 'waiting': {
+        const i = waitingIdxById.get(g.id) ?? 0;
+        x = QUEUE_FIRST_X - QUEUE_SLOT_SPACING * i;
+        y = QUEUE_Y;
+        // De två närmaste ligger i idle (väntar sin tur); resten
+        // "shufflar" lätt med walkPose vid låg amplitud för att
+        // signalera rörelse i kön.
+        pose = i < 2
+          ? idlePose(T * 0.7 + ph * 3)
+          : walkPose((T * 0.4 + ph) % 1, 0.15);
+        break;
+      }
+      case 'ordering': {
+        x = COUNTER_X + counterOffset(orderingIdx++);
+        y = COUNTER_Y;
+        pose = idlePose(T + ph * 2);
+        break;
+      }
+      case 'paying': {
+        x = COUNTER_X + counterOffset(payingIdx++);
+        y = COUNTER_Y;
+        // Något mer aktiv puls än ordering — signalerar transaktion.
+        pose = idlePose(T * 1.4 + ph * 2);
+        break;
+      }
+      case 'arriving': {
+        const i = arrivingIdx++;
+        x = ARRIVING_START_X + i * ARRIVING_SPACING;
+        y = QUEUE_Y;
+        pose = walkPose((T * 0.8 + ph) % 1, 1.0);
+        break;
+      }
+      case 'leaving':
+      case 'declined': {
+        const i = leavingIdx++;
+        x = LEAVING_START_X - i * LEAVING_SPACING;
+        y = QUEUE_Y;
+        pose = walkPose((T * 0.9 + ph) % 1, 1.0);
+        break;
+      }
+      default:
+        // seated / dining / sleeping — inte tillämpliga för foodtruck.
+        // ORDER 111:s guards ska förhindra dessa states i praktiken;
+        // vi skippar rendering defensivt så en framtida sim-tillägg
+        // inte tyst placerar en gäst på seat-index=0-koordinaten.
+        continue;
+    }
+    positionedGuests.push({ id: g.id, x, y, pose, variant });
+  }
+
+  // Kö-räknare för karta + meta-rad — bevarat separat så DoD 5:s test
+  // (antalet renderade figurer följer state.waitingIds) håller för
+  // 'waiting'-figurerna specifikt, samt så kartan visar kö-djup inte
+  // total-scen-räknare (vilket vore missvisande).
+  const queueCount = sim.waitingIds.length;
 
   // Gata-namn (SD-003 §3 "vyn står på gatan"). Använder Grythyttans
   // riktiga gatunamn — Kyrkbacken går längs Torgets södra sida.
@@ -414,30 +535,22 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
           id="staff-hatch"
         />
 
-        {/* Kön — en figur per waitingIds-post, idle-pose med olika fas */}
-        {queueGuests.map((g, i) => {
-          const slotX = QUEUE_FIRST_X - QUEUE_SLOT_SPACING * i;
-          const ph = phaseFor(g.id);
-          // De två närmaste ligger i idle (väntar sin tur); resten
-          // "shufflar" lätt med walkPose vid låg amplitud för att
-          // signalera rörelse i kön.
-          const pose = i < 2
-            ? idlePose(T * 0.7 + ph * 3)
-            : walkPose((T * 0.4 + ph) % 1, 0.15);
-          return (
-            <Figure
-              key={g.id}
-              id={g.id}
-              pose={pose}
-              x={slotX}
-              y={QUEUE_Y}
-              scale={QUEUE_FIGURE_SCALE}
-              variant={variantForId(g.id)}
-            />
-          );
-        })}
+        {/* Gäster — en figur per sim.guests-post som är i ett scen-
+            relevant state (waiting/ordering/paying/arriving/leaving/
+            declined). Positionering beräknad ovan i positionedGuests. */}
+        {positionedGuests.map((p) => (
+          <Figure
+            key={p.id}
+            id={p.id}
+            pose={p.pose}
+            x={p.x}
+            y={p.y}
+            scale={QUEUE_FIGURE_SCALE}
+            variant={p.variant}
+          />
+        ))}
 
-        <StreetMap queueCount={queueGuests.length} />
+        <StreetMap queueCount={queueCount} />
 
         {/* Meta-rad */}
         <text
@@ -448,7 +561,8 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
           fontSize={16}
           fontFamily="system-ui, sans-serif"
         >
-          ORDER 113 · food truck · scene {widthPx} px · kö {queueGuests.length}
+          ORDER 113 · food truck · scene {widthPx} px · kö {queueCount}
+          {' · scen '}{positionedGuests.length}
           {' · '}
           {sim.day.weather
             ? `${sim.day.weather.tempC}°C ${sim.day.weather.precipitation}`
