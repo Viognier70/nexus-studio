@@ -236,6 +236,10 @@ export function makeInitialState(
       giveUpsThisService: 0,
       consecutiveCleanServices: 0
     },
+    // ORDER 117 §3.1 — fördröjd rykte-effekt av värdekvoten.
+    // Startar neutralt (1.0) så nyöppnad verksamhet inte får negativ
+    // push innan värdekvoten hunnit läsas.
+    effectiveValueQuota: 1.0,
     waitingIds: [],
     seatedIds: [],
     revenue: 0,

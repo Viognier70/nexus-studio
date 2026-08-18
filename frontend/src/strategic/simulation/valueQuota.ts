@@ -64,11 +64,38 @@ const INGREDIENT_VALUE: Record<IngredientTier, number> = {
 // nivås pris utan straff.
 const ECO_VALUE_LIFT = 0.15;
 
-// Perceived value från policies + verksamhet. Ren funktion.
+// ORDER 117 §3 VO-beslut (2026-08-18): "råvara + eko höjer tak + mise
+// en place sänker." Låg readiness på svagaste prep-item drar av
+// perceived value — en gäst som får mat utan garnityr eller servett
+// upplever mindre för samma pris. Använder MIN(readiness) så systemet
+// bryter där det är svagast, samma matte-form som collapse-formeln.
+// Max avdrag 0.3 vid readiness=0 (jämförbart med ett steg av
+// ingredient-tier), 0 avdrag vid readiness ≥ 0.7 (tröskeln där MeP
+// räknas som "hel" per PREP_PANEL).
+const MEP_THRESHOLD_FULL = 0.7;   // över denna nivå: inget avdrag
+const MEP_MAX_DEDUCT = 0.30;      // vid readiness 0: max avdrag
+
+function mepDeductionFromReadiness(readiness: Record<string, number> | undefined): number {
+  if (!readiness) return 0;
+  const vals = Object.values(readiness);
+  if (vals.length === 0) return 0;
+  let min = 1;
+  for (const v of vals) if (v < min) min = v;
+  if (min >= MEP_THRESHOLD_FULL) return 0;
+  // Linjärt från 0 avdrag vid MEP_THRESHOLD_FULL ner till max vid 0.
+  const frac = 1 - (min / MEP_THRESHOLD_FULL);
+  return MEP_MAX_DEDUCT * frac;
+}
+
+// Perceived value från policies + verksamhet + MeP. Ren funktion.
+// MeP-avdraget är bara aktivt under service (då prepReadiness existerar).
+// Utanför service (morning/evening) är avdraget 0 — kvoten läses från
+// råvara + eko bara.
 export function perceivedValueForBusiness(state: SimulationState): number {
   const base = INGREDIENT_VALUE[state.policies.ingredientTier];
   const eco = state.policies.localSourcing ? ECO_VALUE_LIFT : 0;
-  return base + eco;
+  const mepDeduct = mepDeductionFromReadiness(state.day.prepReadiness);
+  return Math.max(0, base + eco - mepDeduct);
 }
 
 // -----------------------------------------------------------------------------
@@ -117,4 +144,61 @@ export function valueQuotaSatisfactionDelta(state: SimulationState): number {
   const v = valueQuota(state);
   // Normalisera V mot 1.0 (=neutral).
   return (v - 1.0) * VALUE_SATISFACTION_SCALE;
+}
+
+// -----------------------------------------------------------------------------
+// §3.1 — Asymmetrisk fördröjd effekt på ankomster (VO-beslut 2026-08-18)
+// -----------------------------------------------------------------------------
+
+// Down = rykte tappas snabbare. Up = byggs långsammare.
+// 4 services = 2 speldagar. 6 services = 3 speldagar.
+// Vid varje service-close skjuts effektiv V mot momentan V med olika
+// steg beroende på riktning. Low-pass-filter, inte hårt genombrott.
+const DOWN_STEP = 1 / 4;    // rykte-tapp: 2 dagar tidkonstant
+const UP_STEP = 1 / 6;      // rykte-bygg: 3 dagar tidkonstant
+
+// Kallas vid service-close (efter uppdaterade metrics). Muterar draft.
+export function updateEffectiveValueQuota(state: SimulationState): void {
+  const current = valueQuota(state);
+  const eff = state.effectiveValueQuota;
+  const step = current < eff ? DOWN_STEP : UP_STEP;
+  const next = eff + (current - eff) * step;
+  state.effectiveValueQuota = Math.max(0, Math.min(2, next));
+}
+
+// Läses av arrivals.ts. Returnerar en multiplikator [0.7, 1.3] baserat
+// på effektiv V mot neutral 1.0. Skala vald så en extrem effektiv V
+// ger max ±30% på ankomsttakten — betydande men inte förkrossande;
+// väder-multiplikatorn (0.55×..1.28×) är också i samma band.
+const ARRIVAL_QUOTA_SCALE = 0.3;
+
+export function valueQuotaArrivalMultiplier(state: SimulationState): number {
+  const eff = state.effectiveValueQuota;
+  // (eff - 1.0) i [-1, 1] → mult i [1 - 0.3, 1 + 0.3] = [0.7, 1.3]
+  const delta = Math.max(-1, Math.min(1, eff - 1.0));
+  return 1.0 + delta * ARRIVAL_QUOTA_SCALE;
+}
+
+// -----------------------------------------------------------------------------
+// §5.2 — Rykte-trend-indikator (utan siffra)
+// -----------------------------------------------------------------------------
+
+// Läses av PlayerPanel:s Reading-komponent. Returnerar 'up' | 'down' |
+// 'flat' baserat på om effektiv V ligger tydligt över/under neutralt.
+// Ingen exakt siffra visas — bara riktningen på det som kommer att
+// märkas i kön nästa dag.
+//
+// Trösklarna är brett satta så en marginellt positiv/negativ kvot inte
+// får spelaren att jaga småförändringar. Endast tydliga bra/dåliga val
+// syns i indikatorn.
+const TREND_UP_THRESHOLD = 1.10;    // effektiv V > 1.10 → ▲
+const TREND_DOWN_THRESHOLD = 0.90;  // effektiv V < 0.90 → ▼
+
+export type ReputationTrend = 'up' | 'down' | 'flat';
+
+export function reputationTrend(state: SimulationState): ReputationTrend {
+  const eff = state.effectiveValueQuota;
+  if (eff > TREND_UP_THRESHOLD) return 'up';
+  if (eff < TREND_DOWN_THRESHOLD) return 'down';
+  return 'flat';
 }

@@ -15,6 +15,7 @@ import {
   bumpMorale
 } from './morale';
 import { valueQuotaSatisfactionDelta } from './valueQuota';
+import { applyMissingMepHit, consumeMepForOneGuest } from './mepConsumption';
 
 const TICK_SECONDS = 0.2;
 
@@ -617,17 +618,23 @@ function completeStaffTask(state: SimulationState, staff: StaffMember) {
           // synlig genom hela fasen (staff-servePose peak:as här).
           guest.carrying = 'foodtruckMeal';
           // ORDER 117 §3.2 — värdekvot-modulerad first-impression.
-          // Applicerad EN GÅNG vid intryck av vad de får för vad de
-          // betalar. Positiv delta för V>1 (bra värde), negativ för
-          // V<1. Övriga faser (checkback etc.) modulerar separat.
           const vDelta = valueQuotaSatisfactionDelta(state);
           guest.satisfaction = Math.max(0, Math.min(1, guest.satisfaction + vDelta));
+          // ORDER 117 §4 — MeP-brist-hit och konsumtion vid överlämning.
+          // Servett saknas → mild; garnityr → allvarligare; utebliven
+          // mat → sista utvägen. Ingen post stoppar servicen (VO: en
+          // spärr är inte en avvägning). Tröskelbaserat: bara poster
+          // under 0.2 readiness räknas som "saknas".
+          applyMissingMepHit(state, guest);
+          consumeMepForOneGuest(state);
         } else {
           guest.state = 'dining';
           guest.stateTime = now;
           // Samma modulering för restaurang/värdshus vid dining-entry.
           const vDelta = valueQuotaSatisfactionDelta(state);
           guest.satisfaction = Math.max(0, Math.min(1, guest.satisfaction + vDelta));
+          applyMissingMepHit(state, guest);
+          consumeMepForOneGuest(state);
         }
       }
       break;

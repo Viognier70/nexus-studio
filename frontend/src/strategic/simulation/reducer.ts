@@ -22,6 +22,7 @@ import {
   capacityForBusiness
 } from '../business/businessClass';
 import { shouldUnlockUteplats } from '../business/uteplatsUnlock';
+import { updateEffectiveValueQuota } from './valueQuota';
 import {
   SERVICE_LENGTH_MAX_MINUTES,
   SERVICE_LENGTH_MIN_MINUTES
@@ -1328,6 +1329,11 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       postServiceSummaryLines(next, 'lunch', state);
       // ORDER 117 §5.1 — värdekvot-mening i strömmen efter lunch-close.
       postValueQuotaLine(next, 'lunch');
+      // ORDER 117 §3.1 — uppdatera fördröjd effektiv värdekvot.
+      // Måste ske EFTER metrics-uppdateringen ovan så asymmetriska
+      // steget läser färsk state; nästa service:s ankomsttakt är
+      // baserad på den nya effectiveValueQuota.
+      updateEffectiveValueQuota(next);
       return next;
     }
   }
@@ -1388,6 +1394,9 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       postServiceSummaryLines(next, 'dinner', state);
       // ORDER 117 §5.1 — värdekvot-mening i strömmen efter middag-close.
       postValueQuotaLine(next, 'dinner');
+      // ORDER 117 §3.1 — uppdatera fördröjd effektiv värdekvot (samma
+      // som lunch-close, ovanför).
+      updateEffectiveValueQuota(next);
       return next;
     }
   }

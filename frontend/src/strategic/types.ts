@@ -940,6 +940,17 @@ export interface SimulationState {
     giveUpsThisService: number;
     consecutiveCleanServices: number;
   };
+  // ORDER 117 §3.1 — fördröjd rykte-effekt av värdekvoten.
+  // Uppdateras vid service-close via asymmetrisk låg-pass-filter:
+  // effektiv rör sig mot momentan V med olika tidkonstanter beroende på
+  // riktning. VO-beslut 2026-08-18: "Ned 2 dagar, upp 3. Rykte tappas
+  // snabbare än det byggs." Down step = 1/4 (4 services = 2 dagar),
+  // up step = 1/6 (6 services = 3 dagar). Se `valueQuota.ts:
+  // updateEffectiveValueQuota` för implementering och `arrivals.ts` för
+  // hur den läses in i arrival-probability. Initialvärde 1.0 (neutralt)
+  // så nyöppnad verksamhet inte får negativ push innan värdekvoten
+  // hunnit läsas.
+  effectiveValueQuota: number;
   waitingIds: string[];
   seatedIds: string[];
   revenue: number;

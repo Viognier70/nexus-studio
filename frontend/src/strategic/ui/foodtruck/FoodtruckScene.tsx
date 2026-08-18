@@ -28,6 +28,7 @@ import { assignArchetype, assignSkinTone, FOODTRUCK_ARCHETYPES, applyArchetypeMo
 import type { FoodtruckArchetype } from './archetypes';
 import { deriveFoodtruckGuestFace, GUEST_FACES } from './guestFaces';
 import type { GuestFaceKey, FaceParams } from './guestFaces';
+import { mostMissingMepItem } from '../../simulation/mepConsumption';
 
 // -----------------------------------------------------------------------------
 // Scen-geometri i SVG viewBox-enheter (2432 × 1080). Samma bas som
@@ -992,23 +993,31 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
             relevant state (waiting/ordering/paying/arriving/leaving/
             declined). Positionering beräknad ovan i positionedGuests.
             ORDER 114 — arketyp + face + hudton passeras per figur. */}
-        {positionedGuests.map((p) => (
-          <Figure
-            key={p.id}
-            id={p.id}
-            pose={p.pose}
-            x={p.x}
-            y={p.y}
-            scale={QUEUE_FIGURE_SCALE}
-            variant={p.variant}
-            archetype={p.archetype}
-            face={p.face}
-            faceKey={p.faceKey}
-            skinTone={p.skinTone}
-            facingDirection={p.facing}
-            carrying={p.carrying}
-          />
-        ))}
+        {(() => {
+          // ORDER 117 §4 — vilken MeP-post saknas MEST just nu. Läses
+          // en gång per render och skickas till alla carrying-figurer;
+          // resultatet är samma för alla eftersom prep-readiness är
+          // service-wide.
+          const missing = mostMissingMepItem(sim.day.prepReadiness);
+          return positionedGuests.map((p) => (
+            <Figure
+              key={p.id}
+              id={p.id}
+              pose={p.pose}
+              x={p.x}
+              y={p.y}
+              scale={QUEUE_FIGURE_SCALE}
+              variant={p.variant}
+              archetype={p.archetype}
+              face={p.face}
+              faceKey={p.faceKey}
+              skinTone={p.skinTone}
+              facingDirection={p.facing}
+              carrying={p.carrying}
+              mepMissing={p.carrying ? missing : null}
+            />
+          ));
+        })()}
 
         {/* ORDER 116 §2.1 fix — prop-i-transit under serving-fasen.
             Före denna fix satt propen enbart i gästens hand (från
