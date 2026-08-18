@@ -191,6 +191,36 @@ export const PREP_CARRYOVER_TEXT =
 // congratulating. Fires only during service post-prep, gated by
 // calmness × competence.
 
+// -------- value-quota bank — sentences som nämner sambandet mellan
+//          pris/råvara och gästens val (§5.1 ORDER 117) ---------------
+//
+// Emitteras vid service-close när valueQuota() från valueQuota.ts har
+// legat under- eller över tröskeln under servicen. Fördröjningen mellan
+// spelarens prisbeslut och gästbeteendet (§2) gör orsak-verkan svår att
+// avläsa i sim-siffror; strömmen bär sambandet i naturligt språk.
+//
+// Två polariteter — VALUE_LOW för dålig kvot (dyrt eller sparsamt),
+// VALUE_HIGH för bra kvot (rimligt eller generöst). Observationstext:
+// samma proprietor-röst som resten av strömmen. Prisen nämns i sin
+// konkreta form (lammet, grädden, priset) — DoD §6.8 kräver att
+// meningarna innehåller det som gästen faktiskt reagerar på.
+
+export const VALUE_LOW_TEXTS = [
+  'Två sällskap vände i dörren — priset på lammet nämndes när de tittade på tavlan, och sedan gick de vidare mot torget. Undrar om det var själva siffran eller att den var där utan förklaring; ett skyltat "höjt idag" hade kanske hållit dem kvar.',
+  'Ett par läste priset på specialen två gånger — den yngre höjde ögonbryn, den äldre svepte ihop menyn och nickade mot uteserveringen tvärs över gatan. Hm, priserna märks nu på ett sätt de inte gjorde i förra veckan.',
+  'Nya bordet vid entrén stannade vid menyn — de tittade på gästen som just fått sin tallrik, tittade på priset, gick ut igen. Undrar om det var portionen eller siffran som avgjorde; från kanten såg det ut som båda.',
+  'Servitören hörde ett bord jämföra vår vagns pris med den som stod på Kalastorget förra veckan — de sa "hon tog sextio, vi står här på nittio". Hm, priset finns i minnet på gatan och vi konkurrerar mot igårs siffra utan att veta det.',
+  'En stamgäst räknade högt vid notan — "två portioner för det här, är det värt?" Han la pengarna men han sa det. Undrar om han kommer tillbaka nästa vecka eller om han kommer med sällskap som lyssnat på hans räkning.'
+] as const;
+
+export const VALUE_HIGH_TEXTS = [
+  'Ett bord frågade var vi köpt in lammet — de smakade och nickade mot varandra innan de sa något. Servitören svarade "lokalt, från gården uppåt sjön" och de log; hm, det där svaret betalar sig i tio nya gäster till helgen.',
+  'En gäst räckte upp handen efter förrätten och bad att få tacka kocken personligen — hon nämnde grädden. Undrar om han vet att det märks direkt i första skedhalvan, eller om han bara ler och tar det för givet.',
+  'Två nya sällskap ställde sig i kön efter att ha pratat med paret framför — priset kom aldrig upp, bara "smakade det verkligen". Hm, den där rekommendationen är vad ekologiskt betalar för sig med, inte i marginalen utan i kön.',
+  'Ett bord bad om vår leverantörslista efter dessertsen — de driver en catering och ville köpa av samma. Servitören skrev ner det på en bakremsa; undrar om vi tänker på oss som en av leden i deras kedja, eller om det är dags att.',
+  'Notan lämnades utan att någon räknade — bordet nämnde "det där var värt varje krona" på väg ut. Hm, det är den meningen priset finns till för; den kommer att sägas till andra i veckan utan att vi hör det.'
+] as const;
+
 export const POSITIVE_TEXTS = [
   'Bordet vid fönstret beställde en flaska till — de har suttit i två timmar och verkar inte ha någonstans att gå. Servitören föreslog en av dyrare sorterna utan att fråga om budget; hm, hon lärde sig det utan att vi lärde henne det.',
   'En stamgäst hälsade värden vid namn i entrén och de började prata om helgen — samtalet höll i sig tills paret satt sig. Undrar om värden vet att det är en av de gäster som kommer att nämna oss för andra i veckan.',

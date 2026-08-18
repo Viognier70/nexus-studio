@@ -14,6 +14,7 @@ import {
   MORALE_UNHAPPY_DEPARTURE_HIT,
   bumpMorale
 } from './morale';
+import { valueQuotaSatisfactionDelta } from './valueQuota';
 
 const TICK_SECONDS = 0.2;
 
@@ -615,9 +616,18 @@ function completeStaffTask(state: SimulationState, staff: StaffMember) {
           // Carrying sätts VID INTRÄDE till serving så prop är
           // synlig genom hela fasen (staff-servePose peak:as här).
           guest.carrying = 'foodtruckMeal';
+          // ORDER 117 §3.2 — värdekvot-modulerad first-impression.
+          // Applicerad EN GÅNG vid intryck av vad de får för vad de
+          // betalar. Positiv delta för V>1 (bra värde), negativ för
+          // V<1. Övriga faser (checkback etc.) modulerar separat.
+          const vDelta = valueQuotaSatisfactionDelta(state);
+          guest.satisfaction = Math.max(0, Math.min(1, guest.satisfaction + vDelta));
         } else {
           guest.state = 'dining';
           guest.stateTime = now;
+          // Samma modulering för restaurang/värdshus vid dining-entry.
+          const vDelta = valueQuotaSatisfactionDelta(state);
+          guest.satisfaction = Math.max(0, Math.min(1, guest.satisfaction + vDelta));
         }
       }
       break;

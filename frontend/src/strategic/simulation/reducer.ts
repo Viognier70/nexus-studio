@@ -128,7 +128,8 @@ import {
   applyCashRevenue,
   capitalReadingFor,
   postLedger,
-  postServiceSummaryLines
+  postServiceSummaryLines,
+  postValueQuotaLine
 } from './cashReading';
 import { drawNextTheme } from './themeSelection';
 import {
@@ -1325,6 +1326,8 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       // for the panel; multiply back). Both cash-recap lines, not
       // cash movers (the till already moved per-guest / per-tick).
       postServiceSummaryLines(next, 'lunch', state);
+      // ORDER 117 §5.1 — värdekvot-mening i strömmen efter lunch-close.
+      postValueQuotaLine(next, 'lunch');
       return next;
     }
   }
@@ -1383,6 +1386,8 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
         }
       };
       postServiceSummaryLines(next, 'dinner', state);
+      // ORDER 117 §5.1 — värdekvot-mening i strömmen efter middag-close.
+      postValueQuotaLine(next, 'dinner');
       return next;
     }
   }

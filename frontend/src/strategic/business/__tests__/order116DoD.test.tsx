@@ -10,12 +10,9 @@
 //        ändring inte råkar nollställa den permanenta ackumulatorn.
 
 import { describe, expect, it } from 'vitest';
-import { render } from '@testing-library/react';
 import { reducer } from '../../simulation/reducer';
 import { makeInitialState } from '../../simulation/model';
 import { capacityForBusiness } from '../businessClass';
-import { SimulationProvider } from '../../simulation/SimulationProvider';
-import { FoodtruckScene } from '../../ui/foodtruck/FoodtruckScene';
 import type { Guest, GuestState, SimulationState } from '../../types';
 
 function makeFoodtruckState(seed = 20260817): SimulationState {

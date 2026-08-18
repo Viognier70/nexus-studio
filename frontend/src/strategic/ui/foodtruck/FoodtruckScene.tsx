@@ -104,8 +104,13 @@ const QUEUE_SLOT_SPACING = Math.round(FIGURE_MAX_WIDTH_UNITS * SPACING_SAFETY_MA
 // scale 2. Med samma 1.4× safety-marginal blir spacing 240 units —
 // nästan hälften av walking-spacingen. Det låter kön STÅ på gatan i
 // stället för att breda ut sig över hela scenen.
+// ORDER 116 §8(c) uppföljning — 240 var för tätt: figurerna stod
+// skulder-mot-skulder och läste inte som "på rad med avstånd" (VO:s
+// DoD 3-ord). Höjt till 1.9× safety-marginal (~322 units) — färre
+// figurer synliga på scen samtidigt men avståndet mellan dem läses.
 const IDLE_TORSO_UNITS = 86;
-const IDLE_SPACING = Math.round(IDLE_TORSO_UNITS * QUEUE_FIGURE_SCALE * SPACING_SAFETY_MARGIN);
+const IDLE_SAFETY_MARGIN = 1.9;
+const IDLE_SPACING = Math.round(IDLE_TORSO_UNITS * QUEUE_FIGURE_SCALE * IDLE_SAFETY_MARGIN);
 
 const QUEUE_Y = STREET_TOP + 380;                        // figurernas fot-y
 
@@ -214,7 +219,9 @@ const LEAVING_SPACING = QUEUE_SLOT_SPACING;
 const UTEPLATS_X = WAGON_RIGHT + 60;      // första bordets x
 const UTEPLATS_TABLE_COUNT = 2;           // kapacitet 2 samtidiga
 const UTEPLATS_TABLE_SPACING = 220;       // avstånd mellan bord-par
-const UTEPLATS_GUEST_OFFSET_X = 100;      // gäst står så mycket höger om sitt bord
+// ORDER 116 §8-uppföljning — 100 var för litet: gästens torso täckte
+// bord-skivan. Höjt till 170 så bordet syns helt till vänster om gästen.
+const UTEPLATS_GUEST_OFFSET_X = 170;      // gäst står så mycket höger om sitt bord
 // Bord-skiva vid mid-lår-höjd på gäst; benen på gatan.
 const UTEPLATS_TABLE_Y = 900;             // skiva topp
 const UTEPLATS_TABLE_LEG_H = 120;         // ben-höjd
@@ -937,48 +944,14 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
         </g>
 
         {/* ORDER 115 §4 — Uteplatsen (ståbord). Ritas ENDAST när
-            policies.hasUteplats är sann. Tre ståbord höger om vagnen
-            där eating-gäster står och äter. Ritas EFTER wagon men
-            FÖRE guest-figurer så eating-gäster syns framför borden.
-            Data-attribut `data-foodtruck-uteplats` för test-grep. */}
-        {sim.policies.hasUteplats && (
-          <g data-foodtruck-uteplats>
-            {Array.from({ length: UTEPLATS_TABLE_COUNT }).map((_, i) => {
-              const tx = UTEPLATS_X + i * UTEPLATS_TABLE_SPACING;
-              const ty = UTEPLATS_TABLE_Y;
-              return (
-                <g key={i}>
-                  {/* Bord-skiva (rektangel, hüftr höjd på gata-nivå) */}
-                  <rect
-                    x={tx - 60}
-                    y={ty}
-                    width={120}
-                    height={20}
-                    fill="#5a5044"
-                    stroke={RIG_INK}
-                    strokeWidth={3}
-                  />
-                  {/* Ben (två pinnar ner) */}
-                  <rect x={tx - 50} y={ty + 20} width={8} height={UTEPLATS_TABLE_LEG_H} fill={RIG_INK} />
-                  <rect x={tx + 42} y={ty + 20} width={8} height={UTEPLATS_TABLE_LEG_H} fill={RIG_INK} />
-                </g>
-              );
-            })}
-            {/* Etikett ovanför första bordet */}
-            <text
-              x={UTEPLATS_X}
-              y={UTEPLATS_TABLE_Y - 16}
-              textAnchor="middle"
-              fill="#8a836e"
-              fontSize={18}
-              fontFamily="system-ui, sans-serif"
-              letterSpacing={2}
-              style={{ textTransform: 'uppercase' }}
-            >
-              Uteplats
-            </text>
-          </g>
-        )}
+            policies.hasUteplats är sann.
+            ORDER 116 §8-uppföljning — flyttad från "FÖRE guest-figurer"
+            till EFTER guest-figurer så bord-skivan framstår FÖRE
+            (närmare kameran än) gästens torso. Sidvyn: en person står
+            bakom bordet, bordet syns i förgrunden. Före: bordet var
+            osynligt bakom gäst-torso. Data-attribut
+            `data-foodtruck-uteplats` för test-grep. Rendering flyttad
+            längre ner i JSX-trädet men själva markup:en bevarad. */}
 
         {/* Personalen — ett ansikte i luckan. Fast `nojd`-uttryck:
             personal-vokabulär (deriveFaces.ts) rörs inte per ORDER 114
@@ -1057,24 +1030,23 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
             const START_X = STAFF_X + 40;    // staff-hand ut ur luckan
             const END_X = p.x + 30;          // guest fram-hand
             const propX = START_X + (END_X - START_X) * progress;
-            // Y: LUCKANS överkant (HATCH_Y = 340) — där staff-figurens
-            // hand faktiskt sträcker sig UT ur luckan. Gästen sträcker
-            // sig UPP mot samma nivå. Propen läses som "reser sig ur
-            // luckan, byter händer, sänks mot gästens hand". Före
-            // denna kalibrering låg propen vid y=608 (counter-linjen)
-            // — MITT I gästens torso, dold. Höjs till HATCH_Y + 30
-            // (=370) så den är över alla figur-toppar (huvud slutar
-            // ~y=390 för guest at QUEUE_Y+380).
-            const HANDOFF_Y = HATCH_Y + 30;
+            // ORDER 116 §8(a) uppföljning — y=HATCH_Y+30 låg IN i
+            // belt-band-röd (WAGON_TOP+64 ≈ 284..340), så transit-
+            // propen tävlade med "FOOD TRUCK"-texten och LUCKAN-etiketten
+            // och lästes som "signage". Flyttad ner till y=HATCH_Y+120
+            // (=460) — INUTI hatch-mörkret (340..620), ovanför alla
+            // guest-torso-toppar (~y=475 för scale-2-figur vid
+            // QUEUE_Y+380). Propen läses nu klart mot svart bakgrund
+            // istället för mot röd list.
+            const HANDOFF_Y = HATCH_Y + 120;
             const parabola = -20 * (4 * progress * (1 - progress));
             const propY = HANDOFF_Y + parabola;
-            // Prop-storlek match:ar Figure.tsx:renderCarrying skalad
-            // som gästen: carrying är 32×22 units × QUEUE_FIGURE_SCALE
-            // (2.0) = 64×44. Transit-propen tas samma storlek så
-            // spelaren läser dem som ETT objekt när gästen faktiskt
-            // tar emot i sista tick.
-            const PROP_W = 32 * QUEUE_FIGURE_SCALE;
-            const PROP_H = 22 * QUEUE_FIGURE_SCALE;
+            // ORDER 116 §8(a) uppföljning — bumpad från 32×22 (matchade
+            // gästens carrying) till 44×30 units × scale = 88×60. Transit-
+            // propen är den enda synliga händelsen under 2.5s-fönstret;
+            // matchen med guest-carrying är sekundär till läsbarheten.
+            const PROP_W = 44 * QUEUE_FIGURE_SCALE;
+            const PROP_H = 30 * QUEUE_FIGURE_SCALE;
             return (
               <g key={`transit-${g.id}`} data-foodtruck-prop-transit={g.id}>
                 {/* Brun kartong-låda + accent-band — samma form och
@@ -1099,6 +1071,47 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
               </g>
             );
           })}
+
+        {/* ORDER 116 §8-uppföljning — uteplats-render flyttad HIT från
+            pre-guest-position så bordet läses som framför gästen. */}
+        {sim.policies.hasUteplats && (
+          <g data-foodtruck-uteplats>
+            {Array.from({ length: UTEPLATS_TABLE_COUNT }).map((_, i) => {
+              const tx = UTEPLATS_X + i * UTEPLATS_TABLE_SPACING;
+              const ty = UTEPLATS_TABLE_Y;
+              return (
+                <g key={i}>
+                  {/* Bord-skiva (rektangel, höft-höjd på gata-nivå) */}
+                  <rect
+                    x={tx - 60}
+                    y={ty}
+                    width={120}
+                    height={20}
+                    fill="#5a5044"
+                    stroke={RIG_INK}
+                    strokeWidth={3}
+                  />
+                  {/* Ben (två pinnar ner) */}
+                  <rect x={tx - 50} y={ty + 20} width={8} height={UTEPLATS_TABLE_LEG_H} fill={RIG_INK} />
+                  <rect x={tx + 42} y={ty + 20} width={8} height={UTEPLATS_TABLE_LEG_H} fill={RIG_INK} />
+                </g>
+              );
+            })}
+            {/* Etikett ovanför första bordet */}
+            <text
+              x={UTEPLATS_X}
+              y={UTEPLATS_TABLE_Y - 16}
+              textAnchor="middle"
+              fill="#8a836e"
+              fontSize={18}
+              fontFamily="system-ui, sans-serif"
+              letterSpacing={2}
+              style={{ textTransform: 'uppercase' }}
+            >
+              Uteplats
+            </text>
+          </g>
+        )}
 
         <StreetMap queueCount={queueCount} />
 
