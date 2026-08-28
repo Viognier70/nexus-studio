@@ -2,8 +2,8 @@
 
 **Datum:** 2026-08-15  
 **Order:** ORDER 096 — Dockskåpets mätgrind  
-**Status:** Mätgrind genomförd — SD-003 förblir pausad, detta underlag styr revideringen  
-**Uppfyller:** SD-003 §5.1–§5.4  
+**Status:** **Historisk (2026-08-28)** — SUPERSEDING_DIRECTIVE_004 (`Kroppar i rummet`) upphävde dockskåpet som presentationsform. Mätningarna nedan (§5.1 FPS-svep, §5.2 kuvertantal, §5.3 kartans minsta storlek) avser en form som inte längre byggs. Behållen enligt SD-004 §5 så skälen till dockskåpet finns läsbara nästa gång presentationsfrågan öppnas. Ingenting i sim-lagret (kön, serving-fasen, uteplatsen, värdekvoten, mise en place-konsumtionen, arketyperna, verksamhetsklasserna) berörs.  
+**Uppfyller:** SD-003 rev. 2 §5.1–§5.4 (rev. 2 ersatt av SD-004; se `documentation/architecture/ORDER_REGISTRY.md` SD-003 rev. 2-raden)  
 **Artefakter:** `frontend/scripts/order096-fps-benchmark.mjs` · `frontend/reports/order096/`
 
 ---
