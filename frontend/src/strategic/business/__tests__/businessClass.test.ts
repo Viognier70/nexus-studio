@@ -43,9 +43,9 @@ function accumulate(
 // -----------------------------------------------------------------------------
 
 describe('ORDER 110 §7 DoD 1 — verksamhetsklassen som begrepp', () => {
-  it('BUSINESS_CLASS_CONFIG innehåller exakt tre klasser', () => {
+  it('BUSINESS_CLASS_CONFIG innehåller fyra klasser (ORDER 125 lade till ölkrogen)', () => {
     const ids = Object.keys(BUSINESS_CLASS_CONFIG).sort();
-    expect(ids).toEqual(['foodtruck', 'restaurant', 'värdshus']);
+    expect(ids).toEqual(['foodtruck', 'restaurant', 'värdshus', 'ölkrogen']);
   });
 
   it('restaurant är default-verksamhet i makeInitialState()', () => {
@@ -72,6 +72,13 @@ describe('ORDER 110 §7 DoD 1 — verksamhetsklassen som begrepp', () => {
     expect(cfg.hasMiseEnPlace).toBe(true);
     expect(cfg.hasOvernight).toBe(true);
   });
+
+  it('ORDER 125 §3 — ölkrogen har matsal + mise en place, ingen övernattning', () => {
+    const cfg = BUSINESS_CLASS_CONFIG.ölkrogen;
+    expect(cfg.hasSeats).toBe(true);
+    expect(cfg.hasMiseEnPlace).toBe(true);
+    expect(cfg.hasOvernight).toBe(false);
+  });
 });
 
 // -----------------------------------------------------------------------------
@@ -94,6 +101,12 @@ describe('ORDER 110 §7 DoD 4 — capacity följer verksamhet + bemanning', () =
   it('värdshus: TOTAL_SEATS + 6 rum', () => {
     expect(capacityForBusiness('värdshus', 2)).toBe(TOTAL_SEATS + 6);
     expect(capacityForBusiness('värdshus', 4)).toBe(TOTAL_SEATS + 6);
+  });
+
+  it('ORDER 125 §3 — ölkrogen: 20 platser oavsett bemanning', () => {
+    expect(capacityForBusiness('ölkrogen', 2)).toBe(20);
+    expect(capacityForBusiness('ölkrogen', 3)).toBe(20);
+    expect(capacityForBusiness('ölkrogen', 4)).toBe(20);
   });
 
   it('REQUEST_BANK_LOAN uppdaterar policies.capacity när verksamhet skiftar', () => {
@@ -271,9 +284,9 @@ describe('ORDER 110 §7 DoD 8 — grep + Värdshuset', () => {
     expect(strings.businessClass.värdshus).toBeTruthy();
   });
 
-  it('typkontroll: strings.businessClass-nycklar är exakt de tre BusinessClass-värdena', () => {
+  it('typkontroll: strings.businessClass-nycklar är exakt de fyra BusinessClass-värdena (ORDER 125 lade till ölkrogen)', () => {
     const stringsKeys = Object.keys(strings.businessClass).sort();
-    const businessKeys: BusinessClass[] = ['foodtruck', 'restaurant', 'värdshus'];
+    const businessKeys: BusinessClass[] = ['foodtruck', 'restaurant', 'värdshus', 'ölkrogen'];
     expect(stringsKeys).toEqual(businessKeys);
   });
 });

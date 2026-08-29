@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { CameraController } from '../camera/CameraController';
 import type { Landmark } from '../content/world';
 import { AnimationPrototype } from './AnimationPrototype';
+import { BrewpubScene } from './BrewpubScene';
 import { ChimneySmoke } from './ChimneySmoke';
 import { ProceduralFacades } from './ProceduralFacades';
 import { ScaleReference } from '../../scene/ScaleReference';
@@ -126,6 +127,7 @@ export function StrategicScene({ onSelect, selectedId, showScaleRef = false }: P
         <CraftedLandmarks />
         <CraftedLandmarksD2 />
         <PlayerBusiness />
+        <BrewpubScene />
         <InteriorGuests />
         <InteriorStaff />
         <AnimationPrototype />

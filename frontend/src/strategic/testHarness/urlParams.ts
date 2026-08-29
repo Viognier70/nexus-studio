@@ -92,7 +92,7 @@ interface ParsedParams {
   // override, initial-state:t behåller sin default ('restaurant'). Ingen
   // permanent koppling; hör till dev-verktygsraden tills en riktig
   // ny-spel-flow bygg (senare order).
-  business: 'restaurant' | 'foodtruck' | 'värdshus' | null;
+  business: 'restaurant' | 'foodtruck' | 'värdshus' | 'ölkrogen' | null;
   // ORDER 113 DoD 7/8 — dev-only seed för food truck-benchmark. När satt
   // och business=foodtruck, injicerar SimulationProvider N fake "waiting"-
   // gäster i initial-state:t så skärmdumpen och fps-mätningen har en
@@ -156,12 +156,14 @@ function parseFoodtruckSeed(s: string | null): number | null {
   return Math.min(n, 30);
 }
 
-function parseBusiness(s: string | null): 'restaurant' | 'foodtruck' | 'värdshus' | null {
+function parseBusiness(s: string | null): 'restaurant' | 'foodtruck' | 'värdshus' | 'ölkrogen' | null {
   if (!s) return null;
   const v = s.toLowerCase();
   if (v === 'restaurant' || v === 'restaurang') return 'restaurant';
   if (v === 'foodtruck' || v === 'food-truck' || v === 'food_truck') return 'foodtruck';
   if (v === 'värdshus' || v === 'vardshus' || v === 'varshus') return 'värdshus';
+  // ORDER 125 §3 — ölkrogen valbar via URL för dev-verifikation.
+  if (v === 'ölkrogen' || v === 'olkrogen' || v === 'brewpub') return 'ölkrogen';
   return null;
 }
 
