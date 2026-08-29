@@ -111,25 +111,40 @@ const SEATED_STATES: readonly GuestState[] = ['seated', 'ordering', 'dining', 'p
 // blendPose(poseIdle → poseSeated) över samma 0,5 s.
 const SIT_STAND_DURATION_SEC = 0.5;
 
-const GUEST_COLOUR: Record<GuestState, string> = {
-  arriving: '#e6d4a0',
-  waiting: '#e6b878',
-  seated: '#c9c0a4',
-  ordering: '#b9b394',
-  dining: '#a89f7e',
-  paying: '#9c9070',
+// ORDER 123 §2.2 (SD-004 §3.3-preciseringen 2026-08-29): paletten
+// ljusas så gästen är läsbar mot golvets #a89577. Tidigare palett
+// hade `dining`/`paying`/`leaving`-färger med kontrastförhållande
+// 1,08–1,29 mot golvet — kroppen försvann i golvet. Nya färger för
+// SEATED_STATES (`seated`/`ordering`/`dining`/`paying`) ligger i
+// bandet [1,8, 3,6]:1 per `silhouetteContrast.ts`. `sleeping` +
+// `leaving` + `declined` är transienta / edge-tillstånd och testas
+// inte lika strikt — de är fade-outs, kort synliga.
+// `eating`/`serving` rör bara foodtruck-scenen (typkrav; renderas
+// aldrig i InteriorGuests).
+// ORDER 123 §5 — exporterad så `paletteContrast.test.ts` kan hävda
+// bandet mot golvet. SEATED_STATES-färgerna testas strikt; andra
+// tillstånd är transienta / edge.
+export const GUEST_COLOUR: Record<GuestState, string> = {
+  arriving: '#efd9a8',
+  waiting: '#f0d19a',
+  seated: '#ecd2a0',
+  ordering: '#edd0a4',
+  dining: '#ebcda2',
+  paying: '#e8c99e',
   // ORDER 111 §4 — sleeping-gäst (värdshus) läses lite dovare än seated:
-  // hen är på plats men inte i aktiv service, färgen viker mot leaving.
-  sleeping: '#7a7360',
+  // hen är på plats men inte i aktiv service. Muted warm-tan.
+  sleeping: '#c4ac7d',
   // ORDER 115 §4.5 — eating-gäst (foodtruck-uteplats) — inte i denna
-  // scene men typen kräver alla GuestState-nycklar. Ljus värdedag-ton.
+  // scene men typen kräver alla GuestState-nycklar. Foodtruck-specific.
   eating: '#d4c088',
   // ORDER 115 rev 2 — serving-gäst (foodtruck-överlämning) — samma
   // typkrav; färgen behöver bara vara definierad, används inte i
   // restaurang-scenen.
   serving: '#c9c0a4',
-  leaving: '#8a836e',
-  declined: '#6a6455'
+  // Transienta exit-tillstånd — gäst på väg ut, kort synlig i vyn.
+  // Lite mörkare än SEATED_STATES men inte inuti strikt kontrastband.
+  leaving: '#d3bd8c',
+  declined: '#b8a276'
 };
 
 function smoothstep(a: number, b: number, x: number): number {

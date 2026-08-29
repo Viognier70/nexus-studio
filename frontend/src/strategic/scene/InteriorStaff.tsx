@@ -77,14 +77,30 @@ const PREP_DRIFT_FREQ_HZ = 1.1;       // vs the ~0.4 Hz service-time frequency
 const TASK_BOB_AMPLITUDE_M = 0.05;
 const TASK_BOB_FREQ_HZ = 2.0;
 
-// Uniform tones per role — kept dark and low-chroma so staff never
-// blend with the warm-beige guest palette. Same shape difference
-// (slim + tall) reinforces the distinction from the top-down camera.
-const ROLE_COLOUR: Record<StaffRole, string> = {
-  'värd':     '#2a2f3a',   // host — dark navy
-  'servitör': '#33383f',   // server — charcoal
-  'kock':     '#3d3835',   // cook — warm dark brown
-  'lärling':  '#4a4744'    // apprentice — mid-grey
+// Uniform tones per role.
+//
+// ORDER 123 §2.2 (SD-004 §3.3-preciseringen 2026-08-29): paletten
+// ljusas från det tidigare bandet #2a2f3a–#4a4744, som gav "kroppen
+// blir en skugga oavsett hur hjässan löses" mot golvets #a89577.
+// Kontrastförhållandet var 4,5–6:1 = ren silhuett utan internt
+// färgdjup. Nya färger ligger i bandet [1,8, 3,6]:1 mot golvet, per
+// `silhouetteContrast.ts`, med bevarad roll-distinktion ≥ 12 ΔE.
+// Tester (`paletteContrast.test.ts`) hävdar bandet — nästa gång någon
+// justerar en färg fångas driften direkt.
+// ORDER 123 §5 — exporterad så `paletteContrast.test.ts` kan hävda
+// bandet mot golvet + roll-distinktionen mellan färgerna.
+//
+// Rollerna sprids över FYRA distinkta hue-familjer (djup marinblå,
+// varm-neutral, burgundy, kall-grå) så parvis ΔE 76 ≥ 12 uppfylls
+// utan att någon uniform hamnar utanför [1,8, 3,6]:1-kontrastbandet
+// mot golvets #a89577. Ett tidigare försök med fyra mörka
+// neutraler (#4a5464, #565b64, #605852, #6b6660) föll på §4.4:
+// pair-wise ΔE 5,6–11,1 — spelaren kunde inte skilja rollerna åt.
+export const ROLE_COLOUR: Record<StaffRole, string> = {
+  'värd':     '#2f4a68',   // host — deep navy (cool, doorway)
+  'servitör': '#6b6260',   // server — warm-neutral (mid, functional)
+  'kock':     '#7a3e3a',   // cook — burgundy (warm, kitchen)
+  'lärling':  '#d8d3ce'    // apprentice — light warm-grey (muted, junior)
 };
 
 // ORDER 078 (M5) — service-rhythm colour ring. Thin cylinder at the
