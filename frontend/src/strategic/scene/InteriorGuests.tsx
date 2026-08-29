@@ -14,7 +14,7 @@
 // puck, opposite trajectories.
 
 import { useFrame } from '@react-three/fiber';
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { useCamera } from '../camera/CameraContext';
 import { usePlayerBusinessInterior } from '../business/interiorLayout';
@@ -28,15 +28,32 @@ import {
 } from '../ui/RoomCardPanel/guestPatterns';
 import {
   PIP_COLOUR,
-  PIP_OFFSET_ABOVE_PUCK_TOP_M,
   PIP_SIZE_M,
   computePatternTransform
 } from './patternTransform';
+// ORDER 121 §2 — figureRig ersätter cylinderpucken. Pipens Y-position
+// kommer från rig.joints.headAnchor per §6, inte från konstanten
+// PIP_OFFSET_ABOVE_PUCK_TOP_M längre.
+import {
+  createFigureRig,
+  disposeFigureRig,
+  applyPose,
+  blendPose,
+  poseIdle,
+  poseSeated,
+  poseWalk,
+  type FigureRig,
+  type FigurePose
+} from './figureRig';
 
-const GUEST_RADIUS_M = 0.32;
-// ORDER 053 Del B — guest standing height, exact.
-const GUEST_HEIGHT_M = 1.70;
-const GUEST_Y = GUEST_HEIGHT_M / 2 + 0.06;
+// ORDER 121 — cylinderpuckens `GUEST_RADIUS_M`/`GUEST_HEIGHT_M`/`GUEST_Y`
+// utgår. Riggen har fötterna i golvplanet (y=0) i sitt lokala rum, så
+// gruppen sitter direkt vid marken. Höjdkontraktet (1,700 m) bärs av
+// `FIGURE.totalHeight` i figureRig.ts.
+// ORDER 121 §2 — stridslängd för gångfas (poseWalk tar cykler, inte
+// sekunder). En cykel = två fotisättningar. 0,75 m ger cirka 1,6 cykler
+// per sekund vid 1,2 m/s — naturlig kadens.
+const STRIDE_LENGTH_M = 0.75;
 
 // Walking pace — 1.2 m/s is a comfortable indoor stroll. Guests moving
 // at this pace cross the 6 m arrival radius in ~5 s, which reads as
@@ -83,22 +100,15 @@ const WAIT_LEAN_START_SEC = 8;         // how long unattended before lean starts
 const WAIT_LEAN_FULL_SEC = 45;         // lean saturates at this wait duration
 const SEATED_STATES: readonly GuestState[] = ['seated', 'ordering', 'dining', 'paying'];
 
-// ORDER 046 §4 — sit / stand animation.
+// ORDER 046 §4 / ORDER 088 §2.3 / ORDER 121 §2 — sit / stand animation.
 //
-// On the transition tick 'waiting' → 'seated', dip Y by SIT_DIP_M
-// over SIT_STAND_DURATION_SEC then stay dipped (guest is sitting).
-// On 'paying' → 'leaving', rise Y from the dip back to standing.
-// The Y offset composes on top of the lean-Y so a seated-and-leaning
-// guest still leans normally.
-//
-// ORDER 088 §2.3 — SIT_DIP_M raised from 0.15 to 0.27 m against the
-// legibility criterion: at pitch 58° / distance 8.4 m, a 0.15 m dip
-// projects to ~13 screen pixels — a seated puck read as "same as
-// standing." 0.27 m projects to ~24 px, distinctly seated. Head
-// clearance over table is still 0.69 m (crown Y = 1.70 − 0.27 = 1.43,
-// table Y = 0.74). Measurement + rationale in
-// UNDERLAG_003_MEASUREMENTS.md §0.1 (ORDER 088 amendment).
-const SIT_DIP_M = 0.27;
+// Före ORDER 121 dippades hela pucken 0,27 m i Y (SIT_DIP_M) under
+// SIT_STAND_DURATION_SEC för att läsa som sittande vid pitch 58° /
+// distans 8,4 m. Riggen ersätter det: `poseSeated` sänker höften 0,41 m
+// (sitshöjd 0,45 m) och böjer knä och höft så låret går vågrätt och
+// sulan står plan i golvplanet — kroppen ändrar form, inte bara höjd.
+// SIT_DIP_M utgår som Y-konstant; övergången görs istället som
+// blendPose(poseIdle → poseSeated) över samma 0,5 s.
 const SIT_STAND_DURATION_SEC = 0.5;
 
 const GUEST_COLOUR: Record<GuestState, string> = {
@@ -158,6 +168,11 @@ interface AnimatedPos {
   // ORDER 088 §3 — stable phase seed so per-puck bob/microYaw don't
   // sync. Deterministic per guest id.
   phaseSeed: number;
+  // ORDER 121 §2 — gångfas i cykler (poseWalk-argument). Ökar med
+  // (delta × WALK_SPEED_M_PER_S / STRIDE_LENGTH_M) när figuren rör sig,
+  // står still när figuren står still. Kadensen hänger ihop med
+  // förflyttningen och inte med väggklockan.
+  walkPhase: number;
 }
 
 // ORDER 088 §3 — hash guest id to a stable [0, 2π) phase seed. Same
@@ -181,15 +196,29 @@ export function InteriorGuests() {
   // Per-guest current position (mutated each frame — React does not
   // re-render on position changes; the mesh transform is set direct).
   const positionsRef = useRef<Map<string, AnimatedPos>>(new Map());
-  // Mesh refs keyed by guest id, so useFrame can set position + colour.
-  const meshRefs = useRef<Map<string, THREE.Mesh>>(new Map());
   // ORDER 088 §3 — group refs so the pattern-driven lean/microYaw
   // pivot at ground level (top tilts, base stays planted). Group holds
-  // the puck mesh + the pip mesh.
+  // the rig (added imperativt via group.add) plus the pip mesh.
   const groupRefs = useRef<Map<string, THREE.Group>>(new Map());
   // ORDER 088 §4 — pip mesh refs so visibility can be toggled per
   // tick from derivePipCarriers.
   const pipRefs = useRef<Map<string, THREE.Mesh>>(new Map());
+  // ORDER 121 §2 — rig-refs per gäst-id. Skapas i useFrame första gången
+  // gästen ses (i samma tick som positionen initialiseras), monteras med
+  // group.add(rig.root), och frigörs (disposeFigureRig) när gästen
+  // pruneras.
+  const rigsRef = useRef<Map<string, FigureRig>>(new Map());
+
+  // ORDER 121 §8 DoD 5 — läckagetest-garanti: när komponenten avmonteras
+  // frigörs alla riggens material + delade geometrier. Utan denna
+  // useEffect skulle en dev-server-refresh läcka material.
+  useEffect(() => {
+    const rigs = rigsRef.current;
+    return () => {
+      rigs.forEach((rig) => disposeFigureRig(rig));
+      rigs.clear();
+    };
+  }, []);
 
   // Stable arrival-slot picker per guest. Assigned on first sighting
   // so a guest that arrives at slot 2 does not visually swap to slot 0
@@ -262,15 +291,15 @@ export function InteriorGuests() {
           cx: spawn[0], cz: spawn[1],
           leanX: 0, leanZ: 0, leanY: 0,
           prevState: null, sitStandPhase: -1, sitStandDir: 0,
-          phaseSeed: phaseSeedFor(guest.id)
+          phaseSeed: phaseSeedFor(guest.id),
+          walkPhase: 0
         };
         positionsRef.current.set(guest.id, pos);
       }
 
-      // ORDER 046 §4 — detect sit / stand transitions and start the
-      // Y-animation. waiting → seated is a sit (dip down); paying →
-      // leaving is a stand (rise back). Any other transition resets
-      // the phase so we don't double-animate.
+      // ORDER 046 §4 / ORDER 121 §2 — detect sit / stand transitions.
+      // waiting → seated startar sit (0 → 1 blendas idle → seated);
+      // paying → leaving startar stand (0 → 1 blendas seated → idle).
       if (pos.prevState !== null && pos.prevState !== guest.state) {
         if (pos.prevState === 'waiting' && guest.state === 'seated') {
           pos.sitStandPhase = 0;
@@ -282,46 +311,42 @@ export function InteriorGuests() {
       }
       pos.prevState = guest.state;
 
-      // Advance sit / stand phase.
-      let sitStandY = 0;
+      // Advance sit / stand phase (0..1). Övergången konsumeras i
+      // pose-valet nedan (blendPose), inte som Y-offset.
       if (pos.sitStandDir !== 0 && pos.sitStandPhase >= 0) {
         pos.sitStandPhase += delta / SIT_STAND_DURATION_SEC;
         if (pos.sitStandPhase >= 1) {
           pos.sitStandPhase = 1;
           if (pos.sitStandDir === 1) {
-            // Stand complete — back to zero.
+            // Stand complete — back to zero (poseIdle rakt av).
             pos.sitStandDir = 0;
             pos.sitStandPhase = -1;
           }
         }
-        if (pos.sitStandDir === -1) {
-          // Sit — ease from 0 to −SIT_DIP_M with an easeOut curve.
-          const t = pos.sitStandPhase;
-          const eased = 1 - (1 - t) * (1 - t);
-          sitStandY = -SIT_DIP_M * eased;
-        } else if (pos.sitStandDir === 1) {
-          // Stand — ease from −SIT_DIP_M back to 0.
-          const t = pos.sitStandPhase;
-          const eased = t * t;
-          sitStandY = -SIT_DIP_M * (1 - eased);
-        }
-      } else if (SEATED_STATES.includes(guest.state)) {
-        // Guest is seated but never played the sit-down (e.g. joined
-        // mid-service already seated). Hold at the dipped position.
-        sitStandY = -SIT_DIP_M;
       }
-      // Ease toward target at walking pace.
+
+      // Ease toward target at walking pace. Håll koll på om vi rörde
+      // oss den här bildrutan så gångfasen bara ökar när fötterna
+      // faktiskt tar steg.
       const dx = target.x - pos.cx;
       const dz = target.z - pos.cz;
       const dsq = dx * dx + dz * dz;
       const step = WALK_SPEED_M_PER_S * delta;
+      let movedThisFrame = false;
       if (dsq > step * step) {
         const invd = 1 / Math.sqrt(dsq);
         pos.cx += dx * invd * step;
         pos.cz += dz * invd * step;
-      } else {
+        movedThisFrame = true;
+      } else if (dsq > 1e-6) {
+        // Sista biten — snappar till målet, räknas fortfarande som gång.
         pos.cx = target.x;
         pos.cz = target.z;
+        movedThisFrame = true;
+      }
+      // ORDER 121 §2 — gångfas i cykler (avståndsdrivna, inte tidsdrivna).
+      if (movedThisFrame) {
+        pos.walkPhase += (step / STRIDE_LENGTH_M);
       }
 
       // ORDER 044 §3.3 lean — physical seat-attention.
@@ -333,55 +358,85 @@ export function InteriorGuests() {
 
       // ORDER 088 §3 — pattern-driven transform. Lean, bob, microYaw
       // derived from the pattern label selected in guestPatterns.ts.
-      // Same input tuple returns the same transform (pure function —
-      // no Math.random, no Date.now).
       const pattern = patternForGuest(guest, sim.simTime);
       const patternTx = computePatternTransform(
         pattern, 'guest', sim.simTime, pos.phaseSeed
       );
 
-      // Push to mesh + group. Group carries the ground-planted lean
-      // rotation and microYaw so the puck's base stays grounded while
-      // the top tilts. Mesh carries the sit-stand Y offset (composes
-      // on top of the group's Y) so a seated-and-leaning guest still
-      // leans from the seated position.
+      // ORDER 121 §2 — hämta/skapa rig för denna gäst. Skapas när
+      // gruppen finns (dvs. efter första React-render). Färg = garment
+      // för state (samma palett som pucken bar).
       const group = groupRefs.current.get(guest.id);
+      let rig = rigsRef.current.get(guest.id);
+      if (group && !rig) {
+        rig = createFigureRig({
+          variant: 'guest',
+          garmentColour: target.colour
+        });
+        group.add(rig.root);
+        rigsRef.current.set(guest.id, rig);
+      }
+
+      // Group carries the ground-planted lean rotation and microYaw so
+      // the rig's base stays grounded while the top tilts. Y = leanY +
+      // bob (small vertical wobble from the pattern layer).
       if (group) {
         group.position.set(
           pos.cx + pos.leanX,
-          pos.leanY + patternTx.bobY,   // bob + lean-Y at group level
+          pos.leanY + patternTx.bobY,
           pos.cz + pos.leanZ
         );
         group.rotation.x = patternTx.leanRad;
         group.rotation.y = patternTx.microYawRad;
       }
-      const mesh = meshRefs.current.get(guest.id);
-      if (mesh) {
-        // Local Y within the group: base at 0, mesh centre at GUEST_Y.
-        mesh.position.set(0, GUEST_Y + sitStandY, 0);
-        const mat = mesh.material as THREE.MeshStandardMaterial;
-        if (mat) {
-          mat.color.set(target.colour);
+
+      if (rig) {
+        // Sätt garment-färg per tick (staten skiftar över tid).
+        rig.garment.color.set(target.colour);
+        rig.materials.forEach((mat) => {
           mat.opacity = visibility;
           const wantTransparent = visibility < 0.99;
           if (mat.transparent !== wantTransparent) {
             mat.transparent = wantTransparent;
             mat.needsUpdate = true;
           }
+        });
+
+        // ORDER 121 §4 — pose baserad på state + rörelse.
+        // Gående (arriving/leaving/declined + rörelse) → poseWalk.
+        // Sittande → poseSeated, med blend under sit/stand-transition.
+        // Övrigt stillastående → poseIdle.
+        const t = sim.simTime + pos.phaseSeed;
+        let pose: FigurePose;
+        if (movedThisFrame && !SEATED_STATES.includes(guest.state)) {
+          pose = poseWalk(pos.walkPhase);
+        } else if (pos.sitStandDir === -1 && pos.sitStandPhase >= 0) {
+          // Sätter sig — blenda idle → seated
+          pose = blendPose(poseIdle(t), poseSeated(t), pos.sitStandPhase);
+        } else if (pos.sitStandDir === 1 && pos.sitStandPhase >= 0) {
+          // Reser sig — blenda seated → idle
+          pose = blendPose(poseSeated(t), poseIdle(t), pos.sitStandPhase);
+        } else if (SEATED_STATES.includes(guest.state) || guest.state === 'sleeping') {
+          pose = poseSeated(t);
+        } else {
+          pose = poseIdle(t);
         }
+        applyPose(rig, pose);
       }
-      // ORDER 088 §4 — pip: visible when this guest is a pip carrier
-      // (HAIL / IMPATIENT). Positioned above the puck's top, +sit-stand
-      // Y so the pip follows a seated guest down.
+
+      // ORDER 121 §6 — pip-ankaret flyttas från puckens topp till
+      // huvudet. Läs headAnchors världsposition (efter applyPose och
+      // group-uppdatering), konvertera till group-lokalt rum och sätt
+      // pipens position där. Följer sit-stand och lean automatiskt.
       const pipMesh = pipRefs.current.get(guest.id);
-      if (pipMesh) {
+      if (pipMesh && group && rig) {
         const isCarrier = pipCarrierGuestIds.has(guest.id);
         pipMesh.visible = isCarrier && visibility > 0.02;
-        pipMesh.position.set(
-          0,
-          GUEST_Y + sitStandY + GUEST_HEIGHT_M / 2 + PIP_OFFSET_ABOVE_PUCK_TOP_M,
-          0
-        );
+        group.updateWorldMatrix(true, true);
+        const anchorWorld = new THREE.Vector3();
+        rig.joints.headAnchor.getWorldPosition(anchorWorld);
+        const anchorLocal = group.worldToLocal(anchorWorld);
+        pipMesh.position.copy(anchorLocal);
         const pMat = pipMesh.material as THREE.MeshStandardMaterial;
         if (pMat) {
           pMat.opacity = visibility;
@@ -391,10 +446,17 @@ export function InteriorGuests() {
     }
 
     // Prune positions + slot assignments for guests that left the sim.
+    // ORDER 121 §8 DoD 5 — dispose:a rig också, så material och
+    // material-cachen inte läcker.
     for (const id of Array.from(positionsRef.current.keys())) {
       if (!idsSeen.has(id)) {
         positionsRef.current.delete(id);
         slotAssignRef.current.delete(id);
+        const oldRig = rigsRef.current.get(id);
+        if (oldRig) {
+          disposeFigureRig(oldRig);
+          rigsRef.current.delete(id);
+        }
       }
     }
   });
@@ -411,19 +473,12 @@ export function InteriorGuests() {
             else groupRefs.current.delete(g.id);
           }}
         >
-          <mesh
-            ref={(m) => {
-              if (m) meshRefs.current.set(g.id, m);
-              else meshRefs.current.delete(g.id);
-            }}
-            position={[0, GUEST_Y, 0]}
-          >
-            <cylinderGeometry args={[GUEST_RADIUS_M, GUEST_RADIUS_M, GUEST_HEIGHT_M, 10]} />
-            <meshStandardMaterial color={GUEST_COLOUR[g.state]} roughness={0.9} transparent opacity={0} />
-          </mesh>
+          {/* ORDER 121 §2 — cylinder-mesh borttagen. Riggen (figureRig)
+              monteras imperativt i useFrame via group.add(rig.root)
+              första gången gästen ses; disposeFigureRig i prune. */}
           {/* ORDER 088 §4 — pip cube. Hidden by default; visibility
-              toggled per tick from derivePipCarriers. No text, no
-              number — the cube itself is the reading. */}
+              toggled per tick from derivePipCarriers. Positionen sätts
+              varje tick från rig.joints.headAnchor (ORDER 121 §6). */}
           <mesh
             ref={(m) => {
               if (m) pipRefs.current.set(g.id, m);
