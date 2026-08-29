@@ -218,16 +218,27 @@ Nu använda poser: `poseWalk` (arriving/leaving/declined + rörelse),
 seated` och `paying → leaving` blandas via `blendPose(poseIdle,
 poseSeated)` över 0,5 s (samma varaktighet som gamla `SIT_STAND_DURATION_SEC`).
 
-### 11.3 Avvikelse från källan (§2)
+### 11.3 Typecheck-kompatibilitet (§2)
 
-En rättelse gjord i den kopierade `figureRig.ts` — kommenterad i koden:
+Scen-kopian av `figureRig.ts` är byte-identisk med `handoff/figureRig.ts`
+— ingen avvikelse i själva källan. `measureFigure`-traversens
+`o.isMesh` och `o.geometry` är runtime-flaggor three.js sätter på
+Mesh-instanser men @types/three exponerar dem inte på basklassen
+`Object3D`. Utan hjälp misslyckas typechecken mot handoff-koden.
 
-- **`measureFigure` traverse (rad 721):** källans `o.isMesh` och
-  `o.geometry` är runtime-flaggor three.js sätter men `@types/three:s
-  Object3D` exponerar dem inte. TypeScript-check misslyckades. Bytte
-  till `instanceof THREE.Mesh` + explicit `geometry as
-  THREE.BufferGeometry`-cast. Samma semantik som Design avsåg (den
-  branchen förbi setFromObject).
+Löst via en fristående kompatibilitets-shim:
+
+- **`frontend/src/strategic/scene/three-augmentations.d.ts`** —
+  augmenterar `THREE.Object3D` med valfria `isMesh?: boolean` och
+  `geometry?: BufferGeometry`. Shimen ligger i sin egen fil så
+  handoff-koden inte behöver röras och synkning framåt (om Claude
+  Design levererar en ny version) blir en byte-för-byte-kopiering
+  utan patch. Fälten är valfria — påverkar inte hur `Object3D` läses
+  i övriga kod.
+
+En tidigare version av denna commit modifierade `measureFigure` inline
+(bytte `o.isMesh` mot `instanceof THREE.Mesh`); shimen ersätter det för
+att bevara handoff-kopian byte-identisk med Design-leveransen.
 
 ### 11.4 DoD-verifiering
 
@@ -240,7 +251,7 @@ En rättelse gjord i den kopierade `figureRig.ts` — kommenterad i koden:
 | 5 | Läckagetestet grönt | ✓ 4 tester: root removeFromParent, materials.dispose räknat, idempotent, oberoende |
 | 6 | Måtten verifierade + samma höjd | ✓ 4 tester: guest.shoulderWidth=0.46, staff=0.40, hjässan 1.69–1.705 m båda; drop 0.3-0.6 m vid sittande |
 | 7 | Id-bryggan (två servitörer, två pip) | ✓ Redan verifierad via `teamStaffBridge.test.ts:62` (`'two servitörs, one owns a hail — only that team-servitör gets the pip'`, ORDER 090). Ingen ny bridge-kod behövdes; pip-ankaret flyttat från puckens topp till `rig.joints.headAnchor` i båda Interior-filerna. |
-| 8 | Visuell verifikation via playwright | ✓ `frontend/scripts/order121-body-visibility.mjs` — 6 injicerade gäster, torso-band 16498/34560 avvikande pixlar (48%), ben-band 6064/34560 (18%). Både bandet över och under gamla cylinderns höjd har figurpixlar — bevisar att riggen har bredd OCH höjd i vyn. Skärmdump `reports/order121/scene-with-bodies.png`. |
+| 8 | Visuell verifikation via playwright | ✓ `frontend/scripts/order121-body-visibility.mjs` — **diff-baserad mätning** som isolerar figurbidraget: baseline utan gäster + sample med 6 seated gäster, pixel-vis skillnad ≥ 25 per kanal räknas. Resultat i vänster tredjedel (x=8-38%, y=40-75%): **6 979 pixlar ändras** mellan baseline och sample med figur-bounding-box **576 × 235 CSS-px**. Skärmdumpar: `reports/order121/scene-baseline.png` (0 gäster) och `reports/order121/scene-with-bodies.png` (6 gäster). **Anmärkning om metod:** en tidigare version mätte deviation från medelbakgrund i två horisontella band (rapporterade 16498+6064 pixlar) — den mätningen räknade även "Din verksamhet"-onboarding-modalen och byggnadens yttre silhuett som avvikande, vilket blåste upp värdena för fel skäl. Diff-mätningen isolerar figurbidraget genom att subtrahera baseline: ändringar från 0 → 6 gäster är per definition figurernas kontribution. |
 | 9 | §7-kartläggningen i rapporten | ✓ Denna sektion §11.1 |
 | 10 | Flaggade luckor redovisade | ✓ Denna sektion §11.2 (fyra flaggor, som Design skrev dem) |
 | 11 | `ui/foodtruck/` orörd | ✓ `git diff main..HEAD -- frontend/src/strategic/ui/foodtruck/` = tomt |

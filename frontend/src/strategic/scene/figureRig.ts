@@ -719,13 +719,8 @@ export function measureFigure(rig: FigureRig) {
   const box = new THREE.Box3();
   const v = new THREE.Vector3();
   rig.root.traverse(function (o) {
-    // ORDER 121 §2 avvikelse: källans `o.isMesh`/`o.geometry` är
-    // runtime-flaggor three.js sätter men @types/three:s Object3D
-    // exponerar dem inte — typechecken misslyckas. Byt till instanceof
-    // (samma semantik: setFromObject/traverse-baserade Mesh-tester).
-    if (!(o instanceof THREE.Mesh)) return;
-    const geometry = o.geometry as THREE.BufferGeometry;
-    const pos = geometry.attributes.position;
+    if (!o.isMesh || !o.geometry) return;
+    const pos = o.geometry.attributes.position;
     if (!pos) return;
     for (let i = 0; i < pos.count; i++) {
       v.fromBufferAttribute(pos, i).applyMatrix4(o.matrixWorld);

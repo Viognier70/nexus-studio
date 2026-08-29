@@ -125,50 +125,78 @@ async function seedGuests(page, n) {
 }
 
 /**
- * Läser pixlar från canvas i ett horisontellt band. Returnerar antal
- * pixlar som skiljer sig markant från medelbakgrunden (skillnad > delta
- * i minst en kanal, RGB). Central-region-sampling — undviker paneler
- * på sidorna.
+ * Läser rå pixel-data från ett canvas-region. Region: vänster tredjedel
+ * (x=8%..38%) × mellersta-nedre y-band (y=40%..75%). Undviker "Din
+ * verksamhet"-modalen (center) och DevPanel (höger). Ligger inom
+ * restaurangens interiörsyta i preset=business-kameran.
  */
-async function bandPixelCount(page, bandLabel, yFraction, heightPx) {
-  return page.evaluate((args) => {
+async function readFigureRegion(page) {
+  return page.evaluate(() => {
     const canvas = /** @type HTMLCanvasElement | null */ (document.querySelector('canvas'));
     if (!canvas) throw new Error('canvas not found');
-    const w = canvas.width;
-    const h = canvas.height;
-    const y0 = Math.floor(h * args.yFraction);
-    const bandH = args.heightPx;
-    const bandTop = Math.max(0, y0 - Math.floor(bandH / 2));
-    const bandBottom = Math.min(h, bandTop + bandH);
-    // Sampla mitten 60% av bredden (undvik paneler).
-    const xStart = Math.floor(w * 0.20);
-    const xEnd = Math.floor(w * 0.80);
+    const cw = canvas.width;
+    const ch = canvas.height;
+    const xStart = Math.floor(cw * 0.08);
+    const xEnd = Math.floor(cw * 0.38);
+    const yStart = Math.floor(ch * 0.40);
+    const yEnd = Math.floor(ch * 0.75);
+    const rw = xEnd - xStart;
+    const rh = yEnd - yStart;
 
-    // WebGL-canvas kan inte läsas via 2D-kontext; skapa off-screen
-    // 2D-canvas och drawImage:a in canvas-innehållet.
     const off = document.createElement('canvas');
-    off.width = xEnd - xStart;
-    off.height = bandBottom - bandTop;
+    off.width = rw;
+    off.height = rh;
     const ctx = off.getContext('2d');
     if (!ctx) throw new Error('2D context not available on offscreen canvas');
-    ctx.drawImage(canvas, xStart, bandTop, off.width, off.height, 0, 0, off.width, off.height);
-    const data = ctx.getImageData(0, 0, off.width, off.height).data;
+    ctx.drawImage(canvas, xStart, yStart, rw, rh, 0, 0, rw, rh);
+    const data = ctx.getImageData(0, 0, rw, rh).data;
+    return {
+      width: rw,
+      height: rh,
+      origin: [xStart, yStart],
+      pixels: Array.from(data)
+    };
+  });
+}
 
-    // Medelfärg = bakgrund. Räkna pixlar som skiljer sig ≥ 30 i valfri kanal.
-    let rSum = 0, gSum = 0, bSum = 0, n = 0;
-    for (let i = 0; i < data.length; i += 4) {
-      rSum += data[i]; gSum += data[i + 1]; bSum += data[i + 2]; n += 1;
+/**
+ * Diff:ar två pixel-samplingar. För varje pixel: räkna som "ändrad"
+ * om skillnaden i minst en kanal är ≥ delta. Returnerar totalt antal
+ * ändrade pixlar + deras bounding-box.
+ *
+ * Denna approach isolerar figurernas bidrag: baseline = scen utan
+ * gäster, sample = samma scen MED injicerade gäster. Endast pixlar
+ * där figurerna faktiskt ritas differar — allt annat (väggar, golv,
+ * ljus, modal, panelern) är oförändrat mellan de två läsningarna.
+ */
+function diffFigureContribution(baseline, sample, delta) {
+  if (baseline.width !== sample.width || baseline.height !== sample.height) {
+    throw new Error(`region size mismatch: ${baseline.width}×${baseline.height} vs ${sample.width}×${sample.height}`);
+  }
+  const rw = baseline.width;
+  const rh = baseline.height;
+  const bd = baseline.pixels;
+  const sd = sample.pixels;
+  let changed = 0;
+  let minX = Infinity, maxX = -1, minY = Infinity, maxY = -1;
+  for (let y = 0; y < rh; y++) {
+    for (let x = 0; x < rw; x++) {
+      const i = (y * rw + x) * 4;
+      const dr = Math.abs(sd[i] - bd[i]);
+      const dg = Math.abs(sd[i + 1] - bd[i + 1]);
+      const db = Math.abs(sd[i + 2] - bd[i + 2]);
+      if (dr >= delta || dg >= delta || db >= delta) {
+        changed += 1;
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+      }
     }
-    const rMean = rSum / n, gMean = gSum / n, bMean = bSum / n;
-    let deviants = 0;
-    for (let i = 0; i < data.length; i += 4) {
-      const dr = Math.abs(data[i] - rMean);
-      const dg = Math.abs(data[i + 1] - gMean);
-      const db = Math.abs(data[i + 2] - bMean);
-      if (dr > 30 || dg > 30 || db > 30) deviants += 1;
-    }
-    return { label: args.bandLabel, deviants, sampleSize: n, meanRGB: [Math.round(rMean), Math.round(gMean), Math.round(bMean)] };
-  }, { bandLabel, yFraction, heightPx });
+  }
+  const bboxW = maxX >= 0 ? (maxX - minX + 1) : 0;
+  const bboxH = maxY >= 0 ? (maxY - minY + 1) : 0;
+  return { changed, bboxW, bboxH, bboxOrigin: [minX, minY], totalPixels: rw * rh };
 }
 
 async function main() {
@@ -192,7 +220,25 @@ async function main() {
     // I dev-läge fungerar det bara om vi omedelbart läser efter render.
     // Vi tar getImageData EFTER en tydlig requestAnimationFrame-tick.
 
-    console.log('[order121] injicerar 6 syntetiska gäster i seated state ...');
+    // Pausa tickern FÖRE baseline så väggarna, ljuset, modalen etc.
+    // är stilla mellan de två frame-läsningarna. Skillnaden ska då
+    // ISOLERAS till figurernas bidrag.
+    await page.evaluate(() => {
+      const w = /** @type any */ (window);
+      w.__nxSimState.speed = 0;
+      w.__nxSimDispatch({ type: 'SET_CASH', valueSek: w.__nxSimState.cash });
+    });
+    await delay(400);
+
+    // Steg 1: BASELINE — läs pixlarna utan gäster.
+    console.log('[order121] steg 1: baseline (0 gäster) ...');
+    const baseline = await readFigureRegion(page);
+    const baselineShot = resolve(REPORT_DIR, 'scene-baseline.png');
+    await page.screenshot({ path: baselineShot, fullPage: false });
+    console.log(`[order121] baseline-skärmdump: ${baselineShot}`);
+
+    // Steg 2: injicera 6 gäster + läs pixlarna igen.
+    console.log('[order121] steg 2: injicerar 6 syntetiska gäster i seated state ...');
     const sceneGuests = await seedGuests(page, 6);
     console.log(`[order121] seated-gäster: ${sceneGuests}`);
     if (sceneGuests < 1) {
@@ -200,38 +246,38 @@ async function main() {
       process.exit(1);
     }
     await delay(500);
-
-    // Fånga en förbereding-frame med preserveDrawingBuffer via
-    // requestAnimationFrame → immediate screenshot-läge.
+    const sample = await readFigureRegion(page);
     const shotPath = resolve(REPORT_DIR, 'scene-with-bodies.png');
     await page.screenshot({ path: shotPath, fullPage: false });
-    console.log(`[order121] skärmdump: ${shotPath}`);
+    console.log(`[order121] med-gäster-skärmdump: ${shotPath}`);
 
-    // Sampla två band. Band A ~torso-höjd (55% ner), band B ~ben-höjd (72%).
-    // I strategisk kamera med preset=business hamnar interiören i övre
-    // 2/3 av vyn — de här y-fraktionerna faller inom interiörens rum.
-    const bandA = await bandPixelCount(page, 'torso ~55%', 0.55, 30);
-    const bandB = await bandPixelCount(page, 'ben ~72%', 0.72, 30);
+    // Steg 3: diffa. Endast figurernas bidrag ska ändras — allt annat
+    // (väggar, modal, ljus, paneler) är oförändrat mellan de två.
+    const diff = diffFigureContribution(baseline, sample, 25);
+    console.log(`[order121] region ${baseline.width}×${baseline.height} @ ${baseline.origin[0]},${baseline.origin[1]}`);
+    console.log(`[order121] ändrade pixlar mellan baseline och med-gäster: ${diff.changed}/${diff.totalPixels}`);
+    console.log(`[order121] figur-bounding-box: ${diff.bboxW}×${diff.bboxH} CSS-px @ region-lokal (${diff.bboxOrigin[0]}, ${diff.bboxOrigin[1]})`);
 
-    console.log(`[order121] ${bandA.label}: deviants=${bandA.deviants}/${bandA.sampleSize} mean=${bandA.meanRGB.join(',')}`);
-    console.log(`[order121] ${bandB.label}: deviants=${bandB.deviants}/${bandB.sampleSize} mean=${bandB.meanRGB.join(',')}`);
-
-    // Tröskel: minst 200 avvikande pixlar per band (i en 1152×30 = 34560
-    // pixel-sampel). 200 räcker för att representera flera figur-vertikaler
-    // — det är golvet, inte taket, som skulle passera med noll.
-    const MIN_DEVIANTS = 200;
+    // Trösklar. Diffen isolerar figurernas bidrag; om riggen renderas
+    // med bredd och höjd MÅSTE flera hundra pixlar ändras och box:en
+    // ha bredd + höjd över minimivärdet. En tom rendering (rig ej
+    // renderad) skulle ge diff ≈ 0.
+    const MIN_CHANGED = 300;
+    const MIN_BBOX_W = 60;
+    const MIN_BBOX_H = 40;
     const problems = [];
-    if (bandA.deviants < MIN_DEVIANTS) problems.push(`torso-bandet har bara ${bandA.deviants} avvikande pixlar (< ${MIN_DEVIANTS})`);
-    if (bandB.deviants < MIN_DEVIANTS) problems.push(`ben-bandet har bara ${bandB.deviants} avvikande pixlar (< ${MIN_DEVIANTS})`);
+    if (diff.changed < MIN_CHANGED) problems.push(`endast ${diff.changed} pixlar ändrade — figurbidraget för svagt (< ${MIN_CHANGED}); riggen renderas möjligen inte`);
+    if (diff.bboxW < MIN_BBOX_W) problems.push(`figur-bounding-box bredd ${diff.bboxW} < ${MIN_BBOX_W} CSS-px`);
+    if (diff.bboxH < MIN_BBOX_H) problems.push(`figur-bounding-box höjd ${diff.bboxH} < ${MIN_BBOX_H} CSS-px`);
 
     if (problems.length > 0) {
       console.error('\n[order121] DoD 8 misslyckades:');
       for (const p of problems) console.error(`  - ${p}`);
-      console.error(`\nSe ${shotPath} — troligt scen-kamera-läge eller pixel-tröskel behöver justeras`);
+      console.error(`\nSe skärmdumparna för visuell diagnos`);
       process.exit(1);
     }
 
-    console.log('\n[order121] DoD 8 OK — figurkroppar syns i både torso- och ben-band');
+    console.log('\n[order121] DoD 8 OK — figurkroppar bidrar med bredd OCH höjd i vyn (diff isolerar rig från bakgrund)');
   } finally {
     await browser.close();
     await stopVite(proc);

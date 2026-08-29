@@ -1,3 +1,29 @@
+// ============================================================================
+// HANDOFF-KÄLLA — INTE GÄLLANDE KOD
+// ============================================================================
+//
+// Detta är figurriggen SOM DEN LEVERERADES av Claude Design 2026-08-29
+// för ORDER 121 (SUPERSEDING_DIRECTIVE_004 §3). Filen är historik: den
+// version som byggs, testas och renderar i spelet är kopian på
+// `frontend/src/strategic/scene/figureRig.ts`.
+//
+// Kopian är för närvarande **byte-identisk** med denna handoff-fil.
+// Skillnaden mellan filerna är endast en fristående kompatibilitets-
+// shim i scene/-mappen:
+//   • `frontend/src/strategic/scene/three-augmentations.d.ts` —
+//     augmenterar `THREE.Object3D` med valfria `isMesh?: boolean` och
+//     `geometry?: BufferGeometry`. Behövs för att `measureFigure`
+//     (i slutet av filen) ska typechecka; three.js sätter flaggorna i
+//     runtime men @types/three exponerar dem inte på Object3D-nivån.
+//     Shimen ligger i en egen fil så handoff-koden hålls oförändrad.
+//
+// Ingen produktionskod importerar från `handoff/`. Om denna fil måste
+// uppdateras: kopiera in den nya versionen till scene/, verifiera att
+// shimen fortfarande täcker eventuella nya `Object3D`-flaggor, och
+// dokumentera bytet i registerraden.
+//
+// ============================================================================
+
 // figureRig — ledad figurrigg för den strategiska scenen.
 //
 // SUPERSEDING_DIRECTIVE_004 §3 (Kroppar i rummet), ORDER 121.
