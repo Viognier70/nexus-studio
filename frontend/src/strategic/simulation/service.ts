@@ -14,6 +14,8 @@ import {
   MORALE_UNHAPPY_DEPARTURE_HIT,
   bumpMorale
 } from './morale';
+import { valueQuotaSatisfactionDelta } from './valueQuota';
+import { applyMissingMepHit, consumeMepForOneGuest } from './mepConsumption';
 
 const TICK_SECONDS = 0.2;
 
@@ -23,6 +25,16 @@ const TICK_SECONDS = 0.2;
 // guest is turned away; overflow guests re-render on the same pucks via
 // modulo. Signal path: peakQueue is the reading, floor pucks are chrome.
 const WAITING_QUEUE_CAP = 12;
+// ORDER 115 §4.5 — Food truck-uteplatsens eating-fas. 20 sim-sek
+// matchar "äta en portion foodtruck-mat vid en bänk". Kortare än
+// restaurangens dining-cykel (34-55 s). Bara relevant när
+// policies.hasUteplats är sann OCH businessClass === 'foodtruck'.
+const EATING_DURATION_SEC = 20;
+// ORDER 115 rev 2 — Serving-fasens längd. VO 2026-08-17: "Bygg
+// serving-fas, 2-3 sekunder. En överlämning som inte syns är ingen
+// överlämning." 2,5 sek = 12-13 ticks vid 5 Hz — säkert flera
+// render-frames där prop är synlig och staff-servePose peak:ar.
+const SERVING_PHASE_SEC = 2.5;
 
 function distance(a: Vec2, b: Vec2): number {
   const dx = a.x - b.x;
@@ -107,6 +119,19 @@ export function findFreeSeat(
   state: SimulationState,
   forScenarioGuest = false
 ): number | null {
+  // ORDER 113 fel 1 — verksamheter utan matsal har inga stolar att
+  // finna. Utan denna guard returnerar findFreeSeat en giltig index
+  // ur SEATS_DEFAULT (0..15) även för foodtruck, eftersom
+  // state.layout.seats fortfarande är 16 default. Det får arriving-tick
+  // (rad 162) och waiting-tick (rad 199) att alltid ta seat-vägen →
+  // setGuestSeated-genvägen skickar gästen till 'ordering' utan att
+  // sätta fot i waitingIds. Konsekvens: foodtruckens kö fylls aldrig,
+  // ORDER 111:s kögate + väder- och konkurrensmultiplikatorer gate:ar
+  // en tom port. Med guarden faller foodtruck-gäster in i else-branchen
+  // (rad 176) och pushas korrekt till waitingIds; staff-task-pipelinen
+  // (findTaskTarget → completeStaffTask 'greet'/'seat') tar dem sedan
+  // vidare till 'ordering'. Restaurant/Värdshus opåverkade.
+  if (!businessHasSeats(state.businessClass)) return null;
   const cap = isSeatedCapacity(state);
   // Scenario guests walk the response-specific preference list first.
   // A regular arrival got seat 4 before the party arrived? Try seat 5
@@ -221,6 +246,15 @@ export function tickGuests(state: SimulationState) {
       continue;
     }
 
+    // ORDER 115 rev 2 — serving → paying efter SERVING_PHASE_SEC.
+    // Prop-överlämningen har hunnit synas i 2,5 sim-sek (12+ frames);
+    // gästen övergår till 'paying' som är transaktion + steg-åt-sidan.
+    if (guest.state === 'serving' && now - guest.stateTime > SERVING_PHASE_SEC) {
+      guest.state = 'paying';
+      guest.stateTime = now;
+      continue;
+    }
+
     if (guest.state === 'dining' && now - guest.stateTime > diningDuration(state)) {
       guest.state = 'paying';
       guest.stateTime = now;
@@ -258,6 +292,27 @@ export function tickGuests(state: SimulationState) {
         // (rumsbokning hör till senare arbete). Ingen moveGuest.
         continue;
       }
+      // ORDER 115 §4.5 — foodtruck-uteplats. Om policies.hasUteplats
+      // så går paying → eating (äter i bild) innan leaving. Utan
+      // uteplats: direkt till leaving som förut.
+      if (state.businessClass === 'foodtruck' && state.policies.hasUteplats === true) {
+        guest.state = 'eating';
+        guest.stateTime = now;
+        // Bär med sig maten till uteplatsen. Ingen moveGuest — renderaren
+        // placerar eating-gäster vid uteplats-position.
+        continue;
+      }
+      guest.state = 'leaving';
+      guest.stateTime = now;
+      moveGuest(guest, { x: 0, z: 8 });
+      continue;
+    }
+
+    // ORDER 115 §4.5 — eating-fas: äter en tid vid uteplats, sedan
+    // leaving. EATING_DURATION_SEC balanserad mot arrival-rate så
+    // uteplats-slots inte överfylls under peak. 20 sim-sek matchar
+    // grovt "äta en portion food-truck-mat" ute på bänken.
+    if (guest.state === 'eating' && now - guest.stateTime > EATING_DURATION_SEC) {
       guest.state = 'leaving';
       guest.stateTime = now;
       moveGuest(guest, { x: 0, z: 8 });
@@ -420,6 +475,16 @@ function findTaskTarget(state: SimulationState, type: TaskType): string | null {
   switch (type) {
     case 'greet':
     case 'seat': {
+      // ORDER 113 fel 1 — foodtruck servar front-of-queue (FIFO).
+      // Utan denna gren skulle findTaskTarget bara leta efter arriving-
+      // gäster; foodtruck-gäster som redan pushats till waitingIds
+      // (via arriving-tick → findFreeSeat=null → else-branchen) skulle
+      // aldrig plockas upp. state.waitingIds[0] är front-of-queue —
+      // completeStaffTask('greet'/'seat') foodtruck-branchen filtrerar
+      // sedan bort den från waitingIds och sätter state='ordering'.
+      if (!businessHasSeats(state.businessClass) && state.waitingIds.length > 0) {
+        return state.waitingIds[0];
+      }
       const arriving = state.guests.find((g) => g.state === 'arriving' && g.moveProgress >= 1);
       return arriving?.id ?? null;
     }
@@ -541,15 +606,35 @@ function completeStaffTask(state: SimulationState, staff: StaffMember) {
     case 'order': {
       if (guest.state === 'ordering') {
         // ORDER 111 §3 — food truck-gästen får sin beställning över
-        // luckan och går rakt till betalning; ingen dining-fas (matsal
-        // saknas per hasSeats=false). Restaurant/Värdshus tar den
-        // vanliga vägen ordering → dining (55 s formell / 34 s vardaglig).
+        // luckan. ORDER 115 rev 2 — går nu via 'serving'-fas (2.5 s)
+        // så överlämningen är visuellt observerbar. Utan denna fas
+        // var ordering→paying instantant (< 1 tick) och prop-
+        // överlämningen fanns aldrig i en synlig ram.
+        // Restaurant/Värdshus tar den vanliga vägen ordering → dining.
         if (!businessHasSeats(state.businessClass)) {
-          guest.state = 'paying';
+          guest.state = 'serving';
           guest.stateTime = now;
+          // Carrying sätts VID INTRÄDE till serving så prop är
+          // synlig genom hela fasen (staff-servePose peak:as här).
+          guest.carrying = 'foodtruckMeal';
+          // ORDER 117 §3.2 — värdekvot-modulerad first-impression.
+          const vDelta = valueQuotaSatisfactionDelta(state);
+          guest.satisfaction = Math.max(0, Math.min(1, guest.satisfaction + vDelta));
+          // ORDER 117 §4 — MeP-brist-hit och konsumtion vid överlämning.
+          // Servett saknas → mild; garnityr → allvarligare; utebliven
+          // mat → sista utvägen. Ingen post stoppar servicen (VO: en
+          // spärr är inte en avvägning). Tröskelbaserat: bara poster
+          // under 0.2 readiness räknas som "saknas".
+          applyMissingMepHit(state, guest);
+          consumeMepForOneGuest(state);
         } else {
           guest.state = 'dining';
           guest.stateTime = now;
+          // Samma modulering för restaurang/värdshus vid dining-entry.
+          const vDelta = valueQuotaSatisfactionDelta(state);
+          guest.satisfaction = Math.max(0, Math.min(1, guest.satisfaction + vDelta));
+          applyMissingMepHit(state, guest);
+          consumeMepForOneGuest(state);
         }
       }
       break;

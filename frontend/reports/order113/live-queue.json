@@ -1,0 +1,1897 @@
+{
+  "order": "ORDER 113 fel 1",
+  "date": "2026-08-17",
+  "hypothesis": "findFreeSeat businessClass-guard + findTaskTarget FIFO ska landa foodtruck-gäster i waitingIds istället för att shortcut:a till ordering",
+  "summary": {
+    "samples": 200,
+    "simTimeStart": 5.4,
+    "simTimeEnd": 1005.4,
+    "maxWaiting": 2,
+    "maxOrdering": 5,
+    "maxPaying": 3,
+    "maxLeaving": 1,
+    "meanWaiting": 0.07,
+    "capacity": 9,
+    "cumulativeArrivals": 48,
+    "scenarioAutoResolveCount": 0
+  },
+  "series": [
+    {
+      "simTime": 5.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 10.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 3,
+      "byState": {
+        "arriving": 3
+      }
+    },
+    {
+      "simTime": 15.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 3,
+      "byState": {
+        "ordering": 3
+      }
+    },
+    {
+      "simTime": 20.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 3,
+      "byState": {
+        "paying": 2,
+        "ordering": 1
+      }
+    },
+    {
+      "simTime": 25.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 3,
+      "byState": {
+        "leaving": 1,
+        "paying": 2
+      }
+    },
+    {
+      "simTime": 30.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "declined": 2
+      }
+    },
+    {
+      "simTime": 35.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 40.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 45.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 50.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 55.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 60.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 66,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "ordering": 1
+      }
+    },
+    {
+      "simTime": 71,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 76,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "declined": 1
+      }
+    },
+    {
+      "simTime": 81,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 86,
+      "period": "lunch",
+      "waiting": 1,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "waiting": 1
+      }
+    },
+    {
+      "simTime": 91,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 96,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 101,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 106.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 111.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 116.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 121.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 126.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 131.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 136.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 141.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 146.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 151.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 156.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 161.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 166.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 171.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 176.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "arriving": 1
+      }
+    },
+    {
+      "simTime": 181.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 186.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "paying": 1,
+        "ordering": 1
+      }
+    },
+    {
+      "simTime": 191.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "declined": 1,
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 196.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "leaving": 1
+      }
+    },
+    {
+      "simTime": 201.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 206.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 211.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 216.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 221.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 226.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 231.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 236.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 241.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 246.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 251.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 256.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 261.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 267,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 272,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 277,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "ordering": 1
+      }
+    },
+    {
+      "simTime": 282,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "paying": 2
+      }
+    },
+    {
+      "simTime": 287,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "leaving": 1,
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 292,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "declined": 1
+      }
+    },
+    {
+      "simTime": 297,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 302,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 307.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 312.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 317.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 322.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 327.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 332.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 337.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 342.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 347.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 352.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 357.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 362.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 367.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 372.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 377.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "ordering": 1
+      }
+    },
+    {
+      "simTime": 382.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "paying": 1,
+        "ordering": 1
+      }
+    },
+    {
+      "simTime": 387.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "declined": 1,
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 392.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "declined": 1
+      }
+    },
+    {
+      "simTime": 397.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 402.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "ordering": 1
+      }
+    },
+    {
+      "simTime": 407.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 412.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "leaving": 1
+      }
+    },
+    {
+      "simTime": 417.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "ordering": 1
+      }
+    },
+    {
+      "simTime": 422.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 427.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "declined": 1,
+        "ordering": 1
+      }
+    },
+    {
+      "simTime": 432.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 437.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "declined": 1,
+        "arriving": 1
+      }
+    },
+    {
+      "simTime": 442.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 447.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 452.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "declined": 1
+      }
+    },
+    {
+      "simTime": 457.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 462.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 467.8,
+      "period": "lunch",
+      "waiting": 1,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "paying": 1,
+        "waiting": 1
+      }
+    },
+    {
+      "simTime": 473,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "paying": 2
+      }
+    },
+    {
+      "simTime": 478,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 3,
+      "byState": {
+        "declined": 1,
+        "paying": 1,
+        "arriving": 1
+      }
+    },
+    {
+      "simTime": 483,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 488,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 493,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "declined": 1
+      }
+    },
+    {
+      "simTime": 498,
+      "period": "lunch",
+      "waiting": 1,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "waiting": 1,
+        "arriving": 1
+      }
+    },
+    {
+      "simTime": 503,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 3,
+      "byState": {
+        "paying": 1,
+        "ordering": 2
+      }
+    },
+    {
+      "simTime": 508,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 4,
+      "byState": {
+        "paying": 3,
+        "ordering": 1
+      }
+    },
+    {
+      "simTime": 513.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 5,
+      "byState": {
+        "declined": 1,
+        "leaving": 1,
+        "paying": 2,
+        "ordering": 1
+      }
+    },
+    {
+      "simTime": 518.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 4,
+      "byState": {
+        "declined": 1,
+        "leaving": 1,
+        "paying": 1,
+        "ordering": 1
+      }
+    },
+    {
+      "simTime": 523.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "declined": 1,
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 528.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "declined": 1
+      }
+    },
+    {
+      "simTime": 533.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 538.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 543.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 548.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 553.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "paying": 2
+      }
+    },
+    {
+      "simTime": 558.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "declined": 1,
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 563.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "declined": 1
+      }
+    },
+    {
+      "simTime": 568.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 573.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 578.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 583.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "declined": 1
+      }
+    },
+    {
+      "simTime": 588.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 593.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 598.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 603.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 608.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 613.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 618.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 623.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 628.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 633.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 638.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 643.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 648.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 653.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 658.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 663.8,
+      "period": "lunch",
+      "waiting": 1,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "ordering": 1,
+        "waiting": 1
+      }
+    },
+    {
+      "simTime": 668.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 3,
+      "byState": {
+        "paying": 2,
+        "arriving": 1
+      }
+    },
+    {
+      "simTime": 673.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 3,
+      "byState": {
+        "paying": 3
+      }
+    },
+    {
+      "simTime": 679,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "declined": 1,
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 684,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "declined": 1
+      }
+    },
+    {
+      "simTime": 689,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 694,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 699,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 704,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 709,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 714,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 719.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 724.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 729.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 734.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 739.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 744.2,
+      "period": "lunch",
+      "waiting": 1,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "waiting": 1
+      }
+    },
+    {
+      "simTime": 749.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 754.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "paying": 1,
+        "ordering": 1
+      }
+    },
+    {
+      "simTime": 759.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "paying": 1,
+        "ordering": 1
+      }
+    },
+    {
+      "simTime": 764.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "leaving": 1,
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 769.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "leaving": 1,
+        "ordering": 1
+      }
+    },
+    {
+      "simTime": 774.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 779.4,
+      "period": "lunch",
+      "waiting": 1,
+      "seated": 0,
+      "totalGuests": 3,
+      "byState": {
+        "leaving": 1,
+        "waiting": 1,
+        "arriving": 1
+      }
+    },
+    {
+      "simTime": 784.4,
+      "period": "lunch",
+      "waiting": 1,
+      "seated": 0,
+      "totalGuests": 3,
+      "byState": {
+        "paying": 1,
+        "ordering": 1,
+        "waiting": 1
+      }
+    },
+    {
+      "simTime": 789.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 4,
+      "byState": {
+        "paying": 3,
+        "arriving": 1
+      }
+    },
+    {
+      "simTime": 794.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 5,
+      "byState": {
+        "declined": 1,
+        "paying": 3,
+        "ordering": 1
+      }
+    },
+    {
+      "simTime": 799.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 4,
+      "byState": {
+        "declined": 1,
+        "paying": 2,
+        "arriving": 1
+      }
+    },
+    {
+      "simTime": 804.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 3,
+      "byState": {
+        "declined": 1,
+        "leaving": 1,
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 809.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 3,
+      "byState": {
+        "paying": 1,
+        "ordering": 2
+      }
+    },
+    {
+      "simTime": 814.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 3,
+      "byState": {
+        "declined": 1,
+        "paying": 2
+      }
+    },
+    {
+      "simTime": 819.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 3,
+      "byState": {
+        "leaving": 1,
+        "paying": 1,
+        "ordering": 1
+      }
+    },
+    {
+      "simTime": 824.6,
+      "period": "lunch",
+      "waiting": 1,
+      "seated": 0,
+      "totalGuests": 3,
+      "byState": {
+        "declined": 1,
+        "paying": 1,
+        "waiting": 1
+      }
+    },
+    {
+      "simTime": 829.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "leaving": 1,
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 834.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 839.6,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 844.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "arriving": 1
+      }
+    },
+    {
+      "simTime": 849.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 854.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "paying": 2
+      }
+    },
+    {
+      "simTime": 859.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "declined": 1,
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 864.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "declined": 1
+      }
+    },
+    {
+      "simTime": 869.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 874.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 879.8,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 885,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 890,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 895,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "declined": 1
+      }
+    },
+    {
+      "simTime": 900,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 905,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 910,
+      "period": "lunch",
+      "waiting": 1,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "waiting": 1,
+        "arriving": 1
+      }
+    },
+    {
+      "simTime": 915,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "paying": 1,
+        "ordering": 1
+      }
+    },
+    {
+      "simTime": 920,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "paying": 2
+      }
+    },
+    {
+      "simTime": 925,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 2,
+      "byState": {
+        "declined": 2
+      }
+    },
+    {
+      "simTime": 930.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 935.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 940.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 945.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 0,
+      "byState": {}
+    },
+    {
+      "simTime": 950.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "arriving": 1
+      }
+    },
+    {
+      "simTime": 955.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 960.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "paying": 1
+      }
+    },
+    {
+      "simTime": 965.2,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "declined": 1
+      }
+    },
+    {
+      "simTime": 970.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 1,
+      "byState": {
+        "ordering": 1
+      }
+    },
+    {
+      "simTime": 975.4,
+      "period": "lunch",
+      "waiting": 1,
+      "seated": 0,
+      "totalGuests": 4,
+      "byState": {
+        "paying": 1,
+        "ordering": 1,
+        "waiting": 1,
+        "arriving": 1
+      }
+    },
+    {
+      "simTime": 980.4,
+      "period": "lunch",
+      "waiting": 2,
+      "seated": 0,
+      "totalGuests": 8,
+      "byState": {
+        "declined": 1,
+        "paying": 1,
+        "ordering": 3,
+        "waiting": 2,
+        "arriving": 1
+      }
+    },
+    {
+      "simTime": 985.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 7,
+      "byState": {
+        "paying": 2,
+        "ordering": 5
+      }
+    },
+    {
+      "simTime": 990.4,
+      "period": "lunch",
+      "waiting": 1,
+      "seated": 0,
+      "totalGuests": 9,
+      "byState": {
+        "declined": 1,
+        "paying": 3,
+        "ordering": 4,
+        "waiting": 1
+      }
+    },
+    {
+      "simTime": 995.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 9,
+      "byState": {
+        "declined": 1,
+        "leaving": 1,
+        "paying": 2,
+        "ordering": 5
+      }
+    },
+    {
+      "simTime": 1000.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 9,
+      "byState": {
+        "declined": 1,
+        "paying": 3,
+        "ordering": 4,
+        "arriving": 1
+      }
+    },
+    {
+      "simTime": 1005.4,
+      "period": "lunch",
+      "waiting": 0,
+      "seated": 0,
+      "totalGuests": 9,
+      "byState": {
+        "declined": 1,
+        "leaving": 1,
+        "paying": 3,
+        "ordering": 4
+      }
+    }
+  ]
+}

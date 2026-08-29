@@ -20,6 +20,8 @@ import { OpeningPanel } from './scenario/OpeningPanel';
 import { ScenarioOverlay } from './scenario/ScenarioOverlay';
 import { ServiceLengthPicker } from './scenario/ServiceLengthPicker';
 import { StrategicScene } from './scene/StrategicScene';
+import { DollhouseFrame } from './ui/DollhouseFrame';
+import { harnessParams } from './testHarness/urlParams';
 import { SimulationProvider, useSimDispatch } from './simulation/SimulationProvider';
 import { AboutPanel } from './ui/AboutPanel';
 import { ControlsHint } from './ui/ControlsHint';
@@ -67,7 +69,7 @@ function StrategicShell() {
   const [lastKey, setLastKey] = useState('');
   // ORDER 053 Del D — dev-only scale-reference toggle (G).
   const [showScaleRef, setShowScaleRef] = useState(false);
-  const { focusOn, jumpToPreset } = useCamera();
+  const { focusOn, jumpToPreset, atLevel4 } = useCamera();
   const simDispatch = useSimDispatch();
 
   const getHost = useCallback(() => hostRef.current, []);
@@ -208,11 +210,36 @@ function StrategicShell() {
   return (
     <div className="gb-root">
       <div ref={hostRef} className="gb-canvas-host">
-        <StrategicScene
-          onSelect={handleSelect}
-          selectedId={selectedId}
-          showScaleRef={showScaleRef}
-        />
+        {/*
+          TEMPORÄR växel (Vision Owner-begäran 2026-08-15): två villkor,
+          inte ett globalt läge — dockskåpet ersätter 3D-scenen ENDAST i
+          nivå 4 (din verksamhet). Nivåerna 1–3 (byn, kvarteret, ditt
+          kvarter) förblir 3D enligt SD-003 §3. Dockskåpet lever på
+          verksamhets-lagret, inte över hela världen.
+
+          Villkor:
+            harnessParams.dollhouse && atLevel4  → DollhouseFrame (ingen
+                                                    3D, ingen kamera-input)
+            annars                                → StrategicScene (3D som
+                                                    vanligt)
+
+          `atLevel4` från CameraContext flippas vid distance-tröskeln
+          `restaurantRoofFadeMid − restaurantRoofFadeHalf` (28 m —
+          myBusiness-preset:et landar där). Keyboard 1/2/3 (nivå 1–3) tar
+          spelaren ut ur nivå 4 → StrategicScene monteras om och 3D är
+          tillbaka; 4 (nivå 4) tar in i dockskåpet igen. Ingen permanent
+          koppling; food truck-ordern (SD-003 §8 följdorder 3) landar
+          den riktiga inflätningen.
+        */}
+        {harnessParams.dollhouse && atLevel4 ? (
+          <DollhouseFrame />
+        ) : (
+          <StrategicScene
+            onSelect={handleSelect}
+            selectedId={selectedId}
+            showScaleRef={showScaleRef}
+          />
+        )}
       </div>
       <ViewLabel />
       <VerifyBadge />
@@ -256,7 +283,14 @@ function StrategicShell() {
         <MorningActivityPanel />
         <EventStreamPanel />
         <InstrumentsPanel />
-        <RoomCardPanel />
+        {/*
+          ORDER 112 DoD 1 (delimplementation): RoomCardPanel renderas inte
+          i nivå 4 när dockskåpet är aktivt. Panelen byggdes i ORDER 085
+          som omväg runt att rummet inte kunde visa uttryck; dockskåpet
+          tar bort det skälet. Koden behålls — panelen visas fortfarande
+          i nivå 1-3 samt när dollhouse=1 inte är satt.
+        */}
+        {!(harnessParams.dollhouse && atLevel4) && <RoomCardPanel />}
       </PanelColumn>
       <MorningMenuPanel />
       <PlatesRemainingPanel />

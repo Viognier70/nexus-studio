@@ -66,20 +66,43 @@ describe('ORDER 111 §6 DoD 1 — foodtruck-gäster når aldrig dining', () => {
     expect(observed.has('waiting')).toBe(true);
   });
 
-  it('foodtruck-gäst efter setGuestSeated går direkt till ordering, inte seated', () => {
-    // Direkttest på tick-loopens waiting→setGuestSeated-väg. Utan staff
-    // triggeras findFreeSeat + setGuestSeated i tickGuests; guarden i
-    // setGuestSeated skickar gästen till 'ordering' istället för 'seated'.
+  it('foodtruck-gäst i kö når ordering via staff-task-pipelinen, aldrig seated', () => {
+    // ORDER 113 fel 1 — efter findFreeSeat-guarden på businessClass går
+    // foodtruck-gäster INTE längre via setGuestSeated-genvägen i
+    // tickGuests. Vägen till 'ordering' är nu: waiting →
+    // findTaskTarget('greet') plockar waitingIds[0] → beginStaffTask →
+    // taskDurationTicks (~1-3 s) → completeStaffTask('greet') foodtruck-
+    // branchen filtrerar bort från waitingIds + sätter state='ordering'.
+    // Testet verifierar att pipelinen levererar 'ordering' inom rimlig
+    // tid — inte via genväg utan via faktisk staff-tilldelning.
     let s = makeInitialState();
-    s = { ...s, businessClass: 'foodtruck' };
+    s = {
+      ...s,
+      businessClass: 'foodtruck',
+      policies: { ...s.policies, capacity: capacityForBusiness('foodtruck', s.policies.staffCount) }
+    };
     s.guests = [makeGuestFixture({ id: 'g1', state: 'waiting', stateTime: s.simTime })];
     s.waitingIds = ['g1'];
-    s = reducer(s, { type: 'TICK', dt: 0.1 });
-    const g = s.guests.find((x) => x.id === 'g1');
-    expect(g).toBeDefined();
-    expect(g!.state).toBe('ordering');
-    // seatedIds ska förbli tom.
+    // Kör tillräckligt många ticks för att en staff ska hinna plocka upp
+    // taskType='greet' och köra klart taskDurationTicks. Vid staffCount=3
+    // och default social/training tar detta typiskt ~10-30 ticks (2-6 s
+    // sim). 100 ticks ger stor marginal.
+    let reachedOrdering = false;
+    let reachedSeated = false;
+    for (let i = 0; i < 100; i++) {
+      s = reducer(s, { type: 'TICK', dt: 0.1 });
+      const g = s.guests.find((x) => x.id === 'g1');
+      if (!g) break;
+      if (g.state === 'ordering') reachedOrdering = true;
+      if (g.state === 'seated') reachedSeated = true;
+    }
+    expect(reachedOrdering).toBe(true);
+    // seated ska aldrig nås — foodtruck har inga stolar.
+    expect(reachedSeated).toBe(false);
     expect(s.seatedIds).not.toContain('g1');
+    // waitingIds ska INTE innehålla g1 längre — hen ska ha passerat
+    // genom pipelinen bort från waiting-state.
+    expect(s.waitingIds).not.toContain('g1');
   });
 });
 

@@ -26,6 +26,8 @@ import { PLAYER_BUSINESS_BUILDING_IDS, WORLD } from '../content/world';
 import type { RawBuilding } from '../content/world';
 import { obbLocalToWorld, orientedBbox } from '../procgen/geom';
 import type { OBB } from '../procgen/geom';
+import type { BusinessClass } from './businessClass';
+import { businessHasSeats } from './businessClass';
 
 // ---------- Compile-time layout constants ----------
 // Every measurement below is metres in the OBB local frame:
@@ -185,7 +187,27 @@ function localSeatOffsets(kind: TableKind): [number, number][] {
   ];
 }
 
-export function computePlayerBusinessInterior(): InteriorLayout | null {
+// ORDER 113 fel 1 uppföljning — verksamhets-gated. `usePlayerBusinessInterior`
+// och den underliggande computen returnerade tidigare restaurangens
+// 16-stols-matsal oavsett `state.businessClass`; DevPanel loggade
+// `layout.seats=16 (DRIFT)` för foodtruck som inte har någon matsal
+// alls. Bakom det låg antagandet att PLAYER_BUSINESS_BUILDING_IDS +
+// TABLE_SPECS är statiskt matsals-innehåll — vilket bara stämmer för
+// restaurangen. Foodtruck och andra verksamheter utan `hasSeats` får
+// nu `null` tillbaka, så konsumenter (DevPanel:s DRIFT-check, ev.
+// framtida scener) kan branch:a korrekt.
+//
+// Argumentet är valfritt: äldre anropssidor (InteriorGuests, InteriorStaff,
+// AnimationPrototype — alla restaurang-3D-scener som inte visas i
+// dockskåps-läget) kör vidare med default-beteende (restaurangens
+// matsal). Nya konsumenter som behöver businessClass-medvetenhet passar
+// in flaggan från `useSimState().businessClass`.
+export function computePlayerBusinessInterior(
+  businessClass?: BusinessClass
+): InteriorLayout | null {
+  if (businessClass !== undefined && !businessHasSeats(businessClass)) {
+    return null;
+  }
   const building = findPlayerBuilding();
   if (!building) return null;
 
@@ -299,6 +321,11 @@ export function computePlayerBusinessInterior(): InteriorLayout | null {
   };
 }
 
-export function usePlayerBusinessInterior(): InteriorLayout | null {
-  return useMemo(() => computePlayerBusinessInterior(), []);
+export function usePlayerBusinessInterior(
+  businessClass?: BusinessClass
+): InteriorLayout | null {
+  return useMemo(
+    () => computePlayerBusinessInterior(businessClass),
+    [businessClass]
+  );
 }

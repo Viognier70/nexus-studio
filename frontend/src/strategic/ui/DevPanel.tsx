@@ -21,6 +21,7 @@ import { GRAY_BOX_CAMERA } from '../content/grythyttan';
 import { economicReadingNormalised } from '../simulation/cashReading';
 import { useSimState } from '../simulation/SimulationProvider';
 import { usePlayerBusinessInterior } from '../business/interiorLayout';
+import { businessHasSeats } from '../business/businessClass';
 import { fpsMeter } from '../../lib/fpsMeter';
 import { pixelSampler } from '../../lib/pixelSampler';
 import { harnessParams } from '../testHarness/urlParams';
@@ -59,7 +60,11 @@ export function DevPanel({ lastKey }: Props) {
   // dive. `layout.seats.length` is the runtime echo of TOTAL_SEATS —
   // if it disagrees with policies.capacity, a `!` suffix flags the
   // drift so the mismatch cannot be silently missed.
-  const layout = usePlayerBusinessInterior();
+  // ORDER 113 fel 1 uppföljning — passera businessClass så foodtruck
+  // får `null` tillbaka (ingen matsal). Utan detta returnerade hooken
+  // restaurangens 16-stols-interior även för foodtruck och DRIFT-flaggan
+  // sköt permanent falskt larm eftersom layoutSeats=16 vs capacity=9.
+  const layout = usePlayerBusinessInterior(sim.businessClass);
   // ORDER 090 §5 (finding 3) — camera distance polled on the same
   // 250 ms cadence as FPS. Interior scene (guests, staff, tables)
   // is culled outside restaurantInteriorFade [mid−half, mid+half],
@@ -110,11 +115,53 @@ export function DevPanel({ lastKey }: Props) {
   // across a service. What actually matters when the room reads as
   // empty is the LIVE queue, live seated count, and the capacity
   // ceiling that stops seating even when guests are queued.
-  const queueLive = sim.waitingIds.length;
-  const seatedLive = sim.seatedIds.length;
+  // ORDER 115 §3 DoD 5 — "queue= och seated= i DevPanel motsvarar
+  // antalet renderade figurer". Före ORDER 115 räknade queue endast
+  // waitingIds och seated endast seatedIds → i foodtruck-läge visade
+  // raden noll medan 4 gäster syntes i ordering/paying/eating-state.
+  //
+  // För foodtruck omdefinieras raden så den matcher vad
+  // FoodtruckScene faktiskt renderar:
+  //   * queue = alla vid vagnen (waiting + arriving + ordering + paying)
+  //     = "på gatan framför luckan, i kön eller vid disken"
+  //   * seated = alla vid uteplatsen (eating)
+  //     = "sitter/står vid ståborden och äter"
+  // Övriga verksamheter (restaurant, värdshus) behåller den gamla
+  // avläsningen: queue=waitingIds, seated=seatedIds.
+  const isFoodtruck = sim.businessClass === 'foodtruck';
+  const queueLive = isFoodtruck
+    ? sim.guests.filter((g) =>
+        g.state === 'waiting' || g.state === 'arriving' ||
+        g.state === 'ordering' || g.state === 'serving' || g.state === 'paying'
+      ).length
+    : sim.waitingIds.length;
+  const seatedLive = isFoodtruck
+    ? sim.guests.filter((g) => g.state === 'eating').length
+    : sim.seatedIds.length;
   const capacity = sim.policies.capacity;
   const layoutSeats = layout?.seats.length ?? 0;
-  const seatDrift = layout != null && layoutSeats !== capacity;
+  // ORDER 114 §5 DoD 8 — `scene=` räknar ALLA scen-relevanta figurer
+  // (inklusive leaving/declined som är på väg ut). queue+seated
+  // motsvarar vad SPELAREN läser som "aktiva gäster"; scene motsvarar
+  // exakt antalet [data-figure]-noder som renderas.
+  // ORDER 115 rev 2 — 'serving' är 2.5-sek överlämningsfasen mellan
+  // ordering och paying; den ska räknas i scen-siffran precis som
+  // paying gör, annars droppar sceneLive under serving-fönstret även
+  // om FoodtruckScene renderar figuren.
+  const SCENE_RELEVANT_STATES = new Set(['arriving', 'waiting', 'ordering', 'serving', 'paying', 'eating', 'leaving', 'declined']);
+  const sceneLive = sim.guests.filter((g) => SCENE_RELEVANT_STATES.has(g.state)).length;
+  // ORDER 113 fel 1 uppföljning — DRIFT-check gate:ad på verksamhet.
+  // För foodtruck (`hasSeats=false`) är layout==null ett förväntat
+  // tillstånd, inte drift. Layout-seats-vs-capacity-jämförelsen är en
+  // restaurangs- / värdshusspecifik sanity-check: fysiska stolar i
+  // scenen ska matcha policies.capacity. Verksamheter utan matsal
+  // mäter kapacitet som kö-längd (se `seatsFree` i businessClass.ts),
+  // en dimension som layoutSeats inte försöker representera. Utan
+  // denna gate loggade DevPanel `layout.seats=16 (DRIFT)` permanent
+  // för foodtruck där capacity=9 — falsklarm som förblindade riktiga
+  // drift-signaler.
+  const hasSeats = businessHasSeats(sim.businessClass);
+  const seatDrift = hasSeats && layout != null && layoutSeats !== capacity;
 
   // ORDER 045 weather + world-factor line. Kept compact so the dev
   // panel stays a two-liner most of the time and grows to three
@@ -128,7 +175,7 @@ export function DevPanel({ lastKey }: Props) {
   // Seat-diagnos suffix (see comment on `layout` above). Always
   // present — even out-of-service, queueLive/seatedLive are the
   // authoritative "is anyone in the room right now" readout.
-  const seatStr = ` queue=${queueLive} seated=${seatedLive}/${capacity}${
+  const seatStr = ` queue=${queueLive} scene=${sceneLive} seated=${seatedLive}/${capacity}${
     seatDrift ? `!layout=${layoutSeats}` : ''
   }`;
 

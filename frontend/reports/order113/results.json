@@ -1,0 +1,23 @@
+{
+  "order": "ORDER 113",
+  "date": "2026-08-16",
+  "viewport": "1920×1080",
+  "renderer": "Chrome headless — React + FoodtruckScene + SimulationProvider (rAF-driven)",
+  "screenshotPath": "frontend/reports/order113/foodtruck-scene.png",
+  "seed": {
+    "method": "foodtruckSeed=6 URL-param → applyDevFoodtruckSeed init",
+    "waitingIds": 6,
+    "totalGuests": 6,
+    "period": "morning",
+    "businessClass": "foodtruck"
+  },
+  "renderedFigures": 7,
+  "fps": {
+    "frames": 1201,
+    "measureWindowMs": 10000,
+    "mean": 120.73,
+    "p5": 102.04,
+    "p95": 142.86,
+    "note": "Mätt med sim-tickern (5 Hz) och FoodtruckScene:s egen rAF-loop igång samt panel-insets ResizeObserver och weather-overlay renderade. Detta är observatör-fps — vad spelaren ser i webbläsaren. Jämför mot ORDER 096 §5.1 mean 120 fps (isolerad vanilla-JS rig, ingen React, ingen sim): de mäter olika saker. Denna siffra inkluderar React-reconciliation, context-propagation, och konkurrens om samma rAF-schema.  ORDER 096 rapporterade också 380 fps i intern rig-mätning (utan vsync- clamp); här mäter vi mot Chrome:s vsync-tak (~60/120 Hz beroende på system). Take-away: rig-koden är billig, React-lagret är gratis-nog."
+  }
+}

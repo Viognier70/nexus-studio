@@ -21,6 +21,8 @@ import {
   businessHasOvernight,
   capacityForBusiness
 } from '../business/businessClass';
+import { shouldUnlockUteplats } from '../business/uteplatsUnlock';
+import { updateEffectiveValueQuota } from './valueQuota';
 import {
   SERVICE_LENGTH_MAX_MINUTES,
   SERVICE_LENGTH_MIN_MINUTES
@@ -127,7 +129,8 @@ import {
   applyCashRevenue,
   capitalReadingFor,
   postLedger,
-  postServiceSummaryLines
+  postServiceSummaryLines,
+  postValueQuotaLine
 } from './cashReading';
 import { drawNextTheme } from './themeSelection';
 import {
@@ -1107,7 +1110,11 @@ function openService(
     rngState: rng.state,
     streamThemeCounts: { economic: 0, social: 0, ecological: 0 },
     firedScenarioIds: [],
-    pendingOutcomes: [...state.pendingOutcomes, ...policyOutcomes]
+    pendingOutcomes: [...state.pendingOutcomes, ...policyOutcomes],
+    // ORDER 115 rev 2 — nollställ per-service give-up-räknare vid
+    // service-öppning. Räknaren används av service-close för att
+    // avgöra om servicen var "clean" (uteplats-kandidat B).
+    metrics: { ...state.metrics, giveUpsThisService: 0 }
   };
 }
 
@@ -1274,11 +1281,21 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
   if (day.period === 'lunch' && day.currentServiceLengthMinutes !== null) {
     const endsAt = day.periodStartAt + day.currentServiceLengthMinutes * 60;
     if (simTime >= endsAt) {
+      // ORDER 115 rev 2 — service-close-metrics: uppdatera
+      // consecutiveCleanServices (uteplats-kandidat B). Om denna
+      // service hade noll give-ups → räknaren +1; annars nollställ.
+      const cleanService = state.metrics.giveUpsThisService === 0;
+      const nextConsecutive = cleanService ? state.metrics.consecutiveCleanServices + 1 : 0;
       // Clear agency hires + offer at lunch close, same as dinner.
       const next: SimulationState = {
         ...state,
         team: removeAgencyMembers(state.team),
         agencyOffer: null,
+        metrics: {
+          ...state.metrics,
+          consecutiveCleanServices: nextConsecutive,
+          giveUpsThisService: 0
+        },
         day: {
           ...day,
           period: 'afternoon',
@@ -1310,6 +1327,13 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       // for the panel; multiply back). Both cash-recap lines, not
       // cash movers (the till already moved per-guest / per-tick).
       postServiceSummaryLines(next, 'lunch', state);
+      // ORDER 117 §5.1 — värdekvot-mening i strömmen efter lunch-close.
+      postValueQuotaLine(next, 'lunch');
+      // ORDER 117 §3.1 — uppdatera fördröjd effektiv värdekvot.
+      // Måste ske EFTER metrics-uppdateringen ovan så asymmetriska
+      // steget läser färsk state; nästa service:s ankomsttakt är
+      // baserad på den nya effectiveValueQuota.
+      updateEffectiveValueQuota(next);
       return next;
     }
   }
@@ -1321,6 +1345,12 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       // and friends; if we cleared them first, every account would
       // fall to the mediocre-by-default branch.
       const eveningAccount = computeEveningAccount(state);
+      // ORDER 115 rev 2 — samma metrics-uppdatering som lunch-close.
+      // consecutiveCleanServices måste räknas per stängd service, inte
+      // per dag; annars skulle en clean lunch följt av en clean middag
+      // bara räknas som en "clean service" istället för två.
+      const cleanService = state.metrics.giveUpsThisService === 0;
+      const nextConsecutive = cleanService ? state.metrics.consecutiveCleanServices + 1 : 0;
       // ORDER 043 v3 §10 step 5 — clear any agency hires + any
       // standing agency offer at service close. Agency members are
       // scoped to the single service; the offer is stale after
@@ -1330,6 +1360,11 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
         team: removeAgencyMembers(state.team),
         agencyOffer: null,
         eveningAccount,
+        metrics: {
+          ...state.metrics,
+          consecutiveCleanServices: nextConsecutive,
+          giveUpsThisService: 0
+        },
         day: {
           ...day,
           period: 'evening',
@@ -1357,6 +1392,11 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
         }
       };
       postServiceSummaryLines(next, 'dinner', state);
+      // ORDER 117 §5.1 — värdekvot-mening i strömmen efter middag-close.
+      postValueQuotaLine(next, 'dinner');
+      // ORDER 117 §3.1 — uppdatera fördröjd effektiv värdekvot (samma
+      // som lunch-close, ovanför).
+      updateEffectiveValueQuota(next);
       return next;
     }
   }
@@ -1986,6 +2026,20 @@ function advanceTick(state: SimulationState): SimulationState {
   // it. Runs every period so morning study visibly lifts the ceiling
   // before the doors open.
   tickReputationCeilingDrift(draft);
+
+  // ORDER 115 rev 2 — uteplats auto-unlock. Foodtruck-tillväxt inom
+  // verksamhetsklassen: när aktiv tröskel (default HAPPY_TOTAL ≥ 40)
+  // nås en enda gång sätts policies.hasUteplats = true permanent.
+  // Skrivs på draft i place — nästa tick ser flaggan som satt och
+  // shouldUnlockUteplats returnerar false (no-op) tills state
+  // återställs. Log-event så spelaren ser händelsen i strömmen.
+  if (shouldUnlockUteplats(draft)) {
+    draft.policies = { ...draft.policies, hasUteplats: true };
+    draft.events = [
+      ...draft.events,
+      { at: draft.simTime, kind: 'scenario', text: 'Uteplats öppnad. Ståbord ute på gatan.' }
+    ];
+  }
 
   // ORDER 043 Addendum A service event stream — ambient rolls +
   // pending-outcome emission. Also runs after tickGuests so `loadOf`

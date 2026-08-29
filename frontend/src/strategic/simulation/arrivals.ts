@@ -6,6 +6,7 @@ import { PRICE_ARRIVAL_MULT, SERVICE_ARRIVAL_MULT } from './economics';
 import { currentRhythmMultiplier } from './rhythm';
 import { weatherArrivalMultiplier } from './weather';
 import { worldFactorArrivalMultiplier } from './worldFactors';
+import { valueQuotaArrivalMultiplier } from './valueQuota';
 
 // ORDER 111 §3 — food truck-specifika viktningar.
 //
@@ -142,6 +143,11 @@ export function arrivalProbability(state: SimulationState): number {
   const weatherBase = weatherArrivalMultiplier(state.day.weather);
   const weatherMult = isFoodtruck ? foodtruckWeatherAmplify(weatherBase) : weatherBase;
   const competitionMult = isFoodtruck ? FOODTRUCK_COMPETITION_MULTIPLIER : 1;
+  // ORDER 117 §3.1 — värdekvotens fördröjda multiplikator på ankomster.
+  // Läser state.effectiveValueQuota (asymmetriskt smoothad vid service-
+  // close) och mappar till [0.7, 1.3]. VO-beslut 2026-08-18: rykte
+  // tappas snabbare än det byggs (down 2 dagar, up 3 dagar).
+  const valueMult = valueQuotaArrivalMultiplier(state);
   const perMinute =
     ARRIVAL_BASE_PER_MINUTE *
     periodArrivalMultiplier(state.day.period) *
@@ -152,7 +158,8 @@ export function arrivalProbability(state: SimulationState): number {
     weatherMult *
     worldFactorArrivalMultiplier(state.day.worldFactors) *
     currentRhythmMultiplier(state) *
-    competitionMult;
+    competitionMult *
+    valueMult;
   return perMinute / (60 * 5); // 5 Hz tick.
 }
 

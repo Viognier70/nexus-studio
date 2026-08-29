@@ -26,6 +26,14 @@ export type GuestState =
   | 'waiting'
   | 'seated'
   | 'ordering'
+  // ORDER 115 rev 2 — Food truck. Mellan `ordering` (staff tar order)
+  // och `paying` (transaktion klar) ligger en 2,5-sekunders SERVING-
+  // fas där prop-överlämningen syns i bild. Personalens servePose
+  // peak:as här; carrying-fältet sätts vid inträde till 'serving'.
+  // Utan denna fas skulle överlämningen vara instantan — VO 2026-08-17
+  // "en överlämning som inte syns är ingen överlämning".
+  // Bara giltig när `businessClass === 'foodtruck'`.
+  | 'serving'
   | 'dining'
   | 'paying'
   // ORDER 111 §4 — Värdshus. Gäst som stannar över får denna state
@@ -33,6 +41,11 @@ export type GuestState =
   // dygnsrollovern och plockas upp av frukost-passet nästa morgon.
   // Bara giltig när `state.businessClass === 'värdshus'`.
   | 'sleeping'
+  // ORDER 115 §4.5 — Food truck. Gäst som fått sin mat vid uteplats
+  // äter i bild innan avfärd. Bara giltig när `policies.hasUteplats`
+  // är sann OCH `businessClass === 'foodtruck'`. Utan uteplats går
+  // gästen paying → leaving direkt.
+  | 'eating'
   | 'leaving'
   | 'declined';
 
@@ -180,6 +193,12 @@ export interface Policies {
   ingredientTier: IngredientTier;
   welcomeDrink: boolean;
   localSourcing: boolean;
+  // ORDER 115 §4 — Food truck-uteplats. När sann får paying-gäst
+  // gå till 'eating' innan 'leaving' (istället för direkt 'leaving').
+  // Tröskeln för att köpa uteplatsen sätts INTE av agenten — VO
+  // beslutar (§4.3). Valfri för bakåtkompat: existerande fixtures
+  // behöver inte omdefinieras.
+  hasUteplats?: boolean;
 }
 
 export interface Vec2 {
@@ -285,6 +304,13 @@ export interface Guest {
   // Valfritt (undefined = false) så existerande testfixturer inte
   // behöver ändras; reducern läser med `?? false`.
   stayingOvernight?: boolean;
+  // ORDER 115 §2 — Food truck. Sätts när staff-task 'order' fullbordas
+  // och maten lämnas över. Behåller värdet genom eating/leaving så
+  // renderaren kan rita propen i gästens hand hela vägen ut ur scen.
+  // Sträng-nyckel (matchar HandProp i ui/foodtruck/archetypes) så det
+  // kan matcha arketypens prop OR en generisk foodtruck-portion.
+  // Valfritt (undefined = ej mottaget) för bakåtkompat med tester.
+  carrying?: string;
 }
 
 export type SustainabilityDirection =
@@ -896,6 +922,35 @@ export interface SimulationState {
   staff: StaffMember[];
   guests: Guest[];
   completedGuests: number;
+  // ORDER 115 rev 2 — Uteplats-tröskelmetrics. Tre kandidater för
+  // auto-upplåsning per §4.3; VO väljer via `DEFAULT_UTEPLATS_THRESHOLD`
+  // i businessClass.ts. Alla tre spåras oberoende så byte av kandidat
+  // inte kräver kod-ändring, bara constant-swap.
+  //   * happyDeparturesTotal — kumulativt antal happy-departures
+  //     (satisfaction ≥ HAPPY_THRESHOLD 0.75). Ackumuleras aldrig
+  //     nedåt; permanent räknare.
+  //   * giveUpsThisService — antal walk-outs under nuvarande service.
+  //     Nollställs vid OPEN_SERVICE. Läses av service-close för att
+  //     avgöra om servicen var "clean".
+  //   * consecutiveCleanServices — hur många service-omgångar i rad
+  //     utan give-ups. Nollställs vid varje service med give-ups > 0.
+  //     Uppdateras vid service-close.
+  metrics: {
+    happyDeparturesTotal: number;
+    giveUpsThisService: number;
+    consecutiveCleanServices: number;
+  };
+  // ORDER 117 §3.1 — fördröjd rykte-effekt av värdekvoten.
+  // Uppdateras vid service-close via asymmetrisk låg-pass-filter:
+  // effektiv rör sig mot momentan V med olika tidkonstanter beroende på
+  // riktning. VO-beslut 2026-08-18: "Ned 2 dagar, upp 3. Rykte tappas
+  // snabbare än det byggs." Down step = 1/4 (4 services = 2 dagar),
+  // up step = 1/6 (6 services = 3 dagar). Se `valueQuota.ts:
+  // updateEffectiveValueQuota` för implementering och `arrivals.ts` för
+  // hur den läses in i arrival-probability. Initialvärde 1.0 (neutralt)
+  // så nyöppnad verksamhet inte får negativ push innan värdekvoten
+  // hunnit läsas.
+  effectiveValueQuota: number;
   waitingIds: string[];
   seatedIds: string[];
   revenue: number;

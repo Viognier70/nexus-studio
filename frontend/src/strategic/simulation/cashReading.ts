@@ -187,3 +187,47 @@ export function postServiceSummaryLines(
     });
   }
 }
+
+// ORDER 117 §5.1 — värdekvot-relaterad ström-mening vid service-close.
+// När valueQuota(state) ligger tydligt under/över neutralt (1.0) postas
+// EN mening i den observer-röst spelaren redan är van vid från
+// AMBIENT_TEXTS-familjen. Meningen nämner priset/råvaran som orsak —
+// det bär sambandet över tick-fördröjningen i §2.
+//
+// Håls STRIKT till service-close, inte per tick, så strömmen inte
+// spammas. Enda källa till value-läsning i strömmen; övriga event
+// (bottleneck, kitchen_slip, etc.) fortsätter opåverkade.
+import { valueQuota } from './valueQuota';
+import { VALUE_HIGH_TEXTS, VALUE_LOW_TEXTS } from '../../content/eventStream.sv';
+
+const VALUE_LOW_THRESHOLD = 0.9;    // under 0.9 → poor value narrative
+const VALUE_HIGH_THRESHOLD = 1.35;  // över 1.35 → excellent value narrative
+
+export function postValueQuotaLine(
+  draft: SimulationState,
+  service: 'lunch' | 'dinner'
+): void {
+  const v = valueQuota(draft);
+  let bank: readonly string[] | null = null;
+  if (v < VALUE_LOW_THRESHOLD) bank = VALUE_LOW_TEXTS;
+  else if (v > VALUE_HIGH_THRESHOLD) bank = VALUE_HIGH_TEXTS;
+  if (!bank || bank.length === 0) return;
+  // Deterministiskt val per (service, dayNumber) — samma frö → samma
+  // mening. Bytet till en RNG-driven pick är trivialt om variation
+  // önskas, men determinism gör tester enklare.
+  const idx = (draft.day.dayNumber * 2 + (service === 'lunch' ? 0 : 1)) % bank.length;
+  const text = bank[idx];
+  draft.eventStream = [
+    ...draft.eventStream,
+    {
+      at: draft.simTime,
+      text,
+      category: 'ambient',
+      causeTag: v < VALUE_LOW_THRESHOLD ? 'ingredient_tier_grund' : null,
+      causeChainId: null,
+      sustainability: 'economic',
+      kind: v < VALUE_LOW_THRESHOLD ? 'value_low' : 'value_high',
+      scenarioId: null
+    }
+  ];
+}

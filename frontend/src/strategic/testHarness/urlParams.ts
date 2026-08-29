@@ -74,6 +74,36 @@ interface ParsedParams {
   // DevPanel's day/period/cash lines stay — those are useful in a
   // debrief. Only the aiming reticle + pixel readout drop.
   playtest: boolean;
+  // TEMPORÄR växel (SD-003 rev. 2 rekognosering, Vision Owner-begäran
+  // 2026-08-15) — bara för att se DollhouseFrame utan att ha byggt
+  // riktig montering. Aktiveras med `#playtest=1&dollhouse=1`. Ingen
+  // permanent koppling; den riktiga inflätningen hör till food truck-
+  // ordern (SD-003 §8 följdorder 3). Kräver playtest=1 för att fungera
+  // — annars ignoreras flaggan, så vanliga URL:er inte kan snubbla in
+  // i dockskåpsvyn av misstag.
+  dollhouse: boolean;
+  // TEMPORÄR dev-shortcut (Vision Owner-begäran 2026-08-16): sätter
+  // `state.businessClass` direkt vid init i stället för att kräva att
+  // spelaren övar krediter i Metodköket och går via bankmötet. Läses
+  // av SimulationProvider och applyDevBusinessOverride. Aktiveras med
+  // `#playtest=1&business=foodtruck` (eller `restaurant`/`värdshus`).
+  // Kräver playtest=1 — utan den flaggan ignoreras business= så vanliga
+  // URL:er inte kan flippa verksamheten av misstag. `null` = ingen
+  // override, initial-state:t behåller sin default ('restaurant'). Ingen
+  // permanent koppling; hör till dev-verktygsraden tills en riktig
+  // ny-spel-flow bygg (senare order).
+  business: 'restaurant' | 'foodtruck' | 'värdshus' | null;
+  // ORDER 113 DoD 7/8 — dev-only seed för food truck-benchmark. När satt
+  // och business=foodtruck, injicerar SimulationProvider N fake "waiting"-
+  // gäster i initial-state:t så skärmdumpen och fps-mätningen har en
+  // fylld kö att arbeta med utan att simulera fram organiska arrivals.
+  // `null` = ingen seed. Kräver playtest=1.
+  foodtruckSeed: number | null;
+  // ORDER 115 §4 — dev-only flagga för att aktivera uteplats-fasen
+  // (paying → eating → leaving). Aktiveras med `#playtest=1&uteplats=1`.
+  // Riktig upplåsning väntar på VO-beslut om tröskelvärde (§4.3).
+  // Sätts på policies.hasUteplats i applyDevFoodtruckSeed.
+  uteplats: boolean;
 }
 
 function parseHash(): ParsedParams {
@@ -84,7 +114,11 @@ function parseHash(): ParsedParams {
       roi: DEFAULT_ROI,
       poseId: DEFAULT_POSE_ID,
       calibrationQuad: false,
-      playtest: false
+      playtest: false,
+      dollhouse: false,
+      business: null,
+      foodtruckSeed: null,
+      uteplats: false
     };
   }
   const hash = window.location.hash.replace('#', '');
@@ -104,7 +138,31 @@ function parseHash(): ParsedParams {
   const poseId = params.get('poseId') ?? null;
   const calibrationQuad = params.get('calibrationQuad') === '1';
   const playtest = params.get('playtest') === '1';
-  return { period, camera, roi, poseId, calibrationQuad, playtest };
+  // dollhouse-växeln kräver playtest=1 — annars ignoreras den.
+  const dollhouse = playtest && params.get('dollhouse') === '1';
+  // business= dev-shortcut kräver också playtest=1 — vanliga URL:er
+  // ska inte kunna flippa verksamhetsklassen av misstag.
+  const business = parseBusiness(playtest ? params.get('business') ?? null : null);
+  const foodtruckSeed = playtest ? parseFoodtruckSeed(params.get('foodtruckSeed') ?? null) : null;
+  const uteplats = playtest && params.get('uteplats') === '1';
+  return { period, camera, roi, poseId, calibrationQuad, playtest, dollhouse, business, foodtruckSeed, uteplats };
+}
+
+function parseFoodtruckSeed(s: string | null): number | null {
+  if (!s) return null;
+  const n = Number.parseInt(s, 10);
+  if (!Number.isFinite(n) || n <= 0) return null;
+  // Cap at capacity ceiling so a runaway URL doesn't spawn thousands.
+  return Math.min(n, 30);
+}
+
+function parseBusiness(s: string | null): 'restaurant' | 'foodtruck' | 'värdshus' | null {
+  if (!s) return null;
+  const v = s.toLowerCase();
+  if (v === 'restaurant' || v === 'restaurang') return 'restaurant';
+  if (v === 'foodtruck' || v === 'food-truck' || v === 'food_truck') return 'foodtruck';
+  if (v === 'värdshus' || v === 'vardshus' || v === 'varshus') return 'värdshus';
+  return null;
 }
 
 function parsePeriod(s: string | null): PeriodOverride {

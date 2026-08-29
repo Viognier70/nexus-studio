@@ -20,6 +20,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSimState } from '../simulation/SimulationProvider';
 import { computeValuation, revenueReading, TIER_DATA } from '../simulation/valuation';
+import { reputationTrend, type ReputationTrend } from '../simulation/valueQuota';
 import {
   qualityBand,
   targetQualityDrink,
@@ -259,7 +260,7 @@ export function PlayerPanel() {
 
           <div style={HEADING_STYLE}>Driftskapital</div>
 
-          <Reading label="Rykte"            band={reputationBand(sim.reputation)} fraction={sim.reputation} ceiling={sim.reputationCeiling} />
+          <Reading label="Rykte"            band={reputationBand(sim.reputation)} fraction={sim.reputation} ceiling={sim.reputationCeiling} trend={reputationTrend(sim)} />
           <Reading label="Mat-kvalitet"     band={qualityBand(sim.qualityFood)}    fraction={sim.qualityFood}    ceiling={targetQualityFood(sim)} />
           <Reading label="Dryck-kvalitet"   band={qualityBand(sim.qualityDrink)}   fraction={sim.qualityDrink}   ceiling={targetQualityDrink(sim)} />
           <Reading label="Service-kvalitet" band={qualityBand(sim.qualityService)} fraction={sim.qualityService} ceiling={targetQualityService(sim)} />
@@ -306,15 +307,46 @@ interface ReadingProps {
   // tick above the bar so the eye reads value vs. possible without
   // extra text. Aria-label carries both numbers for screen readers.
   ceiling?: number;
+  // ORDER 117 §5.2 — rykte-trend-indikator (bara Rykte-raden idag).
+  // Visar en pil UTAN siffra — läses som "det du gör i dag märks
+  // nästa dag i den här riktningen". Motivering: fördröjningen (§2)
+  // gör orsak-verkan svår; pilen ger spelaren en tidig varning utan
+  // att avslöja exakt hur mycket rykte som kommer att röras.
+  trend?: ReputationTrend;
 }
 
-function Reading({ label, band, fraction, ceiling }: ReadingProps) {
+// ORDER 117 §5.2 — pil-glyfer. Text-tecken utan behov av SVG-ikoner.
+const TREND_GLYPHS: Record<ReputationTrend, string> = {
+  up:   '▲',
+  down: '▼',
+  flat: '·'
+};
+const TREND_COLOURS: Record<ReputationTrend, string> = {
+  up:   '#7a9a5c',   // grönaktig — bra
+  down: '#c47a5a',   // röd/orangeaktig — dåligt
+  flat: '#8a836e'    // neutral grå
+};
+
+function Reading({ label, band, fraction, ceiling, trend }: ReadingProps) {
   const ariaLabel = ceiling !== undefined
     ? `${label}: ${band}. Möjligt tak vid ${Math.round(ceiling * 100)} procent, aktuellt ${Math.round(fraction * 100)} procent.`
     : `${label}: ${band}.`;
   return (
     <div style={READING_STYLE} aria-label={ariaLabel}>
       <span style={{ opacity: 0.72, flex: 1 }}>{label}</span>
+      {trend !== undefined && (
+        <span
+          data-reputation-trend={trend}
+          aria-label={
+            trend === 'up' ? 'trend uppåt' :
+            trend === 'down' ? 'trend nedåt' :
+            'trend stilla'
+          }
+          style={{ fontSize: 11, color: TREND_COLOURS[trend], marginRight: 4 }}
+        >
+          {TREND_GLYPHS[trend]}
+        </span>
+      )}
       <span style={{ fontSize: 11, opacity: 0.85 }}>{band}</span>
       <div style={BAR_TRACK_STYLE}>
         <div style={barFill(fraction)} />
