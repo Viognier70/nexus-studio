@@ -317,10 +317,18 @@ export function createFigureRig(options?: Partial<FigureRigOptions>): FigureRig 
   headMesh.position.y = FIGURE.headRadius;
   head.add(headMesh);
 
+  // ORDER 123 §2.1 — kalottens täckning utökad från 1,15 rad
+  // (~66° av övre hemisfären) till Math.PI / 2 (hela övre hemisfären)
+  // per SD-004 §3.3-preciseringen 2026-08-29. Den gamla kalotten
+  // uppfyllde ordalydelsen "hjässan bär garment-/uniformsfärgen" men
+  // inte avsikten: hudtonen dominerade så snart kameran lutade från
+  // lodrätt. Ny geometri: garment-färgen täcker hela huvudets övre
+  // hälft ned till horisontallinjen. Cache-nyckel `head:crown:hemi`
+  // (v2) så gammal cachad kalott inte återanvänds.
   const crown = new THREE.Mesh(
-    cached('head:crown', function () {
+    cached('head:crown:hemi', function () {
       return new THREE.SphereGeometry(
-        FIGURE.headRadius * 1.03, 16, 8, 0, Math.PI * 2, 0, 1.15
+        FIGURE.headRadius * 1.03, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2
       );
     }),
     garment
