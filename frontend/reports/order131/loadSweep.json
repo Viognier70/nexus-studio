@@ -1,0 +1,378 @@
+{
+  "config": {
+    "nSeeds": 200,
+    "seedBase": 20260828,
+    "services": [
+      "lunch",
+      "dinner"
+    ],
+    "businesses": [
+      "restaurant",
+      "foodtruck",
+      "värdshus",
+      "ölkrogen"
+    ],
+    "serviceMinutes": 8,
+    "tickHz": 5,
+    "ticksPerService": 2400,
+    "warmupTicks": 100,
+    "faceBands": [
+      {
+        "name": "hurried",
+        "threshold": 0.95,
+        "note": "staff.workload >= 0.95 → hurried"
+      },
+      {
+        "name": "strained",
+        "threshold": 0.7,
+        "note": "staff.workload >= 0.7 + rhythm=red → strained"
+      }
+    ]
+  },
+  "cells": [
+    {
+      "business": "restaurant",
+      "service": "lunch",
+      "capacity": 16,
+      "seeds": 200,
+      "totalSamples": 460000,
+      "percentiles": {
+        "p10": 0,
+        "p25": 0,
+        "p50": 1,
+        "p75": 1,
+        "p90": 1,
+        "p99": 1
+      },
+      "shareOver": {
+        "hurried": 0.5827913043478261,
+        "strained": 0.6459152173913043
+      },
+      "meanQueueMax": 2.595,
+      "meanStaffCount": 3,
+      "histogram": [
+        126048,
+        2135,
+        2857,
+        2724,
+        2704,
+        2717,
+        3061,
+        3664,
+        3326,
+        2787,
+        2817,
+        2853,
+        2703,
+        2483,
+        2871,
+        3437,
+        4003,
+        6776,
+        11950,
+        268084
+      ]
+    },
+    {
+      "business": "restaurant",
+      "service": "dinner",
+      "capacity": 16,
+      "seeds": 200,
+      "totalSamples": 460000,
+      "percentiles": {
+        "p10": 0,
+        "p25": 0.7120000000000005,
+        "p50": 1,
+        "p75": 1,
+        "p90": 1,
+        "p99": 1
+      },
+      "shareOver": {
+        "hurried": 0.6937065217391304,
+        "strained": 0.7523673913043478
+      },
+      "meanQueueMax": 6.855,
+      "meanStaffCount": 3,
+      "histogram": [
+        63544,
+        3547,
+        3908,
+        3725,
+        3930,
+        3883,
+        3772,
+        4090,
+        3705,
+        3738,
+        4101,
+        3931,
+        4015,
+        4022,
+        4096,
+        4616,
+        4738,
+        5974,
+        7560,
+        319105
+      ]
+    },
+    {
+      "business": "foodtruck",
+      "service": "lunch",
+      "capacity": 9,
+      "seeds": 200,
+      "totalSamples": 460000,
+      "percentiles": {
+        "p10": 0,
+        "p25": 0,
+        "p50": 0.4140000000000003,
+        "p75": 0.8619999999999998,
+        "p90": 1,
+        "p99": 1
+      },
+      "shareOver": {
+        "hurried": 0.17521739130434782,
+        "strained": 0.3503586956521739
+      },
+      "meanQueueMax": 3.935,
+      "meanStaffCount": 3,
+      "histogram": [
+        132838,
+        17859,
+        15333,
+        15937,
+        12728,
+        11014,
+        10383,
+        10620,
+        11618,
+        12530,
+        11962,
+        11650,
+        11942,
+        12421,
+        13027,
+        13564,
+        14500,
+        18523,
+        20951,
+        80600
+      ]
+    },
+    {
+      "business": "foodtruck",
+      "service": "dinner",
+      "capacity": 9,
+      "seeds": 200,
+      "totalSamples": 460000,
+      "percentiles": {
+        "p10": 0,
+        "p25": 0.10400000000000004,
+        "p50": 0.7299999999999999,
+        "p75": 1,
+        "p90": 1,
+        "p99": 1
+      },
+      "shareOver": {
+        "hurried": 0.33140652173913043,
+        "strained": 0.5148652173913043
+      },
+      "meanQueueMax": 3.165,
+      "meanStaffCount": 3,
+      "histogram": [
+        101068,
+        12383,
+        10837,
+        11486,
+        9474,
+        8381,
+        8199,
+        7719,
+        7910,
+        8674,
+        8569,
+        8502,
+        9247,
+        10713,
+        11753,
+        12935,
+        14652,
+        20095,
+        24956,
+        152447
+      ]
+    },
+    {
+      "business": "värdshus",
+      "service": "lunch",
+      "capacity": 22,
+      "seeds": 200,
+      "totalSamples": 460000,
+      "percentiles": {
+        "p10": 0,
+        "p25": 0,
+        "p50": 0.9940000000000001,
+        "p75": 1,
+        "p90": 1,
+        "p99": 1
+      },
+      "shareOver": {
+        "hurried": 0.5635804347826087,
+        "strained": 0.643
+      },
+      "meanQueueMax": 0.87,
+      "meanStaffCount": 3,
+      "histogram": [
+        125497,
+        2216,
+        2998,
+        2899,
+        2922,
+        2957,
+        3237,
+        3692,
+        3343,
+        2902,
+        2895,
+        2973,
+        2909,
+        2780,
+        3136,
+        3847,
+        4877,
+        8586,
+        16087,
+        259247
+      ]
+    },
+    {
+      "business": "värdshus",
+      "service": "dinner",
+      "capacity": 22,
+      "seeds": 200,
+      "totalSamples": 460000,
+      "percentiles": {
+        "p10": 0,
+        "p25": 0.7179999999999996,
+        "p50": 1,
+        "p75": 1,
+        "p90": 1,
+        "p99": 1
+      },
+      "shareOver": {
+        "hurried": 0.6473760869565217,
+        "strained": 0.7534630434782609
+      },
+      "meanQueueMax": 1.525,
+      "meanStaffCount": 3,
+      "histogram": [
+        63451,
+        3480,
+        3879,
+        3664,
+        3780,
+        3798,
+        3718,
+        4050,
+        3725,
+        3771,
+        4065,
+        3865,
+        3998,
+        4163,
+        4595,
+        5516,
+        6899,
+        11614,
+        20176,
+        297793
+      ]
+    },
+    {
+      "business": "ölkrogen",
+      "service": "lunch",
+      "capacity": 20,
+      "seeds": 200,
+      "totalSamples": 460000,
+      "percentiles": {
+        "p10": 0,
+        "p25": 0,
+        "p50": 1,
+        "p75": 1,
+        "p90": 1,
+        "p99": 1
+      },
+      "shareOver": {
+        "hurried": 0.5827913043478261,
+        "strained": 0.6459152173913043
+      },
+      "meanQueueMax": 2.595,
+      "meanStaffCount": 3,
+      "histogram": [
+        126048,
+        2135,
+        2857,
+        2724,
+        2704,
+        2717,
+        3061,
+        3664,
+        3326,
+        2787,
+        2817,
+        2853,
+        2703,
+        2483,
+        2871,
+        3437,
+        4003,
+        6776,
+        11950,
+        268084
+      ]
+    },
+    {
+      "business": "ölkrogen",
+      "service": "dinner",
+      "capacity": 20,
+      "seeds": 200,
+      "totalSamples": 460000,
+      "percentiles": {
+        "p10": 0,
+        "p25": 0.7120000000000005,
+        "p50": 1,
+        "p75": 1,
+        "p90": 1,
+        "p99": 1
+      },
+      "shareOver": {
+        "hurried": 0.6937065217391304,
+        "strained": 0.7523673913043478
+      },
+      "meanQueueMax": 6.855,
+      "meanStaffCount": 3,
+      "histogram": [
+        63544,
+        3547,
+        3908,
+        3725,
+        3930,
+        3883,
+        3772,
+        4090,
+        3705,
+        3738,
+        4101,
+        3931,
+        4015,
+        4022,
+        4096,
+        4616,
+        4738,
+        5974,
+        7560,
+        319105
+      ]
+    }
+  ]
+}
