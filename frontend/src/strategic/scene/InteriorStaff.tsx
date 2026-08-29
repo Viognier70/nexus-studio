@@ -20,7 +20,7 @@
 //   lärling  → mid-floor (helps everywhere)
 
 import { useFrame } from '@react-three/fiber';
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { useCamera } from '../camera/CameraContext';
 import { usePlayerBusinessInterior } from '../business/interiorLayout';
@@ -32,23 +32,27 @@ import { staffPositionsRef } from './interiorSharedState';
 import { derivePipCarriers } from '../ui/RoomCardPanel/guestPatterns';
 import {
   PIP_COLOUR,
-  PIP_OFFSET_ABOVE_PUCK_TOP_M,
   PIP_SIZE_M
 } from './patternTransform';
 import { teamPipCarriersFromStaffPipCarriers } from './teamStaffBridge';
+// ORDER 121 §2 — figureRig ersätter cylinderpucken. Pipens Y kommer nu
+// från rig.joints.headAnchor per §6.
+import {
+  createFigureRig,
+  disposeFigureRig,
+  applyPose,
+  poseIdle,
+  poseWalk,
+  type FigureRig
+} from './figureRig';
 
-// ORDER 054 Del A — staff height matches guest (1.70 m per ORDER 053
-// unit contract). The previous 1.75 m came from ORDER 053's silhouette-
-// differentiation motivation: at the bird's-eye strategic camera,
-// slightly taller pucks let the eye separate staff from guests at a
-// glance. That job is now carried by radius (slim 0.24 vs guest 0.32)
-// and uniform tone (dark, low-chroma via ROLE_COLOUR) — form and
-// colour, not height. (ORDER 055 Del E corrects the earlier comment
-// that mislabelled the 1.75 m as a "body-type stereotype cheat" —
-// that framing did not match what ORDER 053 recorded.)
-const STAFF_RADIUS_M = 0.24;
-const STAFF_HEIGHT_M = 1.70;
-const STAFF_Y = STAFF_HEIGHT_M / 2 + 0.06;
+// ORDER 054 Del A / ORDER 121 §2 — staff height matches guest (1.70 m).
+// Skillnaden bärs nu av axelbredd (guest 0,46 / staff 0,40 via figureRig
+// FigureVariant) och uniformsfärg (ROLE_COLOUR) — form och färg, inte
+// höjd. STAFF_RADIUS_M och STAFF_Y utgår som puck-konstanter; rhythm-
+// ringen behåller sitt eget mått nedanför.
+// ORDER 121 §2 — stridslängd för gångfas (poseWalk tar cykler).
+const STRIDE_LENGTH_M = 0.75;
 
 // Movement pace — a little brisker than guests. Staff working under
 // load pick their step up a touch.
@@ -92,9 +96,13 @@ const RHYTHM_COLOUR: Record<'green' | 'amber' | 'red', string> = {
   amber: '#e8c169',
   red:   '#d97070'
 };
-const RHYTHM_RING_INNER_M = STAFF_RADIUS_M;
-const RHYTHM_RING_OUTER_M = STAFF_RADIUS_M + 0.08;
-const RHYTHM_RING_Y = 0.03;   // just above the floor, under the puck body
+// ORDER 121 §2 — behåller ringens innerdiameter på 0,24 m (samma mått
+// som gamla STAFF_RADIUS_M) så tick-lasttolken läser oförändrat.
+// Riggens fötter är ~0,20 m breda, så ringen omsluter fortfarande figuren
+// men lämnar små ankarnyckelben synliga.
+const RHYTHM_RING_INNER_M = 0.24;
+const RHYTHM_RING_OUTER_M = 0.24 + 0.08;
+const RHYTHM_RING_Y = 0.03;   // just above the floor, under the rig body
 
 function smoothstep(a: number, b: number, x: number): number {
   const t = Math.max(0, Math.min(1, (x - a) / (b - a)));
@@ -151,6 +159,10 @@ interface AnimatedStaff {
   cx: number;
   cz: number;
   jitterSeed: number;   // per-puck phase for the idle drift
+  // ORDER 121 §2 — gångfas i cykler + tidsstämpel för föregående
+  // position, så pose-valet vet om personalen faktiskt rör sig eller
+  // står på sin station.
+  walkPhase: number;
 }
 
 export function InteriorStaff() {
@@ -160,12 +172,22 @@ export function InteriorStaff() {
   const sim = useSimState();
 
   const positionsRef = useRef<Map<string, AnimatedStaff>>(new Map());
-  const meshRefs = useRef<Map<string, THREE.Mesh>>(new Map());
-  // ORDER 078 (M5) — group refs so the whole puck-plus-ring subtree
+  // ORDER 078 (M5) — group refs so the whole rig-plus-ring subtree
   // moves as one when tickStaff writes a new position each frame.
   const groupRefs = useRef<Map<string, THREE.Group>>(new Map());
   // ORDER 088 §4 — pip mesh refs per TeamMember id, toggled per tick.
   const pipRefs = useRef<Map<string, THREE.Mesh>>(new Map());
+  // ORDER 121 §2 — rig-refs per team-member-id.
+  const rigsRef = useRef<Map<string, FigureRig>>(new Map());
+
+  // ORDER 121 §8 DoD 5 — läckagetest-garanti.
+  useEffect(() => {
+    const rigs = rigsRef.current;
+    return () => {
+      rigs.forEach((rig) => disposeFigureRig(rig));
+      rigs.clear();
+    };
+  }, []);
 
   const stations = useMemo(() => (layout ? computeStations(layout) : null), [layout]);
 
@@ -237,7 +259,8 @@ export function InteriorStaff() {
         pos = {
           cx: home[0],
           cz: home[1],
-          jitterSeed: Math.random() * Math.PI * 2
+          jitterSeed: Math.random() * Math.PI * 2,
+          walkPhase: 0
         };
         positionsRef.current.set(member.id, pos);
       }
@@ -259,13 +282,20 @@ export function InteriorStaff() {
       const dz = targetZ - pos.cz;
       const dsq = dx * dx + dz * dz;
       const step = pace * delta;
+      let movedThisFrame = false;
       if (dsq > step * step) {
         const invd = 1 / Math.sqrt(dsq);
         pos.cx += dx * invd * step;
         pos.cz += dz * invd * step;
-      } else {
+        movedThisFrame = true;
+      } else if (dsq > 1e-6) {
         pos.cx = targetX;
         pos.cz = targetZ;
+        movedThisFrame = true;
+      }
+      // ORDER 121 §2 — gångfas ökar med stridslängd per meter.
+      if (movedThisFrame) {
+        pos.walkPhase += (step / STRIDE_LENGTH_M);
       }
 
       // ORDER 046 §4 — task-bob overlay. Applies during service
@@ -281,23 +311,41 @@ export function InteriorStaff() {
          bobY = Math.sin(now * TASK_BOB_FREQ_HZ * 2 * Math.PI + pos.jitterSeed * 3) * bobAmp;
        }
 
-      const mesh = meshRefs.current.get(member.id);
       const grp = groupRefs.current.get(member.id);
+      // ORDER 121 §2 — hämta/skapa rig med staff-variant + roll-uniform.
+      let rig = rigsRef.current.get(member.id);
+      if (grp && !rig) {
+        rig = createFigureRig({
+          variant: 'staff',
+          garmentColour: ROLE_COLOUR[member.role]
+        });
+        grp.add(rig.root);
+        rigsRef.current.set(member.id, rig);
+      }
       if (grp) {
-        // ORDER 078 (M5) — group moves; puck + ring stay in local
-        // frame (puck at STAFF_Y + bobY, ring at RHYTHM_RING_Y).
+        // ORDER 078 (M5) — group moves; rig + ring stay in local
+        // frame (rig at y=0, ring at RHYTHM_RING_Y).
         grp.position.set(pos.cx, bobY, pos.cz);
       }
-      if (mesh) {
-        const mat = mesh.material as THREE.MeshStandardMaterial;
-        if (mat) {
-          // Colour is stable per role; only opacity ticks with visibility.
+      if (rig) {
+        // Uniformsfärgen är stabil per roll; opacity följer visibility.
+        rig.materials.forEach((mat) => {
           mat.opacity = visibility;
           const wantTransparent = visibility < 0.99;
           if (mat.transparent !== wantTransparent) {
             mat.transparent = wantTransparent;
             mat.needsUpdate = true;
           }
+        });
+        // ORDER 121 §4 — poseWalk vid rörelse, annars poseIdle. poseWork
+        // och poseCarry är FLAGGADE i figureRig.ts (staff har ingen
+        // task-state resp. carry-state i sim-lagret) — presentationslagret
+        // väljer inte dem självt.
+        const t = sim.simTime + pos.jitterSeed;
+        if (movedThisFrame) {
+          applyPose(rig, poseWalk(pos.walkPhase));
+        } else {
+          applyPose(rig, poseIdle(t));
         }
       }
 
@@ -309,15 +357,19 @@ export function InteriorStaff() {
         role: member.role
       });
 
-      // ORDER 088 §4 + ORDER 090 §3 — pip on this specific staff
-      // puck if the id bridge maps this TeamMember to a pip-carrier
-      // StaffMember. Cube, no number. With two servitörs in play the
-      // pip lands only on the one whose bridged StaffMember owns the
-      // hailing guest.
+      // ORDER 088 §4 + ORDER 090 §3 + ORDER 121 §6 — pip på huvudankaret
+      // (inte längre puck-topp). Id-bryggan (teamPipCarriersFromStaff-
+      // PipCarriers) mappar från StaffMember-tasks till specifik
+      // TeamMember — pip landar på rätt figur även med flera servitörer.
       const pipMesh = pipRefs.current.get(member.id);
-      if (pipMesh) {
+      if (pipMesh && grp && rig) {
         const isCarrier = teamPipCarrierIds.has(member.id);
         pipMesh.visible = isCarrier && visibility > 0.02;
+        grp.updateWorldMatrix(true, true);
+        const anchorWorld = new THREE.Vector3();
+        rig.joints.headAnchor.getWorldPosition(anchorWorld);
+        const anchorLocal = grp.worldToLocal(anchorWorld);
+        pipMesh.position.copy(anchorLocal);
         const pMat = pipMesh.material as THREE.MeshStandardMaterial;
         if (pMat) {
           pMat.opacity = visibility;
@@ -326,11 +378,17 @@ export function InteriorStaff() {
       }
     }
 
-    // Prune positions for members that left (fire / contract end).
+    // Prune positions + rigs for members that left (fire / contract end).
+    // ORDER 121 §8 DoD 5 — disposeFigureRig så material inte läcker.
     for (const id of Array.from(positionsRef.current.keys())) {
       if (!seenIds.has(id)) {
         positionsRef.current.delete(id);
         staffPositionsRef.current.delete(id);
+        const oldRig = rigsRef.current.get(id);
+        if (oldRig) {
+          disposeFigureRig(oldRig);
+          rigsRef.current.delete(id);
+        }
       }
     }
   });
@@ -351,21 +409,8 @@ export function InteriorStaff() {
             else groupRefs.current.delete(m.id);
           }}
         >
-          <mesh
-            position={[0, STAFF_Y, 0]}
-            ref={(mesh) => {
-              if (mesh) meshRefs.current.set(m.id, mesh);
-              else meshRefs.current.delete(m.id);
-            }}
-          >
-            <cylinderGeometry args={[STAFF_RADIUS_M, STAFF_RADIUS_M, STAFF_HEIGHT_M, 8]} />
-            <meshStandardMaterial
-              color={ROLE_COLOUR[m.role]}
-              roughness={0.85}
-              transparent
-              opacity={0}
-            />
-          </mesh>
+          {/* ORDER 121 §2 — cylinder-mesh borttagen. Riggen monteras
+              imperativt i useFrame via grp.add(rig.root). */}
           {showRing && (
             <mesh position={[0, RHYTHM_RING_Y, 0]} rotation={[-Math.PI / 2, 0, 0]}>
               <ringGeometry args={[RHYTHM_RING_INNER_M, RHYTHM_RING_OUTER_M, 24]} />
@@ -386,7 +431,6 @@ export function InteriorStaff() {
               if (mesh) pipRefs.current.set(m.id, mesh);
               else pipRefs.current.delete(m.id);
             }}
-            position={[0, STAFF_Y + STAFF_HEIGHT_M / 2 + PIP_OFFSET_ABOVE_PUCK_TOP_M, 0]}
             visible={false}
             userData={{ testid: `staff-pip-${m.id}` }}
           >
