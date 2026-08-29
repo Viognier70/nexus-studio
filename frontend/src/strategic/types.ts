@@ -178,7 +178,10 @@ export interface BankMeetingOutcomeState {
 // SimulationState och SimAction kan referera den utan cirkulär import.
 // `'värdshus'` = fjärde klassen (från bankmötets internal 'balanced',
 // spelartext "Värdshuset") per §2.
-export type BusinessClass = 'restaurant' | 'foodtruck' | 'värdshus';
+// ORDER 125 §3 — ölkrogen tillagd som fjärde verksamhetsklass (brewpub-
+// rum med tjugo platser + bryggeri i samma lokal). Namn med å för
+// konsekvens med 'värdshus' som också bär svenska tecken.
+export type BusinessClass = 'restaurant' | 'foodtruck' | 'värdshus' | 'ölkrogen';
 
 export type ServiceConcept = 'vardaglig' | 'formell';
 export type PricingTier = 'låg' | 'medel' | 'hög';

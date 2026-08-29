@@ -291,6 +291,9 @@ export const strings = {
   businessClass: {
     restaurant: 'Restaurang',
     foodtruck: 'Food truck',
-    värdshus: 'Värdshuset'
+    värdshus: 'Värdshuset',
+    // ORDER 125 §3 — Ölkrogen. Spelartext med versal första bokstav,
+    // matchar övriga.
+    ölkrogen: 'Ölkrogen'
   }
 } as const;

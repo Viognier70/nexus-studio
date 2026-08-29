@@ -22,7 +22,7 @@
 import type { BankMeetingKlass, SimulationState } from '../types';
 import { TOTAL_SEATS } from './interiorLayout';
 
-export type BusinessClass = 'restaurant' | 'foodtruck' | 'värdshus';
+export type BusinessClass = 'restaurant' | 'foodtruck' | 'värdshus' | 'ölkrogen';
 
 // Flaggor som reducern och kringliggande system läser för att branch:a
 // per verksamhet. Additiva — nya flaggor kan läggas till utan att existerande
@@ -81,6 +81,20 @@ export const BUSINESS_CLASS_CONFIG: Record<BusinessClass, BusinessClassConfig> =
     hasMiseEnPlace: true,
     hasOvernight: true,
     capacityFor: () => TOTAL_SEATS + 6
+  },
+  // ORDER 125 §3 — ölkrogen. Ny verksamhetsklass som rum (brewpub med
+  // bryggeri i samma lokal). Beter sig som restaurangen per ordertext §4
+  // (`hasSeats: true`, `hasMiseEnPlace: true`, ingen övernattning).
+  // Kapaciteten är fast 20 (åtta barstolar + åtta långbords + fyra tvåor)
+  // per handoff/brewpubRoom.ts `TOTAL_SEATS = 20`. Bemanning påverkar inte
+  // antalet stolar; ståplatser (`STANDING_SPOTS = 8` i handoff) räknas
+  // inte i kapaciteten per Design-flagga `standing`.
+  ölkrogen: {
+    id: 'ölkrogen',
+    hasSeats: true,
+    hasMiseEnPlace: true,
+    hasOvernight: false,
+    capacityFor: () => 20
   }
 };
 
