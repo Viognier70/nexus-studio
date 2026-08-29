@@ -98,7 +98,14 @@ const TASK_BOB_FREQ_HZ = 2.0;
 // pair-wise ΔE 5,6–11,1 — spelaren kunde inte skilja rollerna åt.
 export const ROLE_COLOUR: Record<StaffRole, string> = {
   'värd':     '#2f4a68',   // host — deep navy (cool, doorway)
-  'servitör': '#6b6260',   // server — warm-neutral (mid, functional)
+  // ORDER 127 §3.3 — servitör bytt från #6b6260 till #454a52.
+  // Tidigare warm-neutral kollapsade mot ölkrogens `floorBrew #7d776c`
+  // (kontrast 1.33:1 — ORDER 125 §7-fynd). Ny mörkare cool grey ligger
+  // i L 0.069, klarar bandet [1.8, 3.6]:1 mot alla golvzoner:
+  // restaurant #a08462 = 2.52, ölkrogen dining #a49b8a = 3.24,
+  // brew #7d776c = 1.99, kitchen #948f84 = 2.76. Parvis ΔE mot övriga
+  // roller > 12 bevarad (verifierat i paletteZoneCheck-tester).
+  'servitör': '#454a52',   // server — dark cool grey (was #6b6260)
   'kock':     '#7a3e3a',   // cook — burgundy (warm, kitchen)
   'lärling':  '#d8d3ce'    // apprentice — light warm-grey (muted, junior)
 };
