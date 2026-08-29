@@ -218,6 +218,10 @@ export function PlayerPanel() {
   const tier = 'T2';
   const val = computeValuation(sim, tier);
   const rev = revenueReading(sim);
+  // ORDER 117 §5.2 uppföljning — rykte-trend på pillen SJÄLV så
+  // spelaren ser riktningen utan att klicka. Läses från effektiv V
+  // (asymmetriskt smoothad över services). Bara ren pil, ingen siffra.
+  const trend = reputationTrend(sim);
 
   return (
     <div ref={containerRef} style={{ position: 'relative', display: 'inline-block' }}>
@@ -231,6 +235,24 @@ export function PlayerPanel() {
       >
         <span style={PILL_LABEL_STYLE}>Cash</span>
         <span>{formatKSEK(sim.cash / 1000)}</span>
+        {/* Rykte-trend-pil intill Cash-siffran. Endast pil (▲/▼) syns —
+            flat läge (·) döljs så pillen är tyst när rykte inte rör sig.
+            data-reputation-trend attribut för test-grep + aria-label
+            för skärmläsare. */}
+        {trend !== 'flat' && (
+          <span
+            data-reputation-trend={trend}
+            aria-label={trend === 'up' ? 'rykte trend uppåt' : 'rykte trend nedåt'}
+            title={trend === 'up' ? 'Rykte-trend uppåt' : 'Rykte-trend nedåt'}
+            style={{
+              color: TREND_COLOURS[trend],
+              fontSize: 12,
+              marginLeft: 2
+            }}
+          >
+            {TREND_GLYPHS[trend]}
+          </span>
+        )}
         <span aria-hidden style={{ opacity: 0.65 }}>{open ? '▴' : '▾'}</span>
       </button>
 
