@@ -1,0 +1,2154 @@
+{
+  "windowFailures": {
+    "total": 297,
+    "byKind": {
+      "yes": 153,
+      "university": 2,
+      "residential": 26,
+      "house": 70,
+      "detached": 2,
+      "roof": 1,
+      "church": 1,
+      "hotel": 1,
+      "industrial": 17,
+      "train_station": 1,
+      "school": 9,
+      "apartments": 7,
+      "outbuilding": 6,
+      "shed": 1
+    },
+    "obbAngleHistogram": {
+      "0": 39,
+      "10": 22,
+      "20": 21,
+      "30": 8,
+      "40": 1,
+      "50": 21,
+      "60": 23,
+      "70": 82,
+      "80": 78,
+      "90": 2
+    },
+    "distanceFromOriginHistogram": {
+      "0": 21,
+      "100": 34,
+      "200": 37,
+      "300": 40,
+      "400": 21,
+      "500": 19,
+      "600": 20,
+      "700": 18,
+      "800": 7,
+      "900": 4,
+      "1000": 13,
+      "1100": 3,
+      "1200": 1,
+      "1300": 4,
+      "1400": 3,
+      "1500": 1,
+      "1600": 6,
+      "1700": 8,
+      "1800": 8,
+      "1900": 8,
+      "2000": 5,
+      "2100": 4,
+      "2200": 3,
+      "2300": 2,
+      "2600": 2,
+      "2700": 2,
+      "2800": 2,
+      "2900": 1
+    },
+    "worstOffenders": [
+      {
+        "buildingId": "w193810921",
+        "buildingKind": "university",
+        "buildingName": "Kärnhuset",
+        "provenance": "osm",
+        "centre": [
+          406.97,
+          -89.24
+        ],
+        "obb": {
+          "w": 95.46,
+          "d": 46.37,
+          "angleRad": -2.2351
+        },
+        "windowCount": 24,
+        "outsideCount": 21,
+        "worstOutwardM": 36.309,
+        "outside": [
+          {
+            "face": "short+X",
+            "pos": [
+              360.015,
+              -65.419
+            ],
+            "outwardM": 36.309
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              359.866,
+              -66.641
+            ],
+            "outwardM": 36.229
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              430.529,
+              -131.377
+            ],
+            "outwardM": 31.864
+          },
+          {
+            "face": "short+X",
+            "pos": [
+              371.713,
+              -56.26
+            ],
+            "outwardM": 28.998
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              368.115,
+              -77.176
+            ],
+            "outwardM": 27.823
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              453.925,
+              -113.057
+            ],
+            "outwardM": 27.578
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              454.074,
+              -111.836
+            ],
+            "outwardM": 26.941
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              442.227,
+              -122.217
+            ],
+            "outwardM": 26.018
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              418.83,
+              -140.536
+            ],
+            "outwardM": 24.377
+          },
+          {
+            "face": "short+X",
+            "pos": [
+              383.411,
+              -47.1
+            ],
+            "outwardM": 23.593
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              417.609,
+              -140.388
+            ],
+            "outwardM": 23.224
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              376.364,
+              -87.711
+            ],
+            "outwardM": 19.045
+          },
+          {
+            "face": "short+X",
+            "pos": [
+              395.11,
+              -37.941
+            ],
+            "outwardM": 18.672
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              396.331,
+              -38.089
+            ],
+            "outwardM": 17.619
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              445.825,
+              -101.301
+            ],
+            "outwardM": 13.95
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              409.36,
+              -129.852
+            ],
+            "outwardM": 12.284
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              384.613,
+              -98.247
+            ],
+            "outwardM": 6.055
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              421.078,
+              -69.695
+            ],
+            "outwardM": 5.404
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              404.58,
+              -48.624
+            ],
+            "outwardM": 4.629
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              401.111,
+              -119.317
+            ],
+            "outwardM": 3.003
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              437.576,
+              -90.766
+            ],
+            "outwardM": 0.959
+          }
+        ]
+      },
+      {
+        "buildingId": "w1239628613",
+        "buildingKind": "industrial",
+        "buildingName": "Swedecote",
+        "provenance": "osm",
+        "centre": [
+          30.64,
+          285.53
+        ],
+        "obb": {
+          "w": 117.6,
+          "d": 76.11,
+          "angleRad": -0.1955
+        },
+        "windowCount": 24,
+        "outsideCount": 16,
+        "worstOutwardM": 31.674,
+        "outside": [
+          {
+            "face": "long-Z",
+            "pos": [
+              -18.77,
+              236.984
+            ],
+            "outwardM": 31.674
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              -19.793,
+              237.669
+            ],
+            "outwardM": 31.188
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -2.542,
+              240.197
+            ],
+            "outwardM": 25.543
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              13.686,
+              243.41
+            ],
+            "outwardM": 19.412
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              -34.225,
+              310.563
+            ],
+            "outwardM": 19.169
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -33.54,
+              311.585
+            ],
+            "outwardM": 18.978
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              29.914,
+              246.623
+            ],
+            "outwardM": 13.281
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -17.312,
+              314.798
+            ],
+            "outwardM": 11.751
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              80.058,
+              334.076
+            ],
+            "outwardM": 10.945
+          },
+          {
+            "face": "short+X",
+            "pos": [
+              81.08,
+              333.391
+            ],
+            "outwardM": 10.473
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              -29.414,
+              286.265
+            ],
+            "outwardM": 9.919
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              -24.603,
+              261.967
+            ],
+            "outwardM": 8.249
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              63.83,
+              330.863
+            ],
+            "outwardM": 4.642
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              46.143,
+              249.836
+            ],
+            "outwardM": 2.616
+          },
+          {
+            "face": "short+X",
+            "pos": [
+              95.512,
+              260.497
+            ],
+            "outwardM": 0.739
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              94.828,
+              259.475
+            ],
+            "outwardM": 0.268
+          }
+        ]
+      },
+      {
+        "buildingId": "w870510834",
+        "buildingKind": "industrial",
+        "buildingName": null,
+        "provenance": "osm",
+        "centre": [
+          -489.2,
+          -25.76
+        ],
+        "obb": {
+          "w": 78.68,
+          "d": 22.49,
+          "angleRad": 1.3036
+        },
+        "windowCount": 24,
+        "outsideCount": 19,
+        "worstOutwardM": 23.652,
+        "outside": [
+          {
+            "face": "long-Z",
+            "pos": [
+              -510.167,
+              8.351
+            ],
+            "outwardM": 23.652
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              -509.557,
+              9.42
+            ],
+            "outwardM": 23.334
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -468.23,
+              -59.88
+            ],
+            "outwardM": 22.35
+          },
+          {
+            "face": "short+X",
+            "pos": [
+              -468.84,
+              -60.949
+            ],
+            "outwardM": 22.044
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -507.267,
+              -2.243
+            ],
+            "outwardM": 18.159
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              -502.905,
+              11.241
+            ],
+            "outwardM": 17.361
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -471.13,
+              -49.287
+            ],
+            "outwardM": 16.755
+          },
+          {
+            "face": "short+X",
+            "pos": [
+              -475.492,
+              -62.77
+            ],
+            "outwardM": 16.109
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -504.366,
+              -12.836
+            ],
+            "outwardM": 12.666
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              -496.253,
+              13.062
+            ],
+            "outwardM": 11.388
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -474.031,
+              -38.693
+            ],
+            "outwardM": 11.161
+          },
+          {
+            "face": "short+X",
+            "pos": [
+              -482.144,
+              -64.591
+            ],
+            "outwardM": 10.174
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -501.466,
+              -23.429
+            ],
+            "outwardM": 7.132
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -476.931,
+              -28.1
+            ],
+            "outwardM": 5.567
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              -489.6,
+              14.883
+            ],
+            "outwardM": 5.415
+          },
+          {
+            "face": "short+X",
+            "pos": [
+              -488.797,
+              -66.413
+            ],
+            "outwardM": 4.604
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -488.531,
+              14.274
+            ],
+            "outwardM": 4.227
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -489.866,
+              -65.803
+            ],
+            "outwardM": 3.392
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -498.566,
+              -34.023
+            ],
+            "outwardM": 0.674
+          }
+        ]
+      },
+      {
+        "buildingId": "w870510884",
+        "buildingKind": "school",
+        "buildingName": null,
+        "provenance": "osm",
+        "centre": [
+          -183.92,
+          -177.4
+        ],
+        "obb": {
+          "w": 87.35,
+          "d": 6.33,
+          "angleRad": 2.8774
+        },
+        "windowCount": 20,
+        "outsideCount": 18,
+        "worstOutwardM": 22.41,
+        "outside": [
+          {
+            "face": "long-Z",
+            "pos": [
+              -143.447,
+              -163.207
+            ],
+            "outwardM": 22.41
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -224.393,
+              -191.601
+            ],
+            "outwardM": 22.112
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              -142.38,
+              -163.819
+            ],
+            "outwardM": 22.092
+          },
+          {
+            "face": "short+X",
+            "pos": [
+              -225.46,
+              -190.989
+            ],
+            "outwardM": 21.743
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              -141.196,
+              -168.197
+            ],
+            "outwardM": 18.165
+          },
+          {
+            "face": "short+X",
+            "pos": [
+              -226.644,
+              -186.611
+            ],
+            "outwardM": 17.724
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -141.809,
+              -169.264
+            ],
+            "outwardM": 16.976
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -226.031,
+              -185.544
+            ],
+            "outwardM": 16.55
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -212.595,
+              -188.41
+            ],
+            "outwardM": 16.454
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -155.245,
+              -166.398
+            ],
+            "outwardM": 16.296
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -214.233,
+              -182.353
+            ],
+            "outwardM": 10.892
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -153.607,
+              -172.455
+            ],
+            "outwardM": 10.862
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -200.797,
+              -185.219
+            ],
+            "outwardM": 10.439
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -167.043,
+              -169.589
+            ],
+            "outwardM": 10.319
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -202.436,
+              -179.162
+            ],
+            "outwardM": 5.035
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -165.404,
+              -175.646
+            ],
+            "outwardM": 4.84
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -189,
+              -182.028
+            ],
+            "outwardM": 4.23
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -178.84,
+              -172.78
+            ],
+            "outwardM": 2.22
+          }
+        ]
+      },
+      {
+        "buildingId": "w875778824",
+        "buildingKind": "apartments",
+        "buildingName": null,
+        "provenance": "osm",
+        "centre": [
+          -195.56,
+          -331.16
+        ],
+        "obb": {
+          "w": 49.12,
+          "d": 7.97,
+          "angleRad": -2.1963
+        },
+        "windowCount": 20,
+        "outsideCount": 18,
+        "worstOutwardM": 20.277,
+        "outside": [
+          {
+            "face": "short+X",
+            "pos": [
+              -212.423,
+              -313.08
+            ],
+            "outwardM": 20.277
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              -178.697,
+              -349.245
+            ],
+            "outwardM": 20.276
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -212.619,
+              -314.295
+            ],
+            "outwardM": 19.724
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -178.501,
+              -348.03
+            ],
+            "outwardM": 19.724
+          },
+          {
+            "face": "short+X",
+            "pos": [
+              -207.425,
+              -309.47
+            ],
+            "outwardM": 18.34
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              -183.695,
+              -352.855
+            ],
+            "outwardM": 18.338
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -206.21,
+              -309.666
+            ],
+            "outwardM": 17.24
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -184.91,
+              -352.659
+            ],
+            "outwardM": 17.239
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -208.66,
+              -319.775
+            ],
+            "outwardM": 13.306
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -182.46,
+              -342.55
+            ],
+            "outwardM": 13.306
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -202.252,
+              -315.147
+            ],
+            "outwardM": 10.822
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -188.868,
+              -347.178
+            ],
+            "outwardM": 10.821
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -204.702,
+              -325.256
+            ],
+            "outwardM": 6.888
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -186.418,
+              -337.069
+            ],
+            "outwardM": 6.888
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -198.293,
+              -320.627
+            ],
+            "outwardM": 4.404
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -192.827,
+              -341.698
+            ],
+            "outwardM": 4.403
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -200.744,
+              -330.736
+            ],
+            "outwardM": 0.47
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -190.376,
+              -331.589
+            ],
+            "outwardM": 0.47
+          }
+        ]
+      },
+      {
+        "buildingId": "w870510827",
+        "buildingKind": "industrial",
+        "buildingName": null,
+        "provenance": "osm",
+        "centre": [
+          -635.96,
+          -328.68
+        ],
+        "obb": {
+          "w": 89.49,
+          "d": 41.37,
+          "angleRad": -1.7553
+        },
+        "windowCount": 24,
+        "outsideCount": 15,
+        "worstOutwardM": 16.908,
+        "outside": [
+          {
+            "face": "long-Z",
+            "pos": [
+              -607.609,
+              -367.991
+            ],
+            "outwardM": 16.908
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              -647.206,
+              -376.268
+            ],
+            "outwardM": 16.481
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              -608.305,
+              -369.006
+            ],
+            "outwardM": 16.387
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -648.221,
+              -375.572
+            ],
+            "outwardM": 15.966
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -609.908,
+              -355.676
+            ],
+            "outwardM": 13.158
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -664.313,
+              -289.369
+            ],
+            "outwardM": 11.929
+          },
+          {
+            "face": "short+X",
+            "pos": [
+              -663.617,
+              -288.354
+            ],
+            "outwardM": 11.431
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -612.207,
+              -343.361
+            ],
+            "outwardM": 9.297
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              -634.239,
+              -373.847
+            ],
+            "outwardM": 8.695
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -662.014,
+              -301.684
+            ],
+            "outwardM": 7.409
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -650.52,
+              -363.257
+            ],
+            "outwardM": 6.316
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              -621.272,
+              -371.427
+            ],
+            "outwardM": 5.5
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -614.506,
+              -331.047
+            ],
+            "outwardM": 4.735
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -659.715,
+              -313.999
+            ],
+            "outwardM": 2.889
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -616.805,
+              -318.732
+            ],
+            "outwardM": 0.379
+          }
+        ]
+      },
+      {
+        "buildingId": "w870510857",
+        "buildingKind": "residential",
+        "buildingName": null,
+        "provenance": "osm",
+        "centre": [
+          -313.99,
+          -129.06
+        ],
+        "obb": {
+          "w": 47.55,
+          "d": 14.24,
+          "angleRad": 1.321
+        },
+        "windowCount": 24,
+        "outsideCount": 19,
+        "worstOutwardM": 15.868,
+        "outside": [
+          {
+            "face": "long+Z",
+            "pos": [
+              -301.465,
+              -149.468
+            ],
+            "outwardM": 15.868
+          },
+          {
+            "face": "short+X",
+            "pos": [
+              -302.093,
+              -150.526
+            ],
+            "outwardM": 15.538
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -303.081,
+              -143.136
+            ],
+            "outwardM": 12.678
+          },
+          {
+            "face": "short+X",
+            "pos": [
+              -306.11,
+              -151.551
+            ],
+            "outwardM": 11.928
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -304.697,
+              -136.803
+            ],
+            "outwardM": 9.547
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -326.512,
+              -108.647
+            ],
+            "outwardM": 8.743
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              -325.884,
+              -107.589
+            ],
+            "outwardM": 8.396
+          },
+          {
+            "face": "short+X",
+            "pos": [
+              -310.127,
+              -152.576
+            ],
+            "outwardM": 8.319
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -306.312,
+              -130.471
+            ],
+            "outwardM": 6.342
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -324.896,
+              -114.979
+            ],
+            "outwardM": 5.612
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              -321.867,
+              -106.564
+            ],
+            "outwardM": 4.757
+          },
+          {
+            "face": "short+X",
+            "pos": [
+              -314.144,
+              -153.601
+            ],
+            "outwardM": 4.709
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -315.202,
+              -152.973
+            ],
+            "outwardM": 3.523
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -307.928,
+              -124.139
+            ],
+            "outwardM": 3.043
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -323.281,
+              -121.312
+            ],
+            "outwardM": 2.481
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              -313.833,
+              -104.514
+            ],
+            "outwardM": 1.43
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              -317.85,
+              -105.539
+            ],
+            "outwardM": 1.118
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -312.775,
+              -105.142
+            ],
+            "outwardM": 1.081
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -316.818,
+              -146.641
+            ],
+            "outwardM": 0.31
+          }
+        ]
+      },
+      {
+        "buildingId": "w934308174",
+        "buildingKind": "apartments",
+        "buildingName": null,
+        "provenance": "osm",
+        "centre": [
+          -263.56,
+          -493.83
+        ],
+        "obb": {
+          "w": 56.25,
+          "d": 9.57,
+          "angleRad": -1.8626
+        },
+        "windowCount": 22,
+        "outsideCount": 18,
+        "worstOutwardM": 14.198,
+        "outside": [
+          {
+            "face": "long-Z",
+            "pos": [
+              -251.181,
+              -518.54
+            ],
+            "outwardM": 14.198
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -275.949,
+              -469.125
+            ],
+            "outwardM": 14.19
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              -251.764,
+              -519.624
+            ],
+            "outwardM": 13.952
+          },
+          {
+            "face": "short+X",
+            "pos": [
+              -275.366,
+              -468.041
+            ],
+            "outwardM": 13.944
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              -255.483,
+              -520.741
+            ],
+            "outwardM": 10.712
+          },
+          {
+            "face": "short+X",
+            "pos": [
+              -271.647,
+              -466.924
+            ],
+            "outwardM": 10.703
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -253.418,
+              -511.09
+            ],
+            "outwardM": 9.91
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -273.712,
+              -476.575
+            ],
+            "outwardM": 9.904
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              -259.202,
+              -521.858
+            ],
+            "outwardM": 7.472
+          },
+          {
+            "face": "short+X",
+            "pos": [
+              -267.928,
+              -465.807
+            ],
+            "outwardM": 7.462
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -260.286,
+              -521.275
+            ],
+            "outwardM": 6.267
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -266.844,
+              -466.39
+            ],
+            "outwardM": 6.257
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -255.656,
+              -503.64
+            ],
+            "outwardM": 5.621
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -271.474,
+              -484.025
+            ],
+            "outwardM": 5.618
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -262.523,
+              -513.825
+            ],
+            "outwardM": 1.978
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -264.607,
+              -473.84
+            ],
+            "outwardM": 1.971
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -269.236,
+              -491.475
+            ],
+            "outwardM": 1.332
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -257.894,
+              -496.19
+            ],
+            "outwardM": 1.332
+          }
+        ]
+      },
+      {
+        "buildingId": "w870510863",
+        "buildingKind": "residential",
+        "buildingName": null,
+        "provenance": "osm",
+        "centre": [
+          -267.56,
+          -155.93
+        ],
+        "obb": {
+          "w": 49.92,
+          "d": 19.46,
+          "angleRad": -1.8124
+        },
+        "windowCount": 24,
+        "outsideCount": 16,
+        "worstOutwardM": 13.538,
+        "outside": [
+          {
+            "face": "long-Z",
+            "pos": [
+              -252.382,
+              -176.966
+            ],
+            "outwardM": 13.538
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              -253.018,
+              -178.019
+            ],
+            "outwardM": 13.245
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -254.026,
+              -170.291
+            ],
+            "outwardM": 10.095
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -282.733,
+              -134.885
+            ],
+            "outwardM": 9.78
+          },
+          {
+            "face": "short+X",
+            "pos": [
+              -282.096,
+              -133.832
+            ],
+            "outwardM": 9.466
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              -258.735,
+              -179.427
+            ],
+            "outwardM": 8.21
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -255.671,
+              -163.617
+            ],
+            "outwardM": 6.524
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -281.088,
+              -141.56
+            ],
+            "outwardM": 6.329
+          },
+          {
+            "face": "short+X",
+            "pos": [
+              -276.38,
+              -132.423
+            ],
+            "outwardM": 4.376
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              -264.451,
+              -180.836
+            ],
+            "outwardM": 3.176
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -279.444,
+              -148.234
+            ],
+            "outwardM": 2.884
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -257.315,
+              -156.942
+            ],
+            "outwardM": 2.278
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              -270.168,
+              -182.245
+            ],
+            "outwardM": 2.071
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -271.221,
+              -181.608
+            ],
+            "outwardM": 1.705
+          },
+          {
+            "face": "short+X",
+            "pos": [
+              -264.946,
+              -129.606
+            ],
+            "outwardM": 0.434
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -263.894,
+              -130.243
+            ],
+            "outwardM": 0.081
+          }
+        ]
+      },
+      {
+        "buildingId": "w870510876",
+        "buildingKind": "school",
+        "buildingName": null,
+        "provenance": "osm",
+        "centre": [
+          -300.3,
+          -268.22
+        ],
+        "obb": {
+          "w": 56.37,
+          "d": 32.51,
+          "angleRad": -1.8403
+        },
+        "windowCount": 24,
+        "outsideCount": 18,
+        "worstOutwardM": 12.819,
+        "outside": [
+          {
+            "face": "long+Z",
+            "pos": [
+              -323.207,
+              -246.243
+            ],
+            "outwardM": 12.819
+          },
+          {
+            "face": "short+X",
+            "pos": [
+              -322.6,
+              -245.172
+            ],
+            "outwardM": 12.519
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -277.395,
+              -290.204
+            ],
+            "outwardM": 10.534
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              -278.002,
+              -291.274
+            ],
+            "outwardM": 10.235
+          },
+          {
+            "face": "short+X",
+            "pos": [
+              -292.997,
+              -236.994
+            ],
+            "outwardM": 9.74
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -283.623,
+              -267.66
+            ],
+            "outwardM": 9.705
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -291.927,
+              -237.601
+            ],
+            "outwardM": 9.43
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -321.131,
+              -253.757
+            ],
+            "outwardM": 8.817
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -281.547,
+              -275.174
+            ],
+            "outwardM": 8.477
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -279.471,
+              -282.689
+            ],
+            "outwardM": 6.68
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -319.055,
+              -261.272
+            ],
+            "outwardM": 4.815
+          },
+          {
+            "face": "short+X",
+            "pos": [
+              -302.865,
+              -239.72
+            ],
+            "outwardM": 4.567
+          },
+          {
+            "face": "short+X",
+            "pos": [
+              -312.733,
+              -242.446
+            ],
+            "outwardM": 3.733
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -285.699,
+              -260.145
+            ],
+            "outwardM": 2.872
+          },
+          {
+            "face": "long-Z",
+            "pos": [
+              -289.851,
+              -245.116
+            ],
+            "outwardM": 2.705
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              -287.87,
+              -294
+            ],
+            "outwardM": 1.45
+          },
+          {
+            "face": "long+Z",
+            "pos": [
+              -316.979,
+              -268.786
+            ],
+            "outwardM": 0.813
+          },
+          {
+            "face": "short-X",
+            "pos": [
+              -307.605,
+              -299.452
+            ],
+            "outwardM": 0.183
+          }
+        ]
+      }
+    ]
+  },
+  "buildingsVsRoads": {
+    "total": 37,
+    "byRoadKind": {
+      "service": 24,
+      "living_street": 7,
+      "residential": 12,
+      "tertiary": 4,
+      "secondary": 2
+    },
+    "byBuildingKind": {
+      "yes": 10,
+      "university": 1,
+      "hotel": 1,
+      "industrial": 4,
+      "apartments": 5,
+      "house": 15,
+      "outbuilding": 1
+    },
+    "worstOffenders": [
+      {
+        "buildingId": "vw-torget-east-barn",
+        "buildingKind": "outbuilding",
+        "buildingName": null,
+        "provenance": "synthesised",
+        "centre": [
+          65,
+          15
+        ],
+        "hits": [
+          {
+            "roadId": "w122157691",
+            "roadKind": "living_street",
+            "roadWidth": 12,
+            "roadWidthSource": "osm",
+            "vertexInside": {
+              "vertex": 0,
+              "distToCentre": 5.440330872290767,
+              "halfWidth": 6
+            },
+            "roadVertexInside": {
+              "vertex": 6,
+              "coord": [
+                58.06,
+                16.44
+              ]
+            },
+            "edgeCrossing": {
+              "buildingEdge": 3,
+              "roadEdge": 5
+            },
+            "worstOverlapM": 3.484
+          },
+          {
+            "roadId": "w1329020068",
+            "roadKind": "living_street",
+            "roadWidth": 5,
+            "roadWidthSource": "osm",
+            "vertexInside": null,
+            "roadVertexInside": {
+              "vertex": 0,
+              "coord": [
+                58.06,
+                16.44
+              ]
+            },
+            "edgeCrossing": {
+              "buildingEdge": 1,
+              "roadEdge": 0
+            },
+            "worstOverlapM": 0
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-kyr-torget-lh",
+        "buildingKind": "house",
+        "buildingName": "Torget long-house cluster (west/south edge)",
+        "provenance": "synthesised",
+        "centre": [
+          -18,
+          -18
+        ],
+        "hits": [
+          {
+            "roadId": "w122157691",
+            "roadKind": "living_street",
+            "roadWidth": 12,
+            "roadWidthSource": "osm",
+            "vertexInside": {
+              "vertex": 1,
+              "distToCentre": 5.797648194146301,
+              "halfWidth": 6
+            },
+            "roadVertexInside": null,
+            "edgeCrossing": {
+              "buildingEdge": 0,
+              "roadEdge": 1
+            },
+            "worstOverlapM": 2.529
+          },
+          {
+            "roadId": "w860753012",
+            "roadKind": "tertiary",
+            "roadWidth": 5.5,
+            "roadWidthSource": "osm",
+            "vertexInside": null,
+            "roadVertexInside": {
+              "vertex": 1,
+              "coord": [
+                -26.22,
+                -17.1
+              ]
+            },
+            "edgeCrossing": {
+              "buildingEdge": 0,
+              "roadEdge": 1
+            },
+            "worstOverlapM": 0
+          }
+        ]
+      },
+      {
+        "buildingId": "w869907964",
+        "buildingKind": "hotel",
+        "buildingName": "Grythyttans Gästgivaregård",
+        "provenance": "osm",
+        "centre": [
+          62.37,
+          39.33
+        ],
+        "hits": [
+          {
+            "roadId": "w122157691",
+            "roadKind": "living_street",
+            "roadWidth": 12,
+            "roadWidthSource": "osm",
+            "vertexInside": {
+              "vertex": 0,
+              "distToCentre": 3.548748474242996,
+              "halfWidth": 6
+            },
+            "roadVertexInside": null,
+            "edgeCrossing": null,
+            "worstOverlapM": 2.451
+          },
+          {
+            "roadId": "w1422743879",
+            "roadKind": "residential",
+            "roadWidth": 4,
+            "roadWidthSource": "default",
+            "vertexInside": {
+              "vertex": 3,
+              "distToCentre": 1.9926201670982169,
+              "halfWidth": 2
+            },
+            "roadVertexInside": null,
+            "edgeCrossing": null,
+            "worstOverlapM": 0.007
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-pra-19n",
+        "buildingKind": "apartments",
+        "buildingName": null,
+        "provenance": "synthesised",
+        "centre": [
+          382.92,
+          28.61
+        ],
+        "hits": [
+          {
+            "roadId": "w193810976",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "roadWidthSource": "default",
+            "vertexInside": {
+              "vertex": 0,
+              "distToCentre": 1.4888912495553326,
+              "halfWidth": 1.5
+            },
+            "roadVertexInside": {
+              "vertex": 0,
+              "coord": [
+                383.51,
+                28.64
+              ]
+            },
+            "edgeCrossing": {
+              "buildingEdge": 0,
+              "roadEdge": 0
+            },
+            "worstOverlapM": 0.011
+          },
+          {
+            "roadId": "w1329020070",
+            "roadKind": "secondary",
+            "roadWidth": 8,
+            "roadWidthSource": "osm",
+            "vertexInside": {
+              "vertex": 1,
+              "distToCentre": 1.6410019830704572,
+              "halfWidth": 4
+            },
+            "roadVertexInside": {
+              "vertex": 3,
+              "coord": [
+                383.51,
+                28.64
+              ]
+            },
+            "edgeCrossing": {
+              "buildingEdge": 0,
+              "roadEdge": 2
+            },
+            "worstOverlapM": 2.359
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-jarn-9",
+        "buildingKind": "house",
+        "buildingName": null,
+        "provenance": "synthesised",
+        "centre": [
+          -410,
+          -50
+        ],
+        "hits": [
+          {
+            "roadId": "w191323431",
+            "roadKind": "residential",
+            "roadWidth": 5,
+            "roadWidthSource": "osm",
+            "vertexInside": {
+              "vertex": 3,
+              "distToCentre": 0.5004394964171719,
+              "halfWidth": 2.5
+            },
+            "roadVertexInside": null,
+            "edgeCrossing": null,
+            "worstOverlapM": 2
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-nyg-3",
+        "buildingKind": "house",
+        "buildingName": null,
+        "provenance": "synthesised",
+        "centre": [
+          -45,
+          -75
+        ],
+        "hits": [
+          {
+            "roadId": "w1239628612",
+            "roadKind": "tertiary",
+            "roadWidth": 5.5,
+            "roadWidthSource": "osm",
+            "vertexInside": {
+              "vertex": 1,
+              "distToCentre": 0.7726226494513774,
+              "halfWidth": 2.75
+            },
+            "roadVertexInside": null,
+            "edgeCrossing": {
+              "buildingEdge": 0,
+              "roadEdge": 1
+            },
+            "worstOverlapM": 1.977
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-jaktakademin",
+        "buildingKind": "house",
+        "buildingName": "Jaktakademin",
+        "provenance": "synthesised",
+        "centre": [
+          -265,
+          60
+        ],
+        "hits": [
+          {
+            "roadId": "w1329020064",
+            "roadKind": "residential",
+            "roadWidth": 5.5,
+            "roadWidthSource": "osm",
+            "vertexInside": {
+              "vertex": 2,
+              "distToCentre": 1.0114700538880277,
+              "halfWidth": 2.75
+            },
+            "roadVertexInside": null,
+            "edgeCrossing": {
+              "buildingEdge": 1,
+              "roadEdge": 1
+            },
+            "worstOverlapM": 1.739
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-hjv-5",
+        "buildingKind": "house",
+        "buildingName": null,
+        "provenance": "synthesised",
+        "centre": [
+          -350,
+          -160
+        ],
+        "hits": [
+          {
+            "roadId": "w1329020083",
+            "roadKind": "residential",
+            "roadWidth": 6,
+            "roadWidthSource": "osm",
+            "vertexInside": {
+              "vertex": 1,
+              "distToCentre": 1.4708056683252333,
+              "halfWidth": 3
+            },
+            "roadVertexInside": null,
+            "edgeCrossing": null,
+            "worstOverlapM": 1.529
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-torget-kyrkbacken-pair",
+        "buildingKind": "house",
+        "buildingName": "2 Kyrkbacken historic pair",
+        "provenance": "synthesised",
+        "centre": [
+          -42,
+          -40
+        ],
+        "hits": [
+          {
+            "roadId": "w122157691",
+            "roadKind": "living_street",
+            "roadWidth": 12,
+            "roadWidthSource": "osm",
+            "vertexInside": {
+              "vertex": 2,
+              "distToCentre": 4.471834216723297,
+              "halfWidth": 6
+            },
+            "roadVertexInside": null,
+            "edgeCrossing": null,
+            "worstOverlapM": 1.528
+          },
+          {
+            "roadId": "w860753009",
+            "roadKind": "residential",
+            "roadWidth": 5.5,
+            "roadWidthSource": "osm",
+            "vertexInside": {
+              "vertex": 3,
+              "distToCentre": 2.316673499043273,
+              "halfWidth": 2.75
+            },
+            "roadVertexInside": {
+              "vertex": 8,
+              "coord": [
+                -43.84,
+                -36.27
+              ]
+            },
+            "edgeCrossing": {
+              "buildingEdge": 2,
+              "roadEdge": 7
+            },
+            "worstOverlapM": 0.433
+          },
+          {
+            "roadId": "w1239628611",
+            "roadKind": "tertiary",
+            "roadWidth": 5.5,
+            "roadWidthSource": "osm",
+            "vertexInside": null,
+            "roadVertexInside": null,
+            "edgeCrossing": {
+              "buildingEdge": 0,
+              "roadEdge": 0
+            },
+            "worstOverlapM": 0
+          }
+        ]
+      },
+      {
+        "buildingId": "w870510826",
+        "buildingKind": "industrial",
+        "buildingName": null,
+        "provenance": "osm",
+        "centre": [
+          -623.64,
+          -268.4
+        ],
+        "hits": [
+          {
+            "roadId": "w870510820",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "roadWidthSource": "default",
+            "vertexInside": {
+              "vertex": 1,
+              "distToCentre": 0,
+              "halfWidth": 1.5
+            },
+            "roadVertexInside": {
+              "vertex": 1,
+              "coord": [
+                -633.14,
+                -266.49
+              ]
+            },
+            "edgeCrossing": {
+              "buildingEdge": 1,
+              "roadEdge": 0
+            },
+            "worstOverlapM": 1.5
+          },
+          {
+            "roadId": "w870510829",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "roadWidthSource": "default",
+            "vertexInside": {
+              "vertex": 4,
+              "distToCentre": 0,
+              "halfWidth": 1.5
+            },
+            "roadVertexInside": null,
+            "edgeCrossing": {
+              "buildingEdge": 4,
+              "roadEdge": 9
+            },
+            "worstOverlapM": 1.5
+          },
+          {
+            "roadId": "w1329020075",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "roadWidthSource": "default",
+            "vertexInside": {
+              "vertex": 1,
+              "distToCentre": 0,
+              "halfWidth": 1.5
+            },
+            "roadVertexInside": {
+              "vertex": 0,
+              "coord": [
+                -633.14,
+                -266.49
+              ]
+            },
+            "edgeCrossing": null,
+            "worstOverlapM": 1.5
+          }
+        ]
+      }
+    ]
+  }
+}
