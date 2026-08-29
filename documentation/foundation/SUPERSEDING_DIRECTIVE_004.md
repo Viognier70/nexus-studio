@@ -59,6 +59,16 @@ uniformsfärgen; det är den enda pixel den strategiska kameran säkert ser.
 Gästens axelspann är bredare än personalens. Ingen höjdskillnad mellan dem —
 ORDER 053/054/055 står kvar.
 
+**Precisering 2026-08-29:** "hjässan bär garment- eller uniformsfärgen"
+avser hela huvudets övre hemisfär, inte en kalott. Kalotten på 1,15 rad
+(ORDER 121) uppfyllde ordalydelsen men inte avsikten — hudtonen
+dominerar så snart kameran lutar från lodrätt.
+
+Vidare: paletten ska ge läsbar kontrast mot rummets golv. Personalens
+uniformsfärger #2a2f3a–#4a4744 mot golvets #a89577 ger ren silhuett;
+kroppen blir en skugga oavsett hur hjässan löses. Ljusheten är en del
+av kontraktet, inte en smaksak.
+
 **3.4 Ansiktsvokabulären flyttar till korten.** De tjugo uttrycken i
 `deriveFaces` försvinner inte; de blir kortens uppgift. Nyansen bor där, och
 rummet bär riktningen.
