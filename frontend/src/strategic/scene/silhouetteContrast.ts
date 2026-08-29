@@ -17,11 +17,46 @@
 // -------- band + referens ---------------------------------------------
 
 /**
- * Golvets färg i restaurangens interiör. Källa: `Restaurant.tsx` rad
- * 108 (`meshStandardMaterial color="#a89577"`). Om golvet byter färg
- * ska denna konstant följa med och tester räknas om.
+ * Legacy-golvreferens från ORDER 123. Pekar på `Restaurant.tsx` rad
+ * 108 (`meshStandardMaterial color="#a89577"`) — som **inte** är
+ * spelarens interiörsgolv utan skyltblocket ovanför entrén. ORDER 123
+ * kalibrerade paletten mot detta värde av misstag; den verkliga
+ * kontrasten som spelaren ser mäts nu mot `FLOOR_ZONES_BY_BUSINESS`
+ * per ORDER 127 §3.1. Konstanten behålls så äldre grep-referenser inte
+ * bryter, men nya tester ska INTE använda den.
+ *
+ * @deprecated Använd `FLOOR_ZONES_BY_BUSINESS[businessClass]` per
+ *   ORDER 127 §3.1.
  */
 export const FLOOR_COLOUR = '#a89577';
+
+/**
+ * ORDER 127 §3.1 — golvfärger per verksamhetsklass, som data.
+ *
+ * Källor:
+ * - `restaurant`: `PlayerBusiness.tsx:75` `INTERIOR_FLOOR_COLOUR`
+ *   (interiörens stub-golv, det spelaren faktiskt ser figurerna stå på)
+ * - `värdshus`: samma byggnadsstub som restaurangen tills egen
+ *   scen byggs
+ * - `foodtruck`: tom — SVG-sidovyn har ingen 3D-golvton att kontrastera
+ *   mot; figurer läses mot vagnens bakgrund vilket är ett eget kontrakt
+ * - `ölkrogen`: `brewpubRoom.ts` COLOR-tabellens tre golvzoner
+ *   (dining/brew/kitchen), Design-leverans
+ *
+ * En figurfärg måste hålla `[MIN_FLOOR_CONTRAST_RATIO,
+ * MAX_FLOOR_CONTRAST_RATIO]`-bandet mot **varje** zon i den klass den
+ * kan förekomma i. Att en färg passerar mot en zon räcker inte om den
+ * faller mot en annan — bandet är zonmedvetet.
+ */
+export const FLOOR_ZONES_BY_BUSINESS: Record<
+  'restaurant' | 'foodtruck' | 'värdshus' | 'ölkrogen',
+  readonly string[]
+> = {
+  restaurant: ['#a08462'],
+  foodtruck: [],
+  värdshus: ['#a08462'],
+  ölkrogen: ['#a49b8a', '#7d776c', '#948f84']
+};
 
 /**
  * Minsta kontrastförhållande mellan en figurfärg och golvet. Under
@@ -92,10 +127,43 @@ export function contrastRatio(hex1: string, hex2: string): number {
 /**
  * True om färgens kontrast mot golvet ligger inom
  * [`MIN_FLOOR_CONTRAST_RATIO`, `MAX_FLOOR_CONTRAST_RATIO`].
+ *
+ * @deprecated Kontrasterar mot legacy-`FLOOR_COLOUR`. Använd
+ *   `paletteZoneCheck` per ORDER 127 §3.2 för uttömmande kontroll
+ *   mot alla golvzoner i den klass figuren kan förekomma i.
  */
 export function isInFloorContrastBand(hex: string): boolean {
   const c = contrastRatio(hex, FLOOR_COLOUR);
   return c >= MIN_FLOOR_CONTRAST_RATIO && c <= MAX_FLOOR_CONTRAST_RATIO;
+}
+
+/**
+ * ORDER 127 §3.2 — uttömmande kontroll: prövar en figurfärg mot
+ * varje golv i en verksamhetsklass. Returnerar per-zon-resultat
+ * så en färg som klarar en zon men faller på en annan **fångas**
+ * (inte döljs bakom ett medelvärde).
+ *
+ * En färg passerar bara om kontrasten mot **alla** zoner i klassen
+ * ligger i bandet — samma logik som `AND` över zonerna.
+ */
+export interface ZoneCheckResult {
+  zone: string;
+  contrast: number;
+  inBand: boolean;
+}
+
+export function paletteZoneCheck(
+  figureHex: string,
+  businessClass: keyof typeof FLOOR_ZONES_BY_BUSINESS
+): { allInBand: boolean; perZone: ZoneCheckResult[] } {
+  const zones = FLOOR_ZONES_BY_BUSINESS[businessClass];
+  const perZone: ZoneCheckResult[] = zones.map((zoneHex) => {
+    const contrast = contrastRatio(figureHex, zoneHex);
+    const inBand = contrast >= MIN_FLOOR_CONTRAST_RATIO && contrast <= MAX_FLOOR_CONTRAST_RATIO;
+    return { zone: zoneHex, contrast, inBand };
+  });
+  const allInBand = perZone.length > 0 && perZone.every((r) => r.inBand);
+  return { allInBand, perZone };
 }
 
 // -------- CIE Lab ΔE (för roll-distinktion) ---------------------------

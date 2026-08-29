@@ -129,8 +129,15 @@ export const GUEST_COLOUR: Record<GuestState, string> = {
   waiting: '#f0d19a',
   seated: '#ecd2a0',
   ordering: '#edd0a4',
-  dining: '#ebcda2',
-  paying: '#e8c99e',
+  // ORDER 127 §5-beslut — dining/paying justeras uppåt för att passa
+  // mot ölkrogens `floorDining #a49b8a` (kontrast MIN 1.8). Val: JUSTERA
+  // färgen, inte acceptera avvikelse. Skäl: bandet är valt medvetet i
+  // silhouetteContrast.ts, och en 0.06-avvikelse som saknar behandling
+  // blir en glömd avvikelse (ORDER 127 §5). Progression seated → paying
+  // är fortfarande läsbar via nyansskiften även om ljushetsintervallet
+  // krymper — WCAG-kontrasten är kontraktet, inte den narrativa gradienten.
+  dining: '#edcfa4',   // was #ebcda2 — nudge upp (L 0.639 → 0.647)
+  paying: '#edd0a3',   // was #e8c99e — nudge upp (L 0.612 → 0.659)
   // ORDER 111 §4 — sleeping-gäst (värdshus) läses lite dovare än seated:
   // hen är på plats men inte i aktiv service. Muted warm-tan.
   sleeping: '#c4ac7d',
