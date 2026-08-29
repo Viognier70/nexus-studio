@@ -105,6 +105,13 @@ historiska, inte raderas.
 sidovyn där gav faktiskt en läsbar bild. Behålls den som undantag, eller blir
 food trucken 3D som de andra? Vision Owner avgör.
 
+**Beslut 2026-08-29 (Vision Owner Anders):** Food trucken blir 3D som övriga
+verksamhetsklasser. Inget sidovy-undantag. Sidovyns läsbarhet vid luckan var
+inte skäl nog att bära två presentationsformer parallellt; den principen som
+gäller resten av rummet (3D, kroppar, gest bär betydelsen) gäller även här.
+Nuvarande `FoodtruckScene.tsx` med `rig.ts`/`Figure.tsx` fasas ut i separat
+följdorder när 3D-food-trucken byggs.
+
 **6.2 Kartan.** Den bar aggregatet sedan beslut C flyttade dit. Med 3D tillbaka
 kan rummet bära det igen — eller så behålls kartan som överblick. Frågan hör
 till A2 i vägkartan.
