@@ -55,7 +55,17 @@ export const TASK_BASE_TICKS: Record<string, number> = {
   // vid 5 Hz + training/concept-skalning ger ~1.5–2 s slutlig varaktighet
   // vid default policies. Frekvensen (cooldown 15 s per gäst) sätter den
   // faktiska work-belastningen, inte varaktigheten per tillfälle.
-  checkback: 6
+  checkback: 6,
+  // ORDER 137 — bakgrundsarbete. Varje uppgift håller ~1-2 sim-sekunder
+  // så preemption efter avslutad uppgift sker snabbt (§2.2: direkt gäst-
+  // uppgift går alltid före). Explicit preemption i tickStaff avbryter
+  // pågående bakgrundsuppgift när en direkt uppgift dyker upp — se
+  // service.ts. Rimliga varaktigheter för en avstamp mise-en-place,
+  // en glas- eller tallrikvända, en flaskpåfyllning, en yttorkning.
+  misEnPlace: 8,
+  dish: 6,
+  restock: 5,
+  clean: 7
 };
 
 export function revenuePerGuest(policies: Policies): number {
