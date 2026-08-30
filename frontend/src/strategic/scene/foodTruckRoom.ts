@@ -82,6 +82,7 @@
 //   origo    = fordonets mittpunkt i planet, marknivå y = 0
 
 import * as THREE from 'three';
+import { ROLE_COLOUR_VALUES } from './staffColour';
 
 // #region types
 
@@ -103,7 +104,8 @@ export interface StaffStation {
   /** Vagngolvet, inte marken. */
   standHeight: number;
   facing: number;
-  uniform: string;
+  // ORDER 155 — `uniform`-fält borttaget. Personalens färg läses ur
+  // `ROLE_COLOUR` (staffColour.ts) via sim-rollen, inte per station.
   note: string;
 }
 
@@ -263,10 +265,9 @@ export const GUEST_GARMENTS = [
   '#49544a', '#555144', '#554f61', '#5b4f4d'
 ];
 
-export const STAFF_UNIFORMS: { [k: string]: string } = {
-  cook: '#425646',
-  window: '#5e4d55'
-};
+// ORDER 155 — `STAFF_UNIFORMS` borttagen. Personalens färg läses ur
+// `ROLE_COLOUR` (staffColour.ts) — den palett riggen faktiskt ritar.
+// Silhuett-kontrast-checkarna nedan iterrerar `ROLE_COLOUR_VALUES`.
 
 function chan(v: number): number {
   const c = v / 255;
@@ -292,9 +293,7 @@ export function checkPaletteAgainstGround(
   maxRatio: number = 3.6
 ): { figure: string; ground: string; ratio: number }[] {
   const grounds = [APRON_FLOOR].concat(extraGroundColours ?? []);
-  const figures = GUEST_GARMENTS.concat(
-    Object.keys(STAFF_UNIFORMS).map(function (k) { return STAFF_UNIFORMS[k]; })
-  );
+  const figures = GUEST_GARMENTS.concat(ROLE_COLOUR_VALUES);
   const fails = [];
   for (let i = 0; i < figures.length; i++) {
     for (let g = 0; g < grounds.length; g++) {
@@ -313,9 +312,7 @@ export function allowedGroundWindow(
 ): { min: number; max: number } {
   let lightest = 0;
   let darkest = 1;
-  const figures = GUEST_GARMENTS.concat(
-    Object.keys(STAFF_UNIFORMS).map(function (k) { return STAFF_UNIFORMS[k]; })
-  );
+  const figures = GUEST_GARMENTS.concat(ROLE_COLOUR_VALUES);
   for (let i = 0; i < figures.length; i++) {
     const L = luminance(figures[i]);
     if (L > lightest) lightest = L;
@@ -943,13 +940,11 @@ export function createFoodTruckRoom(options?: FoodTruckOptions): FoodTruckRoom {
   const staffStations: StaffStation[] = [
     {
       id: 'window', local: [0.3, serveWallZ - 0.72], standHeight: floorY, facing: 0,
-      uniform: STAFF_UNIFORMS.window,
       note: 'Innanför luckan. Ögonhöjd ' + (floorY + EYE_STANDING_M).toFixed(2) +
             ' m mot gästens 1,66 — personalen tittar ned, och det är vad en vagn är.'
     },
     {
       id: 'cook', local: [rangeX, backZ + 0.95], standHeight: floorY, facing: Math.PI,
-      uniform: STAFF_UNIFORMS.cook,
       note: 'Vid planchan mot bakväggen. Ett steg till prepbänken, två till luckan.'
     }
   ];

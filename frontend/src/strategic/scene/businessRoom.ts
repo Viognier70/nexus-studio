@@ -78,7 +78,10 @@ export interface RoomStation {
   facing: number;
   /** Golvhöjd stationen står på. Noll utom i foodtrucken. */
   standHeight: number;
-  uniform: string;
+  // ORDER 155 — `uniform`-fält borttaget. Personalens färg läses ur
+  // `ROLE_COLOUR` (staffColour.ts) via sim-rollen; stationen bär inte
+  // längre färg per klass (rumsfilernas STAFF_UNIFORMS var Designs
+  // förslag och aldrig kalibrerat mot silhuettbandet).
   note: string;
 }
 
@@ -218,7 +221,6 @@ export function createRoom(roomClass: RoomClass, opts?: any): BusinessRoom {
       local: s.local,
       facing: s.facing,
       standHeight: s.standHeight ?? 0,
-      uniform: s.uniform ?? '',
       note: s.note ?? ''
     };
   });

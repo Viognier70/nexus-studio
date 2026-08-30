@@ -282,8 +282,12 @@ export function rolesAreDistinct(uniforms: { [role: string]: string }): boolean 
 //                      inte sin mark och tar gatans färger som
 //                      argument; den skillnaden ska synas i signaturen.
 //
-// GUEST_GARMENTS och STAFF_UNIFORMS STANNAR i rumsfilerna. De är
-// klassens innehåll, inte bandets.
+// GUEST_GARMENTS STANNAR i rumsfilerna — klassens innehåll, inte
+// bandets. STAFF_UNIFORMS är däremot borttagen per ORDER 155 (VO-
+// beslut 2026-08-30): personalfärger ligger nu i `ROLE_COLOUR`
+// (staffColour.ts) som ENDA källa, kalibrerad genom ORDER 123+127.
+// Rumsfilernas silhuett-kontrast-checkar importerar `ROLE_COLOUR_VALUES`
+// därifrån i stället för att duplicera Designs oprövade förslag.
 //
 // En delvis genomförd migration är strikt sämre än ingen: då finns
 // både registret och kopiorna, och nästa läsare vet inte vilken som

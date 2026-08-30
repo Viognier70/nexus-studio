@@ -82,6 +82,7 @@
 //   omtolkad plan.
 
 import * as THREE from 'three';
+import { ROLE_COLOUR_VALUES } from './staffColour';
 
 // #region types
 
@@ -384,13 +385,10 @@ export const GUEST_GARMENTS = [
  * klart från gästernas avmättade gråtoner, vilket gör att personal och
  * gäst inte byter plats i silhuett.
  */
-export const STAFF_UNIFORMS: { [k: string]: string } = {
-  kitchen: '#2f5a3a',
-  hallService: '#2c4d78',
-  host: '#6e3a4a',
-  breakfast: '#6b5320',
-  rooms: '#1f5a5e'
-};
+// ORDER 155 — `STAFF_UNIFORMS` borttagen. Personalens färg läses ur
+// `ROLE_COLOUR` (staffColour.ts) — den palett riggen faktiskt ritar.
+// Silhuett-kontrast- och roll-distinktionscheckarna nedan itererar
+// `ROLE_COLOUR_VALUES` (fyra sim-roller, inte fem stations-uniformer).
 
 // ---------- WCAG-mått, samma formel som silhouetteContrast.ts ----------
 
@@ -447,10 +445,7 @@ export function deltaE(a: string, b: string): number {
 }
 
 function allFigureColours(): string[] {
-  const out = GUEST_GARMENTS.slice();
-  const keys = Object.keys(STAFF_UNIFORMS);
-  for (let i = 0; i < keys.length; i++) out.push(STAFF_UNIFORMS[keys[i]]);
-  return out;
+  return GUEST_GARMENTS.concat(ROLE_COLOUR_VALUES);
 }
 
 /**
@@ -496,13 +491,15 @@ export function paletteContrastRange(): { min: number; max: number } {
   return { min: lo, max: hi };
 }
 
-/** Minsta parvisa roll-ΔE. Krav 12 (MIN_ROLE_DISTINCTION_DELTA_E). */
+/** Minsta parvisa roll-ΔE. Krav 12 (MIN_ROLE_DISTINCTION_DELTA_E).
+ *  Post-ORDER 155: mätt över `ROLE_COLOUR` (fyra sim-roller), inte
+ *  över fem stations-uniformer — spelaren skiljer sim-roller åt, inte
+ *  stations-ids. */
 export function minRoleDeltaE(): number {
-  const keys = Object.keys(STAFF_UNIFORMS);
   let lo = 999;
-  for (let i = 0; i < keys.length; i++) {
-    for (let j = i + 1; j < keys.length; j++) {
-      const d = deltaE(STAFF_UNIFORMS[keys[i]], STAFF_UNIFORMS[keys[j]]);
+  for (let i = 0; i < ROLE_COLOUR_VALUES.length; i++) {
+    for (let j = i + 1; j < ROLE_COLOUR_VALUES.length; j++) {
+      const d = deltaE(ROLE_COLOUR_VALUES[i], ROLE_COLOUR_VALUES[j]);
       if (d < lo) lo = d;
     }
   }
