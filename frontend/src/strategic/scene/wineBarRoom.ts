@@ -81,6 +81,7 @@
 //   `fits: false` med underskott i stället för en omtolkad plan.
 
 import * as THREE from 'three';
+import { ROLE_COLOUR_VALUES } from './staffColour';
 
 // #region types
 
@@ -126,9 +127,8 @@ export interface StaffStation {
   /** Golvhöjd stationen står på — DJ:n står 0,25 m upp. */
   standHeight: number;
   facing: number;
-  /** Uniformsfärg. Roll-distinktionen mäts mot
-   *  MIN_ROLE_DISTINCTION_DELTA_E i silhouetteContrast.ts. */
-  uniform: string;
+  // ORDER 155 — `uniform`-fält borttaget. Personalens färg läses ur
+  // `ROLE_COLOUR` (staffColour.ts) via sim-rollen, inte per station.
   note: string;
 }
 
@@ -290,13 +290,9 @@ export const GUEST_GARMENTS = [
   '#49544a', '#555144', '#554f61', '#5b4f4d'
 ];
 
-/** Personalens uniformer per roll. Pairwise ΔE 16,6–31,6 (krav 12). */
-export const STAFF_UNIFORMS = {
-  sommelier: '#445269',
-  dj: '#664958',
-  cook: '#425741',
-  runner: '#5e4f37'
-};
+// ORDER 155 — `STAFF_UNIFORMS` borttagen. Personalens färg läses ur
+// `ROLE_COLOUR` (staffColour.ts) — den palett riggen faktiskt ritar.
+// Silhuett-kontrast-checkarna nedan iterrerar `ROLE_COLOUR_VALUES`.
 
 // WCAG-luminans och kontrast, samma formel som silhouetteContrast.ts.
 // Duplicerad här med flit: rummet ska kunna hävda sin egen palett utan
@@ -334,10 +330,7 @@ export function checkPaletteAgainstFloors(
   maxRatio: number = 3.6
 ): { figure: string; floor: string; zone: string; ratio: number }[] {
   const fails = [];
-  const figures = GUEST_GARMENTS.concat([
-    STAFF_UNIFORMS.sommelier, STAFF_UNIFORMS.dj,
-    STAFF_UNIFORMS.cook, STAFF_UNIFORMS.runner
-  ]);
+  const figures = GUEST_GARMENTS.concat(ROLE_COLOUR_VALUES);
   for (let i = 0; i < figures.length; i++) {
     for (let z = 0; z < ZONE_FLOORS.length; z++) {
       const r = contrast(figures[i], ZONE_FLOORS[z].colour);
@@ -358,10 +351,7 @@ export function checkPaletteAgainstFloors(
 export function paletteContrastRange(): { min: number; max: number } {
   let lo = 99;
   let hi = 0;
-  const figures = GUEST_GARMENTS.concat([
-    STAFF_UNIFORMS.sommelier, STAFF_UNIFORMS.dj,
-    STAFF_UNIFORMS.cook, STAFF_UNIFORMS.runner
-  ]);
+  const figures = GUEST_GARMENTS.concat(ROLE_COLOUR_VALUES);
   for (let i = 0; i < figures.length; i++) {
     for (let z = 0; z < ZONE_FLOORS.length; z++) {
       const r = contrast(figures[i], ZONE_FLOORS[z].colour);
@@ -836,7 +826,6 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
       local: [-2.6, -0.6],
       standHeight: 0,
       facing: Math.PI / 2,
-      uniform: STAFF_UNIFORMS.sommelier,
       note: 'Bakom disken, mitt för flaskhyllan. Runway 1,00 m, fri passage i båda ändar (Z < -3,8 och Z > 1,8).'
     },
     {
@@ -844,7 +833,6 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
       local: [DJ_X - 0.35, DJ_Z - 0.55],
       standHeight: DJ_PLATFORM,
       facing: 0,
-      uniform: STAFF_UNIFORMS.dj,
       note: 'Mellan fonden och pulten, 0,25 m upp, vänd mot golvet. Se FLAGS.djState.'
     },
     {
@@ -852,7 +840,6 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
       local: [-6.0, 3.4],
       standHeight: 0,
       facing: -Math.PI / 2,
-      uniform: STAFF_UNIFORMS.cook,
       note: 'Vid planchan. Två stationer inom ett steg: plancha, kall prep.'
     },
     {
@@ -860,7 +847,6 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
       local: [-3.9, 3.3],
       standHeight: 0,
       facing: -Math.PI / 2,
-      uniform: STAFF_UNIFORMS.runner,
       note: 'Vid passluckan. Bär ut smårätter; vinet hämtas vid disken.'
     }
   ];

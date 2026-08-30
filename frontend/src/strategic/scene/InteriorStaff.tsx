@@ -77,38 +77,12 @@ const PREP_DRIFT_FREQ_HZ = 1.1;       // vs the ~0.4 Hz service-time frequency
 const TASK_BOB_AMPLITUDE_M = 0.05;
 const TASK_BOB_FREQ_HZ = 2.0;
 
-// Uniform tones per role.
-//
-// ORDER 123 §2.2 (SD-004 §3.3-preciseringen 2026-08-29): paletten
-// ljusas från det tidigare bandet #2a2f3a–#4a4744, som gav "kroppen
-// blir en skugga oavsett hur hjässan löses" mot golvets #a89577.
-// Kontrastförhållandet var 4,5–6:1 = ren silhuett utan internt
-// färgdjup. Nya färger ligger i bandet [1,8, 3,6]:1 mot golvet, per
-// `silhouetteContrast.ts`, med bevarad roll-distinktion ≥ 12 ΔE.
-// Tester (`paletteContrast.test.ts`) hävdar bandet — nästa gång någon
-// justerar en färg fångas driften direkt.
-// ORDER 123 §5 — exporterad så `paletteContrast.test.ts` kan hävda
-// bandet mot golvet + roll-distinktionen mellan färgerna.
-//
-// Rollerna sprids över FYRA distinkta hue-familjer (djup marinblå,
-// varm-neutral, burgundy, kall-grå) så parvis ΔE 76 ≥ 12 uppfylls
-// utan att någon uniform hamnar utanför [1,8, 3,6]:1-kontrastbandet
-// mot golvets #a89577. Ett tidigare försök med fyra mörka
-// neutraler (#4a5464, #565b64, #605852, #6b6660) föll på §4.4:
-// pair-wise ΔE 5,6–11,1 — spelaren kunde inte skilja rollerna åt.
-export const ROLE_COLOUR: Record<StaffRole, string> = {
-  'värd':     '#2f4a68',   // host — deep navy (cool, doorway)
-  // ORDER 127 §3.3 — servitör bytt från #6b6260 till #454a52.
-  // Tidigare warm-neutral kollapsade mot ölkrogens `floorBrew #7d776c`
-  // (kontrast 1.33:1 — ORDER 125 §7-fynd). Ny mörkare cool grey ligger
-  // i L 0.069, klarar bandet [1.8, 3.6]:1 mot alla golvzoner:
-  // restaurant #a08462 = 2.52, ölkrogen dining #a49b8a = 3.24,
-  // brew #7d776c = 1.99, kitchen #948f84 = 2.76. Parvis ΔE mot övriga
-  // roller > 12 bevarad (verifierat i paletteZoneCheck-tester).
-  'servitör': '#454a52',   // server — dark cool grey (was #6b6260)
-  'kock':     '#7a3e3a',   // cook — burgundy (warm, kitchen)
-  'lärling':  '#d8d3ce'    // apprentice — light warm-grey (muted, junior)
-};
+// ORDER 155 — ROLE_COLOUR flyttat till `staffColour.ts` så rumsfilerna
+// kan importera utan att dra in InteriorStaff.tsx. Re-exporterad här
+// för bakåtkompatibilitet med `paletteContrast.test.ts` som importerar
+// från denna fil.
+import { ROLE_COLOUR } from './staffColour';
+export { ROLE_COLOUR };
 
 // ORDER 078 (M5) — service-rhythm colour ring. Thin cylinder at the
 // puck's base with per-tick colour driven by state.day.serviceRhythm.

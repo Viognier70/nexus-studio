@@ -114,6 +114,7 @@
 // man går längs, och satellitbaren som betjänar loungen.
 
 import * as THREE from 'three';
+import { ROLE_COLOUR_VALUES } from './staffColour';
 
 // #region types
 
@@ -181,7 +182,8 @@ export interface StaffStation {
   local: Vec2;
   standHeight: number;
   facing: number;
-  uniform: string;
+  // ORDER 155 — `uniform`-fält borttaget. Personalens färg läses ur
+  // `ROLE_COLOUR` (staffColour.ts) via sim-rollen, inte per station.
   note: string;
 }
 
@@ -285,12 +287,9 @@ export const GUEST_GARMENTS = [
  * Att gissa riktningar gav 7,7 — under kravet. Talen nedan är lösta,
  * inte valda.
  */
-export const STAFF_UNIFORMS: { [k: string]: string } = {
-  bar: '#8a5263',
-  door: '#706137',
-  floor: '#226e62',
-  dj: '#43658d'
-};
+// ORDER 155 — `STAFF_UNIFORMS` borttagen. Personalens färg läses ur
+// `ROLE_COLOUR` (staffColour.ts) — den palett riggen faktiskt ritar.
+// Silhuett-kontrast-checkarna nedan iterrerar `ROLE_COLOUR_VALUES`.
 
 function chan(v: number): number {
   const c = v / 255;
@@ -315,9 +314,7 @@ export function checkPaletteAgainstFloors(
   maxRatio: number = 3.6
 ): { figure: string; floor: string; zone: string; ratio: number }[] {
   const fails = [];
-  const figures = GUEST_GARMENTS.concat(
-    Object.keys(STAFF_UNIFORMS).map(function (k) { return STAFF_UNIFORMS[k]; })
-  );
+  const figures = GUEST_GARMENTS.concat(ROLE_COLOUR_VALUES);
   for (let i = 0; i < figures.length; i++) {
     for (let z = 0; z < ZONE_FLOORS.length; z++) {
       const r = contrast(figures[i], ZONE_FLOORS[z].colour);
@@ -335,9 +332,7 @@ export function checkPaletteAgainstFloors(
 export function paletteContrastRange(): { min: number; max: number } {
   let lo = Infinity;
   let hi = 0;
-  const figures = GUEST_GARMENTS.concat(
-    Object.keys(STAFF_UNIFORMS).map(function (k) { return STAFF_UNIFORMS[k]; })
-  );
+  const figures = GUEST_GARMENTS.concat(ROLE_COLOUR_VALUES);
   for (let i = 0; i < figures.length; i++) {
     for (let z = 0; z < ZONE_FLOORS.length; z++) {
       const r = contrast(figures[i], ZONE_FLOORS[z].colour);
@@ -850,27 +845,27 @@ export function createNightClubRoom(options?: NightClubOptions): NightClubRoom {
   const staffStations: StaffStation[] = [
     {
       id: 'barMain', role: 'bar', local: [-1.0, -inZ + 0.6 - BAR_DEPTH / 2 - 0.5],
-      standHeight: 0, facing: 0, uniform: STAFF_UNIFORMS.bar,
+      standHeight: 0, facing: 0,
       note: 'Bakom huvudbaren. Runway 0,95 m mellan disk och bakhylla.'
     },
     {
       id: 'barEntry', role: 'bar', local: [inX - 1.4 + BAR_DEPTH / 2 + 0.5, 3.2],
-      standHeight: 0, facing: -Math.PI / 2, uniform: STAFF_UNIFORMS.bar,
+      standHeight: 0, facing: -Math.PI / 2,
       note: 'Entrébaren, med matluckan inom två steg.'
     },
     {
       id: 'door', role: 'door', local: [inX - 0.8, -2.2],
-      standHeight: 0, facing: Math.PI / 2, uniform: STAFF_UNIFORMS.door,
+      standHeight: 0, facing: Math.PI / 2,
       note: 'Vid dörren, innanför och åt sidan så kön inte blockeras. Ser hela entréhallen.'
     },
     {
       id: 'floor', role: 'floor', local: [4.0, 2.6],
-      standHeight: 0, facing: Math.PI, uniform: STAFF_UNIFORMS.floor,
+      standHeight: 0, facing: Math.PI,
       note: 'Golvpersonal mellan dansgolv och lounge. Plockar glas, den enda som rör sig fritt.'
     },
     {
       id: 'dj', role: 'dj', local: [boothX + 0.3, 0.4],
-      standHeight: BOOTH_H, facing: Math.PI / 2, uniform: STAFF_UNIFORMS.dj,
+      standHeight: BOOTH_H, facing: Math.PI / 2,
       note: 'I båset, 0,60 m upp, vänd mot dansgolvet och entrén bortom det.'
     }
   ];

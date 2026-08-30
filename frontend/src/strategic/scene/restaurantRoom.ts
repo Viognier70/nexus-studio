@@ -88,6 +88,7 @@
 // INTE ÄNDRINGSBART HÄRIFRÅN: platsblandningen. Se FLAGS.seatMix.
 
 import * as THREE from 'three';
+import { ROLE_COLOUR_VALUES } from './staffColour';
 
 // #region types
 
@@ -124,7 +125,8 @@ export interface StaffStation {
   id: string;
   local: Vec2;
   facing: number;
-  uniform: string;
+  // ORDER 155 — `uniform`-fält borttaget. Personalens färg läses ur
+  // `ROLE_COLOUR` (staffColour.ts) via sim-rollen, inte per station.
   note: string;
 }
 
@@ -279,12 +281,12 @@ export const GUEST_GARMENTS = [
   '#49544a', '#555144', '#554f61', '#5b4f4d'
 ];
 
-/** Tre roller, ur RESTAURANT_INTERIOR.staffHomes. Pairwise ΔE 17,9–26,6. */
-export const STAFF_UNIFORMS: { [k: string]: string } = {
-  host: '#624b52',
-  server: '#435368',
-  chef: '#435641'
-};
+// ORDER 155 — `STAFF_UNIFORMS` borttagen per Vision Owner 2026-08-30.
+// Personalens uniformer läses nu från `ROLE_COLOUR` (staffColour.ts),
+// samma källa som riggen faktiskt ritar. Silhuett-kontrast-checkarna
+// nedan iterrerar över `ROLE_COLOUR_VALUES` i stället för lokala
+// STAFF_UNIFORMS — då mäts det spelaren ser, inte Designs oprövade
+// förslag.
 
 function chan(v: number): number {
   const c = v / 255;
@@ -309,9 +311,7 @@ export function checkPaletteAgainstFloors(
   maxRatio: number = 3.6
 ): { figure: string; floor: string; zone: string; ratio: number }[] {
   const fails = [];
-  const figures = GUEST_GARMENTS.concat(
-    Object.keys(STAFF_UNIFORMS).map(function (k) { return STAFF_UNIFORMS[k]; })
-  );
+  const figures = GUEST_GARMENTS.concat(ROLE_COLOUR_VALUES);
   for (let i = 0; i < figures.length; i++) {
     for (let z = 0; z < ZONE_FLOORS.length; z++) {
       const r = contrast(figures[i], ZONE_FLOORS[z].colour);
@@ -329,9 +329,7 @@ export function checkPaletteAgainstFloors(
 export function paletteContrastRange(): { min: number; max: number } {
   let lo = Infinity;
   let hi = 0;
-  const figures = GUEST_GARMENTS.concat(
-    Object.keys(STAFF_UNIFORMS).map(function (k) { return STAFF_UNIFORMS[k]; })
-  );
+  const figures = GUEST_GARMENTS.concat(ROLE_COLOUR_VALUES);
   for (let i = 0; i < figures.length; i++) {
     for (let z = 0; z < ZONE_FLOORS.length; z++) {
       const r = contrast(figures[i], ZONE_FLOORS[z].colour);
@@ -756,21 +754,18 @@ export function createRestaurantRoom(options?: RestaurantOptions): RestaurantRoo
       id: 'host',
       local: [halfW - 2.0, 1.6],
       facing: Math.PI / 2,
-      uniform: STAFF_UNIFORMS.host,
       note: 'Vid entrén, innanför dörren och ur köns väg. Ser både dörren och bordsraden.'
     },
     {
       id: 'server',
       local: [0.6, barFrontZ + 1.4],
       facing: 0,
-      uniform: STAFF_UNIFORMS.server,
       note: 'I servicegången mellan disken och bordsraden. Når alla fem bord och passluckan utan att korsa köordningen.'
     },
     {
       id: 'chef',
       local: [kitMidX, -inZ + 1.25],
       facing: -Math.PI / 2,
-      uniform: STAFF_UNIFORMS.chef,
       note: 'I pentryt, mellan spis och prep. Två stationer inom ett steg, passluckan tre.'
     }
   ];
