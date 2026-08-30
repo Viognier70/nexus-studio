@@ -99,21 +99,23 @@ npm run preview    # förhandsgranska bygget
 
 - **Skuggor och opacity (ORDER 055 Del A).** Geometri med `transparent` opacity som kan nå 0 får aldrig ha statiskt `castShadow`. Skuggkartans depth-pass ignorerar alpha, så en fullt ut-fejdad mesh stämplar sin silhuett på marken. Toggla `mesh.castShadow` i samma `useFrame` som styr opacity, med samma tröskel som `depthWrite` (typiskt `opacity > 0.5`).
 
-## Mätningar mot renderad geometri
+## Mätningar mot det de beskriver
 
-**En mätning som påstår något om vad spelaren ser ska läsa samma källa som renderingen.** Om det inte går ska mätningen uttryckligen redovisa avvikelsen och vilken skillnad den kan ge.
+**En mätning ska läsa samma källa som det den påstår sig beskriva — rendering, simulering eller specifikation. Går det inte ska mätningen redovisa avvikelsen och vilken skillnad den kan ge.**
 
 - Konstanter (bredder, färger, offsets, tröskelvärden) importeras från samma modul renderingen läser dem ur. De replikeras inte med "rimliga defaults" och de läses inte från angränsande källor (OSM-tagg, asset-metadata, spec-fil) som renderingen inte konsulterar.
 - Om replikering är oundviklig (t.ex. `.mjs`-script som inte kan importera TypeScript direkt): mätningen dokumenterar avvikelsen i sin header och länkar till den modul som är kanoniskt. En verifieringsrutin som bevisar `replikat === rendering` väger tyngre än ett antagande om det.
 - En rapport som säger "X gäller i spelet" refererar antingen till samma import som renderingen, eller redovisar avvikelsen. Utan det räknas rapporten som obestyrkt.
 
-**Motivering — tre fall inom två dagar (2026-08-29 till 2026-08-30):**
+**Motivering — fem fall:**
 
 - **ORDER 128** — silhuett-kontrastbandet kalibrerades mot `FLOOR_COLOUR = '#a89577'` som var skyltblocket i `Restaurant.tsx:108`, inte spelarens interiörgolv (`PlayerBusiness.tsx:75` `INTERIOR_FLOOR_COLOUR = '#a08462'`).
 - **ORDER 132** — fönster-mätningen räknade 3 156 fönster utanför fasaden på 297 av 338 hus, men spelaren såg 1 381 av 2 556 (renderingens `WINDOW_KINDS`-filter). Mätning och rendering utgick från olika hus-set.
 - **ORDER 135** — vägbredd-mätningen läste `road.width` (OSM-tagg) medan renderingen läser `ROLE_SPECS[roleFor(road)].width` (`roadRoles.ts:104`). OSM-taggen ignoreras helt av renderingen. ORDER 133:s slutsats blev föråldrad inom 24 timmar.
+- **ORDER 145/146** — DEV-observationen läste `state='seated'` som är transient (4 sim-sek per `service.ts:243`) i stället för `seatedIds.length` (verklig upptagen-räkning). Kostade två dygns utredning på ett fel som inte fanns.
+- **ORDER 143** — Designs `occupancyAreas` gav 43 personer där specen räknat 15; funnet av Design i egen leverans innan montering.
 
-Alla tre gav korrekt data om fel yta — vilket är farligare än ingen data eftersom slutsatserna såg giltiga ut.
+Alla gav korrekt data om fel sak — vilket är farligare än ingen data eftersom slutsatserna såg giltiga ut. De två sista visar att regeln inte bara gäller geometri. En sim-signal och en kapacitetsspec kan vara lika mycket "rätt tal om fel sak".
 
 ## Regler för Claude Code
 
