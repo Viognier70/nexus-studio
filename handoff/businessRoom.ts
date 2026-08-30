@@ -11,6 +11,7 @@
 //   measureWineBarRoom      walkPathToSeat
 //   measureInnRoom          walkPathToSeat + walkPathFromRoom
 //   measureFoodTruckRoom    walkPathToQueueSlot
+//   measureNightClubRoom    walkPathToSeat + walkPathToBar
 //
 // Monteringskoden får då fem specialfall för fem saker som gör samma
 // sak, och specialfall är där fel gömmer sig. Den här filen
@@ -30,6 +31,11 @@
 //     stället för att gömmas bakom en flagga.
 //   • foodtrucken har `pitch` skild från `group`: platsen ligger kvar
 //     när fordonet kör. Kontraktet exponerar båda.
+//   • nattklubben har 150 platser varav 24 är stolar. `occupancyAreas`
+//     bär resten som YTOR med densitet — ett dansgolv har inga punkter.
+//     Den är tom för de fem andra i stället för att gömmas.
+//   • nattklubben har dessutom `walkPathToBar`, för en barkö är en
+//     ordning medan ett dansgolv inte är det.
 //
 // ── Namnet på vägfunktionen ───────────────────────────────────────
 // `walkPathToSeat` genomgående, även för foodtrucken där den leder
@@ -43,6 +49,7 @@ import * as Brewpub from './brewpubRoom';
 import * as WineBar from './wineBarRoom';
 import * as Inn from './innRoom';
 import * as FoodTruck from './foodTruckRoom';
+import * as NightClub from './nightClubRoom';
 
 // #region types
 
@@ -50,7 +57,8 @@ export type Vec2 = [number, number];
 
 /** Nycklarna följer BusinessClass i bestämd form (ORDER 139). */
 export type RoomClass =
-  | 'kvarterskrogen' | 'ölkrogen' | 'vinbaren' | 'gästgiveriet' | 'foodtrucken';
+  | 'kvarterskrogen' | 'ölkrogen' | 'vinbaren' | 'gästgiveriet'
+  | 'foodtrucken' | 'nattklubben';
 
 export interface RoomSeat {
   id: string;
@@ -99,10 +107,19 @@ export interface BusinessRoom {
   standing: { id: string; local: Vec2; facing: number }[];
   /** Gästrum. Tom utom i gästgiveriet. */
   guestRooms: any[];
+  /** Beläggningsytor — rektangel, m², densitet. Tom utom i
+   *  nattklubben, där de bär 126 av 150 platser. Se §1 i den filen. */
+  occupancyAreas: any[];
   stations: RoomStation[];
   entrance: Vec2;
   waitingSpot: Vec2;
-  /** Reducerarens kapacitet. NOLL för foodtrucken, och det är rätt. */
+  /**
+   * Reducerarens kapacitet. Tre klasser avviker och det är rätt:
+   *   foodtrucken   0 — begränsas av genomströmning, inte platser
+   *   nattklubben   150 — varav 126 i occupancyAreas, inte i seats
+   *   gästgiveriet  100 — mot interiorLayout.TOTAL_SEATS = 16
+   * Rummets eget `capacity` vinner över seats.length när det finns.
+   */
   capacity: number;
   fits: boolean;
   shortfall: Vec2;
@@ -120,7 +137,8 @@ const MODULES: { [k: string]: any } = {
   ölkrogen: Brewpub,
   vinbaren: WineBar,
   gästgiveriet: Inn,
-  foodtrucken: FoodTruck
+  foodtrucken: FoodTruck,
+  nattklubben: NightClub
 };
 
 const FACTORY: { [k: string]: string } = {
@@ -128,7 +146,8 @@ const FACTORY: { [k: string]: string } = {
   ölkrogen: 'createBrewpubRoom',
   vinbaren: 'createWineBarRoom',
   gästgiveriet: 'createInnRoom',
-  foodtrucken: 'createFoodTruckRoom'
+  foodtrucken: 'createFoodTruckRoom',
+  nattklubben: 'createNightClubRoom'
 };
 
 const MEASURE: { [k: string]: string } = {
@@ -136,7 +155,8 @@ const MEASURE: { [k: string]: string } = {
   ölkrogen: 'measureBrewpubRoom',
   vinbaren: 'measureWineBarRoom',
   gästgiveriet: 'measureInnRoom',
-  foodtrucken: 'measureFoodTruckRoom'
+  foodtrucken: 'measureFoodTruckRoom',
+  nattklubben: 'measureNightClubRoom'
 };
 
 const UPDATE: { [k: string]: string } = {
@@ -144,7 +164,8 @@ const UPDATE: { [k: string]: string } = {
   ölkrogen: 'updateBrewpubRoom',
   vinbaren: 'updateWineBarRoom',
   gästgiveriet: 'updateInnRoom',
-  foodtrucken: 'updateFoodTruckRoom'
+  foodtrucken: 'updateFoodTruckRoom',
+  nattklubben: 'updateNightClubRoom'
 };
 
 function moduleFor(roomClass: RoomClass): any {
@@ -153,8 +174,8 @@ function moduleFor(roomClass: RoomClass): any {
     throw new Error(
       'businessRoom: okänd klass "' + roomClass + '". Nycklarna är ' +
       'bestämd form (ORDER 139): kvarterskrogen, ölkrogen, vinbaren, ' +
-      'gästgiveriet, foodtrucken. En klass som saknas ska bli ett fel, ' +
-      'inte ett tomt rum.'
+      'gästgiveriet, foodtrucken, nattklubben. En klass som saknas ska ' +
+      'bli ett fel, inte ett tomt rum.'
     );
   }
   return m;
@@ -217,10 +238,13 @@ export function createRoom(roomClass: RoomClass, opts?: any): BusinessRoom {
     seats: seats,
     standing: standing,
     guestRooms: raw.guestRooms ?? [],
+    occupancyAreas: raw.occupancyAreas ?? [],
     stations: stations,
     entrance: entrance,
     waitingSpot: waitingSpot,
-    capacity: seats.length,
+    // Rummets eget tal vinner. Nattklubben har 150 med 24 stolar, och
+    // seats.length hade tyst rapporterat 24.
+    capacity: raw.capacity !== undefined ? raw.capacity : seats.length,
     fits: raw.fits,
     shortfall: raw.shortfall,
     flags: mod.FLAGS ?? {},
@@ -259,6 +283,20 @@ export function walkPathToSeat(room: BusinessRoom, seatId: string): Vec2[] {
     return mod.walkPathToQueueSlot(room.raw, seatId);
   }
   return mod.walkPathToSeat(room.raw, seatId);
+}
+
+/**
+ * Vägpunkter till en barköplats. Endast nattklubben — de fem andra
+ * kastar, eftersom de inte har barköer som platser.
+ */
+export function walkPathToBar(room: BusinessRoom, approachId: string): Vec2[] {
+  if (room.roomClass !== 'nattklubben') {
+    throw new Error(
+      'walkPathToBar: bara nattklubben har barköplatser. ' +
+      'Klassen "' + room.roomClass + '" har seats — använd walkPathToSeat.'
+    );
+  }
+  return moduleFor(room.roomClass).walkPathToBar(room.raw, approachId);
 }
 
 /** Vägen ut. Foodtrucken har serveFlowPath i stället — beställ, hämta,
