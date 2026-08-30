@@ -67,10 +67,10 @@ function stateWith(guests: Guest[], simTime = 0): SimulationState {
   return {
     ...base,
     simTime,
-    businessClass: 'foodtruck',
+    businessClass: 'foodtrucken',
     policies: {
       ...base.policies,
-      capacity: capacityForBusiness('foodtruck', base.policies.staffCount)
+      capacity: capacityForBusiness('foodtrucken', base.policies.staffCount)
     },
     // Fixera period till 'lunch' så assignArchetype-vikter är
     // konsistent mellan test-loop-selectionen och render-tid.

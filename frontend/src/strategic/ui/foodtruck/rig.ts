@@ -19,7 +19,7 @@
 //
 // **Ej portat:** sittposer (SIT, SIT_MENU, sitHail, sitWait, sitEat) —
 // food trucken har ingen sittfas per SD-003 §3. `businessHasSeats
-// ('foodtruck') === false` (ORDER 110 §5) speglar det i sim-lagret.
+// ('foodtrucken') === false` (ORDER 110 §5) speglar det i sim-lagret.
 
 // Pose-vokabulär. `POSE_KEYS` är skalära pose-parametrar (lutning,
 // huvud, hip-drop, mun); `LIMB_KEYS` är par [hip-vinkel, knä-vinkel]

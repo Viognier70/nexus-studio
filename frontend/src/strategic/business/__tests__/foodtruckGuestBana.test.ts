@@ -24,10 +24,10 @@ function makeFoodtruckState(withUteplats = false, seed = 20260817): SimulationSt
   let s = makeInitialState(seed);
   s = {
     ...s,
-    businessClass: 'foodtruck',
+    businessClass: 'foodtrucken',
     policies: {
       ...s.policies,
-      capacity: capacityForBusiness('foodtruck', s.policies.staffCount),
+      capacity: capacityForBusiness('foodtrucken', s.policies.staffCount),
       hasUteplats: withUteplats
     },
     cash: 240_000
@@ -237,7 +237,7 @@ describe('ORDER 115 §6 DoD 5 — DevPanel queue+seated matcher renderade', () =
       seatedIds: ['s1', 's2', 's3']
     };
     // Restaurant-läge: queue = waitingIds.length, seated = seatedIds.length
-    const isFoodtruck = stateWith.businessClass === 'foodtruck';
+    const isFoodtruck = stateWith.businessClass === 'foodtrucken';
     const queueLive = isFoodtruck
       ? stateWith.guests.filter((g) => g.state === 'waiting' || g.state === 'arriving' || g.state === 'ordering' || g.state === 'paying').length
       : stateWith.waitingIds.length;
@@ -335,7 +335,7 @@ describe('ORDER 115 §6 DoD 7 — eating-fas gate:ad på hasUteplats', () => {
 
   it('eating-fas blockeras för restaurang (bara foodtruck)', () => {
     // hasUteplats-flaggan finns på policies men eating-transitionen
-    // gate:as också på businessClass === 'foodtruck'. Om restaurant
+    // gate:as också på businessClass === 'foodtrucken'. Om restaurant
     // råkar få hasUteplats=true (regression) ska eating INTE nås.
     let s = makeInitialState();  // default = restaurant
     s = { ...s, policies: { ...s.policies, hasUteplats: true }, cash: 240000 };

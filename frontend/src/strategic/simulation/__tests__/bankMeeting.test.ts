@@ -46,7 +46,7 @@ function accumulate(
 describe('ORDER 109 §5 DoD 1 — resolveBankMeeting ger fyra utfall', () => {
   it('phronesis dominant → restaurant, grant, tier restaurant-full', () => {
     const out = resolveBankMeeting({ episteme: 0, techne: 0, phronesis: 0.5 });
-    expect(out.klass).toBe('restaurant');
+    expect(out.klass).toBe('kvarterskrogen');
     expect(out.granted).toBe(true);
     expect(out.loanTier).toBe('restaurant-full');
     expect(out.loanAmountSek).toBeGreaterThan(0);
@@ -55,9 +55,9 @@ describe('ORDER 109 §5 DoD 1 — resolveBankMeeting ger fyra utfall', () => {
 
   it('techne dominant → foodtruck, grant', () => {
     const out = resolveBankMeeting({ episteme: 0, techne: 0.5, phronesis: 0 });
-    expect(out.klass).toBe('foodtruck');
+    expect(out.klass).toBe('foodtrucken');
     expect(out.granted).toBe(true);
-    expect(out.loanTier).toBe('foodtruck');
+    expect(out.loanTier).toBe('foodtrucken');
     expect(out.messageKey).toBe('grantFoodtruck');
   });
 
@@ -179,7 +179,7 @@ describe('ORDER 109 §5 DoD 4 — REQUEST_BANK_LOAN skriver outcome läsbart i s
     s = accumulate(s, 'techne', 0.5);
     s = reducer(s, { type: 'REQUEST_BANK_LOAN' });
     expect(s.bankMeetingOutcome!.granted).toBe(true);
-    expect(s.bankMeetingOutcome!.klass).toBe('foodtruck');
+    expect(s.bankMeetingOutcome!.klass).toBe('foodtrucken');
     expect(s.cash).toBe(cashBefore + s.bankMeetingOutcome!.loanAmountSek);
     expect(s.ledger.length).toBe(ledgerBefore + 1);
     expect(s.ledger[s.ledger.length - 1].category).toBe('other');
@@ -299,14 +299,14 @@ describe('ORDER 109 §5 DoD 7 — slingan går runt: noLoan → öva → verksam
 
     // Steg 3: begär lån igen → foodtruck-beviljande.
     s = reducer(s, { type: 'REQUEST_BANK_LOAN' });
-    expect(s.bankMeetingOutcome!.klass).toBe('foodtruck');
+    expect(s.bankMeetingOutcome!.klass).toBe('foodtrucken');
     expect(s.bankMeetingOutcome!.granted).toBe(true);
     expect(s.bankMeetingOutcome!.pointedPavilion).toBeNull();
 
     // Steg 4: fortsätt öva phronesis så profilen skiftar; begär lån igen.
     s = accumulate(s, 'phronesis', 1.0);
     s = reducer(s, { type: 'REQUEST_BANK_LOAN' });
-    expect(s.bankMeetingOutcome!.klass).toBe('restaurant');
+    expect(s.bankMeetingOutcome!.klass).toBe('kvarterskrogen');
     expect(s.bankMeetingOutcome!.granted).toBe(true);
 
     // "Tillbaka" — spelaren kan begära lån efter en profilskift och

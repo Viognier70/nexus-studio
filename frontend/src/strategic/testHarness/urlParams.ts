@@ -89,10 +89,10 @@ interface ParsedParams {
   // `#playtest=1&business=foodtruck` (eller `restaurant`/`värdshus`).
   // Kräver playtest=1 — utan den flaggan ignoreras business= så vanliga
   // URL:er inte kan flippa verksamheten av misstag. `null` = ingen
-  // override, initial-state:t behåller sin default ('restaurant'). Ingen
+  // override, initial-state:t behåller sin default ('kvarterskrogen'). Ingen
   // permanent koppling; hör till dev-verktygsraden tills en riktig
   // ny-spel-flow bygg (senare order).
-  business: 'restaurant' | 'foodtruck' | 'värdshus' | 'ölkrogen' | null;
+  business: 'kvarterskrogen' | 'foodtrucken' | 'gästgiveriet' | 'ölkrogen' | null;
   // ORDER 113 DoD 7/8 — dev-only seed för food truck-benchmark. När satt
   // och business=foodtruck, injicerar SimulationProvider N fake "waiting"-
   // gäster i initial-state:t så skärmdumpen och fps-mätningen har en
@@ -156,12 +156,15 @@ function parseFoodtruckSeed(s: string | null): number | null {
   return Math.min(n, 30);
 }
 
-function parseBusiness(s: string | null): 'restaurant' | 'foodtruck' | 'värdshus' | 'ölkrogen' | null {
+function parseBusiness(s: string | null): 'kvarterskrogen' | 'foodtrucken' | 'gästgiveriet' | 'ölkrogen' | null {
   if (!s) return null;
   const v = s.toLowerCase();
-  if (v === 'restaurant' || v === 'restaurang') return 'restaurant';
-  if (v === 'foodtruck' || v === 'food-truck' || v === 'food_truck') return 'foodtruck';
-  if (v === 'värdshus' || v === 'vardshus' || v === 'varshus') return 'värdshus';
+  // ORDER 140 — nya bestämd-form-nycklarna är primära; gamla namnen
+  // (restaurant / foodtruck / värdshus) accepteras som aliaser så
+  // äldre playtest-URL:er inte tystas.
+  if (v === 'kvarterskrogen' || v === 'restaurang' || v === 'restaurant') return 'kvarterskrogen';
+  if (v === 'foodtrucken' || v === 'foodtruck' || v === 'food-truck' || v === 'food_truck') return 'foodtrucken';
+  if (v === 'gästgiveriet' || v === 'värdshus' || v === 'vardshus' || v === 'varshus') return 'gästgiveriet';
   // ORDER 125 §3 — ölkrogen valbar via URL för dev-verifikation.
   if (v === 'ölkrogen' || v === 'olkrogen' || v === 'brewpub') return 'ölkrogen';
   return null;

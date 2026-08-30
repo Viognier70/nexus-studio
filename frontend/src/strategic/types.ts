@@ -32,18 +32,18 @@ export type GuestState =
   // peak:as här; carrying-fältet sätts vid inträde till 'serving'.
   // Utan denna fas skulle överlämningen vara instantan — VO 2026-08-17
   // "en överlämning som inte syns är ingen överlämning".
-  // Bara giltig när `businessClass === 'foodtruck'`.
+  // Bara giltig när `businessClass === 'foodtrucken'`.
   | 'serving'
   | 'dining'
   | 'paying'
   // ORDER 111 §4 — Värdshus. Gäst som stannar över får denna state
   // efter paying, istället för att gå direkt till 'leaving'. Överlever
   // dygnsrollovern och plockas upp av frukost-passet nästa morgon.
-  // Bara giltig när `state.businessClass === 'värdshus'`.
+  // Bara giltig när `state.businessClass === 'gästgiveriet'`.
   | 'sleeping'
   // ORDER 115 §4.5 — Food truck. Gäst som fått sin mat vid uteplats
   // äter i bild innan avfärd. Bara giltig när `policies.hasUteplats`
-  // är sann OCH `businessClass === 'foodtruck'`. Utan uteplats går
+  // är sann OCH `businessClass === 'foodtrucken'`. Utan uteplats går
   // gästen paying → leaving direkt.
   | 'eating'
   | 'leaving'
@@ -147,15 +147,15 @@ export interface ExamState {
 // import annars). Den fulla logiken för hur outcome:t byggs finns i
 // simulation/bankMeeting.ts:resolveBankMeeting.
 export type BankMeetingKlass =
-  | 'restaurant'
-  | 'foodtruck'
+  | 'kvarterskrogen'
+  | 'foodtrucken'
   | 'nearEpisteme'
   | 'balanced'
   | 'noLoan';
 
 export type BankLoanTier =
   | 'none'
-  | 'foodtruck'
+  | 'foodtrucken'
   | 'restaurant-small'
   | 'restaurant-full';
 
@@ -188,12 +188,12 @@ export interface BankMeetingOutcomeState {
 // som avgör vad som byggs och simuleras. Full config-katalog i
 // strategic/business/businessClass.ts; typen ligger här för att
 // SimulationState och SimAction kan referera den utan cirkulär import.
-// `'värdshus'` = fjärde klassen (från bankmötets internal 'balanced',
+// `'gästgiveriet'` = fjärde klassen (från bankmötets internal 'balanced',
 // spelartext "Värdshuset") per §2.
 // ORDER 125 §3 — ölkrogen tillagd som fjärde verksamhetsklass (brewpub-
 // rum med tjugo platser + bryggeri i samma lokal). Namn med å för
-// konsekvens med 'värdshus' som också bär svenska tecken.
-export type BusinessClass = 'restaurant' | 'foodtruck' | 'värdshus' | 'ölkrogen';
+// konsekvens med 'gästgiveriet' som också bär svenska tecken.
+export type BusinessClass = 'kvarterskrogen' | 'foodtrucken' | 'gästgiveriet' | 'ölkrogen';
 
 export type ServiceConcept = 'vardaglig' | 'formell';
 export type PricingTier = 'låg' | 'medel' | 'hög';
@@ -1007,11 +1007,11 @@ export interface SimulationState {
   // dra in businessProfile/bankMeeting-import i types.ts. Se
   // simulation/bankMeeting.ts:BankMeetingOutcome för fullständig form.
   bankMeetingOutcome: BankMeetingOutcomeState | null;
-  // ORDER 110 — R4: den realiserade verksamheten. Default 'restaurant'
+  // ORDER 110 — R4: den realiserade verksamheten. Default 'kvarterskrogen'
   // (spelet börjar som en restaurang; existerande simulation antar det).
   // Ändras när REQUEST_BANK_LOAN dispatchas och bankmötet ger ett utfall
-  // som mappas till en annan verksamhet: 'phronesis' → 'restaurant',
-  // 'techne' → 'foodtruck', 'balanced' → 'värdshus'. `nearEpisteme` och
+  // som mappas till en annan verksamhet: 'phronesis' → 'kvarterskrogen',
+  // 'techne' → 'foodtrucken', 'balanced' → 'gästgiveriet'. `nearEpisteme` och
   // `noLoan` ger ingen förändring — spelaren stannar där hen var.
   //
   // Reducern uppdaterar samtidigt policies.capacity via capacityForBusiness()

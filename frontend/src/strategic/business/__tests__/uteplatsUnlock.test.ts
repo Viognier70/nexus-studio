@@ -26,10 +26,10 @@ function makeFoodtruckState(seed = 20260817): SimulationState {
   let s = makeInitialState(seed);
   s = {
     ...s,
-    businessClass: 'foodtruck',
+    businessClass: 'foodtrucken',
     policies: {
       ...s.policies,
-      capacity: capacityForBusiness('foodtruck', s.policies.staffCount),
+      capacity: capacityForBusiness('foodtrucken', s.policies.staffCount),
       hasUteplats: false
     },
     cash: 240_000

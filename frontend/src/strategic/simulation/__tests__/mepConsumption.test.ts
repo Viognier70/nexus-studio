@@ -21,10 +21,10 @@ function foodtruckWithReadiness(readiness: Record<string, number>): SimulationSt
   const s = makeInitialState();
   return {
     ...s,
-    businessClass: 'foodtruck',
+    businessClass: 'foodtrucken',
     policies: {
       ...s.policies,
-      capacity: capacityForBusiness('foodtruck', s.policies.staffCount)
+      capacity: capacityForBusiness('foodtrucken', s.policies.staffCount)
     },
     day: { ...s.day, prepReadiness: readiness },
     cash: 240_000

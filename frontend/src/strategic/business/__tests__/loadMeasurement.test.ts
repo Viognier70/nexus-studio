@@ -111,9 +111,9 @@ function staffMeanWorkload(s: SimulationState): number {
 
 describe('ORDER 111 §5 — load-mätning per verksamhet (fixed-seed)', () => {
   it('mäter p10/p25/p50/p75/p90 per verksamhet och redovisar förskjutningen', () => {
-    const restaurant = measureLoadFor('restaurant');
-    const foodtruck = measureLoadFor('foodtruck');
-    const värdshus = measureLoadFor('värdshus');
+    const restaurant = measureLoadFor('kvarterskrogen');
+    const foodtruck = measureLoadFor('foodtrucken');
+    const värdshus = measureLoadFor('gästgiveriet');
 
     // Redovisa siffrorna i console — Vision Owner läser dessa när
     // frågan om per-verksamhet-band tas upp. Inga assertions mot
@@ -132,9 +132,9 @@ describe('ORDER 111 §5 — load-mätning per verksamhet (fixed-seed)', () => {
 
     // Sanity — percentilerna är monotont sorterade per verksamhet.
     for (const [name, p] of [
-      ['restaurant', restaurant],
-      ['foodtruck', foodtruck],
-      ['värdshus', värdshus]
+      ['kvarterskrogen', restaurant],
+      ['foodtrucken', foodtruck],
+      ['gästgiveriet', värdshus]
     ] as const) {
       expect(p.p10, `${name} p10 <= p25`).toBeLessThanOrEqual(p.p25);
       expect(p.p25, `${name} p25 <= p50`).toBeLessThanOrEqual(p.p50);
@@ -150,7 +150,7 @@ describe('ORDER 111 §5 — load-mätning per verksamhet (fixed-seed)', () => {
     // körningar skulle producera identiska sampel-arrays vore det ett
     // tecken på att business-differentiering inte får effekt.
     let s = makeInitialState(SEED);
-    s = { ...s, businessClass: 'restaurant' };
+    s = { ...s, businessClass: 'kvarterskrogen' };
     const openAction: SimAction = { type: 'OPEN_SERVICE', service: 'lunch', lengthMinutes: 5 };
     s = reducer(s, openAction);
     let restaurantChecksum = 0;
@@ -161,8 +161,8 @@ describe('ORDER 111 §5 — load-mätning per verksamhet (fixed-seed)', () => {
     let s2 = makeInitialState(SEED);
     s2 = {
       ...s2,
-      businessClass: 'foodtruck',
-      policies: { ...s2.policies, capacity: capacityForBusiness('foodtruck', s2.policies.staffCount) }
+      businessClass: 'foodtrucken',
+      policies: { ...s2.policies, capacity: capacityForBusiness('foodtrucken', s2.policies.staffCount) }
     };
     s2 = reducer(s2, openAction);
     let foodtruckChecksum = 0;

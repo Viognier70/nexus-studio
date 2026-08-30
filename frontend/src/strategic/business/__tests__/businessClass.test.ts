@@ -45,29 +45,30 @@ function accumulate(
 describe('ORDER 110 §7 DoD 1 — verksamhetsklassen som begrepp', () => {
   it('BUSINESS_CLASS_CONFIG innehåller fyra klasser (ORDER 125 lade till ölkrogen)', () => {
     const ids = Object.keys(BUSINESS_CLASS_CONFIG).sort();
-    expect(ids).toEqual(['foodtruck', 'restaurant', 'värdshus', 'ölkrogen']);
+    // UTF-16 codepoint-ordning: 'f' < 'g' < 'k' < 'ö'.
+    expect(ids).toEqual(['foodtrucken', 'gästgiveriet', 'kvarterskrogen', 'ölkrogen']);
   });
 
   it('restaurant är default-verksamhet i makeInitialState()', () => {
-    expect(makeInitialState().businessClass).toBe('restaurant');
+    expect(makeInitialState().businessClass).toBe('kvarterskrogen');
   });
 
   it('restaurant har matsal + mise en place; ingen övernattning', () => {
-    const cfg = BUSINESS_CLASS_CONFIG.restaurant;
+    const cfg = BUSINESS_CLASS_CONFIG.kvarterskrogen;
     expect(cfg.hasSeats).toBe(true);
     expect(cfg.hasMiseEnPlace).toBe(true);
     expect(cfg.hasOvernight).toBe(false);
   });
 
   it('foodtruck saknar matsal, saknar mise en place, saknar övernattning', () => {
-    const cfg = BUSINESS_CLASS_CONFIG.foodtruck;
+    const cfg = BUSINESS_CLASS_CONFIG.foodtrucken;
     expect(cfg.hasSeats).toBe(false);
     expect(cfg.hasMiseEnPlace).toBe(false);
     expect(cfg.hasOvernight).toBe(false);
   });
 
   it('värdshus har matsal + mise en place + övernattning', () => {
-    const cfg = BUSINESS_CLASS_CONFIG.värdshus;
+    const cfg = BUSINESS_CLASS_CONFIG.gästgiveriet;
     expect(cfg.hasSeats).toBe(true);
     expect(cfg.hasMiseEnPlace).toBe(true);
     expect(cfg.hasOvernight).toBe(true);
@@ -87,20 +88,20 @@ describe('ORDER 110 §7 DoD 1 — verksamhetsklassen som begrepp', () => {
 
 describe('ORDER 110 §7 DoD 4 — capacity följer verksamhet + bemanning', () => {
   it('restaurant: TOTAL_SEATS oavsett bemanning', () => {
-    expect(capacityForBusiness('restaurant', 2)).toBe(TOTAL_SEATS);
-    expect(capacityForBusiness('restaurant', 3)).toBe(TOTAL_SEATS);
-    expect(capacityForBusiness('restaurant', 4)).toBe(TOTAL_SEATS);
+    expect(capacityForBusiness('kvarterskrogen', 2)).toBe(TOTAL_SEATS);
+    expect(capacityForBusiness('kvarterskrogen', 3)).toBe(TOTAL_SEATS);
+    expect(capacityForBusiness('kvarterskrogen', 4)).toBe(TOTAL_SEATS);
   });
 
   it('foodtruck: 3 × staffCount', () => {
-    expect(capacityForBusiness('foodtruck', 2)).toBe(6);
-    expect(capacityForBusiness('foodtruck', 3)).toBe(9);
-    expect(capacityForBusiness('foodtruck', 4)).toBe(12);
+    expect(capacityForBusiness('foodtrucken', 2)).toBe(6);
+    expect(capacityForBusiness('foodtrucken', 3)).toBe(9);
+    expect(capacityForBusiness('foodtrucken', 4)).toBe(12);
   });
 
   it('värdshus: TOTAL_SEATS + 6 rum', () => {
-    expect(capacityForBusiness('värdshus', 2)).toBe(TOTAL_SEATS + 6);
-    expect(capacityForBusiness('värdshus', 4)).toBe(TOTAL_SEATS + 6);
+    expect(capacityForBusiness('gästgiveriet', 2)).toBe(TOTAL_SEATS + 6);
+    expect(capacityForBusiness('gästgiveriet', 4)).toBe(TOTAL_SEATS + 6);
   });
 
   it('ORDER 125 §3 — ölkrogen: 20 platser oavsett bemanning', () => {
@@ -115,8 +116,8 @@ describe('ORDER 110 §7 DoD 4 — capacity följer verksamhet + bemanning', () =
     // Öva techne → bankmötet → foodtruck; capacity ska följa med.
     s = accumulate(s, 'techne', 0.5);
     s = reducer(s, { type: 'REQUEST_BANK_LOAN' });
-    expect(s.businessClass).toBe('foodtruck');
-    expect(s.policies.capacity).toBe(capacityForBusiness('foodtruck', s.policies.staffCount));
+    expect(s.businessClass).toBe('foodtrucken');
+    expect(s.policies.capacity).toBe(capacityForBusiness('foodtrucken', s.policies.staffCount));
   });
 });
 
@@ -126,9 +127,9 @@ describe('ORDER 110 §7 DoD 4 — capacity följer verksamhet + bemanning', () =
 
 describe('ORDER 110 §7 DoD 5 — bankmötesutfall → rätt verksamhet', () => {
   it('mappningen: phronesis → restaurant, techne → foodtruck, balanced → värdshus', () => {
-    expect(businessFromBankKlass('restaurant')).toBe('restaurant');
-    expect(businessFromBankKlass('foodtruck')).toBe('foodtruck');
-    expect(businessFromBankKlass('balanced')).toBe('värdshus');
+    expect(businessFromBankKlass('kvarterskrogen')).toBe('kvarterskrogen');
+    expect(businessFromBankKlass('foodtrucken')).toBe('foodtrucken');
+    expect(businessFromBankKlass('balanced')).toBe('gästgiveriet');
   });
 
   it('nearEpisteme och noLoan → null (spelaren stannar)', () => {
@@ -140,16 +141,16 @@ describe('ORDER 110 §7 DoD 5 — bankmötesutfall → rätt verksamhet', () => 
     let s = makeInitialState();
     s = accumulate(s, 'techne', 0.5);
     s = reducer(s, { type: 'REQUEST_BANK_LOAN' });
-    expect(s.bankMeetingOutcome!.klass).toBe('foodtruck');
-    expect(s.businessClass).toBe('foodtruck');
+    expect(s.bankMeetingOutcome!.klass).toBe('foodtrucken');
+    expect(s.businessClass).toBe('foodtrucken');
   });
 
   it('REQUEST_BANK_LOAN med phronesis-profil → state.businessClass = restaurant', () => {
     let s = makeInitialState();
     s = accumulate(s, 'phronesis', 0.5);
     s = reducer(s, { type: 'REQUEST_BANK_LOAN' });
-    expect(s.bankMeetingOutcome!.klass).toBe('restaurant');
-    expect(s.businessClass).toBe('restaurant');
+    expect(s.bankMeetingOutcome!.klass).toBe('kvarterskrogen');
+    expect(s.businessClass).toBe('kvarterskrogen');
   });
 
   it('REQUEST_BANK_LOAN med balanced-profil → state.businessClass = värdshus', () => {
@@ -159,7 +160,7 @@ describe('ORDER 110 §7 DoD 5 — bankmötesutfall → rätt verksamhet', () => 
     s = accumulate(s, 'phronesis', 0.3);
     s = reducer(s, { type: 'REQUEST_BANK_LOAN' });
     expect(s.bankMeetingOutcome!.klass).toBe('balanced');
-    expect(s.businessClass).toBe('värdshus');
+    expect(s.businessClass).toBe('gästgiveriet');
   });
 
   it('REQUEST_BANK_LOAN med nearEpisteme → businessClass oförändrad', () => {
@@ -181,8 +182,8 @@ describe('ORDER 110 §7 DoD 5 — bankmötesutfall → rätt verksamhet', () => 
 
   it('varje bankmötesklass har ett definierat map-utfall (fullständighet)', () => {
     const allKlasser: BankMeetingKlass[] = [
-      'restaurant',
-      'foodtruck',
+      'kvarterskrogen',
+      'foodtrucken',
       'balanced',
       'nearEpisteme',
       'noLoan'
@@ -191,7 +192,7 @@ describe('ORDER 110 §7 DoD 5 — bankmötesutfall → rätt verksamhet', () => 
       // Ska returnera antingen en BusinessClass eller null — inga throws,
       // ingen undefined. Full switch-täckning.
       const out = businessFromBankKlass(klass);
-      expect(out === null || ['restaurant', 'foodtruck', 'värdshus'].includes(out)).toBe(true);
+      expect(out === null || ['kvarterskrogen', 'foodtrucken', 'gästgiveriet'].includes(out)).toBe(true);
     }
   });
 });
@@ -202,9 +203,9 @@ describe('ORDER 110 §7 DoD 5 — bankmötesutfall → rätt verksamhet', () => 
 
 describe('ORDER 110 §7 DoD 6 — foodtruck: inga sittande gäster', () => {
   it('businessHasSeats(foodtruck) === false', () => {
-    expect(businessHasSeats('foodtruck')).toBe(false);
-    expect(businessHasSeats('restaurant')).toBe(true);
-    expect(businessHasSeats('värdshus')).toBe(true);
+    expect(businessHasSeats('foodtrucken')).toBe(false);
+    expect(businessHasSeats('kvarterskrogen')).toBe(true);
+    expect(businessHasSeats('gästgiveriet')).toBe(true);
   });
 
   it('setGuestSeated på foodtruck sätter guest.state = ordering, inte seated', async () => {
@@ -216,7 +217,7 @@ describe('ORDER 110 §7 DoD 6 — foodtruck: inga sittande gäster', () => {
 
     // Bygg foodtruck-state med en gäst i 'waiting'.
     let s = makeInitialState();
-    s = { ...s, businessClass: 'foodtruck' };
+    s = { ...s, businessClass: 'foodtrucken' };
     s.guests = [
       {
         id: 'test-guest-1',
@@ -254,10 +255,10 @@ describe('ORDER 110 §7 DoD 6 — foodtruck: inga sittande gäster', () => {
     // Kontroll att guarden är verksamt: samma test-fixtur i restaurant-mode
     // ska ha möjligheten att sätta 'seated' (den kan förbli waiting om
     // ingen personal serverar, men den ska inte vara blockerad av
-    // hasSeats-flaggan). Vi asserterar bara att businessClass = 'restaurant'
+    // hasSeats-flaggan). Vi asserterar bara att businessClass = 'kvarterskrogen'
     // inte har guarden aktiv.
-    expect(businessHasSeats('restaurant')).toBe(true);
-    expect(BUSINESS_CLASS_CONFIG.restaurant.hasSeats).toBe(true);
+    expect(businessHasSeats('kvarterskrogen')).toBe(true);
+    expect(BUSINESS_CLASS_CONFIG.kvarterskrogen.hasSeats).toBe(true);
   });
 });
 
@@ -265,7 +266,7 @@ describe('ORDER 110 §7 DoD 6 — foodtruck: inga sittande gäster', () => {
 // DoD 8 — grep: 'balanced' inte i strings.sv.ts; Värdshuset som spelartext
 // -----------------------------------------------------------------------------
 
-describe('ORDER 110 §7 DoD 8 — grep + Värdshuset', () => {
+describe('ORDER 110 §7 DoD 8 — grep + Gästgiveriet', () => {
   it('strings.sv.ts innehåller ingen `balanced`-nyckel', () => {
     const thisDir = dirname(fileURLToPath(import.meta.url));
     const stringsPath = resolve(thisDir, '../../../content/strings.sv.ts');
@@ -274,19 +275,21 @@ describe('ORDER 110 §7 DoD 8 — grep + Värdshuset', () => {
     expect(/\bbalanced\b/.test(source), '`balanced` läcker i strings.sv.ts').toBe(false);
   });
 
-  it('Värdshuset finns som spelartext i strings.sv.ts:businessClass', () => {
-    expect(strings.businessClass.värdshus).toBe('Värdshuset');
+  it('Gästgiveriet finns som spelartext i strings.sv.ts:businessClass', () => {
+    expect(strings.businessClass.gästgiveriet).toBe('Gästgiveriet');
   });
 
-  it('alla tre verksamhets-nycklar har spelartext', () => {
-    expect(strings.businessClass.restaurant).toBeTruthy();
-    expect(strings.businessClass.foodtruck).toBeTruthy();
-    expect(strings.businessClass.värdshus).toBeTruthy();
+  it('alla verksamhets-nycklar har spelartext', () => {
+    expect(strings.businessClass.kvarterskrogen).toBeTruthy();
+    expect(strings.businessClass.foodtrucken).toBeTruthy();
+    expect(strings.businessClass.gästgiveriet).toBeTruthy();
+    expect(strings.businessClass.ölkrogen).toBeTruthy();
   });
 
   it('typkontroll: strings.businessClass-nycklar är exakt de fyra BusinessClass-värdena (ORDER 125 lade till ölkrogen)', () => {
     const stringsKeys = Object.keys(strings.businessClass).sort();
-    const businessKeys: BusinessClass[] = ['foodtruck', 'restaurant', 'värdshus', 'ölkrogen'];
+    // UTF-16 codepoint-ordning: 'f' (0x66) < 'g' (0x67) < 'k' (0x6B) < 'ö' (0xF6).
+    const businessKeys: BusinessClass[] = ['foodtrucken', 'gästgiveriet', 'kvarterskrogen', 'ölkrogen'];
     expect(stringsKeys).toEqual(businessKeys);
   });
 });
@@ -299,7 +302,7 @@ describe('ORDER 110 §7 DoD 8 — grep + Värdshuset', () => {
 describe('ORDER 110 — regressions: restaurant-läget oförändrat', () => {
   it('restaurant-default: initial capacity oförändrad', () => {
     const s = makeInitialState();
-    expect(s.businessClass).toBe('restaurant');
+    expect(s.businessClass).toBe('kvarterskrogen');
     expect(s.policies.capacity).toBe(TOTAL_SEATS);
   });
 

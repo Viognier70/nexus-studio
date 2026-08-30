@@ -26,7 +26,7 @@
   },
   "cells": [
     {
-      "business": "restaurant",
+      "business": "kvarterskrogen",
       "staffCount": 2,
       "capacity": 16,
       "seeds": 50,
@@ -81,7 +81,7 @@
       ]
     },
     {
-      "business": "restaurant",
+      "business": "kvarterskrogen",
       "staffCount": 3,
       "capacity": 16,
       "seeds": 50,
@@ -136,7 +136,7 @@
       ]
     },
     {
-      "business": "restaurant",
+      "business": "kvarterskrogen",
       "staffCount": 4,
       "capacity": 16,
       "seeds": 50,
@@ -191,7 +191,7 @@
       ]
     },
     {
-      "business": "foodtruck",
+      "business": "foodtrucken",
       "staffCount": 2,
       "capacity": 6,
       "seeds": 50,
@@ -246,7 +246,7 @@
       ]
     },
     {
-      "business": "foodtruck",
+      "business": "foodtrucken",
       "staffCount": 3,
       "capacity": 9,
       "seeds": 50,
@@ -301,7 +301,7 @@
       ]
     },
     {
-      "business": "foodtruck",
+      "business": "foodtrucken",
       "staffCount": 4,
       "capacity": 12,
       "seeds": 50,
@@ -356,7 +356,7 @@
       ]
     },
     {
-      "business": "värdshus",
+      "business": "gästgiveriet",
       "staffCount": 2,
       "capacity": 22,
       "seeds": 50,
@@ -411,7 +411,7 @@
       ]
     },
     {
-      "business": "värdshus",
+      "business": "gästgiveriet",
       "staffCount": 3,
       "capacity": 22,
       "seeds": 50,
@@ -466,7 +466,7 @@
       ]
     },
     {
-      "business": "värdshus",
+      "business": "gästgiveriet",
       "staffCount": 4,
       "capacity": 22,
       "seeds": 50,

@@ -4,7 +4,7 @@
 // Restaurangen är omdöme och rum; food trucken är hantverk och tempo;
 // Värdshuset är att bära hela måltiden inklusive att gästen sover över.
 // `noLoan` / `nearEpisteme` från bankmötet ger ingen verksamhet — spelaren
-// stannar i sin nuvarande (default 'restaurant' vid start).
+// stannar i sin nuvarande (default 'kvarterskrogen' vid start).
 //
 // **Scope-not** (§7 avgränsning + §5 "omfattningen får hållas nere"):
 // den här filen definierar strukturen och de flaggor som simulationen
@@ -16,13 +16,13 @@
 // **Namn-konvention:** interna nycklar (`restaurant`, `foodtruck`,
 // `värdshus`) är stabila för kod. Spelartext läses via
 // `strings.sv.ts:business.classNames`; `'balanced'` från bankmötets
-// KnowledgeClass mappas till `'värdshus'` här och läcker aldrig till
+// KnowledgeClass mappas till `'gästgiveriet'` här och läcker aldrig till
 // spelaren (grep-testet i ORDER 109 §5 DoD 6 fångar det).
 
 import type { BankMeetingKlass, SimulationState } from '../types';
 import { TOTAL_SEATS } from './interiorLayout';
 
-export type BusinessClass = 'restaurant' | 'foodtruck' | 'värdshus' | 'ölkrogen';
+export type BusinessClass = 'kvarterskrogen' | 'foodtrucken' | 'gästgiveriet' | 'ölkrogen';
 
 // Flaggor som reducern och kringliggande system läser för att branch:a
 // per verksamhet. Additiva — nya flaggor kan läggas till utan att existerande
@@ -61,22 +61,22 @@ export interface BusinessClassConfig {
 // __tests__/businessClass.test.ts (rimlighetsassertions) + registerpost
 // om §-flaggorna ändras.
 export const BUSINESS_CLASS_CONFIG: Record<BusinessClass, BusinessClassConfig> = {
-  restaurant: {
-    id: 'restaurant',
+  kvarterskrogen: {
+    id: 'kvarterskrogen',
     hasSeats: true,
     hasMiseEnPlace: true,
     hasOvernight: false,
     capacityFor: () => TOTAL_SEATS
   },
-  foodtruck: {
-    id: 'foodtruck',
+  foodtrucken: {
+    id: 'foodtrucken',
     hasSeats: false,
     hasMiseEnPlace: false,
     hasOvernight: false,
     capacityFor: (staffCount) => Math.max(3, staffCount * 3)
   },
-  värdshus: {
-    id: 'värdshus',
+  gästgiveriet: {
+    id: 'gästgiveriet',
     hasSeats: true,
     hasMiseEnPlace: true,
     hasOvernight: true,
@@ -105,12 +105,12 @@ export const BUSINESS_CLASS_CONFIG: Record<BusinessClass, BusinessClassConfig> =
 // + tempo).
 export function businessFromBankKlass(klass: BankMeetingKlass): BusinessClass | null {
   switch (klass) {
-    case 'restaurant':
-      return 'restaurant';
-    case 'foodtruck':
-      return 'foodtruck';
+    case 'kvarterskrogen':
+      return 'kvarterskrogen';
+    case 'foodtrucken':
+      return 'foodtrucken';
     case 'balanced':
-      return 'värdshus';
+      return 'gästgiveriet';
     case 'nearEpisteme':
     case 'noLoan':
       return null;

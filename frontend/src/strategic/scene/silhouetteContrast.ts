@@ -49,12 +49,12 @@ export const FLOOR_COLOUR = '#a89577';
  * faller mot en annan — bandet är zonmedvetet.
  */
 export const FLOOR_ZONES_BY_BUSINESS: Record<
-  'restaurant' | 'foodtruck' | 'värdshus' | 'ölkrogen',
+  'kvarterskrogen' | 'foodtrucken' | 'gästgiveriet' | 'ölkrogen',
   readonly string[]
 > = {
-  restaurant: ['#a08462'],
-  foodtruck: [],
-  värdshus: ['#a08462'],
+  kvarterskrogen: ['#a08462'],
+  foodtrucken: [],
+  gästgiveriet: ['#a08462'],
   ölkrogen: ['#a49b8a', '#7d776c', '#948f84']
 };
 

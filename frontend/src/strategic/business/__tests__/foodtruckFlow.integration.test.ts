@@ -30,10 +30,10 @@ function makeFoodtruckState(seed = 20260819): SimulationState {
   let s = makeInitialState(seed);
   s = {
     ...s,
-    businessClass: 'foodtruck',
+    businessClass: 'foodtrucken',
     policies: {
       ...s.policies,
-      capacity: capacityForBusiness('foodtruck', s.policies.staffCount)
+      capacity: capacityForBusiness('foodtrucken', s.policies.staffCount)
     },
     cash: 240_000
   };
@@ -151,7 +151,7 @@ describe('restaurant integration — regressionskontroll efter fel 1', () => {
 describe('seatsFree — per-verksamhet räknare', () => {
   it('foodtruck: seatsFree = queueCapacity - waitingIds.length', () => {
     const s = makeFoodtruckState();
-    expect(s.policies.capacity).toBe(capacityForBusiness('foodtruck', s.policies.staffCount));
+    expect(s.policies.capacity).toBe(capacityForBusiness('foodtrucken', s.policies.staffCount));
     // Tom kö → hela kapaciteten fri
     expect(seatsFree(s)).toBe(s.policies.capacity);
     // Fyll kön till hälften
@@ -168,7 +168,7 @@ describe('seatsFree — per-verksamhet räknare', () => {
 
   it('restaurant: seatsFree = seatCapacity - seatedIds.length (INTE waitingIds)', () => {
     const s = makeInitialState();
-    expect(s.businessClass).toBe('restaurant');
+    expect(s.businessClass).toBe('kvarterskrogen');
     // Tom → hela kapaciteten fri
     expect(seatsFree(s)).toBe(s.policies.capacity);
     // Om restaurang hade läst waitingIds skulle testet ge fel svar:
@@ -206,18 +206,18 @@ describe('computePlayerBusinessInterior — verksamhets-gated', () => {
     // restaurangens 16-stols-matsal även för foodtruck; DevPanel loggade
     // `layout.seats=16 (DRIFT)` permanent. Testet asserterar att foodtruck
     // nu inte får någon matsal-inredning tilldelad.
-    expect(computePlayerBusinessInterior('foodtruck')).toBeNull();
+    expect(computePlayerBusinessInterior('foodtrucken')).toBeNull();
   });
 
   it('restaurant → InteriorLayout med matsal-stolar', () => {
-    const layout = computePlayerBusinessInterior('restaurant');
+    const layout = computePlayerBusinessInterior('kvarterskrogen');
     expect(layout).not.toBeNull();
     expect(layout!.seats.length).toBeGreaterThan(0);
     expect(layout!.totalSeats).toBeGreaterThan(0);
   });
 
   it('värdshus → InteriorLayout med matsal-stolar (samma som restaurant tills egen skepnad byggs)', () => {
-    const layout = computePlayerBusinessInterior('värdshus');
+    const layout = computePlayerBusinessInterior('gästgiveriet');
     expect(layout).not.toBeNull();
     expect(layout!.seats.length).toBeGreaterThan(0);
   });
@@ -237,12 +237,12 @@ describe('computePlayerBusinessInterior — verksamhets-gated', () => {
 
 describe('businessHasSeats — semantik för seatsFree- och layout-guarderna', () => {
   it('foodtruck: false', () => {
-    expect(businessHasSeats('foodtruck')).toBe(false);
+    expect(businessHasSeats('foodtrucken')).toBe(false);
   });
   it('restaurant: true', () => {
-    expect(businessHasSeats('restaurant')).toBe(true);
+    expect(businessHasSeats('kvarterskrogen')).toBe(true);
   });
   it('värdshus: true', () => {
-    expect(businessHasSeats('värdshus')).toBe(true);
+    expect(businessHasSeats('gästgiveriet')).toBe(true);
   });
 });

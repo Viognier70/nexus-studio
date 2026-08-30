@@ -286,12 +286,16 @@ export const strings = {
   // ORDER 110 — R4 verksamhetsklassen som spelartext. Interna nycklar
   // (`restaurant`, `foodtruck`, `värdshus`) hålls samma här som i koden;
   // spelartexten är utpekad. Bankmötets intern-nyckel för den fjärde
-  // klassen mappas till `'värdshus'` innan spelartexten läses — den
+  // klassen mappas till `'gästgiveriet'` innan spelartexten läses — den
   // förbjudna nyckeln får aldrig läcka hit (grep-test i ORDER 109 §5).
   businessClass: {
-    restaurant: 'Restaurang',
-    foodtruck: 'Food truck',
-    värdshus: 'Värdshuset',
+    // ORDER 140 — nycklarna följer BusinessClass i bestämd form
+    // (Vision Owner-beslut 2026-08-30 §1 per ORDER 139). "Kvarterskrogen"
+    // ersätter tidigare "Restaurang", "Foodtrucken" är den bestämda
+    // formen av spelarens vagn, "Gästgiveriet" ersätter "Värdshuset".
+    kvarterskrogen: 'Kvarterskrogen',
+    foodtrucken: 'Foodtrucken',
+    gästgiveriet: 'Gästgiveriet',
     // ORDER 125 §3 — Ölkrogen. Spelartext med versal första bokstav,
     // matchar övriga.
     ölkrogen: 'Ölkrogen'

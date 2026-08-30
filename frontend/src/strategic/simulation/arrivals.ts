@@ -139,7 +139,7 @@ export function arrivalProbability(state: SimulationState): number {
   //   * väder-amplifiering: gatuläget dubblerar väderpåverkan.
   //   * konkurrens: konstant nedjustering för att spegla att food trucken
   //     tävlar med befintliga restauranger.
-  const isFoodtruck = state.businessClass === 'foodtruck';
+  const isFoodtruck = state.businessClass === 'foodtrucken';
   const weatherBase = weatherArrivalMultiplier(state.day.weather);
   const weatherMult = isFoodtruck ? foodtruckWeatherAmplify(weatherBase) : weatherBase;
   const competitionMult = isFoodtruck ? FOODTRUCK_COMPETITION_MULTIPLIER : 1;
@@ -188,7 +188,7 @@ export function maybeSpawnGuest(state: SimulationState, rng: Rng): Guest | null 
   // gäster ställa sig — förbipasserande går vidare. Skiljer sig från
   // ACTIVE_GUEST_CAP: den är en absolut sim-gräns; queue-gate är
   // gatans läsning ("för lång kö = jag går").
-  if (state.businessClass === 'foodtruck') {
+  if (state.businessClass === 'foodtrucken') {
     if (state.waitingIds.length >= state.policies.capacity) return null;
   }
   if (!rng.chance(arrivalProbability(state))) return null;
