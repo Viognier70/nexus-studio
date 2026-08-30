@@ -1,0 +1,3591 @@
+{
+  "summary": {
+    "buildingsTotal": 338,
+    "roadsTotal": 327,
+    "countA_order133": 37,
+    "countB_carriageway": 30,
+    "countC_envelope": 32,
+    "newInB_vs_A": 2,
+    "newInC_vs_A": 3,
+    "droppedInB_vs_A": 9,
+    "droppedInC_vs_A": 8,
+    "worstOverlapA": 3.484,
+    "worstOverlapB": 2.859,
+    "worstOverlapC": 4.359
+  },
+  "idsOnlyInB": [
+    "w870510839",
+    "vw-kyr-9e-mansard"
+  ],
+  "idsOnlyInC": [
+    "w869907963",
+    "w870510839",
+    "vw-kyr-9e-mansard"
+  ],
+  "idsDroppedInB": [
+    "w193810933",
+    "w193810975",
+    "w869907976",
+    "w869907977",
+    "w870510827",
+    "w934308171",
+    "w934308172",
+    "vw-bv-4",
+    "vw-pra-8"
+  ],
+  "idsDroppedInC": [
+    "w193810933",
+    "w193810975",
+    "w869907976",
+    "w869907977",
+    "w870510827",
+    "w934308171",
+    "w934308172",
+    "vw-bv-4"
+  ],
+  "worstA": [
+    {
+      "buildingId": "vw-torget-east-barn",
+      "buildingKind": "outbuilding",
+      "buildingName": null,
+      "centre": [
+        65,
+        15
+      ],
+      "worstOverlap": 3.484,
+      "hits": [
+        {
+          "roadId": "w122157691",
+          "roadKind": "living_street",
+          "roadName": "Prästgatan",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 12,
+          "worstOverlap": 3.484
+        },
+        {
+          "roadId": "w1329020068",
+          "roadKind": "living_street",
+          "roadName": "Prästgatan",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 5,
+          "worstOverlap": 0
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-kyr-torget-lh",
+      "buildingKind": "house",
+      "buildingName": "Torget long-house cluster (west/south edge)",
+      "centre": [
+        -18,
+        -18
+      ],
+      "worstOverlap": 2.529,
+      "hits": [
+        {
+          "roadId": "w122157691",
+          "roadKind": "living_street",
+          "roadName": "Prästgatan",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 12,
+          "worstOverlap": 2.529
+        },
+        {
+          "roadId": "w860753012",
+          "roadKind": "tertiary",
+          "roadName": "Smedsgatan",
+          "roadRef": null,
+          "role": "secondary_connector",
+          "roadWidth": 5.5,
+          "worstOverlap": 0
+        }
+      ]
+    },
+    {
+      "buildingId": "w869907964",
+      "buildingKind": "hotel",
+      "buildingName": "Grythyttans Gästgivaregård",
+      "centre": [
+        62.37,
+        39.33
+      ],
+      "worstOverlap": 2.451,
+      "hits": [
+        {
+          "roadId": "w122157691",
+          "roadKind": "living_street",
+          "roadName": "Prästgatan",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 12,
+          "worstOverlap": 2.451
+        },
+        {
+          "roadId": "w1422743879",
+          "roadKind": "residential",
+          "roadName": "Artur Lindqvists gata",
+          "roadRef": null,
+          "role": "village_street",
+          "roadWidth": 4,
+          "worstOverlap": 0.007
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-pra-19n",
+      "buildingKind": "apartments",
+      "buildingName": null,
+      "centre": [
+        382.92,
+        28.61
+      ],
+      "worstOverlap": 2.359,
+      "hits": [
+        {
+          "roadId": "w193810976",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 3,
+          "worstOverlap": 0.011
+        },
+        {
+          "roadId": "w1329020070",
+          "roadKind": "secondary",
+          "roadName": "Lokavägen",
+          "roadRef": "205",
+          "role": "main",
+          "roadWidth": 8,
+          "worstOverlap": 2.359
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-jarn-9",
+      "buildingKind": "house",
+      "buildingName": null,
+      "centre": [
+        -410,
+        -50
+      ],
+      "worstOverlap": 2,
+      "hits": [
+        {
+          "roadId": "w191323431",
+          "roadKind": "residential",
+          "roadName": "Järnvägsgatan",
+          "roadRef": "T 715",
+          "role": "village_street",
+          "roadWidth": 5,
+          "worstOverlap": 2
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-nyg-3",
+      "buildingKind": "house",
+      "buildingName": null,
+      "centre": [
+        -45,
+        -75
+      ],
+      "worstOverlap": 1.977,
+      "hits": [
+        {
+          "roadId": "w1239628612",
+          "roadKind": "tertiary",
+          "roadName": "Kyrkogatan",
+          "roadRef": "T 718",
+          "role": "secondary_connector",
+          "roadWidth": 5.5,
+          "worstOverlap": 1.977
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-jaktakademin",
+      "buildingKind": "house",
+      "buildingName": "Jaktakademin",
+      "centre": [
+        -265,
+        60
+      ],
+      "worstOverlap": 1.739,
+      "hits": [
+        {
+          "roadId": "w1329020064",
+          "roadKind": "residential",
+          "roadName": "Magasinsgatan",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 5.5,
+          "worstOverlap": 1.739
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-hjv-5",
+      "buildingKind": "house",
+      "buildingName": null,
+      "centre": [
+        -350,
+        -160
+      ],
+      "worstOverlap": 1.529,
+      "hits": [
+        {
+          "roadId": "w1329020083",
+          "roadKind": "residential",
+          "roadName": "Hantverksgatan",
+          "roadRef": null,
+          "role": "village_street",
+          "roadWidth": 6,
+          "worstOverlap": 1.529
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-torget-kyrkbacken-pair",
+      "buildingKind": "house",
+      "buildingName": "2 Kyrkbacken historic pair",
+      "centre": [
+        -42,
+        -40
+      ],
+      "worstOverlap": 1.528,
+      "hits": [
+        {
+          "roadId": "w122157691",
+          "roadKind": "living_street",
+          "roadName": "Prästgatan",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 12,
+          "worstOverlap": 1.528
+        },
+        {
+          "roadId": "w860753009",
+          "roadKind": "residential",
+          "roadName": "Kyrkbacken",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 5.5,
+          "worstOverlap": 0.433
+        },
+        {
+          "roadId": "w1239628611",
+          "roadKind": "tertiary",
+          "roadName": "Kyrkogatan",
+          "roadRef": "T 718",
+          "role": "secondary_connector",
+          "roadWidth": 5.5,
+          "worstOverlap": 0
+        }
+      ]
+    },
+    {
+      "buildingId": "w870510826",
+      "buildingKind": "industrial",
+      "buildingName": null,
+      "centre": [
+        -623.64,
+        -268.4
+      ],
+      "worstOverlap": 1.5,
+      "hits": [
+        {
+          "roadId": "w870510820",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 3,
+          "worstOverlap": 1.5
+        },
+        {
+          "roadId": "w870510829",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 3,
+          "worstOverlap": 1.5
+        },
+        {
+          "roadId": "w1329020075",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 3,
+          "worstOverlap": 1.5
+        }
+      ]
+    }
+  ],
+  "worstB": [
+    {
+      "buildingId": "vw-pra-19n",
+      "buildingKind": "apartments",
+      "buildingName": null,
+      "centre": [
+        382.92,
+        28.61
+      ],
+      "worstOverlap": 2.859,
+      "hits": [
+        {
+          "roadId": "w193810976",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 0
+        },
+        {
+          "roadId": "w1329020070",
+          "roadKind": "secondary",
+          "roadName": "Lokavägen",
+          "roadRef": "205",
+          "role": "main",
+          "roadWidth": 9,
+          "worstOverlap": 2.859
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-nyg-3",
+      "buildingKind": "house",
+      "buildingName": null,
+      "centre": [
+        -45,
+        -75
+      ],
+      "worstOverlap": 2.327,
+      "hits": [
+        {
+          "roadId": "w1239628612",
+          "roadKind": "tertiary",
+          "roadName": "Kyrkogatan",
+          "roadRef": "T 718",
+          "role": "secondary_connector",
+          "roadWidth": 6.2,
+          "worstOverlap": 2.327
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-jarn-9",
+      "buildingKind": "house",
+      "buildingName": null,
+      "centre": [
+        -410,
+        -50
+      ],
+      "worstOverlap": 1.8,
+      "hits": [
+        {
+          "roadId": "w191323431",
+          "roadKind": "residential",
+          "roadName": "Järnvägsgatan",
+          "roadRef": "T 715",
+          "role": "village_street",
+          "roadWidth": 4.6,
+          "worstOverlap": 1.8
+        }
+      ]
+    },
+    {
+      "buildingId": "w870510826",
+      "buildingKind": "industrial",
+      "buildingName": null,
+      "centre": [
+        -623.64,
+        -268.4
+      ],
+      "worstOverlap": 1.4,
+      "hits": [
+        {
+          "roadId": "w870510820",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 1.4
+        },
+        {
+          "roadId": "w870510829",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 1.4
+        },
+        {
+          "roadId": "w1329020075",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 1.4
+        }
+      ]
+    },
+    {
+      "buildingId": "w870510828",
+      "buildingKind": "industrial",
+      "buildingName": null,
+      "centre": [
+        -648.71,
+        -369.18
+      ],
+      "worstOverlap": 1.4,
+      "hits": [
+        {
+          "roadId": "w870510829",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 1.4
+        },
+        {
+          "roadId": "w1329020076",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 1.4
+        },
+        {
+          "roadId": "w1329020077",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 1.4
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-jaktakademin",
+      "buildingKind": "house",
+      "buildingName": "Jaktakademin",
+      "centre": [
+        -265,
+        60
+      ],
+      "worstOverlap": 1.289,
+      "hits": [
+        {
+          "roadId": "w1329020064",
+          "roadKind": "residential",
+          "roadName": "Magasinsgatan",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 4.6,
+          "worstOverlap": 1.289
+        }
+      ]
+    },
+    {
+      "buildingId": "w1422743880",
+      "buildingKind": "yes",
+      "buildingName": "Länsmansgården",
+      "centre": [
+        -30.11,
+        75.64
+      ],
+      "worstOverlap": 1.266,
+      "hits": [
+        {
+          "roadId": "w862853244",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 1.266
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-pra-15s",
+      "buildingKind": "house",
+      "buildingName": null,
+      "centre": [
+        352,
+        5
+      ],
+      "worstOverlap": 1.252,
+      "hits": [
+        {
+          "roadId": "w193810976",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 1.252
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-pra-djurskyddet",
+      "buildingKind": "house",
+      "buildingName": "Djurskyddet Vilsna Tassar Hällefors",
+      "centre": [
+        355,
+        15
+      ],
+      "worstOverlap": 1.227,
+      "hits": [
+        {
+          "roadId": "w193810976",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 1.227
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-pra-18",
+      "buildingKind": "apartments",
+      "buildingName": null,
+      "centre": [
+        386.5,
+        11.2
+      ],
+      "worstOverlap": 1.068,
+      "hits": [
+        {
+          "roadId": "w1329020070",
+          "roadKind": "secondary",
+          "roadName": "Lokavägen",
+          "roadRef": "205",
+          "role": "main",
+          "roadWidth": 9,
+          "worstOverlap": 1.068
+        }
+      ]
+    }
+  ],
+  "worstC": [
+    {
+      "buildingId": "vw-pra-19n",
+      "buildingKind": "apartments",
+      "buildingName": null,
+      "centre": [
+        382.92,
+        28.61
+      ],
+      "worstOverlap": 4.359,
+      "hits": [
+        {
+          "roadId": "w193810976",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 0
+        },
+        {
+          "roadId": "w1329020070",
+          "roadKind": "secondary",
+          "roadName": "Lokavägen",
+          "roadRef": "205",
+          "role": "main",
+          "roadWidth": 12,
+          "worstOverlap": 4.359
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-nyg-3",
+      "buildingKind": "house",
+      "buildingName": null,
+      "centre": [
+        -45,
+        -75
+      ],
+      "worstOverlap": 3.527,
+      "hits": [
+        {
+          "roadId": "w1239628612",
+          "roadKind": "tertiary",
+          "roadName": "Kyrkogatan",
+          "roadRef": "T 718",
+          "role": "secondary_connector",
+          "roadWidth": 8.6,
+          "worstOverlap": 3.527
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-jarn-9",
+      "buildingKind": "house",
+      "buildingName": null,
+      "centre": [
+        -410,
+        -50
+      ],
+      "worstOverlap": 2.7,
+      "hits": [
+        {
+          "roadId": "w191323431",
+          "roadKind": "residential",
+          "roadName": "Järnvägsgatan",
+          "roadRef": "T 715",
+          "role": "village_street",
+          "roadWidth": 6.3999999999999995,
+          "worstOverlap": 2.7
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-pra-18",
+      "buildingKind": "apartments",
+      "buildingName": null,
+      "centre": [
+        386.5,
+        11.2
+      ],
+      "worstOverlap": 2.568,
+      "hits": [
+        {
+          "roadId": "w1329020070",
+          "roadKind": "secondary",
+          "roadName": "Lokavägen",
+          "roadRef": "205",
+          "role": "main",
+          "roadWidth": 12,
+          "worstOverlap": 2.568
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-jaktakademin",
+      "buildingKind": "house",
+      "buildingName": "Jaktakademin",
+      "centre": [
+        -265,
+        60
+      ],
+      "worstOverlap": 2.189,
+      "hits": [
+        {
+          "roadId": "w1329020064",
+          "roadKind": "residential",
+          "roadName": "Magasinsgatan",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 6.3999999999999995,
+          "worstOverlap": 2.189
+        }
+      ]
+    },
+    {
+      "buildingId": "w1422745011",
+      "buildingKind": "yes",
+      "buildingName": null,
+      "centre": [
+        -86.66,
+        -229.27
+      ],
+      "worstOverlap": 1.828,
+      "hits": [
+        {
+          "roadId": "w1329020065",
+          "roadKind": "tertiary",
+          "roadName": "Kyrkogatan",
+          "roadRef": "T 718",
+          "role": "secondary_connector",
+          "roadWidth": 8.6,
+          "worstOverlap": 1.828
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-hjv-5",
+      "buildingKind": "house",
+      "buildingName": null,
+      "centre": [
+        -350,
+        -160
+      ],
+      "worstOverlap": 1.729,
+      "hits": [
+        {
+          "roadId": "w1329020083",
+          "roadKind": "residential",
+          "roadName": "Hantverksgatan",
+          "roadRef": null,
+          "role": "village_street",
+          "roadWidth": 6.3999999999999995,
+          "worstOverlap": 1.729
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-mag-warehouse",
+      "buildingKind": "industrial",
+      "buildingName": "Magasinsgatan warehouse",
+      "centre": [
+        -420,
+        200
+      ],
+      "worstOverlap": 1.618,
+      "hits": [
+        {
+          "roadId": "w175036243",
+          "roadKind": "residential",
+          "roadName": "Magasinsgatan",
+          "roadRef": null,
+          "role": "village_street",
+          "roadWidth": 6.3999999999999995,
+          "worstOverlap": 1.618
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-barbellclub",
+      "buildingKind": "house",
+      "buildingName": "Barbellclub Bergslagen",
+      "centre": [
+        -280,
+        45
+      ],
+      "worstOverlap": 1.595,
+      "hits": [
+        {
+          "roadId": "w191323432",
+          "roadKind": "residential",
+          "roadName": "Skolgatan",
+          "roadRef": "T 715",
+          "role": "village_street",
+          "roadWidth": 6.3999999999999995,
+          "worstOverlap": 0.694
+        },
+        {
+          "roadId": "w287145632",
+          "roadKind": "residential",
+          "roadName": "Hantverksgatan",
+          "roadRef": null,
+          "role": "village_street",
+          "roadWidth": 6.3999999999999995,
+          "worstOverlap": 1.595
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-kyr-9e-mansard",
+      "buildingKind": "house",
+      "buildingName": "Kyrkogatan east mansard villa",
+      "centre": [
+        -14,
+        5
+      ],
+      "worstOverlap": 1.461,
+      "hits": [
+        {
+          "roadId": "w860753012",
+          "roadKind": "tertiary",
+          "roadName": "Smedsgatan",
+          "roadRef": null,
+          "role": "secondary_connector",
+          "roadWidth": 8.6,
+          "worstOverlap": 1.461
+        }
+      ]
+    }
+  ],
+  "perRoadWidths": [
+    {
+      "id": "w1329020081",
+      "kind": "residential",
+      "name": "Närkesgatan",
+      "ref": null,
+      "role": "village_street",
+      "osmWidth": 13,
+      "wA_133": 13,
+      "wB_carriageway": 4.6,
+      "wC_envelope": 6.3999999999999995,
+      "diffBA": -8.4,
+      "diffCA": -6.6
+    },
+    {
+      "id": "w287145822",
+      "kind": "secondary",
+      "name": null,
+      "ref": "244",
+      "role": "primary",
+      "osmWidth": 7,
+      "wA_133": 7,
+      "wB_carriageway": 10,
+      "wC_envelope": 13.2,
+      "diffBA": 3,
+      "diffCA": 6.2
+    },
+    {
+      "id": "w1083999822",
+      "kind": "secondary",
+      "name": null,
+      "ref": "205",
+      "role": "main",
+      "osmWidth": 6,
+      "wA_133": 6,
+      "wB_carriageway": 9,
+      "wC_envelope": 12,
+      "diffBA": 3,
+      "diffCA": 6
+    },
+    {
+      "id": "w122157691",
+      "kind": "living_street",
+      "name": "Prästgatan",
+      "ref": "T 716",
+      "role": "village_street",
+      "osmWidth": 12,
+      "wA_133": 12,
+      "wB_carriageway": 4.6,
+      "wC_envelope": 6.3999999999999995,
+      "diffBA": -7.4,
+      "diffCA": -5.6
+    },
+    {
+      "id": "w568472821",
+      "kind": "secondary",
+      "name": null,
+      "ref": "205",
+      "role": "main",
+      "osmWidth": 6.5,
+      "wA_133": 6.5,
+      "wB_carriageway": 9,
+      "wC_envelope": 12,
+      "diffBA": 2.5,
+      "diffCA": 5.5
+    },
+    {
+      "id": "w8122751",
+      "kind": "secondary",
+      "name": null,
+      "ref": "244",
+      "role": "primary",
+      "osmWidth": 8,
+      "wA_133": 8,
+      "wB_carriageway": 10,
+      "wC_envelope": 13.2,
+      "diffBA": 2,
+      "diffCA": 5.2
+    },
+    {
+      "id": "w25514870",
+      "kind": "secondary",
+      "name": null,
+      "ref": "244",
+      "role": "primary",
+      "osmWidth": 8,
+      "wA_133": 8,
+      "wB_carriageway": 10,
+      "wC_envelope": 13.2,
+      "diffBA": 2,
+      "diffCA": 5.2
+    },
+    {
+      "id": "w287145821",
+      "kind": "secondary",
+      "name": null,
+      "ref": "244",
+      "role": "primary",
+      "osmWidth": 8,
+      "wA_133": 8,
+      "wB_carriageway": 10,
+      "wC_envelope": 13.2,
+      "diffBA": 2,
+      "diffCA": 5.2
+    },
+    {
+      "id": "w1006216361",
+      "kind": "secondary",
+      "name": null,
+      "ref": "244",
+      "role": "primary",
+      "osmWidth": 8,
+      "wA_133": 8,
+      "wB_carriageway": 10,
+      "wC_envelope": 13.2,
+      "diffBA": 2,
+      "diffCA": 5.2
+    },
+    {
+      "id": "w1006222227",
+      "kind": "secondary",
+      "name": null,
+      "ref": "244",
+      "role": "primary",
+      "osmWidth": 8,
+      "wA_133": 8,
+      "wB_carriageway": 10,
+      "wC_envelope": 13.2,
+      "diffBA": 2,
+      "diffCA": 5.2
+    },
+    {
+      "id": "w568472820",
+      "kind": "secondary",
+      "name": "Lokavägen",
+      "ref": "205",
+      "role": "main",
+      "osmWidth": 7,
+      "wA_133": 7,
+      "wB_carriageway": 9,
+      "wC_envelope": 12,
+      "diffBA": 2,
+      "diffCA": 5
+    },
+    {
+      "id": "w614988987",
+      "kind": "secondary",
+      "name": null,
+      "ref": "205",
+      "role": "main",
+      "osmWidth": 7,
+      "wA_133": 7,
+      "wB_carriageway": 9,
+      "wC_envelope": 12,
+      "diffBA": 2,
+      "diffCA": 5
+    },
+    {
+      "id": "w1006216362",
+      "kind": "secondary",
+      "name": "Lokavägen",
+      "ref": "205",
+      "role": "main",
+      "osmWidth": 7,
+      "wA_133": 7,
+      "wB_carriageway": 9,
+      "wC_envelope": 12,
+      "diffBA": 2,
+      "diffCA": 5
+    },
+    {
+      "id": "w191294488",
+      "kind": "tertiary",
+      "name": null,
+      "ref": "T 782",
+      "role": "secondary_connector",
+      "osmWidth": 4.5,
+      "wA_133": 4.5,
+      "wB_carriageway": 6.2,
+      "wC_envelope": 8.6,
+      "diffBA": 1.7,
+      "diffCA": 4.1
+    },
+    {
+      "id": "w1329020070",
+      "kind": "secondary",
+      "name": "Lokavägen",
+      "ref": "205",
+      "role": "main",
+      "osmWidth": 8,
+      "wA_133": 8,
+      "wB_carriageway": 9,
+      "wC_envelope": 12,
+      "diffBA": 1,
+      "diffCA": 4
+    },
+    {
+      "id": "w287143007",
+      "kind": "residential",
+      "name": "Närkesgatan",
+      "ref": null,
+      "role": "village_street",
+      "osmWidth": 10,
+      "wA_133": 10,
+      "wB_carriageway": 4.6,
+      "wC_envelope": 6.3999999999999995,
+      "diffBA": -5.4,
+      "diffCA": -3.6
+    },
+    {
+      "id": "w1329020079",
+      "kind": "residential",
+      "name": "Skiffergatan",
+      "ref": null,
+      "role": "village_street",
+      "osmWidth": 10,
+      "wA_133": 10,
+      "wB_carriageway": 4.6,
+      "wC_envelope": 6.3999999999999995,
+      "diffBA": -5.4,
+      "diffCA": -3.6
+    },
+    {
+      "id": "w1329020049",
+      "kind": "residential",
+      "name": "Norra Bergvägen",
+      "ref": null,
+      "role": "village_street",
+      "osmWidth": 3,
+      "wA_133": 3,
+      "wB_carriageway": 4.6,
+      "wC_envelope": 6.3999999999999995,
+      "diffBA": 1.6,
+      "diffCA": 3.4
+    },
+    {
+      "id": "w862853198",
+      "kind": "service",
+      "name": null,
+      "ref": null,
+      "role": "service",
+      "osmWidth": 6,
+      "wA_133": 6,
+      "wB_carriageway": 2.8,
+      "wC_envelope": 2.8,
+      "diffBA": -3.2,
+      "diffCA": -3.2
+    },
+    {
+      "id": "w122157684",
+      "kind": "tertiary",
+      "name": "Kyrkogatan",
+      "ref": "T 718",
+      "role": "secondary_connector",
+      "osmWidth": 5.5,
+      "wA_133": 5.5,
+      "wB_carriageway": 6.2,
+      "wC_envelope": 8.6,
+      "diffBA": 0.7,
+      "diffCA": 3.1
+    },
+    {
+      "id": "w860753012",
+      "kind": "tertiary",
+      "name": "Smedsgatan",
+      "ref": null,
+      "role": "secondary_connector",
+      "osmWidth": 5.5,
+      "wA_133": 5.5,
+      "wB_carriageway": 6.2,
+      "wC_envelope": 8.6,
+      "diffBA": 0.7,
+      "diffCA": 3.1
+    },
+    {
+      "id": "w1239628611",
+      "kind": "tertiary",
+      "name": "Kyrkogatan",
+      "ref": "T 718",
+      "role": "secondary_connector",
+      "osmWidth": 5.5,
+      "wA_133": 5.5,
+      "wB_carriageway": 6.2,
+      "wC_envelope": 8.6,
+      "diffBA": 0.7,
+      "diffCA": 3.1
+    },
+    {
+      "id": "w1239628612",
+      "kind": "tertiary",
+      "name": "Kyrkogatan",
+      "ref": "T 718",
+      "role": "secondary_connector",
+      "osmWidth": 5.5,
+      "wA_133": 5.5,
+      "wB_carriageway": 6.2,
+      "wC_envelope": 8.6,
+      "diffBA": 0.7,
+      "diffCA": 3.1
+    },
+    {
+      "id": "w1329020065",
+      "kind": "tertiary",
+      "name": "Kyrkogatan",
+      "ref": "T 718",
+      "role": "secondary_connector",
+      "osmWidth": 5.5,
+      "wA_133": 5.5,
+      "wB_carriageway": 6.2,
+      "wC_envelope": 8.6,
+      "diffBA": 0.7,
+      "diffCA": 3.1
+    },
+    {
+      "id": "w191294543",
+      "kind": "unclassified",
+      "name": "Djupdalshultvägen",
+      "ref": null,
+      "role": "local_street",
+      "osmWidth": null,
+      "wA_133": 4,
+      "wB_carriageway": 5,
+      "wC_envelope": 7,
+      "diffBA": 1,
+      "diffCA": 3
+    },
+    {
+      "id": "w191323434",
+      "kind": "unclassified",
+      "name": null,
+      "ref": null,
+      "role": "local_street",
+      "osmWidth": null,
+      "wA_133": 4,
+      "wB_carriageway": 5,
+      "wC_envelope": 7,
+      "diffBA": 1,
+      "diffCA": 3
+    },
+    {
+      "id": "w193810994",
+      "kind": "unclassified",
+      "name": "Breviksvägen",
+      "ref": null,
+      "role": "local_street",
+      "osmWidth": null,
+      "wA_133": 4,
+      "wB_carriageway": 5,
+      "wC_envelope": 7,
+      "diffBA": 1,
+      "diffCA": 3
+    },
+    {
+      "id": "w193810998",
+      "kind": "unclassified",
+      "name": "Sörälgsvägen",
+      "ref": null,
+      "role": "local_street",
+      "osmWidth": null,
+      "wA_133": 4,
+      "wB_carriageway": 5,
+      "wC_envelope": 7,
+      "diffBA": 1,
+      "diffCA": 3
+    },
+    {
+      "id": "w241108732",
+      "kind": "unclassified",
+      "name": null,
+      "ref": null,
+      "role": "local_street",
+      "osmWidth": null,
+      "wA_133": 4,
+      "wB_carriageway": 5,
+      "wC_envelope": 7,
+      "diffBA": 1,
+      "diffCA": 3
+    },
+    {
+      "id": "w241108733",
+      "kind": "unclassified",
+      "name": "Breviksvägen",
+      "ref": null,
+      "role": "local_street",
+      "osmWidth": null,
+      "wA_133": 4,
+      "wB_carriageway": 5,
+      "wC_envelope": 7,
+      "diffBA": 1,
+      "diffCA": 3
+    }
+  ],
+  "hitsA": [
+    {
+      "buildingId": "w193810933",
+      "buildingKind": "yes",
+      "buildingName": null,
+      "centre": [
+        132,
+        -293.06
+      ],
+      "worstOverlap": 0.035,
+      "hits": [
+        {
+          "roadId": "w193810983",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 3,
+          "worstOverlap": 0.035
+        }
+      ]
+    },
+    {
+      "buildingId": "w193810975",
+      "buildingKind": "university",
+      "buildingName": "Måltidens hus",
+      "centre": [
+        568.76,
+        -83.66
+      ],
+      "worstOverlap": 0.085,
+      "hits": [
+        {
+          "roadId": "w122157682",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 3,
+          "worstOverlap": 0.085
+        }
+      ]
+    },
+    {
+      "buildingId": "w611766160",
+      "buildingKind": "yes",
+      "buildingName": "Herrgården Grythyttan",
+      "centre": [
+        689.1,
+        110.77
+      ],
+      "worstOverlap": 0.146,
+      "hits": [
+        {
+          "roadId": "w1329020044",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 3,
+          "worstOverlap": 0.146
+        }
+      ]
+    },
+    {
+      "buildingId": "w611776645",
+      "buildingKind": "yes",
+      "buildingName": null,
+      "centre": [
+        -408.69,
+        1299.17
+      ],
+      "worstOverlap": 0.821,
+      "hits": [
+        {
+          "roadId": "w1329020037",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 3,
+          "worstOverlap": 0.821
+        }
+      ]
+    },
+    {
+      "buildingId": "w869907964",
+      "buildingKind": "hotel",
+      "buildingName": "Grythyttans Gästgivaregård",
+      "centre": [
+        62.37,
+        39.33
+      ],
+      "worstOverlap": 2.451,
+      "hits": [
+        {
+          "roadId": "w122157691",
+          "roadKind": "living_street",
+          "roadName": "Prästgatan",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 12,
+          "worstOverlap": 2.451
+        },
+        {
+          "roadId": "w1422743879",
+          "roadKind": "residential",
+          "roadName": "Artur Lindqvists gata",
+          "roadRef": null,
+          "role": "village_street",
+          "roadWidth": 4,
+          "worstOverlap": 0.007
+        }
+      ]
+    },
+    {
+      "buildingId": "w869907965",
+      "buildingKind": "yes",
+      "buildingName": null,
+      "centre": [
+        92.14,
+        23.98
+      ],
+      "worstOverlap": 0.263,
+      "hits": [
+        {
+          "roadId": "w869907966",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 3,
+          "worstOverlap": 0.263
+        }
+      ]
+    },
+    {
+      "buildingId": "w869907976",
+      "buildingKind": "yes",
+      "buildingName": null,
+      "centre": [
+        66.84,
+        5.08
+      ],
+      "worstOverlap": 0.262,
+      "hits": [
+        {
+          "roadId": "w122157691",
+          "roadKind": "living_street",
+          "roadName": "Prästgatan",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 12,
+          "worstOverlap": 0.262
+        }
+      ]
+    },
+    {
+      "buildingId": "w869907977",
+      "buildingKind": "yes",
+      "buildingName": null,
+      "centre": [
+        55.57,
+        -5.21
+      ],
+      "worstOverlap": 1.08,
+      "hits": [
+        {
+          "roadId": "w122157691",
+          "roadKind": "living_street",
+          "roadName": "Prästgatan",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 12,
+          "worstOverlap": 1.08
+        }
+      ]
+    },
+    {
+      "buildingId": "w870510826",
+      "buildingKind": "industrial",
+      "buildingName": null,
+      "centre": [
+        -623.64,
+        -268.4
+      ],
+      "worstOverlap": 1.5,
+      "hits": [
+        {
+          "roadId": "w870510820",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 3,
+          "worstOverlap": 1.5
+        },
+        {
+          "roadId": "w870510829",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 3,
+          "worstOverlap": 1.5
+        },
+        {
+          "roadId": "w1329020075",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 3,
+          "worstOverlap": 1.5
+        }
+      ]
+    },
+    {
+      "buildingId": "w870510827",
+      "buildingKind": "industrial",
+      "buildingName": null,
+      "centre": [
+        -635.96,
+        -328.68
+      ],
+      "worstOverlap": 0.032,
+      "hits": [
+        {
+          "roadId": "w1329020076",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 3,
+          "worstOverlap": 0.032
+        }
+      ]
+    },
+    {
+      "buildingId": "w870510828",
+      "buildingKind": "industrial",
+      "buildingName": null,
+      "centre": [
+        -648.71,
+        -369.18
+      ],
+      "worstOverlap": 1.5,
+      "hits": [
+        {
+          "roadId": "w870510829",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 3,
+          "worstOverlap": 1.5
+        },
+        {
+          "roadId": "w1329020076",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 3,
+          "worstOverlap": 1.5
+        },
+        {
+          "roadId": "w1329020077",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 3,
+          "worstOverlap": 1.5
+        }
+      ]
+    },
+    {
+      "buildingId": "w934308171",
+      "buildingKind": "yes",
+      "buildingName": null,
+      "centre": [
+        -242.85,
+        -466.5
+      ],
+      "worstOverlap": 0.054,
+      "hits": [
+        {
+          "roadId": "w934308173",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 3,
+          "worstOverlap": 0.054
+        }
+      ]
+    },
+    {
+      "buildingId": "w934308172",
+      "buildingKind": "yes",
+      "buildingName": null,
+      "centre": [
+        -225.53,
+        -414.13
+      ],
+      "worstOverlap": 0.03,
+      "hits": [
+        {
+          "roadId": "w934308173",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 3,
+          "worstOverlap": 0.03
+        }
+      ]
+    },
+    {
+      "buildingId": "w1422743880",
+      "buildingKind": "yes",
+      "buildingName": "Länsmansgården",
+      "centre": [
+        -30.11,
+        75.64
+      ],
+      "worstOverlap": 1.366,
+      "hits": [
+        {
+          "roadId": "w862853244",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 3,
+          "worstOverlap": 1.366
+        }
+      ]
+    },
+    {
+      "buildingId": "w1422745011",
+      "buildingKind": "yes",
+      "buildingName": null,
+      "centre": [
+        -86.66,
+        -229.27
+      ],
+      "worstOverlap": 0.278,
+      "hits": [
+        {
+          "roadId": "w1329020065",
+          "roadKind": "tertiary",
+          "roadName": "Kyrkogatan",
+          "roadRef": "T 718",
+          "role": "secondary_connector",
+          "roadWidth": 5.5,
+          "worstOverlap": 0.278
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-skg-16",
+      "buildingKind": "apartments",
+      "buildingName": null,
+      "centre": [
+        -215,
+        15
+      ],
+      "worstOverlap": 0,
+      "hits": [
+        {
+          "roadId": "w287145630",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 3,
+          "worstOverlap": 0
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-bv-4",
+      "buildingKind": "house",
+      "buildingName": null,
+      "centre": [
+        -500,
+        297
+      ],
+      "worstOverlap": 0.983,
+      "hits": [
+        {
+          "roadId": "w287143007",
+          "roadKind": "residential",
+          "roadName": "Närkesgatan",
+          "roadRef": null,
+          "role": "village_street",
+          "roadWidth": 10,
+          "worstOverlap": 0.983
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-pra-8",
+      "buildingKind": "house",
+      "buildingName": null,
+      "centre": [
+        305,
+        30
+      ],
+      "worstOverlap": 0.132,
+      "hits": [
+        {
+          "roadId": "w122157689",
+          "roadKind": "residential",
+          "roadName": "Prästgatan",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 5,
+          "worstOverlap": 0.132
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-pra-18",
+      "buildingKind": "apartments",
+      "buildingName": null,
+      "centre": [
+        386.5,
+        11.2
+      ],
+      "worstOverlap": 0.568,
+      "hits": [
+        {
+          "roadId": "w1329020070",
+          "roadKind": "secondary",
+          "roadName": "Lokavägen",
+          "roadRef": "205",
+          "role": "main",
+          "roadWidth": 8,
+          "worstOverlap": 0.568
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-pra-21",
+      "buildingKind": "apartments",
+      "buildingName": null,
+      "centre": [
+        370,
+        5
+      ],
+      "worstOverlap": 0,
+      "hits": [
+        {
+          "roadId": "w193810976",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 3,
+          "worstOverlap": 0
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-pra-djurskyddet",
+      "buildingKind": "house",
+      "buildingName": "Djurskyddet Vilsna Tassar Hällefors",
+      "centre": [
+        355,
+        15
+      ],
+      "worstOverlap": 1.327,
+      "hits": [
+        {
+          "roadId": "w193810976",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 3,
+          "worstOverlap": 1.327
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-nyg-3",
+      "buildingKind": "house",
+      "buildingName": null,
+      "centre": [
+        -45,
+        -75
+      ],
+      "worstOverlap": 1.977,
+      "hits": [
+        {
+          "roadId": "w1239628612",
+          "roadKind": "tertiary",
+          "roadName": "Kyrkogatan",
+          "roadRef": "T 718",
+          "role": "secondary_connector",
+          "roadWidth": 5.5,
+          "worstOverlap": 1.977
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-hjv-5",
+      "buildingKind": "house",
+      "buildingName": null,
+      "centre": [
+        -350,
+        -160
+      ],
+      "worstOverlap": 1.529,
+      "hits": [
+        {
+          "roadId": "w1329020083",
+          "roadKind": "residential",
+          "roadName": "Hantverksgatan",
+          "roadRef": null,
+          "role": "village_street",
+          "roadWidth": 6,
+          "worstOverlap": 1.529
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-sorgarden",
+      "buildingKind": "apartments",
+      "buildingName": "Sörgårdens Äldreboende",
+      "centre": [
+        -320,
+        -195
+      ],
+      "worstOverlap": 0,
+      "hits": [
+        {
+          "roadId": "w862853201",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 3,
+          "worstOverlap": 0
+        },
+        {
+          "roadId": "w862853202",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 3,
+          "worstOverlap": 0
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-jaktakademin",
+      "buildingKind": "house",
+      "buildingName": "Jaktakademin",
+      "centre": [
+        -265,
+        60
+      ],
+      "worstOverlap": 1.739,
+      "hits": [
+        {
+          "roadId": "w1329020064",
+          "roadKind": "residential",
+          "roadName": "Magasinsgatan",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 5.5,
+          "worstOverlap": 1.739
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-barbellclub",
+      "buildingKind": "house",
+      "buildingName": "Barbellclub Bergslagen",
+      "centre": [
+        -280,
+        45
+      ],
+      "worstOverlap": 0.395,
+      "hits": [
+        {
+          "roadId": "w191323432",
+          "roadKind": "residential",
+          "roadName": "Skolgatan",
+          "roadRef": "T 715",
+          "role": "village_street",
+          "roadWidth": 5,
+          "worstOverlap": 0
+        },
+        {
+          "roadId": "w287145632",
+          "roadKind": "residential",
+          "roadName": "Hantverksgatan",
+          "roadRef": null,
+          "role": "village_street",
+          "roadWidth": 4,
+          "worstOverlap": 0.395
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-forskola",
+      "buildingKind": "house",
+      "buildingName": "Grythyttans förskola",
+      "centre": [
+        -215,
+        -250
+      ],
+      "worstOverlap": 0.425,
+      "hits": [
+        {
+          "roadId": "w287145634",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 3,
+          "worstOverlap": 0.425
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-csvwellness",
+      "buildingKind": "house",
+      "buildingName": "CSVWellness",
+      "centre": [
+        -882,
+        239
+      ],
+      "worstOverlap": 0,
+      "hits": [
+        {
+          "roadId": "w1329020035",
+          "roadKind": "residential",
+          "roadName": "Åsgatan",
+          "roadRef": null,
+          "role": "residential",
+          "roadWidth": 4,
+          "worstOverlap": 0
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-kyr-torget-lh",
+      "buildingKind": "house",
+      "buildingName": "Torget long-house cluster (west/south edge)",
+      "centre": [
+        -18,
+        -18
+      ],
+      "worstOverlap": 2.529,
+      "hits": [
+        {
+          "roadId": "w122157691",
+          "roadKind": "living_street",
+          "roadName": "Prästgatan",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 12,
+          "worstOverlap": 2.529
+        },
+        {
+          "roadId": "w860753012",
+          "roadKind": "tertiary",
+          "roadName": "Smedsgatan",
+          "roadRef": null,
+          "role": "secondary_connector",
+          "roadWidth": 5.5,
+          "worstOverlap": 0
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-torget-kyrkbacken-pair",
+      "buildingKind": "house",
+      "buildingName": "2 Kyrkbacken historic pair",
+      "centre": [
+        -42,
+        -40
+      ],
+      "worstOverlap": 1.528,
+      "hits": [
+        {
+          "roadId": "w122157691",
+          "roadKind": "living_street",
+          "roadName": "Prästgatan",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 12,
+          "worstOverlap": 1.528
+        },
+        {
+          "roadId": "w860753009",
+          "roadKind": "residential",
+          "roadName": "Kyrkbacken",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 5.5,
+          "worstOverlap": 0.433
+        },
+        {
+          "roadId": "w1239628611",
+          "roadKind": "tertiary",
+          "roadName": "Kyrkogatan",
+          "roadRef": "T 718",
+          "role": "secondary_connector",
+          "roadWidth": 5.5,
+          "worstOverlap": 0
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-torget-west-corner",
+      "buildingKind": "house",
+      "buildingName": "Torget west corner",
+      "centre": [
+        -52,
+        -30
+      ],
+      "worstOverlap": 0.611,
+      "hits": [
+        {
+          "roadId": "w860753009",
+          "roadKind": "residential",
+          "roadName": "Kyrkbacken",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 5.5,
+          "worstOverlap": 0.611
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-torget-east-barn",
+      "buildingKind": "outbuilding",
+      "buildingName": null,
+      "centre": [
+        65,
+        15
+      ],
+      "worstOverlap": 3.484,
+      "hits": [
+        {
+          "roadId": "w122157691",
+          "roadKind": "living_street",
+          "roadName": "Prästgatan",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 12,
+          "worstOverlap": 3.484
+        },
+        {
+          "roadId": "w1329020068",
+          "roadKind": "living_street",
+          "roadName": "Prästgatan",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 5,
+          "worstOverlap": 0
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-pra-15s",
+      "buildingKind": "house",
+      "buildingName": null,
+      "centre": [
+        352,
+        5
+      ],
+      "worstOverlap": 1.352,
+      "hits": [
+        {
+          "roadId": "w193810976",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 3,
+          "worstOverlap": 1.352
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-pra-19n",
+      "buildingKind": "apartments",
+      "buildingName": null,
+      "centre": [
+        382.92,
+        28.61
+      ],
+      "worstOverlap": 2.359,
+      "hits": [
+        {
+          "roadId": "w193810976",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 3,
+          "worstOverlap": 0.011
+        },
+        {
+          "roadId": "w1329020070",
+          "roadKind": "secondary",
+          "roadName": "Lokavägen",
+          "roadRef": "205",
+          "role": "main",
+          "roadWidth": 8,
+          "worstOverlap": 2.359
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-stn-11",
+      "buildingKind": "house",
+      "buildingName": null,
+      "centre": [
+        -200,
+        -235
+      ],
+      "worstOverlap": 0,
+      "hits": [
+        {
+          "roadId": "w287145634",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 3,
+          "worstOverlap": 0
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-jarn-9",
+      "buildingKind": "house",
+      "buildingName": null,
+      "centre": [
+        -410,
+        -50
+      ],
+      "worstOverlap": 2,
+      "hits": [
+        {
+          "roadId": "w191323431",
+          "roadKind": "residential",
+          "roadName": "Järnvägsgatan",
+          "roadRef": "T 715",
+          "role": "village_street",
+          "roadWidth": 5,
+          "worstOverlap": 2
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-mag-warehouse",
+      "buildingKind": "industrial",
+      "buildingName": "Magasinsgatan warehouse",
+      "centre": [
+        -420,
+        200
+      ],
+      "worstOverlap": 1.168,
+      "hits": [
+        {
+          "roadId": "w175036243",
+          "roadKind": "residential",
+          "roadName": "Magasinsgatan",
+          "roadRef": null,
+          "role": "village_street",
+          "roadWidth": 5.5,
+          "worstOverlap": 1.168
+        }
+      ]
+    }
+  ],
+  "hitsB": [
+    {
+      "buildingId": "w611766160",
+      "buildingKind": "yes",
+      "buildingName": "Herrgården Grythyttan",
+      "centre": [
+        689.1,
+        110.77
+      ],
+      "worstOverlap": 0.046,
+      "hits": [
+        {
+          "roadId": "w1329020044",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 0.046
+        }
+      ]
+    },
+    {
+      "buildingId": "w611776645",
+      "buildingKind": "yes",
+      "buildingName": null,
+      "centre": [
+        -408.69,
+        1299.17
+      ],
+      "worstOverlap": 0.721,
+      "hits": [
+        {
+          "roadId": "w1329020037",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 0.721
+        }
+      ]
+    },
+    {
+      "buildingId": "w869907964",
+      "buildingKind": "hotel",
+      "buildingName": "Grythyttans Gästgivaregård",
+      "centre": [
+        62.37,
+        39.33
+      ],
+      "worstOverlap": 0.307,
+      "hits": [
+        {
+          "roadId": "w1422743879",
+          "roadKind": "residential",
+          "roadName": "Artur Lindqvists gata",
+          "roadRef": null,
+          "role": "village_street",
+          "roadWidth": 4.6,
+          "worstOverlap": 0.307
+        }
+      ]
+    },
+    {
+      "buildingId": "w869907965",
+      "buildingKind": "yes",
+      "buildingName": null,
+      "centre": [
+        92.14,
+        23.98
+      ],
+      "worstOverlap": 0.163,
+      "hits": [
+        {
+          "roadId": "w869907966",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 0.163
+        }
+      ]
+    },
+    {
+      "buildingId": "w870510826",
+      "buildingKind": "industrial",
+      "buildingName": null,
+      "centre": [
+        -623.64,
+        -268.4
+      ],
+      "worstOverlap": 1.4,
+      "hits": [
+        {
+          "roadId": "w870510820",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 1.4
+        },
+        {
+          "roadId": "w870510829",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 1.4
+        },
+        {
+          "roadId": "w1329020075",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 1.4
+        }
+      ]
+    },
+    {
+      "buildingId": "w870510828",
+      "buildingKind": "industrial",
+      "buildingName": null,
+      "centre": [
+        -648.71,
+        -369.18
+      ],
+      "worstOverlap": 1.4,
+      "hits": [
+        {
+          "roadId": "w870510829",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 1.4
+        },
+        {
+          "roadId": "w1329020076",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 1.4
+        },
+        {
+          "roadId": "w1329020077",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 1.4
+        }
+      ]
+    },
+    {
+      "buildingId": "w870510839",
+      "buildingKind": "industrial",
+      "buildingName": null,
+      "centre": [
+        -498.88,
+        -170.35
+      ],
+      "worstOverlap": 0.083,
+      "hits": [
+        {
+          "roadId": "w948705766",
+          "roadKind": "unclassified",
+          "roadName": null,
+          "roadRef": null,
+          "role": "local_street",
+          "roadWidth": 5,
+          "worstOverlap": 0.083
+        }
+      ]
+    },
+    {
+      "buildingId": "w1422743880",
+      "buildingKind": "yes",
+      "buildingName": "Länsmansgården",
+      "centre": [
+        -30.11,
+        75.64
+      ],
+      "worstOverlap": 1.266,
+      "hits": [
+        {
+          "roadId": "w862853244",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 1.266
+        }
+      ]
+    },
+    {
+      "buildingId": "w1422745011",
+      "buildingKind": "yes",
+      "buildingName": null,
+      "centre": [
+        -86.66,
+        -229.27
+      ],
+      "worstOverlap": 0.628,
+      "hits": [
+        {
+          "roadId": "w1329020065",
+          "roadKind": "tertiary",
+          "roadName": "Kyrkogatan",
+          "roadRef": "T 718",
+          "role": "secondary_connector",
+          "roadWidth": 6.2,
+          "worstOverlap": 0.628
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-skg-16",
+      "buildingKind": "apartments",
+      "buildingName": null,
+      "centre": [
+        -215,
+        15
+      ],
+      "worstOverlap": 0,
+      "hits": [
+        {
+          "roadId": "w287145630",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 0
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-pra-18",
+      "buildingKind": "apartments",
+      "buildingName": null,
+      "centre": [
+        386.5,
+        11.2
+      ],
+      "worstOverlap": 1.068,
+      "hits": [
+        {
+          "roadId": "w1329020070",
+          "roadKind": "secondary",
+          "roadName": "Lokavägen",
+          "roadRef": "205",
+          "role": "main",
+          "roadWidth": 9,
+          "worstOverlap": 1.068
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-pra-21",
+      "buildingKind": "apartments",
+      "buildingName": null,
+      "centre": [
+        370,
+        5
+      ],
+      "worstOverlap": 0,
+      "hits": [
+        {
+          "roadId": "w193810976",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 0
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-pra-djurskyddet",
+      "buildingKind": "house",
+      "buildingName": "Djurskyddet Vilsna Tassar Hällefors",
+      "centre": [
+        355,
+        15
+      ],
+      "worstOverlap": 1.227,
+      "hits": [
+        {
+          "roadId": "w193810976",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 1.227
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-nyg-3",
+      "buildingKind": "house",
+      "buildingName": null,
+      "centre": [
+        -45,
+        -75
+      ],
+      "worstOverlap": 2.327,
+      "hits": [
+        {
+          "roadId": "w1239628612",
+          "roadKind": "tertiary",
+          "roadName": "Kyrkogatan",
+          "roadRef": "T 718",
+          "role": "secondary_connector",
+          "roadWidth": 6.2,
+          "worstOverlap": 2.327
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-hjv-5",
+      "buildingKind": "house",
+      "buildingName": null,
+      "centre": [
+        -350,
+        -160
+      ],
+      "worstOverlap": 0.829,
+      "hits": [
+        {
+          "roadId": "w1329020083",
+          "roadKind": "residential",
+          "roadName": "Hantverksgatan",
+          "roadRef": null,
+          "role": "village_street",
+          "roadWidth": 4.6,
+          "worstOverlap": 0.829
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-sorgarden",
+      "buildingKind": "apartments",
+      "buildingName": "Sörgårdens Äldreboende",
+      "centre": [
+        -320,
+        -195
+      ],
+      "worstOverlap": 0,
+      "hits": [
+        {
+          "roadId": "w862853201",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 0
+        },
+        {
+          "roadId": "w862853202",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 0
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-jaktakademin",
+      "buildingKind": "house",
+      "buildingName": "Jaktakademin",
+      "centre": [
+        -265,
+        60
+      ],
+      "worstOverlap": 1.289,
+      "hits": [
+        {
+          "roadId": "w1329020064",
+          "roadKind": "residential",
+          "roadName": "Magasinsgatan",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 4.6,
+          "worstOverlap": 1.289
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-barbellclub",
+      "buildingKind": "house",
+      "buildingName": "Barbellclub Bergslagen",
+      "centre": [
+        -280,
+        45
+      ],
+      "worstOverlap": 0.695,
+      "hits": [
+        {
+          "roadId": "w191323432",
+          "roadKind": "residential",
+          "roadName": "Skolgatan",
+          "roadRef": "T 715",
+          "role": "village_street",
+          "roadWidth": 4.6,
+          "worstOverlap": 0
+        },
+        {
+          "roadId": "w287145632",
+          "roadKind": "residential",
+          "roadName": "Hantverksgatan",
+          "roadRef": null,
+          "role": "village_street",
+          "roadWidth": 4.6,
+          "worstOverlap": 0.695
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-forskola",
+      "buildingKind": "house",
+      "buildingName": "Grythyttans förskola",
+      "centre": [
+        -215,
+        -250
+      ],
+      "worstOverlap": 0.325,
+      "hits": [
+        {
+          "roadId": "w287145634",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 0.325
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-csvwellness",
+      "buildingKind": "house",
+      "buildingName": "CSVWellness",
+      "centre": [
+        -882,
+        239
+      ],
+      "worstOverlap": 0,
+      "hits": [
+        {
+          "roadId": "w1329020035",
+          "roadKind": "residential",
+          "roadName": "Åsgatan",
+          "roadRef": null,
+          "role": "residential",
+          "roadWidth": 3.6,
+          "worstOverlap": 0
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-kyr-torget-lh",
+      "buildingKind": "house",
+      "buildingName": "Torget long-house cluster (west/south edge)",
+      "centre": [
+        -18,
+        -18
+      ],
+      "worstOverlap": 0,
+      "hits": [
+        {
+          "roadId": "w122157691",
+          "roadKind": "living_street",
+          "roadName": "Prästgatan",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 4.6,
+          "worstOverlap": 0
+        },
+        {
+          "roadId": "w860753012",
+          "roadKind": "tertiary",
+          "roadName": "Smedsgatan",
+          "roadRef": null,
+          "role": "secondary_connector",
+          "roadWidth": 6.2,
+          "worstOverlap": 0
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-torget-kyrkbacken-pair",
+      "buildingKind": "house",
+      "buildingName": "2 Kyrkbacken historic pair",
+      "centre": [
+        -42,
+        -40
+      ],
+      "worstOverlap": 0,
+      "hits": [
+        {
+          "roadId": "w860753009",
+          "roadKind": "residential",
+          "roadName": "Kyrkbacken",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 4.6,
+          "worstOverlap": 0
+        },
+        {
+          "roadId": "w1239628611",
+          "roadKind": "tertiary",
+          "roadName": "Kyrkogatan",
+          "roadRef": "T 718",
+          "role": "secondary_connector",
+          "roadWidth": 6.2,
+          "worstOverlap": 0
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-torget-west-corner",
+      "buildingKind": "house",
+      "buildingName": "Torget west corner",
+      "centre": [
+        -52,
+        -30
+      ],
+      "worstOverlap": 0.161,
+      "hits": [
+        {
+          "roadId": "w860753009",
+          "roadKind": "residential",
+          "roadName": "Kyrkbacken",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 4.6,
+          "worstOverlap": 0.161
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-torget-east-barn",
+      "buildingKind": "outbuilding",
+      "buildingName": null,
+      "centre": [
+        65,
+        15
+      ],
+      "worstOverlap": 0,
+      "hits": [
+        {
+          "roadId": "w122157691",
+          "roadKind": "living_street",
+          "roadName": "Prästgatan",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 4.6,
+          "worstOverlap": 0
+        },
+        {
+          "roadId": "w1329020068",
+          "roadKind": "living_street",
+          "roadName": "Prästgatan",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 4.6,
+          "worstOverlap": 0
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-pra-15s",
+      "buildingKind": "house",
+      "buildingName": null,
+      "centre": [
+        352,
+        5
+      ],
+      "worstOverlap": 1.252,
+      "hits": [
+        {
+          "roadId": "w193810976",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 1.252
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-pra-19n",
+      "buildingKind": "apartments",
+      "buildingName": null,
+      "centre": [
+        382.92,
+        28.61
+      ],
+      "worstOverlap": 2.859,
+      "hits": [
+        {
+          "roadId": "w193810976",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 0
+        },
+        {
+          "roadId": "w1329020070",
+          "roadKind": "secondary",
+          "roadName": "Lokavägen",
+          "roadRef": "205",
+          "role": "main",
+          "roadWidth": 9,
+          "worstOverlap": 2.859
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-stn-11",
+      "buildingKind": "house",
+      "buildingName": null,
+      "centre": [
+        -200,
+        -235
+      ],
+      "worstOverlap": 0,
+      "hits": [
+        {
+          "roadId": "w287145634",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 0
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-jarn-9",
+      "buildingKind": "house",
+      "buildingName": null,
+      "centre": [
+        -410,
+        -50
+      ],
+      "worstOverlap": 1.8,
+      "hits": [
+        {
+          "roadId": "w191323431",
+          "roadKind": "residential",
+          "roadName": "Järnvägsgatan",
+          "roadRef": "T 715",
+          "role": "village_street",
+          "roadWidth": 4.6,
+          "worstOverlap": 1.8
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-mag-warehouse",
+      "buildingKind": "industrial",
+      "buildingName": "Magasinsgatan warehouse",
+      "centre": [
+        -420,
+        200
+      ],
+      "worstOverlap": 0.718,
+      "hits": [
+        {
+          "roadId": "w175036243",
+          "roadKind": "residential",
+          "roadName": "Magasinsgatan",
+          "roadRef": null,
+          "role": "village_street",
+          "roadWidth": 4.6,
+          "worstOverlap": 0.718
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-kyr-9e-mansard",
+      "buildingKind": "house",
+      "buildingName": "Kyrkogatan east mansard villa",
+      "centre": [
+        -14,
+        5
+      ],
+      "worstOverlap": 0.261,
+      "hits": [
+        {
+          "roadId": "w860753012",
+          "roadKind": "tertiary",
+          "roadName": "Smedsgatan",
+          "roadRef": null,
+          "role": "secondary_connector",
+          "roadWidth": 6.2,
+          "worstOverlap": 0.261
+        }
+      ]
+    }
+  ],
+  "hitsC": [
+    {
+      "buildingId": "w611766160",
+      "buildingKind": "yes",
+      "buildingName": "Herrgården Grythyttan",
+      "centre": [
+        689.1,
+        110.77
+      ],
+      "worstOverlap": 0.046,
+      "hits": [
+        {
+          "roadId": "w1329020044",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 0.046
+        }
+      ]
+    },
+    {
+      "buildingId": "w611776645",
+      "buildingKind": "yes",
+      "buildingName": null,
+      "centre": [
+        -408.69,
+        1299.17
+      ],
+      "worstOverlap": 0.721,
+      "hits": [
+        {
+          "roadId": "w1329020037",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 0.721
+        }
+      ]
+    },
+    {
+      "buildingId": "w869907963",
+      "buildingKind": "yes",
+      "buildingName": null,
+      "centre": [
+        45.87,
+        47.56
+      ],
+      "worstOverlap": 0.686,
+      "hits": [
+        {
+          "roadId": "w1422743879",
+          "roadKind": "residential",
+          "roadName": "Artur Lindqvists gata",
+          "roadRef": null,
+          "role": "village_street",
+          "roadWidth": 6.3999999999999995,
+          "worstOverlap": 0.686
+        }
+      ]
+    },
+    {
+      "buildingId": "w869907964",
+      "buildingKind": "hotel",
+      "buildingName": "Grythyttans Gästgivaregård",
+      "centre": [
+        62.37,
+        39.33
+      ],
+      "worstOverlap": 1.207,
+      "hits": [
+        {
+          "roadId": "w1422743879",
+          "roadKind": "residential",
+          "roadName": "Artur Lindqvists gata",
+          "roadRef": null,
+          "role": "village_street",
+          "roadWidth": 6.3999999999999995,
+          "worstOverlap": 1.207
+        }
+      ]
+    },
+    {
+      "buildingId": "w869907965",
+      "buildingKind": "yes",
+      "buildingName": null,
+      "centre": [
+        92.14,
+        23.98
+      ],
+      "worstOverlap": 0.163,
+      "hits": [
+        {
+          "roadId": "w869907966",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 0.163
+        }
+      ]
+    },
+    {
+      "buildingId": "w870510826",
+      "buildingKind": "industrial",
+      "buildingName": null,
+      "centre": [
+        -623.64,
+        -268.4
+      ],
+      "worstOverlap": 1.4,
+      "hits": [
+        {
+          "roadId": "w870510820",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 1.4
+        },
+        {
+          "roadId": "w870510829",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 1.4
+        },
+        {
+          "roadId": "w1329020075",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 1.4
+        }
+      ]
+    },
+    {
+      "buildingId": "w870510828",
+      "buildingKind": "industrial",
+      "buildingName": null,
+      "centre": [
+        -648.71,
+        -369.18
+      ],
+      "worstOverlap": 1.4,
+      "hits": [
+        {
+          "roadId": "w870510829",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 1.4
+        },
+        {
+          "roadId": "w1329020076",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 1.4
+        },
+        {
+          "roadId": "w1329020077",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 1.4
+        }
+      ]
+    },
+    {
+      "buildingId": "w870510839",
+      "buildingKind": "industrial",
+      "buildingName": null,
+      "centre": [
+        -498.88,
+        -170.35
+      ],
+      "worstOverlap": 1.083,
+      "hits": [
+        {
+          "roadId": "w948705766",
+          "roadKind": "unclassified",
+          "roadName": null,
+          "roadRef": null,
+          "role": "local_street",
+          "roadWidth": 7,
+          "worstOverlap": 1.083
+        }
+      ]
+    },
+    {
+      "buildingId": "w1422743880",
+      "buildingKind": "yes",
+      "buildingName": "Länsmansgården",
+      "centre": [
+        -30.11,
+        75.64
+      ],
+      "worstOverlap": 1.266,
+      "hits": [
+        {
+          "roadId": "w862853244",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 1.266
+        }
+      ]
+    },
+    {
+      "buildingId": "w1422745011",
+      "buildingKind": "yes",
+      "buildingName": null,
+      "centre": [
+        -86.66,
+        -229.27
+      ],
+      "worstOverlap": 1.828,
+      "hits": [
+        {
+          "roadId": "w1329020065",
+          "roadKind": "tertiary",
+          "roadName": "Kyrkogatan",
+          "roadRef": "T 718",
+          "role": "secondary_connector",
+          "roadWidth": 8.6,
+          "worstOverlap": 1.828
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-skg-16",
+      "buildingKind": "apartments",
+      "buildingName": null,
+      "centre": [
+        -215,
+        15
+      ],
+      "worstOverlap": 0,
+      "hits": [
+        {
+          "roadId": "w287145630",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 0
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-pra-8",
+      "buildingKind": "house",
+      "buildingName": null,
+      "centre": [
+        305,
+        30
+      ],
+      "worstOverlap": 0.832,
+      "hits": [
+        {
+          "roadId": "w122157689",
+          "roadKind": "residential",
+          "roadName": "Prästgatan",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 6.3999999999999995,
+          "worstOverlap": 0.832
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-pra-18",
+      "buildingKind": "apartments",
+      "buildingName": null,
+      "centre": [
+        386.5,
+        11.2
+      ],
+      "worstOverlap": 2.568,
+      "hits": [
+        {
+          "roadId": "w1329020070",
+          "roadKind": "secondary",
+          "roadName": "Lokavägen",
+          "roadRef": "205",
+          "role": "main",
+          "roadWidth": 12,
+          "worstOverlap": 2.568
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-pra-21",
+      "buildingKind": "apartments",
+      "buildingName": null,
+      "centre": [
+        370,
+        5
+      ],
+      "worstOverlap": 0,
+      "hits": [
+        {
+          "roadId": "w193810976",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 0
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-pra-djurskyddet",
+      "buildingKind": "house",
+      "buildingName": "Djurskyddet Vilsna Tassar Hällefors",
+      "centre": [
+        355,
+        15
+      ],
+      "worstOverlap": 1.227,
+      "hits": [
+        {
+          "roadId": "w193810976",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 1.227
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-nyg-3",
+      "buildingKind": "house",
+      "buildingName": null,
+      "centre": [
+        -45,
+        -75
+      ],
+      "worstOverlap": 3.527,
+      "hits": [
+        {
+          "roadId": "w1239628612",
+          "roadKind": "tertiary",
+          "roadName": "Kyrkogatan",
+          "roadRef": "T 718",
+          "role": "secondary_connector",
+          "roadWidth": 8.6,
+          "worstOverlap": 3.527
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-hjv-5",
+      "buildingKind": "house",
+      "buildingName": null,
+      "centre": [
+        -350,
+        -160
+      ],
+      "worstOverlap": 1.729,
+      "hits": [
+        {
+          "roadId": "w1329020083",
+          "roadKind": "residential",
+          "roadName": "Hantverksgatan",
+          "roadRef": null,
+          "role": "village_street",
+          "roadWidth": 6.3999999999999995,
+          "worstOverlap": 1.729
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-sorgarden",
+      "buildingKind": "apartments",
+      "buildingName": "Sörgårdens Äldreboende",
+      "centre": [
+        -320,
+        -195
+      ],
+      "worstOverlap": 0,
+      "hits": [
+        {
+          "roadId": "w862853201",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 0
+        },
+        {
+          "roadId": "w862853202",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 0
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-jaktakademin",
+      "buildingKind": "house",
+      "buildingName": "Jaktakademin",
+      "centre": [
+        -265,
+        60
+      ],
+      "worstOverlap": 2.189,
+      "hits": [
+        {
+          "roadId": "w1329020064",
+          "roadKind": "residential",
+          "roadName": "Magasinsgatan",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 6.3999999999999995,
+          "worstOverlap": 2.189
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-barbellclub",
+      "buildingKind": "house",
+      "buildingName": "Barbellclub Bergslagen",
+      "centre": [
+        -280,
+        45
+      ],
+      "worstOverlap": 1.595,
+      "hits": [
+        {
+          "roadId": "w191323432",
+          "roadKind": "residential",
+          "roadName": "Skolgatan",
+          "roadRef": "T 715",
+          "role": "village_street",
+          "roadWidth": 6.3999999999999995,
+          "worstOverlap": 0.694
+        },
+        {
+          "roadId": "w287145632",
+          "roadKind": "residential",
+          "roadName": "Hantverksgatan",
+          "roadRef": null,
+          "role": "village_street",
+          "roadWidth": 6.3999999999999995,
+          "worstOverlap": 1.595
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-forskola",
+      "buildingKind": "house",
+      "buildingName": "Grythyttans förskola",
+      "centre": [
+        -215,
+        -250
+      ],
+      "worstOverlap": 0.325,
+      "hits": [
+        {
+          "roadId": "w287145634",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 0.325
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-csvwellness",
+      "buildingKind": "house",
+      "buildingName": "CSVWellness",
+      "centre": [
+        -882,
+        239
+      ],
+      "worstOverlap": 0,
+      "hits": [
+        {
+          "roadId": "w1329020035",
+          "roadKind": "residential",
+          "roadName": "Åsgatan",
+          "roadRef": null,
+          "role": "residential",
+          "roadWidth": 3.6,
+          "worstOverlap": 0
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-kyr-torget-lh",
+      "buildingKind": "house",
+      "buildingName": "Torget long-house cluster (west/south edge)",
+      "centre": [
+        -18,
+        -18
+      ],
+      "worstOverlap": 0.417,
+      "hits": [
+        {
+          "roadId": "w122157681",
+          "roadKind": "residential",
+          "roadName": "Torget",
+          "roadRef": null,
+          "role": "village_street",
+          "roadWidth": 6.3999999999999995,
+          "worstOverlap": 0.417
+        },
+        {
+          "roadId": "w122157691",
+          "roadKind": "living_street",
+          "roadName": "Prästgatan",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 6.3999999999999995,
+          "worstOverlap": 0
+        },
+        {
+          "roadId": "w860753012",
+          "roadKind": "tertiary",
+          "roadName": "Smedsgatan",
+          "roadRef": null,
+          "role": "secondary_connector",
+          "roadWidth": 8.6,
+          "worstOverlap": 0
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-torget-kyrkbacken-pair",
+      "buildingKind": "house",
+      "buildingName": "2 Kyrkbacken historic pair",
+      "centre": [
+        -42,
+        -40
+      ],
+      "worstOverlap": 0.883,
+      "hits": [
+        {
+          "roadId": "w860753009",
+          "roadKind": "residential",
+          "roadName": "Kyrkbacken",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 6.3999999999999995,
+          "worstOverlap": 0.883
+        },
+        {
+          "roadId": "w1239628611",
+          "roadKind": "tertiary",
+          "roadName": "Kyrkogatan",
+          "roadRef": "T 718",
+          "role": "secondary_connector",
+          "roadWidth": 8.6,
+          "worstOverlap": 0.616
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-torget-west-corner",
+      "buildingKind": "house",
+      "buildingName": "Torget west corner",
+      "centre": [
+        -52,
+        -30
+      ],
+      "worstOverlap": 1.061,
+      "hits": [
+        {
+          "roadId": "w860753009",
+          "roadKind": "residential",
+          "roadName": "Kyrkbacken",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 6.3999999999999995,
+          "worstOverlap": 1.061
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-torget-east-barn",
+      "buildingKind": "outbuilding",
+      "buildingName": null,
+      "centre": [
+        65,
+        15
+      ],
+      "worstOverlap": 0.684,
+      "hits": [
+        {
+          "roadId": "w122157691",
+          "roadKind": "living_street",
+          "roadName": "Prästgatan",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 6.3999999999999995,
+          "worstOverlap": 0.684
+        },
+        {
+          "roadId": "w1329020068",
+          "roadKind": "living_street",
+          "roadName": "Prästgatan",
+          "roadRef": "T 716",
+          "role": "village_street",
+          "roadWidth": 6.3999999999999995,
+          "worstOverlap": 0.639
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-pra-15s",
+      "buildingKind": "house",
+      "buildingName": null,
+      "centre": [
+        352,
+        5
+      ],
+      "worstOverlap": 1.252,
+      "hits": [
+        {
+          "roadId": "w193810976",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 1.252
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-pra-19n",
+      "buildingKind": "apartments",
+      "buildingName": null,
+      "centre": [
+        382.92,
+        28.61
+      ],
+      "worstOverlap": 4.359,
+      "hits": [
+        {
+          "roadId": "w193810976",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 0
+        },
+        {
+          "roadId": "w1329020070",
+          "roadKind": "secondary",
+          "roadName": "Lokavägen",
+          "roadRef": "205",
+          "role": "main",
+          "roadWidth": 12,
+          "worstOverlap": 4.359
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-stn-11",
+      "buildingKind": "house",
+      "buildingName": null,
+      "centre": [
+        -200,
+        -235
+      ],
+      "worstOverlap": 0,
+      "hits": [
+        {
+          "roadId": "w287145634",
+          "roadKind": "service",
+          "roadName": null,
+          "roadRef": null,
+          "role": "service",
+          "roadWidth": 2.8,
+          "worstOverlap": 0
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-jarn-9",
+      "buildingKind": "house",
+      "buildingName": null,
+      "centre": [
+        -410,
+        -50
+      ],
+      "worstOverlap": 2.7,
+      "hits": [
+        {
+          "roadId": "w191323431",
+          "roadKind": "residential",
+          "roadName": "Järnvägsgatan",
+          "roadRef": "T 715",
+          "role": "village_street",
+          "roadWidth": 6.3999999999999995,
+          "worstOverlap": 2.7
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-mag-warehouse",
+      "buildingKind": "industrial",
+      "buildingName": "Magasinsgatan warehouse",
+      "centre": [
+        -420,
+        200
+      ],
+      "worstOverlap": 1.618,
+      "hits": [
+        {
+          "roadId": "w175036243",
+          "roadKind": "residential",
+          "roadName": "Magasinsgatan",
+          "roadRef": null,
+          "role": "village_street",
+          "roadWidth": 6.3999999999999995,
+          "worstOverlap": 1.618
+        }
+      ]
+    },
+    {
+      "buildingId": "vw-kyr-9e-mansard",
+      "buildingKind": "house",
+      "buildingName": "Kyrkogatan east mansard villa",
+      "centre": [
+        -14,
+        5
+      ],
+      "worstOverlap": 1.461,
+      "hits": [
+        {
+          "roadId": "w860753012",
+          "roadKind": "tertiary",
+          "roadName": "Smedsgatan",
+          "roadRef": null,
+          "role": "secondary_connector",
+          "roadWidth": 8.6,
+          "worstOverlap": 1.461
+        }
+      ]
+    }
+  ]
+}
