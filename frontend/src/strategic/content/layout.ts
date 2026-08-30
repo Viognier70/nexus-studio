@@ -69,7 +69,14 @@ export const INTERIOR = {
   staffHomes: {
     värd: { x: 0.8, z: 2.4 },
     servitör: { x: -2.4, z: 0.2 },
-    kock: { x: -3.4, z: -1.6 }
+    kock: { x: -3.4, z: -1.6 },
+    // ORDER 156 — lärlingens hem vid pass-luckan per Vision Owner
+    // 2026-08-30: "en lärling rör sig mellan kök och matsal, och det
+    // är där yrket lärs". Kock ligger djupt i köket (-3.4, -1.6),
+    // servitör på matsalssidan av passet (-2.4, 0.2). Lärlingen står
+    // ON passet, x = -2.9, z = 0 — kollarar med ingen av dem, mellan
+    // dem längs pass-linjen.
+    lärling: { x: -2.9, z: 0 }
   } as Record<string, Vec2>
 };
 
