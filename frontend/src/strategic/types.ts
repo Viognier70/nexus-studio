@@ -62,7 +62,19 @@ export type TaskType =
   // gästen sitter och äter genererar återkommande tillsyn, så personalen
   // står inte idle med fullt rum. Inte låst bakom `service='formell'` —
   // hela poängen med ordern (LOAD_CHAIN_TRACE_2026-08-15.md §rotorsak).
-  | 'checkback';
+  | 'checkback'
+  // ORDER 137 — bakgrundsarbete (mise en place, disk, påfyllning,
+  // städning). Uppgifter personalen utför när inga direkta gäst-
+  // uppgifter finns. Namngivna (inte fill-konstant per §2.1), avbryts
+  // av direkta uppgifter (§2.2), verksamhetsspecifika (§2.3): foodtruck
+  // och ölkrogen har dem inte, restaurang och värdshus har alla fyra.
+  // `targetGuestId` är alltid `null` för dessa; findBackgroundTask och
+  // beginBackgroundTask i service.ts hanterar dem separat från gäst-
+  // uppgifterna.
+  | 'misEnPlace'
+  | 'dish'
+  | 'restock'
+  | 'clean';
 
 // ORDER 102 — R1 kunskapskapital. Vektor (episteme/techne/phronesis),
 // inte skalär, per R3-rapport §1.2. Byggs upp av paviljongerna (R2) och

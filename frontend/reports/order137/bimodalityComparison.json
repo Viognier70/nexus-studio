@@ -1,0 +1,222 @@
+{
+  "afterCells": [
+    {
+      "business": "restaurant",
+      "staffCount": 2,
+      "midMass": 0.30994782608695653,
+      "loMass": 0,
+      "hiMass": 0.6900521739130435
+    },
+    {
+      "business": "restaurant",
+      "staffCount": 3,
+      "midMass": 0.3078695652173913,
+      "loMass": 0,
+      "hiMass": 0.6921304347826087
+    },
+    {
+      "business": "restaurant",
+      "staffCount": 4,
+      "midMass": 0.30789565217391307,
+      "loMass": 0,
+      "hiMass": 0.692104347826087
+    },
+    {
+      "business": "foodtruck",
+      "staffCount": 2,
+      "midMass": 0.3149913043478261,
+      "loMass": 0.3797304347826087,
+      "hiMass": 0.3052782608695652
+    },
+    {
+      "business": "foodtruck",
+      "staffCount": 3,
+      "midMass": 0.31524347826086957,
+      "loMass": 0.3697739130434783,
+      "hiMass": 0.3149826086956522
+    },
+    {
+      "business": "foodtruck",
+      "staffCount": 4,
+      "midMass": 0.31524347826086957,
+      "loMass": 0.3697739130434783,
+      "hiMass": 0.3149826086956522
+    },
+    {
+      "business": "värdshus",
+      "staffCount": 2,
+      "midMass": 0.3044173913043478,
+      "loMass": 0,
+      "hiMass": 0.6955826086956521
+    },
+    {
+      "business": "värdshus",
+      "staffCount": 3,
+      "midMass": 0.30278260869565216,
+      "loMass": 0,
+      "hiMass": 0.6972173913043478
+    },
+    {
+      "business": "värdshus",
+      "staffCount": 4,
+      "midMass": 0.3040695652173913,
+      "loMass": 0,
+      "hiMass": 0.6959304347826087
+    },
+    {
+      "business": "ölkrogen",
+      "staffCount": 2,
+      "midMass": 0.07643478260869566,
+      "loMass": 0.2764086956521739,
+      "hiMass": 0.6471565217391304
+    },
+    {
+      "business": "ölkrogen",
+      "staffCount": 3,
+      "midMass": 0.07604347826086956,
+      "loMass": 0.2764086956521739,
+      "hiMass": 0.6475478260869565
+    },
+    {
+      "business": "ölkrogen",
+      "staffCount": 4,
+      "midMass": 0.07604347826086956,
+      "loMass": 0.2764086956521739,
+      "hiMass": 0.6475478260869565
+    }
+  ],
+  "comparison": [
+    {
+      "business": "restaurant",
+      "staffCount": 2,
+      "beforeMid": 0.08373913043478261,
+      "afterMid": 0.30994782608695653,
+      "deltaMid": 0.22620869565217394,
+      "beforeLo": 0.278,
+      "afterLo": 0,
+      "beforeHi": 0.6382608695652174,
+      "afterHi": 0.6900521739130435
+    },
+    {
+      "business": "restaurant",
+      "staffCount": 3,
+      "beforeMid": 0.08335652173913044,
+      "afterMid": 0.3078695652173913,
+      "deltaMid": 0.22451304347826084,
+      "beforeLo": 0.278,
+      "afterLo": 0,
+      "beforeHi": 0.6386434782608695,
+      "afterHi": 0.6921304347826087
+    },
+    {
+      "business": "restaurant",
+      "staffCount": 4,
+      "beforeMid": 0.08335652173913044,
+      "afterMid": 0.30789565217391307,
+      "deltaMid": 0.22453913043478263,
+      "beforeLo": 0.278,
+      "afterLo": 0,
+      "beforeHi": 0.6386434782608695,
+      "afterHi": 0.692104347826087
+    },
+    {
+      "business": "foodtruck",
+      "staffCount": 2,
+      "beforeMid": 0.3200782608695652,
+      "afterMid": 0.3149913043478261,
+      "deltaMid": -0.005086956521739128,
+      "beforeLo": 0.3969391304347826,
+      "afterLo": 0.3797304347826087,
+      "beforeHi": 0.28298260869565217,
+      "afterHi": 0.3052782608695652
+    },
+    {
+      "business": "foodtruck",
+      "staffCount": 3,
+      "beforeMid": 0.31996521739130435,
+      "afterMid": 0.31524347826086957,
+      "deltaMid": -0.004721739130434777,
+      "beforeLo": 0.3872,
+      "afterLo": 0.3697739130434783,
+      "beforeHi": 0.29283478260869567,
+      "afterHi": 0.3149826086956522
+    },
+    {
+      "business": "foodtruck",
+      "staffCount": 4,
+      "beforeMid": 0.31996521739130435,
+      "afterMid": 0.31524347826086957,
+      "deltaMid": -0.004721739130434777,
+      "beforeLo": 0.3872,
+      "afterLo": 0.3697739130434783,
+      "beforeHi": 0.29283478260869567,
+      "afterHi": 0.3149826086956522
+    },
+    {
+      "business": "värdshus",
+      "staffCount": 2,
+      "beforeMid": 0.09096521739130435,
+      "afterMid": 0.3044173913043478,
+      "deltaMid": 0.21345217391304344,
+      "beforeLo": 0.2732608695652174,
+      "afterLo": 0,
+      "beforeHi": 0.6357739130434783,
+      "afterHi": 0.6955826086956521
+    },
+    {
+      "business": "värdshus",
+      "staffCount": 3,
+      "beforeMid": 0.08966086956521739,
+      "afterMid": 0.30278260869565216,
+      "deltaMid": 0.21312173913043475,
+      "beforeLo": 0.2727913043478261,
+      "afterLo": 0,
+      "beforeHi": 0.6375478260869565,
+      "afterHi": 0.6972173913043478
+    },
+    {
+      "business": "värdshus",
+      "staffCount": 4,
+      "beforeMid": 0.09071304347826087,
+      "afterMid": 0.3040695652173913,
+      "deltaMid": 0.21335652173913044,
+      "beforeLo": 0.2730173913043478,
+      "afterLo": 0,
+      "beforeHi": 0.6362695652173913,
+      "afterHi": 0.6959304347826087
+    },
+    {
+      "business": "ölkrogen",
+      "staffCount": 2,
+      "beforeMid": 0.08373913043478261,
+      "afterMid": 0.07643478260869566,
+      "deltaMid": -0.0073043478260869515,
+      "beforeLo": 0.278,
+      "afterLo": 0.2764086956521739,
+      "beforeHi": 0.6382608695652174,
+      "afterHi": 0.6471565217391304
+    },
+    {
+      "business": "ölkrogen",
+      "staffCount": 3,
+      "beforeMid": 0.08335652173913044,
+      "afterMid": 0.07604347826086956,
+      "deltaMid": -0.0073130434782608805,
+      "beforeLo": 0.278,
+      "afterLo": 0.2764086956521739,
+      "beforeHi": 0.6386434782608695,
+      "afterHi": 0.6475478260869565
+    },
+    {
+      "business": "ölkrogen",
+      "staffCount": 4,
+      "beforeMid": 0.08335652173913044,
+      "afterMid": 0.07604347826086956,
+      "deltaMid": -0.0073130434782608805,
+      "beforeLo": 0.278,
+      "afterLo": 0.2764086956521739,
+      "beforeHi": 0.6386434782608695,
+      "afterHi": 0.6475478260869565
+    }
+  ]
+}

@@ -427,17 +427,103 @@ const PRIORITY: TaskType[] = [
   'clear'
 ];
 
+// ORDER 137 — bakgrundsarbete. Uppgifter personalen utför när inga
+// direkta gäst-uppgifter finns i PRIORITY. Ligger MEDVETET utanför
+// PRIORITY så gäst-uppgifter alltid vinner (§2.2). Preemption sker
+// dessutom explicit i tickStaff: om personal är i en bakgrunds-
+// uppgift och en direkt uppgift dyker upp, avbryts bakgrundsuppgiften
+// samma tick — så en väntande gäst aldrig blockeras av städning.
+const BACKGROUND_TASKS = new Set<TaskType>(['misEnPlace', 'dish', 'restock', 'clean']);
+
+function isBackgroundTask(t: TaskType | null): boolean {
+  return t != null && BACKGROUND_TASKS.has(t);
+}
+
+// ORDER 137 §2.3 — bakgrundsarbete per verksamhet. Foodtruck och
+// ölkrogen står tomma: ORDER 134 visade att foodtruck är trogen på
+// 32 % mittmassa (bg-arbete skulle bara döda det), och ordern lämnar
+// ölkrogens bryggeri-arbete som egen order. Restaurant och värdshus
+// får alla fyra typerna — det är där mittmassan i ORDER 134 var
+// 8-9 % som ska stiga.
+const BACKGROUND_TASKS_BY_BUSINESS: Record<string, readonly TaskType[]> = {
+  restaurant: ['misEnPlace', 'dish', 'restock', 'clean'],
+  värdshus:   ['misEnPlace', 'dish', 'restock', 'clean'],
+  foodtruck:  [],
+  ölkrogen:   []
+};
+
+function anyDirectTaskAvailable(state: SimulationState): boolean {
+  for (const type of PRIORITY) {
+    if (findTaskTarget(state, type)) return true;
+  }
+  return false;
+}
+
+// Roterar bakgrundstyper deterministiskt per personal + simtid så att
+// alla fyra uppgifter förekommer under en service — mise en place följs
+// av disk följs av påfyllning följs av städning, i namngivna svängar
+// snarare än en anonym fill-loop.
+function pickBackgroundTaskFor(state: SimulationState, staff: StaffMember): TaskType | null {
+  const list = BACKGROUND_TASKS_BY_BUSINESS[state.businessClass];
+  if (!list || list.length === 0) return null;
+  // Deterministisk rotation: staff-id-hash + simTime som fönster ger
+  // att en och samma personal cyklar genom alla typer under ett pass,
+  // inte fastnar på "clean, clean, clean".
+  let h = 0;
+  for (let i = 0; i < staff.id.length; i++) h = (h * 31 + staff.id.charCodeAt(i)) | 0;
+  const window = Math.floor(state.simTime / 20) + h;
+  return list[Math.abs(window) % list.length];
+}
+
+function beginBackgroundTask(state: SimulationState, staff: StaffMember, type: TaskType) {
+  staff.taskType = type;
+  staff.taskProgress = 0;
+  staff.taskDuration = taskDurationTicks(
+    state.policies,
+    type,
+    state.capitals.values.social
+  );
+  staff.targetGuestId = null;
+  // Bakgrundsarbete håller personalen vid rollens home-punkt — kock i
+  // köket, servitör vid disk-stationen. Ingen egen anchor per bg-typ
+  // krävs; hemma är där uppgiften rimligen utförs.
+  const home = INTERIOR.staffHomes[staff.role];
+  if (
+    Math.abs(staff.position.x - home.x) > 0.1 ||
+    Math.abs(staff.position.z - home.z) > 0.1
+  ) {
+    moveStaff(staff, home);
+  }
+}
+
 export function tickStaff(state: SimulationState) {
   const now = state.simTime;
+  // ORDER 137 §2.2 — bakgrundsarbete-preemption. Beräkna EN gång per
+  // tick om det finns någon direkt uppgift att ta. Om ja, ska pågående
+  // bakgrundsuppgifter avbrytas — en väntande gäst får aldrig blockeras
+  // av att personalen städar. `anyDirectTaskAvailable` iterar PRIORITY
+  // och returnerar första hit; findTaskTarget är gäst-drivet så det
+  // är rimligt billigt.
+  const directAvailable = state.staff.some((s) => isBackgroundTask(s.taskType))
+    ? anyDirectTaskAvailable(state)
+    : false;
+
   for (const staff of state.staff) {
     stepEntityMotion(staff);
 
     if (staff.taskType) {
-      staff.taskProgress += 1;
-      if (staff.taskProgress >= staff.taskDuration) {
+      // Preempt: om personal är i en bakgrundsuppgift och direkt
+      // uppgift finns, avbryt så nästa steg i loopen väljer den direkta.
+      if (isBackgroundTask(staff.taskType) && directAvailable) {
         completeStaffTask(state, staff);
+        // Fall genom till task-selection nedan.
+      } else {
+        staff.taskProgress += 1;
+        if (staff.taskProgress >= staff.taskDuration) {
+          completeStaffTask(state, staff);
+        }
+        continue;
       }
-      continue;
     }
 
     // Look for the next task.
@@ -447,6 +533,14 @@ export function tickStaff(state: SimulationState) {
         beginStaffTask(state, staff, type, targetGuestId);
         break;
       }
+    }
+
+    // ORDER 137 — inga direkta uppgifter tillgängliga, prova bakgrunds-
+    // arbete. Verksamheter utan bakgrundslista (foodtruck, ölkrogen)
+    // returnerar null och personalen driver hem som förut.
+    if (!staff.taskType) {
+      const bg = pickBackgroundTaskFor(state, staff);
+      if (bg) beginBackgroundTask(state, staff, bg);
     }
 
     // Idle drift toward home if nothing to do.
@@ -460,13 +554,36 @@ export function tickStaff(state: SimulationState) {
       }
     }
 
-    // Workload decays when idle.
-    staff.workload = Math.max(0, staff.workload - 0.03 * TICK_SECONDS);
+    // Workload decays when idle (ingen taskType alls) eller styrs mot
+    // bg-target när bakgrundsuppgift pågår. Direkta uppgifter hanteras
+    // i separat loop nedan så grow-rate 0,05/s bevaras oförändrad.
+    if (!staff.taskType) {
+      staff.workload = Math.max(0, staff.workload - 0.03 * TICK_SECONDS);
+    } else if (isBackgroundTask(staff.taskType)) {
+      // ORDER 137 §2 — bakgrundsarbete målsöker en steady-state
+      // (~0,4) i stället för att växa mot 1. Motivet är modell-trohet,
+      // inte tröskeljustering (§3 förbjuder ansiktsbanden 0,95/0,7,
+      // inte rate per task-typ): att städa eller fylla på flaskor
+      // ger inte samma push som en väntande gäst — arbetet håller
+      // personalen aktiv men inte pressad. Approach 0,5/s betyder att
+      // en pinnad workload (efter en direktuppgift) svalnar mot 0,4
+      // på ~2 sim-sekunder när bg-uppgift börjar. Under en bg-uppgift
+      // som varar 1-2 s nås därför ungefär mittspannet 0,3-0,5, vilket
+      // ORDER 131:s histogram var tomt på.
+      const BG_TARGET = 0.4;
+      const BG_APPROACH_PER_SEC = 0.5;
+      const delta = (BG_TARGET - staff.workload) * BG_APPROACH_PER_SEC * TICK_SECONDS;
+      staff.workload = Math.max(0, Math.min(1, staff.workload + delta));
+    }
+    // Direct-task-grow hanteras i sista loopen nedan (oförändrat).
   }
 
-  // Recompute an average workload signal.
+  // Recompute an average workload signal — direkta uppgifter växer
+  // med oförändrad rate 0,05/s (§3 förbud mot tröskeljustering respekteras).
   for (const staff of state.staff) {
-    if (staff.taskType) staff.workload = Math.min(1, staff.workload + 0.05 * TICK_SECONDS);
+    if (staff.taskType && !isBackgroundTask(staff.taskType)) {
+      staff.workload = Math.min(1, staff.workload + 0.05 * TICK_SECONDS);
+    }
   }
   void now;
 }
