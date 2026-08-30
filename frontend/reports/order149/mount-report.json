@@ -1,0 +1,115 @@
+{
+  "steps": [],
+  "businessClass": "ölkrogen",
+  "probe": {
+    "contractSeats": 20,
+    "standing": 8,
+    "capacity": 20,
+    "floorZonesReported": 3,
+    "zonesFromBrewpubRoom": [
+      {
+        "id": "dining",
+        "colour": "#a49b8a",
+        "note": "Matsalen (öster om BOH_EDGE_X = -3,6). L 0,331."
+      },
+      {
+        "id": "brew",
+        "colour": "#7d776c",
+        "note": "Bryggeriet (väster om BOH_EDGE_X, söder om BREW_KITCHEN_Z = 1,0). Våt betong, mörkare. L 0,204."
+      },
+      {
+        "id": "kitchen",
+        "colour": "#948f84",
+        "note": "Köket (väster om BOH_EDGE_X, norr om BREW_KITCHEN_Z). Kallare grå. L 0,284."
+      }
+    ],
+    "zonesFromReplica": [
+      {
+        "id": "dining",
+        "colour": "#a49b8a"
+      },
+      {
+        "id": "brewery",
+        "colour": "#7d776c"
+      },
+      {
+        "id": "kitchen",
+        "colour": "#948f84"
+      }
+    ],
+    "worldSeatCount": 20,
+    "pairs": [
+      {
+        "state": "seated",
+        "figure": "#ecd2a0",
+        "zone": "dining",
+        "floor": "#a49b8a",
+        "ratio": 1.872
+      },
+      {
+        "state": "seated",
+        "figure": "#ecd2a0",
+        "zone": "brew",
+        "floor": "#7d776c",
+        "ratio": 3.023
+      },
+      {
+        "state": "seated",
+        "figure": "#ecd2a0",
+        "zone": "kitchen",
+        "floor": "#948f84",
+        "ratio": 2.192
+      },
+      {
+        "state": "dining",
+        "figure": "#edcfa4",
+        "zone": "dining",
+        "floor": "#a49b8a",
+        "ratio": 1.842
+      },
+      {
+        "state": "dining",
+        "figure": "#edcfa4",
+        "zone": "brew",
+        "floor": "#7d776c",
+        "ratio": 2.975
+      },
+      {
+        "state": "dining",
+        "figure": "#edcfa4",
+        "zone": "kitchen",
+        "floor": "#948f84",
+        "ratio": 2.156
+      },
+      {
+        "state": "paying",
+        "figure": "#edd0a3",
+        "zone": "dining",
+        "floor": "#a49b8a",
+        "ratio": 1.854
+      },
+      {
+        "state": "paying",
+        "figure": "#edd0a3",
+        "zone": "brew",
+        "floor": "#7d776c",
+        "ratio": 2.994
+      },
+      {
+        "state": "paying",
+        "figure": "#edd0a3",
+        "zone": "kitchen",
+        "floor": "#948f84",
+        "ratio": 2.17
+      }
+    ],
+    "outOfBand": []
+  },
+  "dayScreenshot": "/Users/ashm/Projects/nexus-studio/frontend/reports/order149/brewpub-day-lunch.png",
+  "injectedGuests": {
+    "seatedInState": 20,
+    "seatedIdsLen": 20
+  },
+  "eveningScreenshot": "/Users/ashm/Projects/nexus-studio/frontend/reports/order149/brewpub-evening.png",
+  "zonesReplicaAgrees": true
+}

@@ -1,47 +1,46 @@
 // ORDER 125 §3 — ölkrogens rum monterat i strategiska scenen.
+// ORDER 149 — omlagd att gå via `businessRoom.ts`-kontraktet
+// (`createRoom('ölkrogen', …)` / `updateRoom`) i stället för direkt
+// mot `createBrewpubRoom`. Samma mönster som RestaurantScene efter
+// ORDER 144. Motiv: monteringskod mot rumsfilerna direkt får sex
+// specialfall för sex saker som gör samma sak, och specialfall är där
+// fel gömmer sig (businessRoom.ts §Varför).
 //
-// Villkorat på `sim.businessClass === 'ölkrogen'`. När klassen är vald
-// skapas rummet via `createBrewpubRoom` en gång (imperativt, med egen
-// grupp) och läggs som barn till en THREE.Group under vår ref.
-// Placeringen sker per handoff/-koden:
-//   room.group.position.set(obb.centre[0], 0, obb.centre[1]);
-//   room.group.rotation.y = -obb.angle;
-// `resolveWorldPositions(room)` är tillgänglig för sim-lagret men
-// anropas inte här — den är bara för framtida integration av
-// gästplaceringar med figureRig.
+// Villkorat på `sim.businessClass === 'ölkrogen'`. Placering per
+// interiorLayout-OBB.
 //
-// `updateBrewpubRoom(room, phase)` anropas varje bildruta med
-// `phase = 0` per §5-flaggan `brewPhase` — produktionstillstånd
-// finns inte i sim-lagret ännu och phasen får inte uppfinnas.
+// `updateRoom(room, 0)` anropas varje bildruta med phase = 0 per §5-
+// flaggan `brewPhase` — produktionstillstånd finns inte i sim-lagret
+// ännu och phasen får inte uppfinnas.
 
 import { useEffect, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useSimState } from '../simulation/SimulationProvider';
 import { usePlayerBusinessInterior } from '../business/interiorLayout';
-import {
-  createBrewpubRoom,
-  updateBrewpubRoom,
-  disposeBrewpubGeometry,
-  type BrewpubRoom
-} from './brewpubRoom';
+import { createRoom, updateRoom, type BusinessRoom } from './businessRoom';
+import { disposeBrewpubGeometry } from './brewpubRoom';
 
 export function BrewpubScene() {
   const sim = useSimState();
   const layout = usePlayerBusinessInterior(sim.businessClass);
   const groupRef = useRef<THREE.Group>(null);
-  const roomRef = useRef<BrewpubRoom | null>(null);
+  const roomRef = useRef<BusinessRoom | null>(null);
 
   const isBrewpub = sim.businessClass === 'ölkrogen';
 
-  // Skapa rummet en gång när ölkrogen är vald + gruppen är monterad.
-  // Fäst rummet på gruppen och positionera per PLAYER_BUSINESS-OBB.
   useEffect(() => {
     if (!isBrewpub) return;
     const grp = groupRef.current;
     if (!grp || !layout) return;
-    if (roomRef.current) return; // idempotent — endast första gången
-    const room = createBrewpubRoom();
+    if (roomRef.current) return;
+    // createRoom via businessRoom-kontraktet. Skickar in width/depth ur
+    // interiorLayout så brewpubRoom bygger geometri i samma format
+    // sim-lagret räknar i (OBB w869907975).
+    const room = createRoom('ölkrogen', {
+      width: layout.width,
+      depth: layout.depth
+    });
     room.group.position.set(layout.centre[0], 0, layout.centre[1]);
     room.group.rotation.y = -layout.worldAngle;
     grp.add(room.group);
@@ -50,12 +49,12 @@ export function BrewpubScene() {
       const r = roomRef.current;
       if (r) {
         r.group.removeFromParent();
+        r.dispose?.();
         roomRef.current = null;
       }
     };
   }, [isBrewpub, layout]);
 
-  // Dispose delade geometrier när komponenten avmonteras helt.
   useEffect(() => {
     return () => {
       disposeBrewpubGeometry();
@@ -65,9 +64,7 @@ export function BrewpubScene() {
   useFrame(() => {
     const room = roomRef.current;
     if (!room) return;
-    // ORDER 125 §5 — brewPhase FLAGGAT. phase=0 tills produktionstillstånd
-    // finns i sim-lagret. Uppfinns inte.
-    updateBrewpubRoom(room, 0);
+    updateRoom(room, 0);
   });
 
   if (!isBrewpub) return null;
