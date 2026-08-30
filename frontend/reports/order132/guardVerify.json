@@ -1,0 +1,911 @@
+{
+  "summary": {
+    "totalBuildings": 149,
+    "generatedTotal": 2556,
+    "keptTotal": 1175,
+    "droppedTotal": 1381,
+    "buildingsUntouched": 31,
+    "buildingsWithSomeDropped": 118,
+    "buildingsWithAllDropped": 0,
+    "worstOffenders": [
+      {
+        "id": "w193810921",
+        "kind": "university",
+        "generated": 24,
+        "kept": 3,
+        "dropped": 21
+      },
+      {
+        "id": "w869907964",
+        "kind": "hotel",
+        "generated": 24,
+        "kept": 5,
+        "dropped": 19
+      },
+      {
+        "id": "w870510857",
+        "kind": "residential",
+        "generated": 24,
+        "kept": 5,
+        "dropped": 19
+      },
+      {
+        "id": "w870510858",
+        "kind": "residential",
+        "generated": 24,
+        "kept": 5,
+        "dropped": 19
+      },
+      {
+        "id": "w870510870",
+        "kind": "school",
+        "generated": 24,
+        "kept": 5,
+        "dropped": 19
+      },
+      {
+        "id": "w1239584175",
+        "kind": "house",
+        "generated": 24,
+        "kept": 5,
+        "dropped": 19
+      },
+      {
+        "id": "w870510876",
+        "kind": "school",
+        "generated": 24,
+        "kept": 6,
+        "dropped": 18
+      },
+      {
+        "id": "w870510884",
+        "kind": "school",
+        "generated": 20,
+        "kept": 2,
+        "dropped": 18
+      },
+      {
+        "id": "w875778824",
+        "kind": "apartments",
+        "generated": 20,
+        "kept": 2,
+        "dropped": 18
+      },
+      {
+        "id": "w934308166",
+        "kind": "apartments",
+        "generated": 22,
+        "kept": 4,
+        "dropped": 18
+      }
+    ]
+  },
+  "perBuilding": [
+    {
+      "id": "w193810921",
+      "kind": "university",
+      "generated": 24,
+      "kept": 3,
+      "dropped": 21
+    },
+    {
+      "id": "w869907964",
+      "kind": "hotel",
+      "generated": 24,
+      "kept": 5,
+      "dropped": 19
+    },
+    {
+      "id": "w870510857",
+      "kind": "residential",
+      "generated": 24,
+      "kept": 5,
+      "dropped": 19
+    },
+    {
+      "id": "w870510858",
+      "kind": "residential",
+      "generated": 24,
+      "kept": 5,
+      "dropped": 19
+    },
+    {
+      "id": "w870510870",
+      "kind": "school",
+      "generated": 24,
+      "kept": 5,
+      "dropped": 19
+    },
+    {
+      "id": "w1239584175",
+      "kind": "house",
+      "generated": 24,
+      "kept": 5,
+      "dropped": 19
+    },
+    {
+      "id": "w870510876",
+      "kind": "school",
+      "generated": 24,
+      "kept": 6,
+      "dropped": 18
+    },
+    {
+      "id": "w870510884",
+      "kind": "school",
+      "generated": 20,
+      "kept": 2,
+      "dropped": 18
+    },
+    {
+      "id": "w875778824",
+      "kind": "apartments",
+      "generated": 20,
+      "kept": 2,
+      "dropped": 18
+    },
+    {
+      "id": "w934308166",
+      "kind": "apartments",
+      "generated": 22,
+      "kept": 4,
+      "dropped": 18
+    },
+    {
+      "id": "w934308169",
+      "kind": "apartments",
+      "generated": 22,
+      "kept": 4,
+      "dropped": 18
+    },
+    {
+      "id": "w934308174",
+      "kind": "apartments",
+      "generated": 22,
+      "kept": 4,
+      "dropped": 18
+    },
+    {
+      "id": "w1239699524",
+      "kind": "house",
+      "generated": 22,
+      "kept": 4,
+      "dropped": 18
+    },
+    {
+      "id": "w193810975",
+      "kind": "university",
+      "generated": 24,
+      "kept": 7,
+      "dropped": 17
+    },
+    {
+      "id": "w193810966",
+      "kind": "house",
+      "generated": 22,
+      "kept": 6,
+      "dropped": 16
+    },
+    {
+      "id": "w869907968",
+      "kind": "house",
+      "generated": 20,
+      "kept": 4,
+      "dropped": 16
+    },
+    {
+      "id": "w870510863",
+      "kind": "residential",
+      "generated": 24,
+      "kept": 8,
+      "dropped": 16
+    },
+    {
+      "id": "w870510866",
+      "kind": "school",
+      "generated": 24,
+      "kept": 8,
+      "dropped": 16
+    },
+    {
+      "id": "w870510872",
+      "kind": "school",
+      "generated": 24,
+      "kept": 8,
+      "dropped": 16
+    },
+    {
+      "id": "w870510877",
+      "kind": "school",
+      "generated": 20,
+      "kept": 4,
+      "dropped": 16
+    },
+    {
+      "id": "w1239589271",
+      "kind": "house",
+      "generated": 22,
+      "kept": 6,
+      "dropped": 16
+    },
+    {
+      "id": "w193810969",
+      "kind": "house",
+      "generated": 22,
+      "kept": 7,
+      "dropped": 15
+    },
+    {
+      "id": "w870510864",
+      "kind": "residential",
+      "generated": 22,
+      "kept": 7,
+      "dropped": 15
+    },
+    {
+      "id": "w870510869",
+      "kind": "school",
+      "generated": 22,
+      "kept": 7,
+      "dropped": 15
+    },
+    {
+      "id": "w870510878",
+      "kind": "school",
+      "generated": 24,
+      "kept": 9,
+      "dropped": 15
+    },
+    {
+      "id": "w1239699512",
+      "kind": "house",
+      "generated": 20,
+      "kept": 5,
+      "dropped": 15
+    },
+    {
+      "id": "w1239699513",
+      "kind": "house",
+      "generated": 20,
+      "kept": 5,
+      "dropped": 15
+    },
+    {
+      "id": "w1239699514",
+      "kind": "house",
+      "generated": 20,
+      "kept": 5,
+      "dropped": 15
+    },
+    {
+      "id": "w193810934",
+      "kind": "residential",
+      "generated": 20,
+      "kept": 6,
+      "dropped": 14
+    },
+    {
+      "id": "w193810941",
+      "kind": "residential",
+      "generated": 20,
+      "kept": 6,
+      "dropped": 14
+    },
+    {
+      "id": "w193810952",
+      "kind": "residential",
+      "generated": 20,
+      "kept": 6,
+      "dropped": 14
+    },
+    {
+      "id": "w870510861",
+      "kind": "residential",
+      "generated": 18,
+      "kept": 4,
+      "dropped": 14
+    },
+    {
+      "id": "w870510871",
+      "kind": "school",
+      "generated": 24,
+      "kept": 10,
+      "dropped": 14
+    },
+    {
+      "id": "w1239589270",
+      "kind": "house",
+      "generated": 18,
+      "kept": 4,
+      "dropped": 14
+    },
+    {
+      "id": "w870510841",
+      "kind": "train_station",
+      "generated": 16,
+      "kept": 3,
+      "dropped": 13
+    },
+    {
+      "id": "w870510859",
+      "kind": "residential",
+      "generated": 18,
+      "kept": 5,
+      "dropped": 13
+    },
+    {
+      "id": "w870510862",
+      "kind": "residential",
+      "generated": 18,
+      "kept": 5,
+      "dropped": 13
+    },
+    {
+      "id": "w1239699515",
+      "kind": "house",
+      "generated": 18,
+      "kept": 5,
+      "dropped": 13
+    },
+    {
+      "id": "w193810922",
+      "kind": "residential",
+      "generated": 22,
+      "kept": 10,
+      "dropped": 12
+    },
+    {
+      "id": "w193810927",
+      "kind": "residential",
+      "generated": 22,
+      "kept": 10,
+      "dropped": 12
+    },
+    {
+      "id": "w193810936",
+      "kind": "residential",
+      "generated": 22,
+      "kept": 10,
+      "dropped": 12
+    },
+    {
+      "id": "w193810953",
+      "kind": "residential",
+      "generated": 22,
+      "kept": 10,
+      "dropped": 12
+    },
+    {
+      "id": "w193810959",
+      "kind": "residential",
+      "generated": 22,
+      "kept": 10,
+      "dropped": 12
+    },
+    {
+      "id": "w193810964",
+      "kind": "residential",
+      "generated": 22,
+      "kept": 10,
+      "dropped": 12
+    },
+    {
+      "id": "w193810970",
+      "kind": "residential",
+      "generated": 18,
+      "kept": 6,
+      "dropped": 12
+    },
+    {
+      "id": "w193810971",
+      "kind": "residential",
+      "generated": 18,
+      "kept": 6,
+      "dropped": 12
+    },
+    {
+      "id": "w193810972",
+      "kind": "residential",
+      "generated": 18,
+      "kept": 6,
+      "dropped": 12
+    },
+    {
+      "id": "w193810974",
+      "kind": "residential",
+      "generated": 18,
+      "kept": 6,
+      "dropped": 12
+    },
+    {
+      "id": "w870510856",
+      "kind": "residential",
+      "generated": 18,
+      "kept": 6,
+      "dropped": 12
+    },
+    {
+      "id": "w870510860",
+      "kind": "residential",
+      "generated": 18,
+      "kept": 6,
+      "dropped": 12
+    },
+    {
+      "id": "w870510865",
+      "kind": "residential",
+      "generated": 16,
+      "kept": 4,
+      "dropped": 12
+    },
+    {
+      "id": "w1239584171",
+      "kind": "residential",
+      "generated": 18,
+      "kept": 6,
+      "dropped": 12
+    },
+    {
+      "id": "w1239584172",
+      "kind": "residential",
+      "generated": 18,
+      "kept": 6,
+      "dropped": 12
+    },
+    {
+      "id": "w1239584173",
+      "kind": "residential",
+      "generated": 18,
+      "kept": 6,
+      "dropped": 12
+    },
+    {
+      "id": "w1239589268",
+      "kind": "house",
+      "generated": 18,
+      "kept": 6,
+      "dropped": 12
+    },
+    {
+      "id": "w1239589272",
+      "kind": "house",
+      "generated": 18,
+      "kept": 6,
+      "dropped": 12
+    },
+    {
+      "id": "w1239589276",
+      "kind": "house",
+      "generated": 18,
+      "kept": 6,
+      "dropped": 12
+    },
+    {
+      "id": "w1239589277",
+      "kind": "house",
+      "generated": 16,
+      "kept": 4,
+      "dropped": 12
+    },
+    {
+      "id": "w1239589279",
+      "kind": "house",
+      "generated": 18,
+      "kept": 6,
+      "dropped": 12
+    },
+    {
+      "id": "w1239589281",
+      "kind": "house",
+      "generated": 16,
+      "kept": 4,
+      "dropped": 12
+    },
+    {
+      "id": "vw-skg-16",
+      "kind": "apartments",
+      "generated": 20,
+      "kept": 8,
+      "dropped": 12
+    },
+    {
+      "id": "vw-bv-north-multi",
+      "kind": "apartments",
+      "generated": 20,
+      "kept": 8,
+      "dropped": 12
+    },
+    {
+      "id": "w1239589273",
+      "kind": "house",
+      "generated": 16,
+      "kept": 5,
+      "dropped": 11
+    },
+    {
+      "id": "w193810930",
+      "kind": "house",
+      "generated": 18,
+      "kept": 8,
+      "dropped": 10
+    },
+    {
+      "id": "w193810948",
+      "kind": "house",
+      "generated": 16,
+      "kept": 6,
+      "dropped": 10
+    },
+    {
+      "id": "w193810951",
+      "kind": "house",
+      "generated": 14,
+      "kept": 4,
+      "dropped": 10
+    },
+    {
+      "id": "w193810961",
+      "kind": "house",
+      "generated": 14,
+      "kept": 4,
+      "dropped": 10
+    },
+    {
+      "id": "w1239589264",
+      "kind": "house",
+      "generated": 12,
+      "kept": 2,
+      "dropped": 10
+    },
+    {
+      "id": "w1239589266",
+      "kind": "house",
+      "generated": 14,
+      "kept": 4,
+      "dropped": 10
+    },
+    {
+      "id": "w1239589278",
+      "kind": "house",
+      "generated": 16,
+      "kept": 6,
+      "dropped": 10
+    },
+    {
+      "id": "w1239589280",
+      "kind": "house",
+      "generated": 16,
+      "kept": 6,
+      "dropped": 10
+    },
+    {
+      "id": "w1239589282",
+      "kind": "house",
+      "generated": 14,
+      "kept": 4,
+      "dropped": 10
+    },
+    {
+      "id": "w1239589283",
+      "kind": "house",
+      "generated": 14,
+      "kept": 4,
+      "dropped": 10
+    },
+    {
+      "id": "w1239699510",
+      "kind": "house",
+      "generated": 14,
+      "kept": 4,
+      "dropped": 10
+    },
+    {
+      "id": "w1239699516",
+      "kind": "house",
+      "generated": 16,
+      "kept": 6,
+      "dropped": 10
+    },
+    {
+      "id": "w1239699517",
+      "kind": "house",
+      "generated": 16,
+      "kept": 6,
+      "dropped": 10
+    },
+    {
+      "id": "w1239699518",
+      "kind": "house",
+      "generated": 16,
+      "kept": 6,
+      "dropped": 10
+    },
+    {
+      "id": "w1239699519",
+      "kind": "house",
+      "generated": 14,
+      "kept": 4,
+      "dropped": 10
+    },
+    {
+      "id": "w1239699520",
+      "kind": "house",
+      "generated": 16,
+      "kept": 6,
+      "dropped": 10
+    },
+    {
+      "id": "w1239699521",
+      "kind": "house",
+      "generated": 14,
+      "kept": 4,
+      "dropped": 10
+    },
+    {
+      "id": "w1239699522",
+      "kind": "house",
+      "generated": 16,
+      "kept": 6,
+      "dropped": 10
+    },
+    {
+      "id": "w1239699523",
+      "kind": "house",
+      "generated": 16,
+      "kept": 6,
+      "dropped": 10
+    },
+    {
+      "id": "vw-bv-tree-cluster",
+      "kind": "house",
+      "generated": 14,
+      "kept": 4,
+      "dropped": 10
+    },
+    {
+      "id": "vw-skg-9",
+      "kind": "house",
+      "generated": 14,
+      "kept": 5,
+      "dropped": 9
+    },
+    {
+      "id": "vw-kyr-14",
+      "kind": "house",
+      "generated": 14,
+      "kept": 5,
+      "dropped": 9
+    },
+    {
+      "id": "vw-pra-19n",
+      "kind": "apartments",
+      "generated": 14,
+      "kept": 5,
+      "dropped": 9
+    },
+    {
+      "id": "w193810929",
+      "kind": "house",
+      "generated": 12,
+      "kept": 4,
+      "dropped": 8
+    },
+    {
+      "id": "w193810943",
+      "kind": "house",
+      "generated": 12,
+      "kept": 4,
+      "dropped": 8
+    },
+    {
+      "id": "w193810945",
+      "kind": "house",
+      "generated": 12,
+      "kept": 4,
+      "dropped": 8
+    },
+    {
+      "id": "w193810946",
+      "kind": "house",
+      "generated": 16,
+      "kept": 8,
+      "dropped": 8
+    },
+    {
+      "id": "w193810950",
+      "kind": "house",
+      "generated": 14,
+      "kept": 6,
+      "dropped": 8
+    },
+    {
+      "id": "w193810955",
+      "kind": "house",
+      "generated": 12,
+      "kept": 4,
+      "dropped": 8
+    },
+    {
+      "id": "w193810956",
+      "kind": "detached",
+      "generated": 14,
+      "kept": 6,
+      "dropped": 8
+    },
+    {
+      "id": "w193810960",
+      "kind": "house",
+      "generated": 12,
+      "kept": 4,
+      "dropped": 8
+    },
+    {
+      "id": "w193810962",
+      "kind": "house",
+      "generated": 12,
+      "kept": 4,
+      "dropped": 8
+    },
+    {
+      "id": "w193810963",
+      "kind": "house",
+      "generated": 12,
+      "kept": 4,
+      "dropped": 8
+    },
+    {
+      "id": "w193810965",
+      "kind": "house",
+      "generated": 12,
+      "kept": 4,
+      "dropped": 8
+    },
+    {
+      "id": "w948705763",
+      "kind": "detached",
+      "generated": 12,
+      "kept": 4,
+      "dropped": 8
+    },
+    {
+      "id": "w1239589265",
+      "kind": "house",
+      "generated": 12,
+      "kept": 4,
+      "dropped": 8
+    },
+    {
+      "id": "w1239589267",
+      "kind": "house",
+      "generated": 14,
+      "kept": 6,
+      "dropped": 8
+    },
+    {
+      "id": "w1239589274",
+      "kind": "house",
+      "generated": 14,
+      "kept": 6,
+      "dropped": 8
+    },
+    {
+      "id": "w1239589275",
+      "kind": "house",
+      "generated": 12,
+      "kept": 4,
+      "dropped": 8
+    },
+    {
+      "id": "w1239589285",
+      "kind": "house",
+      "generated": 14,
+      "kept": 6,
+      "dropped": 8
+    },
+    {
+      "id": "vw-skg-5",
+      "kind": "house",
+      "generated": 16,
+      "kept": 8,
+      "dropped": 8
+    },
+    {
+      "id": "vw-bv-2",
+      "kind": "house",
+      "generated": 14,
+      "kept": 6,
+      "dropped": 8
+    },
+    {
+      "id": "vw-bv-4",
+      "kind": "house",
+      "generated": 14,
+      "kept": 6,
+      "dropped": 8
+    },
+    {
+      "id": "vw-bv-6",
+      "kind": "house",
+      "generated": 14,
+      "kept": 6,
+      "dropped": 8
+    },
+    {
+      "id": "vw-bv-8",
+      "kind": "house",
+      "generated": 14,
+      "kept": 6,
+      "dropped": 8
+    },
+    {
+      "id": "vw-bv-12",
+      "kind": "house",
+      "generated": 14,
+      "kept": 6,
+      "dropped": 8
+    },
+    {
+      "id": "vw-bv-15",
+      "kind": "house",
+      "generated": 14,
+      "kept": 6,
+      "dropped": 8
+    },
+    {
+      "id": "vw-bv-18",
+      "kind": "house",
+      "generated": 14,
+      "kept": 6,
+      "dropped": 8
+    },
+    {
+      "id": "vw-bv-lakeshore",
+      "kind": "house",
+      "generated": 14,
+      "kept": 6,
+      "dropped": 8
+    },
+    {
+      "id": "w1239589284",
+      "kind": "house",
+      "generated": 10,
+      "kept": 3,
+      "dropped": 7
+    },
+    {
+      "id": "w1239589269",
+      "kind": "house",
+      "generated": 12,
+      "kept": 6,
+      "dropped": 6
+    },
+    {
+      "id": "vw-skg-8",
+      "kind": "house",
+      "generated": 14,
+      "kept": 8,
+      "dropped": 6
+    },
+    {
+      "id": "vw-skg-10",
+      "kind": "house",
+      "generated": 14,
+      "kept": 8,
+      "dropped": 6
+    },
+    {
+      "id": "vw-skg-12",
+      "kind": "house",
+      "generated": 14,
+      "kept": 8,
+      "dropped": 6
+    },
+    {
+      "id": "w193810949",
+      "kind": "house",
+      "generated": 12,
+      "kept": 8,
+      "dropped": 4
+    }
+  ]
+}
