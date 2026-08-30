@@ -1,38 +1,3 @@
-// ============================================================================
-// HANDOFF-KÄLLA — INTE GÄLLANDE KOD
-// ============================================================================
-//
-// Detta är figurriggen SOM DEN LEVERERADES av Claude Design 2026-08-29
-// för ORDER 121 (SUPERSEDING_DIRECTIVE_004 §3). Filen är historik: den
-// version som byggs, testas och renderar i spelet är kopian på
-// `frontend/src/strategic/scene/figureRig.ts`.
-//
-// Kopian **avviker medvetet** från denna handoff-fil efter ORDER 123
-// (2026-08-29):
-//   • Crown-geometrin: `thetaLength` utökad från 1,15 rad till
-//     `Math.PI / 2` (hela övre hemisfären) per SD-004 §3.3-preciseringen
-//     (ORDER 122). Vision Owner-beslut: crown-patchen görs LOKALT i
-//     scen-kopian, ingen ny Design-leverans. Cache-nyckel `head:crown:hemi`
-//     i scen-kopian (v2) — skiljer från handoff-versionens
-//     `head:crown`-key.
-//
-// Utöver crown-divergensen finns en fristående kompatibilitets-shim:
-//   • `frontend/src/strategic/scene/three-augmentations.d.ts` —
-//     augmenterar `THREE.Object3D` med valfria `isMesh?: boolean` och
-//     `geometry?: BufferGeometry`. Behövs för att `measureFigure`
-//     (i slutet av filen) ska typechecka; three.js sätter flaggorna i
-//     runtime men @types/three exponerar dem inte på Object3D-nivån.
-//     Shimen ligger i en egen fil så handoff-koden hålls oförändrad
-//     där shimen räcker (dvs. i measureFigure).
-//
-// Ingen produktionskod importerar från `handoff/`. Om denna fil måste
-// uppdateras: kopiera in den nya versionen till scene/, patcha om
-// crown-geometrin per ORDER 123 §2.1, verifiera att shimen fortfarande
-// täcker eventuella nya `Object3D`-flaggor, och dokumentera bytet i
-// registerraden.
-//
-// ============================================================================
-
 // figureRig — ledad figurrigg för den strategiska scenen.
 //
 // SUPERSEDING_DIRECTIVE_004 §3 (Kroppar i rummet), ORDER 121.
