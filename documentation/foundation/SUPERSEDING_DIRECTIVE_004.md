@@ -69,6 +69,19 @@ uniformsfärger #2a2f3a–#4a4744 mot golvets #a89577 ger ren silhuett;
 kroppen blir en skugga oavsett hur hjässan löses. Ljusheten är en del
 av kontraktet, inte en smaksak.
 
+**Precisering 2026-08-30 (höjdlåset):** "ingen höjdskillnad mellan dem"
+gäller **personal**. Personalens tre roller ska vara inbördes lika höga
+(1,70 m); silhuettskillnaden mellan värd, servitör, kock och lärling
+bärs av form och färg, inte av storlek.
+
+Gäster bär `heightMult` från sin arketyp. Silhuettkontraktet skiljer
+gäst från personal genom axelbredd (0,46 mot 0,40 m) och hjässans färg
+— höjden bar aldrig den skillnaden. Utan denna precisering kan inga
+gäst-arketyper med annan storlek än vuxen porteras: t.ex. `child`-
+arketypen med `heightMult 0,72` (ORDER 121 §4-flaggan) skulle bli en
+1,22-meter kopia av en vuxen med samma axlar snarare än ett läsbart
+barn.
+
 **3.4 Ansiktsvokabulären flyttar till korten.** De tjugo uttrycken i
 `deriveFaces` försvinner inte; de blir kortens uppgift. Nyansen bor där, och
 rummet bär riktningen.
