@@ -138,6 +138,32 @@ export function DevPanel({ lastKey }: Props) {
   const seatedLive = isFoodtruck
     ? sim.guests.filter((g) => g.state === 'eating').length
     : sim.seatedIds.length;
+  // ORDER 147 — breakdown av gäster som sitter, per underskikt.
+  // `seated=N/cap` visar SEATEDIDS.LENGTH (verklig upptagenhet). Den är
+  // teknisk-korrekt sedan ORDER 097, men etiketten "seated" är lätt att
+  // sammanblanda med gäst-tillståndet `state='seated'` (som är transient
+  // — 4 sim-sek innan → ordering). En observatör som såg `stateSeated=0`
+  // i konsollen och `seated=16/16` i panelen kunde felaktigt tro att
+  // panelen ljög. Breakdown (S:seated O:ordering D:dining P:paying)
+  // visar underskiktet så samma observatör ser att S=0 är gäster som
+  // hunnit vidare, inte gäster som saknas. Se ORDER 146 rapport.
+  //
+  // Foodtruck lämnas oförändrad: dess seatedLive räknar `state='eating'`
+  // (uteplatsen), inte seatedIds. Underskiktet skulle bara duplicera
+  // signalen — foodtruckens gäster har inte fyra sub-tillstånd att bryta
+  // ner.
+  const seatBreakdown = isFoodtruck
+    ? ''
+    : (() => {
+        let s = 0, o = 0, d = 0, p = 0;
+        for (const g of sim.guests) {
+          if (g.state === 'seated') s++;
+          else if (g.state === 'ordering') o++;
+          else if (g.state === 'dining') d++;
+          else if (g.state === 'paying') p++;
+        }
+        return ` (S:${s} O:${o} D:${d} P:${p})`;
+      })();
   const capacity = sim.policies.capacity;
   const layoutSeats = layout?.seats.length ?? 0;
   // ORDER 114 §5 DoD 8 — `scene=` räknar ALLA scen-relevanta figurer
@@ -177,7 +203,7 @@ export function DevPanel({ lastKey }: Props) {
   // authoritative "is anyone in the room right now" readout.
   const seatStr = ` queue=${queueLive} scene=${sceneLive} seated=${seatedLive}/${capacity}${
     seatDrift ? `!layout=${layoutSeats}` : ''
-  }`;
+  }${seatBreakdown}`;
 
   // Log on-change when the live queue is non-empty. Vision Owner
   // 2026-08-15: "waiting=4, ingen sitter" → the console needs to
@@ -187,16 +213,23 @@ export function DevPanel({ lastKey }: Props) {
   const lastLoggedRef = useRef<string>('');
   useEffect(() => {
     if (queueLive === 0) return;
-    const key = `${queueLive}|${seatedLive}|${capacity}|${layoutSeats}`;
+    // ORDER 147 — inkludera breakdown i konsol-logg också så samma
+    // underskikt syns där som i DevPanel-strängen. Nyckeln utökas
+    // också: annars log:as raden inte om bara sub-tillstånden ändras
+    // (t.ex. gäster går från seated → ordering utan att seatedLive
+    // förändras). Att fånga sub-övergångarna är hela poängen med
+    // breakdown — så log:a när något underskikt rör sig.
+    const key = `${queueLive}|${seatedLive}|${capacity}|${layoutSeats}|${seatBreakdown}`;
     if (key === lastLoggedRef.current) return;
     lastLoggedRef.current = key;
     // eslint-disable-next-line no-console
     console.info(
-      '[interior] queue=%d seated=%d/%d layout.seats=%d%s',
+      '[interior] queue=%d seated=%d/%d layout.seats=%d%s%s',
       queueLive, seatedLive, capacity, layoutSeats,
-      seatDrift ? '  (DRIFT)' : ''
+      seatDrift ? '  (DRIFT)' : '',
+      seatBreakdown
     );
-  }, [queueLive, seatedLive, capacity, layoutSeats, seatDrift]);
+  }, [queueLive, seatedLive, capacity, layoutSeats, seatDrift, seatBreakdown]);
   // ORDER 056 Del A — label "strat" so the strategic FPS is
   // distinguishable from the first-person view's separate overlay.
   const fpsStr = fps > 0 ? `${fps.toString().padStart(3, ' ')}fps(strat)` : ' - fps(strat)';
