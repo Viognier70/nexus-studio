@@ -25,5 +25,12 @@ declare module 'three' {
     readonly isMesh?: boolean;
     /** Endast satt på Mesh-noder; kan vara undefined på andra Object3D. */
     readonly geometry?: BufferGeometry;
+    /**
+     * Endast satt på Mesh-noder. Tillagd 2026-08-30 (ORDER 142) för
+     * `figureProps.ts:647` som läser `.material` på Object3D returnerad
+     * av `Raycaster.intersectObject(head, true)[i].object`. Handoff-koden
+     * antar single-material; call-sites gör null-check innan de rör `.color`.
+     */
+    readonly material?: Material | Material[];
   }
 }
