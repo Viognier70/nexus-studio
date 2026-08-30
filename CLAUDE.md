@@ -99,6 +99,22 @@ npm run preview    # förhandsgranska bygget
 
 - **Skuggor och opacity (ORDER 055 Del A).** Geometri med `transparent` opacity som kan nå 0 får aldrig ha statiskt `castShadow`. Skuggkartans depth-pass ignorerar alpha, så en fullt ut-fejdad mesh stämplar sin silhuett på marken. Toggla `mesh.castShadow` i samma `useFrame` som styr opacity, med samma tröskel som `depthWrite` (typiskt `opacity > 0.5`).
 
+## Mätningar mot renderad geometri
+
+**En mätning som påstår något om vad spelaren ser ska läsa samma källa som renderingen.** Om det inte går ska mätningen uttryckligen redovisa avvikelsen och vilken skillnad den kan ge.
+
+- Konstanter (bredder, färger, offsets, tröskelvärden) importeras från samma modul renderingen läser dem ur. De replikeras inte med "rimliga defaults" och de läses inte från angränsande källor (OSM-tagg, asset-metadata, spec-fil) som renderingen inte konsulterar.
+- Om replikering är oundviklig (t.ex. `.mjs`-script som inte kan importera TypeScript direkt): mätningen dokumenterar avvikelsen i sin header och länkar till den modul som är kanoniskt. En verifieringsrutin som bevisar `replikat === rendering` väger tyngre än ett antagande om det.
+- En rapport som säger "X gäller i spelet" refererar antingen till samma import som renderingen, eller redovisar avvikelsen. Utan det räknas rapporten som obestyrkt.
+
+**Motivering — tre fall inom två dagar (2026-08-29 till 2026-08-30):**
+
+- **ORDER 128** — silhuett-kontrastbandet kalibrerades mot `FLOOR_COLOUR = '#a89577'` som var skyltblocket i `Restaurant.tsx:108`, inte spelarens interiörgolv (`PlayerBusiness.tsx:75` `INTERIOR_FLOOR_COLOUR = '#a08462'`).
+- **ORDER 132** — fönster-mätningen räknade 3 156 fönster utanför fasaden på 297 av 338 hus, men spelaren såg 1 381 av 2 556 (renderingens `WINDOW_KINDS`-filter). Mätning och rendering utgick från olika hus-set.
+- **ORDER 135** — vägbredd-mätningen läste `road.width` (OSM-tagg) medan renderingen läser `ROLE_SPECS[roleFor(road)].width` (`roadRoles.ts:104`). OSM-taggen ignoreras helt av renderingen. ORDER 133:s slutsats blev föråldrad inom 24 timmar.
+
+Alla tre gav korrekt data om fel yta — vilket är farligare än ingen data eftersom slutsatserna såg giltiga ut.
+
 ## Regler för Claude Code
 
 1. **Typecheck före varje commit.** `npm run typecheck` måste vara grönt. Ett bygge (`npm run build`) ska gå igenom före push.
