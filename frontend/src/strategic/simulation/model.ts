@@ -290,11 +290,11 @@ export function makeInitialState(
     // REQUEST_BANK_LOAN; sätts av reducern via resolveBankMeeting.
     // Repeat-request skriver över.
     bankMeetingOutcome: null,
-    // ORDER 110 — R4 verksamhetsklassen. Default 'restaurant' matchar
+    // ORDER 110 — R4 verksamhetsklassen. Default 'kvarterskrogen' matchar
     // existerande sim-antaganden (TOTAL_SEATS = 16, matsal, mise en
-    // place). Bankmötet mappar techne → 'foodtruck' och balanced →
-    // 'värdshus' vid beviljande.
-    businessClass: 'restaurant',
+    // place). Bankmötet mappar techne → 'foodtrucken' och balanced →
+    // 'gästgiveriet' vid beviljande.
+    businessClass: 'kvarterskrogen',
     eco: {
       econ: {
         value: 0.55,
@@ -400,7 +400,7 @@ export function makeGuest(
     lastCheckbackAt: null,
     walkAwayOnArrival,
     // ORDER 111 §4 — default false; sätts av reducern (paying-transitionen)
-    // när businessClass = 'värdshus' och gästen rullas att stanna över.
+    // när businessClass = 'gästgiveriet' och gästen rullas att stanna över.
     stayingOvernight: false
   };
 }

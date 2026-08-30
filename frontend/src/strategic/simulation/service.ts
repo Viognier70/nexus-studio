@@ -28,7 +28,7 @@ const WAITING_QUEUE_CAP = 12;
 // ORDER 115 §4.5 — Food truck-uteplatsens eating-fas. 20 sim-sek
 // matchar "äta en portion foodtruck-mat vid en bänk". Kortare än
 // restaurangens dining-cykel (34-55 s). Bara relevant när
-// policies.hasUteplats är sann OCH businessClass === 'foodtruck'.
+// policies.hasUteplats är sann OCH businessClass === 'foodtrucken'.
 const EATING_DURATION_SEC = 20;
 // ORDER 115 rev 2 — Serving-fasens längd. VO 2026-08-17: "Bygg
 // serving-fas, 2-3 sekunder. En överlämning som inte syns är ingen
@@ -295,7 +295,7 @@ export function tickGuests(state: SimulationState) {
       // ORDER 115 §4.5 — foodtruck-uteplats. Om policies.hasUteplats
       // så går paying → eating (äter i bild) innan leaving. Utan
       // uteplats: direkt till leaving som förut.
-      if (state.businessClass === 'foodtruck' && state.policies.hasUteplats === true) {
+      if (state.businessClass === 'foodtrucken' && state.policies.hasUteplats === true) {
         guest.state = 'eating';
         guest.stateTime = now;
         // Bär med sig maten till uteplatsen. Ingen moveGuest — renderaren
@@ -439,17 +439,17 @@ function isBackgroundTask(t: TaskType | null): boolean {
   return t != null && BACKGROUND_TASKS.has(t);
 }
 
-// ORDER 137 §2.3 — bakgrundsarbete per verksamhet. Foodtruck och
-// ölkrogen står tomma: ORDER 134 visade att foodtruck är trogen på
+// ORDER 137 §2.3 — bakgrundsarbete per verksamhet. Foodtrucken och
+// ölkrogen står tomma: ORDER 134 visade att foodtrucken är trogen på
 // 32 % mittmassa (bg-arbete skulle bara döda det), och ordern lämnar
-// ölkrogens bryggeri-arbete som egen order. Restaurant och värdshus
-// får alla fyra typerna — det är där mittmassan i ORDER 134 var
-// 8-9 % som ska stiga.
+// ölkrogens bryggeri-arbete som egen order. Kvarterskrogen och
+// gästgiveriet får alla fyra typerna — det är där mittmassan i
+// ORDER 134 var 8-9 % som ska stiga. (Nya nyckelnamn per ORDER 140.)
 const BACKGROUND_TASKS_BY_BUSINESS: Record<string, readonly TaskType[]> = {
-  restaurant: ['misEnPlace', 'dish', 'restock', 'clean'],
-  värdshus:   ['misEnPlace', 'dish', 'restock', 'clean'],
-  foodtruck:  [],
-  ölkrogen:   []
+  kvarterskrogen: ['misEnPlace', 'dish', 'restock', 'clean'],
+  gästgiveriet:   ['misEnPlace', 'dish', 'restock', 'clean'],
+  foodtrucken:    [],
+  ölkrogen:       []
 };
 
 function anyDirectTaskAvailable(state: SimulationState): boolean {

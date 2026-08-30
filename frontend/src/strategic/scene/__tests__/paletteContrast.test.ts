@@ -27,7 +27,7 @@ const SEATED_STATES: GuestState[] = ['seated', 'ordering', 'dining', 'paying'];
 // Klasser där figurer faktiskt renderas i 3D-scenen (via InteriorGuests
 // + InteriorStaff). Foodtruck har SVG-sidovyn med egen kontrast-story
 // och testas inte här.
-const INTERIOR_3D_CLASSES: BusinessClass[] = ['restaurant', 'värdshus', 'ölkrogen'];
+const INTERIOR_3D_CLASSES: BusinessClass[] = ['kvarterskrogen', 'gästgiveriet', 'ölkrogen'];
 
 describe('ORDER 127 §3.2 — uniformsfärger uttömmande mot alla golvzoner', () => {
   for (const businessClass of INTERIOR_3D_CLASSES) {
@@ -98,7 +98,7 @@ describe('ORDER 127 §3.2 — regressionsvakt: färg som klarar EN zon men falle
   it('samma gamla färg passar dock mot restaurangens ena zon — testet ska visa varför uttömmandet krävs', () => {
     // Om testet bara mätte medel av zoner eller stannade vid första
     // godkännande skulle #6b6260 mot restaurant se OK ut.
-    const result = paletteZoneCheck('#6b6260', 'restaurant');
+    const result = paletteZoneCheck('#6b6260', 'kvarterskrogen');
     // Restaurant har bara en zon; låt oss se vad det blir:
     // #a08462 vs #6b6260 kontrast ~1.66 — faller precis under 1.8.
     // (ORDER 123-kalibreringen mot legacy #a89577 gav 2.04 men det

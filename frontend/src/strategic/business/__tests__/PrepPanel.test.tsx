@@ -30,10 +30,10 @@ function withFoodtruck(): SimulationState {
   const base = makeInitialState();
   return {
     ...base,
-    businessClass: 'foodtruck',
+    businessClass: 'foodtrucken',
     policies: {
       ...base.policies,
-      capacity: capacityForBusiness('foodtruck', base.policies.staffCount)
+      capacity: capacityForBusiness('foodtrucken', base.policies.staffCount)
     },
     day: {
       ...base.day,

@@ -14,7 +14,7 @@ import { makeInitialState } from '../model';
 import type { BusinessClass, SimAction, SimulationState } from '../../types';
 import { capacityForBusiness } from '../../business/businessClass';
 
-const BUSINESSES: BusinessClass[] = ['restaurant', 'foodtruck', 'värdshus', 'ölkrogen'];
+const BUSINESSES: BusinessClass[] = ['kvarterskrogen', 'foodtrucken', 'gästgiveriet', 'ölkrogen'];
 const STAFF_COUNTS: (2 | 3 | 4)[] = [2, 3, 4];
 const N_SEEDS = 50;
 const SERVICE_MINUTES = 8;
@@ -44,8 +44,8 @@ describe('ORDER 137 §2.2 — direkt uppgift blockerar aldrig av bakgrundsarbete
     let s = makeInitialState(SEED_BASE);
     s = {
       ...s,
-      businessClass: 'restaurant',
-      policies: { ...s.policies, capacity: capacityForBusiness('restaurant', s.policies.staffCount) }
+      businessClass: 'kvarterskrogen',
+      policies: { ...s.policies, capacity: capacityForBusiness('kvarterskrogen', s.policies.staffCount) }
     };
     s = reducer(s, { type: 'OPEN_SERVICE', service: 'lunch', lengthMinutes: SERVICE_MINUTES });
 
@@ -94,8 +94,8 @@ describe('ORDER 137 §5.3 — personal utan direktuppgifter och utan kö har wor
     let s = makeInitialState(SEED_BASE);
     s = {
       ...s,
-      businessClass: 'restaurant',
-      policies: { ...s.policies, capacity: capacityForBusiness('restaurant', s.policies.staffCount) }
+      businessClass: 'kvarterskrogen',
+      policies: { ...s.policies, capacity: capacityForBusiness('kvarterskrogen', s.policies.staffCount) }
     };
     s = reducer(s, { type: 'OPEN_SERVICE', service: 'lunch', lengthMinutes: SERVICE_MINUTES });
 
@@ -115,8 +115,8 @@ describe('ORDER 137 §5.3 — personal utan direktuppgifter och utan kö har wor
     let s = makeInitialState(SEED_BASE);
     s = {
       ...s,
-      businessClass: 'foodtruck',
-      policies: { ...s.policies, capacity: capacityForBusiness('foodtruck', s.policies.staffCount) }
+      businessClass: 'foodtrucken',
+      policies: { ...s.policies, capacity: capacityForBusiness('foodtrucken', s.policies.staffCount) }
     };
     s = reducer(s, { type: 'OPEN_SERVICE', service: 'lunch', lengthMinutes: SERVICE_MINUTES });
     for (let t = 0; t < 300; t++) {
@@ -225,7 +225,7 @@ describe('ORDER 137 §4 — jämförelse mot ORDER 134-baseline', () => {
 
     // Restaurant och värdshus (bg-arbete konfigurerat): midMass ska
     // stiga mätbart (≥ 5 procentenheter).
-    for (const c of comparison.filter((c) => c.business === 'restaurant' || c.business === 'värdshus')) {
+    for (const c of comparison.filter((c) => c.business === 'kvarterskrogen' || c.business === 'gästgiveriet')) {
       expect(
         c.deltaMid,
         `${c.business}/${c.staffCount} midMass steg bara ${(c.deltaMid * 100).toFixed(1)}pp (${(c.beforeMid * 100).toFixed(1)}% → ${(c.afterMid * 100).toFixed(1)}%). Krav ≥ 5pp.`
@@ -234,7 +234,7 @@ describe('ORDER 137 §4 — jämförelse mot ORDER 134-baseline', () => {
 
     // Foodtruck (inga bg-tasks): midMass ska INTE ha försämrats
     // meningsfullt. Toleransen 2 pp — normal seed-variation.
-    for (const c of comparison.filter((c) => c.business === 'foodtruck')) {
+    for (const c of comparison.filter((c) => c.business === 'foodtrucken')) {
       expect(
         c.deltaMid,
         `${c.business}/${c.staffCount} midMass sjönk för mycket: ${(c.deltaMid * 100).toFixed(1)}pp (${(c.beforeMid * 100).toFixed(1)}% → ${(c.afterMid * 100).toFixed(1)}%). Tolerans ≥ -2pp.`

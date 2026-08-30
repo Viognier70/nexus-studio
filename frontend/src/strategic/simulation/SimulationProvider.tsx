@@ -45,7 +45,7 @@ function applyDevFoodtruckSeed(state: SimulationState): SimulationState {
   // (`#playtest=1&business=foodtruck&uteplats=1`) för att verifiera
   // eating-fasen utan att seeda kön. Sätts på policies.hasUteplats
   // som service.ts:tickGuests läser vid paying → eating/leaving.
-  if (harnessParams.uteplats && state.businessClass === 'foodtruck') {
+  if (harnessParams.uteplats && state.businessClass === 'foodtrucken') {
     state = {
       ...state,
       policies: { ...state.policies, hasUteplats: true }
@@ -53,7 +53,7 @@ function applyDevFoodtruckSeed(state: SimulationState): SimulationState {
   }
   const n = harnessParams.foodtruckSeed;
   if (n === null || n <= 0) return state;
-  if (state.businessClass !== 'foodtruck') return state;
+  if (state.businessClass !== 'foodtrucken') return state;
   const now = state.simTime;
   const fakeGuests: Guest[] = [];
   const waitingIds: string[] = [];

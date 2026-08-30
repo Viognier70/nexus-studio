@@ -34,8 +34,8 @@ const CENTRE_MAGNITUDE_FLOOR = 0.40;
 const COS_HALF_ANGLE = Math.cos((CONE_HALF_ANGLE_DEG * Math.PI) / 180);
 
 export type KnowledgeClass =
-  | 'restaurant'      // phronesis dominant
-  | 'foodtruck'       // techne dominant
+  | 'kvarterskrogen'      // phronesis dominant
+  | 'foodtrucken'       // techne dominant
   | 'nearEpisteme'    // episteme dominant → loanTier 'none' (Vision Owner 2026-08-15)
   | 'balanced'        // bredd — utanför alla axelkoner, över centrumgolv;
                       // player-visible namn för fjärde klassen beslutas i R4 §3.7 p2
@@ -43,7 +43,7 @@ export type KnowledgeClass =
 
 export type LoanTier =
   | 'none'
-  | 'foodtruck'
+  | 'foodtrucken'
   | 'restaurant-small'
   | 'restaurant-full';
 
@@ -72,8 +72,8 @@ export function readProfile(credits: KnowledgeCredits): KnowledgeClass {
   // Precedens: phronesis > techne > episteme. En profil "i mitten" mellan
   // två koner tilldelas den tyngre klassen — restaurang är rikare än
   // food-truck, food-truck rikare än near-episteme.
-  if (cosPhronesis >= COS_HALF_ANGLE) return 'restaurant';
-  if (cosTechne >= COS_HALF_ANGLE) return 'foodtruck';
+  if (cosPhronesis >= COS_HALF_ANGLE) return 'kvarterskrogen';
+  if (cosTechne >= COS_HALF_ANGLE) return 'foodtrucken';
   if (cosEpisteme >= COS_HALF_ANGLE) return 'nearEpisteme';
 
   // Utanför alla axelkoner — bredd. Kräver centrumgolvet för att räknas
@@ -88,16 +88,16 @@ export function readProfile(credits: KnowledgeCredits): KnowledgeClass {
 export function resolveLoanOutcome(credits: KnowledgeCredits): LoanOutcome {
   const klass = readProfile(credits);
   switch (klass) {
-    case 'restaurant':
+    case 'kvarterskrogen':
       return {
         klass,
         loanTier: 'restaurant-full',
         message: 'Du har omdömet för matsalen. Vi ger dig fulla medel.'
       };
-    case 'foodtruck':
+    case 'foodtrucken':
       return {
         klass,
-        loanTier: 'foodtruck',
+        loanTier: 'foodtrucken',
         message: 'Du har händerna. Börja mindre, växla upp.'
       };
     case 'nearEpisteme':

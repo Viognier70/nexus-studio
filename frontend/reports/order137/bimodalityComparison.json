@@ -1,63 +1,63 @@
 {
   "afterCells": [
     {
-      "business": "restaurant",
+      "business": "kvarterskrogen",
       "staffCount": 2,
       "midMass": 0.30994782608695653,
       "loMass": 0,
       "hiMass": 0.6900521739130435
     },
     {
-      "business": "restaurant",
+      "business": "kvarterskrogen",
       "staffCount": 3,
       "midMass": 0.3078695652173913,
       "loMass": 0,
       "hiMass": 0.6921304347826087
     },
     {
-      "business": "restaurant",
+      "business": "kvarterskrogen",
       "staffCount": 4,
       "midMass": 0.30789565217391307,
       "loMass": 0,
       "hiMass": 0.692104347826087
     },
     {
-      "business": "foodtruck",
+      "business": "foodtrucken",
       "staffCount": 2,
       "midMass": 0.3149913043478261,
       "loMass": 0.3797304347826087,
       "hiMass": 0.3052782608695652
     },
     {
-      "business": "foodtruck",
+      "business": "foodtrucken",
       "staffCount": 3,
       "midMass": 0.31524347826086957,
       "loMass": 0.3697739130434783,
       "hiMass": 0.3149826086956522
     },
     {
-      "business": "foodtruck",
+      "business": "foodtrucken",
       "staffCount": 4,
       "midMass": 0.31524347826086957,
       "loMass": 0.3697739130434783,
       "hiMass": 0.3149826086956522
     },
     {
-      "business": "värdshus",
+      "business": "gästgiveriet",
       "staffCount": 2,
       "midMass": 0.3044173913043478,
       "loMass": 0,
       "hiMass": 0.6955826086956521
     },
     {
-      "business": "värdshus",
+      "business": "gästgiveriet",
       "staffCount": 3,
       "midMass": 0.30278260869565216,
       "loMass": 0,
       "hiMass": 0.6972173913043478
     },
     {
-      "business": "värdshus",
+      "business": "gästgiveriet",
       "staffCount": 4,
       "midMass": 0.3040695652173913,
       "loMass": 0,
@@ -87,7 +87,7 @@
   ],
   "comparison": [
     {
-      "business": "restaurant",
+      "business": "kvarterskrogen",
       "staffCount": 2,
       "beforeMid": 0.08373913043478261,
       "afterMid": 0.30994782608695653,
@@ -98,7 +98,7 @@
       "afterHi": 0.6900521739130435
     },
     {
-      "business": "restaurant",
+      "business": "kvarterskrogen",
       "staffCount": 3,
       "beforeMid": 0.08335652173913044,
       "afterMid": 0.3078695652173913,
@@ -109,7 +109,7 @@
       "afterHi": 0.6921304347826087
     },
     {
-      "business": "restaurant",
+      "business": "kvarterskrogen",
       "staffCount": 4,
       "beforeMid": 0.08335652173913044,
       "afterMid": 0.30789565217391307,
@@ -120,7 +120,7 @@
       "afterHi": 0.692104347826087
     },
     {
-      "business": "foodtruck",
+      "business": "foodtrucken",
       "staffCount": 2,
       "beforeMid": 0.3200782608695652,
       "afterMid": 0.3149913043478261,
@@ -131,7 +131,7 @@
       "afterHi": 0.3052782608695652
     },
     {
-      "business": "foodtruck",
+      "business": "foodtrucken",
       "staffCount": 3,
       "beforeMid": 0.31996521739130435,
       "afterMid": 0.31524347826086957,
@@ -142,7 +142,7 @@
       "afterHi": 0.3149826086956522
     },
     {
-      "business": "foodtruck",
+      "business": "foodtrucken",
       "staffCount": 4,
       "beforeMid": 0.31996521739130435,
       "afterMid": 0.31524347826086957,
@@ -153,7 +153,7 @@
       "afterHi": 0.3149826086956522
     },
     {
-      "business": "värdshus",
+      "business": "gästgiveriet",
       "staffCount": 2,
       "beforeMid": 0.09096521739130435,
       "afterMid": 0.3044173913043478,
@@ -164,7 +164,7 @@
       "afterHi": 0.6955826086956521
     },
     {
-      "business": "värdshus",
+      "business": "gästgiveriet",
       "staffCount": 3,
       "beforeMid": 0.08966086956521739,
       "afterMid": 0.30278260869565216,
@@ -175,7 +175,7 @@
       "afterHi": 0.6972173913043478
     },
     {
-      "business": "värdshus",
+      "business": "gästgiveriet",
       "staffCount": 4,
       "beforeMid": 0.09071304347826087,
       "afterMid": 0.3040695652173913,

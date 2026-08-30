@@ -26,7 +26,7 @@ import { capacityForBusiness } from '../businessClass';
 
 // -------- konfiguration --------
 
-const BUSINESSES: BusinessClass[] = ['restaurant', 'foodtruck', 'värdshus', 'ölkrogen'];
+const BUSINESSES: BusinessClass[] = ['kvarterskrogen', 'foodtrucken', 'gästgiveriet', 'ölkrogen'];
 const SERVICES = ['lunch', 'dinner'] as const;
 const N_SEEDS = 200;
 const SERVICE_MINUTES = 8;

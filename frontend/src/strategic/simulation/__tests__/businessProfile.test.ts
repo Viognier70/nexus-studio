@@ -21,13 +21,13 @@ describe('ORDER 102 §2.3 — readProfile klasstilldelning per axel', () => {
   it('phronesis-dominant vektor läses som restaurant', () => {
     // (0.1, 0.1, 0.9) — magnitud ≈ 0.9, phronesis/mag ≈ 0.997 >> cos(45°) ≈ 0.707
     const credits: KnowledgeCredits = { episteme: 0.1, techne: 0.1, phronesis: 0.9 };
-    expect(readProfile(credits)).toBe('restaurant');
+    expect(readProfile(credits)).toBe('kvarterskrogen');
   });
 
   it('techne-dominant vektor läses som foodtruck', () => {
     // (0.1, 0.9, 0.1) — techne/mag ≈ 0.997, phronesis-cone träffar inte
     const credits: KnowledgeCredits = { episteme: 0.1, techne: 0.9, phronesis: 0.1 };
-    expect(readProfile(credits)).toBe('foodtruck');
+    expect(readProfile(credits)).toBe('foodtrucken');
   });
 
   it('episteme-dominant vektor läses som nearEpisteme', () => {
@@ -110,13 +110,13 @@ describe('ORDER 102 §2.3 — precedens vid överlappande koner', () => {
     const credits: KnowledgeCredits = { episteme: 0, techne: 1.01, phronesis: 1.01 };
     // Verifiera hypotesen: båda axlar borde träffa cone vid 45°.
     // Utan precedens skulle vi kunna få antingen; med precedens: phronesis vinner.
-    expect(readProfile(credits)).toBe('restaurant');
+    expect(readProfile(credits)).toBe('kvarterskrogen');
   });
 
   it('techne vinner över episteme när båda cones träffar', () => {
     // Samma logik: (1.01, 1.01, 0) → t och e båda strax över tröskeln.
     const credits: KnowledgeCredits = { episteme: 1.01, techne: 1.01, phronesis: 0 };
-    expect(readProfile(credits)).toBe('foodtruck');
+    expect(readProfile(credits)).toBe('foodtrucken');
   });
 });
 
@@ -127,15 +127,15 @@ describe('ORDER 102 §2.3 — precedens vid överlappande koner', () => {
 describe('ORDER 102 §2.4 — resolveLoanOutcome mappning klass → loanTier', () => {
   it('restaurant → restaurant-full', () => {
     const result = resolveLoanOutcome({ episteme: 0.1, techne: 0.1, phronesis: 0.9 });
-    expect(result.klass).toBe('restaurant');
+    expect(result.klass).toBe('kvarterskrogen');
     expect(result.loanTier).toBe('restaurant-full');
     expect(result.message.length).toBeGreaterThan(0);
   });
 
   it('foodtruck → foodtruck', () => {
     const result = resolveLoanOutcome({ episteme: 0.1, techne: 0.9, phronesis: 0.1 });
-    expect(result.klass).toBe('foodtruck');
-    expect(result.loanTier).toBe('foodtruck');
+    expect(result.klass).toBe('foodtrucken');
+    expect(result.loanTier).toBe('foodtrucken');
     expect(result.message.length).toBeGreaterThan(0);
   });
 

@@ -112,7 +112,7 @@ export const DEFAULT_UTEPLATS_THRESHOLD: UteplatsThreshold = CANDIDATE_C_HAPPY_T
 // Returnerar true om upplåsning ska ske denna tick. Inga sidoeffekter —
 // reducer.ts skriver flaggan.
 export function shouldUnlockUteplats(state: SimulationState): boolean {
-  if (state.businessClass !== 'foodtruck') return false;
+  if (state.businessClass !== 'foodtrucken') return false;
   if (state.policies.hasUteplats === true) return false;
   return DEFAULT_UTEPLATS_THRESHOLD.check(state);
 }

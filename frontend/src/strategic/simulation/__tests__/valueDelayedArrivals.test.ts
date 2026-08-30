@@ -19,10 +19,10 @@ function foodtruckWithPolicies(overrides: Partial<SimulationState['policies']>):
   const s = makeInitialState();
   return {
     ...s,
-    businessClass: 'foodtruck',
+    businessClass: 'foodtrucken',
     policies: {
       ...s.policies,
-      capacity: capacityForBusiness('foodtruck', s.policies.staffCount),
+      capacity: capacityForBusiness('foodtrucken', s.policies.staffCount),
       ...overrides
     },
     cash: 240_000

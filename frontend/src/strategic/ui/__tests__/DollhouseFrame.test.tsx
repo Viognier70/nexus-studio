@@ -65,7 +65,7 @@ describe('DollhouseFrame — SD-003 §2 alt C (rev. 2, 2026-08-16)', () => {
   // ---------------------------------------------------------------------------
 
   it('initial fokus = fokusrum: öppningarna leder mot kok + bar', () => {
-    const { container } = renderWithBusiness('restaurant');
+    const { container } = renderWithBusiness('kvarterskrogen');
     const openings = Array.from(container.querySelectorAll('[data-opening]'))
       .map((el) => el.getAttribute('data-opening'))
       .sort();
@@ -73,7 +73,7 @@ describe('DollhouseFrame — SD-003 §2 alt C (rev. 2, 2026-08-16)', () => {
   });
 
   it('klick på kok-öppning byter fokus → nya öppningar mot fokusrum + bar', () => {
-    const { container } = renderWithBusiness('restaurant');
+    const { container } = renderWithBusiness('kvarterskrogen');
     const kokOpening = container.querySelector('[data-opening="kok"]')!;
     // Klickytan är den transparenta rect som ligger efter counter-linjen
     // (data-opening = fill rect, sedan line, sedan transparent click rect).
@@ -88,7 +88,7 @@ describe('DollhouseFrame — SD-003 §2 alt C (rev. 2, 2026-08-16)', () => {
   });
 
   it('rums-etiketten uppdateras vid fokus-byte', () => {
-    const { container } = renderWithBusiness('restaurant');
+    const { container } = renderWithBusiness('kvarterskrogen');
     // Klicka på bar-öppningen (höger, dvs andra klickytan)
     const clickTargets = container.querySelectorAll('rect[fill="transparent"]');
     fireEvent.click(clickTargets[1] as SVGElement);
@@ -102,7 +102,7 @@ describe('DollhouseFrame — SD-003 §2 alt C (rev. 2, 2026-08-16)', () => {
   // ---------------------------------------------------------------------------
 
   it('öppningarnas klickytor har pointer-events: auto (opt-in mot §6)', () => {
-    const { container } = renderWithBusiness('restaurant');
+    const { container } = renderWithBusiness('kvarterskrogen');
     const clickables = container.querySelectorAll('rect[fill="transparent"]');
     expect(clickables.length).toBe(2);
     for (const el of Array.from(clickables)) {
@@ -112,7 +112,7 @@ describe('DollhouseFrame — SD-003 §2 alt C (rev. 2, 2026-08-16)', () => {
   });
 
   it('rot-elementet har pointer-events: none (SD-003 §6)', () => {
-    const { container } = renderWithBusiness('restaurant');
+    const { container } = renderWithBusiness('kvarterskrogen');
     const root = container.querySelector('[data-dollhouse-frame]') as HTMLElement;
     expect(root.style.pointerEvents).toBe('none');
   });
@@ -122,7 +122,7 @@ describe('DollhouseFrame — SD-003 §2 alt C (rev. 2, 2026-08-16)', () => {
   // ---------------------------------------------------------------------------
 
   it('öppningens form är horisontell (bredare än hög) — passluckan/bardisken, inte dörr', () => {
-    const { container } = renderWithBusiness('restaurant');
+    const { container } = renderWithBusiness('kvarterskrogen');
     const opening = container.querySelector('[data-opening="kok"]') as SVGRectElement;
     const w = Number(opening.getAttribute('width'));
     const h = Number(opening.getAttribute('height'));
@@ -132,7 +132,7 @@ describe('DollhouseFrame — SD-003 §2 alt C (rev. 2, 2026-08-16)', () => {
   });
 
   it('öppning-etiketten namnger sorten (passluckan / bardisken)', () => {
-    const { container } = renderWithBusiness('restaurant');
+    const { container } = renderWithBusiness('kvarterskrogen');
     const texts = Array.from(container.querySelectorAll('text')).map((el) => el.textContent);
     // Etiketterna "passluckan · Köket" och "bardisken · Baren" ska finnas.
     expect(texts.some((t) => t?.includes('passluckan') && t?.includes('Köket'))).toBe(true);
@@ -145,7 +145,7 @@ describe('DollhouseFrame — SD-003 §2 alt C (rev. 2, 2026-08-16)', () => {
 
   it('utan panel-kolumner i DOM: sceneWidth = viewport − default-reserv (2560)', () => {
     Object.defineProperty(window, 'innerWidth', { value: 2560, configurable: true });
-    const { container } = renderWithBusiness('restaurant');
+    const { container } = renderWithBusiness('kvarterskrogen');
     const svg = container.querySelector('svg') as SVGSVGElement;
     // 2560 − 360 (default left) − 340 (default right) = 1860
     expect(svg.style.width).toBe('1860px');
@@ -164,7 +164,7 @@ describe('DollhouseFrame — SD-003 §2 alt C (rev. 2, 2026-08-16)', () => {
     mockRectFor(rightCol, 280);
 
     Object.defineProperty(window, 'innerWidth', { value: 1920, configurable: true });
-    const { container } = renderWithBusiness('restaurant');
+    const { container } = renderWithBusiness('kvarterskrogen');
     const svg = container.querySelector('svg') as SVGSVGElement;
     // 1920 − (300 + 24 margin) − (280 + 24 margin) = 1920 − 324 − 304 = 1292
     expect(svg.style.width).toBe('1292px');
@@ -181,7 +181,7 @@ describe('DollhouseFrame — SD-003 §2 alt C (rev. 2, 2026-08-16)', () => {
     mockRectFor(rightCol, 260);
 
     Object.defineProperty(window, 'innerWidth', { value: 2560, configurable: true });
-    const { container } = renderWithBusiness('restaurant');
+    const { container } = renderWithBusiness('kvarterskrogen');
     const svg = container.querySelector('svg') as SVGSVGElement;
     // 2560 − 344 − 284 = 1932. Under 2240 → panorering krävs.
     expect(svg.style.width).toBe('1932px');
@@ -201,7 +201,7 @@ describe('DollhouseFrame — SD-003 §2 alt C (rev. 2, 2026-08-16)', () => {
     mockRectFor(rightCol, 240);
 
     Object.defineProperty(window, 'innerWidth', { value: 1280, configurable: true });
-    const { container } = renderWithBusiness('restaurant');
+    const { container } = renderWithBusiness('kvarterskrogen');
     const svg = container.querySelector('svg') as SVGSVGElement;
     // 1280 − 304 − 264 = 712
     expect(svg.style.width).toBe('712px');
@@ -215,7 +215,7 @@ describe('DollhouseFrame — SD-003 §2 alt C (rev. 2, 2026-08-16)', () => {
   // ---------------------------------------------------------------------------
 
   it('businessClass=foodtruck → FoodtruckScene (ORDER 113, ersätter placeholder)', () => {
-    const { container } = renderWithBusiness('foodtruck');
+    const { container } = renderWithBusiness('foodtrucken');
     // ORDER 113 §2 — den riktiga skepnaden. Ingen placeholder längre.
     expect(container.querySelector('[data-placeholder-business]')).toBeNull();
     // Fokusrum-svg (bakvägg + passluckan) ska INTE finnas
@@ -230,16 +230,16 @@ describe('DollhouseFrame — SD-003 §2 alt C (rev. 2, 2026-08-16)', () => {
     expect(container.textContent).not.toContain('Skepnad ej byggd');
   });
 
-  it('businessClass=värdshus → placeholder med värdshus-specifik text', () => {
-    const { container } = renderWithBusiness('värdshus');
-    const placeholder = container.querySelector('[data-placeholder-business="värdshus"]');
+  it('businessClass=gästgiveriet → placeholder med gästgiveri-specifik text', () => {
+    const { container } = renderWithBusiness('gästgiveriet');
+    const placeholder = container.querySelector('[data-placeholder-business="gästgiveriet"]');
     expect(placeholder).toBeTruthy();
-    expect(container.textContent).toContain('Värdshuset');
+    expect(container.textContent).toContain('Gästgiveriet');
     expect(container.textContent).toContain('dygnsstruktur');
   });
 
   it('businessClass=restaurant → fokusrum-skepnaden syns fortfarande', () => {
-    const { container } = renderWithBusiness('restaurant');
+    const { container } = renderWithBusiness('kvarterskrogen');
     expect(container.querySelector('[data-placeholder-business]')).toBeNull();
     expect(container.querySelector('[data-opening="kok"]')).toBeTruthy();
     expect(container.querySelector('[data-opening="bar"]')).toBeTruthy();
@@ -255,7 +255,7 @@ describe('DollhouseFrame — SD-003 §2 alt C (rev. 2, 2026-08-16)', () => {
     mockRectFor(leftCol, 300);
     mockRectFor(rightCol, 260);
     Object.defineProperty(window, 'innerWidth', { value: 1920, configurable: true });
-    const { container } = renderWithBusiness('restaurant');
+    const { container } = renderWithBusiness('kvarterskrogen');
     // Metadata-text ska nämna både vä och hö insets så det är läsbart
     // vad scenbredden räknades mot.
     const meta = Array.from(container.querySelectorAll('text'))

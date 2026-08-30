@@ -128,7 +128,7 @@ export function DevPanel({ lastKey }: Props) {
   //     = "sitter/står vid ståborden och äter"
   // Övriga verksamheter (restaurant, värdshus) behåller den gamla
   // avläsningen: queue=waitingIds, seated=seatedIds.
-  const isFoodtruck = sim.businessClass === 'foodtruck';
+  const isFoodtruck = sim.businessClass === 'foodtrucken';
   const queueLive = isFoodtruck
     ? sim.guests.filter((g) =>
         g.state === 'waiting' || g.state === 'arriving' ||

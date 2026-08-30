@@ -45,10 +45,10 @@ function stateWithQueue(guestIds: string[]): SimulationState {
   const base = makeInitialState();
   return {
     ...base,
-    businessClass: 'foodtruck',
+    businessClass: 'foodtrucken',
     policies: {
       ...base.policies,
-      capacity: capacityForBusiness('foodtruck', base.policies.staffCount)
+      capacity: capacityForBusiness('foodtrucken', base.policies.staffCount)
     },
     guests: guestIds.map(makeGuestFixture),
     waitingIds: guestIds
@@ -264,10 +264,10 @@ function stateWithMixedGuests(specs: Array<{ id: string; state: SimulationState[
   const waitingIds = specs.filter((s) => s.state === 'waiting').map((s) => s.id);
   return {
     ...base,
-    businessClass: 'foodtruck',
+    businessClass: 'foodtrucken',
     policies: {
       ...base.policies,
-      capacity: capacityForBusiness('foodtruck', base.policies.staffCount)
+      capacity: capacityForBusiness('foodtrucken', base.policies.staffCount)
     },
     guests,
     waitingIds

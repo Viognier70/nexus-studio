@@ -48,7 +48,7 @@ function makeGuestFixture(overrides: Partial<Guest>): Guest {
 describe('ORDER 111 §6 DoD 1 — foodtruck-gäster når aldrig dining', () => {
   it('foodtruck-gäst passerar aldrig genom seated eller dining', () => {
     let s = makeInitialState();
-    s = { ...s, businessClass: 'foodtruck' };
+    s = { ...s, businessClass: 'foodtrucken' };
     s.guests = [makeGuestFixture({ id: 'g1', state: 'waiting', stateTime: s.simTime })];
     s.waitingIds = ['g1'];
     const observed = new Set<string>();
@@ -78,8 +78,8 @@ describe('ORDER 111 §6 DoD 1 — foodtruck-gäster når aldrig dining', () => {
     let s = makeInitialState();
     s = {
       ...s,
-      businessClass: 'foodtruck',
-      policies: { ...s.policies, capacity: capacityForBusiness('foodtruck', s.policies.staffCount) }
+      businessClass: 'foodtrucken',
+      policies: { ...s.policies, capacity: capacityForBusiness('foodtrucken', s.policies.staffCount) }
     };
     s.guests = [makeGuestFixture({ id: 'g1', state: 'waiting', stateTime: s.simTime })];
     s.waitingIds = ['g1'];
@@ -115,8 +115,8 @@ describe('ORDER 111 §6 DoD 2 — kölängd påverkar foodtruck-spawn', () => {
     let s = makeInitialState();
     s = {
       ...s,
-      businessClass: 'foodtruck',
-      policies: { ...s.policies, capacity: capacityForBusiness('foodtruck', s.policies.staffCount) }
+      businessClass: 'foodtrucken',
+      policies: { ...s.policies, capacity: capacityForBusiness('foodtrucken', s.policies.staffCount) }
     };
     // Fyll kön till gränsen.
     const capacity = s.policies.capacity;
@@ -138,8 +138,8 @@ describe('ORDER 111 §6 DoD 2 — kölängd påverkar foodtruck-spawn', () => {
     let s = makeInitialState();
     s = {
       ...s,
-      businessClass: 'foodtruck',
-      policies: { ...s.policies, capacity: capacityForBusiness('foodtruck', s.policies.staffCount) }
+      businessClass: 'foodtrucken',
+      policies: { ...s.policies, capacity: capacityForBusiness('foodtrucken', s.policies.staffCount) }
     };
     // Öppna lunch så perioden är rätt för arrivals.
     s = reducer(s, { type: 'OPEN_SERVICE', service: 'lunch', lengthMinutes: 30 });
@@ -181,8 +181,8 @@ describe('ORDER 111 §6 DoD 3 — väder påverkar foodtruck-efterfrågan', () =
     let foodtruck = makeInitialState();
     foodtruck = {
       ...foodtruck,
-      businessClass: 'foodtruck',
-      policies: { ...foodtruck.policies, capacity: capacityForBusiness('foodtruck', foodtruck.policies.staffCount) }
+      businessClass: 'foodtrucken',
+      policies: { ...foodtruck.policies, capacity: capacityForBusiness('foodtrucken', foodtruck.policies.staffCount) }
     };
     foodtruck = reducer(foodtruck, { type: 'OPEN_SERVICE', service: 'lunch', lengthMinutes: 30 });
     foodtruck = {
@@ -220,8 +220,8 @@ describe('ORDER 111 §6 DoD 3 — väder påverkar foodtruck-efterfrågan', () =
     let foodtruck = makeInitialState();
     foodtruck = {
       ...foodtruck,
-      businessClass: 'foodtruck',
-      policies: { ...foodtruck.policies, capacity: capacityForBusiness('foodtruck', foodtruck.policies.staffCount) }
+      businessClass: 'foodtrucken',
+      policies: { ...foodtruck.policies, capacity: capacityForBusiness('foodtrucken', foodtruck.policies.staffCount) }
     };
     foodtruck = reducer(foodtruck, { type: 'OPEN_SERVICE', service: 'lunch', lengthMinutes: 30 });
     foodtruck = {
@@ -272,7 +272,7 @@ describe('ORDER 111 §6 DoD 4 — hasMiseEnPlace + hasOvernight har konsumenter'
 
   it('foodtruck: prepEndsAt = openingEndsAt (ingen prep-fas)', () => {
     let s = makeInitialState();
-    s = { ...s, businessClass: 'foodtruck' };
+    s = { ...s, businessClass: 'foodtrucken' };
     s = reducer(s, { type: 'OPEN_SERVICE', service: 'lunch', lengthMinutes: 20 });
     expect(s.day.openingEndsAt).not.toBeNull();
     expect(s.day.prepEndsAt).not.toBeNull();
@@ -282,7 +282,7 @@ describe('ORDER 111 §6 DoD 4 — hasMiseEnPlace + hasOvernight har konsumenter'
 
   it('restaurant: prepEndsAt > openingEndsAt (60s prep-fönster)', () => {
     let s = makeInitialState();
-    // businessClass default 'restaurant'.
+    // businessClass default 'kvarterskrogen'.
     s = reducer(s, { type: 'OPEN_SERVICE', service: 'lunch', lengthMinutes: 20 });
     expect(s.day.prepEndsAt).toBeGreaterThan(s.day.openingEndsAt!);
   });
@@ -295,7 +295,7 @@ describe('ORDER 111 §6 DoD 4 — hasMiseEnPlace + hasOvernight har konsumenter'
 describe('ORDER 111 §6 DoD 5 — värdshus-gäst stannar över dygnsrollover', () => {
   it('sleeping-gäst i värdshus överlever evening→breakfast (rollover)', () => {
     let s = makeInitialState();
-    s = { ...s, businessClass: 'värdshus' };
+    s = { ...s, businessClass: 'gästgiveriet' };
     s.guests = [
       makeGuestFixture({ id: 'overnight', state: 'sleeping', stayingOvernight: true, seatIndex: 0 }),
       makeGuestFixture({ id: 'declined-guest', state: 'declined', stayingOvernight: false })
@@ -322,7 +322,7 @@ describe('ORDER 111 §6 DoD 5 — värdshus-gäst stannar över dygnsrollover', 
 
   it('restaurant: alla gäster rensas vid rollover oavsett stayingOvernight', () => {
     let s = makeInitialState();
-    // Default businessClass = 'restaurant'. hasOvernight=false → rensar allt.
+    // Default businessClass = 'kvarterskrogen'. hasOvernight=false → rensar allt.
     s.guests = [
       makeGuestFixture({ id: 'r1', state: 'sleeping', stayingOvernight: true })
     ];
@@ -347,7 +347,7 @@ describe('ORDER 111 §6 DoD 6 — frukost är ett pass', () => {
 
   it('värdshus + sleeping-gäster → dygnsrollover startar i breakfast', () => {
     let s = makeInitialState();
-    s = { ...s, businessClass: 'värdshus' };
+    s = { ...s, businessClass: 'gästgiveriet' };
     s.guests = [
       makeGuestFixture({ id: 'ov', state: 'sleeping', stayingOvernight: true, seatIndex: 0 })
     ];
@@ -364,7 +364,7 @@ describe('ORDER 111 §6 DoD 6 — frukost är ett pass', () => {
 
   it('frukost-passet väcker sleeping-gäster (→ leaving) och avslutas i morning', () => {
     let s = makeInitialState();
-    s = { ...s, businessClass: 'värdshus' };
+    s = { ...s, businessClass: 'gästgiveriet' };
     s.guests = [
       makeGuestFixture({ id: 'ov', state: 'sleeping', stayingOvernight: true, seatIndex: 0 })
     ];
@@ -386,7 +386,7 @@ describe('ORDER 111 §6 DoD 6 — frukost är ett pass', () => {
     // Kontroll att breakfast-passet bara utlöses när det finns gäster
     // att servera — värdshus utan övernattare hoppar direkt till morning.
     let s = makeInitialState();
-    s = { ...s, businessClass: 'värdshus' };
+    s = { ...s, businessClass: 'gästgiveriet' };
     s.guests = [];
     s.seatedIds = [];
     s = { ...s, day: { ...s.day, period: 'evening', periodStartAt: 0 }, simTime: 0 };

@@ -19,10 +19,10 @@ function makeFoodtruckState(seed = 20260817): SimulationState {
   let s = makeInitialState(seed);
   s = {
     ...s,
-    businessClass: 'foodtruck',
+    businessClass: 'foodtrucken',
     policies: {
       ...s.policies,
-      capacity: capacityForBusiness('foodtruck', s.policies.staffCount)
+      capacity: capacityForBusiness('foodtrucken', s.policies.staffCount)
     },
     cash: 240_000
   };
@@ -70,7 +70,7 @@ describe('ORDER 116 §4 DoD 5 — queue= i DevPanel = renderade kö-figurer', ()
       ],
       waitingIds: ['g-w']
     };
-    const isFoodtruck = s.businessClass === 'foodtruck';
+    const isFoodtruck = s.businessClass === 'foodtrucken';
     const queueLive = isFoodtruck
       ? s.guests.filter((g) =>
           g.state === 'waiting' || g.state === 'arriving' ||
@@ -132,10 +132,10 @@ describe('ORDER 116 §4 DoD 5 — queue= i DevPanel = renderade kö-figurer', ()
     let s = makeInitialState(seed);
     s = {
       ...s,
-      businessClass: 'foodtruck',
+      businessClass: 'foodtrucken',
       policies: {
         ...s.policies,
-        capacity: capacityForBusiness('foodtruck', s.policies.staffCount)
+        capacity: capacityForBusiness('foodtrucken', s.policies.staffCount)
       },
       cash: 240_000,
       guests: [

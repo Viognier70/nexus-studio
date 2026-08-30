@@ -50,7 +50,7 @@ export type BankMeetingOutcome = Omit<BankMeetingOutcomeState, 'heldAt' | 'point
 // storleksordning som befintligt T2-grandfather (2 400 kSEK).
 const LOAN_AMOUNTS_SEK: Record<BankLoanTier, number> = {
   none: 0,
-  foodtruck: 600_000,
+  foodtrucken: 600_000,
   'restaurant-small': 1_200_000,   // balanced-klass placeholder (R4 §3.7 p2)
   'restaurant-full': 2_400_000
 };
@@ -88,7 +88,7 @@ export function resolveBankMeeting(credits: KnowledgeCredits): BankMeetingOutcom
   const loanAmountSek = LOAN_AMOUNTS_SEK[base.loanTier];
 
   switch (base.klass) {
-    case 'restaurant':
+    case 'kvarterskrogen':
       return {
         klass: base.klass,
         loanTier: base.loanTier,
@@ -98,7 +98,7 @@ export function resolveBankMeeting(credits: KnowledgeCredits): BankMeetingOutcom
         pointedPavilion: null,
         messageKey: 'grantRestaurant'
       };
-    case 'foodtruck':
+    case 'foodtrucken':
       return {
         klass: base.klass,
         loanTier: base.loanTier,

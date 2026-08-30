@@ -244,7 +244,7 @@ export function DollhouseFrame() {
   // ORDER 113: food trucken har nu en riktig skepnad (FoodtruckScene).
   // Restaurant → fokusrum (denna fils resterande JSX). Värdshus förblir
   // placeholder tills egen skepnad byggs (SD-003 §4 följdorder).
-  if (sim.businessClass === 'foodtruck') {
+  if (sim.businessClass === 'foodtrucken') {
     return (
       <FoodtruckScene
         widthPx={widthPx}
@@ -253,10 +253,10 @@ export function DollhouseFrame() {
       />
     );
   }
-  if (sim.businessClass === 'värdshus') {
+  if (sim.businessClass === 'gästgiveriet') {
     return (
       <UnbuiltShapeholder
-        businessClass="värdshus"
+        businessClass="gästgiveriet"
         widthPx={widthPx}
         insets={insets}
       />
@@ -445,7 +445,7 @@ function Opening({ x, y, target, hovered, onEnter, onLeave, onClick }: OpeningPr
 // är rätt vy för alla klasser.
 
 interface PlaceholderProps {
-  businessClass: 'foodtruck' | 'värdshus';
+  businessClass: 'foodtrucken' | 'gästgiveriet';
   widthPx: number;
   insets: PanelInsets;
 }
@@ -454,13 +454,13 @@ const PLACEHOLDER_LABELS: Record<PlaceholderProps['businessClass'], {
   name: string;
   waitingFor: string;
 }> = {
-  foodtruck: {
-    name: 'Food truck',
+  foodtrucken: {
+    name: 'Foodtrucken',
     waitingFor:
       'ORDER 112 §4 — vagn som bakvägg, luckan som öppning, kön på gatan som scen'
   },
-  värdshus: {
-    name: 'Värdshuset',
+  gästgiveriet: {
+    name: 'Gästgiveriet',
     waitingFor:
       'SD-003 §4 följdorder — dygnsstruktur, gäster som stannar över, frukost'
   }

@@ -22,7 +22,7 @@ import { capacityForBusiness } from '../businessClass';
 
 // -------- konfiguration --------
 
-const BUSINESSES: BusinessClass[] = ['restaurant', 'foodtruck', 'värdshus', 'ölkrogen'];
+const BUSINESSES: BusinessClass[] = ['kvarterskrogen', 'foodtrucken', 'gästgiveriet', 'ölkrogen'];
 // `makeStaff` accepterar bara 2 | 3 | 4 (model.ts:42). Att modellen
 // binder personalantalet till tre valen är i sig en bit av bimodalitets-
 // bilden — spelaren kan inte lösa "för lite folk" med steglös bemanning.
@@ -275,7 +275,7 @@ describe('ORDER 134 — bimodaliteten (fixed-seed)', () => {
 
     // Konsollhistogram för foodtruck vs restaurant vid staffCount=3
     for (const c of cells) {
-      if (c.staffCount === 3 && (c.business === 'foodtruck' || c.business === 'restaurant')) {
+      if (c.staffCount === 3 && (c.business === 'foodtrucken' || c.business === 'kvarterskrogen')) {
         // eslint-disable-next-line no-console
         console.log(`\nHistogram ${c.business} staff=3:`);
         const maxCount = Math.max(...c.histogram, 1);

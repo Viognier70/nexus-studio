@@ -152,13 +152,13 @@ describe('ORDER 105 §4.3 — readSpar aggregerar och avgör spår-dominans', ()
 
 describe('ORDER 105 §5 DoD 5 — samma axel-profil, olika spår', () => {
   it('två spelare, båda techne-dominant, ena Stensöta ena Metodköket → olika readSpar', () => {
-    // Båda får readProfile = 'foodtruck' (techne-dominant per ORDER 102).
+    // Båda får readProfile = 'foodtrucken' (techne-dominant per ORDER 102).
     const stensötaPlayer = makeTracked({ techne: { sommellerie: 0.9 } });
     const metodköketPlayer = makeTracked({ techne: { kok: 0.9 } });
 
     // ORDER 102-läsning identisk (samma axel-profil).
-    expect(readProfile(stensötaPlayer.credits)).toBe('foodtruck');
-    expect(readProfile(metodköketPlayer.credits)).toBe('foodtruck');
+    expect(readProfile(stensötaPlayer.credits)).toBe('foodtrucken');
+    expect(readProfile(metodköketPlayer.credits)).toBe('foodtrucken');
 
     // ORDER 105-läsning skiljer dem — R4 kan använda detta för att
     // välja mellan verksamheter med samma profil.
@@ -190,7 +190,7 @@ describe('ORDER 105 §5 DoD 2 — readProfile oförändrad för spårlös indata
       techne: { untagged: 0.1 },
       phronesis: { untagged: 0.9 }
     });
-    expect(readProfile(credits)).toBe('restaurant');
+    expect(readProfile(credits)).toBe('kvarterskrogen');
   });
 
   it('techne-dominant med bara sommellerie ger fortfarande foodtruck (spår rör inte readProfile)', () => {
@@ -201,7 +201,7 @@ describe('ORDER 105 §5 DoD 2 — readProfile oförändrad för spårlös indata
       techne: { sommellerie: 0.9 },
       phronesis: { untagged: 0.1 }
     });
-    expect(readProfile(credits)).toBe('foodtruck');
+    expect(readProfile(credits)).toBe('foodtrucken');
     expect(readSpar(tracks)).toBe('sommellerie');
   });
 });
