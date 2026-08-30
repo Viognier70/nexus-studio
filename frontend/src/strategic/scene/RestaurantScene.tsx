@@ -21,8 +21,9 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useSimState } from '../simulation/SimulationProvider';
 import { usePlayerBusinessInterior } from '../business/interiorLayout';
-import { createRoom, updateRoom, type BusinessRoom } from './businessRoom';
+import { createRoom, resolveWorldPositions, updateRoom, type BusinessRoom } from './businessRoom';
 import { disposeRestaurantGeometry } from './restaurantRoom';
+import { businessRoomRef } from './interiorSharedState';
 
 export function RestaurantScene() {
   const sim = useSimState();
@@ -48,12 +49,29 @@ export function RestaurantScene() {
     room.group.rotation.y = -layout.worldAngle;
     grp.add(room.group);
     roomRef.current = room;
+    // ORDER 150 — publicera kontraktets värld-XZ:er så InteriorGuests
+    // placerar gäster på RUMMETS 16 platser i stället för att läsa
+    // usePlayerBusinessInterior().seats (som fortfarande råkar vara
+    // 16 för restaurangen men är restaurangspecifik ändå).
+    const world = resolveWorldPositions(room);
+    businessRoomRef.current = {
+      businessClass: 'kvarterskrogen',
+      seats: world.seats as [number, number][],
+      standing: world.standing as [number, number][],
+      stations: world.staffStations as [number, number][],
+      entrance: world.entrance as [number, number],
+      waitingSpot: world.waitingSpot as [number, number],
+      capacity: room.capacity
+    };
     return () => {
       const r = roomRef.current;
       if (r) {
         r.group.removeFromParent();
         r.dispose?.();
         roomRef.current = null;
+      }
+      if (businessRoomRef.current?.businessClass === 'kvarterskrogen') {
+        businessRoomRef.current = null;
       }
     };
   }, [isRestaurant, layout]);
