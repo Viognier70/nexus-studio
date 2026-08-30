@@ -37,7 +37,11 @@ export const DEFAULT_POLICIES: Policies = {
   localSourcing: true
 };
 
-const STAFF_ROLE_ORDER: StaffRole[] = ['värd', 'servitör', 'kock', 'servitör'];
+// ORDER 156 — fjärde platsen var 'servitör' (dubblerad) och 'lärling'
+// saknades helt. Per Vision Owner 2026-08-30: "två buggar, inte ett
+// designval". makeStaff(4) ger nu 1 värd + 1 servitör + 1 kock + 1
+// lärling som initial team.
+const STAFF_ROLE_ORDER: StaffRole[] = ['värd', 'servitör', 'kock', 'lärling'];
 
 export function makeStaff(count: 2 | 3 | 4): StaffMember[] {
   const staff: StaffMember[] = [];
