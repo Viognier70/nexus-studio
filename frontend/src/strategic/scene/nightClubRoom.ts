@@ -118,7 +118,11 @@ import * as THREE from 'three';
 // #region types
 
 export type Vec2 = [number, number];
-export type StaffRole = 'bar' | 'door' | 'floor' | 'dj';
+// ORDER 153 — döpt om från lokal `StaffRole` till `StationRole` per
+// Vision Owner-beslut 2026-08-30. Sim-lagrets `StaffRole` (types.ts)
+// förblir de fyra `värd|servitör|kock|lärling`; listan här är
+// stationsindelningen för nattklubbens geometri.
+export type StationRole = 'bar' | 'door' | 'floor' | 'dj';
 
 export interface SeatSpec {
   id: string;
@@ -173,7 +177,7 @@ export interface BarSpec {
 
 export interface StaffStation {
   id: string;
-  role: StaffRole;
+  role: StationRole;
   local: Vec2;
   standHeight: number;
   facing: number;
