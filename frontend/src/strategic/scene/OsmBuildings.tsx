@@ -10,6 +10,7 @@ import {
 } from '../content/world';
 import type { RawBuilding, Vec2Tuple } from '../content/world';
 import { nearestStreetProfile } from '../content/streetProfiles';
+import { inside } from '../procgen/geom';
 import { SKIP_PROCEDURAL_IDS } from './ProceduralFacades';
 
 type WealthTier = 'modest' | 'standard' | 'prosperous';
@@ -1219,22 +1220,43 @@ function windowsFor(b: Extruded): Array<{
     return [wx, ly, wz];
   };
 
+  // ORDER 132 — polygon-guard. Fönster-XZ som faller utanför byggnadens
+  // faktiska footprint kasseras. ORDER 130 mätte 3 156 fönster som hängde
+  // upp till 36 m från fasaden på 297 av 338 hus (88 %) — orsaken var
+  // att positionerna beräknas från OBB-facen (`ridgeW`/`ridgeD`), inte
+  // från polygonens kanter. Icke-rektangulära hus har OBB-face som
+  // sticker ut i luften.
+  //
+  // `buildFacade` (LOD 0/1) undviker felet strukturellt genom att
+  // iterera polygonens kanter direkt (ORDER 058 §1); här (LOD 2)
+  // behåller vi OBB-iterationen och drop:ar utfallen efteråt.
+  // Projicering till närmaste kant hade varit ett annat val — den
+  // vägen väljs inte förrän det finns skäl att inte kassera, och
+  // ORDER 132 §2 säger "uppfinn ingen ny strategi".
+  const poly = b.building.poly;
+  const inFootprint = (pos: [number, number, number]): boolean =>
+    inside(poly, pos[0], pos[2]);
+
   for (const y of storeyYs) {
     // Long +Z face (outward +Z in local frame → world rotY = angle)
     for (const lx of longXs) {
-      out.push({ pos: project(lx, y, halfD), rotY: angle, w: winW, h: winH });
+      const p = project(lx, y, halfD);
+      if (inFootprint(p)) out.push({ pos: p, rotY: angle, w: winW, h: winH });
     }
     // Long -Z face
     for (const lx of longXs) {
-      out.push({ pos: project(lx, y, -halfD), rotY: angle + Math.PI, w: winW, h: winH });
+      const p = project(lx, y, -halfD);
+      if (inFootprint(p)) out.push({ pos: p, rotY: angle + Math.PI, w: winW, h: winH });
     }
     // Short +X face
     for (const lz of shortZs) {
-      out.push({ pos: project(halfW, y, lz), rotY: angle - Math.PI / 2, w: winW, h: winH });
+      const p = project(halfW, y, lz);
+      if (inFootprint(p)) out.push({ pos: p, rotY: angle - Math.PI / 2, w: winW, h: winH });
     }
     // Short -X face
     for (const lz of shortZs) {
-      out.push({ pos: project(-halfW, y, lz), rotY: angle + Math.PI / 2, w: winW, h: winH });
+      const p = project(-halfW, y, lz);
+      if (inFootprint(p)) out.push({ pos: p, rotY: angle + Math.PI / 2, w: winW, h: winH });
     }
   }
   return out;
