@@ -21,7 +21,7 @@ import { usePlayerBusinessInterior } from '../business/interiorLayout';
 import { GRAY_BOX_CAMERA } from '../content/grythyttan';
 import { useSimState } from '../simulation/SimulationProvider';
 import type { Guest, GuestState } from '../types';
-import { staffPositionsRef } from './interiorSharedState';
+import { staffPositionsRef, businessRoomRef } from './interiorSharedState';
 import {
   derivePipCarriers,
   patternForGuest
@@ -242,6 +242,16 @@ export function InteriorGuests() {
     };
   }, []);
 
+  // ORDER 150 — dev-only exponering av positionsRef så playwright kan
+  // läsa faktiska renderade gästpositioner (cx/cz) per id. Refens
+  // identitet är stabil, .current-Map:en muteras in place.
+  useEffect(() => {
+    if (import.meta.env.DEV && typeof window !== 'undefined') {
+      (window as unknown as { __nxGuestPositions?: unknown }).__nxGuestPositions =
+        positionsRef.current;
+    }
+  }, []);
+
   // Stable arrival-slot picker per guest. Assigned on first sighting
   // so a guest that arrives at slot 2 does not visually swap to slot 0
   // when an earlier guest leaves. Same idea for waiting / declined.
@@ -289,6 +299,26 @@ export function InteriorGuests() {
     const pipCarriers = derivePipCarriers(sim.guests, sim.staff, sim.simTime);
     const pipCarrierGuestIds = new Set(pipCarriers.guestIds);
 
+    // ORDER 150 — välj seat-källa per tick. businessRoomRef bär
+    // rummets faktiska platser i värld-XZ när scenen (RestaurantScene
+    // / BrewpubScene / …) har monterat sitt kontraktsrum. Matchar den
+    // aktuell klass använder vi den; annars faller vi tillbaka på
+    // layout.seats (restaurantsspecifik) så äldre kod inte tystnar.
+    const roomChan = businessRoomRef.current;
+    const usingContract =
+      roomChan != null &&
+      roomChan.businessClass === sim.businessClass &&
+      roomChan.seats.length > 0;
+    const seatsForFrame: SlotXZ[] = usingContract ? roomChan!.seats : layout.seats;
+    if (import.meta.env.DEV && typeof window !== 'undefined') {
+      // Dev-observation för playwright — vilken källa och vilken
+      // längd som råder just nu. Sätts varje frame utan overhead
+      // (två fältskrivningar mot window).
+      const w = window as unknown as { __nxSeatSource?: string; __nxSeatSourceLength?: number };
+      w.__nxSeatSource = usingContract ? 'businessRoomContract' : 'interiorLayoutFallback';
+      w.__nxSeatSourceLength = seatsForFrame.length;
+    }
+
     // Compute per-guest target for this frame.
     const idsSeen = new Set<string>();
     for (const guest of sim.guests) {
@@ -302,7 +332,7 @@ export function InteriorGuests() {
         };
         slotAssignRef.current.set(guest.id, slots);
       }
-      const target = targetFor(guest, slots, layout, spawnPoints);
+      const target = targetFor(guest, slots, layout, spawnPoints, seatsForFrame);
       // Initialise position for a first-seen guest at the outer spawn
       // point matching their arrival slot — the walk-in becomes
       // visible instead of a pop-in on the arc.
@@ -530,10 +560,16 @@ function targetFor(
   guest: Guest,
   slots: { arrival: number; waiting: number; declined: number },
   layout: NonNullable<ReturnType<typeof usePlayerBusinessInterior>>,
-  spawnPoints: SlotXZ[]
+  spawnPoints: SlotXZ[],
+  // ORDER 150 — seats kommer nu utifrån (fältet i layout är
+  // restaurantsspecifikt när klassen är ölkrogen / gästgiveriet /
+  // nattklubben). Kallaren väljer källan: businessRoomRef.seats när
+  // ett kontraktsrum är monterat för sim.businessClass, annars
+  // layout.seats som fallback.
+  seats: SlotXZ[]
 ): GuestTarget {
   const colour = GUEST_COLOUR[guest.state];
-  const { arrivalSlots, waitingSlots, declinedSlots, seats } = layout;
+  const { arrivalSlots, waitingSlots, declinedSlots } = layout;
   switch (guest.state) {
     case 'arriving': {
       const [x, z] = arrivalSlots[slots.arrival];

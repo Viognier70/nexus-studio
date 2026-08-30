@@ -1,0 +1,354 @@
+{
+  "brewpub": {
+    "result": {
+      "simBusinessClass": "ölkrogen",
+      "roomBusinessClass": "ölkrogen",
+      "seatsInContract": 20,
+      "guestsSeated": 20,
+      "distinctActualPositions": 20,
+      "seatSource": "businessRoomContract",
+      "seatSourceLength": 20,
+      "per": [
+        {
+          "id": "order150-gst-1",
+          "seatIndex": 0,
+          "cx": 35.379,
+          "cz": -15.893,
+          "expectedX": 35.379,
+          "expectedZ": -15.893,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-2",
+          "seatIndex": 1,
+          "cx": 35.525,
+          "cz": -14.701,
+          "expectedX": 35.525,
+          "expectedZ": -14.701,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-3",
+          "seatIndex": 2,
+          "cx": 33.89,
+          "cz": -15.71,
+          "expectedX": 33.89,
+          "expectedZ": -15.71,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-4",
+          "seatIndex": 3,
+          "cx": 34.036,
+          "cz": -14.518,
+          "expectedX": 34.036,
+          "expectedZ": -14.518,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-5",
+          "seatIndex": 4,
+          "cx": 29.622,
+          "cz": -15.185,
+          "expectedX": 29.622,
+          "expectedZ": -15.185,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-6",
+          "seatIndex": 5,
+          "cx": 29.769,
+          "cz": -13.994,
+          "expectedX": 29.769,
+          "expectedZ": -13.994,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-7",
+          "seatIndex": 6,
+          "cx": 28.133,
+          "cz": -15.002,
+          "expectedX": 28.133,
+          "expectedZ": -15.002,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-8",
+          "seatIndex": 7,
+          "cx": 28.28,
+          "cz": -13.811,
+          "expectedX": 28.28,
+          "expectedZ": -13.811,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-9",
+          "seatIndex": 8,
+          "cx": 35.521,
+          "cz": -12.686,
+          "expectedX": 35.521,
+          "expectedZ": -12.686,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-10",
+          "seatIndex": 9,
+          "cx": 35.692,
+          "cz": -11.296,
+          "expectedX": 35.692,
+          "expectedZ": -11.296,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-11",
+          "seatIndex": 10,
+          "cx": 28.772,
+          "cz": -11.856,
+          "expectedX": 28.772,
+          "expectedZ": -11.856,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-12",
+          "seatIndex": 11,
+          "cx": 28.943,
+          "cz": -10.467,
+          "expectedX": 28.943,
+          "expectedZ": -10.467,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-13",
+          "seatIndex": 12,
+          "cx": 35.347,
+          "cz": -18.609,
+          "expectedX": 35.347,
+          "expectedZ": -18.609,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-14",
+          "seatIndex": 13,
+          "cx": 34.593,
+          "cz": -18.516,
+          "expectedX": 34.593,
+          "expectedZ": -18.516,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-15",
+          "seatIndex": 14,
+          "cx": 33.839,
+          "cz": -18.423,
+          "expectedX": 33.839,
+          "expectedZ": -18.423,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-16",
+          "seatIndex": 15,
+          "cx": 33.084,
+          "cz": -18.331,
+          "expectedX": 33.084,
+          "expectedZ": -18.331,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-17",
+          "seatIndex": 16,
+          "cx": 32.33,
+          "cz": -18.238,
+          "expectedX": 32.33,
+          "expectedZ": -18.238,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-18",
+          "seatIndex": 17,
+          "cx": 31.576,
+          "cz": -18.145,
+          "expectedX": 31.576,
+          "expectedZ": -18.145,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-19",
+          "seatIndex": 18,
+          "cx": 30.821,
+          "cz": -18.053,
+          "expectedX": 30.821,
+          "expectedZ": -18.053,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-20",
+          "seatIndex": 19,
+          "cx": 30.067,
+          "cz": -17.96,
+          "expectedX": 30.067,
+          "expectedZ": -17.96,
+          "distFromSeat": 0
+        }
+      ]
+    },
+    "screenshot": "/Users/ashm/Projects/nexus-studio/frontend/reports/order150/brewpub-20-guests.png"
+  },
+  "restaurant": {
+    "result": {
+      "simBusinessClass": "kvarterskrogen",
+      "roomBusinessClass": "kvarterskrogen",
+      "seatsInContract": 16,
+      "guestsSeated": 16,
+      "distinctActualPositions": 16,
+      "seatSource": "businessRoomContract",
+      "seatSourceLength": 16,
+      "per": [
+        {
+          "id": "order150-gst-1",
+          "seatIndex": 0,
+          "cx": 27.925,
+          "cz": -22.029,
+          "expectedX": 27.925,
+          "expectedZ": -22.029,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-2",
+          "seatIndex": 1,
+          "cx": 28.095,
+          "cz": -20.639,
+          "expectedX": 28.095,
+          "expectedZ": -20.639,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-3",
+          "seatIndex": 2,
+          "cx": 28.23,
+          "cz": -19.548,
+          "expectedX": 28.23,
+          "expectedZ": -19.548,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-4",
+          "seatIndex": 3,
+          "cx": 28.4,
+          "cz": -18.158,
+          "expectedX": 28.4,
+          "expectedZ": -18.158,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-5",
+          "seatIndex": 4,
+          "cx": 28.535,
+          "cz": -17.066,
+          "expectedX": 28.535,
+          "expectedZ": -17.066,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-6",
+          "seatIndex": 5,
+          "cx": 28.705,
+          "cz": -15.677,
+          "expectedX": 28.705,
+          "expectedZ": -15.677,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-7",
+          "seatIndex": 6,
+          "cx": 29.315,
+          "cz": -16.457,
+          "expectedX": 29.315,
+          "expectedZ": -16.457,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-8",
+          "seatIndex": 7,
+          "cx": 27.925,
+          "cz": -16.286,
+          "expectedX": 27.925,
+          "expectedZ": -16.286,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-9",
+          "seatIndex": 8,
+          "cx": 28.84,
+          "cz": -14.585,
+          "expectedX": 28.84,
+          "expectedZ": -14.585,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-10",
+          "seatIndex": 9,
+          "cx": 29.01,
+          "cz": -13.195,
+          "expectedX": 29.01,
+          "expectedZ": -13.195,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-11",
+          "seatIndex": 10,
+          "cx": 29.145,
+          "cz": -12.104,
+          "expectedX": 29.145,
+          "expectedZ": -12.104,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-12",
+          "seatIndex": 11,
+          "cx": 29.315,
+          "cz": -10.714,
+          "expectedX": 29.315,
+          "expectedZ": -10.714,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-13",
+          "seatIndex": 12,
+          "cx": 33.557,
+          "cz": -20.001,
+          "expectedX": 33.557,
+          "expectedZ": -20.001,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-14",
+          "seatIndex": 13,
+          "cx": 33.801,
+          "cz": -18.016,
+          "expectedX": 33.801,
+          "expectedZ": -18.016,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-15",
+          "seatIndex": 14,
+          "cx": 34.045,
+          "cz": -16.031,
+          "expectedX": 34.045,
+          "expectedZ": -16.031,
+          "distFromSeat": 0
+        },
+        {
+          "id": "order150-gst-16",
+          "seatIndex": 15,
+          "cx": 34.289,
+          "cz": -14.046,
+          "expectedX": 34.289,
+          "expectedZ": -14.046,
+          "distFromSeat": 0
+        }
+      ]
+    },
+    "screenshot": "/Users/ashm/Projects/nexus-studio/frontend/reports/order150/restaurant-16-guests.png"
+  }
+}
