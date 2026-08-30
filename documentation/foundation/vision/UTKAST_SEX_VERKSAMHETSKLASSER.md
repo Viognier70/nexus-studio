@@ -1,49 +1,62 @@
-# Utkast — Sex verksamhetsklasser och kunskapsprogressionen
+# Sex verksamhetsklasser och kunskapsprogressionen
 
-**Status** Utkast, inte beslut. Ersätter det tidigare utkastet om
-"fem restauranger i olika storlek", som byggde på en felaktig premiss.
-**Väckt av** Vision Owner 2026-08-29
+**Status** Struktur-beslut, Vision Owner 2026-08-30. Tal (säkerhetsnivåer,
+marknadsandelar, uppgraderingskostnader) och paviljong-innehåll väntar på
+INFRA-2 och Vision Owner-arbete — se §6.
+**Historik** Ersatte utkastet om "fem restauranger i olika storlek" den
+2026-08-29. Vision Owner-besluten 2026-08-30 stänger struktur- och
+namnfrågan; tidigare beslut om att dagens lokal blir vinbaren utgår
+(§2 nedan).
 **Rör** R4 (verksamhetsklassen), R3 (kreditekonomin), R2 (paviljongerna), A1
-
-> Skrivet för att strukturen inte ska försvinna i en chatt. Talen kan inte
-> sättas förrän R3 har mätunderlag från INFRA-2.
 
 ---
 
-## 1. Sex klasser
+## 1. Sex klasser — namn, storlek, särdrag
 
-Food trucken är kvar. Fem tillkommer. Värdshuset ersätts av gästgiveriet — samma
-mekanik, tydligare namn.
+Namn i **bestämd form genomgående** (Vision Owner-beslut 2026-08-30 §1).
+Vokabulärbytet i `BusinessClass`-typen i `types.ts` hör till en egen order —
+den här filen fastställer namnen, inte hur koden uppdateras.
 
 | Klass | Platser | Kök | Särdrag |
 | --- | --- | --- | --- |
-| Food truck | — | minimalt | mobil, kön på gatan, redan byggd mekanik |
-| Ölkrog | 20 | litet, rejäl mat, få rätter | **bryggeri i lokalen** |
-| Vinbar | 20 | litet, smårätter | lounger, DJ |
-| Restaurang | 60 | stort | matsal och bar |
-| Gästgiveri | 100 | stort, flera stationer | soignée servering, mycket personal, dygnsstruktur |
-| Nattklubb | 150 | enkelt | flera barer, volym och flöde |
+| Foodtrucken | — | minimalt | mobil, kön på gatan, redan byggd mekanik |
+| Kvarterskrogen | **16** | ordinärt | dagens matsal — bär den befintliga kalibreringen |
+| Ölkrogen | 20 | litet, rejäl mat, få rätter | **bryggeri i lokalen** |
+| Vinbaren | 20 | litet, smårätter | lounger, DJ |
+| Gästgiveriet | 100 | stort, flera stationer | soignée servering, mycket personal, dygnsstruktur |
+| Nattklubben | 150 | enkelt | flera barer, volym och flöde |
 
-**Ölkrog och vinbar är lika stora men helt olika verksamheter.** Det gör
+**Progressionen** blir **16 → 20 → 20 → 100 → 150**, plus foodtrucken utanför
+storleksstegen (mobil, egen mekanik). Vision Owner-beslut 2026-08-30 §4:
+tidigare 60-platsaren utgår. En sjunde klass kan tillkomma senare om steget
+mellan 20 och 100 behöver fyllas.
+
+**Ölkrogen och vinbaren är lika stora men helt olika verksamheter.** Det gör
 startvalet till ett riktigt val, inte ett svårighetsläge.
 
 ---
 
-## 2. Dagens byggda lokal blir vinbaren
+## 2. Kvarterskrogen är dagens 16-platsare — vinbaren får egen byggnad
 
-Restaurangen i `main` — den enda klass som är helt byggd i 3D och bär
-figurriggen — omtolkas till **vinbaren**.
+**Vision Owner-beslut 2026-08-30 §2 och §3.**
 
-Skälen: skylten i vyn säger redan `VINBAREN`. Stensöta är sommellerie och får
-ett hem direkt. Och ölkrogen kräver ett bryggeri, alltså ett helt produktionsrum
-som den byggda lokalen inte har utrymme för.
+Dagens lokal i `frontend/src/strategic/scene/Restaurant.tsx` — den enda klass
+som är helt byggd i 3D och bär figurriggen — blir **kvarterskrogen**. Den
+behåller sina 16 kuvert och sin nuvarande kalibrering. Design har levererat
+`handoff/restaurantRoom.ts` (16 platser, `TOTAL_SEATS = 16`, header: "Ersätter
+Restaurant.tsx") som dess rum.
 
-**Modifieringar som följer:** kapacitet 16 → 20 kuvert, loungeytor och DJ-plats,
-mindre kök med färre stationer än `interiorLayout` har i dag.
+**Beslutet från 2026-08-29 om att dagens lokal blir vinbaren utgår.** Design
+har byggt `restaurantRoom.ts` och `wineBarRoom.ts` som separata rum —
+vinbaren får en egen byggnad, inte en omtolkning av kvarterskrogen. Skylten
+`VINBAREN` i dagens vy hör till vinbaren när den byggs, inte till lokalen
+den råkar visas i just nu.
 
-**Inte nu.** Restaurangen bär figurriggen och ORDER 123 patchar just den koden.
-Omdöpning plus kapacitetsändring blir en egen order efter att
-presentationsarbetet landat.
+**Vad detta stänger:**
+- Kapacitetsändring 16 → 20 i dagens lokal utgår (kvarterskrogen behåller 16)
+- Loungeytor och DJ-plats byggs i `wineBarRoom.ts`, inte i dagens lokal
+- Kalibreringsarbetet i ORDER 121, 123, 127, 128, 132, 137 gäller kvarterskrogen
+  och behöver inte omprövas för att verksamheten döps om
 
 ---
 
@@ -86,11 +99,11 @@ mot Kalastorget och Metodköket tillsammans.
 
 ---
 
-## 5. Tre frågor som inte är avgjorda
+## 5. Tre frågor som fortfarande inte är avgjorda
 
-**5.1 Är Gastronomiska Teatern en sjätte nivåstege?** Den matar alla tre axlarna
-och bär båda spåren. Kanske är den inte ett område alls, utan det som öppnas när
-de fyra andra nått platina.
+**5.1 Är Gastronomiska Teatern en sjätte nivåstege?** Den matar alla tre
+axlarna och bär båda spåren. Kanske är den inte ett område alls, utan det som
+öppnas när de fyra andra nått platina.
 
 **5.2 Progressionen är ojämn mellan spåren.** Måltidsbiblioteket och Kalastorget
 saknar yrkesspår; Stensöta och Metodköket är spårbundna. En sommelier och en
@@ -115,9 +128,11 @@ inte till en enda nivå.
 uppgraderingskostnaderna hänger på svårighetskurvan och antal varv. De ska mätas
 i INFRA-2, inte gissas.
 
-**Och presentationen.** Fem av sex klasser saknar skepnad. Strukturen kan
-beslutas nu; byggandet väntar på att en verksamhet går att spela hela vägen
-igenom.
+**Och presentationen.** Fem av sex klasser saknar skepnad i main. Design har
+levererat rumsfiler för fyra av dem i `handoff/`
+(`restaurantRoom.ts`, `brewpubRoom.ts`, `wineBarRoom.ts`, `innRoom.ts`);
+nattklubben återstår att formge. Rumsfilerna kopieras in i egna orders enligt
+mönstret ORDER 121 (figureRig) och ORDER 125 (ölkrogen).
 
 ---
 
@@ -129,3 +144,18 @@ och att varje klass blir en tunn variant.
 Motargumentet är att säkerhetsnivån gör kunskapen till spelets ekonomiska
 ryggrad i stället för en sidoaktivitet — och för ett spel om kunskapsinlärning
 är det skillnaden mellan ett tema och en mekanik.
+
+---
+
+## 8. Vad som INTE ingår i denna omskrivning
+
+- **`BusinessClass`-typen i `types.ts` rörs inte här.** Vokabulärbytet från
+  dagens `restaurant | foodtruck | värdshus | ölkrogen` till de nya
+  bestämd-form-namnen är en egen order. Denna fil fastställer namnen på
+  produktnivå; koduppdateringen genomförs separat och ska inte tolkas som
+  auto-implementerad av det här beslutet.
+- **Talen** (säkerhetsnivåer, marknadsandelar, uppgraderingskostnader) väntar
+  fortfarande på INFRA-2 — se §6.
+- **Paviljong-innehållet** väntar på Vision Owner-arbete — se §6.
+- **Nattklubbens rumsfil** finns inte i `handoff/` ännu — kommer separat från
+  Design.
