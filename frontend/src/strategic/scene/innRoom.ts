@@ -91,7 +91,14 @@ export type SeatKind = 'long' | 'round' | 'sal';
 
 export type LaneId = 'spine' | 'longAisle' | 'roundAisle' | 'salLane';
 
-export type StaffRole = 'kitchen' | 'hallService' | 'host' | 'breakfast' | 'rooms';
+// ORDER 153 — döpt om från lokal `StaffRole` till `StationRole` per
+// Vision Owner-beslut 2026-08-30. En station är en plats, inte en
+// anställning: en sim-kock kan stå vid `kitchen`-stationen utan att
+// bli en ny rolltyp. Sim-lagrets `StaffRole` (types.ts) förblir de
+// fyra `värd|servitör|kock|lärling`; kartan över den lokala listan är
+// stationsindelningen för RUMMET (mappningen sim→station hör hemma i
+// businessRoom-kontraktet — se ORDER 152 §2 + kommande ORDER 154).
+export type StationRole = 'kitchen' | 'hallService' | 'host' | 'breakfast' | 'rooms';
 
 export interface SeatSpec {
   /** Stabilt id, t.ex. 'longB07' eller 'sal12'. */
@@ -146,7 +153,7 @@ export interface StaffStation {
   id: string;
   /** Vilken uniformsfärg stationen bär. Tio stationer, fem
    *  uniformer — se STAFF_UNIFORMS-noten. */
-  role: StaffRole;
+  role: StationRole;
   local: Vec2;
   facing: number;
   note: string;
