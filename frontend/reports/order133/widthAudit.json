@@ -1,0 +1,1983 @@
+{
+  "kindReport": {
+    "secondary": {
+      "total": 12,
+      "withOsmWidth": 12,
+      "norm": 6.5,
+      "osmMin": 6,
+      "osmMax": 8,
+      "osmMedian": 8,
+      "osmOverNorm": 0
+    },
+    "residential": {
+      "total": 53,
+      "withOsmWidth": 25,
+      "norm": 4.5,
+      "osmMin": 3,
+      "osmMax": 13,
+      "osmMedian": 5.5,
+      "osmOverNorm": 4
+    },
+    "service": {
+      "total": 134,
+      "withOsmWidth": 1,
+      "norm": 3,
+      "osmMin": 6,
+      "osmMax": 6,
+      "osmMedian": 6,
+      "osmOverNorm": 1
+    },
+    "tertiary": {
+      "total": 7,
+      "withOsmWidth": 7,
+      "norm": 5.5,
+      "osmMin": 4.5,
+      "osmMax": 6.5,
+      "osmMedian": 5.5,
+      "osmOverNorm": 0
+    },
+    "path": {
+      "total": 36,
+      "withOsmWidth": 0,
+      "norm": 1,
+      "osmMin": null,
+      "osmMax": null,
+      "osmMedian": null,
+      "osmOverNorm": 0
+    },
+    "living_street": {
+      "total": 3,
+      "withOsmWidth": 3,
+      "norm": 5,
+      "osmMin": 5,
+      "osmMax": 12,
+      "osmMedian": 5.5,
+      "osmOverNorm": 1
+    },
+    "unclassified": {
+      "total": 28,
+      "withOsmWidth": 0,
+      "norm": 4,
+      "osmMin": null,
+      "osmMax": null,
+      "osmMedian": null,
+      "osmOverNorm": 0
+    },
+    "cycleway": {
+      "total": 14,
+      "withOsmWidth": 0,
+      "norm": 2,
+      "osmMin": null,
+      "osmMax": null,
+      "osmMedian": null,
+      "osmOverNorm": 0
+    },
+    "footway": {
+      "total": 11,
+      "withOsmWidth": 0,
+      "norm": 1.5,
+      "osmMin": null,
+      "osmMax": null,
+      "osmMedian": null,
+      "osmOverNorm": 0
+    },
+    "track": {
+      "total": 27,
+      "withOsmWidth": 0,
+      "norm": 3,
+      "osmMin": null,
+      "osmMax": null,
+      "osmMedian": null,
+      "osmOverNorm": 0
+    },
+    "platform": {
+      "total": 2,
+      "withOsmWidth": 0,
+      "norm": 3,
+      "osmMin": null,
+      "osmMax": null,
+      "osmMedian": null,
+      "osmOverNorm": 0
+    }
+  },
+  "wideLivingStreets": [
+    {
+      "id": "w122157691",
+      "kind": "living_street",
+      "name": "Prästgatan",
+      "width": 12,
+      "polyStart": [
+        -28.9,
+        -31.95
+      ],
+      "polyEnd": [
+        58.06,
+        16.44
+      ]
+    }
+  ],
+  "suspectRoads": [
+    {
+      "id": "w122157691",
+      "kind": "living_street",
+      "width": 12,
+      "norm": 5,
+      "overNormBy": 7
+    },
+    {
+      "id": "w287143007",
+      "kind": "residential",
+      "width": 10,
+      "norm": 4.5,
+      "overNormBy": 5.5
+    },
+    {
+      "id": "w1329020079",
+      "kind": "residential",
+      "width": 10,
+      "norm": 4.5,
+      "overNormBy": 5.5
+    },
+    {
+      "id": "w1329020081",
+      "kind": "residential",
+      "width": 13,
+      "norm": 4.5,
+      "overNormBy": 8.5
+    }
+  ],
+  "baseline": {
+    "total": 37,
+    "hits": [
+      {
+        "buildingId": "w193810933",
+        "buildingKind": "yes",
+        "centre": [
+          132,
+          -293.06
+        ],
+        "hits": [
+          {
+            "roadId": "w193810983",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 0.035
+          }
+        ],
+        "worstOverlap": 0.035
+      },
+      {
+        "buildingId": "w193810975",
+        "buildingKind": "university",
+        "centre": [
+          568.76,
+          -83.66
+        ],
+        "hits": [
+          {
+            "roadId": "w122157682",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 0.085
+          }
+        ],
+        "worstOverlap": 0.085
+      },
+      {
+        "buildingId": "w611766160",
+        "buildingKind": "yes",
+        "centre": [
+          689.1,
+          110.77
+        ],
+        "hits": [
+          {
+            "roadId": "w1329020044",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 0.146
+          }
+        ],
+        "worstOverlap": 0.146
+      },
+      {
+        "buildingId": "w611776645",
+        "buildingKind": "yes",
+        "centre": [
+          -408.69,
+          1299.17
+        ],
+        "hits": [
+          {
+            "roadId": "w1329020037",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 0.821
+          }
+        ],
+        "worstOverlap": 0.821
+      },
+      {
+        "buildingId": "w869907964",
+        "buildingKind": "hotel",
+        "centre": [
+          62.37,
+          39.33
+        ],
+        "hits": [
+          {
+            "roadId": "w122157691",
+            "roadKind": "living_street",
+            "roadWidth": 12,
+            "osmWidth": 12,
+            "worstOverlap": 2.451
+          },
+          {
+            "roadId": "w1422743879",
+            "roadKind": "residential",
+            "roadWidth": 4.5,
+            "osmWidth": null,
+            "worstOverlap": 0.257
+          }
+        ],
+        "worstOverlap": 2.451
+      },
+      {
+        "buildingId": "w869907965",
+        "buildingKind": "yes",
+        "centre": [
+          92.14,
+          23.98
+        ],
+        "hits": [
+          {
+            "roadId": "w869907966",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 0.263
+          }
+        ],
+        "worstOverlap": 0.263
+      },
+      {
+        "buildingId": "w869907976",
+        "buildingKind": "yes",
+        "centre": [
+          66.84,
+          5.08
+        ],
+        "hits": [
+          {
+            "roadId": "w122157691",
+            "roadKind": "living_street",
+            "roadWidth": 12,
+            "osmWidth": 12,
+            "worstOverlap": 0.262
+          }
+        ],
+        "worstOverlap": 0.262
+      },
+      {
+        "buildingId": "w869907977",
+        "buildingKind": "yes",
+        "centre": [
+          55.57,
+          -5.21
+        ],
+        "hits": [
+          {
+            "roadId": "w122157691",
+            "roadKind": "living_street",
+            "roadWidth": 12,
+            "osmWidth": 12,
+            "worstOverlap": 1.08
+          }
+        ],
+        "worstOverlap": 1.08
+      },
+      {
+        "buildingId": "w870510826",
+        "buildingKind": "industrial",
+        "centre": [
+          -623.64,
+          -268.4
+        ],
+        "hits": [
+          {
+            "roadId": "w870510820",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 1.5
+          },
+          {
+            "roadId": "w870510829",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 1.5
+          },
+          {
+            "roadId": "w1329020075",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 1.5
+          }
+        ],
+        "worstOverlap": 1.5
+      },
+      {
+        "buildingId": "w870510827",
+        "buildingKind": "industrial",
+        "centre": [
+          -635.96,
+          -328.68
+        ],
+        "hits": [
+          {
+            "roadId": "w1329020076",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 0.032
+          }
+        ],
+        "worstOverlap": 0.032
+      },
+      {
+        "buildingId": "w870510828",
+        "buildingKind": "industrial",
+        "centre": [
+          -648.71,
+          -369.18
+        ],
+        "hits": [
+          {
+            "roadId": "w870510829",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 1.5
+          },
+          {
+            "roadId": "w1329020076",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 1.5
+          },
+          {
+            "roadId": "w1329020077",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 1.5
+          }
+        ],
+        "worstOverlap": 1.5
+      },
+      {
+        "buildingId": "w934308171",
+        "buildingKind": "yes",
+        "centre": [
+          -242.85,
+          -466.5
+        ],
+        "hits": [
+          {
+            "roadId": "w934308173",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 0.054
+          }
+        ],
+        "worstOverlap": 0.054
+      },
+      {
+        "buildingId": "w934308172",
+        "buildingKind": "yes",
+        "centre": [
+          -225.53,
+          -414.13
+        ],
+        "hits": [
+          {
+            "roadId": "w934308173",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 0.03
+          }
+        ],
+        "worstOverlap": 0.03
+      },
+      {
+        "buildingId": "w1422743880",
+        "buildingKind": "yes",
+        "centre": [
+          -30.11,
+          75.64
+        ],
+        "hits": [
+          {
+            "roadId": "w862853244",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 1.366
+          }
+        ],
+        "worstOverlap": 1.366
+      },
+      {
+        "buildingId": "w1422745011",
+        "buildingKind": "yes",
+        "centre": [
+          -86.66,
+          -229.27
+        ],
+        "hits": [
+          {
+            "roadId": "w1329020065",
+            "roadKind": "tertiary",
+            "roadWidth": 5.5,
+            "osmWidth": 5.5,
+            "worstOverlap": 0.278
+          }
+        ],
+        "worstOverlap": 0.278
+      },
+      {
+        "buildingId": "vw-skg-16",
+        "buildingKind": "apartments",
+        "centre": [
+          -215,
+          15
+        ],
+        "hits": [
+          {
+            "roadId": "w287145630",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 0
+          }
+        ],
+        "worstOverlap": 0
+      },
+      {
+        "buildingId": "vw-bv-4",
+        "buildingKind": "house",
+        "centre": [
+          -500,
+          297
+        ],
+        "hits": [
+          {
+            "roadId": "w287143007",
+            "roadKind": "residential",
+            "roadWidth": 10,
+            "osmWidth": 10,
+            "worstOverlap": 0.983
+          }
+        ],
+        "worstOverlap": 0.983
+      },
+      {
+        "buildingId": "vw-pra-8",
+        "buildingKind": "house",
+        "centre": [
+          305,
+          30
+        ],
+        "hits": [
+          {
+            "roadId": "w122157689",
+            "roadKind": "residential",
+            "roadWidth": 5,
+            "osmWidth": 5,
+            "worstOverlap": 0.132
+          }
+        ],
+        "worstOverlap": 0.132
+      },
+      {
+        "buildingId": "vw-pra-18",
+        "buildingKind": "apartments",
+        "centre": [
+          386.5,
+          11.2
+        ],
+        "hits": [
+          {
+            "roadId": "w1329020070",
+            "roadKind": "secondary",
+            "roadWidth": 8,
+            "osmWidth": 8,
+            "worstOverlap": 0.568
+          }
+        ],
+        "worstOverlap": 0.568
+      },
+      {
+        "buildingId": "vw-pra-21",
+        "buildingKind": "apartments",
+        "centre": [
+          370,
+          5
+        ],
+        "hits": [
+          {
+            "roadId": "w193810976",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 0
+          }
+        ],
+        "worstOverlap": 0
+      },
+      {
+        "buildingId": "vw-pra-djurskyddet",
+        "buildingKind": "house",
+        "centre": [
+          355,
+          15
+        ],
+        "hits": [
+          {
+            "roadId": "w193810976",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 1.327
+          }
+        ],
+        "worstOverlap": 1.327
+      },
+      {
+        "buildingId": "vw-nyg-3",
+        "buildingKind": "house",
+        "centre": [
+          -45,
+          -75
+        ],
+        "hits": [
+          {
+            "roadId": "w1239628612",
+            "roadKind": "tertiary",
+            "roadWidth": 5.5,
+            "osmWidth": 5.5,
+            "worstOverlap": 1.977
+          }
+        ],
+        "worstOverlap": 1.977
+      },
+      {
+        "buildingId": "vw-hjv-5",
+        "buildingKind": "house",
+        "centre": [
+          -350,
+          -160
+        ],
+        "hits": [
+          {
+            "roadId": "w1329020083",
+            "roadKind": "residential",
+            "roadWidth": 6,
+            "osmWidth": 6,
+            "worstOverlap": 1.529
+          }
+        ],
+        "worstOverlap": 1.529
+      },
+      {
+        "buildingId": "vw-sorgarden",
+        "buildingKind": "apartments",
+        "centre": [
+          -320,
+          -195
+        ],
+        "hits": [
+          {
+            "roadId": "w862853201",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 0
+          },
+          {
+            "roadId": "w862853202",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 0
+          }
+        ],
+        "worstOverlap": 0
+      },
+      {
+        "buildingId": "vw-jaktakademin",
+        "buildingKind": "house",
+        "centre": [
+          -265,
+          60
+        ],
+        "hits": [
+          {
+            "roadId": "w1329020064",
+            "roadKind": "residential",
+            "roadWidth": 5.5,
+            "osmWidth": 5.5,
+            "worstOverlap": 1.739
+          }
+        ],
+        "worstOverlap": 1.739
+      },
+      {
+        "buildingId": "vw-barbellclub",
+        "buildingKind": "house",
+        "centre": [
+          -280,
+          45
+        ],
+        "hits": [
+          {
+            "roadId": "w191323432",
+            "roadKind": "residential",
+            "roadWidth": 5,
+            "osmWidth": 5,
+            "worstOverlap": 0
+          },
+          {
+            "roadId": "w287145632",
+            "roadKind": "residential",
+            "roadWidth": 4.5,
+            "osmWidth": null,
+            "worstOverlap": 0.645
+          }
+        ],
+        "worstOverlap": 0.645
+      },
+      {
+        "buildingId": "vw-forskola",
+        "buildingKind": "house",
+        "centre": [
+          -215,
+          -250
+        ],
+        "hits": [
+          {
+            "roadId": "w287145634",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 0.425
+          }
+        ],
+        "worstOverlap": 0.425
+      },
+      {
+        "buildingId": "vw-csvwellness",
+        "buildingKind": "house",
+        "centre": [
+          -882,
+          239
+        ],
+        "hits": [
+          {
+            "roadId": "w1329020035",
+            "roadKind": "residential",
+            "roadWidth": 4.5,
+            "osmWidth": null,
+            "worstOverlap": 0
+          }
+        ],
+        "worstOverlap": 0
+      },
+      {
+        "buildingId": "vw-kyr-torget-lh",
+        "buildingKind": "house",
+        "centre": [
+          -18,
+          -18
+        ],
+        "hits": [
+          {
+            "roadId": "w122157691",
+            "roadKind": "living_street",
+            "roadWidth": 12,
+            "osmWidth": 12,
+            "worstOverlap": 2.529
+          },
+          {
+            "roadId": "w860753012",
+            "roadKind": "tertiary",
+            "roadWidth": 5.5,
+            "osmWidth": 5.5,
+            "worstOverlap": 0
+          }
+        ],
+        "worstOverlap": 2.529
+      },
+      {
+        "buildingId": "vw-torget-kyrkbacken-pair",
+        "buildingKind": "house",
+        "centre": [
+          -42,
+          -40
+        ],
+        "hits": [
+          {
+            "roadId": "w122157691",
+            "roadKind": "living_street",
+            "roadWidth": 12,
+            "osmWidth": 12,
+            "worstOverlap": 1.528
+          },
+          {
+            "roadId": "w860753009",
+            "roadKind": "residential",
+            "roadWidth": 5.5,
+            "osmWidth": 5.5,
+            "worstOverlap": 0.433
+          },
+          {
+            "roadId": "w1239628611",
+            "roadKind": "tertiary",
+            "roadWidth": 5.5,
+            "osmWidth": 5.5,
+            "worstOverlap": 0
+          }
+        ],
+        "worstOverlap": 1.528
+      },
+      {
+        "buildingId": "vw-torget-west-corner",
+        "buildingKind": "house",
+        "centre": [
+          -52,
+          -30
+        ],
+        "hits": [
+          {
+            "roadId": "w860753009",
+            "roadKind": "residential",
+            "roadWidth": 5.5,
+            "osmWidth": 5.5,
+            "worstOverlap": 0.611
+          }
+        ],
+        "worstOverlap": 0.611
+      },
+      {
+        "buildingId": "vw-torget-east-barn",
+        "buildingKind": "outbuilding",
+        "centre": [
+          65,
+          15
+        ],
+        "hits": [
+          {
+            "roadId": "w122157691",
+            "roadKind": "living_street",
+            "roadWidth": 12,
+            "osmWidth": 12,
+            "worstOverlap": 3.484
+          },
+          {
+            "roadId": "w1329020068",
+            "roadKind": "living_street",
+            "roadWidth": 5,
+            "osmWidth": 5,
+            "worstOverlap": 0
+          }
+        ],
+        "worstOverlap": 3.484
+      },
+      {
+        "buildingId": "vw-pra-15s",
+        "buildingKind": "house",
+        "centre": [
+          352,
+          5
+        ],
+        "hits": [
+          {
+            "roadId": "w193810976",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 1.352
+          }
+        ],
+        "worstOverlap": 1.352
+      },
+      {
+        "buildingId": "vw-pra-19n",
+        "buildingKind": "apartments",
+        "centre": [
+          382.92,
+          28.61
+        ],
+        "hits": [
+          {
+            "roadId": "w193810976",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 0.011
+          },
+          {
+            "roadId": "w1329020070",
+            "roadKind": "secondary",
+            "roadWidth": 8,
+            "osmWidth": 8,
+            "worstOverlap": 2.359
+          }
+        ],
+        "worstOverlap": 2.359
+      },
+      {
+        "buildingId": "vw-stn-11",
+        "buildingKind": "house",
+        "centre": [
+          -200,
+          -235
+        ],
+        "hits": [
+          {
+            "roadId": "w287145634",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 0
+          }
+        ],
+        "worstOverlap": 0
+      },
+      {
+        "buildingId": "vw-jarn-9",
+        "buildingKind": "house",
+        "centre": [
+          -410,
+          -50
+        ],
+        "hits": [
+          {
+            "roadId": "w191323431",
+            "roadKind": "residential",
+            "roadWidth": 5,
+            "osmWidth": 5,
+            "worstOverlap": 2
+          }
+        ],
+        "worstOverlap": 2
+      },
+      {
+        "buildingId": "vw-mag-warehouse",
+        "buildingKind": "industrial",
+        "centre": [
+          -420,
+          200
+        ],
+        "hits": [
+          {
+            "roadId": "w175036243",
+            "roadKind": "residential",
+            "roadWidth": 5.5,
+            "osmWidth": 5.5,
+            "worstOverlap": 1.168
+          }
+        ],
+        "worstOverlap": 1.168
+      }
+    ]
+  },
+  "normed": {
+    "total": 33,
+    "hits": [
+      {
+        "buildingId": "w193810933",
+        "buildingKind": "yes",
+        "centre": [
+          132,
+          -293.06
+        ],
+        "hits": [
+          {
+            "roadId": "w193810983",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 0.035
+          }
+        ],
+        "worstOverlap": 0.035
+      },
+      {
+        "buildingId": "w193810975",
+        "buildingKind": "university",
+        "centre": [
+          568.76,
+          -83.66
+        ],
+        "hits": [
+          {
+            "roadId": "w122157682",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 0.085
+          }
+        ],
+        "worstOverlap": 0.085
+      },
+      {
+        "buildingId": "w611766160",
+        "buildingKind": "yes",
+        "centre": [
+          689.1,
+          110.77
+        ],
+        "hits": [
+          {
+            "roadId": "w1329020044",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 0.146
+          }
+        ],
+        "worstOverlap": 0.146
+      },
+      {
+        "buildingId": "w611776645",
+        "buildingKind": "yes",
+        "centre": [
+          -408.69,
+          1299.17
+        ],
+        "hits": [
+          {
+            "roadId": "w1329020037",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 0.821
+          }
+        ],
+        "worstOverlap": 0.821
+      },
+      {
+        "buildingId": "w869907964",
+        "buildingKind": "hotel",
+        "centre": [
+          62.37,
+          39.33
+        ],
+        "hits": [
+          {
+            "roadId": "w1422743879",
+            "roadKind": "residential",
+            "roadWidth": 4.5,
+            "osmWidth": null,
+            "worstOverlap": 0.257
+          }
+        ],
+        "worstOverlap": 0.257
+      },
+      {
+        "buildingId": "w869907965",
+        "buildingKind": "yes",
+        "centre": [
+          92.14,
+          23.98
+        ],
+        "hits": [
+          {
+            "roadId": "w869907966",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 0.263
+          }
+        ],
+        "worstOverlap": 0.263
+      },
+      {
+        "buildingId": "w870510826",
+        "buildingKind": "industrial",
+        "centre": [
+          -623.64,
+          -268.4
+        ],
+        "hits": [
+          {
+            "roadId": "w870510820",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 1.5
+          },
+          {
+            "roadId": "w870510829",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 1.5
+          },
+          {
+            "roadId": "w1329020075",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 1.5
+          }
+        ],
+        "worstOverlap": 1.5
+      },
+      {
+        "buildingId": "w870510827",
+        "buildingKind": "industrial",
+        "centre": [
+          -635.96,
+          -328.68
+        ],
+        "hits": [
+          {
+            "roadId": "w1329020076",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 0.032
+          }
+        ],
+        "worstOverlap": 0.032
+      },
+      {
+        "buildingId": "w870510828",
+        "buildingKind": "industrial",
+        "centre": [
+          -648.71,
+          -369.18
+        ],
+        "hits": [
+          {
+            "roadId": "w870510829",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 1.5
+          },
+          {
+            "roadId": "w1329020076",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 1.5
+          },
+          {
+            "roadId": "w1329020077",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 1.5
+          }
+        ],
+        "worstOverlap": 1.5
+      },
+      {
+        "buildingId": "w934308171",
+        "buildingKind": "yes",
+        "centre": [
+          -242.85,
+          -466.5
+        ],
+        "hits": [
+          {
+            "roadId": "w934308173",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 0.054
+          }
+        ],
+        "worstOverlap": 0.054
+      },
+      {
+        "buildingId": "w934308172",
+        "buildingKind": "yes",
+        "centre": [
+          -225.53,
+          -414.13
+        ],
+        "hits": [
+          {
+            "roadId": "w934308173",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 0.03
+          }
+        ],
+        "worstOverlap": 0.03
+      },
+      {
+        "buildingId": "w1422743880",
+        "buildingKind": "yes",
+        "centre": [
+          -30.11,
+          75.64
+        ],
+        "hits": [
+          {
+            "roadId": "w862853244",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 1.366
+          }
+        ],
+        "worstOverlap": 1.366
+      },
+      {
+        "buildingId": "w1422745011",
+        "buildingKind": "yes",
+        "centre": [
+          -86.66,
+          -229.27
+        ],
+        "hits": [
+          {
+            "roadId": "w1329020065",
+            "roadKind": "tertiary",
+            "roadWidth": 5.5,
+            "osmWidth": 5.5,
+            "worstOverlap": 0.278
+          }
+        ],
+        "worstOverlap": 0.278
+      },
+      {
+        "buildingId": "vw-skg-16",
+        "buildingKind": "apartments",
+        "centre": [
+          -215,
+          15
+        ],
+        "hits": [
+          {
+            "roadId": "w287145630",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 0
+          }
+        ],
+        "worstOverlap": 0
+      },
+      {
+        "buildingId": "vw-pra-18",
+        "buildingKind": "apartments",
+        "centre": [
+          386.5,
+          11.2
+        ],
+        "hits": [
+          {
+            "roadId": "w1329020070",
+            "roadKind": "secondary",
+            "roadWidth": 6.5,
+            "osmWidth": 8,
+            "worstOverlap": 0
+          }
+        ],
+        "worstOverlap": 0
+      },
+      {
+        "buildingId": "vw-pra-21",
+        "buildingKind": "apartments",
+        "centre": [
+          370,
+          5
+        ],
+        "hits": [
+          {
+            "roadId": "w193810976",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 0
+          }
+        ],
+        "worstOverlap": 0
+      },
+      {
+        "buildingId": "vw-pra-djurskyddet",
+        "buildingKind": "house",
+        "centre": [
+          355,
+          15
+        ],
+        "hits": [
+          {
+            "roadId": "w193810976",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 1.327
+          }
+        ],
+        "worstOverlap": 1.327
+      },
+      {
+        "buildingId": "vw-nyg-3",
+        "buildingKind": "house",
+        "centre": [
+          -45,
+          -75
+        ],
+        "hits": [
+          {
+            "roadId": "w1239628612",
+            "roadKind": "tertiary",
+            "roadWidth": 5.5,
+            "osmWidth": 5.5,
+            "worstOverlap": 1.977
+          }
+        ],
+        "worstOverlap": 1.977
+      },
+      {
+        "buildingId": "vw-hjv-5",
+        "buildingKind": "house",
+        "centre": [
+          -350,
+          -160
+        ],
+        "hits": [
+          {
+            "roadId": "w1329020083",
+            "roadKind": "residential",
+            "roadWidth": 4.5,
+            "osmWidth": 6,
+            "worstOverlap": 0.779
+          }
+        ],
+        "worstOverlap": 0.779
+      },
+      {
+        "buildingId": "vw-sorgarden",
+        "buildingKind": "apartments",
+        "centre": [
+          -320,
+          -195
+        ],
+        "hits": [
+          {
+            "roadId": "w862853201",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 0
+          },
+          {
+            "roadId": "w862853202",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 0
+          }
+        ],
+        "worstOverlap": 0
+      },
+      {
+        "buildingId": "vw-jaktakademin",
+        "buildingKind": "house",
+        "centre": [
+          -265,
+          60
+        ],
+        "hits": [
+          {
+            "roadId": "w1329020064",
+            "roadKind": "residential",
+            "roadWidth": 4.5,
+            "osmWidth": 5.5,
+            "worstOverlap": 1.239
+          }
+        ],
+        "worstOverlap": 1.239
+      },
+      {
+        "buildingId": "vw-barbellclub",
+        "buildingKind": "house",
+        "centre": [
+          -280,
+          45
+        ],
+        "hits": [
+          {
+            "roadId": "w191323432",
+            "roadKind": "residential",
+            "roadWidth": 4.5,
+            "osmWidth": 5,
+            "worstOverlap": 0
+          },
+          {
+            "roadId": "w287145632",
+            "roadKind": "residential",
+            "roadWidth": 4.5,
+            "osmWidth": null,
+            "worstOverlap": 0.645
+          }
+        ],
+        "worstOverlap": 0.645
+      },
+      {
+        "buildingId": "vw-forskola",
+        "buildingKind": "house",
+        "centre": [
+          -215,
+          -250
+        ],
+        "hits": [
+          {
+            "roadId": "w287145634",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 0.425
+          }
+        ],
+        "worstOverlap": 0.425
+      },
+      {
+        "buildingId": "vw-csvwellness",
+        "buildingKind": "house",
+        "centre": [
+          -882,
+          239
+        ],
+        "hits": [
+          {
+            "roadId": "w1329020035",
+            "roadKind": "residential",
+            "roadWidth": 4.5,
+            "osmWidth": null,
+            "worstOverlap": 0
+          }
+        ],
+        "worstOverlap": 0
+      },
+      {
+        "buildingId": "vw-kyr-torget-lh",
+        "buildingKind": "house",
+        "centre": [
+          -18,
+          -18
+        ],
+        "hits": [
+          {
+            "roadId": "w122157691",
+            "roadKind": "living_street",
+            "roadWidth": 5,
+            "osmWidth": 12,
+            "worstOverlap": 0
+          },
+          {
+            "roadId": "w860753012",
+            "roadKind": "tertiary",
+            "roadWidth": 5.5,
+            "osmWidth": 5.5,
+            "worstOverlap": 0
+          }
+        ],
+        "worstOverlap": 0
+      },
+      {
+        "buildingId": "vw-torget-kyrkbacken-pair",
+        "buildingKind": "house",
+        "centre": [
+          -42,
+          -40
+        ],
+        "hits": [
+          {
+            "roadId": "w860753009",
+            "roadKind": "residential",
+            "roadWidth": 4.5,
+            "osmWidth": 5.5,
+            "worstOverlap": 0
+          },
+          {
+            "roadId": "w1239628611",
+            "roadKind": "tertiary",
+            "roadWidth": 5.5,
+            "osmWidth": 5.5,
+            "worstOverlap": 0
+          }
+        ],
+        "worstOverlap": 0
+      },
+      {
+        "buildingId": "vw-torget-west-corner",
+        "buildingKind": "house",
+        "centre": [
+          -52,
+          -30
+        ],
+        "hits": [
+          {
+            "roadId": "w860753009",
+            "roadKind": "residential",
+            "roadWidth": 4.5,
+            "osmWidth": 5.5,
+            "worstOverlap": 0.111
+          }
+        ],
+        "worstOverlap": 0.111
+      },
+      {
+        "buildingId": "vw-torget-east-barn",
+        "buildingKind": "outbuilding",
+        "centre": [
+          65,
+          15
+        ],
+        "hits": [
+          {
+            "roadId": "w122157691",
+            "roadKind": "living_street",
+            "roadWidth": 5,
+            "osmWidth": 12,
+            "worstOverlap": 0
+          },
+          {
+            "roadId": "w1329020068",
+            "roadKind": "living_street",
+            "roadWidth": 5,
+            "osmWidth": 5,
+            "worstOverlap": 0
+          }
+        ],
+        "worstOverlap": 0
+      },
+      {
+        "buildingId": "vw-pra-15s",
+        "buildingKind": "house",
+        "centre": [
+          352,
+          5
+        ],
+        "hits": [
+          {
+            "roadId": "w193810976",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 1.352
+          }
+        ],
+        "worstOverlap": 1.352
+      },
+      {
+        "buildingId": "vw-pra-19n",
+        "buildingKind": "apartments",
+        "centre": [
+          382.92,
+          28.61
+        ],
+        "hits": [
+          {
+            "roadId": "w193810976",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 0.011
+          },
+          {
+            "roadId": "w1329020070",
+            "roadKind": "secondary",
+            "roadWidth": 6.5,
+            "osmWidth": 8,
+            "worstOverlap": 1.609
+          }
+        ],
+        "worstOverlap": 1.609
+      },
+      {
+        "buildingId": "vw-stn-11",
+        "buildingKind": "house",
+        "centre": [
+          -200,
+          -235
+        ],
+        "hits": [
+          {
+            "roadId": "w287145634",
+            "roadKind": "service",
+            "roadWidth": 3,
+            "osmWidth": null,
+            "worstOverlap": 0
+          }
+        ],
+        "worstOverlap": 0
+      },
+      {
+        "buildingId": "vw-jarn-9",
+        "buildingKind": "house",
+        "centre": [
+          -410,
+          -50
+        ],
+        "hits": [
+          {
+            "roadId": "w191323431",
+            "roadKind": "residential",
+            "roadWidth": 4.5,
+            "osmWidth": 5,
+            "worstOverlap": 1.75
+          }
+        ],
+        "worstOverlap": 1.75
+      },
+      {
+        "buildingId": "vw-mag-warehouse",
+        "buildingKind": "industrial",
+        "centre": [
+          -420,
+          200
+        ],
+        "hits": [
+          {
+            "roadId": "w175036243",
+            "roadKind": "residential",
+            "roadWidth": 4.5,
+            "osmWidth": 5.5,
+            "worstOverlap": 0.668
+          }
+        ],
+        "worstOverlap": 0.668
+      }
+    ]
+  },
+  "removedByNorm": [
+    "w869907976",
+    "w869907977",
+    "vw-bv-4",
+    "vw-pra-8"
+  ],
+  "stillHitting": [
+    {
+      "buildingId": "vw-nyg-3",
+      "buildingKind": "house",
+      "centre": [
+        -45,
+        -75
+      ],
+      "hits": [
+        {
+          "roadId": "w1239628612",
+          "roadKind": "tertiary",
+          "roadWidth": 5.5,
+          "osmWidth": 5.5,
+          "worstOverlap": 1.977
+        }
+      ],
+      "worstOverlap": 1.977
+    },
+    {
+      "buildingId": "vw-jarn-9",
+      "buildingKind": "house",
+      "centre": [
+        -410,
+        -50
+      ],
+      "hits": [
+        {
+          "roadId": "w191323431",
+          "roadKind": "residential",
+          "roadWidth": 4.5,
+          "osmWidth": 5,
+          "worstOverlap": 1.75
+        }
+      ],
+      "worstOverlap": 1.75
+    },
+    {
+      "buildingId": "vw-pra-19n",
+      "buildingKind": "apartments",
+      "centre": [
+        382.92,
+        28.61
+      ],
+      "hits": [
+        {
+          "roadId": "w193810976",
+          "roadKind": "service",
+          "roadWidth": 3,
+          "osmWidth": null,
+          "worstOverlap": 0.011
+        },
+        {
+          "roadId": "w1329020070",
+          "roadKind": "secondary",
+          "roadWidth": 6.5,
+          "osmWidth": 8,
+          "worstOverlap": 1.609
+        }
+      ],
+      "worstOverlap": 1.609
+    },
+    {
+      "buildingId": "w870510826",
+      "buildingKind": "industrial",
+      "centre": [
+        -623.64,
+        -268.4
+      ],
+      "hits": [
+        {
+          "roadId": "w870510820",
+          "roadKind": "service",
+          "roadWidth": 3,
+          "osmWidth": null,
+          "worstOverlap": 1.5
+        },
+        {
+          "roadId": "w870510829",
+          "roadKind": "service",
+          "roadWidth": 3,
+          "osmWidth": null,
+          "worstOverlap": 1.5
+        },
+        {
+          "roadId": "w1329020075",
+          "roadKind": "service",
+          "roadWidth": 3,
+          "osmWidth": null,
+          "worstOverlap": 1.5
+        }
+      ],
+      "worstOverlap": 1.5
+    },
+    {
+      "buildingId": "w870510828",
+      "buildingKind": "industrial",
+      "centre": [
+        -648.71,
+        -369.18
+      ],
+      "hits": [
+        {
+          "roadId": "w870510829",
+          "roadKind": "service",
+          "roadWidth": 3,
+          "osmWidth": null,
+          "worstOverlap": 1.5
+        },
+        {
+          "roadId": "w1329020076",
+          "roadKind": "service",
+          "roadWidth": 3,
+          "osmWidth": null,
+          "worstOverlap": 1.5
+        },
+        {
+          "roadId": "w1329020077",
+          "roadKind": "service",
+          "roadWidth": 3,
+          "osmWidth": null,
+          "worstOverlap": 1.5
+        }
+      ],
+      "worstOverlap": 1.5
+    },
+    {
+      "buildingId": "w1422743880",
+      "buildingKind": "yes",
+      "centre": [
+        -30.11,
+        75.64
+      ],
+      "hits": [
+        {
+          "roadId": "w862853244",
+          "roadKind": "service",
+          "roadWidth": 3,
+          "osmWidth": null,
+          "worstOverlap": 1.366
+        }
+      ],
+      "worstOverlap": 1.366
+    },
+    {
+      "buildingId": "vw-pra-15s",
+      "buildingKind": "house",
+      "centre": [
+        352,
+        5
+      ],
+      "hits": [
+        {
+          "roadId": "w193810976",
+          "roadKind": "service",
+          "roadWidth": 3,
+          "osmWidth": null,
+          "worstOverlap": 1.352
+        }
+      ],
+      "worstOverlap": 1.352
+    },
+    {
+      "buildingId": "vw-pra-djurskyddet",
+      "buildingKind": "house",
+      "centre": [
+        355,
+        15
+      ],
+      "hits": [
+        {
+          "roadId": "w193810976",
+          "roadKind": "service",
+          "roadWidth": 3,
+          "osmWidth": null,
+          "worstOverlap": 1.327
+        }
+      ],
+      "worstOverlap": 1.327
+    },
+    {
+      "buildingId": "vw-jaktakademin",
+      "buildingKind": "house",
+      "centre": [
+        -265,
+        60
+      ],
+      "hits": [
+        {
+          "roadId": "w1329020064",
+          "roadKind": "residential",
+          "roadWidth": 4.5,
+          "osmWidth": 5.5,
+          "worstOverlap": 1.239
+        }
+      ],
+      "worstOverlap": 1.239
+    },
+    {
+      "buildingId": "w611776645",
+      "buildingKind": "yes",
+      "centre": [
+        -408.69,
+        1299.17
+      ],
+      "hits": [
+        {
+          "roadId": "w1329020037",
+          "roadKind": "service",
+          "roadWidth": 3,
+          "osmWidth": null,
+          "worstOverlap": 0.821
+        }
+      ],
+      "worstOverlap": 0.821
+    },
+    {
+      "buildingId": "vw-hjv-5",
+      "buildingKind": "house",
+      "centre": [
+        -350,
+        -160
+      ],
+      "hits": [
+        {
+          "roadId": "w1329020083",
+          "roadKind": "residential",
+          "roadWidth": 4.5,
+          "osmWidth": 6,
+          "worstOverlap": 0.779
+        }
+      ],
+      "worstOverlap": 0.779
+    },
+    {
+      "buildingId": "vw-mag-warehouse",
+      "buildingKind": "industrial",
+      "centre": [
+        -420,
+        200
+      ],
+      "hits": [
+        {
+          "roadId": "w175036243",
+          "roadKind": "residential",
+          "roadWidth": 4.5,
+          "osmWidth": 5.5,
+          "worstOverlap": 0.668
+        }
+      ],
+      "worstOverlap": 0.668
+    },
+    {
+      "buildingId": "vw-barbellclub",
+      "buildingKind": "house",
+      "centre": [
+        -280,
+        45
+      ],
+      "hits": [
+        {
+          "roadId": "w191323432",
+          "roadKind": "residential",
+          "roadWidth": 4.5,
+          "osmWidth": 5,
+          "worstOverlap": 0
+        },
+        {
+          "roadId": "w287145632",
+          "roadKind": "residential",
+          "roadWidth": 4.5,
+          "osmWidth": null,
+          "worstOverlap": 0.645
+        }
+      ],
+      "worstOverlap": 0.645
+    },
+    {
+      "buildingId": "vw-forskola",
+      "buildingKind": "house",
+      "centre": [
+        -215,
+        -250
+      ],
+      "hits": [
+        {
+          "roadId": "w287145634",
+          "roadKind": "service",
+          "roadWidth": 3,
+          "osmWidth": null,
+          "worstOverlap": 0.425
+        }
+      ],
+      "worstOverlap": 0.425
+    },
+    {
+      "buildingId": "w1422745011",
+      "buildingKind": "yes",
+      "centre": [
+        -86.66,
+        -229.27
+      ],
+      "hits": [
+        {
+          "roadId": "w1329020065",
+          "roadKind": "tertiary",
+          "roadWidth": 5.5,
+          "osmWidth": 5.5,
+          "worstOverlap": 0.278
+        }
+      ],
+      "worstOverlap": 0.278
+    },
+    {
+      "buildingId": "w869907965",
+      "buildingKind": "yes",
+      "centre": [
+        92.14,
+        23.98
+      ],
+      "hits": [
+        {
+          "roadId": "w869907966",
+          "roadKind": "service",
+          "roadWidth": 3,
+          "osmWidth": null,
+          "worstOverlap": 0.263
+        }
+      ],
+      "worstOverlap": 0.263
+    },
+    {
+      "buildingId": "w869907964",
+      "buildingKind": "hotel",
+      "centre": [
+        62.37,
+        39.33
+      ],
+      "hits": [
+        {
+          "roadId": "w1422743879",
+          "roadKind": "residential",
+          "roadWidth": 4.5,
+          "osmWidth": null,
+          "worstOverlap": 0.257
+        }
+      ],
+      "worstOverlap": 0.257
+    },
+    {
+      "buildingId": "w611766160",
+      "buildingKind": "yes",
+      "centre": [
+        689.1,
+        110.77
+      ],
+      "hits": [
+        {
+          "roadId": "w1329020044",
+          "roadKind": "service",
+          "roadWidth": 3,
+          "osmWidth": null,
+          "worstOverlap": 0.146
+        }
+      ],
+      "worstOverlap": 0.146
+    },
+    {
+      "buildingId": "vw-torget-west-corner",
+      "buildingKind": "house",
+      "centre": [
+        -52,
+        -30
+      ],
+      "hits": [
+        {
+          "roadId": "w860753009",
+          "roadKind": "residential",
+          "roadWidth": 4.5,
+          "osmWidth": 5.5,
+          "worstOverlap": 0.111
+        }
+      ],
+      "worstOverlap": 0.111
+    },
+    {
+      "buildingId": "w193810975",
+      "buildingKind": "university",
+      "centre": [
+        568.76,
+        -83.66
+      ],
+      "hits": [
+        {
+          "roadId": "w122157682",
+          "roadKind": "service",
+          "roadWidth": 3,
+          "osmWidth": null,
+          "worstOverlap": 0.085
+        }
+      ],
+      "worstOverlap": 0.085
+    }
+  ]
+}
