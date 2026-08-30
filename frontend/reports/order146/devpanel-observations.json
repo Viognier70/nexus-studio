@@ -1,103 +1,103 @@
 {
   "hitFirstWaiting": {
-    "simTime": 525.9999999999826,
+    "simTime": 523.199999999982,
     "seatedIds": 16,
     "waitingIds": 2,
     "stateSeated": 1,
     "stateOrdering": 4,
-    "stateDining": 11,
-    "devPanelText": "DEV 2fps(strat) cam=900m [35-75] day=1 lunch service=11:14 / 20min scenarios=1/4 cash= 139k econR=0.87 soc=0.55 eco=0.55 rep=0.70 credits=E0.00 T0.00 P0.00 key=- 17°C 0.6m/s none waiting=5 queue=2 scene=8 seated=16/16"
+    "stateDining": 10,
+    "devPanelText": "DEV 1fps(strat) cam=900m [35-75] day=1 lunch service=11:16 / 20min scenarios=1/4 cash= 139k econR=0.87 soc=0.55 eco=0.55 rep=0.70 credits=E0.00 T0.00 P0.00 key=- 17°C 0.6m/s none waiting=5 queue=2 scene=7 seated=16/16 (S:1 O:4 D:10 P:1)"
   },
   "sampleTail": [
     {
-      "simTime": 505.9999999999798,
-      "seatedIds": 10,
-      "waitingIds": 0,
-      "stateSeated": 3,
-      "stateOrdering": 0,
-      "stateDining": 7,
-      "devPanelText": "DEV 1fps(strat) cam=900m [35-75] day=1 lunch service=11:34 / 20min scenarios=1/4 cash= 138k econR=0.86 soc=0.55 eco=0.55 rep=0.71 credits=E0.00 T0.00 P0.00 key=- 17°C 0.6m/s none waiting=5 queue=0 scene=2 seated=10/16"
-    },
-    {
-      "simTime": 510.99999999997954,
-      "seatedIds": 13,
-      "waitingIds": 0,
-      "stateSeated": 3,
-      "stateOrdering": 2,
-      "stateDining": 7,
-      "devPanelText": "DEV 2fps(strat) cam=900m [35-75] day=1 lunch service=11:29 / 20min scenarios=1/4 cash= 138k econR=0.86 soc=0.55 eco=0.55 rep=0.71 credits=E0.00 T0.00 P0.00 key=- 17°C 0.6m/s none waiting=5 queue=0 scene=3 seated=13/16"
-    },
-    {
-      "simTime": 515.9999999999803,
-      "seatedIds": 14,
-      "waitingIds": 0,
-      "stateSeated": 2,
-      "stateOrdering": 4,
-      "stateDining": 8,
-      "devPanelText": "DEV 2fps(strat) cam=900m [35-75] day=1 lunch service=11:24 / 20min scenarios=1/4 cash= 138k econR=0.86 soc=0.55 eco=0.55 rep=0.71 credits=E0.00 T0.00 P0.00 key=- 17°C 0.6m/s none waiting=5 queue=0 scene=5 seated=14/16"
-    },
-    {
-      "simTime": 520.9999999999815,
-      "seatedIds": 16,
-      "waitingIds": 0,
-      "stateSeated": 2,
-      "stateOrdering": 4,
-      "stateDining": 9,
-      "devPanelText": "DEV 2fps(strat) cam=900m [35-75] day=1 lunch service=11:19 / 20min scenarios=1/4 cash= 139k econR=0.87 soc=0.55 eco=0.55 rep=0.70 credits=E0.00 T0.00 P0.00 key=- 17°C 0.6m/s none waiting=5 queue=0 scene=5 seated=16/16"
-    },
-    {
-      "simTime": 525.9999999999826,
+      "simTime": 523.199999999982,
       "seatedIds": 16,
       "waitingIds": 2,
       "stateSeated": 1,
       "stateOrdering": 4,
-      "stateDining": 11,
-      "devPanelText": "DEV 2fps(strat) cam=900m [35-75] day=1 lunch service=11:14 / 20min scenarios=1/4 cash= 139k econR=0.87 soc=0.55 eco=0.55 rep=0.70 credits=E0.00 T0.00 P0.00 key=- 17°C 0.6m/s none waiting=5 queue=2 scene=8 seated=16/16"
+      "stateDining": 10,
+      "devPanelText": "DEV 1fps(strat) cam=900m [35-75] day=1 lunch service=11:16 / 20min scenarios=1/4 cash= 139k econR=0.87 soc=0.55 eco=0.55 rep=0.70 credits=E0.00 T0.00 P0.00 key=- 17°C 0.6m/s none waiting=5 queue=2 scene=7 seated=16/16 (S:1 O:4 D:10 P:1)"
     },
     {
-      "simTime": 530.9999999999837,
+      "simTime": 528.1999999999831,
       "seatedIds": 16,
       "waitingIds": 3,
-      "stateSeated": 0,
+      "stateSeated": 1,
       "stateOrdering": 3,
       "stateDining": 12,
-      "devPanelText": "DEV 2fps(strat) cam=900m [35-75] day=1 lunch service=11:09 / 20min scenarios=1/4 cash= 139k econR=0.87 soc=0.55 eco=0.55 rep=0.69 credits=E0.00 T0.00 P0.00 key=- 17°C 0.6m/s none waiting=5 queue=3 scene=7 seated=16/16"
+      "devPanelText": "DEV 2fps(strat) cam=900m [35-75] day=1 lunch service=11:11 / 20min scenarios=1/4 cash= 139k econR=0.87 soc=0.55 eco=0.55 rep=0.70 credits=E0.00 T0.00 P0.00 key=- 17°C 0.6m/s none waiting=5 queue=3 scene=7 seated=16/16 (S:1 O:3 D:12 P:0)"
     },
     {
-      "simTime": 535.9999999999849,
+      "simTime": 533.1999999999842,
       "seatedIds": 16,
       "waitingIds": 3,
       "stateSeated": 0,
-      "stateOrdering": 1,
+      "stateOrdering": 2,
       "stateDining": 13,
-      "devPanelText": "DEV 2fps(strat) cam=900m [35-75] day=1 lunch service=11:04 / 20min scenarios=1/4 cash= 139k econR=0.87 soc=0.55 eco=0.55 rep=0.69 credits=E0.00 T0.00 P0.00 key=- 17°C 0.6m/s none waiting=5 queue=3 scene=6 seated=16/16"
+      "devPanelText": "DEV 1fps(strat) cam=900m [35-75] day=1 lunch service=11:06 / 20min scenarios=1/4 cash= 139k econR=0.87 soc=0.55 eco=0.55 rep=0.69 credits=E0.00 T0.00 P0.00 key=- 17°C 0.6m/s none waiting=5 queue=3 scene=6 seated=16/16 (S:0 O:2 D:13 P:1)"
     },
     {
-      "simTime": 540.999999999986,
+      "simTime": 538.1999999999854,
+      "seatedIds": 16,
+      "waitingIds": 3,
+      "stateSeated": 1,
+      "stateOrdering": 1,
+      "stateDining": 13,
+      "devPanelText": "DEV 2fps(strat) cam=900m [35-75] day=1 lunch service=11:01 / 20min scenarios=1/4 cash= 139k econR=0.87 soc=0.55 eco=0.55 rep=0.69 credits=E0.00 T0.00 P0.00 key=- 17°C 0.6m/s none waiting=5 queue=3 scene=6 seated=16/16 (S:1 O:1 D:13 P:1)"
+    },
+    {
+      "simTime": 543.1999999999865,
+      "seatedIds": 16,
+      "waitingIds": 3,
+      "stateSeated": 0,
+      "stateOrdering": 0,
+      "stateDining": 15,
+      "devPanelText": "DEV 2fps(strat) cam=900m [35-75] day=1 lunch service=10:56 / 20min scenarios=1/4 cash= 139k econR=0.87 soc=0.55 eco=0.55 rep=0.68 credits=E0.00 T0.00 P0.00 key=- 17°C 0.6m/s none waiting=5 queue=3 scene=5 seated=16/16 (S:0 O:0 D:15 P:1)"
+    },
+    {
+      "simTime": 548.1999999999877,
       "seatedIds": 16,
       "waitingIds": 3,
       "stateSeated": 0,
       "stateOrdering": 1,
       "stateDining": 14,
-      "devPanelText": "DEV 2fps(strat) cam=900m [35-75] day=1 lunch service=10:59 / 20min scenarios=1/4 cash= 139k econR=0.87 soc=0.55 eco=0.55 rep=0.68 credits=E0.00 T0.00 P0.00 key=- 17°C 0.6m/s none waiting=5 queue=3 scene=6 seated=16/16"
+      "devPanelText": "DEV 2fps(strat) cam=900m [35-75] day=1 lunch service=10:51 / 20min scenarios=1/4 cash= 140k econR=0.87 soc=0.55 eco=0.55 rep=0.68 credits=E0.00 T0.00 P0.00 key=- 17°C 0.6m/s none waiting=5 queue=3 scene=7 seated=16/16 (S:0 O:1 D:14 P:1)"
     },
     {
-      "simTime": 545.9999999999872,
+      "simTime": 553.1999999999888,
       "seatedIds": 16,
       "waitingIds": 3,
       "stateSeated": 1,
       "stateOrdering": 0,
-      "stateDining": 14,
-      "devPanelText": "DEV 2fps(strat) cam=900m [35-75] day=1 lunch service=10:54 / 20min scenarios=1/4 cash= 140k econR=0.87 soc=0.55 eco=0.55 rep=0.68 credits=E0.00 T0.00 P0.00 key=- 17°C 0.6m/s none waiting=5 queue=3 scene=5 seated=16/16"
+      "stateDining": 13,
+      "devPanelText": "DEV 1fps(strat) cam=900m [35-75] day=1 lunch service=10:46 / 20min scenarios=1/4 cash= 140k econR=0.88 soc=0.55 eco=0.55 rep=0.66 credits=E0.00 T0.00 P0.00 key=- 17°C 0.6m/s none waiting=5 queue=3 scene=6 seated=16/16 (S:1 O:0 D:13 P:2)"
     },
     {
-      "simTime": 550.9999999999883,
+      "simTime": 558.1999999999899,
       "seatedIds": 16,
-      "waitingIds": 4,
-      "stateSeated": 0,
+      "waitingIds": 2,
+      "stateSeated": 1,
       "stateOrdering": 1,
       "stateDining": 13,
-      "devPanelText": "DEV 2fps(strat) cam=900m [35-75] day=1 lunch service=10:49 / 20min scenarios=1/4 cash= 140k econR=0.88 soc=0.55 eco=0.55 rep=0.67 credits=E0.00 T0.00 P0.00 key=- 17°C 0.6m/s none waiting=5 queue=4 scene=7 seated=16/16"
+      "devPanelText": "DEV 2fps(strat) cam=900m [35-75] day=1 lunch service=10:41 / 20min scenarios=1/4 cash= 140k econR=0.88 soc=0.55 eco=0.55 rep=0.65 credits=E0.00 T0.00 P0.00 key=- 17°C 0.6m/s none waiting=5 queue=2 scene=6 seated=16/16 (S:1 O:1 D:13 P:1)"
+    },
+    {
+      "simTime": 563.1999999999911,
+      "seatedIds": 16,
+      "waitingIds": 1,
+      "stateSeated": 1,
+      "stateOrdering": 1,
+      "stateDining": 12,
+      "devPanelText": "DEV 2fps(strat) cam=900m [35-75] day=1 lunch service=10:36 / 20min scenarios=1/4 cash= 141k econR=0.88 soc=0.55 eco=0.55 rep=0.65 credits=E0.00 T0.00 P0.00 key=- 17°C 0.6m/s none waiting=5 queue=1 scene=7 seated=16/16 (S:1 O:1 D:12 P:2)"
+    },
+    {
+      "simTime": 568.1999999999922,
+      "seatedIds": 16,
+      "waitingIds": 4,
+      "stateSeated": 1,
+      "stateOrdering": 0,
+      "stateDining": 13,
+      "devPanelText": "DEV 1fps(strat) cam=900m [35-75] day=1 lunch service=10:31 / 20min scenarios=1/4 cash= 141k econR=0.88 soc=0.55 eco=0.55 rep=0.63 credits=E0.00 T0.00 P0.00 key=- 17°C 0.6m/s none waiting=5 queue=4 scene=8 seated=16/16 (S:1 O:0 D:13 P:2)"
     }
   ]
 }
