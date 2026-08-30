@@ -374,33 +374,21 @@ export const CAR_LOOPS: Vec2[][] = [
 ];
 
 // Restaurant interior (relative to restaurant landmark position).
+//
+// ORDER 144 §twoLayouts — `bar`, `kitchen`, `tables` och `staffHomes`
+// borttagna. Två oförenliga matsalar var i drift: den här (axelparallell
+// 16×12 med sex bord i 2×3-raster) och `business/interiorLayout.ts`
+// (OBB w869907975, 15,6×11,8 roterad 7°, fem bord i en rad). Efter
+// ORDER 144-monteringen är `interiorLayout` enda sanningen; de fyra
+// fälten var döda utanför `Restaurant.tsx`/`RestaurantActors.tsx` som
+// aldrig JSX-monterats. `centre`/`width`/`depth`/`interiorHeight`/
+// `entrance` behålls — de läses inte just nu men bär byggnads-
+// footprint från landmark-registret som andra lager kan behöva.
 export const RESTAURANT_INTERIOR = {
   // World-space corners for the restaurant footprint.
   centre: RESTAURANT.position,
   width: RESTAURANT.footprint.width,
   depth: RESTAURANT.footprint.depth,
   interiorHeight: 3,
-  entrance: { x: RESTAURANT.position.x, z: RESTAURANT.position.z + RESTAURANT.footprint.depth / 2 },
-  // Local layout: bar strip on west, kitchen at NW corner, tables east.
-  bar: { x: RESTAURANT.position.x - RESTAURANT.footprint.width / 2 + 1.6, z: RESTAURANT.position.z },
-  kitchen: {
-    x: RESTAURANT.position.x - RESTAURANT.footprint.width / 2 + 1.6,
-    z: RESTAURANT.position.z - RESTAURANT.footprint.depth / 2 + 2
-  },
-  tables: [
-    { x: RESTAURANT.position.x + 2.6, z: RESTAURANT.position.z - 3.4 },
-    { x: RESTAURANT.position.x + 2.6, z: RESTAURANT.position.z - 1 },
-    { x: RESTAURANT.position.x + 2.6, z: RESTAURANT.position.z + 1.4 },
-    { x: RESTAURANT.position.x + 5.4, z: RESTAURANT.position.z - 3.4 },
-    { x: RESTAURANT.position.x + 5.4, z: RESTAURANT.position.z - 1 },
-    { x: RESTAURANT.position.x + 5.4, z: RESTAURANT.position.z + 1.4 }
-  ] as Vec2[],
-  staffHomes: [
-    // Host near entrance
-    { x: RESTAURANT.position.x + 1.2, z: RESTAURANT.position.z + RESTAURANT.footprint.depth / 2 - 2 },
-    // Server near bar
-    { x: RESTAURANT.position.x - 1.4, z: RESTAURANT.position.z + 0.4 },
-    // Chef at kitchen
-    { x: RESTAURANT.position.x - RESTAURANT.footprint.width / 2 + 2.2, z: RESTAURANT.position.z - RESTAURANT.footprint.depth / 2 + 2.8 }
-  ] as Vec2[]
+  entrance: { x: RESTAURANT.position.x, z: RESTAURANT.position.z + RESTAURANT.footprint.depth / 2 }
 };
