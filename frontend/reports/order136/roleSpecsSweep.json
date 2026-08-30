@@ -1,0 +1,4096 @@
+{
+  "regimens": {
+    "CURRENT": {
+      "primary": {
+        "width": 10,
+        "sidewalkWidth": 1.6
+      },
+      "main": {
+        "width": 9,
+        "sidewalkWidth": 1.5
+      },
+      "secondary_connector": {
+        "width": 6.2,
+        "sidewalkWidth": 1.2
+      },
+      "local_street": {
+        "width": 5,
+        "sidewalkWidth": 1
+      },
+      "village_street": {
+        "width": 4.6,
+        "sidewalkWidth": 0.9
+      },
+      "residential": {
+        "width": 3.6,
+        "sidewalkWidth": 0
+      },
+      "service": {
+        "width": 2.8,
+        "sidewalkWidth": 0
+      },
+      "track": {
+        "width": 2.4,
+        "sidewalkWidth": 0
+      },
+      "cycleway": {
+        "width": 2,
+        "sidewalkWidth": 0
+      },
+      "footpath": {
+        "width": 1.3,
+        "sidewalkWidth": 0
+      }
+    },
+    "ALT_A": {
+      "primary": {
+        "width": 10,
+        "sidewalkWidth": 1
+      },
+      "main": {
+        "width": 9,
+        "sidewalkWidth": 1
+      },
+      "secondary_connector": {
+        "width": 6.2,
+        "sidewalkWidth": 1.2
+      },
+      "local_street": {
+        "width": 5,
+        "sidewalkWidth": 1
+      },
+      "village_street": {
+        "width": 4.6,
+        "sidewalkWidth": 0.9
+      },
+      "residential": {
+        "width": 3.6,
+        "sidewalkWidth": 0
+      },
+      "service": {
+        "width": 2.8,
+        "sidewalkWidth": 0
+      },
+      "track": {
+        "width": 2.4,
+        "sidewalkWidth": 0
+      },
+      "cycleway": {
+        "width": 2,
+        "sidewalkWidth": 0
+      },
+      "footpath": {
+        "width": 1.3,
+        "sidewalkWidth": 0
+      }
+    },
+    "ALT_B": {
+      "primary": {
+        "width": 7,
+        "sidewalkWidth": 1.2
+      },
+      "main": {
+        "width": 7,
+        "sidewalkWidth": 1.2
+      },
+      "secondary_connector": {
+        "width": 5.5,
+        "sidewalkWidth": 1
+      },
+      "local_street": {
+        "width": 5,
+        "sidewalkWidth": 1
+      },
+      "village_street": {
+        "width": 4.6,
+        "sidewalkWidth": 0.9
+      },
+      "residential": {
+        "width": 3.6,
+        "sidewalkWidth": 0
+      },
+      "service": {
+        "width": 2.8,
+        "sidewalkWidth": 0
+      },
+      "track": {
+        "width": 2.4,
+        "sidewalkWidth": 0
+      },
+      "cycleway": {
+        "width": 2,
+        "sidewalkWidth": 0
+      },
+      "footpath": {
+        "width": 1.3,
+        "sidewalkWidth": 0
+      }
+    },
+    "NORM_SE": {
+      "primary": {
+        "width": 7.5,
+        "sidewalkWidth": 2,
+        "note": "Riksväg 244 i tätort — 6,5-8 m körbana + 1,8-2,4 m gångbana per sida (VGU 6.2)"
+      },
+      "main": {
+        "width": 6.5,
+        "sidewalkWidth": 1.8,
+        "note": "Lokal Rv 205 / huvudgata i bruksort — 5,5-7 m + gångbana 1,5-2 m"
+      },
+      "secondary_connector": {
+        "width": 5.5,
+        "sidewalkWidth": 1.5,
+        "note": "Village collector — 5-6 m + 1,2-1,8 m gångbana"
+      },
+      "local_street": {
+        "width": 4.5,
+        "sidewalkWidth": 1,
+        "note": "Bostadsgata primär — 4-5 m + 0,9-1,2 m gångbana när det finns"
+      },
+      "village_street": {
+        "width": 4.5,
+        "sidewalkWidth": 0.9,
+        "note": "Bostadsgata sekundär — samma nivå"
+      },
+      "residential": {
+        "width": 3.5,
+        "sidewalkWidth": 0,
+        "note": "Angöringsgata — 3-4,5 m, sällan gångbana"
+      },
+      "service": {
+        "width": 3,
+        "sidewalkWidth": 0,
+        "note": "Servicegata — 2,5-3,5 m"
+      },
+      "track": {
+        "width": 2.5,
+        "sidewalkWidth": 0,
+        "note": "Skogsbilväg / traktorspår — 2-3 m"
+      },
+      "cycleway": {
+        "width": 2,
+        "sidewalkWidth": 0,
+        "note": "Cykelbana — 1,8-2,5 m enkelriktad, 2,5-3 m dubbelriktad"
+      },
+      "footpath": {
+        "width": 1.5,
+        "sidewalkWidth": 0,
+        "note": "Gångstig — 1,2-2 m"
+      }
+    }
+  },
+  "rollTable": [
+    {
+      "role": "primary",
+      "current": {
+        "width": 10,
+        "sidewalk": 1.6,
+        "envelope": 13.2
+      },
+      "altA": {
+        "width": 10,
+        "sidewalk": 1,
+        "envelope": 12
+      },
+      "altB": {
+        "width": 7,
+        "sidewalk": 1.2,
+        "envelope": 9.4
+      },
+      "normSE": {
+        "width": 7.5,
+        "sidewalk": 2,
+        "envelope": 11.5,
+        "note": "Riksväg 244 i tätort — 6,5-8 m körbana + 1,8-2,4 m gångbana per sida (VGU 6.2)"
+      },
+      "currentVsNorm": 1.7
+    },
+    {
+      "role": "main",
+      "current": {
+        "width": 9,
+        "sidewalk": 1.5,
+        "envelope": 12
+      },
+      "altA": {
+        "width": 9,
+        "sidewalk": 1,
+        "envelope": 11
+      },
+      "altB": {
+        "width": 7,
+        "sidewalk": 1.2,
+        "envelope": 9.4
+      },
+      "normSE": {
+        "width": 6.5,
+        "sidewalk": 1.8,
+        "envelope": 10.1,
+        "note": "Lokal Rv 205 / huvudgata i bruksort — 5,5-7 m + gångbana 1,5-2 m"
+      },
+      "currentVsNorm": 1.9
+    },
+    {
+      "role": "secondary_connector",
+      "current": {
+        "width": 6.2,
+        "sidewalk": 1.2,
+        "envelope": 8.6
+      },
+      "altA": {
+        "width": 6.2,
+        "sidewalk": 1.2,
+        "envelope": 8.6
+      },
+      "altB": {
+        "width": 5.5,
+        "sidewalk": 1,
+        "envelope": 7.5
+      },
+      "normSE": {
+        "width": 5.5,
+        "sidewalk": 1.5,
+        "envelope": 8.5,
+        "note": "Village collector — 5-6 m + 1,2-1,8 m gångbana"
+      },
+      "currentVsNorm": 0.1
+    },
+    {
+      "role": "local_street",
+      "current": {
+        "width": 5,
+        "sidewalk": 1,
+        "envelope": 7
+      },
+      "altA": {
+        "width": 5,
+        "sidewalk": 1,
+        "envelope": 7
+      },
+      "altB": {
+        "width": 5,
+        "sidewalk": 1,
+        "envelope": 7
+      },
+      "normSE": {
+        "width": 4.5,
+        "sidewalk": 1,
+        "envelope": 6.5,
+        "note": "Bostadsgata primär — 4-5 m + 0,9-1,2 m gångbana när det finns"
+      },
+      "currentVsNorm": 0.5
+    },
+    {
+      "role": "village_street",
+      "current": {
+        "width": 4.6,
+        "sidewalk": 0.9,
+        "envelope": 6.3999999999999995
+      },
+      "altA": {
+        "width": 4.6,
+        "sidewalk": 0.9,
+        "envelope": 6.3999999999999995
+      },
+      "altB": {
+        "width": 4.6,
+        "sidewalk": 0.9,
+        "envelope": 6.3999999999999995
+      },
+      "normSE": {
+        "width": 4.5,
+        "sidewalk": 0.9,
+        "envelope": 6.3,
+        "note": "Bostadsgata sekundär — samma nivå"
+      },
+      "currentVsNorm": 0.1
+    },
+    {
+      "role": "residential",
+      "current": {
+        "width": 3.6,
+        "sidewalk": 0,
+        "envelope": 3.6
+      },
+      "altA": {
+        "width": 3.6,
+        "sidewalk": 0,
+        "envelope": 3.6
+      },
+      "altB": {
+        "width": 3.6,
+        "sidewalk": 0,
+        "envelope": 3.6
+      },
+      "normSE": {
+        "width": 3.5,
+        "sidewalk": 0,
+        "envelope": 3.5,
+        "note": "Angöringsgata — 3-4,5 m, sällan gångbana"
+      },
+      "currentVsNorm": 0.1
+    },
+    {
+      "role": "service",
+      "current": {
+        "width": 2.8,
+        "sidewalk": 0,
+        "envelope": 2.8
+      },
+      "altA": {
+        "width": 2.8,
+        "sidewalk": 0,
+        "envelope": 2.8
+      },
+      "altB": {
+        "width": 2.8,
+        "sidewalk": 0,
+        "envelope": 2.8
+      },
+      "normSE": {
+        "width": 3,
+        "sidewalk": 0,
+        "envelope": 3,
+        "note": "Servicegata — 2,5-3,5 m"
+      },
+      "currentVsNorm": -0.2
+    },
+    {
+      "role": "track",
+      "current": {
+        "width": 2.4,
+        "sidewalk": 0,
+        "envelope": 2.4
+      },
+      "altA": {
+        "width": 2.4,
+        "sidewalk": 0,
+        "envelope": 2.4
+      },
+      "altB": {
+        "width": 2.4,
+        "sidewalk": 0,
+        "envelope": 2.4
+      },
+      "normSE": {
+        "width": 2.5,
+        "sidewalk": 0,
+        "envelope": 2.5,
+        "note": "Skogsbilväg / traktorspår — 2-3 m"
+      },
+      "currentVsNorm": -0.1
+    },
+    {
+      "role": "cycleway",
+      "current": {
+        "width": 2,
+        "sidewalk": 0,
+        "envelope": 2
+      },
+      "altA": {
+        "width": 2,
+        "sidewalk": 0,
+        "envelope": 2
+      },
+      "altB": {
+        "width": 2,
+        "sidewalk": 0,
+        "envelope": 2
+      },
+      "normSE": {
+        "width": 2,
+        "sidewalk": 0,
+        "envelope": 2,
+        "note": "Cykelbana — 1,8-2,5 m enkelriktad, 2,5-3 m dubbelriktad"
+      },
+      "currentVsNorm": 0
+    },
+    {
+      "role": "footpath",
+      "current": {
+        "width": 1.3,
+        "sidewalk": 0,
+        "envelope": 1.3
+      },
+      "altA": {
+        "width": 1.3,
+        "sidewalk": 0,
+        "envelope": 1.3
+      },
+      "altB": {
+        "width": 1.3,
+        "sidewalk": 0,
+        "envelope": 1.3
+      },
+      "normSE": {
+        "width": 1.5,
+        "sidewalk": 0,
+        "envelope": 1.5,
+        "note": "Gångstig — 1,2-2 m"
+      },
+      "currentVsNorm": -0.2
+    }
+  ],
+  "summary": {
+    "CURRENT": {
+      "count": 32,
+      "worst": 4.359,
+      "widthOnly": 13,
+      "structural": 19
+    },
+    "ALT_A": {
+      "count": 32,
+      "worst": 3.859,
+      "droppedFromCurrent": 0,
+      "droppedIds": [],
+      "widthOnly": 13,
+      "structural": 19
+    },
+    "ALT_B": {
+      "count": 32,
+      "worst": 3.059,
+      "droppedFromCurrent": 0,
+      "droppedIds": [],
+      "widthOnly": 13,
+      "structural": 19
+    }
+  },
+  "results": {
+    "CURRENT": [
+      {
+        "buildingId": "vw-pra-19n",
+        "buildingKind": "apartments",
+        "buildingName": null,
+        "centre": [
+          382.92,
+          28.61
+        ],
+        "worstOverlap": 4.359,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w193810976",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 0,
+            "triggers": {
+              "vertexInEnvelope": false,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          },
+          {
+            "roadId": "w1329020070",
+            "roadKind": "secondary",
+            "roadName": "Lokavägen",
+            "roadRef": "205",
+            "role": "main",
+            "envelope": 12,
+            "worstOverlap": 4.359,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-nyg-3",
+        "buildingKind": "house",
+        "buildingName": null,
+        "centre": [
+          -45,
+          -75
+        ],
+        "worstOverlap": 3.527,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w1239628612",
+            "roadKind": "tertiary",
+            "roadName": "Kyrkogatan",
+            "roadRef": "T 718",
+            "role": "secondary_connector",
+            "envelope": 8.6,
+            "worstOverlap": 3.527,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-jarn-9",
+        "buildingKind": "house",
+        "buildingName": null,
+        "centre": [
+          -410,
+          -50
+        ],
+        "worstOverlap": 2.7,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w191323431",
+            "roadKind": "residential",
+            "roadName": "Järnvägsgatan",
+            "roadRef": "T 715",
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 2.7,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-pra-18",
+        "buildingKind": "apartments",
+        "buildingName": null,
+        "centre": [
+          386.5,
+          11.2
+        ],
+        "worstOverlap": 2.568,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w1329020070",
+            "roadKind": "secondary",
+            "roadName": "Lokavägen",
+            "roadRef": "205",
+            "role": "main",
+            "envelope": 12,
+            "worstOverlap": 2.568,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-jaktakademin",
+        "buildingKind": "house",
+        "buildingName": "Jaktakademin",
+        "centre": [
+          -265,
+          60
+        ],
+        "worstOverlap": 2.189,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w1329020064",
+            "roadKind": "residential",
+            "roadName": "Magasinsgatan",
+            "roadRef": "T 716",
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 2.189,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "w1422745011",
+        "buildingKind": "yes",
+        "buildingName": null,
+        "centre": [
+          -86.66,
+          -229.27
+        ],
+        "worstOverlap": 1.828,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w1329020065",
+            "roadKind": "tertiary",
+            "roadName": "Kyrkogatan",
+            "roadRef": "T 718",
+            "role": "secondary_connector",
+            "envelope": 8.6,
+            "worstOverlap": 1.828,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-hjv-5",
+        "buildingKind": "house",
+        "buildingName": null,
+        "centre": [
+          -350,
+          -160
+        ],
+        "worstOverlap": 1.729,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w1329020083",
+            "roadKind": "residential",
+            "roadName": "Hantverksgatan",
+            "roadRef": null,
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 1.729,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-mag-warehouse",
+        "buildingKind": "industrial",
+        "buildingName": "Magasinsgatan warehouse",
+        "centre": [
+          -420,
+          200
+        ],
+        "worstOverlap": 1.618,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w175036243",
+            "roadKind": "residential",
+            "roadName": "Magasinsgatan",
+            "roadRef": null,
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 1.618,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-barbellclub",
+        "buildingKind": "house",
+        "buildingName": "Barbellclub Bergslagen",
+        "centre": [
+          -280,
+          45
+        ],
+        "worstOverlap": 1.595,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w191323432",
+            "roadKind": "residential",
+            "roadName": "Skolgatan",
+            "roadRef": "T 715",
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 0.694,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          },
+          {
+            "roadId": "w287145632",
+            "roadKind": "residential",
+            "roadName": "Hantverksgatan",
+            "roadRef": null,
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 1.595,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-kyr-9e-mansard",
+        "buildingKind": "house",
+        "buildingName": "Kyrkogatan east mansard villa",
+        "centre": [
+          -14,
+          5
+        ],
+        "worstOverlap": 1.461,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w860753012",
+            "roadKind": "tertiary",
+            "roadName": "Smedsgatan",
+            "roadRef": null,
+            "role": "secondary_connector",
+            "envelope": 8.6,
+            "worstOverlap": 1.461,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "w870510826",
+        "buildingKind": "industrial",
+        "buildingName": null,
+        "centre": [
+          -623.64,
+          -268.4
+        ],
+        "worstOverlap": 1.4,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w870510820",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 1.4,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          },
+          {
+            "roadId": "w870510829",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 1.4,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          },
+          {
+            "roadId": "w1329020075",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 1.4,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "w870510828",
+        "buildingKind": "industrial",
+        "buildingName": null,
+        "centre": [
+          -648.71,
+          -369.18
+        ],
+        "worstOverlap": 1.4,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w870510829",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 1.4,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          },
+          {
+            "roadId": "w1329020076",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 1.4,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          },
+          {
+            "roadId": "w1329020077",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 1.4,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "w1422743880",
+        "buildingKind": "yes",
+        "buildingName": "Länsmansgården",
+        "centre": [
+          -30.11,
+          75.64
+        ],
+        "worstOverlap": 1.266,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w862853244",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 1.266,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-pra-15s",
+        "buildingKind": "house",
+        "buildingName": null,
+        "centre": [
+          352,
+          5
+        ],
+        "worstOverlap": 1.252,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w193810976",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 1.252,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-pra-djurskyddet",
+        "buildingKind": "house",
+        "buildingName": "Djurskyddet Vilsna Tassar Hällefors",
+        "centre": [
+          355,
+          15
+        ],
+        "worstOverlap": 1.227,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w193810976",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 1.227,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "w869907964",
+        "buildingKind": "hotel",
+        "buildingName": "Grythyttans Gästgivaregård",
+        "centre": [
+          62.37,
+          39.33
+        ],
+        "worstOverlap": 1.207,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w1422743879",
+            "roadKind": "residential",
+            "roadName": "Artur Lindqvists gata",
+            "roadRef": null,
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 1.207,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "w870510839",
+        "buildingKind": "industrial",
+        "buildingName": null,
+        "centre": [
+          -498.88,
+          -170.35
+        ],
+        "worstOverlap": 1.083,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w948705766",
+            "roadKind": "unclassified",
+            "roadName": null,
+            "roadRef": null,
+            "role": "local_street",
+            "envelope": 7,
+            "worstOverlap": 1.083,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-torget-west-corner",
+        "buildingKind": "house",
+        "buildingName": "Torget west corner",
+        "centre": [
+          -52,
+          -30
+        ],
+        "worstOverlap": 1.061,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w860753009",
+            "roadKind": "residential",
+            "roadName": "Kyrkbacken",
+            "roadRef": "T 716",
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 1.061,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-torget-kyrkbacken-pair",
+        "buildingKind": "house",
+        "buildingName": "2 Kyrkbacken historic pair",
+        "centre": [
+          -42,
+          -40
+        ],
+        "worstOverlap": 0.883,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w860753009",
+            "roadKind": "residential",
+            "roadName": "Kyrkbacken",
+            "roadRef": "T 716",
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 0.883,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          },
+          {
+            "roadId": "w1239628611",
+            "roadKind": "tertiary",
+            "roadName": "Kyrkogatan",
+            "roadRef": "T 718",
+            "role": "secondary_connector",
+            "envelope": 8.6,
+            "worstOverlap": 0.616,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-pra-8",
+        "buildingKind": "house",
+        "buildingName": null,
+        "centre": [
+          305,
+          30
+        ],
+        "worstOverlap": 0.832,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w122157689",
+            "roadKind": "residential",
+            "roadName": "Prästgatan",
+            "roadRef": "T 716",
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 0.832,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "w611776645",
+        "buildingKind": "yes",
+        "buildingName": null,
+        "centre": [
+          -408.69,
+          1299.17
+        ],
+        "worstOverlap": 0.721,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w1329020037",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 0.721,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "w869907963",
+        "buildingKind": "yes",
+        "buildingName": null,
+        "centre": [
+          45.87,
+          47.56
+        ],
+        "worstOverlap": 0.686,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w1422743879",
+            "roadKind": "residential",
+            "roadName": "Artur Lindqvists gata",
+            "roadRef": null,
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 0.686,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-torget-east-barn",
+        "buildingKind": "outbuilding",
+        "buildingName": null,
+        "centre": [
+          65,
+          15
+        ],
+        "worstOverlap": 0.684,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w122157691",
+            "roadKind": "living_street",
+            "roadName": "Prästgatan",
+            "roadRef": "T 716",
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 0.684,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          },
+          {
+            "roadId": "w1329020068",
+            "roadKind": "living_street",
+            "roadName": "Prästgatan",
+            "roadRef": "T 716",
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 0.639,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-kyr-torget-lh",
+        "buildingKind": "house",
+        "buildingName": "Torget long-house cluster (west/south edge)",
+        "centre": [
+          -18,
+          -18
+        ],
+        "worstOverlap": 0.417,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w122157681",
+            "roadKind": "residential",
+            "roadName": "Torget",
+            "roadRef": null,
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 0.417,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          },
+          {
+            "roadId": "w122157691",
+            "roadKind": "living_street",
+            "roadName": "Prästgatan",
+            "roadRef": "T 716",
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 0,
+            "triggers": {
+              "vertexInEnvelope": false,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          },
+          {
+            "roadId": "w860753012",
+            "roadKind": "tertiary",
+            "roadName": "Smedsgatan",
+            "roadRef": null,
+            "role": "secondary_connector",
+            "envelope": 8.6,
+            "worstOverlap": 0,
+            "triggers": {
+              "vertexInEnvelope": false,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-forskola",
+        "buildingKind": "house",
+        "buildingName": "Grythyttans förskola",
+        "centre": [
+          -215,
+          -250
+        ],
+        "worstOverlap": 0.325,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w287145634",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 0.325,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "w869907965",
+        "buildingKind": "yes",
+        "buildingName": null,
+        "centre": [
+          92.14,
+          23.98
+        ],
+        "worstOverlap": 0.163,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w869907966",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 0.163,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "w611766160",
+        "buildingKind": "yes",
+        "buildingName": "Herrgården Grythyttan",
+        "centre": [
+          689.1,
+          110.77
+        ],
+        "worstOverlap": 0.046,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w1329020044",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 0.046,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-skg-16",
+        "buildingKind": "apartments",
+        "buildingName": null,
+        "centre": [
+          -215,
+          15
+        ],
+        "worstOverlap": 0,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": false,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w287145630",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 0,
+            "triggers": {
+              "vertexInEnvelope": false,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-pra-21",
+        "buildingKind": "apartments",
+        "buildingName": null,
+        "centre": [
+          370,
+          5
+        ],
+        "worstOverlap": 0,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": false,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w193810976",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 0,
+            "triggers": {
+              "vertexInEnvelope": false,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-sorgarden",
+        "buildingKind": "apartments",
+        "buildingName": "Sörgårdens Äldreboende",
+        "centre": [
+          -320,
+          -195
+        ],
+        "worstOverlap": 0,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": false,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w862853201",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 0,
+            "triggers": {
+              "vertexInEnvelope": false,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          },
+          {
+            "roadId": "w862853202",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 0,
+            "triggers": {
+              "vertexInEnvelope": false,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-csvwellness",
+        "buildingKind": "house",
+        "buildingName": "CSVWellness",
+        "centre": [
+          -882,
+          239
+        ],
+        "worstOverlap": 0,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": false,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w1329020035",
+            "roadKind": "residential",
+            "roadName": "Åsgatan",
+            "roadRef": null,
+            "role": "residential",
+            "envelope": 3.6,
+            "worstOverlap": 0,
+            "triggers": {
+              "vertexInEnvelope": false,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-stn-11",
+        "buildingKind": "house",
+        "buildingName": null,
+        "centre": [
+          -200,
+          -235
+        ],
+        "worstOverlap": 0,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": false,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w287145634",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 0,
+            "triggers": {
+              "vertexInEnvelope": false,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      }
+    ],
+    "ALT_A": [
+      {
+        "buildingId": "vw-pra-19n",
+        "buildingKind": "apartments",
+        "buildingName": null,
+        "centre": [
+          382.92,
+          28.61
+        ],
+        "worstOverlap": 3.859,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w193810976",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 0,
+            "triggers": {
+              "vertexInEnvelope": false,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          },
+          {
+            "roadId": "w1329020070",
+            "roadKind": "secondary",
+            "roadName": "Lokavägen",
+            "roadRef": "205",
+            "role": "main",
+            "envelope": 11,
+            "worstOverlap": 3.859,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-nyg-3",
+        "buildingKind": "house",
+        "buildingName": null,
+        "centre": [
+          -45,
+          -75
+        ],
+        "worstOverlap": 3.527,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w1239628612",
+            "roadKind": "tertiary",
+            "roadName": "Kyrkogatan",
+            "roadRef": "T 718",
+            "role": "secondary_connector",
+            "envelope": 8.6,
+            "worstOverlap": 3.527,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-jarn-9",
+        "buildingKind": "house",
+        "buildingName": null,
+        "centre": [
+          -410,
+          -50
+        ],
+        "worstOverlap": 2.7,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w191323431",
+            "roadKind": "residential",
+            "roadName": "Järnvägsgatan",
+            "roadRef": "T 715",
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 2.7,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-jaktakademin",
+        "buildingKind": "house",
+        "buildingName": "Jaktakademin",
+        "centre": [
+          -265,
+          60
+        ],
+        "worstOverlap": 2.189,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w1329020064",
+            "roadKind": "residential",
+            "roadName": "Magasinsgatan",
+            "roadRef": "T 716",
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 2.189,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-pra-18",
+        "buildingKind": "apartments",
+        "buildingName": null,
+        "centre": [
+          386.5,
+          11.2
+        ],
+        "worstOverlap": 2.068,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w1329020070",
+            "roadKind": "secondary",
+            "roadName": "Lokavägen",
+            "roadRef": "205",
+            "role": "main",
+            "envelope": 11,
+            "worstOverlap": 2.068,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "w1422745011",
+        "buildingKind": "yes",
+        "buildingName": null,
+        "centre": [
+          -86.66,
+          -229.27
+        ],
+        "worstOverlap": 1.828,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w1329020065",
+            "roadKind": "tertiary",
+            "roadName": "Kyrkogatan",
+            "roadRef": "T 718",
+            "role": "secondary_connector",
+            "envelope": 8.6,
+            "worstOverlap": 1.828,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-hjv-5",
+        "buildingKind": "house",
+        "buildingName": null,
+        "centre": [
+          -350,
+          -160
+        ],
+        "worstOverlap": 1.729,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w1329020083",
+            "roadKind": "residential",
+            "roadName": "Hantverksgatan",
+            "roadRef": null,
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 1.729,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-mag-warehouse",
+        "buildingKind": "industrial",
+        "buildingName": "Magasinsgatan warehouse",
+        "centre": [
+          -420,
+          200
+        ],
+        "worstOverlap": 1.618,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w175036243",
+            "roadKind": "residential",
+            "roadName": "Magasinsgatan",
+            "roadRef": null,
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 1.618,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-barbellclub",
+        "buildingKind": "house",
+        "buildingName": "Barbellclub Bergslagen",
+        "centre": [
+          -280,
+          45
+        ],
+        "worstOverlap": 1.595,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w191323432",
+            "roadKind": "residential",
+            "roadName": "Skolgatan",
+            "roadRef": "T 715",
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 0.694,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          },
+          {
+            "roadId": "w287145632",
+            "roadKind": "residential",
+            "roadName": "Hantverksgatan",
+            "roadRef": null,
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 1.595,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-kyr-9e-mansard",
+        "buildingKind": "house",
+        "buildingName": "Kyrkogatan east mansard villa",
+        "centre": [
+          -14,
+          5
+        ],
+        "worstOverlap": 1.461,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w860753012",
+            "roadKind": "tertiary",
+            "roadName": "Smedsgatan",
+            "roadRef": null,
+            "role": "secondary_connector",
+            "envelope": 8.6,
+            "worstOverlap": 1.461,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "w870510826",
+        "buildingKind": "industrial",
+        "buildingName": null,
+        "centre": [
+          -623.64,
+          -268.4
+        ],
+        "worstOverlap": 1.4,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w870510820",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 1.4,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          },
+          {
+            "roadId": "w870510829",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 1.4,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          },
+          {
+            "roadId": "w1329020075",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 1.4,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "w870510828",
+        "buildingKind": "industrial",
+        "buildingName": null,
+        "centre": [
+          -648.71,
+          -369.18
+        ],
+        "worstOverlap": 1.4,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w870510829",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 1.4,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          },
+          {
+            "roadId": "w1329020076",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 1.4,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          },
+          {
+            "roadId": "w1329020077",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 1.4,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "w1422743880",
+        "buildingKind": "yes",
+        "buildingName": "Länsmansgården",
+        "centre": [
+          -30.11,
+          75.64
+        ],
+        "worstOverlap": 1.266,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w862853244",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 1.266,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-pra-15s",
+        "buildingKind": "house",
+        "buildingName": null,
+        "centre": [
+          352,
+          5
+        ],
+        "worstOverlap": 1.252,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w193810976",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 1.252,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-pra-djurskyddet",
+        "buildingKind": "house",
+        "buildingName": "Djurskyddet Vilsna Tassar Hällefors",
+        "centre": [
+          355,
+          15
+        ],
+        "worstOverlap": 1.227,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w193810976",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 1.227,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "w869907964",
+        "buildingKind": "hotel",
+        "buildingName": "Grythyttans Gästgivaregård",
+        "centre": [
+          62.37,
+          39.33
+        ],
+        "worstOverlap": 1.207,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w1422743879",
+            "roadKind": "residential",
+            "roadName": "Artur Lindqvists gata",
+            "roadRef": null,
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 1.207,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "w870510839",
+        "buildingKind": "industrial",
+        "buildingName": null,
+        "centre": [
+          -498.88,
+          -170.35
+        ],
+        "worstOverlap": 1.083,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w948705766",
+            "roadKind": "unclassified",
+            "roadName": null,
+            "roadRef": null,
+            "role": "local_street",
+            "envelope": 7,
+            "worstOverlap": 1.083,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-torget-west-corner",
+        "buildingKind": "house",
+        "buildingName": "Torget west corner",
+        "centre": [
+          -52,
+          -30
+        ],
+        "worstOverlap": 1.061,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w860753009",
+            "roadKind": "residential",
+            "roadName": "Kyrkbacken",
+            "roadRef": "T 716",
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 1.061,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-torget-kyrkbacken-pair",
+        "buildingKind": "house",
+        "buildingName": "2 Kyrkbacken historic pair",
+        "centre": [
+          -42,
+          -40
+        ],
+        "worstOverlap": 0.883,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w860753009",
+            "roadKind": "residential",
+            "roadName": "Kyrkbacken",
+            "roadRef": "T 716",
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 0.883,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          },
+          {
+            "roadId": "w1239628611",
+            "roadKind": "tertiary",
+            "roadName": "Kyrkogatan",
+            "roadRef": "T 718",
+            "role": "secondary_connector",
+            "envelope": 8.6,
+            "worstOverlap": 0.616,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-pra-8",
+        "buildingKind": "house",
+        "buildingName": null,
+        "centre": [
+          305,
+          30
+        ],
+        "worstOverlap": 0.832,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w122157689",
+            "roadKind": "residential",
+            "roadName": "Prästgatan",
+            "roadRef": "T 716",
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 0.832,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "w611776645",
+        "buildingKind": "yes",
+        "buildingName": null,
+        "centre": [
+          -408.69,
+          1299.17
+        ],
+        "worstOverlap": 0.721,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w1329020037",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 0.721,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "w869907963",
+        "buildingKind": "yes",
+        "buildingName": null,
+        "centre": [
+          45.87,
+          47.56
+        ],
+        "worstOverlap": 0.686,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w1422743879",
+            "roadKind": "residential",
+            "roadName": "Artur Lindqvists gata",
+            "roadRef": null,
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 0.686,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-torget-east-barn",
+        "buildingKind": "outbuilding",
+        "buildingName": null,
+        "centre": [
+          65,
+          15
+        ],
+        "worstOverlap": 0.684,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w122157691",
+            "roadKind": "living_street",
+            "roadName": "Prästgatan",
+            "roadRef": "T 716",
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 0.684,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          },
+          {
+            "roadId": "w1329020068",
+            "roadKind": "living_street",
+            "roadName": "Prästgatan",
+            "roadRef": "T 716",
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 0.639,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-kyr-torget-lh",
+        "buildingKind": "house",
+        "buildingName": "Torget long-house cluster (west/south edge)",
+        "centre": [
+          -18,
+          -18
+        ],
+        "worstOverlap": 0.417,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w122157681",
+            "roadKind": "residential",
+            "roadName": "Torget",
+            "roadRef": null,
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 0.417,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          },
+          {
+            "roadId": "w122157691",
+            "roadKind": "living_street",
+            "roadName": "Prästgatan",
+            "roadRef": "T 716",
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 0,
+            "triggers": {
+              "vertexInEnvelope": false,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          },
+          {
+            "roadId": "w860753012",
+            "roadKind": "tertiary",
+            "roadName": "Smedsgatan",
+            "roadRef": null,
+            "role": "secondary_connector",
+            "envelope": 8.6,
+            "worstOverlap": 0,
+            "triggers": {
+              "vertexInEnvelope": false,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-forskola",
+        "buildingKind": "house",
+        "buildingName": "Grythyttans förskola",
+        "centre": [
+          -215,
+          -250
+        ],
+        "worstOverlap": 0.325,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w287145634",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 0.325,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "w869907965",
+        "buildingKind": "yes",
+        "buildingName": null,
+        "centre": [
+          92.14,
+          23.98
+        ],
+        "worstOverlap": 0.163,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w869907966",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 0.163,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "w611766160",
+        "buildingKind": "yes",
+        "buildingName": "Herrgården Grythyttan",
+        "centre": [
+          689.1,
+          110.77
+        ],
+        "worstOverlap": 0.046,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w1329020044",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 0.046,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-skg-16",
+        "buildingKind": "apartments",
+        "buildingName": null,
+        "centre": [
+          -215,
+          15
+        ],
+        "worstOverlap": 0,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": false,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w287145630",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 0,
+            "triggers": {
+              "vertexInEnvelope": false,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-pra-21",
+        "buildingKind": "apartments",
+        "buildingName": null,
+        "centre": [
+          370,
+          5
+        ],
+        "worstOverlap": 0,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": false,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w193810976",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 0,
+            "triggers": {
+              "vertexInEnvelope": false,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-sorgarden",
+        "buildingKind": "apartments",
+        "buildingName": "Sörgårdens Äldreboende",
+        "centre": [
+          -320,
+          -195
+        ],
+        "worstOverlap": 0,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": false,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w862853201",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 0,
+            "triggers": {
+              "vertexInEnvelope": false,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          },
+          {
+            "roadId": "w862853202",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 0,
+            "triggers": {
+              "vertexInEnvelope": false,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-csvwellness",
+        "buildingKind": "house",
+        "buildingName": "CSVWellness",
+        "centre": [
+          -882,
+          239
+        ],
+        "worstOverlap": 0,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": false,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w1329020035",
+            "roadKind": "residential",
+            "roadName": "Åsgatan",
+            "roadRef": null,
+            "role": "residential",
+            "envelope": 3.6,
+            "worstOverlap": 0,
+            "triggers": {
+              "vertexInEnvelope": false,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-stn-11",
+        "buildingKind": "house",
+        "buildingName": null,
+        "centre": [
+          -200,
+          -235
+        ],
+        "worstOverlap": 0,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": false,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w287145634",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 0,
+            "triggers": {
+              "vertexInEnvelope": false,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      }
+    ],
+    "ALT_B": [
+      {
+        "buildingId": "vw-pra-19n",
+        "buildingKind": "apartments",
+        "buildingName": null,
+        "centre": [
+          382.92,
+          28.61
+        ],
+        "worstOverlap": 3.059,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w193810976",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 0,
+            "triggers": {
+              "vertexInEnvelope": false,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          },
+          {
+            "roadId": "w1329020070",
+            "roadKind": "secondary",
+            "roadName": "Lokavägen",
+            "roadRef": "205",
+            "role": "main",
+            "envelope": 9.4,
+            "worstOverlap": 3.059,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-nyg-3",
+        "buildingKind": "house",
+        "buildingName": null,
+        "centre": [
+          -45,
+          -75
+        ],
+        "worstOverlap": 2.977,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w1239628612",
+            "roadKind": "tertiary",
+            "roadName": "Kyrkogatan",
+            "roadRef": "T 718",
+            "role": "secondary_connector",
+            "envelope": 7.5,
+            "worstOverlap": 2.977,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-jarn-9",
+        "buildingKind": "house",
+        "buildingName": null,
+        "centre": [
+          -410,
+          -50
+        ],
+        "worstOverlap": 2.7,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w191323431",
+            "roadKind": "residential",
+            "roadName": "Järnvägsgatan",
+            "roadRef": "T 715",
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 2.7,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-jaktakademin",
+        "buildingKind": "house",
+        "buildingName": "Jaktakademin",
+        "centre": [
+          -265,
+          60
+        ],
+        "worstOverlap": 2.189,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w1329020064",
+            "roadKind": "residential",
+            "roadName": "Magasinsgatan",
+            "roadRef": "T 716",
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 2.189,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-hjv-5",
+        "buildingKind": "house",
+        "buildingName": null,
+        "centre": [
+          -350,
+          -160
+        ],
+        "worstOverlap": 1.729,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w1329020083",
+            "roadKind": "residential",
+            "roadName": "Hantverksgatan",
+            "roadRef": null,
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 1.729,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-mag-warehouse",
+        "buildingKind": "industrial",
+        "buildingName": "Magasinsgatan warehouse",
+        "centre": [
+          -420,
+          200
+        ],
+        "worstOverlap": 1.618,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w175036243",
+            "roadKind": "residential",
+            "roadName": "Magasinsgatan",
+            "roadRef": null,
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 1.618,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-barbellclub",
+        "buildingKind": "house",
+        "buildingName": "Barbellclub Bergslagen",
+        "centre": [
+          -280,
+          45
+        ],
+        "worstOverlap": 1.595,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w191323432",
+            "roadKind": "residential",
+            "roadName": "Skolgatan",
+            "roadRef": "T 715",
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 0.694,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          },
+          {
+            "roadId": "w287145632",
+            "roadKind": "residential",
+            "roadName": "Hantverksgatan",
+            "roadRef": null,
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 1.595,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "w870510826",
+        "buildingKind": "industrial",
+        "buildingName": null,
+        "centre": [
+          -623.64,
+          -268.4
+        ],
+        "worstOverlap": 1.4,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w870510820",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 1.4,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          },
+          {
+            "roadId": "w870510829",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 1.4,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          },
+          {
+            "roadId": "w1329020075",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 1.4,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "w870510828",
+        "buildingKind": "industrial",
+        "buildingName": null,
+        "centre": [
+          -648.71,
+          -369.18
+        ],
+        "worstOverlap": 1.4,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w870510829",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 1.4,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          },
+          {
+            "roadId": "w1329020076",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 1.4,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          },
+          {
+            "roadId": "w1329020077",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 1.4,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "w1422745011",
+        "buildingKind": "yes",
+        "buildingName": null,
+        "centre": [
+          -86.66,
+          -229.27
+        ],
+        "worstOverlap": 1.278,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w1329020065",
+            "roadKind": "tertiary",
+            "roadName": "Kyrkogatan",
+            "roadRef": "T 718",
+            "role": "secondary_connector",
+            "envelope": 7.5,
+            "worstOverlap": 1.278,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-pra-18",
+        "buildingKind": "apartments",
+        "buildingName": null,
+        "centre": [
+          386.5,
+          11.2
+        ],
+        "worstOverlap": 1.268,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w1329020070",
+            "roadKind": "secondary",
+            "roadName": "Lokavägen",
+            "roadRef": "205",
+            "role": "main",
+            "envelope": 9.4,
+            "worstOverlap": 1.268,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "w1422743880",
+        "buildingKind": "yes",
+        "buildingName": "Länsmansgården",
+        "centre": [
+          -30.11,
+          75.64
+        ],
+        "worstOverlap": 1.266,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w862853244",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 1.266,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-pra-15s",
+        "buildingKind": "house",
+        "buildingName": null,
+        "centre": [
+          352,
+          5
+        ],
+        "worstOverlap": 1.252,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w193810976",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 1.252,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-pra-djurskyddet",
+        "buildingKind": "house",
+        "buildingName": "Djurskyddet Vilsna Tassar Hällefors",
+        "centre": [
+          355,
+          15
+        ],
+        "worstOverlap": 1.227,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w193810976",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 1.227,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "w869907964",
+        "buildingKind": "hotel",
+        "buildingName": "Grythyttans Gästgivaregård",
+        "centre": [
+          62.37,
+          39.33
+        ],
+        "worstOverlap": 1.207,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w1422743879",
+            "roadKind": "residential",
+            "roadName": "Artur Lindqvists gata",
+            "roadRef": null,
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 1.207,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "w870510839",
+        "buildingKind": "industrial",
+        "buildingName": null,
+        "centre": [
+          -498.88,
+          -170.35
+        ],
+        "worstOverlap": 1.083,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w948705766",
+            "roadKind": "unclassified",
+            "roadName": null,
+            "roadRef": null,
+            "role": "local_street",
+            "envelope": 7,
+            "worstOverlap": 1.083,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-torget-west-corner",
+        "buildingKind": "house",
+        "buildingName": "Torget west corner",
+        "centre": [
+          -52,
+          -30
+        ],
+        "worstOverlap": 1.061,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w860753009",
+            "roadKind": "residential",
+            "roadName": "Kyrkbacken",
+            "roadRef": "T 716",
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 1.061,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-kyr-9e-mansard",
+        "buildingKind": "house",
+        "buildingName": "Kyrkogatan east mansard villa",
+        "centre": [
+          -14,
+          5
+        ],
+        "worstOverlap": 0.911,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w860753012",
+            "roadKind": "tertiary",
+            "roadName": "Smedsgatan",
+            "roadRef": null,
+            "role": "secondary_connector",
+            "envelope": 7.5,
+            "worstOverlap": 0.911,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-torget-kyrkbacken-pair",
+        "buildingKind": "house",
+        "buildingName": "2 Kyrkbacken historic pair",
+        "centre": [
+          -42,
+          -40
+        ],
+        "worstOverlap": 0.883,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w860753009",
+            "roadKind": "residential",
+            "roadName": "Kyrkbacken",
+            "roadRef": "T 716",
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 0.883,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          },
+          {
+            "roadId": "w1239628611",
+            "roadKind": "tertiary",
+            "roadName": "Kyrkogatan",
+            "roadRef": "T 718",
+            "role": "secondary_connector",
+            "envelope": 7.5,
+            "worstOverlap": 0.066,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-pra-8",
+        "buildingKind": "house",
+        "buildingName": null,
+        "centre": [
+          305,
+          30
+        ],
+        "worstOverlap": 0.832,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w122157689",
+            "roadKind": "residential",
+            "roadName": "Prästgatan",
+            "roadRef": "T 716",
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 0.832,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "w611776645",
+        "buildingKind": "yes",
+        "buildingName": null,
+        "centre": [
+          -408.69,
+          1299.17
+        ],
+        "worstOverlap": 0.721,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w1329020037",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 0.721,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "w869907963",
+        "buildingKind": "yes",
+        "buildingName": null,
+        "centre": [
+          45.87,
+          47.56
+        ],
+        "worstOverlap": 0.686,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w1422743879",
+            "roadKind": "residential",
+            "roadName": "Artur Lindqvists gata",
+            "roadRef": null,
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 0.686,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-torget-east-barn",
+        "buildingKind": "outbuilding",
+        "buildingName": null,
+        "centre": [
+          65,
+          15
+        ],
+        "worstOverlap": 0.684,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w122157691",
+            "roadKind": "living_street",
+            "roadName": "Prästgatan",
+            "roadRef": "T 716",
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 0.684,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          },
+          {
+            "roadId": "w1329020068",
+            "roadKind": "living_street",
+            "roadName": "Prästgatan",
+            "roadRef": "T 716",
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 0.639,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-kyr-torget-lh",
+        "buildingKind": "house",
+        "buildingName": "Torget long-house cluster (west/south edge)",
+        "centre": [
+          -18,
+          -18
+        ],
+        "worstOverlap": 0.417,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w122157681",
+            "roadKind": "residential",
+            "roadName": "Torget",
+            "roadRef": null,
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 0.417,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          },
+          {
+            "roadId": "w122157691",
+            "roadKind": "living_street",
+            "roadName": "Prästgatan",
+            "roadRef": "T 716",
+            "role": "village_street",
+            "envelope": 6.3999999999999995,
+            "worstOverlap": 0,
+            "triggers": {
+              "vertexInEnvelope": false,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          },
+          {
+            "roadId": "w860753012",
+            "roadKind": "tertiary",
+            "roadName": "Smedsgatan",
+            "roadRef": null,
+            "role": "secondary_connector",
+            "envelope": 7.5,
+            "worstOverlap": 0,
+            "triggers": {
+              "vertexInEnvelope": false,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-forskola",
+        "buildingKind": "house",
+        "buildingName": "Grythyttans förskola",
+        "centre": [
+          -215,
+          -250
+        ],
+        "worstOverlap": 0.325,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w287145634",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 0.325,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "w869907965",
+        "buildingKind": "yes",
+        "buildingName": null,
+        "centre": [
+          92.14,
+          23.98
+        ],
+        "worstOverlap": 0.163,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w869907966",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 0.163,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "w611766160",
+        "buildingKind": "yes",
+        "buildingName": "Herrgården Grythyttan",
+        "centre": [
+          689.1,
+          110.77
+        ],
+        "worstOverlap": 0.046,
+        "widthOnly": true,
+        "structural": false,
+        "triggers": {
+          "anyVertexInEnvelope": true,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": false
+        },
+        "hits": [
+          {
+            "roadId": "w1329020044",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 0.046,
+            "triggers": {
+              "vertexInEnvelope": true,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": false
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-skg-16",
+        "buildingKind": "apartments",
+        "buildingName": null,
+        "centre": [
+          -215,
+          15
+        ],
+        "worstOverlap": 0,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": false,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w287145630",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 0,
+            "triggers": {
+              "vertexInEnvelope": false,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-pra-21",
+        "buildingKind": "apartments",
+        "buildingName": null,
+        "centre": [
+          370,
+          5
+        ],
+        "worstOverlap": 0,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": false,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w193810976",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 0,
+            "triggers": {
+              "vertexInEnvelope": false,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-sorgarden",
+        "buildingKind": "apartments",
+        "buildingName": "Sörgårdens Äldreboende",
+        "centre": [
+          -320,
+          -195
+        ],
+        "worstOverlap": 0,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": false,
+          "anyRoadVertexInBuilding": true,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w862853201",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 0,
+            "triggers": {
+              "vertexInEnvelope": false,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          },
+          {
+            "roadId": "w862853202",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 0,
+            "triggers": {
+              "vertexInEnvelope": false,
+              "roadVertexInBuilding": true,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-csvwellness",
+        "buildingKind": "house",
+        "buildingName": "CSVWellness",
+        "centre": [
+          -882,
+          239
+        ],
+        "worstOverlap": 0,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": false,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w1329020035",
+            "roadKind": "residential",
+            "roadName": "Åsgatan",
+            "roadRef": null,
+            "role": "residential",
+            "envelope": 3.6,
+            "worstOverlap": 0,
+            "triggers": {
+              "vertexInEnvelope": false,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      },
+      {
+        "buildingId": "vw-stn-11",
+        "buildingKind": "house",
+        "buildingName": null,
+        "centre": [
+          -200,
+          -235
+        ],
+        "worstOverlap": 0,
+        "widthOnly": false,
+        "structural": true,
+        "triggers": {
+          "anyVertexInEnvelope": false,
+          "anyRoadVertexInBuilding": false,
+          "anyEdgeCrossing": true
+        },
+        "hits": [
+          {
+            "roadId": "w287145634",
+            "roadKind": "service",
+            "roadName": null,
+            "roadRef": null,
+            "role": "service",
+            "envelope": 2.8,
+            "worstOverlap": 0,
+            "triggers": {
+              "vertexInEnvelope": false,
+              "roadVertexInBuilding": false,
+              "edgeCrossing": true
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
