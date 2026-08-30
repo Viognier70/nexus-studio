@@ -310,6 +310,21 @@ const COLOUR = {
   hood: '#403c36'
 };
 
+/**
+ * ZONE_FLOORS — de tre golvytorna gäster och personal delar med. Kontraktet
+ * (businessRoom.measureRoom) läser den här listan för att rapportera
+ * antalet golvzoner; mätningen av silhuettkontrasten läser samma lista
+ * så färgerna som testas är exakt de som geometrin monterar (jfr
+ * CLAUDE.md: "Mätningar mot det de beskriver"). Färgerna refereras via
+ * COLOUR-objektet ovan — inte kopierade som strängar — så en senare
+ * justering av en zon ändrar båda ställena samtidigt.
+ */
+export const ZONE_FLOORS: { id: string; colour: string; note: string }[] = [
+  { id: 'dining',  colour: COLOUR.floorDining,  note: 'Matsalen (öster om BOH_EDGE_X = -3,6). L 0,331.' },
+  { id: 'brew',    colour: COLOUR.floorBrew,    note: 'Bryggeriet (väster om BOH_EDGE_X, söder om BREW_KITCHEN_Z = 1,0). Våt betong, mörkare. L 0,204.' },
+  { id: 'kitchen', colour: COLOUR.floorKitchen, note: 'Köket (väster om BOH_EDGE_X, norr om BREW_KITCHEN_Z). Kallare grå. L 0,284.' }
+];
+
 // ---------- Konstruktion ----------
 
 /**
