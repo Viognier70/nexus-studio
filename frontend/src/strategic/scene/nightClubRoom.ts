@@ -352,10 +352,13 @@ export function paletteContrastRange(): { min: number; max: number } {
  * nästan alltid i mellanrummet, och då syns felet först när någon
  * mäter.
  */
+// ORDER 143-avvikelse: `maxRatio` prefixad med _ (unused parameter —
+// TS6133). Handoff-signaturen exponerar den för symmetri med minRatio;
+// ta bort _ när upper-bound-räkningen faktiskt läses.
 export function forbiddenFloorBand(
   figureHex: string,
   minRatio: number = 1.8,
-  maxRatio: number = 3.6
+  _maxRatio: number = 3.6
 ): { darkMax: number; lightMin: number } {
   const L = luminance(figureHex);
   return {
@@ -1015,8 +1018,13 @@ export function measureNightClubRoom(room: NightClubRoom): {
   const localBox = new THREE.Box3();
   room.parts.walls.traverse(function (o) {
     if (!o.isMesh || o.name !== 'wallW') return;
-    o.geometry.computeBoundingBox();
-    localBox.copy(o.geometry.boundingBox);
+    // ORDER 143-avvikelse: samma non-null-assert som restaurantRoom.ts:899-900
+    // (ORDER 142). `o.geometry` är optional via three-augmentations.d.ts,
+    // `computeBoundingBox()` sätter `boundingBox: Box3 | null`. Guarden
+    // ovan säkerställer att båda finns.
+    const geo = o.geometry!;
+    geo.computeBoundingBox();
+    localBox.copy(geo.boundingBox!);
     shellH = (localBox.max.y - localBox.min.y) * o.scale.y;
   });
   const dance = room.occupancyAreas.find(function (a) { return a.id === 'dance'; });
