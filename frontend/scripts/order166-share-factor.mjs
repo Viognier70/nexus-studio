@@ -5,7 +5,7 @@
 //
 // **Vad talen kommer ifrån.** Vi importerar `computeShareFactor` från
 // produktionsmodulen `frontend/src/strategic/simulation/competitors.ts`
-// via dynamisk import och matar in tre reputation-värden mot COMPETITORS-
+// via dynamisk import och matar in tre reputation-värden mot AI_COMPETITORS-
 // fältet. Talen som skrivs till JSON är BERÄKNADE av produktionskoden,
 // inte av skriptets egna kopior. Följer ORDER 161 §DoD 5-mönstret där
 // dev-hook läser scenen; här läser vi direkt en pure function (samma
@@ -62,14 +62,14 @@ const mod = await import(pathToFileURL(bundlePath).href);
 const {
   computeShareFactor,
   classSimilarity,
-  COMPETITORS,
+  AI_COMPETITORS,
   SHARE_FACTOR_FLOOR,
   SHARE_FACTOR_CEIL,
   SHARE_FACTOR_NEUTRAL
 } = mod;
 
-// Läs COMPETITORS för fält-genomsnittsberäkning (transparent redovisning).
-const fieldSummary = COMPETITORS.map((c) => ({
+// Läs AI_COMPETITORS för fält-genomsnittsberäkning (transparent redovisning).
+const fieldSummary = AI_COMPETITORS.map((c) => ({
   id: c.id,
   name: c.name,
   businessClass: c.businessClass,
@@ -89,7 +89,7 @@ const scenarios = [
 const results = scenarios.map((s) => ({
   ...s,
   playerClass,
-  shareFactor: computeShareFactor(s.playerReputation, playerClass, COMPETITORS)
+  shareFactor: computeShareFactor(s.playerReputation, playerClass, AI_COMPETITORS)
 }));
 
 // Klass-närhetsmatris — läs från produktionsmodulen så inget klistras in.

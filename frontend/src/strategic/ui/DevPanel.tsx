@@ -283,11 +283,29 @@ export function DevPanel({ lastKey }: Props) {
   // Drift-suffix `!floor` / `!ceiling` när talet slår i bandet — samma
   // mönster som `!room=` (ORDER 157) och `!layout=` använder för att
   // synliggöra begränsning utan att gömma den i en tyst clamp.
+  //
+  // **Suffix-precedence-regel** (ORDER 166-uppföljning 2026-08-31): när
+  // flera drift-villkor kan vara sanna samtidigt visas exakt EN suffix,
+  // vald i följande prioritetsordning från högst till lägst:
+  //
+  //   1. `!ceiling`  — tekniskt oförenlig med `!floor` (utesluter varandra
+  //                     matematiskt), men står först så en framtida ny
+  //                     upper-bound-signal (t.ex. `!capped-by-cls`) hamnar
+  //                     naturligt hit.
+  //   2. `!floor`    — spelaren är klippt nedåt av golvet.
+  //   3. (framtida)  — kvar för `!cls`-liknande signaler när de införs.
+  //   4. (ingen)     — talet är fritt inom bandet.
+  //
+  // Regeln implementeras som en if/else-if-kedja med högsta prioritet
+  // överst, så att bara första sanna villkor sätter suffixet. Ingen
+  // sammansatt sträng (`!floor!cls`) tillåts — det gör raden svårläst
+  // och läsaren har inget sätt att veta vilket villkor som var det som
+  // faktiskt band.
   const shareF = computeShareFactor(sim.reputation, sim.businessClass);
-  const shareSuffix = shareFactorAtFloor(shareF)
-    ? '!floor'
-    : shareFactorAtCeiling(shareF)
-      ? '!ceiling'
+  const shareSuffix = shareFactorAtCeiling(shareF)
+    ? '!ceiling'
+    : shareFactorAtFloor(shareF)
+      ? '!floor'
       : '';
   const shareStr = `share=${shareF.toFixed(2)}${shareSuffix}`;
   const line2 = `     cash=${cashK.toString().padStart(4, ' ')}k  econR=${econReading.toFixed(2)}  soc=${c.social.toFixed(2)}  eco=${c.ecological.toFixed(2)}  rep=${sim.reputation.toFixed(2)}  ${shareStr}  ${creditsStr}  key=${lastKey || '-'}`;

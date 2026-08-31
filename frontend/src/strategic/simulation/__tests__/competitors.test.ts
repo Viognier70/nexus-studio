@@ -15,7 +15,7 @@ import { describe, expect, it } from 'vitest';
 import {
   computeShareFactor,
   classSimilarity,
-  COMPETITORS,
+  AI_COMPETITORS,
   SHARE_FACTOR_FLOOR,
   SHARE_FACTOR_CEIL,
   SHARE_FACTOR_NEUTRAL,
@@ -24,7 +24,7 @@ import {
 
 describe('ORDER 166 §DoD 3 — spelarens rykte mot fältet styr shareFactor', () => {
   it('spelare i mitten av fältet (rykte = fältgenomsnitt) ger ~1,0', () => {
-    // COMPETITORS-fältets vägda genomsnitt beror på playerClass. För
+    // AI_COMPETITORS-fältets vägda genomsnitt beror på playerClass. För
     // kvarterskrogen med default-vikter blir det ca 0,58 (två
     // kvarterskrogar-vikt 1.0 rep 0,55 + 0,70; en ölkrog-vikt 0,6
     // rep 0,50; en vinbar-vikt 0,4 rep 0,65). Spelare med rykte 0,58
@@ -47,7 +47,7 @@ describe('ORDER 166 §DoD 3 — spelarens rykte mot fältet styr shareFactor', (
 
 describe('ORDER 166 §DoD 4 — bandet håller i båda ändar', () => {
   it('rykte 1,0 mot ett fält av 0-rep klipps mot CEIL, inte obegränsat', () => {
-    const flat: Competitor[] = COMPETITORS.map((c) => ({
+    const flat: Competitor[] = AI_COMPETITORS.map((c) => ({
       ...c,
       reputation: 0.0
     }));
@@ -56,7 +56,7 @@ describe('ORDER 166 §DoD 4 — bandet håller i båda ändar', () => {
   });
 
   it('rykte 0,0 mot ett fält av 1-rep klipps mot FLOOR, inte 0 eller spiral', () => {
-    const flat: Competitor[] = COMPETITORS.map((c) => ({
+    const flat: Competitor[] = AI_COMPETITORS.map((c) => ({
       ...c,
       reputation: 1.0
     }));
@@ -65,7 +65,7 @@ describe('ORDER 166 §DoD 4 — bandet håller i båda ändar', () => {
   });
 
   it('en dålig start har alltid väg tillbaka — återhämtning ur golvet är inte asymptotisk', () => {
-    const flat: Competitor[] = COMPETITORS.map((c) => ({
+    const flat: Competitor[] = AI_COMPETITORS.map((c) => ({
       ...c,
       reputation: 1.0
     }));
@@ -134,14 +134,14 @@ describe('ORDER 166 §DoD 5 — klassnärhet är mätbar', () => {
 
 describe('ORDER 166 §2.1 — konkurrent-data', () => {
   it('varje monterad klass har minst en konkurrent i fältet', () => {
-    const classes = new Set(COMPETITORS.map((c) => c.businessClass));
+    const classes = new Set(AI_COMPETITORS.map((c) => c.businessClass));
     expect(classes.has('kvarterskrogen')).toBe(true);
     expect(classes.has('ölkrogen')).toBe(true);
     expect(classes.has('vinbaren')).toBe(true);
   });
 
   it('alla konkurrenter har giltig data (namn, klass, rykte 0..1, buildingId)', () => {
-    for (const c of COMPETITORS) {
+    for (const c of AI_COMPETITORS) {
       expect(c.id).toMatch(/^npc-/);
       expect(c.name.length).toBeGreaterThan(0);
       expect(c.reputation).toBeGreaterThanOrEqual(0);
