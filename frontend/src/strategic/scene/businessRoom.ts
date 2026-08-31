@@ -44,6 +44,8 @@
 
 import * as THREE from 'three';
 
+import type { StaffRole } from '../types';
+
 import * as Restaurant from './restaurantRoom';
 import * as Brewpub from './brewpubRoom';
 import * as WineBar from './wineBarRoom';
@@ -359,6 +361,129 @@ export function measureRoom(room: BusinessRoom): RoomMeasure {
 export function resolveWorldPositions(room: BusinessRoom): any {
   const mod = moduleFor(room.roomClass);
   return mod.resolveWorldPositions(room.raw);
+}
+
+// ────────────────────────────────────────────────────────────────
+// Sim-roll → rums-station mappning (ORDER 154, VO-beslut 2026-08-31)
+// ────────────────────────────────────────────────────────────────
+//
+// Sim-lagret bär FYRA roller: `värd | servitör | kock | lärling`.
+// Rummen har egen stations-vokabulär per klass. Mappningen är
+// kontraktets ansvar (ORDER 152 §2) — renderaren ska fråga, inte
+// räkna ut. En station är en PLATS, inte en anställning: en sim-kock
+// i ölkrogen kan stå vid `brewer`-stationen utan att bli en ny
+// rolltyp.
+//
+// PRINCIPER från Vision Owner 2026-08-31:
+//   1. **Värden vid entrén** — ölkrogen och vinbaren har ingen host-
+//      station i geometrin, men entrén är rummets `entrance`-fält.
+//      För dem läses `room.entrance`-positionen och slås in i en
+//      syntetisk RoomStation. Detta är INTE att uppfinna en station
+//      (VO:s varning) — entréns position kommer från rummets EGET
+//      kontrakt, inte från gissning.
+//   2. **Kocken i ölkrogen = brewer** — bryggeriet ÄR ölkrogens kök,
+//      det var rummets poäng. Nattklubben har inget kök: null.
+//   3. **Lärlingen vid pass-luckan** — närmast produktionen utan att
+//      vara i den. I restaurangen: `server` (matsalssidan av passet).
+//      I ölkrogen och vinbaren: `runner` (samma placering — noten på
+//      båda stationerna är "vid passluckan"). I gästgiveriet finns
+//      ingen pass-mottagarstation: null. Foodtruck och nattklubb:
+//      null.
+//   4. **null när klassen saknar platsen.** En station som uppfinns
+//      för att fylla en cell är precis den gissning ordrarna finns
+//      för att undvika.
+//
+// TeamPanel filtreras INTE per klass — en ölkrog utan värd är ett
+// spelarval, inte något systemet ska förbjuda. Renderaren väljer
+// själv vad den gör med null: dölj puck, fallback-position, eller
+// stå vid centre. Ingen mappning här bestämmer det.
+
+type StationTarget = string | '__entrance' | null;
+
+const STATION_MAP: Record<RoomClass, Record<StaffRole, StationTarget>> = {
+  kvarterskrogen: { värd: 'host',       servitör: 'server', kock: 'chef',   lärling: 'server' },
+  ölkrogen:       { värd: '__entrance', servitör: 'runner', kock: 'brewer', lärling: 'runner' },
+  vinbaren:       { värd: '__entrance', servitör: 'runner', kock: 'cook',   lärling: 'runner' },
+  gästgiveriet:   { värd: 'host',       servitör: 'hallA',  kock: 'chef',   lärling: null },
+  foodtrucken:    { värd: null,         servitör: 'window', kock: 'cook',   lärling: null },
+  nattklubben:    { värd: 'door',       servitör: 'floor',  kock: null,     lärling: null }
+};
+
+/**
+ * Vilken station en given sim-roll hör hemma vid i det här rummet.
+ * En station är en plats, inte en anställning — en kock i ölkrogen
+ * kan stå vid `brewer`-stationen utan att bli en ny rolltyp.
+ *
+ * Returnerar `null` när klassen saknar platsen (t.ex. foodtrucken har
+ * ingen värd-station, nattklubben har ingen kock). Renderaren väljer
+ * själv vad den gör med null.
+ *
+ * För ölkrogen/vinbarens `värd`: syntetiserar en station vid
+ * `room.entrance` — inte en uppfunnen plats, utan rummets EGEN
+ * entrépunkt returnerad i RoomStation-form.
+ */
+export function stationFor(role: StaffRole, room: BusinessRoom): RoomStation | null {
+  const target = STATION_MAP[room.roomClass]?.[role];
+  if (target == null) return null;
+  if (target === '__entrance') {
+    // Syntetisk värd-station vid rummets entré. `facing = Math.PI`
+    // ("in mot rummet") som default: värden möter gästen och blickar
+    // in i lokalen bakom sig. Om ett specifikt rum vill ha annan
+    // vinkel läggs en explicit host-station i dess staffStations.
+    return {
+      id: '__entrance',
+      local: room.entrance,
+      facing: Math.PI,
+      standHeight: 0,
+      note: 'Värdens plats: rummets entré (syntetiserad av stationFor — ingen host-station i geometrin).'
+    };
+  }
+  return room.stations.find(function (s) { return s.id === target; }) ?? null;
+}
+
+/**
+ * Diagnos-form av `stationFor` — returnerar alla fyra rollernas mål
+ * som ett objekt, med null för de som saknas. Praktisk för test och
+ * DevPanel-utskrifter.
+ */
+export function stationsForAllRoles(room: BusinessRoom): Record<StaffRole, RoomStation | null> {
+  return {
+    värd:     stationFor('värd', room),
+    servitör: stationFor('servitör', room),
+    kock:     stationFor('kock', room),
+    lärling:  stationFor('lärling', room)
+  };
+}
+
+/**
+ * Sim-rollernas hemstationer i VÄRLDS-XZ efter att rummet placerats.
+ * Använder rummets group.localToWorld — måste kallas efter att
+ * `room.group.position/rotation` är satta. `null` för roller vars
+ * klass saknar station (STATION_MAP-cell = null).
+ *
+ * Scenerna (RestaurantScene, BrewpubScene, …) skriver detta till
+ * `businessRoomRef.current.staffStationsByRole` så InteriorStaff kan
+ * placera personalpuckarna på rummets faktiska stationer i stället för
+ * att räkna ur `layout.entrance/bar/centre` (restaurantsspecifikt).
+ */
+export function resolveStaffStationsWorld(room: BusinessRoom): Record<StaffRole, Vec2 | null> {
+  room.group.updateWorldMatrix(true, true);
+  const v = new THREE.Vector3();
+  function toWorld(local: Vec2): Vec2 {
+    v.set(local[0], 0, local[1]);
+    room.group.localToWorld(v);
+    return [v.x, v.z];
+  }
+  function resolve(role: StaffRole): Vec2 | null {
+    const s = stationFor(role, room);
+    return s ? toWorld(s.local) : null;
+  }
+  return {
+    värd:     resolve('värd'),
+    servitör: resolve('servitör'),
+    kock:     resolve('kock'),
+    lärling:  resolve('lärling')
+  };
 }
 
 /**
