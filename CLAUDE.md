@@ -107,15 +107,16 @@ npm run preview    # förhandsgranska bygget
 - Om replikering är oundviklig (t.ex. `.mjs`-script som inte kan importera TypeScript direkt): mätningen dokumenterar avvikelsen i sin header och länkar till den modul som är kanoniskt. En verifieringsrutin som bevisar `replikat === rendering` väger tyngre än ett antagande om det.
 - En rapport som säger "X gäller i spelet" refererar antingen till samma import som renderingen, eller redovisar avvikelsen. Utan det räknas rapporten som obestyrkt.
 
-**Motivering — fem fall:**
+**Motivering — sex fall:**
 
 - **ORDER 128** — silhuett-kontrastbandet kalibrerades mot `FLOOR_COLOUR = '#a89577'` som var skyltblocket i `Restaurant.tsx:108`, inte spelarens interiörgolv (`PlayerBusiness.tsx:75` `INTERIOR_FLOOR_COLOUR = '#a08462'`).
 - **ORDER 132** — fönster-mätningen räknade 3 156 fönster utanför fasaden på 297 av 338 hus, men spelaren såg 1 381 av 2 556 (renderingens `WINDOW_KINDS`-filter). Mätning och rendering utgick från olika hus-set.
 - **ORDER 135** — vägbredd-mätningen läste `road.width` (OSM-tagg) medan renderingen läser `ROLE_SPECS[roleFor(road)].width` (`roadRoles.ts:104`). OSM-taggen ignoreras helt av renderingen. ORDER 133:s slutsats blev föråldrad inom 24 timmar.
 - **ORDER 145/146** — DEV-observationen läste `state='seated'` som är transient (4 sim-sek per `service.ts:243`) i stället för `seatedIds.length` (verklig upptagen-räkning). Kostade två dygns utredning på ett fel som inte fanns.
 - **ORDER 143** — Designs `occupancyAreas` gav 43 personer där specen räknat 15; funnet av Design i egen leverans innan montering.
+- **ORDER 157** — verify-scriptet rapporterade "cam=38 m" som bevis på att kamera-fixen fungerade, men läste bara `.gb-viewlabel` textContent — kameradistansen mättes aldrig. Talet var påhittat, spelaren observerade cam=54 m i praktiken. Registerraden såg giltig ut tills provspelet 2026-08-31 avslöjade skillnaden.
 
-Alla gav korrekt data om fel sak — vilket är farligare än ingen data eftersom slutsatserna såg giltiga ut. De två sista visar att regeln inte bara gäller geometri. En sim-signal och en kapacitetsspec kan vara lika mycket "rätt tal om fel sak".
+Alla gav korrekt data om fel sak (eller inget data alls fast rapporterat som mätt) — farligare än ingen data eftersom slutsatserna såg giltiga ut. Fall 4-6 visar att regeln inte bara gäller geometri: en sim-signal, en kapacitetsspec, eller en förment mätsiffra kan lika gärna vara "rätt tal om fel sak" — eller helt obestyrkt.
 
 ## Regler för Claude Code
 
