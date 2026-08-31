@@ -22,7 +22,7 @@
 import type { BankMeetingKlass, SimulationState } from '../types';
 import { TOTAL_SEATS } from './interiorLayout';
 
-export type BusinessClass = 'kvarterskrogen' | 'foodtrucken' | 'gästgiveriet' | 'ölkrogen';
+export type BusinessClass = 'kvarterskrogen' | 'foodtrucken' | 'gästgiveriet' | 'ölkrogen' | 'vinbaren';
 
 // Flaggor som reducern och kringliggande system läser för att branch:a
 // per verksamhet. Additiva — nya flaggor kan läggas till utan att existerande
@@ -91,6 +91,19 @@ export const BUSINESS_CLASS_CONFIG: Record<BusinessClass, BusinessClassConfig> =
   // inte i kapaciteten per Design-flagga `standing`.
   ölkrogen: {
     id: 'ölkrogen',
+    hasSeats: true,
+    hasMiseEnPlace: true,
+    hasOvernight: false,
+    capacityFor: () => 20
+  },
+  // ORDER 166 — vinbaren som klass-nyckel så COMPETITORS kan bära
+  // `businessClass: 'vinbaren'` i data-listan. Ingen scen är monterad
+  // för klassen än (WineBarScene är egen order per ORDER 165), och
+  // ingen kod branch:ar på klassen — inget körs som konsekvens av
+  // att spelaren skulle stå i vinbaren. Konfig-shape följer ölkrogen
+  // (samma 20-kuvert-klass per handoff/wineBarRoom.ts TOTAL_SEATS).
+  vinbaren: {
+    id: 'vinbaren',
     hasSeats: true,
     hasMiseEnPlace: true,
     hasOvernight: false,

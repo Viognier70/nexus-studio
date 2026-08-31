@@ -19,6 +19,11 @@ import { useEffect, useRef, useState } from 'react';
 import { useCamera } from '../camera/CameraContext';
 import { GRAY_BOX_CAMERA } from '../content/grythyttan';
 import { economicReadingNormalised } from '../simulation/cashReading';
+import {
+  computeShareFactor,
+  shareFactorAtCeiling,
+  shareFactorAtFloor
+} from '../simulation/competitors';
 import { useSimState } from '../simulation/SimulationProvider';
 import { usePlayerBusinessInterior } from '../business/interiorLayout';
 import { businessHasSeats } from '../business/businessClass';
@@ -274,7 +279,18 @@ export function DevPanel({ lastKey }: Props) {
   // som queue=/seated= i ORDER 097.
   const kc = sim.knowledgeCredits;
   const creditsStr = `credits=E${kc.episteme.toFixed(2)} T${kc.techne.toFixed(2)} P${kc.phronesis.toFixed(2)}`;
-  const line2 = `     cash=${cashK.toString().padStart(4, ' ')}k  econR=${econReading.toFixed(2)}  soc=${c.social.toFixed(2)}  eco=${c.ecological.toFixed(2)}  rep=${sim.reputation.toFixed(2)}  ${creditsStr}  key=${lastKey || '-'}`;
+  // ORDER 166 §4 — share=X.XX visar spelarens shareFactor mot NPC-fältet.
+  // Drift-suffix `!floor` / `!ceiling` när talet slår i bandet — samma
+  // mönster som `!room=` (ORDER 157) och `!layout=` använder för att
+  // synliggöra begränsning utan att gömma den i en tyst clamp.
+  const shareF = computeShareFactor(sim.reputation, sim.businessClass);
+  const shareSuffix = shareFactorAtFloor(shareF)
+    ? '!floor'
+    : shareFactorAtCeiling(shareF)
+      ? '!ceiling'
+      : '';
+  const shareStr = `share=${shareF.toFixed(2)}${shareSuffix}`;
+  const line2 = `     cash=${cashK.toString().padStart(4, ' ')}k  econR=${econReading.toFixed(2)}  soc=${c.social.toFixed(2)}  eco=${c.ecological.toFixed(2)}  rep=${sim.reputation.toFixed(2)}  ${shareStr}  ${creditsStr}  key=${lastKey || '-'}`;
   const line3 = `     ${weather}${factors}${seatStr}`;
   // ORDER 061 point 3 — post-tone-map pixel at screen centre.
   // Vision Owner aims the crosshair at a roof face; this reads the

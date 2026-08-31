@@ -7,6 +7,7 @@ import { currentRhythmMultiplier } from './rhythm';
 import { weatherArrivalMultiplier } from './weather';
 import { worldFactorArrivalMultiplier } from './worldFactors';
 import { valueQuotaArrivalMultiplier } from './valueQuota';
+import { computeShareFactor } from './competitors';
 
 // ORDER 111 §3 — food truck-specifika viktningar.
 //
@@ -148,6 +149,11 @@ export function arrivalProbability(state: SimulationState): number {
   // close) och mappar till [0.7, 1.3]. VO-beslut 2026-08-18: rykte
   // tappas snabbare än det byggs (down 2 dagar, up 3 dagar).
   const valueMult = valueQuotaArrivalMultiplier(state);
+  // ORDER 166 §2.2 — shareFactor multiplicerar in bredvid de befintliga
+  // faktorerna. Beräknas ur spelarens rykte mot fältets (COMPETITORS)
+  // och avgränsas i SHARE_FACTOR_FLOOR..CEIL i competitors.ts.
+  // BASE_ARRIVAL_RATE och rykteskurvan rörs inte (§3 explicit).
+  const shareMult = computeShareFactor(state.reputation, state.businessClass);
   const perMinute =
     ARRIVAL_BASE_PER_MINUTE *
     periodArrivalMultiplier(state.day.period) *
@@ -159,7 +165,8 @@ export function arrivalProbability(state: SimulationState): number {
     worldFactorArrivalMultiplier(state.day.worldFactors) *
     currentRhythmMultiplier(state) *
     competitionMult *
-    valueMult;
+    valueMult *
+    shareMult;
   return perMinute / (60 * 5); // 5 Hz tick.
 }
 

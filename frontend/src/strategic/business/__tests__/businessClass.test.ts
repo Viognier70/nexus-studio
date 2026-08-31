@@ -43,10 +43,10 @@ function accumulate(
 // -----------------------------------------------------------------------------
 
 describe('ORDER 110 §7 DoD 1 — verksamhetsklassen som begrepp', () => {
-  it('BUSINESS_CLASS_CONFIG innehåller fyra klasser (ORDER 125 lade till ölkrogen)', () => {
+  it('BUSINESS_CLASS_CONFIG innehåller fem klasser (ORDER 125 lade till ölkrogen; ORDER 166 lade till vinbaren)', () => {
     const ids = Object.keys(BUSINESS_CLASS_CONFIG).sort();
-    // UTF-16 codepoint-ordning: 'f' < 'g' < 'k' < 'ö'.
-    expect(ids).toEqual(['foodtrucken', 'gästgiveriet', 'kvarterskrogen', 'ölkrogen']);
+    // UTF-16 codepoint-ordning: 'f' < 'g' < 'k' < 'v' < 'ö'.
+    expect(ids).toEqual(['foodtrucken', 'gästgiveriet', 'kvarterskrogen', 'vinbaren', 'ölkrogen']);
   });
 
   it('restaurant är default-verksamhet i makeInitialState()', () => {
@@ -286,10 +286,10 @@ describe('ORDER 110 §7 DoD 8 — grep + Gästgiveriet', () => {
     expect(strings.businessClass.ölkrogen).toBeTruthy();
   });
 
-  it('typkontroll: strings.businessClass-nycklar är exakt de fyra BusinessClass-värdena (ORDER 125 lade till ölkrogen)', () => {
+  it('typkontroll: strings.businessClass-nycklar är exakt de fem BusinessClass-värdena (ORDER 125 lade till ölkrogen; ORDER 166 lade till vinbaren)', () => {
     const stringsKeys = Object.keys(strings.businessClass).sort();
-    // UTF-16 codepoint-ordning: 'f' (0x66) < 'g' (0x67) < 'k' (0x6B) < 'ö' (0xF6).
-    const businessKeys: BusinessClass[] = ['foodtrucken', 'gästgiveriet', 'kvarterskrogen', 'ölkrogen'];
+    // UTF-16 codepoint-ordning: 'f' (0x66) < 'g' (0x67) < 'k' (0x6B) < 'v' (0x76) < 'ö' (0xF6).
+    const businessKeys: BusinessClass[] = ['foodtrucken', 'gästgiveriet', 'kvarterskrogen', 'vinbaren', 'ölkrogen'];
     expect(stringsKeys).toEqual(businessKeys);
   });
 });

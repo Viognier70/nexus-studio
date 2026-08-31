@@ -1,0 +1,99 @@
+{
+  "band": {
+    "floor": 0.55,
+    "ceil": 1.4,
+    "neutral": 1
+  },
+  "field": [
+    {
+      "id": "npc-kvarnkrogen",
+      "name": "Kvarnkrogen",
+      "businessClass": "kvarterskrogen",
+      "reputation": 0.55,
+      "buildingId": "w611766162"
+    },
+    {
+      "id": "npc-prästgatans-krog",
+      "name": "Prästgatans krog",
+      "businessClass": "kvarterskrogen",
+      "reputation": 0.7,
+      "buildingId": "w611624852"
+    },
+    {
+      "id": "npc-bergsmansöl",
+      "name": "Bergsmansöl",
+      "businessClass": "ölkrogen",
+      "reputation": 0.5,
+      "buildingId": "w870510857"
+    },
+    {
+      "id": "npc-torgets-vinkällare",
+      "name": "Torgets vinkällare",
+      "businessClass": "vinbaren",
+      "reputation": 0.65,
+      "buildingId": "w870510863"
+    }
+  ],
+  "scenarios": [
+    {
+      "name": "under_field",
+      "playerReputation": 0.2,
+      "playerClass": "kvarterskrogen",
+      "shareFactor": 0.55
+    },
+    {
+      "name": "mid_field",
+      "playerReputation": 0.6,
+      "playerClass": "kvarterskrogen",
+      "shareFactor": 0.9948979591836733
+    },
+    {
+      "name": "above_field",
+      "playerReputation": 0.9,
+      "playerClass": "kvarterskrogen",
+      "shareFactor": 1.4
+    }
+  ],
+  "classSimilarity": {
+    "kvarterskrogen": {
+      "kvarterskrogen": 1,
+      "ölkrogen": 0.6,
+      "vinbaren": 0.4,
+      "gästgiveriet": 0.5,
+      "foodtrucken": 0.4
+    },
+    "ölkrogen": {
+      "kvarterskrogen": 0.6,
+      "ölkrogen": 1,
+      "vinbaren": 0.7,
+      "gästgiveriet": 0.4,
+      "foodtrucken": 0.3
+    },
+    "vinbaren": {
+      "kvarterskrogen": 0.4,
+      "ölkrogen": 0.7,
+      "vinbaren": 1,
+      "gästgiveriet": 0.4,
+      "foodtrucken": 0.2
+    },
+    "gästgiveriet": {
+      "kvarterskrogen": 0.5,
+      "ölkrogen": 0.4,
+      "vinbaren": 0.4,
+      "gästgiveriet": 1,
+      "foodtrucken": 0.3
+    },
+    "foodtrucken": {
+      "kvarterskrogen": 0.4,
+      "ölkrogen": 0.3,
+      "vinbaren": 0.2,
+      "gästgiveriet": 0.3,
+      "foodtrucken": 1
+    }
+  },
+  "source": {
+    "module": "frontend/src/strategic/simulation/competitors.ts",
+    "function": "computeShareFactor",
+    "note": "Alla shareFactor-tal beräknade av produktionsmodulen (esbuild-transpilerad kopia); ingen replikering i detta skript."
+  }
+}

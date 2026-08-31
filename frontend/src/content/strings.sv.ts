@@ -298,6 +298,10 @@ export const strings = {
     gästgiveriet: 'Gästgiveriet',
     // ORDER 125 §3 — Ölkrogen. Spelartext med versal första bokstav,
     // matchar övriga.
-    ölkrogen: 'Ölkrogen'
+    ölkrogen: 'Ölkrogen',
+    // ORDER 166 — vinbaren blir spelartext för klass-nyckeln som
+    // tillkommer när COMPETITORS bär `businessClass: 'vinbaren'` i data.
+    // Ingen scen är monterad än (WineBarScene är egen order).
+    vinbaren: 'Vinbaren'
   }
 } as const;

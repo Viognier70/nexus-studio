@@ -49,13 +49,20 @@ export const FLOOR_COLOUR = '#a89577';
  * faller mot en annan — bandet är zonmedvetet.
  */
 export const FLOOR_ZONES_BY_BUSINESS: Record<
-  'kvarterskrogen' | 'foodtrucken' | 'gästgiveriet' | 'ölkrogen',
+  'kvarterskrogen' | 'foodtrucken' | 'gästgiveriet' | 'ölkrogen' | 'vinbaren',
   readonly string[]
 > = {
   kvarterskrogen: ['#a08462'],
   foodtrucken: [],
   gästgiveriet: ['#a08462'],
-  ölkrogen: ['#a49b8a', '#7d776c', '#948f84']
+  ölkrogen: ['#a49b8a', '#7d776c', '#948f84'],
+  // ORDER 166 — vinbaren i FLOOR_ZONES_BY_BUSINESS. Fem zoner från
+  // silhouetteContrast.zones.ts:85 (main/lounge/barRunway/dj/kitchen).
+  // Behövs för att paletteContrast.test.ts uttömmande ska kunna pröva
+  // figurer mot vinbarens golv; utan posten skulle klassen "se ut som
+  // godkänd genom att saknas" — samma varning som kommentaren om
+  // foodtrucken i zones.ts.
+  vinbaren: ['#a89577', '#a49075', '#a08d74', '#97866f', '#a09786']
 };
 
 /**
