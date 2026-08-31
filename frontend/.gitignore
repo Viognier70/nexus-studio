@@ -1,0 +1,8 @@
+# Node / Vite
+node_modules/
+dist/
+
+# ORDER 166 — esbuild-transpilerade bundles som `order166-share-*.mjs`
+# skriver för att kunna importera produktionsmodulen `competitors.ts`
+# från Node. Regenereras vid varje körning; ska inte checkas in.
+reports/order166/*.bundle.mjs

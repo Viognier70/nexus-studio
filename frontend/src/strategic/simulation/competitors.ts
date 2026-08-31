@@ -123,19 +123,34 @@ export function classSimilarity(
 // ---------- fältet ----------
 
 /**
- * NPC-verksamheterna. Byggnads-id:na är valda ur ORDER 164:s
- * kandidatlistor (byggnader vars OBB rymmer respektive rums
- * MIN_WIDTH_M × MIN_DEPTH_M). Renderas inte — id:t hålls för att
- * en framtida order som lägger till NPC-rendering vet var husen står.
+ * AI-drivna NPC-verksamheter. Fyra st: två kvarterskrogar (spelet
+ * börjar oftast där, alltså två rivaler i samma klass), en ölkrog,
+ * en vinbar. Ryktena spridda 0,50–0,70 så field-genomsnittet ligger
+ * nära default-spelarrykte 0,60 — shareFactor för en median-spelare
+ * blir därmed nära 1,0.
  *
- * Antal och fördelning per §2.1: minst en per monterad klass, "inte
- * fler än nödvändigt". Fyra räcker för att kvarterskrogen har två
- * rivaler (spelet börjar oftast där), ölkrogen och vinbaren en var.
- * Ryktena är författade — inget som körs — spridda mellan 0,45 och
- * 0,75 så field-genomsnittet ligger nära default-rep (0,6) och
- * shareFactor för en genomsnittsspelare blir nära 1,0.
+ * **Byggnadsvalen är preliminära och omprövbara.** Tabellen nedan
+ * dokumenterar valen och deras grund. `buildingId` renderas inte i
+ * dag — id:t hålls som data för att en framtida rendering-order har
+ * en startpunkt. **Vilka byggnader konkurrenterna faktiskt bor i är
+ * Vision Owner-beslut som skjuts till den ordern**; ORDER 166 valde
+ * bara footprints som passerar ORDER 164:s OBB-fits-test för
+ * respektive klass. Ingen gestaltningsbedömning gjord här; ingen
+ * närhet-till-spelaren-viktning; ingen historisk läslighet.
+ *
+ * | NPC-id                     | Klass          | Rykte | Byggnad          | Motiv (bara storlek) |
+ * |----------------------------|----------------|-------|------------------|----------------------|
+ * | `npc-kvarnkrogen`          | kvarterskrogen | 0,55  | `w611766162`     | 58,95 × 12,78 m (ORDER 164, `yes`) |
+ * | `npc-prästgatans-krog`     | kvarterskrogen | 0,70  | `w611624852`     | 55,72 × 15,53 m (ORDER 164, `yes`) |
+ * | `npc-bergsmansöl`          | ölkrogen       | 0,50  | `w870510857`     | 47,55 × 14,24 m (ORDER 164, `residential`) |
+ * | `npc-torgets-vinkällare`   | vinbaren       | 0,65  | `w870510863`     | 49,92 × 19,46 m (ORDER 164, `residential`) |
+ *
+ * Ändra en rad om senare mätning eller Vision Owner-beslut motiverar
+ * det. Radens `id` är namnnyckel; `reputation` är författad; `buildingId`
+ * är kandidatens OSM-way. Alla fyra fält är omprövbara utan att
+ * shareFactor-beräkningen behöver ändras.
  */
-export const COMPETITORS: readonly Competitor[] = [
+export const AI_COMPETITORS: readonly Competitor[] = [
   {
     id: 'npc-kvarnkrogen',
     name: 'Kvarnkrogen',
@@ -165,6 +180,14 @@ export const COMPETITORS: readonly Competitor[] = [
     buildingId: 'w870510863'
   }
 ] as const;
+
+/**
+ * @deprecated Använd `AI_COMPETITORS`. Alias hålls så följdscript
+ * (framtidens `order166-*.mjs`, extern-testkod) inte bryter samtidigt
+ * som namnet flyttas till det tydligare AI_COMPETITORS. Radera vid
+ * nästa passage genom den här filen om ingen konsument dyker upp.
+ */
+export const COMPETITORS = AI_COMPETITORS;
 
 // ---------- shareFactor ----------
 
@@ -205,7 +228,7 @@ const REPUTATION_EPS = 0.05;
 export function computeShareFactor(
   playerReputation: number,
   playerClass: BusinessClass,
-  competitors: readonly Competitor[] = COMPETITORS
+  competitors: readonly Competitor[] = AI_COMPETITORS
 ): number {
   if (competitors.length === 0) return SHARE_FACTOR_NEUTRAL;
 

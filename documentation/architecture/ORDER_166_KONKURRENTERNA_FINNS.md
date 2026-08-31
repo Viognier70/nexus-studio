@@ -236,3 +236,39 @@ ytterligare rykteshöjning inte till fler gäster. Läs
 när och hur länge på den här kalibreringen. `dynamic.series` visar
 kontrasten om konkurrenter också lär sig (B-014-mönstret) — en
 öppen designfråga, ingen implementation i denna order.
+
+---
+
+## 10. Uppföljning 2026-08-31 — namn + suffix-precedence
+
+**Rename `COMPETITORS` → `AI_COMPETITORS`** i `competitors.ts` för
+att göra tydligt att fältet är AI-drivna verksamheter, inte samlings-
+begrepp för "andra spelare". Gamla namnet finns kvar som
+`@deprecated`-alias så konsumenter inte bryter samtidigt som namnet
+flyttas. Test-, script- och bundle-referenser uppdaterade.
+
+**Byggnadstabellen inline i modul-headern** dokumenterar de fyra
+NPC-valen som en tabell (id / klass / rykte / byggnad / motiv) med
+uttrycklig not: **placeringen är preliminär, valdes på storlek och
+närhet (ORDER 164:s OBB-fits), inte på gestaltning**. När
+konkurrenterna ska renderas är byggnadsvalet ett Vision Owner-beslut
+som skjuts till den ordern. Alla fyra fält per rad är omprövbara utan
+att shareFactor-beräkningen behöver ändras.
+
+**Suffix-precedence-regel i DevPanel:** när flera drift-villkor för
+`share=` kan vara sanna samtidigt visas exakt EN suffix, vald i
+följande prioritetsordning från högst till lägst:
+
+  1. `!ceiling`
+  2. `!floor`
+  3. (framtida signaler som `!cls` införs här)
+  4. (ingen suffix)
+
+Regeln implementeras som en if/else-if-kedja med högsta prioritet
+överst. Ingen sammansatt sträng (`!floor!cls`) tillåts — det gör
+raden svårläst och läsaren har inget sätt att veta vilket villkor
+som faktiskt band. Nya signaler läggs in i kedjan på rätt position
+när de införs.
+
+Docs-only + rename + två-rads DevPanel-omkastning. Ingen ändring i
+shareFactor-beräkningen. Full svit **1059/1059** grön.

@@ -24,7 +24,7 @@
 //      permanent begränsar mekaniken.
 //   3. Skulle en dynamisk konkurrent (som förbättras med spelaren)
 //      förändra bilden? Skriptet räknar ett kontraktsalternativ där
-//      COMPETITORS-ryktena också stiger 0.05/dag — jämförelsen ligger
+//      AI_COMPETITORS-ryktena också stiger 0.05/dag — jämförelsen ligger
 //      i JSON:en.
 //
 // Talen skrivs till `frontend/reports/order166/shareHorizon.json`
@@ -56,7 +56,7 @@ await esbuild.build({
 const mod = await import(pathToFileURL(bundlePath).href);
 const {
   computeShareFactor,
-  COMPETITORS,
+  AI_COMPETITORS,
   SHARE_FACTOR_FLOOR,
   SHARE_FACTOR_CEIL,
   SHARE_FACTOR_NEUTRAL,
@@ -79,7 +79,7 @@ const playerRepByDay = Array.from({ length: DAYS }, (_, i) => {
 // ---------- huvudkörning: statiska konkurrenter (som ORDER 166 bygger) ----------
 
 const staticSeries = playerRepByDay.map((rep, i) => {
-  const s = computeShareFactor(rep, PLAYER_CLASS, COMPETITORS);
+  const s = computeShareFactor(rep, PLAYER_CLASS, AI_COMPETITORS);
   return {
     day: i + 1,
     playerReputation: Number(rep.toFixed(4)),
@@ -111,7 +111,7 @@ const DYNAMIC_RATE = 0.03; // rykte / dag
 const dynamicSeries = playerRepByDay.map((playerRep, i) => {
   const day = i + 1;
   // Klona konkurrenterna med uppdaterade rykten.
-  const evolved = COMPETITORS.map((c) => ({
+  const evolved = AI_COMPETITORS.map((c) => ({
     ...c,
     reputation: Math.min(1.0, c.reputation + DYNAMIC_RATE * i)
   }));
@@ -145,7 +145,7 @@ const report = {
     neutral: SHARE_FACTOR_NEUTRAL,
     ceil: SHARE_FACTOR_CEIL
   },
-  competitorsStartField: COMPETITORS.map((c) => ({
+  competitorsStartField: AI_COMPETITORS.map((c) => ({
     id: c.id,
     businessClass: c.businessClass,
     reputation: c.reputation
