@@ -119,6 +119,15 @@ spåra.
 
 Det är en fråga Vision Owner avgör i vyn, men rapporten ska ge underlaget.
 
+**§6-utökning 2026-08-31** (VO-instruktion samma dag efter ORDER 166 mergats):
+mät `share=` över en längre horisont, inte bara ett pass. Konkurrenternas rykte
+är statiskt medan spelarens rör sig. Om spelaren lämnar fältet permanent efter
+några dagar är konkurrensen över, och då är taket det enda som håller emot.
+
+Redovisa `share=` per dag över minst tio dagar med spelare som förbättras.
+Talen läses ur skriptets utdata per ORDER 160/161 —
+`frontend/reports/order166/shareHorizon.json` bär serien.
+
 ---
 
 ## 7. Om något inte går
@@ -195,3 +204,35 @@ fallet (shareFactor klipps mot 0,55, inte mot 0), och testet i
 väntetiden är asymptotisk.
 
 Egen gren `order-166-konkurrenterna` från main.
+
+---
+
+## 9. §6-utökningens utfall (2026-08-31)
+
+Skript: `frontend/scripts/order166-share-horizon.mjs`. Bundlar
+`competitors.ts` via esbuild och dynamisk-importerar den — alla tal
+kommer ur produktionsmodulen, samma funktion som `arrivals.ts`
+konsumerar. Simulerar 12 speldagars linjär rykte-drift 0,40 → 0,95.
+
+**Två serier i rapporten** (`reports/order166/shareHorizon.json`):
+
+- `static.series` — ORDER 166:s produktions-mönster (konkurrenter
+  statiska). Bär per dag: `day`, `playerReputation`, `shareFactor`,
+  `atFloor`, `atCeiling`. Plus sammanfattnings-fält: `firstDayAtCeiling`,
+  `daysAtFloor`, `daysAtCeiling`, `daysUnclamped`.
+- `dynamic.series` — kontrastberäkning (INTE i produktion): varje
+  konkurrent stiger 0,03 rykte/dag från sin startvärde. Samma
+  fältstruktur.
+
+**Fyndet i fyndform, läses ur JSON:** rapporten svarar konkret på
+när taket blir bindande. Talen står i filen — inte i denna text, inte
+i registerraden.
+
+**Slutsats i formen fråga → svar, per Vision Owners oro:**
+Om konkurrenternas rykte är statiskt och spelaren förbättras stadigt,
+blir shareFactor vid någon dag klippt mot CEIL och därefter bidrar
+ytterligare rykteshöjning inte till fler gäster. Läs
+`static.firstDayAtCeiling` och `static.daysAtCeiling` i JSON:en för
+när och hur länge på den här kalibreringen. `dynamic.series` visar
+kontrasten om konkurrenter också lär sig (B-014-mönstret) — en
+öppen designfråga, ingen implementation i denna order.

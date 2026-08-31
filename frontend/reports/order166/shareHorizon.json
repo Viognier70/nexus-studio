@@ -1,0 +1,237 @@
+{
+  "horizon": {
+    "days": 12,
+    "playerReputationStart": 0.4,
+    "playerReputationEnd": 0.95,
+    "playerClass": "kvarterskrogen"
+  },
+  "band": {
+    "floor": 0.55,
+    "neutral": 1,
+    "ceil": 1.4
+  },
+  "competitorsStartField": [
+    {
+      "id": "npc-kvarnkrogen",
+      "businessClass": "kvarterskrogen",
+      "reputation": 0.55
+    },
+    {
+      "id": "npc-prästgatans-krog",
+      "businessClass": "kvarterskrogen",
+      "reputation": 0.7
+    },
+    {
+      "id": "npc-bergsmansöl",
+      "businessClass": "ölkrogen",
+      "reputation": 0.5
+    },
+    {
+      "id": "npc-torgets-vinkällare",
+      "businessClass": "vinbaren",
+      "reputation": 0.65
+    }
+  ],
+  "static": {
+    "note": "ORDER 166:s produktions-mönster: konkurrenternas rykte statiskt.",
+    "series": [
+      {
+        "day": 1,
+        "playerReputation": 0.4,
+        "shareFactor": 0.6888,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 2,
+        "playerReputation": 0.45,
+        "shareFactor": 0.7653,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 3,
+        "playerReputation": 0.5,
+        "shareFactor": 0.8418,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 4,
+        "playerReputation": 0.55,
+        "shareFactor": 0.9184,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 5,
+        "playerReputation": 0.6,
+        "shareFactor": 0.9949,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 6,
+        "playerReputation": 0.65,
+        "shareFactor": 1.0714,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 7,
+        "playerReputation": 0.7,
+        "shareFactor": 1.148,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 8,
+        "playerReputation": 0.75,
+        "shareFactor": 1.2245,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 9,
+        "playerReputation": 0.8,
+        "shareFactor": 1.301,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 10,
+        "playerReputation": 0.85,
+        "shareFactor": 1.3776,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 11,
+        "playerReputation": 0.9,
+        "shareFactor": 1.4,
+        "atFloor": false,
+        "atCeiling": true
+      },
+      {
+        "day": 12,
+        "playerReputation": 0.95,
+        "shareFactor": 1.4,
+        "atFloor": false,
+        "atCeiling": true
+      }
+    ],
+    "firstDayAtCeiling": 11,
+    "daysAtFloor": 0,
+    "daysAtCeiling": 2,
+    "daysUnclamped": 10
+  },
+  "dynamic": {
+    "note": "Kontrastberäkning (INTE i produktion): varje konkurrents rykte stiger 0.03/dag från sin startvärde, mjukt clamp:at till [0,1]. Svarar på om taket är levande om konkurrenterna också lär sig (B-014-referensen).",
+    "dynamicRatePerDay": 0.03,
+    "series": [
+      {
+        "day": 1,
+        "playerReputation": 0.4,
+        "fieldMeanReputation": 0.6,
+        "shareFactor": 0.6888,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 2,
+        "playerReputation": 0.45,
+        "fieldMeanReputation": 0.63,
+        "shareFactor": 0.7317,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 3,
+        "playerReputation": 0.5,
+        "fieldMeanReputation": 0.66,
+        "shareFactor": 0.771,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 4,
+        "playerReputation": 0.55,
+        "fieldMeanReputation": 0.69,
+        "shareFactor": 0.8072,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 5,
+        "playerReputation": 0.6,
+        "fieldMeanReputation": 0.72,
+        "shareFactor": 0.8405,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 6,
+        "playerReputation": 0.65,
+        "fieldMeanReputation": 0.75,
+        "shareFactor": 0.8714,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 7,
+        "playerReputation": 0.7,
+        "fieldMeanReputation": 0.78,
+        "shareFactor": 0.9,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 8,
+        "playerReputation": 0.75,
+        "fieldMeanReputation": 0.81,
+        "shareFactor": 0.9266,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 9,
+        "playerReputation": 0.8,
+        "fieldMeanReputation": 0.84,
+        "shareFactor": 0.9515,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 10,
+        "playerReputation": 0.85,
+        "fieldMeanReputation": 0.87,
+        "shareFactor": 0.9747,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 11,
+        "playerReputation": 0.9,
+        "fieldMeanReputation": 0.9,
+        "shareFactor": 0.9965,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 12,
+        "playerReputation": 0.95,
+        "fieldMeanReputation": 0.9225,
+        "shareFactor": 1.0274,
+        "atFloor": false,
+        "atCeiling": false
+      }
+    ],
+    "firstDayAtCeiling": null,
+    "daysAtCeiling": 0
+  },
+  "source": {
+    "module": "frontend/src/strategic/simulation/competitors.ts",
+    "function": "computeShareFactor",
+    "note": "Alla shareFactor-tal beräknade av produktionsmodulen (esbuild-transpilerad kopia); ingen replikering i detta skript."
+  }
+}
