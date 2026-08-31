@@ -1098,6 +1098,806 @@
       ]
     ]
   },
+  "flatPlayer": {
+    "note": "ORDER 167 §4-tillägg 1 (2026-08-31): mät om fältet driver uppåt mot en spelare som INTE förbättras. Om fieldMeanDrift > tolerans är gummiväggen för stark — att stå still ska inte straffas.",
+    "playerReputation": 0.6,
+    "fieldMeanStart": 0.6,
+    "fieldMeanEnd": 0.6058,
+    "fieldMeanDrift": 0.0058,
+    "driftTolerance": 0.02,
+    "gummivägg": false,
+    "series": [
+      {
+        "day": 1,
+        "playerReputation": 0.6,
+        "fieldMeanReputation": 0.6,
+        "shareFactor": 0.9949,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 2,
+        "playerReputation": 0.6,
+        "fieldMeanReputation": 0.6014,
+        "shareFactor": 0.9938,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 3,
+        "playerReputation": 0.6,
+        "fieldMeanReputation": 0.6025,
+        "shareFactor": 0.993,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 4,
+        "playerReputation": 0.6,
+        "fieldMeanReputation": 0.6035,
+        "shareFactor": 0.9924,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 5,
+        "playerReputation": 0.6,
+        "fieldMeanReputation": 0.6043,
+        "shareFactor": 0.9919,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 6,
+        "playerReputation": 0.6,
+        "fieldMeanReputation": 0.605,
+        "shareFactor": 0.9916,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 7,
+        "playerReputation": 0.6,
+        "fieldMeanReputation": 0.6055,
+        "shareFactor": 0.9914,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 8,
+        "playerReputation": 0.6,
+        "fieldMeanReputation": 0.6059,
+        "shareFactor": 0.9913,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 9,
+        "playerReputation": 0.6,
+        "fieldMeanReputation": 0.6062,
+        "shareFactor": 0.9912,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 10,
+        "playerReputation": 0.6,
+        "fieldMeanReputation": 0.6065,
+        "shareFactor": 0.9913,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 11,
+        "playerReputation": 0.6,
+        "fieldMeanReputation": 0.6067,
+        "shareFactor": 0.9913,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 12,
+        "playerReputation": 0.6,
+        "fieldMeanReputation": 0.6068,
+        "shareFactor": 0.9915,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 13,
+        "playerReputation": 0.6,
+        "fieldMeanReputation": 0.6069,
+        "shareFactor": 0.9916,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 14,
+        "playerReputation": 0.6,
+        "fieldMeanReputation": 0.607,
+        "shareFactor": 0.9918,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 15,
+        "playerReputation": 0.6,
+        "fieldMeanReputation": 0.607,
+        "shareFactor": 0.992,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 16,
+        "playerReputation": 0.6,
+        "fieldMeanReputation": 0.607,
+        "shareFactor": 0.9922,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 17,
+        "playerReputation": 0.6,
+        "fieldMeanReputation": 0.6069,
+        "shareFactor": 0.9924,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 18,
+        "playerReputation": 0.6,
+        "fieldMeanReputation": 0.6069,
+        "shareFactor": 0.9926,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 19,
+        "playerReputation": 0.6,
+        "fieldMeanReputation": 0.6068,
+        "shareFactor": 0.9929,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 20,
+        "playerReputation": 0.6,
+        "fieldMeanReputation": 0.6068,
+        "shareFactor": 0.9931,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 21,
+        "playerReputation": 0.6,
+        "fieldMeanReputation": 0.6067,
+        "shareFactor": 0.9933,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 22,
+        "playerReputation": 0.6,
+        "fieldMeanReputation": 0.6066,
+        "shareFactor": 0.9935,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 23,
+        "playerReputation": 0.6,
+        "fieldMeanReputation": 0.6065,
+        "shareFactor": 0.9938,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 24,
+        "playerReputation": 0.6,
+        "fieldMeanReputation": 0.6064,
+        "shareFactor": 0.994,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 25,
+        "playerReputation": 0.6,
+        "fieldMeanReputation": 0.6063,
+        "shareFactor": 0.9942,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 26,
+        "playerReputation": 0.6,
+        "fieldMeanReputation": 0.6062,
+        "shareFactor": 0.9944,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 27,
+        "playerReputation": 0.6,
+        "fieldMeanReputation": 0.6062,
+        "shareFactor": 0.9945,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 28,
+        "playerReputation": 0.6,
+        "fieldMeanReputation": 0.6061,
+        "shareFactor": 0.9947,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 29,
+        "playerReputation": 0.6,
+        "fieldMeanReputation": 0.606,
+        "shareFactor": 0.9949,
+        "atFloor": false,
+        "atCeiling": false
+      },
+      {
+        "day": 30,
+        "playerReputation": 0.6,
+        "fieldMeanReputation": 0.6059,
+        "shareFactor": 0.9951,
+        "atFloor": false,
+        "atCeiling": false
+      }
+    ],
+    "fieldEvolution": [
+      [
+        {
+          "id": "npc-kvarnkrogen",
+          "reputation": 0.55
+        },
+        {
+          "id": "npc-prästgatans-krog",
+          "reputation": 0.7
+        },
+        {
+          "id": "npc-bergsmansöl",
+          "reputation": 0.5
+        },
+        {
+          "id": "npc-torgets-vinkällare",
+          "reputation": 0.65
+        }
+      ],
+      [
+        {
+          "id": "npc-kvarnkrogen",
+          "reputation": 0.5502
+        },
+        {
+          "id": "npc-prästgatans-krog",
+          "reputation": 0.6961
+        },
+        {
+          "id": "npc-bergsmansöl",
+          "reputation": 0.5102
+        },
+        {
+          "id": "npc-torgets-vinkällare",
+          "reputation": 0.649
+        }
+      ],
+      [
+        {
+          "id": "npc-kvarnkrogen",
+          "reputation": 0.5504
+        },
+        {
+          "id": "npc-prästgatans-krog",
+          "reputation": 0.6926
+        },
+        {
+          "id": "npc-bergsmansöl",
+          "reputation": 0.5192
+        },
+        {
+          "id": "npc-torgets-vinkällare",
+          "reputation": 0.6481
+        }
+      ],
+      [
+        {
+          "id": "npc-kvarnkrogen",
+          "reputation": 0.5506
+        },
+        {
+          "id": "npc-prästgatans-krog",
+          "reputation": 0.6892
+        },
+        {
+          "id": "npc-bergsmansöl",
+          "reputation": 0.5271
+        },
+        {
+          "id": "npc-torgets-vinkällare",
+          "reputation": 0.6471
+        }
+      ],
+      [
+        {
+          "id": "npc-kvarnkrogen",
+          "reputation": 0.5508
+        },
+        {
+          "id": "npc-prästgatans-krog",
+          "reputation": 0.6861
+        },
+        {
+          "id": "npc-bergsmansöl",
+          "reputation": 0.534
+        },
+        {
+          "id": "npc-torgets-vinkällare",
+          "reputation": 0.6463
+        }
+      ],
+      [
+        {
+          "id": "npc-kvarnkrogen",
+          "reputation": 0.551
+        },
+        {
+          "id": "npc-prästgatans-krog",
+          "reputation": 0.6833
+        },
+        {
+          "id": "npc-bergsmansöl",
+          "reputation": 0.5401
+        },
+        {
+          "id": "npc-torgets-vinkällare",
+          "reputation": 0.6455
+        }
+      ],
+      [
+        {
+          "id": "npc-kvarnkrogen",
+          "reputation": 0.5511
+        },
+        {
+          "id": "npc-prästgatans-krog",
+          "reputation": 0.6806
+        },
+        {
+          "id": "npc-bergsmansöl",
+          "reputation": 0.5455
+        },
+        {
+          "id": "npc-torgets-vinkällare",
+          "reputation": 0.6447
+        }
+      ],
+      [
+        {
+          "id": "npc-kvarnkrogen",
+          "reputation": 0.5513
+        },
+        {
+          "id": "npc-prästgatans-krog",
+          "reputation": 0.6781
+        },
+        {
+          "id": "npc-bergsmansöl",
+          "reputation": 0.5503
+        },
+        {
+          "id": "npc-torgets-vinkällare",
+          "reputation": 0.644
+        }
+      ],
+      [
+        {
+          "id": "npc-kvarnkrogen",
+          "reputation": 0.5515
+        },
+        {
+          "id": "npc-prästgatans-krog",
+          "reputation": 0.6758
+        },
+        {
+          "id": "npc-bergsmansöl",
+          "reputation": 0.5544
+        },
+        {
+          "id": "npc-torgets-vinkällare",
+          "reputation": 0.6433
+        }
+      ],
+      [
+        {
+          "id": "npc-kvarnkrogen",
+          "reputation": 0.5517
+        },
+        {
+          "id": "npc-prästgatans-krog",
+          "reputation": 0.6736
+        },
+        {
+          "id": "npc-bergsmansöl",
+          "reputation": 0.5581
+        },
+        {
+          "id": "npc-torgets-vinkällare",
+          "reputation": 0.6426
+        }
+      ],
+      [
+        {
+          "id": "npc-kvarnkrogen",
+          "reputation": 0.5518
+        },
+        {
+          "id": "npc-prästgatans-krog",
+          "reputation": 0.6716
+        },
+        {
+          "id": "npc-bergsmansöl",
+          "reputation": 0.5613
+        },
+        {
+          "id": "npc-torgets-vinkällare",
+          "reputation": 0.642
+        }
+      ],
+      [
+        {
+          "id": "npc-kvarnkrogen",
+          "reputation": 0.552
+        },
+        {
+          "id": "npc-prästgatans-krog",
+          "reputation": 0.6698
+        },
+        {
+          "id": "npc-bergsmansöl",
+          "reputation": 0.5642
+        },
+        {
+          "id": "npc-torgets-vinkällare",
+          "reputation": 0.6414
+        }
+      ],
+      [
+        {
+          "id": "npc-kvarnkrogen",
+          "reputation": 0.5522
+        },
+        {
+          "id": "npc-prästgatans-krog",
+          "reputation": 0.668
+        },
+        {
+          "id": "npc-bergsmansöl",
+          "reputation": 0.5667
+        },
+        {
+          "id": "npc-torgets-vinkällare",
+          "reputation": 0.6408
+        }
+      ],
+      [
+        {
+          "id": "npc-kvarnkrogen",
+          "reputation": 0.5523
+        },
+        {
+          "id": "npc-prästgatans-krog",
+          "reputation": 0.6664
+        },
+        {
+          "id": "npc-bergsmansöl",
+          "reputation": 0.5689
+        },
+        {
+          "id": "npc-torgets-vinkällare",
+          "reputation": 0.6403
+        }
+      ],
+      [
+        {
+          "id": "npc-kvarnkrogen",
+          "reputation": 0.5525
+        },
+        {
+          "id": "npc-prästgatans-krog",
+          "reputation": 0.6649
+        },
+        {
+          "id": "npc-bergsmansöl",
+          "reputation": 0.5708
+        },
+        {
+          "id": "npc-torgets-vinkällare",
+          "reputation": 0.6398
+        }
+      ],
+      [
+        {
+          "id": "npc-kvarnkrogen",
+          "reputation": 0.5526
+        },
+        {
+          "id": "npc-prästgatans-krog",
+          "reputation": 0.6635
+        },
+        {
+          "id": "npc-bergsmansöl",
+          "reputation": 0.5725
+        },
+        {
+          "id": "npc-torgets-vinkällare",
+          "reputation": 0.6393
+        }
+      ],
+      [
+        {
+          "id": "npc-kvarnkrogen",
+          "reputation": 0.5528
+        },
+        {
+          "id": "npc-prästgatans-krog",
+          "reputation": 0.6622
+        },
+        {
+          "id": "npc-bergsmansöl",
+          "reputation": 0.574
+        },
+        {
+          "id": "npc-torgets-vinkällare",
+          "reputation": 0.6388
+        }
+      ],
+      [
+        {
+          "id": "npc-kvarnkrogen",
+          "reputation": 0.5529
+        },
+        {
+          "id": "npc-prästgatans-krog",
+          "reputation": 0.661
+        },
+        {
+          "id": "npc-bergsmansöl",
+          "reputation": 0.5753
+        },
+        {
+          "id": "npc-torgets-vinkällare",
+          "reputation": 0.6384
+        }
+      ],
+      [
+        {
+          "id": "npc-kvarnkrogen",
+          "reputation": 0.553
+        },
+        {
+          "id": "npc-prästgatans-krog",
+          "reputation": 0.6599
+        },
+        {
+          "id": "npc-bergsmansöl",
+          "reputation": 0.5765
+        },
+        {
+          "id": "npc-torgets-vinkällare",
+          "reputation": 0.6379
+        }
+      ],
+      [
+        {
+          "id": "npc-kvarnkrogen",
+          "reputation": 0.5532
+        },
+        {
+          "id": "npc-prästgatans-krog",
+          "reputation": 0.6589
+        },
+        {
+          "id": "npc-bergsmansöl",
+          "reputation": 0.5775
+        },
+        {
+          "id": "npc-torgets-vinkällare",
+          "reputation": 0.6375
+        }
+      ],
+      [
+        {
+          "id": "npc-kvarnkrogen",
+          "reputation": 0.5533
+        },
+        {
+          "id": "npc-prästgatans-krog",
+          "reputation": 0.6579
+        },
+        {
+          "id": "npc-bergsmansöl",
+          "reputation": 0.5784
+        },
+        {
+          "id": "npc-torgets-vinkällare",
+          "reputation": 0.6372
+        }
+      ],
+      [
+        {
+          "id": "npc-kvarnkrogen",
+          "reputation": 0.5535
+        },
+        {
+          "id": "npc-prästgatans-krog",
+          "reputation": 0.657
+        },
+        {
+          "id": "npc-bergsmansöl",
+          "reputation": 0.5792
+        },
+        {
+          "id": "npc-torgets-vinkällare",
+          "reputation": 0.6368
+        }
+      ],
+      [
+        {
+          "id": "npc-kvarnkrogen",
+          "reputation": 0.5536
+        },
+        {
+          "id": "npc-prästgatans-krog",
+          "reputation": 0.6561
+        },
+        {
+          "id": "npc-bergsmansöl",
+          "reputation": 0.5799
+        },
+        {
+          "id": "npc-torgets-vinkällare",
+          "reputation": 0.6365
+        }
+      ],
+      [
+        {
+          "id": "npc-kvarnkrogen",
+          "reputation": 0.5537
+        },
+        {
+          "id": "npc-prästgatans-krog",
+          "reputation": 0.6554
+        },
+        {
+          "id": "npc-bergsmansöl",
+          "reputation": 0.5805
+        },
+        {
+          "id": "npc-torgets-vinkällare",
+          "reputation": 0.6361
+        }
+      ],
+      [
+        {
+          "id": "npc-kvarnkrogen",
+          "reputation": 0.5538
+        },
+        {
+          "id": "npc-prästgatans-krog",
+          "reputation": 0.6546
+        },
+        {
+          "id": "npc-bergsmansöl",
+          "reputation": 0.581
+        },
+        {
+          "id": "npc-torgets-vinkällare",
+          "reputation": 0.6358
+        }
+      ],
+      [
+        {
+          "id": "npc-kvarnkrogen",
+          "reputation": 0.554
+        },
+        {
+          "id": "npc-prästgatans-krog",
+          "reputation": 0.654
+        },
+        {
+          "id": "npc-bergsmansöl",
+          "reputation": 0.5815
+        },
+        {
+          "id": "npc-torgets-vinkällare",
+          "reputation": 0.6355
+        }
+      ],
+      [
+        {
+          "id": "npc-kvarnkrogen",
+          "reputation": 0.5541
+        },
+        {
+          "id": "npc-prästgatans-krog",
+          "reputation": 0.6533
+        },
+        {
+          "id": "npc-bergsmansöl",
+          "reputation": 0.5819
+        },
+        {
+          "id": "npc-torgets-vinkällare",
+          "reputation": 0.6353
+        }
+      ],
+      [
+        {
+          "id": "npc-kvarnkrogen",
+          "reputation": 0.5542
+        },
+        {
+          "id": "npc-prästgatans-krog",
+          "reputation": 0.6528
+        },
+        {
+          "id": "npc-bergsmansöl",
+          "reputation": 0.5823
+        },
+        {
+          "id": "npc-torgets-vinkällare",
+          "reputation": 0.635
+        }
+      ],
+      [
+        {
+          "id": "npc-kvarnkrogen",
+          "reputation": 0.5543
+        },
+        {
+          "id": "npc-prästgatans-krog",
+          "reputation": 0.6522
+        },
+        {
+          "id": "npc-bergsmansöl",
+          "reputation": 0.5826
+        },
+        {
+          "id": "npc-torgets-vinkällare",
+          "reputation": 0.6348
+        }
+      ],
+      [
+        {
+          "id": "npc-kvarnkrogen",
+          "reputation": 0.5544
+        },
+        {
+          "id": "npc-prästgatans-krog",
+          "reputation": 0.6517
+        },
+        {
+          "id": "npc-bergsmansöl",
+          "reputation": 0.5829
+        },
+        {
+          "id": "npc-torgets-vinkällare",
+          "reputation": 0.6345
+        }
+      ]
+    ]
+  },
+  "remainingShare": {
+    "note": "ORDER 167 §4-tillägg 2 (2026-08-31): hur mycket av spelarens rykte-förbättring blir kvar som andel efter horisonten. (playerDelta − fieldDelta) / playerDelta = 1 − k_effektiv. k är ett designval om hur hårt fältet följer, inte en enskild konstant i koden — det uppstår ur per-NPC motion-parametrar × classSimilarity-vikter. VO-referens: k=0.42 ⇒ remainingShare ≈ 0.58.",
+    "playerDelta": 0.58,
+    "fieldDelta": 0.0882,
+    "remainingShare": 0.8479,
+    "kAggregate": 0.1521
+  },
   "section4Verdict": {
     "utfall": "B_formen_bär",
     "description": "shareFactor rör sig över hela trettio dagar utan att fastna vid taket; spelaren belönas för att bli bättre utan att vinna för alltid. Formen bär."
