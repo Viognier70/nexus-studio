@@ -9,6 +9,7 @@ import {
   walkAwayProbability
 } from '../arrivals';
 import { PRICE_ARRIVAL_MULT, SERVICE_ARRIVAL_MULT } from '../economics';
+import { computeShareFactor } from '../competitors';
 import { makeGuest, makeInitialState } from '../model';
 import type {
   DayPeriod,
@@ -58,17 +59,23 @@ describe('arrivalProbability', () => {
     expect(arrivalProbability(stateInPeriod(1, 'evening'))).toBe(0);
   });
 
-  it('matches base * periodMult * SERVICE_MULT * PRICE_MULT * economicMult * reputationMult / 300 (5 Hz)', () => {
+  it('matches base * periodMult * SERVICE_MULT * PRICE_MULT * economicMult * reputationMult * shareFactor / 300 (5 Hz)', () => {
     const s = stateInPeriod(1, 'dinner');
     // ORDER 043 v3 §4 reputation loop wired into arrivalProbability:
     // rate now also scales with reputation. Initial reputation = 0.6.
+    // ORDER 166 lade till shareFactor (fältgenomsnitts-kvot mot NPC:er)
+    // som ytterligare multiplikator. Vid default-rep 0,6 mot COMPETITORS-
+    // fältet blir shareFactor nära 1,0 för kvarterskrogen; testet räknar
+    // den ur samma funktion arrivals.ts läser.
+    const shareMult = computeShareFactor(s.reputation, s.businessClass);
     const expected =
       (12 *
         periodArrivalMultiplier('dinner') *
         SERVICE_ARRIVAL_MULT[s.policies.service] *
         PRICE_ARRIVAL_MULT[s.policies.pricing] *
         economicArrivalMultiplier(s) *
-        reputationArrivalMultiplier(s.reputation)) /
+        reputationArrivalMultiplier(s.reputation) *
+        shareMult) /
       300;
     expect(arrivalProbability(s)).toBeCloseTo(expected, 10);
   });

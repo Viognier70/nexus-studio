@@ -64,10 +64,17 @@ describe('arrivalProbability responds to reputation', () => {
     const weak = stateWithPeriod(1, 'dinner');
     weak.reputation = 0.0;
     expect(arrivalProbability(strong)).toBeGreaterThan(arrivalProbability(weak));
-    // Ratio should be 1.4 / 0.6 ≈ 2.33
+    // ORDER 166 — kvoten består nu av rykteskurvan (0,6..1,4) MULTIPLICERAT
+    // med shareFactor mot NPC-fältet (SHARE_FACTOR_FLOOR 0,55..CEIL 1,4).
+    // Vid rep=1,0 blir shareFactor clamp:ad till CEIL; vid rep=0,0 till
+    // FLOOR. Absolut kvot: (1,4 × 1,4) / (0,6 × 0,55) = 1,96 / 0,33 ≈ 5,94.
+    // Testet mäter den kombinerade effekten — reputationens signal förstärks
+    // av konkurrens-vinsten mot fältet, precis som §DoD 3 kräver.
+    const strongMult = 1.4 * 1.4;
+    const weakMult = 0.6 * 0.55;
     expect(arrivalProbability(strong) / arrivalProbability(weak)).toBeCloseTo(
-      1.4 / 0.6,
-      3
+      strongMult / weakMult,
+      2
     );
   });
 });

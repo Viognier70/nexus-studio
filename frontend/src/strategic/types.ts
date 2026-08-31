@@ -193,7 +193,7 @@ export interface BankMeetingOutcomeState {
 // ORDER 125 §3 — ölkrogen tillagd som fjärde verksamhetsklass (brewpub-
 // rum med tjugo platser + bryggeri i samma lokal). Namn med å för
 // konsekvens med 'gästgiveriet' som också bär svenska tecken.
-export type BusinessClass = 'kvarterskrogen' | 'foodtrucken' | 'gästgiveriet' | 'ölkrogen';
+export type BusinessClass = 'kvarterskrogen' | 'foodtrucken' | 'gästgiveriet' | 'ölkrogen' | 'vinbaren';
 
 export type ServiceConcept = 'vardaglig' | 'formell';
 export type PricingTier = 'låg' | 'medel' | 'hög';
