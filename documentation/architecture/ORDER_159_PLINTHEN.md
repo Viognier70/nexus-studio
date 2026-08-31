@@ -101,3 +101,55 @@ och rapportera värdet.
 Om plinth-fejdet i dollhouse-läge stör silhuett-läsningen — behåll
 plinthen synlig i alla lägen (den läser som "detta rum har en
 byggnad runt sig" även utan väggar). Redovisa valet.
+
+---
+
+## 6. Utfall (2026-08-31)
+
+**Val B (lokal kopia) valdes** — inga nya cross-module-kopplingar mot
+`OsmBuildings`. Fyra konstanter (`PLINTH_HEIGHT_M`, `PLINTH_INSET_M`,
+`PLINTH_OUTWARD_M`, `PLINTH_COLOUR`) författade lokalt med referens
+till motsvarande värden i `OsmBuildings.tsx:1071,1074,1077`. Plinth-
+mesh renderas FÖRE väggen i JSX-ordningen så väggen skriver ovanpå
+plinthens topphörn.
+
+**§DoD 2 (plinth följer wallOpacity)** implementerad i samma
+useFrame-block som väggarna, med samma tröskelmönster som ORDER 055
+Del A (opacity → transparent flag → depthWrite → castShadow). Plinthen
+fejdar tillsammans med väggen i dollhouse-läge (dist < 28 m).
+
+**§DoD 3 (skärmdumpar)** producerade av
+`frontend/scripts/order159-verify.mjs`:
+- `plinth-ground-{before,after}.png` — distans 55 m, pitch 0,35 rad
+  (~20°), yaw 0,4. Distansen precis över roof-fade-bandet så väggen
+  är fullopak vid samma vinkel spelaren hade i provspelet.
+- `plinth-context-{before,after}.png` — distans 80 m, pitch 0,7 rad
+  (40°). Bredare vy i kvarterssammanhang.
+
+**§DoD 3 verifieringstal** — läses ur
+`frontend/reports/order159/plinthMeasure.json` (playwright läser
+plinth-meshens `Box3.setFromObject`-bounding-box via dev-hooken
+`window.__nxPlayerBusinessPlinthMeasure()` som PlayerBusiness
+exponerar i DEV-mode). Filen bär `yMinM`, `yMaxM`, `heightM`,
+`xExtentM`, `zExtentM`, `centreX`, `centreZ`. Denna rapport nämner
+inte talvärdet — se JSON-filen. Följer ORDER 160-regeln (verifierande
+tal ur skriptets utdata, inte i rapporten).
+
+**Pixel-diff (grovmätning)**: `plinth-ground-before` vs `-after` skiljer
+i ~275 av 129 600 samplade pixels; skillnaderna klumpar sig i y=500–700
+(byggnadens bas), vilket är den zon där plinth-bandet ska synas. Visuell
+skillnad är subtil på 55 m-avstånd — plinthens 0,42 m mot väggens 6,50 m
+är 6,5 % av byggnadens höjd, och en band av den storleken projicerar
+till ~12 px av byggnadens ~200 px höjd i denna vy. Den definitiva
+verifieringen är plinthMeasure.json, inte pixel-jämförelsen.
+
+**§DoD 4-6 (typecheck, svit, register)**: typecheck grön. Full svit
+**1047 → 1047/1047** grön (ingen ny test — visuell + numerisk fråga,
+per DoD-spec). Registerpost i samma commit uppdaterad från Pending
+till Executed.
+
+**§DoD 1 (färger, höjd, position)**: höjd, färg, inset och OBB-
+rotation läses ur konstanterna i `PlayerBusiness.tsx`. Faktisk
+world-Y-räckvidd bekräftas ur plinthMeasure.json.
+
+Egen gren `order-159` från main.

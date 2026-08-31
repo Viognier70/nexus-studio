@@ -33,7 +33,7 @@
 
 import { Html } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { useCamera } from '../camera/CameraContext';
 import { GRAY_BOX_CAMERA } from '../content/grythyttan';
@@ -67,6 +67,26 @@ const ROOF_RIDGE_ADD_M = 2.4;
 const WALL_COLOUR = '#7c2e24';
 const ROOF_COLOUR = '#3a2e20';
 const TRIM_COLOUR = '#efe6d4';
+
+// ORDER 159 — plinth (stenbas / grundmur), portad från OsmBuildings.tsx
+// BuildingPlinth med commercial-tier defaults. Utan denna renderas
+// PlayerBusiness som svävande låda — se OsmBuildings.tsx:670 "omitting
+// it makes procedural houses read as timber floating on grass". Grannar
+// i `PLINTH_KINDS` får plinthen automatiskt; spelarens byggnad filtreras
+// bort av `LANDMARK_BUILDING_IDS` innan OsmBuildings, så vi ritar den
+// själva här. Lokal kopia (ORDER 159 §2 val B) — ingen ny cross-module-
+// koppling mot OsmBuildings.
+//
+// Höjd 0,42 m: OsmBuildings.tsx:1071 `wealth === 'commercial'`-defaultet.
+// Inset 0,35 m + extra 0,1 m (samma som BuildingPlinth): plinthen sitter
+// 10 cm bredare än ridge-facen så den läser som stenbas som väggen sitter
+// PÅ, inte en list som väggen döljer. Färg #8a8478: OsmBuildings.tsx:1077
+// standard-tier gråmurgrå. `castShadow` toggle:as i useFrame per ORDER
+// 055 Del A tillsammans med väggopaciteten.
+const PLINTH_HEIGHT_M = 0.42;
+const PLINTH_INSET_M = 0.35;
+const PLINTH_OUTWARD_M = 0.1;
+const PLINTH_COLOUR = '#8a8478';
 
 // Interior stub — floor + a handful of tables in the pattern
 // RESTAURANT_INTERIOR uses in content/grythyttan.ts. Not the final
@@ -155,6 +175,12 @@ export function PlayerBusiness() {
 
   const wallMaterialRef = useRef<THREE.MeshStandardMaterial>(null);
   const roofMaterialRef = useRef<THREE.MeshStandardMaterial>(null);
+  // ORDER 159 — plinth-refs. Följer samma ref-mönster som vägg och tak
+  // (mesh + material) för att kunna toggla opacity + castShadow per
+  // ORDER 055 Del A i samma useFrame. Se PLINTH_HEIGHT_M-konstantens
+  // header för portnings-motivering.
+  const plinthMeshRef = useRef<THREE.Mesh>(null);
+  const plinthMaterialRef = useRef<THREE.MeshStandardMaterial>(null);
   // ORDER 055 Del A — mesh refs so we can toggle castShadow alongside
   // opacity. A shadow-caster with opacity=0 still stamps the shadow
   // map (the depth pass ignores alpha), which is exactly what we saw:
@@ -172,6 +198,38 @@ export function PlayerBusiness() {
   // guest material: a self-lit puck reads as symbol (same objection
   // that fell the opacity pulse in ORDER 044 §3.3).
   const interiorLightRef = useRef<THREE.PointLight>(null);
+
+  // ORDER 159 §DoD 3 — dev-hook för playwright-verifiering av
+  // sockelhöjden. Exponerar en funktion som räknar plinth-meshens
+  // world-bounding-box (rätt källa: den faktiska renderade meshen,
+  // efter matrix-updates), returnerar {yMin, yMax, heightM}. Så
+  // verifieringstalet kommer ur three.js scenens output — inte ur
+  // en konstant som scriptet också själv skulle citera, och inte
+  // ur en JSDoc någon manuellt hämtar. Följer den regel ORDER 160
+  // kodifierade efter ORDER 157-fiktionen.
+  useEffect(() => {
+    if (!import.meta.env.DEV || typeof window === 'undefined') return;
+    (window as unknown as { __nxPlayerBusinessPlinthMeasure?: () => object | null }).__nxPlayerBusinessPlinthMeasure = () => {
+      const mesh = plinthMeshRef.current;
+      if (!mesh) return null;
+      mesh.updateMatrixWorld(true);
+      const box = new THREE.Box3().setFromObject(mesh);
+      const size = new THREE.Vector3();
+      box.getSize(size);
+      return {
+        yMinM: box.min.y,
+        yMaxM: box.max.y,
+        heightM: size.y,
+        xExtentM: size.x,
+        zExtentM: size.z,
+        centreX: (box.min.x + box.max.x) / 2,
+        centreZ: (box.min.z + box.max.z) / 2
+      };
+    };
+    return () => {
+      delete (window as unknown as { __nxPlayerBusinessPlinthMeasure?: () => object | null }).__nxPlayerBusinessPlinthMeasure;
+    };
+  }, []);
 
   // Wall + roof geometry from the shared building polygon.
   const geom = useMemo(() => {
@@ -259,6 +317,24 @@ export function PlayerBusiness() {
       mat.depthWrite = wallOpacity > 0.5;
       if (wallMeshRef.current) wallMeshRef.current.castShadow = castsShadow(wallOpacity);
 
+      // ORDER 159 §DoD 2 — plinth följer wallOpacity: när väggen är
+      // borta (dollhouse-läge) ska stenbasen inte stå kvar som en
+      // ring runt den försvunna byggnaden. Samma opacitet-, transparent-
+      // och castShadow-mönster som väggen.
+      if (plinthMaterialRef.current) {
+        const pMat = plinthMaterialRef.current;
+        pMat.opacity = wallOpacity;
+        const wantTransparent = wallOpacity < 0.99;
+        if (pMat.transparent !== wantTransparent) {
+          pMat.transparent = wantTransparent;
+          pMat.needsUpdate = true;
+        }
+        pMat.depthWrite = wallOpacity > 0.5;
+      }
+      if (plinthMeshRef.current) {
+        plinthMeshRef.current.castShadow = castsShadow(wallOpacity);
+      }
+
       // ORDER 057 Del B — restaurant glow. Warm interior tint that
       // ramps in with skyState.nightFactor. During service (lunch or
       // dinner) it's boosted so the restaurant reads as "open" from
@@ -334,8 +410,45 @@ export function PlayerBusiness() {
     ? `${strings.business.labelPrefix} ${business.name}`
     : '';
 
+  // ORDER 159 — plinth-dimensioner i OBB-lokalt rum. Bredd = layout.width
+  // + PLINTH_OUTWARD_M (10 cm bredare än ridge-facen så plinthen syns
+  // som stenbas väggen står PÅ). scale-axeln följer three.js BoxGeometry-
+  // konvention: X = width, Y = height, Z = depth. rotation-Y = -worldAngle
+  // så box-lokal X ligger längs OBB:s långaxel — samma konvention som
+  // interiörgeometrin.
+  const plinthScaleX = layout.width + PLINTH_OUTWARD_M;
+  const plinthScaleZ = layout.depth + PLINTH_OUTWARD_M;
+  void PLINTH_INSET_M;  // konstanten dokumenterar OsmBuildings-mönstret; layout.width är redan yttre måttet.
+
   return (
     <group>
+      {/* ORDER 159 — plinth (stenbas, portad från OsmBuildings.BuildingPlinth
+          med commercial-tier defaults, se PLINTH_HEIGHT_M-headern).
+          Centrerad vertikalt vid PLINTH_HEIGHT_M/2 eftersom BoxGeometry
+          är centrerad kring origin. Rotation följer OBB:s vinkel så
+          hörnen ligger vid väggarnas hörn. `receiveShadow` alltid på;
+          `castShadow` toggle:as i useFrame per ORDER 055 Del A. Renderas
+          FÖRE väggen så väggen skriver ovanpå plinthens topphörn (och
+          döljer skarven där de överlappar). userData bär flagga för
+          playwright-mätningen via `__nxPlayerBusinessPlinthMeasure()`. */}
+      <mesh
+        ref={plinthMeshRef}
+        position={[layout.centre[0], PLINTH_HEIGHT_M / 2, layout.centre[1]]}
+        rotation={[0, roomRotY, 0]}
+        scale={[plinthScaleX, PLINTH_HEIGHT_M, plinthScaleZ]}
+        receiveShadow
+        userData={{ playerBusinessPlinth: true }}
+      >
+        <boxGeometry args={[1, 1, 1]} />
+        <meshStandardMaterial
+          ref={plinthMaterialRef}
+          color={PLINTH_COLOUR}
+          roughness={0.95}
+          metalness={0}
+          transparent
+        />
+      </mesh>
+
       {/* Walls — side quads only, no top or bottom cap. FrontSide (the
           material default) is enough now that walls fade to 0 alongside
           the roof: the camera never sees the walls translucent from
