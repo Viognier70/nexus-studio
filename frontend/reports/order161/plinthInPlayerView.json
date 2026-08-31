@@ -1,0 +1,20 @@
+{
+  "cameraPreset": "myBusiness",
+  "cameraPresetTargetDistanceM": 24,
+  "cameraPresetPitchRad": 0.8726646259971648,
+  "viewLabel": "Kvarterskrogen",
+  "plinthMeasure": {
+    "yMinM": 0,
+    "yMaxM": 0.42,
+    "heightM": 0.42,
+    "xExtentM": 11.892716727545078,
+    "zExtentM": 15.74281258826057,
+    "centreX": 31.597500000000004,
+    "centreZ": -16.7375,
+    "plinthOpacity": 0,
+    "wallOpacity": 0
+  },
+  "visibilityThreshold": 0.05,
+  "visibleFromMyBusiness": false,
+  "finding": "plinth-opacity 0.000 ≤ 0.05 — sockeln syns INTE från myBusiness-preset (kopplad till wall-fade per ORDER 159 §DoD 2). Detta är ett fynd, inte en bugg — se ORDER 161 §5."
+}
