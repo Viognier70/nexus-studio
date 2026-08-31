@@ -203,6 +203,32 @@ fallet (shareFactor klipps mot 0,55, inte mot 0), och testet i
 `competitors.test.ts` bevisar återhämtning ur golvet är möjlig utan att
 väntetiden är asymptotisk.
 
+**§7-fynd (uppföljning efter §6-utökningens horisont-mätning,
+2026-08-31):** alternativ A bär i formen — men bara upp till en
+punkt. En spelare som stadigt förbättrar sitt rykte når efter cirka
+tio dagar shareFactor-taket och stannar där. Från den dagen är
+konkurrensen över: ytterligare rykteshöjning ger inte fler gäster,
+eftersom konkurrenternas rykte är statiskt och taket blir enda
+begränsningen.
+
+Fyndets *form*, inte dess exakta dagsnummer: **statiska konkurrenter
++ förbättrande spelare → plateau efter cirka tio dagar.** De precisa
+tal-värdena — vilken dag taket klipper på just denna kalibrering,
+antal plateau-dagar mot horisontens slut — läses ur
+`frontend/reports/order166/shareHorizon.json` (`static.firstDayAtCeiling`
+respektive `static.daysAtCeiling`). Kalibreringen får justeras utan
+att fyndet ändras: så länge spelarens rykte kan klättra över
+CEIL × field-genomsnitt utan att fältet svarar, är plateau
+inbyggd i alternativ A.
+
+Alternativ B (global efterfrågansfördelning med dynamiska
+konkurrenter) förblir öppen — den skulle strukturellt lösa
+plateaun genom att göra konkurrensen levande hela horisonten.
+Beslutet är Vision Owners. Ordern noterar bara att §7-villkoret
+(*"om det visar sig att en rykteskvot inte går att beräkna
+meningsfullt..."*) ligger nära i formen "beräkningen fungerar,
+men bara i ett fönster".
+
 Egen gren `order-166-konkurrenterna` från main.
 
 ---
