@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { CLIPPED_ROADS, GROUND_Y, WORLD } from '../content/world';
 import type { RawRoad, Vec2Tuple } from '../content/world';
 import { specFor, type RoadRole } from '../content/roadRoles';
-import { inside, polygonBounds } from '../procgen/geom';
+import { clipPolylineForVehicles, inside, polygonBounds } from '../procgen/geom';
 
 // Surfaces where a paved sidewalk would visually contradict the road
 // itself. A compacted gravel local_street receives no paved kerb + walk
@@ -158,6 +158,48 @@ function tierForRole(
   return 'base';
 }
 
+// ORDER 158 — polygon-guard. Analog to ORDER 132's `windowsFor` guard
+// in OsmBuildings.tsx: after ORDER 132 discovered that windows were
+// generated from the OBB face and hung metres outside the polygon,
+// the fix was to drop windows whose XZ lay outside the polygon
+// footprint. Here the mirror problem is the road envelope (carriageway
+// + trottoar) crossing INTO the polygon: ORDER 135 measured 32
+// buildings that overlap the rendered envelope, worst 4.36 m.
+//
+// The strategy is the same shape as ORDER 132's — compute the render
+// geometry, then drop the part that falls inside a building — but
+// applied to a POLYLINE with WIDTH rather than a point. The whole
+// envelope is clipped, not just the centreline (ORDER 135 showed
+// that the carriageway alone hits 30 buildings; the full envelope
+// including trottoar hits 32 — the 2 extra come from the sidewalk).
+//
+// Implementation reuses `clipPolylineForVehicles` from procgen/geom,
+// which already densely resamples a polyline and emits contiguous
+// safe runs. The clearance passed here is the envelope half-width
+// (asphalt half + sidewalk per side); a centreline point closer to
+// any building than that clearance means the envelope crosses the
+// wall, and the piece is dropped there. `stepM = 1.0` gives metre-
+// scale resolution — the finest detail that could matter for a
+// road-envelope collision. `bufferM = 0.5` shrinks each surviving
+// run 0.5 m from the transition so the piece terminates comfortably
+// before the wall rather than at the exact envelope-vs-polygon
+// intersection.
+//
+// Roads that ORDER 136 identified as structural (19 of 32 fall in
+// this class — polyline goes through the building, no width change
+// helps) will emit a hole where the building sits. That's the
+// ordens känsligaste punkt per ORDER 158 §DoD 4 — a road with a
+// hole reads differently from a road through a wall, and the
+// verify-script + report document which outcome each case landed in.
+//
+// Footpath / cycleway / track are NOT excluded: an envelope through
+// a wall reads wrong regardless of tier, and the narrow envelope of
+// these roles rarely triggers the guard anyway.
+function clipRoadForEnvelope(road: RawRoad, halfEnvelope: number): Vec2Tuple[][] {
+  if (halfEnvelope <= 0) return [road.poly];
+  return clipPolylineForVehicles(road.poly, halfEnvelope);
+}
+
 export function OsmRoads() {
   const { ped, base, local, secondary, main, primary } = useMemo(() => {
     const ped: RoadPiece[] = [];
@@ -170,74 +212,94 @@ export function OsmRoads() {
       if (road.poly.length < 2) continue;
       const spec = specFor(road);
       const half = spec.width / 2;
-      const shape = buildRoadShape(road, half);
-      if (!shape) continue;
-      const geo = new THREE.ShapeGeometry(shape);
-      geo.rotateX(-Math.PI / 2);
-      let sidewalkGeo: THREE.BufferGeometry | null = null;
-      let kerbGeo: THREE.BufferGeometry | null = null;
       const surfaceIsUnpaved =
         road.surface != null && UNPAVED_SURFACES.has(road.surface);
-      if (
-        spec.sidewalkWidth > 0 &&
-        !surfaceIsUnpaved &&
-        sidewalkClearsBuildings(road.poly, half + spec.sidewalkWidth)
-      ) {
-        const swShape = buildRoadShape(road, half + spec.sidewalkWidth);
-        if (swShape) {
-          sidewalkGeo = new THREE.ShapeGeometry(swShape);
-          sidewalkGeo.rotateX(-Math.PI / 2);
+      // ORDER 158 — envelope clip. The half-envelope is asphalt half
+      // plus sidewalk per side; unpaved surfaces skip the sidewalk band
+      // (same rule the sidewalk renderer below already applies) so the
+      // clip clearance matches the geometry that will actually draw.
+      const halfEnvelope =
+        half + (surfaceIsUnpaved ? 0 : spec.sidewalkWidth);
+      const envelopePieces = clipRoadForEnvelope(road, halfEnvelope);
+      for (let pi = 0; pi < envelopePieces.length; pi++) {
+        const piecePoly = envelopePieces[pi];
+        if (piecePoly.length < 2) continue;
+        // Each polyline piece is treated as its own RawRoad. Piece 0
+        // inherits the parent id (so any existing lookup still resolves
+        // to the first piece, matching the CLIPPED_ROADS `#pN` convention);
+        // subsequent pieces get an `#eN` suffix (`e` = envelope-clip).
+        const pieceRoad: RawRoad = {
+          ...road,
+          id: pi === 0 ? road.id : `${road.id}#e${pi}`,
+          poly: piecePoly
+        };
+        const shape = buildRoadShape(pieceRoad, half);
+        if (!shape) continue;
+        const geo = new THREE.ShapeGeometry(shape);
+        geo.rotateX(-Math.PI / 2);
+        let sidewalkGeo: THREE.BufferGeometry | null = null;
+        let kerbGeo: THREE.BufferGeometry | null = null;
+        if (
+          spec.sidewalkWidth > 0 &&
+          !surfaceIsUnpaved &&
+          sidewalkClearsBuildings(pieceRoad.poly, half + spec.sidewalkWidth)
+        ) {
+          const swShape = buildRoadShape(pieceRoad, half + spec.sidewalkWidth);
+          if (swShape) {
+            sidewalkGeo = new THREE.ShapeGeometry(swShape);
+            sidewalkGeo.rotateX(-Math.PI / 2);
+          }
+          const kbShape = buildRoadShape(pieceRoad, half + 0.18);
+          if (kbShape) {
+            kerbGeo = new THREE.ShapeGeometry(kbShape);
+            kerbGeo.rotateX(-Math.PI / 2);
+          }
         }
-        const kbShape = buildRoadShape(road, half + 0.18);
-        if (kbShape) {
-          kerbGeo = new THREE.ShapeGeometry(kbShape);
-          kerbGeo.rotateX(-Math.PI / 2);
+        let centreGeo: THREE.BufferGeometry | null = null;
+        if (spec.centreline) {
+          const stripe = buildRoadShape(pieceRoad, 0.14);
+          if (stripe) {
+            centreGeo = new THREE.ShapeGeometry(stripe);
+            centreGeo.rotateX(-Math.PI / 2);
+          }
         }
-      }
-      let centreGeo: THREE.BufferGeometry | null = null;
-      if (spec.centreline) {
-        const stripe = buildRoadShape(road, 0.14);
-        if (stripe) {
-          centreGeo = new THREE.ShapeGeometry(stripe);
-          centreGeo.rotateX(-Math.PI / 2);
+        let edgeLGeo: THREE.BufferGeometry | null = null;
+        let edgeRGeo: THREE.BufferGeometry | null = null;
+        if (spec.edgeLine) {
+          // Edge lines sit inset 0.35 m from the carriageway edge, 0.10 m
+          // thick. Only on the principal through-road (main).
+          const edgeOff = half - 0.35;
+          const eL = buildOffsetLineShape(pieceRoad, edgeOff, 0.10);
+          if (eL) {
+            edgeLGeo = new THREE.ShapeGeometry(eL);
+            edgeLGeo.rotateX(-Math.PI / 2);
+          }
+          const eR = buildOffsetLineShape(pieceRoad, -edgeOff, 0.10);
+          if (eR) {
+            edgeRGeo = new THREE.ShapeGeometry(eR);
+            edgeRGeo.rotateX(-Math.PI / 2);
+          }
         }
-      }
-      let edgeLGeo: THREE.BufferGeometry | null = null;
-      let edgeRGeo: THREE.BufferGeometry | null = null;
-      if (spec.edgeLine) {
-        // Edge lines sit inset 0.35 m from the carriageway edge, 0.10 m
-        // thick. Only on the principal through-road (main).
-        const edgeOff = half - 0.35;
-        const eL = buildOffsetLineShape(road, edgeOff, 0.10);
-        if (eL) {
-          edgeLGeo = new THREE.ShapeGeometry(eL);
-          edgeLGeo.rotateX(-Math.PI / 2);
-        }
-        const eR = buildOffsetLineShape(road, -edgeOff, 0.10);
-        if (eR) {
-          edgeRGeo = new THREE.ShapeGeometry(eR);
-          edgeRGeo.rotateX(-Math.PI / 2);
-        }
-      }
-      const piece: RoadPiece = {
-        id: road.id,
-        role: spec.role,
-        colour: spec.colour,
-        geo,
-        sidewalkGeo,
-        kerbGeo,
-        centreGeo,
-        edgeLGeo,
-        edgeRGeo
-      };
-      if (spec.ped) ped.push(piece);
-      else {
-        switch (tierForRole(spec.role)) {
-          case 'primary': primary.push(piece); break;
-          case 'main': main.push(piece); break;
-          case 'secondary': secondary.push(piece); break;
-          case 'local': local.push(piece); break;
-          default: base.push(piece);
+        const piece: RoadPiece = {
+          id: pieceRoad.id,
+          role: spec.role,
+          colour: spec.colour,
+          geo,
+          sidewalkGeo,
+          kerbGeo,
+          centreGeo,
+          edgeLGeo,
+          edgeRGeo
+        };
+        if (spec.ped) ped.push(piece);
+        else {
+          switch (tierForRole(spec.role)) {
+            case 'primary': primary.push(piece); break;
+            case 'main': main.push(piece); break;
+            case 'secondary': secondary.push(piece); break;
+            case 'local': local.push(piece); break;
+            default: base.push(piece);
+          }
         }
       }
     }
