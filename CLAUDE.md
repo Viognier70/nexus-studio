@@ -118,6 +118,8 @@ npm run preview    # förhandsgranska bygget
 
 Alla gav korrekt data om fel sak (eller inget data alls fast rapporterat som mätt) — farligare än ingen data eftersom slutsatserna såg giltiga ut. Fall 4-6 visar att regeln inte bara gäller geometri: en sim-signal, en kapacitetsspec, eller en förment mätsiffra kan lika gärna vara "rätt tal om fel sak" — eller helt obestyrkt.
 
+**Precisering (ORDER 160, 2026-08-31):** ett verifierande tal ska läsas ur skriptets utdata (`reports/<order>/<name>.json`), inte anges i rapporten. Rapporten citerar filnamnet, inte det inklistrade talet. Se `documentation/architecture/ORDER_160_VERIFIERING_UR_SKRIPT.md`.
+
 ## Regler för Claude Code
 
 1. **Typecheck före varje commit.** `npm run typecheck` måste vara grönt. Ett bygge (`npm run build`) ska gå igenom före push.
