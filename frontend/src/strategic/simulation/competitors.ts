@@ -22,12 +22,40 @@ export interface Competitor {
   id: string;
   name: string;
   businessClass: BusinessClass;
-  /** Rykte 0..1, samma skala som spelarens `state.reputation`. */
+  /** Rykte 0..1, samma skala som spelarens `state.reputation`.
+      ORDER 167: kan röra sig per `motion` nedan. Startvärdet är
+      baseline mot vilken NPC:n driver tillbaka. */
   reputation: number;
   /** OSM way-id ur ORDER 164:s kandidatlistor — byggnaden som
       konkurrenten "bor" i, för framtida rendering. Inte konsumerad
       av sim-lagret; hålls som data för spårbarhet. */
   buildingId: string;
+  /**
+   * ORDER 167 §2 — konkurrentens rörelsemodell. Rörelsen förklaras i
+   * en mening: **konkurrenten driver mot ett mål som förskjuts av
+   * spelarens rykte, med per-NPC lärhastighet, clamp:at till ett
+   * per-NPC rimlighetsband.**
+   *
+   * `target(day) = baseline + adaptSensitivity × (playerReputation − baseline)`
+   * `next(day)   = clamp(current + learnRate × (target − current), MOTION_FLOOR, MOTION_CEIL)`
+   *
+   * - `baseline` — NPC:ns "naturliga" nivå. Om spelaren försvinner (rykte
+   *   = baseline) driver konkurrenten tillbaka hit.
+   * - `adaptSensitivity` (0..1) — hur mycket NPC:n "sneglar på spelaren".
+   *   Känslig konkurrent: värdet högt, målet dras med spelaren. Trög
+   *   konkurrent: värdet lågt, målet ligger nära baseline.
+   * - `learnRate` (0..1) — hur snabbt NPC:n rör sig mot sitt mål per
+   *   dag. Trög NPC: låg learnRate, ändras långsamt. Snabb NPC: hög
+   *   learnRate.
+   *
+   * §2.3-krav (fältet ska vara olika): minst en trög (låg learnRate)
+   * och minst en känslig (hög adaptSensitivity) i AI_COMPETITORS.
+   */
+  motion: {
+    baseline: number;
+    adaptSensitivity: number;
+    learnRate: number;
+  };
 }
 
 // ---------- bandet ----------
@@ -56,6 +84,24 @@ export const SHARE_FACTOR_CEIL = 1.4;
 
 /** Neutralvärde — spelaren ligger i mitten av fältet. */
 export const SHARE_FACTOR_NEUTRAL = 1.0;
+
+// ---------- ORDER 167 — rörelsemodellens clamp-band ----------
+
+/**
+ * Undre rimlighetsgräns för en konkurrents rykte. Under detta räknas
+ * NPC:n praktiskt taget som frånvarande. §DoD 3-krav (ORDER 167):
+ * en konkurrent som driver mot noll är inte längre konkurrent — bandet
+ * håller.
+ */
+export const MOTION_REP_FLOOR = 0.30;
+
+/**
+ * Övre rimlighetsgräns. En konkurrent som driver mot 1,0 blir en
+ * osårbar rival som spelaren inte kan komma i närheten av — hela
+ * poängen med ORDER 166:s SHARE_FACTOR_CEIL skulle förloras. Bandet
+ * håller så fältet finns kvar som något spelaren kan mäta sig mot.
+ */
+export const MOTION_REP_CEIL = 0.85;
 
 // ---------- klass-närhet (§2.3) ----------
 
@@ -151,33 +197,50 @@ export function classSimilarity(
  * shareFactor-beräkningen behöver ändras.
  */
 export const AI_COMPETITORS: readonly Competitor[] = [
+  // Kvarnkrogen — TRÖG konkurrent (§2.3). Låg learnRate + låg
+  // adaptSensitivity: gör lite, sneglar knappt. Rör sig men i
+  // sköldpaddstempo. Spelaren kan förbi men driften tillbaka mot
+  // baseline är seg — historisk närvaro som håller emot.
   {
     id: 'npc-kvarnkrogen',
     name: 'Kvarnkrogen',
     businessClass: 'kvarterskrogen',
     reputation: 0.55,
-    buildingId: 'w611766162'
+    buildingId: 'w611766162',
+    motion: { baseline: 0.55, adaptSensitivity: 0.20, learnRate: 0.02 }
   },
+  // Prästgatans krog — mellanting. Måttlig learnRate + måttlig
+  // adaptSensitivity. Sneglar på spelaren, rör sig i normalt tempo.
   {
     id: 'npc-prästgatans-krog',
     name: 'Prästgatans krog',
     businessClass: 'kvarterskrogen',
     reputation: 0.70,
-    buildingId: 'w611624852'
+    buildingId: 'w611624852',
+    motion: { baseline: 0.70, adaptSensitivity: 0.55, learnRate: 0.07 }
   },
+  // Bergsmansöl — KÄNSLIG konkurrent (§2.3). Hög adaptSensitivity:
+  // målet dras kraftigt med spelaren. Snabb learnRate: rör sig
+  // snabbt mot målet. Ambitiös rival som lär sig när spelaren
+  // förbättras.
   {
     id: 'npc-bergsmansöl',
     name: 'Bergsmansöl',
     businessClass: 'ölkrogen',
     reputation: 0.50,
-    buildingId: 'w870510857'
+    buildingId: 'w870510857',
+    motion: { baseline: 0.50, adaptSensitivity: 0.85, learnRate: 0.12 }
   },
+  // Torgets vinkällare — mellan-mellanting med hög baseline. Måttlig
+  // adaptSensitivity, låg-måttlig learnRate. Etablerad ort som rör
+  // sig försiktigt.
   {
     id: 'npc-torgets-vinkällare',
     name: 'Torgets vinkällare',
     businessClass: 'vinbaren',
     reputation: 0.65,
-    buildingId: 'w870510863'
+    buildingId: 'w870510863',
+    motion: { baseline: 0.65, adaptSensitivity: 0.40, learnRate: 0.05 }
   }
 ] as const;
 
@@ -261,4 +324,50 @@ export function shareFactorAtFloor(f: number): boolean {
 }
 export function shareFactorAtCeiling(f: number): boolean {
   return f >= SHARE_FACTOR_CEIL - 1e-6;
+}
+
+// ---------- ORDER 167 §2 — rörelsemodell ----------
+
+/**
+ * ORDER 167 §2 — en dags rörelse per konkurrent.
+ *
+ * **Rörelsen i en mening:** konkurrenten driver mot ett mål som
+ * förskjuts av spelarens rykte, med per-NPC lärhastighet, clamp:at
+ * till ett per-NPC rimlighetsband.
+ *
+ * Formeln, per NPC:
+ *
+ *     target = baseline + adaptSensitivity × (playerRep − baseline)
+ *     next   = clamp(current + learnRate × (target − current),
+ *                    MOTION_REP_FLOOR, MOTION_REP_CEIL)
+ *
+ * §2.2 spelaren ska inte kunna springa ifrån permanent: fältets
+ * medelvärde släpar efter men följer efter (adaptSensitivity > 0).
+ * §2.2 taket ska inte bli gummivägg: konkurrenterna når inte 1,0
+ * (MOTION_REP_CEIL = 0,85), och spelarens rykte kan alltid överstiga
+ * fältet — bara inte oändligt mycket.
+ * §2.3 fältet olika: se AI_COMPETITORS-per-rad motion-värden.
+ *
+ * Pure function. Returnerar ny array; ingen mutation av indata.
+ *
+ * @param competitors  Nuvarande fält.
+ * @param playerReputation  Spelarens rykte den här dagen (0..1).
+ * @returns Nytt fält där varje konkurrents `reputation` uppdaterats
+ *          efter en dags rörelse.
+ */
+export function evolveCompetitors(
+  competitors: readonly Competitor[],
+  playerReputation: number
+): Competitor[] {
+  return competitors.map((c) => {
+    const target =
+      c.motion.baseline +
+      c.motion.adaptSensitivity * (playerReputation - c.motion.baseline);
+    const drift = c.motion.learnRate * (target - c.reputation);
+    const next = Math.max(
+      MOTION_REP_FLOOR,
+      Math.min(MOTION_REP_CEIL, c.reputation + drift)
+    );
+    return { ...c, reputation: next };
+  });
 }
