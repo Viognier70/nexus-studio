@@ -12,12 +12,17 @@
 // A calm service reads as stations held; a busy one reads as pucks
 // crossing the floor. At load > 1.0 the drift saturates.
 //
-// Roles → stations, using the actual player-business OBB frame so
-// the mapping survives building swaps:
-//   värd     → 1 m inside the entrance (host at the door)
-//   servitör → floor centre (circulates near tables)
-//   kock     → the far end of the room (behind the bar / pass)
-//   lärling  → mid-floor (helps everywhere)
+// Roles → stations (ORDER 154 — Vision Owner-mappningstabellen).
+// Primärkälla: `businessRoomRef.current.staffStationsByRole` som
+// scenerna publicerar via `stationFor(role, room)` i businessRoom.ts.
+// Fallback (för klasser vars scen ej monterat ännu, eller när ref
+// saknas): den restaurangsspecifika `computeStations(layout)` här —
+// bevarad så äldre kod inte tystnar innan alla klasser har scener.
+//
+// Roll-mappningen är kontraktets ansvar per klass, inte renderarens.
+// Se STATION_MAP i businessRoom.ts för de 24 cellerna. Renderaren
+// hanterar bara två specialfall: (1) null-cell → fallback via
+// layoutens beräkning; (2) ref saknad → samma fallback.
 
 import { useFrame } from '@react-three/fiber';
 import { useEffect, useMemo, useRef } from 'react';
@@ -28,7 +33,7 @@ import { GRAY_BOX_CAMERA } from '../content/grythyttan';
 import { useSimState } from '../simulation/SimulationProvider';
 import { COVERS_PER_MEMBER } from '../simulation/team';
 import type { StaffRole, TeamMember } from '../types';
-import { staffPositionsRef } from './interiorSharedState';
+import { staffPositionsRef, businessRoomRef } from './interiorSharedState';
 import { derivePipCarriers } from '../ui/RoomCardPanel/guestPatterns';
 import {
   PIP_COLOUR,
@@ -191,6 +196,16 @@ export function InteriorStaff() {
   useFrame((_, delta) => {
     if (!groupRef.current || !layout || !stations) return;
 
+    // ORDER 154 — kontraktets sim-roll→station-mappning per klass.
+    // Läs businessRoomRef när klassen matchar; annars behåll den
+    // layout-baserade beräkningen som fallback. `contractStations`
+    // är null när ingen scen monterat ännu.
+    const roomChan = businessRoomRef.current;
+    const contractStations =
+      roomChan && roomChan.businessClass === sim.businessClass
+        ? roomChan.staffStationsByRole
+        : null;
+
     const dist = actualRef.current.distance;
     const visibility = 1 - smoothstep(
       GRAY_BOX_CAMERA.restaurantInteriorFadeMid - GRAY_BOX_CAMERA.restaurantInteriorFadeHalf,
@@ -248,7 +263,17 @@ export function InteriorStaff() {
 
     for (const member of sim.team.members) {
       seenIds.add(member.id);
-      const home = stations[member.role] ?? stations['servitör'];
+      // ORDER 154 — kontraktets värde vinner när det finns; annars
+      // layout-baserad fallback; till sist servitör-station som sista
+      // utväg (för klasser vars STATION_MAP-cell är null och layouten
+      // inte har rollen — sällsynt). Foodtruckens värd/lärling är
+      // t.ex. null i kontraktet — fallar tillbaka på layout.centre-
+      // relaterade positioner tills FoodtruckScene skriver en mer
+      // meningsfull placering (eller inte, per VO-beslut om att inte
+      // uppfinna platser).
+      const contractHome = contractStations?.[member.role] ?? null;
+      const home: XZ =
+        contractHome ?? stations[member.role] ?? stations['servitör'];
 
       let pos = positionsRef.current.get(member.id);
       if (!pos) {

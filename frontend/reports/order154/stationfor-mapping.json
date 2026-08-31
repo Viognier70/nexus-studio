@@ -1,0 +1,191 @@
+{
+  "kvarterskrogen": {
+    "värd": {
+      "stationId": "host",
+      "worldXZ": [
+        5.8,
+        1.6
+      ],
+      "note": "Vid entrén, innanför dörren och ur köns väg. Ser både dörren och bordsraden."
+    },
+    "servitör": {
+      "stationId": "server",
+      "worldXZ": [
+        0.6,
+        -2.3
+      ],
+      "note": "I servicegången mellan disken och bordsraden. Når alla fem bord och passluckan utan att korsa köordningen."
+    },
+    "kock": {
+      "stationId": "chef",
+      "worldXZ": [
+        -6.63,
+        -4.45
+      ],
+      "note": "I pentryt, mellan spis och prep. Två stationer inom ett steg, passluckan tre."
+    },
+    "lärling": {
+      "stationId": "server",
+      "worldXZ": [
+        0.6,
+        -2.3
+      ],
+      "note": "I servicegången mellan disken och bordsraden. Når alla fem bord och passluckan utan att korsa köordningen."
+    }
+  },
+  "ölkrogen": {
+    "värd": {
+      "stationId": "__entrance",
+      "worldXZ": [
+        7.2,
+        0
+      ],
+      "note": "Värdens plats: rummets entré (syntetiserad av stationFor — ingen host-station i geometrin)."
+    },
+    "servitör": {
+      "stationId": "runner",
+      "worldXZ": [
+        -3.05,
+        3.2
+      ],
+      "note": "Vid passluckan. Bär ut till bord; ölen hämtas vid disken."
+    },
+    "kock": {
+      "stationId": "brewer",
+      "worldXZ": [
+        -5.5,
+        -3.3
+      ],
+      "note": "I L-hörnet mellan tankraden och bryggverket. Vänd mot mäskkar och kokkärl."
+    },
+    "lärling": {
+      "stationId": "runner",
+      "worldXZ": [
+        -3.05,
+        3.2
+      ],
+      "note": "Vid passluckan. Bär ut till bord; ölen hämtas vid disken."
+    }
+  },
+  "vinbaren": {
+    "värd": {
+      "stationId": "__entrance",
+      "worldXZ": [
+        7.2,
+        0
+      ],
+      "note": "Värdens plats: rummets entré (syntetiserad av stationFor — ingen host-station i geometrin)."
+    },
+    "servitör": {
+      "stationId": "runner",
+      "worldXZ": [
+        -3.9,
+        3.3
+      ],
+      "note": "Vid passluckan. Bär ut smårätter; vinet hämtas vid disken."
+    },
+    "kock": {
+      "stationId": "cook",
+      "worldXZ": [
+        -6,
+        3.4
+      ],
+      "note": "Vid planchan. Två stationer inom ett steg: plancha, kall prep."
+    },
+    "lärling": {
+      "stationId": "runner",
+      "worldXZ": [
+        -3.9,
+        3.3
+      ],
+      "note": "Vid passluckan. Bär ut smårätter; vinet hämtas vid disken."
+    }
+  },
+  "gästgiveriet": {
+    "värd": {
+      "stationId": "host",
+      "worldXZ": [
+        1.6,
+        8.3
+      ],
+      "note": "Värdfolket, innanför salens dörr mot gården. Tar emot både gäster utifrån och gäster som kommer ner från rummen."
+    },
+    "servitör": {
+      "stationId": "hallA",
+      "worldXZ": [
+        -9.3,
+        2.7
+      ],
+      "note": "Salsservering, långbordens gång. Fyra bord om tolv."
+    },
+    "kock": {
+      "stationId": "chef",
+      "worldXZ": [
+        -8.4,
+        -6.6
+      ],
+      "note": "Vid spislinjen, mitt i kökets axel."
+    },
+    "lärling": {
+      "stationId": null,
+      "worldXZ": null,
+      "note": null
+    }
+  },
+  "foodtrucken": {
+    "värd": {
+      "stationId": null,
+      "worldXZ": null,
+      "note": null
+    },
+    "servitör": {
+      "stationId": "window",
+      "worldXZ": [
+        0.3,
+        0.245
+      ],
+      "note": "Innanför luckan. Ögonhöjd 2.08 m mot gästens 1,66 — personalen tittar ned, och det är vad en vagn är."
+    },
+    "kock": {
+      "stationId": "cook",
+      "worldXZ": [
+        -1.1,
+        -0.015
+      ],
+      "note": "Vid planchan mot bakväggen. Ett steg till prepbänken, två till luckan."
+    },
+    "lärling": {
+      "stationId": null,
+      "worldXZ": null,
+      "note": null
+    }
+  },
+  "nattklubben": {
+    "värd": {
+      "stationId": "door",
+      "worldXZ": [
+        6.75,
+        -2.2
+      ],
+      "note": "Vid dörren, innanför och åt sidan så kön inte blockeras. Ser hela entréhallen."
+    },
+    "servitör": {
+      "stationId": "floor",
+      "worldXZ": [
+        4,
+        2.6
+      ],
+      "note": "Golvpersonal mellan dansgolv och lounge. Plockar glas, den enda som rör sig fritt."
+    },
+    "kock": {
+      "stationId": null,
+      "worldXZ": null,
+      "note": null
+    },
+    "lärling": {
+      "stationId": null,
+      "worldXZ": null,
+      "note": null
+    }
+  }
+}

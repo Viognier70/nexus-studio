@@ -21,7 +21,13 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useSimState } from '../simulation/SimulationProvider';
 import { usePlayerBusinessInterior } from '../business/interiorLayout';
-import { createRoom, resolveWorldPositions, updateRoom, type BusinessRoom } from './businessRoom';
+import {
+  createRoom,
+  resolveWorldPositions,
+  resolveStaffStationsWorld,
+  updateRoom,
+  type BusinessRoom
+} from './businessRoom';
 import { disposeRestaurantGeometry } from './restaurantRoom';
 import { businessRoomRef } from './interiorSharedState';
 
@@ -54,6 +60,9 @@ export function RestaurantScene() {
     // usePlayerBusinessInterior().seats (som fortfarande råkar vara
     // 16 för restaurangen men är restaurangspecifik ändå).
     const world = resolveWorldPositions(room);
+    // ORDER 154 — publicera sim-rollernas hemstationer så InteriorStaff
+    // kan läsa dem i stället för att räkna ur layout.entrance/bar/centre.
+    const staffStationsByRole = resolveStaffStationsWorld(room);
     businessRoomRef.current = {
       businessClass: 'kvarterskrogen',
       seats: world.seats as [number, number][],
@@ -61,7 +70,8 @@ export function RestaurantScene() {
       stations: world.staffStations as [number, number][],
       entrance: world.entrance as [number, number],
       waitingSpot: world.waitingSpot as [number, number],
-      capacity: room.capacity
+      capacity: room.capacity,
+      staffStationsByRole
     };
     return () => {
       const r = roomRef.current;

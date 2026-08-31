@@ -26,6 +26,8 @@
 
 import type { StaffRole } from '../types';
 import type { BusinessClass } from '../business/businessClass';
+// StaffRole importeras redan för `SharedStaffPos` — samma import täcker
+// `staffStationsByRole` i SharedBusinessRoom (ORDER 154).
 
 export interface SharedStaffPos {
   x: number;
@@ -62,6 +64,15 @@ export interface SharedBusinessRoom {
   entrance: XZ;
   waitingSpot: XZ;
   capacity: number;
+  /**
+   * ORDER 154 — sim-rollernas hemstationer i värld-XZ, mappade via
+   * `stationFor(role, room)` i businessRoom.ts. `null` för roller
+   * vars klass saknar station enligt STATION_MAP (t.ex. nattklubbens
+   * kock, foodtruckens värd). InteriorStaff läser detta i stället
+   * för att räkna ur restaurangens layout — så personalpuckarna
+   * hamnar på rummets faktiska stationer per klass.
+   */
+  staffStationsByRole: Record<StaffRole, XZ | null>;
 }
 
 export const businessRoomRef: { current: SharedBusinessRoom | null } = {
