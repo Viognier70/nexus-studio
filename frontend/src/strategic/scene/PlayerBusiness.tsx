@@ -216,6 +216,13 @@ export function PlayerBusiness() {
       const box = new THREE.Box3().setFromObject(mesh);
       const size = new THREE.Vector3();
       box.getSize(size);
+      // ORDER 161 — inkludera nuvarande material-state så en playwright-
+      // check kan svara på "syns sockeln från just den här kameraposen?"
+      // utan att gissa ur en konstant. Opacity uppdateras varje frame
+      // av useFrame-blocket ovan; läsningen är alltså den faktiska
+      // renderade opaciteten vid mätögonblicket.
+      const plinthMat = plinthMaterialRef.current;
+      const wallMat = wallMaterialRef.current;
       return {
         yMinM: box.min.y,
         yMaxM: box.max.y,
@@ -223,7 +230,9 @@ export function PlayerBusiness() {
         xExtentM: size.x,
         zExtentM: size.z,
         centreX: (box.min.x + box.max.x) / 2,
-        centreZ: (box.min.z + box.max.z) / 2
+        centreZ: (box.min.z + box.max.z) / 2,
+        plinthOpacity: plinthMat ? plinthMat.opacity : null,
+        wallOpacity: wallMat ? wallMat.opacity : null
       };
     };
     return () => {

@@ -106,6 +106,7 @@ npm run preview    # förhandsgranska bygget
 - Konstanter (bredder, färger, offsets, tröskelvärden) importeras från samma modul renderingen läser dem ur. De replikeras inte med "rimliga defaults" och de läses inte från angränsande källor (OSM-tagg, asset-metadata, spec-fil) som renderingen inte konsulterar.
 - Om replikering är oundviklig (t.ex. `.mjs`-script som inte kan importera TypeScript direkt): mätningen dokumenterar avvikelsen i sin header och länkar till den modul som är kanoniskt. En verifieringsrutin som bevisar `replikat === rendering` väger tyngre än ett antagande om det.
 - En rapport som säger "X gäller i spelet" refererar antingen till samma import som renderingen, eller redovisar avvikelsen. Utan det räknas rapporten som obestyrkt.
+- **Varje mätvärde i en order, en rapport eller en registerrad ska kunna spåras till raden i koden där det beräknas.** Ett tal utan sådan rad räknas som obestyrkt och får inte stå som verifiering. En order-DoD som anger ett tal pekar på filnamn + variabel eller JSON-fält där skriptet skrev det; en registerrad som citerar mätvärde pekar på rapportfilen. Utan fil är raden en beskrivning, inte ett bevis. (ORDER 161, 2026-08-31.)
 
 **Motivering — sex fall:**
 
