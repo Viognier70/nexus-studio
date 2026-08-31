@@ -12,10 +12,12 @@
 import { useState, type FormEvent } from 'react';
 import { strings } from '../../content/strings.sv';
 import { useBusiness } from './BusinessContext';
+import { useCamera } from '../camera/CameraContext';
 import './name-entry.css';
 
 export function NameEntryOverlay() {
   const { hasName, setName } = useBusiness();
+  const { jumpToPreset } = useCamera();
   const [draft, setDraft] = useState('');
   if (hasName) return null;
 
@@ -24,6 +26,15 @@ export function NameEntryOverlay() {
     const trimmed = draft.trim();
     if (trimmed.length === 0) return;
     setName(trimmed);
+    // ORDER 157 §1 — provspelet 2026-08-31: spelaren döpte sin
+    // verksamhet men kameran satt kvar på village. Playwright-scripten
+    // sätter `preset=myBusiness` i URL vid mount och landar direkt
+    // inne i lokalen; spelaren har ingen sådan väg utan tangent 4
+    // (dev-genväg). Efter namn-inmatning zoomar vi in på lokalen —
+    // den enda platsen som är meningsfull just då. CameraController
+    // dämpar från village (900 m) till myBusiness (28 m) över några
+    // sekunder, spelaren ser flygningen.
+    jumpToPreset('myBusiness');
   };
 
   return (

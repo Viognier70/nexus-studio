@@ -1,0 +1,24 @@
+{
+  "brewpub": {
+    "class": "olkrogen",
+    "labelBeforeNaming": "Grythyttan",
+    "labelAfterNaming": "Ölkrogen",
+    "labelUppercase": "uppercase",
+    "devPanelText": "DEV - fps(strat) cam= 38m*[35-75] day=1 morning service=- scenarios=0/0 cash= 120k econR=0.75 soc=0.55 eco=0.55 rep=0.61 credits=E0.00 T0.00 P0.00 key=- no weather (out of service) queue=0 scene=0 seated=0/20 (S:0 O:0 D:0 P:0)",
+    "hasLayoutDrift": false,
+    "hasRoomDrift": false,
+    "screenshot": "/Users/ashm/Projects/nexus-studio/frontend/reports/order157/viewlabel-olkrogen.png",
+    "expectedLabel": "Ölkrogen"
+  },
+  "restaurant": {
+    "class": "kvarterskrogen",
+    "labelBeforeNaming": "Grythyttan",
+    "labelAfterNaming": "Kvarterskrogen",
+    "labelUppercase": "uppercase",
+    "devPanelText": "DEV - fps(strat) cam= 38m*[35-75] day=1 morning service=- scenarios=0/0 cash= 120k econR=0.75 soc=0.55 eco=0.55 rep=0.61 credits=E0.00 T0.00 P0.00 key=- no weather (out of service) queue=0 scene=0 seated=0/16 (S:0 O:0 D:0 P:0)",
+    "hasLayoutDrift": false,
+    "hasRoomDrift": false,
+    "screenshot": "/Users/ashm/Projects/nexus-studio/frontend/reports/order157/viewlabel-kvarterskrogen.png",
+    "expectedLabel": "Kvarterskrogen"
+  }
+}

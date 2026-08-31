@@ -22,6 +22,7 @@ import { economicReadingNormalised } from '../simulation/cashReading';
 import { useSimState } from '../simulation/SimulationProvider';
 import { usePlayerBusinessInterior } from '../business/interiorLayout';
 import { businessHasSeats } from '../business/businessClass';
+import { businessRoomRef } from '../scene/interiorSharedState';
 import { fpsMeter } from '../../lib/fpsMeter';
 import { pixelSampler } from '../../lib/pixelSampler';
 import { harnessParams } from '../testHarness/urlParams';
@@ -165,7 +166,20 @@ export function DevPanel({ lastKey }: Props) {
         return ` (S:${s} O:${o} D:${d} P:${p})`;
       })();
   const capacity = sim.policies.capacity;
-  const layoutSeats = layout?.seats.length ?? 0;
+  // ORDER 157 §2 — provspelet 2026-08-31: ölkrogen visade
+  // `seated=0/20!layout=16`. `capacityFor()` säger 20 (rätt per
+  // businessClass.ts) medan `interiorLayout.seats.length` fortfarande
+  // är 16 (restaurantsspecifik). ORDER 150 monterade rummets faktiska
+  // kapacitet i `businessRoomRef.current.capacity` (20 för ölkrogen,
+  // 16 för kvarterskrogen); vi läser därifrån när klassen matchar och
+  // faller tillbaka på layout.seats.length för äldre kod / klasser
+  // vars scen ännu inte skriver refen. Följdverkan: drift-varningen
+  // (!layout=X) triggar bara på ÄKTA drift — kontraktets kapacitet ≠
+  // policies.capacity — inte längre på restaurantsspecifik shape.
+  const roomChan = businessRoomRef.current;
+  const roomChanCapacity =
+    roomChan?.businessClass === sim.businessClass ? roomChan.capacity : null;
+  const layoutSeats = roomChanCapacity ?? layout?.seats.length ?? 0;
   // ORDER 114 §5 DoD 8 — `scene=` räknar ALLA scen-relevanta figurer
   // (inklusive leaving/declined som är på väg ut). queue+seated
   // motsvarar vad SPELAREN läser som "aktiva gäster"; scene motsvarar
@@ -201,8 +215,14 @@ export function DevPanel({ lastKey }: Props) {
   // Seat-diagnos suffix (see comment on `layout` above). Always
   // present — even out-of-service, queueLive/seatedLive are the
   // authoritative "is anyone in the room right now" readout.
+  // ORDER 157 §2 — drift-suffixet kallas nu `!room=X` när det kommer
+  // från businessRoom-kontraktet (post-scenmount), och `!layout=X` när
+  // det fortfarande är interiorLayout-fallbacken (pre-mount eller
+  // klass utan scen). Etiketten pekar på källan som satt talet, så
+  // observatören ser var driften ligger utan att gissa.
+  const driftLabel = roomChanCapacity != null ? 'room' : 'layout';
   const seatStr = ` queue=${queueLive} scene=${sceneLive} seated=${seatedLive}/${capacity}${
-    seatDrift ? `!layout=${layoutSeats}` : ''
+    seatDrift ? `!${driftLabel}=${layoutSeats}` : ''
   }${seatBreakdown}`;
 
   // Log on-change when the live queue is non-empty. Vision Owner
