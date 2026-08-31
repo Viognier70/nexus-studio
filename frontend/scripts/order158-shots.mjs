@@ -119,12 +119,14 @@ async function main() {
       `#playtest=1&business=restaurant&period=lunch&focus=-30.7,-38.96&distance=45&yaw=0.2&pitch=0.96`,
       resolve(REPORT_DIR, `kyrkogatan-stub-${suffix}.png`)
     );
-    // 2) vw-torget-east-barn @ (65,15) — värsta hus-vs-väg ur ORDER
-    //    130 §3.1. Distans 45m, låg pitch (0.7 rad = 40°) för att se
-    //    överlappet från snedbild.
+    // 2) vw-pra-19n @ (382.9, 28.6) — värsta envelope-överlapp per
+    //    ORDER 135 (4,36 m in i main road envelope). Ersätter
+    //    torget-east-barn som föll i skugga. Distans 55 m ger plats för
+    //    både byggnad och kolliderande huvudväg; högre pitch (0,95 rad
+    //    = 54°) undviker sydvägg-skuggan som drabbade förra vinkeln.
     await shot(page, vite.url,
-      `#playtest=1&business=restaurant&period=lunch&focus=65,15&distance=45&yaw=0.6&pitch=0.7`,
-      resolve(REPORT_DIR, `torget-east-barn-${suffix}.png`)
+      `#playtest=1&business=restaurant&period=lunch&focus=382.9,28.6&distance=55&yaw=0.8&pitch=0.95`,
+      resolve(REPORT_DIR, `pra-19n-${suffix}.png`)
     );
     // 3) Split-fall — Smedsgatan (w860753012). Segmentet startar
     //    (-19.89, 26.62), går söderut till (-28.9, -31.95). ORDER 158-
