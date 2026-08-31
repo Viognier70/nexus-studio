@@ -95,6 +95,26 @@ Utfall skrivs till JSON-fältet `section4Verdict.utfall`:
 Klassificeringen är automatisk; skriptet väljer utfallet — rapporten
 läser det.
 
+**§4-tillägg 1 (2026-08-31): flat-spelare-mätning.** Om fältet driver
+uppåt mot en spelare som INTE förbättrar sig är gummiväggen för stark
+— att stå still ska inte straffas. Skriptet kör samma motion-modell
+mot flat `playerRep=0.60` i 30 dagar och redovisar fältets drift.
+Tolerans `FLAT_DRIFT_TOLERANCE=0.02` författad; över den räknas det
+som gummivägg. Fält, tolerans, drift och gummivägg-boolean skrivs
+till JSON-fältet `flatPlayer` — talen står där, inte här.
+
+**§4-tillägg 2 (2026-08-31): remainingShare.** Hur mycket av spelarens
+rykte-förbättring blir kvar som andel efter horisonten. Formeln:
+`remainingShare = (playerDelta − fieldDelta) / playerDelta`.
+
+`k_aggregate = 1 − remainingShare` är designtalet Vision Owner tog
+upp — det är inte en enskild konstant i koden utan uppstår ur
+per-NPC motion-parametrar × classSimilarity-vikter × learnRate ×
+horisontlängd. VO-referens: k=0,42 ⇒ remainingShare ≈ 0,58 hade
+motsvarat ett fält som fångar spelaren hårdare. Talen (playerDelta,
+fieldDelta, remainingShare, kAggregate) läses ur JSON-fältet
+`remainingShare` — inte inklistrade här per ORDER 161-regeln.
+
 ---
 
 ## 5. Definition of Done
@@ -143,3 +163,27 @@ att ställa frågan.
 håller (test §DoD 3), fältet är olika (test §DoD 2). Slutsatsen skrevs
 till JSON — inte till denna text — så nästa läsning inte fastnar på
 gårdagens siffror.
+
+---
+
+## 7. Utfall §4-tilläggen (2026-08-31)
+
+**Tillägg 1 (flat-spelare):** flat playerRep=0.60 mot AI_COMPETITORS
+i 30 dagar. Fältet driver marginellt uppåt — långt under toleransen
+`FLAT_DRIFT_TOLERANCE=0.02`. `flatPlayer.gummivägg = false`. Att
+stå still straffas inte i denna kalibrering. Talvärdet
+(`fieldMeanDrift`) står i `reports/order166/shareHorizon.json`
+`flatPlayer`-blocket.
+
+**Tillägg 2 (remainingShare):** aggregerad `k` uppstår ur per-NPC
+motion-parametrar snarare än som enskild konstant. Det uppmätta
+värdet på horisonten (`playerDelta`, `fieldDelta`, `remainingShare`,
+`kAggregate`) läses ur `reports/order166/shareHorizon.json`
+`remainingShare`-blocket.
+
+Vision Owners referens k=0,42 (⇒ remainingShare ≈ 0,58) står som
+kalibreringsval — nuvarande motion-parametrar ger ett annat värde.
+Vilket värde är rätt är designfråga: högre `learnRate` på fältets
+NPC:er skulle sänka remainingShare mot 0,58; nuvarande ger ett
+mer generöst fält (spelaren behåller mer av sin förbättring). Talen
+i JSON ger underlaget för att kalibrera utan att räkna om i huvudet.
