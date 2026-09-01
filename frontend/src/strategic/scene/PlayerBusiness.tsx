@@ -463,8 +463,17 @@ export function PlayerBusiness() {
           the roof: the camera never sees the walls translucent from
           inside, so the DoubleSide inside-face handling from the earlier
           cutaway attempt isn't needed. useFrame keeps opacity +
-          depthWrite in sync with the roof crossfade. */}
-      <mesh ref={wallMeshRef} geometry={geom.wallGeo} receiveShadow>
+          depthWrite in sync with the roof crossfade.
+
+          userData-flaggan (ORDER 162 §DoD 1) läses av WallSurfaceAuditProbe
+          för att jämföra denna wall-mesh med närmaste grannbyggnads
+          ExtrudeGeometry-wall. Ingen render-effekt. */}
+      <mesh
+        ref={wallMeshRef}
+        geometry={geom.wallGeo}
+        receiveShadow
+        userData={{ playerBusinessWall: true }}
+      >
         <meshStandardMaterial
           ref={wallMaterialRef}
           color={WALL_COLOUR}

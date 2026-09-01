@@ -1057,13 +1057,15 @@ function BuildingPlinth({
   ridgeW,
   ridgeD,
   ridgeAngle,
-  wealth
+  wealth,
+  osmBuildingId
 }: {
   centre: [number, number];
   ridgeW: number;
   ridgeD: number;
   ridgeAngle: number;
   wealth: WealthTier;
+  osmBuildingId?: string;
 }) {
   // Modest houses sit on a shorter plinth; prosperous villas on a
   // taller, more visible stone base. Civic / commercial kinds default
@@ -1081,6 +1083,7 @@ function BuildingPlinth({
       position={[centre[0], H / 2, centre[1]]}
       rotation={[0, -ridgeAngle, 0]}
       scale={[pw + inset * 2 + 0.1, H, pd + inset * 2 + 0.1]}
+      userData={{ osmBuildingPlinth: true, osmBuildingId }}
     >
       <meshStandardMaterial color={colour} roughness={0.95} />
     </mesh>
@@ -1330,9 +1333,17 @@ export function OsmBuildings() {
                 ridgeD={b.ridgeD}
                 ridgeAngle={b.ridgeAngle}
                 wealth={b.profile.wealth}
+                osmBuildingId={b.id}
               />
             )}
-            <mesh geometry={b.geo}>
+            {/* ORDER 162 §DoD 1 — userData-taggen läses av
+                WallSurfaceAuditProbe för att jämföra grannens wall-mesh
+                (ExtrudeGeometry, alltid opak) mot PlayerBusiness wall-mesh
+                (sideWallGeometry, transparent + fade). Ingen render-effekt. */}
+            <mesh
+              geometry={b.geo}
+              userData={{ osmBuildingWall: true, osmBuildingId: b.id }}
+            >
               <meshStandardMaterial color={b.wallColour} roughness={0.9} />
             </mesh>
             {hasStoreyBands && (

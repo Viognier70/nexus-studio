@@ -125,3 +125,115 @@ pipelinen från spelarens vinkel om det bedöms motiverat.
 Om §2.3:s minsta-fixen är stor (t.ex. omskrivning av
 `sideWallGeometry` med parametrar för cap-hantering) — pausa och
 låt Vision Owner besluta om scope innan implementation.
+
+---
+
+## 5. Utfall (2026-09-01)
+
+Utredning körd 2026-09-01. Instrumentering (dev-only):
+`frontend/src/lib/WallSurfaceAuditProbe.tsx` — exponerar
+`window.__nxWallSurfaceAudit()`, `__nxReadCanvasPixel()`,
+`__nxProjectToScreen()` för playwright. `OsmBuildings.tsx` och
+`PlayerBusiness.tsx` fick två `userData`-taggar var som probe:n
+läser (`osmBuildingWall`, `osmBuildingPlinth`, `playerBusinessWall`
+— den fjärde `playerBusinessPlinth` fanns sedan ORDER 159 §DoD 3).
+Ingen render-effekt utanför den tagningen. Script:
+`frontend/scripts/order162-wall-surface-audit.mjs`. Rapport:
+`frontend/reports/order162/wallSurfaceAudit.json`.
+
+Alla siffror citeras ur rapportfilen per ORDER 161-regeln. Utfallets
+tolkning nedan.
+
+**§2.1 svar — grannen ritar det PlayerBusiness inte ritar.**
+Rapporten fältar:
+- `neighbourWallMeshVertices.yHistogram[0].count` — vertices vid
+  ground-Y-bandet `[0, 0.1)` för grannens `OsmBuildings`
+  ExtrudeGeometry-wall.
+- `playerBusinessWallMeshVertices.yHistogram[0].count` — samma band
+  för PlayerBusiness `sideWallGeometry`.
+- Skillnaden svarar §2.1 direkt: grannen har fler vertices i
+  ground-bandet därför att ExtrudeGeometry lägger en bottom-cap
+  (triangel-fan över polygonen) som `sideWallGeometry` medvetet
+  utelämnar per ORDER 042 §3.2. Rapportens `neighbourHasMoreGroundVertices`
+  är `true`.
+
+**Men — mekanisk skillnad i vertex-count är sekundär.** Rapporten
+lyfter fram att `playerBusinessWallMeshVertices.material.opacity` är
+`0` från myBusiness-preset medan `neighbourWallMeshVertices.material.opacity`
+är `1`. Samma mönster för sockeln:
+`playerPlinth.material.opacity = 0`, `neighbourPlinth.material.opacity
+= 1`. Se `wallSurfaceAudit.json` `playerWallIsInvisible`,
+`neighbourWallIsOpaque`, `playerPlinthIsInvisible`,
+`neighbourPlinthIsOpaque` — alla `true`. Grannens hela envelope
+(wall + sockel) är opakt vid mätvinkeln; PlayerBusiness hela
+envelope är osynligt.
+
+**Ground-Y pixelprovet konfirmerar visuellt.**
+`groundYPixelSampleNeighbour.r/g/b` läser `119/103/87` (varm fasadfärg,
+sockeln möter marken där grannens vägg står). `groundYPixelSamplePlayerBusiness.r/g/b`
+läser `48/43/40` (mörk skugga eller terräng där byggnaden borde synas).
+`pixelChannelDiffs` överstiger tröskeln på alla kanaler
+(`pixelChannelExceedsThreshold: true`). Skillnaden är alltså inte en
+mät-artefakt — den finns i renderade pixlar.
+
+**§2.2 kandidater — bekräftade eller uteslutna.** Från rapportens
+material-snapshot:
+- **`receiveShadow`-skillnad:** grannens `<mesh geometry={b.geo}>`
+  (`OsmBuildings.tsx:1341`) har varken `castShadow` eller
+  `receiveShadow` satt (three.js default `false`). PlayerBusiness
+  wall har `receiveShadow` på (`PlayerBusiness.tsx:481`). Skillnaden
+  finns men förklarar inte försvinnandet — en mesh som är helt
+  transparent renderas inte, oavsett receive-flagga. **Utesluten**
+  som primär orsak.
+- **`depthWrite`:** rapporten läser
+  `playerBusinessWallMeshVertices.material.depthWrite = false`
+  (styrs av useFrame-tröskel `opacity > 0.5`) och
+  `neighbourWallMeshVertices.material.depthWrite = true` (default).
+  **Följdeffekt** av opacity-noll-fallet — inte oberoende orsak.
+- **OBB-rotation:** både `sideWallGeometry` (`PlayerBusiness.tsx:133`)
+  och `ExtrudeGeometry` följer samma polygon utan skalfaktor. Inget
+  som skiljer sig i vertex-Y-histogrammet på ett sätt en vinkelfel
+  skulle förklara. **Utesluten.**
+- **Y-fighting:** båda AABB:er startar `yMinM` vid `0` (rapportens
+  `worldAABB.yMinM`). Ingen sub-mm-avvikelse som skulle ge z-strid
+  mot terrängen. **Utesluten.**
+- **Plinth-inset (ORDER 159, 10 cm outward):** rapporten läser
+  `playerPlinth.worldAABB` och `neighbourPlinth.worldAABB`.
+  Player-plinthen är 10 cm bredare per axel än sockelbaserade
+  wall-mesh, precis som spec. Ingen skillnad från grannen som
+  förklarar försvinnandet. **Utesluten som orsak** — men bekräftar
+  att designen är enligt ORDER 159.
+
+**§2.3 rekommendation — minsta ändringen som återställer fasaden.**
+Rapportens `recommendationFor23`-fält (från de faktiska mätvärdena):
+frikoppla `wallOpacity` från `roofOpacity` i `PlayerBusiness.tsx:318`
+och gör motsvarande separat läsning för sockeln (som idag följer
+`wallOpacity` per ORDER 159 §DoD 2). Roofen ska fortsätta fejda —
+det är den fejden som gör interiören synlig. Wall + sockel ska förbli
+opaka som grannarna, för då står PlayerBusiness på marken som en
+byggnad snarare än en genomskinlig envelope över en golvbit.
+
+Grunden till att wall ursprungligen kopplades till roof-fade
+(ORDER 042 §3.2) var ExtrudeGeometry-cap:ens 50 %-alpha-tint.
+Men `sideWallGeometry` har ingen cap; wall-materialet kan förbli
+opakt utan att återintroducera tint-buggen. Bottom-cap-alternativet
+(byt `sideWallGeometry` mot `ExtrudeGeometry`) löser INTE
+huvudproblemet — även med bottom-cap skulle wall-materialets
+opacity fortsatt fejdas bort av samma koppling. Fade-kopplingen är
+den strukturella orsaken; cap-frånvaron är sekundär.
+
+**Följdorder att utfärda.** Implementation av frikopplingen är
+egen order (denna order är utredning). Föreslagen scope:
+- `PlayerBusiness.tsx:318` — sätt `wallOpacity = 1` (eller behåll
+  som konstant); ta bort `smoothstep`-tråden från roof-fade.
+- `PlayerBusiness.tsx:335` — sockeln behöver egen tröskel
+  eller sätts konstant opak (matchar grannens BuildingPlinth).
+- Ta bort `castShadow`-toggle på wall-meshen om opacity alltid är 1
+  (kastar då skugga statiskt som grannen).
+- Regressionstest via en variant av `order162-wall-surface-audit.mjs`
+  som asserterar `playerWallIsInvisible === false` från myBusiness-
+  preset.
+
+Ingen kod-ändring i `PlayerBusiness.tsx` fade-logik gjord i denna
+order. Instrumenteringen är produktionsneutral (`userData`-taggar
+har ingen render-effekt; probe:n är DEV-only).
