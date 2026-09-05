@@ -240,6 +240,118 @@ export function PlayerBusiness() {
     };
   }, []);
 
+  // ORDER 173 §2 — dev-hook för playwright-verifiering av att
+  // myBusiness-vyn faktiskt visar interiören. ORDER 172-fyndet: fyra
+  // committade "skärmdumpar inifrån"-rapporter visade taket från
+  // utsidan (ORDER 144/149/150). Roten kunde inte avgöras utan att
+  // läsa material.opacity + actualRef.current.distance direkt från
+  // runtime. Denna hook returnerar båda för en mättidpunkt så
+  // verifieringstalet kommer ur three.js output (inte ur en konstant
+  // som scriptet också själv skulle citera). Följer ORDER 160/161-regeln.
+  useEffect(() => {
+    if (!import.meta.env.DEV || typeof window === 'undefined') return;
+    (window as unknown as { __nxPlayerBusinessOpacityMeasure?: () => object | null }).__nxPlayerBusinessOpacityMeasure = () => {
+      const roofMat = roofMaterialRef.current;
+      const wallMat = wallMaterialRef.current;
+      const plinthMat = plinthMaterialRef.current;
+      // ORDER 173 §Diagnos — läs interior mesh opacity direkt. Interior
+      // stub-materialen JSX-initieras med `opacity={0}` och beror på
+      // useFrame:s traverse (rad 383-401) för att uppdateras. Om
+      // traverse aldrig kör (eller om `interiorGroupVisible=false` fast
+      // vi är i fade-bandet) syns ingen interiör oavsett taket.
+      let interiorMeshCount = 0;
+      let interiorMeshesWithOpacityGt0 = 0;
+      const interiorMeshSample: Array<{ opacity: number; transparent: boolean; visible: boolean }> = [];
+      if (interiorGroupRef.current) {
+        interiorGroupRef.current.traverse((obj) => {
+          const mesh = obj as THREE.Mesh;
+          if (mesh.isMesh) {
+            interiorMeshCount++;
+            const mat = mesh.material as THREE.MeshStandardMaterial;
+            if (mat && 'opacity' in mat) {
+              if (mat.opacity > 0) interiorMeshesWithOpacityGt0++;
+              if (interiorMeshSample.length < 5) {
+                interiorMeshSample.push({ opacity: mat.opacity, transparent: mat.transparent, visible: mesh.visible });
+              }
+            }
+          }
+        });
+      }
+      return {
+        cameraDistanceM: actualRef.current.distance,
+        roofOpacity: roofMat ? roofMat.opacity : null,
+        roofTransparent: roofMat ? roofMat.transparent : null,
+        roofDepthWrite: roofMat ? roofMat.depthWrite : null,
+        wallOpacity: wallMat ? wallMat.opacity : null,
+        wallTransparent: wallMat ? wallMat.transparent : null,
+        wallDepthWrite: wallMat ? wallMat.depthWrite : null,
+        plinthOpacity: plinthMat ? plinthMat.opacity : null,
+        interiorGroupVisible: interiorGroupRef.current ? interiorGroupRef.current.visible : null,
+        interiorMeshCount,
+        interiorMeshesWithOpacityGt0,
+        interiorMeshSample,
+        roofFadeBand: [
+          GRAY_BOX_CAMERA.restaurantRoofFadeMid - GRAY_BOX_CAMERA.restaurantRoofFadeHalf,
+          GRAY_BOX_CAMERA.restaurantRoofFadeMid + GRAY_BOX_CAMERA.restaurantRoofFadeHalf
+        ],
+        interiorFadeBand: [
+          GRAY_BOX_CAMERA.restaurantInteriorFadeMid - GRAY_BOX_CAMERA.restaurantInteriorFadeHalf,
+          GRAY_BOX_CAMERA.restaurantInteriorFadeMid + GRAY_BOX_CAMERA.restaurantInteriorFadeHalf
+        ]
+      };
+    };
+    // ORDER 173 §Diagnos — traversera scenen och lista mesh:er vars
+    // bounding box överlappar spelarbyggnadens footprint. Playwright
+    // efter fix ser fortfarande "taket från utsidan" trots att
+    // PlayerBusinesss egen roof/wall/plinth är opacity=0. Något annat
+    // renderar samma footprint opakt — den här hooken listar det.
+    (window as unknown as { __nxSceneMeshesOverPlayerFootprint?: (halfExtent: number) => object }).__nxSceneMeshesOverPlayerFootprint = (halfExtent = 8) => {
+      const roofMesh = roofMeshRef.current;
+      if (!roofMesh) return { error: 'roofMesh-null' };
+      roofMesh.updateMatrixWorld(true);
+      const roofBox = new THREE.Box3().setFromObject(roofMesh);
+      const centreX = (roofBox.min.x + roofBox.max.x) / 2;
+      const centreZ = (roofBox.min.z + roofBox.max.z) / 2;
+      // Traversera hela scenen (från roofMesh:s parent uppåt).
+      let root: THREE.Object3D = roofMesh;
+      while (root.parent) root = root.parent;
+      const hits: Array<{ path: string; opacity: number | null; visible: boolean; bbox: object }> = [];
+      root.traverse((obj) => {
+        const mesh = obj as THREE.Mesh;
+        if (!mesh.isMesh) return;
+        if (mesh === roofMesh || mesh === wallMeshRef.current || mesh === plinthMeshRef.current) return;
+        mesh.updateMatrixWorld(true);
+        const box = new THREE.Box3().setFromObject(mesh);
+        if (!isFinite(box.min.x)) return;
+        // Enkelt overlap-test: mesh:s bounding box overlappar centrerad
+        // kvadrat vid roofCentre med halfExtent.
+        if (
+          box.max.x < centreX - halfExtent || box.min.x > centreX + halfExtent ||
+          box.max.z < centreZ - halfExtent || box.min.z > centreZ + halfExtent
+        ) return;
+        const mat = mesh.material as THREE.MeshStandardMaterial | undefined;
+        // Bygg path uppåt (upp till 3 nivåer).
+        const path: string[] = [];
+        let cur: THREE.Object3D | null = mesh;
+        for (let i = 0; i < 4 && cur; i++) {
+          path.unshift(cur.name || cur.type || '?');
+          cur = cur.parent;
+        }
+        hits.push({
+          path: path.join('/'),
+          opacity: mat && 'opacity' in mat ? mat.opacity : null,
+          visible: mesh.visible,
+          bbox: { minY: box.min.y, maxY: box.max.y, xExtent: box.max.x - box.min.x, zExtent: box.max.z - box.min.z }
+        });
+      });
+      return { footprintCentre: [centreX, centreZ], halfExtent, hitCount: hits.length, hits: hits.slice(0, 40) };
+    };
+    return () => {
+      delete (window as unknown as { __nxPlayerBusinessOpacityMeasure?: () => object | null }).__nxPlayerBusinessOpacityMeasure;
+      delete (window as unknown as { __nxSceneMeshesOverPlayerFootprint?: (halfExtent: number) => object }).__nxSceneMeshesOverPlayerFootprint;
+    };
+  }, [actualRef]);
+
   // Wall + roof geometry from the shared building polygon.
   const geom = useMemo(() => {
     if (!layout) return null;
@@ -430,7 +542,7 @@ export function PlayerBusiness() {
   void PLINTH_INSET_M;  // konstanten dokumenterar OsmBuildings-mönstret; layout.width är redan yttre måttet.
 
   return (
-    <group>
+    <group name="playerBusiness">
       {/* ORDER 159 — plinth (stenbas, portad från OsmBuildings.BuildingPlinth
           med commercial-tier defaults, se PLINTH_HEIGHT_M-headern).
           Centrerad vertikalt vid PLINTH_HEIGHT_M/2 eftersom BoxGeometry

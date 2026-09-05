@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import {
   BUILDING_STATUS_BY_OSM_ID,
   LANDMARK_BUILDING_IDS,
+  PLAYER_BUSINESS_BUILDING_IDS,
   STATUS_PALETTE,
   tintColour,
   WORLD
@@ -1274,10 +1275,35 @@ export function OsmBuildings() {
         // group. Either way the OSM box shouldn't compete for pixels
         // at the same position — skip them here.
         .filter((b) => !SKIP_PROCEDURAL_IDS.has(b.id))
+        // ORDER 173 — samma princip som SKIP_PROCEDURAL_IDS men för
+        // spelarens byggnad: PlayerBusiness renderar w869907975 med
+        // fade-baserad opacity (roof/wall transparenta vid close zoom
+        // så interiören syns). Om OsmBuildings-boxen också renderar
+        // samma footprint konkurrerar den för samma pixels med opakt
+        // tak, och trots att PlayerBusinesss tak är opacity=0 blockerar
+        // OsmBuildings-versionen vyn. Provspel 2026-09-05: spelaren
+        // såg "taket från utsidan" i myBusiness-vyn eftersom OsmBuildings
+        // renderade taket ovanpå PlayerBusiness. Två renderingar av
+        // samma byggnad är samma dubbelhet som ORDER 144 (två matsalar)
+        // och ORDER 171 (två namn för prep-slut) tog bort. Skippa här.
+        .filter((b) => !PLAYER_BUSINESS_BUILDING_IDS.has(b.id))
         .map(toExtruded)
         .filter((b): b is Extruded => b !== null),
     []
   );
+
+  // ORDER 173 §Verifiering — DEV-only sanity: skriv antal buildings kvar
+  // efter filter, och om spelarens byggnad fortfarande finns kvar.
+  // Låter playwright läsa console-loggen för att bevisa att fixen tog
+  // effekt (page.on('console')). Tree-shakas i prod.
+  if (import.meta.env.DEV && typeof window !== 'undefined') {
+    const playerIds = [...PLAYER_BUSINESS_BUILDING_IDS];
+    const stillHasPlayer = buildings.some((b) => playerIds.includes(b.id));
+    // eslint-disable-next-line no-console
+    console.info(
+      `[order173/OsmBuildings] rendered=${buildings.length} playerBuildingStillIn=${stillHasPlayer}`
+    );
+  }
 
   // Aggregate every window across every eligible building into one flat
   // list, rendered via a single drei Instances call — one draw call for

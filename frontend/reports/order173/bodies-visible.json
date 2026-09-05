@@ -1,0 +1,173 @@
+{
+  "focus": [
+    31.6,
+    -16.7
+  ],
+  "distance": 24,
+  "results": [
+    {
+      "pose": {
+        "name": "pitch50_yaw0.4",
+        "pitchDeg": 50,
+        "yaw": 0.4
+      },
+      "state": {
+        "simTime": 261.9999999999937,
+        "periodStartAt": 0,
+        "doorsOpenedThisService": true,
+        "guestsTotal": 9,
+        "guestStateCounts": {
+          "paying": 1,
+          "dining": 6,
+          "ordering": 1,
+          "arriving": 1
+        },
+        "staffCount": 3,
+        "staffTasks": [
+          {
+            "role": "värd",
+            "taskType": "order"
+          },
+          {
+            "role": "servitör",
+            "taskType": "order"
+          },
+          {
+            "role": "kock",
+            "taskType": "order"
+          }
+        ]
+      },
+      "opacity": {
+        "cameraDistanceM": 24,
+        "roofOpacity": 0,
+        "roofTransparent": true,
+        "roofDepthWrite": false,
+        "wallOpacity": 0,
+        "wallTransparent": true,
+        "wallDepthWrite": false,
+        "plinthOpacity": 0,
+        "interiorGroupVisible": true,
+        "interiorMeshCount": 12,
+        "interiorMeshesWithOpacityGt0": 12,
+        "interiorMeshSample": [
+          {
+            "opacity": 1,
+            "transparent": false,
+            "visible": true
+          },
+          {
+            "opacity": 1,
+            "transparent": false,
+            "visible": true
+          },
+          {
+            "opacity": 1,
+            "transparent": false,
+            "visible": true
+          },
+          {
+            "opacity": 1,
+            "transparent": false,
+            "visible": true
+          },
+          {
+            "opacity": 1,
+            "transparent": false,
+            "visible": true
+          }
+        ],
+        "roofFadeBand": [
+          28,
+          52
+        ],
+        "interiorFadeBand": [
+          35,
+          75
+        ]
+      }
+    },
+    {
+      "pose": {
+        "name": "pitch78_yaw0",
+        "pitchDeg": 78,
+        "yaw": 0
+      },
+      "state": {
+        "simTime": 261.7999999999937,
+        "periodStartAt": 0,
+        "doorsOpenedThisService": true,
+        "guestsTotal": 9,
+        "guestStateCounts": {
+          "paying": 1,
+          "dining": 6,
+          "ordering": 1,
+          "arriving": 1
+        },
+        "staffCount": 3,
+        "staffTasks": [
+          {
+            "role": "värd",
+            "taskType": "order"
+          },
+          {
+            "role": "servitör",
+            "taskType": "order"
+          },
+          {
+            "role": "kock",
+            "taskType": "order"
+          }
+        ]
+      },
+      "opacity": {
+        "cameraDistanceM": 24,
+        "roofOpacity": 0,
+        "roofTransparent": true,
+        "roofDepthWrite": false,
+        "wallOpacity": 0,
+        "wallTransparent": true,
+        "wallDepthWrite": false,
+        "plinthOpacity": 0,
+        "interiorGroupVisible": true,
+        "interiorMeshCount": 12,
+        "interiorMeshesWithOpacityGt0": 12,
+        "interiorMeshSample": [
+          {
+            "opacity": 1,
+            "transparent": false,
+            "visible": true
+          },
+          {
+            "opacity": 1,
+            "transparent": false,
+            "visible": true
+          },
+          {
+            "opacity": 1,
+            "transparent": false,
+            "visible": true
+          },
+          {
+            "opacity": 1,
+            "transparent": false,
+            "visible": true
+          },
+          {
+            "opacity": 1,
+            "transparent": false,
+            "visible": true
+          }
+        ],
+        "roofFadeBand": [
+          28,
+          52
+        ],
+        "interiorFadeBand": [
+          35,
+          75
+        ]
+      }
+    }
+  ]
+}

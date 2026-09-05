@@ -40,6 +40,7 @@ import { DeliveryVan } from './DeliveryVan';
 import { InteriorGuests } from './InteriorGuests';
 import { InteriorStaff } from './InteriorStaff';
 import { MentorComment } from './MentorComment';
+import { NeighbourhoodFade } from './NeighbourhoodFade';
 import { PlayerBusiness } from './PlayerBusiness';
 import { StreetLabels } from './StreetLabels';
 import { PublicRealm } from './PublicRealm';
@@ -132,6 +133,11 @@ export function StrategicScene({ onSelect, selectedId, showScaleRef = false }: P
         <BrewpubScene />
         <InteriorGuests />
         <InteriorStaff />
+        {/* ORDER 173 — fejda opaka grannbyggnader i myBusiness-vyn
+            så väggarna inte skymer interiören. Mount:as EFTER OsmBuildings
+            + PlayerBusiness så scen-traversalen i mount hittar deras
+            mesher. */}
+        <NeighbourhoodFade />
         <AnimationPrototype />
         <EntranceDoorPulse />
         <DeliveryVan />

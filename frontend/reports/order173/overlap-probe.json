@@ -1,0 +1,503 @@
+{
+  "overlaps": {
+    "footprintCentre": [
+      31.600000381469727,
+      -16.734999656677246
+    ],
+    "halfExtent": 8,
+    "hitCount": 244,
+    "hits": [
+      {
+        "path": "Scene/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": -2250,
+          "maxY": 2250,
+          "xExtent": 4500,
+          "zExtent": 4500
+        }
+      },
+      {
+        "path": "Scene/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": -3.67394049211045e-13,
+          "maxY": 5.492537975311279,
+          "xExtent": 12000,
+          "zExtent": 12000
+        }
+      },
+      {
+        "path": "Scene/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": 0.14999999999945662,
+          "maxY": 0.15000000000023317,
+          "xExtent": 7826.679931640625,
+          "zExtent": 12681.75048828125
+        }
+      },
+      {
+        "path": "Scene/Group/Group/Mesh",
+        "opacity": 0.9,
+        "visible": true,
+        "bbox": {
+          "minY": 0.19999999999945664,
+          "maxY": 0.20000000000023319,
+          "xExtent": 7826.679931640625,
+          "zExtent": 12681.75048828125
+        }
+      },
+      {
+        "path": "Scene/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": -5.998532515150146e-7,
+          "maxY": 28.07824450495184,
+          "xExtent": 3345.5137446196404,
+          "zExtent": 4376.234194019374
+        }
+      },
+      {
+        "path": "Scene/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": -9.479840059611888e-7,
+          "maxY": 24.95496268939199,
+          "xExtent": 3327.292698809891,
+          "zExtent": 4387.799783862763
+        }
+      },
+      {
+        "path": "Scene/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": -4.642190276626934e-8,
+          "maxY": 1.952741117539226,
+          "xExtent": 8230.319796176136,
+          "zExtent": 16475.30015387797
+        }
+      },
+      {
+        "path": "Scene/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": 0.4449257325589333,
+          "maxY": 5.997704844569297,
+          "xExtent": 8233.635782451915,
+          "zExtent": 16478.681433648377
+        }
+      },
+      {
+        "path": "Scene/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": -1.121979522622496e-7,
+          "maxY": 2.270860766420701,
+          "xExtent": 8233.077879592414,
+          "zExtent": 16538.317436478665
+        }
+      },
+      {
+        "path": "Scene/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": 0.9750190794471436,
+          "maxY": 5.819080636759054,
+          "xExtent": 8235.921726926037,
+          "zExtent": 16541.92767673608
+        }
+      },
+      {
+        "path": "Scene/Group/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": 0.38000000000000145,
+          "maxY": 0.380000000000002,
+          "xExtent": 38.542128413915634,
+          "zExtent": 9.26504135131836
+        }
+      },
+      {
+        "path": "Scene/Group/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": 0.3799999999999986,
+          "maxY": 0.38000000000000106,
+          "xExtent": 54.27799069881439,
+          "zExtent": 39.46860122680664
+        }
+      },
+      {
+        "path": "Scene/Group/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": 0.3800000000000009,
+          "maxY": 0.3800000000000054,
+          "xExtent": 16.987876892089844,
+          "zExtent": 72.81461429595947
+        }
+      },
+      {
+        "path": "Scene/Group/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": 0.39000000000000146,
+          "maxY": 0.39000000000000196,
+          "xExtent": 38.47108083963394,
+          "zExtent": 7.827842712402344
+        }
+      },
+      {
+        "path": "Scene/Group/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": 0.3899999999999987,
+          "maxY": 0.390000000000001,
+          "xExtent": 53.68734071403742,
+          "zExtent": 38.14476013183594
+        }
+      },
+      {
+        "path": "Scene/Group/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": 0.3900000000000009,
+          "maxY": 0.3900000000000054,
+          "xExtent": 15.559606552124023,
+          "zExtent": 72.63132572174072
+        }
+      },
+      {
+        "path": "Scene/Group/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": 0.4300000000000015,
+          "maxY": 0.43000000000000194,
+          "xExtent": 38.453317046165466,
+          "zExtent": 7.468542098999023
+        }
+      },
+      {
+        "path": "Scene/Group/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": 0.42999999999999866,
+          "maxY": 0.430000000000001,
+          "xExtent": 53.53968012332916,
+          "zExtent": 37.81380081176758
+        }
+      },
+      {
+        "path": "Scene/Group/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": 0.4300000000000009,
+          "maxY": 0.4300000000000054,
+          "xExtent": 15.202535629272461,
+          "zExtent": 72.58550930023193
+        }
+      },
+      {
+        "path": "Scene/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": 0.14999999664723873,
+          "maxY": 0.16999999977648259,
+          "xExtent": 1262.0567724198713,
+          "zExtent": 951.2252073806887
+        }
+      },
+      {
+        "path": "Scene/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": 0.060000000000001,
+          "maxY": 0.06000000000000235,
+          "xExtent": 55.11135482788086,
+          "zExtent": 22.054471969604492
+        }
+      },
+      {
+        "path": "Scene/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": 0.04000000022351742,
+          "maxY": 0.06000000052154064,
+          "xExtent": 2896.8201504696876,
+          "zExtent": 4991.6097343374
+        }
+      },
+      {
+        "path": "Scene/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": 0.04000000022351742,
+          "maxY": 0.06000000052154064,
+          "xExtent": 726.1604279673678,
+          "zExtent": 506.4246357687432
+        }
+      },
+      {
+        "path": "Scene/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": 0.02000001072883606,
+          "maxY": 0.669999988079071,
+          "xExtent": 475.3940989539358,
+          "zExtent": 1077.2136529510246
+        }
+      },
+      {
+        "path": "Scene/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": 0.9678229689598083,
+          "maxY": 8.767350210398984,
+          "xExtent": 1577.968698700091,
+          "zExtent": 4957.957662727147
+        }
+      },
+      {
+        "path": "Scene/Group/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": -0.017876050155115286,
+          "maxY": 1.1093459725379944,
+          "xExtent": 1712.317409977638,
+          "zExtent": 431.46325949310926
+        }
+      },
+      {
+        "path": "Scene/Group/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": 0.02000001072883606,
+          "maxY": 0.919999988079071,
+          "xExtent": 1234.5745276924038,
+          "zExtent": 1096.3908998277027
+        }
+      },
+      {
+        "path": "Scene/Group/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": 0.02000002384185795,
+          "maxY": 1.0699999928474426,
+          "xExtent": 1234.6371019507146,
+          "zExtent": 1096.4482366793447
+        }
+      },
+      {
+        "path": "Scene/Group/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": 0.02000001072883606,
+          "maxY": 0.919999988079071,
+          "xExtent": 2891.581635113952,
+          "zExtent": 4988.8854657114825
+        }
+      },
+      {
+        "path": "Scene/Group/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": 0.02000002384185795,
+          "maxY": 1.0699999928474426,
+          "xExtent": 2891.669990454574,
+          "zExtent": 4989.007086333856
+        }
+      },
+      {
+        "path": "Scene/Group/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": -7.899863874172297e-8,
+          "maxY": 2.6099498164660417,
+          "xExtent": 4263.366271555188,
+          "zExtent": 12832.16846946091
+        }
+      },
+      {
+        "path": "Scene/Group/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": 1.3654099798052073,
+          "maxY": 6.8148691868768765,
+          "xExtent": 4267.068125858498,
+          "zExtent": 12836.543490838118
+        }
+      },
+      {
+        "path": "Scene/Group/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": -7.779139821195713e-8,
+          "maxY": 2.160818105418187,
+          "xExtent": 4121.365546430961,
+          "zExtent": 12780.008496754617
+        }
+      },
+      {
+        "path": "Scene/Group/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": 0.7574274645360175,
+          "maxY": 7.022659101173474,
+          "xExtent": 4125.050748587592,
+          "zExtent": 12783.097284354171
+        }
+      },
+      {
+        "path": "Scene/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": 0,
+          "maxY": 2.599999952316284,
+          "xExtent": 1236.5424911433931,
+          "zExtent": 927.540790520133
+        }
+      },
+      {
+        "path": "Scene/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": 2.5999999940395355,
+          "maxY": 2.9000000059604645,
+          "xExtent": 1236.8968810234232,
+          "zExtent": 927.9163417478961
+        }
+      },
+      {
+        "path": "Scene/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": -2.3841857821338408e-8,
+          "maxY": 3.200000047683716,
+          "xExtent": 1224.4645350401327,
+          "zExtent": 893.1394189529112
+        }
+      },
+      {
+        "path": "Scene/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": 3.1749999076128006,
+          "maxY": 3.524999997019768,
+          "xExtent": 1224.8355432573653,
+          "zExtent": 893.514970321824
+        }
+      },
+      {
+        "path": "Scene/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": -1.1920928910669204e-8,
+          "maxY": 1.100000023841858,
+          "xExtent": 805.4522500425983,
+          "zExtent": 679.0369764284355
+        }
+      },
+      {
+        "path": "Scene/Group/Mesh",
+        "opacity": 1,
+        "visible": true,
+        "bbox": {
+          "minY": 0,
+          "maxY": 0.899999988079071,
+          "xExtent": 1169.8604507101568,
+          "zExtent": 796.8980540484249
+        }
+      }
+    ]
+  },
+  "opacity": {
+    "cameraDistanceM": 24,
+    "roofOpacity": 0,
+    "roofTransparent": true,
+    "roofDepthWrite": false,
+    "wallOpacity": 0,
+    "wallTransparent": true,
+    "wallDepthWrite": false,
+    "plinthOpacity": 0,
+    "interiorGroupVisible": true,
+    "interiorMeshCount": 12,
+    "interiorMeshesWithOpacityGt0": 12,
+    "interiorMeshSample": [
+      {
+        "opacity": 1,
+        "transparent": false,
+        "visible": true
+      },
+      {
+        "opacity": 1,
+        "transparent": false,
+        "visible": true
+      },
+      {
+        "opacity": 1,
+        "transparent": false,
+        "visible": true
+      },
+      {
+        "opacity": 1,
+        "transparent": false,
+        "visible": true
+      },
+      {
+        "opacity": 1,
+        "transparent": false,
+        "visible": true
+      }
+    ],
+    "roofFadeBand": [
+      28,
+      52
+    ],
+    "interiorFadeBand": [
+      35,
+      75
+    ]
+  },
+  "order173ConsoleLines": [
+    "info: [order173/OsmBuildings] rendered=180 playerBuildingStillIn=false"
+  ]
+}

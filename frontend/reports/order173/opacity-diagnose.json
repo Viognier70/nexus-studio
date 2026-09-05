@@ -1,0 +1,171 @@
+{
+  "order": 173,
+  "title": "§Diagnos — actual opacity + camera distance i myBusiness-vyn",
+  "setup": {
+    "viewport": {
+      "width": 1920,
+      "height": 1080
+    },
+    "businessClassAlias": "brewpub → ölkrogen (per urlParams.ts:169)",
+    "nameEntryBypass": "__nxSetBusinessName(\"Ölkrogen\")",
+    "waitAfterNameMs": 10000
+  },
+  "scenarios": [
+    {
+      "name": "spelarens_url_utan_preset",
+      "url": "http://localhost:5173/?bust=1788624284117#playtest=1&business=brewpub&period=lunch",
+      "measurement": {
+        "cameraDistanceM": 900,
+        "roofOpacity": 1,
+        "roofTransparent": false,
+        "roofDepthWrite": true,
+        "wallOpacity": 1,
+        "wallTransparent": false,
+        "wallDepthWrite": true,
+        "plinthOpacity": 1,
+        "interiorGroupVisible": false,
+        "interiorMeshCount": 12,
+        "interiorMeshesWithOpacityGt0": 0,
+        "interiorMeshSample": [
+          {
+            "opacity": 0,
+            "transparent": true,
+            "visible": true
+          },
+          {
+            "opacity": 0,
+            "transparent": true,
+            "visible": true
+          },
+          {
+            "opacity": 0,
+            "transparent": true,
+            "visible": true
+          },
+          {
+            "opacity": 0,
+            "transparent": true,
+            "visible": true
+          },
+          {
+            "opacity": 0,
+            "transparent": true,
+            "visible": true
+          }
+        ],
+        "roofFadeBand": [
+          28,
+          52
+        ],
+        "interiorFadeBand": [
+          35,
+          75
+        ]
+      },
+      "simState": {
+        "businessClass": "ölkrogen",
+        "simTime": 57.80000000000028,
+        "period": "morning"
+      },
+      "devPanelText": "DEV    2fps(strat)  cam=900m [35-75]  day=1 morning    service=-               scenarios=0/0\n     cash= 120k  econR=0.75  soc=0.55  eco=0.55  rep=0.61  share=1.03  credits=E0.00 T0.00 P0.00  key=-\n     no weather (out of service) queue=0 scene=0 seated=0/20 (S:0 O:0 D:0 P:0)",
+      "consoleTail": [
+        "log: [PixelSampleProbe] module loaded",
+        "log: [PixelSampleProbe] mounted. GL context attributes: {alpha: true, antialias: true, depth: true, desynchronized: false, failIfMajorPerformanceCaveat: false}",
+        "log: [PixelSampleProbe] renderer info: {dpr: 1, size: Object, isWebGL2: true}",
+        "warning: [.WebGL-0x1040051f600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+        "warning: [.WebGL-0x1040051f600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+        "log: [PixelSampleProbe] tick #1: centre R75 G77 B64 anyNonZero=true corner(0,0)=R49G52B43 top-centre=R155G153B142 canvas=1920×1080@1.00dpr gl-y=536",
+        "warning: [.WebGL-0x1040051f600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+        "warning: [.WebGL-0x1040051f600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)",
+        "log: [PixelSampleProbe] tick #2: centre R75 G77 B64 anyNonZero=true corner(0,0)=R49G52B43 top-centre=R155G153B142 canvas=1920×1080@1.00dpr gl-y=536",
+        "log: [PixelSampleProbe] tick #3: centre R75 G77 B64 anyNonZero=true corner(0,0)=R49G52B43 top-centre=R155G153B142 canvas=1920×1080@1.00dpr gl-y=536"
+      ]
+    },
+    {
+      "name": "preset_myBusiness_som_ORDER_149_150",
+      "url": "http://localhost:5173/?bust=1788624284118#playtest=1&business=brewpub&preset=myBusiness&period=lunch",
+      "measurement": {
+        "cameraDistanceM": 24,
+        "roofOpacity": 0,
+        "roofTransparent": true,
+        "roofDepthWrite": false,
+        "wallOpacity": 0,
+        "wallTransparent": true,
+        "wallDepthWrite": false,
+        "plinthOpacity": 0,
+        "interiorGroupVisible": true,
+        "interiorMeshCount": 12,
+        "interiorMeshesWithOpacityGt0": 12,
+        "interiorMeshSample": [
+          {
+            "opacity": 1,
+            "transparent": false,
+            "visible": true
+          },
+          {
+            "opacity": 1,
+            "transparent": false,
+            "visible": true
+          },
+          {
+            "opacity": 1,
+            "transparent": false,
+            "visible": true
+          },
+          {
+            "opacity": 1,
+            "transparent": false,
+            "visible": true
+          },
+          {
+            "opacity": 1,
+            "transparent": false,
+            "visible": true
+          }
+        ],
+        "roofFadeBand": [
+          28,
+          52
+        ],
+        "interiorFadeBand": [
+          35,
+          75
+        ]
+      },
+      "simState": {
+        "businessClass": "ölkrogen",
+        "simTime": 75.20000000000053,
+        "period": "morning"
+      },
+      "devPanelText": "DEV    1fps(strat)  cam= 24m*[35-75]  day=1 morning    service=-               scenarios=0/0\n     cash= 120k  econR=0.75  soc=0.55  eco=0.55  rep=0.61  share=1.03  credits=E0.00 T0.00 P0.00  key=-\n     no weather (out of service) queue=0 scene=0 seated=0/20 (S:0 O:0 D:0 P:0)",
+      "consoleTail": [
+        "debug: [vite] connecting...",
+        "debug: [vite] connected.",
+        "info: %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold",
+        "log: [PixelSampleProbe] module loaded",
+        "log: [PixelSampleProbe] mounted. GL context attributes: {alpha: true, antialias: true, depth: true, desynchronized: false, failIfMajorPerformanceCaveat: false}",
+        "log: [PixelSampleProbe] renderer info: {dpr: 1, size: Object, isWebGL2: true}",
+        "log: [PixelSampleProbe] tick #1: centre R48 G43 B40 anyNonZero=true corner(0,0)=R78G70B69 top-centre=R91G82B77 canvas=1920×1080@1.00dpr gl-y=536",
+        "log: [PixelSampleProbe] tick #2: centre R48 G43 B40 anyNonZero=true corner(0,0)=R78G70B69 top-centre=R91G82B77 canvas=1920×1080@1.00dpr gl-y=536",
+        "log: [PixelSampleProbe] tick #3: centre R48 G43 B40 anyNonZero=true corner(0,0)=R78G70B69 top-centre=R91G82B77 canvas=1920×1080@1.00dpr gl-y=536"
+      ]
+    }
+  ],
+  "verdict": {
+    "expectedRoofOpacityAtCamBelow28": 0,
+    "scenario1": {
+      "cameraDistanceM": 900,
+      "roofOpacity": 1,
+      "wallOpacity": 1,
+      "interiorGroupVisible": false,
+      "opacityMatchesExpectation": null
+    },
+    "scenario2": {
+      "cameraDistanceM": 24,
+      "roofOpacity": 0,
+      "wallOpacity": 0,
+      "interiorGroupVisible": true,
+      "opacityMatchesExpectation": true
+    }
+  }
+}
