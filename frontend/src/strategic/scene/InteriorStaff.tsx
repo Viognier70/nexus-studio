@@ -65,7 +65,7 @@ const STAFF_WALK_SPEED_M_PER_S = 1.4;
 
 // ORDER 045 prep tempo — Vision Owner (2026-08-08): "Personalen rör
 // sig för långsamt under prep — de ska arbeta, inte driva." During
-// the mise-en-place window (day.prepEndsAt set, past opening, before
+// the mise-en-place window (day.doorsOpenAt set, past opening, before
 // service arrivals) staff are actively working: pace × 1.8, drift
 // amplitude 3× wider, faster oscillation frequency. Falls back to
 // service-time defaults the moment prep closes.
@@ -229,8 +229,8 @@ export function InteriorStaff() {
     const inPrep =
       (sim.day.period === 'lunch' || sim.day.period === 'dinner') &&
       sim.day.openingEndsAt === null &&
-      sim.day.prepEndsAt !== null &&
-      sim.simTime < sim.day.prepEndsAt;
+      sim.day.doorsOpenAt !== null &&
+      sim.simTime < sim.day.doorsOpenAt;
     const pace = inPrep
       ? STAFF_WALK_SPEED_M_PER_S * PREP_PACE_MULTIPLIER
       : STAFF_WALK_SPEED_M_PER_S;

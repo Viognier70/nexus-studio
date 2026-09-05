@@ -263,7 +263,7 @@ export function InstrumentsPanel() {
   // player needs — the OpeningPanel + prep stream carry that moment.
   if (period !== 'lunch' && period !== 'dinner') return null;
   if (sim.day.openingEndsAt !== null) return null;
-  if (sim.day.prepEndsAt !== null) return null;
+  if (sim.day.doorsOpenAt !== null) return null;
 
   // Aggregate reads.
   let activeGuests = 0;

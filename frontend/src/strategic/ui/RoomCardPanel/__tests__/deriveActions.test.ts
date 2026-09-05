@@ -82,11 +82,11 @@ describe('derivePhase', () => {
   it('dinner + openingEndsAt in future → opening', () => {
     expect(derivePhase(makeDay({ period: 'dinner', openingEndsAt: 200 }), 100)).toBe('opening');
   });
-  it('dinner + prepEndsAt in future → prep', () => {
-    expect(derivePhase(makeDay({ period: 'dinner', prepEndsAt: 200 }), 100)).toBe('prep');
+  it('dinner + doorsOpenAt in future → prep', () => {
+    expect(derivePhase(makeDay({ period: 'dinner', doorsOpenAt: 200 }), 100)).toBe('prep');
   });
   it('dinner + prep expired → service', () => {
-    expect(derivePhase(makeDay({ period: 'dinner', prepEndsAt: 50 }), 100)).toBe('service');
+    expect(derivePhase(makeDay({ period: 'dinner', doorsOpenAt: 50 }), 100)).toBe('service');
   });
 });
 
@@ -108,7 +108,7 @@ describe('deriveStaffAction — every table row', () => {
   it('S2 prep + idle → On break / pause', () => {
     const r = deriveStaffAction(
       makeStaff({ taskType: null }), [],
-      makeDay({ period: 'dinner', prepEndsAt: 200, prepReadiness: { ice: 1, napkins: 1, cutlery: 1, stations: 1, garnish: 1 } }),
+      makeDay({ period: 'dinner', doorsOpenAt: 200, prepReadiness: { ice: 1, napkins: 1, cutlery: 1, stations: 1, garnish: 1 } }),
       100, NO_MENU
     );
     expect(r).toEqual({ text: 'On break', iconKey: 'pause' });
@@ -117,7 +117,7 @@ describe('deriveStaffAction — every table row', () => {
     const r = deriveStaffAction(
       makeStaff({ taskType: 'greet' }), [],
       makeDay({
-        period: 'dinner', prepEndsAt: 200,
+        period: 'dinner', doorsOpenAt: 200,
         prepReadiness: { ice: 0.9, napkins: 0.9, cutlery: 0.3, stations: 0.9, garnish: 0.9 }
       }),
       100, NO_MENU
@@ -128,7 +128,7 @@ describe('deriveStaffAction — every table row', () => {
     const r = deriveStaffAction(
       makeStaff({ role: 'kock', taskType: 'greet' }), [],
       makeDay({
-        period: 'dinner', prepEndsAt: 200,
+        period: 'dinner', doorsOpenAt: 200,
         prepReadiness: { ice: 1, napkins: 1, cutlery: 1, stations: 1, garnish: 1 }
       }),
       100, NO_MENU
@@ -338,7 +338,7 @@ describe('exhaustiveness — every GuestState reaches a real row', () => {
       const r = deriveStaffAction(
         makeStaff({ role, taskType: 'greet' }), [],
         makeDay({
-          period: 'dinner', prepEndsAt: 200,
+          period: 'dinner', doorsOpenAt: 200,
           prepReadiness: { ice: 1, napkins: 1, cutlery: 1, stations: 1, garnish: 1 }
         }),
         100, NO_MENU

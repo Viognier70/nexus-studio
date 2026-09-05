@@ -166,7 +166,7 @@ export function initialDay(): DayState {
     scenariosFiredThisService: 0,
     scenarioTriggerTimes: [],
     openingEndsAt: null,
-    prepEndsAt: null,
+    doorsOpenAt: null,
     prepIgnoranceCount: 0,
     prepFloorSchedule: [],
     weather: null,

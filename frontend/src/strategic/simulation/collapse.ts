@@ -140,7 +140,7 @@ export function tickCollapseRoll(draft: SimulationState): void {
   if (period !== 'lunch' && period !== 'dinner') return;
   // Must be post-opening + post-prep — no collapse during briefings.
   if (draft.day.openingEndsAt !== null) return;
-  if (draft.day.prepEndsAt !== null) return;
+  if (draft.day.doorsOpenAt !== null) return;
   if (draft.day.serviceCollapsed) return;
 
   const p = collapseProbabilityPerTick(draft);
@@ -235,7 +235,7 @@ export function fireCollapse(draft: SimulationState): void {
     scenariosFiredThisService: 0,
     scenarioTriggerTimes: [],
     openingEndsAt: null,
-    prepEndsAt: null,
+    doorsOpenAt: null,
     prepIgnoranceCount: 0,
     prepFloorSchedule: [],
     weather: null,

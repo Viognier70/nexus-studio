@@ -894,7 +894,7 @@ function forceCollapseAction(state: SimulationState): SimulationState {
   const period = state.day.period;
   if (period !== 'lunch' && period !== 'dinner') return state;
   if (state.day.openingEndsAt !== null) return state;
-  if (state.day.prepEndsAt !== null) return state;
+  if (state.day.doorsOpenAt !== null) return state;
   if (state.day.serviceCollapsed) return state;
   // fireCollapse mutates the draft in place; give it a shallow copy
   // of everything it touches so the reducer stays pure at the outer
@@ -1050,8 +1050,12 @@ function openService(
     // öppnar när opening-panelen är över, gäster kan komma direkt.
     // Restaurant + Värdshus (hasMiseEnPlace=true) behåller det befintliga
     // prep-fönstret.
+    // ORDER 171 — `doorsOpenAt` = ögonblicket då dörrarna öppnar. Prep
+    // slutar samtidigt (ett värde, inte två). För hasMiseEnPlace-klasser
+    // sker det efter OPENING + PREP; för foodtrucken direkt efter OPENING
+    // (prep-fönstret är noll).
     openingEndsAt: state.simTime + OPENING_DURATION_SEC,
-    prepEndsAt: businessHasMiseEnPlace(state.businessClass)
+    doorsOpenAt: businessHasMiseEnPlace(state.businessClass)
       ? state.simTime + OPENING_DURATION_SEC + PREP_DURATION_SEC
       : state.simTime + OPENING_DURATION_SEC,
     prepIgnoranceCount: 0,
@@ -1155,7 +1159,7 @@ function skipLunch(state: SimulationState): SimulationState {
       scenariosFiredThisService: 0,
       scenarioTriggerTimes: [],
       openingEndsAt: null,
-      prepEndsAt: null,
+      doorsOpenAt: null,
       prepIgnoranceCount: 0,
       prepFloorSchedule: [],
       weather: null,
@@ -1305,7 +1309,7 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           scenariosFiredThisService: 0,
           scenarioTriggerTimes: [],
           openingEndsAt: null,
-          prepEndsAt: null,
+          doorsOpenAt: null,
           prepIgnoranceCount: 0,
           prepFloorSchedule: [],
           weather: null,
@@ -1374,7 +1378,7 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           scenariosFiredThisService: 0,
           scenarioTriggerTimes: [],
           openingEndsAt: null,
-          prepEndsAt: null,
+          doorsOpenAt: null,
           prepIgnoranceCount: 0,
           prepFloorSchedule: [],
           weather: null,
@@ -2051,7 +2055,7 @@ function advanceTick(state: SimulationState): SimulationState {
   // ORDER 045 opening-window end. When the 10-s opening panel expires
   // the day rolls into prep — no visible state change other than the
   // opening panel closing; arrivals + scenarios are still gated by
-  // prepEndsAt (see arrivalProbability + the scheduled-scenario
+  // doorsOpenAt (see arrivalProbability + the scheduled-scenario
   // check below).
   if (
     draft.day.openingEndsAt !== null &&
@@ -2072,8 +2076,8 @@ function advanceTick(state: SimulationState): SimulationState {
   // vocabulary) and the room's normal state machine takes them from
   // there.
   if (
-    draft.day.prepEndsAt !== null &&
-    draft.simTime >= draft.day.prepEndsAt
+    draft.day.doorsOpenAt !== null &&
+    draft.simTime >= draft.day.doorsOpenAt
   ) {
     if (draft.day.prepIgnoranceCount >= PREP_CARRYOVER_THRESHOLD) {
       draft.pendingOutcomes = [
@@ -2127,7 +2131,7 @@ function advanceTick(state: SimulationState): SimulationState {
     }
     draft.day = {
       ...draft.day,
-      prepEndsAt: null,
+      doorsOpenAt: null,
       doorsOpenedThisService: true
     };
   }

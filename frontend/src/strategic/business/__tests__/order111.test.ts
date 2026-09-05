@@ -173,7 +173,7 @@ describe('ORDER 111 §6 DoD 3 — väder påverkar foodtruck-efterfrågan', () =
       day: {
         ...restaurant.day,
         openingEndsAt: null,
-        prepEndsAt: null,
+        doorsOpenAt: null,
         weather: rainyWeather
       }
     };
@@ -190,7 +190,7 @@ describe('ORDER 111 §6 DoD 3 — väder påverkar foodtruck-efterfrågan', () =
       day: {
         ...foodtruck.day,
         openingEndsAt: null,
-        prepEndsAt: null,
+        doorsOpenAt: null,
         weather: rainyWeather
       }
     };
@@ -215,7 +215,7 @@ describe('ORDER 111 §6 DoD 3 — väder påverkar foodtruck-efterfrågan', () =
     restaurant = reducer(restaurant, { type: 'OPEN_SERVICE', service: 'lunch', lengthMinutes: 30 });
     restaurant = {
       ...restaurant,
-      day: { ...restaurant.day, openingEndsAt: null, prepEndsAt: null, weather: sunnyWeather }
+      day: { ...restaurant.day, openingEndsAt: null, doorsOpenAt: null, weather: sunnyWeather }
     };
     let foodtruck = makeInitialState();
     foodtruck = {
@@ -226,7 +226,7 @@ describe('ORDER 111 §6 DoD 3 — väder påverkar foodtruck-efterfrågan', () =
     foodtruck = reducer(foodtruck, { type: 'OPEN_SERVICE', service: 'lunch', lengthMinutes: 30 });
     foodtruck = {
       ...foodtruck,
-      day: { ...foodtruck.day, openingEndsAt: null, prepEndsAt: null, weather: sunnyWeather }
+      day: { ...foodtruck.day, openingEndsAt: null, doorsOpenAt: null, weather: sunnyWeather }
     };
     // I klart väder ska foodtruck ha HÖGRE arrivalProbability trots
     // konkurrens-nedjusteringen (amplifieringen dominerar).
@@ -270,21 +270,21 @@ describe('ORDER 111 §6 DoD 4 — hasMiseEnPlace + hasOvernight har konsumenter'
     expect(overnightReads, 'ingen konsument av businessHasOvernight').toBeGreaterThan(0);
   });
 
-  it('foodtruck: prepEndsAt = openingEndsAt (ingen prep-fas)', () => {
+  it('foodtruck: doorsOpenAt = openingEndsAt (ingen prep-fas)', () => {
     let s = makeInitialState();
     s = { ...s, businessClass: 'foodtrucken' };
     s = reducer(s, { type: 'OPEN_SERVICE', service: 'lunch', lengthMinutes: 20 });
     expect(s.day.openingEndsAt).not.toBeNull();
-    expect(s.day.prepEndsAt).not.toBeNull();
+    expect(s.day.doorsOpenAt).not.toBeNull();
     // Restaurangen: prep = opening + 60s. Foodtruck: prep = opening.
-    expect(s.day.prepEndsAt).toBe(s.day.openingEndsAt);
+    expect(s.day.doorsOpenAt).toBe(s.day.openingEndsAt);
   });
 
-  it('restaurant: prepEndsAt > openingEndsAt (60s prep-fönster)', () => {
+  it('restaurant: doorsOpenAt > openingEndsAt (60s prep-fönster)', () => {
     let s = makeInitialState();
     // businessClass default 'kvarterskrogen'.
     s = reducer(s, { type: 'OPEN_SERVICE', service: 'lunch', lengthMinutes: 20 });
-    expect(s.day.prepEndsAt).toBeGreaterThan(s.day.openingEndsAt!);
+    expect(s.day.doorsOpenAt).toBeGreaterThan(s.day.openingEndsAt!);
   });
 });
 

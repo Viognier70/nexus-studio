@@ -153,7 +153,7 @@ export interface EventDef {
 }
 
 // ORDER 043 Addendum A prep-window event defs. Fire only while
-// `state.day.prepEndsAt` is set (prep window open). Rates chosen so
+// `state.day.doorsOpenAt` is set (prep window open). Rates chosen so
 // a 2-min prep produces ~3–4 lines at mid competence — enough to
 // read the team from, not enough to become its own act.
 export interface PrepEventDef {
@@ -584,11 +584,11 @@ function outcomeToEntry(p: PendingOutcome, at: number): EventStreamEntry {
 //   1. Any pending outcomes whose dueAt has arrived (regardless of period —
 //      an outcome scheduled by a scenario that resolved just before service
 //      end must still fire; the choice was real).
-//   2. Prep-window events during the mise en place window (prepEndsAt
-//      set and simTime < prepEndsAt). Weighted by team competence, no
+//   2. Prep-window events during the mise en place window (doorsOpenAt
+//      set and simTime < doorsOpenAt). Weighted by team competence, no
 //      strain component — the room is empty.
 //   3. Ambient rolls, during service after the prep window closes
-//      (period lunch/dinner AND prepEndsAt === null).
+//      (period lunch/dinner AND doorsOpenAt === null).
 export function tickEventStream(state: SimulationState, rng: Rng): void {
   const emitted: EventStreamEntry[] = [];
 
@@ -605,7 +605,7 @@ export function tickEventStream(state: SimulationState, rng: Rng): void {
 
   const period = state.day.period;
   const inService = period === 'lunch' || period === 'dinner';
-  const inPrep = inService && state.day.prepEndsAt !== null && state.simTime < state.day.prepEndsAt;
+  const inPrep = inService && state.day.doorsOpenAt !== null && state.simTime < state.day.doorsOpenAt;
 
   if (inPrep) {
     // ORDER 043 Addendum B prep floor — fire any scheduled floor

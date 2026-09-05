@@ -1,0 +1,687 @@
+{
+  "order": 171,
+  "title": "§Verifiering — doorsOpenAt i ölkrogen, 15 min + 30 min lunch",
+  "setup": {
+    "business": "ölkrogen (via brewpub-alias)",
+    "service": "lunch",
+    "tickDtSec": 0.2,
+    "note": "Vite dev-server + playwright. speed=0 → manuell TICK. State + DevPanel-sträng läses från runtime."
+  },
+  "pass15min": {
+    "lengthMinutes": 15,
+    "lengthSec": 900,
+    "probeTargetsElapsed": [
+      10,
+      65,
+      129,
+      130,
+      131,
+      300,
+      500,
+      890
+    ],
+    "doorsOpenAtSec": 130,
+    "openingEndsAtSec": null,
+    "periodStartAt": 0,
+    "prepPercentOfPass": 0.14444444444444443,
+    "servicePercentOfPass": 0.8555555555555555,
+    "snapshots": [
+      {
+        "targetElapsed": 0,
+        "actualElapsed": 23.799999999999947,
+        "remainingSec": 876.2,
+        "panelServiceField": "14:36",
+        "simTime": 23.799999999999947,
+        "periodStartAt": 0,
+        "openingEndsAt": null,
+        "doorsOpenAt": 130,
+        "doorsOpenedThisService": false,
+        "currentServiceLengthMinutes": 15,
+        "waitingAtOpening": 5,
+        "period": "lunch",
+        "guestsTotal": 0,
+        "waitingIdsCount": 0,
+        "seatedIdsCount": 0,
+        "businessClass": "ölkrogen",
+        "staff": [
+          {
+            "role": "värd",
+            "taskType": null
+          },
+          {
+            "role": "servitör",
+            "taskType": null
+          },
+          {
+            "role": "kock",
+            "taskType": null
+          }
+        ],
+        "allThreeIdle": true
+      },
+      {
+        "targetElapsed": 10,
+        "actualElapsed": 23.799999999999947,
+        "remainingSec": 876.2,
+        "panelServiceField": "14:36",
+        "simTime": 23.799999999999947,
+        "periodStartAt": 0,
+        "openingEndsAt": null,
+        "doorsOpenAt": 130,
+        "doorsOpenedThisService": false,
+        "currentServiceLengthMinutes": 15,
+        "waitingAtOpening": 5,
+        "period": "lunch",
+        "guestsTotal": 0,
+        "waitingIdsCount": 0,
+        "seatedIdsCount": 0,
+        "businessClass": "ölkrogen",
+        "staff": [
+          {
+            "role": "värd",
+            "taskType": null
+          },
+          {
+            "role": "servitör",
+            "taskType": null
+          },
+          {
+            "role": "kock",
+            "taskType": null
+          }
+        ],
+        "allThreeIdle": true
+      },
+      {
+        "targetElapsed": 65,
+        "actualElapsed": 65.00000000000038,
+        "remainingSec": 834.9999999999997,
+        "panelServiceField": "13:54",
+        "simTime": 65.00000000000038,
+        "periodStartAt": 0,
+        "openingEndsAt": null,
+        "doorsOpenAt": 130,
+        "doorsOpenedThisService": false,
+        "currentServiceLengthMinutes": 15,
+        "waitingAtOpening": 5,
+        "period": "lunch",
+        "guestsTotal": 0,
+        "waitingIdsCount": 0,
+        "seatedIdsCount": 0,
+        "businessClass": "ölkrogen",
+        "staff": [
+          {
+            "role": "värd",
+            "taskType": null
+          },
+          {
+            "role": "servitör",
+            "taskType": null
+          },
+          {
+            "role": "kock",
+            "taskType": null
+          }
+        ],
+        "allThreeIdle": true
+      },
+      {
+        "targetElapsed": 129,
+        "actualElapsed": 129.00000000000122,
+        "remainingSec": 770.9999999999987,
+        "panelServiceField": "12:50",
+        "simTime": 129.00000000000122,
+        "periodStartAt": 0,
+        "openingEndsAt": null,
+        "doorsOpenAt": 130,
+        "doorsOpenedThisService": false,
+        "currentServiceLengthMinutes": 15,
+        "waitingAtOpening": 5,
+        "period": "lunch",
+        "guestsTotal": 0,
+        "waitingIdsCount": 0,
+        "seatedIdsCount": 0,
+        "businessClass": "ölkrogen",
+        "staff": [
+          {
+            "role": "värd",
+            "taskType": null
+          },
+          {
+            "role": "servitör",
+            "taskType": null
+          },
+          {
+            "role": "kock",
+            "taskType": null
+          }
+        ],
+        "allThreeIdle": true
+      },
+      {
+        "targetElapsed": 130,
+        "actualElapsed": 130.00000000000117,
+        "remainingSec": 769.9999999999989,
+        "panelServiceField": "12:49",
+        "simTime": 130.00000000000117,
+        "periodStartAt": 0,
+        "openingEndsAt": null,
+        "doorsOpenAt": null,
+        "doorsOpenedThisService": true,
+        "currentServiceLengthMinutes": 15,
+        "waitingAtOpening": 5,
+        "period": "lunch",
+        "guestsTotal": 5,
+        "waitingIdsCount": 0,
+        "seatedIdsCount": 0,
+        "businessClass": "ölkrogen",
+        "staff": [
+          {
+            "role": "värd",
+            "taskType": null
+          },
+          {
+            "role": "servitör",
+            "taskType": null
+          },
+          {
+            "role": "kock",
+            "taskType": null
+          }
+        ],
+        "allThreeIdle": true
+      },
+      {
+        "targetElapsed": 131,
+        "actualElapsed": 131.0000000000011,
+        "remainingSec": 768.9999999999989,
+        "panelServiceField": "12:48",
+        "simTime": 131.0000000000011,
+        "periodStartAt": 0,
+        "openingEndsAt": null,
+        "doorsOpenAt": null,
+        "doorsOpenedThisService": true,
+        "currentServiceLengthMinutes": 15,
+        "waitingAtOpening": 5,
+        "period": "lunch",
+        "guestsTotal": 6,
+        "waitingIdsCount": 0,
+        "seatedIdsCount": 0,
+        "businessClass": "ölkrogen",
+        "staff": [
+          {
+            "role": "värd",
+            "taskType": null
+          },
+          {
+            "role": "servitör",
+            "taskType": null
+          },
+          {
+            "role": "kock",
+            "taskType": null
+          }
+        ],
+        "allThreeIdle": true
+      },
+      {
+        "targetElapsed": 300,
+        "actualElapsed": 300.1999999999915,
+        "remainingSec": 599.8000000000085,
+        "panelServiceField": "9:59",
+        "simTime": 300.1999999999915,
+        "periodStartAt": 0,
+        "openingEndsAt": null,
+        "doorsOpenAt": null,
+        "doorsOpenedThisService": true,
+        "currentServiceLengthMinutes": 15,
+        "waitingAtOpening": 5,
+        "period": "lunch",
+        "guestsTotal": 13,
+        "waitingIdsCount": 0,
+        "seatedIdsCount": 12,
+        "businessClass": "ölkrogen",
+        "staff": [
+          {
+            "role": "värd",
+            "taskType": "checkback"
+          },
+          {
+            "role": "servitör",
+            "taskType": "checkback"
+          },
+          {
+            "role": "kock",
+            "taskType": "checkback"
+          }
+        ],
+        "allThreeIdle": false
+      },
+      {
+        "targetElapsed": 500,
+        "actualElapsed": 500.19999999998015,
+        "remainingSec": 399.80000000001985,
+        "panelServiceField": "6:39",
+        "simTime": 500.19999999998015,
+        "periodStartAt": 0,
+        "openingEndsAt": null,
+        "doorsOpenAt": null,
+        "doorsOpenedThisService": true,
+        "currentServiceLengthMinutes": 15,
+        "waitingAtOpening": 5,
+        "period": "lunch",
+        "guestsTotal": 24,
+        "waitingIdsCount": 6,
+        "seatedIdsCount": 16,
+        "businessClass": "ölkrogen",
+        "staff": [
+          {
+            "role": "värd",
+            "taskType": "checkback"
+          },
+          {
+            "role": "servitör",
+            "taskType": "checkback"
+          },
+          {
+            "role": "kock",
+            "taskType": "checkback"
+          }
+        ],
+        "allThreeIdle": false
+      },
+      {
+        "targetElapsed": 890,
+        "actualElapsed": 890.0000000000654,
+        "remainingSec": 9.99999999993463,
+        "panelServiceField": "0:09",
+        "simTime": 890.0000000000654,
+        "periodStartAt": 0,
+        "openingEndsAt": null,
+        "doorsOpenAt": null,
+        "doorsOpenedThisService": true,
+        "currentServiceLengthMinutes": 15,
+        "waitingAtOpening": 5,
+        "period": "lunch",
+        "guestsTotal": 3,
+        "waitingIdsCount": 0,
+        "seatedIdsCount": 3,
+        "businessClass": "ölkrogen",
+        "staff": [
+          {
+            "role": "värd",
+            "taskType": "order"
+          },
+          {
+            "role": "servitör",
+            "taskType": "order"
+          },
+          {
+            "role": "kock",
+            "taskType": "order"
+          }
+        ],
+        "allThreeIdle": false
+      }
+    ]
+  },
+  "pass30min": {
+    "lengthMinutes": 30,
+    "lengthSec": 1800,
+    "probeTargetsElapsed": [
+      10,
+      65,
+      129,
+      130,
+      131,
+      500,
+      1000,
+      1500,
+      1790
+    ],
+    "doorsOpenAtSec": 130,
+    "openingEndsAtSec": null,
+    "periodStartAt": 0,
+    "prepPercentOfPass": 0.07222222222222222,
+    "servicePercentOfPass": 0.9277777777777778,
+    "snapshots": [
+      {
+        "targetElapsed": 0,
+        "actualElapsed": 23.999999999999947,
+        "remainingSec": 1776,
+        "panelServiceField": "29:36",
+        "simTime": 23.999999999999947,
+        "periodStartAt": 0,
+        "openingEndsAt": null,
+        "doorsOpenAt": 130,
+        "doorsOpenedThisService": false,
+        "currentServiceLengthMinutes": 30,
+        "waitingAtOpening": 5,
+        "period": "lunch",
+        "guestsTotal": 0,
+        "waitingIdsCount": 0,
+        "seatedIdsCount": 0,
+        "businessClass": "ölkrogen",
+        "staff": [
+          {
+            "role": "värd",
+            "taskType": null
+          },
+          {
+            "role": "servitör",
+            "taskType": null
+          },
+          {
+            "role": "kock",
+            "taskType": null
+          }
+        ],
+        "allThreeIdle": true
+      },
+      {
+        "targetElapsed": 10,
+        "actualElapsed": 23.999999999999947,
+        "remainingSec": 1776,
+        "panelServiceField": "29:36",
+        "simTime": 23.999999999999947,
+        "periodStartAt": 0,
+        "openingEndsAt": null,
+        "doorsOpenAt": 130,
+        "doorsOpenedThisService": false,
+        "currentServiceLengthMinutes": 30,
+        "waitingAtOpening": 5,
+        "period": "lunch",
+        "guestsTotal": 0,
+        "waitingIdsCount": 0,
+        "seatedIdsCount": 0,
+        "businessClass": "ölkrogen",
+        "staff": [
+          {
+            "role": "värd",
+            "taskType": null
+          },
+          {
+            "role": "servitör",
+            "taskType": null
+          },
+          {
+            "role": "kock",
+            "taskType": null
+          }
+        ],
+        "allThreeIdle": true
+      },
+      {
+        "targetElapsed": 65,
+        "actualElapsed": 65.00000000000038,
+        "remainingSec": 1734.9999999999995,
+        "panelServiceField": "28:54",
+        "simTime": 65.00000000000038,
+        "periodStartAt": 0,
+        "openingEndsAt": null,
+        "doorsOpenAt": 130,
+        "doorsOpenedThisService": false,
+        "currentServiceLengthMinutes": 30,
+        "waitingAtOpening": 5,
+        "period": "lunch",
+        "guestsTotal": 0,
+        "waitingIdsCount": 0,
+        "seatedIdsCount": 0,
+        "businessClass": "ölkrogen",
+        "staff": [
+          {
+            "role": "värd",
+            "taskType": null
+          },
+          {
+            "role": "servitör",
+            "taskType": null
+          },
+          {
+            "role": "kock",
+            "taskType": null
+          }
+        ],
+        "allThreeIdle": true
+      },
+      {
+        "targetElapsed": 129,
+        "actualElapsed": 129.00000000000122,
+        "remainingSec": 1670.9999999999989,
+        "panelServiceField": "27:50",
+        "simTime": 129.00000000000122,
+        "periodStartAt": 0,
+        "openingEndsAt": null,
+        "doorsOpenAt": 130,
+        "doorsOpenedThisService": false,
+        "currentServiceLengthMinutes": 30,
+        "waitingAtOpening": 5,
+        "period": "lunch",
+        "guestsTotal": 0,
+        "waitingIdsCount": 0,
+        "seatedIdsCount": 0,
+        "businessClass": "ölkrogen",
+        "staff": [
+          {
+            "role": "värd",
+            "taskType": null
+          },
+          {
+            "role": "servitör",
+            "taskType": null
+          },
+          {
+            "role": "kock",
+            "taskType": null
+          }
+        ],
+        "allThreeIdle": true
+      },
+      {
+        "targetElapsed": 130,
+        "actualElapsed": 130.00000000000117,
+        "remainingSec": 1669.9999999999989,
+        "panelServiceField": "27:49",
+        "simTime": 130.00000000000117,
+        "periodStartAt": 0,
+        "openingEndsAt": null,
+        "doorsOpenAt": null,
+        "doorsOpenedThisService": true,
+        "currentServiceLengthMinutes": 30,
+        "waitingAtOpening": 5,
+        "period": "lunch",
+        "guestsTotal": 5,
+        "waitingIdsCount": 0,
+        "seatedIdsCount": 0,
+        "businessClass": "ölkrogen",
+        "staff": [
+          {
+            "role": "värd",
+            "taskType": null
+          },
+          {
+            "role": "servitör",
+            "taskType": null
+          },
+          {
+            "role": "kock",
+            "taskType": null
+          }
+        ],
+        "allThreeIdle": true
+      },
+      {
+        "targetElapsed": 131,
+        "actualElapsed": 131.0000000000011,
+        "remainingSec": 1668.9999999999989,
+        "panelServiceField": "27:48",
+        "simTime": 131.0000000000011,
+        "periodStartAt": 0,
+        "openingEndsAt": null,
+        "doorsOpenAt": null,
+        "doorsOpenedThisService": true,
+        "currentServiceLengthMinutes": 30,
+        "waitingAtOpening": 5,
+        "period": "lunch",
+        "guestsTotal": 5,
+        "waitingIdsCount": 0,
+        "seatedIdsCount": 0,
+        "businessClass": "ölkrogen",
+        "staff": [
+          {
+            "role": "värd",
+            "taskType": null
+          },
+          {
+            "role": "servitör",
+            "taskType": null
+          },
+          {
+            "role": "kock",
+            "taskType": null
+          }
+        ],
+        "allThreeIdle": true
+      },
+      {
+        "targetElapsed": 500,
+        "actualElapsed": 500.19999999998015,
+        "remainingSec": 1299.8000000000197,
+        "panelServiceField": "21:39",
+        "simTime": 500.19999999998015,
+        "periodStartAt": 0,
+        "openingEndsAt": null,
+        "doorsOpenAt": null,
+        "doorsOpenedThisService": true,
+        "currentServiceLengthMinutes": 30,
+        "waitingAtOpening": 5,
+        "period": "lunch",
+        "guestsTotal": 13,
+        "waitingIdsCount": 0,
+        "seatedIdsCount": 11,
+        "businessClass": "ölkrogen",
+        "staff": [
+          {
+            "role": "värd",
+            "taskType": "order"
+          },
+          {
+            "role": "servitör",
+            "taskType": "order"
+          },
+          {
+            "role": "kock",
+            "taskType": "order"
+          }
+        ],
+        "allThreeIdle": false
+      },
+      {
+        "targetElapsed": 1000,
+        "actualElapsed": 1000.0000000000904,
+        "remainingSec": 799.9999999999096,
+        "panelServiceField": "13:19",
+        "simTime": 1000.0000000000904,
+        "periodStartAt": 0,
+        "openingEndsAt": null,
+        "doorsOpenAt": null,
+        "doorsOpenedThisService": true,
+        "currentServiceLengthMinutes": 30,
+        "waitingAtOpening": 5,
+        "period": "lunch",
+        "guestsTotal": 4,
+        "waitingIdsCount": 0,
+        "seatedIdsCount": 4,
+        "businessClass": "ölkrogen",
+        "staff": [
+          {
+            "role": "värd",
+            "taskType": null
+          },
+          {
+            "role": "servitör",
+            "taskType": null
+          },
+          {
+            "role": "kock",
+            "taskType": null
+          }
+        ],
+        "allThreeIdle": true
+      },
+      {
+        "targetElapsed": 1500,
+        "actualElapsed": 1500.000000000204,
+        "remainingSec": 299.99999999979605,
+        "panelServiceField": "4:59",
+        "simTime": 1500.000000000204,
+        "periodStartAt": 0,
+        "openingEndsAt": null,
+        "doorsOpenAt": null,
+        "doorsOpenedThisService": true,
+        "currentServiceLengthMinutes": 30,
+        "waitingAtOpening": 5,
+        "period": "lunch",
+        "guestsTotal": 3,
+        "waitingIdsCount": 0,
+        "seatedIdsCount": 2,
+        "businessClass": "ölkrogen",
+        "staff": [
+          {
+            "role": "värd",
+            "taskType": "clear"
+          },
+          {
+            "role": "servitör",
+            "taskType": "clear"
+          },
+          {
+            "role": "kock",
+            "taskType": "clear"
+          }
+        ],
+        "allThreeIdle": false
+      },
+      {
+        "targetElapsed": 1790,
+        "actualElapsed": 1790.00000000027,
+        "remainingSec": 9.999999999730107,
+        "panelServiceField": "0:09",
+        "simTime": 1790.00000000027,
+        "periodStartAt": 0,
+        "openingEndsAt": null,
+        "doorsOpenAt": null,
+        "doorsOpenedThisService": true,
+        "currentServiceLengthMinutes": 30,
+        "waitingAtOpening": 5,
+        "period": "lunch",
+        "guestsTotal": 3,
+        "waitingIdsCount": 0,
+        "seatedIdsCount": 3,
+        "businessClass": "ölkrogen",
+        "staff": [
+          {
+            "role": "värd",
+            "taskType": null
+          },
+          {
+            "role": "servitör",
+            "taskType": null
+          },
+          {
+            "role": "kock",
+            "taskType": null
+          }
+        ],
+        "allThreeIdle": true
+      }
+    ]
+  },
+  "assertions": {
+    "doorsOpenTimeIdenticalBothPasses": true,
+    "doorsOpenFired15min": true,
+    "doorsOpenFired30min": true,
+    "anyOnBreakWhileQueueNonEmpty15min": false,
+    "anyOnBreakWhileQueueNonEmpty30min": false
+  }
+}

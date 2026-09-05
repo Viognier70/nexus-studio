@@ -559,12 +559,21 @@ export interface DayState {
   // over the room during this window. When simTime crosses this
   // timestamp, the opening ends and prep begins.
   openingEndsAt: number | null;
-  // ORDER 043 Addendum A prep window — set when opening ends, to
-  // simTime + PREP_DURATION_SEC. While non-null the service is
-  // "in mise en place": no arrivals, no scenarios, prep events fire
-  // on the stream instead. Cleared (set to null) when the prep
-  // window expires; the carryover check runs at that moment.
-  prepEndsAt: number | null;
+  // ORDER 171 — samma ögonblick, ett namn. Fältet hette tidigare
+  // `doorsOpenAt`; ORDER 124 §2 antog att det fanns två separata
+  // konstanter (prep-slut, dörr-öppning) och att arrivals kunde ligga
+  // mellan dem. Koden har alltid haft ETT värde: doors-open-blocket i
+  // reducer.ts fires vid `simTime >= <detta fält>` och det är samma
+  // ögonblick som prep slutar. Samma dubbelhet som ORDER 144 (två
+  // matsalar) och ORDER 149 (ZONE_FLOORS) tog bort. Ett namn nu:
+  // `doorsOpenAt`. Sätts vid OPEN_SERVICE till `periodStartAt +
+  // OPENING_DURATION_SEC + PREP_DURATION_SEC` för klasser med mise en
+  // place (hasMiseEnPlace=true: kvarterskrogen, gästgiveriet, ölkrogen,
+  // vinbaren) och till `periodStartAt + OPENING_DURATION_SEC` för
+  // klasser utan (foodtrucken hoppar över prep — mise en place-fönstret
+  // är noll). Rensas (null) i samma tick som dörrarna öppnar; från och
+  // med då är fältet historik.
+  doorsOpenAt: number | null;
   // Number of ignorance-tagged prep events fired during the current
   // prep window. Read at prep-end to decide whether to schedule a
   // carryover bottleneck event ~13 min into service.
