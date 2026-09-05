@@ -1,0 +1,61 @@
+{
+  "order": 172,
+  "title": "On break — cam=24m i ölkrogen, vad rendas",
+  "setup": {
+    "url": "#playtest=1&business=brewpub&preset=myBusiness&period=lunch",
+    "waitAfterMountMs": 3500,
+    "viewport": {
+      "width": 1920,
+      "height": 1080
+    }
+  },
+  "probe": {
+    "simState": {
+      "businessClass": "ölkrogen",
+      "simTime": 0.2,
+      "period": "morning",
+      "periodStartAt": 0
+    },
+    "businessRoomRef": {
+      "businessClass": "ölkrogen",
+      "capacity": 20,
+      "seatsCount": 20,
+      "standingCount": 8,
+      "entrance": [
+        32.40935134463978,
+        -10.132607704625523
+      ]
+    },
+    "seatSource": {
+      "source": "businessRoomContract",
+      "length": 20
+    },
+    "camera": null,
+    "scene": {
+      "sceneChildrenCount": 0,
+      "namedGroupsCount": 0,
+      "namedGroupsSample": []
+    },
+    "materials": {
+      "roofOpacity": null,
+      "wallOpacity": null,
+      "plinthOpacity": null
+    },
+    "devPanelText": "DEV   - fps(strat)  cam=  0m*[35-75]  day=1 morning    service=-               scenarios=0/0\n     cash= 120k  econR=0.75  soc=0.55  eco=0.55  rep=0.60  share=1.02  credits=E0.00 T0.00 P0.00  key=-\n     no weather (out of service) queue=0 scene=0 seated=0/20 (S:0 O:0 D:0 P:0)"
+  },
+  "consoleTail": [
+    "debug: [vite] connecting...",
+    "debug: [vite] connected.",
+    "info: %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold",
+    "log: [PixelSampleProbe] module loaded",
+    "log: [PixelSampleProbe] mounted. GL context attributes: {alpha: true, antialias: true, depth: true, desynchronized: false, failIfMajorPerformanceCaveat: false}",
+    "log: [PixelSampleProbe] renderer info: {dpr: 1, size: Object, isWebGL2: true}",
+    "warning: [.WebGL-0x12400465400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+    "warning: [.WebGL-0x12400465400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+    "log: [PixelSampleProbe] tick #1: centre R48 G43 B40 anyNonZero=true corner(0,0)=R78G70B69 top-centre=R91G82B77 canvas=1920×1080@1.00dpr gl-y=536",
+    "warning: [.WebGL-0x12400465400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+    "warning: [.WebGL-0x12400465400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)",
+    "log: [PixelSampleProbe] tick #2: centre R48 G43 B40 anyNonZero=true corner(0,0)=R78G70B69 top-centre=R91G82B77 canvas=1920×1080@1.00dpr gl-y=536",
+    "log: [PixelSampleProbe] tick #3: centre R48 G43 B40 anyNonZero=true corner(0,0)=R78G70B69 top-centre=R91G82B77 canvas=1920×1080@1.00dpr gl-y=536"
+  ]
+}
