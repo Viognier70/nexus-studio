@@ -54,6 +54,16 @@ export function useDesktopControls({ enabled, targetElement, onJumpPreset }: Opt
       event.preventDefault();
     };
     const keyDown = (event: KeyboardEvent) => {
+      // ORDER 175 — text-inmatning är inte kamerainput. När fokus ligger
+      // i ett formulär (name-overlay, framtida rename-input, aktivitets-
+      // filter osv.) ska varken Escape, Q/E eller 1-4 påverka kameran.
+      // Utan detta kunde Enter-flödet i namnrutan i vissa fall drunkna i
+      // en global keydown-lyssnare. Escape i input:en skulle också
+      // outward:a kameran i stället för att bara stänga inputens fokus.
+      const t = event.target as HTMLElement | null;
+      if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) {
+        return;
+      }
       if (event.key === 'Escape') camera.outward();
       if (event.key === 'q' || event.key === 'Q') camera.rotate(-0.08, 0);
       if (event.key === 'e' || event.key === 'E') camera.rotate(0.08, 0);

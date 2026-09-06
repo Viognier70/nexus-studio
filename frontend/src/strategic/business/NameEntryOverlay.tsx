@@ -9,7 +9,7 @@
 // styled to sit over the canvas without blocking the WebGL context.
 // Text per strings.sv.ts (CLAUDE.md rule 7). No numbers, no HUD.
 
-import { useState, type FormEvent } from 'react';
+import { useState, type FormEvent, type KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { strings } from '../../content/strings.sv';
 import { useBusiness } from './BusinessContext';
 import { useCamera } from '../camera/CameraContext';
@@ -37,9 +37,18 @@ export function NameEntryOverlay() {
     jumpToPreset('myBusiness');
   };
 
+  // ORDER 175 — text-inmatning är inte kamerainput. Även om
+  // useDesktopControls-guarden numera ignorerar keydown i input, ska
+  // overlay:n vara arkitektoniskt isolerad — framtida globala keydown-
+  // listeners får inte återinföra buggen med att Enter/Escape i formen
+  // också triggar kamera-flygning eller outward.
+  const onKeyDown = (e: ReactKeyboardEvent<HTMLFormElement>) => {
+    e.stopPropagation();
+  };
+
   return (
     <div className="business-name-overlay" role="dialog" aria-modal="true">
-      <form className="business-name-card" onSubmit={onSubmit}>
+      <form className="business-name-card" onSubmit={onSubmit} onKeyDown={onKeyDown}>
         <h2>{strings.business.firstRunHeading}</h2>
         <p>{strings.business.firstRunBody}</p>
         <input

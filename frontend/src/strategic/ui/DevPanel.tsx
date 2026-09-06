@@ -92,11 +92,19 @@ export function DevPanel({ lastKey }: Props) {
   // 250 ms poll cadence as FPS so both readouts stay in sync.
   const [rgb, setRgb] = useState<{ r: number; g: number; b: number }>({ r: 0, g: 0, b: 0 });
   const [camDist, setCamDist] = useState(0);
+  // ORDER 175 — läs även target så DEV-raden kan visa
+  // `cam=<actual>m→<target>m` under pågående flygning. Innan detta
+  // visade cam= endast actual utan indikator på om värdet var landat,
+  // dampat, eller preset-mål; tolkades tolv skärmdumpar i rad som
+  // "kameran står på detta målvärde" medan bilden visade en helt annan
+  // vy. Trettonde fallet i "mätning mot fel sak"-serien.
+  const [camTarget, setCamTarget] = useState(0);
   useEffect(() => {
     const id = window.setInterval(() => {
       setFps(fpsMeter.fps);
       setRgb({ r: pixelSampler.r, g: pixelSampler.g, b: pixelSampler.b });
       setCamDist(camera.actualRef.current.distance);
+      setCamTarget(camera.targetRef.current.distance);
     }, 250);
     return () => window.clearInterval(id);
   }, [camera]);
@@ -270,7 +278,14 @@ export function DevPanel({ lastKey }: Props) {
   const interiorMin = GRAY_BOX_CAMERA.restaurantInteriorFadeMid - GRAY_BOX_CAMERA.restaurantInteriorFadeHalf;
   const interiorMax = GRAY_BOX_CAMERA.restaurantInteriorFadeMid + GRAY_BOX_CAMERA.restaurantInteriorFadeHalf;
   const interiorRenders = camDist < interiorMax;
-  const camStr = `cam=${camDist.toFixed(0).padStart(3, ' ')}m${interiorRenders ? '*' : ' '}[${interiorMin}-${interiorMax}]`;
+  // ORDER 175 — visa target med pil när flygningen är aktiv. Tolerans
+  // 0,5 m så små damping-svansar inte visar en oändlig pil. Slutar
+  // pil visas när actual är inom 0,5 m av target.
+  const flying = Math.abs(camDist - camTarget) > 0.5;
+  const flightArrow = flying
+    ? `→${camTarget.toFixed(0).padStart(3, ' ')}m`
+    : '';
+  const camStr = `cam=${camDist.toFixed(0).padStart(3, ' ')}m${flightArrow}${interiorRenders ? '*' : ' '}[${interiorMin}-${interiorMax}]`;
   const line1 = `DEV  ${fpsStr}  ${camStr}  day=${d.dayNumber} ${d.period.padEnd(9)}  service=${serviceReadout.padEnd(14)}  scenarios=${d.scenariosFiredThisService}/${d.scenariosPlanned}`;
   const cashK = Math.round(sim.cash / 1000);
   // ORDER 102 — R1 kunskapskapital dev-readout. Läses under `capitals`-
