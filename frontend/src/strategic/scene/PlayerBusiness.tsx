@@ -42,6 +42,7 @@ import { usePlayerBusinessInterior } from '../business/interiorLayout';
 import { useSimState } from '../simulation/SimulationProvider';
 import { skyState } from '../../lib/lighting/skyState';
 import { strings } from '../../content/strings.sv';
+import { businessRoomRef } from './interiorSharedState';
 
 // Business volume constants — the D01 historic-centre building is a
 // two-storey sit-down restaurant per ORDER 042 §1.
@@ -376,8 +377,18 @@ export function PlayerBusiness() {
           22 * glow * interiorVisibility;
       }
     }
+    // ORDER 184 — när en businessRoom-scen (Brewpub/Restaurant) monterat
+    // sitt kontrakt för spelarens klass tar den över hela byggnadsvolymen:
+    // skalet (wall + roof) OCH interior stubben. PlayerBusinesss egna
+    // shell-mesher fejdas då till osynliga så scenen inte konkurrerar med
+    // brewpubRoom / restaurantRoom om samma pixlar. Plinth-mesken behålls
+    // (den är utanför contract-scope: en ring runt byggnadens fot).
+    const contract = businessRoomRef.current;
+    const contractOwnsShell = contract !== null && contract.businessClass === sim.businessClass;
+    if (wallMeshRef.current) wallMeshRef.current.visible = !contractOwnsShell;
+    if (roofMeshRef.current) roofMeshRef.current.visible = !contractOwnsShell;
     if (interiorGroupRef.current) {
-      interiorGroupRef.current.visible = interiorVisibility > 0.02;
+      interiorGroupRef.current.visible = !contractOwnsShell && interiorVisibility > 0.02;
       // Fade interior in through its own group opacity by scaling material alpha.
       // Same rule for castShadow — no shadow-stamping from interior
       // furniture when the whole interior is faded to transparent.

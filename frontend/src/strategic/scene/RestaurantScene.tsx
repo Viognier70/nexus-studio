@@ -26,16 +26,26 @@ import {
   resolveWorldPositions,
   resolveStaffStationsWorld,
   updateRoom,
+  setShellOpacity,
   type BusinessRoom
 } from './businessRoom';
 import { disposeRestaurantGeometry } from './restaurantRoom';
 import { businessRoomRef } from './interiorSharedState';
+import { useCamera } from '../camera/CameraContext';
+import { GRAY_BOX_CAMERA } from '../content/grythyttan';
+
+// ORDER 184 — samma smoothstep-formel som PlayerBusinesss roof-fade.
+function smoothstep(a: number, b: number, x: number): number {
+  const t = Math.max(0, Math.min(1, (x - a) / (b - a)));
+  return t * t * (3 - 2 * t);
+}
 
 export function RestaurantScene() {
   const sim = useSimState();
   const layout = usePlayerBusinessInterior(sim.businessClass);
   const groupRef = useRef<THREE.Group>(null);
   const roomRef = useRef<BusinessRoom | null>(null);
+  const { actualRef } = useCamera();
 
   const isRestaurant = sim.businessClass === 'kvarterskrogen';
 
@@ -98,6 +108,17 @@ export function RestaurantScene() {
     // ORDER 144 — phase=0. Köket har inget tillstånd i sim-lagret,
     // och fläkten uppfinns inte. Följer §2.2 i restaurantRoom.FLAGS.
     updateRoom(room, 0);
+    // ORDER 184 — samma roof-fade som PlayerBusiness hade före den
+    // skippades vid contract-monterat läge. Utan detta står restaurangens
+    // tak kvar när kameran zoomat in i myBusiness-preset och skymer
+    // inredningen — samma fynd som drev ORDER 184.
+    const dist = actualRef.current.distance;
+    const shellOpacity = smoothstep(
+      GRAY_BOX_CAMERA.restaurantRoofFadeMid - GRAY_BOX_CAMERA.restaurantRoofFadeHalf,
+      GRAY_BOX_CAMERA.restaurantRoofFadeMid + GRAY_BOX_CAMERA.restaurantRoofFadeHalf,
+      dist
+    );
+    setShellOpacity(room, shellOpacity);
   });
 
   if (!isRestaurant) return null;
