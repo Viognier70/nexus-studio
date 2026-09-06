@@ -100,6 +100,12 @@ const WAIT_LEAN_START_SEC = 8;         // how long unattended before lean starts
 const WAIT_LEAN_FULL_SEC = 45;         // lean saturates at this wait duration
 const SEATED_STATES: readonly GuestState[] = ['seated', 'ordering', 'dining', 'paying'];
 
+// ORDER 185 — stolens sitshöjd per CLAUDE.md Enhetskontrakt (0,45 m).
+// Applied som Y-lyft på hela guest-gruppen under SEATED_STATES + sleeping,
+// eftersom `poseSeated` sänker höften internt men rigg-basen (Y=0) står
+// kvar på golvet. Utan lyftet hänger figuren i luften strax över golvet.
+const SEAT_SIT_HEIGHT_M = 0.45;
+
 // ORDER 046 §4 / ORDER 088 §2.3 / ORDER 121 §2 — sit / stand animation.
 //
 // Före ORDER 121 dippades hela pucken 0,27 m i Y (SIT_DIP_M) under
@@ -207,6 +213,48 @@ function phaseSeedFor(id: string): number {
     h = Math.imul(h, 16777619);
   }
   return ((h >>> 0) % 10000) / 10000 * Math.PI * 2;
+}
+
+// ORDER 185 — deterministisk raw-hash 0..255 per guest id, används för
+// garment-variant-väljaren nedan. Samma FNV-1a-familj som `phaseSeedFor`.
+function guestIdByte(id: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < id.length; i += 1) {
+    h ^= id.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return (h >>> 0) & 0xff;
+}
+
+// ORDER 185 — garment-varianter för sittande gäster. En enda GUEST_COLOUR
+// per state gav alla gäster identisk färg (Vision Owner observation
+// 2026-09-06 från key=5-vyn). Fyra varianter per state, kalibrerade att
+// hålla sig inom ORDER 127 §5:s silhouette-kontrast-band mot ölkrogens
+// floorDining `#a49b8a` — hue-variationen läses som olika människor men
+// luminance-nyckeln (≈ 0.65) bibehålls så bandet inte bryts.
+//
+// Icke-sittande stater (arriving/waiting/leaving/declined) behåller
+// state-driven färg per `GUEST_COLOUR` för att signalen "gäst på väg in
+// / ut" ska läsas tydligt utan att drunkna i garment-variation.
+const GARMENT_VARIANTS: Record<'seated' | 'ordering' | 'dining' | 'paying' | 'sleeping', readonly string[]> = {
+  // Base #ecd2a0 → 3 hue-nudges i varmt band, samma luminance-nyckel.
+  seated:   ['#ecd2a0', '#e8d2a8', '#efd398', '#e6cea3'],
+  // Base #edd0a4 → samma pattern, marginellt kallare för state-progression.
+  ordering: ['#edd0a4', '#e9d0ac', '#f0d19b', '#e8ccaa'],
+  // Base #edcfa4 (nudge upp per ORDER 127 §5).
+  dining:   ['#edcfa4', '#e9cfab', '#f0d09c', '#e8cba9'],
+  // Base #edd0a3 (nudge upp per ORDER 127 §5).
+  paying:   ['#edd0a3', '#e9d0aa', '#f0d19c', '#e8cba9'],
+  // Base #c4ac7d (ORDER 111 §4 — mörkare dovare).
+  sleeping: ['#c4ac7d', '#c0ac82', '#c8ab78', '#bfa984']
+};
+
+function garmentColourFor(guest: Guest): string {
+  const state = guest.state;
+  const table = GARMENT_VARIANTS[state as keyof typeof GARMENT_VARIANTS];
+  if (!table) return GUEST_COLOUR[state];
+  const byte = guestIdByte(guest.id);
+  return table[byte % table.length];
 }
 
 export function InteriorGuests() {
@@ -432,12 +480,33 @@ export function InteriorGuests() {
       }
 
       // Group carries the ground-planted lean rotation and microYaw so
-      // the rig's base stays grounded while the top tilts. Y = leanY +
-      // bob (small vertical wobble from the pattern layer).
+      // the rig's base stays grounded while the top tilts. Y = seat sit
+      // lift + leanY + bob (small vertical wobble from the pattern layer).
+      //
+      // ORDER 185 — sittande gäster måste lyftas till stolens sitshöjd
+      // (0,45 m per CLAUDE.md Enhetskontrakt). `poseSeated` sänker höften
+      // 0,41 m internt; utan Y-lyft hänger fötterna ner under golv-nivån
+      // och figuren ser ut att "halvsitta ovanpå golvet" (Vision Owner
+      // observation 2026-09-06 från key=5-vyn i olkrogen). Under sit/stand-
+      // transition (0..1) skalas lyftet linjärt så pose-blenden och
+      // Y-positionen möts vid sit-slutläget.
+      let sitLift = 0;
+      const isSeatedState =
+        SEATED_STATES.includes(guest.state) || guest.state === 'sleeping';
+      if (pos.sitStandPhase >= 0 && pos.sitStandDir === -1) {
+        // Sitter ner: lyft eases in med samma phase som pose-blenden
+        sitLift = SEAT_SIT_HEIGHT_M * pos.sitStandPhase;
+      } else if (pos.sitStandPhase >= 0 && pos.sitStandDir === 1) {
+        // Reser sig: lyft eases ut
+        sitLift = SEAT_SIT_HEIGHT_M * (1 - pos.sitStandPhase);
+      } else if (isSeatedState) {
+        // Statiskt sittande (ingen transition pågår) — full lyft
+        sitLift = SEAT_SIT_HEIGHT_M;
+      }
       if (group) {
         group.position.set(
           pos.cx + pos.leanX,
-          pos.leanY + patternTx.bobY,
+          sitLift + pos.leanY + patternTx.bobY,
           pos.cz + pos.leanZ
         );
         group.rotation.x = patternTx.leanRad;
@@ -446,7 +515,15 @@ export function InteriorGuests() {
 
       if (rig) {
         // Sätt garment-färg per tick (staten skiftar över tid).
-        rig.garment.color.set(target.colour);
+        // ORDER 185 — sittande stater använder `garmentColourFor` som
+        // ger en av fyra varianter per guest id (hash-baserat) inom
+        // ORDER 127 §5:s kontrastband. Icke-sittande stater faller
+        // tillbaka på state-driven `target.colour` för läsbarhet i
+        // rörliga puckar (arriving/waiting/leaving/declined).
+        const garmentColour = SEATED_STATES.includes(guest.state) || guest.state === 'sleeping'
+          ? garmentColourFor(guest)
+          : target.colour;
+        rig.garment.color.set(garmentColour);
         rig.materials.forEach((mat) => {
           mat.opacity = visibility;
           const wantTransparent = visibility < 0.99;
