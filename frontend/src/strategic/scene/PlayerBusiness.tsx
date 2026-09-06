@@ -167,11 +167,13 @@ function sideWallGeometry(
 export function PlayerBusiness() {
   const { business, hasName } = useBusiness();
   const { actualRef } = useCamera();
-  const layout = usePlayerBusinessInterior();
+  // ORDER 174 — skicka sim.businessClass så interiorLayout kan läsa
+  // per-klass-kontraktet i stället för att default:a till restaurangens matsal.
+  const sim = useSimState();
+  const layout = usePlayerBusinessInterior(sim.businessClass);
   // ORDER 057 Del B — restaurant glow. During service (lunch/dinner)
   // the wall picks up a warm emissive tint at night; outside service
   // it still glows a little to read as "the venue is here" but less.
-  const sim = useSimState();
 
   const wallMaterialRef = useRef<THREE.MeshStandardMaterial>(null);
   const roofMaterialRef = useRef<THREE.MeshStandardMaterial>(null);

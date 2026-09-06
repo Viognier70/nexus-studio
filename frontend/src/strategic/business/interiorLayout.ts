@@ -28,6 +28,7 @@ import { obbLocalToWorld, orientedBbox } from '../procgen/geom';
 import type { OBB } from '../procgen/geom';
 import type { BusinessClass } from './businessClass';
 import { businessHasSeats } from './businessClass';
+import { businessRoomRef } from '../scene/interiorSharedState';
 
 // ---------- Compile-time layout constants ----------
 // Every measurement below is metres in the OBB local frame:
@@ -187,21 +188,27 @@ function localSeatOffsets(kind: TableKind): [number, number][] {
   ];
 }
 
-// ORDER 113 fel 1 uppföljning — verksamhets-gated. `usePlayerBusinessInterior`
-// och den underliggande computen returnerade tidigare restaurangens
-// 16-stols-matsal oavsett `state.businessClass`; DevPanel loggade
-// `layout.seats=16 (DRIFT)` för foodtruck som inte har någon matsal
-// alls. Bakom det låg antagandet att PLAYER_BUSINESS_BUILDING_IDS +
-// TABLE_SPECS är statiskt matsals-innehåll — vilket bara stämmer för
-// restaurangen. Foodtruck och andra verksamheter utan `hasSeats` får
-// nu `null` tillbaka, så konsumenter (DevPanel:s DRIFT-check, ev.
-// framtida scener) kan branch:a korrekt.
+// ORDER 174 — kontraktet är källan, inte restaurangens specialfall.
+// Samma pattern som ORDER 149 (BrewpubScene via businessRoom-kontrakt),
+// ORDER 150 (InteriorGuests läser businessRoomRef.seats).
 //
-// Argumentet är valfritt: äldre anropssidor (InteriorGuests, InteriorStaff,
-// AnimationPrototype — alla restaurang-3D-scener som inte visas i
-// dockskåps-läget) kör vidare med default-beteende (restaurangens
-// matsal). Nya konsumenter som behöver businessClass-medvetenhet passar
-// in flaggan från `useSimState().businessClass`.
+// Vid anrop med `businessClass`-argument OCH ett monterat businessRoom
+// för matchande klass överrides `seats` + `totalSeats` med kontraktets
+// värden. Byggnads-geometrin (width, depth, centre, worldAngle, entrance,
+// waitingSlots, arrivalSlots, deliveryBay/Approach) förblir OBB-derivad
+// och gäller oavsett klass. `tables[]`, `bar`, `barStoolPositions`
+// förblir hardcoded restaurang-form som fallback för PlayerBusinesss
+// interior-stub när ingen contract-scen ännu är monterad — full
+// migration av dessa till per-klass geometri sker när RoomSeat-modellen
+// utökas eller PlayerBusiness-stubben skalas ner.
+//
+// Anrop UTAN argument (interiorLayout.test.ts, initial-mount före sim)
+// bevarar historiskt beteende: hardcoded restaurang-layout, TOTAL_SEATS=16.
+//
+// ORDER 113-historik (bevarad): `usePlayerBusinessInterior` returnerade
+// tidigare restaurangens 16-stols-matsal oavsett `state.businessClass`;
+// DevPanel loggade `layout.seats=16 (DRIFT)` för foodtruck. Verksamheter
+// utan `hasSeats` får `null` tillbaka så konsumenter kan branch:a korrekt.
 export function computePlayerBusinessInterior(
   businessClass?: BusinessClass
 ): InteriorLayout | null {
@@ -299,6 +306,14 @@ export function computePlayerBusinessInterior(
     return obbLocalToWorld(obb, localX, localZ);
   });
 
+  // ORDER 174 — contract-override. När klassens businessRoom är monterat
+  // och `businessClass` matchar så vinner kontraktets platser + kapacitet
+  // över de hardcoded TABLE_SPECS-derivade. Ingen effekt när argument
+  // saknas eller kontraktet är null / annan klass.
+  const contract = readContractSeats(businessClass);
+  const finalSeats = contract?.seats ?? seats;
+  const finalTotalSeats = contract?.capacity ?? TOTAL_SEATS;
+
   return {
     building,
     obb,
@@ -316,9 +331,24 @@ export function computePlayerBusinessInterior(
     arrivalSlots,
     deliveryBay,
     deliveryApproach,
-    seats,
-    totalSeats: TOTAL_SEATS
+    seats: finalSeats,
+    totalSeats: finalTotalSeats
   };
+}
+
+// ORDER 174 — läs kontraktet om det finns för exakt denna klass.
+// Kontraktet publiceras av *Scene-komponenten (BrewpubScene, RestaurantScene, …)
+// när dess businessRoom har monterats. Anropas utan sim-koppling
+// (module-singleton via interiorSharedState).
+function readContractSeats(
+  bc: BusinessClass | undefined
+): { seats: [number, number][]; capacity: number } | null {
+  if (bc === undefined) return null;
+  const room = businessRoomRef.current;
+  if (room === null || room.businessClass !== bc || room.seats.length === 0) {
+    return null;
+  }
+  return { seats: room.seats as [number, number][], capacity: room.capacity };
 }
 
 export function usePlayerBusinessInterior(

@@ -210,10 +210,12 @@ function phaseSeedFor(id: string): number {
 }
 
 export function InteriorGuests() {
-  const layout = usePlayerBusinessInterior();
+  // ORDER 174 — sim.businessClass in i interiorLayout så kontrakt-seats
+  // vinner över restaurangens 16-stols-default för alla klasser.
+  const sim = useSimState();
+  const layout = usePlayerBusinessInterior(sim.businessClass);
   const { actualRef } = useCamera();
   const groupRef = useRef<THREE.Group>(null);
-  const sim = useSimState();
 
   // Per-guest current position (mutated each frame — React does not
   // re-render on position changes; the mesh transform is set direct).

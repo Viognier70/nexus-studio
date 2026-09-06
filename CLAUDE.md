@@ -162,3 +162,4 @@ En ändring är klar när:
 - [ ] Respekterar reduced motion och WebGL-fallback
 - [ ] Relevanta specar i `documentation/` är uppdaterade eller flaggade
 - [ ] Committad med tydligt meddelande
+- [ ] **Verifieringen kör i den klass och det flöde felet rapporterades i.** En fix som prövas i `business=kvarterskrogen` bevisar inget om felet gällde `business=ölkrogen`; en fix som prövas via URL-preset (`focus=… distance=… yaw=… pitch=…`) eller dev-flagga (`dollhouse=1`) bevisar inget om spelarens flöde är namninmatning + kameraflygning. Om skriptet sätter en flagga eller preset:t spelaren inte kan nå, redovisas det och en andra mätning görs i spelarens flöde. (ORDER 174, 2026-09-06 — elfte fallet av "mätning mot fel sak", efter 128/132/135/145/146/143/157/173-8-kedjan.)
