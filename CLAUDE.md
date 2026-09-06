@@ -95,6 +95,27 @@ npm run build      # typecheck + produktionsbygge till dist/
 npm run preview    # förhandsgranska bygget
 ```
 
+## Tangentkommandon (strategiska scenen)
+
+Playtest-genvägar, satta i `useDesktopControls.ts` (kamera) och `StrategicApp.tsx` (sim). Aktiveras när `#playtest=1` finns i URL:en och focus ligger på canvas (inte i input-fält — ORDER 175). **Verifiera renderingen mot dessa när utredningen kräver ett specifikt läge.**
+
+| Tangent | Handling | Källa |
+|---|---|---|
+| `1` | Kamera → `village`-preset (900 m) | `useDesktopControls.ts:60` |
+| `2` | Kamera → `district`-preset (210 m) | `useDesktopControls.ts:61` |
+| `3` | Kamera → `business`-preset (55 m) | `useDesktopControls.ts:62` |
+| `4` | Kamera → `myBusiness`-preset (24 m) | `useDesktopControls.ts:63` |
+| `5` | `dispatch({ type: 'TRIGGER_SCENARIO' })` — startar ett scenariodrivet skeende (subject → situation → response). **INTE en kamera-nivå.** Kamera-preseterna slutar vid `4`. | `StrategicApp.tsx:173` |
+| `r` / `R` | `dispatch({ type: 'RESET' })` — nollställ sim | `StrategicApp.tsx:174` |
+| `,` / `.` / `/` | Cycle social / economic / ecological capital | `StrategicApp.tsx:175-177` |
+| `q` / `Q` | Rotera kameran vänster | `useDesktopControls.ts:58` |
+| `e` / `E` | Rotera kameran höger | `useDesktopControls.ts:59` |
+| `Escape` | Zooma utåt | `useDesktopControls.ts:57` |
+| `g` / `G` (DEV) | Toggle scale-reference | `StrategicApp.tsx:180-185` |
+| `h` / `H` (DEV) | Toggle säsong (autumn ↔ summer) | `StrategicApp.tsx:189-194` |
+
+Ingen tangent är "nivå 5" i kamera-mening. `TRIGGER_SCENARIO` visar `ScenarioOverlay` (nedre kanten). Fjorton ordrar har historiskt utretts under fel antagande att `5` var en preset — se ORDER 184.
+
 ## Renderregler
 
 - **Skuggor och opacity (ORDER 055 Del A).** Geometri med `transparent` opacity som kan nå 0 får aldrig ha statiskt `castShadow`. Skuggkartans depth-pass ignorerar alpha, så en fullt ut-fejdad mesh stämplar sin silhuett på marken. Toggla `mesh.castShadow` i samma `useFrame` som styr opacity, med samma tröskel som `depthWrite` (typiskt `opacity > 0.5`).

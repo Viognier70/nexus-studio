@@ -276,6 +276,54 @@ export function updateRoom(room: BusinessRoom, phase: number): void {
 }
 
 /**
+ * ORDER 184 — sätt shell-opacity (wall + roof) på ett rum. Anropas varje
+ * frame av *Scene-komponenterna med samma smoothstep-formel som PlayerBusinesss
+ * roof-fade så att spelarens kamera vid myBusiness-preset kan zooma IN i
+ * lokalen: byggnadsvolymen försvinner, interiören avslöjas.
+ *
+ * Före ORDER 184 hade brewpubRoom / restaurantRoom fast opaka väggar + tak.
+ * PlayerBusinesss egen skal fejdades vid 24 m men businessRoom-skalet stod
+ * kvar och skymmer interiören — vad Vision Owner såg i olkrogen-vyn 2026-09-06.
+ * ORDER 184 alternativ B: PlayerBusinesss skal skippas när kontraktet är
+ * monterat, och kontraktet får själv fade-ansvar via denna funktion.
+ *
+ * Traversar `room.group` en gång per frame och hittar mesh med namn i
+ * SHELL_MESH_NAMES-set:et. Materialet delas ofta mellan flera mesher
+ * (brewpubRoom bygger med shared `matWall` / `matRoof`) — vi noterar
+ * varje material en gång så vi inte skriver samma opacity gång på gång.
+ *
+ * `castShadow` togglas parallellt med opacity per ORDER 055 Del A —
+ * ett fejdat tak stämplar sin silhuett på marken om depth-pass:en
+ * ignorerar alpha.
+ */
+const SHELL_MESH_NAMES = new Set(['wallN', 'wallS', 'wallE', 'wallW', 'roofSlab']);
+
+export function setShellOpacity(room: BusinessRoom, opacity: number): void {
+  const clamped = Math.max(0, Math.min(1, opacity));
+  const wantTransparent = clamped < 0.99;
+  const depthWrite = clamped > 0.5;
+  const castShadow = clamped > 0.5;
+  const seen = new Set<THREE.Material>();
+  room.group.traverse((obj) => {
+    if (!(obj instanceof THREE.Mesh)) return;
+    if (!SHELL_MESH_NAMES.has(obj.name)) return;
+    obj.castShadow = castShadow;
+    const mat = obj.material as THREE.Material | THREE.Material[];
+    const list = Array.isArray(mat) ? mat : [mat];
+    for (const m of list) {
+      if (seen.has(m)) continue;
+      seen.add(m);
+      m.opacity = clamped;
+      if (m.transparent !== wantTransparent) {
+        m.transparent = wantTransparent;
+        m.needsUpdate = true;
+      }
+      if ('depthWrite' in m) (m as unknown as { depthWrite: boolean }).depthWrite = depthWrite;
+    }
+  });
+}
+
+/**
  * Vägpunkter till en plats, i rummets lokala XZ.
  *
  * Heter walkPathToSeat även för foodtrucken, där den leder till en

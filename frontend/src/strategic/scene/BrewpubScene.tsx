@@ -23,16 +23,29 @@ import {
   resolveWorldPositions,
   resolveStaffStationsWorld,
   updateRoom,
+  setShellOpacity,
   type BusinessRoom
 } from './businessRoom';
 import { disposeBrewpubGeometry } from './brewpubRoom';
 import { businessRoomRef } from './interiorSharedState';
+import { useCamera } from '../camera/CameraContext';
+import { GRAY_BOX_CAMERA } from '../content/grythyttan';
+
+// ORDER 184 — samma smoothstep-formel som PlayerBusinesss roof-fade,
+// så brewpubRoom-skalet försvinner i takt med PlayerBusinesss egna
+// (skippade) skal. Duplicerad från PlayerBusiness.tsx tills en delad
+// util-modul motiveras.
+function smoothstep(a: number, b: number, x: number): number {
+  const t = Math.max(0, Math.min(1, (x - a) / (b - a)));
+  return t * t * (3 - 2 * t);
+}
 
 export function BrewpubScene() {
   const sim = useSimState();
   const layout = usePlayerBusinessInterior(sim.businessClass);
   const groupRef = useRef<THREE.Group>(null);
   const roomRef = useRef<BusinessRoom | null>(null);
+  const { actualRef } = useCamera();
 
   const isBrewpub = sim.businessClass === 'ölkrogen';
 
@@ -92,6 +105,16 @@ export function BrewpubScene() {
     const room = roomRef.current;
     if (!room) return;
     updateRoom(room, 0);
+    // ORDER 184 — samma roof-fade som PlayerBusiness hade före den
+    // skippades vid contract-monterat läge. Vid distance ≤ 28 m är
+    // skalet helt borta; över 52 m helt opakt.
+    const dist = actualRef.current.distance;
+    const shellOpacity = smoothstep(
+      GRAY_BOX_CAMERA.restaurantRoofFadeMid - GRAY_BOX_CAMERA.restaurantRoofFadeHalf,
+      GRAY_BOX_CAMERA.restaurantRoofFadeMid + GRAY_BOX_CAMERA.restaurantRoofFadeHalf,
+      dist
+    );
+    setShellOpacity(room, shellOpacity);
   });
 
   if (!isBrewpub) return null;
