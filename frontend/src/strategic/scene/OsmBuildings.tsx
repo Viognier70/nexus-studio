@@ -12,6 +12,7 @@ import type { RawBuilding, Vec2Tuple } from '../content/world';
 import { nearestStreetProfile } from '../content/streetProfiles';
 import { inside } from '../procgen/geom';
 import { SKIP_PROCEDURAL_IDS } from './ProceduralFacades';
+import { BUILDINGS_ON_ROADS } from '../content/buildingsOnRoads';
 
 type WealthTier = 'modest' | 'standard' | 'prosperous';
 
@@ -1274,6 +1275,11 @@ export function OsmBuildings() {
         // group. Either way the OSM box shouldn't compete for pixels
         // at the same position — skip them here.
         .filter((b) => !SKIP_PROCEDURAL_IDS.has(b.id))
+        // ORDER 176 — byggnader som strukturellt står över en motoriserad
+        // vägs mittlinje (≥ 2 sample-punkter inuti polygonen) skippas.
+        // Löser "väg går in i gaveln och slutar" som ORDER 158-guarden
+        // producerar när OSM har byggnaden felplacerad över korsning.
+        .filter((b) => !BUILDINGS_ON_ROADS.has(b.id))
         .map(toExtruded)
         .filter((b): b is Extruded => b !== null),
     []
