@@ -18,6 +18,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { WORLD } from '../content/world';
 import type { RawBuilding } from '../content/world';
+import { BUILDINGS_ON_ROADS } from '../content/buildingsOnRoads';
 import {
   FODER_HEX,
   KULOR_HEX,
@@ -53,9 +54,14 @@ const ELIGIBLE_KINDS = new Set([
 ]);
 
 // Exported so OsmBuildings can skip these IDs and avoid double-rendering.
+// ORDER 176 — exkluderar också BUILDINGS_ON_ROADS här så byggnader som
+// står över en vägs mittlinje inte plötsligt syns via procedural-vägen
+// när de skippats i OsmBuildings. Byggnaden är strukturellt fel; ingen
+// renderare ska visa den.
 export const SKIP_PROCEDURAL_IDS: Set<string> = new Set(
   WORLD.buildings
     .filter((b) => ELIGIBLE_KINDS.has(b.kind ?? ''))
+    .filter((b) => !BUILDINGS_ON_ROADS.has(b.id))
     .map((b) => b.id)
 );
 
@@ -182,6 +188,10 @@ export function ProceduralFacades() {
     for (const b of WORLD.buildings) {
       if (!ELIGIBLE_KINDS.has(b.kind ?? '')) continue;
       if (b.poly.length < 3) continue;
+      // ORDER 176 — skippa byggnader som står över en väg (samma set
+      // som SKIP_PROCEDURAL_IDS ovan; guarden är per byggnad, filtret
+      // per renderare).
+      if (BUILDINGS_ON_ROADS.has(b.id)) continue;
       const params = paramsFor(b.id);
       const seed = hash32(b.id);
       const lod0 = buildFacade(b.poly, params, seed, { lod: 0 });
