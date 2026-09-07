@@ -203,6 +203,22 @@ interface AnimatedPos {
   walkPhase: number;
 }
 
+// ORDER 188 tillägg 1 — sitYaw-warning en gång per (klass, seatIndex)
+// när kontraktet saknar facing för platsen. Data-fel i rumsfilen, inte
+// runtime-varning per frame — loggar bara första förekomst.
+const _sitYawWarned = new Set<string>();
+function warnMissingSitYaw(businessClass: string, seatIndex: number): void {
+  const key = `${businessClass}:${seatIndex}`;
+  if (_sitYawWarned.has(key)) return;
+  _sitYawWarned.add(key);
+  // eslint-disable-next-line no-console
+  console.warn(
+    `[ORDER 188] sitYaw saknas för seat ${seatIndex} i ${businessClass} — ` +
+    `rumsfilen bör sätta facing per RoomSeat (kontrollera brewpubRoom.ts / ` +
+    `restaurantRoom.ts). Fallback: microYaw only.`
+  );
+}
+
 // ORDER 088 §3 — hash guest id to a stable [0, 2π) phase seed. Same
 // id yields the same seed every mount — no Math.random. Small
 // FNV-1a variant.
@@ -460,8 +476,16 @@ export function InteriorGuests() {
           const dzE = pos.cz - ezWorld;
           const distToEntrance = Math.hypot(dxE, dzE);
           if (distToEntrance > 0.8) {
-            effTargetX = exWorld;
-            effTargetZ = ezWorld;
+            // ORDER 188 fynd 2 — kön ska ha egna platser, inte samma
+            // punkt. Före ORDER 188 hamnade 6-7 gäster i klunga exakt
+            // på entrance-XZ (VO fynd 2026-09-07). Deterministisk
+            // lateral jitter per phaseSeed så samma gäst alltid tar
+            // samma slot; ±1,8 m sprider 6-8 samtidiga gäster utan
+            // överlapp och håller sig inom entrance-approach-området.
+            const jx = Math.sin(pos.phaseSeed) * 1.8;
+            const jz = Math.cos(pos.phaseSeed) * 1.8;
+            effTargetX = exWorld + jx;
+            effTargetZ = ezWorld + jz;
           }
         }
       }
@@ -561,7 +585,17 @@ export function InteriorGuests() {
           idx >= 0 &&
           idx < seatFacingsForFrame.length
         ) {
-          group.rotation.y = seatFacingsForFrame[idx] + patternTx.microYawRad;
+          const facing = seatFacingsForFrame[idx];
+          // ORDER 188 tillägg 1 — en plats utan kurs är ett datafel i
+          // rumsfilen, inte ett normalläge. Logga varning en gång per
+          // (klass, seatIndex) om facing saknas eller är NaN så
+          // rumsfilen kan rättas.
+          if (facing === undefined || Number.isNaN(facing)) {
+            warnMissingSitYaw(sim.businessClass ?? 'okänd', idx);
+            group.rotation.y = patternTx.microYawRad;
+          } else {
+            group.rotation.y = facing + patternTx.microYawRad;
+          }
         } else {
           group.rotation.y = patternTx.microYawRad;
         }

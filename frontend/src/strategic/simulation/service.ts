@@ -71,6 +71,35 @@ function lerp1(current: number, target: number, k: number): number {
   return current + (target - current) * Math.min(1, k);
 }
 
+// ORDER 188 tillägg 2 — nearestSeat med avståndstak. Före ORDER 188
+// fanns ingen exponerad nearestSeat-funktion; städningen i tickGuests
+// använde bara guest.state för att bedöma om en id skulle stanna i
+// seatedIds. En gäst i "seated"-state MEN med position långt från
+// någon riktig seat (t.ex. mid-transition, walk-away edge case)
+// räknades som seated ändå. Avståndstaket säkerställer att en gäst
+// som är >2 m från alla platser inte matchas som "på plats" — annars
+// städas fel gäst bort ur seatedIds (VO 2026-09-07 tillägg 2).
+const NEAREST_SEAT_MAX_M = 2.0;
+
+export function nearestSeatWithinM(
+  state: SimulationState,
+  position: Vec2,
+  maxM: number = NEAREST_SEAT_MAX_M
+): number | null {
+  const cap = isSeatedCapacity(state);
+  let bestIdx = -1;
+  let bestDist = Infinity;
+  for (let i = 0; i < cap; i++) {
+    const seat = seatSlot(state, i);
+    const d = distance(position, seat);
+    if (d < bestDist) {
+      bestDist = d;
+      bestIdx = i;
+    }
+  }
+  return bestDist <= maxM ? bestIdx : null;
+}
+
 export function isSeatedCapacity(state: SimulationState): number {
   // ORDER 186 fynd 3 — capacity derives från businessClass i stället för
   // state.policies.capacity. Anledning: DEFAULT_POLICIES.capacity=TOTAL_SEATS=16
@@ -460,8 +489,28 @@ export function tickGuests(state: SimulationState) {
   });
   state.seatedIds = state.seatedIds.filter((id) => {
     const g = state.guests.find((x) => x.id === id);
-    return g && ['seated', 'ordering', 'dining', 'paying'].includes(g.state);
+    if (!g) return false;
+    if (!['seated', 'ordering', 'dining', 'paying'].includes(g.state)) return false;
+    // ORDER 188 fynd 5 + tillägg 2 — verifiera att gästen är faktiskt
+    // nära en seat, inte bara i seated-state. En gäst mid-transition
+    // (state='seated' men position ännu inte hos seat) räknades tidigare
+    // som seated → staff.targetGuestId följde dem ut ur rummet. Med
+    // avståndstak 2 m filtreras spöks-seatedIds bort.
+    return nearestSeatWithinM(state, g.position) !== null;
   });
+  // ORDER 188 fynd 5 — nolla staff.targetGuestId när gästen är borta.
+  // Tidigare behöll staff en pointer till en borttagen gäst → position
+  // undefined → puck driftar ut ur rummet under "personal försvinner"-
+  // observationen (VO 2026-09-07). completeStaffTask nullar bara vid
+  // normal task-slutförande; pruning-vägen ovan städas separat här.
+  const activeGuestIds = new Set(state.guests.map((g) => g.id));
+  for (const staff of state.staff) {
+    if (staff.targetGuestId && !activeGuestIds.has(staff.targetGuestId)) {
+      staff.targetGuestId = null;
+      staff.taskType = null;
+      staff.taskProgress = 0;
+    }
+  }
 }
 
 // ORDER 111 §4 — deterministisk overnight-roll för värdshus. En tredjedel
