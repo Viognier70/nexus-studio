@@ -586,10 +586,18 @@ export function poseSeated(t: number, options?: Partial<PoseOptions>): FigurePos
     head: { pitch: 0.05 + 0.05 * nod, yaw: (o.targetYaw ?? 0) * 0.7 },
     armL: { swing: 0.52, lift: 0.06, elbow: 1.14 + 0.02 * breathe },
     armR: { swing: 0.52, lift: 0.06, elbow: 1.14 - 0.02 * breathe },
-    // knä 1,77 och fotled 0,31 ger ankle_y = 0,060 och plan fot: sulan
+    // ORDER 188 fynd 1 — swing negeras. `applyLeg` sätter
+    // `hip.rotation.x = -(l.swing ?? 0)` (för att matcha walk-animationens
+    // sin/cos-tecken). För poseSeated betydde det att swing=+1.46 blev
+    // hip.rotation.x=-1.46 → benet BAKÅT-och-uppåt, kroppen tippar framåt
+    // för balans, och figuren la sig platt på magen (VO fynd 2026-09-07
+    // efter ORDER 185 exponerade tidigare gömda buggen). Med swing=-1.46
+    // blir hip.rotation.x=+1.46 → benet framåt-och-nedåt = sittande.
+    //
+    // Knä 1,77 och fotled 0,31 ger ankle_y = 0,060 och plan fot: sulan
     // står i golvplanet i stället för tre centimeter ner i det.
-    legL: { swing: 1.46, spread: 0.06, knee: 1.77, ankle: 0.31 },
-    legR: { swing: 1.46, spread: 0.06, knee: 1.77, ankle: 0.31 }
+    legL: { swing: -1.46, spread: 0.06, knee: 1.77, ankle: 0.31 },
+    legR: { swing: -1.46, spread: 0.06, knee: 1.77, ankle: 0.31 }
   };
 }
 

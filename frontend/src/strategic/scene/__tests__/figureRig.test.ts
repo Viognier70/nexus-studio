@@ -154,12 +154,23 @@ describe('ORDER 121 §8 DoD 4 — golvtestet, fötterna når golvet i alla sex p
     ['poseCarry', (a) => poseCarry(a * 5)]
   ];
 
-  it.each(CASES)('%s — lägsta fot-y i intervallet [-0.05, 0.005]', (_name, poseFn) => {
+  it.each(CASES)('%s — lägsta fot-y i intervallet', (name, poseFn) => {
     const rig = createFigureRig({ variant: 'guest' });
     try {
       const lowest = samplePose(rig, poseFn, 32);
-      expect(lowest).toBeLessThanOrEqual(0.005);   // fötterna når golvet
-      expect(lowest).toBeGreaterThanOrEqual(-0.05); // ingen degenererad dyk
+      // ORDER 188 fynd 1 — poseSeated:s ben-swing negerades så figuren
+      // sitter upprätt istället för att ligga på magen. Konsekvens:
+      // fötterna ligger 0,30-0,40 m OVER rig-root i sittande läge
+      // (framåtsträckta ben från hip). Sit-lift (0,45 m i InteriorGuests
+      // group.position) placerar dem sen mot rätt world-Y för barstol/
+      // vanlig-stol-scenen. Detta test mäter rig-local Y utan sit-lift
+      // så toleransen för poseSeated blir bredare: [-0.05, 0.5].
+      //
+      // Övriga poser (walk/idle/greet/work/carry) står upprätt utan lift
+      // och behåller strikt golv-tolerans [-0.05, 0.005].
+      const upperBound = name === 'poseSeated' ? 0.5 : 0.005;
+      expect(lowest).toBeLessThanOrEqual(upperBound);
+      expect(lowest).toBeGreaterThanOrEqual(-0.05);
     } finally {
       disposeFigureRig(rig);
     }
@@ -170,7 +181,8 @@ describe('ORDER 121 §8 DoD 4 — golvtestet, fötterna når golvet i alla sex p
       const rig = createFigureRig({ variant: 'staff' });
       try {
         const lowest = samplePose(rig, poseFn, 32);
-        expect(lowest, `staff ${name}`).toBeLessThanOrEqual(0.005);
+        const upperBound = name === 'poseSeated' ? 0.5 : 0.005;
+        expect(lowest, `staff ${name}`).toBeLessThanOrEqual(upperBound);
         expect(lowest, `staff ${name}`).toBeGreaterThanOrEqual(-0.05);
       } finally {
         disposeFigureRig(rig);
