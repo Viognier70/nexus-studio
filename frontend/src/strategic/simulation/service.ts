@@ -1,5 +1,6 @@
 import { INTERIOR } from '../content/layout';
-import { businessHasOvernight, businessHasSeats } from '../business/businessClass';
+import { businessHasOvernight, businessHasSeats, capacityForBusiness } from '../business/businessClass';
+import type { BusinessClass } from '../business/businessClass';
 import type { Guest, SimulationState, StaffMember, TaskType, Vec2 } from '../types';
 import { taskDurationTicks } from './economics';
 import {
@@ -71,7 +72,14 @@ function lerp1(current: number, target: number, k: number): number {
 }
 
 export function isSeatedCapacity(state: SimulationState): number {
-  return state.policies.capacity;
+  // ORDER 186 fynd 3 — capacity derives från businessClass i stället för
+  // state.policies.capacity. Anledning: DEFAULT_POLICIES.capacity=TOTAL_SEATS=16
+  // uppdateras bara vid bank-outcome-driven klass-byte (reducer.ts:882-889).
+  // En spelare som startar med `#business=olkrogen` fick capacity=16 trots
+  // att businessClass='ölkrogen' vill ha 20 — findFreeSeat nådde aldrig
+  // bar-stolarna på seatIndex 16-19. Att läsa direkt från businessClass
+  // gör policies.capacity till en cache som aldrig behöver invalideras.
+  return capacityForBusiness(state.businessClass, state.policies.staffCount);
 }
 
 export function seatSlot(_state: SimulationState, index: number): Vec2 {
@@ -104,6 +112,26 @@ const SEATS_DEFAULT = [
   12, 13, 14, 15,  // bar stools
   4, 5, 6, 7       // 4-top (avoided unless nothing else free)
 ];
+
+// ORDER 186 fynd 3 — ölkrogens preferensordning. brewpubRoom.seats:
+//   seatIndex 0-7   communal (två långbord, fyra platser vardera)
+//   seatIndex 8-11  twotop (två tvåbord vid entrén)
+//   seatIndex 12-19 bar (åtta barstolar längs disken)
+// SEATS_DEFAULT (restaurang-form, 16 index) nådde aldrig bar 16-19 och
+// tilldelade bar 12-15 sist. En ölkrog där ingen sitter vid baren är
+// inte en ölkrog — Vision Owner 2026-09-07. Ny preferensordning:
+// bar först (klassens karaktär), sedan communal (långbords-pratläget),
+// sedan twotop sist. Alla 20 index representerade.
+const SEATS_OLKROGEN = [
+  12, 13, 14, 15, 16, 17, 18, 19,  // bar — fylls först
+  0, 1, 2, 3, 4, 5, 6, 7,          // communal (långbord)
+  8, 9, 10, 11                     // twotop (sist)
+];
+
+function seatsPreferenceFor(businessClass: BusinessClass): readonly number[] {
+  if (businessClass === 'ölkrogen') return SEATS_OLKROGEN;
+  return SEATS_DEFAULT;
+}
 
 function scenarioPreferredSeats(state: SimulationState): number[] {
   if (state.scenario.choice === 'A') return SEATS_CHOICE_A;
@@ -142,7 +170,9 @@ export function findFreeSeat(
       if (seat < cap && !seatTaken(state, seat)) return seat;
     }
   }
-  for (const seat of SEATS_DEFAULT) {
+  // ORDER 186 fynd 3 — per-klass preferensordning. Ölkrogen fyller bar
+  // först; övriga klasser använder SEATS_DEFAULT (restaurang-form).
+  for (const seat of seatsPreferenceFor(state.businessClass)) {
     if (seat < cap && !seatTaken(state, seat)) return seat;
   }
   return null;

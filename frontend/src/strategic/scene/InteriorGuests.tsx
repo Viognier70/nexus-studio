@@ -360,6 +360,11 @@ export function InteriorGuests() {
       roomChan.businessClass === sim.businessClass &&
       roomChan.seats.length > 0;
     const seatsForFrame: SlotXZ[] = usingContract ? roomChan!.seats : layout.seats;
+    // ORDER 186 fynd 2 — facings i samma index-ordning som seatsForFrame.
+    // Null när kontraktet saknas (layout.seats-fallback bär inte facing).
+    const seatFacingsForFrame: readonly number[] | null = usingContract
+      ? roomChan!.seatFacings
+      : null;
     if (import.meta.env.DEV && typeof window !== 'undefined') {
       // Dev-observation för playwright — vilken källa och vilken
       // längd som råder just nu. Sätts varje frame utan overhead
@@ -430,8 +435,38 @@ export function InteriorGuests() {
       // Ease toward target at walking pace. Håll koll på om vi rörde
       // oss den här bildrutan så gångfasen bara ökar när fötterna
       // faktiskt tar steg.
-      const dx = target.x - pos.cx;
-      const dz = target.z - pos.cz;
+      // ORDER 186 fynd 4 — waypoint via entrance. När en gäst just
+      // övergått till sittande (waiting → seated) linjär-interpolerade
+      // vi tidigare direkt från waiting-slot (utanför byggnaden) till
+      // seat (inuti). Gästen flög rakt genom väggen. Fix: när gästen
+      // är seated MEN fortfarande utanför byggnadens footprint, sätt
+      // effektivt mål till entrance-punkten. När vi hunnit fram till
+      // (< 0,8 m från) entrance, byt tillbaka till seat-target.
+      // Byggnadens footprint approximeras av OBB half-width — inte
+      // exakt polygon, men tillräckligt konservativ för att undvika
+      // vägg-passager i praktiken.
+      let effTargetX = target.x;
+      let effTargetZ = target.z;
+      const seated = SEATED_STATES.includes(guest.state);
+      if (seated) {
+        const halfW = layout.width / 2;
+        const [cx0, cz0] = layout.centre;
+        const dxFromCentre = pos.cx - cx0;
+        const dzFromCentre = pos.cz - cz0;
+        const distFromCentre = Math.hypot(dxFromCentre, dzFromCentre);
+        if (distFromCentre > halfW * 1.02) {
+          const [exWorld, ezWorld] = layout.entrance;
+          const dxE = pos.cx - exWorld;
+          const dzE = pos.cz - ezWorld;
+          const distToEntrance = Math.hypot(dxE, dzE);
+          if (distToEntrance > 0.8) {
+            effTargetX = exWorld;
+            effTargetZ = ezWorld;
+          }
+        }
+      }
+      const dx = effTargetX - pos.cx;
+      const dz = effTargetZ - pos.cz;
       const dsq = dx * dx + dz * dz;
       const step = WALK_SPEED_M_PER_S * delta;
       let movedThisFrame = false;
@@ -441,9 +476,10 @@ export function InteriorGuests() {
         pos.cz += dz * invd * step;
         movedThisFrame = true;
       } else if (dsq > 1e-6) {
-        // Sista biten — snappar till målet, räknas fortfarande som gång.
-        pos.cx = target.x;
-        pos.cz = target.z;
+        // Sista biten — snappar till effektiva målet (entrance-waypoint
+        // eller seat), räknas fortfarande som gång.
+        pos.cx = effTargetX;
+        pos.cz = effTargetZ;
         movedThisFrame = true;
       }
       // ORDER 121 §2 — gångfas i cykler (avståndsdrivna, inte tidsdrivna).
@@ -510,7 +546,25 @@ export function InteriorGuests() {
           pos.cz + pos.leanZ
         );
         group.rotation.x = patternTx.leanRad;
-        group.rotation.y = patternTx.microYawRad;
+        // ORDER 186 fynd 2 — sittande gäster orienterar sig mot bordet via
+        // RoomSeat.facing (världs-koordinater, satt av resolveWorldPositions
+        // och skickad in via businessRoomRef.seatFacings). Rörliga gäster
+        // (arriving/waiting/leaving/declined) behåller mikro-yaw-jitter för
+        // liv i puck-populationen. Utan seat-facing hade sittande gäster
+        // ryggen mot bordet — Vision Owner fynd 2, 2026-09-07.
+        const idx = guest.seatIndex ?? -1;
+        const seated =
+          SEATED_STATES.includes(guest.state) || guest.state === 'sleeping';
+        if (
+          seated &&
+          seatFacingsForFrame !== null &&
+          idx >= 0 &&
+          idx < seatFacingsForFrame.length
+        ) {
+          group.rotation.y = seatFacingsForFrame[idx] + patternTx.microYawRad;
+        } else {
+          group.rotation.y = patternTx.microYawRad;
+        }
       }
 
       if (rig) {
@@ -537,18 +591,26 @@ export function InteriorGuests() {
         // Gående (arriving/leaving/declined + rörelse) → poseWalk.
         // Sittande → poseSeated, med blend under sit/stand-transition.
         // Övrigt stillastående → poseIdle.
+        //
+        // ORDER 186 fynd 1 — state-check FÖRE movement-check. Före ORDER 186
+        // vann `movedThisFrame` över SEATED_STATES i första grenen, så en
+        // sittande gäst vars XZ jitter:ade över move-tröskeln (från
+        // lean-easing eller pattern-bob) flippade till poseWalk för ett
+        // frame → tillbaka till poseSeated nästa → osv. Läste som "sittande
+        // gäst med raka ben som växlar mellan böjd och rak". Fix: när
+        // guest.state är i SEATED_STATES (eller sleeping) och ingen sit/
+        // stand-transition pågår, force poseSeated oavsett jitter. Motion
+        // pose bara för gäster som INTE är i seated-state.
         const t = sim.simTime + pos.phaseSeed;
         let pose: FigurePose;
-        if (movedThisFrame && !SEATED_STATES.includes(guest.state)) {
-          pose = poseWalk(pos.walkPhase);
-        } else if (pos.sitStandDir === -1 && pos.sitStandPhase >= 0) {
-          // Sätter sig — blenda idle → seated
+        if (pos.sitStandDir === -1 && pos.sitStandPhase >= 0) {
           pose = blendPose(poseIdle(t), poseSeated(t), pos.sitStandPhase);
         } else if (pos.sitStandDir === 1 && pos.sitStandPhase >= 0) {
-          // Reser sig — blenda seated → idle
           pose = blendPose(poseSeated(t), poseIdle(t), pos.sitStandPhase);
         } else if (SEATED_STATES.includes(guest.state) || guest.state === 'sleeping') {
           pose = poseSeated(t);
+        } else if (movedThisFrame) {
+          pose = poseWalk(pos.walkPhase);
         } else {
           pose = poseIdle(t);
         }

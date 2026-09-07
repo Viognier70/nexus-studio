@@ -75,6 +75,7 @@ export function BrewpubScene() {
     businessRoomRef.current = {
       businessClass: 'ölkrogen',
       seats: world.seats as [number, number][],
+      seatFacings: world.seatFacings as number[],
       standing: world.standing as [number, number][],
       stations: world.staffStations as [number, number][],
       entrance: world.entrance as [number, number],

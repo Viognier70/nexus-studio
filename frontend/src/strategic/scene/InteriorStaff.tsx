@@ -39,7 +39,7 @@ import {
   PIP_COLOUR,
   PIP_SIZE_M
 } from './patternTransform';
-import { teamPipCarriersFromStaffPipCarriers } from './teamStaffBridge';
+import { teamPipCarriersFromStaffPipCarriers, bridgeTeamToStaff } from './teamStaffBridge';
 // ORDER 121 §2 — figureRig ersätter cylinderpucken. Pipens Y kommer nu
 // från rig.joints.headAnchor per §6.
 import {
@@ -263,6 +263,16 @@ export function InteriorStaff() {
       new Set(pipCarriers.staffIds)
     );
 
+    // ORDER 186 fynd 5 — koppling till sim-task-pipelinen:
+    // (a) värden står vid entré när ingen aktiv task-riktning finns
+    // (b) servitören går mot sin targetGuest (staff.targetGuestId)
+    // Bridgen mappar TeamMember (economic layer) → StaffMember (task layer)
+    // per pattern från ORDER 090:s pip-räkning.
+    const teamToStaff = bridgeTeamToStaff(sim.team.members, sim.staff);
+    const staffById = new Map(sim.staff.map((s) => [s.id, s]));
+    const guestById = new Map(sim.guests.map((g) => [g.id, g]));
+    const entranceXZ = (roomChan?.entrance ?? layout.entrance) as XZ;
+
     for (const member of sim.team.members) {
       seenIds.add(member.id);
       // ORDER 154 — kontraktets värde vinner när det finns; annars
@@ -298,8 +308,33 @@ export function InteriorStaff() {
         Math.cos(now * driftFreq * 0.9 + pos.jitterSeed * 1.7) * driftAmp;
       const pullDX = gcx - home[0];
       const pullDZ = gcz - home[1];
-      const targetX = home[0] + jitterX + pullDX * strainFactor * 0.5;
-      const targetZ = home[1] + jitterZ + pullDZ * strainFactor * 0.5;
+      let targetX = home[0] + jitterX + pullDX * strainFactor * 0.5;
+      let targetZ = home[1] + jitterZ + pullDZ * strainFactor * 0.5;
+
+      // ORDER 186 fynd 5 — override target när task-pipelinen har mening.
+      // (a) Värd: står vid entré när ingen aktiv task-riktning finns —
+      // rollens läsbara plats i rummet. Task-driven override (t.ex. greet
+      // en gäst utanför) tar över när staff.targetGuestId är satt.
+      // (b) Servitör: går mot sin targetGuest när task pekar ut en.
+      // Ingen jitter, ingen load-pull när task-target aktivt — puck går
+      // rakt mot uppgiften så rummet läser som "servitören är på väg
+      // dit". Utan detta driftar puckar planlöst runt home-station
+      // medan sim kör task-pipelinen osynligt (Vision Owner fynd 5,
+      // 2026-09-07).
+      const bridgedStaffId = teamToStaff.get(member.id) ?? null;
+      const bridgedStaff = bridgedStaffId ? staffById.get(bridgedStaffId) ?? null : null;
+      const taskGuest = bridgedStaff?.targetGuestId
+        ? guestById.get(bridgedStaff.targetGuestId) ?? null
+        : null;
+      if (taskGuest) {
+        // Task-driven target (gäller alla roller, inkl. värd som greet:ar).
+        targetX = taskGuest.position.x;
+        targetZ = taskGuest.position.z;
+      } else if (member.role === 'värd') {
+        // Ingen task: värden står vid entrén med lätt jitter (inte load-pull).
+        targetX = entranceXZ[0] + jitterX * 0.4;
+        targetZ = entranceXZ[1] + jitterZ * 0.4;
+      }
 
       // Ease toward target at walking pace (boosted during prep).
       const dx = targetX - pos.cx;
