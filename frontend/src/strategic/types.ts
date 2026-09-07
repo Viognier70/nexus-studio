@@ -326,6 +326,14 @@ export interface Guest {
   // kan matcha arketypens prop OR en generisk foodtruck-portion.
   // Valfritt (undefined = ej mottaget) för bakåtkompat med tester.
   carrying?: string;
+  // ORDER 187 — sällskap. `partyId` är en gemensam nyckel för gäster som
+  // anländer tillsammans (par eller trio). `findFreeSeat` prioriterar
+  // samma seat-grupp (samma bord eller bar-sektion) när en annan
+  // party-medlem redan är seated, så en två-top inte splittras mellan
+  // bar och långbord. Valfritt (undefined = solo, bakåtkompat med
+  // existerande tester + tidigare guests-fixtures).
+  partyId?: string;
+  partySize?: number;
 }
 
 export type SustainabilityDirection =

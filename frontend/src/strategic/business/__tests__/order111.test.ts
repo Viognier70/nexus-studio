@@ -129,7 +129,8 @@ describe('ORDER 111 §6 DoD 2 — kölängd påverkar foodtruck-spawn', () => {
     // Kör många försök för statistisk säkerhet.
     let spawned = 0;
     for (let i = 0; i < 200; i++) {
-      if (maybeSpawnGuest(s, rng) !== null) spawned += 1;
+      // ORDER 187 — maybeSpawnGuest returnerar Guest[] (tom = ingen spawn).
+      if (maybeSpawnGuest(s, rng).length > 0) spawned += 1;
     }
     expect(spawned).toBe(0);
   });

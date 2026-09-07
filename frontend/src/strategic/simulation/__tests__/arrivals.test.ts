@@ -132,43 +132,47 @@ describe('periodArrivalMultiplier', () => {
 });
 
 describe('maybeSpawnGuest', () => {
-  it('returns null when the active-guest cap (24) is reached', () => {
+  it('returns empty array when the active-guest cap (24) is reached', () => {
     const s = stateInPeriod(1, 'dinner');
     for (let i = 0; i < 24; i++) s.guests.push(makeGuest(s.simTime, false));
     // rng.chance would fire (0 < any probability), but the cap short-circuits.
     const g = maybeSpawnGuest(s, fakeRng([0]));
-    expect(g).toBeNull();
+    expect(g).toHaveLength(0);
   });
 
   it('still admits when active is 23 (one below cap)', () => {
     const s = stateInPeriod(1, 'dinner');
     for (let i = 0; i < 23; i++) s.guests.push(makeGuest(s.simTime, false));
-    const g = maybeSpawnGuest(s, fakeRng([0, 0.9]));
-    expect(g).not.toBeNull();
+    // ORDER 187 — vid room=1 (23 aktiv, cap 24), effectiveSize=1 även
+    // om partySize skulle vara 2/3. Testet verifierar bara att MINST en
+    // gäst spawnas. Skickar extra rng-tal så party-rullen inte krävs
+    // panic:a när solo utfall.
+    const g = maybeSpawnGuest(s, fakeRng([0, 0.9, 0.9, 0.9]));
+    expect(g.length).toBeGreaterThan(0);
   });
 
-  it('returns null when rng.chance rolls above the probability', () => {
+  it('returns empty array when rng.chance rolls above the probability', () => {
     const s = stateInPeriod(1, 'dinner');
     // 0.999 > arrivalProbability, so chance() returns false.
     const g = maybeSpawnGuest(s, fakeRng([0.999]));
-    expect(g).toBeNull();
+    expect(g).toHaveLength(0);
   });
 
-  it('returns null during a closed window regardless of rng', () => {
-    // Any rng roll should be short-circuited by arrivalProbability = 0
-    // when the period gate is closed.
+  it('returns empty array during a closed window regardless of rng', () => {
     const s = stateInPeriod(1, 'morning');
     const g = maybeSpawnGuest(s, fakeRng([0, 0]));
-    expect(g).toBeNull();
+    expect(g).toHaveLength(0);
   });
 
   it('returns a new non-scenario guest when the roll passes the probability', () => {
     const s = stateInPeriod(1, 'dinner');
-    const g = maybeSpawnGuest(s, fakeRng([0, 0.9]));
-    expect(g).not.toBeNull();
-    expect(g!.scenarioSource).toBe(false);
-    expect(g!.state).toBe('arriving');
-    expect(g!.arrivalTime).toBe(s.simTime);
+    // ORDER 187 — party-rullen efter walk-away konsumerar 2 tal
+    // (isNotSolo + isTrio). Skickar extra 0.9 så solo blir utfallet.
+    const g = maybeSpawnGuest(s, fakeRng([0, 0.9, 0.9, 0.9]));
+    expect(g.length).toBeGreaterThan(0);
+    expect(g[0].scenarioSource).toBe(false);
+    expect(g[0].state).toBe('arriving');
+    expect(g[0].arrivalTime).toBe(s.simTime);
   });
 });
 
@@ -292,18 +296,20 @@ describe('ORDER 043 §6 walk-away probability (post-ORDER-050 cash refactor)', (
     const s = stateWithCash(0); // walk-away probability = 0.2
     // First roll (arrival chance) at 0 → passes. Second roll
     // (walk-away) at 0 → below 0.2 → walk-away flagged.
-    const g = maybeSpawnGuest(s, fakeRng([0, 0]));
-    expect(g).not.toBeNull();
-    expect(g!.walkAwayOnArrival).toBe(true);
+    // ORDER 187 — extra tal för party-rullen (isNotSolo + isTrio).
+    const g = maybeSpawnGuest(s, fakeRng([0, 0, 0.9, 0.9]));
+    expect(g.length).toBeGreaterThan(0);
+    expect(g[0].walkAwayOnArrival).toBe(true);
   });
 
   it('maybeSpawnGuest does not flag walk-away at mid-cash when the second roll misses', () => {
     // At ~55 kSEK cash on the default team (~25.2 kSEK/week ops),
     // weeks-of-runway ≈ 2.2, reading ≈ 0.55, walk-away probability
     // ≈ 0.09. Second roll of 0.9 misses that threshold.
+    // ORDER 187 — extra tal för party-rullen (solo utfall).
     const s = stateWithCash(55_000);
-    const g = maybeSpawnGuest(s, fakeRng([0, 0.9]));
-    expect(g).not.toBeNull();
-    expect(g!.walkAwayOnArrival).toBe(false);
+    const g = maybeSpawnGuest(s, fakeRng([0, 0.9, 0.9, 0.9]));
+    expect(g.length).toBeGreaterThan(0);
+    expect(g[0].walkAwayOnArrival).toBe(false);
   });
 });
