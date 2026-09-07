@@ -1873,9 +1873,14 @@ function advanceTick(state: SimulationState): SimulationState {
   }
 
   // Regular arrivals.
+  // ORDER 187 — maybeSpawnGuest returnerar en LIST (0-3 gäster) för att
+  // stödja sällskap (par/trio). Alla member i partiet har samma partyId
+  // så findFreeSeat kan hålla dem på samma seat-grupp.
   if (!draft.scenario.awaitingChoice) {
     const arrival = maybeSpawnGuest(draft, rng);
-    if (arrival) draft.guests.push(arrival);
+    for (const g of arrival) {
+      draft.guests.push(g);
+    }
   }
 
   // Scenario spawning.

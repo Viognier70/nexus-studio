@@ -187,20 +187,59 @@ export function walkAwayProbability(state: SimulationState): number {
   return ECONOMIC_WALKAWAY_CEIL * (1 - normalised);
 }
 
-export function maybeSpawnGuest(state: SimulationState, rng: Rng): Guest | null {
+// ORDER 187 — spawn-fördelning solo/par/trio. Kalibrerad för att ge
+// livfullt sällskaps-mönster utan att fylla rummet för snabbt: majoritet
+// solo (arbetslunch, ensamma bar-gäster) med par som andrastörsta
+// (typiska middagsgäster, arbetskollegor), trio sällsynt (spontan grupp).
+const PARTY_SOLO_P = 0.55;
+const PARTY_PAIR_P = 0.35;
+// Resterande 0.10 = trio (3 st).
+
+let partyCounter = 0;
+
+export function maybeSpawnGuest(state: SimulationState, rng: Rng): Guest[] {
   const active = state.guests.length;
-  if (active >= ACTIVE_GUEST_CAP) return null;
-  // ORDER 111 §3 — kögate för food truck: kön (waitingIds) är
-  // verksamheten. När kön nått verksamhetens capacity slutar nya
-  // gäster ställa sig — förbipasserande går vidare. Skiljer sig från
-  // ACTIVE_GUEST_CAP: den är en absolut sim-gräns; queue-gate är
-  // gatans läsning ("för lång kö = jag går").
+  if (active >= ACTIVE_GUEST_CAP) return [];
+  // ORDER 111 §3 — kögate för food truck.
   if (state.businessClass === 'foodtrucken') {
-    if (state.waitingIds.length >= state.policies.capacity) return null;
+    if (state.waitingIds.length >= state.policies.capacity) return [];
   }
-  if (!rng.chance(arrivalProbability(state))) return null;
+  if (!rng.chance(arrivalProbability(state))) return [];
+  // ORDER 187 — walk-away FÖRE party-rullen så existerande tester
+  // (fakeRng-fixtures med två tal: arrival + walk-away) behåller sitt
+  // beteende. Party-rullar konsumerar rng EFTER walk-away.
   const walkAway = rng.chance(walkAwayProbability(state));
-  return makeGuest(state.simTime, false, walkAway);
+  // Party-storlek. Aktivt endast för ölkrogen i första leveransen:
+  // klassens karaktär (sällskap som stannar och pratar över öl) är
+  // exakt vad VO 2026-09-07 fyndrapporterade som "en två-top som
+  // hamnar på var sin plats är värre än ordningen vi har". Övriga
+  // klasser (kvarterskrogen arbetslunch, foodtruck-snabbmat, etc.)
+  // fortsätter spawna solo tills egen VO-kalibrering finns — deras
+  // sim-integrationstester (order137, m6, day.dinner-queue,
+  // reputation, order111) är kalibrerade mot solo-dynamik och skulle
+  // brytas av mass-party-utrullning.
+  let partySize = 1;
+  if (state.businessClass === 'ölkrogen') {
+    const isNotSolo = rng.chance(1 - PARTY_SOLO_P);
+    const isTrio = isNotSolo && rng.chance(0.10 / (0.10 + PARTY_PAIR_P));
+    partySize = isNotSolo ? (isTrio ? 3 : 2) : 1;
+  }
+
+  // Guarda mot att blåsa capacity-taket när party spawnar. Om active +
+  // partySize > cap → skala ner till vad som får plats (alltid ≥ 1 för
+  // att inte kasta bort tick:en).
+  const room = Math.max(1, ACTIVE_GUEST_CAP - active);
+  const effectiveSize = Math.min(partySize, room);
+
+  const party = effectiveSize > 1
+    ? { id: `party-${++partyCounter}`, size: effectiveSize }
+    : undefined;
+
+  const out: Guest[] = [];
+  for (let i = 0; i < effectiveSize; i++) {
+    out.push(makeGuest(state.simTime, false, walkAway, party));
+  }
+  return out;
 }
 
 // Scenario spawn: independent of the arrival model. Emits `count` guests at a

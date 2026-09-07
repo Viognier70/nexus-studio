@@ -387,7 +387,8 @@ export function nextGuestId(scenario = false): string {
 export function makeGuest(
   simTime: number,
   scenario = false,
-  walkAwayOnArrival = false
+  walkAwayOnArrival = false,
+  party?: { id: string; size: number }
 ): Guest {
   return {
     id: nextGuestId(scenario),
@@ -405,6 +406,11 @@ export function makeGuest(
     walkAwayOnArrival,
     // ORDER 111 §4 — default false; sätts av reducern (paying-transitionen)
     // när businessClass = 'gästgiveriet' och gästen rullas att stanna över.
-    stayingOvernight: false
+    stayingOvernight: false,
+    // ORDER 187 — party-koppling. Solo gäster har ingen partyId (undefined);
+    // par/trio har samma partyId från maybeSpawnGuest, konsumeras av
+    // findFreeSeat för att hålla ihop sällskap på samma seat-grupp.
+    partyId: party?.id,
+    partySize: party?.size ?? 1
   };
 }

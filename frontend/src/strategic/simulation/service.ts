@@ -133,6 +133,48 @@ function seatsPreferenceFor(businessClass: BusinessClass): readonly number[] {
   return SEATS_DEFAULT;
 }
 
+// ORDER 187 — seat-grupperingar per klass. En party håller ihop på
+// samma grupp när det är möjligt (findFreeSeat prioriterar samma grupp
+// som existerande party-medlem). En två-top som splittras mellan bar
+// och långbord är värre än att fylla bar-först-preferensen — VO 2026-09-07.
+//
+// Grupperna motsvarar fysiska möbelenheter i klassens rumsgeometri:
+//   ölkrogen (från brewpubRoom.ts:597-660):
+//     0-3   longS (långbord söder)
+//     4-7   longN (långbord norr)
+//     8-9   twoC (tvåbord öster om entré)
+//     10-11 twoD (tvåbord söder om entré)
+//     12-19 bar (åtta stolar längs disken)
+//   kvarterskrogen (från restaurantRoom.ts + interiorLayout.ts):
+//     0-1   t0 (2-top)
+//     2-3   t1 (2-top)
+//     4-7   t2 (4-top)
+//     8-9   t3 (2-top)
+//     10-11 t4 (2-top)
+//     12-15 bar
+const SEAT_GROUPS_OLKROGEN: readonly (readonly number[])[] = [
+  [0, 1, 2, 3],
+  [4, 5, 6, 7],
+  [8, 9],
+  [10, 11],
+  [12, 13, 14, 15, 16, 17, 18, 19]
+];
+const SEAT_GROUPS_KVARTERSKROGEN: readonly (readonly number[])[] = [
+  [0, 1], [2, 3], [4, 5, 6, 7], [8, 9], [10, 11], [12, 13, 14, 15]
+];
+
+function seatGroupsFor(businessClass: BusinessClass): readonly (readonly number[])[] {
+  if (businessClass === 'ölkrogen') return SEAT_GROUPS_OLKROGEN;
+  return SEAT_GROUPS_KVARTERSKROGEN;
+}
+
+function groupOfSeat(businessClass: BusinessClass, seat: number): readonly number[] | null {
+  for (const g of seatGroupsFor(businessClass)) {
+    if (g.includes(seat)) return g;
+  }
+  return null;
+}
+
 function scenarioPreferredSeats(state: SimulationState): number[] {
   if (state.scenario.choice === 'A') return SEATS_CHOICE_A;
   if (state.scenario.choice === 'B') return SEATS_CHOICE_B;
@@ -145,7 +187,8 @@ function seatTaken(state: SimulationState, seat: number): boolean {
 
 export function findFreeSeat(
   state: SimulationState,
-  forScenarioGuest = false
+  forScenarioGuest = false,
+  partyId?: string
 ): number | null {
   // ORDER 113 fel 1 — verksamheter utan matsal har inga stolar att
   // finna. Utan denna guard returnerar findFreeSeat en giltig index
@@ -168,6 +211,52 @@ export function findFreeSeat(
   if (forScenarioGuest && state.scenario.choice) {
     for (const seat of scenarioPreferredSeats(state)) {
       if (seat < cap && !seatTaken(state, seat)) return seat;
+    }
+  }
+  // ORDER 187 — party-hänsyn. Om en annan medlem av samma parti redan
+  // är seated, försök hitta ledig plats i SAMMA seat-grupp (samma bord
+  // eller bar-sektion). Om ingen ledig i gruppen: hitta grupp med minst
+  // `remainingPartySize` lediga platser så resten av partiet får plats
+  // där gästen nu placeras. Fallback: vanlig preferensordning per klass.
+  if (partyId !== undefined) {
+    // Hitta redan-seated partymedlem
+    const seatedPartyMember = state.guests.find(
+      (g) => g.partyId === partyId && g.seatIndex !== null && g.seatIndex !== undefined
+    );
+    if (seatedPartyMember) {
+      const group = groupOfSeat(state.businessClass, seatedPartyMember.seatIndex as number);
+      if (group) {
+        // Först lediga i samma grupp
+        for (const seat of group) {
+          if (seat < cap && !seatTaken(state, seat)) return seat;
+        }
+        // Gruppen full → fallback (partisplittring är sista utväg)
+      }
+    } else {
+      // Första medlemmen från partiet — hitta grupp med tillräckligt
+      // med lediga platser för hela partiet, iterera i class-preferens.
+      const partySize = state.guests.find((g) => g.partyId === partyId)?.partySize ?? 2;
+      const groups = seatGroupsFor(state.businessClass);
+      // Sortera grupper i preferensordning: den grupp vars första seat
+      // är först i seatsPreferenceFor kommer först.
+      const pref = seatsPreferenceFor(state.businessClass);
+      const groupRank = (g: readonly number[]): number => {
+        let best = Infinity;
+        for (const s of g) {
+          const r = pref.indexOf(s);
+          if (r >= 0 && r < best) best = r;
+        }
+        return best;
+      };
+      const sortedGroups = [...groups].sort((a, b) => groupRank(a) - groupRank(b));
+      for (const group of sortedGroups) {
+        const free = group.filter((s) => s < cap && !seatTaken(state, s));
+        if (free.length >= partySize) {
+          // Hela partiet får plats här — ta första lediga
+          return free[0];
+        }
+      }
+      // Ingen grupp tillräckligt stor: fallback (partiet splittras)
     }
   }
   // ORDER 186 fynd 3 — per-klass preferensordning. Ölkrogen fyller bar
@@ -214,7 +303,7 @@ export function tickGuests(state: SimulationState) {
           moveGuest(guest, { x: 0, z: 8 });
           continue;
         }
-        const seat = findFreeSeat(state, guest.scenarioSource);
+        const seat = findFreeSeat(state, guest.scenarioSource, guest.partyId);
         if (seat !== null && !state.scenario.awaitingChoice) {
           setGuestSeated(state, guest, seat);
         } else {
@@ -251,7 +340,7 @@ export function tickGuests(state: SimulationState) {
       // Satisfaction decreases while waiting.
       const drop = 0.02 * TICK_SECONDS;
       guest.satisfaction = Math.max(0, guest.satisfaction - drop);
-      const seat = findFreeSeat(state, guest.scenarioSource);
+      const seat = findFreeSeat(state, guest.scenarioSource, guest.partyId);
       if (seat !== null) {
         state.waitingIds = state.waitingIds.filter((id) => id !== guest.id);
         setGuestSeated(state, guest, seat);
@@ -732,7 +821,7 @@ function completeStaffTask(state: SimulationState, staff: StaffMember) {
           guest.stateTime = now;
           break;
         }
-        const seat = findFreeSeat(state, guest.scenarioSource);
+        const seat = findFreeSeat(state, guest.scenarioSource, guest.partyId);
         if (seat !== null) {
           state.waitingIds = state.waitingIds.filter((id) => id !== guest.id);
           guest.state = 'seated';
