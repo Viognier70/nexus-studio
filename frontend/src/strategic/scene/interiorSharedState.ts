@@ -59,6 +59,15 @@ export type XZ = [number, number];
 export interface SharedBusinessRoom {
   businessClass: BusinessClass;
   seats: XZ[];
+  /**
+   * ORDER 186 fynd 2 — världs-facing (radianer) per sitsplats, samma
+   * index-ordning som `seats`. InteriorGuests läser detta för att sätta
+   * `group.rotation.y` på sittande gäster så de tittar mot bordet i
+   * stället för default `+Z` (som råkar peka bort från bordet vid
+   * hälften av stols-orienteringarna). Utan detta hade gästen ryggen
+   * mot bordet — Vision Owner observation 2026-09-07 fynd 2.
+   */
+  seatFacings: number[];
   standing: XZ[];
   stations: XZ[];
   entrance: XZ;

@@ -971,6 +971,7 @@ export function checkSeatContract(room: RestaurantRoom): {
  */
 export function resolveWorldPositions(room: RestaurantRoom): {
   seats: Vec2[];
+  seatFacings: number[];
   tables: Vec2[];
   staffStations: Vec2[];
   entrance: Vec2;
@@ -988,8 +989,11 @@ export function resolveWorldPositions(room: RestaurantRoom): {
     room.group.localToWorld(v);
     return [v.x, v.z];
   }
+  // ORDER 186 fynd 2 — världs-facing per sitsplats (som brewpubRoom).
+  const groupYaw = room.group.rotation.y;
   return {
     seats: room.seats.map(function (s) { return toWorld(s.local); }),
+    seatFacings: room.seats.map(function (s) { return s.facing + groupYaw; }),
     tables: room.tables.map(function (t) { return toWorld(t.local); }),
     staffStations: room.staffStations.map(function (s) { return toWorld(s.local); }),
     entrance: toWorld(room.entrance),

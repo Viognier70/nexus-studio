@@ -893,6 +893,7 @@ export function checkSightLines(room: BrewpubRoom): {
  */
 export function resolveWorldPositions(room: BrewpubRoom): {
   seats: Vec2[];
+  seatFacings: number[];
   standing: Vec2[];
   staffStations: Vec2[];
   entrance: Vec2;
@@ -905,8 +906,12 @@ export function resolveWorldPositions(room: BrewpubRoom): {
     room.group.localToWorld(v);
     return [v.x, v.z];
   }
+  // ORDER 186 fynd 2 — världs-facing per sitsplats. Room.group har
+  // rotation.y = -worldAngle så world-facing = local-facing + group.rotation.y.
+  const groupYaw = room.group.rotation.y;
   return {
     seats: room.seats.map(function (s) { return toWorld(s.local); }),
+    seatFacings: room.seats.map(function (s) { return s.facing + groupYaw; }),
     standing: room.standing.map(function (s) { return toWorld(s.local); }),
     staffStations: room.staffStations.map(function (s) { return toWorld(s.local); }),
     entrance: toWorld(room.entrance),
