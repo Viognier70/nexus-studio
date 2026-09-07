@@ -105,13 +105,26 @@ describe('deriveStaffAction — every table row', () => {
     );
     expect(r.iconKey).toBe('plan');
   });
-  it('S2 prep + idle → On break / pause', () => {
+  it('S2 prep + idle med låg workload → On break / pause', () => {
+    // ORDER 191 — On break kräver nu workload < 0.1. Mise en place vinner
+    // annars — prep-tid är arbetstid, inte rast. Testet verifierar att
+    // On break fortfarande visas när personal är verkligt inaktiv.
     const r = deriveStaffAction(
-      makeStaff({ taskType: null }), [],
+      makeStaff({ taskType: null, workload: 0 }), [],
       makeDay({ period: 'dinner', prepEndsAt: 200, prepReadiness: { ice: 1, napkins: 1, cutlery: 1, stations: 1, garnish: 1 } }),
       100, NO_MENU
     );
     expect(r).toEqual({ text: 'On break', iconKey: 'pause' });
+  });
+
+  it('ORDER 191 — S2 prep + idle med workload ≥ 0.1 → Mise en place, inte On break', () => {
+    const r = deriveStaffAction(
+      makeStaff({ taskType: null, workload: 0.3, role: 'kock' }), [],
+      makeDay({ period: 'dinner', prepEndsAt: 200, prepReadiness: { ice: 1, napkins: 1, cutlery: 1, stations: 1, garnish: 1 } }),
+      100, NO_MENU
+    );
+    expect(r.iconKey).toBe('prep');
+    expect(r.text).toBe('Mise en place — stations');
   });
   it('S3 prep + weakest item < 0.5 → Chasing X / chase', () => {
     const r = deriveStaffAction(
