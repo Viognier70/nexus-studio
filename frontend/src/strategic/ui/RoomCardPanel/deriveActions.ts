@@ -128,19 +128,40 @@ export function deriveStaffAction(
     return { text: "Preparing today's plan", iconKey: 'plan' };
   }
 
-  // S2 — prep phase, idle staff: on break, off-reel.
+  // ORDER 191 — S3/S4 mise en place vinner över S2 "On break" när
+  // workload är hög. Bakgrund: sim-lagret sätter staff.taskType=null
+  // under prep (`service.ts:706-712` — ölkrogen har ingen background-
+  // task-lista per ORDER 137, foodtruck heller). Före ORDER 191 föll
+  // alla task-null till S2 "On break" — VO fynd 2 2026-09-07 17:22
+  // "On break trots att personalen borde vara mise en place". Rätt
+  // signal under prep är att personalen ARBETAR (mise en place) — de
+  // har jobb att göra även om sim inte tilldelar en specifik guest-
+  // driven task. "On break" reserveras för verklig inaktivitet:
+  // workload < 0.1 efter längre tid utan uppgifter (workload decays
+  // 0.03/s vid null task per service.ts:729).
+  if (phase === 'prep' && staff.taskType === null && staff.workload >= 0.1) {
+    const weakest = weakestPrepItem(day.prepReadiness);
+    if (weakest !== null && day.prepReadiness[weakest] < 0.5) {
+      return { text: `Chasing ${weakest}`, iconKey: 'chase' };
+    }
+    return {
+      text: `Mise en place — ${PREP_ITEM_FOR_ROLE[staff.role]}`,
+      iconKey: 'prep'
+    };
+  }
+
+  // S2 — prep phase, riktigt idle staff (workload dyk): on break, off-reel.
   if (phase === 'prep' && staff.taskType === null) {
     return { text: 'On break', iconKey: 'pause' };
   }
 
-  // S3 — prep phase, weakest item below 0.5: short-prep chase.
-  // Feeds punch-list row 21 (short prep produces running-about).
+  // S3 — prep phase med explicit task: samma logik som ovan för
+  // uppföljningsraderna (chasing / mise en place).
   if (phase === 'prep') {
     const weakest = weakestPrepItem(day.prepReadiness);
     if (weakest !== null && day.prepReadiness[weakest] < 0.5) {
       return { text: `Chasing ${weakest}`, iconKey: 'chase' };
     }
-    // S4 — prep phase fallback: mise en place per role.
     return {
       text: `Mise en place — ${PREP_ITEM_FOR_ROLE[staff.role]}`,
       iconKey: 'prep'
