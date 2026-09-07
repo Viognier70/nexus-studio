@@ -384,7 +384,13 @@ export function InteriorStaff() {
       if (grp) {
         // ORDER 078 (M5) — group moves; rig + ring stay in local
         // frame (rig at y=0, ring at RHYTHM_RING_Y).
-        grp.position.set(pos.cx, bobY, pos.cz);
+        // ORDER 190 fynd 4 — bobY clampas ≥ 0. Före ORDER 190 gick bob-
+        // oscillationen ±TASK_BOB_AMPLITUDE_M = ±0.05m; negativ sving
+        // gjorde staff synligt under golv-cutout vid entrance-dörren
+        // (VO 2026-09-07 17:22 "värd delvis nedsjunken i entréns golv-
+        // öppning"). Bob upp bibehålls (rörelsen läses), bob ner
+        // kapas till 0 så staff aldrig penetrerar golvet.
+        grp.position.set(pos.cx, Math.max(0, bobY), pos.cz);
       }
       if (rig) {
         // Uniformsfärgen är stabil per roll; opacity följer visibility.

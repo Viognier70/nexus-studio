@@ -465,12 +465,23 @@ export function InteriorGuests() {
       let effTargetZ = target.z;
       const seated = SEATED_STATES.includes(guest.state);
       if (seated) {
+        // ORDER 190 fynd 3 — waypoint släpper när gästen är nära seat.
+        // Före ORDER 190 kunde waypoint hålla kvar en gäst vid entrance-
+        // jittern trots att seat-positionen redan var nådd — VO fynd
+        // 2026-09-07 "gäst står bredvid stolen, inte på". Släpp release
+        // vid distToSeat < 1.5 m så final approach går direkt till seat
+        // utan att waypoint tar över igen från jitter-oscillation.
+        const seatIdx = guest.seatIndex ?? -1;
+        const distToSeat =
+          seatIdx >= 0 && seatIdx < seatsForFrame.length
+            ? Math.hypot(pos.cx - seatsForFrame[seatIdx][0], pos.cz - seatsForFrame[seatIdx][1])
+            : Infinity;
         const halfW = layout.width / 2;
         const [cx0, cz0] = layout.centre;
         const dxFromCentre = pos.cx - cx0;
         const dzFromCentre = pos.cz - cz0;
         const distFromCentre = Math.hypot(dxFromCentre, dzFromCentre);
-        if (distFromCentre > halfW * 1.02) {
+        if (distFromCentre > halfW * 1.02 && distToSeat > 1.5) {
           const [exWorld, ezWorld] = layout.entrance;
           const dxE = pos.cx - exWorld;
           const dzE = pos.cz - ezWorld;
