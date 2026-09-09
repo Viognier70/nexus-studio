@@ -1,0 +1,93 @@
+{
+  "target": {
+    "id": "gst-18",
+    "state": "ordering",
+    "seatIndex": 0,
+    "cx": 35.5631725525547,
+    "cz": -1.1773998360146645
+  },
+  "cameraAfter": {
+    "target": {
+      "focus": {
+        "x": 35.5631725525547,
+        "z": -1.1773998360146645
+      },
+      "distance": 10,
+      "yaw": 0.4,
+      "pitch": 0.3839724354387525
+    },
+    "actual": {
+      "focus": {
+        "x": 35.5631725525547,
+        "z": -1.1773998360146645
+      },
+      "distance": 10,
+      "yaw": 0.4,
+      "pitch": 0.3839724354387525
+    }
+  },
+  "final": {
+    "guestsSeatedish": [
+      {
+        "id": "gst-6",
+        "state": "dining",
+        "seatIndex": 12
+      },
+      {
+        "id": "gst-7",
+        "state": "dining",
+        "seatIndex": 13
+      },
+      {
+        "id": "gst-8",
+        "state": "dining",
+        "seatIndex": 14
+      },
+      {
+        "id": "gst-9",
+        "state": "dining",
+        "seatIndex": 15
+      },
+      {
+        "id": "gst-10",
+        "state": "dining",
+        "seatIndex": 16
+      },
+      {
+        "id": "gst-14",
+        "state": "dining",
+        "seatIndex": 17
+      },
+      {
+        "id": "gst-15",
+        "state": "ordering",
+        "seatIndex": 18
+      },
+      {
+        "id": "gst-16",
+        "state": "ordering",
+        "seatIndex": 19
+      },
+      {
+        "id": "gst-18",
+        "state": "ordering",
+        "seatIndex": 0
+      },
+      {
+        "id": "gst-20",
+        "state": "ordering",
+        "seatIndex": 1
+      },
+      {
+        "id": "gst-22",
+        "state": "seated",
+        "seatIndex": 2
+      }
+    ],
+    "guestCount": 11,
+    "simTime": 220.19999999999604,
+    "period": "lunch",
+    "businessClass": "ölkrogen",
+    "seatSource": "businessRoomContract"
+  }
+}

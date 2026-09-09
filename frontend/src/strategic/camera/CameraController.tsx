@@ -19,6 +19,15 @@ export function CameraController() {
     apply(camera, actualRef.current);
   }, [camera, actualRef]);
 
+  // Dev-only window-handle till THREE-kameran så playwright kan
+  // projicera world→screen utan att komma åt r3f-rot-staten (som är
+  // internal och inte publikt exponerad i r3f 8).
+  useEffect(() => {
+    if (import.meta.env.DEV && typeof window !== 'undefined') {
+      (window as unknown as { __nxThreeCamera?: unknown }).__nxThreeCamera = camera;
+    }
+  }, [camera]);
+
   useFrame((_, delta) => {
     const target = targetRef.current;
     const actual = actualRef.current;

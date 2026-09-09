@@ -232,6 +232,19 @@ export function CameraProvider({ children }: Props) {
     [label, atLevel4, selection, zoomBy, focusOn, outward, jumpToPreset, rotate, pan]
   );
 
+  // Dev-only window-handle (samma mönster som `__nxSimDispatch`,
+  // `__nxSetBusinessName`, `__nxGuestPositions`). Playwright-skripten kan
+  // därmed köra `focusOn`/`zoomBy` direkt utan att gå via syntetiska
+  // mus/wheel-events, som visat sig okylande (första försöket i ORDER
+  // 194-skriptet nådde inte rätt hit-testing under R3F-canvasen).
+  useEffect(() => {
+    if (import.meta.env.DEV && typeof window !== 'undefined') {
+      (window as unknown as { __nxCamera?: unknown }).__nxCamera = {
+        targetRef, actualRef, zoomBy, focusOn, jumpToPreset, rotate
+      };
+    }
+  }, [targetRef, actualRef, zoomBy, focusOn, jumpToPreset, rotate]);
+
   return <CameraCtx.Provider value={api}>{children}</CameraCtx.Provider>;
 }
 
