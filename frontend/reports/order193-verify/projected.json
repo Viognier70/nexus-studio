@@ -1,0 +1,9 @@
+{
+  "error": "missing globals",
+  "has": {
+    "posMap": true,
+    "s": true,
+    "cam": false,
+    "canvas": true
+  }
+}

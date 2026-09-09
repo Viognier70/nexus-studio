@@ -315,6 +315,13 @@ export function InteriorGuests() {
     if (import.meta.env.DEV && typeof window !== 'undefined') {
       (window as unknown as { __nxGuestPositions?: unknown }).__nxGuestPositions =
         positionsRef.current;
+      // ORDER 193 — dev-only rigg-inspektion. Skriver ut varje gästs
+      // faktiskt applicerade led-rotationer i världskoordinater så
+      // pose-verifiering kan läsa direkt ur DOM utan att gissa vad
+      // applyPose gjorde. Registret uppdateras per bildruta i useFrame
+      // via write below; refens identitet är stabil.
+      (window as unknown as { __nxRigDebug?: unknown }).__nxRigDebug =
+        rigsRef.current;
     }
   }, []);
 

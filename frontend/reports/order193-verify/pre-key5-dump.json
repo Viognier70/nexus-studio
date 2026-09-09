@@ -1,0 +1,342 @@
+{
+  "preDump": {
+    "positions": [
+      {
+        "id": "gst-7",
+        "cx": 35.21243438203112,
+        "cz": -16.204221400607594,
+        "leanX": -0.016273866121130427,
+        "leanZ": 0.173744210775654,
+        "leanY": -0.03966015855334436,
+        "prevState": "dining",
+        "sitStandPhase": -1,
+        "sitStandDir": 0,
+        "phaseSeed": 3.102008586154562,
+        "walkPhase": 18.33311999983788
+      },
+      {
+        "id": "gst-8",
+        "cx": 34.57605637871895,
+        "cz": -14.765917430476822,
+        "leanX": 0.06658031420699378,
+        "leanZ": 0.14312789385369462,
+        "leanY": -0.035876374796487476,
+        "prevState": "dining",
+        "sitStandPhase": -1,
+        "sitStandDir": 0,
+        "phaseSeed": 2.204141405758599,
+        "walkPhase": 18.33311999983788
+      },
+      {
+        "id": "gst-9",
+        "cx": 33.58007690594362,
+        "cz": -8.765347063741784,
+        "leanX": 0.10480546398625329,
+        "leanZ": 0.09463268614539107,
+        "leanY": -0.0320925915156342,
+        "prevState": "dining",
+        "sitStandPhase": -1,
+        "sitStandDir": 0,
+        "phaseSeed": 0.7081149841191393,
+        "walkPhase": 12.191199999856948
+      },
+      {
+        "id": "gst-10",
+        "cx": 33.17677725339524,
+        "cz": -8.50440087667925,
+        "leanX": 0.10962186796246604,
+        "leanZ": 0.059143311009672704,
+        "leanY": -0.028308809528845527,
+        "prevState": "dining",
+        "sitStandPhase": -1,
+        "sitStandDir": 0,
+        "phaseSeed": 0.440451290033289,
+        "walkPhase": 12.191199999856948
+      },
+      {
+        "id": "gst-11",
+        "cx": 33.01417049173598,
+        "cz": -12.805636248055743,
+        "leanX": 0.10132839192890147,
+        "leanZ": 0.037110063926184225,
+        "leanY": -0.024525033440620653,
+        "prevState": "dining",
+        "sitStandPhase": -1,
+        "sitStandDir": 0,
+        "phaseSeed": 1.9364777116727483,
+        "walkPhase": 18.33311999983788
+      },
+      {
+        "id": "gst-12",
+        "cx": 31.018639467002032,
+        "cz": -15.458208071478865,
+        "leanX": 0.08822104063185363,
+        "leanZ": 0.023361891147220922,
+        "leanY": -0.020741335401130725,
+        "prevState": "dining",
+        "sitStandPhase": -1,
+        "sitStandDir": 0,
+        "phaseSeed": 3.432504133312208,
+        "walkPhase": 18.33311999983788
+      },
+      {
+        "id": "gst-14",
+        "cx": 32.662973562127426,
+        "cz": -8.35056512073572,
+        "leanX": 0.0731908438009485,
+        "leanZ": 0.01450812232880808,
+        "leanY": -0.01695793475415453,
+        "prevState": "dining",
+        "sitStandPhase": -1,
+        "sitStandDir": 0,
+        "phaseSeed": 0.1413716694115407,
+        "walkPhase": 12.787519999933242
+      },
+      {
+        "id": "gst-16",
+        "cx": 33.40854687660881,
+        "cz": -10.987746733627468,
+        "leanX": 0.05732350461536735,
+        "leanZ": 0.008664198285010223,
+        "leanY": -0.01317631015332238,
+        "prevState": "dining",
+        "sitStandPhase": -1,
+        "sitStandDir": 0,
+        "phaseSeed": 3.1334245126904596,
+        "walkPhase": 14.000799999904634
+      },
+      {
+        "id": "gst-18",
+        "cx": 32.918018659632004,
+        "cz": -6.702091317145688,
+        "leanX": -0.003915675873268276,
+        "leanZ": -0.030546274258860105,
+        "leanY": -0.006999141729563438,
+        "prevState": "dining",
+        "sitStandPhase": -1,
+        "sitStandDir": 0,
+        "phaseSeed": 6.1254773559693785,
+        "walkPhase": 9.626239999961854
+      },
+      {
+        "id": "gst-21",
+        "cx": 33.18135870632351,
+        "cz": -6.570639260307029,
+        "leanX": -0.001868605356011674,
+        "leanZ": -0.014870671684112689,
+        "leanY": -0.0034062758249319494,
+        "prevState": "dining",
+        "sitStandPhase": -1,
+        "sitStandDir": 0,
+        "phaseSeed": 1.6040972089229486,
+        "walkPhase": 9.626239999961854
+      },
+      {
+        "id": "gst-22",
+        "cx": 31.19892855520716,
+        "cz": -7.0619661360888575,
+        "leanX": 0.001478498482437458,
+        "leanZ": -0.001644906958723556,
+        "leanY": -0.0005026621621400051,
+        "prevState": "dining",
+        "sitStandPhase": -1,
+        "sitStandDir": 0,
+        "phaseSeed": 6.092176473841327,
+        "walkPhase": 9.626239999961854
+      },
+      {
+        "id": "gst-24",
+        "cx": 27.66841521111722,
+        "cz": -7.908665282126002,
+        "leanX": 0,
+        "leanZ": 0,
+        "leanY": 0,
+        "prevState": "dining",
+        "sitStandPhase": -1,
+        "sitStandDir": 0,
+        "phaseSeed": 3.3992032511841566,
+        "walkPhase": 6.829439999961853
+      }
+    ],
+    "roomChan": "businessRoomContract",
+    "seatSourceLen": 20
+  },
+  "simDump": {
+    "simTime": 317.9999999999905,
+    "period": "lunch",
+    "prepEndsAt": null,
+    "openingEndsAt": null,
+    "serviceRhythm": "red",
+    "speed": 4,
+    "guests": [
+      {
+        "id": "gst-7",
+        "state": "dining",
+        "seatIndex": 12,
+        "pos": {
+          "x": 2,
+          "z": -1.8
+        },
+        "target": {
+          "x": 2,
+          "z": -1.8
+        },
+        "moveProgress": 1
+      },
+      {
+        "id": "gst-8",
+        "state": "dining",
+        "seatIndex": 13,
+        "pos": {
+          "x": 2,
+          "z": -1.8
+        },
+        "target": {
+          "x": 2,
+          "z": -1.8
+        },
+        "moveProgress": 1
+      },
+      {
+        "id": "gst-9",
+        "state": "dining",
+        "seatIndex": 14,
+        "pos": {
+          "x": 2,
+          "z": -1.8
+        },
+        "target": {
+          "x": 2,
+          "z": -1.8
+        },
+        "moveProgress": 1
+      },
+      {
+        "id": "gst-10",
+        "state": "dining",
+        "seatIndex": 15,
+        "pos": {
+          "x": 2,
+          "z": -1.8
+        },
+        "target": {
+          "x": 2,
+          "z": -1.8
+        },
+        "moveProgress": 1
+      },
+      {
+        "id": "gst-11",
+        "state": "dining",
+        "seatIndex": 16,
+        "pos": {
+          "x": 2,
+          "z": -1.8
+        },
+        "target": {
+          "x": 2,
+          "z": -1.8
+        },
+        "moveProgress": 1
+      },
+      {
+        "id": "gst-12",
+        "state": "dining",
+        "seatIndex": 17,
+        "pos": {
+          "x": 2,
+          "z": -1.8
+        },
+        "target": {
+          "x": 2,
+          "z": -1.8
+        },
+        "moveProgress": 1
+      },
+      {
+        "id": "gst-14",
+        "state": "dining",
+        "seatIndex": 18,
+        "pos": {
+          "x": 2,
+          "z": -1.8
+        },
+        "target": {
+          "x": 2,
+          "z": -1.8
+        },
+        "moveProgress": 1
+      },
+      {
+        "id": "gst-16",
+        "state": "dining",
+        "seatIndex": 19,
+        "pos": {
+          "x": 2,
+          "z": -1.8
+        },
+        "target": {
+          "x": 2,
+          "z": -1.8
+        },
+        "moveProgress": 1
+      },
+      {
+        "id": "gst-18",
+        "state": "dining",
+        "seatIndex": 0,
+        "pos": {
+          "x": 2,
+          "z": -1.8
+        },
+        "target": {
+          "x": 2,
+          "z": -1.8
+        },
+        "moveProgress": 1
+      },
+      {
+        "id": "gst-21",
+        "state": "dining",
+        "seatIndex": 1,
+        "pos": {
+          "x": 2,
+          "z": -0.6
+        },
+        "target": {
+          "x": 2,
+          "z": -0.6
+        },
+        "moveProgress": 1
+      },
+      {
+        "id": "gst-22",
+        "state": "dining",
+        "seatIndex": 2,
+        "pos": {
+          "x": 2,
+          "z": 0.6
+        },
+        "target": {
+          "x": 2,
+          "z": 0.6
+        },
+        "moveProgress": 1
+      },
+      {
+        "id": "gst-24",
+        "state": "dining",
+        "seatIndex": 3,
+        "pos": {
+          "x": 2,
+          "z": 1.8
+        },
+        "target": {
+          "x": 2,
+          "z": 1.8
+        },
+        "moveProgress": 1
+      }
+    ]
+  }
+}
