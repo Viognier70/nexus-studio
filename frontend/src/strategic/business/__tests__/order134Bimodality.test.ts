@@ -10,11 +10,17 @@
 // §3 (förbud) verifierat: inga trösklar kalibreras, inga
 // ankomstmultiplikatorer ändras, inget värde föreslås.
 //
+// Rapportfil skrivs till `os.tmpdir()/nexus-order134/` — INTE till
+// repo:t. Se ORDER 194 §7 (retro-registrerad) för motivet: mätdata
+// i `frontend/reports/order134/` är verifiering från stängda ordern
+// och får inte överskrivas av en re-run.
+//
 // Kör om:  npx vitest run order134Bimodality --reporter=verbose
 
 import { describe, expect, it } from 'vitest';
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { tmpdir } from 'node:os';
 import { reducer } from '../../simulation/reducer';
 import { makeInitialState, makeStaff } from '../../simulation/model';
 import type { BusinessClass, SimAction, SimulationState } from '../../types';
@@ -231,7 +237,7 @@ describe('ORDER 134 — bimodaliteten (fixed-seed)', () => {
       }
     }
 
-    const reportDir = resolve(__dirname, '../../../../reports/order134');
+    const reportDir = resolve(tmpdir(), 'nexus-order134');
     mkdirSync(reportDir, { recursive: true });
     writeFileSync(
       resolve(reportDir, 'bimodality.json'),

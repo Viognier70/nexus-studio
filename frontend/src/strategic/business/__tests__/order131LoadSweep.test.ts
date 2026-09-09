@@ -10,7 +10,13 @@
 // förbud: inga tröskelvärden ändras, ingen produktionskod utanför
 // denna testfil rörs.
 //
-// Rapportfiler skrivs till `frontend/reports/order131/`:
+// Rapportfiler skrivs till `os.tmpdir()/nexus-order131/` — INTE till
+// repo:t. `frontend/reports/order131/` är verifierings-artefakter från
+// den order som stängde (commit `d07f0a6`) och får bara skrivas av
+// order-egna skript. Testkörningar (lokala eller CI) skriver ALLTID
+// till tmp så mätdata i repo:t inte överskrivs av en re-run per
+// ORDER 194 §7 process-fynd.
+//
 //   loadSweep.json  — alla samples aggregerade per (verksamhet, service)
 //   report.md       — analysrapport med histogram + slutsats
 //
@@ -19,6 +25,7 @@
 import { describe, expect, it } from 'vitest';
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { tmpdir } from 'node:os';
 import { reducer } from '../../simulation/reducer';
 import { makeInitialState } from '../../simulation/model';
 import type { BusinessClass, SimAction, SimulationState } from '../../types';
@@ -200,7 +207,7 @@ describe('ORDER 131 §2 — load-svep per verksamhet (fixed-seed)', () => {
     }
 
     // Skriv rapportfiler.
-    const reportDir = resolve(__dirname, '../../../../reports/order131');
+    const reportDir = resolve(tmpdir(), 'nexus-order131');
     mkdirSync(reportDir, { recursive: true });
     writeFileSync(
       resolve(reportDir, 'loadSweep.json'),

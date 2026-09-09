@@ -9,6 +9,7 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { tmpdir } from 'node:os';
 import { reducer } from '../reducer';
 import { makeInitialState } from '../model';
 import type { BusinessClass, SimAction, SimulationState } from '../../types';
@@ -178,9 +179,10 @@ describe('ORDER 137 §4 — jämförelse mot ORDER 134-baseline', () => {
 
     // Läs ORDER 134-baseline. En committerad kopia ligger i
     // reports/order137/bimodality-baseline.json — snapshot från main
-    // vid ORDER 134-mergen. Kan INTE läsa reports/order134/bimodality.json
-    // direkt eftersom order134-testet skriver dit vid varje körning
-    // och skulle radera baseline.
+    // vid ORDER 134-mergen. Efter ORDER 194 §7 skriver INGA tester
+    // längre till reports/, så order134-baseline:n är inte längre i
+    // fara att raderas av en re-run — men den ligger ändå kvar här
+    // för spårbarhet mot den ordern som producerade siffran.
     const baselinePath = resolve(__dirname, '../../../../reports/order137/bimodality-baseline.json');
     const baseline = JSON.parse(readFileSync(baselinePath, 'utf8')) as {
       cells: Array<{ business: string; staffCount: number; workloadMidMass: number; workloadLoMass: number; workloadHiMass: number }>;
@@ -204,8 +206,10 @@ describe('ORDER 137 §4 — jämförelse mot ORDER 134-baseline', () => {
       };
     });
 
-    // Skriv rapport.
-    const reportDir = resolve(__dirname, '../../../../reports/order137');
+    // Skriv rapport till os.tmpdir() — INTE till reports/. Per ORDER
+    // 194 §7 får `frontend/reports/` bara skrivas av order-egna
+    // verifieringsskript, inte av testsviten.
+    const reportDir = resolve(tmpdir(), 'nexus-order137');
     mkdirSync(reportDir, { recursive: true });
     writeFileSync(
       resolve(reportDir, 'bimodalityComparison.json'),
