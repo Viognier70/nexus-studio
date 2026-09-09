@@ -1,0 +1,84 @@
+{
+  "runs": [
+    {
+      "business": "olkrogen",
+      "samples": 63,
+      "bounds": {
+        "centre": [
+          31.597500000000004,
+          -16.7375
+        ],
+        "width": 14.509200552894312,
+        "depth": 10.086506289734302,
+        "entrance": [
+          32.40935134463978,
+          -10.132607704625523
+        ]
+      },
+      "halfW": 7.254600276447156,
+      "boundary": 7.399692281976099,
+      "maxDistFromCentre": 7.148194633825741,
+      "marginOverBoundary": -0.2514976481503579,
+      "violations": 0,
+      "maxViolation": null,
+      "perRole": {
+        "värd": {
+          "max": 7.148194633825741,
+          "samples": 63,
+          "violations": 0
+        },
+        "servitör": {
+          "max": 6.654600276447155,
+          "samples": 63,
+          "violations": 0
+        },
+        "kock": {
+          "max": 6.724468477218143,
+          "samples": 63,
+          "violations": 0
+        }
+      },
+      "pass": true
+    },
+    {
+      "business": "kvarterskrogen",
+      "samples": 64,
+      "bounds": {
+        "centre": [
+          31.597500000000004,
+          -16.7375
+        ],
+        "width": 14.509200552894312,
+        "depth": 10.086506289734302,
+        "entrance": [
+          32.40935134463978,
+          -10.132607704625523
+        ]
+      },
+      "halfW": 7.254600276447156,
+      "boundary": 7.399692281976099,
+      "maxDistFromCentre": 7.218293023922927,
+      "marginOverBoundary": -0.18139925805317247,
+      "violations": 0,
+      "maxViolation": null,
+      "perRole": {
+        "värd": {
+          "max": 7.218293023922927,
+          "samples": 64,
+          "violations": 0
+        },
+        "servitör": {
+          "max": 6.654600276447155,
+          "samples": 64,
+          "violations": 0
+        },
+        "kock": {
+          "max": 7.00891910301,
+          "samples": 64,
+          "violations": 0
+        }
+      },
+      "pass": true
+    }
+  ]
+}
