@@ -586,18 +586,27 @@ export function poseSeated(t: number, options?: Partial<PoseOptions>): FigurePos
     head: { pitch: 0.05 + 0.05 * nod, yaw: (o.targetYaw ?? 0) * 0.7 },
     armL: { swing: 0.52, lift: 0.06, elbow: 1.14 + 0.02 * breathe },
     armR: { swing: 0.52, lift: 0.06, elbow: 1.14 - 0.02 * breathe },
-    // ORDER 188 fynd 1 — swing negeras. `applyLeg` sätter
-    // `hip.rotation.x = -(l.swing ?? 0)` (för att matcha walk-animationens
-    // sin/cos-tecken). För poseSeated betydde det att swing=+1.46 blev
-    // hip.rotation.x=-1.46 → benet BAKÅT-och-uppåt, kroppen tippar framåt
-    // för balans, och figuren la sig platt på magen (VO fynd 2026-09-07
-    // efter ORDER 185 exponerade tidigare gömda buggen). Med swing=-1.46
-    // blir hip.rotation.x=+1.46 → benet framåt-och-nedåt = sittande.
+    // ORDER 193 — swing-tecken och knä-vinkel omkalibrerade så
+    // världsriktningen på benet blir det ORDER 188 §2.1 avsåg.
     //
-    // Knä 1,77 och fotled 0,31 ger ankle_y = 0,060 och plan fot: sulan
-    // står i golvplanet i stället för tre centimeter ner i det.
-    legL: { swing: -1.46, spread: 0.06, knee: 1.77, ankle: 0.31 },
-    legR: { swing: -1.46, spread: 0.06, knee: 1.77, ankle: 0.31 }
+    // `applyLeg` sätter `hip.rotation.x = -(swing)`. I three.js
+    // right-handed frame (positiv rot om +X vrider +Y mot +Z) roterar
+    // benet från vilo (0,-1,0):
+    //   swing=+1.46 → hip.rot.x=-1.46 → thigh (0,-cos1.46,+sin1.46) =
+    //     (0,-0.11,+0.995) = lokal +Z = FRAMÅT (facing=0 tittar mot +Z).
+    //   swing=-1.46 → hip.rot.x=+1.46 → thigh (0,-0.11,-0.995) = lokal
+    //     -Z = BAKÅT. ORDER 188:s kommentar sa "framåt-och-nedåt = sittande"
+    //     men tecknet gav i praktiken bakåt-och-nedåt.
+    //
+    // Knä 1,46 med sving 1,46 → shin exakt lodrätt ner (Rx(1.46) på
+    // knä-lokal vinner tillbaka thigh-rotationen så shin i världen
+    // blir (0,-1,0)). Ankel 0,00: fotens position följer shin-riktning
+    // naturligt utan att böja sig upp mot skenbenets sträck.
+    //
+    // Verifierat mot rig-inspection.json 2026-09-09: hipL.rot.x=-1.46,
+    // kneeL.rot.x=+1.46 ger shin lodrätt i alla fyra long-facings.
+    legL: { swing: 1.46, spread: 0.06, knee: 1.46, ankle: 0 },
+    legR: { swing: 1.46, spread: 0.06, knee: 1.46, ankle: 0 }
   };
 }
 

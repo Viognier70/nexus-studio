@@ -1,0 +1,243 @@
+{
+  "positions": [
+    {
+      "id": "gst-26",
+      "cx": 34.07082218136009,
+      "cz": -7.284120199535923,
+      "leanX": 0.000046830466037014966,
+      "leanZ": -0.0000167263039622504,
+      "leanY": -0.000011301790324516696,
+      "prevState": "declined",
+      "sitStandPhase": -1,
+      "sitStandDir": 0,
+      "phaseSeed": 0.10807078728348889,
+      "walkPhase": 16.032319999980924
+    },
+    {
+      "id": "gst-28",
+      "cx": 33.445041375112815,
+      "cz": -11.380964329038841,
+      "leanX": -0.011579961784814841,
+      "leanZ": 0.12363081434610775,
+      "leanY": -0.028220898280040874,
+      "prevState": "dining",
+      "sitStandPhase": -1,
+      "sitStandDir": 0,
+      "phaseSeed": 3.6982828718059046,
+      "walkPhase": 15.19680000009537
+    },
+    {
+      "id": "gst-31",
+      "cx": 33.00459628521229,
+      "cz": -7.274364644898923,
+      "leanX": 0.022787827835510505,
+      "leanZ": 0.048987059349963384,
+      "leanY": -0.012279074707922114,
+      "prevState": "dining",
+      "sitStandPhase": -1,
+      "sitStandDir": 0,
+      "phaseSeed": 0.07791149780902687,
+      "walkPhase": 10.273760000085831
+    },
+    {
+      "id": "gst-32",
+      "cx": 33.208113617770366,
+      "cz": -7.073009940140304,
+      "leanX": 0.027793509030575404,
+      "leanZ": 0.02509577570606928,
+      "leanY": -0.00851067967430916,
+      "prevState": "dining",
+      "sitStandPhase": -1,
+      "sitStandDir": 0,
+      "phaseSeed": 1.8730175400702345,
+      "walkPhase": 10.273760000085831
+    },
+    {
+      "id": "gst-36",
+      "cx": 28.80637195096469,
+      "cz": -7.220792257387041,
+      "leanX": 0.0052195210416009245,
+      "leanZ": 0.0028160417444321557,
+      "leanY": -0.001347891891872101,
+      "prevState": "dining",
+      "sitStandPhase": -1,
+      "sitStandDir": 0,
+      "phaseSeed": 1.5739379194484864,
+      "walkPhase": 7.535200000095366
+    },
+    {
+      "id": "gst-38",
+      "cx": 37.52596543314526,
+      "cz": -7.632908106266901,
+      "leanX": 0,
+      "leanZ": 0,
+      "leanY": 0,
+      "prevState": "dining",
+      "sitStandPhase": -1,
+      "sitStandDir": 0,
+      "phaseSeed": 5.463229624592651,
+      "walkPhase": 6.178240000104903
+    },
+    {
+      "id": "gst-42",
+      "cx": 39.030867769436995,
+      "cz": -3.324397368683208,
+      "leanX": 0,
+      "leanZ": 0,
+      "leanY": 0,
+      "prevState": "seated",
+      "sitStandPhase": -1,
+      "sitStandDir": 0,
+      "phaseSeed": 2.48688474458168,
+      "walkPhase": 1.3079999999999998
+    },
+    {
+      "id": "gst-43",
+      "cx": 35.75874328442891,
+      "cz": -1.1294207608693636,
+      "leanX": 0,
+      "leanZ": 0,
+      "leanY": 0,
+      "prevState": "seated",
+      "sitStandPhase": -1,
+      "sitStandDir": 0,
+      "phaseSeed": 0.9908583229422208,
+      "walkPhase": 1.3079999999999998
+    },
+    {
+      "id": "gst-44",
+      "cx": 31.36038295080194,
+      "cz": -0.5862457823721614,
+      "leanX": 0,
+      "leanZ": 0,
+      "leanY": 0,
+      "prevState": "seated",
+      "sitStandPhase": -1,
+      "sitStandDir": 0,
+      "phaseSeed": 5.778017208482347,
+      "walkPhase": 1.3079999999999998
+    }
+  ],
+  "guests": [
+    {
+      "id": "gst-28",
+      "state": "dining",
+      "seatIndex": 12,
+      "pos": {
+        "x": 2,
+        "z": -1.8
+      },
+      "target": {
+        "x": 2,
+        "z": -1.8
+      },
+      "stateTime": 360.99999999998806,
+      "scenarioSource": false
+    },
+    {
+      "id": "gst-31",
+      "state": "dining",
+      "seatIndex": 13,
+      "pos": {
+        "x": 2,
+        "z": -1.8
+      },
+      "target": {
+        "x": 2,
+        "z": -1.8
+      },
+      "stateTime": 372.7999999999874,
+      "scenarioSource": false
+    },
+    {
+      "id": "gst-32",
+      "state": "dining",
+      "seatIndex": 14,
+      "pos": {
+        "x": 2,
+        "z": -1.8
+      },
+      "target": {
+        "x": 2,
+        "z": -1.8
+      },
+      "stateTime": 375.59999999998723,
+      "scenarioSource": false
+    },
+    {
+      "id": "gst-36",
+      "state": "dining",
+      "seatIndex": 15,
+      "pos": {
+        "x": 2,
+        "z": -1.8
+      },
+      "target": {
+        "x": 2,
+        "z": -1.8
+      },
+      "stateTime": 381.3999999999869,
+      "scenarioSource": false
+    },
+    {
+      "id": "gst-38",
+      "state": "dining",
+      "seatIndex": 16,
+      "pos": {
+        "x": 2,
+        "z": -1.8
+      },
+      "target": {
+        "x": 2,
+        "z": -1.8
+      },
+      "stateTime": 384.19999999998674,
+      "scenarioSource": false
+    },
+    {
+      "id": "gst-42",
+      "state": "ordering",
+      "seatIndex": 17,
+      "pos": {
+        "x": 2,
+        "z": -1.8
+      },
+      "target": {
+        "x": 2,
+        "z": -1.8
+      },
+      "stateTime": 393.5999999999862,
+      "scenarioSource": false
+    },
+    {
+      "id": "gst-43",
+      "state": "ordering",
+      "seatIndex": 18,
+      "pos": {
+        "x": 2,
+        "z": -1.8
+      },
+      "target": {
+        "x": 2,
+        "z": -1.8
+      },
+      "stateTime": 393.5999999999862,
+      "scenarioSource": false
+    },
+    {
+      "id": "gst-44",
+      "state": "ordering",
+      "seatIndex": 19,
+      "pos": {
+        "x": 2,
+        "z": -1.8
+      },
+      "target": {
+        "x": 2,
+        "z": -1.8
+      },
+      "stateTime": 393.5999999999862,
+      "scenarioSource": false
+    }
+  ]
+}

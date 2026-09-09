@@ -1,0 +1,73 @@
+{
+  "out": [],
+  "guests": [
+    {
+      "id": "gst-24",
+      "state": "paying",
+      "seatIndex": 1,
+      "moveProgress": 1
+    },
+    {
+      "id": "gst-27",
+      "state": "dining",
+      "seatIndex": 2,
+      "moveProgress": 1
+    },
+    {
+      "id": "gst-28",
+      "state": "dining",
+      "seatIndex": 3,
+      "moveProgress": 1
+    },
+    {
+      "id": "gst-31",
+      "state": "dining",
+      "seatIndex": 12,
+      "moveProgress": 1
+    },
+    {
+      "id": "gst-32",
+      "state": "dining",
+      "seatIndex": 13,
+      "moveProgress": 1
+    },
+    {
+      "id": "gst-35",
+      "state": "dining",
+      "seatIndex": 14,
+      "moveProgress": 1
+    },
+    {
+      "id": "gst-36",
+      "state": "dining",
+      "seatIndex": 15,
+      "moveProgress": 1
+    },
+    {
+      "id": "gst-39",
+      "state": "ordering",
+      "seatIndex": 16,
+      "moveProgress": 1
+    },
+    {
+      "id": "gst-40",
+      "state": "ordering",
+      "seatIndex": 17,
+      "moveProgress": 1
+    },
+    {
+      "id": "gst-44",
+      "state": "seated",
+      "seatIndex": 18,
+      "moveProgress": 1
+    },
+    {
+      "id": "gst-46",
+      "state": "seated",
+      "seatIndex": 19,
+      "moveProgress": 0.434869729199826
+    }
+  ],
+  "seatSource": "businessRoomContract",
+  "seatSourceLen": 20
+}
