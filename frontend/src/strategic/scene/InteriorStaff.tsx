@@ -298,14 +298,19 @@ export function InteriorStaff() {
   useFrame((_, delta) => {
     if (!groupRef.current || !layout || !stations) return;
 
-    // ORDER 154 — kontraktets sim-roll→station-mappning per klass.
-    // Läs businessRoomRef när klassen matchar; annars behåll den
-    // layout-baserade beräkningen som fallback. `contractStations`
-    // är null när ingen scen monterat ännu.
+    // ORDER 204 — läs den flata `stations`-listan direkt från kontraktet
+    // (raw `staffStations` världs-XZ i deklarationsordning). Ingen roll-
+    // härledning via `stationFor`/STATION_MAP — Design (via VO 2026-09-10
+    // kl. 15:30) klargjorde att rummet levererar `stations` som garanterat
+    // fält och en index-baserad tilldelning per team-medlem räcker.
+    // Ölkrogen har 4 stations (barkeep, brewer, cook, runner); team har
+    // 3-4 medlemmar. Värden hanteras separat i entrance-branchen nedan
+    // (är alltid vid entrén oavsett), övriga roller får varsin station
+    // via `nonVärdIndex` (räknat i member-order).
     const roomChan = businessRoomRef.current;
-    const contractStations =
+    const contractStations: readonly XZ[] | null =
       roomChan && roomChan.businessClass === sim.businessClass
-        ? roomChan.staffStationsByRole
+        ? (roomChan.stations as readonly XZ[])
         : null;
 
     const dist = actualRef.current.distance;
@@ -373,41 +378,63 @@ export function InteriorStaff() {
     const guestById = new Map(sim.guests.map((g) => [g.id, g]));
     const entranceXZ = (roomChan?.entrance ?? layout.entrance) as XZ;
 
+    // ORDER 204 — räkna nonVärd-index inuti loopen; värd hoppar över och
+    // skippar en position i station-indexeringen. Så första servitör/kock
+    // får stations[0], andra stations[1] etc. Deklarationsordning i
+    // rumsfilen bestämmer vilken station som får vilken puck.
+    let nonVärdIndex = 0;
     for (const member of sim.team.members) {
       seenIds.add(member.id);
-      // ORDER 154 — kontraktets värde vinner när det finns; annars
-      // layout-baserad fallback; till sist servitör-station som sista
-      // utväg (för klasser vars STATION_MAP-cell är null och layouten
-      // inte har rollen — sällsynt). Foodtruckens värd/lärling är
-      // t.ex. null i kontraktet — fallar tillbaka på layout.centre-
-      // relaterade positioner tills FoodtruckScene skriver en mer
-      // meningsfull placering (eller inte, per VO-beslut om att inte
-      // uppfinna platser).
-      // ORDER 202 §2 — INGEN fallback till layout-räknade `stations`.
-      // Fallbacken (`stations[member.role] ?? stations['servitör']`) var
-      // restaurangens `computeStations(layout)` som ölkrogen INTE ska
-      // ärva. VO-direktiv 2026-09-10 kl. 14:00: "En fallback som döljer
-      // att data saknas är samma mönster som INTERIOR.chair.seatY."
-      // Om `contractHome` är null (klass-STATION_MAP saknar rollen, eller
-      // rummet har ingen station med det id:et) → skippa medlemmen med
-      // DEV-warning. Fyra tidigare läckor har levt på detta mönster
-      // (staffHomes wine-bar-koords i ölkrogen, walkPathToSeat gissad,
-      // sitYaw default 0, chair-seatY hardcodad 0.45).
-      const contractHome = contractStations?.[member.role] ?? null;
-      if (!contractHome) {
-        if (
-          import.meta.env.DEV &&
-          !NO_CONTRACT_HOME_WARNED.has(sim.businessClass + ':' + member.role)
-        ) {
-          NO_CONTRACT_HOME_WARNED.add(sim.businessClass + ':' + member.role);
-          console.warn(
-            `[ORDER 202 §2] contractHome saknas för ${sim.businessClass}/${member.role} (member.id=${member.id}). ` +
-            `Ingen fallback — pucken renderas inte. Fixa STATION_MAP i businessRoom.ts eller lägg till en station i rumsfilen.`
-          );
+
+      // ORDER 204 — värd hanteras i entrance-branchen längre ner (target
+      // = entrance oavsett), så home behöver inte pekas ut för värd.
+      // För övriga roller: läs `stations[nonVärdIndex]` från kontraktet.
+      // Ingen roll-mapping via STATION_MAP — Design (via VO 2026-09-10
+      // kl. 15:30): "Det heter stations på businessRoom-kontraktet och
+      // staffStations på råobjektet. Ölkrogen har fyra. Läs kontraktets
+      // garanterade fält på nytt och använd stations. Ingen härledning
+      // ur stationFor."
+      //
+      // Ordning: brewpub `staffStations` deklarationsordning är
+      // [barkeep, brewer, cook, runner]. Team-medlemmar (efter värd)
+      // fyller stations i ordning: första nonVärd = barkeep, andra
+      // = brewer, tredje = cook, fjärde = runner. Deklarationsordningen
+      // i rumsfilen är därmed kontraktets ordning-som-mening.
+      let home: XZ;
+      if (member.role === 'värd') {
+        // Placeholder — entrance-branchen nedan skriver över target.
+        home = entranceXZ;
+      } else {
+        if (!contractStations || contractStations.length === 0) {
+          if (
+            import.meta.env.DEV &&
+            !NO_CONTRACT_HOME_WARNED.has(sim.businessClass + ':' + member.role)
+          ) {
+            NO_CONTRACT_HOME_WARNED.add(sim.businessClass + ':' + member.role);
+            console.warn(
+              `[ORDER 204] kontraktets stations-lista tom för businessClass="${sim.businessClass}" (member.id=${member.id}, role=${member.role}). ` +
+              `Ingen fallback — pucken renderas inte. Lägg till staffStations i rumsfilen (t.ex. brewpubRoom.ts).`
+            );
+          }
+          continue;
         }
-        continue;
+        if (nonVärdIndex >= contractStations.length) {
+          if (
+            import.meta.env.DEV &&
+            !NO_CONTRACT_HOME_WARNED.has(sim.businessClass + ':overflow')
+          ) {
+            NO_CONTRACT_HOME_WARNED.add(sim.businessClass + ':overflow');
+            console.warn(
+              `[ORDER 204] team har fler nonVärd-medlemmar (${nonVärdIndex + 1}) än kontraktets stations (${contractStations.length}) för "${sim.businessClass}". ` +
+              `Extra medlem "${member.role}" (${member.id}) renderas inte. Lägg till fler stations i rumsfilen.`
+            );
+          }
+          nonVärdIndex += 1;
+          continue;
+        }
+        home = contractStations[nonVärdIndex];
+        nonVärdIndex += 1;
       }
-      const home: XZ = contractHome;
 
       let pos = positionsRef.current.get(member.id);
       if (!pos) {

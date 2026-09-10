@@ -24,7 +24,6 @@ import { usePlayerBusinessInterior } from '../business/interiorLayout';
 import {
   createRoom,
   resolveWorldPositions,
-  resolveStaffStationsWorld,
   updateRoom,
   setShellOpacity,
   type BusinessRoom
@@ -70,9 +69,9 @@ export function RestaurantScene() {
     // usePlayerBusinessInterior().seats (som fortfarande råkar vara
     // 16 för restaurangen men är restaurangspecifik ändå).
     const world = resolveWorldPositions(room);
-    // ORDER 154 — publicera sim-rollernas hemstationer så InteriorStaff
-    // kan läsa dem i stället för att räkna ur layout.entrance/bar/centre.
-    const staffStationsByRole = resolveStaffStationsWorld(room);
+    // ORDER 204 — `resolveStaffStationsWorld` + `staffStationsByRole`
+    // borttagna. Se BrewpubScene-kommentar. Kontraktet publicerar `stations`
+    // (raw `staffStations` världs-XZ) och InteriorStaff läser flata listan.
     businessRoomRef.current = {
       businessClass: 'kvarterskrogen',
       seats: world.seats as [number, number][],
@@ -84,6 +83,8 @@ export function RestaurantScene() {
       // Se BrewpubScene-kommentar för motivet.
       plinth: 0.11,
       standing: world.standing as [number, number][],
+      // ORDER 204 — restaurangens tre stations (host, server, chef) i
+      // deklarationsordning per restaurantRoom.ts staffStations-listan.
       stations: world.staffStations as [number, number][],
       entrance: world.entrance as [number, number],
       waitingSpot: world.waitingSpot as [number, number],
@@ -92,8 +93,7 @@ export function RestaurantScene() {
       // som varit oanvänd sedan augusti. Publicera den nu så InteriorGuests
       // läser rummets egen kö istället för layout-räknad kopia.
       waitingSlots: world.waitingSlots as [number, number][],
-      capacity: room.capacity,
-      staffStationsByRole
+      capacity: room.capacity
     };
     return () => {
       const r = roomRef.current;

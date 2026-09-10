@@ -165,15 +165,12 @@ export interface SharedBusinessRoom {
    */
   waitingSlots: XZ[];
   capacity: number;
-  /**
-   * ORDER 154 — sim-rollernas hemstationer i värld-XZ, mappade via
-   * `stationFor(role, room)` i businessRoom.ts. `null` för roller
-   * vars klass saknar station enligt STATION_MAP (t.ex. nattklubbens
-   * kock, foodtruckens värd). InteriorStaff läser detta i stället
-   * för att räkna ur restaurangens layout — så personalpuckarna
-   * hamnar på rummets faktiska stationer per klass.
-   */
-  staffStationsByRole: Record<StaffRole, XZ | null>;
+  // ORDER 204 — `staffStationsByRole: Record<StaffRole, XZ | null>` bort-
+  // taget. Design (via VO 2026-09-10 kl. 15:30) klargjorde att fältet
+  // heter `stations` (kontraktet) / `staffStations` (raw); ölkrogen har
+  // fyra. InteriorStaff läser den flata `stations`-listan direkt utan
+  // roll-härledning. Se ORDER 154:s ursprung (roll-mapping via
+  // `stationFor`) och ORDER 204:s revert-registerrad.
 }
 
 export const businessRoomRef: { current: SharedBusinessRoom | null } = {
