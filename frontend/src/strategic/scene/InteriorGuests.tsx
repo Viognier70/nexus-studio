@@ -105,14 +105,19 @@ const SEATED_STATES: readonly GuestState[] = ['seated', 'ordering', 'dining', 'p
 // eftersom `poseSeated` sänker höften internt men rigg-basen (Y=0) står
 // kvar på golvet. Utan lyftet hänger figuren i luften strax över golvet.
 //
-// ORDER 200 fynd 1 — 0.45 m gäller CHAIR_HEIGHT, men rummen har fler
-// sitstyper: STOOL_HEIGHT = 0.75 m (barstolar), LOUNGE_SEAT_H = 0.38 m
-// (soffor i vinbaren). Konstanten stannar kvar som FALLBACK när kontraktet
-// inte publicerar `seatHeights` (t.ex. layout.seats-fallback). Den PRIMÄRA
-// vägen är `roomChan.seatHeights[seatIndex]` — se sitLift-beräkningen
-// nedan. Att bara läsa 0.45 var STOOLS-fyndet från 2026-09-10-inspelningen:
-// 8 barstolar av 20 seats fick fel höjd, gäster satt 30 cm under stolen.
-const SEAT_SIT_HEIGHT_FALLBACK_M = 0.45;
+// ORDER 200 §3.1 — ingen fallback-konstant längre. Den tidigare
+// `SEAT_SIT_HEIGHT_FALLBACK_M = 0.45` var restaurangens CHAIR_HEIGHT
+// smuget in i ölkrogen (fjärde gången samma familj efter walkPathToSeat,
+// staffHomes, queueSlots). Om `seatHeightsForFrame[seatIndex]` inte finns
+// tillgänglig → `sitLift = 0`, gästen renderas som halvcrouchad på golvet.
+// Det är ett synligt fynd, inte en tyst kompromiss. Om något fortfarande
+// hamnar där är det ett bevis på att en kod-väg gissar där kontraktet
+// har svaret.
+
+// ORDER 200 §3.1 — DEV-only-warning en gång per kod-väg som saknar
+// seatHeights. Använder en modul-lokal Set så samma väg inte spammar
+// konsolen. Nyckel = businessClass så VO ser vilken klass som fallerar.
+const NO_SEAT_HEIGHTS_WARNED = new Set<string>();
 
 // ORDER 046 §4 / ORDER 088 §2.3 / ORDER 121 §2 — sit / stand animation.
 //
@@ -415,8 +420,9 @@ export function InteriorGuests() {
     const seatFacingsForFrame: readonly number[] | null = usingContract
       ? roomChan!.seatFacings
       : null;
-    // ORDER 200 fynd 1 — sitshöjd per plats. Null i fallback-läge; consumer
-    // faller då tillbaka på SEAT_SIT_HEIGHT_FALLBACK_M.
+    // ORDER 200 fynd 1 + §3.1 — sitshöjd per plats. Null utan kontrakt;
+    // consumern nedan använder då `targetSitHeight = 0` (loud finding via
+    // console.warn i DEV) i stället för att gissa 0.45.
     const seatHeightsForFrame: readonly number[] | null = usingContract
       ? roomChan!.seatHeights
       : null;
@@ -655,19 +661,36 @@ export function InteriorGuests() {
       // ovanpå golvet". Under sit/stand-transition (0..1) skalas lyftet
       // linjärt så pose-blenden och Y-positionen möts vid sit-slutläget.
       //
-      // ORDER 200 fynd 1 — läs sitshöjd per plats från kontraktet i
-      // stället för en konstant. Barstolar (STOOL_HEIGHT=0.75) och
-      // träbord-stolar (CHAIR_HEIGHT=0.45) samexisterar i ölkrogen — 12
-      // chair + 8 stool. Innan detta fanns 8 av 20 gäster 30 cm under
-      // sin faktiska stol. Fallback = 0.45 när kontraktet saknas.
-      const targetSitHeight =
+      // ORDER 200 fynd 1 + §3.1 — läs sitshöjd per plats från kontraktet.
+      // Barstolar (STOOL_HEIGHT=0.75) och träbord-stolar (CHAIR_HEIGHT=0.45)
+      // samexisterar i ölkrogen — 12 chair + 8 stool. Ingen fallback:
+      // om `seatHeightsForFrame` saknas ELLER seatIndex ligger utanför
+      // publicerade platser → `targetSitHeight = 0` → gäst syns som
+      // halvcrouchad på golvet. Det är ett synligt VO-fynd, inte en
+      // tyst kompromiss (§3.1: restaurangens layout har läckt in i
+      // ölkrogen fyra gånger nu; låt inte femte gången gömma sig).
+      let targetSitHeight = 0;
+      if (
         guest.seatIndex !== null &&
         guest.seatIndex !== undefined &&
         guest.seatIndex >= 0 &&
         seatHeightsForFrame &&
         guest.seatIndex < seatHeightsForFrame.length
-          ? seatHeightsForFrame[guest.seatIndex]
-          : SEAT_SIT_HEIGHT_FALLBACK_M;
+      ) {
+        targetSitHeight = seatHeightsForFrame[guest.seatIndex];
+      } else if (
+        import.meta.env.DEV &&
+        SEATED_STATES.includes(guest.state) &&
+        !NO_SEAT_HEIGHTS_WARNED.has(sim.businessClass)
+      ) {
+        NO_SEAT_HEIGHTS_WARNED.add(sim.businessClass);
+        // Loud finding i konsolen — inget silent 0.45. Nyckeln per klass
+        // så VO ser vilken klass som fallerar och när.
+        console.warn(
+          `[ORDER 200 §3.1] seatHeights saknas för businessClass="${sim.businessClass}" (guestId=${guest.id}, seatIndex=${guest.seatIndex}). ` +
+          `sitLift=0 → gäster visuellt halvcrouchade. Kontraktet ska publicera SharedBusinessRoom.seatHeights via *Scene-komponenten.`
+        );
+      }
 
       let sitLift = 0;
       // ORDER 197 §2 — "statiskt sittande utan transition" är efter sit-

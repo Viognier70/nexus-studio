@@ -1,23 +1,23 @@
 #!/usr/bin/env node
-// ORDER 200 — video-verifiering av fyra fynd (VO-direktiv 2026-09-10).
-// "Verifiera med video, inte pixeltal. Jag vill se gäster på barstolar
-// och personal som stannar inne."
+// ORDER 200 — video-verifiering (VO-direktiv 2026-09-10):
+// "Verifiera med VIDEO, inte pixeltal. Jag vill se en gäst gå till en
+// barstol och sätta sig på den, och personal som stannar innanför
+// väggarna under ett helt pass."
 //
 // Flöde: ölkrogen lunch, spelarflödet (namn → Enter → lunch service).
-// Snabbspola prep vid speed=8 tills första kohorten sitter, sänk till
-// speed=1 och spela in ~25 s realtid av mid-service. Utdata:
-//   frontend/reports/order200/mid-service.webm  — video (VO bedömer)
-//   frontend/reports/order200/state.json        — sista snapshot av
-//                                                  gäst-positioner,
-//                                                  staff-positioner,
-//                                                  seatHeights[] per
-//                                                  klass. Underlag
-//                                                  för §3-registerraden,
-//                                                  INTE pass-kriterium.
+// Snabbspola prep vid speed=8 tills sim öppnar service; vid `seatedIds
+// >= 1` (första gäst-cohortens första kohort har hittat sits) sänk till
+// **speed=1 i 90 s** — visar gäster promenerar in genom entrén och
+// sätter sig ner (inkl. barstols-ankomster; SEATS_OLKROGEN prioriterar
+// bar-index 12-19 först per service.ts:154). Sedan **speed=2 i 240 s**
+// för att fånga resten av service-passet (staff-observation genom hela
+// passet, per direktivet). Total realtid ~5.5 min. Utdata:
+//   frontend/reports/order200/full-pass.webm — video (VO bedömer)
+//   frontend/reports/order200/state.json     — slut-snapshot (spårbarhet)
 //
-// Pass-kriterium: VO tittar på webm-filen och bedömer att (a) gäster
-// sitter på både barstolar och bord-stolar, (b) personalen står inne,
-// (c) inga gäster utanför byggnaden. Ingen automatisk pixel-signatur.
+// Pass-kriterium: VO tittar på webm-filen och bedömer att (a) en gäst
+// promenerar till en barstol och sätter sig, (b) personalen står inne
+// genom hela passet. Ingen automatisk pixel-signatur.
 
 import { chromium } from 'playwright';
 import { spawn } from 'node:child_process';
@@ -32,7 +32,15 @@ const REPORT_DIR = resolve(FRONTEND, 'reports/order200');
 mkdirSync(REPORT_DIR, { recursive: true });
 
 const VIEWPORT = { width: 1920, height: 1080 };
-const RECORD_SECONDS = 25;
+// Speed=1 fönster: fånga gäst→barstol-promenad + sit-blend i realtid.
+// SEAT_ARRIVAL_THRESHOLD_M=0.6m + WALK_SPEED_M_PER_S=1.2 → sit-blend
+// tar 0.5s, hela vägen entré→barstol ~10-15s. 90s täcker flera arriv.
+const SPEED1_SECONDS = 90;
+// Speed=2 fönster: kompresserar resten av lunch-passet (15 sim-min
+// totalt). Vid speed=2 blir 240 s realtid = 480 s sim = 8 sim-minuter,
+// vilket räcker för att observera staff-beteende genom mid-service och
+// första gäster som lämnar (paying→leaving). Total = 330 s ≈ 5.5 min.
+const SPEED2_SECONDS = 240;
 
 async function startVite() {
   const url = 'http://localhost:5173';
@@ -64,9 +72,13 @@ console.log(`Vite på ${vite.url}`);
 const browser = await chromium.launch();
 const videoDir = resolve(REPORT_DIR, '_playwright-video');
 mkdirSync(videoDir, { recursive: true });
+// Renderar i 1920×1080 (samma vy som VO:s tidigare inspelningar), men
+// spelar in i 1280×720 för att hålla filstorleken hanterbar för git.
+// Fem minuter × 1920×1080 skulle bli >100 MB webm; 1280×720 halverar
+// ungefär.
 const ctx = await browser.newContext({
   viewport: VIEWPORT,
-  recordVideo: { dir: videoDir, size: VIEWPORT }
+  recordVideo: { dir: videoDir, size: { width: 1280, height: 720 } }
 });
 const page = await ctx.newPage();
 page.on('pageerror', (e) => console.error('[pageerror]', e.message));
@@ -89,19 +101,30 @@ try {
   await delay(3000);
 
   await page.evaluate(() => {
+    // 20 min lunch räcker för hela passet plus lite marginal så vi ser
+    // paying→leaving-cyklerna vid slutet.
     window.__nxSimDispatch({ type: 'OPEN_SERVICE', service: 'lunch', lengthMinutes: 20 });
     window.__nxSimDispatch({ type: 'SET_SPEED', speed: 8 });
   });
+  // Snabbspola prep + låt sim skapa första ankomster. Sim måste ha en
+  // arriving-guest i pipelinen när vi drar ner till speed=1, annars ser
+  // videon tomt ut de första 15-20 sekunderna.
   await page.waitForFunction(
     () => {
       const s = window.__nxSimState;
-      return s?.seatedIds && s.seatedIds.length >= 8;
+      if (!s?.guests) return false;
+      return s.guests.some((g) => g.state === 'arriving' || g.state === 'waiting') ||
+        (s.seatedIds && s.seatedIds.length >= 1);
     },
     null, { timeout: 180000 }
   );
   await page.evaluate(() => window.__nxSimDispatch({ type: 'SET_SPEED', speed: 1 }));
-  console.log(`Spelar in ${RECORD_SECONDS} s vid speed=1 ...`);
-  await delay(RECORD_SECONDS * 1000);
+  console.log(`Spelar in ${SPEED1_SECONDS} s vid speed=1 (gäst→barstol-fönstret) ...`);
+  await delay(SPEED1_SECONDS * 1000);
+
+  await page.evaluate(() => window.__nxSimDispatch({ type: 'SET_SPEED', speed: 2 }));
+  console.log(`Spelar in ${SPEED2_SECONDS} s vid speed=2 (resten av passet) ...`);
+  await delay(SPEED2_SECONDS * 1000);
 
   finalSnap = await page.evaluate(() => {
     const sim = window.__nxSimState;
@@ -215,7 +238,7 @@ try {
 const videos = readdirSync(videoDir).filter((f) => f.endsWith('.webm'));
 if (videos.length > 0) {
   const src = resolve(videoDir, videos[0]);
-  const dst = resolve(REPORT_DIR, 'mid-service.webm');
+  const dst = resolve(REPORT_DIR, 'full-pass.webm');
   if (existsSync(dst)) {
     // Overwrite by rename.
   }
