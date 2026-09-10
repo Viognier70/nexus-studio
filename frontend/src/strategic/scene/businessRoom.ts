@@ -470,16 +470,45 @@ type StationTarget = string | '__entrance' | null;
 // 'taps' finns.
 const STATION_MAP: Record<RoomClass, Record<StaffRole, StationTarget>> = {
   // Kvarterskrogen: namn-matchning entydig.
-  kvarterskrogen: { värd: 'host',       servitör: 'server', kock: 'chef',   lärling: 'server' },
+  kvarterskrogen: { värd: 'host', servitör: 'server', kock: 'chef', lärling: 'server' },
+
   // Ölkrogen: brewer/cook/runner-namnen matchar inte entydigt sim-roller.
-  //   värd → '__entrance': VO-arv (ORDER 200); Design 4-to-4 tyder på
-  //     'taps'-station som INTE finns i brewpubRoom.ts idag. ANTAGANDE.
-  //   servitör → 'barkeep': pubservitör är typiskt bartender. ANTAGANDE.
-  //   kock → 'brewer': brygg-arbete = kock-arbete. ANTAGANDE (nämnt av
-  //     VO 2026-09-10 kl. 16:30 som "din" antagande).
-  //   lärling → 'cook': apprentice fyller kök-stationen som kock inte
-  //     håller. ANTAGANDE.
-  ölkrogen:       { värd: '__entrance', servitör: 'barkeep', kock: 'brewer', lärling: 'cook' },
+  // Fyra stations = fyra roller (Design via VO 2026-09-10 kl. 15:30).
+  // Namn-mappningen nedan är MINA ANTAGANDEN om Designs namn — inte
+  // bekräftade. VO 2026-09-10 kl. 17:00:
+  //   "Skriv brewer→kock, taps→värd som antaganden i koden — de är
+  //    dina, inte Designs."
+  //
+  //   värd → 'taps' — ANTAGANDE. Design 4-to-4 tyder på en 'taps'-
+  //     station (tapptornet är där värden både servar och möter gästen
+  //     i en ölkrog). 'taps'-station finns INTE i nuvarande
+  //     brewpubRoom.ts (fyra deklarerade: barkeep/brewer/cook/runner).
+  //     Design måste antingen (a) döpa om 'barkeep' → 'taps' eller (b)
+  //     lägga till en 'taps'-station för att värd ska renderas. Tills
+  //     dess: `stationFor('värd', ölkrogen)` returnerar null →
+  //     InteriorStaff skippar värd med DEV-warn. Ingen tyst fallback
+  //     till entrance eller barkeep — kontraktet levererar antingen
+  //     data eller ingenting (VO-princip: "en fallback som döljer att
+  //     data saknas är samma mönster som INTERIOR.chair.seatY").
+  //
+  //   servitör → 'barkeep' — ANTAGANDE. Pubservitör är typiskt
+  //     bartender. Om 'taps' är samma station som nuvarande 'barkeep'
+  //     med nytt namn så kolliderar värd och servitör; om 'taps' är
+  //     egen station bakom värden (tapptornet) och 'barkeep' står kvar
+  //     för kassan/serving så är det två distincta.
+  //
+  //   kock → 'brewer' — ANTAGANDE, uttryckligen nämnt av VO 2026-09-10
+  //     kl. 16:30 som "din" antagande. Bryggarens arbete = kock-arbete
+  //     i ölkrog-verksamhet. Alternativ: 'cook' (den mer traditionella
+  //     kock-stationen); men brewer läser starkare som "husets kock" i
+  //     en pub där maten är utpekat sekundär.
+  //
+  //   lärling → 'cook' — ANTAGANDE. Apprentice hjälper i köket vid
+  //     spisen. Om kock → 'brewer' så är 'cook' ledig för lärling.
+  //
+  // Öppen Design-fråga: STATION_ROLE_MAPPING_QUESTION_2026-09-10.md.
+  ölkrogen:       { värd: 'taps',       servitör: 'barkeep', kock: 'brewer', lärling: 'cook' },
+
   vinbaren:       { värd: '__entrance', servitör: 'runner', kock: 'cook',   lärling: 'runner' },
   gästgiveriet:   { värd: 'host',       servitör: 'hallA',  kock: 'chef',   lärling: null },
   foodtrucken:    { värd: null,         servitör: 'window', kock: 'cook',   lärling: null },
