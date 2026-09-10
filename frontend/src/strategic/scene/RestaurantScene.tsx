@@ -80,6 +80,9 @@ export function RestaurantScene() {
       // ORDER 200 fynd 1 — se BrewpubScene-kommentaren. Restaurangens
       // 16 seats: index 0-11 chair, 12-15 stool.
       seatHeights: room.seats.map((s) => s.seatHeight),
+      // ORDER 201 fynd 1 — restaurantRoom.ts:236 `const PLINTH_M = 0.11`.
+      // Se BrewpubScene-kommentar för motivet.
+      plinth: 0.11,
       standing: world.standing as [number, number][],
       stations: world.staffStations as [number, number][],
       entrance: world.entrance as [number, number],

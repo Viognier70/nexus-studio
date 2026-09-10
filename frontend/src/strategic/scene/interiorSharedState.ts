@@ -122,6 +122,23 @@ export interface SharedBusinessRoom {
    * sextonde fallet av "designen levererade i kontraktet, koden gissade".
    */
   seatHeights: number[];
+  /**
+   * ORDER 201 fynd 1 — sockelns tjocklek (Y-höjden av rummets golv-slab
+   * över world Y=0). Alla sex rumsfilerna använder `PLINTH_M = 0.11`
+   * som magic constant sedan augusti (restaurantRoom/wineBarRoom/inn/
+   * nightClub deklarerar det, brewpub upprepar `+ 0.11` inline utan
+   * namngivning). InteriorGuests behöver den för att lyfta gäster på
+   * TOP av sockeln, inte 11 cm under. Utan detta:
+   *   pelvisWorldY = groupY + 0.445 (rig hipY 0.86 - hipDrop 0.41)
+   *   groupY = seatHeight (ORDER 200) → pelvis = 0.895 m för chair
+   *   chair cushion top = 0.11 + 0.45 + 0.025 = 0.585 m
+   *   → gäst 31 cm ÖVER stolen. Bar stools maskerade felet visuellt (bar
+   *   counter är 1.21 m så en pelvis vid 1.20 läser som "lutar mot baren"),
+   *   men träbord-stolar exponerar det (VO 2026-09-10 kl. 13:30: "gäster
+   *   sitter bredvid/genom stolarna, inte på dem").
+   * Publiceras per klass för framtida rum med annan sockel.
+   */
+  plinth: number;
   standing: XZ[];
   stations: XZ[];
   entrance: XZ;

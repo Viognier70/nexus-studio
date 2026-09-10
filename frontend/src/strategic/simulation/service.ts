@@ -613,12 +613,47 @@ function isBackgroundTask(t: TaskType | null): boolean {
 // ölkrogens bryggeri-arbete som egen order. Kvarterskrogen och
 // gästgiveriet får alla fyra typerna — det är där mittmassan i
 // ORDER 134 var 8-9 % som ska stiga. (Nya nyckelnamn per ORDER 140.)
+// ORDER 201 fynd 4 — ölkrogen får bakgrunds-tasks. VO-observation
+// 2026-09-10 13:30: "Mise en place faller mot 0% under passet —
+// napkins, cutlery, garnish. Fylls aldrig på." Ölkrogen har `hasMiseEnPlace:
+// true` i businessClass-config (prepReadiness sätts vid prep-start,
+// consumeMepForOneGuest drar ner det per gäst), men listan var tom
+// sedan ORDER 137 (som deferrade bryggeri-arbete). Refill-loopen kunde
+// aldrig sluta. Nu får ölkrogen samma fyra bg-typer som kvarterskrogen;
+// bryggeri-specifika tasks (mash-check, tapp-koll) är fortfarande egen
+// order — dessa fyra räcker för att hålla mep vid liv.
 const BACKGROUND_TASKS_BY_BUSINESS: Record<string, readonly TaskType[]> = {
   kvarterskrogen: ['misEnPlace', 'dish', 'restock', 'clean'],
   gästgiveriet:   ['misEnPlace', 'dish', 'restock', 'clean'],
   foodtrucken:    [],
-  ölkrogen:       []
+  ölkrogen:       ['misEnPlace', 'dish', 'restock', 'clean']
 };
+
+// ORDER 201 fynd 4 — refill-mängder per bg-task-typ, per mep-post.
+// Kalibrerade så en typisk 15-gästs-lunch (consumption 0.03-0.04 per
+// gäst) kompenseras av 3-5 bg-tasks per typ under passet (staff hinner
+// köra dem när direct-tasks saknas, per §2.2). Ingen post täcker allt
+// själv — misEnPlace är bredare, restock/dish/clean är fokuserade.
+// Muterar `state.day.prepReadiness` i place, clamp 0..1.
+const MEP_REFILL_BY_TASK: Record<string, Record<string, number>> = {
+  misEnPlace: { napkins: 0.08, cutlery: 0.08, garnish: 0.08 },
+  dish:       { cutlery: 0.15 },
+  restock:    { napkins: 0.10, garnish: 0.10, ice: 0.10, stations: 0.05 },
+  clean:      { stations: 0.10 }
+};
+
+function replenishFromBackgroundTask(state: SimulationState, taskType: TaskType): void {
+  const refill = MEP_REFILL_BY_TASK[taskType];
+  if (!refill) return;
+  const readiness = state.day.prepReadiness;
+  if (!readiness) return;
+  const next: Record<string, number> = { ...readiness };
+  for (const [key, amount] of Object.entries(refill)) {
+    const cur = next[key] ?? 0;
+    next[key] = Math.min(1, cur + amount);
+  }
+  state.day = { ...state.day, prepReadiness: next };
+}
 
 function anyDirectTaskAvailable(state: SimulationState): boolean {
   for (const type of PRIORITY) {
@@ -849,6 +884,27 @@ function completeStaffTask(state: SimulationState, staff: StaffMember) {
   staff.taskProgress = 0;
   staff.taskDuration = 0;
   staff.targetGuestId = null;
+
+  // ORDER 201 fynd 4 — background-tasks fyller på prep-readiness.
+  // Före ORDER 201 föll servett/bestick/garnityr mot 0 under passet:
+  // `consumeMepForOneGuest` (mepConsumption.ts:88) drog ner ~0.03-0.04
+  // per gäst, men INGEN kod ökade dem. Bakgrunds-uppgifterna
+  // `misEnPlace` / `restock` / `dish` / `clean` gick igenom
+  // task-pipelinen (findTask → beginBackgroundTask → tick → complete)
+  // men completeStaffTask retunerade tidigt vid `!guest` (rad 853 pre-201).
+  // Sim-design (ORDER 137 §2, ORDER 117 §4) förutsatte att staff skulle
+  // hålla readiness uppe genom aktivt arbete; koden slöt aldrig loopen.
+  //
+  // Refill-mängderna kalibrerade så en typisk lunch (~15 gäster,
+  // consumption ~0.5 av napkins) kompenseras av 3-5 misEnPlace-tasks
+  // (som staff hinner köra när de inte har direkta gäst-uppgifter, per
+  // §2.2 preemption). Mängderna är MEDVETET generösa på restock/dish/
+  // clean så staff inte behöver stapla misEnPlace för att hålla en
+  // enskild post uppe. Sum-refill per pass ≈ consumption per pass.
+  if (!guest && type !== null && BACKGROUND_TASKS.has(type)) {
+    replenishFromBackgroundTask(state, type);
+    return;
+  }
 
   if (!guest) return;
 

@@ -82,6 +82,12 @@ export function BrewpubScene() {
       // hardcodade InteriorGuests 0.45 för alla 20 platser → 8 barstols-
       // gäster satt 30 cm under stolsäten.
       seatHeights: room.seats.map((s) => s.seatHeight),
+      // ORDER 201 fynd 1 — brewpubRoom lägger golv-slabben på Y=0.11 (se
+      // slabPlate `m.position.set(x, 0.11, z)` + alla möbel-Y `+ 0.11`).
+      // Konstanten är oämngiven i brewpub men skriven som PLINTH_M i
+      // restaurant/wineBar/inn/nightClub. InteriorGuests behöver den för
+      // att inte placera pelvis 11 cm under sitten.
+      plinth: 0.11,
       standing: world.standing as [number, number][],
       stations: world.staffStations as [number, number][],
       entrance: world.entrance as [number, number],

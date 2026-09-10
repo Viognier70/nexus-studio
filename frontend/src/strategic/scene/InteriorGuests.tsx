@@ -110,9 +110,31 @@ const SEATED_STATES: readonly GuestState[] = ['seated', 'ordering', 'dining', 'p
 // smuget in i ölkrogen (fjärde gången samma familj efter walkPathToSeat,
 // staffHomes, queueSlots). Om `seatHeightsForFrame[seatIndex]` inte finns
 // tillgänglig → `sitLift = 0`, gästen renderas som halvcrouchad på golvet.
-// Det är ett synligt fynd, inte en tyst kompromiss. Om något fortfarande
-// hamnar där är det ett bevis på att en kod-väg gissar där kontraktet
-// har svaret.
+// Det är ett synligt fynd, inte en tyst kompromiss.
+//
+// ORDER 201 fynd 1 — sitLift-FORMELN är ny. Före ORDER 201:
+//   sitLift = seatHeight (0.45 chair, 0.75 stool)
+// gav pelvis-Y = groupY + 0.445 = 0.895 (chair) eller 1.195 (stool).
+// Chair cushion top var 0.585 m → gäst 31 cm över stolen ("bredvid/genom
+// stolen"). Bar counter är 1.21 m → stool-gäst vid 1.195 läste som
+// "lutar mot baren" och maskerade felet visuellt (ORDER 200 slöts som
+// LÖST för stools på fel grund). Rätta formel:
+//   sitLift = plinth + seatHeight + CUSHION_HALF - HIP_Y_SEATED
+//           = 0.11 + seatHeight + 0.025 - 0.445
+//           = seatHeight - 0.31 (med de faktiska konstanterna)
+// där:
+//   plinth              = SharedBusinessRoom.plinth (0.11 idag)
+//   seatHeight          = SharedBusinessRoom.seatHeights[seatIndex]
+//   CUSHION_HALF_M      = 0.025 (5 cm cushion-cylinder, halva tjockleken)
+//   HIP_Y_SEATED_M      = 0.445 (rig hipY 0.86 - poseSeated hipDrop 0.41
+//                                - poseSeated lift ~0.005, mätt empiriskt
+//                                i figureRig.ts:577-611)
+// Resultat: pelvis absoluta Y = cushion top → gäst SITTER PÅ stolen.
+
+// Empiriskt uppmätt från figureRig.ts. Byts endast om rig-geometrin
+// ändras (FIGURE.hipY eller poseSeated.hipDrop).
+const HIP_Y_SEATED_M = 0.445;
+const CUSHION_HALF_M = 0.025;
 
 // ORDER 200 §3.1 — DEV-only-warning en gång per kod-väg som saknar
 // seatHeights. Använder en modul-lokal Set så samma väg inte spammar
@@ -426,6 +448,8 @@ export function InteriorGuests() {
     const seatHeightsForFrame: readonly number[] | null = usingContract
       ? roomChan!.seatHeights
       : null;
+    // ORDER 201 fynd 1 — sockelns tjocklek per klass. Null utan kontrakt.
+    const plinthForFrame: number | null = usingContract ? roomChan!.plinth : null;
     if (import.meta.env.DEV && typeof window !== 'undefined') {
       // Dev-observation för playwright — vilken källa och vilken
       // längd som råder just nu. Sätts varje frame utan overhead
@@ -661,23 +685,27 @@ export function InteriorGuests() {
       // ovanpå golvet". Under sit/stand-transition (0..1) skalas lyftet
       // linjärt så pose-blenden och Y-positionen möts vid sit-slutläget.
       //
-      // ORDER 200 fynd 1 + §3.1 — läs sitshöjd per plats från kontraktet.
-      // Barstolar (STOOL_HEIGHT=0.75) och träbord-stolar (CHAIR_HEIGHT=0.45)
-      // samexisterar i ölkrogen — 12 chair + 8 stool. Ingen fallback:
-      // om `seatHeightsForFrame` saknas ELLER seatIndex ligger utanför
-      // publicerade platser → `targetSitHeight = 0` → gäst syns som
-      // halvcrouchad på golvet. Det är ett synligt VO-fynd, inte en
-      // tyst kompromiss (§3.1: restaurangens layout har läckt in i
-      // ölkrogen fyra gånger nu; låt inte femte gången gömma sig).
-      let targetSitHeight = 0;
+      // ORDER 200 fynd 1 + §3.1 + ORDER 201 fynd 1 — sitshöjd per plats
+      // från kontraktet. `targetSitLift` är hur mycket guest-gruppen ska
+      // lyftas i Y för att pelvis ska hamna på sittytans TOPP. Formeln:
+      //   plinth + seatHeight + CUSHION_HALF - HIP_Y_SEATED
+      // Se blocket ovan för härledning. Ingen fallback-konstant — om
+      // seatHeights eller plinth saknas → sitLift = 0, gäst syns som
+      // halvcrouchad på golvet (loud finding).
+      let targetSitLift = 0;
       if (
         guest.seatIndex !== null &&
         guest.seatIndex !== undefined &&
         guest.seatIndex >= 0 &&
         seatHeightsForFrame &&
-        guest.seatIndex < seatHeightsForFrame.length
+        guest.seatIndex < seatHeightsForFrame.length &&
+        plinthForFrame !== null
       ) {
-        targetSitHeight = seatHeightsForFrame[guest.seatIndex];
+        targetSitLift =
+          plinthForFrame +
+          seatHeightsForFrame[guest.seatIndex] +
+          CUSHION_HALF_M -
+          HIP_Y_SEATED_M;
       } else if (
         import.meta.env.DEV &&
         SEATED_STATES.includes(guest.state) &&
@@ -687,8 +715,8 @@ export function InteriorGuests() {
         // Loud finding i konsolen — inget silent 0.45. Nyckeln per klass
         // så VO ser vilken klass som fallerar och när.
         console.warn(
-          `[ORDER 200 §3.1] seatHeights saknas för businessClass="${sim.businessClass}" (guestId=${guest.id}, seatIndex=${guest.seatIndex}). ` +
-          `sitLift=0 → gäster visuellt halvcrouchade. Kontraktet ska publicera SharedBusinessRoom.seatHeights via *Scene-komponenten.`
+          `[ORDER 200 §3.1] seatHeights/plinth saknas för businessClass="${sim.businessClass}" (guestId=${guest.id}, seatIndex=${guest.seatIndex}). ` +
+          `sitLift=0 → gäster visuellt halvcrouchade. Kontraktet ska publicera SharedBusinessRoom.{seatHeights,plinth} via *Scene-komponenten.`
         );
       }
 
@@ -698,12 +726,16 @@ export function InteriorGuests() {
       // sit-blend-signal betyder gäst är på väg till stolen (state
       // skiftade till seated men positional trigger har inte eldat än)
       // — då noll lyft, gästen går som en person på golvet.
+      // ORDER 201 fynd 1 — `targetSitLift` är delta över plinth-nivån
+      // (kan vara ~0.14 m för chair, ~0.44 m för stool). Fasen skalar
+      // mellan poseIdle (rig root på plinth, ingen lift) och poseSeated
+      // (rig root vid targetSitLift). Vid dir=-1, phase=1 håller lyftet.
       if (pos.sitStandPhase >= 0 && pos.sitStandDir === -1) {
         // Sitter ner: lyft eases in med samma phase som pose-blenden
-        sitLift = targetSitHeight * pos.sitStandPhase;
+        sitLift = targetSitLift * pos.sitStandPhase;
       } else if (pos.sitStandPhase >= 0 && pos.sitStandDir === 1) {
         // Reser sig: lyft eases ut
-        sitLift = targetSitHeight * (1 - pos.sitStandPhase);
+        sitLift = targetSitLift * (1 - pos.sitStandPhase);
       }
       if (group) {
         group.position.set(
