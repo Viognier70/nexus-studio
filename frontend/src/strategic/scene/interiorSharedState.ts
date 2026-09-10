@@ -143,6 +143,27 @@ export interface SharedBusinessRoom {
   stations: XZ[];
   entrance: XZ;
   waitingSpot: XZ;
+  /**
+   * ORDER 203 — kön framför entrén, per klass. Distincta punkter (2
+   * laterals × 4 depths i default-formen); före ORDER 203 hade
+   * `SharedBusinessRoom` bara `waitingSpot` (singular, midpunkt).
+   * InteriorGuests placerade `state='waiting'`-gäster via
+   * `layout.waitingSlots` — OBB-generiskt uträknat i
+   * `interiorLayout.ts:288-292` med `WAITING_SLOT_DEPTHS/LATERALS`,
+   * duplicerat i `restaurantRoom.ts:224-225,733-737`. Två skrivningar,
+   * en läsning; kontraktet fick aldrig äga formen. Nu publiceras
+   * `waitingSlots` per klass från *Scene:
+   *   - RestaurantScene: `world.waitingSlots` från
+   *     `resolveWorldPositions()` (redan beräknad, oanvänd före ORDER 203).
+   *   - BrewpubScene: pass-through av `layout.waitingSlots` tills
+   *     brewpubRoom får egen queue-form (vestibul eller sidewalk-kö).
+   *   - Framtida rum (nattklubb med rope-line, gästgiveri med vestibul)
+   *     definierar sin egen form i rumsfilen.
+   * InteriorGuests läser `roomChan.waitingSlots`; om tomt →
+   * DEV-warning + fallback till `layout.waitingSlots` (samma mönster
+   * som ORDER 200 §3.1: fallback är signal att data saknas).
+   */
+  waitingSlots: XZ[];
   capacity: number;
   /**
    * ORDER 154 — sim-rollernas hemstationer i värld-XZ, mappade via
