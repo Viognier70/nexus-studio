@@ -112,29 +112,17 @@ const SEATED_STATES: readonly GuestState[] = ['seated', 'ordering', 'dining', 'p
 // tillgänglig → `sitLift = 0`, gästen renderas som halvcrouchad på golvet.
 // Det är ett synligt fynd, inte en tyst kompromiss.
 //
-// ORDER 201 fynd 1 — sitLift-FORMELN är ny. Före ORDER 201:
-//   sitLift = seatHeight (0.45 chair, 0.75 stool)
-// gav pelvis-Y = groupY + 0.445 = 0.895 (chair) eller 1.195 (stool).
-// Chair cushion top var 0.585 m → gäst 31 cm över stolen ("bredvid/genom
-// stolen"). Bar counter är 1.21 m → stool-gäst vid 1.195 läste som
-// "lutar mot baren" och maskerade felet visuellt (ORDER 200 slöts som
-// LÖST för stools på fel grund). Rätta formel:
-//   sitLift = plinth + seatHeight + CUSHION_HALF - HIP_Y_SEATED
-//           = 0.11 + seatHeight + 0.025 - 0.445
-//           = seatHeight - 0.31 (med de faktiska konstanterna)
-// där:
-//   plinth              = SharedBusinessRoom.plinth (0.11 idag)
-//   seatHeight          = SharedBusinessRoom.seatHeights[seatIndex]
-//   CUSHION_HALF_M      = 0.025 (5 cm cushion-cylinder, halva tjockleken)
-//   HIP_Y_SEATED_M      = 0.445 (rig hipY 0.86 - poseSeated hipDrop 0.41
-//                                - poseSeated lift ~0.005, mätt empiriskt
-//                                i figureRig.ts:577-611)
-// Resultat: pelvis absoluta Y = cushion top → gäst SITTER PÅ stolen.
-
-// Empiriskt uppmätt från figureRig.ts. Byts endast om rig-geometrin
-// ändras (FIGURE.hipY eller poseSeated.hipDrop).
-const HIP_Y_SEATED_M = 0.445;
-const CUSHION_HALF_M = 0.025;
+// ORDER 202 §1 — reverterade ORDER 201:s plinth-formel. Formeln
+// (plinth + seatHeight + cushion − hip) gav pelvis vid cushion top för
+// chair-kombinationen 0.45+0.11+0.025−0.445=0.14m, men BRÖT den
+// visuellt LÖSTA stool-observationen från ORDER 200 (pelvis 1.19 m
+// nära bar counter 1.21 m läste som "lutar mot baren"). Rot-orsaken
+// för långborden är inte rig-matten — enligt VO-direktiv
+// 2026-09-10 kl. 14:00: "Fråga Design: har långborden bänkar som inte
+// renderas? seatY 0,45 m antyder en sittyta som saknas i geometrin.
+// Antingen ritas bänkarna eller så ska seatY ändras — men det är
+// deras rum." Se `documentation/blueprints/ROOM_DESIGN_QUESTION_2026-09-10.md`.
+// Tills Design svarar behåller vi ORDER 200-formen: `sitLift = seatHeight`.
 
 // ORDER 200 §3.1 — DEV-only-warning en gång per kod-väg som saknar
 // seatHeights. Använder en modul-lokal Set så samma väg inte spammar
@@ -443,13 +431,16 @@ export function InteriorGuests() {
       ? roomChan!.seatFacings
       : null;
     // ORDER 200 fynd 1 + §3.1 — sitshöjd per plats. Null utan kontrakt;
-    // consumern nedan använder då `targetSitHeight = 0` (loud finding via
+    // consumern nedan använder då `targetSitLift = 0` (loud finding via
     // console.warn i DEV) i stället för att gissa 0.45.
     const seatHeightsForFrame: readonly number[] | null = usingContract
       ? roomChan!.seatHeights
       : null;
-    // ORDER 201 fynd 1 — sockelns tjocklek per klass. Null utan kontrakt.
-    const plinthForFrame: number | null = usingContract ? roomChan!.plinth : null;
+    // ORDER 201 fynd 1 — sockelns tjocklek per klass publicerad. INTE
+    // konsumerad av sitLift efter ORDER 202 §1-revert (bänk-vs-stol
+    // frågan hos Design). Fältet stannar kvar för framtida användning
+    // (mep-prop-plinth, bordslampa, etc.).
+    void (usingContract ? roomChan!.plinth : null);
     if (import.meta.env.DEV && typeof window !== 'undefined') {
       // Dev-observation för playwright — vilken källa och vilken
       // längd som råder just nu. Sätts varje frame utan overhead
@@ -685,27 +676,21 @@ export function InteriorGuests() {
       // ovanpå golvet". Under sit/stand-transition (0..1) skalas lyftet
       // linjärt så pose-blenden och Y-positionen möts vid sit-slutläget.
       //
-      // ORDER 200 fynd 1 + §3.1 + ORDER 201 fynd 1 — sitshöjd per plats
-      // från kontraktet. `targetSitLift` är hur mycket guest-gruppen ska
-      // lyftas i Y för att pelvis ska hamna på sittytans TOPP. Formeln:
-      //   plinth + seatHeight + CUSHION_HALF - HIP_Y_SEATED
-      // Se blocket ovan för härledning. Ingen fallback-konstant — om
-      // seatHeights eller plinth saknas → sitLift = 0, gäst syns som
-      // halvcrouchad på golvet (loud finding).
+      // ORDER 200 fynd 1 + §3.1 — sitshöjd per plats från kontraktet.
+      // `targetSitLift` är Y-lyftet för guest-gruppen. ORDER 202 §1
+      // reverterade ORDER 201:s plinth+cushion-formel — långbords-
+      // fyndet är Design-frågan (bänk-vs-stol), inte rig-matten. Här
+      // används rå seatHeight per ORDER 200-vägen; stolar och stools
+      // får samma delta som pre-ORDER 201 (chair 0.45, stool 0.75).
       let targetSitLift = 0;
       if (
         guest.seatIndex !== null &&
         guest.seatIndex !== undefined &&
         guest.seatIndex >= 0 &&
         seatHeightsForFrame &&
-        guest.seatIndex < seatHeightsForFrame.length &&
-        plinthForFrame !== null
+        guest.seatIndex < seatHeightsForFrame.length
       ) {
-        targetSitLift =
-          plinthForFrame +
-          seatHeightsForFrame[guest.seatIndex] +
-          CUSHION_HALF_M -
-          HIP_Y_SEATED_M;
+        targetSitLift = seatHeightsForFrame[guest.seatIndex];
       } else if (
         import.meta.env.DEV &&
         SEATED_STATES.includes(guest.state) &&
@@ -715,8 +700,8 @@ export function InteriorGuests() {
         // Loud finding i konsolen — inget silent 0.45. Nyckeln per klass
         // så VO ser vilken klass som fallerar och när.
         console.warn(
-          `[ORDER 200 §3.1] seatHeights/plinth saknas för businessClass="${sim.businessClass}" (guestId=${guest.id}, seatIndex=${guest.seatIndex}). ` +
-          `sitLift=0 → gäster visuellt halvcrouchade. Kontraktet ska publicera SharedBusinessRoom.{seatHeights,plinth} via *Scene-komponenten.`
+          `[ORDER 200 §3.1] seatHeights saknas för businessClass="${sim.businessClass}" (guestId=${guest.id}, seatIndex=${guest.seatIndex}). ` +
+          `sitLift=0 → gäster visuellt halvcrouchade. Kontraktet ska publicera SharedBusinessRoom.seatHeights via *Scene-komponenten.`
         );
       }
 
