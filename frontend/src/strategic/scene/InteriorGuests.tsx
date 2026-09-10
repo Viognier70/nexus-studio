@@ -116,6 +116,13 @@ const SEAT_SIT_HEIGHT_M = 0.45;
 // SIT_DIP_M utgår som Y-konstant; övergången görs istället som
 // blendPose(poseIdle → poseSeated) över samma 0,5 s.
 const SIT_STAND_DURATION_SEC = 0.5;
+// ORDER 197 §2 — avstånd från seat där sit-blend triggas positionellt.
+// Vid WALK_SPEED_M_PER_S × SIT_STAND_DURATION_SEC = 0,6 m tar promenaden
+// samma tid som blenden — blenden slutförs exakt när gästen når stolen.
+// Utan denna avstämning blev det antingen "sitter innan hen når stolen"
+// (för lång threshold) eller "står tills stolen och snappar sedan"
+// (för kort threshold).
+const SEAT_ARRIVAL_THRESHOLD_M = 0.6;
 
 // ORDER 123 §2.2 (SD-004 §3.3-preciseringen 2026-08-29): paletten
 // ljusas så gästen är läsbar mot golvets #a89577. Tidigare palett
@@ -201,6 +208,18 @@ interface AnimatedPos {
   // står still när figuren står still. Kadensen hänger ihop med
   // förflyttningen och inte med väggklockan.
   walkPhase: number;
+  // ORDER 197 §2 — yaw i rörelseriktning under promenad (atan2(dx,dz)).
+  // Uppdateras varje frame när `movedThisFrame` är sant. Används både
+  // som base-yaw under gång och som `blendStartYaw` vid sit-blend-
+  // avfyring. Utan detta står gästen med microYaw-jitter men "tittar"
+  // åt fel håll under promenaden.
+  walkYaw: number;
+  // ORDER 197 §3.2 — yaw vid sit-blend-avfyring. Interpoleras mot
+  // seatFacing under sitStandPhase 0→1 så gästen svänger in mot bordet
+  // i takt med att hen sätter sig. Utan detta snappar yaw från
+  // rörelseriktning till seatFacing på ett enda frame när sit-blend
+  // fyras — samma sorts fel som teleport-i-sittställning-poserna.
+  blendStartYaw: number;
 }
 
 // ORDER 188 tillägg 1 — sitYaw-warning en gång per (klass, seatIndex)
@@ -422,24 +441,65 @@ export function InteriorGuests() {
           leanX: 0, leanZ: 0, leanY: 0,
           prevState: null, sitStandPhase: -1, sitStandDir: 0,
           phaseSeed: phaseSeedFor(guest.id),
-          walkPhase: 0
+          walkPhase: 0,
+          walkYaw: 0,
+          blendStartYaw: 0
         };
         positionsRef.current.set(guest.id, pos);
       }
 
       // ORDER 046 §4 / ORDER 121 §2 — detect sit / stand transitions.
-      // waiting → seated startar sit (0 → 1 blendas idle → seated);
-      // paying → leaving startar stand (0 → 1 blendas seated → idle).
+      // ORDER 197 §2 — sit-blend (waiting → seated) triggas ENDAST
+      // positionellt när gästen når inom SEAT_ARRIVAL_THRESHOLD_M från
+      // seat (koden strax nedanför). State-transition-triggern hade två
+      // fel: (1) första-frames vid state='seated' (t.ex. vid sim-speed >
+      // 1 där arriving→waiting→seated händer mellan render-frames) fick
+      // pos.prevState=null och triggern eldade aldrig — gästen fastnade
+      // i poseSeated + sitLift under hela vägen från spawn till stol
+      // (VO-observation 2026-09-09: "gäster teleporteras till sin plats
+      // redan i sittställning"); (2) även när triggern eldade normalt
+      // vid waiting → seated var gästen fortfarande vid waiting-slot
+      // 2.5–5.2m utanför entrén, så sit-blend startade långt före
+      // gästen nådde stolen och blenden slutförde långt före
+      // promenaden var klar → sista 2-3m av promenaden gjordes i
+      // seated pose. Positional trigger löser båda: blend startar när
+      // det matchar med resten av rörelsen.
+      //
+      // Stand-blend (paying → leaving) behåller state-transition-
+      // triggern eftersom `paying` alltid är en fullt renderad state
+      // före `leaving` (ingen genomgång bara mellan frames).
       if (pos.prevState !== null && pos.prevState !== guest.state) {
-        if (pos.prevState === 'waiting' && guest.state === 'seated') {
-          pos.sitStandPhase = 0;
-          pos.sitStandDir = -1;
-        } else if (pos.prevState === 'paying' && guest.state === 'leaving') {
+        if (pos.prevState === 'paying' && guest.state === 'leaving') {
           pos.sitStandPhase = 0;
           pos.sitStandDir = 1;
+          pos.blendStartYaw = pos.walkYaw;
         }
       }
       pos.prevState = guest.state;
+
+      // ORDER 197 §2 — positional sit-blend trigger. Fires when guest
+      // reaches within SEAT_ARRIVAL_THRESHOLD_M of seat while state is
+      // in SEATED_STATES and no sit-blend has fired yet. Threshold 0.6m
+      // matches walk-speed × SIT_STAND_DURATION (1.2 m/s × 0.5s = 0.6m)
+      // så promenaden och blenden slutförs samtidigt vid stolen.
+      if (
+        SEATED_STATES.includes(guest.state) &&
+        pos.sitStandDir === 0 &&
+        pos.sitStandPhase < 0
+      ) {
+        const seatIdx = guest.seatIndex ?? -1;
+        if (seatIdx >= 0 && seatIdx < seatsForFrame.length) {
+          const dToSeat = Math.hypot(
+            pos.cx - seatsForFrame[seatIdx][0],
+            pos.cz - seatsForFrame[seatIdx][1]
+          );
+          if (dToSeat < SEAT_ARRIVAL_THRESHOLD_M) {
+            pos.sitStandPhase = 0;
+            pos.sitStandDir = -1;
+            pos.blendStartYaw = pos.walkYaw;
+          }
+        }
+      }
 
       // Advance sit / stand phase (0..1). Övergången konsumeras i
       // pose-valet nedan (blendPose), inte som Y-offset.
@@ -527,6 +587,14 @@ export function InteriorGuests() {
       // ORDER 121 §2 — gångfas i cykler (avståndsdrivna, inte tidsdrivna).
       if (movedThisFrame) {
         pos.walkPhase += (step / STRIDE_LENGTH_M);
+        // ORDER 197 §2 — uppdatera walkYaw ur rörelseriktningen. THREE:s
+        // yaw-konvention: rotation.y = 0 ger objektets +Z-axel i världens
+        // +Z, så för rörelsevektor (dx, dz) blir yaw = atan2(dx, dz).
+        // Uppdateras endast när `movedThisFrame` för att undvika
+        // NaN-atan2 på nollvektor; senast beräknade värde behålls när
+        // gästen står still (så sit-blend-triggeringen får en meningsfull
+        // blendStartYaw även på frame där rörelsen just stannade).
+        pos.walkYaw = Math.atan2(dx, dz);
       }
 
       // ORDER 044 §3.3 lean — physical seat-attention.
@@ -569,17 +637,17 @@ export function InteriorGuests() {
       // transition (0..1) skalas lyftet linjärt så pose-blenden och
       // Y-positionen möts vid sit-slutläget.
       let sitLift = 0;
-      const isSeatedState =
-        SEATED_STATES.includes(guest.state) || guest.state === 'sleeping';
+      // ORDER 197 §2 — "statiskt sittande utan transition" är efter sit-
+      // blend har nått phase=1 (dir stannar -1). SEATED_STATES UTAN
+      // sit-blend-signal betyder gäst är på väg till stolen (state
+      // skiftade till seated men positional trigger har inte eldat än)
+      // — då noll lyft, gästen går som en person på golvet.
       if (pos.sitStandPhase >= 0 && pos.sitStandDir === -1) {
         // Sitter ner: lyft eases in med samma phase som pose-blenden
         sitLift = SEAT_SIT_HEIGHT_M * pos.sitStandPhase;
       } else if (pos.sitStandPhase >= 0 && pos.sitStandDir === 1) {
         // Reser sig: lyft eases ut
         sitLift = SEAT_SIT_HEIGHT_M * (1 - pos.sitStandPhase);
-      } else if (isSeatedState) {
-        // Statiskt sittande (ingen transition pågår) — full lyft
-        sitLift = SEAT_SIT_HEIGHT_M;
       }
       if (group) {
         group.position.set(
@@ -597,26 +665,66 @@ export function InteriorGuests() {
         const idx = guest.seatIndex ?? -1;
         const seated =
           SEATED_STATES.includes(guest.state) || guest.state === 'sleeping';
-        if (
+        // ORDER 197 §3.2 — yaw ska interpoleras, inte snappa. Tre lägen:
+        //   (a) sit-blend pågår (dir=-1, phase 0→1): interpolera från
+        //       walkYaw (rörelsens riktning vid trigger, sparad i
+        //       blendStartYaw) mot seatFacing. Fasen matchar sit-lift
+        //       och pose-blend så gästen svänger in mot bordet i takt
+        //       med att hen sätter sig.
+        //   (b) stand-blend pågår (dir=+1, phase 0→1): motsatta riktning
+        //       — från seatFacing (blendStartYaw sattes vid trigger)
+        //       mot walkYaw. Följdriktig avresa.
+        //   (c) fullt sittande (dir=-1 phase>=1): seatFacing + microYaw.
+        //   (d) övrigt (går, står): walkYaw + microYaw.
+        // Utan (a) snappade yaw från rörelseriktning till seatFacing på
+        // ett enda frame när sit-blend fyras — VO-observation samma
+        // familj som teleportering-i-sittställning.
+        const seatFacing =
           seated &&
           seatFacingsForFrame !== null &&
           idx >= 0 &&
           idx < seatFacingsForFrame.length
-        ) {
-          const facing = seatFacingsForFrame[idx];
-          // ORDER 188 tillägg 1 — en plats utan kurs är ett datafel i
-          // rumsfilen, inte ett normalläge. Logga varning en gång per
-          // (klass, seatIndex) om facing saknas eller är NaN så
-          // rumsfilen kan rättas.
-          if (facing === undefined || Number.isNaN(facing)) {
-            warnMissingSitYaw(sim.businessClass ?? 'okänd', idx);
-            group.rotation.y = patternTx.microYawRad;
-          } else {
-            group.rotation.y = facing + patternTx.microYawRad;
-          }
-        } else {
-          group.rotation.y = patternTx.microYawRad;
+            ? seatFacingsForFrame[idx]
+            : undefined;
+        if (seatFacing !== undefined && Number.isNaN(seatFacing)) {
+          warnMissingSitYaw(sim.businessClass ?? 'okänd', idx);
         }
+        const validSeatFacing =
+          seatFacing !== undefined && !Number.isNaN(seatFacing)
+            ? seatFacing
+            : null;
+        // Modular-π-delta så interpolationen tar kortaste vägen (undviker
+        // ~2π-snurr när blendStartYaw och seatFacing ligger på var sin
+        // sida om ±π-vändningen).
+        const interpAngle = (from: number, to: number, phase: number): number => {
+          const rawDelta = to - from;
+          const delta = ((rawDelta + Math.PI) % (2 * Math.PI)) - Math.PI;
+          return from + delta * phase;
+        };
+        let baseYaw: number;
+        if (
+          pos.sitStandDir === -1 &&
+          pos.sitStandPhase >= 0 &&
+          pos.sitStandPhase < 1 &&
+          validSeatFacing !== null
+        ) {
+          baseYaw = interpAngle(pos.blendStartYaw, validSeatFacing, pos.sitStandPhase);
+        } else if (
+          pos.sitStandDir === 1 &&
+          pos.sitStandPhase >= 0 &&
+          pos.sitStandPhase < 1
+        ) {
+          baseYaw = interpAngle(pos.blendStartYaw, pos.walkYaw, pos.sitStandPhase);
+        } else if (
+          pos.sitStandDir === -1 &&
+          pos.sitStandPhase >= 1 &&
+          validSeatFacing !== null
+        ) {
+          baseYaw = validSeatFacing;
+        } else {
+          baseYaw = pos.walkYaw;
+        }
+        group.rotation.y = baseYaw + patternTx.microYawRad;
       }
 
       if (rig) {
@@ -655,11 +763,23 @@ export function InteriorGuests() {
         // pose bara för gäster som INTE är i seated-state.
         const t = sim.simTime + pos.phaseSeed;
         let pose: FigurePose;
-        if (pos.sitStandDir === -1 && pos.sitStandPhase >= 0) {
+        // ORDER 197 §2 — pose-fallback:en "SEATED_STATES → poseSeated"
+        // körde över rörelsen: en gäst vars state var 'seated' men som
+        // fortfarande promenerade in mot stolen (positional sit-blend
+        // hade inte eldat än) fick seated pose under hela promenaden.
+        // Fix: pose följer sit-blend-signalen, inte guest.state. När
+        // ingen blend pågår och state är seated betyder det antingen
+        // (a) på väg till stolen (går, movedThisFrame=true) → poseWalk;
+        // (b) blend redan slutförd (dir=-1, phase=1) → poseSeated.
+        if (pos.sitStandDir === -1 && pos.sitStandPhase >= 0 && pos.sitStandPhase < 1) {
           pose = blendPose(poseIdle(t), poseSeated(t), pos.sitStandPhase);
-        } else if (pos.sitStandDir === 1 && pos.sitStandPhase >= 0) {
+        } else if (pos.sitStandDir === 1 && pos.sitStandPhase >= 0 && pos.sitStandPhase < 1) {
           pose = blendPose(poseSeated(t), poseIdle(t), pos.sitStandPhase);
-        } else if (SEATED_STATES.includes(guest.state) || guest.state === 'sleeping') {
+        } else if (pos.sitStandDir === -1 && pos.sitStandPhase >= 1) {
+          // Blend slutförd — fullt sittande.
+          pose = poseSeated(t);
+        } else if (guest.state === 'sleeping') {
+          // Sleeping är alltid sittande (värdshus-övernattning).
           pose = poseSeated(t);
         } else if (movedThisFrame) {
           pose = poseWalk(pos.walkPhase);
