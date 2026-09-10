@@ -1,0 +1,226 @@
+{
+  "runs": [
+    {
+      "business": "olkrogen",
+      "samples": 127,
+      "totals": {
+        "poseWalk": 78,
+        "poseIdle": 216,
+        "poseGreet": 0,
+        "poseCarry": 87
+      },
+      "perTask": {
+        "checkback": {
+          "poseWalk": 19,
+          "poseIdle": 149,
+          "poseGreet": 0,
+          "poseCarry": 0
+        },
+        "(none)": {
+          "poseWalk": 54,
+          "poseIdle": 0,
+          "poseGreet": 0,
+          "poseCarry": 0
+        },
+        "clear": {
+          "poseWalk": 0,
+          "poseIdle": 0,
+          "poseGreet": 0,
+          "poseCarry": 87
+        },
+        "order": {
+          "poseWalk": 5,
+          "poseIdle": 67,
+          "poseGreet": 0,
+          "poseCarry": 0
+        }
+      },
+      "perStaff": {
+        "värd-ysr94x": {
+          "role": "värd",
+          "counts": {
+            "poseWalk": 21,
+            "poseIdle": 77,
+            "poseGreet": 0,
+            "poseCarry": 29
+          }
+        },
+        "servitör-hdptum": {
+          "role": "servitör",
+          "counts": {
+            "poseWalk": 27,
+            "poseIdle": 71,
+            "poseGreet": 0,
+            "poseCarry": 29
+          }
+        },
+        "kock-r4qzgf": {
+          "role": "kock",
+          "counts": {
+            "poseWalk": 30,
+            "poseIdle": 68,
+            "poseGreet": 0,
+            "poseCarry": 29
+          }
+        }
+      },
+      "lastSnap": {
+        "simTime": 326.19999999999004,
+        "staff": [
+          {
+            "id": "värd-ysr94x",
+            "role": "värd",
+            "poseName": "poseWalk",
+            "taskType": null,
+            "targetGuestId": null,
+            "moving": true,
+            "yaw": 5.866911205784532
+          },
+          {
+            "id": "servitör-hdptum",
+            "role": "servitör",
+            "poseName": "poseWalk",
+            "taskType": null,
+            "targetGuestId": null,
+            "moving": true,
+            "yaw": 16.061237028440445
+          },
+          {
+            "id": "kock-r4qzgf",
+            "role": "kock",
+            "poseName": "poseWalk",
+            "taskType": null,
+            "targetGuestId": null,
+            "moving": true,
+            "yaw": 3.0532266067724567
+          }
+        ]
+      },
+      "pass": true,
+      "passReason": "poseCarry=87 (krav >0); poseGreet=0 (endast observation, se header §1)"
+    },
+    {
+      "business": "kvarterskrogen",
+      "samples": 128,
+      "totals": {
+        "poseWalk": 64,
+        "poseIdle": 248,
+        "poseGreet": 0,
+        "poseCarry": 72
+      },
+      "perTask": {
+        "(none)": {
+          "poseWalk": 14,
+          "poseIdle": 2,
+          "poseGreet": 0,
+          "poseCarry": 0
+        },
+        "clean": {
+          "poseWalk": 11,
+          "poseIdle": 0,
+          "poseGreet": 0,
+          "poseCarry": 0
+        },
+        "clear": {
+          "poseWalk": 0,
+          "poseIdle": 0,
+          "poseGreet": 0,
+          "poseCarry": 72
+        },
+        "order": {
+          "poseWalk": 16,
+          "poseIdle": 146,
+          "poseGreet": 0,
+          "poseCarry": 0
+        },
+        "checkback": {
+          "poseWalk": 9,
+          "poseIdle": 96,
+          "poseGreet": 0,
+          "poseCarry": 0
+        },
+        "misEnPlace": {
+          "poseWalk": 8,
+          "poseIdle": 1,
+          "poseGreet": 0,
+          "poseCarry": 0
+        },
+        "restock": {
+          "poseWalk": 5,
+          "poseIdle": 3,
+          "poseGreet": 0,
+          "poseCarry": 0
+        },
+        "dish": {
+          "poseWalk": 1,
+          "poseIdle": 0,
+          "poseGreet": 0,
+          "poseCarry": 0
+        }
+      },
+      "perStaff": {
+        "värd-z7stex": {
+          "role": "värd",
+          "counts": {
+            "poseWalk": 17,
+            "poseIdle": 87,
+            "poseGreet": 0,
+            "poseCarry": 24
+          }
+        },
+        "servitör-f8rfay": {
+          "role": "servitör",
+          "counts": {
+            "poseWalk": 27,
+            "poseIdle": 77,
+            "poseGreet": 0,
+            "poseCarry": 24
+          }
+        },
+        "kock-6fr025": {
+          "role": "kock",
+          "counts": {
+            "poseWalk": 20,
+            "poseIdle": 84,
+            "poseGreet": 0,
+            "poseCarry": 24
+          }
+        }
+      },
+      "lastSnap": {
+        "simTime": 324.59999999999013,
+        "staff": [
+          {
+            "id": "värd-z7stex",
+            "role": "värd",
+            "poseName": "poseIdle",
+            "taskType": "checkback",
+            "targetGuestId": "gst-24",
+            "moving": false,
+            "yaw": -11.66488245685377
+          },
+          {
+            "id": "servitör-f8rfay",
+            "role": "servitör",
+            "poseName": "poseIdle",
+            "taskType": "checkback",
+            "targetGuestId": "gst-24",
+            "moving": false,
+            "yaw": 18.72614886433669
+          },
+          {
+            "id": "kock-6fr025",
+            "role": "kock",
+            "poseName": "poseIdle",
+            "taskType": "checkback",
+            "targetGuestId": "gst-24",
+            "moving": false,
+            "yaw": -19.0080691805865
+          }
+        ]
+      },
+      "pass": true,
+      "passReason": "poseCarry=72 (krav >0); poseGreet=0 (endast observation, se header §1)"
+    }
+  ]
+}

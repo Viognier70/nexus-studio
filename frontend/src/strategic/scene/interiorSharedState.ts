@@ -40,6 +40,25 @@ export const staffPositionsRef: { current: Map<string, SharedStaffPos> } = {
   current: new Map()
 };
 
+// ORDER 198 — presentationslagrets valda pose per staff-medlem, samma
+// per-frame-uppdatering som staffPositionsRef. Innehåller poseNamn,
+// task-typ som drev valet, och yaw (både group.rotation.y och
+// poseGreet:s relativa targetYaw). Verify-skriptet läser detta för
+// att bevisa att poseGreet och poseCarry faktiskt väljs under
+// service — utan att skriptet behöver introspektera rig-vinklar.
+export interface SharedStaffPose {
+  poseName: 'poseWalk' | 'poseIdle' | 'poseGreet' | 'poseCarry';
+  taskType: string | null;
+  targetGuestId: string | null;
+  moving: boolean;
+  yaw: number;
+  greetYaw: number | null;
+}
+
+export const staffPosesRef: { current: Map<string, SharedStaffPose> } = {
+  current: new Map()
+};
+
 export type XZ = [number, number];
 
 /**
@@ -102,4 +121,9 @@ if (import.meta.env.DEV && typeof window !== 'undefined') {
   // staff.position är i lokal building-frame (kring origin) och kan
   // INTE användas för väggclamp-verifiering.
   (window as unknown as { __nxStaffPositions?: unknown }).__nxStaffPositions = staffPositionsRef;
+  // ORDER 198 — dev-only window-handle till render-lagrets pose-val
+  // per staff. Verify-skriptet räknar hur ofta varje pose väljs
+  // under service och bekräftar att poseGreet + poseCarry faktiskt
+  // eldar när task-pipelinen levererar greet-/carry-tasks.
+  (window as unknown as { __nxStaffPoses?: unknown }).__nxStaffPoses = staffPosesRef;
 }
