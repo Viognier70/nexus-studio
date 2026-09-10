@@ -245,6 +245,12 @@ function interpAngle(from: number, to: number, k: number): number {
   return from + d * Math.max(0, Math.min(1, k));
 }
 
+// ORDER 202 §2 — DEV-only-warnings för dolt data-fel. En gång per
+// (klass, roll) så konsolen inte spammar. Nyckeln inkluderar roll så
+// vi ser vilken specifik puck som hamnar utanför OBB eller saknar home.
+const TARGET_OUTSIDE_OBB_WARNED = new Set<string>();
+const NO_CONTRACT_HOME_WARNED = new Set<string>();
+
 export function InteriorStaff() {
   // ORDER 174 — sim.businessClass in i interiorLayout så kontrakt-seats
   // vinner över restaurangens 16-stols-default för alla klasser.
@@ -377,9 +383,31 @@ export function InteriorStaff() {
       // relaterade positioner tills FoodtruckScene skriver en mer
       // meningsfull placering (eller inte, per VO-beslut om att inte
       // uppfinna platser).
+      // ORDER 202 §2 — INGEN fallback till layout-räknade `stations`.
+      // Fallbacken (`stations[member.role] ?? stations['servitör']`) var
+      // restaurangens `computeStations(layout)` som ölkrogen INTE ska
+      // ärva. VO-direktiv 2026-09-10 kl. 14:00: "En fallback som döljer
+      // att data saknas är samma mönster som INTERIOR.chair.seatY."
+      // Om `contractHome` är null (klass-STATION_MAP saknar rollen, eller
+      // rummet har ingen station med det id:et) → skippa medlemmen med
+      // DEV-warning. Fyra tidigare läckor har levt på detta mönster
+      // (staffHomes wine-bar-koords i ölkrogen, walkPathToSeat gissad,
+      // sitYaw default 0, chair-seatY hardcodad 0.45).
       const contractHome = contractStations?.[member.role] ?? null;
-      const home: XZ =
-        contractHome ?? stations[member.role] ?? stations['servitör'];
+      if (!contractHome) {
+        if (
+          import.meta.env.DEV &&
+          !NO_CONTRACT_HOME_WARNED.has(sim.businessClass + ':' + member.role)
+        ) {
+          NO_CONTRACT_HOME_WARNED.add(sim.businessClass + ':' + member.role);
+          console.warn(
+            `[ORDER 202 §2] contractHome saknas för ${sim.businessClass}/${member.role} (member.id=${member.id}). ` +
+            `Ingen fallback — pucken renderas inte. Fixa STATION_MAP i businessRoom.ts eller lägg till en station i rumsfilen.`
+          );
+        }
+        continue;
+      }
+      const home: XZ = contractHome;
 
       let pos = positionsRef.current.get(member.id);
       if (!pos) {
@@ -457,21 +485,33 @@ export function InteriorStaff() {
         }
       }
 
-      // ORDER 196 — hindra personal från att gå ut genom väggen.
-      // Guest-render-position kan ligga utanför OBB (arriving/waiting-
-      // gäst). När den gör det clampas staff-target till entrén så
-      // servitören möter gästen vid dörren i stället för att gå genom
-      // väggen. Guest-fallet fick motsvarande fix i ORDER 186 fynd 4
-      // (InteriorGuests.tsx:551-568, uppdaterad i ORDER 200 fynd 2 till
-      // ren entrance-target utan jitter). Marginal 1.02 samma som gäst-
-      // waypoint:en; symmetriskt beteende.
+      // ORDER 202 §2 — väggclamp BORTTAGEN. Före ORDER 202:
+      //   if (targetDistFromCentre > halfW * 1.02) target = entrance
+      // Motivering (ORDER 196): "hindra personal från att gå ut genom
+      // väggen". Rot-problemet ORDER 196 löste var att sim.guest.position
+      // (lokal frame) gav huge targetDist när jämförd mot layout.centre
+      // (värld) → clamp fyrade ALLTID → staff klumpade på entrance.
+      // ORDER 200 fixade det genom att läsa guest RENDER-position (värld);
+      // efter det är clampen strukturellt onödig — värd är låst vid
+      // entrance-branchen, övriga roller har home inuti OBB, task-guest
+      // render-position går genom entrance-waypoint. Om target ändå
+      // hamnar utanför OBB är det ett fynd (någon data-väg är fel), inte
+      // något att gömma. VO-direktiv 2026-09-10 kl. 14:00: "En fallback
+      // som döljer att data saknas är samma mönster som INTERIOR.chair.
+      // seatY." Utan clampen: DEV-warning en gång per klass+roll om target
+      // faktiskt hamnar utanför OBB, så VO ser i konsolen om det inträffar.
       const halfW = layout.width / 2;
-      const dxTargetFromCentre = targetX - layout.centre[0];
-      const dzTargetFromCentre = targetZ - layout.centre[1];
-      const targetDistFromCentre = Math.hypot(dxTargetFromCentre, dzTargetFromCentre);
-      if (targetDistFromCentre > halfW * 1.02) {
-        targetX = entranceXZ[0];
-        targetZ = entranceXZ[1];
+      if (
+        import.meta.env.DEV &&
+        Math.hypot(targetX - layout.centre[0], targetZ - layout.centre[1]) > halfW * 1.02 &&
+        !TARGET_OUTSIDE_OBB_WARNED.has(sim.businessClass + ':' + member.role)
+      ) {
+        TARGET_OUTSIDE_OBB_WARNED.add(sim.businessClass + ':' + member.role);
+        console.warn(
+          `[ORDER 202 §2] staff target utanför OBB för ${sim.businessClass}/${member.role} (member.id=${member.id}). ` +
+          `target=(${targetX.toFixed(1)}, ${targetZ.toFixed(1)}) centre=(${layout.centre[0].toFixed(1)}, ${layout.centre[1].toFixed(1)}) halfW=${halfW.toFixed(2)}. ` +
+          `Ingen clamp — undersök varför data-vägen (contractHome/taskGuest) gav utanför-OBB-target.`
+        );
       }
 
       // Ease toward target at walking pace (boosted during prep).

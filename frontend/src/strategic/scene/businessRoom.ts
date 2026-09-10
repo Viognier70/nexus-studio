@@ -448,13 +448,25 @@ export function resolveWorldPositions(room: BusinessRoom): any {
 
 type StationTarget = string | '__entrance' | null;
 
+// ORDER 202 §2 — ölkrogens mappning skiljer nu servitör från lärling.
+// Före: servitör OCH lärling → 'runner' (samma station, båda klumpade
+// vid pass-luckan). VO-observation 2026-09-10 13:30: "Ingen personal
+// syns i rummet". En del av orsaken: två roller på identisk station läser
+// som en figur. Ölkrogen har fyra distincta stations i brewpubRoom.ts
+// (barkeep, brewer, cook, runner) — koden matchade tre av dem. Nu:
+//   värd → __entrance (rummets entré, greet-plats)
+//   servitör → 'barkeep' (bakom disken, tappar öl — läsbar bar-figur)
+//   kock → 'brewer' (bryggeriets L-hörn)
+//   lärling → 'runner' (pass-luckan, bär ut till bord)
+// Alla fyra distincta. 'cook'-stationen (spis-hörnet) står tom eftersom
+// ölkrogens sim-team har bara fyra roller; framtida kock-2 kan mappas dit.
 const STATION_MAP: Record<RoomClass, Record<StaffRole, StationTarget>> = {
-  kvarterskrogen: { värd: 'host',       servitör: 'server', kock: 'chef',   lärling: 'server' },
-  ölkrogen:       { värd: '__entrance', servitör: 'runner', kock: 'brewer', lärling: 'runner' },
-  vinbaren:       { värd: '__entrance', servitör: 'runner', kock: 'cook',   lärling: 'runner' },
-  gästgiveriet:   { värd: 'host',       servitör: 'hallA',  kock: 'chef',   lärling: null },
-  foodtrucken:    { värd: null,         servitör: 'window', kock: 'cook',   lärling: null },
-  nattklubben:    { värd: 'door',       servitör: 'floor',  kock: null,     lärling: null }
+  kvarterskrogen: { värd: 'host',       servitör: 'server',  kock: 'chef',   lärling: 'server' },
+  ölkrogen:       { värd: '__entrance', servitör: 'barkeep', kock: 'brewer', lärling: 'runner' },
+  vinbaren:       { värd: '__entrance', servitör: 'runner',  kock: 'cook',   lärling: 'runner' },
+  gästgiveriet:   { värd: 'host',       servitör: 'hallA',   kock: 'chef',   lärling: null },
+  foodtrucken:    { värd: null,         servitör: 'window',  kock: 'cook',   lärling: null },
+  nattklubben:    { värd: 'door',       servitör: 'floor',   kock: null,     lärling: null }
 };
 
 /**
