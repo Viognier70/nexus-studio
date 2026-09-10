@@ -237,6 +237,17 @@ Every ORDER number that appears anywhere in the repository — filename, documen
   - ORDER 049 §3.1 — knowledge-generation prompt rewritten for English output; `scenario_chef` used verbatim (§3, phronesis short-circuit) unchanged in scope but now aligned with target language.
 - **Not affected:** code identifiers, commit prefixes, documentation in `documentation/` (English already), file paths.
 
+**Observation 7 — Verifieringens VAR-fråga (2026-09-10).** Sjutton fall i följd där en agent-rapport beskrev en fil, siffra eller commit som verklig; VO öppnade beskrivningen och hittade ingenting. Utredning visade att i majoriteten av fallen **stämde rapporten** — filen fanns, siffran fanns, commiten fanns. Men de fanns i **agentens arbetskopia på en annan gren** än den VO hade uppdaterad, eller i agentens `os.tmpdir()`-utdata från en verifieringskörning som VO inte hade tillgång till.
+
+- **Rot-orsak:** Commit-verifiering-avsnittet i `CLAUDE.md` (§156-165) kräver att fil/commit *finns i historiken* — inte VAR i historiken. `git log --oneline -3` visar de senaste commits på nuvarande HEAD utan att säga vilken gren det är; en rapport som skriver "finns i `frontend/reports/orderXXX/`" är sann på grenen `order-XXX` men falsk på main om grenen inte är mergad.
+- **Rapporterna var sanna men obestämda.** Agent och VO antog samma vy när vyerna var olika: agent på arbetsgren, VO på main; agent på tmpdir-utdata, VO på committad rapport.
+- **Regel bindande från 2026-09-10:** varje rapport-artefakt (fil, JSON-tal, skärmdump, commit) ska ange **både sökväg och lokation**: `frontend/reports/orderXXX/foo.png` **@ `order-XXX-<slug>`** (eller **@ `main`** om mergat, eller **@ `$TMPDIR/nexus-orderXXX/`** om test-utdata). Utan lokation-kvalifikationen räknas artefakten inte som verifierbar för VO.
+- **Rapporteringsplikt utökad:** i tillägg till `git log --oneline -3` efter varje commit ska rapporten också visa `git branch --show-current`, så gren-kontexten är läsbar. Vid arbete på gren som inte är mergad: rapporten säger uttryckligen "på gren X, ännu inte mergad till main".
+- **Motiverande fall:**
+  - ORDER 194 `seated-guest-closeup.png` rapporterades "committad till main" — sant efter merge `4b0c3bd`, obestämt innan.
+  - ORDER 196 `staff-distance-samples.json` finns 2026-09-10 kl. skrivandet av denna rad @ `order-196-staff-inside-walls`, inte @ main.
+  - Skulle ett hypotetiskt ORDER 198 verifieringsutdata "finnas" @ `$TMPDIR/nexus-order198/` är det per definition osynligt för VO och ska rapporteras som "existerar lokalt hos agent, inte i git".
+
 ## 5. Maintenance
 
 - New ORDER: reserve the next number in this registry with title, date and status *before* the order text is written. Update to "Own document" when the file lands.
