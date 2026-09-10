@@ -33,7 +33,7 @@ import { GRAY_BOX_CAMERA } from '../content/grythyttan';
 import { useSimState } from '../simulation/SimulationProvider';
 import { COVERS_PER_MEMBER } from '../simulation/team';
 import type { StaffRole, TeamMember } from '../types';
-import { staffPositionsRef, staffPosesRef, businessRoomRef } from './interiorSharedState';
+import { staffPositionsRef, staffPosesRef, businessRoomRef, guestPositionsRef } from './interiorSharedState';
 import type { SharedStaffPose } from './interiorSharedState';
 import type { TaskType } from '../types';
 import { derivePipCarriers } from '../ui/RoomCardPanel/guestPatterns';
@@ -411,48 +411,60 @@ export function InteriorStaff() {
       let targetX = home[0] + jitterX + pullDX * strainFactor * 0.5;
       let targetZ = home[1] + jitterZ + pullDZ * strainFactor * 0.5;
 
-      // ORDER 186 fynd 5 — override target när task-pipelinen har mening.
-      // (a) Värd: står vid entré när ingen aktiv task-riktning finns —
-      // rollens läsbara plats i rummet. Task-driven override (t.ex. greet
-      // en gäst utanför) tar över när staff.targetGuestId är satt.
-      // (b) Servitör: går mot sin targetGuest när task pekar ut en.
-      // Ingen jitter, ingen load-pull när task-target aktivt — puck går
-      // rakt mot uppgiften så rummet läser som "servitören är på väg
-      // dit". Utan detta driftar puckar planlöst runt home-station
-      // medan sim kör task-pipelinen osynligt (Vision Owner fynd 5,
-      // 2026-09-07).
+      // ORDER 200 fynd 3 — värd stannar ALLTID vid entrén, oavsett task.
+      //
+      // Före ORDER 200: värd hade `entrance + jitter` som default men om
+      // sim satte `staff.targetGuestId` (t.ex. greet på arriving guest)
+      // lämnade värden entrén och gick mot gästen. VO-direktiv 2026-09-10:
+      // "värden ska stanna vid entrén, inte gå till kön. Servera kön är
+      // en handling, inte en hemplats." Värdens läsbarhet i rummet ÄR att
+      // hen står vid dörren; att greeta är en handling som utförs DÄRIFRÅN,
+      // inte genom att lämna posten. Andra roller (servitör/kock/lärling)
+      // rör sig till gästen som förr, men task-target hämtas nu från
+      // render-lagret (se nedan).
       const bridgedStaffId = teamToStaff.get(member.id) ?? null;
       const bridgedStaff = bridgedStaffId ? staffById.get(bridgedStaffId) ?? null : null;
       const taskGuest = bridgedStaff?.targetGuestId
         ? guestById.get(bridgedStaff.targetGuestId) ?? null
         : null;
-      if (taskGuest) {
-        // Task-driven target (gäller alla roller, inkl. värd som greet:ar).
-        targetX = taskGuest.position.x;
-        targetZ = taskGuest.position.z;
-      } else if (member.role === 'värd') {
-        // Ingen task: värden står vid entrén med lätt jitter (inte load-pull).
+
+      if (member.role === 'värd') {
+        // Värd: fast vid entrén, lätt jitter så figuren inte fryses.
+        // Ingen task-override — sim:s eventuella targetGuestId ignoreras.
         targetX = entranceXZ[0] + jitterX * 0.4;
         targetZ = entranceXZ[1] + jitterZ * 0.4;
+      } else if (taskGuest) {
+        // ORDER 200 fynd 3 — läs gästens RENDER-position (värld-XZ) i
+        // stället för `taskGuest.position` (LOKAL frame ~ origin per
+        // content/layout.ts:INTERIOR). Innan ORDER 200 gav sim-koordinater
+        // (2, -1.8) `targetDistFromCentre = 33 m` när jämförd mot
+        // layout.centre = (31.6, -16.7) → ORDER 196:s clamp tryckte
+        // ALLA task-driftade staff till entrance-XZ, oavsett gästens
+        // faktiska render-position (som ligger inom OBB). Diagnostiken
+        // 2026-09-10 visade servitör + kock klumpade på entrance-XZ =
+        // (32.4, -10.1) i stället för sina stationer (runner 28.5,-13.5;
+        // brewer 26.1,-20.0). Fynd 3.
+        const guestRender = guestPositionsRef.current.get(bridgedStaff!.targetGuestId!);
+        if (guestRender) {
+          targetX = guestRender.x;
+          targetZ = guestRender.z;
+        } else {
+          // Fallback när render-position ännu inte publicerad (första
+          // frames före InteriorGuests hunnit skriva): stanna vid home.
+          // Vi UNDVIKER sim.guest.position eftersom det är lokala coords
+          // och ORDER 196:s clamp skulle skjuta target till entrance.
+          // Home är alltid en giltig värld-XZ.
+        }
       }
 
       // ORDER 196 — hindra personal från att gå ut genom väggen.
-      // taskGuest.position kan ligga utanför byggnaden (arriving guest
-      // vid arrival-slot 6 m söder om entrén, waiting-slot 2,5–5,2 m
-      // utanför entrén). Utan clamp går servitören/värden rakt genom
-      // OBB-väggen mot uppgiften — VO-observation 2026-09-09
-      // "personalen rör sig utanför rummets väggar trots ORDER 193".
-      // Guest-fallet fick motsvarande fix i ORDER 186 fynd 4
-      // (InteriorGuests.tsx:461-508); ingen sådan skydd för staff
-      // fanns förrän nu.
-      //
-      // Mönster: byggnadens footprint approximeras med OBB half-width
-      // (samma som guest-waypoint:en), staff-target clampas till
-      // entrance-XZ om det ligger utanför `halfW * 1.02` från centrum.
-      // 1.02-marginalen matchar guest-waypoint:en så beteendet är
-      // symmetriskt: gäster kliver INTE ut, personal kliver INTE ut.
-      // Effekt: värd greetar vid dörren, servitör möter arriving guest
-      // vid entrén i stället för på gatan.
+      // Guest-render-position kan ligga utanför OBB (arriving/waiting-
+      // gäst). När den gör det clampas staff-target till entrén så
+      // servitören möter gästen vid dörren i stället för att gå genom
+      // väggen. Guest-fallet fick motsvarande fix i ORDER 186 fynd 4
+      // (InteriorGuests.tsx:551-568, uppdaterad i ORDER 200 fynd 2 till
+      // ren entrance-target utan jitter). Marginal 1.02 samma som gäst-
+      // waypoint:en; symmetriskt beteende.
       const halfW = layout.width / 2;
       const dxTargetFromCentre = targetX - layout.centre[0];
       const dzTargetFromCentre = targetZ - layout.centre[1];
@@ -575,12 +587,16 @@ export function InteriorStaff() {
           distToTargetSq <= GREET_ARRIVAL_THRESHOLD_M * GREET_ARRIVAL_THRESHOLD_M;
 
         // Beräkna yaw mot gästen för greet-posen (samma frame som
-        // pose väljs; ingen memorering behövs eftersom `taskGuest`
-        // följer sim och `pos.cx/cz` följer render-lagret).
+        // pose väljs). ORDER 200 fynd 3 — läs render-position, INTE
+        // sim.guest.position (lokal frame). Fallback: nuvarande walkYaw.
         let guestYaw = pos.walkYaw;
-        if (taskGuest) {
-          const gdx = taskGuest.position.x - pos.cx;
-          const gdz = taskGuest.position.z - pos.cz;
+        const taskGuestId = bridgedStaff?.targetGuestId ?? null;
+        const taskGuestRender = taskGuestId
+          ? guestPositionsRef.current.get(taskGuestId)
+          : null;
+        if (taskGuestRender) {
+          const gdx = taskGuestRender.x - pos.cx;
+          const gdz = taskGuestRender.z - pos.cz;
           if (gdx * gdx + gdz * gdz > 1e-6) {
             guestYaw = Math.atan2(gdx, gdz);
           }

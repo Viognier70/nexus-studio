@@ -59,6 +59,27 @@ export const staffPosesRef: { current: Map<string, SharedStaffPose> } = {
   current: new Map()
 };
 
+// ORDER 200 fynd 3 — gäst-render-positioner i värld-XZ, per guest.id.
+// InteriorGuests skriver denna varje frame (samma pattern som
+// staffPositionsRef); InteriorStaff läser den för att peka staff-target
+// mot gästens RENDER-position i stället för sim.guest.position — sim
+// använder ett LOKALT frame (INTERIOR-konstanter kring origin, se
+// content/layout.ts) medan render lever i värld-frame. Före ORDER 200
+// jämförde ORDER 196:s target-clamp `sim.guest.position` (lokal, ~0,0)
+// mot `layout.centre` (värld, ~32,-17) och gav `targetDistFromCentre ≈
+// 33m` för varje task-styrd staff → ALLTID > `halfW * 1.02` → clamp
+// tryckte ALLA task-driftade staff till entrén, oavsett var gästen
+// faktiskt var. Diagnostiken 2026-09-10 visade värd + servitör + kock
+// alla klumpade på entrance-XZ. Fynd 3.
+export interface SharedGuestPos {
+  x: number;
+  z: number;
+}
+
+export const guestPositionsRef: { current: Map<string, SharedGuestPos> } = {
+  current: new Map()
+};
+
 export type XZ = [number, number];
 
 /**
@@ -87,6 +108,20 @@ export interface SharedBusinessRoom {
    * mot bordet — Vision Owner observation 2026-09-07 fynd 2.
    */
   seatFacings: number[];
+  /**
+   * ORDER 200 fynd 1 — sitshöjd (Y-mätt från golvet till stolsits/stols-
+   * top) per sitsplats. Chair = 0.45 m, bar stool = 0.75 m, lounge-soffa
+   * kan avvika (se `wineBarRoom.LOUNGE_SEAT_H`). Innan ORDER 200 hade
+   * InteriorGuests en hardcodad konstant `SEAT_SIT_HEIGHT_M = 0.45` för
+   * ALLA sittplatser — resultat: gäster på ölkrogens 8 barstolar (index
+   * 12-19) satt 30 cm under stolsäten, gäster på ölkrogens 12 träbord-
+   * stolar satt rätt. Placeraren måste läsa höjden per seat, inte anta
+   * en. `RoomSeat.seatHeight` fanns redan i rumsfilerna (sattes i alla
+   * sex rum sedan augusti) men vägen från rumsfilens `RoomSeat.seatHeight`
+   * → `SharedBusinessRoom` → InteriorGuests saknades. Nionde till
+   * sextonde fallet av "designen levererade i kontraktet, koden gissade".
+   */
+  seatHeights: number[];
   standing: XZ[];
   stations: XZ[];
   entrance: XZ;
