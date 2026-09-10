@@ -1,0 +1,163 @@
+{
+  "cameraPreset": "myBusiness",
+  "cameraPresetTargetDistanceM": 24,
+  "cameraPresetPitchRad": 0.8726646259971648,
+  "hooksAvailable": {
+    "wallSurface": true,
+    "readPixel": true,
+    "project": true
+  },
+  "channelDiffThreshold": 20,
+  "neighbourWallMeshVertices": {
+    "matchTag": "userData.osmBuildingWall (closest)",
+    "found": true,
+    "neighbourId": "w869907977",
+    "vertexCount": 60,
+    "yHistogram": [
+      {
+        "yMinM": 0,
+        "yMaxM": 0.1,
+        "count": 21
+      },
+      {
+        "yMinM": 0.1,
+        "yMaxM": 5.5,
+        "count": 30
+      },
+      {
+        "yMinM": 5.5,
+        "yMaxM": 20,
+        "count": 0
+      }
+    ],
+    "worldAABB": {
+      "xMinM": 47.29999923706055,
+      "xMaxM": 61.31999969482422,
+      "yMinM": -7.494838155486076e-16,
+      "yMaxM": 5.444958209991455,
+      "zMinM": -22.549999237060547,
+      "zMaxM": 12.239999771118164
+    },
+    "material": {
+      "color": "#b19d83",
+      "opacity": 1,
+      "transparent": false,
+      "depthWrite": true,
+      "side": "front"
+    }
+  },
+  "playerBusinessWallMeshVertices": {
+    "matchTag": "userData.playerBusinessWall",
+    "found": true,
+    "vertexCount": 16,
+    "yHistogram": [
+      {
+        "yMinM": 0,
+        "yMaxM": 0.1,
+        "count": 8
+      },
+      {
+        "yMinM": 0.1,
+        "yMaxM": 5.5,
+        "count": 0
+      },
+      {
+        "yMinM": 5.5,
+        "yMaxM": 20,
+        "count": 8
+      }
+    ],
+    "worldAABB": {
+      "xMinM": 25.709999084472656,
+      "xMaxM": 37.4900016784668,
+      "yMinM": 0,
+      "yMaxM": 6.5,
+      "zMinM": -24.549999237060547,
+      "zMaxM": -8.920000076293945
+    },
+    "material": {
+      "color": "#7c2e24",
+      "opacity": 0,
+      "transparent": true,
+      "depthWrite": false,
+      "side": "front"
+    }
+  },
+  "neighbourPlinth": {
+    "found": true,
+    "material": {
+      "color": "#8a8478",
+      "opacity": 1,
+      "transparent": false,
+      "depthWrite": true,
+      "side": "front"
+    },
+    "worldAABB": {
+      "xMinM": 47.711566732209505,
+      "xMaxM": 63.431766601123826,
+      "yMinM": 0,
+      "yMaxM": 0.42,
+      "zMinM": -22.659474101438978,
+      "zMaxM": 12.239474101438976
+    }
+  },
+  "playerPlinth": {
+    "found": true,
+    "material": {
+      "color": "#8a8478",
+      "opacity": 0,
+      "transparent": true,
+      "depthWrite": false,
+      "side": "front"
+    },
+    "worldAABB": {
+      "xMinM": 25.651141636227464,
+      "xMaxM": 37.54385836377254,
+      "yMinM": 0,
+      "yMaxM": 0.42,
+      "zMinM": -24.608906294130286,
+      "zMaxM": -8.866093705869716
+    }
+  },
+  "distanceToNeighbourM": 25.49196847341886,
+  "cameraWorldPos": [
+    37.60751885009613,
+    18.385066634855473,
+    -2.4908817269450605
+  ],
+  "groundYScreenPointNeighbour": {
+    "xCss": 2827.288616857726,
+    "yCss": 2235.153138855257,
+    "behindCamera": false
+  },
+  "groundYScreenPointPlayerBusiness": {
+    "xCss": 960.7402047602549,
+    "yCss": 537.9607244367527,
+    "behindCamera": false
+  },
+  "groundYPixelSampleNeighbour": {
+    "r": 119,
+    "g": 103,
+    "b": 87,
+    "samples": 9
+  },
+  "groundYPixelSamplePlayerBusiness": {
+    "r": 48,
+    "g": 43,
+    "b": 40,
+    "samples": 9
+  },
+  "pixelChannelDiffs": {
+    "dR": 71,
+    "dG": 60,
+    "dB": 47
+  },
+  "pixelChannelExceedsThreshold": true,
+  "neighbourHasMoreGroundVertices": true,
+  "neighbourWallIsOpaque": true,
+  "playerWallIsInvisible": true,
+  "neighbourPlinthIsOpaque": true,
+  "playerPlinthIsInvisible": true,
+  "finding": "neighbour ExtrudeGeometry har 21 vertices vid ground-Y-bandet mot PlayerBusiness sideWallGeometry 8; neighbour wall är opak (opacity 1, transparent false) medan PlayerBusiness wall är osynlig (opacity 0, transparent true) från myBusiness-preset; sockeln på grannen är opak (1) medan PlayerBusiness sockel följer wallOpacity till (0) per ORDER 159 §DoD 2; ground-Y pixelprov skiljer sig (dR 71, dG 60, dB 47 — över tröskeln 20 på minst en kanal)",
+  "recommendationFor23": "Minsta ändring: koppla loss wall-opacity från roof-opacity. Låt roofen fortsätta fejda (interiören behöver kunna visas), men behåll wall + plinth opaka som grannarna. ORDER 042 §3.2 tint-buggen gällde ExtrudeGeometry-cap (top-cap), inte sideWallGeometry — sideWallGeometry har ingen cap, så wall-materialet kan förbli opakt utan att återintroducera tint-buggen. En ExtrudeGeometry med bottom-cap är alternativ, men löser inte att den fejdar bort vid dollhouse-vy — fade-kopplingen är den strukturella orsaken. Följdorder implementerar; denna order är utredning."
+}
