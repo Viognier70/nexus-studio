@@ -195,6 +195,22 @@ export function InteriorStaff() {
 
   const stations = useMemo(() => (layout ? computeStations(layout) : null), [layout]);
 
+  // ORDER 196 — dev-only window-handle för layout-bounds så verify-
+  // skriptet kan läsa `halfW * 1.02` mot samma tal som render-clampen
+  // (samma layout, samma OBB, samma marginal). Undviker att skriptet
+  // duplicerar konstanter — se ORDER 128:s princip om att replikat
+  // driver isär.
+  useEffect(() => {
+    if (import.meta.env.DEV && typeof window !== 'undefined' && layout) {
+      (window as unknown as { __nxLayoutBounds?: unknown }).__nxLayoutBounds = {
+        centre: layout.centre,
+        width: layout.width,
+        depth: layout.depth,
+        entrance: layout.entrance
+      };
+    }
+  }, [layout]);
+
   useFrame((_, delta) => {
     if (!groupRef.current || !layout || !stations) return;
 
@@ -334,6 +350,32 @@ export function InteriorStaff() {
         // Ingen task: värden står vid entrén med lätt jitter (inte load-pull).
         targetX = entranceXZ[0] + jitterX * 0.4;
         targetZ = entranceXZ[1] + jitterZ * 0.4;
+      }
+
+      // ORDER 196 — hindra personal från att gå ut genom väggen.
+      // taskGuest.position kan ligga utanför byggnaden (arriving guest
+      // vid arrival-slot 6 m söder om entrén, waiting-slot 2,5–5,2 m
+      // utanför entrén). Utan clamp går servitören/värden rakt genom
+      // OBB-väggen mot uppgiften — VO-observation 2026-09-09
+      // "personalen rör sig utanför rummets väggar trots ORDER 193".
+      // Guest-fallet fick motsvarande fix i ORDER 186 fynd 4
+      // (InteriorGuests.tsx:461-508); ingen sådan skydd för staff
+      // fanns förrän nu.
+      //
+      // Mönster: byggnadens footprint approximeras med OBB half-width
+      // (samma som guest-waypoint:en), staff-target clampas till
+      // entrance-XZ om det ligger utanför `halfW * 1.02` från centrum.
+      // 1.02-marginalen matchar guest-waypoint:en så beteendet är
+      // symmetriskt: gäster kliver INTE ut, personal kliver INTE ut.
+      // Effekt: värd greetar vid dörren, servitör möter arriving guest
+      // vid entrén i stället för på gatan.
+      const halfW = layout.width / 2;
+      const dxTargetFromCentre = targetX - layout.centre[0];
+      const dzTargetFromCentre = targetZ - layout.centre[1];
+      const targetDistFromCentre = Math.hypot(dxTargetFromCentre, dzTargetFromCentre);
+      if (targetDistFromCentre > halfW * 1.02) {
+        targetX = entranceXZ[0];
+        targetZ = entranceXZ[1];
       }
 
       // Ease toward target at walking pace (boosted during prep).

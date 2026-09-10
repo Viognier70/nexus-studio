@@ -95,4 +95,11 @@ export const businessRoomRef: { current: SharedBusinessRoom | null } = {
 // place, så handle:t behöver aldrig skrivas igen.
 if (import.meta.env.DEV && typeof window !== 'undefined') {
   (window as unknown as { __nxBusinessRoomRef?: unknown }).__nxBusinessRoomRef = businessRoomRef;
+  // ORDER 196 — dev-only window-handle till render-lagrets staff-XZ
+  // (world-koordinater). InteriorStaff skriver dit varje frame; ORDER
+  // 196:s waypoint-clamp verifieras genom att läsa max distFromCentre
+  // över tid och jämföra mot layout.width/2 * 1.02. Sim-lagrets
+  // staff.position är i lokal building-frame (kring origin) och kan
+  // INTE användas för väggclamp-verifiering.
+  (window as unknown as { __nxStaffPositions?: unknown }).__nxStaffPositions = staffPositionsRef;
 }
