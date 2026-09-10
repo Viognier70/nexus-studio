@@ -83,9 +83,11 @@ export function RestaurantScene() {
       // Se BrewpubScene-kommentar för motivet.
       plinth: 0.11,
       standing: world.standing as [number, number][],
-      // ORDER 204 — restaurangens tre stations (host, server, chef) i
-      // deklarationsordning per restaurantRoom.ts staffStations-listan.
+      // ORDER 204/205 — restaurangens stations i deklarationsordning per
+      // restaurantRoom.ts staffStations-listan. Se BrewpubScene-kommentar.
       stations: world.staffStations as [number, number][],
+      stationIds: room.stations.map((s) => s.id),
+      stationFacings: room.stations.map((s) => s.facing + room.group.rotation.y),
       entrance: world.entrance as [number, number],
       waitingSpot: world.waitingSpot as [number, number],
       // ORDER 203 — restaurantRoom.resolveWorldPositions returnerar redan

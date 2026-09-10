@@ -250,6 +250,8 @@ function interpAngle(from: number, to: number, k: number): number {
 // vi ser vilken specifik puck som hamnar utanför OBB eller saknar home.
 const TARGET_OUTSIDE_OBB_WARNED = new Set<string>();
 const NO_CONTRACT_HOME_WARNED = new Set<string>();
+// ORDER 205 — provisorisk station-mappning-warning en gång per klass.
+const ROLE_MAPPING_PROVISIONAL_WARNED = new Set<string>();
 
 export function InteriorStaff() {
   // ORDER 174 — sim.businessClass in i interiorLayout så kontrakt-seats
@@ -298,20 +300,72 @@ export function InteriorStaff() {
   useFrame((_, delta) => {
     if (!groupRef.current || !layout || !stations) return;
 
-    // ORDER 204 — läs den flata `stations`-listan direkt från kontraktet
-    // (raw `staffStations` världs-XZ i deklarationsordning). Ingen roll-
-    // härledning via `stationFor`/STATION_MAP — Design (via VO 2026-09-10
-    // kl. 15:30) klargjorde att rummet levererar `stations` som garanterat
-    // fält och en index-baserad tilldelning per team-medlem räcker.
-    // Ölkrogen har 4 stations (barkeep, brewer, cook, runner); team har
-    // 3-4 medlemmar. Värden hanteras separat i entrance-branchen nedan
-    // (är alltid vid entrén oavsett), övriga roller får varsin station
-    // via `nonVärdIndex` (räknat i member-order).
+    // ORDER 204/205 — läs den flata `stations`-listan direkt från
+    // kontraktet (raw `staffStations` världs-XZ i deklarationsordning) +
+    // parallella `stationIds` och `stationFacings`. Ingen roll-mapping
+    // via STATION_MAP — Design (VO 2026-09-10 kl. 15:30): "det heter
+    // stations på kontraktet och staffStations på råobjektet; ölkrogen
+    // har fyra. Läs kontraktets garanterade fält på nytt och använd
+    // stations. Ingen härledning ur stationFor."
+    //
+    // ORDER 205 — home-formen: en punkt 0,6 m FRAMFÖR stationen, vänd
+    // MOT stationen (VO 2026-09-10 kl. 16:00). Utnyttjar station.facing
+    // som station-fasadens riktning: staff står 0,6 m in motsatt
+    // riktning från fasaden (dvs. bakom stationens front, på arbetssidan),
+    // och vänder sig mot fasadens riktning så figuren tittar in i
+    // arbetsområdet.
+    //
+    // ORDER 205 §rollmapping — Design har inte svarat på vilken
+    // station-id som hör till vilken sim-roll. Se
+    // `STATION_ROLE_MAPPING_QUESTION_2026-09-10.md`. Tills svar: värd
+    // hålls vid entrance (VO-arv 2026-09-10 tidigare), övriga roller
+    // fyller stations positionellt (nonVärdIndex) med DEV-warn.
     const roomChan = businessRoomRef.current;
-    const contractStations: readonly XZ[] | null =
-      roomChan && roomChan.businessClass === sim.businessClass
-        ? (roomChan.stations as readonly XZ[])
-        : null;
+    const contractHasStations =
+      roomChan != null &&
+      roomChan.businessClass === sim.businessClass &&
+      roomChan.stations.length > 0;
+    const contractStations: readonly XZ[] | null = contractHasStations
+      ? (roomChan!.stations as readonly XZ[])
+      : null;
+    const contractStationFacings: readonly number[] | null = contractHasStations
+      ? roomChan!.stationFacings
+      : null;
+    const contractStationIds: readonly string[] | null = contractHasStations
+      ? roomChan!.stationIds
+      : null;
+    if (
+      import.meta.env.DEV &&
+      contractHasStations &&
+      !ROLE_MAPPING_PROVISIONAL_WARNED.has(sim.businessClass)
+    ) {
+      ROLE_MAPPING_PROVISIONAL_WARNED.add(sim.businessClass);
+      console.warn(
+        `[ORDER 205] station-role-mapping ännu ej bekräftat av Design för "${sim.businessClass}" ` +
+        `(stations=[${contractStationIds!.join(', ')}]). Positionell fallback används per team-medlemsordning. ` +
+        `Se STATION_ROLE_MAPPING_QUESTION_2026-09-10.md.`
+      );
+    }
+
+    // ORDER 205 — station-relative home offset. 0,6 m i motsatt riktning
+    // till stationens facing (=arbetssidan), + rotation.y = facing så
+    // figuren vänder sig mot stationen. `facingVec = (sin(f), cos(f))`
+    // = riktningen stationens front pekar; staff-hem = station.xz -
+    // 0,6 * facingVec.
+    const STATION_STANDOFF_M = 0.6;
+    function stationHome(idx: number): { xz: XZ; facing: number } | null {
+      if (!contractStations || !contractStationFacings || idx >= contractStations.length) {
+        return null;
+      }
+      const [sx, sz] = contractStations[idx];
+      const facing = contractStationFacings[idx];
+      const fx = Math.sin(facing);
+      const fz = Math.cos(facing);
+      return {
+        xz: [sx - STATION_STANDOFF_M * fx, sz - STATION_STANDOFF_M * fz],
+        facing
+      };
+    }
 
     const dist = actualRef.current.distance;
     const visibility = 1 - smoothstep(
@@ -378,29 +432,19 @@ export function InteriorStaff() {
     const guestById = new Map(sim.guests.map((g) => [g.id, g]));
     const entranceXZ = (roomChan?.entrance ?? layout.entrance) as XZ;
 
-    // ORDER 204 — räkna nonVärd-index inuti loopen; värd hoppar över och
-    // skippar en position i station-indexeringen. Så första servitör/kock
-    // får stations[0], andra stations[1] etc. Deklarationsordning i
-    // rumsfilen bestämmer vilken station som får vilken puck.
+    // ORDER 204 + 205 — värd hanteras i entrance-branchen längre ner;
+    // övriga roller får `stations[nonVärdIndex]` från kontraktet,
+    // konverterat till en HEM-PUNKT via `stationHome(idx)` (0,6 m
+    // framför stationen, vänd mot den). Roll-mapping är PROVISORISK
+    // per team-medlemsordning tills Design svarar
+    // (STATION_ROLE_MAPPING_QUESTION_2026-09-10.md); DEV-warning fyras
+    // en gång per klass så VO ser att mappningen inte är bekräftad.
     let nonVärdIndex = 0;
     for (const member of sim.team.members) {
       seenIds.add(member.id);
 
-      // ORDER 204 — värd hanteras i entrance-branchen längre ner (target
-      // = entrance oavsett), så home behöver inte pekas ut för värd.
-      // För övriga roller: läs `stations[nonVärdIndex]` från kontraktet.
-      // Ingen roll-mapping via STATION_MAP — Design (via VO 2026-09-10
-      // kl. 15:30): "Det heter stations på businessRoom-kontraktet och
-      // staffStations på råobjektet. Ölkrogen har fyra. Läs kontraktets
-      // garanterade fält på nytt och använd stations. Ingen härledning
-      // ur stationFor."
-      //
-      // Ordning: brewpub `staffStations` deklarationsordning är
-      // [barkeep, brewer, cook, runner]. Team-medlemmar (efter värd)
-      // fyller stations i ordning: första nonVärd = barkeep, andra
-      // = brewer, tredje = cook, fjärde = runner. Deklarationsordningen
-      // i rumsfilen är därmed kontraktets ordning-som-mening.
       let home: XZ;
+      let homeStationFacing: number | null = null;
       if (member.role === 'värd') {
         // Placeholder — entrance-branchen nedan skriver över target.
         home = entranceXZ;
@@ -418,7 +462,8 @@ export function InteriorStaff() {
           }
           continue;
         }
-        if (nonVärdIndex >= contractStations.length) {
+        const stationHomeXZ = stationHome(nonVärdIndex);
+        if (!stationHomeXZ) {
           if (
             import.meta.env.DEV &&
             !NO_CONTRACT_HOME_WARNED.has(sim.businessClass + ':overflow')
@@ -432,9 +477,13 @@ export function InteriorStaff() {
           nonVärdIndex += 1;
           continue;
         }
-        home = contractStations[nonVärdIndex];
+        home = stationHomeXZ.xz;
+        homeStationFacing = stationHomeXZ.facing;
         nonVärdIndex += 1;
       }
+      // ORDER 205 — `homeStationFacing` konsumeras nedan i yaw-tilldelningen
+      // när staff är nära home + inaktiv (target = station-facing så
+      // figuren tittar in i arbetsområdet).
 
       let pos = positionsRef.current.get(member.id);
       if (!pos) {
@@ -727,7 +776,22 @@ export function InteriorStaff() {
         // vänder sig mot gästen medan blend rampar upp), annars
         // walkYaw. Interpolationssteget matchar greetBlend-rampen så
         // rörelsen är samordnad.
-        const targetYawRad = pos.greetBlend > 0 ? guestYaw : pos.walkYaw;
+        // ORDER 205 — när staff är vid sin station (nära home, ingen
+        // rörelse, ingen greet-blend), vänd mot stationen enligt
+        // `homeStationFacing`. Så figuren tittar in i arbetsområdet
+        // istället för att stå med walkYaw från senaste task-walk.
+        let targetYawRad: number;
+        if (pos.greetBlend > 0) {
+          targetYawRad = guestYaw;
+        } else if (
+          !movedThisFrame &&
+          homeStationFacing !== null &&
+          Math.hypot(pos.cx - home[0], pos.cz - home[1]) < 0.4
+        ) {
+          targetYawRad = homeStationFacing;
+        } else {
+          targetYawRad = pos.walkYaw;
+        }
         // Snabb ease på yaw: `1 - exp(-delta * k)` med k=6/s ger ~63%
         // konvergens per 0.17s — snappar snabbt utan att flimra.
         const yawEase = 1 - Math.exp(-delta * 6);

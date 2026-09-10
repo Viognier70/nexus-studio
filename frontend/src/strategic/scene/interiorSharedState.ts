@@ -140,7 +140,30 @@ export interface SharedBusinessRoom {
    */
   plinth: number;
   standing: XZ[];
+  /**
+   * ORDER 204/205 — rummets `staffStations` världs-XZ i deklarationsordning
+   * (samma index som `stationIds` och `stationFacings`). Ölkrogen: 4
+   * stations. InteriorStaff läser flata listan direkt utan roll-mappning
+   * via STATION_MAP — se ORDER 204-registerraden.
+   */
   stations: XZ[];
+  /**
+   * ORDER 205 — station-ids i samma ordning som `stations`. Behövs för
+   * (a) DEV-warnings som pekar på specifikt station-id, (b) framtida
+   * roll-mappning där Design kopplar en sim-roll till en station-id (se
+   * `STATION_ROLE_MAPPING_QUESTION_2026-09-10.md`). Idag används endast
+   * för warnings; roll-mappning kommer när Design svarar.
+   */
+  stationIds: string[];
+  /**
+   * ORDER 205 — station-facing per station i radianer (rotation.y). Speglar
+   * `RoomStation.facing` i råobjektet, i värld-koordinater (adderar
+   * `room.group.rotation.y`). Konsumeras av InteriorStaff för att räkna
+   * home-punkten `0,6 m framför stationen` — VO 2026-09-10 kl. 16:00:
+   * "Hemplatsen är fortfarande INTE stationens mittpunkt. En punkt
+   * framför, vänd mot stationen, ~0,6 m ut."
+   */
+  stationFacings: number[];
   entrance: XZ;
   waitingSpot: XZ;
   /**
