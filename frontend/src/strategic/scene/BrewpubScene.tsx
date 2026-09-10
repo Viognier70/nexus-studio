@@ -89,10 +89,16 @@ export function BrewpubScene() {
       // att inte placera pelvis 11 cm under sitten.
       plinth: 0.11,
       standing: world.standing as [number, number][],
-      // ORDER 204 — ölkrogens fyra stations (barkeep, brewer, cook, runner)
-      // i deklarationsordning. Konsumeras av InteriorStaff för home-placering
-      // per team-member-index.
+      // ORDER 204/205 — ölkrogens fyra stations (barkeep, brewer, cook, runner)
+      // i deklarationsordning. Konsumeras av InteriorStaff.
       stations: world.staffStations as [number, number][],
+      // ORDER 205 — parallell array med station-id (för DEV-warnings +
+      // framtida Design-driven roll-mapping).
+      stationIds: room.stations.map((s) => s.id),
+      // ORDER 205 — parallell array med station-facing (radianer, värld-
+      // koordinater = raw local facing + room.group.rotation.y). Konsumeras
+      // av InteriorStaff för att räkna 0,6 m-hemplats framför stationen.
+      stationFacings: room.stations.map((s) => s.facing + room.group.rotation.y),
       entrance: world.entrance as [number, number],
       waitingSpot: world.waitingSpot as [number, number],
       // ORDER 203 — brewpub har idag ingen egen queue-form (vestibul
