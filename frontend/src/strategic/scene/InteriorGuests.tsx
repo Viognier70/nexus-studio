@@ -129,6 +129,9 @@ const SEATED_STATES: readonly GuestState[] = ['seated', 'ordering', 'dining', 'p
 // konsolen. Nyckel = businessClass så VO ser vilken klass som fallerar.
 const NO_SEAT_HEIGHTS_WARNED = new Set<string>();
 
+// ORDER 203 — samma mönster för waitingSlots-fallback.
+const NO_WAITING_SLOTS_WARNED = new Set<string>();
+
 // ORDER 046 §4 / ORDER 088 §2.3 / ORDER 121 §2 — sit / stand animation.
 //
 // Före ORDER 121 dippades hela pucken 0,27 m i Y (SIT_DIP_M) under
@@ -441,6 +444,28 @@ export function InteriorGuests() {
     // frågan hos Design). Fältet stannar kvar för framtida användning
     // (mep-prop-plinth, bordslampa, etc.).
     void (usingContract ? roomChan!.plinth : null);
+    // ORDER 203 — kön framför entrén, per klass från kontraktet. Tomt
+    // array (contract publicerar inga slots) faller tillbaka på
+    // `layout.waitingSlots` med DEV-warning. Fallback-warning per klass
+    // (samma pattern som seatHeights/plinth i §3.1) så VO ser om ett
+    // rum aldrig publicerar sin egen queue-form.
+    let waitingSlotsForFrame: readonly SlotXZ[];
+    if (usingContract && roomChan!.waitingSlots.length > 0) {
+      waitingSlotsForFrame = roomChan!.waitingSlots;
+    } else {
+      waitingSlotsForFrame = layout.waitingSlots;
+      if (
+        import.meta.env.DEV &&
+        !NO_WAITING_SLOTS_WARNED.has(sim.businessClass)
+      ) {
+        NO_WAITING_SLOTS_WARNED.add(sim.businessClass);
+        console.warn(
+          `[ORDER 203] waitingSlots saknas i kontraktet för businessClass="${sim.businessClass}". ` +
+          `Fallback till layout.waitingSlots (OBB-generisk 2×4-form). ` +
+          `Publicera egen queue-form via *Scene → SharedBusinessRoom.waitingSlots.`
+        );
+      }
+    }
     if (import.meta.env.DEV && typeof window !== 'undefined') {
       // Dev-observation för playwright — vilken källa och vilken
       // längd som råder just nu. Sätts varje frame utan overhead
@@ -458,12 +483,16 @@ export function InteriorGuests() {
       if (!slots) {
         slots = {
           arrival: slotCounterRef.current.arrival++ % layout.arrivalSlots.length,
-          waiting: slotCounterRef.current.waiting++ % layout.waitingSlots.length,
+          // ORDER 203 — mod:a mot kontraktets kö-längd om det finns,
+          // annars layout-fallback. Slot-tilldelningen hänger inte
+          // efter ID-tilldelning-tid; targetFor:s slot-lookup gör en
+          // andra modulo för säkerhets skull om kontraktet växer/krymper.
+          waiting: slotCounterRef.current.waiting++ % waitingSlotsForFrame.length,
           declined: slotCounterRef.current.declined++ % layout.declinedSlots.length
         };
         slotAssignRef.current.set(guest.id, slots);
       }
-      const target = targetFor(guest, slots, layout, spawnPoints, seatsForFrame);
+      const target = targetFor(guest, slots, layout, spawnPoints, seatsForFrame, waitingSlotsForFrame);
       // Initialise position for a first-seen guest at the outer spawn
       // point matching their arrival slot — the walk-in becomes
       // visible instead of a pop-in on the arc.
@@ -961,17 +990,20 @@ function targetFor(
   // nattklubben). Kallaren väljer källan: businessRoomRef.seats när
   // ett kontraktsrum är monterat för sim.businessClass, annars
   // layout.seats som fallback.
-  seats: SlotXZ[]
+  seats: SlotXZ[],
+  // ORDER 203 — samma pattern som `seats`: kön kommer nu utifrån.
+  // Kallaren väljer källan (roomChan.waitingSlots eller fallback).
+  waitingSlots: readonly SlotXZ[]
 ): GuestTarget {
   const colour = GUEST_COLOUR[guest.state];
-  const { arrivalSlots, waitingSlots, declinedSlots } = layout;
+  const { arrivalSlots, declinedSlots } = layout;
   switch (guest.state) {
     case 'arriving': {
       const [x, z] = arrivalSlots[slots.arrival];
       return { x, z, colour };
     }
     case 'waiting': {
-      const [x, z] = waitingSlots[slots.waiting];
+      const [x, z] = waitingSlots[slots.waiting % waitingSlots.length];
       return { x, z, colour };
     }
     case 'seated':

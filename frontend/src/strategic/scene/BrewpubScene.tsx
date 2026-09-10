@@ -92,6 +92,11 @@ export function BrewpubScene() {
       stations: world.staffStations as [number, number][],
       entrance: world.entrance as [number, number],
       waitingSpot: world.waitingSpot as [number, number],
+      // ORDER 203 — brewpub har idag ingen egen queue-form (vestibul
+      // eller sidewalk-kö) i rumsfilen; passera igenom `layout.waitingSlots`
+      // (OBB-generisk 2×4-form) tills en design-order öppnar den. Se
+      // SharedBusinessRoom.waitingSlots-doc för framtida per-rum-formen.
+      waitingSlots: layout.waitingSlots as [number, number][],
       capacity: room.capacity,
       staffStationsByRole
     };

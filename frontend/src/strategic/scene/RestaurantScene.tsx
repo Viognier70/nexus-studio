@@ -87,6 +87,11 @@ export function RestaurantScene() {
       stations: world.staffStations as [number, number][],
       entrance: world.entrance as [number, number],
       waitingSpot: world.waitingSpot as [number, number],
+      // ORDER 203 — restaurantRoom.resolveWorldPositions returnerar redan
+      // `.waitingSlots` (rad 733-737 i restaurantRoom.ts, 2×4 OBB-form)
+      // som varit oanvänd sedan augusti. Publicera den nu så InteriorGuests
+      // läser rummets egen kö istället för layout-räknad kopia.
+      waitingSlots: world.waitingSlots as [number, number][],
       capacity: room.capacity,
       staffStationsByRole
     };
