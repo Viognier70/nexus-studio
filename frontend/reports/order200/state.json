@@ -1,6 +1,6 @@
 {
-  "simTime": 766.0000000000372,
-  "seatedIds": 7,
+  "simTime": 765.8000000000371,
+  "seatedIds": 3,
   "seatSource": "businessRoomContract",
   "seatSourceLength": 20,
   "contract": {
@@ -43,44 +43,8 @@
   },
   "guests": [
     {
-      "id": "gst-200",
-      "state": "dining",
-      "seatIndex": 12,
-      "seatKind": "bar",
-      "seatXZ": [
-        35.34719669816977,
-        -18.608936526237205
-      ],
-      "seatHeight": 0.75,
-      "renderPos": {
-        "cx": 34.97744278261026,
-        "cz": -17.48550715422675
-      },
-      "sitStandDir": 0,
-      "sitStandPhase": -1,
-      "distFromSeat": 1.18
-    },
-    {
-      "id": "gst-202",
-      "state": "dining",
-      "seatIndex": 14,
-      "seatKind": "bar",
-      "seatXZ": [
-        33.83855066806904,
-        -18.423498785037324
-      ],
-      "seatHeight": 0.75,
-      "renderPos": {
-        "cx": 33.450640598282995,
-        "cz": -16.345671360499804
-      },
-      "sitStandDir": 0,
-      "sitStandPhase": -1,
-      "distFromSeat": 2.11
-    },
-    {
-      "id": "gst-204",
-      "state": "dining",
+      "id": "gst-106",
+      "state": "paying",
       "seatIndex": 15,
       "seatKind": "bar",
       "seatXZ": [
@@ -89,70 +53,31 @@
       ],
       "seatHeight": 0.75,
       "renderPos": {
-        "cx": 32.283448130889816,
-        "cz": -14.171631042776076
+        "cx": 33.08422765301868,
+        "cz": -18.330779914437382
       },
-      "sitStandDir": 0,
-      "sitStandPhase": -1,
-      "distFromSeat": 4.24
+      "sitStandDir": -1,
+      "sitStandPhase": 1,
+      "distFromSeat": 0
     },
     {
-      "id": "gst-208",
-      "state": "dining",
-      "seatIndex": 16,
+      "id": "gst-109",
+      "state": "seated",
+      "seatIndex": 12,
       "seatKind": "bar",
       "seatXZ": [
-        32.32990463796831,
-        -18.23806104383744
+        35.34719669816977,
+        -18.608936526237205
       ],
       "seatHeight": 0.75,
-      "renderPos": {
-        "cx": 33.062903862210945,
-        "cz": -13.24100849207203
-      },
-      "sitStandDir": 0,
-      "sitStandPhase": -1,
-      "distFromSeat": 5.05
+      "renderPos": null,
+      "sitStandDir": null,
+      "sitStandPhase": null,
+      "distFromSeat": null
     },
     {
-      "id": "gst-209",
-      "state": "dining",
-      "seatIndex": 17,
-      "seatKind": "bar",
-      "seatXZ": [
-        31.575581622917948,
-        -18.145342173237502
-      ],
-      "seatHeight": 0.75,
-      "renderPos": {
-        "cx": 32.51517590395279,
-        "cz": -12.415892060776768
-      },
-      "sitStandDir": 0,
-      "sitStandPhase": -1,
-      "distFromSeat": 5.81
-    },
-    {
-      "id": "gst-210",
-      "state": "dining",
-      "seatIndex": 18,
-      "seatKind": "bar",
-      "seatXZ": [
-        30.821258607867584,
-        -18.05262330263756
-      ],
-      "seatHeight": 0.75,
-      "renderPos": {
-        "cx": 32.05579760331636,
-        "cz": -12.081834112697342
-      },
-      "sitStandDir": 0,
-      "sitStandPhase": -1,
-      "distFromSeat": 6.1
-    },
-    {
-      "id": "gst-212",
-      "state": "dining",
+      "id": "gst-110",
+      "state": "seated",
       "seatIndex": 13,
       "seatKind": "bar",
       "seatXZ": [
@@ -160,46 +85,43 @@
         -18.516217655637263
       ],
       "seatHeight": 0.75,
-      "renderPos": {
-        "cx": 32.79283109248615,
-        "cz": -11.45844216427938
-      },
-      "sitStandDir": 0,
-      "sitStandPhase": -1,
-      "distFromSeat": 7.28
+      "renderPos": null,
+      "sitStandDir": null,
+      "sitStandPhase": null,
+      "distFromSeat": null
     }
   ],
   "staff": [
     {
-      "id": "värd-blxnib",
+      "id": "värd-aoaqcp",
       "role": "värd",
       "renderPos": {
-        "x": 32.563681502266554,
-        "z": -10.280028011097677
+        "x": 31.51067200491461,
+        "z": -10.506663950139277
       },
       "poseName": "poseWalk"
     },
     {
-      "id": "servitör-xu5z4b",
+      "id": "servitör-0viqql",
       "role": "servitör",
       "renderPos": {
-        "x": 32.7612854505766,
-        "z": -11.845400541296163
+        "x": 32.153173809573566,
+        "z": -20.166297747012166
       },
       "poseName": "poseWalk"
     },
     {
-      "id": "kock-mis9re",
+      "id": "kock-of3q09",
       "role": "kock",
       "renderPos": {
-        "x": 32.824758905225714,
-        "z": -11.877881932872823
+        "x": 33.567945399769904,
+        "z": -22.308169487397862
       },
       "poseName": "poseWalk"
     }
   ],
   "summary": {
-    "seatedTotal": 7,
+    "seatedTotal": 3,
     "nearSeat": 1,
     "onBarStool": 1,
     "onChair": 0,

@@ -21,6 +21,7 @@ import { usePlayerBusinessInterior } from '../business/interiorLayout';
 import {
   createRoom,
   resolveWorldPositions,
+  resolveStaffHomesWorldByRole,
   updateRoom,
   setShellOpacity,
   type BusinessRoom
@@ -99,6 +100,10 @@ export function BrewpubScene() {
       // koordinater = raw local facing + room.group.rotation.y). Konsumeras
       // av InteriorStaff för att räkna 0,6 m-hemplats framför stationen.
       stationFacings: room.stations.map((s) => s.facing + room.group.rotation.y),
+      // ORDER 206 — kontraktet levererar per-roll hem-XZ+Y+facing.
+      // InteriorStaff läser detta i stället för att räkna själv.
+      // Mappning + 0,6 m-offset + floorY sker i businessRoom.staffHomeFor.
+      staffHomesByRole: resolveStaffHomesWorldByRole(room),
       entrance: world.entrance as [number, number],
       waitingSpot: world.waitingSpot as [number, number],
       // ORDER 203 — brewpub har idag ingen egen queue-form (vestibul

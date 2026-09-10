@@ -448,17 +448,38 @@ export function resolveWorldPositions(room: BusinessRoom): any {
 
 type StationTarget = string | '__entrance' | null;
 
-// ORDER 204 — reverterat ORDER 202 §2:s STATION_MAP-ändring. Design
-// (via VO 2026-09-10 kl. 15:30): staffHomes SAKNAS INTE. Fältet heter
-// `stations` på businessRoom-kontraktet och `staffStations` på råobjektet;
-// ölkrogen har fyra. Ingen härledning ur `stationFor`/STATION_MAP behövs
-// för InteriorStaff:s placering — läs den flata `stations`-listan direkt
-// från kontraktet. STATION_MAP behålls oförändrad för framtida behov
-// (t.ex. nattklubbens `dj`, foodtruckens `window`), men konsumeras inte
-// längre av staff-render-hemresolveringen.
+// ORDER 206 — kontraktet äger mappningen (VO 2026-09-10 kl. 16:30:
+// "Bygg staffHomeFor i businessRoom.ts, inte i scenen — kontraktet
+// ska äga mappningen, som ORDER 154 gjorde för stationFor.").
+// InteriorStaff läser inte längre kontraktets flata `stations` direkt
+// (ORDER 204:s approach); i stället kallar den `staffHomeFor(role, room)`
+// nedan som slår upp station via STATION_MAP + räknar hem 0.6 m fram
+// vid PLINTH_M-golvet.
+//
+// **Mappnings-antaganden markerade explicit.** ORDER 205:s design-
+// fråga `STATION_ROLE_MAPPING_QUESTION_2026-09-10.md` är öppen — Design
+// har inte bekräftat vilken station-id som hör till vilken sim-roll för
+// ölkrogen. Varje icke-uppenbar rad nedan har en `ANTAGANDE:`-kommentar.
+// När Design svarar: uppdatera raderna och ta bort ANTAGANDE-taggen.
+//
+// VO 2026-09-10 kl. 16:30: "brewer→kock och taps→värd är dina antaganden
+// om Designs namn. Skriv dem som antaganden i koden, så nästa läsare
+// ser att de inte är bekräftade." → 'taps' är namnet Design kanske vill
+// ha; nuvarande brewpubRoom har ingen 'taps'-station så jag mappar värd
+// till närmaste substitut ('__entrance', VO-arv från ORDER 200) tills
+// 'taps' finns.
 const STATION_MAP: Record<RoomClass, Record<StaffRole, StationTarget>> = {
+  // Kvarterskrogen: namn-matchning entydig.
   kvarterskrogen: { värd: 'host',       servitör: 'server', kock: 'chef',   lärling: 'server' },
-  ölkrogen:       { värd: '__entrance', servitör: 'runner', kock: 'brewer', lärling: 'runner' },
+  // Ölkrogen: brewer/cook/runner-namnen matchar inte entydigt sim-roller.
+  //   värd → '__entrance': VO-arv (ORDER 200); Design 4-to-4 tyder på
+  //     'taps'-station som INTE finns i brewpubRoom.ts idag. ANTAGANDE.
+  //   servitör → 'barkeep': pubservitör är typiskt bartender. ANTAGANDE.
+  //   kock → 'brewer': brygg-arbete = kock-arbete. ANTAGANDE (nämnt av
+  //     VO 2026-09-10 kl. 16:30 som "din" antagande).
+  //   lärling → 'cook': apprentice fyller kök-stationen som kock inte
+  //     håller. ANTAGANDE.
+  ölkrogen:       { värd: '__entrance', servitör: 'barkeep', kock: 'brewer', lärling: 'cook' },
   vinbaren:       { värd: '__entrance', servitör: 'runner', kock: 'cook',   lärling: 'runner' },
   gästgiveriet:   { värd: 'host',       servitör: 'hallA',  kock: 'chef',   lärling: null },
   foodtrucken:    { värd: null,         servitör: 'window', kock: 'cook',   lärling: null },
@@ -533,6 +554,88 @@ export function resolveStaffStationsWorld(room: BusinessRoom): Record<StaffRole,
   function resolve(role: StaffRole): Vec2 | null {
     const s = stationFor(role, room);
     return s ? toWorld(s.local) : null;
+  }
+  return {
+    värd:     resolve('värd'),
+    servitör: resolve('servitör'),
+    kock:     resolve('kock'),
+    lärling:  resolve('lärling')
+  };
+}
+
+/**
+ * ORDER 206 — hemplatsen för en sim-roll i rummet. Fyra egenskaper:
+ *
+ *   xz     — värld-XZ, 0,6 m FRAMFÖR stationens mittpunkt (arbetssidan,
+ *            dvs motsatt riktning från stationens front). VO 2026-09-10
+ *            kl. 16:00: "Hemplatsen är fortfarande INTE stationens
+ *            mittpunkt. En punkt framför, vänd mot stationen, ~0,6 m ut."
+ *   y      — golv-Y (`floorY` = PLINTH_M ≈ 0.11 m för alla nuvarande rum).
+ *            VO 2026-09-10 kl. 16:30: "Hemplatserna ska mätas mot floorY,
+ *            inte mot noll." Räknas som `moduleFor(room.roomClass).PLINTH_M ?? 0.11`
+ *            så framtida rum med annan sockel (foodtruck-flak Y=0.42-0.62)
+ *            hämtar sitt eget värde när modulen exporterar det.
+ *   facing — station.facing i värld-koordinater. Figuren tittar mot
+ *            arbetsområdet.
+ *
+ * Retur `null` när rollen inte har en station i klassen (STATION_MAP-
+ * cell = null). Renderaren (InteriorStaff) skippar sådana medlemmar med
+ * DEV-warning i stället för att gissa en fallback-position.
+ */
+export interface StaffHome {
+  xz: Vec2;
+  y: number;
+  facing: number;
+}
+
+const STAFF_HOME_STANDOFF_M = 0.6;
+
+export function staffHomeFor(role: StaffRole, room: BusinessRoom): StaffHome | null {
+  const station = stationFor(role, room);
+  if (!station) return null;
+  const mod = moduleFor(room.roomClass) as { PLINTH_M?: number };
+  const floorY = mod.PLINTH_M ?? 0.11;
+  // Home = station.local − 0,6 m i facing-riktning. `facing` är station-
+  // fronten (vart stationens "front" pekar); staff står 0,6 m på
+  // arbetssidan och tittar mot stationen (rotation.y = facing).
+  const fx = Math.sin(station.facing);
+  const fz = Math.cos(station.facing);
+  return {
+    xz: [station.local[0] - STAFF_HOME_STANDOFF_M * fx, station.local[1] - STAFF_HOME_STANDOFF_M * fz],
+    y: floorY,
+    facing: station.facing
+  };
+}
+
+/**
+ * ORDER 206 — hemplatsen per roll i VÄRLDS-XZ efter att rummet placerats.
+ * Använder room.group.localToWorld för XZ och adderar room.group.rotation.y
+ * till facing (samma pattern som `resolveWorldPositions().seatFacings`).
+ * Y är rummets floorY oförändrad — det är en Y-mätning, inte transformerad
+ * av rum-group:s position (som är Y=0 i alla nuvarande rum, men explicit-
+ * ändras det om ett framtida rum står på annan Y).
+ *
+ * Scenerna (BrewpubScene/RestaurantScene/…) publicerar detta till
+ * `SharedBusinessRoom.staffHomesByRole` så InteriorStaff läser rummets
+ * kontraktsberäknade hem per roll — inte längre en beräkning i scenen.
+ */
+export function resolveStaffHomesWorldByRole(room: BusinessRoom): Record<StaffRole, { xz: Vec2; y: number; facing: number } | null> {
+  room.group.updateWorldMatrix(true, true);
+  const v = new THREE.Vector3();
+  const groupYaw = room.group.rotation.y;
+  function toWorldXZ(local: Vec2): Vec2 {
+    v.set(local[0], 0, local[1]);
+    room.group.localToWorld(v);
+    return [v.x, v.z];
+  }
+  function resolve(role: StaffRole): { xz: Vec2; y: number; facing: number } | null {
+    const h = staffHomeFor(role, room);
+    if (!h) return null;
+    return {
+      xz: toWorldXZ(h.xz),
+      y: h.y,
+      facing: h.facing + groupYaw
+    };
   }
   return {
     värd:     resolve('värd'),

@@ -34,8 +34,13 @@ import { useSimState } from '../simulation/SimulationProvider';
 import { COVERS_PER_MEMBER } from '../simulation/team';
 import type { StaffRole, TeamMember } from '../types';
 import { staffPositionsRef, staffPosesRef, businessRoomRef, guestPositionsRef } from './interiorSharedState';
-import type { SharedStaffPose } from './interiorSharedState';
+import type { SharedStaffPose, SharedBusinessRoom } from './interiorSharedState';
 import type { TaskType } from '../types';
+
+// ORDER 206 — bekvämtyp för det per-roll hem-mappningsvärdet som
+// InteriorStaff läser från kontraktet. Publiceras av *Scene via
+// `resolveStaffHomesWorldByRole`.
+type SharedStaffHomes = SharedBusinessRoom['staffHomesByRole'];
 import { derivePipCarriers } from '../ui/RoomCardPanel/guestPatterns';
 import {
   PIP_COLOUR,
@@ -300,71 +305,33 @@ export function InteriorStaff() {
   useFrame((_, delta) => {
     if (!groupRef.current || !layout || !stations) return;
 
-    // ORDER 204/205 — läs den flata `stations`-listan direkt från
-    // kontraktet (raw `staffStations` världs-XZ i deklarationsordning) +
-    // parallella `stationIds` och `stationFacings`. Ingen roll-mapping
-    // via STATION_MAP — Design (VO 2026-09-10 kl. 15:30): "det heter
-    // stations på kontraktet och staffStations på råobjektet; ölkrogen
-    // har fyra. Läs kontraktets garanterade fält på nytt och använd
-    // stations. Ingen härledning ur stationFor."
+    // ORDER 206 — läs `staffHomesByRole[role]` från kontraktet. Ingen
+    // beräkning i scenen: `businessRoom.staffHomeFor()` gör mappningen
+    // (STATION_MAP + 0,6 m-offset + floorY) och `resolveStaffHomesWorldByRole`
+    // publicerar värdena i värld-XZ. VO 2026-09-10 kl. 16:30: "Bygg
+    // staffHomeFor i businessRoom.ts, inte i scenen — kontraktet ska äga
+    // mappningen, som ORDER 154 gjorde för stationFor."
     //
-    // ORDER 205 — home-formen: en punkt 0,6 m FRAMFÖR stationen, vänd
-    // MOT stationen (VO 2026-09-10 kl. 16:00). Utnyttjar station.facing
-    // som station-fasadens riktning: staff står 0,6 m in motsatt
-    // riktning från fasaden (dvs. bakom stationens front, på arbetssidan),
-    // och vänder sig mot fasadens riktning så figuren tittar in i
-    // arbetsområdet.
-    //
-    // ORDER 205 §rollmapping — Design har inte svarat på vilken
-    // station-id som hör till vilken sim-roll. Se
-    // `STATION_ROLE_MAPPING_QUESTION_2026-09-10.md`. Tills svar: värd
-    // hålls vid entrance (VO-arv 2026-09-10 tidigare), övriga roller
-    // fyller stations positionellt (nonVärdIndex) med DEV-warn.
+    // Roll→station-mappningen i STATION_MAP är delvis ANTAGANDE (öppen
+    // Design-fråga STATION_ROLE_MAPPING_QUESTION_2026-09-10.md). VO:
+    // "brewer→kock och taps→värd är dina antaganden om Designs namn.
+    // Skriv dem som antaganden i koden." → antagandena är markerade
+    // som ANTAGANDE-kommentarer i businessRoom.ts:STATION_MAP.
     const roomChan = businessRoomRef.current;
-    const contractHasStations =
-      roomChan != null &&
-      roomChan.businessClass === sim.businessClass &&
-      roomChan.stations.length > 0;
-    const contractStations: readonly XZ[] | null = contractHasStations
-      ? (roomChan!.stations as readonly XZ[])
-      : null;
-    const contractStationFacings: readonly number[] | null = contractHasStations
-      ? roomChan!.stationFacings
-      : null;
-    const contractStationIds: readonly string[] | null = contractHasStations
-      ? roomChan!.stationIds
-      : null;
+    const contractHomes: SharedStaffHomes | null =
+      roomChan != null && roomChan.businessClass === sim.businessClass
+        ? roomChan.staffHomesByRole
+        : null;
     if (
       import.meta.env.DEV &&
-      contractHasStations &&
+      contractHomes &&
       !ROLE_MAPPING_PROVISIONAL_WARNED.has(sim.businessClass)
     ) {
       ROLE_MAPPING_PROVISIONAL_WARNED.add(sim.businessClass);
       console.warn(
-        `[ORDER 205] station-role-mapping ännu ej bekräftat av Design för "${sim.businessClass}" ` +
-        `(stations=[${contractStationIds!.join(', ')}]). Positionell fallback används per team-medlemsordning. ` +
-        `Se STATION_ROLE_MAPPING_QUESTION_2026-09-10.md.`
+        `[ORDER 206] STATION_MAP-mappning för "${sim.businessClass}" är delvis ANTAGANDE. ` +
+        `Se businessRoom.ts:STATION_MAP-kommentar + STATION_ROLE_MAPPING_QUESTION_2026-09-10.md.`
       );
-    }
-
-    // ORDER 205 — station-relative home offset. 0,6 m i motsatt riktning
-    // till stationens facing (=arbetssidan), + rotation.y = facing så
-    // figuren vänder sig mot stationen. `facingVec = (sin(f), cos(f))`
-    // = riktningen stationens front pekar; staff-hem = station.xz -
-    // 0,6 * facingVec.
-    const STATION_STANDOFF_M = 0.6;
-    function stationHome(idx: number): { xz: XZ; facing: number } | null {
-      if (!contractStations || !contractStationFacings || idx >= contractStations.length) {
-        return null;
-      }
-      const [sx, sz] = contractStations[idx];
-      const facing = contractStationFacings[idx];
-      const fx = Math.sin(facing);
-      const fz = Math.cos(facing);
-      return {
-        xz: [sx - STATION_STANDOFF_M * fx, sz - STATION_STANDOFF_M * fz],
-        facing
-      };
     }
 
     const dist = actualRef.current.distance;
@@ -430,60 +397,37 @@ export function InteriorStaff() {
     const teamToStaff = bridgeTeamToStaff(sim.team.members, sim.staff);
     const staffById = new Map(sim.staff.map((s) => [s.id, s]));
     const guestById = new Map(sim.guests.map((g) => [g.id, g]));
-    const entranceXZ = (roomChan?.entrance ?? layout.entrance) as XZ;
+    // ORDER 206 — `entranceXZ` konsumerades av värd-branchen som togs
+    // bort; värd-hem läses nu ur `contractHomes.värd` (som i sin tur
+    // kan peka på entrance via STATION_MAP.ölkrogen.värd = '__entrance').
+    // Ingen fri läsning av `roomChan?.entrance` behövs här.
 
-    // ORDER 204 + 205 — värd hanteras i entrance-branchen längre ner;
-    // övriga roller får `stations[nonVärdIndex]` från kontraktet,
-    // konverterat till en HEM-PUNKT via `stationHome(idx)` (0,6 m
-    // framför stationen, vänd mot den). Roll-mapping är PROVISORISK
-    // per team-medlemsordning tills Design svarar
-    // (STATION_ROLE_MAPPING_QUESTION_2026-09-10.md); DEV-warning fyras
-    // en gång per klass så VO ser att mappningen inte är bekräftad.
-    let nonVärdIndex = 0;
+    // ORDER 206 — hem per roll läses direkt ur kontraktet. Ingen
+    // scen-lokal beräkning; STATION_MAP + 0,6 m-offset + floorY sker
+    // i `businessRoom.staffHomeFor` (som `resolveStaffHomesWorldByRole`
+    // wraps och publicerar). Skip medlem med DEV-warn om `contractHomes`
+    // saknar rollen (STATION_MAP-cell = null eller ingen station med
+    // det id:et i rummet).
     for (const member of sim.team.members) {
       seenIds.add(member.id);
 
-      let home: XZ;
-      let homeStationFacing: number | null = null;
-      if (member.role === 'värd') {
-        // Placeholder — entrance-branchen nedan skriver över target.
-        home = entranceXZ;
-      } else {
-        if (!contractStations || contractStations.length === 0) {
-          if (
-            import.meta.env.DEV &&
-            !NO_CONTRACT_HOME_WARNED.has(sim.businessClass + ':' + member.role)
-          ) {
-            NO_CONTRACT_HOME_WARNED.add(sim.businessClass + ':' + member.role);
-            console.warn(
-              `[ORDER 204] kontraktets stations-lista tom för businessClass="${sim.businessClass}" (member.id=${member.id}, role=${member.role}). ` +
-              `Ingen fallback — pucken renderas inte. Lägg till staffStations i rumsfilen (t.ex. brewpubRoom.ts).`
-            );
-          }
-          continue;
+      const contractHome = contractHomes?.[member.role] ?? null;
+      if (!contractHome) {
+        if (
+          import.meta.env.DEV &&
+          !NO_CONTRACT_HOME_WARNED.has(sim.businessClass + ':' + member.role)
+        ) {
+          NO_CONTRACT_HOME_WARNED.add(sim.businessClass + ':' + member.role);
+          console.warn(
+            `[ORDER 206] staffHomesByRole["${member.role}"] är null för businessClass="${sim.businessClass}" (member.id=${member.id}). ` +
+            `Uppdatera STATION_MAP i businessRoom.ts eller lägg till en station i rumsfilen. Pucken renderas inte.`
+          );
         }
-        const stationHomeXZ = stationHome(nonVärdIndex);
-        if (!stationHomeXZ) {
-          if (
-            import.meta.env.DEV &&
-            !NO_CONTRACT_HOME_WARNED.has(sim.businessClass + ':overflow')
-          ) {
-            NO_CONTRACT_HOME_WARNED.add(sim.businessClass + ':overflow');
-            console.warn(
-              `[ORDER 204] team har fler nonVärd-medlemmar (${nonVärdIndex + 1}) än kontraktets stations (${contractStations.length}) för "${sim.businessClass}". ` +
-              `Extra medlem "${member.role}" (${member.id}) renderas inte. Lägg till fler stations i rumsfilen.`
-            );
-          }
-          nonVärdIndex += 1;
-          continue;
-        }
-        home = stationHomeXZ.xz;
-        homeStationFacing = stationHomeXZ.facing;
-        nonVärdIndex += 1;
+        continue;
       }
-      // ORDER 205 — `homeStationFacing` konsumeras nedan i yaw-tilldelningen
-      // när staff är nära home + inaktiv (target = station-facing så
-      // figuren tittar in i arbetsområdet).
+      const home: XZ = contractHome.xz;
+      const homeY: number = contractHome.y;
+      const homeStationFacing: number = contractHome.facing;
 
       let pos = positionsRef.current.get(member.id);
       if (!pos) {
@@ -532,12 +476,14 @@ export function InteriorStaff() {
         ? guestById.get(bridgedStaff.targetGuestId) ?? null
         : null;
 
-      if (member.role === 'värd') {
-        // Värd: fast vid entrén, lätt jitter så figuren inte fryses.
-        // Ingen task-override — sim:s eventuella targetGuestId ignoreras.
-        targetX = entranceXZ[0] + jitterX * 0.4;
-        targetZ = entranceXZ[1] + jitterZ * 0.4;
-      } else if (taskGuest) {
+      // ORDER 206 — värd-entrance-branchen BORTTAGEN. Design 4-to-4
+      // (VO 2026-09-10 kl. 15:30 + 16:30) implicerar att värd hör till
+      // EN av de fyra stationerna, inte entrén. STATION_MAP.ölkrogen.värd
+      // = '__entrance' är fortsatt ANTAGANDE (VO-arv ORDER 200) tills
+      // Design bekräftar 'taps' eller annan station-id; men koden gör
+      // ingen scen-lokal specialbehandling — värd följer samma path som
+      // övriga roller, task-driven om taskGuest, annars home + drift.
+      if (taskGuest) {
         // ORDER 200 fynd 3 — läs gästens RENDER-position (värld-XZ) i
         // stället för `taskGuest.position` (LOKAL frame ~ origin per
         // content/layout.ts:INTERIOR). Innan ORDER 200 gav sim-koordinater
@@ -658,7 +604,13 @@ export function InteriorStaff() {
         // (VO 2026-09-07 17:22 "värd delvis nedsjunken i entréns golv-
         // öppning"). Bob upp bibehålls (rörelsen läses), bob ner
         // kapas till 0 så staff aldrig penetrerar golvet.
-        grp.position.set(pos.cx, Math.max(0, bobY), pos.cz);
+        // ORDER 206 — Y = `homeY` (rummets floorY = PLINTH_M ≈ 0.11 m)
+        // plus bob-oscillationen. VO 2026-09-10 kl. 16:30: "Hemplatserna
+        // ska mätas mot floorY, inte mot noll." Före ORDER 206 stod staff
+        // med fötterna på Y=0 medan golvet är på Y=0.11 → figuren 11 cm
+        // under golv-nivån. Bob-clampen bakom PLINTH_M så bob-ner aldrig
+        // sjunker under golvet (ORDER 190 fynd 4-principen bevarad).
+        grp.position.set(pos.cx, homeY + Math.max(0, bobY), pos.cz);
       }
       if (rig) {
         // Uniformsfärgen är stabil per roll; opacity följer visibility.
@@ -785,9 +737,10 @@ export function InteriorStaff() {
           targetYawRad = guestYaw;
         } else if (
           !movedThisFrame &&
-          homeStationFacing !== null &&
           Math.hypot(pos.cx - home[0], pos.cz - home[1]) < 0.4
         ) {
+          // ORDER 206 — homeStationFacing är alltid definierad (contract-
+          // levererad), så villkoret är bara "inaktiv vid home".
           targetYawRad = homeStationFacing;
         } else {
           targetYawRad = pos.walkYaw;

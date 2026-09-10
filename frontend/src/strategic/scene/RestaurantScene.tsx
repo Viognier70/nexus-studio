@@ -24,6 +24,7 @@ import { usePlayerBusinessInterior } from '../business/interiorLayout';
 import {
   createRoom,
   resolveWorldPositions,
+  resolveStaffHomesWorldByRole,
   updateRoom,
   setShellOpacity,
   type BusinessRoom
@@ -88,6 +89,9 @@ export function RestaurantScene() {
       stations: world.staffStations as [number, number][],
       stationIds: room.stations.map((s) => s.id),
       stationFacings: room.stations.map((s) => s.facing + room.group.rotation.y),
+      // ORDER 206 — per-roll hem-XZ+Y+facing från kontraktet. Se
+      // BrewpubScene-kommentar.
+      staffHomesByRole: resolveStaffHomesWorldByRole(room),
       entrance: world.entrance as [number, number],
       waitingSpot: world.waitingSpot as [number, number],
       // ORDER 203 — restaurantRoom.resolveWorldPositions returnerar redan

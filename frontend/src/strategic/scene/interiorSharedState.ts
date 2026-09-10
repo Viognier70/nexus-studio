@@ -164,6 +164,20 @@ export interface SharedBusinessRoom {
    * framför, vänd mot stationen, ~0,6 m ut."
    */
   stationFacings: number[];
+  /**
+   * ORDER 206 — hemplatserna per sim-roll i värld-koordinater. Publiceras
+   * via `businessRoom.resolveStaffHomesWorldByRole(room)`. `xz` = 0,6 m
+   * FRAMFÖR stationens mittpunkt (arbetssidan), `y` = rummets `floorY`
+   * (`PLINTH_M`), `facing` = station-facing i värld (så figuren tittar
+   * mot arbetsområdet). `null` när klassen saknar station för rollen
+   * (t.ex. foodtruckens lärling). InteriorStaff läser detta direkt —
+   * ingen beräkning i scenen (kontraktet äger mappningen, per VO-direktiv
+   * 2026-09-10 kl. 16:30, samma pattern som ORDER 154 gjorde för
+   * stationFor). ROLL→STATION-mappningen är delvis ANTAGANDE markerad
+   * i STATION_MAP-kommentarerna i businessRoom.ts; öppen Design-fråga i
+   * `STATION_ROLE_MAPPING_QUESTION_2026-09-10.md`.
+   */
+  staffHomesByRole: Record<StaffRole, { xz: XZ; y: number; facing: number } | null>;
   entrance: XZ;
   waitingSpot: XZ;
   /**
