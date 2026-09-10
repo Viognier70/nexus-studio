@@ -448,25 +448,21 @@ export function resolveWorldPositions(room: BusinessRoom): any {
 
 type StationTarget = string | '__entrance' | null;
 
-// ORDER 202 §2 — ölkrogens mappning skiljer nu servitör från lärling.
-// Före: servitör OCH lärling → 'runner' (samma station, båda klumpade
-// vid pass-luckan). VO-observation 2026-09-10 13:30: "Ingen personal
-// syns i rummet". En del av orsaken: två roller på identisk station läser
-// som en figur. Ölkrogen har fyra distincta stations i brewpubRoom.ts
-// (barkeep, brewer, cook, runner) — koden matchade tre av dem. Nu:
-//   värd → __entrance (rummets entré, greet-plats)
-//   servitör → 'barkeep' (bakom disken, tappar öl — läsbar bar-figur)
-//   kock → 'brewer' (bryggeriets L-hörn)
-//   lärling → 'runner' (pass-luckan, bär ut till bord)
-// Alla fyra distincta. 'cook'-stationen (spis-hörnet) står tom eftersom
-// ölkrogens sim-team har bara fyra roller; framtida kock-2 kan mappas dit.
+// ORDER 204 — reverterat ORDER 202 §2:s STATION_MAP-ändring. Design
+// (via VO 2026-09-10 kl. 15:30): staffHomes SAKNAS INTE. Fältet heter
+// `stations` på businessRoom-kontraktet och `staffStations` på råobjektet;
+// ölkrogen har fyra. Ingen härledning ur `stationFor`/STATION_MAP behövs
+// för InteriorStaff:s placering — läs den flata `stations`-listan direkt
+// från kontraktet. STATION_MAP behålls oförändrad för framtida behov
+// (t.ex. nattklubbens `dj`, foodtruckens `window`), men konsumeras inte
+// längre av staff-render-hemresolveringen.
 const STATION_MAP: Record<RoomClass, Record<StaffRole, StationTarget>> = {
-  kvarterskrogen: { värd: 'host',       servitör: 'server',  kock: 'chef',   lärling: 'server' },
-  ölkrogen:       { värd: '__entrance', servitör: 'barkeep', kock: 'brewer', lärling: 'runner' },
-  vinbaren:       { värd: '__entrance', servitör: 'runner',  kock: 'cook',   lärling: 'runner' },
-  gästgiveriet:   { värd: 'host',       servitör: 'hallA',   kock: 'chef',   lärling: null },
-  foodtrucken:    { värd: null,         servitör: 'window',  kock: 'cook',   lärling: null },
-  nattklubben:    { värd: 'door',       servitör: 'floor',   kock: null,     lärling: null }
+  kvarterskrogen: { värd: 'host',       servitör: 'server', kock: 'chef',   lärling: 'server' },
+  ölkrogen:       { värd: '__entrance', servitör: 'runner', kock: 'brewer', lärling: 'runner' },
+  vinbaren:       { värd: '__entrance', servitör: 'runner', kock: 'cook',   lärling: 'runner' },
+  gästgiveriet:   { värd: 'host',       servitör: 'hallA',  kock: 'chef',   lärling: null },
+  foodtrucken:    { värd: null,         servitör: 'window', kock: 'cook',   lärling: null },
+  nattklubben:    { värd: 'door',       servitör: 'floor',  kock: null,     lärling: null }
 };
 
 /**

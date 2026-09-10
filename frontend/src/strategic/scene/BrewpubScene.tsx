@@ -21,7 +21,6 @@ import { usePlayerBusinessInterior } from '../business/interiorLayout';
 import {
   createRoom,
   resolveWorldPositions,
-  resolveStaffStationsWorld,
   updateRoom,
   setShellOpacity,
   type BusinessRoom
@@ -69,9 +68,10 @@ export function BrewpubScene() {
     // placerar 20 gäster på ölkrogens tjugo platser i stället för att
     // läsa restaurangens 16-stols-layout.
     const world = resolveWorldPositions(room);
-    // ORDER 154 — publicera sim-rollernas hemstationer så InteriorStaff
-    // kan läsa dem per klass (kock=brewer i ölkrogen, värd=entré, etc.).
-    const staffStationsByRole = resolveStaffStationsWorld(room);
+    // ORDER 204 — `resolveStaffStationsWorld` + `staffStationsByRole`
+    // borttagna. Kontraktet publicerar `stations` (raw `staffStations`
+    // världs-XZ, i deklarationsordning) och InteriorStaff läser den
+    // flata listan direkt. Ingen roll-mapping via `stationFor`.
     businessRoomRef.current = {
       businessClass: 'ölkrogen',
       seats: world.seats as [number, number][],
@@ -84,11 +84,14 @@ export function BrewpubScene() {
       seatHeights: room.seats.map((s) => s.seatHeight),
       // ORDER 201 fynd 1 — brewpubRoom lägger golv-slabben på Y=0.11 (se
       // slabPlate `m.position.set(x, 0.11, z)` + alla möbel-Y `+ 0.11`).
-      // Konstanten är oämngiven i brewpub men skriven som PLINTH_M i
+      // Konstanten är onamngiven i brewpub men skriven som PLINTH_M i
       // restaurant/wineBar/inn/nightClub. InteriorGuests behöver den för
       // att inte placera pelvis 11 cm under sitten.
       plinth: 0.11,
       standing: world.standing as [number, number][],
+      // ORDER 204 — ölkrogens fyra stations (barkeep, brewer, cook, runner)
+      // i deklarationsordning. Konsumeras av InteriorStaff för home-placering
+      // per team-member-index.
       stations: world.staffStations as [number, number][],
       entrance: world.entrance as [number, number],
       waitingSpot: world.waitingSpot as [number, number],
@@ -97,8 +100,7 @@ export function BrewpubScene() {
       // (OBB-generisk 2×4-form) tills en design-order öppnar den. Se
       // SharedBusinessRoom.waitingSlots-doc för framtida per-rum-formen.
       waitingSlots: layout.waitingSlots as [number, number][],
-      capacity: room.capacity,
-      staffStationsByRole
+      capacity: room.capacity
     };
     return () => {
       const r = roomRef.current;
