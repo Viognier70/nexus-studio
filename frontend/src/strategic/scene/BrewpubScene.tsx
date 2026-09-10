@@ -76,6 +76,12 @@ export function BrewpubScene() {
       businessClass: 'ölkrogen',
       seats: world.seats as [number, number][],
       seatFacings: world.seatFacings as number[],
+      // ORDER 200 fynd 1 — läs sitshöjd per plats från kontraktets
+      // normaliserade `RoomSeat.seatHeight`. Brewpub-seat 0-11 = CHAIR_HEIGHT
+      // (0.45 m), seat 12-19 = STOOL_HEIGHT (0.75 m). Utan denna publicering
+      // hardcodade InteriorGuests 0.45 för alla 20 platser → 8 barstols-
+      // gäster satt 30 cm under stolsäten.
+      seatHeights: room.seats.map((s) => s.seatHeight),
       standing: world.standing as [number, number][],
       stations: world.staffStations as [number, number][],
       entrance: world.entrance as [number, number],

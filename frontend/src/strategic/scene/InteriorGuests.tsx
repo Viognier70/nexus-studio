@@ -21,7 +21,7 @@ import { usePlayerBusinessInterior } from '../business/interiorLayout';
 import { GRAY_BOX_CAMERA } from '../content/grythyttan';
 import { useSimState } from '../simulation/SimulationProvider';
 import type { Guest, GuestState } from '../types';
-import { staffPositionsRef, businessRoomRef } from './interiorSharedState';
+import { staffPositionsRef, businessRoomRef, guestPositionsRef } from './interiorSharedState';
 import {
   derivePipCarriers,
   patternForGuest
@@ -104,7 +104,15 @@ const SEATED_STATES: readonly GuestState[] = ['seated', 'ordering', 'dining', 'p
 // Applied som Y-lyft på hela guest-gruppen under SEATED_STATES + sleeping,
 // eftersom `poseSeated` sänker höften internt men rigg-basen (Y=0) står
 // kvar på golvet. Utan lyftet hänger figuren i luften strax över golvet.
-const SEAT_SIT_HEIGHT_M = 0.45;
+//
+// ORDER 200 fynd 1 — 0.45 m gäller CHAIR_HEIGHT, men rummen har fler
+// sitstyper: STOOL_HEIGHT = 0.75 m (barstolar), LOUNGE_SEAT_H = 0.38 m
+// (soffor i vinbaren). Konstanten stannar kvar som FALLBACK när kontraktet
+// inte publicerar `seatHeights` (t.ex. layout.seats-fallback). Den PRIMÄRA
+// vägen är `roomChan.seatHeights[seatIndex]` — se sitLift-beräkningen
+// nedan. Att bara läsa 0.45 var STOOLS-fyndet från 2026-09-10-inspelningen:
+// 8 barstolar av 20 seats fick fel höjd, gäster satt 30 cm under stolen.
+const SEAT_SIT_HEIGHT_FALLBACK_M = 0.45;
 
 // ORDER 046 §4 / ORDER 088 §2.3 / ORDER 121 §2 — sit / stand animation.
 //
@@ -407,6 +415,11 @@ export function InteriorGuests() {
     const seatFacingsForFrame: readonly number[] | null = usingContract
       ? roomChan!.seatFacings
       : null;
+    // ORDER 200 fynd 1 — sitshöjd per plats. Null i fallback-läge; consumer
+    // faller då tillbaka på SEAT_SIT_HEIGHT_FALLBACK_M.
+    const seatHeightsForFrame: readonly number[] | null = usingContract
+      ? roomChan!.seatHeights
+      : null;
     if (import.meta.env.DEV && typeof window !== 'undefined') {
       // Dev-observation för playwright — vilken källa och vilken
       // längd som råder just nu. Sätts varje frame utan overhead
@@ -549,22 +562,29 @@ export function InteriorGuests() {
         const dzFromCentre = pos.cz - cz0;
         const distFromCentre = Math.hypot(dxFromCentre, dzFromCentre);
         if (distFromCentre > halfW * 1.02 && distToSeat > 1.5) {
-          const [exWorld, ezWorld] = layout.entrance;
-          const dxE = pos.cx - exWorld;
-          const dzE = pos.cz - ezWorld;
-          const distToEntrance = Math.hypot(dxE, dzE);
-          if (distToEntrance > 0.8) {
-            // ORDER 188 fynd 2 — kön ska ha egna platser, inte samma
-            // punkt. Före ORDER 188 hamnade 6-7 gäster i klunga exakt
-            // på entrance-XZ (VO fynd 2026-09-07). Deterministisk
-            // lateral jitter per phaseSeed så samma gäst alltid tar
-            // samma slot; ±1,8 m sprider 6-8 samtidiga gäster utan
-            // överlapp och håller sig inom entrance-approach-området.
-            const jx = Math.sin(pos.phaseSeed) * 1.8;
-            const jz = Math.cos(pos.phaseSeed) * 1.8;
-            effTargetX = exWorld + jx;
-            effTargetZ = ezWorld + jz;
-          }
+          // ORDER 200 fynd 2/4 — waypoint till entrén, ingen jitter.
+          //
+          // Före ORDER 200: entrance-jitter (±1.8 m per sin/cos av
+          // phaseSeed, kommenterad som "ORDER 188 fynd 2 — kön ska ha
+          // egna platser"). Bugen: release-villkoret mätte `distToEntrance`
+          // mot RÅ entrance, inte mot jittered target. Jitter-magnituden
+          // är alltid `sqrt(sin²+cos²) * 1.8 = 1.8 m`, alltid > 0.8 m-
+          // tröskeln → waypoint fyras varje frame → target = samma
+          // jittered position → dsq=0 → gäst STÅR STILL för alltid 1.8 m
+          // utanför entrén. Diagnostiken 2026-09-10 visade 5-10 gäster
+          // fastnade utanför OBB, aldrig nådde seat, sit-blend fyrade
+          // aldrig — grund för fynd 2 (gäst på gräset) + fynd 4 (16 seated
+          // men bara 6 syns; de 10 klumpade utanför nordväggen bortom
+          // kamera-FOV).
+          //
+          // ORDER 188:s "kluster vid entrance" gällde WAITING-gäster
+          // (som placeras via `layout.waitingSlots` — redan distincta
+          // platser). Jitter i seated-branchen var missriktad; SEATED-
+          // gäster går IGENOM entrén, inte queue:ar där. Rakt genom
+          // entrance-punkten är rätt — ingen kluster, gästerna är på
+          // väg in.
+          effTargetX = layout.entrance[0];
+          effTargetZ = layout.entrance[1];
         }
       }
       const dx = effTargetX - pos.cx;
@@ -629,13 +649,26 @@ export function InteriorGuests() {
       // the rig's base stays grounded while the top tilts. Y = seat sit
       // lift + leanY + bob (small vertical wobble from the pattern layer).
       //
-      // ORDER 185 — sittande gäster måste lyftas till stolens sitshöjd
-      // (0,45 m per CLAUDE.md Enhetskontrakt). `poseSeated` sänker höften
-      // 0,41 m internt; utan Y-lyft hänger fötterna ner under golv-nivån
-      // och figuren ser ut att "halvsitta ovanpå golvet" (Vision Owner
-      // observation 2026-09-06 från key=5-vyn i olkrogen). Under sit/stand-
-      // transition (0..1) skalas lyftet linjärt så pose-blenden och
-      // Y-positionen möts vid sit-slutläget.
+      // ORDER 185 — sittande gäster måste lyftas till stolens sitshöjd.
+      // `poseSeated` sänker höften 0,41 m internt; utan Y-lyft hänger
+      // fötterna ner under golv-nivån och figuren ser ut att "halvsitta
+      // ovanpå golvet". Under sit/stand-transition (0..1) skalas lyftet
+      // linjärt så pose-blenden och Y-positionen möts vid sit-slutläget.
+      //
+      // ORDER 200 fynd 1 — läs sitshöjd per plats från kontraktet i
+      // stället för en konstant. Barstolar (STOOL_HEIGHT=0.75) och
+      // träbord-stolar (CHAIR_HEIGHT=0.45) samexisterar i ölkrogen — 12
+      // chair + 8 stool. Innan detta fanns 8 av 20 gäster 30 cm under
+      // sin faktiska stol. Fallback = 0.45 när kontraktet saknas.
+      const targetSitHeight =
+        guest.seatIndex !== null &&
+        guest.seatIndex !== undefined &&
+        guest.seatIndex >= 0 &&
+        seatHeightsForFrame &&
+        guest.seatIndex < seatHeightsForFrame.length
+          ? seatHeightsForFrame[guest.seatIndex]
+          : SEAT_SIT_HEIGHT_FALLBACK_M;
+
       let sitLift = 0;
       // ORDER 197 §2 — "statiskt sittande utan transition" är efter sit-
       // blend har nått phase=1 (dir stannar -1). SEATED_STATES UTAN
@@ -644,10 +677,10 @@ export function InteriorGuests() {
       // — då noll lyft, gästen går som en person på golvet.
       if (pos.sitStandPhase >= 0 && pos.sitStandDir === -1) {
         // Sitter ner: lyft eases in med samma phase som pose-blenden
-        sitLift = SEAT_SIT_HEIGHT_M * pos.sitStandPhase;
+        sitLift = targetSitHeight * pos.sitStandPhase;
       } else if (pos.sitStandPhase >= 0 && pos.sitStandDir === 1) {
         // Reser sig: lyft eases ut
-        sitLift = SEAT_SIT_HEIGHT_M * (1 - pos.sitStandPhase);
+        sitLift = targetSitHeight * (1 - pos.sitStandPhase);
       }
       if (group) {
         group.position.set(
@@ -823,6 +856,15 @@ export function InteriorGuests() {
           rigsRef.current.delete(id);
         }
       }
+    }
+    // ORDER 200 fynd 3 — synka guestPositionsRef med InteriorGuests
+    // egen positionsRef (render-lager, värld-XZ). InteriorStaff läser
+    // detta i stället för sim.guest.position (lokal frame). Overwrite
+    // istället för incremental för att undvika stale entries när
+    // pruning-loopen just tog bort id:n ovan.
+    guestPositionsRef.current.clear();
+    for (const [id, gp] of positionsRef.current) {
+      guestPositionsRef.current.set(id, { x: gp.cx, z: gp.cz });
     }
   });
 
