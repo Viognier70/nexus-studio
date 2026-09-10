@@ -33,7 +33,9 @@ import { GRAY_BOX_CAMERA } from '../content/grythyttan';
 import { useSimState } from '../simulation/SimulationProvider';
 import { COVERS_PER_MEMBER } from '../simulation/team';
 import type { StaffRole, TeamMember } from '../types';
-import { staffPositionsRef, businessRoomRef } from './interiorSharedState';
+import { staffPositionsRef, staffPosesRef, businessRoomRef } from './interiorSharedState';
+import type { SharedStaffPose } from './interiorSharedState';
+import type { TaskType } from '../types';
 import { derivePipCarriers } from '../ui/RoomCardPanel/guestPatterns';
 import {
   PIP_COLOUR,
@@ -46,8 +48,11 @@ import {
   createFigureRig,
   disposeFigureRig,
   applyPose,
+  blendPose,
   poseIdle,
   poseWalk,
+  poseGreet,
+  poseCarry,
   type FigureRig
 } from './figureRig';
 
@@ -165,6 +170,79 @@ interface AnimatedStaff {
   // position, så pose-valet vet om personalen faktiskt rör sig eller
   // står på sin station.
   walkPhase: number;
+  // ORDER 198 — yaw-tillstånd för poseGreet-riktning. `walkYaw` följer
+  // rörelseriktningen (uppdateras vid `movedThisFrame`), `renderedYaw`
+  // är det tal som skrevs till `group.rotation.y` denna frame (så nästa
+  // frame kan interpolera från kvarvarande yaw utan snap). `greetBlend`
+  // ligger på [0..1] och rampar upp mot 1 medan staff står stilla på
+  // en greet-task, ner mot 0 när task upphör eller staff börjar röra
+  // sig igen — så torso-yaw:en mot gästen fejdas in/ut i stället för
+  // att snappa.
+  walkYaw: number;
+  renderedYaw: number;
+  greetBlend: number;
+}
+
+// ORDER 198 — pose-mappning från sim-task till presentationspose.
+//
+// **Motivering:** sim producerar `taskType` för varje aktiv staff-medlem
+// via service.ts:PRIORITY. Presentationslagret läste ingen av dem
+// förrän nu — allt reducerades till poseWalk/poseIdle. `poseGreet` och
+// `poseCarry` fanns i figureRig.ts (ORDER 121 §4) men var explicit
+// "flaggade" som ej valda av renderaren eftersom sim-lagret inte hade
+// task-state. Kommentaren är föråldrad — sim HAR task-state
+// (types.ts:52-77, satt av service.ts:completeStaffTask och
+// findTaskTarget). ORDER 198 stänger gapet.
+//
+// **CARRY_TASKS:** uppgifter där händerna bär något (bricka, karaff,
+// gäst-tallrik). poseCarry blandar in gångbenen via `phase` när staff
+// rör sig, så bärande under promenad är samma pose (figureRig.ts:671
+// dokumentation). `serve`, `welcomeDrink`, `decant`, `clear` bär alla
+// något visuellt — `checkback` gör det inte (tomhänt tillsyn) och
+// `order`/`flambe` är stationära (poseWork skulle passa där, men det
+// är ej i scope för ORDER 198).
+//
+// **GREET_TASKS:** uppgifter där staff möter en gäst ansikte mot
+// ansikte — `greet` (välkomna vid entrén) och `seat` (visa till bord).
+// poseGreet är stationär (arm-vinkning + torso-yaw), så den kickar
+// bara in när staff är nära gästen (`GREET_ARRIVAL_THRESHOLD_M`);
+// under promenaden dit → poseWalk. Ute-vinkeln till gästen sätts via
+// `group.rotation.y` (staff vänder hela kroppen), och `targetYaw=0`
+// skickas till poseGreet så torso/huvud står i linje med kroppen.
+const CARRY_TASKS: ReadonlySet<TaskType> = new Set<TaskType>([
+  'serve',
+  'welcomeDrink',
+  'decant',
+  'clear'
+]);
+const GREET_TASKS: ReadonlySet<TaskType> = new Set<TaskType>(['greet', 'seat']);
+
+// Avstånd i meter till puckens EASE-target (efter ORDER 196:s clamp)
+// där poseGreet börjar väljas. Vi kan inte mäta mot gästens faktiska
+// position eftersom en arriving guest ligger 2,5–6 m utanför entrén
+// (arrival/waiting-slot); ORDER 196 clampar staff-target till entrén
+// när guest ligger utanför OBB, så staff står vid dörren och greetar
+// "genom" väggen. Rätt "har jag kommit fram?"-signal är därför
+// avstånd till target-XZ, inte till guest-XZ. Tröskeln matchar
+// ease-loopens `dsq > step^2`-marginal med lite luft så pose-valet
+// inte flimrar när puckens sub-frame-jitter oscillerar runt target.
+const GREET_ARRIVAL_THRESHOLD_M = 0.8;
+
+// Sekunder för greetBlend att gå från 0 → 1 (eller tvärtom). Matchar
+// SIT_STAND_DURATION i InteriorGuests (0.5s per ORDER 121 §4).
+const GREET_BLEND_DURATION_SEC = 0.5;
+
+/**
+ * Kortaste vinkelinterpolation mellan `from` och `to`. Kopierar
+ * `interpAngle` i InteriorGuests.tsx (ORDER 197 §2 (d)) i stället för
+ * att exportera — funktionen är fyra rader och en gemensam modul
+ * skulle betala mer i indirection än den sparar.
+ */
+function interpAngle(from: number, to: number, k: number): number {
+  const twoPi = Math.PI * 2;
+  let d = to - from;
+  d = ((d + Math.PI) % twoPi + twoPi) % twoPi - Math.PI;
+  return from + d * Math.max(0, Math.min(1, k));
 }
 
 export function InteriorStaff() {
@@ -310,7 +388,13 @@ export function InteriorStaff() {
           cx: home[0],
           cz: home[1],
           jitterSeed: Math.random() * Math.PI * 2,
-          walkPhase: 0
+          walkPhase: 0,
+          // ORDER 198 — nya fält får neutralt startläge. walkYaw=0
+          // (default +Z) bytas ut första gången staff rör sig; tills
+          // dess står figuren i sitt spawn-yaw utan att snappa.
+          walkYaw: 0,
+          renderedYaw: 0,
+          greetBlend: 0
         };
         positionsRef.current.set(member.id, pos);
       }
@@ -384,12 +468,18 @@ export function InteriorStaff() {
       const dsq = dx * dx + dz * dz;
       const step = pace * delta;
       let movedThisFrame = false;
+      let moveDx = 0;
+      let moveDz = 0;
       if (dsq > step * step) {
         const invd = 1 / Math.sqrt(dsq);
-        pos.cx += dx * invd * step;
-        pos.cz += dz * invd * step;
+        moveDx = dx * invd * step;
+        moveDz = dz * invd * step;
+        pos.cx += moveDx;
+        pos.cz += moveDz;
         movedThisFrame = true;
       } else if (dsq > 1e-6) {
+        moveDx = targetX - pos.cx;
+        moveDz = targetZ - pos.cz;
         pos.cx = targetX;
         pos.cz = targetZ;
         movedThisFrame = true;
@@ -397,6 +487,14 @@ export function InteriorStaff() {
       // ORDER 121 §2 — gångfas ökar med stridslängd per meter.
       if (movedThisFrame) {
         pos.walkPhase += (step / STRIDE_LENGTH_M);
+      }
+      // ORDER 198 — spara rörelseriktningens yaw så pose-valet vet vart
+      // figuren är på väg (matchar mönstret i InteriorGuests §2 (c)).
+      // Uppdateras bara vid faktisk rörelse; en stationär staff ärver
+      // sin senaste yaw. `atan2(dx, dz)` ger yaw runt +Y för +Z-facing
+      // frame (samma konvention som seatFacing).
+      if (movedThisFrame && (moveDx * moveDx + moveDz * moveDz) > 1e-8) {
+        pos.walkYaw = Math.atan2(moveDx, moveDz);
       }
 
       // ORDER 046 §4 — task-bob overlay. Applies during service
@@ -444,16 +542,127 @@ export function InteriorStaff() {
             mat.needsUpdate = true;
           }
         });
-        // ORDER 121 §4 — poseWalk vid rörelse, annars poseIdle. poseWork
-        // och poseCarry är FLAGGADE i figureRig.ts (staff har ingen
-        // task-state resp. carry-state i sim-lagret) — presentationslagret
-        // väljer inte dem självt.
+        // ORDER 198 — pose-valet läser sim.staff[i].taskType via
+        // bridgedStaff. CARRY_TASKS → poseCarry (blandar in poseWalk
+        // via `phase` när staff rör sig så bärandet ser rätt ut i
+        // gång). GREET_TASKS → poseGreet när staff står nära gästen
+        // (inom GREET_ARRIVAL_THRESHOLD_M) och står stilla; poseWalk
+        // under promenad dit. Övrigt behåller ORDER 121 §4-beteendet
+        // (poseWalk om rörelse, annars poseIdle).
+        //
+        // Yaw: `group.rotation.y` sätts till walkYaw som default; för
+        // greet-poser interpoleras yaw mot vektorn till gästen så
+        // hela kroppen vänder sig (targetYaw i poseGreet är då =0).
+        // `greetBlend` går 0→1 medan greet-villkoret gäller, 1→0 när
+        // det upphör — så torso-vridningen fejdas i stället för att
+        // snappa. Matchar SIT_STAND-mönstret i InteriorGuests.
         const t = sim.simTime + pos.jitterSeed;
-        if (movedThisFrame) {
+        const taskType: TaskType | null = bridgedStaff?.taskType ?? null;
+        const isCarry = taskType !== null && CARRY_TASKS.has(taskType);
+        const isGreetTask = taskType !== null && GREET_TASKS.has(taskType);
+        // Har staff hunnit fram till sin ease-target? `dx/dz` beräknades
+        // före steget. Vi kräver INTE `!movedThisFrame` — vid högre
+        // sim-speed (>1×) hinner sim genomföra hela greet-tasken (4
+        // ticks = 0,8 sim-sek) på färre frames än puckens ease behöver
+        // för att helt landa; kravet skulle spärra poseGreet i realistiska
+        // provspel. Distanströskeln räcker: när staff är inom
+        // GREET_ARRIVAL_THRESHOLD_M av (den ORDER 196-clampade) target
+        // spelar det ingen roll om puckens sub-frame-jitter ännu räknas
+        // som "movedThisFrame".
+        const distToTargetSq = dx * dx + dz * dz;
+        const nearGreetTarget =
+          isGreetTask &&
+          distToTargetSq <= GREET_ARRIVAL_THRESHOLD_M * GREET_ARRIVAL_THRESHOLD_M;
+
+        // Beräkna yaw mot gästen för greet-posen (samma frame som
+        // pose väljs; ingen memorering behövs eftersom `taskGuest`
+        // följer sim och `pos.cx/cz` följer render-lagret).
+        let guestYaw = pos.walkYaw;
+        if (taskGuest) {
+          const gdx = taskGuest.position.x - pos.cx;
+          const gdz = taskGuest.position.z - pos.cz;
+          if (gdx * gdx + gdz * gdz > 1e-6) {
+            guestYaw = Math.atan2(gdx, gdz);
+          }
+        }
+
+        // Uppdatera greetBlend mot måltillståndet (1 om nearGreetTarget,
+        // annars 0). delta*duration-invers = rate per sekund.
+        const blendRate = delta / GREET_BLEND_DURATION_SEC;
+        const targetBlend = nearGreetTarget ? 1 : 0;
+        if (pos.greetBlend < targetBlend) {
+          pos.greetBlend = Math.min(targetBlend, pos.greetBlend + blendRate);
+        } else if (pos.greetBlend > targetBlend) {
+          pos.greetBlend = Math.max(targetBlend, pos.greetBlend - blendRate);
+        }
+
+        // Välj pose. Ordningsföljd:
+        //   1. greet (om vi är nära gästen med greet-task) — poseGreet
+        //      med targetYaw=0 (kroppen är redan vänd via renderedYaw
+        //      nedan). Om greetBlend<1 blandar vi in poseIdle/poseWalk
+        //      så inhoppet ser mjukt ut.
+        //   2. carry — poseCarry, phase= walkPhase om rörelse, annars
+        //      null (armar bär, ben står stilla).
+        //   3. fallback — poseWalk om rörelse, annars poseIdle.
+        let poseName: SharedStaffPose['poseName'];
+        if (nearGreetTarget || pos.greetBlend > 0) {
+          // Stationär greet med torso-yaw = 0 (kroppen håller riktningen).
+          poseName = 'poseGreet';
+          if (pos.greetBlend >= 0.999) {
+            applyPose(rig, poseGreet(t, { targetYaw: 0, side: 1 }));
+          } else {
+            // Blend mellan idle/walk och greet så inhoppet dämpas.
+            const baseIsWalk = movedThisFrame;
+            const base = baseIsWalk ? poseWalk(pos.walkPhase) : poseIdle(t);
+            const greet = poseGreet(t, { targetYaw: 0, side: 1 });
+            // blendPose (figureRig.ts:475) väger båda pose-uppsättningarna
+            // linjärt per led — samma pattern som SIT_STAND-blenden i
+            // InteriorGuests. Alla sex poser sätter samma led-set (se
+            // figureRig.ts:698 POSE_JOINT_NOTES), så viktningen är
+            // trygg.
+            applyPose(rig, blendPose(base, greet, pos.greetBlend));
+            if (pos.greetBlend < 0.5) {
+              poseName = baseIsWalk ? 'poseWalk' : 'poseIdle';
+            }
+          }
+        } else if (isCarry) {
+          poseName = 'poseCarry';
+          applyPose(
+            rig,
+            poseCarry(t, { phase: movedThisFrame ? pos.walkPhase : null })
+          );
+        } else if (movedThisFrame) {
+          poseName = 'poseWalk';
           applyPose(rig, poseWalk(pos.walkPhase));
         } else {
+          poseName = 'poseIdle';
           applyPose(rig, poseIdle(t));
         }
+
+        // Yaw på group: interpolera mellan senaste renderad yaw och
+        // ny mål-yaw. Målet är guestYaw när greetBlend > 0 (så staff
+        // vänder sig mot gästen medan blend rampar upp), annars
+        // walkYaw. Interpolationssteget matchar greetBlend-rampen så
+        // rörelsen är samordnad.
+        const targetYawRad = pos.greetBlend > 0 ? guestYaw : pos.walkYaw;
+        // Snabb ease på yaw: `1 - exp(-delta * k)` med k=6/s ger ~63%
+        // konvergens per 0.17s — snappar snabbt utan att flimra.
+        const yawEase = 1 - Math.exp(-delta * 6);
+        pos.renderedYaw = interpAngle(pos.renderedYaw, targetYawRad, yawEase);
+
+        if (grp) {
+          grp.rotation.y = pos.renderedYaw;
+        }
+
+        // Publicera pose-val till DEV-hook.
+        staffPosesRef.current.set(member.id, {
+          poseName,
+          taskType,
+          targetGuestId: bridgedStaff?.targetGuestId ?? null,
+          moving: movedThisFrame,
+          yaw: pos.renderedYaw,
+          greetYaw: poseName === 'poseGreet' ? 0 : null
+        });
       }
 
       // Publish position for the seat-attention system in
