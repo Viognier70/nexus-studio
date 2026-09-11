@@ -1,0 +1,212 @@
+{
+  "simTime": 195.19999999999746,
+  "seatedIdsCount": 8,
+  "guestCount": 9,
+  "cameraDist": 54.42808683559094,
+  "cameraTarget": 24,
+  "layout": {
+    "centre": [
+      31.597500000000004,
+      -16.7375
+    ],
+    "width": 14.509200552894312,
+    "depth": 10.086506289734302,
+    "entrance": [
+      32.40935134463978,
+      -10.132607704625523
+    ]
+  },
+  "contract": {
+    "class": "ölkrogen",
+    "seatCount": 20,
+    "stationCount": 4
+  },
+  "guests": [
+    {
+      "id": "gst-6",
+      "state": "dining",
+      "isSeatedState": true,
+      "seatIndex": 12,
+      "seatXZ": [
+        35.34719669816977,
+        -18.608936526237205
+      ],
+      "hasRenderPos": true,
+      "renderPos": {
+        "cx": 35.34719669816977,
+        "cz": -18.608936526237205
+      },
+      "sitStandDir": -1,
+      "sitStandPhase": 1,
+      "distFromSeat": 0,
+      "distFromCentre": 4.19,
+      "insideOBB": true
+    },
+    {
+      "id": "gst-7",
+      "state": "dining",
+      "isSeatedState": true,
+      "seatIndex": 13,
+      "seatXZ": [
+        34.59287368311941,
+        -18.516217655637263
+      ],
+      "hasRenderPos": true,
+      "renderPos": {
+        "cx": 34.59287368311941,
+        "cz": -18.516217655637263
+      },
+      "sitStandDir": -1,
+      "sitStandPhase": 1,
+      "distFromSeat": 0,
+      "distFromCentre": 3.48,
+      "insideOBB": true
+    },
+    {
+      "id": "gst-8",
+      "state": "dining",
+      "isSeatedState": true,
+      "seatIndex": 14,
+      "seatXZ": [
+        33.83855066806904,
+        -18.423498785037324
+      ],
+      "hasRenderPos": true,
+      "renderPos": {
+        "cx": 33.83855066806904,
+        "cz": -18.423498785037324
+      },
+      "sitStandDir": -1,
+      "sitStandPhase": 1,
+      "distFromSeat": 0,
+      "distFromCentre": 2.8,
+      "insideOBB": true
+    },
+    {
+      "id": "gst-9",
+      "state": "ordering",
+      "isSeatedState": true,
+      "seatIndex": 15,
+      "seatXZ": [
+        33.08422765301868,
+        -18.330779914437382
+      ],
+      "hasRenderPos": true,
+      "renderPos": {
+        "cx": 33.08422765301868,
+        "cz": -18.330779914437382
+      },
+      "sitStandDir": -1,
+      "sitStandPhase": 1,
+      "distFromSeat": 0,
+      "distFromCentre": 2.18,
+      "insideOBB": true
+    },
+    {
+      "id": "gst-10",
+      "state": "ordering",
+      "isSeatedState": true,
+      "seatIndex": 16,
+      "seatXZ": [
+        32.32990463796831,
+        -18.23806104383744
+      ],
+      "hasRenderPos": true,
+      "renderPos": {
+        "cx": 32.32990463796831,
+        "cz": -18.23806104383744
+      },
+      "sitStandDir": -1,
+      "sitStandPhase": 1,
+      "distFromSeat": 0,
+      "distFromCentre": 1.67,
+      "insideOBB": true
+    },
+    {
+      "id": "gst-13",
+      "state": "ordering",
+      "isSeatedState": true,
+      "seatIndex": 17,
+      "seatXZ": [
+        31.575581622917948,
+        -18.145342173237502
+      ],
+      "hasRenderPos": true,
+      "renderPos": {
+        "cx": 31.575581622917948,
+        "cz": -18.145342173237502
+      },
+      "sitStandDir": -1,
+      "sitStandPhase": 1,
+      "distFromSeat": 0,
+      "distFromCentre": 1.41,
+      "insideOBB": true
+    },
+    {
+      "id": "gst-14",
+      "state": "ordering",
+      "isSeatedState": true,
+      "seatIndex": 18,
+      "seatXZ": [
+        30.821258607867584,
+        -18.05262330263756
+      ],
+      "hasRenderPos": true,
+      "renderPos": {
+        "cx": 30.821258607867584,
+        "cz": -18.05262330263756
+      },
+      "sitStandDir": -1,
+      "sitStandPhase": 1,
+      "distFromSeat": 0,
+      "distFromCentre": 1.53,
+      "insideOBB": true
+    },
+    {
+      "id": "gst-16",
+      "state": "ordering",
+      "isSeatedState": true,
+      "seatIndex": 19,
+      "seatXZ": [
+        30.06693559281722,
+        -17.95990443203762
+      ],
+      "hasRenderPos": true,
+      "renderPos": {
+        "cx": 30.06693559281722,
+        "cz": -17.95990443203762
+      },
+      "sitStandDir": -1,
+      "sitStandPhase": 1,
+      "distFromSeat": 0,
+      "distFromCentre": 1.96,
+      "insideOBB": true
+    },
+    {
+      "id": "gst-18",
+      "state": "arriving",
+      "isSeatedState": false,
+      "seatIndex": -1,
+      "seatXZ": null,
+      "hasRenderPos": true,
+      "renderPos": {
+        "cx": 35.76159387475128,
+        "cz": -0.9420231076500374
+      },
+      "sitStandDir": 0,
+      "sitStandPhase": -1,
+      "distFromSeat": null,
+      "distFromCentre": 16.34,
+      "insideOBB": false
+    }
+  ],
+  "summary": {
+    "totalGuests": 9,
+    "seatedFamilyCount": 8,
+    "seatedWithRenderPos": 8,
+    "seatedNearSeat": 8,
+    "seatedInsideOBB": 8,
+    "seatedSitBlendComplete": 8,
+    "seatedFarFromSeatButInsideOBB": 0
+  }
+}

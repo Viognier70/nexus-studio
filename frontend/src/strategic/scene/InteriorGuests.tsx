@@ -564,6 +564,47 @@ export function InteriorGuests() {
         }
       }
 
+      // ORDER 209 — LATE-STATE SNAP. VO-inspelning 2026-09-11 16:45,
+      // femte inspelningen med samma mönster: "sim säger fullt, rummet
+      // är tomt". Diagnostik (order209-diagnostic.mjs @ simTime=233s):
+      // 8/8 seated-family-gäster med `dir=0 phase=-1` (sit-blend aldrig
+      // fyrat) och distToSeat 7-15 m. Rot-orsak: sim.tickGuests
+      // transitionerar 'seated' → 'ordering' efter bara 4 sim-sek
+      // (service.ts:391) medan render-walken vid 1.2 m/s täcker bara
+      // 4.8 m under den tiden. Från arrival-arc (12-15 m från seat) är
+      // det omöjligt att hinna fram innan sim går vidare. Sim ligger
+      // sedan i 'dining' i 30+ sim-sek medan render står stilla mellan
+      // spawnpunkten och seat.
+      //
+      // ORDER 197 sade "walk-in, teleportera inte" för state='seated'.
+      // Den regeln bevaras: så länge state är EXAKT 'seated', gå. Men
+      // när state redan passerat till 'ordering'/'dining'/'paying'/
+      // 'sleeping' är fasen "har suttit ett tag" — då är det värre att
+      // rendera en gäst som stapplar 15 m från sin stol än att snappa
+      // fram. Gränsen 1.5 m fångar "har inte hunnit fram" utan att
+      // trigga för mikro-jitter kring en gäst som redan sitter.
+      const LATE_SEATED_STATES: readonly string[] = ['ordering', 'dining', 'paying', 'sleeping'];
+      if (
+        LATE_SEATED_STATES.includes(guest.state) &&
+        pos.sitStandDir === 0 &&
+        pos.sitStandPhase < 0
+      ) {
+        const seatIdx = guest.seatIndex ?? -1;
+        if (seatIdx >= 0 && seatIdx < seatsForFrame.length) {
+          const [seatX, seatZ] = seatsForFrame[seatIdx];
+          const dToSeat = Math.hypot(pos.cx - seatX, pos.cz - seatZ);
+          if (dToSeat > 1.5) {
+            const seatYaw = seatFacingsForFrame?.[seatIdx] ?? 0;
+            pos.cx = seatX;
+            pos.cz = seatZ;
+            pos.sitStandPhase = 1;
+            pos.sitStandDir = -1;
+            pos.walkYaw = seatYaw;
+            pos.blendStartYaw = seatYaw;
+          }
+        }
+      }
+
       // Advance sit / stand phase (0..1). Övergången konsumeras i
       // pose-valet nedan (blendPose), inte som Y-offset.
       if (pos.sitStandDir !== 0 && pos.sitStandPhase >= 0) {
