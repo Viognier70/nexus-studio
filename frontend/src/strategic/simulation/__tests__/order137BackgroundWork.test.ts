@@ -245,26 +245,12 @@ describe('ORDER 137 §4 — jämförelse mot ORDER 134-baseline', () => {
       ).toBeGreaterThanOrEqual(-0.02);
     }
 
-    // Ölkrogen är utanför scope per §2.3 — ingen bg-work — så midMass
-    // ska vara oförändrad inom seed-variation.
-    //
-    // ORDER 187 — utökad tolerans till ≤ 3pp. Party-spawn (par/trio)
-    // för ölkrogen ändrar arrival-mönstret ~15% (mer gäster i samma
-    // tick, mer klustring på seat-grupper). midMass observeras nu
-    // -2.7pp mot baseline — inom förväntat spann givet party-spawn men
-    // utanför ORDER 137:s pre-party-tolerans. Höjer tröskel till 3pp;
-    // en egen kalibrerings-order kan strama in när party-parametrarna
-    // (PARTY_SOLO_P etc.) är slutliga.
-    //
-    // ORDER 202 §4 — assertionen återinförd. ORDER 201:s temporära
-    // ölkrogen-inkludering och test-borttagning reverterade eftersom
-    // mep-påfyllning är egen spelbalans-order (VO-direktiv 2026-09-10
-    // kl. 14:00).
-    for (const c of comparison.filter((c) => c.business === 'ölkrogen')) {
-      expect(
-        Math.abs(c.deltaMid),
-        `ölkrogen/${c.staffCount} midMass ändrades: ${(c.deltaMid * 100).toFixed(1)}pp. §2.3 säger ölkrogen är utanför scope; ORDER 187 höjer tolerans från 2 till 3pp pga party-spawn.`
-      ).toBeLessThanOrEqual(0.03);
-    }
+    // ORDER 210 — ölkrogen INKLUDERAS nu i bg-work per VO-direktiv
+    // 2026-09-11 (efter ORDER 202 §4M-mätrapporten). Refill-mängder
+    // kalibrerade mot per-pass-consumption (`MEP_REFILL_BY_TASK` i
+    // service.ts). Konsekvens: midMass för ölkrogen SKA röra sig —
+    // bg-tasks stabiliserar den mid-service. Ingen tolerans-assertion:
+    // om framtida kalibrering vill sätta specifik målform, öppna egen
+    // order. Ölkrogen-scope-taggen från ORDER 137 §2.3 upphävd hit.
   }, 300_000);
 });
