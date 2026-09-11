@@ -607,23 +607,69 @@ function isBackgroundTask(t: TaskType | null): boolean {
   return t != null && BACKGROUND_TASKS.has(t);
 }
 
-// ORDER 137 §2.3 — bakgrundsarbete per verksamhet. Foodtrucken och
-// ölkrogen står tomma: ORDER 134 visade att foodtrucken är trogen på
-// 32 % mittmassa (bg-arbete skulle bara döda det), och ordern lämnar
-// ölkrogens bryggeri-arbete som egen order. Kvarterskrogen och
-// gästgiveriet får alla fyra typerna — det är där mittmassan i
-// ORDER 134 var 8-9 % som ska stiga. (Nya nyckelnamn per ORDER 140.)
-// ORDER 137 §2.3 (återställd av ORDER 202 §4): ölkrogen deferrad från
-// bg-work. ORDER 201:s inkludering av ölkrogen reverterad — VO-direktiv
-// 2026-09-10 kl. 14:00: mep-refill är egen spelbalans-order, mät
-// consumption vs påfyllning per pass först. Se `frontend/scripts/
-// order202-mep-measurement.mjs`.
+// ORDER 210 (spelbalans, tidigare tecknad som "fynd 4" i ORDER 202) —
+// ölkrogen får bg-tasks. Föregående lägen:
+//   ORDER 137 §2.3: `[]` — bryggeri-arbete deferrat.
+//   ORDER 201 (2026-09-10 fm): `['misEnPlace','dish','restock','clean']`
+//     — men utan mätning; reverterad av ORDER 202 §4.
+//   ORDER 202 §4 (revert + mät): `[]` + mätrapport `order202-mep/`.
+//   ORDER 209 §4 (deferrat fynd 2 "On break vid 16 s" hit).
+//   ORDER 210 (denna): `['misEnPlace','dish','restock','clean']` med
+//     refill-mängder kalibrerade mot mätrapporten (se
+//     `MEP_REFILL_BY_TASK` nedan). Bryggeri-specifika tasks (mash-check,
+//     tapp-koll) är fortfarande egen order — dessa fyra räcker för att
+//     hålla mep vid liv OCH ge staff något att göra under prep (löser
+//     VO-inspelning 2026-09-11 16:45 fynd 2 "On break på alla tre
+//     roller vid 16 s"; utan bg-tasks under prep var workload=0 →
+//     deriveActions valde "On break").
 const BACKGROUND_TASKS_BY_BUSINESS: Record<string, readonly TaskType[]> = {
   kvarterskrogen: ['misEnPlace', 'dish', 'restock', 'clean'],
   gästgiveriet:   ['misEnPlace', 'dish', 'restock', 'clean'],
   foodtrucken:    [],
-  ölkrogen:       []
+  ölkrogen:       ['misEnPlace', 'dish', 'restock', 'clean']
 };
+
+// ORDER 210 — refill-mängder kalibrerade mot ORDER 202 §4M-mätrapporten
+// (`frontend/reports/order202-mep/mep-measurement.json`). Per-guest
+// consumption × 96-guest-pass = totalt behov:
+//   napkins  0.03 × 96 = 2.88 per pass
+//   cutlery  0.025 × 96 = 2.40 per pass
+//   garnish  0.04 × 96 = 3.84 per pass
+//   stations 0.01 × 96 = 0.96 per pass
+//   ice      0.02 × 96 = 1.92 per pass
+//
+// Vid ~15 completions per bg-task-typ per pass (mätrapportens task-
+// observations minus prep-fönstret, grovt räknat) täcker fördelningen
+// nedan behovet med lite marginal så prepReadiness håller sig över
+// MEP_HIT_THRESHOLD (0.2) genom hela passet:
+//   napkins  15 × (0.10 + 0.10) = 3.0 (behov 2.88)
+//   cutlery  15 × (0.08 + 0.15) = 3.45 (behov 2.40)
+//   garnish  15 × (0.10 + 0.15) = 3.75 (behov 3.84)  (marginellt under)
+//   stations 15 × (0.05 + 0.15) = 3.00 (behov 0.96)  (bra marginal)
+//   ice      15 × (0.15) = 2.25 (behov 1.92)
+//
+// Om VO tycker mep-nivåerna är för höga/låga per rumsdiagnostiken:
+// justera denna tabell. Clamp 0..1 i replenishFromBackgroundTask
+// gör att övertäckt refill inte spiller.
+const MEP_REFILL_BY_TASK: Record<string, Record<string, number>> = {
+  misEnPlace: { napkins: 0.10, cutlery: 0.08, garnish: 0.10 },
+  dish:       { cutlery: 0.15 },
+  restock:    { napkins: 0.10, garnish: 0.15, ice: 0.15, stations: 0.05 },
+  clean:      { stations: 0.15 }
+};
+
+function replenishFromBackgroundTask(state: SimulationState, taskType: TaskType): void {
+  const refill = MEP_REFILL_BY_TASK[taskType];
+  if (!refill) return;
+  const readiness = state.day.prepReadiness;
+  if (!readiness) return;
+  const next: Record<string, number> = { ...readiness };
+  for (const [key, amount] of Object.entries(refill)) {
+    const cur = next[key] ?? 0;
+    next[key] = Math.min(1, cur + amount);
+  }
+  state.day = { ...state.day, prepReadiness: next };
+}
 
 function anyDirectTaskAvailable(state: SimulationState): boolean {
   for (const type of PRIORITY) {
@@ -855,18 +901,18 @@ function completeStaffTask(state: SimulationState, staff: StaffMember) {
   staff.taskDuration = 0;
   staff.targetGuestId = null;
 
-  // ORDER 202 §4 — ORDER 201:s refill-logik REVERTERAD. VO-direktiv
-  // 2026-09-10 kl. 14:00: "Egen order, spelbalans. Redovisa förbrukning
-  // mot påfyllning per pass först." Refill-mängderna som ORDER 201 satte
-  // (misEnPlace {napkins:+0.08, cutlery:+0.08, garnish:+0.08}, dish
-  // {cutlery:+0.15}, restock {napkins:+0.10, garnish:+0.10, ice:+0.10,
-  // stations:+0.05}, clean {stations:+0.10}) var kalibrerade mot antagen
-  // 3-5 tasks per typ per pass utan mätning. Mät-scriptet
-  // `frontend/scripts/order202-mep-measurement.mjs` (denna order §M)
-  // producerar consumption + task-frekvens per pass så nästa order kan
-  // sätta korrekta refill-värden. Tills dess: mep faller mot 0 under
-  // passet — det matchar VO-inspelningen 2026-09-10 13:30 och läses
-  // som en spelbalans-fråga.
+  // ORDER 210 — bakgrunds-tasks fyller på prep-readiness. Kalibrerad
+  // mot ORDER 202 §4M-mätrapporten (`frontend/reports/order202-mep/
+  // mep-measurement.json`). Refill-mängderna i `MEP_REFILL_BY_TASK`
+  // ovan; kommentaren där dokumenterar per-pass-räkningen. Bg-tasks
+  // för ölkrogen aktiverade i samma order (`BACKGROUND_TASKS_BY_BUSINESS.
+  // ölkrogen`). Fyras HÄR före `!guest`-guarden så bg-tasks (som har
+  // targetGuestId=null) triggar refill innan tidig retur.
+  if (!guest && type !== null && BACKGROUND_TASKS.has(type)) {
+    replenishFromBackgroundTask(state, type);
+    return;
+  }
+
   if (!guest) return;
 
   const now = state.simTime;
