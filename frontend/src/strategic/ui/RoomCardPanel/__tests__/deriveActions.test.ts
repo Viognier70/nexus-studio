@@ -42,6 +42,7 @@ function makeStaff(overrides: Partial<StaffMember> = {}): StaffMember {
     position: { x: 0, z: 0 },
     targetPosition: { x: 0, z: 0 },
     moveProgress: 0,
+    taskQueue: [],
     ...overrides
   };
 }

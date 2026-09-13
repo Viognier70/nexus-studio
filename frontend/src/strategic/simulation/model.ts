@@ -58,7 +58,9 @@ export function makeStaff(count: 2 | 3 | 4): StaffMember[] {
       targetGuestId: null,
       position: { ...home },
       targetPosition: { ...home },
-      moveProgress: 1
+      moveProgress: 1,
+      // ORDER 211 (C1) — tom kö vid start; scheduleTasks fyller den per tick.
+      taskQueue: []
     });
   }
   return staff;
