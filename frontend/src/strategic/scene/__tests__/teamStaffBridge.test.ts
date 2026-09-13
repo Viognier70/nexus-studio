@@ -15,7 +15,7 @@ function makeStaff(id: string, role: StaffRole, targetGuestId: string | null = n
   return {
     id, role, workload: 0, taskType: null, taskProgress: 0, taskDuration: 0,
     targetGuestId, position: { x: 0, z: 0 }, targetPosition: { x: 0, z: 0 },
-    moveProgress: 0
+    moveProgress: 0, taskQueue: []
   };
 }
 

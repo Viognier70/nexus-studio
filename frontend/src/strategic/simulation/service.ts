@@ -1,7 +1,7 @@
 import { INTERIOR } from '../content/layout';
 import { businessHasOvernight, businessHasSeats, capacityForBusiness } from '../business/businessClass';
 import type { BusinessClass } from '../business/businessClass';
-import type { Guest, SimulationState, StaffMember, TaskType, Vec2 } from '../types';
+import type { Guest, SimulationState, StaffMember, TaskAssignment, TaskType, Vec2 } from '../types';
 import { taskDurationTicks } from './economics';
 import {
   HAPPY_THRESHOLD,
@@ -671,12 +671,10 @@ function replenishFromBackgroundTask(state: SimulationState, taskType: TaskType)
   state.day = { ...state.day, prepReadiness: next };
 }
 
-function anyDirectTaskAvailable(state: SimulationState): boolean {
-  for (const type of PRIORITY) {
-    if (findTaskTarget(state, type)) return true;
-  }
-  return false;
-}
+// ORDER 211 (C1) — `anyDirectTaskAvailable` togs bort som konsumtion i
+// tickStaff: preemption baseras nu per-staff på `staff.taskQueue.length > 0`
+// i stället för global sökning. Utan konsumenter är hjälparen död kod;
+// släpps bort och kan återöppnas i C2 vid roll-baserad tilldelning.
 
 // Roterar bakgrundstyper deterministiskt per personal + simtid så att
 // alla fyra uppgifter förekommer under en service — mise en place följs
@@ -715,48 +713,115 @@ function beginBackgroundTask(state: SimulationState, staff: StaffMember, type: T
   }
 }
 
+// ORDER 211 (C1) — kö-kapacitet vid vilken workload mättas till 1.0.
+// `staff.workload = min(1, (taskQueue.length + (taskType ? 1 : 0)) / QUEUE_CAPACITY)`.
+// Vald till 4 så att pressure-bands (workload ≥ 0.7 för strained,
+// ≥ 0.95 för hurried) är reachable när servitören har 1 aktiv + 2-3
+// köade, snarare än 1 aktiv + 4-5 (som QUEUE_CAPACITY=6 skulle kräva).
+// Kalibreringen är den enda kalibreringspunkten i C1 — om ORDER 134-
+// sveppet visar för mycket mid-mass efter C1 → sänk QUEUE_CAPACITY; för
+// lite → höj. Vald 4 för att ORDER 087 face-distribution-testet ska
+// kunna nå pressure-bands i en 60-min dinner utan att göra rhythm-
+// kalibrering till egen order redan i C1.
+const QUEUE_CAPACITY = 4;
+
+/**
+ * ORDER 211 (C1) — enkel scheduler. Iterar PRIORITY och lägger varje
+ * outsatt (guest, taskType) i den staff-kö som är kortast. Ingen roll-
+ * mapping (C2), ingen chain-modell (§2.2 i utkastet). Duplicerar inte:
+ * om (guest, type) redan är aktiv eller köad hoppar vi.
+ *
+ * Motivering: schemaläggaren är föråldrad greedy PRIORITY-plockning men
+ * FLYTTAD från tickStaff till en egen fas som körs FÖRE tickStaff. Det
+ * gör att när tickStaff sedan konsumerar kön, staff-medlemmarnas
+ * `taskQueue.length` blir en giltig mätning av backlog (medan gamla
+ * PRIORITY-loopen konsumerade tasks direkt utan att lämna spår).
+ */
+function scheduleTasks(state: SimulationState) {
+  if (state.staff.length === 0) return;
+
+  // 1. Städa döda gäster ur köerna.
+  const activeGuestIds = new Set(state.guests.map((g) => g.id));
+  for (const staff of state.staff) {
+    if (staff.taskQueue.length > 0) {
+      staff.taskQueue = staff.taskQueue.filter(
+        (t) => t.targetGuestId === null || activeGuestIds.has(t.targetGuestId)
+      );
+    }
+  }
+
+  // 2. För varje PRIORITY-type, hitta första tillgänglig gäst och köa den
+  //    på kortast kö. `alreadyBoundOrQueued`-checken förhindrar duplikat
+  //    över alla staff (inkl. aktiv taskType).
+  for (const type of PRIORITY) {
+    const targetGuestId = findTaskTarget(state, type);
+    if (!targetGuestId) continue;
+
+    const alreadyBoundOrQueued = state.staff.some(
+      (s) =>
+        (s.taskType === type && s.targetGuestId === targetGuestId) ||
+        s.taskQueue.some(
+          (t) => t.type === type && t.targetGuestId === targetGuestId
+        )
+    );
+    if (alreadyBoundOrQueued) continue;
+
+    // Kortast kö vinner. Vid oavgjort: tidigare index (första staff).
+    let bestStaff = state.staff[0];
+    for (const s of state.staff) {
+      if (s.taskQueue.length < bestStaff.taskQueue.length) bestStaff = s;
+    }
+    const assignment: TaskAssignment = {
+      id: `${targetGuestId}:${type}:${state.simTime}`,
+      type,
+      targetGuestId,
+      scheduledAt: state.simTime
+    };
+    bestStaff.taskQueue.push(assignment);
+  }
+}
+
 export function tickStaff(state: SimulationState) {
   const now = state.simTime;
-  // ORDER 137 §2.2 — bakgrundsarbete-preemption. Beräkna EN gång per
-  // tick om det finns någon direkt uppgift att ta. Om ja, ska pågående
-  // bakgrundsuppgifter avbrytas — en väntande gäst får aldrig blockeras
-  // av att personalen städar. `anyDirectTaskAvailable` iterar PRIORITY
-  // och returnerar första hit; findTaskTarget är gäst-drivet så det
-  // är rimligt billigt.
-  const directAvailable = state.staff.some((s) => isBackgroundTask(s.taskType))
-    ? anyDirectTaskAvailable(state)
-    : false;
+
+  // ORDER 211 (C1) — schemaläggaren fyller köer före tickStaff.
+  scheduleTasks(state);
 
   for (const staff of state.staff) {
     stepEntityMotion(staff);
 
     if (staff.taskType) {
-      // Preempt: om personal är i en bakgrundsuppgift och direkt
-      // uppgift finns, avbryt så nästa steg i loopen väljer den direkta.
-      if (isBackgroundTask(staff.taskType) && directAvailable) {
+      // ORDER 137 §2.2 — bg-task preemption när gäst-tasks väntar i kön.
+      // Ersätter den gamla `anyDirectTaskAvailable`-globala kontrollen med
+      // en per-staff-kö-koll: om jag har en bg-task pågående OCH direkt-
+      // tasks väntar i min egen kö, avbryt bg och plocka kön-fronten.
+      if (isBackgroundTask(staff.taskType) && staff.taskQueue.length > 0) {
         completeStaffTask(state, staff);
-        // Fall genom till task-selection nedan.
+        // Fall genom till task-val nedan.
       } else {
         staff.taskProgress += 1;
         if (staff.taskProgress >= staff.taskDuration) {
           completeStaffTask(state, staff);
         }
+        // ORDER 211 (C1) — härled workload ur kön (inkl. aktiv task).
+        setWorkloadFromQueue(staff);
         continue;
       }
     }
 
-    // Look for the next task.
-    for (const type of PRIORITY) {
-      const targetGuestId = findTaskTarget(state, type);
-      if (targetGuestId) {
-        beginStaffTask(state, staff, type, targetGuestId);
-        break;
+    // ORDER 211 (C1) — plocka nästa direkta task ur kön i stället för
+    // greedy PRIORITY-loop. Schemaläggaren har redan valt vilka som
+    // hamnar där; tickStaff bara konsumerar fronten.
+    if (staff.taskQueue.length > 0) {
+      const next = staff.taskQueue.shift();
+      if (next && next.targetGuestId) {
+        beginStaffTask(state, staff, next.type, next.targetGuestId);
       }
     }
 
-    // ORDER 137 — inga direkta uppgifter tillgängliga, prova bakgrunds-
-    // arbete. Verksamheter utan bakgrundslista (foodtruck, ölkrogen)
-    // returnerar null och personalen driver hem som förut.
+    // ORDER 137 — inga direkta uppgifter i kön, prova bakgrundsarbete.
+    // Verksamheter utan bakgrundslista (foodtruck) returnerar null och
+    // personalen driver hem som förut.
     if (!staff.taskType) {
       const bg = pickBackgroundTaskFor(state, staff);
       if (bg) beginBackgroundTask(state, staff, bg);
@@ -773,38 +838,22 @@ export function tickStaff(state: SimulationState) {
       }
     }
 
-    // Workload decays when idle (ingen taskType alls) eller styrs mot
-    // bg-target när bakgrundsuppgift pågår. Direkta uppgifter hanteras
-    // i separat loop nedan så grow-rate 0,05/s bevaras oförändrad.
-    if (!staff.taskType) {
-      staff.workload = Math.max(0, staff.workload - 0.03 * TICK_SECONDS);
-    } else if (isBackgroundTask(staff.taskType)) {
-      // ORDER 137 §2 — bakgrundsarbete målsöker en steady-state
-      // (~0,4) i stället för att växa mot 1. Motivet är modell-trohet,
-      // inte tröskeljustering (§3 förbjuder ansiktsbanden 0,95/0,7,
-      // inte rate per task-typ): att städa eller fylla på flaskor
-      // ger inte samma push som en väntande gäst — arbetet håller
-      // personalen aktiv men inte pressad. Approach 0,5/s betyder att
-      // en pinnad workload (efter en direktuppgift) svalnar mot 0,4
-      // på ~2 sim-sekunder när bg-uppgift börjar. Under en bg-uppgift
-      // som varar 1-2 s nås därför ungefär mittspannet 0,3-0,5, vilket
-      // ORDER 131:s histogram var tomt på.
-      const BG_TARGET = 0.4;
-      const BG_APPROACH_PER_SEC = 0.5;
-      const delta = (BG_TARGET - staff.workload) * BG_APPROACH_PER_SEC * TICK_SECONDS;
-      staff.workload = Math.max(0, Math.min(1, staff.workload + delta));
-    }
-    // Direct-task-grow hanteras i sista loopen nedan (oförändrat).
-  }
-
-  // Recompute an average workload signal — direkta uppgifter växer
-  // med oförändrad rate 0,05/s (§3 förbud mot tröskeljustering respekteras).
-  for (const staff of state.staff) {
-    if (staff.taskType && !isBackgroundTask(staff.taskType)) {
-      staff.workload = Math.min(1, staff.workload + 0.05 * TICK_SECONDS);
-    }
+    setWorkloadFromQueue(staff);
   }
   void now;
+}
+
+/**
+ * ORDER 211 (C1) — härled workload ur `taskQueue.length` + `taskType ? 1 : 0`.
+ * Ersätter rate-modellen (+0.05 direkt / -0.03 idle / bg-approach 0.4).
+ * Skalan 0..1 bevaras så deriveFaces / hurried / strained / bandläsare
+ * (ORDER 088 §2.1) läser samma tal — men bakomvarande betydelsen är nu
+ * "hur mycket backlog har jag" i stället för "hur snabbt växer min rate".
+ */
+function setWorkloadFromQueue(staff: StaffMember): void {
+  const activeCount = staff.taskType ? 1 : 0;
+  const load = (staff.taskQueue.length + activeCount) / QUEUE_CAPACITY;
+  staff.workload = Math.min(1, Math.max(0, load));
 }
 
 function findTaskTarget(state: SimulationState, type: TaskType): string | null {

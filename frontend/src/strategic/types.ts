@@ -232,6 +232,44 @@ export interface StaffMember {
   position: Vec2;
   targetPosition: Vec2;
   moveProgress: number;
+  /**
+   * ORDER 211 (C1) — uppgiftskö per personal. Direkt-tasks (greet, seat,
+   * welcomeDrink, order, serve, checkback, decant, flambe, clear) schemaläggs
+   * hit av `scheduleTasks(state)` innan tickStaff. När `taskType === null`
+   * plockar tickStaff `taskQueue[0]` och kör `beginStaffTask`. Kön är per
+   * personal — två servitörer har varsin. Fördelningen mellan personal
+   * sker i schemaläggaren (round-robin över köns-djup i C1; roll-baserad
+   * i C2).
+   *
+   * `workload` (samma fält som tidigare, samma skala 0..1) HÄRLEDS nu från
+   * kö-djup: `min(1, (taskQueue.length + (taskType ? 1 : 0)) / QUEUE_CAPACITY)`.
+   * Rate-modellen (+0.05 / -0.03 / bg-approach) ersätts av kö-mätning.
+   * Se ORDER 211-registerraden §3 för kalibreringens grund.
+   *
+   * Bg-tasks från ORDER 137 hamnar INTE i kön — de startas separat när
+   * kön är tom (samma pattern som gamla `pickBackgroundTaskFor`). ORDER
+   * 137 §2.3-listorna oförändrade i C1.
+   */
+  taskQueue: TaskAssignment[];
+}
+
+/**
+ * ORDER 211 (C1) — en direkt-task-post i personalens kö.
+ *
+ *   id             stabil sträng `<guest.id>:<type>:<simTime>`. För
+ *                  duplikatkontroll i schemaläggaren.
+ *   type           TaskType. Bg-tasks (misEnPlace/dish/restock/clean)
+ *                  hamnar INTE i kön i C1; startas separat när kön är tom.
+ *   targetGuestId  gästen tasken syftar på. Null möjlig endast om
+ *                  framtida direct-task saknar gäst-koppling.
+ *   scheduledAt    simTime då kön fick posten. För FIFO-ordning inom kön
+ *                  och för mätning av väntetid (C2).
+ */
+export interface TaskAssignment {
+  id: string;
+  type: TaskType;
+  targetGuestId: string | null;
+  scheduledAt: number;
 }
 
 // ORDER 043 team member — the economic record for hiring, cost,
