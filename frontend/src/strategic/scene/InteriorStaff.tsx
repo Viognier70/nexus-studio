@@ -577,63 +577,82 @@ export function InteriorStaff() {
         );
       }
 
-      // ORDER 217 (C3 §3.2) — routing via rummets korridorer när personalen
-      // ska hem och står långt bort. Rak linje från t.ex. entrén till kock-
-      // hemmet skulle korsa långborden i ölkrogens spine. Vi läser vägpunkter
-      // från kontraktet (staffPathsByRole publiceras av BrewpubScene/
-      // RestaurantScene, resolveStaffPathsWorldByRole i businessRoom.ts).
-      //
-      // Aktivering: bara när targetX/Z sattes till home (ingen taskGuest)
-      // OCH staff är >HOME_NEAR_M från home. När staff har taskGuest följer
-      // vi guest-render-position direkt (ingen path-routing än — walkPathTo-
-      // Seat-koppling för det är egen order).
-      //
-      // Path-index avanceras när nuvarande waypoint är inom PATH_ADVANCE_
-      // THRESHOLD_M. När sista waypoint nås (idx === path.length-1) sätts
-      // pathIdx=-1 så vanlig home-drift tar över (jitter runt home).
-      const contractPath = roomChan?.staffPathsByRole?.[member.role] ?? null;
+      // ORDER 217 (C3 §3.2) + ORDER 218 (uppföljning) — routing via
+      // rummets korridorer. Två fall:
+      //   (a) staff→home (!taskGuest, far från home): staffPathsByRole
+      //       — publicerad av walkPathToStation.
+      //   (b) staff→seated-guest: walkPathsToSeatsByIndex[guest.seatIndex]
+      //       — publicerad av walkPathToSeat, ORDER 218. Utan detta korsar
+      //       en servitör på väg till gäst vid ölkrogens långbord bordet
+      //       (samma sorts fel som (a) hade före ORDER 217).
+      // Om taskGuest inte är seated (waiting/arriving/etc.) faller vi
+      // tillbaka till rak linje mot guest-render-position — inga
+      // korridorer beskrivna för de tillstånden.
+      const homePath = roomChan?.staffPathsByRole?.[member.role] ?? null;
+      const seatPaths = roomChan?.walkPathsToSeatsByIndex ?? null;
       const homeDx = home[0] - pos.cx;
       const homeDz = home[1] - pos.cz;
       const distFromHomeSq = homeDx * homeDx + homeDz * homeDz;
       const farFromHome = distFromHomeSq > HOME_NEAR_M * HOME_NEAR_M;
-      const wantHomePath = !taskGuest && farFromHome && contractPath && contractPath.length > 1;
 
-      if (wantHomePath) {
+      // Välj aktiv path.
+      let activePath: XZ[] | null = null;
+      if (taskGuest && seatPaths) {
+        // ORDER 218 — routa via walkPathToSeat om guest är seated
+        // (`seatIndex != null`). SEATED_STATES-listan hanteras via närvaro
+        // av `seatIndex` — waiting-gäster har seatIndex=null.
+        const seatIdx = taskGuest.seatIndex ?? -1;
+        if (seatIdx >= 0 && seatIdx < seatPaths.length && seatPaths[seatIdx].length > 1) {
+          // Sista waypoint är seat.local; staff står bredvid, inte på
+          // stolen. Guest-render-position räknas in via en distanscheck:
+          // om staff är nära sista waypoint släpps path och vi går rakt
+          // till guest-render-position (för sista biten, ~0.6-1.0 m).
+          const path = seatPaths[seatIdx];
+          const lastWp = path[path.length - 1];
+          const distToSeatSq = (lastWp[0] - pos.cx) ** 2 + (lastWp[1] - pos.cz) ** 2;
+          if (distToSeatSq > HOME_NEAR_M * HOME_NEAR_M) {
+            activePath = path;
+          }
+        }
+      } else if (!taskGuest && farFromHome && homePath && homePath.length > 1) {
+        activePath = homePath;
+      }
+
+      if (activePath) {
         // Aktivera path om ingen är aktiv, eller om nuvarande idx är ur
-        // range (t.ex. path bytt klass mellan frames).
-        if (pos.pathIdx < 0 || pos.pathIdx >= contractPath.length) {
-          // Välj waypoint närmast staff-position (i st f alltid från idx 0)
-          // så staff inte går bakåt till entrén för att sedan gå framåt.
-          // Nästa waypoint efter närmaste ger framåtrörelse.
+        // range (t.ex. path bytt mellan frames när task-guest ändrats).
+        if (pos.pathIdx < 0 || pos.pathIdx >= activePath.length) {
+          // Välj waypoint närmast staff-position så staff inte går bakåt
+          // till entrén för att sedan gå framåt. Nästa waypoint efter
+          // närmaste ger framåtrörelse.
           let nearestIdx = 0;
           let nearestDsq = Infinity;
-          for (let i = 0; i < contractPath.length; i++) {
-            const wx = contractPath[i][0];
-            const wz = contractPath[i][1];
+          for (let i = 0; i < activePath.length; i++) {
+            const wx = activePath[i][0];
+            const wz = activePath[i][1];
             const d = (wx - pos.cx) ** 2 + (wz - pos.cz) ** 2;
             if (d < nearestDsq) { nearestDsq = d; nearestIdx = i; }
           }
-          // Om närmaste waypoint är sista (nära home) → path klar, ingen
-          // aktivering. Annars börja på nästa efter närmaste.
-          pos.pathIdx = Math.min(contractPath.length - 1, nearestIdx + 1);
+          pos.pathIdx = Math.min(activePath.length - 1, nearestIdx + 1);
         }
         // Avancera om vi nått nuvarande waypoint.
-        const w = contractPath[pos.pathIdx];
+        const w = activePath[pos.pathIdx];
         const wdx = w[0] - pos.cx;
         const wdz = w[1] - pos.cz;
         if (wdx * wdx + wdz * wdz < PATH_ADVANCE_THRESHOLD_M * PATH_ADVANCE_THRESHOLD_M) {
-          if (pos.pathIdx < contractPath.length - 1) {
+          if (pos.pathIdx < activePath.length - 1) {
             pos.pathIdx += 1;
           } else {
-            // Sista waypoint nådd — home-drift tar över nästa frame.
+            // Sista waypoint nådd — direkt-target (home eller guest) tar
+            // över nästa frame via straight-line ease.
             pos.pathIdx = -1;
           }
         }
-        // Använd waypoint som effektivt mål (utan drift — driftjitter under
-        // path-routing kan pusha ur korridoren).
-        if (pos.pathIdx >= 0 && pos.pathIdx < contractPath.length) {
-          targetX = contractPath[pos.pathIdx][0];
-          targetZ = contractPath[pos.pathIdx][1];
+        // Använd waypoint som effektivt mål (utan drift — driftjitter
+        // under path-routing kan pusha ur korridoren).
+        if (pos.pathIdx >= 0 && pos.pathIdx < activePath.length) {
+          targetX = activePath[pos.pathIdx][0];
+          targetZ = activePath[pos.pathIdx][1];
         }
       } else if (!taskGuest && !farFromHome) {
         // Nära hemma — släpp path-state så nästa långt-hemifrån-övergång

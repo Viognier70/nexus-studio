@@ -191,6 +191,18 @@ export interface SharedBusinessRoom {
    * är samma sorts fel som väggarna var (VO 2026-09-14).
    */
   staffPathsByRole: Record<StaffRole, XZ[]>;
+  /**
+   * ORDER 218 (C3 §3.2 uppföljning) — vägpunkter TILL VARJE SÄTE, i
+   * värld-XZ, index-aligned med `seats`. Publiceras via
+   * `businessRoom.resolveWalkPathsToSeatsWorld(room)`. Konsumeras av
+   * InteriorStaff när staff har en `taskGuest` som är seated: staff
+   * routar via denna path (samma korridorer walkPathToSeat använder)
+   * i stället för rak linje till guest-render-position. Utan detta
+   * korsar en servitör på väg till en gäst vid ölkrogens långbord
+   * bordet — samma sorts fel som staff→home hade före ORDER 217.
+   * Tom array (`[]`) för klasser vars modul inte har walkPathToSeat.
+   */
+  walkPathsToSeatsByIndex: XZ[][];
   entrance: XZ;
   waitingSpot: XZ;
   /**
