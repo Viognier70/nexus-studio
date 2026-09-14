@@ -47,7 +47,9 @@ export const staffPositionsRef: { current: Map<string, SharedStaffPos> } = {
 // att bevisa att poseGreet och poseCarry faktiskt väljs under
 // service — utan att skriptet behöver introspektera rig-vinklar.
 export interface SharedStaffPose {
-  poseName: 'poseWalk' | 'poseIdle' | 'poseGreet' | 'poseCarry';
+  // ORDER 216 (C3) — poseWork tillagd. Se WORK_TASKS i InteriorStaff.tsx
+  // för mappningen (order/flambe/misEnPlace/dish/restock/clean).
+  poseName: 'poseWalk' | 'poseIdle' | 'poseGreet' | 'poseCarry' | 'poseWork';
   taskType: string | null;
   targetGuestId: string | null;
   moving: boolean;
