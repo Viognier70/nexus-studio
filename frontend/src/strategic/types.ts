@@ -254,14 +254,15 @@ export interface StaffMember {
 }
 
 /**
- * ORDER 211 (C1) — en direkt-task-post i personalens kö.
+ * ORDER 211 (C1) — en task-post i personalens kö.
  *
- *   id             stabil sträng `<guest.id>:<type>:<simTime>`. För
- *                  duplikatkontroll i schemaläggaren.
- *   type           TaskType. Bg-tasks (misEnPlace/dish/restock/clean)
- *                  hamnar INTE i kön i C1; startas separat när kön är tom.
- *   targetGuestId  gästen tasken syftar på. Null möjlig endast om
- *                  framtida direct-task saknar gäst-koppling.
+ *   id             stabil sträng. För guest-tasks `<guest.id>:<type>:<simTime>`,
+ *                  för bg-tasks `<staff.id>:<type>:<simTime>`. Duplikatkontroll
+ *                  i schemaläggaren.
+ *   type           TaskType. ORDER 213: bg-tasks (misEnPlace/dish/restock/clean)
+ *                  ligger också i kön som TaskAssignment, sorterade efter guest-
+ *                  tasks. Så backlog av prep syns som kö-djup och därmed i workload.
+ *   targetGuestId  gästen tasken syftar på. `null` för bg-tasks (ORDER 213).
  *   scheduledAt    simTime då kön fick posten. För FIFO-ordning inom kön
  *                  och för mätning av väntetid (C2).
  */

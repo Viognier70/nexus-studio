@@ -680,16 +680,24 @@ function replenishFromBackgroundTask(state: SimulationState, taskType: TaskType)
 // alla fyra uppgifter förekommer under en service — mise en place följs
 // av disk följs av påfyllning följs av städning, i namngivna svängar
 // snarare än en anonym fill-loop.
+//
+// ORDER 213 — bg-tasks filtreras nu på TASK_ROLE_ASSIGNMENT så en kock
+// bara får misEnPlace, en servitör bara restock, osv. Detta är parallellt
+// med hur C2 (ORDER 212) redan filtrerar guest-tasks per roll.
 function pickBackgroundTaskFor(state: SimulationState, staff: StaffMember): TaskType | null {
   const list = BACKGROUND_TASKS_BY_BUSINESS[state.businessClass];
   if (!list || list.length === 0) return null;
+  // ORDER 213 — filtrera på roll först. Om rollen saknar bg-tasks (t.ex.
+  // värd i alla klasser idag) returneras null.
+  const roleBgs = list.filter((t) => TASK_ROLE_ASSIGNMENT[t] === staff.role);
+  if (roleBgs.length === 0) return null;
   // Deterministisk rotation: staff-id-hash + simTime som fönster ger
   // att en och samma personal cyklar genom alla typer under ett pass,
   // inte fastnar på "clean, clean, clean".
   let h = 0;
   for (let i = 0; i < staff.id.length; i++) h = (h * 31 + staff.id.charCodeAt(i)) | 0;
   const window = Math.floor(state.simTime / 20) + h;
-  return list[Math.abs(window) % list.length];
+  return roleBgs[Math.abs(window) % roleBgs.length];
 }
 
 function beginBackgroundTask(state: SimulationState, staff: StaffMember, type: TaskType) {
@@ -719,6 +727,15 @@ function beginBackgroundTask(state: SimulationState, staff: StaffMember, type: T
 // ≥ 0.95 för hurried) är reachable när servitören har 1 aktiv + 2-3
 // köade, snarare än 1 aktiv + 4-5 (som QUEUE_CAPACITY=6 skulle kräva).
 const QUEUE_CAPACITY = 4;
+
+// ORDER 213 — bg-backlog per staff. Schemaläggaren håller kön fylld med
+// minst så många bg-tasks (aktiv bg räknas). Val 1: en enda bg pending ger
+// naturliga mellanlägen — workload = 0.25 vid idle bg, 0.5 med 1 guest-task
+// på topp, 0.75 med 2 guests, 1.0 vid mättning. Sätts högre om /4-staffing
+// visar för glest kö-djup i mätningen. Sätts till 0 för att stänga av bg
+// helt (foodtruck har redan tom BACKGROUND_TASKS_BY_BUSINESS-lista och
+// påverkas inte).
+const BG_BACKLOG_TARGET = 1;
 
 // ORDER 212 (C2) — roll-tilldelning per task-typ. VO 2026-09-13/14 C2-
 // spec: "vem tar vilken uppgift". Kartlagt utifrån klassisk restaurangs-
@@ -838,6 +855,48 @@ function scheduleTasks(state: SimulationState) {
       droppedTasksThisService: state.metrics.droppedTasksThisService + drops
     };
   }
+
+  // 3. ORDER 213 — fyll varje personals kö med bg-tasks som backlog. Bg-
+  //    arbetet är rollspecifikt (misEnPlace=kock, dish/clean=lärling,
+  //    restock=servitör) och räknas nu som kö-djup. Målet är BG_BACKLOG_TARGET
+  //    pending bg-tasks per staff (aktiv bg räknas). Utan detta steg skulle
+  //    bg-arbetet försvinna helt när §3.4-exkluderingen tog bort +1-bidraget
+  //    från aktiv bg-task — istället flyttar vi bg in i själva kön så det
+  //    naturligt syns som backlog. "En uppgift i kön är inte samma sak som
+  //    fem" (VO 2026-09-14): kö-djupet får då mellanlägen som löser
+  //    bimodaliteten (ORDER 131) strukturellt.
+  for (const staff of state.staff) {
+    if (staff.taskQueue.length >= QUEUE_CAPACITY) continue;
+    const activeIsBg = staff.taskType && isBackgroundTask(staff.taskType) ? 1 : 0;
+    const queuedBg = staff.taskQueue.reduce(
+      (n, t) => n + (isBackgroundTask(t.type) ? 1 : 0),
+      0
+    );
+    if (activeIsBg + queuedBg >= BG_BACKLOG_TARGET) continue;
+    const bg = pickBackgroundTaskFor(state, staff);
+    if (!bg) continue;
+    staff.taskQueue.push({
+      id: `${staff.id}:${bg}:${state.simTime}`,
+      type: bg,
+      targetGuestId: null,
+      scheduledAt: state.simTime
+    });
+  }
+
+  // 4. ORDER 213 — sortera varje kö så guest-tasks kommer FÖRE bg-tasks
+  //    (stabil sort bevarar FIFO inom varje klass). Bg-tasks läggs alltid
+  //    på back-of-queue via push, men om steg 2 lade en guest-task på back
+  //    efter att steg 3 redan hunnit skjuta in bg måste vi städa. Enkel sort
+  //    per staff — O(n log n) på högst QUEUE_CAPACITY element per staff.
+  for (const staff of state.staff) {
+    if (staff.taskQueue.length <= 1) continue;
+    staff.taskQueue.sort((a, b) => {
+      const aBg = isBackgroundTask(a.type) ? 1 : 0;
+      const bBg = isBackgroundTask(b.type) ? 1 : 0;
+      if (aBg !== bBg) return aBg - bBg; // guest (0) före bg (1)
+      return a.scheduledAt - b.scheduledAt; // FIFO inom klass
+    });
+  }
 }
 
 export function tickStaff(state: SimulationState) {
@@ -850,11 +909,15 @@ export function tickStaff(state: SimulationState) {
     stepEntityMotion(staff);
 
     if (staff.taskType) {
-      // ORDER 137 §2.2 — bg-task preemption när gäst-tasks väntar i kön.
-      // Ersätter den gamla `anyDirectTaskAvailable`-globala kontrollen med
-      // en per-staff-kö-koll: om jag har en bg-task pågående OCH direkt-
-      // tasks väntar i min egen kö, avbryt bg och plocka kön-fronten.
-      if (isBackgroundTask(staff.taskType) && staff.taskQueue.length > 0) {
+      // ORDER 137 §2.2 / ORDER 213 — bg-task preemption. Efter ORDER 213
+      // ligger bg-tasks också i kön, så "queue.length > 0" räcker inte som
+      // preemption-villkor — då skulle en aktiv bg avbrytas för att göra
+      // en annan bg. Preemption fires ENDAST när kön har en riktig guest-
+      // task (queue är sorterad guest-first av scheduleTasks steg 4, så
+      // det räcker att titta på fronten).
+      const front = staff.taskQueue[0];
+      const guestWaiting = front != null && !isBackgroundTask(front.type);
+      if (isBackgroundTask(staff.taskType) && guestWaiting) {
         completeStaffTask(state, staff);
         // Fall genom till task-val nedan.
       } else {
@@ -868,22 +931,18 @@ export function tickStaff(state: SimulationState) {
       }
     }
 
-    // ORDER 211 (C1) — plocka nästa direkta task ur kön i stället för
-    // greedy PRIORITY-loop. Schemaläggaren har redan valt vilka som
-    // hamnar där; tickStaff bara konsumerar fronten.
+    // ORDER 211 (C1) / ORDER 213 — plocka nästa task ur kön. Efter ORDER
+    // 213 innehåller kön både guest-tasks (targetGuestId satt) och bg-tasks
+    // (targetGuestId null). Dispatch efter typ.
     if (staff.taskQueue.length > 0) {
       const next = staff.taskQueue.shift();
-      if (next && next.targetGuestId) {
-        beginStaffTask(state, staff, next.type, next.targetGuestId);
+      if (next) {
+        if (isBackgroundTask(next.type)) {
+          beginBackgroundTask(state, staff, next.type);
+        } else if (next.targetGuestId) {
+          beginStaffTask(state, staff, next.type, next.targetGuestId);
+        }
       }
-    }
-
-    // ORDER 137 — inga direkta uppgifter i kön, prova bakgrundsarbete.
-    // Verksamheter utan bakgrundslista (foodtruck) returnerar null och
-    // personalen driver hem som förut.
-    if (!staff.taskType) {
-      const bg = pickBackgroundTaskFor(state, staff);
-      if (bg) beginBackgroundTask(state, staff, bg);
     }
 
     // Idle drift toward home if nothing to do.
@@ -908,6 +967,12 @@ export function tickStaff(state: SimulationState) {
  * Skalan 0..1 bevaras så deriveFaces / hurried / strained / bandläsare
  * (ORDER 088 §2.1) läser samma tal — men bakomvarande betydelsen är nu
  * "hur mycket backlog har jag" i stället för "hur snabbt växer min rate".
+ *
+ * ORDER 213 — bg-tasks räknas som +1 aktiv precis som guest-tasks. Efter
+ * migrationen i scheduleTasks steg 3 ligger bg-arbete i själva kön (inte
+ * separat via pickBackgroundTaskFor-fallback), så en aktiv bg-task är
+ * bara "task jag just plockade ur kön". Ingen dubbelräkning — bg-tasken
+ * konsumerades från kön till aktiv, den ligger inte kvar i kön.
  */
 function setWorkloadFromQueue(staff: StaffMember): void {
   const activeCount = staff.taskType ? 1 : 0;
