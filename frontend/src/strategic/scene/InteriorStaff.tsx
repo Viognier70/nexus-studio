@@ -58,6 +58,7 @@ import {
   poseWalk,
   poseGreet,
   poseCarry,
+  poseWork,
   type FigureRig
 } from './figureRig';
 
@@ -203,9 +204,8 @@ interface AnimatedStaff {
 // gäst-tallrik). poseCarry blandar in gångbenen via `phase` när staff
 // rör sig, så bärande under promenad är samma pose (figureRig.ts:671
 // dokumentation). `serve`, `welcomeDrink`, `decant`, `clear` bär alla
-// något visuellt — `checkback` gör det inte (tomhänt tillsyn) och
-// `order`/`flambe` är stationära (poseWork skulle passa där, men det
-// är ej i scope för ORDER 198).
+// något visuellt — `checkback` gör det inte (tomhänt tillsyn).
+// `order`/`flambe` hanteras nu i WORK_TASKS (ORDER 216).
 //
 // **GREET_TASKS:** uppgifter där staff möter en gäst ansikte mot
 // ansikte — `greet` (välkomna vid entrén) och `seat` (visa till bord).
@@ -221,6 +221,27 @@ const CARRY_TASKS: ReadonlySet<TaskType> = new Set<TaskType>([
   'clear'
 ]);
 const GREET_TASKS: ReadonlySet<TaskType> = new Set<TaskType>(['greet', 'seat']);
+
+// ORDER 216 (C3) — WORK_TASKS: stationära uppgifter där bålen är fram
+// och händerna är i arbete. Fyller den lucka ORDER 198:s kommentar
+// noterade ("poseWork skulle passa där, men det är ej i scope för
+// ORDER 198"). Två grupper:
+//   Gäst-tasks stationära vid bord: `order` (skriva på pad), `flambe`
+//   (tableside-tillagning). Sim moveStaff → guest.position; när staff
+//   står stilla vid bordet ska poseWork spela, inte poseIdle.
+//   Bg-tasks vid station: `misEnPlace`, `dish`, `restock`, `clean`.
+//   Sim moveStaff → INTERIOR.staffHomes[role]; när staff står stilla
+//   vid stationen ska poseWork spela.
+// `checkback` är INTE work — det är en kort tomhänt tillsyn (poseIdle
+// räcker; en kort blick på gästen, inget arbete med händerna).
+const WORK_TASKS: ReadonlySet<TaskType> = new Set<TaskType>([
+  'order',
+  'flambe',
+  'misEnPlace',
+  'dish',
+  'restock',
+  'clean'
+]);
 
 // Avstånd i meter till puckens EASE-target (efter ORDER 196:s clamp)
 // där poseGreet börjar väljas. Vi kan inte mäta mot gästens faktiska
@@ -640,6 +661,8 @@ export function InteriorStaff() {
         const taskType: TaskType | null = bridgedStaff?.taskType ?? null;
         const isCarry = taskType !== null && CARRY_TASKS.has(taskType);
         const isGreetTask = taskType !== null && GREET_TASKS.has(taskType);
+        // ORDER 216 (C3) — poseWork när staff står stilla i en work-task.
+        const isWorkTask = taskType !== null && WORK_TASKS.has(taskType);
         // Har staff hunnit fram till sin ease-target? `dx/dz` beräknades
         // före steget. Vi kräver INTE `!movedThisFrame` — vid högre
         // sim-speed (>1×) hinner sim genomföra hela greet-tasken (4
@@ -715,6 +738,17 @@ export function InteriorStaff() {
             rig,
             poseCarry(t, { phase: movedThisFrame ? pos.walkPhase : null })
           );
+        } else if (isWorkTask && !movedThisFrame) {
+          // ORDER 216 (C3) — poseWork spelar när staff står vid arbetsplats
+          // (station för bg-tasks, gästbord för order/flambe) och taskType
+          // signalerar arbete. Priorityn står EFTER isCarry så en staff som
+          // bär `serve` fortfarande spelar poseCarry även om de skulle råka
+          // matcha ett WORK_TASKS-namn (inga overlap idag men rätt ordning
+          // förebygger framtida ambiguity). Villkoret !movedThisFrame gör
+          // att staff spelar poseWalk under promenaden dit — samma pattern
+          // som poseGreet med sitt distance-gate.
+          poseName = 'poseWork';
+          applyPose(rig, poseWork(t));
         } else if (movedThisFrame) {
           poseName = 'poseWalk';
           applyPose(rig, poseWalk(pos.walkPhase));
