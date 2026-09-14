@@ -359,6 +359,33 @@ export function exitPath(room: BusinessRoom, seatId: string): Vec2[] {
   return mod.exitPathFromSeat(room.raw, seatId);
 }
 
+/**
+ * ORDER 217 (C3 §3.2) — vägpunkter från entrén till en personalstation.
+ * Delegerar till modul (kvarterskrogen/ölkrogen har korridor-medvetna
+ * implementationer som skirtar långborden). Klasser utan modul-support
+ * faller tillbaka till [entrance, station.local] — samma raka linje som
+ * före ORDER 217, men explicit två-punkts-path för att renderaren ska
+ * kunna följa samma waypoint-loop utan special-fall.
+ *
+ * `role` slås upp mot STATION_MAP via `stationFor(role, room)` — så
+ * anroparen inte behöver känna station-id:t direkt.
+ */
+export function walkPathToStation(room: BusinessRoom, role: StaffRole): Vec2[] {
+  const station = stationFor(role, room);
+  if (!station) return [];
+  const mod = moduleFor(room.roomClass) as {
+    walkPathToStation?: (raw: unknown, stationId: string) => Vec2[];
+  };
+  if (typeof mod.walkPathToStation === 'function') {
+    return mod.walkPathToStation(room.raw, station.id);
+  }
+  // Fallback för klasser utan modul-support: entrance → station.
+  return [
+    [room.entrance[0], room.entrance[1]],
+    [station.local[0], station.local[1]]
+  ];
+}
+
 /** Ögonhöjd för en plats. Räknas ur SITSEN, aldrig ur golvet. */
 export function eyeHeightForSeat(room: BusinessRoom, seatId: string): number {
   const mod = moduleFor(room.roomClass);
@@ -671,6 +698,35 @@ export function resolveStaffHomesWorldByRole(room: BusinessRoom): Record<StaffRo
     servitör: resolve('servitör'),
     kock:     resolve('kock'),
     lärling:  resolve('lärling')
+  };
+}
+
+/**
+ * ORDER 217 (C3 §3.2) — vägpunkter per roll i värld-XZ. Publiceras
+ * parallellt med `staffHomesByRole` så InteriorStaff kan traversa
+ * korridorerna istället för att gå raka linjen genom långborden.
+ *
+ * Returnerar tomma arrayer för roller vars klass saknar station-mapping
+ * (null från `walkPathToStation`). Renderaren skippar path-following
+ * för de rollerna och faller tillbaka till home-target.
+ */
+export function resolveStaffPathsWorldByRole(room: BusinessRoom): Record<StaffRole, Vec2[]> {
+  room.group.updateWorldMatrix(true, true);
+  const v = new THREE.Vector3();
+  function toWorldXZ(local: Vec2): Vec2 {
+    v.set(local[0], 0, local[1]);
+    room.group.localToWorld(v);
+    return [v.x, v.z];
+  }
+  function resolvePath(role: StaffRole): Vec2[] {
+    const localPath = walkPathToStation(room, role);
+    return localPath.map(toWorldXZ);
+  }
+  return {
+    värd:     resolvePath('värd'),
+    servitör: resolvePath('servitör'),
+    kock:     resolvePath('kock'),
+    lärling:  resolvePath('lärling')
   };
 }
 

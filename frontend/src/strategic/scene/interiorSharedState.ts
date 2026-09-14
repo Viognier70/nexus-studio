@@ -180,6 +180,17 @@ export interface SharedBusinessRoom {
    * `STATION_ROLE_MAPPING_QUESTION_2026-09-10.md`.
    */
   staffHomesByRole: Record<StaffRole, { xz: XZ; y: number; facing: number } | null>;
+  /**
+   * ORDER 217 (C3 §3.2) — vägpunkter per roll i värld-XZ. Publiceras via
+   * `businessRoom.resolveStaffPathsWorldByRole(room)`. Första waypoint är
+   * rummets entrance, sista är stationen; mellanliggande punkter går via
+   * korridorer så personalen undviker att korsa långborden. Tom array
+   * (`[]`) för roller vars klass saknar station-mapping. InteriorStaff
+   * följer path:en waypoint för waypoint med samma ease-mönster som gäster
+   * använder för sin single-entrance-waypoint. Rak linje genom ett bord
+   * är samma sorts fel som väggarna var (VO 2026-09-14).
+   */
+  staffPathsByRole: Record<StaffRole, XZ[]>;
   entrance: XZ;
   waitingSpot: XZ;
   /**

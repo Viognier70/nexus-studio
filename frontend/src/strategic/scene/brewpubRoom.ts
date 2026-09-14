@@ -790,6 +790,32 @@ export function exitPathFromSeat(room: BrewpubRoom, seatId: string): Vec2[] {
   return back;
 }
 
+/**
+ * ORDER 217 (C3 §3.2) — vägpunkter från entrén till en personalstation.
+ * Följer samma korridor-princip som walkPathToSeat: rummet deklarerar
+ * sina egna passager. En rak linje från entrén (X≈6.4) till kök-stationen
+ * (X=-5.9) skulle korsa långborden i mittspinen (Z=0). Fixen är att
+ * gå via perimN (Z=+4.6) eller perimS (Z=-4.6) beroende på stationens
+ * sida av Z=0.
+ *
+ * `station` här är en RoomStation (vid callsite ligger `stationFor(role,
+ * room)` som ger id/local/facing per STATION_MAP). Returnerar tom
+ * array om ingen match.
+ */
+export function walkPathToStation(room: BrewpubRoom, stationId: string): Vec2[] {
+  const st = room.staffStations.find((s) => s.id === stationId);
+  if (!st) return [];
+  const path: Vec2[] = [[room.entrance[0], room.entrance[1]]];
+  // Perimeter-val: stationens Z avgör N/S. Stationer nära spine (|Z|<0.5)
+  // — som barkeep (-1.3) — kan nås via närmaste perim.
+  const perimZ = st.local[1] >= 0 ? LANE_Z.perimN : LANE_Z.perimS;
+  path.push([LANE_ENTRY_X, 0]);
+  path.push([LANE_ENTRY_X, perimZ]);
+  path.push([st.local[0], perimZ]);
+  path.push([st.local[0], st.local[1]]);
+  return path;
+}
+
 // ---------- Mätning (§7) ----------
 
 /**

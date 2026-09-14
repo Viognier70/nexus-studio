@@ -187,7 +187,23 @@ interface AnimatedStaff {
   walkYaw: number;
   renderedYaw: number;
   greetBlend: number;
+  // ORDER 217 (C3 §3.2) — pathIdx = index i staffPathsByRole[role] mot
+  // vilken waypoint personalen är på väg. -1 = ingen aktiv path (staff
+  // är hemma eller följer taskGuest-target direkt). Uppdateras när
+  // personalen når nuvarande waypoint (< PATH_ADVANCE_THRESHOLD_M) eller
+  // när task-state byter (nästa order-serie kan koppla walkPathToSeat
+  // för task-guest-fallet).
+  pathIdx: number;
 }
+
+// ORDER 217 (C3 §3.2) — tröskel för att räknas "framme vid waypoint" och
+// avancera till nästa. Matchar guest-koden GREET_ARRIVAL_THRESHOLD_M-
+// principen: ease har sub-frame-jitter, en snäv tröskel ger flimmer.
+const PATH_ADVANCE_THRESHOLD_M = 0.6;
+// ORDER 217 (C3 §3.2) — hur långt från home staff måste vara för att
+// initiera path-följning. Om staff redan står vid home (< HOME_NEAR_M)
+// behövs ingen path — den standard-drift som fanns pre-217 räcker.
+const HOME_NEAR_M = 1.2;
 
 // ORDER 198 — pose-mappning från sim-task till presentationspose.
 //
@@ -463,7 +479,11 @@ export function InteriorStaff() {
           // dess står figuren i sitt spawn-yaw utan att snappa.
           walkYaw: 0,
           renderedYaw: 0,
-          greetBlend: 0
+          greetBlend: 0,
+          // ORDER 217 (C3 §3.2) — ingen aktiv path vid spawn (staff står
+          // redan vid home). Path aktiveras när staff blivit tillräckligt
+          // långt hemifrån och behöver ta sig tillbaka.
+          pathIdx: -1
         };
         positionsRef.current.set(member.id, pos);
       }
@@ -555,6 +575,70 @@ export function InteriorStaff() {
           `target=(${targetX.toFixed(1)}, ${targetZ.toFixed(1)}) centre=(${layout.centre[0].toFixed(1)}, ${layout.centre[1].toFixed(1)}) halfW=${halfW.toFixed(2)}. ` +
           `Ingen clamp — undersök varför data-vägen (contractHome/taskGuest) gav utanför-OBB-target.`
         );
+      }
+
+      // ORDER 217 (C3 §3.2) — routing via rummets korridorer när personalen
+      // ska hem och står långt bort. Rak linje från t.ex. entrén till kock-
+      // hemmet skulle korsa långborden i ölkrogens spine. Vi läser vägpunkter
+      // från kontraktet (staffPathsByRole publiceras av BrewpubScene/
+      // RestaurantScene, resolveStaffPathsWorldByRole i businessRoom.ts).
+      //
+      // Aktivering: bara när targetX/Z sattes till home (ingen taskGuest)
+      // OCH staff är >HOME_NEAR_M från home. När staff har taskGuest följer
+      // vi guest-render-position direkt (ingen path-routing än — walkPathTo-
+      // Seat-koppling för det är egen order).
+      //
+      // Path-index avanceras när nuvarande waypoint är inom PATH_ADVANCE_
+      // THRESHOLD_M. När sista waypoint nås (idx === path.length-1) sätts
+      // pathIdx=-1 så vanlig home-drift tar över (jitter runt home).
+      const contractPath = roomChan?.staffPathsByRole?.[member.role] ?? null;
+      const homeDx = home[0] - pos.cx;
+      const homeDz = home[1] - pos.cz;
+      const distFromHomeSq = homeDx * homeDx + homeDz * homeDz;
+      const farFromHome = distFromHomeSq > HOME_NEAR_M * HOME_NEAR_M;
+      const wantHomePath = !taskGuest && farFromHome && contractPath && contractPath.length > 1;
+
+      if (wantHomePath) {
+        // Aktivera path om ingen är aktiv, eller om nuvarande idx är ur
+        // range (t.ex. path bytt klass mellan frames).
+        if (pos.pathIdx < 0 || pos.pathIdx >= contractPath.length) {
+          // Välj waypoint närmast staff-position (i st f alltid från idx 0)
+          // så staff inte går bakåt till entrén för att sedan gå framåt.
+          // Nästa waypoint efter närmaste ger framåtrörelse.
+          let nearestIdx = 0;
+          let nearestDsq = Infinity;
+          for (let i = 0; i < contractPath.length; i++) {
+            const wx = contractPath[i][0];
+            const wz = contractPath[i][1];
+            const d = (wx - pos.cx) ** 2 + (wz - pos.cz) ** 2;
+            if (d < nearestDsq) { nearestDsq = d; nearestIdx = i; }
+          }
+          // Om närmaste waypoint är sista (nära home) → path klar, ingen
+          // aktivering. Annars börja på nästa efter närmaste.
+          pos.pathIdx = Math.min(contractPath.length - 1, nearestIdx + 1);
+        }
+        // Avancera om vi nått nuvarande waypoint.
+        const w = contractPath[pos.pathIdx];
+        const wdx = w[0] - pos.cx;
+        const wdz = w[1] - pos.cz;
+        if (wdx * wdx + wdz * wdz < PATH_ADVANCE_THRESHOLD_M * PATH_ADVANCE_THRESHOLD_M) {
+          if (pos.pathIdx < contractPath.length - 1) {
+            pos.pathIdx += 1;
+          } else {
+            // Sista waypoint nådd — home-drift tar över nästa frame.
+            pos.pathIdx = -1;
+          }
+        }
+        // Använd waypoint som effektivt mål (utan drift — driftjitter under
+        // path-routing kan pusha ur korridoren).
+        if (pos.pathIdx >= 0 && pos.pathIdx < contractPath.length) {
+          targetX = contractPath[pos.pathIdx][0];
+          targetZ = contractPath[pos.pathIdx][1];
+        }
+      } else if (!taskGuest && !farFromHome) {
+        // Nära hemma — släpp path-state så nästa långt-hemifrån-övergång
+        // startar rent (annars kunde pathIdx hänga kvar från förra passet).
+        pos.pathIdx = -1;
       }
 
       // Ease toward target at walking pace (boosted during prep).
