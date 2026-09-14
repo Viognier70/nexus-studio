@@ -108,6 +108,26 @@ export function socialThroughputMultiplier(social: number): number {
 // för ORDER 076 M6-testet (som blev känsligt vid 5 %-skift). Passeras
 // från beginStaffTask/beginBackgroundTask, som slår upp roll-genomsnitt
 // från team via `roleCompetence(team, staff.role)` (team.ts).
+//
+// ORDER 215 (§3.4 provenance) — INTERVALLET 0.85–1.15 ÄR GISSAT, INTE MÄTT.
+// Detta är första gången kompetens påverkar något mekaniskt i modellen och
+// det finns ingen empirisk grund för lutningen (0.3), avstängningen (1.15
+// vid practical=0), eller symmetripunkten (0.5). Valet är motiverat av tre
+// heuristiker, inte data:
+//   (a) "skicklig ska vara snabbare, oskicklig ska klara det ändå" —
+//       riktning, inte magnitud;
+//   (b) M6-testets 20-sek chain-fönster — övre gräns för hur mycket
+//       durationer får skifta utan att bryta ambient-chain-detektering;
+//   (c) bakåtkompatibilitet: mult=1.0 vid default-arg 0.5 för alla
+//       call-sites som inte skickar competence.
+// När VO/Design vill ha en riktig kalibrering: räkna om mot playtest-
+// observation ("hur mycket långsammare KÄNNS lärling än specialist?")
+// eller mot verklig data ("hur mycket längre tid tar en novis vs erfaren
+// kock för samma rätt?"). Talen HÄR har inget att stå på — CLAUDE.md-regeln
+// "varje mätvärde ska kunna spåras till raden i koden där det beräknas"
+// gäller även designparametrar: den här raden är beräkningen, men talen
+// (1.15, 0.3) har ingen upstream. Fall sju av "rätt tal om fel sak" —
+// tydligt märkt så det inte glöms bort.
 export function competenceDurationMultiplier(practical: number): number {
   const clamped = Math.max(0, Math.min(1, practical));
   return 1.15 - 0.3 * clamped;
