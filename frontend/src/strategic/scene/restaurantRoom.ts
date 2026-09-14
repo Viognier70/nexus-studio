@@ -863,6 +863,34 @@ export function exitPathFromSeat(room: RestaurantRoom, seatId: string): Vec2[] {
   return back;
 }
 
+/**
+ * ORDER 217 (C3 §3.2) — vägpunkter från entrén till en personalstation.
+ * Rummet har tre stationer: host (vid entrén), server (i servicegången
+ * mellan disk och bordsrad), chef (i pentryt bakom disken). En rak linje
+ * från entrén (X≈6.8) till chef-stationen (kitMidX, väl in i köket)
+ * skulle korsa bordsraden och sedan disken. Fixen: route via LANE_ENTRY_X
+ * och LANE_SERVICE_Z (servicegången) — samma tal walkPathToSeat använder
+ * för de sida-korsande vägarna.
+ */
+export function walkPathToStation(room: RestaurantRoom, stationId: string): Vec2[] {
+  const st = room.staffStations.find((s) => s.id === stationId);
+  if (!st) return [];
+  const path: Vec2[] = [[room.entrance[0], room.entrance[1]]];
+  // host står nära entrén — inga waypoints behövs, gå raka vägen.
+  if (stationId === 'host') {
+    path.push([st.local[0], st.local[1]]);
+    return path;
+  }
+  // server + chef ligger bakom bordsraden. Route via LANE_ENTRY_X och
+  // LANE_SERVICE_Z (samma korridor som walkPathToSeat väljer för bar-
+  // och service-sidan).
+  path.push([LANE_ENTRY_X, 0]);
+  path.push([LANE_ENTRY_X, LANE_SERVICE_Z]);
+  path.push([st.local[0], LANE_SERVICE_Z]);
+  path.push([st.local[0], st.local[1]]);
+  return path;
+}
+
 // ---------- Mätning ----------
 
 export function measureRestaurantRoom(room: RestaurantRoom): {

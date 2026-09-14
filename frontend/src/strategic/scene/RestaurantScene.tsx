@@ -25,6 +25,7 @@ import {
   createRoom,
   resolveWorldPositions,
   resolveStaffHomesWorldByRole,
+  resolveStaffPathsWorldByRole,
   updateRoom,
   setShellOpacity,
   type BusinessRoom
@@ -92,6 +93,8 @@ export function RestaurantScene() {
       // ORDER 206 — per-roll hem-XZ+Y+facing från kontraktet. Se
       // BrewpubScene-kommentar.
       staffHomesByRole: resolveStaffHomesWorldByRole(room),
+      // ORDER 217 (C3 §3.2) — vägpunkter per roll i värld-XZ.
+      staffPathsByRole: resolveStaffPathsWorldByRole(room),
       entrance: world.entrance as [number, number],
       waitingSpot: world.waitingSpot as [number, number],
       // ORDER 203 — restaurantRoom.resolveWorldPositions returnerar redan
