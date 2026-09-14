@@ -240,7 +240,9 @@ export function makeInitialState(
     metrics: {
       happyDeparturesTotal: 0,
       giveUpsThisService: 0,
-      consecutiveCleanServices: 0
+      consecutiveCleanServices: 0,
+      // ORDER 212 (C2) — räknare för scheduler-drops per service.
+      droppedTasksThisService: 0
     },
     // ORDER 117 §3.1 — fördröjd rykte-effekt av värdekvoten.
     // Startar neutralt (1.0) så nyöppnad verksamhet inte får negativ

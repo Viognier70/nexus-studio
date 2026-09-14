@@ -1000,6 +1000,15 @@ export interface SimulationState {
     happyDeparturesTotal: number;
     giveUpsThisService: number;
     consecutiveCleanServices: number;
+    /**
+     * ORDER 212 (C2) — antal tasks schemaläggaren VILLE lägga i en kö
+     * men ingen kompatibel roll hade plats (kö full ELLER ingen staff
+     * med matchande roll finns). Ackumuleras per service och nollställs
+     * vid OPEN_SERVICE. Läses av ORDER 134-svepet och playtest-panel
+     * som signal på "vi har mer att göra än vi klarar av" — ett svar
+     * på VO:s C2-fråga "vad händer när ingen är ledig".
+     */
+    droppedTasksThisService: number;
   };
   // ORDER 117 §3.1 — fördröjd rykte-effekt av värdekvoten.
   // Uppdateras vid service-close via asymmetrisk låg-pass-filter:
