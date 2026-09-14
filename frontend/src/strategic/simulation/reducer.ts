@@ -1114,7 +1114,7 @@ function openService(
     // ORDER 115 rev 2 — nollställ per-service give-up-räknare vid
     // service-öppning. Räknaren används av service-close för att
     // avgöra om servicen var "clean" (uteplats-kandidat B).
-    metrics: { ...state.metrics, giveUpsThisService: 0 }
+    metrics: { ...state.metrics, giveUpsThisService: 0, droppedTasksThisService: 0 }
   };
 }
 
@@ -1294,7 +1294,7 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
         metrics: {
           ...state.metrics,
           consecutiveCleanServices: nextConsecutive,
-          giveUpsThisService: 0
+          giveUpsThisService: 0, droppedTasksThisService: 0
         },
         day: {
           ...day,
@@ -1363,7 +1363,7 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
         metrics: {
           ...state.metrics,
           consecutiveCleanServices: nextConsecutive,
-          giveUpsThisService: 0
+          giveUpsThisService: 0, droppedTasksThisService: 0
         },
         day: {
           ...day,

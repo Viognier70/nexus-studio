@@ -1,7 +1,7 @@
 import { INTERIOR } from '../content/layout';
 import { businessHasOvernight, businessHasSeats, capacityForBusiness } from '../business/businessClass';
 import type { BusinessClass } from '../business/businessClass';
-import type { Guest, SimulationState, StaffMember, TaskAssignment, TaskType, Vec2 } from '../types';
+import type { Guest, SimulationState, StaffMember, StaffRole, TaskAssignment, TaskType, Vec2 } from '../types';
 import { taskDurationTicks } from './economics';
 import {
   HAPPY_THRESHOLD,
@@ -718,12 +718,49 @@ function beginBackgroundTask(state: SimulationState, staff: StaffMember, type: T
 // Vald till 4 så att pressure-bands (workload ≥ 0.7 för strained,
 // ≥ 0.95 för hurried) är reachable när servitören har 1 aktiv + 2-3
 // köade, snarare än 1 aktiv + 4-5 (som QUEUE_CAPACITY=6 skulle kräva).
-// Kalibreringen är den enda kalibreringspunkten i C1 — om ORDER 134-
-// sveppet visar för mycket mid-mass efter C1 → sänk QUEUE_CAPACITY; för
-// lite → höj. Vald 4 för att ORDER 087 face-distribution-testet ska
-// kunna nå pressure-bands i en 60-min dinner utan att göra rhythm-
-// kalibrering till egen order redan i C1.
 const QUEUE_CAPACITY = 4;
+
+// ORDER 212 (C2) — roll-tilldelning per task-typ. VO 2026-09-13/14 C2-
+// spec: "vem tar vilken uppgift". Kartlagt utifrån klassisk restaurangs-
+// koreografi + ORDER 207 STATION_MAP-namnkonventioner. Alla mappningar
+// är MINA ANTAGANDEN (per samma princip som STATION_MAP-antaganden i
+// businessRoom.ts) — Design kan korrigera i egen order.
+//
+//   greet         → värd     (host greetar vid dörren)
+//   seat          → värd     (host visar till bord, ANTAGANDE — kunde
+//                             delegeras till servitör om värden är upptagen)
+//   welcomeDrink  → servitör (dryck-servering)
+//   order         → servitör (tar beställning)
+//   serve         → servitör (levererar mat, ANTAGANDE — kan vara lärling
+//                             som runner i formell service)
+//   checkback     → servitör (tillsyn under dining)
+//   decant        → servitör (formell vin-service)
+//   flambe        → kock     (eldshow-mat, kock utför tableside)
+//   clear         → servitör (rensa efter gäst, ANTAGANDE — vanligtvis
+//                             delegerat till lärling i större team)
+//   misEnPlace    → kock     (bg)
+//   dish          → lärling  (bg, ANTAGANDE — praktikanten diskar)
+//   restock       → servitör (bg, ANTAGANDE — servitörens ansvar för glas etc.)
+//   clean         → lärling  (bg, ANTAGANDE — städ är typiskt lärlingens)
+//
+// Om en task saknar ansvarig roll i staff (t.ex. flambe men ingen kock)
+// eller om alla i den rollen har full kö (QUEUE_CAPACITY nådd), räknas
+// tasken som DROPPED i state.metrics.droppedTasksThisService.
+const TASK_ROLE_ASSIGNMENT: Record<TaskType, StaffRole> = {
+  greet:        'värd',
+  seat:         'värd',
+  welcomeDrink: 'servitör',
+  order:        'servitör',
+  serve:        'servitör',
+  checkback:    'servitör',
+  decant:       'servitör',
+  flambe:       'kock',
+  clear:        'servitör',
+  misEnPlace:   'kock',
+  dish:         'lärling',
+  restock:      'servitör',
+  clean:        'lärling'
+};
 
 /**
  * ORDER 211 (C1) — enkel scheduler. Iterar PRIORITY och lägger varje
@@ -750,9 +787,13 @@ function scheduleTasks(state: SimulationState) {
     }
   }
 
-  // 2. För varje PRIORITY-type, hitta första tillgänglig gäst och köa den
-  //    på kortast kö. `alreadyBoundOrQueued`-checken förhindrar duplikat
-  //    över alla staff (inkl. aktiv taskType).
+  // 2. ORDER 212 (C2) — för varje PRIORITY-type, hitta första tillgängliga
+  //    gäst och köa på KORTAST KÖ AV RÄTT ROLL. Duplicate-checken över
+  //    alla staff (oavsett roll) bevaras — samma (guest, type) får inte
+  //    köas två gånger. Om ingen staff med rätt roll finns ELLER alla
+  //    kompatibla staff har fullt (queue.length >= QUEUE_CAPACITY),
+  //    räknas tasken som dropped.
+  let drops = 0;
   for (const type of PRIORITY) {
     const targetGuestId = findTaskTarget(state, type);
     if (!targetGuestId) continue;
@@ -766,10 +807,21 @@ function scheduleTasks(state: SimulationState) {
     );
     if (alreadyBoundOrQueued) continue;
 
-    // Kortast kö vinner. Vid oavgjort: tidigare index (första staff).
-    let bestStaff = state.staff[0];
+    // C2 roll-filtrering. Hitta staff av rätt roll med kortast kö.
+    const requiredRole = TASK_ROLE_ASSIGNMENT[type];
+    let bestStaff: StaffMember | null = null;
     for (const s of state.staff) {
-      if (s.taskQueue.length < bestStaff.taskQueue.length) bestStaff = s;
+      if (s.role !== requiredRole) continue;
+      if (s.taskQueue.length >= QUEUE_CAPACITY) continue;
+      if (bestStaff === null || s.taskQueue.length < bestStaff.taskQueue.length) {
+        bestStaff = s;
+      }
+    }
+    if (bestStaff === null) {
+      // Ingen kompatibel staff med plats → drop. C2:s svar på VO:s fråga
+      // "vad händer när ingen är ledig".
+      drops += 1;
+      continue;
     }
     const assignment: TaskAssignment = {
       id: `${targetGuestId}:${type}:${state.simTime}`,
@@ -778,6 +830,13 @@ function scheduleTasks(state: SimulationState) {
       scheduledAt: state.simTime
     };
     bestStaff.taskQueue.push(assignment);
+  }
+
+  if (drops > 0) {
+    state.metrics = {
+      ...state.metrics,
+      droppedTasksThisService: state.metrics.droppedTasksThisService + drops
+    };
   }
 }
 
