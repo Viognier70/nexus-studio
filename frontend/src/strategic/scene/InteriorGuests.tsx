@@ -246,6 +246,12 @@ interface AnimatedPos {
   // rörelseriktning till seatFacing på ett enda frame när sit-blend
   // fyras — samma sorts fel som teleport-i-sittställning-poserna.
   blendStartYaw: number;
+  // ORDER 220 §1 — sant om gästen faktiskt tog ett steg under senaste
+  // renderade frame. Läses av publiceringsloopen längre ner för att
+  // sätta SharedGuestPos.moving; InteriorStaff behöver flaggan för att
+  // veta om trail-offset (värd bakom gäst under gång) ska aktiveras
+  // eller inte (stilla gäst → värd närmar sig direkt, ingen offset).
+  movedLastFrame: boolean;
 }
 
 // ORDER 188 tillägg 1 — sitYaw-warning en gång per (klass, seatIndex)
@@ -506,7 +512,8 @@ export function InteriorGuests() {
           phaseSeed: phaseSeedFor(guest.id),
           walkPhase: 0,
           walkYaw: 0,
-          blendStartYaw: 0
+          blendStartYaw: 0,
+          movedLastFrame: false
         };
         positionsRef.current.set(guest.id, pos);
       }
@@ -707,6 +714,8 @@ export function InteriorGuests() {
         // blendStartYaw även på frame där rörelsen just stannade).
         pos.walkYaw = Math.atan2(dx, dz);
       }
+      // ORDER 220 §1 — spara gångstate för publicerings-loopen.
+      pos.movedLastFrame = movedThisFrame;
 
       // ORDER 044 §3.3 lean — physical seat-attention.
       const lean = computeLeanTarget(guest, target, layout, sim.simTime);
@@ -974,7 +983,17 @@ export function InteriorGuests() {
     // pruning-loopen just tog bort id:n ovan.
     guestPositionsRef.current.clear();
     for (const [id, gp] of positionsRef.current) {
-      guestPositionsRef.current.set(id, { x: gp.cx, z: gp.cz });
+      // ORDER 220 §1 — publicera walkYaw + movedLastFrame så InteriorStaff
+      // kan lägga värden BAKOM gästen längs hens gångriktning (trail-offset)
+      // i stället för att sätta target = guest.position (som ger parallell
+      // väg när värd och gäst startar från olika platser). När gästen står
+      // still släpps offseten och värden går fram och stannar bredvid.
+      guestPositionsRef.current.set(id, {
+        x: gp.cx,
+        z: gp.cz,
+        yaw: gp.walkYaw,
+        moving: gp.movedLastFrame
+      });
     }
   });
 

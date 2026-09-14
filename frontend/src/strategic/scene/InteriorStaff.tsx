@@ -274,6 +274,17 @@ const GREET_ARRIVAL_THRESHOLD_M = 0.8;
 // SIT_STAND_DURATION i InteriorGuests (0.5s per ORDER 121 §4).
 const GREET_BLEND_DURATION_SEC = 0.5;
 
+// ORDER 220 §1 — trail-offset för escort. Under greet-task med rörlig
+// gäst sätter InteriorStaff värdens target till gästens render-position
+// MINUS unit(walkYaw) * ESCORT_TRAIL_M, dvs. en punkt strax bakom
+// gästen längs gångriktningen. Effekt: värden går samma väg som gästen,
+// ett halvsteg efter, i stället för att gena en rak diagonal mellan
+// hemplatsen och gästens aktuella position. Värdet 0.7 m är ungefär ett
+// stridslängds-mellanrum (STRIDE_LENGTH_M = 0.75 m) — nära nog att
+// figurerna läser som "tillsammans" men inte så nära att skelettens
+// bounding-boxar överlappar visuellt.
+const ESCORT_TRAIL_M = 0.7;
+
 /**
  * Kortaste vinkelinterpolation mellan `from` och `to`. Kopierar
  * `interpAngle` i InteriorGuests.tsx (ORDER 197 §2 (d)) i stället för
@@ -551,6 +562,43 @@ export function InteriorStaff() {
         if (guestRender) {
           targetX = guestRender.x;
           targetZ = guestRender.z;
+          // ORDER 220 §1 — escort trail. När task är `greet` och gästen
+          // faktiskt går (arriving/waiting mot seat), sätt target BAKOM
+          // gästen längs hens gångriktning (`guestRender.yaw`, atan2(dx,dz))
+          // med `ESCORT_TRAIL_M`-offset. Effekt: värden går samma väg som
+          // gästen, ett halvmeter bakom, i stället för att välja rak linje
+          // hem-→-guestpos vilket gav parallella spår (VO 2026-09-14:
+          // "två figurer på olika vägar ser sämre ut än ingen eskort alls").
+          //
+          // Villkor:
+          //  - taskType === 'greet' (endast escort under greet, inte serve).
+          //  - guestRender.moving (gästen tar faktiskt steg — stilla gäst
+          //    ska värden nå fram till, inte fastna 0,6 m bort).
+          //  - guestRender.yaw definierad (första publiceringen har den).
+          //
+          // För seated-gäst med greet-task (sällsynt — findTaskTarget
+          // fallback 3, prioriteras efter arriving/waiting) faller vi
+          // tillbaka till walkPathsToSeatsByIndex-branchen längre ner. Där
+          // rör sig staff genom rummets korridor och den slutliga
+          // approachen använder gäst-render-position rakt av.
+          //
+          // ORDER 219 §5(b) noterade uttryckligen att "värd står vid
+          // gäst-target ... men escortar inte guest fysiskt" — snyggare
+          // hosting-koreografi flaggades som egen order. Detta är den.
+          const taskType = bridgedStaff?.taskType ?? null;
+          if (
+            taskType === 'greet' &&
+            guestRender.moving === true &&
+            typeof guestRender.yaw === 'number'
+          ) {
+            // Enhetsvektor i gästens gångriktning: (sin(yaw), cos(yaw)) i
+            // atan2(dx,dz)-konventionen. Trail-offseten dras AV målet
+            // (target flyttas bakåt från gästens position mot startpunkten
+            // för gästens rörelse).
+            const gy = guestRender.yaw;
+            targetX = guestRender.x - Math.sin(gy) * ESCORT_TRAIL_M;
+            targetZ = guestRender.z - Math.cos(gy) * ESCORT_TRAIL_M;
+          }
         } else {
           // Fallback när render-position ännu inte publicerad (första
           // frames före InteriorGuests hunnit skriva): stanna vid home.
