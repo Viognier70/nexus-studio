@@ -731,6 +731,35 @@ export function resolveStaffPathsWorldByRole(room: BusinessRoom): Record<StaffRo
 }
 
 /**
+ * ORDER 218 (C3 §3.2 uppföljning) — vägpunkter TILL VARJE SÄTE i värld-XZ.
+ * Index-aligned med `room.seats` (så seatIndex från sim mappar direkt).
+ * Delegerar till modulens `walkPathToSeat(raw, seat.id)` per säte.
+ *
+ * Publiceras i `SharedBusinessRoom.walkPathsToSeatsByIndex` så InteriorStaff
+ * kan routa staff→guest via samma korridorer som guest själv skulle använt
+ * (walkPathToSeat är kontraktets egna korridor-deklaration, se
+ * brewpubRoom.ts/restaurantRoom.ts). Rak linje staff→seated-guest korsar
+ * långborden lika illa som staff→home gjorde före ORDER 217.
+ */
+export function resolveWalkPathsToSeatsWorld(room: BusinessRoom): Vec2[][] {
+  room.group.updateWorldMatrix(true, true);
+  const v = new THREE.Vector3();
+  function toWorldXZ(local: Vec2): Vec2 {
+    v.set(local[0], 0, local[1]);
+    room.group.localToWorld(v);
+    return [v.x, v.z];
+  }
+  const mod = moduleFor(room.roomClass) as {
+    walkPathToSeat?: (raw: unknown, seatId: string) => Vec2[];
+  };
+  if (typeof mod.walkPathToSeat !== 'function') return [];
+  return room.seats.map((seat) => {
+    const localPath = mod.walkPathToSeat!(room.raw, seat.id);
+    return localPath.map(toWorldXZ);
+  });
+}
+
+/**
  * Alla klassers flaggor i en läsning, med klassnamn framför.
  * Monteringskoden bör skriva ut den här listan en gång och stanna vid
  * de blockerande — det finns tre, och de är alla sim-sidiga.

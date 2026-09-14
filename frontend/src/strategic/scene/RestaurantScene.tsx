@@ -26,6 +26,7 @@ import {
   resolveWorldPositions,
   resolveStaffHomesWorldByRole,
   resolveStaffPathsWorldByRole,
+  resolveWalkPathsToSeatsWorld,
   updateRoom,
   setShellOpacity,
   type BusinessRoom
@@ -95,6 +96,8 @@ export function RestaurantScene() {
       staffHomesByRole: resolveStaffHomesWorldByRole(room),
       // ORDER 217 (C3 §3.2) — vägpunkter per roll i värld-XZ.
       staffPathsByRole: resolveStaffPathsWorldByRole(room),
+      // ORDER 218 (C3 §3.2 uppföljning) — vägpunkter per säte i värld-XZ.
+      walkPathsToSeatsByIndex: resolveWalkPathsToSeatsWorld(room),
       entrance: world.entrance as [number, number],
       waitingSpot: world.waitingSpot as [number, number],
       // ORDER 203 — restaurantRoom.resolveWorldPositions returnerar redan
