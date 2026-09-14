@@ -1,0 +1,16 @@
+[
+  {
+    "business": "kvarterskrogen",
+    "videoPath": "/var/folders/2c/xy2dtdvj157dc4gn1b48vj3h0000gp/T/nexus-order220-1789410397148/kvarterskrogen.webm",
+    "greetSightings": 6,
+    "escortSightings": 6,
+    "escortDistance": {
+      "n": 1,
+      "min": 10.043958199520663,
+      "mean": 10.043958199520663,
+      "max": 10.043958199520663
+    },
+    "maxGreetGuests": 13,
+    "ok": true
+  }
+]

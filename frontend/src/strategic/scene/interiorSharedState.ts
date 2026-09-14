@@ -76,6 +76,21 @@ export const staffPosesRef: { current: Map<string, SharedStaffPose> } = {
 export interface SharedGuestPos {
   x: number;
   z: number;
+  /**
+   * ORDER 220 §1 — gästens rörelse-yaw (radianer, atan2(dx, dz)-konvention,
+   * samma som staff.walkYaw). Publiceras varje frame; värdet behålls från
+   * senast rörelse när gästen står still. Läses av InteriorStaff för att
+   * beräkna trail-target BAKOM gästen längs hens gångriktning, så värden
+   * escortar samma väg i stället för att gena parallellt. Optionell så
+   * äldre test-fixturer med hårdkodad `{x, z}`-shape fortsatt typechecker.
+   */
+  yaw?: number;
+  /**
+   * ORDER 220 §1 — sant om gästen rörde sig under senaste renderad frame.
+   * Trail-offset ska bara appliceras när gästen faktiskt går; en stilla
+   * gäst (seated/idle) ska värden nå fram till, inte fastna bakom.
+   */
+  moving?: boolean;
 }
 
 export const guestPositionsRef: { current: Map<string, SharedGuestPos> } = {

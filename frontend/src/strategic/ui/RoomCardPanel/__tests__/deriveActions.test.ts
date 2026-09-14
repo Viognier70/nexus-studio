@@ -159,6 +159,20 @@ describe('deriveStaffAction — every table row', () => {
     );
     expect(r).toEqual({ text: 'Greeting seat 4', iconKey: 'hail-response' });
   });
+  it('S5b (ORDER 220 §2) greet + arriving guest → Escorting to seat N', () => {
+    // Speglar figurens aktiva handling: när gästen är arriving går värden
+    // med gästen från entrén till bordet (ORDER 220 §1 trail-offset). Före
+    // 220 stod raden kvar på "Greeting seat X" hela vägen även medan värden
+    // fortfarande promenerade — panel och figur läste olika saker.
+    const guest = makeGuest({ id: 'g1', state: 'arriving', seatIndex: 3 });
+    const r = deriveStaffAction(
+      makeStaff({ taskType: 'greet', targetGuestId: 'g1' }),
+      [guest],
+      makeDay({ period: 'dinner' }),
+      100, NO_MENU
+    );
+    expect(r).toEqual({ text: 'Escorting to seat 4', iconKey: 'hail-response' });
+  });
   it('S6 seat', () => {
     const r = deriveStaffAction(
       makeStaff({ taskType: 'seat', targetGuestId: null }), [],

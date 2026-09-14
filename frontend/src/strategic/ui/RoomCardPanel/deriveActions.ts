@@ -174,7 +174,22 @@ export function deriveStaffAction(
 
   switch (staff.taskType as TaskType | null) {
     case 'greet':
-      // reel HAIL (staff response side)
+      // ORDER 220 §2 — panel speglar figurens aktiva handling under greet.
+      // Före 220 sa raden "Greeting seat X" hela greet-tasken igenom, även
+      // medan värden fortfarande gick tillsammans med gästen från entrén
+      // till bordet — panel och figur läste olika saker (VO 2026-09-14:
+      // "panelens text och figuren i rummet ska visa samma sak").
+      // Delas nu på gästens state:
+      //   - `arriving` → värden escortar samma väg som gästen (ORDER 220
+      //     §1) → "Escorting to seat X".
+      //   - annars (waiting/seated) → figurationen är stationär greet vid
+      //     dörren/bordet → behåller "Greeting <seatLabel>".
+      // Ingen ny iconKey — 'hail-response' läser fortfarande som staff-
+      // response och matchar båda fasenen semantiskt (värden svarar på
+      // gästens ankomst hela vägen från entré till bord).
+      if (target !== null && target.state === 'arriving') {
+        return { text: `Escorting to ${targetLabel}`, iconKey: 'hail-response' };
+      }
       return { text: `Greeting ${targetLabel}`, iconKey: 'hail-response' };
     case 'seat':
       // reel SIT DOWN (staff shepherding)
