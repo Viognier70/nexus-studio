@@ -4,6 +4,7 @@ import type { BusinessClass } from '../business/businessClass';
 import type { Guest, SimulationState, StaffMember, StaffRole, TaskAssignment, TaskType, Vec2 } from '../types';
 import { taskDurationTicks } from './economics';
 import { roleCompetence } from './team';
+import { businessRoomRef } from '../scene/interiorSharedState';
 import {
   HAPPY_THRESHOLD,
   UNHAPPY_THRESHOLD,
@@ -112,7 +113,22 @@ export function isSeatedCapacity(state: SimulationState): number {
   return capacityForBusiness(state.businessClass, state.policies.staffCount);
 }
 
-export function seatSlot(_state: SimulationState, index: number): Vec2 {
+export function seatSlot(state: SimulationState, index: number): Vec2 {
+  // ORDER 219 (A) — läs per-klass seat-position från businessRoomRef om
+  // scenen är monterad. Detta fixar buggen där sim.guest.position för
+  // seat-index >= 12 fastnade på INTERIOR.seatOrder[0] = (2, -1.8), som
+  // gjorde att `moveStaff(staff, guest.position)` gav samma tal för alla
+  // efterföljande gäster → servitörens sim.position ändrades aldrig
+  // (utredning 2026-09-14 §Q5). Rendering läser guest-render-position
+  // via `guestPositionsRef` med korrekt per-klass seats — sim-fixen är
+  // för läsare av sim.staff/guest.position (tester, DevPanel, logg).
+  //
+  // Fallback till INTERIOR.seatOrder när scenen inte är monterad (t.ex.
+  // i tester som inte kör React-scenen). Samma pattern som pre-219 för
+  // dem, ingen regression.
+  void state; // reserved for future use
+  const local = businessRoomRef.current?.seatsLocal?.[index];
+  if (local) return { x: local[0], z: local[1] };
   return INTERIOR.seatOrder[index] ?? INTERIOR.seatOrder[0];
 }
 
@@ -1017,15 +1033,48 @@ function setWorkloadFromQueue(staff: StaffMember): void {
 
 function findTaskTarget(state: SimulationState, type: TaskType): string | null {
   switch (type) {
-    case 'greet':
-    case 'seat': {
+    case 'greet': {
       // ORDER 113 fel 1 — foodtruck servar front-of-queue (FIFO).
       // Utan denna gren skulle findTaskTarget bara leta efter arriving-
       // gäster; foodtruck-gäster som redan pushats till waitingIds
       // (via arriving-tick → findFreeSeat=null → else-branchen) skulle
       // aldrig plockas upp. state.waitingIds[0] är front-of-queue —
-      // completeStaffTask('greet'/'seat') foodtruck-branchen filtrerar
-      // sedan bort den från waitingIds och sätter state='ordering'.
+      // completeStaffTask('greet') foodtruck-branchen filtrerar sedan
+      // bort den från waitingIds och sätter state='ordering'.
+      if (!businessHasSeats(state.businessClass) && state.waitingIds.length > 0) {
+        const w = state.guests.find((g) => g.id === state.waitingIds[0]);
+        if (w && !w.hasBeenGreeted) return w.id;
+        return null;
+      }
+      // ORDER 219 (B) — pre-219 krävde `state==='arriving' && moveProgress>=1`
+      // men tickGuests transitionerade arriving→seated/waiting samma tick
+      // som moveProgress nådde 1, så villkoret var aldrig sant för
+      // restaurangs-klasser (utredning 2026-09-14 §Q3). greet fyrades
+      // aldrig. Nu: fyra så tidigt som möjligt så värden hinner gå till
+      // entrén och möta gästen där. Prioritering:
+      //   1. arriving (gästen på väg in) — värden hinner gå till entré
+      //   2. waiting (kö, rummet fullt) — värden kan hälsa i kön
+      //   3. seated men ännu inte greetad — värden går till bordet
+      // `hasBeenGreeted` sätts i completeStaffTask så en gäst bara greetas
+      // en gång per besök.
+      const arriving = state.guests.find(
+        (g) => g.state === 'arriving' && !g.hasBeenGreeted
+      );
+      if (arriving) return arriving.id;
+      const waiting = state.guests.find(
+        (g) => g.state === 'waiting' && !g.hasBeenGreeted
+      );
+      if (waiting) return waiting.id;
+      const seated = state.guests.find(
+        (g) => g.state === 'seated' && !g.hasBeenGreeted
+      );
+      return seated?.id ?? null;
+    }
+    case 'seat': {
+      // Behåller tidigare beteende för seat-tasken — arriving-gäst med
+      // moveProgress>=1. Se ORDER 198 header för varför denna gren
+      // sällan fyras i praktiken; kvar för foodtruck-kompatibilitet
+      // och framtida re-work.
       if (!businessHasSeats(state.businessClass) && state.waitingIds.length > 0) {
         return state.waitingIds[0];
       }
@@ -1127,15 +1176,29 @@ function completeStaffTask(state: SimulationState, staff: StaffMember) {
 
   const now = state.simTime;
   switch (type) {
-    case 'greet':
+    case 'greet': {
+      // ORDER 219 (B) — greet är nu en separat handling från seat.
+      // Sätter `hasBeenGreeted=true` så samma gäst inte greetas igen.
+      // För restaurangs-klasser: ingen state-transition — gästen sitter
+      // eller väntar redan (transition sker via tickGuests när
+      // moveProgress når 1). För foodtruck: sätter också gästen i
+      // 'ordering' (bevarar pre-219-beteendet där greet + seat delade
+      // case och foodtruck-grenen flyttade gäst till ordering).
+      guest.hasBeenGreeted = true;
+      if (!businessHasSeats(state.businessClass) && guest.state === 'waiting') {
+        state.waitingIds = state.waitingIds.filter((id) => id !== guest.id);
+        guest.state = 'ordering';
+        guest.seatIndex = null;
+        guest.stateTime = now;
+      }
+      break;
+    }
     case 'seat': {
-      // A guest sitting in the waiting queue is served here too.
+      // Behåller pre-219 seat-completion — sätter waiting/arriving-gäst
+      // till seated om plats finns. Fyras sällan för with-seats-klasser
+      // (samma arriving-moveProgress-race som ORDER 198 header noterade)
+      // men behållet för foodtruck-fallback och framtida re-work.
       if (guest.state === 'arriving' || guest.state === 'waiting') {
-        // ORDER 110 — R4: food truck saknar matsal. Hoppa över
-        // findFreeSeat och sittandet; gästen övergår direkt till
-        // ordering (vid luckan) och plockas ur waiting-listan.
-        // Guarden speglar den i setGuestSeated ovan så flaggan
-        // `hasSeats: false` håller i båda write-sites (DoD 6).
         if (!businessHasSeats(state.businessClass)) {
           state.waitingIds = state.waitingIds.filter((id) => id !== guest.id);
           guest.state = 'ordering';

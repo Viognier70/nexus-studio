@@ -98,6 +98,8 @@ export function RestaurantScene() {
       staffPathsByRole: resolveStaffPathsWorldByRole(room),
       // ORDER 218 (C3 §3.2 uppföljning) — vägpunkter per säte i värld-XZ.
       walkPathsToSeatsByIndex: resolveWalkPathsToSeatsWorld(room),
+      // ORDER 219 (A) — seat-positioner i ROOM-LOKAL XZ, för sim.seatSlot.
+      seatsLocal: room.seats.map((s) => s.local as [number, number]),
       entrance: world.entrance as [number, number],
       waitingSpot: world.waitingSpot as [number, number],
       // ORDER 203 — restaurantRoom.resolveWorldPositions returnerar redan

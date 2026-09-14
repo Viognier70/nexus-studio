@@ -337,6 +337,20 @@ export interface Guest {
   targetPosition: Vec2;
   moveProgress: number;
   hadWelcomeDrink: boolean;
+  /**
+   * ORDER 219 (B) — sant när värden (eller motsvarande roll) faktiskt
+   * har genomfört en `greet`-task för gästen. Före ORDER 219 fyrades
+   * `greet` aldrig för restaurangs-klasser eftersom `findTaskTarget
+   * ('greet')` krävde `state==='arriving' && moveProgress>=1` men
+   * tickGuests transitionerade arriving→seated/waiting samma tick som
+   * moveProgress nådde 1 (utredning 2026-09-14 §Q3). Nu fyras greet
+   * på gäster som är arriving eller waiting OCH inte redan blivit
+   * greetade; hasBeenGreeted sätts av completeStaffTask('greet') så
+   * en gäst bara blir greetad en gång per besök. Optionell så existerande
+   * test-fixturer inte behöver uppdateras — läsare använder `!!guest.
+   * hasBeenGreeted`.
+   */
+  hasBeenGreeted?: boolean;
   // ORDER 098 — simTime för senast utförd checkback (tillsyn) under
   // dining. `null` innan första besöket. `findTaskTarget('checkback')`
   // väljer dining-gäster där `simTime - (lastCheckbackAt ?? stateTime)

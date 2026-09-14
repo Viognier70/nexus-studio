@@ -403,7 +403,11 @@ export function InteriorStaff() {
     const driftFreq = inPrep ? PREP_DRIFT_FREQ_HZ : 0.4;
 
     const now = sim.simTime;
-    const [gcx, gcz] = layout.centre; // room's centre-of-gravity for load drift
+    // ORDER 219 (C) — layout.centre användes för load-drift-pullen som
+    // togs bort. Behållet som referens om framtida orders vill visualisera
+    // "team drar mot centrum" på annat sätt (t.ex. huvudvridning eller
+    // gångfrekvens i st f target-position).
+    void layout.centre;
     const seenIds = new Set<string>();
 
     // ORDER 088 §4 + ORDER 090 §3 — pip carriers this tick.
@@ -488,17 +492,25 @@ export function InteriorStaff() {
         positionsRef.current.set(member.id, pos);
       }
 
-      // Target: home station + idle drift (wider + faster in prep) +
-      // load-driven pull toward the room's centre. At load ≤ 0.4 the
-      // puck sits at home; at load ≥ 1.2 it's substantially pulled
-      // into the guest area (post-prep only).
+      // Target: home station + idle drift.
+      //
+      // ORDER 219 (C) — load-driven pull toward the room's centre BORTTAGEN.
+      // Pre-C1/C2/C3-eran använde `pullDX * strainFactor * 0.5` för att
+      // visualisera stress ("staff söker sig till centrum vid hög belastning").
+      // Med C1/C2/C3 driver riktiga tasks staffs rörelse: order/serve/clear
+      // tar staff till gäster, misEnPlace/dish tar staff till stationer.
+      // Strain-pullen blev en redundant force som drog staff AWAY från home
+      // MELLAN uppgifter — VO 2026-09-14: "mellan uppgifter — tillbaka till
+      // hemplatsen. Inte stå kvar där man råkade sluta." Vid load=2 (dinner
+      // rush) drog pullen staff halvvägs mot centrum efter varje task-slut i
+      // st f att låta dem gå hem. Nu: mellan uppgifter går staff hem via
+      // ORDER 217:s walkPath när de är far, straight-line + jitter när nära.
       const jitterX = Math.sin(now * driftFreq + pos.jitterSeed) * driftAmp;
       const jitterZ =
         Math.cos(now * driftFreq * 0.9 + pos.jitterSeed * 1.7) * driftAmp;
-      const pullDX = gcx - home[0];
-      const pullDZ = gcz - home[1];
-      let targetX = home[0] + jitterX + pullDX * strainFactor * 0.5;
-      let targetZ = home[1] + jitterZ + pullDZ * strainFactor * 0.5;
+      let targetX = home[0] + jitterX;
+      let targetZ = home[1] + jitterZ;
+      void strainFactor; // reserved; strain visualisation flyttad till pose/rhythm
 
       // ORDER 200 fynd 3 — värd stannar ALLTID vid entrén, oavsett task.
       //
