@@ -406,6 +406,8 @@ export function makeGuest(
     targetPosition: { x: INTERIOR.entrance.x, z: INTERIOR.entrance.z },
     moveProgress: 0,
     hadWelcomeDrink: false,
+    // ORDER 219 (B) — värden har inte hunnit greeta ännu.
+    hasBeenGreeted: false,
     lastCheckbackAt: null,
     walkAwayOnArrival,
     // ORDER 111 §4 — default false; sätts av reducern (paying-transitionen)

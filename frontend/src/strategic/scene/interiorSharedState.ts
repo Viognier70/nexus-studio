@@ -203,6 +203,23 @@ export interface SharedBusinessRoom {
    * Tom array (`[]`) för klasser vars modul inte har walkPathToSeat.
    */
   walkPathsToSeatsByIndex: XZ[][];
+  /**
+   * ORDER 219 (A) — seat-positioner i ROOM-LOKAL XZ, index-aligned med
+   * `seats`. Publiceras via `room.seats.map(s => s.local)`. Sim-lagret
+   * läser detta via `businessRoomRef` för `seatSlot(state, index)` så
+   * sim.guest.position sätts korrekt per klass i st f `INTERIOR.
+   * seatOrder`-fallback som ligger på (2, -1.8) för alla index >= 12.
+   *
+   * Motivering (utredning 2026-09-14 §Q5): logg visade servitörens
+   * sim.position fastnat vid (2, -1.8) för alla nästkommande order-tasks
+   * eftersom `INTERIOR.seatOrder` har 12 entries och ölkrogens gäster
+   * på seat 12-19 föll till INTERIOR.seatOrder[0]. `moveStaff(staff,
+   * guest.position)` gav samma tal för alla → staff.position ändrades
+   * aldrig efter första besöket. Rendering var opåverkad (läser
+   * `guestPositionsRef` från scene med korrekt per-klass seats), men
+   * sim-läsare (tester, DevPanel) fick fel data.
+   */
+  seatsLocal: XZ[];
   entrance: XZ;
   waitingSpot: XZ;
   /**
