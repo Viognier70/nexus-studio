@@ -141,6 +141,23 @@ export function teamCompetence(
   return total / team.members.length;
 }
 
+// ORDER 214 (C2 §4) — kompetens per roll, för att skala task-duration.
+// Genomsnitt över de lagmedlemmar som har den rollen; om ingen finns
+// (t.ex. flambe krävs kock men laget har ingen) faller tillbaka till
+// `ROLE_DEFAULTS[role]`. Praktisk-axeln används som duration-styrande
+// (per RoleCompetence-kommentaren i types.ts: "practical → house-standard
+// execution"). Kvalitet på uppgiften är egen mekanik (R3) — här bara tid.
+export function roleCompetence(
+  team: TeamState,
+  role: StaffRole,
+  axis: keyof RoleCompetence = 'practical'
+): number {
+  const members = team.members.filter((m) => m.role === role);
+  if (members.length === 0) return ROLE_DEFAULTS[role].competence[axis];
+  const total = members.reduce((s, m) => s + m.competence[axis], 0);
+  return total / members.length;
+}
+
 // Capacity for the reputation loop + agency-offer trigger. Each
 // team member absorbs the same COVERS_PER_MEMBER guests. Agency
 // hires count too — they add capacity for the service they were
