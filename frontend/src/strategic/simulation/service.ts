@@ -3,6 +3,7 @@ import { businessHasOvernight, businessHasSeats, capacityForBusiness } from '../
 import type { BusinessClass } from '../business/businessClass';
 import type { Guest, SimulationState, StaffMember, StaffRole, TaskAssignment, TaskType, Vec2 } from '../types';
 import { taskDurationTicks } from './economics';
+import { roleCompetence } from './team';
 import {
   HAPPY_THRESHOLD,
   UNHAPPY_THRESHOLD,
@@ -703,10 +704,12 @@ function pickBackgroundTaskFor(state: SimulationState, staff: StaffMember): Task
 function beginBackgroundTask(state: SimulationState, staff: StaffMember, type: TaskType) {
   staff.taskType = type;
   staff.taskProgress = 0;
+  // ORDER 214 (C2 §4) — staff-rollens praktiska kompetens skalar duration.
   staff.taskDuration = taskDurationTicks(
     state.policies,
     type,
-    state.capitals.values.social
+    state.capitals.values.social,
+    roleCompetence(state.team, staff.role)
   );
   staff.targetGuestId = null;
   // Bakgrundsarbete håller personalen vid rollens home-punkt — kock i
@@ -763,6 +766,39 @@ const BG_BACKLOG_TARGET = 1;
 // Om en task saknar ansvarig roll i staff (t.ex. flambe men ingen kock)
 // eller om alla i den rollen har full kö (QUEUE_CAPACITY nådd), räknas
 // tasken som DROPPED i state.metrics.droppedTasksThisService.
+// ORDER 214 (C2 §1) — joker-roll. Lärling absorberar överallt när primär
+// roll inte finns i laget. Anställningstexten (team.ts:7) beskriver lärling
+// som "low across the board, low cost". Lärlingens låga kompetens gör att
+// duration blir längre (§4) — inte att uppgiften refuseras. En kock som
+// serverar är inte en restaurang: primär roll står över allt annat, men
+// lärling får ta över när ingen annan finns.
+const JOKER_ROLE: StaffRole = 'lärling';
+
+function pickAssigneeFor(state: SimulationState, type: TaskType): StaffMember | null {
+  const primary = TASK_ROLE_ASSIGNMENT[type];
+
+  // Primär roll först — kortast kö vinner, INGET CAPACITY-tak (§3).
+  let best: StaffMember | null = null;
+  for (const s of state.staff) {
+    if (s.role !== primary) continue;
+    if (best === null || s.taskQueue.length < best.taskQueue.length) best = s;
+  }
+  if (best !== null) return best;
+
+  // Joker-fallback: om primär roll saknas i laget, låt lärling ta över.
+  // Aktiveras bara när primary ≠ lärling (annars redan sökt ovan).
+  if (primary !== JOKER_ROLE) {
+    for (const s of state.staff) {
+      if (s.role !== JOKER_ROLE) continue;
+      if (best === null || s.taskQueue.length < best.taskQueue.length) best = s;
+    }
+    if (best !== null) return best;
+  }
+
+  // Varken primär eller joker finns → unstaffed (räknas i scheduleTasks).
+  return null;
+}
+
 const TASK_ROLE_ASSIGNMENT: Record<TaskType, StaffRole> = {
   greet:        'värd',
   seat:         'värd',
@@ -804,13 +840,23 @@ function scheduleTasks(state: SimulationState) {
     }
   }
 
-  // 2. ORDER 212 (C2) — för varje PRIORITY-type, hitta första tillgängliga
-  //    gäst och köa på KORTAST KÖ AV RÄTT ROLL. Duplicate-checken över
-  //    alla staff (oavsett roll) bevaras — samma (guest, type) får inte
-  //    köas två gånger. Om ingen staff med rätt roll finns ELLER alla
-  //    kompatibla staff har fullt (queue.length >= QUEUE_CAPACITY),
-  //    räknas tasken som dropped.
-  let drops = 0;
+  // 2. ORDER 212 → ORDER 214 (C2) — för varje PRIORITY-type, hitta första
+  //    tillgängliga gäst och köa på KORTAST KÖ AV RÄTT ROLL. ORDER 214
+  //    §3: kön har inget CAPACITY-tak i schemaläggningen — den växer.
+  //    QUEUE_CAPACITY används fortfarande som workload-nämnare (mättar
+  //    signalen vid 4) men schemaläggaren blockeras inte av den. "Att
+  //    slänga uppgifter döljer överbelastning; att köra dem ändå gör
+  //    bemanningen meningslös" (VO 2026-09-14).
+  //
+  //    §1 joker-regel: om primär roll saknas i laget faller vi tillbaka
+  //    till lärling. Anställningstexten (team.ts:7): "lärling — apprentice,
+  //    low across the board, low cost". Låg kompetens = längre duration
+  //    (§4), inte att uppgiften refuseras.
+  //
+  //    Om varken primär roll ELLER lärling finns räknas tasken som
+  //    unstaffed (droppedTasksThisService-fältet återanvänds med ny
+  //    betydelse: "vi hade uppgifter för en roll som inte finns i laget").
+  let unstaffed = 0;
   for (const type of PRIORITY) {
     const targetGuestId = findTaskTarget(state, type);
     if (!targetGuestId) continue;
@@ -824,20 +870,9 @@ function scheduleTasks(state: SimulationState) {
     );
     if (alreadyBoundOrQueued) continue;
 
-    // C2 roll-filtrering. Hitta staff av rätt roll med kortast kö.
-    const requiredRole = TASK_ROLE_ASSIGNMENT[type];
-    let bestStaff: StaffMember | null = null;
-    for (const s of state.staff) {
-      if (s.role !== requiredRole) continue;
-      if (s.taskQueue.length >= QUEUE_CAPACITY) continue;
-      if (bestStaff === null || s.taskQueue.length < bestStaff.taskQueue.length) {
-        bestStaff = s;
-      }
-    }
+    const bestStaff = pickAssigneeFor(state, type);
     if (bestStaff === null) {
-      // Ingen kompatibel staff med plats → drop. C2:s svar på VO:s fråga
-      // "vad händer när ingen är ledig".
-      drops += 1;
+      unstaffed += 1;
       continue;
     }
     const assignment: TaskAssignment = {
@@ -849,10 +884,10 @@ function scheduleTasks(state: SimulationState) {
     bestStaff.taskQueue.push(assignment);
   }
 
-  if (drops > 0) {
+  if (unstaffed > 0) {
     state.metrics = {
       ...state.metrics,
-      droppedTasksThisService: state.metrics.droppedTasksThisService + drops
+      droppedTasksThisService: state.metrics.droppedTasksThisService + unstaffed
     };
   }
 
@@ -1052,10 +1087,12 @@ function beginStaffTask(
 ) {
   staff.taskType = type;
   staff.taskProgress = 0;
+  // ORDER 214 (C2 §4) — staff-rollens praktiska kompetens skalar duration.
   staff.taskDuration = taskDurationTicks(
     state.policies,
     type,
-    state.capitals.values.social
+    state.capitals.values.social,
+    roleCompetence(state.team, staff.role)
   );
   staff.targetGuestId = targetGuestId;
   const guest = state.guests.find((g) => g.id === targetGuestId);

@@ -93,14 +93,36 @@ export function socialThroughputMultiplier(social: number): number {
   return 2 - clamped;
 }
 
+// ORDER 214 (C2 §4) — kompetens-multiplikator för duration. Praktisk-
+// kompetens 0..1 mappas linjärt till 1.15..0.85. Symmetrisk kring 0.5
+// så en default-competence (som `taskDurationTicks(p, type)` utan
+// competence-arg får som 0.5-fallback) ger multiplikator 1.0 —
+// bakåtkompatibelt med kod som ännu inte skickar per-roll-kompetens.
+//   lärling (practical 0.30) → 1.06 (~6 % längre tid)
+//   värd    (practical 0.50) → 1.00 (baseline)
+//   servitör/kock (0.60)     → 0.97 (~3 % kortare)
+//   spec.   (practical 0.75) → 0.925 (~7 % kortare)
+// Effekten är avsiktligt måttlig — modellen ska säga "skicklig kock är
+// snabbare", inte "lärling är oanvändbar". Lutningen 0.3 (i st f 0.5)
+// valdes så det inte skulle skifta chain-detekteringens 20-sek-fönster
+// för ORDER 076 M6-testet (som blev känsligt vid 5 %-skift). Passeras
+// från beginStaffTask/beginBackgroundTask, som slår upp roll-genomsnitt
+// från team via `roleCompetence(team, staff.role)` (team.ts).
+export function competenceDurationMultiplier(practical: number): number {
+  const clamped = Math.max(0, Math.min(1, practical));
+  return 1.15 - 0.3 * clamped;
+}
+
 export function taskDurationTicks(
   policies: Policies,
   taskType: string,
-  social = 1
+  social = 1,
+  competencePractical = 0.5
 ): number {
   const base = TASK_BASE_TICKS[taskType] ?? 8;
   const training = 1.6 - 0.3 * policies.trainingLevel;
   const concept = SERVICE_DURATION_MULT[policies.service];
   const socialMult = socialThroughputMultiplier(social);
-  return Math.max(2, Math.round(base * training * concept * socialMult));
+  const competenceMult = competenceDurationMultiplier(competencePractical);
+  return Math.max(2, Math.round(base * training * concept * socialMult * competenceMult));
 }
