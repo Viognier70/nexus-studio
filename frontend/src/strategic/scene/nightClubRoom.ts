@@ -909,6 +909,15 @@ export function updateNightClubRoom(room: NightClubRoom, phase: number): void {
   room.parts.mirrorBall.rotation.y = (phase ?? 0) * Math.PI * 2;
 }
 
+// ORDER 221 §2.1 — hinder ur rummets egen geometri.
+// Nattklubben: 126 av 150 platser är occupancyAreas (fritt-rörelse-band),
+// bara 24 chairs har seat-position. Stub tills klassen får aktiv
+// verifiering. Egen order när nattklubben kommer i fokus.
+export function getObstacles(_room?: NightClubRoom): { id: string; local: Vec2; halfW: number; halfD: number }[] {
+  void _room;
+  return [];
+}
+
 /**
  * Fördelar n kroppar i en beläggningsyta. Deterministiskt: samma yta
  * och samma n ger alltid samma punkter, så två klienter renderar samma

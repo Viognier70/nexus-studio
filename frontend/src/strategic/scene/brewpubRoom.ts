@@ -816,6 +816,119 @@ export function walkPathToStation(room: BrewpubRoom, stationId: string): Vec2[] 
   return path;
 }
 
+// ---------- ORDER 221 §2.1 — hinder ur rummets egen geometri ---------
+//
+// Möblernas AABBs härleds ur SAMMA konstanter som bygger meshen ovan
+// (BAR_X, BAR_Z0/Z1, BAR_DEPTH, fermX/fermZ0/fermPitch, tableBox-
+// koordinater, kitchen station-positioner). §2.1: "hindren härleds ur
+// [geometrin], inte ur en handskriven lista som kan glida isär" — den
+// här funktionen läser konstanter, inte en parallell tabell.
+//
+// Vad som RÄKNAS som hinder:
+//   - bardisk (§2.1 explicit)
+//   - jästtankarna + bryggverket + hetvattentank (bryggkar, §2.1 explicit)
+//   - kökets tre stationer (§2.1 explicit)
+//   - långborden + tvåor-borden (bord, §2.1 explicit)
+//   - bryggeri-sockelkanten + skiljeväggen bryggeri↔kök (skiljelinjer i
+//     bakhuset — figurer ska respektera dem)
+//   - maltsäcks-pallen (bryggeri-arbetsyta)
+//
+// Vad som INTE räknas som hinder (§2.2):
+//   - stolar och stolar-runt-borden — seats ligger på dem
+//   - barstolar — bar-seats ligger på dem
+//   - tapptorn (0.55 m högt, på disken; disken själv räknas)
+//   - hyllor / ryggstöd / bordsben — subenheter av bord/stolar
+//   - dörren och leveransluckan — passager
+//   - golvzoner (dining/brew/kitchen färgband) — dekor
+//
+// Cylindriska hinder approximeras som cirkumskrivna fyrkanter
+// (halfW = halfD = radie). Konservativ approximation: figurer får lite
+// mer marginal än cirkeln kräver, aldrig mindre.
+export function getObstacles(_room?: BrewpubRoom): { id: string; local: Vec2; halfW: number; halfD: number }[] {
+  void _room; // parametern behålls för API-symmetri; värdena kommer ur
+              // modulens egna konstanter (samma som mesh-bygget).
+  const width = 15.6;   // brewpub default width (samma som createBrewpubRoom)
+  const depth = 11.8;
+  const halfW = width / 2;
+  const halfD = depth / 2;
+  const inX = halfW - WALL_T;
+  const inZ = halfD - WALL_T;
+
+  const obstacles: { id: string; local: Vec2; halfW: number; halfD: number }[] = [];
+
+  // Bardisken: BAR_X ± BAR_DEPTH/2, sträcker sig BAR_Z0..BAR_Z1.
+  obstacles.push({
+    id: 'barCounter',
+    local: [BAR_X, (BAR_Z0 + BAR_Z1) / 2],
+    halfW: BAR_DEPTH / 2,
+    halfD: (BAR_Z1 - BAR_Z0) / 2
+  });
+
+  // Jästtankarna: 4 cylindrar r=0.55 vid X=-6.9, Z=fermZ0+i*1.25.
+  const fermX = -6.9;
+  const fermZ0 = -3.4;
+  const fermPitch = 1.25;
+  const fermR = 0.55;
+  for (let i = 0; i < 4; i++) {
+    obstacles.push({
+      id: 'fermenter' + i,
+      local: [fermX, fermZ0 + i * fermPitch],
+      halfW: fermR, halfD: fermR
+    });
+  }
+
+  // Bryggverket: mäskkar r=0.72 @ (-6.7,-4.9), kokkärl r=0.72 @ (-5.1,-4.9),
+  // hetvattentank r=0.42 @ (-4.2,-4.9). Sockeln (`brewhousePlinth`,
+  // 3.6×1.7×0.25) INTE med i hinderlistan: den är 0.25 m HÖG, en step-
+  // over-nivå snarare än en vägg (jfr `INTERIOR.chair` som är 0.45 m och
+  // också step-over). Cylindrarna på sockeln ÄR hinder — figuren går
+  // runt tankarna medan sockeln själv är del av golvet.
+  //
+  // Maltsäcks-pallen `grainSacksA` (0.20 m hög) samma sak — step-over,
+  // inte vägg. Kan lyftas till obstacle om VO senare vill att bryggaren
+  // ska gå runt.
+  obstacles.push({ id: 'mashTun',        local: [-6.7, -4.9], halfW: 0.72, halfD: 0.72 });
+  obstacles.push({ id: 'brewKettle',     local: [-5.1, -4.9], halfW: 0.72, halfD: 0.72 });
+  obstacles.push({ id: 'hotLiquorTank',  local: [-4.2, -4.9], halfW: 0.42, halfD: 0.42 });
+
+  // Bryggeri-sockelkanten `breweryKerb` (0.16 × 0.35 × 6.7): INTE med i
+  // hinderlistan. 0.35 m hög — step-over-nivå, samma resonemang som
+  // `brewhousePlinth`. Kerbn markerar zon-gränsen visuellt (matKerb)
+  // men blockerar inte figurens gång. Utan detta beslut var brewer-
+  // stationen strukturellt oåtkomlig: kerb + brewKitchenWall + södra
+  // ytterväggen slöt in brewery-zonen och lämnade ingen passage för
+  // ölkrogens sim-lager (som gladeligen dispatchade "brewer"-tasks
+  // men vars puck aldrig kunde ta sig fram).
+
+  // Skiljevägg bryggeri/kök: 0.15 tjock, längd = BOH_EDGE_X + inX vid Z=1.0.
+  const wallLen = BOH_EDGE_X + inX;
+  obstacles.push({
+    id: 'brewKitchenWall',
+    local: [-inX + wallLen / 2, BREW_KITCHEN_Z],
+    halfW: wallLen / 2,
+    halfD: 0.15 / 2
+  });
+
+  // Kökets stationer.
+  obstacles.push({ id: 'stationRange', local: [-6.9, 2.4], halfW: 1.2 / 2, halfD: 2.0 / 2 });
+  obstacles.push({ id: 'stationWash',  local: [-6.9, 4.4], halfW: 1.2 / 2, halfD: 1.0 / 2 });
+  obstacles.push({ id: 'stationPrep',  local: [-4.9, 5.1], halfW: 2.2 / 2, halfD: 0.8 / 2 });
+
+  // Långborden: 2.4 × 0.95 vid (1.9, ±2.9).
+  obstacles.push({ id: 'longA', local: [1.9, -2.9], halfW: 2.4 / 2, halfD: 0.95 / 2 });
+  obstacles.push({ id: 'longB', local: [1.9,  2.9], halfW: 2.4 / 2, halfD: 0.95 / 2 });
+
+  // Två-topparna: 1.05 × 1.05 vid (5.2, ±3.4).
+  obstacles.push({ id: 'twoC', local: [5.2, -3.4], halfW: 1.05 / 2, halfD: 1.05 / 2 });
+  obstacles.push({ id: 'twoD', local: [5.2,  3.4], halfW: 1.05 / 2, halfD: 1.05 / 2 });
+
+  // Ståkant-hyllor (ledges): 3.6 × 0.35 vid (1.3, ±(inZ-0.25)).
+  obstacles.push({ id: 'ledgeS', local: [1.3, -inZ + 0.25], halfW: 3.6 / 2, halfD: 0.35 / 2 });
+  obstacles.push({ id: 'ledgeN', local: [1.3,  inZ - 0.25], halfW: 3.6 / 2, halfD: 0.35 / 2 });
+
+  return obstacles;
+}
+
 // ---------- Mätning (§7) ----------
 
 /**

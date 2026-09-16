@@ -99,6 +99,18 @@ export interface RoomMeasure {
   raw: any;
 }
 
+/**
+ * ORDER 221 §2 — hinder-AABB i rum-lokal XZ. Härleds ur rummets egen
+ * geometri via klassens `getObstacles()` (se t.ex. brewpubRoom.ts).
+ * Konsumeras av `roomNav.buildNav` för gåbar-yta + A*.
+ */
+export interface ObstacleAABB {
+  id: string;
+  local: Vec2;
+  halfW: number;
+  halfD: number;
+}
+
 export interface BusinessRoom {
   roomClass: RoomClass;
   /** Lägg i scenen. Placeras med byggnadens OBB, eller — för
@@ -132,6 +144,21 @@ export interface BusinessRoom {
   flags: { [k: string]: string };
   /** Rumsobjektet som klassens egen modul returnerade. */
   raw: any;
+  /**
+   * ORDER 221 §2.1 — hinder-AABBs i rum-lokal XZ. Härleds ur klassens
+   * `getObstacles()` (samma konstanter som mesh-bygget). Tom lista för
+   * klasser som inte har aktiv nav-verifiering ännu (foodtruck, inn,
+   * nightClub) — där degraderar `computePath` till rak linje.
+   */
+  obstacles: ObstacleAABB[];
+  /**
+   * ORDER 221 §2 — rummets halva bredd/djup i lokal XZ. Behövs av
+   * nav-modulen för att bygga walkable-grid inom ytterväggarna.
+   * Utläses ur `raw.width`/`raw.depth` när klassen definierar dem;
+   * fallback (halvW=halvD=0) betyder "ingen nav-yta" (foodtrucken).
+   */
+  halfW: number;
+  halfD: number;
   dispose: () => void;
 }
 
@@ -235,6 +262,16 @@ export function createRoom(roomClass: RoomClass, opts?: any): BusinessRoom {
        || raw.queue[0]).local
     : raw.waitingSpot;
 
+  // ORDER 221 §2.1 — hinderlistan hämtas ur klassens `getObstacles()`.
+  // När modulen inte exponerar funktionen (t.ex. under övergången) —
+  // fallback till tom lista. Nav-modulen degraderar då till rak linje,
+  // vilket är pre-221-beteendet för samma klass.
+  const rawObstacles: ObstacleAABB[] =
+    typeof mod.getObstacles === 'function' ? mod.getObstacles(raw) : [];
+
+  const halfW = typeof raw.width === 'number' ? raw.width / 2 : 0;
+  const halfD = typeof raw.depth === 'number' ? raw.depth / 2 : 0;
+
   return {
     roomClass: roomClass,
     group: raw.group,
@@ -253,6 +290,9 @@ export function createRoom(roomClass: RoomClass, opts?: any): BusinessRoom {
     shortfall: raw.shortfall,
     flags: mod.FLAGS ?? {},
     raw: raw,
+    obstacles: rawObstacles,
+    halfW: halfW,
+    halfD: halfD,
     dispose: raw.dispose
   };
 }

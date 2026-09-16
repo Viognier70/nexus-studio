@@ -35,6 +35,7 @@ import { COVERS_PER_MEMBER } from '../simulation/team';
 import type { StaffRole, TeamMember } from '../types';
 import { staffPositionsRef, staffPosesRef, businessRoomRef, guestPositionsRef } from './interiorSharedState';
 import type { SharedStaffPose, SharedBusinessRoom } from './interiorSharedState';
+import { computePath } from './roomNav';
 import type { TaskType } from '../types';
 
 // ORDER 206 — bekvämtyp för det per-roll hem-mappningsvärdet som
@@ -193,7 +194,27 @@ interface AnimatedStaff {
   // personalen når nuvarande waypoint (< PATH_ADVANCE_THRESHOLD_M) eller
   // när task-state byter (nästa order-serie kan koppla walkPathToSeat
   // för task-guest-fallet).
+  //
+  // ORDER 221 §2.4 — pathIdx pekar nu i navPath (nav-beräknad väg) i st
+  // f i de gamla staffPathsByRole/walkPathsToSeatsByIndex-arrayerna. Nav
+  // ersätter båda: samma system för gäster och personal (§2.4).
   pathIdx: number;
+  /**
+   * ORDER 221 §2.3 — cachad nav-path för nuvarande target. Beräknad EN
+   * gång per target-byte (nyckel: `navTargetKey`) och läses per frame
+   * av route-loopen. Utan cache skulle A* köra 4-20 ggr/sekund per
+   * staff — onödigt för statiska mål (staffs sim.taskType byter var
+   * 4-8 sim-tick och target-position ändras ~0.5 m/frame vid rörlig
+   * gäst).
+   */
+  navPath: XZ[] | null;
+  /**
+   * Nyckel som identifierar det target `navPath` beräknades för. Format:
+   * `${role}:${targetX.toFixed(1)}:${targetZ.toFixed(1)}` — 0.1 m
+   * upplösning räcker för att undvika onödiga omräkningar utan att
+   * fjärma path från verkligheten.
+   */
+  navTargetKey: string;
 }
 
 // ORDER 217 (C3 §3.2) — tröskel för att räknas "framme vid waypoint" och
@@ -498,7 +519,10 @@ export function InteriorStaff() {
           // ORDER 217 (C3 §3.2) — ingen aktiv path vid spawn (staff står
           // redan vid home). Path aktiveras när staff blivit tillräckligt
           // långt hemifrån och behöver ta sig tillbaka.
-          pathIdx: -1
+          pathIdx: -1,
+          // ORDER 221 §2.3 — ingen cached nav-path vid spawn.
+          navPath: null,
+          navTargetKey: ''
         };
         positionsRef.current.set(member.id, pos);
       }
@@ -637,45 +661,66 @@ export function InteriorStaff() {
         );
       }
 
-      // ORDER 217 (C3 §3.2) + ORDER 218 (uppföljning) — routing via
-      // rummets korridorer. Två fall:
-      //   (a) staff→home (!taskGuest, far från home): staffPathsByRole
-      //       — publicerad av walkPathToStation.
-      //   (b) staff→seated-guest: walkPathsToSeatsByIndex[guest.seatIndex]
-      //       — publicerad av walkPathToSeat, ORDER 218. Utan detta korsar
-      //       en servitör på väg till gäst vid ölkrogens långbord bordet
-      //       (samma sorts fel som (a) hade före ORDER 217).
-      // Om taskGuest inte är seated (waiting/arriving/etc.) faller vi
-      // tillbaka till rak linje mot guest-render-position — inga
-      // korridorer beskrivna för de tillstånden.
-      const homePath = roomChan?.staffPathsByRole?.[member.role] ?? null;
-      const seatPaths = roomChan?.walkPathsToSeatsByIndex ?? null;
+      // ORDER 221 §2.3 — vägen beräknas via nav-modulen i st f att
+      // väljas ur hand-kodade `staffPathsByRole` / `walkPathsToSeats-
+      // ByIndex`. §2.4: samma system för gäster och personal. Nav-graf
+      // + bakade transformer publicerade av *Scene vid mount (se
+      // BrewpubScene / RestaurantScene §221).
+      //
+      // Val av target-XZ har redan skett ovan (targetX/Z = escort-trail,
+      // guest-render, home + drift eller station approach). Vi bygger
+      // en nav-path FRÅN nuvarande position TILL denna target, cachar
+      // per (target-round) så A* inte kör per frame, och följer path:en
+      // waypoint för waypoint med samma ease-mönster som förut.
+      //
+      // Fallback när nav saknas (foodtruck, äldre klasser utan
+      // getObstacles): activePath = null → rak linje direkt till
+      // targetX/Z (pre-221-beteende bevarat för dessa klasser).
       const homeDx = home[0] - pos.cx;
       const homeDz = home[1] - pos.cz;
       const distFromHomeSq = homeDx * homeDx + homeDz * homeDz;
       const farFromHome = distFromHomeSq > HOME_NEAR_M * HOME_NEAR_M;
 
-      // Välj aktiv path.
       let activePath: XZ[] | null = null;
-      if (taskGuest && seatPaths) {
-        // ORDER 218 — routa via walkPathToSeat om guest är seated
-        // (`seatIndex != null`). SEATED_STATES-listan hanteras via närvaro
-        // av `seatIndex` — waiting-gäster har seatIndex=null.
-        const seatIdx = taskGuest.seatIndex ?? -1;
-        if (seatIdx >= 0 && seatIdx < seatPaths.length && seatPaths[seatIdx].length > 1) {
-          // Sista waypoint är seat.local; staff står bredvid, inte på
-          // stolen. Guest-render-position räknas in via en distanscheck:
-          // om staff är nära sista waypoint släpps path och vi går rakt
-          // till guest-render-position (för sista biten, ~0.6-1.0 m).
-          const path = seatPaths[seatIdx];
-          const lastWp = path[path.length - 1];
-          const distToSeatSq = (lastWp[0] - pos.cx) ** 2 + (lastWp[1] - pos.cz) ** 2;
-          if (distToSeatSq > HOME_NEAR_M * HOME_NEAR_M) {
-            activePath = path;
+      const nav = roomChan?.nav ?? null;
+      const worldToLocal = roomChan?.worldToLocalXZ ?? null;
+      const localToWorld = roomChan?.localToWorldXZ ?? null;
+      // Nav aktiveras när: (a) det finns en nav-graf, (b) target skiljer
+      // sig materiellt från nuvarande position (annars är rak-linje-
+      // clampen längre ner rätt), (c) escort-trail INTE aktivt (trail
+      // ändras varje frame med guest render-yaw, cachning motverkar
+      // följsamheten — trail-follow är genuint per-frame straight-line
+      // enligt ORDER 220).
+      const escortActive = !!taskGuest &&
+        bridgedStaff?.taskType === 'greet' &&
+        guestPositionsRef.current.get(bridgedStaff.targetGuestId!)?.moving === true;
+      const shouldRoute = nav && worldToLocal && localToWorld && !escortActive &&
+        (farFromHome || !!taskGuest);
+      if (shouldRoute) {
+        // Cache-nyckel: rundad target-XZ per roll. `taskType`
+        // ingår så en byte av target (greet→serve på samma gäst) räknar
+        // om även om positionen råkade vara nästan samma.
+        const roundedTX = Math.round(targetX * 10) / 10;
+        const roundedTZ = Math.round(targetZ * 10) / 10;
+        const key = `${member.role}:${bridgedStaff?.taskType ?? '-'}:${roundedTX}:${roundedTZ}`;
+        if (pos.navTargetKey !== key || !pos.navPath) {
+          const fromLocal = worldToLocal([pos.cx, pos.cz]);
+          const toLocal = worldToLocal([targetX, targetZ]);
+          const localPath = computePath(nav, fromLocal, toLocal);
+          if (localPath && localPath.length > 1) {
+            pos.navPath = localPath.map((p) => localToWorld(p));
+          } else {
+            pos.navPath = null;
           }
+          pos.navTargetKey = key;
+          pos.pathIdx = -1;  // starta från början med den nya path:en
         }
-      } else if (!taskGuest && farFromHome && homePath && homePath.length > 1) {
-        activePath = homePath;
+        if (pos.navPath && pos.navPath.length > 1) {
+          activePath = pos.navPath;
+        }
+      } else {
+        pos.navPath = null;
+        pos.navTargetKey = '';
       }
 
       if (activePath) {

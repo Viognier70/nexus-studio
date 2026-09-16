@@ -22,6 +22,8 @@ import { GRAY_BOX_CAMERA } from '../content/grythyttan';
 import { useSimState } from '../simulation/SimulationProvider';
 import type { Guest, GuestState } from '../types';
 import { staffPositionsRef, businessRoomRef, guestPositionsRef } from './interiorSharedState';
+import { computePath } from './roomNav';
+import type { XZ } from './roomNav';
 import {
   derivePipCarriers,
   patternForGuest
@@ -252,6 +254,14 @@ interface AnimatedPos {
   // veta om trail-offset (värd bakom gäst under gång) ska aktiveras
   // eller inte (stilla gäst → värd närmar sig direkt, ingen offset).
   movedLastFrame: boolean;
+  // ORDER 221 §2.3+§2.4 — cachad nav-path för gästens nuvarande target.
+  // Samma pattern som staff (InteriorStaff.tsx:navPath). Recomputas när
+  // navTargetKey ändras (rundad state+seatIndex-nyckel). Gäster följer
+  // waypoints via `navPathIdx`; sista waypoint är target-positionen så
+  // ease-loopen får identiskt slutbeteende som pre-221.
+  navPath: XZ[] | null;
+  navTargetKey: string;
+  navPathIdx: number;
 }
 
 // ORDER 188 tillägg 1 — sitYaw-warning en gång per (klass, seatIndex)
@@ -513,7 +523,10 @@ export function InteriorGuests() {
           walkPhase: 0,
           walkYaw: 0,
           blendStartYaw: 0,
-          movedLastFrame: false
+          movedLastFrame: false,
+          navPath: null,
+          navTargetKey: '',
+          navPathIdx: -1
         };
         positionsRef.current.set(guest.id, pos);
       }
@@ -642,7 +655,57 @@ export function InteriorGuests() {
       let effTargetX = target.x;
       let effTargetZ = target.z;
       const seated = SEATED_STATES.includes(guest.state);
-      if (seated) {
+
+      // ORDER 221 §2.3+§2.4 — nav-route för gäster mot INTERIÖRA mål.
+      // Samma system som staff (InteriorStaff.tsx). Aktiveras när
+      // gästens sluttarget ligger inuti byggnadens OBB (dvs. seated-
+      // states — arriving/waiting/leaving ligger utanför). Utan nav:
+      // gästen rusade rakt genom bardisk / bord / bryggkar från arrival
+      // slot till seat — VO 2026-09-16 "Rummet går att gå i".
+      //
+      // Cache per (state, seatIndex) — target-punkten är statisk per
+      // seat, så nav-anropet kör en gång per gäst-sittning i st f varje
+      // frame. När guest byter state (arriving → seated) blir nyckeln
+      // ny och path räknas om.
+      const roomChanForNav = businessRoomRef.current;
+      const nav = roomChanForNav?.nav ?? null;
+      const worldToLocal = roomChanForNav?.worldToLocalXZ ?? null;
+      const localToWorld = roomChanForNav?.localToWorldXZ ?? null;
+      if (nav && worldToLocal && localToWorld && seated) {
+        const key = `${guest.state}:${guest.seatIndex ?? -1}`;
+        if (pos.navTargetKey !== key || !pos.navPath) {
+          const fromLocal = worldToLocal([pos.cx, pos.cz]);
+          const toLocal = worldToLocal([target.x, target.z]);
+          const localPath = computePath(nav, fromLocal, toLocal);
+          if (localPath && localPath.length > 1) {
+            pos.navPath = localPath.map((p) => localToWorld(p));
+          } else {
+            pos.navPath = null;
+          }
+          pos.navTargetKey = key;
+          pos.navPathIdx = 0;
+        }
+        if (pos.navPath && pos.navPath.length > 1) {
+          // Följ pathen — sista waypoint är target. Avancera när nära
+          // aktuell waypoint (< 0.5 m). Effektivt mål = aktuell waypoint.
+          const wp = pos.navPath[pos.navPathIdx];
+          const wdx = wp[0] - pos.cx;
+          const wdz = wp[1] - pos.cz;
+          if (wdx * wdx + wdz * wdz < 0.5 * 0.5 && pos.navPathIdx < pos.navPath.length - 1) {
+            pos.navPathIdx += 1;
+          }
+          effTargetX = pos.navPath[pos.navPathIdx][0];
+          effTargetZ = pos.navPath[pos.navPathIdx][1];
+        }
+      } else {
+        // Gäst i non-seated state → släpp cachad nav-path så nästa
+        // seated-transition startar rent.
+        pos.navPath = null;
+        pos.navTargetKey = '';
+        pos.navPathIdx = -1;
+      }
+
+      if (seated && !pos.navPath) {
         // ORDER 190 fynd 3 — waypoint släpper när gästen är nära seat.
         // Före ORDER 190 kunde waypoint hålla kvar en gäst vid entrance-
         // jittern trots att seat-positionen redan var nådd — VO fynd

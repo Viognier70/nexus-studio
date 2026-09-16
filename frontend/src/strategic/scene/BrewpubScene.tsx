@@ -30,6 +30,7 @@ import {
 } from './businessRoom';
 import { disposeBrewpubGeometry } from './brewpubRoom';
 import { businessRoomRef } from './interiorSharedState';
+import { buildNav, type XZ } from './roomNav';
 import { useCamera } from '../camera/CameraContext';
 import { GRAY_BOX_CAMERA } from '../content/grythyttan';
 
@@ -75,6 +76,49 @@ export function BrewpubScene() {
     // borttagna. Kontraktet publicerar `stations` (raw `staffStations`
     // världs-XZ, i deklarationsordning) och InteriorStaff läser den
     // flata listan direkt. Ingen roll-mapping via `stationFor`.
+    // ORDER 221 §2 — bygg nav-grafen i rum-lokal XZ. Exempt-punkter =
+    // seats (default 0.35 m radie, räcker för en enskild plats på
+    // möbelkanten). Stationer behöver större radie eftersom personalen
+    // står och arbetar i en workspace-yta som kan ligga i en narrow
+    // slot mellan möbler (kvarterskrogens chef mellan spis och prep,
+    // ölkrogens brewer i L-hörnet mellan tankraden och bryggverket).
+    // 0.7 m öppnar en 1.4 m diameter walkable-zon runt varje station —
+    // tillräckligt för approach + poseWork, utan att sudda ut hinder-
+    // väggarna i angränsande passager (obstacle-inflate är 0.25 m så
+    // en dörrpassage smalare än 1.0 m klipps först vid station-exempt).
+    const exemptPoints: XZ[] = room.seats.map((s) => s.local as XZ);
+    // Stationsexempt-radie 1.5 m. Se roomNav.ts:BuildOpts.exemptCircles-
+     // kommentaren för resonemanget: workspaces ligger ibland i narrow
+     // slots (ölkrogens brewer i L-hörnet mellan tankraden och brygg-
+     // verket, kvarterskrogens chef mellan spis och prep), och exempt-
+     // radien måste räcka för att bygga en gåbar bro genom slotens
+     // hinder + inflate på båda sidor. Wall-clampen i buildNav ser till
+     // att exempt aldrig läcker utanför ytterväggen.
+    const exemptCircles = room.stations.map((s) => ({
+      local: s.local as XZ, radius: 1.75
+    }));
+    const nav = buildNav(room.halfW, room.halfD, room.obstacles,
+      { exemptPoints, exemptCircles });
+    // Bakade transformer: rummet är statiskt efter mount så en bakad
+    // yaw + origin räcker (rummet flyttar aldrig). Rummet är roterat
+    // -layout.worldAngle rundt +Y från lokal.
+    const roomYaw = room.group.rotation.y;
+    const cosR = Math.cos(roomYaw);
+    const sinR = Math.sin(roomYaw);
+    const rx = room.group.position.x;
+    const rz = room.group.position.z;
+    const worldToLocalXZ = (world: XZ): XZ => {
+      const dx = world[0] - rx;
+      const dz = world[1] - rz;
+      // Invers rotation: [cos, sin; -sin, cos].
+      return [cosR * dx + sinR * dz, -sinR * dx + cosR * dz];
+    };
+    const localToWorldXZ = (local: XZ): XZ => {
+      const lx = local[0];
+      const lz = local[1];
+      return [cosR * lx - sinR * lz + rx, sinR * lx + cosR * lz + rz];
+    };
+
     businessRoomRef.current = {
       businessClass: 'ölkrogen',
       seats: world.seats as [number, number][],
@@ -119,7 +163,13 @@ export function BrewpubScene() {
       // (OBB-generisk 2×4-form) tills en design-order öppnar den. Se
       // SharedBusinessRoom.waitingSlots-doc för framtida per-rum-formen.
       waitingSlots: layout.waitingSlots as [number, number][],
-      capacity: room.capacity
+      capacity: room.capacity,
+      // ORDER 221 §2 — gåbar-yta + transformer i samma commit som obstacle-
+      // exporten. Konsumenter (InteriorStaff, InteriorGuests) läser detta
+      // via businessRoomRef.
+      nav: nav,
+      worldToLocalXZ: worldToLocalXZ,
+      localToWorldXZ: localToWorldXZ
     };
     return () => {
       const r = roomRef.current;
