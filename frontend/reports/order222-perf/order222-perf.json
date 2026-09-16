@@ -1,0 +1,23 @@
+{
+  "fps": 41.19098503010495,
+  "guestCount": 19,
+  "staffCount": 3,
+  "seatedCount": 9,
+  "movingGuests": 4,
+  "movingStaff": 3,
+  "nav": {
+    "computePathCalls": 252,
+    "straightLineHits": 38,
+    "astarRuns": 214,
+    "totalMs": 4.800000548362732,
+    "maxMs": 0.7000000476837158,
+    "nullResults": 180
+  },
+  "_derived": {
+    "meanMs": 0.019047621223661635,
+    "astarPerSec": 10.7,
+    "pathPerSec": 12.6,
+    "cacheMissRate": 0.8492063492063492,
+    "astarMsPerFrame": 0.005826518284103417
+  }
+}
