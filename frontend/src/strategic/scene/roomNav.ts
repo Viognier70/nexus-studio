@@ -466,6 +466,53 @@ function smoothPath(nav: NavGraph, cells: Array<[number, number]>, from: XZ, to:
 }
 
 /**
+ * ORDER 222 — instrumentering för perf-verifiering (§5 DoD 7). Räknar
+ * antal `computePath`-anrop uppdelat på rak-linje-snabbfall och äkta
+ * A*, samt totalt tidsåtgång + max-per-anrop. Läses av perf-scriptet
+ * (`scripts/order222-nav-perf.mjs`) via `resetNavPerfCounters` +
+ * `readNavPerfCounters`. Overhead: en integer-inkrement + `performance
+ * .now()` per anrop → försumbart, får ligga kvar i prod (siffrorna kan
+ * användas i devpanel senare).
+ */
+interface NavPerfCounters {
+  computePathCalls: number;
+  straightLineHits: number;
+  astarRuns: number;
+  totalMs: number;
+  maxMs: number;
+  nullResults: number;
+}
+const _navPerf: NavPerfCounters = {
+  computePathCalls: 0,
+  straightLineHits: 0,
+  astarRuns: 0,
+  totalMs: 0,
+  maxMs: 0,
+  nullResults: 0
+};
+export function resetNavPerfCounters(): void {
+  _navPerf.computePathCalls = 0;
+  _navPerf.straightLineHits = 0;
+  _navPerf.astarRuns = 0;
+  _navPerf.totalMs = 0;
+  _navPerf.maxMs = 0;
+  _navPerf.nullResults = 0;
+}
+export function readNavPerfCounters(): Readonly<NavPerfCounters> {
+  return { ..._navPerf };
+}
+
+// DEV-hook så playwright kan läsa/nolla utan att importera modulen.
+if (import.meta.env.DEV && typeof window !== 'undefined') {
+  (window as unknown as {
+    __nxNavPerf?: {
+      reset: () => void;
+      read: () => Readonly<NavPerfCounters>;
+    };
+  }).__nxNavPerf = { reset: resetNavPerfCounters, read: readNavPerfCounters };
+}
+
+/**
  * Beräknar en väg i lokal XZ från `from` till `to`. Returnerar en lista
  * som ALLTID börjar med `from` (eller nära det, om from ligger i ett
  * blockerat område och måste projiceras) och slutar med `to`. Null om
@@ -475,6 +522,8 @@ function smoothPath(nav: NavGraph, cells: Array<[number, number]>, from: XZ, to:
  * Anropskontrakt: ändra ALDRIG returlistan (kan cachas av anroparen).
  */
 export function computePath(nav: NavGraph, from: XZ, to: XZ): XZ[] | null {
+  const t0 = (typeof performance !== 'undefined') ? performance.now() : 0;
+  _navPerf.computePathCalls += 1;
   const fCell = toCell(nav, from);
   const tCell = toCell(nav, to);
   // Om from/to hamnade i blockerad cell — hitta närmaste walkable inom
@@ -483,12 +532,43 @@ export function computePath(nav: NavGraph, from: XZ, to: XZ): XZ[] | null {
     ? fCell : nearestWalkable(nav, fCell.c, fCell.r, 6);
   const tW = isWalkable(nav, tCell.c, tCell.r)
     ? tCell : nearestWalkable(nav, tCell.c, tCell.r, 6);
-  if (!fW || !tW) return null;
+  if (!fW || !tW) {
+    _navPerf.nullResults += 1;
+    if (typeof performance !== 'undefined') {
+      const ms = performance.now() - t0;
+      _navPerf.totalMs += ms;
+      if (ms > _navPerf.maxMs) _navPerf.maxMs = ms;
+    }
+    return null;
+  }
   // Snabbfall: rak linje fungerar → hoppa A*.
-  if (segmentClear(nav, from, to)) return [from, to];
+  if (segmentClear(nav, from, to)) {
+    _navPerf.straightLineHits += 1;
+    if (typeof performance !== 'undefined') {
+      const ms = performance.now() - t0;
+      _navPerf.totalMs += ms;
+      if (ms > _navPerf.maxMs) _navPerf.maxMs = ms;
+    }
+    return [from, to];
+  }
   const cells = astar(nav, fW.c, fW.r, tW.c, tW.r);
-  if (!cells) return null;
-  return smoothPath(nav, cells, from, to);
+  _navPerf.astarRuns += 1;
+  if (!cells) {
+    _navPerf.nullResults += 1;
+    if (typeof performance !== 'undefined') {
+      const ms = performance.now() - t0;
+      _navPerf.totalMs += ms;
+      if (ms > _navPerf.maxMs) _navPerf.maxMs = ms;
+    }
+    return null;
+  }
+  const smoothed = smoothPath(nav, cells, from, to);
+  if (typeof performance !== 'undefined') {
+    const ms = performance.now() - t0;
+    _navPerf.totalMs += ms;
+    if (ms > _navPerf.maxMs) _navPerf.maxMs = ms;
+  }
+  return smoothed;
 }
 
 /**
