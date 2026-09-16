@@ -891,6 +891,66 @@ export function walkPathToStation(room: RestaurantRoom, stationId: string): Vec2
   return path;
 }
 
+// ---------- ORDER 221 §2.1 — hinder ur rummets egen geometri ---------
+//
+// Härleds ur samma konstanter som mesh-bygget (BAR_X-relaterade,
+// TABLE_SPECS, kitchen station-positioner). Se brewpubRoom.ts:
+// getObstacles för samma mönster och motivering.
+export function getObstacles(_room?: RestaurantRoom): { id: string; local: Vec2; halfW: number; halfD: number }[] {
+  void _room;
+  const width = 15.6;
+  const depth = 11.8;
+  const counterDepth = 0.70;
+  const halfW = width / 2;
+  const halfD = depth / 2;
+  const inX = halfW - WALL_T;
+  const inZ = halfD - WALL_T;
+
+  const barStripZ = -halfD + BAR_OFFSET_M + BAR_STRIP_M / 2;
+  const barFrontZ = barStripZ + BAR_STRIP_M / 2;
+  const barLength = width * BAR_LENGTH_FRAC;
+  const counterZ = barFrontZ - counterDepth / 2;
+  const kitchenX0 = -inX;
+  const kitchenX1 = -barLength / 2 - 0.2;
+  const kitMidX = (kitchenX0 + kitchenX1) / 2;
+
+  const obstacles: { id: string; local: Vec2; halfW: number; halfD: number }[] = [];
+
+  // Bardisken (matBar).
+  obstacles.push({
+    id: 'barCounter',
+    local: [0, counterZ],
+    halfW: barLength / 2,
+    halfD: counterDepth / 2
+  });
+
+  // Kökets vägg mot matsalen (matWall, 0.15 tjock, 1.5 hög).
+  const kitDepth = 4.5;
+  obstacles.push({
+    id: 'kitchenWall',
+    local: [kitchenX1, -inZ + kitDepth / 2],
+    halfW: 0.15 / 2,
+    halfD: kitDepth / 2
+  });
+
+  // Kökets stationer + passluckan.
+  obstacles.push({ id: 'stationRange', local: [kitMidX, -inZ + 0.5], halfW: 1.6 / 2, halfD: 0.85 / 2 });
+  obstacles.push({ id: 'stationPrep',  local: [kitMidX, -inZ + 2.0], halfW: 1.6 / 2, halfD: 0.85 / 2 });
+  obstacles.push({ id: 'passCounter',  local: [kitchenX1 + 0.2, -inZ + 3.4], halfW: 0.4 / 2, halfD: 1.5 / 2 });
+
+  // Borden (TABLE_SPECS).
+  for (const t of TABLE_SPECS) {
+    obstacles.push({
+      id: t.id,
+      local: [t.local[0], t.local[1]],
+      halfW: t.sizeM / 2,
+      halfD: t.sizeM / 2
+    });
+  }
+
+  return obstacles;
+}
+
 // ---------- Mätning ----------
 
 export function measureRestaurantRoom(room: RestaurantRoom): {

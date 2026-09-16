@@ -1332,6 +1332,16 @@ export function createInnRoom(options?: InnOptions): InnRoom {
   };
 }
 
+// ORDER 221 §2.1 — hinder ur rummets egen geometri.
+// Gästgiveriet: U-form med matsals-vingar. Stub tills klassen får
+// aktiv verifiering — nav-modulen degraderar då till rak linje, vilket
+// är samma beteende som pre-221 för klassen. Egen order när gästgiveriet
+// kommer i fokus.
+export function getObstacles(_room?: InnRoom): { id: string; local: Vec2; halfW: number; halfD: number }[] {
+  void _room;
+  return [];
+}
+
 /**
  * Enda rörliga delen: grillspettet. `phase` är 0..1 och kommer från
  * anroparen — rummet äger ingen klocka.

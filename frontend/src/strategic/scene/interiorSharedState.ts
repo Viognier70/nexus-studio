@@ -259,6 +259,33 @@ export interface SharedBusinessRoom {
    */
   waitingSlots: XZ[];
   capacity: number;
+  /**
+   * ORDER 221 §2 — gåbar-yta + navigering. Kör en gång vid scen-mount
+   * via `buildNav(halfW, halfD, obstacles, {...seats+stationer som
+   * exemptPoints})`. Sim-tid: 0. Läses av InteriorStaff + InteriorGuests
+   * för att routa runt möbler i st f rak linje. `null` när klassens
+   * modul inte har hinderdata (foodtruck idag) — konsumenten faller
+   * då tillbaka till rak linje som pre-221.
+   *
+   * Nav-grafen ligger i ROOM-LOKAL XZ. Konsumenter konverterar via
+   * `worldToLocalXZ` / `localToWorldXZ` nedan; funktionerna bakar in
+   * rummets rotation + translation vid publicerings-tid så konsumenter
+   * inte behöver hålla en THREE-referens.
+   */
+  nav: import('./roomNav').NavGraph | null;
+  /**
+   * ORDER 221 §2 — konverterar en världs-XZ till rum-lokal XZ. Bakad
+   * inversen av rummets `group.matrixWorld` (rotation + translation);
+   * anroparen behöver ingen THREE-referens. Returvärdet återanvänder
+   * inte input-arrayen — säkert att pipe:a in i path-frågor.
+   */
+  worldToLocalXZ: (world: XZ) => XZ;
+  /**
+   * ORDER 221 §2 — konverterar en rum-lokal XZ (t.ex. path-waypoint)
+   * till världs-XZ. Motsvarigheten till `worldToLocalXZ`; samma
+   * bakning.
+   */
+  localToWorldXZ: (local: XZ) => XZ;
   // ORDER 204 — `staffStationsByRole: Record<StaffRole, XZ | null>` bort-
   // taget. Design (via VO 2026-09-10 kl. 15:30) klargjorde att fältet
   // heter `stations` (kontraktet) / `staffStations` (raw); ölkrogen har

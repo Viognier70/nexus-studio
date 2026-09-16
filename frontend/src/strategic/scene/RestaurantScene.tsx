@@ -33,6 +33,7 @@ import {
 } from './businessRoom';
 import { disposeRestaurantGeometry } from './restaurantRoom';
 import { businessRoomRef } from './interiorSharedState';
+import { buildNav, type XZ } from './roomNav';
 import { useCamera } from '../camera/CameraContext';
 import { GRAY_BOX_CAMERA } from '../content/grythyttan';
 
@@ -75,6 +76,31 @@ export function RestaurantScene() {
     // ORDER 204 — `resolveStaffStationsWorld` + `staffStationsByRole`
     // borttagna. Se BrewpubScene-kommentar. Kontraktet publicerar `stations`
     // (raw `staffStations` världs-XZ) och InteriorStaff läser flata listan.
+    // ORDER 221 §2 — bygg nav-graf + bakade transformer. Se BrewpubScene
+    // för motivet + val av exempt-radie per typ (seats 0.35, stations 0.7).
+    const exemptPoints: XZ[] = room.seats.map((s) => s.local as XZ);
+    // Stationsexempt-radie 1.5 m. Se BrewpubScene / roomNav.ts:BuildOpts.
+    const exemptCircles = room.stations.map((s) => ({
+      local: s.local as XZ, radius: 1.75
+    }));
+    const nav = buildNav(room.halfW, room.halfD, room.obstacles,
+      { exemptPoints, exemptCircles });
+    const roomYaw = room.group.rotation.y;
+    const cosR = Math.cos(roomYaw);
+    const sinR = Math.sin(roomYaw);
+    const rx = room.group.position.x;
+    const rz = room.group.position.z;
+    const worldToLocalXZ = (world: XZ): XZ => {
+      const dx = world[0] - rx;
+      const dz = world[1] - rz;
+      return [cosR * dx + sinR * dz, -sinR * dx + cosR * dz];
+    };
+    const localToWorldXZ = (local: XZ): XZ => {
+      const lx = local[0];
+      const lz = local[1];
+      return [cosR * lx - sinR * lz + rx, sinR * lx + cosR * lz + rz];
+    };
+
     businessRoomRef.current = {
       businessClass: 'kvarterskrogen',
       seats: world.seats as [number, number][],
@@ -107,7 +133,11 @@ export function RestaurantScene() {
       // som varit oanvänd sedan augusti. Publicera den nu så InteriorGuests
       // läser rummets egen kö istället för layout-räknad kopia.
       waitingSlots: world.waitingSlots as [number, number][],
-      capacity: room.capacity
+      capacity: room.capacity,
+      // ORDER 221 §2 — nav-graf + bakade transformer. Se BrewpubScene.
+      nav: nav,
+      worldToLocalXZ: worldToLocalXZ,
+      localToWorldXZ: localToWorldXZ
     };
     return () => {
       const r = roomRef.current;

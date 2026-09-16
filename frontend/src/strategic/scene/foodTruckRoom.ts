@@ -989,6 +989,16 @@ export function createFoodTruckRoom(options?: FoodTruckOptions): FoodTruckRoom {
  *
  * Rummet äger ingen klocka. Se FLAGS.hatchState.
  */
+// ORDER 221 §2.1 — hinder ur rummets egen geometri.
+// Foodtrucken har ingen "inreliggande" nav-yta — gästerna köar utanför,
+// beställer vid luckan, går därifrån. Nav-modulen är no-op för denna
+// klass; behåller stubben så businessRoom.createRoom kan dispatcha
+// uniformt utan special-case.
+export function getObstacles(_room?: FoodTruckRoom): { id: string; local: Vec2; halfW: number; halfD: number }[] {
+  void _room;
+  return [];
+}
+
 export function updateFoodTruckRoom(room: FoodTruckRoom, open: number): void {
   const k = Math.max(0, Math.min(1, open ?? 1));
   // POSITIV rotation. Negativ svepte +Z-panelen uppåt, så vagnen blev

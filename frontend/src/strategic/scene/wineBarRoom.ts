@@ -888,6 +888,61 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
  * rummet äger ingen klocka. Se FLAGS.djState: om tallriken ska vrida
  * sig alls är ett kvällstillstånd som inte finns ännu.
  */
+// ORDER 221 §2.1 — hinder ur rummets egen geometri. Se brewpubRoom.ts.
+export function getObstacles(_room?: WineBarRoom): { id: string; local: Vec2; halfW: number; halfD: number }[] {
+  void _room;
+  const obstacles: { id: string; local: Vec2; halfW: number; halfD: number }[] = [];
+
+  // Bardisken (matBar, BAR_X ± BAR_DEPTH/2, BAR_Z0..BAR_Z1).
+  obstacles.push({
+    id: 'barCounter',
+    local: [BAR_X, (BAR_Z0 + BAR_Z1) / 2],
+    halfW: BAR_DEPTH / 2,
+    halfD: (BAR_Z1 - BAR_Z0) / 2
+  });
+
+  // Flaskhyllan (matShelf, SHELF_X ± SHELF_T/2, SHELF_Z0..SHELF_Z1).
+  obstacles.push({
+    id: 'bottleShelf',
+    local: [SHELF_X, (SHELF_Z0 + SHELF_Z1) / 2],
+    halfW: SHELF_T / 2,
+    halfD: (SHELF_Z1 - SHELF_Z0) / 2
+  });
+
+  // Lounge-borden (två grupper) + plintarna. Plinthen är sätesbasen +
+  // ryggstödet — dynorna sitter ovanpå så vi räknar plinthen som
+  // hinder (0.86 m djup, LOUNGE_PITCH*4+0.1 bred) för att förhindra
+  // att figurer går bakifrån in i soffan.
+  const loungeSpec = [{ id: 'loungeA', cx: 1.6 }, { id: 'loungeB', cx: 5.2 }];
+  for (const L of loungeSpec) {
+    obstacles.push({
+      id: L.id + 'Plinth',
+      local: [L.cx, LOUNGE_Z + 0.06],
+      halfW: (LOUNGE_PITCH * 4 + 0.1) / 2,
+      halfD: 0.86 / 2
+    });
+    obstacles.push({
+      id: L.id + 'Table',
+      local: [L.cx, LOUNGE_TABLE_Z],
+      halfW: 1.6 / 2,
+      halfD: 0.7 / 2
+    });
+  }
+
+  // Tvåor-borden (0.95 × 0.95).
+  const twoSpec = [{ id: 'twoA', x: 2.9 }, { id: 'twoB', x: 4.7 }, { id: 'twoC', x: 6.5 }];
+  for (const T of twoSpec) {
+    obstacles.push({
+      id: T.id,
+      local: [T.x, TWOTOP_Z],
+      halfW: 0.95 / 2,
+      halfD: 0.95 / 2
+    });
+  }
+
+  return obstacles;
+}
+
 export function updateWineBarRoom(room: WineBarRoom, phase: number): void {
   room.parts.turntable.rotation.y = (phase ?? 0) * Math.PI * 2;
 }
