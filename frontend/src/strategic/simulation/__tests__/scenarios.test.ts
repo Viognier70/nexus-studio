@@ -18,6 +18,7 @@ import {
   ALL_SCENARIOS,
   SCENARIO_BY_THEME,
   pickScenarioSpec,
+  pickScenarioSpecFiltered,
   scenarioById
 } from '../scenarios';
 import type { ScenarioChoice, SustainabilityKey } from '../../types';
@@ -142,5 +143,109 @@ describe('capitalSign per choice drives the drawn-theme capital direction', () =
     expect(Math.abs(deltaC)).toBeGreaterThan(0);
     // Same theme, A and C should NOT land on the same value.
     expect(deltaA).not.toBe(deltaC);
+  });
+});
+
+// ORDER 226 (Fas 3) — phase-fältet + phase-filtrerad pick.
+describe('scenario phase (ORDER 226 Fas 3)', () => {
+  it('every spec deklarerar en phase', () => {
+    for (const s of ALL_SCENARIOS) {
+      expect(s.phase).toBeDefined();
+      expect(['service', 'morning', 'evening']).toContain(s.phase);
+    }
+  });
+
+  it('phase-mappningen är den avsedda: 2 service, 1 morning, 0 evening', () => {
+    const byPhase = {
+      service: ALL_SCENARIOS.filter((s) => s.phase === 'service'),
+      morning: ALL_SCENARIOS.filter((s) => s.phase === 'morning'),
+      evening: ALL_SCENARIOS.filter((s) => s.phase === 'evening')
+    };
+    // Fas 3 flyttade time-pressure till morning (ekonomi/planering);
+    // gäst- och råvara-scenarier stannar i service.
+    expect(byPhase.service.map((s) => s.id).sort()).toEqual(
+      ['moral-dilemma', 'walk-in-of-five'].sort()
+    );
+    expect(byPhase.morning.map((s) => s.id)).toEqual(['time-pressure']);
+    expect(byPhase.evening).toEqual([]);
+  });
+});
+
+describe('pickScenarioSpecFiltered — phase filter (ORDER 226)', () => {
+  it('utan phase-argument: bakåtkompatibelt beteende (returnerar aldrig null)', () => {
+    // Vilket tema som helst → någon spec ska returneras.
+    for (const t of ['social', 'economic', 'ecological'] as const) {
+      const spec = pickScenarioSpecFiltered(t, [], null);
+      expect(spec).not.toBeNull();
+    }
+  });
+
+  it("phase='service' + tema economic → faller tillbaka till service-scenario (time-pressure är morning)", () => {
+    const spec = pickScenarioSpecFiltered('economic', [], null, 'service');
+    // Preferred (time-pressure) är morning → fallback till första
+    // service-phase-scenariot i ALL_SCENARIOS-ordningen.
+    expect(spec).not.toBeNull();
+    expect(spec!.phase).toBe('service');
+    expect(spec!.id).not.toBe('time-pressure');
+  });
+
+  it("phase='service' + tema social → returnerar walk-in-of-five direkt (preferred matchar)", () => {
+    const spec = pickScenarioSpecFiltered('social', [], null, 'service');
+    expect(spec).not.toBeNull();
+    expect(spec!.id).toBe('walk-in-of-five');
+  });
+
+  it("phase='service' + tema ecological → returnerar moral-dilemma direkt (preferred matchar)", () => {
+    const spec = pickScenarioSpecFiltered('ecological', [], null, 'service');
+    expect(spec).not.toBeNull();
+    expect(spec!.id).toBe('moral-dilemma');
+  });
+
+  it("phase='morning' + tema economic → returnerar time-pressure (matchar båda)", () => {
+    const spec = pickScenarioSpecFiltered('economic', [], null, 'morning');
+    expect(spec).not.toBeNull();
+    expect(spec!.id).toBe('time-pressure');
+  });
+
+  it("phase='morning' + tema social → time-pressure (enda morgon-scenariot, phase-fallback)", () => {
+    // Preferred (walk-in-of-five) är service → skip. Fallback letar
+    // efter oanvänt morning-scenario → time-pressure.
+    const spec = pickScenarioSpecFiltered('social', [], null, 'morning');
+    expect(spec).not.toBeNull();
+    expect(spec!.id).toBe('time-pressure');
+  });
+
+  it("phase='evening' → null (inga evening-scenarier i cycle-1)", () => {
+    const spec = pickScenarioSpecFiltered('economic', [], null, 'evening');
+    expect(spec).toBeNull();
+  });
+
+  it("phase='service' med båda service-scenarier redan fyrade → in-phase-repeat (aldrig time-pressure)", () => {
+    const spec = pickScenarioSpecFiltered(
+      'economic',
+      ['walk-in-of-five', 'moral-dilemma'],
+      null,
+      'service'
+    );
+    expect(spec).not.toBeNull();
+    // Preferred (time-pressure) är morning → skip. Alla in-phase
+    // service-scenarier är fyrade. Fall back: preferred om in-phase,
+    // annars första in-phase-scenariot. Preferred är morning så vi
+    // faller till första service-scenariot i ALL_SCENARIOS.
+    expect(spec!.phase).toBe('service');
+    expect(spec!.id).not.toBe('time-pressure');
+  });
+
+  it('avoidOpenerId respekteras även med phase-filter', () => {
+    const spec = pickScenarioSpecFiltered(
+      'social',
+      [],
+      'walk-in-of-five', // undvik detta som opener
+      'service'
+    );
+    expect(spec).not.toBeNull();
+    // Preferred (walk-in-of-five) matchar phase MEN är opener → skip.
+    // Fallback: annan oanvänd service-phase → moral-dilemma.
+    expect(spec!.id).toBe('moral-dilemma');
   });
 });

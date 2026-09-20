@@ -212,9 +212,32 @@ export interface ScenarioChoiceSpec {
   mentor: string;
 }
 
+// ORDER 226 (Fas 3) — vilken fas i dygnet ett scenario hör hemma i.
+// Motiveringen är dokumenterad i kartläggningen ORDER 224 §6:
+//   - `service`  — scenariet ankras i rummets händelser under service.
+//                   Fyras via auto-triggern (reducer.ts:2171-2189).
+//   - `morning`  — scenariet hör till morgonens planering (bemanning,
+//                   ekonomi, dagens meny). Vision Owner-svar 2026-09-20:
+//                   "flytta ekonomi- och planeringsscenarierna till
+//                   morgon och kvällsavräkning". Fyras vid morgon-pass
+//                   (egen kommande order).
+//   - `evening`  — kvällsavräkning (bankMeeting.ts-läget). Framtida
+//                   scenarier som hör till kassaslut eller lån-samtal.
+//
+// Ordern annoterar bara fältet + filtrerar auto-firen. Morgon- och
+// kvällsfirande byggs i egna ordrar (planeringspanel / bankMeeting-
+// integration).
+export type ScenarioPhase = 'service' | 'morning' | 'evening';
+
 export interface ScenarioSpec {
   id: string;
   sustainability: SustainabilityKey;
+  // ORDER 226 (Fas 3) — vilken fas i dygnet scenariet hör hemma.
+  // Auto-firen under service (reducer.ts:2182) filtrerar till
+  // `phase === 'service'`; manuell TRIGGER_SCENARIO-action är
+  // oförändrat ofiltrerad så tester och playtest-tangenten '5' kan
+  // fyra vilket scenario som helst.
+  phase: ScenarioPhase;
   // Subject phase — the one-line "who's arriving / what's calling".
   subjectBody: string;
   subjectCta: string;
@@ -240,6 +263,9 @@ export interface ScenarioSpec {
 const WALK_IN_OF_FIVE: ScenarioSpec = {
   id: 'walk-in-of-five',
   sustainability: 'social',
+  // ORDER 226 (Fas 3) — gäst-scenario, ankras i entré-ögonblicket
+  // (ORDER 224 §6.3, `greet`-ankaret från ORDER 225).
+  phase: 'service',
   subjectBody: 'A party is at the door — no booking.',
   subjectCta: 'Continue',
   situationBody:
@@ -340,6 +366,13 @@ const WALK_IN_OF_FIVE: ScenarioSpec = {
 const TIME_PRESSURE: ScenarioSpec = {
   id: 'time-pressure',
   sustainability: 'economic',
+  // ORDER 226 (Fas 3) — flyttat från service till morgon. Vision Owner
+  // 2026-09-20: ekonomi- och planeringsscenarier hör inte till servicen.
+  // Delegationens bokningsförfrågan är morgonens planering (dagens meny,
+  // bemanning); ORDER 224 §6.4 landade slutsatsen "rent ekonomiska
+  // frågor: flytta till morgon/kväll". Här är markören; morgonens
+  // fyrningsmekanism byggs i egen order.
+  phase: 'morning',
   subjectBody:
     'A delegation calls — wants to book tomorrow, but expects the special menu to be trialled tonight.',
   subjectCta: 'Continue',
@@ -430,6 +463,10 @@ const TIME_PRESSURE: ScenarioSpec = {
 const MORAL_DILEMMA: ScenarioSpec = {
   id: 'moral-dilemma',
   sustainability: 'ecological',
+  // ORDER 226 (Fas 3) — råvara-scenario, ankras vid leverans-ankomst
+  // (ORDER 224 §6.1). Fisk-med-bruten-kylkedja är exakt det som Fas 2:s
+  // `delivery_arrived`-event ska koppla mot i en framtida order.
+  phase: 'service',
   subjectBody:
     'The supplier calls — today\'s fish exists only as uncertainty.',
   subjectCta: 'Continue',
@@ -538,33 +575,60 @@ export function pickScenarioSpec(theme: SustainabilityKey): ScenarioSpec {
 // the drawn theme's scenario, fall back to the least-recently-used
 // alternative regardless of theme. When more variants land per theme
 // (see ORDER 047 out-of-scope note), this pool logic scales up.
+//
+// ORDER 226 (Fas 3) — overload med `phase`-parameter. Utan phase-arg:
+// original beteende (returnerar alltid en spec, faller tillbaka till
+// preferred vid pool-exhaust). Med phase-arg: filtrerar poolen till
+// scenarier med matchande `phase`; kan returnera null om ingen
+// matchning finns. Auto-firen skickar `phase='service'`; om ekonomiskt
+// tema dras men bara `time-pressure` matchar (som är `phase='morning'`)
+// faller vi tillbaka på annan service-phase-scenario eller null.
 export function pickScenarioSpecFiltered(
   theme: SustainabilityKey,
   firedIds: readonly string[],
   avoidOpenerId: string | null
-): ScenarioSpec {
-  const preferred = SCENARIO_BY_THEME[theme] ?? WALK_IN_OF_FIVE;
+): ScenarioSpec;
+export function pickScenarioSpecFiltered(
+  theme: SustainabilityKey,
+  firedIds: readonly string[],
+  avoidOpenerId: string | null,
+  phase: ScenarioPhase
+): ScenarioSpec | null;
+export function pickScenarioSpecFiltered(
+  theme: SustainabilityKey,
+  firedIds: readonly string[],
+  avoidOpenerId: string | null,
+  phase?: ScenarioPhase
+): ScenarioSpec | null {
   const isFired = (id: string) => firedIds.includes(id);
-  // First choice: the drawn-theme spec if it hasn't fired this service
-  // and isn't the previous service's opener.
-  if (!isFired(preferred.id) && preferred.id !== avoidOpenerId) {
+  const inPhase = (s: ScenarioSpec) => phase === undefined || s.phase === phase;
+
+  const preferred = SCENARIO_BY_THEME[theme] ?? WALK_IN_OF_FIVE;
+  // First choice: the drawn-theme spec if it hasn't fired this service,
+  // isn't the previous service's opener, AND matches the requested phase.
+  if (inPhase(preferred) && !isFired(preferred.id) && preferred.id !== avoidOpenerId) {
     return preferred;
   }
-  // Second: any spec that hasn't fired this service, biased away from
-  // avoidOpenerId if possible.
-  const unfired = ALL_SCENARIOS.filter((s) => !isFired(s.id));
-  if (unfired.length > 0) {
-    const nonOpener = unfired.filter((s) => s.id !== avoidOpenerId);
+  // Second: any spec that hasn't fired this service AND matches the
+  // requested phase, biased away from avoidOpenerId if possible.
+  const unfiredInPhase = ALL_SCENARIOS.filter((s) => !isFired(s.id) && inPhase(s));
+  if (unfiredInPhase.length > 0) {
+    const nonOpener = unfiredInPhase.filter((s) => s.id !== avoidOpenerId);
     if (nonOpener.length > 0) return nonOpener[0];
-    return unfired[0];
+    return unfiredInPhase[0];
   }
-  // Third: everything has fired this service — the pool is exhausted.
-  // Fall back to the preferred spec anyway (a repeat is better than
-  // no fire; the wager loop must not stall). This only happens when
-  // the density × service length exceeds ALL_SCENARIOS.length, which
-  // at 0.22/min × 15 min ≈ 3.3 scenarios and ALL_SCENARIOS.length = 3
-  // is exactly on the boundary.
-  return preferred;
+  // Third: everything in-phase has fired this service.
+  //   - Utan phase-filter (bakåtkompat): fall back to preferred (a repeat
+  //     is better than no fire; the wager loop must not stall).
+  //   - Med phase-filter: returnera in-phase-repeat om preferred matchar
+  //     phasen, annars första in-phase-scenariot över huvud taget, annars
+  //     null (ingen matchande scenario existerar för `phase`).
+  if (phase === undefined) {
+    return preferred;
+  }
+  if (inPhase(preferred)) return preferred;
+  const anyInPhase = ALL_SCENARIOS.find(inPhase);
+  return anyInPhase ?? null;
 }
 
 // Convenience export: array form for iteration / spec-lookup by id.
