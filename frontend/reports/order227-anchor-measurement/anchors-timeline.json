@@ -1,0 +1,445 @@
+{
+  "summary": {
+    "order": 227,
+    "seed": 42,
+    "lengthMinutes": 15,
+    "totalTicks": 4500,
+    "framesWithAnyAnchor": 3022,
+    "framesWithAnchorPercent": 67.16,
+    "cumulativeFramesPerAnchor": {
+      "greet": 445,
+      "order": 1105,
+      "setDown": 0,
+      "requestCheck": 1322,
+      "pay": 2124
+    },
+    "cumulativeSecondsPerAnchor": {
+      "greet": 89,
+      "order": 221,
+      "setDown": 0,
+      "requestCheck": 264.4,
+      "pay": 424.8
+    },
+    "firePerAnchor": {
+      "greet": 89,
+      "order": 86,
+      "setDown": 0,
+      "requestCheck": 85,
+      "pay": 85
+    },
+    "totalFires": 345,
+    "guestsSpawned": 2,
+    "guestsSeated": 2,
+    "completedGuests": 85,
+    "scenariosFired": 0,
+    "scenariosPlanned": 0
+  },
+  "stateChanges": [
+    {
+      "simTime": 439.4,
+      "kind": "scenario.phase",
+      "detail": "idle → subject (id=walk-in-of-five)"
+    },
+    {
+      "simTime": 439.4,
+      "kind": "scheduled.consumed",
+      "detail": "2 → 1 (fired=1)"
+    },
+    {
+      "simTime": 439.6,
+      "kind": "scenario.phase",
+      "detail": "subject → situation (id=walk-in-of-five)"
+    },
+    {
+      "simTime": 439.8,
+      "kind": "scenario.phase",
+      "detail": "situation → question (id=walk-in-of-five)"
+    },
+    {
+      "simTime": 440,
+      "kind": "scenario.phase",
+      "detail": "question → resolving (id=walk-in-of-five)"
+    },
+    {
+      "simTime": 474.8,
+      "kind": "scenario.phase",
+      "detail": "resolving → settled (id=walk-in-of-five)"
+    },
+    {
+      "simTime": 768.2,
+      "kind": "scenario.phase",
+      "detail": "settled → subject (id=moral-dilemma)"
+    },
+    {
+      "simTime": 768.2,
+      "kind": "scheduled.consumed",
+      "detail": "1 → 0 (fired=2)"
+    },
+    {
+      "simTime": 768.4,
+      "kind": "scenario.phase",
+      "detail": "subject → situation (id=moral-dilemma)"
+    },
+    {
+      "simTime": 768.6,
+      "kind": "scenario.phase",
+      "detail": "situation → resolving (id=moral-dilemma)"
+    },
+    {
+      "simTime": 803.4,
+      "kind": "scenario.phase",
+      "detail": "resolving → settled (id=moral-dilemma)"
+    }
+  ],
+  "timeline": [
+    {
+      "simTime": 60,
+      "tick": 300,
+      "period": "dinner",
+      "guestsInRoom": 0,
+      "staffTargeting": 0,
+      "counts": {
+        "greet": 0,
+        "order": 0,
+        "setDown": 0,
+        "requestCheck": 0,
+        "pay": 0
+      },
+      "scenario": {
+        "phase": "idle",
+        "scenarioId": null,
+        "drawnTheme": null,
+        "remainingScheduled": 2,
+        "firedThisService": 0,
+        "firedIds": []
+      }
+    },
+    {
+      "simTime": 120,
+      "tick": 600,
+      "period": "dinner",
+      "guestsInRoom": 0,
+      "staffTargeting": 0,
+      "counts": {
+        "greet": 0,
+        "order": 0,
+        "setDown": 0,
+        "requestCheck": 0,
+        "pay": 0
+      },
+      "scenario": {
+        "phase": "idle",
+        "scenarioId": null,
+        "drawnTheme": null,
+        "remainingScheduled": 2,
+        "firedThisService": 0,
+        "firedIds": []
+      }
+    },
+    {
+      "simTime": 180,
+      "tick": 900,
+      "period": "dinner",
+      "guestsInRoom": 8,
+      "staffTargeting": 1,
+      "counts": {
+        "greet": 0,
+        "order": 0,
+        "setDown": 0,
+        "requestCheck": 0,
+        "pay": 0
+      },
+      "scenario": {
+        "phase": "idle",
+        "scenarioId": null,
+        "drawnTheme": null,
+        "remainingScheduled": 2,
+        "firedThisService": 0,
+        "firedIds": []
+      }
+    },
+    {
+      "simTime": 240,
+      "tick": 1200,
+      "period": "dinner",
+      "guestsInRoom": 7,
+      "staffTargeting": 1,
+      "counts": {
+        "greet": 0,
+        "order": 0,
+        "setDown": 0,
+        "requestCheck": 0,
+        "pay": 1
+      },
+      "scenario": {
+        "phase": "idle",
+        "scenarioId": null,
+        "drawnTheme": null,
+        "remainingScheduled": 2,
+        "firedThisService": 0,
+        "firedIds": []
+      }
+    },
+    {
+      "simTime": 300,
+      "tick": 1500,
+      "period": "dinner",
+      "guestsInRoom": 11,
+      "staffTargeting": 1,
+      "counts": {
+        "greet": 0,
+        "order": 0,
+        "setDown": 0,
+        "requestCheck": 0,
+        "pay": 0
+      },
+      "scenario": {
+        "phase": "idle",
+        "scenarioId": null,
+        "drawnTheme": null,
+        "remainingScheduled": 2,
+        "firedThisService": 0,
+        "firedIds": []
+      }
+    },
+    {
+      "simTime": 360,
+      "tick": 1800,
+      "period": "dinner",
+      "guestsInRoom": 17,
+      "staffTargeting": 1,
+      "counts": {
+        "greet": 0,
+        "order": 0,
+        "setDown": 0,
+        "requestCheck": 0,
+        "pay": 1
+      },
+      "scenario": {
+        "phase": "idle",
+        "scenarioId": null,
+        "drawnTheme": null,
+        "remainingScheduled": 2,
+        "firedThisService": 0,
+        "firedIds": []
+      }
+    },
+    {
+      "simTime": 420,
+      "tick": 2100,
+      "period": "dinner",
+      "guestsInRoom": 23,
+      "staffTargeting": 1,
+      "counts": {
+        "greet": 0,
+        "order": 1,
+        "setDown": 0,
+        "requestCheck": 0,
+        "pay": 1
+      },
+      "scenario": {
+        "phase": "idle",
+        "scenarioId": null,
+        "drawnTheme": null,
+        "remainingScheduled": 2,
+        "firedThisService": 0,
+        "firedIds": []
+      }
+    },
+    {
+      "simTime": 480,
+      "tick": 2400,
+      "period": "dinner",
+      "guestsInRoom": 20,
+      "staffTargeting": 1,
+      "counts": {
+        "greet": 0,
+        "order": 0,
+        "setDown": 0,
+        "requestCheck": 0,
+        "pay": 1
+      },
+      "scenario": {
+        "phase": "settled",
+        "scenarioId": "walk-in-of-five",
+        "drawnTheme": "social",
+        "remainingScheduled": 1,
+        "firedThisService": 1,
+        "firedIds": [
+          "walk-in-of-five"
+        ]
+      }
+    },
+    {
+      "simTime": 540,
+      "tick": 2700,
+      "period": "dinner",
+      "guestsInRoom": 15,
+      "staffTargeting": 1,
+      "counts": {
+        "greet": 0,
+        "order": 0,
+        "setDown": 0,
+        "requestCheck": 0,
+        "pay": 1
+      },
+      "scenario": {
+        "phase": "settled",
+        "scenarioId": "walk-in-of-five",
+        "drawnTheme": "social",
+        "remainingScheduled": 1,
+        "firedThisService": 1,
+        "firedIds": [
+          "walk-in-of-five"
+        ]
+      }
+    },
+    {
+      "simTime": 600,
+      "tick": 3000,
+      "period": "dinner",
+      "guestsInRoom": 12,
+      "staffTargeting": 2,
+      "counts": {
+        "greet": 1,
+        "order": 0,
+        "setDown": 0,
+        "requestCheck": 1,
+        "pay": 1
+      },
+      "scenario": {
+        "phase": "settled",
+        "scenarioId": "walk-in-of-five",
+        "drawnTheme": "social",
+        "remainingScheduled": 1,
+        "firedThisService": 1,
+        "firedIds": [
+          "walk-in-of-five"
+        ]
+      }
+    },
+    {
+      "simTime": 660,
+      "tick": 3300,
+      "period": "dinner",
+      "guestsInRoom": 9,
+      "staffTargeting": 2,
+      "counts": {
+        "greet": 1,
+        "order": 0,
+        "setDown": 0,
+        "requestCheck": 1,
+        "pay": 1
+      },
+      "scenario": {
+        "phase": "settled",
+        "scenarioId": "walk-in-of-five",
+        "drawnTheme": "social",
+        "remainingScheduled": 1,
+        "firedThisService": 1,
+        "firedIds": [
+          "walk-in-of-five"
+        ]
+      }
+    },
+    {
+      "simTime": 720,
+      "tick": 3600,
+      "period": "dinner",
+      "guestsInRoom": 7,
+      "staffTargeting": 1,
+      "counts": {
+        "greet": 0,
+        "order": 1,
+        "setDown": 0,
+        "requestCheck": 1,
+        "pay": 0
+      },
+      "scenario": {
+        "phase": "settled",
+        "scenarioId": "walk-in-of-five",
+        "drawnTheme": "social",
+        "remainingScheduled": 1,
+        "firedThisService": 1,
+        "firedIds": [
+          "walk-in-of-five"
+        ]
+      }
+    },
+    {
+      "simTime": 780,
+      "tick": 3900,
+      "period": "dinner",
+      "guestsInRoom": 4,
+      "staffTargeting": 0,
+      "counts": {
+        "greet": 0,
+        "order": 0,
+        "setDown": 0,
+        "requestCheck": 0,
+        "pay": 2
+      },
+      "scenario": {
+        "phase": "resolving",
+        "scenarioId": "moral-dilemma",
+        "drawnTheme": "social",
+        "remainingScheduled": 0,
+        "firedThisService": 2,
+        "firedIds": [
+          "walk-in-of-five",
+          "moral-dilemma"
+        ]
+      }
+    },
+    {
+      "simTime": 840,
+      "tick": 4200,
+      "period": "dinner",
+      "guestsInRoom": 1,
+      "staffTargeting": 0,
+      "counts": {
+        "greet": 0,
+        "order": 0,
+        "setDown": 0,
+        "requestCheck": 1,
+        "pay": 0
+      },
+      "scenario": {
+        "phase": "settled",
+        "scenarioId": "moral-dilemma",
+        "drawnTheme": "social",
+        "remainingScheduled": 0,
+        "firedThisService": 2,
+        "firedIds": [
+          "walk-in-of-five",
+          "moral-dilemma"
+        ]
+      }
+    },
+    {
+      "simTime": 900,
+      "tick": 4500,
+      "period": "evening",
+      "guestsInRoom": 2,
+      "staffTargeting": 0,
+      "counts": {
+        "greet": 0,
+        "order": 0,
+        "setDown": 0,
+        "requestCheck": 0,
+        "pay": 0
+      },
+      "scenario": {
+        "phase": "settled",
+        "scenarioId": "moral-dilemma",
+        "drawnTheme": "social",
+        "remainingScheduled": 0,
+        "firedThisService": 0,
+        "firedIds": [
+          "walk-in-of-five",
+          "moral-dilemma"
+        ]
+      }
+    }
+  ]
+}
