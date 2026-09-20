@@ -1078,6 +1078,10 @@ function openService(
     revenueAtServiceStart: state.revenue,
     costAtServiceStart: state.cost,
     reputationAtServiceStart: state.reputation,
+    // ORDER 228 (etapp A) — snapshot kunskapskapitalet så
+    // kvällsavräkningen kan visa dagens delta per axel. Deep-copy för
+    // att undvika share med state.knowledgeCredits.
+    knowledgeCreditsAtServiceStart: { ...state.knowledgeCredits },
     // ORDER 050 §7 step 3 (2026-08-10) — fresh accumulators for this
     // service; posted + reset at service-close transition.
     serviceIngredientAccrued: 0,
@@ -1167,6 +1171,7 @@ function skipLunch(state: SimulationState): SimulationState {
       revenueAtServiceStart: null,
       costAtServiceStart: null,
       reputationAtServiceStart: null,
+      knowledgeCreditsAtServiceStart: null,
       serviceIngredientAccrued: 0,
       idleCostAccrued: 0,
       serviceCovers: 0
@@ -1317,6 +1322,7 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           revenueAtServiceStart: null,
           costAtServiceStart: null,
           reputationAtServiceStart: null,
+          knowledgeCreditsAtServiceStart: null,
           serviceIngredientAccrued: 0,
           idleCostAccrued: 0,
           serviceCovers: 0
@@ -1386,6 +1392,7 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           revenueAtServiceStart: null,
           costAtServiceStart: null,
           reputationAtServiceStart: null,
+          knowledgeCreditsAtServiceStart: null,
           serviceIngredientAccrued: 0,
           idleCostAccrued: 0,
           serviceCovers: 0

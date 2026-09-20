@@ -26,6 +26,8 @@
 import type {
   EveningAccount,
   EveningAccountBranch,
+  EveningAccountMetrics,
+  KnowledgeCredits,
   SimulationState
 } from '../types';
 import { pickParagraph } from '../../content/eveningAccount.sv';
@@ -63,10 +65,39 @@ export function pickBranch(state: SimulationState): EveningAccountBranch {
   return 'mediocre';
 }
 
+// -------- metrics (ORDER 228 etapp A) ---------------------------------
+
+// Beräknar dagens spårbara tal (intäkt, kostnad, resultat, rykte-delta,
+// kunskaps-delta per axel) ur snapshotarna som togs vid OPEN_SERVICE.
+// När en snapshot saknas (mycket tidigt state eller service som aldrig
+// öppnats) returneras noll-delta så UI kan visa något meningsfullt utan
+// att krascha. Kalibrering: dessa tal LÄSES ur state.day-snapshotarna;
+// samma källa som pickBranch redan använder, så ingen risk för "rätt tal
+// om fel sak"-drift (CLAUDE.md-principen).
+export function computeMetrics(state: SimulationState): EveningAccountMetrics {
+  const rStart = state.day.revenueAtServiceStart ?? state.revenue;
+  const cStart = state.day.costAtServiceStart ?? state.cost;
+  const repStart = state.day.reputationAtServiceStart ?? state.reputation;
+  const kcStart: KnowledgeCredits =
+    state.day.knowledgeCreditsAtServiceStart ?? state.knowledgeCredits;
+
+  const revenue = state.revenue - rStart;
+  const cost = state.cost - cStart;
+  const result = revenue - cost;
+  const reputationDelta = state.reputation - repStart;
+  const knowledgeDelta: KnowledgeCredits = {
+    episteme: state.knowledgeCredits.episteme - kcStart.episteme,
+    techne: state.knowledgeCredits.techne - kcStart.techne,
+    phronesis: state.knowledgeCredits.phronesis - kcStart.phronesis
+  };
+  return { revenue, cost, result, reputationDelta, knowledgeDelta };
+}
+
 // -------- compose ------------------------------------------------------
 
 export function computeEveningAccount(state: SimulationState): EveningAccount {
   const branch = pickBranch(state);
+  const metrics = computeMetrics(state);
   let paragraph = pickParagraph({
     branch,
     collapseAxis: state.day.collapseAxis,
@@ -112,6 +143,7 @@ export function computeEveningAccount(state: SimulationState): EveningAccount {
   return {
     branch,
     paragraph,
-    presentedAt: state.simTime
+    presentedAt: state.simTime,
+    metrics
   };
 }

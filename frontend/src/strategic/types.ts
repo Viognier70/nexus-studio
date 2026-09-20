@@ -697,6 +697,12 @@ export interface DayState {
   // evening account uses this to say "kvällen bevarade ryktet" vs
   // "ryktet gick tillbaka" without surfacing the number itself.
   reputationAtServiceStart: number | null;
+  // ORDER 228 (etapp A) — snapshot av kunskapskapital vid OPEN_SERVICE
+  // så kvällsavräkningen kan visa dagens förändring per axel (per DoD
+  // A.1: "förändring i kunskapskapital"). Null mellan services, samma
+  // som revenue/cost/reputation-snapshotarna. Optionellt fält för
+  // bakåtkompat med test-fixturer skrivna före ORDER 228.
+  knowledgeCreditsAtServiceStart?: KnowledgeCredits | null;
   // ORDER 075 (M2) — today's picked activity ids. Set in the morning
   // via PICK_ACTIVITY; cleared at day rollover. Length capped at
   // MAX_ACTIVITIES_PER_DAY = 3 in the reducer.
@@ -974,6 +980,25 @@ export interface EveningAccount {
   // in EveningAccountPanel as a block; no per-sentence styling.
   paragraph: string;
   presentedAt: number;   // simTime — start of fade-in
+  // ORDER 228 (etapp A) — dagens tal, spårbara till vad som hände.
+  // DoD A.1: kvällsavräkningen ska visa intäkt, kostnad, resultat,
+  // förändring i rykte, förändring i kunskapskapital. Beräknas ur
+  // day.<something>AtServiceStart vs state.<something> vid stängning.
+  // Optionellt för bakåtkompat med test-fixturer skrivna före ORDER
+  // 228 som konstruerar EveningAccount-objekt direkt.
+  metrics?: EveningAccountMetrics;
+}
+
+export interface EveningAccountMetrics {
+  // SEK. Snapshot-diffar mot state.revenue / state.cost vid OPEN_SERVICE.
+  revenue: number;
+  cost: number;
+  // Nettoresultat = revenue − cost. Kan vara negativt.
+  result: number;
+  // Rykte-delta = state.reputation − day.reputationAtServiceStart.
+  reputationDelta: number;
+  // Kunskapskapital-delta per axel.
+  knowledgeDelta: KnowledgeCredits;
 }
 
 export interface PendingOutcome {
