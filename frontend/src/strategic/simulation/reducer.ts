@@ -2179,13 +2179,44 @@ function advanceTick(state: SimulationState): SimulationState {
     scheduled.length > 0 &&
     draft.simTime >= scheduled[0]
   ) {
-    const nextDraft = triggerScenario(draft, /* auto */ true);
-    nextDraft.day = {
-      ...nextDraft.day,
-      scenarioTriggerTimes: scheduled.slice(1),
-      scenariosFiredThisService: draft.day.scenariosFiredThisService + 1
+    // ORDER 226 (Fas 3) — auto-firen filtrerar till phase='service'
+    // så ekonomi/planeringsscenarier (time-pressure) inte längre
+    // fyras under service. Manuell TRIGGER_SCENARIO-action är
+    // oförändrat ofiltrerad. Om triggerScenario returnerar state
+    // oförändrad (null-pick, inget service-phase-scenario matchar
+    // ens efter fallback — bör inte ske i Cycle-1 då 2 av 3
+    // scenarier är service-phase) konsumerar vi ändå scheme-slot
+    // så schemat progresserar; annars vore vi fast på samma tid.
+    const nextDraft = triggerScenario(draft, /* auto */ true, 'service');
+    // ORDER 226 (Fas 3) — triggerScenario returnerar state med
+    // scenario.phase='subject' när något fyrades, annars oförändrad
+    // scenario-fas ('idle' eller 'settled' — det som scenarioIdle
+    // guardade). scenarioId är olämpligt som marker eftersom det
+    // överlever över dygnsrollover (state.scenario nollställs inte
+    // vid dagsbyte, se reducer.ts:1489-1494). `phase` speglar
+    // faktisk fyrning per tick.
+    const scenarioFired = nextDraft.scenario.phase === 'subject';
+    if (scenarioFired) {
+      nextDraft.day = {
+        ...nextDraft.day,
+        scenarioTriggerTimes: scheduled.slice(1),
+        scenariosFiredThisService: draft.day.scenariosFiredThisService + 1
+      };
+      return nextDraft;
+    }
+    // Ingen scenario att fyra — konsumera slot ändå så framtida ticks
+    // inte re-kollar samma slot i evighet. `scenariosFiredThisService`
+    // ökar inte (vi fyrade inget), men schedule minskar med en så
+    // DevPanel-räknaren `scenarios=fired/planned` visar när schemat
+    // har fönster som passerats utan fire. Behåll rngState-progressen
+    // från triggerScenarion (theme-draget konsumerade rng).
+    return {
+      ...nextDraft,
+      day: {
+        ...nextDraft.day,
+        scenarioTriggerTimes: scheduled.slice(1)
+      }
     };
-    return nextDraft;
   }
 
   // Transition scenario from 'resolving' → 'settled' after the
@@ -2330,7 +2361,11 @@ function describePolicyPatch(patch: Partial<Policies>): string {
   return `Policy: ${parts.join(', ')}`;
 }
 
-function triggerScenario(state: SimulationState, auto: boolean): SimulationState {
+function triggerScenario(
+  state: SimulationState,
+  auto: boolean,
+  phaseFilter?: 'service' | 'morning' | 'evening'
+): SimulationState {
   // Enters phase 'subject' — the party is at the door, awaiting the
   // player's difficulty wager (§4.3) and response (§4.2). `auto` is
   // unused now; both manual and auto triggers set hasAutoTriggered
@@ -2350,11 +2385,33 @@ function triggerScenario(state: SimulationState, auto: boolean): SimulationState
   // opener. pickScenarioSpecFiltered falls back to the preferred spec
   // if the pool exhausts (density > pool size), so the wager loop
   // never stalls.
-  const scenarioSpec = pickScenarioSpecFiltered(
-    drawnTheme,
-    state.firedScenarioIds,
-    state.lastServiceOpenerId
-  );
+  //
+  // ORDER 226 (Fas 3) — auto-firen skickar phaseFilter='service' så
+  // ekonomi/planeringsscenarier (time-pressure, phase='morning') inte
+  // fyras under service. Manuell dispatch (action-baserad) skickar
+  // ingen filter → oförändrat beteende för tester och playtest-'5'.
+  // Returnerar null om phase-filtret uttömmer poolen; state lämnas då
+  // oförändrad så anroparen kan konsumera scheme-slot utan att fyra.
+  const scenarioSpec = phaseFilter
+    ? pickScenarioSpecFiltered(
+        drawnTheme,
+        state.firedScenarioIds,
+        state.lastServiceOpenerId,
+        phaseFilter
+      )
+    : pickScenarioSpecFiltered(
+        drawnTheme,
+        state.firedScenarioIds,
+        state.lastServiceOpenerId
+      );
+  if (scenarioSpec === null) {
+    // ORDER 226 — inget scenario matchade phaseFilter. Låt state stå
+    // stilla; anroparen (advanceTick) hanterar scheme-slot-konsumtionen.
+    // rng-state har konsumerat theme-draget — det är avsiktligt så att
+    // efterföljande auto-triggers får en ny theme-siffra i stället för
+    // att fastna på samma draget-och-avvisade tema.
+    return { ...state, rngState: rng.state };
+  }
   // ORDER 048 §4 — pick the sender at trigger time. Uses a DERIVED
   // rng (hashed from state.seed × state.tick × scenario spec id) so
   // downstream arrival randomness is not shifted — the queue-monotonicity
