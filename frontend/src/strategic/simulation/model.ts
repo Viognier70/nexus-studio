@@ -180,6 +180,7 @@ export function initialDay(): DayState {
     revenueAtServiceStart: null,
     costAtServiceStart: null,
     reputationAtServiceStart: null,
+    knowledgeCreditsAtServiceStart: null,
     serviceIngredientAccrued: 0,
     idleCostAccrued: 0,
     serviceCovers: 0,

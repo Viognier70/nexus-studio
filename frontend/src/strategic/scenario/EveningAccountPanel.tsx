@@ -28,8 +28,8 @@
 // button; the panel goes with the transition.
 
 import { useEffect, useRef, useState } from 'react';
-import { useSimState } from '../simulation/SimulationProvider';
-import type { LedgerCategory, LedgerLine } from '../types';
+import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
+import type { EveningAccountMetrics, LedgerCategory, LedgerLine } from '../types';
 
 const PANEL_WRAPPER_STYLE: React.CSSProperties = {
   position: 'absolute',
@@ -100,6 +100,61 @@ const LEDGER_EMPTY_STYLE: React.CSSProperties = {
   padding: '4px 0'
 };
 
+// ORDER 228 (etapp A) — dagens tal enligt DoD A.1: intäkt, kostnad,
+// resultat, rykte-delta, kunskap-delta. Egen sektion mellan paragrafen
+// och ledgern; samma monospace-stil som ledger så talen läses som ett
+// bokföringsutdrag.
+const METRICS_SECTION_STYLE: React.CSSProperties = {
+  marginTop: 16,
+  paddingTop: 14,
+  borderTop: '1px solid rgba(168, 146, 106, 0.35)',
+  fontFamily: 'ui-monospace, "SF Mono", Menlo, Consolas, monospace',
+  fontSize: 12,
+  lineHeight: 1.6
+};
+
+const METRICS_ROW_STYLE: React.CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: '1fr 120px',
+  gap: 8,
+  alignItems: 'baseline',
+  padding: '2px 0'
+};
+
+const METRICS_RESULT_ROW_STYLE: React.CSSProperties = {
+  ...METRICS_ROW_STYLE,
+  fontWeight: 600,
+  paddingTop: 6,
+  marginTop: 4,
+  borderTop: '1px dashed rgba(168, 146, 106, 0.28)'
+};
+
+// ORDER 228 (etapp A) — spelar-nåbar restart. Knappen sitter i
+// kvällsavräknings-panelen som är synlig ~30 s per dag; spelaren kan
+// välja att starta en ny omgång utan att behöva reload:a sidan eller
+// nå dev-tangenten 'r'. Före ORDER 228 fanns bara 'r'-tangenten (dev).
+const NEW_ROUND_SECTION_STYLE: React.CSSProperties = {
+  marginTop: 20,
+  paddingTop: 16,
+  borderTop: '1px solid rgba(168, 146, 106, 0.35)',
+  display: 'flex',
+  justifyContent: 'flex-end'
+};
+
+const NEW_ROUND_BUTTON_STYLE: React.CSSProperties = {
+  padding: '8px 16px',
+  fontSize: 12,
+  letterSpacing: 1.5,
+  textTransform: 'uppercase',
+  fontFamily: 'system-ui, sans-serif',
+  background: 'rgba(216, 190, 130, 0.12)',
+  border: '1px solid rgba(216, 190, 130, 0.5)',
+  color: '#d8be82',
+  cursor: 'pointer',
+  borderRadius: 2,
+  pointerEvents: 'auto'
+};
+
 const LEDGER_CATEGORY_LABEL: Record<LedgerCategory, string> = {
   revenue:    'Rev.',
   wage:       'Wage',
@@ -145,6 +200,22 @@ function envelope(elapsed: number): number {
     return 1 - t;
   }
   return 0;
+}
+
+function NewRoundButton() {
+  const dispatch = useSimDispatch();
+  return (
+    <div style={NEW_ROUND_SECTION_STYLE}>
+      <button
+        type="button"
+        style={NEW_ROUND_BUTTON_STYLE}
+        onClick={() => dispatch({ type: 'RESET' })}
+        aria-label="Starta en ny omgång från dag 1"
+      >
+        Ny omgång
+      </button>
+    </div>
+  );
 }
 
 export function EveningAccountPanel() {
@@ -194,13 +265,84 @@ export function EveningAccountPanel() {
         <div style={HEADING_STYLE}>Kvällens redovisning</div>
         <div>{account.paragraph}</div>
 
+        {account.metrics ? (
+          <div style={METRICS_SECTION_STYLE}>
+            <div style={LEDGER_SUBHEADING_STYLE}>Dagens tal</div>
+            <MetricsBlock metrics={account.metrics} />
+          </div>
+        ) : null}
+
         <div style={LEDGER_SECTION_STYLE}>
           <div style={LEDGER_SUBHEADING_STYLE}>Räkenskaperna för dagen</div>
           <TodaysLedger lines={todaysLedger} />
         </div>
+
+        <NewRoundButton />
       </div>
     </div>
   );
+}
+
+// ORDER 228 (etapp A) — visar de fem talen DoD A.1 kräver.
+// Rykte som två decimaler eftersom det ligger i [0, 1]; kunskap som
+// två decimaler per axel eftersom förändringen ligger i tiondelar per
+// service. Positiva delta får `+`-prefix så det syns att det är en
+// förändring, inte ett absolut värde.
+function MetricsBlock({ metrics }: { metrics: EveningAccountMetrics }) {
+  return (
+    <div role="log" aria-label="Dagens tal">
+      <div style={METRICS_ROW_STYLE}>
+        <span style={{ opacity: 0.75 }}>Intäkt</span>
+        <span style={{ textAlign: 'right', color: '#d8be82' }}>
+          {formatSek(metrics.revenue)}
+        </span>
+      </div>
+      <div style={METRICS_ROW_STYLE}>
+        <span style={{ opacity: 0.75 }}>Kostnad</span>
+        <span style={{ textAlign: 'right', color: '#e8b498' }}>
+          {formatSek(-metrics.cost)}
+        </span>
+      </div>
+      <div style={METRICS_RESULT_ROW_STYLE}>
+        <span>Resultat</span>
+        <span
+          style={{
+            textAlign: 'right',
+            color: metrics.result >= 0 ? '#d8be82' : '#e8b498'
+          }}
+        >
+          {formatSek(metrics.result)}
+        </span>
+      </div>
+      <div style={METRICS_ROW_STYLE}>
+        <span style={{ opacity: 0.75 }}>Rykte</span>
+        <span style={{ textAlign: 'right' }}>
+          {formatDelta(metrics.reputationDelta, 2)}
+        </span>
+      </div>
+      <div style={METRICS_ROW_STYLE}>
+        <span style={{ opacity: 0.75 }}>Kunskap</span>
+        <span style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
+          E {formatDelta(metrics.knowledgeDelta.episteme, 2)}  T{' '}
+          {formatDelta(metrics.knowledgeDelta.techne, 2)}  P{' '}
+          {formatDelta(metrics.knowledgeDelta.phronesis, 2)}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function formatSek(amount: number): string {
+  const sign = amount >= 0 ? '+' : '−';
+  const abs = Math.abs(Math.round(amount));
+  return `${sign}${abs.toLocaleString('sv-SE')} kr`;
+}
+
+function formatDelta(value: number, decimals: number): string {
+  const rounded = Number(value.toFixed(decimals));
+  if (rounded === 0) return '±0.00';
+  const sign = rounded > 0 ? '+' : '−';
+  return `${sign}${Math.abs(rounded).toFixed(decimals)}`;
 }
 
 interface TodaysLedgerProps {
