@@ -194,10 +194,14 @@ describe('computeMetrics (ORDER 228 etapp A)', () => {
   it('knowledgeDelta per axel = current − snapshot', () => {
     const base = midService(makeInitialState(1));
     // Sätt snapshot till {0.10, 0.05, 0.20}, current till {0.14, 0.05, 0.18}.
+    // ORDER 230 — computeMetrics läser AtDayStart FÖRST; sätter både
+    // AtDayStart och AtServiceStart så testet verifierar avsedd
+    // delta-räkning oavsett vilken snapshot som är primärkälla.
     const s: SimulationState = {
       ...base,
       day: {
         ...base.day,
+        knowledgeCreditsAtDayStart: { episteme: 0.10, techne: 0.05, phronesis: 0.20 },
         knowledgeCreditsAtServiceStart: { episteme: 0.10, techne: 0.05, phronesis: 0.20 }
       },
       knowledgeCredits: { episteme: 0.14, techne: 0.05, phronesis: 0.18 }

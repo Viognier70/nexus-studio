@@ -1497,7 +1497,18 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           ...initialDay(),
           dayNumber: day.dayNumber + 1,
           period: startInBreakfast ? 'breakfast' : 'morning',
-          periodStartAt: simTime
+          periodStartAt: simTime,
+          // ORDER 230 — snapshotta det nya dygnets startvärden INNAN
+          // wages/idle-cost/aktivitetseffekter appliceras nedan
+          // (rad 1503-1541). Referensen är alltså "sim vid nya dagens
+          // gryning"; dagens löner räknas därför som dagens kostnad i
+          // metrics.cost, vilket matchar §DoD:s intent "dagens tal ska
+          // gälla dagen" (VO 2026-09-21). Kunskapskapitalet deep-copy:
+          // as, samma pattern som *AtServiceStart-snapshotet.
+          revenueAtDayStart: state.revenue,
+          costAtDayStart: state.cost,
+          reputationAtDayStart: state.reputation,
+          knowledgeCreditsAtDayStart: { ...state.knowledgeCredits }
         }
       };
       if (wageTotal > 0) {

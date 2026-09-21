@@ -181,6 +181,15 @@ export function initialDay(): DayState {
     costAtServiceStart: null,
     reputationAtServiceStart: null,
     knowledgeCreditsAtServiceStart: null,
+    // ORDER 230 — dag-snapshotarna. Sätts av reducern vid dagens
+    // start (både i makeInitialState och vid dygnsrollover). Null här
+    // eftersom initialDay() returnerar en ren struktur utan sim-
+    // referens; makeInitialState fyller på med den initiala staten
+    // just efter initialDay-anropet.
+    revenueAtDayStart: null,
+    costAtDayStart: null,
+    reputationAtDayStart: null,
+    knowledgeCreditsAtDayStart: null,
     serviceIngredientAccrued: 0,
     idleCostAccrued: 0,
     serviceCovers: 0,
@@ -223,7 +232,7 @@ export function makeInitialState(
   policies: Policies = DEFAULT_POLICIES
 ): SimulationState {
   const staff = makeStaff(policies.staffCount);
-  return {
+  const base: SimulationState = {
     seed,
     rngState: seed >>> 0,
     tick: 0,
@@ -381,6 +390,18 @@ export function makeInitialState(
       closedDinner: false
     }
   };
+  // ORDER 230 — seed dag-start-snapshotarna med initialtillståndet så
+  // dag 1:s kvällsavräkning har rätt referens. Vid dagsrollover ersätts
+  // dessa av reducern med det nya dygnets startvärden (före wages
+  // charges så dagens löner räknas som dagens kostnad).
+  base.day = {
+    ...base.day,
+    revenueAtDayStart: base.revenue,
+    costAtDayStart: base.cost,
+    reputationAtDayStart: base.reputation,
+    knowledgeCreditsAtDayStart: { ...base.knowledgeCredits }
+  };
+  return base;
 }
 
 let guestCounter = 0;

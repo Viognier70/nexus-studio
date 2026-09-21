@@ -703,6 +703,19 @@ export interface DayState {
   // som revenue/cost/reputation-snapshotarna. Optionellt fält för
   // bakåtkompat med test-fixturer skrivna före ORDER 228.
   knowledgeCreditsAtServiceStart?: KnowledgeCredits | null;
+  // ORDER 230 — snapshot vid dagens start (rollover → morning). Läses
+  // av computeMetrics för kvällsavräkningen så "dagens tal" täcker
+  // BÅDA services + idle-kostnaderna mellan dem, till skillnad från
+  // *AtServiceStart som skrivs över vid dinnerns OPEN_SERVICE och
+  // därför bara reflekterar dinner-delen (bekräftat i rekognosering
+  // 2026-09-21: lunchens 5 355 kr försvinner ur metrics för seed=42).
+  // *AtServiceStart lämnas orörda — de används fortfarande av
+  // pickBranch (`eveningAccount.ts:47-64`) som fattar branch-val per
+  // service, inte per dag.
+  revenueAtDayStart?: number | null;
+  costAtDayStart?: number | null;
+  reputationAtDayStart?: number | null;
+  knowledgeCreditsAtDayStart?: KnowledgeCredits | null;
   // ORDER 075 (M2) — today's picked activity ids. Set in the morning
   // via PICK_ACTIVITY; cleared at day rollover. Length capped at
   // MAX_ACTIVITIES_PER_DAY = 3 in the reducer.
