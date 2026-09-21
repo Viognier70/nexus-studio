@@ -236,11 +236,15 @@ describe('ORDER 237 — 90s-varianten, 15-min dinner seed=42', () => {
       }
     };
 
-    mkdirSync(REPORT_DIR, { recursive: true });
-    writeFileSync(
-      REPORT_JSON,
-      JSON.stringify({ summary, anchorFires: log, scenarioFires: scenarioFireLog }, null, 2)
-    );
+    // ORDER 239 uppföljning — rapport skrivs bara när WRITE_REPORTS=1.
+    // Se order235-testet för samma mönster.
+    if (process.env.WRITE_REPORTS === '1') {
+      mkdirSync(REPORT_DIR, { recursive: true });
+      writeFileSync(
+        REPORT_JSON,
+        JSON.stringify({ summary, anchorFires: log, scenarioFires: scenarioFireLog }, null, 2)
+      );
+    }
 
     // eslint-disable-next-line no-console
     console.info(

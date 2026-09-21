@@ -291,19 +291,22 @@ describe('ORDER 238 — anchor-picker RNG-isolation från sim', () => {
         '237 rapporterade 3 anchor-fyrningar med delad rng-ström. 238 har egen rng-ström; samma seed men annat rng-utfall per pick — kan ge samma eller annat antal och andra frågor.'
     };
 
-    mkdirSync(REPORT_DIR, { recursive: true });
-    writeFileSync(
-      REPORT_JSON,
-      JSON.stringify(
-        {
-          summary,
-          passA_anchorFires: passA.anchorFires,
-          passB_anchorFires: passB.anchorFires
-        },
-        null,
-        2
-      )
-    );
+    // ORDER 239 uppföljning — rapport skrivs bara när WRITE_REPORTS=1.
+    if (process.env.WRITE_REPORTS === '1') {
+      mkdirSync(REPORT_DIR, { recursive: true });
+      writeFileSync(
+        REPORT_JSON,
+        JSON.stringify(
+          {
+            summary,
+            passA_anchorFires: passA.anchorFires,
+            passB_anchorFires: passB.anchorFires
+          },
+          null,
+          2
+        )
+      );
+    }
 
     // eslint-disable-next-line no-console
     console.info(

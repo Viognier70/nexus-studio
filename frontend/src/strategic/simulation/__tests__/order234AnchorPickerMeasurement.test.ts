@@ -262,11 +262,14 @@ describe('ORDER 234 — mätpass anchor-fråge-picker (seed=42, 15-min dinner)',
       }
     };
 
-    mkdirSync(REPORT_DIR, { recursive: true });
-    writeFileSync(
-      REPORT_JSON,
-      JSON.stringify({ summary, timeline: log }, null, 2)
-    );
+    // ORDER 239 uppföljning — rapport skrivs bara när WRITE_REPORTS=1.
+    if (process.env.WRITE_REPORTS === '1') {
+      mkdirSync(REPORT_DIR, { recursive: true });
+      writeFileSync(
+        REPORT_JSON,
+        JSON.stringify({ summary, timeline: log }, null, 2)
+      );
+    }
 
     // eslint-disable-next-line no-console
     console.info(

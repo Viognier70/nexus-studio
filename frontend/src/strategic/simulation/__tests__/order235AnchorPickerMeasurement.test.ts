@@ -233,11 +233,17 @@ describe('ORDER 235 — mätpass 15-min dinner efter bidirectional buffer', () =
       ) / 100 // procent, två decimaler
     };
 
-    mkdirSync(REPORT_DIR, { recursive: true });
-    writeFileSync(
-      REPORT_JSON,
-      JSON.stringify({ summary, anchorFires: log, scenarioFires: scenarioFireLog }, null, 2)
-    );
+    // ORDER 239 uppföljning — rapport skrivs bara när WRITE_REPORTS=1.
+    // En vanlig testkörning ska verifiera, inte röra reports/ på disk.
+    // VO kör `WRITE_REPORTS=1 npx vitest run <file>` när mätpasset ska
+    // regenerera referensen.
+    if (process.env.WRITE_REPORTS === '1') {
+      mkdirSync(REPORT_DIR, { recursive: true });
+      writeFileSync(
+        REPORT_JSON,
+        JSON.stringify({ summary, anchorFires: log, scenarioFires: scenarioFireLog }, null, 2)
+      );
+    }
 
     // eslint-disable-next-line no-console
     console.info(
