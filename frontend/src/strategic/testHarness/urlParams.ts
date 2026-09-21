@@ -104,6 +104,12 @@ interface ParsedParams {
   // Riktig upplåsning väntar på VO-beslut om tröskelvärde (§4.3).
   // Sätts på policies.hasUteplats i applyDevFoodtruckSeed.
   uteplats: boolean;
+  // ORDER 239 — dev-only override för sim-seed. `#playtest=1&seed=42`
+  // låter VO provspela mot referensloggen i ORDER 238 (som kör seed=42).
+  // Utan seed= faller sim tillbaka på DEFAULT_SEED (model.ts:22). Kräver
+  // playtest=1 så vanliga URL:er inte kan flippa determinismen av misstag.
+  // `null` = ingen override.
+  seed: number | null;
 }
 
 function parseHash(): ParsedParams {
@@ -118,7 +124,8 @@ function parseHash(): ParsedParams {
       dollhouse: false,
       business: null,
       foodtruckSeed: null,
-      uteplats: false
+      uteplats: false,
+      seed: null
     };
   }
   const hash = window.location.hash.replace('#', '');
@@ -145,7 +152,15 @@ function parseHash(): ParsedParams {
   const business = parseBusiness(playtest ? params.get('business') ?? null : null);
   const foodtruckSeed = playtest ? parseFoodtruckSeed(params.get('foodtruckSeed') ?? null) : null;
   const uteplats = playtest && params.get('uteplats') === '1';
-  return { period, camera, roi, poseId, calibrationQuad, playtest, dollhouse, business, foodtruckSeed, uteplats };
+  const seed = playtest ? parseSeed(params.get('seed') ?? null) : null;
+  return { period, camera, roi, poseId, calibrationQuad, playtest, dollhouse, business, foodtruckSeed, uteplats, seed };
+}
+
+function parseSeed(s: string | null): number | null {
+  if (!s) return null;
+  const n = Number.parseInt(s, 10);
+  if (!Number.isFinite(n) || n < 0) return null;
+  return n >>> 0;
 }
 
 function parseFoodtruckSeed(s: string | null): number | null {
