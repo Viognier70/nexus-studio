@@ -49,7 +49,7 @@ export function StrategicApp() {
   return (
     <BusinessProvider>
       <CameraProvider>
-        <SimulationProvider>
+        <SimulationProvider seed={harnessParams.seed ?? undefined}>
           <StrategicShell />
           <NameEntryOverlay />
         </SimulationProvider>
