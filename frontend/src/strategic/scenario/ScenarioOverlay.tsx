@@ -11,7 +11,7 @@
 // not here.
 
 import { strings } from '../../content/strings.sv';
-import { SENDER_PREFIX, scenarioById } from '../simulation/scenarios';
+import { ASKER_PREFIX, SENDER_PREFIX, scenarioById } from '../simulation/scenarios';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 
 const OVERLAY_STYLE: React.CSSProperties = {
@@ -119,9 +119,13 @@ export function ScenarioOverlay() {
   // sender (typically the specialist role, e.g. Kocken for a
   // kitchen-technique question, Värden for a hospitality one).
   if (phase === 'question' && pendingQuestion) {
-    const qPrefix = pendingQuestion.senderRole
-      ? `${SENDER_PREFIX[pendingQuestion.senderRole]}: `
-      : '';
+    // ORDER 234 — askerRole (QuestionAsker) läses först, faller
+    // tillbaka till senderRole (StaffRole) för scenariofrågor.
+    const qPrefix = pendingQuestion.askerRole
+      ? `${ASKER_PREFIX[pendingQuestion.askerRole]}: `
+      : pendingQuestion.senderRole
+        ? `${SENDER_PREFIX[pendingQuestion.senderRole]}: `
+        : '';
     return (
       <div style={OVERLAY_STYLE}>
         <div style={BODY_STYLE}>{qPrefix + pendingQuestion.body}</div>
@@ -136,6 +140,72 @@ export function ScenarioOverlay() {
               {o.label}
             </button>
           ))}
+        </div>
+      </div>
+    );
+  }
+
+  // ORDER 234 — anchor-frågans post-answer-fas. Visar frågan i muted,
+  // markerar spelarens val (rätt = grön, fel = röd), markerar det
+  // rätta svaret, och renderar FÖRKLARING-texten. En "Fortsätt"-knapp
+  // dispatch:ar ACK_QUESTION_EXPLANATION. Scenariofrågor passerar
+  // inte hit (deras path går resolving → settled utan explanation-fas).
+  if (phase === 'question-explanation' && pendingQuestion && pendingQuestion.explanation) {
+    const qPrefix = pendingQuestion.askerRole
+      ? `${ASKER_PREFIX[pendingQuestion.askerRole]}: `
+      : '';
+    const lastIdx = pendingQuestion.lastAnswerIndex ?? -1;
+    const wasCorrect = pendingQuestion.lastAnswerCorrect ?? false;
+    return (
+      <div style={OVERLAY_STYLE}>
+        <div style={{ ...BODY_STYLE, opacity: 0.7 }}>{qPrefix + pendingQuestion.body}</div>
+        <div style={{ ...BUTTON_ROW_STYLE, flexDirection: 'column', alignItems: 'stretch' }}>
+          {pendingQuestion.options.map((o, i) => {
+            const isPlayerChoice = i === lastIdx;
+            const isCorrect = o.correct;
+            let bg = 'transparent';
+            let borderColor = 'rgba(168, 146, 106, 0.35)';
+            if (isPlayerChoice && isCorrect) {
+              bg = 'rgba(120, 168, 100, 0.22)';
+              borderColor = '#a8c896';
+            } else if (isPlayerChoice && !isCorrect) {
+              bg = 'rgba(200, 100, 80, 0.22)';
+              borderColor = '#d89078';
+            } else if (isCorrect) {
+              // Rätta svaret (spelaren valde annat) — markera grönt
+              // så förklaringen kan pekar direkt.
+              borderColor = '#a8c896';
+            }
+            return (
+              <div
+                key={i}
+                style={{
+                  padding: '8px 10px',
+                  background: bg,
+                  border: `1px solid ${borderColor}`,
+                  borderRadius: 3,
+                  fontSize: 13,
+                  opacity: isPlayerChoice || isCorrect ? 1 : 0.55
+                }}
+              >
+                {isPlayerChoice ? '▸ ' : isCorrect ? '✓ ' : '  '}
+                {o.label}
+              </div>
+            );
+          })}
+        </div>
+        <div style={{ marginTop: 12, fontSize: 13, lineHeight: 1.5, opacity: 0.9 }}>
+          {wasCorrect ? 'Rätt. ' : ''}
+          {pendingQuestion.explanation}
+        </div>
+        <div style={{ ...BUTTON_ROW_STYLE, marginTop: 12, justifyContent: 'flex-end' }}>
+          <button
+            type="button"
+            style={BUTTON_STYLE}
+            onClick={() => dispatch({ type: 'ACK_QUESTION_EXPLANATION' })}
+          >
+            Fortsätt
+          </button>
         </div>
       </div>
     );

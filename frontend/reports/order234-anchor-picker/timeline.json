@@ -1,0 +1,93 @@
+{
+  "summary": {
+    "order": 234,
+    "seed": 42,
+    "lengthMinutes": "lunch=5 + dinner=10",
+    "totalFires": 3,
+    "firedRight": 3,
+    "firedWrong": 0,
+    "knowledgeCredits": {
+      "preService": {
+        "episteme": 0,
+        "techne": 0,
+        "phronesis": 0
+      },
+      "atOpenService": {
+        "episteme": 0,
+        "techne": 0,
+        "phronesis": 0
+      },
+      "atEnd": {
+        "episteme": 0,
+        "techne": 0.05,
+        "phronesis": 0.1
+      },
+      "deltaAtEnd": {
+        "episteme": 0,
+        "techne": 0.05,
+        "phronesis": 0.1
+      },
+      "totalDelta": 0.15000000000000002,
+      "expectedTotalDelta": 0.15000000000000002,
+      "creditPerRight": 0.05
+    },
+    "villkor2": {
+      "anchorFireDidNotChangeScenarioCounter": true,
+      "scenariosFiredThisServiceAtLunchOpen": 0,
+      "scenariosFiredThisServiceAtEnd": 0,
+      "lastScenarioChoiceAtEnd": "A",
+      "revenueAtServiceStartAtEnd": null,
+      "costAtServiceStartAtEnd": null,
+      "knowledgeCreditsAtServiceStartAtEnd": null
+    },
+    "rateLimits": {
+      "maxPerService": 3,
+      "minGapSec": 180,
+      "logGaps": [
+        259.6,
+        199.8
+      ]
+    }
+  },
+  "timeline": [
+    {
+      "simTime": 288.6,
+      "questionId": "stensota-brons-02",
+      "anchorId": "order",
+      "askerRole": "sommelier",
+      "correctIndex": 2,
+      "playerIndex": 2,
+      "wasCorrect": true,
+      "promptFirst80": "Varför fungerar ett tanninrikt rött vin så bra till en fet, välhängd entrecôte?",
+      "explanationFirst80": "Tanniner binder till proteiner, både i saliven och i maten. Med kött på tungan f",
+      "simTimeAtAck": 289.6,
+      "gapSinceLastSec": null
+    },
+    {
+      "simTime": 548.2,
+      "questionId": "kalastorget-brons-08",
+      "anchorId": "requestCheck",
+      "askerRole": "värd",
+      "correctIndex": 2,
+      "playerIndex": 2,
+      "wasCorrect": true,
+      "promptFirst80": "Sällskapet vid fönsterbordet har betalat men sitter kvar och pratar. Nästa bokni",
+      "explanationFirst80": "En vänlig förvarning i god tid ger sällskapet chans att avsluta i lugn, och kaff",
+      "simTimeAtAck": 549.2,
+      "gapSinceLastSec": 259.6
+    },
+    {
+      "simTime": 748,
+      "questionId": "kalastorget-brons-01",
+      "anchorId": "greet",
+      "askerRole": "värd",
+      "correctIndex": 1,
+      "playerIndex": 1,
+      "wasCorrect": true,
+      "promptFirst80": "Ett sällskap på fem kommer utan bokning en fredag. Alla bord är tagna och det fö",
+      "explanationFirst80": "En ärlig väntetid låter sällskapet välja själva, och baren eller en ny bokning g",
+      "simTimeAtAck": 749,
+      "gapSinceLastSec": 199.8
+    }
+  ]
+}
