@@ -43,7 +43,7 @@ export interface PavilionConfig {
 export const PAVILION_CONFIGS: Record<PavilionId, PavilionConfig> = {
   maltidbiblioteket: {
     id: 'maltidbiblioteket',
-    displayName: 'Måltidbiblioteket',
+    displayName: 'Måltidsbiblioteket',
     axis: 'episteme',
     tracks: []   // "alla områden" per §2.1 = spårlöst
   },
