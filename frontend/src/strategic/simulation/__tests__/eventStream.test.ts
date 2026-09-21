@@ -145,8 +145,23 @@ describe('outcome events fire deterministically after RESOLVE', () => {
       service: 'lunch',
       lengthMinutes: 10
     });
+    // ORDER 235 — loopen väntar på scenariot ('subject'). Hantera
+    // ev. anchor-fråga (ANSWER + ACK) så pathen inte fastnar i
+    // 'question' innan scenariot fyras. Pickern respekterar 3-min-
+    // buffer före scheme:at, så anchor-fråga före första scenariot
+    // är osannolik — men loopen är safe.
     for (let i = 0; i < 3000 && s.scenario.phase !== 'subject'; i++) {
       s = reducer(s, { type: 'TICK', dt: 0.2 });
+      if (
+        s.scenario.phase === 'question' &&
+        s.scenario.pendingQuestion !== null &&
+        s.scenario.pendingQuestion.anchorId !== undefined
+      ) {
+        s = reducer(s, { type: 'ANSWER_QUESTION', index: 0 });
+      }
+      if (s.scenario.phase === 'question-explanation') {
+        s = reducer(s, { type: 'ACK_QUESTION_EXPLANATION' });
+      }
     }
     expect(s.scenario.phase).toBe('subject');
     s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_SITUATION' });

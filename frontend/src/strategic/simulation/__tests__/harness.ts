@@ -61,6 +61,15 @@ export interface HarnessConfig {
    *  and simple; tests that want to probe divergence should supply a
    *  strategy that returns different choices per run. */
   scenarioStrategy?: ScenarioStrategy;
+  /** ORDER 235 — reactive anchor-question handler. När phase === 'question'
+   *  och pendingQuestion.anchorId är satt (dvs anchor-fråga, inte
+   *  scenariofråga), returnerar strategin option-index att svara. Default:
+   *  0. Etablerat mönster i befintliga scenariofråge-loopar (day.test.ts,
+   *  m7a.test.ts, order227AnchorMeasurement.test.ts). Deterministiskt
+   *  oavsett seed; kredit landar bara när option[0].correct råkar vara
+   *  sant (varierar per fråga). Efter svar dispatch:as
+   *  ACK_QUESTION_EXPLANATION automatiskt. */
+  anchorAnswerStrategy?: (state: SimulationState) => number;
   /** Tick frequency in Hz. Defaults to 5 — matches the SimulationProvider's
    *  0.2 s tick rate. */
   tickHz?: number;
@@ -88,6 +97,8 @@ export function runHarness(cfg: HarnessConfig): HarnessResult {
   const tickHz = cfg.tickHz ?? 5;
   const dt = 1 / tickHz;
   const strategy = cfg.scenarioStrategy ?? (() => 'A');
+  // ORDER 235 — default anchor-svar = index 0 (etablerat mönster).
+  const anchorAnswer = cfg.anchorAnswerStrategy ?? (() => 0);
 
   const script = [...cfg.script].sort((a, b) => a.atSec - b.atSec);
 
@@ -157,6 +168,23 @@ export function runHarness(cfg: HarnessConfig): HarnessResult {
         dispatch({ type: 'RESOLVE_SCENARIO', choice }, `RESOLVE_SCENARIO(${choice})`);
         scenariosResolved += 1;
       }
+    }
+    // (b2) ORDER 235 — reactive anchor-question resolver. När picker
+    //      fyrat en anchor-fråga (phase='question' + pq.anchorId satt),
+    //      svara + ACK explanation-fasen så pathen inte fastnar och
+    //      scenariots slot frigörs för nästa tick. För scenariofrågor
+    //      (pq.anchorId === undefined) väntar vi — de resolvas separat
+    //      av scenariotestet.
+    if (
+      state.scenario.phase === 'question' &&
+      state.scenario.pendingQuestion !== null &&
+      state.scenario.pendingQuestion.anchorId !== undefined
+    ) {
+      const idx = anchorAnswer(state);
+      dispatch({ type: 'ANSWER_QUESTION', index: idx }, `ANSWER_ANCHOR(${idx})`);
+    }
+    if (state.scenario.phase === 'question-explanation') {
+      dispatch({ type: 'ACK_QUESTION_EXPLANATION' }, 'ACK_QUESTION_EXPLANATION');
     }
     // (c) advance one tick
     dispatch({ type: 'TICK', dt }, 'TICK');
