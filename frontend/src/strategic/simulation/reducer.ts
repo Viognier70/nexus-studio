@@ -2295,7 +2295,11 @@ function advanceTick(state: SimulationState): SimulationState {
   const inScenarioAftermath =
     lastScenarioAt !== null &&
     draft.simTime - lastScenarioAt < ANCHOR_SCENARIO_BUFFER_SEC;
+  // ORDER 238 — anchor-picker på/av-flagga från policies. Default
+  // true (undefined = true) för produktion.
+  const anchorEnabled = draft.policies.anchorQuestionsEnabled ?? true;
   if (
+    anchorEnabled &&
     canFire &&
     scenarioIdleFresh &&
     !nextScenarioSoon &&
@@ -2304,7 +2308,17 @@ function advanceTick(state: SimulationState): SimulationState {
   ) {
     const activeAnchors = deriveActiveAnchors(draft);
     if (activeAnchors.length > 0) {
-      const picked = pickAnchorQuestion(draft, activeAnchors, rng);
+      // ORDER 238 — egen rng-ström för pickern, härledd ur seed + tick.
+      // Följer samma mönster som `senderRng` (reducer.ts:2521) men med
+      // multiplikatorer bytta ordning så streams inte kolliderar vid
+      // samma (seed, tick). Sim-rng (`state.rngState`) rörs INTE av
+      // pickern — inte vid null-pick (ORDER 237) och inte vid faktisk
+      // fyra (ORDER 238). Anchor-frågor kan därmed inte ändra
+      // simuleringens utfall (ambient events, arrivals, service-rytm).
+      const anchorPickerSeed =
+        ((draft.tick + 1) * 2246822519) ^ (draft.seed * 2654435761);
+      const anchorPickerRng = createRng(anchorPickerSeed >>> 0);
+      const picked = pickAnchorQuestion(draft, activeAnchors, anchorPickerRng);
       if (picked !== null) {
         draft.scenario = {
           ...draft.scenario,
