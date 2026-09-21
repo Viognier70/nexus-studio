@@ -1,0 +1,51 @@
+{
+  "summary": {
+    "order": 238,
+    "seed": 42,
+    "dinnerMinutes": 15,
+    "passA_anchorFires": 3,
+    "passB_anchorFires": 0,
+    "passA_knowledgeCreditsFinal": {
+      "episteme": 0,
+      "techne": 0,
+      "phronesis": 0.15000000000000002
+    },
+    "passB_knowledgeCreditsFinal": {
+      "episteme": 0,
+      "techne": 0,
+      "phronesis": 0
+    },
+    "passA_scenariofiresFinal": 0,
+    "passB_scenariofiresFinal": 0,
+    "rngIsolationVerified": true,
+    "cashLedgerIdentical": true,
+    "historikReferens": "237 rapporterade 3 anchor-fyrningar med delad rng-ström. 238 har egen rng-ström; samma seed men annat rng-utfall per pick — kan ge samma eller annat antal och andra frågor."
+  },
+  "passA_anchorFires": [
+    {
+      "simTime": 130.2,
+      "questionId": "kalastorget-brons-01",
+      "anchorId": "greet",
+      "askerRole": "värd",
+      "wasCorrect": true,
+      "promptFirst80": "Ett sällskap på fem kommer utan bokning en fredag. Alla bord är tagna och det fö"
+    },
+    {
+      "simTime": 226.8,
+      "questionId": "kalastorget-brons-08",
+      "anchorId": "requestCheck",
+      "askerRole": "värd",
+      "wasCorrect": true,
+      "promptFirst80": "Sällskapet vid fönsterbordet har betalat men sitter kvar och pratar. Nästa bokni"
+    },
+    {
+      "simTime": 317,
+      "questionId": "kalastorget-brons-06",
+      "anchorId": "requestCheck",
+      "askerRole": "gäst",
+      "wasCorrect": true,
+      "promptFirst80": "Den här flaskan på notan tror jag inte att vi beställde. Kan du titta på det?"
+    }
+  ],
+  "passB_anchorFires": []
+}

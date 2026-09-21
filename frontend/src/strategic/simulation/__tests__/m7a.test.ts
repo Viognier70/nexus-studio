@@ -36,6 +36,18 @@ function driveUntil(
   const answer = opts.answerCorrectly ?? false;
   const choice = opts.scenarioChoice ?? 'A';
   let state = makeInitialState(seed);
+  // ORDER 238 — isolera M7a-testet från anchor-picker. Denna svit
+  // testar bank-fråge-flödet (scenariofrågor + enabler-writes), inte
+  // anchor-frågor. Utan denna avstängning kan pickern fyra en anchor-
+  // fråga innan första scenariot; `driveUntil`:s `!answer`-branch
+  // bryter då loopen prematurt (den designen förutsatte att pending
+  // alltid är en scenariofråga) → withAnswers/withoutAnswers-jämförelsen
+  // i DoD 3 blir sned. Anchor-picker isoleras via policies-flaggan
+  // ORDER 238 införde.
+  state = {
+    ...state,
+    policies: { ...state.policies, anchorQuestionsEnabled: false }
+  };
   const queue = [...script].sort((a, b) => a.atSec - b.atSec);
   let observedPendingQuestions = 0;
   let correctAnswersDispatched = 0;

@@ -214,6 +214,11 @@ export interface Policies {
   // beslutar (§4.3). Valfri för bakåtkompat: existerande fixtures
   // behöver inte omdefinieras.
   hasUteplats?: boolean;
+  // ORDER 238 — anchor-fråge-picker på/av-flagga. Default true
+  // (undefined = true) för produktion; test-fixturer kan sätta false
+  // för att stänga av pickern och verifiera att sim-utfallet är
+  // identiskt (RNG-isolation). Valfri för bakåtkompat.
+  anchorQuestionsEnabled?: boolean;
 }
 
 export interface Vec2 {
