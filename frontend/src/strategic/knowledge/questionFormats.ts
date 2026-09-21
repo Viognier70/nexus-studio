@@ -13,7 +13,8 @@
 // valfritt spår (sommellerie/kok, `null` = spårlöst för Bibliotek
 // och Kalastorget).
 
-import type { KnowledgeAxis, StaffRole, YrkesSpar } from '../types';
+import type { KnowledgeAxis, YrkesSpar } from '../types';
+import type { AnchorId } from '../simulation/anchors';
 
 // ORDER 229 — bronsprogressionens fyra nivåer (från ORDER "En hel dag"
 // §0 beslut 1). Säkerhetsnivåerna 15/30/55/90 % kopplas mot spelarens
@@ -22,17 +23,41 @@ import type { KnowledgeAxis, StaffRole, YrkesSpar } from '../types';
 // innehåll skrivet i egen omgång.
 export type QuestionLevel = 'brons' | 'silver' | 'guld' | 'platina';
 
+// ORDER 231 — frågelokal union för FRÅGESTÄLLARE-fältet. Skiljer sig
+// från `StaffRole` (som är `värd | servitör | kock | lärling`) genom
+// att inkludera `sommelier` och `gäst` — två roller som Stensötas tio
+// bronsfrågor behöver men som inte finns i sim:s team-modell.
+// **StaffRole rörs INTE av den här utökningen** (VO 2026-09-21) —
+// utökningen är strikt fråge-lokal så scenarier / task-typer / STATION_
+// MAP i sim inte påverkas. En framtida presentations-lager tolkar
+// `askerRole` för prefix ("Sommelieren:", "Gästen:") oavsett om rollen
+// existerar i team.members eller ej.
+export type QuestionAsker =
+  | 'kock'
+  | 'sommelier'
+  | 'gäst'
+  | 'värd'
+  | 'servitör'
+  | 'lärling';
+
 // ORDER 229 — ankartagg per fråga. `phase` matchar `ScenarioPhase` från
 // scenarios.ts (ORDER 226): 'service' | 'morning' | 'evening'.
 // `station` är en fri sträng idag (STATION_MAP i businessRoom.ts är
 // under omdop av Design — 'taps'/'barkeep'/'brew' etc; en fast enum vore
 // bräcklig innan namnen är låsta). `rawText` bevarar källfilens
 // ANKARE-formulering för audit-spårning (per ORDER 160-principen — vad
-// modulen påstår ska kunna spåras tillbaka till källan). Läses först
-// av Fas 2 event-lagret (ORDER 224 §7) när det byggs; tills dess är
-// fältet ren dokumentation som knyter innehåll till avsett ögonblick.
+// modulen påstår ska kunna spåras tillbaka till källan).
+//
+// ORDER 231 — nytt fält `anchorId?: AnchorId` för koreografi-ankaren
+// från ORDER 225 (`greet | order | setDown | requestCheck | pay`).
+// Sätts på frågor vars rå-ankare naturligt bindes till ett av dessa
+// koreografi-ögonblick (t.ex. Stensötas "när beställningen tas upp"
+// → `order`). `station` fortsätter användas för Fas 2 `staff_at_
+// station`-eventet — de två fälten är parallella koppling-mekanismer,
+// en framtida picker läser en av dem beroende på event-typ.
 export interface QuestionAnchor {
   phase: 'service' | 'morning' | 'evening';
+  anchorId?: AnchorId;
   station?: string;
   rawText: string;
 }
@@ -89,10 +114,12 @@ interface BaseQuestion {
   // ORDER 229 — ankartagg. Se QuestionAnchor ovan. Valfri av samma
   // bakåtkompat-skäl som `level` och `explanation`.
   anchor?: QuestionAnchor;
-  // ORDER 229 — vem som ställer frågan i rummet. Härledbar ur axis+spar
-  // för Metodköket ('kock'); explicit för Kalastorget-frågor senare
-  // (fronesis + värd/servitör/gäst). Valfri.
-  askerRole?: StaffRole;
+  // ORDER 229/231 — vem som ställer frågan i rummet. Typ `QuestionAsker`
+  // (inte `StaffRole`) för att kunna representera `sommelier` och `gäst`
+  // som Stensötas frågor kräver utan att röra sim:s team-modell.
+  // Valfri av bakåtkompat med ORDER 107:s templates/seeds; nya frågor
+  // sätter fältet explicit.
+  askerRole?: QuestionAsker;
 }
 
 // §3.1 — flerval. M7a:s befintliga form. Ett rätt alternativ.
