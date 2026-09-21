@@ -2974,11 +2974,16 @@ function answerProfessionalQuestion(
   const opt = pq.options[index];
   if (!opt) return state;
 
-  // ORDER 234 — anchor-fråga har `anchorId` satt och saknar
-  // `scenarioId`. Går egen path: ACCUMULATE_KNOWLEDGE vid rätt svar,
-  // ingen enabler-write, ingen scenario-fas-progression. Overlay
-  // stannar på 'question-explanation' tills spelaren ACK:ar.
-  if (pq.anchorId !== undefined) {
+  // ORDER 234 — anchor-fråga vs scenariofråga-diskriminator.
+  // ORDER 236 fix: kolla `pq.axis !== undefined` istället för
+  // `pq.anchorId !== undefined`. Alla anchor-frågor (från
+  // `toPendingQuestion` i `anchorQuestionPicker.ts`) sätter `axis`;
+  // scenariofrågor gör inte det. Detta täcker även frågor med
+  // `phase='morning'/'evening'` eller `phase='service' utan anchorId`
+  // (guest_complaint-väntande) — de skulle annars falla ner i
+  // scenariopathen och returnera state oförändrad (bekräftat via
+  // ORDER 236:s alla-40-tester).
+  if (pq.axis !== undefined) {
     return answerAnchorQuestion(state, pq, index);
   }
 
