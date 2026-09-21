@@ -2281,7 +2281,13 @@ function advanceTick(state: SimulationState): SimulationState {
   // slot konsumeras inte när en anchor-fråga är öppen). Om
   // scenariot väntar på att anchor-frågan ACK:as fyras det direkt
   // efter — sloten konsumeras aldrig utan att fyras.
-  const ANCHOR_SCENARIO_BUFFER_SEC = 180;
+  // ORDER 237 — buffer sänkt från 180 till 90 sek per VO 2026-09-21
+  // efter ORDER 235-mätpasset (1 anchor-fråga per 15-min dinner var
+  // för lågt; 3-min-bufferten var för bred). 90s = scenariot får
+  // 3 min "eget utrymme" (90s före + 90s efter) medan anchor-frågor
+  // får plats både före och mellan scenarier även när dessa ligger
+  // 3 min isär.
+  const ANCHOR_SCENARIO_BUFFER_SEC = 90;
   const nextScenarioSoon =
     scheduled.length > 0 &&
     scheduled[0] - draft.simTime < ANCHOR_SCENARIO_BUFFER_SEC;
@@ -2530,6 +2536,14 @@ function triggerScenario(
     scenarioId: scenarioSpec.id,
     senderRole: sender ? sender.role : null,
     senderMemberId: sender ? sender.memberId : null,
+    // ORDER 237 fix: null:a ev. orphan anchor-fråga när nytt scenario
+    // stampar över. Utan detta överlever pendingQuestion (från anchor-
+    // pickern) in i scenario-'subject'-fasen, och när harnessen/
+    // spelaren ANSWER:ar hamnar den i answerAnchorQuestion-vägen
+    // istället för scenariopathen — scenariots outcome-events skapas
+    // aldrig och cause-chains bryts (m6.test.ts:75 fångade detta med
+    // 90s-buffer och anchor-fyra före TRIGGER_SCENARIO t=500).
+    pendingQuestion: null,
     mentorComment: null,
     mentorCommentAt: null
   };

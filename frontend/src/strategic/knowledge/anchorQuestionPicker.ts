@@ -43,7 +43,11 @@ import { KALASTORGET_BRONS_QUESTIONS } from './kalastorgetBrons';
 //   Minst 3 sim-minuter (180 s) mellan.
 //   Ingen upprepning samma dag.
 export const MAX_ANCHOR_QUESTIONS_PER_SERVICE = 3;
-export const MIN_GAP_BETWEEN_ANCHOR_QUESTIONS_SEC = 180;
+// ORDER 237 — sänkt från 180 till 90 sek per VO 2026-09-21. Håller
+// symmetri med ANCHOR_SCENARIO_BUFFER_SEC i reducer.ts (också 90);
+// två separata tal möjliggör oberoende reglering, men de startas
+// tillsammans så en observation inte döljer den andra.
+export const MIN_GAP_BETWEEN_ANCHOR_QUESTIONS_SEC = 90;
 
 // ORDER 227 mätning: setDown-mappningen `staff.taskType === 'serve'`
 // träffar aldrig (findTaskTarget söker seated-gäster med stateTime > 6
@@ -123,17 +127,22 @@ export function pickAnchorQuestion(
   activeAnchors: readonly GuestAnchorInfo[],
   rng: Rng
 ): PendingQuestion | null {
+  // ORDER 237 fix: pickern konsumerar RNG BARA vid faktisk fyrning.
+  // Att konsumera draw även vid null-pick shiftar rng och påverkar
+  // downstream ambient-event-timing + cause-chain-formering (m6.test.ts
+  // DoD 3 bröts med tätare pickning i ORDER 237). Deterministik
+  // hålls: samma seed + samma sim-sekvens ger samma rng-tillstånd
+  // eftersom pickern bara drar rng när den faktiskt fyrar en fråga.
+
   // Rate-limit: max per service.
   const firedThisService = state.day.anchorQuestionsFiredThisService ?? 0;
   if (firedThisService >= MAX_ANCHOR_QUESTIONS_PER_SERVICE) {
-    rng.int(0, 0); // konsumera 1 draw för determinism
     return null;
   }
 
   // Rate-limit: min gap mellan.
   const lastAt = state.day.lastAnchorQuestionAt ?? null;
   if (lastAt !== null && state.simTime - lastAt < MIN_GAP_BETWEEN_ANCHOR_QUESTIONS_SEC) {
-    rng.int(0, 0);
     return null;
   }
 
@@ -150,7 +159,6 @@ export function pickAnchorQuestion(
   });
 
   if (candidates.length === 0) {
-    rng.int(0, 0);
     return null;
   }
 
