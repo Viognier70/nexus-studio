@@ -776,6 +776,14 @@ export interface DayState {
   anchorQuestionsFiredThisService?: number;
   lastAnchorQuestionAt?: number | null;
   firedAnchorQuestionIdsToday?: readonly string[];
+  // ORDER 235 — simTime för senaste scenario-auto-fire. Läses av
+  // anchor-pickern för 3-min-buffer EFTER scenario ("scenariot har
+  // företräde, inget ankare inom 3 min efter"). Sätts i advanceTick
+  // vid scenario-auto-fire (INTE vid manuell TRIGGER_SCENARIO — den
+  // vägen är för tester och playtest-tangent, oberoende av picker-
+  // gaten). Reset:as vid OPEN_SERVICE + dygnsrollover. Optionellt
+  // för bakåtkompat.
+  lastScenarioAt?: number | null;
   // ORDER 075 (M2) — today's picked activity ids. Set in the morning
   // via PICK_ACTIVITY; cleared at day rollover. Length capped at
   // MAX_ACTIVITIES_PER_DAY = 3 in the reducer.

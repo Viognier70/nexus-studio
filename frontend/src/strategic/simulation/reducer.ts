@@ -1093,6 +1093,8 @@ function openService(
     // ThisService); frågelistan lever över hela dagen.
     anchorQuestionsFiredThisService: 0,
     lastAnchorQuestionAt: null,
+    // ORDER 235 — nollställ anchor-buffers "efter"-halva.
+    lastScenarioAt: null,
     // ORDER 050 §7 step 3 (2026-08-10) — fresh accumulators for this
     // service; posted + reset at service-close transition.
     serviceIngredientAccrued: 0,
@@ -2229,7 +2231,10 @@ function advanceTick(state: SimulationState): SimulationState {
       nextDraft.day = {
         ...nextDraft.day,
         scenarioTriggerTimes: scheduled.slice(1),
-        scenariosFiredThisService: draft.day.scenariosFiredThisService + 1
+        scenariosFiredThisService: draft.day.scenariosFiredThisService + 1,
+        // ORDER 235 — anchor-buffer "efter"-halva: markera senaste
+        // scenario-fyra. Anchor-pickern skippar i 3 min efter.
+        lastScenarioAt: draft.simTime
       };
       return nextDraft;
     }
@@ -2267,19 +2272,28 @@ function advanceTick(state: SimulationState): SimulationState {
   // scenarios 'subject' och bryta scenariotrigger-testerna.
   const scenarioIdleFresh =
     draft.scenario.phase === 'idle' || draft.scenario.phase === 'settled';
-  // **Scenarier har alltid företräde.** Anchor-picker aktiveras endast
-  // efter första scenariot i servicen har fyrats. Utan detta kunde en
-  // tidigt fyrad anchor-fråga blockera scenariots första chans
-  // (schedule kan ligga hundratals sekunder in i service-fönstret;
-  // reducer.test.ts:130 fångade det). Efter första scenariot avlöses
-  // scenarier och anchor-frågor fritt — pending scenario blockerar
-  // via scenarioIdleFresh-gaten.
-  const scenarioHasFiredThisService =
-    (draft.day.scenariosFiredThisService ?? 0) > 0;
+  // **ORDER 235 — asymmetrisk buffer (VO 2026-09-21).** Scenarier har
+  // företräde. Anchor-pickern får inte fyra:
+  //   * inom 3 min FÖRE nästa schemalagda scenario, ELLER
+  //   * inom 3 min EFTER senaste scenario-auto-fire.
+  // Scenariots auto-fire gate:as INTE av anchor-frågor (auto-fire-
+  // blocket ovan hoppar över hela om phase != idle så scenariots
+  // slot konsumeras inte när en anchor-fråga är öppen). Om
+  // scenariot väntar på att anchor-frågan ACK:as fyras det direkt
+  // efter — sloten konsumeras aldrig utan att fyras.
+  const ANCHOR_SCENARIO_BUFFER_SEC = 180;
+  const nextScenarioSoon =
+    scheduled.length > 0 &&
+    scheduled[0] - draft.simTime < ANCHOR_SCENARIO_BUFFER_SEC;
+  const lastScenarioAt = draft.day.lastScenarioAt ?? null;
+  const inScenarioAftermath =
+    lastScenarioAt !== null &&
+    draft.simTime - lastScenarioAt < ANCHOR_SCENARIO_BUFFER_SEC;
   if (
     canFire &&
     scenarioIdleFresh &&
-    scenarioHasFiredThisService &&
+    !nextScenarioSoon &&
+    !inScenarioAftermath &&
     draft.scenario.pendingQuestion === null
   ) {
     const activeAnchors = deriveActiveAnchors(draft);

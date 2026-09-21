@@ -132,6 +132,14 @@ describe('reducer TRIGGER_SCENARIO', () => {
     // fires when simTime crosses it. The head has ~12 s of head-space
     // per SCHEDULE_HEAD_SEC to give the room time to establish before
     // the first scenario.
+    //
+    // ORDER 235 — under 3-min asymmetric anchor-buffer respekterar
+    // pickern `simTime + 180 < scheduled[0]`, så pickern får inte
+    // fyra inom 3 min FÖRE första scenariot. Tidigare (ORDER 234)
+    // krävdes en workaround-gate; nu räcker buffern. Loopen nedan
+    // hanterar ändå ev. anchor-fråga som mock-testet råkar fyra
+    // (ANSWER + ACK) för att inte fastna i 'question' innan
+    // scenariot fyras.
     let s = reducer(makeInitialState(1), {
       type: 'OPEN_SERVICE',
       service: 'lunch',
@@ -143,7 +151,25 @@ describe('reducer TRIGGER_SCENARIO', () => {
     // Advance well past the first scheduled fire.
     const firstFireAt = s.day.scenarioTriggerTimes[0];
     const ticksNeeded = Math.ceil((firstFireAt - s.simTime) / 0.2) + 5;
-    s = tick(s, ticksNeeded);
+    for (let i = 0; i < ticksNeeded; i++) {
+      s = reducer(s, { type: 'TICK', dt: 0.2 });
+      // ORDER 235 — hantera anchor-fråge-flöde så scenariot får
+      // sin auto-fire-chans (schedule-slot konsumeras aldrig med
+      // öppen anchor-fråga; scenariot skjuts upp tills anchor-
+      // frågan ACK:ats). Notera att pickern respekterar 3-min-
+      // buffern så det är osannolikt att detta triggas här — men
+      // vi håller loopen safe.
+      if (
+        s.scenario.phase === 'question' &&
+        s.scenario.pendingQuestion !== null &&
+        s.scenario.pendingQuestion.anchorId !== undefined
+      ) {
+        s = reducer(s, { type: 'ANSWER_QUESTION', index: 0 });
+      }
+      if (s.scenario.phase === 'question-explanation') {
+        s = reducer(s, { type: 'ACK_QUESTION_EXPLANATION' });
+      }
+    }
     expect(s.scenario.phase).toBe('subject');
     expect(s.day.scenariosFiredThisService).toBe(1);
     // The head of the schedule was consumed.

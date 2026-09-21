@@ -194,6 +194,8 @@ export function initialDay(): DayState {
     anchorQuestionsFiredThisService: 0,
     lastAnchorQuestionAt: null,
     firedAnchorQuestionIdsToday: [],
+    // ORDER 235 — bufferns "efter"-halva mot anchor-pickern.
+    lastScenarioAt: null,
     serviceIngredientAccrued: 0,
     idleCostAccrued: 0,
     serviceCovers: 0,

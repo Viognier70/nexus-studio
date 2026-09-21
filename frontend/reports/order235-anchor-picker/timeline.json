@@ -1,0 +1,48 @@
+{
+  "summary": {
+    "order": 235,
+    "seed": 42,
+    "dinnerMinutes": 15,
+    "bufferSec": 180,
+    "dinnerOpenAt": 0,
+    "dinnerCloseAt": 900,
+    "scenariosPlanned": 2,
+    "scenariosFired": 2,
+    "allScenariosFired": true,
+    "scheduledFireTimes": [
+      439.28,
+      768.04
+    ],
+    "actualScenarioFireTimes": [
+      439.2,
+      768
+    ],
+    "anchorFires": 1,
+    "firstAnchorAt": 130.2,
+    "openWindows": [
+      {
+        "startSec": 0,
+        "endSec": 259.28,
+        "lengthSec": 259.28,
+        "reason": "öppet mellan bufferzoner"
+      }
+    ],
+    "totalOpenWindowSec": 259.28,
+    "totalDinnerSec": 900,
+    "openWindowShareOfService": 28.81
+  },
+  "anchorFires": [
+    {
+      "simTime": 130.2,
+      "questionId": "kalastorget-brons-01",
+      "anchorId": "greet",
+      "askerRole": "värd",
+      "wasCorrect": true,
+      "promptFirst80": "Ett sällskap på fem kommer utan bokning en fredag. Alla bord är tagna och det fö"
+    }
+  ],
+  "scenarioFires": [
+    439.1999999999836,
+    768.0000000000376
+  ]
+}
