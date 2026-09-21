@@ -711,3 +711,28 @@ export const SENDER_PREFIX: Record<StaffRole, string> = {
   'kock':     'The chef',
   'lärling':  'The apprentice'
 };
+
+// ORDER 234 — utökad prefix-lookup för anchor-frågor. Täcker samma
+// fyra roller som SENDER_PREFIX plus `sommelier` och `gäst` som
+// Stensöta + Kalastorget-frågor behöver. Overlay:et läser detta först
+// om `pendingQuestion.askerRole` är satt; faller tillbaka till
+// SENDER_PREFIX + senderRole för scenariofrågor. StaffRole i sim rörs
+// INTE (VO 2026-09-21) — de två extra rollerna är strikt fråge-lokala.
+export const ASKER_PREFIX: Record<QuestionAskerLocal, string> = {
+  'värd':      'The host',
+  'servitör':  'The waiter',
+  'kock':      'The chef',
+  'lärling':   'The apprentice',
+  'sommelier': 'The sommelier',
+  'gäst':      'The guest'
+};
+
+// Lokal alias för att inte tvinga circular import mellan scenarios.ts
+// och knowledge/questionFormats.ts (samma union, hålls i synk).
+type QuestionAskerLocal =
+  | 'kock'
+  | 'sommelier'
+  | 'gäst'
+  | 'värd'
+  | 'servitör'
+  | 'lärling';

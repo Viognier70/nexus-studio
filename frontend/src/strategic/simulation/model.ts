@@ -190,6 +190,10 @@ export function initialDay(): DayState {
     costAtDayStart: null,
     reputationAtDayStart: null,
     knowledgeCreditsAtDayStart: null,
+    // ORDER 234 — anchor-fråge-picker rate-limits.
+    anchorQuestionsFiredThisService: 0,
+    lastAnchorQuestionAt: null,
+    firedAnchorQuestionIdsToday: [],
     serviceIngredientAccrued: 0,
     idleCostAccrued: 0,
     serviceCovers: 0,

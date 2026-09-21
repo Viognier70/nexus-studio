@@ -423,12 +423,39 @@ export type ScenarioChoice = 'A' | 'B' | 'C';
 // the real professional questions coming from ORDER 049 §5.1's bank —
 // same shape (a beat between framing and choosing), replaced by
 // something that actually reads what the player knows.
+// ORDER 234 — inline-typerna nedan är re-definierade från sina
+// primärmoduler (`../simulation/anchors.ts`, `../knowledge/questionFormats.ts`)
+// för att låta `PendingQuestion` bära dem utan att skapa cirkulärt
+// import-beroende (types.ts är rot; både source-modulerna importerar
+// härifrån). Om unionerna växer måste båda ställena hållas i synk;
+// för Cycle-1 är listorna små och stabila.
+export type AnchorId =
+  | 'greet'
+  | 'order'
+  | 'setDown'
+  | 'requestCheck'
+  | 'pay';
+
+export type QuestionAsker =
+  | 'kock'
+  | 'sommelier'
+  | 'gäst'
+  | 'värd'
+  | 'servitör'
+  | 'lärling';
+
 export type ScenarioPhase =
   | 'idle'
   | 'subject'
   | 'situation'
   | 'resolving'
   | 'question'
+  // ORDER 234 — post-answer förklarings-fas. Träder mellan 'question'
+  // och 'settled' (för scenariofrågor) ELLER 'question' → direkt
+  // 'idle' (för anchor-frågor). Renderar överlägget kvar med
+  // spelarens val, rätt svar, och FÖRKLARING-texten från
+  // QuestionAnchor. Stängs via ACK_QUESTION_EXPLANATION-action.
+  | 'question-explanation'
   | 'settled';
 
 // ORDER 048 §5 — the professional question currently awaiting a
@@ -447,14 +474,35 @@ export interface PendingQuestion {
     consequenceLine?: string;
   }[];
   senderRole: StaffRole | null;   // overrides scenario sender for the question
-  scenarioId: string;
-  choice: ScenarioChoice;
+  // ORDER 234 — scenarioId + choice är optionella. För scenariofrågor
+  // (ORDER 048 §5) kvarstår de så pathen genom answerProfessionalQuestion
+  // kan slå upp specen. För anchor-frågor (ORDER 234) sätts de INTE —
+  // frågan står på egna ben, kredit ges direkt via ACCUMULATE_KNOWLEDGE
+  // med amount 0.05 (samma storlek som scenario-bank per scenarios.ts:317).
+  scenarioId?: string;
+  choice?: ScenarioChoice;
   // Bank-only fields. When the question was drawn from the bank,
   // these carry the citation the answer is grounded in per §3.1.
   sourceBankId?: string;
   sourceArticleTitle?: string;
   sourceArticleUrl?: string;
   sourceCitation?: string;
+  // ORDER 234 — anchor-fråge-fält. `anchorId` markerar frågan som en
+  // anchor-fråga (för routing i answerProfessionalQuestion). `explanation`
+  // är FÖRKLARING-texten som visas i phase='question-explanation'.
+  // `askerRole` (QuestionAsker, inte StaffRole) täcker 'sommelier' och
+  // 'gäst' som scenariofrågors StaffRole inte kan bära; overlay:et
+  // läser detta FÖRE senderRole. `axis`+`track` sätter destinationen
+  // för ACCUMULATE_KNOWLEDGE-dispatchen vid rätt svar. `lastAnswerIndex`
+  // + `lastAnswerCorrect` sätts av ANSWER_QUESTION för
+  // 'question-explanation'-fasens rendering.
+  anchorId?: AnchorId;
+  explanation?: string;
+  askerRole?: QuestionAsker;
+  axis?: KnowledgeAxis;
+  track?: YrkesSpar;
+  lastAnswerIndex?: number;
+  lastAnswerCorrect?: boolean;
 }
 
 export interface ScenarioState {
@@ -716,6 +764,18 @@ export interface DayState {
   costAtDayStart?: number | null;
   reputationAtDayStart?: number | null;
   knowledgeCreditsAtDayStart?: KnowledgeCredits | null;
+  // ORDER 234 — anchor-fråge-picker rate-limit-räknare.
+  // `anchorQuestionsFiredThisService` reset:as vid OPEN_SERVICE (samma
+  // sitrs som `scenariosFiredThisService`); räknar bara anchor-frågor,
+  // rör INTE scenariosFiredThisService (VO 2026-09-21 villkor 2).
+  // `lastAnchorQuestionAt` = simTime för senaste anchor-fråga; används
+  // av pickern för 3-min-gap. `firedAnchorQuestionIdsToday` reset:as
+  // vid dygnsrollover; hindrar att samma fråga upprepas samma dag.
+  // Alla tre optionella för bakåtkompat med testfixturer skrivna före
+  // ORDER 234.
+  anchorQuestionsFiredThisService?: number;
+  lastAnchorQuestionAt?: number | null;
+  firedAnchorQuestionIdsToday?: readonly string[];
   // ORDER 075 (M2) — today's picked activity ids. Set in the morning
   // via PICK_ACTIVITY; cleared at day rollover. Length capped at
   // MAX_ACTIVITIES_PER_DAY = 3 in the reducer.
@@ -1360,6 +1420,12 @@ export type SimAction =
   // the pending options; the reducer looks up correctness against
   // the pending options and fires the right/wrong effects.
   | { type: 'ANSWER_QUESTION'; index: number }
+  // ORDER 234 — stänger explanation-modalen efter en anchor-fråga.
+  // Övergår scenario.phase från 'question-explanation' till 'idle'
+  // och rensar pendingQuestion. No-op om phase inte är
+  // 'question-explanation' eller pendingQuestion.anchorId saknas
+  // (scenariofrågor följer sin ordinära settle-väg).
+  | { type: 'ACK_QUESTION_EXPLANATION' }
   // ORDER 075 (M2) — morning activity pick / unpick. Only fires
   // during period='morning'. Cost posts immediately; effect posts
   // at end-of-day alongside wages. Max 3 picks per day.

@@ -301,6 +301,12 @@ describe('scheduled scenario firing during service', () => {
       if (s.scenario.phase === 'question') {
         s = reducer(s, { type: 'ANSWER_QUESTION', index: 0 });
       }
+      // ORDER 234 — anchor-frågors post-answer-fas. Utan denna gren
+      // fastnar loopen i 'question-explanation' och nästa scenario
+      // kan inte fyra.
+      if (s.scenario.phase === 'question-explanation') {
+        s = reducer(s, { type: 'ACK_QUESTION_EXPLANATION' });
+      }
     }
     expect(s.day.scenariosFiredThisService).toBe(planned);
     expect(s.day.scenarioTriggerTimes).toEqual([]);

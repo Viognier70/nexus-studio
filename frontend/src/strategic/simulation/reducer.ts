@@ -6,6 +6,7 @@ import type {
   DayState,
   EnablerKey,
   IngredientTier,
+  PendingQuestion,
   Policies,
   Register,
   ScenarioChoice,
@@ -38,6 +39,9 @@ import {
 } from '../knowledge/examMechanic';
 import { ALL_TEMPLATE_EXAMPLES, R2_SEED_QUESTIONS } from '../knowledge/questionTemplates';
 import type { Question } from '../knowledge/questionFormats';
+// ORDER 234 — anchor-fråge-picker + deriveActiveAnchors.
+import { deriveActiveAnchors } from './anchors';
+import { pickAnchorQuestion } from '../knowledge/anchorQuestionPicker';
 
 // ORDER 104 §Q3 — separat slot-mekanik för prov, inte återanvänd
 // activity-slot. Aktiviteter är driftdagens val, prov är mellan-varv-
@@ -269,6 +273,8 @@ export function reducer(state: SimulationState, action: SimAction): SimulationSt
       return forceCollapseAction(state);
     case 'ANSWER_QUESTION':
       return answerProfessionalQuestion(state, action.index);
+    case 'ACK_QUESTION_EXPLANATION':
+      return ackQuestionExplanation(state);
     case 'START_EXAM':
       return startExam(state, action.pavilionId, action.seed);
     case 'ANSWER_EXAM_QUESTION':
@@ -1082,6 +1088,11 @@ function openService(
     // kvällsavräkningen kan visa dagens delta per axel. Deep-copy för
     // att undvika share med state.knowledgeCredits.
     knowledgeCreditsAtServiceStart: { ...state.knowledgeCredits },
+    // ORDER 234 — nollställ anchor-fråge-räknarna per service.
+    // Räknarna är per-service (samma pattern som scenariosFired-
+    // ThisService); frågelistan lever över hela dagen.
+    anchorQuestionsFiredThisService: 0,
+    lastAnchorQuestionAt: null,
     // ORDER 050 §7 step 3 (2026-08-10) — fresh accumulators for this
     // service; posted + reset at service-close transition.
     serviceIngredientAccrued: 0,
@@ -2237,6 +2248,53 @@ function advanceTick(state: SimulationState): SimulationState {
     };
   }
 
+  // ORDER 234 — anchor-fråge-picker. Läser deriveActiveAnchors
+  // (ORDER 225 pure function) + rate-limits, väljer en fråga att
+  // fyra om något ankare matchar. Går inte via scenariokedjan;
+  // resultatet skrivs direkt till `draft.scenario.pendingQuestion`
+  // och phase = 'question' (samma phase som scenariofrågor så
+  // ScenarioOverlay renderar samma).
+  //
+  // Gated identiskt som scenario-auto-firen: canFire (lunch/dinner)
+  // + scenarioIdle + inget pendingQuestion. Om ett scenario är
+  // aktivt eller en scenariofråga väntar hoppar pickern över
+  // — pågående scenario blockerar (VO 2026-09-21).
+  //
+  // **VIKTIGT: läser `draft.scenario.phase` FÄRSKT.** Den lokala
+  // `scenarioIdle`-variabeln beräknades ovan innan scenariot
+  // eventuellt fyrade på samma tick; om vi använder den skulle
+  // pickern kunna skriva 'question' ovanpå ett just-fyrat
+  // scenarios 'subject' och bryta scenariotrigger-testerna.
+  const scenarioIdleFresh =
+    draft.scenario.phase === 'idle' || draft.scenario.phase === 'settled';
+  // **Scenarier har alltid företräde.** Anchor-picker aktiveras endast
+  // efter första scenariot i servicen har fyrats. Utan detta kunde en
+  // tidigt fyrad anchor-fråga blockera scenariots första chans
+  // (schedule kan ligga hundratals sekunder in i service-fönstret;
+  // reducer.test.ts:130 fångade det). Efter första scenariot avlöses
+  // scenarier och anchor-frågor fritt — pending scenario blockerar
+  // via scenarioIdleFresh-gaten.
+  const scenarioHasFiredThisService =
+    (draft.day.scenariosFiredThisService ?? 0) > 0;
+  if (
+    canFire &&
+    scenarioIdleFresh &&
+    scenarioHasFiredThisService &&
+    draft.scenario.pendingQuestion === null
+  ) {
+    const activeAnchors = deriveActiveAnchors(draft);
+    if (activeAnchors.length > 0) {
+      const picked = pickAnchorQuestion(draft, activeAnchors, rng);
+      if (picked !== null) {
+        draft.scenario = {
+          ...draft.scenario,
+          phase: 'question',
+          pendingQuestion: picked
+        };
+      }
+    }
+  }
+
   // Transition scenario from 'resolving' → 'settled' after the
   // consequence window; surface the mentor comment as an event and on
   // the scenario record so MentorComment can render it in-world.
@@ -2807,6 +2865,92 @@ function resolveScenario(
 // same enabler tally the correct answer would have paid (ORDER 049
 // §2.1, 2026-08-09: knowledge that failed is the knowledge that
 // regresses; capital falls indirectly via the ceiling chain).
+// ORDER 234 — kredit-storleken vid rätt svar på en anchor-fråga.
+// Läst från `scenarios.ts:317` (walk-in-of-five choice C):
+// `correctEnablerWrite: { enabler: 'cultural', register: 'episteme',
+// amount: 0.05 }`. Samma storlek gäller alla bank-fråge-bärande
+// scenariovalen (scenarios.ts:413, :555). VO 2026-09-21 villkor 1:
+// "kredit per rätt svar ska ha samma storlek som ett rätt svar på en
+// bankfråga i scenario ger i dag". Bank-vägen skriver till `enablers`;
+// anchor-vägen skriver till `knowledgeCredits` via ACCUMULATE_KNOWLEDGE.
+// Numeriska storleken hålls identisk mellan lagerena.
+const ANCHOR_CORRECT_CREDIT = 0.05;
+
+function answerAnchorQuestion(
+  state: SimulationState,
+  pq: PendingQuestion,
+  index: number
+): SimulationState {
+  const opt = pq.options[index];
+  if (!opt) return state;
+
+  // ORDER 234 — anchor-frågan RÖR INTE scenario-fält (VO villkor 2):
+  //   * state.day.scenariosFiredThisService — orört
+  //   * state.day.lastScenarioChoice — orört
+  //   * state.day.revenueAtServiceStart/cost/rep/kc — orört
+  // Bara state.scenario.pendingQuestion + phase uppdateras.
+
+  // Vid rätt svar: dispatcha ACCUMULATE_KNOWLEDGE med 0.05-krediten på
+  // frågans axis + optional track (från q.spar). Går via reducern så
+  // knowledgeTracks-invariant och capitals-effekter hanteras enhetligt.
+  let next = state;
+  if (opt.correct && pq.axis !== undefined) {
+    next = reducer(next, {
+      type: 'ACCUMULATE_KNOWLEDGE',
+      axis: pq.axis,
+      amount: ANCHOR_CORRECT_CREDIT,
+      ...(pq.track !== undefined ? { track: pq.track } : {})
+    });
+  }
+
+  // Rate-limit-räknarna uppdateras nu vid ANSWER (inte vid pick), så
+  // en obesvarad fråga (om spelaren stänger fliken innan svar) inte
+  // förbrukar en slot permanent. `firedAnchorQuestionIdsToday` markerar
+  // frågan så samma fråga inte upprepas samma dag.
+  const questionId = pq.sourceBankId; // ORDER 234 lagrar q.id här
+  const prevFiredIds = next.day.firedAnchorQuestionIdsToday ?? [];
+  const firedIds = questionId ? [...prevFiredIds, questionId] : prevFiredIds;
+  const prevFiredCount = next.day.anchorQuestionsFiredThisService ?? 0;
+
+  return {
+    ...next,
+    day: {
+      ...next.day,
+      anchorQuestionsFiredThisService: prevFiredCount + 1,
+      lastAnchorQuestionAt: next.simTime,
+      firedAnchorQuestionIdsToday: firedIds
+    },
+    scenario: {
+      ...next.scenario,
+      phase: 'question-explanation',
+      pendingQuestion: {
+        ...pq,
+        lastAnswerIndex: index,
+        lastAnswerCorrect: opt.correct
+      }
+    }
+  };
+}
+
+function ackQuestionExplanation(state: SimulationState): SimulationState {
+  // ORDER 234 — stänger explanation-modalen efter anchor-fråga.
+  // Anchor-frågor är inte scenariofasen, så vi går tillbaka till 'idle'
+  // (inte 'settled') och rensar pendingQuestion. Scenariofrågor följer
+  // fortsatt sin ordinära resolving → settled-väg och passerar inte
+  // hit — kontroll via `pq.anchorId`-guard.
+  if (state.scenario.phase !== 'question-explanation') return state;
+  const pq = state.scenario.pendingQuestion;
+  if (!pq || pq.anchorId === undefined) return state;
+  return {
+    ...state,
+    scenario: {
+      ...state.scenario,
+      phase: 'idle',
+      pendingQuestion: null
+    }
+  };
+}
+
 function answerProfessionalQuestion(
   state: SimulationState,
   index: number
@@ -2816,6 +2960,16 @@ function answerProfessionalQuestion(
   const opt = pq.options[index];
   if (!opt) return state;
 
+  // ORDER 234 — anchor-fråga har `anchorId` satt och saknar
+  // `scenarioId`. Går egen path: ACCUMULATE_KNOWLEDGE vid rätt svar,
+  // ingen enabler-write, ingen scenario-fas-progression. Overlay
+  // stannar på 'question-explanation' tills spelaren ACK:ar.
+  if (pq.anchorId !== undefined) {
+    return answerAnchorQuestion(state, pq, index);
+  }
+
+  // Scenariofrågor har alltid scenarioId + choice satt (ORDER 048 §5).
+  if (pq.scenarioId === undefined || pq.choice === undefined) return state;
   const spec = scenarioById(pq.scenarioId);
   const questionSpec = spec?.choices[pq.choice]?.professionalQuestion ?? null;
   // ORDER 049 §7 step 3 (2026-08-10) — hand-authored questions carry
