@@ -269,20 +269,23 @@ describe('ORDER 227 — ankarmätning under ett dinner-pass', () => {
       scenariosPlanned: result.finalState.day.scenarioTriggerTimes.length + result.finalState.day.scenariosFiredThisService
     };
 
-    mkdirSync(REPORT_DIR, { recursive: true });
-    writeFileSync(
-      REPORT_JSON,
-      JSON.stringify(
-        {
-          summary,
-          stateChanges: result.stateChanges,
-          // Full timeline: alla ticks där något ankare var aktivt + heartbeats var 10 s.
-          timeline: result.timeline
-        },
-        null,
-        2
-      )
-    );
+    // ORDER 239 uppföljning — rapport skrivs bara när WRITE_REPORTS=1.
+    if (process.env.WRITE_REPORTS === '1') {
+      mkdirSync(REPORT_DIR, { recursive: true });
+      writeFileSync(
+        REPORT_JSON,
+        JSON.stringify(
+          {
+            summary,
+            stateChanges: result.stateChanges,
+            // Full timeline: alla ticks där något ankare var aktivt + heartbeats var 10 s.
+            timeline: result.timeline
+          },
+          null,
+          2
+        )
+      );
+    }
 
     const scenarioChanges = result.stateChanges.filter((c) => c.kind === 'scenario.phase');
     const scheduleChanges = result.stateChanges.filter((c) => c.kind === 'scheduled.consumed');
