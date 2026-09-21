@@ -13,7 +13,29 @@
 // valfritt spår (sommellerie/kok, `null` = spårlöst för Bibliotek
 // och Kalastorget).
 
-import type { KnowledgeAxis, YrkesSpar } from '../types';
+import type { KnowledgeAxis, StaffRole, YrkesSpar } from '../types';
+
+// ORDER 229 — bronsprogressionens fyra nivåer (från ORDER "En hel dag"
+// §0 beslut 1). Säkerhetsnivåerna 15/30/55/90 % kopplas mot spelarens
+// högsta nådda nivå per paviljong; varje fråga bär vilken nivå den hör
+// till så picker + progression kan filtrera. Silver–platina får sitt
+// innehåll skrivet i egen omgång.
+export type QuestionLevel = 'brons' | 'silver' | 'guld' | 'platina';
+
+// ORDER 229 — ankartagg per fråga. `phase` matchar `ScenarioPhase` från
+// scenarios.ts (ORDER 226): 'service' | 'morning' | 'evening'.
+// `station` är en fri sträng idag (STATION_MAP i businessRoom.ts är
+// under omdop av Design — 'taps'/'barkeep'/'brew' etc; en fast enum vore
+// bräcklig innan namnen är låsta). `rawText` bevarar källfilens
+// ANKARE-formulering för audit-spårning (per ORDER 160-principen — vad
+// modulen påstår ska kunna spåras tillbaka till källan). Läses först
+// av Fas 2 event-lagret (ORDER 224 §7) när det byggs; tills dess är
+// fältet ren dokumentation som knyter innehåll till avsett ögonblick.
+export interface QuestionAnchor {
+  phase: 'service' | 'morning' | 'evening';
+  station?: string;
+  rawText: string;
+}
 
 // Fyra format per ORDER 107 §3. `gestaltning` är den omarbetade
 // varianten som visar tre färdiga gestaltningar och låter spelaren
@@ -54,6 +76,23 @@ interface BaseQuestion {
   // men förväntas inte. En lista eftersom en episteme-fråga kan vila
   // på flera arbeten.
   sources?: readonly QuestionSource[];
+  // ORDER 229 — bronsprogressionens nivåstämpel. Valfritt för
+  // bakåtkompat med ORDER 107:s template-exempel och ORDER 104:s
+  // seed-frågor som skrevs innan nivåstrukturen fanns; nya paviljong-
+  // frågor sätter fältet.
+  level?: QuestionLevel;
+  // ORDER 229 — pedagogisk förklaring per FRAGORNA_TILL_PAVILJONGERNA.md
+  // §6: "Spelaren som svarar fel ska förstå varför, inte bara se ett
+  // rött kryss." Obligatorisk för nya paviljong-frågor; valfritt på
+  // typen för bakåtkompat.
+  explanation?: string;
+  // ORDER 229 — ankartagg. Se QuestionAnchor ovan. Valfri av samma
+  // bakåtkompat-skäl som `level` och `explanation`.
+  anchor?: QuestionAnchor;
+  // ORDER 229 — vem som ställer frågan i rummet. Härledbar ur axis+spar
+  // för Metodköket ('kock'); explicit för Kalastorget-frågor senare
+  // (fronesis + värd/servitör/gäst). Valfri.
+  askerRole?: StaffRole;
 }
 
 // §3.1 — flerval. M7a:s befintliga form. Ett rätt alternativ.
