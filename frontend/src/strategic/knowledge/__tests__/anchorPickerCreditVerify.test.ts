@@ -67,7 +67,9 @@ describe('ORDER 236 — rättighetsberäkning i answerAnchorQuestion', () => {
   it('Kalastorget-brons-01 har correctIndex=1 (svar B)', () => {
     expect(q1.id).toBe('kalastorget-brons-01');
     expect(q1.correctIndex).toBe(1);
-    expect(q1.options[1]).toContain('erbjuder plats i baren');
+    // ORDER 242: engelsk översättning per Observation 6. Substräng
+    // bytt från "erbjuder plats i baren" till engelsk motsvarighet.
+    expect(q1.options[1]).toContain('offer seats at the bar');
   });
 
   it('index=0 (svar A) ger 0 kredit och phase går ändå till question-explanation', () => {

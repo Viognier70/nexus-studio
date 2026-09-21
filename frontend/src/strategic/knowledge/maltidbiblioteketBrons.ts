@@ -43,16 +43,16 @@ export const MALTIDBIBLIOTEKET_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     pavilion: 'maltidbiblioteket',
     level: 'brons',
     askerRole: 'gäst',
-    prompt: 'Vad är egentligen skillnaden mellan champagne och en crémant?',
+    prompt: "What's actually the difference between champagne and a crémant?",
     options: [
-      'Champagne jäser andra gången på flaska, crémant i tank',
-      'Champagne är en skyddad ursprungsbeteckning; crémant görs med samma metod i andra franska regioner',
-      'Champagne får bara göras på chardonnay, crémant på alla druvor',
-      'Champagne är torr, crémant är alltid halvtorr'
+      'Champagne has its second fermentation in bottle, crémant in tank',
+      'Champagne is a protected designation of origin; crémant is made the same way in other French regions',
+      'Champagne can only be made from chardonnay, crémant from any grape',
+      'Champagne is dry, crémant is always off-dry'
     ],
     correctIndex: 1,
     explanation:
-      'Båda görs med den traditionella metoden, där den andra jäsningen sker i flaskan. Skillnaden är var: champagne får bara komma från det avgränsade området Champagne, medan crémant är samma metod i exempelvis Loire, Alsace eller Bourgogne. A är det lockande felsvaret, eftersom tankjäsning är det man förknippar med billigare mousserande — men det gäller inte crémant.',
+      "Both are made by the traditional method, with the second fermentation in bottle. The difference is where: champagne can only come from the delimited Champagne region, while crémant is the same method in, for example, the Loire, Alsace or Burgundy. A is the tempting wrong answer, since tank fermentation is what people associate with cheaper sparkling wine — but it doesn't apply to crémant.",
     anchor: {
       phase: 'service',
       anchorId: 'order',
@@ -67,16 +67,16 @@ export const MALTIDBIBLIOTEKET_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     pavilion: 'maltidbiblioteket',
     level: 'brons',
     askerRole: 'lärling',
-    prompt: 'Vad är umami egentligen, och var kommer begreppet ifrån?',
+    prompt: 'What actually is umami, and where does the idea come from?',
     options: [
-      'En blandning av salt och sött, beskriven av franska kockar på 1800-talet',
-      'Smaken av glutamat och vissa nukleotider, beskriven av Kikunae Ikeda i Japan 1908',
-      'Känslan av fett i munnen, som en japansk forskare gav namn på 1950-talet',
-      'En samlingsterm för fermenterade smaker, lånad från koreanskt kök'
+      'A mix of salty and sweet, described by French chefs in the 1800s',
+      'The taste of glutamate and certain nucleotides, described by Kikunae Ikeda in Japan in 1908',
+      'The feeling of fat in the mouth, named by a Japanese researcher in the 1950s',
+      'A catch-all term for fermented flavours, borrowed from Korean cooking'
     ],
     correctIndex: 1,
     explanation:
-      'Ikeda isolerade glutamat ur kombu, tången i dashi, och gav smaken namnet umami. Senare visades att nukleotider som inosinat och guanylat förstärker den, vilket förklarar varför kombu och bonito fungerar så bra ihop. A lockar eftersom umami ofta beskrivs som runt och fylligt, men det är en egen grundsmak med egna receptorer.',
+      "Ikeda isolated glutamate from kombu, the kelp in dashi, and named the taste umami. It was later shown that nucleotides such as inosinate and guanylate amplify it, which explains why kombu and bonito work so well together. A tempts because umami is often described as round and full, but it's a basic taste in its own right, with its own receptors.",
     anchor: {
       phase: 'morning',
       rawText: 'morgon'
@@ -90,11 +90,11 @@ export const MALTIDBIBLIOTEKET_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     pavilion: 'maltidbiblioteket',
     level: 'brons',
     askerRole: 'kock',
-    prompt: 'Vilken av dessa räknas inte till Escoffiers fem grundsåser?',
+    prompt: "Which of these is not one of Escoffier's five mother sauces?",
     options: ['Velouté', 'Espagnole', 'Béarnaise', 'Béchamel'],
     correctIndex: 2,
     explanation:
-      'Escoffiers fem grundsåser är béchamel, velouté, espagnole, tomatsås och hollandaise. Béarnaise är en dottersås till hollandaisen, med dragon och vinäger. Den lockar eftersom den är så central i klassiskt kök — men den bygger på en grundsås i stället för att vara en.',
+      "Escoffier's five mother sauces are béchamel, velouté, espagnole, tomato and hollandaise. Béarnaise is a daughter of hollandaise, with tarragon and vinegar. It tempts because it's so central to classical cooking — but it's built on a mother sauce rather than being one.",
     anchor: {
       phase: 'morning',
       rawText: 'morgon'
@@ -108,16 +108,16 @@ export const MALTIDBIBLIOTEKET_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     pavilion: 'maltidbiblioteket',
     level: 'brons',
     askerRole: 'gäst',
-    prompt: 'Vad är skillnaden mellan torrhängt kött och kött som mognat i vakuumpåse?',
+    prompt: "What's the difference between dry-aged beef and beef aged in a vacuum bag?",
     options: [
-      'Vakuummognat blir alltid mörare, eftersom vätskan stannar kvar',
-      'Torrhängning påverkar bara ytan; insidan är likadan',
-      'Torrhängt tappar vätska och får koncentrerad, nötig smak; båda mörnar genom köttets egna enzymer',
-      'Skillnaden ligger bara i hur länge köttet har hängt'
+      'Vacuum-aged is always more tender, because the moisture stays in',
+      'Dry ageing only affects the surface; the inside is the same',
+      "Dry-aged loses moisture and gains a concentrated, nutty flavour; both tenderise through the meat's own enzymes",
+      'The only difference is how long the meat has hung'
     ],
     correctIndex: 2,
     explanation:
-      'I båda metoderna bryter köttets egna enzymer ned muskelproteiner och gör köttet mörare. Det torrhängda förlorar dessutom vätska och utvecklar nötiga, lätt ostiga toner, vilket vakuummognat inte gör. B lockar eftersom den torra skorpan skärs bort, men smakförändringen går genom hela biten.',
+      "In both methods the meat's own enzymes break down muscle proteins and make it more tender. Dry-aged meat also loses moisture and develops nutty, slightly cheesy notes, which vacuum-aged meat does not. B tempts because the dry crust is trimmed off, but the change in flavour runs through the whole piece.",
     anchor: {
       phase: 'service',
       anchorId: 'order',
@@ -132,16 +132,16 @@ export const MALTIDBIBLIOTEKET_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     pavilion: 'maltidbiblioteket',
     level: 'brons',
     askerRole: 'gäst',
-    prompt: 'Den här tomatsåsen känns som något riktigt gammalt. Har italienarna ätit tomatsås sedan romartiden?',
+    prompt: 'This tomato sauce feels like something truly old. Have Italians eaten tomato sauce since Roman times?',
     options: [
-      'Ja, tomater odlades redan i det romerska riket',
-      'Nej, tomaten kom från Amerika på 1500-talet och tog plats i italienskt kök först från slutet av 1600-talet',
-      'Ja, tomaten kom via sidenvägen från Asien under medeltiden',
-      'Nej, tomatsås uppfanns i USA och fördes till Italien av återvandrare'
+      'Yes, tomatoes were already grown in the Roman Empire',
+      'No, the tomato came from the Americas in the 1500s and only found its place in Italian cooking from the late 1600s',
+      'Yes, the tomato arrived from Asia along the Silk Road in the Middle Ages',
+      'No, tomato sauce was invented in the USA and brought to Italy by returning emigrants'
     ],
     correctIndex: 1,
     explanation:
-      'Tomaten har sitt ursprung i Sydamerika och kom till Europa efter Columbus. Den betraktades länge med misstänksamhet, och de första tryckta italienska recepten på tomatsås är från 1690-talet. A lockar eftersom tomaten känns så grundläggande i italiensk mat, men den är yngre än både pasta och olivolja i det köket.',
+      'The tomato originated in South America and reached Europe after Columbus. It was long regarded with suspicion, and the first printed Italian recipes for tomato sauce date from the 1690s. A tempts because the tomato feels so fundamental to Italian food, but in that kitchen it is younger than both pasta and olive oil.',
     anchor: {
       phase: 'service',
       anchorId: 'order',
@@ -156,16 +156,16 @@ export const MALTIDBIBLIOTEKET_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     pavilion: 'maltidbiblioteket',
     level: 'brons',
     askerRole: 'lärling',
-    prompt: 'Vad menar man med terroir?',
+    prompt: 'What do people mean by terroir?',
     options: [
-      'Den jordiga doften som vissa viner har',
-      'Platsens samlade inverkan — jord, klimat, läge och ofta lokal tradition — på det som odlas där',
-      'Druvsorten som ett vin är gjort på',
-      'En officiell kvalitetsklassning av franska vingårdar'
+      'The earthy smell some wines have',
+      'The combined influence of a place — soil, climate, aspect and often local tradition — on what grows there',
+      'The grape variety a wine is made from',
+      'An official quality classification of French vineyards'
     ],
     correctIndex: 1,
     explanation:
-      'Terroir betecknar hur en plats präglar en produkt genom jordmån, klimat, sluttning och ofta hävdvunna metoder. Begreppet används för vin men också för ost, kaffe och te. A lockar eftersom ordet liknar terre, jord, och jordiga toner ibland tillskrivs terroir — men begreppet handlar om platsen, inte om en doft.',
+      'Terroir describes how a place shapes a product through soil, climate, slope and often long-established practice. The term is used for wine but also for cheese, coffee and tea. A tempts because the word resembles terre, earth, and earthy notes are sometimes put down to terroir — but the concept is about the place, not a smell.',
     anchor: {
       phase: 'morning',
       rawText: 'morgon'
@@ -179,16 +179,16 @@ export const MALTIDBIBLIOTEKET_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     pavilion: 'maltidbiblioteket',
     level: 'brons',
     askerRole: 'kock',
-    prompt: 'Receptet till sorbeten anger 28 °Brix. Vad mäter det?',
+    prompt: 'The sorbet recipe calls for 28 °Brix. What does that measure?',
     options: [
-      'Halten lösta ämnen, i praktiken mest socker, i vätskan',
-      'Syrahalten i fruktpurén',
-      'Vätskans viskositet vid serveringstemperatur',
-      'Andelen fast fruktkött i basen'
+      'The content of dissolved solids, in practice mostly sugar, in the liquid',
+      'The acidity of the fruit purée',
+      "The liquid's viscosity at serving temperature",
+      'The share of solid fruit pulp in the base'
     ],
     correctIndex: 0,
     explanation:
-      'En grad Brix motsvarar ungefär ett gram löst socker per hundra gram lösning, och mäts med refraktometer. I sorbet avgör sockerhalten hur hårt den fryser, så Brix är ett arbetsmått — samma mått används för druvmustens mognad. C lockar eftersom sockret faktiskt påverkar konsistensen, men Brix mäter halten, inte hur trögflytande vätskan är.',
+      'One degree Brix corresponds to roughly one gram of dissolved sugar per hundred grams of solution, and is measured with a refractometer. In sorbet the sugar content decides how hard it freezes, so Brix is a working measure — the same one used for ripeness in grape must. C tempts because sugar does affect texture, but Brix measures content, not how thick the liquid is.',
     anchor: {
       phase: 'morning',
       rawText: 'morgon'
@@ -203,11 +203,11 @@ export const MALTIDBIBLIOTEKET_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     level: 'brons',
     askerRole: 'kock',
     prompt:
-      'En gäst har uppgett allergi. Vilken av dessa ingredienser måste enligt EU:s regler kunna redovisas som allergen?',
-    options: ['Tomat', 'Vitlök', 'Selleri', 'Paprika'],
+      'A guest has declared an allergy. Which of these ingredients must, under EU rules, be declarable as an allergen?',
+    options: ['Tomato', 'Garlic', 'Celery', 'Paprika'],
     correctIndex: 2,
     explanation:
-      'Selleri är ett av de fjorton ämnen som EU kräver att restauranger kan redovisa, tillsammans med bland annat senap, sesam och lupin. Den gömmer sig ofta i fonder, buljonger och kryddblandningar, vilket gör den lätt att missa. Tomat och vitlök kan ge överkänslighet hos enskilda gäster, men omfattas inte av listan.',
+      "Celery is one of the fourteen substances the EU requires restaurants to be able to declare, along with mustard, sesame and lupin, among others. It often hides in stocks, broths and spice blends, which makes it easy to miss. Tomato and garlic can cause sensitivities in individual guests, but they aren't on the list.",
     anchor: {
       phase: 'service',
       anchorId: 'order',
@@ -222,16 +222,16 @@ export const MALTIDBIBLIOTEKET_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     pavilion: 'maltidbiblioteket',
     level: 'brons',
     askerRole: 'lärling',
-    prompt: 'Varför kallas köksorganisationen med chef de partie och commis för brigadsystemet?',
+    prompt: 'Why is the kitchen organisation with chef de partie and commis called the brigade system?',
     options: [
-      'Den byggdes efter brandkårens organisation i Paris',
-      'Escoffier organiserade köket efter militär förebild kring sekelskiftet 1900',
-      'Den kommer från klosterköken under medeltiden',
-      'Den infördes av den franska revolutionens nya restauranger'
+      'It was modelled on the Paris fire brigade',
+      'Escoffier organised the kitchen on a military model around 1900',
+      'It comes from monastery kitchens in the Middle Ages',
+      'It was introduced by the new restaurants of the French Revolution'
     ],
     correctIndex: 1,
     explanation:
-      'Auguste Escoffier, som själv tjänstgjort i armén, delade in köket i stationer med tydlig befälsordning för att klara stora hotellserviser. Strukturen lever kvar i dag i titlar som sous-chef och chef de partie. Revolutionen lockar eftersom den gav upphov till de första restaurangerna, men köksbrigaden kom ett sekel senare.',
+      'Auguste Escoffier, who had served in the army himself, divided the kitchen into stations with a clear chain of command to handle large hotel services. The structure lives on today in titles such as sous-chef and chef de partie. The Revolution tempts because it gave rise to the first restaurants, but the kitchen brigade came a century later.',
     anchor: {
       phase: 'evening',
       rawText: 'kväll'
@@ -245,16 +245,16 @@ export const MALTIDBIBLIOTEKET_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     pavilion: 'maltidbiblioteket',
     level: 'brons',
     askerRole: 'gäst',
-    prompt: 'Vad betyder confit egentligen — är det bara ett finare ord för stekt anka?',
+    prompt: 'What does confit actually mean — is it just a fancier word for fried duck?',
     options: [
-      'Nej, det betyder marinerat i vin före tillagning',
-      'Nej, det betyder kallrökt och lagrat',
-      'Nej, det betyder konserverat genom långsam tillagning och förvaring i fett eller socker',
-      'Nej, det betyder inlagt i ättika och kryddor'
+      'No, it means marinated in wine before cooking',
+      'No, it means cold-smoked and aged',
+      'No, it means preserved by slow cooking and storage in fat or sugar',
+      'No, it means pickled in vinegar and spices'
     ],
     correctIndex: 2,
     explanation:
-      'Ordet kommer av franskans confire, att konservera. Ankan tillagas långsamt i sitt eget fett och kan sedan förvaras täckt av det, på samma sätt som frukt konserveras i socker. D lockar eftersom inläggning också är konservering, men confit bygger på fett eller socker, inte på syra.',
+      'The word comes from the French confire, to preserve. The duck is cooked slowly in its own fat and can then be kept covered by it, just as fruit is preserved in sugar. D tempts because pickling is also a form of preservation, but confit relies on fat or sugar, not acid.',
     anchor: {
       phase: 'service',
       anchorId: 'order',

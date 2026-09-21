@@ -27,16 +27,16 @@ export const METODKOKET_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     level: 'brons',
     askerRole: 'kock',
     prompt:
-      'Du bryner rotselleri i smör och vill ha djup färg utan bränd sötma. Vad skiljer maillardreaktionen från karamellisering?',
+      "You're browning celeriac in butter and want deep colour without a burnt sweetness. What separates the Maillard reaction from caramelisation?",
     options: [
-      'Maillard kräver aminosyror tillsammans med reducerande socker; karamellisering är sockrets egen nedbrytning utan kväve',
-      'Maillard sker i fett, karamellisering i vattenfas',
-      'Maillard kräver högre temperatur än karamellisering',
-      'Maillard ger färgen, karamellisering ger smaken'
+      'Maillard needs amino acids together with reducing sugars; caramelisation is sugar breaking down on its own, without nitrogen',
+      'Maillard happens in fat, caramelisation in water',
+      'Maillard needs a higher temperature than caramelisation',
+      'Maillard gives the colour, caramelisation gives the flavour'
     ],
     correctIndex: 0,
     explanation:
-      'Maillard är en reaktion mellan en aminogrupp och ett reducerande socker, och ger därför kvävehaltiga aromämnen som karamellisering saknar. C är det lockande felsvaret eftersom båda sker vid hög värme — men rent socker karamelliserar först runt 160 °C, medan maillard går i gång betydligt tidigare.',
+      'Maillard is a reaction between an amino group and a reducing sugar, which is why it produces nitrogen-bearing aromas that caramelisation lacks. C is the tempting wrong answer because both happen under high heat — but pure sugar only caramelises at around 160 °C, while Maillard gets going well below that.',
     anchor: {
       phase: 'service',
       station: 'range',
@@ -52,16 +52,16 @@ export const METODKOKET_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     level: 'brons',
     askerRole: 'kock',
     prompt:
-      'En kycklinglårfilé har legat länge i 60 °C vattenbad. En kollega säger att den är osäker eftersom den aldrig nått 70 °C. Vad avgör säkerheten?',
+      "A chicken thigh has been in a 60 °C water bath for a long time. A colleague says it's unsafe because it never reached 70 °C. What decides whether it's safe?",
     options: [
-      'Kärntemperaturen ensam — under 70 °C är kyckling alltid osäker',
-      'Temperatur och hålltid tillsammans; tillräckligt länge vid 60 °C ger samma reduktion som ett ögonblick vid 70 °C',
-      'Vakuumpåsens syrefattiga miljö, som hindrar salmonella',
-      'Vilotiden efter badet, då värmen utjämnas inåt'
+      'Core temperature alone — chicken below 70 °C is never safe',
+      'Temperature and holding time together; long enough at 60 °C gives the same reduction as a moment at 70 °C',
+      'The low-oxygen environment in the vacuum bag, which stops salmonella',
+      'The resting time after the bath, while the heat evens out'
     ],
     correctIndex: 1,
     explanation:
-      'Pastörisering är en logaritmisk reduktion som beror på både temperatur och tid, så 60 °C under tillräckligt många minuter ger samma säkerhet som 70 °C under några sekunder. A är svaret en halvkunnig ger, eftersom 70 °C är siffran som lärs ut för snabb tillagning — men den siffran förutsätter just kort tid. Syrefattig miljö hjälper inte: salmonella är fakultativt anaerob.',
+      "Pasteurisation is a logarithmic reduction that depends on both temperature and time, so enough minutes at 60 °C are as safe as a few seconds at 70 °C. A is what a half-trained cook answers, because 70 °C is the number taught for quick cooking — but that number assumes a short time. Low oxygen doesn't help: salmonella is a facultative anaerobe.",
     anchor: {
       phase: 'morning',
       station: 'range',
@@ -77,16 +77,16 @@ export const METODKOKET_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     level: 'brons',
     askerRole: 'kock',
     prompt:
-      'En gelé på gelatin ska göras vegetarisk med agar. Vilken skillnad märks tydligast i munnen?',
+      'A gelatine jelly needs to go vegetarian with agar. What difference will the guest notice most in the mouth?',
     options: [
-      'Agargelén stelnar bara i kyla och rinner så snart den lämnar kylen',
-      'Agargelén smälter inte vid kroppstemperatur utan bryts i stycken',
-      'Agargelén blir mjukare och lösare än gelatingelén',
-      'Agargelén kräver syra för att stelna och smakar därför surt'
+      'The agar jelly only sets when chilled and runs as soon as it leaves the fridge',
+      "The agar jelly doesn't melt at body temperature; it breaks into pieces instead",
+      'The agar jelly is softer and looser than the gelatine one',
+      'The agar jelly needs acid to set, so it tastes sour'
     ],
     correctIndex: 1,
     explanation:
-      'Gelatin smälter runt 35 °C, alltså strax under kroppstemperatur, vilket ger den smältning på tungan som gästen förväntar sig. Agar smälter först runt 85 °C och behåller formen i munnen, så gelén spricker i stället för att smälta. A vänder på förhållandet — det är gelatin, inte agar, som är det värmekänsliga av de två.',
+      'Gelatine melts at around 35 °C, just below body temperature, which gives the melt on the tongue guests expect. Agar only melts at around 85 °C and holds its shape in the mouth, so the jelly fractures instead of melting. A has it backwards — gelatine, not agar, is the heat-sensitive one of the two.',
     anchor: {
       phase: 'morning',
       station: 'pastry',
@@ -101,16 +101,16 @@ export const METODKOKET_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     pavilion: 'metodkoket',
     level: 'brons',
     askerRole: 'kock',
-    prompt: 'Hollandaisen skär sig när den blir för varm. Vad har hänt med emulsionen?',
+    prompt: 'The hollandaise splits when it gets too hot. What has happened to the emulsion?',
     options: [
-      'Smöret har avdunstat och lämnat vattenfasen ensam',
-      'Syran från citronen har neutraliserats så att pH stigit',
-      'Äggulans proteiner har koagulerat och släppt de fettdroppar de höll isär',
-      'Fettdropparna har blivit för små för att hålla ihop'
+      'The butter has evaporated and left the water phase on its own',
+      'The acid from the lemon has been neutralised, so the pH has risen',
+      'The egg yolk proteins have coagulated and let go of the fat droplets they were keeping apart',
+      'The fat droplets have become too small to hold together'
     ],
     correctIndex: 2,
     explanation:
-      'Det är äggulans proteiner och lecitin som lägger sig kring fettdropparna och hindrar dem från att slå samman. När värmen koagulerar proteinerna förlorar de den funktionen och fettet skiljer ut sig. B lockar eftersom syran verkligen bidrar till stabiliteten, men den försvinner inte av värme — det är proteinet som ger vika.',
+      "It's the yolk's proteins and lecithin that wrap around the fat droplets and stop them merging. When heat coagulates the proteins they lose that function and the fat separates out. B is tempting because the acid does help stability, but heat doesn't remove it — it's the protein that gives way.",
     anchor: {
       phase: 'service',
       station: 'range',
@@ -126,16 +126,16 @@ export const METODKOKET_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     level: 'brons',
     askerRole: 'kock',
     prompt:
-      'Varför avråds ofta från att salta en biff tio minuter före stekning, men inte fyrtio?',
+      'Why are cooks often told not to salt a steak ten minutes before searing, when forty minutes is fine?',
     options: [
-      'Efter tio minuter ligger utdragen vätska kvar på ytan och hindrar bryningen; efter fyrtio har den tagits upp igen',
-      'Saltet hinner inte lösa sig på tio minuter och ger ojämn smak',
-      'Efter tio minuter har saltet koagulerat ytproteinerna så att de inte kan brynas',
-      'Kort saltkontakt smakar beskt, längre kontakt mildrar'
+      'After ten minutes the drawn-out liquid is still on the surface and stops browning; after forty it has been reabsorbed',
+      "Salt can't dissolve in ten minutes and seasons unevenly",
+      "After ten minutes the salt has coagulated the surface proteins so they can't brown",
+      'Short contact with salt tastes bitter; longer contact mellows it'
     ],
     correctIndex: 0,
     explanation:
-      'Saltet drar först ut vätska genom osmos, och den vätskan måste kokas bort innan ytan kan nå bryningstemperatur. Med längre tid löses saltet i vätskan och dras tillbaka in i köttet, så ytan hinner torka upp. B är det troligaste felsvaret — saltet löser sig snabbt, problemet är var vätskan befinner sig, inte hur jämnt saltet fördelats.',
+      'Salt first draws out liquid by osmosis, and that liquid has to boil off before the surface can reach browning temperature. Given more time, the salt dissolves in the liquid and is drawn back into the meat, so the surface dries out again. B is the most likely wrong answer — salt dissolves quickly; the problem is where the liquid sits, not how evenly the salt is spread.',
     anchor: {
       phase: 'morning',
       station: 'range',
@@ -151,16 +151,16 @@ export const METODKOKET_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     level: 'brons',
     askerRole: 'kock',
     prompt:
-      'En stärkelseredd sås tunnas ut efter att citronsaft tillsatts och såsen fått koka vidare. Varför?',
+      'A starch-thickened sauce thins out after lemon juice is added and it keeps simmering. Why?',
     options: [
-      'Syran binder vattnet så att mindre finns kvar åt stärkelsen',
-      'Syran sänker kokpunkten så att stärkelsen aldrig gelatiniseras',
-      'Syran hydrolyserar stärkelsekedjorna, som blir för korta för att förtjocka',
-      'Syran denaturerar mjölets gluten, som bär konsistensen'
+      'The acid binds the water, leaving less for the starch',
+      'The acid lowers the boiling point, so the starch never gelatinises',
+      'The acid hydrolyses the starch chains, which become too short to thicken',
+      'The acid denatures the gluten in the flour, which carries the texture'
     ],
     correctIndex: 2,
     explanation:
-      'Under värme spjälkar syran de långa amylos- och amylopektinkedjorna i kortare bitar, och korta kedjor binder mycket mindre vatten. Därför tillsätts syra helst sent, efter att såsen dragit ihop sig. D lockar eftersom gluten är det man förknippar med vetemjöl, men i en sås är det stärkelsen och inte proteinet som gör arbetet.',
+      "Under heat, acid cuts the long amylose and amylopectin chains into shorter pieces, and short chains hold far less water. That's why acid is best added late, once the sauce has come together. D is tempting because gluten is what you associate with wheat flour, but in a sauce it's the starch, not the protein, doing the work.",
     anchor: {
       phase: 'service',
       station: 'pass',
@@ -175,16 +175,16 @@ export const METODKOKET_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     pavilion: 'metodkoket',
     level: 'brons',
     askerRole: 'kock',
-    prompt: 'En grönsaksjäsning står i fyraprocentig saltlake. Vad gör saltet i första hand?',
+    prompt: 'A vegetable ferment is sitting in a four per cent brine. What is the salt mainly doing?',
     options: [
-      'Hämmar saltkänsliga mikroorganismer så att mjölksyrabakterierna får ett försprång',
-      'Sänker pH direkt och startar därmed jäsningen',
-      'Tillför näring som mjölksyrabakterierna behöver för att föröka sig',
-      'Stoppar all mikrobiell aktivitet tills syran börjat bildas'
+      'Holding back salt-sensitive microbes so the lactic acid bacteria get a head start',
+      'Lowering the pH straight away and so starting the fermentation',
+      'Providing nutrients the lactic acid bacteria need to multiply',
+      'Stopping all microbial activity until acid starts to form'
     ],
     correctIndex: 0,
     explanation:
-      'Salt verkar selektivt, inte steriliserande: mjölksyrabakterier tål högre salthalt än de flesta bakterier och mögelsvampar som annars skulle ta över. Sänkningen av pH kommer sedan, som resultat av bakteriernas egen mjölksyra — inte av saltet. Det gör B till det vanligaste felsvaret, eftersom slutresultatet mycket riktigt är en sur lake.',
+      "Salt is selective, not sterilising: lactic acid bacteria tolerate more salt than most of the bacteria and moulds that would otherwise take over. The drop in pH comes afterwards, from the bacteria's own lactic acid — not from the salt. That makes B the most common wrong answer, since the end result really is a sour brine.",
     anchor: {
       phase: 'service',
       station: 'brew',
@@ -199,16 +199,16 @@ export const METODKOKET_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     pavilion: 'metodkoket',
     level: 'brons',
     askerRole: 'kock',
-    prompt: 'Ärtor blancheras före infrysning. Vad är huvudsyftet?',
+    prompt: 'Peas are blanched before freezing. What is the main purpose?',
     options: [
-      'Att döda bakterier så att ärtorna håller längre i frysen',
-      'Att inaktivera enzymer som annars bryter ned färg och smak under frysförvaring',
-      'Att driva ut luft så att iskristallerna blir mindre',
-      'Att fixera klorofyllet permanent'
+      'To kill bacteria so the peas keep longer in the freezer',
+      'To deactivate enzymes that would otherwise break down colour and flavour in frozen storage',
+      'To drive out air so the ice crystals are smaller',
+      'To fix the chlorophyll permanently'
     ],
     correctIndex: 1,
     explanation:
-      'Enzymer som peroxidas och lipoxygenas arbetar långsamt vidare även vid minus arton grader och ger med tiden hö- och gräsaktiga bismaker. Blancheringen slår ut dem. A lockar eftersom värmebehandling normalt handlar om mikrobiologi, men i frysen är bakterierna redan stoppade — det är enzymerna som fortsätter.',
+      "Enzymes such as peroxidase and lipoxygenase keep working slowly even at minus eighteen, and over time they bring hay-like, grassy off-flavours. Blanching knocks them out. A is tempting because heat treatment is usually about microbes, but in the freezer the bacteria are already stopped — it's the enzymes that carry on.",
     anchor: {
       phase: 'morning',
       rawText: 'morgon'
@@ -223,16 +223,16 @@ export const METODKOKET_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     level: 'brons',
     askerRole: 'kock',
     prompt:
-      'En högrev har legat tre timmar vid 62 °C i vattenbad och är fortfarande seg. Vad saknas?',
+      "A beef chuck has had three hours at 62 °C in a water bath and is still tough. What's missing?",
     options: [
-      'Högre kärntemperatur, eftersom kollagen inte löses under 70 °C',
-      'Tid, eftersom omvandlingen av kollagen till gelatin går långsamt vid låg temperatur',
-      'Vila, så att muskelfibrerna slappnar av och tar upp saften igen',
-      'Salt, som måste tränga in för att lösa bindväven'
+      "A higher core temperature, since collagen doesn't dissolve below 70 °C",
+      'Time, since collagen converts to gelatine slowly at low temperature',
+      'Rest, so the muscle fibres relax and take the juices back up',
+      'Salt, which has to penetrate to break down the connective tissue'
     ],
     correctIndex: 1,
     explanation:
-      'Kollagen löses till gelatin även strax över 60 °C, men processen är starkt tidsberoende och kan kräva ett dygn i stället för några timmar. A ligger närmast till hands för den som lärt sig grytans 85 °C — men där är det den högre temperaturen som gör tiden kort, inte tvärtom.',
+      "Collagen converts to gelatine even just above 60 °C, but the process depends heavily on time and can take a day rather than a few hours. A is the obvious answer for anyone who learned braising at 85 °C — but there it's the higher temperature that makes the time short, not the other way round.",
     anchor: {
       phase: 'service',
       station: 'range',
@@ -248,16 +248,16 @@ export const METODKOKET_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     level: 'brons',
     askerRole: 'kock',
     prompt:
-      'En marängsmet vill inte skumma upp trots lång vispning. Vad är den vanligaste orsaken?',
+      "The meringue won't whip up despite long whisking. What's the most common cause?",
     options: [
-      'Äggvitorna var för kalla när vispningen började',
-      'Sockret tillsattes för sent i vispningen',
-      'Spår av fett i skålen eller från äggulan',
-      'Skålen var av rostfritt stål i stället för koppar'
+      'The egg whites were too cold when whisking started',
+      'The sugar went in too late',
+      'Traces of fat in the bowl or from the yolk',
+      'The bowl was stainless steel rather than copper'
     ],
     correctIndex: 2,
     explanation:
-      'Fettmolekyler tränger in mellan äggviteproteinerna och hindrar dem från att bilda den sammanhängande film som håller luftbubblorna. En droppe gula räcker. A lockar eftersom rumstempererade vitor mycket riktigt skummar lättare — men kyla gör skummet långsammare, inte omöjligt.',
+      'Fat molecules get in between the egg-white proteins and stop them forming the continuous film that holds the air bubbles. A single drop of yolk is enough. A is tempting because room-temperature whites do whip more easily — but cold makes the foam slower, not impossible.',
     anchor: {
       phase: 'morning',
       rawText: 'morgon'

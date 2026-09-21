@@ -35,16 +35,16 @@ export const STENSOTA_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     level: 'brons',
     askerRole: 'gäst',
     prompt:
-      'Det röda känns spritigt och platt i kväll. Flaskan har stått framme i matsalen, som håller 23 grader. Vad gör du?',
+      'The red tastes hot and flat tonight. The bottle has been standing out in the dining room, which is at 23 degrees. What do you do?',
     options: [
-      'Dekanterar vinet så att det får mer luft',
-      'Kyler flaskan några minuter ned mot 16–17 °C',
-      'Byter till ett glas med större kupa',
-      'Öppnar en ny flaska av samma vin'
+      'Decant the wine to give it more air',
+      'Chill the bottle for a few minutes, down towards 16–17 °C',
+      'Switch to a glass with a bigger bowl',
+      'Open a new bottle of the same wine'
     ],
     correctIndex: 1,
     explanation:
-      'Värme ökar alkoholens flyktighet, så spriten tar över doften medan fruktens friskhet dämpas. Några minuter i kylen eller en ishink räcker för att få tillbaka balansen. Dekantering lockar eftersom den ofta löser problem med slutna viner, men luft gör ingenting åt temperaturen.',
+      "Warmth makes the alcohol more volatile, so it dominates the nose while the fruit's freshness is muted. A few minutes in the fridge or an ice bucket brings the balance back. Decanting is tempting because it often fixes closed wines, but air does nothing about temperature.",
     anchor: {
       phase: 'service',
       anchorId: 'setDown',
@@ -59,16 +59,16 @@ export const STENSOTA_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     pavilion: 'stensota',
     level: 'brons',
     askerRole: 'sommelier',
-    prompt: 'Varför fungerar ett tanninrikt rött vin så bra till en fet, välhängd entrecôte?',
+    prompt: 'Why does a tannic red work so well with a fatty, well-hung rib-eye?',
     options: [
-      'Syran i vinet bryter ned fettet kemiskt i munnen',
-      'Alkoholen löser upp fettet så att det sköljs bort',
-      'Tanninerna binder till proteiner, så strävheten mildras och fettet känns lättare',
-      'Tanninerna förstärker köttets umami så att vinet smakar fylligare'
+      'The acidity in the wine breaks down the fat chemically in the mouth',
+      "The alcohol dissolves the fat so it's rinsed away",
+      'The tannins bind to proteins, so the astringency softens and the fat feels lighter',
+      "The tannins amplify the meat's umami so the wine tastes fuller"
     ],
     correctIndex: 2,
     explanation:
-      'Tanniner binder till proteiner, både i saliven och i maten. Med kött på tungan fångas tanninerna upp och vinet upplevs mjukare, samtidigt som strävheten rensar känslan av fett. A lockar eftersom syra verkligen upplevs fräscha mot fett, men den verkan är sinnlig, inte en kemisk nedbrytning.',
+      'Tannins bind to proteins, both in saliva and in food. With meat on the palate the tannins are taken up and the wine feels softer, while the grip cuts through the sense of fat. A is tempting because acidity really does feel refreshing against fat, but that effect is sensory, not a chemical breakdown.',
     anchor: {
       phase: 'service',
       anchorId: 'order',
@@ -84,16 +84,16 @@ export const STENSOTA_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     level: 'brons',
     askerRole: 'sommelier',
     prompt:
-      'Ett sällskap beställer en het thailändsk curry och vill ha ett kraftigt rött på 15 procent till. Vad är det viktigaste att säga?',
+      "A table orders a hot Thai curry and wants a big red at 15 per cent with it. What's the most important thing to say?",
     options: [
-      'Hög alkohol förstärker upplevd hetta; ett vin med lägre alkohol och lite restsötma fungerar bättre',
-      'Tanninerna i ett kraftigt rött neutraliserar chilins hetta',
-      'Hög syra i vinet släcker chili bättre än alkohol gör',
-      'Ett fatlagrat vin dämpar hettan genom sina vaniljtoner'
+      'High alcohol heightens the perceived heat; a wine with lower alcohol and a touch of sweetness works better',
+      "The tannins in a big red neutralise the chilli's heat",
+      'High acidity in the wine quenches chilli better than alcohol does',
+      'An oak-aged wine softens the heat with its vanilla notes'
     ],
     correctIndex: 0,
     explanation:
-      'Alkohol förstärker hur capsaicin upplevs, så hettan blir skarpare och vinet smakar bränt. Restsötma och låg alkohol verkar åt motsatt håll. B är det lockande felsvaret, men tanniner och chili förstärker varandra — strävhet och hetta adderas.',
+      'Alcohol amplifies how capsaicin is perceived, so the heat gets sharper and the wine tastes burnt. Residual sugar and low alcohol work the other way. B is the tempting wrong answer, but tannin and chilli reinforce each other — grip and heat add up.',
     anchor: {
       phase: 'service',
       anchorId: 'order',
@@ -108,16 +108,16 @@ export const STENSOTA_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     pavilion: 'stensota',
     level: 'brons',
     askerRole: 'gäst',
-    prompt: 'Vinet luktar som en fuktig källare, nästan som blöt kartong. Är det meningen?',
+    prompt: 'The wine smells like a damp cellar, almost like wet cardboard. Is it meant to?',
     options: [
-      'Nej, det är troligen en korkdefekt; flaskan ska bytas',
-      'Ja, det är brettanomyces och en del av vinets stil',
-      'Nej, vinet behöver luftas en halvtimme så försvinner lukten',
-      'Ja, det är svavel från tappningen och klingar av i glaset'
+      "No, it's most likely cork taint; the bottle should be replaced",
+      "Yes, that's brettanomyces and part of the wine's style",
+      'No, the wine needs half an hour of air and the smell will go',
+      "Yes, it's sulphur from bottling and will fade in the glass"
     ],
     correctIndex: 0,
     explanation:
-      'Doft av fuktig källare och blöt kartong är kännetecknet för TCA, den vanligaste korkdefekten. Den går inte att lufta bort och dämpar dessutom vinets frukt, så flaskan byts. B lockar eftersom brett också ger jordiga toner, men den luktar stall och läder, inte våt papp.',
+      "A smell of damp cellar and wet cardboard is the signature of TCA, the most common cork fault. It can't be aired away and it also mutes the wine's fruit, so the bottle is replaced. B is tempting because brett also brings earthy notes, but it smells of stables and leather, not wet paper.",
     anchor: {
       phase: 'service',
       anchorId: 'setDown',
@@ -133,16 +133,16 @@ export const STENSOTA_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     level: 'brons',
     askerRole: 'sommelier',
     prompt:
-      'Du ska öppna en champagne vid bordet utan smäll och utan att tappa kolsyra. Hur gör du?',
+      "You're opening champagne at the table without a bang and without losing fizz. How do you do it?",
     options: [
-      'Tar av buren helt, greppar korken och vrider den försiktigt',
-      'Lossar buren men håller kvar tummen, och vrider flaskan medan korken hålls stilla',
-      'Öppnar med flaskan rakt upp så att skummet stannar i halsen',
-      'Vrider korken snabbt så att trycket släpps på en gång'
+      'Take the cage off completely, grip the cork and twist it gently',
+      'Loosen the cage but keep your thumb on it, and turn the bottle while holding the cork still',
+      'Open it with the bottle upright so the foam stays in the neck',
+      'Twist the cork quickly so the pressure is released all at once'
     ],
     correctIndex: 1,
     explanation:
-      'Buren sitter kvar som grepp och skydd, och flaskan vrids i cirka 45 graders vinkel medan korken hålls fast. Då släpps trycket ut med en suck i stället för en smäll. A lockar eftersom det känns naturligt, men utan bur och tumme kan korken skjuta iväg i samma stund som den lossnar.',
+      'The cage stays on as a grip and a guard, and the bottle is turned at about 45 degrees while the cork is held firm. The pressure then escapes with a sigh rather than a pop. A is tempting because it feels natural, but without the cage and thumb the cork can shoot off the moment it comes loose.',
     anchor: {
       phase: 'service',
       anchorId: 'setDown',
@@ -157,16 +157,16 @@ export const STENSOTA_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     pavilion: 'stensota',
     level: 'brons',
     askerRole: 'sommelier',
-    prompt: 'En 25 år gammal Bordeaux ska dekanteras. Vad är huvudskälet, och vad bör du undvika?',
+    prompt: "A 25-year-old Bordeaux is to be decanted. What's the main reason, and what should you avoid?",
     options: [
-      'Att ge tanninerna ett par timmar att mjukna; undvik att servera den direkt',
-      'Att höja temperaturen; undvik en kall karaff',
-      'Att skilja vinet från fällningen; undvik att låta det stå länge i karaffen',
-      'Att få bort svavelstickan; undvik att hälla för långsamt'
+      'To give the tannins a couple of hours to soften; avoid serving it straight away',
+      'To raise the temperature; avoid a cold decanter',
+      'To separate the wine from its sediment; avoid leaving it long in the decanter',
+      'To blow off the sulphur; avoid pouring too slowly'
     ],
     correctIndex: 2,
     explanation:
-      'Ett gammalt vin dekanteras främst för att fällningen ska stanna i flaskan. Samtidigt är det skört: för mycket luft kan få det att falla ihop på en halvtimme. A är rätt för ett ungt, stramt vin — och därför lockande — men gäller inte här.',
+      "An old wine is decanted mainly so the sediment stays in the bottle. It's also fragile: too much air can make it fall apart within half an hour. A is right for a young, tight wine — which is why it tempts — but it doesn't apply here.",
     anchor: {
       phase: 'service',
       anchorId: 'setDown',
@@ -182,16 +182,16 @@ export const STENSOTA_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     level: 'brons',
     askerRole: 'sommelier',
     prompt:
-      'Till en crème brûlée föreslår en kollega ett torrt, friskt vitt som kontrast. Vad händer i munnen?',
+      'For a crème brûlée, a colleague suggests a dry, crisp white as a contrast. What happens in the mouth?',
     options: [
-      'Kontrasten lyfter både vin och dessert',
-      'Vinet upplevs surt och tunt eftersom desserten är sötare',
-      'Vinets syra skär igenom grädden och balanserar sötman',
-      'Ingenting särskilt, så länge vinet håller låg alkohol'
+      'The contrast lifts both wine and dessert',
+      'The wine tastes sour and thin because the dessert is sweeter',
+      "The wine's acidity cuts through the cream and balances the sweetness",
+      'Nothing much, as long as the wine is low in alcohol'
     ],
     correctIndex: 1,
     explanation:
-      'Söt mat får vin att smaka mindre sött och mer syrligt, så ett torrt vin blir strävt och tunt bredvid en dessert. Tumregeln är att vinet ska vara minst lika sött som rätten. A och C lockar eftersom kontrast ofta är ett bra parningsgrepp — men inte när det gäller sötma.',
+      'Sweet food makes wine taste less sweet and more acidic, so a dry wine turns harsh and thin next to a dessert. The rule of thumb is that the wine should be at least as sweet as the dish. A and C tempt because contrast is often a good pairing move — but not when it comes to sweetness.',
     anchor: {
       phase: 'service',
       anchorId: 'order',
@@ -206,16 +206,16 @@ export const STENSOTA_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     pavilion: 'stensota',
     level: 'brons',
     askerRole: 'kock',
-    prompt: 'Jag sätter grön sparris med hollandaise på menyn i dag. Vilken stil av vin ska vi para med?',
+    prompt: "I'm putting green asparagus with hollandaise on today's menu. What style of wine should we pair with it?",
     options: [
-      'En fyllig, fatlagrad chardonnay som möter smöret',
-      'En ung, tanninrik röd som står emot såsen',
-      'En frisk, oekad vit med grön ton, som sauvignon blanc eller grüner veltliner',
-      'En söt riesling som balanserar sparrisens beska'
+      'A full, barrel-aged chardonnay to meet the butter',
+      'A young, tannic red to stand up to the sauce',
+      'A crisp, unoaked white with a green edge, such as sauvignon blanc or grüner veltliner',
+      "A sweet riesling to balance the asparagus's bitterness"
     ],
     correctIndex: 2,
     explanation:
-      'Sparrisens svavelföreningar och beska får ek och tanniner att smaka metalliskt, medan ett friskt, oekat vin med gröna toner möter dem. Syran räcker också mot hollandaisens smör. A lockar eftersom smörsås ofta paras med ekad chardonnay, men eken krockar med sparrisen.',
+      "Asparagus's sulphur compounds and bitterness make oak and tannin taste metallic, while a crisp, unoaked wine with green notes meets them. Its acidity also stands up to the butter in the hollandaise. A tempts because butter sauces are often paired with oaked chardonnay, but the oak clashes with the asparagus.",
     anchor: {
       phase: 'morning',
       rawText: 'morgon'
@@ -230,16 +230,16 @@ export const STENSOTA_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     level: 'brons',
     askerRole: 'gäst',
     prompt:
-      'Den vita burgundern doftar nästan ingenting. Den har stått i isbadet sedan ni öppnade den. Är den dålig?',
+      "The white Burgundy smells of almost nothing. It's been in the ice bucket since you opened it. Is it off?",
     options: [
-      'Troligen korkad; flaskan bör bytas',
-      'Den behöver dekanteras för att öppna sig',
-      'Den är för kall; låt den stiga mot 10–12 °C i glaset',
-      'Glaset är för stort så doften sprids ut'
+      'Probably corked; the bottle should be replaced',
+      'It needs decanting to open up',
+      "It's too cold; let it warm towards 10–12 °C in the glass",
+      'The glass is too big, so the aroma disperses'
     ],
     correctIndex: 2,
     explanation:
-      'Kyla håller kvar aromämnena i vinet, så ett fylligt vitt som stått länge i is blir stumt. Några minuter i handen eller på bordet räcker för att doften ska komma fram. A lockar eftersom stumhet kan vara ett korkfel, men korkade viner har en egen doft av fuktig källare — de är inte bara tysta.',
+      "Cold holds the aroma compounds in the wine, so a full-bodied white left long in ice goes mute. A few minutes in the hand or on the table is enough for the aromas to come through. A tempts because muteness can be a cork fault, but corked wines have their own smell of damp cellar — they're not just silent.",
     anchor: {
       phase: 'service',
       anchorId: 'setDown',
@@ -254,16 +254,16 @@ export const STENSOTA_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     pavilion: 'stensota',
     level: 'brons',
     askerRole: 'gäst',
-    prompt: 'Jag dricker inte alkohol i kväll. Vad passar till den friterade rätten jag beställde?',
+    prompt: "I'm not drinking tonight. What would go with the fried dish I ordered?",
     options: [
-      'En söt fruktdryck som balanserar saltet',
-      'En mousserande dryck med tydlig syra och låg sötma',
-      'En fyllig, krämig dryck som matchar friteringens fett',
-      'Stilla vatten med citron, så att smaken inte störs'
+      'A sweet fruit drink to balance the salt',
+      'A sparkling drink with clear acidity and little sweetness',
+      'A rich, creamy drink to match the fat of the fry',
+      'Still water with lemon, so nothing interferes with the flavour'
     ],
     correctIndex: 1,
     explanation:
-      'Kolsyra och syra rensar munnen från fett på samma sätt som champagne gör till friterat. Låg sötma hindrar drycken från att bli tung bredvid rätten. C lockar eftersom lika-med-lika fungerar i många parningar, men fett mot fett förstärker bara tyngden.',
+      'Bubbles and acidity clear fat from the palate the same way champagne does with fried food. Low sweetness keeps the drink from feeling heavy next to the dish. C tempts because like-with-like works in many pairings, but fat against fat only adds weight.',
     anchor: {
       phase: 'service',
       anchorId: 'order',
