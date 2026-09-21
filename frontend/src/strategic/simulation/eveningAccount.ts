@@ -68,18 +68,36 @@ export function pickBranch(state: SimulationState): EveningAccountBranch {
 // -------- metrics (ORDER 228 etapp A) ---------------------------------
 
 // Beräknar dagens spårbara tal (intäkt, kostnad, resultat, rykte-delta,
-// kunskaps-delta per axel) ur snapshotarna som togs vid OPEN_SERVICE.
-// När en snapshot saknas (mycket tidigt state eller service som aldrig
-// öppnats) returneras noll-delta så UI kan visa något meningsfullt utan
-// att krascha. Kalibrering: dessa tal LÄSES ur state.day-snapshotarna;
-// samma källa som pickBranch redan använder, så ingen risk för "rätt tal
-// om fel sak"-drift (CLAUDE.md-principen).
+// kunskaps-delta per axel).
+//
+// ORDER 230 — snapshot-prioritering:
+//   1. `*AtDayStart` (fastställd vid dygnsrollover eller makeInitialState;
+//      speglar hela dagen inkl. lunch + idle-kost + wages)
+//   2. `*AtServiceStart` (bakåtkompat med testfixturer skrivna före
+//      ORDER 230; skrivs över vid varje OPEN_SERVICE i verklig sim så
+//      speglar bara senaste service — fungerar för SKIP_LUNCH-tester
+//      men missar lunch när båda services körs)
+//   3. current state (fallback: noll-delta)
+//
+// pickBranch (samma fil) läser fortsatt *AtServiceStart eftersom
+// branchvalet är per service, inte per dag.
 export function computeMetrics(state: SimulationState): EveningAccountMetrics {
-  const rStart = state.day.revenueAtServiceStart ?? state.revenue;
-  const cStart = state.day.costAtServiceStart ?? state.cost;
-  const repStart = state.day.reputationAtServiceStart ?? state.reputation;
+  const rStart =
+    state.day.revenueAtDayStart ??
+    state.day.revenueAtServiceStart ??
+    state.revenue;
+  const cStart =
+    state.day.costAtDayStart ??
+    state.day.costAtServiceStart ??
+    state.cost;
+  const repStart =
+    state.day.reputationAtDayStart ??
+    state.day.reputationAtServiceStart ??
+    state.reputation;
   const kcStart: KnowledgeCredits =
-    state.day.knowledgeCreditsAtServiceStart ?? state.knowledgeCredits;
+    state.day.knowledgeCreditsAtDayStart ??
+    state.day.knowledgeCreditsAtServiceStart ??
+    state.knowledgeCredits;
 
   const revenue = state.revenue - rStart;
   const cost = state.cost - cStart;
