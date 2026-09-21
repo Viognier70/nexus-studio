@@ -37,16 +37,16 @@ export const KALASTORGET_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     level: 'brons',
     askerRole: 'värd',
     prompt:
-      'Ett sällskap på fem kommer utan bokning en fredag. Alla bord är tagna och det första blir ledigt om cirka fyrtio minuter. Vad gör du?',
+      'A party of five walks in without a booking on a Friday. Every table is taken, and the first one frees up in about forty minutes. What do you do?',
     options: [
-      'Säger att det blir ledigt snart, så att de stannar kvar',
-      'Ger en ärlig väntetid och erbjuder plats i baren eller en bokning en annan kväll',
-      'Tränger in dem vid ett fyrabord med en extra stol',
-      'Beklagar att det är fullt och ber dem återkomma'
+      'Tell them a table will be free shortly, so they stay',
+      'Give them an honest wait time and offer seats at the bar or a booking another night',
+      'Squeeze them onto a four-top with an extra chair',
+      "Apologise that you're full and ask them to come back"
     ],
     correctIndex: 1,
     explanation:
-      'En ärlig väntetid låter sällskapet välja själva, och baren eller en ny bokning gör att de inte går tomhänta. C lockar eftersom sällskapet får sitta direkt, men ett trångt bord ger en sämre kväll för dem och sämre service för grannborden. A köper tid men kostar förtroende när fyrtio minuter blir en timme.',
+      "An honest wait lets the party decide for themselves, and the bar or a new booking means they don't leave empty-handed. C is tempting because they'd be seated at once, but a cramped table makes a worse evening for them and worse service for the tables around them. A buys time but costs trust when forty minutes becomes an hour.",
     anchor: {
       phase: 'service',
       anchorId: 'greet',
@@ -62,16 +62,16 @@ export const KALASTORGET_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     level: 'brons',
     askerRole: 'servitör',
     prompt:
-      'Gästen beställde biffen medium rare, men den är genomstekt. Hon säger det lugnt när du går förbi. Vad gör du?',
+      "The guest ordered her steak medium rare, but it's well done. She mentions it calmly as you pass. What do you do?",
     options: [
-      'Förklarar att köttet fortsätter att tillagas under vilan',
-      'Tar tallriken direkt, ber kort om ursäkt och ser till att en ny biff går före i köket',
-      'Kontrollerar med kocken innan du säger något till gästen',
-      'Erbjuder rabatt på notan så att hon slipper vänta'
+      'Explain that the meat keeps cooking while it rests',
+      'Take the plate straight away, apologise briefly and make sure a new steak jumps the queue in the kitchen',
+      'Check with the chef before saying anything to the guest',
+      "Offer a discount on the bill so she doesn't have to wait"
     ],
     correctIndex: 1,
     explanation:
-      'Felet är uppenbart och gästen har rätt, så det viktigaste är att agera direkt och synligt. En kort ursäkt räcker; det är den nya biffen som reparerar kvällen. C lockar eftersom det känns noggrant, men att gå iväg utan att ta tallriken lämnar gästen med felet framför sig.',
+      "The mistake is obvious and the guest is right, so what matters most is acting at once and visibly. A short apology is enough; it's the new steak that rescues the evening. C tempts because it feels thorough, but walking off without taking the plate leaves the guest with the mistake in front of her.",
     anchor: {
       // phase='service' UTAN anchorId — väntar på Fas 2:s guest_complaint-
       // event per ORDER 224 §7 (VO:s prio 1 av 9 händelsetyper).
@@ -87,16 +87,16 @@ export const KALASTORGET_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     pavilion: 'kalastorget',
     level: 'brons',
     askerRole: 'gäst',
-    prompt: 'Jag är allergisk mot nötter. Kan jag ta pannacottan?',
+    prompt: "I'm allergic to nuts. Can I have the panna cotta?",
     options: [
-      'Ja, det står inga nötter i beskrivningen på menyn',
-      'Nej, för säkerhets skull avråder vi från alla desserter',
-      'Du kontrollerar med köket vad som ingår och hur den hanteras, och återkommer innan något serveras',
-      'Ja, om gästen har sin medicin med sig'
+      'Yes, there are no nuts in the menu description',
+      'No, to be safe we advise against all desserts',
+      "You check with the kitchen what's in it and how it's handled, and come back before anything is served",
+      'Yes, as long as the guest has their medication with them'
     ],
     correctIndex: 2,
     explanation:
-      'Menyn beskriver rätten, inte vad som finns i den eller vad den kommit i kontakt med — praliner, garnityr och delade redskap syns inte där. Att kontrollera och återkomma tar en minut och tar allergin på allvar. A är det lockande felsvaret eftersom det låter hjälpsamt, men ett snabbt ja på fel grund kan bli allvarligt.',
+      "The menu describes the dish, not everything in it or everything it has touched — pralines, garnishes and shared utensils don't show up there. Checking and coming back takes a minute and takes the allergy seriously. A is the tempting wrong answer because it sounds helpful, but a quick yes on the wrong grounds can turn serious.",
     anchor: {
       phase: 'service',
       anchorId: 'order',
@@ -112,16 +112,16 @@ export const KALASTORGET_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     level: 'brons',
     askerRole: 'gäst',
     prompt:
-      'Jag är här ofta. Kan köket göra den där pastan från förra säsongen i kväll, fast den inte står på menyn?',
+      "I'm here a lot. Could the kitchen make that pasta from last season tonight, even though it's not on the menu?",
     options: [
-      'Ja, stamgäster ska alltid få det de ber om',
-      'Nej, vi lagar bara det som står på menyn',
-      'Du frågar köket innan du svarar, och om det inte går föreslår du det som ligger närmast',
-      'Ja, och du ber köket prioritera den eftersom gästen är stamgäst'
+      'Yes, regulars should always get what they ask for',
+      "No, we only cook what's on the menu",
+      "You ask the kitchen before answering, and if it can't be done you suggest the closest thing",
+      'Yes, and you ask the kitchen to prioritise it because the guest is a regular'
     ],
     correctIndex: 2,
     explanation:
-      'Om det går beror på vad köket har hemma och hur hårt pressat det är just då — det vet inte den som står vid bordet. Genom att fråga först undviker du att lova något köket inte kan hålla. A lockar eftersom stamgäster är viktiga, men ett löfte som köket sedan måste bryta skadar relationen mer än ett vänligt nej med ett alternativ.',
+      "Whether it's possible depends on what the kitchen has in and how stretched it is right then — the person at the table doesn't know that. Asking first avoids promising something the kitchen can't deliver. A tempts because regulars matter, but a promise the kitchen then has to break hurts the relationship more than a friendly no with an alternative.",
     anchor: {
       phase: 'service',
       anchorId: 'order',
@@ -136,16 +136,16 @@ export const KALASTORGET_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     pavilion: 'kalastorget',
     level: 'brons',
     askerRole: 'lärling',
-    prompt: 'Gästen vid bord sju är märkbart berusad och beställer ett glas till. Vad gör jag?',
+    prompt: 'The guest at table seven is visibly drunk and orders another glass. What do I do?',
     options: [
-      'Serverar, men ett mindre glas',
-      'Frågar sällskapet om det är okej',
-      'Säger diskret att du inte serverar mer alkohol i kväll, och erbjuder vatten och något att äta',
-      'Ber gästen att lämna restaurangen'
+      'Serve it, but a smaller glass',
+      "Ask the rest of the party whether it's all right",
+      "Say discreetly that you won't serve more alcohol tonight, and offer water and something to eat",
+      'Ask the guest to leave the restaurant'
     ],
     correctIndex: 2,
     explanation:
-      'Enligt alkohollagen får alkohol inte serveras till den som är märkbart påverkad, så svaret är nej oavsett glasets storlek. Att säga det diskret och samtidigt erbjuda vatten och mat bevarar gästens värdighet. B lockar eftersom sällskapet känner gästen, men ansvaret för serveringen kan inte lämnas över till dem.',
+      "Under Swedish law, alcohol may not be served to anyone who is visibly intoxicated, so the answer is no whatever the size of the glass. Saying so discreetly while offering water and food lets the guest keep their dignity. B tempts because the party knows the guest, but responsibility for serving can't be handed over to them.",
     anchor: {
       phase: 'service',
       anchorId: 'order',
@@ -160,16 +160,16 @@ export const KALASTORGET_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     pavilion: 'kalastorget',
     level: 'brons',
     askerRole: 'gäst',
-    prompt: 'Den här flaskan på notan tror jag inte att vi beställde. Kan du titta på det?',
+    prompt: "I don't think we ordered this bottle on the bill. Could you look at it?",
     options: [
-      'Visar utskriften från kassasystemet som bevis',
-      'Går igenom beställningen lugnt med gästen, och stryker posten om det inte går att reda ut',
-      'Hämtar chefen direkt',
-      'Säger att den måste betalas, men erbjuder rabatt nästa gång'
+      'Show the till printout as proof',
+      "Go through the order calmly with the guest, and take the item off if it can't be sorted out",
+      'Fetch the manager straight away',
+      'Say it has to be paid, but offer a discount next time'
     ],
     correctIndex: 1,
     explanation:
-      'Kvällens sista minuter formar gästens minne av hela besöket, och en omtvistad flaska är värd mindre än den relationen. Att gå igenom beställningen tillsammans utan att lägga skuld löser de flesta fall. A lockar eftersom systemet ofta har rätt, men att bevisa att gästen har fel vinner diskussionen och förlorar gästen.',
+      "The last minutes of the evening shape the guest's memory of the whole visit, and a disputed bottle is worth less than that relationship. Going through the order together without assigning blame settles most cases. A tempts because the system is usually right, but proving the guest wrong wins the argument and loses the guest.",
     anchor: {
       phase: 'service',
       anchorId: 'requestCheck',
@@ -184,16 +184,16 @@ export const KALASTORGET_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     pavilion: 'kalastorget',
     level: 'brons',
     askerRole: 'kock',
-    prompt: 'Lammet är slut. Bord fyra beställde det för fem minuter sedan. Hur hanterar vi det?',
+    prompt: "We're out of lamb. Table four ordered it five minutes ago. How do we handle it?",
     options: [
-      'Väntar tills varmrätterna går ut och förklarar då',
-      'Går till bordet nu, säger som det är och föreslår ett par alternativ',
-      'Skickar ut en annan rätt och förklarar när den serveras',
-      'Ber köket improvisera något liknande utan att säga något'
+      'Wait until the mains go out and explain then',
+      'Go to the table now, say it as it is, and suggest a couple of alternatives',
+      "Send out a different dish and explain when it's served",
+      'Ask the kitchen to improvise something similar without saying anything'
     ],
     correctIndex: 1,
     explanation:
-      'Ju tidigare gästen får veta, desto mer tid finns att välja om utan att sällskapets tempo störs. Två konkreta alternativ gör beskedet till ett val i stället för en förlust. A lockar eftersom det skjuter upp ett obekvämt samtal, men då sitter gästen utan mat medan resten av bordet äter.',
+      "The sooner the guest knows, the more time there is to choose again without upsetting the table's pace. Two concrete alternatives turn the news into a choice rather than a loss. A tempts because it puts off an awkward conversation, but then the guest sits without food while the rest of the table eats.",
     anchor: {
       phase: 'service',
       anchorId: 'order',
@@ -209,16 +209,16 @@ export const KALASTORGET_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     level: 'brons',
     askerRole: 'värd',
     prompt:
-      'Sällskapet vid fönsterbordet har betalat men sitter kvar och pratar. Nästa bokning kommer om en kvart. Vad gör du?',
+      'The party at the window table has paid but is still sitting and talking. The next booking arrives in fifteen minutes. What do you do?',
     options: [
-      'Börjar duka av runt dem så att de förstår',
-      'Låter dem sitta och ber nästa sällskap vänta vid dörren',
-      'Säger vänligt i god tid att bordet är bokat, och erbjuder kaffe i baren',
-      'Väntar tills nästa sällskap står i dörren och ber då de första gå'
+      'Start clearing around them so they get the hint',
+      'Let them stay and ask the next party to wait by the door',
+      'Tell them kindly and in good time that the table is booked, and offer coffee at the bar',
+      'Wait until the next party is at the door, then ask the first to leave'
     ],
     correctIndex: 2,
     explanation:
-      'En vänlig förvarning i god tid ger sällskapet chans att avsluta i lugn, och kaffe i baren gör flytten till en fortsättning i stället för en utkastning. A lockar eftersom den undviker ett samtal, men signaler utan ord upplevs som ohövliga. B skyddar det ena sällskapet på det andras bekostnad.',
+      "A friendly heads-up in good time lets the party finish in peace, and coffee at the bar turns the move into a continuation rather than an eviction. A tempts because it avoids a conversation, but wordless hints come across as rude. B protects one party at the other's expense.",
     anchor: {
       phase: 'service',
       anchorId: 'requestCheck',
@@ -234,16 +234,16 @@ export const KALASTORGET_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     level: 'brons',
     askerRole: 'värd',
     prompt:
-      'En servitör har sjukanmält sig. Sextio kuverter är bokade i kväll. Vad gör du före öppning?',
+      'A waiter has called in sick. Sixty covers are booked tonight. What do you do before opening?',
     options: [
-      'Kör som vanligt och hoppas att kvällen går',
-      'Avbokar de sista bokningarna för att få ned antalet',
-      'Förenklar kvällen, till exempel färre sittningar eller en kortare meny, och går igenom den nya fördelningen med laget',
-      'Tar själv över den sjukas hela station utöver ditt eget arbete'
+      'Run as usual and hope the evening holds',
+      'Cancel the last bookings to bring the numbers down',
+      'Simplify the evening — for example fewer sittings or a shorter menu — and go through the new split with the team',
+      "Take over the absent waiter's whole station on top of your own work"
     ],
     correctIndex: 2,
     explanation:
-      'Ett lag som är en person kort klarar samma kväll om tempot anpassas och alla vet sin nya uppgift innan dörrarna öppnas. Att förenkla är ett beslut; att hoppas är det inte. D lockar eftersom det känns ansvarsfullt, men värden som gör två jobb tappar överblicken som kvällen behöver.',
+      'A team one person short can handle the same evening if the pace is adjusted and everyone knows their new job before the doors open. Simplifying is a decision; hoping is not. D tempts because it feels responsible, but a host doing two jobs loses the overview the evening needs.',
     anchor: {
       phase: 'morning',
       rawText: 'morgon'
@@ -258,16 +258,16 @@ export const KALASTORGET_BRONS_QUESTIONS: readonly FlervalQuestion[] = [
     level: 'brons',
     askerRole: 'värd',
     prompt:
-      'Lärlingen gjorde ett misstag vid bord tolv som ledde till ett klagomål. Hur tar du upp det?',
+      'The apprentice made a mistake at table twelve that led to a complaint. How do you raise it?',
     options: [
-      'Inför hela laget vid kvällens genomgång, så att alla lär sig',
-      'Enskilt, efter service eller på morgonen, med fokus på vad som hände och vad som görs annorlunda',
-      'Vid nästa medarbetarsamtal, så att det inte blir för känslosamt',
-      'Låter det passera eftersom gästen redan fått en ursäkt'
+      'In front of the whole team at the evening debrief, so everyone learns',
+      'One to one, after service or in the morning, focusing on what happened and what will be done differently',
+      "At the next staff appraisal, so it doesn't get too emotional",
+      'Let it go, since the guest already had an apology'
     ],
     correctIndex: 1,
     explanation:
-      'Ett enskilt samtal medan händelsen är färsk gör det möjligt att förstå vad som hände utan att lärlingen behöver försvara sig inför andra. Fokus på nästa gång gör misstaget till lärande. A lockar eftersom andra också kan lära sig, men det lärandet kan tas upp som ett exempel utan namn.',
+      'A private conversation while the event is fresh makes it possible to understand what happened without the apprentice having to defend themselves in front of others. Focusing on next time turns the mistake into learning. A tempts because others could learn too, but that lesson can be shared as an example without a name.',
     anchor: {
       phase: 'evening',
       rawText: 'kväll'

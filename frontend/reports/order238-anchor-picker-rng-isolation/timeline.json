@@ -28,7 +28,7 @@
       "anchorId": "greet",
       "askerRole": "värd",
       "wasCorrect": true,
-      "promptFirst80": "Ett sällskap på fem kommer utan bokning en fredag. Alla bord är tagna och det fö"
+      "promptFirst80": "A party of five walks in without a booking on a Friday. Every table is taken, an"
     },
     {
       "simTime": 226.8,
@@ -36,7 +36,7 @@
       "anchorId": "requestCheck",
       "askerRole": "värd",
       "wasCorrect": true,
-      "promptFirst80": "Sällskapet vid fönsterbordet har betalat men sitter kvar och pratar. Nästa bokni"
+      "promptFirst80": "The party at the window table has paid but is still sitting and talking. The nex"
     },
     {
       "simTime": 317,
@@ -44,7 +44,7 @@
       "anchorId": "requestCheck",
       "askerRole": "gäst",
       "wasCorrect": true,
-      "promptFirst80": "Den här flaskan på notan tror jag inte att vi beställde. Kan du titta på det?"
+      "promptFirst80": "I don't think we ordered this bottle on the bill. Could you look at it?"
     }
   ],
   "passB_anchorFires": []
