@@ -25,6 +25,7 @@ import { fileURLToPath } from 'node:url';
 import { reducer } from '../reducer';
 import { makeInitialState } from '../model';
 import type { AnchorId } from '../anchors';
+import { MIN_GAP_BETWEEN_ANCHOR_QUESTIONS_SEC } from '../../knowledge/anchorQuestionPicker';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPORT_DIR = resolve(HERE, '../../../../reports/order234-anchor-picker');
@@ -181,13 +182,15 @@ describe('ORDER 234 — mätpass anchor-fråge-picker (seed=42, 15-min dinner)',
     // services, alltså max 6 totalt.
     expect(log.length).toBeLessThanOrEqual(2 * 3);
 
-    // 3-min-gap mellan fyrningar (inom samma service).
+    // ORDER 237 — min-gap sänkt 180 → 90 s. Läser konstanten från
+    // pickern istället för att hårdkoda så testet följer med om VO
+    // justerar igen.
     for (let i = 1; i < log.length; i++) {
       const gap = log[i].gapSinceLastSec;
       if (gap !== null && gap > 0) {
-        // gap kan vara negativ när service byts (lunch → dinner) —
-        // då är simTime för dinner < simTime för lunch. Filtrera.
-        expect(gap, `fråga ${i} kom ${gap}s efter förra`).toBeGreaterThanOrEqual(180);
+        expect(gap, `fråga ${i} kom ${gap}s efter förra`).toBeGreaterThanOrEqual(
+          MIN_GAP_BETWEEN_ANCHOR_QUESTIONS_SEC
+        );
       }
     }
 

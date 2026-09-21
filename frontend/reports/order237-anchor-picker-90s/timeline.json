@@ -1,0 +1,92 @@
+{
+  "summary": {
+    "order": 237,
+    "seed": 42,
+    "dinnerMinutes": 15,
+    "bufferSec": 90,
+    "minGapSec": 90,
+    "maxPerService": 3,
+    "doorsOpenAt": 130,
+    "serviceCloseAt": 900,
+    "serviceWindowSec": 770,
+    "scenariosPlanned": 2,
+    "scenariosFired": 2,
+    "allScenariosFired": true,
+    "scheduledFireTimes": [
+      439.28,
+      768.04
+    ],
+    "actualScenarioFireTimes": [
+      439.2,
+      768
+    ],
+    "anchorFires": 3,
+    "firstAnchorAt": 130.2,
+    "openWindows": [
+      {
+        "startSec": 130,
+        "endSec": 349.28,
+        "lengthSec": 219.28,
+        "reason": "öppet mellan bufferzoner"
+      },
+      {
+        "startSec": 529.28,
+        "endSec": 678.04,
+        "lengthSec": 148.76,
+        "reason": "öppet mellan bufferzoner"
+      },
+      {
+        "startSec": 858.04,
+        "endSec": 900,
+        "lengthSec": 41.96,
+        "reason": "öppet efter sista scenariot till service-close"
+      }
+    ],
+    "totalOpenSec": 410,
+    "openShareOfService": 53.25,
+    "potentialFiresPerWindow": [
+      3,
+      2,
+      1
+    ],
+    "potentialTotalFires": 6,
+    "potentialCappedByMaxPerService": 3,
+    "actualFires": 3,
+    "minGapConstraint": {
+      "note": "Min-gap 90s begränsade — potentiellt 6 fyrningar tillät fönstret, 3 tillät max-per-service, 3 kom."
+    }
+  },
+  "anchorFires": [
+    {
+      "simTime": 130.2,
+      "questionId": "kalastorget-brons-01",
+      "anchorId": "greet",
+      "askerRole": "värd",
+      "wasCorrect": true,
+      "promptFirst80": "Ett sällskap på fem kommer utan bokning en fredag. Alla bord är tagna och det fö",
+      "gapSinceLastSec": null
+    },
+    {
+      "simTime": 226.8,
+      "questionId": "kalastorget-brons-06",
+      "anchorId": "requestCheck",
+      "askerRole": "gäst",
+      "wasCorrect": true,
+      "promptFirst80": "Den här flaskan på notan tror jag inte att vi beställde. Kan du titta på det?",
+      "gapSinceLastSec": 96.6
+    },
+    {
+      "simTime": 317,
+      "questionId": "kalastorget-brons-08",
+      "anchorId": "requestCheck",
+      "askerRole": "värd",
+      "wasCorrect": true,
+      "promptFirst80": "Sällskapet vid fönsterbordet har betalat men sitter kvar och pratar. Nästa bokni",
+      "gapSinceLastSec": 90.2
+    }
+  ],
+  "scenarioFires": [
+    439.1999999999836,
+    768.0000000000376
+  ]
+}
