@@ -972,7 +972,19 @@ export function tickStaff(state: SimulationState) {
         completeStaffTask(state, staff);
         // Fall genom till task-val nedan.
       } else {
-        staff.taskProgress += 1;
+        // ORDER 251 — arrival guard. `taskProgress` börjar räknas först
+        // när personen kommit fram (`moveProgress >= 1`). Före denna
+        // ändring räknade progress upp från tick 1 oavsett position, så
+        // en order-task på 10 ticks = 2 s slutade efter 2 s även om
+        // servitören fortfarande gick — ORDER 250-mätningens 61 %
+        // mid-move-byten var direkt konsekvens. Ingen ändring av
+        // taskDuration ännu — det kommer i egen order efter ORDER 252
+        // (spelklockan vs animationsklocka). Effekten mäts före/efter
+        // via order250-scriptet; M3 får falla (VO 2026-09-22: "rapportera
+        // siffrorna, uppdatera INTE baseline utan mitt godkännande").
+        if (staff.moveProgress >= 1) {
+          staff.taskProgress += 1;
+        }
         if (staff.taskProgress >= staff.taskDuration) {
           completeStaffTask(state, staff);
         }
