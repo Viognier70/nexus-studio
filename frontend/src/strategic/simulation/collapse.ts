@@ -38,6 +38,7 @@ import { COLLAPSE_TEXTS } from '../../content/collapse.sv';
 import { loadOf, strainMultiplier, STREAM_KEEP } from './eventStream';
 import { computeEveningAccount } from './eveningAccount';
 import { postServiceSummaryLines } from './cashReading';
+import { logRepDelta } from './reputation';
 import {
   MORALE_COLLAPSE_HIT,
   bumpMorale,
@@ -183,7 +184,9 @@ export function fireCollapse(draft: SimulationState): void {
   };
   draft.eventStream = [...draft.eventStream, entry].slice(-STREAM_KEEP);
 
+  const beforeCollapse = draft.reputation;
   draft.reputation = Math.max(0, draft.reputation - COLLAPSE_REPUTATION_DROP);
+  logRepDelta(draft, 'collapse', draft.reputation - beforeCollapse); // ORDER 256
 
   const consequence: ConsequenceEvent = {
     kind: 'staff_resigns',

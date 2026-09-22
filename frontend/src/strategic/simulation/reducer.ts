@@ -114,7 +114,8 @@ import {
   decayEnablersOvernight,
   phronesisSofteningGeneral,
   tickReputationCeilingDrift,
-  tickReputationDrift
+  tickReputationDrift,
+  logRepDelta
 } from './reputation';
 import { tickGuests, tickStaff } from './service';
 import { tickSustainability } from './sustainability';
@@ -684,7 +685,9 @@ export function drawMenuDishForGuest(
 
   // No available substitute → forced walkout.
   if (candidates.length === 0) {
+    const before = draft.reputation;
     draft.reputation = Math.max(0, draft.reputation - REP_HIT_WALKOUT);
+    logRepDelta(draft, 'walkout', draft.reputation - before); // ORDER 256
     draft.day.walkedCount = (draft.day.walkedCount ?? 0) + 1;
     draft.eventStream = [
       ...draft.eventStream,
@@ -713,7 +716,9 @@ export function drawMenuDishForGuest(
     const cheapestDish = findDish(cheapest.dishId);
     if (!cheapestDish) return { kind: 'walked', targetDishId: target.dishId };
     serve(cheapest);
+    const beforeSub = draft.reputation;
     draft.reputation = Math.max(0, draft.reputation - REP_HIT_SUBSTITUTE);
+    logRepDelta(draft, 'substitute', draft.reputation - beforeSub); // ORDER 256
     draft.day.substitutedCount = (draft.day.substitutedCount ?? 0) + 1;
     draft.eventStream = [
       ...draft.eventStream,
@@ -737,7 +742,9 @@ export function drawMenuDishForGuest(
   }
 
   // Walk.
+  const beforeWalk = draft.reputation;
   draft.reputation = Math.max(0, draft.reputation - REP_HIT_WALKOUT);
+  logRepDelta(draft, 'walkout', draft.reputation - beforeWalk); // ORDER 256
   draft.day.walkedCount = (draft.day.walkedCount ?? 0) + 1;
   draft.eventStream = [
     ...draft.eventStream,
@@ -1134,7 +1141,16 @@ function openService(
     // ORDER 115 rev 2 — nollställ per-service give-up-räknare vid
     // service-öppning. Räknaren används av service-close för att
     // avgöra om servicen var "clean" (uteplats-kandidat B).
-    metrics: { ...state.metrics, giveUpsThisService: 0, droppedTasksThisService: 0 }
+    metrics: {
+      ...state.metrics,
+      giveUpsThisService: 0,
+      droppedTasksThisService: 0,
+      // ORDER 256 — nollställ rykteschannel-ackumulator vid service-öppning.
+      reputationBreakdown: {
+        queueStrain: 0, teamStrain: 0, giveUp: 0, happy: 0, unhappy: 0,
+        walkout: 0, substitute: 0, collapse: 0, ceilingDrift: 0, other: 0
+      }
+    }
   };
 }
 
@@ -1316,6 +1332,9 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           ...state.metrics,
           consecutiveCleanServices: nextConsecutive,
           giveUpsThisService: 0, droppedTasksThisService: 0
+          // ORDER 256 — reputationBreakdown bevaras genom service-close.
+          // Nollställs bara vid OPEN_SERVICE så mätning kan läsa summan
+          // efter service utan att förlora den vid rollover.
         },
         day: {
           ...day,
@@ -1386,6 +1405,9 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           ...state.metrics,
           consecutiveCleanServices: nextConsecutive,
           giveUpsThisService: 0, droppedTasksThisService: 0
+          // ORDER 256 — reputationBreakdown bevaras genom service-close.
+          // Nollställs bara vid OPEN_SERVICE så mätning kan läsa summan
+          // efter service utan att förlora den vid rollover.
         },
         day: {
           ...day,

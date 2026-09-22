@@ -1135,6 +1135,25 @@ export interface SimulationState {
      * på VO:s C2-fråga "vad händer när ingen är ledig".
      */
     droppedTasksThisService: number;
+    /**
+     * ORDER 256 — mätning av rykteschannelen. Bara ackumulator; ingen
+     * logik-ändring. Alla platser där state.reputation ändras skriver
+     * ALSO till denna breakdown (via logRepDelta i reputation.ts).
+     * Nollställs vid OPEN_SERVICE. Optionellt fält — testfixturer utan
+     * detta fältet läser 0 för alla kanaler.
+     */
+    reputationBreakdown?: {
+      queueStrain: number;
+      teamStrain: number;
+      giveUp: number;
+      happy: number;
+      unhappy: number;
+      walkout: number;      // REP_HIT_WALKOUT från reducer 687/740
+      substitute: number;   // REP_HIT_SUBSTITUTE från reducer 716
+      collapse: number;
+      ceilingDrift: number; // reputation.ts:208 tickReputationCeilingDrift
+      other: number;
+    };
   };
   // ORDER 117 §3.1 — fördröjd rykte-effekt av värdekvoten.
   // Uppdateras vid service-close via asymmetrisk låg-pass-filter:

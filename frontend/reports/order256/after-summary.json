@@ -1,0 +1,183 @@
+{
+  "perStaff": {
+    "staff-0": {
+      "role": "värd",
+      "totalSamples": 242,
+      "totalSimSec": 907.4,
+      "movingPct": 11.6,
+      "stillPct": 88.4,
+      "targetChangesPerMin": 5.7,
+      "taskChanges": 120,
+      "taskChangesMidMove": 15,
+      "taskChangesMidMovePct": 12.5,
+      "dwellGreet": {
+        "count": 37,
+        "meanSec": 4.3,
+        "medianSec": 3.6,
+        "minSec": 3.2,
+        "maxSec": 7.4
+      },
+      "dwellOrder": {
+        "count": 0
+      },
+      "dwellServe": {
+        "count": 0
+      }
+    },
+    "staff-1": {
+      "role": "servitör",
+      "totalSamples": 242,
+      "totalSimSec": 907.4,
+      "movingPct": 24.8,
+      "stillPct": 75.2,
+      "targetChangesPerMin": 6.4,
+      "taskChanges": 107,
+      "taskChangesMidMove": 23,
+      "taskChangesMidMovePct": 21.5,
+      "dwellGreet": {
+        "count": 0
+      },
+      "dwellOrder": {
+        "count": 52,
+        "meanSec": 8.7,
+        "medianSec": 7.8,
+        "minSec": 6.6,
+        "maxSec": 14.8
+      },
+      "dwellServe": {
+        "count": 0
+      }
+    },
+    "staff-2": {
+      "role": "kock",
+      "totalSamples": 242,
+      "totalSimSec": 907.4,
+      "movingPct": 0,
+      "stillPct": 100,
+      "targetChangesPerMin": 0,
+      "taskChanges": 35,
+      "taskChangesMidMove": 0,
+      "taskChangesMidMovePct": 0,
+      "dwellGreet": {
+        "count": 0
+      },
+      "dwellOrder": {
+        "count": 0
+      },
+      "dwellServe": {
+        "count": 0
+      }
+    }
+  },
+  "anchorFires": [
+    {
+      "simTime": 134.20000000000093,
+      "questionId": "kalastorget-brons-01",
+      "anchorId": "greet",
+      "askerRole": "värd",
+      "askerStaffId": "staff-0",
+      "askerTaskType": "greet",
+      "guestId": "gst-5",
+      "guestState": "arriving",
+      "staffToGuestDist": 4.52,
+      "staffArrivedAtTarget": true
+    },
+    {
+      "simTime": 231.79999999999538,
+      "questionId": "kalastorget-brons-08",
+      "anchorId": "requestCheck",
+      "askerRole": "värd",
+      "askerStaffId": "staff-0",
+      "askerTaskType": "greet",
+      "guestId": "gst-28",
+      "guestState": "arriving",
+      "staffToGuestDist": 2.1199999999999974,
+      "staffArrivedAtTarget": true
+    },
+    {
+      "simTime": 325.99999999999005,
+      "questionId": "kalastorget-brons-05",
+      "anchorId": "order",
+      "askerRole": "lärling",
+      "askerStaffId": "staff-1",
+      "askerTaskType": "order",
+      "guestId": "gst-28",
+      "guestState": "ordering",
+      "staffToGuestDist": 0,
+      "staffArrivedAtTarget": true
+    }
+  ],
+  "guestThroughput": {
+    "completedGuests": 49,
+    "totalArrived": 0,
+    "walkoutsDuringService": 0,
+    "finalStates": {},
+    "revenueThisService": 17493,
+    "costThisService": 4742.526666666751,
+    "resultThisService": 12750.473333333248,
+    "eveningMetrics": null,
+    "reputationStart": 0.6,
+    "reputationEnd": 0.25662597067295323,
+    "reputationDelta": -0.34337402932704675,
+    "satisfactionMean": 0.815,
+    "satisfactionMedian": 0.851,
+    "satisfactionN": 67,
+    "satisfactionHistogram": {
+      "0.0-0.1": 0,
+      "0.1-0.2": 0,
+      "0.2-0.3": 0,
+      "0.3-0.4": 0,
+      "0.4-0.5": 0,
+      "0.5-0.6": 0,
+      "0.6-0.7": 2,
+      "0.7-0.8": 25,
+      "0.8-0.9": 33,
+      "0.9-1.0": 7
+    },
+    "satisfactionAbove075": 43,
+    "satisfactionBelow035": 0,
+    "costPerCategory": {
+      "revenue": {
+        "count": 1,
+        "sumSek": 33558
+      },
+      "ingredient": {
+        "count": 1,
+        "sumSek": -510
+      },
+      "other": {
+        "count": 2,
+        "sumSek": 714
+      }
+    },
+    "reputationBreakdown": {
+      "queueStrain": 0,
+      "teamStrain": -1.2103999999998993,
+      "giveUp": 0,
+      "happy": 0.4800000000000003,
+      "unhappy": 0,
+      "walkout": 0,
+      "substitute": 0,
+      "collapse": 0,
+      "ceilingDrift": 0.04365194134577699,
+      "other": 0
+    }
+  },
+  "waitStats": {
+    "arrivingToSeated": {
+      "n": 59,
+      "meanSec": 11.5,
+      "medianSec": 7.4
+    },
+    "seatedToOrdering": {
+      "n": 59,
+      "meanSec": 4.1,
+      "medianSec": 3.6
+    },
+    "orderingToPaying": {
+      "n": 49,
+      "meanSec": 213.8,
+      "medianSec": 218.6
+    }
+  }
+}
