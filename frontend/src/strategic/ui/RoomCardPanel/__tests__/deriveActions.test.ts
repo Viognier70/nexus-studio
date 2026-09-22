@@ -429,3 +429,77 @@ describe('staffAttentionPriority', () => {
     );
   });
 });
+
+// ORDER 248 (uppföljning ORDER 247) — värd-specifik prep-fallback.
+// Rot-orsak: `TASK_ROLE_ASSIGNMENT` mappar inga bg-tasks till värd, så
+// under prep-fasen får värd taskType=null och workload decayar till <0.1,
+// vilket före ORDER 247 fyrade S2 "On break". Den nya grenen i
+// deriveActions.ts före S2 ska returnera "Reviewing tonight's bookings"
+// specifikt för värd + prep + task=null oavsett workload.
+describe('ORDER 247 — värd-prep-fallback: "Reviewing tonight\'s bookings"', () => {
+  // Bygg en DayState där derivePhase → 'prep': period=dinner (in-service),
+  // opening slutade före simTime, prep slutar efter simTime.
+  function makePrepDay(): DayState {
+    return makeDay({
+      period: 'dinner',
+      openingEndsAt: 10,
+      prepEndsAt: 100,
+      doorsOpenedThisService: false
+    });
+  }
+  const menu: readonly MenuEntry[] = [];
+
+  it('värd + prep + task=null + workload=0 → "Reviewing tonight\'s bookings"', () => {
+    const staff = makeStaff({ role: 'värd', taskType: null, workload: 0 });
+    const result = deriveStaffAction(staff, [], makePrepDay(), 50, menu);
+    expect(result.text).toBe("Reviewing tonight's bookings");
+    expect(result.iconKey).toBe('plan');
+  });
+
+  it('värd + prep + task=null + workload=0.5 → samma fallback (oberoende av workload)', () => {
+    // Även om värd hypotetiskt fick workload uppåt via en framtida bg-task,
+    // ska prep-fallbacken fortfarande vinna över mise-en-place-branschen
+    // för värd-rollen (mise en place är för de andra rollerna).
+    const staff = makeStaff({ role: 'värd', taskType: null, workload: 0.5 });
+    const result = deriveStaffAction(staff, [], makePrepDay(), 50, menu);
+    expect(result.text).toBe("Reviewing tonight's bookings");
+  });
+
+  it('kock + prep + task=null + workload=0 → "On break" (fallbacken gäller inte andra roller)', () => {
+    // Verifierar att den nya grenen är rollspecifik — kock med samma
+    // förhållanden faller vidare till S2 "On break" (workload < 0.1).
+    const staff = makeStaff({ role: 'kock', taskType: null, workload: 0 });
+    const result = deriveStaffAction(staff, [], makePrepDay(), 50, menu);
+    expect(result.text).toBe('On break');
+  });
+
+  it('värd + service-fas + task=null → "Standing by" (fallbacken gäller bara prep)', () => {
+    // I service-fasen (past prepEndsAt) ska värd inte längre få prep-
+    // texten — då är S14 "Standing by" rätt signal.
+    const day = makeDay({
+      period: 'dinner',
+      openingEndsAt: 10,
+      prepEndsAt: 100,
+      doorsOpenedThisService: true
+    });
+    const staff = makeStaff({ role: 'värd', taskType: null, workload: 0 });
+    const result = deriveStaffAction(staff, [], day, 200, menu);
+    expect(result.text).toBe('Standing by');
+  });
+
+  it('värd + prep + task=greet → S3 mise en place (task-specifika switchen är efter S3-catchall)', () => {
+    // Under prep fångar S3-catchall alla staff med task != null och
+    // levererar mise-en-place-text oavsett taskType. Task-specifika
+    // switchen (case 'greet': Escorting...) körs bara under service.
+    // Testet dokumenterar detta beteende så framtida ändringar av
+    // S3-ordningen inte tystläggs.
+    const guest = makeGuest({ state: 'arriving' });
+    const staff = makeStaff({
+      role: 'värd',
+      taskType: 'greet',
+      targetGuestId: guest.id
+    });
+    const result = deriveStaffAction(staff, [guest], makePrepDay(), 50, menu);
+    expect(result.text).toMatch(/Mise en place|Chasing/);
+  });
+});

@@ -172,7 +172,8 @@ function parseSeed(s: string | null): number | null {
   return n >>> 0;
 }
 
-function parseStart(s: string | null): 'dinner15' | null {
+// ORDER 248 — exponerad för enhetstest utan att öppna hela parseHash.
+export function parseStart(s: string | null): 'dinner15' | null {
   if (!s) return null;
   if (s.toLowerCase() === 'dinner15') return 'dinner15';
   return null;
