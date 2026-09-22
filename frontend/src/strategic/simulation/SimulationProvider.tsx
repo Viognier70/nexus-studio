@@ -91,6 +91,18 @@ function applyDevFoodtruckSeed(state: SimulationState): SimulationState {
   };
 }
 
+// ORDER 245 — dev-only snabb-start. `#playtest=1&start=dinner15` hoppar
+// över morgon/lunch och öppnar en 15-minuters middag direkt vid init,
+// samma väg som ORDER 238-mätpasset använder (SKIP_LUNCH + OPEN_SERVICE
+// dinner 15min). Kombinerat med `seed=42` blir sim-utfallet identiskt
+// med 238:s per-fire-referens.
+function applyDevStartOverride(state: SimulationState): SimulationState {
+  if (harnessParams.start !== 'dinner15') return state;
+  state = reducer(state, { type: 'SKIP_LUNCH' });
+  state = reducer(state, { type: 'OPEN_SERVICE', service: 'dinner', lengthMinutes: 15 });
+  return state;
+}
+
 // ORDER 090 §5 — exported so the scene-mount smoke test can wrap
 // InteriorStaff / InteriorGuests in a hand-crafted state (one team
 // member + one guest) without ticking a real reducer forward. Not
@@ -108,7 +120,7 @@ const TICK_MS = 1000 / TICK_HZ;
 
 export function SimulationProvider({ children, seed = DEFAULT_SEED }: Props) {
   const [state, dispatch] = useReducer(reducer, undefined, () =>
-    applyDevFoodtruckSeed(applyDevBusinessOverride(makeInitialState(seed)))
+    applyDevStartOverride(applyDevFoodtruckSeed(applyDevBusinessOverride(makeInitialState(seed))))
   );
   const speedRef = useRef(state.speed);
   speedRef.current = state.speed;

@@ -110,6 +110,13 @@ interface ParsedParams {
   // playtest=1 så vanliga URL:er inte kan flippa determinismen av misstag.
   // `null` = ingen override.
   seed: number | null;
+  // ORDER 245 — dev-only snabb-start. `#playtest=1&start=dinner15` hoppar
+  // över morgon/lunch och öppnar 15-minuters middag direkt vid init,
+  // samma väg som ORDER 238-mätpasset (SKIP_LUNCH + OPEN_SERVICE dinner
+  // 15min). Med `seed=42&start=dinner15` blir sim-utfallet identiskt med
+  // 238:s per-fire-referens: tre bronsfrågor vid t=130.2/226.8/317.0s.
+  // Kräver playtest=1. `null` = ingen snabb-start.
+  start: 'dinner15' | null;
 }
 
 function parseHash(): ParsedParams {
@@ -125,7 +132,8 @@ function parseHash(): ParsedParams {
       business: null,
       foodtruckSeed: null,
       uteplats: false,
-      seed: null
+      seed: null,
+      start: null
     };
   }
   const hash = window.location.hash.replace('#', '');
@@ -153,7 +161,8 @@ function parseHash(): ParsedParams {
   const foodtruckSeed = playtest ? parseFoodtruckSeed(params.get('foodtruckSeed') ?? null) : null;
   const uteplats = playtest && params.get('uteplats') === '1';
   const seed = playtest ? parseSeed(params.get('seed') ?? null) : null;
-  return { period, camera, roi, poseId, calibrationQuad, playtest, dollhouse, business, foodtruckSeed, uteplats, seed };
+  const start = playtest ? parseStart(params.get('start') ?? null) : null;
+  return { period, camera, roi, poseId, calibrationQuad, playtest, dollhouse, business, foodtruckSeed, uteplats, seed, start };
 }
 
 function parseSeed(s: string | null): number | null {
@@ -161,6 +170,12 @@ function parseSeed(s: string | null): number | null {
   const n = Number.parseInt(s, 10);
   if (!Number.isFinite(n) || n < 0) return null;
   return n >>> 0;
+}
+
+function parseStart(s: string | null): 'dinner15' | null {
+  if (!s) return null;
+  if (s.toLowerCase() === 'dinner15') return 'dinner15';
+  return null;
 }
 
 function parseFoodtruckSeed(s: string | null): number | null {
