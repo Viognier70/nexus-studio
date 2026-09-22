@@ -131,7 +131,17 @@ function findEngagingStaff(
 /**
  * Alla aktiva ankare i state. Nollställs för gäster som inte matchar
  * något ankare. Ordningen följer `state.guests` (stabil).
+ *
+ * ORDER 255 §B (VO 2026-09-22): staff-drivna ankare (greet/order/setDown)
+ * kräver att personalen är inom `SERVICE_ANCHOR_MAX_DISTANCE_M = 1.25 m`
+ * från gästen. Motiv: koreografins `SERVICE_DISTANCES` sätter 1.25 m som
+ * greet-avstånd, och ORDER 253:s mätning visade anchor-fyra vid 7.27 m
+ * (staff står vid dörren, gäst 7 m bort vid sätet). Utan avståndskravet
+ * kan fråge-fyrande ske utan att staff är "vid" gästen. Gäst-drivna
+ * ankare (requestCheck/pay) är oberoende av staff-position.
  */
+export const SERVICE_ANCHOR_MAX_DISTANCE_M = 1.25;
+
 export function deriveActiveAnchors(
   state: SimulationState
 ): readonly GuestAnchorInfo[] {
@@ -143,9 +153,17 @@ export function deriveActiveAnchors(
     // För requestCheck/pay är ankaret gäst-drivet; staffId är null
     // även om någon staff råkar peka på gästen med en task-type som
     // inte mappas.
-    const staffId = anchor === 'requestCheck' || anchor === 'pay'
-      ? null
-      : (staff?.id ?? null);
+    const isGuestDriven = anchor === 'requestCheck' || anchor === 'pay';
+    if (!isGuestDriven && staff) {
+      // ORDER 255 §B — staff måste vara ≤ 1.25 m från gästen för att
+      // ankaret ska räknas som aktivt. Detta gate:ar anchor-picker:s
+      // fyrning så frågan aldrig visas när staff står långt ifrån.
+      const dx = staff.position.x - guest.position.x;
+      const dz = staff.position.z - guest.position.z;
+      const dist = Math.sqrt(dx * dx + dz * dz);
+      if (dist > SERVICE_ANCHOR_MAX_DISTANCE_M) continue;
+    }
+    const staffId = isGuestDriven ? null : (staff?.id ?? null);
     out.push({ guestId: guest.id, anchor, staffId });
   }
   return out;

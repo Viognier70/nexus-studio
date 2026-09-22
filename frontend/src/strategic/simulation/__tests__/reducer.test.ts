@@ -331,7 +331,11 @@ describe('seat allocation invariants', () => {
     s = reducer(s, { type: 'TRIGGER_SCENARIO' });
     s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_SITUATION' });
     s = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'A' });
-    for (let t = 0; t < 80; t++) s = reducer(s, { type: 'TICK', dt: 1 / 5 });
+    // ORDER 255 (VO 2026-09-22) — välkomnande-flödet stannar gäster vid
+    // dörren tills värden greetat dem. Med greet-task 16 ticks (ORDER 253)
+    // × 5 party-guests + gångtider behöver ~500 ticks (100 sim-sek) för
+    // att alla ska hunnit greetas och seatas. Före ORDER 253/255 räckte 80.
+    for (let t = 0; t < 500; t++) s = reducer(s, { type: 'TICK', dt: 1 / 5 });
     // 4-top seat range is 4..7; one adjacent 2-top seat is 8 or 9.
     // No party guest should land at the outer 2-tops (10/11), no bar
     // stool (12–15), and none should land on the far-left 2-tops (0–3)
@@ -357,7 +361,11 @@ describe('seat allocation invariants', () => {
     s = reducer(s, { type: 'TRIGGER_SCENARIO' });
     s = reducer(s, { type: 'ADVANCE_SCENARIO_TO_SITUATION' });
     s = reducer(s, { type: 'RESOLVE_SCENARIO', choice: 'B' });
-    for (let t = 0; t < 80; t++) s = reducer(s, { type: 'TICK', dt: 1 / 5 });
+    // ORDER 255 (VO 2026-09-22) — välkomnande-flödet stannar gäster vid
+    // dörren tills värden greetat dem. Med greet-task 16 ticks (ORDER 253)
+    // × 5 party-guests + gångtider behöver ~500 ticks (100 sim-sek) för
+    // att alla ska hunnit greetas och seatas. Före ORDER 253/255 räckte 80.
+    for (let t = 0; t < 500; t++) s = reducer(s, { type: 'TICK', dt: 1 / 5 });
     const partySeats = s.guests
       .filter((g) => g.scenarioSource && g.seatIndex !== null)
       .map((g) => g.seatIndex as number)
