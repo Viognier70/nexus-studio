@@ -117,6 +117,12 @@ interface ParsedParams {
   // 238:s per-fire-referens: tre bronsfrågor vid t=130.2/226.8/317.0s.
   // Kräver playtest=1. `null` = ingen snabb-start.
   start: 'dinner15' | null;
+  // ORDER 249 §1 — snabb-lösning för provspel. `#playtest=1&light=day`
+  // tvingar solpositionen till lunch-timmen (12:30) oavsett sim-period.
+  // Låter VO provspela middagsservice med dagsljus tills IndoorLamps-
+  // komponenten (§2) monterats i alla scener. Kräver playtest=1.
+  // `null` = ingen override, HOUR_BY_PERIOD gäller.
+  light: 'day' | null;
 }
 
 function parseHash(): ParsedParams {
@@ -133,7 +139,8 @@ function parseHash(): ParsedParams {
       foodtruckSeed: null,
       uteplats: false,
       seed: null,
-      start: null
+      start: null,
+      light: null
     };
   }
   const hash = window.location.hash.replace('#', '');
@@ -162,7 +169,14 @@ function parseHash(): ParsedParams {
   const uteplats = playtest && params.get('uteplats') === '1';
   const seed = playtest ? parseSeed(params.get('seed') ?? null) : null;
   const start = playtest ? parseStart(params.get('start') ?? null) : null;
-  return { period, camera, roi, poseId, calibrationQuad, playtest, dollhouse, business, foodtruckSeed, uteplats, seed, start };
+  const light = playtest ? parseLight(params.get('light') ?? null) : null;
+  return { period, camera, roi, poseId, calibrationQuad, playtest, dollhouse, business, foodtruckSeed, uteplats, seed, start, light };
+}
+
+function parseLight(s: string | null): 'day' | null {
+  if (!s) return null;
+  if (s.toLowerCase() === 'day') return 'day';
+  return null;
 }
 
 function parseSeed(s: string | null): number | null {

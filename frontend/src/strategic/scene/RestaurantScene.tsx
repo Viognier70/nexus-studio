@@ -16,7 +16,7 @@
 // `updateRoom(room, 0)` anropas varje bildruta — fläkten i spiskåpan
 // får ingen fas eftersom köket saknar tillstånd (`FLAGS.kitchenStations`).
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useSimState } from '../simulation/SimulationProvider';
@@ -34,6 +34,8 @@ import {
 import { disposeRestaurantGeometry } from './restaurantRoom';
 import { businessRoomRef } from './interiorSharedState';
 import { buildNav, type XZ } from './roomNav';
+import { IndoorLamps } from './IndoorLamps';
+import type { Vec2 } from './businessRoom';
 import { useCamera } from '../camera/CameraContext';
 import { GRAY_BOX_CAMERA } from '../content/grythyttan';
 
@@ -49,6 +51,10 @@ export function RestaurantScene() {
   const groupRef = useRef<THREE.Group>(null);
   const roomRef = useRef<BusinessRoom | null>(null);
   const { actualRef } = useCamera();
+  // ORDER 249 §2 — bord-positioner för IndoorLamps. Sätts vid mount så
+  // JSX-komponenten under kan rendera pointLights vid varje bord. Utan
+  // detta hade lampor krävt imperativ THREE.Scene-mount i useEffect.
+  const [tables, setTables] = useState<readonly Vec2[]>([]);
 
   const isRestaurant = sim.businessClass === 'kvarterskrogen';
 
@@ -73,6 +79,8 @@ export function RestaurantScene() {
     // usePlayerBusinessInterior().seats (som fortfarande råkar vara
     // 16 för restaurangen men är restaurangspecifik ändå).
     const world = resolveWorldPositions(room);
+    // ORDER 249 §2 — mata IndoorLamps med rummets bord-positioner.
+    setTables(world.tables as Vec2[]);
     // ORDER 204 — `resolveStaffStationsWorld` + `staffStationsByRole`
     // borttagna. Se BrewpubScene-kommentar. Kontraktet publicerar `stations`
     // (raw `staffStations` världs-XZ) och InteriorStaff läser flata listan.
@@ -178,5 +186,13 @@ export function RestaurantScene() {
   });
 
   if (!isRestaurant) return null;
-  return <group ref={groupRef} />;
+  // IndoorLamps som syskon till roomRef.current-gruppen (som mount:as
+  // imperativt via grp.add). Blandning av .add() och JSX-children i
+  // samma group är fragilt — separera.
+  return (
+    <>
+      <group ref={groupRef} />
+      <IndoorLamps tables={tables} />
+    </>
+  );
 }

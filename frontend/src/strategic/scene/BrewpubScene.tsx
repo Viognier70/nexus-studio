@@ -13,7 +13,7 @@
 // flaggan `brewPhase` — produktionstillstånd finns inte i sim-lagret
 // ännu och phasen får inte uppfinnas.
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useSimState } from '../simulation/SimulationProvider';
@@ -33,6 +33,8 @@ import { businessRoomRef } from './interiorSharedState';
 import { buildNav, type XZ } from './roomNav';
 import { useCamera } from '../camera/CameraContext';
 import { GRAY_BOX_CAMERA } from '../content/grythyttan';
+import { IndoorLamps } from './IndoorLamps';
+import type { Vec2 } from './businessRoom';
 
 // ORDER 184 — samma smoothstep-formel som PlayerBusinesss roof-fade,
 // så brewpubRoom-skalet försvinner i takt med PlayerBusinesss egna
@@ -51,6 +53,8 @@ export function BrewpubScene() {
   const { actualRef } = useCamera();
 
   const isBrewpub = sim.businessClass === 'ölkrogen';
+  // ORDER 249 §2 — bord-positioner för IndoorLamps.
+  const [tables, setTables] = useState<readonly Vec2[]>([]);
 
   useEffect(() => {
     if (!isBrewpub) return;
@@ -72,6 +76,8 @@ export function BrewpubScene() {
     // placerar 20 gäster på ölkrogens tjugo platser i stället för att
     // läsa restaurangens 16-stols-layout.
     const world = resolveWorldPositions(room);
+    // ORDER 249 §2 — mata IndoorLamps med rummets bord-positioner.
+    setTables(world.tables as Vec2[]);
     // ORDER 204 — `resolveStaffStationsWorld` + `staffStationsByRole`
     // borttagna. Kontraktet publicerar `stations` (raw `staffStations`
     // världs-XZ, i deklarationsordning) och InteriorStaff läser den
@@ -207,5 +213,10 @@ export function BrewpubScene() {
   });
 
   if (!isBrewpub) return null;
-  return <group ref={groupRef} />;
+  return (
+    <>
+      <group ref={groupRef} />
+      <IndoorLamps tables={tables} />
+    </>
+  );
 }
