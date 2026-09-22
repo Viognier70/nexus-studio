@@ -114,6 +114,8 @@ while (Date.now() < deadline) {
       id: g.id,
       state: g.state,
       seatIndex: g.seatIndex,
+      stateTime: g.stateTime,
+      arrivalTime: g.arrivalTime,
       position: { x: g.position.x, z: g.position.z }
     }));
     const pq = st.scenario?.pendingQuestion;
@@ -121,6 +123,12 @@ while (Date.now() < deadline) {
     return {
       simTime: st.simTime,
       period: st.day?.period,
+      // ORDER 251 tillägg — genomsatta gäster + intäkt så före/efter kan
+      // jämföras. `completedGuests` är kumulativ räknare per pass; cash
+      // + eveningAccount.metrics.revenue läses vid pass-close.
+      completedGuests: st.completedGuests ?? 0,
+      cash: st.cash,
+      revenueThisService: (st.cash ?? 0) - (st.day?.revenueAtServiceStart ?? 0),
       pending: pq ? {
         id: pq.sourceBankId ?? null,
         anchorId: pq.anchorId ?? null,
@@ -304,6 +312,61 @@ for (const f of anchorFires) {
   console.log(`  t=${f.simTime.toFixed(1)}s ${f.questionId} anchor=${f.anchorId} asker=${f.askerRole}(${f.askerStaffId}) task=${f.askerTaskType} dist=${f.staffToGuestDist?.toFixed(2) ?? 'na'}m arrived=${f.staffArrivedAtTarget}`);
 }
 
+// ================= GUEST-THROUGHPUT + VÄNTETIDER =================
+// ORDER 251 tillägg — jämförelse-tal för före/efter arrival guard.
+const finalSnap = samples[samples.length-1];
+const guestThroughput = {
+  completedGuests: finalSnap.completedGuests,
+  cashDeltaSek: finalSnap.revenueThisService,
+  totalArrived: finalSnap.guests.length,
+  finalStates: finalSnap.guests.reduce((acc, g) => {
+    acc[g.state] = (acc[g.state] ?? 0) + 1;
+    return acc;
+  }, {})
+};
+
+// Väntetider: läs gästens första simTime i varje state ur samples,
+// aggregera övergångar. En gäst kan förekomma i flera samples med olika
+// state — samla första + sista i varje state.
+const perGuestTimeline = new Map(); // guestId → { state → [firstSim, lastSim] }
+for (const snap of samples) {
+  for (const g of snap.guests) {
+    if (!perGuestTimeline.has(g.id)) perGuestTimeline.set(g.id, {});
+    const tl = perGuestTimeline.get(g.id);
+    if (!tl[g.state]) tl[g.state] = { first: snap.simTime, last: snap.simTime };
+    else tl[g.state].last = snap.simTime;
+  }
+}
+// Väntetid arriving→seated: (seated.first − arriving.first), för gäster som nådde seated.
+// Väntetid seated→ordering: (ordering.first − seated.first), för gäster som nådde ordering.
+const waitDurations = { arrivingToSeated: [], seatedToOrdering: [], orderingToPaying: [] };
+for (const [, tl] of perGuestTimeline) {
+  if (tl.arriving && tl.seated) waitDurations.arrivingToSeated.push(tl.seated.first - tl.arriving.first);
+  if (tl.seated && tl.ordering) waitDurations.seatedToOrdering.push(tl.ordering.first - tl.seated.first);
+  if (tl.ordering && tl.paying) waitDurations.orderingToPaying.push(tl.paying.first - tl.ordering.first);
+}
+function statFmt(arr) {
+  if (arr.length === 0) return { n: 0 };
+  const s = [...arr].sort((a,b) => a-b);
+  const mean = arr.reduce((a,b) => a+b, 0) / arr.length;
+  return { n: arr.length, meanSec: Math.round(mean*10)/10, medianSec: Math.round(s[Math.floor(s.length/2)]*10)/10 };
+}
+const waitStats = {
+  arrivingToSeated: statFmt(waitDurations.arrivingToSeated),
+  seatedToOrdering: statFmt(waitDurations.seatedToOrdering),
+  orderingToPaying: statFmt(waitDurations.orderingToPaying)
+};
+
+console.log('\n===== GUEST THROUGHPUT =====');
+console.log(`  completedGuests: ${guestThroughput.completedGuests}`);
+console.log(`  cash delta: ${guestThroughput.cashDeltaSek.toFixed(0)} SEK`);
+console.log(`  arrivals: ${guestThroughput.totalArrived}`);
+console.log(`  final states:`, guestThroughput.finalStates);
+console.log(`\n===== VÄNTETIDER (sim-sek) =====`);
+for (const [k, v] of Object.entries(waitStats)) {
+  if (v.n > 0) console.log(`  ${k}: n=${v.n} mean=${v.meanSec}s median=${v.medianSec}s`);
+}
+
 // ================= WRITE (WRITE_REPORTS=1) =================
 if (process.env.WRITE_REPORTS === '1') {
   writeFileSync(
@@ -312,7 +375,7 @@ if (process.env.WRITE_REPORTS === '1') {
   );
   writeFileSync(
     resolve(REPORT_DIR, 'summary.json'),
-    JSON.stringify({ perStaff, anchorFires }, null, 2)
+    JSON.stringify({ perStaff, anchorFires, guestThroughput, waitStats }, null, 2)
   );
   console.log(`\n📁 rådata: ${REPORT_DIR}/`);
 } else {

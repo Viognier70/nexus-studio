@@ -1,0 +1,38 @@
+{
+  "note": "BEFORE-tal från main HEAD e59effa (ORDER 249). Kört i worktree /tmp/nexus-251-before via order250-scriptet med start=dinner15&seed=42. Worktreet borttaget efter körning. Rådata inte bevarad — dessa tal är kopierade från scriptets stdout och utgör källan för ORDER 251-registerradens 'BEFORE'-kolumn.",
+  "perStaff": {
+    "staff-0-värd": {
+      "role": "värd",
+      "totalSimSec": 904.8,
+      "dwellGreet": { "count": null, "meanSec": null, "medianSec": null, "note": "ej separat noterat i log-tail; se ORDER 250-summary.json som referens (3.5s medel)" }
+    },
+    "staff-1-servitör": {
+      "role": "servitör",
+      "totalSimSec": 904.8,
+      "taskChanges": 210,
+      "taskChangesMidMove": 125,
+      "taskChangesMidMovePct": 59.5,
+      "dwellOrder": { "medianSec": 3.4, "meanSec": 3.5 }
+    },
+    "staff-2-kock": {
+      "role": "kock",
+      "movingPct": 0,
+      "taskChanges": 44,
+      "taskChangesMidMove": 0
+    }
+  },
+  "anchorFires": [
+    { "simTime": 130.6, "questionId": "kalastorget-brons-01", "anchorId": "greet", "askerRole": "värd", "askerTaskType": "greet", "staffToGuestDist": 3.28, "staffArrivedAtTarget": false },
+    { "simTime": 229.4, "questionId": "kalastorget-brons-08", "anchorId": "requestCheck", "askerRole": "värd", "askerTaskType": "greet", "staffToGuestDist": 4.23, "staffArrivedAtTarget": false },
+    { "simTime": 327.6, "questionId": "kalastorget-brons-06", "anchorId": "requestCheck", "askerRole": "gäst", "askerTaskType": null, "staffToGuestDist": null, "staffArrivedAtTarget": null }
+  ],
+  "guestThroughput": {
+    "completedGuests": 105,
+    "cashDeltaSek": 153097
+  },
+  "waitStats": {
+    "arrivingToSeated": { "n": 34, "meanSec": 3.5, "medianSec": 3.4 },
+    "seatedToOrdering": { "n": 112, "meanSec": 4.0, "medianSec": 3.6 },
+    "orderingToPaying": { "n": 103, "meanSec": 111.6, "medianSec": 134.4 }
+  }
+}

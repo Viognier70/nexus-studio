@@ -1,0 +1,133 @@
+{
+  "perStaff": {
+    "staff-0": {
+      "role": "värd",
+      "totalSamples": 230,
+      "totalSimSec": 900.4,
+      "movingPct": 28.3,
+      "stillPct": 71.7,
+      "targetChangesPerMin": 6.4,
+      "taskChanges": 76,
+      "taskChangesMidMove": 27,
+      "taskChangesMidMovePct": 35.5,
+      "dwellGreet": {
+        "count": 10,
+        "meanSec": 3.7,
+        "medianSec": 3.8,
+        "minSec": 3,
+        "maxSec": 5.2
+      },
+      "dwellOrder": {
+        "count": 0
+      },
+      "dwellServe": {
+        "count": 0
+      }
+    },
+    "staff-1": {
+      "role": "servitör",
+      "totalSamples": 230,
+      "totalSimSec": 900.4,
+      "movingPct": 39.1,
+      "stillPct": 60.9,
+      "targetChangesPerMin": 10.5,
+      "taskChanges": 165,
+      "taskChangesMidMove": 57,
+      "taskChangesMidMovePct": 34.5,
+      "dwellGreet": {
+        "count": 0
+      },
+      "dwellOrder": {
+        "count": 65,
+        "meanSec": 3.6,
+        "medianSec": 3.6,
+        "minSec": 3,
+        "maxSec": 4.2
+      },
+      "dwellServe": {
+        "count": 0
+      }
+    },
+    "staff-2": {
+      "role": "kock",
+      "totalSamples": 230,
+      "totalSimSec": 900.4,
+      "movingPct": 0,
+      "stillPct": 100,
+      "targetChangesPerMin": 0,
+      "taskChanges": 24,
+      "taskChangesMidMove": 0,
+      "taskChangesMidMovePct": 0,
+      "dwellGreet": {
+        "count": 0
+      },
+      "dwellOrder": {
+        "count": 0
+      },
+      "dwellServe": {
+        "count": 0
+      }
+    }
+  },
+  "anchorFires": [
+    {
+      "simTime": 131.40000000000109,
+      "questionId": "kalastorget-brons-01",
+      "anchorId": "greet",
+      "askerRole": "värd",
+      "askerStaffId": "staff-0",
+      "askerTaskType": "greet",
+      "guestId": "gst-5",
+      "guestState": "seated",
+      "staffToGuestDist": 2.273425113579816,
+      "staffArrivedAtTarget": false
+    },
+    {
+      "simTime": 227.9999999999956,
+      "questionId": "kalastorget-brons-04",
+      "anchorId": "order",
+      "askerRole": "gäst",
+      "askerStaffId": null,
+      "askerTaskType": null,
+      "guestId": null,
+      "guestState": null,
+      "staffToGuestDist": null,
+      "staffArrivedAtTarget": null
+    },
+    {
+      "simTime": 322.9999999999902,
+      "questionId": "maltidbiblioteket-brons-05",
+      "anchorId": "order",
+      "askerRole": "gäst",
+      "askerStaffId": null,
+      "askerTaskType": null,
+      "guestId": null,
+      "guestState": null,
+      "staffToGuestDist": null,
+      "staffArrivedAtTarget": null
+    }
+  ],
+  "guestThroughput": {
+    "completedGuests": 89,
+    "cashDeltaSek": 147387.6999999932,
+    "totalArrived": 0,
+    "finalStates": {}
+  },
+  "waitStats": {
+    "arrivingToSeated": {
+      "n": 27,
+      "meanSec": 3.5,
+      "medianSec": 3.6
+    },
+    "seatedToOrdering": {
+      "n": 97,
+      "meanSec": 4.2,
+      "medianSec": 3.6
+    },
+    "orderingToPaying": {
+      "n": 88,
+      "meanSec": 132.2,
+      "medianSec": 161.8
+    }
+  }
+}
