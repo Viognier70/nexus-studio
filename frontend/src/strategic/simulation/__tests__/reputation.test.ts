@@ -155,7 +155,11 @@ describe('per-event reputation changes', () => {
     expect(s.reputation).toBeCloseTo(0.6 - UNHAPPY_COST, 10);
   });
 
-  it('mediocre departure (satisfaction in [0.35, 0.75]) is neutral', () => {
+  // ORDER 257 (VO 2026-09-22): band flyttade — mediocre är nu 0.65–0.85,
+  // inte 0.35–0.75. Test-value 0.5 ligger under nya UNHAPPY_THRESHOLD (0.65)
+  // → straffas med UNHAPPY_COST. Baseline väntar VO-beslut om testet ska
+  // uppdateras till nya banden (0.75 test) eller markera fixat.
+  it.fails('mediocre departure (satisfaction in [0.35, 0.75]) is neutral [KÄND AVVIKELSE ORDER 257]', () => {
     const s = makeInitialState(1);
     s.reputation = 0.6;
     reputationEventDeparture(s, 0.5);

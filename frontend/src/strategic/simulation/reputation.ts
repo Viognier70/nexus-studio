@@ -53,6 +53,11 @@ const TICK_SECONDS = 0.2;
 // Queue-strain: reputation loses ~0.005/sec while a queue longer than
 // 3 persists. Sustained over the full 10 min of a bad dinner that's
 // ~3.0 reputation points — enough to shift the multiplier one band.
+// ORDER 257 (VO 2026-09-22): oförändrad. VO: "queueStrain: lämna orörd
+// tills vi vet vad kön ska betyda efter ORDER 255." Post-255 hålls
+// gäster vid dörren i 'arriving' istället för 'waiting' → nuvarande
+// tröskel 3 träffas aldrig i mätning. Egen order när kö-signalens
+// betydelse omdefinieras.
 export const QUEUE_STRAIN_THRESHOLD = 3;
 export const QUEUE_STRAIN_RATE = 0.005;
 
@@ -61,16 +66,33 @@ export const QUEUE_STRAIN_RATE = 0.005;
 // teamCapacity(state.team) at ORDER 043 v3 §10 step 5 — a hired
 // lärling or an agency hand now visibly changes the strain threshold
 // in the reading, not just the labels.
-export const TEAM_STRAIN_RATE = 0.001;
+//
+// ORDER 257 (VO 2026-09-22): sänkt från 0.001 till 0.0001 (10× lägre).
+// Räknat ur ORDER 256:s mätning: 251-passet ackumulerade −1.060 vid
+// gammal rate = 1060 sim-sek över tröskeln × 0.001 → clampade rep till
+// noll och gav mätt Δrep = −0.246 (halva signalen förlorad). Ny rate:
+// 1060 × 0.0001 = −0.106, samma storleksordning som happy-summan
+// (+0.180), så kanalerna balanseras utan clamp. VO explicit: "sänk
+// TEAM_STRAIN_RATE så att kanalens totala bidrag per pass blir i samma
+// storleksordning som happy, inte tio gånger större". COVERS_PER_MEMBER
+// bevaras på 5 per VO ("sänk INTE till 3 — det förstärker felet").
+export const TEAM_STRAIN_RATE = 0.0001;
 
 // Per-event costs. Give-up dwarfs unhappy-departure because a walkout
 // during service is a much stronger negative signal than a quiet
 // dissatisfied guest paying and leaving.
 export const GIVE_UP_COST = 0.02;
-export const HAPPY_THRESHOLD = 0.75;
+// ORDER 257 — banden flyttade dit gästerna faktiskt ligger (VO 2026-09-22
+// från histogrammet i ORDER 256-mätning). Ny fördelning:
+//   happy    ≥ 0.85 → HAPPY_GAIN
+//   neutral    0.65 – 0.85 → ingen signal (mediocre glöms)
+//   unhappy  < 0.65 → −UNHAPPY_COST
+// Vikter räknade ur mätning så att målen (251 ≈ −0.05 till 0, 253 > 0)
+// träffas. Se ORDER 257-registerposten §2 för härledningen.
+export const HAPPY_THRESHOLD = 0.85;
 export const HAPPY_GAIN = 0.006;
-export const UNHAPPY_THRESHOLD = 0.35;
-export const UNHAPPY_COST = 0.012;
+export const UNHAPPY_THRESHOLD = 0.65;
+export const UNHAPPY_COST = 0.020;
 
 // -------- knowledge-ceiling helpers (shared with quality.ts) -------------
 
