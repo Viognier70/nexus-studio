@@ -93,12 +93,12 @@ describe('ORDER 248 (§ORDER 245) — start=dinner15 sim-parity mot ORDER 238', 
 
     expect(firstAnchorFireSimTime, 'ingen anchor-fråga fyrade — testet mäter inget').not.toBeNull();
     expect(firstAnchorFireId, 'första fyrningens id saknas').toBe('kalastorget-brons-01');
-    // ORDER 238:s log: t=130.2s. Tillåt marginell drift ±0.5s (tick-
-    // rasterering vid samma seed ger stabilt värde, men vi vill inte
-    // regressa på en tick-frekvens-ändring). Om testet failar med t.ex.
-    // 130.4s eller 129.8s är utfallet fortfarande "samma tick, samma
-    // fråga"; annat värde signalerar riktig regression i determinismen.
+    // ORDER 238:s log: t=130.2s. Tillåt marginell drift ±1s (tick-
+    // rasterering + ORDER 255 §B avstånds-gate kan skjuta första fyran
+    // 1-2 ticks eftersom staff nu måste vara ≤ 1.25 m från gäst).
+    // Om testet failar med annat värde signalerar det riktig regression
+    // i determinismen (kalastorget-brons-01 vid annat ID = brytning).
     expect(firstAnchorFireSimTime).toBeGreaterThanOrEqual(129.5);
-    expect(firstAnchorFireSimTime).toBeLessThanOrEqual(130.7);
+    expect(firstAnchorFireSimTime).toBeLessThanOrEqual(132.0);
   });
 });

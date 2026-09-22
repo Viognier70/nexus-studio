@@ -239,9 +239,12 @@ describe('deriveActiveAnchors', () => {
     const g3 = guestInState('paying', 219, 'g-3'); // 1 s → requestCheck
     const g4 = guestInState('dining', 210, 'g-4'); // ingen match
     state.guests = [g1, g2, g3, g4];
+    // ORDER 255 §B — staff position måste vara nära gästen (≤ 1.25 m) för
+    // att staff-drivet ankare ska räknas. makeGuest sätter default
+    // position {0, 8}; matcha staff-position så avstånd = 0.
     state.staff = [
-      makeStaff('h1', { role: 'värd' }),
-      makeStaff('s1', { role: 'servitör' })
+      makeStaff('h1', { role: 'värd', position: { x: 0, z: 8 }, targetPosition: { x: 0, z: 8 } }),
+      makeStaff('s1', { role: 'servitör', position: { x: 0, z: 8 }, targetPosition: { x: 0, z: 8 } })
     ];
     engage(state, 'h1', 'g-1', 'greet');
     engage(state, 's1', 'g-2', 'order');
@@ -251,6 +254,41 @@ describe('deriveActiveAnchors', () => {
       { guestId: 'g-1', anchor: 'greet', staffId: 'h1' },
       { guestId: 'g-2', anchor: 'order', staffId: 's1' },
       { guestId: 'g-3', anchor: 'requestCheck', staffId: null }
+    ]);
+  });
+
+  // ORDER 255 §B — avstånds-gate på staff-drivna ankare.
+  it('filtrerar bort staff-drivna ankare när staff är > 1.25 m från gästen', () => {
+    const state = seededState(220);
+    const g1 = guestInState('arriving', 218, 'g-1'); // makeGuest default position (0, 8)
+    const g2 = guestInState('paying', 219, 'g-2');   // guest-driven, ej position-gate:ad
+    state.guests = [g1, g2];
+    state.staff = [
+      // Långt bort — 5 m från g1
+      makeStaff('h1', { role: 'värd', position: { x: 5, z: 8 }, targetPosition: { x: 5, z: 8 } })
+    ];
+    engage(state, 'h1', 'g-1', 'greet');
+
+    const active = deriveActiveAnchors(state);
+    // g1:s greet ska filtreras bort (avstånd 5 m > 1.25 m); g2:s requestCheck kvarstår.
+    expect(active).toEqual([
+      { guestId: 'g-2', anchor: 'requestCheck', staffId: null }
+    ]);
+  });
+
+  it('inkluderar staff-drivna ankare när staff är inom 1.25 m från gästen', () => {
+    const state = seededState(220);
+    const g1 = guestInState('arriving', 218, 'g-1'); // default position (0, 8)
+    state.guests = [g1];
+    state.staff = [
+      // Exakt inom gränsen — 1.0 m offset
+      makeStaff('h1', { role: 'värd', position: { x: 1.0, z: 8 }, targetPosition: { x: 1.0, z: 8 } })
+    ];
+    engage(state, 'h1', 'g-1', 'greet');
+
+    const active = deriveActiveAnchors(state);
+    expect(active).toEqual([
+      { guestId: 'g-1', anchor: 'greet', staffId: 'h1' }
     ]);
   });
 });

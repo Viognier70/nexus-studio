@@ -1,0 +1,143 @@
+{
+  "perStaff": {
+    "staff-0": {
+      "role": "värd",
+      "totalSamples": 225,
+      "totalSimSec": 905.8,
+      "movingPct": 12.4,
+      "stillPct": 87.6,
+      "targetChangesPerMin": 5.3,
+      "taskChanges": 116,
+      "taskChangesMidMove": 14,
+      "taskChangesMidMovePct": 12.1,
+      "dwellGreet": {
+        "count": 35,
+        "meanSec": 4.1,
+        "medianSec": 3.8,
+        "minSec": 3.2,
+        "maxSec": 7.8
+      },
+      "dwellOrder": {
+        "count": 0
+      },
+      "dwellServe": {
+        "count": 0
+      }
+    },
+    "staff-1": {
+      "role": "servitör",
+      "totalSamples": 225,
+      "totalSimSec": 905.8,
+      "movingPct": 22.7,
+      "stillPct": 77.3,
+      "targetChangesPerMin": 6.6,
+      "taskChanges": 96,
+      "taskChangesMidMove": 19,
+      "taskChangesMidMovePct": 19.8,
+      "dwellGreet": {
+        "count": 0
+      },
+      "dwellOrder": {
+        "count": 52,
+        "meanSec": 9.1,
+        "medianSec": 8,
+        "minSec": 5,
+        "maxSec": 14.2
+      },
+      "dwellServe": {
+        "count": 0
+      }
+    },
+    "staff-2": {
+      "role": "kock",
+      "totalSamples": 225,
+      "totalSimSec": 905.8,
+      "movingPct": 0,
+      "stillPct": 100,
+      "targetChangesPerMin": 0,
+      "taskChanges": 33,
+      "taskChangesMidMove": 0,
+      "taskChangesMidMovePct": 0,
+      "dwellGreet": {
+        "count": 0
+      },
+      "dwellOrder": {
+        "count": 0
+      },
+      "dwellServe": {
+        "count": 0
+      }
+    }
+  },
+  "anchorFires": [
+    {
+      "simTime": 132.40000000000103,
+      "questionId": "kalastorget-brons-01",
+      "anchorId": "greet",
+      "askerRole": "värd",
+      "askerStaffId": "staff-0",
+      "askerTaskType": "greet",
+      "guestId": "gst-5",
+      "guestState": "arriving",
+      "staffToGuestDist": 4.52,
+      "staffArrivedAtTarget": true
+    },
+    {
+      "simTime": 229.39999999999552,
+      "questionId": "kalastorget-brons-08",
+      "anchorId": "requestCheck",
+      "askerRole": "värd",
+      "askerStaffId": "staff-0",
+      "askerTaskType": "seat",
+      "guestId": "gst-26",
+      "guestState": "seated",
+      "staffToGuestDist": 3.2,
+      "staffArrivedAtTarget": true
+    },
+    {
+      "simTime": 326.99999999999,
+      "questionId": "stensota-brons-10",
+      "anchorId": "order",
+      "askerRole": "gäst",
+      "askerStaffId": "staff-1",
+      "askerTaskType": "order",
+      "guestId": "gst-28",
+      "guestState": "ordering",
+      "staffToGuestDist": 0,
+      "staffArrivedAtTarget": true
+    }
+  ],
+  "guestThroughput": {
+    "completedGuests": 49,
+    "totalArrived": 0,
+    "walkoutsDuringService": 0,
+    "finalStates": {},
+    "revenueThisService": 17493,
+    "costThisService": 4742.526666666751,
+    "resultThisService": 12750.473333333248,
+    "eveningMetrics": null,
+    "reputationStart": 0.6,
+    "reputationEnd": 0.25662597067295323,
+    "reputationDelta": -0.34337402932704675,
+    "satisfactionMean": 0.814,
+    "satisfactionMedian": 0.851,
+    "satisfactionN": 67
+  },
+  "waitStats": {
+    "arrivingToSeated": {
+      "n": 63,
+      "meanSec": 11.5,
+      "medianSec": 7.8
+    },
+    "seatedToOrdering": {
+      "n": 63,
+      "meanSec": 4.4,
+      "medianSec": 3.8
+    },
+    "orderingToPaying": {
+      "n": 49,
+      "meanSec": 213.2,
+      "medianSec": 221.2
+    }
+  }
+}

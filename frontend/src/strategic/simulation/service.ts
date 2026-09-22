@@ -349,6 +349,17 @@ export function tickGuests(state: SimulationState) {
           moveGuest(guest, { x: 0, z: 8 });
           continue;
         }
+        // ORDER 255 §A (VO 2026-09-22): gästen väntar vid dörren tills
+        // greet-gesten är klar (hasBeenGreeted=true). Utan detta transitio-
+        // nerades gästen omedelbart till 'seated' när hen nådde dörren —
+        // värden hann inte fram och hälsningen fyrade i en tom scen. Nu
+        // står gästen vid entrén; värden går fram, greet-tasken körs
+        // (`completeStaffTask('greet')` sätter hasBeenGreeted=true), och
+        // nästa tick tar denna gren gästen vidare till säte eller kö.
+        // findTaskTarget('greet') prioriterar arriving-gäster utan
+        // hasBeenGreeted (rad 1072-1075) så schemaläggaren pushar
+        // greet-task automatiskt — ingen deadlock-risk.
+        if (!guest.hasBeenGreeted) continue;
         const seat = findFreeSeat(state, guest.scenarioSource, guest.partyId);
         if (seat !== null && !state.scenario.awaitingChoice) {
           setGuestSeated(state, guest, seat);
