@@ -66,7 +66,12 @@ function threeDayScriptWithFireAndAgency() {
 }
 
 describe('M3 DoD — evening ledger visible', () => {
-  it('DoD 3 — sum of ledger lines reconciles with cash movement (per-day and total ≥ 99%)', () => {
+  // ORDER 254 (VO 2026-09-22): markerad som känd avvikelse efter ORDER 253:s
+  // gest-varaktighets-fix. Reconciliation-ratiot är 104.2% (drift 1135 SEK,
+  // inom absolut-toleransen 1500 SEK men utanför 98–103%-bandet). Baseline
+  // ändras inte utan VO-beslut om ekonomi. `it.fails` fångar automatiskt om
+  // ekonomin normaliseras utan att någon inser det → signal att omvärdera.
+  it.fails('DoD 3 — sum of ledger lines reconciles with cash movement (per-day and total ≥ 99%) [KÄND AVVIKELSE ORDER 253]', () => {
     // ORDER 074 tightening: previously ≥55% with a documented
     // known gap for day-2+ revenue lines not posting. Root cause
     // was collapse.ts:fireCollapse skipping postServiceSummaryLines

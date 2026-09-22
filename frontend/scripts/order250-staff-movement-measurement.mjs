@@ -116,6 +116,7 @@ while (Date.now() < deadline) {
       seatIndex: g.seatIndex,
       stateTime: g.stateTime,
       arrivalTime: g.arrivalTime,
+      satisfaction: g.satisfaction ?? null,
       position: { x: g.position.x, z: g.position.z }
     }));
     const pq = st.scenario?.pendingQuestion;
@@ -128,7 +129,23 @@ while (Date.now() < deadline) {
       // + eveningAccount.metrics.revenue läses vid pass-close.
       completedGuests: st.completedGuests ?? 0,
       cash: st.cash,
-      revenueThisService: (st.cash ?? 0) - (st.day?.revenueAtServiceStart ?? 0),
+      // ORDER 253/254 tillägg — separera INTÄKT (revenue) från kassa-delta.
+      // state.revenue är kumulativ intäkt (bara guest-payments); cash-delta
+      // inkluderar även löner, ingredienser, agentur-avgifter, ränta osv.
+      // Snapshots före service läses ur day.revenueAtServiceStart etc.
+      revenue: st.revenue ?? 0,
+      cost: st.cost ?? 0,
+      revenueThisService: (st.revenue ?? 0) - (st.day?.revenueAtServiceStart ?? 0),
+      costThisService: (st.cost ?? 0) - (st.day?.costAtServiceStart ?? 0),
+      resultThisService: ((st.revenue ?? 0) - (st.day?.revenueAtServiceStart ?? 0)) - ((st.cost ?? 0) - (st.day?.costAtServiceStart ?? 0)),
+      reputation: st.reputation ?? 0,
+      reputationAtStart: st.day?.reputationAtServiceStart ?? null,
+      // metrics per completed service — bara fylld post-service (eveningAccount).
+      eveningMetrics: st.eveningAccount?.metrics ?? null,
+      // ORDER 254 tillägg — event-räknare för att förklara reputationsdelta.
+      // Ledger-raderna innehåller cause-fält. Vi räknar 'walkout'/'substitute'-
+      // rader denna service.
+      ledgerEventsThisService: (st.ledger ?? []).filter((l) => l.day === st.day?.dayNumber).length,
       pending: pq ? {
         id: pq.sourceBankId ?? null,
         anchorId: pq.anchorId ?? null,
@@ -315,14 +332,44 @@ for (const f of anchorFires) {
 // ================= GUEST-THROUGHPUT + VÄNTETIDER =================
 // ORDER 251 tillägg — jämförelse-tal för före/efter arrival guard.
 const finalSnap = samples[samples.length-1];
+// Räkna walkouts/declined/substituted i sista snapshot samt reputation-
+// och satisfaction-fördelning.
+const finalStates = finalSnap.guests.reduce((acc, g) => {
+  acc[g.state] = (acc[g.state] ?? 0) + 1;
+  return acc;
+}, {});
+const walkouts = (finalStates.declined ?? 0) + (finalStates.leaving ?? 0);
+// satisfaction över alla gäster som varit med i minst en sampel — läs
+// högsta seenade satisfaction per guest.id från alla sampels.
+const satPerGuest = new Map();
+for (const snap of samples) {
+  for (const g of snap.guests) {
+    if (g.satisfaction != null) {
+      // spara sista uppmätta satisfaction per gäst
+      satPerGuest.set(g.id, g.satisfaction);
+    }
+  }
+}
+const satValues = [...satPerGuest.values()];
+const satMean = satValues.length > 0 ? satValues.reduce((a,b)=>a+b,0) / satValues.length : null;
+const satSort = [...satValues].sort((a,b)=>a-b);
+const satMedian = satSort.length > 0 ? satSort[Math.floor(satSort.length/2)] : null;
+
 const guestThroughput = {
   completedGuests: finalSnap.completedGuests,
-  cashDeltaSek: finalSnap.revenueThisService,
   totalArrived: finalSnap.guests.length,
-  finalStates: finalSnap.guests.reduce((acc, g) => {
-    acc[g.state] = (acc[g.state] ?? 0) + 1;
-    return acc;
-  }, {})
+  walkoutsDuringService: walkouts,
+  finalStates,
+  revenueThisService: finalSnap.revenueThisService,
+  costThisService: finalSnap.costThisService,
+  resultThisService: finalSnap.resultThisService,
+  eveningMetrics: finalSnap.eveningMetrics,
+  reputationStart: samples[0]?.reputation ?? null,
+  reputationEnd: finalSnap.reputation,
+  reputationDelta: (finalSnap.reputation ?? 0) - (samples[0]?.reputation ?? 0),
+  satisfactionMean: satMean != null ? Math.round(satMean * 1000) / 1000 : null,
+  satisfactionMedian: satMedian != null ? Math.round(satMedian * 1000) / 1000 : null,
+  satisfactionN: satValues.length
 };
 
 // Väntetider: läs gästens första simTime i varje state ur samples,
@@ -359,9 +406,16 @@ const waitStats = {
 
 console.log('\n===== GUEST THROUGHPUT =====');
 console.log(`  completedGuests: ${guestThroughput.completedGuests}`);
-console.log(`  cash delta: ${guestThroughput.cashDeltaSek.toFixed(0)} SEK`);
-console.log(`  arrivals: ${guestThroughput.totalArrived}`);
+console.log(`  revenue this service: ${(guestThroughput.revenueThisService ?? 0).toFixed(0)} SEK`);
+console.log(`  cost this service:    ${(guestThroughput.costThisService ?? 0).toFixed(0)} SEK`);
+console.log(`  result this service:  ${(guestThroughput.resultThisService ?? 0).toFixed(0)} SEK`);
+console.log(`  reputation: ${(guestThroughput.reputationStart ?? 0).toFixed(3)} → ${(guestThroughput.reputationEnd ?? 0).toFixed(3)} (Δ ${guestThroughput.reputationDelta.toFixed(3)})`);
+console.log(`  satisfaction: mean=${guestThroughput.satisfactionMean ?? 'na'}  median=${guestThroughput.satisfactionMedian ?? 'na'}  (n=${guestThroughput.satisfactionN})`);
+console.log(`  walkouts+declined during service: ${guestThroughput.walkoutsDuringService}`);
 console.log(`  final states:`, guestThroughput.finalStates);
+if (guestThroughput.eveningMetrics) {
+  console.log(`  evening metrics: revenue=${guestThroughput.eveningMetrics.revenue.toFixed(0)} cost=${guestThroughput.eveningMetrics.cost.toFixed(0)} result=${guestThroughput.eveningMetrics.result.toFixed(0)} repΔ=${guestThroughput.eveningMetrics.reputationDelta.toFixed(3)}`);
+}
 console.log(`\n===== VÄNTETIDER (sim-sek) =====`);
 for (const [k, v] of Object.entries(waitStats)) {
   if (v.n > 0) console.log(`  ${k}: n=${v.n} mean=${v.meanSec}s median=${v.medianSec}s`);
