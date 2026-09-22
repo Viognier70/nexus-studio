@@ -1,0 +1,41 @@
+{
+  "note": "ORDER 251-varianten + ORDER 259 (stock ur costThisService via applyCashDelta, RNG-shift fix i BUY_STOCK). Kört i worktree /tmp/nexus-259-251 (main HEAD 8fff992) med filer kopierade från ORDER 259-branchen. Worktreet borttaget.",
+  "seed": 42,
+  "params": "start=dinner15&business=kvarterskrogen",
+  "codeVersion": "ORDER 251 + ORDER 258 + ORDER 259 fix",
+  "guestThroughput": {
+    "completedGuests": 80,
+    "revenueThisService": 14945,
+    "costThisService": 8282,
+    "resultThisService": 6662,
+    "reputationBreakdown": {
+      "queueStrain": 0.000,
+      "teamStrain": -0.099,
+      "giveUp": 0.000,
+      "happy": 0.468,
+      "unhappy": 0.000,
+      "walkout": 0.000,
+      "substitute": 0.000,
+      "collapse": 0.000,
+      "ceilingDrift": -0.017,
+      "other": 0.000,
+      "sum": 0.352
+    },
+    "reputationMinObserved": 0.600,
+    "clampFloorHits": 0
+  },
+  "departureLogN": 160,
+  "departureSatHistogram": {
+    "0.0-0.1": 0, "0.1-0.2": 0, "0.2-0.3": 0, "0.3-0.4": 0,
+    "0.4-0.5": 0, "0.5-0.6": 0, "0.6-0.7": 0,
+    "0.7-0.8": 70, "0.8-0.9": 64, "0.9-1.0": 26
+  },
+  "departureHappyCount": 78,
+  "departureMediocreCount": 82,
+  "departureUnhappyCount": 0,
+  "waitTimes": {
+    "arrivingToSeated": { "n": 76, "meanSec": 4.7, "medianSec": 3.6 },
+    "seatedToOrdering": { "n": 96, "meanSec": 4.3, "medianSec": 3.6 },
+    "orderingToPaying": { "n": 79, "meanSec": 136.9, "medianSec": 150.0 }
+  }
+}
