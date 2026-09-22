@@ -1,0 +1,37 @@
+{
+  "note": "ORDER 251-varianten med ORDER 257 rykte-fix. Körd i worktree /tmp/nexus-257-251 (main HEAD 8fff992 = ORDER 251-merge) + reputation.ts + collapse.ts + types.ts + script kopierade från ORDER 257-branchen. Worktreet borttaget efter körning; rådata inte bevarad. Talen är kopierade ur skriptets stdout.",
+  "seed": 42,
+  "params": "start=dinner15&business=kvarterskrogen",
+  "codeVersion": "ORDER 251 + rykte-konstanter från ORDER 257",
+  "guestThroughput": {
+    "completedGuests": 84,
+    "revenueThisService": 30000,
+    "reputationBreakdown": {
+      "queueStrain": 0.000,
+      "teamStrain": -0.106,
+      "giveUp": 0.000,
+      "happy": 0.432,
+      "unhappy": 0.000,
+      "walkout": 0.000,
+      "substitute": 0.000,
+      "collapse": 0.000,
+      "ceilingDrift": -0.015,
+      "other": 0.000,
+      "sum": 0.311
+    },
+    "reputationMinObserved": 0.600,
+    "clampFloorHits": 0
+  },
+  "satisfactionAbove075": 45,
+  "satisfactionBelow035": 0,
+  "costPerCategoryLedgerDay1": {
+    "revenue": { "count": 1, "sumSek": 58548 },
+    "ingredient": { "count": 1, "sumSek": -510 },
+    "other": { "count": 4, "sumSek": 1428 }
+  },
+  "waitTimes": {
+    "arrivingToSeated": { "n": 34, "meanSec": 3.5, "medianSec": 3.4 },
+    "seatedToOrdering": { "n": 101, "meanSec": 4.5, "medianSec": 3.6 },
+    "orderingToPaying": { "n": 84, "meanSec": 138.3, "medianSec": 171.2 }
+  }
+}

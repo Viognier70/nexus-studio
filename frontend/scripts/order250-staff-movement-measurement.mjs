@@ -374,6 +374,13 @@ for (const v of satValues) {
 const satAbove075 = satValues.filter((v) => v >= 0.75).length;
 const satBelow035 = satValues.filter((v) => v < 0.35).length;
 
+// ORDER 257 — clamp-check: hur ofta bottnade reputation vid 0 under passet?
+// Räknar samples där reputation === 0 (eller ≤ 0.001 för float-marginal).
+const clampFloorHits = samples.filter((s) => (s.reputation ?? 1) <= 0.001).length;
+const reputationMin = samples.length > 0
+  ? Math.min(...samples.map((s) => s.reputation ?? 1))
+  : null;
+
 // ORDER 256 — cost per kategori ur ledger. En 'revenue'-rad är intäkt
 // (positiv för till kassan); övriga är kostnad. Grupperar per category.
 const ledger = finalSnap.ledgerDay ?? [];
@@ -410,7 +417,9 @@ const guestThroughput = {
   satisfactionBelow035: satBelow035,
   // Cost per kategori och reputation-breakdown
   costPerCategory: perCategory,
-  reputationBreakdown: finalSnap.reputationBreakdown
+  reputationBreakdown: finalSnap.reputationBreakdown,
+  clampFloorHits, // ORDER 257
+  reputationMinObserved: reputationMin != null ? Math.round(reputationMin * 1000) / 1000 : null
 };
 
 // Väntetider: läs gästens första simTime i varje state ur samples,
@@ -467,6 +476,9 @@ console.log(`\n===== COST PER CATEGORY (dag=${finalSnap.simTime > 0 ? '?' : '?'}
 for (const [cat, m] of Object.entries(guestThroughput.costPerCategory)) {
   console.log(`  ${cat.padEnd(12, ' ')}: n=${String(m.count).padStart(3, ' ')} sum=${String(m.sumSek).padStart(7, ' ')} SEK`);
 }
+console.log(`\n===== CLAMP-CHECK (ORDER 257) =====`);
+console.log(`  reputation minObserved: ${guestThroughput.reputationMinObserved ?? 'na'}`);
+console.log(`  clampFloorHits (rep ≤ 0.001): ${guestThroughput.clampFloorHits}`);
 if (guestThroughput.reputationBreakdown) {
   console.log(`\n===== REPUTATION BREAKDOWN =====`);
   const rb = guestThroughput.reputationBreakdown;
