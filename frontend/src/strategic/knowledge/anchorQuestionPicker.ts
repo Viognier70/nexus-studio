@@ -47,6 +47,9 @@ export const MAX_ANCHOR_QUESTIONS_PER_SERVICE = 3;
 // symmetri med ANCHOR_SCENARIO_BUFFER_SEC i reducer.ts (också 90);
 // två separata tal möjliggör oberoende reglering, men de startas
 // tillsammans så en observation inte döljer den andra.
+// ORDER 246 — expone­rad så DevPanel:s picker-status-rad kan replikera
+// samma buffer-check som `reducer.ts:2290` utan att duplicera konstanten.
+export const ANCHOR_SCENARIO_BUFFER_SEC = 90;
 export const MIN_GAP_BETWEEN_ANCHOR_QUESTIONS_SEC = 90;
 
 // ORDER 227 mätning: setDown-mappningen `staff.taskType === 'serve'`
@@ -56,6 +59,68 @@ export const MIN_GAP_BETWEEN_ANCHOR_QUESTIONS_SEC = 90;
 // setDown-ankrade frågor bort så pickern inte väljer något som ändå
 // aldrig fyras.
 const LIVE_ANCHOR_IDS: readonly AnchorId[] = ['greet', 'order', 'requestCheck'];
+
+// ORDER 246 — picker-status för DevPanel-visning.
+// Returnerar samma gate-utfall som reducer.ts:2301-2308 skulle ge om
+// den evaluerades just nu, uppdelat i "öppet" eller "stängt + orsak".
+// Prioritetsordningen matchar reducer:ns kontrollflöde:
+//   1. anchorEnabled (policies)
+//   2. canFire (period == lunch|dinner)
+//   3. scenario aktivt (fresh phase-läsning)
+//   4. pending fråga öppen
+//   5. tak nått (fired >= max)
+//   6. buffert före schemalagt scenario
+//   7. buffert efter senaste scenario
+//   8. min-gap sedan senaste anchor-fyra
+export type AnchorPickerStatus =
+  | { open: true; firedCount: number; maxCount: number }
+  | { open: false; reason: AnchorPickerClosedReason; firedCount: number; maxCount: number };
+export type AnchorPickerClosedReason =
+  | 'disabled'
+  | 'not-in-service'
+  | 'scenario-open'
+  | 'question-pending'
+  | 'max-reached'
+  | 'buffer-before-scenario'
+  | 'buffer-after-scenario'
+  | 'min-gap';
+
+export function getAnchorPickerStatus(state: SimulationState): AnchorPickerStatus {
+  const firedCount = state.day.anchorQuestionsFiredThisService ?? 0;
+  const maxCount = MAX_ANCHOR_QUESTIONS_PER_SERVICE;
+  const anchorEnabled = state.policies.anchorQuestionsEnabled ?? true;
+  if (!anchorEnabled) return { open: false, reason: 'disabled', firedCount, maxCount };
+  const period = state.day.period;
+  const canFire = period === 'lunch' || period === 'dinner';
+  if (!canFire) return { open: false, reason: 'not-in-service', firedCount, maxCount };
+  const phase = state.scenario.phase;
+  if (phase !== 'idle' && phase !== 'settled') {
+    return { open: false, reason: 'scenario-open', firedCount, maxCount };
+  }
+  if (state.scenario.pendingQuestion !== null) {
+    return { open: false, reason: 'question-pending', firedCount, maxCount };
+  }
+  if (firedCount >= maxCount) {
+    return { open: false, reason: 'max-reached', firedCount, maxCount };
+  }
+  const scheduled = state.day.scenarioTriggerTimes ?? [];
+  const nextScenarioSoon =
+    scheduled.length > 0 && scheduled[0] - state.simTime < ANCHOR_SCENARIO_BUFFER_SEC;
+  if (nextScenarioSoon) {
+    return { open: false, reason: 'buffer-before-scenario', firedCount, maxCount };
+  }
+  const lastScenarioAt = state.day.lastScenarioAt ?? null;
+  const inScenarioAftermath =
+    lastScenarioAt !== null && state.simTime - lastScenarioAt < ANCHOR_SCENARIO_BUFFER_SEC;
+  if (inScenarioAftermath) {
+    return { open: false, reason: 'buffer-after-scenario', firedCount, maxCount };
+  }
+  const lastAnchorAt = state.day.lastAnchorQuestionAt ?? null;
+  if (lastAnchorAt !== null && state.simTime - lastAnchorAt < MIN_GAP_BETWEEN_ANCHOR_QUESTIONS_SEC) {
+    return { open: false, reason: 'min-gap', firedCount, maxCount };
+  }
+  return { open: true, firedCount, maxCount };
+}
 
 // Kombinera de fyra brons-poolarna och filtrera till frågor vars
 // ankare är LEVANDE (anchorId satt + inte 'setDown'). Beräknas en gång
