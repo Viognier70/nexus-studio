@@ -138,6 +138,14 @@ while (Date.now() < deadline) {
       revenueThisService: (st.revenue ?? 0) - (st.day?.revenueAtServiceStart ?? 0),
       costThisService: (st.cost ?? 0) - (st.day?.costAtServiceStart ?? 0),
       resultThisService: ((st.revenue ?? 0) - (st.day?.revenueAtServiceStart ?? 0)) - ((st.cost ?? 0) - (st.day?.costAtServiceStart ?? 0)),
+      // ORDER 256 tillägg — reputation-breakdown (om instrumenteringen finns).
+      reputationBreakdown: st.metrics?.reputationBreakdown ?? null,
+      // ORDER 256 — ledger-rader dag 1 (dinner-passet). Filtrerar på day===1
+      // för att undvika miss efter dygns-rollover. dayNumberFromInit=1 för
+      // start=dinner15.
+      ledgerDay: (st.ledger ?? []).filter((l) => l.day === 1).map((l) => ({
+        category: l.category, amount: l.amount, cause: l.cause, at: l.at
+      })),
       reputation: st.reputation ?? 0,
       reputationAtStart: st.day?.reputationAtServiceStart ?? null,
       // metrics per completed service — bara fylld post-service (eveningAccount).
@@ -354,6 +362,32 @@ const satValues = [...satPerGuest.values()];
 const satMean = satValues.length > 0 ? satValues.reduce((a,b)=>a+b,0) / satValues.length : null;
 const satSort = [...satValues].sort((a,b)=>a-b);
 const satMedian = satSort.length > 0 ? satSort[Math.floor(satSort.length/2)] : null;
+// ORDER 256 tillägg — satisfaction histogram i steg om 0.1.
+// Bucket i räknas som [i×0.1, (i+1)×0.1). Bucket 10 = exakt 1.0.
+const satHistogram = { '0.0-0.1': 0, '0.1-0.2': 0, '0.2-0.3': 0, '0.3-0.4': 0,
+  '0.4-0.5': 0, '0.5-0.6': 0, '0.6-0.7': 0, '0.7-0.8': 0, '0.8-0.9': 0, '0.9-1.0': 0 };
+const buckets = Object.keys(satHistogram);
+for (const v of satValues) {
+  const b = Math.min(9, Math.floor(v * 10));
+  satHistogram[buckets[b]] += 1;
+}
+const satAbove075 = satValues.filter((v) => v >= 0.75).length;
+const satBelow035 = satValues.filter((v) => v < 0.35).length;
+
+// ORDER 256 — cost per kategori ur ledger. En 'revenue'-rad är intäkt
+// (positiv för till kassan); övriga är kostnad. Grupperar per category.
+const ledger = finalSnap.ledgerDay ?? [];
+const perCategory = {};
+for (const line of ledger) {
+  const cat = line.category ?? 'unknown';
+  if (!perCategory[cat]) perCategory[cat] = { count: 0, sumSek: 0 };
+  perCategory[cat].count += 1;
+  perCategory[cat].sumSek += line.amount;
+}
+// Runda till heltal.
+for (const cat of Object.keys(perCategory)) {
+  perCategory[cat].sumSek = Math.round(perCategory[cat].sumSek);
+}
 
 const guestThroughput = {
   completedGuests: finalSnap.completedGuests,
@@ -369,7 +403,14 @@ const guestThroughput = {
   reputationDelta: (finalSnap.reputation ?? 0) - (samples[0]?.reputation ?? 0),
   satisfactionMean: satMean != null ? Math.round(satMean * 1000) / 1000 : null,
   satisfactionMedian: satMedian != null ? Math.round(satMedian * 1000) / 1000 : null,
-  satisfactionN: satValues.length
+  satisfactionN: satValues.length,
+  // ORDER 256 tillägg — histogram + trösklar
+  satisfactionHistogram: satHistogram,
+  satisfactionAbove075: satAbove075,
+  satisfactionBelow035: satBelow035,
+  // Cost per kategori och reputation-breakdown
+  costPerCategory: perCategory,
+  reputationBreakdown: finalSnap.reputationBreakdown
 };
 
 // Väntetider: läs gästens första simTime i varje state ur samples,
@@ -415,6 +456,25 @@ console.log(`  walkouts+declined during service: ${guestThroughput.walkoutsDurin
 console.log(`  final states:`, guestThroughput.finalStates);
 if (guestThroughput.eveningMetrics) {
   console.log(`  evening metrics: revenue=${guestThroughput.eveningMetrics.revenue.toFixed(0)} cost=${guestThroughput.eveningMetrics.cost.toFixed(0)} result=${guestThroughput.eveningMetrics.result.toFixed(0)} repΔ=${guestThroughput.eveningMetrics.reputationDelta.toFixed(3)}`);
+}
+console.log(`\n===== SATISFACTION HISTOGRAM =====`);
+for (const [bucket, n] of Object.entries(guestThroughput.satisfactionHistogram)) {
+  const bar = '█'.repeat(n);
+  console.log(`  ${bucket}: ${String(n).padStart(3, ' ')} ${bar}`);
+}
+console.log(`  ≥ 0.75: ${guestThroughput.satisfactionAbove075}   < 0.35: ${guestThroughput.satisfactionBelow035}`);
+console.log(`\n===== COST PER CATEGORY (dag=${finalSnap.simTime > 0 ? '?' : '?'} ur ledger) =====`);
+for (const [cat, m] of Object.entries(guestThroughput.costPerCategory)) {
+  console.log(`  ${cat.padEnd(12, ' ')}: n=${String(m.count).padStart(3, ' ')} sum=${String(m.sumSek).padStart(7, ' ')} SEK`);
+}
+if (guestThroughput.reputationBreakdown) {
+  console.log(`\n===== REPUTATION BREAKDOWN =====`);
+  const rb = guestThroughput.reputationBreakdown;
+  const sum = Object.values(rb).reduce((a,b)=>a+b, 0);
+  for (const [ch, v] of Object.entries(rb)) {
+    console.log(`  ${ch.padEnd(14, ' ')}: ${v >= 0 ? '+' : ''}${v.toFixed(3)}`);
+  }
+  console.log(`  ${'sum'.padEnd(14, ' ')}: ${sum >= 0 ? '+' : ''}${sum.toFixed(3)}`);
 }
 console.log(`\n===== VÄNTETIDER (sim-sek) =====`);
 for (const [k, v] of Object.entries(waitStats)) {

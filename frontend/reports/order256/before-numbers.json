@@ -1,0 +1,40 @@
+{
+  "note": "ORDER 251-varianten (arrival-guard, TASK_BASE_TICKS = pre-koreografi). Mätning kördes i worktree /tmp/nexus-256-251 (main HEAD 8fff992) med ORDER 256-instrumenteringen applicerad manuellt på reputation.ts + collapse.ts + types.ts + scripts/order250-... Reducer.ts orörd i denna körning (walkout/substitute/collapse-instrumenteringen från reducer saknas — men de events fyras inte i denna sim ändå per finalStates + guest-fördelning). Worktreet borttaget efter körning; rådata inte bevarad. Talen är kopierade ur skriptets stdout och utgör källan för register-radens 'ORDER 251'-kolumn.",
+  "seed": 42,
+  "params": "start=dinner15&business=kvarterskrogen",
+  "codeVersion": "main HEAD 8fff992 (ORDER 251-merge) + ORDER 256 instrumenting",
+  "guestThroughput": {
+    "completedGuests": 83,
+    "revenueThisService": 30000,
+    "reputationBreakdown": {
+      "queueStrain": 0.000,
+      "teamStrain": -1.060,
+      "giveUp": 0.000,
+      "happy": 0.540,
+      "unhappy": 0.000,
+      "walkout": 0.000,
+      "substitute": 0.000,
+      "collapse": 0.000,
+      "ceilingDrift": 0.028,
+      "other": 0.000,
+      "sum": -0.492
+    }
+  },
+  "satisfactionHistogram": {
+    "0.0-0.1": 0, "0.1-0.2": 0, "0.2-0.3": 0, "0.3-0.4": 0,
+    "0.4-0.5": 8, "0.5-0.6": 0, "0.6-0.7": 0,
+    "0.7-0.8": 47, "0.8-0.9": 29, "0.9-1.0": 16
+  },
+  "satisfactionAbove075": 45,
+  "satisfactionBelow035": 0,
+  "costPerCategoryLedgerDay1": {
+    "revenue": { "count": 1, "sumSek": 58548 },
+    "ingredient": { "count": 1, "sumSek": -510 },
+    "other": { "count": 3, "sumSek": 1071 }
+  },
+  "waitTimes": {
+    "arrivingToSeated": { "n": 35, "meanSec": 3.4, "medianSec": 3.4 },
+    "seatedToOrdering": { "n": 95, "meanSec": 4.3, "medianSec": 3.6 },
+    "orderingToPaying": { "n": 83, "meanSec": 138.5, "medianSec": 165.0 }
+  }
+}

@@ -205,7 +205,11 @@ export function tickReputationCeilingDrift(draft: SimulationState): void {
     ? REP_TO_CEILING_DRIFT_PER_TICK * techneDriftMultiplier(draft, 'cultural')
     : REP_TO_CEILING_DRIFT_PER_TICK * 0.5;
   const move = gap * rate;
+  const before = draft.reputation;
   draft.reputation = Math.max(0, Math.min(1, draft.reputation + move));
+  // ORDER 256 — instrumentera med FAKTISKT delta (efter clamp).
+  const actualDelta = draft.reputation - before;
+  if (actualDelta !== 0) logRepDelta(draft, 'ceilingDrift', actualDelta);
 }
 
 export function applyReputationDelta(
@@ -214,6 +218,35 @@ export function applyReputationDelta(
 ): void {
   const next = state.reputation + delta;
   state.reputation = Math.max(0, Math.min(1, next));
+}
+
+// ORDER 256 — instrumentering. Ackumulator per kanal, ingen logik-ändring.
+// Anropas SIDE-BY-SIDE med state.reputation-writes. Om metrics.reputation-
+// Breakdown saknas (t.ex. gamla testfixturer) initieras den nollställd.
+export type RepSource =
+  | 'queueStrain'
+  | 'teamStrain'
+  | 'giveUp'
+  | 'happy'
+  | 'unhappy'
+  | 'walkout'
+  | 'substitute'
+  | 'collapse'
+  | 'ceilingDrift'
+  | 'other';
+
+export function logRepDelta(
+  state: SimulationState,
+  source: RepSource,
+  delta: number
+): void {
+  if (!state.metrics.reputationBreakdown) {
+    state.metrics.reputationBreakdown = {
+      queueStrain: 0, teamStrain: 0, giveUp: 0, happy: 0, unhappy: 0,
+      walkout: 0, substitute: 0, collapse: 0, ceilingDrift: 0, other: 0
+    };
+  }
+  state.metrics.reputationBreakdown[source] += delta;
 }
 
 // Per-tick reputation drift from continuous room state. Runs each tick
@@ -226,8 +259,10 @@ export function tickReputationDrift(state: SimulationState): void {
   let delta = 0;
 
   const queueLen = state.waitingIds.length;
+  let queueDelta = 0;
   if (queueLen > QUEUE_STRAIN_THRESHOLD) {
-    delta -= QUEUE_STRAIN_RATE * TICK_SECONDS;
+    queueDelta = -QUEUE_STRAIN_RATE * TICK_SECONDS;
+    delta += queueDelta;
   }
 
   const activeGuests = state.guests.filter(
@@ -239,11 +274,18 @@ export function tickReputationDrift(state: SimulationState): void {
       g.state === 'dining' ||
       g.state === 'paying'
   ).length;
+  let teamDelta = 0;
   if (activeGuests > teamCapacity(state.team)) {
-    delta -= TEAM_STRAIN_RATE * TICK_SECONDS;
+    teamDelta = -TEAM_STRAIN_RATE * TICK_SECONDS;
+    delta += teamDelta;
   }
 
-  if (delta !== 0) applyReputationDelta(state, delta);
+  if (delta !== 0) {
+    applyReputationDelta(state, delta);
+    // ORDER 256 — instrumentera per kanal (SIDE-BY-SIDE, ingen behavior-ändring).
+    if (queueDelta !== 0) logRepDelta(state, 'queueStrain', queueDelta);
+    if (teamDelta !== 0) logRepDelta(state, 'teamStrain', teamDelta);
+  }
 }
 
 // Called from service.ts when a guest gives up waiting. One-shot event
@@ -251,6 +293,7 @@ export function tickReputationDrift(state: SimulationState): void {
 // only — not every tick the guest is in 'leaving' state.
 export function reputationEventGiveUp(state: SimulationState): void {
   applyReputationDelta(state, -GIVE_UP_COST);
+  logRepDelta(state, 'giveUp', -GIVE_UP_COST);
   // ORDER 115 rev 2 — spåra för uteplats-tröskel kandidat B
   // (serviceomgångar utan missnöjda). Räknare nollställs vid
   // service-close om > 0 (dvs. servicen var INTE clean).
@@ -265,12 +308,14 @@ export function reputationEventDeparture(
 ): void {
   if (satisfaction >= HAPPY_THRESHOLD) {
     applyReputationDelta(state, HAPPY_GAIN);
+    logRepDelta(state, 'happy', HAPPY_GAIN);
     // ORDER 115 rev 2 — kumulativ räknare för uteplats-kandidat C
     // (kumulativt antal nöjda gäster). Nollställs aldrig — permanent
     // ackumulator för spelets livstid.
     state.metrics.happyDeparturesTotal += 1;
   } else if (satisfaction <= UNHAPPY_THRESHOLD) {
     applyReputationDelta(state, -UNHAPPY_COST);
+    logRepDelta(state, 'unhappy', -UNHAPPY_COST);
   }
   // Otherwise: mediocre departure, no signal.
 }
