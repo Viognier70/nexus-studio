@@ -1,0 +1,110 @@
+{
+  "perStaff": {
+    "staff-0": {
+      "role": "värd",
+      "totalSamples": 249,
+      "totalSimSec": 902.8,
+      "movingPct": 31.3,
+      "stillPct": 68.7,
+      "targetChangesPerMin": 4.9,
+      "taskChanges": 62,
+      "taskChangesMidMove": 37,
+      "taskChangesMidMovePct": 59.7,
+      "dwellGreet": {
+        "count": 11,
+        "meanSec": 3.5,
+        "medianSec": 3.4,
+        "minSec": 3,
+        "maxSec": 4.2
+      },
+      "dwellOrder": {
+        "count": 0
+      },
+      "dwellServe": {
+        "count": 0
+      }
+    },
+    "staff-1": {
+      "role": "servitör",
+      "totalSamples": 249,
+      "totalSimSec": 902.8,
+      "movingPct": 56.6,
+      "stillPct": 43.4,
+      "targetChangesPerMin": 11.8,
+      "taskChanges": 201,
+      "taskChangesMidMove": 123,
+      "taskChangesMidMovePct": 61.2,
+      "dwellGreet": {
+        "count": 0
+      },
+      "dwellOrder": {
+        "count": 44,
+        "meanSec": 3.5,
+        "medianSec": 3.4,
+        "minSec": 3,
+        "maxSec": 6.8
+      },
+      "dwellServe": {
+        "count": 0
+      }
+    },
+    "staff-2": {
+      "role": "kock",
+      "totalSamples": 249,
+      "totalSimSec": 902.8,
+      "movingPct": 0,
+      "stillPct": 100,
+      "targetChangesPerMin": 0,
+      "taskChanges": 46,
+      "taskChangesMidMove": 0,
+      "taskChangesMidMovePct": 0,
+      "dwellGreet": {
+        "count": 0
+      },
+      "dwellOrder": {
+        "count": 0
+      },
+      "dwellServe": {
+        "count": 0
+      }
+    }
+  },
+  "anchorFires": [
+    {
+      "simTime": 131.60000000000107,
+      "questionId": "kalastorget-brons-01",
+      "anchorId": "greet",
+      "askerRole": "värd",
+      "askerStaffId": "staff-0",
+      "askerTaskType": "greet",
+      "guestId": "gst-6",
+      "guestState": "seated",
+      "staffToGuestDist": 1.9276715474571198,
+      "staffArrivedAtTarget": false
+    },
+    {
+      "simTime": 230.39999999999546,
+      "questionId": "kalastorget-brons-08",
+      "anchorId": "requestCheck",
+      "askerRole": "värd",
+      "askerStaffId": "staff-0",
+      "askerTaskType": null,
+      "guestId": null,
+      "guestState": null,
+      "staffToGuestDist": null,
+      "staffArrivedAtTarget": null
+    },
+    {
+      "simTime": 329.19999999998987,
+      "questionId": "kalastorget-brons-06",
+      "anchorId": "requestCheck",
+      "askerRole": "gäst",
+      "askerStaffId": null,
+      "askerTaskType": null,
+      "guestId": null,
+      "guestState": null,
+      "staffToGuestDist": null,
+      "staffArrivedAtTarget": null
+    }
+  ]
+}
