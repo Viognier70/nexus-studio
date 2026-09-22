@@ -456,11 +456,19 @@ function buyStock(
   if (!supplier || !ingredient) return state;
   if (!ingredient.suppliers.includes(supplierId)) return state;
 
-  // Short-delivery roll — one unit off (min 0). Deterministic path
-  // through state.rngState so a fixed-seed harness sees the same
-  // short-delivery pattern each run.
-  const rng = createRng(state.rngState);
-  const roll = rng.next();
+  // ORDER 259 (VO 2026-09-22): short-delivery-roll får egen slumpström
+  // härledd ur seed + ingredientId. Före denna ändring konsumerade
+  // `state.rngState` en next() → arrival-schedulet i nästa OPEN_SERVICE
+  // förskjöts, vilket ändrade gäst-antalet mellan mätpass som bara
+  // skilde sig på om BUY_STOCK dispatchats. Nu bevaras sim-rng
+  // oberoende av lager-dispatchar. Samma pattern som anchor-picker
+  // (ORDER 238).
+  let hash = state.seed;
+  for (let i = 0; i < ingredientId.length; i++) {
+    hash = ((hash * 31) + ingredientId.charCodeAt(i)) | 0;
+  }
+  const isoRng = createRng((hash * 2246822519) >>> 0);
+  const roll = isoRng.next();
   const received = roll < (1 - supplier.reliability) ? Math.max(0, units - 1) : units;
 
   const costSek = ingredient.baseCostSek * supplier.priceIndex * units;
@@ -470,7 +478,7 @@ function buyStock(
 
   const next: SimulationState = {
     ...state,
-    rngState: rng.state,
+    // rngState orörd — isolerad stream ovan
     stock: nextStock,
     capitals: {
       ...state.capitals,
@@ -481,7 +489,11 @@ function buyStock(
       platesRemaining: computePlatesRemaining(state.menu, nextStock)
     }
   };
-  applyCashCost(next, costSek);
+  // ORDER 259 (VO 2026-09-22): stock-inköp är asset-conversion (kassa
+  // → varor), inte servicekostnad. `applyCashDelta` drar bara kassan
+  // utan att öka `state.cost`, så `costThisService` (state.cost delta
+  // under service-fönstret) inte inkluderar lager-inköp.
+  applyCashDelta(next, -costSek);
   postLedger(next, {
     category: 'stock',
     amount: -costSek,
