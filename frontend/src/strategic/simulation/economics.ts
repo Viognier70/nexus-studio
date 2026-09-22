@@ -41,11 +41,22 @@ export const SERVICE_DURATION_MULT: Record<ServiceConcept, number> = {
 
 // Duration in ticks for each task type at training level 2. Level 1 slows
 // down; level 3 speeds up.
+//
+// ORDER 253 (steg 1 av alternativ D per VO 2026-09-22) — de tre gest-
+// taskarna greet/order/serve läses nu från `handoff/serviceScore.ts`
+// SERVICE_TIMING vid gameSpeed=1: base = SERVICE_TIMING × TICK_HZ.
+//   greet   3.2 s × 5 =  16 ticks  (från 4)
+//   order   6.5 s × 5 =  33 ticks  (från 10)
+//   serve   2.4 s × 5 =  12 ticks  (från 14) — koreografins setDown
+// Hastighetsfaktorn (× gameSpeed) landas i steg 2 så gestens wall-tid
+// blir konstant vid 1×/2×/4× (`serviceScore.ts §tempo`). Övriga tasks
+// (seat/clear/decant/flambe/welcomeDrink/checkback/bg) hålls tills
+// koreografin fyller dem — egen order per uppgifts-typ.
 export const TASK_BASE_TICKS: Record<string, number> = {
-  greet: 4,
+  greet: 16,
   seat: 6,
-  order: 10,
-  serve: 14,
+  order: 33,
+  serve: 12,
   decant: 18,
   flambe: 20,
   clear: 8,
