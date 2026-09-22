@@ -210,9 +210,9 @@ function NewRoundButton() {
         type="button"
         style={NEW_ROUND_BUTTON_STYLE}
         onClick={() => dispatch({ type: 'RESET' })}
-        aria-label="Starta en ny omgång från dag 1"
+        aria-label="Start a new round from day 1"
       >
-        Ny omgång
+        New round
       </button>
     </div>
   );
@@ -262,18 +262,18 @@ export function EveningAccountPanel() {
   return (
     <div style={{ ...PANEL_WRAPPER_STYLE, opacity }}>
       <div style={PANEL_STYLE}>
-        <div style={HEADING_STYLE}>Kvällens redovisning</div>
+        <div style={HEADING_STYLE}>Evening account</div>
         <div>{account.paragraph}</div>
 
         {account.metrics ? (
           <div style={METRICS_SECTION_STYLE}>
-            <div style={LEDGER_SUBHEADING_STYLE}>Dagens tal</div>
+            <div style={LEDGER_SUBHEADING_STYLE}>Today's figures</div>
             <MetricsBlock metrics={account.metrics} />
           </div>
         ) : null}
 
         <div style={LEDGER_SECTION_STYLE}>
-          <div style={LEDGER_SUBHEADING_STYLE}>Räkenskaperna för dagen</div>
+          <div style={LEDGER_SUBHEADING_STYLE}>The day's ledger</div>
           <TodaysLedger lines={todaysLedger} />
         </div>
 
@@ -290,21 +290,21 @@ export function EveningAccountPanel() {
 // förändring, inte ett absolut värde.
 function MetricsBlock({ metrics }: { metrics: EveningAccountMetrics }) {
   return (
-    <div role="log" aria-label="Dagens tal">
+    <div role="log" aria-label="Today's figures">
       <div style={METRICS_ROW_STYLE}>
-        <span style={{ opacity: 0.75 }}>Intäkt</span>
+        <span style={{ opacity: 0.75 }}>Revenue</span>
         <span style={{ textAlign: 'right', color: '#d8be82' }}>
           {formatSek(metrics.revenue)}
         </span>
       </div>
       <div style={METRICS_ROW_STYLE}>
-        <span style={{ opacity: 0.75 }}>Kostnad</span>
+        <span style={{ opacity: 0.75 }}>Costs</span>
         <span style={{ textAlign: 'right', color: '#e8b498' }}>
           {formatSek(-metrics.cost)}
         </span>
       </div>
       <div style={METRICS_RESULT_ROW_STYLE}>
-        <span>Resultat</span>
+        <span>Result</span>
         <span
           style={{
             textAlign: 'right',
@@ -315,13 +315,13 @@ function MetricsBlock({ metrics }: { metrics: EveningAccountMetrics }) {
         </span>
       </div>
       <div style={METRICS_ROW_STYLE}>
-        <span style={{ opacity: 0.75 }}>Rykte</span>
+        <span style={{ opacity: 0.75 }}>Reputation</span>
         <span style={{ textAlign: 'right' }}>
           {formatDelta(metrics.reputationDelta, 2)}
         </span>
       </div>
       <div style={METRICS_ROW_STYLE}>
-        <span style={{ opacity: 0.75 }}>Kunskap</span>
+        <span style={{ opacity: 0.75 }}>Knowledge</span>
         <span style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
           E {formatDelta(metrics.knowledgeDelta.episteme, 2)}  T{' '}
           {formatDelta(metrics.knowledgeDelta.techne, 2)}  P{' '}
@@ -335,7 +335,7 @@ function MetricsBlock({ metrics }: { metrics: EveningAccountMetrics }) {
 function formatSek(amount: number): string {
   const sign = amount >= 0 ? '+' : '−';
   const abs = Math.abs(Math.round(amount));
-  return `${sign}${abs.toLocaleString('sv-SE')} kr`;
+  return `${sign}${abs.toLocaleString('sv-SE')} SEK`;
 }
 
 function formatDelta(value: number, decimals: number): string {
@@ -351,10 +351,10 @@ interface TodaysLedgerProps {
 
 function TodaysLedger({ lines }: TodaysLedgerProps) {
   if (lines.length === 0) {
-    return <div style={LEDGER_EMPTY_STYLE}>Inga rörelser att bokföra idag.</div>;
+    return <div style={LEDGER_EMPTY_STYLE}>Nothing to record today.</div>;
   }
   return (
-    <div role="log" aria-label="Dagens rörelser">
+    <div role="log" aria-label="Today's entries">
       {lines.map((line, i) => (
         <div
           key={`${line.at}-${line.category}-${i}`}

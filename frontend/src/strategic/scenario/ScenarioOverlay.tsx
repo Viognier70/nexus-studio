@@ -147,7 +147,7 @@ export function ScenarioOverlay() {
 
   // ORDER 234 — anchor-frågans post-answer-fas. Visar frågan i muted,
   // markerar spelarens val (rätt = grön, fel = röd), markerar det
-  // rätta svaret, och renderar FÖRKLARING-texten. En "Fortsätt"-knapp
+  // rätta svaret, och renderar FÖRKLARING-texten. En "Continue"-knapp
   // dispatch:ar ACK_QUESTION_EXPLANATION. Scenariofrågor passerar
   // inte hit (deras path går resolving → settled utan explanation-fas).
   if (phase === 'question-explanation' && pendingQuestion && pendingQuestion.explanation) {
@@ -195,7 +195,7 @@ export function ScenarioOverlay() {
           })}
         </div>
         <div style={{ marginTop: 12, fontSize: 13, lineHeight: 1.5, opacity: 0.9 }}>
-          {wasCorrect ? 'Rätt. ' : ''}
+          {wasCorrect ? 'Correct. ' : ''}
           {pendingQuestion.explanation}
         </div>
         <div style={{ ...BUTTON_ROW_STYLE, marginTop: 12, justifyContent: 'flex-end' }}>
@@ -204,7 +204,7 @@ export function ScenarioOverlay() {
             style={BUTTON_STYLE}
             onClick={() => dispatch({ type: 'ACK_QUESTION_EXPLANATION' })}
           >
-            Fortsätt
+            Continue
           </button>
         </div>
       </div>
