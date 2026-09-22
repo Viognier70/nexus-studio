@@ -8,8 +8,14 @@
 // Wrapped in `import.meta.env.DEV` so Vite strips this at production
 // build time; no numeric HUD ships to a player build.
 //
-// Layout: bottom-left corner, small monospace strip. Opposite the
-// ScenarioOverlay (bottom-centre) so they never overlap.
+// Layout: top-left corner, small monospace strip. Placed at TOP
+// so the bottom-centre ScenarioOverlay can grow tall (fyra
+// svarsalternativ = ~200-250 px) without overlapping. ORDER 244
+// (2026-09-22): flyttad från bottom:8 till top:8 efter provspel-
+// rapport att DevPanel:s tredje rad (weather + factors + anch =
+// ~950 px bred) korsade under overlayets sista svarsalternativ
+// (C/D) på 1280-viewport. PanelColumn startar top:72 så DevPanel
+// (~60 px hög) hamnar över den utan att kollidera.
 //
 // Removed at ORDER 043 B.3 alongside the S/E/C dev shortcuts, when
 // the wager UI + scenario-driven capital movement replace the manual
@@ -35,7 +41,7 @@ import { harnessParams } from '../testHarness/urlParams';
 
 const PANEL_STYLE: React.CSSProperties = {
   position: 'absolute',
-  bottom: 8,
+  top: 8,
   left: 8,
   padding: '6px 10px',
   background: 'rgba(20, 14, 10, 0.82)',
