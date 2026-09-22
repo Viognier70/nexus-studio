@@ -98,6 +98,35 @@ function applyDevFoodtruckSeed(state: SimulationState): SimulationState {
 // med 238:s per-fire-referens.
 function applyDevStartOverride(state: SimulationState): SimulationState {
   if (harnessParams.start !== 'dinner15') return state;
+  // ORDER 258 — kompose en default meny + fyll stock vid start=dinner15
+  // så per-rätt-ingredient-cost fyras för mätning. Utan detta hoppar
+  // reducer via legacy fallback (revenuePerGuest utan ingredient-debit)
+  // ELLER stockar tomma → walkouts flashar rykte.
+  // Rimlig stock: 100 units av varje ingrediens täcker ~15-20 min service.
+  state = reducer(state, { type: 'BUY_STOCK', supplierId: 'wholesaler', ingredientId: 'root-veg',  units: 100 });
+  state = reducer(state, { type: 'BUY_STOCK', supplierId: 'wholesaler', ingredientId: 'leaf-veg',  units: 100 });
+  state = reducer(state, { type: 'BUY_STOCK', supplierId: 'local-veg',  ingredientId: 'herbs',     units: 100 });
+  state = reducer(state, { type: 'BUY_STOCK', supplierId: 'wholesaler', ingredientId: 'chicken',   units: 50  });
+  state = reducer(state, { type: 'BUY_STOCK', supplierId: 'wholesaler', ingredientId: 'pork',      units: 50  });
+  state = reducer(state, { type: 'BUY_STOCK', supplierId: 'meat-game',  ingredientId: 'lamb',      units: 30  });
+  state = reducer(state, { type: 'BUY_STOCK', supplierId: 'meat-game',  ingredientId: 'game',      units: 20  });
+  state = reducer(state, { type: 'BUY_STOCK', supplierId: 'lake-fish',  ingredientId: 'lake-fish', units: 30  });
+  state = reducer(state, { type: 'BUY_STOCK', supplierId: 'wholesaler', ingredientId: 'eggs',      units: 50  });
+  state = reducer(state, { type: 'BUY_STOCK', supplierId: 'wholesaler', ingredientId: 'dairy',     units: 50  });
+  state = reducer(state, { type: 'BUY_STOCK', supplierId: 'brewery',    ingredientId: 'beer',      units: 60  });
+  state = reducer(state, {
+    type: 'COMPOSE_MENU',
+    dishes: [
+      { dishId: 'root-soup',     price: 95  },
+      { dishId: 'chicken-plate', price: 175 },
+      { dishId: 'pork-plate',    price: 195 },
+      { dishId: 'lamb-plate',    price: 285 },
+      { dishId: 'game-plate',    price: 385 },
+      { dishId: 'fish-plate',    price: 265 },
+      { dishId: 'dairy-dessert', price: 85  },
+      { dishId: 'beer-pairing',  price: 55  }
+    ]
+  });
   state = reducer(state, { type: 'SKIP_LUNCH' });
   state = reducer(state, { type: 'OPEN_SERVICE', service: 'dinner', lengthMinutes: 15 });
   return state;

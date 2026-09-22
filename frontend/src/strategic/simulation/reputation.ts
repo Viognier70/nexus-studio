@@ -326,7 +326,8 @@ export function reputationEventGiveUp(state: SimulationState): void {
 // Reads their final satisfaction and applies the appropriate delta.
 export function reputationEventDeparture(
   state: SimulationState,
-  satisfaction: number
+  satisfaction: number,
+  guestId?: string
 ): void {
   if (satisfaction >= HAPPY_THRESHOLD) {
     applyReputationDelta(state, HAPPY_GAIN);
@@ -340,4 +341,15 @@ export function reputationEventDeparture(
     logRepDelta(state, 'unhappy', -UNHAPPY_COST);
   }
   // Otherwise: mediocre departure, no signal.
+
+  // ORDER 258 (dev-only) — logga alla departures för mätscriptet så
+  // histogram fångar sat vid rätt tidpunkt (paying→leaving) istället
+  // för sat vid sista state.guests-snapshot (som missar gäster som
+  // prunas mellan sample och mätslut). Reset:as vid OPEN_SERVICE via
+  // reducer.ts. Tree-shakas i prod eftersom `import.meta.env.DEV`.
+  if (import.meta.env.DEV && typeof globalThis !== 'undefined' && guestId !== undefined) {
+    const g = globalThis as unknown as { __nxRepDepartureLog?: Array<{ guestId: string; satisfaction: number; simTime: number }> };
+    if (!g.__nxRepDepartureLog) g.__nxRepDepartureLog = [];
+    g.__nxRepDepartureLog.push({ guestId, satisfaction, simTime: state.simTime });
+  }
 }
