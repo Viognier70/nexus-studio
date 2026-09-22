@@ -41,7 +41,10 @@ import { ALL_TEMPLATE_EXAMPLES, R2_SEED_QUESTIONS } from '../knowledge/questionT
 import type { Question } from '../knowledge/questionFormats';
 // ORDER 234 — anchor-fråge-picker + deriveActiveAnchors.
 import { deriveActiveAnchors } from './anchors';
-import { pickAnchorQuestion } from '../knowledge/anchorQuestionPicker';
+import {
+  pickAnchorQuestion,
+  ANCHOR_SCENARIO_BUFFER_SEC
+} from '../knowledge/anchorQuestionPicker';
 
 // ORDER 104 §Q3 — separat slot-mekanik för prov, inte återanvänd
 // activity-slot. Aktiviteter är driftdagens val, prov är mellan-varv-
@@ -2287,7 +2290,8 @@ function advanceTick(state: SimulationState): SimulationState {
   // 3 min "eget utrymme" (90s före + 90s efter) medan anchor-frågor
   // får plats både före och mellan scenarier även när dessa ligger
   // 3 min isär.
-  const ANCHOR_SCENARIO_BUFFER_SEC = 90;
+  // ORDER 246 — konstanten importeras från anchorQuestionPicker.ts nu
+  // så getAnchorPickerStatus() och reducer:s gate garanterat är i synk.
   const nextScenarioSoon =
     scheduled.length > 0 &&
     scheduled[0] - draft.simTime < ANCHOR_SCENARIO_BUFFER_SEC;

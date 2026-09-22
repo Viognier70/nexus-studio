@@ -32,6 +32,7 @@ import {
 } from '../simulation/competitors';
 import { useSimState } from '../simulation/SimulationProvider';
 import { countActiveAnchors } from '../simulation/anchors';
+import { getAnchorPickerStatus } from '../knowledge/anchorQuestionPicker';
 import { usePlayerBusinessInterior } from '../business/interiorLayout';
 import { businessHasSeats } from '../business/businessClass';
 import { businessRoomRef } from '../scene/interiorSharedState';
@@ -255,6 +256,14 @@ export function DevPanel({ lastKey }: Props) {
   const anchors = countActiveAnchors(sim);
   const anchStr = ` anch=g${anchors.greet}/o${anchors.order}/s${anchors.setDown}/rc${anchors.requestCheck}/p${anchors.pay}`;
 
+  // ORDER 246 — anchor-picker-status. `aq=N/M open` när fönstret är
+  // öppet (pickern kan fyra), `aq=N/M closed:<reason>` när gate:n
+  // stänger. Reason:orna matchar reducer.ts:2301-2308 kontrollflödet.
+  const pickerStatus = getAnchorPickerStatus(sim);
+  const pickerStr = ` aq=${pickerStatus.firedCount}/${pickerStatus.maxCount} ${
+    pickerStatus.open ? 'open' : `closed:${pickerStatus.reason}`
+  }`;
+
   // Log on-change when the live queue is non-empty. Vision Owner
   // 2026-08-15: "waiting=4, ingen sitter" → the console needs to
   // show at which tuple (queue, seated, capacity, layoutSeats) the
@@ -341,7 +350,7 @@ export function DevPanel({ lastKey }: Props) {
       : '';
   const shareStr = `share=${shareF.toFixed(2)}${shareSuffix}`;
   const line2 = `     cash=${cashK.toString().padStart(4, ' ')}k  econR=${econReading.toFixed(2)}  soc=${c.social.toFixed(2)}  eco=${c.ecological.toFixed(2)}  rep=${sim.reputation.toFixed(2)}  ${shareStr}  ${creditsStr}  key=${lastKey || '-'}`;
-  const line3 = `     ${weather}${factors}${seatStr}${anchStr}`;
+  const line3 = `     ${weather}${factors}${seatStr}${anchStr}${pickerStr}`;
   // ORDER 061 point 3 — post-tone-map pixel at screen centre.
   // Vision Owner aims the crosshair at a roof face; this reads the
   // sRGB value being displayed. R170 G120 B100 → math is right and
