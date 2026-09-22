@@ -150,6 +150,20 @@ export function deriveStaffAction(
     };
   }
 
+  // ORDER 247 — värd-specifik prep-fallback. ORDER 210 gav
+  // kock/lärling/servitör bg-tasks (misEnPlace/dish/restock/clean) via
+  // `TASK_ROLE_ASSIGNMENT` (`service.ts:818`), men värd har inga bg-tasks
+  // tilldelade (bara greet + seat som är guest-drivna). Under prep får
+  // värd `taskType = null` genom hela fasen → workload decayar 0.03/s →
+  // under 0.1 efter ~30s → S2 "On break" fyras. Missledande UX: värden
+  // är inte på rast, hen väntar på att dörrarna ska öppnas. Ge en prep-
+  // specifik text som matchar väntandet. Placeras FÖRE S2 så den vinner
+  // fallthrough oavsett workload. (Analog fix som ORDER 191 gjorde för
+  // andra roller via mise en place-branschen; VO-inspelning 2026-09-22.)
+  if (phase === 'prep' && staff.role === 'värd' && staff.taskType === null) {
+    return { text: "Reviewing tonight's bookings", iconKey: 'plan' };
+  }
+
   // S2 — prep phase, riktigt idle staff (workload dyk): on break, off-reel.
   if (phase === 'prep' && staff.taskType === null) {
     return { text: 'On break', iconKey: 'pause' };
