@@ -445,7 +445,7 @@ export function tickGuests(state: SimulationState) {
       // remembered).
       state.completedGuests += 1;
       state.seatedIds = state.seatedIds.filter((id) => id !== guest.id);
-      reputationEventDeparture(state, guest.satisfaction);
+      reputationEventDeparture(state, guest.satisfaction, guest.id);
       // ORDER 047 §2 — same satisfaction band drives morale. A happy
       // departure lifts; an unhappy one drags; a mediocre departure is
       // silent (the team doesn't register a neutral customer).

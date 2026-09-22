@@ -1,0 +1,46 @@
+{
+  "note": "ORDER 251-varianten (arrival-guard, kort TASK_BASE_TICKS) + ORDER 258 (per-rätt-cost + departure-log + rykte-fix från 257 + menu+stock i applyDevStartOverride). Kört i worktree /tmp/nexus-258-251 (main HEAD 8fff992) med filer kopierade från ORDER 258-branchen. Worktreet borttaget efter körning.",
+  "seed": 42,
+  "params": "start=dinner15&business=kvarterskrogen",
+  "codeVersion": "ORDER 251 + ORDER 258 (rep-fix + per-dish + menu-init)",
+  "guestThroughput": {
+    "completedGuests": 79,
+    "revenueThisService": 15480,
+    "costThisService": 19008,
+    "resultThisService": -3528,
+    "reputationBreakdown": {
+      "queueStrain": 0.000,
+      "teamStrain": -0.099,
+      "giveUp": 0.000,
+      "happy": 0.492,
+      "unhappy": 0.000,
+      "walkout": 0.000,
+      "substitute": 0.000,
+      "collapse": 0.000,
+      "ceilingDrift": -0.018,
+      "other": 0.000,
+      "sum": 0.375
+    },
+    "reputationMinObserved": 0.600,
+    "clampFloorHits": 0
+  },
+  "departureLogN": 158,
+  "departureSatHistogram": {
+    "0.0-0.1": 0, "0.1-0.2": 0, "0.2-0.3": 0, "0.3-0.4": 0,
+    "0.4-0.5": 0, "0.5-0.6": 0, "0.6-0.7": 0,
+    "0.7-0.8": 52, "0.8-0.9": 66, "0.9-1.0": 40
+  },
+  "departureHappyCount": 82,
+  "departureMediocreCount": 76,
+  "departureUnhappyCount": 0,
+  "costPerCategoryLedgerDay1": {
+    "stock": { "count": 11, "sumSek": -10930 },
+    "revenue": { "count": 1, "sumSek": 29020 },
+    "ingredient": { "count": 1, "sumSek": -3648 }
+  },
+  "waitTimes": {
+    "arrivingToSeated": { "n": 77, "meanSec": 4.8, "medianSec": 4.0 },
+    "seatedToOrdering": { "n": 94, "meanSec": 4.1, "medianSec": 3.8 },
+    "orderingToPaying": { "n": 79, "meanSec": 131.0, "medianSec": 142.4 }
+  }
+}

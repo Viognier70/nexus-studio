@@ -340,6 +340,16 @@ for (const f of anchorFires) {
 // ================= GUEST-THROUGHPUT + VÄNTETIDER =================
 // ORDER 251 tillägg — jämförelse-tal för före/efter arrival guard.
 const finalSnap = samples[samples.length-1];
+// ORDER 258 — läs dev-only departure-log (från reputationEventDeparture).
+// Fångar sat vid EXAKT paying→leaving-tidpunkten, inte sista state.guests-
+// snapshot. Löser 72-vs-45-diskrepansen i ORDER 257-mätningen.
+const departureLog = await page.evaluate(() =>
+  (globalThis.__nxRepDepartureLog ?? []).map((e) => ({
+    guestId: e.guestId, satisfaction: e.satisfaction, simTime: e.simTime
+  }))
+);
+console.log(`\ndeparture-log: ${departureLog.length} events`);
+
 // Räkna walkouts/declined/substituted i sista snapshot samt reputation-
 // och satisfaction-fördelning.
 const finalStates = finalSnap.guests.reduce((acc, g) => {
@@ -373,6 +383,25 @@ for (const v of satValues) {
 }
 const satAbove075 = satValues.filter((v) => v >= 0.75).length;
 const satBelow035 = satValues.filter((v) => v < 0.35).length;
+
+// ORDER 258 — histogram från departure-log (sat vid REAL paying→leaving).
+const depSatValues = departureLog.map((e) => e.satisfaction);
+const depSatHistogram = { '0.0-0.1': 0, '0.1-0.2': 0, '0.2-0.3': 0, '0.3-0.4': 0,
+  '0.4-0.5': 0, '0.5-0.6': 0, '0.6-0.7': 0, '0.7-0.8': 0, '0.8-0.9': 0, '0.9-1.0': 0 };
+for (const v of depSatValues) {
+  const b = Math.min(9, Math.floor(v * 10));
+  depSatHistogram[buckets[b]] += 1;
+}
+// Rätta band-checks per ORDER 257 (0.65 / 0.85).
+const depHappyCount = depSatValues.filter((v) => v >= 0.85).length;
+const depMediocreCount = depSatValues.filter((v) => v >= 0.65 && v < 0.85).length;
+const depUnhappyCount = depSatValues.filter((v) => v < 0.65).length;
+const depSatMean = depSatValues.length > 0
+  ? Math.round((depSatValues.reduce((a, b) => a + b, 0) / depSatValues.length) * 1000) / 1000
+  : null;
+const depSatMedian = depSatValues.length > 0
+  ? (() => { const s = [...depSatValues].sort((a, b) => a - b); return Math.round(s[Math.floor(s.length / 2)] * 1000) / 1000; })()
+  : null;
 
 // ORDER 257 — clamp-check: hur ofta bottnade reputation vid 0 under passet?
 // Räknar samples där reputation === 0 (eller ≤ 0.001 för float-marginal).
@@ -419,7 +448,15 @@ const guestThroughput = {
   costPerCategory: perCategory,
   reputationBreakdown: finalSnap.reputationBreakdown,
   clampFloorHits, // ORDER 257
-  reputationMinObserved: reputationMin != null ? Math.round(reputationMin * 1000) / 1000 : null
+  reputationMinObserved: reputationMin != null ? Math.round(reputationMin * 1000) / 1000 : null,
+  // ORDER 258 — departure-log histogram
+  departureLogN: departureLog.length,
+  departureSatHistogram: depSatHistogram,
+  departureSatMean: depSatMean,
+  departureSatMedian: depSatMedian,
+  departureHappyCount: depHappyCount,        // ≥ 0.85 (nya HAPPY_THRESHOLD)
+  departureMediocreCount: depMediocreCount,  // 0.65-0.85 (neutral-band)
+  departureUnhappyCount: depUnhappyCount     // < 0.65 (nya UNHAPPY_THRESHOLD)
 };
 
 // Väntetider: läs gästens första simTime i varje state ur samples,
@@ -476,6 +513,13 @@ console.log(`\n===== COST PER CATEGORY (dag=${finalSnap.simTime > 0 ? '?' : '?'}
 for (const [cat, m] of Object.entries(guestThroughput.costPerCategory)) {
   console.log(`  ${cat.padEnd(12, ' ')}: n=${String(m.count).padStart(3, ' ')} sum=${String(m.sumSek).padStart(7, ' ')} SEK`);
 }
+console.log(`\n===== DEPARTURE-LOG HISTOGRAM (ORDER 258 — sat vid paying→leaving) =====`);
+console.log(`  N=${guestThroughput.departureLogN}  mean=${guestThroughput.departureSatMean}  median=${guestThroughput.departureSatMedian}`);
+for (const [bucket, n] of Object.entries(guestThroughput.departureSatHistogram)) {
+  const bar = '█'.repeat(n);
+  console.log(`  ${bucket}: ${String(n).padStart(3, ' ')} ${bar}`);
+}
+console.log(`  band-check (ORDER 257):  ≥ 0.85 happy: ${guestThroughput.departureHappyCount}   0.65-0.85 mediocre: ${guestThroughput.departureMediocreCount}   < 0.65 unhappy: ${guestThroughput.departureUnhappyCount}`);
 console.log(`\n===== CLAMP-CHECK (ORDER 257) =====`);
 console.log(`  reputation minObserved: ${guestThroughput.reputationMinObserved ?? 'na'}`);
 console.log(`  clampFloorHits (rep ≤ 0.001): ${guestThroughput.clampFloorHits}`);

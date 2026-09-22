@@ -597,9 +597,11 @@ function pickTargetDish(
 }
 
 // The four possible outcomes at the pay tick under M4 + M4a.
+// ORDER 258 — served/substituted returnerar nu även `ingredientCostSek`
+// från menyns frozen värde (per rätt, inte flat per minut).
 export type DrawOutcome =
-  | { kind: 'served';    dishId: string; price: number }
-  | { kind: 'substituted'; targetDishId: string; servedDishId: string; price: number }
+  | { kind: 'served';    dishId: string; price: number; ingredientCostSek: number }
+  | { kind: 'substituted'; targetDishId: string; servedDishId: string; price: number; ingredientCostSek: number }
   | { kind: 'walked';    targetDishId: string }
   | { kind: 'no-menu'    };
 
@@ -672,7 +674,7 @@ export function drawMenuDishForGuest(
   if (!targetOut) {
     serve(target);
     void guestId;
-    return { kind: 'served', dishId: target.dishId, price: target.price };
+    return { kind: 'served', dishId: target.dishId, price: target.price, ingredientCostSek: target.ingredientCostSek };
   }
 
   // Target is out. Substitute vs walk per §3.
@@ -737,7 +739,8 @@ export function drawMenuDishForGuest(
       kind: 'substituted',
       targetDishId: target.dishId,
       servedDishId: cheapest.dishId,
-      price: cheapest.price
+      price: cheapest.price,
+      ingredientCostSek: cheapest.ingredientCostSek
     };
   }
 
@@ -1131,6 +1134,10 @@ function openService(
     sustainability: 'social' as const,
     scenarioId: 'morning-policy'
   }));
+  // ORDER 258 — nollställ dev-only departure-log vid service-öppning.
+  if (import.meta.env.DEV && typeof globalThis !== 'undefined') {
+    (globalThis as unknown as { __nxRepDepartureLog?: unknown[] }).__nxRepDepartureLog = [];
+  }
   return {
     ...state,
     day,
@@ -1983,6 +1990,11 @@ function advanceTick(state: SimulationState): SimulationState {
       // If every menu dish is out or menu is empty, fall back to the
       // legacy policies-based revenue path so pre-M4 tests still hold.
       let rev: number;
+      // ORDER 258 — per-rätt ingredient-cost lagras vid draw, används
+      // nedan vid samma paying-tick. Menyns frozen `ingredientCostSek`.
+      // Vid legacy no-menu-branch är per-rätt-cost 0 (paras ej gäster
+      // till specifik rätt). Flat 4|7|12/min borttagen i costPerMinuteToTick.
+      let ingredientCostSek = 0;
       if (draft.menu.length > 0) {
         const rng = createRng(draft.rngState);
         const targetRoll = rng.next();
@@ -1995,6 +2007,7 @@ function advanceTick(state: SimulationState): SimulationState {
         // already fired the ambient line + rep hit).
         if (draw.kind === 'served' || draw.kind === 'substituted') {
           rev = draw.price * revenueMult;
+          ingredientCostSek = draw.ingredientCostSek;
         } else {
           continue;
         }
@@ -2005,6 +2018,14 @@ function advanceTick(state: SimulationState): SimulationState {
       // + cash till stay in sync via applyCashRevenue. serviceRevenue
       // panel arrays continue to receive the kSEK share.
       applyCashRevenue(draft, rev);
+      // ORDER 258 — debitera per-rätt ingredient-cost vid samma paying-
+      // tick som revenue. Bokförs vid BETALNING (rekognosering i register
+      // §5: en gäst som lämnar utan att betala kostar ingenting idag —
+      // förslag om flytt till servering väntar VO-beslut).
+      if (ingredientCostSek > 0) {
+        applyCashCost(draft, ingredientCostSek);
+        draft.day.serviceIngredientAccrued += ingredientCostSek;
+      }
       const revKsek = rev / 1000;
       if (inLunch) draft.serviceRevenueToday.lunch += revKsek;
       else if (inDinner) draft.serviceRevenueToday.dinner += revKsek;
@@ -2377,15 +2398,17 @@ function advanceTick(state: SimulationState): SimulationState {
 }
 
 function costPerMinuteToTick(state: SimulationState): number {
+  // ORDER 258 (VO 2026-09-22 beslut §B alt A): flat ingredient-post
+  // (4|7|12 SEK/min per ingredientTier) BORTTAGEN. Ingredient bokförs nu
+  // per serverad rätt (menyns frozen `ingredientCostSek`, 16-113 SEK
+  // för kvarterskrogen) vid guest-paying-transitionen. `base` (9 ×
+  // staffCount) + `wastePenalty` kvar som "kitchen operating overhead"
+  // — INTE mat, utan personal-driven-tid + spillspenalti. Mätning
+  // efter fix visar om denna post underskattar total; VO kalibrerar
+  // separat om behövs.
   const base = 9 * state.policies.staffCount;
-  const ingredients =
-    state.policies.ingredientTier === 'premium'
-      ? 12
-      : state.policies.ingredientTier === 'utvald'
-        ? 7
-        : 4;
   const wastePenalty = state.waste * 0.4;
-  return base + ingredients + wastePenalty;
+  return base + wastePenalty;
 }
 
 // ORDER 072 → M1 defence — validate patch enum fields before merging.
