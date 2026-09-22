@@ -43,7 +43,7 @@ import type { Question } from '../knowledge/questionFormats';
 import { deriveActiveAnchors } from './anchors';
 import {
   pickAnchorQuestion,
-  ANCHOR_SCENARIO_BUFFER_SEC
+  getAnchorPickerStatus
 } from '../knowledge/anchorQuestionPicker';
 
 // ORDER 104 §Q3 — separat slot-mekanik för prov, inte återanvänd
@@ -2268,13 +2268,12 @@ function advanceTick(state: SimulationState): SimulationState {
   // aktivt eller en scenariofråga väntar hoppar pickern över
   // — pågående scenario blockerar (VO 2026-09-21).
   //
-  // **VIKTIGT: läser `draft.scenario.phase` FÄRSKT.** Den lokala
-  // `scenarioIdle`-variabeln beräknades ovan innan scenariot
-  // eventuellt fyrade på samma tick; om vi använder den skulle
-  // pickern kunna skriva 'question' ovanpå ett just-fyrat
+  // **VIKTIGT: helper:n läser `draft.scenario.phase` FÄRSKT.** Den
+  // lokala `scenarioIdle`-variabeln (rad ~2205) beräknades ovan innan
+  // scenariot eventuellt fyrade på samma tick; om vi använde den
+  // skulle pickern kunna skriva 'question' ovanpå ett just-fyrat
   // scenarios 'subject' och bryta scenariotrigger-testerna.
-  const scenarioIdleFresh =
-    draft.scenario.phase === 'idle' || draft.scenario.phase === 'settled';
+  // getAnchorPickerStatus tar draft direkt så phase är alltid färskt.
   // **ORDER 235 — asymmetrisk buffer (VO 2026-09-21).** Scenarier har
   // företräde. Anchor-pickern får inte fyra:
   //   * inom 3 min FÖRE nästa schemalagda scenario, ELLER
@@ -2290,26 +2289,17 @@ function advanceTick(state: SimulationState): SimulationState {
   // 3 min "eget utrymme" (90s före + 90s efter) medan anchor-frågor
   // får plats både före och mellan scenarier även när dessa ligger
   // 3 min isär.
-  // ORDER 246 — konstanten importeras från anchorQuestionPicker.ts nu
-  // så getAnchorPickerStatus() och reducer:s gate garanterat är i synk.
-  const nextScenarioSoon =
-    scheduled.length > 0 &&
-    scheduled[0] - draft.simTime < ANCHOR_SCENARIO_BUFFER_SEC;
-  const lastScenarioAt = draft.day.lastScenarioAt ?? null;
-  const inScenarioAftermath =
-    lastScenarioAt !== null &&
-    draft.simTime - lastScenarioAt < ANCHOR_SCENARIO_BUFFER_SEC;
-  // ORDER 238 — anchor-picker på/av-flagga från policies. Default
-  // true (undefined = true) för produktion.
-  const anchorEnabled = draft.policies.anchorQuestionsEnabled ?? true;
-  if (
-    anchorEnabled &&
-    canFire &&
-    scenarioIdleFresh &&
-    !nextScenarioSoon &&
-    !inScenarioAftermath &&
-    draft.scenario.pendingQuestion === null
-  ) {
+  // ORDER 248 (uppföljning ORDER 246) — reducer:s gate är nu ETT anrop
+  // till `getAnchorPickerStatus(draft)` istället för en lokal upprepning
+  // av samma villkor. Helper:n definierar regeln; reducer:n verkställer
+  // den. Om regeln ändras behövs bara en ändring, inte två synkade.
+  //
+  // Helper:n täcker alla gate-villkor (anchorEnabled, canFire,
+  // scenario-idle, !nextScenarioSoon, !inScenarioAftermath,
+  // pendingQuestion, max, min-gap). Reducer behöver bara aktiva-
+  // anchors-villkoret ovanpå (det är candidate-existens, inte del av
+  // rate-limit-regeln).
+  if (getAnchorPickerStatus(draft).open) {
     const activeAnchors = deriveActiveAnchors(draft);
     if (activeAnchors.length > 0) {
       // ORDER 238 — egen rng-ström för pickern, härledd ur seed + tick.
