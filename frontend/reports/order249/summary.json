@@ -1,0 +1,28 @@
+{
+  "passA": {
+    "label": "lamps-on (default lighting, IndoorLamps aktiva under middag)",
+    "meanY": 34.48369172926448,
+    "meanR": 38.81627543035994,
+    "meanG": 33.720402973395935,
+    "meanB": 29.286971830985916,
+    "roi": {
+      "x": 427,
+      "y": 240,
+      "w": 426,
+      "h": 240
+    }
+  },
+  "passB": {
+    "label": "light=day (dev-override till lunch-timme 12:30)",
+    "meanY": 89.31948403169014,
+    "meanR": 99.13404733959311,
+    "meanG": 87.52184076682316,
+    "meanB": 78.2266627543036,
+    "roi": {
+      "x": 427,
+      "y": 240,
+      "w": 426,
+      "h": 240
+    }
+  }
+}

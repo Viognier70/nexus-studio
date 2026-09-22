@@ -55,7 +55,13 @@ export function DayLighting() {
   // read from the URL hash, which is empty in a player build).
   const effectivePeriod: DayPeriod =
     (import.meta.env.DEV && harnessParams.period) ? harnessParams.period : sim.day.period;
-  const hour = useMemo(() => HOUR_BY_PERIOD[effectivePeriod], [effectivePeriod]);
+  // ORDER 249 §1 — `#playtest=1&light=day` tvingar lunch-timmen (12:30)
+  // så VO kan provspela middag utan att invänta IndoorLamps-monteringen.
+  // Overrider periodmappningen; ingen effekt utan flaggan.
+  const hour = useMemo(
+    () => (harnessParams.light === 'day' ? HOUR_BY_PERIOD.lunch : HOUR_BY_PERIOD[effectivePeriod]),
+    [effectivePeriod]
+  );
   // ORDER 056 Del A — season is a dev-toggle (default autumn = 25 Sep
   // per ORDER 054). Summer selects 21 Jun for comparison. Non-dev
   // builds always read 'autumn' (the module default).
