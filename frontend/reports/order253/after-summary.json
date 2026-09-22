@@ -1,0 +1,133 @@
+{
+  "perStaff": {
+    "staff-0": {
+      "role": "värd",
+      "totalSamples": 246,
+      "totalSimSec": 897.8,
+      "movingPct": 16.3,
+      "stillPct": 83.7,
+      "targetChangesPerMin": 6.3,
+      "taskChanges": 70,
+      "taskChangesMidMove": 5,
+      "taskChangesMidMovePct": 7.1,
+      "dwellGreet": {
+        "count": 26,
+        "meanSec": 4.7,
+        "medianSec": 3.8,
+        "minSec": 3,
+        "maxSec": 9.4
+      },
+      "dwellOrder": {
+        "count": 0
+      },
+      "dwellServe": {
+        "count": 0
+      }
+    },
+    "staff-1": {
+      "role": "servitör",
+      "totalSamples": 246,
+      "totalSimSec": 897.8,
+      "movingPct": 22,
+      "stillPct": 78,
+      "targetChangesPerMin": 7.3,
+      "taskChanges": 104,
+      "taskChangesMidMove": 17,
+      "taskChangesMidMovePct": 16.3,
+      "dwellGreet": {
+        "count": 0
+      },
+      "dwellOrder": {
+        "count": 53,
+        "meanSec": 8.7,
+        "medianSec": 9.6,
+        "minSec": 3.2,
+        "maxSec": 11.4
+      },
+      "dwellServe": {
+        "count": 0
+      }
+    },
+    "staff-2": {
+      "role": "kock",
+      "totalSamples": 246,
+      "totalSimSec": 897.8,
+      "movingPct": 0,
+      "stillPct": 100,
+      "targetChangesPerMin": 0,
+      "taskChanges": 54,
+      "taskChangesMidMove": 0,
+      "taskChangesMidMovePct": 0,
+      "dwellGreet": {
+        "count": 0
+      },
+      "dwellOrder": {
+        "count": 0
+      },
+      "dwellServe": {
+        "count": 0
+      }
+    }
+  },
+  "anchorFires": [
+    {
+      "simTime": 133.40000000000097,
+      "questionId": "kalastorget-brons-01",
+      "anchorId": "greet",
+      "askerRole": "värd",
+      "askerStaffId": "staff-0",
+      "askerTaskType": "greet",
+      "guestId": "gst-5",
+      "guestState": "seated",
+      "staffToGuestDist": 7.274640884607295,
+      "staffArrivedAtTarget": true
+    },
+    {
+      "simTime": 229.99999999999548,
+      "questionId": "stensota-brons-07",
+      "anchorId": "order",
+      "askerRole": "sommelier",
+      "askerStaffId": "staff-0",
+      "askerTaskType": "greet",
+      "guestId": "gst-28",
+      "guestState": "arriving",
+      "staffToGuestDist": 0.9827473931687346,
+      "staffArrivedAtTarget": false
+    },
+    {
+      "simTime": 325.99999999999005,
+      "questionId": "kalastorget-brons-05",
+      "anchorId": "order",
+      "askerRole": "lärling",
+      "askerStaffId": null,
+      "askerTaskType": null,
+      "guestId": null,
+      "guestState": null,
+      "staffToGuestDist": null,
+      "staffArrivedAtTarget": null
+    }
+  ],
+  "guestThroughput": {
+    "completedGuests": 49,
+    "cashDeltaSek": 133107.02000000665,
+    "totalArrived": 0,
+    "finalStates": {}
+  },
+  "waitStats": {
+    "arrivingToSeated": {
+      "n": 16,
+      "meanSec": 3.4,
+      "medianSec": 3.6
+    },
+    "seatedToOrdering": {
+      "n": 63,
+      "meanSec": 4.9,
+      "medianSec": 3.6
+    },
+    "orderingToPaying": {
+      "n": 48,
+      "meanSec": 222.5,
+      "medianSec": 224
+    }
+  }
+}
