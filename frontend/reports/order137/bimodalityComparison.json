@@ -3,86 +3,86 @@
     {
       "business": "kvarterskrogen",
       "staffCount": 2,
-      "midMass": 0.30994782608695653,
+      "midMass": 0.3040086956521739,
       "loMass": 0,
-      "hiMass": 0.6900521739130435
+      "hiMass": 0.6959913043478261
     },
     {
       "business": "kvarterskrogen",
       "staffCount": 3,
-      "midMass": 0.3078695652173913,
+      "midMass": 0.3023565217391304,
       "loMass": 0,
-      "hiMass": 0.6921304347826087
+      "hiMass": 0.6976434782608696
     },
     {
       "business": "kvarterskrogen",
       "staffCount": 4,
-      "midMass": 0.30789565217391307,
+      "midMass": 0.30217391304347824,
       "loMass": 0,
-      "hiMass": 0.692104347826087
+      "hiMass": 0.6978260869565217
     },
     {
       "business": "foodtrucken",
       "staffCount": 2,
-      "midMass": 0.3149913043478261,
-      "loMass": 0.3797304347826087,
-      "hiMass": 0.3052782608695652
+      "midMass": 0.30307826086956524,
+      "loMass": 0.49630434782608696,
+      "hiMass": 0.20061739130434783
     },
     {
       "business": "foodtrucken",
       "staffCount": 3,
-      "midMass": 0.31524347826086957,
-      "loMass": 0.3697739130434783,
-      "hiMass": 0.3149826086956522
+      "midMass": 0.303,
+      "loMass": 0.4955217391304348,
+      "hiMass": 0.20147826086956522
     },
     {
       "business": "foodtrucken",
       "staffCount": 4,
-      "midMass": 0.31524347826086957,
-      "loMass": 0.3697739130434783,
-      "hiMass": 0.3149826086956522
+      "midMass": 0.303,
+      "loMass": 0.4955217391304348,
+      "hiMass": 0.20147826086956522
     },
     {
       "business": "gästgiveriet",
       "staffCount": 2,
-      "midMass": 0.3044173913043478,
+      "midMass": 0.3028347826086957,
       "loMass": 0,
-      "hiMass": 0.6955826086956521
+      "hiMass": 0.6971652173913043
     },
     {
       "business": "gästgiveriet",
       "staffCount": 3,
-      "midMass": 0.30278260869565216,
+      "midMass": 0.3008,
       "loMass": 0,
-      "hiMass": 0.6972173913043478
+      "hiMass": 0.6992
     },
     {
       "business": "gästgiveriet",
       "staffCount": 4,
-      "midMass": 0.3040695652173913,
+      "midMass": 0.3002695652173913,
       "loMass": 0,
-      "hiMass": 0.6959304347826087
+      "hiMass": 0.6997304347826087
     },
     {
       "business": "ölkrogen",
       "staffCount": 2,
-      "midMass": 0.07643478260869566,
-      "loMass": 0.2764086956521739,
-      "hiMass": 0.6471565217391304
+      "midMass": 0.07183478260869565,
+      "loMass": 0.2775739130434783,
+      "hiMass": 0.6505913043478261
     },
     {
       "business": "ölkrogen",
       "staffCount": 3,
-      "midMass": 0.07604347826086956,
-      "loMass": 0.2764086956521739,
-      "hiMass": 0.6475478260869565
+      "midMass": 0.07183478260869565,
+      "loMass": 0.2775739130434783,
+      "hiMass": 0.6505913043478261
     },
     {
       "business": "ölkrogen",
       "staffCount": 4,
-      "midMass": 0.07604347826086956,
-      "loMass": 0.2764086956521739,
-      "hiMass": 0.6475478260869565
+      "midMass": 0.07145217391304348,
+      "loMass": 0.2775739130434783,
+      "hiMass": 0.6509739130434783
     }
   ],
   "comparison": [
@@ -90,133 +90,133 @@
       "business": "kvarterskrogen",
       "staffCount": 2,
       "beforeMid": 0.08373913043478261,
-      "afterMid": 0.30994782608695653,
-      "deltaMid": 0.22620869565217394,
+      "afterMid": 0.3040086956521739,
+      "deltaMid": 0.22026956521739133,
       "beforeLo": 0.278,
       "afterLo": 0,
       "beforeHi": 0.6382608695652174,
-      "afterHi": 0.6900521739130435
+      "afterHi": 0.6959913043478261
     },
     {
       "business": "kvarterskrogen",
       "staffCount": 3,
       "beforeMid": 0.08335652173913044,
-      "afterMid": 0.3078695652173913,
-      "deltaMid": 0.22451304347826084,
+      "afterMid": 0.3023565217391304,
+      "deltaMid": 0.21899999999999997,
       "beforeLo": 0.278,
       "afterLo": 0,
       "beforeHi": 0.6386434782608695,
-      "afterHi": 0.6921304347826087
+      "afterHi": 0.6976434782608696
     },
     {
       "business": "kvarterskrogen",
       "staffCount": 4,
       "beforeMid": 0.08335652173913044,
-      "afterMid": 0.30789565217391307,
-      "deltaMid": 0.22453913043478263,
+      "afterMid": 0.30217391304347824,
+      "deltaMid": 0.2188173913043478,
       "beforeLo": 0.278,
       "afterLo": 0,
       "beforeHi": 0.6386434782608695,
-      "afterHi": 0.692104347826087
+      "afterHi": 0.6978260869565217
     },
     {
       "business": "foodtrucken",
       "staffCount": 2,
       "beforeMid": 0.3200782608695652,
-      "afterMid": 0.3149913043478261,
-      "deltaMid": -0.005086956521739128,
+      "afterMid": 0.30307826086956524,
+      "deltaMid": -0.01699999999999996,
       "beforeLo": 0.3969391304347826,
-      "afterLo": 0.3797304347826087,
+      "afterLo": 0.49630434782608696,
       "beforeHi": 0.28298260869565217,
-      "afterHi": 0.3052782608695652
+      "afterHi": 0.20061739130434783
     },
     {
       "business": "foodtrucken",
       "staffCount": 3,
       "beforeMid": 0.31996521739130435,
-      "afterMid": 0.31524347826086957,
-      "deltaMid": -0.004721739130434777,
+      "afterMid": 0.303,
+      "deltaMid": -0.016965217391304355,
       "beforeLo": 0.3872,
-      "afterLo": 0.3697739130434783,
+      "afterLo": 0.4955217391304348,
       "beforeHi": 0.29283478260869567,
-      "afterHi": 0.3149826086956522
+      "afterHi": 0.20147826086956522
     },
     {
       "business": "foodtrucken",
       "staffCount": 4,
       "beforeMid": 0.31996521739130435,
-      "afterMid": 0.31524347826086957,
-      "deltaMid": -0.004721739130434777,
+      "afterMid": 0.303,
+      "deltaMid": -0.016965217391304355,
       "beforeLo": 0.3872,
-      "afterLo": 0.3697739130434783,
+      "afterLo": 0.4955217391304348,
       "beforeHi": 0.29283478260869567,
-      "afterHi": 0.3149826086956522
+      "afterHi": 0.20147826086956522
     },
     {
       "business": "gästgiveriet",
       "staffCount": 2,
       "beforeMid": 0.09096521739130435,
-      "afterMid": 0.3044173913043478,
-      "deltaMid": 0.21345217391304344,
+      "afterMid": 0.3028347826086957,
+      "deltaMid": 0.2118695652173913,
       "beforeLo": 0.2732608695652174,
       "afterLo": 0,
       "beforeHi": 0.6357739130434783,
-      "afterHi": 0.6955826086956521
+      "afterHi": 0.6971652173913043
     },
     {
       "business": "gästgiveriet",
       "staffCount": 3,
       "beforeMid": 0.08966086956521739,
-      "afterMid": 0.30278260869565216,
-      "deltaMid": 0.21312173913043475,
+      "afterMid": 0.3008,
+      "deltaMid": 0.2111391304347826,
       "beforeLo": 0.2727913043478261,
       "afterLo": 0,
       "beforeHi": 0.6375478260869565,
-      "afterHi": 0.6972173913043478
+      "afterHi": 0.6992
     },
     {
       "business": "gästgiveriet",
       "staffCount": 4,
       "beforeMid": 0.09071304347826087,
-      "afterMid": 0.3040695652173913,
-      "deltaMid": 0.21335652173913044,
+      "afterMid": 0.3002695652173913,
+      "deltaMid": 0.20955652173913042,
       "beforeLo": 0.2730173913043478,
       "afterLo": 0,
       "beforeHi": 0.6362695652173913,
-      "afterHi": 0.6959304347826087
+      "afterHi": 0.6997304347826087
     },
     {
       "business": "ölkrogen",
       "staffCount": 2,
       "beforeMid": 0.08373913043478261,
-      "afterMid": 0.07643478260869566,
-      "deltaMid": -0.0073043478260869515,
+      "afterMid": 0.07183478260869565,
+      "deltaMid": -0.011904347826086958,
       "beforeLo": 0.278,
-      "afterLo": 0.2764086956521739,
+      "afterLo": 0.2775739130434783,
       "beforeHi": 0.6382608695652174,
-      "afterHi": 0.6471565217391304
+      "afterHi": 0.6505913043478261
     },
     {
       "business": "ölkrogen",
       "staffCount": 3,
       "beforeMid": 0.08335652173913044,
-      "afterMid": 0.07604347826086956,
-      "deltaMid": -0.0073130434782608805,
+      "afterMid": 0.07183478260869565,
+      "deltaMid": -0.011521739130434791,
       "beforeLo": 0.278,
-      "afterLo": 0.2764086956521739,
+      "afterLo": 0.2775739130434783,
       "beforeHi": 0.6386434782608695,
-      "afterHi": 0.6475478260869565
+      "afterHi": 0.6505913043478261
     },
     {
       "business": "ölkrogen",
       "staffCount": 4,
       "beforeMid": 0.08335652173913044,
-      "afterMid": 0.07604347826086956,
-      "deltaMid": -0.0073130434782608805,
+      "afterMid": 0.07145217391304348,
+      "deltaMid": -0.011904347826086958,
       "beforeLo": 0.278,
-      "afterLo": 0.2764086956521739,
+      "afterLo": 0.2775739130434783,
       "beforeHi": 0.6386434782608695,
-      "afterHi": 0.6475478260869565
+      "afterHi": 0.6509739130434783
     }
   ]
 }
