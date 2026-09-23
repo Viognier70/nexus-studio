@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/modernist-fa2a5900-708d-4668-979a-71ad6a03542a/styles.css">
+<script src="_ds/modernist-fa2a5900-708d-4668-979a-71ad6a03542a/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: var(--color-bg); }
+  a { color: var(--color-accent-700); text-decoration: none; border-bottom: 2px solid var(--color-accent); }
+  a:hover { color: var(--color-accent); }
+</style>
+</helmet>
+<div style="font-family: var(--font-body); color: var(--color-text); background: var(--color-bg); min-height: 100vh; padding: 40px 48px 72px; max-width: 1560px; margin: 0 auto;">
+
+  <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 48px;">
+    <div>
+      <div style="font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-700); font-weight: 700;">SD-004 §3 · rekvisita · strategiska spåret</div>
+      <h1 style="font-family: var(--font-heading); font-size: 54px; line-height: 1.02; margin: 12px 0 0; font-weight: 700; letter-spacing: -0.02em;">Rekvisitan</h1>
+      <p style="margin: 14px 0 0; font-size: 17px; max-width: 62ch; text-wrap: pretty;">Fyra handföremål och sex huvudbonader på riggens befintliga ankare. Den enda verkliga frågan var om en bonad dödar silhuettkontraktet — svaret är två olika svar, och gränsen går mellan hår och huvudbonad.</p>
+    </div>
+    <div style="text-align: left; font-size: 13px; line-height: 1.7; flex: 0 0 auto; padding-bottom: 6px;">
+      <div style="font-weight: 700;">Leverans</div>
+      <div><a href="figureProps.ts">figureProps.ts</a> — ren three.js</div>
+      <div style="color: var(--color-neutral-600);">Nycklar ur archetypes.ts</div>
+      <div style="color: var(--color-neutral-600);">Ingen klocka, inget urval</div>
+    </div>
+  </div>
+
+  <div class="hr" style="margin: 28px 0 0;"></div>
+
+  <div style="display: flex; gap: 20px; align-items: baseline; padding: 14px 0 18px; flex-wrap: wrap;">
+    <span class="tag tag-accent">hjässans täckning {{ mCoverage }}</span>
+    <span class="tag tag-outline">kontrast {{ mFloorRange }} mot 14 golvzoner</span>
+    <span class="tag tag-outline">figur 1,70 m · huvudradie 0,12</span>
+    <span style="font-size: 13px; color: var(--color-neutral-600);">Dra i vyn. Närbildsläget är där en bonad ska kunna avvisas.</span>
+  </div>
+
+  <div style="position: relative; border-top: 2px solid var(--color-divider); border-bottom: 2px solid var(--color-divider); background: var(--color-neutral-100);">
+    <div ref="{{ stageRef }}" style="width: 100%; height: 520px; cursor: grab;"></div>
+    <div style="position: absolute; left: 14px; top: 12px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-neutral-600); font-weight: 700;">{{ viewLabel }} · vridning {{ yawLabel }}° · lutning {{ pitchLabel }}°</div>
+    <div style="position: absolute; right: 14px; top: 12px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-700); font-weight: 700;">{{ statusLabel }}</div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(10, 1fr); border-bottom: 2px solid var(--color-divider);">
+    <sc-for list="{{ propCells }}" as="cell" hint-placeholder-count="10">
+      <div style="padding: 11px 12px 13px; border-right: 1px solid var(--color-neutral-300);">
+        <div style="font-family: var(--font-heading); font-weight: 700; font-size: 14px;">{{ cell.name }}</div>
+        <div style="font-size: 11px; line-height: 1.45; color: var(--color-neutral-700); margin-top: 4px;">{{ cell.note }}</div>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="display: flex; gap: 10px; align-items: center; padding: 18px 0 0; flex-wrap: wrap; white-space: nowrap;">
+    <button class="btn btn-primary" onClick="{{ cycleView }}">{{ viewLabel }}</button>
+    <button class="btn btn-secondary" onClick="{{ togglePlay }}">{{ playLabel }}</button>
+    <button class="btn btn-secondary" onClick="{{ cycleFloor }}">Golv: {{ floorLabel }}</button>
+    <button class="btn btn-ghost" onClick="{{ toggleLabels }}">{{ labelsLabel }}</button>
+    <button class="btn btn-ghost" onClick="{{ toggleRays }}">{{ raysLabel }}</button>
+    <button class="btn btn-ghost" onClick="{{ resetView }}">Nollställ vridning</button>
+  </div>
+
+  <div class="hr" style="margin: 30px 0 0;"></div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; padding-top: 28px;">
+    <div>
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 16px; font-weight: 700;">Två svar, inte ett</h2>
+      <p style="font-size: 14px; line-height: 1.6; margin: 0 0 18px; color: var(--color-neutral-700); max-width: 54ch; text-wrap: pretty;">Briefen erbjöd tre vägar och bad om ett motiverat val. Valet är två, och gränsen går mellan hår och huvudbonad — de är inte samma sorts sak.</p>
+      <div style="border-top: 2px solid var(--color-divider);">
+        <div style="padding: 14px 0; border-bottom: 1px solid var(--color-neutral-300);">
+          <div style="font-weight: 700; font-size: 15px;">Hår lämnar hjässan fri</div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 4px;">Kalotten i <code>figureRig</code> täcker klotet ned till 1,15 rad från polen, alltså allt över y&nbsp;=&nbsp;0,169 i huvudets ram. Håret byggs som ett band <em>under</em> den linjen, 0,092–0,167, plus tovor som bryter konturen i sidled. Uppifrån syns håret som en smal rand runt en oförändrad kalott. Det är också anatomiskt rätt: hår växer inte ovanpå en hjässa, det ramar in den.</div>
+        </div>
+        <div style="padding: 14px 0;">
+          <div style="font-weight: 700; font-size: 15px;">Huvudbonader bär garment-färgen</div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 4px;">En keps, en solhatt och en huva täcker hjässan — det är vad de <em>är</em>. Att göra dem små nog att kalotten dominerar hade gjort dem till dekaler. I stället ärver ovansidan identitetsfärgen och igenkänningen flyttas till formen. Ingen av de tre ändrar vilken färg kameran ser uppifrån; alla tre ändrar formen den ser.</div>
+        </div>
+      </div>
+      <table class="table" style="width: 100%; margin-top: 18px;">
+        <thead>
+          <tr><th>Bonad</th><th>Signalen</th><th>Hjässans täckning</th></tr>
+        </thead>
+        <tbody>
+          <tr><td style="font-weight: 700;">ruffled</td><td>Sektor + sex tovor på skallen</td><td>{{ covRuffled }}</td></tr>
+          <tr><td style="font-weight: 700;">shortCut</td><td>Tunn sektor, hjässan orörd</td><td>{{ covShortCut }}</td></tr>
+          <tr><td style="font-weight: 700;">grayHair</td><td>Ljus sektor, tjockare i nacken</td><td>{{ covGrayHair }}</td></tr>
+          <tr><td style="font-weight: 700;">workCap</td><td>Skärm 0,17 m, asymmetrisk uppifrån</td><td>{{ covWorkCap }}</td></tr>
+          <tr><td style="font-weight: 700;">sunHat</td><td>Brätte, ytterradie 0,27 m</td><td>{{ covSunHat }}</td></tr>
+          <tr><td style="font-weight: 700;">hoodRaised</td><td>Äggform + nackmassa</td><td>{{ covHood }}</td></tr>
+          <tr><td style="color: var(--color-neutral-600);">utan bonad</td><td style="color: var(--color-neutral-600);">Provets nollpunkt</td><td style="color: var(--color-neutral-600);">{{ covBare }}</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size: 12px; line-height: 1.6; margin: 12px 0 0; color: var(--color-neutral-600); max-width: 54ch; text-wrap: pretty;"><strong>Talet är mätt, inte påstått.</strong> <code>checkCrownCoverage()</code> skjuter 240 strålar rakt ned över hjässan och räknar andelen träffar som landar på en yta i identitetsfärgen. Provet körs på huvudet ensamt — annars mäter man axlarna — och samplar en disk med huvudradiens bredd, så ett solhattsbrätte som sticker utanför varken räknas som täckning eller som brott. Kravet är 0,95.</p>
+    </div>
+
+    <div>
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 16px; font-weight: 700;">Bandet har två fönster</h2>
+      <p style="font-size: 14px; line-height: 1.6; margin: 0 0 16px; color: var(--color-neutral-700); max-width: 54ch; text-wrap: pretty;">Rumsleveranserna har hittills bara använt den mörka lösningen — figurfärger under golvet. Men villkoret är ett intervall på en <em>kvot</em>, och kvoten är symmetrisk: en färg får lika gärna vara ljusare än golvet.</p>
+      <table class="table" style="width: 100%;">
+        <tbody>
+          <tr><td style="width: 46%;">Golvspann, alla fyra klasserna</td><td style="font-weight: 700;">L 0,1864 – 0,3317</td></tr>
+          <tr><td>Mörkt fönster</td><td style="font-weight: 700;">L 0,0560 – 0,0813</td></tr>
+          <tr><td>Ljust fönster</td><td style="font-weight: 700;">L 0,6371 – 0,8009 — sex gånger bredare</td></tr>
+          <tr><td>Rekvisitans kontrast mot golv</td><td style="font-weight: 700;">{{ mFloorRange }}</td></tr>
+          <tr><td>Par utanför bandet</td><td style="font-weight: 700;">{{ mFails }}</td></tr>
+          <tr><td>Lägsta kontrast mot garment</td><td style="font-weight: 700;">{{ mGarment }}</td></tr>
+          <tr><td>Lägsta bland de ljusa tonerna</td><td style="font-weight: 700;">5,76 — allt som rör kroppen</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size: 12px; line-height: 1.6; margin: 12px 0 0; color: var(--color-neutral-600); max-width: 54ch; text-wrap: pretty;"><strong>Det ljusa fönstret är inte en kuriositet — det är enda sättet rekvisitan kan fungera.</strong> Garment-färgerna ligger på L ≈ 0,083, alltså i det mörka fönstret. En portfölj i samma fönster får kontrast 1,12 mot kroppen den hänger intill: den klarar golvprovet och är ändå osynlig. I det ljusa blir samma portfölj 5,79 mot garment och 2,0–3,3 mot varje golv. Därför ligger allt som överlappar kroppen eller kalotten i det ljusa fönstret.</p>
+      <p style="font-size: 12px; line-height: 1.6; margin: 10px 0 0; color: var(--color-neutral-600); max-width: 54ch; text-wrap: pretty;">Undantaget är rufsigt och kortklippt hår, som ligger mörkt. De rör aldrig kalotten — de sitter i huvudets kant och läses mot golvet bakom, inte mot garment framför. Grått hår ligger däremot ljust, för att läsa som grått och inte som en mörk lugg.</p>
+
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 30px 0 16px; font-weight: 700;">Skalan, mätt i vyn</h2>
+      <table class="table" style="width: 100%;">
+        <thead>
+          <tr><th>Föremål</th><th>B × H × D</th><th>Mot figuren</th></tr>
+        </thead>
+        <tbody>
+          <tr><td style="font-weight: 700;">iceCream</td><td>{{ dimIceCream }}</td><td>{{ relIceCream }}</td></tr>
+          <tr><td style="font-weight: 700;">briefcase</td><td>{{ dimBriefcase }}</td><td>{{ relBriefcase }}</td></tr>
+          <tr><td style="font-weight: 700;">camera</td><td>{{ dimCamera }}</td><td>{{ relCamera }}</td></tr>
+          <tr><td style="font-weight: 700;">thermos</td><td>{{ dimThermos }}</td><td>{{ relThermos }}</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size: 12px; line-height: 1.6; margin: 12px 0 0; color: var(--color-neutral-600); max-width: 54ch; text-wrap: pretty;">Storleken löses aldrig genom att förstora — samma regel som gällde riggen. Portföljen är den enda som är stor nog att kunna bli fel: skriven till 0,26 m mot axelspannets 0,46, mätt till 63 % i vyn eftersom en bounding box alltid är större än måttet man skrev. Första versionen var 0,30 och mätte 71 %. Termosen är smalast av de fyra och den som mest behöver sin ljusa ton för att synas alls.</p>
+    </div>
+  </div>
+
+  <div class="hr" style="margin: 32px 0 0;"></div>
+
+  <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; padding-top: 28px;">
+    <div>
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 16px; font-weight: 700;">Solhatt bredvid ingen hatt</h2>
+      <p style="font-size: 14px; line-height: 1.6; margin: 0 0 16px; color: var(--color-neutral-700); max-width: 56ch; text-wrap: pretty;">Briefen bad om jämförelsen, och den är figur fyra och fem i raden ovan. Slå på plan-vyn: hjässan läser <em>likadant</em> i båda — samma färg, samma storlek på den färgade ytan. Skillnaden är brättets ring runtomkring. Det är hela poängen med att låta kullen bära garment-färgen i stället för att göra hatten liten.</p>
+      <table class="table" style="width: 100%;">
+        <tbody>
+          <tr><td style="width: 42%;">Utan bonad</td><td style="font-weight: 700;">{{ mBareLong }}</td></tr>
+          <tr><td>Med solhatt</td><td style="font-weight: 700;">{{ mHat }}</td></tr>
+          <tr><td>Brättets ytterradie</td><td style="font-weight: 700;">0,27 m mot huvudets 0,12</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 16px; font-weight: 700;">Flaggat, inte uppfunnet</h2>
+      <div style="border-top: 2px solid var(--color-divider);">
+        <div style="padding: 12px 0; border-bottom: 1px solid var(--color-neutral-300);">
+          <div style="font-weight: 700; font-size: 14px;">Barnet kan inte porteras <span style="color: var(--color-accent);">⛔</span></div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 3px;"><code>archetypes.ts</code> ger barnet <code>heightMult: 0.72</code>. <code>figureRig.ts</code> har ett mått: 1,70 m, låst av SD-004 §3 för både gäst och personal. Ett barn på 1,70 m med glass är inte ett barn. Antingen lyfts höjdlåset för gäster, eller så kan arketypen inte porteras — och det är ett direktivbeslut, inte ett geometribeslut.</div>
+        </div>
+        <div style="padding: 12px 0; border-bottom: 1px solid var(--color-neutral-300);">
+          <div style="font-weight: 700; font-size: 14px;">Hudtonerna är inte kontrastprövade</div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 3px;"><code>SKIN_TONES</code> spänner L 0,057 till 0,690 — tvärs över båda fönstren och rakt genom det otillåtna spannet mellan dem. Riggen har inga ansikten så ytan är liten, men om händer eller nacke någonsin blir stora nog att mätas är det en verklig konflikt mellan <code>archetypes.ts</code> och <code>silhouetteContrast.ts</code>.</div>
+        </div>
+        <div style="padding: 12px 0; border-bottom: 1px solid var(--color-neutral-300);">
+          <div style="font-weight: 700; font-size: 14px;">Händerna i fickorna saknar pose</div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 3px;">Två arketyper bär ingenting: efter-skiftet har händerna i fickorna, stamgästen bara ingenting. Riggen har ingen fickpose, så skillnaden går inte att se. Det kräver en sjunde pose i <code>figureRig.ts</code>, inte en form här.</div>
+        </div>
+        <div style="padding: 12px 0;">
+          <div style="font-weight: 700; font-size: 14px;">Kopplingen arketyp → 3D-figur finns inte</div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 3px;">Briefen säger att den byggs i ordern. <code>assignArchetype()</code> bor i <code>ui/foodtruck/</code> och 3D-scenens gäster har ingen arketyp, så <code>attachProps()</code> tar nycklarna som argument i stället för att slå upp dem.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1560,&quot;height&quot;:1800},&quot;occupancy&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:11,&quot;min&quot;:1,&quot;max&quot;:11,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Raden&quot;}}">
+const CDN = 'https://unpkg.com/three@0.160.0/build/three.module.js';
+const ACCENT = '#ec3013';
+
+// Samtliga golvzoner en figur kan stå på, alla fyra klasserna.
+const FLOORS = [
+  ['restaurang', '#a08462'],
+  ['ölkrog, matsal', '#a49b8a'], ['ölkrog, bryggeri', '#7d776c'], ['ölkrog, kök', '#948f84'],
+  ['vinbar, main', '#a89577'], ['vinbar, lounge', '#a49075'], ['vinbar, runway', '#a08d74'],
+  ['vinbar, dj', '#97866f'], ['vinbar, kök', '#a09786'],
+  ['gästgiveri, hall', '#a08462'], ['gästgiveri, kök', '#9d8362'],
+  ['gästgiveri, grus', '#8d8679'], ['gästgiveri, gräs', '#64935b'], ['gästgiveri, boule', '#8f887a']
+];
+const FLOOR_ONLY = FLOORS.map((f) => f[1]);
+
+// Tio figurer i rad: fyra handföremål, sex bonader — plus en bar
+// jämförelsefigur intill solhatten, per briefens §7.
+const LINEUP = [
+  { key: 'iceCream', kind: 'hand', name: 'glass', note: 'Strut plus kula. Hålls upprätt i handen.', garment: '#5b5045' },
+  { key: 'briefcase', kind: 'hand', name: 'portfölj', note: '0,26 m bred mot axelns 0,46. Hänger rakt ned.', garment: '#52505d' },
+  { key: 'camera', kind: 'hand', name: 'kamera', note: 'Objektivet är enda detaljen som läser på håll.', garment: '#465452' },
+  { key: 'thermos', kind: 'hand', name: 'termos', note: 'Smalast av de fyra. Behöver sin ljusa ton mest.', garment: '#5c4d58' },
+  { key: 'ruffled', kind: 'head', name: 'rufsigt', note: 'Band under kalottlinjen, sex tovor i sidled.', garment: '#49544a' },
+  { key: 'shortCut', kind: 'head', name: 'kortklippt', note: 'Tunnare band. Rör aldrig hjässan.', garment: '#555144' },
+  { key: 'grayHair', kind: 'head', name: 'grått hår', note: 'Enda håret i ljusa fönstret — ska läsa grått.', garment: '#554f61' },
+  { key: 'workCap', kind: 'head', name: 'keps', note: 'Bär garment. Skärmen 0,15 m fram är signalen.', garment: '#5b4f4d' },
+  { key: 'sunHat', kind: 'head', name: 'solhatt', note: 'Bär garment. Brättet 0,27 m är signalen.', garment: '#5b5045' },
+  { key: null, kind: 'bare', name: 'utan bonad', note: 'Jämförelsen. Hjässan läser likadant som solhatten.', garment: '#5b5045' },
+  { key: 'hoodRaised', kind: 'head', name: 'huva', note: 'Bär garment. Äggformen är signalen.', garment: '#465452' }
+];
+
+class Component extends DCLogic {
+  state = {
+    view: 0, yaw: 0.42, pitch: 0.82, playing: true, floor: 0,
+    labels: true, rays: false, ready: false, m: null,
+    cov: {}, dim: {}, rel: {}
+  };
+
+  // Raden är 11,5 m bred; solhatt/bar-paret ligger på x 3,45 och 4,60.
+  // Topdown-vyn riktas mot DET paret i stället för mot hela raden —
+  // briefens §7 ber uttryckligen att skillnaden ska kunna avgöras där,
+  // och på hela radens avstånd blir varje huvud fjorton pixlar.
+  views = [
+    { name: 'Strategisk vinkel', yaw: 0.42, pitch: 0.82, dist: 11.5, tgt: [0, 1.0, 0] },
+    { name: 'Rakt uppifrån: solhatt mot bar', yaw: 0, pitch: 1.5533, dist: 3.2, tgt: [4.02, 1.62, 0] },
+    { name: 'Närbild, huvuden', yaw: 0.34, pitch: 0.52, dist: 5.2, tgt: [2.3, 1.55, 0] },
+    { name: 'Närbild, händer', yaw: -0.35, pitch: 0.42, dist: 4.0, tgt: [-4.0, 0.95, 0] },
+    { name: 'Hela raden uppifrån', yaw: 0, pitch: 1.5533, dist: 9.4, tgt: [0, 0.6, 0] }
+  ];
+
+  componentDidMount() {
+    this.unmounted = false;
+    this.t = 0;
+    this.frames = 0;
+    this.load();
+  }
+
+  componentWillUnmount() {
+    this.unmounted = true;
+    if (this.raf) cancelAnimationFrame(this.raf);
+    this.raf = null;
+    if (this.ro) this.ro.disconnect();
+    if (this.figures) this.figures.forEach((f) => {
+      f.props.forEach((p) => p.dispose());
+      this.R.disposeFigureRig(f.rig);
+    });
+    if (this.sprites) this.sprites.forEach((s) => { s.material.map.dispose(); s.material.dispose(); });
+    if (this.renderer) this.renderer.dispose();
+  }
+
+  async load() {
+    try {
+      const THREE = await import(CDN);
+      const R = await import(new URL('figureRig.js', document.baseURI).href);
+      const P = await import(new URL('figureProps.js?v=4', document.baseURI).href);
+      if (this.unmounted) return;
+      this.THREE = THREE; this.R = R; this.P = P;
+      this.build();
+    } catch (e) {
+      console.error('props model failed to load', e);
+    }
+  }
+
+  stageRef = (el) => {
+    this.el = el;
+    if (el && this.renderer) this.attach();
+  };
+
+  build() {
+    const THREE = this.THREE;
+    const R = this.R;
+    const P = this.P;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color('#f3f2f2');
+    this.scene = scene;
+
+    scene.add(new THREE.HemisphereLight('#ffffff', '#cfcac6', 0.85));
+    const key = new THREE.DirectionalLight('#ffffff', 1.02);
+    key.position.set(5, 10, 6);
+    key.castShadow = true;
+    key.shadow.mapSize.set(2048, 2048);
+    const c = key.shadow.camera;
+    c.left = -8; c.right = 8; c.top = 6; c.bottom = -6; c.near = 0.5; c.far = 28;
+    scene.add(key);
+    const fill = new THREE.DirectionalLight('#ffffff', 0.24);
+    fill.position.set(-6, 5, -5);
+    scene.add(fill);
+
+    // Golvet byts med knappen — hela poängen är att kunna se
+    // rekvisitan mot varje zon den kan hamna på.
+    this.floorMat = new THREE.MeshStandardMaterial({ color: FLOORS[0][1], roughness: 0.95 });
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), this.floorMat);
+    floor.rotation.x = -Math.PI / 2;
+    floor.receiveShadow = true;
+    scene.add(floor);
+
+    const pitch = 1.15;
+    this.figures = [];
+    this.sprites = [];
+    const labels = new THREE.Group();
+    scene.add(labels);
+    this.labels = labels;
+
+    LINEUP.forEach((L, i) => {
+      const x = (i - (LINEUP.length - 1) / 2) * pitch;
+      const rig = R.createFigureRig({ variant: 'guest', garmentColour: L.garment });
+      rig.root.position.set(x, 0, 0);
+      rig.root.rotation.y = 0.18;
+      rig.root.traverse((o) => { if (o.isMesh) o.castShadow = true; });
+      scene.add(rig.root);
+
+      let props = [];
+      if (L.kind === 'hand') {
+        props = P.attachProps(rig, { hand: L.key, garmentColour: L.garment });
+      } else if (L.kind === 'head') {
+        props = P.attachProps(rig, { headTopping: L.key, garmentColour: L.garment });
+      }
+      this.figures.push({ rig: rig, props: props, spec: L, off: i * 0.43 });
+
+      const cv = document.createElement('canvas');
+      cv.width = 256; cv.height = 64;
+      const g2 = cv.getContext('2d');
+      g2.fillStyle = ACCENT;
+      g2.fillRect(0, 0, 256, 64);
+      g2.fillStyle = '#ffffff';
+      g2.font = 'bold 30px Archivo, sans-serif';
+      g2.textAlign = 'center'; g2.textBaseline = 'middle';
+      g2.fillText(L.name, 128, 34);
+      const tex = new THREE.CanvasTexture(cv);
+      const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: false }));
+      sp.position.set(x, 2.12, 0);
+      sp.scale.set(0.92, 0.23, 1);
+      sp.userData.x = x;
+      labels.add(sp);
+      this.sprites.push(sp);
+    });
+
+    // Strålarna i hjässprovet, som annotation.
+    const rays = new THREE.Group();
+    rays.visible = false;
+    scene.add(rays);
+    this.rays = rays;
+    const rayMat = new THREE.LineBasicMaterial({ color: ACCENT, transparent: true, opacity: 0.5 });
+    this.figures.forEach((f) => {
+      if (f.spec.kind === 'hand') return;
+      const hp = new THREE.Vector3();
+      f.rig.joints.head.getWorldPosition(hp);
+      for (let k = 0; k < 14; k++) {
+        const a = k * 2.399963;
+        const t = Math.sqrt((k + 0.5) / 14) * 0.115;
+        const px = hp.x + Math.cos(a) * t;
+        const pz = hp.z + Math.sin(a) * t;
+        rays.add(new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(px, hp.y + 0.62, pz),
+            new THREE.Vector3(px, hp.y + 0.24, pz)
+          ]), rayMat));
+      }
+    });
+
+    this.camera = new THREE.PerspectiveCamera(38, 2, 0.1, 120);
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+    this.renderer.setClearColor('#f3f2f2', 1);
+    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    this.attach();
+    this.measure();
+    this.startLoop();
+  }
+
+  attach() {
+    if (!this.el || !this.renderer || this.attached) return;
+    while (this.el.firstChild) this.el.removeChild(this.el.firstChild);
+    this.el.appendChild(this.renderer.domElement);
+    this.renderer.domElement.style.width = '100%';
+    this.renderer.domElement.style.height = '100%';
+    this.renderer.domElement.style.display = 'block';
+    this.attached = true;
+    this.resize();
+    this.ro = new ResizeObserver(() => this.resize());
+    this.ro.observe(this.el);
+    const el = this.el;
+    let drag = null;
+    el.addEventListener('pointerdown', (e) => {
+      drag = { x: e.clientX, y: e.clientY, yaw: this.state.yaw, pitch: this.state.pitch };
+      el.setPointerCapture(e.pointerId);
+      el.style.cursor = 'grabbing';
+    });
+    el.addEventListener('pointermove', (e) => {
+      if (!drag) return;
+      const yaw = drag.yaw + (e.clientX - drag.x) * 0.007;
+      const pitch = Math.max(0.05, Math.min(1.5533, drag.pitch + (e.clientY - drag.y) * 0.006));
+      this.setState({ yaw: yaw, pitch: pitch }, this.recenter);
+    });
+    const end = (e) => {
+      drag = null;
+      el.style.cursor = 'grab';
+      if (e && e.pointerId !== undefined && el.hasPointerCapture(e.pointerId)) el.releasePointerCapture(e.pointerId);
+    };
+    el.addEventListener('pointerup', end);
+    el.addEventListener('pointercancel', end);
+    el.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const v = this.views[this.state.view];
+      v.dist = Math.max(1.6, Math.min(40, v.dist * (1 + e.deltaY * 0.001)));
+      this.recenter();
+    }, { passive: false });
+  }
+
+  resize() {
+    if (!this.el || !this.renderer) return;
+    const w = this.el.clientWidth || 1000;
+    const h = this.el.clientHeight || 520;
+    this.renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+    this.renderer.setSize(w, h, false);
+    this.camera.aspect = w / h;
+    this.place();
+  }
+
+  place() {
+    const THREE = this.THREE;
+    if (!this.camera) return;
+    const v = this.views[this.state.view];
+    const cam = this.camera;
+    const tgt = new THREE.Vector3(v.tgt[0], v.tgt[1], v.tgt[2]);
+    const d = v.dist;
+    const p = this.state.pitch;
+    cam.position.set(
+      tgt.x + d * Math.cos(p) * Math.sin(this.state.yaw),
+      tgt.y + d * Math.sin(p),
+      tgt.z + d * Math.cos(p) * Math.cos(this.state.yaw)
+    );
+    cam.lookAt(tgt);
+    cam.updateProjectionMatrix();
+    this.placeLabels();
+    this.drawNow();
+  }
+
+  /**
+   * Etiketterna sitter på y 2,12 med depthTest: false — rakt ovanför
+   * varje huvud. I en topdown-vy hamnar de därmed PÅ huvudena och
+   * täcker exakt det som ska bedömas. De flyttas därför ut framför
+   * figuren när kameran lutar nedåt: brantare blick, längre ut.
+   * Att lämna det åt en knapp duger inte när vyn har ett enda syfte.
+   */
+  placeLabels = () => {
+    if (!this.sprites) return;
+    const p = this.state.pitch;
+    const k = Math.max(0, (p - 0.95) / (1.5533 - 0.95));
+    const z = k * 0.95;
+    const y = 2.12 - k * 1.05;
+    for (let i = 0; i < this.sprites.length; i++) {
+      const sp = this.sprites[i];
+      sp.position.set(sp.userData.x, y, z);
+    }
+  };
+
+  drawNow = () => {
+    if (this.renderer && this.scene && this.camera) this.renderer.render(this.scene, this.camera);
+  };
+
+  refresh = () => {
+    if (this.renderer && !this.unmounted && this.frames === this.lastFrames) this.startLoop();
+    this.lastFrames = this.frames;
+    this.drawNow();
+  };
+
+  recenter = () => { this.place(); this.refresh(); };
+
+  startLoop = () => {
+    if (this.unmounted || !this.renderer) return;
+    this.gen = (this.gen || 0) + 1;
+    if (this.raf) cancelAnimationFrame(this.raf);
+    this.raf = null;
+    this.tick(performance.now(), this.gen);
+  };
+
+  tick = (ms, gen) => {
+    const g = gen === undefined ? this.gen : gen;
+    if (this.unmounted || g !== this.gen) return;
+    this.raf = requestAnimationFrame((t) => this.tick(t, g));
+    const now = ms / 1000;
+    const dt = this.last === undefined ? 0 : Math.min(0.05, now - this.last);
+    this.last = now;
+    if (this.state.playing) this.t += dt;
+    const R = this.R;
+    const t = this.t;
+    for (let i = 0; i < this.figures.length; i++) {
+      const f = this.figures[i];
+      R.applyPose(f.rig, R.poseIdle(t + f.off));
+    }
+    this.renderer.render(this.scene, this.camera);
+    this.frames++;
+  };
+
+  // ── Mätningen ───────────────────────────────────────────────────
+  measure() {
+    const P = this.P;
+    const num = (x, d) => x.toFixed(d === undefined ? 2 : d).replace('.', ',');
+
+    const fails = P.checkPropPalette(FLOOR_ONLY);
+    const range = P.propContrastRange(FLOOR_ONLY, '#52505d');
+
+    const cov = {};
+    let worst = 1;
+    let bare = null;
+    let hat = null;
+    const dim = {};
+    const rel = {};
+    this.figures.forEach((f) => {
+      if (f.spec.kind === 'hand') {
+        if (!f.props.length) return;
+        const d = P.measureProp(f.props[0]);
+        dim[f.spec.key] = num(d.width) + ' × ' + num(d.height) + ' × ' + num(d.depth) + ' m';
+        rel[f.spec.key] = Math.round((d.width / 0.46) * 100) + ' % av axelspannet';
+        return;
+      }
+      const c = P.checkCrownCoverage(f.rig, f.spec.garment);
+      if (f.spec.kind === 'bare') { bare = c; return; }
+      if (f.spec.key === 'sunHat') hat = c;
+      if (c.coverage < worst) worst = c.coverage;
+      cov[f.spec.key] = num(c.coverage) + (c.ok ? '' : ' ✗');
+    });
+
+    this.setState({
+      ready: true,
+      cov: cov,
+      dim: dim,
+      rel: rel,
+      m: {
+        floorRange: num(range.floorMin) + ' – ' + num(range.floorMax),
+        fails: fails.length === 0 ? 'ingen (168 par prövade)' : String(fails.length),
+        garment: num(range.garmentMin) + ' (lägsta av alla tolv toner)',
+        coverage: num(worst) + ' lägst av sex',
+        bare: bare ? num(bare.coverage) : '—',
+        bareLong: bare ? num(bare.coverage) + ' av hjässan i garment-färg' : '—',
+        hat: hat ? num(hat.coverage) + ' av hjässan i garment-färg' : '—'
+      }
+    }, this.refresh);
+  }
+
+  cycleView = () => {
+    const next = (this.state.view + 1) % this.views.length;
+    const v = this.views[next];
+    this.setState({ view: next, yaw: v.yaw, pitch: v.pitch }, this.recenter);
+  };
+  resetView = () => {
+    const v = this.views[this.state.view];
+    this.setState({ yaw: v.yaw, pitch: v.pitch }, this.recenter);
+  };
+  togglePlay = () => this.setState((s) => ({ playing: !s.playing }), this.refresh);
+  cycleFloor = () => this.setState((s) => ({ floor: (s.floor + 1) % FLOORS.length }), () => {
+    this.floorMat.color.set(FLOORS[this.state.floor][1]);
+    this.refresh();
+  });
+  toggleLabels = () => this.setState((s) => ({ labels: !s.labels }), () => {
+    if (this.labels) this.labels.visible = this.state.labels;
+    this.refresh();
+  });
+  toggleRays = () => this.setState((s) => ({ rays: !s.rays }), () => {
+    if (this.rays) this.rays.visible = this.state.rays;
+    this.refresh();
+  });
+
+  renderVals() {
+    const s = this.state;
+    const m = s.m;
+    return {
+      stageRef: this.stageRef,
+      cycleView: this.cycleView,
+      resetView: this.resetView,
+      togglePlay: this.togglePlay,
+      cycleFloor: this.cycleFloor,
+      toggleLabels: this.toggleLabels,
+      toggleRays: this.toggleRays,
+      viewLabel: this.views[s.view].name,
+      yawLabel: Math.round((s.yaw * 180 / Math.PI) % 360),
+      pitchLabel: Math.round(s.pitch * 180 / Math.PI),
+      statusLabel: s.ready ? (s.playing ? 'Tio former, live' : 'Pausad') : 'Bygger figurerna',
+      playLabel: s.playing ? 'Pausa' : 'Spela',
+      floorLabel: FLOORS[s.floor][0],
+      labelsLabel: s.labels ? 'Etiketter: på' : 'Etiketter: av',
+      raysLabel: s.rays ? 'Hjässprovet: på' : 'Hjässprovet: av',
+      propCells: LINEUP.filter((L) => L.kind !== 'bare').map((L) => ({ name: L.name, note: L.note })),
+      covRuffled: s.cov.ruffled || '—',
+      covShortCut: s.cov.shortCut || '—',
+      covGrayHair: s.cov.grayHair || '—',
+      covWorkCap: s.cov.workCap || '—',
+      covSunHat: s.cov.sunHat || '—',
+      covHood: s.cov.hoodRaised || '—',
+      covBare: m ? m.bare : '—',
+      dimIceCream: s.dim.iceCream || '—', relIceCream: s.rel.iceCream || '—',
+      dimBriefcase: s.dim.briefcase || '—', relBriefcase: s.rel.briefcase || '—',
+      dimCamera: s.dim.camera || '—', relCamera: s.rel.camera || '—',
+      dimThermos: s.dim.thermos || '—', relThermos: s.rel.thermos || '—',
+      mCoverage: m ? m.coverage : '—',
+      mFloorRange: m ? m.floorRange : '—',
+      mFails: m ? m.fails : '—',
+      mGarment: m ? m.garment : '—',
+      mBareLong: m ? m.bareLong : '—',
+      mHat: m ? m.hat : '—'
+    };
+  }
+}
+</script>
+</body>
+</html>

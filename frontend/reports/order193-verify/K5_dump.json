@@ -1,0 +1,118 @@
+{
+  "guests": [
+    {
+      "id": "gst-80",
+      "state": "declined",
+      "seatIndex": 5,
+      "scenarioSource": false
+    },
+    {
+      "id": "gst-84",
+      "state": "leaving",
+      "seatIndex": 6,
+      "scenarioSource": false
+    },
+    {
+      "id": "gst-85",
+      "state": "paying",
+      "seatIndex": 7,
+      "scenarioSource": false
+    },
+    {
+      "id": "gst-86",
+      "state": "paying",
+      "seatIndex": 8,
+      "scenarioSource": false
+    },
+    {
+      "id": "gst-90",
+      "state": "dining",
+      "seatIndex": 0,
+      "scenarioSource": false
+    },
+    {
+      "id": "gst-91",
+      "state": "dining",
+      "seatIndex": 1,
+      "scenarioSource": false
+    },
+    {
+      "id": "gst-92",
+      "state": "dining",
+      "seatIndex": 9,
+      "scenarioSource": false
+    },
+    {
+      "id": "gst-94",
+      "state": "dining",
+      "seatIndex": 2,
+      "scenarioSource": false
+    },
+    {
+      "id": "gst-97",
+      "state": "dining",
+      "seatIndex": 10,
+      "scenarioSource": false
+    },
+    {
+      "id": "gst-98",
+      "state": "dining",
+      "seatIndex": 11,
+      "scenarioSource": false
+    },
+    {
+      "id": "gst-101",
+      "state": "dining",
+      "seatIndex": 12,
+      "scenarioSource": false
+    },
+    {
+      "id": "gst-102",
+      "state": "dining",
+      "seatIndex": 13,
+      "scenarioSource": false
+    },
+    {
+      "id": "gst-104",
+      "state": "dining",
+      "seatIndex": 14,
+      "scenarioSource": false
+    },
+    {
+      "id": "gst-107",
+      "state": "dining",
+      "seatIndex": 15,
+      "scenarioSource": false
+    },
+    {
+      "id": "gst-108",
+      "state": "dining",
+      "seatIndex": 16,
+      "scenarioSource": false
+    },
+    {
+      "id": "gst-110",
+      "state": "dining",
+      "seatIndex": 17,
+      "scenarioSource": false
+    },
+    {
+      "id": "gst-114",
+      "state": "seated",
+      "seatIndex": 18,
+      "scenarioSource": false
+    },
+    {
+      "id": "gst-115",
+      "state": "seated",
+      "seatIndex": 19,
+      "scenarioSource": false
+    },
+    {
+      "id": "gst-116",
+      "state": "arriving",
+      "seatIndex": null,
+      "scenarioSource": false
+    }
+  ]
+}

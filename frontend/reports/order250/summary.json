@@ -2,20 +2,20 @@
   "perStaff": {
     "staff-0": {
       "role": "värd",
-      "totalSamples": 249,
-      "totalSimSec": 902.8,
-      "movingPct": 31.3,
-      "stillPct": 68.7,
-      "targetChangesPerMin": 4.9,
-      "taskChanges": 62,
-      "taskChangesMidMove": 37,
-      "taskChangesMidMovePct": 59.7,
+      "totalSamples": 238,
+      "totalSimSec": 904.4,
+      "movingPct": 16,
+      "stillPct": 84,
+      "targetChangesPerMin": 5.8,
+      "taskChanges": 122,
+      "taskChangesMidMove": 24,
+      "taskChangesMidMovePct": 19.7,
       "dwellGreet": {
-        "count": 11,
-        "meanSec": 3.5,
-        "medianSec": 3.4,
+        "count": 40,
+        "meanSec": 4.9,
+        "medianSec": 4,
         "minSec": 3,
-        "maxSec": 4.2
+        "maxSec": 7.4
       },
       "dwellOrder": {
         "count": 0
@@ -26,23 +26,23 @@
     },
     "staff-1": {
       "role": "servitör",
-      "totalSamples": 249,
-      "totalSimSec": 902.8,
-      "movingPct": 56.6,
-      "stillPct": 43.4,
-      "targetChangesPerMin": 11.8,
-      "taskChanges": 201,
-      "taskChangesMidMove": 123,
-      "taskChangesMidMovePct": 61.2,
+      "totalSamples": 238,
+      "totalSimSec": 904.4,
+      "movingPct": 22.7,
+      "stillPct": 77.3,
+      "targetChangesPerMin": 6.9,
+      "taskChanges": 113,
+      "taskChangesMidMove": 23,
+      "taskChangesMidMovePct": 20.4,
       "dwellGreet": {
         "count": 0
       },
       "dwellOrder": {
-        "count": 44,
-        "meanSec": 3.5,
-        "medianSec": 3.4,
-        "minSec": 3,
-        "maxSec": 6.8
+        "count": 52,
+        "meanSec": 8.8,
+        "medianSec": 9.4,
+        "minSec": 4,
+        "maxSec": 14.4
       },
       "dwellServe": {
         "count": 0
@@ -50,12 +50,12 @@
     },
     "staff-2": {
       "role": "kock",
-      "totalSamples": 249,
-      "totalSimSec": 902.8,
+      "totalSamples": 238,
+      "totalSimSec": 904.4,
       "movingPct": 0,
       "stillPct": 100,
       "targetChangesPerMin": 0,
-      "taskChanges": 46,
+      "taskChanges": 39,
       "taskChangesMidMove": 0,
       "taskChangesMidMovePct": 0,
       "dwellGreet": {
@@ -71,40 +71,137 @@
   },
   "anchorFires": [
     {
-      "simTime": 131.60000000000107,
+      "simTime": 134.20000000000093,
       "questionId": "kalastorget-brons-01",
       "anchorId": "greet",
       "askerRole": "värd",
       "askerStaffId": "staff-0",
       "askerTaskType": "greet",
-      "guestId": "gst-6",
-      "guestState": "seated",
-      "staffToGuestDist": 1.9276715474571198,
-      "staffArrivedAtTarget": false
+      "guestId": "gst-5",
+      "guestState": "arriving",
+      "staffToGuestDist": 4.52,
+      "staffArrivedAtTarget": true
     },
     {
-      "simTime": 230.39999999999546,
+      "simTime": 232.19999999999536,
       "questionId": "kalastorget-brons-08",
       "anchorId": "requestCheck",
       "askerRole": "värd",
       "askerStaffId": "staff-0",
-      "askerTaskType": null,
-      "guestId": null,
-      "guestState": null,
-      "staffToGuestDist": null,
-      "staffArrivedAtTarget": null
+      "askerTaskType": "greet",
+      "guestId": "gst-28",
+      "guestState": "arriving",
+      "staffToGuestDist": 2.1199999999999974,
+      "staffArrivedAtTarget": true
     },
     {
-      "simTime": 329.19999999998987,
-      "questionId": "kalastorget-brons-06",
-      "anchorId": "requestCheck",
+      "simTime": 326.99999999999,
+      "questionId": "stensota-brons-10",
+      "anchorId": "order",
       "askerRole": "gäst",
-      "askerStaffId": null,
-      "askerTaskType": null,
-      "guestId": null,
-      "guestState": null,
-      "staffToGuestDist": null,
-      "staffArrivedAtTarget": null
+      "askerStaffId": "staff-1",
+      "askerTaskType": "order",
+      "guestId": "gst-28",
+      "guestState": "ordering",
+      "staffToGuestDist": 0,
+      "staffArrivedAtTarget": true
     }
-  ]
+  ],
+  "guestThroughput": {
+    "completedGuests": 49,
+    "totalArrived": 0,
+    "walkoutsDuringService": 0,
+    "finalStates": {},
+    "revenueThisService": 8995,
+    "costThisService": 6797.030000000006,
+    "resultThisService": 2197.969999999994,
+    "eveningMetrics": null,
+    "reputationStart": 0.6,
+    "reputationEnd": 0.7019463786419099,
+    "reputationDelta": 0.10194637864190992,
+    "satisfactionMean": 0.803,
+    "satisfactionMedian": 0.825,
+    "satisfactionN": 76,
+    "satisfactionHistogram": {
+      "0.0-0.1": 0,
+      "0.1-0.2": 0,
+      "0.2-0.3": 0,
+      "0.3-0.4": 0,
+      "0.4-0.5": 0,
+      "0.5-0.6": 0,
+      "0.6-0.7": 2,
+      "0.7-0.8": 34,
+      "0.8-0.9": 35,
+      "0.9-1.0": 5
+    },
+    "satisfactionAbove075": 42,
+    "satisfactionBelow035": 0,
+    "costPerCategory": {
+      "stock": {
+        "count": 11,
+        "sumSek": -10930
+      },
+      "revenue": {
+        "count": 1,
+        "sumSek": 17610
+      },
+      "ingredient": {
+        "count": 1,
+        "sumSek": -2538
+      },
+      "other": {
+        "count": 2,
+        "sumSek": 190
+      }
+    },
+    "reputationBreakdown": {
+      "queueStrain": 0,
+      "teamStrain": -0.10940000000001215,
+      "giveUp": 0,
+      "happy": 0.3240000000000002,
+      "unhappy": 0,
+      "walkout": 0,
+      "substitute": 0,
+      "collapse": 0,
+      "ceilingDrift": -0.010707242716071041,
+      "other": 0
+    },
+    "clampFloorHits": 0,
+    "reputationMinObserved": 0.6,
+    "departureLogN": 98,
+    "departureSatHistogram": {
+      "0.0-0.1": 0,
+      "0.1-0.2": 0,
+      "0.2-0.3": 0,
+      "0.3-0.4": 0,
+      "0.4-0.5": 0,
+      "0.5-0.6": 0,
+      "0.6-0.7": 0,
+      "0.7-0.8": 18,
+      "0.8-0.9": 76,
+      "0.9-1.0": 4
+    },
+    "departureSatMean": 0.843,
+    "departureSatMedian": 0.866,
+    "departureHappyCount": 54,
+    "departureMediocreCount": 44,
+    "departureUnhappyCount": 0
+  },
+  "waitStats": {
+    "arrivingToSeated": {
+      "n": 65,
+      "meanSec": 10,
+      "medianSec": 7
+    },
+    "seatedToOrdering": {
+      "n": 67,
+      "meanSec": 4.1,
+      "medianSec": 3.6
+    },
+    "orderingToPaying": {
+      "n": 49,
+      "meanSec": 207.7,
+      "medianSec": 194.4
+    }
+  }
 }

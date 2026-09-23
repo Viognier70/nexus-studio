@@ -1,0 +1,66 @@
+{
+  "simTime": 54.40000000000023,
+  "period": "lunch",
+  "prepEndsAt": 182.0000000000002,
+  "seatedIdsCount": 0,
+  "guestCount": 0,
+  "guests": [],
+  "staff": [
+    {
+      "id": "värd-7xxsi9",
+      "role": "värd",
+      "renderPos": {
+        "x": 32.59015139363219,
+        "z": -10.264803545950944
+      },
+      "poseName": "poseWalk",
+      "moving": true
+    },
+    {
+      "id": "servitör-ze9eik",
+      "role": "servitör",
+      "renderPos": {
+        "x": 27.940682010195232,
+        "z": -19.52822985923394
+      },
+      "poseName": "poseWalk",
+      "moving": true
+    },
+    {
+      "id": "kock-1uh40o",
+      "role": "kock",
+      "renderPos": {
+        "x": 34.09996420841259,
+        "z": -22.11106682834401
+      },
+      "poseName": "poseWalk",
+      "moving": true
+    }
+  ],
+  "layout": {
+    "centre": [
+      31.597500000000004,
+      -16.7375
+    ],
+    "width": 14.509200552894312,
+    "depth": 10.086506289734302,
+    "entrance": [
+      32.40935134463978,
+      -10.132607704625523
+    ]
+  },
+  "seatSource": "businessRoomContract",
+  "seatSourceLength": 20,
+  "contractSeatsLength": 20,
+  "contractClass": "ölkrogen",
+  "cameraDist": 417.612172566686,
+  "cameraTargetDist": 24,
+  "summary": {
+    "seatedTotal": 0,
+    "seatedWithRenderPos": 0,
+    "seatedNearSeat": 0,
+    "seatedFarFromSeat": 0,
+    "seatedNoSitBlend": 0,
+    "outsideOBB": 0
+  }
+}

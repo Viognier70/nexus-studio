@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/modernist-fa2a5900-708d-4668-979a-71ad6a03542a/styles.css">
+<script src="_ds/modernist-fa2a5900-708d-4668-979a-71ad6a03542a/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: var(--color-bg); }
+  a { color: var(--color-accent-700); text-decoration: none; border-bottom: 2px solid var(--color-accent); }
+  a:hover { color: var(--color-accent); }
+</style>
+</helmet>
+<div style="font-family: var(--font-body); color: var(--color-text); background: var(--color-bg); min-height: 100vh; padding: 40px 48px 72px; max-width: 1560px; margin: 0 auto;">
+
+  <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 48px;">
+    <div>
+      <div style="font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-700); font-weight: 700;">SD-004 · verksamhetsklass som rum · fjärde och sista</div>
+      <h1 style="font-family: var(--font-heading); font-size: 54px; line-height: 1.02; margin: 12px 0 0; font-weight: 700; letter-spacing: -0.02em;">Restaurangen</h1>
+      <p style="margin: 14px 0 0; font-size: 17px; max-width: 62ch; text-wrap: pretty;">Sexton platser, den ursprungliga matsalen. Den enda av de fyra som redan fanns byggd — och den enda som fanns byggd <em>två gånger</em>, oförenligt. Den här leveransen väljer den ena och gör den andra till död kod.</p>
+    </div>
+    <div style="text-align: left; font-size: 13px; line-height: 1.7; flex: 0 0 auto; padding-bottom: 6px;">
+      <div style="font-weight: 700;">Leverans</div>
+      <div><a href="restaurantRoom.ts">restaurantRoom.ts</a> — ren three.js</div>
+      <div style="color: var(--color-neutral-600);">Ersätter Restaurant.tsx</div>
+      <div style="color: var(--color-neutral-600);">Följer interiorLayout.ts</div>
+    </div>
+  </div>
+
+  <div class="hr" style="margin: 28px 0 0;"></div>
+
+  <div style="background: var(--color-accent); color: #fff; padding: 26px 30px; margin: 20px 0 0;">
+    <div style="font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; opacity: 0.85;">Blockerande fynd — läs innan något annat</div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr 0.9fr; gap: 32px; margin-top: 18px;">
+      <div>
+        <div style="font-family: var(--font-heading); font-size: 20px; font-weight: 700;">A · RESTAURANT_INTERIOR</div>
+        <p style="font-size: 13.5px; line-height: 1.55; margin: 6px 0 0;">Landmärkesbaserad, i <code>content/grythyttan.ts</code>. 16 × 12 m, centrum (0, 20), axelparallell. Sex bord i ett 2 × 3-raster, bardisk längs västra väggen, kök i NV. Landmärket är märkt <code>placeholder</code>. <strong>Restaurant.tsx renderar denna.</strong></p>
+      </div>
+      <div>
+        <div style="font-family: var(--font-heading); font-size: 20px; font-weight: 700;">B · interiorLayout.ts</div>
+        <p style="font-size: 13.5px; line-height: 1.55; margin: 6px 0 0;">OBB-baserad på OSM-byggnaden w869907975. 15,6 × 11,8 m, roterad 7°. Fem bord i en rad, bar längs den långa −Z-väggen, fyra stolar. <code>TOTAL_SEATS = 16</code> matar reducerarens kapacitet. <strong>InteriorGuests placerar gäster enligt denna.</strong></p>
+      </div>
+      <div>
+        <div style="font-family: var(--font-heading); font-size: 20px; font-weight: 700;">Följden</div>
+        <p style="font-size: 13.5px; line-height: 1.55; margin: 6px 0 0;">Gästerna sitter i en annan byggnad än borden står i, med annan rotation och annat centrum. Ingen av filerna vet om det.</p>
+      </div>
+    </div>
+    <p style="font-size: 13.5px; line-height: 1.6; margin: 20px 0 0; max-width: 104ch; opacity: 0.95;"><strong>Rummet följer B.</strong> Inte smaksak: <code>TOTAL_SEATS</code> är reducerarens kapacitet, ORDER 042 §3.2 föreskriver OBB och underkänner uttryckligen AABB-layout, och B:s byggnad är verklig medan A:s landmärke är en platshållare. Vid montering blir <code>RESTAURANT_INTERIOR.bar</code>, <code>.kitchen</code>, <code>.tables</code> och <code>.staffHomes</code> död kod och ska raderas — inte lämnas kvar som en andra sanning.</p>
+  </div>
+
+  <div style="display: flex; gap: 20px; align-items: baseline; padding: 18px 0; flex-wrap: wrap;">
+    <span class="tag tag-accent">16 platser — låsta</span>
+    <span class="tag tag-outline">15,6 × 11,8 m, roterad 7°</span>
+    <span class="tag tag-outline">kontrast {{ mContrast }}</span>
+    <span style="font-size: 13px; color: var(--color-neutral-600);">Dra i vyn. Röda linjer är annotation, inte geometri.</span>
+  </div>
+
+  <div style="position: relative; border-top: 2px solid var(--color-divider); border-bottom: 2px solid var(--color-divider); background: var(--color-neutral-100);">
+    <div ref="{{ stageRef }}" style="width: 100%; height: 520px; cursor: grab;"></div>
+    <div style="position: absolute; left: 14px; top: 12px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-neutral-600); font-weight: 700;">{{ viewLabel }} · vridning {{ yawLabel }}° · lutning {{ pitchLabel }}°</div>
+    <div style="position: absolute; right: 14px; top: 12px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-700); font-weight: 700;">{{ statusLabel }}</div>
+  </div>
+
+  <div style="display: flex; gap: 10px; align-items: center; padding: 18px 0 0; flex-wrap: wrap; white-space: nowrap;">
+    <button class="btn btn-primary" onClick="{{ cycleView }}">{{ viewLabel }}</button>
+    <button class="btn btn-secondary" onClick="{{ togglePlay }}">{{ playLabel }}</button>
+    <button class="btn btn-secondary" onClick="{{ toggleBodies }}">{{ bodiesLabel }}</button>
+    <button class="btn btn-secondary" onClick="{{ toggleWalls }}">{{ wallsLabel }}</button>
+    <button class="btn btn-ghost" onClick="{{ toggleLabels }}">{{ labelsLabel }}</button>
+    <button class="btn btn-ghost" onClick="{{ togglePaths }}">{{ pathsLabel }}</button>
+    <button class="btn btn-ghost" onClick="{{ toggleSlots }}">{{ slotsLabel }}</button>
+    <button class="btn btn-ghost" onClick="{{ resetView }}">Nollställ vridning</button>
+  </div>
+
+  <div class="hr" style="margin: 30px 0 0;"></div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; padding-top: 28px;">
+    <div>
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 16px; font-weight: 700;">Tre band längs långaxeln</h2>
+      <p style="font-size: 14px; line-height: 1.6; margin: 0 0 18px; color: var(--color-neutral-700); max-width: 54ch; text-wrap: pretty;">Baren längs den långa väggen i −Z, bordsraden längs +Z, servicegången emellan. Varje band är en remsa med konstant Z som sträcker sig i X — de löper alltså längs långaxeln och staplas tvärs kortaxeln. Entrén i +X och leveransfickan i −X, så gäst och varor aldrig möts. Köket är en pentry-linje bakom bardiskens västra ände.</p>
+      <table class="table" style="width: 100%;">
+        <thead>
+          <tr><th>Band</th><th>Lokal Z</th><th>Innehåll</th></tr>
+        </thead>
+        <tbody>
+          <tr><td style="font-weight: 700;">Runway</td><td>−5,70 … −4,40</td><td>1,30 m bakom disken. Enda avvikande golvzonen — den säger var personalen hör hemma.</td></tr>
+          <tr><td style="font-weight: 700;">Bardisk</td><td>−4,40 … −3,70</td><td>10,92 m lång, 1,10 m hög, messingfotlist. Ingen bakhylla.</td></tr>
+          <tr><td style="font-weight: 700;">Barstolar</td><td>−3,20</td><td>Fyra, på lokal X ±1 och ±3. Vända mot disken.</td></tr>
+          <tr><td style="font-weight: 700;">Servicegång</td><td>−2,50 … 2,30</td><td>Serverns arbetsyta. Når alla fem bord och passluckan utan att korsa köordningen.</td></tr>
+          <tr><td style="font-weight: 700;">Bordsraden</td><td>3,00</td><td>Tvåa, tvåa, <strong>fyra</strong>, tvåa, tvåa på X −5, −2,5, 0, 2,5, 5.</td></tr>
+          <tr><td style="font-weight: 700;">Norra remsan</td><td>4,70</td><td>Angörning till fyrans nordsida.</td></tr>
+        </tbody>
+      </table>
+
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 30px 0 16px; font-weight: 700;">Baren är en servicedisk</h2>
+      <p style="font-size: 14px; line-height: 1.6; margin: 0; color: var(--color-neutral-700); max-width: 54ch; text-wrap: pretty;">Det är skillnaden mot de tre andra rummen. I ölkrogen vänder sig åtta av tjugo mot tanken, i vinbaren sex av tjugo mot flaskhyllan. Här är det fyra av sexton, och de fem borden vänder sig <em>från</em> baren. Därför får den ingen bakhylla och ingen skyltning — den ska läsa som personalens arbetsyta, och rummets tyngdpunkt ska ligga i bordsraden.</p>
+    </div>
+
+    <div>
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 16px; font-weight: 700;">Runwayen var 0,60 m</h2>
+      <p style="font-size: 14px; line-height: 1.6; margin: 0 0 16px; color: var(--color-neutral-700); max-width: 54ch; text-wrap: pretty;"><code>BAR_WIDTH_M = 1,6</code> med <code>BAR_OFFSET_M = 0,6</code> lämnar sex decimeter mellan disk och vägg. Det är ingen passage — en figur är 0,46 m bred och behöver dryga 0,8. Konstanten blandar ihop <em>strippens</em> djup, som är en renderingshint, med <em>diskens</em>.</p>
+      <p style="font-size: 14px; line-height: 1.6; margin: 0 0 18px; color: var(--color-neutral-700); max-width: 54ch; text-wrap: pretty;">Löst utan att röra en enda plats: framkanten ligger kvar på lokal Z = −3,70, som barstolarna härleds ur, och disken görs 0,70 m djup i stället för 1,60. Runwayen blir <strong>{{ mRunway }}</strong>.</p>
+      <table class="table" style="width: 100%;">
+        <tbody>
+          <tr><td style="width: 52%;">Inredningens utbredning</td><td style="font-weight: 700;">{{ mFootprint }}</td></tr>
+          <tr><td>Fri takhöjd</td><td style="font-weight: 700;">{{ mHeight }}</td></tr>
+          <tr><td>Högsta inredning</td><td style="font-weight: 700;">{{ mTallest }}</td></tr>
+          <tr><td>Platser: bord / bar</td><td style="font-weight: 700;">{{ mSeats }}</td></tr>
+          <tr><td>Bardiskens längd</td><td style="font-weight: 700;">{{ mBarLen }}</td></tr>
+          <tr><td>Runway bakom disken</td><td style="font-weight: 700;">{{ mRunway }}</td></tr>
+          <tr><td>Smalaste passagen på någon väg</td><td style="font-weight: 700;">{{ mMinPassage }}</td></tr>
+          <tr><td>Platskontraktet</td><td style="font-weight: 700;">{{ mSeatContract }}</td></tr>
+          <tr><td>Kontrast mot tre golvzoner</td><td style="font-weight: 700;">{{ mContrast }}</td></tr>
+          <tr><td>Par utanför bandet</td><td style="font-weight: 700;">{{ mFails }}</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size: 12px; line-height: 1.6; margin: 12px 0 0; color: var(--color-neutral-600); max-width: 54ch; text-wrap: pretty;">Golvbasen är Restaurant.tsx eget <code>#a49b8a</code>, oförändrad — rummet ska läsa som samma plats. Spannet blir 0,026 i luminans mot gästgiveriets 0,008, eftersom utgångsfärgen här är <em>given</em> och inte vald. Figurfönstret blir ändå L 0,056–0,148, alltså brett: det är spridningen som kostar, och tre zoner inom 0,026 kostar lite.</p>
+    </div>
+  </div>
+
+  <div class="hr" style="margin: 32px 0 0;"></div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; padding-top: 28px;">
+    <div>
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 16px; font-weight: 700;">Platserna är låsta</h2>
+      <p style="font-size: 14px; line-height: 1.6; margin: 0 0 16px; color: var(--color-neutral-700); text-wrap: pretty;">Till skillnad från de tre andra rummen kan sitsfördelningen <strong>inte</strong> justeras härifrån. 4 × tvåa + 1 × fyra + 4 barstolar = 16, per Vision Owner-godkännande 2026-08-08, och talet matar reducerarens kapacitet.</p>
+      <p style="font-size: 14px; line-height: 1.6; margin: 0; color: var(--color-neutral-700); text-wrap: pretty;">Ordningen är också låst — reduceraren indexerar rakt in i <code>seats[]</code>: bordsplatser t0…t4 på 0–11, sedan barstolarna på 12–15. <code>checkSeatContract()</code> prövar båda, för båda kan gå sönder tyst.</p>
+    </div>
+    <div>
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 16px; font-weight: 700;">Vad som följer med</h2>
+      <table class="table" style="width: 100%;">
+        <tbody>
+          <tr><td style="width: 46%; font-weight: 700;">seats[16]</td><td>I reducerarens indexordning, med kurs, sitshöjd, angörningsnod och korridor.</td></tr>
+          <tr><td style="font-weight: 700;">waitingSlots · declinedSlots · arrivalSlots</td><td>Alla tre slot-uppsättningarna ur ORDER 043 §6, oförändrade.</td></tr>
+          <tr><td style="font-weight: 700;">deliveryBay · deliveryApproach</td><td>Den ekologiska ankarpunkten, −X-änden.</td></tr>
+          <tr><td style="font-weight: 700;">staffStations[3]</td><td>host, server, chef — med uniform och kurs.</td></tr>
+          <tr><td style="font-weight: 700;">parts.roof · walls · bar · sign</td><td>Egna grupper för avståndstoningen Restaurant.tsx redan gör.</td></tr>
+          <tr><td style="font-weight: 700;">glassAnchor · passAnchor</td><td>Fästen. Rekvisitan porteras separat.</td></tr>
+          <tr><td style="font-weight: 700;">checkSeatContract()</td><td>Antal, ordning, bordsplatser före barstolar.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 16px; font-weight: 700;">Flaggat, inte uppfunnet</h2>
+      <div style="border-top: 2px solid var(--color-divider);">
+        <div style="padding: 12px 0; border-bottom: 1px solid var(--color-neutral-300);">
+          <div style="font-weight: 700; font-size: 14px;">1 · Två layouter <span style="color: var(--color-accent);">⛔</span></div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 3px;">Se det röda fältet ovan. Blockerande, och den enda flaggan i alla fyra rummen som pekar på ett fel som redan är i drift.</div>
+        </div>
+        <div style="padding: 12px 0; border-bottom: 1px solid var(--color-neutral-300);">
+          <div style="font-weight: 700; font-size: 14px;">2 · BAR_WIDTH_M gör två saker</div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 3px;">Ändras den i <code>interiorLayout</code> flyttar barstolarna, eftersom <code>stoolLocalZ</code> räknas ur den. Konstanten bör delas i strippdjup och diskdjup.</div>
+        </div>
+        <div style="padding: 12px 0; border-bottom: 1px solid var(--color-neutral-300);">
+          <div style="font-weight: 700; font-size: 14px;">3 · Landmärket heter vinbar</div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 3px;"><code>gry-vinbar-placeholder-01</code> med displayName &rdquo;Restaurang (Gray Box)&rdquo;. Nu när vinbaren finns som egen klass träffar en sökning på &rdquo;vinbar&rdquo; restaurangen.</div>
+        </div>
+        <div style="padding: 12px 0; border-bottom: 1px solid var(--color-neutral-300);">
+          <div style="font-weight: 700; font-size: 14px;">4 · Tre roller, inga uppgifter</div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 3px;">Samma flagga som de tre andra. <code>staffHomes</code> i RESTAURANT_INTERIOR är dessutom räknade i den geometri som utgår — lägena är omräknade här.</div>
+        </div>
+        <div style="padding: 12px 0; border-bottom: 1px solid var(--color-neutral-300);">
+          <div style="font-weight: 700; font-size: 14px;">5 · Två stationer, inga rätter</div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 3px;">Spis och prep är geometri; kopplingen till en rätt kräver en menymodell som inte finns.</div>
+        </div>
+        <div style="padding: 12px 0;">
+          <div style="font-weight: 700; font-size: 14px;">6 · Palettkoden i fyra kopior</div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 3px;">Fjärde upprepningen av samma WCAG-formler. <a href="silhouetteContrast.zones.ts">silhouetteContrast.zones.ts</a> har redan nyckeln <code>restaurang</code>.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1560,&quot;height&quot;:1900},&quot;occupancy&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:16,&quot;min&quot;:0,&quot;max&quot;:16,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Rummet&quot;},&quot;barCounterDepth&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.7,&quot;min&quot;:0.5,&quot;max&quot;:1.6,&quot;step&quot;:0.05,&quot;unit&quot;:&quot;m&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Baren&quot;},&quot;interiorHeight&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:3,&quot;min&quot;:2.6,&quot;max&quot;:4,&quot;step&quot;:0.1,&quot;unit&quot;:&quot;m&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Rummet&quot;}}">
+const CDN = 'https://unpkg.com/three@0.160.0/build/three.module.js';
+const ACCENT = '#ec3013';
+const LANE_NAMES = {
+  service: 'Servicegången',
+  tableRow: 'Norra remsan',
+  barLane: 'Barkorridoren'
+};
+
+class Component extends DCLogic {
+  state = {
+    view: 0, yaw: 0.62, pitch: 0.84, playing: true,
+    bodies: true, walls: 0, labels: true, paths: false, slots: true,
+    ready: false, m: null
+  };
+
+  views = [
+    { name: 'Strategisk vinkel', yaw: 0.62, pitch: 0.84, dist: 22, tgt: [0, 0.9, 0] },
+    { name: 'Plan', yaw: 0, pitch: 1.5533, dist: 26, tgt: [0, 0.4, 0] },
+    { name: 'Längs baren', yaw: -0.5, pitch: 0.42, dist: 13, tgt: [-1.0, 1.0, -2.4] },
+    { name: 'Entrén och kön', yaw: 1.05, pitch: 0.62, dist: 15, tgt: [8.4, 0.9, 0] }
+  ];
+
+  componentDidMount() {
+    this.unmounted = false;
+    this.t = 0;
+    this.load();
+    // Återkommande vakthund. componentDidUpdate räcker inte: en scen
+    // som fryser gör det oftast när ingenting annat händer, och då
+    // kommer ingen uppdatering som kan starta om den.
+    this.watchdog = setInterval(this.ensureLoop, 1000);
+    document.addEventListener('visibilitychange', this.ensureLoop);
+  }
+
+  componentWillUnmount() {
+    this.unmounted = true;
+    if (this.watchdog) clearInterval(this.watchdog);
+    document.removeEventListener('visibilitychange', this.ensureLoop);
+    if (this.raf) cancelAnimationFrame(this.raf);
+    if (this.ro) this.ro.disconnect();
+    if (this.figures) this.figures.forEach((f) => this.R.disposeFigureRig(f.rig));
+    if (this.room) this.room.dispose();
+    if (this.sprites) this.sprites.forEach((s) => { s.material.map.dispose(); s.material.dispose(); });
+    if (this.renderer) this.renderer.dispose();
+  }
+
+  async load() {
+    try {
+      const THREE = await import(CDN);
+      const Q = await import(new URL('restaurantRoom.js?v=2', document.baseURI).href);
+      const R = await import(new URL('figureRig.js', document.baseURI).href);
+      if (this.unmounted) return;
+      this.THREE = THREE; this.Q = Q; this.R = R;
+      this.build();
+    } catch (e) {
+      console.error('restaurant model failed to load', e);
+    }
+  }
+
+  stageRef = (el) => {
+    this.el = el;
+    if (el && this.renderer) this.attach();
+  };
+
+  build() {
+    const THREE = this.THREE;
+    const Q = this.Q;
+    const R = this.R;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color('#f3f2f2');
+    this.scene = scene;
+
+    scene.add(new THREE.HemisphereLight('#ffffff', '#cfcac6', 0.82));
+    const key = new THREE.DirectionalLight('#ffffff', 1.0);
+    key.position.set(8, 13, 7);
+    key.castShadow = true;
+    key.shadow.mapSize.set(2048, 2048);
+    const c = key.shadow.camera;
+    c.left = -14; c.right = 14; c.top = 11; c.bottom = -11; c.near = 1; c.far = 44;
+    scene.add(key);
+    const fill = new THREE.DirectionalLight('#ffffff', 0.22);
+    fill.position.set(-8, 6, -6);
+    scene.add(fill);
+
+    const ground = new THREE.Mesh(
+      new THREE.PlaneGeometry(90, 90),
+      new THREE.MeshStandardMaterial({ color: '#e6e4e2', roughness: 1 })
+    );
+    ground.rotation.x = -Math.PI / 2;
+    ground.position.y = -0.002;
+    ground.receiveShadow = true;
+    scene.add(ground);
+
+    const room = Q.createRestaurantRoom({
+      interiorHeight: this.props.interiorHeight ?? 3.0,
+      barCounterDepth: this.props.barCounterDepth ?? 0.7
+    });
+    this.room = room;
+    scene.add(room.group);
+    room.parts.roof.visible = false;
+
+    // Kroppar i egen grupp utanför room.group — samma disciplin som
+    // de andra tre rummen, så mätningarna gäller rummet.
+    const bodies = new THREE.Group();
+    scene.add(bodies);
+    this.bodies = bodies;
+    this.figures = [];
+
+    const occupancy = Math.max(0, Math.min(16, Math.round(this.props.occupancy ?? 16)));
+    room.seats.forEach((s, i) => {
+      if (i >= occupancy) return;
+      const rig = R.createFigureRig({
+        variant: 'guest',
+        garmentColour: Q.GUEST_GARMENTS[i % Q.GUEST_GARMENTS.length]
+      });
+      rig.root.position.set(s.local[0], 0.11 + (s.seatHeight - 0.45), s.local[1]);
+      rig.root.rotation.y = s.facing;
+      bodies.add(rig.root);
+      this.figures.push({ rig: rig, mode: 'seated', off: i * 0.41 });
+    });
+
+    const staffMode = { host: 'idle', server: 'carry', chef: 'work' };
+    room.staffStations.forEach((st, i) => {
+      const rig = R.createFigureRig({ variant: 'staff', garmentColour: st.uniform });
+      rig.root.position.set(st.local[0], 0.11, st.local[1]);
+      rig.root.rotation.y = st.facing;
+      bodies.add(rig.root);
+      this.figures.push({ rig: rig, mode: staffMode[st.id] ?? 'idle', off: i * 0.77 });
+    });
+
+    // Två gäster i kön, så entrésidan inte läser som tom.
+    room.waitingSlots.slice(0, 2).forEach((w, i) => {
+      const rig = R.createFigureRig({
+        variant: 'guest',
+        garmentColour: Q.GUEST_GARMENTS[(i + 5) % Q.GUEST_GARMENTS.length]
+      });
+      rig.root.position.set(w[0], 0.11, w[1]);
+      rig.root.rotation.y = -Math.PI / 2;
+      bodies.add(rig.root);
+      this.figures.push({ rig: rig, mode: 'idle', off: 2.1 + i * 0.9 });
+    });
+
+    bodies.traverse((o) => { if (o.isMesh) o.castShadow = true; });
+
+    // ── Annotationer ──────────────────────────────────────────────
+    const anno = new THREE.Group();
+    scene.add(anno);
+    this.anno = anno;
+    const accentMat = new THREE.MeshStandardMaterial({
+      color: ACCENT, emissive: ACCENT, emissiveIntensity: 0.35, roughness: 0.6
+    });
+    const disc = (x, z, r, y) => {
+      const m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, 0.02, 18), accentMat);
+      m.position.set(x, y ?? 0.14, z);
+      anno.add(m);
+      return m;
+    };
+    disc(room.entrance[0], room.entrance[1], 0.34);
+    disc(room.waitingSpot[0], room.waitingSpot[1], 0.28, 0.03);
+    disc(room.deliveryBay[0], room.deliveryBay[1], 0.3, 0.03);
+    room.staffStations.forEach((st) => disc(st.local[0], st.local[1], 0.3));
+
+    // Slot-uppsättningarna ur ORDER 043 §6 — kö, avvisade, ankomst.
+    const slots = new THREE.Group();
+    anno.add(slots);
+    this.slots = slots;
+    const slotMat = new THREE.MeshStandardMaterial({
+      color: ACCENT, transparent: true, opacity: 0.4, roughness: 0.8
+    });
+    const ring = (x, z, r) => {
+      const m = new THREE.Mesh(new THREE.RingGeometry(r * 0.62, r, 16), slotMat);
+      m.rotation.x = -Math.PI / 2;
+      m.position.set(x, 0.05, z);
+      slots.add(m);
+    };
+    room.waitingSlots.forEach((p) => ring(p[0], p[1], 0.30));
+    room.declinedSlots.forEach((p) => ring(p[0], p[1], 0.24));
+    room.arrivalSlots.forEach((p) => ring(p[0], p[1], 0.20));
+
+    const labels = new THREE.Group();
+    anno.add(labels);
+    this.labels = labels;
+    this.sprites = [];
+    room.seats.forEach((s, i) => {
+      const cv = document.createElement('canvas');
+      cv.width = 96; cv.height = 96;
+      const g = cv.getContext('2d');
+      g.fillStyle = ACCENT;
+      g.beginPath(); g.arc(48, 48, 44, 0, Math.PI * 2); g.fill();
+      g.fillStyle = '#ffffff';
+      g.font = 'bold 54px Archivo, sans-serif';
+      g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.fillText(String(i), 48, 52);
+      const tex = new THREE.CanvasTexture(cv);
+      const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: false }));
+      sp.position.set(s.local[0], 1.98 + (s.seatHeight - 0.45), s.local[1]);
+      sp.scale.set(0.42, 0.42, 0.42);
+      labels.add(sp);
+      this.sprites.push(sp);
+    });
+
+    const paths = new THREE.Group();
+    paths.visible = false;
+    anno.add(paths);
+    this.paths = paths;
+    const lineMat = new THREE.LineBasicMaterial({ color: ACCENT, transparent: true, opacity: 0.75 });
+    room.seats.forEach((s) => {
+      const pts = Q.walkPathToSeat(room, s.id).map((p) => new THREE.Vector3(p[0], 0.16, p[1]));
+      paths.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), lineMat));
+    });
+
+    this.camera = new THREE.PerspectiveCamera(38, 2, 0.1, 200);
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+    this.renderer.setClearColor('#f3f2f2', 1);
+    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    this.applyWalls();
+    this.attach();
+    this.measure();
+    this.tick(0);
+  }
+
+  attach() {
+    if (!this.el || !this.renderer || this.attached) return;
+    while (this.el.firstChild) this.el.removeChild(this.el.firstChild);
+    this.el.appendChild(this.renderer.domElement);
+    // Ingen manuell 100 %-styling: den skulle konkurrera med
+    // setSize() om samma två värden. three.js sätter dem.
+    this.renderer.domElement.style.display = 'block';
+    this.attached = true;
+    this.resize();
+    this.ro = new ResizeObserver(() => this.resize());
+    this.ro.observe(this.el);
+    const el = this.el;
+    let drag = null;
+    el.addEventListener('pointerdown', (e) => {
+      drag = { x: e.clientX, y: e.clientY, yaw: this.state.yaw, pitch: this.state.pitch };
+      el.setPointerCapture(e.pointerId);
+      el.style.cursor = 'grabbing';
+    });
+    el.addEventListener('pointermove', (e) => {
+      if (!drag) return;
+      const yaw = drag.yaw + (e.clientX - drag.x) * 0.007;
+      const pitch = Math.max(0.05, Math.min(1.5533, drag.pitch + (e.clientY - drag.y) * 0.006));
+      this.setState({ yaw: yaw, pitch: pitch });
+    });
+    const end = (e) => {
+      drag = null;
+      el.style.cursor = 'grab';
+      if (e && e.pointerId !== undefined && el.hasPointerCapture(e.pointerId)) el.releasePointerCapture(e.pointerId);
+    };
+    el.addEventListener('pointerup', end);
+    el.addEventListener('pointercancel', end);
+    el.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const v = this.views[this.state.view];
+      v.dist = Math.max(4, Math.min(60, v.dist * (1 + e.deltaY * 0.001)));
+      this.place();
+    }, { passive: false });
+  }
+
+  resize() {
+    if (!this.el || !this.renderer) return;
+    const w = this.el.clientWidth;
+    const h = this.el.clientHeight;
+    // Hitta INTE på ett mått. En påhittad bredd blir kvar i
+    // ritbufferten och i camera.aspect medan CSS tvingar elementet till
+    // 100 %, och då sträcks bilden ojämnt — 1000 px buffert i en
+    // 829 px box gav 17 % horisontell klämning. Ingen layout, ingen
+    // storlek: vakthunden försöker igen om en sekund.
+    if (!w || !h) return;
+    this.renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+    // three.js äger både bufferten och CSS-boxen. Det är enda sättet de
+    // inte kan glida ifrån varandra.
+    this.renderer.setSize(w, h);
+    this.camera.aspect = w / h;
+    this.place();
+  }
+
+  place() {
+    const THREE = this.THREE;
+    if (!this.camera) return;
+    const v = this.views[this.state.view];
+    const cam = this.camera;
+    const tgt = new THREE.Vector3(v.tgt[0], v.tgt[1], v.tgt[2]);
+    const d = v.dist;
+    const p = this.state.pitch;
+    cam.position.set(
+      tgt.x + d * Math.cos(p) * Math.sin(this.state.yaw),
+      tgt.y + d * Math.sin(p),
+      tgt.z + d * Math.cos(p) * Math.cos(this.state.yaw)
+    );
+    cam.lookAt(tgt);
+    cam.updateProjectionMatrix();
+    // Rita direkt. Kameran får aldrig vara beroende av att rAF-loopen
+    // lever: gör den det ser man gradtalet i överlägget räkna upp
+    // medan bilden står still, vilket är värre än ingen rotation alls.
+    if (this.renderer && this.scene) this.renderer.render(this.scene, this.camera);
+  }
+
+  // Tar läget som argument. Anropas FÖRE commit, inte i en
+  // setState-callback: callbacken körs efter componentDidUpdate, så
+  // place() ritade den omuterade scenen och mutationen blev liggande
+  // till nästa klick — väggarna var en interaktion efter.
+  applyWalls(mode) {
+    if (!this.room) return;
+    if (mode === undefined) mode = this.state.walls;
+    const h = this.props.interiorHeight ?? 3.0;
+    this.room.parts.walls.visible = mode !== 2;
+    this.room.parts.walls.scale.y = mode === 0 ? 1.0 / h : 1;
+    this.room.parts.roof.visible = mode === 1;
+  }
+
+  measure() {
+    const THREE = this.THREE;
+    const Q = this.Q;
+    const room = this.room;
+    const m = Q.measureRestaurantRoom(room);
+    const sc = Q.checkSeatContract(room);
+    const fails = Q.checkPaletteAgainstFloors();
+    const range = Q.paletteContrastRange();
+    const num = (x, d) => x.toFixed(d === undefined ? 2 : d).replace('.', ',');
+
+    // Framkomlighet: gå alla sexton vägar och läs närmaste hinder.
+    const obstacles = [];
+    const bb = new THREE.Box3();
+    const collect = (rootObj) => {
+      rootObj.traverse((o) => {
+        if (!o.isMesh) return;
+        if (o.name.indexOf('floor') === 0) return;
+        bb.setFromObject(o);
+        if (bb.min.y > 1.6 || bb.max.y < 0.15) return;
+        obstacles.push([bb.min.x, bb.max.x, bb.min.z, bb.max.z]);
+      });
+    };
+    collect(room.parts.interior);
+    collect(room.parts.walls);
+
+    const clearance = (px, pz) => {
+      let best = 99;
+      for (let i = 0; i < obstacles.length; i++) {
+        const o = obstacles[i];
+        const dx = Math.max(o[0] - px, 0, px - o[1]);
+        const dz = Math.max(o[2] - pz, 0, pz - o[3]);
+        const d = Math.sqrt(dx * dx + dz * dz);
+        if (d < 0.06) continue;
+        if (d < best) best = d;
+      }
+      return best;
+    };
+
+    let worst = { w: 99, id: '' };
+    room.seats.forEach((s) => {
+      const full = Q.walkPathToSeat(room, s.id);
+      const pts = full.slice(0, full.length - 1);
+      let minR = 99;
+      for (let i = 0; i < pts.length - 1; i++) {
+        const a = pts[i];
+        const b = pts[i + 1];
+        const len = Math.hypot(b[0] - a[0], b[1] - a[1]);
+        const n = Math.max(1, Math.ceil(len / 0.08));
+        for (let k = i === 0 ? 1 : 0; k <= n; k++) {
+          const u = k / n;
+          const r = clearance(a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u);
+          if (r < minR) minR = r;
+        }
+      }
+      if (minR < worst.w) worst = { w: minR, id: s.id };
+    });
+
+    this.setState({
+      ready: true,
+      m: {
+        footprint: num(m.footprint[0]) + ' × ' + num(m.footprint[1]) + ' m',
+        height: num(m.interiorHeight) + ' m',
+        tallest: num(m.tallestFitting) + ' m (spiskåpan)',
+        seats: m.tableSeats + ' / ' + m.barSeats + ' = ' + m.seatCount,
+        barLen: num(m.barLengthM) + ' m',
+        runway: num(m.runwayWidthM) + ' m',
+        minPassage: num(worst.w * 2) + ' m — vid ' + worst.id,
+        seatContract: sc.ok
+          ? 'håller (' + sc.count + ' av ' + sc.expected + ', ordning ok)'
+          : 'BRUTET',
+        contrast: num(range.min) + ' – ' + num(range.max),
+        fails: fails.length === 0 ? 'ingen (33 par prövade)' : String(fails.length)
+      }
+    });
+  }
+
+  // Livstecknet är DOM:en, inte en instansflagga. Runtimen kan fyra av
+  // componentWillUnmount på den instans som fortfarande äger den
+  // synliga canvasen (StrictMode-dubbelkörning, remount), och då blev
+  // this.unmounted true medan renderaren levde vidare — figurerna frös
+  // fast överlägget påstod "Kroppar i rörelse". Sitter canvasen kvar i
+  // dokumentet ska loopen gå.
+  alive() {
+    return !!(this.renderer && this.renderer.domElement &&
+              this.renderer.domElement.isConnected);
+  }
+
+  tick = (ms) => {
+    if (!this.alive()) return;
+    this.raf = requestAnimationFrame(this.tick);
+    const now = ms / 1000;
+    const dt = this.last === undefined ? 0 : Math.min(0.05, now - this.last);
+    this.last = now;
+    if (this.state.playing) this.t += dt;
+    const t = this.t;
+    const R = this.R;
+    for (let i = 0; i < this.figures.length; i++) {
+      const f = this.figures[i];
+      const ft = t + f.off;
+      let pose;
+      if (f.mode === 'seated') pose = R.poseSeated(ft);
+      else if (f.mode === 'work') pose = R.poseWork(ft);
+      else if (f.mode === 'carry') pose = R.poseCarry(ft);
+      else pose = R.poseIdle(ft);
+      R.applyPose(f.rig, pose);
+    }
+    // Fläkten står still: FLAGS säger phase = 0 tills köket har ett
+    // tillstånd. Modellen visar det genom att faktiskt skicka 0.
+    this.Q.updateRestaurantRoom(this.room, 0);
+    this.renderer.render(this.scene, this.camera);
+    this.frames = (this.frames || 0) + 1;
+  };
+
+  // Vakthund: om ingen bildruta ritats sedan förra uppdateringen har
+  // rAF-kedjan brutits, och kropparna fryser utan att något syns i
+  // konsolen. Starta om i stället för att lita på att den lever.
+  ensureLoop = () => {
+    // Storleken kontrolleras FÖRE hidden-vakten: en ResizeObserver som
+    // aldrig fyrar av lämnar annars canvasen i fel format hur länge som
+    // helst, och det syns även i en stillbild.
+    if (this.el && this.renderer && this.el.clientWidth &&
+        this.renderer.domElement.clientWidth !== this.el.clientWidth) {
+      this.resize();
+    }
+    // Dolt dokument: webbläsaren fryser requestAnimationFrame helt.
+    // Mätt i förhandsvisningen — även en naken rAF-kedja får noll
+    // bildrutor när document.hidden är true. Att tvinga fram en ruta
+    // per sekund via vakthunden är bara bortkastat arbete; kedjan
+    // startas i stället om på visibilitychange.
+    if (document.hidden) return;
+    if (!this.alive()) return;
+    if (this.frames === this.lastFrames) {
+      if (this.raf) cancelAnimationFrame(this.raf);
+      this.raf = null;
+      this.tick(performance.now());
+    }
+    this.lastFrames = this.frames;
+  };
+
+  cycleView = () => {
+    const next = (this.state.view + 1) % this.views.length;
+    const v = this.views[next];
+    this.setState({ view: next, yaw: v.yaw, pitch: v.pitch }, () => this.place());
+  };
+  resetView = () => {
+    const v = this.views[this.state.view];
+    this.setState({ yaw: v.yaw, pitch: v.pitch }, () => this.place());
+  };
+  togglePlay = () => this.setState((s) => ({ playing: !s.playing }));
+  toggleBodies = () => this.setState((s) => {
+    const on = !s.bodies;
+    if (this.bodies) this.bodies.visible = on;
+    return { bodies: on };
+  });
+  toggleWalls = () => this.setState((s) => {
+    const w = (s.walls + 1) % 3;
+    this.applyWalls(w);
+    return { walls: w };
+  });
+  toggleLabels = () => this.setState((s) => {
+    const on = !s.labels;
+    if (this.labels) this.labels.visible = on;
+    return { labels: on };
+  });
+  togglePaths = () => this.setState((s) => {
+    const on = !s.paths;
+    if (this.paths) this.paths.visible = on;
+    return { paths: on };
+  });
+  toggleSlots = () => this.setState((s) => {
+    const on = !s.slots;
+    if (this.slots) this.slots.visible = on;
+    return { slots: on };
+  });
+
+  // Ovillkorligt. Runtimen skickar inte prevState, så en jämförelse mot
+  // prevState.yaw kastar innan place() någonsin nås — och eftersom
+  // pointermove förlitade sig på just den här kroken slutade
+  // dra-för-att-vrida fungera helt, medan gradtalet i överlägget
+  // fortsatte räkna. place() är billig; villkoret var inte värt det.
+  componentDidUpdate() {
+    this.place();
+    this.ensureLoop();
+  }
+
+  renderVals() {
+    const s = this.state;
+    const m = s.m;
+    const g = (k) => (m ? m[k] : '—');
+    return {
+      stageRef: this.stageRef,
+      cycleView: this.cycleView,
+      resetView: this.resetView,
+      togglePlay: this.togglePlay,
+      toggleBodies: this.toggleBodies,
+      toggleWalls: this.toggleWalls,
+      toggleLabels: this.toggleLabels,
+      togglePaths: this.togglePaths,
+      toggleSlots: this.toggleSlots,
+      viewLabel: this.views[s.view].name,
+      yawLabel: Math.round((s.yaw * 180 / Math.PI) % 360),
+      pitchLabel: Math.round(s.pitch * 180 / Math.PI),
+      statusLabel: s.ready ? (s.playing ? 'Kroppar i rörelse' : 'Pausad') : 'Bygger rummet',
+      playLabel: s.playing ? 'Pausa' : 'Spela',
+      bodiesLabel: s.bodies ? 'Kroppar: på' : 'Kroppar: av',
+      wallsLabel: ['Väggar: kapade', 'Väggar: hela + tak', 'Väggar: av'][s.walls],
+      labelsLabel: s.labels ? 'seatIndex: på' : 'seatIndex: av',
+      pathsLabel: s.paths ? 'Gånglinjer: på' : 'Gånglinjer: av',
+      slotsLabel: s.slots ? 'Köslots: på' : 'Köslots: av',
+      mFootprint: g('footprint'),
+      mHeight: g('height'),
+      mTallest: g('tallest'),
+      mSeats: g('seats'),
+      mBarLen: g('barLen'),
+      mRunway: g('runway'),
+      mMinPassage: g('minPassage'),
+      mSeatContract: g('seatContract'),
+      mContrast: g('contrast'),
+      mFails: g('fails')
+    };
+  }
+}
+</script>
+</body>
+</html>

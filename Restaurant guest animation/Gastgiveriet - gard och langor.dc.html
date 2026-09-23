@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/modernist-fa2a5900-708d-4668-979a-71ad6a03542a/styles.css">
+<script src="_ds/modernist-fa2a5900-708d-4668-979a-71ad6a03542a/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: var(--color-bg); }
+  a { color: var(--color-accent-700); text-decoration: none; border-bottom: 2px solid var(--color-accent); }
+  a:hover { color: var(--color-accent); }
+</style>
+</helmet>
+<div style="font-family: var(--font-body); color: var(--color-text); background: var(--color-bg); min-height: 100vh; padding: 40px 48px 72px; max-width: 1560px; margin: 0 auto;">
+
+  <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 48px;">
+    <div>
+      <div style="font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-700); font-weight: 700;">SD-004 · största verksamhetsklassen · strategiska spåret</div>
+      <h1 style="font-family: var(--font-heading); font-size: 54px; line-height: 1.02; margin: 12px 0 0; font-weight: 700; letter-spacing: -0.02em;">Gästgiveriet</h1>
+      <p style="margin: 14px 0 0; font-size: 17px; max-width: 62ch; text-wrap: pretty;">Hundra platser, åttio gästrum. Huvudbyggnad plus två längor runt en gård — valt av ett kameraskäl och inte ett stilskäl: morgonrörelsen mellan rum och matsal måste kunna ses. Dra i vyn för att vrida anläggningen.</p>
+    </div>
+    <div style="text-align: left; font-size: 13px; line-height: 1.7; flex: 0 0 auto; padding-bottom: 6px;">
+      <div style="font-weight: 700;">Leverans</div>
+      <div><a href="innRoom.ts">innRoom.ts</a> — ren three.js</div>
+      <div style="color: var(--color-neutral-600);">Formmall: brewpubRoom → wineBarRoom</div>
+      <div style="color: var(--color-neutral-600);">Ingen klocka, ingen sim-logik</div>
+    </div>
+  </div>
+
+  <div class="hr" style="margin: 28px 0 0;"></div>
+
+  <div style="display: flex; gap: 20px; align-items: baseline; padding: 14px 0 18px; flex-wrap: wrap;">
+    <span class="tag tag-accent">100 platser · 80 rum</span>
+    <span class="tag tag-outline">fem golvzoner inom 0,008 luminans</span>
+    <span class="tag tag-outline">kalibrerad mot #a08462</span>
+    <span class="tag tag-outline">figur 1,70 m · axel 0,46 / 0,40</span>
+  </div>
+
+  <div style="position: relative; border-top: 2px solid var(--color-divider); border-bottom: 2px solid var(--color-divider); background: var(--color-neutral-100);">
+    <div ref="{{ stageRef }}" style="width: 100%; height: 580px; cursor: grab;"></div>
+    <div style="position: absolute; left: 14px; top: 12px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-neutral-600); font-weight: 700;">{{ viewLabel }} · vridning {{ yawLabel }}° · lutning {{ pitchLabel }}°</div>
+    <div style="position: absolute; right: 14px; top: 12px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-700); font-weight: 700;">{{ statusLabel }}</div>
+    <div style="position: absolute; left: 14px; bottom: 12px; font-size: 11px; line-height: 1.6; color: var(--color-neutral-600); max-width: 48ch;">Rött = annotation, inte geometri. Den tjocka röda linjen är morgonvägen: rum → korridor → trappa → gård → salens dörr.</div>
+  </div>
+
+  <div style="display: flex; gap: 10px; align-items: center; padding: 18px 0 0; flex-wrap: wrap; white-space: nowrap;">
+    <button class="btn btn-primary" onClick="{{ cycleView }}">{{ viewLabel }}</button>
+    <button class="btn btn-secondary" onClick="{{ togglePlay }}">{{ playLabel }}</button>
+    <button class="btn btn-secondary" onClick="{{ toggleBodies }}">{{ bodiesLabel }}</button>
+    <button class="btn btn-secondary" onClick="{{ toggleRoofs }}">{{ roofsLabel }}</button>
+    <button class="btn btn-secondary" onClick="{{ toggleUpper }}">{{ upperLabel }}</button>
+    <button class="btn btn-ghost" onClick="{{ toggleMorning }}">{{ morningLabel }}</button>
+    <button class="btn btn-ghost" onClick="{{ togglePaths }}">{{ pathsLabel }}</button>
+    <button class="btn btn-ghost" onClick="{{ toggleLabels }}">{{ labelsLabel }}</button>
+    <button class="btn btn-ghost" onClick="{{ resetView }}">Nollställ vridning</button>
+  </div>
+
+  <div class="hr" style="margin: 30px 0 0;"></div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; padding-top: 28px;">
+    <div>
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 16px; font-weight: 700;">Planlösningen</h2>
+      <p style="font-size: 14px; line-height: 1.6; margin: 0 0 18px; color: var(--color-neutral-700); max-width: 54ch; text-wrap: pretty;">Ingen rumsvåning över matsalen. Salen är en hall i full höjd och alla åttio rummen ligger i längorna. Skälet är kameran: ligger rummen ovanför salen sker morgonrörelsen i ett trapphus och syns aldrig. Ligger de i längorna korsar den gården.</p>
+      <table class="table" style="width: 100%;">
+        <thead>
+          <tr><th>Del</th><th>Lokal ram</th><th>Innehåll</th></tr>
+        </thead>
+        <tbody>
+          <tr><td style="font-weight: 700;">Salen</td><td>X ±11,8 · Z −1,4…6,8</td><td>Fyra långbord om tolv, sex runda om sex. Entré mot gården i +Z.</td></tr>
+          <tr><td style="font-weight: 700;">Köket</td><td>X −11,8…−2,6 · Z −6,8…−1,4</td><td>Sex stationer på en axel: kall prep, spislinje, grill, saucier på ö, uppläggning i passluckan, disk. Halvvägg 1,5 m mot salen.</td></tr>
+          <tr><td style="font-weight: 700;">Frukostfickan</td><td>X ±2,6 · Z −6,8…−1,4</td><td>Två buffébord. Egen yta i samma sal — tanken är att den är stängd vid middag.</td></tr>
+          <tr><td style="font-weight: 700;">Lilla salen</td><td>X 2,6…11,8 · Z −6,8…−1,4</td><td>Ett bord om sexton bakom halvvägg med öppning.</td></tr>
+          <tr><td style="font-weight: 700;">Gården</td><td>X ±13,5 · Z 9…42</td><td>Grusstråk i mitten, X ±3, fritt hela vägen från grind till dörr. Grindstolpar i mynningen.</td></tr>
+          <tr><td style="font-weight: 700;">Gräsmattan</td><td>X −12,6…−4 · Z 16,5…31,5</td><td>129 m² väster om stråket, tre träd. Egen golvzon, full kroma men samma ljushet som salen.</td></tr>
+          <tr><td style="font-weight: 700;">Boulebanan</td><td>X 5…9 · Z 16…31</td><td>15 × 4 m med 0,12 m sarg. Verkliga mått — en kvadratisk grusfläck läser inte som bana, proportionen gör det.</td></tr>
+          <tr><td style="font-weight: 700;">Utomhusbaren</td><td>X 8 · Z 11,9</td><td>6,2 m disk öster om salens dörr, pergola på 2,4 m så kameran ser under den.</td></tr>
+          <tr><td style="font-weight: 700;">Längorna</td><td>X ±13,5…±25,7 · Z 8…42</td><td>Två plan, tio rum per sida och plan. Fönster per rum i båda fasaderna. Loftgång längs gårdsfasaden på övre plan; trappan vid södra gaveln, närmast hallen.</td></tr>
+        </tbody>
+      </table>
+
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 30px 0 16px; font-weight: 700;">Hundra platser som tre märken</h2>
+      <p style="font-size: 14px; line-height: 1.6; margin: 0 0 16px; color: var(--color-neutral-700); max-width: 54ch; text-wrap: pretty;">Hundra stolar i en jämn möblering blir en textur uppifrån, inte hundra platser. Fördelningen är därför ett läsbarhetsbeslut före ett möbleringsbeslut.</p>
+      <table class="table" style="width: 100%;">
+        <thead>
+          <tr><th>Slag</th><th>Antal</th><th>seatIndex</th><th>Märket uppifrån</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Långbord, 4 × 12</td><td>48</td><td>0–47</td><td>Fyra kraftiga streck längs salens djup.</td></tr>
+          <tr><td>Runda, 6 × 6</td><td>36</td><td>48–83</td><td>Sex cirklar. Ett helt annat märke än strecken.</td></tr>
+          <tr><td>Lilla salen, 1 × 16</td><td>16</td><td>84–99</td><td>Ett bord i ett eget rum. Läses som rum, inte som bord.</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size: 12px; line-height: 1.6; margin: 12px 0 0; color: var(--color-neutral-600); max-width: 54ch; text-wrap: pretty;">Ordningen är interiorLayouts konvention: platt lista i bordsordning. <strong>resolveWorldPositions()</strong> ger världskoordinaterna efter placering, plus rumslistan i id-ordning.</p>
+
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 30px 0 16px; font-weight: 700;">Åttio rum som kam</h2>
+      <p style="font-size: 14px; line-height: 1.6; margin: 0 0 16px; color: var(--color-neutral-700); max-width: 54ch; text-wrap: pretty;">Rummen får väggar, dörrar och volym — ingen inredning, per brief. Det som gör dem läsbara är kammen: elva skiljeväggar per sida och plan, en cell per rum, en mörk dörrplan. Åttio sängar med nattduksbord är geometri som aldrig läses. <strong>checkRoomCount()</strong> räknar både specarna och dörrplanen i scengrafen — åttio är precis den sortens tal man tror på utan att räkna.</p>
+      <p style="font-size: 14px; line-height: 1.6; margin: 0; color: var(--color-neutral-700); max-width: 54ch; text-wrap: pretty;"><strong>Ett fönster per rum i båda fasaderna.</strong> Utan dem läser längorna som två långa lådor uppifrån; med dem syns åttio rum som åttio. Och övre planets gårdsrum öppnar inte mot korridoren utan mot en <strong>loftgång</strong> längs gårdsfasaden — det är den som gör morgonrörelsen läsbar hela vägen i stället för bara i trappan. Trappan flyttade samtidigt till södra gaveln: gången till salens dörr blir kort i stället för att korsa halva gården, och korridoren kan mynna i gaveln utan att en rumscell offras för passagen.</p>
+    </div>
+
+    <div>
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 16px; font-weight: 700;">Mätt i vyn, inte i scengrafen</h2>
+      <table class="table" style="width: 100%;">
+        <tbody>
+          <tr><td style="width: 50%;">Anläggningens utbredning</td><td style="font-weight: 700;">{{ mFootprint }}</td></tr>
+          <tr><td>Salens utbredning · fri takhöjd</td><td style="font-weight: 700;">{{ mHall }}</td></tr>
+          <tr><td>Högsta inredning i salen</td><td style="font-weight: 700;">{{ mTallFit }}</td></tr>
+          <tr><td>Längornas höjd över golv</td><td style="font-weight: 700;">{{ mWing }}</td></tr>
+          <tr><td>Gårdens yta</td><td style="font-weight: 700;">{{ mCourt }}</td></tr>
+          <tr><td>Gårdens innehåll</td><td style="font-weight: 700;">{{ mOutdoor }}</td></tr>
+          <tr><td>Loftgång, båda längorna</td><td style="font-weight: 700;">{{ mGallery }}</td></tr>
+          <tr><td>Platser i grafen</td><td style="font-weight: 700;">{{ mSeats }}</td></tr>
+          <tr><td>Gästrum · dörrplan i grafen</td><td style="font-weight: 700;">{{ mRooms }}</td></tr>
+          <tr><td>Rumsarea per gästrum</td><td style="font-weight: 700;">{{ mRoomArea }}</td></tr>
+          <tr><td>Smalaste passagen på någon väg</td><td style="font-weight: 700;">{{ mMinPassage }}</td></tr>
+        </tbody>
+      </table>
+
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 30px 0 16px; font-weight: 700;">Silhuettbandet, mot rätt golv</h2>
+      <p style="font-size: 14px; line-height: 1.6; margin: 0 0 16px; color: var(--color-neutral-700); max-width: 54ch; text-wrap: pretty;">Vinbarens leverans kalibrerade mot <code>#a89577</code>, som är skyltblocket och inte golvet. Skillnaden är inte kosmetisk: <code>#a89577</code> har relativ luminans 0,3115 och <code>#a08462</code> har 0,2486, och hela figurfönstret flyttar med — från L 0,050–0,151 till L 0,033–0,116. Gästernas färger ligger på L ≈ 0,083 och klarar båda, så de återanvänds oförändrade.</p>
+      <table class="table" style="width: 100%;">
+        <tbody>
+          <tr><td style="width: 50%;">Kontrast figur ↔ golvzon</td><td style="font-weight: 700;">{{ mContrast }}</td></tr>
+          <tr><td>Krav (MIN…MAX)</td><td style="font-weight: 700;">1,80 … 3,60</td></tr>
+          <tr><td>Färger utanför bandet</td><td style="font-weight: 700;">{{ mFails }}</td></tr>
+          <tr><td>Minsta parvisa roll-ΔE</td><td style="font-weight: 700;">{{ mDeltaE }}</td></tr>
+          <tr><td>Krav (MIN_ROLE_DISTINCTION)</td><td style="font-weight: 700;">12,0</td></tr>
+          <tr><td>Golvzoner</td><td style="font-weight: 700;">{{ mZones }}</td></tr>
+        </tbody>
+      </table>
+      <table class="table" style="width: 100%; margin-top: 14px;">
+        <thead>
+          <tr><th>Golvzon</th><th>Färg</th><th>Luminans</th><th>Kontrastspann</th></tr>
+        </thead>
+        <tbody>
+          <sc-for list="{{ zoneRows }}" as="row" hint-placeholder-count="3">
+            <tr><td style="font-weight: 700;">{{ row.id }}</td><td>{{ row.colour }}</td><td>{{ row.lum }}</td><td>{{ row.span }}</td></tr>
+          </sc-for>
+        </tbody>
+      </table>
+      <p style="font-size: 12px; line-height: 1.6; margin: 12px 0 0; color: var(--color-neutral-600); max-width: 54ch; text-wrap: pretty;"><strong>Det är spridningen som kostar, inte antalet zoner.</strong> Vinbarens fem zoner spänner 0,065 i luminans; gästgiveriets fem spänner 0,008, och figurfönstret är därför lika brett som mot huvudgolvet ensamt. Gräsmattan är beviset: <code>#64935b</code> är full kroma men sitter på L 0,2433, mitt i spannet. Kulören är fri — det är bara ljusheten som är låst. Samma resonemang som personalens uniformer, där separationen hämtas ur hue.</p>
+
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 30px 0 16px; font-weight: 700;">Framkomlighet per korridor</h2>
+      <table class="table" style="width: 100%;">
+        <thead>
+          <tr><th>Korridor</th><th>Platser</th><th>Fri bredd</th><th>Kropp 0,46 m</th></tr>
+        </thead>
+        <tbody>
+          <sc-for list="{{ laneRows }}" as="row" hint-placeholder-count="3">
+            <tr><td style="font-weight: 700;">{{ row.name }}</td><td>{{ row.count }}</td><td>{{ row.width }}</td><td>{{ row.verdict }}</td></tr>
+          </sc-for>
+        </tbody>
+      </table>
+      <p style="font-size: 12px; line-height: 1.6; margin: 12px 0 0; color: var(--color-neutral-600); max-width: 54ch; text-wrap: pretty;">Mätt genom att gå <strong>walkPathToSeat()</strong> för alla hundra platser och för varje steg läsa avståndet till närmaste hinder i golvplanet. Fri bredd = dubbla marginalen. Mätningen börjar innanför dörren; dörröppningen är ett plan i väggen som i Restaurant.tsx, inte ett hål i geometrin. Gästens egen stol räknas inte som hinder på vägen till just den platsen — man står bredvid den för att sitta ner.</p>
+      <p style="font-size: 12px; line-height: 1.6; margin: 10px 0 0; color: var(--color-neutral-600); max-width: 54ch; text-wrap: pretty;"><strong>Talen är med avsikt pessimistiska.</strong> Varje möbel mäts som sin axelparallella omslutande box, och en stol vriden 60° får en box som är upp till 37 % bredare än stolen. Den fria bredden i verkligheten är alltså något större än vad tabellen säger. Det är rätt håll att fela på när kravet är att en kropp ska komma fram.</p>
+    </div>
+  </div>
+
+  <div class="hr" style="margin: 32px 0 0;"></div>
+
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; padding-top: 28px;">
+    <div>
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 16px; font-weight: 700;">Tio stationer, fem uniformer</h2>
+      <p style="font-size: 14px; line-height: 1.6; margin: 0 0 16px; color: var(--color-neutral-700); text-wrap: pretty;">Ett mätbart beslut, inte en förenkling. Tio uniformsfärger går inte: alla ska ligga i figurfönstret L 0,033–0,116 och samtidigt hålla ΔE 12 parvis, och då tvingas minst ett par under bandet — rollerna kollapsar till samma silhuett i strategisk kamera. Att skilja saucier från grillen är inte något den kameran kan bära, och då ska den inte låtsas göra det.</p>
+      <table class="table" style="width: 100%;">
+        <tbody>
+          <tr><td style="width: 40%; font-weight: 700;">kitchen</td><td>chef, sous, grill, plating, dish — fem stationer på kökets axel.</td></tr>
+          <tr><td style="font-weight: 700;">hallService</td><td>hallA, hallB, salWaiter — långborden, de runda, lilla salen.</td></tr>
+          <tr><td style="font-weight: 700;">host</td><td>Värdfolket innanför dörren. Tar emot både utifrån och nerifrån längorna.</td></tr>
+          <tr><td style="font-weight: 700;">breakfast</td><td>Buffén mellan de två borden.</td></tr>
+          <tr><td style="font-weight: 700;">rooms</td><td>Städ, vid västra trappan. Uppgiften finns inte — se flaggan.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 16px; font-weight: 700;">Vad som följer med</h2>
+      <table class="table" style="width: 100%;">
+        <tbody>
+          <tr><td style="width: 46%; font-weight: 700;">seats[100]</td><td>id, kind, seatIndex, furnitureId, lokal XZ, sitshöjd, kurs, angörningsnod, korridor.</td></tr>
+          <tr><td style="font-weight: 700;">guestRooms[80]</td><td>id, länga, plan, sida, mittpunkt, golvnivå, dörr, trappan rummet nås via, area.</td></tr>
+          <tr><td style="font-weight: 700;">staffStations[11]</td><td>Hemstation med roll, kurs och en not om vad platsen är.</td></tr>
+          <tr><td style="font-weight: 700;">entrance · waitingSpot · courtyardGate</td><td>Innanför dörren, i gården, och i gårdens mynning mot vägen.</td></tr>
+          <tr><td style="font-weight: 700;">wingStairs[2]</td><td>Morgonrörelsens enda två punkter, i stället för åttio dörrar.</td></tr>
+          <tr><td style="font-weight: 700;">walkPathFromRoom()</td><td>Rum → korridor → trappa → gård → salens dörr. Verksamhetens signatur som funktion.</td></tr>
+          <tr><td style="font-weight: 700;">walkPathToSeat · exitPathFromSeat</td><td>In till plats, och ut genom gården till grinden.</td></tr>
+          <tr><td style="font-weight: 700;">parts.roofMain · roofWings · wingUpper</td><td>Egna grupper: tona tak med avståndet, dölj övre planet för att visa markplanets kam.</td></tr>
+          <tr><td style="font-weight: 700;">parts.passAnchor · buffetAnchor</td><td>Fästen för tallriks- respektive buffétindikator.</td></tr>
+          <tr><td style="font-weight: 700;">checkPaletteAgainstFloors · minRoleDeltaE</td><td>Silhuettbandet hävdat lokalt, mot de tre zonerna.</td></tr>
+          <tr><td style="font-weight: 700;">checkRoomCount · measureInnRoom</td><td>§7-måtten som tabellerna visar.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 16px; font-weight: 700;">Flaggat, inte uppfunnet</h2>
+      <div style="border-top: 2px solid var(--color-divider);">
+        <div style="padding: 12px 0; border-bottom: 1px solid var(--color-neutral-300);">
+          <div style="font-weight: 700; font-size: 14px;">Åttio rum utan boende</div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 3px;">Simuleringen har <code>hasOvernight</code> och en stayingOvernight-väg, men ingen gäst bär rumsnummer, ingen vet hur många nätter, och ingenting kopplar en gäst till en GuestRoomSpec. <code>guestRooms[]</code> är en tilldelningsbar lista som ingen ännu tilldelar.</div>
+        </div>
+        <div style="padding: 12px 0; border-bottom: 1px solid var(--color-neutral-300);">
+          <div style="font-weight: 700; font-size: 14px;">Frukost som eget pass</div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 3px;">Fickan är byggd som egen yta med tanken att den är stängd vid middag. Men det finns ingen servicefas som heter frukost och ingen kapacitet skild från middagens. Geometrin bär båda tolkningarna; valet hör i sim-lagret.</div>
+        </div>
+        <div style="padding: 12px 0; border-bottom: 1px solid var(--color-neutral-300);">
+          <div style="font-weight: 700; font-size: 14px;">Morgonrörelsen har väg men ingen orsak</div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 3px;"><code>walkPathFromRoom()</code> ger hela vägen. Vad som utlöser den — en gäst som vaknar, ett klockslag, ett frukostpass — finns inte.</div>
+        </div>
+        <div style="padding: 12px 0; border-bottom: 1px solid var(--color-neutral-300);">
+          <div style="font-weight: 700; font-size: 14px;">Städning och personal mellan planen</div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 3px;">Inget rum har smutsigt/rent-tillstånd och <code>staffTasks</code> känner inte till våningsplan. Stationen finns; uppgiften finns inte.</div>
+        </div>
+        <div style="padding: 12px 0; border-bottom: 1px solid var(--color-neutral-300);">
+          <div style="font-weight: 700; font-size: 14px;">Verksamhetsklassen och registret</div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 3px;">BusinessClass har <code>'värdshus'</code> men ingen <code>'gästgiveri'</code>, och capacityFor måste bli 100. <code>FLOOR_ZONES_BY_BUSINESS</code> saknar nyckel för klassen; värdshus-nyckeln pekar i dag på restaurangens stub-golv och ska repekas eller tas bort.</div>
+        </div>
+        <div style="padding: 12px 0; border-bottom: 1px solid var(--color-neutral-300);">
+          <div style="font-weight: 700; font-size: 14px;">Anläggningen har ingen tomt</div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 3px;">51,9 × 51,5 m ryms inte i OSM-polygonen på 11,8 × 15,6 m. Vilken polygon och var i byn är ett världsdatabeslut. Rummet byggs i sin egen lokala ram och kan placeras var som helst; det säger inte var.</div>
+        </div>
+        <div style="padding: 12px 0; border-bottom: 1px solid var(--color-neutral-300);">
+          <div style="font-weight: 700; font-size: 14px;">Utomhusbaren vet inte när den är öppen</div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 3px;">Simuleringen har varken årstid, väder eller temperatur, och en utebar i februari är inte samma sak som en i juli. Geometrin står kvar året om; bemanningen kräver ett tillstånd som inte finns. Kapacitet har den ingen — man står vid disken, och en stående gäst har inget tillstånd.</div>
+        </div>
+        <div style="padding: 12px 0; border-bottom: 1px solid var(--color-neutral-300);">
+          <div style="font-weight: 700; font-size: 14px;">Boulebanan är en yta, inte ett spel</div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 3px;">Att någon spelar kräver en aktivitet gästen kan befinna sig i, och GuestState har bara bordsvägen. Banan finns som yta och som plats att stå på.</div>
+        </div>
+        <div style="padding: 12px 0; border-bottom: 1px solid var(--color-neutral-300);">
+          <div style="font-weight: 700; font-size: 14px;">Palettkoden finns i tre kopior</div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 3px;">Ölkrogen, vinbaren och gästgiveriet bär identiska WCAG-formler. Ändras MIN/MAX i <code>silhouetteContrast.ts</code> följer kopiorna inte med, och tre rum passerar tyst mot ett band som inte längre gäller. <a href="silhouetteContrast.zones.ts">silhouetteContrast.zones.ts</a> levereras separat med zonregistret för alla tre klasserna och en generisk <code>paletteZoneCheck()</code>.</div>
+        </div>
+        <div style="padding: 12px 0;">
+          <div style="font-weight: 700; font-size: 14px;">Sex stationer, inga rätter</div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 3px;">Samma flagga som ölkrogen och vinbaren, nu med fler lådor att inte veta något om.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hr" style="margin: 32px 0 0;"></div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; padding-top: 24px;">
+    <div>
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 14px; font-weight: 700;">Fast geometri</h2>
+      <p style="font-size: 14px; line-height: 1.65; margin: 0; color: var(--color-neutral-700); text-wrap: pretty;">U-formen och gårdens öppning i +Z. Att rummen ligger i längorna och inte över salen. De två trapporna som morgonrörelsens enda punkter, och loftgången som gör den läsbar. Grusstråket X ±3 som alltid fritt. Kammen som rummens läsbarhet. Kökets linje. Halvväggarna på 1,5 m. Golvzonernas luminansspann på 0,008 — antalet zoner är fritt, spridningen är inte det.</p>
+    </div>
+    <div>
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 14px; font-weight: 700;">Tänkt att kunna ändras</h2>
+      <p style="font-size: 14px; line-height: 1.65; margin: 0; color: var(--color-neutral-700); text-wrap: pretty;">Längornas längd och rummodulen på 3,4 m — antalet rum följer, och <code>checkRoomCount()</code> fångar om det inte längre blir åttio. Prova med reglaget för längan. Sitsfördelningen inom de hundra. Kökets sex stationer. Huvudbyggnadens mått — understiger de 21,0 × 12,6 m returneras <code>fits: false</code> med underskottet i meter, i stället för en tyst omtolkad plan.</p>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1560,&quot;height&quot;:2400},&quot;occupancy&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:100,&quot;min&quot;:0,&quot;max&quot;:100,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Salen&quot;},&quot;wingLength&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:34,&quot;min&quot;:20.4,&quot;max&quot;:40.8,&quot;step&quot;:3.4,&quot;unit&quot;:&quot;m&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Längorna&quot;},&quot;hallHeight&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:5,&quot;min&quot;:3.6,&quot;max&quot;:6.5,&quot;step&quot;:0.1,&quot;unit&quot;:&quot;m&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Salen&quot;}}">
+const CDN = 'https://unpkg.com/three@0.160.0/build/three.module.js';
+const ACCENT = '#ec3013';
+const LANE_NAMES = {
+  longAisle: 'Långbordens gångar',
+  roundAisle: 'De rundas gång',
+  salLane: 'Lilla salen'
+};
+const MORNING_ROOMS = ['r002', 'r025', 'r042', 'r065'];
+
+class Component extends DCLogic {
+  state = {
+    view: 0, yaw: 0.5, pitch: 0.82, playing: true,
+    bodies: true, roofs: 0, upper: true, morning: true, paths: false, labels: false,
+    ready: false, m: null,
+    // Seedade rader med rätt form: annars kan hålen inne i sc-for inte
+    // resolvas innan mätningen är klar, och varje hål loggar en varning.
+    lanes: [
+      { name: 'Långbordens gångar', count: '—', width: '—', verdict: '—' },
+      { name: 'De rundas gång', count: '—', width: '—', verdict: '—' },
+      { name: 'Lilla salen', count: '—', width: '—', verdict: '—' }
+    ],
+    zones: [
+      { id: 'hall', colour: '—', lum: '—', span: '—' },
+      { id: 'kitchen', colour: '—', lum: '—', span: '—' },
+      { id: 'courtyard', colour: '—', lum: '—', span: '—' }
+    ]
+  };
+
+  views = [
+    { name: 'Strategisk vinkel', yaw: 0.5, pitch: 0.82, dist: 74, tgt: [0, 2, 13] },
+    { name: 'Gården från grinden', yaw: 0.02, pitch: 0.26, dist: 40, tgt: [0, 3, 16] },
+    { name: 'Plan', yaw: 0, pitch: 1.5533, dist: 104, tgt: [0, 0, 13] },
+    { name: 'Salen', yaw: 0.95, pitch: 0.6, dist: 27, tgt: [0, 1.2, 0.5] },
+    { name: 'Västra längan', yaw: -1.15, pitch: 0.52, dist: 44, tgt: [-18, 3.4, 20] }
+  ];
+
+  componentDidMount() {
+    this.dead = false;
+    this.t = 0;
+    this.load();
+  }
+
+  componentWillUnmount() {
+    this.dead = true;
+    this.unmounted = true;
+    if (this.raf) cancelAnimationFrame(this.raf);
+    this.raf = null;
+    if (this.ro) this.ro.disconnect();
+    if (this.figures) this.figures.forEach((f) => this.R.disposeFigureRig(f.rig));
+    if (this.room) this.room.dispose();
+    if (this.sprites) this.sprites.forEach((s) => { s.material.map.dispose(); s.material.dispose(); });
+    if (this.renderer) this.renderer.dispose();
+  }
+
+  async load() {
+    try {
+      const THREE = await import(CDN);
+      const I = await import(new URL('innRoom.js?v=6', document.baseURI).href);
+      const R = await import(new URL('figureRig.js', document.baseURI).href);
+      if (this.dead) return;
+      this.THREE = THREE; this.I = I; this.R = R;
+      this.build();
+    } catch (e) {
+      console.error('inn model failed to load', e);
+    }
+  }
+
+  stageRef = (el) => {
+    this.el = el;
+    if (el && this.renderer) this.attach();
+  };
+
+  build() {
+    const THREE = this.THREE;
+    const I = this.I;
+    const R = this.R;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color('#f3f2f2');
+    this.scene = scene;
+
+    scene.add(new THREE.HemisphereLight('#ffffff', '#cfcac6', 0.82));
+    const key = new THREE.DirectionalLight('#ffffff', 0.98);
+    key.position.set(26, 40, 8);
+    key.castShadow = true;
+    key.shadow.mapSize.set(2048, 2048);
+    const c = key.shadow.camera;
+    c.left = -34; c.right = 34; c.top = 34; c.bottom = -34; c.near = 1; c.far = 110;
+    scene.add(key);
+    const fill = new THREE.DirectionalLight('#ffffff', 0.2);
+    fill.position.set(-20, 14, 34);
+    scene.add(fill);
+
+    const ground = new THREE.Mesh(
+      new THREE.PlaneGeometry(220, 220),
+      new THREE.MeshStandardMaterial({ color: '#e6e4e2', roughness: 1 })
+    );
+    ground.rotation.x = -Math.PI / 2;
+    ground.position.set(0, -0.002, 12);
+    ground.receiveShadow = true;
+    scene.add(ground);
+
+    const room = I.createInnRoom({
+      wingLength: this.props.wingLength ?? 34,
+      hallHeight: this.props.hallHeight ?? 5.0
+    });
+    this.room = room;
+    scene.add(room.group);
+
+    // ── Kroppar. Egen grupp, utanför room.group.
+    const bodies = new THREE.Group();
+    scene.add(bodies);
+    this.bodies = bodies;
+    this.figures = [];
+
+    const occ = Math.max(0, Math.min(100, Math.round(this.props.occupancy ?? 100)));
+    room.seats.forEach((s, i) => {
+      if (i >= occ) return;
+      const rig = R.createFigureRig({
+        variant: 'guest',
+        garmentColour: I.GUEST_GARMENTS[i % I.GUEST_GARMENTS.length]
+      });
+      rig.root.position.set(s.local[0], 0.11, s.local[1]);
+      rig.root.rotation.y = s.facing;
+      bodies.add(rig.root);
+      this.figures.push({ rig: rig, mode: 'seated', off: i * 0.29 });
+    });
+
+    const staffMode = {
+      host: 'greet', chef: 'work', sous: 'work', grill: 'work',
+      plating: 'work', dish: 'work', hallA: 'carry', hallB: 'carry',
+      salWaiter: 'carry', breakfast: 'work', rooms: 'idle'
+    };
+    room.staffStations.forEach((st, i) => {
+      const rig = R.createFigureRig({
+        variant: 'staff',
+        garmentColour: I.STAFF_UNIFORMS[st.role]
+      });
+      rig.root.position.set(st.local[0], 0.11, st.local[1]);
+      rig.root.rotation.y = st.facing;
+      bodies.add(rig.root);
+      this.figures.push({ rig: rig, mode: staffMode[st.id] ?? 'idle', off: i * 0.71 });
+    });
+
+    // Fyra gäster på morgonvägen — en per länga och plan. De står
+    // stilla i sina vägpunkter; poängen är att de syns därifrån.
+    MORNING_ROOMS.forEach((rid, i) => {
+      const gr = room.guestRooms.find((g) => g.id === rid);
+      if (!gr) return;
+      const p = I.walkPathFromRoom(room, rid);
+      const hs = I.walkHeightsFromRoom(room, rid);
+      const at = p[Math.min(p.length - 1, 3 + (i % 2))];
+      const atY = hs[Math.min(hs.length - 1, 3 + (i % 2))];
+      const rig = R.createFigureRig({
+        variant: 'guest',
+        garmentColour: I.GUEST_GARMENTS[(i + 2) % I.GUEST_GARMENTS.length]
+      });
+      rig.root.position.set(at[0], atY, at[1]);
+      rig.root.rotation.y = gr.wing === 'west' ? Math.PI / 2 : -Math.PI / 2;
+      bodies.add(rig.root);
+      this.figures.push({ rig: rig, mode: 'idle', off: i * 1.13 });
+    });
+
+    // ── Annotationer, utanför room.group.
+    const anno = new THREE.Group();
+    scene.add(anno);
+    this.anno = anno;
+    const accentMat = new THREE.MeshStandardMaterial({
+      color: ACCENT, emissive: ACCENT, emissiveIntensity: 0.35, roughness: 0.6
+    });
+    this.accentMat = accentMat;
+    const disc = (x, z, r, y) => {
+      const m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, 0.02, 20), accentMat);
+      m.position.set(x, y ?? 0.14, z);
+      anno.add(m);
+    };
+    disc(room.entrance[0], room.entrance[1], 0.42);
+    disc(room.waitingSpot[0], room.waitingSpot[1], 0.34, 0.05);
+    disc(room.courtyardGate[0], room.courtyardGate[1], 0.44, 0.05);
+    room.wingStairs.forEach((s) => disc(s[0], s[1], 0.5, 0.28));
+    room.staffStations.forEach((st) => disc(st.local[0], st.local[1], 0.3));
+
+    const lineMat = new THREE.LineBasicMaterial({ color: ACCENT, transparent: true, opacity: 0.7 });
+    this.lineMat = lineMat;
+
+    // Gånglinjer till alla hundra platser.
+    const paths = new THREE.Group();
+    paths.visible = false;
+    anno.add(paths);
+    this.paths = paths;
+    room.seats.forEach((s) => {
+      const pts = I.walkPathToSeat(room, s.id).map((p) => new THREE.Vector3(p[0], 0.15, p[1]));
+      paths.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), lineMat));
+    });
+
+    // Morgonvägen — fyra rum, en per länga och plan, med höjd.
+    const morning = new THREE.Group();
+    anno.add(morning);
+    this.morning = morning;
+    const thickMat = new THREE.MeshStandardMaterial({
+      color: ACCENT, emissive: ACCENT, emissiveIntensity: 0.28, roughness: 0.6
+    });
+    this.thickMat = thickMat;
+    MORNING_ROOMS.forEach((rid) => {
+      const gr = room.guestRooms.find((g) => g.id === rid);
+      if (!gr) return;
+      const p = I.walkPathFromRoom(room, rid);
+      // Höjdprofilen kommer från rummet, inte från en gissning här.
+      const ys = I.walkHeightsFromRoom(room, rid).map((y) => y + 0.16);
+      for (let i = 0; i < p.length - 1; i++) {
+        const a = new THREE.Vector3(p[i][0], ys[i], p[i][1]);
+        const b = new THREE.Vector3(p[i + 1][0], ys[i + 1], p[i + 1][1]);
+        const d = b.clone().sub(a);
+        const len = d.length();
+        if (len < 0.01) continue;
+        const seg = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, len, 6), thickMat);
+        seg.position.copy(a).addScaledVector(d, 0.5);
+        seg.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), d.clone().normalize());
+        morning.add(seg);
+      }
+    });
+
+    // Platsnummer som sprites.
+    const labels = new THREE.Group();
+    labels.visible = false;
+    anno.add(labels);
+    this.labels = labels;
+    this.sprites = [];
+    room.seats.forEach((s, i) => {
+      const cv = document.createElement('canvas');
+      cv.width = 96; cv.height = 96;
+      const g = cv.getContext('2d');
+      g.fillStyle = ACCENT;
+      g.beginPath(); g.arc(48, 48, 44, 0, Math.PI * 2); g.fill();
+      g.fillStyle = '#ffffff';
+      g.font = 'bold 48px Archivo, sans-serif';
+      g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.fillText(String(i + 1), 48, 52);
+      const tex = new THREE.CanvasTexture(cv);
+      const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: false }));
+      sp.position.set(s.local[0], 2.0, s.local[1]);
+      sp.scale.set(0.5, 0.5, 0.5);
+      labels.add(sp);
+      this.sprites.push(sp);
+    });
+
+    this.camera = new THREE.PerspectiveCamera(38, 2, 0.2, 400);
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+    this.renderer.setClearColor('#f3f2f2', 1);
+    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    this.applyVis();
+    this.attach();
+    this.measure();
+    this.startLoop();
+  }
+
+  attach() {
+    if (!this.el || !this.renderer || this.attached) return;
+    // Töm behållaren först. Utan detta lägger varje ombyggnad en ny
+    // canvas ovanpå den gamla, och den översta är den frusna.
+    while (this.el.firstChild) this.el.removeChild(this.el.firstChild);
+    this.el.appendChild(this.renderer.domElement);
+    this.renderer.domElement.style.width = '100%';
+    this.renderer.domElement.style.height = '100%';
+    this.renderer.domElement.style.display = 'block';
+    this.attached = true;
+    this.resize();
+    this.ro = new ResizeObserver(() => this.resize());
+    this.ro.observe(this.el);
+    const el = this.el;
+    let drag = null;
+    el.addEventListener('pointerdown', (e) => {
+      drag = { x: e.clientX, y: e.clientY, yaw: this.state.yaw, pitch: this.state.pitch };
+      el.setPointerCapture(e.pointerId);
+      el.style.cursor = 'grabbing';
+    });
+    el.addEventListener('pointermove', (e) => {
+      if (!drag) return;
+      const yaw = drag.yaw + (e.clientX - drag.x) * 0.007;
+      const pitch = Math.max(0.04, Math.min(1.5533, drag.pitch + (e.clientY - drag.y) * 0.006));
+      this.setState({ yaw: yaw, pitch: pitch }, this.recenter);
+    });
+    const end = (e) => {
+      drag = null;
+      el.style.cursor = 'grab';
+      if (e && e.pointerId !== undefined && el.hasPointerCapture(e.pointerId)) el.releasePointerCapture(e.pointerId);
+    };
+    el.addEventListener('pointerup', end);
+    el.addEventListener('pointercancel', end);
+    el.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const v = this.views[this.state.view];
+      v.dist = Math.max(10, Math.min(180, v.dist * (1 + e.deltaY * 0.001)));
+      this.recenter();
+    }, { passive: false });
+  }
+
+  resize() {
+    if (!this.el || !this.renderer) return;
+    const w = this.el.clientWidth || 1000;
+    const h = this.el.clientHeight || 580;
+    this.renderer.setPixelRatio(Math.min(1.75, window.devicePixelRatio || 1));
+    this.renderer.setSize(w, h, false);
+    this.camera.aspect = w / h;
+    this.place();
+  }
+
+  place() {
+    const THREE = this.THREE;
+    if (!this.camera) return;
+    const v = this.views[this.state.view];
+    const cam = this.camera;
+    const tgt = new THREE.Vector3(v.tgt[0], v.tgt[1], v.tgt[2]);
+    const d = v.dist;
+    const p = this.state.pitch;
+    cam.position.set(
+      tgt.x + d * Math.cos(p) * Math.sin(this.state.yaw),
+      tgt.y + d * Math.sin(p),
+      tgt.z + d * Math.cos(p) * Math.cos(this.state.yaw)
+    );
+    cam.lookAt(tgt);
+    cam.updateProjectionMatrix();
+    this.drawNow();
+  }
+
+  applyRoofs() {
+    if (!this.room) return;
+    const mode = this.state.roofs;
+    this.room.parts.roofMain.visible = mode === 1 || mode === 2;
+    this.room.parts.roofWings.visible = mode === 2;
+    this.room.parts.wingUpper.visible = this.state.upper;
+  }
+
+  // ── §7-mätningen ────────────────────────────────────────────────
+  measure() {
+    const THREE = this.THREE;
+    const I = this.I;
+    const room = this.room;
+    const m = I.measureInnRoom(room);
+    const rc = I.checkRoomCount(room);
+    const cr = I.paletteContrastRange();
+    const fails = I.checkPaletteAgainstFloors();
+    const dE = I.minRoleDeltaE();
+
+    // Hinderlistan bär ägaren: en stol som en given gäst själv sitter
+    // på är inget hinder på vägen till just den platsen. Utan det
+    // mäter varje väg mot sin egen stolsrygg och rapporterar sista
+    // steget som trångt.
+    const obstacles = [];
+    const bb = new THREE.Box3();
+    const collect = (rootObj) => {
+      rootObj.traverse((o) => {
+        if (!o.isMesh) return;
+        if (o.name.indexOf('floor') === 0) return;
+        bb.setFromObject(o);
+        if (bb.min.y > 1.6 || bb.max.y < 0.2) return;
+        let owner = '';
+        let p = o.parent;
+        while (p) {
+          if (p.name && p.name.indexOf('chair_') === 0) { owner = p.name; break; }
+          p = p.parent;
+        }
+        obstacles.push([bb.min.x, bb.max.x, bb.min.z, bb.max.z, owner]);
+      });
+    };
+    collect(room.parts.interior);
+    collect(room.parts.walls);
+
+    const clearance = (px, pz, own) => {
+      let best = 99;
+      for (let i = 0; i < obstacles.length; i++) {
+        const o = obstacles[i];
+        if (o[4] && o[4] === own) continue;
+        const dx = Math.max(o[0] - px, 0, px - o[1]);
+        const dz = Math.max(o[2] - pz, 0, pz - o[3]);
+        const d = Math.sqrt(dx * dx + dz * dz);
+        if (d < 0.06) continue;
+        if (d < best) best = d;
+      }
+      return best;
+    };
+
+    const lanes = {};
+    let worst = { w: 99, id: '' };
+    room.seats.forEach((s) => {
+      const full = I.walkPathToSeat(room, s.id);
+      const pts = full.slice(0, full.length - 1);
+      const own = 'chair_' + s.id;
+      let minR = 99;
+      for (let i = 0; i < pts.length - 1; i++) {
+        const a = pts[i];
+        const b = pts[i + 1];
+        const len = Math.hypot(b[0] - a[0], b[1] - a[1]);
+        const n = Math.max(1, Math.ceil(len / 0.1));
+        for (let k = i === 0 ? 1 : 0; k <= n; k++) {
+          const u = k / n;
+          const r = clearance(a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u, own);
+          if (r < minR) minR = r;
+        }
+      }
+      const lane = s.lane;
+      if (!lanes[lane]) lanes[lane] = { name: LANE_NAMES[lane] ?? lane, count: 0, min: 99 };
+      lanes[lane].count++;
+      lanes[lane].min = Math.min(lanes[lane].min, minR);
+      if (minR < worst.w) worst = { w: minR, id: s.id };
+    });
+
+    const order = ['longAisle', 'roundAisle', 'salLane'];
+    const laneRows = order.filter((k) => lanes[k]).map((k) => {
+      const L = lanes[k];
+      const width = L.min * 2;
+      return {
+        name: L.name,
+        count: String(L.count) + ' st',
+        width: width.toFixed(2).replace('.', ',') + ' m',
+        verdict: width >= 0.9 ? 'passerar' : (width >= 0.6 ? 'trång' : 'blockerad')
+      };
+    });
+
+    const num = (x, d) => x.toFixed(d ?? 2).replace('.', ',');
+    const zoneRows = I.ZONE_FLOORS.map((z) => {
+      let lo = 99;
+      let hi = 0;
+      const figs = I.GUEST_GARMENTS.concat(Object.keys(I.STAFF_UNIFORMS).map((k) => I.STAFF_UNIFORMS[k]));
+      figs.forEach((f) => {
+        const r = I.contrast(f, z.colour);
+        if (r < lo) lo = r;
+        if (r > hi) hi = r;
+      });
+      return {
+        id: z.id,
+        colour: z.colour,
+        lum: num(I.luminance(z.colour), 4),
+        span: num(lo) + ' – ' + num(hi)
+      };
+    });
+
+    this.setState({
+      ready: true,
+      m: {
+        footprint: num(m.footprint[0]) + ' × ' + num(m.footprint[1]) + ' m',
+        hall: num(m.hallFootprint[0]) + ' × ' + num(m.hallFootprint[1]) + ' m · ' + num(m.hallHeight) + ' m',
+        tallFit: num(m.tallestFitting) + ' m (spiskåpan)',
+        wing: num(m.wingHeight) + ' m',
+        court: num(m.courtyardM2, 0) + ' m²',
+        outdoor: num(m.lawnM2, 0) + ' m² gräs · ' + num(m.bouleM2, 0) + ' m² boule · ' + m.treeCount + ' träd',
+        gallery: num(m.galleryLengthM, 1) + ' m loftgång',
+        seats: String(m.seatCount) + ' av 100',
+        rooms: String(rc.found) + ' · ' + String(rc.doorsInGraph) + (rc.ok ? ' — stämmer' : ' — AVVIKER'),
+        roomArea: num(m.roomAreaM2) + ' m²',
+        contrast: num(cr.min) + ' – ' + num(cr.max),
+        fails: fails.length === 0 ? 'ingen' : String(fails.length),
+        deltaE: num(dE, 1),
+        zones: String(m.floorZones) + ' st',
+        minPassage: num(worst.w * 2) + ' m — vid ' + worst.id
+      },
+      lanes: laneRows,
+      zones: zoneRows
+    });
+  }
+
+  // Loopen är generationsmärkt. En omstart bumpar this.gen, så en
+  // gammal kedja dör av sig själv och två kedjor aldrig kan leva
+  // samtidigt och dubbla tempot.
+  startLoop = () => {
+    if (this.unmounted || !this.renderer) return;
+    this.gen = (this.gen || 0) + 1;
+    if (this.raf) cancelAnimationFrame(this.raf);
+    this.raf = null;
+    this.tick(performance.now(), this.gen);
+  };
+
+  tick = (ms, gen) => {
+    const g = gen === undefined ? this.gen : gen;
+    if (this.unmounted || g !== this.gen) { return; }
+    this.raf = requestAnimationFrame((t) => this.tick(t, g));
+    try { this.frameBody(ms); } catch (err) {
+      this.gen++;
+      console.error('inn tick failed', err);
+    }
+  };
+
+  frameBody = (ms) => {
+    const now = ms / 1000;
+    const dt = this.last === undefined ? 0 : Math.min(0.05, now - this.last);
+    this.last = now;
+    if (this.state.playing) this.t += dt;
+    const t = this.t;
+    const R = this.R;
+    if (this.figures && this.bodies.visible) {
+      for (let i = 0; i < this.figures.length; i++) {
+        const f = this.figures[i];
+        const ft = t + f.off;
+        let pose;
+        if (f.mode === 'seated') pose = R.poseSeated(ft);
+        else if (f.mode === 'work') pose = R.poseWork(ft);
+        else if (f.mode === 'carry') pose = R.poseCarry(ft);
+        else if (f.mode === 'greet') pose = R.poseGreet(ft);
+        else pose = R.poseIdle(ft);
+        R.applyPose(f.rig, pose);
+      }
+    }
+    this.I.updateInnRoom(this.room, (t / 4) % 1);
+    this.renderer.render(this.scene, this.camera);
+    this.frames = (this.frames || 0) + 1;
+  };
+
+  /** Rita om direkt. requestAnimationFrame strypes när vyn ligger i en
+   *  dold ram, och då skulle en vyväxling eller en av knapparna inte
+   *  synas förrän loopen råkar få en bildruta. Varje tillståndsändring
+   *  ritar därför en bildruta själv. */
+  drawNow = () => {
+    if (this.renderer && this.scene && this.camera) {
+      this.renderer.render(this.scene, this.camera);
+    }
+  };
+
+  /**
+   * Varje reglage ritar om själv, via sin egen setState-callback.
+   * INTE via componentDidUpdate: den hooken kallas inte i den här
+   * runtimen, och när ompaintningen låg där var sex av nio reglage och
+   * hela dra-för-att-vrida döda — etiketten vände, bilden stod still.
+   * refresh() bär också omstarten av renderloopen, av samma skäl.
+   */
+  refresh = () => {
+    if (this.renderer && !this.unmounted && this.frames === this.lastFrames) {
+      this.startLoop();
+    }
+    this.lastFrames = this.frames;
+    this.drawNow();
+  };
+
+  /** Flytta kameran och rita om. place() ritar en bildruta själv. */
+  recenter = () => {
+    this.place();
+    this.refresh();
+  };
+
+  cycleView = () => {
+    const next = (this.state.view + 1) % this.views.length;
+    const v = this.views[next];
+    this.setState({ view: next, yaw: v.yaw, pitch: v.pitch }, this.recenter);
+  };
+  resetView = () => {
+    const v = this.views[this.state.view];
+    this.setState({ yaw: v.yaw, pitch: v.pitch }, this.recenter);
+  };
+  /**
+   * Sätter alla gruppers synlighet ur tillståndet. Ligger här och inte
+   * inne i setState-uppdaterarna: en uppdaterare kan köras mer än en
+   * gång, och en sidoeffekt som växlar `visible` nollade då ut sig
+   * själv — Kroppar-knappen vände etiketten utan att något hände.
+   * Uppdaterarna är rena; allt som rör scenen sker i callbacken.
+   */
+  applyVis = () => {
+    const s = this.state;
+    if (this.bodies) this.bodies.visible = s.bodies;
+    if (this.morning) this.morning.visible = s.morning;
+    if (this.paths) this.paths.visible = s.paths;
+    if (this.labels) this.labels.visible = s.labels;
+    this.applyRoofs();
+  };
+
+  /** Skriv scenen ur tillståndet och rita om. */
+  commit = () => {
+    this.applyVis();
+    this.refresh();
+  };
+
+  togglePlay = () => this.setState((s) => ({ playing: !s.playing }), this.refresh);
+  toggleBodies = () => this.setState((s) => ({ bodies: !s.bodies }), this.commit);
+  toggleRoofs = () => this.setState((s) => ({ roofs: (s.roofs + 1) % 3 }), this.commit);
+  toggleUpper = () => this.setState((s) => ({ upper: !s.upper }), this.commit);
+  toggleMorning = () => this.setState((s) => ({ morning: !s.morning }), this.commit);
+  togglePaths = () => this.setState((s) => ({ paths: !s.paths }), this.commit);
+  toggleLabels = () => this.setState((s) => ({ labels: !s.labels }), this.commit);
+
+  renderVals() {
+    const s = this.state;
+    const m = s.m;
+    return {
+      stageRef: this.stageRef,
+      cycleView: this.cycleView,
+      resetView: this.resetView,
+      togglePlay: this.togglePlay,
+      toggleBodies: this.toggleBodies,
+      toggleRoofs: this.toggleRoofs,
+      toggleUpper: this.toggleUpper,
+      toggleMorning: this.toggleMorning,
+      togglePaths: this.togglePaths,
+      toggleLabels: this.toggleLabels,
+      viewLabel: this.views[s.view].name,
+      yawLabel: Math.round((s.yaw * 180 / Math.PI) % 360),
+      pitchLabel: Math.round(s.pitch * 180 / Math.PI),
+      statusLabel: s.ready ? (s.playing ? 'Kroppar i rörelse' : 'Pausad') : 'Bygger anläggningen',
+      playLabel: s.playing ? 'Pausa' : 'Spela',
+      bodiesLabel: s.bodies ? 'Kroppar: på' : 'Kroppar: av',
+      roofsLabel: ['Tak: av', 'Tak: salen', 'Tak: allt'][s.roofs],
+      upperLabel: s.upper ? 'Övre plan: på' : 'Övre plan: av',
+      morningLabel: s.morning ? 'Morgonvägen: på' : 'Morgonvägen: av',
+      pathsLabel: s.paths ? 'Gånglinjer: på' : 'Gånglinjer: av',
+      labelsLabel: s.labels ? 'Platsnummer: på' : 'Platsnummer: av',
+      laneRows: s.lanes,
+      zoneRows: s.zones,
+      mFootprint: m ? m.footprint : '—',
+      mHall: m ? m.hall : '—',
+      mTallFit: m ? m.tallFit : '—',
+      mWing: m ? m.wing : '—',
+      mCourt: m ? m.court : '—',
+      mOutdoor: m ? m.outdoor : '—',
+      mGallery: m ? m.gallery : '—',
+      mSeats: m ? m.seats : '—',
+      mRooms: m ? m.rooms : '—',
+      mRoomArea: m ? m.roomArea : '—',
+      mContrast: m ? m.contrast : '—',
+      mFails: m ? m.fails : '—',
+      mDeltaE: m ? m.deltaE : '—',
+      mZones: m ? m.zones : '—',
+      mMinPassage: m ? m.minPassage : '—'
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,403 @@
+{
+  "simTime": 261.19999999999374,
+  "period": "lunch",
+  "prepEndsAt": null,
+  "seatedIdsCount": 16,
+  "guestCount": 16,
+  "guests": [
+    {
+      "id": "gst-8",
+      "state": "paying",
+      "seatIndex": 15,
+      "simPos": {
+        "x": 2,
+        "z": -1.8
+      },
+      "renderPos": {
+        "cx": 33.08422765301868,
+        "cz": -18.330779914437382
+      },
+      "sitStandDir": -1,
+      "sitStandPhase": 1,
+      "seatXZ": [
+        33.08422765301868,
+        -18.330779914437382
+      ],
+      "seatSource": "contract",
+      "distFromSeat": 0
+    },
+    {
+      "id": "gst-10",
+      "state": "dining",
+      "seatIndex": 16,
+      "simPos": {
+        "x": 2,
+        "z": -1.8
+      },
+      "renderPos": {
+        "cx": 33.17677725339524,
+        "cz": -8.50440087667925
+      },
+      "sitStandDir": 0,
+      "sitStandPhase": -1,
+      "seatXZ": [
+        32.32990463796831,
+        -18.23806104383744
+      ],
+      "seatSource": "contract",
+      "distFromSeat": 9.77
+    },
+    {
+      "id": "gst-12",
+      "state": "dining",
+      "seatIndex": 17,
+      "simPos": {
+        "x": 2,
+        "z": -1.8
+      },
+      "renderPos": {
+        "cx": 31.575581622917948,
+        "cz": -18.145342173237502
+      },
+      "sitStandDir": -1,
+      "sitStandPhase": 1,
+      "seatXZ": [
+        31.575581622917948,
+        -18.145342173237502
+      ],
+      "seatSource": "contract",
+      "distFromSeat": 0
+    },
+    {
+      "id": "gst-15",
+      "state": "dining",
+      "seatIndex": 18,
+      "simPos": {
+        "x": 2,
+        "z": -1.8
+      },
+      "renderPos": {
+        "cx": 30.821258607867584,
+        "cz": -18.05262330263756
+      },
+      "sitStandDir": -1,
+      "sitStandPhase": 1,
+      "seatXZ": [
+        30.821258607867584,
+        -18.05262330263756
+      ],
+      "seatSource": "contract",
+      "distFromSeat": 0
+    },
+    {
+      "id": "gst-16",
+      "state": "dining",
+      "seatIndex": 19,
+      "simPos": {
+        "x": 2,
+        "z": -1.8
+      },
+      "renderPos": {
+        "cx": 30.06693559281722,
+        "cz": -17.95990443203762
+      },
+      "sitStandDir": -1,
+      "sitStandPhase": 1,
+      "seatXZ": [
+        30.06693559281722,
+        -17.95990443203762
+      ],
+      "seatSource": "contract",
+      "distFromSeat": 0
+    },
+    {
+      "id": "gst-23",
+      "state": "dining",
+      "seatIndex": 0,
+      "simPos": {
+        "x": 2,
+        "z": -1.8
+      },
+      "renderPos": {
+        "cx": 35.378833600939146,
+        "cz": -15.892505208058303
+      },
+      "sitStandDir": -1,
+      "sitStandPhase": 1,
+      "seatXZ": [
+        35.378833600939146,
+        -15.892505208058303
+      ],
+      "seatSource": "contract",
+      "distFromSeat": 0
+    },
+    {
+      "id": "gst-24",
+      "state": "dining",
+      "seatIndex": 1,
+      "simPos": {
+        "x": 2,
+        "z": -0.6
+      },
+      "renderPos": {
+        "cx": 35.525231817675895,
+        "cz": -14.701468868505097
+      },
+      "sitStandDir": -1,
+      "sitStandPhase": 1,
+      "seatXZ": [
+        35.525231817675895,
+        -14.701468868505097
+      ],
+      "seatSource": "contract",
+      "distFromSeat": 0
+    },
+    {
+      "id": "gst-25",
+      "state": "dining",
+      "seatIndex": 2,
+      "simPos": {
+        "x": 2,
+        "z": 0.6
+      },
+      "renderPos": {
+        "cx": 33.89003817649764,
+        "cz": -15.709507437137368
+      },
+      "sitStandDir": -1,
+      "sitStandPhase": 1,
+      "seatXZ": [
+        33.89003817649764,
+        -15.709507437137368
+      ],
+      "seatSource": "contract",
+      "distFromSeat": 0
+    },
+    {
+      "id": "gst-26",
+      "state": "dining",
+      "seatIndex": 4,
+      "simPos": {
+        "x": 0.5,
+        "z": -1.8
+      },
+      "renderPos": {
+        "cx": 32.60350032562728,
+        "cz": -8.34310884372018
+      },
+      "sitStandDir": 0,
+      "sitStandPhase": -1,
+      "seatXZ": [
+        29.62215795976532,
+        -15.18491382716402
+      ],
+      "seatSource": "contract",
+      "distFromSeat": 7.463
+    },
+    {
+      "id": "gst-27",
+      "state": "dining",
+      "seatIndex": 5,
+      "simPos": {
+        "x": 0.5,
+        "z": -0.6
+      },
+      "renderPos": {
+        "cx": 29.768556176502067,
+        "cz": -13.993877487610813
+      },
+      "sitStandDir": -1,
+      "sitStandPhase": 1,
+      "seatXZ": [
+        29.768556176502067,
+        -13.993877487610813
+      ],
+      "seatSource": "contract",
+      "distFromSeat": 0
+    },
+    {
+      "id": "gst-28",
+      "state": "dining",
+      "seatIndex": 6,
+      "simPos": {
+        "x": 0.5,
+        "z": 0.6
+      },
+      "renderPos": {
+        "cx": 28.133362535323812,
+        "cz": -15.001916056243086
+      },
+      "sitStandDir": -1,
+      "sitStandPhase": 1,
+      "seatXZ": [
+        28.133362535323812,
+        -15.001916056243086
+      ],
+      "seatSource": "contract",
+      "distFromSeat": 0
+    },
+    {
+      "id": "gst-31",
+      "state": "dining",
+      "seatIndex": 8,
+      "simPos": {
+        "x": 2,
+        "z": -2.6
+      },
+      "renderPos": {
+        "cx": 32.549450202205236,
+        "cz": -8.33806812297544
+      },
+      "sitStandDir": 0,
+      "sitStandPhase": -1,
+      "seatXZ": [
+        35.52109627483023,
+        -12.685908674096265
+      ],
+      "seatSource": "contract",
+      "distFromSeat": 5.266
+    },
+    {
+      "id": "gst-32",
+      "state": "dining",
+      "seatIndex": 9,
+      "simPos": {
+        "x": 0.5,
+        "z": -2.6
+      },
+      "renderPos": {
+        "cx": 35.691894194356436,
+        "cz": -11.296366277950856
+      },
+      "sitStandDir": -1,
+      "sitStandPhase": 1,
+      "seatXZ": [
+        35.691894194356436,
+        -11.296366277950856
+      ],
+      "seatSource": "contract",
+      "distFromSeat": 0
+    },
+    {
+      "id": "gst-34",
+      "state": "dining",
+      "seatIndex": 3,
+      "simPos": {
+        "x": 2,
+        "z": 1.8
+      },
+      "renderPos": {
+        "cx": 34.03643639323439,
+        "cz": -14.518471097584161
+      },
+      "sitStandDir": -1,
+      "sitStandPhase": 1,
+      "seatXZ": [
+        34.03643639323439,
+        -14.518471097584161
+      ],
+      "seatSource": "contract",
+      "distFromSeat": 0
+    },
+    {
+      "id": "gst-37",
+      "state": "seated",
+      "seatIndex": 12,
+      "simPos": {
+        "x": 2,
+        "z": -1.8
+      },
+      "renderPos": {
+        "cx": 26.110368557203874,
+        "cz": -6.1768613528980625
+      },
+      "sitStandDir": 0,
+      "sitStandPhase": -1,
+      "seatXZ": [
+        35.34719669816977,
+        -18.608936526237205
+      ],
+      "seatSource": "contract",
+      "distFromSeat": 15.488
+    },
+    {
+      "id": "gst-38",
+      "state": "seated",
+      "seatIndex": 13,
+      "simPos": {
+        "x": 2,
+        "z": -1.8
+      },
+      "renderPos": {
+        "cx": 39.36568662149493,
+        "cz": -7.487080518663248
+      },
+      "sitStandDir": 0,
+      "sitStandPhase": -1,
+      "seatXZ": [
+        34.59287368311941,
+        -18.516217655637263
+      ],
+      "seatSource": "contract",
+      "distFromSeat": 12.018
+    }
+  ],
+  "staff": [
+    {
+      "id": "värd-7xxsi9",
+      "role": "värd",
+      "renderPos": {
+        "x": 32.40935134463978,
+        "z": -10.132607704625523
+      },
+      "poseName": "poseIdle",
+      "moving": false
+    },
+    {
+      "id": "servitör-ze9eik",
+      "role": "servitör",
+      "renderPos": {
+        "x": 32.40935134463978,
+        "z": -10.132607704625523
+      },
+      "poseName": "poseIdle",
+      "moving": false
+    },
+    {
+      "id": "kock-1uh40o",
+      "role": "kock",
+      "renderPos": {
+        "x": 32.40935134463978,
+        "z": -10.132607704625523
+      },
+      "poseName": "poseIdle",
+      "moving": false
+    }
+  ],
+  "layout": {
+    "centre": [
+      31.597500000000004,
+      -16.7375
+    ],
+    "width": 14.509200552894312,
+    "depth": 10.086506289734302,
+    "entrance": [
+      32.40935134463978,
+      -10.132607704625523
+    ]
+  },
+  "seatSource": "businessRoomContract",
+  "seatSourceLength": 20,
+  "contractSeatsLength": 20,
+  "contractClass": "ölkrogen",
+  "cameraDist": 24.011057637546845,
+  "cameraTargetDist": 24,
+  "summary": {
+    "seatedTotal": 16,
+    "seatedWithRenderPos": 16,
+    "seatedNearSeat": 11,
+    "seatedFarFromSeat": 5,
+    "seatedNoSitBlend": 5,
+    "outsideOBB": 5
+  }
+}

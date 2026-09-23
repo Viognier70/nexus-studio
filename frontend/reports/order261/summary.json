@@ -1,0 +1,92 @@
+{
+  "order": "ORDER 261 (steg 2A)",
+  "seed": 42,
+  "business": "kvarterskrogen",
+  "script": "start=dinner15",
+  "totalTickSamples": 247,
+  "totalGuestTicks": 4411,
+  "diffMeters": {
+    "p50": 0,
+    "p90": 2.63,
+    "p95": 15.565,
+    "p99": 26.351,
+    "max": 32.955,
+    "under_030_ratio": 0.8866,
+    "under_050_ratio": 0.893,
+    "under_100_ratio": 0.8957,
+    "over_100_count": 460
+  },
+  "fallbackCounters": {
+    "finalObserved": null,
+    "maxObserved": {
+      "entrance": 0,
+      "waitingSlot": 0,
+      "spawnPoint": 0,
+      "arrivalSlot": 0
+    }
+  },
+  "passEconomics": {
+    "completedGuests": 43,
+    "revenueThisService": 7025,
+    "costThisService": 6286,
+    "resultThisService": 739
+  },
+  "perState": {
+    "arriving": {
+      "n": 111,
+      "maxDist": 6.103,
+      "over_030": 26,
+      "meanDist": 0.963,
+      "over_030_pct": 23.42
+    },
+    "ordering": {
+      "n": 3309,
+      "maxDist": 30.804,
+      "over_030": 254,
+      "meanDist": 1.256,
+      "over_030_pct": 7.68
+    },
+    "seated": {
+      "n": 68,
+      "maxDist": 9.6,
+      "over_030": 65,
+      "meanDist": 4.946,
+      "over_030_pct": 95.59
+    },
+    "dining": {
+      "n": 672,
+      "maxDist": 0.01,
+      "over_030": 0,
+      "meanDist": 0,
+      "over_030_pct": 0
+    },
+    "paying": {
+      "n": 93,
+      "maxDist": 0,
+      "over_030": 0,
+      "meanDist": 0,
+      "over_030_pct": 0
+    },
+    "leaving": {
+      "n": 125,
+      "maxDist": 19.697,
+      "over_030": 122,
+      "meanDist": 10.618,
+      "over_030_pct": 97.6
+    },
+    "declined": {
+      "n": 33,
+      "maxDist": 32.955,
+      "over_030": 33,
+      "meanDist": 27.007,
+      "over_030_pct": 100
+    }
+  },
+  "order260Baseline": {
+    "completedGuests": 49,
+    "revenue": 9770,
+    "cost": 2777,
+    "result": 6993,
+    "note": "ORDER 260 rev.3, seed=42 kvarterskrogen dinner15 — via runHarness"
+  }
+}

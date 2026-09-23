@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/modernist-fa2a5900-708d-4668-979a-71ad6a03542a/styles.css">
+<script src="_ds/modernist-fa2a5900-708d-4668-979a-71ad6a03542a/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: var(--color-bg); }
+  a { color: var(--color-accent-700); text-decoration: none; border-bottom: 2px solid var(--color-accent); }
+  a:hover { color: var(--color-accent); }
+</style>
+</helmet>
+<div style="font-family: var(--font-body); color: var(--color-text); background: var(--color-bg); min-height: 100vh; padding: 40px 48px 72px; max-width: 1560px; margin: 0 auto;">
+
+  <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 48px;">
+    <div>
+      <div style="font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-700); font-weight: 700;">SD-004 · verksamhetsklass som rum · formmall brewpubRoom.ts</div>
+      <h1 style="font-family: var(--font-heading); font-size: 54px; line-height: 1.02; margin: 12px 0 0; font-weight: 700; letter-spacing: -0.02em;">Vinbaren</h1>
+      <p style="margin: 14px 0 0; font-size: 17px; max-width: 62ch; text-wrap: pretty;">Tjugo platser, litet kök med smårätter, lounger och DJ. Där ölkrogen hade bryggeriet som mittpunkt har vinbaren bardisken — och flaskhyllan, som här måste finnas där ölkrogen förbjöd den. Dra i vyn för att vrida rummet.</p>
+    </div>
+    <div style="text-align: left; font-size: 13px; line-height: 1.7; flex: 0 0 auto; padding-bottom: 6px;">
+      <div style="font-weight: 700;">Leverans</div>
+      <div><a href="wineBarRoom.ts">wineBarRoom.ts</a> — ren three.js</div>
+      <div style="color: var(--color-neutral-600);">Byggs imperativt, en gång</div>
+      <div style="color: var(--color-neutral-600);">Ingen klocka, ingen sim-logik</div>
+    </div>
+  </div>
+
+  <div class="hr" style="margin: 28px 0 0;"></div>
+
+  <div style="display: flex; gap: 20px; align-items: baseline; padding: 14px 0 18px; flex-wrap: wrap;">
+    <span class="tag tag-accent">20 platser · 8 lounge / 6 bar / 6 bord</span>
+    <span class="tag tag-outline">15,6 × 11,8 m — samma OBB</span>
+    <span class="tag tag-outline">kontrast {{ mContrast }} i bandet 1,8–3,6</span>
+    <span style="font-size: 13px; color: var(--color-neutral-600);">Ersätter Restaurant.tsx. Samma plats sedd på nytt.</span>
+  </div>
+
+  <div style="position: relative; border-top: 2px solid var(--color-divider); border-bottom: 2px solid var(--color-divider); background: var(--color-neutral-100);">
+    <div ref="{{ stageRef }}" style="width: 100%; height: 540px; cursor: grab;"></div>
+    <div style="position: absolute; left: 14px; top: 12px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-neutral-600); font-weight: 700;">{{ viewLabel }} · vridning {{ yawLabel }}° · lutning {{ pitchLabel }}°</div>
+    <div style="position: absolute; right: 14px; top: 12px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-700); font-weight: 700;">{{ statusLabel }}</div>
+    <div style="position: absolute; left: 14px; bottom: 12px; font-size: 11px; line-height: 1.6; color: var(--color-neutral-600); max-width: 46ch;">Rött = annotation, inte geometri: platsnummer, gånglinjer, siktlinjer mot flaskhyllan, entré och personalstationer.</div>
+  </div>
+
+  <div style="display: flex; gap: 10px; align-items: center; padding: 18px 0 0; flex-wrap: wrap; white-space: nowrap;">
+    <button class="btn btn-primary" onClick="{{ cycleView }}">{{ viewLabel }}</button>
+    <button class="btn btn-secondary" onClick="{{ togglePlay }}">{{ playLabel }}</button>
+    <button class="btn btn-secondary" onClick="{{ toggleBodies }}">{{ bodiesLabel }}</button>
+    <button class="btn btn-secondary" onClick="{{ toggleWalls }}">{{ wallsLabel }}</button>
+    <button class="btn btn-ghost" onClick="{{ toggleLabels }}">{{ labelsLabel }}</button>
+    <button class="btn btn-ghost" onClick="{{ togglePaths }}">{{ pathsLabel }}</button>
+    <button class="btn btn-ghost" onClick="{{ toggleSight }}">{{ sightLabel }}</button>
+    <button class="btn btn-ghost" onClick="{{ resetView }}">Nollställ vridning</button>
+  </div>
+
+  <div class="hr" style="margin: 30px 0 0;"></div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; padding-top: 28px;">
+    <div>
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 16px; font-weight: 700;">Planlösningen — disken är mitten</h2>
+      <p style="font-size: 14px; line-height: 1.6; margin: 0 0 18px; color: var(--color-neutral-700); max-width: 54ch; text-wrap: pretty;">Ölkrogen hade en produktionslinje att följa: tank → disk → gäst längs en axel. Vinbaren har ingen produktion. Bardisken är mitten och allt annat vänder sig mot den — vilket ger ett rum som läses radiellt i stället för i band.</p>
+      <table class="table" style="width: 100%;">
+        <thead>
+          <tr><th>Zon</th><th>Lokal XZ</th><th>Innehåll</th></tr>
+        </thead>
+        <tbody>
+          <tr><td style="font-weight: 700;">Flaskhylla</td><td>X −3,3</td><td>2,4 m hög, 5,2 m lång. Fyra hyllplan i visningsbandet 1,35–2,13 m; under det skåp. Målet, inte hindret.</td></tr>
+          <tr><td style="font-weight: 700;">Bardisk</td><td>X −1,75</td><td>4,8 m, 1,10 m hög, messingfotlist. Sommelierens runway 1,00 m mellan disk och hylla.</td></tr>
+          <tr><td style="font-weight: 700;">Barstolar</td><td>X −0,95</td><td>Sex, pitch 0,80. Vända mot disken och därmed mot hyllan.</td></tr>
+          <tr><td style="font-weight: 700;">Lounge</td><td>Z 4,95</td><td>Två grupper om fyra dynor, sitthöjd 0,38, lågt bord framför på Z 3,1.</td></tr>
+          <tr><td style="font-weight: 700;">Tvåor</td><td>Z −4,5</td><td>Tre bord öster om DJ-zonen, sitsoffset längs X som interiorLayout.</td></tr>
+          <tr><td style="font-weight: 700;">DJ</td><td>−0,2 / −4,4</td><td>Platta 3,0 × 2,2 på 0,25 m, egen golvzon, fond 1,9 m, pult 1,10 m med skivtallrik. Vid södra väggen mitt för det öppna golvet.</td></tr>
+          <tr><td style="font-weight: 700;">Kök</td><td>X &lt; −4,4, Z &gt; 1,5</td><td>Två stationer: plancha med kåpa, kall prep. Halvväggar 1,5 m, passlucka.</td></tr>
+        </tbody>
+      </table>
+
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 30px 0 16px; font-weight: 700;">Tre avvikelser från formmallen</h2>
+      <div style="border-top: 2px solid var(--color-divider);">
+        <div style="padding: 12px 0; border-bottom: 1px solid var(--color-neutral-300);">
+          <div style="font-weight: 700; font-size: 14px;">1 · Bakhyllan är obligatorisk här</div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 3px;">I ölkrogen var frånvaron av bakhylla ett krav — den hade skymt tankarna, som var det gästen skulle se. I vinbaren är hyllan själv målet. Samma siktlinjeresonemang, motsatt slutsats: <code>checkSightLines()</code> mäter sikten <em>till</em> hyllan, inte förbi den.</div>
+        </div>
+        <div style="padding: 12px 0; border-bottom: 1px solid var(--color-neutral-300);">
+          <div style="font-weight: 700; font-size: 14px;">2 · Golvet är en palettparameter</div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 3px;"></div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 3px;">Fem golvzoner betyder fem kontrastunderlag. Se kolumnen till höger — det avgjorde paletten, inte tvärtom.</div>
+        </div>
+        <div style="padding: 12px 0;">
+          <div style="font-weight: 700; font-size: 14px;">3 · Loungen är fyra dynor, inte en soffa</div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 3px;">Uppifrån läser en genomgående sittsoffa som ett bord: en avlång platta utan platsindelning. Varje loungeplats är en egen dyna med 0,08 m glapp emellan. Fyra dynor räknas som fyra platser av ögat — hela poängen med en läsbar plats. Ryggstödet är genomgående; dynorna är inte.</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 16px; font-weight: 700;">Kontrastbandet avgjorde paletten</h2>
+      <p style="font-size: 14px; line-height: 1.6; margin: 0 0 16px; color: var(--color-neutral-700); max-width: 54ch; text-wrap: pretty;"><code>silhouetteContrast.ts</code> håller [1,8 · 3,6] mot golvet <code>#a89577</code> (luminans 0,3115). Det ger figurfönstret L ∈ [0,050 · 0,151] — men bara mot <em>ett</em> golv. Fem zoner krymper fönstret till snittet över alla fem: undre gränsen sätts av det ljusaste golvet, övre av det mörkaste.</p>
+      <table class="table" style="width: 100%;">
+        <tbody>
+          <tr><td style="width: 52%;">Figurfönster, ett golv</td><td style="font-weight: 700;">L 0,0504 – 0,1508</td></tr>
+          <tr><td>Figurfönster, fem zoner</td><td style="font-weight: 700;">L 0,0509 – 0,1154</td></tr>
+          <tr><td>Palettens mål</td><td style="font-weight: 700;">L ≈ 0,083 (mitten)</td></tr>
+          <tr><td>Uppmätt kontrast, alla par</td><td style="font-weight: 700;">{{ mContrast }}</td></tr>
+          <tr><td>Par utanför bandet</td><td style="font-weight: 700;">{{ mPaletteFails }}</td></tr>
+          <tr><td>Roll-ΔE, minsta par</td><td style="font-weight: 700;">{{ mRoleDelta }}</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size: 12px; line-height: 1.6; margin: 12px 0 0; color: var(--color-neutral-600); max-width: 54ch; text-wrap: pretty;">Därför ligger golvzonerna tätt: 0,248–0,313 luminans, inte 0,10–0,31. Varje steg mörkare golv äter direkt av figurernas utrymme. <strong>Ett mörkt loungegolv stänger fönstret helt</strong> — vilket är precis vad briefen varnade för, och nu är det ett tal i stället för en varning.</p>
+
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 30px 0 16px; font-weight: 700;">Mätt i vyn, inte i scengrafen</h2>
+      <table class="table" style="width: 100%;">
+        <tbody>
+          <tr><td style="width: 52%;">Inredningens utbredning</td><td style="font-weight: 700;">{{ mFootprint }}</td></tr>
+          <tr><td>Flaskhyllans topp</td><td style="font-weight: 700;">{{ mShelf }}</td></tr>
+          <tr><td>DJ-zonens golvyta</td><td style="font-weight: 700;">{{ mDjArea }}</td></tr>
+          <tr><td>Platser: lounge / bar / bord</td><td style="font-weight: 700;">{{ mSplit }}</td></tr>
+          <tr><td>Platser som ser flaskhyllan</td><td style="font-weight: 700;">{{ mSeeShelf }}</td></tr>
+          <tr><td>Barstolar som ser alla fyra hyllplan</td><td style="font-weight: 700;">{{ mBarTiers }}</td></tr>
+          <tr><td>Platser som ser DJ:n</td><td style="font-weight: 700;">{{ mSeeDj }}</td></tr>
+          <tr><td>Plats utan sikt till hyllan</td><td style="font-weight: 700;">{{ mBlind }}</td></tr>
+          <tr><td>Smalaste passagen på någon väg</td><td style="font-weight: 700;">{{ mMinPassage }}</td></tr>
+        </tbody>
+      </table>
+
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 30px 0 16px; font-weight: 700;">Framkomlighet per korridor</h2>
+      <table class="table" style="width: 100%;">
+        <thead>
+          <tr><th>Korridor</th><th>Platser</th><th>Fri bredd</th><th>Kropp 0,46 m</th></tr>
+        </thead>
+        <tbody>
+          <sc-for list="{{ laneRows }}" as="row" hint-placeholder-count="4">
+            <tr><td style="font-weight: 700;">{{ row.name }}</td><td>{{ row.count }}</td><td>{{ row.width }}</td><td>{{ row.verdict }}</td></tr>
+          </sc-for>
+        </tbody>
+      </table>
+      <p style="font-size: 12px; line-height: 1.6; margin: 12px 0 0; color: var(--color-neutral-600); max-width: 54ch; text-wrap: pretty;">Mätt genom att gå <code>walkPathToSeat()</code> för alla tjugo och för varje steg läsa avståndet till närmaste hinder i golvplanet. Loungekorridoren är den trängsta med flit — man glider in framför dynorna, inte mellan dem, och en lounge är tätare än en matsalsgång.</p>
+    </div>
+  </div>
+
+  <div class="hr" style="margin: 32px 0 0;"></div>
+
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; padding-top: 28px;">
+    <div>
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 16px; font-weight: 700;">Vad gästen ser</h2>
+      <p style="font-size: 14px; line-height: 1.6; margin: 0 0 16px; color: var(--color-neutral-700); text-wrap: pretty;">Briefens fråga: vad ser en gäst i barstolen? Svaret är tre lager på 1,0 m djup — glaset på disken, sommelieren i runwayen, flaskraden bakom henne. Det är arbetsflödet som är innehållet, inte en enskild pryl.</p>
+      <table class="table" style="width: 100%;">
+        <tbody>
+          <tr><td style="width: 40%; font-weight: 700;">0,0 m</td><td>Diskens skiva på 1,26 m, messingfotlist, glasfästet.</td></tr>
+          <tr><td style="font-weight: 700;">0,4 m</td><td>Sommelieren, ögonhöjd 1,66 m stående mot gästens 1,70 på barstolen.</td></tr>
+          <tr><td style="font-weight: 700;">1,4 m</td><td>Flaskhyllan: fyra plan på 1,35 / 1,61 / 1,87 / 2,13 m.</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size: 12px; line-height: 1.6; margin: 12px 0 0; color: var(--color-neutral-600); text-wrap: pretty;"><strong>Ögonhöjden räknas från sitsen, inte från golvet.</strong> Första versionen använde 1,29 m för alla sittande och startade hyllplanen på 0,63 m — då rapporterade provet att noll av sex barstolar såg alla fyra plan. Helt riktigt: 1,29 ligger tre centimeter under diskens egen skiva, och det nedersta planet låg bakom disken. En gäst på en barstol på 0,75 m har ögonhöjd 1,70. Visningsbandet börjar därför på 1,35 m och hyllan under det är skåp, inte skyltning.</p>
+    </div>
+
+    <div>
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 16px; font-weight: 700;">Vad som följer med</h2>
+      <table class="table" style="width: 100%;">
+        <tbody>
+          <tr><td style="width: 44%; font-weight: 700;">seats[20]</td><td>id, kind, seatIndex, furnitureId, lokal XZ, sitshöjd, kurs, angörningsnod, korridor.</td></tr>
+          <tr><td style="font-weight: 700;">standing[4]</td><td>Ståplatser vid diskens södra kortände. Utanför kapaciteten.</td></tr>
+          <tr><td style="font-weight: 700;">staffStations[4]</td><td>Hemstation med kurs, ståhöjd och uniformsfärg per roll.</td></tr>
+          <tr><td style="font-weight: 700;">entrance · waitingSpot</td><td>Innanför dörren, och 2,5 m utanför — samma standoff som interiorLayout.</td></tr>
+          <tr><td style="font-weight: 700;">walkPathToSeat · exitPathFromSeat</td><td>Vägpunkter in och ut, fyra korridorer.</td></tr>
+          <tr><td style="font-weight: 700;">parts.roof · walls · bar</td><td>Egna grupper för avståndstoning, som Restaurant.tsx.</td></tr>
+          <tr><td style="font-weight: 700;">glassAnchor · bottleAnchor · passAnchor</td><td>Fästen för glas, flaska och tallrik. Rekvisitan porteras senare.</td></tr>
+          <tr><td style="font-weight: 700;">ZONE_FLOORS · GUEST_GARMENTS · STAFF_UNIFORMS</td><td>Paletten som data, så tester kan läsa den.</td></tr>
+          <tr><td style="font-weight: 700;">checkPaletteAgainstFloors()</td><td>Bandet hävdat i kod, mot alla fem zoner.</td></tr>
+          <tr><td style="font-weight: 700;">updateWineBarRoom(room, phase)</td><td>Vrider skivtallriken. Allt annat är stillastående geometri.</td></tr>
+          <tr><td style="font-weight: 700;">measureWineBarRoom · checkSightLines</td><td>Måtten som tabellerna visar.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 16px; font-weight: 700;">Flaggat, inte uppfunnet</h2>
+      <div style="border-top: 2px solid var(--color-divider);">
+        <div style="padding: 12px 0; border-bottom: 1px solid var(--color-neutral-300);">
+          <div style="font-weight: 700; font-size: 14px;">1 · Verksamhetsklassen finns inte <span style="color: var(--color-accent);">⛔</span></div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 3px;">BusinessClass har ingen <code>'vinbar'</code>. Rummet kan inte väljas förrän klassen finns med capacityFor = 20. Blockerande.</div>
+        </div>
+        <div style="padding: 12px 0; border-bottom: 1px solid var(--color-neutral-300);">
+          <div style="font-weight: 700; font-size: 14px;">2 · DJ:n spelar eller inte</div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 3px;">Precis det fall briefen förutsåg. Geometrin har pult, platta, fond och tallrik. Men ingenting i simulationen säger om det spelas nu: ingen kvällsfas, ingen musiknivå, ingen publikrespons. Skicka <code>phase = 0</code> tills det finns. DJ-figuren står i poseWork som rollkonstant, inte som händelse.</div>
+        </div>
+        <div style="padding: 12px 0; border-bottom: 1px solid var(--color-neutral-300);">
+          <div style="font-weight: 700; font-size: 14px;">3 · Sommelierens ärende</div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 3px;">Rörelsen mellan gäst och hylla är rummets signatur, och den kan inte drivas härifrån. Det finns inget ärende-tillstånd — ingen &rdquo;hämtar flaska till bord 3&rdquo;. Fästena finns; ärendet gör det inte.</div>
+        </div>
+        <div style="padding: 12px 0; border-bottom: 1px solid var(--color-neutral-300);">
+          <div style="font-weight: 700; font-size: 14px;">4 · Ståplats vid baren</div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 3px;">Fyra ståplatser finns som geometri. En stående gäst har inget tillstånd, så de räknas inte i kapaciteten.</div>
+        </div>
+        <div style="padding: 12px 0; border-bottom: 1px solid var(--color-neutral-300);">
+          <div style="font-weight: 700; font-size: 14px;">5 · Loungen har inget sällskapsbegrepp</div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 3px;">Sim-lagret tilldelar platser som en platt lista. En ensam gäst kan hamna mitt i en tom lounge medan en fyra splittras över två grupper. Rummet exponerar <code>furnitureId</code> per plats så gruppering blir möjlig — urvalet är sim-lagrets.</div>
+        </div>
+        <div style="padding: 12px 0; border-bottom: 1px solid var(--color-neutral-300);">
+          <div style="font-weight: 700; font-size: 14px;">6 · Två stationer, inga rätter</div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 3px;">Smårätter betyder färre stationer än ölkrogens tre. Vilken station en rätt använder kräver en menymodell som inte finns.</div>
+        </div>
+        <div style="padding: 12px 0;">
+          <div style="font-weight: 700; font-size: 14px;">7 · FLOOR_COLOUR är en konstant, inte en zon</div>
+          <div style="font-size: 13px; line-height: 1.55; color: var(--color-neutral-700); margin-top: 3px;">Detta är den nya flaggan. <code>silhouetteContrast.ts</code> har ett golv; vinbaren har fem. Zonerna krymper figurfönstret till snittet, så en ny zon kan underkänna en palett som redan är godkänd. Rätt lösning är att <code>FLOOR_COLOUR</code> blir en lista eller en funktion av zon — beslutet hör i den filen, inte i det här rummet.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hr" style="margin: 32px 0 0;"></div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; padding-top: 24px;">
+    <div>
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 14px; font-weight: 700;">Fast geometri</h2>
+      <p style="font-size: 14px; line-height: 1.65; margin: 0; color: var(--color-neutral-700); text-wrap: pretty;">Bardiskens läge som rummets mitt. Flaskhyllan bakom den. Sommelierens runway på 1,00 m. DJ-plattans zon — platta plus golvbyte plus fond, inte bara pulten. Loungens fyra separata dynor. Golvzonernas smala luminansspann. Taket i 3,40 m.</p>
+    </div>
+    <div>
+      <h2 style="font-family: var(--font-heading); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 14px; font-weight: 700;">Tänkt att kunna ändras</h2>
+      <p style="font-size: 14px; line-height: 1.65; margin: 0; color: var(--color-neutral-700); text-wrap: pretty;">Antal hyllplan. Sitsfördelningen inom de tjugo. Ståkantens längd. Kökets två stationer. Rummets bredd och djup — understiger de 13,8 × 10,2 m returneras <code>fits: false</code> med underskottet i meter, i stället för en tyst omtolkad plan.</p>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1560,&quot;height&quot;:2100},&quot;shelfTiers&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:4,&quot;min&quot;:2,&quot;max&quot;:6,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Baren&quot;},&quot;occupancy&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:20,&quot;min&quot;:0,&quot;max&quot;:20,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Rummet&quot;},&quot;interiorHeight&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:3.4,&quot;min&quot;:2.8,&quot;max&quot;:4.4,&quot;step&quot;:0.1,&quot;unit&quot;:&quot;m&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Rummet&quot;}}">
+const CDN = 'https://unpkg.com/three@0.160.0/build/three.module.js';
+const ACCENT = '#ec3013';
+const LANE_NAMES = {
+  spine: 'Mittstråk (entré → bar)',
+  barLane: 'Barkorridor',
+  perimS: 'Södra bandet',
+  loungeN: 'Loungekorridor'
+};
+
+class Component extends DCLogic {
+  state = {
+    view: 0, yaw: 0.7, pitch: 0.84, playing: true,
+    bodies: true, walls: 0, labels: true, paths: false, sight: true,
+    ready: false, m: null, lanes: []
+  };
+
+  views = [
+    { name: 'Strategisk vinkel', mode: 'orbit', yaw: 0.7, pitch: 0.84, dist: 23 },
+    { name: 'Plan', mode: 'orbit', yaw: 0, pitch: 1.5533, dist: 36 },
+    { name: 'Snett över baren', mode: 'orbit', yaw: -0.55, pitch: 0.46, dist: 14 },
+    { name: 'Gästens öga vid baren', mode: 'eye', yaw: 0, pitch: 0 }
+  ];
+
+  componentDidMount() {
+    this.dead = false;
+    this.t = 0;
+    this.load();
+    this.watchdog = setInterval(this.ensureLoop, 1000);
+    document.addEventListener('visibilitychange', this.ensureLoop);
+  }
+
+  componentWillUnmount() {
+    this.dead = true;
+    if (this.watchdog) clearInterval(this.watchdog);
+    document.removeEventListener('visibilitychange', this.ensureLoop);
+    if (this.raf) cancelAnimationFrame(this.raf);
+    if (this.ro) this.ro.disconnect();
+    if (this.figures) this.figures.forEach((f) => this.R.disposeFigureRig(f.rig));
+    if (this.room) this.room.dispose();
+    if (this.sprites) this.sprites.forEach((s) => { s.material.map.dispose(); s.material.dispose(); });
+    if (this.renderer) this.renderer.dispose();
+  }
+
+  async load() {
+    try {
+      const THREE = await import(CDN);
+      const W = await import(new URL('wineBarRoom.js?v=6', document.baseURI).href);
+      const R = await import(new URL('figureRig.js', document.baseURI).href);
+      if (this.dead) return;
+      this.THREE = THREE; this.W = W; this.R = R;
+      this.build();
+    } catch (e) {
+      console.error('wine bar model failed to load', e);
+    }
+  }
+
+  stageRef = (el) => {
+    this.el = el;
+    if (el && this.renderer) this.attach();
+  };
+
+  build() {
+    const THREE = this.THREE;
+    const W = this.W;
+    const R = this.R;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color('#f3f2f2');
+    this.scene = scene;
+
+    scene.add(new THREE.HemisphereLight('#ffffff', '#cfcac6', 0.8));
+    const key = new THREE.DirectionalLight('#ffffff', 1.0);
+    key.position.set(7, 13, 6);
+    key.castShadow = true;
+    key.shadow.mapSize.set(2048, 2048);
+    const c = key.shadow.camera;
+    c.left = -12; c.right = 12; c.top = 10; c.bottom = -10; c.near = 1; c.far = 40;
+    scene.add(key);
+    const fill = new THREE.DirectionalLight('#ffffff', 0.22);
+    fill.position.set(-8, 6, -6);
+    scene.add(fill);
+
+    const ground = new THREE.Mesh(
+      new THREE.PlaneGeometry(80, 80),
+      new THREE.MeshStandardMaterial({ color: '#e6e4e2', roughness: 1 })
+    );
+    ground.rotation.x = -Math.PI / 2;
+    ground.position.y = -0.001;
+    ground.receiveShadow = true;
+    scene.add(ground);
+
+    const room = W.createWineBarRoom({
+      shelfTiers: Math.round(this.props.shelfTiers ?? 4),
+      interiorHeight: this.props.interiorHeight ?? 3.4
+    });
+    this.room = room;
+    scene.add(room.group);
+    room.parts.roof.visible = false;
+
+    // Kroppar i egen grupp utanför room.group — checkSightLines
+    // raycastar mot rummet, och kroppar inuti gör provet meningslöst.
+    const bodies = new THREE.Group();
+    scene.add(bodies);
+    this.bodies = bodies;
+    this.figures = [];
+
+    this.eyeSeat = room.seats.filter((s) => s.kind === 'bar')[2];
+    const occupancy = Math.max(0, Math.min(20, Math.round(this.props.occupancy ?? 20)));
+    room.seats.forEach((s, i) => {
+      if (i >= occupancy) return;
+      const rig = R.createFigureRig({
+        variant: 'guest',
+        garmentColour: W.GUEST_GARMENTS[i % W.GUEST_GARMENTS.length]
+      });
+      // Loungedynan är 0,38 och stolen 0,45 — poseSeated är kalibrerad
+      // för 0,45, så skillnaden tas i rotens y.
+      rig.root.position.set(s.local[0], 0.11 + (s.seatHeight - 0.45), s.local[1]);
+      rig.root.rotation.y = s.facing;
+      bodies.add(rig.root);
+      if (s.id === this.eyeSeat.id) this.eyeRoot = rig.root;
+      this.figures.push({ rig: rig, mode: 'seated', off: i * 0.37 });
+    });
+
+    room.standing.forEach((s, i) => {
+      const rig = R.createFigureRig({
+        variant: 'guest',
+        garmentColour: W.GUEST_GARMENTS[(i + 4) % W.GUEST_GARMENTS.length]
+      });
+      rig.root.position.set(s.local[0], 0.11, s.local[1]);
+      rig.root.rotation.y = s.facing;
+      bodies.add(rig.root);
+      this.figures.push({ rig: rig, mode: 'idle', off: i * 0.61 });
+    });
+
+    const staffMode = { sommelier: 'work', dj: 'work', cook: 'work', runner: 'carry' };
+    room.staffStations.forEach((st, i) => {
+      const rig = R.createFigureRig({ variant: 'staff', garmentColour: st.uniform });
+      rig.root.position.set(st.local[0], 0.11 + st.standHeight, st.local[1]);
+      rig.root.rotation.y = st.facing;
+      bodies.add(rig.root);
+      this.figures.push({ rig: rig, mode: staffMode[st.id] ?? 'idle', off: i * 0.83 });
+    });
+
+    // ── Annotationer, också utanför room.group ────────────────────
+    const anno = new THREE.Group();
+    scene.add(anno);
+    this.anno = anno;
+
+    const accentMat = new THREE.MeshStandardMaterial({
+      color: ACCENT, emissive: ACCENT, emissiveIntensity: 0.35, roughness: 0.6
+    });
+    const disc = (x, z, r, y) => {
+      const m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, 0.02, 20), accentMat);
+      m.position.set(x, y ?? 0.13, z);
+      anno.add(m);
+    };
+    disc(room.entrance[0], room.entrance[1], 0.34);
+    disc(room.waitingSpot[0], room.waitingSpot[1], 0.28, 0.02);
+    room.staffStations.forEach((st) => disc(st.local[0], st.local[1], 0.3, 0.13 + st.standHeight));
+
+    const labels = new THREE.Group();
+    anno.add(labels);
+    this.labels = labels;
+    this.sprites = [];
+    room.seats.forEach((s, i) => {
+      const cv = document.createElement('canvas');
+      cv.width = 96; cv.height = 96;
+      const g = cv.getContext('2d');
+      g.fillStyle = ACCENT;
+      g.beginPath(); g.arc(48, 48, 44, 0, Math.PI * 2); g.fill();
+      g.fillStyle = '#ffffff';
+      g.font = 'bold 56px Archivo, sans-serif';
+      g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.fillText(String(i + 1), 48, 52);
+      const tex = new THREE.CanvasTexture(cv);
+      const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: false }));
+      sp.position.set(s.local[0], 1.95 + (s.seatHeight - 0.45), s.local[1]);
+      sp.scale.set(0.44, 0.44, 0.44);
+      labels.add(sp);
+      this.sprites.push(sp);
+    });
+
+    const lineMat = new THREE.LineBasicMaterial({ color: ACCENT, transparent: true, opacity: 0.75 });
+    const paths = new THREE.Group();
+    paths.visible = false;
+    anno.add(paths);
+    this.paths = paths;
+    room.seats.forEach((s) => {
+      const pts = W.walkPathToSeat(room, s.id).map((p) => new THREE.Vector3(p[0], 0.14, p[1]));
+      paths.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), lineMat));
+    });
+
+    // Siktlinjer från ögonplatsen till varje hyllplan.
+    const sight = new THREE.Group();
+    anno.add(sight);
+    this.sight = sight;
+    const eye = new THREE.Vector3(
+      this.eyeSeat.local[0], W.eyeHeightForSeat(this.eyeSeat), this.eyeSeat.local[1]);
+    const tp = new THREE.Vector3();
+    room.parts.shelfTargets.forEach((tier) => {
+      tier.getWorldPosition(tp);
+      sight.add(new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints([eye.clone(), tp.clone()]), lineMat));
+    });
+
+    this.camera = new THREE.PerspectiveCamera(38, 2, 0.1, 200);
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+    this.renderer.setClearColor('#f3f2f2', 1);
+    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    this.applyWalls();
+    this.attach();
+    this.measure();
+    this.tick(0);
+  }
+
+  attach() {
+    if (!this.el || !this.renderer || this.attached) return;
+    this.el.appendChild(this.renderer.domElement);
+    // Ingen manuell 100 %-styling — three.js äger buffert och CSS-box.
+    this.renderer.domElement.style.display = 'block';
+    this.attached = true;
+    this.resize();
+    this.ro = new ResizeObserver(() => this.resize());
+    this.ro.observe(this.el);
+    const el = this.el;
+    let drag = null;
+    el.addEventListener('pointerdown', (e) => {
+      drag = { x: e.clientX, y: e.clientY, yaw: this.state.yaw, pitch: this.state.pitch };
+      el.setPointerCapture(e.pointerId);
+      el.style.cursor = 'grabbing';
+    });
+    el.addEventListener('pointermove', (e) => {
+      if (!drag) return;
+      const yaw = drag.yaw + (e.clientX - drag.x) * 0.007;
+      const pitch = Math.max(-0.15, Math.min(1.5533, drag.pitch + (e.clientY - drag.y) * 0.006));
+      this.setState({ yaw: yaw, pitch: pitch });
+    });
+    const end = (e) => {
+      drag = null;
+      el.style.cursor = 'grab';
+      if (e && e.pointerId !== undefined && el.hasPointerCapture(e.pointerId)) el.releasePointerCapture(e.pointerId);
+    };
+    el.addEventListener('pointerup', end);
+    el.addEventListener('pointercancel', end);
+    el.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const v = this.views[this.state.view];
+      if (v.mode !== 'orbit') return;
+      v.dist = Math.max(6, Math.min(48, v.dist * (1 + e.deltaY * 0.001)));
+      this.place();
+    }, { passive: false });
+  }
+
+  resize() {
+    if (!this.el || !this.renderer) return;
+    const w = this.el.clientWidth;
+    const h = this.el.clientHeight;
+    // Hitta inte på ett mått — se Restaurangen.
+    if (!w || !h) return;
+    this.renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+    this.renderer.setSize(w, h);
+    this.camera.aspect = w / h;
+    this.place();
+  }
+
+  place() {
+    const THREE = this.THREE;
+    if (!this.camera) return;
+    const v = this.views[this.state.view];
+    const cam = this.camera;
+    if (this.eyeRoot) this.eyeRoot.visible = v.mode !== 'eye';
+    if (v.mode === 'eye') {
+      const seat = this.eyeSeat;
+      cam.fov = 58;
+      cam.position.set(seat.local[0], this.W.eyeHeightForSeat(seat), seat.local[1]);
+      const dir = new THREE.Vector3(-3.3, 1.35, seat.local[1]).sub(cam.position).normalize();
+      const yawQ = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), this.state.yaw - v.yaw);
+      dir.applyQuaternion(yawQ);
+      dir.y += (this.state.pitch - v.pitch) * -0.6;
+      cam.lookAt(cam.position.clone().add(dir));
+    } else {
+      cam.fov = 38;
+      const tgt = new THREE.Vector3(0.2, 0.9, 0.2);
+      const d = v.dist;
+      const p = this.state.pitch;
+      cam.position.set(
+        tgt.x + d * Math.cos(p) * Math.sin(this.state.yaw),
+        tgt.y + d * Math.sin(p),
+        tgt.z + d * Math.cos(p) * Math.cos(this.state.yaw)
+      );
+      cam.lookAt(tgt);
+    }
+    cam.updateProjectionMatrix();
+    // Rita direkt — kameran får inte bero på att rAF-loopen lever.
+    if (this.renderer && this.scene) this.renderer.render(this.scene, this.camera);
+  }
+
+  // Tar läget som argument och anropas före commit. Se Restaurangen.
+  applyWalls(mode) {
+    if (!this.room) return;
+    if (mode === undefined) mode = this.state.walls;
+    const h = this.props.interiorHeight ?? 3.4;
+    this.room.parts.walls.visible = mode !== 2;
+    this.room.parts.walls.scale.y = mode === 0 ? 1.0 / h : 1;
+    this.room.parts.roof.visible = mode === 1;
+  }
+
+  measure() {
+    const THREE = this.THREE;
+    const W = this.W;
+    const room = this.room;
+    const m = W.measureWineBarRoom(room);
+    const sl = W.checkSightLines(room);
+    const fails = W.checkPaletteAgainstFloors();
+    const range = W.paletteContrastRange();
+
+    // Roll-ΔE, CIE 76, samma formel som silhouetteContrast.ts.
+    const s2l = (ch) => { const c = ch / 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+    const lab = (hex) => {
+      const h = hex.replace('#', '');
+      const r = s2l(parseInt(h.slice(0, 2), 16));
+      const g = s2l(parseInt(h.slice(2, 4), 16));
+      const b = s2l(parseInt(h.slice(4, 6), 16));
+      const x = r * 0.4124564 + g * 0.3575761 + b * 0.1804375;
+      const y = r * 0.2126729 + g * 0.7151522 + b * 0.0721750;
+      const z = r * 0.0193339 + g * 0.1191920 + b * 0.9503041;
+      const f = (t) => t > 0.008856 ? Math.pow(t, 1 / 3) : 7.787 * t + 16 / 116;
+      const fx = f(x / 0.95047), fy = f(y / 1.0), fz = f(z / 1.08883);
+      return [116 * fy - 16, 500 * (fx - fy), 200 * (fy - fz)];
+    };
+    const uni = Object.keys(W.STAFF_UNIFORMS).map((k) => W.STAFF_UNIFORMS[k]);
+    let minDe = 999;
+    for (let i = 0; i < uni.length; i++) {
+      for (let j = i + 1; j < uni.length; j++) {
+        const A = lab(uni[i]), B = lab(uni[j]);
+        const d = Math.hypot(A[0] - B[0], A[1] - B[1], A[2] - B[2]);
+        if (d < minDe) minDe = d;
+      }
+    }
+
+    // Hinderlista i golvplanet.
+    const obstacles = [];
+    const bb = new THREE.Box3();
+    const collect = (rootObj) => {
+      rootObj.traverse((o) => {
+        if (!o.isMesh) return;
+        if (o.name.indexOf('floor') === 0) return;
+        bb.setFromObject(o);
+        if (bb.min.y > 1.6 || bb.max.y < 0.15) return;
+        obstacles.push([bb.min.x, bb.max.x, bb.min.z, bb.max.z]);
+      });
+    };
+    collect(room.parts.interior);
+    collect(room.parts.walls);
+
+    const clearance = (px, pz) => {
+      let best = 99;
+      for (let i = 0; i < obstacles.length; i++) {
+        const o = obstacles[i];
+        const dx = Math.max(o[0] - px, 0, px - o[1]);
+        const dz = Math.max(o[2] - pz, 0, pz - o[3]);
+        const d = Math.sqrt(dx * dx + dz * dz);
+        if (d < 0.06) continue;
+        if (d < best) best = d;
+      }
+      return best;
+    };
+
+    const lanes = {};
+    let worst = { w: 99, id: '' };
+    room.seats.forEach((s) => {
+      const full = W.walkPathToSeat(room, s.id);
+      const pts = full.slice(0, full.length - 1);
+      let minR = 99;
+      for (let i = 0; i < pts.length - 1; i++) {
+        const a = pts[i], b = pts[i + 1];
+        const len = Math.hypot(b[0] - a[0], b[1] - a[1]);
+        const n = Math.max(1, Math.ceil(len / 0.08));
+        for (let k = i === 0 ? 1 : 0; k <= n; k++) {
+          const u = k / n;
+          const r = clearance(a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u);
+          if (r < minR) minR = r;
+        }
+      }
+      if (!lanes[s.lane]) lanes[s.lane] = { name: LANE_NAMES[s.lane] ?? s.lane, count: 0, min: 99 };
+      lanes[s.lane].count++;
+      lanes[s.lane].min = Math.min(lanes[s.lane].min, minR);
+      if (minR < worst.w) worst = { w: minR, id: s.id };
+    });
+
+    const order = ['spine', 'barLane', 'perimS', 'loungeN'];
+    const laneRows = order.filter((k) => lanes[k]).map((k) => {
+      const L = lanes[k];
+      const width = L.min * 2;
+      return {
+        name: L.name,
+        count: String(L.count) + ' st',
+        width: width.toFixed(2).replace('.', ',') + ' m',
+        verdict: width >= 0.9 ? 'passerar' : (width >= 0.6 ? 'trång' : 'blockerad')
+      };
+    });
+
+    const n2 = (v) => v.toFixed(2).replace('.', ',');
+    this.setState({
+      ready: true,
+      lanes: laneRows,
+      m: {
+        footprint: n2(m.footprint[0]) + ' × ' + n2(m.footprint[1]) + ' m',
+        shelf: n2(m.shelfHeight) + ' m',
+        djArea: n2(m.djZoneArea) + ' m²',
+        split: m.loungeSeats + ' / ' + m.barSeats + ' / ' + m.tableSeats +
+               ' (+' + m.standingCount + ' stå)',
+        seeShelf: sl.seatsSeeingShelf + ' av ' + m.seatCount,
+        barTiers: sl.barSeatsSeeingAllTiers + ' av ' + m.barSeats,
+        seeDj: sl.seatsSeeingDj + ' av ' + m.seatCount,
+        blind: sl.blindSeats.length ? sl.blindSeats.join(', ') : 'ingen',
+        contrast: n2(range.min) + ' – ' + n2(range.max),
+        paletteFails: fails.length === 0 ? 'inga (60 par prövade)' : String(fails.length),
+        roleDelta: minDe.toFixed(1).replace('.', ',') + ' (krav 12)',
+        minPassage: n2(worst.w * 2) + ' m — vid ' + worst.id
+      }
+    });
+  }
+
+  // Livstecknet är DOM:en, inte en instansflagga. Se Restaurangen.
+  alive() {
+    return !!(this.renderer && this.renderer.domElement &&
+              this.renderer.domElement.isConnected);
+  }
+
+  tick = (ms) => {
+    if (!this.alive()) return;
+    this.raf = requestAnimationFrame(this.tick);
+    const now = ms / 1000;
+    const dt = this.last === undefined ? 0 : Math.min(0.05, now - this.last);
+    this.last = now;
+    if (this.state.playing) this.t += dt;
+    const t = this.t;
+    const R = this.R;
+    if (this.figures) {
+      for (let i = 0; i < this.figures.length; i++) {
+        const f = this.figures[i];
+        const ft = t + f.off;
+        let pose;
+        if (f.mode === 'seated') pose = R.poseSeated(ft);
+        else if (f.mode === 'work') pose = R.poseWork(ft);
+        else if (f.mode === 'carry') pose = R.poseCarry(ft);
+        else pose = R.poseIdle(ft);
+        R.applyPose(f.rig, pose);
+      }
+    }
+    this.W.updateWineBarRoom(this.room, (t / 2.4) % 1);
+    this.renderer.render(this.scene, this.camera);
+    this.frames = (this.frames || 0) + 1;
+  };
+
+  // Vakthund för rAF-kedjan. Se Restaurangen.
+  ensureLoop = () => {
+    if (this.el && this.renderer && this.el.clientWidth &&
+        this.renderer.domElement.clientWidth !== this.el.clientWidth) {
+      this.resize();
+    }
+    // Dolt dokument fryser rAF helt. Se Restaurangen.
+    if (document.hidden) return;
+    if (!this.alive()) return;
+    if (this.frames === this.lastFrames) {
+      if (this.raf) cancelAnimationFrame(this.raf);
+      this.raf = null;
+      this.tick(performance.now());
+    }
+    this.lastFrames = this.frames;
+  };
+
+  cycleView = () => {
+    const next = (this.state.view + 1) % this.views.length;
+    const v = this.views[next];
+    this.setState({ view: next, yaw: v.yaw, pitch: v.pitch }, () => this.place());
+  };
+  resetView = () => {
+    const v = this.views[this.state.view];
+    this.setState({ yaw: v.yaw, pitch: v.pitch }, () => this.place());
+  };
+  togglePlay = () => this.setState((s) => ({ playing: !s.playing }));
+  toggleBodies = () => this.setState((s) => {
+    const on = !s.bodies;
+    if (this.bodies) this.bodies.visible = on;
+    return { bodies: on };
+  });
+  toggleWalls = () => this.setState((s) => {
+    const w = (s.walls + 1) % 3;
+    this.applyWalls(w);
+    return { walls: w };
+  });
+  toggleLabels = () => this.setState((s) => {
+    const on = !s.labels;
+    if (this.labels) this.labels.visible = on;
+    return { labels: on };
+  });
+  togglePaths = () => this.setState((s) => {
+    const on = !s.paths;
+    if (this.paths) this.paths.visible = on;
+    return { paths: on };
+  });
+  toggleSight = () => this.setState((s) => {
+    const on = !s.sight;
+    if (this.sight) this.sight.visible = on;
+    return { sight: on };
+  });
+
+  // Ovillkorligt — runtimen skickar inte prevState. Se Restaurangen.
+  componentDidUpdate() {
+    this.place();
+    this.ensureLoop();
+  }
+
+  renderVals() {
+    const s = this.state;
+    const m = s.m;
+    const g = (k) => (m ? m[k] : '—');
+    return {
+      stageRef: this.stageRef,
+      cycleView: this.cycleView,
+      resetView: this.resetView,
+      togglePlay: this.togglePlay,
+      toggleBodies: this.toggleBodies,
+      toggleWalls: this.toggleWalls,
+      toggleLabels: this.toggleLabels,
+      togglePaths: this.togglePaths,
+      toggleSight: this.toggleSight,
+      viewLabel: this.views[s.view].name,
+      yawLabel: Math.round((s.yaw * 180 / Math.PI) % 360),
+      pitchLabel: Math.round(s.pitch * 180 / Math.PI),
+      statusLabel: s.ready ? (s.playing ? 'Kroppar i rörelse' : 'Pausad') : 'Bygger rummet',
+      playLabel: s.playing ? 'Pausa' : 'Spela',
+      bodiesLabel: s.bodies ? 'Kroppar: på' : 'Kroppar: av',
+      wallsLabel: ['Väggar: kapade', 'Väggar: hela + tak', 'Väggar: av'][s.walls],
+      labelsLabel: s.labels ? 'Platsnummer: på' : 'Platsnummer: av',
+      pathsLabel: s.paths ? 'Gånglinjer: på' : 'Gånglinjer: av',
+      sightLabel: s.sight ? 'Siktlinjer: på' : 'Siktlinjer: av',
+      laneRows: s.lanes,
+      mFootprint: g('footprint'),
+      mShelf: g('shelf'),
+      mDjArea: g('djArea'),
+      mSplit: g('split'),
+      mSeeShelf: g('seeShelf'),
+      mBarTiers: g('barTiers'),
+      mSeeDj: g('seeDj'),
+      mBlind: g('blind'),
+      mContrast: g('contrast'),
+      mPaletteFails: g('paletteFails'),
+      mRoleDelta: g('roleDelta'),
+      mMinPassage: g('minPassage')
+    };
+  }
+}
+</script>
+</body>
+</html>

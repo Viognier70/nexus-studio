@@ -124,22 +124,104 @@ export function isSeatedCapacity(state: SimulationState): number {
 }
 
 export function seatSlot(state: SimulationState, index: number): Vec2 {
-  // ORDER 219 (A) — läs per-klass seat-position från businessRoomRef om
-  // scenen är monterad. Detta fixar buggen där sim.guest.position för
-  // seat-index >= 12 fastnade på INTERIOR.seatOrder[0] = (2, -1.8), som
-  // gjorde att `moveStaff(staff, guest.position)` gav samma tal för alla
-  // efterföljande gäster → servitörens sim.position ändrades aldrig
-  // (utredning 2026-09-14 §Q5). Rendering läser guest-render-position
-  // via `guestPositionsRef` med korrekt per-klass seats — sim-fixen är
-  // för läsare av sim.staff/guest.position (tester, DevPanel, logg).
+  // ORDER 219 (A) — per-klass seat-position från businessRoomRef.
+  // ORDER 261 (steg 2A, VO 2026-09-23) — läser nu VÄRLDS-koordinater
+  // (`seats`), inte lokala (`seatsLocal`). Sim.guest.position ska ligga
+  // i samma frame som renderarens pos.cx/cz och de övriga sim-punkterna
+  // (roomEntrance/roomWaitingSlot/roomSpawnPoint från businessRoomRef).
+  // Pre-261 blandning av frames (local för seats, world för allt annat)
+  // gav max diff 30 m mellan sim och render för ordering-gäster.
+  //
+  // ORDER 219 (A) motiv (bevarad): pre-219 fastnade sim.guest.position
+  // för seat-index >= 12 på INTERIOR.seatOrder[0] = (2, -1.8) — samma
+  // fallback för alla överflödsindex. Fix via businessRoomRef.seats
+  // (per-klass, index-alignad) håller.
   //
   // Fallback till INTERIOR.seatOrder när scenen inte är monterad (t.ex.
   // i tester som inte kör React-scenen). Samma pattern som pre-219 för
   // dem, ingen regression.
-  void state; // reserved for future use
-  const local = businessRoomRef.current?.seatsLocal?.[index];
-  if (local) return { x: local[0], z: local[1] };
+  void state;
+  const world = businessRoomRef.current?.seats?.[index];
+  if (world) return { x: world[0], z: world[1] };
+  if (import.meta.env.DEV) { roomSourceCounters.seat += 1; publishSourceCounters(); }
   return INTERIOR.seatOrder[index] ?? INTERIOR.seatOrder[0];
+}
+
+// ORDER 261 (steg 2A) — sim-side helpers so guest position, waiting-slot
+// och spawn/exit-punkt läses från `businessRoomRef` (samma OBB-
+// transformerade världskoordinater som renderaren använder). Före
+// ORDER 261 slog sim.guest.position ihop `content/layout.ts INTERIOR`
+// (wine-bar-hårdkodad världskoord) med renderarens OBB-deriverade
+// slots — två parallella sanningar. Nu en källa: kontraktet. INTERIOR
+// bevaras som fallback för tester som inte monterar scenen. VO
+// 2026-09-23 iter 3: "Räkna hur ofta INTERIOR-fallbacken används
+// under mätpasset. Krav: 0 med monterad scen."
+export interface RoomSourceCounters {
+  entrance: number;
+  waitingSlot: number;
+  spawnPoint: number;
+  seat: number;
+}
+const roomSourceCounters: RoomSourceCounters = {
+  entrance: 0, waitingSlot: 0, spawnPoint: 0, seat: 0
+};
+export function readRoomSourceCounters(): RoomSourceCounters { return { ...roomSourceCounters }; }
+export function resetRoomSourceCounters(): void {
+  roomSourceCounters.entrance = 0;
+  roomSourceCounters.waitingSlot = 0;
+  roomSourceCounters.spawnPoint = 0;
+  roomSourceCounters.seat = 0;
+}
+function publishSourceCounters(): void {
+  if (import.meta.env.DEV && typeof globalThis !== 'undefined') {
+    const g = globalThis as unknown as { __nxRoomSourceCounters?: RoomSourceCounters };
+    g.__nxRoomSourceCounters = roomSourceCounters;
+  }
+}
+
+export function roomEntrance(): Vec2 {
+  const r = businessRoomRef.current;
+  if (r?.entrance) return { x: r.entrance[0], z: r.entrance[1] };
+  if (import.meta.env.DEV) { roomSourceCounters.entrance += 1; publishSourceCounters(); }
+  return { x: INTERIOR.entrance.x, z: INTERIOR.entrance.z };
+}
+
+export function roomWaitingSlot(idx: number): Vec2 {
+  const r = businessRoomRef.current;
+  const slots = r?.waitingSlots;
+  if (slots && slots.length > 0) {
+    const p = slots[idx % slots.length];
+    return { x: p[0], z: p[1] };
+  }
+  if (import.meta.env.DEV) { roomSourceCounters.waitingSlot += 1; publishSourceCounters(); }
+  const p = INTERIOR.waitingSpots[idx % INTERIOR.waitingSpots.length];
+  return { x: p.x, z: p.z };
+}
+
+function hashGuestId(id: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < id.length; i += 1) {
+    h ^= id.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
+export function roomSpawnPoint(guestId?: string): Vec2 {
+  const r = businessRoomRef.current;
+  // Föredra arrivalSlots per gäst-id (deterministisk spawn-variation);
+  // fallback till spawnPoint (enskild punkt) om arrivalSlots inte
+  // publicerats för klassen.
+  const arr = r?.arrivalSlots;
+  if (arr && arr.length > 0 && guestId) {
+    const idx = hashGuestId(guestId) % arr.length;
+    const p = arr[idx];
+    return { x: p[0], z: p[1] };
+  }
+  const sp = r?.spawnPoint;
+  if (sp) return { x: sp[0], z: sp[1] };
+  if (import.meta.env.DEV) { roomSourceCounters.spawnPoint += 1; publishSourceCounters(); }
+  return { x: 0, z: 8 };
 }
 
 // Seat preferences per scenario response (ORDER 042 §3.3 walk-in-of-
@@ -356,7 +438,7 @@ export function tickGuests(state: SimulationState) {
         if (guest.walkAwayOnArrival && !guest.scenarioSource) {
           guest.state = 'declined';
           guest.stateTime = now;
-          moveGuest(guest, { x: 0, z: 8 });
+          moveGuest(guest, roomSpawnPoint(guest.id));
           continue;
         }
         // ORDER 255 §A (VO 2026-09-22): gästen väntar vid dörren tills
@@ -389,14 +471,12 @@ export function tickGuests(state: SimulationState) {
             // No waiting room — leave.
             guest.state = 'declined';
             guest.stateTime = now;
-            moveGuest(guest, { x: 0, z: 8 });
+            moveGuest(guest, roomSpawnPoint(guest.id));
           } else {
             state.waitingIds.push(guest.id);
             guest.state = 'waiting';
             guest.stateTime = now;
-            const spot =
-              INTERIOR.waitingSpots[idx % INTERIOR.waitingSpots.length];
-            moveGuest(guest, spot);
+            moveGuest(guest, roomWaitingSlot(idx));
           }
         }
       }
@@ -420,7 +500,7 @@ export function tickGuests(state: SimulationState) {
         // that someone waited too long and gave up.
         guest.state = 'leaving';
         guest.stateTime = now;
-        moveGuest(guest, { x: 0, z: 8 });
+        moveGuest(guest, roomSpawnPoint(guest.id));
         reputationEventGiveUp(state);
         bumpMorale(state, -MORALE_GIVE_UP_HIT);
       }
@@ -501,7 +581,7 @@ export function tickGuests(state: SimulationState) {
       }
       guest.state = 'leaving';
       guest.stateTime = now;
-      moveGuest(guest, { x: 0, z: 8 });
+      moveGuest(guest, roomSpawnPoint(guest.id));
       continue;
     }
 
@@ -512,7 +592,7 @@ export function tickGuests(state: SimulationState) {
     if (guest.state === 'eating' && now - guest.stateTime > EATING_DURATION_SEC) {
       guest.state = 'leaving';
       guest.stateTime = now;
-      moveGuest(guest, { x: 0, z: 8 });
+      moveGuest(guest, roomSpawnPoint(guest.id));
       continue;
     }
 
