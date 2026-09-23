@@ -304,44 +304,41 @@ export function PlayerBusiness() {
     }
     if (roofMeshRef.current) roofMeshRef.current.castShadow = castsShadow(roofOpacity);
     if (wallMaterialRef.current) {
-      // Walls fade with the same curve as the roof. Vision Owner
-      // decision 2026-08-08: at close zoom the walls should disappear
-      // completely, not sit at half alpha — the earlier "cutaway"
-      // reading with 50% translucent walls tinted everything visible
-      // through them regardless of DoubleSide / depthWrite settings,
-      // because a translucent surface with any alpha > 0 blends its
-      // colour into whatever is behind it. Fading to 0 removes the
-      // failure mode; the room's spatial anchoring is carried by the
-      // floor + bar + tables, not by the wall silhouette at that zoom.
-      // Dollhouse-view (cull only the camera-facing wall) is the
-      // proper long-term answer and is deferred to its own order.
-      const wallOpacity = roofOpacity;
+      // ORDER 168 (2026-09-02) — wall + plinth är alltid opaka, samma
+      // mönster som grannarnas `OsmBuildings` ExtrudeGeometry-wall +
+      // BuildingPlinth (`OsmBuildings.tsx:1341-1346` alltid opak, ingen
+      // `transparent`-flagga). ORDER 042 §3.2-fejden av wall motiverades
+      // av ExtrudeGeometry-cap:ens 50 %-alpha-tint, men `sideWallGeometry`
+      // har ingen cap — wall-materialet kan vara opakt utan att
+      // återintroducera tint-buggen. ORDER 162 §5-rekommendationen bekräftar
+      // valet: fade-kopplingen till roofOpacity var den strukturella
+      // orsaken till att fasaden aldrig syntes från spelarens landningsvinkel
+      // (myBusiness-preset, dist 24 m — se `frontend/reports/order162/wallSurfaceAudit.json`).
+      // Roof-fade behållen — det är taket som gör interiören synlig.
       const mat = wallMaterialRef.current;
-      mat.opacity = wallOpacity;
-      const wantTransparent = wallOpacity < 0.99;
-      if (mat.transparent !== wantTransparent) {
-        mat.transparent = wantTransparent;
+      mat.opacity = 1;
+      if (mat.transparent !== false) {
+        mat.transparent = false;
         mat.needsUpdate = true;
       }
-      mat.depthWrite = wallOpacity > 0.5;
-      if (wallMeshRef.current) wallMeshRef.current.castShadow = castsShadow(wallOpacity);
+      mat.depthWrite = true;
+      if (wallMeshRef.current) wallMeshRef.current.castShadow = true;
 
-      // ORDER 159 §DoD 2 — plinth följer wallOpacity: när väggen är
-      // borta (dollhouse-läge) ska stenbasen inte stå kvar som en
-      // ring runt den försvunna byggnaden. Samma opacitet-, transparent-
-      // och castShadow-mönster som väggen.
+      // ORDER 168 §2.1 — plinth alltid opak, motiverad avvikelse från
+      // ORDER 159 §DoD 2 (som lyft att sockeln inte ska stå kvar när
+      // väggen är borta). Väggen försvinner inte längre → sockeln kan
+      // också förbli opak som grannarnas `BuildingPlinth` alltid är.
       if (plinthMaterialRef.current) {
         const pMat = plinthMaterialRef.current;
-        pMat.opacity = wallOpacity;
-        const wantTransparent = wallOpacity < 0.99;
-        if (pMat.transparent !== wantTransparent) {
-          pMat.transparent = wantTransparent;
+        pMat.opacity = 1;
+        if (pMat.transparent !== false) {
+          pMat.transparent = false;
           pMat.needsUpdate = true;
         }
-        pMat.depthWrite = wallOpacity > 0.5;
+        pMat.depthWrite = true;
       }
       if (plinthMeshRef.current) {
-        plinthMeshRef.current.castShadow = castsShadow(wallOpacity);
+        plinthMeshRef.current.castShadow = true;
       }
 
       // ORDER 057 Del B — restaurant glow. Warm interior tint that
@@ -454,23 +451,22 @@ export function PlayerBusiness() {
           color={PLINTH_COLOUR}
           roughness={0.95}
           metalness={0}
-          transparent
         />
       </mesh>
 
       {/* Walls — side quads only, no top or bottom cap. FrontSide (the
-          material default) is enough now that walls fade to 0 alongside
-          the roof: the camera never sees the walls translucent from
-          inside, so the DoubleSide inside-face handling from the earlier
-          cutaway attempt isn't needed. useFrame keeps opacity +
-          depthWrite in sync with the roof crossfade. */}
+          material default) matches OsmBuildings' wall convention. ORDER
+          168 (2026-09-02): wall + plinth är alltid opaka (som grannarnas
+          `OsmBuildings` ExtrudeGeometry-wall + `BuildingPlinth`). Sekvens
+          i useFrame säkerställer opacity=1, transparent=false, depthWrite=true
+          som statiskt tillstånd — `transparent`-JSX-flaggan borttagen så
+          konstruktionstillståndet är korrekt redan första framen. */}
       <mesh ref={wallMeshRef} geometry={geom.wallGeo} receiveShadow>
         <meshStandardMaterial
           ref={wallMaterialRef}
           color={WALL_COLOUR}
           roughness={0.75}
           metalness={0}
-          transparent
         />
       </mesh>
 
