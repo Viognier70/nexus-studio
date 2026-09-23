@@ -392,6 +392,13 @@ export interface Guest {
   // existerande tester + tidigare guests-fixtures).
   partyId?: string;
   partySize?: number;
+  // ORDER 260 — timing-diagnostik. Sätts när guest transitionerar in i
+  // seated respektive dining. `orderCompleteAtSimTime − seatedAtSimTime`
+  // ger tid-till-beställning per gäst — utnyttjad av mätning för att
+  // avgöra om ett straff behövs eller inte. Valfria för bakåtkompat
+  // med äldre testfixturer.
+  seatedAtSimTime?: number;
+  orderCompleteAtSimTime?: number;
 }
 
 export type SustainabilityDirection =

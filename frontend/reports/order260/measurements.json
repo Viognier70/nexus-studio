@@ -1,0 +1,178 @@
+{
+  "pass15min": {
+    "tempo253": {
+      "completedGuests": 49,
+      "totalArrived": 65,
+      "revenue": 9770,
+      "cost": 2777,
+      "result": 6993,
+      "reputationStart": 0.6,
+      "reputationEnd": 0.254,
+      "reputationDelta": -0.346,
+      "reputationBreakdown": {
+        "queueStrain": -0.041,
+        "teamStrain": -0.054,
+        "giveUp": -0.1,
+        "happy": 0.168,
+        "unhappy": -0.32,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0.001,
+        "other": 0
+      },
+      "departureLogN": 49,
+      "departureSatHistogram": {
+        "0.0-0.1": 0,
+        "0.1-0.2": 9,
+        "0.2-0.3": 1,
+        "0.3-0.4": 2,
+        "0.4-0.5": 1,
+        "0.5-0.6": 2,
+        "0.6-0.7": 2,
+        "0.7-0.8": 2,
+        "0.8-0.9": 25,
+        "0.9-1.0": 5
+      },
+      "departureSatMean": 0.678,
+      "departureSatMedian": 0.866,
+      "departureHappyCount": 28,
+      "departureMediocreCount": 5,
+      "departureUnhappyCount": 16,
+      "resultPerGuestSek": 142.7,
+      "seatedToOrderCompleteN": 49,
+      "seatedToOrderCompleteMedianSec": 128.4,
+      "seatedToOrderCompleteP90Sec": 176,
+      "seatedToOrderCompleteMeanSec": 120.3,
+      "seatedToOrderCompleteMaxSec": 179
+    },
+    "tempo251": {
+      "completedGuests": 93,
+      "totalArrived": 97,
+      "revenue": 17610,
+      "cost": 4479,
+      "result": 13131,
+      "reputationStart": 0.6,
+      "reputationEnd": 0.001,
+      "reputationDelta": -0.599,
+      "reputationBreakdown": {
+        "queueStrain": -0.029,
+        "teamStrain": -0.04,
+        "giveUp": 0,
+        "happy": 0.27,
+        "unhappy": -0.86,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0.003,
+        "other": 0
+      },
+      "departureLogN": 93,
+      "departureSatHistogram": {
+        "0.0-0.1": 0,
+        "0.1-0.2": 0,
+        "0.2-0.3": 0,
+        "0.3-0.4": 18,
+        "0.4-0.5": 18,
+        "0.5-0.6": 5,
+        "0.6-0.7": 3,
+        "0.7-0.8": 3,
+        "0.8-0.9": 19,
+        "0.9-1.0": 27
+      },
+      "departureSatMean": 0.679,
+      "departureSatMedian": 0.797,
+      "departureHappyCount": 45,
+      "departureMediocreCount": 5,
+      "departureUnhappyCount": 43,
+      "resultPerGuestSek": 141.2,
+      "seatedToOrderCompleteN": 93,
+      "seatedToOrderCompleteMedianSec": 48.6,
+      "seatedToOrderCompleteP90Sec": 64.8,
+      "seatedToOrderCompleteMeanSec": 38.7,
+      "seatedToOrderCompleteMaxSec": 73.6
+    }
+  },
+  "threeDay": {
+    "tempo253": [
+      {
+        "day": 1,
+        "reputationEnd": 0.254,
+        "arrivals": 49,
+        "revenue": 9770,
+        "cost": 2777,
+        "result": 6993,
+        "departureLogN": 49,
+        "departureHappyCount": 28,
+        "departureUnhappyCount": 16
+      },
+      {
+        "day": 2,
+        "reputationEnd": 0.466,
+        "arrivals": 49,
+        "revenue": 17493,
+        "cost": 1007,
+        "result": 16486,
+        "departureLogN": 49,
+        "departureHappyCount": 42,
+        "departureUnhappyCount": 0
+      },
+      {
+        "day": 3,
+        "reputationEnd": 0.32,
+        "arrivals": 0,
+        "revenue": 357,
+        "cost": 694,
+        "result": -337,
+        "departureLogN": 0,
+        "departureHappyCount": 0,
+        "departureUnhappyCount": 0
+      }
+    ],
+    "tempo251": [
+      {
+        "day": 1,
+        "reputationEnd": 0.001,
+        "arrivals": 93,
+        "revenue": 17610,
+        "cost": 4479,
+        "result": 13131,
+        "departureLogN": 93,
+        "departureHappyCount": 45,
+        "departureUnhappyCount": 43
+      },
+      {
+        "day": 2,
+        "reputationEnd": 0.003,
+        "arrivals": 67,
+        "revenue": 21884,
+        "cost": 1007,
+        "result": 20877,
+        "departureLogN": 67,
+        "departureHappyCount": 38,
+        "departureUnhappyCount": 20
+      },
+      {
+        "day": 3,
+        "reputationEnd": 0.009,
+        "arrivals": 1,
+        "revenue": 714,
+        "cost": 694,
+        "result": 20,
+        "departureLogN": 1,
+        "departureHappyCount": 1,
+        "departureUnhappyCount": 0
+      }
+    ]
+  },
+  "repArrivalsCoupling": {
+    "formula": "multiplier = 0.6 + 0.8 × clamp(reputation, 0, 1)",
+    "floor": 0.6,
+    "ceil": 1.4,
+    "atRep0_0": 0.6,
+    "atRep0_5": 1,
+    "atRep0_6": 1.08,
+    "atRep1_0": 1.4,
+    "codeLocation": "frontend/src/strategic/simulation/arrivals.ts:93-99 (reputationArrivalMultiplier)"
+  }
+}

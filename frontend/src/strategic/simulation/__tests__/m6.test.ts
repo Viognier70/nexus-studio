@@ -72,10 +72,12 @@ describe('M6 DoD — cause-aware texture', () => {
     ).toBeGreaterThanOrEqual(0.8);
   });
 
-  // ORDER 257 (VO 2026-09-22): känd avvikelse. Rykte-parametrarnas ändring
-  // påverkar arrivals-rate → färre event-clusters → cause-chains kortare.
-  // Baseline väntar VO-beslut om ekonomi/rykte.
-  it.fails('DoD 3 — a chain of ≥ 3 events shares one causeChainId [KÄND AVVIKELSE ORDER 257]', () => {
+  // ORDER 257 (VO 2026-09-22): tidigare känd avvikelse. Rykte-parametrarnas
+  // ändring gav kortare cause-chains. ORDER 260 (VO 2026-09-21): tidsberoende
+  // negativa straff skiftar arrivals-mönstret igen och den längsta kedjan
+  // återgår till 3 (mätt: `[M6] longest cause chain: 3 events`). Åter till
+  // normal `it()`.
+  it('DoD 3 — a chain of ≥ 3 events shares one causeChainId', () => {
     const r = runHarness({
       seed: 42,
       script: threeDayScript(),

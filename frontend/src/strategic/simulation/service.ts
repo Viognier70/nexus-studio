@@ -39,6 +39,16 @@ const EATING_DURATION_SEC = 20;
 // render-frames där prop är synlig och staff-servePose peak:ar.
 const SERVING_PHASE_SEC = 2.5;
 
+// ORDER 260 §1 (VO 2026-09-23) — waiting-drop kalibrering.
+// Sänkt från 0.02 till 0.007 sat/sim-sek: mätning visade att 0.02/s
+// pinnar 40 s-köade gäster till 0.0-0.1 vid departure (13/49 i 253,
+// 35/93 i 251) — köstraffet var den verkliga kvalitetssignalen och
+// för brant. Målet 2026-09-23: 40 s väntan → sat ≈ 0.6 vid departure
+// (mediocre-bandet, inte botten). Räknat ur mätdata: normal gäst
+// utan kö landar på 0.87 (initial 0.72 + service-bumps ≈ 0.15).
+// Vid 40 s × 0.007 = 0.28 sat-loss → 0.87 - 0.28 = 0.59 ≈ 0.6 ✓.
+const WAITING_SAT_DROP_PER_SEC = 0.007;
+
 function distance(a: Vec2, b: Vec2): number {
   const dx = a.x - b.x;
   const dz = a.z - b.z;
@@ -394,8 +404,9 @@ export function tickGuests(state: SimulationState) {
     }
 
     if (guest.state === 'waiting') {
-      // Satisfaction decreases while waiting.
-      const drop = 0.02 * TICK_SECONDS;
+      // Satisfaction decreases while waiting. ORDER 260 §1 (VO 2026-09-23):
+      // rate sänkt 0.02 → 0.007 sat/sim-sek så 40 s kö landar sat ≈ 0.6.
+      const drop = WAITING_SAT_DROP_PER_SEC * TICK_SECONDS;
       guest.satisfaction = Math.max(0, guest.satisfaction - drop);
       const seat = findFreeSeat(state, guest.scenarioSource, guest.partyId);
       if (seat !== null) {
@@ -422,6 +433,13 @@ export function tickGuests(state: SimulationState) {
       continue;
     }
 
+    // ORDER 260 §2 (VO 2026-09-23): awaitOrder-straff och missedCheckback-
+    // straff BORTTAGNA. Mekaniken mätte noll gäster i båda tempi efter
+    // att tröskeln sattes över 253:s p90 (176 s) — så länge tail-fallen
+    // inte finns i normalspel är straffen dead code. Timing-hooks
+    // (seatedAtSimTime, orderCompleteAtSimTime) bevaras för framtida
+    // dataunderlag om straffet ska återinföras.
+
     // ORDER 115 rev 2 — serving → paying efter SERVING_PHASE_SEC.
     // Prop-överlämningen har hunnit synas i 2,5 sim-sek (12+ frames);
     // gästen övergår till 'paying' som är transaktion + steg-åt-sidan.
@@ -445,7 +463,10 @@ export function tickGuests(state: SimulationState) {
       // remembered).
       state.completedGuests += 1;
       state.seatedIds = state.seatedIds.filter((id) => id !== guest.id);
-      reputationEventDeparture(state, guest.satisfaction, guest.id);
+      reputationEventDeparture(state, guest.satisfaction, guest.id, {
+        seatedAtSimTime: guest.seatedAtSimTime,
+        orderCompleteAtSimTime: guest.orderCompleteAtSimTime
+      });
       // ORDER 047 §2 — same satisfaction band drives morale. A happy
       // departure lifts; an unhappy one drags; a mediocre departure is
       // silent (the team doesn't register a neutral customer).
@@ -571,6 +592,8 @@ function setGuestSeated(state: SimulationState, guest: Guest, seat: number) {
   guest.state = 'seated';
   guest.seatIndex = seat;
   guest.stateTime = state.simTime;
+  // ORDER 260 §2 — timing-diagnostik för straff-tröskelkalibrering.
+  guest.seatedAtSimTime = state.simTime;
   state.seatedIds.push(guest.id);
   moveGuest(guest, seatSlot(state, seat));
 }
@@ -1274,6 +1297,8 @@ function completeStaffTask(state: SimulationState, staff: StaffMember) {
         } else {
           guest.state = 'dining';
           guest.stateTime = now;
+          // ORDER 260 §2 — timing-diagnostik.
+          guest.orderCompleteAtSimTime = now;
           // Samma modulering för restaurang/värdshus vid dining-entry.
           const vDelta = valueQuotaSatisfactionDelta(state);
           guest.satisfaction = Math.max(0, Math.min(1, guest.satisfaction + vDelta));
