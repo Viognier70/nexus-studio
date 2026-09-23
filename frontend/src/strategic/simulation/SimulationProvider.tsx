@@ -13,6 +13,18 @@ import { DEFAULT_SEED, makeInitialState } from './model';
 import { reducer } from './reducer';
 import { harnessParams } from '../testHarness/urlParams';
 import { capacityForBusiness } from '../business/businessClass';
+import { TASK_BASE_TICKS } from './economics';
+
+// ORDER 260 — dev-only tempo-övergång. Skriv om greet/order/serve till
+// förr-ORDER-253-värden (ORDER 251-tempot) när `#playtest=1&tempo=251`.
+// Mutation av TASK_BASE_TICKS är avsiktlig och sker en gång vid modulens
+// första laddning; dev-only så bygget tree-shakar. Andra taskar är
+// oförändrade eftersom ORDER 253 bara rörde de tre gest-taskarna.
+if (import.meta.env.DEV && harnessParams.tempo === '251') {
+  TASK_BASE_TICKS.greet = 4;
+  TASK_BASE_TICKS.order = 10;
+  TASK_BASE_TICKS.serve = 14;
+}
 
 // TEMPORÄR dev-shortcut (Vision Owner-begäran 2026-08-16): tillämpa
 // `#playtest=1&business=<klass>` på initial-state:t. Sätter både

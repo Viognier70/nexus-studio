@@ -123,6 +123,11 @@ interface ParsedParams {
   // komponenten (§2) monterats i alla scener. Kräver playtest=1.
   // `null` = ingen override, HOUR_BY_PERIOD gäller.
   light: 'day' | null;
+  // ORDER 260 — dev-only tempo-övergång. `#playtest=1&tempo=251` skriver
+  // om TASK_BASE_TICKS för greet/order/serve till förr-ORDER-253-värden
+  // så före/efter-mätning kan köras utan att växla branch. Ingen annan
+  // effekt. Kräver playtest=1. `null` = ORDER 253-tempo (default).
+  tempo: '251' | null;
 }
 
 function parseHash(): ParsedParams {
@@ -140,7 +145,8 @@ function parseHash(): ParsedParams {
       uteplats: false,
       seed: null,
       start: null,
-      light: null
+      light: null,
+      tempo: null
     };
   }
   const hash = window.location.hash.replace('#', '');
@@ -170,7 +176,14 @@ function parseHash(): ParsedParams {
   const seed = playtest ? parseSeed(params.get('seed') ?? null) : null;
   const start = playtest ? parseStart(params.get('start') ?? null) : null;
   const light = playtest ? parseLight(params.get('light') ?? null) : null;
-  return { period, camera, roi, poseId, calibrationQuad, playtest, dollhouse, business, foodtruckSeed, uteplats, seed, start, light };
+  const tempo = playtest ? parseTempo(params.get('tempo') ?? null) : null;
+  return { period, camera, roi, poseId, calibrationQuad, playtest, dollhouse, business, foodtruckSeed, uteplats, seed, start, light, tempo };
+}
+
+function parseTempo(s: string | null): '251' | null {
+  if (!s) return null;
+  if (s === '251') return '251';
+  return null;
 }
 
 function parseLight(s: string | null): 'day' | null {

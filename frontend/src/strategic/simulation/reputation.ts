@@ -53,13 +53,17 @@ const TICK_SECONDS = 0.2;
 // Queue-strain: reputation loses ~0.005/sec while a queue longer than
 // 3 persists. Sustained over the full 10 min of a bad dinner that's
 // ~3.0 reputation points — enough to shift the multiplier one band.
-// ORDER 257 (VO 2026-09-22): oförändrad. VO: "queueStrain: lämna orörd
-// tills vi vet vad kön ska betyda efter ORDER 255." Post-255 hålls
-// gäster vid dörren i 'arriving' istället för 'waiting' → nuvarande
-// tröskel 3 träffas aldrig i mätning. Egen order när kö-signalens
-// betydelse omdefinieras.
+//
+// ORDER 260 (VO 2026-09-23): sänkt från 0.005 till 0.0001 (50× lägre)
+// enligt samma mönster som ORDER 257 sänkte teamStrain. ORDER 260-
+// mätningen (`reports/order260/measurements.json` pre-fix) gav
+// queueStrain −1,59 i 253-tempot medan happy landade på +0,036 —
+// kanalen dominerade och clampade rykte till golvet. Uppmätt tid
+// över tröskeln (queue > 3) i 253-tempot: 318 sim-sek. Mål:
+// queueStrain-summa ≈ happy-summa. 0,0001 ger 318 × 0,0001 = 0,032
+// vilket ligger i samma storleksordning som happy-summan.
 export const QUEUE_STRAIN_THRESHOLD = 3;
-export const QUEUE_STRAIN_RATE = 0.005;
+export const QUEUE_STRAIN_RATE = 0.0001;
 
 // Team-strain: reputation loses ~0.001/sec when active guests exceed
 // the team's capacity. Rewired from policies.staffCount × 5 to
@@ -327,7 +331,11 @@ export function reputationEventGiveUp(state: SimulationState): void {
 export function reputationEventDeparture(
   state: SimulationState,
   satisfaction: number,
-  guestId?: string
+  guestId?: string,
+  diagnostics?: {
+    seatedAtSimTime?: number;
+    orderCompleteAtSimTime?: number;
+  }
 ): void {
   if (satisfaction >= HAPPY_THRESHOLD) {
     applyReputationDelta(state, HAPPY_GAIN);
@@ -347,9 +355,24 @@ export function reputationEventDeparture(
   // för sat vid sista state.guests-snapshot (som missar gäster som
   // prunas mellan sample och mätslut). Reset:as vid OPEN_SERVICE via
   // reducer.ts. Tree-shakas i prod eftersom `import.meta.env.DEV`.
+  // ORDER 260 §2 — utökad med per-gäst timing (seated → order-complete)
+  // så mätning kan avgöra om straff behövs. Straff-fälten borttagna
+  // per VO 2026-09-23 (mekaniken slog aldrig till).
   if (import.meta.env.DEV && typeof globalThis !== 'undefined' && guestId !== undefined) {
-    const g = globalThis as unknown as { __nxRepDepartureLog?: Array<{ guestId: string; satisfaction: number; simTime: number }> };
+    const g = globalThis as unknown as { __nxRepDepartureLog?: Array<{
+      guestId: string;
+      satisfaction: number;
+      simTime: number;
+      seatedAtSimTime?: number;
+      orderCompleteAtSimTime?: number;
+    }> };
     if (!g.__nxRepDepartureLog) g.__nxRepDepartureLog = [];
-    g.__nxRepDepartureLog.push({ guestId, satisfaction, simTime: state.simTime });
+    g.__nxRepDepartureLog.push({
+      guestId,
+      satisfaction,
+      simTime: state.simTime,
+      seatedAtSimTime: diagnostics?.seatedAtSimTime,
+      orderCompleteAtSimTime: diagnostics?.orderCompleteAtSimTime
+    });
   }
 }
