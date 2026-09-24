@@ -24,6 +24,11 @@ Detta dokument styr hur Claude Code arbetar i det här repot. Läs det i början
 | `documentation/world/` | Setting, ton, narrativ referens (t.ex. `01_THE_ORIGIN.md`) |
 | `documentation/game-design/` | Designdokument och systemspecar |
 | `documentation/architecture/` | Teknisk arkitektur, RFC:er, ADR:er, implementationsrapporter |
+| `documentation/orders/` | Orderdokument (ORDER-texter) |
+| `documentation/briefs/` | Designbriefer till Claude Design (`BRIEF_DESIGN_*.md`) |
+| `documentation/leveranser/` | Mottagna designleveranser, oförändrade paket |
+| `documentation/INDEX.md` | Förteckning över alla filer under `documentation/` |
+| `_arkiv/versioner/` | Äldre versioner och uppladdningskopior, se `_arkiv/STADPLAN.md` |
 | `frontend/` | Spelklienten (se nedan) |
 | `backend/`, `database/`, `ai/` | Scaffolding — ännu tomma; bygg inget här utan spec |
 | `testing/` | Testsviter och QA-planer |
