@@ -1,4 +1,4 @@
-# Pending order — `eyeHeightForSeat` från leverans/, alla fem rummen i ett svep
+# Pending order — `eyeHeightForSeat` från _arkiv/versioner/leverans/, alla fem rummen i ett svep
 
 **Öppnad** 2026-09-10 (ORDER 208 stub-not)
 **Ska bli** en egen order (nummer TBD) när den skrivs
@@ -10,7 +10,7 @@ Designs egen not om att floorY är null överallt utom ölkrogen."
 
 ## Vad är det som blockerar
 
-`leverans/businessRoom.ts:273` exporterar
+`_arkiv/versioner/leverans/businessRoom.ts:273` exporterar
 `eyeHeightForSeat(room, seatId)`:
 
 ```ts
@@ -23,7 +23,7 @@ export function eyeHeightForSeat(room: BusinessRoom, seatId: string): number {
 }
 ```
 
-Delegerar till rums-modulens `eyeHeightForSeat(seat)`, som i `leverans/`
+Delegerar till rums-modulens `eyeHeightForSeat(seat)`, som i `_arkiv/versioner/leverans/`
 finns för:
 
 - `wineBarRoom.ts:245` — `PLINTH_M + seat.seatHeight + EYE_ABOVE_SEAT_M`
@@ -52,7 +52,7 @@ med en not (VO 2026-09-10): `floorY` är `null` överallt utom
 Idag: ingen. `eyeHeightForSeat` behövs för framtida kamera-look-at,
 DevPanel-diagnostik, och (eventuellt) sitLift-formeln (`ORDER 200`
 long-bord-frågan). Ingen brådskande, men kod-vägen är laid down
-i leverans/-paketet och ska inte glömmas.
+i _arkiv/versioner/leverans/-paketet och ska inte glömmas.
 
 ## Vad denna not ÄR och INTE ÄR
 
@@ -60,6 +60,6 @@ Detta är EN NOT, inte en order. Skriven för att när nästa order i
 området skrivs, ska den täcka alla fem rummen i ett svep — inte en
 tredjedel som blockerar en fjärdedel.
 
-Se `documentation/blueprints/LEVERANSNOT.md` (från
-`nexus-design-2026-08-30-1245/`) och `leverans/businessRoom.ts` för
+Se `documentation/leveranser/nexus-design-2026-08-30-1245/LEVERANSNOT.md`
+och `_arkiv/versioner/leverans/businessRoom.ts` för
 Designs formulering av kontraktet.

@@ -131,9 +131,9 @@ För att svara på fråga 5 krävs antingen (a) exponera derived-yaw från
 rendering-koden via `window.__nxStaffFacing` eller (b) sätta `heading`
 som fält i StaffMember-typen. Utanför denna mätorders scope.
 
-## Jämförelse mot leverans-servicekoreografin/
+## Jämförelse mot documentation/leveranser/leverans-servicekoreografin/
 
-Modellen `Servicekoreografin.html` (leverans-servicekoreografin/) är
+Modellen `Servicekoreografin.html` (documentation/leveranser/leverans-servicekoreografin/) är
 den visuella referensen — den läser samma `serviceScore.ts` som VO
 och Claude Code. Modellen renderar en enskild scen med de nio poserna
 över tid. Vad sim-lagret producerar (mätt ovan) matchar INTE
@@ -179,4 +179,4 @@ Ingen sim- eller animations-ändring. Rapporten dokumenterar mätningen.
 - Rådata: `frontend/reports/order250/raw-samples.json` (249 sampels)
 - Summary: `frontend/reports/order250/summary.json` (talen ovan)
 - Referens: `handoff/serviceScore.ts` (godkänd koreografi-modell)
-- Referens-visualisering: `leverans-servicekoreografin/Servicekoreografin.html`
+- Referens-visualisering: `documentation/leveranser/leverans-servicekoreografin/Servicekoreografin.html`
