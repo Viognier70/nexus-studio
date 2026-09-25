@@ -13,6 +13,7 @@ import { calendarFor } from '../../sim/calendar';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 import { scheduleSlotsUsed } from '../knowledge/pavilionVisit';
 import { MedalShelf } from '../knowledge/ui/MedalShelf';
+import { settlementInWords } from '../economy/BankDialog';
 
 const OVERLAY_STYLE: React.CSSProperties = {
   position: 'absolute',
@@ -68,21 +69,36 @@ const BUTTON_STYLE: React.CSSProperties = {
 interface Props {
   // ORDER 264 — öppnar Måltidens hus (paviljongerna).
   onOpenHouse: () => void;
+  // ORDER 265 — öppnar banken (söndag, eller utan verksamhet).
+  onOpenBank: () => void;
 }
 
-export function DayActionBar({ onOpenHouse }: Props) {
+export function DayActionBar({ onOpenHouse, onOpenBank }: Props) {
   const sim = useSimState();
   const dispatch = useSimDispatch();
   const period = sim.day.period;
   if (period !== 'morning' && period !== 'afternoon') return null;
   const cal = calendarFor(sim.day.dayNumber);
   const used = scheduleSlotsUsed(sim);
+  const business = sim.economy.businessClass;
+  const settlement = !cal.isServiceDay ? settlementInWords(sim) : [];
+  const showBank = business === null || !cal.isServiceDay;
   return (
     <div style={OVERLAY_STYLE} data-testid="day-action-bar">
       <div style={HEADING_STYLE}>
         {strings.calendar.weekdays[cal.weekday]} · {strings.morning.heading}
+        {business && <> · {strings.economy.classes[business]}</>}
       </div>
-      <div>{cal.isServiceDay ? strings.morning.serviceDayBody : strings.morning.sundayBody}</div>
+      <div>
+        {business === null
+          ? strings.economy.noBusinessBody
+          : cal.isServiceDay ? strings.morning.serviceDayBody : strings.morning.sundayBody}
+      </div>
+      {settlement.length > 0 && (
+        <div style={{ marginTop: 6 }} data-testid="settlement">
+          <strong>{strings.economy.settlement.heading}.</strong> {settlement.join(' ')}
+        </div>
+      )}
       <div style={ROW_STYLE}>
         <span style={{ opacity: 0.75 }}>{strings.morning.slots(used, cal.scheduleSlots)}</span>
         {period === 'morning' && (
@@ -90,7 +106,12 @@ export function DayActionBar({ onOpenHouse }: Props) {
             {strings.knowledge.houseButton}
           </button>
         )}
-        {cal.isServiceDay ? (
+        {period === 'morning' && showBank && (
+          <button type="button" style={BUTTON_STYLE} data-testid="open-bank" onClick={onOpenBank}>
+            {strings.economy.bankButton}
+          </button>
+        )}
+        {cal.isServiceDay && !sim.scaleDown.closedDinner && sim.economy.businessClass !== null ? (
           <button
             type="button"
             style={BUTTON_STYLE}
@@ -106,7 +127,7 @@ export function DayActionBar({ onOpenHouse }: Props) {
             data-testid="close-day"
             onClick={() => dispatch({ type: 'CLOSE_DAY' })}
           >
-            {strings.morning.closeSunday}
+            {cal.isServiceDay ? strings.morning.closeDay : strings.morning.closeSunday}
           </button>
         )}
       </div>

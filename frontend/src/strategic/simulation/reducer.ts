@@ -1,10 +1,12 @@
 import { calendarFor } from '../../sim/calendar';
-import { EVENING, POST_SERVICE_QUIZ, SERVICE } from '../../sim/balance';
+import { EVENING, POST_SERVICE_QUIZ, SERVICE, type BusinessClassId } from '../../sim/balance';
+import { canChangeClassToday, changeClass, classOptions, creditLineSek, dailyGuestCap, dayEnd, dayEndCash, postDailyInterest, settleWeek } from '../../sim/economy';
 import { answerVisit, closeVisit, nextVisitQuestion, scheduleSlotsLeft, startVisit } from '../knowledge/pavilionVisit';
 import { answerQuiz, nextQuizQuestion, offerQuiz, skipQuiz, startQuiz } from '../knowledge/postServiceQuiz';
 import { createRng } from '../util/rng';
 import type {
   AxisTracks,
+  EveningAccount,
   KnowledgeAxis,
   YrkesSpar,
   BankMeetingOutcomeState,
@@ -312,6 +314,8 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       return nextQuizQuestion(state);
     case 'SKIP_QUIZ':
       return skipQuiz(state);
+    case 'CHOOSE_CLASS':
+      return chooseClass(state, action.to);
     case 'END_EVENING':
       if (state.day.period !== 'evening') return state;
       if (state.postServiceQuiz?.status === 'active') return state;
@@ -378,6 +382,8 @@ function pickActivity(state: SimulationState, id: string): SimulationState {
   if (scheduleSlotsLeft(state) <= 0) return state;
   const activity = activityById(id);
   if (!activity) return state;
+  // ORDER 265 — golvet är kreditramen för satsningar (speldesign > Golvet).
+  if (state.cash - activity.costSek < -creditLineSek(state)) return state;
   // Weekly gate — reject if this activity was picked within the last
   // WEEKLY_GATE_DAYS days.
   if (activity.availability === 'weekly') {
@@ -1114,6 +1120,11 @@ function debitQuestion(
 // och middagen öppnas med v1-längden.
 function startService(state: SimulationState): SimulationState {
   if (!calendarFor(state.day.dayNumber).isServiceDay) return state;
+  // ORDER 265 — utan verksamhet, eller med kvällen stängd, finns ingen
+  // service. Kontrolleras före lunchhoppet så att tillståndet står orört.
+  if (state.economy.businessClass === null) return state;
+  if (state.scaleDown.closedDinner) return state;
+  if (state.day.period !== 'morning' && state.day.period !== 'afternoon') return state;
   const fromAfternoon = state.day.period === 'morning' ? skipLunch(state) : state;
   return openService(fromAfternoon, 'dinner', SERVICE.simMinutes);
 }
@@ -1121,12 +1132,32 @@ function startService(state: SimulationState): SimulationState {
 // ORDER 263 — söndagen är stängd: morgonen (fyra schemaplatser) följs
 // direkt av kvällen, och dagen rullar till måndag som vanligt.
 function closeDay(state: SimulationState): SimulationState {
-  if (calendarFor(state.day.dayNumber).isServiceDay) return state;
-  if (state.day.period !== 'morning') return state;
+  // ORDER 265 — en servicedag där spelaren stängt kvällen (skala ner,
+  // ORDER 049 §5.3) avslutas också utan service; annars fastnar dagen.
+  const eveningClosed = state.scaleDown.closedDinner || state.economy.businessClass === null;
+  if (calendarFor(state.day.dayNumber).isServiceDay && !eveningClosed) return state;
+  if (state.day.period !== 'morning' && state.day.period !== 'afternoon') return state;
   return {
     ...state,
+    economy: dayEnd(state.economy, dayEndCash(state)),
     day: { ...state.day, period: 'evening', periodStartAt: state.simTime }
   };
+}
+
+// ORDER 265 — nedgraderingens varning i kvällsberättelsen (speldesign >
+// Nedgradering: "två dagars varning i kvällsberättelsen").
+function withEconomyWarning(account: EveningAccount | null, economy: SimulationState['economy']): EveningAccount | null {
+  if (!account || !economy.warning) return account;
+  return { ...account, paragraph: `${account.paragraph} ${strings.economy.warnings[economy.warning]}` };
+}
+
+// ORDER 265 — byte av verksamhet vid veckoavräkningen (eller vilken
+// morgon som helst utan verksamhet): bara till en klass som går att välja.
+function chooseClass(state: SimulationState, to: BusinessClassId): SimulationState {
+  if (!canChangeClassToday(state)) return state;
+  const option = classOptions(state).find((o) => o.id === to);
+  if (!option || option.status !== 'available') return state;
+  return changeClass(state, to, false);
 }
 
 function openService(
@@ -1539,7 +1570,8 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
         ...state,
         team: removeAgencyMembers(state.team),
         agencyOffer: null,
-        eveningAccount,
+        eveningAccount: withEconomyWarning(eveningAccount, dayEnd(state.economy, dayEndCash(state))),
+        economy: dayEnd(state.economy, dayEndCash(state)),
         // ORDER 264 — quizen efter servicen erbjuds när kvällen börjar.
         postServiceQuiz: offerQuiz(state, day.periodStartAt),
         metrics: {
@@ -1737,6 +1769,12 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       // Clear again after effect application so the new day starts
       // clean.
       nextForDay.day = { ...nextForDay.day, pickedActivityIds: [] };
+      // ORDER 265 — v1-lånets ränta varje dygn, och veckoavräkningen när
+      // söndagen (den stängda dagen) börjar.
+      postDailyInterest(nextForDay);
+      if (!calendarFor(nextForDay.day.dayNumber).isServiceDay) {
+        return settleWeek(nextForDay);
+      }
       return nextForDay;
     }
   }
@@ -2086,6 +2124,10 @@ function advanceTick(state: SimulationState): SimulationState {
     for (const g of arrival) {
       draft.guests.push(g);
     }
+    // ORDER 265 — dagens ankomster mot marknadens tak.
+    if (arrival.length > 0) {
+      draft.day = { ...draft.day, arrivalsToday: (draft.day.arrivalsToday ?? 0) + arrival.length };
+    }
   }
 
   // Scenario spawning.
@@ -2315,7 +2357,10 @@ function advanceTick(state: SimulationState): SimulationState {
     // the doorsOpenedThisService flag.
     if (!draft.day.doorsOpenedThisService && draft.day.waitingAtOpening > 0) {
       const walkAwayCeil = walkAwayProbability(draft);
-      for (let i = 0; i < draft.day.waitingAtOpening; i++) {
+      // ORDER 265 — de som väntar vid dörren räknas också mot marknadens tak.
+      const waitingAllowed = Math.max(0, Math.min(draft.day.waitingAtOpening, dailyGuestCap(draft) - (draft.day.arrivalsToday ?? 0)));
+      draft.day = { ...draft.day, arrivalsToday: (draft.day.arrivalsToday ?? 0) + waitingAllowed };
+      for (let i = 0; i < waitingAllowed; i++) {
         const walkAway = rng.chance(walkAwayCeil);
         draft.guests.push(makeGuest(draft.simTime, false, walkAway));
       }

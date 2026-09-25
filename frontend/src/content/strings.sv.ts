@@ -137,6 +137,7 @@ export const strings = {
     slots: (used: number, total: number) => `Schemat: ${used} av ${total} platser`,
     startService: 'Öppna för kvällen',
     closeSunday: 'Avsluta söndagen',
+    closeDay: 'Avsluta dagen utan service',
     activitiesHeading: 'Satsningar i dag',
     weekly: 'en gång i veckan'
   },
@@ -202,6 +203,71 @@ export const strings = {
     skipped: 'Du hoppade över quizen i kväll.',
     done: (delta: number) => delta > 0 ? `Quizen gav ${delta} ${delta === 1 ? 'kredit' : 'krediter'}.` : delta < 0 ? `Quizen kostade ${-delta} ${delta === -1 ? 'kredit' : 'krediter'}.` : 'Quizen gick jämnt upp.',
     nextMorning: 'Till nästa morgon'
+  },
+  // ORDER 265 (Nexus v1 etapp 3) — ekonomin och banken.
+  economy: {
+    ledger: {
+      interest: 'Ränta på lånet',
+      floor: 'Golvet fyllde på veckan',
+      amortisation: 'Amortering på lånet'
+    },
+    classes: {
+      vinbar: 'Vinbar',
+      foodtruck: 'Food truck',
+      restaurang: 'Restaurang',
+      olkrog: 'Ölkrog',
+      gastgiveri: 'Gästgiveri',
+      nattklubb: 'Nattklubb'
+    },
+    classesDefinite: {
+      vinbar: 'vinbaren',
+      foodtruck: 'food trucken',
+      restaurang: 'restaurangen',
+      olkrog: 'ölkrogen',
+      gastgiveri: 'gästgiveriet',
+      nattklubb: 'nattklubben'
+    },
+    warnings: {
+      first: 'Kassan är under noll i kväll. Om den är det tre kvällar i rad tar banken lokalen vid veckoavräkningen.',
+      second: 'Andra kvällen i rad under noll. En kväll till, och banken tar lokalen vid söndagens avräkning.',
+      downgrade: 'Tredje kvällen i rad under noll. Vid söndagens avräkning går verksamheten ner en klass. Det du kan följer med.'
+    },
+    noBusinessBody: 'Du har ingen verksamhet just nu. Öva och gör prov i Måltidens hus, och gå sedan till banken.',
+    bankButton: 'Banken',
+    bankHeading: 'Banken',
+    bankCurrent: (name: string) => `Du driver ${name}.`,
+    bankNone: 'Du har ingen verksamhet.',
+    bankNoLoan: 'Banken ger inget lån utan en medalj. Gå och öva.',
+    shown: (topics: string) => `Du har visat att du kan ${topics}.`,
+    shownNothing: 'Du har inte visat något i Måltidens hus ännu.',
+    missing: (cls: string, req: string) => `För ${cls} saknas ${req}.`,
+    reqLevelIn: (level: string, count: string) => `${level} i ${count}`,
+    reqIncluding: (names: string) => `, varav ${names}`,
+    cashShort: (cls: string) => `Kassan räcker inte till en veckas golv i ${cls}.`,
+    upgradeOnly: 'Nås bara genom att växa från en annan verksamhet.',
+    choose: (cls: string) => `Byt till ${cls.toLowerCase()}`,
+    current: 'Din verksamhet',
+    onlySunday: 'Byte av verksamhet görs på söndagen, vid veckoavräkningen.',
+    topics: {
+      maltidbiblioteket: 'måltidens historia och begrepp',
+      metodkoket: 'köket',
+      stensota: 'vin och dryck',
+      kalastorget: 'bemötande och omdöme',
+      gastronomiskateatern: 'helheten'
+    },
+    counts: ['ingen', 'en', 'två', 'tre', 'fyra', 'fem'],
+    pavilionOne: 'paviljong',
+    pavilionMany: 'paviljonger',
+    and: 'och',
+    settlement: {
+      heading: 'Veckoavräkningen',
+      aboveFloor: 'Veckan gav mer än golvet.',
+      topUp: 'Veckan blev svag, och golvet fyllde på skillnaden.',
+      noFloor: 'Du har inget golv ännu. Det växer med dina medaljer.',
+      amortised: 'Banken drog veckans amortering.',
+      downgraded: (from: string, to: string) => `Banken tog ${from}. Du fortsätter med ${to}.`,
+      downgradedToNothing: (from: string) => `Banken tog ${from}. Nu gäller det att öva och komma tillbaka.`
+    }
   },
   save: {
     menuItem: 'Spara och ladda',

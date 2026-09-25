@@ -182,6 +182,8 @@ describe('ORDER 264 — ingen väg sänker en medalj', () => {
       if (f.endsWith('/sim/balance.ts')) continue;
       // strings.sv.ts: `medals` där är medaljernas namn (text), inte tillstånd.
       if (f.endsWith('/content/strings.sv.ts')) continue;
+      // testHarness/: testverktyg som skriver rapportrader, inte speltillstånd.
+      if (f.includes('/strategic/testHarness/')) continue;
       const code = readFileSync(f, 'utf8').replace(/\/\/.*$/gm, '');
       const lines = code.split('\n');
       lines.forEach((line, i) => {
@@ -207,7 +209,13 @@ describe('ORDER 264 — ingen väg sänker en medalj', () => {
       const r = rng.next();
       let action: SimAction;
       if (r < 0.2) action = { type: 'VISIT_PAVILION', pavilion: rng.pick(pavilions), mode: rng.chance(0.6) ? 'exam' : 'practice' };
-      else if (r < 0.5) action = { type: 'ANSWER_VISIT', chosenIndex: rng.int(0, 3) };
+      else if (r < 0.5) {
+        // Oftast rätt svar, så att proven ibland ger medaljer och
+        // medaljvägen prövas (slumpsvar ger nästan aldrig sex av åtta).
+        const qid = s.pavilionVisit?.questionIds[s.pavilionVisit.answers.length];
+        const q = qid ? bankQuestionById(qid) : null;
+        action = { type: 'ANSWER_VISIT', chosenIndex: q && rng.chance(0.85) ? q.correctIndex : rng.int(0, 3) };
+      }
       else if (r < 0.62) action = { type: 'NEXT_VISIT_QUESTION' };
       else if (r < 0.7) action = { type: 'CLOSE_VISIT' };
       else if (r < 0.74) action = { type: 'START_SERVICE' };

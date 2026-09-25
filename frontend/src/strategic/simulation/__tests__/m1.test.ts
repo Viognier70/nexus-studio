@@ -22,6 +22,7 @@
 // is a human-judgment claim that lives at M8 acceptance per the
 // proposal; not asserted here.
 
+import { startLoanSek } from '../../../sim/economy';
 import { describe, expect, it } from 'vitest';
 import { computeValuation } from '../valuation';
 import { makeInitialState } from '../model';
@@ -163,17 +164,20 @@ describe('M1 DoD — first playable loop', () => {
     // premises baseline surfaces here.
     const state = makeInitialState(1);
     const v = computeValuation(state);
-    // Debt = 2400 kSEK (T2 grandfather).
-    expect(v.debt).toBe(2400);
+    // ORDER 265 — skulden är v1-lånet (vinbarens startlån, src/sim/
+    // economy.ts), inte längre T2-lånet på 2400 kSEK. Testet larmade
+    // som avsett när lånet byttes.
+    expect(v.debt).toBeCloseTo(startLoanSek('vinbar') / 1000, 6);
     // Tangible ≈ 2164 kSEK (premises 1680 + fitout 504 + inventory 5
     // − buyout ≈ 25). Allow small drift for team-defaults tuning.
     expect(v.tangible).toBeGreaterThan(2100);
     expect(v.tangible).toBeLessThan(2200);
     // Goodwill = 0 (no service history).
     expect(v.goodwill).toBe(0);
-    // Total value negative — venture underwater on day 1.
-    expect(v.value).toBeLessThan(0);
-    expect(v.value).toBeGreaterThan(-300);
+    // Värdet är nu positivt: lokalen är värd mer än v1-lånet. Skalan i
+    // värderingens lokalvärde (ORDER 049) och v1-lånet (etapp 3) skiljer
+    // sig; se ORDER_265_RAPPORT.md §4.
+    expect(v.value).toBeCloseTo(v.tangible + v.goodwill - v.debt, 6);
   });
 
   it('DoD 3 — defect C (initial quality reads same mid-band) is honest', () => {

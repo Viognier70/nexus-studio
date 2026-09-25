@@ -1,0 +1,918 @@
+{
+  "vanlig-vecka": {
+    "seed": 42,
+    "settlements": [
+      {
+        "week": 1,
+        "revenueSek": 42554,
+        "floorSek": 5051,
+        "topUpSek": 0,
+        "amortisationSek": 10523,
+        "downgradedFrom": null,
+        "downgradedTo": null,
+        "class": "vinbar",
+        "cash": 128544
+      }
+    ],
+    "days": [
+      {
+        "day": 1,
+        "week": 1,
+        "weekday": "mon",
+        "class": "vinbar",
+        "cash": 122124,
+        "floor": 4419,
+        "revenue": 6069,
+        "guests": 17,
+        "reputation": 0.702,
+        "medals": {
+          "stensota": "brons",
+          "metodkoket": "brons"
+        },
+        "credits": {
+          "episteme": 0,
+          "techne": 16,
+          "phronesis": 0
+        }
+      },
+      {
+        "day": 2,
+        "week": 1,
+        "weekday": "tue",
+        "class": "vinbar",
+        "cash": 125675,
+        "floor": 5051,
+        "revenue": 7497,
+        "guests": 21,
+        "reputation": 0.823,
+        "medals": {
+          "stensota": "brons",
+          "metodkoket": "brons",
+          "kalastorget": "brons"
+        },
+        "credits": {
+          "episteme": 0,
+          "techne": 16,
+          "phronesis": 8
+        }
+      },
+      {
+        "day": 3,
+        "week": 1,
+        "weekday": "wed",
+        "class": "vinbar",
+        "cash": 129227,
+        "floor": 5051,
+        "revenue": 7497,
+        "guests": 24,
+        "reputation": 0.943,
+        "medals": {
+          "stensota": "brons",
+          "metodkoket": "brons",
+          "kalastorget": "brons"
+        },
+        "credits": {
+          "episteme": 0,
+          "techne": 16,
+          "phronesis": 8
+        }
+      },
+      {
+        "day": 4,
+        "week": 1,
+        "weekday": "thu",
+        "class": "vinbar",
+        "cash": 127575,
+        "floor": 5051,
+        "revenue": 2142,
+        "guests": 27,
+        "reputation": 0.824,
+        "medals": {
+          "stensota": "brons",
+          "metodkoket": "brons",
+          "kalastorget": "brons"
+        },
+        "credits": {
+          "episteme": 0,
+          "techne": 16,
+          "phronesis": 8
+        }
+      },
+      {
+        "day": 5,
+        "week": 1,
+        "weekday": "fri",
+        "class": "vinbar",
+        "cash": 133982,
+        "floor": 5051,
+        "revenue": 10353,
+        "guests": 53,
+        "reputation": 0.763,
+        "medals": {
+          "stensota": "brons",
+          "metodkoket": "brons",
+          "kalastorget": "brons"
+        },
+        "credits": {
+          "episteme": 0,
+          "techne": 16,
+          "phronesis": 8
+        }
+      },
+      {
+        "day": 6,
+        "week": 1,
+        "weekday": "sat",
+        "class": "vinbar",
+        "cash": 128544,
+        "floor": 5051,
+        "revenue": 8996,
+        "guests": 50,
+        "reputation": 0.657,
+        "medals": {
+          "stensota": "brons",
+          "metodkoket": "brons",
+          "kalastorget": "brons"
+        },
+        "credits": {
+          "episteme": 0,
+          "techne": 16,
+          "phronesis": 8
+        }
+      },
+      {
+        "day": 7,
+        "week": 1,
+        "weekday": "sun",
+        "class": "vinbar",
+        "cash": 124869,
+        "floor": 5051,
+        "revenue": 0,
+        "guests": 0,
+        "reputation": 0.657,
+        "medals": {
+          "stensota": "brons",
+          "metodkoket": "brons",
+          "kalastorget": "brons"
+        },
+        "credits": {
+          "episteme": 0,
+          "techne": 16,
+          "phronesis": 8
+        }
+      }
+    ]
+  },
+  "svag-vecka": {
+    "seed": 42,
+    "settlements": [
+      {
+        "week": 1,
+        "revenueSek": 6069,
+        "floorSek": 10733,
+        "topUpSek": 4664,
+        "amortisationSek": 10523,
+        "downgradedFrom": null,
+        "downgradedTo": null,
+        "class": "vinbar",
+        "cash": 97888
+      }
+    ],
+    "days": [
+      {
+        "day": 1,
+        "week": 1,
+        "weekday": "mon",
+        "class": "vinbar",
+        "cash": 122124,
+        "floor": 4419,
+        "revenue": 6069,
+        "guests": 17,
+        "reputation": 0.702,
+        "medals": {
+          "stensota": "brons",
+          "metodkoket": "brons"
+        },
+        "credits": {
+          "episteme": 0,
+          "techne": 16,
+          "phronesis": 0
+        }
+      },
+      {
+        "day": 2,
+        "week": 1,
+        "weekday": "tue",
+        "class": "vinbar",
+        "cash": 118448,
+        "floor": 5682,
+        "revenue": 0,
+        "guests": 0,
+        "reputation": 0.702,
+        "medals": {
+          "stensota": "brons",
+          "metodkoket": "brons",
+          "kalastorget": "brons",
+          "maltidbiblioteket": "brons"
+        },
+        "credits": {
+          "episteme": 8,
+          "techne": 16,
+          "phronesis": 8
+        }
+      },
+      {
+        "day": 3,
+        "week": 1,
+        "weekday": "wed",
+        "class": "vinbar",
+        "cash": 114773,
+        "floor": 10102,
+        "revenue": 0,
+        "guests": 0,
+        "reputation": 0.702,
+        "medals": {
+          "stensota": "silver",
+          "metodkoket": "silver",
+          "kalastorget": "brons",
+          "maltidbiblioteket": "brons"
+        },
+        "credits": {
+          "episteme": 8,
+          "techne": 32,
+          "phronesis": 8
+        }
+      },
+      {
+        "day": 4,
+        "week": 1,
+        "weekday": "thu",
+        "class": "vinbar",
+        "cash": 111098,
+        "floor": 10733,
+        "revenue": 0,
+        "guests": 0,
+        "reputation": 0.702,
+        "medals": {
+          "stensota": "silver",
+          "metodkoket": "silver",
+          "kalastorget": "silver",
+          "maltidbiblioteket": "brons"
+        },
+        "credits": {
+          "episteme": 8,
+          "techne": 32,
+          "phronesis": 16
+        }
+      },
+      {
+        "day": 5,
+        "week": 1,
+        "weekday": "fri",
+        "class": "vinbar",
+        "cash": 107423,
+        "floor": 10733,
+        "revenue": 0,
+        "guests": 0,
+        "reputation": 0.702,
+        "medals": {
+          "stensota": "silver",
+          "metodkoket": "silver",
+          "kalastorget": "silver",
+          "maltidbiblioteket": "brons"
+        },
+        "credits": {
+          "episteme": 8,
+          "techne": 32,
+          "phronesis": 16
+        }
+      },
+      {
+        "day": 6,
+        "week": 1,
+        "weekday": "sat",
+        "class": "vinbar",
+        "cash": 97888,
+        "floor": 10733,
+        "revenue": 0,
+        "guests": 0,
+        "reputation": 0.702,
+        "medals": {
+          "stensota": "silver",
+          "metodkoket": "silver",
+          "kalastorget": "silver",
+          "maltidbiblioteket": "brons"
+        },
+        "credits": {
+          "episteme": 8,
+          "techne": 32,
+          "phronesis": 16
+        }
+      },
+      {
+        "day": 7,
+        "week": 1,
+        "weekday": "sun",
+        "class": "vinbar",
+        "cash": 94213,
+        "floor": 10733,
+        "revenue": 0,
+        "guests": 0,
+        "reputation": 0.702,
+        "medals": {
+          "stensota": "silver",
+          "metodkoket": "silver",
+          "kalastorget": "silver",
+          "maltidbiblioteket": "brons"
+        },
+        "credits": {
+          "episteme": 8,
+          "techne": 32,
+          "phronesis": 16
+        }
+      }
+    ]
+  },
+  "nedgradering-och-tillbaka": {
+    "seed": 42,
+    "settlements": [
+      {
+        "week": 1,
+        "revenueSek": 32808,
+        "floorSek": 0,
+        "topUpSek": 0,
+        "amortisationSek": 10523,
+        "downgradedFrom": null,
+        "downgradedTo": null,
+        "class": "vinbar",
+        "cash": 798
+      },
+      {
+        "week": 2,
+        "revenueSek": 44821,
+        "floorSek": 0,
+        "topUpSek": 0,
+        "amortisationSek": 10522,
+        "downgradedFrom": "vinbar",
+        "downgradedTo": "foodtruck",
+        "class": "foodtruck",
+        "cash": 7750
+      },
+      {
+        "week": 3,
+        "revenueSek": 41555,
+        "floorSek": 7289,
+        "topUpSek": 0,
+        "amortisationSek": 0,
+        "downgradedFrom": null,
+        "downgradedTo": null,
+        "class": "foodtruck",
+        "cash": 22599
+      },
+      {
+        "week": 4,
+        "revenueSek": 37271,
+        "floorSek": 5051,
+        "topUpSek": 0,
+        "amortisationSek": 10523,
+        "downgradedFrom": null,
+        "downgradedTo": null,
+        "class": "vinbar",
+        "cash": 22122
+      }
+    ],
+    "days": [
+      {
+        "day": 1,
+        "week": 1,
+        "weekday": "mon",
+        "class": "vinbar",
+        "cash": 1625,
+        "floor": 0,
+        "revenue": 3570,
+        "guests": 13,
+        "reputation": 0.66,
+        "medals": {},
+        "credits": {
+          "episteme": 0,
+          "techne": 0,
+          "phronesis": 0
+        }
+      },
+      {
+        "day": 2,
+        "week": 1,
+        "weekday": "tue",
+        "class": "vinbar",
+        "cash": 2320,
+        "floor": 0,
+        "revenue": 4641,
+        "guests": 15,
+        "reputation": 0.738,
+        "medals": {},
+        "credits": {
+          "episteme": 0,
+          "techne": 0,
+          "phronesis": 0
+        }
+      },
+      {
+        "day": 3,
+        "week": 1,
+        "weekday": "wed",
+        "class": "vinbar",
+        "cash": 3480,
+        "floor": 0,
+        "revenue": 5105,
+        "guests": 16,
+        "reputation": 0.816,
+        "medals": {},
+        "credits": {
+          "episteme": 0,
+          "techne": 0,
+          "phronesis": 0
+        }
+      },
+      {
+        "day": 4,
+        "week": 1,
+        "weekday": "thu",
+        "class": "vinbar",
+        "cash": 1828,
+        "floor": 0,
+        "revenue": 2142,
+        "guests": 18,
+        "reputation": 0.702,
+        "medals": {},
+        "credits": {
+          "episteme": 0,
+          "techne": 0,
+          "phronesis": 0
+        }
+      },
+      {
+        "day": 5,
+        "week": 1,
+        "weekday": "fri",
+        "class": "vinbar",
+        "cash": 7522,
+        "floor": 0,
+        "revenue": 9639,
+        "guests": 36,
+        "reputation": 0.864,
+        "medals": {},
+        "credits": {
+          "episteme": 0,
+          "techne": 0,
+          "phronesis": 0
+        }
+      },
+      {
+        "day": 6,
+        "week": 1,
+        "weekday": "sat",
+        "class": "vinbar",
+        "cash": 798,
+        "floor": 0,
+        "revenue": 7711,
+        "guests": 39,
+        "reputation": 0.816,
+        "medals": {},
+        "credits": {
+          "episteme": 0,
+          "techne": 0,
+          "phronesis": 0
+        }
+      },
+      {
+        "day": 7,
+        "week": 1,
+        "weekday": "sun",
+        "class": "vinbar",
+        "cash": -2877,
+        "floor": 0,
+        "revenue": 0,
+        "guests": 0,
+        "reputation": 0.816,
+        "medals": {},
+        "credits": {
+          "episteme": 0,
+          "techne": 0,
+          "phronesis": 0
+        }
+      },
+      {
+        "day": 8,
+        "week": 2,
+        "weekday": "mon",
+        "class": "vinbar",
+        "cash": -2324,
+        "floor": 0,
+        "revenue": 4498,
+        "guests": 18,
+        "reputation": 0.888,
+        "medals": {},
+        "credits": {
+          "episteme": 0,
+          "techne": 0,
+          "phronesis": 0
+        }
+      },
+      {
+        "day": 9,
+        "week": 2,
+        "weekday": "tue",
+        "class": "vinbar",
+        "cash": -1022,
+        "floor": 0,
+        "revenue": 5248,
+        "guests": 21,
+        "reputation": 0.972,
+        "medals": {},
+        "credits": {
+          "episteme": 0,
+          "techne": 0,
+          "phronesis": 0
+        }
+      },
+      {
+        "day": 10,
+        "week": 2,
+        "weekday": "wed",
+        "class": "vinbar",
+        "cash": 2530,
+        "floor": 0,
+        "revenue": 7497,
+        "guests": 24,
+        "reputation": 1,
+        "medals": {},
+        "credits": {
+          "episteme": 0,
+          "techne": 0,
+          "phronesis": 0
+        }
+      },
+      {
+        "day": 11,
+        "week": 2,
+        "weekday": "thu",
+        "class": "vinbar",
+        "cash": 7956,
+        "floor": 0,
+        "revenue": 9371,
+        "guests": 26,
+        "reputation": 1,
+        "medals": {},
+        "credits": {
+          "episteme": 0,
+          "techne": 0,
+          "phronesis": 0
+        }
+      },
+      {
+        "day": 12,
+        "week": 2,
+        "weekday": "fri",
+        "class": "vinbar",
+        "cash": 12578,
+        "floor": 0,
+        "revenue": 8568,
+        "guests": 34,
+        "reputation": 1,
+        "medals": {},
+        "credits": {
+          "episteme": 0,
+          "techne": 0,
+          "phronesis": 0
+        }
+      },
+      {
+        "day": 13,
+        "week": 2,
+        "weekday": "sat",
+        "class": "foodtruck",
+        "cash": 7750,
+        "floor": 0,
+        "revenue": 9639,
+        "guests": 37,
+        "reputation": 0.98,
+        "medals": {},
+        "credits": {
+          "episteme": 0,
+          "techne": 0,
+          "phronesis": 0
+        }
+      },
+      {
+        "day": 14,
+        "week": 2,
+        "weekday": "sun",
+        "class": "foodtruck",
+        "cash": 4150,
+        "floor": 0,
+        "revenue": 0,
+        "guests": 0,
+        "reputation": 0.98,
+        "medals": {},
+        "credits": {
+          "episteme": 0,
+          "techne": 0,
+          "phronesis": 0
+        }
+      },
+      {
+        "day": 15,
+        "week": 3,
+        "weekday": "mon",
+        "class": "foodtruck",
+        "cash": 5421,
+        "floor": 6378,
+        "revenue": 5141,
+        "guests": 24,
+        "reputation": 0.66,
+        "medals": {
+          "stensota": "brons",
+          "metodkoket": "brons"
+        },
+        "credits": {
+          "episteme": 0,
+          "techne": 16,
+          "phronesis": 0
+        }
+      },
+      {
+        "day": 16,
+        "week": 3,
+        "weekday": "tue",
+        "class": "foodtruck",
+        "cash": 5120,
+        "floor": 7289,
+        "revenue": 3570,
+        "guests": 14,
+        "reputation": 0.46,
+        "medals": {
+          "stensota": "brons",
+          "metodkoket": "brons",
+          "kalastorget": "brons"
+        },
+        "credits": {
+          "episteme": 0,
+          "techne": 16,
+          "phronesis": 8
+        }
+      },
+      {
+        "day": 17,
+        "week": 3,
+        "weekday": "wed",
+        "class": "foodtruck",
+        "cash": 9461,
+        "floor": 7289,
+        "revenue": 8211,
+        "guests": 28,
+        "reputation": 0,
+        "medals": {
+          "stensota": "brons",
+          "metodkoket": "brons",
+          "kalastorget": "brons"
+        },
+        "credits": {
+          "episteme": 0,
+          "techne": 16,
+          "phronesis": 8
+        }
+      },
+      {
+        "day": 18,
+        "week": 3,
+        "weekday": "thu",
+        "class": "foodtruck",
+        "cash": 8919,
+        "floor": 7289,
+        "revenue": 3213,
+        "guests": 14,
+        "reputation": 0,
+        "medals": {
+          "stensota": "brons",
+          "metodkoket": "brons",
+          "kalastorget": "brons"
+        },
+        "credits": {
+          "episteme": 0,
+          "techne": 16,
+          "phronesis": 8
+        }
+      },
+      {
+        "day": 19,
+        "week": 3,
+        "weekday": "fri",
+        "class": "foodtruck",
+        "cash": 14688,
+        "floor": 7289,
+        "revenue": 9639,
+        "guests": 33,
+        "reputation": 0,
+        "medals": {
+          "stensota": "brons",
+          "metodkoket": "brons",
+          "kalastorget": "brons"
+        },
+        "credits": {
+          "episteme": 0,
+          "techne": 16,
+          "phronesis": 8
+        }
+      },
+      {
+        "day": 20,
+        "week": 3,
+        "weekday": "sat",
+        "class": "foodtruck",
+        "cash": 22599,
+        "floor": 7289,
+        "revenue": 11781,
+        "guests": 46,
+        "reputation": 0,
+        "medals": {
+          "stensota": "brons",
+          "metodkoket": "brons",
+          "kalastorget": "brons"
+        },
+        "credits": {
+          "episteme": 0,
+          "techne": 16,
+          "phronesis": 8
+        }
+      },
+      {
+        "day": 21,
+        "week": 3,
+        "weekday": "sun",
+        "class": "vinbar",
+        "cash": 18924,
+        "floor": 5051,
+        "revenue": 0,
+        "guests": 0,
+        "reputation": 0,
+        "medals": {
+          "stensota": "brons",
+          "metodkoket": "brons",
+          "kalastorget": "brons"
+        },
+        "credits": {
+          "episteme": 0,
+          "techne": 16,
+          "phronesis": 8
+        }
+      },
+      {
+        "day": 22,
+        "week": 4,
+        "weekday": "mon",
+        "class": "vinbar",
+        "cash": 20120,
+        "floor": 5051,
+        "revenue": 5141,
+        "guests": 20,
+        "reputation": 0.09,
+        "medals": {
+          "stensota": "brons",
+          "metodkoket": "brons",
+          "kalastorget": "brons"
+        },
+        "credits": {
+          "episteme": 0,
+          "techne": 16,
+          "phronesis": 8
+        }
+      },
+      {
+        "day": 23,
+        "week": 4,
+        "weekday": "tue",
+        "class": "vinbar",
+        "cash": 21886,
+        "floor": 5051,
+        "revenue": 5712,
+        "guests": 27,
+        "reputation": 0.18,
+        "medals": {
+          "stensota": "brons",
+          "metodkoket": "brons",
+          "kalastorget": "brons"
+        },
+        "credits": {
+          "episteme": 0,
+          "techne": 16,
+          "phronesis": 8
+        }
+      },
+      {
+        "day": 24,
+        "week": 4,
+        "weekday": "wed",
+        "class": "vinbar",
+        "cash": 20877,
+        "floor": 5051,
+        "revenue": 2856,
+        "guests": 20,
+        "reputation": 0.073,
+        "medals": {
+          "stensota": "brons",
+          "metodkoket": "brons",
+          "kalastorget": "brons"
+        },
+        "credits": {
+          "episteme": 0,
+          "techne": 16,
+          "phronesis": 8
+        }
+      },
+      {
+        "day": 25,
+        "week": 4,
+        "weekday": "thu",
+        "class": "vinbar",
+        "cash": 23358,
+        "floor": 5051,
+        "revenue": 6426,
+        "guests": 19,
+        "reputation": 0.181,
+        "medals": {
+          "stensota": "brons",
+          "metodkoket": "brons",
+          "kalastorget": "brons"
+        },
+        "credits": {
+          "episteme": 0,
+          "techne": 16,
+          "phronesis": 8
+        }
+      },
+      {
+        "day": 26,
+        "week": 4,
+        "weekday": "fri",
+        "class": "vinbar",
+        "cash": 28694,
+        "floor": 5051,
+        "revenue": 9282,
+        "guests": 41,
+        "reputation": 0.331,
+        "medals": {
+          "stensota": "brons",
+          "metodkoket": "brons",
+          "kalastorget": "brons"
+        },
+        "credits": {
+          "episteme": 0,
+          "techne": 16,
+          "phronesis": 8
+        }
+      },
+      {
+        "day": 27,
+        "week": 4,
+        "weekday": "sat",
+        "class": "vinbar",
+        "cash": 22122,
+        "floor": 5051,
+        "revenue": 7854,
+        "guests": 45,
+        "reputation": 0.306,
+        "medals": {
+          "stensota": "brons",
+          "metodkoket": "brons",
+          "kalastorget": "brons"
+        },
+        "credits": {
+          "episteme": 0,
+          "techne": 16,
+          "phronesis": 8
+        }
+      },
+      {
+        "day": 28,
+        "week": 4,
+        "weekday": "sun",
+        "class": "vinbar",
+        "cash": 18447,
+        "floor": 5051,
+        "revenue": 0,
+        "guests": 0,
+        "reputation": 0.306,
+        "medals": {
+          "stensota": "brons",
+          "metodkoket": "brons",
+          "kalastorget": "brons"
+        },
+        "credits": {
+          "episteme": 0,
+          "techne": 16,
+          "phronesis": 8
+        }
+      }
+    ]
+  }
+}

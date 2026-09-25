@@ -15,6 +15,7 @@
 // All tests dispatch through the reducer — no direct state mutation.
 // tick() below advances via TICK actions so tickDayTransitions runs.
 
+import { withoutMarketCap } from './marketHeadroom';
 import { EVENING } from '../../../sim/balance';
 import { describe, expect, it } from 'vitest';
 import { makeInitialState } from '../model';
@@ -382,7 +383,7 @@ describe('period gate — arrivals only fire during a running service', () => {
 // are not — a downtick means the retune has broken the reading.
 describe('dinner queue grows monotonically as social falls (regression)', () => {
   function simulateDinnerPeakQueue(seed: number, socialValue: number): number {
-    let s = reducer(makeInitialState(seed), { type: 'SKIP_LUNCH' });
+    let s = reducer(withoutMarketCap(makeInitialState(seed)), { type: 'SKIP_LUNCH' });
     s = reducer(s, { type: 'SET_CAPITAL', capital: 'social', value: socialValue });
     s = reducer(s, {
       type: 'OPEN_SERVICE',

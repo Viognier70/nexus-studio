@@ -8,6 +8,7 @@
 //     down; a good service (high social + no queue + happy departures)
 //     does not decay it
 
+import { withoutMarketCap } from './marketHeadroom';
 import { describe, expect, it } from 'vitest';
 import {
   arrivalProbability,
@@ -176,7 +177,7 @@ describe('loop integration — a bad service visibly moves reputation', () => {
   // gör att social=0 och social=1 skiljs på rätt sätt igen. Åter till it().
   it('social=0 dinner drops reputation more than social=1 dinner', () => {
     const runService = (socialValue: number): number => {
-      let s = reducer(makeInitialState(7), { type: 'SKIP_LUNCH' });
+      let s = reducer(withoutMarketCap(makeInitialState(7)), { type: 'SKIP_LUNCH' });
       s = reducer(s, {
         type: 'SET_CAPITAL',
         capital: 'social',

@@ -3,7 +3,8 @@ import { INTERIOR, RESIDENT_SPLINES } from '../content/layout';
 import { INITIAL_CASH_SEK } from './constants';
 import { MORALE_INITIAL } from './morale';
 import { initialTeam } from './team';
-import { SERVICE } from '../../sim/balance';
+import { SEASON, SERVICE } from '../../sim/balance';
+import { initialEconomy } from '../../sim/economy';
 import type {
   CapitalState,
   DayState,
@@ -395,11 +396,19 @@ export function makeInitialState(
     qualityService: 0.55,
     serviceRevenueToday: { lunch: 0, dinner: 0 },
     serviceRevenueRolling: { lunch: [], dinner: [] },
+    // ORDER 265 — det gamla lånet (ORDER 049) ersätts av v1-lånet i
+    // `economy.loan` (src/sim/economy.ts). Huvudsumman är noll så att
+    // den dagliga räntan på 2 400 kSEK inte längre dras; fältet står
+    // kvar för valuation.ts och äldre tester.
     loan: {
-      principal: 2400,               // T2 ceiling grandfather until bank meeting lands
-      interestRatePerDay: 0.00025,   // ~9 % APR baseline (post-bankruptcy raises this)
+      principal: 0,
+      interestRatePerDay: 0,
       lastAccrualDay: 1
     },
+    // ORDER 265 (F23) — tills introduktionen byggs (etapp 5) börjar ett
+    // nytt spel som vinbar med vinbarens startlån, amorterat över
+    // säsongens åtta veckor.
+    economy: initialEconomy('vinbar', SEASON.weeks, 0),
     scaleDown: {
       menuShortenedFrom: null,
       wineListReduced: false,
