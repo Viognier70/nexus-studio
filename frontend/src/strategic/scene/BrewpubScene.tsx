@@ -169,6 +169,12 @@ export function BrewpubScene() {
       // (OBB-generisk 2×4-form) tills en design-order öppnar den. Se
       // SharedBusinessRoom.waitingSlots-doc för framtida per-rum-formen.
       waitingSlots: layout.waitingSlots as [number, number][],
+      // ORDER 261 (steg 2A) — arrivals-ring och walk-away-punkter från
+      // layout tills brewpubRoom får egen form (samma mönster som
+      // waitingSlots pre-ORDER-203). spawnPoint = waitingSpot.
+      arrivalSlots: layout.arrivalSlots as [number, number][],
+      declinedSlots: layout.declinedSlots as [number, number][],
+      spawnPoint: world.waitingSpot as [number, number],
       capacity: room.capacity,
       // ORDER 221 §2 — gåbar-yta + transformer i samma commit som obstacle-
       // exporten. Konsumenter (InteriorStaff, InteriorGuests) läser detta

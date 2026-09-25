@@ -1,0 +1,25 @@
+{
+  "samples": [
+    {
+      "label": "t1-early-arrivals",
+      "dev": "DEV    2fps(strat)  cam= 24m*[35-75]  day=1 lunch      service=13:52 / 15min   scenarios=0/2",
+      "state": null
+    },
+    {
+      "label": "t2-first-seated",
+      "dev": "DEV    2fps(strat)  cam= 24m*[35-75]  day=1 lunch      service=13:52 / 15min   scenarios=0/2",
+      "state": null
+    },
+    {
+      "label": "t3-mid-service",
+      "dev": "DEV    2fps(strat)  cam= 24m*[35-75]  day=1 lunch      service=13:52 / 15min   scenarios=0/2",
+      "state": null
+    },
+    {
+      "label": "t4-full-service",
+      "dev": "DEV    2fps(strat)  cam= 24m*[35-75]  day=1 lunch      service=13:52 / 15min   scenarios=0/2",
+      "state": null
+    }
+  ],
+  "scenarioDev": "DEV    2fps(strat)  cam= 24m*[35-75]  day=1 lunch      service=13:52 / 15min   scenarios=0/2"
+}

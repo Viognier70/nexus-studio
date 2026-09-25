@@ -258,6 +258,23 @@ export interface SharedBusinessRoom {
    * som ORDER 200 §3.1: fallback är signal att data saknas).
    */
   waitingSlots: XZ[];
+  /**
+   * ORDER 261 (steg 2A) — arrivals-ring per klass, världskoord.
+   * `arrivalSlots` publiceras nu på kontraktet så sim kan välja en
+   * spawn-punkt per gäst utan att renderaren håller egen slot-tilldelning.
+   * `declinedSlots` publiceras för samma anledning — walk-away-punkter
+   * hör till rummet, inte till renderaren.
+   */
+  arrivalSlots: XZ[];
+  declinedSlots: XZ[];
+  /**
+   * ORDER 261 (steg 2A) — enskild "utanför dörren"-punkt för
+   * spawn/despawn. Sim använder denna för `makeGuest.position` +
+   * "leaving"-target. Härledd från `waitingSpot` för restaurangen
+   * (samma punkt, 2.5 m utanför entrén); framtida rum kan ha egen
+   * välplacerad punkt om entrén ligger på annan sida än waitingSpot.
+   */
+  spawnPoint: XZ;
   capacity: number;
   /**
    * ORDER 221 §2 — gåbar-yta + navigering. Kör en gång vid scen-mount

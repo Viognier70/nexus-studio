@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/modernist-fa2a5900-708d-4668-979a-71ad6a03542a/styles.css">
+<script src="_ds/modernist-fa2a5900-708d-4668-979a-71ad6a03542a/_ds_bundle.js"></script>
+<style>
+  html, body { margin: 0; background: var(--color-bg); }
+  a { color: var(--color-accent-700); text-decoration: none; }
+  a:hover { color: var(--color-accent); }
+  @keyframes rBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+  @keyframes rBobFast { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+  @keyframes rBobSlow { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
+  @keyframes rSway { 0% { transform: translateX(-4px); } 100% { transform: translateX(4px); } }
+  @keyframes rFlip { 0%, 49.9% { transform: scaleX(1); } 50%, 100% { transform: scaleX(-1); } }
+  @keyframes rPatrol { 0% { transform: translate(-46px, 10px); } 100% { transform: translate(46px, -10px); } }
+  @keyframes rGreet { 0% { transform: translate(-40px, -14px); } 34%, 66% { transform: translate(6px, 12px); } 100% { transform: translate(-40px, -14px); } }
+  @keyframes rServe { 0% { transform: translate(-50px, -16px); } 38%, 56% { transform: translate(30px, 16px); } 100% { transform: translate(-50px, -16px); } }
+  @keyframes rBus { 0% { transform: translate(44px, 14px); } 40%, 58% { transform: translate(-26px, -12px); } 100% { transform: translate(44px, 14px); } }
+  @keyframes rPass { 0% { transform: translate(-18px, 0); } 46%, 60% { transform: translate(22px, -8px); } 100% { transform: translate(-18px, 0); } }
+  @keyframes rLine { 0% { transform: translateX(-12px); } 100% { transform: translateX(12px); } }
+  @keyframes rSink { 0% { transform: translateX(-5px); } 100% { transform: translateX(5px); } }
+  @keyframes rShake { 0% { transform: rotate(-13deg); } 100% { transform: rotate(13deg); } }
+  @keyframes rPull { 0%, 100% { transform: translateY(0) rotate(0deg); } 30%, 55% { transform: translateY(6px) rotate(-7deg); } }
+  @keyframes rTour { 0% { transform: translate(-52px, 12px); } 24%, 34% { transform: translate(-8px, -14px); } 58%, 68% { transform: translate(42px, 10px); } 100% { transform: translate(-52px, 12px); } }
+  @keyframes rFig8 { 0% { transform: translate(-44px, 12px); } 25% { transform: translate(-14px, -14px); } 50% { transform: translate(16px, 12px); } 75% { transform: translate(44px, -14px); } 100% { transform: translate(-44px, 12px); } }
+  @keyframes rHaul { 0% { transform: translate(-54px, 16px); } 44%, 52% { transform: translate(34px, -14px); } 100% { transform: translate(-54px, 16px); } }
+  @keyframes rHesitate { 0% { transform: translate(-42px, 12px); } 22%, 36% { transform: translate(-12px, 0px); } 62%, 74% { transform: translate(28px, -12px); } 100% { transform: translate(-42px, 12px); } }
+  @keyframes rPip { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
+</style>
+</helmet>
+
+<div style="min-height: 100vh; background: var(--color-bg); color: var(--color-text); font-family: var(--font-body); padding: 56px 64px 104px; display: flex; flex-direction: column; gap: 64px; max-width: 1720px; margin: 0 auto;">
+
+  <header style="display: flex; flex-direction: column; gap: 26px;">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 4px solid var(--color-text); padding-bottom: 14px;">
+      <div style="font-family: var(--font-heading); font-weight: 800; font-size: 15px; letter-spacing: 0.18em; text-transform: uppercase;">Nexus Studio · Vinbaren · Matsalen</div>
+      <div style="font-family: var(--font-heading); font-weight: 800; font-size: 15px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-accent);">Underlag 003 · tolv yrkesroller</div>
+    </div>
+    <div style="display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 64px; align-items: start;">
+      <h1 style="font-family: var(--font-heading); font-weight: 800; font-size: 78px; line-height: 0.94; letter-spacing: -0.035em; margin: 0; text-wrap: pretty;">Tolv roller, tolv rörelser, en silhuett</h1>
+      <p style="margin: 0; font-size: 19px; line-height: 1.55; max-width: 54ch; text-wrap: pretty;">Förfinat sedan underlag 001 på tre punkter: figuren har fått <strong>huvudbonad, förkläde och bälte</strong> så rollen syns i silhuett vid 25 px; riktningskilen är skarpare och sitter i axelhöjd; och varje roll har nu en <strong>egen loop med eget tempo</strong> i stället för ett delat mönsternummer. Alla mått och färger kommer ur <em>InteriorStaff.tsx</em>.</p>
+    </div>
+  </header>
+
+  <section style="display: flex; flex-direction: column; gap: 26px;">
+    <div style="display: flex; gap: 18px; align-items: baseline; border-bottom: 3px solid var(--color-text); padding-bottom: 12px;">
+      <span style="font-family: var(--font-heading); font-weight: 800; font-size: 20px; letter-spacing: 0.16em; color: var(--color-accent);">01</span>
+      <h2 style="font-family: var(--font-heading); font-weight: 800; font-size: 34px; margin: 0; letter-spacing: -0.02em;">Silhuettprovet</h2>
+      <span style="margin-left: auto; font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800;">Tolv figurer · ingen text</span>
+    </div>
+    <p style="margin: 0; font-size: 17px; line-height: 1.55; max-width: 92ch;">Provet är enkelt: täck etiketterna och se om du fortfarande kan peka ut kocken, städaren och utköraren. Huvudbonaden bär ungefär hälften av igenkänningen, propen resten — uniformsfärgerna är för närliggande för att räknas på håll.</p>
+    <div style="border: 3px solid var(--color-text); background: #eae9e9; padding: 26px 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(104px, 1fr)); gap: 24px 12px; justify-items: center;">
+      <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;"><dc-import name="StaffPuck" color="#2a2f3a" prop="pad" hat="none" belt="{{ true }}" hint-size="96px,128px"></dc-import><div style="font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; text-align: center;">Hovmästare</div></div>
+      <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;"><dc-import name="StaffPuck" color="#33383f" prop="tray" hat="none" belt="{{ true }}" hint-size="96px,128px"></dc-import><div style="font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; text-align: center;">Servitör</div></div>
+      <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;"><dc-import name="StaffPuck" color="#4a4744" prop="stack" hat="kerchief" apron="{{ true }}" hint-size="96px,128px"></dc-import><div style="font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; text-align: center;">Bussare</div></div>
+      <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;"><dc-import name="StaffPuck" color="#3d3835" prop="pad" hat="toque" apron="{{ true }}" hint-size="96px,128px"></dc-import><div style="font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; text-align: center;">Kökschef</div></div>
+      <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;"><dc-import name="StaffPuck" color="#3d3835" prop="pan" hat="toque" apron="{{ true }}" hint-size="96px,128px"></dc-import><div style="font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; text-align: center;">Kock</div></div>
+      <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;"><dc-import name="StaffPuck" color="#4a4744" prop="towel" hat="kerchief" apron="{{ true }}" hint-size="96px,128px"></dc-import><div style="font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; text-align: center;">Diskare</div></div>
+      <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;"><dc-import name="StaffPuck" color="#2a2f3a" prop="shaker" hat="none" apron="{{ true }}" hint-size="96px,128px"></dc-import><div style="font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; text-align: center;">Bartender</div></div>
+      <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;"><dc-import name="StaffPuck" color="#2a2f3a" prop="cup" hat="visor" apron="{{ true }}" hint-size="96px,128px"></dc-import><div style="font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; text-align: center;">Barista</div></div>
+      <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;"><dc-import name="StaffPuck" color="#33383f" prop="pad" hat="bun" hint-size="96px,128px"></dc-import><div style="font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; text-align: center;">Chef</div></div>
+      <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;"><dc-import name="StaffPuck" color="#4a4744" prop="mop" hat="cap" hint-size="96px,128px"></dc-import><div style="font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; text-align: center;">Städare</div></div>
+      <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;"><dc-import name="StaffPuck" color="#4a4744" prop="crate" hat="cap" hint-size="96px,128px"></dc-import><div style="font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; text-align: center;">Utkörare</div></div>
+      <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;"><dc-import name="StaffPuck" color="#4a4744" prop="glass" hat="none" apron="{{ true }}" hint-size="96px,128px"></dc-import><div style="font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; text-align: center;">Lärling</div></div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 30px;">
+    <div style="display: flex; gap: 18px; align-items: baseline; border-bottom: 3px solid var(--color-text); padding-bottom: 12px;">
+      <span style="font-family: var(--font-heading); font-weight: 800; font-size: 20px; letter-spacing: 0.16em; color: var(--color-accent);">02</span>
+      <h2 style="font-family: var(--font-heading); font-weight: 800; font-size: 34px; margin: 0; letter-spacing: -0.02em;">Rörelse per roll</h2>
+      <span style="margin-left: auto; font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800;">Sedd i spelets vinkel · live</span>
+    </div>
+    <p style="margin: -8px 0 0; font-size: 17px; line-height: 1.55; max-width: 92ch;">Varje ruta är rollens hela arbetsdag komprimerad till en loop. Tempot står under rutan och är det som skiljer två roller som råkar dela mönster: utköraren och servitören går samma väg men i 1,6 respektive 1,4 m/s, och det syns.</p>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 44px 30px;">
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; gap: 12px; align-items: baseline; border-top: 3px solid var(--color-text); padding-top: 12px;"><span style="font-family: var(--font-heading); font-weight: 800; font-size: 17px; color: var(--color-accent); letter-spacing: 0.1em;">01</span><span style="font-family: var(--font-heading); font-weight: 800; font-size: 20px;">Hovmästare</span><span style="margin-left: auto; font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;">i StaffRole</span></div>
+        <div style="position: relative; height: 216px; border: 2px solid var(--color-divider); overflow: hidden; background-color: #eeecec; background-image: repeating-linear-gradient(28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px), repeating-linear-gradient(-28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px);">
+          <div style="position: absolute; left: 14px; top: 22px; width: 58px; height: 26px; background: #6b5b47; border: 3px solid var(--color-text);"></div>
+          <div style="position: absolute; left: 50%; bottom: 40px; margin-left: -48px; animation: rGreet 8s ease-in-out infinite;">
+            <div style="animation: rSway 4.2s ease-in-out infinite alternate;"><dc-import name="StaffPuck" color="#2a2f3a" prop="pad" hat="none" belt="{{ true }}" hint-size="96px,128px"></dc-import></div>
+          </div>
+        </div>
+        <div style="font-size: 14px; line-height: 1.5;"><strong>1,0 m/s</strong> · håller entrén, går fram till gästen, tillbaka. Lämnar aldrig dörren obevakad mer än 6 s.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; gap: 12px; align-items: baseline; border-top: 3px solid var(--color-text); padding-top: 12px;"><span style="font-family: var(--font-heading); font-weight: 800; font-size: 17px; color: var(--color-accent); letter-spacing: 0.1em;">02</span><span style="font-family: var(--font-heading); font-weight: 800; font-size: 20px;">Servitör</span><span style="margin-left: auto; font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;">i StaffRole</span></div>
+        <div style="position: relative; height: 216px; border: 2px solid var(--color-divider); overflow: hidden; background-color: #eeecec; background-image: repeating-linear-gradient(28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px), repeating-linear-gradient(-28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px);">
+          <div style="position: absolute; right: 22px; bottom: 54px; width: 62px; height: 26px; border-radius: 50%; background: #8b8477; border: 3px solid var(--color-text);"></div>
+          <div style="position: absolute; left: 50%; bottom: 34px; margin-left: -48px; animation: rServe 6.4s ease-in-out infinite;">
+            <div style="animation: rBob 0.6s ease-in-out infinite;"><dc-import name="StaffPuck" color="#33383f" prop="tray" hat="none" belt="{{ true }}" hint-size="96px,128px"></dc-import></div>
+          </div>
+        </div>
+        <div style="font-size: 14px; line-height: 1.5;"><strong>1,4 m/s</strong> · pass → bord → pass, med 0,8 s inbromsning och ett dopp vid bordet. Brickan hålls vågrät.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; gap: 12px; align-items: baseline; border-top: 3px solid var(--color-text); padding-top: 12px;"><span style="font-family: var(--font-heading); font-weight: 800; font-size: 17px; color: var(--color-accent); letter-spacing: 0.1em;">03</span><span style="font-family: var(--font-heading); font-weight: 800; font-size: 20px;">Bussare</span><span style="margin-left: auto; font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent);">föreslagen</span></div>
+        <div style="position: relative; height: 216px; border: 2px solid var(--color-divider); overflow: hidden; background-color: #eeecec; background-image: repeating-linear-gradient(28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px), repeating-linear-gradient(-28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px);">
+          <div style="position: absolute; left: 20px; bottom: 58px; width: 62px; height: 26px; border-radius: 50%; background: #8b8477; border: 3px solid var(--color-text);"></div>
+          <div style="position: absolute; left: 50%; bottom: 34px; margin-left: -48px; animation: rBus 7.2s ease-in-out infinite;">
+            <div style="animation: rBob 0.64s ease-in-out infinite;"><dc-import name="StaffPuck" color="#4a4744" prop="stack" hat="kerchief" apron="{{ true }}" hint-size="96px,128px"></dc-import></div>
+          </div>
+        </div>
+        <div style="font-size: 14px; line-height: 1.5;"><strong>1,3 m/s</strong> · två dopp per bord, stapeln växer per dopp. Går mot disken, aldrig mot passet.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; gap: 12px; align-items: baseline; border-top: 3px solid var(--color-text); padding-top: 12px;"><span style="font-family: var(--font-heading); font-weight: 800; font-size: 17px; color: var(--color-accent); letter-spacing: 0.1em;">04</span><span style="font-family: var(--font-heading); font-weight: 800; font-size: 20px;">Kökschef</span><span style="margin-left: auto; font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;">i StaffRole</span></div>
+        <div style="position: relative; height: 216px; border: 2px solid var(--color-divider); overflow: hidden; background-color: #eeecec; background-image: repeating-linear-gradient(28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px), repeating-linear-gradient(-28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px);">
+          <div style="position: absolute; left: 0; right: 0; bottom: 26px; height: 24px; background: #767268; border-top: 3px solid var(--color-text);"></div>
+          <div style="position: absolute; left: 0; right: 0; top: 30px; height: 8px; background: rgba(32,30,29,0.22);"></div>
+          <div style="position: absolute; left: 50%; bottom: 44px; margin-left: -48px; animation: rPass 5.4s ease-in-out infinite;">
+            <div style="animation: rBobSlow 1.1s ease-in-out infinite;"><dc-import name="StaffPuck" color="#3d3835" prop="pad" hat="toque" apron="{{ true }}" hint-size="96px,128px"></dc-import></div>
+          </div>
+        </div>
+        <div style="font-size: 14px; line-height: 1.5;"><strong>0,6 m/s</strong> · patrullerar passet, vänder sig mot matsalen var 5:e sekund. Rör sig minst av alla.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; gap: 12px; align-items: baseline; border-top: 3px solid var(--color-text); padding-top: 12px;"><span style="font-family: var(--font-heading); font-weight: 800; font-size: 17px; color: var(--color-accent); letter-spacing: 0.1em;">05</span><span style="font-family: var(--font-heading); font-weight: 800; font-size: 20px;">Kock</span><span style="margin-left: auto; font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;">i StaffRole</span></div>
+        <div style="position: relative; height: 216px; border: 2px solid var(--color-divider); overflow: hidden; background-color: #eeecec; background-image: repeating-linear-gradient(28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px), repeating-linear-gradient(-28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px);">
+          <div style="position: absolute; left: 0; right: 0; bottom: 26px; height: 24px; background: #767268; border-top: 3px solid var(--color-text);"></div>
+          <div style="position: absolute; left: 50%; bottom: 44px; margin-left: -48px; animation: rLine 2.6s ease-in-out infinite alternate;">
+            <div style="animation: rBob 0.8s ease-in-out infinite;"><dc-import name="StaffPuck" color="#3d3835" prop="pan" hat="toque" apron="{{ true }}" hint-size="96px,128px"></dc-import></div>
+          </div>
+        </div>
+        <div style="font-size: 14px; line-height: 1.5;"><strong>0,4 m/s</strong> · stationsbunden, ±0,12 m längs linjen. Lämnar aldrig köket under service.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; gap: 12px; align-items: baseline; border-top: 3px solid var(--color-text); padding-top: 12px;"><span style="font-family: var(--font-heading); font-weight: 800; font-size: 17px; color: var(--color-accent); letter-spacing: 0.1em;">06</span><span style="font-family: var(--font-heading); font-weight: 800; font-size: 20px;">Diskare</span><span style="margin-left: auto; font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent);">föreslagen</span></div>
+        <div style="position: relative; height: 216px; border: 2px solid var(--color-divider); overflow: hidden; background-color: #eeecec; background-image: repeating-linear-gradient(28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px), repeating-linear-gradient(-28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px);">
+          <div style="position: absolute; left: 0; right: 0; bottom: 26px; height: 26px; background: #767268; border-top: 3px solid var(--color-text);"></div>
+          <div style="position: absolute; left: 50%; bottom: 46px; margin-left: -48px; animation: rSink 0.8s ease-in-out infinite alternate;">
+            <div style="animation: rBob 0.42s ease-in-out infinite;"><div style="animation: rPip 1.2s ease-in-out infinite;"><dc-import name="StaffPuck" color="#4a4744" prop="towel" hat="kerchief" apron="{{ true }}" alert="{{ true }}" hint-size="96px,128px"></dc-import></div></div>
+          </div>
+        </div>
+        <div style="font-size: 14px; line-height: 1.5;"><strong>0,2 m/s</strong> · ingen förflyttning, 1,6 Hz. Pipen tänds när kön når taket — enda gången rollen syns.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; gap: 12px; align-items: baseline; border-top: 3px solid var(--color-text); padding-top: 12px;"><span style="font-family: var(--font-heading); font-weight: 800; font-size: 17px; color: var(--color-accent); letter-spacing: 0.1em;">07</span><span style="font-family: var(--font-heading); font-weight: 800; font-size: 20px;">Bartender</span><span style="margin-left: auto; font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent);">föreslagen</span></div>
+        <div style="position: relative; height: 216px; border: 2px solid var(--color-divider); overflow: hidden; background-color: #eeecec; background-image: repeating-linear-gradient(28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px), repeating-linear-gradient(-28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px);">
+          <div style="position: absolute; left: 0; right: 0; bottom: 26px; height: 30px; background: #6b5b47; border-top: 3px solid var(--color-text);"></div>
+          <div style="position: absolute; left: 50%; bottom: 50px; margin-left: -48px;">
+            <div style="animation: rShake 0.9s ease-in-out infinite alternate; transform-origin: bottom center;"><dc-import name="StaffPuck" color="#2a2f3a" prop="shaker" hat="none" apron="{{ true }}" hint-size="96px,128px"></dc-import></div>
+          </div>
+        </div>
+        <div style="font-size: 14px; line-height: 1.5;"><strong>0,5 m/s</strong> · ±13° i 3 s, sedan 2 s stillastående häll. Alltid bakom bardisken, aldrig framför.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; gap: 12px; align-items: baseline; border-top: 3px solid var(--color-text); padding-top: 12px;"><span style="font-family: var(--font-heading); font-weight: 800; font-size: 17px; color: var(--color-accent); letter-spacing: 0.1em;">08</span><span style="font-family: var(--font-heading); font-weight: 800; font-size: 20px;">Barista</span><span style="margin-left: auto; font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent);">föreslagen</span></div>
+        <div style="position: relative; height: 216px; border: 2px solid var(--color-divider); overflow: hidden; background-color: #eeecec; background-image: repeating-linear-gradient(28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px), repeating-linear-gradient(-28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px);">
+          <div style="position: absolute; left: 0; right: 0; bottom: 26px; height: 30px; background: #6b5b47; border-top: 3px solid var(--color-text);"></div>
+          <div style="position: absolute; right: 26px; bottom: 56px; width: 34px; height: 46px; background: #8b8477; border: 3px solid var(--color-text);"></div>
+          <div style="position: absolute; left: 50%; bottom: 50px; margin-left: -48px;">
+            <div style="animation: rPull 3.2s ease-in-out infinite; transform-origin: bottom center;"><dc-import name="StaffPuck" color="#2a2f3a" prop="cup" hat="visor" apron="{{ true }}" hint-size="96px,128px"></dc-import></div>
+          </div>
+        </div>
+        <div style="font-size: 14px; line-height: 1.5;"><strong>0,4 m/s</strong> · drar handtaget nedåt 0,06 m, håller 1,4 s, reser sig. Kortaste cykeln i huset.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; gap: 12px; align-items: baseline; border-top: 3px solid var(--color-text); padding-top: 12px;"><span style="font-family: var(--font-heading); font-weight: 800; font-size: 17px; color: var(--color-accent); letter-spacing: 0.1em;">09</span><span style="font-family: var(--font-heading); font-weight: 800; font-size: 20px;">Restaurangchef</span><span style="margin-left: auto; font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent);">föreslagen</span></div>
+        <div style="position: relative; height: 216px; border: 2px solid var(--color-divider); overflow: hidden; background-color: #eeecec; background-image: repeating-linear-gradient(28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px), repeating-linear-gradient(-28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px);">
+          <div style="position: absolute; left: 30px; bottom: 62px; width: 14px; height: 14px; background: var(--color-accent); animation: rPip 2s ease-in-out infinite;"></div>
+          <div style="position: absolute; right: 34px; bottom: 40px; width: 14px; height: 14px; background: var(--color-accent); animation: rPip 2s ease-in-out 1s infinite;"></div>
+          <div style="position: absolute; left: 50%; bottom: 34px; margin-left: -48px; animation: rTour 10s ease-in-out infinite;">
+            <div style="animation: rBob 0.66s ease-in-out infinite;"><dc-import name="StaffPuck" color="#33383f" prop="pad" hat="bun" hint-size="96px,128px"></dc-import></div>
+          </div>
+        </div>
+        <div style="font-size: 14px; line-height: 1.5;"><strong>1,1 m/s</strong> · går mot närmaste pip, stannar 3 s, går vidare. Rutan visar prioriteringen.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; gap: 12px; align-items: baseline; border-top: 3px solid var(--color-text); padding-top: 12px;"><span style="font-family: var(--font-heading); font-weight: 800; font-size: 17px; color: var(--color-accent); letter-spacing: 0.1em;">10</span><span style="font-family: var(--font-heading); font-weight: 800; font-size: 20px;">Städare</span><span style="margin-left: auto; font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent);">föreslagen</span></div>
+        <div style="position: relative; height: 216px; border: 2px solid var(--color-divider); overflow: hidden; background-color: #eeecec; background-image: repeating-linear-gradient(28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px), repeating-linear-gradient(-28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px);">
+          <div style="position: absolute; left: 50%; bottom: 34px; margin-left: -48px; animation: rFig8 7.4s ease-in-out infinite;">
+            <div style="animation: rSway 1.5s ease-in-out infinite alternate;"><dc-import name="StaffPuck" color="#4a4744" prop="mop" hat="cap" hint-size="96px,128px"></dc-import></div>
+          </div>
+        </div>
+        <div style="font-size: 14px; line-height: 1.5;"><strong>1,0 m/s</strong> · figur-8 över golvet, svep 0,8 m. Backar när en gäst korsar banan. Bara i prep-fönstret.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; gap: 12px; align-items: baseline; border-top: 3px solid var(--color-text); padding-top: 12px;"><span style="font-family: var(--font-heading); font-weight: 800; font-size: 17px; color: var(--color-accent); letter-spacing: 0.1em;">11</span><span style="font-family: var(--font-heading); font-weight: 800; font-size: 20px;">Utkörare</span><span style="margin-left: auto; font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent);">föreslagen</span></div>
+        <div style="position: relative; height: 216px; border: 2px solid var(--color-divider); overflow: hidden; background-color: #eeecec; background-image: repeating-linear-gradient(28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px), repeating-linear-gradient(-28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px);">
+          <div style="position: absolute; right: 0; top: 0; bottom: 0; width: 42px; background: rgba(32,30,29,0.14); border-left: 3px solid var(--color-text);"></div>
+          <div style="position: absolute; left: 50%; bottom: 32px; margin-left: -48px; animation: rHaul 6s ease-in-out infinite;">
+            <div style="animation: rBobFast 0.36s ease-in-out infinite;"><div style="transform: rotate(6deg); transform-origin: bottom center;"><dc-import name="StaffPuck" color="#4a4744" prop="crate" hat="cap" hint-size="96px,128px"></dc-import></div></div>
+          </div>
+        </div>
+        <div style="font-size: 14px; line-height: 1.5;"><strong>1,6 m/s</strong> · snabbast i huset, lutar 6° av lasten. Försvinner ut genom gårdsdörren till DeliveryVan.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; gap: 12px; align-items: baseline; border-top: 3px solid var(--color-text); padding-top: 12px;"><span style="font-family: var(--font-heading); font-weight: 800; font-size: 17px; color: var(--color-accent); letter-spacing: 0.1em;">12</span><span style="font-family: var(--font-heading); font-weight: 800; font-size: 20px;">Lärling</span><span style="margin-left: auto; font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;">i StaffRole</span></div>
+        <div style="position: relative; height: 216px; border: 2px solid var(--color-accent); overflow: hidden; background-color: #eeecec; background-image: repeating-linear-gradient(28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px), repeating-linear-gradient(-28deg, transparent 0 26px, rgba(32,30,29,0.09) 26px 28px);">
+          <div style="position: absolute; left: 50%; bottom: 34px; margin-left: -48px; animation: rHesitate 8.6s ease-in-out infinite;">
+            <div style="animation: rBob 0.72s ease-in-out infinite;"><dc-import name="StaffPuck" color="#4a4744" prop="glass" hat="none" apron="{{ true }}" hint-size="96px,128px"></dc-import></div>
+          </div>
+        </div>
+        <div style="font-size: 14px; line-height: 1.5;"><strong>1,1 m/s</strong> · två stopp per sträcka, tvekar innan varje riktningsbyte. Tempot stiger med training.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 30px;">
+    <div style="display: flex; gap: 18px; align-items: baseline; border-bottom: 3px solid var(--color-text); padding-bottom: 12px;">
+      <span style="font-family: var(--font-heading); font-weight: 800; font-size: 20px; letter-spacing: 0.16em; color: var(--color-accent);">03</span>
+      <h2 style="font-family: var(--font-heading); font-weight: 800; font-size: 34px; margin: 0; letter-spacing: -0.02em;">Rollens ansikte</h2>
+      <span style="margin-left: auto; font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800;">Grundläge i ansiktsraden</span>
+    </div>
+    <p style="margin: -8px 0 0; font-size: 17px; line-height: 1.55; max-width: 92ch;">Varje roll har ett grunduttryck som gäller när ingenting särskilt händer — det är det spelaren ser i ansiktsraden en vanlig kväll. Avvikelsen från grundläget är signalen: en <em>fokuserad</em> kock är normalt, en <em>stressad</em> kökschef är sällsynt och betyder att passet är övermannat.</p>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 30px 22px;">
+      <div style="display: flex; flex-direction: column; gap: 10px; border-top: 3px solid var(--color-text); padding-top: 12px;"><div style="width: 90px; height: 100px; overflow: hidden;"><div style="transform: scale(0.76); transform-origin: top left;"><dc-import name="StaffFace" expression="artigt" hint-size="118px,132px"></dc-import></div></div><div style="font-family: var(--font-heading); font-weight: 800; font-size: 16px;">Hovmästare</div><div style="font-size: 13px; line-height: 1.45;">Artigt leende — yrkesmasken sitter hela passet.</div></div>
+      <div style="display: flex; flex-direction: column; gap: 10px; border-top: 3px solid var(--color-text); padding-top: 12px;"><div style="width: 90px; height: 100px; overflow: hidden;"><div style="transform: scale(0.76); transform-origin: top left;"><dc-import name="StaffFace" expression="artigt" hint-size="118px,132px"></dc-import></div></div><div style="font-family: var(--font-heading); font-weight: 800; font-size: 16px;">Servitör</div><div style="font-size: 13px; line-height: 1.45;">Artigt vid bordet, neutral på väg tillbaka.</div></div>
+      <div style="display: flex; flex-direction: column; gap: 10px; border-top: 3px solid var(--color-text); padding-top: 12px;"><div style="width: 90px; height: 100px; overflow: hidden;"><div style="transform: scale(0.76); transform-origin: top left;"><dc-import name="StaffFace" expression="fokuserad" hint-size="118px,132px"></dc-import></div></div><div style="font-family: var(--font-heading); font-weight: 800; font-size: 16px;">Bussare</div><div style="font-size: 13px; line-height: 1.45;">Fokuserad — händerna är alltid fulla.</div></div>
+      <div style="display: flex; flex-direction: column; gap: 10px; border-top: 3px solid var(--color-text); padding-top: 12px;"><div style="width: 90px; height: 100px; overflow: hidden;"><div style="transform: scale(0.76); transform-origin: top left;"><dc-import name="StaffFace" expression="neutral" hint-size="118px,132px"></dc-import></div></div><div style="font-family: var(--font-heading); font-weight: 800; font-size: 16px;">Kökschef</div><div style="font-size: 13px; line-height: 1.45;">Neutral. Stressad kökschef = varning.</div></div>
+      <div style="display: flex; flex-direction: column; gap: 10px; border-top: 3px solid var(--color-text); padding-top: 12px;"><div style="width: 90px; height: 100px; overflow: hidden;"><div style="transform: scale(0.76); transform-origin: top left;"><dc-import name="StaffFace" expression="fokuserad" hint-size="118px,132px"></dc-import></div></div><div style="font-family: var(--font-heading); font-weight: 800; font-size: 16px;">Kock</div><div style="font-size: 13px; line-height: 1.45;">Fokuserad hela servicen.</div></div>
+      <div style="display: flex; flex-direction: column; gap: 10px; border-top: 3px solid var(--color-text); padding-top: 12px;"><div style="width: 90px; height: 100px; overflow: hidden;"><div style="transform: scale(0.76); transform-origin: top left;"><dc-import name="StaffFace" expression="utmattad" hint-size="118px,132px"></dc-import></div></div><div style="font-family: var(--font-heading); font-weight: 800; font-size: 16px;">Diskare</div><div style="font-size: 13px; line-height: 1.45;">Utmattad efter halva passet — normalt, inte ett larm.</div></div>
+      <div style="display: flex; flex-direction: column; gap: 10px; border-top: 3px solid var(--color-text); padding-top: 12px;"><div style="width: 90px; height: 100px; overflow: hidden;"><div style="transform: scale(0.76); transform-origin: top left;"><dc-import name="StaffFace" expression="stolt" hint-size="118px,132px"></dc-import></div></div><div style="font-family: var(--font-heading); font-weight: 800; font-size: 16px;">Bartender</div><div style="font-size: 13px; line-height: 1.45;">Stolt — den enda rollen med publik.</div></div>
+      <div style="display: flex; flex-direction: column; gap: 10px; border-top: 3px solid var(--color-text); padding-top: 12px;"><div style="width: 90px; height: 100px; overflow: hidden;"><div style="transform: scale(0.76); transform-origin: top left;"><dc-import name="StaffFace" expression="fokuserad" hint-size="118px,132px"></dc-import></div></div><div style="font-family: var(--font-heading); font-weight: 800; font-size: 16px;">Barista</div><div style="font-size: 13px; line-height: 1.45;">Fokuserad, blicken i koppen.</div></div>
+      <div style="display: flex; flex-direction: column; gap: 10px; border-top: 3px solid var(--color-text); padding-top: 12px;"><div style="width: 90px; height: 100px; overflow: hidden;"><div style="transform: scale(0.76); transform-origin: top left;"><dc-import name="StaffFace" expression="neutral" hint-size="118px,132px"></dc-import></div></div><div style="font-family: var(--font-heading); font-weight: 800; font-size: 16px;">Restaurangchef</div><div style="font-size: 13px; line-height: 1.45;">Neutral — läser rummet, inte gästen.</div></div>
+      <div style="display: flex; flex-direction: column; gap: 10px; border-top: 3px solid var(--color-text); padding-top: 12px;"><div style="width: 90px; height: 100px; overflow: hidden;"><div style="transform: scale(0.76); transform-origin: top left;"><dc-import name="StaffFace" expression="neutral" hint-size="118px,132px"></dc-import></div></div><div style="font-family: var(--font-heading); font-weight: 800; font-size: 16px;">Städare</div><div style="font-size: 13px; line-height: 1.45;">Neutral. Syns bara före öppning.</div></div>
+      <div style="display: flex; flex-direction: column; gap: 10px; border-top: 3px solid var(--color-text); padding-top: 12px;"><div style="width: 90px; height: 100px; overflow: hidden;"><div style="transform: scale(0.76); transform-origin: top left;"><dc-import name="StaffFace" expression="stressad" hint-size="118px,132px"></dc-import></div></div><div style="font-family: var(--font-heading); font-weight: 800; font-size: 16px;">Utkörare</div><div style="font-size: 13px; line-height: 1.45;">Stressad — kör alltid mot en klocka.</div></div>
+      <div style="display: flex; flex-direction: column; gap: 10px; border-top: 3px solid var(--color-accent); padding-top: 12px;"><div style="width: 90px; height: 100px; overflow: hidden;"><div style="transform: scale(0.76); transform-origin: top left;"><dc-import name="StaffFace" expression="förvirrad" hint-size="118px,132px"></dc-import></div></div><div style="font-family: var(--font-heading); font-weight: 800; font-size: 16px;">Lärling</div><div style="font-size: 13px; line-height: 1.45;">Förvirrad vecka ett, neutral vecka fyra. Uttrycket är kvittot på din upplärning.</div></div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 26px;">
+    <div style="display: flex; gap: 18px; align-items: baseline; border-bottom: 3px solid var(--color-text); padding-bottom: 12px;">
+      <span style="font-family: var(--font-heading); font-weight: 800; font-size: 20px; letter-spacing: 0.16em; color: var(--color-accent);">04</span>
+      <h2 style="font-family: var(--font-heading); font-weight: 800; font-size: 34px; margin: 0; letter-spacing: -0.02em;">Vad det kräver av koden</h2>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px;">
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div style="font-family: var(--font-heading); font-weight: 800; font-size: 19px;">StaffRole måste växa</div>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55;">Fyra av tolv roller finns i typen idag. De åtta övriga behöver antingen egna värden eller ett <em>task</em>-fält som låter befintliga roller bära uppgiften — men silhuetten kräver ändå headwear och apron per person, så fältet hör på TeamMember, inte på rollen.</p>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div style="font-family: var(--font-heading); font-weight: 800; font-size: 19px;">Tempo som datum, inte magi</div>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55;">Tolv hastigheter mellan 0,2 och 1,6 m/s ersätter dagens enda konstant 1,4. Lägg dem i en tabell intill rollen — då kan balansering ske utan att röra scenkoden.</p>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div style="font-family: var(--font-heading); font-weight: 800; font-size: 19px;">Två roller lämnar rummet</div>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55;">Diskaren och utköraren arbetar utanför matsalen. De behöver ändå puckar — annars saknar ansiktsraden två ansikten och spelaren undrar vem som diskar.</p>
+      </div>
+    </div>
+    <div style="border-top: 4px solid var(--color-text); padding-top: 20px; display: flex; justify-content: space-between; align-items: baseline; gap: 24px; flex-wrap: wrap;">
+      <div style="font-family: var(--font-heading); font-weight: 800; font-size: 15px; letter-spacing: 0.16em; text-transform: uppercase;">Underlag 001 · rigg &amp; mönster — 002 · matsalen i kontext — 003 · yrkesrollerna</div>
+      <div style="font-family: var(--font-heading); font-weight: 800; font-size: 15px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-accent);">Nästa: rollerna i matsalen samtidigt</div>
+    </div>
+  </section>
+
+</div>
+</x-dc>
+</body>
+</html>

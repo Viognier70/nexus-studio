@@ -22,7 +22,6 @@ import { GRAY_BOX_CAMERA } from '../content/grythyttan';
 import { useSimState } from '../simulation/SimulationProvider';
 import type { Guest, GuestState } from '../types';
 import { staffPositionsRef, businessRoomRef, guestPositionsRef } from './interiorSharedState';
-import { computePath } from './roomNav';
 import type { XZ } from './roomNav';
 import {
   derivePipCarriers,
@@ -57,10 +56,13 @@ import {
 // per sekund vid 1,2 m/s — naturlig kadens.
 const STRIDE_LENGTH_M = 0.75;
 
-// Walking pace — 1.2 m/s is a comfortable indoor stroll. Guests moving
-// at this pace cross the 6 m arrival radius in ~5 s, which reads as
-// "walking" rather than teleport-with-easing.
-const WALK_SPEED_M_PER_S = 1.2;
+// ORDER 261 (steg 2A, VO 2026-09-23 iter 4) — utjämning "hård, ~100 ms".
+// Renderaren följer sim.guest.position (världskoord) och lerpar cx/cz
+// exponentiellt mot det värdet. Vid delta = 1/60 s ger τ = 0.1 s en
+// alpha ≈ 0.154 per frame — 63 % catchup efter 6 frames, 95 % efter
+// 18 frames. Ger max render-lag ≈ WALK_SPEED × τ = 1.2 × 0.1 = 0.12 m
+// när sim är i konstant rörelse; DoD-krav < 0.3 m i 99 % av tick.
+const POSITION_SMOOTHING_TAU_SEC = 0.1;
 
 // Spawn offset: new guests appear this many metres further out along
 // the entrance→arrival-slot vector, then walk in. Small enough that
@@ -509,14 +511,13 @@ export function InteriorGuests() {
         slotAssignRef.current.set(guest.id, slots);
       }
       const target = targetFor(guest, slots, layout, spawnPoints, seatsForFrame, waitingSlotsForFrame);
-      // Initialise position for a first-seen guest at the outer spawn
-      // point matching their arrival slot — the walk-in becomes
-      // visible instead of a pop-in on the arc.
+      // ORDER 261 (steg 2A) — pos.cx/cz seedas från sim.guest.position
+      // (världskoord från roomSpawnPoint via arrivals.seedGuestPosition)
+      // istället för renderarens egna spawnPoints. En källa: sim.
       let pos = positionsRef.current.get(guest.id);
       if (!pos) {
-        const spawn = spawnPoints[slots.arrival];
         pos = {
-          cx: spawn[0], cz: spawn[1],
+          cx: guest.position.x, cz: guest.position.z,
           leanX: 0, leanZ: 0, leanY: 0,
           prevState: null, sitStandPhase: -1, sitStandDir: 0,
           phaseSeed: phaseSeedFor(guest.id),
@@ -639,145 +640,41 @@ export function InteriorGuests() {
         }
       }
 
-      // Ease toward target at walking pace. Håll koll på om vi rörde
-      // oss den här bildrutan så gångfasen bara ökar när fötterna
-      // faktiskt tar steg.
-      // ORDER 186 fynd 4 — waypoint via entrance. När en gäst just
-      // övergått till sittande (waiting → seated) linjär-interpolerade
-      // vi tidigare direkt från waiting-slot (utanför byggnaden) till
-      // seat (inuti). Gästen flög rakt genom väggen. Fix: när gästen
-      // är seated MEN fortfarande utanför byggnadens footprint, sätt
-      // effektivt mål till entrance-punkten. När vi hunnit fram till
-      // (< 0,8 m från) entrance, byt tillbaka till seat-target.
-      // Byggnadens footprint approximeras av OBB half-width — inte
-      // exakt polygon, men tillräckligt konservativ för att undvika
-      // vägg-passager i praktiken.
-      let effTargetX = target.x;
-      let effTargetZ = target.z;
-      const seated = SEATED_STATES.includes(guest.state);
-
-      // ORDER 221 §2.3+§2.4 — nav-route för gäster mot INTERIÖRA mål.
-      // Samma system som staff (InteriorStaff.tsx). Aktiveras när
-      // gästens sluttarget ligger inuti byggnadens OBB (dvs. seated-
-      // states — arriving/waiting/leaving ligger utanför). Utan nav:
-      // gästen rusade rakt genom bardisk / bord / bryggkar från arrival
-      // slot till seat — VO 2026-09-16 "Rummet går att gå i".
+      // ORDER 261 (steg 2A, VO 2026-09-23) — utjämning mot sim.guest.
+      // position, ingen egen rörelse mot egna mål. Före ORDER 261 hade
+      // renderaren:
+      //   1. Egen `targetFor()` med per-state kalkylerad mål-koord
+      //   2. Egen nav-path (SEATED_STATES only) via `computePath`
+      //   3. Egen entrance-waypoint (ORDER 186 fynd 4)
+      //   4. Egen `WALK_SPEED_M_PER_S` × delta lerp mot mål
+      // Alla borttagna. Sim äger nu positionen; renderaren följer.
       //
-      // Cache per (state, seatIndex) — target-punkten är statisk per
-      // seat, så nav-anropet kör en gång per gäst-sittning i st f varje
-      // frame. När guest byter state (arriving → seated) blir nyckeln
-      // ny och path räknas om.
-      const roomChanForNav = businessRoomRef.current;
-      const nav = roomChanForNav?.nav ?? null;
-      const worldToLocal = roomChanForNav?.worldToLocalXZ ?? null;
-      const localToWorld = roomChanForNav?.localToWorldXZ ?? null;
-      if (nav && worldToLocal && localToWorld && seated) {
-        const key = `${guest.state}:${guest.seatIndex ?? -1}`;
-        if (pos.navTargetKey !== key || !pos.navPath) {
-          const fromLocal = worldToLocal([pos.cx, pos.cz]);
-          const toLocal = worldToLocal([target.x, target.z]);
-          const localPath = computePath(nav, fromLocal, toLocal);
-          if (localPath && localPath.length > 1) {
-            pos.navPath = localPath.map((p) => localToWorld(p));
-          } else {
-            pos.navPath = null;
-          }
-          pos.navTargetKey = key;
-          pos.navPathIdx = 0;
-        }
-        if (pos.navPath && pos.navPath.length > 1) {
-          // Följ pathen — sista waypoint är target. Avancera när nära
-          // aktuell waypoint (< 0.5 m). Effektivt mål = aktuell waypoint.
-          const wp = pos.navPath[pos.navPathIdx];
-          const wdx = wp[0] - pos.cx;
-          const wdz = wp[1] - pos.cz;
-          if (wdx * wdx + wdz * wdz < 0.5 * 0.5 && pos.navPathIdx < pos.navPath.length - 1) {
-            pos.navPathIdx += 1;
-          }
-          effTargetX = pos.navPath[pos.navPathIdx][0];
-          effTargetZ = pos.navPath[pos.navPathIdx][1];
-        }
-      } else {
-        // Gäst i non-seated state → släpp cachad nav-path så nästa
-        // seated-transition startar rent.
-        pos.navPath = null;
-        pos.navTargetKey = '';
-        pos.navPathIdx = -1;
-      }
-
-      if (seated && !pos.navPath) {
-        // ORDER 190 fynd 3 — waypoint släpper när gästen är nära seat.
-        // Före ORDER 190 kunde waypoint hålla kvar en gäst vid entrance-
-        // jittern trots att seat-positionen redan var nådd — VO fynd
-        // 2026-09-07 "gäst står bredvid stolen, inte på". Släpp release
-        // vid distToSeat < 1.5 m så final approach går direkt till seat
-        // utan att waypoint tar över igen från jitter-oscillation.
-        const seatIdx = guest.seatIndex ?? -1;
-        const distToSeat =
-          seatIdx >= 0 && seatIdx < seatsForFrame.length
-            ? Math.hypot(pos.cx - seatsForFrame[seatIdx][0], pos.cz - seatsForFrame[seatIdx][1])
-            : Infinity;
-        const halfW = layout.width / 2;
-        const [cx0, cz0] = layout.centre;
-        const dxFromCentre = pos.cx - cx0;
-        const dzFromCentre = pos.cz - cz0;
-        const distFromCentre = Math.hypot(dxFromCentre, dzFromCentre);
-        if (distFromCentre > halfW * 1.02 && distToSeat > 1.5) {
-          // ORDER 200 fynd 2/4 — waypoint till entrén, ingen jitter.
-          //
-          // Före ORDER 200: entrance-jitter (±1.8 m per sin/cos av
-          // phaseSeed, kommenterad som "ORDER 188 fynd 2 — kön ska ha
-          // egna platser"). Bugen: release-villkoret mätte `distToEntrance`
-          // mot RÅ entrance, inte mot jittered target. Jitter-magnituden
-          // är alltid `sqrt(sin²+cos²) * 1.8 = 1.8 m`, alltid > 0.8 m-
-          // tröskeln → waypoint fyras varje frame → target = samma
-          // jittered position → dsq=0 → gäst STÅR STILL för alltid 1.8 m
-          // utanför entrén. Diagnostiken 2026-09-10 visade 5-10 gäster
-          // fastnade utanför OBB, aldrig nådde seat, sit-blend fyrade
-          // aldrig — grund för fynd 2 (gäst på gräset) + fynd 4 (16 seated
-          // men bara 6 syns; de 10 klumpade utanför nordväggen bortom
-          // kamera-FOV).
-          //
-          // ORDER 188:s "kluster vid entrance" gällde WAITING-gäster
-          // (som placeras via `layout.waitingSlots` — redan distincta
-          // platser). Jitter i seated-branchen var missriktad; SEATED-
-          // gäster går IGENOM entrén, inte queue:ar där. Rakt genom
-          // entrance-punkten är rätt — ingen kluster, gästerna är på
-          // väg in.
-          effTargetX = layout.entrance[0];
-          effTargetZ = layout.entrance[1];
-        }
-      }
-      const dx = effTargetX - pos.cx;
-      const dz = effTargetZ - pos.cz;
-      const dsq = dx * dx + dz * dz;
-      const step = WALK_SPEED_M_PER_S * delta;
-      let movedThisFrame = false;
-      if (dsq > step * step) {
-        const invd = 1 / Math.sqrt(dsq);
-        pos.cx += dx * invd * step;
-        pos.cz += dz * invd * step;
-        movedThisFrame = true;
-      } else if (dsq > 1e-6) {
-        // Sista biten — snappar till effektiva målet (entrance-waypoint
-        // eller seat), räknas fortfarande som gång.
-        pos.cx = effTargetX;
-        pos.cz = effTargetZ;
-        movedThisFrame = true;
-      }
-      // ORDER 121 §2 — gångfas i cykler (avståndsdrivna, inte tidsdrivna).
+      // Exponentiell utjämning τ = 100 ms (POSITION_SMOOTHING_TAU_SEC):
+      // alpha = 1 - exp(-delta / τ). Vid sim-hastighet 2.4 m/s ger τ =
+      // 0.1 s max render-lag på 0.24 m i steady-state, väl under DoD-
+      // kravet < 0.3 m i 99 % av tick.
+      const targetX = guest.position.x;
+      const targetZ = guest.position.z;
+      const prevCx = pos.cx;
+      const prevCz = pos.cz;
+      const smoothAlpha = 1 - Math.exp(-delta / POSITION_SMOOTHING_TAU_SEC);
+      pos.cx = pos.cx + (targetX - pos.cx) * smoothAlpha;
+      pos.cz = pos.cz + (targetZ - pos.cz) * smoothAlpha;
+      // Rörelse-detektion: mät faktisk förflyttning denna frame.
+      // MIN_FRAME_MOVE_M = 0.001 m filtrerar bort mikro-jitter från
+      // exponentiell utjämning så pose-walk-cykeln inte fastnar på
+      // "rör sig" när gästen står still.
+      const frameDx = pos.cx - prevCx;
+      const frameDz = pos.cz - prevCz;
+      const frameDist = Math.hypot(frameDx, frameDz);
+      const movedThisFrame = frameDist > 0.001;
       if (movedThisFrame) {
-        pos.walkPhase += (step / STRIDE_LENGTH_M);
-        // ORDER 197 §2 — uppdatera walkYaw ur rörelseriktningen. THREE:s
-        // yaw-konvention: rotation.y = 0 ger objektets +Z-axel i världens
-        // +Z, så för rörelsevektor (dx, dz) blir yaw = atan2(dx, dz).
-        // Uppdateras endast när `movedThisFrame` för att undvika
-        // NaN-atan2 på nollvektor; senast beräknade värde behålls när
-        // gästen står still (så sit-blend-triggeringen får en meningsfull
-        // blendStartYaw även på frame där rörelsen just stannade).
-        pos.walkYaw = Math.atan2(dx, dz);
+        // ORDER 121 §2 — gångfas ökar med faktiskt förflyttning per
+        // frame, inte målhastigheten (så gångcykeln matchar det som
+        // syns även när sim rör sig i annan takt än förr).
+        pos.walkPhase += frameDist / STRIDE_LENGTH_M;
+        pos.walkYaw = Math.atan2(frameDx, frameDz);
       }
-      // ORDER 220 §1 — spara gångstate för publicerings-loopen.
       pos.movedLastFrame = movedThisFrame;
 
       // ORDER 044 §3.3 lean — physical seat-attention.
