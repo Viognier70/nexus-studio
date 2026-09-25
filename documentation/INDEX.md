@@ -58,6 +58,7 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 - `M8_PLAYTEST_BRIEF_ORDER_081.md`: M8 playtest brief (ORDER 081).
 - `M8_ROOM_CARD_PANEL_REPORT_ORDER_085.md`: M8 Room Card Panel — Report Gate (ORDER 085).
 - `NEXUS_V1_OPPNA_FRAGOR.md`: Nexus v1 — öppna frågor.
+- `NEXUS_V1_TIDSLOGG.md`: Nexus v1 — tidslogg.
 - `ORDER_025_ENGINEERING_REPORT.md`: ORDER 025 Engineering Report.
 - `ORDER_027_FINAL_REPORT.md`: ORDER 027 Final Report — Place Framework & Adaptive World Model.
 - `ORDER_034_DOCUMENTATION_ALIGNMENT.md`: ORDER 034 — Documentation Alignment.
