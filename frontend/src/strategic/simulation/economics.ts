@@ -43,8 +43,10 @@ export const SERVICE_DURATION_MULT: Record<ServiceConcept, number> = {
 // down; level 3 speeds up.
 //
 // ORDER 253 (steg 1 av alternativ D per VO 2026-09-22) — de tre gest-
-// taskarna greet/order/serve läses nu från `handoff/serviceScore.ts`
+// taskarna greet/order/serve är handkopierade från `handoff/serviceScore.ts`
 // SERVICE_TIMING vid gameSpeed=1: base = SERVICE_TIMING × TICK_HZ.
+// Filen importeras inte (handoff/ ligger utanför tsconfig) — ändras
+// SERVICE_TIMING där måste värdena nedan uppdateras för hand.
 //   greet   3.2 s × 5 =  16 ticks  (från 4)
 //   order   6.5 s × 5 =  33 ticks  (från 10)
 //   serve   2.4 s × 5 =  12 ticks  (från 14) — koreografins setDown
