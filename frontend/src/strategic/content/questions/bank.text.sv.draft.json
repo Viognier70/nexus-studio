@@ -1,0 +1,408 @@
+{
+  "language": "sv",
+  "status": "draft",
+  "reviewedBy": null,
+  "note": "Utkast översatt av Claude Code i ORDER 262 (etapp 0), i en körning för enhetlig ton och terminologi. Ej granskat av Vision Owner. Spelet läser den engelska texten tills detta utkast är granskat och status satt till 'reviewed'.",
+  "texts": {
+    "maltidbiblioteket-brons-01": {
+      "prompt": "Vad är egentligen skillnaden mellan champagne och crémant?",
+      "options": [
+        "Champagne jäser en andra gång på flaska, crémant på tank",
+        "Champagne är en skyddad ursprungsbeteckning; crémant görs på samma sätt i andra franska regioner",
+        "Champagne får bara göras på chardonnay, crémant på vilken druva som helst",
+        "Champagne är torr, crémant är alltid halvtorr"
+      ],
+      "explanation": "Båda görs med den traditionella metoden, med andra jäsningen på flaska. Skillnaden är var: champagne får bara komma från det avgränsade Champagneområdet, medan crémant är samma metod i till exempel Loire, Alsace eller Bourgogne. A är det lockande felsvaret, eftersom tankjäsning är vad man förknippar med billigare mousserande vin — men det gäller inte crémant."
+    },
+    "maltidbiblioteket-brons-02": {
+      "prompt": "Vad är umami egentligen, och var kommer idén ifrån?",
+      "options": [
+        "En blandning av salt och sött, beskriven av franska kockar på 1800-talet",
+        "Smaken av glutamat och vissa nukleotider, beskriven av Kikunae Ikeda i Japan 1908",
+        "Känslan av fett i munnen, namngiven av en japansk forskare på 1950-talet",
+        "Ett samlingsnamn för fermenterade smaker, lånat från koreansk matlagning"
+      ],
+      "explanation": "Ikeda isolerade glutamat ur kombu, tången i dashi, och kallade smaken umami. Senare visades att nukleotider som inosinat och guanylat förstärker den, vilket förklarar varför kombu och bonito fungerar så bra ihop. A lockar eftersom umami ofta beskrivs som runt och fylligt, men det är en grundsmak i egen rätt, med egna receptorer."
+    },
+    "maltidbiblioteket-brons-03": {
+      "prompt": "Vilken av de här är inte en av Escoffiers fem grundsåser?",
+      "options": [
+        "Velouté",
+        "Espagnole",
+        "Béarnaise",
+        "Béchamel"
+      ],
+      "explanation": "Escoffiers fem grundsåser är béchamel, velouté, espagnole, tomatsås och hollandaise. Béarnaise är en dottersås till hollandaise, med dragon och vinäger. Den lockar eftersom den är så central i det klassiska köket — men den bygger på en grundsås i stället för att vara en."
+    },
+    "maltidbiblioteket-brons-04": {
+      "prompt": "Vad är skillnaden mellan torrhängt kött och kött som mörats i vakuumpåse?",
+      "options": [
+        "Vakuummörat blir alltid mörare, eftersom fukten stannar kvar",
+        "Torrhängningen påverkar bara ytan; insidan är densamma",
+        "Torrhängt tappar fukt och får en koncentrerad, nötig smak; båda mörnar genom köttets egna enzymer",
+        "Den enda skillnaden är hur länge köttet har hängt"
+      ],
+      "explanation": "I båda metoderna bryter köttets egna enzymer ner muskelproteinerna och gör det mörare. Torrhängt kött tappar dessutom fukt och får nötiga, lätt ostiga toner, vilket vakuummörat inte får. B lockar eftersom den torra skorpan skärs bort, men smakförändringen går genom hela biten."
+    },
+    "maltidbiblioteket-brons-05": {
+      "prompt": "Den här tomatsåsen känns som något riktigt gammalt. Har italienarna ätit tomatsås sedan romartiden?",
+      "options": [
+        "Ja, tomater odlades redan i romarriket",
+        "Nej, tomaten kom från Amerika på 1500-talet och fick sin plats i det italienska köket först från slutet av 1600-talet",
+        "Ja, tomaten kom från Asien längs Sidenvägen under medeltiden",
+        "Nej, tomatsåsen uppfanns i USA och fördes till Italien av hemvändande emigranter"
+      ],
+      "explanation": "Tomaten kommer från Sydamerika och nådde Europa efter Columbus. Den sågs länge med misstro, och de första tryckta italienska recepten på tomatsås är från 1690-talet. A lockar eftersom tomaten känns så grundläggande i italiensk mat, men i det köket är den yngre än både pastan och olivoljan."
+    },
+    "maltidbiblioteket-brons-06": {
+      "prompt": "Vad menar man med terroir?",
+      "options": [
+        "Den jordiga doft som vissa viner har",
+        "En plats samlade inverkan — jord, klimat, läge och ofta lokal tradition — på det som växer där",
+        "Den druvsort ett vin är gjort på",
+        "En officiell kvalitetsklassning av franska vingårdar"
+      ],
+      "explanation": "Terroir beskriver hur en plats formar en produkt genom jord, klimat, sluttning och ofta sedan länge etablerade arbetssätt. Begreppet används om vin men också om ost, kaffe och te. A lockar eftersom ordet liknar terre, jord, och jordiga toner ibland tillskrivs terroir — men begreppet handlar om platsen, inte om en doft."
+    },
+    "maltidbiblioteket-brons-07": {
+      "prompt": "Receptet på sorbeten säger 28 °Brix. Vad är det som mäts?",
+      "options": [
+        "Halten lösta ämnen, i praktiken mest socker, i vätskan",
+        "Syrahalten i fruktpurén",
+        "Vätskans viskositet vid serveringstemperatur",
+        "Andelen fast fruktkött i basen"
+      ],
+      "explanation": "En grad Brix motsvarar ungefär ett gram löst socker per hundra gram lösning och mäts med refraktometer. I sorbet avgör sockerhalten hur hårt den fryser, så Brix är ett arbetsmått — samma som används för mognad i druvmust. C lockar eftersom sockret påverkar konsistensen, men Brix mäter halt, inte hur tjock vätskan är."
+    },
+    "maltidbiblioteket-brons-08": {
+      "prompt": "En gäst har uppgett en allergi. Vilken av de här ingredienserna ska enligt EU:s regler kunna redovisas som allergen?",
+      "options": [
+        "Tomat",
+        "Vitlök",
+        "Selleri",
+        "Paprika"
+      ],
+      "explanation": "Selleri är ett av de fjorton ämnen som EU kräver att restauranger ska kunna redovisa, tillsammans med bland annat senap, sesam och lupin. Det gömmer sig ofta i fonder, buljonger och kryddblandningar, vilket gör det lätt att missa. Tomat och vitlök kan ge överkänslighet hos enskilda gäster, men de finns inte på listan."
+    },
+    "maltidbiblioteket-brons-09": {
+      "prompt": "Varför kallas köksorganisationen med chef de partie och commis för brigadsystemet?",
+      "options": [
+        "Den byggdes efter förebild från Paris brandkår",
+        "Escoffier organiserade köket efter militär förebild runt år 1900",
+        "Den kommer från klosterkök under medeltiden",
+        "Den infördes av franska revolutionens nya restauranger"
+      ],
+      "explanation": "Auguste Escoffier, som själv hade tjänstgjort i armén, delade in köket i stationer med tydlig befälsordning för att klara stora hotellserveringar. Strukturen lever kvar i dag i titlar som sous-chef och chef de partie. Revolutionen lockar eftersom den gav upphov till de första restaurangerna, men köksbrigaden kom ett sekel senare."
+    },
+    "maltidbiblioteket-brons-10": {
+      "prompt": "Vad betyder confit egentligen — är det bara ett finare ord för stekt anka?",
+      "options": [
+        "Nej, det betyder marinerad i vin före tillagning",
+        "Nej, det betyder kallrökt och lagrad",
+        "Nej, det betyder konserverad genom långsam tillagning och förvaring i fett eller socker",
+        "Nej, det betyder inlagd i vinäger och kryddor"
+      ],
+      "explanation": "Ordet kommer från franskans confire, att konservera. Ankan tillagas långsamt i sitt eget fett och kan sedan förvaras täckt av det, precis som frukt konserveras i socker. D lockar eftersom inläggning också är ett sätt att konservera, men confit bygger på fett eller socker, inte syra."
+    },
+    "metodkoket-brons-01": {
+      "prompt": "Du bryner rotselleri i smör och vill ha djup färg utan bränd sötma. Vad skiljer Maillardreaktionen från karamellisering?",
+      "options": [
+        "Maillard kräver aminosyror tillsammans med reducerande socker; karamellisering är socker som bryts ner på egen hand, utan kväve",
+        "Maillard sker i fett, karamellisering i vatten",
+        "Maillard kräver högre temperatur än karamellisering",
+        "Maillard ger färgen, karamelliseringen ger smaken"
+      ],
+      "explanation": "Maillard är en reaktion mellan en aminogrupp och ett reducerande socker, och därför ger den kvävehaltiga aromer som karamellisering saknar. C är det lockande felsvaret eftersom båda sker vid hög värme — men rent socker karamelliseras först runt 160 °C, medan Maillard kommer igång långt under det."
+    },
+    "metodkoket-brons-02": {
+      "prompt": "Ett kycklinglår har legat länge i vattenbad på 60 °C. En kollega säger att det inte är säkert eftersom det aldrig nådde 70 °C. Vad avgör om det är säkert?",
+      "options": [
+        "Enbart kärntemperaturen — kyckling under 70 °C är aldrig säker",
+        "Temperatur och hålltid tillsammans; tillräckligt länge i 60 °C ger samma reduktion som ett ögonblick i 70 °C",
+        "Den syrefattiga miljön i vakuumpåsen, som stoppar salmonella",
+        "Vilotiden efter badet, medan värmen jämnar ut sig"
+      ],
+      "explanation": "Pastörisering är en logaritmisk reduktion som beror på både temperatur och tid, så tillräckligt många minuter i 60 °C är lika säkert som några sekunder i 70 °C. A är vad en halvutbildad kock svarar, eftersom 70 °C är siffran man lär sig för snabb tillagning — men den siffran förutsätter kort tid. Syrebrist hjälper inte: salmonella är fakultativt anaerob."
+    },
+    "metodkoket-brons-03": {
+      "prompt": "En gelatingelé ska bli vegetarisk med agar. Vilken skillnad märker gästen mest i munnen?",
+      "options": [
+        "Agargelén stelnar bara kall och rinner så fort den lämnar kylen",
+        "Agargelén smälter inte vid kroppstemperatur; den bryts i bitar i stället",
+        "Agargelén är mjukare och lösare än gelatingelén",
+        "Agargelén behöver syra för att stelna, så den smakar surt"
+      ],
+      "explanation": "Gelatin smälter runt 35 °C, strax under kroppstemperatur, och det ger den smältning på tungan som gästerna väntar sig. Agar smälter först runt 85 °C och håller formen i munnen, så gelén spricker i stället för att smälta. A har det bakvänt — det är gelatinet, inte agarn, som är det värmekänsliga av de två."
+    },
+    "metodkoket-brons-04": {
+      "prompt": "Hollandaisen skär sig när den blir för varm. Vad har hänt med emulsionen?",
+      "options": [
+        "Smöret har avdunstat och lämnat vattenfasen ensam",
+        "Syran från citronen har neutraliserats, så pH har stigit",
+        "Äggulans proteiner har koagulerat och släppt fettdropparna de höll isär",
+        "Fettdropparna har blivit för små för att hålla ihop"
+      ],
+      "explanation": "Det är äggulans proteiner och lecitin som lägger sig runt fettdropparna och hindrar dem från att flyta ihop. När värmen koagulerar proteinerna förlorar de den funktionen och fettet skiljer sig. B lockar eftersom syran faktiskt hjälper stabiliteten, men värmen tar inte bort den — det är proteinet som ger vika."
+    },
+    "metodkoket-brons-05": {
+      "prompt": "Varför får kockar ofta höra att de inte ska salta en biff tio minuter före stekning, när fyrtio minuter går bra?",
+      "options": [
+        "Efter tio minuter ligger den utdragna vätskan kvar på ytan och hindrar bryningen; efter fyrtio har den sugits tillbaka",
+        "Saltet hinner inte lösas upp på tio minuter och kryddar ojämnt",
+        "Efter tio minuter har saltet koagulerat ytans proteiner så att de inte kan brynas",
+        "Kort kontakt med salt smakar beskt; längre kontakt mildrar det"
+      ],
+      "explanation": "Saltet drar först ut vätska genom osmos, och den vätskan måste koka bort innan ytan kan nå bryningstemperatur. Med mer tid löses saltet i vätskan och dras tillbaka in i köttet, så ytan torkar igen. B är det troligaste felsvaret — salt löses snabbt; problemet är var vätskan ligger, inte hur jämnt saltet fördelas."
+    },
+    "metodkoket-brons-06": {
+      "prompt": "En sås redd med stärkelse blir tunn när citronsaft tillsätts och den fortsätter sjuda. Varför?",
+      "options": [
+        "Syran binder vattnet, så det blir mindre kvar åt stärkelsen",
+        "Syran sänker kokpunkten, så stärkelsen förklistras aldrig",
+        "Syran hydrolyserar stärkelsekedjorna, som blir för korta för att reda",
+        "Syran denaturerar glutenet i mjölet, som bär konsistensen"
+      ],
+      "explanation": "Under värme klipper syran de långa amylos- och amylopektinkedjorna i kortare bitar, och korta kedjor håller betydligt mindre vatten. Därför tillsätts syra helst sent, när såsen har satt sig. D lockar eftersom gluten är vad man förknippar med vetemjöl, men i en sås är det stärkelsen, inte proteinet, som gör jobbet."
+    },
+    "metodkoket-brons-07": {
+      "prompt": "En grönsaksfermentering står i fyraprocentig lake. Vad gör saltet framför allt?",
+      "options": [
+        "Håller tillbaka saltkänsliga mikrober så att mjölksyrabakterierna får ett försprång",
+        "Sänker pH direkt och sätter därmed igång fermenteringen",
+        "Ger näring som mjölksyrabakterierna behöver för att föröka sig",
+        "Stoppar all mikrobiell aktivitet tills syra börjar bildas"
+      ],
+      "explanation": "Salt är selektivt, inte steriliserande: mjölksyrabakterier tål mer salt än de flesta bakterier och mögel som annars skulle ta över. pH-sänkningen kommer efteråt, från bakteriernas egen mjölksyra — inte från saltet. Därför är B det vanligaste felsvaret, eftersom slutresultatet verkligen är en sur lake."
+    },
+    "metodkoket-brons-08": {
+      "prompt": "Ärtor förvälls innan de fryses. Vad är huvudsyftet?",
+      "options": [
+        "Att döda bakterier så att ärtorna håller längre i frysen",
+        "Att inaktivera enzymer som annars bryter ner färg och smak under fryslagring",
+        "Att driva ut luft så att iskristallerna blir mindre",
+        "Att fixera klorofyllet permanent"
+      ],
+      "explanation": "Enzymer som peroxidas och lipoxygenas fortsätter arbeta långsamt även i minus arton grader, och med tiden ger de höartade, gräsiga bismaker. Förvällningen slår ut dem. A lockar eftersom värmebehandling oftast handlar om mikrober, men i frysen står bakterierna redan still — det är enzymerna som fortsätter."
+    },
+    "metodkoket-brons-09": {
+      "prompt": "En högrev har fått tre timmar i 62 °C i vattenbad och är fortfarande seg. Vad saknas?",
+      "options": [
+        "Högre kärntemperatur, eftersom kollagen inte löses upp under 70 °C",
+        "Tid, eftersom kollagen omvandlas till gelatin långsamt vid låg temperatur",
+        "Vila, så att muskelfibrerna slappnar av och tar upp saften igen",
+        "Salt, som måste tränga in för att bryta ner bindväven"
+      ],
+      "explanation": "Kollagen omvandlas till gelatin redan strax över 60 °C, men processen beror starkt på tid och kan ta ett dygn snarare än några timmar. A är det självklara svaret för den som lärt sig bräsera i 85 °C — men där är det den högre temperaturen som gör tiden kort, inte tvärtom."
+    },
+    "metodkoket-brons-10": {
+      "prompt": "Marängen vill inte vispas upp trots lång vispning. Vad är den vanligaste orsaken?",
+      "options": [
+        "Äggvitorna var för kalla när vispningen började",
+        "Sockret kom i för sent",
+        "Spår av fett i bunken eller från gulan",
+        "Bunken var i rostfritt stål i stället för koppar"
+      ],
+      "explanation": "Fettmolekyler tränger in mellan äggvitans proteiner och hindrar dem från att bilda den sammanhängande hinna som håller luftbubblorna. En enda droppe gula räcker. A lockar eftersom rumsvarma vitor faktiskt vispas lättare — men kyla gör skummet långsammare, inte omöjligt."
+    },
+    "stensota-brons-01": {
+      "prompt": "Det röda smakar varmt och platt i kväll. Flaskan har stått framme i matsalen, där det är 23 grader. Vad gör du?",
+      "options": [
+        "Dekanterar vinet för att ge det mer luft",
+        "Kyler flaskan några minuter, ner mot 16–17 °C",
+        "Byter till ett glas med större kupa",
+        "Öppnar en ny flaska av samma vin"
+      ],
+      "explanation": "Värme gör alkoholen mer flyktig, så den tar över i doften medan fruktens friskhet dämpas. Några minuter i kylen eller i en ishink ger tillbaka balansen. Dekantering lockar eftersom det ofta hjälper slutna viner, men luft gör ingenting åt temperaturen."
+    },
+    "stensota-brons-02": {
+      "prompt": "Varför fungerar ett tanninrikt rött så bra till en fet, välhängd entrecôte?",
+      "options": [
+        "Syran i vinet bryter ner fettet kemiskt i munnen",
+        "Alkoholen löser upp fettet så att det sköljs bort",
+        "Tanninerna binder till proteiner, så strävheten mjuknar och fettet känns lättare",
+        "Tanninerna förstärker köttets umami så att vinet smakar fylligare"
+      ],
+      "explanation": "Tanniner binder till proteiner, både i saliven och i maten. Med kött i munnen tas tanninerna upp och vinet känns mjukare, samtidigt som strävheten skär genom känslan av fett. A lockar eftersom syra verkligen känns fräsch mot fett, men den effekten är sensorisk, inte en kemisk nedbrytning."
+    },
+    "stensota-brons-03": {
+      "prompt": "Ett bord beställer en stark thailändsk curry och vill ha ett kraftigt rött på 15 procent till. Vad är viktigast att säga?",
+      "options": [
+        "Hög alkohol förstärker den upplevda hettan; ett vin med lägre alkohol och lite sötma fungerar bättre",
+        "Tanninerna i ett kraftigt rött neutraliserar chilins hetta",
+        "Hög syra i vinet släcker chili bättre än alkohol gör",
+        "Ett ekfatslagrat vin mildrar hettan med sina vaniljtoner"
+      ],
+      "explanation": "Alkohol förstärker hur capsaicin uppfattas, så hettan blir skarpare och vinet smakar bränt. Restsötma och låg alkohol verkar åt andra hållet. B är det lockande felsvaret, men tannin och chili förstärker varandra — strävhet och hetta läggs ihop."
+    },
+    "stensota-brons-04": {
+      "prompt": "Vinet luktar fuktig källare, nästan som blöt kartong. Ska det göra det?",
+      "options": [
+        "Nej, det är troligen korkdefekt; flaskan ska bytas",
+        "Ja, det är brettanomyces och en del av vinets stil",
+        "Nej, vinet behöver en halvtimmes luft så går lukten bort",
+        "Ja, det är svavel från buteljeringen och försvinner i glaset"
+      ],
+      "explanation": "Doft av fuktig källare och blöt kartong är kännetecknet för TCA, den vanligaste korkdefekten. Den går inte att lufta bort och den dämpar dessutom vinets frukt, så flaskan byts. B lockar eftersom brett också ger jordiga toner, men den luktar stall och läder, inte blött papper."
+    },
+    "stensota-brons-05": {
+      "prompt": "Du öppnar champagne vid bordet utan smäll och utan att tappa mousse. Hur gör du?",
+      "options": [
+        "Tar av buren helt, greppar korken och vrider den försiktigt",
+        "Lossar buren men håller tummen kvar på den, och vrider flaskan medan korken hålls still",
+        "Öppnar med flaskan upprätt så att skummet stannar i halsen",
+        "Vrider korken snabbt så att trycket släpps på en gång"
+      ],
+      "explanation": "Buren sitter kvar som grepp och skydd, och flaskan vrids i ungefär 45 graders vinkel medan korken hålls fast. Trycket pyser då ut med en suck i stället för en smäll. A lockar eftersom det känns naturligt, men utan bur och tumme kan korken skjutas iväg i samma stund som den lossnar."
+    },
+    "stensota-brons-06": {
+      "prompt": "En 25 år gammal Bordeaux ska dekanteras. Vad är huvudskälet, och vad ska du undvika?",
+      "options": [
+        "Att ge tanninerna ett par timmar att mjukna; undvik att servera det direkt",
+        "Att höja temperaturen; undvik en kall karaff",
+        "Att skilja vinet från fällningen; undvik att låta det stå länge i karaffen",
+        "Att vädra bort svavlet; undvik att hälla för långsamt"
+      ],
+      "explanation": "Ett gammalt vin dekanteras framför allt för att fällningen ska stanna i flaskan. Det är också skört: för mycket luft kan få det att falla ihop inom en halvtimme. A stämmer för ett ungt, stramt vin — därför lockar det — men inte här."
+    },
+    "stensota-brons-07": {
+      "prompt": "Till en crème brûlée föreslår en kollega ett torrt, friskt vitt som kontrast. Vad händer i munnen?",
+      "options": [
+        "Kontrasten lyfter både vinet och desserten",
+        "Vinet smakar surt och tunt eftersom desserten är sötare",
+        "Vinets syra skär genom grädden och balanserar sötman",
+        "Inte mycket, så länge vinet har låg alkohol"
+      ],
+      "explanation": "Söt mat får vin att smaka mindre sött och mer syrligt, så ett torrt vin blir strävt och tunt bredvid en dessert. Tumregeln är att vinet ska vara minst lika sött som rätten. A och C lockar eftersom kontrast ofta är ett bra drag i en matchning — men inte när det gäller sötma."
+    },
+    "stensota-brons-08": {
+      "prompt": "Jag sätter grön sparris med hollandaise på dagens meny. Vilken vinstil ska vi matcha med?",
+      "options": [
+        "En fyllig, fatlagrad chardonnay som möter smöret",
+        "Ett ungt, tanninrikt rött som står emot såsen",
+        "Ett friskt, ekfritt vitt med grön ton, som sauvignon blanc eller grüner veltliner",
+        "En söt riesling som balanserar sparrisens beska"
+      ],
+      "explanation": "Sparrisens svavelföreningar och beska gör att ek och tannin smakar metalliskt, medan ett friskt, ekfritt vin med gröna toner möter dem. Syran står dessutom emot smöret i hollandaisen. A lockar eftersom smörsåser ofta matchas med fatlagrad chardonnay, men eken krockar med sparrisen."
+    },
+    "stensota-brons-09": {
+      "prompt": "Den vita bourgognen luktar nästan ingenting. Den har stått i ishinken sedan ni öppnade den. Är den dålig?",
+      "options": [
+        "Troligen korkdefekt; flaskan ska bytas",
+        "Den behöver dekanteras för att öppna sig",
+        "Den är för kall; låt den värmas mot 10–12 °C i glaset",
+        "Glaset är för stort, så doften sprids ut"
+      ],
+      "explanation": "Kyla håller kvar aromämnena i vinet, så ett fylligt vitt som stått länge i is blir stumt. Några minuter i handen eller på bordet räcker för att doften ska komma fram. A lockar eftersom stumhet kan vara korkdefekt, men ett korkat vin har sin egen doft av fuktig källare — det är inte bara tyst."
+    },
+    "stensota-brons-10": {
+      "prompt": "Jag dricker inte i kväll. Vad skulle passa till den friterade rätten jag beställde?",
+      "options": [
+        "En söt fruktdryck som balanserar saltet",
+        "En mousserande dryck med tydlig syra och lite sötma",
+        "En fyllig, krämig dryck som matchar friteringens fett",
+        "Stilla vatten med citron, så att inget stör smaken"
+      ],
+      "explanation": "Bubblor och syra rensar fett från gommen på samma sätt som champagne gör med friterad mat. Låg sötma gör att drycken inte känns tung bredvid rätten. C lockar eftersom lika mot lika fungerar i många matchningar, men fett mot fett lägger bara till tyngd."
+    },
+    "kalastorget-brons-01": {
+      "prompt": "Ett sällskap på fem kommer in utan bokning en fredag. Alla bord är tagna, och det första blir ledigt om ungefär fyrtio minuter. Vad gör du?",
+      "options": [
+        "Säger att ett bord blir ledigt alldeles strax, så att de stannar",
+        "Ger dem en ärlig väntetid och erbjuder plats i baren eller en bokning en annan kväll",
+        "Klämmer in dem vid ett fyrabord med en extra stol",
+        "Ber om ursäkt för att det är fullt och ber dem komma tillbaka"
+      ],
+      "explanation": "En ärlig väntetid låter sällskapet bestämma själva, och baren eller en ny bokning gör att de inte går tomhänta. C lockar eftersom de skulle få sitta direkt, men ett trångt bord ger en sämre kväll för dem och sämre service för borden runt omkring. A köper tid men kostar förtroende när fyrtio minuter blir en timme."
+    },
+    "kalastorget-brons-02": {
+      "prompt": "Gästen beställde sin biff medium rare, men den är genomstekt. Hon nämner det lugnt när du går förbi. Vad gör du?",
+      "options": [
+        "Förklarar att köttet fortsätter tillagas medan det vilar",
+        "Tar tallriken direkt, ber kort om ursäkt och ser till att en ny biff går före i köket",
+        "Stämmer av med kocken innan du säger något till gästen",
+        "Erbjuder rabatt på notan så att hon slipper vänta"
+      ],
+      "explanation": "Felet är uppenbart och gästen har rätt, så det viktigaste är att agera direkt och synligt. En kort ursäkt räcker; det är den nya biffen som räddar kvällen. C lockar eftersom det känns noggrant, men att gå därifrån utan att ta tallriken lämnar gästen med felet framför sig."
+    },
+    "kalastorget-brons-03": {
+      "prompt": "Jag är nötallergiker. Kan jag ta pannacottan?",
+      "options": [
+        "Ja, det står inga nötter i menybeskrivningen",
+        "Nej, för säkerhets skull avråder vi från alla desserter",
+        "Du stämmer av med köket vad den innehåller och hur den hanteras, och återkommer innan något serveras",
+        "Ja, så länge gästen har sin medicin med sig"
+      ],
+      "explanation": "Menyn beskriver rätten, inte allt i den eller allt den har varit i kontakt med — pralin, garnityr och delade redskap syns inte där. Att kontrollera och återkomma tar en minut och tar allergin på allvar. A är det lockande felsvaret eftersom det låter hjälpsamt, men ett snabbt ja på fel grunder kan bli allvarligt."
+    },
+    "kalastorget-brons-04": {
+      "prompt": "Jag är här ofta. Kan köket göra den där pastan från förra säsongen i kväll, fast den inte står på menyn?",
+      "options": [
+        "Ja, stamgäster ska alltid få det de ber om",
+        "Nej, vi lagar bara det som står på menyn",
+        "Du frågar köket innan du svarar, och går det inte föreslår du det som ligger närmast",
+        "Ja, och du ber köket prioritera den eftersom gästen är stamgäst"
+      ],
+      "explanation": "Om det går beror på vad köket har inne och hur pressat det är just då — det vet inte den som sitter vid bordet. Att fråga först gör att du inte lovar något köket inte kan leverera. A lockar eftersom stamgäster är viktiga, men ett löfte som köket sedan måste bryta skadar relationen mer än ett vänligt nej med ett alternativ."
+    },
+    "kalastorget-brons-05": {
+      "prompt": "Gästen vid bord sju är märkbart berusad och beställer ett glas till. Vad gör jag?",
+      "options": [
+        "Serverar, men ett mindre glas",
+        "Frågar resten av sällskapet om det är okej",
+        "Säger diskret att du inte serverar mer alkohol i kväll, och erbjuder vatten och något att äta",
+        "Ber gästen lämna restaurangen"
+      ],
+      "explanation": "Enligt svensk lag får alkohol inte serveras till någon som är märkbart påverkad, så svaret är nej oavsett glasets storlek. Att säga det diskret och samtidigt erbjuda vatten och mat låter gästen behålla sin värdighet. B lockar eftersom sällskapet känner gästen, men ansvaret för serveringen går inte att lämna över till dem."
+    },
+    "kalastorget-brons-06": {
+      "prompt": "Jag tror inte att vi beställde den här flaskan på notan. Kan du titta på det?",
+      "options": [
+        "Visar kassautskriften som bevis",
+        "Går lugnt igenom beställningen med gästen, och tar bort posten om det inte går att reda ut",
+        "Hämtar chefen direkt",
+        "Säger att den ska betalas, men erbjuder rabatt nästa gång"
+      ],
+      "explanation": "Kvällens sista minuter formar gästens minne av hela besöket, och en omtvistad flaska är värd mindre än den relationen. Att gå igenom beställningen tillsammans utan att peka ut någon löser de flesta fall. A lockar eftersom systemet oftast har rätt, men att bevisa att gästen har fel vinner diskussionen och förlorar gästen."
+    },
+    "kalastorget-brons-07": {
+      "prompt": "Lammet är slut. Bord fyra beställde det för fem minuter sedan. Hur gör vi?",
+      "options": [
+        "Väntar tills varmrätterna går ut och förklarar då",
+        "Går till bordet nu, säger som det är och föreslår ett par alternativ",
+        "Skickar ut en annan rätt och förklarar när den serveras",
+        "Ber köket improvisera något liknande utan att säga något"
+      ],
+      "explanation": "Ju tidigare gästen vet, desto mer tid finns att välja om utan att rubba bordets tempo. Två konkreta alternativ gör beskedet till ett val snarare än en förlust. A lockar eftersom det skjuter upp ett obekvämt samtal, men då sitter gästen utan mat medan resten av bordet äter."
+    },
+    "kalastorget-brons-08": {
+      "prompt": "Sällskapet vid fönsterbordet har betalat men sitter kvar och pratar. Nästa bokning kommer om en kvart. Vad gör du?",
+      "options": [
+        "Börjar duka av runt dem så att de förstår vinken",
+        "Låter dem sitta kvar och ber nästa sällskap vänta vid dörren",
+        "Säger vänligt och i god tid att bordet är bokat, och erbjuder kaffe i baren",
+        "Väntar tills nästa sällskap står i dörren och ber sedan det första att gå"
+      ],
+      "explanation": "Ett vänligt besked i god tid låter sällskapet avsluta i lugn och ro, och kaffe i baren gör flytten till en fortsättning snarare än en avhysning. A lockar eftersom det undviker ett samtal, men ordlösa vinkar uppfattas som oartiga. B skyddar ett sällskap på det andras bekostnad."
+    },
+    "kalastorget-brons-09": {
+      "prompt": "En servitör har sjukanmält sig. Sextio kuvert är bokade i kväll. Vad gör du före öppning?",
+      "options": [
+        "Kör som vanligt och hoppas att kvällen håller",
+        "Avbokar de sista bokningarna för att få ner antalet",
+        "Förenklar kvällen — till exempel färre sittningar eller en kortare meny — och går igenom den nya fördelningen med teamet",
+        "Tar över den frånvarande servitörens hela station ovanpå ditt eget arbete"
+      ],
+      "explanation": "Ett team som är en person kort klarar samma kväll om tempot anpassas och alla vet sitt nya jobb innan dörrarna öppnar. Att förenkla är ett beslut; att hoppas är det inte. D lockar eftersom det känns ansvarsfullt, men en värd som gör två jobb tappar den överblick kvällen behöver."
+    },
+    "kalastorget-brons-10": {
+      "prompt": "Lärlingen gjorde ett misstag vid bord tolv som ledde till ett klagomål. Hur tar du upp det?",
+      "options": [
+        "Inför hela teamet vid kvällens genomgång, så att alla lär sig",
+        "Enskilt, efter servicen eller på morgonen, med fokus på vad som hände och vad som görs annorlunda",
+        "Vid nästa medarbetarsamtal, så att det inte blir för känsloladdat",
+        "Låter det bero, eftersom gästen redan fått en ursäkt"
+      ],
+      "explanation": "Ett enskilt samtal medan händelsen är färsk gör det möjligt att förstå vad som hände utan att lärlingen behöver försvara sig inför andra. Fokus på nästa gång gör misstaget till lärande. A lockar eftersom andra också kunde lära sig, men den lärdomen kan delas som ett exempel utan namn."
+    }
+  }
+}
