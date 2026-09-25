@@ -256,6 +256,8 @@ export const strings = {
       gastronomiskateatern: 'helheten'
     },
     counts: ['ingen', 'en', 'två', 'tre', 'fyra', 'fem'],
+    pavilionOne: 'paviljong',
+    pavilionMany: 'paviljonger',
     and: 'och',
     settlement: {
       heading: 'Veckoavräkningen',

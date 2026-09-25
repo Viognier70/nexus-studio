@@ -77,7 +77,11 @@ export function BrewpubScene() {
     // läsa restaurangens 16-stols-layout.
     const world = resolveWorldPositions(room);
     // ORDER 249 §2 — mata IndoorLamps med rummets bord-positioner.
-    setTables(world.tables as Vec2[]);
+    // ORDER 265 — ölkrogens rum publicerar inga `tables` (brewpubRoom.ts
+    // resolveWorldPositions), så värdet var undefined och IndoorLamps
+    // kraschade när spelaren bytte till ölkrogen i banken. Inga bord,
+    // inga bordslampor.
+    setTables((world.tables ?? []) as Vec2[]);
     // ORDER 204 — `resolveStaffStationsWorld` + `staffStationsByRole`
     // borttagna. Kontraktet publicerar `stations` (raw `staffStations`
     // världs-XZ, i deklarationsordning) och InteriorStaff läser den

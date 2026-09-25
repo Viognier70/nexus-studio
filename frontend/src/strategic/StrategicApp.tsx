@@ -21,6 +21,7 @@ import { ScenarioOverlay } from './scenario/ScenarioOverlay';
 import { DayActionBar } from './scenario/DayActionBar';
 import { EveningBar } from './scenario/EveningBar';
 import { MaltidensHusDialog } from './knowledge/ui/MaltidensHusDialog';
+import { BankDialog } from './economy/BankDialog';
 import { SaveProvider, useSave } from './save/SaveContext';
 import { SaveMenu } from './save/SaveMenu';
 import { DayBadge } from './ui/DayBadge';
@@ -71,6 +72,8 @@ function StrategicShell() {
   const [aboutOpen, setAboutOpen] = useState(false);
   // ORDER 264 — Måltidens hus öppnas från morgonens rad.
   const [houseOpen, setHouseOpen] = useState(false);
+  // ORDER 265 — banken öppnas från morgonens rad.
+  const [bankOpen, setBankOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   // ORDER 043 B.1 dev readout — the last key the shortcut handler
   // processed. Renders in DevPanel (dev-only) so the Vision Owner can
@@ -267,7 +270,8 @@ function StrategicShell() {
         onClose={() => setSelectedId(null)}
       />
       <ScenarioOverlay />
-      <DayActionBar onOpenHouse={() => setHouseOpen(true)} />
+      <DayActionBar onOpenHouse={() => setHouseOpen(true)} onOpenBank={() => setBankOpen(true)} />
+      <BankDialog open={bankOpen} onClose={() => setBankOpen(false)} />
       <EveningBar />
       <MaltidensHusDialog open={houseOpen} onClose={() => setHouseOpen(false)} />
       {/*
