@@ -17,7 +17,9 @@ Vision Owner svarar genom att skriva sitt beslut under **Svar**. Svaret förs se
 | F6 | 0 | Teatern har inga bronsfrågor. Vad ska dess prov visa tills Vision Owner har skrivit frågor? | Inget i etapp 0. Frågan avgörs i etapp 2: förslaget är att Teaterns prov blandar två andra paviljongers frågor, eftersom "Teaterns frågor kombinerar två områden". | `questionBank.ts` `questionsFor` |
 | F7 | 0 | Vem ställer frågan? Speldesignen nämner Bibliotekarien och Köksmästaren, men bronsbanken har frågeställarna kock, sommelier, gäst, värd, servitör och lärling. | Bronsbankens frågeställare behålls. De nya rollerna läggs till när frågeställaren visas i etapp 11. | `bank.meta.json` `asker` |
 | F8 | 0 | Klassens "normala veckointäkt" (grund för golvet) och startlånet per klass saknar tal i speldesignen. | Inget valt ännu. Talen sätts i etapp 3 och förs in här. | — |
+| F9 | 1 | Språk: speldesignen säger svenska i v1, CLAUDE.md regel 7 och Observation 6 säger engelska. | Speldesignen gäller (ordern §0: nyare dokument vid konflikt). CLAUDE.md regel 7 är omskriven. Ny spelartext skrivs på svenska från etapp 1 via `strings.sv.ts`. Befintlig engelsk text står kvar tills den översätts i en egen omgång, så gränssnittet är blandat under tiden. Frågebanken läses på engelska tills Vision Owner granskat utkastet. Går att ändra: texten ligger i strängfiler, inte i logik. | `CLAUDE.md` regel 7 |
+| F10 | 1 | ORDER 100:s statusrad säger "no binding force", men ordern kallar den källa nr 2. | Statusraden lämnas orörd. För v1 är speldesignen det bindande dokumentet och ORDER 100 gäller genom den, vilket avsnittet *SCOPE OF VERSION 1* redan säger. Ingen kod beror på statusen. | `ORDER_100_VISION.md` |
 
 ## Svar
 
-*(tomt)*
+**Vision Owner 2026-09-25:** "Följ §1.5. För varje fråga, skriv en rad med vad du valde och varför, och fortsätt." Därmed gäller de valda tolkningarna för F1–F5 och F9–F10 tills Vision Owner säger annat. F6 avgörs i etapp 2, F7 i etapp 11 och F8 i etapp 3.
