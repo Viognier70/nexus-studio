@@ -17,7 +17,8 @@ import type { KnowledgeAxis, YrkesSpar } from '../types';
 import type { AnchorId } from '../simulation/anchors';
 
 // ORDER 229 — bronsprogressionens fyra nivåer (från ORDER "En hel dag"
-// §0 beslut 1). Säkerhetsnivåerna 15/30/55/90 % kopplas mot spelarens
+// §0 beslut 1). Golvvärdena per nivå (`FLOOR.medalValue` i
+// `src/sim/balance.ts`, ORDER 262) kopplas mot spelarens
 // högsta nådda nivå per paviljong; varje fråga bär vilken nivå den hör
 // till så picker + progression kan filtrera. Silver–platina får sitt
 // innehåll skrivet i egen omgång.

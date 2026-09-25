@@ -1,0 +1,594 @@
+{
+  "schemaVersion": 1,
+  "questions": [
+    {
+      "id": "maltidbiblioteket-brons-01",
+      "pavilion": "maltidbiblioteket",
+      "level": "brons",
+      "asker": "gäst",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "anchorId": "order",
+        "rawText": "när beställningen tas upp"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "maltidbiblioteket-brons-02",
+      "pavilion": "maltidbiblioteket",
+      "level": "brons",
+      "asker": "lärling",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "morgon"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "maltidbiblioteket-brons-03",
+      "pavilion": "maltidbiblioteket",
+      "level": "brons",
+      "asker": "kock",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "morgon"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "maltidbiblioteket-brons-04",
+      "pavilion": "maltidbiblioteket",
+      "level": "brons",
+      "asker": "gäst",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "anchorId": "order",
+        "rawText": "när beställningen tas upp"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "maltidbiblioteket-brons-05",
+      "pavilion": "maltidbiblioteket",
+      "level": "brons",
+      "asker": "gäst",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "anchorId": "order",
+        "rawText": "när beställningen tas upp"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "maltidbiblioteket-brons-06",
+      "pavilion": "maltidbiblioteket",
+      "level": "brons",
+      "asker": "lärling",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "morgon"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "maltidbiblioteket-brons-07",
+      "pavilion": "maltidbiblioteket",
+      "level": "brons",
+      "asker": "kock",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "morgon"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "maltidbiblioteket-brons-08",
+      "pavilion": "maltidbiblioteket",
+      "level": "brons",
+      "asker": "kock",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "anchorId": "order",
+        "rawText": "när beställningen tas upp"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "maltidbiblioteket-brons-09",
+      "pavilion": "maltidbiblioteket",
+      "level": "brons",
+      "asker": "lärling",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "evening",
+        "rawText": "kväll"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "maltidbiblioteket-brons-10",
+      "pavilion": "maltidbiblioteket",
+      "level": "brons",
+      "asker": "gäst",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "anchorId": "order",
+        "rawText": "när beställningen tas upp"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "metodkoket-brons-01",
+      "pavilion": "metodkoket",
+      "level": "brons",
+      "asker": "kock",
+      "axis": "techne",
+      "track": "kok",
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "service",
+        "station": "range",
+        "rawText": "vid stationen, när grönsaker bryns"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "metodkoket-brons-02",
+      "pavilion": "metodkoket",
+      "level": "brons",
+      "asker": "kock",
+      "axis": "techne",
+      "track": "kok",
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "morning",
+        "station": "range",
+        "rawText": "vid stationen, när badet sätts på morgonen"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "metodkoket-brons-03",
+      "pavilion": "metodkoket",
+      "level": "brons",
+      "asker": "kock",
+      "axis": "techne",
+      "track": "kok",
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "morning",
+        "station": "pastry",
+        "rawText": "när en dessert sätts inför service"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "metodkoket-brons-04",
+      "pavilion": "metodkoket",
+      "level": "brons",
+      "asker": "kock",
+      "axis": "techne",
+      "track": "kok",
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "station": "range",
+        "rawText": "vid stationen, mitt i service"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "metodkoket-brons-05",
+      "pavilion": "metodkoket",
+      "level": "brons",
+      "asker": "kock",
+      "axis": "techne",
+      "track": "kok",
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "morning",
+        "station": "range",
+        "rawText": "vid stationen, när kött förbereds före service"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "metodkoket-brons-06",
+      "pavilion": "metodkoket",
+      "level": "brons",
+      "asker": "kock",
+      "axis": "techne",
+      "track": "kok",
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "station": "pass",
+        "rawText": "vid stationen, när en sås justeras före uppläggning"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "metodkoket-brons-07",
+      "pavilion": "metodkoket",
+      "level": "brons",
+      "asker": "kock",
+      "axis": "techne",
+      "track": "kok",
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "service",
+        "station": "brew",
+        "rawText": "vid bryggkaret, när en sats sätts"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "metodkoket-brons-08",
+      "pavilion": "metodkoket",
+      "level": "brons",
+      "asker": "kock",
+      "axis": "techne",
+      "track": "kok",
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "morgon"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "metodkoket-brons-09",
+      "pavilion": "metodkoket",
+      "level": "brons",
+      "asker": "kock",
+      "axis": "techne",
+      "track": "kok",
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "station": "range",
+        "rawText": "vid stationen, när nästa dags mise en place sätts"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "metodkoket-brons-10",
+      "pavilion": "metodkoket",
+      "level": "brons",
+      "asker": "kock",
+      "axis": "techne",
+      "track": "kok",
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "morgon"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "stensota-brons-01",
+      "pavilion": "stensota",
+      "level": "brons",
+      "asker": "gäst",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "anchorId": "setDown",
+        "rawText": "när vin serveras"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "stensota-brons-02",
+      "pavilion": "stensota",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "anchorId": "order",
+        "rawText": "när beställningen tas upp"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "stensota-brons-03",
+      "pavilion": "stensota",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "service",
+        "anchorId": "order",
+        "rawText": "när beställningen tas upp"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "stensota-brons-04",
+      "pavilion": "stensota",
+      "level": "brons",
+      "asker": "gäst",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "service",
+        "anchorId": "setDown",
+        "rawText": "när vin serveras"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "stensota-brons-05",
+      "pavilion": "stensota",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "anchorId": "setDown",
+        "rawText": "när vin serveras"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "stensota-brons-06",
+      "pavilion": "stensota",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "anchorId": "setDown",
+        "rawText": "när vin serveras"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "stensota-brons-07",
+      "pavilion": "stensota",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "anchorId": "order",
+        "rawText": "när beställningen tas upp"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "stensota-brons-08",
+      "pavilion": "stensota",
+      "level": "brons",
+      "asker": "kock",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "morgon"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "stensota-brons-09",
+      "pavilion": "stensota",
+      "level": "brons",
+      "asker": "gäst",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "anchorId": "setDown",
+        "rawText": "när vin serveras"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "stensota-brons-10",
+      "pavilion": "stensota",
+      "level": "brons",
+      "asker": "gäst",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "anchorId": "order",
+        "rawText": "när beställningen tas upp"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "kalastorget-brons-01",
+      "pavilion": "kalastorget",
+      "level": "brons",
+      "asker": "värd",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "anchorId": "greet",
+        "rawText": "när gästen tas emot"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "kalastorget-brons-02",
+      "pavilion": "kalastorget",
+      "level": "brons",
+      "asker": "servitör",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "rawText": "när en gäst klagar"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "kalastorget-brons-03",
+      "pavilion": "kalastorget",
+      "level": "brons",
+      "asker": "gäst",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "anchorId": "order",
+        "rawText": "när beställningen tas upp"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "kalastorget-brons-04",
+      "pavilion": "kalastorget",
+      "level": "brons",
+      "asker": "gäst",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "anchorId": "order",
+        "rawText": "när beställningen tas upp"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "kalastorget-brons-05",
+      "pavilion": "kalastorget",
+      "level": "brons",
+      "asker": "lärling",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "anchorId": "order",
+        "rawText": "när beställningen tas upp"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "kalastorget-brons-06",
+      "pavilion": "kalastorget",
+      "level": "brons",
+      "asker": "gäst",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "anchorId": "requestCheck",
+        "rawText": "när notan begärs"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "kalastorget-brons-07",
+      "pavilion": "kalastorget",
+      "level": "brons",
+      "asker": "kock",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "anchorId": "order",
+        "rawText": "när beställningen tas upp"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "kalastorget-brons-08",
+      "pavilion": "kalastorget",
+      "level": "brons",
+      "asker": "värd",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "anchorId": "requestCheck",
+        "rawText": "när notan begärs"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "kalastorget-brons-09",
+      "pavilion": "kalastorget",
+      "level": "brons",
+      "asker": "värd",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "morgon"
+      },
+      "placeholder": false
+    },
+    {
+      "id": "kalastorget-brons-10",
+      "pavilion": "kalastorget",
+      "level": "brons",
+      "asker": "värd",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "evening",
+        "rawText": "kväll"
+      },
+      "placeholder": false
+    }
+  ]
+}

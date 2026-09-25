@@ -57,6 +57,7 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 - `M8_PERCEPTION_PUNCH_LIST.md`: M8 perception punch-list (per ORDER 079).
 - `M8_PLAYTEST_BRIEF_ORDER_081.md`: M8 playtest brief (ORDER 081).
 - `M8_ROOM_CARD_PANEL_REPORT_ORDER_085.md`: M8 Room Card Panel — Report Gate (ORDER 085).
+- `NEXUS_V1_OPPNA_FRAGOR.md`: Nexus v1 — öppna frågor.
 - `ORDER_025_ENGINEERING_REPORT.md`: ORDER 025 Engineering Report.
 - `ORDER_027_FINAL_REPORT.md`: ORDER 027 Final Report — Place Framework & Adaptive World Model.
 - `ORDER_034_DOCUMENTATION_ALIGNMENT.md`: ORDER 034 — Documentation Alignment.
@@ -126,6 +127,7 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 - `ORDER_190_GUEST_ON_CHAIR_STAFF_Y.md`: ORDER 190 — gäst når faktisk seat + värd sjunker inte i golvöppning.
 - `ORDER_191_MISE_EN_PLACE_VISIBLE.md`: ORDER 191 — Mise en place vinner över "On break" under prep.
 - `ORDER_193_POSESEATED_LEG_DIRECTION.md`: ORDER 193 — poseSeated: benet framåt-och-nedåt, inte bakåt-och-uppåt.
+- `ORDER_262_RAPPORT.md`: ORDER 262 — Nexus v1 etapp 0: Grunden (rapport).
 - `ORDER_RECONSTRUCTION_004_005_019_020.md`: ORDER_RECONSTRUCTION_004_005_019_020 — Evidence record for four sprint orders.
 - `ORDER_REGISTRY.md`: ORDER REGISTRY.
 - `PERFORMANCE_PREPARATION_REFERENCE.md`: Performance Preparation Reference.
@@ -204,6 +206,7 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 - `BRIEF_DESIGN_FOODTRUCKEN.md`: Brief till Claude Design — Food trucken.
 - `BRIEF_DESIGN_GASTGIVERIET.md`: Brief till Claude Design — Gästgiveriet.
 - `BRIEF_DESIGN_REKVISITAN.md`: Brief till Claude Design — Rekvisitan.
+- `DESIGN_SPEC_NEXUS_V1.md`: Designspecifikation — Nexus version 1.
 
 ## documentation/content/
 
@@ -332,6 +335,7 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 
 ## documentation/foundation/vision/
 
+- `NEXUS_SPELDESIGN_V1.md`: Nexus – speldesign version 1.
 - `ORDER_100_VISION.md`: ORDER 100 — Nexus Studio Game Design Constitution.
 - `SPELSLINGAN_SCHEMAT.md`: Spelslingan — schemat.
 - `UTKAST_SEX_VERKSAMHETSKLASSER.md`: Sex verksamhetsklasser och kunskapsprogressionen.
@@ -413,6 +417,7 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 - `ORDER_KONKURRENTERNA_FINNS.md`: ORDER — Konkurrenterna finns.
 - `ORDER_KONKURRENTERNA_ROR_SIG.md`: ORDER — Konkurrenterna rör sig.
 - `ORDER_NEXUS_PA_EN_LANK.md`: ORDER — Nexus på en länk.
+- `ORDER_NEXUS_V1_HELA_SPELET.md`: ORDER — Nexus version 1: hela spelet.
 - `ORDER_RAKNAREN_OCH_KONSOLEN.md`: ORDER — Räknaren och konsolen.
 - `ORDER_VAD_SOM_UTLOSER_EN_FRAGA.md`: ORDER — Vad som utlöser en fråga.
 

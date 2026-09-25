@@ -9,6 +9,22 @@
 
 ---
 
+## SCOPE OF VERSION 1
+
+*Added 2026-09-25 under ORDER 262 (Nexus v1, stage 0), per the Vision Owner's order `documentation/orders/ORDER_NEXUS_V1_HELA_SPELET.md`. The source text below is unchanged.*
+
+Version 1 of the game is defined by `documentation/foundation/vision/NEXUS_SPELDESIGN_V1.md` (the game design, Vision Owner 2026-09-25). The following parts of this constitution are **not built in version 1** (speldesign, *Ramar för version 1 > Utanför version 1*). They are deferred, not dropped:
+
+- **NPCs with independent lives** (§ NPCs) — studying, working, travelling, opening and closing businesses, remembering interactions.
+- **Adaptive buildings** (§ ADAPTIVE BUILDINGS) — buildings that change function over time.
+- **Seasons other than summer** (§ SEASONS) — version 1 is one summer season of eight weeks, from Midsummer to the crayfish party.
+- **Multiple players.**
+- **Export of research data** (§ RESEARCH) — the game as a research platform with participant consent.
+
+Everything else in this document applies to version 1 through the game design, which the Vision Owner states is governed by this constitution.
+
+---
+
 
 ## PURPOSE
 
