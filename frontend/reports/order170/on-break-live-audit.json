@@ -1,0 +1,511 @@
+{
+  "order": 170,
+  "title": "On break-spåret — live-sim-audit i ölkrogen",
+  "orderObservations": {
+    "obs1": {
+      "date": "2026-09-01",
+      "devPanelService": "12:51/15min",
+      "waiting": 3,
+      "rolesOnBreak": 3
+    },
+    "obs2": {
+      "date": "2026-09-05",
+      "devPanelService": "14:40/15min",
+      "waiting": 5,
+      "rolesOnBreak": 3
+    }
+  },
+  "setup": {
+    "business": "ölkrogen",
+    "service": "lunch",
+    "lengthMinutes": 15,
+    "tickDtSec": 0.2,
+    "note": "Vite dev-server, playwright, speed=0 → manuell TICK-drift. State läses från window.__nxSimState; DevPanel-strängen från renderad DOM."
+  },
+  "snapshots": [
+    {
+      "targetSimTime": 0,
+      "simTime": 24.399999999999945,
+      "periodStartAt": 0,
+      "openingEndsAt": null,
+      "prepEndsAt": 130,
+      "doorsOpenedThisService": false,
+      "currentServiceLengthMinutes": 15,
+      "waitingAtOpening": 5,
+      "period": "lunch",
+      "elapsedSinceServiceStart": 24.399999999999945,
+      "remainingSec": 875.6,
+      "devPanelServiceField": "14:35",
+      "devPanelRawIncludesOnBreak": false,
+      "devPanelFull": "DEV    1fps(strat)  cam=900m [35-75]  day=1 lunch      service=14:35 / 15min   scenarios=0/3\n     cash= 120k  econR=0.75  soc=0.55  eco=0.55  rep=0.60  share=1.02  credits=E0.00 T0.00 P0.00  key=-\n     17°C  0.6m/s  none  waiting=5 queue=0 scene=0 seated=0/20 (S:0 O:0 D:0 P:0)",
+      "computedPhase": "prep",
+      "staff": [
+        {
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null,
+          "workload": 0
+        },
+        {
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null,
+          "workload": 0
+        },
+        {
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null,
+          "workload": 0
+        }
+      ],
+      "allThreeIdle": true,
+      "onBreakByS2": true,
+      "guestsTotal": 0,
+      "waitingIdsCount": 0,
+      "seatedIdsCount": 0,
+      "businessClass": "ölkrogen"
+    },
+    {
+      "targetSimTime": 20,
+      "simTime": 44.40000000000009,
+      "periodStartAt": 0,
+      "openingEndsAt": null,
+      "prepEndsAt": 130,
+      "doorsOpenedThisService": false,
+      "currentServiceLengthMinutes": 15,
+      "waitingAtOpening": 5,
+      "period": "lunch",
+      "elapsedSinceServiceStart": 44.40000000000009,
+      "remainingSec": 855.5999999999999,
+      "devPanelServiceField": "14:15",
+      "devPanelRawIncludesOnBreak": false,
+      "devPanelFull": "DEV    1fps(strat)  cam=900m [35-75]  day=1 lunch      service=14:15 / 15min   scenarios=0/3\n     cash= 120k  econR=0.75  soc=0.55  eco=0.55  rep=0.60  share=1.02  credits=E0.00 T0.00 P0.00  key=-\n     17°C  0.6m/s  none  waiting=5 queue=0 scene=0 seated=0/20 (S:0 O:0 D:0 P:0)",
+      "computedPhase": "prep",
+      "staff": [
+        {
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null,
+          "workload": 0
+        },
+        {
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null,
+          "workload": 0
+        },
+        {
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null,
+          "workload": 0
+        }
+      ],
+      "allThreeIdle": true,
+      "onBreakByS2": true,
+      "guestsTotal": 0,
+      "waitingIdsCount": 0,
+      "seatedIdsCount": 0,
+      "businessClass": "ölkrogen"
+    },
+    {
+      "targetSimTime": 60,
+      "simTime": 84.40000000000066,
+      "periodStartAt": 0,
+      "openingEndsAt": null,
+      "prepEndsAt": 130,
+      "doorsOpenedThisService": false,
+      "currentServiceLengthMinutes": 15,
+      "waitingAtOpening": 5,
+      "period": "lunch",
+      "elapsedSinceServiceStart": 84.40000000000066,
+      "remainingSec": 815.5999999999993,
+      "devPanelServiceField": "13:35",
+      "devPanelRawIncludesOnBreak": false,
+      "devPanelFull": "DEV    1fps(strat)  cam=900m [35-75]  day=1 lunch      service=13:35 / 15min   scenarios=0/3\n     cash= 120k  econR=0.75  soc=0.55  eco=0.55  rep=0.60  share=1.02  credits=E0.00 T0.00 P0.00  key=-\n     17°C  0.6m/s  none  waiting=5 queue=0 scene=0 seated=0/20 (S:0 O:0 D:0 P:0)",
+      "computedPhase": "prep",
+      "staff": [
+        {
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null,
+          "workload": 0
+        },
+        {
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null,
+          "workload": 0
+        },
+        {
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null,
+          "workload": 0
+        }
+      ],
+      "allThreeIdle": true,
+      "onBreakByS2": true,
+      "guestsTotal": 0,
+      "waitingIdsCount": 0,
+      "seatedIdsCount": 0,
+      "businessClass": "ölkrogen"
+    },
+    {
+      "targetSimTime": 129,
+      "simTime": 153.39999999999984,
+      "periodStartAt": 0,
+      "openingEndsAt": null,
+      "prepEndsAt": null,
+      "doorsOpenedThisService": true,
+      "currentServiceLengthMinutes": 15,
+      "waitingAtOpening": 5,
+      "period": "lunch",
+      "elapsedSinceServiceStart": 153.39999999999984,
+      "remainingSec": 746.6000000000001,
+      "devPanelServiceField": "12:26",
+      "devPanelRawIncludesOnBreak": false,
+      "devPanelFull": "DEV    1fps(strat)  cam=900m [35-75]  day=1 lunch      service=12:26 / 15min   scenarios=0/3\n     cash= 120k  econR=0.75  soc=0.55  eco=0.55  rep=0.60  share=1.02  credits=E0.00 T0.00 P0.00  key=-\n     17°C  0.6m/s  none  waiting=5 queue=0 scene=2 seated=8/20 (S:0 O:2 D:6 P:0)",
+      "computedPhase": "service",
+      "staff": [
+        {
+          "role": "värd",
+          "taskType": "order",
+          "targetGuestId": "gst-15",
+          "workload": 0.8400000000000006
+        },
+        {
+          "role": "servitör",
+          "taskType": "order",
+          "targetGuestId": "gst-15",
+          "workload": 0.8400000000000006
+        },
+        {
+          "role": "kock",
+          "taskType": "order",
+          "targetGuestId": "gst-15",
+          "workload": 0.8400000000000006
+        }
+      ],
+      "allThreeIdle": false,
+      "onBreakByS2": false,
+      "guestsTotal": 8,
+      "waitingIdsCount": 0,
+      "seatedIdsCount": 8,
+      "businessClass": "ölkrogen"
+    },
+    {
+      "targetSimTime": 130,
+      "simTime": 154.59999999999977,
+      "periodStartAt": 0,
+      "openingEndsAt": null,
+      "prepEndsAt": null,
+      "doorsOpenedThisService": true,
+      "currentServiceLengthMinutes": 15,
+      "waitingAtOpening": 5,
+      "period": "lunch",
+      "elapsedSinceServiceStart": 154.59999999999977,
+      "remainingSec": 745.4000000000002,
+      "devPanelServiceField": "12:25",
+      "devPanelRawIncludesOnBreak": false,
+      "devPanelFull": "DEV    1fps(strat)  cam=900m [35-75]  day=1 lunch      service=12:25 / 15min   scenarios=0/3\n     cash= 120k  econR=0.75  soc=0.55  eco=0.55  rep=0.60  share=1.02  credits=E0.00 T0.00 P0.00  key=-\n     17°C  0.6m/s  none  waiting=5 queue=0 scene=2 seated=8/20 (S:0 O:2 D:6 P:0)",
+      "computedPhase": "service",
+      "staff": [
+        {
+          "role": "värd",
+          "taskType": "order",
+          "targetGuestId": "gst-15",
+          "workload": 0.9000000000000007
+        },
+        {
+          "role": "servitör",
+          "taskType": "order",
+          "targetGuestId": "gst-15",
+          "workload": 0.9000000000000007
+        },
+        {
+          "role": "kock",
+          "taskType": "order",
+          "targetGuestId": "gst-15",
+          "workload": 0.9000000000000007
+        }
+      ],
+      "allThreeIdle": false,
+      "onBreakByS2": false,
+      "guestsTotal": 8,
+      "waitingIdsCount": 0,
+      "seatedIdsCount": 8,
+      "businessClass": "ölkrogen"
+    },
+    {
+      "targetSimTime": 131,
+      "simTime": 155.5999999999997,
+      "periodStartAt": 0,
+      "openingEndsAt": null,
+      "prepEndsAt": null,
+      "doorsOpenedThisService": true,
+      "currentServiceLengthMinutes": 15,
+      "waitingAtOpening": 5,
+      "period": "lunch",
+      "elapsedSinceServiceStart": 155.5999999999997,
+      "remainingSec": 744.4000000000003,
+      "devPanelServiceField": "12:24",
+      "devPanelRawIncludesOnBreak": false,
+      "devPanelFull": "DEV    1fps(strat)  cam=900m [35-75]  day=1 lunch      service=12:24 / 15min   scenarios=0/3\n     cash= 120k  econR=0.75  soc=0.55  eco=0.55  rep=0.60  share=1.02  credits=E0.00 T0.00 P0.00  key=-\n     17°C  0.6m/s  none  waiting=5 queue=0 scene=1 seated=8/20 (S:0 O:1 D:7 P:0)",
+      "computedPhase": "service",
+      "staff": [
+        {
+          "role": "värd",
+          "taskType": "order",
+          "targetGuestId": "gst-16",
+          "workload": 0.9400000000000007
+        },
+        {
+          "role": "servitör",
+          "taskType": "order",
+          "targetGuestId": "gst-16",
+          "workload": 0.9400000000000007
+        },
+        {
+          "role": "kock",
+          "taskType": "order",
+          "targetGuestId": "gst-16",
+          "workload": 0.9400000000000007
+        }
+      ],
+      "allThreeIdle": false,
+      "onBreakByS2": false,
+      "guestsTotal": 8,
+      "waitingIdsCount": 0,
+      "seatedIdsCount": 8,
+      "businessClass": "ölkrogen"
+    },
+    {
+      "targetSimTime": 200,
+      "simTime": 224.5999999999958,
+      "periodStartAt": 0,
+      "openingEndsAt": null,
+      "prepEndsAt": null,
+      "doorsOpenedThisService": true,
+      "currentServiceLengthMinutes": 15,
+      "waitingAtOpening": 5,
+      "period": "lunch",
+      "elapsedSinceServiceStart": 224.5999999999958,
+      "remainingSec": 675.4000000000042,
+      "devPanelServiceField": "11:15",
+      "devPanelRawIncludesOnBreak": false,
+      "devPanelFull": "DEV    2fps(strat)  cam=900m [35-75]  day=1 lunch      service=11:15 / 15min   scenarios=0/3\n     cash= 124k  econR=0.78  soc=0.55  eco=0.55  rep=0.64  share=1.08  credits=E0.00 T0.00 P0.00  key=-\n     17°C  0.6m/s  none  waiting=5 queue=0 scene=5 seated=9/20 (S:0 O:1 D:5 P:3)",
+      "computedPhase": "service",
+      "staff": [
+        {
+          "role": "värd",
+          "taskType": "order",
+          "targetGuestId": "gst-36",
+          "workload": 1
+        },
+        {
+          "role": "servitör",
+          "taskType": "order",
+          "targetGuestId": "gst-36",
+          "workload": 1
+        },
+        {
+          "role": "kock",
+          "taskType": "order",
+          "targetGuestId": "gst-36",
+          "workload": 1
+        }
+      ],
+      "allThreeIdle": false,
+      "onBreakByS2": false,
+      "guestsTotal": 10,
+      "waitingIdsCount": 0,
+      "seatedIdsCount": 9,
+      "businessClass": "ölkrogen"
+    },
+    {
+      "targetSimTime": 500,
+      "simTime": 524.5999999999823,
+      "periodStartAt": 0,
+      "openingEndsAt": null,
+      "prepEndsAt": null,
+      "doorsOpenedThisService": true,
+      "currentServiceLengthMinutes": 15,
+      "waitingAtOpening": 5,
+      "period": "lunch",
+      "elapsedSinceServiceStart": 524.5999999999823,
+      "remainingSec": 375.4000000000177,
+      "devPanelServiceField": "6:15",
+      "devPanelRawIncludesOnBreak": false,
+      "devPanelFull": "DEV    1fps(strat)  cam=900m [35-75]  day=1 lunch      service=6:15 / 15min    scenarios=1/3\n     cash= 143k  econR=0.89  soc=0.55  eco=0.55  rep=0.31  share=0.56  credits=E0.00 T0.00 P0.00  key=-\n     17°C  0.6m/s  none  waiting=5 queue=2 scene=8 seated=16/20 (S:2 O:1 D:11 P:2)",
+      "computedPhase": "service",
+      "staff": [
+        {
+          "role": "värd",
+          "taskType": "order",
+          "targetGuestId": "gst-156",
+          "workload": 1
+        },
+        {
+          "role": "servitör",
+          "taskType": "order",
+          "targetGuestId": "gst-156",
+          "workload": 1
+        },
+        {
+          "role": "kock",
+          "taskType": "order",
+          "targetGuestId": "gst-156",
+          "workload": 1
+        }
+      ],
+      "allThreeIdle": false,
+      "onBreakByS2": false,
+      "guestsTotal": 21,
+      "waitingIdsCount": 2,
+      "seatedIdsCount": 16,
+      "businessClass": "ölkrogen"
+    },
+    {
+      "targetSimTime": 880,
+      "simTime": 904.4000000000686,
+      "periodStartAt": 900.0000000000676,
+      "openingEndsAt": null,
+      "prepEndsAt": null,
+      "doorsOpenedThisService": false,
+      "currentServiceLengthMinutes": null,
+      "waitingAtOpening": 0,
+      "period": "afternoon",
+      "elapsedSinceServiceStart": 4.4000000000010004,
+      "remainingSec": 0,
+      "devPanelServiceField": "-",
+      "devPanelRawIncludesOnBreak": false,
+      "devPanelFull": "DEV    2fps(strat)  cam=900m [35-75]  day=1 afternoon  service=-               scenarios=0/0\n     cash= 156k  econR=0.97  soc=0.52  eco=0.55  rep=0.06  share=0.55!floor  credits=E0.00 T0.00 P0.00  key=-\n     no weather (out of service) queue=0 scene=1 seated=2/20 (S:0 O:0 D:2 P:0)",
+      "computedPhase": "afternoon",
+      "staff": [
+        {
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null,
+          "workload": 0.8399999999999999
+        },
+        {
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null,
+          "workload": 0.8399999999999999
+        },
+        {
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null,
+          "workload": 0.8399999999999999
+        }
+      ],
+      "allThreeIdle": true,
+      "onBreakByS2": false,
+      "guestsTotal": 3,
+      "waitingIdsCount": 0,
+      "seatedIdsCount": 2,
+      "businessClass": "ölkrogen"
+    },
+    {
+      "targetSimTime": 890,
+      "simTime": 914.4000000000709,
+      "periodStartAt": 900.0000000000676,
+      "openingEndsAt": null,
+      "prepEndsAt": null,
+      "doorsOpenedThisService": false,
+      "currentServiceLengthMinutes": null,
+      "waitingAtOpening": 0,
+      "period": "afternoon",
+      "elapsedSinceServiceStart": 14.400000000003274,
+      "remainingSec": 0,
+      "devPanelServiceField": "-",
+      "devPanelRawIncludesOnBreak": false,
+      "devPanelFull": "DEV    1fps(strat)  cam=900m [35-75]  day=1 afternoon  service=-               scenarios=0/0\n     cash= 156k  econR=0.97  soc=0.52  eco=0.55  rep=0.07  share=0.55!floor  credits=E0.00 T0.00 P0.00  key=-\n     no weather (out of service) queue=0 scene=0 seated=2/20 (S:0 O:0 D:2 P:0)",
+      "computedPhase": "afternoon",
+      "staff": [
+        {
+          "role": "värd",
+          "taskType": null,
+          "targetGuestId": null,
+          "workload": 0.8079999999999998
+        },
+        {
+          "role": "servitör",
+          "taskType": null,
+          "targetGuestId": null,
+          "workload": 0.8079999999999998
+        },
+        {
+          "role": "kock",
+          "taskType": null,
+          "targetGuestId": null,
+          "workload": 0.8079999999999998
+        }
+      ],
+      "allThreeIdle": true,
+      "onBreakByS2": false,
+      "guestsTotal": 2,
+      "waitingIdsCount": 0,
+      "seatedIdsCount": 2,
+      "businessClass": "ölkrogen"
+    }
+  ],
+  "observationInterpretation": {
+    "observation1_12_51": {
+      "elapsedSecFromScript": 153.39999999999984,
+      "devPanelServiceFieldAtSameElapsed": "12:26",
+      "computedPhase": "service",
+      "onBreakByS2": false,
+      "matchesObservation": false
+    },
+    "observation2_14_40": {
+      "elapsedSecFromScript": 4.4000000000010004,
+      "devPanelServiceFieldAtSameElapsed": "-",
+      "computedPhase": "afternoon",
+      "onBreakByS2": false,
+      "matchesObservation": false
+    },
+    "earlyPrepCheck": {
+      "elapsedSec": 44.40000000000009,
+      "devPanelServiceField": "14:15",
+      "computedPhase": "prep",
+      "note": "Om panelen är remaining, ska service= vid elapsed=20s vara ~14:40/15min. Om elapsed, ~0:20/15min."
+    }
+  },
+  "consoleTail": [
+    "error: Warning: %s a style property during rerender (%s) when a conflicting property is set (%s) can lead to styling bugs. To avoid this, don't mix shorthand and non-shorthand properties for the same value; instead, replace the shorthand with separate values.%s Removing borderColor border \n    at div\n    at div\n    at div\n    at InstrumentsPanel (http://localhost:5173/src/strategic/ui/InstrumentsPanel.tsx:144:15)\n    at div\n    at PanelColumn (http://localhost:5173/src/strategic/ui/PanelColumn.tsx:18:3)\n    at div\n    at StrategicShell (http://localhost:5173/src/strategic/StrategicApp.tsx:98:19)\n    at SimulationProvider (http://localhost:5173/src/strategic/simulation/SimulationProvider.tsx:87:38)\n    at CameraProvider (http://localhost:5173/src/strategic/camera/CameraContext.tsx:55:34)\n    at BusinessProvider (http://localhost:5173/src/strategic/business/BusinessContext.tsx:31:36)\n    at StrategicApp (http://localhost:5173/src/strategic/StrategicApp.tsx:61:21)\n    at Root (http://localhost:5173/src/main.tsx:29:29)",
+    "info: [interior] queue=%d seated=%d/%d layout.seats=%d%s%s 3 16 20 20   (S:1 O:1 D:14 P:0)",
+    "info: [interior] queue=%d seated=%d/%d layout.seats=%d%s%s 6 16 20 20   (S:0 O:0 D:14 P:2)",
+    "info: [interior] queue=%d seated=%d/%d layout.seats=%d%s%s 7 16 20 20   (S:1 O:0 D:12 P:3)",
+    "info: [interior] queue=%d seated=%d/%d layout.seats=%d%s%s 6 16 20 20   (S:1 O:1 D:11 P:3)",
+    "info: [interior] queue=%d seated=%d/%d layout.seats=%d%s%s 4 16 20 20   (S:1 O:1 D:13 P:1)",
+    "error: Warning: %s a style property during rerender (%s) when a conflicting property is set (%s) can lead to styling bugs. To avoid this, don't mix shorthand and non-shorthand properties for the same value; instead, replace the shorthand with separate values.%s Removing borderColor border \n    at div\n    at div\n    at div\n    at InstrumentsPanel (http://localhost:5173/src/strategic/ui/InstrumentsPanel.tsx:144:15)\n    at div\n    at PanelColumn (http://localhost:5173/src/strategic/ui/PanelColumn.tsx:18:3)\n    at div\n    at StrategicShell (http://localhost:5173/src/strategic/StrategicApp.tsx:98:19)\n    at SimulationProvider (http://localhost:5173/src/strategic/simulation/SimulationProvider.tsx:87:38)\n    at CameraProvider (http://localhost:5173/src/strategic/camera/CameraContext.tsx:55:34)\n    at BusinessProvider (http://localhost:5173/src/strategic/business/BusinessContext.tsx:31:36)\n    at StrategicApp (http://localhost:5173/src/strategic/StrategicApp.tsx:61:21)\n    at Root (http://localhost:5173/src/main.tsx:29:29)",
+    "info: [interior] queue=%d seated=%d/%d layout.seats=%d%s%s 6 16 20 20   (S:1 O:0 D:13 P:2)",
+    "info: [interior] queue=%d seated=%d/%d layout.seats=%d%s%s 6 16 20 20   (S:1 O:1 D:11 P:3)",
+    "info: [interior] queue=%d seated=%d/%d layout.seats=%d%s%s 5 16 20 20   (S:2 O:1 D:11 P:2)",
+    "info: [interior] queue=%d seated=%d/%d layout.seats=%d%s%s 5 16 20 20   (S:1 O:1 D:11 P:3)",
+    "info: [interior] queue=%d seated=%d/%d layout.seats=%d%s%s 3 16 20 20   (S:2 O:0 D:11 P:3)",
+    "info: [interior] queue=%d seated=%d/%d layout.seats=%d%s%s 2 16 20 20   (S:2 O:1 D:11 P:2)",
+    "error: Warning: %s a style property during rerender (%s) when a conflicting property is set (%s) can lead to styling bugs. To avoid this, don't mix shorthand and non-shorthand properties for the same value; instead, replace the shorthand with separate values.%s Removing borderColor border \n    at div\n    at div\n    at div\n    at InstrumentsPanel (http://localhost:5173/src/strategic/ui/InstrumentsPanel.tsx:144:15)\n    at div\n    at PanelColumn (http://localhost:5173/src/strategic/ui/PanelColumn.tsx:18:3)\n    at div\n    at StrategicShell (http://localhost:5173/src/strategic/StrategicApp.tsx:98:19)\n    at SimulationProvider (http://localhost:5173/src/strategic/simulation/SimulationProvider.tsx:87:38)\n    at CameraProvider (http://localhost:5173/src/strategic/camera/CameraContext.tsx:55:34)\n    at BusinessProvider (http://localhost:5173/src/strategic/business/BusinessContext.tsx:31:36)\n    at StrategicApp (http://localhost:5173/src/strategic/StrategicApp.tsx:61:21)\n    at Root (http://localhost:5173/src/main.tsx:29:29)",
+    "info: [interior] queue=%d seated=%d/%d layout.seats=%d%s%s 1 16 20 20   (S:1 O:1 D:13 P:1)",
+    "info: [interior] queue=%d seated=%d/%d layout.seats=%d%s%s 1 16 20 20   (S:0 O:0 D:14 P:2)",
+    "error: Warning: %s a style property during rerender (%s) when a conflicting property is set (%s) can lead to styling bugs. To avoid this, don't mix shorthand and non-shorthand properties for the same value; instead, replace the shorthand with separate values.%s Removing borderColor border \n    at div\n    at div\n    at div\n    at InstrumentsPanel (http://localhost:5173/src/strategic/ui/InstrumentsPanel.tsx:144:15)\n    at div\n    at PanelColumn (http://localhost:5173/src/strategic/ui/PanelColumn.tsx:18:3)\n    at div\n    at StrategicShell (http://localhost:5173/src/strategic/StrategicApp.tsx:98:19)\n    at SimulationProvider (http://localhost:5173/src/strategic/simulation/SimulationProvider.tsx:87:38)\n    at CameraProvider (http://localhost:5173/src/strategic/camera/CameraContext.tsx:55:34)\n    at BusinessProvider (http://localhost:5173/src/strategic/business/BusinessContext.tsx:31:36)\n    at StrategicApp (http://localhost:5173/src/strategic/StrategicApp.tsx:61:21)\n    at Root (http://localhost:5173/src/main.tsx:29:29)",
+    "error: Warning: %s a style property during rerender (%s) when a conflicting property is set (%s) can lead to styling bugs. To avoid this, don't mix shorthand and non-shorthand properties for the same value; instead, replace the shorthand with separate values.%s Removing borderColor border \n    at div\n    at div\n    at div\n    at InstrumentsPanel (http://localhost:5173/src/strategic/ui/InstrumentsPanel.tsx:144:15)\n    at div\n    at PanelColumn (http://localhost:5173/src/strategic/ui/PanelColumn.tsx:18:3)\n    at div\n    at StrategicShell (http://localhost:5173/src/strategic/StrategicApp.tsx:98:19)\n    at SimulationProvider (http://localhost:5173/src/strategic/simulation/SimulationProvider.tsx:87:38)\n    at CameraProvider (http://localhost:5173/src/strategic/camera/CameraContext.tsx:55:34)\n    at BusinessProvider (http://localhost:5173/src/strategic/business/BusinessContext.tsx:31:36)\n    at StrategicApp (http://localhost:5173/src/strategic/StrategicApp.tsx:61:21)\n    at Root (http://localhost:5173/src/main.tsx:29:29)",
+    "error: Warning: %s a style property during rerender (%s) when a conflicting property is set (%s) can lead to styling bugs. To avoid this, don't mix shorthand and non-shorthand properties for the same value; instead, replace the shorthand with separate values.%s Removing borderColor border \n    at div\n    at div\n    at div\n    at InstrumentsPanel (http://localhost:5173/src/strategic/ui/InstrumentsPanel.tsx:144:15)\n    at div\n    at PanelColumn (http://localhost:5173/src/strategic/ui/PanelColumn.tsx:18:3)\n    at div\n    at StrategicShell (http://localhost:5173/src/strategic/StrategicApp.tsx:98:19)\n    at SimulationProvider (http://localhost:5173/src/strategic/simulation/SimulationProvider.tsx:87:38)\n    at CameraProvider (http://localhost:5173/src/strategic/camera/CameraContext.tsx:55:34)\n    at BusinessProvider (http://localhost:5173/src/strategic/business/BusinessContext.tsx:31:36)\n    at StrategicApp (http://localhost:5173/src/strategic/StrategicApp.tsx:61:21)\n    at Root (http://localhost:5173/src/main.tsx:29:29)",
+    "error: Warning: %s a style property during rerender (%s) when a conflicting property is set (%s) can lead to styling bugs. To avoid this, don't mix shorthand and non-shorthand properties for the same value; instead, replace the shorthand with separate values.%s Removing borderColor border \n    at div\n    at div\n    at div\n    at InstrumentsPanel (http://localhost:5173/src/strategic/ui/InstrumentsPanel.tsx:144:15)\n    at div\n    at PanelColumn (http://localhost:5173/src/strategic/ui/PanelColumn.tsx:18:3)\n    at div\n    at StrategicShell (http://localhost:5173/src/strategic/StrategicApp.tsx:98:19)\n    at SimulationProvider (http://localhost:5173/src/strategic/simulation/SimulationProvider.tsx:87:38)\n    at CameraProvider (http://localhost:5173/src/strategic/camera/CameraContext.tsx:55:34)\n    at BusinessProvider (http://localhost:5173/src/strategic/business/BusinessContext.tsx:31:36)\n    at StrategicApp (http://localhost:5173/src/strategic/StrategicApp.tsx:61:21)\n    at Root (http://localhost:5173/src/main.tsx:29:29)",
+    "error: Warning: %s a style property during rerender (%s) when a conflicting property is set (%s) can lead to styling bugs. To avoid this, don't mix shorthand and non-shorthand properties for the same value; instead, replace the shorthand with separate values.%s Removing borderColor border \n    at div\n    at div\n    at div\n    at InstrumentsPanel (http://localhost:5173/src/strategic/ui/InstrumentsPanel.tsx:144:15)\n    at div\n    at PanelColumn (http://localhost:5173/src/strategic/ui/PanelColumn.tsx:18:3)\n    at div\n    at StrategicShell (http://localhost:5173/src/strategic/StrategicApp.tsx:98:19)\n    at SimulationProvider (http://localhost:5173/src/strategic/simulation/SimulationProvider.tsx:87:38)\n    at CameraProvider (http://localhost:5173/src/strategic/camera/CameraContext.tsx:55:34)\n    at BusinessProvider (http://localhost:5173/src/strategic/business/BusinessContext.tsx:31:36)\n    at StrategicApp (http://localhost:5173/src/strategic/StrategicApp.tsx:61:21)\n    at Root (http://localhost:5173/src/main.tsx:29:29)",
+    "error: Warning: %s a style property during rerender (%s) when a conflicting property is set (%s) can lead to styling bugs. To avoid this, don't mix shorthand and non-shorthand properties for the same value; instead, replace the shorthand with separate values.%s Removing borderColor border \n    at div\n    at div\n    at div\n    at InstrumentsPanel (http://localhost:5173/src/strategic/ui/InstrumentsPanel.tsx:144:15)\n    at div\n    at PanelColumn (http://localhost:5173/src/strategic/ui/PanelColumn.tsx:18:3)\n    at div\n    at StrategicShell (http://localhost:5173/src/strategic/StrategicApp.tsx:98:19)\n    at SimulationProvider (http://localhost:5173/src/strategic/simulation/SimulationProvider.tsx:87:38)\n    at CameraProvider (http://localhost:5173/src/strategic/camera/CameraContext.tsx:55:34)\n    at BusinessProvider (http://localhost:5173/src/strategic/business/BusinessContext.tsx:31:36)\n    at StrategicApp (http://localhost:5173/src/strategic/StrategicApp.tsx:61:21)\n    at Root (http://localhost:5173/src/main.tsx:29:29)",
+    "error: Warning: %s a style property during rerender (%s) when a conflicting property is set (%s) can lead to styling bugs. To avoid this, don't mix shorthand and non-shorthand properties for the same value; instead, replace the shorthand with separate values.%s Removing borderColor border \n    at div\n    at div\n    at div\n    at InstrumentsPanel (http://localhost:5173/src/strategic/ui/InstrumentsPanel.tsx:144:15)\n    at div\n    at PanelColumn (http://localhost:5173/src/strategic/ui/PanelColumn.tsx:18:3)\n    at div\n    at StrategicShell (http://localhost:5173/src/strategic/StrategicApp.tsx:98:19)\n    at SimulationProvider (http://localhost:5173/src/strategic/simulation/SimulationProvider.tsx:87:38)\n    at CameraProvider (http://localhost:5173/src/strategic/camera/CameraContext.tsx:55:34)\n    at BusinessProvider (http://localhost:5173/src/strategic/business/BusinessContext.tsx:31:36)\n    at StrategicApp (http://localhost:5173/src/strategic/StrategicApp.tsx:61:21)\n    at Root (http://localhost:5173/src/main.tsx:29:29)",
+    "error: Warning: %s a style property during rerender (%s) when a conflicting property is set (%s) can lead to styling bugs. To avoid this, don't mix shorthand and non-shorthand properties for the same value; instead, replace the shorthand with separate values.%s Removing borderColor border \n    at div\n    at div\n    at div\n    at InstrumentsPanel (http://localhost:5173/src/strategic/ui/InstrumentsPanel.tsx:144:15)\n    at div\n    at PanelColumn (http://localhost:5173/src/strategic/ui/PanelColumn.tsx:18:3)\n    at div\n    at StrategicShell (http://localhost:5173/src/strategic/StrategicApp.tsx:98:19)\n    at SimulationProvider (http://localhost:5173/src/strategic/simulation/SimulationProvider.tsx:87:38)\n    at CameraProvider (http://localhost:5173/src/strategic/camera/CameraContext.tsx:55:34)\n    at BusinessProvider (http://localhost:5173/src/strategic/business/BusinessContext.tsx:31:36)\n    at StrategicApp (http://localhost:5173/src/strategic/StrategicApp.tsx:61:21)\n    at Root (http://localhost:5173/src/main.tsx:29:29)",
+    "error: Warning: %s a style property during rerender (%s) when a conflicting property is set (%s) can lead to styling bugs. To avoid this, don't mix shorthand and non-shorthand properties for the same value; instead, replace the shorthand with separate values.%s Removing borderColor border \n    at div\n    at div\n    at div\n    at InstrumentsPanel (http://localhost:5173/src/strategic/ui/InstrumentsPanel.tsx:144:15)\n    at div\n    at PanelColumn (http://localhost:5173/src/strategic/ui/PanelColumn.tsx:18:3)\n    at div\n    at StrategicShell (http://localhost:5173/src/strategic/StrategicApp.tsx:98:19)\n    at SimulationProvider (http://localhost:5173/src/strategic/simulation/SimulationProvider.tsx:87:38)\n    at CameraProvider (http://localhost:5173/src/strategic/camera/CameraContext.tsx:55:34)\n    at BusinessProvider (http://localhost:5173/src/strategic/business/BusinessContext.tsx:31:36)\n    at StrategicApp (http://localhost:5173/src/strategic/StrategicApp.tsx:61:21)\n    at Root (http://localhost:5173/src/main.tsx:29:29)",
+    "error: Warning: %s a style property during rerender (%s) when a conflicting property is set (%s) can lead to styling bugs. To avoid this, don't mix shorthand and non-shorthand properties for the same value; instead, replace the shorthand with separate values.%s Removing borderColor border \n    at div\n    at div\n    at div\n    at InstrumentsPanel (http://localhost:5173/src/strategic/ui/InstrumentsPanel.tsx:144:15)\n    at div\n    at PanelColumn (http://localhost:5173/src/strategic/ui/PanelColumn.tsx:18:3)\n    at div\n    at StrategicShell (http://localhost:5173/src/strategic/StrategicApp.tsx:98:19)\n    at SimulationProvider (http://localhost:5173/src/strategic/simulation/SimulationProvider.tsx:87:38)\n    at CameraProvider (http://localhost:5173/src/strategic/camera/CameraContext.tsx:55:34)\n    at BusinessProvider (http://localhost:5173/src/strategic/business/BusinessContext.tsx:31:36)\n    at StrategicApp (http://localhost:5173/src/strategic/StrategicApp.tsx:61:21)\n    at Root (http://localhost:5173/src/main.tsx:29:29)",
+    "error: Warning: %s a style property during rerender (%s) when a conflicting property is set (%s) can lead to styling bugs. To avoid this, don't mix shorthand and non-shorthand properties for the same value; instead, replace the shorthand with separate values.%s Removing borderColor border \n    at div\n    at div\n    at div\n    at InstrumentsPanel (http://localhost:5173/src/strategic/ui/InstrumentsPanel.tsx:144:15)\n    at div\n    at PanelColumn (http://localhost:5173/src/strategic/ui/PanelColumn.tsx:18:3)\n    at div\n    at StrategicShell (http://localhost:5173/src/strategic/StrategicApp.tsx:98:19)\n    at SimulationProvider (http://localhost:5173/src/strategic/simulation/SimulationProvider.tsx:87:38)\n    at CameraProvider (http://localhost:5173/src/strategic/camera/CameraContext.tsx:55:34)\n    at BusinessProvider (http://localhost:5173/src/strategic/business/BusinessContext.tsx:31:36)\n    at StrategicApp (http://localhost:5173/src/strategic/StrategicApp.tsx:61:21)\n    at Root (http://localhost:5173/src/main.tsx:29:29)",
+    "error: Warning: %s a style property during rerender (%s) when a conflicting property is set (%s) can lead to styling bugs. To avoid this, don't mix shorthand and non-shorthand properties for the same value; instead, replace the shorthand with separate values.%s Removing borderColor border \n    at div\n    at div\n    at div\n    at InstrumentsPanel (http://localhost:5173/src/strategic/ui/InstrumentsPanel.tsx:144:15)\n    at div\n    at PanelColumn (http://localhost:5173/src/strategic/ui/PanelColumn.tsx:18:3)\n    at div\n    at StrategicShell (http://localhost:5173/src/strategic/StrategicApp.tsx:98:19)\n    at SimulationProvider (http://localhost:5173/src/strategic/simulation/SimulationProvider.tsx:87:38)\n    at CameraProvider (http://localhost:5173/src/strategic/camera/CameraContext.tsx:55:34)\n    at BusinessProvider (http://localhost:5173/src/strategic/business/BusinessContext.tsx:31:36)\n    at StrategicApp (http://localhost:5173/src/strategic/StrategicApp.tsx:61:21)\n    at Root (http://localhost:5173/src/main.tsx:29:29)",
+    "error: Warning: %s a style property during rerender (%s) when a conflicting property is set (%s) can lead to styling bugs. To avoid this, don't mix shorthand and non-shorthand properties for the same value; instead, replace the shorthand with separate values.%s Removing borderColor border \n    at div\n    at div\n    at div\n    at InstrumentsPanel (http://localhost:5173/src/strategic/ui/InstrumentsPanel.tsx:144:15)\n    at div\n    at PanelColumn (http://localhost:5173/src/strategic/ui/PanelColumn.tsx:18:3)\n    at div\n    at StrategicShell (http://localhost:5173/src/strategic/StrategicApp.tsx:98:19)\n    at SimulationProvider (http://localhost:5173/src/strategic/simulation/SimulationProvider.tsx:87:38)\n    at CameraProvider (http://localhost:5173/src/strategic/camera/CameraContext.tsx:55:34)\n    at BusinessProvider (http://localhost:5173/src/strategic/business/BusinessContext.tsx:31:36)\n    at StrategicApp (http://localhost:5173/src/strategic/StrategicApp.tsx:61:21)\n    at Root (http://localhost:5173/src/main.tsx:29:29)",
+    "error: Warning: %s a style property during rerender (%s) when a conflicting property is set (%s) can lead to styling bugs. To avoid this, don't mix shorthand and non-shorthand properties for the same value; instead, replace the shorthand with separate values.%s Removing borderColor border \n    at div\n    at div\n    at div\n    at InstrumentsPanel (http://localhost:5173/src/strategic/ui/InstrumentsPanel.tsx:144:15)\n    at div\n    at PanelColumn (http://localhost:5173/src/strategic/ui/PanelColumn.tsx:18:3)\n    at div\n    at StrategicShell (http://localhost:5173/src/strategic/StrategicApp.tsx:98:19)\n    at SimulationProvider (http://localhost:5173/src/strategic/simulation/SimulationProvider.tsx:87:38)\n    at CameraProvider (http://localhost:5173/src/strategic/camera/CameraContext.tsx:55:34)\n    at BusinessProvider (http://localhost:5173/src/strategic/business/BusinessContext.tsx:31:36)\n    at StrategicApp (http://localhost:5173/src/strategic/StrategicApp.tsx:61:21)\n    at Root (http://localhost:5173/src/main.tsx:29:29)"
+  ]
+}

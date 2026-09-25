@@ -1,0 +1,190 @@
+{
+  "order": 169,
+  "title": "On break-spåret — prep-fasgränsen i ölkrogen",
+  "observation": {
+    "date": "2026-09-01",
+    "business": "ölkrogen",
+    "devPanelService": "12:51/15min",
+    "devPanelWaiting": 3,
+    "rolesOnBreak": 3,
+    "interpretationInOrderText": "Preppen ska vara över 12 min in i ett 15-min-pass"
+  },
+  "constants": {
+    "OPENING_DURATION_SEC": {
+      "file": "src/strategic/simulation/reducer.ts",
+      "line": 83,
+      "value": 10,
+      "lineText": "export const OPENING_DURATION_SEC = 10;"
+    },
+    "PREP_DURATION_SEC": {
+      "file": "src/strategic/simulation/constants.ts",
+      "line": 78,
+      "value": 120,
+      "lineText": "export const PREP_DURATION_SEC = 120;"
+    },
+    "businessHasMiseEnPlace(ölkrogen)": {
+      "file": "src/strategic/business/businessClass.ts",
+      "line": 95,
+      "value": true,
+      "lineText": "hasMiseEnPlace: true"
+    }
+  },
+  "derivedTimeline": {
+    "periodStartAt": 0,
+    "openingEndsAt": 10,
+    "prepEndsAt": 130,
+    "prepEndsAtMinutesInService": 2.1666666666666665,
+    "serviceLengthSec": 900
+  },
+  "sourceCitations": {
+    "reducerPrepEndsAtAssign": {
+      "file": "src/strategic/simulation/reducer.ts",
+      "line": 1054,
+      "lineText": "prepEndsAt: businessHasMiseEnPlace(state.businessClass)"
+    },
+    "reducerDoorsOpenSpawn": {
+      "file": "src/strategic/simulation/reducer.ts",
+      "line": 2092,
+      "lineText": "if (!draft.day.doorsOpenedThisService && draft.day.waitingAtOpening > 0) {"
+    },
+    "arrivalsPrepGate": {
+      "file": "src/strategic/simulation/arrivals.ts",
+      "line": 127,
+      "lineText": "state.simTime < state.day.prepEndsAt"
+    },
+    "arrivalsReturnZeroAfterGate": {
+      "file": "src/strategic/simulation/arrivals.ts",
+      "line": 123,
+      "lineText": "return 0;"
+    },
+    "devPanelServiceFormulaLine": {
+      "file": "src/strategic/ui/DevPanel.tsx",
+      "line": 113,
+      "lineText": "const rem = Math.max(0, totalSec - elapsed);"
+    },
+    "devPanelWaitingLine": {
+      "file": "src/strategic/ui/DevPanel.tsx",
+      "line": 215,
+      "lineText": "? `${d.weather.tempC}°C  ${d.weather.windMS}m/s  ${d.weather.precipitation}  waiting=${d.waitingAtOpening}`"
+    }
+  },
+  "probes": [
+    {
+      "simTime": 0,
+      "elapsedSinceServiceStart": 0,
+      "remainingSec": 900,
+      "devPanelServiceReadout": "15:00 / 15min",
+      "derivePhase": "opening",
+      "kockAction": "Preparing today's plan",
+      "servitorAction": "Preparing today's plan",
+      "värdAction": "Preparing today's plan",
+      "allThreeOnBreak": false
+    },
+    {
+      "simTime": 10,
+      "elapsedSinceServiceStart": 10,
+      "remainingSec": 890,
+      "devPanelServiceReadout": "14:50 / 15min",
+      "derivePhase": "prep",
+      "kockAction": "On break",
+      "servitorAction": "On break",
+      "värdAction": "On break",
+      "allThreeOnBreak": true
+    },
+    {
+      "simTime": 70,
+      "elapsedSinceServiceStart": 70,
+      "remainingSec": 830,
+      "devPanelServiceReadout": "13:50 / 15min",
+      "derivePhase": "prep",
+      "kockAction": "On break",
+      "servitorAction": "On break",
+      "värdAction": "On break",
+      "allThreeOnBreak": true
+    },
+    {
+      "simTime": 129,
+      "elapsedSinceServiceStart": 129,
+      "remainingSec": 771,
+      "devPanelServiceReadout": "12:51 / 15min",
+      "derivePhase": "prep",
+      "kockAction": "On break",
+      "servitorAction": "On break",
+      "värdAction": "On break",
+      "allThreeOnBreak": true
+    },
+    {
+      "simTime": 129,
+      "elapsedSinceServiceStart": 129,
+      "remainingSec": 771,
+      "devPanelServiceReadout": "12:51 / 15min",
+      "derivePhase": "prep",
+      "kockAction": "On break",
+      "servitorAction": "On break",
+      "värdAction": "On break",
+      "allThreeOnBreak": true
+    },
+    {
+      "simTime": 130,
+      "elapsedSinceServiceStart": 130,
+      "remainingSec": 770,
+      "devPanelServiceReadout": "12:50 / 15min",
+      "derivePhase": "service",
+      "kockAction": "Standing by",
+      "servitorAction": "Standing by",
+      "värdAction": "Standing by",
+      "allThreeOnBreak": false
+    },
+    {
+      "simTime": 131,
+      "elapsedSinceServiceStart": 131,
+      "remainingSec": 769,
+      "devPanelServiceReadout": "12:49 / 15min",
+      "derivePhase": "service",
+      "kockAction": "Standing by",
+      "servitorAction": "Standing by",
+      "värdAction": "Standing by",
+      "allThreeOnBreak": false
+    },
+    {
+      "simTime": 300,
+      "elapsedSinceServiceStart": 300,
+      "remainingSec": 600,
+      "devPanelServiceReadout": "10:00 / 15min",
+      "derivePhase": "service",
+      "kockAction": "Standing by",
+      "servitorAction": "Standing by",
+      "värdAction": "Standing by",
+      "allThreeOnBreak": false
+    },
+    {
+      "simTime": 899,
+      "elapsedSinceServiceStart": 899,
+      "remainingSec": 1,
+      "devPanelServiceReadout": "0:01 / 15min",
+      "derivePhase": "service",
+      "kockAction": "Standing by",
+      "servitorAction": "Standing by",
+      "värdAction": "Standing by",
+      "allThreeOnBreak": false
+    }
+  ],
+  "observationInterpretation": {
+    "devPanelIsRemaining": true,
+    "elapsedSecondsFromObservation": 129,
+    "elapsedMinutes": 2.15,
+    "prepEndsAtSec": 130,
+    "elapsedIsLessThanPrepEndsAt": true,
+    "secondsUntilPrepEnds": 1,
+    "onBreakIsExpected": true,
+    "arrivalsCanHappenNow": false,
+    "waitingFieldSemantics": "DevPanel `waiting=` är d.waitingAtOpening — forecast som sätts vid OPEN_SERVICE och är stabil hela passet. Live-kön är `queue=` på samma rad."
+  },
+  "source": {
+    "scriptFile": "frontend/scripts/order169-prep-gate-audit.mjs",
+    "derivePhaseFrom": "frontend/src/strategic/ui/RoomCardPanel/deriveActions.ts (esbuild-transpilerad kopia; samma referens som RoomCardPanel + DevPanel konsumerar)",
+    "deriveStaffActionFrom": "frontend/src/strategic/ui/RoomCardPanel/deriveActions.ts (samma bundle)",
+    "constantsFrom": "regex mot källfilerna; värden + rader speglade i constants-fältet ovan",
+    "note": "Ingen replikering av derivePhase-logik. Konstanter läses som författade tal, inte replikerade beräkningar."
+  }
+}
