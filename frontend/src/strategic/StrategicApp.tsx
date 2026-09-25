@@ -7,6 +7,7 @@ import { PlatesRemainingPanel } from './business/PlatesRemainingPanel';
 import { PrepPanel } from './business/PrepPanel';
 import { ScaleDownPanel } from './business/ScaleDownPanel';
 import { NameEntryOverlay } from './business/NameEntryOverlay';
+import { MentorPanel } from './ui/MentorPanel';
 import { PlayerPanel } from './business/PlayerPanel';
 import { TeamPanel } from './business/TeamPanel';
 import { CameraProvider, useCamera } from './camera/CameraContext';
@@ -23,6 +24,7 @@ import { EveningBar } from './scenario/EveningBar';
 import { ActionButtonPanel, BlindOverlay } from './scenario/ActionButtonPanel';
 import { MaltidensHusDialog } from './knowledge/ui/MaltidensHusDialog';
 import { BankDialog } from './economy/BankDialog';
+import { NewspaperDialog, useNewspaper } from './economy/NewspaperDialog';
 import { SaveProvider, useSave } from './save/SaveContext';
 import { SaveMenu } from './save/SaveMenu';
 import { DayBadge } from './ui/DayBadge';
@@ -48,7 +50,14 @@ import { detectWebGL, WebGLFallback } from '../webgl/WebGLFallback';
 import { devToggles } from '../lib/devToggles';
 import './strategic.css';
 
-export function StrategicApp() {
+interface StrategicAppProps {
+  // ORDER 267 — spelaren kommer från bussen (VS001): introduktionen börjar.
+  startIntroduction?: boolean;
+  // ORDER 267 — "Nytt spel" på startrutan: till bussen.
+  onNewGame?: () => void;
+}
+
+export function StrategicApp({ startIntroduction = false, onNewGame }: StrategicAppProps = {}) {
   const [webglOk] = useState<boolean>(() => detectWebGL());
   if (!webglOk) {
     return <WebGLFallback onRestart={() => window.location.reload()} />;
@@ -56,10 +65,11 @@ export function StrategicApp() {
   return (
     <BusinessProvider>
       <CameraProvider>
-        <SimulationProvider seed={harnessParams.seed ?? undefined}>
+        <SimulationProvider seed={harnessParams.seed ?? undefined} startIntroduction={startIntroduction}>
           <SaveProvider>
             <StrategicShell />
-            <NameEntryOverlay />
+            <MentorPanel />
+            <NameEntryOverlay onNewGame={onNewGame} />
             <SaveMenu />
           </SaveProvider>
         </SimulationProvider>
@@ -75,6 +85,8 @@ function StrategicShell() {
   const [houseOpen, setHouseOpen] = useState(false);
   // ORDER 265 — banken öppnas från morgonens rad.
   const [bankOpen, setBankOpen] = useState(false);
+  // ORDER 267 — söndagstidningen.
+  const newspaper = useNewspaper();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   // ORDER 043 B.1 dev readout — the last key the shortcut handler
   // processed. Renders in DevPanel (dev-only) so the Vision Owner can
@@ -271,8 +283,13 @@ function StrategicShell() {
         onClose={() => setSelectedId(null)}
       />
       <ScenarioOverlay />
-      <DayActionBar onOpenHouse={() => setHouseOpen(true)} onOpenBank={() => setBankOpen(true)} />
+      <DayActionBar
+        onOpenHouse={() => setHouseOpen(true)}
+        onOpenBank={() => setBankOpen(true)}
+        onOpenNewspaper={newspaper.available ? newspaper.openAgain : undefined}
+      />
       <BankDialog open={bankOpen} onClose={() => setBankOpen(false)} />
+      <NewspaperDialog open={newspaper.open} onClose={newspaper.close} />
       <EveningBar />
       <ActionButtonPanel />
       <BlindOverlay />

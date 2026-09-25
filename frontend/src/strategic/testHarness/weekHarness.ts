@@ -12,7 +12,7 @@
 // En "spelare" är en plan: vad som görs på morgonen varje dag.
 
 import { reducer } from '../simulation/reducer';
-import { makeInitialState } from '../simulation/model';
+import { makeNewGameState } from '../simulation/model';
 import { bankQuestionById } from '../knowledge/questionBank';
 import { calendarFor } from '../../sim/calendar';
 import { floorSek } from '../../sim/economy';
@@ -140,7 +140,8 @@ export function runWeeks(opts: {
   economy?: EconomyReading;
 }): HarnessRun {
   const economy = opts.economy ?? V1_ECONOMY;
-  let s = makeInitialState(opts.seed);
+  // ORDER 267 — samma start som spelarens nya spel (rummet följer klassen).
+  let s = makeNewGameState(opts.seed);
   if (opts.setup) s = opts.setup(s);
   const days: DayRecord[] = [];
   const totalDays = opts.weeks * WEEK.daysPerWeek;

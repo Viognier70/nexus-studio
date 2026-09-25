@@ -74,9 +74,11 @@ interface Props {
   onOpenHouse: () => void;
   // ORDER 265 — öppnar banken (söndag, eller utan verksamhet).
   onOpenBank: () => void;
+  // ORDER 267 — söndagstidningen (bara söndag morgon efter en avräkning).
+  onOpenNewspaper?: () => void;
 }
 
-export function DayActionBar({ onOpenHouse, onOpenBank }: Props) {
+export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper }: Props) {
   const sim = useSimState();
   const dispatch = useSimDispatch();
   const period = sim.day.period;
@@ -114,7 +116,7 @@ export function DayActionBar({ onOpenHouse, onOpenBank }: Props) {
       {cal.isServiceDay && business !== null && (
         <div style={{ marginTop: 6, opacity: 0.85 }} data-testid="stock-forecast">{forecastText}</div>
       )}
-      {settlement.length > 0 && (
+      {settlement.length > 0 && !onOpenNewspaper && (
         <div style={{ marginTop: 6 }} data-testid="settlement">
           <strong>{strings.economy.settlement.heading}.</strong> {settlement.join(' ')}
         </div>
@@ -124,6 +126,11 @@ export function DayActionBar({ onOpenHouse, onOpenBank }: Props) {
         {period === 'morning' && (
           <button type="button" style={BUTTON_STYLE} data-testid="open-house" onClick={onOpenHouse}>
             {strings.knowledge.houseButton}
+          </button>
+        )}
+        {period === 'morning' && onOpenNewspaper && (
+          <button type="button" style={BUTTON_STYLE} data-testid="open-newspaper" onClick={onOpenNewspaper}>
+            {strings.newspaper.open}
           </button>
         )}
         {period === 'morning' && showBank && (
@@ -140,7 +147,7 @@ export function DayActionBar({ onOpenHouse, onOpenBank }: Props) {
           >
             {strings.morning.startService}
           </button>
-        ) : (
+        ) : sim.introduction ? null : (
           <button
             type="button"
             style={BUTTON_STYLE}

@@ -4,9 +4,10 @@ import { strings } from '../content/strings.sv';
 interface Props {
   onContinue: () => void;
   onRestart: () => void;
+  continueLabel?: string;
 }
 
-export function EndStage({ onContinue, onRestart }: Props) {
+export function EndStage({ onContinue, onRestart, continueLabel }: Props) {
   const continueRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -31,7 +32,7 @@ export function EndStage({ onContinue, onRestart }: Props) {
             className="btn primary"
             onClick={onContinue}
           >
-            {strings.end.continueButton}
+            {continueLabel ?? strings.end.continueButton}
           </button>
           <button type="button" className="btn" onClick={onRestart}>
             {strings.end.restartButton}

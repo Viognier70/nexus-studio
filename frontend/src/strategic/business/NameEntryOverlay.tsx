@@ -15,14 +15,52 @@ import { useBusiness } from './BusinessContext';
 import { useCamera } from '../camera/CameraContext';
 import './name-entry.css';
 import { useSave } from '../save/SaveContext';
+import { useSimState } from '../simulation/SimulationProvider';
 
-export function NameEntryOverlay() {
+const intro = strings.introduction;
+
+interface Props {
+  // ORDER 267 — "Nytt spel": till bussen (VS001) och introduktionen.
+  onNewGame?: () => void;
+}
+
+// ORDER 267 (Nexus v1 etapp 5) — tre lägen innan verksamheten har ett namn:
+//   - startrutan: inget spel har börjat (introduktionen har inte körts):
+//     "Nytt spel" till bussen, eller fortsätt ett sparat spel;
+//   - inget: introduktionen pågår, mentorn leder (ui/MentorPanel.tsx);
+//   - namnet: banken har öppnat den första verksamheten.
+export function NameEntryOverlay({ onNewGame }: Props) {
   const { hasName, setName } = useBusiness();
   // ORDER 263 — fortsätt ett sparat spel från startrutan.
   const save = useSave();
+  const sim = useSimState();
   const { jumpToPreset } = useCamera();
   const [draft, setDraft] = useState('');
   if (hasName) return null;
+  if (sim.introduction) return null;
+  if (sim.introduction === undefined && onNewGame) {
+    return (
+      <div className="business-name-overlay" role="dialog" aria-modal="true">
+        <div className="business-name-card" data-testid="start-screen">
+          <h2>{intro.startHeading}</h2>
+          <p>{intro.startSubtitle}</p>
+          <div className="business-name-actions">
+            <button type="button" data-testid="new-game" onClick={onNewGame}>
+              {intro.newGame}
+            </button>
+            {save.hasAnySave && (
+              <button type="button" data-testid="continue-saved" onClick={save.openMenu}>
+                {strings.save.continueSaved}
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+  const cls = sim.economy.businessClass;
+  const body = cls ? intro.nameBody(intro.classesIndefinite[cls]) : strings.business.firstRunBody;
+  const placeholder = cls ? intro.namePlaceholder : strings.business.firstRunPlaceholder;
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -53,14 +91,14 @@ export function NameEntryOverlay() {
     <div className="business-name-overlay" role="dialog" aria-modal="true">
       <form className="business-name-card" onSubmit={onSubmit} onKeyDown={onKeyDown}>
         <h2>{strings.business.firstRunHeading}</h2>
-        <p>{strings.business.firstRunBody}</p>
+        <p>{body}</p>
         <input
           type="text"
           autoFocus
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
-          placeholder={strings.business.firstRunPlaceholder}
-          aria-label={strings.business.firstRunPlaceholder}
+          placeholder={placeholder}
+          aria-label={placeholder}
           maxLength={48}
         />
         <div className="business-name-actions">

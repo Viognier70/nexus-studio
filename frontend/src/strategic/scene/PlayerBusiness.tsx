@@ -428,8 +428,12 @@ export function PlayerBusiness() {
   // building centre, always visible. Once `hasName` is false the
   // NameEntryOverlay is capturing the player's input, so we don't show
   // the label until a name exists.
+  // ORDER 267 — prefixet är spelarens v1-klass (Vinbar, Food truck …),
+  // inte det fasta "Restaurang".
+  const v1Class = sim.economy.businessClass;
+  const labelPrefix = v1Class ? strings.economy.classes[v1Class] : strings.business.labelPrefix;
   const labelText = hasName && business.name
-    ? `${strings.business.labelPrefix} ${business.name}`
+    ? `${labelPrefix} ${business.name}`
     : '';
 
   // ORDER 159 — plinth-dimensioner i OBB-lokalt rum. Bredd = layout.width

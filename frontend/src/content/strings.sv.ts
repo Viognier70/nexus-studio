@@ -74,6 +74,70 @@ export const strings = {
     firstRunHint: 'Namnet kan du inte ändra senare.',
     labelPrefix: 'Restaurang'
   },
+  // ORDER 267 (Nexus v1 etapp 5) — söndagstidningen (sim/newspaper.ts).
+  newspaper: {
+    masthead: 'Söndagsnumret',
+    subhead: (week: number) => `Lokaltidningen i Grythyttan · vecka ${week}`,
+    open: 'Söndagsnumret',
+    close: 'Lägg ifrån dig tidningen',
+    reviewHeading: 'Recensionen',
+    marketHeading: 'Marknaden',
+    bankHeading: 'Banken',
+    holidayHeading: 'Det som kommer',
+    reviewTitleGood: (weekday: string, name: string) => `En ${weekday}kväll hos ${name}`,
+    reviewTitleBad: (weekday: string, name: string) => `En ${weekday}kväll hos ${name} som inte höll`,
+    reviewFull: 'Det var fullt, och kön ringlade ut mot torget.',
+    reviewGaveUp: 'Några tröttnade i kön och gick innan de fick plats.',
+    reviewSparse: 'Rummet var glest, och det märktes i stämningen.',
+    reviewSteady: 'Rummet fylldes i jämn takt.',
+    reviewUp: 'De som satt där talade gott om kvällen efteråt.',
+    reviewDown: 'Ryktet fick sig en törn.',
+    reviewFlat: 'Kvällen gick som kvällar gör, utan att någon talade om den efteråt.',
+    noEvenings: (name: string) => `${name} höll stängt hela veckan. Tidningen har ingen kväll att recensera.`,
+    market: {
+      full: (cls: string) => `${cls} tog nästan varje gäst som marknaden gav den den här veckan.`,
+      most: (cls: string) => `${cls} fick de flesta av gästerna den kunde få den här veckan.`,
+      half: (cls: string) => `${cls} fick ungefär hälften av gästerna den kunde få den här veckan.`,
+      few: (cls: string) => `${cls} fick få av gästerna den kunde få den här veckan.`
+    },
+    bankNext: (missing: string) => `Banken om nästa steg: ${missing.charAt(0).toLowerCase()}${missing.slice(1)}`,
+    holidayNextWeek: (name: string) => `${name} nästa vecka.`,
+    holidayInWeeks: (name: string, weeks: string) => `${name} om ${weeks} veckor.`,
+    holidayNone: 'Ingen högtid före säsongens slut.',
+    weekdaysLower: {
+      mon: 'måndags', tue: 'tisdags', wed: 'onsdags', thu: 'torsdags', fri: 'fredags', sat: 'lördags', sun: 'söndags'
+    }
+  },
+  // ORDER 267 (Nexus v1 etapp 5) — startrutan, mentorn i introduktionen
+  // och namnet på den första verksamheten.
+  introduction: {
+    startHeading: 'Nexus',
+    startSubtitle: 'Grythyttan',
+    newGame: 'Nytt spel',
+    mentor: 'Mentorn',
+    steps: {
+      practice:
+        'Välkommen till Grythyttan. Jag kommer från Campus och följer dig i dag. Banken lånar inte ut något förrän den har sett vad du kan, så vi börjar med att öva. Öppna Måltidens hus och öva i Stensöta, där sommelierna håller till. Inget står på spel.',
+      exam:
+        'Bra. Nu provet i samma paviljong: åtta frågor, och sex rätt ger brons. Med brons i Stensöta kan banken låna ut till en vinbar. Går det inte, gör om det. I dag kostar besöken ingen plats i schemat.',
+      bank: 'Brons. Gå till Banken i morgonraden. Där får du höra vad du har visat och vad du kan låna till.'
+    },
+    farewell:
+      'Nu är den din. I kväll öppnar du för första gången. Den här veckan kommer färre gäster än vanligt, så du hinner lära dig rummet. Jag finns på Campus om det går illa.',
+    farewellClose: 'Tack',
+    classesIndefinite: {
+      vinbar: 'en vinbar',
+      foodtruck: 'en food truck',
+      restaurang: 'en restaurang',
+      olkrog: 'en ölkrog',
+      gastgiveri: 'ett gästgiveri',
+      nattklubb: 'en nattklubb'
+    },
+    chooseFirst: (cls: string) => `Öppna ${cls}`,
+    nameBody: (cls: string) => `Banken lånar ut till ${cls} vid torget. Vad ska den heta?`,
+    namePlaceholder: 'Verksamhetens namn',
+    endContinue: 'Fortsätt'
+  },
   day: {
     // ORDER 043 v3 §2 — day-period player-facing text. Cycle-1 scope:
     // morning + afternoon are the two picker phases; lunch/dinner/

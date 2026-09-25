@@ -27,7 +27,13 @@ import { detectWebGL, WebGLFallback } from './webgl/WebGLFallback';
 import { devToggles } from './lib/devToggles';
 import { FpsOverlay } from './lib/FpsOverlay';
 
-export default function App() {
+interface AppProps {
+  // ORDER 267 — i ett nytt spel leder registreringen vidare till
+  // introduktionen i strategiska spelet (main.tsx).
+  onFinished?: () => void;
+}
+
+export default function App({ onFinished }: AppProps = {}) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const isTouch = useIsTouch();
   const [webglOk] = useState<boolean>(() => detectWebGL());
@@ -239,7 +245,8 @@ export default function App() {
               )}
               {state.stage === 'end' && (
                 <EndStage
-                  onContinue={() => dispatch({ type: 'DISMISS_END' })}
+                  continueLabel={onFinished ? strings.introduction.endContinue : undefined}
+                  onContinue={onFinished ?? (() => dispatch({ type: 'DISMISS_END' }))}
                   onRestart={() => dispatch({ type: 'RESET' })}
                 />
               )}

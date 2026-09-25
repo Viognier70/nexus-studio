@@ -2,7 +2,8 @@ import { calendarFor } from '../../sim/calendar';
 import { ACTION_BUTTON, EVENING, POST_SERVICE_QUIZ, SERVICE, type BusinessClassId } from '../../sim/balance';
 import { resetForService, startIntervention, tickIntervention } from '../../sim/actionButton';
 import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
-import { canChangeClassToday, changeClass, classOptions, creditLineSek, dailyGuestCap, dayEnd, dayEndCash, postDailyInterest, settleWeek } from '../../sim/economy';
+import { afterVisitClosed, beginIntroduction } from '../../sim/introduction';
+import { canChangeClassToday, changeClass, classOptions, openFirstBusiness, recordEvening, creditLineSek, dailyGuestCap, dayEnd, dayEndCash, postDailyInterest, settleWeek } from '../../sim/economy';
 import { answerVisit, closeVisit, nextVisitQuestion, scheduleSlotsLeft, startVisit } from '../knowledge/pavilionVisit';
 import { answerQuiz, nextQuizQuestion, offerQuiz, skipQuiz, startQuiz } from '../knowledge/postServiceQuiz';
 import { createRng } from '../util/rng';
@@ -119,7 +120,7 @@ import {
 } from './morale';
 import { tickQualityDrift } from './quality';
 import { ROLLING_WINDOW } from './valuation';
-import { initialDay, loadIdCounters, makeGuest, makeInitialState, makeStaff, readIdCounters } from './model';
+import { initialDay, loadIdCounters, makeGuest, makeNewGameState, makeStaff, readIdCounters } from './model';
 import {
   phronesisSofteningGeneral,
   tickReputationCeilingDrift,
@@ -315,7 +316,9 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
     case 'NEXT_VISIT_QUESTION':
       return nextVisitQuestion(state);
     case 'CLOSE_VISIT':
-      return closeVisit(state);
+      return afterVisitClosed(state, closeVisit(state));
+    case 'BEGIN_INTRODUCTION':
+      return beginIntroduction(state);
     case 'START_QUIZ':
       return startQuiz(state);
     case 'ANSWER_QUIZ': {
@@ -350,7 +353,7 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
     case 'FIRE_TEAM_MEMBER':
       return fireTeamMember(state, action.memberId);
     case 'RESET':
-      return makeInitialState(state.seed, state.policies);
+      return makeNewGameState(state.seed, state.policies);
     case 'FORCE_COLLAPSE':
       return forceCollapseAction(state);
     case 'ANSWER_QUESTION':
@@ -1176,6 +1179,8 @@ function chooseClass(state: SimulationState, to: BusinessClassId): SimulationSta
   if (!canChangeClassToday(state)) return state;
   const option = classOptions(state).find((o) => o.id === to);
   if (!option || option.status !== 'available') return state;
+  // ORDER 267 — bankmötet i introduktionen öppnar den första verksamheten.
+  if (state.introduction) return openFirstBusiness(state, to);
   return changeClass(state, to, false);
 }
 
@@ -1647,6 +1652,8 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           }
         };
       }
+      // ORDER 267 — kvällen till veckans lista (söndagstidningen).
+      next.economy = recordEvening(state, next);
       postServiceSummaryLines(next, 'dinner', state);
       // ORDER 117 §5.1 — värdekvot-mening i strömmen efter middag-close.
       postValueQuotaLine(next, 'dinner');

@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { CameraController } from '../camera/CameraController';
 import type { Landmark } from '../content/world';
 import { AnimationPrototype } from './AnimationPrototype';
-import { BrewpubScene } from './BrewpubScene';
+import { BrewpubScene, WineBarScene } from './BrewpubScene';
 import { RestaurantScene } from './RestaurantScene';
 import { ChimneySmoke } from './ChimneySmoke';
 import { ProceduralFacades } from './ProceduralFacades';
@@ -131,6 +131,7 @@ export function StrategicScene({ onSelect, selectedId, showScaleRef = false }: P
         <PlayerBusiness />
         <RestaurantScene />
         <BrewpubScene />
+        <WineBarScene />
         <InteriorGuests />
         <InteriorStaff />
         <AnimationPrototype />

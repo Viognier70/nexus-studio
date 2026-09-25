@@ -1275,6 +1275,11 @@ export interface SimulationState {
   medals: Partial<Record<PavilionKey, MedalLevelId>>;
   // ORDER 264 — pågående paviljongsbesök (Öva eller Prov), annars null.
   pavilionVisit: PavilionVisitState | null;
+  // ORDER 267 (Nexus v1 etapp 5) — introduktionen (speldesign > Ramar
+  // för version 1 > Introduktionen). Satt från att spelaren kliver av
+  // bussen tills banken öppnat hennes första verksamhet; saknas annars.
+  // Stegen härleds i sim/introduction.ts.
+  introduction?: { practiced: boolean } | null;
   // ORDER 264 — quizen efter servicen; erbjuds när kvällen börjar.
   postServiceQuiz: PostServiceQuizState | null;
   // ORDER 264 — antal kvällar spelaren tagit quizen (mognad, etapp 12).
@@ -1540,6 +1545,7 @@ export type SimAction =
   | { type: 'END_EVENING' }
   // ORDER 265 — byt verksamhet vid veckoavräkningen (banken).
   | { type: 'CHOOSE_CLASS'; to: import('../sim/balance').BusinessClassId }
+  | { type: 'BEGIN_INTRODUCTION' }
   // ORDER 266 — rycka in själv (action-knappen).
   | { type: 'INTERVENE'; kind: import('../sim/actionButton').InterventionKind; guestId: string }
   // ORDER 043 v3 §10 step 5 agency-staff mid-service offer response.

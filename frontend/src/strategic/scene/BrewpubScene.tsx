@@ -12,6 +12,14 @@
 // `updateRoom(room, 0)` anropas varje bildruta med phase = 0 per §5-
 // flaggan `brewPhase` — produktionstillstånd finns inte i sim-lagret
 // ännu och phasen får inte uppfinnas.
+//
+// ORDER 267 (Nexus v1 etapp 5) — komponenten är generisk över rums-
+// klassen (`ContractRoomScene`) och monterar även vinbaren
+// (`WineBarScene`, wineBarRoom.ts via samma kontrakt). v1:s vinbar
+// spelas i det rummet (sim/economy.ts V1_CLASS_TO_ROOM). Vinbarens
+// skivtallrik får phase 0 som ölkrogens bryggning (businessRoom.ts
+// updateRoom-kommentaren). Filnamnet behålls: många kommentarer pekar
+// hit.
 
 import { useEffect, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
@@ -29,6 +37,7 @@ import {
   type BusinessRoom
 } from './businessRoom';
 import { disposeBrewpubGeometry } from './brewpubRoom';
+import { disposeWineBarGeometry, PLINTH_M as WINE_BAR_PLINTH_M } from './wineBarRoom';
 import { businessRoomRef } from './interiorSharedState';
 import { buildNav, type XZ } from './roomNav';
 import { useCamera } from '../camera/CameraContext';
@@ -45,14 +54,32 @@ function smoothstep(a: number, b: number, x: number): number {
   return t * t * (3 - 2 * t);
 }
 
+// ORDER 201 fynd 1 — brewpubRoom lägger golv-slabben på Y=0.11 (onamngiven
+// i brewpubRoom, PLINTH_M i övriga rumsfiler).
+const BREWPUB_PLINTH_M = 0.11;
+
 export function BrewpubScene() {
+  return <ContractRoomScene roomClass="ölkrogen" plinth={BREWPUB_PLINTH_M} disposeGeometry={disposeBrewpubGeometry} />;
+}
+
+export function WineBarScene() {
+  return <ContractRoomScene roomClass="vinbaren" plinth={WINE_BAR_PLINTH_M} disposeGeometry={disposeWineBarGeometry} />;
+}
+
+interface ContractRoomSceneProps {
+  roomClass: 'ölkrogen' | 'vinbaren';
+  plinth: number;
+  disposeGeometry: () => void;
+}
+
+function ContractRoomScene({ roomClass, plinth, disposeGeometry }: ContractRoomSceneProps) {
   const sim = useSimState();
   const layout = usePlayerBusinessInterior(sim.businessClass);
   const groupRef = useRef<THREE.Group>(null);
   const roomRef = useRef<BusinessRoom | null>(null);
   const { actualRef } = useCamera();
 
-  const isBrewpub = sim.businessClass === 'ölkrogen';
+  const isBrewpub = sim.businessClass === roomClass;
   // ORDER 249 §2 — bord-positioner för IndoorLamps.
   const [tables, setTables] = useState<readonly Vec2[]>([]);
 
@@ -64,7 +91,7 @@ export function BrewpubScene() {
     // createRoom via businessRoom-kontraktet. Skickar in width/depth ur
     // interiorLayout så brewpubRoom bygger geometri i samma format
     // sim-lagret räknar i (OBB w869907975).
-    const room = createRoom('ölkrogen', {
+    const room = createRoom(roomClass, {
       width: layout.width,
       depth: layout.depth
     });
@@ -130,7 +157,7 @@ export function BrewpubScene() {
     };
 
     businessRoomRef.current = {
-      businessClass: 'ölkrogen',
+      businessClass: roomClass,
       seats: world.seats as [number, number][],
       seatFacings: world.seatFacings as number[],
       // ORDER 200 fynd 1 — läs sitshöjd per plats från kontraktets
@@ -144,7 +171,7 @@ export function BrewpubScene() {
       // Konstanten är onamngiven i brewpub men skriven som PLINTH_M i
       // restaurant/wineBar/inn/nightClub. InteriorGuests behöver den för
       // att inte placera pelvis 11 cm under sitten.
-      plinth: 0.11,
+      plinth,
       standing: world.standing as [number, number][],
       // ORDER 204/205 — ölkrogens fyra stations (barkeep, brewer, cook, runner)
       // i deklarationsordning. Konsumeras av InteriorStaff.
@@ -188,17 +215,17 @@ export function BrewpubScene() {
         r.dispose?.();
         roomRef.current = null;
       }
-      if (businessRoomRef.current?.businessClass === 'ölkrogen') {
+      if (businessRoomRef.current?.businessClass === roomClass) {
         businessRoomRef.current = null;
       }
     };
-  }, [isBrewpub, layout]);
+  }, [isBrewpub, layout, roomClass]);
 
   useEffect(() => {
     return () => {
-      disposeBrewpubGeometry();
+      disposeGeometry();
     };
-  }, []);
+  }, [disposeGeometry]);
 
   useFrame(() => {
     const room = roomRef.current;

@@ -26,12 +26,13 @@ import { reducer } from '../../simulation/reducer';
 import { DEFAULT_SEED, makeInitialState } from '../../simulation/model';
 import { mountRoomLikeScene } from '../roomParity';
 import { isSeatedCapacity } from '../../simulation/service';
-import { dailyGuestCap } from '../../../sim/economy';
+import { dailyGuestCap, V1_CLASS_TO_ROOM } from '../../../sim/economy';
 import { GAME_MINUTES_PER_SIM_SECOND } from '../../../sim/balance';
 import type { SimulationState } from '../../types';
 
 const OUT = resolve(dirname(fileURLToPath(import.meta.url)), '../../../../reports/order267');
-const ROOM: SimulationState['businessClass'] = 'vinbaren';
+// Rummet som spelarens vinbar spelar i (sim/economy.ts V1_CLASS_TO_ROOM).
+const ROOM: SimulationState['businessClass'] = V1_CLASS_TO_ROOM.vinbar;
 const TICK = 0.2;
 const MAX_TICKS = 20000;
 // Vecka 2: dag 8 = måndag … dag 13 = lördag.

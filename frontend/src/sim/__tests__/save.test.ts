@@ -24,6 +24,7 @@ import {
   type SaveStore
 } from '../save';
 import { SAVING } from '../balance';
+import { V1_CLASS_TO_ROOM } from '../economy';
 
 class MemoryStore implements SaveStore {
   data = new Map<string, string>();
@@ -82,11 +83,27 @@ describe('ORDER 263 — sparande', () => {
     writeSlot(store, 2, makeSaveFile(makeInitialState(1), 'B', 'auto'));
     writeSlot(store, 3, makeSaveFile(makeInitialState(1), 'C', 'auto'));
     expect(firstEmptySlot(store)).toBeNull();
-    const old = { ...makeSaveFile(makeInitialState(1), 'D', 'auto'), formatVersion: SAVING.formatVersion - 1 };
+    const oldest = Math.min(...SAVING.migratableVersions);
+    const old = { ...makeSaveFile(makeInitialState(1), 'D', 'auto'), formatVersion: oldest - 1 };
     store.setItem('nexus.v1.slot3', JSON.stringify(old));
     expect(readSlot(store, 3).status).toBe('older');
     store.setItem('nexus.v1.slot3', '{trasig');
     expect(readSlot(store, 3).status).toBe('corrupt');
+  });
+
+  // ORDER 267 — en fil i version 1 (vinbaren i kvarterskrogens rum)
+  // laddas i vinbarens rum; resten av tillståndet är detsamma.
+  it('en fil från före etapp 5 laddas med vinbarens rum', () => {
+    const store = new MemoryStore();
+    const sim = makeInitialState(1);
+    expect(sim.economy.businessClass).toBe('vinbar');
+    const v1 = { ...makeSaveFile(sim, 'E', 'auto'), formatVersion: Math.min(...SAVING.migratableVersions) };
+    store.setItem('nexus.v1.slot1', JSON.stringify(v1));
+    const read = readSlot(store, 1);
+    if (read.status !== 'ok') throw new Error(read.status);
+    expect(read.file.formatVersion).toBe(SAVING.formatVersion);
+    expect(read.file.sim.businessClass).toBe(V1_CLASS_TO_ROOM.vinbar);
+    expect({ ...read.file.sim, businessClass: sim.businessClass }).toEqual(JSON.parse(JSON.stringify(sim)));
   });
 
   it('autospar vid varje dagsavslut, veckokopia när en ny vecka börjar', () => {

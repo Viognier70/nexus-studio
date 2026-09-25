@@ -101,7 +101,8 @@ function shuffle<T>(items: readonly T[], state: SimulationState): { out: T[]; rn
 export function canVisit(state: SimulationState, pavilion: PavilionKey, mode: 'practice' | 'exam'): boolean {
   if (state.day.period !== 'morning') return false;
   if (state.pavilionVisit !== null) return false;
-  if (scheduleSlotsLeft(state) <= 0) return false;
+  // ORDER 267 (F33) — introduktionens besök tar ingen schemaplats.
+  if (!state.introduction && scheduleSlotsLeft(state) <= 0) return false;
   if (!isPavilionUnlocked(state, pavilion)) return false;
   if (mode === 'exam' && nextExamLevel(state.medals[pavilion]) === null) return false;
   const level = mode === 'exam' ? nextExamLevel(state.medals[pavilion])! : practiceLevel(state.medals[pavilion]);
@@ -128,7 +129,9 @@ export function startVisit(state: SimulationState, pavilion: PavilionKey, mode: 
     ...state,
     rngState,
     pavilionVisit: visit,
-    day: { ...state.day, pavilionVisitsToday: [...(state.day.pavilionVisitsToday ?? []), pavilion] }
+    day: state.introduction
+      ? state.day
+      : { ...state.day, pavilionVisitsToday: [...(state.day.pavilionVisitsToday ?? []), pavilion] }
   };
 }
 
