@@ -31,7 +31,9 @@ const BADGE_STYLE: React.CSSProperties = {
   lineHeight: 1.3,
   letterSpacing: 0.2,
   minHeight: 26,
-  boxSizing: 'border-box'
+  boxSizing: 'border-box',
+  flexShrink: 0,
+  whiteSpace: 'nowrap'
 };
 
 const HOLIDAY_STYLE: React.CSSProperties = {
@@ -54,15 +56,23 @@ export function DayBadge() {
       ? strings.calendar.holidayThisWeek(strings.calendar.holidays[cal.holidayThisWeek.id])
       : null;
   return (
-    <div style={BADGE_STYLE} data-testid="day-badge" aria-live="polite">
-      <span>
+    <div style={BADGE_STYLE} className="gb-daybadge" data-testid="day-badge" aria-live="polite">
+      {/* Full form; på smala skärmar visas den korta formen (strategic.css). */}
+      <span className="gb-daybadge-full">
         <strong data-testid="day-badge-weekday">{strings.calendar.weekdays[cal.weekday]}</strong>
         {' · '}
         <span data-testid="day-badge-week">{strings.calendar.week(cal.week, SEASON.weeks)}</span>
         {' · '}
         <span data-testid="day-badge-phase">{phase}</span>
       </span>
-      {holiday && <span style={HOLIDAY_STYLE}>{holiday}</span>}
+      <span className="gb-daybadge-short" aria-hidden="true">
+        <strong>{strings.calendar.weekdaysShort[cal.weekday]}</strong>
+        {' · '}
+        {strings.calendar.weekShort(cal.week)}
+        {' · '}
+        {phase}
+      </span>
+      {holiday && <span style={HOLIDAY_STYLE} className="gb-daybadge-holiday">{holiday}</span>}
     </div>
   );
 }

@@ -33,7 +33,11 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const FRONTEND = resolve(HERE, '..');
 const OUT = resolve(FRONTEND, 'reports/order263');
 mkdirSync(OUT, { recursive: true });
-const URL = 'http://localhost:5173';
+// PREVIEW=1 kör produktionsbygget på en egen port (4173), så att en
+// redan körande dev-server på 5173 aldrig råkar besvara körningen.
+const PREVIEW = process.env.PREVIEW === '1';
+const PORT = PREVIEW ? 4173 : 5173;
+const URL = `http://localhost:${PORT}`;
 
 async function ensureVite(url) {
   try { const r = await fetch(url + '/'); if (r.ok || r.status === 304) return null; } catch {}
@@ -76,7 +80,27 @@ async function simReading(page) {
   });
 }
 
-const vite = await ensureVite(URL);
+// PREVIEW=1: bygg och kör produktionsbygget (vite preview), samma som
+// spelaren får. Då finns inga DEV-paneler och ingen DEV-krok; simReading
+// ger null och all avläsning sker ur gränssnittet och sparfilen.
+async function ensurePreview() {
+  try { await fetch(URL + '/'); throw new Error(`port ${PORT} är redan upptagen`); } catch (e) { if (String(e.message).includes('upptagen')) throw e; }
+  await new Promise((res, rej) => {
+    const b = spawn('npm', ['run', 'build'], { cwd: FRONTEND, stdio: 'inherit' });
+    b.on('exit', (code) => (code === 0 ? res() : rej(new Error(`build exit ${code}`))));
+  });
+  const proc = spawn('npx', ['vite', 'preview', '--port', String(PORT), '--strictPort'], {
+    cwd: FRONTEND, stdio: ['ignore', 'pipe', 'pipe']
+  });
+  proc.stdout.on('data', () => {}); proc.stderr.on('data', () => {});
+  const deadline = Date.now() + 120000;
+  while (Date.now() < deadline) {
+    try { const r = await fetch(URL + '/'); if (r.ok) return proc; } catch {}
+    await delay(500);
+  }
+  throw new Error('preview timeout');
+}
+const vite = PREVIEW ? await ensurePreview() : await ensureVite(URL);
 const { chromium } = await import('playwright');
 // Playwrights egen Chromium om den finns, annars installerad Chrome.
 const browser = await chromium.launch().catch(() => chromium.launch({ channel: 'chrome' }));
@@ -85,7 +109,7 @@ const page = await ctx.newPage();
 const errors = [];
 page.on('pageerror', (e) => errors.push(e.message));
 
-const report = { url: `${URL}/`, flags: 'inga', days: [], saveLoad: null, errors };
+const report = { url: `${URL}/`, build: PREVIEW ? 'produktion (vite build + preview)' : 'dev-server', flags: 'inga', days: [], saveLoad: null, errors };
 try {
   await page.goto(`${URL}/`, { waitUntil: 'domcontentloaded' });
   await page.waitForSelector('input[type=text]', { timeout: 120000 });
@@ -161,8 +185,45 @@ try {
     savedFile: saved ? { dayNumber: saved.sim.day.dayNumber, cash: Math.round(saved.sim.cash), businessName: saved.businessName, kind: saved.kind } : null,
     after,
     sameDay: before.badge.weekday === after.badge.weekday && before.badge.week === after.badge.week,
-    sameDayNumberAsFile: saved ? saved.sim.day.dayNumber === after.sim?.dayNumber : false
+    sameDayNumberAsFile: saved && after.sim ? saved.sim.day.dayNumber === after.sim.dayNumber : null,
+    // Efter laddning: sparfilen i plats 1 är orörd (ingen dag har passerat).
+    fileAfterLoad: await page.evaluate(() => {
+      const raw = window.localStorage.getItem('nexus.v1.slot1');
+      if (!raw) return null;
+      const f = JSON.parse(raw);
+      return { dayNumber: f.sim.day.dayNumber, cash: Math.round(f.sim.cash), businessName: f.businessName };
+    })
   };
+
+  // Mobil med touch: samma sparade spel laddas via tryck, och morgonens
+  // knapp och dagsmärket ska synas inom en telefonskärm.
+  const mctx = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, storageState: await ctx.storageState() });
+  const m = await mctx.newPage();
+  await m.goto(`${URL}/`, { waitUntil: 'domcontentloaded' });
+  await m.waitForSelector('[data-testid=continue-saved]', { timeout: 120000 });
+  await m.tap('[data-testid=continue-saved]');
+  await m.waitForSelector('[data-testid=load-slot-1]');
+  await m.screenshot({ path: resolve(OUT, 'mobil-sparmeny.png') });
+  await m.tap('[data-testid=load-slot-1]');
+  await m.waitForSelector('[data-testid=day-badge]');
+  await delay(4000);
+  await m.screenshot({ path: resolve(OUT, 'mobil-morgon.png') });
+  report.mobile = await m.evaluate(() => {
+    const r = (sel) => {
+      const e = document.querySelector(sel);
+      if (!e) return null;
+      const b = e.getBoundingClientRect();
+      return { left: Math.round(b.left), right: Math.round(b.right), top: Math.round(b.top), bottom: Math.round(b.bottom) };
+    };
+    return {
+      viewport: { w: window.innerWidth, h: window.innerHeight },
+      badge: r('[data-testid=day-badge]'),
+      actionBar: r('[data-testid=day-action-bar]'),
+      startButton: r('[data-testid=start-service]') ?? r('[data-testid=close-day]'),
+      horizontalScroll: document.documentElement.scrollWidth > window.innerWidth
+    };
+  });
+  await mctx.close();
 } finally {
   writeFileSync(resolve(OUT, 'week-playthrough.json'), JSON.stringify(report, null, 2));
   await browser.close();

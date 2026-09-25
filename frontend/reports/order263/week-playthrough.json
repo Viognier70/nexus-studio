@@ -1,0 +1,304 @@
+{
+  "url": "http://localhost:4173/",
+  "build": "produktion (vite build + preview)",
+  "flags": "inga",
+  "days": [
+    {
+      "morning": {
+        "weekday": "Måndag",
+        "week": "Vecka 1 av 8",
+        "phase": "Morgon",
+        "full": "Måndag · Vecka 1 av 8 · MorgonMidsommar den här veckan"
+      },
+      "shots": [
+        "d1-måndag-1-morgon.png",
+        "d1-måndag-2-service.png",
+        "d1-måndag-3-kvall.png"
+      ],
+      "simAtMorning": null,
+      "action": "Öppna för kvällen",
+      "service": {
+        "weekday": "Måndag",
+        "week": "Vecka 1 av 8",
+        "phase": "Service",
+        "full": "Måndag · Vecka 1 av 8 · ServiceMidsommar den här veckan"
+      },
+      "evening": {
+        "weekday": "Måndag",
+        "week": "Vecka 1 av 8",
+        "phase": "Kväll",
+        "full": "Måndag · Vecka 1 av 8 · KvällMidsommar den här veckan"
+      },
+      "nextMorning": {
+        "weekday": "Tisdag",
+        "week": "Vecka 1 av 8",
+        "phase": "Morgon",
+        "full": "Tisdag · Vecka 1 av 8 · MorgonMidsommar den här veckan"
+      }
+    },
+    {
+      "morning": {
+        "weekday": "Tisdag",
+        "week": "Vecka 1 av 8",
+        "phase": "Morgon",
+        "full": "Tisdag · Vecka 1 av 8 · MorgonMidsommar den här veckan"
+      },
+      "shots": [
+        "d2-tisdag-1-morgon.png",
+        "d2-tisdag-2-service.png",
+        "d2-tisdag-3-kvall.png"
+      ],
+      "simAtMorning": null,
+      "action": "Öppna för kvällen",
+      "service": {
+        "weekday": "Tisdag",
+        "week": "Vecka 1 av 8",
+        "phase": "Service",
+        "full": "Tisdag · Vecka 1 av 8 · ServiceMidsommar den här veckan"
+      },
+      "evening": {
+        "weekday": "Tisdag",
+        "week": "Vecka 1 av 8",
+        "phase": "Kväll",
+        "full": "Tisdag · Vecka 1 av 8 · KvällMidsommar den här veckan"
+      },
+      "nextMorning": {
+        "weekday": "Onsdag",
+        "week": "Vecka 1 av 8",
+        "phase": "Morgon",
+        "full": "Onsdag · Vecka 1 av 8 · MorgonMidsommar den här veckan"
+      }
+    },
+    {
+      "morning": {
+        "weekday": "Onsdag",
+        "week": "Vecka 1 av 8",
+        "phase": "Morgon",
+        "full": "Onsdag · Vecka 1 av 8 · MorgonMidsommar den här veckan"
+      },
+      "shots": [
+        "d3-onsdag-1-morgon.png",
+        "d3-onsdag-2-service.png",
+        "d3-onsdag-3-kvall.png"
+      ],
+      "simAtMorning": null,
+      "action": "Öppna för kvällen",
+      "service": {
+        "weekday": "Onsdag",
+        "week": "Vecka 1 av 8",
+        "phase": "Service",
+        "full": "Onsdag · Vecka 1 av 8 · ServiceMidsommar den här veckan"
+      },
+      "evening": {
+        "weekday": "Onsdag",
+        "week": "Vecka 1 av 8",
+        "phase": "Kväll",
+        "full": "Onsdag · Vecka 1 av 8 · KvällMidsommar den här veckan"
+      },
+      "nextMorning": {
+        "weekday": "Torsdag",
+        "week": "Vecka 1 av 8",
+        "phase": "Morgon",
+        "full": "Torsdag · Vecka 1 av 8 · MorgonMidsommar den här veckan"
+      }
+    },
+    {
+      "morning": {
+        "weekday": "Torsdag",
+        "week": "Vecka 1 av 8",
+        "phase": "Morgon",
+        "full": "Torsdag · Vecka 1 av 8 · MorgonMidsommar den här veckan"
+      },
+      "shots": [
+        "d4-torsdag-1-morgon.png",
+        "d4-torsdag-2-service.png",
+        "d4-torsdag-3-kvall.png"
+      ],
+      "simAtMorning": null,
+      "action": "Öppna för kvällen",
+      "service": {
+        "weekday": "Torsdag",
+        "week": "Vecka 1 av 8",
+        "phase": "Service",
+        "full": "Torsdag · Vecka 1 av 8 · ServiceMidsommar den här veckan"
+      },
+      "evening": {
+        "weekday": "Torsdag",
+        "week": "Vecka 1 av 8",
+        "phase": "Kväll",
+        "full": "Torsdag · Vecka 1 av 8 · KvällMidsommar den här veckan"
+      },
+      "nextMorning": {
+        "weekday": "Fredag",
+        "week": "Vecka 1 av 8",
+        "phase": "Morgon",
+        "full": "Fredag · Vecka 1 av 8 · MorgonMidsommar i dag"
+      }
+    },
+    {
+      "morning": {
+        "weekday": "Fredag",
+        "week": "Vecka 1 av 8",
+        "phase": "Morgon",
+        "full": "Fredag · Vecka 1 av 8 · MorgonMidsommar i dag"
+      },
+      "shots": [
+        "d5-fredag-1-morgon.png",
+        "d5-fredag-2-service.png",
+        "d5-fredag-3-kvall.png"
+      ],
+      "simAtMorning": null,
+      "action": "Öppna för kvällen",
+      "service": {
+        "weekday": "Fredag",
+        "week": "Vecka 1 av 8",
+        "phase": "Service",
+        "full": "Fredag · Vecka 1 av 8 · ServiceMidsommar i dag"
+      },
+      "evening": {
+        "weekday": "Fredag",
+        "week": "Vecka 1 av 8",
+        "phase": "Kväll",
+        "full": "Fredag · Vecka 1 av 8 · KvällMidsommar i dag"
+      },
+      "nextMorning": {
+        "weekday": "Lördag",
+        "week": "Vecka 1 av 8",
+        "phase": "Morgon",
+        "full": "Lördag · Vecka 1 av 8 · MorgonMidsommar i dag"
+      }
+    },
+    {
+      "morning": {
+        "weekday": "Lördag",
+        "week": "Vecka 1 av 8",
+        "phase": "Morgon",
+        "full": "Lördag · Vecka 1 av 8 · MorgonMidsommar i dag"
+      },
+      "shots": [
+        "d6-lördag-1-morgon.png",
+        "d6-lördag-2-service.png",
+        "d6-lördag-3-kvall.png"
+      ],
+      "simAtMorning": null,
+      "action": "Öppna för kvällen",
+      "service": {
+        "weekday": "Lördag",
+        "week": "Vecka 1 av 8",
+        "phase": "Service",
+        "full": "Lördag · Vecka 1 av 8 · ServiceMidsommar i dag"
+      },
+      "evening": {
+        "weekday": "Lördag",
+        "week": "Vecka 1 av 8",
+        "phase": "Kväll",
+        "full": "Lördag · Vecka 1 av 8 · KvällMidsommar i dag"
+      },
+      "nextMorning": {
+        "weekday": "Söndag",
+        "week": "Vecka 1 av 8",
+        "phase": "Stängt",
+        "full": "Söndag · Vecka 1 av 8 · StängtMidsommar den här veckan"
+      }
+    },
+    {
+      "morning": {
+        "weekday": "Söndag",
+        "week": "Vecka 1 av 8",
+        "phase": "Stängt",
+        "full": "Söndag · Vecka 1 av 8 · StängtMidsommar den här veckan"
+      },
+      "shots": [
+        "d7-söndag-1-morgon.png",
+        "d7-söndag-3-kvall.png"
+      ],
+      "simAtMorning": null,
+      "action": "Avsluta söndagen",
+      "evening": {
+        "weekday": "Söndag",
+        "week": "Vecka 1 av 8",
+        "phase": "Kväll",
+        "full": "Söndag · Vecka 1 av 8 · KvällMidsommar den här veckan"
+      },
+      "nextMorning": {
+        "weekday": "Måndag",
+        "week": "Vecka 2 av 8",
+        "phase": "Morgon",
+        "full": "Måndag · Vecka 2 av 8 · Morgon"
+      }
+    }
+  ],
+  "saveLoad": {
+    "before": {
+      "badge": {
+        "weekday": "Måndag",
+        "week": "Vecka 2 av 8",
+        "phase": "Morgon",
+        "full": "Måndag · Vecka 2 av 8 · Morgon"
+      },
+      "sim": null
+    },
+    "savedFile": {
+      "dayNumber": 8,
+      "cash": 142906,
+      "businessName": "Vinbaren vid torget",
+      "kind": "auto"
+    },
+    "after": {
+      "badge": {
+        "weekday": "Måndag",
+        "week": "Vecka 2 av 8",
+        "phase": "Morgon",
+        "full": "Måndag · Vecka 2 av 8 · Morgon"
+      },
+      "sim": null
+    },
+    "sameDay": true,
+    "sameDayNumberAsFile": null,
+    "fileAfterLoad": {
+      "dayNumber": 8,
+      "cash": 142906,
+      "businessName": "Vinbaren vid torget"
+    }
+  },
+  "errors": [],
+  "endOfWeek": {
+    "badge": {
+      "weekday": "Måndag",
+      "week": "Vecka 2 av 8",
+      "phase": "Morgon",
+      "full": "Måndag · Vecka 2 av 8 · Morgon"
+    },
+    "sim": null
+  },
+  "saveMenu": {
+    "text": "Sparade spelStängSpelet sparas automatiskt när dagen tar slut, och en kopia sparas varje vecka.Plats 1 · Spelar nuVinbaren vid torget · Måndag, vecka 2LaddaSpara härVeckokopior:Början av vecka 1Början av vecka 2Plats 2TomSpara härPlats 3TomSpara här",
+    "hasWeek1Copy": true,
+    "hasWeek2Copy": true
+  },
+  "mobile": {
+    "viewport": {
+      "w": 390,
+      "h": 844
+    },
+    "badge": {
+      "left": 0,
+      "right": 84,
+      "top": 19,
+      "bottom": 92
+    },
+    "actionBar": {
+      "left": 16,
+      "right": 374,
+      "top": 663,
+      "bottom": 820
+    },
+    "startButton": {
+      "left": 37,
+      "right": 199,
+      "top": 759,
+      "bottom": 803
+    },
+    "horizontalScroll": false
+  }
+}

@@ -70,7 +70,27 @@
   right: 1.2rem;
   display: flex;
   gap: 0.5rem;
-  z-index: 10;
+  /* ORDER 263 — över panelkolumnerna (z 33) så att menyns rullgardin
+     (Spara och ladda, Om denna prototyp) går att klicka. Var 10: då
+     låg högerkolumnen över rullgardinen och fångade klicken. */
+  z-index: 45;
+}
+/* ORDER 263 — dagsmärket: kort form på smala skärmar (telefon), så att
+   märket ryms på en rad bredvid kassan och fartknapparna. */
+.gb-daybadge-short { display: none; }
+@media (max-width: 640px) {
+  .gb-daybadge-full { display: none; }
+  .gb-daybadge-short { display: inline; }
+  .gb-daybadge { font-size: 11px !important; padding: 4px 8px !important; }
+  .gb-daybadge-holiday { font-size: 10px !important; white-space: normal; }
+  .gb-daybadge { white-space: normal !important; max-width: 46vw; }
+  /* Raden uppe till höger får bryta i stället för att gå utanför skärmen. */
+  .gb-topright {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    max-width: calc(100vw - 32px);
+    right: 16px;
+  }
 }
 .gb-btn {
   border: 1px solid var(--gb-border);

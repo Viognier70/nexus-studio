@@ -103,7 +103,17 @@ export const strings = {
       sat: 'Lördag',
       sun: 'Söndag'
     },
+    weekdaysShort: {
+      mon: 'Mån',
+      tue: 'Tis',
+      wed: 'Ons',
+      thu: 'Tor',
+      fri: 'Fre',
+      sat: 'Lör',
+      sun: 'Sön'
+    },
     week: (week: number, weeks: number) => `Vecka ${week} av ${weeks}`,
+    weekShort: (week: number) => `v. ${week}`,
     season: (season: number) => `Säsong ${season}`,
     holidays: {
       midsommar: 'Midsommar',
