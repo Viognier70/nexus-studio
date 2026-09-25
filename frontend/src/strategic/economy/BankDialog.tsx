@@ -8,7 +8,7 @@
 
 import { strings } from '../../content/strings.sv';
 import { BUSINESS_CLASSES, MEDAL_LEVELS, type BusinessClassId, type MedalRequirement } from '../../sim/balance';
-import { ALL_PAVILIONS, canChangeClassToday, classOptions, classSpec, meetsRequirement, type ClassOption } from '../../sim/economy';
+import { ALL_PAVILIONS, canChangeClassToday, classOptions, classSpec, meetsRequirement, requirementsFor, type ClassOption } from '../../sim/economy';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 import type { PavilionKey, SimulationState } from '../types';
 
@@ -41,16 +41,16 @@ export function shownInWords(medals: SimulationState['medals']): string {
   return e.shown(joinWords(byLevel.map((p) => e.topics[p])));
 }
 
-export function missingInWords(id: BusinessClassId, medals: SimulationState['medals']): string | null {
-  const unmet = classSpec(id).requirements.filter((r) => !meetsRequirement(r, medals));
+export function missingInWords(id: BusinessClassId, medals: SimulationState['medals'], requirements: readonly MedalRequirement[] = classSpec(id).requirements): string | null {
+  const unmet = requirements.filter((r) => !meetsRequirement(r, medals));
   if (unmet.length === 0) return null;
   return e.missing(e.classesDefinite[id], joinWords(unmet.map(requirementInWords)));
 }
 
-function optionLine(o: ClassOption, medals: SimulationState['medals']): string {
+function optionLine(o: ClassOption, sim: SimulationState): string {
   switch (o.status) {
     case 'current': return e.current;
-    case 'requirements': return missingInWords(o.id, medals) ?? '';
+    case 'requirements': return missingInWords(o.id, sim.medals, requirementsFor(sim, o.id)) ?? '';
     case 'cash': return e.cashShort(e.classesDefinite[o.id]);
     case 'upgradeOnly': return e.upgradeOnly;
     case 'available': return '';
@@ -105,7 +105,7 @@ export function BankDialog({ open, onClose }: Props) {
           return (
             <div key={c.id} style={ROW} data-testid={`class-${c.id}`}>
               <strong>{e.classes[c.id]}</strong>
-              {o.status !== 'available' && <div style={{ opacity: 0.8 }}>{optionLine(o, sim.medals)}</div>}
+              {o.status !== 'available' && <div style={{ opacity: 0.8 }}>{optionLine(o, sim)}</div>}
               {o.status === 'available' && canChange && (
                 <div>
                   <button
@@ -117,7 +117,9 @@ export function BankDialog({ open, onClose }: Props) {
                       onClose();
                     }}
                   >
-                    {e.choose(e.classes[c.id])}
+                    {sim.introduction
+                      ? strings.introduction.chooseFirst(strings.introduction.classesIndefinite[c.id])
+                      : e.choose(e.classes[c.id])}
                   </button>
                 </div>
               )}

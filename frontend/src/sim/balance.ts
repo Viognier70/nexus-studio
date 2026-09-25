@@ -268,19 +268,27 @@ export interface BusinessClassSpec {
   // 1, vinbar och ölkrog 2, restaurang 3, gästgiveri och nattklubb 4. Ett
   // byte till större storlek är en uppgradering.
   sizeRank: number;
+  // ORDER 267 (F33) — kravet för spelarens första verksamhet i
+  // introduktionen: "Startvalet mellan vinbar och ölkrog styrs av vad
+  // spelaren har valt att lära sig." Introduktionen har ett prov; brons
+  // i klassens huvudpaviljong räcker för start. Utelämnat = samma krav
+  // som annars.
+  startRequirements?: readonly MedalRequirement[];
 }
 
 export const BUSINESS_CLASSES = {
   section: 'Verksamhetsklasserna',
   list: [
     { id: 'vinbar', seats: 20, mainPavilion: 'stensota', upgradeOnly: false, buildOrder: 1, sizeRank: 2,
-      requirements: [{ level: 'brons', count: 3, including: ['stensota'] }] },
+      requirements: [{ level: 'brons', count: 3, including: ['stensota'] }],
+      startRequirements: [{ level: 'brons', count: 1, including: ['stensota'] }] },
     { id: 'foodtruck', seats: null, mainPavilion: 'best', upgradeOnly: false, buildOrder: 2, sizeRank: 1,
       requirements: [{ level: 'brons', count: 1, including: [] }] },
     { id: 'restaurang', seats: 60, mainPavilion: 'metodkoket', upgradeOnly: false, buildOrder: 3, sizeRank: 3,
       requirements: [{ level: 'silver', count: 3, including: [] }] },
     { id: 'olkrog', seats: 20, mainPavilion: 'metodkoket', upgradeOnly: false, buildOrder: 4, sizeRank: 2,
-      requirements: [{ level: 'brons', count: 3, including: ['metodkoket'] }] },
+      requirements: [{ level: 'brons', count: 3, including: ['metodkoket'] }],
+      startRequirements: [{ level: 'brons', count: 1, including: ['metodkoket'] }] },
     { id: 'gastgiveri', seats: 100, mainPavilion: 'kalastorget', upgradeOnly: true, buildOrder: 5, sizeRank: 4,
       requirements: [{ level: 'guld', count: 3, including: ['kalastorget'] }] },
     { id: 'nattklubb', seats: 150, mainPavilion: 'kalastorget', upgradeOnly: true, buildOrder: 6, sizeRank: 4,
@@ -352,6 +360,40 @@ export const QUEUE = {
   giveUpSatisfaction: 0.35
 } as const;
 
+// ORDER 267 (F31) — sittiden. Speldesignen anger ingen klocka för
+// kvällen; servicen räknas som 18–23 i speltid (fem timmar över
+// SERVICE.simMinutes), alltså en halv spelminut per simsekund. En gäst
+// stannar en bestämd tid från att hon satt sig tills hon betalat; går
+// beställningen långsamt blir sittningen längre, aldrig kortare än
+// minDiningGameMinutes efter maten (gånger 2 − socialt kapital, ORDER
+// 043). Före ORDER 267 fanns ingen sittid: den blev vad personalen
+// hann med, 84–174 s beroende på fröet. Vision Owner 2026-09-25:
+// 60–90 min för en vinbar. Valda tal.
+export const SITTING = {
+  section: 'Servicen',
+  openQuestion: 'F31',
+  serviceStartHour: 18,
+  serviceEndHour: 23,
+  stayGameMinutes: { vardaglig: 75, formell: 90 },
+  minDiningGameMinutes: 10
+} as const;
+
+// Spelminuter per simsekund under servicen (F31).
+export const GAME_MINUTES_PER_SIM_SECOND =
+  ((SITTING.serviceEndHour - SITTING.serviceStartHour) * 60) / (SERVICE.simMinutes * 60);
+
+// ORDER 267 (F34) — söndagstidningen (speldesign > Ramar för version 1 >
+// Veckoavräkningen): "en recension av veckans bästa eller sämsta kväll,
+// hur det gick på marknaden, vad banken säger och vilken högtid som
+// kommer." Marknaden i ord efter andelen av veckans tak som kom (gäster
+// / summan av dagarnas tak). En kväll räknas som full vid samma andel.
+// Valda tal.
+export const NEWSPAPER = {
+  section: 'Ramar för version 1 > Veckoavräkningen',
+  openQuestion: 'F34',
+  marketShareWords: { full: 0.95, most: 0.7, half: 0.4 }
+} as const;
+
 // ORDER 266 (F28) — händelser ur simuleringen, var och en med en orsak
 // (speldesign > Händelser). Valda tal.
 export const EVENTS = {
@@ -413,6 +455,10 @@ export const SAVING = {
   section: 'Ramar för version 1 > Sparande',
   slots: 3,                    // "Tre sparplatser per spelare"
   // ORDER 263 — sparfilens formatversion. Höjs när sparfilens form
-  // ändras; äldre filer visas då som "sparat i en äldre version" (F12).
-  formatVersion: 1
+  // ändras; äldre filer visas då som "sparat i en äldre version" (F12),
+  // utom de som står i migratableVersions och går att föra över.
+  // ORDER 267 — version 2: vinbaren spelas i vinbarens rum. En fil i
+  // version 1 laddas med rummet satt efter klassen (save.ts migrate).
+  formatVersion: 2,
+  migratableVersions: [1]
 } as const;

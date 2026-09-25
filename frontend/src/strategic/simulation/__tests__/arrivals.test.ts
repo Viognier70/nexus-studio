@@ -135,12 +135,14 @@ describe('periodArrivalMultiplier', () => {
 });
 
 describe('maybeSpawnGuest', () => {
-  it('returns empty array when the active-guest cap (24) is reached', () => {
+  // ORDER 267 (Vision Owner 2026-09-25) — taket på 24 samtidiga gäster
+  // är borttaget; ett fullt rum släpper fortfarande in, överskottet blir
+  // kö och gäster som går.
+  it('admits with 24 guests already in the room (no active-guest cap)', () => {
     const s = stateInPeriod(1, 'dinner');
     for (let i = 0; i < 24; i++) s.guests.push(makeGuest(s.simTime, false));
-    // rng.chance would fire (0 < any probability), but the cap short-circuits.
-    const g = maybeSpawnGuest(s, fakeRng([0]));
-    expect(g).toHaveLength(0);
+    const g = maybeSpawnGuest(s, fakeRng([0, 0.9, 0.9, 0.9]));
+    expect(g.length).toBeGreaterThan(0);
   });
 
   it('still admits when active is 23 (one below cap)', () => {

@@ -18,6 +18,8 @@ import { reducer } from '../reducer';
 import type { SimulationState } from '../../types';
 
 const LUNCH_MINUTES = 5;
+// Flyttalsbrus i kronor (ORDER 258: −3e-12).
+const FLOAT_TOLERANCE_SEK = 1e-6;
 const DINNER_MINUTES = 5;
 const TICK_HZ = 5;
 
@@ -68,15 +70,15 @@ describe('ORDER 230 — dagens tal i kvällsavräkningen efter lunch + middag', 
   // > 13 000 SEK. Efter längre gest-tid ger seed=42 ~10 710 SEK per pass
   // vilket är korrekt sim-utfall men under den tröskel VO 2026-08-XX
   // satte. Baseline väntar VO-beslut om ekonomi.
-  it.fails('metrics.revenue matchar dagsledgerns revenue-summa (båda services) [KÄND AVVIKELSE ORDER 253]', () => {
-    const dayLedgerRevenue = state.ledger
-      .filter((l) => l.day === 1 && l.category === 'revenue')
-      .reduce((sum, l) => sum + l.amount, 0);
+  // ORDER 267: regressionsvakten läser ledgern i stället för tröskeln
+  // 13 000 SEK (som föll med ORDER 253:s tempo): båda servicerna har en
+  // intäktsrad, och metrics.revenue är summan av dem, inte middagens.
+  it('metrics.revenue matchar dagsledgerns revenue-summa (båda services)', () => {
+    const revenueLines = state.ledger.filter((l) => l.day === 1 && l.category === 'revenue');
+    const dayLedgerRevenue = revenueLines.reduce((sum, l) => sum + l.amount, 0);
     expect(account!.metrics!.revenue).toBeCloseTo(dayLedgerRevenue, 2);
-    // Regressionsguard: siffran ska vara märkbart större än vad
-    // dinner ensam gav. Rekognoseringen visade dinner=11 067 kr och
-    // lunch=5 355 kr; den bugginga metrics.revenue var 11 067.
-    expect(account!.metrics!.revenue).toBeGreaterThan(13000);
+    expect(revenueLines.filter((l) => l.amount > 0).length).toBeGreaterThanOrEqual(2);
+    expect(account!.metrics!.revenue).toBeGreaterThan(Math.max(...revenueLines.map((l) => l.amount)));
   });
 
   it('metrics.cost är summan av all dagskostnad (service + idle + wages)', () => {
@@ -130,7 +132,8 @@ describe('ORDER 230 — dagens tal i kvällsavräkningen efter lunch + middag', 
   // Testet asserterar gap >= 0, vilket vari sant matematiskt (float-fel).
   // Baseline väntar VO-beslut — kan lösas med tolerans-tillägg eller
   // omkalibrering av idle-cost-modell.
-  it.fails('idle-kostnad mellan lunch och middag räknas in i metrics.cost [KÄND AVVIKELSE ORDER 258]', () => {
+  // ORDER 267: toleransen för flyttalsbrus (gapet blev −3e-12).
+  it('idle-kostnad mellan lunch och middag räknas in i metrics.cost', () => {
     // Idle-kost mellan lunch → dinner ackumuleras i
     // draft.day.idleCostAccrued (reducer.ts:2008) OCH applyCashCost:as
     // per tick (reducer.ts:1997). Alltså finns den i state.cost, men
@@ -153,7 +156,7 @@ describe('ORDER 230 — dagens tal i kvällsavräkningen efter lunch + middag', 
     // ger något per-tick-kost även utanför service. gap > 0 betyder
     // att idle-kost räknas i metrics utan att synas i ledger än (vilket
     // är förväntat pre-rollover).
-    expect(gap).toBeGreaterThanOrEqual(0);
+    expect(gap).toBeGreaterThanOrEqual(-FLOAT_TOLERANCE_SEK);
   });
 });
 

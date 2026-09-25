@@ -1,0 +1,46 @@
+{
+  "seed": 20260719,
+  "room": "vinbaren",
+  "evenings": {
+    "mån": {
+      "seats": 20,
+      "marketCap": 27,
+      "arrivals": 27,
+      "maxQueue": 0,
+      "gaveUp": 0,
+      "declinedAtDoor": 1,
+      "departures": 26,
+      "sittingGameMinutes": 75
+    },
+    "tis": {
+      "seats": 20,
+      "marketCap": 31,
+      "arrivals": 31,
+      "maxQueue": 0,
+      "gaveUp": 0,
+      "declinedAtDoor": 1,
+      "departures": 30,
+      "sittingGameMinutes": 79
+    },
+    "fre": {
+      "seats": 20,
+      "marketCap": 50,
+      "arrivals": 50,
+      "maxQueue": 9,
+      "gaveUp": 5,
+      "declinedAtDoor": 2,
+      "departures": 30,
+      "sittingGameMinutes": 89
+    },
+    "lör": {
+      "seats": 20,
+      "marketCap": 54,
+      "arrivals": 54,
+      "maxQueue": 10,
+      "gaveUp": 9,
+      "declinedAtDoor": 1,
+      "departures": 30,
+      "sittingGameMinutes": 89
+    }
+  }
+}

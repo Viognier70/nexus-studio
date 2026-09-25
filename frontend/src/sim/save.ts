@@ -18,6 +18,7 @@
 
 import { SAVING } from './balance';
 import { calendarFor } from './calendar';
+import { V1_CLASS_TO_ROOM } from './economy';
 import type { SimulationState } from '../strategic/types';
 import { awardMedal } from '../strategic/knowledge/pavilionVisit';
 
@@ -75,13 +76,23 @@ export function makeSaveFile(
   };
 }
 
+// ORDER 267 — en fil från före etapp 5 har vinbaren i kvarterskrogens
+// rum. Rummet sätts efter klassen (sim/economy.ts V1_CLASS_TO_ROOM);
+// resten av tillståndet är oförändrat.
+function migrate(file: SaveFile): SaveFile {
+  const cls = file.sim.economy?.businessClass;
+  const sim = cls ? { ...file.sim, businessClass: V1_CLASS_TO_ROOM[cls] } : file.sim;
+  return { ...file, formatVersion: SAVING.formatVersion, sim };
+}
+
 function parse(raw: string | null): SlotStatus {
   if (raw === null) return { status: 'empty' };
   try {
     const file = JSON.parse(raw) as SaveFile;
-    if (file.formatVersion !== SAVING.formatVersion) return { status: 'older' };
+    const migratable = (SAVING.migratableVersions as readonly number[]).includes(file.formatVersion);
+    if (file.formatVersion !== SAVING.formatVersion && !migratable) return { status: 'older' };
     if (!file.sim || typeof file.sim.day?.dayNumber !== 'number') return { status: 'corrupt' };
-    return { status: 'ok', file };
+    return { status: 'ok', file: migratable ? migrate(file) : file };
   } catch {
     return { status: 'corrupt' };
   }

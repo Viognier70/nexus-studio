@@ -35,11 +35,12 @@ export const ALL_PAVILIONS: readonly PavilionKey[] = [
   'gastronomiskateatern'
 ];
 
-// v1-klassen → simuleringens rum (F20). Vinbaren spelas i dagens byggda
-// rum (kvarterskrogen) tills etapp 5 gör det till vinbaren; restaurang
-// och nattklubb har ännu inget eget rum (etapp 7 och 10).
+// v1-klassen → simuleringens rum (F20). Vinbaren spelas i vinbarens rum
+// (wineBarRoom.ts, 20 platser; ORDER 267 / etapp 5, scene/BrewpubScene.tsx
+// WineBarScene); restaurang och nattklubb har ännu inget eget rum och
+// spelas i kvarterskrogen (etapp 7 och 10).
 export const V1_CLASS_TO_ROOM: Record<BusinessClassId, SimulationState['businessClass']> = {
-  vinbar: 'kvarterskrogen',
+  vinbar: 'vinbaren',
   foodtruck: 'foodtrucken',
   restaurang: 'kvarterskrogen',
   olkrog: 'ölkrogen',
@@ -53,8 +54,38 @@ export interface LoanState {
   weeksLeft: number;
 }
 
+// ORDER 267 — en kväll i veckan, för söndagstidningen (sim/newspaper.ts).
+export interface EveningRecord {
+  dayNumber: number;
+  revenueSek: number;
+  reputationDelta: number;
+  // Gäster som kom (dagens ankomster) mot dagens tak på marknaden.
+  guests: number;
+  marketCap: number;
+  gaveUp: number;
+}
+
+// Kvällen till veckans lista när servicen stänger, både vid vanlig
+// stängning (reducer.ts) och när den faller ihop (collapse.ts). `before`
+// bär servicens startvärden (day.revenueAtServiceStart m.fl.), `after`
+// kvällens utfall.
+export function recordEvening(before: SimulationState, after: SimulationState): EconomyState {
+  const d = before.day;
+  const record: EveningRecord = {
+    dayNumber: d.dayNumber,
+    revenueSek: Math.round(after.revenue - (d.revenueAtServiceStart ?? after.revenue)),
+    reputationDelta: after.reputation - (d.reputationAtServiceStart ?? before.reputation),
+    guests: d.arrivalsToday ?? 0,
+    marketCap: dailyGuestCap(before),
+    gaveUp: before.metrics.giveUpsThisService
+  };
+  return { ...after.economy, weekEvenings: [...(after.economy.weekEvenings ?? []), record] };
+}
+
 export interface SettlementRecord {
   week: number;
+  // ORDER 267 — veckans kvällar, för söndagstidningen.
+  evenings?: EveningRecord[];
   revenueSek: number;
   floorSek: number;
   topUpSek: number;
@@ -68,6 +99,8 @@ export interface EconomyState {
   loan: LoanState | null;
   // state.revenue när veckan började (efter förra avräkningen).
   weekRevenueStartSek: number;
+  // ORDER 267 — kvällarna sedan förra avräkningen (söndagstidningen).
+  weekEvenings?: EveningRecord[];
   consecutiveNegativeDayEnds: number;
   downgradePending: boolean;
   lastSettlement: SettlementRecord | null;
@@ -252,18 +285,43 @@ export function canChangeClassToday(state: SimulationState): boolean {
   return !calendarFor(state.day.dayNumber).isServiceDay;
 }
 
+// ORDER 267 (F33) — spelarens första verksamhet i introduktionen.
+function isFirstBusiness(state: SimulationState): boolean {
+  return !!state.introduction && state.economy.businessClass === null;
+}
+
+// Kraven som gäller för ett byte till klassen just nu: i introduktionen
+// klassens startkrav (brons i huvudpaviljongen för vinbar och ölkrog),
+// annars klasstabellens krav.
+export function requirementsFor(state: SimulationState, id: BusinessClassId): readonly MedalRequirement[] {
+  const spec = classSpec(id);
+  return isFirstBusiness(state) ? spec.startRequirements ?? spec.requirements : spec.requirements;
+}
+
 export function classOptions(state: SimulationState): ClassOption[] {
   const current = state.economy.businessClass;
+  const first = isFirstBusiness(state);
   return BUSINESS_CLASSES.list.map((c) => {
     if (c.id === current) return { id: c.id, status: 'current' as const };
     // Gästgiveri och nattklubb nås bara genom uppgradering, inte som start.
     if (c.upgradeOnly && current === null) return { id: c.id, status: 'upgradeOnly' as const };
-    if (!meetsClass(c.id, state.medals)) return { id: c.id, status: 'requirements' as const };
-    // "om kassan räcker till en veckas golv i den nya klassen"
+    if (!requirementsFor(state, c.id).every((r) => meetsRequirement(r, state.medals))) {
+      return { id: c.id, status: 'requirements' as const };
+    }
+    // "om kassan räcker till en veckas golv i den nya klassen" — gäller
+    // uppgradering, inte den första verksamheten (startlånet täcker den).
     const need = floorSek(c.id, state.medals) * UPGRADE.cashRequiredInWeeksOfFloor;
-    if (state.cash < need) return { id: c.id, status: 'cash' as const };
+    if (!first && state.cash < need) return { id: c.id, status: 'cash' as const };
     return { id: c.id, status: 'available' as const };
   });
+}
+
+// Bankmötet i introduktionen öppnar den första verksamheten: klassens
+// startlån, rummet efter klassen, ryktet orört (det finns ingen tidigare
+// lokal som gästerna kände), och introduktionen är slut.
+export function openFirstBusiness(state: SimulationState, to: BusinessClassId): SimulationState {
+  const opened = changeClass(state, to, false);
+  return { ...opened, reputation: state.reputation, introduction: null };
 }
 
 // Golvet som kreditram: en satsning får dra kassan ner till −golvet.
@@ -304,7 +362,7 @@ export function settleWeek(state: SimulationState): SimulationState {
     : null;
   let next: SimulationState = {
     ...draft,
-    economy: { ...e, loan, weekRevenueStartSek: state.revenue }
+    economy: { ...e, loan, weekRevenueStartSek: state.revenue, weekEvenings: [] }
   };
   let downgradedTo: BusinessClassId | null = null;
   const downgradedFrom = e.downgradePending ? e.businessClass : null;
@@ -316,7 +374,7 @@ export function settleWeek(state: SimulationState): SimulationState {
     ...next,
     economy: {
       ...next.economy,
-      lastSettlement: { week, revenueSek, floorSek: floor, topUpSek, amortisationSek, downgradedFrom, downgradedTo }
+      lastSettlement: { week, evenings: e.weekEvenings ?? [], revenueSek, floorSek: floor, topUpSek, amortisationSek, downgradedFrom, downgradedTo }
     }
   };
 }

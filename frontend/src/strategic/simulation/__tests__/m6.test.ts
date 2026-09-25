@@ -9,6 +9,7 @@
 
 import { describe, expect, it } from 'vitest';
 import { jaccardTokenDistance, runHarness } from './harness';
+import { withoutMarketCap } from './marketHeadroom';
 import type { EventStreamEntry, ScenarioChoice } from '../../types';
 
 
@@ -80,6 +81,10 @@ describe('M6 DoD — cause-aware texture', () => {
   it('DoD 3 — a chain of ≥ 3 events shares one causeChainId', () => {
     const r = runHarness({
       seed: 42,
+      // ORDER 267 — rummets mekanik utan marknadens tak (marketHeadroom.ts):
+      // med taket fördelat över kvällens minuter blir kassarörelsen och
+      // händelsetrycket i det här skriptet för litet för att pröva mekaniken.
+      setup: withoutMarketCap,
       script: threeDayScript(),
       runUntilSec: RUN_UNTIL_LOCAL
     });

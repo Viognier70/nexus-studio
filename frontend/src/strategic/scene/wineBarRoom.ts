@@ -1119,6 +1119,7 @@ export function checkSightLines(room: WineBarRoom): {
  */
 export function resolveWorldPositions(room: WineBarRoom): {
   seats: Vec2[];
+  seatFacings: number[];
   standing: Vec2[];
   staffStations: Vec2[];
   entrance: Vec2;
@@ -1131,8 +1132,14 @@ export function resolveWorldPositions(room: WineBarRoom): {
     room.group.localToWorld(v);
     return [v.x, v.z];
   }
+  // ORDER 267 — världs-facing per sitsplats, som brewpubRoom (ORDER 186
+  // fynd 2). Utan den läste InteriorGuests `seatFacings` som undefined
+  // och renderingen av gästerna kastade varje bildruta när vinbaren
+  // monterades i spelet.
+  const groupYaw = room.group.rotation.y;
   return {
     seats: room.seats.map(function (s) { return toWorld(s.local); }),
+    seatFacings: room.seats.map(function (s) { return s.facing + groupYaw; }),
     standing: room.standing.map(function (s) { return toWorld(s.local); }),
     staffStations: room.staffStations.map(function (s) { return toWorld(s.local); }),
     entrance: toWorld(room.entrance),

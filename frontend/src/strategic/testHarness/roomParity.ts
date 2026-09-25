@@ -26,7 +26,7 @@ import type { SimulationState } from '../types';
 // Rum som monteras via rumskontraktet i spelet (övriga klasser har egna
 // vyer utan businessRoomRef, och simuleringen använder då reservlistan
 // även i spelet).
-const CONTRACT_ROOMS: readonly SimulationState['businessClass'][] = ['kvarterskrogen', 'ölkrogen'];
+const CONTRACT_ROOMS: readonly SimulationState['businessClass'][] = ['kvarterskrogen', 'ölkrogen', 'vinbaren'];
 
 export function mountRoomLikeScene(businessClass: SimulationState['businessClass']): void {
   if (businessRoomRef.current?.businessClass === businessClass) return;

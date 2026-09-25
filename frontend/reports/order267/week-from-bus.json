@@ -1,0 +1,113 @@
+{
+  "url": "http://localhost:4174/",
+  "build": "produktion (vite build + preview)",
+  "flags": "inga",
+  "steps": [
+    {
+      "name": "nytt spel",
+      "atSeconds": 13
+    },
+    {
+      "name": "bussen framme",
+      "atSeconds": 31
+    },
+    {
+      "name": "samtalet",
+      "atSeconds": 34
+    },
+    {
+      "name": "registreringen",
+      "atSeconds": 42
+    },
+    {
+      "name": "övningsbesöket",
+      "atSeconds": 63
+    },
+    {
+      "name": "provet",
+      "atSeconds": 81
+    },
+    {
+      "name": "banken",
+      "atSeconds": 83
+    },
+    {
+      "name": "verksamheten har ett namn",
+      "atSeconds": 85,
+      "minutesFromNewGame": 1.2
+    },
+    {
+      "name": "dag 1",
+      "atSeconds": 245
+    },
+    {
+      "name": "dag 2",
+      "atSeconds": 403
+    },
+    {
+      "name": "dag 3",
+      "atSeconds": 559
+    },
+    {
+      "name": "dag 4",
+      "atSeconds": 713
+    },
+    {
+      "name": "dag 5",
+      "atSeconds": 1016
+    },
+    {
+      "name": "dag 6",
+      "atSeconds": 1134
+    },
+    {
+      "name": "söndagstidningen",
+      "atSeconds": 1134
+    }
+  ],
+  "days": [
+    {
+      "morning": "Måndag · Morgon · VinbarFyll dagens schema och öppna för kvällen.Ingen meny satt",
+      "evening": "Fjorton gick härifrån nöjda. Ingen gav upp i kön. Kvällen betalade — och det märktes utan att någon räknade högt. Priset stod ut, och gästerna sa ja ändå. Rummet fann sin puls, laget läste varandra, och gästerna gick nöjda utan att någon slog ut med armarna. Det är sådana kvällar som bygger ett rykte tyst — inte de som glimrar utan de som stämmer. Skriv upp det i minnet innan morgonen skjuter bort det. Du valde den hårdare läsningen, den som kräver skarpt öga och lite obekvämt tal — den vägen slipar men den kostar också."
+    },
+    {
+      "morning": "Tisdag · Morgon · VinbarFyll dagens schema och öppna för kvällen.Ingen meny satt",
+      "evening": "Nio gick härifrån nöjda. Ingen gav upp i kön. Laget gjorde det de brukar; ingen berättade om det efteråt. Rummet fyllde sig i sin egen takt, laget gjorde det de brukar göra, och gästerna gick utan att någon hade en historia att ta med sig därifrån. Det finns inget att lära av kvällar som den här — inget att fira, inget att laga. De flesta kvällar är så, och det är därför de sällsynta är det de är. Du valde den hårdare läsningen, den som kräver skarpt öga och lite obekvämt tal — den vägen slipar men den kostar också."
+    },
+    {
+      "morning": "Onsdag · Morgon · VinbarFyll dagens schema och öppna för kvällen.Ingen meny satt",
+      "evening": "Elva gick härifrån nöjda. Ingen gav upp i kön. Laget gjorde det de brukar; ingen berättade om det efteråt. Rummet fyllde sig i sin egen takt, laget gjorde det de brukar göra, och gästerna gick utan att någon hade en historia att ta med sig därifrån. Det finns inget att lära av kvällar som den här — inget att fira, inget att laga. De flesta kvällar är så, och det är därför de sällsynta är det de är. Du valde den hårdare läsningen, den som kräver skarpt öga och lite obekvämt tal — den vägen slipar men den kostar också."
+    },
+    {
+      "morning": "Torsdag · Morgon · VinbarFyll dagens schema och öppna för kvällen.Ingen meny sat",
+      "evening": "Tio gick härifrån nöjda. Ingen gav upp i kön. Kvällen betalade — och det märktes utan att någon räknade högt. Priset stod ut, och gästerna sa ja ändå. Rummet fann sin puls, laget läste varandra, och gästerna gick nöjda utan att någon slog ut med armarna. Det är sådana kvällar som bygger ett rykte tyst — inte de som glimrar utan de som stämmer. Skriv upp det i minnet innan morgonen skjuter bort det. Du valde den hårdare läsningen, den som kräver skarpt öga och lite obekvämt tal — den vägen slipar men den kostar också."
+    },
+    {
+      "morning": "Fredag · Morgon · VinbarFyll dagens schema och öppna för kvällen.Ingen meny satt",
+      "evening": "Fem gick härifrån nöjda. Ingen gav upp i kön. Du ryckte in vid rätt tillfälle, och en gäst som var på väg att gå stannade. Laget gjorde det de brukar; ingen berättade om det efteråt. Rummet fyllde sig i sin egen takt, laget gjorde det de brukar göra, och gästerna gick utan att någon hade en historia att ta med sig därifrån. Det finns inget att lära av kvällar som den här — inget att fira, inget att laga. De flesta kvällar är så, och det är därför de sällsynta är det de är. Du valde den hårdare läsningen, den som kräver skarpt öga och lite obekvämt tal — den vägen slipar men den kostar också."
+    },
+    {
+      "morning": "Lördag · Morgon · VinbarFyll dagens schema och öppna för kvällen.I morse: Ryktet",
+      "evening": "Åtta gick härifrån nöjda. Kvällen slutade innan den skulle. Det var huset som inte höll — inte oturen, inte gästerna, utan att någon inte var på plats där kunskapen skulle stå. I morgon börjar med en dörr som stängde tidigt, och ett rykte som märkte det. Ta med det till morgonen. Det där kommer inte att glömmas snabbt. Du valde den hårdare läsningen, den som kräver skarpt öga och lite obekvämt tal — den vägen slipar men den kostar också."
+    }
+  ],
+  "errors": [],
+  "mentor": {
+    "practice": "MentornVälkommen till Grythyttan. Jag kommer från Campus och följer dig i dag. Banken lånar inte ut något förrän den har sett vad du kan, så vi börjar med att öva. Öppna Måltidens hus och öva i Stensöta, där sommelierna håller till. Inget står på spel.",
+    "exam": "MentornBra. Nu provet i samma paviljong: åtta frågor, och sex rätt ger brons. Med brons i Stensöta kan banken låna ut till en vinbar. Går det inte, gör om det. I dag kostar besöken ingen plats i schemat.",
+    "bank": "MentornBrons. Gå till Banken i morgonraden. Där får du höra vad du har visat och vad du kan låna till.",
+    "farewell": "MentornNu är den din. I kväll öppnar du för första gången. Den här veckan kommer färre gäster än vanligt, så du hinner lära dig rummet. Jag finns på Campus om det går illa.Tack"
+  },
+  "practice": "5 av 5 rätt. Varje rätt svar gav en kredit.Tillbaka",
+  "exam": "8 av 8 rätt. Du har tagit brons i Stensöta.Tillbaka",
+  "bank": "BankenStängDu har ingen verksamhet. Du har visat att du kan vin och dryck. VinbarÖppna en vinbarFood truckÖppna en food truckRestaurangFör restaurangen saknas silver i tre paviljonger.ÖlkrogFör ölkrogen saknas brons i Metodköket.GästgiveriNås bara genom att växa från en annan verksamhet.NattklubbNås bara genom att växa från en annan verksamhet.",
+  "nameBody": "Banken lånar ut till en vinbar vid torget. Vad ska den heta?",
+  "minutesToBusiness": 1.2,
+  "intervention": {
+    "day": 5,
+    "label": "Lugna gästen som väntar · på väg att gå",
+    "blind": "Du står med gästen i kön. Resten av rummet ser du inte just nu.",
+    "stream": "Du lugnade gästen i kön. Gästen stannade kvar i stället för att gå.A garnish was improvised mid-service — the prep bowl was empty at first ticket.The unstrained sauce from prep hits at pass 7 — the kitchen skips it and the dish goes out plain.Två stamgäster har lagt märke till att ursprunget aldrig nämns längre — jag hörde dem prata om det vid utpasseringen. Hm, den där tystnaden är svår att hämta tillbaka."
+  },
+  "newspaper": "SöndagsnumretLokaltidningen i Grythyttan · vecka 1RecensionenEn fredagskväll hos Vinbaren vid torget som inte höllDet var fullt, och kön ringlade ut mot torget. Ryktet fick sig en törn.MarknadenVinbaren fick de flesta av gästerna den kunde få den här veckan.BankenVeckan gav mer än golvet. Banken drog veckans amortering. Banken om nästa steg: för restaurangen saknas silver i tre paviljonger.Det som kommerGrythyttedagarna om två veckor.Lägg ifrån dig tidningen"
+}

@@ -9,7 +9,8 @@ import {
   type Dispatch
 } from 'react';
 import type { Guest, SimAction, SimulationState } from '../types';
-import { DEFAULT_SEED, makeInitialState } from './model';
+import { DEFAULT_SEED, makeNewGameState } from './model';
+import { beginIntroduction } from '../../sim/introduction';
 import { reducer } from './reducer';
 import { harnessParams } from '../testHarness/urlParams';
 import { capacityForBusiness } from '../business/businessClass';
@@ -154,15 +155,18 @@ export const SimDispatchCtx = createContext<Dispatch<SimAction> | null>(null);
 interface Props {
   children: ReactNode;
   seed?: number;
+  // ORDER 267 — spelaren kommer från bussen: introduktionen börjar.
+  startIntroduction?: boolean;
 }
 
 const TICK_HZ = 5;
 const TICK_MS = 1000 / TICK_HZ;
 
-export function SimulationProvider({ children, seed = DEFAULT_SEED }: Props) {
-  const [state, dispatch] = useReducer(reducer, undefined, () =>
-    applyDevStartOverride(applyDevFoodtruckSeed(applyDevBusinessOverride(makeInitialState(seed))))
-  );
+export function SimulationProvider({ children, seed = DEFAULT_SEED, startIntroduction = false }: Props) {
+  const [state, dispatch] = useReducer(reducer, undefined, () => {
+    const start = makeNewGameState(seed);
+    return applyDevStartOverride(applyDevFoodtruckSeed(applyDevBusinessOverride(startIntroduction ? beginIntroduction(start) : start)));
+  });
   const speedRef = useRef(state.speed);
   speedRef.current = state.speed;
 

@@ -4,7 +4,7 @@ import { INITIAL_CASH_SEK } from './constants';
 import { MORALE_INITIAL } from './morale';
 import { initialTeam } from './team';
 import { SEASON, SERVICE } from '../../sim/balance';
-import { initialEconomy } from '../../sim/economy';
+import { initialEconomy, V1_CLASS_TO_ROOM } from '../../sim/economy';
 import { initialActionButton } from '../../sim/actionButton';
 import { initialServiceEvents } from '../../sim/serviceEvents';
 import type {
@@ -240,6 +240,21 @@ export function initialScenario(): ScenarioState {
     mentorComment: null,
     mentorCommentAt: null
   };
+}
+
+// ORDER 267 (Nexus v1 etapp 5) — rummet följer v1-klassen. Spelarens
+// nya spel (SimulationProvider, RESET) och laddade sparfiler spelar i
+// rummet som V1_CLASS_TO_ROOM anger för klassen; makeInitialState
+// behåller kvarterskrogen som rum för de tester som är kalibrerade mot
+// det.
+export function withRoomForClass(s: SimulationState): SimulationState {
+  const cls = s.economy.businessClass;
+  if (!cls || s.businessClass === V1_CLASS_TO_ROOM[cls]) return s;
+  return { ...s, businessClass: V1_CLASS_TO_ROOM[cls] };
+}
+
+export function makeNewGameState(seed: number = DEFAULT_SEED, policies?: Parameters<typeof makeInitialState>[1]): SimulationState {
+  return withRoomForClass(makeInitialState(seed, policies));
 }
 
 export function makeInitialState(

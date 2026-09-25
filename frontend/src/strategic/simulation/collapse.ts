@@ -28,7 +28,7 @@
 
 import { offerQuiz } from '../knowledge/postServiceQuiz';
 import { clampReputation } from './reputation';
-import { dayEnd, dayEndCash } from '../../sim/economy';
+import { dayEnd, dayEndCash, recordEvening } from '../../sim/economy';
 import { onServiceClose } from '../../sim/serviceEvents';
 import type {
   ConsequenceEvent,
@@ -240,6 +240,8 @@ export function fireCollapse(draft: SimulationState): void {
   draft.economy = dayEnd(draft.economy, dayEndCash(draft));
   // ORDER 266 — recensentens omdöme och stationernas skick även här.
   onServiceClose(draft, { ...draft }, 'collapsed');
+  // ORDER 267 — kvällen till veckans lista (söndagstidningen).
+  draft.economy = recordEvening(draft, draft);
   draft.day = {
     ...draft.day,
     period: 'evening',
