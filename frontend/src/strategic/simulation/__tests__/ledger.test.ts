@@ -5,6 +5,7 @@
 // state.ledger. Cheap sanity that the ring buffer, per-service
 // summary posts and day-close wage posts are all wired.
 
+import { EVENING } from '../../../sim/balance';
 import { describe, expect, it } from 'vitest';
 import { LEDGER_MAX_LINES } from '../constants';
 import { makeInitialState } from '../model';
@@ -59,8 +60,8 @@ describe('full-loop ledger smoke — a dinner service that closes and rolls into
     s = reducer(s, { type: 'SKIP_LUNCH' });
     s = reducer(s, { type: 'OPEN_SERVICE', service: 'dinner', lengthMinutes: minutes });
     // Opening 10 s + prep 120 s + service (minutes × 60) + evening
-    // pause 30 s + slack. dt = 0.2, so ticks = ~5 × (seconds + slack).
-    const ticks = Math.ceil((minutes * 60 + 200) * 5);
+    // (ORDER 264: EVENING.simSeconds) + slack. dt = 0.2 → 5 ticks/s.
+    const ticks = Math.ceil((minutes * 60 + 170 + EVENING.simSeconds) * 5);
     for (let i = 0; i < ticks; i++) s = reducer(s, { type: 'TICK', dt: 0.2 });
     return s;
   }

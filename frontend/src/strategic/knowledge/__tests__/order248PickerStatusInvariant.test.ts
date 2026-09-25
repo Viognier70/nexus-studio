@@ -36,6 +36,8 @@ const TICK_HZ = 5;
 describe('ORDER 248 — anchor-picker-invariant: fyrning ⇒ status var open', () => {
   it('samma tick som en anchor-fråga fyras, getAnchorPickerStatus(före) === open', () => {
     let s: SimulationState = makeInitialState(42);
+    // ORDER 264 (F15) — ankarfrågorna är avstängda i v1; testet prövar dem.
+    s = { ...s, policies: { ...s.policies, anchorQuestionsEnabled: true } };
     s = reducer(s, { type: 'SKIP_LUNCH' });
     s = reducer(s, {
       type: 'OPEN_SERVICE',

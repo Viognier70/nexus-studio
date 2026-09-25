@@ -14,6 +14,7 @@
 // Distribution/latency-of-attribution tests (Vision Owner ask) live
 // in the "well-served evening trajectory" integration below.
 
+import { EVENING } from '../../../sim/balance';
 import { describe, expect, it } from 'vitest';
 import {
   MORALE_AGENCY_ACCEPT_BUMP,
@@ -254,9 +255,9 @@ describe('baseline + regression', () => {
     let s = makeInitialState(1);
     s = reducer(s, { type: 'SKIP_LUNCH' });
     s = reducer(s, { type: 'OPEN_SERVICE', service: 'dinner', lengthMinutes: 3 });
-    // Advance past service + close pause. 3-min service + 30-s pause = 210 s = 1050 ticks.
+    // Advance past service + evening (ORDER 264: EVENING.simSeconds).
     // Also inject high morale before the transition.
-    for (let i = 0; i < 1100; i++) {
+    for (let i = 0; i < (3 * 60 + EVENING.simSeconds) * 5 + 50; i++) {
       s = reducer(s, { type: 'TICK', dt: 1 / 5 });
     }
     // We should now be on day 2 morning. Morale should have regressed.
@@ -291,7 +292,8 @@ describe('trajectory smoke — a well-served evening lifts morale', () => {
     s.morale = 0.6;
     s = reducer(s, { type: 'SKIP_LUNCH' });
     s = reducer(s, { type: 'OPEN_SERVICE', service: 'dinner', lengthMinutes: 5 });
-    for (let i = 0; i < 2000; i++) {
+    // ORDER 264 — igenom kvällen (EVENING.simSeconds) till nästa morgon.
+    for (let i = 0; i < (5 * 60 + EVENING.simSeconds) * 5 + 100; i++) {
       s = reducer(s, { type: 'TICK', dt: 1 / 5 });
     }
     expect(s.morale).toBeGreaterThan(0.2);

@@ -10,6 +10,7 @@
 //   * Day advance (evening → next morning via ticks) charges cost
 //     once per day.
 
+import { EVENING } from '../../../sim/balance';
 import { describe, expect, it } from 'vitest';
 import { makeInitialState } from '../model';
 import { reducer } from '../reducer';
@@ -136,10 +137,10 @@ describe('day-advance integration — charge fires once per day', () => {
       service: 'dinner',
       lengthMinutes: 3
     });
-    // Dinner (3 min = 180 s = 900 ticks) → evening → +75 ticks for
-    // the close pause → morning.
+    // Dinner (3 min = 180 s = 900 ticks) → evening (ORDER 264:
+    // EVENING.simSeconds) → morning.
     const beforePaid = s.team.paidStructuralCost;
-    for (let i = 0; i < 1100; i++) s = reducer(s, { type: 'TICK', dt: 0.2 });
+    for (let i = 0; i < (180 + EVENING.simSeconds) * 5 + 50; i++) s = reducer(s, { type: 'TICK', dt: 0.2 });
     expect(s.day.period).toBe('morning');
     expect(s.team.paidStructuralCost).toBeGreaterThan(beforePaid);
   });

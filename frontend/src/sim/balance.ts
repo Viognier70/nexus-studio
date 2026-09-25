@@ -80,6 +80,17 @@ export const SERVICE = {
   simMinutes: DAY.realMinutes.service[1] * DEFAULT_SIM_SPEED
 } as const;
 
+// ORDER 264 — kvällen. Speldesignen anger 1–2 minuter i verkligheten
+// för kvällsberättelsen och quizen; i standardfarten blir det 2 × 60 × 2
+// = 240 simulerade sekunder innan nästa morgon börjar av sig själv.
+// Spelaren kan gå vidare tidigare, och kvällen väntar medan quizen pågår.
+const SECONDS_PER_MINUTE = 60;
+export const EVENING = {
+  section: 'Tiden',
+  openQuestion: 'F17',
+  simSeconds: DAY.realMinutes.evening[1] * SECONDS_PER_MINUTE * DEFAULT_SIM_SPEED
+} as const;
+
 export type HolidayId = 'midsommar' | 'grythyttedagarna' | 'vinprovning' | 'kraftskiva';
 
 export interface Holiday {

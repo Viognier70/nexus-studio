@@ -720,6 +720,11 @@ export interface DayState {
   //   - at evening account, prepends a sentence about the morning
   //     change (if any) to the branch's paragraph.
   morningPolicyChanges: string[];
+  // ORDER 264 — paviljongsbesök i dag. Varje besök tar en schemaplats
+  // (speldesign > Öva och pröva), delade med morgonens satsningar.
+  pavilionVisitsToday?: PavilionKey[];
+  // ORDER 264 — spelaren har valt att gå vidare till nästa morgon.
+  eveningEndRequested?: boolean;
   // ORDER 046 §1 — set true when a collapse roll fires during this
   // service. Blocks the collapse tick from firing twice in the same
   // service; read by the evening-account panel to pick the collapsed
@@ -1107,6 +1112,45 @@ export interface PendingOutcome {
   flavor?: 'outcome' | 'prep-carryover';
 }
 
+// ORDER 264 (Nexus v1 etapp 2) — kunskapen i spelarens händer.
+// Speldesign > Kunskapen: medaljer per paviljong (brons → platina, kan
+// aldrig förloras), besök som Öva eller Prov, quizen efter servicen.
+export type MedalLevelId = 'brons' | 'silver' | 'guld' | 'platina';
+export type PavilionKey =
+  | 'maltidbiblioteket'
+  | 'kalastorget'
+  | 'stensota'
+  | 'metodkoket'
+  | 'gastronomiskateatern';
+
+export interface QuestionAnswerRecord {
+  questionId: string;
+  chosenIndex: number;
+  correct: boolean;
+}
+
+export interface PavilionVisitState {
+  pavilion: PavilionKey;
+  mode: 'practice' | 'exam';
+  level: MedalLevelId;
+  questionIds: string[];
+  answers: QuestionAnswerRecord[];
+  // Sant medan förklaringen till det senaste svaret visas.
+  showingExplanation: boolean;
+  // Satt när alla frågor är besvarade.
+  result: null | { correct: number; total: number; passed: boolean | null; medalAwarded: MedalLevelId | null };
+}
+
+export interface PostServiceQuizState {
+  axis: KnowledgeAxis;
+  status: 'offered' | 'active' | 'done' | 'skipped';
+  questionIds: string[];
+  answers: QuestionAnswerRecord[];
+  showingExplanation: boolean;
+  // Kreditförändring under quizen (+1 rätt, −1 fel).
+  creditDelta: number;
+}
+
 export interface SimulationState {
   seed: number;
   rngState: number;
@@ -1209,6 +1253,15 @@ export interface SimulationState {
   // rimlig default per M2-pattern; kalibreras när R3 §7 (antal varv)
   // svaras.
   currentExam: ExamState | null;
+  // ORDER 264 — högsta medalj per paviljong. Skrivs bara via
+  // `awardMedal` (knowledge/pavilionVisit.ts), som aldrig sänker.
+  medals: Partial<Record<PavilionKey, MedalLevelId>>;
+  // ORDER 264 — pågående paviljongsbesök (Öva eller Prov), annars null.
+  pavilionVisit: PavilionVisitState | null;
+  // ORDER 264 — quizen efter servicen; erbjuds när kvällen börjar.
+  postServiceQuiz: PostServiceQuizState | null;
+  // ORDER 264 — antal kvällar spelaren tagit quizen (mognad, etapp 12).
+  postServiceQuizzesTaken: number;
   examSlotsUsed: number;
   // ORDER 109 — M7b bankmötet. Sätts av REQUEST_BANK_LOAN via
   // `resolveBankMeeting`. Persistar tills mötet hålls igen (repeat-
@@ -1452,6 +1505,16 @@ export type SimAction =
   // ORDER 263 — laddar ett sparat spel: ersätter hela tillståndet med
   // det sparade (src/sim/save.ts). Farten behålls från det sparade.
   | { type: 'LOAD_STATE'; state: SimulationState }
+  // ORDER 264 (Nexus v1 etapp 2) — paviljongerna och quizen.
+  | { type: 'VISIT_PAVILION'; pavilion: PavilionKey; mode: 'practice' | 'exam' }
+  | { type: 'ANSWER_VISIT'; chosenIndex: number }
+  | { type: 'NEXT_VISIT_QUESTION' }
+  | { type: 'CLOSE_VISIT' }
+  | { type: 'START_QUIZ' }
+  | { type: 'ANSWER_QUIZ'; chosenIndex: number }
+  | { type: 'NEXT_QUIZ_QUESTION' }
+  | { type: 'SKIP_QUIZ' }
+  | { type: 'END_EVENING' }
   // ORDER 043 v3 §10 step 5 agency-staff mid-service offer response.
   | { type: 'ACCEPT_AGENCY' }
   | { type: 'DECLINE_AGENCY' }

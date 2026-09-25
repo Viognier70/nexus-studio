@@ -26,6 +26,7 @@
 // 15-min service; a strong team at rest sees ~1 %. See §1.1 in the
 // order document for the full expected-rate table.
 
+import { offerQuiz } from '../knowledge/postServiceQuiz';
 import type {
   ConsequenceEvent,
   EventStreamEntry,
@@ -229,6 +230,9 @@ export function fireCollapse(draft: SimulationState): void {
   const nextTeam = { ...draft.team, members: draft.team.members.filter((m) => !m.isAgency) };
   draft.team = nextTeam;
   draft.agencyOffer = null;
+  // ORDER 264 — quizen erbjuds också efter en kväll som föll ihop.
+  const serviceStartedAt = draft.day.periodStartAt;
+  draft.postServiceQuiz = offerQuiz(draft, serviceStartedAt);
   draft.day = {
     ...draft.day,
     period: 'evening',
