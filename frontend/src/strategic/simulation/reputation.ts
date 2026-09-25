@@ -45,7 +45,18 @@
 // The chain is: knowledge sets the ceiling, operation moves you
 // around inside it. You can't read yourself to a good restaurant.
 
+import { REPUTATION } from '../../sim/balance';
 import type { EnablerKey, SimulationState } from '../types';
+
+// ORDER 265→266 (Nexus v1 etapp 4) — ryktets golv. Speldesign > Ryktet:
+// "Ryktet kan inte gå under 10 av 100." Simuleringen räknar ryktet på
+// skalan 0–1, så golvet är 10 / 100 = 0,10. Alla skrivningar går via
+// clampReputation; reducern upprätthåller dessutom golvet efter varje
+// åtgärd (reducer.ts), så att ett nytt skrivställe inte kan bryta det.
+export const REPUTATION_FLOOR = REPUTATION.floor / REPUTATION.scale;
+export function clampReputation(v: number): number {
+  return Math.max(REPUTATION_FLOOR, Math.min(1, v));
+}
 import { teamCapacity } from './team';
 
 const TICK_SECONDS = 0.2;
@@ -161,30 +172,9 @@ export function phronesisSofteningGeneral(state: SimulationState): number {
   return 1 - avg * PHRONESIS_MAX_SOFTEN;
 }
 
-// Fixed nightly decay on all enabler tallies. Vision Owner
-// (2026-08-09): "Per natt, fast procent. Förutsägbart, och det gör
-// påfyllning till en rytm snarare än en reaktion." The decay is
-// applied to the tallies only; the `history` log is authoritative
-// and untouched — decay is a reading-side pull-back, not a rewrite
-// of what was earned.
-export const NIGHTLY_ENABLER_DECAY = 0.05;
+// ORDER 266 (F27) — den nattliga avklingningen (ORDER 049 §2.1,
+// NIGHTLY_ENABLER_DECAY = 0,05) är borttagen: kunskap går inte förlorad.
 
-export function decayEnablersOvernight(
-  enablers: SimulationState['enablers']
-): SimulationState['enablers'] {
-  const decay = (v: number) => Math.max(0, v * (1 - NIGHTLY_ENABLER_DECAY));
-  const next: SimulationState['enablers'] = { ...enablers };
-  for (const key of Object.keys(enablers) as EnablerKey[]) {
-    const rec = enablers[key];
-    next[key] = {
-      ...rec,
-      episteme: decay(rec.episteme),
-      techne: decay(rec.techne),
-      phronesis: decay(rec.phronesis)
-    };
-  }
-  return next;
-}
 
 // -------- reputation-ceiling drift ---------------------------------------
 
@@ -232,7 +222,7 @@ export function tickReputationCeilingDrift(draft: SimulationState): void {
     : REP_TO_CEILING_DRIFT_PER_TICK * 0.5;
   const move = gap * rate;
   const before = draft.reputation;
-  draft.reputation = Math.max(0, Math.min(1, draft.reputation + move));
+  draft.reputation = clampReputation(draft.reputation + move);
   // ORDER 256 — instrumentera med FAKTISKT delta (efter clamp).
   const actualDelta = draft.reputation - before;
   if (actualDelta !== 0) logRepDelta(draft, 'ceilingDrift', actualDelta);
@@ -243,7 +233,7 @@ export function applyReputationDelta(
   delta: number
 ): void {
   const next = state.reputation + delta;
-  state.reputation = Math.max(0, Math.min(1, next));
+  state.reputation = clampReputation(next);
 }
 
 // ORDER 256 — instrumentering. Ackumulator per kanal, ingen logik-ändring.

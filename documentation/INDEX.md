@@ -132,6 +132,7 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 - `ORDER_263_RAPPORT.md`: ORDER 263 — Nexus v1 etapp 1: Tiden (rapport).
 - `ORDER_264_RAPPORT.md`: ORDER 264 — Nexus v1 etapp 2: Kunskapen (rapport).
 - `ORDER_265_RAPPORT.md`: ORDER 265 — Nexus v1 etapp 3: Ekonomin och bankmötet (rapport).
+- `ORDER_266_RAPPORT.md`: ORDER 266 — Nexus v1 etapp 4: Servicen (rapport, stoppad).
 - `ORDER_RECONSTRUCTION_004_005_019_020.md`: ORDER_RECONSTRUCTION_004_005_019_020 — Evidence record for four sprint orders.
 - `ORDER_REGISTRY.md`: ORDER REGISTRY.
 - `PERFORMANCE_PREPARATION_REFERENCE.md`: Performance Preparation Reference.

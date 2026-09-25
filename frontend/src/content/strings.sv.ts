@@ -269,6 +269,56 @@ export const strings = {
       downgradedToNothing: (from: string) => `Banken tog ${from}. Nu gäller det att öva och komma tillbaka.`
     }
   },
+  // ORDER 266 (Nexus v1 etapp 4) — servicen: action-knappen, ryktet,
+  // lagret och händelserna.
+  service: {
+    actionButton: 'Rycka in',
+    actionHeading: 'Rycka in själv',
+    actionBody: (left: string) => `Välj en uppgift ur kön. Medan du är där ser du inte resten av rummet. Insatser kvar i kväll: ${left}.`,
+    noneLeft: 'Du har ryckt in tre gånger i kväll.',
+    queueEmpty: 'Ingen i kön behöver dig just nu.',
+    close: 'Stäng',
+    tasks: {
+      calm: 'Lugna gästen som väntar',
+      order: 'Ta beställningen'
+    },
+    atRisk: 'på väg att gå',
+    waited: (sec: string) => `har väntat ${sec}`,
+    blind: {
+      calm: 'Du står med gästen i kön. Resten av rummet ser du inte just nu.',
+      order: 'Du tar beställningen vid bordet. Resten av rummet ser du inte just nu.'
+    },
+    intervention: {
+      calmSuccess: 'Du lugnade gästen i kön. Gästen stannade kvar i stället för att gå.',
+      orderSuccess: 'Du tog beställningen själv. Bordet fick sin mat i tid.',
+      missed: 'Gästen hann gå innan du kom fram.'
+    },
+    events: {
+      reviewerBooked: 'En recensent har bokat bord i kväll. Ryktet har nått ut.',
+      reviewGood: 'Recensenten gick nöjd. Kvällen höll, och det kommer att stå i tidningen.',
+      reviewBad: 'Recensenten såg en kväll som inte höll ihop. Det kommer att märkas i ryktet.',
+      reviewMixed: 'Recensenten skrev ner både det som fungerade och det som inte gjorde det.',
+      cleanEvening: 'Ingen gick ifrån i kväll. Det pratas om det, och ryktet hämtar sig.',
+      slowRecovery: 'Ryktet hämtar sig sakta. Gästerna minns inte längre den sämsta kvällen.',
+      inspection: 'Miljöinspektören kom i morse. Stationerna hade inte hållits rena under gårdagens kväll.',
+      inspectionLedger: 'Avgift efter inspektionen',
+      bankCall: 'Banken ringde i morse. Kassan var under noll när dagen tog slut.'
+    },
+    stock: {
+      forecast: (covers: string) => `Råvaror till ungefär ${covers} kuvert.`,
+      none: 'Inga råvaror i lager. Du kan ändå öppna, men köket har inget att laga.',
+      noMenu: 'Ingen meny satt i dag.'
+    },
+    morningEvents: 'I morse',
+    wentWell: {
+      happy: (n: string) => `${n} gick härifrån nöjda.`,
+      happyOne: 'En gäst gick härifrån nöjd.',
+      clean: 'Ingen gav upp i kön.',
+      turned: 'Du ryckte in vid rätt tillfälle, och en gäst som var på väg att gå stannade.'
+    },
+    numberWords: ['noll', 'en', 'två', 'tre', 'fyra', 'fem', 'sex', 'sju', 'åtta', 'nio', 'tio', 'elva', 'tolv', 'tretton', 'fjorton', 'femton', 'sexton', 'sjutton', 'arton', 'nitton', 'tjugo'],
+    manyWord: 'fler än tjugo'
+  },
   save: {
     menuItem: 'Spara och ladda',
     continueSaved: 'Fortsätt ett sparat spel',

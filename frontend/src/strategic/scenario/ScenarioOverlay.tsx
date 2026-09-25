@@ -93,7 +93,7 @@ export function ScenarioOverlay() {
 
   if (phase === 'subject') {
     return (
-      <div style={OVERLAY_STYLE}>
+      <div style={OVERLAY_STYLE} data-testid="scenario-overlay">
         <div style={BODY_STYLE}>{subjectBody}</div>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <button
@@ -127,7 +127,7 @@ export function ScenarioOverlay() {
         ? `${SENDER_PREFIX[pendingQuestion.senderRole]}: `
         : '';
     return (
-      <div style={OVERLAY_STYLE}>
+      <div style={OVERLAY_STYLE} data-testid="scenario-overlay">
         <div style={BODY_STYLE}>{qPrefix + pendingQuestion.body}</div>
         <div style={{ ...BUTTON_ROW_STYLE, flexDirection: 'column', alignItems: 'stretch' }}>
           {pendingQuestion.options.map((o, i) => (
@@ -157,7 +157,7 @@ export function ScenarioOverlay() {
     const lastIdx = pendingQuestion.lastAnswerIndex ?? -1;
     const wasCorrect = pendingQuestion.lastAnswerCorrect ?? false;
     return (
-      <div style={OVERLAY_STYLE}>
+      <div style={OVERLAY_STYLE} data-testid="scenario-overlay">
         <div style={{ ...BODY_STYLE, opacity: 0.7 }}>{qPrefix + pendingQuestion.body}</div>
         <div style={{ ...BUTTON_ROW_STYLE, flexDirection: 'column', alignItems: 'stretch' }}>
           {pendingQuestion.options.map((o, i) => {
@@ -213,7 +213,7 @@ export function ScenarioOverlay() {
 
   // phase === 'situation'
   return (
-    <div style={OVERLAY_STYLE}>
+    <div style={OVERLAY_STYLE} data-testid="scenario-overlay">
       <div style={BODY_STYLE}>{situationBody}</div>
       <div style={{ ...BUTTON_ROW_STYLE, flexDirection: 'column', alignItems: 'stretch' }}>
         <button

@@ -27,7 +27,9 @@
 // order document for the full expected-rate table.
 
 import { offerQuiz } from '../knowledge/postServiceQuiz';
+import { clampReputation } from './reputation';
 import { dayEnd, dayEndCash } from '../../sim/economy';
+import { onServiceClose } from '../../sim/serviceEvents';
 import type {
   ConsequenceEvent,
   EventStreamEntry,
@@ -187,7 +189,7 @@ export function fireCollapse(draft: SimulationState): void {
   draft.eventStream = [...draft.eventStream, entry].slice(-STREAM_KEEP);
 
   const beforeCollapse = draft.reputation;
-  draft.reputation = Math.max(0, draft.reputation - COLLAPSE_REPUTATION_DROP);
+  draft.reputation = clampReputation(draft.reputation - COLLAPSE_REPUTATION_DROP);
   logRepDelta(draft, 'collapse', draft.reputation - beforeCollapse); // ORDER 256
 
   const consequence: ConsequenceEvent = {
@@ -236,6 +238,8 @@ export function fireCollapse(draft: SimulationState): void {
   draft.postServiceQuiz = offerQuiz(draft, serviceStartedAt);
   // ORDER 265 — dagsavslut också efter en kväll som föll ihop.
   draft.economy = dayEnd(draft.economy, dayEndCash(draft));
+  // ORDER 266 — recensentens omdöme och stationernas skick även här.
+  onServiceClose(draft, { ...draft }, 'collapsed');
   draft.day = {
     ...draft.day,
     period: 'evening',

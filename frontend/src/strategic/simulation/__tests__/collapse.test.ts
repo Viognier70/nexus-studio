@@ -19,6 +19,7 @@
 // probability, not a full sim tick loop — the full loop is more brittle
 // against unrelated changes elsewhere in the reducer.
 
+import { REPUTATION_FLOOR } from '../reputation';
 import { describe, expect, it } from 'vitest';
 import { COLLAPSE_TEXTS } from '../../../content/collapse.sv';
 import {
@@ -182,11 +183,12 @@ describe('fireCollapse — state mutation matches spec', () => {
     expect(draft.reputation).toBeCloseTo(0.5 - COLLAPSE_REPUTATION_DROP, 5);
   });
 
-  it('clamps reputation at 0', () => {
-    const s = { ...inRunningService(makeInitialState(1)), reputation: 0.05 };
+  // ORDER 266 — golvet är 10 av 100 (speldesign > Ryktet), inte 0.
+  it('clamps reputation at the floor (10 of 100)', () => {
+    const s = { ...inRunningService(makeInitialState(1)), reputation: 0.12 };
     const draft = { ...s };
     fireCollapse(draft);
-    expect(draft.reputation).toBe(0);
+    expect(draft.reputation).toBe(REPUTATION_FLOOR);
   });
 
   it('appends a ConsequenceEvent (staff_resigns, social)', () => {

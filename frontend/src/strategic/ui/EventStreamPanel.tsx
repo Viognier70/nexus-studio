@@ -139,7 +139,7 @@ export function EventStreamPanel() {
   if (entries.length === 0) return null;
 
   return (
-    <div style={PANEL_STYLE}>
+    <div style={PANEL_STYLE} data-testid="event-stream">
       {entries.map((e, i) => {
         // ORDER 047 §3 — tighter fade curve for the smaller window.
         // Newest at 1.0, then 0.72, 0.44, 0.22. The tail entry sits

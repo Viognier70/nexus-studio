@@ -16,6 +16,7 @@ import { makeInitialState } from '../simulation/model';
 import { bankQuestionById } from '../knowledge/questionBank';
 import { calendarFor } from '../../sim/calendar';
 import { floorSek } from '../../sim/economy';
+import { mountRoomLikeScene } from './roomParity';
 import { WEEK } from '../../sim/balance';
 import type { PavilionKey, SimAction, SimulationState } from '../types';
 
@@ -89,10 +90,12 @@ export function playMorning(s: SimulationState, plan: MorningPlan): SimulationSt
   return s;
 }
 
-// Spelar en dag från morgon till nästa morgon.
+// Spelar en dag från morgon till nästa morgon, i samma rum som spelaren
+// ser (roomParity.ts).
 export function playDay(s: SimulationState, plan: MorningPlan): { state: SimulationState; guests: number } {
   const day = s.day.dayNumber;
   s = playMorning(s, plan);
+  mountRoomLikeScene(s.businessClass);
   const seen = new Set<string>();
   const opened = reducer(s, { type: 'START_SERVICE' });
   if (opened !== s) {

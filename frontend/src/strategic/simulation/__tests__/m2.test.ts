@@ -113,8 +113,12 @@ describe('M2 DoD — morning activity model', () => {
     // Both picked activities named by name
     expect(paragraph).toContain("Switch tonight's produce to local");
     expect(paragraph).toContain('Team wine tasting hour');
-    // Prepended, not appended
-    expect(paragraph.startsWith('Today you picked:')).toBe(true);
+    // ORDER 266 — speldesign > Medgång: berättelsen börjar med det som
+    // gick bra (wentWell), därefter morgonens val, sedan kvällens omdöme.
+    const picked = paragraph.indexOf('Today you picked:');
+    expect(picked).toBeGreaterThanOrEqual(0);
+    const before = paragraph.slice(0, picked).trim();
+    expect(before === '' || /nöjd|gav upp|ryckte in/.test(before)).toBe(true);
   });
 
   it('DoD 4 — no activity name/description labels a sustainability capital', () => {

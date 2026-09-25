@@ -82,18 +82,20 @@ const ALL_GUEST_STATES: readonly GuestState[] = [
 // -------- §6.3 — FACES vocabulary is exactly the ten ------------------
 
 describe('ORDER 087 §6.3 — FACES vocabulary', () => {
-  it('ALL_FACE_KEYS contains exactly the ten reconciled expressions', () => {
+  // ORDER 266 — nio uttryck sedan `proud` togs bort (speldesign > Medgång).
+  it('ALL_FACE_KEYS contains exactly the nine reconciled expressions', () => {
     const expected: readonly FaceKey[] = [
       'neutral', 'focused', 'smiling', 'attentive',
       'tense', 'strained', 'hurried', 'exhausted',
-      'proud', 'irritated'
+      'irritated'
     ];
     expect(new Set(ALL_FACE_KEYS)).toEqual(new Set(expected));
-    expect(ALL_FACE_KEYS.length).toBe(10);
+    expect(ALL_FACE_KEYS.length).toBe(9);
   });
 
-  it('STAFF_EXCLUSIVE_FACES is exactly exhausted + proud', () => {
-    expect(new Set(STAFF_EXCLUSIVE_FACES)).toEqual(new Set(['exhausted', 'proud']));
+  // ORDER 266 — `proud` borttaget (speldesign > Medgång).
+  it('STAFF_EXCLUSIVE_FACES is exactly exhausted', () => {
+    expect(new Set(STAFF_EXCLUSIVE_FACES)).toEqual(new Set(['exhausted']));
   });
 });
 

@@ -731,6 +731,11 @@ export interface DayState {
   eveningEndRequested?: boolean;
   // ORDER 265 — dagens ankomster, mot marknadens tak (dailyGuestCap).
   arrivalsToday?: number;
+  // ORDER 266 — nöjda gäster totalt när servicen öppnade (kvällsberättelsen).
+  happyAtServiceStart?: number;
+  // ORDER 266 — stationernas lägsta mise en place under kvällen (hygien,
+  // inspektion). Nollställs när servicen öppnar.
+  minStationsReadiness?: number;
   // ORDER 046 §1 — set true when a collapse roll fires during this
   // service. Blocks the collapse tick from firing twice in the same
   // service; read by the evening-account panel to pick the collapsed
@@ -1273,6 +1278,9 @@ export interface SimulationState {
   // ORDER 265 — v1-ekonomin: klass, lån, veckoavräkning, nedgradering
   // (src/sim/economy.ts).
   economy: import('../sim/economy').EconomyState;
+  // ORDER 266 — action-knappen och händelserna ur simuleringen.
+  actionButton: import('../sim/actionButton').ActionButtonState;
+  serviceEvents: import('../sim/serviceEvents').ServiceEventsState;
   examSlotsUsed: number;
   // ORDER 109 — M7b bankmötet. Sätts av REQUEST_BANK_LOAN via
   // `resolveBankMeeting`. Persistar tills mötet hålls igen (repeat-
@@ -1528,6 +1536,8 @@ export type SimAction =
   | { type: 'END_EVENING' }
   // ORDER 265 — byt verksamhet vid veckoavräkningen (banken).
   | { type: 'CHOOSE_CLASS'; to: import('../sim/balance').BusinessClassId }
+  // ORDER 266 — rycka in själv (action-knappen).
+  | { type: 'INTERVENE'; kind: import('../sim/actionButton').InterventionKind; guestId: string }
   // ORDER 043 v3 §10 step 5 agency-staff mid-service offer response.
   | { type: 'ACCEPT_AGENCY' }
   | { type: 'DECLINE_AGENCY' }
