@@ -9,6 +9,7 @@ import { worldFactorArrivalMultiplier } from './worldFactors';
 import { valueQuotaArrivalMultiplier } from './valueQuota';
 import { computeShareFactor } from './competitors';
 import { calendarFor } from '../../sim/calendar';
+import { dailyGuestCap } from '../../sim/economy';
 
 // ORDER 111 §3 — food truck-specifika viktningar.
 //
@@ -203,6 +204,9 @@ const PARTY_PAIR_P = 0.35;
 export function maybeSpawnGuest(state: SimulationState, rng: Rng): Guest[] {
   const active = state.guests.length;
   if (active >= ACTIVE_GUEST_CAP) return [];
+  // ORDER 265 — marknadens tak: spelarens andel av dagens gästpool
+  // (speldesign > Marknaden, src/sim/economy.ts dailyGuestCap).
+  if ((state.day.arrivalsToday ?? 0) >= dailyGuestCap(state)) return [];
   // ORDER 111 §3 — kögate för food truck.
   if (state.businessClass === 'foodtrucken') {
     if (state.waitingIds.length >= state.policies.capacity) return [];
@@ -232,7 +236,8 @@ export function maybeSpawnGuest(state: SimulationState, rng: Rng): Guest[] {
   // partySize > cap → skala ner till vad som får plats (alltid ≥ 1 för
   // att inte kasta bort tick:en).
   const room = Math.max(1, ACTIVE_GUEST_CAP - active);
-  const effectiveSize = Math.min(partySize, room);
+  const marketRoom = Math.max(1, dailyGuestCap(state) - (state.day.arrivalsToday ?? 0));
+  const effectiveSize = Math.min(partySize, room, marketRoom);
 
   const party = effectiveSize > 1
     ? { id: nextPartyId(), size: effectiveSize }

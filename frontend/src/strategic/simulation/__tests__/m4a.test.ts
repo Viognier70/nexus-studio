@@ -9,6 +9,7 @@
 //   2. Both 'guest_substituted' and 'guest_walked' events fire when
 //      a target dish runs out and other dishes remain available.
 
+import { withoutMarketCap } from './marketHeadroom';
 import { describe, expect, it } from 'vitest';
 import { runHarness } from './harness';
 import type { SimAction } from '../../types';
@@ -46,7 +47,7 @@ describe('M4a DoD — attractiveness weighting + substitute/walkout', () => {
       { atSec: 6, action: { type: 'SKIP_LUNCH' } },
       { atSec: 60, action: { type: 'OPEN_SERVICE', service: 'dinner', lengthMinutes: 15 } }
     ];
-    const r = runHarness({ seed: 42, script, runUntilSec: 1100 });
+    const r = runHarness({ seed: 42, script, runUntilSec: 1100 , setup: withoutMarketCap });
     // Count served + substituted events per dish. A served event
     // draws the dish itself; a substituted event serves the
     // substitute (which shows up in guest_substituted's substituted
@@ -94,7 +95,7 @@ describe('M4a DoD — attractiveness weighting + substitute/walkout', () => {
       { atSec: 6, action: { type: 'SKIP_LUNCH' } },
       { atSec: 60, action: { type: 'OPEN_SERVICE', service: 'dinner', lengthMinutes: 15 } }
     ];
-    const r = runHarness({ seed: 42, script, runUntilSec: 1100 });
+    const r = runHarness({ seed: 42, script, runUntilSec: 1100 , setup: withoutMarketCap });
     const chickenSold = 30 - (r.finalState.stock['chicken'] ?? 0);
     const porkSold    = 30 - (r.finalState.stock['pork']    ?? 0);
     console.log(`[M4a] 1.5× survival — chicken@263: ${chickenSold} units, pork@195: ${porkSold} units`);
@@ -134,7 +135,7 @@ describe('M4a DoD — attractiveness weighting + substitute/walkout', () => {
     // (state.day.substitutedCount / walkedCount) are used instead
     // of the eventStream because the eventStream ring buffer
     // (STREAM_KEEP = 40) purges older entries as service continues.
-    const r = runHarness({ seed: 42, script, runUntilSec: 900 });
+    const r = runHarness({ seed: 42, script, runUntilSec: 900 , setup: withoutMarketCap });
     const substitutedCount = r.finalState.day.substitutedCount;
     const walkedCount      = r.finalState.day.walkedCount;
     console.log(`[M4a] game stock left=${r.finalState.stock['game']} chicken stock left=${r.finalState.stock['chicken']}`);

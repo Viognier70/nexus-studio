@@ -176,7 +176,9 @@ export const FLOOR = {
   mainPavilionWeight: 0.6,
   otherPavilionsWeight: 0.4,
   // "G kan aldrig bli högre än 90." Procent av klassens normala veckointäkt.
-  maxPercent: 90
+  maxPercent: 90,
+  // Golvet anges i procent; andel = procent / 100.
+  percentBase: 100
 } as const;
 
 export const LOAN = {
@@ -193,7 +195,37 @@ export const MARKET = {
   baseShareCap: 0.20,          // "20 %"
   shareCapPerMedalStep: 0.03,  // "plus 3 procentenheter per medaljsteg"
   // Tolkning: medaljsteg summeras över alla paviljonger.
-  openQuestion: 'F4'
+  openQuestion: 'F4',
+  // ORDER 265 (F21) — Grythyttans gästpool en vanlig dag (gästfaktor 1),
+  // före veckodag, högtid och första veckan (kalenderns gästfaktor).
+  // Härlett ur reports/order265/normal-weekly-revenue.json: vinbaren
+  // spelas i kvarterskrogens rum (F20), som drar 259,5 gäster per vecka
+  // (median, result.kvarterskrogen.guestsPerWeek) = 43,25 per servicedag.
+  // Taket ska bita vid klassens ingångsnivå (brons i tre = tre steg =
+  // 29 %) vid 90 % av det rummet drar: 43,25 × 0,9 / 0,29 ≈ 134. Med fler
+  // medaljer släpper taket; utan medaljer har spelaren ingen verksamhet.
+  basePoolPerDay: 134
+} as const;
+
+// ORDER 265 (F8) — klassernas normala veckointäkt och startlån.
+// Speldesignen anger inte beloppen. Intäkten är mätt med veckoharnessen:
+// reports/order265/normal-weekly-revenue.json, fältet result.<klass>.median
+// (vecka 2–3, frön 11/22/33, utan satsningar). Restaurang och nattklubb
+// har ännu inget eget rum (etapp 7 och 10) och mäts i kvarterskrogen.
+export const ECONOMY = {
+  section: 'Ekonomin > Golvet',
+  openQuestion: 'F8',
+  normalWeeklyRevenueSek: {
+    vinbar: 42090,        // kvarterskrogen — vinbaren spelas i dagens byggda rum tills etapp 5 (F20)
+    foodtruck: 60744,     // foodtrucken
+    restaurang: 42090,    // kvarterskrogen (platshållare till etapp 7)
+    olkrog: 47044,        // ölkrogen
+    gastgiveri: 42626,    // gästgiveriet
+    nattklubb: 42090      // kvarterskrogen (platshållare till etapp 10)
+  },
+  // Startlånet = två veckors normal intäkt; amorteringen blir då ungefär
+  // en fjärdedel av veckans intäkt under åtta veckor. Talet är valt.
+  startLoanWeeksOfRevenue: 2
 } as const;
 
 export const RANDOMNESS = {
@@ -232,22 +264,26 @@ export interface BusinessClassSpec {
   requirements: readonly MedalRequirement[];
   upgradeOnly: boolean;
   buildOrder: number;
+  // Storlek i nedgraderingskedjan (speldesign > Nedgradering): food truck
+  // 1, vinbar och ölkrog 2, restaurang 3, gästgiveri och nattklubb 4. Ett
+  // byte till större storlek är en uppgradering.
+  sizeRank: number;
 }
 
 export const BUSINESS_CLASSES = {
   section: 'Verksamhetsklasserna',
   list: [
-    { id: 'vinbar', seats: 20, mainPavilion: 'stensota', upgradeOnly: false, buildOrder: 1,
+    { id: 'vinbar', seats: 20, mainPavilion: 'stensota', upgradeOnly: false, buildOrder: 1, sizeRank: 2,
       requirements: [{ level: 'brons', count: 3, including: ['stensota'] }] },
-    { id: 'foodtruck', seats: null, mainPavilion: 'best', upgradeOnly: false, buildOrder: 2,
+    { id: 'foodtruck', seats: null, mainPavilion: 'best', upgradeOnly: false, buildOrder: 2, sizeRank: 1,
       requirements: [{ level: 'brons', count: 1, including: [] }] },
-    { id: 'restaurang', seats: 60, mainPavilion: 'metodkoket', upgradeOnly: false, buildOrder: 3,
+    { id: 'restaurang', seats: 60, mainPavilion: 'metodkoket', upgradeOnly: false, buildOrder: 3, sizeRank: 3,
       requirements: [{ level: 'silver', count: 3, including: [] }] },
-    { id: 'olkrog', seats: 20, mainPavilion: 'metodkoket', upgradeOnly: false, buildOrder: 4,
+    { id: 'olkrog', seats: 20, mainPavilion: 'metodkoket', upgradeOnly: false, buildOrder: 4, sizeRank: 2,
       requirements: [{ level: 'brons', count: 3, including: ['metodkoket'] }] },
-    { id: 'gastgiveri', seats: 100, mainPavilion: 'kalastorget', upgradeOnly: true, buildOrder: 5,
+    { id: 'gastgiveri', seats: 100, mainPavilion: 'kalastorget', upgradeOnly: true, buildOrder: 5, sizeRank: 4,
       requirements: [{ level: 'guld', count: 3, including: ['kalastorget'] }] },
-    { id: 'nattklubb', seats: 150, mainPavilion: 'kalastorget', upgradeOnly: true, buildOrder: 6,
+    { id: 'nattklubb', seats: 150, mainPavilion: 'kalastorget', upgradeOnly: true, buildOrder: 6, sizeRank: 4,
       requirements: [
         { level: 'guld', count: 1, including: ['kalastorget'] },
         { level: 'silver', count: 1, including: ['stensota'] }

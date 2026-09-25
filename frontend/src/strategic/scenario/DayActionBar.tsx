@@ -90,7 +90,7 @@ export function DayActionBar({ onOpenHouse }: Props) {
             {strings.knowledge.houseButton}
           </button>
         )}
-        {cal.isServiceDay ? (
+        {cal.isServiceDay && !sim.scaleDown.closedDinner && sim.economy.businessClass !== null ? (
           <button
             type="button"
             style={BUTTON_STYLE}
@@ -106,7 +106,7 @@ export function DayActionBar({ onOpenHouse }: Props) {
             data-testid="close-day"
             onClick={() => dispatch({ type: 'CLOSE_DAY' })}
           >
-            {strings.morning.closeSunday}
+            {cal.isServiceDay ? strings.morning.closeDay : strings.morning.closeSunday}
           </button>
         )}
       </div>

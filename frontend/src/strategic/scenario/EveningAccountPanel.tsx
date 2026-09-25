@@ -164,6 +164,8 @@ const LEDGER_CATEGORY_LABEL: Record<LedgerCategory, string> = {
   scenario:   'Scen.',
   buyout:     'Buy.',
   stock:      'Stock',
+  floor:      'Golv',
+  amortisation: 'Amort.',
   other:      '—'
 };
 

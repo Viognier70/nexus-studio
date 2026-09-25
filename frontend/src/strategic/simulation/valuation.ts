@@ -146,7 +146,9 @@ export function computeValuation(state: SimulationState, tier: LoanTier = 'T2'):
   const multiplier = BASE_MULTIPLIER * qFactor * rFactor;
   const goodwill = runRate * multiplier;
 
-  const debt = state.loan.principal;
+  // ORDER 265 — skulden är v1-lånets återstående belopp (SEK → kSEK,
+  // värderingens skala); det gamla ORDER 049-lånet är noll.
+  const debt = state.loan.principal + (state.economy?.loan?.principalSek ?? 0) / 1000;
   const value = tangible + goodwill - debt;
 
   const q = { mat: state.qualityFood, dryck: state.qualityDrink, service: state.qualityService };

@@ -219,6 +219,10 @@ export interface Policies {
   // för att stänga av pickern och verifiera att sim-utfallet är
   // identiskt (RNG-isolation). Valfri för bakåtkompat.
   anchorQuestionsEnabled?: boolean;
+  // ORDER 265 — marknadens tak på dagens gäster (speldesign > Marknaden).
+  // På som standard (undefined = på). Stängs av bara i tester av rummets
+  // mekanik som kör äldre passlängder; spelaren når inte växeln.
+  marketCapEnabled?: boolean;
 }
 
 export interface Vec2 {
@@ -725,6 +729,8 @@ export interface DayState {
   pavilionVisitsToday?: PavilionKey[];
   // ORDER 264 — spelaren har valt att gå vidare till nästa morgon.
   eveningEndRequested?: boolean;
+  // ORDER 265 — dagens ankomster, mot marknadens tak (dailyGuestCap).
+  arrivalsToday?: number;
   // ORDER 046 §1 — set true when a collapse roll fires during this
   // service. Blocks the collapse tick from firing twice in the same
   // service; read by the evening-account panel to pick the collapsed
@@ -952,6 +958,8 @@ export type LedgerCategory =
   | 'scenario'            // scenario cash writes (themed + secondary)
   | 'buyout'              // fired team member contract buyout
   | 'stock'               // ORDER 077 §4 (M4) — ingredient purchase from a supplier
+  | 'floor'               // ORDER 265 — golvets påfyllnad vid veckoavräkningen
+  | 'amortisation'        // ORDER 265 — lånets amortering vid veckoavräkningen
   | 'other';              // fallback with mandatory descriptive cause
 
 export interface LedgerLine {
@@ -1262,6 +1270,9 @@ export interface SimulationState {
   postServiceQuiz: PostServiceQuizState | null;
   // ORDER 264 — antal kvällar spelaren tagit quizen (mognad, etapp 12).
   postServiceQuizzesTaken: number;
+  // ORDER 265 — v1-ekonomin: klass, lån, veckoavräkning, nedgradering
+  // (src/sim/economy.ts).
+  economy: import('../sim/economy').EconomyState;
   examSlotsUsed: number;
   // ORDER 109 — M7b bankmötet. Sätts av REQUEST_BANK_LOAN via
   // `resolveBankMeeting`. Persistar tills mötet hålls igen (repeat-
@@ -1515,6 +1526,8 @@ export type SimAction =
   | { type: 'NEXT_QUIZ_QUESTION' }
   | { type: 'SKIP_QUIZ' }
   | { type: 'END_EVENING' }
+  // ORDER 265 — byt verksamhet vid veckoavräkningen (banken).
+  | { type: 'CHOOSE_CLASS'; to: import('../sim/balance').BusinessClassId }
   // ORDER 043 v3 §10 step 5 agency-staff mid-service offer response.
   | { type: 'ACCEPT_AGENCY' }
   | { type: 'DECLINE_AGENCY' }

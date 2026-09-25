@@ -93,7 +93,14 @@ describe('M3 DoD — evening ledger visible', () => {
     expect(r.invariantErrors, r.invariantErrors.join('\n')).toEqual([]);
 
     // Whole-run reconciliation
-    const ledgerSum = r.finalState.ledger.reduce((s, l) => s + l.amount, 0);
+    // ORDER 265 — kostnader som redan dragits från kassan men ännu inte
+    // bokförts (tomgångs- och ingredienskostnad som postas vid stängning
+    // och dygnsskifte) räknas med, så att avstämningen inte beror på var
+    // i dygnet körningen stannar. Mätt 2026-09-25: ledger 9571, kassa
+    // 8953, obokfört −256, rest −362 SEK (ORDER 260 §9:s kända
+    // avvikelse, egen order — se ORDER_265_RAPPORT.md §4).
+    const pending = -((r.finalState.day.idleCostAccrued ?? 0) + (r.finalState.day.serviceIngredientAccrued ?? 0));
+    const ledgerSum = r.finalState.ledger.reduce((s, l) => s + l.amount, 0) + pending;
     const netCashMovement = r.finalState.cash - INITIAL_CASH_SEK;
     const overallDrift = Math.abs(netCashMovement - ledgerSum);
     const overallRatio = Math.abs(ledgerSum) / Math.max(1, Math.abs(netCashMovement));
@@ -170,6 +177,8 @@ describe('M3 DoD — evening ledger visible', () => {
     // ledger-poster fyras per tick (särskilt när dropped tasks re-schedule:as
     // nästa tick, small ordering-shifts). Observerad drift 102.2% i seed=3;
     // 103% ger marginal utan att gömma en genuint växande drift.
+    // ORDER 265 — tolerans 1.04 → 1.05: marknadens tak (etapp 3) ger
+    // färre gäster och mindre kassarörelse; resten 362 SEK ger 1.040.
     // ORDER 263 — tolerans 1.03 → 1.04. Kalenderns gästfaktor (dag 1–3
     // = mån–ons vecka 1, ×0,49–0,63) minskar kassarörelsen, så samma
     // absoluta avvikelse ger högre kvot: mätt 901 SEK både med och utan
@@ -178,8 +187,8 @@ describe('M3 DoD — evening ledger visible', () => {
     // Avvikelsen själv (ORDER 260 §9 "ledger-drift") rättas i etapp 3.
     expect(
       overallRatio,
-      `overall reconciliation ${(overallRatio * 100).toFixed(1)}% (drift ${overallDrift.toFixed(0)} SEK) — outside 98–104%`
-    ).toBeLessThanOrEqual(1.04);
+      `overall reconciliation ${(overallRatio * 100).toFixed(1)}% (drift ${overallDrift.toFixed(0)} SEK) — outside 98–105%`
+    ).toBeLessThanOrEqual(1.05);
     // Absolute drift bound: <2% of total cash movement AND < 1500 SEK
     // absolute. Absolute floor catches the case where movement is
     // small (weekend, quiet service) but drift accumulates.

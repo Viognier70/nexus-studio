@@ -27,6 +27,7 @@
 // order document for the full expected-rate table.
 
 import { offerQuiz } from '../knowledge/postServiceQuiz';
+import { dayEnd, dayEndCash } from '../../sim/economy';
 import type {
   ConsequenceEvent,
   EventStreamEntry,
@@ -233,6 +234,8 @@ export function fireCollapse(draft: SimulationState): void {
   // ORDER 264 — quizen erbjuds också efter en kväll som föll ihop.
   const serviceStartedAt = draft.day.periodStartAt;
   draft.postServiceQuiz = offerQuiz(draft, serviceStartedAt);
+  // ORDER 265 — dagsavslut också efter en kväll som föll ihop.
+  draft.economy = dayEnd(draft.economy, dayEndCash(draft));
   draft.day = {
     ...draft.day,
     period: 'evening',

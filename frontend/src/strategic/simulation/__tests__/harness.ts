@@ -51,6 +51,8 @@ export interface ScriptedAction {
 export type ScenarioStrategy = (state: SimulationState) => ScenarioChoice | null;
 
 export interface HarnessConfig {
+  // ORDER 265 — ändra starttillståndet innan skriptet körs.
+  setup?: (s: SimulationState) => SimulationState;
   /** Seed for `makeInitialState`. Defaults to 1 — deterministic. */
   seed?: number;
   script: ScriptedAction[];
@@ -103,6 +105,8 @@ export function runHarness(cfg: HarnessConfig): HarnessResult {
   const script = [...cfg.script].sort((a, b) => a.atSec - b.atSec);
 
   let state = makeInitialState(cfg.seed ?? 1);
+  // ORDER 265 — valfri startinställning (t.ex. withoutMarketCap).
+  if (cfg.setup) state = cfg.setup(state);
   let scriptIdx = 0;
   let actionsDispatched = 0;
   let scenariosResolved = 0;
