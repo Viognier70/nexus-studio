@@ -20,8 +20,10 @@ import { reducer } from '../reducer';
 import {
   GIVE_UP_COST,
   HAPPY_GAIN,
+  HAPPY_THRESHOLD,
   QUEUE_STRAIN_THRESHOLD,
   UNHAPPY_COST,
+  UNHAPPY_THRESHOLD,
   applyReputationDelta,
   reputationEventDeparture,
   reputationEventGiveUp,
@@ -158,14 +160,13 @@ describe('per-event reputation changes', () => {
     expect(s.reputation).toBeCloseTo(0.6 - UNHAPPY_COST, 10);
   });
 
-  // ORDER 257 (VO 2026-09-22): band flyttade — mediocre är nu 0.65–0.85,
-  // inte 0.35–0.75. Test-value 0.5 ligger under nya UNHAPPY_THRESHOLD (0.65)
-  // → straffas med UNHAPPY_COST. Baseline väntar VO-beslut om testet ska
-  // uppdateras till nya banden (0.75 test) eller markera fixat.
-  it.fails('mediocre departure (satisfaction in [0.35, 0.75]) is neutral [KÄND AVVIKELSE ORDER 257]', () => {
+  // ORDER 257 (VO 2026-09-22): banden flyttade — medelmåttigt är
+  // UNHAPPY_THRESHOLD–HAPPY_THRESHOLD (0,65–0,85). ORDER 267: testet läser
+  // banden ur reputation.ts i stället för det gamla talet 0,5.
+  it('mediocre departure (between UNHAPPY_THRESHOLD and HAPPY_THRESHOLD) is neutral', () => {
     const s = makeInitialState(1);
     s.reputation = 0.6;
-    reputationEventDeparture(s, 0.5);
+    reputationEventDeparture(s, (UNHAPPY_THRESHOLD + HAPPY_THRESHOLD) / 2);
     expect(s.reputation).toBe(0.6);
   });
 });
