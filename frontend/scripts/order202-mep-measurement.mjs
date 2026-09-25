@@ -81,7 +81,7 @@ async function runViteMeasure(businessArg) {
       const s = window.__nxSimState;
       return {
         simTime: s.simTime,
-        prepEndsAt: s.day.prepEndsAt,
+        doorsOpenAt: s.day.doorsOpenAt,
         prepReadiness: s.day.prepReadiness ?? null
       };
     });

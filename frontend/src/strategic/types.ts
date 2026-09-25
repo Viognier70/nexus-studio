@@ -680,12 +680,13 @@ export interface DayState {
   // over the room during this window. When simTime crosses this
   // timestamp, the opening ends and prep begins.
   openingEndsAt: number | null;
-  // ORDER 043 Addendum A prep window — set when opening ends, to
-  // simTime + PREP_DURATION_SEC. While non-null the service is
-  // "in mise en place": no arrivals, no scenarios, prep events fire
-  // on the stream instead. Cleared (set to null) when the prep
-  // window expires; the carryover check runs at that moment.
-  prepEndsAt: number | null;
+  // ORDER 171/263 — ögonblicket dörrarna öppnar (hette prepEndsAt).
+  // Sätts vid OPEN_SERVICE till simTime + OPENING_DURATION_SEC +
+  // PREP_DURATION_SEC för klasser med mise en place, annars utan prep.
+  // Prep-fasen är [openingEndsAt, doorsOpenAt]: inga ankomster, inga
+  // scenarier. Nollas när dörrarna öppnat; carryover-kontrollen körs då.
+  // Samma ögonblick, ett namn — som ORDER 144 (två matsalar) och 149.
+  doorsOpenAt: number | null;
   // Number of ignorance-tagged prep events fired during the current
   // prep window. Read at prep-end to decide whether to schedule a
   // carryover bottleneck event ~13 min into service.

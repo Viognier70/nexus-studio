@@ -50,7 +50,7 @@ export interface GuestCardAction { text: string; iconKey: GuestIconKey }
 //
 // `state.day.period` is coarse (`morning | lunch | afternoon | dinner |
 // evening`). The finer inside-a-service phases (opening / prep /
-// service) live in `openingEndsAt`, `prepEndsAt`, `doorsOpenedThisService`.
+// service) live in `openingEndsAt`, `doorsOpenAt`, `doorsOpenedThisService`.
 // This helper collapses the two into one logical phase so the derivation
 // tables can switch on it directly.
 
@@ -64,7 +64,7 @@ export function derivePhase(day: DayState, simTime: number): LogicalPhase {
   if (p === 'evening') return 'evening';
   // Inside a service slot (lunch or dinner).
   if (day.openingEndsAt !== null && simTime < day.openingEndsAt) return 'opening';
-  if (day.prepEndsAt !== null && simTime < day.prepEndsAt) return 'prep';
+  if (day.doorsOpenAt !== null && simTime < day.doorsOpenAt) return 'prep';
   return 'service';
 }
 
