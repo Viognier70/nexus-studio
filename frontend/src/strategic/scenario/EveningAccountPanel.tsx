@@ -265,7 +265,7 @@ export function EveningAccountPanel() {
     <div style={{ ...PANEL_WRAPPER_STYLE, opacity }}>
       <div style={PANEL_STYLE}>
         <div style={HEADING_STYLE}>Evening account</div>
-        <div>{account.paragraph}</div>
+        <div data-testid="evening-story">{account.paragraph}</div>
 
         {account.metrics ? (
           <div style={METRICS_SECTION_STYLE}>

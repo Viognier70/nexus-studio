@@ -1,0 +1,32 @@
+{
+  "url": "http://localhost:4173/",
+  "build": "produktion (vite build + preview)",
+  "flags": "inga",
+  "days": [
+    {
+      "morning": "Måndag · Morgon · VinbarFyll dagens schema och öppna för kvällen.Ingen meny satt i dag.Schemat: 0 av 2 platserMåltidens husÖppna för kvällenMedaljer: Inga medaljer ännu",
+      "evening": "Sexton gick härifrån nöjda. Ingen gav upp i kön. Kvällen höll ihop utan att någon behövde påminnas. Rummet fann sin puls, laget läste varandra, och gästerna gick nöjda utan att någon slog ut med armarna. Det är sådana kvällar som bygger ett rykte tyst — inte de som glimrar utan de som stämmer. Skriv upp det i minnet innan morgonen skjuter bort det."
+    },
+    {
+      "morning": "Tisdag · Morgon · VinbarFyll dagens schema och öppna för kvällen.Ingen meny satt i dag.Schemat: 0 av 2 platserMåltidens husÖppna för kvällenMedaljer: Metodköket brons · Stensöta brons",
+      "evening": "Nitton gick härifrån nöjda. Ingen gav upp i kön. Kvällen höll ihop utan att någon behövde påminnas. Rummet fann sin puls, laget läste varandra, och gästerna gick nöjda utan att någon slog ut med armarna. Det är sådana kvällar som bygger ett rykte tyst — inte de som glimrar utan de som stämmer. Skriv upp det i minnet innan morgonen skjuter bort det."
+    },
+    {
+      "morning": "Onsdag · Morgon · VinbarFyll dagens schema och öppna för kvällen.Ingen meny satt i dag.Schemat: 0 av 2 platserMåltidens husÖppna för kvällenMedaljer: Metodköket brons · Stensöta brons · Kalastorget brons",
+      "evening": "Fler än tjugo gick härifrån nöjda. Ingen gav upp i kön. Kvällen höll ihop utan att någon behövde påminnas. Rummet fann sin puls, laget läste varandra, och gästerna gick nöjda utan att någon slog ut med armarna. Det är sådana kvällar som bygger ett rykte tyst — inte de som glimrar utan de som stämmer. Skriv upp det i minnet innan morgonen skjuter bort det."
+    },
+    {
+      "morning": "Torsdag · Morgon · VinbarFyll dagens schema och öppna för kvällen.Ingen meny satt i dag.Schemat: 0 av 2 platserMåltidens husÖppna för kvällenMedaljer: Metodköket brons · Stensöta brons · Kalastorget brons",
+      "evening": "Fler än tjugo gick härifrån nöjda. Ingen gav upp i kön. Kvällen höll ihop utan att någon behövde påminnas. Rummet fann sin puls, laget läste varandra, och gästerna gick nöjda utan att någon slog ut med armarna. Det är sådana kvällar som bygger ett rykte tyst — inte de som glimrar utan de som stämmer. Skriv upp det i minnet innan morgonen skjuter bort det."
+    },
+    {
+      "morning": "Fredag · Morgon · VinbarFyll dagens schema och öppna för kvällen.Ingen meny satt i dag.Schemat: 0 av 2 platserMåltidens husÖppna för kvällenMedaljer: Metodköket brons · Stensöta brons · Kalastorget brons",
+      "evening": "Fler än tjugo gick härifrån nöjda. Kvällen slutade innan den skulle. Det var huset som inte höll — inte oturen, inte gästerna, utan att någon inte var på plats där kunskapen skulle stå. I morgon börjar med en dörr som stängde tidigt, och ett rykte som märkte det. Ta med det till morgonen. Det där kommer inte att glömmas snabbt. Du valde den hårdare läsningen, den som kräver skarpt öga och lite obekvämt tal — den vägen slipar men den kostar också."
+    },
+    {
+      "morning": "Lördag · Morgon · VinbarFyll dagens schema och öppna för kvällen.Ingen meny satt i dag.Schemat: 0 av 2 platserMåltidens husÖppna för kvällenMedaljer: Metodköket brons · Stensöta brons · Kalastorget brons",
+      "evening": "Tretton gick härifrån nöjda. Kvällen slutade innan den skulle. Det var huset som inte höll — inte oturen, inte gästerna, utan att någon inte var på plats där kunskapen skulle stå. I morgon börjar med en dörr som stängde tidigt, och ett rykte som märkte det. Ta med det till morgonen. Det där kommer inte att glömmas snabbt. Du valde den hårdare läsningen, den som kräver skarpt öga och lite obekvämt tal — den vägen slipar men den kostar också."
+    }
+  ],
+  "errors": []
+}

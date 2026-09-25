@@ -17,6 +17,7 @@ import { numberWord } from '../simulation/eveningAccount';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 
 const t = strings.service;
+const VISIBLE_TASKS = 6;
 
 const BUTTON: React.CSSProperties = {
   padding: '10px 16px',
@@ -36,6 +37,8 @@ const PANEL: React.CSSProperties = {
   left: 16,
   bottom: 24,
   width: 'min(360px, calc(100vw - 32px))',
+  maxHeight: 'calc(100vh - 140px)',
+  overflowY: 'auto',
   padding: '12px 14px',
   background: 'rgba(30, 22, 16, 0.94)',
   color: '#f5f0e0',
@@ -79,7 +82,8 @@ export function ActionButtonPanel() {
       </div>
     );
   }
-  const queue = actionQueue(sim);
+  // De mest akuta först; en lång lista hjälper inte i stressen.
+  const queue = actionQueue(sim).slice(0, VISIBLE_TASKS);
   return (
     <div style={PANEL} data-testid="action-panel">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

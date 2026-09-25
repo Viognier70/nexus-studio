@@ -69,13 +69,16 @@ function taskFor(g: Guest, now: number): ActionTask | null {
   if (g.state === 'waiting') {
     return { kind: 'calm', guestId: g.id, atRisk: g.satisfaction < ACTION_BUTTON.atRiskSatisfaction, waitedSec: now - g.stateTime };
   }
+  // En gäst som väntar på att beställa går inte; bara kön kan vara "på
+  // väg att gå".
   if (g.state === 'ordering') {
-    return { kind: 'order', guestId: g.id, atRisk: g.satisfaction < ACTION_BUTTON.atRiskSatisfaction, waitedSec: now - g.stateTime };
+    return { kind: 'order', guestId: g.id, atRisk: false, waitedSec: now - g.stateTime };
   }
   return null;
 }
 
-// Kön: gäster som går att hjälpa just nu, de som riskerar att gå först.
+// Kön: gäster som går att hjälpa just nu, de som riskerar att gå först,
+// därefter de som väntat längst.
 export function actionQueue(state: SimulationState): ActionTask[] {
   if (!inService(state)) return [];
   return state.guests
