@@ -1,3 +1,4 @@
+import { QUEUE } from '../../sim/balance';
 import { INTERIOR } from '../content/layout';
 import { businessHasOvernight, businessHasSeats, capacityForBusiness } from '../business/businessClass';
 import type { BusinessClass } from '../business/businessClass';
@@ -412,7 +413,13 @@ export function tickGuests(state: SimulationState) {
       if (seat !== null) {
         state.waitingIds = state.waitingIds.filter((id) => id !== guest.id);
         setGuestSeated(state, guest, seat);
-      } else if (now - guest.stateTime > 90 && guest.satisfaction < 0.2) {
+      } else if (
+        now - guest.stateTime > QUEUE.patienceSimSeconds &&
+        guest.satisfaction < QUEUE.giveUpSatisfaction &&
+        // ORDER 266 — en gäst som spelaren står hos (action-knappen) ger
+        // inte upp medan insatsen pågår.
+        state.actionButton?.active?.guestId !== guest.id
+      ) {
         // Give up. ORDER 043 v3 §4 reputation loop: a walkout from
         // the queue is the loudest bad-reputation signal — a person
         // waited long enough to be visibly unhappy and then left.

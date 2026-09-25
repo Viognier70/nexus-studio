@@ -15,13 +15,17 @@ import type {
   StaffMember,
   TaskType
 } from '../../types';
-import type { EnablerRecord } from '../../types';
 import { WAIT_HAIL_SEC, WAIT_IMPATIENT_SEC } from './deriveActions';
 
+// ORDER 266 (Nexus v1 etapp 4) — `proud` borttaget. Speldesign > Medgång:
+// "Personalens känslor som saknar avläsare, som `proud`, tas bort."
+// `proud` utlöstes bara av ett rätt svar mitt i servicen, och sådana
+// frågor finns inte i v1 (F15); ansiktet kunde aldrig synas. Övriga nio
+// har var sin utlösare nedan.
 export type FaceKey =
   | 'neutral' | 'focused' | 'smiling' | 'attentive'
   | 'tense' | 'strained' | 'hurried' | 'exhausted'
-  | 'proud' | 'irritated';
+  | 'irritated';
 
 // The ten reconciled expressions, materialised as a runtime tuple so a
 // test can assert the set is exactly these. Ordered to mirror the
@@ -29,7 +33,7 @@ export type FaceKey =
 export const ALL_FACE_KEYS: readonly FaceKey[] = [
   'neutral', 'focused', 'smiling', 'attentive',
   'tense', 'strained', 'hurried', 'exhausted',
-  'proud', 'irritated'
+  'irritated'
 ];
 
 // ORDER 087 §3 — `exhausted` and `proud` are personal-exclusive.
@@ -40,31 +44,7 @@ export const ALL_FACE_KEYS: readonly FaceKey[] = [
 // Guest satisfaction, however high, is `smiling`; guest closure, however
 // serene, is `neutral`. Left as an explicit constant so the guest
 // derivation can guard against a silent regression back to `proud`.
-export const STAFF_EXCLUSIVE_FACES: readonly FaceKey[] = ['exhausted', 'proud'];
-
-// Window (seconds) after a correct-answer episteme write within which
-// the staff face reads `proud`. Same window used by the `irritated`
-// counterpart to detect a very recent wrong-answer episteme-write
-// absence. Longer than a tick, short enough that pride/irritation
-// doesn't overhang into the next task.
-export const RECENT_ANSWER_WINDOW_SEC = 5;
-
-// Detect a fresh correct-answer episteme write across every enabler
-// register. Pure over state; scans `history` for the newest entry and
-// returns true if it lies within the window.
-export function recentAnswerHit(
-  enablers: Record<string, EnablerRecord>,
-  simTime: number
-): boolean {
-  let newestAt = -Infinity;
-  for (const rec of Object.values(enablers)) {
-    for (const evt of rec.history) {
-      if (evt.at > newestAt) newestAt = evt.at;
-    }
-  }
-  if (newestAt === -Infinity) return false;
-  return simTime - newestAt <= RECENT_ANSWER_WINDOW_SEC;
-}
+export const STAFF_EXCLUSIVE_FACES: readonly FaceKey[] = ['exhausted'];
 
 // -------- staff face derivation -----------------------------------------
 
@@ -72,25 +52,19 @@ export function deriveStaffFace(args: {
   staff: StaffMember;
   day: DayState;
   simTime: number;
-  recentAnswerHitFlag: boolean;
   targetGuestSatisfaction: number | null;   // null if targetGuestId lookup fails
 }): FaceKey {
-  const { staff, day, recentAnswerHitFlag, targetGuestSatisfaction } = args;
+  const { staff, day, targetGuestSatisfaction } = args;
 
   // SF1 — end of service or post-collapse: exhausted.
   if (day.period === 'evening' || day.serviceCollapsed) return 'exhausted';
-  // SF2 — landed correct answer within the window: proud.
-  if (recentAnswerHitFlag) return 'proud';
   // SF3 — greeting or pouring welcome drink: smiling.
   const t = staff.taskType as TaskType | null;
   if (t === 'greet' || t === 'welcomeDrink') return 'smiling';
   // SF4 — order-taking: attentive.
   if (t === 'order') return 'attentive';
   // SF5 — dissatisfied target guest OR wrong-answer recency: irritated.
-  //   Wrong-answer recency is inverse of `recentAnswerHitFlag`; we only
-  //   have positive-write history, so a wrong answer is detected upstream
-  //   via a separate flag if wired later. For now, dissatisfaction is
-  //   the sole trigger — sufficient for the DoD in report §4.
+  //   Dissatisfaction is the sole trigger.
   if (targetGuestSatisfaction !== null && targetGuestSatisfaction < 0.3) {
     return 'irritated';
   }

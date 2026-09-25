@@ -5,6 +5,8 @@ import { MORALE_INITIAL } from './morale';
 import { initialTeam } from './team';
 import { SEASON, SERVICE } from '../../sim/balance';
 import { initialEconomy } from '../../sim/economy';
+import { initialActionButton } from '../../sim/actionButton';
+import { initialServiceEvents } from '../../sim/serviceEvents';
 import type {
   CapitalState,
   DayState,
@@ -409,6 +411,9 @@ export function makeInitialState(
     // nytt spel som vinbar med vinbarens startlån, amorterat över
     // säsongens åtta veckor.
     economy: initialEconomy('vinbar', SEASON.weeks, 0),
+    // ORDER 266 — action-knappen och händelserna ur simuleringen.
+    actionButton: initialActionButton(),
+    serviceEvents: initialServiceEvents(),
     scaleDown: {
       menuShortenedFrom: null,
       wineListReduced: false,

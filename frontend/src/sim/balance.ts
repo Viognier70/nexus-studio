@@ -307,13 +307,65 @@ export const ACTION_BUTTON = {
   section: 'Servicen > Action-knappen',
   blindSimSeconds: 20,         // "resten av rummet i tjugo spelsekunder"
   maxPerEvening: 3,            // "Högst tre insatser per kväll"
-  techneCreditOnSuccess: 1     // "ger en techne-kredit"
+  techneCreditOnSuccess: 1,    // "ger en techne-kredit"
+  // ORDER 266 (F25) — valda tal. Insatsen tar baseSimSeconds / (1 +
+  // techneSpeedPerCredit × techne-krediter), dock minst minSimSeconds
+  // ("Insatsen går snabbare ju fler techne-krediter hon har").
+  openQuestion: 'F25',
+  baseSimSeconds: 14,
+  techneSpeedPerCredit: 0.05,
+  minSimSeconds: 5,
+  // Att lugna en gäst i kön: nöjdheten höjs och väntan börjar om.
+  calmSatisfactionBoost: 0.4,
+  // En gäst i kön visas som "på väg att gå" under denna nöjdhet (före
+  // gränsen för att ge upp, QUEUE.giveUpSatisfaction, så att spelaren
+  // hinner rycka in).
+  atRiskSatisfaction: 0.6
 } as const;
 
 export const REPUTATION = {
   section: 'Servicen > Ryktet',
   scale: 100,
-  floor: 10                    // "Ryktet kan inte gå under 10 av 100"
+  floor: 10,                   // "Ryktet kan inte gå under 10 av 100"
+  // ORDER 266 (F26) — återhämtningen. "Det återhämtar sig långsamt av sig
+  // självt och snabbare genom händelser." Valda tal, på skalan 0–100.
+  openQuestion: 'F26',
+  recoveryTarget: 50,          // självläkningen drar mot 50 av 100
+  dailyRecovery: 2,            // per dag under målet
+  cleanEveningBonus: 3,        // "en kväll utan returer": ingen gav upp
+  actionSuccessBonus: 1        // en gäst som stannade tack vare insatsen
+} as const;
+
+// ORDER 266 (F29) — kön. Speldesign > Action-knappen: "lugna en gäst som
+// väntat länge … en gäst som stannar i stället för att gå". Regeln för
+// att ge upp (90 s och nöjdhet under 0,2, ORDER 043) var gjord för pass
+// på 15–30 minuter; v1:s dörrar står öppna i knappt åtta, och ingen gav
+// upp (mätt 2026-09-25: längsta väntan en vanlig lördag 23 s, en
+// högtidslördag 37 s). Mätt en vanlig fredag (53 gäster, brons i tre):
+// tålamod 30 s → ryktet 0,60 → 0,47, 45 s → 0,50, 60 s → 0,53, 90 s →
+// 0,62. Med 60 s blir det omkring tre gäster på väg att gå en tung kväll,
+// lika många som spelarens tre insatser. Valda tal.
+export const QUEUE = {
+  section: 'Servicen',
+  openQuestion: 'F29',
+  patienceSimSeconds: 60,
+  giveUpSatisfaction: 0.35
+} as const;
+
+// ORDER 266 (F28) — händelser ur simuleringen, var och en med en orsak
+// (speldesign > Händelser). Valda tal.
+export const EVENTS = {
+  section: 'Servicen > Händelser',
+  openQuestion: 'F28',
+  // Inspektion: stationernas mise en place under denna nivå när
+  // servicen stänger ("Dålig hygien leder till inspektion").
+  inspectionStationsBelow: 0.4,
+  inspectionReputationHit: 5,  // av 100
+  inspectionFineSek: 2000,
+  // Recensent: ryktet minst detta när servicen öppnar ("gott rykte
+  // till en recensent"). Utfallet följer kvällen.
+  reviewerReputationAtLeast: 70,
+  reviewerReputationChange: 5
 } as const;
 
 // ---------------------------------------------------------------------

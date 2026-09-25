@@ -15,7 +15,7 @@
 import { describe, expect, it } from 'vitest';
 import { reducer } from '../reducer';
 import { makeInitialState } from '../model';
-import { deriveStaffFace, recentAnswerHit } from '../../ui/RoomCardPanel/deriveFaces';
+import { deriveStaffFace } from '../../ui/RoomCardPanel/deriveFaces';
 import type { FaceKey } from '../../ui/RoomCardPanel/deriveFaces';
 import type { SimAction, SimulationState } from '../../types';
 
@@ -69,7 +69,6 @@ function runFullService(seed: number): {
       (state.day.period === 'dinner' || state.day.period === 'lunch') &&
       state.day.doorsOpenedThisService;
     if (inService) {
-      const answerHit = recentAnswerHit(state.enablers, state.simTime);
       for (const s of state.staff) {
         const targetGuest = s.targetGuestId
           ? state.guests.find((g) => g.id === s.targetGuestId) ?? null
@@ -78,7 +77,6 @@ function runFullService(seed: number): {
           staff: s,
           day: state.day,
           simTime: state.simTime,
-          recentAnswerHitFlag: answerHit,
           targetGuestSatisfaction: targetGuest?.satisfaction ?? null
         });
         faceCounts[face] = (faceCounts[face] ?? 0) + 1;
@@ -222,14 +220,12 @@ describe('ORDER 089 §2 — medgångsinventering', () => {
         state.day.doorsOpenedThisService;
       if (!inService) continue;
 
-      const answerHit = false; // approximation — full recentAnswerHit is elsewhere
       for (const s of state.staff) {
         const targetGuest = s.targetGuestId
           ? state.guests.find((g) => g.id === s.targetGuestId) ?? null
           : null;
         const face = deriveStaffFace({
           staff: s, day: state.day, simTime: state.simTime,
-          recentAnswerHitFlag: answerHit,
           targetGuestSatisfaction: targetGuest?.satisfaction ?? null
         });
         staffFaceCounts[face] = (staffFaceCounts[face] ?? 0) + 1;

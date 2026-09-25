@@ -1,5 +1,7 @@
 import { calendarFor } from '../../sim/calendar';
-import { EVENING, POST_SERVICE_QUIZ, SERVICE, type BusinessClassId } from '../../sim/balance';
+import { ACTION_BUTTON, EVENING, POST_SERVICE_QUIZ, SERVICE, type BusinessClassId } from '../../sim/balance';
+import { resetForService, startIntervention, tickIntervention } from '../../sim/actionButton';
+import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
 import { canChangeClassToday, changeClass, classOptions, creditLineSek, dailyGuestCap, dayEnd, dayEndCash, postDailyInterest, settleWeek } from '../../sim/economy';
 import { answerVisit, closeVisit, nextVisitQuestion, scheduleSlotsLeft, startVisit } from '../knowledge/pavilionVisit';
 import { answerQuiz, nextQuizQuestion, offerQuiz, skipQuiz, startQuiz } from '../knowledge/postServiceQuiz';
@@ -119,11 +121,12 @@ import { tickQualityDrift } from './quality';
 import { ROLLING_WINDOW } from './valuation';
 import { initialDay, loadIdCounters, makeGuest, makeInitialState, makeStaff, readIdCounters } from './model';
 import {
-  decayEnablersOvernight,
   phronesisSofteningGeneral,
   tickReputationCeilingDrift,
   tickReputationDrift,
-  logRepDelta
+  logRepDelta,
+  clampReputation,
+  REPUTATION_FLOOR
 } from './reputation';
 import { tickGuests, tickStaff } from './service';
 import { tickSustainability } from './sustainability';
@@ -214,6 +217,14 @@ export function reducer(state: SimulationState, action: SimAction): SimulationSt
   const next = reduce(base, action);
   // Oförändrat tillstånd (åtgärden avvisades): inga id delades ut.
   if (next === base) return base;
+  // ORDER 266 — ryktets golv (10 av 100) gäller efter varje åtgärd.
+  if (next.reputation < REPUTATION_FLOOR) {
+    return withIdCounters({ ...next, reputation: REPUTATION_FLOOR });
+  }
+  return withIdCounters(next);
+}
+
+function withIdCounters(next: SimulationState): SimulationState {
   const counters = readIdCounters();
   if (next.idCounters?.guest === counters.guest && next.idCounters?.party === counters.party) return next;
   return { ...next, idCounters: counters };
@@ -223,6 +234,12 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
   switch (action.type) {
     case 'TICK': {
       const next = advanceTick(state);
+      // ORDER 266 — en lyckad insats ger en techne-kredit (via
+      // ACCUMULATE_KNOWLEDGE, så axel- och spårsummorna hålls i synk).
+      const r = next.actionButton?.lastResult;
+      if (r && r.success && r !== state.actionButton?.lastResult) {
+        return creditQuestion(next, 'techne', null, ACTION_BUTTON.techneCreditOnSuccess);
+      }
       return next;
     }
     case 'SET_SPEED':
@@ -316,6 +333,8 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       return skipQuiz(state);
     case 'CHOOSE_CLASS':
       return chooseClass(state, action.to);
+    case 'INTERVENE':
+      return startIntervention(state, action.kind, action.guestId);
     case 'END_EVENING':
       if (state.day.period !== 'evening') return state;
       if (state.postServiceQuiz?.status === 'active') return state;
@@ -762,7 +781,7 @@ export function drawMenuDishForGuest(
   // No available substitute → forced walkout.
   if (candidates.length === 0) {
     const before = draft.reputation;
-    draft.reputation = Math.max(0, draft.reputation - REP_HIT_WALKOUT);
+    draft.reputation = clampReputation(draft.reputation - REP_HIT_WALKOUT);
     logRepDelta(draft, 'walkout', draft.reputation - before); // ORDER 256
     draft.day.walkedCount = (draft.day.walkedCount ?? 0) + 1;
     draft.eventStream = [
@@ -793,7 +812,7 @@ export function drawMenuDishForGuest(
     if (!cheapestDish) return { kind: 'walked', targetDishId: target.dishId };
     serve(cheapest);
     const beforeSub = draft.reputation;
-    draft.reputation = Math.max(0, draft.reputation - REP_HIT_SUBSTITUTE);
+    draft.reputation = clampReputation(draft.reputation - REP_HIT_SUBSTITUTE);
     logRepDelta(draft, 'substitute', draft.reputation - beforeSub); // ORDER 256
     draft.day.substitutedCount = (draft.day.substitutedCount ?? 0) + 1;
     draft.eventStream = [
@@ -820,7 +839,7 @@ export function drawMenuDishForGuest(
 
   // Walk.
   const beforeWalk = draft.reputation;
-  draft.reputation = Math.max(0, draft.reputation - REP_HIT_WALKOUT);
+  draft.reputation = clampReputation(draft.reputation - REP_HIT_WALKOUT);
   logRepDelta(draft, 'walkout', draft.reputation - beforeWalk); // ORDER 256
   draft.day.walkedCount = (draft.day.walkedCount ?? 0) + 1;
   draft.eventStream = [
@@ -1302,9 +1321,11 @@ function openService(
   if (import.meta.env.DEV && typeof globalThis !== 'undefined') {
     (globalThis as unknown as { __nxRepDepartureLog?: unknown[] }).__nxRepDepartureLog = [];
   }
-  return {
+  const opened: SimulationState = {
     ...state,
-    day,
+    day: { ...day, happyAtServiceStart: state.metrics.happyDeparturesTotal ?? 0, minStationsReadiness: undefined },
+    // ORDER 266 — kvällens insatser nollställs.
+    actionButton: resetForService(state.actionButton),
     rngState: rng.state,
     streamThemeCounts: { economic: 0, social: 0, ecological: 0 },
     firedScenarioIds: [],
@@ -1323,6 +1344,9 @@ function openService(
       }
     }
   };
+  // ORDER 266 — kommer det en recensent i kväll? (speldesign > Händelser)
+  onServiceOpen(opened);
+  return opened;
 }
 
 // ORDER 043 Addendum B — two guaranteed prep events per service.
@@ -1609,6 +1633,19 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           serviceCovers: 0
         }
       };
+      // ORDER 266 — en kväll utan returer, recensentens omdöme och
+      // stationernas skick (inspektion nästa morgon). Kvällens
+      // redovisning räknar in ryktets förändring från händelserna.
+      onServiceClose(next, state, eveningAccount.branch);
+      if (next.eveningAccount?.metrics) {
+        next.eveningAccount = {
+          ...next.eveningAccount,
+          metrics: {
+            ...next.eveningAccount.metrics,
+            reputationDelta: next.eveningAccount.metrics.reputationDelta + (next.reputation - state.reputation)
+          }
+        };
+      }
       postServiceSummaryLines(next, 'dinner', state);
       // ORDER 117 §5.1 — värdekvot-mening i strömmen efter middag-close.
       postValueQuotaLine(next, 'dinner');
@@ -1707,7 +1744,10 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
         // ORDER 049 §2.1 knowledge decay — every enabler tally drops
         // a fixed % per night. Rhythm not reaction: the player must
         // refill via questions to hold the ceiling.
-        enablers: decayEnablersOvernight(state.enablers),
+        // ORDER 266 (F27) — ingen nattlig avklingning: kunskap går inte
+        // förlorad (speldesign > Spelslingan), och i v1 finns inga frågor
+        // under servicen som fyller på dem.
+        enablers: state.enablers,
         // ORDER 077 §4 (M4) — menu clears at day rollover (fresh
         // morning compose). Stock persists across days per ORDER 051
         // §4 (leftover-stock persistence); ageing deferred to M4b.
@@ -1769,6 +1809,8 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       // Clear again after effect application so the new day starts
       // clean.
       nextForDay.day = { ...nextForDay.day, pickedActivityIds: [] };
+      // ORDER 266 — självläkning, inspektion och samtal från banken.
+      onNewMorning(nextForDay, state.economy.warning);
       // ORDER 265 — v1-lånets ränta varje dygn, och veckoavräkningen när
       // söndagen (den stängda dagen) börjar.
       postDailyInterest(nextForDay);
@@ -2286,6 +2328,10 @@ function advanceTick(state: SimulationState): SimulationState {
   // waiting queue reflects this tick's arrivals + departures, not the
   // previous tick's state.
   tickReputationDrift(draft);
+  // ORDER 266 — action-knappen: insatsen blir klar, rummet syns igen.
+  tickIntervention(draft);
+  // ORDER 266 — stationernas lägsta nivå under servicen (inspektion).
+  if (draft.day.period === 'lunch' || draft.day.period === 'dinner') trackHygiene(draft);
 
   // ORDER 049 §2.1 knowledge-ceiling drift — recomputes reputation
   // ceiling from episteme enablers and pulls the live reading toward
@@ -2875,7 +2921,7 @@ function resolveScenario(
   // through the capital delta + wager loop instead.
   let reputation = state.reputation;
   if (spec?.id === 'walk-in-of-five' && choice === 'C') {
-    reputation = Math.max(0, reputation - 0.03);
+    reputation = clampReputation(reputation - 0.03);
   }
 
   // ORDER 048 §6 — meter-threshold amplifier. Hoisted above the

@@ -8,6 +8,7 @@
 //     down; a good service (high social + no queue + happy departures)
 //     does not decay it
 
+import { REPUTATION_FLOOR } from '../reputation';
 import { withoutMarketCap } from './marketHeadroom';
 import { describe, expect, it } from 'vitest';
 import {
@@ -88,11 +89,12 @@ describe('applyReputationDelta clamps into [0, 1]', () => {
     expect(s.reputation).toBe(1);
   });
 
-  it('does not fall below 0', () => {
+  // ORDER 266 — golvet är 10 av 100 (speldesign > Ryktet), inte 0.
+  it('does not fall below the floor (10 of 100)', () => {
     const s = makeInitialState(1);
-    s.reputation = 0.02;
+    s.reputation = 0.12;
     applyReputationDelta(s, -0.5);
-    expect(s.reputation).toBe(0);
+    expect(s.reputation).toBe(REPUTATION_FLOOR);
   });
 });
 

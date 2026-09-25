@@ -317,14 +317,6 @@ const FACES: Record<FaceKey, ReactNode> = {
       <path d="M9 17 c1 -1 5 -1 6 0" />
     </>
   ),
-  proud: (
-    <>
-      <circle cx="12" cy="12" r="9" />
-      <path d="M8 10 l2 -1 M14 9 l2 1" />
-      <path d="M8 14 c1 3 7 3 8 0" />
-      <path d="M11 6 l1 -2 1 2" />
-    </>
-  ),
   irritated: (
     <>
       <circle cx="12" cy="12" r="9" />

@@ -14,6 +14,9 @@ import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 import { scheduleSlotsUsed } from '../knowledge/pavilionVisit';
 import { MedalShelf } from '../knowledge/ui/MedalShelf';
 import { settlementInWords } from '../economy/BankDialog';
+import { stockForecast } from '../../sim/stockForecast';
+import { eventsSince } from '../../sim/serviceEvents';
+import { numberWord } from '../simulation/eveningAccount';
 
 const OVERLAY_STYLE: React.CSSProperties = {
   position: 'absolute',
@@ -83,6 +86,15 @@ export function DayActionBar({ onOpenHouse, onOpenBank }: Props) {
   const business = sim.economy.businessClass;
   const settlement = !cal.isServiceDay ? settlementInWords(sim) : [];
   const showBank = business === null || !cal.isServiceDay;
+  // ORDER 266 — morgonens händelser (inspektion, banken, självläkning).
+  const morningEvents = eventsSince(sim, sim.day.periodStartAt);
+  // ORDER 266 — lagret i ord före öppning (speldesign > Lagret).
+  const forecast = stockForecast(sim);
+  const forecastText = forecast.kind === 'noMenu'
+    ? strings.service.stock.noMenu
+    : forecast.covers === 0
+      ? strings.service.stock.none
+      : strings.service.stock.forecast(numberWord(forecast.covers));
   return (
     <div style={OVERLAY_STYLE} data-testid="day-action-bar">
       <div style={HEADING_STYLE}>
@@ -94,6 +106,14 @@ export function DayActionBar({ onOpenHouse, onOpenBank }: Props) {
           ? strings.economy.noBusinessBody
           : cal.isServiceDay ? strings.morning.serviceDayBody : strings.morning.sundayBody}
       </div>
+      {morningEvents.length > 0 && (
+        <div style={{ marginTop: 6 }} data-testid="morning-events">
+          <strong>{strings.service.morningEvents}:</strong> {morningEvents.map((e) => e.text).join(' ')}
+        </div>
+      )}
+      {cal.isServiceDay && business !== null && (
+        <div style={{ marginTop: 6, opacity: 0.85 }} data-testid="stock-forecast">{forecastText}</div>
+      )}
       {settlement.length > 0 && (
         <div style={{ marginTop: 6 }} data-testid="settlement">
           <strong>{strings.economy.settlement.heading}.</strong> {settlement.join(' ')}

@@ -2,15 +2,12 @@
 
 import { describe, expect, it } from 'vitest';
 import {
-  RECENT_ANSWER_WINDOW_SEC,
   deriveGuestFace,
-  deriveStaffFace,
-  recentAnswerHit
+  deriveStaffFace
 } from '../deriveFaces';
 import { WAIT_HAIL_SEC, WAIT_IMPATIENT_SEC } from '../deriveActions';
 import type {
   DayState,
-  EnablerRecord,
   Guest,
   StaffMember
 } from '../../../types';
@@ -56,103 +53,71 @@ function makeGuest(overrides: Partial<Guest> = {}): Guest {
   };
 }
 
-function makeEnablers(latestWriteAt: number | null = null): Record<string, EnablerRecord> {
-  const rec: EnablerRecord = {
-    episteme: 0, techne: 0, phronesis: 0,
-    history: latestWriteAt === null
-      ? []
-      : [{ at: latestWriteAt, register: 'episteme', amount: 0.05, scenarioId: 's' }]
-  };
-  return { cultural: rec, scientific: rec, practical: rec };
-}
-
-// -------- recentAnswerHit -----------------------------------------------
-
-describe('recentAnswerHit', () => {
-  it('no history → false', () => {
-    expect(recentAnswerHit(makeEnablers(null), 100)).toBe(false);
-  });
-  it('newest write inside window → true', () => {
-    expect(recentAnswerHit(makeEnablers(100 - RECENT_ANSWER_WINDOW_SEC + 1), 100)).toBe(true);
-  });
-  it('newest write outside window → false', () => {
-    expect(recentAnswerHit(makeEnablers(100 - RECENT_ANSWER_WINDOW_SEC - 1), 100)).toBe(false);
-  });
-});
-
-// -------- deriveStaffFace: 10 rules -------------------------------------
-
 describe('deriveStaffFace — every rule row', () => {
   it('SF1 evening period → exhausted', () => {
     expect(deriveStaffFace({
       staff: makeStaff(), day: makeDay({ period: 'evening' }),
-      simTime: 100, recentAnswerHitFlag: false, targetGuestSatisfaction: null
+      simTime: 100, targetGuestSatisfaction: null
     })).toBe('exhausted');
   });
   it('SF1 serviceCollapsed → exhausted', () => {
     expect(deriveStaffFace({
       staff: makeStaff(), day: makeDay({ serviceCollapsed: true }),
-      simTime: 100, recentAnswerHitFlag: false, targetGuestSatisfaction: null
+      simTime: 100, targetGuestSatisfaction: null
     })).toBe('exhausted');
-  });
-  it('SF2 recentAnswerHit → proud', () => {
-    expect(deriveStaffFace({
-      staff: makeStaff(), day: makeDay(),
-      simTime: 100, recentAnswerHitFlag: true, targetGuestSatisfaction: null
-    })).toBe('proud');
   });
   it('SF3 greet → smiling', () => {
     expect(deriveStaffFace({
       staff: makeStaff({ taskType: 'greet' }), day: makeDay(),
-      simTime: 100, recentAnswerHitFlag: false, targetGuestSatisfaction: null
+      simTime: 100, targetGuestSatisfaction: null
     })).toBe('smiling');
   });
   it('SF3 welcomeDrink → smiling', () => {
     expect(deriveStaffFace({
       staff: makeStaff({ taskType: 'welcomeDrink' }), day: makeDay(),
-      simTime: 100, recentAnswerHitFlag: false, targetGuestSatisfaction: null
+      simTime: 100, targetGuestSatisfaction: null
     })).toBe('smiling');
   });
   it('SF4 order → attentive', () => {
     expect(deriveStaffFace({
       staff: makeStaff({ taskType: 'order' }), day: makeDay(),
-      simTime: 100, recentAnswerHitFlag: false, targetGuestSatisfaction: null
+      simTime: 100, targetGuestSatisfaction: null
     })).toBe('attentive');
   });
   it('SF5 red rhythm + workload ≥ 0.7 → strained', () => {
     expect(deriveStaffFace({
       staff: makeStaff({ workload: 0.75 }), day: makeDay({ serviceRhythm: 'red' }),
-      simTime: 100, recentAnswerHitFlag: false, targetGuestSatisfaction: null
+      simTime: 100, targetGuestSatisfaction: null
     })).toBe('strained');
   });
   it('SF6 target guest satisfaction < 0.3 → irritated', () => {
     expect(deriveStaffFace({
       staff: makeStaff(), day: makeDay(),
-      simTime: 100, recentAnswerHitFlag: false, targetGuestSatisfaction: 0.2
+      simTime: 100, targetGuestSatisfaction: 0.2
     })).toBe('irritated');
   });
   it('SF7 amber rhythm → tense', () => {
     expect(deriveStaffFace({
       staff: makeStaff(), day: makeDay({ serviceRhythm: 'amber' }),
-      simTime: 100, recentAnswerHitFlag: false, targetGuestSatisfaction: null
+      simTime: 100, targetGuestSatisfaction: null
     })).toBe('tense');
   });
   it('SF6 workload ≥ 0.95 → hurried (ORDER 088 §2.1 — threshold moved from 0.85)', () => {
     expect(deriveStaffFace({
       staff: makeStaff({ workload: 0.96 }), day: makeDay(),
-      simTime: 100, recentAnswerHitFlag: false, targetGuestSatisfaction: null
+      simTime: 100, targetGuestSatisfaction: null
     })).toBe('hurried');
   });
   it('SF9 has taskType, no other flag → focused', () => {
     expect(deriveStaffFace({
       staff: makeStaff({ taskType: 'clear' }), day: makeDay(),
-      simTime: 100, recentAnswerHitFlag: false, targetGuestSatisfaction: null
+      simTime: 100, targetGuestSatisfaction: null
     })).toBe('focused');
   });
   it('SF10 fallback → neutral', () => {
     expect(deriveStaffFace({
       staff: makeStaff({ taskType: null, workload: 0.1 }), day: makeDay(),
-      simTime: 100, recentAnswerHitFlag: false, targetGuestSatisfaction: null
+      simTime: 100, targetGuestSatisfaction: null
     })).toBe('neutral');
   });
 });

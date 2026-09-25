@@ -31,7 +31,7 @@ import {
   guestAttentionPriority,
   staffAttentionPriority
 } from './deriveActions';
-import { deriveGuestFace, deriveStaffFace, recentAnswerHit } from './deriveFaces';
+import { deriveGuestFace, deriveStaffFace } from './deriveFaces';
 import { FaceCard, type CardTone, type FaceCardModel } from './FaceCard';
 
 const PANEL_STYLE: React.CSSProperties = {
@@ -78,7 +78,6 @@ export function RoomCardPanel() {
 
   const models: FaceCardModel[] = useMemo(() => {
     const rhythm = sim.day.serviceRhythm;
-    const answerHit = recentAnswerHit(sim.enablers, sim.simTime);
 
     // Build staff cards.
     const staffCards: FaceCardModel[] = sim.staff.map((s: StaffMember) => {
@@ -90,7 +89,6 @@ export function RoomCardPanel() {
         staff: s,
         day: sim.day,
         simTime: sim.simTime,
-        recentAnswerHitFlag: answerHit,
         targetGuestSatisfaction: target?.satisfaction ?? null
       });
       const priority = staffAttentionPriority(s, sim.day, sim.simTime);

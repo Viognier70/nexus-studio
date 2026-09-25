@@ -32,6 +32,7 @@ import type {
 } from '../types';
 import { pickParagraph } from '../../content/eveningAccount.sv';
 import { ACTIVITY_CATALOGUE } from './activities';
+import { strings } from '../../content/strings.sv';
 
 // "Good night" thresholds. Net revenue = (current revenue − snapshot).
 // Rep "held or grew" = current reputation ≥ snapshot − 0.02 (allowing
@@ -158,10 +159,36 @@ export function computeEveningAccount(state: SimulationState): EveningAccount {
       paragraph = `Today you picked: ${list}. ` + paragraph;
     }
   }
+  // ORDER 266 — speldesign > Medgång: "Kvällsberättelsen börjar med det
+  // som gick bra, och först därefter det som gick fel." Det som gick bra
+  // läggs först, före morgonens val och kvällens omdöme.
+  const good = wentWell(state);
+  if (good.length > 0) paragraph = `${good.join(' ')} ${paragraph}`;
   return {
     branch,
     paragraph,
     presentedAt: state.simTime,
     metrics
   };
+}
+
+// Det som gick bra i kväll, i ord (tal skrivs som ord upp till tjugo).
+export function wentWell(state: SimulationState): string[] {
+  const w = strings.service.wentWell;
+  const out: string[] = [];
+  const happy = (state.metrics.happyDeparturesTotal ?? 0) - (state.day.happyAtServiceStart ?? state.metrics.happyDeparturesTotal ?? 0);
+  if (happy === 1) out.push(w.happyOne);
+  else if (happy > 1) out.push(w.happy(capitalise(numberWord(happy))));
+  if (!state.day.serviceCollapsed && state.metrics.giveUpsThisService === 0 && happy > 0) out.push(w.clean);
+  if (state.actionButton?.turnedThisService) out.push(w.turned);
+  return out;
+}
+
+export function numberWord(n: number): string {
+  const words = strings.service.numberWords;
+  return n < words.length ? words[n] : strings.service.manyWord;
+}
+
+function capitalise(t: string): string {
+  return t.charAt(0).toUpperCase() + t.slice(1);
 }

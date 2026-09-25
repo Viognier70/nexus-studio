@@ -20,6 +20,7 @@ import { OpeningPanel } from './scenario/OpeningPanel';
 import { ScenarioOverlay } from './scenario/ScenarioOverlay';
 import { DayActionBar } from './scenario/DayActionBar';
 import { EveningBar } from './scenario/EveningBar';
+import { ActionButtonPanel, BlindOverlay } from './scenario/ActionButtonPanel';
 import { MaltidensHusDialog } from './knowledge/ui/MaltidensHusDialog';
 import { BankDialog } from './economy/BankDialog';
 import { SaveProvider, useSave } from './save/SaveContext';
@@ -273,6 +274,8 @@ function StrategicShell() {
       <DayActionBar onOpenHouse={() => setHouseOpen(true)} onOpenBank={() => setBankOpen(true)} />
       <BankDialog open={bankOpen} onClose={() => setBankOpen(false)} />
       <EveningBar />
+      <ActionButtonPanel />
+      <BlindOverlay />
       <MaltidensHusDialog open={houseOpen} onClose={() => setHouseOpen(false)} />
       {/*
         ORDER 090 §6 — panels flow inside two PanelColumns instead of
