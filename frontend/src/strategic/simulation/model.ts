@@ -35,7 +35,11 @@ export const DEFAULT_POLICIES: Policies = {
   capacity: TOTAL_SEATS,
   ingredientTier: 'utvald',
   welcomeDrink: false,
-  localSourcing: true
+  localSourcing: true,
+  // ORDER 264 (F15) — inga frågor mitt i servicen i v1; frågorna kommer
+  // i paviljongerna och i quizen efter servicen. Tester som prövar
+  // ankarfrågorna (ORDER 225–248) slår på dem uttryckligen.
+  anchorQuestionsEnabled: false
 };
 
 // ORDER 156 — fjärde platsen var 'servitör' (dubblerad) och 'lärling'
@@ -201,6 +205,7 @@ export function initialDay(): DayState {
     idleCostAccrued: 0,
     serviceCovers: 0,
     morningPolicyChanges: [],
+    pavilionVisitsToday: [],
     pickedActivityIds: [],
     drawnCapital: null,
     lastScenarioChoice: null,
@@ -311,6 +316,11 @@ export function makeInitialState(
     // definierar när ett nytt varv börjar.
     currentExam: null,
     examSlotsUsed: 0,
+    // ORDER 264 — medaljer, paviljongsbesök och kvällens quiz.
+    medals: {},
+    pavilionVisit: null,
+    postServiceQuiz: null,
+    postServiceQuizzesTaken: 0,
     // ORDER 109 — M7b bankmötet. Null tills spelaren begär lån via
     // REQUEST_BANK_LOAN; sätts av reducern via resolveBankMeeting.
     // Repeat-request skriver över.

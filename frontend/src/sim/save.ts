@@ -19,6 +19,7 @@
 import { SAVING } from './balance';
 import { calendarFor } from './calendar';
 import type { SimulationState } from '../strategic/types';
+import { awardMedal } from '../strategic/knowledge/pavilionVisit';
 
 export interface SaveStore {
   getItem(key: string): string | null;
@@ -150,4 +151,28 @@ export function browserStore(): SaveStore | null {
   } catch {
     return null;
   }
+}
+
+// ORDER 264 (F19) — tillbaka en vecka utan att förlora kunskap.
+// Speldesign > Spelslingan: "Kassan kan gå förlorad, kunskapen kan det
+// inte." > Medaljerna: "En medalj som är tagen behålls alltid." När
+// spelaren laddar en veckokopia på samma plats spolas allt tillbaka
+// utom kunskapen: medaljerna blir de högsta av nu och kopian, och
+// krediterna och kvällsquizräkningen behålls från nu.
+export function carryKnowledge(current: SimulationState, loaded: SimulationState): SimulationState {
+  let medals = loaded.medals ?? {};
+  for (const [pavilion, level] of Object.entries(current.medals ?? {})) {
+    if (level) medals = awardMedal(medals, pavilion as keyof SimulationState['medals'], level);
+  }
+  return {
+    ...loaded,
+    medals,
+    knowledgeCredits: { ...current.knowledgeCredits },
+    knowledgeTracks: {
+      episteme: { ...current.knowledgeTracks.episteme },
+      techne: { ...current.knowledgeTracks.techne },
+      phronesis: { ...current.knowledgeTracks.phronesis }
+    },
+    postServiceQuizzesTaken: Math.max(current.postServiceQuizzesTaken ?? 0, loaded.postServiceQuizzesTaken ?? 0)
+  };
 }

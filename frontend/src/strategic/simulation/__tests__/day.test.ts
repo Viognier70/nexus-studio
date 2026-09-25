@@ -15,6 +15,7 @@
 // All tests dispatch through the reducer — no direct state mutation.
 // tick() below advances via TICK actions so tickDayTransitions runs.
 
+import { EVENING } from '../../../sim/balance';
 import { describe, expect, it } from 'vitest';
 import { makeInitialState } from '../model';
 import { reducer, tickDayTransitions } from '../reducer';
@@ -185,9 +186,9 @@ describe('automatic tick transitions', () => {
     s = tick(s, 920);
     expect(s.day.period).toBe('evening');
     const eveningDayNumber = s.day.dayNumber;
-    // ORDER 046 §3 — close pause bumped 15 → 30 s (150 ticks) to
-    // hold the evening account panel. Add a few for slack.
-    s = tick(s, 170);
+    // ORDER 264 (F17) — kvällen varar EVENING.simSeconds (balance.ts);
+    // tidigare 30 s. Några tick extra som marginal.
+    s = tick(s, EVENING.simSeconds * 5 + 20);
     expect(s.day.period).toBe('morning');
     expect(s.day.dayNumber).toBe(eveningDayNumber + 1);
     expect(s.day.currentServiceLengthMinutes).toBeNull();

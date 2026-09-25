@@ -612,6 +612,10 @@ export function PlayerBusiness() {
           position={[cx, WALL_HEIGHT_M + ROOF_RIDGE_ADD_M + 1.5, cz]}
           center
           distanceFactor={45}
+          // ORDER 264 — under panelerna och dialogerna (Måltidens hus,
+          // sparmenyn). drei:s standard lade skylten över allt och
+          // täckte dialogens rubrik och Stäng-knapp.
+          zIndexRange={[30, 0]}
           style={{ pointerEvents: 'none' }}
         >
           <div

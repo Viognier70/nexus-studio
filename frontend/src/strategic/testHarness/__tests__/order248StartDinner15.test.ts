@@ -54,6 +54,8 @@ describe('ORDER 248 (§ORDER 245) — start=dinner15 sim-parity mot ORDER 238', 
     // 15min via reducer). Om denna sekvens ändras måste både
     // applyDevStartOverride och detta test uppdateras tillsammans.
     let s: SimulationState = makeInitialState(42);
+    // ORDER 264 (F15) — ankarfrågorna är avstängda i v1; testet prövar dem.
+    s = { ...s, policies: { ...s.policies, anchorQuestionsEnabled: true } };
     s = reducer(s, { type: 'SKIP_LUNCH' });
     s = reducer(s, {
       type: 'OPEN_SERVICE',

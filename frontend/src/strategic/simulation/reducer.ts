@@ -1,8 +1,12 @@
 import { calendarFor } from '../../sim/calendar';
-import { SERVICE } from '../../sim/balance';
+import { EVENING, POST_SERVICE_QUIZ, SERVICE } from '../../sim/balance';
+import { answerVisit, closeVisit, nextVisitQuestion, scheduleSlotsLeft, startVisit } from '../knowledge/pavilionVisit';
+import { answerQuiz, nextQuizQuestion, offerQuiz, skipQuiz, startQuiz } from '../knowledge/postServiceQuiz';
 import { createRng } from '../util/rng';
 import type {
   AxisTracks,
+  KnowledgeAxis,
+  YrkesSpar,
   BankMeetingOutcomeState,
   DayPeriod,
   DayState,
@@ -144,7 +148,6 @@ import {
 } from './cashReading';
 import { drawNextTheme } from './themeSelection';
 import {
-  scheduleSlotsFor,
   WEEKLY_GATE_DAYS,
   activityById
 } from './activities';
@@ -281,6 +284,38 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       return closeDay(state);
     case 'LOAD_STATE':
       return action.state;
+    case 'VISIT_PAVILION':
+      return startVisit(state, action.pavilion, action.mode);
+    case 'ANSWER_VISIT': {
+      if (!state.pavilionVisit) return state;
+      const r = answerVisit(state.pavilionVisit, action.chosenIndex);
+      if (!r) return state;
+      const next = { ...state, pavilionVisit: r.visit };
+      return r.correct ? creditQuestion(next, r.question.axis, r.question.track, 1) : next;
+    }
+    case 'NEXT_VISIT_QUESTION':
+      return nextVisitQuestion(state);
+    case 'CLOSE_VISIT':
+      return closeVisit(state);
+    case 'START_QUIZ':
+      return startQuiz(state);
+    case 'ANSWER_QUIZ': {
+      if (!state.postServiceQuiz) return state;
+      const r = answerQuiz(state.postServiceQuiz, action.chosenIndex);
+      if (!r) return state;
+      const next = { ...state, postServiceQuiz: r.quiz };
+      return r.correct
+        ? creditQuestion(next, r.question.axis, r.question.track, POST_SERVICE_QUIZ.creditOnCorrect)
+        : debitQuestion(next, r.question.axis, r.question.track, -POST_SERVICE_QUIZ.creditOnWrong);
+    }
+    case 'NEXT_QUIZ_QUESTION':
+      return nextQuizQuestion(state);
+    case 'SKIP_QUIZ':
+      return skipQuiz(state);
+    case 'END_EVENING':
+      if (state.day.period !== 'evening') return state;
+      if (state.postServiceQuiz?.status === 'active') return state;
+      return { ...state, day: { ...state.day, eveningEndRequested: true } };
     case 'SKIP_LUNCH':
       return skipLunch(state);
     case 'ACCEPT_AGENCY':
@@ -339,7 +374,8 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
 function pickActivity(state: SimulationState, id: string): SimulationState {
   if (state.day.period !== 'morning') return state;
   if (state.day.pickedActivityIds.includes(id)) return state;
-  if (state.day.pickedActivityIds.length >= scheduleSlotsFor(state.day.dayNumber)) return state;
+  // ORDER 264 — satsningar och paviljongsbesök delar schemaplatserna.
+  if (scheduleSlotsLeft(state) <= 0) return state;
   const activity = activityById(id);
   if (!activity) return state;
   // Weekly gate — reject if this activity was picked within the last
@@ -1032,6 +1068,47 @@ function clampServiceLength(mins: number): number {
   );
 }
 
+// ORDER 264 — kredit för ett rätt svar (paviljong eller quiz), via
+// ACCUMULATE_KNOWLEDGE så att axel- och spårsummorna hålls i synk.
+function creditQuestion(
+  state: SimulationState,
+  axis: KnowledgeAxis,
+  track: YrkesSpar | null,
+  amount: number
+): SimulationState {
+  return reduce(state, {
+    type: 'ACCUMULATE_KNOWLEDGE',
+    axis,
+    amount,
+    ...(track !== null ? { track } : {})
+  });
+}
+
+// ORDER 264 — quizens avdrag vid fel svar ("fel svar kostar en").
+// Dras från frågans spår och därefter från axelns övriga spår; krediter
+// går aldrig under noll. Medaljer rörs inte.
+function debitQuestion(
+  state: SimulationState,
+  axis: KnowledgeAxis,
+  track: YrkesSpar | null,
+  amount: number
+): SimulationState {
+  const tracks = { ...state.knowledgeTracks[axis] };
+  let left = amount;
+  const order: (keyof AxisTracks)[] = [track ?? 'untagged', 'untagged', 'sommellerie', 'kok'];
+  for (const key of order) {
+    const take = Math.min(left, tracks[key]);
+    tracks[key] -= take;
+    left -= take;
+  }
+  const total = tracks.untagged + tracks.sommellerie + tracks.kok;
+  return {
+    ...state,
+    knowledgeCredits: { ...state.knowledgeCredits, [axis]: total },
+    knowledgeTracks: { ...state.knowledgeTracks, [axis]: tracks }
+  };
+}
+
 // ORDER 263 (Nexus v1 etapp 1) — kvällens service. Speldesign > Tiden:
 // dagen har tre faser, morgon, service och kväll. Lunchen hoppas över
 // och middagen öppnas med v1-längden.
@@ -1286,7 +1363,6 @@ function skipLunch(state: SimulationState): SimulationState {
 // ORDER 046 §3 — bumped 15 → 30 to hold the evening account panel.
 // The account fades in at evening start, holds for ~25 s, fades over
 // ~5 s; anything shorter would rush the reading.
-const EVENING_TO_MORNING_PAUSE_SEC = 30;
 
 // ORDER 050 §7 step 3 (2026-08-10) — post the per-service summary
 // lines that aggregate mid-service per-guest revenue and per-tick
@@ -1464,6 +1540,8 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
         team: removeAgencyMembers(state.team),
         agencyOffer: null,
         eveningAccount,
+        // ORDER 264 — quizen efter servicen erbjuds när kvällen börjar.
+        postServiceQuiz: offerQuiz(state, day.periodStartAt),
         metrics: {
           ...state.metrics,
           consecutiveCleanServices: nextConsecutive,
@@ -1509,7 +1587,12 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
     }
   }
   if (day.period === 'evening') {
-    if (simTime - day.periodStartAt >= EVENING_TO_MORNING_PAUSE_SEC) {
+    // ORDER 264 (F17) — kvällen varar EVENING.simSeconds, väntar medan
+    // quizen pågår och slutar tidigare när spelaren väljer det.
+    const quizActive = state.postServiceQuiz?.status === 'active';
+    const eveningOver =
+      day.eveningEndRequested === true || simTime - day.periodStartAt >= EVENING.simSeconds;
+    if (eveningOver && !quizActive) {
       // Day advance — charge structural cost for the closing day
       // (every non-agency member pays their dailyCost) and roll to
       // the next morning. §10 "structural cost locked over multiple
@@ -1579,6 +1662,9 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
         // clear when the new day begins so the panel doesn't linger
         // into morning where the investment panel needs the room.
         eveningAccount: null,
+        // ORDER 264 — kvällens quiz och ett avslutat besök hör till dagen.
+        postServiceQuiz: null,
+        pavilionVisit: state.pavilionVisit?.result ? null : state.pavilionVisit,
         morale: regressed,
         // Per-service tallies reset with the day.
         streamThemeCounts: { economic: 0, social: 0, ecological: 0 },

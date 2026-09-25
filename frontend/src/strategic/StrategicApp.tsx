@@ -19,6 +19,8 @@ import { EveningAccountPanel } from './scenario/EveningAccountPanel';
 import { OpeningPanel } from './scenario/OpeningPanel';
 import { ScenarioOverlay } from './scenario/ScenarioOverlay';
 import { DayActionBar } from './scenario/DayActionBar';
+import { EveningBar } from './scenario/EveningBar';
+import { MaltidensHusDialog } from './knowledge/ui/MaltidensHusDialog';
 import { SaveProvider, useSave } from './save/SaveContext';
 import { SaveMenu } from './save/SaveMenu';
 import { DayBadge } from './ui/DayBadge';
@@ -67,6 +69,8 @@ export function StrategicApp() {
 function StrategicShell() {
   const hostRef = useRef<HTMLDivElement>(null);
   const [aboutOpen, setAboutOpen] = useState(false);
+  // ORDER 264 — Måltidens hus öppnas från morgonens rad.
+  const [houseOpen, setHouseOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   // ORDER 043 B.1 dev readout — the last key the shortcut handler
   // processed. Renders in DevPanel (dev-only) so the Vision Owner can
@@ -263,7 +267,9 @@ function StrategicShell() {
         onClose={() => setSelectedId(null)}
       />
       <ScenarioOverlay />
-      <DayActionBar />
+      <DayActionBar onOpenHouse={() => setHouseOpen(true)} />
+      <EveningBar />
+      <MaltidensHusDialog open={houseOpen} onClose={() => setHouseOpen(false)} />
       {/*
         ORDER 090 §6 — panels flow inside two PanelColumns instead of
         each picking its own `position: absolute; top: N` value. See

@@ -21,6 +21,7 @@ import {
 } from 'react';
 import {
   browserStore,
+  carryKnowledge,
   clearSlot,
   firstEmptySlot,
   makeSaveFile,
@@ -122,16 +123,19 @@ export function SaveProvider({ children }: { children: ReactNode }) {
       if (read.status !== 'ok') return false;
       loadingRef.current = business.name === null;
       prevDayRef.current = read.file.sim.day.dayNumber;
-      dispatch({ type: 'LOAD_STATE', state: read.file.sim });
+      // Tillbaka en vecka på samma plats: kunskapen följer med (F19).
+      const sameGame = week !== undefined && slot === activeSlot;
+      const nextSim = sameGame ? carryKnowledge(sim, read.file.sim) : read.file.sim;
+      dispatch({ type: 'LOAD_STATE', state: nextSim });
       if (read.file.businessName) setName(read.file.businessName);
       setActiveSlot(slot);
       // Tillbaka en vecka: platsen fortsätter från veckokopian.
-      if (week !== undefined) writeSlot(store, slot, read.file);
+      if (week !== undefined) writeSlot(store, slot, { ...read.file, sim: nextSim });
       setRevision((r) => r + 1);
       setMenuOpen(false);
       return true;
     },
-    [store, dispatch, setName, business.name]
+    [store, dispatch, setName, business.name, sim, activeSlot]
   );
 
   const hasAnySave = useMemo(

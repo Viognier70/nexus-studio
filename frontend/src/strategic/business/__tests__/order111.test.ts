@@ -10,6 +10,7 @@
 //   DoD 7  state.businessClass läses på fler än två platser.
 //   (DoD 8 mätning + DoD 9 inga band omkalibrerade — separata test:er.)
 
+import { EVENING } from '../../../sim/balance';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -20,6 +21,11 @@ import { arrivalProbability, maybeSpawnGuest } from '../../simulation/arrivals';
 import { createRng } from '../../util/rng';
 import type { Guest, WeatherConditions } from '../../types';
 import { capacityForBusiness } from '../businessClass';
+
+// ORDER 264 (F17) — kvällen varar EVENING.simSeconds (tidigare 30 s).
+// Testerna nedan prövar rollovern strax efter att kvällen tagit slut;
+// starten sätts så att samma 30 s återstår som före ändringen.
+const EVENING_STARTED_AT = 30 - EVENING.simSeconds;
 
 function makeGuestFixture(overrides: Partial<Guest>): Guest {
   return {
@@ -304,10 +310,10 @@ describe('ORDER 111 §6 DoD 5 — värdshus-gäst stannar över dygnsrollover', 
     s.seatedIds = ['overnight'];
     s = {
       ...s,
-      day: { ...s.day, period: 'evening', periodStartAt: 0 },
+      day: { ...s.day, period: 'evening', periodStartAt: EVENING_STARTED_AT },
       simTime: 0
     };
-    // Rollover triggeras när evening pågått EVENING_TO_MORNING_PAUSE_SEC (30 s).
+    // Rollover triggeras när kvällen tagit slut (EVENING_STARTED_AT + EVENING.simSeconds = 30 s).
     // Kör 35 sim-sek — säkert över tröskeln men innan breakfast (30 s) hunnit
     // väcka gästen.
     for (let i = 0; i < 200; i++) s = reducer(s, { type: 'TICK', dt: 1 });
@@ -327,7 +333,7 @@ describe('ORDER 111 §6 DoD 5 — värdshus-gäst stannar över dygnsrollover', 
     s.guests = [
       makeGuestFixture({ id: 'r1', state: 'sleeping', stayingOvernight: true })
     ];
-    s = { ...s, day: { ...s.day, period: 'evening', periodStartAt: 0 }, simTime: 0 };
+    s = { ...s, day: { ...s.day, period: 'evening', periodStartAt: EVENING_STARTED_AT }, simTime: 0 };
     for (let i = 0; i < 200; i++) s = reducer(s, { type: 'TICK', dt: 1 });
     expect(s.day.dayNumber).toBeGreaterThan(1);
     expect(s.guests.find((g) => g.id === 'r1'), 'restaurant behöll gäst över rollover').toBeUndefined();
@@ -353,7 +359,7 @@ describe('ORDER 111 §6 DoD 6 — frukost är ett pass', () => {
       makeGuestFixture({ id: 'ov', state: 'sleeping', stayingOvernight: true, seatIndex: 0 })
     ];
     s.seatedIds = ['ov'];
-    s = { ...s, day: { ...s.day, period: 'evening', periodStartAt: 0 }, simTime: 0 };
+    s = { ...s, day: { ...s.day, period: 'evening', periodStartAt: EVENING_STARTED_AT }, simTime: 0 };
     // Kör precis över rollover-tröskeln (30 s) men innan breakfast (30 s)
     // hunnit avslutas.
     for (let i = 0; i < 200; i++) s = reducer(s, { type: 'TICK', dt: 1 });
@@ -370,7 +376,7 @@ describe('ORDER 111 §6 DoD 6 — frukost är ett pass', () => {
       makeGuestFixture({ id: 'ov', state: 'sleeping', stayingOvernight: true, seatIndex: 0 })
     ];
     s.seatedIds = ['ov'];
-    s = { ...s, day: { ...s.day, period: 'evening', periodStartAt: 0 }, simTime: 0 };
+    s = { ...s, day: { ...s.day, period: 'evening', periodStartAt: EVENING_STARTED_AT }, simTime: 0 };
     // TICK avancerar 0.2 sim-sek oavsett dt. 30 s evening→breakfast +
     // 30 s breakfast→morning = 60 sim-sek = 300 ticks. Kör 500 för säker
     // marginal.
@@ -390,7 +396,7 @@ describe('ORDER 111 §6 DoD 6 — frukost är ett pass', () => {
     s = { ...s, businessClass: 'gästgiveriet' };
     s.guests = [];
     s.seatedIds = [];
-    s = { ...s, day: { ...s.day, period: 'evening', periodStartAt: 0 }, simTime: 0 };
+    s = { ...s, day: { ...s.day, period: 'evening', periodStartAt: EVENING_STARTED_AT }, simTime: 0 };
     for (let i = 0; i < 200; i++) s = reducer(s, { type: 'TICK', dt: 1 });
     expect(s.day.period).toBe('morning');
   });

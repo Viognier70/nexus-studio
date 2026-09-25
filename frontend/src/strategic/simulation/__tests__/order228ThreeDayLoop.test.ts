@@ -16,6 +16,7 @@
 //   3. Cash/rykte/kunskap bärs över mellan dagar (A.2).
 //   4. RESET-action tar sim tillbaka till dag 1 (A.3).
 
+import { EVENING } from '../../../sim/balance';
 import { describe, expect, it } from 'vitest';
 import { makeInitialState } from '../model';
 import { reducer } from '../reducer';
@@ -46,7 +47,8 @@ function runOneDinner(
     lengthMinutes
   });
   const dt = 1 / 5;
-  const maxTicks = lengthMinutes * 60 * 5 + 500; // service-fönster + slack
+  // service-fönster + kvällen (ORDER 264: EVENING.simSeconds) + slack
+  const maxTicks = (lengthMinutes * 60 + EVENING.simSeconds) * 5 + 500;
   let account: EveningAccount | null = null;
   for (let i = 0; i < maxTicks; i++) {
     s = reducer(s, { type: 'TICK', dt });

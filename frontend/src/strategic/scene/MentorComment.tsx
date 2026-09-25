@@ -73,6 +73,8 @@ export function MentorComment() {
     <Html
       position={[cx, BUBBLE_HEIGHT_M, cz]}
       center
+      // ORDER 264 — under dialogerna (samma skäl som namnskylten).
+      zIndexRange={[30, 0]}
       style={{ pointerEvents: 'none' }}
     >
       <div style={{ ...BUBBLE_STYLE, opacity }}>{mentorComment}</div>

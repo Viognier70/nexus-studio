@@ -183,6 +183,20 @@ export function questionsFor(
     .map((q) => ({ ...q, id: `${q.id}@${level}`, level, placeholder: true, sourceId: q.id }));
 }
 
+// ORDER 264 — slå upp en fråga på id, också platshållarnas
+// `<bronsid>@<nivå>`. Returnerar null för okända id.
+export function bankQuestionById(
+  id: string,
+  language: BankLanguage = activeBankLanguage()
+): BankQuestion | null {
+  const [sourceId, level] = id.split('@');
+  const meta = BANK_META.find((m) => m.id === sourceId);
+  if (!meta) return null;
+  const q = join(meta, language);
+  if (!level) return q;
+  return { ...q, id, level: level as QuestionLevel, placeholder: true, sourceId };
+}
+
 // Brygga till den befintliga flervalsformen (ORDER 107/229) som
 // ankarpickern och proven läser.
 export function toFlerval(q: BankQuestion): FlervalQuestion {

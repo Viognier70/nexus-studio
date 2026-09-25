@@ -1,0 +1,125 @@
+{
+  "url": "http://localhost:4173/",
+  "build": "produktion (vite build + preview)",
+  "flags": "inga",
+  "errors": [],
+  "house": {
+    "theatre": "Gastronomiska TeaternIngen medalj ännuÖppnas när du har silver i två paviljonger",
+    "stensota": "StensötaIngen medalj ännuÖvaProv: brons"
+  },
+  "practice": [
+    {
+      "prompt": "I'm not drinking tonight. What would go with the fried dish I ordered?",
+      "picked": 1,
+      "correct": 1,
+      "explanation": "Rätt. Bubbles and acidity clear fat from the palate the same way champagne does with fried food. Low sweetness keeps the"
+    },
+    {
+      "prompt": "For a crème brûlée, a colleague suggests a dry, crisp white as a contrast. What happens in the mouth?",
+      "picked": 2,
+      "correct": 1,
+      "explanation": "Inte riktigt. Sweet food makes wine taste less sweet and more acidic, so a dry wine turns harsh and thin next to a desse"
+    },
+    {
+      "prompt": "The red tastes hot and flat tonight. The bottle has been standing out in the dining room, which is at 23 degrees. What do you do?",
+      "picked": 1,
+      "correct": 1,
+      "explanation": "Rätt. Warmth makes the alcohol more volatile, so it dominates the nose while the fruit's freshness is muted. A few minut"
+    },
+    {
+      "prompt": "The wine smells like a damp cellar, almost like wet cardboard. Is it meant to?",
+      "picked": 0,
+      "correct": 0,
+      "explanation": "Rätt. A smell of damp cellar and wet cardboard is the signature of TCA, the most common cork fault. It can't be aired aw"
+    },
+    {
+      "prompt": "A 25-year-old Bordeaux is to be decanted. What's the main reason, and what should you avoid?",
+      "picked": 2,
+      "correct": 2,
+      "explanation": "Rätt. An old wine is decanted mainly so the sediment stays in the bottle. It's also fragile: too much air can make it fa"
+    }
+  ],
+  "practiceResult": "4 av 5 rätt. Varje rätt svar gav en kredit.Tillbaka",
+  "examButton": "Prov: brons",
+  "exam": [
+    {
+      "prompt": "The white Burgundy smells of almost nothing. It's been in the ice bucket since you opened it. Is it off?",
+      "picked": 2,
+      "correct": 2,
+      "explanation": "Rätt. Cold holds the aroma compounds in the wine, so a full-bodied white left long in ice goes mute. A few minutes in th"
+    },
+    {
+      "prompt": "A table orders a hot Thai curry and wants a big red at 15 per cent with it. What's the most important thing to say?",
+      "picked": 0,
+      "correct": 0,
+      "explanation": "Rätt. Alcohol amplifies how capsaicin is perceived, so the heat gets sharper and the wine tastes burnt. Residual sugar a"
+    },
+    {
+      "prompt": "I'm putting green asparagus with hollandaise on today's menu. What style of wine should we pair with it?",
+      "picked": 2,
+      "correct": 2,
+      "explanation": "Rätt. Asparagus's sulphur compounds and bitterness make oak and tannin taste metallic, while a crisp, unoaked wine with "
+    },
+    {
+      "prompt": "A 25-year-old Bordeaux is to be decanted. What's the main reason, and what should you avoid?",
+      "picked": 2,
+      "correct": 2,
+      "explanation": "Rätt. An old wine is decanted mainly so the sediment stays in the bottle. It's also fragile: too much air can make it fa"
+    },
+    {
+      "prompt": "You're opening champagne at the table without a bang and without losing fizz. How do you do it?",
+      "picked": 1,
+      "correct": 1,
+      "explanation": "Rätt. The cage stays on as a grip and a guard, and the bottle is turned at about 45 degrees while the cork is held firm."
+    },
+    {
+      "prompt": "For a crème brûlée, a colleague suggests a dry, crisp white as a contrast. What happens in the mouth?",
+      "picked": 1,
+      "correct": 1,
+      "explanation": "Rätt. Sweet food makes wine taste less sweet and more acidic, so a dry wine turns harsh and thin next to a dessert. The "
+    },
+    {
+      "prompt": "The red tastes hot and flat tonight. The bottle has been standing out in the dining room, which is at 23 degrees. What do you do?",
+      "picked": 1,
+      "correct": 1,
+      "explanation": "Rätt. Warmth makes the alcohol more volatile, so it dominates the nose while the fruit's freshness is muted. A few minut"
+    },
+    {
+      "prompt": "Why does a tannic red work so well with a fatty, well-hung rib-eye?",
+      "picked": 2,
+      "correct": 2,
+      "explanation": "Rätt. Tannins bind to proteins, both in saliva and in food. With meat on the palate the tannins are taken up and the win"
+    }
+  ],
+  "examResult": "8 av 8 rätt. Du har tagit brons i Stensöta.Tillbaka",
+  "shelfAfterExam": "Medaljer: Stensöta brons",
+  "slotsAfter": "Måndag · MorgonFyll dagens schema och öppna för kvällen.Schemat: 2 av 2 platserMåltidens husÖppna för kvällenMedaljer: Stensöta brons",
+  "quizOffer": "KvällenKvällens quiz: 3 frågor om fronesis, där kvällen gick sämst. Rätt svar ger en kredit, fel kostar en.Ta quizenHoppa överTill nästa morgon",
+  "quiz": [
+    {
+      "prompt": "A party of five walks in without a booking on a Friday. Every table is taken, and the first one frees up in about forty minutes. What do you do?",
+      "picked": 1,
+      "correct": 1,
+      "explanation": "Rätt. An honest wait lets the party decide for themselves, and the bar or a new booking means they don't leave empty-han"
+    },
+    {
+      "prompt": "A waiter has called in sick. Sixty covers are booked tonight. What do you do before opening?",
+      "picked": 2,
+      "correct": 2,
+      "explanation": "Rätt. A team one person short can handle the same evening if the pace is adjusted and everyone knows their new job befor"
+    },
+    {
+      "prompt": "The guest ordered her steak medium rare, but it's well done. She mentions it calmly as you pass. What do you do?",
+      "picked": 2,
+      "correct": 1,
+      "explanation": "Inte riktigt. The mistake is obvious and the guest is right, so what matters most is acting at once and visibly. A short"
+    }
+  ],
+  "quizDone": "Quizen gav 1 kredit.",
+  "nextMorning": "Tisdag · Vecka 1 av 8 · MorgonTis · v. 1 · MorgonMidsommar den här veckan",
+  "afterReload": {
+    "badge": "Tisdag · Vecka 1 av 8 · MorgonTis · v. 1 · MorgonMidsommar den här veckan",
+    "shelf": "Medaljer: Stensöta brons",
+    "house": "Medalj: brons"
+  }
+}

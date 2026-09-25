@@ -15,6 +15,7 @@ import {
   WEEKLY_GATE_DAYS
 } from '../simulation/activities';
 import { strings } from '../../content/strings.sv';
+import { scheduleSlotsUsed } from '../knowledge/pavilionVisit';
 import type { Activity } from '../simulation/activities';
 
 // ORDER 090 §6 — was `top: 72, right: 20`; parent RIGHT PanelColumn
@@ -106,10 +107,11 @@ export function MorningActivityPanel() {
   const dispatch = useSimDispatch();
   if (sim.day.period !== 'morning') return null;
 
-  const pickedCount = sim.day.pickedActivityIds.length;
-  // ORDER 263 — schemaplatserna kommer från kalendern (2, söndag 4).
+  // ORDER 263/264 — schemaplatserna kommer från kalendern (2, söndag 4)
+  // och delas med paviljongsbesöken.
   const slots = scheduleSlotsFor(sim.day.dayNumber);
-  const atCap = pickedCount >= slots;
+  const used = scheduleSlotsUsed(sim);
+  const atCap = used >= slots;
 
   const isWeeklyGated = (a: Activity): boolean => {
     if (a.availability !== 'weekly') return false;
@@ -121,7 +123,7 @@ export function MorningActivityPanel() {
     <div style={PANEL_STYLE} aria-label="Morning activities">
       <div style={HEADING_STYLE}>{strings.morning.activitiesHeading}</div>
       <div style={SUB_STYLE} data-testid="schedule-slots">
-        {strings.morning.slots(pickedCount, slots)}
+        {strings.morning.slots(used, slots)}
       </div>
       {ACTIVITY_CATALOGUE.map((a) => {
         const picked = sim.day.pickedActivityIds.includes(a.id);
