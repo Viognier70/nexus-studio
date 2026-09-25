@@ -12,14 +12,9 @@ import { makeInitialState } from '../model';
 import { calendarFor, type DayPhase } from '../../../sim/calendar';
 import { SERVICE, WEEK } from '../../../sim/balance';
 import { arrivalProbability } from '../arrivals';
-import type { DayPeriod, SimulationState } from '../../types';
-
-// Samma avbildning som gränssnittet använder (ui/DayBadge).
-function phaseOf(period: DayPeriod): DayPhase {
-  if (period === 'lunch' || period === 'dinner') return 'service';
-  if (period === 'evening') return 'evening';
-  return 'morning';
-}
+import type { SimulationState } from '../../types';
+// Samma avbildning som gränssnittet visar (DayBadge).
+import { phaseOf } from '../../ui/DayBadge';
 
 function tickUntil(s: SimulationState, done: (s: SimulationState) => boolean, maxTicks = 20000): SimulationState {
   for (let i = 0; i < maxTicks && !done(s); i++) s = reducer(s, { type: 'TICK', dt: 0.2 });

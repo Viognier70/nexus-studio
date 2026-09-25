@@ -18,7 +18,10 @@ import { AgencyOfferPanel } from './scenario/AgencyOfferPanel';
 import { EveningAccountPanel } from './scenario/EveningAccountPanel';
 import { OpeningPanel } from './scenario/OpeningPanel';
 import { ScenarioOverlay } from './scenario/ScenarioOverlay';
-import { ServiceLengthPicker } from './scenario/ServiceLengthPicker';
+import { DayActionBar } from './scenario/DayActionBar';
+import { SaveProvider, useSave } from './save/SaveContext';
+import { SaveMenu } from './save/SaveMenu';
+import { DayBadge } from './ui/DayBadge';
 import { StrategicScene } from './scene/StrategicScene';
 import { DollhouseFrame } from './ui/DollhouseFrame';
 import { harnessParams } from './testHarness/urlParams';
@@ -50,8 +53,11 @@ export function StrategicApp() {
     <BusinessProvider>
       <CameraProvider>
         <SimulationProvider seed={harnessParams.seed ?? undefined}>
-          <StrategicShell />
-          <NameEntryOverlay />
+          <SaveProvider>
+            <StrategicShell />
+            <NameEntryOverlay />
+            <SaveMenu />
+          </SaveProvider>
         </SimulationProvider>
       </CameraProvider>
     </BusinessProvider>
@@ -71,6 +77,7 @@ function StrategicShell() {
   const [showScaleRef, setShowScaleRef] = useState(false);
   const { focusOn, jumpToPreset, atLevel4 } = useCamera();
   const simDispatch = useSimDispatch();
+  const save = useSave();
 
   const getHost = useCallback(() => hostRef.current, []);
   useDesktopControls({
@@ -244,9 +251,10 @@ function StrategicShell() {
       <ViewLabel />
       <VerifyBadge />
       <div className="gb-topright">
+        <DayBadge />
         <PlayerPanel />
         <SpeedToggle />
-        <TopRightMenu onOpenAbout={() => setAboutOpen(true)} />
+        <TopRightMenu onOpenAbout={() => setAboutOpen(true)} onOpenSave={save.openMenu} />
       </div>
       <OutwardButton />
       <ControlsHint />
@@ -255,7 +263,7 @@ function StrategicShell() {
         onClose={() => setSelectedId(null)}
       />
       <ScenarioOverlay />
-      <ServiceLengthPicker />
+      <DayActionBar />
       {/*
         ORDER 090 §6 — panels flow inside two PanelColumns instead of
         each picking its own `position: absolute; top: N` value. See

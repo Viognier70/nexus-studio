@@ -6,7 +6,7 @@
 // for — the team decision has to feel like a decision, not a fixed
 // starting condition.
 //
-// Layout: top-left corner, out of the way of the ServiceLengthPicker
+// Layout: top-left corner, out of the way of the DayActionBar
 // (bottom-centre) and the top-right chrome. Non-modal — sits open
 // while the player deliberates, closes when morning ends.
 //

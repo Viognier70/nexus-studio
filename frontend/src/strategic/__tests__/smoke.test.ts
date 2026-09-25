@@ -207,7 +207,7 @@ describe('module graph smoke — imports resolve without throwing', () => {
       import('../scenario/OpeningPanel'),
       import('../scenario/AgencyOfferPanel'),
       import('../scenario/ScenarioOverlay'),
-      import('../scenario/ServiceLengthPicker'),
+      import('../scenario/DayActionBar'),
       import('../business/TeamPanel'),
       import('../business/InvestmentPanel'),
       import('../ui/DevPanel'),

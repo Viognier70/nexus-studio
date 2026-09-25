@@ -14,9 +14,12 @@
 // vanish until the player asks for them.
 
 import { useEffect, useRef, useState } from 'react';
+import { strings } from '../../content/strings.sv';
 
 interface Props {
   onOpenAbout: () => void;
+  // ORDER 263 — öppnar sparmenyn.
+  onOpenSave: () => void;
 }
 
 const DROPDOWN_STYLE: React.CSSProperties = {
@@ -57,7 +60,7 @@ const DROPDOWN_ITEM_HOVER_STYLE: React.CSSProperties = {
   background: 'rgba(255, 255, 255, 0.08)'
 };
 
-export function TopRightMenu({ onOpenAbout }: Props) {
+export function TopRightMenu({ onOpenAbout, onOpenSave }: Props) {
   const [open, setOpen] = useState(false);
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -88,7 +91,8 @@ export function TopRightMenu({ onOpenAbout }: Props) {
         type="button"
         className="gb-btn"
         onClick={() => setOpen((o) => !o)}
-        aria-label="More options"
+        aria-label="Fler val"
+        data-testid="menu-button"
         aria-haspopup="menu"
         aria-expanded={open}
         title="Fler val"
@@ -97,6 +101,20 @@ export function TopRightMenu({ onOpenAbout }: Props) {
       </button>
       {open && (
         <div role="menu" style={DROPDOWN_STYLE}>
+          <button
+            role="menuitem"
+            type="button"
+            style={itemStyle(2)}
+            data-testid="menu-save"
+            onMouseEnter={() => setHoverIdx(2)}
+            onMouseLeave={() => setHoverIdx(null)}
+            onClick={() => {
+              onOpenSave();
+              setOpen(false);
+            }}
+          >
+            {strings.save.menuItem}
+          </button>
           <a
             role="menuitem"
             href="#/first-person-prototype"

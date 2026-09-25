@@ -21,7 +21,7 @@
 //
 // Visible only during service (lunch / dinner) — outside service the
 // stream is either empty or stale, and rendering it would compete
-// with the ServiceLengthPicker / WagerPanel for the player's
+// with the DayActionBar / WagerPanel for the player's
 // attention. Fade-out on transition rather than pop; the closing
 // scene of an evening should carry a moment of its own text.
 

@@ -132,6 +132,7 @@ export const strings = {
   },
   save: {
     menuItem: 'Spara och ladda',
+    continueSaved: 'Fortsätt ett sparat spel',
     heading: 'Sparade spel',
     close: 'Stäng',
     slot: (n: number) => `Plats ${n}`,
