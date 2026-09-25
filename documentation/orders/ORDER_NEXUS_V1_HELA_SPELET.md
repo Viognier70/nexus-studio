@@ -281,3 +281,26 @@ flera spelare och export av forskningsdata. Se speldesignen, Ramar för version 
 
 Börja med etapp 0. Innan du skriver kod: läs speldesignen i sin helhet och lista
 i etapp 0:s rapport varje ställe där befintlig kod säger emot den.
+
+---
+
+## 5. Tillägg 2026-09-25 — tidslogg
+
+*Vision Owner, efter etapp 0. Gäller från etapp 0 och för alla etapper.*
+
+Innan varje etapp börjar: skriv en uppskattning i
+`documentation/architecture/NEXUS_V1_TIDSLOGG.md` med
+
+- etapp och ordernummer
+- ungefär hur många filer som berörs
+- uppskattad tid i timmar, som ett spann (till exempel 1–2 h)
+- den största risken som kan göra det längre
+
+När etappen är klar: fyll i faktisk tid (från första till sista commit) och en
+mening om varför det avvek, om det gjorde det.
+
+Efter etapp 2: gör en ny uppskattning av alla återstående etapper utifrån hur de
+tre första faktiskt gick, och redovisa den i rapporten.
+
+Etapp 0 uppskattas i efterhand, eftersom den redan har börjat, och läggs in först
+i loggen.
