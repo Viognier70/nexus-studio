@@ -1,3 +1,5 @@
+import { calendarFor } from '../../sim/calendar';
+import { SERVICE } from '../../sim/balance';
 import { createRng } from '../util/rng';
 import type {
   AxisTracks,
@@ -142,7 +144,7 @@ import {
 } from './cashReading';
 import { drawNextTheme } from './themeSelection';
 import {
-  MAX_ACTIVITIES_PER_DAY,
+  scheduleSlotsFor,
   WEEKLY_GATE_DAYS,
   activityById
 } from './activities';
@@ -261,6 +263,10 @@ export function reducer(state: SimulationState, action: SimAction): SimulationSt
     }
     case 'OPEN_SERVICE':
       return openService(state, action.service, action.lengthMinutes);
+    case 'START_SERVICE':
+      return startService(state);
+    case 'CLOSE_DAY':
+      return closeDay(state);
     case 'SKIP_LUNCH':
       return skipLunch(state);
     case 'ACCEPT_AGENCY':
@@ -319,7 +325,7 @@ export function reducer(state: SimulationState, action: SimAction): SimulationSt
 function pickActivity(state: SimulationState, id: string): SimulationState {
   if (state.day.period !== 'morning') return state;
   if (state.day.pickedActivityIds.includes(id)) return state;
-  if (state.day.pickedActivityIds.length >= MAX_ACTIVITIES_PER_DAY) return state;
+  if (state.day.pickedActivityIds.length >= scheduleSlotsFor(state.day.dayNumber)) return state;
   const activity = activityById(id);
   if (!activity) return state;
   // Weekly gate — reject if this activity was picked within the last
@@ -1012,11 +1018,33 @@ function clampServiceLength(mins: number): number {
   );
 }
 
+// ORDER 263 (Nexus v1 etapp 1) — kvällens service. Speldesign > Tiden:
+// dagen har tre faser, morgon, service och kväll. Lunchen hoppas över
+// och middagen öppnas med v1-längden.
+function startService(state: SimulationState): SimulationState {
+  if (!calendarFor(state.day.dayNumber).isServiceDay) return state;
+  const fromAfternoon = state.day.period === 'morning' ? skipLunch(state) : state;
+  return openService(fromAfternoon, 'dinner', SERVICE.simMinutes);
+}
+
+// ORDER 263 — söndagen är stängd: morgonen (fyra schemaplatser) följs
+// direkt av kvällen, och dagen rullar till måndag som vanligt.
+function closeDay(state: SimulationState): SimulationState {
+  if (calendarFor(state.day.dayNumber).isServiceDay) return state;
+  if (state.day.period !== 'morning') return state;
+  return {
+    ...state,
+    day: { ...state.day, period: 'evening', periodStartAt: state.simTime }
+  };
+}
+
 function openService(
   state: SimulationState,
   service: 'lunch' | 'dinner',
   lengthMinutes: number
 ): SimulationState {
+  // ORDER 263 — ingen service på en stängd dag (söndag).
+  if (!calendarFor(state.day.dayNumber).isServiceDay) return state;
   // Guard: lunch can only open from morning, dinner from afternoon.
   // Any other phase → no-op. Prevents the UI from opening dinner
   // during a running lunch service etc.

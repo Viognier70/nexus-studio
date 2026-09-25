@@ -3,6 +3,8 @@
 // Replaces the abstract theme-wager retired in ORDER 050 §5 with
 // named work carrying visible three-column effects.
 
+import { calendarFor } from '../../sim/calendar';
+import { WEEK } from '../../sim/balance';
 import type { SustainabilityKey } from '../types';
 
 export interface CapitalDelta {
@@ -73,8 +75,15 @@ export const ACTIVITY_CATALOGUE: readonly Activity[] = [
   }
 ];
 
-export const MAX_ACTIVITIES_PER_DAY = 3;
-export const WEEKLY_GATE_DAYS = 7;
+// ORDER 263 — morgonens schemaplatser kommer från kalendern: två på
+// vardagar, fyra på söndag (speldesign > Tiden, balance.ts DAY). Ersätter
+// MAX_ACTIVITIES_PER_DAY = 3. Paviljongsbesök tar också en plats från
+// etapp 2 (ORDER 264).
+export function scheduleSlotsFor(dayNumber: number): number {
+  return calendarFor(dayNumber).scheduleSlots;
+}
+// Veckospärren: en veckoaktivitet kan väljas en gång per sju dagar.
+export const WEEKLY_GATE_DAYS = WEEK.daysPerWeek;
 
 export function activityById(id: string): Activity | undefined {
   return ACTIVITY_CATALOGUE.find((a) => a.id === id);

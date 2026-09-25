@@ -8,6 +8,7 @@ import { weatherArrivalMultiplier } from './weather';
 import { worldFactorArrivalMultiplier } from './worldFactors';
 import { valueQuotaArrivalMultiplier } from './valueQuota';
 import { computeShareFactor } from './competitors';
+import { calendarFor } from '../../sim/calendar';
 
 // ORDER 111 §3 — food truck-specifika viktningar.
 //
@@ -154,6 +155,9 @@ export function arrivalProbability(state: SimulationState): number {
   // och avgränsas i SHARE_FACTOR_FLOOR..CEIL i competitors.ts.
   // BASE_ARRIVAL_RATE och rykteskurvan rörs inte (§3 explicit).
   const shareMult = computeShareFactor(state.reputation, state.businessClass);
+  // ORDER 263 — kalenderns gästfaktor: veckodag × högtid × första
+  // veckan (speldesign > Tiden, balance.ts WEEK/HOLIDAYS/INTRODUCTION).
+  const calendarMult = calendarFor(state.day.dayNumber).guestFactor;
   const perMinute =
     ARRIVAL_BASE_PER_MINUTE *
     periodArrivalMultiplier(state.day.period) *
@@ -166,7 +170,8 @@ export function arrivalProbability(state: SimulationState): number {
     currentRhythmMultiplier(state) *
     competitionMult *
     valueMult *
-    shareMult;
+    shareMult *
+    calendarMult;
   return perMinute / (60 * 5); // 5 Hz tick.
 }
 

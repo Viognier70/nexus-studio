@@ -11,9 +11,10 @@
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 import {
   ACTIVITY_CATALOGUE,
-  MAX_ACTIVITIES_PER_DAY,
+  scheduleSlotsFor,
   WEEKLY_GATE_DAYS
 } from '../simulation/activities';
+import { strings } from '../../content/strings.sv';
 import type { Activity } from '../simulation/activities';
 
 // ORDER 090 §6 — was `top: 72, right: 20`; parent RIGHT PanelColumn
@@ -106,7 +107,9 @@ export function MorningActivityPanel() {
   if (sim.day.period !== 'morning') return null;
 
   const pickedCount = sim.day.pickedActivityIds.length;
-  const atCap = pickedCount >= MAX_ACTIVITIES_PER_DAY;
+  // ORDER 263 — schemaplatserna kommer från kalendern (2, söndag 4).
+  const slots = scheduleSlotsFor(sim.day.dayNumber);
+  const atCap = pickedCount >= slots;
 
   const isWeeklyGated = (a: Activity): boolean => {
     if (a.availability !== 'weekly') return false;
@@ -116,9 +119,9 @@ export function MorningActivityPanel() {
 
   return (
     <div style={PANEL_STYLE} aria-label="Morning activities">
-      <div style={HEADING_STYLE}>Aktiviteter i dag</div>
-      <div style={SUB_STYLE}>
-        Välj upp till {MAX_ACTIVITIES_PER_DAY} — {pickedCount}/{MAX_ACTIVITIES_PER_DAY} valda
+      <div style={HEADING_STYLE}>{strings.morning.activitiesHeading}</div>
+      <div style={SUB_STYLE} data-testid="schedule-slots">
+        {strings.morning.slots(pickedCount, slots)}
       </div>
       {ACTIVITY_CATALOGUE.map((a) => {
         const picked = sim.day.pickedActivityIds.includes(a.id);
@@ -150,7 +153,7 @@ export function MorningActivityPanel() {
               {a.name}
               {a.availability === 'weekly' && (
                 <span style={{ opacity: 0.55, fontWeight: 400, marginLeft: 6, fontSize: 10 }}>
-                  · weekly
+                  · {strings.morning.weekly}
                 </span>
               )}
             </div>

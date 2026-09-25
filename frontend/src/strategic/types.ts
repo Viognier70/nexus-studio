@@ -1437,6 +1437,14 @@ export type SimAction =
   // SKIP_LUNCH advances morning → afternoon without a lunch service.
   // Legitimate play — v3 §2: "not all businesses run lunch".
   | { type: 'SKIP_LUNCH' }
+  // ORDER 263 (Nexus v1 etapp 1) — dagen har en service, kvällens. Från
+  // morgonen (eller eftermiddagen) öppnas middagen med längden ur
+  // balance.ts (SERVICE.simMinutes); lunchen hoppas över. Ingen effekt
+  // på en stängd dag.
+  | { type: 'START_SERVICE' }
+  // ORDER 263 — avslutar en stängd dag (söndag) utan service: morgon →
+  // kväll, sedan rullar dagen som vanligt. Ingen effekt på servicedagar.
+  | { type: 'CLOSE_DAY' }
   // ORDER 043 v3 §10 step 5 agency-staff mid-service offer response.
   | { type: 'ACCEPT_AGENCY' }
   | { type: 'DECLINE_AGENCY' }

@@ -397,11 +397,13 @@ describe('dinner queue grows monotonically as social falls (regression)', () => 
     return peak;
   }
 
-  // ORDER 255 (VO 2026-09-22): känd avvikelse. Välkomnande-flödet
-  // kompresserar peak-queue-distributionen — endpoint sanity (peak vid
-  // social=0.0 > peak vid social=1.0) håller inte längre stringt. Baseline
-  // väntar VO-beslut om ekonomi (samma familj som M3/M4a/ORDER 230).
-  it.fails('peak queue grows as social drops (1.0 → 0.7 → 0.5 → 0.3 → 0.0) [KÄND AVVIKELSE ORDER 255]', () => {
+  // ORDER 255 (VO 2026-09-22): var känd avvikelse — välkomnande-flödet
+  // kompresserade peak-queue-distributionen. ORDER 263: med kalenderns
+  // gästfaktor (dag 1 = måndag vecka 1, ×0,7 × 0,7) blir ankomsttakten
+  // lägre och topparna tydligare, som ORDER 212-kommentaren nedan
+  // förutsåg ("sänker arrival-rate så peaks blir mer distinkta").
+  // Testet går igen och är ett vanligt test.
+  it('peak queue grows as social drops (1.0 → 0.7 → 0.5 → 0.3 → 0.0)', () => {
     const socials = [1.0, 0.7, 0.5, 0.3, 0.0];
     // 16 seeds (bumped from 8 under ORDER 050 §3 cash refactor,
     // 2026-08-10) — the derived economic reading nudges arrival
