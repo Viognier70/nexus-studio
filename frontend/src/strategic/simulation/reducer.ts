@@ -207,6 +207,8 @@ export function reducer(state: SimulationState, action: SimAction): SimulationSt
   const base = action.type === 'LOAD_STATE' ? action.state : state;
   loadIdCounters(base);
   const next = reduce(base, action);
+  // Oförändrat tillstånd (åtgärden avvisades): inga id delades ut.
+  if (next === base) return base;
   const counters = readIdCounters();
   if (next.idCounters?.guest === counters.guest && next.idCounters?.party === counters.party) return next;
   return { ...next, idCounters: counters };
