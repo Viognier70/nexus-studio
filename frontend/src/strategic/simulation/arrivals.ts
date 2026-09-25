@@ -1,6 +1,6 @@
 import type { Rng } from '../util/rng';
 import type { DayPeriod, Guest, SimulationState } from '../types';
-import { makeGuest } from './model';
+import { makeGuest, nextPartyId } from './model';
 import { economicReadingNormalised } from './cashReading';
 import { PRICE_ARRIVAL_MULT, SERVICE_ARRIVAL_MULT } from './economics';
 import { currentRhythmMultiplier } from './rhythm';
@@ -8,6 +8,7 @@ import { weatherArrivalMultiplier } from './weather';
 import { worldFactorArrivalMultiplier } from './worldFactors';
 import { valueQuotaArrivalMultiplier } from './valueQuota';
 import { computeShareFactor } from './competitors';
+import { calendarFor } from '../../sim/calendar';
 
 // ORDER 111 §3 — food truck-specifika viktningar.
 //
@@ -109,7 +110,7 @@ const ACTIVE_GUEST_CAP = 24;
 // capital and reputation so a weak-economy period visibly thins the
 // room and a strong-reputation restaurant pulls guests in.
 //
-// ORDER 043 Addendum A prep gate: while day.prepEndsAt is set and
+// ORDER 043 Addendum A prep gate: while day.doorsOpenAt is set and
 // simTime hasn't crossed it, the doors haven't opened yet — no
 // arrivals, no queue. The prep event stream carries the reading
 // during this window.
@@ -123,8 +124,8 @@ export function arrivalProbability(state: SimulationState): number {
     return 0;
   }
   if (
-    state.day.prepEndsAt !== null &&
-    state.simTime < state.day.prepEndsAt
+    state.day.doorsOpenAt !== null &&
+    state.simTime < state.day.doorsOpenAt
   ) {
     return 0;
   }
@@ -154,6 +155,9 @@ export function arrivalProbability(state: SimulationState): number {
   // och avgränsas i SHARE_FACTOR_FLOOR..CEIL i competitors.ts.
   // BASE_ARRIVAL_RATE och rykteskurvan rörs inte (§3 explicit).
   const shareMult = computeShareFactor(state.reputation, state.businessClass);
+  // ORDER 263 — kalenderns gästfaktor: veckodag × högtid × första
+  // veckan (speldesign > Tiden, balance.ts WEEK/HOLIDAYS/INTRODUCTION).
+  const calendarMult = calendarFor(state.day.dayNumber).guestFactor;
   const perMinute =
     ARRIVAL_BASE_PER_MINUTE *
     periodArrivalMultiplier(state.day.period) *
@@ -166,7 +170,8 @@ export function arrivalProbability(state: SimulationState): number {
     currentRhythmMultiplier(state) *
     competitionMult *
     valueMult *
-    shareMult;
+    shareMult *
+    calendarMult;
   return perMinute / (60 * 5); // 5 Hz tick.
 }
 
@@ -194,8 +199,6 @@ export function walkAwayProbability(state: SimulationState): number {
 const PARTY_SOLO_P = 0.55;
 const PARTY_PAIR_P = 0.35;
 // Resterande 0.10 = trio (3 st).
-
-let partyCounter = 0;
 
 export function maybeSpawnGuest(state: SimulationState, rng: Rng): Guest[] {
   const active = state.guests.length;
@@ -232,7 +235,7 @@ export function maybeSpawnGuest(state: SimulationState, rng: Rng): Guest[] {
   const effectiveSize = Math.min(partySize, room);
 
   const party = effectiveSize > 1
-    ? { id: `party-${++partyCounter}`, size: effectiveSize }
+    ? { id: nextPartyId(), size: effectiveSize }
     : undefined;
 
   const out: Guest[] = [];

@@ -5,7 +5,7 @@
 // `#playtest=1&business=ölkrogen&period=lunch`, dispatch:ar
 // OPEN_SERVICE(lunch, 15 min), sätter speed=0 och driver ticken manuellt
 // (dt=0.2, 5 Hz). Vid nio elapsed-punkter läses:
-//   1. `state.simTime`, `state.day.periodStartAt`, `state.day.prepEndsAt`,
+//   1. `state.simTime`, `state.day.periodStartAt`, `state.day.doorsOpenAt`,
 //      `state.day.openingEndsAt`, `state.day.doorsOpenedThisService`,
 //      `state.day.currentServiceLengthMinutes`, `state.day.waitingAtOpening`
 //   2. `state.staff.map(s => ({role, taskType, targetGuestId, workload}))`
@@ -123,7 +123,7 @@ try {
       else if (d.period === 'afternoon') computedPhase = 'afternoon';
       else if (d.period === 'evening') computedPhase = 'evening';
       else if (d.openingEndsAt != null && t < d.openingEndsAt) computedPhase = 'opening';
-      else if (d.prepEndsAt != null && t < d.prepEndsAt) computedPhase = 'prep';
+      else if (d.doorsOpenAt != null && t < d.doorsOpenAt) computedPhase = 'prep';
       else computedPhase = 'service';
       const staff = (s.staff || []).map((st) => ({
         role: st.role,
@@ -140,7 +140,7 @@ try {
         simTime: t,
         periodStartAt: Number(d.periodStartAt ?? 0),
         openingEndsAt: d.openingEndsAt,
-        prepEndsAt: d.prepEndsAt,
+        doorsOpenAt: d.doorsOpenAt,
         doorsOpenedThisService: d.doorsOpenedThisService,
         currentServiceLengthMinutes: d.currentServiceLengthMinutes,
         waitingAtOpening: d.waitingAtOpening,

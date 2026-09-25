@@ -130,7 +130,7 @@ export function tickMoraleDrift(draft: SimulationState): void {
   const period = draft.day.period;
   if (period !== 'lunch' && period !== 'dinner') return;
   if (draft.day.openingEndsAt !== null) return;
-  if (draft.day.prepEndsAt !== null) return;
+  if (draft.day.doorsOpenAt !== null) return;
 
   const { count, meanSat } = activeSeatedSatisfaction(draft);
   if (count === 0) return;

@@ -48,7 +48,7 @@ function inActiveService(state: SimulationState, meanSat = 0.8): SimulationState
       periodStartAt: 100,
       currentServiceLengthMinutes: 15,
       openingEndsAt: null,
-      prepEndsAt: null,
+      doorsOpenAt: null,
       doorsOpenedThisService: true,
       revenueAtServiceStart: 0,
       costAtServiceStart: 0,
@@ -179,7 +179,7 @@ describe('tickMoraleDrift', () => {
   });
   it('no drift during prep (guests not in yet)', () => {
     const s = inActiveService(makeInitialState(1), 0.8);
-    s.day = { ...s.day, prepEndsAt: s.simTime + 60 };
+    s.day = { ...s.day, doorsOpenAt: s.simTime + 60 };
     const before = s.morale;
     for (let i = 0; i < 100; i++) tickMoraleDrift(s);
     expect(s.morale).toBe(before);

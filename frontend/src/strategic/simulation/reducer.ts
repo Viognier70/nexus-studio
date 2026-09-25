@@ -1,3 +1,5 @@
+import { calendarFor } from '../../sim/calendar';
+import { SERVICE } from '../../sim/balance';
 import { createRng } from '../util/rng';
 import type {
   AxisTracks,
@@ -109,7 +111,7 @@ import {
 } from './morale';
 import { tickQualityDrift } from './quality';
 import { ROLLING_WINDOW } from './valuation';
-import { initialDay, makeGuest, makeInitialState, makeStaff } from './model';
+import { initialDay, loadIdCounters, makeGuest, makeInitialState, makeStaff, readIdCounters } from './model';
 import {
   decayEnablersOvernight,
   phronesisSofteningGeneral,
@@ -142,7 +144,7 @@ import {
 } from './cashReading';
 import { drawNextTheme } from './themeSelection';
 import {
-  MAX_ACTIVITIES_PER_DAY,
+  scheduleSlotsFor,
   WEEKLY_GATE_DAYS,
   activityById
 } from './activities';
@@ -200,7 +202,19 @@ const CHOICE_CAPITAL_SIGN: Record<ScenarioChoice, number> = {
   C: -0.5
 };
 
+// ORDER 263 — id-räknarna följer tillståndet (se model.ts loadIdCounters).
 export function reducer(state: SimulationState, action: SimAction): SimulationState {
+  const base = action.type === 'LOAD_STATE' ? action.state : state;
+  loadIdCounters(base);
+  const next = reduce(base, action);
+  // Oförändrat tillstånd (åtgärden avvisades): inga id delades ut.
+  if (next === base) return base;
+  const counters = readIdCounters();
+  if (next.idCounters?.guest === counters.guest && next.idCounters?.party === counters.party) return next;
+  return { ...next, idCounters: counters };
+}
+
+function reduce(state: SimulationState, action: SimAction): SimulationState {
   switch (action.type) {
     case 'TICK': {
       const next = advanceTick(state);
@@ -261,6 +275,12 @@ export function reducer(state: SimulationState, action: SimAction): SimulationSt
     }
     case 'OPEN_SERVICE':
       return openService(state, action.service, action.lengthMinutes);
+    case 'START_SERVICE':
+      return startService(state);
+    case 'CLOSE_DAY':
+      return closeDay(state);
+    case 'LOAD_STATE':
+      return action.state;
     case 'SKIP_LUNCH':
       return skipLunch(state);
     case 'ACCEPT_AGENCY':
@@ -319,7 +339,7 @@ export function reducer(state: SimulationState, action: SimAction): SimulationSt
 function pickActivity(state: SimulationState, id: string): SimulationState {
   if (state.day.period !== 'morning') return state;
   if (state.day.pickedActivityIds.includes(id)) return state;
-  if (state.day.pickedActivityIds.length >= MAX_ACTIVITIES_PER_DAY) return state;
+  if (state.day.pickedActivityIds.length >= scheduleSlotsFor(state.day.dayNumber)) return state;
   const activity = activityById(id);
   if (!activity) return state;
   // Weekly gate — reject if this activity was picked within the last
@@ -925,7 +945,7 @@ function forceCollapseAction(state: SimulationState): SimulationState {
   const period = state.day.period;
   if (period !== 'lunch' && period !== 'dinner') return state;
   if (state.day.openingEndsAt !== null) return state;
-  if (state.day.prepEndsAt !== null) return state;
+  if (state.day.doorsOpenAt !== null) return state;
   if (state.day.serviceCollapsed) return state;
   // fireCollapse mutates the draft in place; give it a shallow copy
   // of everything it touches so the reducer stays pure at the outer
@@ -1012,11 +1032,33 @@ function clampServiceLength(mins: number): number {
   );
 }
 
+// ORDER 263 (Nexus v1 etapp 1) — kvällens service. Speldesign > Tiden:
+// dagen har tre faser, morgon, service och kväll. Lunchen hoppas över
+// och middagen öppnas med v1-längden.
+function startService(state: SimulationState): SimulationState {
+  if (!calendarFor(state.day.dayNumber).isServiceDay) return state;
+  const fromAfternoon = state.day.period === 'morning' ? skipLunch(state) : state;
+  return openService(fromAfternoon, 'dinner', SERVICE.simMinutes);
+}
+
+// ORDER 263 — söndagen är stängd: morgonen (fyra schemaplatser) följs
+// direkt av kvällen, och dagen rullar till måndag som vanligt.
+function closeDay(state: SimulationState): SimulationState {
+  if (calendarFor(state.day.dayNumber).isServiceDay) return state;
+  if (state.day.period !== 'morning') return state;
+  return {
+    ...state,
+    day: { ...state.day, period: 'evening', periodStartAt: state.simTime }
+  };
+}
+
 function openService(
   state: SimulationState,
   service: 'lunch' | 'dinner',
   lengthMinutes: number
 ): SimulationState {
+  // ORDER 263 — ingen service på en stängd dag (söndag).
+  if (!calendarFor(state.day.dayNumber).isServiceDay) return state;
   // Guard: lunch can only open from morning, dinner from afternoon.
   // Any other phase → no-op. Prevents the UI from opening dinner
   // during a running lunch service etc.
@@ -1044,11 +1086,16 @@ function openService(
   // Opening runs first, then prep, then service. Scenario schedule
   // shifted by opening + prep so no scenario fires while the doors
   // are still closed.
-  const doorsOpenAt =
-    state.simTime + OPENING_DURATION_SEC + PREP_DURATION_SEC;
+  // ORDER 263 (ORDER 171) — dörrarnas öppningstid räknas här, en gång.
+  // Tidigare räknades den på tre ställen: fältet (prepEndsAt) tog
+  // hänsyn till mise en place, men scenarioschemat och morgonbeslutens
+  // utfall lade alltid till PREP_DURATION_SEC. För food trucken (utan
+  // mise en place) hamnade de därför 120 s efter att dörrarna öppnat.
+  const prepSec = businessHasMiseEnPlace(state.businessClass) ? PREP_DURATION_SEC : 0;
+  const doorsOpenAt = state.simTime + OPENING_DURATION_SEC + prepSec;
   const serviceWindowMinutes = Math.max(
     1,
-    length - (OPENING_DURATION_SEC + PREP_DURATION_SEC) / 60
+    length - (OPENING_DURATION_SEC + prepSec) / 60
   );
   const scenarioTriggerTimes = scheduleScenarioTriggerTimes(
     scenariosPlanned,
@@ -1082,9 +1129,7 @@ function openService(
     // Restaurant + Värdshus (hasMiseEnPlace=true) behåller det befintliga
     // prep-fönstret.
     openingEndsAt: state.simTime + OPENING_DURATION_SEC,
-    prepEndsAt: businessHasMiseEnPlace(state.businessClass)
-      ? state.simTime + OPENING_DURATION_SEC + PREP_DURATION_SEC
-      : state.simTime + OPENING_DURATION_SEC,
+    doorsOpenAt,
     prepIgnoranceCount: 0,
     // ORDER 043 Addendum B prep floor — two guaranteed prep events
     // per service, at ~35 s and ~85 s past prep-start (~45 s and
@@ -1139,9 +1184,8 @@ function openService(
   // ORDER 047 §6 — schedule a pendingOutcome per morningPolicyChange
   // to fire ~4 s past doors-open so the stream names the change as it
   // lands. Uses the same pendingOutcome machinery as scenario outcomes.
-  const doorsOpenAtAbs = state.simTime + OPENING_DURATION_SEC + PREP_DURATION_SEC;
   const policyOutcomes = state.day.morningPolicyChanges.map((text) => ({
-    dueAt: doorsOpenAtAbs + 4,
+    dueAt: doorsOpenAt + 4,
     text,
     sustainability: 'social' as const,
     scenarioId: 'morning-policy'
@@ -1210,7 +1254,7 @@ function skipLunch(state: SimulationState): SimulationState {
       scenariosFiredThisService: 0,
       scenarioTriggerTimes: [],
       openingEndsAt: null,
-      prepEndsAt: null,
+      doorsOpenAt: null,
       prepIgnoranceCount: 0,
       prepFloorSchedule: [],
       weather: null,
@@ -1364,7 +1408,7 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           scenariosFiredThisService: 0,
           scenarioTriggerTimes: [],
           openingEndsAt: null,
-          prepEndsAt: null,
+          doorsOpenAt: null,
           prepIgnoranceCount: 0,
           prepFloorSchedule: [],
           weather: null,
@@ -1437,7 +1481,7 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           scenariosFiredThisService: 0,
           scenarioTriggerTimes: [],
           openingEndsAt: null,
-          prepEndsAt: null,
+          doorsOpenAt: null,
           prepIgnoranceCount: 0,
           prepFloorSchedule: [],
           weather: null,
@@ -2145,7 +2189,7 @@ function advanceTick(state: SimulationState): SimulationState {
   // ORDER 045 opening-window end. When the 10-s opening panel expires
   // the day rolls into prep — no visible state change other than the
   // opening panel closing; arrivals + scenarios are still gated by
-  // prepEndsAt (see arrivalProbability + the scheduled-scenario
+  // doorsOpenAt (see arrivalProbability + the scheduled-scenario
   // check below).
   if (
     draft.day.openingEndsAt !== null &&
@@ -2166,8 +2210,8 @@ function advanceTick(state: SimulationState): SimulationState {
   // vocabulary) and the room's normal state machine takes them from
   // there.
   if (
-    draft.day.prepEndsAt !== null &&
-    draft.simTime >= draft.day.prepEndsAt
+    draft.day.doorsOpenAt !== null &&
+    draft.simTime >= draft.day.doorsOpenAt
   ) {
     if (draft.day.prepIgnoranceCount >= PREP_CARRYOVER_THRESHOLD) {
       draft.pendingOutcomes = [
@@ -2221,7 +2265,7 @@ function advanceTick(state: SimulationState): SimulationState {
     }
     draft.day = {
       ...draft.day,
-      prepEndsAt: null,
+      doorsOpenAt: null,
       doorsOpenedThisService: true
     };
   }

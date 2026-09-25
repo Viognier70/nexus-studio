@@ -170,10 +170,16 @@ describe('M3 DoD — evening ledger visible', () => {
     // ledger-poster fyras per tick (särskilt när dropped tasks re-schedule:as
     // nästa tick, small ordering-shifts). Observerad drift 102.2% i seed=3;
     // 103% ger marginal utan att gömma en genuint växande drift.
+    // ORDER 263 — tolerans 1.03 → 1.04. Kalenderns gästfaktor (dag 1–3
+    // = mån–ons vecka 1, ×0,49–0,63) minskar kassarörelsen, så samma
+    // absoluta avvikelse ger högre kvot: mätt 901 SEK både med och utan
+    // kalenderfaktorn, kvot 102,8 % → 103,9 %. Den absoluta gränsen
+    // (< 1500 SEK) nedan är oförändrad och fångar en växande avvikelse.
+    // Avvikelsen själv (ORDER 260 §9 "ledger-drift") rättas i etapp 3.
     expect(
       overallRatio,
-      `overall reconciliation ${(overallRatio * 100).toFixed(1)}% (drift ${overallDrift.toFixed(0)} SEK) — outside 98–103%`
-    ).toBeLessThanOrEqual(1.03);
+      `overall reconciliation ${(overallRatio * 100).toFixed(1)}% (drift ${overallDrift.toFixed(0)} SEK) — outside 98–104%`
+    ).toBeLessThanOrEqual(1.04);
     // Absolute drift bound: <2% of total cash movement AND < 1500 SEK
     // absolute. Absolute floor catches the case where movement is
     // small (weekend, quiet service) but drift accumulates.

@@ -142,7 +142,7 @@ async function snapshot(page, label) {
     return {
       simTime: sim?.simTime ?? null,
       period: sim?.day?.period ?? null,
-      prepEndsAt: sim?.day?.prepEndsAt ?? null,
+      doorsOpenAt: sim?.day?.doorsOpenAt ?? null,
       seatedIdsCount: sim?.seatedIds?.length ?? null,
       guestCount: guests.length,
       guests,

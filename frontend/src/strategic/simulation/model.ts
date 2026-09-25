@@ -3,6 +3,7 @@ import { INTERIOR, RESIDENT_SPLINES } from '../content/layout';
 import { INITIAL_CASH_SEK } from './constants';
 import { MORALE_INITIAL } from './morale';
 import { initialTeam } from './team';
+import { SERVICE } from '../../sim/balance';
 import type {
   CapitalState,
   DayState,
@@ -168,7 +169,7 @@ export function initialDay(): DayState {
     scenariosFiredThisService: 0,
     scenarioTriggerTimes: [],
     openingEndsAt: null,
-    prepEndsAt: null,
+    doorsOpenAt: null,
     prepIgnoranceCount: 0,
     prepFloorSchedule: [],
     weather: null,
@@ -247,7 +248,7 @@ export function makeInitialState(
     // in half the real time. Scenario overlays + evening-account
     // fade use wall-clock timing (below), so speed does not
     // shrink the player's reading window.
-    speed: 2,
+    speed: SERVICE.defaultSimSpeed,   // ORDER 263 — balance.ts (SERVICE)
     policies,
     staff,
     guests: [],
@@ -411,9 +412,39 @@ export function makeInitialState(
 }
 
 let guestCounter = 0;
+let partyCounter = 0;
 export function nextGuestId(scenario = false): string {
   guestCounter += 1;
   return `${scenario ? 'grp' : 'gst'}-${guestCounter}`;
+}
+export function nextPartyId(): string {
+  partyCounter += 1;
+  return `party-${partyCounter}`;
+}
+
+// ORDER 263 — id-räknarna är en del av tillståndet (`state.idCounters`)
+// så att ett sparat spel fortsätter exakt likadant efter laddning och
+// nya gäster aldrig får samma id som gäster i rummet. Reducern läser in
+// räknarna när en åtgärd börjar (`loadIdCounters`) och skriver tillbaka
+// dem när den är klar (`readIdCounters`). Räknaren sätts aldrig under
+// ett id som redan finns bland gästerna, så gäster som skapats utanför
+// reducern (testfixturer) inte krockar med nya.
+function idNumber(id: string | undefined): number {
+  const m = id ? /-(\d+)$/.exec(id) : null;
+  return m ? Number(m[1]) : 0;
+}
+export function loadIdCounters(state: SimulationState): void {
+  let guest = state.idCounters?.guest ?? 0;
+  let party = state.idCounters?.party ?? 0;
+  for (const g of state.guests) {
+    guest = Math.max(guest, idNumber(g.id));
+    party = Math.max(party, idNumber(g.partyId));
+  }
+  guestCounter = guest;
+  partyCounter = party;
+}
+export function readIdCounters(): { guest: number; party: number } {
+  return { guest: guestCounter, party: partyCounter };
 }
 
 export function makeGuest(

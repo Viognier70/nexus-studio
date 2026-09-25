@@ -15,13 +15,16 @@ import { describe, expect, it } from 'vitest';
 import { reducer } from '../reducer';
 import { makeInitialState } from '../model';
 import { runHarness } from './harness';
-import { ACTIVITY_CATALOGUE, MAX_ACTIVITIES_PER_DAY } from '../activities';
+import { ACTIVITY_CATALOGUE, scheduleSlotsFor } from '../activities';
 import { INITIAL_CASH_SEK } from '../constants';
 
 describe('M2 DoD — morning activity model', () => {
-  it('DoD 1 — player can pick 1–3 activities in the morning', () => {
+  // ORDER 263 — v1: schemaplatserna kommer från kalendern (två på
+  // vardagar, fyra på söndag), inte längre upp till tre per morgon.
+  it('DoD 1 — player fills the morning schedule slots (2 on a weekday)', () => {
     let s = makeInitialState(1);
     expect(s.day.period).toBe('morning');
+    expect(scheduleSlotsFor(s.day.dayNumber)).toBe(2);
     // Pick one activity — should succeed
     s = reducer(s, { type: 'PICK_ACTIVITY', id: 'train-service' });
     expect(s.day.pickedActivityIds).toEqual(['train-service']);
@@ -31,15 +34,24 @@ describe('M2 DoD — morning activity model', () => {
     expect(s.ledger.length).toBe(1);
     expect(s.ledger[0].category).toBe('other');
     expect(s.ledger[0].amount).toBe(-3000);
-    // Pick two more — cap at 3
+    // Second pick fills the weekday schedule
     s = reducer(s, { type: 'PICK_ACTIVITY', id: 'runner-shift' });
+    expect(s.day.pickedActivityIds).toHaveLength(2);
+    // Third pick rejected
     s = reducer(s, { type: 'PICK_ACTIVITY', id: 'wine-tasting' });
-    expect(s.day.pickedActivityIds).toHaveLength(3);
-    // Fourth pick rejected
-    s = reducer(s, { type: 'PICK_ACTIVITY', id: 'local-sourcing' });
-    expect(s.day.pickedActivityIds).toHaveLength(MAX_ACTIVITIES_PER_DAY);
-    // Cash reflects three costs
-    expect(s.cash).toBe(INITIAL_CASH_SEK - 3000 - 1800 - 2000);
+    expect(s.day.pickedActivityIds).toHaveLength(scheduleSlotsFor(s.day.dayNumber));
+    // Cash reflects two costs
+    expect(s.cash).toBe(INITIAL_CASH_SEK - 3000 - 1800);
+  });
+
+  it('DoD 1 — Sunday has four schedule slots', () => {
+    let s = makeInitialState(1);
+    s = { ...s, day: { ...s.day, dayNumber: 7 } };
+    expect(scheduleSlotsFor(7)).toBe(4);
+    for (const id of ['train-service', 'runner-shift', 'wine-tasting', 'local-sourcing', 'guest-chef']) {
+      s = reducer(s, { type: 'PICK_ACTIVITY', id });
+    }
+    expect(s.day.pickedActivityIds).toHaveLength(4);
   });
 
   it('DoD 1 — unpick refunds cost and clears history', () => {

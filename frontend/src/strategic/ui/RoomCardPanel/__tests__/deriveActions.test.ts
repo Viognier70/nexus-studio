@@ -83,11 +83,11 @@ describe('derivePhase', () => {
   it('dinner + openingEndsAt in future → opening', () => {
     expect(derivePhase(makeDay({ period: 'dinner', openingEndsAt: 200 }), 100)).toBe('opening');
   });
-  it('dinner + prepEndsAt in future → prep', () => {
-    expect(derivePhase(makeDay({ period: 'dinner', prepEndsAt: 200 }), 100)).toBe('prep');
+  it('dinner + doorsOpenAt in future → prep', () => {
+    expect(derivePhase(makeDay({ period: 'dinner', doorsOpenAt: 200 }), 100)).toBe('prep');
   });
   it('dinner + prep expired → service', () => {
-    expect(derivePhase(makeDay({ period: 'dinner', prepEndsAt: 50 }), 100)).toBe('service');
+    expect(derivePhase(makeDay({ period: 'dinner', doorsOpenAt: 50 }), 100)).toBe('service');
   });
 });
 
@@ -112,7 +112,7 @@ describe('deriveStaffAction — every table row', () => {
     // On break fortfarande visas när personal är verkligt inaktiv.
     const r = deriveStaffAction(
       makeStaff({ taskType: null, workload: 0 }), [],
-      makeDay({ period: 'dinner', prepEndsAt: 200, prepReadiness: { ice: 1, napkins: 1, cutlery: 1, stations: 1, garnish: 1 } }),
+      makeDay({ period: 'dinner', doorsOpenAt: 200, prepReadiness: { ice: 1, napkins: 1, cutlery: 1, stations: 1, garnish: 1 } }),
       100, NO_MENU
     );
     expect(r).toEqual({ text: 'On break', iconKey: 'pause' });
@@ -121,7 +121,7 @@ describe('deriveStaffAction — every table row', () => {
   it('ORDER 191 — S2 prep + idle med workload ≥ 0.1 → Mise en place, inte On break', () => {
     const r = deriveStaffAction(
       makeStaff({ taskType: null, workload: 0.3, role: 'kock' }), [],
-      makeDay({ period: 'dinner', prepEndsAt: 200, prepReadiness: { ice: 1, napkins: 1, cutlery: 1, stations: 1, garnish: 1 } }),
+      makeDay({ period: 'dinner', doorsOpenAt: 200, prepReadiness: { ice: 1, napkins: 1, cutlery: 1, stations: 1, garnish: 1 } }),
       100, NO_MENU
     );
     expect(r.iconKey).toBe('prep');
@@ -131,7 +131,7 @@ describe('deriveStaffAction — every table row', () => {
     const r = deriveStaffAction(
       makeStaff({ taskType: 'greet' }), [],
       makeDay({
-        period: 'dinner', prepEndsAt: 200,
+        period: 'dinner', doorsOpenAt: 200,
         prepReadiness: { ice: 0.9, napkins: 0.9, cutlery: 0.3, stations: 0.9, garnish: 0.9 }
       }),
       100, NO_MENU
@@ -142,7 +142,7 @@ describe('deriveStaffAction — every table row', () => {
     const r = deriveStaffAction(
       makeStaff({ role: 'kock', taskType: 'greet' }), [],
       makeDay({
-        period: 'dinner', prepEndsAt: 200,
+        period: 'dinner', doorsOpenAt: 200,
         prepReadiness: { ice: 1, napkins: 1, cutlery: 1, stations: 1, garnish: 1 }
       }),
       100, NO_MENU
@@ -366,7 +366,7 @@ describe('exhaustiveness — every GuestState reaches a real row', () => {
       const r = deriveStaffAction(
         makeStaff({ role, taskType: 'greet' }), [],
         makeDay({
-          period: 'dinner', prepEndsAt: 200,
+          period: 'dinner', doorsOpenAt: 200,
           prepReadiness: { ice: 1, napkins: 1, cutlery: 1, stations: 1, garnish: 1 }
         }),
         100, NO_MENU
@@ -443,7 +443,7 @@ describe('ORDER 247 — värd-prep-fallback: "Reviewing tonight\'s bookings"', (
     return makeDay({
       period: 'dinner',
       openingEndsAt: 10,
-      prepEndsAt: 100,
+      doorsOpenAt: 100,
       doorsOpenedThisService: false
     });
   }
@@ -474,12 +474,12 @@ describe('ORDER 247 — värd-prep-fallback: "Reviewing tonight\'s bookings"', (
   });
 
   it('värd + service-fas + task=null → "Standing by" (fallbacken gäller bara prep)', () => {
-    // I service-fasen (past prepEndsAt) ska värd inte längre få prep-
+    // I service-fasen (past doorsOpenAt) ska värd inte längre få prep-
     // texten — då är S14 "Standing by" rätt signal.
     const day = makeDay({
       period: 'dinner',
       openingEndsAt: 10,
-      prepEndsAt: 100,
+      doorsOpenAt: 100,
       doorsOpenedThisService: true
     });
     const staff = makeStaff({ role: 'värd', taskType: null, workload: 0 });

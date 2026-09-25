@@ -50,6 +50,8 @@ export const WEEK = {
   section: 'Tiden',
   daysPerWeek: 7,              // mermaid: "Veckan 7 dagar"
   serviceDays: 6,              // "sex servicedagar och en söndag"
+  // Veckan börjar på måndag; spelets dag 1 är måndag vecka 1.
+  weekdays: ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'] as readonly Weekday[],
   closedDay: 'sun' as Weekday,
   // Gästfaktor per veckodag. Speldesignen: "Måndag är lugn, fredag och
   // lördag är tunga. Söndagen är stängd." Talen är valda.
@@ -63,6 +65,19 @@ export const WEEK = {
     sat: 1.4,
     sun: 0
   } as Record<Weekday, number>
+} as const;
+
+// ORDER 263 — kvällens service i v1. Speldesignen anger 4–5 minuter i
+// verkligheten; simuleringen går i standardfarten 2× (`ui/SpeedToggle.tsx`),
+// så servicen är 5 × 2 = 10 simulerade minuter, räknat från att
+// servicen öppnas (opening och mise en place ingår). Spelaren väljer
+// inte längden. Talet är valt.
+const DEFAULT_SIM_SPEED = 2;
+export const SERVICE = {
+  section: 'Tiden',
+  openQuestion: 'F11',
+  defaultSimSpeed: DEFAULT_SIM_SPEED,
+  simMinutes: DAY.realMinutes.service[1] * DEFAULT_SIM_SPEED
 } as const;
 
 export type HolidayId = 'midsommar' | 'grythyttedagarna' | 'vinprovning' | 'kraftskiva';
@@ -297,5 +312,8 @@ export const INTRODUCTION = {
 
 export const SAVING = {
   section: 'Ramar för version 1 > Sparande',
-  slots: 3                     // "Tre sparplatser per spelare"
+  slots: 3,                    // "Tre sparplatser per spelare"
+  // ORDER 263 — sparfilens formatversion. Höjs när sparfilens form
+  // ändras; äldre filer visas då som "sparat i en äldre version" (F12).
+  formatVersion: 1
 } as const;

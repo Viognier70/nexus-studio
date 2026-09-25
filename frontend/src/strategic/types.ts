@@ -680,12 +680,13 @@ export interface DayState {
   // over the room during this window. When simTime crosses this
   // timestamp, the opening ends and prep begins.
   openingEndsAt: number | null;
-  // ORDER 043 Addendum A prep window — set when opening ends, to
-  // simTime + PREP_DURATION_SEC. While non-null the service is
-  // "in mise en place": no arrivals, no scenarios, prep events fire
-  // on the stream instead. Cleared (set to null) when the prep
-  // window expires; the carryover check runs at that moment.
-  prepEndsAt: number | null;
+  // ORDER 171/263 — ögonblicket dörrarna öppnar (hette prepEndsAt).
+  // Sätts vid OPEN_SERVICE till simTime + OPENING_DURATION_SEC +
+  // PREP_DURATION_SEC för klasser med mise en place, annars utan prep.
+  // Prep-fasen är [openingEndsAt, doorsOpenAt]: inga ankomster, inga
+  // scenarier. Nollas när dörrarna öppnat; carryover-kontrollen körs då.
+  // Samma ögonblick, ett namn — som ORDER 144 (två matsalar) och 149.
+  doorsOpenAt: number | null;
   // Number of ignorance-tagged prep events fired during the current
   // prep window. Read at prep-end to decide whether to schedule a
   // carryover bottleneck event ~13 min into service.
@@ -1109,6 +1110,10 @@ export interface PendingOutcome {
 export interface SimulationState {
   seed: number;
   rngState: number;
+  // ORDER 263 — senast utdelade gäst- och sällskaps-id. Del av
+  // tillståndet så att ett laddat spel fortsätter exakt (model.ts
+  // loadIdCounters). Valfri så äldre fixturer utan fältet fungerar.
+  idCounters?: { guest: number; party: number };
   tick: number;
   simTime: number;
   speed: 0 | 1 | 2 | 4;
@@ -1436,6 +1441,17 @@ export type SimAction =
   // SKIP_LUNCH advances morning → afternoon without a lunch service.
   // Legitimate play — v3 §2: "not all businesses run lunch".
   | { type: 'SKIP_LUNCH' }
+  // ORDER 263 (Nexus v1 etapp 1) — dagen har en service, kvällens. Från
+  // morgonen (eller eftermiddagen) öppnas middagen med längden ur
+  // balance.ts (SERVICE.simMinutes); lunchen hoppas över. Ingen effekt
+  // på en stängd dag.
+  | { type: 'START_SERVICE' }
+  // ORDER 263 — avslutar en stängd dag (söndag) utan service: morgon →
+  // kväll, sedan rullar dagen som vanligt. Ingen effekt på servicedagar.
+  | { type: 'CLOSE_DAY' }
+  // ORDER 263 — laddar ett sparat spel: ersätter hela tillståndet med
+  // det sparade (src/sim/save.ts). Farten behålls från det sparade.
+  | { type: 'LOAD_STATE'; state: SimulationState }
   // ORDER 043 v3 §10 step 5 agency-staff mid-service offer response.
   | { type: 'ACCEPT_AGENCY' }
   | { type: 'DECLINE_AGENCY' }

@@ -38,7 +38,7 @@ function midService(base: SimulationState): SimulationState {
       costAtServiceStart: 0,
       reputationAtServiceStart: 0.60,
       openingEndsAt: null,
-      prepEndsAt: null
+      doorsOpenAt: null
     },
     reputation: 0.60,
     revenue: 0,
@@ -149,7 +149,7 @@ describe('full loop — evening account appears at natural close', () => {
     s = reducer(s, { type: 'OPEN_SERVICE', service: 'dinner', lengthMinutes: 3 });
     // Advance through opening (10 s), prep (120 s), 3-min service (180 s)
     // + slack for the day transition. 3-min service length is
-    // openingEndsAt + prepEndsAt + serviceWindow = 10 + 120 + 50 = 180 s.
+    // openingEndsAt + doorsOpenAt + serviceWindow = 10 + 120 + 50 = 180 s.
     const totalTicks = 5 * 200; // 200 sim-sec → past close
     for (let i = 0; i < totalTicks; i++) {
       s = reducer(s, { type: 'TICK', dt: 1 / 5 });

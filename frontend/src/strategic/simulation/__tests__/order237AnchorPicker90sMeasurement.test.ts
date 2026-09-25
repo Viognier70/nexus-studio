@@ -64,8 +64,8 @@ describe('ORDER 237 — 90s-varianten, 15-min dinner seed=42', () => {
     // Öppningstider: doors-open efter opening+prep-perioden. Fönster-
     // mätningen ska räknas från denna punkt, inte från simTime=0
     // (ORDER 237 §tillägg 1 från VO).
-    const doorsOpenAt = s.day.openingEndsAt !== null && s.day.prepEndsAt !== null
-      ? s.day.prepEndsAt
+    const doorsOpenAt = s.day.openingEndsAt !== null && s.day.doorsOpenAt !== null
+      ? s.day.doorsOpenAt
       : s.simTime + 130;
     const plannedScenarios = s.day.scenariosPlanned;
     const scheduledFireTimes: number[] = [...s.day.scenarioTriggerTimes];

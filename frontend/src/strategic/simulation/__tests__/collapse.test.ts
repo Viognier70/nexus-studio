@@ -52,7 +52,7 @@ function inRunningService(state: SimulationState): SimulationState {
       periodStartAt: 0,
       currentServiceLengthMinutes: 15,
       openingEndsAt: null,
-      prepEndsAt: null,
+      doorsOpenAt: null,
       doorsOpenedThisService: true,
       serviceCollapsed: false,
       collapseAxis: null
@@ -238,7 +238,7 @@ describe('tickCollapseRoll — gating', () => {
 
   it('never fires during prep', () => {
     const s = inRunningService(makeInitialState(1));
-    s.day = { ...s.day, prepEndsAt: s.simTime + 60 };
+    s.day = { ...s.day, doorsOpenAt: s.simTime + 60 };
     for (let i = 0; i < 500; i++) { s.tick += 1; tickCollapseRoll(s); }
     expect(s.day.serviceCollapsed).toBe(false);
   });

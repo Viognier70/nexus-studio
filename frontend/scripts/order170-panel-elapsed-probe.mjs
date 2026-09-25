@@ -98,7 +98,7 @@ try {
       return {
         simTime: Number(s.simTime ?? 0),
         periodStartAt: Number(d.periodStartAt ?? 0),
-        prepEndsAt: d.prepEndsAt,
+        doorsOpenAt: d.doorsOpenAt,
         openingEndsAt: d.openingEndsAt,
         currentServiceLengthMinutes: d.currentServiceLengthMinutes,
         elapsedSinceServiceStart: Number(s.simTime ?? 0) - Number(d.periodStartAt ?? 0),
@@ -190,7 +190,7 @@ try {
       console.log(`  target service=${target}  → INTE observerad inom ${ticks} ticks`);
       continue;
     }
-    console.log(`  target service=${target.padEnd(6)} → elapsed=${h.elapsedSinceServiceStart.toFixed(1).padStart(6)}s  remaining=${h.remainingSec.toFixed(1).padStart(6)}s  phase=${h.period}  prepEndsAt=${h.prepEndsAt}  waitingIdsCount=${h.waitingIdsCount}  guestsTotal=${h.guestsTotal}  staff=${h.staff.map((s) => s.role + ':' + (s.taskType ?? 'null')).join(' ')}`);
+    console.log(`  target service=${target.padEnd(6)} → elapsed=${h.elapsedSinceServiceStart.toFixed(1).padStart(6)}s  remaining=${h.remainingSec.toFixed(1).padStart(6)}s  phase=${h.period}  doorsOpenAt=${h.doorsOpenAt}  waitingIdsCount=${h.waitingIdsCount}  guestsTotal=${h.guestsTotal}  staff=${h.staff.map((s) => s.role + ':' + (s.taskType ?? 'null')).join(' ')}`);
   }
   console.log('');
   console.log(`Rapport: ${out}`);

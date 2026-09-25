@@ -91,6 +91,72 @@ export const strings = {
     },
     minutesSuffix: 'min'
   },
+  // ORDER 263 (Nexus v1 etapp 1) — tiden och sparandet. Svenska enligt
+  // speldesignen > Språk och målgrupp (CLAUDE.md regel 7, F9).
+  calendar: {
+    weekdays: {
+      mon: 'Måndag',
+      tue: 'Tisdag',
+      wed: 'Onsdag',
+      thu: 'Torsdag',
+      fri: 'Fredag',
+      sat: 'Lördag',
+      sun: 'Söndag'
+    },
+    weekdaysShort: {
+      mon: 'Mån',
+      tue: 'Tis',
+      wed: 'Ons',
+      thu: 'Tor',
+      fri: 'Fre',
+      sat: 'Lör',
+      sun: 'Sön'
+    },
+    week: (week: number, weeks: number) => `Vecka ${week} av ${weeks}`,
+    weekShort: (week: number) => `v. ${week}`,
+    season: (season: number) => `Säsong ${season}`,
+    holidays: {
+      midsommar: 'Midsommar',
+      grythyttedagarna: 'Grythyttedagarna',
+      vinprovning: 'Vinprovning i Stensöta',
+      kraftskiva: 'Kräftskiva'
+    },
+    holidayToday: (name: string) => `${name} i dag`,
+    holidayThisWeek: (name: string) => `${name} den här veckan`,
+    phases: {
+      morning: 'Morgon',
+      service: 'Service',
+      evening: 'Kväll'
+    },
+    closed: 'Stängt'
+  },
+  morning: {
+    heading: 'Morgon',
+    serviceDayBody: 'Fyll dagens schema och öppna för kvällen.',
+    sundayBody: 'Söndag. Krogen är stängd, och du har fyra platser i schemat.',
+    slots: (used: number, total: number) => `Schemat: ${used} av ${total} platser`,
+    startService: 'Öppna för kvällen',
+    closeSunday: 'Avsluta söndagen',
+    activitiesHeading: 'Satsningar i dag',
+    weekly: 'en gång i veckan'
+  },
+  save: {
+    menuItem: 'Spara och ladda',
+    continueSaved: 'Fortsätt ett sparat spel',
+    heading: 'Sparade spel',
+    close: 'Stäng',
+    slot: (n: number) => `Plats ${n}`,
+    empty: 'Tom',
+    active: 'Spelar nu',
+    saveHere: 'Spara här',
+    load: 'Ladda',
+    weeklyCopies: 'Veckokopior',
+    loadWeek: (week: number) => `Början av vecka ${week}`,
+    autosaveNote: 'Spelet sparas automatiskt när dagen tar slut, och en kopia sparas varje vecka.',
+    savedAt: (weekday: string, week: number, name: string) => `${name} · ${weekday}, vecka ${week}`,
+    olderVersion: 'Sparat i en äldre version av spelet och kan inte laddas.',
+    storageUnavailable: 'Webbläsaren tillåter inte sparande just nu.'
+  },
   scenario: {
     // ORDER 042 §3.3 walk-in-of-five. Difficulty is chosen BEFORE the
     // situation is revealed (LEARNING_AND_SCENARIO_ARCHITECTURE §4.3).

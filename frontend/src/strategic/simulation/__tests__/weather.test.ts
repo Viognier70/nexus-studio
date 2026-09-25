@@ -5,7 +5,7 @@
 //   * weatherArrivalMultiplier maps warm+still→up, cold+windy→down
 //   * outdoor terrace viability requires warm+still+dry
 //   * waitingAtOpeningCount grows with reputation × weather
-//   * OPEN_SERVICE sets openingEndsAt AND prepEndsAt (opening → prep
+//   * OPEN_SERVICE sets openingEndsAt AND doorsOpenAt (opening → prep
 //     → service) with correct offsets
 //   * Arrivals gated to zero during both opening AND prep windows
 //   * Doors-open spawn fires exactly once per service
@@ -145,7 +145,7 @@ describe('OPEN_SERVICE — opening + prep sequence', () => {
     expect(s.day.openingEndsAt).toBeCloseTo(openedAt + OPENING_DURATION_SEC, 5);
   });
 
-  it('sets prepEndsAt to opening-end + prep-duration', () => {
+  it('sets doorsOpenAt to opening-end + prep-duration', () => {
     let s = reducer(makeInitialState(1), { type: 'SKIP_LUNCH' });
     const openedAt = s.simTime;
     s = reducer(s, {
@@ -153,8 +153,8 @@ describe('OPEN_SERVICE — opening + prep sequence', () => {
       service: 'dinner',
       lengthMinutes: 10
     });
-    // opening is 10 s, prep is 120 s → prepEndsAt = openedAt + 130.
-    expect(s.day.prepEndsAt).toBeCloseTo(openedAt + 130, 5);
+    // opening is 10 s, prep is 120 s → doorsOpenAt = openedAt + 130.
+    expect(s.day.doorsOpenAt).toBeCloseTo(openedAt + 130, 5);
   });
 
   it('generates a weather record + a waiting-at-opening count', () => {
@@ -257,7 +257,7 @@ describe('service close clears opening/weather/waiting fields', () => {
     for (let i = 0; i < 920; i++) s = reducer(s, { type: 'TICK', dt: 0.2 });
     expect(s.day.period).toBe('afternoon');
     expect(s.day.openingEndsAt).toBeNull();
-    expect(s.day.prepEndsAt).toBeNull();
+    expect(s.day.doorsOpenAt).toBeNull();
     expect(s.day.weather).toBeNull();
     expect(s.day.waitingAtOpening).toBe(0);
     expect(s.day.doorsOpenedThisService).toBe(false);

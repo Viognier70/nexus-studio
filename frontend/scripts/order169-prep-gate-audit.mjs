@@ -21,7 +21,7 @@
 //    som reducer.ts:1054 grenar på för att välja PREP-tillägg. Läses
 //    som "vad står i konfig-tabellen" med källrad, inte gissad.
 // 5. Arrivals prep-gate: skriptet verifierar existensen av
-//    `state.simTime < state.day.prepEndsAt` i arrivals.ts:126-127 via
+//    `state.simTime < state.day.doorsOpenAt` i arrivals.ts:126-127 via
 //    grep. Rapporten citerar rad + funktion.
 // 6. DevPanels `service=`-formel återges genom att skriptet reproducerar
 //    exakt raderna 107-117 i DevPanel.tsx. Formeln är trivial men det
@@ -116,11 +116,11 @@ function readMiseEnPlace(classKey) {
 }
 const OLKROGEN_MISE = readMiseEnPlace('ölkrogen');
 
-// Arrivals prep-gate: bevisa att arrivals.ts har `simTime < prepEndsAt`
+// Arrivals prep-gate: bevisa att arrivals.ts har `simTime < doorsOpenAt`
 // early-return i arrivalProbability.
 const ARRIVALS_PREP_GATE = grepFirst(
   'src/strategic/simulation/arrivals.ts',
-  /state\.simTime\s*<\s*state\.day\.prepEndsAt/
+  /state\.simTime\s*<\s*state\.day\.doorsOpenAt/
 );
 const ARRIVALS_RETURN_ZERO_AFTER_GATE = grepFirst(
   'src/strategic/simulation/arrivals.ts',
@@ -138,14 +138,14 @@ const DEVPANEL_WAITING_LINE = grepFirst(
   /waiting=\$\{d\.waitingAtOpening\}/
 );
 
-// Reducer:s prepEndsAt-tilldelning (för spårbarhet i rapporten).
+// Reducer:s doorsOpenAt-tilldelning (för spårbarhet i rapporten).
 const REDUCER_PREP_ENDS_AT = grepFirst(
   'src/strategic/simulation/reducer.ts',
-  /prepEndsAt:\s*businessHasMiseEnPlace/
+  /doorsOpenAt:\s*businessHasMiseEnPlace/
 );
 
 // Reducer:s doors-open guest spawn (för att bevisa att waitingAtOpening-
-// gästerna spawnar vid prepEndsAt, inte tidigare).
+// gästerna spawnar vid doorsOpenAt, inte tidigare).
 const REDUCER_DOORS_OPEN_SPAWN = grepFirst(
   'src/strategic/simulation/reducer.ts',
   /!draft\.day\.doorsOpenedThisService\s*&&\s*draft\.day\.waitingAtOpening\s*>\s*0/
@@ -169,13 +169,13 @@ const { derivePhase, deriveStaffAction } = await import(pathToFileURL(bundlePath
 //
 // simTime origin: t=0 är OPEN_SERVICE-ögonblicket för lunchpasset. Enligt
 // reducer.ts:1040 sätts `periodStartAt: state.simTime` samtidigt som
-// `prepEndsAt: businessHasMiseEnPlace(...) ? simTime+OPENING+PREP : simTime+OPENING`.
-// För ölkrogen (mise en place = true) blir `prepEndsAt = OPENING+PREP` sekunder
+// `doorsOpenAt: businessHasMiseEnPlace(...) ? simTime+OPENING+PREP : simTime+OPENING`.
+// För ölkrogen (mise en place = true) blir `doorsOpenAt = OPENING+PREP` sekunder
 // efter service-start.
 
 const periodStartAt = 0;
 const currentServiceLengthMinutes = 15;    // observationens 15-min-pass
-const prepEndsAt = OLKROGEN_MISE.value
+const doorsOpenAt = OLKROGEN_MISE.value
   ? periodStartAt + OPENING.value + PREP.value
   : periodStartAt + OPENING.value;
 const openingEndsAt = periodStartAt + OPENING.value;
@@ -189,8 +189,8 @@ function mockDay(atSimTime) {
     periodStartAt,
     currentServiceLengthMinutes,
     openingEndsAt: openingEndsAt > atSimTime ? openingEndsAt : null,
-    prepEndsAt: prepEndsAt > atSimTime ? prepEndsAt : null,
-    doorsOpenedThisService: prepEndsAt <= atSimTime,
+    doorsOpenAt: doorsOpenAt > atSimTime ? doorsOpenAt : null,
+    doorsOpenedThisService: doorsOpenAt <= atSimTime,
     waitingAtOpening: 3,               // observationens värde
     prepReadiness: { ice: 1, napkins: 1, cutlery: 1, stations: 1, garnish: 1 },
     prepIgnoranceCount: 0,
@@ -257,10 +257,10 @@ const probeSimTimes = [
   0,
   OPENING.value,                        // opening-slut
   OPENING.value + Math.floor(PREP.value / 2),  // mitten av prep
-  prepEndsAt - 1,                       // sista sekunden i prep
+  doorsOpenAt - 1,                       // sista sekunden i prep
   OBSERVATION_ELAPSED,                  // observationens elapsed 129s
-  prepEndsAt,                           // exakt prep-slut
-  prepEndsAt + 1,                       // första sekunden i service
+  doorsOpenAt,                           // exakt prep-slut
+  doorsOpenAt + 1,                       // första sekunden i service
   300,                                  // mitten av 15-min-passet
   currentServiceLengthMinutes * 60 - 1  // sista sekunden i passet
 ];
@@ -308,8 +308,8 @@ const report = {
   derivedTimeline: {
     periodStartAt,
     openingEndsAt,
-    prepEndsAt,
-    prepEndsAtMinutesInService: prepEndsAt / 60,
+    doorsOpenAt,
+    doorsOpenAtMinutesInService: doorsOpenAt / 60,
     serviceLengthSec: currentServiceLengthMinutes * 60
   },
   sourceCitations: {
@@ -324,14 +324,14 @@ const report = {
   observationInterpretation: (() => {
     const remSec = 12 * 60 + 51;
     const elapsedSec = currentServiceLengthMinutes * 60 - remSec;
-    const inPrep = elapsedSec < prepEndsAt;
+    const inPrep = elapsedSec < doorsOpenAt;
     return {
       devPanelIsRemaining: true,          // per DevPanel.tsx:113 `rem = ...`
       elapsedSecondsFromObservation: elapsedSec,
       elapsedMinutes: elapsedSec / 60,
-      prepEndsAtSec: prepEndsAt,
+      doorsOpenAtSec: doorsOpenAt,
       elapsedIsLessThanPrepEndsAt: inPrep,
-      secondsUntilPrepEnds: prepEndsAt - elapsedSec,
+      secondsUntilPrepEnds: doorsOpenAt - elapsedSec,
       onBreakIsExpected: inPrep,
       arrivalsCanHappenNow: !inPrep,
       waitingFieldSemantics:
@@ -354,7 +354,7 @@ console.log('=== ORDER 169 — prep-gate-audit ===\n');
 console.log(`OPENING_DURATION_SEC   = ${OPENING.value}   (${OPENING.file}:${OPENING.line})`);
 console.log(`PREP_DURATION_SEC      = ${PREP.value}  (${PREP.file}:${PREP.line})`);
 console.log(`ölkrogen.hasMiseEnPlace= ${OLKROGEN_MISE.value}  (${OLKROGEN_MISE.file}:${OLKROGEN_MISE.line})`);
-console.log(`prepEndsAt (för lunch) = ${prepEndsAt}s efter service-start`);
+console.log(`doorsOpenAt (för lunch) = ${doorsOpenAt}s efter service-start`);
 console.log('');
 console.log('Probes:');
 console.log('  elapsed  remaining  devPanel        phase   allThreeOnBreak');
@@ -366,7 +366,7 @@ for (const p of probes) {
 console.log('');
 console.log('Observation-tolkning:');
 console.log(`  remaining=12:51 → elapsed=${report.observationInterpretation.elapsedSecondsFromObservation}s = ${report.observationInterpretation.elapsedMinutes.toFixed(2)} min`);
-console.log(`  prep slutar vid ${prepEndsAt}s → elapsed < prep? ${report.observationInterpretation.elapsedIsLessThanPrepEndsAt}`);
+console.log(`  prep slutar vid ${doorsOpenAt}s → elapsed < prep? ${report.observationInterpretation.elapsedIsLessThanPrepEndsAt}`);
 console.log(`  På-rast är väntat: ${report.observationInterpretation.onBreakIsExpected}`);
 console.log(`  Arrivals kan hända nu: ${report.observationInterpretation.arrivalsCanHappenNow}`);
 console.log('');

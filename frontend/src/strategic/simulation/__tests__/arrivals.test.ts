@@ -10,6 +10,7 @@ import {
 } from '../arrivals';
 import { PRICE_ARRIVAL_MULT, SERVICE_ARRIVAL_MULT } from '../economics';
 import { computeShareFactor } from '../competitors';
+import { calendarFor } from '../../../sim/calendar';
 import { makeGuest, makeInitialState } from '../model';
 import type {
   DayPeriod,
@@ -59,7 +60,7 @@ describe('arrivalProbability', () => {
     expect(arrivalProbability(stateInPeriod(1, 'evening'))).toBe(0);
   });
 
-  it('matches base * periodMult * SERVICE_MULT * PRICE_MULT * economicMult * reputationMult * shareFactor / 300 (5 Hz)', () => {
+  it('matches base * periodMult * SERVICE_MULT * PRICE_MULT * economicMult * reputationMult * shareFactor * calendar / 300 (5 Hz)', () => {
     const s = stateInPeriod(1, 'dinner');
     // ORDER 043 v3 §4 reputation loop wired into arrivalProbability:
     // rate now also scales with reputation. Initial reputation = 0.6.
@@ -75,7 +76,9 @@ describe('arrivalProbability', () => {
         PRICE_ARRIVAL_MULT[s.policies.pricing] *
         economicArrivalMultiplier(s) *
         reputationArrivalMultiplier(s.reputation) *
-        shareMult) /
+        shareMult *
+        // ORDER 263 — kalenderns gästfaktor (veckodag × högtid × första veckan).
+        calendarFor(s.day.dayNumber).guestFactor) /
       300;
     expect(arrivalProbability(s)).toBeCloseTo(expected, 10);
   });

@@ -14,9 +14,12 @@ import { strings } from '../../content/strings.sv';
 import { useBusiness } from './BusinessContext';
 import { useCamera } from '../camera/CameraContext';
 import './name-entry.css';
+import { useSave } from '../save/SaveContext';
 
 export function NameEntryOverlay() {
   const { hasName, setName } = useBusiness();
+  // ORDER 263 — fortsätt ett sparat spel från startrutan.
+  const save = useSave();
   const { jumpToPreset } = useCamera();
   const [draft, setDraft] = useState('');
   if (hasName) return null;
@@ -67,6 +70,11 @@ export function NameEntryOverlay() {
           >
             {strings.business.firstRunSubmit}
           </button>
+          {save.hasAnySave && (
+            <button type="button" data-testid="continue-saved" onClick={save.openMenu}>
+              {strings.save.continueSaved}
+            </button>
+          )}
         </div>
         <p className="business-name-hint">{strings.business.firstRunHint}</p>
       </form>
