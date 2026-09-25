@@ -1,7 +1,6 @@
 import type { Rng } from '../util/rng';
 import type { DayPeriod, Guest, SimulationState } from '../types';
 import { makeGuest } from './model';
-import { roomSpawnPoint, roomEntrance } from './service';
 import { economicReadingNormalised } from './cashReading';
 import { PRICE_ARRIVAL_MULT, SERVICE_ARRIVAL_MULT } from './economics';
 import { currentRhythmMultiplier } from './rhythm';
@@ -238,9 +237,7 @@ export function maybeSpawnGuest(state: SimulationState, rng: Rng): Guest[] {
 
   const out: Guest[] = [];
   for (let i = 0; i < effectiveSize; i++) {
-    const g = makeGuest(state.simTime, false, walkAway, party);
-    seedGuestPosition(g);
-    out.push(g);
+    out.push(makeGuest(state.simTime, false, walkAway, party));
   }
   return out;
 }
@@ -251,21 +248,5 @@ export function maybeSpawnGuest(state: SimulationState, rng: Rng): Guest[] {
 export function scenarioSpawnStep(state: SimulationState): Guest | null {
   if (state.scenario.spawnedRemaining <= 0) return null;
   if (state.simTime < state.scenario.nextSpawnAt) return null;
-  const g = makeGuest(state.simTime, true, false);
-  seedGuestPosition(g);
-  return g;
-}
-
-// ORDER 261 (steg 2A) — spawn position + entrance target ur `business-
-// RoomRef` via roomSpawnPoint/roomEntrance. Före ORDER 261 hårdkodades
-// (0, 8) och (0, 3) i model.makeGuest (wine-bar-koord från content/
-// layout.ts INTERIOR) — de landade fel på restaurangens OBB-position.
-// Efter ORDER 261: sim och renderare läser samma OBB-transformerade
-// punkter. Fallback till INTERIOR sker bara i tester utan monterad
-// scen (räknare exponerad via `readRoomSourceCounters`).
-function seedGuestPosition(g: Guest): void {
-  const spawn = roomSpawnPoint(g.id);
-  const entrance = roomEntrance();
-  g.position = { x: spawn.x, z: spawn.z };
-  g.targetPosition = { x: entrance.x, z: entrance.z };
+  return makeGuest(state.simTime, true, false);
 }

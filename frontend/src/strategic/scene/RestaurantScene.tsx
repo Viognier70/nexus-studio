@@ -141,14 +141,6 @@ export function RestaurantScene() {
       // som varit oanvänd sedan augusti. Publicera den nu så InteriorGuests
       // läser rummets egen kö istället för layout-räknad kopia.
       waitingSlots: world.waitingSlots as [number, number][],
-      // ORDER 261 (steg 2A) — arrivals-ring och walk-away-punkter till
-      // kontraktet så sim väljer per-gäst spawn utan renderar-slot-räkning.
-      arrivalSlots: world.arrivalSlots as [number, number][],
-      declinedSlots: world.declinedSlots as [number, number][],
-      // ORDER 261 (steg 2A) — spawnPoint = waitingSpot (2.5 m utanför
-      // entrén). Sim.makeGuest sätter position hit; despawn efter
-      // 'leaving' också hit.
-      spawnPoint: world.waitingSpot as [number, number],
       capacity: room.capacity,
       // ORDER 221 §2 — nav-graf + bakade transformer. Se BrewpubScene.
       nav: nav,
