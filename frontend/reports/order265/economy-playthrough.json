@@ -1,0 +1,56 @@
+{
+  "url": "http://localhost:4173/",
+  "build": "produktion (vite build + preview)",
+  "flags": "inga",
+  "days": [
+    {
+      "morning": "Måndag · Morgon · VinbarFyll dagens schema och öppna för kvällen.Schemat: 0 av 2 platserMåltidens husÖppna för kvällenMedaljer: Inga medaljer ännu",
+      "exams": [
+        "8 av 8 rätt. Du har tagit brons i Stensöta.Tillbaka",
+        "8 av 8 rätt. Du har tagit brons i Metodköket.Tillbaka"
+      ],
+      "evening": "KvällenKvällens quiz: 3 frågor om fronesis, där kvällen gick sämst. Rätt svar ger en kredit, fel kostar en.Ta quizenHoppa överTill nästa morgon"
+    },
+    {
+      "morning": "Tisdag · Morgon · VinbarFyll dagens schema och öppna för kvällen.Schemat: 0 av 2 platserMåltidens husÖppna för kvällenMedaljer: Metodköket brons · Stensöta brons",
+      "exams": [
+        "8 av 8 rätt. Du har tagit brons i Kalastorget.Tillbaka"
+      ],
+      "evening": "KvällenKvällens quiz: 3 frågor om episteme, där kvällen gick sämst. Rätt svar ger en kredit, fel kostar en.Ta quizenHoppa överTill nästa morgon"
+    },
+    {
+      "morning": "Onsdag · Morgon · VinbarFyll dagens schema och öppna för kvällen.Schemat: 0 av 2 platserMåltidens husÖppna för kvällenMedaljer: Metodköket brons · Stensöta brons · Kalastorget brons",
+      "evening": "KvällenKvällens quiz: 3 frågor om fronesis, där kvällen gick sämst. Rätt svar ger en kredit, fel kostar en.Ta quizenHoppa överTill nästa morgon"
+    },
+    {
+      "morning": "Torsdag · Morgon · VinbarFyll dagens schema och öppna för kvällen.Schemat: 0 av 2 platserMåltidens husÖppna för kvällenMedaljer: Metodköket brons · Stensöta brons · Kalastorget brons",
+      "evening": "KvällenKvällens quiz: 3 frågor om fronesis, där kvällen gick sämst. Rätt svar ger en kredit, fel kostar en.Ta quizenHoppa överTill nästa morgon"
+    },
+    {
+      "morning": "Fredag · Morgon · VinbarFyll dagens schema och öppna för kvällen.Schemat: 0 av 2 platserMåltidens husÖppna för kvällenMedaljer: Metodköket brons · Stensöta brons · Kalastorget brons",
+      "evening": "KvällenKvällens quiz: 3 frågor om techne, där kvällen gick sämst. Rätt svar ger en kredit, fel kostar en.Ta quizenHoppa överTill nästa morgon"
+    },
+    {
+      "morning": "Lördag · Morgon · VinbarFyll dagens schema och öppna för kvällen.Schemat: 0 av 2 platserMåltidens husÖppna för kvällenMedaljer: Metodköket brons · Stensöta brons · Kalastorget brons",
+      "evening": "KvällenKvällens quiz: 3 frågor om fronesis, där kvällen gick sämst. Rätt svar ger en kredit, fel kostar en.Ta quizenHoppa överTill nästa morgon"
+    },
+    {
+      "morning": "Söndag · Morgon · VinbarSöndag. Krogen är stängd, och du har fyra platser i schemat.Veckoavräkningen. Veckan gav mer än golvet. Banken drog veckans amortering.Schemat: 0 av 4 platserMåltidens husBankenAvsluta söndagenMedaljer: Metodköket brons · Stensöta brons · Kalastorget brons",
+      "settlement": "Veckoavräkningen. Veckan gav mer än golvet. Banken drog veckans amortering."
+    }
+  ],
+  "errors": [],
+  "bank": {
+    "diagnosis": "Du driver vinbaren. Du har visat att du kan bemötande och omdöme, vin och dryck och köket. ",
+    "classes": {
+      "vinbar": "VinbarDin verksamhet",
+      "foodtruck": "Food truckByt till food truck",
+      "restaurang": "RestaurangFör restaurangen saknas silver i tre paviljonger.",
+      "olkrog": "ÖlkrogByt till ölkrog",
+      "gastgiveri": "GästgiveriFör gästgiveriet saknas guld i tre paviljonger, varav Kalastorget.",
+      "nattklubb": "NattklubbFör nattklubben saknas guld i Kalastorget och silver i Stensöta."
+    }
+  },
+  "afterChoice": "Söndag · Morgon · ÖlkrogSöndag. Krogen är stängd, och du har fyra platser i schemat.Veckoavräkningen. Veckan gav mer än golvet. Banken drog veckans amortering.Schemat: 0 av 4 platserMåltidens husBankenAvsluta söndagenMedaljer: Metodköket brons · Stensöta brons · Kalastorget brons",
+  "mondayAfter": "Måndag · Morgon · ÖlkrogFyll dagens schema och öppna för kvällen.Schemat: 0 av 2 platserMåltidens husÖppna för kvällenMedaljer: Metodköket brons · Stensöta brons · Kalastorget brons"
+}

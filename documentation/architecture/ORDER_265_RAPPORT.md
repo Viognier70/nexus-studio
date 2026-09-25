@@ -51,7 +51,24 @@
 
 ## 2. Hur det verifierades i spelarens vy
 
-*(fylls i ur `frontend/reports/order265/economy-playthrough.json`)*
+**Skript:** `frontend/scripts/order265-economy-playthrough.mjs`, körd mot produktionsbygget (`vite build` och `preview` på port 4173) med start på `/` utan flaggor. Utdata: `frontend/reports/order265/economy-playthrough.json`.
+
+**Flödet**, bara med spelarens knappar:
+1. Namnrutan.
+2. Måndag: prov i Stensöta och Metodköket. Tisdag: prov i Kalastorget.
+3. Varje kväll: "Öppna för kvällen" i farten 4×, quizen hoppas över, "Till nästa morgon".
+4. Söndag: avräkningen i ord, `days[6].settlement` = "Veckoavräkningen. Veckan gav mer än golvet. Banken drog veckans amortering." (`1-sondag-avrakning.png`).
+5. **Banken** (`2-banken.png`)
+   - `bank.diagnosis` = "Du driver vinbaren. Du har visat att du kan bemötande och omdöme, vin och dryck och köket."
+   - `bank.classes` visar i ord vad som saknas för restaurangen ("silver i tre paviljonger"), gästgiveriet ("guld i tre paviljonger, varav Kalastorget") och nattklubben ("guld i Kalastorget och silver i Stensöta"). Food truck och ölkrog går att välja.
+6. "Byt till ölkrog" ger `afterChoice` = "Söndag · Morgon · Ölkrog …" (`3-efter-bytet.png`), och `mondayAfter` = "Måndag · Morgon · Ölkrog …" med ölkrogens rum (`4-mandag-olkrog.png`).
+- `errors` är tom.
+
+**Felet som körningen hittade.** Första körningen föll på söndagen med "Cannot read properties of undefined (reading 'map')". En omkörning med ett bygge utan minifiering visade stacken, `IndoorLamps` ← `BrewpubScene`: ölkrogens rum publicerar inga bord, och lamporna fick `undefined`. Felet fanns sedan ORDER 249, men kunde inte nås av spelaren förrän banken gjorde det möjligt att byta till ölkrogen. Rättat i `BrewpubScene.tsx`. Andra körningen gick hela vägen utan fel.
+
+**Test:** bankens besked innehåller inga siffror (`src/strategic/economy/__tests__/bankWords.test.ts`).
+
+**Svit:** typecheck och build är gröna. Vitest: 2002 godkända, 3 förväntade fel och 1 överhoppad (mätningen av normal veckointäkt, som körs med `ORDER265_MEASURE=1`).
 
 ## 3. Veckoharnessens tal
 
