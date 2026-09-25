@@ -112,6 +112,9 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 - `ORDER_165_ARRIVALS_KONKURRENS_KARTLAGGNING.md`: ORDER 165 — Arrivals + konkurrens (kartläggning + VO-beslut alternativ A).
 - `ORDER_166_KONKURRENTERNA_FINNS.md`: ORDER 166 — Konkurrenterna finns.
 - `ORDER_167_KONKURRENTERNA_ROR_SIG.md`: ORDER 167 — Konkurrenterna rör sig.
+- `ORDER_169_ON_BREAK_UTREDNING.md`: ORDER 169 — On break-spåret: prep-fasgränsen och avläsningen av DevPanel.
+- `ORDER_170_ON_BREAK_LIVE_SIM.md`: ORDER 170 — On break-spåret: live-sim-audit i ölkrogen.
+- `ORDER_172_KAMERA_INTERIOR_UTREDNING.md`: ORDER 172 — Kameran, interiören och playwright-scripten: utredning.
 - `ORDER_174_INTERIORLAYOUT_CONTRACT.md`: ORDER 174 — interiorLayout läser businessRoom-kontraktet + DoD-krav "verifiering i fyndets flöde".
 - `ORDER_175_ENTER_OCH_CAM_TARGET.md`: ORDER 175 — Enter i namnrutan är inte kamerainput + DEV-raden visar actual→target.
 - `ORDER_176_BUILDINGS_OFF_ROADS.md`: ORDER 176 — byggnads-guard mot väg-envelope (motsatt riktning till ORDER 158).
