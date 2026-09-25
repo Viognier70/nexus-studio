@@ -691,6 +691,10 @@ export interface DayState {
   // scenarier. Nollas när dörrarna öppnat; carryover-kontrollen körs då.
   // Samma ögonblick, ett namn — som ORDER 144 (två matsalar) och 149.
   doorsOpenAt: number | null;
+  // ORDER 267 — minuter med öppna dörrar denna service (längden minus
+  // öppningsbilden och mise en place). Marknadens gäster för dagen
+  // fördelas över dem (arrivals.ts arrivalProbability).
+  doorsOpenMinutes?: number;
   // Number of ignorance-tagged prep events fired during the current
   // prep window. Read at prep-end to decide whether to schedule a
   // carryover bottleneck event ~13 min into service.

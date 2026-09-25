@@ -32,6 +32,7 @@
 
 import { describe, expect, it } from 'vitest';
 import { runHarness } from './harness';
+import { withoutMarketCap } from './marketHeadroom';
 import { INITIAL_CASH_SEK } from '../constants';
 import type { LedgerCategory } from '../../types';
 
@@ -87,6 +88,10 @@ describe('M3 DoD — evening ledger visible', () => {
     // absolute reconciliation drift must be small.
     const r = runHarness({
       seed: 42,
+      // ORDER 267 — rummets mekanik utan marknadens tak (marketHeadroom.ts):
+      // med taket fördelat över kvällens minuter blir kassarörelsen och
+      // händelsetrycket i det här skriptet för litet för att pröva mekaniken.
+      setup: withoutMarketCap,
       script: threeDayScriptWithFireAndAgency(),
       runUntilSec: RUN_UNTIL
     });

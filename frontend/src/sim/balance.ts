@@ -352,6 +352,28 @@ export const QUEUE = {
   giveUpSatisfaction: 0.35
 } as const;
 
+// ORDER 267 (F31) — sittiden. Speldesignen anger ingen klocka för
+// kvällen; servicen räknas som 18–23 i speltid (fem timmar över
+// SERVICE.simMinutes), alltså en halv spelminut per simsekund. En gäst
+// stannar en bestämd tid från att hon satt sig tills hon betalat; går
+// beställningen långsamt blir sittningen längre, aldrig kortare än
+// minDiningGameMinutes efter maten (gånger 2 − socialt kapital, ORDER
+// 043). Före ORDER 267 fanns ingen sittid: den blev vad personalen
+// hann med, 84–174 s beroende på fröet. Vision Owner 2026-09-25:
+// 60–90 min för en vinbar. Valda tal.
+export const SITTING = {
+  section: 'Servicen',
+  openQuestion: 'F31',
+  serviceStartHour: 18,
+  serviceEndHour: 23,
+  stayGameMinutes: { vardaglig: 75, formell: 90 },
+  minDiningGameMinutes: 10
+} as const;
+
+// Spelminuter per simsekund under servicen (F31).
+export const GAME_MINUTES_PER_SIM_SECOND =
+  ((SITTING.serviceEndHour - SITTING.serviceStartHour) * 60) / (SERVICE.simMinutes * 60);
+
 // ORDER 266 (F28) — händelser ur simuleringen, var och en med en orsak
 // (speldesign > Händelser). Valda tal.
 export const EVENTS = {

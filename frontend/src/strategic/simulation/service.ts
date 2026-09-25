@@ -1,4 +1,5 @@
-import { QUEUE } from '../../sim/balance';
+import { GAME_MINUTES_PER_SIM_SECOND, QUEUE, SITTING } from '../../sim/balance';
+import { INITIAL_CAPITAL_VALUE } from './model';
 import { INTERIOR } from '../content/layout';
 import { businessHasOvernight, businessHasSeats, capacityForBusiness } from '../business/businessClass';
 import type { BusinessClass } from '../business/businessClass';
@@ -39,6 +40,8 @@ const EATING_DURATION_SEC = 20;
 // överlämning." 2,5 sek = 12-13 ticks vid 5 Hz — säkert flera
 // render-frames där prop är synlig och staff-servePose peak:ar.
 const SERVING_PHASE_SEC = 2.5;
+// Betalningen: transaktion + steg åt sidan (sim-sek).
+const PAYING_PHASE_SEC = 8;
 
 // ORDER 260 §1 (VO 2026-09-23) — waiting-drop kalibrering.
 // Sänkt från 0.02 till 0.007 sat/sim-sek: mätning visade att 0.02/s
@@ -185,8 +188,20 @@ const SEATS_OLKROGEN = [
   8, 9, 10, 11                     // twotop (sist)
 ];
 
+// ORDER 267 — vinbaren (wineBarRoom.ts): 0-7 två lounger om fyra,
+// 8-13 tre tvåbord, 14-19 sex barstolar. Samma form som restaurangen:
+// tvåbord först, sedan baren, loungerna sist så att de hålls lediga för
+// sällskap. Utan egen lista föll vinbaren på SEATS_DEFAULT och fick
+// bara sexton av sina tjugo platser.
+const SEATS_VINBAREN = [
+  8, 9, 10, 11, 12, 13,            // tvåbord
+  14, 15, 16, 17, 18, 19,          // bar
+  0, 1, 2, 3, 4, 5, 6, 7           // lounger
+];
+
 function seatsPreferenceFor(businessClass: BusinessClass): readonly number[] {
   if (businessClass === 'ölkrogen') return SEATS_OLKROGEN;
+  if (businessClass === 'vinbaren') return SEATS_VINBAREN;
   return SEATS_DEFAULT;
 }
 
@@ -220,8 +235,13 @@ const SEAT_GROUPS_KVARTERSKROGEN: readonly (readonly number[])[] = [
   [0, 1], [2, 3], [4, 5, 6, 7], [8, 9], [10, 11], [12, 13, 14, 15]
 ];
 
+const SEAT_GROUPS_VINBAREN: readonly (readonly number[])[] = [
+  [0, 1, 2, 3], [4, 5, 6, 7], [8, 9], [10, 11], [12, 13], [14, 15, 16, 17, 18, 19]
+];
+
 function seatGroupsFor(businessClass: BusinessClass): readonly (readonly number[])[] {
   if (businessClass === 'ölkrogen') return SEAT_GROUPS_OLKROGEN;
+  if (businessClass === 'vinbaren') return SEAT_GROUPS_VINBAREN;
   return SEAT_GROUPS_KVARTERSKROGEN;
 }
 
@@ -456,13 +476,13 @@ export function tickGuests(state: SimulationState) {
       continue;
     }
 
-    if (guest.state === 'dining' && now - guest.stateTime > diningDuration(state)) {
+    if (guest.state === 'dining' && now - guest.stateTime > diningDuration(state, guest)) {
       guest.state = 'paying';
       guest.stateTime = now;
       continue;
     }
 
-    if (guest.state === 'paying' && now - guest.stateTime > 8) {
+    if (guest.state === 'paying' && now - guest.stateTime > PAYING_PHASE_SEC) {
       // Free the seat, count as completed. ORDER 043 v3 §4 reputation
       // loop: read final satisfaction as a reputation signal — happy
       // departures pull word-of-mouth up, unhappy departures pull it
@@ -552,7 +572,14 @@ export function tickGuests(state: SimulationState) {
     // (state='seated' men position ännu inte hos seat) räknades tidigare
     // som seated → staff.targetGuestId följde dem ut ur rummet. Med
     // avståndstak 2 m filtreras spöks-seatedIds bort.
-    return nearestSeatWithinM(state, g.position) !== null;
+    //
+    // ORDER 267 — mät mot gästens mål, inte dess nuvarande position. En
+    // gäst som fått plats men ännu går dit (platsen längre än 2 m från
+    // dörren, t.ex. vinbarens plats 8) städades annars bort, platsen
+    // såg ledig ut och gavs till nästa gäst. Mätt vecka 2 fredag i
+    // vinbarens rum: 43 sittande gäster på 20 platser, 38 av dem på
+    // plats 8, och ingen kö någonsin.
+    return nearestSeatWithinM(state, g.targetPosition ?? g.position) !== null;
   });
   // ORDER 188 fynd 5 — nolla staff.targetGuestId när gästen är borta.
   // Tidigare behöll staff en pointer till en borttagen gäst → position
@@ -605,17 +632,18 @@ function setGuestSeated(state: SimulationState, guest: Guest, seat: number) {
   moveGuest(guest, seatSlot(state, seat));
 }
 
-function diningDuration(state: SimulationState): number {
-  const base = state.policies.service === 'formell' ? 55 : 34;
+function diningDuration(state: SimulationState, guest: Guest): number {
   // ORDER 043 v3 §5.2 — low social capital lingers, high social capital
-  // turns tables. Scale factor (2 − social) with social clamped [0, 1]:
-  //   social = 1 → factor 1.0  (normal linger)
-  //   social = 0.5 → factor 1.5 (~50 % longer)
-  //   social = 0  → factor 2.0  (double linger, staff bottleneck)
-  // The queue reading depends on this: without slower turnover at low
-  // social, the room drains fast enough that a queue never forms.
+  // turns tables. Scale factor (2 − social) with social clamped [0, 1].
+  // ORDER 267 (F31) — faktorn gäller hela sittningen
+  // (SITTING.stayGameMinutes i balance.ts), räknad mot startvärdet så att
+  // en gäst i ett nystartat spel sitter just stayGameMinutes.
   const social = Math.max(0, Math.min(1, state.capitals.values.social));
-  return base * (2 - social);
+  const linger = (2 - social) / (2 - INITIAL_CAPITAL_VALUE);
+  const minDining = (SITTING.minDiningGameMinutes / GAME_MINUTES_PER_SIM_SECOND) * linger;
+  const stay = (SITTING.stayGameMinutes[state.policies.service] / GAME_MINUTES_PER_SIM_SECOND) * linger;
+  const seatedFor = guest.stateTime - (guest.seatedAtSimTime ?? guest.stateTime);
+  return Math.max(minDining, stay - seatedFor - PAYING_PHASE_SEC);
 }
 
 // -------------------------------------------------------------------------

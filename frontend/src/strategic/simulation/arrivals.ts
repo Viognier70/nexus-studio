@@ -100,11 +100,13 @@ export function reputationArrivalMultiplier(reputation: number): number {
   );
 }
 
-// Maximum concurrent guests (seated + waiting + arriving + declined
-// pending removal). Raised from 12 → 24 alongside the base-rate lift so
-// the arrival stream can actually reach 16 covers + 4 waiting at peak
-// without the cap short-circuiting spawns.
-const ACTIVE_GUEST_CAP = 24;
+// ORDER 267 (Vision Owner 2026-09-25) — taket på samtidiga gäster
+// (ACTIVE_GUEST_CAP = 24) är borttaget. Det begränsade efterfrågan i
+// tysthet: när 24 gäster fanns i rummet kom inga nya, och de räknades
+// aldrig. Efterfrågan kommer nu från marknaden (dagens pool och
+// spelarens andelstak, sim/economy.ts dailyGuestCap), och överskottet
+// syns som kö och som gäster som vänder vid dörren (service.ts,
+// WAITING_QUEUE_CAP) eller ger upp i kön (balance.ts QUEUE).
 
 // Very small arrival model. Expected guests per sim-minute is derived from
 // pricing and service concept, then modulated by the current economic
@@ -137,7 +139,7 @@ export function arrivalProbability(state: SimulationState): number {
   //
   // ORDER 111 §3 — food truck-specifika modifierare:
   //   * kö-gate: när kön är full slutar nya gäster ställa sig
-  //     (behandlas i maybeSpawnGuest via ACTIVE_GUEST_CAP-liknande check
+  //     (behandlas i maybeSpawnGuest via en kapacitetscheck
   //     mot policies.capacity — capacity varierar per verksamhet).
   //   * väder-amplifiering: gatuläget dubblerar väderpåverkan.
   //   * konkurrens: konstant nedjustering för att spegla att food trucken
@@ -159,9 +161,7 @@ export function arrivalProbability(state: SimulationState): number {
   // ORDER 263 — kalenderns gästfaktor: veckodag × högtid × första
   // veckan (speldesign > Tiden, balance.ts WEEK/HOLIDAYS/INTRODUCTION).
   const calendarMult = calendarFor(state.day.dayNumber).guestFactor;
-  const perMinute =
-    ARRIVAL_BASE_PER_MINUTE *
-    periodArrivalMultiplier(state.day.period) *
+  const attraction =
     SERVICE_ARRIVAL_MULT[state.policies.service] *
     PRICE_ARRIVAL_MULT[state.policies.pricing] *
     economicArrivalMultiplier(state) *
@@ -171,8 +171,21 @@ export function arrivalProbability(state: SimulationState): number {
     currentRhythmMultiplier(state) *
     competitionMult *
     valueMult *
-    shareMult *
-    calendarMult;
+    shareMult;
+  // ORDER 267 — med marknadens tak (speldesign > Marknaden) kommer
+  // kvällens gäster ur dagens tak, fördelade över minuterna med öppna
+  // dörrar och vägda med rummets dragningskraft (pris, rykte, väder,
+  // värdekvot …, omkring 1 en vanlig kväll). Tidigare var taket bara
+  // en stoppskylt: 12 gäster/min fyllde dagens tak under första halvan
+  // av kvällen och sedan kom ingen, så även måndagen fick kö. Taket
+  // innehåller redan kalenderns gästfaktor. Utan tak (mekaniktesterna,
+  // marketHeadroom.ts) gäller den gamla grundtakten.
+  const cap = dailyGuestCap(state);
+  const openMinutes = state.day.doorsOpenMinutes;
+  const perMinute =
+    Number.isFinite(cap) && openMinutes !== undefined && openMinutes > 0
+      ? (cap / openMinutes) * attraction
+      : ARRIVAL_BASE_PER_MINUTE * periodArrivalMultiplier(state.day.period) * attraction * calendarMult;
   return perMinute / (60 * 5); // 5 Hz tick.
 }
 
@@ -202,8 +215,6 @@ const PARTY_PAIR_P = 0.35;
 // Resterande 0.10 = trio (3 st).
 
 export function maybeSpawnGuest(state: SimulationState, rng: Rng): Guest[] {
-  const active = state.guests.length;
-  if (active >= ACTIVE_GUEST_CAP) return [];
   // ORDER 265 — marknadens tak: spelarens andel av dagens gästpool
   // (speldesign > Marknaden, src/sim/economy.ts dailyGuestCap).
   if ((state.day.arrivalsToday ?? 0) >= dailyGuestCap(state)) return [];
@@ -232,12 +243,9 @@ export function maybeSpawnGuest(state: SimulationState, rng: Rng): Guest[] {
     partySize = isNotSolo ? (isTrio ? 3 : 2) : 1;
   }
 
-  // Guarda mot att blåsa capacity-taket när party spawnar. Om active +
-  // partySize > cap → skala ner till vad som får plats (alltid ≥ 1 för
-  // att inte kasta bort tick:en).
-  const room = Math.max(1, ACTIVE_GUEST_CAP - active);
+  // Ett sällskap får inte blåsa marknadens tak för dagen.
   const marketRoom = Math.max(1, dailyGuestCap(state) - (state.day.arrivalsToday ?? 0));
-  const effectiveSize = Math.min(partySize, room, marketRoom);
+  const effectiveSize = Math.min(partySize, marketRoom);
 
   const party = effectiveSize > 1
     ? { id: nextPartyId(), size: effectiveSize }

@@ -1244,6 +1244,7 @@ function openService(
     period: service,
     periodStartAt: state.simTime,
     currentServiceLengthMinutes: length,
+    doorsOpenMinutes: serviceWindowMinutes,
     scenariosPlanned,
     scenariosFiredThisService: 0,
     scenarioTriggerTimes,

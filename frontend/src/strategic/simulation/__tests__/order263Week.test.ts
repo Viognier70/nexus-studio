@@ -1,3 +1,4 @@
+import { dailyGuestCap } from '../../../sim/economy';
 // ORDER 263 (Nexus v1 etapp 1) — en hel vecka i simuleringen.
 //
 // Speldesign > Tiden: dagen har tre faser (morgon, service, kväll),
@@ -83,7 +84,13 @@ describe('ORDER 263 — en hel vecka', () => {
     open = tickUntil(open, (x) => x.day.doorsOpenAt === null || x.simTime >= x.day.doorsOpenAt);
     const rateOn = (dayNumber: number) => arrivalProbability({ ...open, day: { ...open.day, dayNumber } });
     // Vecka 2 (ingen första-veckan-faktor, ingen högtid): dag 8 = måndag, 12 = fredag.
+    // ORDER 267 — takten kommer ur dagens marknadstak, som är avrundat
+    // till hela gäster; kvoten följer taken exakt och veckodagen inom
+    // avrundningen (en gäst på måndagens tak).
+    const capOn = (dayNumber: number) => dailyGuestCap({ ...open, day: { ...open.day, dayNumber } });
     const ratio = rateOn(12) / rateOn(8);
-    expect(ratio).toBeCloseTo(WEEK.guestFactor.fri / WEEK.guestFactor.mon, 6);
+    expect(ratio).toBeCloseTo(capOn(12) / capOn(8), 6);
+    const factorRatio = WEEK.guestFactor.fri / WEEK.guestFactor.mon;
+    expect(Math.abs(ratio - factorRatio)).toBeLessThan(factorRatio / capOn(8));
   });
 });
