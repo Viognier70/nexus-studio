@@ -11,6 +11,8 @@
 import { strings } from '../../content/strings.sv';
 import { calendarFor } from '../../sim/calendar';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
+import { scheduleSlotsUsed } from '../knowledge/pavilionVisit';
+import { MedalShelf } from '../knowledge/ui/MedalShelf';
 
 const OVERLAY_STYLE: React.CSSProperties = {
   position: 'absolute',
@@ -63,13 +65,18 @@ const BUTTON_STYLE: React.CSSProperties = {
   cursor: 'pointer'
 };
 
-export function DayActionBar() {
+interface Props {
+  // ORDER 264 — öppnar Måltidens hus (paviljongerna).
+  onOpenHouse: () => void;
+}
+
+export function DayActionBar({ onOpenHouse }: Props) {
   const sim = useSimState();
   const dispatch = useSimDispatch();
   const period = sim.day.period;
   if (period !== 'morning' && period !== 'afternoon') return null;
   const cal = calendarFor(sim.day.dayNumber);
-  const used = sim.day.pickedActivityIds.length;
+  const used = scheduleSlotsUsed(sim);
   return (
     <div style={OVERLAY_STYLE} data-testid="day-action-bar">
       <div style={HEADING_STYLE}>
@@ -78,6 +85,11 @@ export function DayActionBar() {
       <div>{cal.isServiceDay ? strings.morning.serviceDayBody : strings.morning.sundayBody}</div>
       <div style={ROW_STYLE}>
         <span style={{ opacity: 0.75 }}>{strings.morning.slots(used, cal.scheduleSlots)}</span>
+        {period === 'morning' && (
+          <button type="button" style={BUTTON_STYLE} data-testid="open-house" onClick={onOpenHouse}>
+            {strings.knowledge.houseButton}
+          </button>
+        )}
         {cal.isServiceDay ? (
           <button
             type="button"
@@ -98,6 +110,7 @@ export function DayActionBar() {
           </button>
         )}
       </div>
+      <MedalShelf />
     </div>
   );
 }

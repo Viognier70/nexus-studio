@@ -140,6 +140,69 @@ export const strings = {
     activitiesHeading: 'Satsningar i dag',
     weekly: 'en gång i veckan'
   },
+  // ORDER 264 (Nexus v1 etapp 2) — Måltidens hus, prov och kvällsquiz.
+  knowledge: {
+    houseButton: 'Måltidens hus',
+    houseHeading: 'Måltidens hus',
+    houseBody: 'Ett besök tar en plats i dagens schema. Öva för krediter, eller gör prov för nästa medalj.',
+    close: 'Stäng',
+    pavilions: {
+      maltidbiblioteket: 'Måltidsbiblioteket',
+      kalastorget: 'Kalastorget',
+      stensota: 'Stensöta',
+      metodkoket: 'Metodköket',
+      gastronomiskateatern: 'Gastronomiska Teatern'
+    },
+    axes: {
+      episteme: 'episteme',
+      techne: 'techne',
+      phronesis: 'fronesis'
+    },
+    medals: {
+      brons: 'brons',
+      silver: 'silver',
+      guld: 'guld',
+      platina: 'platina'
+    },
+    noMedal: 'Ingen medalj ännu',
+    medalLine: (medal: string) => `Medalj: ${medal}`,
+    medalsHeading: 'Medaljer',
+    noMedalsYet: 'Inga medaljer ännu',
+    practice: 'Öva',
+    exam: (level: string) => `Prov: ${level}`,
+    examDone: 'Platina är taget',
+    theatreLocked: 'Öppnas när du har silver i två paviljonger',
+    noSlotsLeft: 'Dagens schema är fullt',
+    askers: {
+      kock: 'Kocken',
+      sommelier: 'Sommelieren',
+      gäst: 'Gästen',
+      värd: 'Värden',
+      servitör: 'Servitören',
+      lärling: 'Lärlingen'
+    },
+    questionOf: (n: number, total: number) => `Fråga ${n} av ${total}`,
+    right: 'Rätt.',
+    wrong: 'Inte riktigt.',
+    next: 'Nästa',
+    seeResult: 'Se resultatet',
+    practiceResult: (correct: number, total: number) => `${correct} av ${total} rätt. Varje rätt svar gav en kredit.`,
+    examPassed: (medal: string, pavilion: string, correct: number, total: number) =>
+      `${correct} av ${total} rätt. Du har tagit ${medal} i ${pavilion}.`,
+    examFailed: (correct: number, total: number, need: number) =>
+      `${correct} av ${total} rätt. Det behövs ${need}. Ett nytt prov drar nya frågor.`,
+    back: 'Tillbaka',
+    placeholderNote: 'Frågorna på den här nivån är tillfälliga tills de riktiga är skrivna.'
+  },
+  quiz: {
+    heading: 'Kvällen',
+    offer: (axis: string, n: number) => `Kvällens quiz: ${n} frågor om ${axis}, där kvällen gick sämst. Rätt svar ger en kredit, fel kostar en.`,
+    start: 'Ta quizen',
+    skip: 'Hoppa över',
+    skipped: 'Du hoppade över quizen i kväll.',
+    done: (delta: number) => delta > 0 ? `Quizen gav ${delta} ${delta === 1 ? 'kredit' : 'krediter'}.` : delta < 0 ? `Quizen kostade ${-delta} ${delta === -1 ? 'kredit' : 'krediter'}.` : 'Quizen gick jämnt upp.',
+    nextMorning: 'Till nästa morgon'
+  },
   save: {
     menuItem: 'Spara och ladda',
     continueSaved: 'Fortsätt ett sparat spel',
