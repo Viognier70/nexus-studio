@@ -6,10 +6,11 @@
 // flaggor, bara spelarens knappar och tangenter:
 //   startrutan → Nytt spel → titeln och bussen (VS001) → gå fram till den
 //   andra sökande (W), prata (E), välj en replik → gå till registreringen
-//   (A, W), registrera (E) → Fortsätt → mentorn: öva i Stensöta, provet i
+//   (W), registrera (E) → Fortsätt → mentorn: öva i Stensöta, provet i
 //   Stensöta, banken → Öppna en vinbar → namnet → mentorns avsked →
 //   måndag–lördag: Öppna för kvällen, hoppa över quizen, Till nästa
-//   morgon → söndag: söndagstidningen.
+//   morgon; fredag och lördag i 2× med "Rycka in" för en gäst som är på
+//   väg att gå (etapp 4:s DoD 1, flyttad hit) → söndag: söndagstidningen.
 // Tiden från "Nytt spel" till att verksamheten har ett namn mäts
 // (speldesignen: en ny spelare står i sin verksamhet inom 20 minuter).
 // Utdata: reports/order267/week-from-bus.json + skärmdumpar.
@@ -57,7 +58,12 @@ const browser = await chromium.launch().catch(() => chromium.launch({ channel: '
 const ctx = await browser.newContext({ viewport: { width: 1280, height: 720 } });
 const page = await ctx.newPage();
 const errors = [];
-page.on('pageerror', (e) => errors.push(`${e.message}\n${(e.stack ?? '').slice(0, 800)}`));
+page.on('pageerror', (e) => {
+  if (errors.length === 0) console.log(`FÖRSTA FELET efter steget "${report.steps.at(-1)?.name ?? 'start'}":\n${(e.stack ?? e.message).slice(0, 2500)}`);
+  errors.push(`${e.message}\n${(e.stack ?? '').slice(0, 800)}`);
+  // DEBUG_STOP=1: stanna vid första felet (felsökning med omminifierat bygge).
+  if (process.env.DEBUG_STOP === '1') process.exit(1);
+});
 const report = { url: `${URL}/`, build: 'produktion (vite build + preview)', flags: 'inga', steps: [], days: [], errors };
 const t0 = Date.now();
 const step = (name, extra = {}) => {
@@ -96,7 +102,7 @@ async function walkUntilPrompt(key, prompt, maxMs) {
     const hud = await page.$eval('.hud-context', (e) => e.textContent).catch(() => '');
     if (hud && hud.includes(prompt)) return true;
     await page.keyboard.down(key);
-    await delay(250);
+    await delay(120);
     await page.keyboard.up(key);
   }
   return false;
@@ -110,6 +116,41 @@ async function finishEvening() {
   await page.click('[data-testid=end-evening]');
   await page.waitForSelector('[data-testid=day-action-bar]', { timeout: 120000 });
   return story;
+}
+
+// Etapp 4:s DoD 1: vänta på en gäst "på väg att gå", rycka in, se rummet
+// skymmas och läs strömmen direkt när rummet syns igen (under servicen).
+async function tryIntervene(tag) {
+  while (!(await page.$('[data-testid=evening-bar]'))) {
+    const scenarioButton = await page.$('[data-testid=scenario-overlay] button');
+    if (scenarioButton) await scenarioButton.dispatchEvent('click').catch(() => {});
+    if (!(await page.$('[data-testid=action-panel]'))) {
+      const btn = await page.$('[data-testid=action-button]');
+      if (btn) await btn.dispatchEvent('click').catch(() => {});
+    }
+    if (await page.$('[data-testid=action-panel] button[data-at-risk=true]')) {
+      const label = await page.$eval('[data-testid=action-panel] button[data-at-risk=true]', (b) => b.textContent).catch(() => null);
+      const guestTestId = await page.$eval('[data-testid=action-panel] button[data-at-risk=true]', (b) => b.dataset.testid).catch(() => null);
+      await shot(`${tag}-1-ko-pa-vag-att-ga.png`);
+      const clicked = await page.evaluate((id) => {
+        const b = document.querySelector(`[data-testid="${id}"]`) ?? document.querySelector('[data-testid=action-panel] button[data-at-risk=true]');
+        if (!b) return false;
+        b.click();
+        return true;
+      }, guestTestId);
+      if (!clicked) continue;
+      const blindShown = await page.waitForSelector('[data-testid=blind-overlay]', { timeout: 2000 }).then(() => true).catch(() => false);
+      if (!blindShown) continue;
+      const blind = await page.textContent('[data-testid=blind-overlay]');
+      await shot(`${tag}-2-rummet-skymt.png`);
+      await page.waitForSelector('[data-testid=blind-overlay]', { state: 'detached', timeout: 60000 });
+      const stream = await page.textContent('[data-testid=event-stream]').catch(() => null);
+      await shot(`${tag}-3-strommen.png`);
+      return { label, blind, stream };
+    }
+    await delay(500);
+  }
+  return null;
 }
 
 // Ett scenario som väntar på spelaren stoppar ankomsterna; spelaren svarar.
@@ -141,21 +182,24 @@ try {
   if (!(await walkUntilPrompt('w', 'Prata', 20000))) throw new Error('kom inte fram till den andra sökande');
   await page.keyboard.press('e');
   await page.waitForSelector('.dialogue-panel .choice');
-  await page.click('.dialogue-panel .choice');
+  await page.$eval('.dialogue-panel .choice', (b) => b.click());
   await page.waitForSelector('.dialogue-actions .btn');
   await shot('w04-samtalet.png');
-  await page.click('.dialogue-actions .btn');
+  // Dialogen ritas om medan den visas; Playwrights träffprov landar då på
+  // panelen. Samma klick som spelarens, direkt på knappen.
+  await page.$eval('.dialogue-actions .btn', (b) => b.click());
+  await page.waitForSelector('.dialogue-panel', { state: 'detached', timeout: 10000 });
   step('samtalet');
 
-  await page.keyboard.down('a');
-  await delay(900);
-  await page.keyboard.up('a');
-  if (!(await walkUntilPrompt('w', 'Registrera', 30000))) throw new Error('kom inte fram till registreringen');
+  if (!(await walkUntilPrompt('w', 'Registrera', 30000))) {
+    await shot('w-fel-registreringen.png');
+    throw new Error('kom inte fram till registreringen');
+  }
   await page.keyboard.press('e');
   await page.waitForSelector('.end-stage', { timeout: 10000 });
   await shot('w05-registreringen.png');
   step('registreringen');
-  await page.click('.end-buttons .btn.primary');
+  await page.$eval('.end-buttons .btn.primary', (b) => b.click());
 
   // Introduktionen i strategiska spelet.
   await page.waitForSelector('[data-testid=mentor][data-step=practice]', { timeout: 120000 });
@@ -199,8 +243,15 @@ try {
       await delay(20000);
       await shot('w11-forsta-kvallen.png');
     }
+    const busy = d >= 4 && !report.intervention;
+    if (busy) {
+      await page.click('button[title="Simulering 2× hastighet"]');
+      const r = await tryIntervene(d === 4 ? 'w-fredag' : 'w-lordag');
+      if (r) report.intervention = { day: d + 1, ...r };
+    }
     await answerScenariosUntilEvening();
     const story = await finishEvening();
+    if (busy) await page.click('button[title="Simulering 4× hastighet"]');
     report.days.push({ morning: bar.slice(0, 80), evening: story });
     step(`dag ${d + 1}`);
   }
@@ -217,4 +268,4 @@ try {
   await browser.close();
   preview.kill('SIGTERM');
 }
-console.log(JSON.stringify({ minutesToBusiness: report.minutesToBusiness, newspaper: report.newspaper?.slice(0, 400), errors }, null, 2));
+console.log(JSON.stringify({ minutesToBusiness: report.minutesToBusiness, intervention: report.intervention, newspaper: report.newspaper?.slice(0, 400), errors }, null, 2));

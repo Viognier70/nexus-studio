@@ -447,13 +447,13 @@ export function InteriorGuests() {
     // ORDER 186 fynd 2 — facings i samma index-ordning som seatsForFrame.
     // Null när kontraktet saknas (layout.seats-fallback bär inte facing).
     const seatFacingsForFrame: readonly number[] | null = usingContract
-      ? roomChan!.seatFacings
+      ? roomChan!.seatFacings ?? null
       : null;
     // ORDER 200 fynd 1 + §3.1 — sitshöjd per plats. Null utan kontrakt;
     // consumern nedan använder då `targetSitLift = 0` (loud finding via
     // console.warn i DEV) i stället för att gissa 0.45.
     const seatHeightsForFrame: readonly number[] | null = usingContract
-      ? roomChan!.seatHeights
+      ? roomChan!.seatHeights ?? null
       : null;
     // ORDER 201 fynd 1 — sockelns tjocklek per klass publicerad. INTE
     // konsumerad av sitLift efter ORDER 202 §1-revert (bänk-vs-stol
