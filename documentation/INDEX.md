@@ -363,7 +363,6 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 - `ORDER - rekvisitan.md`: ORDER — Rekvisitan: montering av `figureProps.ts`.
 - `ORDER - restaurangen.md`: ORDER — Restaurangen: montering av `restaurantRoom.ts`.
 - `ORDER - silhuettbandet per zon.md`: ORDER — Silhuettbandet per golvzon: `silhouetteContrast.zones.ts`.
-- `ORDER - vinbaren.md`: ORDER — Vinbaren: montering av `wineBarRoom.ts`.
 - `Olkrog med bryggeri.dc.html`: Claude Design-canvas: Olkrog med bryggeri.
 - `Personal - perspektiv och rörelser.dc.html`: Claude Design-canvas: Personal - perspektiv och rörelser.
 - `Reel - gaster och personal.dc.html`: Claude Design-canvas: Reel - gaster och personal.
