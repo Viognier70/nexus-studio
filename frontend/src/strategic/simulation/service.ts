@@ -172,18 +172,11 @@ export function resetRoomSourceCounters(): void {
   roomSourceCounters.spawnPoint = 0;
   roomSourceCounters.seat = 0;
 }
-// Publicera räknaren EN GÅNG på globalThis (referens är stabil, alla
-// mutations syns via mätscriptet). Före ORDER 261-mätningen skrev vi
-// hela objektet varje fallback-inkrement — order131LoadSweep-testet
-// (200×2×4 iterationer med tusentals seatSlot-anrop utan monterad
-// scen) blev 5× långsammare pga globalThis-set-overhead. Referensen
-// på g.__nxRoomSourceCounters muteras nu in place.
-if (import.meta.env.DEV && typeof globalThis !== 'undefined') {
-  const g = globalThis as unknown as { __nxRoomSourceCounters?: RoomSourceCounters };
-  g.__nxRoomSourceCounters = roomSourceCounters;
-}
 function publishSourceCounters(): void {
-  /* no-op — referensen är delad, mutations syns direkt i mätningen */
+  if (import.meta.env.DEV && typeof globalThis !== 'undefined') {
+    const g = globalThis as unknown as { __nxRoomSourceCounters?: RoomSourceCounters };
+    g.__nxRoomSourceCounters = roomSourceCounters;
+  }
 }
 
 export function roomEntrance(): Vec2 {
