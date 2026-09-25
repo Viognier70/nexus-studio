@@ -1110,6 +1110,10 @@ export interface PendingOutcome {
 export interface SimulationState {
   seed: number;
   rngState: number;
+  // ORDER 263 — senast utdelade gäst- och sällskaps-id. Del av
+  // tillståndet så att ett laddat spel fortsätter exakt (model.ts
+  // loadIdCounters). Valfri så äldre fixturer utan fältet fungerar.
+  idCounters?: { guest: number; party: number };
   tick: number;
   simTime: number;
   speed: 0 | 1 | 2 | 4;
@@ -1445,6 +1449,9 @@ export type SimAction =
   // ORDER 263 — avslutar en stängd dag (söndag) utan service: morgon →
   // kväll, sedan rullar dagen som vanligt. Ingen effekt på servicedagar.
   | { type: 'CLOSE_DAY' }
+  // ORDER 263 — laddar ett sparat spel: ersätter hela tillståndet med
+  // det sparade (src/sim/save.ts). Farten behålls från det sparade.
+  | { type: 'LOAD_STATE'; state: SimulationState }
   // ORDER 043 v3 §10 step 5 agency-staff mid-service offer response.
   | { type: 'ACCEPT_AGENCY' }
   | { type: 'DECLINE_AGENCY' }

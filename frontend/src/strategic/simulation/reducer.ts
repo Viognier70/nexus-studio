@@ -111,7 +111,7 @@ import {
 } from './morale';
 import { tickQualityDrift } from './quality';
 import { ROLLING_WINDOW } from './valuation';
-import { initialDay, makeGuest, makeInitialState, makeStaff } from './model';
+import { initialDay, loadIdCounters, makeGuest, makeInitialState, makeStaff, readIdCounters } from './model';
 import {
   decayEnablersOvernight,
   phronesisSofteningGeneral,
@@ -202,7 +202,17 @@ const CHOICE_CAPITAL_SIGN: Record<ScenarioChoice, number> = {
   C: -0.5
 };
 
+// ORDER 263 — id-räknarna följer tillståndet (se model.ts loadIdCounters).
 export function reducer(state: SimulationState, action: SimAction): SimulationState {
+  const base = action.type === 'LOAD_STATE' ? action.state : state;
+  loadIdCounters(base);
+  const next = reduce(base, action);
+  const counters = readIdCounters();
+  if (next.idCounters?.guest === counters.guest && next.idCounters?.party === counters.party) return next;
+  return { ...next, idCounters: counters };
+}
+
+function reduce(state: SimulationState, action: SimAction): SimulationState {
   switch (action.type) {
     case 'TICK': {
       const next = advanceTick(state);
@@ -267,6 +277,8 @@ export function reducer(state: SimulationState, action: SimAction): SimulationSt
       return startService(state);
     case 'CLOSE_DAY':
       return closeDay(state);
+    case 'LOAD_STATE':
+      return action.state;
     case 'SKIP_LUNCH':
       return skipLunch(state);
     case 'ACCEPT_AGENCY':

@@ -312,5 +312,8 @@ export const INTRODUCTION = {
 
 export const SAVING = {
   section: 'Ramar för version 1 > Sparande',
-  slots: 3                     // "Tre sparplatser per spelare"
+  slots: 3,                    // "Tre sparplatser per spelare"
+  // ORDER 263 — sparfilens formatversion. Höjs när sparfilens form
+  // ändras; äldre filer visas då som "sparat i en äldre version" (F12).
+  formatVersion: 1
 } as const;

@@ -1,6 +1,6 @@
 import type { Rng } from '../util/rng';
 import type { DayPeriod, Guest, SimulationState } from '../types';
-import { makeGuest } from './model';
+import { makeGuest, nextPartyId } from './model';
 import { economicReadingNormalised } from './cashReading';
 import { PRICE_ARRIVAL_MULT, SERVICE_ARRIVAL_MULT } from './economics';
 import { currentRhythmMultiplier } from './rhythm';
@@ -200,8 +200,6 @@ const PARTY_SOLO_P = 0.55;
 const PARTY_PAIR_P = 0.35;
 // Resterande 0.10 = trio (3 st).
 
-let partyCounter = 0;
-
 export function maybeSpawnGuest(state: SimulationState, rng: Rng): Guest[] {
   const active = state.guests.length;
   if (active >= ACTIVE_GUEST_CAP) return [];
@@ -237,7 +235,7 @@ export function maybeSpawnGuest(state: SimulationState, rng: Rng): Guest[] {
   const effectiveSize = Math.min(partySize, room);
 
   const party = effectiveSize > 1
-    ? { id: `party-${++partyCounter}`, size: effectiveSize }
+    ? { id: nextPartyId(), size: effectiveSize }
     : undefined;
 
   const out: Guest[] = [];
