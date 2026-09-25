@@ -3,6 +3,7 @@ import { INTERIOR, RESIDENT_SPLINES } from '../content/layout';
 import { INITIAL_CASH_SEK } from './constants';
 import { MORALE_INITIAL } from './morale';
 import { initialTeam } from './team';
+import { SERVICE } from '../../sim/balance';
 import type {
   CapitalState,
   DayState,
@@ -247,7 +248,7 @@ export function makeInitialState(
     // in half the real time. Scenario overlays + evening-account
     // fade use wall-clock timing (below), so speed does not
     // shrink the player's reading window.
-    speed: 2,
+    speed: SERVICE.defaultSimSpeed,   // ORDER 263 — balance.ts (SERVICE)
     policies,
     staff,
     guests: [],
