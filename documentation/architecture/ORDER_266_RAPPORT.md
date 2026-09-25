@@ -4,7 +4,7 @@
 **Speldesign** `NEXUS_SPELDESIGN_V1.md` > Servicen
 **Gren** `order-266` från `main` `1564a25`
 **Datum** 2026-09-25
-**Status** **Stoppad — DoD inte uppnådd.** Grenen är inte mergad. Se §2 och §4.
+**Status** Mergad utan DoD 1, som flyttats till etapp 5 enligt Vision Owners beslut 2026-09-25 (se *Beslut och rättelse* sist). DoD 2 är uppnådd.
 
 ---
 
@@ -125,3 +125,38 @@ Nya i `NEXUS_V1_OPPNA_FRAGOR.md`:
 - **F27:** avklingningen.
 - **F28:** händelserna.
 - **F29:** köns tålamod.
+
+
+---
+
+## Beslut och rättelse (2026-09-25, efter stoppet)
+
+**Vision Owners beslut:** "Ta bort ACTIVE_GUEST_CAP som tyst begränsning. Efterfrågan ska komma från marknaden … och överskottet ska synas som kö och gäster som går." Vidare: sittiden ska sättas i `balance.ts` (riktvärde 60–90 min speltid för en vinbar), och fredag och lördag vecka 2 ska mätas med vinbarens 20 platser. "Detta hör till etapp 5 och slumpmålet, så fortsätt i ordning." DoD 1 (rycka in och se en gäst stanna, i spelarens vy) flyttas därmed till etapp 5 (ORDER 267).
+
+**Hur DoD 1 verifierades: det gjorde den inte i spelarens vy.**
+- Den enda verifieringen är simuleringstestet `frontend/src/sim/__tests__/service.test.ts`, testet "kontrafaktiskt".
+- Testet bygger ett fullt rum och lägger in en gäst i kön strax under gränsen för att ge upp. Utan insats går gästen, med insats stannar den.
+- Tillståndet är konstruerat. Ingen gäst gick i någon riktig spelsession, så DoD 1 är inte uppfylld.
+
+**Rättelse av §4.** I stoppet påstod jag att "gästerna sitter kort, i snitt runt två minuter" och att rummet "vänder så fort att ingen behöver vänta". Det var en gissning, inte en mätning, och den var fel.
+
+Mätt i spelarens rum (kvarterskrogen, fredag vecka 2, standardfrö, 27 gäster som satt och gick):
+
+| Fas | Simulerade sekunder i snitt |
+| --- | --- |
+| Sätter sig | 4,2 |
+| Väntar på att få beställa | 128,2 |
+| Äter | 51,1 |
+| Betalar | 8,2 |
+| **Från att gästen satt sig till att den gick** | **173,7** |
+
+Den verkliga orsaken till den tomma kön är taket på samtidiga gäster. När 24 gäster finns i rummet, sittande, väntande och på väg ut, kommer inga nya: de når aldrig kön, och ingen räknar dem.
+
+**De fyra förväntade felen**
+
+| Test | Varför det felar | När det blir grönt |
+| --- | --- | --- |
+| `order265WeekHarness.test.ts` "en nedgradering som följs av en väg tillbaka [KÄND AVVIKELSE ORDER 266]" | I spelarens rum räcker kassan efter nedgraderingen inte till en veckas golv i vinbaren (4 144 mot 5 051 SEK), och food trucken går under igen. | Etapp 6, när food trucken byggs om, eller tidigare om Vision Owner ändrar villkoren vid nedgradering (F22). |
+| `order230LunchDinnerMetrics.test.ts` "metrics.revenue matchar dagsledgerns revenue-summa (båda services) [KÄND AVVIKELSE ORDER 253]" | Testet kräver att dagens intäkt för lunch och middag överstiger 13 000 SEK. Efter ORDER 253:s tempo ger frö 42 omkring 10 710 SEK per pass. | När Vision Owner beslutat om ekonomins baslinje. I v1 finns bara en service per dag, så testets förutsättning (två pass) bör skrivas om eller tas bort i etapp 5. |
+| `order230LunchDinnerMetrics.test.ts` "idle-kostnad mellan lunch och middag räknas in i metrics.cost [KÄND AVVIKELSE ORDER 258]" | Flyttalsbrus: gapet blir −3e-12 och testet kräver ≥ 0. | Med en tolerans i testet. Det räcker, eftersom felet är avrundning, inte en läcka. Kan göras i etapp 5. |
+| `reputation.test.ts` "mediocre departure (satisfaction in [0.35, 0.75]) is neutral [KÄND AVVIKELSE ORDER 257]" | Ryktets band flyttades i ORDER 257 (medelmåttigt är nu 0,65–0,85), men testet använder det gamla bandet (0,5). | När testet får de nya banden, vilket ORDER 257 lät vänta på Vision Owner. Kan göras i etapp 5. |
