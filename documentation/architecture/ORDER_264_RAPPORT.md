@@ -99,7 +99,7 @@ Nya i `NEXUS_V1_OPPNA_FRAGOR.md`:
 | --- | --- | --- | --- |
 | 0 | 1–2 h (i efterhand) | 15 min på grenen, cirka 30 min med läsningen | ~0,5 |
 | 1 | 4–6 h | 1 h 19 min | ~0,33 |
-| 2 | 5–7 h | se tidsloggen, cirka 40 min | ~0,13 |
+| 2 | 5–7 h | 33 min | ~0,11 |
 
 **Slutsatser**
 - Uppskattningarna var 3 till 8 gånger för höga.
