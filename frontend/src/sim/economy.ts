@@ -10,12 +10,16 @@ import {
   BUSINESS_CLASSES,
   DOWNGRADE,
   ECONOMY,
+  NEW_START,
+  SCENARIO_CASH,
   FLOOR,
   LOAN,
   REPUTATION,
   MARKET,
   MEDAL_LEVELS,
+  TEAM_BY_CLASS,
   UPGRADE,
+  WAGES,
   WEEK,
   type BusinessClassId,
   type BusinessClassSpec,
@@ -25,6 +29,7 @@ import {
 import { calendarFor } from './calendar';
 import type { PavilionKey, SimulationState } from '../strategic/types';
 import { applyCashCost, applyCashDelta, postLedger } from '../strategic/simulation/cashReading';
+import { teamForClass } from '../strategic/simulation/team';
 import { strings } from '../content/strings.sv';
 
 export const ALL_PAVILIONS: readonly PavilionKey[] = [
@@ -106,6 +111,12 @@ export interface EconomyState {
   lastSettlement: SettlementRecord | null;
   // Senaste dagsavslutets varning, för kvällsberättelsen.
   warning: 'first' | 'second' | 'downgrade' | null;
+  // ORDER 268 — sedan när spelaren står utan verksamhet och hur många
+  // prov hon gjort sedan dess (banken lånar ut igen efter en hel vecka
+  // med minst ett prov). Saknas i äldre sparfiler: då gäller inget krav.
+  withoutBusiness?: { sinceDay: number; examsTaken: number } | null;
+  // ORDER 268 — scenariernas kassa sedan veckoavräkningen (taket ±20 %).
+  weekScenarioCashSek?: number;
 }
 
 export function classSpec(id: BusinessClassId): BusinessClassSpec {
@@ -212,14 +223,27 @@ export function dailyInterestSek(loan: LoanState | null): number {
 // kvällens löner och lånets ränta (som bokförs vid dygnsskiftet).
 // Räknas när kvällen börjar, så att kvällsberättelsen kan bära varningen.
 export function dayEndCash(state: SimulationState): number {
-  const wages = state.team.members.filter((m) => !m.isAgency).reduce((sum, m) => sum + m.dailyCost, 0);
-  return state.cash - wages - dailyInterestSek(state.economy.loan);
+  return state.cash - dailyWagesSek(state) - dailyInterestSek(state.economy.loan);
+}
+
+// ORDER 268 — lönerna för dagen: bara på servicedagar ("Söndag ingen lön").
+export function dailyWagesSek(state: SimulationState): number {
+  if (WAGES.onlyOnServiceDays && !calendarFor(state.day.dayNumber).isServiceDay) return 0;
+  return state.team.members.filter((m) => !m.isAgency).reduce((sum, m) => sum + m.dailyCost, 0);
+}
+
+// ORDER 268 — det nedgraderingen räknar: kassan vid dagsavslut plus
+// kreditramen (golvet). "Nedgradering räknas först när kassan är under
+// minus veckogolvet tre dagsavslut i rad."
+export function dayEndHeadroom(state: SimulationState): number {
+  return dayEndCash(state) + creditLineSek(state) * DOWNGRADE.creditLineInWeeksOfFloor;
 }
 
 // Dagsavslut (F24): när kvällen börjar. Räknar dagar i rad under noll
-// och ger varningen till kvällsberättelsen.
-export function dayEnd(economy: EconomyState, cash: number): EconomyState {
-  const negative = cash < 0;
+// och ger varningen till kvällsberättelsen. ORDER 268: `headroom` är
+// kassan plus kreditramen (dayEndHeadroom).
+export function dayEnd(economy: EconomyState, headroom: number): EconomyState {
+  const negative = headroom < 0;
   const count = negative ? economy.consecutiveNegativeDayEnds + 1 : 0;
   const reached = count >= DOWNGRADE.consecutiveNegativeDayEnds;
   const warningsLeft = DOWNGRADE.consecutiveNegativeDayEnds - count;
@@ -251,12 +275,40 @@ export function isDowngrade(from: BusinessClassId | null, to: BusinessClassId | 
   return classSpec(to).sizeRank < classSpec(from).sizeRank;
 }
 
+// ORDER 268 (F37) — personalen följer klassen: vid uppgradering följer
+// alla med, vid nedgradering stannar de klassen har plats för, och utan
+// verksamhet finns ingen personal (och inga löner).
+// ORDER 268 — vid tvingad nedgradering säljs lokalen: 50 % av
+// inventarievärdet blir startkassa i den nya klassen (underskottet
+// skrivs av med lokalen). Vid uppgradering från en verksamhet dras
+// kontantinsatsen; resten täcks av den nya klassens startlån.
+export function saleProceedsSek(from: BusinessClassId | null): number {
+  if (!from) return 0;
+  return Math.round(startLoanSek(from) * DOWNGRADE.inventoryShareOfStartLoan * DOWNGRADE.salePriceShareOfInventory);
+}
+
+export function upgradeDepositSek(to: BusinessClassId, medals: SimulationState['medals']): number {
+  return Math.round(floorSek(to, medals) * UPGRADE.depositShareOfWeekFloor);
+}
+
 export function changeClass(state: SimulationState, to: BusinessClassId | null, forced: boolean): SimulationState {
   const economy = state.economy;
   const up = !isDowngrade(economy.businessClass, to);
+  const proceeds = forced ? saleProceedsSek(economy.businessClass) : 0;
+  const deposit = up && to && economy.businessClass !== null ? upgradeDepositSek(to, state.medals) : 0;
+  const ledger = [...state.ledger];
+  const draft: SimulationState = { ...state, ledger, cash: forced ? Math.max(state.cash, 0) : state.cash };
+  if (proceeds > 0) {
+    applyCashDelta(draft, proceeds);
+    postLedger(draft, { category: 'other', amount: proceeds, cause: strings.economy.ledger.sale });
+  }
+  if (deposit > 0) {
+    applyCashDelta(draft, -deposit);
+    postLedger(draft, { category: 'other', amount: -deposit, cause: strings.economy.ledger.deposit });
+  }
   return {
-    ...state,
-    cash: forced ? Math.max(state.cash, 0) : state.cash,
+    ...draft,
+    team: teamForClass(state.team, to ? TEAM_BY_CLASS.roles[to] : [], up, state.day.dayNumber),
     businessClass: to ? V1_CLASS_TO_ROOM[to] : state.businessClass,
     reputation: up ? Math.max(REPUTATION.floor / REPUTATION.scale, state.reputation * UPGRADE.reputationFactor) : state.reputation,
     economy: {
@@ -265,9 +317,24 @@ export function changeClass(state: SimulationState, to: BusinessClassId | null, 
       loan: up && to ? { originalSek: startLoanSek(to), principalSek: startLoanSek(to), weeksLeft: LOAN.amortisationWeeks } : null,
       consecutiveNegativeDayEnds: 0,
       downgradePending: false,
-      warning: null
+      warning: null,
+      withoutBusiness: to === null ? { sinceDay: state.day.dayNumber, examsTaken: 0 } : null
     }
   };
+}
+
+// ORDER 268 — ett prov utan verksamhet räknas mot bankens krav.
+export function recordExamWithoutBusiness(economy: EconomyState): EconomyState {
+  if (economy.businessClass !== null || !economy.withoutBusiness) return economy;
+  return { ...economy, withoutBusiness: { ...economy.withoutBusiness, examsTaken: economy.withoutBusiness.examsTaken + 1 } };
+}
+
+// ORDER 268 — "Efter inget lån ger banken nytt lån först efter en hel
+// vecka i Måltidens hus med minst ett prov."
+export function bankReadyAfterNoBusiness(state: SimulationState): boolean {
+  const w = state.economy.withoutBusiness;
+  if (state.economy.businessClass !== null || !w) return true;
+  return state.day.dayNumber - w.sinceDay >= NEW_START.daysWithoutBusiness && w.examsTaken >= NEW_START.examsRequired;
 }
 
 // Vilka klasser spelaren kan byta till nu, och varför inte de andra.
@@ -276,6 +343,7 @@ export type ClassOption =
   | { id: BusinessClassId; status: 'available' }
   | { id: BusinessClassId; status: 'requirements' }
   | { id: BusinessClassId; status: 'cash' }
+  | { id: BusinessClassId; status: 'bankWait' }
   | { id: BusinessClassId; status: 'upgradeOnly' };
 
 export function canChangeClassToday(state: SimulationState): boolean {
@@ -308,10 +376,14 @@ export function classOptions(state: SimulationState): ClassOption[] {
     if (!requirementsFor(state, c.id).every((r) => meetsRequirement(r, state.medals))) {
       return { id: c.id, status: 'requirements' as const };
     }
-    // "om kassan räcker till en veckas golv i den nya klassen" — gäller
-    // uppgradering, inte den första verksamheten (startlånet täcker den).
-    const need = floorSek(c.id, state.medals) * UPGRADE.cashRequiredInWeeksOfFloor;
-    if (!first && state.cash < need) return { id: c.id, status: 'cash' as const };
+    // ORDER 268 — efter inget lån: en hel vecka i Måltidens hus med
+    // minst ett prov. Ingen kontantinsats (det finns ingen lokal att
+    // byta från, och kassan står still utan verksamhet).
+    if (current === null && !first && !bankReadyAfterNoBusiness(state)) return { id: c.id, status: 'bankWait' as const };
+    // ORDER 268 — uppgradering kräver kontantinsats, 25 % av en veckas
+    // golv i den nya klassen; resten lånas. Gäller byte från en
+    // verksamhet, inte den första och inte en ny start.
+    if (current !== null && !isDowngrade(current, c.id) && state.cash < upgradeDepositSek(c.id, state.medals)) return { id: c.id, status: 'cash' as const };
     return { id: c.id, status: 'available' as const };
   });
 }
@@ -322,6 +394,27 @@ export function classOptions(state: SimulationState): ClassOption[] {
 export function openFirstBusiness(state: SimulationState, to: BusinessClassId): SimulationState {
   const opened = changeClass(state, to, false);
   return { ...opened, reputation: state.reputation, introduction: null };
+}
+
+// ORDER 268 — scenariernas kassa (Vision Owner 2026-09-26): en enhet är
+// en andel av klassens normala veckointäkt, och veckans summa hålls
+// inom ±20 % av den. Utan verksamhet finns ingen service och inga scenarier.
+export function scenarioUnitSek(state: SimulationState): number {
+  const cls = state.economy.businessClass;
+  return cls ? ECONOMY.normalWeeklyRevenueSek[cls] * SCENARIO_CASH.unitShareOfWeeklyRevenue : 0;
+}
+
+export function scenarioChoiceUnits(scenarioId: string | null, choice: 'A' | 'B' | 'C'): number {
+  return (scenarioId && SCENARIO_CASH.choiceUnits[scenarioId]?.[choice]) || 0;
+}
+
+// Det belopp som får bokas nu: veckans summa efter beloppet hålls inom taket.
+export function clampScenarioCash(state: SimulationState, deltaSek: number): number {
+  const cls = state.economy.businessClass;
+  if (!cls) return 0;
+  const cap = ECONOMY.normalWeeklyRevenueSek[cls] * SCENARIO_CASH.weeklyCapShareOfNormalRevenue;
+  const sofar = state.economy.weekScenarioCashSek ?? 0;
+  return Math.max(-cap, Math.min(cap, sofar + deltaSek)) - sofar;
 }
 
 // Golvet som kreditram: en satsning får dra kassan ner till −golvet.
@@ -362,7 +455,7 @@ export function settleWeek(state: SimulationState): SimulationState {
     : null;
   let next: SimulationState = {
     ...draft,
-    economy: { ...e, loan, weekRevenueStartSek: state.revenue, weekEvenings: [] }
+    economy: { ...e, loan, weekRevenueStartSek: state.revenue, weekEvenings: [], weekScenarioCashSek: 0 }
   };
   let downgradedTo: BusinessClassId | null = null;
   const downgradedFrom = e.downgradePending ? e.businessClass : null;

@@ -1,0 +1,48 @@
+{
+  "capShare": 0.2,
+  "normalWeeklyRevenueSek": 42090,
+  "rational": [
+    {
+      "week": 1,
+      "sek": 3367,
+      "share": 0.08
+    },
+    {
+      "week": 2,
+      "sek": 4209,
+      "share": 0.1
+    },
+    {
+      "week": 3,
+      "sek": 6313,
+      "share": 0.15
+    },
+    {
+      "week": 4,
+      "sek": 4209,
+      "share": 0.1
+    }
+  ],
+  "weak": [
+    {
+      "week": 1,
+      "sek": 5,
+      "share": 0
+    },
+    {
+      "week": 2,
+      "sek": -1626,
+      "share": -0.039
+    },
+    {
+      "week": 3,
+      "sek": 429,
+      "share": 0.01
+    },
+    {
+      "week": 4,
+      "sek": -2420,
+      "share": -0.057
+    }
+  ]
+}

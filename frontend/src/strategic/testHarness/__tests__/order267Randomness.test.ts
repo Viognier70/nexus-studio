@@ -4,6 +4,8 @@
 // mätningen (RANDOMNESS.simulatedWeeks = 1 000 veckor) körs med
 //   RANDOMNESS_WEEKS=1000 WRITE_REPORTS=1 npx vitest run order267Randomness
 // och skriver reports/order267/randomness.json, som rapporten citerar.
+// ORDER 268 — REPORT_ORDER=order268 skriver mätningen under en senare
+// orders katalog (ordern §1.2: slumpmålet mäts efter varje etapp).
 
 import { describe, expect, it } from 'vitest';
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -12,7 +14,7 @@ import { fileURLToPath } from 'node:url';
 import { measureRandomness, MEASURED_WEEK, PLAYERS } from '../randomness';
 import { RANDOMNESS } from '../../../sim/balance';
 
-const OUT = resolve(dirname(fileURLToPath(import.meta.url)), '../../../../reports/order267');
+const OUT = resolve(dirname(fileURLToPath(import.meta.url)), '../../../../reports', process.env.REPORT_ORDER ?? 'order267');
 const SAMPLE_WEEKS = 4;
 const weeks = Number(process.env.RANDOMNESS_WEEKS ?? SAMPLE_WEEKS);
 const TIMEOUT_MS_PER_WEEK = 5000;

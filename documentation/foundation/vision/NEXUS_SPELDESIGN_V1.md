@@ -104,6 +104,8 @@ G kan aldrig bli högre än 90. Veckogolvet är G procent av klassens normala ve
 
 Bankmötet ger ett startlån som täcker lokal och inventarier för klassen. Lånet amorteras lika under säsongens åtta veckor, med fem procents ränta. Bankens besked formuleras som en diagnos i ord, aldrig som siffror: vad spelaren visat att hon kan och vad som saknas för nästa klass.
 
+*Beslut 2026-09-26 (Vision Owner):* efter inget lån ger banken nytt lån först efter en hel vecka i Måltidens hus med minst ett prov.
+
 ### Marknaden
 
 Varje dag har Grythyttan en gästpool som följer veckodag, säsong och högtid. Poolen delas mellan spelaren och ortens krogar efter attraktivitet. Spelarens andel har ett tak som växer med kunskapen: 20 % plus 3 procentenheter per medaljsteg, där brons är ett steg och platina fyra. Förebilden är *Two Point Hospital*, där ryktet drar folk men kapaciteten sätter gränsen.
@@ -112,9 +114,16 @@ Varje dag har Grythyttan en gästpool som följer veckodag, säsong och högtid.
 
 En enskild kväll får gå riktigt illa även för en duktig spelare. Över en vecka ska den bättre förberedda spelaren vinna ungefär tre veckor av fyra. Förebilden är *Slay the Spire*: slumpen avgör enskilda strider, skickligheten avgör resultatet över tid. Målet mäts med 1 000 simulerade veckor och fast fröslump.
 
+*Beslut 2026-09-26 (Vision Owner):* mätningen spelar som spelaren, och svarar på scenarierna vid dörren. Den har två spelare: en rimlig, som väljer det svar en duktig spelare väljer, och en svag, som väljer sämsta svaret och handlar för lite till lagret. Nedgraderingen och vägen tillbaka prövas med den svaga spelaren, som sedan byter till rimligt spel.
+
 ### Nedgradering
 
-Om kassan är under noll vid tre dagsavslut i rad, nedgraderas spelaren vid nästa veckoavräkning. Lokalen säljs, resten av lånet skrivs ner, och spelaren går ner en klass: gästgiveri eller nattklubb till restaurang, restaurang till vinbar eller ölkrog efter spelarens medaljer, vinbar eller ölkrog till food truck, food truck till inget lån. Kunskapen följer alltid med. Spelaren får två dagars varning i kvällsberättelsen innan det händer.
+Om kassan är under minus veckogolvet vid tre dagsavslut i rad, nedgraderas spelaren vid nästa veckoavräkning. Lokalen säljs, resten av lånet skrivs ner, och spelaren går ner en klass: gästgiveri eller nattklubb till restaurang, restaurang till vinbar eller ölkrog efter spelarens medaljer, vinbar eller ölkrog till food truck, food truck till inget lån. Kunskapen följer alltid med. Spelaren får två dagars varning i kvällsberättelsen innan det händer.
+
+*Beslut 2026-09-26 (Vision Owner), så att det alltid finns en väg tillbaka:*
+- Nedgradering räknas först när kassan är under minus veckogolvet tre dagsavslut i rad. Golvet är kreditram.
+- Löner dras bara på servicedagar, efter kvällens intäkt. Söndag ingen lön.
+- Vid tvingad nedgradering säljs lokalen för 50 % av inventarievärdet, som blir startkassa i den nya klassen.
 
 ## Verksamhetsklasserna
 
@@ -133,7 +142,7 @@ Utan någon brons blir bankens besked inget lån: gå och öva.
 
 ### Uppgradering
 
-Vid varje veckoavräkning kan spelaren byta till en klass vars krav hon uppfyller, om kassan räcker till en veckas golv i den nya klassen. Kunskapen följer med, personalen får följa med, och ryktet halveras eftersom gästerna inte känner den nya lokalen. Spelaren kan också frivilligt gå ner en klass vid veckoavräkningen, utan att först ha gått under.
+Vid varje veckoavräkning kan spelaren byta till en klass vars krav hon uppfyller, om kassan räcker till kontantinsatsen: 25 % av en veckas golv i den nya klassen, resten lånas (beslut 2026-09-26, Vision Owner). Kunskapen följer med, personalen får följa med, och ryktet halveras eftersom gästerna inte känner den nya lokalen. Spelaren kan också frivilligt gå ner en klass vid veckoavräkningen, utan att först ha gått under.
 
 Förebilden är *Two Point Hospital* och *Game Dev Tycoon*: att flytta till större lokal är en milstolpe man arbetar mot och som känns i spelet, men den är också en risk.
 
@@ -162,6 +171,8 @@ Spelaren får öppna med för lite råvaror. Före öppning visas en prognos i o
 ### Händelser
 
 Händelser uppstår ur simuleringen, inte ur en kortlek. Dålig hygien leder till inspektion, gott rykte till en recensent, svag kassa till ett samtal från banken. Varje händelse har en orsak som kvällsberättelsen kan peka på.
+
+*Beslut 2026-09-26 (Vision Owner):* scenarierna vid dörren ger sammanlagt högst cirka 20 % av en normal veckointäkt i klassen, åt båda hållen. Scenarierna ska krydda veckan, inte bära den.
 
 ### Medgång
 

@@ -3,7 +3,7 @@ import { ACTION_BUTTON, EVENING, POST_SERVICE_QUIZ, SERVICE, type BusinessClassI
 import { resetForService, startIntervention, tickIntervention } from '../../sim/actionButton';
 import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
 import { afterVisitClosed, beginIntroduction } from '../../sim/introduction';
-import { canChangeClassToday, changeClass, classOptions, openFirstBusiness, recordEvening, creditLineSek, dailyGuestCap, dayEnd, dayEndCash, postDailyInterest, settleWeek } from '../../sim/economy';
+import { canChangeClassToday, changeClass, classOptions, openFirstBusiness, recordEvening, creditLineSek, dailyGuestCap, dayEnd, dayEndHeadroom, dailyWagesSek, recordExamWithoutBusiness, scenarioUnitSek, scenarioChoiceUnits, clampScenarioCash, postDailyInterest, settleWeek } from '../../sim/economy';
 import { answerVisit, closeVisit, nextVisitQuestion, scheduleSlotsLeft, startVisit } from '../knowledge/pavilionVisit';
 import { answerQuiz, nextQuizQuestion, offerQuiz, skipQuiz, startQuiz } from '../knowledge/postServiceQuiz';
 import { createRng } from '../util/rng';
@@ -177,15 +177,13 @@ import {
   CAPITAL_MIN,
   CAPITAL_MAX,
   THEME_HISTORY_LIMIT,
-  SCENARIO_CAPITAL_DELTA,
-  SCENARIO_CASH_DELTA_SEK
+  SCENARIO_CAPITAL_DELTA
 } from './constants';
 export {
   CAPITAL_MIN,
   CAPITAL_MAX,
   THEME_HISTORY_LIMIT,
-  SCENARIO_CAPITAL_DELTA,
-  SCENARIO_CASH_DELTA_SEK
+  SCENARIO_CAPITAL_DELTA
 };
 
 // Consequence window per ORDER 042 §3.4: "over 30–45 seconds of
@@ -313,8 +311,13 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       const next = { ...state, pavilionVisit: r.visit };
       return r.correct ? creditQuestion(next, r.question.axis, r.question.track, 1) : next;
     }
-    case 'NEXT_VISIT_QUESTION':
-      return nextVisitQuestion(state);
+    case 'NEXT_VISIT_QUESTION': {
+      const next = nextVisitQuestion(state);
+      // ORDER 268 — ett avslutat prov utan verksamhet räknas mot bankens
+      // krav för ett nytt lån.
+      const examDone = next.pavilionVisit?.mode === 'exam' && next.pavilionVisit.result && !state.pavilionVisit?.result;
+      return examDone ? { ...next, economy: recordExamWithoutBusiness(next.economy) } : next;
+    }
     case 'CLOSE_VISIT':
       return afterVisitClosed(state, closeVisit(state));
     case 'BEGIN_INTRODUCTION':
@@ -1161,7 +1164,7 @@ function closeDay(state: SimulationState): SimulationState {
   if (state.day.period !== 'morning' && state.day.period !== 'afternoon') return state;
   return {
     ...state,
-    economy: dayEnd(state.economy, dayEndCash(state)),
+    economy: dayEnd(state.economy, dayEndHeadroom(state)),
     day: { ...state.day, period: 'evening', periodStartAt: state.simTime }
   };
 }
@@ -1600,8 +1603,8 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
         ...state,
         team: removeAgencyMembers(state.team),
         agencyOffer: null,
-        eveningAccount: withEconomyWarning(eveningAccount, dayEnd(state.economy, dayEndCash(state))),
-        economy: dayEnd(state.economy, dayEndCash(state)),
+        eveningAccount: withEconomyWarning(eveningAccount, dayEnd(state.economy, dayEndHeadroom(state))),
+        economy: dayEnd(state.economy, dayEndHeadroom(state)),
         // ORDER 264 — quizen efter servicen erbjuds när kvällen börjar.
         postServiceQuiz: offerQuiz(state, day.periodStartAt),
         metrics: {
@@ -1702,7 +1705,9 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       // §7 step 3 — one ledger line per non-agency member per day so
       // the book names who was paid.
       const nonAgencyMembers = state.team.members.filter((m) => !m.isAgency);
-      const wageTotal = nonAgencyMembers.reduce((s, m) => s + m.dailyCost, 0);
+      // ORDER 268 — lön bara på servicedagar, efter kvällens intäkt
+      // (dailyWagesSek läser dagen som slutar; söndag ingen lön).
+      const wageTotal = dailyWagesSek(state);
       // ORDER 111 §4 — Värdshus: dygnsrollovern behåller gäster med
       // stayingOvernight-flaggan; alla andra gäster (och andra
       // verksamheter) rensas till en tom kväll så nya dagen börjar
@@ -1734,7 +1739,7 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
         seatedIds: state.seatedIds.filter((id) =>
           guestsAfterRollover.some((g) => g.id === id)
         ),
-        team: chargeStructuralCost(state.team),
+        team: wageTotal > 0 ? chargeStructuralCost(state.team) : state.team,
         // ORDER 046 §3 — evening account is scoped to a single evening;
         // clear when the new day begins so the panel doesn't linger
         // into morning where the investment panel needs the room.
@@ -2647,6 +2652,8 @@ function costPerMinuteToTick(state: SimulationState): number {
   // — INTE mat, utan personal-driven-tid + spillspenalti. Mätning
   // efter fix visar om denna post underskattar total; VO kalibrerar
   // separat om behövs.
+  // ORDER 268 — utan verksamhet finns inget kök och ingen personal.
+  if (state.economy.businessClass === null && !state.introduction) return 0;
   const base = 9 * state.policies.staffCount;
   const wastePenalty = state.waste * 0.4;
   return base + wastePenalty;
@@ -2969,7 +2976,8 @@ function resolveScenario(
       // ORDER 050 §3 (2026-08-10) — economic-themed scenarios move
       // the till in SEK, not a [0,1] scalar. Signed by capitalSign
       // and scaled by the phronesis-softened themeMult.
-      themedCashDelta += SCENARIO_CASH_DELTA_SEK * capitalSign * themeMult;
+      // ORDER 268 — en enhet av klassens veckointäkt (balance.ts SCENARIO_CASH).
+      themedCashDelta += scenarioUnitSek(state) * capitalSign * themeMult;
     } else {
       const themedDelta = SCENARIO_CAPITAL_DELTA * capitalSign;
       nextValues[drawn] = clampCapital(nextValues[drawn] + themedDelta * themeMult);
@@ -2988,11 +2996,8 @@ function resolveScenario(
     // Amplifier (secondaryMult) applies to the excess above ×1 same
     // shape as the [0,1] axes so pressed scenarios feel expensive on
     // the till too.
-    if (choiceSpec?.cashWrites) {
-      for (const w of choiceSpec.cashWrites) {
-        themedCashDelta += w.amount * secondaryMult;
-      }
-    }
+    // ORDER 268 — valets kassa i enheter (balance.ts SCENARIO_CASH.choiceUnits).
+    themedCashDelta += scenarioUnitSek(state) * scenarioChoiceUnits(scenario.scenarioId, choice) * secondaryMult;
     themeHistory = [...themeHistory, drawn].slice(-THEME_HISTORY_LIMIT);
     capitals = {
       ...state.capitals,
@@ -3158,7 +3163,11 @@ function resolveScenario(
   // §7 step 3 — one ledger line per scenario resolution so the book
   // names what shifted and by how much. The cause reads as English
   // prose the player recognises rather than a code identifier.
+  // ORDER 268 — veckans scenariokassa hålls inom ±20 % av klassens
+  // normala veckointäkt (Vision Owner 2026-09-26).
+  themedCashDelta = clampScenarioCash(state, themedCashDelta);
   if (themedCashDelta !== 0) {
+    nextState.economy = { ...nextState.economy, weekScenarioCashSek: (nextState.economy.weekScenarioCashSek ?? 0) + themedCashDelta };
     applyCashDelta(nextState, themedCashDelta);
     postLedger(nextState, {
       category: 'scenario',

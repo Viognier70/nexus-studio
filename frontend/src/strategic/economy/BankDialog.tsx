@@ -53,6 +53,7 @@ function optionLine(o: ClassOption, sim: SimulationState): string {
     case 'requirements': return missingInWords(o.id, sim.medals, requirementsFor(sim, o.id)) ?? '';
     case 'cash': return e.cashShort(e.classesDefinite[o.id]);
     case 'upgradeOnly': return e.upgradeOnly;
+    case 'bankWait': return e.bankWait;
     case 'available': return '';
   }
 }

@@ -1,0 +1,137 @@
+{
+  "seed": 42,
+  "bankAnswers": [
+    {
+      "day": 1,
+      "vinbar": "requirements"
+    },
+    {
+      "day": 2,
+      "vinbar": "requirements"
+    },
+    {
+      "day": 3,
+      "vinbar": "requirements"
+    },
+    {
+      "day": 4,
+      "vinbar": "bankWait"
+    },
+    {
+      "day": 5,
+      "vinbar": "bankWait"
+    },
+    {
+      "day": 6,
+      "vinbar": "bankWait"
+    },
+    {
+      "day": 7,
+      "vinbar": "bankWait"
+    },
+    {
+      "day": 8,
+      "vinbar": "available"
+    }
+  ],
+  "days": [
+    {
+      "day": 1,
+      "week": 1,
+      "weekday": "mon",
+      "class": null,
+      "cash": 21045
+    },
+    {
+      "day": 2,
+      "week": 1,
+      "weekday": "tue",
+      "class": null,
+      "cash": 21045
+    },
+    {
+      "day": 3,
+      "week": 1,
+      "weekday": "wed",
+      "class": null,
+      "cash": 21045
+    },
+    {
+      "day": 4,
+      "week": 1,
+      "weekday": "thu",
+      "class": null,
+      "cash": 21045
+    },
+    {
+      "day": 5,
+      "week": 1,
+      "weekday": "fri",
+      "class": null,
+      "cash": 21045
+    },
+    {
+      "day": 6,
+      "week": 1,
+      "weekday": "sat",
+      "class": null,
+      "cash": 21045
+    },
+    {
+      "day": 7,
+      "week": 1,
+      "weekday": "sun",
+      "class": null,
+      "cash": 21045
+    },
+    {
+      "day": 8,
+      "week": 2,
+      "weekday": "mon",
+      "class": "vinbar",
+      "cash": 23360
+    },
+    {
+      "day": 9,
+      "week": 2,
+      "weekday": "tue",
+      "class": "vinbar",
+      "cash": 26033
+    },
+    {
+      "day": 10,
+      "week": 2,
+      "weekday": "wed",
+      "class": "vinbar",
+      "cash": 33379
+    },
+    {
+      "day": 11,
+      "week": 2,
+      "weekday": "thu",
+      "class": "vinbar",
+      "cash": 29585
+    },
+    {
+      "day": 12,
+      "week": 2,
+      "weekday": "fri",
+      "class": "vinbar",
+      "cash": 29702
+    },
+    {
+      "day": 13,
+      "week": 2,
+      "weekday": "sat",
+      "class": "vinbar",
+      "cash": 23084
+    },
+    {
+      "day": 14,
+      "week": 2,
+      "weekday": "sun",
+      "class": "vinbar",
+      "cash": 23009
+    }
+  ]
+}

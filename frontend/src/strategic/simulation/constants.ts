@@ -30,13 +30,14 @@ export const THEME_HISTORY_LIMIT = 6;
 // applies to its drawn theme. Two anchors, one per unit system:
 //   * SCENARIO_CAPITAL_DELTA (0.06) — [0,1] delta for the social and
 //     ecological axes. Unchanged since ORDER 043 v3.
-//   * SCENARIO_CASH_DELTA_SEK (6 000) — SEK delta for the economic
+//   * (ORDER 268: the SEK anchor SCENARIO_CASH_DELTA_SEK moved to
+//     src/sim/balance.ts SCENARIO_CASH, a share of the class's normal
+//     weekly revenue.) Formerly: SEK delta for the economic
 //     axis after the ORDER 050 cash refactor (2026-08-10). Anchored
 //     to ~one lunch's revenue at medium/utvald so a bad answer is
 //     visible in the book rather than lost to rounding. Everything
 //     else in `scenarios.ts` cash writes is scaled proportionally.
 export const SCENARIO_CAPITAL_DELTA = 0.06;
-export const SCENARIO_CASH_DELTA_SEK = 6000;
 
 // ORDER 050 §3 — starting cash for a fresh T2 venture (grandfathered
 // until ORDER 049 §5.1 bank meeting stamps the real tier on the

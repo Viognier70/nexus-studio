@@ -28,7 +28,7 @@
 
 import { offerQuiz } from '../knowledge/postServiceQuiz';
 import { clampReputation } from './reputation';
-import { dayEnd, dayEndCash, recordEvening } from '../../sim/economy';
+import { dayEnd, dayEndHeadroom, recordEvening } from '../../sim/economy';
 import { onServiceClose } from '../../sim/serviceEvents';
 import type {
   ConsequenceEvent,
@@ -237,7 +237,7 @@ export function fireCollapse(draft: SimulationState): void {
   const serviceStartedAt = draft.day.periodStartAt;
   draft.postServiceQuiz = offerQuiz(draft, serviceStartedAt);
   // ORDER 265 — dagsavslut också efter en kväll som föll ihop.
-  draft.economy = dayEnd(draft.economy, dayEndCash(draft));
+  draft.economy = dayEnd(draft.economy, dayEndHeadroom(draft));
   // ORDER 266 — recensentens omdöme och stationernas skick även här.
   onServiceClose(draft, { ...draft }, 'collapsed');
   // ORDER 267 — kvällen till veckans lista (söndagstidningen).

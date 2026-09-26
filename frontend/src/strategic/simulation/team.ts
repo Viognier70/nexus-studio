@@ -123,6 +123,27 @@ export function initialTeam(): TeamState {
   };
 }
 
+// ORDER 268 (F37) — laget när verksamheten byter klass. `roles` är
+// klassens lag (balance.ts TEAM_BY_CLASS); en tom lista betyder ingen
+// verksamhet. Uppgradering: alla följer med och de roller som saknas
+// anställs. Nedgradering: en person per roll som klassen har plats för
+// stannar, resten slutar (löner dras bara för dem som är kvar).
+export function teamForClass(
+  team: TeamState,
+  roles: readonly StaffRole[],
+  keepEveryone: boolean,
+  dayNumber: number
+): TeamState {
+  const regular = team.members.filter((m) => !m.isAgency);
+  const kept = keepEveryone
+    ? regular
+    : roles.flatMap((role) => regular.find((m) => m.role === role) ?? []);
+  const hired = roles
+    .filter((role) => !kept.some((m) => m.role === role))
+    .map((role) => makeTeamMember(role, dayNumber));
+  return { ...team, members: [...kept, ...hired], strainSinceSimTime: null };
+}
+
 // -------- competence readout ----------------------------------------------
 //
 // Used by the event stream's ignorance-weighting. Each competence
