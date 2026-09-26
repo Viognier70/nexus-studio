@@ -30,6 +30,12 @@ describe('ORDER 267 — slumpmålet', () => {
       betterWins: m.betterWins,
       ties: m.ties,
       winShare: m.winShare,
+      // ORDER 269 — andelen veckor där spelaren hade en kväll utan intäkt
+      // (kvällen föll ihop): "En enskild kväll får gå riktigt illa".
+      weeksWithEmptyEvening: {
+        better: m.pairs.filter((p) => p.better.worstEveningSek <= 0).length / m.weeks,
+        baseline: m.pairs.filter((p) => p.baseline.worstEveningSek <= 0).length / m.weeks
+      },
       meanResultSek: {
         better: Math.round(m.pairs.reduce((a, p) => a + p.better.resultSek, 0) / m.weeks),
         baseline: Math.round(m.pairs.reduce((a, p) => a + p.baseline.resultSek, 0) / m.weeks)

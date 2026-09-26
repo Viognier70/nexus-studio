@@ -23,39 +23,15 @@ import type {
   WeatherConditions
 } from '../types';
 import type { Rng } from '../util/rng';
+import { WEATHER } from '../../sim/balance';
 
 // -------- generation ------------------------------------------------------
 
-// Weighted temperature bands for a cycle-1 autumn evening. Weights sum
-// to 10 for readability; rng.next() * 10 picks a band.
-const TEMP_BANDS: readonly { min: number; max: number; weight: number }[] = [
-  { min:  6, max:  9, weight: 1 },   // cold evening — 10 %
-  { min: 10, max: 13, weight: 3 },   // cool         — 30 %
-  { min: 14, max: 17, weight: 4 },   // mild         — 40 %
-  { min: 18, max: 21, weight: 2 }    // warm         — 20 %
-];
-
-// Wind: three bands from still to blustery. Grythyttan is inland,
-// rarely windier than 12 m/s in autumn.
-const WIND_BANDS: readonly { min: number; max: number; weight: number }[] = [
-  { min: 0.5, max:  2.0, weight: 4 },   // still     — 40 %
-  { min: 2.0, max:  5.5, weight: 4 },   // breezy    — 40 %
-  { min: 5.5, max: 10.0, weight: 2 }    // blustery  — 20 %
-];
-
-// Precipitation is unusual on any given evening; when it happens the
-// distribution favours drizzle over rain.
-const PRECIP_WEIGHTS: readonly { kind: PrecipitationKind; weight: number }[] = [
-  { kind: 'none',    weight: 7 },
-  { kind: 'drizzle', weight: 2 },
-  { kind: 'rain',    weight: 1 }
-];
-
-const CLOUD_WEIGHTS: readonly { kind: CloudCover; weight: number }[] = [
-  { kind: 'clear',    weight: 3 },
-  { kind: 'partly',   weight: 4 },
-  { kind: 'overcast', weight: 3 }
-];
+// ORDER 269 — banden och vikterna står i src/sim/balance.ts WEATHER.
+const TEMP_BANDS = WEATHER.tempBands;
+const WIND_BANDS = WEATHER.windBands;
+const PRECIP_WEIGHTS = WEATHER.precipWeights as readonly { kind: PrecipitationKind; weight: number }[];
+const CLOUD_WEIGHTS = WEATHER.cloudWeights as readonly { kind: CloudCover; weight: number }[];
 
 function pickWeighted<T extends { weight: number }>(
   rng: Rng,
@@ -101,8 +77,8 @@ export function isOutdoorViable(
   precip: PrecipitationKind
 ): boolean {
   if (precip !== 'none') return false;
-  if (tempC < 14) return false;
-  if (windMS > 5.5) return false;
+  if (tempC < WEATHER.outdoorMinTempC) return false;
+  if (windMS > WEATHER.outdoorMaxWindMS) return false;
   return true;
 }
 
@@ -114,18 +90,17 @@ export function isOutdoorViable(
 //   warm + still + clear      → ~1.28×
 export function weatherArrivalMultiplier(w: WeatherConditions | null): number {
   if (!w) return 1;
-  // Temperature: linear from 0.75× at 6 °C to 1.20× at 21 °C.
-  const tempT = Math.max(0, Math.min(1, (w.tempC - 6) / (21 - 6)));
-  const tempMult = 0.75 + tempT * 0.45;
-  // Wind: 1.0× at 0.5 m/s down to 0.75× at 10 m/s.
-  const windT = Math.max(0, Math.min(1, (w.windMS - 0.5) / (10 - 0.5)));
-  const windMult = 1.0 - windT * 0.25;
-  // Precipitation: dry 1.0×, drizzle 0.9×, rain 0.75×, snow 0.65×.
+  // ORDER 269 — faktorerna står i balance.ts WEATHER.arrival.
+  const a = WEATHER.arrival;
+  const tempT = Math.max(0, Math.min(1, (w.tempC - a.tempColdC) / (a.tempWarmC - a.tempColdC)));
+  const tempMult = a.tempMultCold + tempT * a.tempMultSpan;
+  const windT = Math.max(0, Math.min(1, (w.windMS - a.windStillMS) / (a.windBlusteryMS - a.windStillMS)));
+  const windMult = 1.0 - windT * a.windMultSpan;
   const precipMult =
-    w.precipitation === 'none' ? 1.0 :
-    w.precipitation === 'drizzle' ? 0.9 :
-    w.precipitation === 'rain' ? 0.75 :
-    0.65;
+    w.precipitation === 'none' ? a.precipMult.none :
+    w.precipitation === 'drizzle' ? a.precipMult.drizzle :
+    w.precipitation === 'rain' ? a.precipMult.rain :
+    a.precipMult.other;
   return tempMult * windMult * precipMult;
 }
 

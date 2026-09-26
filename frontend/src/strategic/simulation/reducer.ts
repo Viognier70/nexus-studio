@@ -1,4 +1,5 @@
 import { calendarFor } from '../../sim/calendar';
+import { bestAnswerFactor, drinkRevenueFactor, enablersWithCredits } from '../../sim/knowledgeInService';
 import { ACTION_BUTTON, EVENING, POST_SERVICE_QUIZ, SERVICE, type BusinessClassId } from '../../sim/balance';
 import { resetForService, startIntervention, tickIntervention } from '../../sim/actionButton';
 import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
@@ -103,7 +104,8 @@ import {
   SENDER_PREFIX,
   pickScenarioSender,
   pickScenarioSpecFiltered,
-  scenarioById
+  scenarioById,
+  bestChoice
 } from './scenarios';
 import { pickBankQuestion } from '../../content/knowledgeBank';
 import type { BankSender } from '../../content/knowledgeBank';
@@ -1760,7 +1762,8 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
         // ORDER 266 (F27) — ingen nattlig avklingning: kunskap går inte
         // förlorad (speldesign > Spelslingan), och i v1 finns inga frågor
         // under servicen som fyller på dem.
-        enablers: state.enablers,
+        // ORDER 269 — krediterna fyller enablers (knowledgeInService.ts).
+        enablers: enablersWithCredits(state),
         // ORDER 077 §4 (M4) — menu clears at day rollover (fresh
         // morning compose). Stock persists across days per ORDER 051
         // §4 (leftover-stock persistence); ageing deferred to M4b.
@@ -2253,6 +2256,8 @@ function advanceTick(state: SimulationState): SimulationState {
       } else {
         rev = revenuePerGuest(draft.policies) * revenueMult;
       }
+      // ORDER 269 — Stensöta höjer intäkten per gäst via dryck.
+      rev *= drinkRevenueFactor(draft);
       // ORDER 050 §3 (2026-08-10) — paired write: revenue accumulator
       // + cash till stay in sync via applyCashRevenue. serviceRevenue
       // panel arrays continue to receive the kSEK share.
@@ -3163,6 +3168,8 @@ function resolveScenario(
   // §7 step 3 — one ledger line per scenario resolution so the book
   // names what shifted and by how much. The cause reads as English
   // prose the player recognises rather than a code identifier.
+  // ORDER 269 — med medaljer i Kalastorget ger det bästa svaret mer.
+  if (themedCashDelta > 0 && choice === bestChoice(scenario.scenarioId)) themedCashDelta *= bestAnswerFactor(state);
   // ORDER 268 — veckans scenariokassa hålls inom ±20 % av klassens
   // normala veckointäkt (Vision Owner 2026-09-26).
   themedCashDelta = clampScenarioCash(state, themedCashDelta);

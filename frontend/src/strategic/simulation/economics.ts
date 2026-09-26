@@ -148,12 +148,14 @@ export function taskDurationTicks(
   policies: Policies,
   taskType: string,
   social = 1,
-  competencePractical = 0.5
+  competencePractical = 0.5,
+  // ORDER 269 — huvudpaviljongens tempo (knowledgeInService.ts staffTempoFactor).
+  knowledgeTempo = 1
 ): number {
   const base = TASK_BASE_TICKS[taskType] ?? 8;
   const training = 1.6 - 0.3 * policies.trainingLevel;
   const concept = SERVICE_DURATION_MULT[policies.service];
   const socialMult = socialThroughputMultiplier(social);
   const competenceMult = competenceDurationMultiplier(competencePractical);
-  return Math.max(2, Math.round(base * training * concept * socialMult * competenceMult));
+  return Math.max(2, Math.round(base * training * concept * socialMult * competenceMult * knowledgeTempo));
 }

@@ -1,10 +1,11 @@
-import { GAME_MINUTES_PER_SIM_SECOND, QUEUE, SITTING } from '../../sim/balance';
+import { GAME_MINUTES_PER_SIM_SECOND, SITTING } from '../../sim/balance';
 import { INITIAL_CAPITAL_VALUE } from './model';
 import { INTERIOR } from '../content/layout';
 import { businessHasOvernight, businessHasSeats, capacityForBusiness } from '../business/businessClass';
 import type { BusinessClass } from '../business/businessClass';
 import type { Guest, SimulationState, StaffMember, StaffRole, TaskAssignment, TaskType, Vec2 } from '../types';
 import { taskDurationTicks } from './economics';
+import { giveUpSatisfaction, queuePatienceSeconds, staffTempoFactor } from '../../sim/knowledgeInService';
 import { roleCompetence } from './team';
 import { businessRoomRef } from '../scene/interiorSharedState';
 import {
@@ -434,8 +435,9 @@ export function tickGuests(state: SimulationState) {
         state.waitingIds = state.waitingIds.filter((id) => id !== guest.id);
         setGuestSeated(state, guest, seat);
       } else if (
-        now - guest.stateTime > QUEUE.patienceSimSeconds &&
-        guest.satisfaction < QUEUE.giveUpSatisfaction &&
+        // ORDER 269 — Kalastorget: klagande gäster stannar oftare.
+        now - guest.stateTime > queuePatienceSeconds(state) &&
+        guest.satisfaction < giveUpSatisfaction(state) &&
         // ORDER 266 — en gäst som spelaren står hos (action-knappen) ger
         // inte upp medan insatsen pågår.
         state.actionButton?.active?.guestId !== guest.id
@@ -794,7 +796,8 @@ function beginBackgroundTask(state: SimulationState, staff: StaffMember, type: T
     state.policies,
     type,
     state.capitals.values.social,
-    roleCompetence(state.team, staff.role)
+    roleCompetence(state.team, staff.role),
+    staffTempoFactor(state)
   );
   staff.targetGuestId = null;
   // Bakgrundsarbete håller personalen vid rollens home-punkt — kock i
@@ -1222,7 +1225,8 @@ function beginStaffTask(
     state.policies,
     type,
     state.capitals.values.social,
-    roleCompetence(state.team, staff.role)
+    roleCompetence(state.team, staff.role),
+    staffTempoFactor(state)
   );
   staff.targetGuestId = targetGuestId;
   const guest = state.guests.find((g) => g.id === targetGuestId);

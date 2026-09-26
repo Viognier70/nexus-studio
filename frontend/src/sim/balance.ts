@@ -447,6 +447,95 @@ export const NEWSPAPER = {
 
 // ORDER 266 (F28) — händelser ur simuleringen, var och en med en orsak
 // (speldesign > Händelser). Valda tal.
+// ORDER 269 — kunskapen i servicen (Vision Owner 2026-09-26): "Låt
+// medaljerna verka: Metodköket sänker köksmisstag och kollapsrisk,
+// Stensöta höjer intäkt per gäst via dryck, Kalastorget gör att klagande
+// gäster oftare stannar, huvudpaviljongen styr personalens tempo." Och:
+// "med medaljer i Kalastorget ger det bästa svaret mer". Talen gäller
+// per medaljsteg (brons ett, platina fyra) och är kalibrerade mot
+// slumpmålet (reports/order269/randomness.json). Speldesign > Servicen.
+export const KNOWLEDGE_IN_SERVICE = {
+  section: 'Servicen',
+  metodkoket: {
+    kitchenMistakeCutPerStep: 0.1,   // köksmissar i strömmen (kitchen_slip)
+    collapseCutPerStep: 0.1,         // kollapsrisken per tick
+    minFactor: 0.4
+  },
+  stensota: {
+    drinkRevenuePerStep: 0.1         // intäkt per betalande gäst
+  },
+  kalastorget: {
+    giveUpSatisfactionCutPerStep: 0.03, // tröskeln för att ge upp i kön sänks
+    patienceSecondsPerStep: 10,         // och tålamodet växer
+    bestAnswerBonusPerStep: 0.25        // scenariots bästa svar ger mer
+  },
+  mainPavilion: {
+    tempoCutPerStep: 0.05,           // uppgifternas tid för personalen
+    minFactor: 0.7
+  },
+  // Speldesignen: krediterna samlas av varje rätt svar (F15: inga frågor
+  // under servicen i v1; F27: ingen avklingning). De fyller rummets
+  // `enablers` (ryktets tak, kvalitetens takt) i samma register, på
+  // båda axlarna, och sänker dem aldrig.
+  credits: {
+    enablerPerCredit: 0.02,
+    enablerMax: 1
+  },
+  openQuestion: 'F42'
+} as const;
+
+// ORDER 269 — kollapsen, flyttad från strategic/simulation/collapse.ts
+// (ordern: "Flytta först kollapsens och vädrets konstanter till
+// balance.ts"). Värdena är oförändrade. Sannolikhet per tick (5 Hz):
+// golv + (1 − svagaste axeln) × belastning × förstärkning.
+export const COLLAPSE = {
+  section: 'Servicen',
+  floorPerTick: 0.00003,
+  strainGainPerTick: 0.00025,
+  reputationDrop: 0.15
+} as const;
+
+// ORDER 269 — vädret, flyttat från strategic/simulation/weather.ts.
+// Värdena är oförändrade. Band med vikter (en höstkväll), och hur vädret
+// påverkar ankomsterna: temperatur 0,75× vid 6 °C till 1,20× vid 21 °C,
+// vind 1,0× vid 0,5 m/s till 0,75× vid 10 m/s, nederbörd enligt tabell.
+export const WEATHER = {
+  section: 'Servicen',
+  tempBands: [
+    { min: 6, max: 9, weight: 1 },
+    { min: 10, max: 13, weight: 3 },
+    { min: 14, max: 17, weight: 4 },
+    { min: 18, max: 21, weight: 2 }
+  ],
+  windBands: [
+    { min: 0.5, max: 2.0, weight: 4 },
+    { min: 2.0, max: 5.5, weight: 4 },
+    { min: 5.5, max: 10.0, weight: 2 }
+  ],
+  precipWeights: [
+    { kind: 'none', weight: 7 },
+    { kind: 'drizzle', weight: 2 },
+    { kind: 'rain', weight: 1 }
+  ],
+  cloudWeights: [
+    { kind: 'clear', weight: 3 },
+    { kind: 'partly', weight: 4 },
+    { kind: 'overcast', weight: 3 }
+  ],
+  outdoorMinTempC: 14,
+  outdoorMaxWindMS: 5.5,
+  arrival: {
+    tempColdC: 6,
+    tempWarmC: 21,
+    tempMultCold: 0.75,
+    tempMultSpan: 0.45,
+    windStillMS: 0.5,
+    windBlusteryMS: 10,
+    windMultSpan: 0.25,
+    precipMult: { none: 1.0, drizzle: 0.9, rain: 0.75, other: 0.65 }
+  }
+} as const;
+
 // Vision Owner 2026-09-26 (ORDER 268): "Scenarierna sammanlagt ger
 // högst cirka 20 % av en normal veckointäkt i klassen, åt båda hållen.
 // Scenarierna ska krydda veckan, inte bära den." Speldesign > Servicen >
