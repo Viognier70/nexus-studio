@@ -23,6 +23,7 @@
 // spåra vad som faktiskt orsakade en förändring." No per-event
 // capital nudges here; the stream is read-only against state.
 
+import { kitchenMistakeFactor } from '../../sim/knowledgeInService';
 import type {
   EventStreamCauseTag,
   EventStreamEntry,
@@ -239,10 +240,13 @@ export function eventProbabilityPerTick(
   // ORDER 043 Addendum A rhythm — the ambient stream inherits the
   // service curve (opening / buildup / rush / decline) so cadence
   // rises and falls with the room's pace, not as a flat carpet.
+  // ORDER 269 — Metodköket sänker köksmissarna (knowledgeInService.ts).
+  const knowledge = def.kind === 'kitchen_slip' ? kitchenMistakeFactor(state) : 1;
   const perMinute =
     def.baseRatePerMin *
     eventMultiplier(def, state) *
-    currentRhythmMultiplier(state);
+    currentRhythmMultiplier(state) *
+    knowledge;
   // Cap at 1 to keep chance() well-defined even in extreme states.
   return Math.min(1, (perMinute * TICK_SECONDS) / 60);
 }

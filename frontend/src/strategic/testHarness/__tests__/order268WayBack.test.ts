@@ -107,9 +107,11 @@ describe('ORDER 268 — vägen tillbaka efter nedgradering', () => {
     const cap = ECONOMY.normalWeeklyRevenueSek.vinbar * SCENARIO_CASH.weeklyCapShareOfNormalRevenue;
     for (const w of [...scenarioWeeks(rational), ...scenarioWeeks(weakRun)]) expect(Math.abs(w.sek)).toBeLessThanOrEqual(cap + 1);
     expect(scenarioWeeks(rational).every((w) => w.sek > 0)).toBe(true);
-    // Bara kvällar med ekonomiskt tema flyttar kassan, så en enskild
-    // vecka kan gå jämnt upp; över fyra veckor förlorar den svaga.
-    expect(scenarioWeeks(weakRun).reduce((a, w) => a + w.sek, 0)).toBeLessThan(0);
+    // Bara kvällar med ekonomiskt tema drar av, och genvägen med fisken
+    // (A, sämsta svaret) ger alltid lite kassa; den svaga kan därför gå
+    // jämnt upp. Över fyra veckor får hon klart mindre än den rimliga.
+    const sum = (r: ReturnType<typeof runWeeks>) => scenarioWeeks(r).reduce((a, w) => a + w.sek, 0);
+    expect(sum(weakRun)).toBeLessThan(sum(rational) / 2);
   });
 
   it.runIf(WRITE)('rapporterna och sparfilen skrivs', () => {

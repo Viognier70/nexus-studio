@@ -18,7 +18,7 @@ import { calendarFor } from '../../sim/calendar';
 import { floorSek } from '../../sim/economy';
 import { mountRoomLikeScene } from './roomParity';
 import { WEEK } from '../../sim/balance';
-import { scenarioById } from '../simulation/scenarios';
+import { rankedScenarioChoice } from '../simulation/scenarios';
 import type { PavilionKey, ScenarioChoice, SimAction, SimulationState } from '../types';
 
 // Simuleringens tick är 0,2 s (5 Hz), samma som SimulationProvider.
@@ -67,14 +67,9 @@ function tickUntil(s: SimulationState, done: (s: SimulationState) => boolean, an
 }
 
 // ORDER 268 — valen rangordnas efter hur de flyttar kvällens tema
-// (scenarios.ts `capitalSign`, samma tal som simuleringen läser). Vid
-// lika väljs det första.
+// (scenarios.ts `rankedScenarioChoice`, samma som simuleringen läser).
 export function rankedChoice(scenarioId: string | null, answer: ScenarioAnswer): ScenarioChoice {
-  const spec = scenarioId ? scenarioById(scenarioId) : null;
-  if (!spec) return 'A';
-  const order: ScenarioChoice[] = ['A', 'B', 'C'];
-  const sign = (c: ScenarioChoice) => spec.choices[c].capitalSign ?? 0;
-  return order.reduce((pick, c) => (answer === 'best' ? sign(c) > sign(pick) : sign(c) < sign(pick)) ? c : pick, order[0]);
+  return rankedScenarioChoice(scenarioId, answer);
 }
 
 // ORDER 268 — spelaren svarar på scenariot vid dörren (ScenarioOverlay:

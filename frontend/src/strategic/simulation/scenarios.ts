@@ -628,6 +628,21 @@ export const ALL_SCENARIOS: readonly ScenarioSpec[] = [
   MORAL_DILEMMA
 ];
 
+// ORDER 269 — det bästa svaret: valet som lyfter kvällens tema mest
+// (`capitalSign`); vid lika det första. Samma rangordning som harnessens
+// rimliga spelare och playwright-skripten läser.
+export function rankedScenarioChoice(scenarioId: string | null, answer: 'best' | 'worst'): ScenarioChoice {
+  const spec = scenarioId ? scenarioById(scenarioId) : null;
+  if (!spec) return 'A';
+  const order: ScenarioChoice[] = ['A', 'B', 'C'];
+  const sign = (c: ScenarioChoice) => spec.choices[c].capitalSign ?? 0;
+  return order.reduce((pick, c) => ((answer === 'best' ? sign(c) > sign(pick) : sign(c) < sign(pick)) ? c : pick), order[0]);
+}
+
+export function bestChoice(scenarioId: string | null): ScenarioChoice {
+  return rankedScenarioChoice(scenarioId, 'best');
+}
+
 export function scenarioById(id: string): ScenarioSpec | null {
   return ALL_SCENARIOS.find((s) => s.id === id) ?? null;
 }

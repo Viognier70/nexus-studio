@@ -35,6 +35,11 @@ export interface WeekResult {
   resultSek: number;
   guests: number;
   reputationEnd: number;
+  // ORDER 269 — veckans sämsta kväll (intäkt) och veckans bästa, ur
+  // avräkningens kvällslista (economy.ts EveningRecord): "En enskild
+  // kväll får gå riktigt illa även för en duktig spelare."
+  worstEveningSek: number;
+  bestEveningSek: number;
 }
 
 export function playMeasuredWeek(seed: number, medals: SimulationState['medals']): WeekResult {
@@ -50,7 +55,15 @@ export function playMeasuredWeek(seed: number, medals: SimulationState['medals']
   const settlement = s.economy.lastSettlement;
   const topUp = settlement?.topUpSek ?? 0;
   const amortisation = settlement?.amortisationSek ?? 0;
-  return { seed, resultSek: Math.round(s.cash - cashStart - topUp + amortisation), guests, reputationEnd: s.reputation };
+  const evenings = (settlement?.evenings ?? []).map((e) => e.revenueSek);
+  return {
+    seed,
+    resultSek: Math.round(s.cash - cashStart - topUp + amortisation),
+    guests,
+    reputationEnd: s.reputation,
+    worstEveningSek: evenings.length ? Math.min(...evenings) : 0,
+    bestEveningSek: evenings.length ? Math.max(...evenings) : 0
+  };
 }
 
 export interface RandomnessMeasurement {

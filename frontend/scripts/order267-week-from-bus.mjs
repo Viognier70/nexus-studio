@@ -23,7 +23,8 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const FRONTEND = resolve(HERE, '..');
-const OUT = resolve(FRONTEND, 'reports/order267');
+// ORDER 269 — REPORT_ORDER skriver under en senare orders katalog.
+const OUT = resolve(FRONTEND, 'reports', process.env.REPORT_ORDER ?? 'order267');
 mkdirSync(OUT, { recursive: true });
 const PORT = 4174;
 const URL = `http://localhost:${PORT}`;

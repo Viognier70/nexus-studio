@@ -150,6 +150,15 @@ Förebilden är *Two Point Hospital* och *Game Dev Tycoon*: att flytta till stö
 
 Servicen är slumpen, viktad av spelarens förberedelser. Det spelaren gjort på morgonen, och det hon kan, avgör hur ofta saker går rätt. Hon ser konsekvenserna i rummet, inte i siffertavlor.
 
+*Beslut 2026-09-26 (Vision Owner): kunskapen verkar i servicen.* Medaljerna verkar per medaljsteg, där brons är ett steg och platina fyra:
+- **Metodköket** sänker köksmisstagen och risken att kvällen faller ihop, med 10 % per steg.
+- **Stensöta** höjer intäkten per gäst via dryck, med 10 % per steg.
+- **Kalastorget** gör att klagande gäster oftare stannar: gästen i kön tål 10 sekunder längre per steg och ger upp först vid lägre nöjdhet. Med medaljer i Kalastorget ger också scenariots bästa svar mer, 25 % per steg.
+- **Huvudpaviljongen** styr personalens tempo: uppgifterna går 5 % fortare per steg.
+- **Krediterna** från övning och quiz fyller rummets förutsättningar i samma register och sänks aldrig.
+
+Slumpmålet mäts med scenarierna inräknade, och den bättre förberedda spelaren skiljer sig bara i medaljer. Målet är att hon vinner mellan 70 och 80 % av veckorna.
+
 ### Satsningarna
 
 Morgonens satsningar påverkar de tre kapitalen: ekonomiskt, socialt och ekologiskt. Personalfest och utbildning gör personalen lojal och minskar misstag. Ekologiska råvaror höjer kvaliteten men kostar mer. Ingen satsning är alltid rätt, bara bättre eller sämre för veckan som kommer. Det finns ingen optimal strategi, bara avvägningar, precis som ORDER 100 kräver.

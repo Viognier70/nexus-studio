@@ -29,6 +29,8 @@
 import { offerQuiz } from '../knowledge/postServiceQuiz';
 import { clampReputation } from './reputation';
 import { dayEnd, dayEndHeadroom, recordEvening } from '../../sim/economy';
+import { COLLAPSE } from '../../sim/balance';
+import { collapseRiskFactor } from '../../sim/knowledgeInService';
 import { onServiceClose } from '../../sim/serviceEvents';
 import type {
   ConsequenceEvent,
@@ -52,13 +54,14 @@ import {
 // Per-tick constants. Sim ticks at 5 Hz (0.2 s / tick, TICK_SECONDS
 // in eventStream.ts). A 15-min service is 4500 ticks; the constants
 // are chosen against that horizon.
-export const COLLAPSE_FLOOR = 0.00003;
-export const COLLAPSE_STRAIN_GAIN = 0.00025;
+// ORDER 269 — talen står i src/sim/balance.ts COLLAPSE.
+export const COLLAPSE_FLOOR = COLLAPSE.floorPerTick;
+export const COLLAPSE_STRAIN_GAIN = COLLAPSE.strainGainPerTick;
 
 // Reputation dip when a service collapses. Same magnitude as a
 // scenario-C refusal on walk-in-of-five × 5 — collapse is worse than
 // a single refusal because the whole evening ended early.
-export const COLLAPSE_REPUTATION_DROP = 0.15;
+export const COLLAPSE_REPUTATION_DROP = COLLAPSE.reputationDrop;
 
 export type CompetenceAxis = 'scientific' | 'cultural' | 'practical';
 
@@ -118,7 +121,8 @@ export function collapseProbabilityPerTick(state: SimulationState): number {
   const { value } = weakestAxis(state.team);
   const effectiveWeakest = value * moraleCompetenceMultiplier(state.morale);
   const strain = strainMultiplier(loadOf(state));
-  const p = COLLAPSE_FLOOR + (1 - effectiveWeakest) * strain * COLLAPSE_STRAIN_GAIN;
+  // ORDER 269 — Metodköket sänker kollapsrisken (knowledgeInService.ts).
+  const p = (COLLAPSE_FLOOR + (1 - effectiveWeakest) * strain * COLLAPSE_STRAIN_GAIN) * collapseRiskFactor(state);
   // Clamp to [0, 1]; the analytical max at strain 3.0, weakest 0 is
   // 0.00003 + 3 × 0.00025 = 0.00078, well below 1 — clamp is defensive.
   return Math.max(0, Math.min(1, p));
