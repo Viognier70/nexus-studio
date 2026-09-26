@@ -1,0 +1,187 @@
+{
+  "url": "http://localhost:4175/",
+  "build": "produktion (vite build + preview)",
+  "flags": "inga",
+  "start": "reports/order268/save-lordag-vecka1.json på sparplats 1",
+  "steps": [
+    {
+      "name": "sparfilen laddad: lördag vecka 1 i vinbaren",
+      "atSeconds": 19
+    },
+    {
+      "name": "lördagens kväll",
+      "atSeconds": 153
+    },
+    {
+      "name": "söndagstidningen: nedgraderad",
+      "atSeconds": 160
+    },
+    {
+      "name": "brons i tre",
+      "atSeconds": 242
+    },
+    {
+      "name": "söndagen stängd",
+      "atSeconds": 289
+    },
+    {
+      "name": "food trucken dag 1",
+      "atSeconds": 445
+    },
+    {
+      "name": "food trucken dag 2",
+      "atSeconds": 600
+    },
+    {
+      "name": "food trucken dag 3",
+      "atSeconds": 756
+    },
+    {
+      "name": "food trucken dag 4",
+      "atSeconds": 911
+    },
+    {
+      "name": "food trucken dag 5",
+      "atSeconds": 1067
+    },
+    {
+      "name": "food trucken dag 6",
+      "atSeconds": 1222
+    },
+    {
+      "name": "tillbaka i vinbaren",
+      "atSeconds": 1235
+    },
+    {
+      "name": "första kvällen i vinbaren igen",
+      "atSeconds": 1433
+    }
+  ],
+  "days": [
+    {
+      "morning": "Lördag · Morgon · VinbarFyll dagens schema och öppna för kvällen.I morse: Ryktet hämtar sig sakta. Gästerna minns inte längre den sämsta kvällen. Banken ringde i morse. Kassan var under noll när dagen tog slut.Ingen meny satt i dag.Schemat: 0 av 2 platserMåltidens husÖppna för kvällenMedaljer: Inga medaljer ännu",
+      "evening": "Två gick härifrån nöjda. Kvällen slutade innan den skulle. Det var huset som inte höll — inte oturen, inte gästerna, utan att någon inte var på plats där kunskapen skulle stå. I morgon börjar med en dörr som stängde tidigt, och ett rykte som märkte det. Ta med det till morgonen. Det där kommer inte att glömmas snabbt. Du valde att kliva åt sidan i kväll; ingen skam i det, men avvaktan lämnar också ett spår som kommer tillbaka som en fråga i morgon."
+    },
+    {
+      "morning": "Måndag · Morgon · Food truckFyll dagens schema och öppna för kvällen.I morse: Ryktet hämtar sig sakta. Gästerna minns inte längre den sämsta kvällen.Ingen meny satt i dag.Schemat: 0 av 2 platserMåltidens husÖppna för kvällenMedaljer: Metodköket brons · Stensöta brons · Kalastorget brons",
+      "evening": "Kassan flöt, men flöt tomt; ingen kolumn stack ut. Rummet fyllde sig i sin egen takt, laget gjorde det de brukar göra, och gästerna gick utan att någon hade en historia att ta med sig därifrån. Det finns inget att lära av kvällar som den här — inget att fira, inget att laga. De flesta kvällar är så, och det är därför de sällsynta är det de är. Du valde att kliva åt sidan i kväll; ingen skam i det, men avvaktan lämnar också ett spår som kommer tillbaka som en fråga i morgon."
+    },
+    {
+      "morning": "Tisdag · Morgon · Food truckFyll dagens schema och öppna för kvällen.I morse: Ryktet hämtar sig sakta. Gästerna minns inte längre den sämsta kvällen.Ingen meny satt i dag.Schemat: 0 av 2 platserMåltidens husÖppna för kvällenMedaljer: Metodköket brons · Stensöta brons · Kalastorget brons",
+      "evening": "Råvaran var där, oberörd; ingen frågade om den och ingen svarade. Rummet fyllde sig i sin egen takt, laget gjorde det de brukar göra, och gästerna gick utan att någon hade en historia att ta med sig därifrån. Det finns inget att lära av kvällar som den här — inget att fira, inget att laga. De flesta kvällar är så, och det är därför de sällsynta är det de är. Du valde den hårdare läsningen, den som kräver skarpt öga och lite obekvämt tal — den vägen slipar men den kostar också."
+    },
+    {
+      "morning": "Onsdag · Morgon · Food truckFyll dagens schema och öppna för kvällen.I morse: Ryktet hämtar sig sakta. Gästerna minns inte längre den sämsta kvällen.Ingen meny satt i dag.Schemat: 0 av 2 platserMåltidens husÖppna för kvällenMedaljer: Metodköket brons · Stensöta brons · Kalastorget brons",
+      "evening": "Laget gjorde det de brukar; ingen berättade om det efteråt. Rummet fyllde sig i sin egen takt, laget gjorde det de brukar göra, och gästerna gick utan att någon hade en historia att ta med sig därifrån. Det finns inget att lära av kvällar som den här — inget att fira, inget att laga. De flesta kvällar är så, och det är därför de sällsynta är det de är. Du valde att kliva åt sidan i kväll; ingen skam i det, men avvaktan lämnar också ett spår som kommer tillbaka som en fråga i morgon."
+    },
+    {
+      "morning": "Torsdag · Morgon · Food truckFyll dagens schema och öppna för kvällen.I morse: Ryktet hämtar sig sakta. Gästerna minns inte längre den sämsta kvällen.Ingen meny satt i dag.Schemat: 0 av 2 platserMåltidens husÖppna för kvällenMedaljer: Metodköket brons · Stensöta brons · Kalastorget brons",
+      "evening": "Kassan flöt, men flöt tomt; ingen kolumn stack ut. Rummet fyllde sig i sin egen takt, laget gjorde det de brukar göra, och gästerna gick utan att någon hade en historia att ta med sig därifrån. Det finns inget att lära av kvällar som den här — inget att fira, inget att laga. De flesta kvällar är så, och det är därför de sällsynta är det de är. Du valde den hårdare läsningen, den som kräver skarpt öga och lite obekvämt tal — den vägen slipar men den kostar också."
+    },
+    {
+      "morning": "Fredag · Morgon · Food truckFyll dagens schema och öppna för kvällen.I morse: Ryktet hämtar sig sakta. Gästerna minns inte längre den sämsta kvällen.Ingen meny satt i dag.Schemat: 0 av 2 platserMåltidens husÖppna för kvällenMedaljer: Metodköket brons · Stensöta brons · Kalastorget brons",
+      "evening": "Råvaran var där, oberörd; ingen frågade om den och ingen svarade. Rummet fyllde sig i sin egen takt, laget gjorde det de brukar göra, och gästerna gick utan att någon hade en historia att ta med sig därifrån. Det finns inget att lära av kvällar som den här — inget att fira, inget att laga. De flesta kvällar är så, och det är därför de sällsynta är det de är. Du valde att kliva åt sidan i kväll; ingen skam i det, men avvaktan lämnar också ett spår som kommer tillbaka som en fråga i morgon."
+    },
+    {
+      "morning": "Lördag · Morgon · Food truckFyll dagens schema och öppna för kvällen.I morse: Ryktet hämtar sig sakta. Gästerna minns inte längre den sämsta kvällen.Ingen meny satt i dag.Schemat: 0 av 2 platserMåltidens husÖppna för kvällenMedaljer: Metodköket brons · Stensöta brons · Kalastorget brons",
+      "evening": "Laget gjorde det de brukar; ingen berättade om det efteråt. Rummet fyllde sig i sin egen takt, laget gjorde det de brukar göra, och gästerna gick utan att någon hade en historia att ta med sig därifrån. Det finns inget att lära av kvällar som den här — inget att fira, inget att laga. De flesta kvällar är så, och det är därför de sällsynta är det de är. Du valde den hårdare läsningen, den som kräver skarpt öga och lite obekvämt tal — den vägen slipar men den kostar också."
+    },
+    {
+      "morning": "Måndag · Morgon · VinbarFyll dagens schema och öppna för kvällen.I morse: Ryktet hämtar sig sakta. Gästerna minns inte längre den sämsta kvällen.Ingen meny satt i dag.Schemat: 0 av 2 platserMåltidens husÖppna för kvällenMedaljer: Metodköket brons · Stensöta brons · Kalastorget brons",
+      "evening": "Tolv gick härifrån nöjda. Ingen gav upp i kön. Kvällen läste laget — och laget höll den. Det du valde i morse satte tonen i rummet. Rummet fann sin puls, laget läste varandra, och gästerna gick nöjda utan att någon slog ut med armarna. Det är sådana kvällar som bygger ett rykte tyst — inte de som glimrar utan de som stämmer. Skriv upp det i minnet innan morgonen skjuter bort det. Du valde den hårdare läsningen, den som kräver skarpt öga och lite obekvämt tal — den vägen slipar men den kostar också."
+    }
+  ],
+  "errors": [],
+  "saturday": "Lördag · Morgon · VinbarFyll dagens schema och öppna för kvällen.I morse: Ryktet hämtar sig sakta. Gästerna minns inte längre den sämsta kvällen. Banken ringde i morse. Kassan var under noll när dagen tog slut.Ingen meny satt i dag.Schemat: 0 av 2 platserMåltidens husÖppna för kvällenMedaljer: Inga medaljer ännu",
+  "scenarioAnswers": [
+    {
+      "mode": "worst",
+      "choice": "Take the fish — the team labels it carefully and hopes."
+    },
+    {
+      "mode": "worst",
+      "choice": "Turn the party away."
+    },
+    {
+      "mode": "best",
+      "choice": "Rewrite the menu — bring the season's greens forward."
+    },
+    {
+      "mode": "best",
+      "choice": "Seat all five — join the four-top and a two-top."
+    },
+    {
+      "mode": "best",
+      "choice": "Rewrite the menu — bring the season's greens forward."
+    },
+    {
+      "mode": "best",
+      "choice": "Rewrite the menu — bring the season's greens forward."
+    },
+    {
+      "mode": "best",
+      "choice": "Seat all five — join the four-top and a two-top."
+    },
+    {
+      "mode": "best",
+      "choice": "Seat all five — join the four-top and a two-top."
+    },
+    {
+      "mode": "best",
+      "choice": "Rewrite the menu — bring the season's greens forward."
+    },
+    {
+      "mode": "best",
+      "choice": "Rewrite the menu — bring the season's greens forward."
+    },
+    {
+      "mode": "best",
+      "choice": "Seat all five — join the four-top and a two-top."
+    },
+    {
+      "mode": "best",
+      "choice": "Seat all five — join the four-top and a two-top."
+    },
+    {
+      "mode": "best",
+      "choice": "Rewrite the menu — bring the season's greens forward."
+    },
+    {
+      "mode": "best",
+      "choice": "Rewrite the menu — bring the season's greens forward."
+    },
+    {
+      "mode": "best",
+      "choice": "Rewrite the menu — bring the season's greens forward."
+    },
+    {
+      "mode": "best",
+      "choice": "Seat all five — join the four-top and a two-top."
+    },
+    {
+      "mode": "best",
+      "choice": "Seat all five — join the four-top and a two-top."
+    },
+    {
+      "mode": "best",
+      "choice": "Rewrite the menu — bring the season's greens forward."
+    },
+    {
+      "mode": "best",
+      "choice": "Seat all five — join the four-top and a two-top."
+    }
+  ],
+  "newspaper1": "SöndagsnumretLokaltidningen i Grythyttan · vecka 1RecensionenEn onsdagskväll hos Vinbaren vid torget som inte höllRummet fylldes i jämn takt. Ryktet fick sig en törn.MarknadenFood trucken fick få av gästerna den kunde få den här veckan.BankenDu har inget golv ännu. Det växer med dina medaljer. Banken drog veckans amortering. Banken tog vinbaren och köpte inventarierna. Det blir din kassa när du fortsätter med food trucken. Banken om nästa steg: för vinbaren saknas brons i tre paviljonger, varav Stensöta.Det som kommerGrythyttedagarna om två veckor.Lägg ifrån dig tidningen",
+  "sunday1": "Söndag · Morgon · Food truckSöndag. Krogen är stängd, och du har fyra platser i schemat.I morse: Ryktet hämtar sig sakta. Gästerna minns inte längre den sämsta kvällen. Banken ringde i morse. Kassan var under noll när dagen tog slut.Schemat: 0 av 4 platserMåltidens husSöndagsnumretBankenAvsluta söndagenMedaljer: Inga medaljer ännu",
+  "exams": [
+    "8 av 8 rätt. Du har tagit brons i Stensöta.Tillbaka",
+    "8 av 8 rätt. Du har tagit brons i Metodköket.Tillbaka",
+    "8 av 8 rätt. Du har tagit brons i Kalastorget.Tillbaka"
+  ],
+  "bank1": "BankenStängDu driver food trucken. Du har visat att du kan bemötande och omdöme, vin och dryck och köket. VinbarByt till vinbarFood truckDin verksamhetRestaurangFör restaurangen saknas silver i tre paviljonger.ÖlkrogByt till ölkrogGästgiveriFör gästgiveriet saknas guld i tre paviljonger, varav Kalastorget.NattklubbFör nattklubben saknas guld i Kalastorget och silver i Stensöta.",
+  "newspaper2": "SöndagsnumretLokaltidningen i Grythyttan · vecka 2RecensionenEn måndagskväll hos Vinbaren vid torget som inte höllRummet var glest, och det märktes i stämningen. Ryktet fick sig en törn.MarknadenFood trucken fick få av gästerna den kunde få den här veckan.BankenVeckan gav mer än golvet. Banken om nästa steg: för restaurangen saknas silver i tre paviljonger.Det som kommerGrythyttedagarna nästa vecka.Lägg ifrån dig tidningen",
+  "sunday2": "Söndag · Morgon · Food truckSöndag. Krogen är stängd, och du har fyra platser i schemat.I morse: Ryktet hämtar sig sakta. Gästerna minns inte längre den sämsta kvällen.Schemat: 0 av 4 platserMåltidens husSöndagsnumretBankenAvsluta söndagenMedaljer: Metodköket brons · Stensöta brons · Kalastorget brons",
+  "bank2": "BankenStängDu driver food trucken. Du har visat att du kan bemötande och omdöme, vin och dryck och köket. VinbarByt till vinbarFood truckDin verksamhetRestaurangFör restaurangen saknas silver i tre paviljonger.ÖlkrogByt till ölkrogGästgiveriFör gästgiveriet saknas guld i tre paviljonger, varav Kalastorget.NattklubbFör nattklubben saknas guld i Kalastorget och silver i Stensöta.",
+  "vinbarAvailable": true,
+  "back": "Söndag · Morgon · VinbarSöndag. Krogen är stängd, och du har fyra platser i schemat.I morse: Ryktet hämtar sig sakta. Gästerna minns inte längre den sämsta kvällen.Schemat: 0 av 4 platserMåltidens husSöndagsnumretBankenAvsluta söndagenMedaljer: Metodköket brons · Stensöta brons · Kalastorget brons"
+}

@@ -15,6 +15,7 @@
 // närmast speldesignen och går att ändra här utan annan kodändring.
 
 import type { PavilionId } from '../strategic/knowledge/pavilions';
+import type { StaffRole } from '../strategic/types';
 
 // Medaljnivåer i stigande ordning. Index + 1 = antal medaljsteg
 // (Ekonomin > Marknaden: "brons är ett steg och platina fyra").
@@ -237,8 +238,35 @@ export const RANDOMNESS = {
 
 export const DOWNGRADE = {
   section: 'Ekonomin > Nedgradering',
-  consecutiveNegativeDayEnds: 3, // "under noll vid tre dagsavslut i rad"
-  warningDays: 2                 // "två dagars varning i kvällsberättelsen"
+  consecutiveNegativeDayEnds: 3, // "under minus veckogolvet vid tre dagsavslut i rad"
+  warningDays: 2,                // "två dagars varning i kvällsberättelsen"
+  // Vision Owner 2026-09-26 (ORDER 268): "Nedgradering räknas först när
+  // kassan är under minus veckogolvet" — golvet är kreditram. Gränsen är
+  // så många veckors golv under noll.
+  creditLineInWeeksOfFloor: 1,
+  // "Vid tvingad nedgradering säljs lokalen för 50 % av inventarievärdet,
+  // som blir startkassa i den nya klassen."
+  salePriceShareOfInventory: 0.5,
+  // Inventarievärdet: speldesignen anger det inte. Startlånet "täcker
+  // lokal och inventarier"; inventarierna är hälften av det (F40).
+  inventoryShareOfStartLoan: 0.5,
+  openQuestion: 'F40'
+} as const;
+
+// Vision Owner 2026-09-26 (ORDER 268): "Löner dras bara på servicedagar,
+// efter kvällens intäkt. Söndag ingen lön." Speldesign > Ekonomin >
+// Nedgradering. Flaggan finns för att regeln ska stå här och inte i logiken.
+export const WAGES = {
+  section: 'Ekonomin > Nedgradering',
+  onlyOnServiceDays: true
+} as const;
+
+// Vision Owner 2026-09-26 (ORDER 268): "Efter inget lån ger banken nytt
+// lån först efter en hel vecka i Måltidens hus med minst ett prov."
+export const NEW_START = {
+  section: 'Ekonomin > Lånet',
+  daysWithoutBusiness: 7,      // "en hel vecka"
+  examsRequired: 1             // "med minst ett prov"
 } as const;
 
 // ---------------------------------------------------------------------
@@ -301,10 +329,33 @@ export const BUSINESS_CLASSES = {
 
 export const UPGRADE = {
   section: 'Verksamhetsklasserna > Uppgradering',
-  // "om kassan räcker till en veckas golv i den nya klassen"
-  cashRequiredInWeeksOfFloor: 1,
+  // Vision Owner 2026-09-26 (ORDER 268): "Uppgradering kräver
+  // kontantinsats 25 % av en veckas golv i nya klassen, resten lånas."
+  // Insatsen dras ur kassan; lokalen i övrigt täcks av startlånet.
+  depositShareOfWeekFloor: 0.25,
   // "ryktet halveras"
   reputationFactor: 0.5
+} as const;
+
+// ORDER 268 (F37) — personalen följer verksamheten. Speldesignen säger
+// att "personalen får följa med" vid uppgradering, men inte hur många
+// en mindre klass bär. Vid nedgradering behåller spelaren de roller
+// klassen har plats för och resten slutar; utan verksamhet finns ingen
+// personal och inga löner. Vid uppgradering följer alla med och de
+// roller som saknas anställs. Food trucken är en lucka mot gatan: en
+// kock och en lärling. Restaurang och större har samma lag som vinbaren
+// tills deras egna spel byggs (etapp 7–10).
+export const TEAM_BY_CLASS = {
+  section: 'Verksamhetsklasserna > Uppgradering',
+  openQuestion: 'F37',
+  roles: {
+    vinbar: ['värd', 'servitör', 'kock'],
+    foodtruck: ['kock', 'lärling'],
+    restaurang: ['värd', 'servitör', 'kock'],
+    olkrog: ['värd', 'servitör', 'kock'],
+    gastgiveri: ['värd', 'servitör', 'kock'],
+    nattklubb: ['värd', 'servitör', 'kock']
+  } as Record<BusinessClassId, readonly StaffRole[]>
 } as const;
 
 // ---------------------------------------------------------------------
@@ -396,6 +447,26 @@ export const NEWSPAPER = {
 
 // ORDER 266 (F28) — händelser ur simuleringen, var och en med en orsak
 // (speldesign > Händelser). Valda tal.
+// Vision Owner 2026-09-26 (ORDER 268): "Scenarierna sammanlagt ger
+// högst cirka 20 % av en normal veckointäkt i klassen, åt båda hållen.
+// Scenarierna ska krydda veckan, inte bära den." Speldesign > Servicen >
+// Händelser. Beloppen var förut fasta kronor i strategic/simulation/
+// constants.ts (SCENARIO_CASH_DELTA_SEK 6 000) och scenarios.ts
+// (cashWrites 3 000 och 2 000), och gav 21 000–36 000 SEK i veckan.
+// En enhet = unitShareOfWeeklyRevenue × klassens normala veckointäkt.
+// Kvällens tema (ekonomiskt) ger en enhet × valets tecken; valens egna
+// kassaskrivningar står i enheter nedan. Med omkring nio svar i veckan
+// ger 0,02 per enhet en rimlig vecka nära taket; taket håller summan.
+export const SCENARIO_CASH = {
+  section: 'Servicen > Händelser',
+  weeklyCapShareOfNormalRevenue: 0.2,
+  unitShareOfWeeklyRevenue: 0.02,
+  choiceUnits: {
+    'walk-in-of-five': { A: 0.5 },
+    'moral-dilemma': { A: 1 / 3 }
+  } as Record<string, Partial<Record<'A' | 'B' | 'C', number>>>
+} as const;
+
 export const EVENTS = {
   section: 'Servicen > Händelser',
   openQuestion: 'F28',

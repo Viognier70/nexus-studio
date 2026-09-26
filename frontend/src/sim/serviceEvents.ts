@@ -15,6 +15,7 @@
 import { EVENTS, REPUTATION } from './balance';
 import { strings } from '../content/strings.sv';
 import { applyCashCost, postLedger } from '../strategic/simulation/cashReading';
+import { businessHasMiseEnPlace } from '../strategic/business/businessClass';
 import type { EventStreamEntry, SimulationState } from '../strategic/types';
 
 export interface ServiceEventsState {
@@ -84,7 +85,12 @@ export function onServiceClose(draft: SimulationState, prev: SimulationState, br
   }
   // Lägsta nivån under kvällen: stationerna fylls på av personalen, så
   // nivån vid stängning säger inte om de hållits rena hela kvällen.
-  const stations = prev.day.minStationsReadiness ?? prev.day.prepReadiness?.stations;
+  // ORDER 268 — bara i klasser som har mise en place. Food trucken har
+  // inga stationer att hålla (hasMiseEnPlace false, ORDER 111); nivån
+  // stod där på noll och gav en inspektion med avgift varje morgon.
+  const stations = businessHasMiseEnPlace(prev.businessClass)
+    ? prev.day.minStationsReadiness ?? prev.day.prepReadiness?.stations
+    : undefined;
   const dirty = stations !== undefined && stations < EVENTS.inspectionStationsBelow;
   draft.serviceEvents = { inspectionDue: dirty, reviewerTonight: false };
 }

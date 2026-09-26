@@ -58,7 +58,8 @@ export interface SustainabilityWrite {
 // directly to `state.cash` at RESOLVE_SCENARIO. Replaces the previous
 // `{capital: 'economic', delta: <0..1>}` shape for two-way trades.
 // Scale: ±3 000 SEK ≈ half a lunch's revenue; ±6 000 SEK ≈ one lunch.
-// Anchored to SCENARIO_CASH_DELTA_SEK per constants.ts.
+// ORDER 268: beloppen står i src/sim/balance.ts SCENARIO_CASH (andel av
+// klassens veckointäkt); fältet används inte längre av scenariodatan.
 export interface CashWrite {
   amount: number;   // signed SEK
 }
@@ -287,12 +288,7 @@ const WALK_IN_OF_FIVE: ScenarioSpec = {
       secondaryWrites: [
         { capital: 'ecological', delta: -0.02 }
       ],
-      cashWrites: [
-        // ORDER 050 §3 (2026-08-10) — the economic secondaryWrite
-        // (delta 0.03) migrated to a cashWrite. 3 000 SEK ≈ five
-        // extra covers at medium/utvald: half a lunch of found revenue.
-        { amount: 3000 }
-      ],
+      // ORDER 268 — valets kassa står i balance.ts SCENARIO_CASH.choiceUnits.
       // ORDER 048 §6 depth — cramming a strained room compounds the
       // ecological hit. The kitchen's waste gets worse under load;
       // taking the party when the team is already at the edge is a
@@ -491,13 +487,7 @@ const MORAL_DILEMMA: ScenarioSpec = {
       secondaryWrites: [
         { capital: 'social', delta: -0.01 }
       ],
-      cashWrites: [
-        // ORDER 050 §3 (2026-08-10) — the economic secondaryWrite
-        // (delta 0.02) migrated to a cashWrite. 2 000 SEK ≈ the
-        // portioned fish that would otherwise have been re-bought:
-        // the shortcut's found money.
-        { amount: 2000 }
-      ],
+      // ORDER 268 — valets kassa står i balance.ts SCENARIO_CASH.choiceUnits.
       // ORDER 048 §6 depth — a shortcut on ecological when the
       // capital is already weak doubles the hit. Reads as "you took
       // the shortcut when the supplier trust could least afford it";

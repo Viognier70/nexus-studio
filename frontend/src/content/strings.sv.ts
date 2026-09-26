@@ -273,7 +273,9 @@ export const strings = {
     ledger: {
       interest: 'Ränta på lånet',
       floor: 'Golvet fyllde på veckan',
-      amortisation: 'Amortering på lånet'
+      amortisation: 'Amortering på lånet',
+      sale: 'Lokalen såld till banken',
+      deposit: 'Kontantinsats för den nya lokalen'
     },
     classes: {
       vinbar: 'Vinbar',
@@ -292,9 +294,9 @@ export const strings = {
       nattklubb: 'nattklubben'
     },
     warnings: {
-      first: 'Kassan är under noll i kväll. Om den är det tre kvällar i rad tar banken lokalen vid veckoavräkningen.',
-      second: 'Andra kvällen i rad under noll. En kväll till, och banken tar lokalen vid söndagens avräkning.',
-      downgrade: 'Tredje kvällen i rad under noll. Vid söndagens avräkning går verksamheten ner en klass. Det du kan följer med.'
+      first: 'Kassan är under det banken lånar ut mot ditt golv i kväll. Om den är det tre kvällar i rad tar banken lokalen vid veckoavräkningen.',
+      second: 'Andra kvällen i rad under det banken lånar ut mot. En kväll till, och banken tar lokalen vid söndagens avräkning.',
+      downgrade: 'Tredje kvällen i rad under det banken lånar ut mot. Vid söndagens avräkning går verksamheten ner en klass. Det du kan följer med.'
     },
     noBusinessBody: 'Du har ingen verksamhet just nu. Öva och gör prov i Måltidens hus, och gå sedan till banken.',
     bankButton: 'Banken',
@@ -307,7 +309,8 @@ export const strings = {
     missing: (cls: string, req: string) => `För ${cls} saknas ${req}.`,
     reqLevelIn: (level: string, count: string) => `${level} i ${count}`,
     reqIncluding: (names: string) => `, varav ${names}`,
-    cashShort: (cls: string) => `Kassan räcker inte till en veckas golv i ${cls}.`,
+    cashShort: (cls: string) => `Kassan räcker inte till kontantinsatsen för ${cls}.`,
+    bankWait: 'Banken lånar ut igen när du har ägnat en hel vecka åt Måltidens hus och gjort minst ett prov.',
     upgradeOnly: 'Nås bara genom att växa från en annan verksamhet.',
     choose: (cls: string) => `Byt till ${cls.toLowerCase()}`,
     current: 'Din verksamhet',
@@ -329,7 +332,7 @@ export const strings = {
       topUp: 'Veckan blev svag, och golvet fyllde på skillnaden.',
       noFloor: 'Du har inget golv ännu. Det växer med dina medaljer.',
       amortised: 'Banken drog veckans amortering.',
-      downgraded: (from: string, to: string) => `Banken tog ${from}. Du fortsätter med ${to}.`,
+      downgraded: (from: string, to: string) => `Banken tog ${from} och köpte inventarierna. Det blir din kassa när du fortsätter med ${to}.`,
       downgradedToNothing: (from: string) => `Banken tog ${from}. Nu gäller det att öva och komma tillbaka.`
     }
   },

@@ -18,7 +18,8 @@ import { calendarFor } from '../../sim/calendar';
 import { floorSek } from '../../sim/economy';
 import { mountRoomLikeScene } from './roomParity';
 import { WEEK } from '../../sim/balance';
-import type { PavilionKey, SimAction, SimulationState } from '../types';
+import { scenarioById } from '../simulation/scenarios';
+import type { PavilionKey, ScenarioChoice, SimAction, SimulationState } from '../types';
 
 // Simuleringens tick är 0,2 s (5 Hz), samma som SimulationProvider.
 const TICK_DT = 0.2;
@@ -34,7 +35,13 @@ export interface MorningPlan {
   // Stäng kvällens service (skala ner, samma som spelarens knapp) och
   // avsluta dagen utan service.
   closeEvening?: boolean;
+  // ORDER 268 — hur spelaren svarar på scenariot vid dörren: 'best' är
+  // den rimliga spelaren (det svar som lyfter kvällens tema mest, och
+  // rätt svar på frågan), 'worst' den svaga. Utelämnat = 'best'.
+  scenarioAnswer?: ScenarioAnswer;
 }
+
+export type ScenarioAnswer = 'best' | 'worst';
 
 export type PlayerPlan = (state: SimulationState) => MorningPlan;
 
@@ -54,9 +61,45 @@ export interface DayRecord {
   events: string[];
 }
 
-function tickUntil(s: SimulationState, done: (s: SimulationState) => boolean): SimulationState {
-  for (let i = 0; i < MAX_TICKS_PER_PHASE && !done(s); i++) s = reducer(s, { type: 'TICK', dt: TICK_DT });
+function tickUntil(s: SimulationState, done: (s: SimulationState) => boolean, answer: ScenarioAnswer = 'best'): SimulationState {
+  for (let i = 0; i < MAX_TICKS_PER_PHASE && !done(s); i++) s = answerScenario(reducer(s, { type: 'TICK', dt: TICK_DT }), answer);
   return s;
+}
+
+// ORDER 268 — valen rangordnas efter hur de flyttar kvällens tema
+// (scenarios.ts `capitalSign`, samma tal som simuleringen läser). Vid
+// lika väljs det första.
+export function rankedChoice(scenarioId: string | null, answer: ScenarioAnswer): ScenarioChoice {
+  const spec = scenarioId ? scenarioById(scenarioId) : null;
+  if (!spec) return 'A';
+  const order: ScenarioChoice[] = ['A', 'B', 'C'];
+  const sign = (c: ScenarioChoice) => spec.choices[c].capitalSign ?? 0;
+  return order.reduce((pick, c) => (answer === 'best' ? sign(c) > sign(pick) : sign(c) < sign(pick)) ? c : pick, order[0]);
+}
+
+// ORDER 268 — spelaren svarar på scenariot vid dörren (ScenarioOverlay:
+// första knappen i varje steg, samma som playwright-skripten). Förut
+// svarade harnessen aldrig: scenariot stod kvar i 'subject', inga fler
+// scenarier fyrades, och deras gäster och kassa uteblev. Mätt från
+// reports/order268/save-lordag-vecka1.json: lördagens intäkt 7 140 SEK
+// i harnessen mot 17 850 SEK + 8 000 SEK (scenario) i spelarens vy.
+export function answerScenario(s: SimulationState, answer: ScenarioAnswer = 'best'): SimulationState {
+  switch (s.scenario.phase) {
+    case 'subject':
+      return reducer(s, { type: 'ADVANCE_SCENARIO_TO_SITUATION' });
+    case 'situation':
+      return reducer(s, { type: 'RESOLVE_SCENARIO', choice: rankedChoice(s.scenario.scenarioId, answer) });
+    case 'question': {
+      const q = s.scenario.pendingQuestion;
+      if (!q) return s;
+      const index = q.options.findIndex((o) => o.correct === (answer === 'best'));
+      return reducer(s, { type: 'ANSWER_QUESTION', index: Math.max(0, index) });
+    }
+    case 'question-explanation':
+      return reducer(s, { type: 'ACK_QUESTION_EXPLANATION' });
+    default:
+      return s;
+  }
 }
 
 function answer(s: SimulationState, correctCount: number): SimulationState {
@@ -102,7 +145,7 @@ export function playDay(s: SimulationState, plan: MorningPlan): { state: Simulat
     s = tickUntil(opened, (x) => {
       for (const g of x.guests) seen.add(g.id);
       return x.day.period === 'evening' || x.day.period === 'morning';
-    });
+    }, plan.scenarioAnswer);
   } else {
     s = reducer(s, { type: 'CLOSE_DAY' });
   }

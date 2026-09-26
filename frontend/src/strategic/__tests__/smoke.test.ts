@@ -69,7 +69,6 @@ describe('module graph smoke — imports resolve without throwing', () => {
       'CAPITAL_MAX',
       'THEME_HISTORY_LIMIT',
       'SCENARIO_CAPITAL_DELTA',
-      'SCENARIO_CASH_DELTA_SEK',
       'INITIAL_CASH_SEK',
       'ECONOMIC_READING_RUNWAY_WEEKS',
       'WEEKLY_OPERATING_BASELINE_SEK'
