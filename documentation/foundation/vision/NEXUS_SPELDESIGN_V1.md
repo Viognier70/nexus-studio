@@ -33,8 +33,8 @@ En säsong är åtta veckor, från midsommar till kräftskiva. En genomspelning 
 | Fas | Vad spelaren gör | Tid i verkligheten |
 | --- | --- | --- |
 | Morgon | Fyller två platser i dagens schema: en satsning (personalfest, utbildning, ekologiska råvaror) eller ett besök i en paviljong. Beställer råvaror och sätter menyn | 2–3 min |
-| Service | Kvällen spelas. Gästerna kommer efter veckodag och säsong. Spelaren kan rycka in med action-knappen | 4–5 min |
-| Kväll | Kvällsberättelsen visar vad som hände och varför. Quizen efter servicen erbjuds | 1–2 min |
+| Service | Kvällen spelas. Gästerna kommer efter veckodag och säsong. Spelaren svarar på kvällens händelser | 4–5 min |
+| Kväll | Kvällsberättelsen visar vad som hände och varför. Kvällens lärdom förklarar de fel beslut spelaren tog | 1–2 min |
 
 **Veckan** har sex servicedagar och en söndag. Måndag är lugn, fredag och lördag är tunga. Söndagen är stängd: veckoavräkningen görs, golvet betalas ut, lånet amorteras, och spelaren har fyra schemaplatser i stället för två. Söndagen är alltså veckans stora övningsdag.
 
@@ -79,6 +79,8 @@ Förklaringen efter varje svar är det viktigaste i hela kunskapssystemet. Den g
 Brons, silver, guld och platina per paviljong. En medalj som är tagen behålls alltid, som ett gymmärke i *Pokémon*: ett bevis som öppnar vägar och aldrig kan tas tillbaka. Platina är taket. Den som når platina får en belöning i verksamheten, till exempel en signaturrätt i Metodköket eller en egen vinlista i Stensöta.
 
 ### Quizen efter servicen
+
+*Beslut 2026-09-26 (Vision Owner, efter provspel):* quizen efter servicen ersätts av **kvällens lärdom**: förklaringen till de fel beslut spelaren tog i kvällens händelser (se Servicen, Händelserna i servicen). Texten nedan gäller inte längre.
 
 Efter varje kväll erbjuds tre frågor från kvällens svagaste axel, den som låg bakom flest problem i kvällsberättelsen. Rätt svar ger en kredit, fel svar kostar en. Spelaren kan hoppa över quizen utan kostnad, men får då inget. Quizen är ett erbjudande, inte ett avbrott.
 
@@ -163,7 +165,22 @@ Slumpmålet mäts med scenarierna inräknade, och den bättre förberedda spelar
 
 Morgonens satsningar påverkar de tre kapitalen: ekonomiskt, socialt och ekologiskt. Personalfest och utbildning gör personalen lojal och minskar misstag. Ekologiska råvaror höjer kvaliteten men kostar mer. Ingen satsning är alltid rätt, bara bättre eller sämre för veckan som kommer. Det finns ingen optimal strategi, bara avvägningar, precis som ORDER 100 kräver.
 
-### Action-knappen
+### Händelserna i servicen
+
+*Beslut 2026-09-26 (Vision Owner, efter provspel): servicen görs om. Action-knappen tas bort.*
+
+- Servicen blir en följd av händelser: 3–6 per kväll, fler fredag och lördag, i en båge med öppning, rusning, kris och avslut.
+- Varje händelse är en kort berättelse i kvällens sammanhang (bord, gäst, rätt, personal) med 3–4 svar och 20 sekunders nedräkning. Uteblir svaret beslutar personalen själv, med sämre utfall och −1 kredit.
+- Varje händelse hör till en paviljong och en axel. Medaljer i den paviljongen ger mer tid eller stryker ett fel alternativ.
+- Varje svar ger direkt effekt: synligt i rummet och i tre mätare, kassa, gästernas nöjdhet och personalens ork. Mätarna är ett medvetet undantag från regeln om stat-paneler (princip 6).
+- Händelser kan kedjas: ett val kan utlösa eller förhindra en senare händelse samma kväll.
+- Dagens scenarier vid dörren flyttar in som händelser. Quizen efter servicen ersätts av kvällens lärdom: förklaringen till de fel beslut spelaren tog.
+- Händelsebanken är data, som frågebanken. Varje händelse har paviljong, axel, svar med utfall och kedjor.
+- Harnessen svarar på händelserna som rimlig och svag spelare, och slumpmålet mäts om.
+
+### Action-knappen (utgår)
+
+*Ersatt 2026-09-26 av Händelserna i servicen.* Texten står kvar som historik.
 
 Spelaren kan rycka in själv. Hon väljer en uppgift ur kön, till exempel att ta en beställning, bära ut en rätt eller lugna en gäst som väntat länge, och hennes figur utför den. Insatsen går snabbare ju fler techne-krediter hon har. Under tiden ser hon inte resten av rummet i tjugo spelsekunder, så hon kan missa något annat.
 
@@ -195,8 +212,8 @@ Medaljerna visar vad spelaren vet och kan. Mognadssteget visar hur hon använder
 | --- | --- | --- |
 | Novis | – | Spelets början |
 | Praktiker | Brons i tre | En hel vecka utan att kassan gått under noll |
-| Reflekterande praktiker | Silver i tre | Quizen efter servicen tagen tio kvällar, och den svagaste axeln förbättrad |
-| Professionell | Guld i tre | Två veckor i rad över golvet utan påfyllnad, och fem kvällar vända med action-knappen |
+| Reflekterande praktiker | Silver i tre | Kvällens lärdom läst tio kvällar, och den svagaste axeln förbättrad *(ändrat 2026-09-26: quizen ersatt av kvällens lärdom)* |
+| Professionell | Guld i tre | Två veckor i rad över golvet utan påfyllnad, och fem kvällar vända i händelserna *(ändrat 2026-09-26: action-knappen ersatt av händelserna)* |
 | Expert | Platina i två och guld i Kalastorget | En vecka där alla tre kapitalen ökade |
 
 Expert kräver Kalastorget eftersom fronesis, omdömet, är den högsta formen av yrkeskunskap enligt ORDER 100.
@@ -240,7 +257,7 @@ Varje ny funktion ska klara de här sju principerna. Den som inte gör det hör 
 3. **Det finns alltid en väg tillbaka.** Medaljer förloras aldrig, nedgradering är inte slutet, och paviljongerna är alltid öppna.
 4. **Val, inte optimering.** Ingen satsning, klass eller paviljong är alltid rätt. Spelet belönar avvägningar.
 5. **Närvaro framför åskådande.** Spelaren ska kunna ingripa när det gäller, men insatsen har ett pris.
-6. **Berättelse framför siffror.** Resultat visas som händelser, repliker och tidningstext, aldrig som stat-paneler.
+6. **Berättelse framför siffror.** Resultat visas som händelser, repliker och tidningstext, aldrig som stat-paneler. *Undantag 2026-09-26 (Vision Owner):* servicens tre mätare, kassa, gästernas nöjdhet och personalens ork.
 7. **Något att se fram emot.** Nästa medalj, nästa klass, nästa högtid. Det ska alltid finnas ett mål som ligger en eller två dagar bort och ett som ligger veckor bort.
 
 Den sjunde principen är den som får spelaren att fortsätta. Den är lånad från *Stardew Valley* och *Animal Crossing*: små mål varje dag, stora mål varje säsong.

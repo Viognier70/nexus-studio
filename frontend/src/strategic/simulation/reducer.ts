@@ -1,12 +1,11 @@
 import { calendarFor } from '../../sim/calendar';
 import { bestAnswerFactor, drinkRevenueFactor, enablersWithCredits } from '../../sim/knowledgeInService';
-import { ACTION_BUTTON, EVENING, POST_SERVICE_QUIZ, SERVICE, type BusinessClassId } from '../../sim/balance';
-import { resetForService, startIntervention, tickIntervention } from '../../sim/actionButton';
+import { EVENING, SERVICE, type BusinessClassId } from '../../sim/balance';
+import { closeIncidents, countDown, isIncidentOpen, maybeOpenIncident, planIncidents, resolveIncident, type CreditChange } from '../../sim/incidents';
 import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
 import { afterVisitClosed, beginIntroduction } from '../../sim/introduction';
 import { canChangeClassToday, changeClass, classOptions, openFirstBusiness, recordEvening, creditLineSek, dailyGuestCap, dayEnd, dayEndHeadroom, dailyWagesSek, recordExamWithoutBusiness, scenarioUnitSek, scenarioChoiceUnits, clampScenarioCash, postDailyInterest, settleWeek } from '../../sim/economy';
 import { answerVisit, closeVisit, nextVisitQuestion, scheduleSlotsLeft, startVisit } from '../knowledge/pavilionVisit';
-import { answerQuiz, nextQuizQuestion, offerQuiz, skipQuiz, startQuiz } from '../knowledge/postServiceQuiz';
 import { createRng } from '../util/rng';
 import type {
   AxisTracks,
@@ -234,14 +233,21 @@ function withIdCounters(next: SimulationState): SimulationState {
 function reduce(state: SimulationState, action: SimAction): SimulationState {
   switch (action.type) {
     case 'TICK': {
-      const next = advanceTick(state);
-      // ORDER 266 — en lyckad insats ger en techne-kredit (via
-      // ACCUMULATE_KNOWLEDGE, så axel- och spårsummorna hålls i synk).
-      const r = next.actionButton?.lastResult;
-      if (r && r.success && r !== state.actionButton?.lastResult) {
-        return creditQuestion(next, 'techne', null, ACTION_BUTTON.techneCreditOnSuccess);
+      // ORDER 270 — medan en händelse är öppen står rummet stilla och bara
+      // nedräkningen går. När den är slut beslutar personalen själv.
+      if (isIncidentOpen(state)) {
+        const draft: SimulationState = { ...state, guests: state.guests.map((g) => ({ ...g })) };
+        if (!countDown(draft, action.dt)) return draft;
+        return applyCreditChange(draft, resolveIncident(draft, null));
       }
-      return next;
+      return advanceTick(state);
+    }
+    case 'ANSWER_INCIDENT': {
+      if (!isIncidentOpen(state)) return state;
+      const draft: SimulationState = { ...state, guests: state.guests.map((g) => ({ ...g })) };
+      const credit = resolveIncident(draft, action.optionId);
+      if (draft.incidents?.active) return state;
+      return applyCreditChange(draft, credit);
     }
     case 'SET_SPEED':
       return { ...state, speed: action.speed };
@@ -324,28 +330,10 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       return afterVisitClosed(state, closeVisit(state));
     case 'BEGIN_INTRODUCTION':
       return beginIntroduction(state);
-    case 'START_QUIZ':
-      return startQuiz(state);
-    case 'ANSWER_QUIZ': {
-      if (!state.postServiceQuiz) return state;
-      const r = answerQuiz(state.postServiceQuiz, action.chosenIndex);
-      if (!r) return state;
-      const next = { ...state, postServiceQuiz: r.quiz };
-      return r.correct
-        ? creditQuestion(next, r.question.axis, r.question.track, POST_SERVICE_QUIZ.creditOnCorrect)
-        : debitQuestion(next, r.question.axis, r.question.track, -POST_SERVICE_QUIZ.creditOnWrong);
-    }
-    case 'NEXT_QUIZ_QUESTION':
-      return nextQuizQuestion(state);
-    case 'SKIP_QUIZ':
-      return skipQuiz(state);
     case 'CHOOSE_CLASS':
       return chooseClass(state, action.to);
-    case 'INTERVENE':
-      return startIntervention(state, action.kind, action.guestId);
     case 'END_EVENING':
       if (state.day.period !== 'evening') return state;
-      if (state.postServiceQuiz?.status === 'active') return state;
       return { ...state, day: { ...state.day, eveningEndRequested: true } };
     case 'SKIP_LUNCH':
       return skipLunch(state);
@@ -1153,7 +1141,24 @@ function startService(state: SimulationState): SimulationState {
   if (state.scaleDown.closedDinner) return state;
   if (state.day.period !== 'morning' && state.day.period !== 'afternoon') return state;
   const fromAfternoon = state.day.period === 'morning' ? skipLunch(state) : state;
-  return openService(fromAfternoon, 'dinner', SERVICE.simMinutes);
+  const opened = openService(fromAfternoon, 'dinner', SERVICE.simMinutes);
+  if (opened === fromAfternoon || opened.day.doorsOpenAt === null) return opened;
+  // ORDER 270 — kvällens händelser. Klasser med händelsebank får
+  // händelser i stället för scenarierna vid dörren ("Dagens scenarier
+  // flyttar in som händelser"); övriga behåller scenarierna tills deras
+  // bank är skriven.
+  const endsAt = opened.day.periodStartAt + SERVICE.simMinutes * 60;
+  const planned = planIncidents(opened, opened.day.doorsOpenAt, endsAt);
+  if (!planned.incidents?.enabled) return planned;
+  return { ...planned, day: { ...planned.day, scenariosPlanned: 0, scenarioTriggerTimes: [] } };
+}
+
+// ORDER 270 — händelsens kredit bokförs som frågornas (axel och spår i synk).
+function applyCreditChange(state: SimulationState, credit: CreditChange | null): SimulationState {
+  if (!credit || credit.amount === 0) return state;
+  return credit.amount > 0
+    ? creditQuestion(state, credit.axis, credit.track, credit.amount)
+    : debitQuestion(state, credit.axis, credit.track, -credit.amount);
 }
 
 // ORDER 263 — söndagen är stängd: morgonen (fyra schemaplatser) följs
@@ -1335,8 +1340,6 @@ function openService(
   const opened: SimulationState = {
     ...state,
     day: { ...day, happyAtServiceStart: state.metrics.happyDeparturesTotal ?? 0, minStationsReadiness: undefined },
-    // ORDER 266 — kvällens insatser nollställs.
-    actionButton: resetForService(state.actionButton),
     rngState: rng.state,
     streamThemeCounts: { economic: 0, social: 0, ecological: 0 },
     firedScenarioIds: [],
@@ -1607,8 +1610,6 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
         agencyOffer: null,
         eveningAccount: withEconomyWarning(eveningAccount, dayEnd(state.economy, dayEndHeadroom(state))),
         economy: dayEnd(state.economy, dayEndHeadroom(state)),
-        // ORDER 264 — quizen efter servicen erbjuds när kvällen börjar.
-        postServiceQuiz: offerQuiz(state, day.periodStartAt),
         metrics: {
           ...state.metrics,
           consecutiveCleanServices: nextConsecutive,
@@ -1648,6 +1649,8 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       // stationernas skick (inspektion nästa morgon). Kvällens
       // redovisning räknar in ryktets förändring från händelserna.
       onServiceClose(next, state, eveningAccount.branch);
+      // ORDER 270 — kvällens lärdom ur kvällens händelser.
+      closeIncidents(next);
       if (next.eveningAccount?.metrics) {
         next.eveningAccount = {
           ...next.eveningAccount,
@@ -1669,12 +1672,12 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
     }
   }
   if (day.period === 'evening') {
-    // ORDER 264 (F17) — kvällen varar EVENING.simSeconds, väntar medan
-    // quizen pågår och slutar tidigare när spelaren väljer det.
-    const quizActive = state.postServiceQuiz?.status === 'active';
+    // ORDER 264 (F17) — kvällen varar EVENING.simSeconds och slutar
+    // tidigare när spelaren väljer det. ORDER 270 — kvällens lärdom står
+    // under samma tid (den väntade förut bara medan quizen pågick).
     const eveningOver =
       day.eveningEndRequested === true || simTime - day.periodStartAt >= EVENING.simSeconds;
-    if (eveningOver && !quizActive) {
+    if (eveningOver) {
       // Day advance — charge structural cost for the closing day
       // (every non-agency member pays their dailyCost) and roll to
       // the next morning. §10 "structural cost locked over multiple
@@ -1746,8 +1749,9 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
         // clear when the new day begins so the panel doesn't linger
         // into morning where the investment panel needs the room.
         eveningAccount: null,
-        // ORDER 264 — kvällens quiz och ett avslutat besök hör till dagen.
-        postServiceQuiz: null,
+        // ORDER 264 — ett avslutat besök hör till dagen. ORDER 270 —
+        // kvällens lärdom likaså.
+        ...(state.incidents ? { incidents: { ...state.incidents, lesson: null, log: [], lastOutcome: null, turnedTonight: false } } : {}),
         pavilionVisit: state.pavilionVisit?.result ? null : state.pavilionVisit,
         morale: regressed,
         // Per-service tallies reset with the day.
@@ -2346,8 +2350,6 @@ function advanceTick(state: SimulationState): SimulationState {
   // waiting queue reflects this tick's arrivals + departures, not the
   // previous tick's state.
   tickReputationDrift(draft);
-  // ORDER 266 — action-knappen: insatsen blir klar, rummet syns igen.
-  tickIntervention(draft);
   // ORDER 266 — stationernas lägsta nivå under servicen (inspektion).
   if (draft.day.period === 'lunch' || draft.day.period === 'dinner') trackHygiene(draft);
 
@@ -2485,6 +2487,9 @@ function advanceTick(state: SimulationState): SimulationState {
   // with active seated guests; a dead room applies no drift so an
   // empty evening doesn't reset morale to a neutral middle.
   tickMoraleDrift(draft);
+
+  // ORDER 270 — kvällens nästa händelse, när dess tid har kommit.
+  maybeOpenIncident(draft);
 
   // ORDER 043 v3 step 5b — scheduled scenario firing.
   //

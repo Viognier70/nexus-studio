@@ -220,10 +220,8 @@ describe('ORDER 264 — ingen väg sänker en medalj', () => {
       else if (r < 0.7) action = { type: 'CLOSE_VISIT' };
       else if (r < 0.74) action = { type: 'START_SERVICE' };
       else if (r < 0.76) action = { type: 'CLOSE_DAY' };
-      else if (r < 0.8) action = { type: 'START_QUIZ' };
-      else if (r < 0.86) action = { type: 'ANSWER_QUIZ', chosenIndex: rng.int(0, 3) };
-      else if (r < 0.9) action = { type: 'NEXT_QUIZ_QUESTION' };
-      else if (r < 0.92) action = { type: 'SKIP_QUIZ' };
+      // ORDER 270 — quizen är borttagen; kvällens händelser besvaras.
+      else if (r < 0.92) action = { type: 'ANSWER_INCIDENT', optionId: rng.pick(['a', 'b', 'c', 'd']) };
       else if (r < 0.94) action = { type: 'END_EVENING' };
       else action = { type: 'TICK', dt: 0.2 };
       const before = s.medals;

@@ -26,7 +26,7 @@
 // 15-min service; a strong team at rest sees ~1 %. See §1.1 in the
 // order document for the full expected-rate table.
 
-import { offerQuiz } from '../knowledge/postServiceQuiz';
+import { closeIncidents } from '../../sim/incidents';
 import { clampReputation } from './reputation';
 import { dayEnd, dayEndHeadroom, recordEvening } from '../../sim/economy';
 import { COLLAPSE } from '../../sim/balance';
@@ -237,9 +237,8 @@ export function fireCollapse(draft: SimulationState): void {
   const nextTeam = { ...draft.team, members: draft.team.members.filter((m) => !m.isAgency) };
   draft.team = nextTeam;
   draft.agencyOffer = null;
-  // ORDER 264 — quizen erbjuds också efter en kväll som föll ihop.
-  const serviceStartedAt = draft.day.periodStartAt;
-  draft.postServiceQuiz = offerQuiz(draft, serviceStartedAt);
+  // ORDER 270 — kvällens lärdom även när kvällen föll ihop.
+  closeIncidents(draft);
   // ORDER 265 — dagsavslut också efter en kväll som föll ihop.
   draft.economy = dayEnd(draft.economy, dayEndHeadroom(draft));
   // ORDER 266 — recensentens omdöme och stationernas skick även här.

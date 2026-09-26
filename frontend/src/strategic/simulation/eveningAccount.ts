@@ -180,7 +180,7 @@ export function wentWell(state: SimulationState): string[] {
   if (happy === 1) out.push(w.happyOne);
   else if (happy > 1) out.push(w.happy(capitalise(numberWord(happy))));
   if (!state.day.serviceCollapsed && state.metrics.giveUpsThisService === 0 && happy > 0) out.push(w.clean);
-  if (state.actionButton?.turnedThisService) out.push(w.turned);
+  if (state.incidents?.turnedTonight) out.push(w.turned);
   return out;
 }
 

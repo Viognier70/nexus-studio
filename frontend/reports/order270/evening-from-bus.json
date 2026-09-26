@@ -1,0 +1,153 @@
+{
+  "url": "http://localhost:4174/",
+  "build": "produktion (vite build + preview)",
+  "flags": "inga",
+  "steps": [
+    {
+      "name": "nytt spel",
+      "atSeconds": 16
+    },
+    {
+      "name": "bussen framme",
+      "atSeconds": 34
+    },
+    {
+      "name": "samtalet",
+      "atSeconds": 37
+    },
+    {
+      "name": "registreringen",
+      "atSeconds": 45
+    },
+    {
+      "name": "övningsbesöket",
+      "atSeconds": 74
+    },
+    {
+      "name": "provet",
+      "atSeconds": 103
+    },
+    {
+      "name": "banken",
+      "atSeconds": 107
+    },
+    {
+      "name": "verksamheten har ett namn",
+      "atSeconds": 110,
+      "minutesFromNewGame": 1.6
+    },
+    {
+      "name": "öppnat för kvällen",
+      "atSeconds": 118
+    },
+    {
+      "name": "händelse 1: vb04-dubbelbokning",
+      "atSeconds": 206
+    },
+    {
+      "name": "händelse 2: vb21-skuren-hand",
+      "atSeconds": 323
+    },
+    {
+      "name": "händelse 3: vb23-sott",
+      "atSeconds": 420
+    },
+    {
+      "name": "kvällens lärdom",
+      "atSeconds": 442
+    },
+    {
+      "name": "tisdag morgon",
+      "atSeconds": 444
+    }
+  ],
+  "incidents": [
+    {
+      "n": 1,
+      "id": "vb04-dubbelbokning",
+      "pavilion": "kalastorget",
+      "arc": "opening",
+      "text": "Öppning · Kalastorget20 sSamma bord två gångerTvå sällskap står i dörren med bokning på bord 5, samma tid. Båda har fått en bekräftelse.Ge bordet till den som bokade först, erbjud de andra baren och ett glas på husetBe båda vänta medan du ringer runt och reder ut detGe bordet till det största sällskapetPersonalen beslutar själv om du inte svarar.",
+      "countdownAtOpen": "20 s",
+      "struck": [],
+      "metersBefore": {
+        "cash": "119859",
+        "satisfaction": "0.78",
+        "stamina": "0.88"
+      },
+      "answer": {
+        "id": "b",
+        "quality": "wrong"
+      },
+      "roomLine": "Båda sällskapen står kvar i entrén. Kön växer bakom dem.",
+      "metersAfter": {
+        "cash": "119858",
+        "satisfaction": "0.64",
+        "stamina": "0.83"
+      }
+    },
+    {
+      "n": 2,
+      "id": "vb21-skuren-hand",
+      "pavilion": "metodkoket",
+      "arc": "crisis",
+      "text": "Kris · Metodköket20 sSkuren handKocken skär sig i handen när en flaska ska öppnas med kniv. Det blöder genom servetten.Plåster och handske, byt uppgift för resten av kvällen, och torka av och sanera ytanPlåster och fortsätt som vanligtSkicka hem personen direktPersonalen beslutar själv om du inte svarar.",
+      "countdownAtOpen": "20 s",
+      "struck": [],
+      "metersBefore": {
+        "cash": "122657",
+        "satisfaction": "0.85",
+        "stamina": "0.89"
+      },
+      "answer": null,
+      "secondsUntilStaffDecided": 19.1,
+      "roomLine": "Ingen tog hand om såret, och kocken fortsatte arbeta.",
+      "metersAfter": {
+        "cash": "122488",
+        "satisfaction": "0.80",
+        "stamina": "0.77"
+      }
+    },
+    {
+      "n": 3,
+      "id": "vb23-sott",
+      "pavilion": "stensota",
+      "arc": "closing",
+      "text": "Avslut · Stensöta25 sNågot söttBord 2 vill avsluta med chokladtryffeln och frågar vad de ska dricka till.Ett glas ung portvin, rubyEtt glas torrt mousserandeKaffe och en avecMer tid tack vare Stensöta. Personalen beslutar själv om du inte svarar.",
+      "countdownAtOpen": "25 s",
+      "struck": [],
+      "metersBefore": {
+        "cash": "125701",
+        "satisfaction": "",
+        "stamina": "0.96"
+      },
+      "answer": {
+        "id": "a",
+        "quality": "best"
+      },
+      "roomLine": "Gästerna smakar och beställer ett glas till.",
+      "metersAfter": {
+        "cash": "126121",
+        "satisfaction": "",
+        "stamina": "0.96"
+      }
+    }
+  ],
+  "errors": [],
+  "mentor": {
+    "practice": "MentornVälkommen till Grythyttan. Jag kommer från Campus och följer dig i dag. Banken lånar inte ut något förrän den har sett vad du kan, så vi börjar med att öva. Öppna Måltidens hus och öva i Stensöta, där sommelierna håller till. Inget står på spel.",
+    "exam": "MentornBra. Nu provet i samma paviljong: åtta frågor, och sex rätt ger brons. Med brons i Stensöta kan banken låna ut till en vinbar. Går det inte, gör om det. I dag kostar besöken ingen plats i schemat.",
+    "bank": "MentornBrons. Gå till Banken i morgonraden. Där får du höra vad du har visat och vad du kan låna till.",
+    "farewell": "MentornNu är den din. I kväll öppnar du för första gången. Den här veckan kommer färre gäster än vanligt, så du hinner lära dig rummet. Jag finns på Campus om det går illa.Tack"
+  },
+  "practice": "5 av 5 rätt. Varje rätt svar gav en kredit.Tillbaka",
+  "exam": "8 av 8 rätt. Du har tagit brons i Stensöta.Tillbaka",
+  "bank": "BankenStängDu har ingen verksamhet. Du har visat att du kan vin och dryck. VinbarÖppna en vinbarFood truckÖppna en food truckRestaurangFör restaurangen saknas silver i tre paviljonger.ÖlkrogFör ölkrogen saknas brons i Metodköket.GästgiveriNås bara genom att växa från en annan verksamhet.NattklubbNås bara genom att växa från en annan verksamhet.",
+  "nameBody": "Banken lånar ut till en vinbar vid torget. Vad ska den heta?",
+  "minutesToBusiness": 1.6,
+  "morning": "Måndag · Morgon · VinbarFyll dagens schema och öppna för kvällen.Ingen meny satt i dag.Schemat: 0 av 2 platserMåltidens ",
+  "lesson": "Det här gick fel i kväll, och varför.Samma bord två gångerDu valde: Be båda vänta medan du ringer runt och reder ut detUtredningen kan vänta till efter kvällen. Gästerna i dörren behöver ett beslut nu, och en entré full av väntande gäster syns i hela rummet.Bättre: Ge bordet till den som bokade först, erbjud de andra baren och ett glas på husetBoken avgör, och den som får vänta ska få något för besväret. Ett glas på huset kostar lite och gör ett fel till en god historia.Skuren handDu svarade inte, och personalen beslutade själv. Ingen tog hand om såret, och kocken fortsatte arbeta.Bättre: Plåster och handske, byt uppgift för resten av kvällen, och torka av och sanera ytanEtt sår vid livsmedel ska täckas med plåster och handske. Den skadade ska inte hantera öppen mat, och ytan ska saneras. Personalen är viktigare än tempot.",
+  "lessonItems": 2,
+  "eveningStory": "Åtta gick härifrån nöjda. Ingen gav upp i kön. Kvällen höll ihop utan att någon behövde påminnas. Rummet fann sin puls, laget läste varandra, och gästerna gick nöjda utan att någon slog ut med armarna. Det är sådana kvällar som bygger ett rykte tyst — inte de som glimrar utan de som stämmer. Skriv upp det i minnet innan morgonen skjuter bort det.",
+  "actionButtonGone": true
+}

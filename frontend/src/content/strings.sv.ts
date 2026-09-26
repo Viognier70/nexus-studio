@@ -259,13 +259,16 @@ export const strings = {
     back: 'Tillbaka',
     placeholderNote: 'Frågorna på den här nivån är tillfälliga tills de riktiga är skrivna.'
   },
-  quiz: {
-    heading: 'Kvällen',
-    offer: (axis: string, n: number) => `Kvällens quiz: ${n} frågor om ${axis}, där kvällen gick sämst. Rätt svar ger en kredit, fel kostar en.`,
-    start: 'Ta quizen',
-    skip: 'Hoppa över',
-    skipped: 'Du hoppade över quizen i kväll.',
-    done: (delta: number) => delta > 0 ? `Quizen gav ${delta} ${delta === 1 ? 'kredit' : 'krediter'}.` : delta < 0 ? `Quizen kostade ${-delta} ${delta === -1 ? 'kredit' : 'krediter'}.` : 'Quizen gick jämnt upp.',
+  // ORDER 270 — kvällens lärdom ersätter quizen efter servicen.
+  lesson: {
+    heading: 'Kvällens lärdom',
+    eveningHeading: 'Kvällen',
+    intro: 'Det här gick fel i kväll, och varför.',
+    none: 'Inga fel beslut i kväll. Varje händelse fick ett svar som höll.',
+    noIncidents: 'Kvällen hade inga händelser att lära av.',
+    youChose: (label: string) => `Du valde: ${label}`,
+    staffDecided: (outcome: string) => `Du svarade inte, och personalen beslutade själv. ${outcome}`,
+    better: (label: string) => `Bättre: ${label}`,
     nextMorning: 'Till nästa morgon'
   },
   // ORDER 265 (Nexus v1 etapp 3) — ekonomin och banken.
@@ -339,26 +342,28 @@ export const strings = {
   // ORDER 266 (Nexus v1 etapp 4) — servicen: action-knappen, ryktet,
   // lagret och händelserna.
   service: {
-    actionButton: 'Rycka in',
-    actionHeading: 'Rycka in själv',
-    actionBody: (left: string) => `Välj en uppgift ur kön. Medan du är där ser du inte resten av rummet. Insatser kvar i kväll: ${left}.`,
-    noneLeft: 'Du har ryckt in tre gånger i kväll.',
-    queueEmpty: 'Ingen i kön behöver dig just nu.',
-    close: 'Stäng',
-    tasks: {
-      calm: 'Lugna gästen som väntar',
-      order: 'Ta beställningen'
+    // ORDER 270 — händelserna i servicen och de tre mätarna.
+    incident: {
+      countdown: (sec: string) => `${sec} s`,
+      struck: 'Strukits av dina kunskaper',
+      medalTime: (pavilion: string) => `Mer tid tack vare ${pavilion}`,
+      staffDecides: 'Personalen beslutar själv om du inte svarar.',
+      staffDecided: 'Personalen beslutade själv.',
+      chained: 'Följden av ett tidigare val',
+      phase: { opening: 'Öppning', rush: 'Rusning', crisis: 'Kris', closing: 'Avslut' } as Record<string, string>,
+      guests: ['ett par', 'en stamgäst', 'ett sällskap från Örebro', 'två kollegor från Campus', 'en turist från Hamburg', 'en gäst i ljus kavaj', 'ett par på bröllopsresa', 'en ensam gäst med en bok'],
+      wines: ['Chablis', 'Sancerre', 'Barolo', 'Rioja Reserva', 'Riesling från Mosel', 'Côtes du Rhône', 'Grüner Veltliner'],
+      staffRoles: { värd: 'värden', servitör: 'servitören', kock: 'kocken', lärling: 'lärlingen' } as Record<string, string>,
+      staffFallback: 'servitören',
+      ledger: (title: string) => `Händelse: ${title}`
     },
-    atRisk: 'på väg att gå',
-    waited: (sec: string) => `har väntat ${sec}`,
-    blind: {
-      calm: 'Du står med gästen i kön. Resten av rummet ser du inte just nu.',
-      order: 'Du tar beställningen vid bordet. Resten av rummet ser du inte just nu.'
-    },
-    intervention: {
-      calmSuccess: 'Du lugnade gästen i kön. Gästen stannade kvar i stället för att gå.',
-      orderSuccess: 'Du tog beställningen själv. Bordet fick sin mat i tid.',
-      missed: 'Gästen hann gå innan du kom fram.'
+    meters: {
+      heading: 'Kvällen',
+      cash: 'Kassa',
+      satisfaction: 'Gästernas nöjdhet',
+      stamina: 'Personalens ork',
+      noGuests: 'inga gäster',
+      sek: (amount: string) => `${amount} kr`
     },
     events: {
       reviewerBooked: 'En recensent har bokat bord i kväll. Ryktet har nått ut.',
@@ -381,7 +386,7 @@ export const strings = {
       happy: (n: string) => `${n} gick härifrån nöjda.`,
       happyOne: 'En gäst gick härifrån nöjd.',
       clean: 'Ingen gav upp i kön.',
-      turned: 'Du ryckte in vid rätt tillfälle, och en gäst som var på väg att gå stannade.'
+      turned: 'När kvällen ställdes på sin spets tog du rätt beslut.'
     },
     numberWords: ['noll', 'en', 'två', 'tre', 'fyra', 'fem', 'sex', 'sju', 'åtta', 'nio', 'tio', 'elva', 'tolv', 'tretton', 'fjorton', 'femton', 'sexton', 'sjutton', 'arton', 'nitton', 'tjugo'],
     manyWord: 'fler än tjugo'

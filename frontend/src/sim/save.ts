@@ -19,6 +19,7 @@
 import { SAVING } from './balance';
 import { calendarFor } from './calendar';
 import { V1_CLASS_TO_ROOM } from './economy';
+import { initialIncidents } from './incidents';
 import type { SimulationState } from '../strategic/types';
 import { awardMedal } from '../strategic/knowledge/pavilionVisit';
 
@@ -81,7 +82,11 @@ export function makeSaveFile(
 // resten av tillståndet är oförändrat.
 function migrate(file: SaveFile): SaveFile {
   const cls = file.sim.economy?.businessClass;
-  const sim = cls ? { ...file.sim, businessClass: V1_CLASS_TO_ROOM[cls] } : file.sim;
+  const roomed = cls ? { ...file.sim, businessClass: V1_CLASS_TO_ROOM[cls] } : file.sim;
+  // ORDER 270 — version 3: händelserna ersätter action-knappen och quizen.
+  const { actionButton: _a, postServiceQuiz: _q, postServiceQuizzesTaken: _n, ...rest } =
+    roomed as typeof roomed & { actionButton?: unknown; postServiceQuiz?: unknown; postServiceQuizzesTaken?: unknown };
+  const sim = { ...rest, incidents: rest.incidents ?? initialIncidents() } as SimulationState;
   return { ...file, formatVersion: SAVING.formatVersion, sim };
 }
 
@@ -184,6 +189,11 @@ export function carryKnowledge(current: SimulationState, loaded: SimulationState
       techne: { ...current.knowledgeTracks.techne },
       phronesis: { ...current.knowledgeTracks.phronesis }
     },
-    postServiceQuizzesTaken: Math.max(current.postServiceQuizzesTaken ?? 0, loaded.postServiceQuizzesTaken ?? 0)
+    // ORDER 270 — kvällarnas evidens (lärdomen, vända kvällar) följer kunskapen.
+    incidents: {
+      ...loaded.incidents,
+      lessonEvenings: Math.max(current.incidents?.lessonEvenings ?? 0, loaded.incidents?.lessonEvenings ?? 0),
+      eveningsTurned: Math.max(current.incidents?.eveningsTurned ?? 0, loaded.incidents?.eveningsTurned ?? 0)
+    }
   };
 }

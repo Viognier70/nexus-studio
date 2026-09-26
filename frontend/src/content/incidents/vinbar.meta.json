@@ -1,0 +1,1711 @@
+{
+ "schemaVersion": 1,
+ "businessClass": "vinbar",
+ "status": "draft",
+ "note": "Utkast av Claude Code i ORDER 270 för Vision Owners granskning. Effekterna: cash i enheter (SCENARIO_CASH, 2 % av klassens normala veckointäkt), satisfaction och stamina som förändring på 0–1, reputation i poäng av 100. target 'table' = kvällens bord, 'room' = alla gäster i rummet.",
+ "incidents": [
+  {
+   "id": "vb01-korken",
+   "pavilion": "stensota",
+   "axis": "techne",
+   "track": "sommellerie",
+   "arc": "opening",
+   "chainOnly": false,
+   "options": [
+    {
+     "id": "a",
+     "quality": "best",
+     "effects": {
+      "cash": -0.1,
+      "satisfaction": 0.15,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "table"
+    },
+    {
+     "id": "b",
+     "quality": "wrong",
+     "effects": {
+      "cash": 0.3,
+      "satisfaction": -0.25,
+      "stamina": 0,
+      "reputation": -1
+     },
+     "target": "table",
+     "triggers": [
+      "vb30-korkgasten"
+     ]
+    },
+    {
+     "id": "c",
+     "quality": "wrong",
+     "effects": {
+      "cash": 0,
+      "satisfaction": -0.15,
+      "stamina": -0.05,
+      "reputation": 0
+     },
+     "target": "table"
+    },
+    {
+     "id": "d",
+     "quality": "ok",
+     "effects": {
+      "cash": -0.2,
+      "satisfaction": 0.05,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "table"
+    }
+   ],
+   "staff": {
+    "effects": {
+     "cash": -0.3,
+     "satisfaction": -0.15,
+     "stamina": 0,
+     "reputation": 0
+    },
+    "target": "table"
+   },
+   "placeholder": false
+  },
+  {
+   "id": "vb02-rosen",
+   "pavilion": "stensota",
+   "axis": "techne",
+   "track": "sommellerie",
+   "arc": "opening",
+   "chainOnly": false,
+   "options": [
+    {
+     "id": "a",
+     "quality": "best",
+     "effects": {
+      "cash": 0.4,
+      "satisfaction": 0.05,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "room"
+    },
+    {
+     "id": "b",
+     "quality": "ok",
+     "effects": {
+      "cash": 0.3,
+      "satisfaction": 0,
+      "stamina": -0.05,
+      "reputation": 0
+     },
+     "target": "room"
+    },
+    {
+     "id": "c",
+     "quality": "wrong",
+     "effects": {
+      "cash": 0.3,
+      "satisfaction": -0.1,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "room"
+    }
+   ],
+   "staff": {
+    "effects": {
+     "cash": 0.1,
+     "satisfaction": -0.05,
+     "stamina": 0,
+     "reputation": 0
+    },
+    "target": "room"
+   },
+   "placeholder": false
+  },
+  {
+   "id": "vb03-notallergi",
+   "pavilion": "metodkoket",
+   "axis": "techne",
+   "track": "kok",
+   "arc": "opening",
+   "chainOnly": false,
+   "options": [
+    {
+     "id": "a",
+     "quality": "best",
+     "effects": {
+      "cash": 0.2,
+      "satisfaction": 0.1,
+      "stamina": -0.03,
+      "reputation": 0
+     },
+     "target": "table",
+     "prevents": [
+      "vb27-allergireaktion"
+     ]
+    },
+    {
+     "id": "b",
+     "quality": "wrong",
+     "effects": {
+      "cash": 0.3,
+      "satisfaction": 0,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "table",
+     "triggers": [
+      "vb27-allergireaktion"
+     ]
+    },
+    {
+     "id": "c",
+     "quality": "ok",
+     "effects": {
+      "cash": 0.1,
+      "satisfaction": 0.03,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "table"
+    }
+   ],
+   "staff": {
+    "effects": {
+     "cash": 0,
+     "satisfaction": -0.05,
+     "stamina": 0,
+     "reputation": 0
+    },
+    "target": "table",
+    "triggers": [
+     "vb27-allergireaktion"
+    ]
+   },
+   "placeholder": false
+  },
+  {
+   "id": "vb04-dubbelbokning",
+   "pavilion": "kalastorget",
+   "axis": "phronesis",
+   "track": null,
+   "arc": "opening",
+   "chainOnly": false,
+   "options": [
+    {
+     "id": "a",
+     "quality": "best",
+     "effects": {
+      "cash": -0.2,
+      "satisfaction": 0.05,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "room"
+    },
+    {
+     "id": "b",
+     "quality": "wrong",
+     "effects": {
+      "cash": 0,
+      "satisfaction": -0.15,
+      "stamina": -0.05,
+      "reputation": 0
+     },
+     "target": "room"
+    },
+    {
+     "id": "c",
+     "quality": "ok",
+     "effects": {
+      "cash": 0.3,
+      "satisfaction": -0.1,
+      "stamina": 0,
+      "reputation": -1
+     },
+     "target": "room"
+    }
+   ],
+   "staff": {
+    "effects": {
+     "cash": 0,
+     "satisfaction": -0.15,
+     "stamina": -0.05,
+     "reputation": 0
+    },
+    "target": "room",
+    "room": {
+     "leave": 2
+    }
+   },
+   "placeholder": false
+  },
+  {
+   "id": "vb05-dj",
+   "pavilion": "kalastorget",
+   "axis": "phronesis",
+   "track": null,
+   "arc": "opening",
+   "chainOnly": false,
+   "options": [
+    {
+     "id": "a",
+     "quality": "best",
+     "effects": {
+      "cash": 0.2,
+      "satisfaction": 0.1,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "room"
+    },
+    {
+     "id": "b",
+     "quality": "wrong",
+     "effects": {
+      "cash": 0,
+      "satisfaction": -0.1,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "room",
+     "room": {
+      "leave": 2
+     }
+    },
+    {
+     "id": "c",
+     "quality": "ok",
+     "effects": {
+      "cash": 0,
+      "satisfaction": 0.05,
+      "stamina": -0.03,
+      "reputation": 0
+     },
+     "target": "table"
+    }
+   ],
+   "staff": {
+    "effects": {
+     "cash": 0,
+     "satisfaction": -0.1,
+     "stamina": 0,
+     "reputation": 0
+    },
+    "target": "room",
+    "room": {
+     "leave": 2
+    }
+   },
+   "placeholder": false
+  },
+  {
+   "id": "vb06-kylen",
+   "pavilion": "maltidbiblioteket",
+   "axis": "episteme",
+   "track": null,
+   "arc": "opening",
+   "chainOnly": false,
+   "options": [
+    {
+     "id": "a",
+     "quality": "best",
+     "effects": {
+      "cash": -0.2,
+      "satisfaction": 0,
+      "stamina": -0.05,
+      "reputation": 0
+     },
+     "target": "room",
+     "prevents": [
+      "vb28-kylen-stannar"
+     ]
+    },
+    {
+     "id": "b",
+     "quality": "wrong",
+     "effects": {
+      "cash": 0,
+      "satisfaction": 0,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "room",
+     "triggers": [
+      "vb28-kylen-stannar"
+     ]
+    },
+    {
+     "id": "c",
+     "quality": "ok",
+     "effects": {
+      "cash": -1,
+      "satisfaction": 0,
+      "stamina": -0.05,
+      "reputation": 0
+     },
+     "target": "room",
+     "prevents": [
+      "vb28-kylen-stannar"
+     ]
+    }
+   ],
+   "staff": {
+    "effects": {
+     "cash": 0,
+     "satisfaction": 0,
+     "stamina": 0,
+     "reputation": 0
+    },
+    "target": "room",
+    "triggers": [
+     "vb28-kylen-stannar"
+    ]
+   },
+   "placeholder": false
+  },
+  {
+   "id": "vb07-provningen",
+   "pavilion": "stensota",
+   "axis": "techne",
+   "track": "sommellerie",
+   "arc": "rush",
+   "chainOnly": false,
+   "options": [
+    {
+     "id": "a",
+     "quality": "best",
+     "effects": {
+      "cash": 0.6,
+      "satisfaction": 0.1,
+      "stamina": -0.05,
+      "reputation": 0
+     },
+     "target": "table"
+    },
+    {
+     "id": "b",
+     "quality": "wrong",
+     "effects": {
+      "cash": 0.3,
+      "satisfaction": -0.05,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "table"
+    },
+    {
+     "id": "c",
+     "quality": "ok",
+     "effects": {
+      "cash": 0.5,
+      "satisfaction": 0.05,
+      "stamina": -0.1,
+      "reputation": 0
+     },
+     "target": "table",
+     "triggers": [
+      "vb17-glasen"
+     ]
+    }
+   ],
+   "staff": {
+    "effects": {
+     "cash": 0.3,
+     "satisfaction": -0.05,
+     "stamina": 0,
+     "reputation": 0
+    },
+    "target": "table"
+   },
+   "placeholder": false
+  },
+  {
+   "id": "vb08-sallskap-pa-fem",
+   "pavilion": "kalastorget",
+   "axis": "phronesis",
+   "track": null,
+   "arc": "rush",
+   "chainOnly": false,
+   "options": [
+    {
+     "id": "a",
+     "quality": "ok",
+     "effects": {
+      "cash": 1,
+      "satisfaction": 0,
+      "stamina": -0.08,
+      "reputation": 0
+     },
+     "target": "room",
+     "room": {
+      "arrive": 5
+     },
+     "triggers": [
+      "vb17-glasen"
+     ]
+    },
+    {
+     "id": "b",
+     "quality": "best",
+     "effects": {
+      "cash": 0.8,
+      "satisfaction": 0.05,
+      "stamina": -0.03,
+      "reputation": 0
+     },
+     "target": "room",
+     "room": {
+      "arrive": 5
+     }
+    },
+    {
+     "id": "c",
+     "quality": "wrong",
+     "effects": {
+      "cash": 0,
+      "satisfaction": 0,
+      "stamina": 0,
+      "reputation": -1
+     },
+     "target": "room"
+    }
+   ],
+   "staff": {
+    "effects": {
+     "cash": 0,
+     "satisfaction": -0.05,
+     "stamina": 0,
+     "reputation": -1
+    },
+    "target": "room"
+   },
+   "placeholder": false
+  },
+  {
+   "id": "vb09-getosten",
+   "pavilion": "stensota",
+   "axis": "techne",
+   "track": "sommellerie",
+   "arc": "rush",
+   "chainOnly": false,
+   "options": [
+    {
+     "id": "a",
+     "quality": "best",
+     "effects": {
+      "cash": 0.4,
+      "satisfaction": 0.1,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "table",
+     "triggers": [
+      "vb23-sott"
+     ]
+    },
+    {
+     "id": "b",
+     "quality": "wrong",
+     "effects": {
+      "cash": 0.4,
+      "satisfaction": -0.1,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "table"
+    },
+    {
+     "id": "c",
+     "quality": "ok",
+     "effects": {
+      "cash": 0.2,
+      "satisfaction": 0,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "table"
+    }
+   ],
+   "staff": {
+    "effects": {
+     "cash": 0.1,
+     "satisfaction": -0.05,
+     "stamina": 0,
+     "reputation": 0
+    },
+    "target": "table"
+   },
+   "placeholder": false
+  },
+  {
+   "id": "vb10-berusad",
+   "pavilion": "maltidbiblioteket",
+   "axis": "episteme",
+   "track": null,
+   "arc": "rush",
+   "chainOnly": false,
+   "options": [
+    {
+     "id": "a",
+     "quality": "best",
+     "effects": {
+      "cash": -0.2,
+      "satisfaction": 0,
+      "stamina": 0,
+      "reputation": 1
+     },
+     "target": "room",
+     "prevents": [
+      "vb29-brak"
+     ]
+    },
+    {
+     "id": "b",
+     "quality": "wrong",
+     "effects": {
+      "cash": 0.1,
+      "satisfaction": 0,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "room",
+     "triggers": [
+      "vb29-brak"
+     ]
+    },
+    {
+     "id": "c",
+     "quality": "wrong",
+     "effects": {
+      "cash": 0.5,
+      "satisfaction": 0,
+      "stamina": 0,
+      "reputation": -2
+     },
+     "target": "room",
+     "triggers": [
+      "vb29-brak"
+     ]
+    }
+   ],
+   "staff": {
+    "effects": {
+     "cash": 0.3,
+     "satisfaction": 0,
+     "stamina": 0,
+     "reputation": -1
+    },
+    "target": "room",
+    "triggers": [
+     "vb29-brak"
+    ]
+   },
+   "placeholder": false
+  },
+  {
+   "id": "vb11-cremant",
+   "pavilion": "maltidbiblioteket",
+   "axis": "episteme",
+   "track": null,
+   "arc": "rush",
+   "chainOnly": false,
+   "options": [
+    {
+     "id": "a",
+     "quality": "best",
+     "effects": {
+      "cash": 0.3,
+      "satisfaction": 0.1,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "table"
+    },
+    {
+     "id": "b",
+     "quality": "wrong",
+     "effects": {
+      "cash": 0,
+      "satisfaction": -0.1,
+      "stamina": 0,
+      "reputation": -1
+     },
+     "target": "table"
+    },
+    {
+     "id": "c",
+     "quality": "ok",
+     "effects": {
+      "cash": 0,
+      "satisfaction": -0.03,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "table"
+    }
+   ],
+   "staff": {
+    "effects": {
+     "cash": 0,
+     "satisfaction": -0.05,
+     "stamina": 0,
+     "reputation": 0
+    },
+    "target": "table"
+   },
+   "placeholder": false
+  },
+  {
+   "id": "vb12-varmt-rott",
+   "pavilion": "stensota",
+   "axis": "techne",
+   "track": "sommellerie",
+   "arc": "rush",
+   "chainOnly": false,
+   "options": [
+    {
+     "id": "a",
+     "quality": "best",
+     "effects": {
+      "cash": -0.1,
+      "satisfaction": 0.1,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "table"
+    },
+    {
+     "id": "b",
+     "quality": "wrong",
+     "effects": {
+      "cash": 0,
+      "satisfaction": -0.15,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "table"
+    },
+    {
+     "id": "c",
+     "quality": "wrong",
+     "effects": {
+      "cash": 0,
+      "satisfaction": -0.1,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "table"
+    }
+   ],
+   "staff": {
+    "effects": {
+     "cash": -0.1,
+     "satisfaction": -0.1,
+     "stamina": 0,
+     "reputation": 0
+    },
+    "target": "table"
+   },
+   "placeholder": false
+  },
+  {
+   "id": "vb13-delegationen",
+   "pavilion": "metodkoket",
+   "axis": "techne",
+   "track": "kok",
+   "arc": "rush",
+   "chainOnly": false,
+   "options": [
+    {
+     "id": "a",
+     "quality": "wrong",
+     "effects": {
+      "cash": 1,
+      "satisfaction": -0.1,
+      "stamina": -0.12,
+      "reputation": 0
+     },
+     "target": "room",
+     "triggers": [
+      "vb19-bongarna"
+     ]
+    },
+    {
+     "id": "b",
+     "quality": "best",
+     "effects": {
+      "cash": 1,
+      "satisfaction": 0,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "room"
+    },
+    {
+     "id": "c",
+     "quality": "ok",
+     "effects": {
+      "cash": 0,
+      "satisfaction": 0,
+      "stamina": 0.03,
+      "reputation": 0
+     },
+     "target": "room"
+    }
+   ],
+   "staff": {
+    "effects": {
+     "cash": 0,
+     "satisfaction": -0.05,
+     "stamina": -0.05,
+     "reputation": 0
+    },
+    "target": "room"
+   },
+   "placeholder": false
+  },
+  {
+   "id": "vb14-surdegen",
+   "pavilion": "maltidbiblioteket",
+   "axis": "episteme",
+   "track": null,
+   "arc": "rush",
+   "chainOnly": false,
+   "options": [
+    {
+     "id": "a",
+     "quality": "best",
+     "effects": {
+      "cash": 0.2,
+      "satisfaction": 0.1,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "table",
+     "prevents": [
+      "vb27-allergireaktion"
+     ]
+    },
+    {
+     "id": "b",
+     "quality": "wrong",
+     "effects": {
+      "cash": 0.2,
+      "satisfaction": 0,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "table",
+     "triggers": [
+      "vb27-allergireaktion"
+     ]
+    },
+    {
+     "id": "c",
+     "quality": "wrong",
+     "effects": {
+      "cash": 0.2,
+      "satisfaction": -0.05,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "table",
+     "triggers": [
+      "vb27-allergireaktion"
+     ]
+    }
+   ],
+   "staff": {
+    "effects": {
+     "cash": 0,
+     "satisfaction": -0.1,
+     "stamina": 0,
+     "reputation": 0
+    },
+    "target": "table"
+   },
+   "placeholder": false
+  },
+  {
+   "id": "vb15-fisken",
+   "pavilion": "metodkoket",
+   "axis": "techne",
+   "track": "kok",
+   "arc": "rush",
+   "chainOnly": false,
+   "options": [
+    {
+     "id": "a",
+     "quality": "wrong",
+     "effects": {
+      "cash": 0.4,
+      "satisfaction": 0,
+      "stamina": 0,
+      "reputation": -2
+     },
+     "target": "room"
+    },
+    {
+     "id": "b",
+     "quality": "ok",
+     "effects": {
+      "cash": 0.1,
+      "satisfaction": -0.05,
+      "stamina": -0.05,
+      "reputation": 0
+     },
+     "target": "room"
+    },
+    {
+     "id": "c",
+     "quality": "best",
+     "effects": {
+      "cash": 0.3,
+      "satisfaction": 0.05,
+      "stamina": -0.05,
+      "reputation": 0
+     },
+     "target": "room"
+    }
+   ],
+   "staff": {
+    "effects": {
+     "cash": 0.2,
+     "satisfaction": -0.05,
+     "stamina": 0,
+     "reputation": -1
+    },
+    "target": "room"
+   },
+   "placeholder": false
+  },
+  {
+   "id": "vb16-stamgasten",
+   "pavilion": "kalastorget",
+   "axis": "phronesis",
+   "track": null,
+   "arc": "rush",
+   "chainOnly": false,
+   "options": [
+    {
+     "id": "a",
+     "quality": "best",
+     "effects": {
+      "cash": 0.3,
+      "satisfaction": 0.1,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "table"
+    },
+    {
+     "id": "b",
+     "quality": "wrong",
+     "effects": {
+      "cash": 0,
+      "satisfaction": -0.15,
+      "stamina": 0,
+      "reputation": -1
+     },
+     "target": "table",
+     "room": {
+      "leave": 1
+     }
+    },
+    {
+     "id": "c",
+     "quality": "ok",
+     "effects": {
+      "cash": 0.1,
+      "satisfaction": 0,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "room"
+    }
+   ],
+   "staff": {
+    "effects": {
+     "cash": 0,
+     "satisfaction": -0.1,
+     "stamina": 0,
+     "reputation": 0
+    },
+    "target": "table",
+    "room": {
+     "leave": 1
+    }
+   },
+   "placeholder": false
+  },
+  {
+   "id": "vb17-glasen",
+   "pavilion": "stensota",
+   "axis": "techne",
+   "track": "sommellerie",
+   "arc": "crisis",
+   "chainOnly": false,
+   "options": [
+    {
+     "id": "a",
+     "quality": "best",
+     "effects": {
+      "cash": 0,
+      "satisfaction": 0.05,
+      "stamina": -0.1,
+      "reputation": 0
+     },
+     "target": "room"
+    },
+    {
+     "id": "b",
+     "quality": "wrong",
+     "effects": {
+      "cash": 0,
+      "satisfaction": -0.1,
+      "stamina": 0,
+      "reputation": -1
+     },
+     "target": "room"
+    },
+    {
+     "id": "c",
+     "quality": "ok",
+     "effects": {
+      "cash": -0.5,
+      "satisfaction": -0.05,
+      "stamina": 0.03,
+      "reputation": 0
+     },
+     "target": "room"
+    }
+   ],
+   "staff": {
+    "effects": {
+     "cash": -0.3,
+     "satisfaction": -0.1,
+     "stamina": -0.05,
+     "reputation": 0
+    },
+    "target": "room"
+   },
+   "placeholder": false
+  },
+  {
+   "id": "vb18-kavajen",
+   "pavilion": "kalastorget",
+   "axis": "phronesis",
+   "track": null,
+   "arc": "crisis",
+   "chainOnly": false,
+   "options": [
+    {
+     "id": "a",
+     "quality": "best",
+     "effects": {
+      "cash": -0.4,
+      "satisfaction": 0.15,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "table"
+    },
+    {
+     "id": "b",
+     "quality": "wrong",
+     "effects": {
+      "cash": 0,
+      "satisfaction": -0.2,
+      "stamina": 0,
+      "reputation": -1
+     },
+     "target": "table"
+    },
+    {
+     "id": "c",
+     "quality": "ok",
+     "effects": {
+      "cash": -0.8,
+      "satisfaction": 0.1,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "table"
+    }
+   ],
+   "staff": {
+    "effects": {
+     "cash": -0.2,
+     "satisfaction": -0.15,
+     "stamina": 0,
+     "reputation": -1
+    },
+    "target": "table"
+   },
+   "placeholder": false
+  },
+  {
+   "id": "vb19-bongarna",
+   "pavilion": "metodkoket",
+   "axis": "techne",
+   "track": "kok",
+   "arc": "crisis",
+   "chainOnly": false,
+   "options": [
+    {
+     "id": "a",
+     "quality": "best",
+     "effects": {
+      "cash": 0,
+      "satisfaction": 0.05,
+      "stamina": -0.08,
+      "reputation": 0
+     },
+     "target": "room"
+    },
+    {
+     "id": "b",
+     "quality": "wrong",
+     "effects": {
+      "cash": 0.2,
+      "satisfaction": -0.15,
+      "stamina": -0.15,
+      "reputation": 0
+     },
+     "target": "room",
+     "triggers": [
+      "vb20-notan"
+     ]
+    },
+    {
+     "id": "c",
+     "quality": "ok",
+     "effects": {
+      "cash": -0.3,
+      "satisfaction": 0,
+      "stamina": -0.03,
+      "reputation": 0
+     },
+     "target": "room"
+    }
+   ],
+   "staff": {
+    "effects": {
+     "cash": -0.2,
+     "satisfaction": -0.1,
+     "stamina": -0.1,
+     "reputation": 0
+    },
+    "target": "room",
+    "triggers": [
+     "vb20-notan"
+    ]
+   },
+   "placeholder": false
+  },
+  {
+   "id": "vb20-notan",
+   "pavilion": "kalastorget",
+   "axis": "phronesis",
+   "track": null,
+   "arc": "crisis",
+   "chainOnly": false,
+   "options": [
+    {
+     "id": "a",
+     "quality": "best",
+     "effects": {
+      "cash": -0.1,
+      "satisfaction": 0.1,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "table"
+    },
+    {
+     "id": "b",
+     "quality": "wrong",
+     "effects": {
+      "cash": 0,
+      "satisfaction": -0.2,
+      "stamina": 0,
+      "reputation": -1
+     },
+     "target": "table",
+     "room": {
+      "leave": 2
+     }
+    },
+    {
+     "id": "c",
+     "quality": "ok",
+     "effects": {
+      "cash": -0.4,
+      "satisfaction": 0.05,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "table"
+    }
+   ],
+   "staff": {
+    "effects": {
+     "cash": -0.2,
+     "satisfaction": -0.1,
+     "stamina": 0,
+     "reputation": 0
+    },
+    "target": "table"
+   },
+   "placeholder": false
+  },
+  {
+   "id": "vb21-skuren-hand",
+   "pavilion": "metodkoket",
+   "axis": "techne",
+   "track": "kok",
+   "arc": "crisis",
+   "chainOnly": false,
+   "options": [
+    {
+     "id": "a",
+     "quality": "best",
+     "effects": {
+      "cash": -0.2,
+      "satisfaction": 0,
+      "stamina": -0.05,
+      "reputation": 0
+     },
+     "target": "room"
+    },
+    {
+     "id": "b",
+     "quality": "wrong",
+     "effects": {
+      "cash": 0,
+      "satisfaction": 0,
+      "stamina": -0.15,
+      "reputation": -2
+     },
+     "target": "room"
+    },
+    {
+     "id": "c",
+     "quality": "ok",
+     "effects": {
+      "cash": -0.3,
+      "satisfaction": -0.05,
+      "stamina": -0.08,
+      "reputation": 0
+     },
+     "target": "room"
+    }
+   ],
+   "staff": {
+    "effects": {
+     "cash": -0.2,
+     "satisfaction": -0.05,
+     "stamina": -0.12,
+     "reputation": 0
+    },
+    "target": "room"
+   },
+   "placeholder": false
+  },
+  {
+   "id": "vb22-recensenten",
+   "pavilion": "kalastorget",
+   "axis": "phronesis",
+   "track": null,
+   "arc": "crisis",
+   "chainOnly": false,
+   "options": [
+    {
+     "id": "a",
+     "quality": "best",
+     "effects": {
+      "cash": 0,
+      "satisfaction": 0.1,
+      "stamina": 0,
+      "reputation": 2
+     },
+     "target": "table"
+    },
+    {
+     "id": "b",
+     "quality": "wrong",
+     "effects": {
+      "cash": 0,
+      "satisfaction": -0.1,
+      "stamina": 0,
+      "reputation": -2
+     },
+     "target": "table"
+    },
+    {
+     "id": "c",
+     "quality": "ok",
+     "effects": {
+      "cash": -0.3,
+      "satisfaction": 0.05,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "table"
+    }
+   ],
+   "staff": {
+    "effects": {
+     "cash": 0,
+     "satisfaction": -0.05,
+     "stamina": 0,
+     "reputation": -1
+    },
+    "target": "table"
+   },
+   "placeholder": false
+  },
+  {
+   "id": "vb23-sott",
+   "pavilion": "stensota",
+   "axis": "techne",
+   "track": "sommellerie",
+   "arc": "closing",
+   "chainOnly": false,
+   "options": [
+    {
+     "id": "a",
+     "quality": "best",
+     "effects": {
+      "cash": 0.5,
+      "satisfaction": 0.1,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "table"
+    },
+    {
+     "id": "b",
+     "quality": "wrong",
+     "effects": {
+      "cash": 0.3,
+      "satisfaction": -0.1,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "table"
+    },
+    {
+     "id": "c",
+     "quality": "ok",
+     "effects": {
+      "cash": 0.3,
+      "satisfaction": 0.03,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "table"
+    }
+   ],
+   "staff": {
+    "effects": {
+     "cash": 0.1,
+     "satisfaction": 0,
+     "stamina": 0,
+     "reputation": 0
+    },
+    "target": "table"
+   },
+   "placeholder": false
+  },
+  {
+   "id": "vb24-terroir",
+   "pavilion": "maltidbiblioteket",
+   "axis": "episteme",
+   "track": null,
+   "arc": "closing",
+   "chainOnly": false,
+   "options": [
+    {
+     "id": "a",
+     "quality": "best",
+     "effects": {
+      "cash": 0.2,
+      "satisfaction": 0.1,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "table"
+    },
+    {
+     "id": "b",
+     "quality": "ok",
+     "effects": {
+      "cash": 0.1,
+      "satisfaction": 0.03,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "table"
+    },
+    {
+     "id": "c",
+     "quality": "wrong",
+     "effects": {
+      "cash": 0,
+      "satisfaction": -0.05,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "table"
+    }
+   ],
+   "staff": {
+    "effects": {
+     "cash": 0,
+     "satisfaction": -0.03,
+     "stamina": 0,
+     "reputation": 0
+    },
+    "target": "table"
+   },
+   "placeholder": false
+  },
+  {
+   "id": "vb25-efter-stangning",
+   "pavilion": "kalastorget",
+   "axis": "phronesis",
+   "track": null,
+   "arc": "closing",
+   "chainOnly": false,
+   "options": [
+    {
+     "id": "a",
+     "quality": "best",
+     "effects": {
+      "cash": 0.2,
+      "satisfaction": 0.05,
+      "stamina": -0.03,
+      "reputation": 0
+     },
+     "target": "table"
+    },
+    {
+     "id": "b",
+     "quality": "wrong",
+     "effects": {
+      "cash": 0.6,
+      "satisfaction": 0,
+      "stamina": -0.12,
+      "reputation": 0
+     },
+     "target": "table"
+    },
+    {
+     "id": "c",
+     "quality": "ok",
+     "effects": {
+      "cash": 0,
+      "satisfaction": -0.05,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "table"
+    }
+   ],
+   "staff": {
+    "effects": {
+     "cash": 0.3,
+     "satisfaction": 0,
+     "stamina": -0.08,
+     "reputation": 0
+    },
+    "target": "table"
+   },
+   "placeholder": false
+  },
+  {
+   "id": "vb26-oppna-flaskor",
+   "pavilion": "stensota",
+   "axis": "techne",
+   "track": "sommellerie",
+   "arc": "closing",
+   "chainOnly": false,
+   "options": [
+    {
+     "id": "a",
+     "quality": "best",
+     "effects": {
+      "cash": 0.3,
+      "satisfaction": 0,
+      "stamina": -0.02,
+      "reputation": 0
+     },
+     "target": "room"
+    },
+    {
+     "id": "b",
+     "quality": "wrong",
+     "effects": {
+      "cash": -0.4,
+      "satisfaction": 0,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "room"
+    },
+    {
+     "id": "c",
+     "quality": "ok",
+     "effects": {
+      "cash": -0.2,
+      "satisfaction": 0,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "room"
+    }
+   ],
+   "staff": {
+    "effects": {
+     "cash": -0.4,
+     "satisfaction": 0,
+     "stamina": 0,
+     "reputation": 0
+    },
+    "target": "room"
+   },
+   "placeholder": false
+  },
+  {
+   "id": "vb27-allergireaktion",
+   "pavilion": "metodkoket",
+   "axis": "techne",
+   "track": "kok",
+   "arc": "crisis",
+   "chainOnly": true,
+   "options": [
+    {
+     "id": "a",
+     "quality": "best",
+     "effects": {
+      "cash": -0.5,
+      "satisfaction": 0,
+      "stamina": -0.1,
+      "reputation": 0
+     },
+     "target": "table"
+    },
+    {
+     "id": "b",
+     "quality": "wrong",
+     "effects": {
+      "cash": -0.5,
+      "satisfaction": -0.2,
+      "stamina": -0.1,
+      "reputation": -4
+     },
+     "target": "table",
+     "room": {
+      "leave": 1
+     }
+    },
+    {
+     "id": "c",
+     "quality": "wrong",
+     "effects": {
+      "cash": -0.3,
+      "satisfaction": -0.15,
+      "stamina": -0.05,
+      "reputation": -3
+     },
+     "target": "table"
+    }
+   ],
+   "staff": {
+    "effects": {
+     "cash": -0.5,
+     "satisfaction": -0.2,
+     "stamina": -0.1,
+     "reputation": -3
+    },
+    "target": "table"
+   },
+   "placeholder": false
+  },
+  {
+   "id": "vb28-kylen-stannar",
+   "pavilion": "maltidbiblioteket",
+   "axis": "episteme",
+   "track": null,
+   "arc": "crisis",
+   "chainOnly": true,
+   "options": [
+    {
+     "id": "a",
+     "quality": "best",
+     "effects": {
+      "cash": -0.8,
+      "satisfaction": 0,
+      "stamina": -0.08,
+      "reputation": 0
+     },
+     "target": "room"
+    },
+    {
+     "id": "b",
+     "quality": "wrong",
+     "effects": {
+      "cash": -0.2,
+      "satisfaction": 0,
+      "stamina": 0,
+      "reputation": -3
+     },
+     "target": "room"
+    },
+    {
+     "id": "c",
+     "quality": "ok",
+     "effects": {
+      "cash": -1.5,
+      "satisfaction": 0,
+      "stamina": -0.05,
+      "reputation": 0
+     },
+     "target": "room"
+    }
+   ],
+   "staff": {
+    "effects": {
+     "cash": -1,
+     "satisfaction": 0,
+     "stamina": -0.05,
+     "reputation": -1
+    },
+    "target": "room"
+   },
+   "placeholder": false
+  },
+  {
+   "id": "vb29-brak",
+   "pavilion": "kalastorget",
+   "axis": "phronesis",
+   "track": null,
+   "arc": "crisis",
+   "chainOnly": true,
+   "options": [
+    {
+     "id": "a",
+     "quality": "best",
+     "effects": {
+      "cash": -0.2,
+      "satisfaction": 0.05,
+      "stamina": -0.05,
+      "reputation": 0
+     },
+     "target": "room"
+    },
+    {
+     "id": "b",
+     "quality": "wrong",
+     "effects": {
+      "cash": 0,
+      "satisfaction": -0.2,
+      "stamina": -0.1,
+      "reputation": -2
+     },
+     "target": "room",
+     "room": {
+      "leave": 2
+     }
+    },
+    {
+     "id": "c",
+     "quality": "ok",
+     "effects": {
+      "cash": -0.2,
+      "satisfaction": -0.05,
+      "stamina": -0.08,
+      "reputation": 0
+     },
+     "target": "room"
+    }
+   ],
+   "staff": {
+    "effects": {
+     "cash": -0.2,
+     "satisfaction": -0.15,
+     "stamina": -0.1,
+     "reputation": -1
+    },
+    "target": "room",
+    "room": {
+     "leave": 2
+    }
+   },
+   "placeholder": false
+  },
+  {
+   "id": "vb30-korkgasten",
+   "pavilion": "kalastorget",
+   "axis": "phronesis",
+   "track": null,
+   "arc": "crisis",
+   "chainOnly": true,
+   "options": [
+    {
+     "id": "a",
+     "quality": "best",
+     "effects": {
+      "cash": -0.5,
+      "satisfaction": 0.2,
+      "stamina": 0,
+      "reputation": 1
+     },
+     "target": "table"
+    },
+    {
+     "id": "b",
+     "quality": "wrong",
+     "effects": {
+      "cash": 0,
+      "satisfaction": -0.2,
+      "stamina": 0,
+      "reputation": -2
+     },
+     "target": "table",
+     "room": {
+      "leave": 2
+     }
+    },
+    {
+     "id": "c",
+     "quality": "ok",
+     "effects": {
+      "cash": -0.3,
+      "satisfaction": 0.05,
+      "stamina": 0,
+      "reputation": 0
+     },
+     "target": "table"
+    }
+   ],
+   "staff": {
+    "effects": {
+     "cash": -0.3,
+     "satisfaction": -0.15,
+     "stamina": 0,
+     "reputation": -1
+    },
+    "target": "table",
+    "room": {
+     "leave": 2
+    }
+   },
+   "placeholder": false
+  }
+ ]
+}
