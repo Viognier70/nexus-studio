@@ -1,5 +1,27 @@
 # Nexus v1 — tidslogg
 
+## Överlämning (2026-09-26, SPELSTOPP 1)
+
+**Var vi är.**
+- Etapp 0–5 (ORDER 262–267) är mergade till `main` och pushade. Senaste merge: `47305aa`.
+- Vi står vid **SPELSTOPP 1**. Vision Owner spelar en vecka. Ingen etapp 6 förrän Vision Owner svarat, och svaren förs in i `NEXUS_V1_OPPNA_FRAGOR.md` och i speldesignen först.
+- En hel vecka går att spela från bussen till söndagstidningen, verifierat i produktionsbygget (`frontend/reports/order267/week-from-bus.json`).
+
+**Öppet.**
+1. **Vägen tillbaka efter nedgradering.** Den ska rättas först efter spelstoppet, se första punkten i `NEXUS_V1_OPPNA_FRAGOR.md`. Det enda förväntade felet i sviten (`order265WeekHarness`).
+2. **Slumpmålet är inte nått:** 55 % mot ungefär 75 % (`frontend/reports/order267/randomness.json`). Vision Owner väljer väg (`ORDER_267_RAPPORT.md` §3).
+3. **Vision Owners bekräftelse** av F31–F36: sittiden, marknadens takt, den första verksamheten, tidningen, slumpmålets definition och sparfilen version 2.
+4. **Platshållare:** mentorns gestalt, tidningens utseende, spelarens figur vid insatsen och Teaterns frågor. Äldre paneler har kvar engelsk text (CLAUDE.md regel 7).
+5. **Kvar från provspelet att bekräfta:** att "Fortsätt" i VS001-dialogen svarar på första klicket, och tiden till första verksamheten för en människa (målet är 20 min).
+
+**Läs först i nästa session.**
+1. `documentation/architecture/ORDER_267_RAPPORT.md`: vad som byggdes, hur man startar spelet, platshållarna.
+2. `documentation/architecture/NEXUS_V1_OPPNA_FRAGOR.md`: punkten överst, och Vision Owners svar under **Svar**.
+3. `documentation/orders/ORDER_NEXUS_V1_HELA_SPELET.md`: etapp 6 till 10 (food trucken först).
+4. Den här filen: uppskattningen för nästa etapp skrivs innan grenen skapas.
+
+---
+
 **Ordern** `documentation/orders/ORDER_NEXUS_V1_HELA_SPELET.md` §5 (tillägg 2026-09-25)
 
 Uppskattningen skrivs innan etappen börjar. Faktisk tid fylls i när etappen är klar.

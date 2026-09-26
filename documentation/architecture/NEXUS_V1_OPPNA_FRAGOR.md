@@ -7,6 +7,18 @@ Här står varje beslut som speldesignen inte täcker och som en etapp har fatta
 
 Vision Owner svarar genom att skriva sitt beslut under **Svar**. Svaret förs sedan in i speldesignen och i `balance.ts`.
 
+## Rättas först efter SPELSTOPP 1
+
+**1. Vägen tillbaka efter nedgradering håller inte i spelarens rum** (ORDER 266, registerrad 266; testet `order265WeekHarness.test.ts`, `it.fails`; talen i `frontend/reports/order267/week-harness.json`, `scenarios["nedgradering-och-tillbaka"]`).
+
+Varför det inte håller, i scenariot "ingen kassa, inga medaljer vecka 1–2":
+- **Tvingad nedgradering nollställer kassan.** Kassan blir 0 (`economy.ts` `changeClass`, `cash: forced ? Math.max(state.cash, 0)`). Redan första kvällens löner tar den under noll igen, så tre negativa dagsavslut följer direkt: vinbar → food truck vid avräkningen vecka 1, food truck → ingen verksamhet vecka 2 (`settlements[0..1].downgradedTo`).
+- **Food trucken bär sig inte.** Den spelas i dagens gamla vy, med 2–10 gäster per kväll (`settlements[1].evenings`). Den egna simuleringen byggs först i etapp 6.
+- **Kassakravet stänger dörren.** Tillbaka till vinbaren kräver kassa för en veckas golv (`UPGRADE.cashRequiredInWeeksOfFloor`, `classOptions`). Med kassan på 0 går det inte, trots brons i tre (ORDER 266 mätte 4 144 SEK mot 5 051 SEK).
+- **Kostnaderna löper även utan verksamhet.** Personalens löner dras vidare: kassan går till −25 201 SEK vecka 3 och −50 401 SEK vecka 4 (`settlements[2..3].cash`). Utan verksamhet finns ingen väg ut.
+
+Att bestämma och rätta: villkoren vid tvingad nedgradering (F22), kassakravet för att komma tillbaka, och att personalen avvecklas eller slutar kosta när verksamheten är borta. Food trucken hör till etapp 6, men resten kan rättas före.
+
 | Nr | Etapp | Fråga | Vald tolkning | Var |
 | --- | --- | --- | --- | --- |
 | F1 | 0 | Gästfaktor per veckodag. Speldesignen: "Måndag är lugn, fredag och lördag är tunga." | mån 0,7 · tis 0,8 · ons 0,9 · tor 1,0 · fre 1,3 · lör 1,4 · sön 0 (stängd) | `WEEK.guestFactor` |
