@@ -139,3 +139,99 @@ Utdrag ur `evening-from-bus.json`:
 ## 6. Svit och commit
 
 Typecheck grön, `npm run build` grön, Vitest 116 filer godkända (1 överhoppad), 2 041 tester godkända, 4 överhoppade. Arbetet är committat på `order-270` och **inte mergat till main**. Ordern stannar här för Vision Owners provning.
+
+---
+
+# Tillägg efter provspel 2026-09-27
+
+**Ordern** (Vision Owner 2026-09-27, lagt till i ORDER 270):
+- Utan verksamhet och utan pengar: en ruta mitt på skärmen, med Måltidens hus som enda väg vidare.
+- Proven på tid, 30 s per fråga, där tiden ute räknas som fel. Övningen är utan tid.
+- Fältet referens (titel och länk) i fråge- och händelsebanken. Alla fält är tomma tills Vision Owner levererar dem (Vision Owners rättelse samma dag), och inga länkar hittas på.
+- Händelser där rätt svar beror på kvällens läge, med servetterna och isen som exempel. Fler utkast ska bero på klockslag och läge.
+- Fel val låser. Rummet står inte still.
+- Från förra rapporten: den svaga spelaren ska gå minus över en vecka, inga händelser om bord utan gäster, och inga engelska paneler.
+- Besluten skrivs in i speldesignen.
+- Stopp när det går att spela.
+
+## T1. Vad som byggdes
+
+**Rummet står inte still.**
+- `TICK` kör servicen som vanligt, och nedräkningen går bredvid (`reducer.ts`).
+- En händelse som står öppen när servicen tar slut beslutas av personalen, med −1 kredit (`closeIncidents`).
+
+**Fel val låser** (`incidents.ongoing`):
+- Följden av ett fel svar, eller av personalens eget beslut, står över rummet och verkar varje simulerad minut tills nästa händelse öppnas (`tickOngoing`). Den verkar på:
+  - nöjdheten, vid bordet eller i rummet
+  - orken
+  - personalens tempo (`service.ts`)
+- Svaret går inte att ändra, och ett andra svar avvisas.
+
+**Kvällens läge:**
+- Villkor i banken:
+  - `when`: fönster i speltid, kön, gäster vid borden
+  - `situations`: lägen där ett annat svar är rätt, med kvalitet, utfall och förklaring per läge (`in`, `explanationIn`)
+- Kortet visar klockslaget och läget i ord.
+- Lärdomen förklarar svaret i det läge det gavs.
+- Nytt: **vb31 Servetterna och isen**, med Vision Owners exempel. Före 20.00 är servetterna rätt, efter är isen det. Fel val ger "Isen är slut i baren. Drinkarna står och väntar", och personalen går 30 % långsammare, nöjdheten sjunker och det kostar −1 kredit.
+- 20 av 31 händelser beror nu på klockslag eller läge (F45).
+
+**Bord utan gäster:** en händelse vars berättelse nämner ett bord (`needsTable`) kommer bara när en gäst sitter där. En kedjad händelse gäller samma bord, som allergireaktionen efter peston.
+
+**Den svaga spelaren går minus:** fel svar ger ingen kassa (utom att servera den berusade gästen), personalens eget beslut kostar, och 38 svar låser en följd.
+
+**Referenser:**
+- `reference: null` finns på alla 40 frågor (`bank.meta.json`) och alla 31 händelser.
+- Laddaren validerar titel och länk när fältet är ifyllt.
+- `ReferenceLine` visar referensen med förklaringen (frågekortet och kvällens lärdom) och visar ingenting när fältet är tomt.
+
+**Provet på tid:**
+- `EXAM.secondsPerQuestion` 30, i verklig tid i frågekortet.
+- När tiden går ut skickas `TIMED_OUT` (−1), som räknas som fel ("Tiden gick ut. Det räknas som fel.").
+- Övningen har ingen tid, och reducern avvisar −1 där.
+
+**Rutan utan verksamhet** (`NoBusinessBox`, `isStrandedWithoutBusiness`):
+- Visas mitt på skärmen när verksamheten är förlorad och lånet borta.
+- Har en knapp: Till Måltidens hus, eller Till banken när bankens krav är uppfyllt.
+- Morgonens rad med knappar visas inte.
+- Dagen slutar av sig själv när schemat är fullt (F46).
+
+**Inga engelska paneler:**
+- `InstrumentsPanel` (Room pace, Guest mood, Team stamina, Tonight's take, kapitalflikarna) och `RoomCardPanel` visas inte längre. Mätarna och rummet ersätter dem.
+- Övrig engelsk spelartext är översatt: strömmen, satsningarna, menyn och inköpen, mise en place, kvällens redovisning, kassaraden och tillskriften. Se T3.
+
+# Tillägg 2: trestegsraketer (Vision Owner 2026-09-27)
+
+**Beslutet:** varje händelse i servicen är en raket med tre frågor i samma sammanhang. Episteme frågar vad (15 s), techne hur (20 s) och phronesis när och varför (30 s). Man når nästa steg bara genom att klara det förra. Ett fel svar ger stegets konsekvens, och personalen tar över resten med sämre utfall. Hela raketen klarad ger bästa utfall. Medaljer i stegets paviljong ger mer tid på det steget. Det blir 2–4 raketer per kväll. Beslutet står i speldesignen (Servicen > Händelserna i servicen) och i F43 och F44.
+
+## R1. Vad som byggdes
+
+- **Tider och antal** (`balance.ts` `INCIDENTS`):
+  - `stepSeconds` episteme 15, techne 20, phronesis 30.
+  - `minPerEvening` 2 och `maxPerEvening` 4. Per veckodag: mån 2, tis 2, ons 3, tor 3, fre 4, lör 4.
+  - `staffShareByFailedStep` [1, 2/3, 1/3], som är valt (F43).
+- **Banken** (`vinbar.meta.json` schemaVersion 2, `vinbar.text.sv.draft.json`):
+  - Alla 31 utkast är omskrivna till raketer. Utkastets fråga blir steget på sin axel, och de två andra stegen är nya.
+  - Varje steg har en fråga, 3–4 svar med förklaring och en egen konsekvens vid fel (`fail`). Ett svar kan ha en egen konsekvens, som bär kedjorna.
+  - Raketen har `success` och `staff`. `track` avgör techne-stegets paviljong (kök → Metodköket, sommellerie → Stensöta).
+  - Det bästa svaret står jämnt fördelat på a–d. I utkasten stod det på a i 28 av 31.
+- **Motorn** (`sim/incidents.ts`):
+  - `resolveIncident` svarar på det aktuella steget. Ett klarat steg öppnar nästa med stegets tid.
+  - Ett fel eller en utebliven tid ger stegets konsekvens och personalens utfall skalat efter stegen som återstod (`applyOutcome`).
+  - Krediten går på stegets axel. Loggen och lärdomen anger steget där raketen föll.
+- **Kortet** (`IncidentPanel.tsx`): berättelsen står kvar och stegrutorna visar klarat, pågående och kommande steg. Frågan och svaren byts per steg.
+- **Kvällens lärdom** (`EveningBar.tsx`): lärdomen anger steget och dess fråga.
+- **Harnessen** (`rankedStepOption`) svarar steg för steg.
+
+## R2. Tal
+
+- **Slumpmålet:** `frontend/reports/order270/randomness.json`, 1 000 veckor. `winShare` är 0,732. Harnessen svarar direkt, så nedräkningen och medaljernas tid mäts inte. Skillnaden mellan spelarna är medaljernas verkan i servicen.
+- **Rimlig mot svag:** `frontend/reports/order270/week-players.json`, 20 veckor. Den svaga spelaren går minus i `svagMinusWeeks` 20 av 20 veckor.
+- **Sviten:** `order270Incidents.test.ts` (29 tester) och `balance.test.ts` är uppdaterade. Hela sviten är grön.
+
+## R3. Öppet
+
+- `scripts/order270-evening-from-bus.mjs` spelar nu raketer steg för steg. Kortet, stegrutorna och utfallet i rummet är verifierade i produktionsbygget (`e11-raket-*`, `e12-utfall-*`).
+- Efter den andra raketen visades aldrig kvällsvyn i webbläsaren. Simuleringen når kvällen i samma flöde, så felet utreds i nästa order.
+- Personalens text (`staff`) är en per raket och passar ibland inte steget där raketen föll.
+- Gusto.science-skriptet (en raket per artikel) är inte byggt. Det väntar på svaren om läsrätten.

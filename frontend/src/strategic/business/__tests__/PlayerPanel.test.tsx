@@ -45,7 +45,7 @@ const FLAT_STATE = stateWithTrend(1.0);
 describe('ORDER 120 DoD 1 — pillen visar trend', () => {
   it('trend=up → pillen har [data-reputation-trend="up"]', () => {
     const { container } = render(withProvider(UP_STATE));
-    const pill = container.querySelector('button[aria-label="Cash on hand"]');
+    const pill = container.querySelector('button[aria-label="Kassa"]');
     expect(pill).toBeTruthy();
     const glyph = pill!.querySelector('[data-reputation-trend="up"]');
     expect(glyph).toBeTruthy();
@@ -53,14 +53,14 @@ describe('ORDER 120 DoD 1 — pillen visar trend', () => {
 
   it('trend=down → pillen har [data-reputation-trend="down"]', () => {
     const { container } = render(withProvider(DOWN_STATE));
-    const pill = container.querySelector('button[aria-label="Cash on hand"]');
+    const pill = container.querySelector('button[aria-label="Kassa"]');
     const glyph = pill!.querySelector('[data-reputation-trend="down"]');
     expect(glyph).toBeTruthy();
   });
 
   it('trend=flat → pillen har INGET [data-reputation-trend]-attribut', () => {
     const { container } = render(withProvider(FLAT_STATE));
-    const pill = container.querySelector('button[aria-label="Cash on hand"]');
+    const pill = container.querySelector('button[aria-label="Kassa"]');
     expect(pill).toBeTruthy();
     // Vid flat ska pillen vara tyst — inget trend-attribut alls, inte ens tomt.
     expect(pill!.querySelector('[data-reputation-trend]')).toBeNull();
@@ -70,7 +70,7 @@ describe('ORDER 120 DoD 1 — pillen visar trend', () => {
 describe('ORDER 120 DoD 2 — §5.2:s Reading-rad orörd (regression)', () => {
   it('öppnad panel → Rykte-Reading-raden har fortfarande [data-reputation-trend]', () => {
     const { container } = render(withProvider(UP_STATE));
-    const pill = container.querySelector('button[aria-label="Cash on hand"]');
+    const pill = container.querySelector('button[aria-label="Kassa"]');
     fireEvent.click(pill!);
 
     // Efter öppning: två noder ska ha data-reputation-trend — pillen och
@@ -78,8 +78,8 @@ describe('ORDER 120 DoD 2 — §5.2:s Reading-rad orörd (regression)', () => {
     const trendNodes = container.querySelectorAll('[data-reputation-trend]');
     expect(trendNodes.length).toBeGreaterThanOrEqual(2);
 
-    // Verifiera att en av dem ligger inuti öppnad panel (region "Business account").
-    const panel = container.querySelector('[aria-label="Business account"]');
+    // Verifiera att en av dem ligger inuti öppnad panel (region "Verksamhetens konto").
+    const panel = container.querySelector('[aria-label="Verksamhetens konto"]');
     expect(panel).toBeTruthy();
     expect(panel!.querySelector('[data-reputation-trend]')).toBeTruthy();
   });
@@ -88,14 +88,14 @@ describe('ORDER 120 DoD 2 — §5.2:s Reading-rad orörd (regression)', () => {
 describe('ORDER 120 DoD 5 — skärmläsare + tooltip', () => {
   it('trend=up → aria-label "rykte trend uppåt"', () => {
     const { container } = render(withProvider(UP_STATE));
-    const glyph = container.querySelector('button[aria-label="Cash on hand"] [data-reputation-trend="up"]');
+    const glyph = container.querySelector('button[aria-label="Kassa"] [data-reputation-trend="up"]');
     expect(glyph!.getAttribute('aria-label')).toBe('rykte trend uppåt');
     expect(glyph!.getAttribute('title')).toBe('Rykte-trend uppåt');
   });
 
   it('trend=down → aria-label "rykte trend nedåt"', () => {
     const { container } = render(withProvider(DOWN_STATE));
-    const glyph = container.querySelector('button[aria-label="Cash on hand"] [data-reputation-trend="down"]');
+    const glyph = container.querySelector('button[aria-label="Kassa"] [data-reputation-trend="down"]');
     expect(glyph!.getAttribute('aria-label')).toBe('rykte trend nedåt');
     expect(glyph!.getAttribute('title')).toBe('Rykte-trend nedåt');
   });
@@ -104,7 +104,7 @@ describe('ORDER 120 DoD 5 — skärmläsare + tooltip', () => {
 describe('ORDER 120 DoD 6 — DOM-struktur', () => {
   it('trend-glyfen är direkt barn till <button> (inte nästad i Cash-value-spannen)', () => {
     const { container } = render(withProvider(UP_STATE));
-    const pill = container.querySelector('button[aria-label="Cash on hand"]');
+    const pill = container.querySelector('button[aria-label="Kassa"]');
     const glyph = pill!.querySelector('[data-reputation-trend="up"]');
     // parentElement ska vara själva button-noden, inte en inre span.
     expect(glyph!.parentElement).toBe(pill);
@@ -112,11 +112,11 @@ describe('ORDER 120 DoD 6 — DOM-struktur', () => {
 
   it('trend-glyfen kommer efter Cash-value-spannen och före ▾-toggleln', () => {
     const { container } = render(withProvider(UP_STATE));
-    const pill = container.querySelector('button[aria-label="Cash on hand"]');
+    const pill = container.querySelector('button[aria-label="Kassa"]');
     const children = Array.from(pill!.children);
 
-    const cashLabelIdx = children.findIndex((c) => c.textContent === 'Cash');
-    const cashValueIdx = children.findIndex((c) => /kSEK$/.test(c.textContent ?? ''));
+    const cashLabelIdx = children.findIndex((c) => c.textContent === 'Kassa');
+    const cashValueIdx = children.findIndex((c) => /tkr$/.test(c.textContent ?? ''));
     const glyphIdx = children.findIndex((c) => c.hasAttribute('data-reputation-trend'));
     const toggleIdx = children.findIndex((c) => c.textContent === '▾' || c.textContent === '▴');
 
@@ -128,17 +128,17 @@ describe('ORDER 120 DoD 6 — DOM-struktur', () => {
 
   it('trend-glyfen har textContent = ▲ (up) eller ▼ (down), aldrig · (flat)', () => {
     const { container: cUp } = render(withProvider(UP_STATE));
-    const glyphUp = cUp.querySelector('button[aria-label="Cash on hand"] [data-reputation-trend]');
+    const glyphUp = cUp.querySelector('button[aria-label="Kassa"] [data-reputation-trend]');
     expect(glyphUp!.textContent).toBe('▲');
 
     const { container: cDown } = render(withProvider(DOWN_STATE));
-    const glyphDown = cDown.querySelector('button[aria-label="Cash on hand"] [data-reputation-trend]');
+    const glyphDown = cDown.querySelector('button[aria-label="Kassa"] [data-reputation-trend]');
     expect(glyphDown!.textContent).toBe('▼');
   });
 
   it('trend-glyfen har inline fontSize > 0 (nödvändigt villkor för synlighet — visuell verifikation via scripts/order120)', () => {
     const { container } = render(withProvider(UP_STATE));
-    const glyph = container.querySelector('button[aria-label="Cash on hand"] [data-reputation-trend]') as HTMLElement;
+    const glyph = container.querySelector('button[aria-label="Kassa"] [data-reputation-trend]') as HTMLElement;
     // Jsdom sätter inte layout men läser inline styles.
     const fontSize = glyph.style.fontSize;
     expect(fontSize).not.toBe('');

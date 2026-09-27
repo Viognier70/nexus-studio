@@ -1,8 +1,10 @@
 // ORDER 270 — händelserna i servicen (Vision Owner 2026-09-26).
 //
-// IncidentCard: kvällens händelse med 3–4 svar och nedräkningen. Medan
-// kortet är öppet står rummet stilla (reducern räknar bara ner). Ett
-// alternativ som spelarens medaljer strukit visas överstruket och går
+// IncidentCard: kvällens händelse som en raket i tre steg (Vision Owner
+// 2026-09-27): episteme (vad), techne (hur), phronesis (när och varför).
+// Kortet visar berättelsen, stegen, det aktuella stegets fråga med 3–4
+// svar och stegets nedräkning. Rummet fortsätter medan nedräkningen går.
+// Ett alternativ som spelarens medaljer strukit visas överstruket och går
 // inte att välja.
 //
 // ServiceMeters: de tre mätarna, kassa, gästernas nöjdhet och personalens
@@ -78,13 +80,16 @@ export function IncidentCard() {
   const f = (t: string) => formatIncidentText(t, active.context);
   const left = Math.ceil(active.secondsLeft);
   const share = active.secondsTotal > 0 ? active.secondsLeft / active.secondsTotal : 0;
-  const extra = medalSteps(sim.medals, incident.pavilion) > 0 && active.secondsTotal > INCIDENTS.countdownSeconds;
-  const pavilionName = PAVILION_CONFIGS[incident.pavilion].displayName;
+  const stepIndex = active.step ?? 0;
+  const step = incident.steps[stepIndex];
+  if (!step) return null;
+  const extra = medalSteps(sim.medals, step.pavilion) > 0 && active.secondsTotal > INCIDENTS.stepSeconds[step.axis];
+  const pavilionName = PAVILION_CONFIGS[step.pavilion].displayName;
   return (
-    <div style={CARD} data-testid="incident-card" data-incident-id={incident.id} role="dialog" aria-live="assertive" aria-label={f(incident.text.title)}>
+    <div style={CARD} data-testid="incident-card" data-incident-id={incident.id} data-step={stepIndex} data-step-axis={step.axis} role="dialog" aria-live="assertive" aria-label={f(incident.text.title)}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
         <div style={LABEL}>
-          {s.phase[incident.arc]} · {pavilionName}{active.chained ? ` · ${s.chained}` : ''}
+          {s.clock(active.context.clock)} · {s.phase[incident.arc]} · {pavilionName}{active.chained ? ` · ${s.chained}` : ''}
         </div>
         <div style={{ fontVariantNumeric: 'tabular-nums', fontWeight: 600 }} data-testid="incident-countdown">
           {s.countdown(String(left))}
@@ -106,7 +111,40 @@ export function IncidentCard() {
       </div>
       <div style={{ fontWeight: 600, fontSize: 16 }}>{f(incident.text.title)}</div>
       <div style={{ marginTop: 4 }}>{f(incident.text.body)}</div>
-      {incident.options.map((o) => {
+      {active.situation && incident.text.situations?.[active.situation] && (
+        <div style={{ marginTop: 4, fontStyle: 'italic', opacity: 0.9 }} data-testid="incident-situation" data-situation={active.situation}>
+          {f(incident.text.situations[active.situation])}
+        </div>
+      )}
+      <ol style={{ display: 'flex', gap: 6, listStyle: 'none', padding: 0, margin: '10px 0 0' }} aria-label={s.stepOf(String(stepIndex + 1), String(incident.steps.length))} data-testid="incident-steps">
+        {incident.steps.map((st, i) => {
+          const done = i < stepIndex;
+          const current = i === stepIndex;
+          return (
+            <li
+              key={st.axis}
+              style={{
+                flex: 1,
+                padding: '4px 6px',
+                fontSize: 11,
+                letterSpacing: 0.6,
+                textAlign: 'center',
+                borderRadius: 3,
+                border: `1px solid ${current ? '#d8b56a' : 'rgba(168,146,106,0.45)'}`,
+                background: done ? 'rgba(156,192,122,0.22)' : current ? 'rgba(216,181,106,0.18)' : 'transparent',
+                opacity: done || current ? 1 : 0.55
+              }}
+              aria-current={current ? 'step' : undefined}
+              data-testid={`incident-step-${st.axis}`}
+              data-state={done ? 'cleared' : current ? 'current' : 'ahead'}
+            >
+              {s.stepName[st.axis]} · {s.stepAsks[st.axis]}{done ? ` · ${s.stepCleared}` : ''}
+            </li>
+          );
+        })}
+      </ol>
+      <div style={{ marginTop: 10, fontWeight: 600 }} data-testid="incident-question">{f(step.text.question)}</div>
+      {step.options.map((o) => {
         const struck = active.struck.includes(o.id);
         return (
           <button
@@ -120,7 +158,7 @@ export function IncidentCard() {
             title={struck ? s.struck : undefined}
             onClick={() => dispatch({ type: 'ANSWER_INCIDENT', optionId: o.id })}
           >
-            {f(incident.text.options[o.id].label)}
+            {f(step.text.options[o.id].label)}
           </button>
         );
       })}

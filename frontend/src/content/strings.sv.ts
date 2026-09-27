@@ -249,6 +249,10 @@ export const strings = {
     questionOf: (n: number, total: number) => `Fråga ${n} av ${total}`,
     right: 'Rätt.',
     wrong: 'Inte riktigt.',
+    // ORDER 270 — provet på tid och referensen med förklaringen.
+    timedOut: 'Tiden gick ut. Det räknas som fel.',
+    secondsLeft: (sec: string) => `${sec} s`,
+    referenceLabel: 'Läs mer:',
     next: 'Nästa',
     seeResult: 'Se resultatet',
     practiceResult: (correct: number, total: number) => `${correct} av ${total} rätt. Varje rätt svar gav en kredit.`,
@@ -264,8 +268,10 @@ export const strings = {
     heading: 'Kvällens lärdom',
     eveningHeading: 'Kvällen',
     intro: 'Det här gick fel i kväll, och varför.',
-    none: 'Inga fel beslut i kväll. Varje händelse fick ett svar som höll.',
+    none: 'Inga fel beslut i kväll. Varje raket höll hela vägen.',
     noIncidents: 'Kvällen hade inga händelser att lära av.',
+    // ORDER 270 — raketen föll på ett steg.
+    fellOn: (step: string, question: string) => `${step}: ${question}`,
     youChose: (label: string) => `Du valde: ${label}`,
     staffDecided: (outcome: string) => `Du svarade inte, och personalen beslutade själv. ${outcome}`,
     better: (label: string) => `Bättre: ${label}`,
@@ -302,6 +308,16 @@ export const strings = {
       downgrade: 'Tredje kvällen i rad under det banken lånar ut mot. Vid söndagens avräkning går verksamheten ner en klass. Det du kan följer med.'
     },
     noBusinessBody: 'Du har ingen verksamhet just nu. Öva och gör prov i Måltidens hus, och gå sedan till banken.',
+    // ORDER 270 — rutan mitt på skärmen utan verksamhet och utan pengar.
+    stranded: {
+      heading: 'Du står utan verksamhet',
+      body: 'Verksamheten är borta, men det du kan finns kvar. Banken lånar ut igen när du visat vad du kan: en hel vecka i Måltidens hus med minst ett prov.',
+      readyBody: 'Du har visat vad du kan. Banken är beredd att pröva ett nytt lån.',
+      progress: (days: number, of: number, exams: number, need: number) =>
+        `Dag ${days} av ${of} i Måltidens hus · ${exams} av ${need} ${need === 1 ? 'prov' : 'prov'}`,
+      toHouse: 'Till Måltidens hus',
+      toBank: 'Till banken'
+    },
     bankButton: 'Banken',
     bankHeading: 'Banken',
     bankCurrent: (name: string) => `Du driver ${name}.`,
@@ -345,9 +361,16 @@ export const strings = {
     // ORDER 270 — händelserna i servicen och de tre mätarna.
     incident: {
       countdown: (sec: string) => `${sec} s`,
+      clock: (hhmm: string) => `Kl. ${hhmm}`,
+      ongoingLabel: 'Pågår tills nästa händelse',
       struck: 'Strukits av dina kunskaper',
       medalTime: (pavilion: string) => `Mer tid tack vare ${pavilion}`,
-      staffDecides: 'Personalen beslutar själv om du inte svarar.',
+      staffDecides: 'Svarar du fel eller inte alls tar personalen över resten.',
+      // ORDER 270 (Vision Owner 2026-09-27) — raketens tre steg.
+      stepName: { episteme: 'Episteme', techne: 'Techne', phronesis: 'Phronesis' } as Record<string, string>,
+      stepAsks: { episteme: 'vad', techne: 'hur', phronesis: 'när och varför' } as Record<string, string>,
+      stepOf: (n: string, total: string) => `Steg ${n} av ${total}`,
+      stepCleared: 'Klarat',
       staffDecided: 'Personalen beslutade själv.',
       chained: 'Följden av ett tidigare val',
       phase: { opening: 'Öppning', rush: 'Rusning', crisis: 'Kris', closing: 'Avslut' } as Record<string, string>,
@@ -620,5 +643,97 @@ export const strings = {
     // tillkommer när COMPETITORS bär `businessClass: 'vinbaren'` i data.
     // Ingen scen är monterad än (WineBarScene är egen order).
     vinbaren: 'Vinbaren'
+  },
+  // Vision Owner efter speltest: "inga engelska paneler". Paneltexter som
+  // tidigare stod på engelska direkt i komponenterna.
+  panels: {
+    // Satsningskortens tre effektchips (ekonomiskt, socialt, ekologiskt).
+    activityEffects: {
+      panelAria: 'Morgonens satsningar',
+      aria: 'Effekt på de tre kapitalen',
+      econ: 'Ekon',
+      soc: 'Soc',
+      ecol: 'Ekol'
+    },
+    menu: {
+      aria: 'Meny och inköp',
+      menuHeading: 'Dagens meny',
+      ingredientCost: (sek: string) => `råvarukostnad ≈ ${sek} kr`,
+      priceAria: (dish: string) => `Pris för ${dish} i kronor`,
+      confirmAria: 'Fastställ dagens meny',
+      confirm: (n: number) => `Fastställ menyn (${n} ${n === 1 ? 'rätt' : 'rätter'})`,
+      stockHeading: 'Köp in råvaror',
+      supplierAria: 'Leverantör',
+      ingredientAria: 'Råvara',
+      offer: (sek: string, reliabilityPct: string) => `${sek} kr · leveranssäkerhet ${reliabilityPct} %`,
+      unitsAria: 'Antal att köpa',
+      buyAria: 'Bekräfta inköpet',
+      buy: 'Köp'
+    },
+    prep: {
+      heading: 'Mise en place',
+      items: {
+        ice: 'is',
+        napkins: 'servetter',
+        cutlery: 'bestick',
+        stations: 'stationer',
+        garnish: 'garnityr'
+      } as Record<string, string>,
+      stations: {
+        bar: 'baren',
+        floor: 'matsalen',
+        kitchen: 'köket',
+        pass: 'passet'
+      } as Record<string, string>,
+      doorsOpen: 'Dörrarna öppnas — servicen börjar.',
+      doorsOpenReady: 'Dörrarna öppnas — salen är redo.',
+      doorsOpenThin: (station: string, item: string) => `Dörrarna öppnas — ${station} ligger efter (${item}).`
+    },
+    evening: {
+      heading: 'Kvällens avräkning',
+      figuresHeading: 'Dagens siffror',
+      ledgerHeading: 'Dagens kassabok',
+      revenue: 'Intäkter',
+      costs: 'Kostnader',
+      result: 'Resultat',
+      reputation: 'Rykte',
+      knowledge: 'Kunskap',
+      newRound: 'Ny omgång',
+      newRoundAria: 'Starta en ny omgång från dag 1',
+      nothingToRecord: 'Inget att bokföra i dag.',
+      entriesAria: 'Dagens poster',
+      currency: 'kr',
+      thousandSuffix: 'tkr',
+      entryAria: (cause: string, amount: string, running: string) =>
+        `${cause}: ${amount} kr, kassa ${running} kr`,
+      // Kort kategorietikett i kassabokens första kolumn.
+      category: {
+        revenue: 'Intäkt',
+        wage: 'Lön',
+        agency: 'Hyrp.',
+        ingredient: 'Råv.',
+        interest: 'Ränta',
+        scenario: 'Händ.',
+        buyout: 'Avg.',
+        stock: 'Inköp',
+        floor: 'Golv',
+        amortisation: 'Amort.',
+        other: '—'
+      }
+    },
+    cash: {
+      label: 'Kassa',
+      unit: 'tkr',
+      pillAria: 'Kassa',
+      pillTitle: (amount: string) => `Klicka för att öppna verksamhetens konto — kassa ${amount}`,
+      accountAria: 'Verksamhetens konto',
+      heading: 'Kassa',
+      valuation: 'värdering'
+    },
+    platesRemaining: {
+      heading: 'Portioner kvar',
+      out: 'SLUT'
+    },
+    verifyBadge: 'GRÅSKISS — © OpenStreetMap-bidragsgivare (ODbL) · byggnadshöjder och material stiliserade'
   }
 } as const;

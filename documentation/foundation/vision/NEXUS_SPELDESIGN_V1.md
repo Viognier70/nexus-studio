@@ -72,6 +72,8 @@ Ett besök i en paviljong kostar en schemaplats och är ett av två val:
 - **Öva.** Fem frågor med förklaring efter varje svar. Ger krediter men ingen medalj. Förebilden är *Duolingo*: repetition som känns som framsteg.
 - **Prov.** Åtta frågor dras ur nivåns tio, i slumpvis ordning. Sex rätt ger medaljen. Ett omprov drar på nytt. För att pröva en nivå krävs medaljen på nivån under.
 
+*Beslut 2026-09-27 (Vision Owner):* Måltidens hus är oförändrat när servicen får trestegsraketer (se Servicen, Händelserna i servicen): paviljongerna övar och prövar var sin kunskapsform. Proven är på tid, 30 sekunder per fråga. Hinner spelaren inte svara räknas det som fel. Övningen är utan tid och visar förklaringen.
+
 Förklaringen efter varje svar är det viktigaste i hela kunskapssystemet. Den gör ett fel svar till något spelaren lär sig av.
 
 ### Medaljerna
@@ -86,7 +88,10 @@ Efter varje kväll erbjuds tre frågor från kvällens svagaste axel, den som l�
 
 ### Frågebanken
 
-Frågorna är data, inte kod. Varje fråga har paviljong, nivå, vem som ställer den, frågetext, fyra alternativ, rätt svar och förklaring. Vision Owner levererar frågorna. Tills de finns används bronsbankens 40 frågor på alla nivåer, tydligt märkta som platshållare.
+Frågorna är data, inte kod. Varje fråga har paviljong, nivå, vem som ställer den, frågetext, fyra alternativ, rätt svar och förklaring.
+
+*Beslut 2026-09-27 (Vision Owner):* frågebanken och händelsebanken har fältet referens (titel och länk), som visas med förklaringen när det finns. Fälten är tomma tills vidare. Vision Owner levererar referenserna och kunskapen bakom frågorna senare. Inga länkar hittas på.
+ Vision Owner levererar frågorna. Tills de finns används bronsbankens 40 frågor på alla nivåer, tydligt märkta som platshållare.
 
 ## Ekonomin
 
@@ -107,6 +112,8 @@ G kan aldrig bli högre än 90. Veckogolvet är G procent av klassens normala ve
 Bankmötet ger ett startlån som täcker lokal och inventarier för klassen. Lånet amorteras lika under säsongens åtta veckor, med fem procents ränta. Bankens besked formuleras som en diagnos i ord, aldrig som siffror: vad spelaren visat att hon kan och vad som saknas för nästa klass.
 
 *Beslut 2026-09-26 (Vision Owner):* efter inget lån ger banken nytt lån först efter en hel vecka i Måltidens hus med minst ett prov.
+
+*Beslut 2026-09-27 (Vision Owner):* utan verksamhet och utan pengar visas en tydlig ruta mitt på skärmen. Den enda vägen vidare är till Måltidens hus för att öva och göra prov, så att banken kan ge lån. Inga andra knappar.
 
 ### Marknaden
 
@@ -178,6 +185,24 @@ Morgonens satsningar påverkar de tre kapitalen: ekonomiskt, socialt och ekologi
 - Händelsebanken är data, som frågebanken. Varje händelse har paviljong, axel, svar med utfall och kedjor.
 - Harnessen svarar på händelserna som rimlig och svag spelare, och slumpmålet mäts om.
 
+*Beslut 2026-09-27 (Vision Owner, efter provspel):*
+- Rummet står inte still. Servicen fortsätter medan nedräkningen går, så att väntan syns.
+- Fel val låser. Följden av ett fel svar pågår synligt i rummet tills nästa händelse, och svaret går inte att ändra.
+- Rätt svar kan bero på kvällens läge. Exempel: klockan 20.30 har både tygservetterna och isen tagit slut. Rätt är isen, eftersom kvällen går mot after dinner-drinkar och servetterna kan brytas i morgon bitti. Väljer spelaren servetterna tar isen slut i baren, gästerna får vänta synligt, och nöjdhet och krediter sjunker. Fler händelser ska bero på klockslag och läge.
+- En händelse som gäller ett bord kommer bara när en gäst sitter vid bordet.
+- Den svaga spelaren ska gå minus över en vecka.
+
+*Beslut 2026-09-27 (Vision Owner): trestegsraketer i servicen.*
+- Måltidens hus är oförändrat. Paviljongerna övar och prövar var sin kunskapsform. Provfrågorna har 30 sekunder.
+- I servicen är varje händelse en raket med tre frågor i samma sammanhang: **Episteme** (vad, 15 sekunder), **Techne** (hur, 20 sekunder) och **Phronesis** (när och varför, 30 sekunder). Man når nästa steg bara genom att klara det förra.
+- Fel svar på ett steg ger stegets konsekvens, och personalen tar över resten med sämre utfall. Hela raketen klarad ger bästa utfall. Konsekvensen syns direkt i rummet och på mätarna.
+- Medaljer i den paviljong som hör till stegets axel ger mer tid på just det steget. Episteme hör till Måltidsbiblioteket, Techne till Metodköket eller Stensöta efter händelsens ämne, och Phronesis till Kalastorget.
+- 2–4 raketer per kväll, fler fredag och lördag. Rummet fortsätter medan nedräkningen går.
+- De 30 utkasten skrivs om till raketer. Gusto.science-skriptet skriver en raket per artikel, med ett steg ur vart och ett av artikelns tre avsnitt.
+- Alla tider står i `balance.ts`. Slumpmålet mäts om.
+
+Det här ersätter punkterna ovan om 3–6 händelser per kväll, 20 sekunders nedräkning och en axel per händelse.
+
 ### Action-knappen (utgår)
 
 *Ersatt 2026-09-26 av Händelserna i servicen.* Texten står kvar som historik.
@@ -240,7 +265,7 @@ Veckoavräkningen visas som söndagsnumret av en lokaltidning i Grythyttan. Den 
 
 ### Språk och målgrupp
 
-Spelet är på svenska i version 1. Frågorna skrivs med spelartext och metadata separerade, så att engelska kan läggas till senare. Bronsbanken har i dag spelartext på engelska. Claude översätter den som utkast, och Vision Owner granskar.
+Spelet är på svenska i version 1. *Beslut 2026-09-27 (Vision Owner):* inga engelska paneler. Frågorna skrivs med spelartext och metadata separerade, så att engelska kan läggas till senare. Bronsbanken har i dag spelartext på engelska. Claude översätter den som utkast, och Vision Owner granskar.
 
 Målgruppen är studenter och blivande studenter i måltidskunskap. Brons ska gå att klara för en intresserad lekman som har övat, platina ska kräva yrkeskunskap.
 

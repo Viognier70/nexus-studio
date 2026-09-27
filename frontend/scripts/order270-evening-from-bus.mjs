@@ -7,13 +7,17 @@
 // Produktionsbygget (vite build + preview på port 4174), start på `/` utan
 // flaggor, bara spelarens knappar och tangenter, samma väg som etapp 5:s
 // vecka från bussen (order267-week-from-bus.mjs) fram till att vinbaren har
-// ett namn. Därefter måndagens kväll i 2×:
-//   - första händelsen: ett fel svar (så att kvällens lärdom har något),
-//   - andra händelsen: inget svar; personalen beslutar själv efter 20 s,
-//   - övriga: det bästa svaret.
+// ett namn. Därefter måndagens kväll i 2×. Varje händelse är en raket i
+// tre steg (Vision Owner 2026-09-27):
+//   - första raketen: bästa svaret på episteme, ett fel på techne (så att
+//     kvällens lärdom har något),
+//   - andra raketen: bästa svaret på episteme, inget svar på techne;
+//     personalen tar över när stegets nedräkning går ut,
+//   - övriga: det bästa svaret i alla tre stegen.
 // Svarens kvalitet läses ur händelsebanken (samma JSON som spelet läser).
-// Per händelse skrivs rubrik, fas, svar, raden i rummet och mätarna före och
-// efter. Kvällen avslutas med kvällens lärdom.
+// Per raket skrivs rubrik, fas, stegen med fråga, nedräkning och svar,
+// raden i rummet och mätarna före och efter. Kvällen avslutas med kvällens
+// lärdom.
 // Utdata: reports/order270/evening-from-bus.json + skärmdumpar e01–e..
 
 import { spawn } from 'node:child_process';
@@ -36,7 +40,7 @@ for (const file of ['bank.text.en.json', 'bank.text.sv.draft.json']) {
   const texts = JSON.parse(readFileSync(resolve(Q, file), 'utf8')).texts;
   for (const m of meta) if (texts[m.id]) correctByPrompt.set(texts[m.id].prompt.trim(), m.correctIndex);
 }
-// Händelsebanken: svarens kvalitet per händelse.
+// Händelsebanken: svarens kvalitet per raket och steg.
 const incidentMeta = JSON.parse(readFileSync(resolve(FRONTEND, 'src/content/incidents/vinbar.meta.json'), 'utf8')).incidents;
 const incidentById = new Map(incidentMeta.map((i) => [i.id, i]));
 
@@ -74,6 +78,12 @@ const step = (name, extra = {}) => {
   console.log(`${entry.atSeconds}s ${name}`);
 };
 const shot = (file) => page.screenshot({ path: resolve(OUT, file) });
+// Provspel 2026-09-27: "inga engelska paneler". All synlig text i varje fas
+// sparas, så att engelsk text kan hittas (report.visibleText).
+const visibleText = async (phase) => {
+  report.visibleText ??= {};
+  report.visibleText[phase] = await page.evaluate(() => document.body.innerText);
+};
 
 async function answerCurrent(wantCorrect) {
   const prompt = await page.textContent('[data-testid=question-prompt]');
@@ -182,6 +192,7 @@ try {
   report.mentor.farewell = await page.textContent('[data-testid=mentor]');
   await page.click('[data-testid=mentor-close]');
 
+  await visibleText('morgon');
   // Måndagens kväll i 2×.
   await page.click('button[title="Simulering 2× hastighet"]');
   report.morning = (await page.textContent('[data-testid=day-action-bar]')).slice(0, 120);
@@ -193,6 +204,13 @@ try {
     stamina: await page.getAttribute('[data-testid=meter-stamina]', 'data-value').catch(() => null)
   });
   let n = 0;
+  // Vänta tills kortet har gått vidare från steget, eller stängts.
+  const leftStep = async (step) => {
+    await page.waitForFunction((st) => {
+      const c = document.querySelector('[data-testid=incident-card]');
+      return !c || c.getAttribute('data-step') !== String(st);
+    }, step, { timeout: 60000 });
+  };
   while (!(await page.$('[data-testid=evening-bar]'))) {
     const card = await page.$('[data-testid=incident-card]');
     if (!card) { await delay(300); continue; }
@@ -200,47 +218,64 @@ try {
     const id = await card.getAttribute('data-incident-id');
     const m = incidentById.get(id);
     const entry = {
-      n, id, pavilion: m?.pavilion, arc: m?.arc,
+      n, id, track: m?.track, arc: m?.arc,
       text: (await card.textContent()).slice(0, 600),
-      countdownAtOpen: await page.textContent('[data-testid=incident-countdown]'),
-      struck: await page.$$eval('[data-struck=true]', (els) => els.map((e) => e.getAttribute('data-option-id'))),
+      steps: [],
       metersBefore: await meters()
     };
-    await shot(`e11-handelse-${n}.png`);
-    if (n === 2) {
-      // Inget svar: nedräkningen går ut och personalen beslutar själv.
-      entry.answer = null;
-      const t = Date.now();
-      await page.waitForSelector('[data-testid=incident-card]', { state: 'detached', timeout: 60000 });
-      entry.secondsUntilStaffDecided = Math.round((Date.now() - t) / 100) / 10;
-    } else {
-      const want = n === 1 ? 'wrong' : 'best';
-      const option = m.options.find((o) => o.quality === want && !entry.struck.includes(o.id));
-      entry.answer = { id: option.id, quality: option.quality };
-      await page.click(`[data-testid=incident-option-${option.id}]`);
-      await page.waitForSelector('[data-testid=incident-card]', { state: 'detached', timeout: 10000 });
+    if (n === 1) await visibleText('service');
+    for (let step = 0; step < 3; step++) {
+      const c = await page.$('[data-testid=incident-card]');
+      if (!c || (await c.getAttribute('data-incident-id')) !== id || Number(await c.getAttribute('data-step')) !== step) break;
+      const s = {
+        step,
+        axis: await c.getAttribute('data-step-axis'),
+        question: await page.textContent('[data-testid=incident-question]'),
+        countdownAtOpen: await page.textContent('[data-testid=incident-countdown]'),
+        struck: await page.$$eval('[data-struck=true]', (els) => els.map((e) => e.getAttribute('data-option-id')))
+      };
+      await shot(`e11-raket-${n}-steg-${step + 1}.png`);
+      // Raket 1: bästa svaret på episteme, fel på techne (kvällens lärdom
+      // får något). Raket 2: bästa på episteme, inget svar på techne
+      // (personalen tar över). Övriga: bästa svaret i alla tre stegen.
+      const plan = step === 1 && n === 1 ? 'wrong' : step === 1 && n === 2 ? null : 'best';
+      if (plan === null) {
+        s.answer = null;
+        const t = Date.now();
+        await leftStep(step);
+        s.secondsUntilStaffDecided = Math.round((Date.now() - t) / 100) / 10;
+      } else {
+        const option = m.steps[step].options.find((o) => o.quality === plan && !s.struck.includes(o.id));
+        s.answer = { id: option.id, quality: option.quality };
+        await page.click(`[data-testid=incident-option-${option.id}]`);
+        await leftStep(step);
+      }
+      entry.steps.push(s);
     }
+    await page.waitForSelector('[data-testid=incident-card]', { state: 'detached', timeout: 60000 });
     await delay(600);
     entry.roomLine = await page.textContent('.incident-outcome').catch(() => null);
     entry.metersAfter = await meters();
     await shot(`e12-utfall-${n}.png`);
     report.incidents.push(entry);
-    step(`händelse ${n}: ${id}`);
+    step(`raket ${n}: ${id}`);
   }
   await page.waitForSelector('[data-testid=evening-lesson]', { timeout: 10000 });
   report.lesson = await page.textContent('[data-testid=evening-lesson]');
   report.lessonItems = Number(await page.getAttribute('[data-testid=evening-lesson]', 'data-items'));
   report.eveningStory = await page.textContent('[data-testid=evening-story]').catch(() => null);
   await shot('e13-kvallens-lardom.png');
+  await visibleText('kvall');
   step('kvällens lärdom');
   report.actionButtonGone = (await page.$('[data-testid=action-button]')) === null;
   await page.click('[data-testid=end-evening]');
   await page.waitForSelector('[data-testid=day-action-bar]', { timeout: 120000 });
   await shot('e14-tisdag-morgon.png');
+  await visibleText('tisdag-morgon');
   step('tisdag morgon');
 } finally {
   writeFileSync(resolve(OUT, 'evening-from-bus.json'), JSON.stringify(report, null, 2));
   await browser.close();
   preview.kill('SIGTERM');
 }
-console.log(JSON.stringify({ minutesToBusiness: report.minutesToBusiness, incidents: report.incidents.map((i) => `${i.arc} ${i.id} ${i.answer?.quality ?? 'personalen'}`), lessonItems: report.lessonItems, errors }, null, 2));
+console.log(JSON.stringify({ minutesToBusiness: report.minutesToBusiness, incidents: report.incidents.map((i) => `${i.arc} ${i.id} ${i.steps.map((x) => `${x.axis}:${x.answer?.quality ?? 'personalen'}`).join(' ')}`), lessonItems: report.lessonItems, errors }, null, 2));

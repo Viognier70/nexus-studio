@@ -15,7 +15,7 @@
 // närmast speldesignen och går att ändra här utan annan kodändring.
 
 import type { PavilionId } from '../strategic/knowledge/pavilions';
-import type { StaffRole } from '../strategic/types';
+import type { KnowledgeAxis, StaffRole } from '../strategic/types';
 
 // Medaljnivåer i stigande ordning. Index + 1 = antal medaljsteg
 // (Ekonomin > Marknaden: "brons är ett steg och platina fyra").
@@ -141,7 +141,11 @@ export const EXAM = {
   section: 'Kunskapen > Öva och pröva',
   questionsDrawn: 8,           // "Åtta frågor dras ur nivåns tio"
   questionsPerLevel: 10,
-  correctToPass: 6             // "Sex rätt ger medaljen"
+  correctToPass: 6,            // "Sex rätt ger medaljen"
+  // ORDER 270 (provspel 2026-09-27): "Proven på tid: 30 sekunder per
+  // fråga. Hinner spelaren inte svara räknas det som fel. Övningen är
+  // utan tid och visar förklaringen." Verklig tid.
+  secondsPerQuestion: 30
 } as const;
 
 // Frågebanken: "fyra alternativ".
@@ -360,16 +364,28 @@ export const TEAM_BY_CLASS = {
 // Händelserna står som data i `src/content/incidents/` (händelsebanken).
 export const INCIDENTS = {
   section: 'Servicen > Händelserna i servicen',
-  minPerEvening: 3,            // "3–6 per kväll"
-  maxPerEvening: 6,
+  // ORDER 270 (Vision Owner 2026-09-27): "2–4 raketer per kväll, fler
+  // fredag och lördag."
+  minPerEvening: 2,
+  maxPerEvening: 4,
   optionsMin: 3,               // "3–4 svar"
   optionsMax: 4,
-  countdownSeconds: 20,        // "20 sekunders nedräkning", i verklig tid
+  // Varje händelse är en raket med tre steg i samma sammanhang: "Episteme
+  // (vad, 15 s), Techne (hur, 20 s), Phronesis (när och varför, 30 s)."
+  // Nedräkningen går i verklig tid.
+  stepAxes: ['episteme', 'techne', 'phronesis'] as readonly KnowledgeAxis[],
+  stepSeconds: { episteme: 15, techne: 20, phronesis: 30 } as Record<KnowledgeAxis, number>,
   timeoutCreditPenalty: 1,     // "−1 kredit" när personalen beslutar själv
+  // "Fel svar på ett steg ger stegets konsekvens och personalen tar över
+  // resten, med sämre utfall." Personalens utfall skalas efter stegen som
+  // återstod: fel på episteme ger hela, på techne två tredjedelar, på
+  // phronesis en tredjedel. Talen är valda (F43).
+  staffShareByFailedStep: [1, 2 / 3, 1 / 3] as readonly number[],
   // ORDER 270 (F43) — valda tal.
   openQuestion: 'F43',
-  // "fler fredag och lördag": antalet per veckodag, en till under en högtid.
-  perWeekday: { mon: 3, tue: 3, wed: 4, thu: 4, fri: 5, sat: 6, sun: 0 } as Record<Weekday, number>,
+  // "fler fredag och lördag": antalet per veckodag, en till under en högtid
+  // (inom 2–4).
+  perWeekday: { mon: 2, tue: 2, wed: 3, thu: 3, fri: 4, sat: 4, sun: 0 } as Record<Weekday, number>,
   holidayExtra: 1,
   // Kedjade händelser får komma utöver kvällens antal, högst så här många.
   chainExtraMax: 2,
@@ -380,11 +396,12 @@ export const INCIDENTS = {
   windowStart: 0.08,
   windowEnd: 0.92,
   jitter: 0.03,
-  // Medaljer i händelsens paviljong: mer tid per steg, och från silver
-  // stryks ett fel alternativ.
+  // "Medaljer i den paviljong som hör till stegets axel ger mer tid på
+  // just det steget": så här många sekunder per medaljsteg. Från silver
+  // stryks dessutom ett fel alternativ i steget (beslutet 2026-09-26).
   extraSecondsPerMedalStep: 5,
   strikeWrongFromMedalSteps: 2,
-  // Det bästa svaret ger en kredit på händelsens axel (quizen efter
+  // Det bästa svaret i ett steg ger en kredit på stegets axel (quizen efter
   // servicen, som gav krediterna förut, är borttagen).
   bestAnswerCredit: 1,
   // Kvällens bord: platserna i rummet i par; utan sittande gäst ett av
@@ -394,7 +411,12 @@ export const INCIDENTS = {
   // Svarets rad i rummet syns så här länge (spelsekunder).
   outcomeBubbleSimSeconds: 14,
   // Gäster som går efter ett svar går mot samma utgång som i service.ts.
-  exitZ: 8
+  exitZ: 8,
+  // Klockan i händelsernas text och lägen ("20.30").
+  minutesPerHour: 60,
+  clockDigits: 2,
+  // Följden av ett fel val räknas per simulerad minut.
+  simSecondsPerMinute: 60
 } as const;
 
 export const REPUTATION = {

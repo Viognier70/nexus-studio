@@ -9,6 +9,7 @@
 // here: the room breaks where the weakest station is thinnest.
 
 import type { SimulationState, TeamMember } from '../types';
+import { strings } from '../../content/strings.sv';
 
 // Duplicated to avoid a circular reducer ↔ miseEnPlace import. Both
 // values live in reducer.ts / constants.ts; if PREP_DURATION_SEC or
@@ -116,13 +117,14 @@ export function weakestPrepItem(
 // Compose the doors-open line per §4 of the report gate.
 export function afterCountdownLine(readiness: Record<string, number>): string {
   const weakest = weakestPrepItem(readiness);
-  if (!weakest) return 'Doors open — service begins.';
+  const t = strings.panels.prep;
+  if (!weakest) return t.doorsOpen;
   const allReady = PREP_ITEMS.every((i) => (readiness[i.id] ?? 0) >= 0.7);
-  if (allReady) return 'Doors open — the room is ready.';
+  if (allReady) return t.doorsOpenReady;
   if (weakest.readiness < 0.4) {
-    return `Doors open — ${weakest.station} is thin (${weakest.id}).`;
+    return t.doorsOpenThin(t.stations[weakest.station] ?? weakest.station, t.items[weakest.id] ?? weakest.id);
   }
-  return 'Doors open — service begins.';
+  return t.doorsOpen;
 }
 
 // ORDER 078 (M5) — service rhythm reading per §3. Recomputed each

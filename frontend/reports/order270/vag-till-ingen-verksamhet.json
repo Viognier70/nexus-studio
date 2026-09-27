@@ -1,0 +1,207 @@
+{
+  "seed": 11,
+  "classes": [
+    "vinbar",
+    "foodtruck",
+    null
+  ],
+  "strandedDay": 21,
+  "days": [
+    {
+      "day": 1,
+      "week": 1,
+      "weekday": "mon",
+      "class": "vinbar",
+      "cash": -3911
+    },
+    {
+      "day": 2,
+      "week": 1,
+      "weekday": "tue",
+      "class": "vinbar",
+      "cash": -8664
+    },
+    {
+      "day": 3,
+      "week": 1,
+      "weekday": "wed",
+      "class": "vinbar",
+      "cash": -12606
+    },
+    {
+      "day": 4,
+      "week": 1,
+      "weekday": "thu",
+      "class": "vinbar",
+      "cash": -17003
+    },
+    {
+      "day": 5,
+      "week": 1,
+      "weekday": "fri",
+      "class": "vinbar",
+      "cash": -20867
+    },
+    {
+      "day": 6,
+      "week": 1,
+      "weekday": "sat",
+      "class": "foodtruck",
+      "cash": 21045
+    },
+    {
+      "day": 7,
+      "week": 1,
+      "weekday": "sun",
+      "class": "foodtruck",
+      "cash": 20960
+    },
+    {
+      "day": 8,
+      "week": 2,
+      "weekday": "mon",
+      "class": "foodtruck",
+      "cash": 19239
+    },
+    {
+      "day": 9,
+      "week": 2,
+      "weekday": "tue",
+      "class": "foodtruck",
+      "cash": 16297
+    },
+    {
+      "day": 10,
+      "week": 2,
+      "weekday": "wed",
+      "class": "foodtruck",
+      "cash": 14674
+    },
+    {
+      "day": 11,
+      "week": 2,
+      "weekday": "thu",
+      "class": "foodtruck",
+      "cash": 12682
+    },
+    {
+      "day": 12,
+      "week": 2,
+      "weekday": "fri",
+      "class": "foodtruck",
+      "cash": 9529
+    },
+    {
+      "day": 13,
+      "week": 2,
+      "weekday": "sat",
+      "class": "foodtruck",
+      "cash": 7375
+    },
+    {
+      "day": 14,
+      "week": 2,
+      "weekday": "sun",
+      "class": "foodtruck",
+      "cash": 7290
+    },
+    {
+      "day": 15,
+      "week": 3,
+      "weekday": "mon",
+      "class": "foodtruck",
+      "cash": 6482
+    },
+    {
+      "day": 16,
+      "week": 3,
+      "weekday": "tue",
+      "class": "foodtruck",
+      "cash": 2981
+    },
+    {
+      "day": 17,
+      "week": 3,
+      "weekday": "wed",
+      "class": "foodtruck",
+      "cash": -1205
+    },
+    {
+      "day": 18,
+      "week": 3,
+      "weekday": "thu",
+      "class": "foodtruck",
+      "cash": -5080
+    },
+    {
+      "day": 19,
+      "week": 3,
+      "weekday": "fri",
+      "class": "foodtruck",
+      "cash": -6284
+    },
+    {
+      "day": 20,
+      "week": 3,
+      "weekday": "sat",
+      "class": null,
+      "cash": 30372
+    },
+    {
+      "day": 21,
+      "week": 3,
+      "weekday": "sun",
+      "class": null,
+      "cash": 30372
+    },
+    {
+      "day": 22,
+      "week": 4,
+      "weekday": "mon",
+      "class": null,
+      "cash": 30372
+    },
+    {
+      "day": 23,
+      "week": 4,
+      "weekday": "tue",
+      "class": null,
+      "cash": 30372
+    },
+    {
+      "day": 24,
+      "week": 4,
+      "weekday": "wed",
+      "class": null,
+      "cash": 30372
+    },
+    {
+      "day": 25,
+      "week": 4,
+      "weekday": "thu",
+      "class": null,
+      "cash": 30372
+    },
+    {
+      "day": 26,
+      "week": 4,
+      "weekday": "fri",
+      "class": null,
+      "cash": 30372
+    },
+    {
+      "day": 27,
+      "week": 4,
+      "weekday": "sat",
+      "class": null,
+      "cash": 30372
+    },
+    {
+      "day": 28,
+      "week": 4,
+      "weekday": "sun",
+      "class": null,
+      "cash": 30372
+    }
+  ]
+}

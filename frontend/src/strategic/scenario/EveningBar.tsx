@@ -5,6 +5,7 @@
 
 import { strings } from '../../content/strings.sv';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
+import { ReferenceLine } from '../knowledge/ui/ReferenceLine';
 
 const BAR: React.CSSProperties = {
   position: 'absolute',
@@ -66,12 +67,16 @@ export function EveningBar() {
         {lesson.map((item) => (
           <div key={item.incidentId} style={ITEM} data-testid={`lesson-${item.incidentId}`}>
             <div style={{ fontWeight: 600 }}>{item.title}</div>
+            <div style={{ opacity: 0.85 }} data-testid={`lesson-step-${item.incidentId}`} data-step-axis={item.stepAxis}>
+              {l.fellOn(strings.service.incident.stepName[item.stepAxis], item.question)}
+            </div>
             <div style={{ opacity: 0.85 }}>
               {item.chosen !== null ? l.youChose(item.chosen) : l.staffDecided(item.explanation)}
             </div>
             {item.chosen !== null && <div>{item.explanation}</div>}
             <div style={{ marginTop: 4, color: '#e8d9a8' }}>{l.better(item.better)}</div>
             <div style={{ opacity: 0.85 }}>{item.betterExplanation}</div>
+            <ReferenceLine reference={item.reference} />
           </div>
         ))}
       </div>

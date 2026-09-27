@@ -20,7 +20,7 @@ import { mountRoomLikeScene } from './roomParity';
 import { WEEK } from '../../sim/balance';
 import { rankedScenarioChoice } from '../simulation/scenarios';
 import { incidentById } from '../../sim/incidentBank';
-import { rankedIncidentOption } from '../../sim/incidents';
+import { rankedStepOption } from '../../sim/incidents';
 import type { PavilionKey, ScenarioChoice, SimAction, SimulationState } from '../types';
 
 // Simuleringens tick är 0,2 s (5 Hz), samma som SimulationProvider.
@@ -41,7 +41,7 @@ export interface MorningPlan {
   // den rimliga spelaren (det svar som lyfter kvällens tema mest, och
   // rätt svar på frågan), 'worst' den svaga. Utelämnat = 'best'.
   // ORDER 270 — samma val gäller kvällens händelser: den rimliga spelaren
-  // väljer det bästa svaret, den svaga det sämsta (rankedIncidentOption).
+  // väljer det bästa svaret i varje steg, den svaga det sämsta (rankedStepOption).
   scenarioAnswer?: ScenarioAnswer;
 }
 
@@ -83,12 +83,14 @@ export function rankedChoice(scenarioId: string | null, answer: ScenarioAnswer):
 // reports/order268/save-lordag-vecka1.json: lördagens intäkt 7 140 SEK
 // i harnessen mot 17 850 SEK + 8 000 SEK (scenario) i spelarens vy.
 export function answerScenario(s: SimulationState, answer: ScenarioAnswer = 'best'): SimulationState {
-  // ORDER 270 — kvällens händelse besvaras direkt, som spelaren gör i
-  // IncidentCard (samma åtgärd, ANSWER_INCIDENT).
+  // ORDER 270 — raketens aktuella steg besvaras direkt, som spelaren gör i
+  // IncidentCard (samma åtgärd, ANSWER_INCIDENT). Nästa tick svarar på
+  // nästa steg.
   const active = s.incidents?.active;
   if (active) {
     const incident = incidentById(s.economy.businessClass, active.id);
-    if (incident) return reducer(s, { type: 'ANSWER_INCIDENT', optionId: rankedIncidentOption(incident, answer, active.struck) });
+    const step = incident?.steps[active.step ?? 0];
+    if (step) return reducer(s, { type: 'ANSWER_INCIDENT', optionId: rankedStepOption(step, answer, active.struck, active.situation) });
   }
   switch (s.scenario.phase) {
     case 'subject':

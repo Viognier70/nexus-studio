@@ -14,7 +14,8 @@
         "anchorId": "order",
         "rawText": "när beställningen tas upp"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "maltidbiblioteket-brons-02",
@@ -28,7 +29,8 @@
         "phase": "morning",
         "rawText": "morgon"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "maltidbiblioteket-brons-03",
@@ -42,7 +44,8 @@
         "phase": "morning",
         "rawText": "morgon"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "maltidbiblioteket-brons-04",
@@ -57,7 +60,8 @@
         "anchorId": "order",
         "rawText": "när beställningen tas upp"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "maltidbiblioteket-brons-05",
@@ -72,7 +76,8 @@
         "anchorId": "order",
         "rawText": "när beställningen tas upp"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "maltidbiblioteket-brons-06",
@@ -86,7 +91,8 @@
         "phase": "morning",
         "rawText": "morgon"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "maltidbiblioteket-brons-07",
@@ -100,7 +106,8 @@
         "phase": "morning",
         "rawText": "morgon"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "maltidbiblioteket-brons-08",
@@ -115,7 +122,8 @@
         "anchorId": "order",
         "rawText": "när beställningen tas upp"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "maltidbiblioteket-brons-09",
@@ -129,7 +137,8 @@
         "phase": "evening",
         "rawText": "kväll"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "maltidbiblioteket-brons-10",
@@ -144,7 +153,8 @@
         "anchorId": "order",
         "rawText": "när beställningen tas upp"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "metodkoket-brons-01",
@@ -159,7 +169,8 @@
         "station": "range",
         "rawText": "vid stationen, när grönsaker bryns"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "metodkoket-brons-02",
@@ -174,7 +185,8 @@
         "station": "range",
         "rawText": "vid stationen, när badet sätts på morgonen"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "metodkoket-brons-03",
@@ -189,7 +201,8 @@
         "station": "pastry",
         "rawText": "när en dessert sätts inför service"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "metodkoket-brons-04",
@@ -204,7 +217,8 @@
         "station": "range",
         "rawText": "vid stationen, mitt i service"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "metodkoket-brons-05",
@@ -219,7 +233,8 @@
         "station": "range",
         "rawText": "vid stationen, när kött förbereds före service"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "metodkoket-brons-06",
@@ -234,7 +249,8 @@
         "station": "pass",
         "rawText": "vid stationen, när en sås justeras före uppläggning"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "metodkoket-brons-07",
@@ -249,7 +265,8 @@
         "station": "brew",
         "rawText": "vid bryggkaret, när en sats sätts"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "metodkoket-brons-08",
@@ -263,7 +280,8 @@
         "phase": "morning",
         "rawText": "morgon"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "metodkoket-brons-09",
@@ -278,7 +296,8 @@
         "station": "range",
         "rawText": "vid stationen, när nästa dags mise en place sätts"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "metodkoket-brons-10",
@@ -292,7 +311,8 @@
         "phase": "morning",
         "rawText": "morgon"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "stensota-brons-01",
@@ -307,7 +327,8 @@
         "anchorId": "setDown",
         "rawText": "när vin serveras"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "stensota-brons-02",
@@ -322,7 +343,8 @@
         "anchorId": "order",
         "rawText": "när beställningen tas upp"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "stensota-brons-03",
@@ -337,7 +359,8 @@
         "anchorId": "order",
         "rawText": "när beställningen tas upp"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "stensota-brons-04",
@@ -352,7 +375,8 @@
         "anchorId": "setDown",
         "rawText": "när vin serveras"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "stensota-brons-05",
@@ -367,7 +391,8 @@
         "anchorId": "setDown",
         "rawText": "när vin serveras"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "stensota-brons-06",
@@ -382,7 +407,8 @@
         "anchorId": "setDown",
         "rawText": "när vin serveras"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "stensota-brons-07",
@@ -397,7 +423,8 @@
         "anchorId": "order",
         "rawText": "när beställningen tas upp"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "stensota-brons-08",
@@ -411,7 +438,8 @@
         "phase": "morning",
         "rawText": "morgon"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "stensota-brons-09",
@@ -426,7 +454,8 @@
         "anchorId": "setDown",
         "rawText": "när vin serveras"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "stensota-brons-10",
@@ -441,7 +470,8 @@
         "anchorId": "order",
         "rawText": "när beställningen tas upp"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "kalastorget-brons-01",
@@ -456,7 +486,8 @@
         "anchorId": "greet",
         "rawText": "när gästen tas emot"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "kalastorget-brons-02",
@@ -470,7 +501,8 @@
         "phase": "service",
         "rawText": "när en gäst klagar"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "kalastorget-brons-03",
@@ -485,7 +517,8 @@
         "anchorId": "order",
         "rawText": "när beställningen tas upp"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "kalastorget-brons-04",
@@ -500,7 +533,8 @@
         "anchorId": "order",
         "rawText": "när beställningen tas upp"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "kalastorget-brons-05",
@@ -515,7 +549,8 @@
         "anchorId": "order",
         "rawText": "när beställningen tas upp"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "kalastorget-brons-06",
@@ -530,7 +565,8 @@
         "anchorId": "requestCheck",
         "rawText": "när notan begärs"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "kalastorget-brons-07",
@@ -545,7 +581,8 @@
         "anchorId": "order",
         "rawText": "när beställningen tas upp"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "kalastorget-brons-08",
@@ -560,7 +597,8 @@
         "anchorId": "requestCheck",
         "rawText": "när notan begärs"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "kalastorget-brons-09",
@@ -574,7 +612,8 @@
         "phase": "morning",
         "rawText": "morgon"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     },
     {
       "id": "kalastorget-brons-10",
@@ -588,7 +627,8 @@
         "phase": "evening",
         "rawText": "kväll"
       },
-      "placeholder": false
+      "placeholder": false,
+      "reference": null
     }
   ]
 }

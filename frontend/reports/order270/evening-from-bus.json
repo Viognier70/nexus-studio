@@ -5,7 +5,7 @@
   "steps": [
     {
       "name": "nytt spel",
-      "atSeconds": 16
+      "atSeconds": 17
     },
     {
       "name": "bussen framme",
@@ -21,115 +21,115 @@
     },
     {
       "name": "övningsbesöket",
-      "atSeconds": 74
+      "atSeconds": 76
     },
     {
       "name": "provet",
-      "atSeconds": 103
+      "atSeconds": 106
     },
     {
       "name": "banken",
-      "atSeconds": 107
+      "atSeconds": 110
     },
     {
       "name": "verksamheten har ett namn",
-      "atSeconds": 110,
+      "atSeconds": 113,
       "minutesFromNewGame": 1.6
     },
     {
       "name": "öppnat för kvällen",
-      "atSeconds": 118
+      "atSeconds": 122
     },
     {
-      "name": "händelse 1: vb04-dubbelbokning",
-      "atSeconds": 206
+      "name": "raket 1: vb05-dj",
+      "atSeconds": 219
     },
     {
-      "name": "händelse 2: vb21-skuren-hand",
-      "atSeconds": 323
-    },
-    {
-      "name": "händelse 3: vb23-sott",
-      "atSeconds": 420
-    },
-    {
-      "name": "kvällens lärdom",
-      "atSeconds": 442
-    },
-    {
-      "name": "tisdag morgon",
-      "atSeconds": 444
+      "name": "raket 2: vb24-terroir",
+      "atSeconds": 543
     }
   ],
   "incidents": [
     {
       "n": 1,
-      "id": "vb04-dubbelbokning",
-      "pavilion": "kalastorget",
+      "id": "vb05-dj",
+      "track": "kok",
       "arc": "opening",
-      "text": "Öppning · Kalastorget20 sSamma bord två gångerTvå sällskap står i dörren med bokning på bord 5, samma tid. Båda har fått en bekräftelse.Ge bordet till den som bokade först, erbjud de andra baren och ett glas på husetBe båda vänta medan du ringer runt och reder ut detGe bordet till det största sällskapetPersonalen beslutar själv om du inte svarar.",
-      "countdownAtOpen": "20 s",
-      "struck": [],
+      "text": "Kl. 19.24 · Öppning · Måltidsbiblioteket14 sMusikenKlockan är 19.24 och DJ:n har höjt volymen. Ett par vid bord 6 lutar sig över bordet för att höra varandra.Rummet är fortfarande halvtomt, och de flesta gäster sitter och äter.Episteme · vadTechne · hurPhronesis · när och varförVad gör gäster när musiken blir högre?Höjer rösterna, så rummet blir ännu högreVänjer sig och hör varandra bättreInget, om musiken saknar sångSvarar du fel eller inte alls tar personalen över resten.",
+      "steps": [
+        {
+          "step": 0,
+          "axis": "episteme",
+          "question": "Vad gör gäster när musiken blir högre?",
+          "countdownAtOpen": "12 s",
+          "struck": [],
+          "answer": {
+            "id": "a",
+            "quality": "best"
+          }
+        },
+        {
+          "step": 1,
+          "axis": "techne",
+          "question": "Hur tar du reda på om volymen är för hög vid borden?",
+          "countdownAtOpen": "18 s",
+          "struck": [],
+          "answer": {
+            "id": "a",
+            "quality": "wrong"
+          }
+        }
+      ],
       "metersBefore": {
-        "cash": "119859",
-        "satisfaction": "0.78",
+        "cash": "119854",
+        "satisfaction": "0.80",
         "stamina": "0.88"
       },
-      "answer": {
-        "id": "b",
-        "quality": "wrong"
-      },
-      "roomLine": "Båda sällskapen står kvar i entrén. Kön växer bakom dem.",
+      "roomLine": "Värden tycker att det låter bra från baren. Vid bordet hörs ingenting. Personalen tar över, men ingen sa något till DJ:n. Två bord gick tidigt.",
       "metersAfter": {
-        "cash": "119858",
-        "satisfaction": "0.64",
-        "stamina": "0.83"
+        "cash": "119732",
+        "satisfaction": "0.73",
+        "stamina": "0.88"
       }
     },
     {
       "n": 2,
-      "id": "vb21-skuren-hand",
-      "pavilion": "metodkoket",
-      "arc": "crisis",
-      "text": "Kris · Metodköket20 sSkuren handKocken skär sig i handen när en flaska ska öppnas med kniv. Det blöder genom servetten.Plåster och handske, byt uppgift för resten av kvällen, och torka av och sanera ytanPlåster och fortsätt som vanligtSkicka hem personen direktPersonalen beslutar själv om du inte svarar.",
-      "countdownAtOpen": "20 s",
-      "struck": [],
-      "metersBefore": {
-        "cash": "122657",
-        "satisfaction": "0.85",
-        "stamina": "0.89"
-      },
-      "answer": null,
-      "secondsUntilStaffDecided": 19.1,
-      "roomLine": "Ingen tog hand om såret, och kocken fortsatte arbeta.",
-      "metersAfter": {
-        "cash": "122488",
-        "satisfaction": "0.80",
-        "stamina": "0.77"
-      }
-    },
-    {
-      "n": 3,
-      "id": "vb23-sott",
-      "pavilion": "stensota",
+      "id": "vb24-terroir",
+      "track": "sommellerie",
       "arc": "closing",
-      "text": "Avslut · Stensöta25 sNågot söttBord 2 vill avsluta med chokladtryffeln och frågar vad de ska dricka till.Ett glas ung portvin, rubyEtt glas torrt mousserandeKaffe och en avecMer tid tack vare Stensöta. Personalen beslutar själv om du inte svarar.",
-      "countdownAtOpen": "25 s",
-      "struck": [],
+      "text": "Kl. 22.41 · Avslut · Måltidsbiblioteket14 sVad är terroir?Det lugnar sig. En turist från Hamburg vid baren frågar kocken vad ordet terroir på vinlistan egentligen betyder.Episteme · vadTechne · hurPhronesis · när och varförVad betyder terroir?Jordmånen där druvorna växerPlatsens samlade inverkan: jord, klimat, läge och människornas hantverkEtt franskt ord för ekologisktSvarar du fel eller inte alls tar personalen över resten.",
+      "steps": [
+        {
+          "step": 0,
+          "axis": "episteme",
+          "question": "Vad betyder terroir?",
+          "countdownAtOpen": "12 s",
+          "struck": [],
+          "answer": {
+            "id": "b",
+            "quality": "best"
+          }
+        },
+        {
+          "step": 1,
+          "axis": "techne",
+          "question": "Hur låter du gästen smaka på terroir?",
+          "countdownAtOpen": "23 s",
+          "struck": [],
+          "answer": null,
+          "secondsUntilStaffDecided": 9.8
+        }
+      ],
       "metersBefore": {
-        "cash": "125701",
+        "cash": "124670",
         "satisfaction": "",
-        "stamina": "0.96"
+        "stamina": "1.00"
       },
-      "answer": {
-        "id": "a",
-        "quality": "best"
-      },
-      "roomLine": "Gästerna smakar och beställer ett glas till.",
+      "roomLine": null,
       "metersAfter": {
-        "cash": "126121",
-        "satisfaction": "",
-        "stamina": "0.96"
+        "cash": null,
+        "satisfaction": null,
+        "stamina": null
       }
     }
   ],
@@ -145,9 +145,9 @@
   "bank": "BankenStängDu har ingen verksamhet. Du har visat att du kan vin och dryck. VinbarÖppna en vinbarFood truckÖppna en food truckRestaurangFör restaurangen saknas silver i tre paviljonger.ÖlkrogFör ölkrogen saknas brons i Metodköket.GästgiveriNås bara genom att växa från en annan verksamhet.NattklubbNås bara genom att växa från en annan verksamhet.",
   "nameBody": "Banken lånar ut till en vinbar vid torget. Vad ska den heta?",
   "minutesToBusiness": 1.6,
-  "morning": "Måndag · Morgon · VinbarFyll dagens schema och öppna för kvällen.Ingen meny satt i dag.Schemat: 0 av 2 platserMåltidens ",
-  "lesson": "Det här gick fel i kväll, och varför.Samma bord två gångerDu valde: Be båda vänta medan du ringer runt och reder ut detUtredningen kan vänta till efter kvällen. Gästerna i dörren behöver ett beslut nu, och en entré full av väntande gäster syns i hela rummet.Bättre: Ge bordet till den som bokade först, erbjud de andra baren och ett glas på husetBoken avgör, och den som får vänta ska få något för besväret. Ett glas på huset kostar lite och gör ett fel till en god historia.Skuren handDu svarade inte, och personalen beslutade själv. Ingen tog hand om såret, och kocken fortsatte arbeta.Bättre: Plåster och handske, byt uppgift för resten av kvällen, och torka av och sanera ytanEtt sår vid livsmedel ska täckas med plåster och handske. Den skadade ska inte hantera öppen mat, och ytan ska saneras. Personalen är viktigare än tempot.",
-  "lessonItems": 2,
-  "eveningStory": "Åtta gick härifrån nöjda. Ingen gav upp i kön. Kvällen höll ihop utan att någon behövde påminnas. Rummet fann sin puls, laget läste varandra, och gästerna gick nöjda utan att någon slog ut med armarna. Det är sådana kvällar som bygger ett rykte tyst — inte de som glimrar utan de som stämmer. Skriv upp det i minnet innan morgonen skjuter bort det.",
-  "actionButtonGone": true
+  "visibleText": {
+    "morgon": "Vinbar Vinbaren vid torget\nErik Andersgatan\nLinnskällvägen\nBaluns väg\nLokstallsgatan\nStentrygatan\nVINBAREN\nGRÅSKISS — © OPENSTREETMAP-BIDRAGSGIVARE (ODBL) · BYGGNADSHÖJDER OCH MATERIAL STILISERADE\nMåndag · Vecka 1 av 8 · Morgon\nMidsommar den här veckan\nKASSA\n120 tkr\n▾\n1×\n2×\n4×\n⋯\nBakåt\n1 byn · 2 kvarteret · 3 ditt kvarter · 4 din verksamhet\nMushjul zoomar · vänsterdrag panorerar · höger-/mellandrag roterar · klick väljer · Esc ut\n×\nMÅNDAG · MORGON · VINBAR\nFyll dagens schema och öppna för kvällen.\nIngen meny satt i dag.\nSchemat: 0 av 2 platser\nMåltidens hus\nÖppna för kvällen\nMedaljer: Stensöta brons\nLAGET\nAnställ och säg upp inför dagen. Kontrakt löper i sju dagar.\nVärd\n1200 kr/dag · kontrakt t.o.m. dag 8\nSäg upp (8400 kr)\nServitör\n1000 kr/dag · kontrakt t.o.m. dag 8\nSäg upp (7000 kr)\nKock\n1400 kr/dag · kontrakt t.o.m. dag 8\nSäg upp (9800 kr)\nANSTÄLL\nVärd — 1200 kr/dag\nHälsar och styr rummet — hög kulturell kompetens.\nServitör — 1000 kr/dag\nBär order och håller flöde — balanserad rustning.\nKock — 1400 kr/dag\nHåller köket — hög vetenskaplig kompetens.\nLärling — 500 kr/dag\nLärling som avlastar överallt — låg kompetens, låg kostnad.\nINVESTERING\nVad står laget inför i dag? Träning, prisläge och råvara sätter kvällens karaktär.\nUTBILDNING\nGrundnivå\nRäcker för att öppna dörrarna. Rummet får bära det som händer.\nErfaren\nKockar och servitörer har rutin. Slag jämnas ut innan de syns.\nSpecialiserad\nAlla vet mer än det som krävs i stunden. Servicen har djup att gå till.\nPRISLÄGE\nLågt\nFyllt hus, tunnare marginal. Krogen håller pulsen uppe.\nMedel\nBalans mellan volym och intäkt. Kvällens standardläge.\nHögt\nFärre gäster, mer per bord. Rummet måste bära förväntan.\nRÅVARA\nGrund\nStandardleverantör. Kvällen bygger på hantverket, inte på råvaran.\nUtvald\nUtvalda leverantörer när det räknas. Något att prata om vid ett par bord.\nPremium\nDet bästa av det som finns. Kvällen står och faller med det köket gör med det.\nSKALA NER\nAktiv reträtt när passet blöder. Reversibelt — återöppnas när kassan tål det.\nKorta menyn\nSänk råvarunivån ett steg. Sparar per gäst, dämpar mat-kvaliteten över tid.\nTunna vinlistan\nDra ner drycksidan. Servicen får mindre att bära, dryck-kvaliteten faller över tid.\nStäng lunchen\nIngen lunch tills du öppnar igen. Sparar personal + råvaror; rummets stambord noterar dörren.\nStäng middagen\nIngen middag tills du öppnar igen. Största besparingen, största rykteskostnaden.\nSATSNINGAR I DAG\nSchemat: 0 av 2 platser\nTräna serveringspersonalen\nEn halvtimmes genomgång av tempot vid passet och rytmen vid borden.\nEkon−3,0 tkr\nSoc+0.04\nEkol0\nTa in en springare\nEtt extra par händer som bär ut tallrikar och dukar av.\nEkon−1,8 tkr\nSoc+0.03\nEkol0\nLokala råvaror i kväll\nSmå gårdar i närheten: högre styckpris, kortare leveranskedja.\nEkon−2,5 tkr\nSoc+0.02\nEkol+0.05\nVinprovning med laget\nLaget kan vinlistan, och merförsäljningen kommer av sig själv.\nEkon+1,0 tkr\nSoc+0.02\nEkol0\nGästkock för kvällen· en gång i veckan\nEn vän till huset lagar maten, och passet skickar ut något som gästerna pratar om.\nEkon+6,0 tkr\nSoc+0.02\nEkol0\nGenomgång av kökets kompost· en gång i veckan\nGå igenom sopkärlen och flödet i förberedelserna. Små ändringar håller när någon tittar på dem.\nEkon−4,0 tkr\nSoc+0.01\nEkol+0.04\nDAGENS MENY\nRotfruktssoppa\nråvarukostnad ≈ 17 kr\nKyckling med rotfrukter\nråvarukostnad ≈ 25 kr\nFläsk med rotfrukter\nråvarukostnad ≈ 31 kr\nLamm med rotfrukter\nråvarukostnad ≈ 75 kr\nVilt med rotfrukter\nråvarukostnad ≈ 113 kr\nPocherad insjöfisk\nråvarukostnad ≈ 71 kr\nGräddessert\nråvarukostnad ≈ 16 kr\nLokal öl till maten\nråvarukostnad ≈ 18 kr\nFastställ menyn (0 rätter)\nKÖP IN RÅVAROR\nBergslagens grossist\nGrythyttans odlare\nÖrebro ekoproducenter\nBergslagens kött & vilt\nHjälmarens insjöfisk\nNora bryggeri\nrotfrukter\nbladgrönt\nkyckling\nfläsk\nägg\nmejeri\nmjöl\n17 kr · leveranssäkerhet 95 %\nKöp",
+    "service": "Vinbar Vinbaren vid torget\nErik Andersgatan\nLinnskällvägen\nBaluns väg\nLokstallsgatan\nStentrygatan\nVINBAREN\nGRÅSKISS — © OPENSTREETMAP-BIDRAGSGIVARE (ODBL) · BYGGNADSHÖJDER OCH MATERIAL STILISERADE\nMåndag · Vecka 1 av 8 · Service\nMidsommar den här veckan\nKASSA\n120 tkr\n▾\n1×\n2×\n4×\n⋯\nBakåt\n1 byn · 2 kvarteret · 3 ditt kvarter · 4 din verksamhet\nMushjul zoomar · vänsterdrag panorerar · höger-/mellandrag roterar · klick väljer · Esc ut\n×\nKL. 19.24 · ÖPPNING · MÅLTIDSBIBLIOTEKET\n14 s\nMusiken\nKlockan är 19.24 och DJ:n har höjt volymen. Ett par vid bord 6 lutar sig över bordet för att höra varandra.\nRummet är fortfarande halvtomt, och de flesta gäster sitter och äter.\nEpisteme · vad\nTechne · hur\nPhronesis · när och varför\nVad gör gäster när musiken blir högre?\nHöjer rösterna, så rummet blir ännu högre\nVänjer sig och hör varandra bättre\nInget, om musiken saknar sång\nSvarar du fel eller inte alls tar personalen över resten.\nKVÄLLEN\nKassa: 119 853 kr\nGästernas nöjdhet\nPersonalens ork\nDörrarna öppnas — servicen börjar.\nEn sås från i går stod oprovad i frysen.\nKylkedjan höll från lastbilen till kylrummet.\nVinlistan var aktuell och båda servitörerna hade läst den.\nMISE EN PLACE\nis\n75%\nservetter\n56%\nbestick\n57%\nstationer\n78%\ngarnityr\n69%"
+  },
+  "morning": "Måndag · Morgon · VinbarFyll dagens schema och öppna för kvällen.Ingen meny satt i dag.Schemat: 0 av 2 platserMåltidens "
 }

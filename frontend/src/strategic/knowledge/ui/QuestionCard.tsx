@@ -6,8 +6,11 @@
 // inte som en tentamensfråga. Används av paviljongsbesöken och av
 // quizen efter servicen.
 
+import { useEffect, useState } from 'react';
 import { strings } from '../../../content/strings.sv';
 import type { BankQuestion } from '../questionBank';
+import { TIMED_OUT } from '../pavilionVisit';
+import { ReferenceLine } from './ReferenceLine';
 
 interface Props {
   question: BankQuestion;
@@ -17,6 +20,9 @@ interface Props {
   onAnswer: (chosenIndex: number) => void;
   onNext: () => void;
   nextLabel: string;
+  // ORDER 270 — provet är på tid (EXAM.secondsPerQuestion, verklig tid).
+  // Övningen har ingen tid.
+  secondsPerQuestion?: number;
 }
 
 const LETTERS = ['A', 'B', 'C', 'D'];
@@ -54,12 +60,44 @@ function optionStyle(i: number, props: Props): React.CSSProperties {
   return { ...OPTION_STYLE, opacity: 0.55, cursor: 'default' };
 }
 
+// Nedräkningen startar om för varje fråga; när den når noll skickas
+// TIMED_OUT, som räknas som fel.
+function useQuestionTimer(props: Props): number | null {
+  const { secondsPerQuestion, answered, question, onAnswer } = props;
+  const [left, setLeft] = useState<number | null>(secondsPerQuestion ?? null);
+  useEffect(() => {
+    if (!secondsPerQuestion || answered) return;
+    const started = performance.now();
+    setLeft(secondsPerQuestion);
+    const id = window.setInterval(() => {
+      const remaining = secondsPerQuestion - (performance.now() - started) / 1000;
+      if (remaining <= 0) {
+        window.clearInterval(id);
+        setLeft(0);
+        onAnswer(TIMED_OUT);
+      } else {
+        setLeft(remaining);
+      }
+    }, 200);
+    return () => window.clearInterval(id);
+    // En ny fråga (id) eller ett svar startar om eller stoppar klockan.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [question.id, answered, secondsPerQuestion]);
+  return secondsPerQuestion ? left : null;
+}
+
 export function QuestionCard(props: Props) {
   const { question, answered } = props;
+  const left = useQuestionTimer(props);
   return (
     <div data-testid="question-card">
       <div style={{ fontSize: 11, letterSpacing: 1.2, textTransform: 'uppercase', opacity: 0.7 }}>
         {strings.knowledge.questionOf(props.index + 1, props.total)}
+        {left !== null && !answered && (
+          <span style={{ float: 'right', fontVariantNumeric: 'tabular-nums', fontWeight: 600, color: left <= 5 ? '#d0694e' : undefined }} data-testid="question-countdown">
+            {strings.knowledge.secondsLeft(String(Math.ceil(left)))}
+          </span>
+        )}
       </div>
       <p style={{ margin: '6px 0 0', fontSize: 15, lineHeight: 1.45 }} data-testid="question-prompt">
         <strong>{strings.knowledge.askers[question.asker]}:</strong> {question.prompt}
@@ -79,8 +117,11 @@ export function QuestionCard(props: Props) {
       ))}
       {answered && (
         <div style={{ marginTop: 12 }} data-testid="explanation">
-          <strong>{answered.correct ? strings.knowledge.right : strings.knowledge.wrong}</strong>{' '}
+          <strong>
+            {answered.correct ? strings.knowledge.right : answered.chosenIndex === TIMED_OUT ? strings.knowledge.timedOut : strings.knowledge.wrong}
+          </strong>{' '}
           {question.explanation}
+          <ReferenceLine reference={question.reference} />
           <div>
             <button type="button" style={NEXT_STYLE} data-testid="next-question" onClick={props.onNext}>
               {props.nextLabel}

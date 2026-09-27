@@ -337,6 +337,15 @@ export function bankReadyAfterNoBusiness(state: SimulationState): boolean {
   return state.day.dayNumber - w.sinceDay >= NEW_START.daysWithoutBusiness && w.examsTaken >= NEW_START.examsRequired;
 }
 
+// ORDER 270 (provspel 2026-09-27) — spelaren har förlorat verksamheten och
+// står utan lån: "Utan verksamhet och utan pengar: en tydlig ruta mitt på
+// skärmen. Den enda vägen vidare är till Måltidens hus för att öva och göra
+// prov, så att banken kan ge lån. Inga andra knappar." (Introduktionen,
+// före den första verksamheten, har mentorn och räknas inte hit.)
+export function isStrandedWithoutBusiness(state: SimulationState): boolean {
+  return state.economy.businessClass === null && !!state.economy.withoutBusiness && !state.introduction;
+}
+
 // Vilka klasser spelaren kan byta till nu, och varför inte de andra.
 export type ClassOption =
   | { id: BusinessClassId; status: 'current' }

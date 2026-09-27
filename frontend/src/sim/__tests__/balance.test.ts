@@ -139,7 +139,9 @@ describe('ORDER 262 — balance.ts mot speldesignen', () => {
     expect(balance.MARKET.shareCapPerMedalStep).toBe(0.03);
     expect(balance.LOAN).toMatchObject({ amortisationWeeks: 8, interestRate: 0.05 });
     expect(balance.DOWNGRADE).toMatchObject({ consecutiveNegativeDayEnds: 3, warningDays: 2 });
-    expect(balance.INCIDENTS).toMatchObject({ minPerEvening: 3, maxPerEvening: 6, optionsMin: 3, optionsMax: 4, countdownSeconds: 20, timeoutCreditPenalty: 1 });
+    // Vision Owner 2026-09-27: trestegsraketer, 2–4 per kväll, 15/20/30 s.
+    expect(balance.INCIDENTS).toMatchObject({ minPerEvening: 2, maxPerEvening: 4, optionsMin: 3, optionsMax: 4, timeoutCreditPenalty: 1 });
+    expect(balance.INCIDENTS.stepSeconds).toEqual({ episteme: 15, techne: 20, phronesis: 30 });
     expect(balance.EXAM).toMatchObject({ questionsDrawn: 8, questionsPerLevel: 10, correctToPass: 6 });
     expect(balance.PRACTICE.questions).toBe(5);
     expect(balance.DAY).toMatchObject({ scheduleSlots: 2, sundayScheduleSlots: 4 });

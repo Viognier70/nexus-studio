@@ -3,11 +3,12 @@
 // materials and NPC motion are stylised. Campus Grythyttan — Måltidens hus —
 // Sevillapaviljongen are represented as a single canonical location per
 // design constitution.
+import { strings } from '../../content/strings.sv';
+
 export function VerifyBadge() {
   return (
     <div className="gb-verify-badge" role="status">
-      GRAY BOX — © OpenStreetMap contributors (ODbL) · byggnadshöjder och
-      material stiliserade
+      {strings.panels.verifyBadge}
     </div>
   );
 }

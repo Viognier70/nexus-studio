@@ -1,10 +1,10 @@
 import { calendarFor } from '../../sim/calendar';
 import { bestAnswerFactor, drinkRevenueFactor, enablersWithCredits } from '../../sim/knowledgeInService';
 import { EVENING, SERVICE, type BusinessClassId } from '../../sim/balance';
-import { closeIncidents, countDown, isIncidentOpen, maybeOpenIncident, planIncidents, resolveIncident, type CreditChange } from '../../sim/incidents';
+import { closeIncidents, countDown, isIncidentOpen, maybeOpenIncident, planIncidents, resolveIncident, tickOngoing, type CreditChange } from '../../sim/incidents';
 import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
 import { afterVisitClosed, beginIntroduction } from '../../sim/introduction';
-import { canChangeClassToday, changeClass, classOptions, openFirstBusiness, recordEvening, creditLineSek, dailyGuestCap, dayEnd, dayEndHeadroom, dailyWagesSek, recordExamWithoutBusiness, scenarioUnitSek, scenarioChoiceUnits, clampScenarioCash, postDailyInterest, settleWeek } from '../../sim/economy';
+import { isStrandedWithoutBusiness, canChangeClassToday, changeClass, classOptions, openFirstBusiness, recordEvening, creditLineSek, dailyGuestCap, dayEnd, dayEndHeadroom, dailyWagesSek, recordExamWithoutBusiness, scenarioUnitSek, scenarioChoiceUnits, clampScenarioCash, postDailyInterest, settleWeek } from '../../sim/economy';
 import { answerVisit, closeVisit, nextVisitQuestion, scheduleSlotsLeft, startVisit } from '../knowledge/pavilionVisit';
 import { createRng } from '../util/rng';
 import type {
@@ -233,20 +233,22 @@ function withIdCounters(next: SimulationState): SimulationState {
 function reduce(state: SimulationState, action: SimAction): SimulationState {
   switch (action.type) {
     case 'TICK': {
-      // ORDER 270 — medan en händelse är öppen står rummet stilla och bara
-      // nedräkningen går. När den är slut beslutar personalen själv.
-      if (isIncidentOpen(state)) {
-        const draft: SimulationState = { ...state, guests: state.guests.map((g) => ({ ...g })) };
-        if (!countDown(draft, action.dt)) return draft;
-        return applyCreditChange(draft, resolveIncident(draft, null));
-      }
-      return advanceTick(state);
+      // ORDER 270 (provspel 2026-09-27) — rummet står inte still: servicen
+      // fortsätter medan nedräkningen går. När den är slut beslutar
+      // personalen själv.
+      const next = advanceTick(state);
+      if (!isIncidentOpen(next)) return next;
+      const draft: SimulationState = { ...next, guests: next.guests.map((g) => ({ ...g })) };
+      if (!countDown(draft, action.dt)) return draft;
+      return applyCreditChange(draft, resolveIncident(draft, null));
     }
     case 'ANSWER_INCIDENT': {
       if (!isIncidentOpen(state)) return state;
       const draft: SimulationState = { ...state, guests: state.guests.map((g) => ({ ...g })) };
       const credit = resolveIncident(draft, action.optionId);
-      if (draft.incidents?.active) return state;
+      // Ett struket eller okänt svar ändrar ingenting. Ett klarat steg
+      // lämnar raketen öppen på nästa steg (ORDER 270, 2026-09-27).
+      if (draft.incidents === state.incidents) return state;
       return applyCreditChange(draft, credit);
     }
     case 'SET_SPEED':
@@ -326,8 +328,14 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       const examDone = next.pavilionVisit?.mode === 'exam' && next.pavilionVisit.result && !state.pavilionVisit?.result;
       return examDone ? { ...next, economy: recordExamWithoutBusiness(next.economy) } : next;
     }
-    case 'CLOSE_VISIT':
-      return afterVisitClosed(state, closeVisit(state));
+    case 'CLOSE_VISIT': {
+      const closed = afterVisitClosed(state, closeVisit(state));
+      // ORDER 270 (provspel 2026-09-27) — utan verksamhet är Måltidens hus
+      // den enda vägen vidare. När dagens schemaplatser är använda slutar
+      // dagen av sig själv, så att rutan inte behöver fler knappar.
+      if (isStrandedWithoutBusiness(closed) && !closed.pavilionVisit && scheduleSlotsLeft(closed) <= 0) return closeDay(closed);
+      return closed;
+    }
     case 'BEGIN_INTRODUCTION':
       return beginIntroduction(state);
     case 'CHOOSE_CLASS':
@@ -424,7 +432,7 @@ function pickActivity(state: SimulationState, id: string): SimulationState {
     postLedger(next, {
       category: 'other',
       amount: -activity.costSek,
-      cause: `Activity cost: ${activity.name}`,
+      cause: `Satsning: ${activity.name}`,
       causeId: id
     });
   }
@@ -457,7 +465,7 @@ function unpickActivity(state: SimulationState, id: string): SimulationState {
     postLedger(next, {
       category: 'other',
       amount: activity.costSek,
-      cause: `Activity refund: ${activity.name}`,
+      cause: `Återbetald satsning: ${activity.name}`,
       causeId: id
     });
   }
@@ -479,7 +487,7 @@ function applyActivityEffectsOnDayClose(draft: SimulationState): void {
       postLedger(draft, {
         category: 'other',
         amount: activity.effect.economic,
-        cause: `Activity effect: ${activity.name}`,
+        cause: `Satsningens effekt: ${activity.name}`,
         causeId: id
       });
     }
@@ -574,7 +582,7 @@ function buyStock(
   postLedger(next, {
     category: 'stock',
     amount: -costSek,
-    cause: `Buy ${units}× ${ingredient.name} from ${supplier.name}`,
+    cause: `Inköp ${units}× ${ingredient.name} från ${supplier.name}`,
     causeId: `${supplierId}:${ingredientId}`
   });
   if (received < units) {
@@ -582,7 +590,7 @@ function buyStock(
       ...next.eventStream,
       {
         at: state.simTime,
-        text: `Supplier short-delivery: ${supplier.name} delivered ${received}/${units} ${ingredient.name}.`,
+        text: `Kort leverans: ${supplier.name} levererade ${received} av ${units} ${ingredient.name}.`,
         category: 'ambient',
         causeTag: 'stock_out',
         causeChainId: null,
@@ -747,7 +755,7 @@ export function drawMenuDishForGuest(
           ...draft.eventStream,
           {
             at: simTime,
-            text: `Dish '${runOutDish.name}' ran out — the kitchen is out of stock.`,
+            text: `${runOutDish.name} tog slut — köket har inga råvaror kvar.`,
             category: 'ambient',
             causeTag: 'stock_out',
             causeChainId: null,
@@ -784,7 +792,7 @@ export function drawMenuDishForGuest(
       ...draft.eventStream,
       {
         at: simTime,
-        text: `Guest left — no ${targetDish.name} tonight.`,
+        text: `En gäst gick — ${targetDish.name} fanns inte i kväll.`,
         category: 'ambient',
         causeTag: 'stock_out',
         causeChainId: null,
@@ -815,7 +823,7 @@ export function drawMenuDishForGuest(
       ...draft.eventStream,
       {
         at: simTime,
-        text: `Guest wanted ${targetDish.name}; kitchen substituted ${cheapestDish.name}.`,
+        text: `En gäst ville ha ${targetDish.name}; köket serverade ${cheapestDish.name} i stället.`,
         category: 'ambient',
         causeTag: 'stock_out',
         causeChainId: null,
@@ -842,7 +850,7 @@ export function drawMenuDishForGuest(
     ...draft.eventStream,
     {
       at: simTime,
-      text: `Guest left — no ${targetDish.name} tonight.`,
+      text: `En gäst gick — ${targetDish.name} fanns inte i kväll.`,
       category: 'ambient',
       causeTag: 'stock_out',
       causeChainId: null,
@@ -979,7 +987,7 @@ function requestBankLoan(state: SimulationState): SimulationState {
   postLedger(draft, {
     category: 'other',
     amount: outcome.loanAmountSek,
-    cause: `Bank loan (${outcome.loanTier})`,
+    cause: `Banklån (${outcome.loanTier})`,
     causeId: `bank-loan-${outcome.loanTier}`
   });
   // ORDER 110 — R4 realiserar bankmötets tilldelning. Byt verksamhet om
@@ -1448,21 +1456,21 @@ function skipLunch(state: SimulationState): SimulationState {
 // mapping is per (scenarioId, choice) for cycle-1's three scenarios;
 // unmapped combinations fall back to a legible generic form.
 const SCENARIO_LEDGER_TITLE: Record<string, string> = {
-  'walk-in-of-five': 'Walk-in of five',
-  'time-pressure': 'Late delegation booking',
-  'moral-dilemma': 'Fish with a broken cold chain'
+  'walk-in-of-five': 'Fem gäster utan bokning',
+  'time-pressure': 'Sen bokning från en delegation',
+  'moral-dilemma': 'Fisk med bruten kylkedja'
 };
 
 const SCENARIO_LEDGER_CHOICE: Record<string, string> = {
-  'walk-in-of-five|A': 'seated the party',
-  'walk-in-of-five|B': 'seated four plus a bar seat',
-  'walk-in-of-five|C': 'refused at the door',
-  'time-pressure|A': 'ran the menu tonight',
-  'time-pressure|B': 'deferred to tomorrow',
-  'time-pressure|C': 'declined the booking',
-  'moral-dilemma|A': 'served the fish',
-  'moral-dilemma|B': 'swapped the dish',
-  'moral-dilemma|C': 'transformed the plate'
+  'walk-in-of-five|A': 'tog emot sällskapet',
+  'walk-in-of-five|B': 'fyra vid bordet och en i baren',
+  'walk-in-of-five|C': 'nekade i dörren',
+  'time-pressure|A': 'körde menyn i kväll',
+  'time-pressure|B': 'sköt upp till i morgon',
+  'time-pressure|C': 'tackade nej till bokningen',
+  'moral-dilemma|A': 'serverade fisken',
+  'moral-dilemma|B': 'bytte rätt',
+  'moral-dilemma|C': 'gjorde om tallriken'
 };
 
 function scenarioLedgerCause(
@@ -1472,10 +1480,10 @@ function scenarioLedgerCause(
   const title = scenarioId && SCENARIO_LEDGER_TITLE[scenarioId]
     ? SCENARIO_LEDGER_TITLE[scenarioId]
     : scenarioId
-      ? `Scenario: ${scenarioId}`
-      : 'Scenario';
+      ? `Händelse: ${scenarioId}`
+      : 'Händelse';
   const choiceKey = scenarioId ? `${scenarioId}|${choice}` : '';
-  const choiceLabel = SCENARIO_LEDGER_CHOICE[choiceKey] ?? `choice ${choice}`;
+  const choiceLabel = SCENARIO_LEDGER_CHOICE[choiceKey] ?? `val ${choice}`;
   return `${title}: ${choiceLabel}`;
 }
 
@@ -1649,8 +1657,9 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       // stationernas skick (inspektion nästa morgon). Kvällens
       // redovisning räknar in ryktets förändring från händelserna.
       onServiceClose(next, state, eveningAccount.branch);
-      // ORDER 270 — kvällens lärdom ur kvällens händelser.
-      closeIncidents(next);
+      // ORDER 270 — kvällens lärdom ur kvällens händelser. En händelse som
+      // står öppen när servicen tar slut beslutas av personalen.
+      const closingCredit = closeIncidents(next);
       if (next.eveningAccount?.metrics) {
         next.eveningAccount = {
           ...next.eveningAccount,
@@ -1668,7 +1677,7 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       // ORDER 117 §3.1 — uppdatera fördröjd effektiv värdekvot (samma
       // som lunch-close, ovanför).
       updateEffectiveValueQuota(next);
-      return next;
+      return applyCreditChange(next, closingCredit);
     }
   }
   if (day.period === 'evening') {
@@ -1799,7 +1808,7 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           postLedger(nextForDay, {
             category: 'wage',
             amount: -m.dailyCost,
-            cause: `Wage: ${m.role}`,
+            cause: `Lön: ${m.role}`,
             causeId: m.id
           });
         }
@@ -1815,7 +1824,7 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
         postLedger(nextForDay, {
           category: 'other',
           amount: -idleAccrued,
-          cause: `Idle-period staff cost (day ${state.day.dayNumber})`
+          cause: `Personalkostnad utanför service (dag ${state.day.dayNumber})`
         });
       }
       // ORDER 075 (M2) — apply picked-activity end-of-day effects.
@@ -1956,7 +1965,7 @@ function acceptAgency(state: SimulationState): SimulationState {
   postLedger(next, {
     category: 'agency',
     amount: -AGENCY_HIRE_COST,
-    cause: `Agency: ${state.agencyOffer.role} for tonight`,
+    cause: `Hyrpersonal: ${state.agencyOffer.role} i kväll`,
     causeId: state.agencyOffer.role
   });
   bumpMorale(next, MORALE_AGENCY_ACCEPT_BUMP);
@@ -2063,7 +2072,7 @@ function fireTeamMember(state: SimulationState, memberId: string): SimulationSta
     postLedger(next, {
       category: 'buyout',
       amount: -buyout,
-      cause: `Buyout: ${member.role} (${remainingDays} days remaining)`,
+      cause: `Avgångsvederlag: ${member.role} (${remainingDays} dagar kvar)`,
       causeId: member.id
     });
   }
@@ -2293,7 +2302,7 @@ function advanceTick(state: SimulationState): SimulationState {
         postLedger(draft, {
           category: 'other',
           amount: rev,
-          cause: `Late guest payment (${draft.day.period})`,
+          cause: `Sen betalning från gäst (${draft.day.period === 'dinner' ? 'middag' : draft.day.period})`,
           causeId: guest.id
         });
       }
@@ -2331,8 +2340,8 @@ function advanceTick(state: SimulationState): SimulationState {
       amount: -interestKr,
       cause:
         daysToCharge === 1
-          ? `Loan interest (day ${draft.day.dayNumber})`
-          : `Loan interest (days ${draft.loan.lastAccrualDay + 1}–${draft.day.dayNumber})`
+          ? `Låneränta (dag ${draft.day.dayNumber})`
+          : `Låneränta (dag ${draft.loan.lastAccrualDay + 1}–${draft.day.dayNumber})`
     });
     draft.loan = { ...draft.loan, lastAccrualDay: draft.day.dayNumber };
   }
@@ -2488,7 +2497,9 @@ function advanceTick(state: SimulationState): SimulationState {
   // empty evening doesn't reset morale to a neutral middle.
   tickMoraleDrift(draft);
 
-  // ORDER 270 — kvällens nästa händelse, när dess tid har kommit.
+  // ORDER 270 — följden av ett fel val pågår till nästa händelse, och
+  // kvällens nästa händelse öppnas när dess tid har kommit.
+  tickOngoing(draft, tickSeconds);
   maybeOpenIncident(draft);
 
   // ORDER 043 v3 step 5b — scheduled scenario firing.
@@ -2765,7 +2776,7 @@ function describePolicyPatch(patch: Partial<Policies>): string {
     parts.push(`välkomstdryck ${patch.welcomeDrink ? 'på' : 'av'}`);
   if (patch.localSourcing !== undefined)
     parts.push(`lokala leverantörer ${patch.localSourcing ? 'på' : 'av'}`);
-  return `Policy: ${parts.join(', ')}`;
+  return `Ändrat: ${parts.join(', ')}`;
 }
 
 function triggerScenario(
@@ -2880,7 +2891,7 @@ function triggerScenario(
           ? sender
             ? `${SENDER_PREFIX[sender.role]}: ${scenarioSpec.subjectBody}`
             : scenarioSpec.subjectBody
-          : 'Scenariot replays (utvecklarläge)'
+          : 'Scenariot spelas om (utvecklarläge)'
       }
     ]
   };

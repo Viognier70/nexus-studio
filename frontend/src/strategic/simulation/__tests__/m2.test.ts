@@ -111,11 +111,11 @@ describe('M2 DoD — morning activity model', () => {
     expect(r.eveningAccounts.length).toBeGreaterThan(0);
     const paragraph = r.eveningAccounts[0];
     // Both picked activities named by name
-    expect(paragraph).toContain("Switch tonight's produce to local");
-    expect(paragraph).toContain('Team wine tasting hour');
+    expect(paragraph).toContain('Lokala råvaror i kväll');
+    expect(paragraph).toContain('Vinprovning med laget');
     // ORDER 266 — speldesign > Medgång: berättelsen börjar med det som
     // gick bra (wentWell), därefter morgonens val, sedan kvällens omdöme.
-    const picked = paragraph.indexOf('Today you picked:');
+    const picked = paragraph.indexOf('I dag valde du:');
     expect(picked).toBeGreaterThanOrEqual(0);
     const before = paragraph.slice(0, picked).trim();
     expect(before === '' || /nöjd|gav upp|ryckte in/.test(before)).toBe(true);
@@ -156,12 +156,12 @@ describe('M2 DoD — morning activity model', () => {
     const r = runHarness({ seed: 42, script, runUntilSec: 1200 });
     // Should have crossed at least one day rollover
     expect(r.finalState.day.dayNumber).toBeGreaterThanOrEqual(2);
-    // Ledger has an 'Activity effect' line naming the activity
+    // Ledger has a 'Satsningens effekt' line naming the activity
     const effectLine = r.finalState.ledger.find((l) =>
-      l.cause.startsWith('Activity effect')
+      l.cause.startsWith('Satsningens effekt')
     );
-    expect(effectLine, 'no Activity effect ledger line found').toBeDefined();
-    expect(effectLine!.cause).toContain("Switch tonight's produce to local");
+    expect(effectLine, 'no Satsningens effekt ledger line found').toBeDefined();
+    expect(effectLine!.cause).toContain('Lokala råvaror i kväll');
     expect(effectLine!.amount).toBe(-2500);
   });
 });

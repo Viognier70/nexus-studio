@@ -9,6 +9,7 @@
 import { useSimState } from '../simulation/SimulationProvider';
 import { PREP_ITEMS } from '../simulation/miseEnPlace';
 import { businessHasMiseEnPlace } from './businessClass';
+import { strings } from '../../content/strings.sv';
 
 const PANEL_STYLE: React.CSSProperties = {
   position: 'absolute',
@@ -77,14 +78,14 @@ export function PrepPanel() {
   if (!readiness || Object.keys(readiness).length === 0) return null;
 
   return (
-    <div style={PANEL_STYLE} aria-label="Mise en place">
-      <div style={HEADING_STYLE}>Mise en place</div>
+    <div style={PANEL_STYLE} aria-label={strings.panels.prep.heading}>
+      <div style={HEADING_STYLE}>{strings.panels.prep.heading}</div>
       {PREP_ITEMS.map((item) => {
         const r = readiness[item.id] ?? 0;
         return (
           <div key={item.id}>
             <div style={ROW_STYLE}>
-              <span>{item.id}</span>
+              <span>{strings.panels.prep.items[item.id] ?? item.id}</span>
               <span style={{ color: readinessColour(r), textAlign: 'right' }}>
                 {(r * 100).toFixed(0)}%
               </span>

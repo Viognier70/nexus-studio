@@ -30,6 +30,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 import type { EveningAccountMetrics, LedgerCategory, LedgerLine } from '../types';
+import { strings } from '../../content/strings.sv';
+
+const T = strings.panels.evening;
 
 const PANEL_WRAPPER_STYLE: React.CSSProperties = {
   position: 'absolute',
@@ -155,34 +158,22 @@ const NEW_ROUND_BUTTON_STYLE: React.CSSProperties = {
   pointerEvents: 'auto'
 };
 
-const LEDGER_CATEGORY_LABEL: Record<LedgerCategory, string> = {
-  revenue:    'Rev.',
-  wage:       'Wage',
-  agency:     'Agcy',
-  ingredient: 'Ingr.',
-  interest:   'Int.',
-  scenario:   'Scen.',
-  buyout:     'Buy.',
-  stock:      'Stock',
-  floor:      'Golv',
-  amortisation: 'Amort.',
-  other:      '—'
-};
+const LEDGER_CATEGORY_LABEL: Record<LedgerCategory, string> = T.category;
 
 function formatLedgerAmount(sek: number): string {
   const abs = Math.abs(sek);
   if (abs < 10_000) {
-    return `${sek >= 0 ? '+' : '−'}${Math.round(abs).toLocaleString('en-GB')}`;
+    return `${sek >= 0 ? '+' : '−'}${Math.round(abs).toLocaleString('sv-SE')}`;
   }
-  return `${sek >= 0 ? '+' : '−'}${(abs / 1000).toFixed(1)}k`;
+  return `${sek >= 0 ? '+' : '−'}${(abs / 1000).toFixed(1).replace('.', ',')} ${T.thousandSuffix}`;
 }
 
 function formatRunningCash(sek: number): string {
   const abs = Math.abs(sek);
   if (abs < 10_000) {
-    return `${Math.round(sek).toLocaleString('en-GB')}`;
+    return `${Math.round(sek).toLocaleString('sv-SE')}`;
   }
-  return `${(sek / 1000).toFixed(1)}k`;
+  return `${(sek / 1000).toFixed(1).replace('.', ',')} ${T.thousandSuffix}`;
 }
 
 // Timing constants (in seconds). Matches EVENING_TO_MORNING_PAUSE_SEC
@@ -212,9 +203,9 @@ function NewRoundButton() {
         type="button"
         style={NEW_ROUND_BUTTON_STYLE}
         onClick={() => dispatch({ type: 'RESET' })}
-        aria-label="Start a new round from day 1"
+        aria-label={T.newRoundAria}
       >
-        New round
+        {T.newRound}
       </button>
     </div>
   );
@@ -264,18 +255,18 @@ export function EveningAccountPanel() {
   return (
     <div style={{ ...PANEL_WRAPPER_STYLE, opacity }}>
       <div style={PANEL_STYLE}>
-        <div style={HEADING_STYLE}>Evening account</div>
+        <div style={HEADING_STYLE}>{T.heading}</div>
         <div data-testid="evening-story">{account.paragraph}</div>
 
         {account.metrics ? (
           <div style={METRICS_SECTION_STYLE}>
-            <div style={LEDGER_SUBHEADING_STYLE}>Today's figures</div>
+            <div style={LEDGER_SUBHEADING_STYLE}>{T.figuresHeading}</div>
             <MetricsBlock metrics={account.metrics} />
           </div>
         ) : null}
 
         <div style={LEDGER_SECTION_STYLE}>
-          <div style={LEDGER_SUBHEADING_STYLE}>The day's ledger</div>
+          <div style={LEDGER_SUBHEADING_STYLE}>{T.ledgerHeading}</div>
           <TodaysLedger lines={todaysLedger} />
         </div>
 
@@ -292,21 +283,21 @@ export function EveningAccountPanel() {
 // förändring, inte ett absolut värde.
 function MetricsBlock({ metrics }: { metrics: EveningAccountMetrics }) {
   return (
-    <div role="log" aria-label="Today's figures">
+    <div role="log" aria-label={T.figuresHeading}>
       <div style={METRICS_ROW_STYLE}>
-        <span style={{ opacity: 0.75 }}>Revenue</span>
+        <span style={{ opacity: 0.75 }}>{T.revenue}</span>
         <span style={{ textAlign: 'right', color: '#d8be82' }}>
           {formatSek(metrics.revenue)}
         </span>
       </div>
       <div style={METRICS_ROW_STYLE}>
-        <span style={{ opacity: 0.75 }}>Costs</span>
+        <span style={{ opacity: 0.75 }}>{T.costs}</span>
         <span style={{ textAlign: 'right', color: '#e8b498' }}>
           {formatSek(-metrics.cost)}
         </span>
       </div>
       <div style={METRICS_RESULT_ROW_STYLE}>
-        <span>Result</span>
+        <span>{T.result}</span>
         <span
           style={{
             textAlign: 'right',
@@ -317,13 +308,13 @@ function MetricsBlock({ metrics }: { metrics: EveningAccountMetrics }) {
         </span>
       </div>
       <div style={METRICS_ROW_STYLE}>
-        <span style={{ opacity: 0.75 }}>Reputation</span>
+        <span style={{ opacity: 0.75 }}>{T.reputation}</span>
         <span style={{ textAlign: 'right' }}>
           {formatDelta(metrics.reputationDelta, 2)}
         </span>
       </div>
       <div style={METRICS_ROW_STYLE}>
-        <span style={{ opacity: 0.75 }}>Knowledge</span>
+        <span style={{ opacity: 0.75 }}>{T.knowledge}</span>
         <span style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
           E {formatDelta(metrics.knowledgeDelta.episteme, 2)}  T{' '}
           {formatDelta(metrics.knowledgeDelta.techne, 2)}  P{' '}
@@ -337,14 +328,14 @@ function MetricsBlock({ metrics }: { metrics: EveningAccountMetrics }) {
 function formatSek(amount: number): string {
   const sign = amount >= 0 ? '+' : '−';
   const abs = Math.abs(Math.round(amount));
-  return `${sign}${abs.toLocaleString('sv-SE')} SEK`;
+  return `${sign}${abs.toLocaleString('sv-SE')} ${T.currency}`;
 }
 
 function formatDelta(value: number, decimals: number): string {
   const rounded = Number(value.toFixed(decimals));
-  if (rounded === 0) return '±0.00';
+  if (rounded === 0) return `±${(0).toFixed(decimals).replace('.', ',')}`;
   const sign = rounded > 0 ? '+' : '−';
-  return `${sign}${Math.abs(rounded).toFixed(decimals)}`;
+  return `${sign}${Math.abs(rounded).toFixed(decimals).replace('.', ',')}`;
 }
 
 interface TodaysLedgerProps {
@@ -353,15 +344,15 @@ interface TodaysLedgerProps {
 
 function TodaysLedger({ lines }: TodaysLedgerProps) {
   if (lines.length === 0) {
-    return <div style={LEDGER_EMPTY_STYLE}>Nothing to record today.</div>;
+    return <div style={LEDGER_EMPTY_STYLE}>{T.nothingToRecord}</div>;
   }
   return (
-    <div role="log" aria-label="Today's entries">
+    <div role="log" aria-label={T.entriesAria}>
       {lines.map((line, i) => (
         <div
           key={`${line.at}-${line.category}-${i}`}
           style={LEDGER_ROW_STYLE}
-          aria-label={`${line.cause}: ${formatLedgerAmount(line.amount)} SEK, running cash ${formatRunningCash(line.runningCash)} SEK`}
+          aria-label={T.entryAria(line.cause, Math.round(line.amount).toLocaleString('sv-SE'), Math.round(line.runningCash).toLocaleString('sv-SE'))}
         >
           <span style={{ opacity: 0.55, fontSize: 10, letterSpacing: 0.5 }}>
             {LEDGER_CATEGORY_LABEL[line.category]}
