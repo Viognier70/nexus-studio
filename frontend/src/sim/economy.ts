@@ -11,6 +11,7 @@ import {
   DOWNGRADE,
   ECONOMY,
   NEW_START,
+  NO_BUSINESS,
   SCENARIO_CASH,
   FLOOR,
   LOAN,
@@ -342,8 +343,41 @@ export function bankReadyAfterNoBusiness(state: SimulationState): boolean {
 // skärmen. Den enda vägen vidare är till Måltidens hus för att öva och göra
 // prov, så att banken kan ge lån. Inga andra knappar." (Introduktionen,
 // före den första verksamheten, har mentorn och räknas inte hit.)
+//
+// ORDER 271 (Vision Owner, FRAGOR §50; Design paket 6, X1): rutan gäller
+// spelaren utan verksamhet vars kassa är under minsta insats, en fjärdedel
+// av en veckas golv som i ORDER 268. Med kassa kvar går banken och dagens
+// knappar att nå som vanligt.
 export function isStrandedWithoutBusiness(state: SimulationState): boolean {
-  return state.economy.businessClass === null && !!state.economy.withoutBusiness && !state.introduction;
+  return state.economy.businessClass === null && !!state.economy.withoutBusiness && !state.introduction &&
+    state.cash < minimumStakeSek(state);
+}
+
+// Medaljerna höjda till det kraven begär (namngivna paviljonger först,
+// sedan de spelaren redan står högst i).
+function medalsMeeting(reqs: readonly MedalRequirement[], medals: SimulationState['medals']): SimulationState['medals'] {
+  const out: SimulationState['medals'] = { ...medals };
+  for (const req of reqs) {
+    const need = medalRank(req.level);
+    const raise = (p: PavilionKey) => { if (medalRank(out[p]) < need) out[p] = req.level; };
+    req.including.forEach((p) => raise(p as PavilionKey));
+    const byRank = [...ALL_PAVILIONS].sort((a, b) => medalRank(out[b]) - medalRank(out[a]));
+    for (const p of byRank) {
+      if (ALL_PAVILIONS.filter((q) => medalRank(out[q]) >= need).length >= req.count) break;
+      raise(p);
+    }
+  }
+  return out;
+}
+
+// ORDER 271 (FRAGOR §50) — minsta insats för en ny start: en fjärdedel av
+// en veckas golv i den billigaste klass spelaren kan starta (inte de som
+// bara nås genom uppgradering), med minst de medaljer klassens krav begär.
+export function minimumStakeSek(state: SimulationState): number {
+  const stakes = BUSINESS_CLASSES.list
+    .filter((c) => !c.upgradeOnly)
+    .map((c) => Math.round(floorSek(c.id, medalsMeeting(c.requirements, state.medals)) * NO_BUSINESS.minimumStakeShareOfWeekFloor));
+  return Math.min(...stakes);
 }
 
 // Vilka klasser spelaren kan byta till nu, och varför inte de andra.

@@ -100,6 +100,7 @@ export const strings = {
       half: (cls: string) => `${cls} fick ungefär hälften av gästerna den kunde få den här veckan.`,
       few: (cls: string) => `${cls} fick få av gästerna den kunde få den här veckan.`
     },
+    marketNoBusiness: 'Du hade ingen verksamhet den här veckan, och inga gäster att räkna.',
     bankNext: (missing: string) => `Banken om nästa steg: ${missing.charAt(0).toLowerCase()}${missing.slice(1)}`,
     holidayNextWeek: (name: string) => `${name} nästa vecka.`,
     holidayInWeeks: (name: string, weeks: string) => `${name} om ${weeks} veckor.`,
@@ -276,6 +277,94 @@ export const strings = {
     staffDecided: (outcome: string) => `Du svarade inte, och personalen beslutade själv. ${outcome}`,
     better: (label: string) => `Bättre: ${label}`,
     nextMorning: 'Till nästa morgon'
+  },
+  // ORDER 271 — skärmarna i paket 1 (mentorn M1/M2, morgonens schema
+  // S1/S2, banken B0/B1, tidningen T1, Måltidens hus O1/O2/MD1/MD2).
+  // Speldesignens text där den finns; övrigt är skärmarnas egna rader.
+  screens: {
+    mentor: {
+      label: 'Mentorn · från Campus',
+      campus: 'Campus',
+      stepOf: (n: number, total: number) => `Steg ${n} av ${total}`,
+      skip: 'Jag klarar mig — hoppa över guiden',
+      understood: 'Uppfattat',
+      service:
+        'Nu öppnar du. När något händer i rummet kommer ett kort upp: vad, hur och när, ett steg i taget och på tid. Svarar du inte tar personalen över. Mätarna visar kassan, gästerna och personalen, i riktning, inte i belopp.'
+    },
+    morning: {
+      label: (weekday: string, week: number, weeks: number) => `${weekday} morgon · vecka ${week} av ${weeks}`,
+      heading: 'Vad gör du i dag?',
+      sundayHeading: 'Söndag. Fyra platser, en lång dag.',
+      slot: (n: number) => `Plats ${n}`,
+      slotPavilion: 'Paviljong',
+      slotActivity: 'Satsning',
+      slotEmpty: 'Välj satsning eller paviljong',
+      newspaperArrived: 'Söndagstidningen har kommit',
+      newspaperBody: 'Recensionen, marknaden, banken och det som kommer.',
+      activities: 'Satsningar',
+      pavilions: 'Paviljonger i Måltidens hus',
+      picked: 'Vald',
+      aside: 'Rummet och personalen',
+      backToSchedule: 'Tillbaka till schemat'
+    },
+    bank: {
+      speaker: 'Banken',
+      diagnosis: 'Bankens diagnos',
+      seen: 'Det banken ser',
+      none: 'ingen än',
+      startLoan: 'Startlån',
+      queue: 'Kö i stället för platser.',
+      seats: (n: number) => `${n} platser.`,
+      // Speldesign > Verksamhetsklasserna, kolumnen Särdrag.
+      traits: {
+        vinbar: 'Smårätter, lounger, DJ, vinlista.',
+        foodtruck: 'Lucka mot gatan, kö, väder, gatuläge, snabb omsättning.',
+        restaurang: 'Matsal och bar, mise en place, flera rätter.',
+        olkrog: 'Bryggeri i lokalen, rejäl mat, få rätter.',
+        gastgiveri: 'Övernattning, frukost, soignée servering, dygnsstruktur.',
+        nattklubb: 'Flera barer, dans, volym och flöde, sena kvällar.'
+      },
+      firstLabel: (weekday: string) => `${weekday} · dag 1 · banken`,
+      firstHeading: 'Första mötet med banken',
+      firstOpening: 'Mentorn sa att du gjorde provet i dag. Låt mig se.',
+      firstVerdict: {
+        vinbar: 'Det räcker för ett rum med bord. Banken vågar vinbaren.',
+        foodtruck: 'Det räcker för att börja, men inte för ett rum med bord.',
+        restaurang: 'Det räcker för att börja.',
+        olkrog: 'Det räcker för ett rum med bord. Banken vågar ölkrogen.',
+        gastgiveri: 'Det räcker för att börja.',
+        nattklubb: 'Det räcker för att börja.'
+      },
+      firstNoteVinbar: 'Undantaget gäller bara första dagen. Därefter styr medaljerna, som för alla.',
+      firstNoteLater: 'Banken ser på det vid varje veckoavräkning.',
+      heading: 'Samtal med banken',
+      canChange: 'Går att byta till nu',
+      missing: 'Det som saknas',
+      stay: (cls: string) => `Stanna i ${cls}`
+    },
+    newspaper: {
+      toBank: 'Till banken'
+    },
+    house: {
+      medals: 'Medaljerna',
+      today: (level: string) => `${level} i dag`,
+      practiceLabel: 'Övning · ingen medalj står på spel',
+      yourAnswer: 'Ditt svar',
+      practiceHeading: 'Övningen är klar',
+      examHeading: 'Provet är klart',
+      practiceDone: 'Bra övat.',
+      practiceCredits: 'Varje rätt svar gav en kredit.',
+      passed: (level: string, pavilion: string) => `Godkänt. ${level} i ${pavilion}.`,
+      almost: 'Nästan.',
+      waited: (n: number, word: string) => `${word} ${n === 1 ? 'fråga fick' : 'frågor fick'} vänta.`,
+      need: (need: string, total: string) => `Det behövs ${need} rätt av ${total}. Ett nytt prov drar nya frågor.`,
+      boxesAria: (correct: number, total: number) => `${correct} av ${total} rätt`,
+      toMedals: 'Till medaljerna',
+      newMedal: 'Ny medalj',
+      medalTitle: (level: string, pavilion: string) => `${level} i ${pavilion}`,
+      medalCaption: (level: string, pavilion: string) => `${level} · ${pavilion}`,
+      continue: 'Fortsätt'
+    }
   },
   // ORDER 265 (Nexus v1 etapp 3) — ekonomin och banken.
   economy: {
@@ -735,5 +824,78 @@ export const strings = {
       out: 'SLUT'
     },
     verifyBadge: 'GRÅSKISS — © OpenStreetMap-bidragsgivare (ODbL) · byggnadshöjder och material stiliserade'
+  },
+  // ORDER 271 — Designs paket 6 (servicen som raketer): raketkortet R1–R3,
+  // mätarna, kvällens lärdom L1, kvällsberättelsen K1 och rutan X1.
+  rocket: {
+    card: {
+      rocketOf: (n: string, total: string) => `Raket ${n} av ${total}`,
+      table: (n: string) => `Bord ${n}`,
+      room: 'Rummet',
+      stepCleared: (ask: string) => `${ask} · klar ✓`,
+      stepCurrent: (ask: string, sec: string) => `${ask} · ${sec} s · pågår`,
+      stepNext: (sec: string) => `Nästa · ${sec} s`,
+      stepAhead: (ask: string, sec: string) => `${ask} · ${sec} s`,
+      stepFailed: (ask: string) => `${ask} · fel`,
+      stepUnreached: 'Nås inte',
+      stepAsks: { episteme: 'Vad', techne: 'Hur', phronesis: 'När och varför' } as Record<string, string>,
+      right: (next: string) => `Rätt · vidare till ${next}`,
+      rightDone: 'Rätt · raketen höll',
+      wrong: (role: string) => `Fel · ${role} tar över`,
+      correctTag: 'Rätt',
+      yourTag: 'Ditt svar',
+      timedOut: 'Tiden gick ut innan du svarade.',
+      footer: (role: string) => `Tangent 1–4 väljer. Rummet väntar inte. Går tiden ut räknas det som fel svar, och ${role} tar över.`,
+      secondsLeft: (sec: string) => `${sec} sekunder kvar`,
+      takeover: (role: string) => `${role} tar över`
+    },
+    meters: {
+      cash: 'Kassa',
+      guests: 'Gästerna',
+      staff: 'Personalen',
+      note: 'Tio steg per mätare. Riktning, inte belopp.',
+      delta: (name: string, sign: string, n: string) => `${name} ${sign}${n}`,
+      sentence: (parts: string) => `${parts}.`,
+      nothing: 'Mätarna står still.'
+    },
+    lesson: {
+      label: (weekday: string, hour: string) => `${weekday} · Stängt ${hour}.00 · Kvällens lärdom`,
+      wentWrong: (clock: string, step: string, ask: string) => `Det som gick fel · ${clock} · ${step}, ${ask}`,
+      also: (clock: string, step: string, ask: string) => `Också · ${clock} · ${step}, ${ask}`,
+      question: (q: string) => `Frågan: ${q}`,
+      youChose: (label: string) => `Du valde: ${label}.`,
+      staffDecided: 'Du svarade inte i tid, och personalen beslutade själv.',
+      right: (label: string) => `Rätt var: ${label}.`,
+      noneTitle: 'Varje raket höll',
+      gridRocket: 'Raket',
+      legendCleared: '✓ klarat',
+      legendFailed: '✗ fel, personalen tog över',
+      legendUnreached: '— nåddes inte',
+      cellCleared: 'klarat',
+      cellFailed: 'fel, personalen tog över',
+      cellUnreached: 'nåddes inte',
+      summary: (n: string, total: string) => `${n} av ${total} steg klarade i kväll.`,
+      practice: (pavilion: string) => `Öva i ${pavilion} i morgon`,
+      toStory: 'Till kvällsberättelsen'
+    },
+    story: {
+      label: (weekday: string, hour: string) => `${weekday} kväll · Stängt ${hour}.00`,
+      title: (weekday: string, business: string) => `${weekday} i ${business}`,
+      weekdayDefinite: { mon: 'Måndagen', tue: 'Tisdagen', wed: 'Onsdagen', thu: 'Torsdagen', fri: 'Fredagen', sat: 'Lördagen', sun: 'Söndagen' } as Record<string, string>,
+      evening: 'Kvällen',
+      wentWell: 'Det som gick bra',
+      wentWrong: 'Det som gick fel',
+      cause: (why: string) => `Orsak: ${why}`,
+      noCause: 'Orsak: inget svar i tid, och personalen fick besluta själv.',
+      nothingWell: 'Ingen raket höll hela vägen i kväll.',
+      nothingWrong: 'Inget gick fel i kväll.',
+      back: 'Tillbaka till lärdomen'
+    },
+    stranded: {
+      label: 'Ingen verksamhet · ingen kassa',
+      medals: 'Dina medaljer finns kvar. Det du har lärt dig tas aldrig ifrån dig.',
+      cashShort: 'Kassan räcker inte till en ny insats.',
+      toHouse: 'Gå till Måltidens hus'
+    }
   }
 } as const;

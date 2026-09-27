@@ -1051,7 +1051,8 @@ export function InteriorStaff() {
     }
   });
 
-  if (!layout || !stations) return null;
+  // ORDER 271 — vinbarens personal ritas av WineBarFigures (Designs koreografi).
+  if (!layout || !stations || sim.businessClass === 'vinbaren') return null;
 
   const rhythm = sim.day.serviceRhythm;
   const showRing = rhythm !== null;

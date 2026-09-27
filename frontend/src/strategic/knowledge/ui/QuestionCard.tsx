@@ -1,16 +1,23 @@
 // ORDER 264 (Nexus v1 etapp 2) — en fråga som en replik, med förklaring.
+// ORDER 271 — formen efter Designs skärm O1 (paket 1, "Öva: frågeställaren
+// förklarar efter fel svar"): frågan som rubrik, fyra svar i ett rutnät,
+// förklaringen störst efter svaret. Fel svar streckat och grått, aldrig
+// rött (LEVERANSNOT §3). Frågeställarens porträtt och namn står i
+// vänsterspalten (MaltidensHusDialog).
 //
 // Speldesign > Öva och pröva: "Förklaringen efter varje svar är det
 // viktigaste i hela kunskapssystemet. Den gör ett fel svar till något
 // spelaren lär sig av." Frågan ställs av någon i rummet (FRÅGESTÄLLARE),
-// inte som en tentamensfråga. Används av paviljongsbesöken och av
-// quizen efter servicen.
+// inte som en tentamensfråga. Används av paviljongsbesöken.
 
 import { useEffect, useState } from 'react';
 import { strings } from '../../../content/strings.sv';
 import type { BankQuestion } from '../questionBank';
 import { TIMED_OUT } from '../pavilionVisit';
 import { ReferenceLine } from './ReferenceLine';
+import { NxButton } from '../../ui/system/components';
+import { NxIcon } from '../../ui/screens/icons';
+import '../../ui/screens/screens.css';
 
 interface Props {
   question: BankQuestion;
@@ -23,41 +30,22 @@ interface Props {
   // ORDER 270 — provet är på tid (EXAM.secondsPerQuestion, verklig tid).
   // Övningen har ingen tid.
   secondsPerQuestion?: number;
+  // ORDER 271 — raden överst (O1: "Övning · ingen medalj står på spel").
+  label?: string;
+  // En rad till vänster om knappen längst ned.
+  note?: string;
 }
 
 const LETTERS = ['A', 'B', 'C', 'D'];
 
-const OPTION_STYLE: React.CSSProperties = {
-  display: 'block',
-  width: '100%',
-  textAlign: 'left',
-  padding: '10px 12px',
-  minHeight: 44,
-  marginTop: 8,
-  background: '#3c2c1e',
-  color: '#f5f0e0',
-  border: '1px solid #a8926a',
-  borderRadius: 3,
-  font: 'inherit',
-  fontSize: 14,
-  lineHeight: 1.35,
-  cursor: 'pointer'
-};
+type OptionState = 'open' | 'correct' | 'wrong' | 'other';
 
-const NEXT_STYLE: React.CSSProperties = {
-  ...OPTION_STYLE,
-  width: 'auto',
-  display: 'inline-block',
-  fontWeight: 600,
-  marginTop: 12
-};
-
-function optionStyle(i: number, props: Props): React.CSSProperties {
+function optionState(i: number, props: Props): OptionState {
   const a = props.answered;
-  if (!a) return OPTION_STYLE;
-  if (i === props.question.correctIndex) return { ...OPTION_STYLE, background: '#2f4a2c', borderColor: '#8fc27f', cursor: 'default' };
-  if (i === a.chosenIndex) return { ...OPTION_STYLE, background: '#4a2a24', borderColor: '#c9806f', cursor: 'default' };
-  return { ...OPTION_STYLE, opacity: 0.55, cursor: 'default' };
+  if (!a) return 'open';
+  if (i === props.question.correctIndex) return 'correct';
+  if (i === a.chosenIndex) return 'wrong';
+  return 'other';
 }
 
 // Nedräkningen startar om för varje fråga; när den når noll skickas
@@ -89,46 +77,75 @@ function useQuestionTimer(props: Props): number | null {
 export function QuestionCard(props: Props) {
   const { question, answered } = props;
   const left = useQuestionTimer(props);
+  const k = strings.knowledge;
+  const asker = k.askers[question.asker];
   return (
-    <div data-testid="question-card">
-      <div style={{ fontSize: 11, letterSpacing: 1.2, textTransform: 'uppercase', opacity: 0.7 }}>
-        {strings.knowledge.questionOf(props.index + 1, props.total)}
-        {left !== null && !answered && (
-          <span style={{ float: 'right', fontVariantNumeric: 'tabular-nums', fontWeight: 600, color: left <= 5 ? '#d0694e' : undefined }} data-testid="question-countdown">
-            {strings.knowledge.secondsLeft(String(Math.ceil(left)))}
-          </span>
-        )}
-      </div>
-      <p style={{ margin: '6px 0 0', fontSize: 15, lineHeight: 1.45 }} data-testid="question-prompt">
-        <strong>{strings.knowledge.askers[question.asker]}:</strong> {question.prompt}
-      </p>
-      {question.options.map((opt, i) => (
-        <button
-          key={i}
-          type="button"
-          style={optionStyle(i, props)}
-          disabled={answered !== null}
-          data-testid={`option-${i}`}
-          onClick={() => props.onAnswer(i)}
-        >
-          <strong style={{ marginRight: 8 }}>{LETTERS[i]}</strong>
-          {opt}
-        </button>
-      ))}
-      {answered && (
-        <div style={{ marginTop: 12 }} data-testid="explanation">
-          <strong>
-            {answered.correct ? strings.knowledge.right : answered.chosenIndex === TIMED_OUT ? strings.knowledge.timedOut : strings.knowledge.wrong}
-          </strong>{' '}
-          {question.explanation}
-          <ReferenceLine reference={question.reference} />
-          <div>
-            <button type="button" style={NEXT_STYLE} data-testid="next-question" onClick={props.onNext}>
-              {props.nextLabel}
-            </button>
+    <div className="nx" data-testid="question-card" style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+      <div className="nxs-row-between" style={{ alignItems: 'center', paddingBottom: 'calc(24 * var(--nx-u))', borderBottom: 'var(--nx-line) solid var(--nx-ink)' }}>
+        <div className="nx-label nx-accent-text">
+          {props.label ? <>{props.label} · </> : null}
+          <span data-testid="question-of">{k.questionOf(props.index + 1, props.total)}</span>
+        </div>
+        <div className="nxs-row" style={{ gap: 'calc(24 * var(--nx-u))' }}>
+          {left !== null && !answered && (
+            <span className="nxs-countdown" data-low={left <= 5} data-testid="question-countdown">
+              {k.secondsLeft(String(Math.ceil(left)))}
+            </span>
+          )}
+          <div className="nxs-progress" aria-hidden>
+            {Array.from({ length: props.total }, (_, i) => (
+              <span key={i} data-state={i < props.index || (i === props.index && answered) ? 'done' : i === props.index ? 'now' : 'later'} />
+            ))}
           </div>
         </div>
+      </div>
+      <h2 className="nx-mid nxs-mt-40" data-testid="question-prompt">
+        <span className="nxs-sr">{asker}: </span>
+        <span className="nxs-quote-mark">{question.prompt}</span>
+      </h2>
+      <div className="nxs-options">
+        {question.options.map((opt, i) => {
+          const state = optionState(i, props);
+          return (
+            <button
+              key={i}
+              type="button"
+              className="nxs-option"
+              data-state={state}
+              disabled={answered !== null}
+              data-testid={`option-${i}`}
+              onClick={() => props.onAnswer(i)}
+            >
+              <span className="nxs-option-letter">{LETTERS[i]}</span>
+              <span style={{ flex: 1 }}>{opt}</span>
+              {answered && i === answered.chosenIndex && state !== 'correct' && (
+                <span className="nx-label nxs-tag">{strings.screens.house.yourAnswer}</span>
+              )}
+              {state === 'correct' && <NxIcon name="check" size={32} />}
+            </button>
+          );
+        })}
+      </div>
+      {answered && (
+        <div className="nxs-explain" data-testid="explanation">
+          <div className="nx-label nx-accent-text">{asker}</div>
+          <p className="nx-body nxs-mt-8" style={{ fontSize: 'calc(30 * var(--nx-u))' }}>
+            <strong>
+              {answered.correct ? k.right : answered.chosenIndex === TIMED_OUT ? k.timedOut : k.wrong}
+            </strong>{' '}
+            {question.explanation}
+          </p>
+          <ReferenceLine reference={question.reference} />
+        </div>
       )}
+      <div className="nxs-foot" style={{ marginTop: 'auto', paddingTop: 'calc(24 * var(--nx-u))' }}>
+        <p className="nx-small nx-muted">{props.note ?? ''}</p>
+        {answered && (
+          <div className="nxs-btn-primary-w">
+            <NxButton testId="next-question" onClick={props.onNext} autoFocus>{props.nextLabel}</NxButton>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

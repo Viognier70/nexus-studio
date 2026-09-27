@@ -1266,6 +1266,15 @@ function windowsFor(b: Extruded): Array<{
   return out;
 }
 
+// ORDER 271 — samma urval och samma volym som renderingen, för vinbarens
+// kameraprov med grannhusen (wineBarRoom.checkCameraView `extra`).
+export function isRenderedByOsmBuildings(b: RawBuilding): boolean {
+  return !LANDMARK_BUILDING_IDS.has(b.id) && b.kind !== 'church' &&
+    !SKIP_PROCEDURAL_IDS.has(b.id) && !BUILDINGS_ON_ROADS.has(b.id);
+}
+export type OsmBuildingVolume = Extruded;
+export const osmBuildingVolume: (b: RawBuilding) => OsmBuildingVolume | null = toExtruded;
+
 export function OsmBuildings() {
   const buildings = useMemo(
     () =>

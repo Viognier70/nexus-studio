@@ -1060,7 +1060,8 @@ export function InteriorGuests() {
     }
   });
 
-  if (!layout) return null;
+  // ORDER 271 — vinbarens gäster ritas av WineBarFigures (Designs koreografi).
+  if (!layout || sim.businessClass === 'vinbaren') return null;
 
   return (
     <group ref={groupRef} visible={false}>

@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { BusinessProvider } from './business/BusinessContext';
 import { InvestmentPanel } from './business/InvestmentPanel';
-import { MorningActivityPanel } from './business/MorningActivityPanel';
-import { MorningMenuPanel } from './business/MorningMenuPanel';
 import { PlatesRemainingPanel } from './business/PlatesRemainingPanel';
 import { PrepPanel } from './business/PrepPanel';
 import { ScaleDownPanel } from './business/ScaleDownPanel';
@@ -67,7 +65,6 @@ export function StrategicApp({ startIntroduction = false, onNewGame }: Strategic
         <SimulationProvider seed={harnessParams.seed ?? undefined} startIntroduction={startIntroduction}>
           <SaveProvider>
             <StrategicShell />
-            <MentorPanel />
             <NameEntryOverlay onNewGame={onNewGame} />
             <SaveMenu />
           </SaveProvider>
@@ -289,10 +286,19 @@ function StrategicShell() {
       />
       <NoBusinessBox hidden={houseOpen || bankOpen} onOpenHouse={() => setHouseOpen(true)} onOpenBank={() => setBankOpen(true)} />
       <BankDialog open={bankOpen} onClose={() => setBankOpen(false)} />
-      <NewspaperDialog open={newspaper.open} onClose={newspaper.close} />
+      <NewspaperDialog
+        open={newspaper.open}
+        onClose={newspaper.close}
+        onOpenBank={() => {
+          newspaper.close();
+          setBankOpen(true);
+        }}
+      />
       <EveningBar />
       <IncidentCard />
       <MaltidensHusDialog open={houseOpen} onClose={() => setHouseOpen(false)} />
+      {/* ORDER 271 — mentorn (M1/M2) inne i .gb-root, så att banken, huset och tidningen ligger över den. */}
+      <MentorPanel />
       {/*
         ORDER 090 §6 — panels flow inside two PanelColumns instead of
         each picking its own `position: absolute; top: N` value. See
@@ -317,7 +323,7 @@ function StrategicShell() {
         </PanelRow>
       </PanelColumn>
       <PanelColumn side="right">
-        <MorningActivityPanel />
+        {/* ORDER 271 — satsningarna och menyn ligger i morgonens schema (DayActionBar, S1). */}
         <ServiceMeters />
         <EventStreamPanel />
         {/*
@@ -336,7 +342,6 @@ function StrategicShell() {
         */}
 
       </PanelColumn>
-      <MorningMenuPanel />
       <PlatesRemainingPanel />
       <PrepPanel />
       <AgencyOfferPanel />

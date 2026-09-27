@@ -91,3 +91,7 @@ function apply(
     (camera as THREE.PerspectiveCamera).updateProjectionMatrix();
   }
 }
+
+// ORDER 271 — exporterad så att vinbarens kameraprov (scene/__tests__/
+// wineBarRoom.test.ts) ställer kameran med samma funktion som spelet.
+export { apply as applyCameraState };

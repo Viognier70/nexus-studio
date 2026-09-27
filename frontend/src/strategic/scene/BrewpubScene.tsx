@@ -21,8 +21,8 @@
 // updateRoom-kommentaren). Filnamnet behålls: många kommentarer pekar
 // hit.
 
-import { useEffect, useRef, useState } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useSimState } from '../simulation/SimulationProvider';
 import { usePlayerBusinessInterior } from '../business/interiorLayout';
@@ -34,25 +34,36 @@ import {
   resolveWalkPathsToSeatsWorld,
   updateRoom,
   setShellOpacity,
+  shellOpacityForDistance,
+  roomSizeFor,
   type BusinessRoom
 } from './businessRoom';
 import { disposeBrewpubGeometry } from './brewpubRoom';
-import { disposeWineBarGeometry, PLINTH_M as WINE_BAR_PLINTH_M } from './wineBarRoom';
+import {
+  disposeWineBarGeometry,
+  PLINTH_M as WINE_BAR_PLINTH_M,
+  LIGHT_MOODS,
+  setMood,
+  setWineWallLevel,
+  updateCutaway,
+  updateWineBarRoom,
+  type MoodId,
+  type WineBarRoom,
+  type WineWallLevel
+} from './wineBarRoom';
+import { WineBarFigures } from './WineBarFigures';
+import { calendarFor } from '../../sim/calendar';
+import { clockMinutes } from '../../sim/incidents';
+import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import type { SimulationState } from '../types';
 import { businessRoomRef } from './interiorSharedState';
 import { buildNav, type XZ } from './roomNav';
 import { useCamera } from '../camera/CameraContext';
-import { GRAY_BOX_CAMERA } from '../content/grythyttan';
 import { IndoorLamps } from './IndoorLamps';
 import type { Vec2 } from './businessRoom';
 
-// ORDER 184 — samma smoothstep-formel som PlayerBusinesss roof-fade,
-// så brewpubRoom-skalet försvinner i takt med PlayerBusinesss egna
-// (skippade) skal. Duplicerad från PlayerBusiness.tsx tills en delad
-// util-modul motiveras.
-function smoothstep(a: number, b: number, x: number): number {
-  const t = Math.max(0, Math.min(1, (x - a) / (b - a)));
-  return t * t * (3 - 2 * t);
-}
+// ORDER 184 — skalets tonning: businessRoom.shellOpacityForDistance (samma
+// smoothstep som PlayerBusiness roof-fade; flyttad dit i ORDER 271).
 
 // ORDER 201 fynd 1 — brewpubRoom lägger golv-slabben på Y=0.11 (onamngiven
 // i brewpubRoom, PLINTH_M i övriga rumsfiler).
@@ -82,6 +93,17 @@ function ContractRoomScene({ roomClass, plinth, disposeGeometry }: ContractRoomS
   const isBrewpub = sim.businessClass === roomClass;
   // ORDER 249 §2 — bord-positioner för IndoorLamps.
   const [tables, setTables] = useState<readonly Vec2[]>([]);
+  // ORDER 271 — vinbarens rum för figurerna (monteras efter rummet).
+  const [wineBar, setWineBar] = useState<WineBarRoom | null>(null);
+  const { camera } = useThree();
+  const reducedMotion = usePrefersReducedMotion();
+  const isWineBar = roomClass === 'vinbaren';
+  // ORDER 271 — kvällens stämning och vinväggens läge ur simuleringen.
+  const mood = isWineBar ? wineBarMood(sim) : 'tidig';
+  const wallLevel: WineWallLevel = sim.medals?.stensota === 'platina' ? 'platina' : 'bas';
+  const cutRef = useRef({ yaw: NaN, x: NaN, z: NaN, d: NaN });
+  const appliedRef = useRef<{ mood: MoodId | null; wall: WineWallLevel | null }>({ mood: null, wall: null });
+  const djPlaying = useMemo(() => LIGHT_MOODS[mood].djPlaying, [mood]);
 
   useEffect(() => {
     if (!isBrewpub) return;
@@ -91,10 +113,7 @@ function ContractRoomScene({ roomClass, plinth, disposeGeometry }: ContractRoomS
     // createRoom via businessRoom-kontraktet. Skickar in width/depth ur
     // interiorLayout så brewpubRoom bygger geometri i samma format
     // sim-lagret räknar i (OBB w869907975).
-    const room = createRoom(roomClass, {
-      width: layout.width,
-      depth: layout.depth
-    });
+    const room = createRoom(roomClass, roomSizeFor(roomClass, layout.width, layout.depth));
     room.group.position.set(layout.centre[0], 0, layout.centre[1]);
     room.group.rotation.y = -layout.worldAngle;
     grp.add(room.group);
@@ -109,6 +128,7 @@ function ContractRoomScene({ roomClass, plinth, disposeGeometry }: ContractRoomS
     // kraschade när spelaren bytte till ölkrogen i banken. Inga bord,
     // inga bordslampor.
     setTables((world.tables ?? []) as Vec2[]);
+    if (roomClass === 'vinbaren') setWineBar(room.raw as WineBarRoom);
     // ORDER 204 — `resolveStaffStationsWorld` + `staffStationsByRole`
     // borttagna. Kontraktet publicerar `stations` (raw `staffStations`
     // världs-XZ, i deklarationsordning) och InteriorStaff läser den
@@ -218,6 +238,9 @@ function ContractRoomScene({ roomClass, plinth, disposeGeometry }: ContractRoomS
       if (businessRoomRef.current?.businessClass === roomClass) {
         businessRoomRef.current = null;
       }
+      setWineBar(null);
+      appliedRef.current = { mood: null, wall: null };
+      cutRef.current = { yaw: NaN, x: NaN, z: NaN, d: NaN };
     };
   }, [isBrewpub, layout, roomClass]);
 
@@ -227,20 +250,39 @@ function ContractRoomScene({ roomClass, plinth, disposeGeometry }: ContractRoomS
     };
   }, [disposeGeometry]);
 
-  useFrame(() => {
+  useFrame((state) => {
     const room = roomRef.current;
     if (!room) return;
-    updateRoom(room, 0);
+    if (roomClass === 'vinbaren') {
+      const raw = room.raw as WineBarRoom;
+      // Stämningen och vinväggen byts bara när värdet ändras.
+      if (appliedRef.current.mood !== mood) { setMood(raw, mood); appliedRef.current.mood = mood; }
+      if (appliedRef.current.wall !== wallLevel) { setWineWallLevel(raw, wallLevel); appliedRef.current.wall = wallLevel; }
+      // Skivtallriken går när DJ:n spelar (helgstämningen), ljuslågorna
+      // fladdrar. Inget av det vid reducerad rörelse.
+      const tSec = state.clock.elapsedTime;
+      updateWineBarRoom(raw, djPlaying && !reducedMotion ? (tSec * 0.55) % 1 : 0, reducedMotion ? undefined : tSec);
+      // Väggarna på kamerasidan kapas när kameran vridits eller flyttats,
+      // inte varje bildruta (wineBarRoom FLAGS.cutaway).
+      const a = actualRef.current;
+      const c = cutRef.current;
+      if (!(Math.abs(a.yaw - c.yaw) < 0.02 && Math.abs(a.focus.x - c.x) < 0.5 && Math.abs(a.focus.z - c.z) < 0.5 && Math.abs(a.distance - c.d) < 1)) {
+        updateCutaway(raw, camera);
+        cutRef.current = { yaw: a.yaw, x: a.focus.x, z: a.focus.z, d: a.distance };
+      }
+    } else {
+      updateRoom(room, 0);
+    }
     // ORDER 184 — samma roof-fade som PlayerBusiness hade före den
     // skippades vid contract-monterat läge. Vid distance ≤ 28 m är
     // skalet helt borta; över 52 m helt opakt.
     const dist = actualRef.current.distance;
-    const shellOpacity = smoothstep(
-      GRAY_BOX_CAMERA.restaurantRoofFadeMid - GRAY_BOX_CAMERA.restaurantRoofFadeHalf,
-      GRAY_BOX_CAMERA.restaurantRoofFadeMid + GRAY_BOX_CAMERA.restaurantRoofFadeHalf,
-      dist
-    );
+    const shellOpacity = shellOpacityForDistance(dist);
     setShellOpacity(room, shellOpacity);
+    // ORDER 271 — vinbarens tak döljs helt när det tonats bort, så att det
+    // inte fångar skuggan och kameraprovet (checkCameraView läser `visible`)
+    // ser samma rum som spelaren.
+    if (roomClass === 'vinbaren') (room.raw as WineBarRoom).parts.roof.visible = shellOpacity > 0.01;
   });
 
   if (!isBrewpub) return null;
@@ -248,6 +290,18 @@ function ContractRoomScene({ roomClass, plinth, disposeGeometry }: ContractRoomS
     <>
       <group ref={groupRef} />
       <IndoorLamps tables={tables} />
+      {isWineBar && wineBar && <WineBarFigures room={wineBar} mood={mood} />}
     </>
   );
+}
+
+// ORDER 271 — kvällens två stämningar (wineBarRoom FLAGS.mood): 'helg' en
+// fredag eller lördag från klockan 21 i speltid, annars 'tidig'. Designs
+// två bilder är tisdag klockan sex och lördag klockan elva; gränsen 21.00
+// är vårt val.
+export const WINE_BAR_HELG_FROM_MINUTES = 21 * 60;
+export function wineBarMood(sim: SimulationState): MoodId {
+  const weekday = calendarFor(sim.day.dayNumber).weekday;
+  if (weekday !== 'fri' && weekday !== 'sat') return 'tidig';
+  return clockMinutes(sim) >= WINE_BAR_HELG_FROM_MINUTES ? 'helg' : 'tidig';
 }

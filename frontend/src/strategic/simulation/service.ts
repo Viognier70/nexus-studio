@@ -189,15 +189,14 @@ const SEATS_OLKROGEN = [
   8, 9, 10, 11                     // twotop (sist)
 ];
 
-// ORDER 267 — vinbaren (wineBarRoom.ts): 0-7 två lounger om fyra,
-// 8-13 tre tvåbord, 14-19 sex barstolar. Samma form som restaurangen:
-// tvåbord först, sedan baren, loungerna sist så att de hålls lediga för
-// sällskap. Utan egen lista föll vinbaren på SEATS_DEFAULT och fick
-// bara sexton av sina tjugo platser.
+// ORDER 267 — vinbaren (wineBarRoom.ts). ORDER 271 — rummet ur Designs
+// paket 1: 0-5 två lounger om tre dynor, 6-11 tre tvåbord, 12-19 åtta
+// barstolar (fyra per långsida). Samma form som förut: tvåbord först,
+// sedan baren, loungerna sist så att de hålls lediga för sällskap.
 const SEATS_VINBAREN = [
-  8, 9, 10, 11, 12, 13,            // tvåbord
-  14, 15, 16, 17, 18, 19,          // bar
-  0, 1, 2, 3, 4, 5, 6, 7           // lounger
+  6, 7, 8, 9, 10, 11,              // tvåbord
+  12, 13, 14, 15, 16, 17, 18, 19,  // bar
+  0, 1, 2, 3, 4, 5                 // lounger
 ];
 
 function seatsPreferenceFor(businessClass: BusinessClass): readonly number[] {
@@ -236,8 +235,10 @@ const SEAT_GROUPS_KVARTERSKROGEN: readonly (readonly number[])[] = [
   [0, 1], [2, 3], [4, 5, 6, 7], [8, 9], [10, 11], [12, 13, 14, 15]
 ];
 
+// ORDER 271 — grupperna följer möblerna i wineBarRoom.ts (furnitureId):
+// loungeATable, loungeBTable, twoA-C, barCounterN, barCounterS.
 const SEAT_GROUPS_VINBAREN: readonly (readonly number[])[] = [
-  [0, 1, 2, 3], [4, 5, 6, 7], [8, 9], [10, 11], [12, 13], [14, 15, 16, 17, 18, 19]
+  [0, 1, 2], [3, 4, 5], [6, 7], [8, 9], [10, 11], [12, 13, 14, 15], [16, 17, 18, 19]
 ];
 
 function seatGroupsFor(businessClass: BusinessClass): readonly (readonly number[])[] {

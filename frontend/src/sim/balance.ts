@@ -334,6 +334,16 @@ export const UPGRADE = {
   reputationFactor: 0.5
 } as const;
 
+// ORDER 271 (Vision Owner, FRAGOR §50): rutan utan verksamhet och pengar
+// (Design paket 6, X1) visas när spelaren saknar verksamhet och kassan är
+// under minsta insats: en fjärdedel av en veckas golv, som kontantinsatsen
+// i ORDER 268. Golvet räknas i den billigaste klass spelaren kan starta,
+// med minst de medaljer klassens krav begär (utan medaljer är golvet noll).
+export const NO_BUSINESS = {
+  section: 'Ekonomin > Lånet',
+  minimumStakeShareOfWeekFloor: UPGRADE.depositShareOfWeekFloor
+} as const;
+
 // ORDER 268 (F37) — personalen följer verksamheten. Speldesignen säger
 // att "personalen får följa med" vid uppgradering, men inte hur många
 // en mindre klass bär. Vid nedgradering behåller spelaren de roller
@@ -410,6 +420,18 @@ export const INCIDENTS = {
   fallbackTables: 10,
   // Svarets rad i rummet syns så här länge (spelsekunder).
   outcomeBubbleSimSeconds: 14,
+  // ORDER 271 (Design paket 6, R2/R3): efter ett svar visas rätt och fel i
+  // kortet så här många sekunder (verklig tid) innan nästa steg öppnas på
+  // full tid, eller kortet stängs.
+  revealSeconds: 2.4,
+  // ORDER 271 (Vision Owner, FRAGOR §49): vid fel tar den ordinarie
+  // personalen i rollen över och lämnar sin uppgift, så att andra bord
+  // får vänta synligt. Rollen per steg: kunskapen och hantverket följer
+  // spåret (kök → kocken, sommellerie → servitören), omdömet i rummet
+  // hör till värden. Så här länge (spelsekunder) är den personen borta
+  // från sin uppgift.
+  takeoverRole: { kok: 'kock', sommellerie: 'servitör', phronesis: 'värd' } as Record<string, StaffRole>,
+  takeoverSimSeconds: 30,
   // Gäster som går efter ett svar går mot samma utgång som i service.ts.
   exitZ: 8,
   // Klockan i händelsernas text och lägen ("20.30").

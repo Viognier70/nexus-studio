@@ -1,12 +1,12 @@
 // ORDER 075 (M2) — morning activity picker panel.
+// ORDER 271 — formen efter Designs S1 (paket 1): satsningarna som en
+// lista i morgonens schema (scenario/DayActionBar.tsx), namn och en rad
+// om vad satsningen gör. Inga siffertavlor (LEVERANSNOT §3): effekterna
+// står kvar i ACTIVITY_CATALOGUE och verkar som förut, men visas inte
+// som tal.
 //
-// Renders one card per activity in ACTIVITY_CATALOGUE. Each card
-// shows the three-column effect (economic / social / ecological)
-// as three labelled numeric fields — the numbers ARE the teaching
-// per ORDER 050 §4, no card labels itself as "serving" any one
-// sustainability. Click to pick/unpick; cap enforced by reducer.
-// Visible only during morning; hidden during service and later
-// periods.
+// Click to pick/unpick; cap enforced by reducer. Visible only during
+// morning; hidden during service and later periods.
 
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 import {
@@ -17,90 +17,8 @@ import {
 import { strings } from '../../content/strings.sv';
 import { scheduleSlotsUsed } from '../knowledge/pavilionVisit';
 import type { Activity } from '../simulation/activities';
-
-// ORDER 090 §6 — was `top: 72, right: 20`; parent RIGHT PanelColumn
-// now owns the anchor. Morning-only, first child of the right column
-// during the morning; unmounts at service start so EventStream /
-// Instruments / RoomCard slide up into the same anchor without any
-// hardcoded top offset to reconcile.
-const PANEL_STYLE: React.CSSProperties = {
-  width: 340,
-  padding: '10px 14px',
-  background: 'rgba(20, 14, 10, 0.62)',
-  color: '#f0e8d4',
-  border: '1px solid rgba(168, 146, 106, 0.35)',
-  borderRadius: 3,
-  fontFamily: 'system-ui, sans-serif',
-  fontSize: 13,
-  zIndex: 33,
-  pointerEvents: 'auto'
-};
-
-const HEADING_STYLE: React.CSSProperties = {
-  fontSize: 10,
-  letterSpacing: 1.4,
-  textTransform: 'uppercase',
-  opacity: 0.62,
-  marginBottom: 8
-};
-
-const SUB_STYLE: React.CSSProperties = {
-  fontSize: 11,
-  opacity: 0.55,
-  marginBottom: 10
-};
-
-const CARD_STYLE = (picked: boolean, disabled: boolean): React.CSSProperties => ({
-  padding: '8px 10px',
-  marginBottom: 6,
-  background: picked ? 'rgba(216, 190, 130, 0.18)' : 'rgba(30, 20, 15, 0.55)',
-  border: `1px solid ${picked ? 'rgba(216, 190, 130, 0.55)' : 'rgba(168, 146, 106, 0.28)'}`,
-  borderRadius: 3,
-  cursor: disabled ? 'not-allowed' : 'pointer',
-  opacity: disabled ? 0.45 : 1
-});
-
-const CARD_NAME_STYLE: React.CSSProperties = {
-  fontSize: 13,
-  fontWeight: 600,
-  marginBottom: 2
-};
-
-const CARD_DESC_STYLE: React.CSSProperties = {
-  fontSize: 11,
-  opacity: 0.75,
-  marginBottom: 6,
-  lineHeight: 1.35
-};
-
-const EFFECT_ROW_STYLE: React.CSSProperties = {
-  display: 'grid',
-  gridTemplateColumns: '1fr 1fr 1fr',
-  gap: 6,
-  fontSize: 11,
-  fontFamily: 'ui-monospace, "SF Mono", Menlo, Consolas, monospace'
-};
-
-const EFFECT_CELL_STYLE = (v: number): React.CSSProperties => ({
-  padding: '2px 4px',
-  background: 'rgba(0,0,0,0.25)',
-  borderRadius: 2,
-  color: v > 0 ? '#c6dfa8' : v < 0 ? '#e8b498' : 'rgba(240, 232, 212, 0.55)'
-});
-
-function formatSek(v: number): string {
-  if (v === 0) return '0';
-  const sign = v >= 0 ? '+' : '−';
-  const abs = Math.abs(v);
-  if (abs < 1000) return `${sign}${abs}`;
-  return `${sign}${(abs / 1000).toFixed(1).replace('.', ',')} ${strings.panels.evening.thousandSuffix}`;
-}
-
-function formatCapital(v: number): string {
-  if (v === 0) return '0';
-  const sign = v >= 0 ? '+' : '−';
-  return `${sign}${Math.abs(v).toFixed(2)}`;
-}
+import { NxIcon, ACTIVITY_ICON } from '../ui/screens/icons';
+import '../ui/screens/screens.css';
 
 export function MorningActivityPanel() {
   const sim = useSimState();
@@ -120,61 +38,35 @@ export function MorningActivityPanel() {
   };
 
   return (
-    <div style={PANEL_STYLE} aria-label={strings.panels.activityEffects.panelAria}>
-      <div style={HEADING_STYLE}>{strings.morning.activitiesHeading}</div>
-      <div style={SUB_STYLE} data-testid="schedule-slots">
-        {strings.morning.slots(used, slots)}
-      </div>
+    <div className="nx" aria-label={strings.panels.activityEffects.panelAria} data-testid="morning-activities">
       {ACTIVITY_CATALOGUE.map((a) => {
         const picked = sim.day.pickedActivityIds.includes(a.id);
         const gated = isWeeklyGated(a);
         const disabled = !picked && (atCap || gated);
         return (
-          <div
+          <button
             key={a.id}
-            style={CARD_STYLE(picked, disabled)}
-            role="button"
-            tabIndex={disabled ? -1 : 0}
+            type="button"
+            className="nxs-list-row"
             aria-pressed={picked}
             aria-disabled={disabled}
+            data-testid={`activity-${a.id}`}
             onClick={() => {
               if (disabled) return;
               if (picked) dispatch({ type: 'UNPICK_ACTIVITY', id: a.id });
               else dispatch({ type: 'PICK_ACTIVITY', id: a.id });
             }}
-            onKeyDown={(e) => {
-              if (disabled) return;
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                if (picked) dispatch({ type: 'UNPICK_ACTIVITY', id: a.id });
-                else dispatch({ type: 'PICK_ACTIVITY', id: a.id });
-              }
-            }}
           >
-            <div style={CARD_NAME_STYLE}>
-              {a.name}
-              {a.availability === 'weekly' && (
-                <span style={{ opacity: 0.55, fontWeight: 400, marginLeft: 6, fontSize: 10 }}>
-                  · {strings.morning.weekly}
-                </span>
-              )}
-            </div>
-            <div style={CARD_DESC_STYLE}>{a.description}</div>
-            <div style={EFFECT_ROW_STYLE} aria-label={strings.panels.activityEffects.aria}>
-              <span style={EFFECT_CELL_STYLE(a.effect.economic)}>
-                <span style={{ opacity: 0.55, fontSize: 9, marginRight: 3 }}>{strings.panels.activityEffects.econ}</span>
-                {formatSek(a.effect.economic)}
+            <NxIcon name={ACTIVITY_ICON[a.id] ?? 'users'} size={32} />
+            <span style={{ flex: 1 }}>
+              <span className="nxs-row-title" style={{ display: 'block' }}>{a.name}</span>
+              <span className="nxs-row-sub" style={{ display: 'block' }}>
+                {a.description}
+                {a.availability === 'weekly' && <> · {strings.morning.weekly}</>}
               </span>
-              <span style={EFFECT_CELL_STYLE(a.effect.social)}>
-                <span style={{ opacity: 0.55, fontSize: 9, marginRight: 3 }}>{strings.panels.activityEffects.soc}</span>
-                {formatCapital(a.effect.social)}
-              </span>
-              <span style={EFFECT_CELL_STYLE(a.effect.ecological)}>
-                <span style={{ opacity: 0.55, fontSize: 9, marginRight: 3 }}>{strings.panels.activityEffects.ecol}</span>
-                {formatCapital(a.effect.ecological)}
-              </span>
-            </div>
-          </div>
+            </span>
+            {picked && <span className="nx-label nx-accent-text nxs-tag">{strings.screens.morning.picked}</span>}
+          </button>
         );
       })}
     </div>

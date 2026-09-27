@@ -22,7 +22,7 @@
 //
 // Talen står i `balance.ts` `INCIDENTS`; händelserna i händelsebanken.
 
-import type { Guest, KnowledgeAxis, SimulationState, YrkesSpar } from '../strategic/types';
+import type { Guest, KnowledgeAxis, SimulationState, StaffRole, YrkesSpar } from '../strategic/types';
 import { createRng } from '../strategic/util/rng';
 import { bumpMorale } from '../strategic/simulation/morale';
 import { applyCashDelta, postLedger } from '../strategic/simulation/cashReading';
@@ -68,6 +68,10 @@ export interface ActiveIncident {
   secondsLeft: number;
   // Ett fel alternativ i steget som spelarens medaljer strukit.
   struck: string[];
+  // ORDER 271 — det förra stegets svar visas (rätt) i `revealLeft`
+  // verkliga sekunder innan stegets nedräkning börjar.
+  revealed?: StepReveal | null;
+  revealLeft?: number;
   // Sant när händelsen kom som följd av ett tidigare val.
   chained: boolean;
   // Kvällens läge när händelsen kom (händelsens `situations`), annars null.
@@ -88,6 +92,15 @@ export interface IncidentRecord {
   at: number;
 }
 
+// ORDER 271 — ett svar i stunden (Design paket 6, R2/R3): valt svar,
+// det rätta, och om steget klarades.
+export interface StepReveal {
+  step: number;
+  optionId: string | null;
+  correctId: string;
+  cleared: boolean;
+}
+
 export interface IncidentDeltas {
   cashSek: number;
   satisfaction: number;
@@ -98,6 +111,10 @@ export interface IncidentDeltas {
 export interface IncidentOutcomeView {
   incidentId: string;
   optionId: string | null;
+  // ORDER 271 — steget där raketen föll (null när den klarades), svaret i
+  // stunden och vem i personalen som tog över (FRAGOR §49).
+  reveal?: StepReveal | null;
+  takeover?: { role: StaffRole; memberId: string | null; until: number } | null;
   text: string;
   at: number;
   deltas: IncidentDeltas;
@@ -420,6 +437,27 @@ function meanSatisfaction(guests: Guest[]): number | null {
   return guests.reduce((s, g) => s + g.satisfaction, 0) / guests.length;
 }
 
+
+// Det rätta svaret i steget, i kvällens läge.
+function correctOptionId(step: IncidentStep, situation: string | null): string {
+  return (step.options.find((o) => optionQuality(o, situation) === 'best') ?? step.options[0]).id;
+}
+
+// FRAGOR §49 (Vision Owner 2026-09-27): den ordinarie personalen i
+// stegets roll tar över och lämnar sin uppgift en stund.
+function takeoverFor(draft: SimulationState, incident: Incident, step: IncidentStep): { role: StaffRole; memberId: string | null; until: number } {
+  const key = step.axis === 'phronesis' ? 'phronesis' : incident.track;
+  const role = INCIDENTS.takeoverRole[key] ?? 'servitör';
+  const member = draft.team.members.find((m) => m.role === role) ?? draft.team.members[0] ?? null;
+  return { role: (member?.role as StaffRole) ?? role, memberId: member?.id ?? null, until: draft.simTime + INCIDENTS.takeoverSimSeconds };
+}
+
+// Är personalen borta från sin uppgift efter ett fel (FRAGOR §49)?
+export function takeoverActive(state: SimulationState): { role: StaffRole; memberId: string | null } | null {
+  const t = state.incidents?.lastOutcome?.takeover;
+  return t && state.simTime < t.until ? t : null;
+}
+
 interface Applied {
   cashSek: number;
   ongoing: OngoingConsequence | null;
@@ -525,7 +563,11 @@ export function resolveIncident(draft: SimulationState, optionId: string | null)
     const struck = struckFor(draft, next, active.situation, () => rng.next());
     draft.rngState = rng.state;
     const secondsTotal = secondsFor(draft, next);
-    draft.incidents = { ...inc, active: { ...active, step: stepIndex + 1, secondsTotal, secondsLeft: secondsTotal, struck } };
+    const revealed: StepReveal = { step: stepIndex, optionId: option.id, correctId: correctOptionId(step, active.situation), cleared: true };
+    draft.incidents = {
+      ...inc,
+      active: { ...active, step: stepIndex + 1, secondsTotal, secondsLeft: secondsTotal, struck, revealed, revealLeft: INCIDENTS.revealSeconds }
+    };
     return creditFor(quality === 'best' ? INCIDENTS.bestAnswerCredit : 0);
   }
 
@@ -562,6 +604,8 @@ export function resolveIncident(draft: SimulationState, optionId: string | null)
     causeTag: null, causeChainId: null, sustainability: 'social', kind: 'v1_incident', scenarioId: incident.id
   }];
   const now = draft.incidents!;
+  const reveal: StepReveal = { step: stepIndex, optionId: option?.id ?? null, correctId: correctOptionId(step, active.situation), cleared };
+  const takeover = cleared ? null : takeoverFor(draft, incident, step);
   const record: IncidentRecord = {
     id: incident.id,
     step: cleared ? null : stepIndex,
@@ -580,6 +624,8 @@ export function resolveIncident(draft: SimulationState, optionId: string | null)
     lastOutcome: {
       incidentId: incident.id,
       optionId: option?.id ?? null,
+      reveal,
+      takeover,
       text,
       at: draft.simTime,
       deltas: {
@@ -611,9 +657,18 @@ export function tickOngoing(draft: SimulationState, dt: number): void {
 export function countDown(draft: SimulationState, dt: number): boolean {
   const inc = draft.incidents;
   if (!inc?.active) return false;
-  const real = dt / Math.max(1, draft.speed);
-  const left = inc.active.secondsLeft - real;
-  draft.incidents = { ...inc, active: { ...inc.active, secondsLeft: Math.max(0, left) } };
+  let real = dt / Math.max(1, draft.speed);
+  const reveal = inc.active.revealLeft ?? 0;
+  if (reveal > 0) {
+    // Svaret i stunden visas först; stegets tid börjar sedan på full tid.
+    const rest = reveal - real;
+    draft.incidents = { ...inc, active: { ...inc.active, revealLeft: Math.max(0, rest), revealed: rest > 0 ? inc.active.revealed : null } };
+    if (rest > 0) return false;
+    real = -rest;
+  }
+  const a = draft.incidents.active!;
+  const left = a.secondsLeft - real;
+  draft.incidents = { ...draft.incidents, active: { ...a, secondsLeft: Math.max(0, left) } };
   return left <= 0;
 }
 
