@@ -30,6 +30,8 @@ export function weakMorning(): MorningPlan {
   const n = WEAK_STOCK_COVERS;
   return {
     scenarioAnswer: 'worst',
+    // ORDER 275 — den svaga köper inget baspaket, bara råvarorna nedan.
+    stock: 'none',
     actions: [
       { type: 'COMPOSE_MENU', dishes: [{ dishId: 'chicken-plate', price: 175 }, { dishId: 'root-soup', price: 95 }] },
       { type: 'BUY_STOCK', supplierId: 'wholesaler', ingredientId: 'chicken', units: n / 2 },

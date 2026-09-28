@@ -39,6 +39,9 @@ function tickUntil(
 
 function runFullDay(seed: number): SimulationState {
   let s = makeInitialState(seed);
+  // ORDER 275 — lagret är insatsen: två baspaket räcker till lunch och middag.
+  s = reducer(s, { type: 'BUY_PACKAGE', packageId: 'vinbar-base' });
+  s = reducer(s, { type: 'BUY_PACKAGE', packageId: 'vinbar-base' });
   // Lunch
   s = reducer(s, { type: 'OPEN_SERVICE', service: 'lunch', lengthMinutes: LUNCH_MINUTES });
   s = tickUntil(
@@ -93,7 +96,7 @@ describe('ORDER 230 — dagens tal i kvällsavräkningen efter lunch + middag', 
     // Om samma tal också går att läsa ur ledgern så håller det för
     // korsverifiering:
     const dayLedgerCost = state.ledger
-      .filter((l) => l.day === 1 && l.amount < 0)
+      .filter((l) => l.day === 1 && l.amount < 0 && l.category !== 'stock') // ORDER 275/259 — lagerköp är inte kostnad
       .reduce((sum, l) => sum + Math.abs(l.amount), 0);
     // Ledger-kost brukar täcka det mesta men inte allt (tick-loan-
     // interest, aktivitetseffekter). Kravet är att metrics >= ledger
@@ -149,7 +152,7 @@ describe('ORDER 230 — dagens tal i kvällsavräkningen efter lunch + middag', 
     // metrics.cost. På dag 1, före rollover, förväntar vi oss att
     // ledger-cost < metrics.cost — idle-kost har inte postats än.
     const dayLedgerCost = state.ledger
-      .filter((l) => l.day === 1 && l.amount < 0)
+      .filter((l) => l.day === 1 && l.amount < 0 && l.category !== 'stock') // ORDER 275/259 — lagerköp är inte kostnad
       .reduce((sum, l) => sum + Math.abs(l.amount), 0);
     const gap = account!.metrics!.cost - dayLedgerCost;
     // Idle mellan lunch (5 min) + afternoon-passet (5-15 min) + dinner

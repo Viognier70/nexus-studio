@@ -57,6 +57,8 @@ describe('postLedger', () => {
 describe('full-loop ledger smoke — a dinner service that closes and rolls into the next morning', () => {
   function runOneDayDinner(seed: number, minutes = 10): SimulationState {
     let s: SimulationState = makeInitialState(seed);
+    // ORDER 275 — lagret är insatsen: vinbaren köper baspaketet först.
+    s = reducer(s, { type: 'BUY_PACKAGE', packageId: 'vinbar-base' });
     s = reducer(s, { type: 'SKIP_LUNCH' });
     s = reducer(s, { type: 'OPEN_SERVICE', service: 'dinner', lengthMinutes: minutes });
     // Opening 10 s + prep 120 s + service (minutes × 60) + evening

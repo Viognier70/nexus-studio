@@ -34,6 +34,10 @@ import { numberWord } from '../simulation/eveningAccount';
 import { activityById } from '../simulation/activities';
 import { MorningActivityPanel } from '../business/MorningActivityPanel';
 import { MorningMenuPanel } from '../business/MorningMenuPanel';
+import { StockPackagesPanel } from '../business/StockPackagesPanel';
+import { packagesFor } from '../simulation/packages';
+import { menuFromStock } from '../simulation/stockPackages';
+import { findDish } from '../simulation/m4Catalogue';
 import { NxButton, NxLabel } from '../ui/system/components';
 import { NxIcon, ACTIVITY_ICON, PAVILION_ICON } from '../ui/screens/icons';
 import { useMentor } from '../ui/screens/mentor';
@@ -75,7 +79,11 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper }: Props
   // ORDER 266 — morgonens händelser (inspektion, banken, självläkning).
   const morningEvents = eventsSince(sim, sim.day.periodStartAt);
   // ORDER 266 — lagret i ord före öppning (speldesign > Lagret).
-  const forecast = stockForecast(sim);
+  // ORDER 275 — i klasser med paket räknas kuverten på maten ur lagret
+  // (drycken följer med varje gäst).
+  const forecast = packagesFor(sim.economy.businessClass)
+    ? stockForecast({ menu: menuFromStock(sim).filter((m) => findDish(m.dishId)?.kind !== 'drink'), stock: sim.stock })
+    : stockForecast(sim);
   const forecastText = forecast.kind === 'noMenu'
     ? strings.service.stock.noMenu
     : forecast.covers === 0
@@ -206,8 +214,10 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper }: Props
         <div>
           {business !== null ? (
             <>
-              <MorningMenuPanel />
-              {cal.isServiceDay && (
+              {/* ORDER 275 — klasser med paket köper lagret som paket. */}
+              {packagesFor(sim.economy.businessClass) ? <StockPackagesPanel /> : <MorningMenuPanel />}
+              {/* ORDER 275 — i klasser med paket står prognosen i lagerpanelen. */}
+              {cal.isServiceDay && !packagesFor(sim.economy.businessClass) && (
                 <div className="nxs-dark-box nxs-mt-24" data-testid="stock-forecast">
                   <NxIcon name="package" size={36} />
                   <p className="nx-body">{forecastText}</p>

@@ -46,19 +46,23 @@ function threeDayScriptWithFireAndAgency() {
   // additional ledger categories: FIRE_TEAM_MEMBER (buyout) and
   // ACCEPT_AGENCY (agency). Interest and wages fire on day rollover
   // regardless; scenario fires because we TRIGGER + ADVANCE.
+  // ORDER 275 — lagret är insatsen: baspaketet köps varje morgon.
   return [
     // Day 1: setup + dinner 15 min
     { atSec: 1, action: { type: 'SET_POLICY', patch: { pricing: 'medel' } } },
+    { atSec: 2, action: { type: 'BUY_PACKAGE', packageId: 'vinbar-base' } },
     { atSec: 3, action: { type: 'SKIP_LUNCH' } },
     { atSec: 60, action: { type: 'OPEN_SERVICE', service: 'dinner', lengthMinutes: 15 } },
     { atSec: 500, action: { type: 'TRIGGER_SCENARIO' } },
     { atSec: 510, action: { type: 'ADVANCE_SCENARIO_TO_SITUATION' } },
     // Day 2 (previous day ~1080 s, so day 2 morning ≈ 1080 s)
+    { atSec: 1399, action: { type: 'BUY_PACKAGE', packageId: 'vinbar-base' } },
     { atSec: 1400, action: { type: 'SKIP_LUNCH' } },
     { atSec: 1450, action: { type: 'OPEN_SERVICE', service: 'dinner', lengthMinutes: 15 } },
     { atSec: 1900, action: { type: 'TRIGGER_SCENARIO' } },
     { atSec: 1910, action: { type: 'ADVANCE_SCENARIO_TO_SITUATION' } },
     // Day 3
+    { atSec: 2749, action: { type: 'BUY_PACKAGE', packageId: 'vinbar-base' } },
     { atSec: 2750, action: { type: 'SKIP_LUNCH' } },
     { atSec: 2800, action: { type: 'OPEN_SERVICE', service: 'dinner', lengthMinutes: 15 } },
     { atSec: 3250, action: { type: 'TRIGGER_SCENARIO' } },
@@ -108,7 +112,13 @@ describe('M3 DoD — evening ledger visible', () => {
     const ledgerSum = r.finalState.ledger.reduce((s, l) => s + l.amount, 0) + pending;
     const netCashMovement = r.finalState.cash - INITIAL_CASH_SEK;
     const overallDrift = Math.abs(netCashMovement - ledgerSum);
-    const overallRatio = Math.abs(ledgerSum) / Math.max(1, Math.abs(netCashMovement));
+    // ORDER 275 — lagret är insatsen: baspaketen dras ur kassan och bokförs
+    // samtidigt med exakt samma belopp (stockPackages.ts buyPackage), så de
+    // bidrar inte till driften men krymper nettorörelsen och gör kvoten
+    // känsligare. Kvoten räknas därför utan lagerköpen på båda sidor;
+    // driften i kronor ovan är densamma.
+    const stockSum = r.finalState.ledger.filter((l) => l.category === 'stock').reduce((sum, l) => sum + l.amount, 0);
+    const overallRatio = Math.abs(ledgerSum - stockSum) / Math.max(1, Math.abs(netCashMovement - stockSum));
 
     // Per-day reconciliation — sum the ledger.day===N lines and
     // compare against the day's own cash movement. Uses running-

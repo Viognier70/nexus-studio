@@ -1,6 +1,6 @@
 import { calendarFor } from '../../sim/calendar';
 import { bestAnswerFactor, drinkRevenueFactor, enablersWithCredits } from '../../sim/knowledgeInService';
-import { EVENING, SERVICE, type BusinessClassId } from '../../sim/balance';
+import { EVENING, SERVICE, STOCK, type BusinessClassId } from '../../sim/balance';
 import { closeIncidents, countDown, isIncidentOpen, maybeOpenIncident, planIncidents, resolveIncident, tickOngoing, type CreditChange } from '../../sim/incidents';
 import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
 import { afterVisitClosed, beginIntroduction } from '../../sim/introduction';
@@ -86,6 +86,7 @@ import {
 // report per the three-voices split. Observer voice moved out of
 // during-service into the evening account only.
 import { SERVICE_REPORT_PREP_CARRYOVER } from '../../content/serviceReport';
+import { buyPackage, computePlatesRemaining, drawDrinkForGuest, menuAtServiceStart, usesPackages, wasteAtDayEnd } from './stockPackages';
 import { generateWeather, waitingAtOpeningCount } from './weather';
 import {
   generateWorldFactors,
@@ -381,6 +382,8 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       return closeServiceAction(state, action.service);
     case 'BUY_STOCK':
       return buyStock(state, action.supplierId, action.ingredientId, action.units);
+    case 'BUY_PACKAGE':
+      return buyPackage(state, action.packageId);
     case 'COMPOSE_MENU':
       return composeMenu(state, action.dishes);
     default:
@@ -506,27 +509,7 @@ function applyActivityEffectsOnDayClose(draft: SimulationState): void {
 
 // ---------- ORDER 077 §4 (M4) — menu + kitchen + stock ------------------
 
-// Recompute the plates-remaining reading from current stock + menu.
-// Kept as a pure derivation so tests can call it directly. min-over-
-// recipe-ingredients of floor(stock / units).
-function computePlatesRemaining(
-  menu: SimulationState['menu'],
-  stock: Record<string, number>
-): Record<string, number> {
-  const out: Record<string, number> = {};
-  for (const entry of menu) {
-    const dish = findDish(entry.dishId);
-    if (!dish) { out[entry.dishId] = 0; continue; }
-    let minPlates = Infinity;
-    for (const r of dish.recipe) {
-      const units = stock[r.ingredientId] ?? 0;
-      const plates = Math.floor(units / r.units);
-      if (plates < minPlates) minPlates = plates;
-    }
-    out[entry.dishId] = Number.isFinite(minPlates) ? minPlates : 0;
-  }
-  return out;
-}
+// ORDER 275 — computePlatesRemaining bor i stockPackages.ts (samma beräkning).
 
 function buyStock(
   state: SimulationState,
@@ -722,9 +705,13 @@ export function drawMenuDishForGuest(
   substituteRoll: number
 ): DrawOutcome {
   if (draft.menu.length === 0) return { kind: 'no-menu' };
+  // ORDER 275 — i klasser med paket väljer gästen en rätt här och en dryck
+  // för sig (stockPackages.ts drawDrinkForGuest).
+  const dishMenu = usesPackages(draft) ? draft.menu.filter((m) => findDish(m.dishId)?.kind !== 'drink') : draft.menu;
+  if (dishMenu.length === 0) return { kind: 'no-menu' };
 
   // ORDER 079 §2 — weighted target pick over the full menu.
-  const target = pickTargetDish(draft.menu, targetRoll);
+  const target = pickTargetDish(dishMenu, targetRoll);
   if (!target) return { kind: 'no-menu' };
   const targetDish = findDish(target.dishId);
   if (!targetDish) return { kind: 'no-menu' };
@@ -777,7 +764,7 @@ export function drawMenuDishForGuest(
   // Target is out. Substitute vs walk per §3.
   // Substitute candidates = available dishes (plates > 0) EXCLUDING
   // the target. Pick the cheapest.
-  const candidates = draft.menu.filter(
+  const candidates = dishMenu.filter(
     (m) => m.dishId !== target.dishId
       && (draft.day.platesRemaining[m.dishId] ?? 0) > 0
   );
@@ -1203,22 +1190,25 @@ function chooseClass(state: SimulationState, to: BusinessClassId): SimulationSta
 }
 
 function openService(
-  state: SimulationState,
+  stateIn: SimulationState,
   service: 'lunch' | 'dinner',
   lengthMinutes: number
 ): SimulationState {
   // ORDER 263 — ingen service på en stängd dag (söndag).
-  if (!calendarFor(state.day.dayNumber).isServiceDay) return state;
+  if (!calendarFor(stateIn.day.dayNumber).isServiceDay) return stateIn;
+  // ORDER 275 — menyn är det som finns i lagret (klasser med paket), både
+  // till lunch och middag.
+  const state = menuAtServiceStart(stateIn);
   // Guard: lunch can only open from morning, dinner from afternoon.
   // Any other phase → no-op. Prevents the UI from opening dinner
   // during a running lunch service etc.
   const expectedPhase: DayPeriod = service === 'lunch' ? 'morning' : 'afternoon';
-  if (state.day.period !== expectedPhase) return state;
+  if (state.day.period !== expectedPhase) return stateIn;
   // ORDER 049 §5.3 — refuse OPEN_SERVICE when the corresponding
   // scale-down flag is set. The player must restore the service
   // (dispatch CLOSE_SERVICE again with the same key) before opening.
-  if (service === 'lunch'  && state.scaleDown.closedLunch)  return state;
-  if (service === 'dinner' && state.scaleDown.closedDinner) return state;
+  if (service === 'lunch'  && state.scaleDown.closedLunch)  return stateIn;
+  if (service === 'dinner' && state.scaleDown.closedDinner) return stateIn;
   const length = clampServiceLength(lengthMinutes);
   // Deterministic scenario count + schedule from the current rng
   // state — same seed + same open sequence yields the same rhythm.
@@ -1746,8 +1736,22 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       const startInBreakfast =
         businessHasOvernight(state.businessClass) &&
         guestsAfterRollover.some((g) => g.state === 'sleeping');
+      // ORDER 275 — osåld mat blir svinn vid dagens slut (klasser med paket).
+      const dayEndWaste = wasteAtDayEnd(state);
       const nextForDay: SimulationState = {
         ...state,
+        eventStream: dayEndWaste.waste
+          ? [...state.eventStream, {
+              at: simTime,
+              text: strings.stock.wasteEvent(strings.service.meters.sek(dayEndWaste.waste.sek.toLocaleString('en-GB'))),
+              category: 'ambient' as const,
+              causeTag: 'stock_out' as const,
+              causeChainId: null,
+              sustainability: 'ecological' as const,
+              kind: 'stock_waste',
+              scenarioId: null
+            }]
+          : state.eventStream,
         guests: guestsAfterRollover,
         // Rensa waitingIds + seatedIds för allt utom överlevande gäster.
         // Sleeping-gäster behåller seatIndex och räknas som seated här
@@ -1785,7 +1789,12 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
         // ORDER 077 §4 (M4) — menu clears at day rollover (fresh
         // morning compose). Stock persists across days per ORDER 051
         // §4 (leftover-stock persistence); ageing deferred to M4b.
+        // ORDER 275 — i klasser med paket blir osåld mat svinn vid dagens
+        // slut; drycken står sig (stockPackages.ts wasteAtDayEnd).
         menu: [],
+        stock: dayEndWaste.stock,
+        lastWaste: dayEndWaste.waste,
+        packagesBoughtToday: [],
         day: {
           ...initialDay(),
           dayNumber: day.dayNumber + 1,
@@ -2255,6 +2264,13 @@ function advanceTick(state: SimulationState): SimulationState {
       // Vid legacy no-menu-branch är per-rätt-cost 0 (paras ej gäster
       // till specifik rätt). Flat 4|7|12/min borttagen i costPerMinuteToTick.
       let ingredientCostSek = 0;
+      // ORDER 275 — klasser med paket: utan något i lagret finns inget att
+      // beställa, och gästen går utan att betala (ingen gammal väg).
+      const packaged = usesPackages(draft);
+      if (packaged && !draft.menu.some((m) => findDish(m.dishId)?.kind !== 'drink' && (draft.day.platesRemaining[m.dishId] ?? 0) > 0)) {
+        draft.day.walkedCount = (draft.day.walkedCount ?? 0) + 1;
+        continue;
+      }
       if (draft.menu.length > 0) {
         const rng = createRng(draft.rngState);
         const targetRoll = rng.next();
@@ -2268,6 +2284,20 @@ function advanceTick(state: SimulationState): SimulationState {
         if (draw.kind === 'served' || draw.kind === 'substituted') {
           rev = draw.price * revenueMult;
           ingredientCostSek = draw.ingredientCostSek;
+          if (packaged) {
+            // ORDER 275 — portionerna är betalda vid köpet: ingen kostnad
+            // vid betalningen. En dryck ur lagret till rätten.
+            ingredientCostSek = 0;
+            const drinkRng = createRng(draft.rngState);
+            const drink = drawDrinkForGuest(draft, drinkRng.next());
+            if (drink) rev += drink.price * revenueMult;
+            // Ett andra glas (balance.ts STOCK.secondDrinkChance).
+            if (drink && drinkRng.next() < STOCK.secondDrinkChance) {
+              const second = drawDrinkForGuest(draft, drinkRng.next());
+              if (second) rev += second.price * revenueMult;
+            }
+            draft.rngState = drinkRng.state;
+          }
         } else {
           continue;
         }

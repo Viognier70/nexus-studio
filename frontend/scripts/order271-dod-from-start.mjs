@@ -208,6 +208,22 @@ try {
   await page.evaluate(() => document.querySelector('[data-testid=day-action-bar]')?.scrollTo(0, 0));
   await delay(200); await shot('dod-02-S1-schema-mandag.png', 'S1 morgonens schema, måndag');
   step('vinbaren öppnad');
+  // ORDER 275 — lagret är insatsen: spelaren köper baspaketet och ser
+  // kassan sjunka direkt.
+  if (await page.$('[data-testid=stock-packages]')) {
+    const cashText = () => page.textContent('[aria-label="Cash"]').catch(() => null);
+    report.stock = { before: await cashText() };
+    await page.$eval('[data-testid=stock-packages]', (e) => e.scrollIntoView({ block: 'start' }));
+    await shot('dod-26-lagret-fore-kop.png', 'lagret före köpet (paketen)');
+    await page.click('[data-testid=buy-package-vinbar-base]');
+    await delay(400);
+    report.stock.after = await cashText();
+    report.stock.inStock = await page.getAttribute('[data-testid=stock-in-stock]', 'data-covers');
+    await page.$eval('[data-testid=stock-in-stock]', (e) => e.scrollIntoView({ block: 'center' }));
+    await shot('dod-27-lagret-efter-kop.png', 'lagret efter köpet: i lager nu, kassan lägre');
+    await page.evaluate(() => document.querySelector('[data-testid=day-action-bar]')?.scrollTo(0, 0));
+    step('baspaketet köpt');
+  }
 
   await page.click('[data-testid=start-service]');
   await page.waitForSelector('[data-testid=mentor][data-step=service]', { timeout: 60000 });
@@ -274,6 +290,9 @@ try {
   // Morgonen som den rimliga spelaren i harnessen: inga ändringar (spelets
   // förvalda meny och lager). En egen meny med tre rätter tömde köket.
   async function playEvening(figures) {
+    // ORDER 275 — baspaketet varje morgon, som den rimliga spelaren.
+    const buyBase = await page.$('[data-testid=buy-package-vinbar-base]');
+    if (buyBase) { await buyBase.click().catch(() => {}); await delay(200); }
     await page.click('[data-testid=start-service]');
     let shotsTaken = 0;
     const openedAt = Date.now();
