@@ -21,7 +21,7 @@ import { WEEK } from '../../sim/balance';
 import { rankedScenarioChoice } from '../simulation/scenarios';
 import { incidentById } from '../../sim/incidentBank';
 import { packagesFor } from '../simulation/packages';
-import { rankedStepOption } from '../../sim/incidents';
+import { canStartBet, rankedStepOption } from '../../sim/incidents';
 import type { PavilionKey, ScenarioChoice, SimAction, SimulationState } from '../types';
 
 // Simuleringens tick är 0,2 s (5 Hz), samma som SimulationProvider.
@@ -48,6 +48,11 @@ export interface MorningPlan {
   // ORDER 270 — samma val gäller kvällens händelser: den rimliga spelaren
   // väljer det bästa svaret i varje steg, den svaga det sämsta (rankedStepOption).
   scenarioAnswer?: ScenarioAnswer;
+  // ORDER 279 — insatsen: spelaren startar en egen raket med den här
+  // insatsen så fort det går (högst BET.maxPerEvening per kväll) och svarar
+  // som i scenarioAnswer. Utelämnat = ingen insats (harnessens spelare
+  // satsar inte i slumpmätningen).
+  betStake?: number;
 }
 
 export type ScenarioAnswer = 'best' | 'worst';
@@ -70,8 +75,11 @@ export interface DayRecord {
   events: string[];
 }
 
-function tickUntil(s: SimulationState, done: (s: SimulationState) => boolean, answer: ScenarioAnswer = 'best'): SimulationState {
-  for (let i = 0; i < MAX_TICKS_PER_PHASE && !done(s); i++) s = answerScenario(reducer(s, { type: 'TICK', dt: TICK_DT }), answer);
+function tickUntil(s: SimulationState, done: (s: SimulationState) => boolean, answer: ScenarioAnswer = 'best', betStake?: number): SimulationState {
+  for (let i = 0; i < MAX_TICKS_PER_PHASE && !done(s); i++) {
+    s = answerScenario(reducer(s, { type: 'TICK', dt: TICK_DT }), answer);
+    if (betStake !== undefined && canStartBet(s, betStake)) s = reducer(s, { type: 'START_BET', stake: betStake });
+  }
   return s;
 }
 
@@ -160,7 +168,7 @@ export function playDay(s: SimulationState, plan: MorningPlan): { state: Simulat
     s = tickUntil(opened, (x) => {
       for (const g of x.guests) seen.add(g.id);
       return x.day.period === 'evening' || x.day.period === 'morning';
-    }, plan.scenarioAnswer);
+    }, plan.scenarioAnswer, plan.betStake);
   } else {
     s = reducer(s, { type: 'CLOSE_DAY' });
   }

@@ -1203,6 +1203,37 @@ export const TABLE = {
     },
     ledger: { sv: 'Sopbilen: miljöavgift för svinnet', en: 'Refuse truck: environmental fee for the waste' }
   },
+  // ORDER 279 — insatsen: action-knappen som live betting.
+  bet: {
+    heading: { sv: 'Insatsen', en: 'Your stake' },
+    intro: {
+      sv: 'Ta ett bord själv: starta en raket och satsa krediter. Klarar du alla tre stegen får du tillbaka dubbla insatsen och en intäkt. Faller raketen förlorar du krediterna, och kassan tar en större smäll.',
+      en: 'Take a table yourself: start a rocket and stake credits. Clear all three steps and you get double your stake back, plus takings. If the rocket falls you lose the credits, and the till takes a bigger hit.'
+    },
+    stake: { sv: (n: number) => `Satsa ${n}`, en: (n: number) => `Stake ${n}` },
+    stakeAria: {
+      sv: (n: number, win: string, loss: string) => `Satsa ${n} krediter: vinst ${win}, förlust ${loss}`,
+      en: (n: number, win: string, loss: string) => `Stake ${n} credits: win ${win}, loss ${loss}`
+    },
+    odds: {
+      sv: (win: string, loss: string) => `Vinst ${win} · förlust ${loss}`,
+      en: (win: string, loss: string) => `Win ${win} · loss ${loss}`
+    },
+    left: { sv: (n: number) => `${n} insatser kvar i kväll`, en: (n: number) => `${n} stakes left tonight` },
+    none: { sv: 'Inga insatser kvar i kväll.', en: 'No stakes left tonight.' },
+    credits: { sv: 'Krediter', en: 'Credits' },
+    creditsAria: { sv: (n: number) => `Krediter: ${n}`, en: (n: number) => `Credits: ${n}` },
+    own: { sv: (n: number) => `Din insats: ${n} ${n === 1 ? 'kredit' : 'krediter'}`, en: (n: number) => `Your stake: ${n} ${n === 1 ? 'credit' : 'credits'}` },
+    won: {
+      sv: (stake: number, credits: number, cash: number) => `Insatsen vann: ${stake} ${stake === 1 ? 'kredit' : 'krediter'} blev ${credits}, och kassan fick ${Math.round(cash).toLocaleString('sv-SE')} kr.`,
+      en: (stake: number, credits: number, cash: number) => `The stake won: ${stake} ${stake === 1 ? 'credit' : 'credits'} became ${credits}, and the till gained SEK ${Math.round(cash).toLocaleString('en-GB')}.`
+    },
+    lost: {
+      sv: (stake: number, cash: number) => `Insatsen förlorade: ${stake} ${stake === 1 ? 'kredit' : 'krediter'} borta, och kassan tappade ${Math.round(cash).toLocaleString('sv-SE')} kr.`,
+      en: (stake: number, cash: number) => `The stake lost: ${stake} ${stake === 1 ? 'credit' : 'credits'} gone, and the till lost SEK ${Math.round(cash).toLocaleString('en-GB')}.`
+    },
+    ledger: { sv: (title: string, stake: number) => `Insats (${stake} kred.): ${title}`, en: (title: string, stake: number) => `Stake (${stake} cr.): ${title}` }
+  },
   // ORDER 277 — kassan syns hela tiden.
   cashCounter: {
     label: { sv: 'Kassa', en: 'Cash' },
@@ -1702,6 +1733,7 @@ export const TABLE = {
         buyout: { sv: 'Avg.', en: 'Fee' },
         stock: { sv: 'Inköp', en: 'Stock' },
         waste: { sv: 'Svinn', en: 'Waste' },
+        bet: { sv: 'Insats', en: 'Stake' },
         floor: { sv: 'Golv', en: 'Floor' },
         amortisation: { sv: 'Amort.', en: 'Repay.' },
         other: { sv: '—', en: '—' }

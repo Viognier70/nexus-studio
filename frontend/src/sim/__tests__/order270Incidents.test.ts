@@ -15,6 +15,8 @@ import vinbarMeta from '../../content/incidents/vinbar.meta.json';
 import vinbarText from '../../content/incidents/vinbar.text.sv.draft.json';
 import type { SimulationState } from '../../strategic/types';
 import { stocked } from '../../strategic/testHarness/stocked';
+import menuMeta from '../../content/incidents/menu.meta.json';
+import menuText from '../../content/incidents/menu.text.en.json';
 
 const TICK = { type: 'TICK', dt: 0.2 } as const;
 
@@ -59,9 +61,11 @@ const tracks = (x: SimulationState, axis: 'episteme' | 'techne' | 'phronesis') =
 describe('ORDER 270 — händelsebanken som raketer', () => {
   const bank = incidentBankFor('vinbar');
 
-  it('31 raketer för vinbaren (30 utkast och servetterna och isen), som data, utan fel', () => {
-    expect(bank).toHaveLength(31);
+  // ORDER 279 — och nio raketer om kvällens meny och dryckeslista.
+  it('31 raketer för vinbaren (30 utkast och servetterna och isen) och 9 om menyn, som data, utan fel', () => {
+    expect(bank).toHaveLength(31 + 9);
     expect(validateIncidentBank(vinbarMeta as never, vinbarText as never)).toEqual([]);
+    expect(validateIncidentBank(menuMeta as never, menuText as never)).toEqual([]);
   });
 
   it('varje raket har tre steg: episteme, techne, phronesis, var och ett med 3–4 svar, ett bästa och minst ett fel', () => {

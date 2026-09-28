@@ -46,6 +46,8 @@ for (const file of ['bank.text.en.json', 'bank.text.sv.draft.json']) {
 }
 // Raketbanken: svarens kvalitet per raket och steg (samma JSON som spelet).
 const rocketMeta = new Map(JSON.parse(readFileSync(resolve(FRONTEND, 'src/content/incidents/vinbar.meta.json'), 'utf8')).incidents.map((i) => [i.id, i]));
+// ORDER 279 — raketerna om kvällens meny.
+for (const i of JSON.parse(readFileSync(resolve(FRONTEND, 'src/content/incidents/menu.meta.json'), 'utf8')).incidents) rocketMeta.set(i.id, i);
 
 async function startPreview() {
   try { await fetch(URL + '/'); throw new Error(`port ${PORT} är redan upptagen`); } catch (e) { if (String(e.message).includes('upptagen')) throw e; }
@@ -297,6 +299,45 @@ try {
         report.lostSale = { line, cash: await page.getAttribute('[data-testid=cash-counter]', 'data-value').catch(() => null) };
         await shot('dod-28-gast-utan-alternativ.png', 'servicen: en gäst utan alternativ för sin kost eller plånbok (strömmen), kassan överst');
       }
+    }
+    // ORDER 279 — en raket där gästen frågar om kvällens meny, på bild.
+    if (card && !report.menuRocket) {
+      const cid = await card.getAttribute('data-incident-id');
+      if (cid && cid.startsWith('mn') && !(await page.$('[data-testid=incident-band]'))) {
+        report.menuRocket = { id: cid, question: await page.textContent('[data-testid=incident-question]').catch(() => null) };
+        await shot('dod-37-menyraket.png', `raket om kvällens meny (${cid})`);
+      }
+    }
+    // ORDER 279 — insatsen: en vunnen och en förlorad, med kassan och
+    // krediterna som tickar.
+    if (!card && n >= 1 && !report.bets && await page.$('[data-testid=bet-panel]')) {
+      report.bets = [];
+      await shot('dod-38-insatsen.png', 'insatsen: panelen med insatserna, vinst och förlust i kronor');
+      for (const [stake, want] of [[1, 'best'], [1, 'wrong']]) {
+        const btn = await page.$(`[data-testid=bet-stake-${stake}]`);
+        if (!btn || await btn.isDisabled()) { report.bets.push({ stake, skipped: 'knappen avstängd (krediter eller tid)' }); continue; }
+        const before = { cash: await page.getAttribute('[data-testid=cash-counter]', 'data-value'), credits: await page.getAttribute('[data-testid=credits-counter]', 'data-value') };
+        await btn.click();
+        await page.waitForSelector('[data-testid=incident-bet]', { timeout: 10000 });
+        const bid = await page.getAttribute('[data-testid=incident-card]', 'data-incident-id');
+        const afterStake = await page.getAttribute('[data-testid=credits-counter]', 'data-value');
+        const entry = { stake, want, id: bid, before, creditsAfterStake: afterStake, steps: [] };
+        if (want === 'best') {
+          for (let st = 0; st < 3; st++) entry.steps.push(await answerStep(bid, st, 'best', st === 0 ? 'dod-39-insats-raket' : null));
+        } else {
+          entry.steps.push(await answerStep(bid, 0, 'wrong', null));
+        }
+        await page.waitForSelector('[data-testid=incident-card]', { state: 'detached', timeout: 30000 });
+        await page.waitForSelector('[data-testid=bet-result]', { timeout: 10000 }).catch(() => {});
+        await delay(250);
+        entry.mid = { cashShown: await page.getAttribute('[data-testid=cash-counter]', 'data-shown'), cash: await page.getAttribute('[data-testid=cash-counter]', 'data-value'), creditsShown: await page.getAttribute('[data-testid=credits-counter]', 'data-shown'), credits: await page.getAttribute('[data-testid=credits-counter]', 'data-value') };
+        await shot(`dod-40-insats-${want === 'best' ? 'vinst' : 'forlust'}.png`, `insatsen ${want === 'best' ? 'vann' : 'förlorade'}: resultatet, kassan och krediterna tickar`);
+        entry.result = await page.textContent('[data-testid=bet-result]').catch(() => null);
+        entry.after = { cash: await page.getAttribute('[data-testid=cash-counter]', 'data-value'), credits: await page.getAttribute('[data-testid=credits-counter]', 'data-value') };
+        report.bets.push(entry);
+        step(`insats ${stake} (${want})`);
+      }
+      continue;
     }
     if (!card) {
       if (movement < 2 && n >= 1) {

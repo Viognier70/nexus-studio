@@ -18,6 +18,10 @@ import { INCIDENTS, type BusinessClassId, type Weekday } from './balance';
 import vinbarMeta from '../content/incidents/vinbar.meta.json';
 // ORDER 273 — spelet läser den engelska texten; den svenska sparas.
 import vinbarText from '../content/incidents/vinbar.text.en.json';
+// ORDER 279 — raketer om kvällens meny och dryckeslista (engelska i spelet,
+// svenska sparas bredvid).
+import menuMeta from '../content/incidents/menu.meta.json';
+import menuText from '../content/incidents/menu.text.en.json';
 
 export type ArcPhase = 'opening' | 'rush' | 'crisis' | 'closing';
 export const ARC_PHASES: readonly ArcPhase[] = ['opening', 'rush', 'crisis', 'closing'];
@@ -114,6 +118,9 @@ export interface IncidentMeta {
   needsTable: boolean;
   reference: Reference | null;
   steps: StepMeta[];
+  // ORDER 279 — raketen gäller kvällens meny: den kan komma när minst en
+  // av de här rätterna eller dryckerna står på menyn eller dryckeslistan.
+  requiresOnMenu?: string[];
   // Hela raketen klarad: bästa utfall.
   success: IncidentOutcomeMeta;
   // Personalen tar över resten efter ett fel (skalat efter stegen som
@@ -253,7 +260,10 @@ function build(meta: MetaFile, text: TextFile): Incident[] {
 }
 
 const BANKS: Partial<Record<BusinessClassId, Incident[]>> = {
-  vinbar: build(vinbarMeta as unknown as MetaFile, vinbarText as unknown as TextFile)
+  vinbar: [
+    ...build(vinbarMeta as unknown as MetaFile, vinbarText as unknown as TextFile),
+    ...build(menuMeta as unknown as MetaFile, menuText as unknown as TextFile)
+  ]
 };
 
 export function incidentBankFor(cls: BusinessClassId | null | undefined): Incident[] {
@@ -262,4 +272,10 @@ export function incidentBankFor(cls: BusinessClassId | null | undefined): Incide
 
 export function incidentById(cls: BusinessClassId | null | undefined, id: string): Incident | undefined {
   return incidentBankFor(cls).find((i) => i.id === id);
+}
+
+// ORDER 279 — kan raketen komma med kvällens meny? Raketer utan krav kan
+// alltid komma.
+export function fitsMenu(incident: Pick<IncidentMeta, 'requiresOnMenu'>, menuDishIds: readonly string[]): boolean {
+  return !incident.requiresOnMenu || incident.requiresOnMenu.some((id) => menuDishIds.includes(id));
 }

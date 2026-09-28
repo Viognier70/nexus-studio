@@ -1,0 +1,683 @@
+{
+  "language": "sv",
+  "status": "draft",
+  "reviewedBy": null,
+  "note": "ORDER 279 — menyraketer, svenska (sparas bredvid den engelska, CLAUDE.md regel 7).",
+  "texts": {
+    "mn01-veltliner": {
+      "title": "Grüner Veltliner?",
+      "body": "{gäst} vid bord {bord} pekar på dryckeslistan: \"Grüner Veltliner. Vad är det, egentligen?\"",
+      "steps": [
+        {
+          "question": "Vad är Grüner Veltliner?",
+          "options": {
+            "a": {
+              "label": "En vit druva, Österrikes mest odlade",
+              "explanation": "Grüner Veltliner är en vit druva och Österrikes mest odlade sort, framför allt längs Donau i Niederösterreich: Wachau, Kamptal och Kremstal."
+            },
+            "b": {
+              "label": "En röd druva från Tyskland",
+              "explanation": "Det är en vit druva, och den hör hemma i Österrike, inte Tyskland."
+            },
+            "c": {
+              "label": "En blandning av flera druvor från Alperna",
+              "explanation": "Grüner Veltliner är en enda druvsort, och vinet på listan är gjort bara på den."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} gissar på ett svar. Gästen nickar artigt men är inte övertygad."
+          }
+        },
+        {
+          "question": "Vilken temperatur serverar du det i?",
+          "options": {
+            "a": {
+              "label": "Väl kylt, omkring 8–10 °C",
+              "explanation": "Ett friskt vitt vin serveras kylt. Vid 8–10 °C kommer syran och den pepprighet som Grüner Veltliner är känt för fram."
+            },
+            "b": {
+              "label": "Iskallt, 2–4 °C, direkt ur frysen",
+              "explanation": "Så kallt att doften stängs. Gästen smakar kyla, inte vin."
+            },
+            "c": {
+              "label": "Rumstemperatur, 18–20 °C",
+              "explanation": "För varmt för ett friskt vitt vin: alkoholen tar över och syran blir platt."
+            }
+          },
+          "fail": {
+            "outcome": "Glaset kommer i fel temperatur. Gästen smuttar och skjuter det åt sidan.",
+            "ongoing": "{personal} står kvar vid bord {bord} och rättar till det, medan andra bord väntar."
+          }
+        },
+        {
+          "question": "Vad på menyn passar bäst till?",
+          "options": {
+            "a": {
+              "label": "Bara desserten",
+              "explanation": "Ett torrt vitt vin smakar surt bredvid något sött. Desserten vill ha ett sötare vin."
+            },
+            "b": {
+              "label": "Lätta rätter: fisk, grönsaker, kantarellerna",
+              "explanation": "Ett friskt och lätt vitt vin passar till lätt mat. Syran lyfter fisk och grönsaker utan att dränka dem."
+            },
+            "c": {
+              "label": "Viltet, den mäktigaste tallriken vi har",
+              "explanation": "Hjort vill ha ett vin med mer kropp, till exempel ett rött. Ett lätt vitt vin försvinner bredvid."
+            }
+          },
+          "fail": {
+            "outcome": "Gästen beställer något som inte passar vinet, och det märks.",
+            "ongoing": "{personal} står kvar vid bord {bord} och släter över, medan andra bord väntar."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Gästen beställer ett glas till och ber {personal} om producentens namn."
+      },
+      "staff": {
+        "outcome": "{personal} tar över och rekommenderar något på måfå. Gästen dricker utan större glädje.",
+        "ongoing": "{personal} är upptagen vid bord {bord}, och de andra borden får vänta längre."
+      }
+    },
+    "mn02-pinot": {
+      "title": "Pinot Noiren",
+      "body": "{gäst} vid bord {bord} väljer mellan de röda: \"Berätta om Pinot Noiren.\"",
+      "steps": [
+        {
+          "question": "Var har Pinot Noir sitt klassiska hem?",
+          "options": {
+            "a": {
+              "label": "Bourgogne, i Frankrike",
+              "explanation": "Pinot Noir är Bourgognes röda druva, där de stora röda vinerna görs bara på den. Den odlas också i Champagne, Tyskland, Oregon och Nya Zeeland."
+            },
+            "b": {
+              "label": "Rioja, i Spanien",
+              "explanation": "Riojas röda viner görs främst på Tempranillo, inte Pinot Noir."
+            },
+            "c": {
+              "label": "Douro, i Portugal",
+              "explanation": "Douro är portvinets hem, med druvor som Touriga Nacional."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} blandar ihop områdena. Gästen vet bättre och säger det."
+          }
+        },
+        {
+          "question": "Hur serverar du Pinot Noir?",
+          "options": {
+            "a": {
+              "label": "Varmt, omkring 22 °C, så att det öppnar sig",
+              "explanation": "Vid 22 °C dominerar alkoholen och vinet smakar tungt. Rumstemperaturen är varmare i dag än när regeln kom till."
+            },
+            "b": {
+              "label": "Direkt ur kylen, omkring 5 °C",
+              "explanation": "För kallt för ett rött vin: frukten stängs och strävheten känns hårdare."
+            },
+            "c": {
+              "label": "Lätt svalt, omkring 14–16 °C, i ett vitt glas",
+              "explanation": "Ett lätt rött vin vinner på att vara lite svalt: frukten blir frisk och alkoholen stannar i bakgrunden. En vid kupa samlar doften."
+            }
+          },
+          "fail": {
+            "outcome": "Vinet kommer för varmt. Gästen väntar på att det ska svalna.",
+            "ongoing": "{personal} står kvar vid bord {bord} och rättar till det, medan andra bord väntar."
+          }
+        },
+        {
+          "question": "Vilken rätt på kvällens meny passar till?",
+          "options": {
+            "a": {
+              "label": "Ingenting: ett gott rött vin dricks utan mat",
+              "explanation": "Pinot Noir är ett av de mest matvänliga röda vinerna. Att säga nej tappar en försäljning och en bra kombination."
+            },
+            "b": {
+              "label": "De jordiga rätterna: lamm, vilt eller kantarellerna",
+              "explanation": "Pinot Noir har röda bär och en jordig ton av skogsbotten. Den passar lamm, vilt och svamp utan att dränka dem."
+            },
+            "c": {
+              "label": "Lingonsorbeten",
+              "explanation": "En syrlig, söt sorbet gör att ett torrt rött vin smakar tunt och beskt."
+            }
+          },
+          "fail": {
+            "outcome": "Gästen rycker på axlarna och beställer husets vin i stället.",
+            "ongoing": "{personal} står kvar vid bord {bord} och släter över, medan andra bord väntar."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Gästen beställer flaskan till bordet och tackar {personal} för rådet."
+      },
+      "staff": {
+        "outcome": "{personal} tar över. Rådet blir vagt och gästen nöjer sig med ett glas.",
+        "ongoing": "{personal} är upptagen vid bord {bord}, och de andra borden får vänta längre."
+      }
+    },
+    "mn03-gos": {
+      "title": "Gösen",
+      "body": "{gäst} vid bord {bord} tittar på menyn: \"Pocherad gös. Är det en fisk härifrån?\"",
+      "steps": [
+        {
+          "question": "Vad är gös?",
+          "options": {
+            "a": {
+              "label": "En sötvattensfisk i abborrfamiljen, från Hjälmaren",
+              "explanation": "Gös är en sötvattensfisk i abborrfamiljen, med fast vitt kött. Hjälmaren, en sjö söder om Grythyttan, är känd för den."
+            },
+            "b": {
+              "label": "En saltvattensfisk från Nordsjön",
+              "explanation": "Gösen lever i sjöar och lugna älvar, och i Östersjöns bräckta vatten, inte i salta Nordsjön."
+            },
+            "c": {
+              "label": "En odlad lax",
+              "explanation": "Lax har rosa, fet kött. Gös är en mager vit fisk, och vår är fångad i sjön."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} vet inte var fisken kommer ifrån. Gästen beställer något annat."
+          }
+        },
+        {
+          "question": "Hur pocheras den så att den blir saftig?",
+          "options": {
+            "a": {
+              "label": "I kraftigt kok i tio minuter",
+              "explanation": "Alldeles för hårt och länge: fisken faller sönder och blir torr och trådig."
+            },
+            "b": {
+              "label": "Pocherad på morgonen och värmd när den beställs",
+              "explanation": "Uppvärmd fisk tappar sin konsistens och kan vara en risk för livsmedelssäkerheten om den stått varm."
+            },
+            "c": {
+              "label": "Strax under sjudning, omkring 80 °C, några minuter",
+              "explanation": "Låg värme håller ihop det ömtåliga köttet och gör det saftigt. Ett kraftigt kok river sönder det och torkar ut det."
+            }
+          },
+          "fail": {
+            "outcome": "Fisken kommer ut torr. Gästen lämnar halva.",
+            "ongoing": "{personal} står kvar vid bord {bord} och rättar till det, medan andra bord väntar."
+          }
+        },
+        {
+          "question": "En annan gäst vid bordet är allergisk mot fisk. Vad svarar du när hen frågar om köket kan hålla isär?",
+          "options": {
+            "a": {
+              "label": "Säg att sötvattensfisk inte räknas",
+              "explanation": "En fiskallergi gäller oftast också sötvattensfisk. Det är inte sant, och det är farligt."
+            },
+            "b": {
+              "label": "Fråga köket och säg ärligt vad som går och inte går att lova",
+              "explanation": "Vid allergi kommer ärligheten först. Köket vet om pannor och olja delas. Ett löfte som inte går att hålla är en risk för gästen."
+            },
+            "c": {
+              "label": "Säg att det går bra utan att fråga",
+              "explanation": "Ett okontrollerat löfte om en allergi kan göra en gäst allvarligt sjuk."
+            }
+          },
+          "fail": {
+            "outcome": "Bordet blir oroligt. De beställer lite och går tidigt.",
+            "ongoing": "{personal} står kvar vid bord {bord} och släter över, medan andra bord väntar."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Gästen beställer gösen och ber {personal} tacka köket."
+      },
+      "staff": {
+        "outcome": "{personal} tar över, men svaren blir vaga. Bordet beställer den billigaste rätten.",
+        "ongoing": "{personal} är upptagen vid bord {bord}, och de andra borden får vänta längre."
+      }
+    },
+    "mn04-kantareller": {
+      "title": "Kantarellerna",
+      "body": "{gäst} vid bord {bord} läser menyn högt: \"Kantareller på toast. Är de härifrån?\"",
+      "steps": [
+        {
+          "question": "Vad är kantareller?",
+          "options": {
+            "a": {
+              "label": "Vilda skogssvampar, plockade på sensommaren",
+              "explanation": "Kantareller växer vilt i svensk skog, i mossa nära björk och gran. Säsongen går från juli in på hösten, och de odlas inte."
+            },
+            "b": {
+              "label": "Odlade champinjoner",
+              "explanation": "Champinjoner odlas inomhus. Kantareller plockas vilda i skogen."
+            },
+            "c": {
+              "label": "En sorts tryffel från Italien",
+              "explanation": "Tryffel växer under jord och är något annat. Kantareller är gula svampar som syns ovanför mossan."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} vet inte vad de är. Gästen tappar intresset."
+          }
+        },
+        {
+          "question": "Hur rensas kantareller i köket?",
+          "options": {
+            "a": {
+              "label": "Blötlagda i vatten en timme",
+              "explanation": "Blötlagda kantareller kokar i sitt eget vatten i stället för att stekas, och smaken blir platt."
+            },
+            "b": {
+              "label": "Inte alls, skogsjorden ger smak",
+              "explanation": "Jord och barr knastrar mellan tänderna. Smaken sitter i svampen, inte i smutsen."
+            },
+            "c": {
+              "label": "Med borste eller liten kniv, så torrt som möjligt",
+              "explanation": "Kantareller suger upp vatten och blir sladdriga i pannan. Borsta bort jord och barr och skär av foten."
+            }
+          },
+          "fail": {
+            "outcome": "Kantarellerna kommer ut sladdriga och grusiga.",
+            "ongoing": "{personal} står kvar vid bord {bord} och rättar till det, medan andra bord väntar."
+          }
+        },
+        {
+          "question": "En gäst med celiaki vill ha kantarellerna. Vad säger du?",
+          "options": {
+            "a": {
+              "label": "Skrapa bort smöret",
+              "explanation": "Smör innehåller laktos, inte gluten. Problemet är brödet."
+            },
+            "b": {
+              "label": "Säg att brödet innehåller gluten, och föreslå en annan rätt eller svampen utan bröd",
+              "explanation": "Celiaki betyder inget gluten alls. Brödet är vete. Säg det tydligt och fråga köket vad som kan serveras säkert."
+            },
+            "c": {
+              "label": "Servera, lite bröd går bra",
+              "explanation": "För den som har celiaki skadar även lite gluten."
+            }
+          },
+          "fail": {
+            "outcome": "Gästen får fel besked och litar inte på menyn efter det.",
+            "ongoing": "{personal} står kvar vid bord {bord} och släter över, medan andra bord väntar."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Gästen beställer kantarellerna och fotograferar tallriken."
+      },
+      "staff": {
+        "outcome": "{personal} tar över. Gästen beställer, men utan större entusiasm.",
+        "ongoing": "{personal} är upptagen vid bord {bord}, och de andra borden får vänta längre."
+      }
+    },
+    "mn05-linser": {
+      "title": "Är den vegansk?",
+      "body": "{gäst} vid bord {bord} är vegan och frågar om de rostade rotfrukterna med linser.",
+      "steps": [
+        {
+          "question": "Är rätten vegansk?",
+          "options": {
+            "a": {
+              "label": "Ja: linser, rotfrukter och örter, inget från djur",
+              "explanation": "Rätten är linser, rotfrukter och örter. Linser är baljväxter och ger bra protein, så tallriken mättar utan kött eller mejeri."
+            },
+            "b": {
+              "label": "Nej, linser är en mejeriprodukt",
+              "explanation": "Linser är baljväxter, frön från en växt. De har inget med mejeri att göra."
+            },
+            "c": {
+              "label": "Bara om grädden tas bort",
+              "explanation": "Det finns ingen grädde i rätten. Att gissa får gästen att tvivla på hela svaret."
+            }
+          },
+          "fail": {
+            "outcome": "Gästen är osäker på vad som finns i rätten och beställer bara något att dricka."
+          }
+        },
+        {
+          "question": "Hur kokas linserna?",
+          "options": {
+            "a": {
+              "label": "Blötlagda över natten och hårdkokta i två timmar",
+              "explanation": "Då blir linserna mos. Så hanteras vissa torkade bönor, inte linser."
+            },
+            "b": {
+              "label": "Serveras råa för att de ska knapra",
+              "explanation": "Råa linser är svårsmälta och äts inte som de är."
+            },
+            "c": {
+              "label": "Sköljda och sjudna mjukt tills de är möra, ingen blötläggning",
+              "explanation": "Till skillnad från torkade bönor behöver linser inte blötläggas. Skölj dem och sjud mjukt så att de håller formen."
+            }
+          },
+          "fail": {
+            "outcome": "Linserna kommer ut som mos.",
+            "ongoing": "{personal} står kvar vid bord {bord} och rättar till det, medan andra bord väntar."
+          }
+        },
+        {
+          "question": "Den veganska gästen vill ha en dessert. Vad föreslår du?",
+          "options": {
+            "a": {
+              "label": "Säg att det inte finns något och kom med notan",
+              "explanation": "Det tappar en försäljning och gästen går och känner sig ovälkommen, när det fanns ett alternativ."
+            },
+            "b": {
+              "label": "Kolla listan: sorbeten är bara bär, gräddesserten är inte vegansk",
+              "explanation": "Lingonsorbeten har varken grädde eller ägg. Gräddesserten har båda. Den som kan listan besparar gästen en fråga."
+            },
+            "c": {
+              "label": "Gräddesserten, den är lätt",
+              "explanation": "Grädde och ägg kommer från djur. Lätt är inte samma sak som veganskt."
+            }
+          },
+          "fail": {
+            "outcome": "Gästen hoppar över desserten och går.",
+            "ongoing": "{personal} står kvar vid bord {bord} och släter över, medan andra bord väntar."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Gästen beställer linserna och säger att hen kommer tillbaka med vänner."
+      },
+      "staff": {
+        "outcome": "{personal} tar över och svarar försiktigt, men gästen är fortfarande tveksam.",
+        "ongoing": "{personal} är upptagen vid bord {bord}, och de andra borden får vänta längre."
+      }
+    },
+    "mn06-lingon": {
+      "title": "Lingon",
+      "body": "{gäst} vid bord {bord} är här från utlandet och har sett lingon på listan: \"Vad är det?\"",
+      "steps": [
+        {
+          "question": "Vad är lingon?",
+          "options": {
+            "a": {
+              "label": "Ett vilt nordiskt bär i ljungväxtfamiljen, syrligt och rött",
+              "explanation": "Lingon växer vilt i nordisk skog, på ett lågt vintergrönt ris i ljungväxtfamiljen. De är röda och syrliga."
+            },
+            "b": {
+              "label": "En odlad jordgubbssort",
+              "explanation": "Lingon är små, vilda och syrliga. Jordgubbar är en annan växt."
+            },
+            "c": {
+              "label": "En citrusfrukt från Spanien",
+              "explanation": "Det är ett nordiskt skogsbär, inte en citrusfrukt."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} famlar efter svaret. Gästen beställer det hen känner till."
+          }
+        },
+        {
+          "question": "Varför håller sig lingon så bra?",
+          "options": {
+            "a": {
+              "label": "De är alltid frysta",
+              "explanation": "Många fryses, men att de håller sig även råa beror på bensoesyran."
+            },
+            "b": {
+              "label": "De innehåller mycket socker",
+              "explanation": "Lingon är syrliga, med lite socker. Det är syran som håller dem."
+            },
+            "c": {
+              "label": "De innehåller naturlig bensoesyra, som konserverar",
+              "explanation": "Lingon innehåller bensoesyra, ett naturligt konserveringsmedel. Därför håller sig rårörda lingon utan att kokas."
+            }
+          },
+          "fail": {
+            "outcome": "Gästen får ett rörigt svar och tappar intresset.",
+            "ongoing": "{personal} står kvar vid bord {bord} och rättar till det, medan andra bord väntar."
+          }
+        },
+        {
+          "question": "Gästen dricker inte alkohol. Vad ska hen ta till maten?",
+          "options": {
+            "a": {
+              "label": "Ett litet glas vin, det är nästan ingenting",
+              "explanation": "En gäst som inte dricker alkohol menar ingen alls. Att tjata är respektlöst."
+            },
+            "b": {
+              "label": "Den alkoholfria lingondrickan: syrlig och frisk, den fungerar som ett vin till maten",
+              "explanation": "Syra är det som får en dryck att fungera till mat. En syrlig, mousserande lingondricka gör ett vins jobb utan alkohol."
+            },
+            "c": {
+              "label": "Bara vatten, vi har inget annat",
+              "explanation": "Det stämmer inte om listan har något alkoholfritt, och det tappar en försäljning."
+            }
+          },
+          "fail": {
+            "outcome": "Gästen dricker vatten och går utan dessert.",
+            "ongoing": "{personal} står kvar vid bord {bord} och släter över, medan andra bord väntar."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Gästen beställer lingondrickan och sorbeten, och frågar var man plockar lingon."
+      },
+      "staff": {
+        "outcome": "{personal} tar över och pekar på listan. Gästen beställer vatten.",
+        "ongoing": "{personal} är upptagen vid bord {bord}, och de andra borden får vänta längre."
+      }
+    },
+    "mn07-soppan": {
+      "title": "Soppan",
+      "body": "{gäst} vid bord {bord} tål inte laktos och frågar om rotfruktssoppan.",
+      "steps": [
+        {
+          "question": "Vad gör soppan krämig?",
+          "options": {
+            "a": {
+              "label": "Grädde, så den innehåller laktos",
+              "explanation": "Soppan avslutas med grädde, en mejeriprodukt, så den innehåller laktos."
+            },
+            "b": {
+              "label": "Bara rotfrukterna, så den är laktosfri",
+              "explanation": "Receptet har grädde. Att säga att den är laktosfri är fel och skadar gästen."
+            },
+            "c": {
+              "label": "Kokosmjölk",
+              "explanation": "Inte i den här soppan. Att gissa om ingredienser är en risk vid intolerans."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} vet inte vad som finns i soppan. Gästen beställer ingenting."
+          }
+        },
+        {
+          "question": "Hur tar man fram rotfrukternas sötma?",
+          "options": {
+            "a": {
+              "label": "Koka dem länge i mycket vatten",
+              "explanation": "Lång kokning lakar ut smaken i vattnet och ger ingen färg."
+            },
+            "b": {
+              "label": "Tillsätt socker på slutet",
+              "explanation": "Det gör soppan söt, inte djup. Rostning ger rötternas egen sötma."
+            },
+            "c": {
+              "label": "Rosta dem i hög värme, omkring 200 °C, tills ytan får färg",
+              "explanation": "I hög värme får ytan färg och karamelliseras, och rötternas eget socker smakar sötare och djupare."
+            }
+          },
+          "fail": {
+            "outcome": "Soppan smakar tunt.",
+            "ongoing": "{personal} står kvar vid bord {bord} och rättar till det, medan andra bord väntar."
+          }
+        },
+        {
+          "question": "Vad föreslår du för gästen som inte tål laktos?",
+          "options": {
+            "a": {
+              "label": "Säg att laktosen försvinner om soppan värms mer",
+              "explanation": "Uppvärmning tar inte bort laktos. Det är helt enkelt inte sant."
+            },
+            "b": {
+              "label": "Säg att soppan har grädde och föreslå en laktosfri rätt, till exempel linserna",
+              "explanation": "Var tydlig med grädden och erbjud något gästen kan äta. Linserna har inget mejeri."
+            },
+            "c": {
+              "label": "Säg att det bara är lite grädde",
+              "explanation": "Lite grädde innehåller ändå laktos. Gästen bestämmer, och behöver sanningen."
+            }
+          },
+          "fail": {
+            "outcome": "Gästen beställer soppan i tron på svaret, och ångrar sig.",
+            "ongoing": "{personal} står kvar vid bord {bord} och släter över, medan andra bord väntar."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Gästen beställer linserna och tackar {personal} för ett tydligt svar."
+      },
+      "staff": {
+        "outcome": "{personal} tar över. Gästen får ett svar, men känner sig osäker.",
+        "ongoing": "{personal} är upptagen vid bord {bord}, och de andra borden får vänta längre."
+      }
+    },
+    "mn08-flaskan": {
+      "title": "En flaska till bordet",
+      "body": "Ett sällskap på fyra vid bord {bord} vill ha ett glas eller två var. {gäst} frågar: \"Glas eller flaska?\"",
+      "steps": [
+        {
+          "question": "Hur många glas ger en flaska på 75 cl?",
+          "options": {
+            "a": {
+              "label": "Omkring fem glas à 15 cl",
+              "explanation": "Ett vanligt glas är omkring 15 cl, så en flaska på 75 cl ger fem glas."
+            },
+            "b": {
+              "label": "Två glas",
+              "explanation": "Det vore glas på nästan 40 cl vardera, långt mer än ett glas."
+            },
+            "c": {
+              "label": "Tio glas",
+              "explanation": "Det vore 7,5 cl vardera, en provsmakning snarare än ett glas."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} räknar fel. Bordet beställer enstaka glas."
+          }
+        },
+        {
+          "question": "Hur öppnar du flaskan vid bordet?",
+          "options": {
+            "a": {
+              "label": "Öppna den i baren och häll upp åt alla direkt",
+              "explanation": "Gästen ser aldrig flaskan och smakar inte först. En felaktig flaska hamnar i alla glas."
+            },
+            "b": {
+              "label": "Låt korken smälla för effektens skull",
+              "explanation": "Ett stilla vin öppnas tyst. En smäll hör inte till något på den här listan."
+            },
+            "c": {
+              "label": "Visa etiketten, skär kapsylen under läppen, dra korken tyst och låt värden smaka först",
+              "explanation": "Gästen ser att hen fått det hen beställt, vinet rör inte kapsylen, och värden kontrollerar vinet innan alla får."
+            }
+          },
+          "fail": {
+            "outcome": "Flaskan öppnas klumpigt och värden rynkar pannan.",
+            "ongoing": "{personal} står kvar vid bord {bord} och rättar till det, medan andra bord väntar."
+          }
+        },
+        {
+          "question": "Vad föreslår du för sällskapet?",
+          "options": {
+            "a": {
+              "label": "En flaska var",
+              "explanation": "Fyra flaskor är tjugo glas till fyra personer. Att sälja så långt tappar förtroende."
+            },
+            "b": {
+              "label": "En flaska: fem glas kostar mindre än fem glas var för sig, och bordet delar",
+              "explanation": "På vår lista kostar en flaska mindre än fem enstaka glas. För ett bord på fyra är det billigare och ett trevligare ögonblick."
+            },
+            "c": {
+              "label": "Fyra glas av fyra olika viner, alltid",
+              "explanation": "Det kan vara roligt, men bordet frågade efter värde, och det kostar dem mer."
+            }
+          },
+          "fail": {
+            "outcome": "Bordet beställer glas för glas och notan förvånar dem.",
+            "ongoing": "{personal} står kvar vid bord {bord} och släter över, medan andra bord väntar."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Bordet beställer en flaska, och en till senare."
+      },
+      "staff": {
+        "outcome": "{personal} tar över. Bordet beställer glas och stannar en runda.",
+        "ongoing": "{personal} är upptagen vid bord {bord}, och de andra borden får vänta längre."
+      }
+    },
+    "mn09-olet": {
+      "title": "Det lokala ölet",
+      "body": "{gäst} vid bord {bord} vill hellre ha en öl: \"Är ölet lokalt?\"",
+      "steps": [
+        {
+          "question": "Var kommer kvällens öl ifrån?",
+          "options": {
+            "a": {
+              "label": "Bryggeriet i Nora, en kort bit från Grythyttan",
+              "explanation": "Ölet kommer från bryggeriet i Nora, grannorten. Lokala leverantörer är en del av berättelsen gästen betalar för."
+            },
+            "b": {
+              "label": "Importerat från Belgien",
+              "explanation": "Inte kvällens öl. Att ta fel på ursprunget undergräver den lokala berättelsen."
+            },
+            "c": {
+              "label": "Bryggt i vårt eget kök",
+              "explanation": "Vinbaren brygger inte. Ölkrogen har eget bryggeri; vi köper från Nora."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} gissar fel om ölet. Gästen märker det."
+          }
+        },
+        {
+          "question": "Hur häller du upp ölet i glaset?",
+          "options": {
+            "a": {
+              "label": "Rakt ner, snabbt, mitt i glaset",
+              "explanation": "Glaset fylls med skum, ölet blir flatt och gästen får vänta."
+            },
+            "b": {
+              "label": "I ett varmt glas direkt ur diskmaskinen",
+              "explanation": "Ett varmt glas får ölet att skumma över och bli ljummet."
+            },
+            "c": {
+              "label": "Luta glaset, häll längs kanten och räta upp det för ett litet skum",
+              "explanation": "Att hälla längs kanten behåller kolsyran, och att räta upp på slutet bygger ett skum som bär doften."
+            }
+          },
+          "fail": {
+            "outcome": "Ölet kommer flatt och skummigt på samma gång.",
+            "ongoing": "{personal} står kvar vid bord {bord} och rättar till det, medan andra bord väntar."
+          }
+        },
+        {
+          "question": "Gästen som äter fläsket frågar: vin eller öl?",
+          "options": {
+            "a": {
+              "label": "Bara det dyraste vinet duger",
+              "explanation": "Gästen bad om råd, inte om en säljpitch."
+            },
+            "b": {
+              "label": "Båda fungerar: en maltig öl passar fläsk och rotfrukter, och kostar mindre",
+              "explanation": "Fläsk med rostade rotfrukter passar maltet i en öl lika bra som ett friskt vin. Ge gästen ett riktigt val."
+            },
+            "c": {
+              "label": "Öl passar aldrig till mat på en vinbar",
+              "explanation": "Öl är en utmärkt måltidsdryck, och den står på listan av en anledning."
+            }
+          },
+          "fail": {
+            "outcome": "Gästen känner sig styrd och beställer inget mer.",
+            "ongoing": "{personal} står kvar vid bord {bord} och släter över, medan andra bord väntar."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Gästen beställer en öl, och en till till desserten."
+      },
+      "staff": {
+        "outcome": "{personal} tar över och häller upp en öl. Det duger, inget mer.",
+        "ongoing": "{personal} är upptagen vid bord {bord}, och de andra borden får vänta längre."
+      }
+    }
+  }
+}

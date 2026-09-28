@@ -8,7 +8,8 @@
 // och förändringen visas bredvid (röd nedåt, mörk uppåt). Med
 // prefers-reduced-motion byts talet direkt.
 //
-// `useTickingNumber` används också av krediterna vid insatsen (ORDER 279).
+// ORDER 279 — krediterna står bredvid kassan och tickar på samma sätt
+// (insatsen: "Kassa och krediter tickar upp och ner med tydlig animation").
 
 import { useEffect, useRef, useState } from 'react';
 import { strings } from '../../content/strings';
@@ -73,6 +74,9 @@ export function CashCounter() {
   // minut); talet följer i hela kronor.
   const target = Math.round(sim.cash);
   const { shown, delta } = useTickingNumber(target);
+  // ORDER 279 — krediterna tickar bredvid kassan (insatsen).
+  const creditsTarget = sim.knowledgeCredits.episteme + sim.knowledgeCredits.techne + sim.knowledgeCredits.phronesis;
+  const credits = useTickingNumber(creditsTarget, MORNING_STAKE.cashTickMs, 1);
   if (isStrandedWithoutBusiness(sim)) return null;
   const t = strings.cashCounter;
   const signed = delta === null ? null : `${delta < 0 ? '−' : '+'}${formatSek(Math.abs(delta))}`;
@@ -109,6 +113,17 @@ export function CashCounter() {
           style={{ fontSize: u(22), fontWeight: 800, fontVariantNumeric: 'tabular-nums', color: (delta ?? 0) < 0 ? 'var(--nx-accent-700)' : 'var(--nx-ink)' }}
         >
           {signed}
+        </span>
+      )}
+      <span className="nx-label" style={{ marginLeft: u(10) }}>{strings.bet.credits}</span>
+      <span data-testid="credits-counter" data-value={creditsTarget} data-shown={Math.round(credits.shown)} aria-label={strings.bet.creditsAria(creditsTarget)}
+        style={{ fontSize: u(34), fontWeight: 800, fontVariantNumeric: 'tabular-nums' }}>
+        {Math.round(credits.shown)}
+      </span>
+      {credits.delta !== null && (
+        <span data-testid="credits-counter-delta" data-delta={credits.delta}
+          style={{ fontSize: u(22), fontWeight: 800, color: credits.delta < 0 ? 'var(--nx-accent-700)' : 'var(--nx-ink)' }}>
+          {credits.delta < 0 ? '−' : '+'}{Math.abs(credits.delta)}
         </span>
       )}
     </div>

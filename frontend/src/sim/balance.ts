@@ -706,6 +706,45 @@ export const MORNING_STAKE = {
   cashDeltaMinSek: 20
 } as const;
 
+// ORDER 279 — frågorna och insatsen (Vision Owner 2026-09-28, andra
+// provspelet). Speldesign > Servicen > Händelserna i servicen och
+// > Insatsen. Valda tal (F52).
+export const MENU_ROCKETS = {
+  section: 'Servicen > Händelserna i servicen',
+  openQuestion: 'F52',
+  // "Raketer där gäster frågar om kvällens rätter och drycker, utifrån
+  // menyn och dryckeslistan." När en sådan raket kan komma väljs den med
+  // den här sannolikheten framför bankens övriga. Menyraketerna är lugnare
+  // än bankens övriga (inga gäster som går eller kommer); med 0,5 gav
+  // ingen upp i kön en fredag i vecka 2 (order267Pressure), med 0,35 två.
+  share: 0.35,
+  // "Rätt svar ger högre dricks": varje klarat steg höjer dricksen hos
+  // bordets gäster med så här stor andel av notan, och en hel raket med
+  // så här mycket till. Gäller alla raketer.
+  tipBonusPerClearedStep: 0.03,
+  tipBonusOnRocketCleared: 0.04
+} as const;
+
+export const BET = {
+  section: 'Servicen > Insatsen',
+  openQuestion: 'F52',
+  // "Spelaren startar själv en trestegsraket och satsar krediter, med
+  // vinst och förlust." Insatserna spelaren kan välja, i krediter.
+  stakes: [1, 3, 5, 10] as readonly number[],
+  maxPerEvening: 3,
+  // Insatsen avgör hur mycket raketen flyttar kassan: kronor per kredit.
+  cashPerCredit: 2500,
+  // En vunnen raket (alla tre stegen klarade) ger tillbaka insatsen gånger
+  // winCreditFactor i krediter och insatsen × cashPerCredit × winCashFactor
+  // i kassan. En förlorad raket tar insatsen och insatsen × cashPerCredit ×
+  // lossCashFactor ur kassan. "Förlusterna ska kunna bli stora."
+  winCreditFactor: 2,
+  winCashFactor: 0.6,
+  lossCashFactor: 1.5,
+  // Resultatet syns i gränssnittet så här länge (ms).
+  resultVisibleMs: 5000
+} as const;
+
 // ORDER 278 — servicen syns (Vision Owner 2026-09-28, andra provspelet).
 // Speldesign > Servicen > Händelseströmmen och > Lagret. Valda tal (F51).
 export const SERVICE_STREAM = {
