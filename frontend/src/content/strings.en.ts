@@ -836,6 +836,8 @@ export const strings: Widen<typeof Sv> = {
       stepAsks: { episteme: 'What', techne: 'How', phronesis: 'When and why' } as Record<string, string>,
       right: (next: string) => `Right · on to ${next}`,
       rightDone: 'Right · the rocket held',
+      // ORDER 276 — raketerna styr gästflödet.
+      guestsIn: (n: number) => (n === 1 ? 'One more guest comes in.' : `${n} more guests come in.`),
       wrong: (role: string) => `Wrong · ${role} takes over`,
       correctTag: 'Right',
       yourTag: 'Your answer',

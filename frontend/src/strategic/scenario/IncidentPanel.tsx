@@ -111,6 +111,8 @@ export function IncidentCard() {
     struck: string[];
     role: string | null;
     outcomeText: string | null;
+    // ORDER 276 — gäster som svaret släppte in.
+    guestsIn: number;
   } | null = null;
   if (active && cls) {
     const incident = incidentById(cls, active.id);
@@ -126,7 +128,8 @@ export function IncidentCard() {
         correct: revealing ? active.revealed!.correctId : null,
         struck: revealing ? [] : active.struck,
         role: null,
-        outcomeText: null
+        outcomeText: null,
+        guestsIn: revealing ? active.revealed!.guestsIn ?? 0 : 0
       };
     }
   } else if (held && cls) {
@@ -144,7 +147,8 @@ export function IncidentCard() {
         correct: r?.correctId ?? null,
         struck: [],
         role: held.outcome.takeover?.role ?? null,
-        outcomeText: held.outcome.text
+        outcomeText: held.outcome.text,
+        guestsIn: r?.guestsIn ?? 0
       };
     }
   }
@@ -236,9 +240,9 @@ export function IncidentCard() {
     const next = incident.steps[view.shown + 1];
     const chosenText = view.chosen ? step.text.options[view.chosen] : null;
     const explanation = chosenText ? (view.situation && chosenText.explanationIn?.[view.situation]) || chosenText.explanation : '';
-    band = { kind: 'right', label: t.right(next ? s.stepName[next.axis] : ''), text: f(explanation) };
+    band = { kind: 'right', label: t.right(next ? s.stepName[next.axis] : ''), text: `${view.guestsIn > 0 ? `${t.guestsIn(view.guestsIn)} ` : ''}${f(explanation)}` };
   } else if (view.mode === 'done') {
-    band = { kind: 'right', label: t.rightDone, text: view.outcomeText ?? '' };
+    band = { kind: 'right', label: t.rightDone, text: `${view.guestsIn > 0 ? `${t.guestsIn(view.guestsIn)} ` : ''}${view.outcomeText ?? ''}` };
   } else if (view.mode === 'wrong') {
     const role = capitalise(takeoverWord(incident, step, view.role));
     band = { kind: 'wrong', label: t.wrong(role), text: `${view.chosen === null ? `${t.timedOut} ` : ''}${view.outcomeText ?? ''}` };

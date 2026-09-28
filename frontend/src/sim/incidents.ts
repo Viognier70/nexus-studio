@@ -99,6 +99,8 @@ export interface StepReveal {
   optionId: string | null;
   correctId: string;
   cleared: boolean;
+  // ORDER 276 — gäster som svaret släppte in (raketerna styr gästflödet).
+  guestsIn?: number;
 }
 
 export interface IncidentDeltas {
@@ -458,6 +460,15 @@ export function takeoverActive(state: SimulationState): { role: StaffRole; membe
   return t && state.simTime < t.until ? t : null;
 }
 
+
+// ORDER 276 — raketerna styr gästflödet: gäster släpps in i lokalen (samma
+// väg som ett utfall med `room.arrive`). Returnerar antalet.
+function letGuestsIn(draft: SimulationState, n: number): number {
+  if (n <= 0 || draft.day.period !== 'dinner') return 0;
+  draft.scenario = { ...draft.scenario, spawnedRemaining: draft.scenario.spawnedRemaining + n, nextSpawnAt: draft.simTime };
+  return n;
+}
+
 interface Applied {
   cashSek: number;
   ongoing: OngoingConsequence | null;
@@ -563,7 +574,8 @@ export function resolveIncident(draft: SimulationState, optionId: string | null)
     const struck = struckFor(draft, next, active.situation, () => rng.next());
     draft.rngState = rng.state;
     const secondsTotal = secondsFor(draft, next);
-    const revealed: StepReveal = { step: stepIndex, optionId: option.id, correctId: correctOptionId(step, active.situation), cleared: true };
+    const guestsIn = letGuestsIn(draft, INCIDENTS.guestsPerClearedStep);
+    const revealed: StepReveal = { step: stepIndex, optionId: option.id, correctId: correctOptionId(step, active.situation), cleared: true, guestsIn };
     draft.incidents = {
       ...inc,
       active: { ...active, step: stepIndex + 1, secondsTotal, secondsLeft: secondsTotal, struck, revealed, revealLeft: INCIDENTS.revealSeconds }
@@ -604,7 +616,9 @@ export function resolveIncident(draft: SimulationState, optionId: string | null)
     causeTag: null, causeChainId: null, sustainability: 'social', kind: 'v1_incident', scenarioId: incident.id
   }];
   const now = draft.incidents!;
-  const reveal: StepReveal = { step: stepIndex, optionId: option?.id ?? null, correctId: correctOptionId(step, active.situation), cleared };
+  // ORDER 276 — det sista klarade steget och hela raketen släpper in gäster.
+  const guestsIn = cleared ? letGuestsIn(draft, INCIDENTS.guestsPerClearedStep + INCIDENTS.guestsOnRocketCleared) : 0;
+  const reveal: StepReveal = { step: stepIndex, optionId: option?.id ?? null, correctId: correctOptionId(step, active.situation), cleared, guestsIn };
   const takeover = cleared ? null : takeoverFor(draft, incident, step);
   const record: IncidentRecord = {
     id: incident.id,

@@ -1,0 +1,314 @@
+{
+  "url": "http://localhost:4174/",
+  "build": "produktion (vite build + preview)",
+  "flags": "inga",
+  "viewport": "1920×1080",
+  "steps": [
+    {
+      "name": "framme i Grythyttan",
+      "atSeconds": 42
+    },
+    {
+      "name": "vinbaren öppnad",
+      "atSeconds": 119
+    },
+    {
+      "name": "baspaketet köpt",
+      "atSeconds": 121
+    },
+    {
+      "name": "servicen öppnad",
+      "atSeconds": 126
+    },
+    {
+      "name": "raket 1: vb05-dj",
+      "atSeconds": 218
+    },
+    {
+      "name": "raket 2: vb26-oppna-flaskor",
+      "atSeconds": 413
+    },
+    {
+      "name": "tisdag morgon",
+      "atSeconds": 430
+    },
+    {
+      "name": "morgon 3",
+      "atSeconds": 741
+    },
+    {
+      "name": "morgon 4",
+      "atSeconds": 1051
+    },
+    {
+      "name": "morgon 5",
+      "atSeconds": 1358
+    },
+    {
+      "name": "morgon 6",
+      "atSeconds": 1664
+    },
+    {
+      "name": "morgon 7",
+      "atSeconds": 1973
+    },
+    {
+      "name": "söndag",
+      "atSeconds": 1980
+    },
+    {
+      "name": "X1",
+      "atSeconds": 2012
+    }
+  ],
+  "shots": [
+    {
+      "file": "dod-00-startrutan.png",
+      "what": "normal start"
+    },
+    {
+      "file": "dod-01-M1-mentorn-dag-1.png",
+      "what": "M1 mentorn (practice)"
+    },
+    {
+      "file": "dod-02-S1-schema-introduktionen.png",
+      "what": "S1 schemat i introduktionen"
+    },
+    {
+      "file": "dod-14-MD1-medaljerna.png",
+      "what": "MD1 medaljerna"
+    },
+    {
+      "file": "dod-12-O1-ova-forklaring.png",
+      "what": "O1 öva, förklaringen efter fel svar"
+    },
+    {
+      "file": "dod-13-O2-ova-resultat.png",
+      "what": "O2 resultatet (practice)"
+    },
+    {
+      "file": "dod-15-MD2-ny-medalj.png",
+      "what": "MD2 ny medalj (efter 1,2 s)"
+    },
+    {
+      "file": "dod-13-O2-prov-resultat.png",
+      "what": "O2 resultatet (exam)"
+    },
+    {
+      "file": "dod-14-MD1-ny-medalj.png",
+      "what": "MD1 med dagens medalj"
+    },
+    {
+      "file": "dod-01b-B0a-forsta-bankmotet-foodtruck.png",
+      "what": "B0a första bankmötet, food trucken"
+    },
+    {
+      "file": "dod-01c-B0b-forsta-bankmotet-vinbaren.png",
+      "what": "B0b första bankmötet, vinbaren"
+    },
+    {
+      "file": "dod-02-S1-schema-mandag.png",
+      "what": "S1 morgonens schema, måndag"
+    },
+    {
+      "file": "dod-26-lagret-fore-kop.png",
+      "what": "lagret före köpet (paketen)"
+    },
+    {
+      "file": "dod-27-lagret-efter-kop.png",
+      "what": "lagret efter köpet: i lager nu, kassan lägre"
+    },
+    {
+      "file": "dod-04-M2-mentorn-service.png",
+      "what": "M2 mentorn första servicen"
+    },
+    {
+      "file": "dod-25-tiden-kvar-1.png",
+      "what": "tiden kvar av servicen (tidpunkt 1)"
+    },
+    {
+      "file": "dod-25-tiden-kvar-2.png",
+      "what": "tiden kvar av servicen (tidpunkt 2)"
+    },
+    {
+      "file": "dod-20-vinbaren-spelarens-kamera.png",
+      "what": "vinbaren från spelarens kamera, under servicen"
+    },
+    {
+      "file": "dod-30-raket-1-steg-1-fraga.png",
+      "what": "R1 raketkortet, steg 1 (episteme)"
+    },
+    {
+      "file": "dod-30-raket-1-steg-1-svar.png",
+      "what": "R2 rätt svar, steg 1"
+    },
+    {
+      "file": "dod-30-raket-1-steg-2-fraga.png",
+      "what": "R1 raketkortet, steg 2 (techne)"
+    },
+    {
+      "file": "dod-30-raket-1-steg-2-svar.png",
+      "what": "R2 rätt svar, steg 2"
+    },
+    {
+      "file": "dod-30-raket-1-steg-3-fraga.png",
+      "what": "R1 raketkortet, steg 3 (phronesis)"
+    },
+    {
+      "file": "dod-30-raket-1-steg-3-svar.png",
+      "what": "R2 rätt svar, steg 3"
+    },
+    {
+      "file": "dod-32-raket-1-utfallet.png",
+      "what": "efter raket 1: raden i rummet och mätarna"
+    },
+    {
+      "file": "dod-21-kvallen-figurerna-1.png",
+      "what": "kvällen, figurerna i rörelse (tidpunkt 1)"
+    },
+    {
+      "file": "dod-21-kvallen-figurerna-2.png",
+      "what": "kvällen, figurerna i rörelse (tidpunkt 2)"
+    },
+    {
+      "file": "dod-31-raket-2-fel-fraga.png",
+      "what": "R1 raketkortet, steg 2 (techne)"
+    },
+    {
+      "file": "dod-31-raket-2-fel-svar.png",
+      "what": "R3 fel svar, steg 2"
+    },
+    {
+      "file": "dod-32-raket-2-utfallet.png",
+      "what": "efter raket 2: raden i rummet och mätarna"
+    },
+    {
+      "file": "dod-40-L1-kvallens-lardom.png",
+      "what": "L1 kvällens lärdom"
+    },
+    {
+      "file": "dod-41-K1-kvallsberattelsen.png",
+      "what": "K1 kvällsberättelsen"
+    },
+    {
+      "file": "dod-22-lordag-figurerna-1.png",
+      "what": "lördagskvällen, figurerna i rörelse (tidpunkt 1)"
+    },
+    {
+      "file": "dod-22-lordag-figurerna-2.png",
+      "what": "lördagskvällen, figurerna i rörelse (tidpunkt 2)"
+    },
+    {
+      "file": "dod-10-T1-sondagstidningen.png",
+      "what": "T1 söndagstidningen"
+    },
+    {
+      "file": "dod-11-B1-bankmotet.png",
+      "what": "B1 bankmötet"
+    },
+    {
+      "file": "dod-03-S2-schema-sondag.png",
+      "what": "S2 morgonens schema, söndag"
+    },
+    {
+      "file": "dod-50-X1-utan-verksamhet-och-pengar.png",
+      "what": "X1 utan verksamhet och pengar (sparfil)"
+    }
+  ],
+  "rockets": [
+    {
+      "n": 1,
+      "id": "vb05-dj",
+      "steps": [
+        {
+          "step": 0,
+          "axis": "episteme",
+          "question": "What do guests do when the music gets louder?",
+          "countdown": "15",
+          "answer": {
+            "id": "a",
+            "quality": "best"
+          },
+          "band": "Right · on to TechneOne more guest comes in. We speak louder the more noise there is around us. This is called the Lombard effect. That is why the noise level in a room rises faster than the music is turned up."
+        },
+        {
+          "step": 1,
+          "axis": "techne",
+          "question": "How do you find out if the volume is too loud at the tables?",
+          "countdown": "20",
+          "answer": {
+            "id": "d",
+            "quality": "best"
+          },
+          "band": "Right · on to PhronesisOne more guest comes in. If you have to raise your voice to be heard at the table, the guests have to as well. Then you know how it sounds where they are sitting."
+        },
+        {
+          "step": 2,
+          "axis": "phronesis",
+          "question": "The couple cannot hear each other. What do you do now?",
+          "countdown": "35",
+          "answer": {
+            "id": "b",
+            "quality": "best"
+          },
+          "band": "Right · the rocket held2 more guests come in. The couple are talking again, and the room has the sound level the evening needs."
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "id": "vb26-oppna-flaskor",
+      "steps": [
+        {
+          "step": 0,
+          "axis": "episteme",
+          "question": "What is it that mainly spoils the wine in an opened bottle?",
+          "countdown": "13",
+          "answer": {
+            "id": "d",
+            "quality": "best"
+          },
+          "band": "Right · on to TechneOne more guest comes in. Once the bottle is open, oxygen gets in and the wine loses fruit and freshness day by day. Cold slows this down, for red wine too."
+        },
+        {
+          "step": 1,
+          "axis": "techne",
+          "question": "How do you deal with the bottles before you go home?",
+          "countdown": "25",
+          "answer": {
+            "id": "a",
+            "quality": "wrong"
+          },
+          "band": "Wrong · The waiter takes overNine bottles are emptied into the sink. The staff take over: the bottles are left open on the counter overnight."
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "s1ScrollTopBeforeShot": 469,
+  "stock": {
+    "before": "Cash120 k SEK▾",
+    "after": "Cash118 k SEK▾",
+    "inStock": "30"
+  },
+  "fpsService": 24,
+  "clock": [
+    {
+      "text": "Service · 18:074 h 53 min leftCloses 23:00",
+      "leftMinutes": "293"
+    },
+    {
+      "text": "Service · 19:073 h 53 min leftCloses 23:00",
+      "leftMinutes": "233"
+    }
+  ],
+  "saturdayGuests": [
+    "CashThe guestsThe staffTen steps per meter. Direction, not amounts.",
+    "CashThe guestsThe staffTen steps per meter. Direction, not amounts."
+  ],
+  "x1": {
+    "save": "reports/order270/save-utan-verksamhet.json",
+    "cashInSave": 30372,
+    "cashLoaded": 0
+  }
+}

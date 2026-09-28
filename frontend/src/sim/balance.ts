@@ -424,6 +424,13 @@ export const INCIDENTS = {
   // kortet så här många sekunder (verklig tid) innan nästa steg öppnas på
   // full tid, eller kortet stängs.
   revealSeconds: 2.4,
+  // ORDER 276 (Vision Owner 2026-09-28, provspel): "Raketerna styr
+  // gästflödet: fler rätta svar ger fler gäster in i lokalen, som köper
+  // mer ur lagret." Varje klarat steg släpper in så här många gäster, och
+  // en hel klarad raket så här många till. Ett fel släpper inte in någon.
+  // Valda tal (F49).
+  guestsPerClearedStep: 1,
+  guestsOnRocketCleared: 1,
   // ORDER 271 (Vision Owner, FRAGOR §49): vid fel tar den ordinarie
   // personalen i rollen över och lämnar sin uppgift, så att andra bord
   // får vänta synligt. Rollen per steg: kunskapen och hantverket följer

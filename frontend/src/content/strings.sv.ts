@@ -878,6 +878,8 @@ export const strings = {
       stepAsks: { episteme: 'Vad', techne: 'Hur', phronesis: 'När och varför' } as Record<string, string>,
       right: (next: string) => `Rätt · vidare till ${next}`,
       rightDone: 'Rätt · raketen höll',
+      // ORDER 276 — raketerna styr gästflödet.
+      guestsIn: (n: number) => (n === 1 ? 'En gäst till kommer in.' : `${n} gäster till kommer in.`),
       wrong: (role: string) => `Fel · ${role} tar över`,
       correctTag: 'Rätt',
       yourTag: 'Ditt svar',
