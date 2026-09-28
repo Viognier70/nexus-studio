@@ -506,6 +506,19 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 
 - 5 bilder (5 .png): bl.a. `L1-kvallens-lardom.png`, `R1-raketkortet.png`.
 
+## documentation/leveranser/nexus-leverans-2026-09-28/
+
+- `INSTRUKTION till Claude Code.md`: INSTRUKTION till Claude Code — leverans 2026-09-28.
+- 5 tillhörande filer (kod, data, bilder) (5 .ts): `figureActs.ts`, `innDay.ts`, `innRoom.ts`, `nexusStrings.ts`, `wineBarRoom.ts`.
+
+## documentation/leveranser/nexus-leverans-2026-09-28/bilder/
+
+- 2 bilder (2 .png): bl.a. `ringar-01-spelarens-kamera-raket.png`, `ringar-02-nara-baren.png`.
+
+## documentation/leveranser/nexus-leverans-2026-09-28/skarmar/
+
+- 6 bilder (6 .png): bl.a. `G1-hud-servicen.png`, `G2-raketkortet.png`.
+
 ## documentation/orders/
 
 - `ORDER - vinbaren.md`: ORDER — Vinbaren: montering av `wineBarRoom.ts`.
