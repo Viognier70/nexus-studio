@@ -15,7 +15,7 @@ export interface CapitalDelta {
 
 export interface Activity {
   id: string;
-  name: string;                // English per CLAUDE.md rule 7
+  name: string;                // spelartext på svenska (CLAUDE.md regel 7)
   description: string;
   costSek: number;             // upfront cost paid when the activity is picked
   effect: CapitalDelta;        // applied at end-of-day, alongside wages
@@ -27,48 +27,48 @@ export interface Activity {
 export const ACTIVITY_CATALOGUE: readonly Activity[] = [
   {
     id: 'train-service',
-    name: 'Train the service team',
-    description: 'A half-hour walk-through of pass timing and table cadence.',
+    name: 'Träna serveringspersonalen',
+    description: 'En halvtimmes genomgång av tempot vid passet och rytmen vid borden.',
     costSek: 3000,
     effect: { economic: -3000, social: 0.04, ecological: 0 },
     availability: 'always'
   },
   {
     id: 'runner-shift',
-    name: 'Bring in a floor runner',
-    description: 'One extra pair of hands moving plates and clearing tables.',
+    name: 'Ta in en springare',
+    description: 'Ett extra par händer som bär ut tallrikar och dukar av.',
     costSek: 1800,
     effect: { economic: -1800, social: 0.03, ecological: 0 },
     availability: 'always'
   },
   {
     id: 'local-sourcing',
-    name: "Switch tonight's produce to local",
-    description: 'Small farms nearby; higher unit cost, shorter supply chain.',
+    name: 'Lokala råvaror i kväll',
+    description: 'Små gårdar i närheten: högre styckpris, kortare leveranskedja.',
     costSek: 2500,
     effect: { economic: -2500, social: 0.02, ecological: 0.05 },
     availability: 'always'
   },
   {
     id: 'wine-tasting',
-    name: 'Team wine tasting hour',
-    description: 'The team knows the list; upsells arrive naturally.',
+    name: 'Vinprovning med laget',
+    description: 'Laget kan vinlistan, och merförsäljningen kommer av sig själv.',
     costSek: 2000,
     effect: { economic: 1000, social: 0.02, ecological: 0 },
     availability: 'always'
   },
   {
     id: 'guest-chef',
-    name: 'Guest chef for the evening',
-    description: 'A friend of the house cooks; the pass ships something worth talking about.',
+    name: 'Gästkock för kvällen',
+    description: 'En vän till huset lagar maten, och passet skickar ut något som gästerna pratar om.',
     costSek: 8000,
     effect: { economic: 6000, social: 0.02, ecological: 0 },
     availability: 'weekly'
   },
   {
     id: 'compost-audit',
-    name: 'Kitchen composting audit',
-    description: 'Walk through the bins and prep flow; small changes stick if you look at them.',
+    name: 'Genomgång av kökets kompost',
+    description: 'Gå igenom sopkärlen och flödet i förberedelserna. Små ändringar håller när någon tittar på dem.',
     costSek: 4000,
     effect: { economic: -4000, social: 0.01, ecological: 0.04 },
     availability: 'weekly'

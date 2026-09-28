@@ -134,6 +134,7 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 - `ORDER_265_RAPPORT.md`: ORDER 265 — Nexus v1 etapp 3: Ekonomin och bankmötet (rapport).
 - `ORDER_266_RAPPORT.md`: ORDER 266 — Nexus v1 etapp 4: Servicen (rapport, stoppad).
 - `ORDER_267_RAPPORT.md`: ORDER 267 — Nexus v1 etapp 5: Vinbaren och introduktionen (rapport, SPELSTOPP 1).
+- `ORDER_270_RAPPORT.md`: ORDER 270 — Servicen som händelser (rapport, stopp för provning).
 - `ORDER_RECONSTRUCTION_004_005_019_020.md`: ORDER_RECONSTRUCTION_004_005_019_020 — Evidence record for four sprint orders.
 - `ORDER_REGISTRY.md`: ORDER REGISTRY.
 - `PERFORMANCE_PREPARATION_REFERENCE.md`: Performance Preparation Reference.
@@ -413,6 +414,89 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 - `LEVERANS.md`: Leveransbrev från Claude Design 2026-08-30 kl. 12:45, den leverans som monterades i handoff/ (ORDER 142/143).
 - `LEVERANSNOT.md`: Substansen ur de åtta orderdokumenten, ordnad per fil, med alla mått tagna i renderad geometri.
 - 10 tillhörande filer (kod, data, bilder) (10 .ts): `brewpubRoom.ts`, `businessRoom.ts`, `figureProps.ts`, `figureRig.ts`, `foodTruckRoom.ts`, `innRoom.ts`, `nightClubRoom.ts`, `restaurantRoom.ts`, `silhouetteContrast.zones.ts`, `wineBarRoom.ts`.
+
+## documentation/leveranser/nexus-leverans-2026-09-27/
+
+- `FRAGOR till Claude Code.md`: Frågor till Claude Code — innan de fem rummen monteras.
+- `INSTRUKTION till Claude Code - Nexus paket 1-6.md`: INSTRUKTION till Claude Code — Nexus v1, paket 1–6.
+
+## documentation/leveranser/nexus-leverans-2026-09-27/paket-1-vinbaren-veckan-figurerna/
+
+- `FRAGOR till Claude Code.md`: Frågor till Claude Code — innan de fem rummen monteras.
+- `LEVERANS.md`: LEVERANS — nexus-design-2026-09-25-1630.
+- `LEVERANSNOT.md`: Leveransnot — Nexus v1, paket 1.
+- 2 tillhörande filer (kod, data, bilder) (2 .ts): `figureActs.ts`, `wineBarRoom.ts`.
+
+## documentation/leveranser/nexus-leverans-2026-09-27/paket-1-vinbaren-veckan-figurerna/bilder/
+
+- 12 bilder (12 .png): bl.a. `anim-01-vantans-tre-lagen.png`, `anim-02-alla-kamerahojd.png`.
+
+## documentation/leveranser/nexus-leverans-2026-09-27/paket-1-vinbaren-veckan-figurerna/skarmar/
+
+- 18 bilder (18 .png): bl.a. `00-SYS-systemet.png`, `01-M1-mentorn-dag-1.png`.
+
+## documentation/leveranser/nexus-leverans-2026-09-27/paket-2-foodtrucken-uppgraderingen/
+
+- `FRAGOR till Claude Code.md`: Frågor till Claude Code — innan de fem rummen monteras.
+- `LEVERANS.md`: LEVERANS — nexus-design-2026-09-25-1900.
+- `LEVERANSNOT.md`: Leveransnot — Nexus v1, paket 2.
+- 2 tillhörande filer (kod, data, bilder) (2 .ts): `figureActs.ts`, `truckPitch.ts`.
+
+## documentation/leveranser/nexus-leverans-2026-09-27/paket-2-foodtrucken-uppgraderingen/bilder/
+
+- 13 bilder (13 .png): bl.a. `foodtruck-01-torget-sol-1830.png`, `foodtruck-02-torget-regn-1830.png`.
+
+## documentation/leveranser/nexus-leverans-2026-09-27/paket-2-foodtrucken-uppgraderingen/skarmar/
+
+- 5 bilder (5 .png): bl.a. `11-B1-bankmotet-reviderad.png`, `U1-veckoavrakningen.png`.
+
+## documentation/leveranser/nexus-leverans-2026-09-27/paket-3-restaurangen/
+
+- `FRAGOR till Claude Code.md`: Frågor till Claude Code — innan de fem rummen monteras.
+- `LEVERANS.md`: LEVERANS — nexus-design-2026-09-26-restaurangen.
+- `LEVERANSNOT.md`: Leveransnot — Nexus v1, paket 3: restaurangen.
+- 2 tillhörande filer (kod, data, bilder) (2 .ts): `figureActs.ts`, `restaurantRoom.ts`.
+
+## documentation/leveranser/nexus-leverans-2026-09-27/paket-3-restaurangen/bilder/
+
+- 9 bilder (9 .png): bl.a. `restaurangen-01-middag-spelarens-kamera.png`, `restaurangen-02-middag-hela-rummet.png`.
+
+## documentation/leveranser/nexus-leverans-2026-09-27/paket-4-olkrogen/
+
+- `FRAGOR till Claude Code.md`: Frågor till Claude Code — innan de fem rummen monteras.
+- `LEVERANS.md`: LEVERANS — nexus-design-2026-09-26-olkrogen.
+- `LEVERANSNOT.md`: Leveransnot — Nexus v1, paket 4: ölkrogen med bryggeriet.
+- 2 tillhörande filer (kod, data, bilder) (2 .ts): `brewpubRoom.ts`, `figureActs.ts`.
+
+## documentation/leveranser/nexus-leverans-2026-09-27/paket-4-olkrogen/bilder/
+
+- 7 bilder (7 .png): bl.a. `olkrogen-01-fredag-bryggdag-spelarens-kamera.png`, `olkrogen-02-fredag-vriden.png`.
+
+## documentation/leveranser/nexus-leverans-2026-09-27/paket-5-gastgiveriet/
+
+- `FRAGOR till Claude Code.md`: Frågor till Claude Code — innan de fem rummen monteras.
+- `LEVERANS.md`: LEVERANS — nexus-design-2026-09-26-gastgiveriet.
+- `LEVERANSNOT.md`: Leveransnot — Nexus v1, paket 5: gästgiveriet.
+- 2 tillhörande filer (kod, data, bilder) (2 .ts): `figureActs.ts`, `innDay.ts`.
+
+## documentation/leveranser/nexus-leverans-2026-09-27/paket-5-gastgiveriet/bilder/
+
+- 9 bilder (9 .png): bl.a. `gastgiveriet-01-frukost-salen.png`, `gastgiveriet-02-frukost-garden-ned-fran-rummen.png`.
+
+## documentation/leveranser/nexus-leverans-2026-09-27/paket-6-servicen-raketer/
+
+- `FRAGOR till Claude Code.md`: Frågor till Claude Code — innan de fem rummen monteras.
+- `LEVERANS.md`: LEVERANS — nexus-design-2026-09-26-servicen (paket 6, rev. 2026-09-27).
+- `LEVERANSNOT.md`: Leveransnot — paket 6: servicen som raketer.
+- 1 tillhörande filer (kod, data, bilder) (1 .ts): `serviceFlow.ts`.
+
+## documentation/leveranser/nexus-leverans-2026-09-27/paket-6-servicen-raketer/bilder/
+
+- 4 bilder (4 .png): bl.a. `servicen-01-mellan-handelserna.png`, `servicen-02-raket-techne.png`.
+
+## documentation/leveranser/nexus-leverans-2026-09-27/paket-6-servicen-raketer/skarmar/
+
+- 5 bilder (5 .png): bl.a. `L1-kvallens-lardom.png`, `R1-raketkortet.png`.
 
 ## documentation/orders/
 

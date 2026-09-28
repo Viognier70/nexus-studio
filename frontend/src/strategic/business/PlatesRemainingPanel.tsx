@@ -8,6 +8,7 @@
 
 import { useSimState } from '../simulation/SimulationProvider';
 import { findDish } from '../simulation/m4Catalogue';
+import { strings } from '../../content/strings.sv';
 
 const PANEL_STYLE: React.CSSProperties = {
   position: 'absolute',
@@ -50,8 +51,8 @@ export function PlatesRemainingPanel() {
   if (sim.menu.length === 0) return null;
 
   return (
-    <div style={PANEL_STYLE} aria-label="Plates remaining">
-      <div style={HEADING_STYLE}>Plates remaining</div>
+    <div style={PANEL_STYLE} aria-label={strings.panels.platesRemaining.heading}>
+      <div style={HEADING_STYLE}>{strings.panels.platesRemaining.heading}</div>
       {sim.menu.map((entry) => {
         const dish = findDish(entry.dishId);
         if (!dish) return null;
@@ -60,7 +61,7 @@ export function PlatesRemainingPanel() {
         return (
           <div key={entry.dishId} style={ROW_STYLE(isOut)}>
             <span>{dish.name}</span>
-            <span>{isOut ? 'OUT' : plates}</span>
+            <span>{isOut ? strings.panels.platesRemaining.out : plates}</span>
           </div>
         );
       })}

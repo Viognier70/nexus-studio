@@ -437,10 +437,7 @@ export function tickGuests(state: SimulationState) {
       } else if (
         // ORDER 269 — Kalastorget: klagande gäster stannar oftare.
         now - guest.stateTime > queuePatienceSeconds(state) &&
-        guest.satisfaction < giveUpSatisfaction(state) &&
-        // ORDER 266 — en gäst som spelaren står hos (action-knappen) ger
-        // inte upp medan insatsen pågår.
-        state.actionButton?.active?.guestId !== guest.id
+        guest.satisfaction < giveUpSatisfaction(state)
       ) {
         // Give up. ORDER 043 v3 §4 reputation loop: a walkout from
         // the queue is the loudest bad-reputation signal — a person
@@ -797,7 +794,10 @@ function beginBackgroundTask(state: SimulationState, staff: StaffMember, type: T
     type,
     state.capitals.values.social,
     roleCompetence(state.team, staff.role),
-    staffTempoFactor(state)
+    staffTempoFactor(state) *
+    // ORDER 270 — följden av ett fel val kan göra personalen långsammare
+    // tills nästa händelse (läses här för att undvika en importcirkel).
+    (state.incidents?.ongoing?.tempoFactor ?? 1)
   );
   staff.targetGuestId = null;
   // Bakgrundsarbete håller personalen vid rollens home-punkt — kock i
@@ -1226,7 +1226,10 @@ function beginStaffTask(
     type,
     state.capitals.values.social,
     roleCompetence(state.team, staff.role),
-    staffTempoFactor(state)
+    staffTempoFactor(state) *
+    // ORDER 270 — följden av ett fel val kan göra personalen långsammare
+    // tills nästa händelse (läses här för att undvika en importcirkel).
+    (state.incidents?.ongoing?.tempoFactor ?? 1)
   );
   staff.targetGuestId = targetGuestId;
   const guest = state.guests.find((g) => g.id === targetGuestId);

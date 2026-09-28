@@ -21,7 +21,8 @@ import { OpeningPanel } from './scenario/OpeningPanel';
 import { ScenarioOverlay } from './scenario/ScenarioOverlay';
 import { DayActionBar } from './scenario/DayActionBar';
 import { EveningBar } from './scenario/EveningBar';
-import { ActionButtonPanel, BlindOverlay } from './scenario/ActionButtonPanel';
+import { IncidentCard, ServiceMeters } from './scenario/IncidentPanel';
+import { NoBusinessBox } from './economy/NoBusinessBox';
 import { MaltidensHusDialog } from './knowledge/ui/MaltidensHusDialog';
 import { BankDialog } from './economy/BankDialog';
 import { NewspaperDialog, useNewspaper } from './economy/NewspaperDialog';
@@ -36,9 +37,7 @@ import { AboutPanel } from './ui/AboutPanel';
 import { ControlsHint } from './ui/ControlsHint';
 import { DevPanel } from './ui/DevPanel';
 import { EventStreamPanel } from './ui/EventStreamPanel';
-import { InstrumentsPanel } from './ui/InstrumentsPanel';
 import { PanelColumn, PanelRow } from './ui/PanelColumn';
-import { RoomCardPanel } from './ui/RoomCardPanel/RoomCardPanel';
 import { primeStreamAudio } from './ui/streamArrivalCue';
 import { OutwardButton } from './ui/OutwardButton';
 import { SpeedToggle } from './ui/SpeedToggle';
@@ -288,11 +287,11 @@ function StrategicShell() {
         onOpenBank={() => setBankOpen(true)}
         onOpenNewspaper={newspaper.available ? newspaper.openAgain : undefined}
       />
+      <NoBusinessBox hidden={houseOpen || bankOpen} onOpenHouse={() => setHouseOpen(true)} onOpenBank={() => setBankOpen(true)} />
       <BankDialog open={bankOpen} onClose={() => setBankOpen(false)} />
       <NewspaperDialog open={newspaper.open} onClose={newspaper.close} />
       <EveningBar />
-      <ActionButtonPanel />
-      <BlindOverlay />
+      <IncidentCard />
       <MaltidensHusDialog open={houseOpen} onClose={() => setHouseOpen(false)} />
       {/*
         ORDER 090 §6 — panels flow inside two PanelColumns instead of
@@ -319,8 +318,15 @@ function StrategicShell() {
       </PanelColumn>
       <PanelColumn side="right">
         <MorningActivityPanel />
+        <ServiceMeters />
         <EventStreamPanel />
-        <InstrumentsPanel />
+        {/*
+          ORDER 270 (provspel 2026-09-27): "inga engelska paneler".
+          InstrumentsPanel (Room pace, Guest mood, Team stamina, Tonight's
+          take, kapitalflikarna) och RoomCardPanel visas inte i v1: de
+          engelska panelerna ersätts av servicens tre mätare
+          (ServiceMeters) och av rummet självt. Koden står kvar.
+        */}
         {/*
           ORDER 112 DoD 1 (delimplementation): RoomCardPanel renderas inte
           i nivå 4 när dockskåpet är aktivt. Panelen byggdes i ORDER 085
@@ -328,7 +334,7 @@ function StrategicShell() {
           tar bort det skälet. Koden behålls — panelen visas fortfarande
           i nivå 1-3 samt när dollhouse=1 inte är satt.
         */}
-        {!(harnessParams.dollhouse && atLevel4) && <RoomCardPanel />}
+
       </PanelColumn>
       <MorningMenuPanel />
       <PlatesRemainingPanel />

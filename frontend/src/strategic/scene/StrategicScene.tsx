@@ -40,6 +40,7 @@ import { DayLighting } from './DayLighting';
 import { DeliveryVan } from './DeliveryVan';
 import { InteriorGuests } from './InteriorGuests';
 import { InteriorStaff } from './InteriorStaff';
+import { IncidentOutcomeBubble } from './IncidentOutcomeBubble';
 import { MentorComment } from './MentorComment';
 import { PlayerBusiness } from './PlayerBusiness';
 import { StreetLabels } from './StreetLabels';
@@ -138,6 +139,7 @@ export function StrategicScene({ onSelect, selectedId, showScaleRef = false }: P
         <EntranceDoorPulse />
         <DeliveryVan />
         <MentorComment />
+        <IncidentOutcomeBubble />
         <OsmLandmarks onSelect={onSelect} selectedId={selectedId} />
         <OsmTraffic />
         <OsmPedestrians />

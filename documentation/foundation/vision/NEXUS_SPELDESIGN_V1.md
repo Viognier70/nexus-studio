@@ -33,8 +33,8 @@ En säsong är åtta veckor, från midsommar till kräftskiva. En genomspelning 
 | Fas | Vad spelaren gör | Tid i verkligheten |
 | --- | --- | --- |
 | Morgon | Fyller två platser i dagens schema: en satsning (personalfest, utbildning, ekologiska råvaror) eller ett besök i en paviljong. Beställer råvaror och sätter menyn | 2–3 min |
-| Service | Kvällen spelas. Gästerna kommer efter veckodag och säsong. Spelaren kan rycka in med action-knappen | 4–5 min |
-| Kväll | Kvällsberättelsen visar vad som hände och varför. Quizen efter servicen erbjuds | 1–2 min |
+| Service | Kvällen spelas. Gästerna kommer efter veckodag och säsong. Spelaren svarar på kvällens händelser | 4–5 min |
+| Kväll | Kvällsberättelsen visar vad som hände och varför. Kvällens lärdom förklarar de fel beslut spelaren tog | 1–2 min |
 
 **Veckan** har sex servicedagar och en söndag. Måndag är lugn, fredag och lördag är tunga. Söndagen är stängd: veckoavräkningen görs, golvet betalas ut, lånet amorteras, och spelaren har fyra schemaplatser i stället för två. Söndagen är alltså veckans stora övningsdag.
 
@@ -72,6 +72,8 @@ Ett besök i en paviljong kostar en schemaplats och är ett av två val:
 - **Öva.** Fem frågor med förklaring efter varje svar. Ger krediter men ingen medalj. Förebilden är *Duolingo*: repetition som känns som framsteg.
 - **Prov.** Åtta frågor dras ur nivåns tio, i slumpvis ordning. Sex rätt ger medaljen. Ett omprov drar på nytt. För att pröva en nivå krävs medaljen på nivån under.
 
+*Beslut 2026-09-27 (Vision Owner):* Måltidens hus är oförändrat när servicen får trestegsraketer (se Servicen, Händelserna i servicen): paviljongerna övar och prövar var sin kunskapsform. Proven är på tid, 30 sekunder per fråga. Hinner spelaren inte svara räknas det som fel. Övningen är utan tid och visar förklaringen.
+
 Förklaringen efter varje svar är det viktigaste i hela kunskapssystemet. Den gör ett fel svar till något spelaren lär sig av.
 
 ### Medaljerna
@@ -80,11 +82,16 @@ Brons, silver, guld och platina per paviljong. En medalj som är tagen behålls 
 
 ### Quizen efter servicen
 
+*Beslut 2026-09-26 (Vision Owner, efter provspel):* quizen efter servicen ersätts av **kvällens lärdom**: förklaringen till de fel beslut spelaren tog i kvällens händelser (se Servicen, Händelserna i servicen). Texten nedan gäller inte längre.
+
 Efter varje kväll erbjuds tre frågor från kvällens svagaste axel, den som låg bakom flest problem i kvällsberättelsen. Rätt svar ger en kredit, fel svar kostar en. Spelaren kan hoppa över quizen utan kostnad, men får då inget. Quizen är ett erbjudande, inte ett avbrott.
 
 ### Frågebanken
 
-Frågorna är data, inte kod. Varje fråga har paviljong, nivå, vem som ställer den, frågetext, fyra alternativ, rätt svar och förklaring. Vision Owner levererar frågorna. Tills de finns används bronsbankens 40 frågor på alla nivåer, tydligt märkta som platshållare.
+Frågorna är data, inte kod. Varje fråga har paviljong, nivå, vem som ställer den, frågetext, fyra alternativ, rätt svar och förklaring.
+
+*Beslut 2026-09-27 (Vision Owner):* frågebanken och händelsebanken har fältet referens (titel och länk), som visas med förklaringen när det finns. Fälten är tomma tills vidare. Vision Owner levererar referenserna och kunskapen bakom frågorna senare. Inga länkar hittas på.
+ Vision Owner levererar frågorna. Tills de finns används bronsbankens 40 frågor på alla nivåer, tydligt märkta som platshållare.
 
 ## Ekonomin
 
@@ -105,6 +112,8 @@ G kan aldrig bli högre än 90. Veckogolvet är G procent av klassens normala ve
 Bankmötet ger ett startlån som täcker lokal och inventarier för klassen. Lånet amorteras lika under säsongens åtta veckor, med fem procents ränta. Bankens besked formuleras som en diagnos i ord, aldrig som siffror: vad spelaren visat att hon kan och vad som saknas för nästa klass.
 
 *Beslut 2026-09-26 (Vision Owner):* efter inget lån ger banken nytt lån först efter en hel vecka i Måltidens hus med minst ett prov.
+
+*Beslut 2026-09-27 (Vision Owner):* utan verksamhet och utan pengar visas en tydlig ruta mitt på skärmen. Den enda vägen vidare är till Måltidens hus för att öva och göra prov, så att banken kan ge lån. Inga andra knappar.
 
 ### Marknaden
 
@@ -163,7 +172,40 @@ Slumpmålet mäts med scenarierna inräknade, och den bättre förberedda spelar
 
 Morgonens satsningar påverkar de tre kapitalen: ekonomiskt, socialt och ekologiskt. Personalfest och utbildning gör personalen lojal och minskar misstag. Ekologiska råvaror höjer kvaliteten men kostar mer. Ingen satsning är alltid rätt, bara bättre eller sämre för veckan som kommer. Det finns ingen optimal strategi, bara avvägningar, precis som ORDER 100 kräver.
 
-### Action-knappen
+### Händelserna i servicen
+
+*Beslut 2026-09-26 (Vision Owner, efter provspel): servicen görs om. Action-knappen tas bort.*
+
+- Servicen blir en följd av händelser: 3–6 per kväll, fler fredag och lördag, i en båge med öppning, rusning, kris och avslut.
+- Varje händelse är en kort berättelse i kvällens sammanhang (bord, gäst, rätt, personal) med 3–4 svar och 20 sekunders nedräkning. Uteblir svaret beslutar personalen själv, med sämre utfall och −1 kredit.
+- Varje händelse hör till en paviljong och en axel. Medaljer i den paviljongen ger mer tid eller stryker ett fel alternativ.
+- Varje svar ger direkt effekt: synligt i rummet och i tre mätare, kassa, gästernas nöjdhet och personalens ork. Mätarna är ett medvetet undantag från regeln om stat-paneler (princip 6).
+- Händelser kan kedjas: ett val kan utlösa eller förhindra en senare händelse samma kväll.
+- Dagens scenarier vid dörren flyttar in som händelser. Quizen efter servicen ersätts av kvällens lärdom: förklaringen till de fel beslut spelaren tog.
+- Händelsebanken är data, som frågebanken. Varje händelse har paviljong, axel, svar med utfall och kedjor.
+- Harnessen svarar på händelserna som rimlig och svag spelare, och slumpmålet mäts om.
+
+*Beslut 2026-09-27 (Vision Owner, efter provspel):*
+- Rummet står inte still. Servicen fortsätter medan nedräkningen går, så att väntan syns.
+- Fel val låser. Följden av ett fel svar pågår synligt i rummet tills nästa händelse, och svaret går inte att ändra.
+- Rätt svar kan bero på kvällens läge. Exempel: klockan 20.30 har både tygservetterna och isen tagit slut. Rätt är isen, eftersom kvällen går mot after dinner-drinkar och servetterna kan brytas i morgon bitti. Väljer spelaren servetterna tar isen slut i baren, gästerna får vänta synligt, och nöjdhet och krediter sjunker. Fler händelser ska bero på klockslag och läge.
+- En händelse som gäller ett bord kommer bara när en gäst sitter vid bordet.
+- Den svaga spelaren ska gå minus över en vecka.
+
+*Beslut 2026-09-27 (Vision Owner): trestegsraketer i servicen.*
+- Måltidens hus är oförändrat. Paviljongerna övar och prövar var sin kunskapsform. Provfrågorna har 30 sekunder.
+- I servicen är varje händelse en raket med tre frågor i samma sammanhang: **Episteme** (vad, 15 sekunder), **Techne** (hur, 20 sekunder) och **Phronesis** (när och varför, 30 sekunder). Man når nästa steg bara genom att klara det förra.
+- Fel svar på ett steg ger stegets konsekvens, och personalen tar över resten med sämre utfall. Hela raketen klarad ger bästa utfall. Konsekvensen syns direkt i rummet och på mätarna.
+- Medaljer i den paviljong som hör till stegets axel ger mer tid på just det steget. Episteme hör till Måltidsbiblioteket, Techne till Metodköket eller Stensöta efter händelsens ämne, och Phronesis till Kalastorget.
+- 2–4 raketer per kväll, fler fredag och lördag. Rummet fortsätter medan nedräkningen går.
+- De 30 utkasten skrivs om till raketer. Gusto.science-skriptet skriver en raket per artikel, med ett steg ur vart och ett av artikelns tre avsnitt.
+- Alla tider står i `balance.ts`. Slumpmålet mäts om.
+
+Det här ersätter punkterna ovan om 3–6 händelser per kväll, 20 sekunders nedräkning och en axel per händelse.
+
+### Action-knappen (utgår)
+
+*Ersatt 2026-09-26 av Händelserna i servicen.* Texten står kvar som historik.
 
 Spelaren kan rycka in själv. Hon väljer en uppgift ur kön, till exempel att ta en beställning, bära ut en rätt eller lugna en gäst som väntat länge, och hennes figur utför den. Insatsen går snabbare ju fler techne-krediter hon har. Under tiden ser hon inte resten av rummet i tjugo spelsekunder, så hon kan missa något annat.
 
@@ -195,8 +237,8 @@ Medaljerna visar vad spelaren vet och kan. Mognadssteget visar hur hon använder
 | --- | --- | --- |
 | Novis | – | Spelets början |
 | Praktiker | Brons i tre | En hel vecka utan att kassan gått under noll |
-| Reflekterande praktiker | Silver i tre | Quizen efter servicen tagen tio kvällar, och den svagaste axeln förbättrad |
-| Professionell | Guld i tre | Två veckor i rad över golvet utan påfyllnad, och fem kvällar vända med action-knappen |
+| Reflekterande praktiker | Silver i tre | Kvällens lärdom läst tio kvällar, och den svagaste axeln förbättrad *(ändrat 2026-09-26: quizen ersatt av kvällens lärdom)* |
+| Professionell | Guld i tre | Två veckor i rad över golvet utan påfyllnad, och fem kvällar vända i händelserna *(ändrat 2026-09-26: action-knappen ersatt av händelserna)* |
 | Expert | Platina i två och guld i Kalastorget | En vecka där alla tre kapitalen ökade |
 
 Expert kräver Kalastorget eftersom fronesis, omdömet, är den högsta formen av yrkeskunskap enligt ORDER 100.
@@ -223,7 +265,7 @@ Veckoavräkningen visas som söndagsnumret av en lokaltidning i Grythyttan. Den 
 
 ### Språk och målgrupp
 
-Spelet är på svenska i version 1. Frågorna skrivs med spelartext och metadata separerade, så att engelska kan läggas till senare. Bronsbanken har i dag spelartext på engelska. Claude översätter den som utkast, och Vision Owner granskar.
+Spelet är på svenska i version 1. *Beslut 2026-09-27 (Vision Owner):* inga engelska paneler. Frågorna skrivs med spelartext och metadata separerade, så att engelska kan läggas till senare. Bronsbanken har i dag spelartext på engelska. Claude översätter den som utkast, och Vision Owner granskar.
 
 Målgruppen är studenter och blivande studenter i måltidskunskap. Brons ska gå att klara för en intresserad lekman som har övat, platina ska kräva yrkeskunskap.
 
@@ -240,7 +282,7 @@ Varje ny funktion ska klara de här sju principerna. Den som inte gör det hör 
 3. **Det finns alltid en väg tillbaka.** Medaljer förloras aldrig, nedgradering är inte slutet, och paviljongerna är alltid öppna.
 4. **Val, inte optimering.** Ingen satsning, klass eller paviljong är alltid rätt. Spelet belönar avvägningar.
 5. **Närvaro framför åskådande.** Spelaren ska kunna ingripa när det gäller, men insatsen har ett pris.
-6. **Berättelse framför siffror.** Resultat visas som händelser, repliker och tidningstext, aldrig som stat-paneler.
+6. **Berättelse framför siffror.** Resultat visas som händelser, repliker och tidningstext, aldrig som stat-paneler. *Undantag 2026-09-26 (Vision Owner):* servicens tre mätare, kassa, gästernas nöjdhet och personalens ork.
 7. **Något att se fram emot.** Nästa medalj, nästa klass, nästa högtid. Det ska alltid finnas ett mål som ligger en eller två dagar bort och ett som ligger veckor bort.
 
 Den sjunde principen är den som får spelaren att fortsätta. Den är lånad från *Stardew Valley* och *Animal Crossing*: små mål varje dag, stora mål varje säsong.

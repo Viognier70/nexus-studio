@@ -29,6 +29,7 @@ import type { AnchorId } from '../simulation/anchors';
 import { ANCHOR_IDS } from '../simulation/anchors';
 import type { FlervalQuestion, QuestionAnchor, QuestionAsker, QuestionLevel } from './questionFormats';
 import type { PavilionId } from './pavilions';
+import type { Reference } from '../../sim/incidentBank';
 import { ALL_PAVILION_IDS } from './pavilions';
 import { OPTIONS_PER_QUESTION } from '../../sim/balance';
 import metaJson from '../content/questions/bank.meta.json';
@@ -49,6 +50,9 @@ export interface BankQuestionMeta {
   anchor: QuestionAnchor;
   // Sant för frågor som står i för en nivå som saknar eget innehåll.
   placeholder: boolean;
+  // ORDER 270 — referensen bakom frågan (titel och länk), visas med
+  // förklaringen. Tom tills Vision Owner levererar referenserna.
+  reference: Reference | null;
 }
 
 // Spelartext — det enda som översätts.
@@ -94,6 +98,9 @@ export function validateMeta(q: unknown): string[] {
     fail(`rätt svar utanför 0..${OPTIONS_PER_QUESTION - 1}`);
   }
   if (typeof r?.placeholder !== 'boolean') fail('placeholder saknas');
+  const ref = r?.reference as Record<string, unknown> | null | undefined;
+  if (ref === undefined) fail('reference saknas (null när den är tom)');
+  else if (ref !== null && (typeof ref.title !== 'string' || typeof ref.url !== 'string' || !ref.title || !ref.url)) fail('referensen ska ha titel och länk');
   const a = r?.anchor as Record<string, unknown> | undefined;
   if (!a || !PHASES.includes(a.phase as QuestionAnchor['phase'])) fail('ankare saknar giltig fas');
   else {

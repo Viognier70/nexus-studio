@@ -126,6 +126,7 @@ export function MaltidensHusDialog({ open, onClose }: Props) {
           onAnswer={(chosenIndex) => dispatch({ type: 'ANSWER_VISIT', chosenIndex })}
           onNext={() => dispatch({ type: 'NEXT_VISIT_QUESTION' })}
           nextLabel={last ? k.seeResult : k.next}
+          secondsPerQuestion={visit.mode === 'exam' ? EXAM.secondsPerQuestion : undefined}
         />
       </>
     ) : null;

@@ -5,7 +5,7 @@ import { MORALE_INITIAL } from './morale';
 import { initialTeam } from './team';
 import { SEASON, SERVICE } from '../../sim/balance';
 import { initialEconomy, V1_CLASS_TO_ROOM } from '../../sim/economy';
-import { initialActionButton } from '../../sim/actionButton';
+import { initialIncidents } from '../../sim/incidents';
 import { initialServiceEvents } from '../../sim/serviceEvents';
 import type {
   CapitalState,
@@ -337,8 +337,6 @@ export function makeInitialState(
     // ORDER 264 — medaljer, paviljongsbesök och kvällens quiz.
     medals: {},
     pavilionVisit: null,
-    postServiceQuiz: null,
-    postServiceQuizzesTaken: 0,
     // ORDER 109 — M7b bankmötet. Null tills spelaren begär lån via
     // REQUEST_BANK_LOAN; sätts av reducern via resolveBankMeeting.
     // Repeat-request skriver över.
@@ -427,7 +425,7 @@ export function makeInitialState(
     // säsongens åtta veckor.
     economy: initialEconomy('vinbar', SEASON.weeks, 0),
     // ORDER 266 — action-knappen och händelserna ur simuleringen.
-    actionButton: initialActionButton(),
+    incidents: initialIncidents(),
     serviceEvents: initialServiceEvents(),
     scaleDown: {
       menuShortenedFrom: null,

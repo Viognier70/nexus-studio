@@ -154,9 +154,9 @@ export function computeEveningAccount(state: SimulationState): EveningAccount {
       const list = names.length === 1
         ? names[0]
         : names.length === 2
-          ? `${names[0]} and ${names[1]}`
-          : `${names.slice(0, -1).join(', ')}, and ${names[names.length - 1]}`;
-      paragraph = `Today you picked: ${list}. ` + paragraph;
+          ? `${names[0]} och ${names[1]}`
+          : `${names.slice(0, -1).join(', ')} och ${names[names.length - 1]}`;
+      paragraph = `I dag valde du: ${list}. ` + paragraph;
     }
   }
   // ORDER 266 — speldesign > Medgång: "Kvällsberättelsen börjar med det
@@ -180,7 +180,7 @@ export function wentWell(state: SimulationState): string[] {
   if (happy === 1) out.push(w.happyOne);
   else if (happy > 1) out.push(w.happy(capitalise(numberWord(happy))));
   if (!state.day.serviceCollapsed && state.metrics.giveUpsThisService === 0 && happy > 0) out.push(w.clean);
-  if (state.actionButton?.turnedThisService) out.push(w.turned);
+  if (state.incidents?.turnedTonight) out.push(w.turned);
   return out;
 }
 

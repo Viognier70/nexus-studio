@@ -20,6 +20,9 @@ import {
   findIngredient,
   findSupplier
 } from '../simulation/m4Catalogue';
+import { strings } from '../../content/strings.sv';
+
+const T = strings.panels.menu;
 
 const PANEL_STYLE: React.CSSProperties = {
   position: 'absolute',
@@ -142,9 +145,9 @@ export function MorningMenuPanel() {
   };
 
   return (
-    <div style={PANEL_STYLE} aria-label="Menu and stock">
+    <div style={PANEL_STYLE} aria-label={T.aria}>
       <div style={SECTION_STYLE}>
-        <div style={HEADING_STYLE}>Menu today</div>
+        <div style={HEADING_STYLE}>{T.menuHeading}</div>
         {DISHES.map((d, idx) => {
           const draft = drafts[idx];
           const ingredientCost = estimateDishIngredientCost(d.id);
@@ -165,7 +168,7 @@ export function MorningMenuPanel() {
                   {d.name}
                 </label>
                 <div style={{ fontSize: 10, opacity: 0.6, marginTop: 2 }}>
-                  ingr. cost ≈ {ingredientCost.toFixed(0)} SEK
+                  {T.ingredientCost(ingredientCost.toFixed(0))}
                 </div>
               </div>
               <input
@@ -179,7 +182,7 @@ export function MorningMenuPanel() {
                   setDrafts(copy);
                 }}
                 style={INPUT_STYLE}
-                aria-label={`Price for ${d.name} in SEK`}
+                aria-label={T.priceAria(d.name)}
               />
             </div>
           );
@@ -188,20 +191,20 @@ export function MorningMenuPanel() {
           type="button"
           onClick={commitMenu}
           style={{ ...BUTTON_STYLE, marginTop: 6 }}
-          aria-label="Confirm today's menu"
+          aria-label={T.confirmAria}
         >
-          Confirm menu ({drafts.filter((d) => d.included).length} dishes)
+          {T.confirm(drafts.filter((d) => d.included).length)}
         </button>
       </div>
 
       <div>
-        <div style={HEADING_STYLE}>Buy stock</div>
+        <div style={HEADING_STYLE}>{T.stockHeading}</div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, marginBottom: 6 }}>
           <select
             value={supplierId}
             onChange={(e) => setSupplierId(e.target.value)}
             style={SELECT_STYLE}
-            aria-label="Supplier"
+            aria-label={T.supplierAria}
           >
             {SUPPLIERS.map((s) => (
               <option key={s.id} value={s.id}>{s.name}</option>
@@ -211,7 +214,7 @@ export function MorningMenuPanel() {
             value={currentIngredient}
             onChange={(e) => setIngredientId(e.target.value)}
             style={SELECT_STYLE}
-            aria-label="Ingredient"
+            aria-label={T.ingredientAria}
           >
             {validIngredients.map((i) => (
               <option key={i.id} value={i.id}>{i.name}</option>
@@ -225,7 +228,7 @@ export function MorningMenuPanel() {
               const ing = findIngredient(currentIngredient);
               if (!sup || !ing) return '';
               const perUnit = ing.baseCostSek * sup.priceIndex;
-              return `${(perUnit * units).toFixed(0)} SEK · rel ${(sup.reliability * 100).toFixed(0)}%`;
+              return T.offer((perUnit * units).toFixed(0), (sup.reliability * 100).toFixed(0));
             })()}
           </div>
           <div style={{ display: 'flex', gap: 4 }}>
@@ -236,15 +239,15 @@ export function MorningMenuPanel() {
               step={1}
               onChange={(e) => setUnits(Number(e.target.value) || 0)}
               style={INPUT_STYLE}
-              aria-label="Units to buy"
+              aria-label={T.unitsAria}
             />
             <button
               type="button"
               onClick={buyStock}
               style={BUTTON_STYLE}
-              aria-label="Confirm stock purchase"
+              aria-label={T.buyAria}
             >
-              Buy
+              {T.buy}
             </button>
           </div>
         </div>

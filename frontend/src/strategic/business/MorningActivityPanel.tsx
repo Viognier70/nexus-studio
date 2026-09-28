@@ -93,7 +93,7 @@ function formatSek(v: number): string {
   const sign = v >= 0 ? '+' : '−';
   const abs = Math.abs(v);
   if (abs < 1000) return `${sign}${abs}`;
-  return `${sign}${(abs / 1000).toFixed(1)}k`;
+  return `${sign}${(abs / 1000).toFixed(1).replace('.', ',')} ${strings.panels.evening.thousandSuffix}`;
 }
 
 function formatCapital(v: number): string {
@@ -120,7 +120,7 @@ export function MorningActivityPanel() {
   };
 
   return (
-    <div style={PANEL_STYLE} aria-label="Morning activities">
+    <div style={PANEL_STYLE} aria-label={strings.panels.activityEffects.panelAria}>
       <div style={HEADING_STYLE}>{strings.morning.activitiesHeading}</div>
       <div style={SUB_STYLE} data-testid="schedule-slots">
         {strings.morning.slots(used, slots)}
@@ -160,17 +160,17 @@ export function MorningActivityPanel() {
               )}
             </div>
             <div style={CARD_DESC_STYLE}>{a.description}</div>
-            <div style={EFFECT_ROW_STYLE} aria-label="Three-column effect">
+            <div style={EFFECT_ROW_STYLE} aria-label={strings.panels.activityEffects.aria}>
               <span style={EFFECT_CELL_STYLE(a.effect.economic)}>
-                <span style={{ opacity: 0.55, fontSize: 9, marginRight: 3 }}>ECON</span>
+                <span style={{ opacity: 0.55, fontSize: 9, marginRight: 3 }}>{strings.panels.activityEffects.econ}</span>
                 {formatSek(a.effect.economic)}
               </span>
               <span style={EFFECT_CELL_STYLE(a.effect.social)}>
-                <span style={{ opacity: 0.55, fontSize: 9, marginRight: 3 }}>SOC</span>
+                <span style={{ opacity: 0.55, fontSize: 9, marginRight: 3 }}>{strings.panels.activityEffects.soc}</span>
                 {formatCapital(a.effect.social)}
               </span>
               <span style={EFFECT_CELL_STYLE(a.effect.ecological)}>
-                <span style={{ opacity: 0.55, fontSize: 9, marginRight: 3 }}>ECO</span>
+                <span style={{ opacity: 0.55, fontSize: 9, marginRight: 3 }}>{strings.panels.activityEffects.ecol}</span>
                 {formatCapital(a.effect.ecological)}
               </span>
             </div>

@@ -27,6 +27,9 @@ import {
   targetQualityFood,
   targetQualityService
 } from '../simulation/quality';
+import { strings } from '../../content/strings.sv';
+
+const T = strings.panels.cash;
 
 // Same word-band pattern as the four instruments panel.
 function reputationBand(v: number): string {
@@ -40,7 +43,7 @@ function reputationBand(v: number): string {
 function formatKSEK(v: number): string {
   const rounded = Math.round(v);
   // Thin space between thousand groups — Swedish typography.
-  return rounded.toLocaleString('sv-SE').replace(/ /g, ' ') + ' kSEK';
+  return rounded.toLocaleString('sv-SE').replace(/ /g, ' ') + ' ' + T.unit;
 }
 
 // -------- styles --------------------------------------------------------
@@ -230,10 +233,10 @@ export function PlayerPanel() {
         style={PILL_STYLE}
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        aria-label="Cash on hand"
-        title={`Click to open the business account — cash on hand ${formatKSEK(sim.cash / 1000)}`}
+        aria-label={T.pillAria}
+        title={T.pillTitle(formatKSEK(sim.cash / 1000))}
       >
-        <span style={PILL_LABEL_STYLE}>Cash</span>
+        <span style={PILL_LABEL_STYLE}>{T.label}</span>
         <span>{formatKSEK(sim.cash / 1000)}</span>
         {/* Rykte-trend-pil intill Cash-siffran. Endast pil (▲/▼) syns —
             flat läge (·) döljs så pillen är tyst när rykte inte rör sig.
@@ -257,12 +260,12 @@ export function PlayerPanel() {
       </button>
 
       {open && (
-        <div style={PANEL_STYLE} role="region" aria-label="Business account">
-          <div style={HEADING_STYLE}>Cash on hand</div>
+        <div style={PANEL_STYLE} role="region" aria-label={T.accountAria}>
+          <div style={HEADING_STYLE}>{T.heading}</div>
           <div style={VALUE_STYLE}>{formatKSEK(sim.cash / 1000)}</div>
 
           <div style={{ fontSize: 11, opacity: 0.75, marginBottom: 10 }}>
-            {TIER_DATA[tier].label} · valuation {formatKSEK(val.value)}
+            {TIER_DATA[tier].label} · {T.valuation} {formatKSEK(val.value)}
           </div>
 
           <div style={ROW_STYLE}>
@@ -292,7 +295,7 @@ export function PlayerPanel() {
           <div style={HEADING_STYLE}>Omsättning</div>
           <div style={ROW_STYLE}>
             <span style={{ opacity: 0.72 }}>Per stol · dag</span>
-            <span>{rev.perSeatPerDay > 0 ? `${rev.perSeatPerDay.toFixed(2)} kSEK` : '—'}</span>
+            <span>{rev.perSeatPerDay > 0 ? `${rev.perSeatPerDay.toFixed(2).replace('.', ',')} ${T.unit}` : '—'}</span>
           </div>
           <div style={{ ...ROW_STYLE, marginBottom: 2 }}>
             <span style={{ opacity: 0.72 }}>Lunch / Kväll</span>

@@ -1,14 +1,11 @@
-// ORDER 264 (Nexus v1 etapp 2) — kvällen: quizen och vägen till morgonen.
-//
-// Speldesign > Quizen efter servicen: "Quizen är ett erbjudande, inte ett
-// avbrott." Raden erbjuder quizen (tre frågor från kvällens svagaste
-// axel) och låter spelaren gå till nästa morgon när hen vill (F17).
+// ORDER 264 (Nexus v1 etapp 2) — kvällen och vägen till morgonen.
+// ORDER 270 — kvällens lärdom ersätter quizen efter servicen (Vision
+// Owner 2026-09-26): förklaringen till de fel beslut spelaren tog i
+// kvällens händelser, och till dem där personalen fick besluta själv.
 
 import { strings } from '../../content/strings.sv';
-import { POST_SERVICE_QUIZ } from '../../sim/balance';
-import { bankQuestionById } from '../knowledge/questionBank';
-import { QuestionCard } from '../knowledge/ui/QuestionCard';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
+import { ReferenceLine } from '../knowledge/ui/ReferenceLine';
 
 const BAR: React.CSSProperties = {
   position: 'absolute',
@@ -47,62 +44,56 @@ const BUTTON: React.CSSProperties = {
   marginTop: 10
 };
 
+const ITEM: React.CSSProperties = {
+  borderTop: '1px solid rgba(168, 146, 106, 0.35)',
+  paddingTop: 8,
+  marginTop: 8
+};
+
 export function EveningBar() {
   const sim = useSimState();
   const dispatch = useSimDispatch();
   if (sim.day.period !== 'evening') return null;
-  const quiz = sim.postServiceQuiz;
-  const k = strings.knowledge;
-  const q = strings.quiz;
+  const l = strings.lesson;
+  const lesson = sim.incidents?.lesson ?? null;
 
   let content: React.ReactNode = null;
-  if (quiz?.status === 'offered') {
-    content = (
-      <>
-        <div>{q.offer(k.axes[quiz.axis], POST_SERVICE_QUIZ.questions)}</div>
-        <button type="button" style={BUTTON} data-testid="start-quiz" onClick={() => dispatch({ type: 'START_QUIZ' })}>
-          {q.start}
-        </button>
-        <button type="button" style={BUTTON} data-testid="skip-quiz" onClick={() => dispatch({ type: 'SKIP_QUIZ' })}>
-          {q.skip}
-        </button>
-      </>
+  if (lesson !== null) {
+    content = lesson.length === 0 ? (
+      <div data-testid="evening-lesson" data-items={0}>{l.none}</div>
+    ) : (
+      <div data-testid="evening-lesson" data-items={lesson.length}>
+        <div style={{ opacity: 0.8 }}>{l.intro}</div>
+        {lesson.map((item) => (
+          <div key={item.incidentId} style={ITEM} data-testid={`lesson-${item.incidentId}`}>
+            <div style={{ fontWeight: 600 }}>{item.title}</div>
+            <div style={{ opacity: 0.85 }} data-testid={`lesson-step-${item.incidentId}`} data-step-axis={item.stepAxis}>
+              {l.fellOn(strings.service.incident.stepName[item.stepAxis], item.question)}
+            </div>
+            <div style={{ opacity: 0.85 }}>
+              {item.chosen !== null ? l.youChose(item.chosen) : l.staffDecided(item.explanation)}
+            </div>
+            {item.chosen !== null && <div>{item.explanation}</div>}
+            <div style={{ marginTop: 4, color: '#e8d9a8' }}>{l.better(item.better)}</div>
+            <div style={{ opacity: 0.85 }}>{item.betterExplanation}</div>
+            <ReferenceLine reference={item.reference} />
+          </div>
+        ))}
+      </div>
     );
-  } else if (quiz?.status === 'active') {
-    const i = quiz.showingExplanation ? quiz.answers.length - 1 : quiz.answers.length;
-    const question = bankQuestionById(quiz.questionIds[i]);
-    const last = quiz.answers.length >= quiz.questionIds.length;
-    content = question ? (
-      <QuestionCard
-        question={question}
-        index={i}
-        total={quiz.questionIds.length}
-        answered={quiz.showingExplanation ? quiz.answers[i] : null}
-        onAnswer={(chosenIndex) => dispatch({ type: 'ANSWER_QUIZ', chosenIndex })}
-        onNext={() => dispatch({ type: 'NEXT_QUIZ_QUESTION' })}
-        nextLabel={last ? q.nextMorning : k.next}
-      />
-    ) : null;
-  } else if (quiz?.status === 'done') {
-    content = <div data-testid="quiz-done">{q.done(quiz.creditDelta)}</div>;
-  } else if (quiz?.status === 'skipped') {
-    content = <div>{q.skipped}</div>;
   }
 
-  const canLeave = quiz?.status !== 'active';
   return (
     <div style={BAR} data-testid="evening-bar">
       <div style={{ fontSize: 11, letterSpacing: 1.2, textTransform: 'uppercase', opacity: 0.72, marginBottom: 4 }}>
-        {q.heading}
+        {lesson !== null ? l.heading : l.eveningHeading}
       </div>
       {content}
-      {canLeave && (
-        <div>
-          <button type="button" style={BUTTON} data-testid="end-evening" onClick={() => dispatch({ type: 'END_EVENING' })}>
-            {q.nextMorning}
-          </button>
-        </div>
-      )}
+      <div>
+        <button type="button" style={BUTTON} data-testid="end-evening" onClick={() => dispatch({ type: 'END_EVENING' })}>
+          {l.nextMorning}
+        </button>
+      </div>
     </div>
   );
 }

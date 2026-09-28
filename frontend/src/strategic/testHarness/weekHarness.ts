@@ -19,6 +19,8 @@ import { floorSek } from '../../sim/economy';
 import { mountRoomLikeScene } from './roomParity';
 import { WEEK } from '../../sim/balance';
 import { rankedScenarioChoice } from '../simulation/scenarios';
+import { incidentById } from '../../sim/incidentBank';
+import { rankedStepOption } from '../../sim/incidents';
 import type { PavilionKey, ScenarioChoice, SimAction, SimulationState } from '../types';
 
 // Simuleringens tick är 0,2 s (5 Hz), samma som SimulationProvider.
@@ -38,6 +40,8 @@ export interface MorningPlan {
   // ORDER 268 — hur spelaren svarar på scenariot vid dörren: 'best' är
   // den rimliga spelaren (det svar som lyfter kvällens tema mest, och
   // rätt svar på frågan), 'worst' den svaga. Utelämnat = 'best'.
+  // ORDER 270 — samma val gäller kvällens händelser: den rimliga spelaren
+  // väljer det bästa svaret i varje steg, den svaga det sämsta (rankedStepOption).
   scenarioAnswer?: ScenarioAnswer;
 }
 
@@ -79,6 +83,15 @@ export function rankedChoice(scenarioId: string | null, answer: ScenarioAnswer):
 // reports/order268/save-lordag-vecka1.json: lördagens intäkt 7 140 SEK
 // i harnessen mot 17 850 SEK + 8 000 SEK (scenario) i spelarens vy.
 export function answerScenario(s: SimulationState, answer: ScenarioAnswer = 'best'): SimulationState {
+  // ORDER 270 — raketens aktuella steg besvaras direkt, som spelaren gör i
+  // IncidentCard (samma åtgärd, ANSWER_INCIDENT). Nästa tick svarar på
+  // nästa steg.
+  const active = s.incidents?.active;
+  if (active) {
+    const incident = incidentById(s.economy.businessClass, active.id);
+    const step = incident?.steps[active.step ?? 0];
+    if (step) return reducer(s, { type: 'ANSWER_INCIDENT', optionId: rankedStepOption(step, answer, active.struck, active.situation) });
+  }
   switch (s.scenario.phase) {
     case 'subject':
       return reducer(s, { type: 'ADVANCE_SCENARIO_TO_SITUATION' });
@@ -145,7 +158,6 @@ export function playDay(s: SimulationState, plan: MorningPlan): { state: Simulat
     s = reducer(s, { type: 'CLOSE_DAY' });
   }
   if (s.day.period === 'evening') {
-    s = reducer(s, { type: 'SKIP_QUIZ' });
     s = reducer(s, { type: 'END_EVENING' });
   }
   s = tickUntil(s, (x) => x.day.dayNumber > day && (x.day.period === 'morning'));

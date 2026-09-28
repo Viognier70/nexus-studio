@@ -15,7 +15,7 @@
 // närmast speldesignen och går att ändra här utan annan kodändring.
 
 import type { PavilionId } from '../strategic/knowledge/pavilions';
-import type { StaffRole } from '../strategic/types';
+import type { KnowledgeAxis, StaffRole } from '../strategic/types';
 
 // Medaljnivåer i stigande ordning. Index + 1 = antal medaljsteg
 // (Ekonomin > Marknaden: "brons är ett steg och platina fyra").
@@ -141,7 +141,11 @@ export const EXAM = {
   section: 'Kunskapen > Öva och pröva',
   questionsDrawn: 8,           // "Åtta frågor dras ur nivåns tio"
   questionsPerLevel: 10,
-  correctToPass: 6             // "Sex rätt ger medaljen"
+  correctToPass: 6,            // "Sex rätt ger medaljen"
+  // ORDER 270 (provspel 2026-09-27): "Proven på tid: 30 sekunder per
+  // fråga. Hinner spelaren inte svara räknas det som fel. Övningen är
+  // utan tid och visar förklaringen." Verklig tid.
+  secondsPerQuestion: 30
 } as const;
 
 // Frågebanken: "fyra alternativ".
@@ -157,13 +161,6 @@ export const MEDALS = {
   levels: MEDAL_LEVELS          // brons, silver, guld, platina
 } as const;
 
-export const POST_SERVICE_QUIZ = {
-  section: 'Kunskapen > Quizen efter servicen',
-  questions: 3,                // "tre frågor från kvällens svagaste axel"
-  creditOnCorrect: 1,
-  creditOnWrong: -1,
-  creditOnSkip: 0
-} as const;
 
 // ---------------------------------------------------------------------
 // Ekonomin
@@ -362,24 +359,64 @@ export const TEAM_BY_CLASS = {
 // Servicen
 // ---------------------------------------------------------------------
 
-export const ACTION_BUTTON = {
-  section: 'Servicen > Action-knappen',
-  blindSimSeconds: 20,         // "resten av rummet i tjugo spelsekunder"
-  maxPerEvening: 3,            // "Högst tre insatser per kväll"
-  techneCreditOnSuccess: 1,    // "ger en techne-kredit"
-  // ORDER 266 (F25) — valda tal. Insatsen tar baseSimSeconds / (1 +
-  // techneSpeedPerCredit × techne-krediter), dock minst minSimSeconds
-  // ("Insatsen går snabbare ju fler techne-krediter hon har").
-  openQuestion: 'F25',
-  baseSimSeconds: 14,
-  techneSpeedPerCredit: 0.05,
-  minSimSeconds: 5,
-  // Att lugna en gäst i kön: nöjdheten höjs och väntan börjar om.
-  calmSatisfactionBoost: 0.4,
-  // En gäst i kön visas som "på väg att gå" under denna nöjdhet (före
-  // gränsen för att ge upp, QUEUE.giveUpSatisfaction, så att spelaren
-  // hinner rycka in).
-  atRiskSatisfaction: 0.6
+// ORDER 270 — Vision Owners beslut 2026-09-26 efter provspelet: servicen
+// görs om till en följd av händelser, och action-knappen tas bort.
+// Händelserna står som data i `src/content/incidents/` (händelsebanken).
+export const INCIDENTS = {
+  section: 'Servicen > Händelserna i servicen',
+  // ORDER 270 (Vision Owner 2026-09-27): "2–4 raketer per kväll, fler
+  // fredag och lördag."
+  minPerEvening: 2,
+  maxPerEvening: 4,
+  optionsMin: 3,               // "3–4 svar"
+  optionsMax: 4,
+  // Varje händelse är en raket med tre steg i samma sammanhang: "Episteme
+  // (vad, 15 s), Techne (hur, 20 s), Phronesis (när och varför, 30 s)."
+  // Nedräkningen går i verklig tid.
+  stepAxes: ['episteme', 'techne', 'phronesis'] as readonly KnowledgeAxis[],
+  stepSeconds: { episteme: 15, techne: 20, phronesis: 30 } as Record<KnowledgeAxis, number>,
+  timeoutCreditPenalty: 1,     // "−1 kredit" när personalen beslutar själv
+  // "Fel svar på ett steg ger stegets konsekvens och personalen tar över
+  // resten, med sämre utfall." Personalens utfall skalas efter stegen som
+  // återstod: fel på episteme ger hela, på techne två tredjedelar, på
+  // phronesis en tredjedel. Talen är valda (F43).
+  staffShareByFailedStep: [1, 2 / 3, 1 / 3] as readonly number[],
+  // ORDER 270 (F43) — valda tal.
+  openQuestion: 'F43',
+  // "fler fredag och lördag": antalet per veckodag, en till under en högtid
+  // (inom 2–4).
+  perWeekday: { mon: 2, tue: 2, wed: 3, thu: 3, fri: 4, sat: 4, sun: 0 } as Record<Weekday, number>,
+  holidayExtra: 1,
+  // Kedjade händelser får komma utöver kvällens antal, högst så här många.
+  chainExtraMax: 2,
+  // En kedjad händelse kommer så här långt efter valet som utlöste den.
+  chainDelaySimSeconds: 40,
+  // Händelserna läggs jämnt mellan dessa andelar av tiden med öppna
+  // dörrar, med lite slump, i bågen öppning → rusning → kris → avslut.
+  windowStart: 0.08,
+  windowEnd: 0.92,
+  jitter: 0.03,
+  // "Medaljer i den paviljong som hör till stegets axel ger mer tid på
+  // just det steget": så här många sekunder per medaljsteg. Från silver
+  // stryks dessutom ett fel alternativ i steget (beslutet 2026-09-26).
+  extraSecondsPerMedalStep: 5,
+  strikeWrongFromMedalSteps: 2,
+  // Det bästa svaret i ett steg ger en kredit på stegets axel (quizen efter
+  // servicen, som gav krediterna förut, är borttagen).
+  bestAnswerCredit: 1,
+  // Kvällens bord: platserna i rummet i par; utan sittande gäst ett av
+  // så här många bord.
+  seatsPerTable: 2,
+  fallbackTables: 10,
+  // Svarets rad i rummet syns så här länge (spelsekunder).
+  outcomeBubbleSimSeconds: 14,
+  // Gäster som går efter ett svar går mot samma utgång som i service.ts.
+  exitZ: 8,
+  // Klockan i händelsernas text och lägen ("20.30").
+  minutesPerHour: 60,
+  clockDigits: 2,
+  // Följden av ett fel val räknas per simulerad minut.
+  simSecondsPerMinute: 60
 } as const;
 
 export const REPUTATION = {
@@ -391,8 +428,7 @@ export const REPUTATION = {
   openQuestion: 'F26',
   recoveryTarget: 50,          // självläkningen drar mot 50 av 100
   dailyRecovery: 2,            // per dag under målet
-  cleanEveningBonus: 3,        // "en kväll utan returer": ingen gav upp
-  actionSuccessBonus: 1        // en gäst som stannade tack vare insatsen
+  cleanEveningBonus: 3         // "en kväll utan returer": ingen gav upp
 } as const;
 
 // ORDER 266 (F29) — kön. Speldesign > Action-knappen: "lugna en gäst som
@@ -583,9 +619,9 @@ export const MATURITY = {
     { id: 'praktiker', medals: [{ level: 'brons', count: 3, including: [] }],
       evidence: { fullWeeksWithoutNegativeCash: 1 } },
     { id: 'reflekterande', medals: [{ level: 'silver', count: 3, including: [] }],
-      evidence: { postServiceQuizEvenings: 10, weakestAxisImproved: true } },
+      evidence: { eveningLessonEvenings: 10, weakestAxisImproved: true } },
     { id: 'professionell', medals: [{ level: 'guld', count: 3, including: [] }],
-      evidence: { consecutiveWeeksAboveFloorWithoutTopUp: 2, eveningsTurnedWithActionButton: 5 } },
+      evidence: { consecutiveWeeksAboveFloorWithoutTopUp: 2, eveningsTurnedByIncidents: 5 } },
     { id: 'expert', medals: [
         { level: 'platina', count: 2, including: [] },
         { level: 'guld', count: 1, including: ['kalastorget'] }
@@ -619,6 +655,8 @@ export const SAVING = {
   // utom de som står i migratableVersions och går att föra över.
   // ORDER 267 — version 2: vinbaren spelas i vinbarens rum. En fil i
   // version 1 laddas med rummet satt efter klassen (save.ts migrate).
-  formatVersion: 2,
-  migratableVersions: [1]
+  // ORDER 270 — version 3: händelserna i servicen ersätter action-knappen
+  // och quizen. Filer i version 1 och 2 förs över (save.ts migrate).
+  formatVersion: 3,
+  migratableVersions: [1, 2]
 } as const;

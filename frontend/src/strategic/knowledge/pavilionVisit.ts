@@ -27,6 +27,9 @@ import { bankQuestionById, questionsFor, type BankQuestion } from './questionBan
 
 export const THEATRE: PavilionKey = 'gastronomiskateatern';
 
+// ORDER 270 — svaret när provets tid per fråga gick ut.
+export const TIMED_OUT = -1;
+
 // Placeholder för Teatern tills Vision Owner skrivit dess frågor (F6):
 // "Teaterns frågor kombinerar två områden, till exempel en rätt och dess
 // vin" — köket och sommellerien.
@@ -145,8 +148,11 @@ export function answerVisit(
   const questionId = visit.questionIds[visit.answers.length];
   const question = questionId ? bankQuestionById(questionId) : null;
   if (!question) return null;
-  if (!Number.isInteger(chosenIndex) || chosenIndex < 0 || chosenIndex >= question.options.length) return null;
-  const correct = chosenIndex === question.correctIndex;
+  // ORDER 270 — i provet är tiden per fråga begränsad; −1 betyder att
+  // tiden gick ut, och det räknas som fel.
+  const timedOut = chosenIndex === TIMED_OUT && visit.mode === 'exam';
+  if (!timedOut && (!Number.isInteger(chosenIndex) || chosenIndex < 0 || chosenIndex >= question.options.length)) return null;
+  const correct = !timedOut && chosenIndex === question.correctIndex;
   return {
     visit: {
       ...visit,

@@ -162,27 +162,27 @@ export function postServiceSummaryLines(
   service: 'lunch' | 'dinner',
   prev: SimulationState
 ): void {
-  const serviceLabel = service === 'lunch' ? 'Lunch' : 'Dinner';
+  const serviceLabel = service === 'lunch' ? 'Lunch' : 'Middag';
   const revenueKsek = prev.serviceRevenueToday[service];
   const covers = prev.day.serviceCovers;
   if (revenueKsek > 0) {
     const coverSuffix = covers > 0
-      ? ` (${covers} cover${covers === 1 ? '' : 's'})`
+      ? ` (${covers} kuvert)`
       : '';
     postLedger(draft, {
       category: 'revenue',
       amount: revenueKsek * 1000,
-      cause: `${serviceLabel} revenue${coverSuffix}`,
+      cause: `Intäkter ${serviceLabel.toLowerCase()}${coverSuffix}`,
       causeId: service
     });
   }
   const ingredientSek = prev.day.serviceIngredientAccrued;
   if (ingredientSek > 0) {
-    const coverSuffix = covers > 0 ? ` — ${covers} cover${covers === 1 ? '' : 's'}` : '';
+    const coverSuffix = covers > 0 ? ` — ${covers} kuvert` : '';
     postLedger(draft, {
       category: 'ingredient',
       amount: -ingredientSek,
-      cause: `Ingredients — ${serviceLabel.toLowerCase()}${coverSuffix}`,
+      cause: `Råvaror — ${serviceLabel.toLowerCase()}${coverSuffix}`,
       causeId: service
     });
   }

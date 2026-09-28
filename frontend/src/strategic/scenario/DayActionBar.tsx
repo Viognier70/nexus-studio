@@ -8,6 +8,7 @@
 // Visas på morgonen (och eftermiddagen, om lunchen redan passerat).
 // Döljs under service och kväll.
 
+import { isStrandedWithoutBusiness } from '../../sim/economy';
 import { strings } from '../../content/strings.sv';
 import { calendarFor } from '../../sim/calendar';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
@@ -83,6 +84,9 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper }: Props
   const dispatch = useSimDispatch();
   const period = sim.day.period;
   if (period !== 'morning' && period !== 'afternoon') return null;
+  // ORDER 270 — utan verksamhet och utan pengar finns bara rutan mitt på
+  // skärmen (NoBusinessBox), inga andra knappar.
+  if (isStrandedWithoutBusiness(sim)) return null;
   const cal = calendarFor(sim.day.dayNumber);
   const used = scheduleSlotsUsed(sim);
   const business = sim.economy.businessClass;

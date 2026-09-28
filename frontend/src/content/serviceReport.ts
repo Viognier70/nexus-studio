@@ -26,7 +26,8 @@
 //   scale_down > morning_change > short_prep > thin_team
 //     > low_competence > ingredient_tier_grund > poor_morale > ambient
 //
-// Language: English (game text per CLAUDE.md rule 7). Filename
+// Language: Swedish (spelartext per CLAUDE.md regel 7; översatt när
+// Vision Owner ville ha "inga engelska paneler"). Filename
 // locale-free: renamed from serviceReport.sv.ts 2026-08-10.
 
 // -------- cause taxonomy ------------------------------------------------
@@ -60,178 +61,179 @@ export type CauseBank = {
   readonly [K in Exclude<CauseKey, 'ambient'>]?: readonly string[];
 } & { readonly ambient: readonly string[] };
 
+
 // -------- ambient banks (during service) -------------------------------
 
 export const SERVICE_REPORT_AMBIENT = {
   // Ignorance — scientific (kitchen technique)
   kitchen_slip: {
     scale_down: [
-      "The dessert went out plain — the shortened menu leaves the finish without its garnish."
+      "Desserten gick ut naken — den kortade menyn lämnar avslutningen utan garnityr."
     ],
     morning_change: [
-      "The wine reduction went out unstrained — prep ran short after the morning menu change.",
-      "The plating sequence broke on the new dish — the change hit at 8am and the kitchen hasn't drilled it yet."
+      "Vinreduktionen gick ut osilad — förberedelserna räckte inte efter morgonens menybyte.",
+      "Uppläggningen föll isär på den nya rätten — bytet kom klockan åtta och köket har inte övat in den."
     ],
     short_prep: [
-      "A sauce went out uncalibrated — the tempering step was cut when prep ran long on the mise.",
-      "A garnish improvised at the pass — the prep run didn't reach the herb station."
+      "En sås gick ut ojusterad — temperingen ströks när mise en place drog ut på tiden.",
+      "Ett garnityr improviserades på passet — förberedelserna hann aldrig till örtstationen."
     ],
     thin_team: [
-      "One cook missed the sear window on table 4 — two stations and one pair of hands.",
-      "A plate went out unchecked at the pass — the second look is a person the kitchen doesn't have tonight."
+      "En kock missade stekningen till bord 4 — två stationer och ett par händer.",
+      "En tallrik gick ut okontrollerad från passet — den andra blicken är en person köket saknar i kväll."
     ],
     low_competence: [
-      "The sauce split on table 4 — the kitchen tempered too warm, junior at the pass.",
-      "A wallenberg went to table 3 visibly raw — a second look would have caught it.",
-      "The dessert cheese was past — the pass didn't check ripeness before the plate went out."
+      "Såsen skar sig till bord 4 — köket tempererade för varmt, och en junior stod på passet.",
+      "En wallenbergare gick ut synbart rå till bord 3 — en andra blick hade fångat den.",
+      "Dessertosten var för mogen — passet kollade inte mognaden innan tallriken gick ut."
     ],
     ingredient_tier_grund: [
-      "Two lamb portions came off tough — grund tier lamb this month isn't cut consistently.",
-      "The fish came off uneven — grund tier's sizing is a lottery station to station."
+      "Två lammportioner blev sega — lammet i grundsortimentet är inte jämnt styckat den här månaden.",
+      "Fisken blev ojämn — storlekarna i grundsortimentet är ett lotteri från station till station."
     ],
     poor_morale: [
-      "A wallenberg went to table 3 visibly raw — the team is dragging and no one caught it on the second look.",
-      "A plate went out with the wrong garnish — heads are down; the check at the pass was cursory."
+      "En wallenbergare gick ut synbart rå till bord 3 — laget släpar och ingen fångade den i andra blicken.",
+      "En tallrik gick ut med fel garnityr — alla har huvudet nere och kontrollen på passet var slarvig."
     ],
     ambient: [
-      "An allergy note was missed at plate-up.",
-      "The dessert cheese went out past its edge.",
-      "A single plate went out to the wrong table."
+      "En allergianteckning missades vid uppläggningen.",
+      "Dessertosten gick ut när den redan passerat sin bästa tid.",
+      "En tallrik gick till fel bord."
     ]
   },
 
   // Ignorance — cultural (hospitality, pairing)
   service_slip: {
     scale_down: [
-      "A pairing suggestion missed — the thinned wine list left the waiter without the bottle he'd have offered."
+      "Ett dryckesförslag föll bort — den tunnade vinlistan lämnade servitören utan flaskan han skulle ha föreslagit."
     ],
     morning_change: [
-      "The dessert alternative wasn't offered — the menu was rewritten at 8am and the floor is still catching up.",
-      "A guest asked about the new dish and the waiter hesitated — the morning briefing didn't reach him."
+      "Dessertalternativet erbjöds aldrig — menyn skrevs om klockan åtta och matsalen har inte hunnit ikapp.",
+      "En gäst frågade om den nya rätten och servitören tvekade — morgonens genomgång nådde aldrig honom."
     ],
     short_prep: [
-      "A butter knife missed three settings — the setup was cut short when prep ran long elsewhere."
+      "Smörkniven saknades vid tre kuvert — dukningen kortades när förberedelserna drog ut på annat håll."
     ],
     thin_team: [
-      "A butter knife missed three settings — a floor of two couldn't set the whole room in the prep window.",
-      "The wine went to the wrong guest — the waiter reads by whoever is nearest when he's stretched thin.",
-      "An allergy noted in the booking went unset at the table — three passes short a person."
+      "Smörkniven saknades vid tre kuvert — två i matsalen hann inte duka hela salen under förberedelserna.",
+      "Vinet hamnade hos fel gäst — servitören tar den som står närmast när han är för tunt bemannad.",
+      "En allergi i bokningen kom aldrig fram till bordet — tre pass och en person för lite."
     ],
     low_competence: [
-      "A wine was poured to the wrong guest — the waiter reads the table by age, not the booking.",
-      "A regular was greeted with the wrong name — front-of-house doesn't yet know the room.",
-      "Coffee went out before the digestif at table 6 — the sequence isn't learned yet."
+      "Ett vin hälldes upp åt fel gäst — servitören läser bordet efter ålder, inte efter bokningen.",
+      "En stamgäst hälsades med fel namn — matsalen känner ännu inte sina gäster.",
+      "Kaffet kom före digestifen vid bord 6 — ordningen sitter inte än."
     ],
     poor_morale: [
-      "A regular walked in and the greeting was flat — the front-of-house is drained.",
-      "The dish presentation was skipped at table 4 — the waiter set the plate and moved on."
+      "En stamgäst kom in och välkomnandet var platt — serveringen är sliten.",
+      "Presentationen av rätten hoppades över vid bord 4 — servitören ställde ner tallriken och gick vidare."
     ],
     ambient: [
-      "A vegetarian was offered a meat dish first.",
-      "The welcome drink didn't reach a waiting party.",
-      "A digestif went out before the coffee cleared."
+      "En vegetarian erbjöds en kötträtt först.",
+      "Välkomstdrinken nådde aldrig ett väntande sällskap.",
+      "En digestif kom ut innan kaffet var avdukat."
     ]
   },
 
   // Ignorance — cultural (supplier / ecological sourcing)
   delivery_short: {
     thin_team: [
-      "The delivery truck came and went with no one checking the load — the kitchen was single-handed.",
-      "The invoice sat unread on the counter — receiving is a job no one had time for."
+      "Leveransbilen kom och åkte utan att någon kontrollerade lasten — köket var ensambemannat.",
+      "Följesedeln låg oläst på bänken — varumottagningen var det ingen som hann med."
     ],
     ingredient_tier_grund: [
-      "The greens came in wilted — grund tier's supplier doesn't cold-chain the leafy stuff.",
-      "The fish went into the walk-in looking grey — grund tier means yesterday's catch as today's price."
+      "Grönsallaten kom vissen — grundsortimentets leverantör håller inte kylkedjan för bladgrönt.",
+      "Fisken gick in i kylrummet med grå ton — grundsortimentet betyder gårdagens fångst till dagens pris."
     ],
     poor_morale: [
-      "The cream sat fifteen minutes on the loading bay before someone moved it — attention was elsewhere all morning.",
-      "The invoice was short a kilo on salmon and no one called back — the day started tired."
+      "Grädden stod en kvart på lastkajen innan någon flyttade den — uppmärksamheten var någon annanstans hela morgonen.",
+      "Följesedeln saknade ett kilo lax och ingen ringde tillbaka — dagen började trött."
     ],
     ambient: [
-      "The delivery was short a kilo on salmon and no one called back.",
-      "The venison came with the wrong label.",
-      "The lemon carton was half full.",
-      "The fish arrived without an ice pack."
+      "Leveransen saknade ett kilo lax och ingen ringde tillbaka.",
+      "Hjortköttet kom med fel etikett.",
+      "Citronkartongen var halvfull.",
+      "Fisken kom utan kylklamp."
     ]
   },
 
   // Strain — kitchen bottleneck
   bottleneck: {
     scale_down: [
-      "The dessert went out without its finish — the shortened menu leaves no fallback when the pass stacks."
+      "Desserten gick ut utan avslutning — den kortade menyn ger ingen reserv när det hopar sig på passet."
     ],
     morning_change: [
-      "The kitchen ran a beat behind on every ticket — the menu changed at 8am and the timings weren't rewritten.",
-      "The new dish held two extra minutes at the pass — the timing sheet was never redrawn."
+      "Köket låg ett slag efter på varje bong — menyn byttes klockan åtta och tiderna skrevs aldrig om.",
+      "Den nya rätten stod två extra minuter på passet — tidsschemat ritades aldrig om."
     ],
     short_prep: [
-      "The sauce station is catching up at the pass — the reduction that should have been ready this morning is being made now.",
-      "A garnish was improvised mid-service — the prep bowl was empty at first ticket."
+      "Såsstationen jobbar ikapp på passet — reduktionen som skulle ha varit klar i morse görs nu.",
+      "Ett garnityr improviserades mitt i servicen — förberedelseskålen var tom vid första bongen."
     ],
     thin_team: [
-      "Pass 3 stacked four plates under the lamp — one cook can't cover both stations at fifteen covers.",
-      "The ticket queue is at six — a full brigade is a person short tonight.",
-      "The dish went out plain — the pastry hand is on the sauce line and the finish got skipped."
+      "Fyra tallrikar staplades under värmelampan på pass 3 — en kock hinner inte två stationer vid femton kuvert.",
+      "Sex bongar i kö — hela brigaden är en person kort i kväll.",
+      "Rätten gick ut naken — konditorn står på såsen och avslutningen hoppades över."
     ],
     low_competence: [
-      "Four tickets held at the pass — the junior can't fire and finish at the same pace.",
-      "The timings drifted across three orders — the pass reader isn't calling ahead yet."
+      "Fyra bongar väntade på passet — juniorn hinner inte sätta igång och avsluta i samma takt.",
+      "Tiderna gled isär över tre beställningar — den som läser passet ropar inte ut i förväg än."
     ],
     poor_morale: [
-      "The pace at the pass is off — the second wrong-order call in ten minutes.",
-      "The kitchen is running a beat behind — the shift started tired."
+      "Tempot på passet är fel — andra felbeställningen på tio minuter.",
+      "Köket ligger ett slag efter — passet började trött."
     ],
     ambient: [
-      "A main went out before the starter.",
-      "The dishwasher is behind — clean plates are short at the pass.",
-      "Three plates stack under the lamp waiting for a runner."
+      "En varmrätt gick ut före förrätten.",
+      "Disken ligger efter — det är ont om rena tallrikar på passet.",
+      "Tre tallrikar står under värmelampan och väntar på en springare."
     ]
   },
 
   // Strain — service coverage
   wait_stretched: {
     scale_down: [
-      "The dinner covers are stretched thin over one waiter — lunch was closed and the floor is short-planned."
+      "Middagens kuvert är utspridda på en enda servitör — lunchen var stängd och matsalen är underbemannad."
     ],
     thin_team: [
-      "Table 6 waited eight minutes for the check — two on the floor and one on a call at the bar.",
-      "A raised hand at the bar was missed — no one was in the room's line of sight.",
-      "A wine order was forgotten in the turn — the waiter took it and had to double back after two tables."
+      "Bord 6 väntade åtta minuter på notan — två i matsalen och en fast vid ett samtal i baren.",
+      "En uppräckt hand i baren missades — ingen hade salen i blickfånget.",
+      "En vinbeställning glömdes i vändan — servitören tog den och fick gå tillbaka efter två bord."
     ],
     low_competence: [
-      "A raised hand at the bar got missed twice — the floor doesn't scan the room yet.",
-      "Two tables signalled at once and the closer one won by ten seconds — no read of relative wait.",
-      "The runner walked past a waving hand — head down on the ticket."
+      "En uppräckt hand i baren missades två gånger — matsalen läser inte av rummet än.",
+      "Två bord vinkade samtidigt och det närmaste vann med tio sekunder — ingen bedömde vem som väntat längst.",
+      "Springaren gick förbi en vinkande hand — med blicken i bongen."
     ],
     poor_morale: [
-      "The runner walked past table 9 without stopping — heads are down after yesterday's long service.",
-      "A water refill was forgotten twice on the same table — the shift is dragging."
+      "Springaren gick förbi bord 9 utan att stanna — alla har huvudet nere efter gårdagens långa service.",
+      "Vattenpåfyllningen glömdes två gånger vid samma bord — passet släpar."
     ],
     ambient: [
-      "A water top-up was missed on table 3.",
-      "Two tables raised hands within seconds of each other.",
-      "The bar hand was slow to acknowledge a new arrival."
+      "Vattnet fylldes inte på vid bord 3.",
+      "Två bord räckte upp handen med några sekunders mellanrum.",
+      "Bartendern var sen att uppmärksamma en nyanländ gäst."
     ]
   },
 
   // Both — house-standard slippage under load
   turnover_stumble: {
     thin_team: [
-      "The reset on table 2 took twelve minutes — the host cleared it alone while the floor was in service.",
-      "The next party stood at the door two minutes longer than they should have — no one had a hand free."
+      "Omdukningen av bord 2 tog tolv minuter — värden dukade av ensam medan matsalen var mitt i servicen.",
+      "Nästa sällskap stod två minuter för länge i dörren — ingen hade en hand ledig."
     ],
     low_competence: [
-      "The cutlery went down on the wrong side after a reset — the newer hand is copying by memory, not by pattern.",
-      "A table light wasn't relit after the reset — no one checked the room before seating."
+      "Besticken hamnade på fel sida efter omdukningen — den nyare i laget dukar efter minnet, inte efter mönstret.",
+      "Bordsljuset tändes inte igen efter omdukningen — ingen såg över salen innan gästerna placerades."
     ],
     poor_morale: [
-      "The napkin fold went slack on the reset — attention slipped after two long days.",
-      "A water glass from the previous party was left on the table — the reset was rushed and eyes were down."
+      "Servettvikningen blev slarvig vid omdukningen — uppmärksamheten sviktade efter två långa dagar.",
+      "Ett vattenglas från förra sällskapet blev kvar på bordet — omdukningen gick för fort och blicken var nere."
     ],
     ambient: [
-      "A booking card ended up on the wrong table.",
-      "A salad garnish was mixed up between two tables.",
-      "A place setting shifted a centimetre in the turn."
+      "Ett bokningskort hamnade på fel bord.",
+      "Salladsgarnityret blandades ihop mellan två bord.",
+      "Ett kuvert flyttades en centimeter i vändan."
     ]
   }
 } as const satisfies Record<string, CauseBank>;
@@ -243,63 +245,63 @@ export type ServiceReportAmbientKind = keyof typeof SERVICE_REPORT_AMBIENT;
 export const SERVICE_REPORT_PREP = {
   prep_kitchen: {
     short_prep: [
-      "The pass sheet ran out of time — half the menu has no timings written.",
-      "The reduction went into the pot with the stock unsettled — the ten-minute prep window closed too early."
+      "Tiden tog slut för passlistan — halva menyn saknar tider.",
+      "Reduktionen gick i grytan innan fonden hade satt sig — de tio minuterna för förberedelser tog slut för tidigt."
     ],
     morning_change: [
-      "The station is laid out for yesterday's menu — the change wasn't propagated in the morning brief.",
-      "The recipe printout at the sauce station is stale — the change at 8am never reached the wall."
+      "Stationen är upplagd för gårdagens meny — bytet kom aldrig med i morgonens genomgång.",
+      "Receptutskriften vid såsstationen är gammal — bytet klockan åtta nådde aldrig väggen."
     ],
     low_competence: [
-      "Mise en place started ten minutes late — no one took the lead when the kitchen came in.",
-      "The spice rack was empty at first plate — the fill-up in the morning was skipped."
+      "Mise en place kom igång tio minuter sent — ingen tog ledningen när köket kom in.",
+      "Kryddhyllan var tom vid första tallriken — påfyllningen i morse hoppades över."
     ],
     thin_team: [
-      "The prep window closed with the sauce station half laid — one cook doing two.",
-      "The pass sheet is only half-written — the head hand was on the line, not the board."
+      "Förberedelsetiden tog slut med såsstationen halvfärdig — en kock som gör två.",
+      "Passlistan är bara halvskriven — kökschefen stod vid spisen, inte vid tavlan."
     ],
     ambient: [
-      "A sauce from yesterday sat in the freezer un-tasted.",
-      "The label on the plastic wrap ran out — dates are guesswork tonight.",
-      "A garnish tray isn't cut and the first ticket is coming."
+      "En sås från i går stod oprovad i frysen.",
+      "Etiketterna till plastfilmen tog slut — datumen är gissningar i kväll.",
+      "En garnityrbricka är inte skuren och första bongen är på väg."
     ]
   },
   prep_room: {
     short_prep: [
-      "The bar wasn't swept before opening — the setup ran long on the tables.",
-      "The wine list went to the floor with two prices still old — the change hit at 8am and no one crosschecked before opening."
+      "Baren sopades inte före öppning — dukningen av borden drog ut på tiden.",
+      "Vinlistan kom ut i matsalen med två gamla priser — bytet kom klockan åtta och ingen dubbelkollade före öppning."
     ],
     morning_change: [
-      "The new prices weren't crosschecked before opening — the change hit at 8am.",
-      "The menu boards were half-updated — one wall still has yesterday's fish."
+      "De nya priserna dubbelkollades inte före öppning — bytet kom klockan åtta.",
+      "Menytavlorna var bara halvt uppdaterade — en vägg har fortfarande gårdagens fisk."
     ],
     thin_team: [
-      "One host is doing sweep and setup and briefing — the room won't all be right at open.",
-      "Two tables were half-set at open — the host had to prioritise the booking sheet over the linen."
+      "En värd sopar, dukar och håller genomgången — salen blir inte helt klar till öppning.",
+      "Två bord var halvdukade vid öppning — värden fick prioritera bokningslistan före linnet."
     ],
     ambient: [
-      "The light over the bar wasn't switched on until first customer.",
-      "Two chairs sat askew from yesterday — no one straightened them.",
-      "The bookings sheet stayed at the host station — the floor didn't read it before service."
+      "Lampan över baren tändes inte förrän första gästen kom.",
+      "Två stolar stod snett sedan i går — ingen rättade till dem.",
+      "Bokningslistan blev liggande vid värdpulpeten — matsalen läste den inte före service."
     ]
   },
   prep_delivery: {
     short_prep: [
-      "The cold chain paused fifteen minutes during sort — the prep window was too tight to work clean.",
-      "A box was opened out of order — the sort ran short and it will surface later."
+      "Kylkedjan bröts en kvart under sorteringen — förberedelsetiden var för knapp för att jobba rent.",
+      "En låda öppnades i fel ordning — sorteringen hann inte klart och det kommer att märkas senare."
     ],
     ingredient_tier_grund: [
-      "The delivery was accepted without weighing — grund tier's tolerances aren't worth the extra step, but they should be.",
-      "The portioning went by eye rather than by scale — grund tier variance passed through unnoticed."
+      "Leveransen togs emot utan vägning — grundsortimentets toleranser känns inte värda extrasteget, men det borde de.",
+      "Portioneringen gjordes på ögonmått i stället för på våg — grundsortimentets variation passerade obemärkt."
     ],
     thin_team: [
-      "The cream came in and went straight to the shelf without a temp check — one pair of hands doing sort and prep.",
-      "A carton got mislabelled in the rush — the shorthanded receive won't catch it until service."
+      "Grädden kom in och gick direkt till hyllan utan temperaturkontroll — ett par händer som sorterar och förbereder.",
+      "En kartong fick fel etikett i brådskan — den underbemannade mottagningen upptäcker det inte förrän i servicen."
     ],
     ambient: [
-      "The invoice sits unsigned on the counter.",
-      "The supplier sent one item short and one duplicated.",
-      "The vegetable crates blocked the dish return path."
+      "Följesedeln ligger osignerad på bänken.",
+      "Leverantören skickade en vara för lite och en dubbelt.",
+      "Grönsakslådorna blockerade vägen till disken."
     ]
   }
 } as const satisfies Record<string, CauseBank>;
@@ -310,25 +312,25 @@ export type ServiceReportPrepKind = keyof typeof SERVICE_REPORT_PREP;
 
 export const SERVICE_REPORT_PREP_POSITIVE = {
   prep_kitchen: [
-    "Mise en place was clean twenty minutes before open.",
-    "The reduction stood finished and strained in its pot.",
-    "The pass sheet was written with the whole menu and timings.",
-    "A leftover sauce was tasted and cast off without hesitation.",
-    "The kitchen went through the day's menu together before first plate."
+    "Mise en place var klar tjugo minuter före öppning.",
+    "Reduktionen stod färdig och silad i sin gryta.",
+    "Passlistan var skriven med hela menyn och alla tider.",
+    "En överbliven sås provades och kastades utan tvekan.",
+    "Köket gick igenom dagens meny tillsammans före första tallriken."
   ],
   prep_room: [
-    "Every table was set clean ten minutes before open.",
-    "The lights on the bar and above the tables came on together on cue.",
-    "The wine list was current and both waiters had read it.",
-    "The entrance floor was mopped and dry by open.",
-    "The bookings brief was given to all three stations."
+    "Alla bord var dukade tio minuter före öppning.",
+    "Lamporna i baren och över borden tändes samtidigt, på signal.",
+    "Vinlistan var aktuell och båda servitörerna hade läst den.",
+    "Golvet vid entrén var moppat och torrt till öppning.",
+    "Genomgången av bokningarna nådde alla tre stationerna."
   ],
   prep_delivery: [
-    "The cold chain held from truck to walk-in.",
-    "The boxes were sorted in the right order — nothing had to be lifted twice.",
-    "Invoices were signed and filed the same minute they came in.",
-    "The delivery matched the order exactly.",
-    "The fish was weighed at arrival and portioned before service."
+    "Kylkedjan höll från lastbilen till kylrummet.",
+    "Lådorna sorterades i rätt ordning — inget behövde lyftas två gånger.",
+    "Följesedlarna signerades och arkiverades i samma minut som de kom.",
+    "Leveransen stämde exakt med beställningen.",
+    "Fisken vägdes vid ankomst och portionerades före service."
   ]
 } as const;
 
@@ -340,14 +342,14 @@ export const SERVICE_REPORT_PREP_POSITIVE = {
 // stays in the evening. Here the room reports itself.
 
 export const SERVICE_REPORT_POSITIVE = [
-  "The table by the window ordered a second bottle.",
-  "A regular was greeted at the door by name.",
-  "The kitchen adjusted a sauce mid-pass without being asked.",
-  "A table asked to stay on for coffee.",
-  "The front-of-house saw the second bottle coming before the table asked.",
-  "A wallenberg came out clean and the table said so.",
-  "A tip of two extra notes was left on the check.",
-  "A table booked again on the way out."
+  "Bordet vid fönstret beställde en andra flaska.",
+  "En stamgäst hälsades välkommen vid namn i dörren.",
+  "Köket justerade en sås på passet utan att någon bad om det.",
+  "Ett bord bad att få sitta kvar över kaffet.",
+  "Serveringen såg den andra flaskan komma innan bordet frågade.",
+  "En wallenbergare kom ut perfekt och bordet sa det.",
+  "Två extra sedlar lämnades i dricks på notan.",
+  "Ett bord bokade igen på vägen ut."
 ] as const;
 
 // -------- prep-carryover (plain, one line) ------------------------------
@@ -356,4 +358,4 @@ export const SERVICE_REPORT_POSITIVE = [
 // ignorance events. Names the fact and the consequence; no lament.
 
 export const SERVICE_REPORT_PREP_CARRYOVER =
-  "The unstrained sauce from prep hits at pass 7 — the kitchen skips it and the dish goes out plain.";
+  "Den osilade såsen från förberedelserna slår till vid pass 7 — köket hoppar över den och rätten går ut naken.";

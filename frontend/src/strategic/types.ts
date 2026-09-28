@@ -1158,16 +1158,6 @@ export interface PavilionVisitState {
   result: null | { correct: number; total: number; passed: boolean | null; medalAwarded: MedalLevelId | null };
 }
 
-export interface PostServiceQuizState {
-  axis: KnowledgeAxis;
-  status: 'offered' | 'active' | 'done' | 'skipped';
-  questionIds: string[];
-  answers: QuestionAnswerRecord[];
-  showingExplanation: boolean;
-  // Kreditförändring under quizen (+1 rätt, −1 fel).
-  creditDelta: number;
-}
-
 export interface SimulationState {
   seed: number;
   rngState: number;
@@ -1280,15 +1270,13 @@ export interface SimulationState {
   // bussen tills banken öppnat hennes första verksamhet; saknas annars.
   // Stegen härleds i sim/introduction.ts.
   introduction?: { practiced: boolean } | null;
-  // ORDER 264 — quizen efter servicen; erbjuds när kvällen börjar.
-  postServiceQuiz: PostServiceQuizState | null;
-  // ORDER 264 — antal kvällar spelaren tagit quizen (mognad, etapp 12).
-  postServiceQuizzesTaken: number;
   // ORDER 265 — v1-ekonomin: klass, lån, veckoavräkning, nedgradering
   // (src/sim/economy.ts).
   economy: import('../sim/economy').EconomyState;
-  // ORDER 266 — action-knappen och händelserna ur simuleringen.
-  actionButton: import('../sim/actionButton').ActionButtonState;
+  // ORDER 270 — händelserna i servicen och kvällens lärdom (ersätter
+  // action-knappen och quizen efter servicen). ORDER 266 — händelserna
+  // ur simuleringen (inspektion, recensent, banken).
+  incidents: import('../sim/incidents').IncidentsState;
   serviceEvents: import('../sim/serviceEvents').ServiceEventsState;
   examSlotsUsed: number;
   // ORDER 109 — M7b bankmötet. Sätts av REQUEST_BANK_LOAN via
@@ -1538,16 +1526,12 @@ export type SimAction =
   | { type: 'ANSWER_VISIT'; chosenIndex: number }
   | { type: 'NEXT_VISIT_QUESTION' }
   | { type: 'CLOSE_VISIT' }
-  | { type: 'START_QUIZ' }
-  | { type: 'ANSWER_QUIZ'; chosenIndex: number }
-  | { type: 'NEXT_QUIZ_QUESTION' }
-  | { type: 'SKIP_QUIZ' }
+  | { type: 'ANSWER_INCIDENT'; optionId: string }
   | { type: 'END_EVENING' }
   // ORDER 265 — byt verksamhet vid veckoavräkningen (banken).
   | { type: 'CHOOSE_CLASS'; to: import('../sim/balance').BusinessClassId }
   | { type: 'BEGIN_INTRODUCTION' }
   // ORDER 266 — rycka in själv (action-knappen).
-  | { type: 'INTERVENE'; kind: import('../sim/actionButton').InterventionKind; guestId: string }
   // ORDER 043 v3 §10 step 5 agency-staff mid-service offer response.
   | { type: 'ACCEPT_AGENCY' }
   | { type: 'DECLINE_AGENCY' }
