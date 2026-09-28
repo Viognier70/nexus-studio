@@ -38,10 +38,10 @@ interface TierData {
 }
 
 export const TIER_DATA: Record<LoanTier, TierData> = {
-  T0: { ceiling:  200, fitoutPct: 0.40, label: 'Foodtruck (Grythyttan)' },
-  T1: { ceiling:  900, fitoutPct: 0.30, label: 'Café / bistro'          },
-  T2: { ceiling: 2400, fitoutPct: 0.30, label: 'Restaurang'             },
-  T3: { ceiling: 5500, fitoutPct: 0.25, label: 'Historisk sittning'     }
+  T0: { ceiling:  200, fitoutPct: 0.40, label: 'Food truck (Grythyttan)' },
+  T1: { ceiling:  900, fitoutPct: 0.30, label: 'Café / bistro'           },
+  T2: { ceiling: 2400, fitoutPct: 0.30, label: 'Restaurant'              },
+  T3: { ceiling: 5500, fitoutPct: 0.25, label: 'Historic dining room'    }
 };
 
 const PREMISES_BASELINE_FRACTION = 0.70;

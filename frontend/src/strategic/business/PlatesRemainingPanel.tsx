@@ -8,7 +8,7 @@
 
 import { useSimState } from '../simulation/SimulationProvider';
 import { findDish } from '../simulation/m4Catalogue';
-import { strings } from '../../content/strings.sv';
+import { strings } from '../../content/strings';
 
 const PANEL_STYLE: React.CSSProperties = {
   position: 'absolute',

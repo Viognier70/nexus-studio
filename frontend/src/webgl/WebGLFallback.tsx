@@ -1,4 +1,4 @@
-import { strings } from '../content/strings.sv';
+import { strings } from '../content/strings';
 
 export function detectWebGL(): boolean {
   if (typeof window === 'undefined') return false;

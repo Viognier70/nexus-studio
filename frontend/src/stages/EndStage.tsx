@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { strings } from '../content/strings.sv';
+import { strings } from '../content/strings';
 
 interface Props {
   onContinue: () => void;

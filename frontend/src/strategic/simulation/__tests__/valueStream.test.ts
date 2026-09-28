@@ -10,7 +10,7 @@ import { describe, expect, it } from 'vitest';
 import { reducer } from '../reducer';
 import { makeInitialState } from '../model';
 import { capacityForBusiness } from '../../business/businessClass';
-import { VALUE_HIGH_TEXTS, VALUE_LOW_TEXTS } from '../../../content/eventStream.sv';
+import { VALUE_HIGH_TEXTS, VALUE_LOW_TEXTS } from '../../../content/eventStream.en';
 import type { SimulationState } from '../../types';
 
 function foodtruckWithPolicies(overrides: Partial<SimulationState['policies']>): SimulationState {
@@ -41,13 +41,13 @@ describe('ORDER 117 §5.1 DoD 8 — strömmen bär sambandet', () => {
   });
 
   it('minst en LOW-mening nämner "priset" som konkret orsak', () => {
-    const hits = VALUE_LOW_TEXTS.filter((t) => t.toLowerCase().includes('pris'));
+    const hits = VALUE_LOW_TEXTS.filter((t) => t.toLowerCase().includes('price'));
     expect(hits.length, `ingen LOW-mening nämner priset — bank: ${VALUE_LOW_TEXTS.join(' | ')}`)
       .toBeGreaterThan(0);
   });
 
   it('minst en LOW-mening nämner en råvara ("lamm" per orderns exempel eller motsvarande)', () => {
-    const foodWords = ['lamm', 'grädde', 'råvara', 'lax', 'menyn'];
+    const foodWords = ['lamb', 'cream', 'produce', 'salmon', 'menu'];
     const hits = VALUE_LOW_TEXTS.filter((t) =>
       foodWords.some((w) => t.toLowerCase().includes(w))
     );
@@ -55,7 +55,7 @@ describe('ORDER 117 §5.1 DoD 8 — strömmen bär sambandet', () => {
   });
 
   it('minst en HIGH-mening nämner leverantör eller ursprung', () => {
-    const sourceWords = ['leverantör', 'lokalt', 'gården', 'ekologiskt'];
+    const sourceWords = ['supplier', 'locally', 'farm', 'organic'];
     const hits = VALUE_HIGH_TEXTS.filter((t) =>
       sourceWords.some((w) => t.toLowerCase().includes(w))
     );
@@ -64,10 +64,10 @@ describe('ORDER 117 §5.1 DoD 8 — strömmen bär sambandet', () => {
 
   // Grep-verifiering på filnivå så en framtida commit som råkar
   // rename:a nyckeln fångas.
-  it('eventStream.sv.ts fil-grep: VALUE_LOW_TEXTS + VALUE_HIGH_TEXTS existerar', () => {
+  it('eventStream.en.ts fil-grep: VALUE_LOW_TEXTS + VALUE_HIGH_TEXTS existerar', () => {
     const here = dirname(fileURLToPath(import.meta.url));
     const src = readFileSync(
-      resolve(here, '..', '..', '..', 'content', 'eventStream.sv.ts'),
+      resolve(here, '..', '..', '..', 'content', 'eventStream.en.ts'),
       'utf8'
     );
     expect(src).toContain('VALUE_LOW_TEXTS');

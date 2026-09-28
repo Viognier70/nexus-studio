@@ -101,50 +101,50 @@ export function tickSustainability(state: SimulationState) {
 }
 
 function econCause(state: SimulationState, revenueDelta: number, workload: number): string | null {
-  if (state.completedGuests === 0) return 'Kväll som nyss börjat';
-  if (revenueDelta > 20) return 'Fler serveringar än på länge';
-  if (workload > 0.8) return 'Personalen sliter — låg omsättning per timme';
+  if (state.completedGuests === 0) return 'The evening has just begun';
+  if (revenueDelta > 20) return 'More covers than in a long while';
+  if (workload > 0.8) return 'The staff are straining — low takings per hour';
   if (state.policies.pricing === 'låg' && state.policies.ingredientTier === 'premium') {
-    return 'Höga inköp i förhållande till priset';
+    return 'High purchasing costs for the price';
   }
   return null;
 }
 
 function econConsequence(_state: SimulationState, workload: number): string | null {
-  if (workload > 0.85) return 'Kostnadssidan pressar marginalen om ca. 2 min';
+  if (workload > 0.85) return 'Costs will squeeze the margin in about 2 min';
   return null;
 }
 
 function socialCause(state: SimulationState, waiting: number, workload: number): string | null {
-  if (waiting >= 2 && workload > 0.6) return 'Full beläggning och hög arbetsbelastning';
-  if (waiting >= 2) return 'Väntande gäster i entrén';
-  if (workload > 0.8) return 'Personalen är pressad';
-  if (state.policies.welcomeDrink && waiting > 0) return 'Välkomstservering till väntande grupp';
+  if (waiting >= 2 && workload > 0.6) return 'Full house and a heavy workload';
+  if (waiting >= 2) return 'Guests waiting at the entrance';
+  if (workload > 0.8) return 'The staff are under pressure';
+  if (state.policies.welcomeDrink && waiting > 0) return 'Welcome drinks for a waiting party';
   return null;
 }
 
 function socialConsequence(_state: SimulationState, waiting: number, workload: number): string | null {
-  if (waiting >= 3 && workload > 0.7) return 'Missnöje väntar om ca. 2 min';
-  if (workload > 0.9) return 'Servicekvalitet kan falla snart';
+  if (waiting >= 3 && workload > 0.7) return 'Discontent expected in about 2 min';
+  if (workload > 0.9) return 'Service quality may drop soon';
   return null;
 }
 
 function ecologCause(state: SimulationState): string | null {
   if (state.policies.welcomeDrink && state.waitingIds.length > 0) {
-    return 'Välkomstservering till väntande grupp';
+    return 'Welcome drinks for a waiting party';
   }
   if (state.policies.ingredientTier === 'premium') {
-    return 'Premiumsortiment i inköp';
+    return 'Premium range in purchasing';
   }
   if (state.policies.localSourcing) {
-    return 'Lokala leverantörer i inköp';
+    return 'Local suppliers in purchasing';
   }
   return null;
 }
 
 function ecologConsequence(state: SimulationState, wasteFactor: number): string | null {
-  if (wasteFactor > 0.4) return 'Ökat svinn påverkar villkoret om ca. 3 min';
+  if (wasteFactor > 0.4) return 'More waste will affect the balance in about 3 min';
   if (state.policies.welcomeDrink && state.waitingIds.length > 0)
-    return 'Resursanvändning ökar under väntetiden';
+    return 'Resource use rises while guests wait';
   return null;
 }

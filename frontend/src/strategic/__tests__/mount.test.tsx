@@ -83,7 +83,7 @@ vi.mock('../../webgl/WebGLFallback', () => ({
 
 // Import AFTER the mocks so the mocked module is what StrategicApp sees.
 import { StrategicApp } from '../StrategicApp';
-import { strings } from '../../content/strings.sv';
+import { strings } from '../../content/strings';
 
 afterEach(() => {
   cleanup();

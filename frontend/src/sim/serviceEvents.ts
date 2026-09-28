@@ -13,7 +13,7 @@
 // morgonraden (strategic/scenario/DayActionBar.tsx).
 
 import { EVENTS, REPUTATION } from './balance';
-import { strings } from '../content/strings.sv';
+import { strings } from '../content/strings';
 import { applyCashCost, postLedger } from '../strategic/simulation/cashReading';
 import { businessHasMiseEnPlace } from '../strategic/business/businessClass';
 import type { EventStreamEntry, SimulationState } from '../strategic/types';

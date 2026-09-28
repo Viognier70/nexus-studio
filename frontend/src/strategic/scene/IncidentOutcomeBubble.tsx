@@ -10,7 +10,7 @@
 // gästernas nöjdhet sjunker och personalen arbetar långsammare.
 
 import { Html } from '@react-three/drei';
-import { strings } from '../../content/strings.sv';
+import { strings } from '../../content/strings';
 import { INCIDENTS } from '../../sim/balance';
 import { takeoverActive } from '../../sim/incidents';
 import { usePlayerBusinessInterior } from '../business/interiorLayout';

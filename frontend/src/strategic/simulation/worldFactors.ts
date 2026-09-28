@@ -160,28 +160,28 @@ export function worldFactorDeliveryMultiplier(
 // player sees the reason the room is doing what it's doing.
 
 export const FACTOR_LABEL: Record<WorldFactorKind, string> = {
-  konjunktur_uppgang: 'Uppgång i regionen',
-  konjunktur_nedgang: 'Konjunkturbarometer: fallande',
-  vagarbeten:         'Vägarbete på Kyrkogatan',
-  sasong_turism:      'Höstlöv drar besökare till bygden',
-  sasong_semester:    'Bygden är tom — semesterveckan',
-  evenemang_festival: 'Höstmarknad på Torget',
-  evenemang_hockey:   'Hockeymatch klockan sju'
+  konjunktur_uppgang: 'Upturn in the region',
+  konjunktur_nedgang: 'Business barometer: falling',
+  vagarbeten:         'Roadworks on Kyrkogatan',
+  sasong_turism:      'Autumn leaves draw visitors to the area',
+  sasong_semester:    'The area is empty — holiday week',
+  evenemang_festival: 'Autumn market on Torget',
+  evenemang_hockey:   'Hockey match at seven'
 };
 
 export const FACTOR_BODY: Record<WorldFactorKind, string> = {
   konjunktur_uppgang:
-    'Handeln går bra. Fler bokningar, tyngre notor.',
+    'Business is good. More bookings, bigger bills.',
   konjunktur_nedgang:
-    'Näringslivet snålar. Färre gäster, mindre spendera.',
+    'Local business is tightening its belt. Fewer guests, less spending.',
   vagarbeten:
-    'Anfarten från öst är avstängd — färre utanförgäster hittar hit, och leverantörerna dröjer.',
+    'The road in from the east is closed — fewer out-of-town guests find their way here, and suppliers are late.',
   sasong_turism:
-    'Många på tur i trakten. Rummet drar folk även utan bokning.',
+    'Lots of visitors in the area. The room draws people even without bookings.',
   sasong_semester:
-    'Byn har åkt bort. Kvällen blir stillsam.',
+    'The village has gone away. The evening will be quiet.',
   evenemang_festival:
-    'Marknaden på Torget lämnar av gäster hela kvällen.',
+    'The market on Torget drops guests off all evening.',
   evenemang_hockey:
-    'Matchen dominerar — publik som kommer efteråt, snabb och priskänslig.'
+    'The match dominates — a crowd that comes afterwards, quick and price-conscious.'
 };

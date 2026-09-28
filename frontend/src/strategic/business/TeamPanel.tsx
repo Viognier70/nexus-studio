@@ -14,7 +14,7 @@
 // this is shown in the button label so the cost is legible before
 // the click, not after.
 
-import { strings } from '../../content/strings.sv';
+import { strings } from '../../content/strings';
 import type { StaffRole } from '../types';
 import { ROLE_DEFAULTS } from '../simulation/team';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
@@ -138,7 +138,7 @@ export function TeamPanel() {
             <div style={{ flex: 1 }}>
               <div>
                 <strong>{label}</strong>
-                {m.isAgency ? ' (hyr)' : ''}
+                {m.isAgency ? ' (agency)' : ''}
               </div>
               <div style={MEMBER_META_STYLE}>
                 {m.dailyCost} {strings.team.dailyCostLabel} · {strings.team.contractLabel}{' '}

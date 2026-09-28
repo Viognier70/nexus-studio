@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { openingDialogue } from '../content/dialogue';
-import { strings } from '../content/strings.sv';
+import { strings } from '../content/strings';
 import type { ChoiceId } from '../types';
 
 interface Props {

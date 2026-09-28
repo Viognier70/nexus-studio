@@ -11,7 +11,7 @@
 // inte som en tentamensfråga. Används av paviljongsbesöken.
 
 import { useEffect, useState } from 'react';
-import { strings } from '../../../content/strings.sv';
+import { strings } from '../../../content/strings';
 import type { BankQuestion } from '../questionBank';
 import { TIMED_OUT } from '../pavilionVisit';
 import { ReferenceLine } from './ReferenceLine';

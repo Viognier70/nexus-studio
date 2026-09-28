@@ -19,7 +19,7 @@
 // ("Kvällens tre frågor", Q1) byggs inte (ORDER 271).
 
 import { useState } from 'react';
-import { strings } from '../../content/strings.sv';
+import { strings } from '../../content/strings';
 import { SITTING } from '../../sim/balance';
 import { calendarFor } from '../../sim/calendar';
 import { incidentById, type Incident } from '../../sim/incidentBank';

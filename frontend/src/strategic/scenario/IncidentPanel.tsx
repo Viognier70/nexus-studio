@@ -28,7 +28,7 @@
 // ui/service/serviceView.ts).
 
 import { useEffect, useRef, useState } from 'react';
-import { strings } from '../../content/strings.sv';
+import { strings } from '../../content/strings';
 import { INCIDENTS } from '../../sim/balance';
 import { incidentById, type Incident, type IncidentStep } from '../../sim/incidentBank';
 import {

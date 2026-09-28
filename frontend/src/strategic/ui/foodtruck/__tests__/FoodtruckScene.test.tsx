@@ -100,7 +100,7 @@ describe('ORDER 113 §3 DoD 5 — antalet kö-figurer följer state.waitingIds',
       stateWithQueue(['gst-1', 'gst-2', 'gst-3'])
     );
     const mapText = Array.from(container.querySelectorAll('text'))
-      .find((el) => el.textContent?.includes('kö 3'));
+      .find((el) => el.textContent?.includes('queue 3'));
     expect(mapText).toBeTruthy();
   });
 });
@@ -207,7 +207,7 @@ describe('ORDER 113 §3 DoD 1 — SKEPNAD EJ BYGGD läcker inte i foodtruck-väg
   it('renderad scen innehåller inte strängen "SKEPNAD EJ BYGGD"', () => {
     const { container } = renderScene(stateWithQueue(['gst-1', 'gst-2']));
     expect(container.textContent).not.toContain('SKEPNAD EJ BYGGD');
-    expect(container.textContent).not.toContain('Skepnad ej byggd');
+    expect(container.textContent).not.toContain('Shape not built');
   });
 
   it('data-foodtruck-scene finns (bevisar att FoodtruckScene renderats)', () => {
@@ -324,8 +324,8 @@ describe('ORDER 113 fel 2 — FoodtruckScene renderar alla sim.guests-states', (
       { id: 'l1', state: 'leaving' }
     ]));
     const mapText = Array.from(container.querySelectorAll('text'))
-      .find((el) => el.textContent?.includes('kö 3'));
-    expect(mapText, `karta ska visa "kö 3" (w1+o1+p1); l1 är på väg ut`).toBeTruthy();
+      .find((el) => el.textContent?.includes('queue 3'));
+    expect(mapText, `karta ska visa "queue 3" (w1+o1+p1); l1 är på väg ut`).toBeTruthy();
   });
 
   it('gäster i seated/dining renderas INTE (defensiv skip — foodtruck saknar matsal)', () => {

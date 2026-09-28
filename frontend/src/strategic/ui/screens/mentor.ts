@@ -15,7 +15,7 @@
 // MentorPanel: en laddad sparfil får varken avskedet eller M2.
 
 import { useEffect, useSyncExternalStore } from 'react';
-import { strings } from '../../../content/strings.sv';
+import { strings } from '../../../content/strings';
 import { introductionStep, type IntroductionStep } from '../../../sim/introduction';
 import { useBusiness } from '../../business/BusinessContext';
 import { useSimState } from '../../simulation/SimulationProvider';

@@ -1,6 +1,6 @@
 import { useCamera } from '../camera/CameraContext';
 import { useSimState } from '../simulation/SimulationProvider';
-import { strings } from '../../content/strings.sv';
+import { strings } from '../../content/strings';
 
 // ORDER 157 §3 — provspelet 2026-08-31: HUD-etiketten skrev VINBAREN
 // oavsett vilken klass spelaren drev. ORDER 139 upphävde beslutet att
@@ -13,11 +13,11 @@ import { strings } from '../../content/strings.sv';
 // står labeln kvar oförändrad — de är ortsnivåer, inte klassnivåer.
 const CAMERA_LABEL_SV: Record<string, string> = {
   grythyttan: 'Grythyttan',
-  kvarteret: 'Kvarteret',
+  kvarteret: 'The District',
   // 'vinbaren' behålls som fallback för klass som saknar spelartext,
   // men läses aldrig i praktiken eftersom sim.businessClass alltid är
   // satt när business/myBusiness-preseterna är aktiva.
-  vinbaren: 'Vinbaren'
+  vinbaren: 'The Wine Bar'
 };
 
 export function ViewLabel() {

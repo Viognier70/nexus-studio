@@ -31,7 +31,7 @@ import { calendarFor } from './calendar';
 import type { PavilionKey, SimulationState } from '../strategic/types';
 import { applyCashCost, applyCashDelta, postLedger } from '../strategic/simulation/cashReading';
 import { teamForClass } from '../strategic/simulation/team';
-import { strings } from '../content/strings.sv';
+import { strings } from '../content/strings';
 
 export const ALL_PAVILIONS: readonly PavilionKey[] = [
   'maltidbiblioteket',

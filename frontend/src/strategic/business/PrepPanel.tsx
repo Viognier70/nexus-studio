@@ -9,7 +9,7 @@
 import { useSimState } from '../simulation/SimulationProvider';
 import { PREP_ITEMS } from '../simulation/miseEnPlace';
 import { businessHasMiseEnPlace } from './businessClass';
-import { strings } from '../../content/strings.sv';
+import { strings } from '../../content/strings';
 import { NxLabel, NxSteps, u } from '../ui/system/components';
 import '../ui/screens/screens.css';
 

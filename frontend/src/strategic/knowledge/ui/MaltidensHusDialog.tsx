@@ -20,7 +20,7 @@
 // ett besök (besöket ligger i simuleringens tillstånd).
 
 import { useEffect, useState } from 'react';
-import { strings } from '../../../content/strings.sv';
+import { strings } from '../../../content/strings';
 import { EXAM, MEDAL_LEVELS } from '../../../sim/balance';
 import { useSimDispatch, useSimState } from '../../simulation/SimulationProvider';
 import type { MedalLevelId, PavilionKey, PavilionVisitState } from '../../types';

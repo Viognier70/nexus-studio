@@ -30,7 +30,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 import type { EveningAccountMetrics, LedgerCategory, LedgerLine } from '../types';
-import { strings } from '../../content/strings.sv';
+import { strings } from '../../content/strings';
 
 const T = strings.panels.evening;
 
@@ -163,17 +163,17 @@ const LEDGER_CATEGORY_LABEL: Record<LedgerCategory, string> = T.category;
 function formatLedgerAmount(sek: number): string {
   const abs = Math.abs(sek);
   if (abs < 10_000) {
-    return `${sek >= 0 ? '+' : '−'}${Math.round(abs).toLocaleString('sv-SE')}`;
+    return `${sek >= 0 ? '+' : '−'}${Math.round(abs).toLocaleString('en-GB')}`;
   }
-  return `${sek >= 0 ? '+' : '−'}${(abs / 1000).toFixed(1).replace('.', ',')} ${T.thousandSuffix}`;
+  return `${sek >= 0 ? '+' : '−'}${(abs / 1000).toFixed(1)} ${T.thousandSuffix}`;
 }
 
 function formatRunningCash(sek: number): string {
   const abs = Math.abs(sek);
   if (abs < 10_000) {
-    return `${Math.round(sek).toLocaleString('sv-SE')}`;
+    return `${Math.round(sek).toLocaleString('en-GB')}`;
   }
-  return `${(sek / 1000).toFixed(1).replace('.', ',')} ${T.thousandSuffix}`;
+  return `${(sek / 1000).toFixed(1)} ${T.thousandSuffix}`;
 }
 
 // Timing constants (in seconds). Matches EVENING_TO_MORNING_PAUSE_SEC
@@ -331,14 +331,14 @@ function MetricsBlock({ metrics }: { metrics: EveningAccountMetrics }) {
 function formatSek(amount: number): string {
   const sign = amount >= 0 ? '+' : '−';
   const abs = Math.abs(Math.round(amount));
-  return `${sign}${abs.toLocaleString('sv-SE')} ${T.currency}`;
+  return `${sign}${abs.toLocaleString('en-GB')} ${T.currency}`;
 }
 
 function formatDelta(value: number, decimals: number): string {
   const rounded = Number(value.toFixed(decimals));
-  if (rounded === 0) return `±${(0).toFixed(decimals).replace('.', ',')}`;
+  if (rounded === 0) return `±${(0).toFixed(decimals)}`;
   const sign = rounded > 0 ? '+' : '−';
-  return `${sign}${Math.abs(rounded).toFixed(decimals).replace('.', ',')}`;
+  return `${sign}${Math.abs(rounded).toFixed(decimals)}`;
 }
 
 interface TodaysLedgerProps {
@@ -355,7 +355,7 @@ function TodaysLedger({ lines }: TodaysLedgerProps) {
         <div
           key={`${line.at}-${line.category}-${i}`}
           style={LEDGER_ROW_STYLE}
-          aria-label={T.entryAria(line.cause, Math.round(line.amount).toLocaleString('sv-SE'), Math.round(line.runningCash).toLocaleString('sv-SE'))}
+          aria-label={T.entryAria(line.cause, Math.round(line.amount).toLocaleString('en-GB'), Math.round(line.runningCash).toLocaleString('en-GB'))}
         >
           <span style={{ opacity: 0.55, fontSize: 10, letterSpacing: 0.5 }}>
             {LEDGER_CATEGORY_LABEL[line.category]}

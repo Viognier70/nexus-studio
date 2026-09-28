@@ -27,7 +27,7 @@ import { createRng } from '../strategic/util/rng';
 import { bumpMorale } from '../strategic/simulation/morale';
 import { applyCashDelta, postLedger } from '../strategic/simulation/cashReading';
 import { clampReputation } from '../strategic/simulation/reputation';
-import { strings } from '../content/strings.sv';
+import { strings } from '../content/strings';
 import { GAME_MINUTES_PER_SIM_SECOND, INCIDENTS, REPUTATION, SITTING } from './balance';
 import { calendarFor } from './calendar';
 import { clampScenarioCash, scenarioUnitSek } from './economy';
@@ -213,7 +213,7 @@ export function clockMinutes(state: SimulationState): number {
 export function formatClock(minutes: number): string {
   const h = Math.floor(minutes / MINUTES_PER_HOUR);
   const m = minutes % MINUTES_PER_HOUR;
-  return `${h}.${String(m).padStart(INCIDENTS.clockDigits, '0')}`;
+  return `${h}:${String(m).padStart(INCIDENTS.clockDigits, '0')}`;
 }
 
 function parseClock(hhmm: string): number {

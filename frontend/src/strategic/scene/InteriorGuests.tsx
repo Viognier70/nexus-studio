@@ -902,7 +902,7 @@ export function InteriorGuests() {
             ? seatFacingsForFrame[idx]
             : undefined;
         if (seatFacing !== undefined && Number.isNaN(seatFacing)) {
-          warnMissingSitYaw(sim.businessClass ?? 'okänd', idx);
+          warnMissingSitYaw(sim.businessClass ?? 'unknown', idx);
         }
         const validSeatFacing =
           seatFacing !== undefined && !Number.isNaN(seatFacing)

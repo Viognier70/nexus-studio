@@ -22,8 +22,8 @@ describe('ORDER 265 — bankens diagnos i ord', () => {
   });
 
   it('det som saknas nämner nivå och paviljonger i ord', () => {
-    expect(missingInWords('vinbar', { kalastorget: 'brons' })).toBe('För vinbaren saknas brons i tre paviljonger, varav Stensöta.');
-    expect(missingInWords('nattklubb', { kalastorget: 'guld' })).toBe('För nattklubben saknas silver i Stensöta.');
+    expect(missingInWords('vinbar', { kalastorget: 'brons' })).toBe('For the wine bar, you still need bronze in three pavilions, including Stensöta.');
+    expect(missingInWords('nattklubb', { kalastorget: 'guld' })).toBe('For the nightclub, you still need silver in Stensöta.');
     expect(missingInWords('foodtruck', { kalastorget: 'brons' })).toBeNull();
   });
 
@@ -32,6 +32,6 @@ describe('ORDER 265 — bankens diagnos i ord', () => {
     const withSettlement = { ...s, economy: { ...s.economy, lastSettlement: { week: 1, revenueSek: 3000, floorSek: 5000, topUpSek: 2000, amortisationSek: 10000, downgradedFrom: 'vinbar' as const, downgradedTo: 'foodtruck' as const } } };
     const lines = settlementInWords(withSettlement).join(' ');
     expect(lines).not.toMatch(/[0-9]/);
-    expect(lines).toContain('golvet fyllde på');
+    expect(lines).toContain('floor topped up');
   });
 });

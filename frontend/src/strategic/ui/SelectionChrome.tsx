@@ -6,17 +6,17 @@ interface Props {
 }
 
 const VERIFICATION_LABEL: Record<Landmark['verification'], string> = {
-  verified: 'Verifierat — OpenStreetMap',
-  approximate: 'Approximerat — VERIFICATION REQUIRED',
-  placeholder: 'Platshållare (Gray Box)'
+  verified: 'Verified — OpenStreetMap',
+  approximate: 'Approximate — VERIFICATION REQUIRED',
+  placeholder: 'Placeholder (Gray Box)'
 };
 
 const KIND_LABEL: Record<Landmark['kind'], string> = {
   institution: 'Institution',
-  commercial: 'Verksamhet',
-  municipal: 'Offentlig plats',
-  religious: 'Kyrka',
-  placeholder: 'Platshållare'
+  commercial: 'Business',
+  municipal: 'Public place',
+  religious: 'Church',
+  placeholder: 'Placeholder'
 };
 
 export function SelectionChrome({ landmark, onClose }: Props) {
@@ -33,7 +33,7 @@ export function SelectionChrome({ landmark, onClose }: Props) {
           type="button"
           className="gb-selection-close"
           onClick={onClose}
-          aria-label="Stäng markering"
+          aria-label="Close selection"
         >
           ×
         </button>

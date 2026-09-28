@@ -38,7 +38,7 @@ Detta dokument styr hur Claude Code arbetar i det här repot. Läs det i början
 
 - **Vite + React 18 + TypeScript**, rendering med **React Three Fiber + drei** (three.js)
 - Node.js 18+, WebGL-krav med fallback i `src/webgl/WebGLFallback.tsx`
-- Spelinnehåll/text ligger i `src/content/` (`dialogue.ts`, `strings.sv.ts`) — all spelartext på svenska går via strings-filen, hårdkoda aldrig UI-text i komponenter
+- Spelinnehåll/text ligger i `src/content/` (`dialogue.ts`, `strings.ts` → `strings.en.ts`) — all spelartext på engelska går via strings-filen, hårdkoda aldrig UI-text i komponenter
 - Globalt speltillstånd i `src/state/gameState.ts`
 - Scenen är uppdelad i komponenter under `src/scene/`, spelfaser under `src/stages/` (Title → Bus → End)
 - Tillgänglighet: respektera `usePrefersReducedMotion`, touch-stöd via `src/controls/MobileControls.tsx` + `useIsTouch`
@@ -156,7 +156,7 @@ Alla gav korrekt data om fel sak (eller inget data alls fast rapporterat som mä
 4. **Ändra inte** `documentation/foundation/` eller `documentation/world/` på eget initiativ — det är projektledningens domän. Föreslå ändringar istället.
 5. **Fråga före** nya beroenden i `package.json`. Stacken hålls medvetet minimal.
 6. **Bevara prestandabudgeten:** procedurell geometri, ingen tung post-processing utan beslut, testa mentalt mot mobil/touch.
-7. **Svenska i spelet (Nexus v1), engelska i koden.** `NEXUS_SPELDESIGN_V1.md` > Språk och målgrupp: "Spelet är på svenska i version 1." Det upphäver Observation 6 (2026-08-09, engelsk spelartext) — se `NEXUS_V1_OPPNA_FRAGOR.md` F9. Ny spelartext skrivs på svenska via strängfilerna, aldrig hårdkodad i komponenter. Befintlig engelsk spelartext översätts i en egen omgång; tills dess är gränssnittet blandat. Frågor skrivs med spelartext och metadata separerade så att engelska kan läggas till senare. Kod, identifierare och kodkommentarer får vara på engelska eller svenska som i omgivande kod.
+7. **Engelska i spelet (Nexus v1).** `NEXUS_SPELDESIGN_V1.md` > Språk och målgrupp, Vision Owner 2026-09-28: "allt i spelet är på engelska, text och repliker." Det ersätter beslutet om svenska (2026-09-26/27). Ny spelartext skrivs på engelska via strängfilerna (`src/content/strings.ts` → `strings.en.ts`), aldrig hårdkodad i komponenter. De svenska filerna (`*.sv.ts`, `*.sv.draft.json`) sparas för en svensk version senare och har samma form som de engelska. Egennamn på platser, byggnader och paviljonger (Grythyttan, Måltidens hus, Stensöta …) står kvar på svenska. Frågor och händelser skrivs med spelartext och metadata separerade. Kod, identifierare och kodkommentarer får vara på engelska eller svenska som i omgivande kod; dokumentationen i `documentation/` skrivs på svenska som förut.
 8. När en uppgift är klar: sammanfatta vad som gjordes, vilka filer som ändrades och vad som återstår — kort och konkret.
 9. **Inget ORDER-nummer utfärdas utan en post i `documentation/architecture/ORDER_REGISTRY.md`.** Registret är källan till sanning för nummerbruk; renumrera innan filen skrivs om en kollision hittas.
 

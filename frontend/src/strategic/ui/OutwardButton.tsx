@@ -7,9 +7,9 @@ export function OutwardButton() {
       type="button"
       className="gb-outward"
       onClick={outward}
-      aria-label="Zooma ut ett steg"
+      aria-label="Zoom out one step"
     >
-      Bakåt
+      Back
     </button>
   );
 }

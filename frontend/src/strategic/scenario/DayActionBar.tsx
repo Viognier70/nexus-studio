@@ -21,7 +21,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { isStrandedWithoutBusiness } from '../../sim/economy';
-import { strings } from '../../content/strings.sv';
+import { strings } from '../../content/strings';
 import { calendarFor } from '../../sim/calendar';
 import { SEASON } from '../../sim/balance';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';

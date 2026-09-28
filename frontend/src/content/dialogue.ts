@@ -1,5 +1,5 @@
 import type { ChoiceId } from '../types';
-import { strings } from './strings.sv';
+import { strings } from './strings';
 
 export interface DialogueChoice {
   id: ChoiceId;

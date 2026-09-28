@@ -1,7 +1,7 @@
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { strings } from '../content/strings.sv';
+import { strings } from '../content/strings';
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
 
 function BusScene({ reduceMotion }: { reduceMotion: boolean }) {

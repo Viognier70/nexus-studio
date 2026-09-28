@@ -9,7 +9,7 @@
 // here: the room breaks where the weakest station is thinnest.
 
 import type { SimulationState, TeamMember } from '../types';
-import { strings } from '../../content/strings.sv';
+import { strings } from '../../content/strings';
 
 // Duplicated to avoid a circular reducer ↔ miseEnPlace import. Both
 // values live in reducer.ts / constants.ts; if PREP_DURATION_SEC or

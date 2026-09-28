@@ -14,7 +14,7 @@ import {
   scheduleSlotsFor,
   WEEKLY_GATE_DAYS
 } from '../simulation/activities';
-import { strings } from '../../content/strings.sv';
+import { strings } from '../../content/strings';
 import { scheduleSlotsUsed } from '../knowledge/pavilionVisit';
 import type { Activity } from '../simulation/activities';
 import { NxIcon, ACTIVITY_ICON } from '../ui/screens/icons';

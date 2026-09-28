@@ -16,7 +16,8 @@
 import type { KnowledgeAxis, PavilionKey, YrkesSpar } from '../strategic/types';
 import { INCIDENTS, type BusinessClassId, type Weekday } from './balance';
 import vinbarMeta from '../content/incidents/vinbar.meta.json';
-import vinbarText from '../content/incidents/vinbar.text.sv.draft.json';
+// ORDER 273 — spelet läser den engelska texten; den svenska sparas.
+import vinbarText from '../content/incidents/vinbar.text.en.json';
 
 export type ArcPhase = 'opening' | 'rush' | 'crisis' | 'closing';
 export const ARC_PHASES: readonly ArcPhase[] = ['opening', 'rush', 'crisis', 'closing'];

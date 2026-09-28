@@ -55,7 +55,7 @@ describe('ORDER 266 — händelser med orsak', () => {
     s = reducer(s, { type: 'END_EVENING' });
     s = tick(s, 2);
     const e = s.eventStream.find((x) => x.kind === 'v1_inspection');
-    expect(e?.text).toMatch(/Stationerna/);
+    expect(e?.text).toMatch(/The stations/);
     expect(s.ledger.some((l) => l.amount === -EVENTS.inspectionFineSek)).toBe(true);
     expect(s.reputation).toBeLessThan(repBefore + 0.05);
   });
@@ -83,7 +83,7 @@ describe('ORDER 266 — kvällsberättelsen börjar med det som gick bra', () =>
     s = reducer(s, { type: 'START_SERVICE' });
     for (let i = 0; i < 20000 && s.day.period !== 'evening'; i++) s = reducer(s, { type: 'TICK', dt: 0.2 });
     const p = s.eveningAccount!.paragraph;
-    expect(p).toMatch(/^(En gäst gick härifrån nöjd|[A-ZÅÄÖ][a-zåäö]+ gick härifrån nöjda)/);
+    expect(p).toMatch(/^(One guest left happy|[A-Z][a-z]+ guests left happy)/);
   });
 });
 

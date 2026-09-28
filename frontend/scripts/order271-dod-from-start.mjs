@@ -29,7 +29,8 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const FRONTEND = resolve(HERE, '..');
-const OUT = resolve(FRONTEND, 'reports', 'order271');
+// REPORT_ORDER=order273 skriver under en senare orders katalog.
+const OUT = resolve(FRONTEND, 'reports', process.env.REPORT_ORDER ?? 'order271');
 mkdirSync(OUT, { recursive: true });
 const PORT = 4174;
 const URL = `http://localhost:${PORT}`;
@@ -166,14 +167,14 @@ try {
   await page.click('[data-testid=new-game]');
   await page.waitForSelector('.hud', { timeout: 90000 });
   await delay(2000);
-  if (!(await walkUntilPrompt('w', 'Prata', 20000))) throw new Error('prata');
+  if (!(await walkUntilPrompt('w', 'Talk', 20000))) throw new Error('prata');
   await page.keyboard.press('e');
   await page.waitForSelector('.dialogue-panel .choice');
   await page.$eval('.dialogue-panel .choice', (b) => b.click());
   await page.waitForSelector('.dialogue-actions .btn');
   await page.$eval('.dialogue-actions .btn', (b) => b.click());
   await page.waitForSelector('.dialogue-panel', { state: 'detached', timeout: 10000 });
-  if (!(await walkUntilPrompt('w', 'Registrera', 30000))) throw new Error('registrera');
+  if (!(await walkUntilPrompt('w', 'Register', 30000))) throw new Error('registrera');
   await page.keyboard.press('e');
   await page.waitForSelector('.end-stage', { timeout: 10000 });
   await page.$eval('.end-buttons .btn.primary', (b) => b.click());

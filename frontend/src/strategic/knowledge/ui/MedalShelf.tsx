@@ -7,7 +7,7 @@
 // tas tillbaka. Visas i morgonens schema så att medaljerna syns varje
 // dag, också efter att spelet laddats om.
 
-import { strings } from '../../../content/strings.sv';
+import { strings } from '../../../content/strings';
 import { useSimState } from '../../simulation/SimulationProvider';
 import type { PavilionKey } from '../../types';
 import { isPavilionUnlocked } from '../pavilionVisit';

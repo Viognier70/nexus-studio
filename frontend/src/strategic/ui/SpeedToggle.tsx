@@ -48,7 +48,7 @@ export function SpeedToggle() {
   const dispatch = useSimDispatch();
 
   return (
-    <div style={CONTAINER_STYLE} role="group" aria-label="Simuleringshastighet">
+    <div style={CONTAINER_STYLE} role="group" aria-label="Simulation speed">
       {OPTIONS.map((speed) => {
         const active = sim.speed === speed;
         return (
@@ -58,7 +58,7 @@ export function SpeedToggle() {
             style={active ? BUTTON_ACTIVE : BUTTON_BASE}
             onClick={() => dispatch({ type: 'SET_SPEED', speed })}
             aria-pressed={active}
-            title={`Simulering ${speed}× hastighet`}
+            title={`Simulation ${speed}× speed`}
           >
             {speed}×
           </button>

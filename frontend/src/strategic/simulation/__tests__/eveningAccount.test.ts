@@ -14,7 +14,7 @@
 //     produces a non-null state.eveningAccount at evening start.
 
 import { describe, expect, it } from 'vitest';
-import { pickParagraph } from '../../../content/eveningAccount.sv';
+import { pickParagraph } from '../../../content/eveningAccount.en';
 import { computeEveningAccount, computeMetrics, pickBranch } from '../eveningAccount';
 import { fireCollapse } from '../collapse';
 import { makeInitialState } from '../model';

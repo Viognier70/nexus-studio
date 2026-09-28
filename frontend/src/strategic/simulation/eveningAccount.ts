@@ -30,9 +30,9 @@ import type {
   KnowledgeCredits,
   SimulationState
 } from '../types';
-import { pickParagraph } from '../../content/eveningAccount.sv';
+import { pickParagraph } from '../../content/eveningAccount.en';
 import { ACTIVITY_CATALOGUE } from './activities';
-import { strings } from '../../content/strings.sv';
+import { strings } from '../../content/strings';
 
 // "Good night" thresholds. Net revenue = (current revenue − snapshot).
 // Rep "held or grew" = current reputation ≥ snapshot − 0.02 (allowing
@@ -154,9 +154,9 @@ export function computeEveningAccount(state: SimulationState): EveningAccount {
       const list = names.length === 1
         ? names[0]
         : names.length === 2
-          ? `${names[0]} och ${names[1]}`
-          : `${names.slice(0, -1).join(', ')} och ${names[names.length - 1]}`;
-      paragraph = `I dag valde du: ${list}. ` + paragraph;
+          ? `${names[0]} and ${names[1]}`
+          : `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;
+      paragraph = `Today you chose: ${list}. ` + paragraph;
     }
   }
   // ORDER 266 — speldesign > Medgång: "Kvällsberättelsen börjar med det

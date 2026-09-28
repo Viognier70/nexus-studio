@@ -41,7 +41,7 @@ import { useBusiness } from '../business/BusinessContext';
 import { usePlayerBusinessInterior } from '../business/interiorLayout';
 import { useSimState } from '../simulation/SimulationProvider';
 import { skyState } from '../../lib/lighting/skyState';
-import { strings } from '../../content/strings.sv';
+import { strings } from '../../content/strings';
 import { businessRoomRef } from './interiorSharedState';
 
 // Business volume constants — the D01 historic-centre building is a
