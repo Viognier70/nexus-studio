@@ -12,13 +12,16 @@ import { GAME_MINUTES_PER_SIM_SECOND, INCIDENTS, SITTING } from './balance';
 import { clockMinutes } from './incidents';
 
 export interface ServiceClock {
-  // Klockslaget nu och när servicen stänger, i spelminuter efter midnatt.
+  // Klockslaget när servicen öppnade, nu och när den stänger, i spelminuter efter midnatt.
+  startMinutes: number;
   nowMinutes: number;
   endMinutes: number;
   // Spelminuter kvar, aldrig under noll.
   leftMinutes: number;
   // Andel av servicen som gått, 0..1.
   elapsedShare: number;
+  // Sista beställningen: högst SITTING.lastOrdersMinutes kvar (Designs §3).
+  lastOrders: boolean;
 }
 
 // Samma tidsenheter som klockan i incidents.ts (balance.ts INCIDENTS).
@@ -34,10 +37,13 @@ export function serviceClock(state: SimulationState): ServiceClock | null {
   const endMinutes = start + Math.round(lengthSimSeconds * GAME_MINUTES_PER_SIM_SECOND);
   const nowMinutes = Math.min(endMinutes, clockMinutes(state));
   const elapsed = Math.max(0, state.simTime - periodStartAt);
+  const leftMinutes = Math.max(0, endMinutes - nowMinutes);
   return {
+    startMinutes: start,
     nowMinutes,
     endMinutes,
-    leftMinutes: Math.max(0, endMinutes - nowMinutes),
-    elapsedShare: Math.max(0, Math.min(1, elapsed / lengthSimSeconds))
+    leftMinutes,
+    elapsedShare: Math.max(0, Math.min(1, elapsed / lengthSimSeconds)),
+    lastOrders: leftMinutes <= SITTING.lastOrdersMinutes
   };
 }

@@ -6,7 +6,7 @@
 //   DoD 3  episteme-avslag pekar aldrig mot Måltidbiblioteket.
 //   DoD 4  outcome läsbart i state efter REQUEST_BANK_LOAN.
 //   DoD 5  väg tillbaka: pointedPavilion är giltig paviljong-id.
-//   DoD 6  grep: inga interna outcome-nycklar i strings.sv.ts;
+//   DoD 6  grep: inga interna outcome-nycklar i nexusStrings.ts;
 //          ingen kreditsiffra i spelartext; ingen cash↔credits-omvandling.
 //   DoD 7  slingan går runt: noLoan → öva → verksamhet → tillbaka.
 
@@ -23,6 +23,7 @@ import { reducer } from '../reducer';
 import { makeInitialState } from '../model';
 import { ALL_PAVILION_IDS } from '../../knowledge/pavilions';
 import { strings } from '../../../content/strings';
+import { svSideText } from '../../../content/__tests__/tableText';
 import type { KnowledgeCredits, SimAction } from '../../types';
 
 const ZERO_CREDITS: KnowledgeCredits = { episteme: 0, techne: 0, phronesis: 0 };
@@ -214,14 +215,13 @@ describe('ORDER 109 §5 DoD 5 — väg tillbaka: paviljong-id giltig', () => {
 });
 
 // -----------------------------------------------------------------------------
-// DoD 6 — grep över strings.sv.ts + ingen kredit→cash-omvandling
+// DoD 6 — grep över nexusStrings.ts + ingen kredit→cash-omvandling
 // -----------------------------------------------------------------------------
 
-describe('ORDER 109 §5 DoD 6 — grep: inga interna nycklar i strings.sv.ts', () => {
-  it('strings.sv.ts innehåller ingen intern outcome-nyckel', () => {
-    const thisDir = dirname(fileURLToPath(import.meta.url));
-    const stringsPath = resolve(thisDir, '../../../content/strings.sv.ts');
-    const source = readFileSync(stringsPath, 'utf8');
+describe('ORDER 109 §5 DoD 6 — grep: inga interna nycklar i nexusStrings.ts', () => {
+  it('nexusStrings.ts innehåller ingen intern outcome-nyckel', () => {
+    // ORDER 273: tabellens nycklar och sv-sida (det som stod i strings.sv.ts).
+    const source = svSideText();
     // Interna nycklar från businessProfile.ts:KnowledgeClass +
     // bankMeeting.ts:BankLoanTier. Får inte förekomma någonstans
     // i filen (inte ens i kommentar — kommentaren i bank-sektionen
@@ -237,10 +237,10 @@ describe('ORDER 109 §5 DoD 6 — grep: inga interna nycklar i strings.sv.ts', (
     for (const pattern of forbidden) {
       if (pattern.test(source)) hits.push(pattern.toString());
     }
-    expect(hits, `Förbjudna nycklar i strings.sv.ts: ${hits.join(', ')}`).toEqual([]);
+    expect(hits, `Förbjudna nycklar i nexusStrings.ts: ${hits.join(', ')}`).toEqual([]);
   });
 
-  it('strings.sv.ts:bank innehåller inga siffror alls (ingen kredit-siffra i spelartext)', () => {
+  it('nexusStrings.ts:bank innehåller inga siffror alls (ingen kredit-siffra i spelartext)', () => {
     // Bank-meddelanden och paviljongnamn är prosa; en siffra där skulle
     // signalera att en kredit- eller cash-siffra läckt in. Uteslut
     // "ORDER 109" i kommentaren via att bara skanna själva strängvärdena.

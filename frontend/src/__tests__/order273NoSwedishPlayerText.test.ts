@@ -8,12 +8,19 @@
 // byggnader och paviljonger står kvar på svenska (CLAUDE.md regel 7), och
 // kodens interna nycklar (rollerna 'värd', 'servitör' …) är inte
 // spelartext. Raketbankens engelska text prövas för sig.
+//
+// Strängtabellen (content/nexusStrings.ts) har svenska och engelska sida vid
+// sida med avsikt och undantas från genomsökningen av källkoden. I stället
+// prövas tabellen själv: varje löv har både `sv` och `en`, och
+// `pickLang(TABLE, 'en')` (och Designs STRINGS på engelska) har ingen svensk
+// text, med samma igenkänning som för källkoden.
 
 import { describe, expect, it } from 'vitest';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import ts from 'typescript';
+import { STRINGS, TABLE, pickLang } from '../content/nexusStrings';
 
 const SRC = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -33,6 +40,8 @@ const ALLOWED = [
 // namn), mallfrågorna från ORDER 107 (START_EXAM anropas inte från
 // gränssnittet) och matkärrans arketyper (visas inte).
 const NOT_PLAYER_TEXT = [
+  // Strängtabellen: svenska och engelska sida vid sida (ORDER 273).
+  /^content\/nexusStrings\.ts$/,
   /^strategic\/scene\/[A-Za-z.]+\.ts$/,
   /^strategic\/content\/(roadRoles|streetProfiles|grythyttan|layout)\.ts$/,
   /^sim\/(balance|incidentBank)\.ts$/,
@@ -63,8 +72,8 @@ function isSwedish(text: string): boolean {
   return words.filter((w) => SWEDISH_WORDS.includes(w)).length >= 2;
 }
 
-function literalsIn(file: string): { line: number; text: string }[] {
-  const src = readFileSync(file, 'utf8');
+function literalsIn(file: string, source?: string): { line: number; text: string }[] {
+  const src = source ?? readFileSync(file, 'utf8');
   const sf = ts.createSourceFile(file, src, ts.ScriptTarget.Latest, true, file.endsWith('x') ? ts.ScriptKind.TSX : ts.ScriptKind.TS);
   const out: { line: number; text: string }[] = [];
   const visit = (n: ts.Node) => {
@@ -107,9 +116,85 @@ describe('ORDER 273 — ingen svensk spelartext', () => {
     expect(offenders).toEqual([]);
   });
 
-  it('de svenska filerna finns kvar', () => {
-    for (const f of ['content/strings.sv.ts', 'content/incidents/vinbar.text.sv.draft.json']) {
-      expect(statSync(join(SRC, f)).isFile()).toBe(true);
-    }
+  it('den svenska texten finns kvar: varje löv i strängtabellen har sv, och raketbankens svenska utkast finns', () => {
+    const missing: string[] = [];
+    walkTable(TABLE, '', (path, leaf) => {
+      if (!leaf || !('sv' in leaf) || isEmpty(leaf.sv)) missing.push(path);
+    });
+    expect(missing).toEqual([]);
+    expect(statSync(join(SRC, 'content/incidents/vinbar.text.sv.draft.json')).isFile()).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------
+// ORDER 273 — strängtabellen
+// ---------------------------------------------------------------------
+
+type Leaf = { sv: unknown; en: unknown };
+
+function isLeafNode(v: unknown): v is Leaf {
+  return !!v && typeof v === 'object' && !Array.isArray(v) && Object.keys(v).length === 2 && 'sv' in v && 'en' in v;
+}
+
+function isEmpty(v: unknown): boolean {
+  return v === undefined || v === null || v === '';
+}
+
+// Går igenom TABLE; `leaf` är null för ett värde som varken är ett löv
+// ({ sv, en }) eller en gren (ett objekt med löv och grenar).
+function walkTable(node: unknown, path: string, visit: (path: string, leaf: Leaf | null) => void) {
+  if (isLeafNode(node)) return visit(path, node);
+  if (!node || typeof node !== 'object' || Array.isArray(node)) return visit(path, null);
+  for (const [k, v] of Object.entries(node)) walkTable(v, path ? `${path}.${k}` : k, visit);
+}
+
+// Spelartexten i ett värde: text, texterna i tupler och Record-objekt och
+// strängliteralerna och template-texten i funktioner (lästa med samma parser).
+function textsOf(v: unknown, path: string, out: { path: string; text: string }[]) {
+  if (typeof v === 'string') out.push({ path, text: v });
+  else if (typeof v === 'function') {
+    for (const lit of literalsIn(`${path}.ts`, `const f = ${v.toString()};`)) out.push({ path, text: lit.text });
+  } else if (Array.isArray(v)) v.forEach((x, i) => textsOf(x, `${path}[${i}]`, out));
+  else if (v && typeof v === 'object') for (const [k, x] of Object.entries(v)) textsOf(x, `${path}.${k}`, out);
+}
+
+describe('ORDER 273 — strängtabellen, svenska och engelska sida vid sida', () => {
+  it('varje löv i spelets tabell har både sv och en', () => {
+    const bad: string[] = [];
+    let leaves = 0;
+    walkTable(TABLE, '', (path, leaf) => {
+      if (!leaf) bad.push(`${path}: inget { sv, en }-löv`);
+      else {
+        leaves++;
+        if (isEmpty(leaf.sv)) bad.push(`${path}: saknar sv`);
+        if (isEmpty(leaf.en)) bad.push(`${path}: saknar en`);
+        if (typeof leaf.sv !== typeof leaf.en || Array.isArray(leaf.sv) !== Array.isArray(leaf.en)) bad.push(`${path}: sv och en har olika form`);
+      }
+    });
+    expect(bad).toEqual([]);
+    expect(leaves).toBeGreaterThan(0);
+  });
+
+  it('varje nyckel i Designs STRINGS har både sv och en', () => {
+    const bad = Object.entries(STRINGS).filter(([, e]) => isEmpty(e.sv) || isEmpty(e.en)).map(([k]) => k);
+    expect(bad).toEqual([]);
+  });
+
+  it("pickLang(TABLE, 'en') och Designs STRINGS på engelska har ingen svensk text", () => {
+    const texts: { path: string; text: string }[] = [];
+    textsOf(pickLang(TABLE, 'en'), 'TABLE', texts);
+    for (const [k, e] of Object.entries(STRINGS)) texts.push({ path: `STRINGS.${k}`, text: e.en });
+    const offenders = texts.filter((t) => isSwedish(t.text)).map((t) => `${t.path}: ${JSON.stringify(t.text.slice(0, 80))}`);
+    expect(texts.length).toBeGreaterThan(600);
+    expect(offenders).toEqual([]);
+  });
+
+  it("pickLang(TABLE, 'sv') ger svenska där engelskan skiljer sig (tabellen är inte en kopia av engelskan)", () => {
+    const sv = pickLang(TABLE, 'sv');
+    const en = pickLang(TABLE, 'en');
+    expect(sv.service.clock.lastOrders).toBe(STRINGS['hud.clock.last'].sv);
+    expect(en.service.clock.lastOrders).toBe(STRINGS['hud.clock.last'].en);
+    expect(en.knowledge.houseHeading).toBe(STRINGS['house.name'].en);
+    expect(sv.knowledge.houseHeading).toBe(STRINGS['house.name'].sv);
   });
 });

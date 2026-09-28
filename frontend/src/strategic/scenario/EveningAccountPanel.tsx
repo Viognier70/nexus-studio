@@ -165,7 +165,7 @@ function formatLedgerAmount(sek: number): string {
   if (abs < 10_000) {
     return `${sek >= 0 ? '+' : '−'}${Math.round(abs).toLocaleString('en-GB')}`;
   }
-  return `${sek >= 0 ? '+' : '−'}${(abs / 1000).toFixed(1)} ${T.thousandSuffix}`;
+  return `${sek >= 0 ? '+' : '−'}${strings.panels.cash.thousands((abs / 1000).toFixed(1))}`;
 }
 
 function formatRunningCash(sek: number): string {
@@ -173,7 +173,7 @@ function formatRunningCash(sek: number): string {
   if (abs < 10_000) {
     return `${Math.round(sek).toLocaleString('en-GB')}`;
   }
-  return `${(sek / 1000).toFixed(1)} ${T.thousandSuffix}`;
+  return strings.panels.cash.thousands((sek / 1000).toFixed(1));
 }
 
 // Timing constants (in seconds). Matches EVENING_TO_MORNING_PAUSE_SEC

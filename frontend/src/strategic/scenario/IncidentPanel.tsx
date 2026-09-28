@@ -244,8 +244,10 @@ export function IncidentCard() {
   } else if (view.mode === 'done') {
     band = { kind: 'right', label: t.rightDone, text: `${view.guestsIn > 0 ? `${t.guestsIn(view.guestsIn)} ` : ''}${view.outcomeText ?? ''}` };
   } else if (view.mode === 'wrong') {
-    const role = capitalise(takeoverWord(incident, step, view.role));
-    band = { kind: 'wrong', label: t.wrong(role), text: `${view.chosen === null ? `${t.timedOut} ` : ''}${view.outcomeText ?? ''}` };
+    // Designs band (2026-09-28): "Wrong · the {role} takes over" /
+    // "Out of time · the {role} takes over"; rollen med sin artikel.
+    const role = takeoverWord(incident, step, view.role);
+    band = { kind: 'wrong', label: view.chosen === null ? t.outOfTime(role) : t.wrong(role), text: view.outcomeText ?? '' };
   }
 
   return (
@@ -339,8 +341,8 @@ export function IncidentCard() {
         </div>
       ) : (
         <div className="nx-rocket-foot">
-          {extra ? `${s.medalTime(pavilionName)}. ` : ''}
-          {t.footer(takeoverWord(incident, step))}
+          <span>{extra ? `${s.medalTime(pavilionName)}. ` : ''}{t.footer}</span>
+          <strong className="nx-rocket-keys">{t.keys}</strong>
         </div>
       )}
     </section>

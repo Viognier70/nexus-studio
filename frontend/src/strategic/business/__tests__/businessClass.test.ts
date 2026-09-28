@@ -7,14 +7,11 @@
 //   DoD 4  capacity följer verksamhet + bemanning.
 //   DoD 5  Varje bankmötesutfall leder till rätt verksamhet.
 //   DoD 6  Food truck har inga sittande gäster + sittmönstren anropas ej.
-//   DoD 8  grep: 'balanced' inte i strings.sv.ts; Värdshuset som spelartext.
+//   DoD 8  grep: 'balanced' inte i nexusStrings.ts; Värdshuset som spelartext.
 //
 // DoD 2/3/7 partiellt uppfyllda i denna order och dokumenterade som
 // öppet i registerposten — se ORDER_REGISTRY.md 110.
 
-import { readFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import {
   BUSINESS_CLASS_CONFIG,
@@ -28,6 +25,7 @@ import { reducer } from '../../simulation/reducer';
 import { makeInitialState } from '../../simulation/model';
 import type { BankMeetingKlass, SimAction } from '../../types';
 import { strings } from '../../../content/strings';
+import { svSideText } from '../../../content/__tests__/tableText';
 
 function accumulate(
   state: ReturnType<typeof makeInitialState>,
@@ -263,19 +261,18 @@ describe('ORDER 110 §7 DoD 6 — foodtruck: inga sittande gäster', () => {
 });
 
 // -----------------------------------------------------------------------------
-// DoD 8 — grep: 'balanced' inte i strings.sv.ts; Värdshuset som spelartext
+// DoD 8 — grep: 'balanced' inte i nexusStrings.ts; Värdshuset som spelartext
 // -----------------------------------------------------------------------------
 
 describe('ORDER 110 §7 DoD 8 — grep + Gästgiveriet', () => {
-  it('strings.sv.ts innehåller ingen `balanced`-nyckel', () => {
-    const thisDir = dirname(fileURLToPath(import.meta.url));
-    const stringsPath = resolve(thisDir, '../../../content/strings.sv.ts');
-    const source = readFileSync(stringsPath, 'utf8');
+  it('nexusStrings.ts innehåller ingen `balanced`-nyckel', () => {
+    // ORDER 273: tabellens nycklar och sv-sida (det som stod i strings.sv.ts).
+    const source = svSideText();
     // Word-boundary så vi inte fångar sammansatta ord (t.ex. `balancedX`).
-    expect(/\bbalanced\b/.test(source), '`balanced` läcker i strings.sv.ts').toBe(false);
+    expect(/\bbalanced\b/.test(source), '`balanced` läcker i nexusStrings.ts').toBe(false);
   });
 
-  it('Gästgiveriet finns som spelartext i strings.sv.ts:businessClass', () => {
+  it('Gästgiveriet finns som spelartext i nexusStrings.ts:businessClass', () => {
     expect(strings.businessClass.gästgiveriet).toBe('The Inn');
   });
 

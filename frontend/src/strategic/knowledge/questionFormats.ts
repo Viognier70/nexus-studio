@@ -4,7 +4,7 @@
 //
 // Alla format är rena datastrukturer + rena score-funktioner. Samma
 // indata ger samma poäng — testbart i fixed-seed-harnessen. Ingen
-// Math.random, inget nätanrop, ingen strings.sv.ts-koppling. Innehållet
+// Math.random, inget nätanrop, ingen nexusStrings.ts-koppling. Innehållet
 // (Vision Owner §5) läses in från JSON eller inline modul; formaten
 // här specificerar bara skalet.
 //

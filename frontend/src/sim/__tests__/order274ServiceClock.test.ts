@@ -6,6 +6,8 @@ import { makeNewGameState } from '../../strategic/simulation/model';
 import { firstDayOfWeek } from '../calendar';
 import { SITTING } from '../balance';
 import { serviceClock } from '../serviceClock';
+import { formatClock } from '../incidents';
+import { setLanguage } from '../../content/language';
 
 const TICK = { type: 'TICK', dt: 0.2 } as const;
 
@@ -26,6 +28,35 @@ describe('ORDER 274 — tiden kvar av servicen', () => {
     expect(c.endMinutes).toBe(SITTING.serviceEndHour * 60);
     expect(c.leftMinutes).toBe((SITTING.serviceEndHour - SITTING.serviceStartHour) * 60);
     expect(c.elapsedShare).toBe(0);
+    expect(c.startMinutes).toBe(SITTING.serviceStartHour * 60);
+    expect(c.lastOrders).toBe(false);
+  });
+
+  // ORDER 273 (Designs §3) — "Last orders" de sista minuterna.
+  it('sista beställningen gäller exakt de sista SITTING.lastOrdersMinutes minuterna', () => {
+    let s = opened();
+    let sawLastOrders = false;
+    for (let i = 0; i < 20000 && s.day.period === 'dinner'; i++) {
+      s = reducer(s, TICK);
+      const c = serviceClock(s);
+      if (!c) break;
+      expect(c.lastOrders).toBe(c.leftMinutes <= SITTING.lastOrdersMinutes);
+      if (c.lastOrders) sawLastOrders = true;
+    }
+    expect(sawLastOrders).toBe(true);
+  });
+
+  // ORDER 273 (Designs §2) — klockslaget per språk.
+  it('klockslaget är 18:00 på engelska och 18.00 på svenska', () => {
+    const min = SITTING.serviceStartHour * 60;
+    try {
+      setLanguage('en');
+      expect(formatClock(min)).toBe(`${SITTING.serviceStartHour}:00`);
+      setLanguage('sv');
+      expect(formatClock(min)).toBe(`${SITTING.serviceStartHour}.00`);
+    } finally {
+      setLanguage('en');
+    }
   });
 
   it('tiden kvar sjunker hela kvällen och når noll när reducern stänger servicen', () => {

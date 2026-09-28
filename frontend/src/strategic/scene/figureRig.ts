@@ -772,7 +772,7 @@ export function measureFigure(rig: FigureRig) {
 //
 // 1. poseWork  — TeamMember bär bara `role`. Det finns ingen uppgift
 //    på den entitet InteriorStaff.tsx renderar, så "arbetar just nu"
-//    går inte att läsa av. `staffTasks` i strings.sv.ts är text utan
+//    går inte att läsa av. `staffTasks` i nexusStrings.ts är text utan
 //    koppling till en tillståndsmaskin. Fram till dess är poseWork
 //    korrekt bara som roll-konstant (kock vid passet), inte som
 //    händelse. FLAGGAT.

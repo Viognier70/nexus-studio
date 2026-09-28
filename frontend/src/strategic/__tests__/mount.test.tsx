@@ -101,7 +101,7 @@ describe('mount smoke — StrategicApp renders into a real DOM', () => {
   it('shows the NameEntryOverlay heading on first mount', () => {
     // BusinessProvider starts with no name set, so NameEntryOverlay
     // is what the player sees first. The heading text comes from
-    // strings.sv.ts (CLAUDE.md rule 7) — asserting against it also
+    // the string table, content/nexusStrings.ts (CLAUDE.md rule 7) — asserting against it also
     // pins the pass-through of the strings module through the
     // BusinessProvider layer.
     render(<StrategicApp />);
