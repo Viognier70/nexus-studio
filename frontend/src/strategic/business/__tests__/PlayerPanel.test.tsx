@@ -116,7 +116,7 @@ describe('ORDER 120 DoD 6 — DOM-struktur', () => {
     const children = Array.from(pill!.children);
 
     const cashLabelIdx = children.findIndex((c) => c.textContent === 'Cash');
-    const cashValueIdx = children.findIndex((c) => /k SEK$/.test(c.textContent ?? ''));
+    const cashValueIdx = children.findIndex((c) => /^SEK -?[\d,.]+k$/.test(c.textContent ?? ''));
     const glyphIdx = children.findIndex((c) => c.hasAttribute('data-reputation-trend'));
     const toggleIdx = children.findIndex((c) => c.textContent === '▾' || c.textContent === '▴');
 

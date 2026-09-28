@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import { StrategicApp } from './strategic/StrategicApp';
+import { useLanguage } from './content/language';
 import './index.css';
 
 const VS01_HASH = '#/first-person-prototype';
@@ -19,6 +20,11 @@ type Flow = 'start' | 'bus' | 'introduction';
 function Root() {
   const [route, setRoute] = useState(currentRoute);
   const [flow, setFlow] = useState<Flow>('start');
+  // ORDER 273 — språket; bussen (VS001) ritas också om vid byte.
+  const lang = useLanguage();
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
   useEffect(() => {
     const onHashChange = () => setRoute(currentRoute());
     window.addEventListener('hashchange', onHashChange);

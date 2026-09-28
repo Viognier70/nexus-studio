@@ -15,6 +15,15 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { strings } from '../../content/strings';
+import { LANGUAGES, setLanguage, useLanguage, type Lang } from '../../content/language';
+
+// ORDER 273 — språkvalet (Designs leverans 2026-09-28 §2: spelet går på
+// engelska som standard och byter språk med en inställning). Namnen på
+// språken står i strängtabellen (menu.english / menu.swedish).
+const LANGUAGE_NAME: Record<Lang, () => string> = {
+  en: () => strings.menu.english,
+  sv: () => strings.menu.swedish
+};
 
 interface Props {
   onOpenAbout: () => void;
@@ -60,10 +69,44 @@ const DROPDOWN_ITEM_HOVER_STYLE: React.CSSProperties = {
   background: 'rgba(255, 255, 255, 0.08)'
 };
 
+const LANGUAGE_ROW_STYLE: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: 4,
+  padding: '6px 12px',
+  borderTop: '1px solid var(--gb-border)',
+  marginTop: 2
+};
+
+const LANGUAGE_LABEL_STYLE: React.CSSProperties = {
+  fontSize: '0.75rem',
+  letterSpacing: '0.06em',
+  opacity: 0.72,
+  marginRight: 'auto'
+};
+
+const LANGUAGE_BUTTON_STYLE: React.CSSProperties = {
+  padding: '4px 8px',
+  background: 'transparent',
+  color: 'var(--gb-text)',
+  border: '1px solid var(--gb-border)',
+  borderRadius: 2,
+  font: 'inherit',
+  fontSize: '0.8rem',
+  cursor: 'pointer'
+};
+
+const LANGUAGE_ACTIVE_STYLE: React.CSSProperties = {
+  ...LANGUAGE_BUTTON_STYLE,
+  background: 'rgba(255, 255, 255, 0.16)',
+  fontWeight: 700
+};
+
 export function TopRightMenu({ onOpenAbout, onOpenSave }: Props) {
   const [open, setOpen] = useState(false);
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const lang = useLanguage();
 
   useEffect(() => {
     if (!open) return;
@@ -91,11 +134,11 @@ export function TopRightMenu({ onOpenAbout, onOpenSave }: Props) {
         type="button"
         className="gb-btn"
         onClick={() => setOpen((o) => !o)}
-        aria-label="More options"
+        aria-label={strings.menu.button}
         data-testid="menu-button"
         aria-haspopup="menu"
         aria-expanded={open}
-        title="More options"
+        title={strings.menu.button}
       >
         ⋯
       </button>
@@ -123,7 +166,7 @@ export function TopRightMenu({ onOpenAbout, onOpenSave }: Props) {
             onMouseLeave={() => setHoverIdx(null)}
             onClick={() => setOpen(false)}
           >
-            First-person prototype
+            {strings.menu.firstPerson}
           </a>
           <button
             role="menuitem"
@@ -136,8 +179,24 @@ export function TopRightMenu({ onOpenAbout, onOpenSave }: Props) {
               setOpen(false);
             }}
           >
-            About this prototype
+            {strings.pause.aboutHeading}
           </button>
+          <div role="group" aria-label={strings.menu.language} data-testid="menu-language" style={LANGUAGE_ROW_STYLE}>
+            <span style={LANGUAGE_LABEL_STYLE}>{strings.menu.language}</span>
+            {LANGUAGES.map((l) => (
+              <button
+                key={l}
+                role="menuitemradio"
+                type="button"
+                aria-checked={l === lang}
+                data-testid={`menu-language-${l}`}
+                style={l === lang ? LANGUAGE_ACTIVE_STYLE : LANGUAGE_BUTTON_STYLE}
+                onClick={() => setLanguage(l)}
+              >
+                {LANGUAGE_NAME[l]()}
+              </button>
+            ))}
+          </div>
         </div>
       )}
     </div>

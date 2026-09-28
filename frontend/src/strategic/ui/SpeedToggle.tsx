@@ -11,6 +11,7 @@
 // action.
 
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
+import { strings } from '../../content/strings';
 
 const OPTIONS: readonly (1 | 2 | 4)[] = [1, 2, 4];
 
@@ -48,7 +49,7 @@ export function SpeedToggle() {
   const dispatch = useSimDispatch();
 
   return (
-    <div style={CONTAINER_STYLE} role="group" aria-label="Simulation speed">
+    <div style={CONTAINER_STYLE} role="group" aria-label={strings.hud.speed}>
       {OPTIONS.map((speed) => {
         const active = sim.speed === speed;
         return (
@@ -58,7 +59,7 @@ export function SpeedToggle() {
             style={active ? BUTTON_ACTIVE : BUTTON_BASE}
             onClick={() => dispatch({ type: 'SET_SPEED', speed })}
             aria-pressed={active}
-            title={`Simulation ${speed}× speed`}
+            title={strings.hud.speedOption(speed)}
           >
             {speed}×
           </button>

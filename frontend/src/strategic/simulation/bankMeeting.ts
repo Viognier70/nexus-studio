@@ -5,7 +5,7 @@
 // Ren funktion, samma DoD som businessProfile.ts — ingen sim-state-
 // läsning utanför den vektor som skickas in, ingen Math.random, inget
 // nätanrop. Meddelanden refereras via `messageKey`; texterna själva
-// bor i `content/strings.sv.ts:bank` för att hålla presentationslagret
+// bor i `content/nexusStrings.ts:bank` för att hålla presentationslagret
 // åtskilt (grep-testet fångar om interna nycklar läcker dit).
 //
 // §3-designen: `noLoan` uppstår på två sätt som ska säga olika saker:
@@ -145,12 +145,12 @@ export function resolveBankMeeting(credits: KnowledgeCredits): BankMeetingOutcom
   }
 }
 
-// Formaterings-helper. Tar ut den engelska texten från strings.sv.ts:bank
+// Formaterings-helper. Tar ut den engelska texten från nexusStrings.ts:bank
 // och substituerar {pavilion} med paviljongnamnet vid avslag. Presentations-
 // koden anropar denna för att inte behöva känna till bankMessageKey-formen.
 //
 // Argumentet är shape:t på strings.bank så testet kan bygga en falsk
-// strings-tabell utan att importera hela `content/strings.sv.ts`. Håller
+// strings-tabell utan att importera hela `content/nexusStrings.ts`. Håller
 // bankMeeting.ts fri från strings-modulen.
 export interface BankStrings {
   grantRestaurant: string;

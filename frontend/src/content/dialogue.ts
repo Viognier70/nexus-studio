@@ -14,11 +14,16 @@ export interface OpeningDialogue {
 
 const choiceIds: ChoiceId[] = ['A', 'B', 'C'];
 
+// ORDER 273 — läses vid åtkomst, så att dialogen följer det valda språket.
 export const openingDialogue: OpeningDialogue = {
-  prompt: strings.npc.prompt,
-  choices: choiceIds.map((id) => ({
-    id,
-    playerLine: strings.npc.choices[id],
-    npcResponse: strings.npc.responses[id]
-  }))
+  get prompt() {
+    return strings.npc.prompt;
+  },
+  get choices() {
+    return choiceIds.map((id) => ({
+      id,
+      playerLine: strings.npc.choices[id],
+      npcResponse: strings.npc.responses[id]
+    }));
+  }
 };

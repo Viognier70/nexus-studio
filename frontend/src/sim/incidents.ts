@@ -212,10 +212,12 @@ export function clockMinutes(state: SimulationState): number {
   return SITTING.serviceStartHour * MINUTES_PER_HOUR + Math.floor(since * GAME_MINUTES_PER_SIM_SECOND);
 }
 
+// Klockslaget som text i det aktuella språket (ORDER 273, Designs §2):
+// "18:00" på engelska, "18.00" på svenska (strängtabellen service.clock.hhmm).
 export function formatClock(minutes: number): string {
   const h = Math.floor(minutes / MINUTES_PER_HOUR);
   const m = minutes % MINUTES_PER_HOUR;
-  return `${h}:${String(m).padStart(INCIDENTS.clockDigits, '0')}`;
+  return strings.service.clock.hhmm(String(h), String(m).padStart(INCIDENTS.clockDigits, '0'));
 }
 
 function parseClock(hhmm: string): number {

@@ -1,0 +1,1749 @@
+// ORDER 273 — strängtabellen: svenska och engelska sida vid sida.
+//
+// GENERERAD av scripts/order273-strings-table.mjs (kan köras om, se skriptets
+// huvud). Vision Owner 2026-09-28: Designs nexusStrings.ts är grunden, spelets
+// egna strängar är sammanslagna in, och Designs ordval gäller där de skiljer sig.
+//
+// Filen har två delar:
+//   1. Designs tabell (leveransen nexus-leverans-2026-09-28/nexusStrings.ts)
+//      ordagrant: STRINGS (platt, { sv, en } per nyckel), t(lang, key, vars),
+//      Lang och serviceClock(lang, min).
+//   2. Spelets tabell TABLE med samma nästlade form som de tidigare
+//      strings.sv.ts / strings.en.ts; varje löv är { sv, en }. Funktioner,
+//      tupler och `{…} as Record`-objekt är löv i sin helhet.
+// pickLang(TABLE, lang) ger tabellen för ett språk; content/strings.ts
+// exporterar `strings` för det aktuella språket (content/language.ts).
+//
+// Egennamn på platser och paviljonger står kvar på svenska också i de
+// engelska löven (CLAUDE.md regel 7); "Måltidens hus" heter på engelska
+// "the House of the Meal" (Designs house.name).
+
+// ───────────────────────────────────────────────────────────────────
+// 1. Designs tabell (leveransen 2026-09-28, ordagrant)
+// ───────────────────────────────────────────────────────────────────
+
+// nexusStrings — every string the designed screens use, Swedish and English
+// side by side. Provspel 2026-09-28: the game is now in English, and it can
+// switch language. One key per string; `t(lang, key, vars)` fills {vars}.
+//
+// Names follow SVAR §26: the game's own words ("the Mentor", "The Grythyttan
+// Local"), no invented people or banks. Rocket content is sample text — the
+// real bank is frontend/src/content/incidents/vinbar.*.json.
+//
+// Merge target: frontend/src/content/strings.sv.ts. Keys here are new; where
+// the repo already has a string for the same place, keep the repo's key and
+// add the `en` value from here.
+
+export type Lang = 'sv' | 'en';
+type Entry = { sv: string; en: string };
+
+export const STRINGS = {
+  // ── HUD ───────────────────────────────────────────────────────
+  'hud.day': { sv: '{weekday} · vecka {week} av 8', en: '{weekday} · week {week} of 8' },
+  'hud.phase.service': { sv: 'Service', en: 'Service' },
+  'hud.phase.morning': { sv: 'Morgon', en: 'Morning' },
+  'hud.cash': { sv: 'Kassa', en: 'Cash' },
+  'hud.cash.value': { sv: '{k} tkr', en: 'SEK {k}k' },
+  'hud.speed': { sv: 'Tempo', en: 'Speed' },
+  'hud.back': { sv: 'Tillbaka', en: 'Back' },
+  'hud.menu': { sv: 'Meny', en: 'Menu' },
+  'hud.clock.label': { sv: 'Servicen', en: 'Service' },
+  'hud.clock.start': { sv: '18.00', en: '18:00' },
+  'hud.clock.ends': { sv: 'Stänger 23.00', en: 'Closes 23:00' },
+  'hud.clock.left': { sv: '{h} h {m} min kvar', en: '{h} h {m} min left' },
+  'hud.clock.leftMin': { sv: '{m} min kvar', en: '{m} min left' },
+  'hud.clock.last': { sv: 'Sista beställningen', en: 'Last orders' },
+  'hud.meter.cash': { sv: 'Kassa', en: 'Takings' },
+  'hud.meter.guests': { sv: 'Gästerna', en: 'Guests' },
+  'hud.meter.staff': { sv: 'Personalen', en: 'Staff' },
+  'hud.feed': { sv: 'Kvällen', en: 'Tonight' },
+  'hud.feed.open': { sv: 'Dörrarna öppnas, servicen börjar.', en: 'Doors open. Service begins.' },
+  'hud.feed.cold': { sv: 'Kylkedjan höll från lastbilen till kylrummet.', en: 'The cold chain held from the lorry to the cold room.' },
+  'hud.feed.lamps': { sv: 'Lamporna i baren och över borden tänds samtidigt.', en: 'The lamps over the bar and tables go on together.' },
+  'hud.mise': { sv: 'Mise en place', en: 'Mise en place' },
+  'hud.mise.ice': { sv: 'Is', en: 'Ice' },
+  'hud.mise.napkins': { sv: 'Servetter', en: 'Napkins' },
+  'hud.mise.cutlery': { sv: 'Bestick', en: 'Cutlery' },
+  'hud.mise.stations': { sv: 'Stationer', en: 'Stations' },
+  'hud.mise.garnish': { sv: 'Garnityr', en: 'Garnish' },
+  'hud.portions': { sv: 'Portioner kvar', en: 'Portions left' },
+
+  // ── Roles (shown under a figure on hover) ─────────────────────
+  'role.maitre': { sv: 'Hovmästare', en: 'Maître d’' },
+  'role.waiter': { sv: 'Servitör', en: 'Waiter' },
+  'role.runner': { sv: 'Runner', en: 'Runner' },
+  'role.sommelier': { sv: 'Sommelier', en: 'Sommelier' },
+  'role.bartender': { sv: 'Bartender', en: 'Bartender' },
+  'role.cook': { sv: 'Kock', en: 'Cook' },
+  'role.dish': { sv: 'Diskare', en: 'Kitchen porter' },
+  'role.mentor': { sv: 'Mentorn', en: 'The Mentor' },
+
+  // ── Rocket ───────────────────────────────────────────────────
+  'rocket.no': { sv: 'Raket {n} av {of}', en: 'Rocket {n} of {of}' },
+  'rocket.episteme': { sv: 'Episteme', en: 'Episteme' },
+  'rocket.techne': { sv: 'Techne', en: 'Techne' },
+  'rocket.phronesis': { sv: 'Phronesis', en: 'Phronesis' },
+  'rocket.ask.episteme': { sv: 'Vad', en: 'What' },
+  'rocket.ask.techne': { sv: 'Hur', en: 'How' },
+  'rocket.ask.phronesis': { sv: 'När och varför', en: 'When and why' },
+  'rocket.state.done': { sv: 'klar', en: 'done' },
+  'rocket.state.now': { sv: 'pågår', en: 'now' },
+  'rocket.state.wrong': { sv: 'fel', en: 'wrong' },
+  'rocket.state.locked': { sv: 'nås inte', en: 'locked' },
+  'rocket.right': { sv: 'Rätt · vidare till {step}', en: 'Right · on to {step}' },
+  'rocket.rightDone': { sv: 'Rätt · raketen klar', en: 'Right · rocket complete' },
+  'rocket.wrong': { sv: 'Fel · {role} tar över', en: 'Wrong · the {role} takes over' },
+  'rocket.timeout': { sv: 'Tiden gick ut · {role} tar över', en: 'Out of time · the {role} takes over' },
+  'rocket.foot': { sv: 'Rummet väntar inte. Går tiden ut räknas det som fel svar.', en: 'The room won’t wait. Running out of time counts as a wrong answer.' },
+  'rocket.keys': { sv: 'Välj med 1–4', en: 'Choose with 1–4' },
+
+  // ── Evening lesson ───────────────────────────────────────────
+  'lesson.kicker': { sv: 'Stängt 23.00 · kvällens lärdom', en: 'Closed 23:00 · tonight’s lesson' },
+  'lesson.wrong': { sv: 'Det som gick fel', en: 'What went wrong' },
+  'lesson.also': { sv: 'Också', en: 'Also' },
+  'lesson.grid': { sv: 'Kvällens raketer', en: 'Tonight’s rockets' },
+  'lesson.legend.done': { sv: 'klarat', en: 'passed' },
+  'lesson.legend.wrong': { sv: 'fel, personalen tog över', en: 'wrong, staff took over' },
+  'lesson.legend.locked': { sv: 'nåddes inte', en: 'not reached' },
+  'lesson.practise': { sv: 'Öva i {pavilion} i morgon', en: 'Practise in {pavilion} tomorrow' },
+  'lesson.next': { sv: 'Till kvällsberättelsen', en: 'Tonight’s story' },
+
+  // ── Practice (Måltidens hus) ─────────────────────────────────
+  'house.name': { sv: 'Måltidens hus', en: 'The House of the Meal' },
+  'practice.kicker': { sv: 'Övning · ingen medalj står på spel', en: 'Practice · no medal at stake' },
+  'practice.exam': { sv: 'Prov', en: 'Exam' },
+  'practice.again': { sv: 'Frågan kommer tillbaka senare i övningen.', en: 'This question comes back later in the practice.' },
+  'practice.next': { sv: 'Nästa fråga', en: 'Next question' },
+  'practice.yours': { sv: 'Ditt svar', en: 'Your answer' },
+  'practice.almost': { sv: 'Nästan.', en: 'Almost.' },
+
+  // ── Bank ─────────────────────────────────────────────────────
+  'bank.kicker': { sv: 'Söndag 11.00 · banken', en: 'Sunday 11:00 · the bank' },
+  'bank.title': { sv: 'Samtal med banken', en: 'A word with the bank' },
+  'bank.banker': { sv: 'Banken', en: 'The bank' },
+  'bank.you': { sv: 'Du', en: 'You' },
+  'bank.diagnosis': { sv: 'Bankens diagnos', en: 'The bank’s view' },
+  'bank.offer': { sv: 'Banken kan erbjuda', en: 'The bank can offer' },
+  'bank.notNow': { sv: 'Inte nu', en: 'Not now' },
+  'bank.toAccount': { sv: 'Ta med till avräkningen', en: 'Take it to the weekly account' },
+  'bank.firstRule': { sv: 'Brons i Stensöta öppnar den första vinbaren.', en: 'Bronze in Stensöta opens your first wine bar.' },
+
+  // ── Schedule ─────────────────────────────────────────────────
+  'plan.kicker': { sv: '{weekday} morgon · vecka {week}', en: '{weekday} morning · week {week}' },
+  'plan.title': { sv: 'Vad gör du i dag?', en: 'What will you do today?' },
+  'plan.slots': { sv: '{n} platser att fylla före kvällen', en: '{n} slots to fill before tonight' },
+  'plan.slot': { sv: 'Plats {n}', en: 'Slot {n}' },
+  'plan.slotEmpty': { sv: 'Välj satsning eller paviljong', en: 'Choose an initiative or a pavilion' },
+  'plan.initiatives': { sv: 'Satsningar', en: 'Initiatives' },
+  'plan.pavilions': { sv: 'Paviljonger i Måltidens hus', en: 'Pavilions in the House of the Meal' },
+  'plan.menu': { sv: 'Kvällens meny', en: 'Tonight’s menu' },
+  'plan.buy': { sv: 'Inköp', en: 'Purchasing' },
+  'plan.order': { sv: 'Beställ', en: 'Order' },
+  'plan.enough': { sv: 'Räcker', en: 'Enough' },
+  'plan.selected': { sv: 'Vald', en: 'Chosen' },
+  'plan.locked': { sv: 'Låst', en: 'Locked' },
+  'plan.open': { sv: 'Öppna för kvällen', en: 'Open for the evening' },
+
+  // ── Newspaper ────────────────────────────────────────────────
+  'paper.name': { sv: 'Lokaltidningen i Grythyttan', en: 'The Grythyttan Local' },
+  'paper.date': { sv: 'Söndag 5 oktober · vecka 40', en: 'Sunday 5 October · week 40' },
+  'paper.review': { sv: 'Recension', en: 'Review' },
+  'paper.market': { sv: 'Marknaden', en: 'The market' },
+  'paper.bankWord': { sv: 'Bankens ord', en: 'From the bank' },
+  'paper.nextFeast': { sv: 'Nästa högtid', en: 'Coming up' },
+  'paper.effect': { sv: 'Recensionen påverkar vem som kommer nästa vecka.', en: 'The review shapes who comes next week.' },
+  'paper.toBank': { sv: 'Till banken', en: 'To the bank' },
+
+  // ── Without business and money (X1) ──────────────────────────
+  'stranded.kicker': { sv: 'Ingen verksamhet · ingen kassa', en: 'No business · no cash' },
+  'stranded.title': { sv: 'Banken lånar inte ut i dag.', en: 'The bank won’t lend today.' },
+  'stranded.body': { sv: 'Kassan räcker inte till en ny insats. Det som öppnar en ny lokal är det du kan: en vecka i Måltidens hus med minst ett prov, så lyssnar banken igen.', en: 'Your cash won’t cover a new stake. What opens a new venue is what you know: a week in the House of the Meal with at least one exam, and the bank will listen again.' },
+  'stranded.medals': { sv: 'Dina medaljer finns kvar. Det du har lärt dig tas aldrig ifrån dig.', en: 'Your medals stay. What you have learned is never taken from you.' },
+  'stranded.go': { sv: 'Gå till Måltidens hus', en: 'Go to the House of the Meal' },
+  'stranded.bank': { sv: 'Gå till banken', en: 'Go to the bank' }
+} satisfies Record<string, Entry>;
+
+export type StringKey = keyof typeof STRINGS;
+
+export function t(lang: Lang, key: StringKey, vars?: Record<string, string | number>): string {
+  let s = STRINGS[key][lang];
+  if (vars) for (const k in vars) s = s.split('{' + k + '}').join(String(vars[k]));
+  return s;
+}
+
+/** Clock for the service bar: 18:00–23:00 mapped from sim minutes. */
+export function serviceClock(lang: Lang, minutesSince18: number) {
+  const left = Math.max(0, 300 - minutesSince18);
+  const h = Math.floor(left / 60), m = Math.round(left % 60);
+  const now = 18 * 60 + minutesSince18;
+  const hh = String(Math.floor(now / 60)).padStart(2, '0'), mm = String(Math.floor(now % 60)).padStart(2, '0');
+  return {
+    now: lang === 'en' ? hh + ':' + mm : hh + '.' + mm,
+    left: h > 0 ? t(lang, 'hud.clock.left', { h, m }) : t(lang, 'hud.clock.leftMin', { m }),
+    share: left / 300,
+    lastOrders: left <= 30
+  };
+}
+
+// ───────────────────────────────────────────────────────────────────
+// 2. Spelets tabell
+// ───────────────────────────────────────────────────────────────────
+
+export const TABLE = {
+  title: { sv: 'NEXUS', en: 'NEXUS' },
+  subtitle: { sv: 'Grythyttan — The Origin', en: 'Grythyttan — The Origin' },
+  busText: {
+    sv: 'Alla kommer hit med drömmar.\nIngen vet ännu vem de kommer att bli.',
+    en: 'Everyone comes here with dreams.\nNo one knows yet who they will become.'
+  },
+  npc: {
+    prompt: { sv: 'Är du också här för antagningen?', en: 'Are you here for admissions too?' },
+    choices: {
+      A: {
+        sv: 'Ja. Jag vet bara inte riktigt vad jag kan bli.',
+        en: "Yes. I just don't really know what I could become."
+      },
+      B: { sv: 'Ja. Jag har drömt om att arbeta med gastronomi.', en: "Yes. I've dreamt of working with gastronomy." },
+      C: {
+        sv: 'Jag är mest nyfiken på varför den här platsen betyder så mycket.',
+        en: "I'm mostly curious why this place means so much."
+      }
+    },
+    responses: {
+      A: {
+        sv: 'Det är fler än du tror som säger så. Kanske är det just därför vi kommit hit.',
+        en: 'More people say that than you think. Maybe that is exactly why we came here.'
+      },
+      B: {
+        sv: 'Många vägar leder in i gastronomin. Se först vad platsen gör med dig.',
+        en: 'Many paths lead into gastronomy. First, see what the place does to you.'
+      },
+      C: {
+        sv: 'Det märks. Var uppmärksam idag — Grythyttan brukar svara den som frågar.',
+        en: 'It shows. Pay attention today — Grythyttan tends to answer those who ask.'
+      }
+    }
+  },
+  objective: { sv: 'Hitta registreringen vid Sevillapaviljongen.', en: 'Find registration at the Sevilla Pavilion.' },
+  end: {
+    heading: { sv: 'Din initiation börjar här.', en: 'Your initiation begins here.' },
+    continueButton: { sv: 'Utforska vidare', en: 'Explore further' },
+    restartButton: { sv: 'Börja om', en: 'Start again' }
+  },
+  pause: {
+    title: { sv: 'Paus', en: 'Pause' },
+    resume: { sv: 'Fortsätt', en: 'Continue' },
+    restart: { sv: 'Börja om', en: 'Start again' },
+    muteOn: { sv: 'Ljud på', en: 'Sound on' },
+    muteOff: { sv: 'Ljud av', en: 'Sound off' },
+    controlsHeading: { sv: 'Kontroller', en: 'Controls' },
+    aboutHeading: { sv: 'Om denna prototyp', en: 'About this prototype' },
+    disclaimer: {
+      sv: 'Vertikal skiva 001. Alla platser, byggnader och personer i denna prototyp är stiliserade platshållare. Inget anspråk görs på arkitektonisk trohet eller rättigheter. Grythyttan och Sevillapaviljongen är verkliga platser som här används enbart som narrativ inspiration.',
+      en: 'Vertical slice 001. All places, buildings and people in this prototype are stylised placeholders. No claim is made to architectural accuracy or rights. Grythyttan and the Sevilla Pavilion are real places, used here purely as narrative inspiration.'
+    }
+  },
+  controls: {
+    desktop: {
+      sv: [
+          'W A S D eller pilar — gå',
+          'Mus — se dig omkring',
+          'Shift — gå fortare',
+          'E — interagera',
+          'Esc — paus'
+        ],
+      en: [
+          'W A S D or arrows — walk',
+          'Mouse — look around',
+          'Shift — walk faster',
+          'E — interact',
+          'Esc — pause'
+        ]
+    },
+    mobile: {
+      sv: [
+          'Vänster styrspak — gå',
+          'Dra på skärmen — se dig omkring',
+          'Knapp — interagera'
+        ],
+      en: [
+          'Left joystick — walk',
+          'Drag on the screen — look around',
+          'Button — interact'
+        ]
+    }
+  },
+  prompts: {
+    talkTo: { sv: 'Prata', en: 'Talk' },
+    register: { sv: 'Registrera dig', en: 'Register' }
+  },
+  hud: {
+    muteAria: { sv: 'Slå av ljudet', en: 'Mute sound' },
+    unmuteAria: { sv: 'Slå på ljudet', en: 'Unmute sound' },
+    pauseLabel: { sv: 'Paus', en: 'Pause' },
+    soundLabel: { sv: 'Ljud', en: 'Sound' },
+    beginPlay: { sv: 'Fortsätt', en: 'Continue' },
+    speed: { sv: 'Tempo', en: 'Speed' },
+    speedOption: { sv: (n: number) => `${n}× tempo`, en: (n: number) => `${n}× speed` }
+  },
+  webglFallback: {
+    title: { sv: 'Grafiken kan inte visas', en: 'The graphics cannot be shown' },
+    body: {
+      sv: 'Din webbläsare eller enhet stöder inte WebGL. Prototypen kräver hårdvaruaccelererad 3D-grafik.',
+      en: 'Your browser or device does not support WebGL. The prototype needs hardware-accelerated 3D graphics.'
+    },
+    quote: {
+      sv: 'Alla kommer hit med drömmar. Ingen vet ännu vem de kommer att bli.',
+      en: 'Everyone comes here with dreams. No one knows yet who they will become.'
+    },
+    restart: { sv: 'Försök igen', en: 'Try again' }
+  },
+  business: {
+    firstRunHeading: { sv: 'Din verksamhet', en: 'Your business' },
+    firstRunBody: {
+      sv: 'Du äger en restaurang i Grythyttans historiska kärna. Vad heter den?',
+      en: "You own a restaurant in Grythyttan's historic centre. What is it called?"
+    },
+    firstRunPlaceholder: { sv: 'Restaurangens namn', en: 'Name of the restaurant' },
+    firstRunSubmit: { sv: 'Öppna verksamheten', en: 'Open the business' },
+    firstRunHint: { sv: 'Namnet kan du inte ändra senare.', en: 'You cannot change the name later.' },
+    labelPrefix: { sv: 'Restaurang', en: 'Restaurant' }
+  },
+  // ORDER 267 (Nexus v1 etapp 5) — söndagstidningen (sim/newspaper.ts).
+  newspaper: {
+    masthead: { sv: 'Lokaltidningen i Grythyttan', en: 'The Grythyttan Local' },
+    subhead: { sv: (week: number) => `Söndag · vecka ${week}`, en: (week: number) => `Sunday · week ${week}` },
+    open: { sv: 'Söndagsnumret', en: 'The Sunday Edition' },
+    close: { sv: 'Lägg ifrån dig tidningen', en: 'Put the paper down' },
+    reviewHeading: { sv: 'Recension', en: 'Review' },
+    marketHeading: { sv: 'Marknaden', en: 'The market' },
+    bankHeading: { sv: 'Bankens ord', en: 'From the bank' },
+    holidayHeading: { sv: 'Nästa högtid', en: 'Coming up' },
+    reviewTitleGood: {
+      sv: (weekday: string, name: string) => `En ${weekday}kväll hos ${name}`,
+      en: (weekday: string, name: string) => `A ${weekday} evening at ${name}`
+    },
+    reviewTitleBad: {
+      sv: (weekday: string, name: string) => `En ${weekday}kväll hos ${name} som inte höll`,
+      en: (weekday: string, name: string) => `A ${weekday} evening at ${name} that did not hold`
+    },
+    reviewFull: {
+      sv: 'Det var fullt, och kön ringlade ut mot torget.',
+      en: 'It was full, and the queue wound out towards the square.'
+    },
+    reviewGaveUp: {
+      sv: 'Några tröttnade i kön och gick innan de fick plats.',
+      en: 'Some grew tired of the queue and left before they got a seat.'
+    },
+    reviewSparse: {
+      sv: 'Rummet var glest, och det märktes i stämningen.',
+      en: 'The room was sparse, and you could feel it in the mood.'
+    },
+    reviewSteady: { sv: 'Rummet fylldes i jämn takt.', en: 'The room filled at a steady pace.' },
+    reviewUp: {
+      sv: 'De som satt där talade gott om kvällen efteråt.',
+      en: 'Those who were there spoke well of the evening afterwards.'
+    },
+    reviewDown: { sv: 'Ryktet fick sig en törn.', en: 'The reputation took a knock.' },
+    reviewFlat: {
+      sv: 'Kvällen gick som kvällar gör, utan att någon talade om den efteråt.',
+      en: 'The evening went the way evenings do, and no one talked about it afterwards.'
+    },
+    noEvenings: {
+      sv: (name: string) => `${name} höll stängt hela veckan. Tidningen har ingen kväll att recensera.`,
+      en: (name: string) => `${name} was closed all week. The paper has no evening to review.`
+    },
+    market: {
+      full: {
+        sv: (cls: string) => `${cls} tog nästan varje gäst som marknaden gav den den här veckan.`,
+        en: (cls: string) => `${cls} took almost every guest the market gave it this week.`
+      },
+      most: {
+        sv: (cls: string) => `${cls} fick de flesta av gästerna den kunde få den här veckan.`,
+        en: (cls: string) => `${cls} got most of the guests it could get this week.`
+      },
+      half: {
+        sv: (cls: string) => `${cls} fick ungefär hälften av gästerna den kunde få den här veckan.`,
+        en: (cls: string) => `${cls} got about half of the guests it could get this week.`
+      },
+      few: {
+        sv: (cls: string) => `${cls} fick få av gästerna den kunde få den här veckan.`,
+        en: (cls: string) => `${cls} got few of the guests it could get this week.`
+      }
+    },
+    marketNoBusiness: {
+      sv: 'Du hade ingen verksamhet den här veckan, och inga gäster att räkna.',
+      en: 'You had no business this week, and no guests to count.'
+    },
+    bankNext: {
+      sv: (missing: string) => `Banken om nästa steg: ${missing.charAt(0).toLowerCase()}${missing.slice(1)}`,
+      en: (missing: string) => `The bank on the next step: ${missing.charAt(0).toLowerCase()}${missing.slice(1)}`
+    },
+    holidayNextWeek: { sv: (name: string) => `${name} nästa vecka.`, en: (name: string) => `${name} next week.` },
+    holidayInWeeks: {
+      sv: (name: string, weeks: string) => `${name} om ${weeks} veckor.`,
+      en: (name: string, weeks: string) => `${name} in ${weeks} weeks.`
+    },
+    holidayNone: { sv: 'Ingen högtid före säsongens slut.', en: 'No holiday before the end of the season.' },
+    weekdaysLower: {
+      mon: { sv: 'måndags', en: 'Monday' },
+      tue: { sv: 'tisdags', en: 'Tuesday' },
+      wed: { sv: 'onsdags', en: 'Wednesday' },
+      thu: { sv: 'torsdags', en: 'Thursday' },
+      fri: { sv: 'fredags', en: 'Friday' },
+      sat: { sv: 'lördags', en: 'Saturday' },
+      sun: { sv: 'söndags', en: 'Sunday' }
+    }
+  },
+  // ORDER 267 (Nexus v1 etapp 5) — startrutan, mentorn i introduktionen
+  // och namnet på den första verksamheten.
+  introduction: {
+    startHeading: { sv: 'Nexus', en: 'Nexus' },
+    startSubtitle: { sv: 'Grythyttan', en: 'Grythyttan' },
+    newGame: { sv: 'Nytt spel', en: 'New game' },
+    mentor: { sv: 'Mentorn', en: 'The Mentor' },
+    steps: {
+      practice: {
+        sv: 'Välkommen till Grythyttan. Jag kommer från Campus och följer dig i dag. Banken lånar inte ut något förrän den har sett vad du kan, så vi börjar med att öva. Öppna Måltidens hus och öva i Stensöta, där sommelierna håller till. Inget står på spel.',
+        en: "Welcome to Grythyttan. I'm from Campus and I'll be with you today. The bank won't lend you anything until it has seen what you can do, so we start by practising. Open the House of the Meal and practise in Stensöta, where the sommeliers are. Nothing is at stake."
+      },
+      exam: {
+        sv: 'Bra. Nu provet i samma paviljong: åtta frågor, och sex rätt ger brons. Med brons i Stensöta kan banken låna ut till en vinbar. Går det inte, gör om det. I dag kostar besöken ingen plats i schemat.',
+        en: "Good. Now the exam in the same pavilion: eight questions, and six right gives bronze. With bronze in Stensöta the bank can lend you enough for a wine bar. If it doesn't work, try again. Today the visits don't take a slot in the schedule."
+      },
+      bank: {
+        sv: 'Brons. Gå till Banken i morgonraden. Där får du höra vad du har visat och vad du kan låna till.',
+        en: "Bronze. Go to the Bank in the morning row. There you'll hear what you have shown and what you can borrow for."
+      }
+    },
+    farewell: {
+      sv: 'Nu är den din. I kväll öppnar du för första gången. Den här veckan kommer färre gäster än vanligt, så du hinner lära dig rummet. Jag finns på Campus om det går illa.',
+      en: "Now it's yours. Tonight you open for the first time. This week fewer guests than usual will come, so you have time to learn the room. I'm at Campus if things go badly."
+    },
+    farewellClose: { sv: 'Tack', en: 'Thank you' },
+    classesIndefinite: {
+      vinbar: { sv: 'en vinbar', en: 'a wine bar' },
+      foodtruck: { sv: 'en food truck', en: 'a food truck' },
+      restaurang: { sv: 'en restaurang', en: 'a restaurant' },
+      olkrog: { sv: 'en ölkrog', en: 'a brewpub' },
+      gastgiveri: { sv: 'ett gästgiveri', en: 'an inn' },
+      nattklubb: { sv: 'en nattklubb', en: 'a nightclub' }
+    },
+    chooseFirst: { sv: (cls: string) => `Öppna ${cls}`, en: (cls: string) => `Open ${cls}` },
+    nameBody: {
+      sv: (cls: string) => `Banken lånar ut till ${cls} vid torget. Vad ska den heta?`,
+      en: (cls: string) => `The bank will lend you enough for ${cls} by the square. What should it be called?`
+    },
+    namePlaceholder: { sv: 'Verksamhetens namn', en: 'Name of the business' },
+    endContinue: { sv: 'Fortsätt', en: 'Continue' }
+  },
+  day: {
+    // ORDER 043 v3 §2 — day-period player-facing text. Cycle-1 scope:
+    // morning + afternoon are the two picker phases; lunch/dinner/
+    // evening are running or transitional.
+    morning: {
+      heading: { sv: 'Morgon', en: 'Morning' },
+      body: { sv: 'Öppna lunch eller hoppa över.', en: 'Open for lunch or skip it.' },
+      openLunch: { sv: 'Öppna lunch', en: 'Open for lunch' },
+      skipLunch: { sv: 'Hoppa över lunch', en: 'Skip lunch' }
+    },
+    afternoon: {
+      heading: { sv: 'Eftermiddag', en: 'Afternoon' },
+      body: { sv: 'Öppna middag.', en: 'Open for dinner.' },
+      openDinner: { sv: 'Öppna middag', en: 'Open for dinner' }
+    },
+    minutesSuffix: { sv: 'min', en: 'min' }
+  },
+  // ORDER 263 (Nexus v1 etapp 1) — tiden och sparandet. Svenska enligt
+  // speldesignen > Språk och målgrupp (CLAUDE.md regel 7, F9).
+  calendar: {
+    weekdays: {
+      mon: { sv: 'Måndag', en: 'Monday' },
+      tue: { sv: 'Tisdag', en: 'Tuesday' },
+      wed: { sv: 'Onsdag', en: 'Wednesday' },
+      thu: { sv: 'Torsdag', en: 'Thursday' },
+      fri: { sv: 'Fredag', en: 'Friday' },
+      sat: { sv: 'Lördag', en: 'Saturday' },
+      sun: { sv: 'Söndag', en: 'Sunday' }
+    },
+    weekdaysShort: {
+      mon: { sv: 'Mån', en: 'Mon' },
+      tue: { sv: 'Tis', en: 'Tue' },
+      wed: { sv: 'Ons', en: 'Wed' },
+      thu: { sv: 'Tor', en: 'Thu' },
+      fri: { sv: 'Fre', en: 'Fri' },
+      sat: { sv: 'Lör', en: 'Sat' },
+      sun: { sv: 'Sön', en: 'Sun' }
+    },
+    week: {
+      sv: (week: number, weeks: number) => `Vecka ${week} av ${weeks}`,
+      en: (week: number, weeks: number) => `Week ${week} of ${weeks}`
+    },
+    weekShort: { sv: (week: number) => `v. ${week}`, en: (week: number) => `wk ${week}` },
+    season: { sv: (season: number) => `Säsong ${season}`, en: (season: number) => `Season ${season}` },
+    holidays: {
+      midsommar: { sv: 'Midsommar', en: 'Midsummer' },
+      grythyttedagarna: { sv: 'Grythyttedagarna', en: 'Grythyttan Days' },
+      vinprovning: { sv: 'Vinprovning i Stensöta', en: 'Wine tasting in Stensöta' },
+      kraftskiva: { sv: 'Kräftskiva', en: 'Crayfish party' }
+    },
+    holidayToday: { sv: (name: string) => `${name} i dag`, en: (name: string) => `${name} today` },
+    holidayThisWeek: { sv: (name: string) => `${name} den här veckan`, en: (name: string) => `${name} this week` },
+    phases: {
+      morning: { sv: 'Morgon', en: 'Morning' },
+      service: { sv: 'Service', en: 'Service' },
+      evening: { sv: 'Kväll', en: 'Evening' }
+    },
+    closed: { sv: 'Stängt', en: 'Closed' }
+  },
+  morning: {
+    heading: { sv: 'Morgon', en: 'Morning' },
+    serviceDayBody: {
+      sv: 'Fyll dagens schema och öppna för kvällen.',
+      en: "Fill today's schedule and open for the evening."
+    },
+    sundayBody: {
+      sv: 'Söndag. Krogen är stängd, och du har fyra platser i schemat.',
+      en: 'Sunday. The restaurant is closed, and you have four slots in the schedule.'
+    },
+    slots: {
+      sv: (used: number, total: number) => `Schemat: ${used} av ${total} platser`,
+      en: (used: number, total: number) => `Schedule: ${used} of ${total} slots`
+    },
+    startService: { sv: 'Öppna för kvällen', en: 'Open for the evening' },
+    closeSunday: { sv: 'Avsluta söndagen', en: 'End Sunday' },
+    closeDay: { sv: 'Avsluta dagen utan service', en: 'End the day without service' },
+    activitiesHeading: { sv: 'Satsningar i dag', en: 'Today’s initiatives' },
+    weekly: { sv: 'en gång i veckan', en: 'once a week' }
+  },
+  // ORDER 264 (Nexus v1 etapp 2) — Måltidens hus, prov och kvällsquiz.
+  knowledge: {
+    houseButton: { sv: 'Måltidens hus', en: 'The House of the Meal' },
+    houseHeading: { sv: 'Måltidens hus', en: 'The House of the Meal' },
+    houseBody: {
+      sv: 'Ett besök tar en plats i dagens schema. Öva för krediter, eller gör prov för nästa medalj.',
+      en: 'A visit takes one slot in today’s schedule. Practise for credits, or take an exam for the next medal.'
+    },
+    close: { sv: 'Stäng', en: 'Close' },
+    pavilions: {
+      maltidbiblioteket: { sv: 'Måltidsbiblioteket', en: 'Måltidsbiblioteket' },
+      kalastorget: { sv: 'Kalastorget', en: 'Kalastorget' },
+      stensota: { sv: 'Stensöta', en: 'Stensöta' },
+      metodkoket: { sv: 'Metodköket', en: 'Metodköket' },
+      gastronomiskateatern: { sv: 'Gastronomiska Teatern', en: 'Gastronomiska Teatern' }
+    },
+    axes: {
+      episteme: { sv: 'episteme', en: 'episteme' },
+      techne: { sv: 'techne', en: 'techne' },
+      phronesis: { sv: 'fronesis', en: 'phronesis' }
+    },
+    medals: {
+      brons: { sv: 'brons', en: 'bronze' },
+      silver: { sv: 'silver', en: 'silver' },
+      guld: { sv: 'guld', en: 'gold' },
+      platina: { sv: 'platina', en: 'platinum' }
+    },
+    noMedal: { sv: 'Ingen medalj ännu', en: 'No medal yet' },
+    medalLine: { sv: (medal: string) => `Medalj: ${medal}`, en: (medal: string) => `Medal: ${medal}` },
+    medalsHeading: { sv: 'Medaljer', en: 'Medals' },
+    noMedalsYet: { sv: 'Inga medaljer ännu', en: 'No medals yet' },
+    practice: { sv: 'Öva', en: 'Practise' },
+    exam: { sv: (level: string) => `Prov: ${level}`, en: (level: string) => `Exam: ${level}` },
+    examDone: { sv: 'Platina är taget', en: 'Platinum is taken' },
+    theatreLocked: {
+      sv: 'Öppnas när du har silver i två paviljonger',
+      en: 'Opens when you have silver in two pavilions'
+    },
+    noSlotsLeft: { sv: 'Dagens schema är fullt', en: "Today's schedule is full" },
+    askers: {
+      kock: { sv: 'Kocken', en: 'The cook' },
+      sommelier: { sv: 'Sommelieren', en: 'The sommelier' },
+      gäst: { sv: 'Gästen', en: 'The guest' },
+      värd: { sv: 'Värden', en: 'The host' },
+      servitör: { sv: 'Servitören', en: 'The waiter' },
+      lärling: { sv: 'Lärlingen', en: 'The apprentice' }
+    },
+    questionOf: {
+      sv: (n: number, total: number) => `Fråga ${n} av ${total}`,
+      en: (n: number, total: number) => `Question ${n} of ${total}`
+    },
+    right: { sv: 'Rätt.', en: 'Right.' },
+    wrong: { sv: 'Inte riktigt.', en: 'Not quite.' },
+    // ORDER 270 — provet på tid och referensen med förklaringen.
+    timedOut: { sv: 'Tiden gick ut. Det räknas som fel.', en: 'Time ran out. It counts as wrong.' },
+    secondsLeft: { sv: (sec: string) => `${sec} s`, en: (sec: string) => `${sec} s` },
+    referenceLabel: { sv: 'Läs mer:', en: 'Read more:' },
+    next: { sv: 'Nästa', en: 'Next' },
+    seeResult: { sv: 'Se resultatet', en: 'See the result' },
+    practiceResult: {
+      sv: (correct: number, total: number) => `${correct} av ${total} rätt. Varje rätt svar gav en kredit.`,
+      en: (correct: number, total: number) => `${correct} of ${total} right. Each right answer gave one credit.`
+    },
+    examPassed: {
+      sv: (medal: string, pavilion: string, correct: number, total: number) =>
+        `${correct} av ${total} rätt. Du har tagit ${medal} i ${pavilion}.`,
+      en: (medal: string, pavilion: string, correct: number, total: number) =>
+        `${correct} of ${total} right. You have taken ${medal} in ${pavilion}.`
+    },
+    examFailed: {
+      sv: (correct: number, total: number, need: number) =>
+        `${correct} av ${total} rätt. Det behövs ${need}. Ett nytt prov drar nya frågor.`,
+      en: (correct: number, total: number, need: number) =>
+        `${correct} of ${total} right. You need ${need}. A new exam draws new questions.`
+    },
+    back: { sv: 'Tillbaka', en: 'Back' },
+    placeholderNote: {
+      sv: 'Frågorna på den här nivån är tillfälliga tills de riktiga är skrivna.',
+      en: 'The questions at this level are temporary until the real ones are written.'
+    },
+    nextQuestion: { sv: 'Nästa fråga', en: 'Next question' }
+  },
+  // ORDER 270 — kvällens lärdom ersätter quizen efter servicen.
+  lesson: {
+    heading: { sv: 'Kvällens lärdom', en: "Tonight's lesson" },
+    eveningHeading: { sv: 'Kvällen', en: 'The evening' },
+    intro: { sv: 'Det här gick fel i kväll, och varför.', en: 'This is what went wrong tonight, and why.' },
+    none: {
+      sv: 'Inga fel beslut i kväll. Varje raket höll hela vägen.',
+      en: 'No wrong decisions tonight. Every rocket held all the way.'
+    },
+    noIncidents: { sv: 'Kvällen hade inga händelser att lära av.', en: 'The evening had no incidents to learn from.' },
+    // ORDER 270 — raketen föll på ett steg.
+    fellOn: {
+      sv: (step: string, question: string) => `${step}: ${question}`,
+      en: (step: string, question: string) => `${step}: ${question}`
+    },
+    youChose: { sv: (label: string) => `Du valde: ${label}`, en: (label: string) => `You chose: ${label}` },
+    staffDecided: {
+      sv: (outcome: string) => `Du svarade inte, och personalen beslutade själv. ${outcome}`,
+      en: (outcome: string) => `You did not answer, and the staff decided for themselves. ${outcome}`
+    },
+    better: { sv: (label: string) => `Bättre: ${label}`, en: (label: string) => `Better: ${label}` },
+    nextMorning: { sv: 'Till nästa morgon', en: 'On to the next morning' }
+  },
+  // ORDER 271 — skärmarna i paket 1 (mentorn M1/M2, morgonens schema
+  // S1/S2, banken B0/B1, tidningen T1, Måltidens hus O1/O2/MD1/MD2).
+  // Speldesignens text där den finns; övrigt är skärmarnas egna rader.
+  screens: {
+    mentor: {
+      label: { sv: 'Mentorn · från Campus', en: 'The Mentor · from Campus' },
+      campus: { sv: 'Campus', en: 'Campus' },
+      stepOf: {
+        sv: (n: number, total: number) => `Steg ${n} av ${total}`,
+        en: (n: number, total: number) => `Step ${n} of ${total}`
+      },
+      skip: { sv: 'Jag klarar mig — hoppa över guiden', en: "I'll manage — skip the guide" },
+      understood: { sv: 'Uppfattat', en: 'Understood' },
+      service: {
+        sv: 'Nu öppnar du. När något händer i rummet kommer ett kort upp: vad, hur och när, ett steg i taget och på tid. Svarar du inte tar personalen över. Mätarna visar kassan, gästerna och personalen, i riktning, inte i belopp.',
+        en: 'Now you open. When something happens in the room, a card comes up: what, how and when, one step at a time and against the clock. If you do not answer, the staff take over. The meters show the cash, the guests and the staff, as direction, not as amounts.'
+      }
+    },
+    morning: {
+      label: {
+        sv: (weekday: string, week: number, weeks: number) => `${weekday} morgon · vecka ${week} av ${weeks}`,
+        en: (weekday: string, week: number, weeks: number) => `${weekday} morning · week ${week} of ${weeks}`
+      },
+      heading: { sv: 'Vad gör du i dag?', en: 'What will you do today?' },
+      sundayHeading: { sv: 'Söndag. Fyra platser, en lång dag.', en: 'Sunday. Four slots, a long day.' },
+      slot: { sv: (n: number) => `Plats ${n}`, en: (n: number) => `Slot ${n}` },
+      slotPavilion: { sv: 'Paviljong', en: 'Pavilion' },
+      slotActivity: { sv: 'Satsning', en: 'Initiative' },
+      slotEmpty: { sv: 'Välj satsning eller paviljong', en: 'Choose an initiative or a pavilion' },
+      newspaperArrived: { sv: 'Söndagstidningen har kommit', en: 'The Sunday paper has arrived' },
+      newspaperBody: {
+        sv: 'Recensionen, marknaden, banken och det som kommer.',
+        en: 'The review, the market, the bank and what is coming.'
+      },
+      activities: { sv: 'Satsningar', en: 'Initiatives' },
+      pavilions: { sv: 'Paviljonger i Måltidens hus', en: 'Pavilions in the House of the Meal' },
+      picked: { sv: 'Vald', en: 'Chosen' },
+      aside: { sv: 'Rummet och personalen', en: 'The room and the staff' },
+      backToSchedule: { sv: 'Tillbaka till schemat', en: 'Back to the schedule' }
+    },
+    bank: {
+      speaker: { sv: 'Banken', en: 'The bank' },
+      diagnosis: { sv: 'Bankens diagnos', en: 'The bank’s view' },
+      seen: { sv: 'Det banken ser', en: 'What the bank sees' },
+      none: { sv: 'ingen än', en: 'none yet' },
+      startLoan: { sv: 'Startlån', en: 'Start-up loan' },
+      queue: { sv: 'Kö i stället för platser.', en: 'A queue instead of seats.' },
+      seats: { sv: (n: number) => `${n} platser.`, en: (n: number) => `${n} seats.` },
+      // Speldesign > Verksamhetsklasserna, kolumnen Särdrag.
+      traits: {
+        vinbar: { sv: 'Smårätter, lounger, DJ, vinlista.', en: 'Small plates, lounges, DJ, wine list.' },
+        foodtruck: {
+          sv: 'Lucka mot gatan, kö, väder, gatuläge, snabb omsättning.',
+          en: 'Hatch onto the street, queue, weather, street location, fast turnover.'
+        },
+        restaurang: {
+          sv: 'Matsal och bar, mise en place, flera rätter.',
+          en: 'Dining room and bar, mise en place, several courses.'
+        },
+        olkrog: { sv: 'Bryggeri i lokalen, rejäl mat, få rätter.', en: 'Brewery on site, hearty food, few dishes.' },
+        gastgiveri: {
+          sv: 'Övernattning, frukost, soignée servering, dygnsstruktur.',
+          en: 'Overnight stays, breakfast, soignée service, a round-the-clock rhythm.'
+        },
+        nattklubb: {
+          sv: 'Flera barer, dans, volym och flöde, sena kvällar.',
+          en: 'Several bars, dancing, volume and flow, late nights.'
+        }
+      },
+      firstLabel: {
+        sv: (weekday: string) => `${weekday} · dag 1 · banken`,
+        en: (weekday: string) => `${weekday} · day 1 · the bank`
+      },
+      firstHeading: { sv: 'Första mötet med banken', en: 'First meeting with the bank' },
+      firstOpening: {
+        sv: 'Mentorn sa att du gjorde provet i dag. Låt mig se.',
+        en: 'The Mentor said you took the exam today. Let me see.'
+      },
+      firstVerdict: {
+        vinbar: {
+          sv: 'Det räcker för ett rum med bord. Banken vågar vinbaren.',
+          en: 'It is enough for a room with tables. The bank will risk the wine bar.'
+        },
+        foodtruck: {
+          sv: 'Det räcker för att börja, men inte för ett rum med bord.',
+          en: 'It is enough to start, but not for a room with tables.'
+        },
+        restaurang: { sv: 'Det räcker för att börja.', en: 'It is enough to start.' },
+        olkrog: {
+          sv: 'Det räcker för ett rum med bord. Banken vågar ölkrogen.',
+          en: 'It is enough for a room with tables. The bank will risk the brewpub.'
+        },
+        gastgiveri: { sv: 'Det räcker för att börja.', en: 'It is enough to start.' },
+        nattklubb: { sv: 'Det räcker för att börja.', en: 'It is enough to start.' }
+      },
+      firstNoteVinbar: {
+        sv: 'Undantaget gäller bara första dagen. Därefter styr medaljerna, som för alla.',
+        en: 'The exception only applies on the first day. After that, the medals decide, as for everyone.'
+      },
+      firstNoteLater: {
+        sv: 'Banken ser på det vid varje veckoavräkning.',
+        en: 'The bank looks at it at every weekly settlement.'
+      },
+      heading: { sv: 'Samtal med banken', en: 'A word with the bank' },
+      canChange: { sv: 'Går att byta till nu', en: 'Can switch to now' },
+      missing: { sv: 'Det som saknas', en: 'What is missing' },
+      stay: { sv: (cls: string) => `Stanna i ${cls}`, en: (cls: string) => `Stay with ${cls}` }
+    },
+    newspaper: {
+      toBank: { sv: 'Till banken', en: 'To the bank' }
+    },
+    house: {
+      medals: { sv: 'Medaljerna', en: 'The medals' },
+      today: { sv: (level: string) => `${level} i dag`, en: (level: string) => `${level} today` },
+      practiceLabel: { sv: 'Övning · ingen medalj står på spel', en: 'Practice · no medal at stake' },
+      yourAnswer: { sv: 'Ditt svar', en: 'Your answer' },
+      practiceHeading: { sv: 'Övningen är klar', en: 'Practice is done' },
+      examHeading: { sv: 'Provet är klart', en: 'The exam is done' },
+      practiceDone: { sv: 'Bra övat.', en: 'Well practised.' },
+      practiceCredits: { sv: 'Varje rätt svar gav en kredit.', en: 'Each right answer gave one credit.' },
+      passed: {
+        sv: (level: string, pavilion: string) => `Godkänt. ${level} i ${pavilion}.`,
+        en: (level: string, pavilion: string) => `Passed. ${level} in ${pavilion}.`
+      },
+      almost: { sv: 'Nästan.', en: 'Almost.' },
+      waited: {
+        sv: (n: number, word: string) => `${word} ${n === 1 ? 'fråga fick' : 'frågor fick'} vänta.`,
+        en: (n: number, word: string) => `${word} ${n === 1 ? 'question had' : 'questions had'} to wait.`
+      },
+      need: {
+        sv: (need: string, total: string) => `Det behövs ${need} rätt av ${total}. Ett nytt prov drar nya frågor.`,
+        en: (need: string, total: string) => `You need ${need} right out of ${total}. A new exam draws new questions.`
+      },
+      boxesAria: {
+        sv: (correct: number, total: number) => `${correct} av ${total} rätt`,
+        en: (correct: number, total: number) => `${correct} of ${total} right`
+      },
+      toMedals: { sv: 'Till medaljerna', en: 'To the medals' },
+      newMedal: { sv: 'Ny medalj', en: 'New medal' },
+      medalTitle: {
+        sv: (level: string, pavilion: string) => `${level} i ${pavilion}`,
+        en: (level: string, pavilion: string) => `${level} in ${pavilion}`
+      },
+      medalCaption: {
+        sv: (level: string, pavilion: string) => `${level} · ${pavilion}`,
+        en: (level: string, pavilion: string) => `${level} · ${pavilion}`
+      },
+      continue: { sv: 'Fortsätt', en: 'Continue' }
+    }
+  },
+  // ORDER 265 (Nexus v1 etapp 3) — ekonomin och banken.
+  economy: {
+    ledger: {
+      interest: { sv: 'Ränta på lånet', en: 'Interest on the loan' },
+      floor: { sv: 'Golvet fyllde på veckan', en: 'The floor topped up the week' },
+      amortisation: { sv: 'Amortering på lånet', en: 'Repayment on the loan' },
+      sale: { sv: 'Lokalen såld till banken', en: 'Premises sold to the bank' },
+      deposit: { sv: 'Kontantinsats för den nya lokalen', en: 'Cash deposit for the new premises' }
+    },
+    classes: {
+      vinbar: { sv: 'Vinbar', en: 'Wine bar' },
+      foodtruck: { sv: 'Food truck', en: 'Food truck' },
+      restaurang: { sv: 'Restaurang', en: 'Restaurant' },
+      olkrog: { sv: 'Ölkrog', en: 'Brewpub' },
+      gastgiveri: { sv: 'Gästgiveri', en: 'Inn' },
+      nattklubb: { sv: 'Nattklubb', en: 'Nightclub' }
+    },
+    classesDefinite: {
+      vinbar: { sv: 'vinbaren', en: 'the wine bar' },
+      foodtruck: { sv: 'food trucken', en: 'the food truck' },
+      restaurang: { sv: 'restaurangen', en: 'the restaurant' },
+      olkrog: { sv: 'ölkrogen', en: 'the brewpub' },
+      gastgiveri: { sv: 'gästgiveriet', en: 'the inn' },
+      nattklubb: { sv: 'nattklubben', en: 'the nightclub' }
+    },
+    warnings: {
+      first: {
+        sv: 'Kassan är under det banken lånar ut mot ditt golv i kväll. Om den är det tre kvällar i rad tar banken lokalen vid veckoavräkningen.',
+        en: 'Tonight your cash is below what the bank lends against your floor. If it stays there three evenings in a row, the bank takes the premises at the weekly settlement.'
+      },
+      second: {
+        sv: 'Andra kvällen i rad under det banken lånar ut mot. En kväll till, och banken tar lokalen vid söndagens avräkning.',
+        en: 'Second evening in a row below what the bank lends against. One more evening, and the bank takes the premises at Sunday\'s settlement.'
+      },
+      downgrade: {
+        sv: 'Tredje kvällen i rad under det banken lånar ut mot. Vid söndagens avräkning går verksamheten ner en klass. Det du kan följer med.',
+        en: 'Third evening in a row below what the bank lends against. At Sunday\'s settlement the business goes down one class. What you know comes with you.'
+      }
+    },
+    noBusinessBody: {
+      sv: 'Du har ingen verksamhet just nu. Öva och gör prov i Måltidens hus, och gå sedan till banken.',
+      en: 'You have no business right now. Practise and take exams in the House of the Meal, then go to the bank.'
+    },
+    // ORDER 270 — rutan mitt på skärmen utan verksamhet och utan pengar.
+    stranded: {
+      heading: { sv: 'Du står utan verksamhet', en: 'You are without a business' },
+      body: {
+        sv: 'Det som öppnar en ny lokal är det du kan: en vecka i Måltidens hus med minst ett prov, så lyssnar banken igen.',
+        en: 'What opens a new venue is what you know: a week in the House of the Meal with at least one exam, and the bank will listen again.'
+      },
+      readyBody: {
+        sv: 'Du har visat vad du kan. Banken är beredd att pröva ett nytt lån.',
+        en: 'You have shown what you can do. The bank is ready to try a new loan.'
+      },
+      progress: {
+        sv: (days: number, of: number, exams: number, need: number) =>
+          `Dag ${days} av ${of} i Måltidens hus · ${exams} av ${need} ${need === 1 ? 'prov' : 'prov'}`,
+        en: (days: number, of: number, exams: number, need: number) =>
+          `Day ${days} of ${of} in the House of the Meal · ${exams} of ${need} ${need === 1 ? 'exam' : 'exams'}`
+      },
+      toHouse: { sv: 'Till Måltidens hus', en: 'To the House of the Meal' },
+      toBank: { sv: 'Gå till banken', en: 'Go to the bank' }
+    },
+    bankButton: { sv: 'Banken', en: 'The bank' },
+    bankHeading: { sv: 'Banken', en: 'The bank' },
+    bankCurrent: { sv: (name: string) => `Du driver ${name}.`, en: (name: string) => `You run ${name}.` },
+    bankNone: { sv: 'Du har ingen verksamhet.', en: 'You have no business.' },
+    bankNoLoan: {
+      sv: 'Banken ger inget lån utan en medalj. Gå och öva.',
+      en: 'The bank gives no loan without a medal. Go and practise.'
+    },
+    shown: {
+      sv: (topics: string) => `Du har visat att du kan ${topics}.`,
+      en: (topics: string) => `You have shown that you know ${topics}.`
+    },
+    shownNothing: {
+      sv: 'Du har inte visat något i Måltidens hus ännu.',
+      en: 'You have not shown anything in the House of the Meal yet.'
+    },
+    missing: {
+      sv: (cls: string, req: string) => `För ${cls} saknas ${req}.`,
+      en: (cls: string, req: string) => `For ${cls}, you still need ${req}.`
+    },
+    reqLevelIn: {
+      sv: (level: string, count: string) => `${level} i ${count}`,
+      en: (level: string, count: string) => `${level} in ${count}`
+    },
+    reqIncluding: { sv: (names: string) => `, varav ${names}`, en: (names: string) => `, including ${names}` },
+    cashShort: {
+      sv: (cls: string) => `Kassan räcker inte till kontantinsatsen för ${cls}.`,
+      en: (cls: string) => `There is not enough cash for the deposit for ${cls}.`
+    },
+    bankWait: {
+      sv: 'Banken lånar ut igen när du har ägnat en hel vecka åt Måltidens hus och gjort minst ett prov.',
+      en: 'The bank will lend again once you have spent a whole week in the House of the Meal and taken at least one exam.'
+    },
+    upgradeOnly: {
+      sv: 'Nås bara genom att växa från en annan verksamhet.',
+      en: 'Only reached by growing from another business.'
+    },
+    choose: {
+      sv: (cls: string) => `Byt till ${cls.toLowerCase()}`,
+      en: (cls: string) => `Switch to ${cls.toLowerCase()}`
+    },
+    current: { sv: 'Din verksamhet', en: 'Your business' },
+    onlySunday: {
+      sv: 'Byte av verksamhet görs på söndagen, vid veckoavräkningen.',
+      en: 'Changing business happens on Sunday, at the weekly settlement.'
+    },
+    topics: {
+      maltidbiblioteket: { sv: 'måltidens historia och begrepp', en: 'the history and concepts of the meal' },
+      metodkoket: { sv: 'köket', en: 'the kitchen' },
+      stensota: { sv: 'vin och dryck', en: 'wine and drinks' },
+      kalastorget: { sv: 'bemötande och omdöme', en: 'hospitality and judgement' },
+      gastronomiskateatern: { sv: 'helheten', en: 'the whole' }
+    },
+    counts: { sv: ['ingen', 'en', 'två', 'tre', 'fyra', 'fem'], en: ['no', 'one', 'two', 'three', 'four', 'five'] },
+    pavilionOne: { sv: 'paviljong', en: 'pavilion' },
+    pavilionMany: { sv: 'paviljonger', en: 'pavilions' },
+    and: { sv: 'och', en: 'and' },
+    settlement: {
+      heading: { sv: 'Veckoavräkningen', en: 'The weekly settlement' },
+      aboveFloor: { sv: 'Veckan gav mer än golvet.', en: 'The week gave more than the floor.' },
+      topUp: {
+        sv: 'Veckan blev svag, och golvet fyllde på skillnaden.',
+        en: 'The week was weak, and the floor topped up the difference.'
+      },
+      noFloor: {
+        sv: 'Du har inget golv ännu. Det växer med dina medaljer.',
+        en: 'You have no floor yet. It grows with your medals.'
+      },
+      amortised: { sv: 'Banken drog veckans amortering.', en: "The bank took this week's repayment." },
+      downgraded: {
+        sv: (from: string, to: string) => `Banken tog ${from} och köpte inventarierna. Det blir din kassa när du fortsätter med ${to}.`,
+        en: (from: string, to: string) => `The bank took ${from} and bought the fittings. That becomes your cash as you carry on with ${to}.`
+      },
+      downgradedToNothing: {
+        sv: (from: string) => `Banken tog ${from}. Nu gäller det att öva och komma tillbaka.`,
+        en: (from: string) => `The bank took ${from}. Now it is time to practise and come back.`
+      }
+    }
+  },
+  // ORDER 266 (Nexus v1 etapp 4) — servicen: action-knappen, ryktet,
+  // lagret och händelserna.
+  service: {
+    // ORDER 270 — händelserna i servicen och de tre mätarna.
+    incident: {
+      countdown: { sv: (sec: string) => `${sec} s`, en: (sec: string) => `${sec} s` },
+      clock: { sv: (hhmm: string) => `Kl. ${hhmm}`, en: (hhmm: string) => `At ${hhmm}` },
+      ongoingLabel: { sv: 'Pågår tills nästa händelse', en: 'Ongoing until the next incident' },
+      struck: { sv: 'Strukits av dina kunskaper', en: 'Struck out by what you know' },
+      medalTime: {
+        sv: (pavilion: string) => `Mer tid tack vare ${pavilion}`,
+        en: (pavilion: string) => `More time thanks to ${pavilion}`
+      },
+      staffDecides: {
+        sv: 'Svarar du fel eller inte alls tar personalen över resten.',
+        en: 'If you answer wrong or not at all, the staff take over the rest.'
+      },
+      // ORDER 270 (Vision Owner 2026-09-27) — raketens tre steg.
+      stepName: {
+        sv: { episteme: 'Episteme', techne: 'Techne', phronesis: 'Phronesis' } as Record<string, string>,
+        en: { episteme: 'Episteme', techne: 'Techne', phronesis: 'Phronesis' } as Record<string, string>
+      },
+      stepAsks: {
+        sv: { episteme: 'vad', techne: 'hur', phronesis: 'när och varför' } as Record<string, string>,
+        en: { episteme: 'what', techne: 'how', phronesis: 'when and why' } as Record<string, string>
+      },
+      stepOf: {
+        sv: (n: string, total: string) => `Steg ${n} av ${total}`,
+        en: (n: string, total: string) => `Step ${n} of ${total}`
+      },
+      stepCleared: { sv: 'Klarat', en: 'Cleared' },
+      staffDecided: { sv: 'Personalen beslutade själv.', en: 'The staff decided for themselves.' },
+      chained: { sv: 'Följden av ett tidigare val', en: 'The result of an earlier choice' },
+      phase: {
+        sv: { opening: 'Öppning', rush: 'Rusning', crisis: 'Kris', closing: 'Avslut' } as Record<string, string>,
+        en: { opening: 'Opening', rush: 'Rush', crisis: 'Crisis', closing: 'Closing' } as Record<string, string>
+      },
+      guests: {
+        sv: ['ett par', 'en stamgäst', 'ett sällskap från Örebro', 'två kollegor från Campus', 'en turist från Hamburg', 'en gäst i ljus kavaj', 'ett par på bröllopsresa', 'en ensam gäst med en bok'],
+        en: ['a couple', 'a regular', 'a party from Örebro', 'two colleagues from Campus', 'a tourist from Hamburg', 'a guest in a light jacket', 'a honeymooning couple', 'a lone guest with a book']
+      },
+      wines: {
+        sv: ['Chablis', 'Sancerre', 'Barolo', 'Rioja Reserva', 'Riesling från Mosel', 'Côtes du Rhône', 'Grüner Veltliner'],
+        en: ['Chablis', 'Sancerre', 'Barolo', 'Rioja Reserva', 'Riesling from the Mosel', 'Côtes du Rhône', 'Grüner Veltliner']
+      },
+      staffRoles: {
+        sv: { värd: 'värden', servitör: 'servitören', kock: 'kocken', lärling: 'lärlingen' } as Record<string, string>,
+        en: { värd: 'the host', servitör: 'the waiter', kock: 'the cook', lärling: 'the apprentice' } as Record<string, string>
+      },
+      staffFallback: { sv: 'servitören', en: 'the waiter' },
+      ledger: { sv: (title: string) => `Händelse: ${title}`, en: (title: string) => `Incident: ${title}` }
+    },
+    meters: {
+      heading: { sv: 'Kvällen', en: 'The evening' },
+      cash: { sv: 'Kassa', en: 'Cash' },
+      satisfaction: { sv: 'Gästernas nöjdhet', en: 'Guest satisfaction' },
+      stamina: { sv: 'Personalens ork', en: 'Staff stamina' },
+      noGuests: { sv: 'inga gäster', en: 'no guests' },
+      sek: { sv: (amount: string) => `${amount} kr`, en: (amount: string) => `${amount} SEK` }
+    },
+    // ORDER 274 — tiden kvar av servicen, hela kvällen.
+    clock: {
+      label: { sv: 'Servicen', en: 'Service' },
+      now: { sv: (hhmm: string) => hhmm, en: (hhmm: string) => hhmm },
+      left: {
+        sv: (h: number, m: number) => (h > 0 ? `${h} h ${m} min kvar` : `${m} min kvar`),
+        en: (h: number, m: number) => (h > 0 ? `${h} h ${m} min left` : `${m} min left`)
+      },
+      closes: { sv: (hhmm: string) => `Stänger ${hhmm}`, en: (hhmm: string) => `Closes ${hhmm}` },
+      closed: { sv: 'Stänger', en: 'Closing' },
+      aria: {
+        sv: (left: string, closes: string) => `${left}. ${closes}.`,
+        en: (left: string, closes: string) => `${left}. ${closes}.`
+      },
+      lastOrders: { sv: 'Sista beställningen', en: 'Last orders' },
+      hhmm: { sv: (h: string, m: string) => `${h}.${m}`, en: (h: string, m: string) => `${h}:${m}` }
+    },
+    events: {
+      reviewerBooked: {
+        sv: 'En recensent har bokat bord i kväll. Ryktet har nått ut.',
+        en: 'A reviewer has booked a table tonight. Word has got out.'
+      },
+      reviewGood: {
+        sv: 'Recensenten gick nöjd. Kvällen höll, och det kommer att stå i tidningen.',
+        en: 'The reviewer left happy. The evening held, and it will be in the paper.'
+      },
+      reviewBad: {
+        sv: 'Recensenten såg en kväll som inte höll ihop. Det kommer att märkas i ryktet.',
+        en: 'The reviewer saw an evening that did not hold together. It will show in the reputation.'
+      },
+      reviewMixed: {
+        sv: 'Recensenten skrev ner både det som fungerade och det som inte gjorde det.',
+        en: 'The reviewer wrote down both what worked and what did not.'
+      },
+      cleanEvening: {
+        sv: 'Ingen gick ifrån i kväll. Det pratas om det, och ryktet hämtar sig.',
+        en: 'No one walked out tonight. People are talking about it, and the reputation recovers.'
+      },
+      slowRecovery: {
+        sv: 'Ryktet hämtar sig sakta. Gästerna minns inte längre den sämsta kvällen.',
+        en: 'The reputation is slowly recovering. The guests no longer remember the worst evening.'
+      },
+      inspection: {
+        sv: 'Miljöinspektören kom i morse. Stationerna hade inte hållits rena under gårdagens kväll.',
+        en: "The environmental health inspector came this morning. The stations had not been kept clean during last night's service."
+      },
+      inspectionLedger: { sv: 'Avgift efter inspektionen', en: 'Fee after the inspection' },
+      bankCall: {
+        sv: 'Banken ringde i morse. Kassan var under noll när dagen tog slut.',
+        en: 'The bank called this morning. Cash was below zero when the day ended.'
+      }
+    },
+    stock: {
+      forecast: {
+        sv: (covers: string) => `Råvaror till ungefär ${covers} kuvert.`,
+        en: (covers: string) => `Ingredients for about ${covers} covers.`
+      },
+      none: {
+        sv: 'Inga råvaror i lager. Du kan ändå öppna, men köket har inget att laga.',
+        en: 'No ingredients in stock. You can still open, but the kitchen has nothing to cook.'
+      },
+      noMenu: { sv: 'Ingen meny satt i dag.', en: 'No menu set today.' }
+    },
+    morningEvents: { sv: 'I morse', en: 'This morning' },
+    wentWell: {
+      happy: { sv: (n: string) => `${n} gick härifrån nöjda.`, en: (n: string) => `${n} guests left happy.` },
+      happyOne: { sv: 'En gäst gick härifrån nöjd.', en: 'One guest left happy.' },
+      clean: { sv: 'Ingen gav upp i kön.', en: 'No one gave up in the queue.' },
+      turned: {
+        sv: 'När kvällen ställdes på sin spets tog du rätt beslut.',
+        en: 'When the evening came to a head, you made the right decision.'
+      }
+    },
+    numberWords: {
+      sv: ['noll', 'en', 'två', 'tre', 'fyra', 'fem', 'sex', 'sju', 'åtta', 'nio', 'tio', 'elva', 'tolv', 'tretton', 'fjorton', 'femton', 'sexton', 'sjutton', 'arton', 'nitton', 'tjugo'],
+      en: ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty']
+    },
+    manyWord: { sv: 'fler än tjugo', en: 'more than twenty' }
+  },
+  // ORDER 275 — lagret är insatsen.
+  stock: {
+    heading: { sv: 'Kvällens lager', en: "Tonight's stock" },
+    intro: {
+      sv: 'Köp lagret innan du öppnar. Pengarna går ur kassan direkt. Portionerna säljs ur lagret under servicen, och osåld mat blir svinn i kväll.',
+      en: 'Buy the stock before you open. The money leaves the till at once. Portions are sold from the stock during service, and unsold food goes to waste tonight.'
+    },
+    base: { sv: 'Baspaket', en: 'Base package' },
+    addOns: { sv: 'Köp till', en: 'Add more' },
+    buy: { sv: (price: string) => `Köp · ${price}`, en: (price: string) => `Buy · ${price}` },
+    boughtTimes: {
+      sv: (n: number) => (n === 1 ? 'Köpt i dag' : `Köpt ${n}× i dag`),
+      en: (n: number) => (n === 1 ? 'Bought today' : `Bought ${n}× today`)
+    },
+    inStock: { sv: 'I lager nu', en: 'In stock now' },
+    empty: {
+      sv: 'Inget i lager. Gäster som kommer in hittar inget att beställa.',
+      en: 'Nothing in stock. Guests who come in will find nothing to order.'
+    },
+    // Rätterna delar ingredienser: talet är taket om inget annat säljs.
+    portions: {
+      sv: (n: number) => `upp till ${n} ${n === 1 ? 'portion' : 'portioner'}`,
+      en: (n: number) => `up to ${n} ${n === 1 ? 'portion' : 'portions'}`
+    },
+    covers: {
+      sv: (n: number) => `Räcker till ungefär ${n} ${n === 1 ? 'gäst' : 'gäster'}.`,
+      en: (n: number) => `Enough for about ${n} ${n === 1 ? 'guest' : 'guests'}.`
+    },
+    drinksKeep: {
+      sv: 'Drycken står sig till i morgon. Maten gör det inte.',
+      en: 'Drinks keep until tomorrow. Food does not.'
+    },
+    lastWaste: {
+      sv: (sek: string) => `Gårdagens osålda mat blev svinn: ${sek}.`,
+      en: (sek: string) => `Yesterday's unsold food went to waste: ${sek}.`
+    },
+    wasteEvent: {
+      sv: (sek: string) => `Osåld mat blev svinn vid stängning: ${sek}.`,
+      en: (sek: string) => `Unsold food went to waste at closing: ${sek}.`
+    },
+    packageLedger: { sv: (name: string) => `Lager: ${name}`, en: (name: string) => `Stock: ${name}` },
+    item: {
+      sv: (portions: number, name: string) => `${portions} × ${name}`,
+      en: (portions: number, name: string) => `${portions} × ${name}`
+    },
+    packages: {
+      sv: {
+          'vinbar-base': { name: 'Baspaket', description: 'En vanlig vardagskväll: soppa, kyckling, fläsk och en dessert, med husets vin och lokal öl.' },
+          'vinbar-extra-covers': { name: 'Fler kuvert', description: 'Kyckling, fläsk och husets vin till en livligare kväll.' },
+          'vinbar-fish': { name: 'Insjöfisk', description: 'Pocherad insjöfisk, till gäster som vill ha något lättare.' },
+          'vinbar-lamb': { name: 'Lamm', description: 'Lamm med rotfrukter, en dyrare tallrik.' },
+          'vinbar-game': { name: 'Vilt', description: 'Hjort från Bergslagen, menyns dyraste tallrik.' },
+          'vinbar-fine-wine': { name: 'Finare vin', description: 'Ett bättre vin på glas, till ett högre pris.' },
+          'vinbar-house-wine': { name: 'Mer husets vin', description: 'Husets vin på glas, till en törstig kväll.' }
+        } as Record<string, { name: string; description: string }>,
+      en: {
+          'vinbar-base': { name: 'Base package', description: 'An ordinary weekday evening: soup, chicken, pork and a dessert, with house wine and local beer.' },
+          'vinbar-extra-covers': { name: 'More covers', description: 'Chicken, pork and house wine for a busier evening.' },
+          'vinbar-fish': { name: 'Lake fish', description: 'Poached lake fish, for guests who want something lighter.' },
+          'vinbar-lamb': { name: 'Lamb', description: 'Lamb with root vegetables, a dearer plate.' },
+          'vinbar-game': { name: 'Game', description: 'Deer from Bergslagen, the dearest plate on the menu.' },
+          'vinbar-fine-wine': { name: 'Fine wine', description: 'A better wine by the glass, at a higher price.' },
+          'vinbar-house-wine': { name: 'More house wine', description: 'House wine by the glass, for a thirsty evening.' }
+        } as Record<string, { name: string; description: string }>
+    }
+  },
+  save: {
+    menuItem: { sv: 'Spara och ladda', en: 'Save and load' },
+    continueSaved: { sv: 'Fortsätt ett sparat spel', en: 'Continue a saved game' },
+    heading: { sv: 'Sparade spel', en: 'Saved games' },
+    close: { sv: 'Stäng', en: 'Close' },
+    slot: { sv: (n: number) => `Plats ${n}`, en: (n: number) => `Slot ${n}` },
+    empty: { sv: 'Tom', en: 'Empty' },
+    active: { sv: 'Spelar nu', en: 'Playing now' },
+    saveHere: { sv: 'Spara här', en: 'Save here' },
+    load: { sv: 'Ladda', en: 'Load' },
+    weeklyCopies: { sv: 'Veckokopior', en: 'Weekly copies' },
+    loadWeek: { sv: (week: number) => `Början av vecka ${week}`, en: (week: number) => `Start of week ${week}` },
+    autosaveNote: {
+      sv: 'Spelet sparas automatiskt när dagen tar slut, och en kopia sparas varje vecka.',
+      en: 'The game saves automatically when the day ends, and a copy is saved every week.'
+    },
+    savedAt: {
+      sv: (weekday: string, week: number, name: string) => `${name} · ${weekday}, vecka ${week}`,
+      en: (weekday: string, week: number, name: string) => `${name} · ${weekday}, week ${week}`
+    },
+    olderVersion: {
+      sv: 'Sparat i en äldre version av spelet och kan inte laddas.',
+      en: 'Saved in an older version of the game and cannot be loaded.'
+    },
+    storageUnavailable: {
+      sv: 'Webbläsaren tillåter inte sparande just nu.',
+      en: 'The browser does not allow saving right now.'
+    }
+  },
+  scenario: {
+    // ORDER 042 §3.3 walk-in-of-five. Difficulty is chosen BEFORE the
+    // situation is revealed (LEARNING_AND_SCENARIO_ARCHITECTURE §4.3).
+    // No response is marked correct (§4.2). No result popup — the
+    // response resolves in the room (CAMERA_AND_GAMEPLAY_BIBLE §8.1).
+    //
+    // These fields are legacy fallbacks — the live spec text lives in
+    // strategic/simulation/scenarios.ts and is what the overlay uses
+    // in practice. Kept in English so any drop-through fallback still
+    // reads in the game's language.
+    subject: {
+      body: { sv: 'A party is at the door — no booking.', en: 'A party is at the door — no booking.' },
+      cta: { sv: 'Continue', en: 'Continue' }
+    },
+    // ORDER 048 §5 (2026-08-10 amendment) — the difficulty block
+    // (self-reported confidence "Hur säker känner du dig inför det
+    // här?") is retired. It asked about feeling instead of knowledge
+    // and produced no outcome. The slot between subject and situation
+    // is reserved for ORDER 049 §5.1's professional questions.
+    situation: {
+      body: {
+        sv: 'Five in the party. Service starts soon and the room is partly booked. What do you do?',
+        en: 'Five in the party. Service starts soon and the room is partly booked. What do you do?'
+      },
+      options: {
+        A: {
+          sv: 'Seat all five — join the four-top and a two-top.',
+          en: 'Seat all five — join the four-top and a two-top.'
+        },
+        B: {
+          sv: 'Seat four at the four-top, the fifth at the bar.',
+          en: 'Seat four at the four-top, the fifth at the bar.'
+        },
+        C: { sv: 'Turn the party away.', en: 'Turn the party away.' }
+      }
+    },
+    // Mentor comments are non-modal — they surface as an in-world text
+    // bubble above the room after the response has begun to play out.
+    // Keyed by choice only after the ORDER 048 §5 confidence-question
+    // retirement (2026-08-10); the mid-difficulty variants survive as
+    // the neutral base.
+    mentor: {
+      A: {
+        sv: 'Joining tables works when the floor is with you. Keep an eye on the two-top next door.',
+        en: 'Joining tables works when the floor is with you. Keep an eye on the two-top next door.'
+      },
+      B: {
+        sv: 'Sensible split. The bar seat only works if a staff member gets there in time.',
+        en: 'Sensible split. The bar seat only works if a staff member gets there in time.'
+      },
+      C: {
+        sv: 'Declining is a choice too. The evening keeps its rhythm — but the room notes it.',
+        en: 'Declining is a choice too. The evening keeps its rhythm — but the room notes it.'
+      }
+    }
+  },
+  // ORDER 043 v3 §10 step 5 — the morning team panel. Player-facing
+  // labels for the hire/fire surface, keyed by role for a compact
+  // switch in TeamPanel. Role labels are capitalized display forms
+  // of the internal StaffRole (which stays lowercase for code-side).
+  team: {
+    heading: { sv: 'Laget', en: 'The team' },
+    body: {
+      sv: 'Anställ och säg upp inför dagen. Kontrakt löper i sju dagar.',
+      en: 'Hire and let go before the day. Contracts run for seven days.'
+    },
+    contractLabel: { sv: 'kontrakt t.o.m. dag', en: 'contract until day' },
+    dailyCostLabel: { sv: 'kr/dag', en: 'SEK/day' },
+    fireButton: { sv: 'Säg upp', en: 'Let go' },
+    buyoutLabel: { sv: 'buyout', en: 'buyout' },
+    kr: { sv: 'kr', en: 'SEK' },
+    hireHeading: { sv: 'Anställ', en: 'Hire' },
+    roleLabel: {
+      'värd': { sv: 'Värd', en: 'Host' },
+      'servitör': { sv: 'Servitör', en: 'Waiter' },
+      'kock': { sv: 'Kock', en: 'Cook' },
+      'lärling': { sv: 'Lärling', en: 'Apprentice' }
+    },
+    roleDescription: {
+      'värd': {
+        sv: 'Hälsar och styr rummet — hög kulturell kompetens.',
+        en: 'Greets and runs the room — high cultural competence.'
+      },
+      'servitör': {
+        sv: 'Bär order och håller flöde — balanserad rustning.',
+        en: 'Carries orders and keeps the flow — balanced all-rounder.'
+      },
+      'kock': {
+        sv: 'Håller köket — hög vetenskaplig kompetens.',
+        en: 'Holds the kitchen — high scientific competence.'
+      },
+      'lärling': {
+        sv: 'Lärling som avlastar överallt — låg kompetens, låg kostnad.',
+        en: 'An apprentice who lends a hand everywhere — low competence, low cost.'
+      }
+    }
+  },
+  // ORDER 043 v3 §10 step 5 — agency-staff offer. Appears mid-service
+  // when strain has been sustained above threshold. Player accepts
+  // (money cost, agency joins for the service) or declines (social
+  // capital cost — the team registers that no help came).
+  agency: {
+    heading: { sv: 'Hyrpersonal erbjuds', en: 'Agency staff offered' },
+    body: {
+      sv: 'Laget står under press. Vill du ta in en extra hand för resten av kvällen?',
+      en: 'The team is under pressure. Do you want to bring in an extra pair of hands for the rest of the evening?'
+    },
+    accept: { sv: 'Ta in — kostar', en: 'Bring in — costs' },
+    decline: { sv: 'Avstå', en: 'Decline' },
+    kr: { sv: 'kr', en: 'SEK' }
+  },
+  // ORDER 046 §2 — the morning investment panel. Sits alongside
+  // TeamPanel and surfaces the three policy dials that shape the
+  // service (training level, price positioning, ingredient tier).
+  // Not a scoreboard — the labels are the reading.
+  invest: {
+    heading: { sv: 'Investering', en: 'Investment' },
+    body: {
+      sv: 'Vad står laget inför i dag? Träning, prisläge och råvara sätter kvällens karaktär.',
+      en: 'What is the team facing today? Training, pricing and ingredients set the character of the evening.'
+    },
+    trainingHeading: { sv: 'Utbildning', en: 'Training' },
+    trainingLevels: {
+      1: { sv: 'Grundnivå', en: 'Basic' },
+      2: { sv: 'Erfaren', en: 'Experienced' },
+      3: { sv: 'Specialiserad', en: 'Specialised' }
+    },
+    trainingDescriptions: {
+      1: {
+        sv: 'Räcker för att öppna dörrarna. Rummet får bära det som händer.',
+        en: 'Enough to open the doors. The room has to carry whatever happens.'
+      },
+      2: {
+        sv: 'Kockar och servitörer har rutin. Slag jämnas ut innan de syns.',
+        en: 'Cooks and waiters have routine. Blows are smoothed out before they show.'
+      },
+      3: {
+        sv: 'Alla vet mer än det som krävs i stunden. Servicen har djup att gå till.',
+        en: 'Everyone knows more than the moment demands. The service has depth to draw on.'
+      }
+    },
+    pricingHeading: { sv: 'Prisläge', en: 'Pricing' },
+    pricingLevels: {
+      'låg': { sv: 'Lågt', en: 'Low' },
+      'medel': { sv: 'Medel', en: 'Medium' },
+      'hög': { sv: 'Högt', en: 'High' }
+    },
+    pricingDescriptions: {
+      'låg': {
+        sv: 'Fyllt hus, tunnare marginal. Krogen håller pulsen uppe.',
+        en: 'A full house, a thinner margin. The restaurant keeps the pulse up.'
+      },
+      'medel': {
+        sv: 'Balans mellan volym och intäkt. Kvällens standardläge.',
+        en: "A balance between volume and revenue. The evening's standard setting."
+      },
+      'hög': {
+        sv: 'Färre gäster, mer per bord. Rummet måste bära förväntan.',
+        en: 'Fewer guests, more per table. The room has to live up to the expectation.'
+      }
+    },
+    ingredientHeading: { sv: 'Råvara', en: 'Ingredients' },
+    ingredientLevels: {
+      'grund': { sv: 'Grund', en: 'Basic' },
+      'utvald': { sv: 'Utvald', en: 'Selected' },
+      'premium': { sv: 'Premium', en: 'Premium' }
+    },
+    ingredientDescriptions: {
+      'grund': {
+        sv: 'Standardleverantör. Kvällen bygger på hantverket, inte på råvaran.',
+        en: 'Standard supplier. The evening rests on the craft, not on the ingredients.'
+      },
+      'utvald': {
+        sv: 'Utvalda leverantörer när det räknas. Något att prata om vid ett par bord.',
+        en: 'Selected suppliers where it counts. Something to talk about at a couple of tables.'
+      },
+      'premium': {
+        sv: 'Det bästa av det som finns. Kvällen står och faller med det köket gör med det.',
+        en: 'The best there is. The evening stands or falls with what the kitchen does with it.'
+      }
+    }
+  },
+  // ORDER 043 v3 §7 wager — placed between scenarios on which
+  // sustainability the next situation will concern. Optional; declining
+  // is legitimate and progresses more slowly.
+  wager: {
+    heading: { sv: 'Läs rummet', en: 'Read the room' },
+    // ORDER 043 Addendum B — pre-placement copy in the observer's
+    // voice. Names what the stake is, what a correct read gives back,
+    // what a wrong one costs, and that it locks the moment it's
+    // placed. Not a rules panel; a briefing.
+    body: {
+      sv: 'Vilken hållbarhet handlar nästa situation om? Rätt läsning ger tillbaka — och lite mer om den avläsning du valde ligger svagt. Fel läsning tas.',
+      en: 'Which sustainability will the next situation be about? A right reading pays back — and a little more if the reading you chose is weak. A wrong reading is taken.'
+    },
+    lockNote: {
+      sv: 'Insatsen låser i samma stund du väljer. Ingen ångrings-knapp; det är där risken bor.',
+      en: 'The stake locks the moment you choose. No undo button; that is where the risk lives.'
+    },
+    capitals: {
+      economic: { sv: 'Ekonomiskt', en: 'Economic' },
+      social: { sv: 'Socialt', en: 'Social' },
+      ecological: { sv: 'Ekologiskt', en: 'Ecological' }
+    },
+    decline: { sv: 'Avstå', en: 'Decline' },
+    standing: { sv: 'Satsat:', en: 'Staked:' },
+    placed: {
+      sv: 'Insatsen står — vi ser hur nästa situation faller ut.',
+      en: 'The stake stands — we will see how the next situation turns out.'
+    },
+    // ORDER 045 — weather line shown under the capital buttons so the
+    // wager reads against the evening's conditions.
+    weatherPrefix: { sv: 'Kvällen:', en: 'The evening:' }
+  },
+  // ORDER 045 — the opening image before mise en place. Ten-second
+  // briefing screen showing weather + local factors + how many are
+  // already outside. No numeric HUD dominance (§9); the copy carries
+  // the reading.
+  opening: {
+    heading: { sv: 'Kvällen', en: 'The evening' },
+    tempSuffix: { sv: '°C', en: '°C' },
+    windSuffix: { sv: 'm/s', en: 'm/s' },
+    precipitation: {
+      none: { sv: 'uppehåll', en: 'dry' },
+      drizzle: { sv: 'duggregn', en: 'drizzle' },
+      rain: { sv: 'regn', en: 'rain' },
+      snow: { sv: 'snö', en: 'snow' }
+    },
+    clouds: {
+      clear: { sv: 'klart', en: 'clear' },
+      partly: { sv: 'halvklart', en: 'partly cloudy' },
+      overcast: { sv: 'mulet', en: 'overcast' }
+    },
+    outdoorViable: { sv: 'Uteserveringen är i läge.', en: 'The outdoor seating is open.' },
+    outdoorClosed: { sv: 'Uteserveringen är stängd i kväll.', en: 'The outdoor seating is closed tonight.' },
+    waitingSingular: {
+      sv: 'En person står redan utanför dörren.',
+      en: 'One person is already standing outside the door.'
+    },
+    waitingPlural: {
+      sv: (n: number) => `${n} personer står redan utanför dörren.`,
+      en: (n: number) => `${n} people are already standing outside the door.`
+    },
+    waitingNone: { sv: 'Ingen står utanför ännu.', en: 'No one is outside yet.' },
+    countdownPrefix: { sv: 'Dörrarna öppnar om', en: 'The doors open in' },
+    countdownSecondsSuffix: { sv: 's', en: 's' }
+  },
+  // ORDER 109 — M7b bankmötet. Player-visible text på engelska per
+  // CLAUDE.md Observation 6 (2026-08-09); paviljongnamn på svenska per
+  // samma regel (platsnamn behålls). {pavilion} substitueras vid render
+  // med `bank.pavilionNames[outcome.pointedPavilion]`. Interna
+  // outcome-nycklar från businessProfile.ts/bankMeeting.ts får inte
+  // förekomma i den här filen — DoD 6 grep-testet skannar hela filen.
+  bank: {
+    grantRestaurant: {
+      sv: 'Your judgement carries the room. We are funding the full house.',
+      en: 'Your judgement carries the room. We are funding the full house.'
+    },
+    grantFoodtruck: {
+      sv: 'You have the hands. Start smaller and grow into it.',
+      en: 'You have the hands. Start smaller and grow into it.'
+    },
+    grantWide: {
+      sv: 'A broad competence. We back a starting position.',
+      en: 'A broad competence. We back a starting position.'
+    },
+    rejectPractice: {
+      sv: 'We cannot see enough to fund. Practise at {pavilion} and come back.',
+      en: 'We cannot see enough to fund. Practise at {pavilion} and come back.'
+    },
+    rejectField: {
+      sv: 'You have read the field but never lived it. Come back once you have worked at {pavilion}.',
+      en: 'You have read the field but never lived it. Come back once you have worked at {pavilion}.'
+    },
+    pavilionNames: {
+      maltidbiblioteket: { sv: 'Måltidbiblioteket', en: 'Måltidsbiblioteket' },
+      kalastorget: { sv: 'Kalastorget', en: 'Kalastorget' },
+      stensota: { sv: 'Stensöta', en: 'Stensöta' },
+      metodkoket: { sv: 'Metodköket', en: 'Metodköket' },
+      gastronomiskateatern: { sv: 'Gastronomiska Teatern', en: 'Gastronomiska Teatern' }
+    }
+  },
+  // ORDER 110 — R4 verksamhetsklassen som spelartext. Interna nycklar
+  // (`restaurant`, `foodtruck`, `värdshus`) hålls samma här som i koden;
+  // spelartexten är utpekad. Bankmötets intern-nyckel för den fjärde
+  // klassen mappas till `'gästgiveriet'` innan spelartexten läses — den
+  // förbjudna nyckeln får aldrig läcka hit (grep-test i ORDER 109 §5).
+  businessClass: {
+    // ORDER 140 — nycklarna följer BusinessClass i bestämd form
+    // (Vision Owner-beslut 2026-08-30 §1 per ORDER 139). "Kvarterskrogen"
+    // ersätter tidigare "Restaurang", "Foodtrucken" är den bestämda
+    // formen av spelarens vagn, "Gästgiveriet" ersätter "Värdshuset".
+    kvarterskrogen: { sv: 'Kvarterskrogen', en: 'The Restaurant' },
+    foodtrucken: { sv: 'Foodtrucken', en: 'The Food Truck' },
+    gästgiveriet: { sv: 'Gästgiveriet', en: 'The Inn' },
+    // ORDER 125 §3 — Ölkrogen. Spelartext med versal första bokstav,
+    // matchar övriga.
+    ölkrogen: { sv: 'Ölkrogen', en: 'The Brewpub' },
+    // ORDER 166 — vinbaren blir spelartext för klass-nyckeln som
+    // tillkommer när COMPETITORS bär `businessClass: 'vinbaren'` i data.
+    // Ingen scen är monterad än (WineBarScene är egen order).
+    vinbaren: { sv: 'Vinbaren', en: 'The Wine Bar' }
+  },
+  // Vision Owner efter speltest: "inga engelska paneler". Paneltexter som
+  // tidigare stod på engelska direkt i komponenterna.
+  panels: {
+    // Satsningskortens tre effektchips (ekonomiskt, socialt, ekologiskt).
+    activityEffects: {
+      panelAria: { sv: 'Morgonens satsningar', en: 'The morning’s initiatives' },
+      aria: { sv: 'Effekt på de tre kapitalen', en: 'Effect on the three capitals' },
+      econ: { sv: 'Ekon', en: 'Econ' },
+      soc: { sv: 'Soc', en: 'Soc' },
+      ecol: { sv: 'Ekol', en: 'Ecol' }
+    },
+    menu: {
+      aria: { sv: 'Meny och inköp', en: 'Menu and purchasing' },
+      menuHeading: { sv: 'Kvällens meny', en: 'Tonight’s menu' },
+      ingredientCost: {
+        sv: (sek: string) => `råvarukostnad ≈ ${sek} kr`,
+        en: (sek: string) => `ingredient cost ≈ ${sek} SEK`
+      },
+      priceAria: {
+        sv: (dish: string) => `Pris för ${dish} i kronor`,
+        en: (dish: string) => `Price for ${dish} in SEK`
+      },
+      confirmAria: { sv: 'Fastställ dagens meny', en: "Set today's menu" },
+      confirm: {
+        sv: (n: number) => `Fastställ menyn (${n} ${n === 1 ? 'rätt' : 'rätter'})`,
+        en: (n: number) => `Set the menu (${n} ${n === 1 ? 'dish' : 'dishes'})`
+      },
+      stockHeading: { sv: 'Inköp', en: 'Purchasing' },
+      supplierAria: { sv: 'Leverantör', en: 'Supplier' },
+      ingredientAria: { sv: 'Råvara', en: 'Ingredient' },
+      offer: {
+        sv: (sek: string, reliabilityPct: string) => `${sek} kr · leveranssäkerhet ${reliabilityPct} %`,
+        en: (sek: string, reliabilityPct: string) => `${sek} SEK · delivery reliability ${reliabilityPct}%`
+      },
+      unitsAria: { sv: 'Antal att köpa', en: 'Quantity to buy' },
+      buyAria: { sv: 'Bekräfta inköpet', en: 'Confirm the purchase' },
+      buy: { sv: 'Köp', en: 'Buy' }
+    },
+    prep: {
+      heading: { sv: 'Mise en place', en: 'Mise en place' },
+      items: {
+        sv: {
+            ice: 'is',
+            napkins: 'servetter',
+            cutlery: 'bestick',
+            stations: 'stationer',
+            garnish: 'garnityr'
+          } as Record<string, string>,
+        en: {
+            ice: 'ice',
+            napkins: 'napkins',
+            cutlery: 'cutlery',
+            stations: 'stations',
+            garnish: 'garnish'
+          } as Record<string, string>
+      },
+      stations: {
+        sv: {
+            bar: 'baren',
+            floor: 'matsalen',
+            kitchen: 'köket',
+            pass: 'passet'
+          } as Record<string, string>,
+        en: {
+            bar: 'the bar',
+            floor: 'the dining room',
+            kitchen: 'the kitchen',
+            pass: 'the pass'
+          } as Record<string, string>
+      },
+      doorsOpen: { sv: 'Dörrarna öppnas, servicen börjar.', en: 'Doors open. Service begins.' },
+      doorsOpenReady: { sv: 'Dörrarna öppnas, salen är redo.', en: 'Doors open. The room is ready.' },
+      doorsOpenThin: {
+        sv: (station: string, item: string) => `Dörrarna öppnas, men ${station} ligger efter (${item}).`,
+        en: (station: string, item: string) => `Doors open, but ${station} is behind (${item}).`
+      }
+    },
+    evening: {
+      heading: { sv: 'Kvällens avräkning', en: "The evening's account" },
+      figuresHeading: { sv: 'Dagens siffror', en: "Today's figures" },
+      ledgerHeading: { sv: 'Dagens kassabok', en: "Today's ledger" },
+      revenue: { sv: 'Intäkter', en: 'Revenue' },
+      costs: { sv: 'Kostnader', en: 'Costs' },
+      result: { sv: 'Resultat', en: 'Result' },
+      reputation: { sv: 'Rykte', en: 'Reputation' },
+      knowledge: { sv: 'Kunskap', en: 'Knowledge' },
+      newRound: { sv: 'Ny omgång', en: 'New round' },
+      newRoundAria: { sv: 'Starta en ny omgång från dag 1', en: 'Start a new round from day 1' },
+      nothingToRecord: { sv: 'Inget att bokföra i dag.', en: 'Nothing to record today.' },
+      entriesAria: { sv: 'Dagens poster', en: "Today's entries" },
+      currency: { sv: 'kr', en: 'SEK' },
+      entryAria: {
+        sv: (cause: string, amount: string, running: string) =>
+          `${cause}: ${amount} kr, kassa ${running} kr`,
+        en: (cause: string, amount: string, running: string) =>
+          `${cause}: ${amount} SEK, cash ${running} SEK`
+      },
+      // Kort kategorietikett i kassabokens första kolumn.
+      category: {
+        revenue: { sv: 'Intäkt', en: 'Rev.' },
+        wage: { sv: 'Lön', en: 'Wage' },
+        agency: { sv: 'Hyrp.', en: 'Agency' },
+        ingredient: { sv: 'Råv.', en: 'Ingr.' },
+        interest: { sv: 'Ränta', en: 'Int.' },
+        scenario: { sv: 'Händ.', en: 'Incid.' },
+        buyout: { sv: 'Avg.', en: 'Fee' },
+        stock: { sv: 'Inköp', en: 'Stock' },
+        floor: { sv: 'Golv', en: 'Floor' },
+        amortisation: { sv: 'Amort.', en: 'Repay.' },
+        other: { sv: '—', en: '—' }
+      }
+    },
+    cash: {
+      label: { sv: 'Kassa', en: 'Cash' },
+      pillAria: { sv: 'Kassa', en: 'Cash' },
+      pillTitle: {
+        sv: (amount: string) => `Klicka för att öppna verksamhetens konto — kassa ${amount}`,
+        en: (amount: string) => `Click to open the business account — cash ${amount}`
+      },
+      accountAria: { sv: 'Verksamhetens konto', en: 'Business account' },
+      heading: { sv: 'Kassa', en: 'Cash' },
+      valuation: { sv: 'värdering', en: 'valuation' },
+      thousands: { sv: (k: string) => `${k} tkr`, en: (k: string) => `SEK ${k}k` }
+    },
+    platesRemaining: {
+      heading: { sv: 'Portioner kvar', en: 'Portions left' },
+      out: { sv: 'SLUT', en: 'OUT' }
+    },
+    verifyBadge: {
+      sv: 'GRÅSKISS — © OpenStreetMap-bidragsgivare (ODbL) · byggnadshöjder och material stiliserade',
+      en: 'GREY SKETCH — © OpenStreetMap contributors (ODbL) · building heights and materials stylised'
+    }
+  },
+  // ORDER 271 — Designs paket 6 (servicen som raketer): raketkortet R1–R3,
+  // mätarna, kvällens lärdom L1, kvällsberättelsen K1 och rutan X1.
+  rocket: {
+    card: {
+      rocketOf: {
+        sv: (n: string, total: string) => `Raket ${n} av ${total}`,
+        en: (n: string, total: string) => `Rocket ${n} of ${total}`
+      },
+      table: { sv: (n: string) => `Bord ${n}`, en: (n: string) => `Table ${n}` },
+      room: { sv: 'Rummet', en: 'The room' },
+      stepCleared: { sv: (ask: string) => `${ask} · klar ✓`, en: (ask: string) => `${ask} · done ✓` },
+      stepCurrent: {
+        sv: (ask: string, sec: string) => `${ask} · ${sec} s · pågår`,
+        en: (ask: string, sec: string) => `${ask} · ${sec} s · now`
+      },
+      stepNext: { sv: (sec: string) => `Nästa · ${sec} s`, en: (sec: string) => `Next · ${sec} s` },
+      stepAhead: {
+        sv: (ask: string, sec: string) => `${ask} · ${sec} s`,
+        en: (ask: string, sec: string) => `${ask} · ${sec} s`
+      },
+      stepFailed: { sv: (ask: string) => `${ask} · fel`, en: (ask: string) => `${ask} · wrong` },
+      stepUnreached: { sv: 'Nås inte', en: 'Locked' },
+      stepAsks: {
+        sv: { episteme: 'Vad', techne: 'Hur', phronesis: 'När och varför' } as Record<string, string>,
+        en: { episteme: 'What', techne: 'How', phronesis: 'When and why' } as Record<string, string>
+      },
+      right: { sv: (next: string) => `Rätt · vidare till ${next}`, en: (next: string) => `Right · on to ${next}` },
+      rightDone: { sv: 'Rätt · raketen klar', en: 'Right · rocket complete' },
+      // ORDER 276 — raketerna styr gästflödet.
+      guestsIn: {
+        sv: (n: number) => (n === 1 ? 'En gäst till kommer in.' : `${n} gäster till kommer in.`),
+        en: (n: number) => (n === 1 ? 'One more guest comes in.' : `${n} more guests come in.`)
+      },
+      wrong: { sv: (role: string) => `Fel · ${role} tar över`, en: (role: string) => `Wrong · ${role} takes over` },
+      correctTag: { sv: 'Rätt', en: 'Right' },
+      yourTag: { sv: 'Ditt svar', en: 'Your answer' },
+      footer: {
+        sv: 'Rummet väntar inte. Går tiden ut räknas det som fel svar.',
+        en: 'The room won’t wait. Running out of time counts as a wrong answer.'
+      },
+      secondsLeft: { sv: (sec: string) => `${sec} sekunder kvar`, en: (sec: string) => `${sec} seconds left` },
+      takeover: { sv: (role: string) => `${role} tar över`, en: (role: string) => `${role} takes over` },
+      outOfTime: {
+        sv: (role: string) => `Tiden gick ut · ${role} tar över`,
+        en: (role: string) => `Out of time · ${role} takes over`
+      },
+      keys: { sv: 'Välj med 1–4', en: 'Choose with 1–4' }
+    },
+    meters: {
+      cash: { sv: 'Kassa', en: 'Takings' },
+      guests: { sv: 'Gästerna', en: 'Guests' },
+      staff: { sv: 'Personalen', en: 'Staff' },
+      note: { sv: 'Tio steg per mätare. Riktning, inte belopp.', en: 'Ten steps per meter. Direction, not amounts.' },
+      delta: {
+        sv: (name: string, sign: string, n: string) => `${name} ${sign}${n}`,
+        en: (name: string, sign: string, n: string) => `${name} ${sign}${n}`
+      },
+      sentence: { sv: (parts: string) => `${parts}.`, en: (parts: string) => `${parts}.` },
+      nothing: { sv: 'Mätarna står still.', en: 'The meters stand still.' }
+    },
+    lesson: {
+      label: {
+        sv: (weekday: string, hour: string) => `${weekday} · Stängt ${hour}.00 · kvällens lärdom`,
+        en: (weekday: string, hour: string) => `${weekday} · Closed ${hour}:00 · tonight’s lesson`
+      },
+      wentWrong: {
+        sv: (clock: string, step: string, ask: string) => `Det som gick fel · ${clock} · ${step}, ${ask}`,
+        en: (clock: string, step: string, ask: string) => `What went wrong · ${clock} · ${step}, ${ask}`
+      },
+      also: {
+        sv: (clock: string, step: string, ask: string) => `Också · ${clock} · ${step}, ${ask}`,
+        en: (clock: string, step: string, ask: string) => `Also · ${clock} · ${step}, ${ask}`
+      },
+      question: { sv: (q: string) => `Frågan: ${q}`, en: (q: string) => `The question: ${q}` },
+      youChose: { sv: (label: string) => `Du valde: ${label}.`, en: (label: string) => `You chose: ${label}.` },
+      staffDecided: {
+        sv: 'Du svarade inte i tid, och personalen beslutade själv.',
+        en: 'You did not answer in time, and the staff decided for themselves.'
+      },
+      right: { sv: (label: string) => `Rätt var: ${label}.`, en: (label: string) => `The right answer was: ${label}.` },
+      noneTitle: { sv: 'Varje raket höll', en: 'Every rocket held' },
+      gridRocket: { sv: 'Raket', en: 'Rocket' },
+      legendCleared: { sv: '✓ klarat', en: '✓ passed' },
+      legendFailed: { sv: '✗ fel, personalen tog över', en: '✗ wrong, staff took over' },
+      legendUnreached: { sv: '— nåddes inte', en: '— not reached' },
+      cellCleared: { sv: 'klarat', en: 'passed' },
+      cellFailed: { sv: 'fel, personalen tog över', en: 'wrong, staff took over' },
+      cellUnreached: { sv: 'nåddes inte', en: 'not reached' },
+      summary: {
+        sv: (n: string, total: string) => `${n} av ${total} steg klarade i kväll.`,
+        en: (n: string, total: string) => `${n} of ${total} steps cleared tonight.`
+      },
+      practice: {
+        sv: (pavilion: string) => `Öva i ${pavilion} i morgon`,
+        en: (pavilion: string) => `Practise in ${pavilion} tomorrow`
+      },
+      toStory: { sv: 'Till kvällsberättelsen', en: 'Tonight’s story' }
+    },
+    story: {
+      label: {
+        sv: (weekday: string, hour: string) => `${weekday} kväll · Stängt ${hour}.00`,
+        en: (weekday: string, hour: string) => `${weekday} evening · Closed ${hour}:00`
+      },
+      title: {
+        sv: (weekday: string, business: string) => `${weekday} i ${business}`,
+        en: (weekday: string, business: string) => `${weekday} at ${business}`
+      },
+      weekdayDefinite: {
+        sv: { mon: 'Måndagen', tue: 'Tisdagen', wed: 'Onsdagen', thu: 'Torsdagen', fri: 'Fredagen', sat: 'Lördagen', sun: 'Söndagen' } as Record<string, string>,
+        en: { mon: 'Monday', tue: 'Tuesday', wed: 'Wednesday', thu: 'Thursday', fri: 'Friday', sat: 'Saturday', sun: 'Sunday' } as Record<string, string>
+      },
+      evening: { sv: 'Kvällen', en: 'The evening' },
+      wentWell: { sv: 'Det som gick bra', en: 'What went well' },
+      wentWrong: { sv: 'Det som gick fel', en: 'What went wrong' },
+      cause: { sv: (why: string) => `Orsak: ${why}`, en: (why: string) => `Cause: ${why}` },
+      noCause: {
+        sv: 'Orsak: inget svar i tid, och personalen fick besluta själv.',
+        en: 'Cause: no answer in time, and the staff had to decide for themselves.'
+      },
+      nothingWell: { sv: 'Ingen raket höll hela vägen i kväll.', en: 'No rocket held all the way tonight.' },
+      nothingWrong: { sv: 'Inget gick fel i kväll.', en: 'Nothing went wrong tonight.' },
+      back: { sv: 'Tillbaka till lärdomen', en: 'Back to the lesson' }
+    },
+    stranded: {
+      label: { sv: 'Ingen verksamhet · ingen kassa', en: 'No business · no cash' },
+      medals: {
+        sv: 'Dina medaljer finns kvar. Det du har lärt dig tas aldrig ifrån dig.',
+        en: 'Your medals stay. What you have learned is never taken from you.'
+      },
+      cashShort: { sv: 'Kassan räcker inte till en ny insats.', en: 'Your cash won’t cover a new stake.' },
+      toHouse: { sv: 'Gå till Måltidens hus', en: 'Go to the House of the Meal' },
+      title: { sv: 'Banken lånar inte ut i dag.', en: 'The bank won’t lend today.' }
+    }
+  },
+  menu: {
+    button: { sv: 'Meny', en: 'Menu' },
+    firstPerson: { sv: 'Förstapersonsprototypen', en: 'First-person prototype' },
+    language: { sv: 'Språk', en: 'Language' },
+    english: { sv: 'English', en: 'English' },
+    swedish: { sv: 'Svenska', en: 'Svenska' }
+  }
+};
+
+// En tabell med { sv, en }-löv → samma tabell med ett språks värden.
+export type ForLang<T> = T extends { sv: infer A; en: infer B } ? A | B : { readonly [K in keyof T]: ForLang<T[K]> };
+
+export type GameStrings = ForLang<typeof TABLE>;
+
+function isLeaf(v: unknown): v is Entry {
+  if (!v || typeof v !== 'object' || Array.isArray(v)) return false;
+  const keys = Object.keys(v);
+  return keys.length === 2 && 'sv' in v && 'en' in v;
+}
+
+// Bygger tabellen för ett språk.
+export function pickLang<T>(table: T, lang: Lang): ForLang<T> {
+  const walk = (node: unknown): unknown => {
+    if (isLeaf(node)) return (node as Record<Lang, unknown>)[lang];
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(node as Record<string, unknown>)) out[k] = walk(v);
+    return out;
+  };
+  return walk(table) as ForLang<T>;
+}

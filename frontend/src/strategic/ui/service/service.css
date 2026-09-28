@@ -107,7 +107,9 @@
   padding: calc(22 * var(--nx-u)) calc(32 * var(--nx-u)) calc(24 * var(--nx-u));
   border-top: var(--nx-line) solid var(--nx-ink);
   font-size: calc(20 * var(--nx-u)); line-height: 1.4; color: var(--nx-ink-2);
+  display: flex; justify-content: space-between; align-items: baseline; gap: calc(24 * var(--nx-u));
 }
+.nx-rocket-keys { color: var(--nx-ink); font-weight: 800; white-space: nowrap; }
 
 /* ------------------------------------------------------------------ */
 /* Mätarna: kassa, gästerna, personalen — tio steg var, utan tal        */

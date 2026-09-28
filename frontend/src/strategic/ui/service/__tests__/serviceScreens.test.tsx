@@ -150,7 +150,7 @@ describe('ORDER 271 — raketkortet (R1–R3)', () => {
     expect(byTestId(container, 'incident-step-phronesis')!.getAttribute('data-state')).toBe('unreached');
     const role = after.incidents.lastOutcome!.takeover!.role;
     const word = strings.service.incident.staffRoles[role];
-    expect(byTestId(container, 'incident-band')!.textContent).toContain(strings.rocket.card.wrong(word[0].toUpperCase() + word.slice(1)));
+    expect(byTestId(container, 'incident-band')!.textContent).toContain(strings.rocket.card.wrong(word));
     act(() => { vi.advanceTimersByTime(INCIDENTS.revealSeconds * 1000 + 10); });
     expect(byTestId(container, 'incident-card')).toBeNull();
   });

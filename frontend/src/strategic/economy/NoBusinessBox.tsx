@@ -86,7 +86,7 @@ export function NoBusinessBox({ onOpenHouse, onOpenBank, hidden }: { onOpenHouse
       >
         <div data-testid="screen-X1">
           <NxLabel>{x.label}</NxLabel>
-          <h2 id="stranded-heading" className="nx-heading">{t.heading}</h2>
+          <h2 id="stranded-heading" className="nx-heading">{ready ? t.heading : x.title}</h2>
           <ul className="nx-stranded-rows">
             <li data-testid="no-business-medals"><MedalIcon /><span>{x.medals}</span></li>
             {!ready && (

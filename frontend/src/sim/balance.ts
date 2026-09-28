@@ -490,6 +490,9 @@ export const SITTING = {
   openQuestion: 'F31',
   serviceStartHour: 18,
   serviceEndHour: 23,
+  // ORDER 273 (Designs leverans 2026-09-28 §3): de sista minuterna före
+  // stängning visar klockan "Last orders" och en accentfärgad stapel.
+  lastOrdersMinutes: 30,
   stayGameMinutes: { vardaglig: 75, formell: 90 },
   minDiningGameMinutes: 10
 } as const;

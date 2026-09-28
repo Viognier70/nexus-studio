@@ -42,7 +42,7 @@ function reputationBand(v: number): string {
 
 function formatKSEK(v: number): string {
   const rounded = Math.round(v);
-  return rounded.toLocaleString('en-GB') + ' ' + T.unit;
+  return T.thousands(rounded.toLocaleString('en-GB'));
 }
 
 // -------- styles --------------------------------------------------------
@@ -294,7 +294,7 @@ export function PlayerPanel() {
           <div style={HEADING_STYLE}>Turnover</div>
           <div style={ROW_STYLE}>
             <span style={{ opacity: 0.72 }}>Per seat · day</span>
-            <span>{rev.perSeatPerDay > 0 ? `${rev.perSeatPerDay.toFixed(2)} ${T.unit}` : '—'}</span>
+            <span>{rev.perSeatPerDay > 0 ? T.thousands(rev.perSeatPerDay.toFixed(2)) : '—'}</span>
           </div>
           <div style={{ ...ROW_STYLE, marginBottom: 2 }}>
             <span style={{ opacity: 0.72 }}>Lunch / Dinner</span>

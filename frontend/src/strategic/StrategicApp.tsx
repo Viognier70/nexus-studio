@@ -47,6 +47,7 @@ import { detectWebGL, WebGLFallback } from '../webgl/WebGLFallback';
 import { devToggles } from '../lib/devToggles';
 import './strategic.css';
 import { ServiceClock } from './ui/service/ServiceClock';
+import { useLanguage } from '../content/language';
 
 interface StrategicAppProps {
   // ORDER 267 — spelaren kommer från bussen (VS001): introduktionen börjar.
@@ -57,6 +58,10 @@ interface StrategicAppProps {
 
 export function StrategicApp({ startIntroduction = false, onNewGame }: StrategicAppProps = {}) {
   const [webglOk] = useState<boolean>(() => detectWebGL());
+  // ORDER 273 — språkbytet (menyn) ritar om hela gränssnittet: roten ritas
+  // om när språket byts, och alla komponenter under läser `strings` på nytt.
+  // Ingen nyckel (remount), så speltillståndet och scenen står kvar.
+  useLanguage();
   if (!webglOk) {
     return <WebGLFallback onRestart={() => window.location.reload()} />;
   }
