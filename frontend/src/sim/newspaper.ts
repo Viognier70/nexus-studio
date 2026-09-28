@@ -71,7 +71,9 @@ function market(evenings: readonly EveningRecord[], sim: SimulationState): Newsp
   const cls = sim.economy.businessClass;
   const guests = evenings.reduce((a, e) => a + e.guests, 0);
   const cap = evenings.reduce((a, e) => a + e.marketCap, 0);
-  const who = cls ? strings.economy.classesDefinite[cls] : strings.economy.bankNone;
+  // ORDER 271 — utan verksamhet finns inga gäster att räkna.
+  if (!cls) return { id: 'market', heading: t.marketHeading, lines: [t.marketNoBusiness] };
+  const who = strings.economy.classesDefinite[cls];
   const capitalised = who.charAt(0).toUpperCase() + who.slice(1);
   return { id: 'market', heading: t.marketHeading, lines: [t.market[shareWord(cap > 0 ? guests / cap : 0)](capitalised)] };
 }

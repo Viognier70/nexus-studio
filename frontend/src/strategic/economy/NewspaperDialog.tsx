@@ -4,9 +4,11 @@
 // (sim/newspaper.ts). Öppnas av sig själv söndag morgon efter varje
 // avräkning och kan läsas igen från morgonraden.
 //
-// PLACEHOLDER_DESIGN — tidningens utseende (designspecifikationen,
-// "Söndagstidningen") finns inte i Designs leveranser. Tills dess är det
-// en enkel spalt med rubriker.
+// ORDER 271 — formen efter Designs skärm T1 (paket 1): tidningssidan
+// med recensionen i två spalter och marknaden, banken och det som kommer
+// i sidospalten. Innehållet är oförändrat (sim/newspaper.ts). Designens
+// vinglas, citat och tidningsnamn är platshållare utan motsvarighet i
+// spelet och är inte byggda.
 
 import { useEffect, useState } from 'react';
 import { strings } from '../../content/strings.sv';
@@ -16,23 +18,10 @@ import { requirementsFor } from '../../sim/economy';
 import { useBusiness } from '../business/BusinessContext';
 import { useSimState } from '../simulation/SimulationProvider';
 import { missingInWords, settlementInWords } from './BankDialog';
+import { NxButton } from '../ui/system/components';
+import '../ui/screens/screens.css';
 
 const t = strings.newspaper;
-
-const BACKDROP: React.CSSProperties = {
-  position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex',
-  alignItems: 'center', justifyContent: 'center', padding: 16, zIndex: 150
-};
-const PAPER: React.CSSProperties = {
-  width: 'min(560px, 100%)', maxHeight: 'calc(100vh - 32px)', overflowY: 'auto', padding: '18px 22px',
-  background: '#f3eddc', color: '#2c241c', border: '1px solid #a8926a', borderRadius: 3,
-  fontFamily: 'Georgia, "Times New Roman", serif', fontSize: 15, lineHeight: 1.5, boxShadow: '0 8px 28px rgba(0,0,0,0.5)',
-  boxSizing: 'border-box'
-};
-const BUTTON: React.CSSProperties = {
-  marginTop: 14, padding: '8px 14px', minHeight: 40, background: '#3c2c1e', color: '#f5f0e0',
-  border: '1px solid #a8926a', borderRadius: 3, fontFamily: 'system-ui, sans-serif', fontSize: 13, cursor: 'pointer'
-};
 
 // Öppen söndag morgon för veckan som just avräknats, tills spelaren
 // lägger ifrån sig tidningen; `openAgain` öppnar den igen.
@@ -58,7 +47,7 @@ export function useNewspaper() {
   };
 }
 
-export function NewspaperDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+export function NewspaperDialog({ open, onClose, onOpenBank }: { open: boolean; onClose: () => void; onOpenBank?: () => void }) {
   const sim = useSimState();
   const { business } = useBusiness();
   if (!open) return null;
@@ -66,27 +55,49 @@ export function NewspaperDialog({ open, onClose }: { open: boolean; onClose: () 
     missingInWords(id, sim.medals, requirementsFor(sim, id))
   );
   if (!paper) return null;
+  const review = paper.sections.find((x) => x.id === 'review');
+  const side = paper.sections.filter((x) => x.id !== 'review');
+  const cal = calendarFor(sim.day.dayNumber);
   return (
-    <div style={BACKDROP} role="dialog" aria-modal="true" aria-label={paper.masthead}>
-      <article style={PAPER} data-testid="newspaper">
-        <header style={{ borderBottom: '2px solid #2c241c', paddingBottom: 6, marginBottom: 10, textAlign: 'center' }}>
-          <div style={{ fontSize: 28, fontWeight: 700, letterSpacing: 1 }}>{paper.masthead}</div>
-          <div style={{ fontSize: 12, fontFamily: 'system-ui, sans-serif', letterSpacing: 1, textTransform: 'uppercase', opacity: 0.75 }}>
-            {paper.subhead}
+    <div className="nx nx-screen nxs-paper-back" role="dialog" aria-modal="true" aria-label={paper.masthead}>
+      <article className="nxs-paper" data-testid="newspaper">
+        <header className="nxs-paper-head" data-testid="screen-T1">
+          <h1 className="nxs-masthead">{paper.masthead}</h1>
+          <div className="nx-small" style={{ fontWeight: 700, textAlign: 'right' }}>
+            <div>{strings.calendar.weekdays[cal.weekday]}</div>
+            <div>{paper.subhead}</div>
           </div>
         </header>
-        {paper.sections.map((section) => (
-          <section key={section.id} style={{ marginTop: 12 }} data-testid={`newspaper-${section.id}`}>
-            <div style={{ fontSize: 11, fontFamily: 'system-ui, sans-serif', letterSpacing: 1.2, textTransform: 'uppercase', opacity: 0.7 }}>
-              {section.heading}
+        <div className="nxs-paper-grid">
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            {review && (
+              <section data-testid={`newspaper-${review.id}`}>
+                <div className="nxs-review-head">
+                  <span className="nx-label nxs-chip">{review.heading}</span>
+                </div>
+                {review.title && <h2 className="nx-heading nxs-mt-24">{review.title}</h2>}
+                <p className="nx-small nxs-columns">{review.lines.join(' ')}</p>
+              </section>
+            )}
+            <div className="nxs-foot" style={{ marginTop: 'auto' }}>
+              <NxButton kind="quiet" testId="close-newspaper" onClick={onClose}>{t.close}</NxButton>
+              {onOpenBank && (
+                <div className="nxs-btn-primary-w">
+                  <NxButton testId="newspaper-to-bank" onClick={onOpenBank}>{strings.screens.newspaper.toBank}</NxButton>
+                </div>
+              )}
             </div>
-            {section.title && <h3 style={{ margin: '2px 0 4px', fontSize: 19 }}>{section.title}</h3>}
-            <p style={{ margin: 0 }}>{section.lines.join(' ')}</p>
-          </section>
-        ))}
-        <button type="button" style={BUTTON} data-testid="close-newspaper" onClick={onClose}>
-          {t.close}
-        </button>
+          </div>
+          <aside>
+            {side.map((section) => (
+              <section key={section.id} className="nxs-side-section" data-testid={`newspaper-${section.id}`}>
+                <div className="nx-label">{section.heading}</div>
+                {section.title && <h3>{section.title}</h3>}
+                <p className="nx-small nxs-mt-8">{section.lines.join(' ')}</p>
+              </section>
+            ))}
+          </aside>
+        </div>
       </article>
     </div>
   );

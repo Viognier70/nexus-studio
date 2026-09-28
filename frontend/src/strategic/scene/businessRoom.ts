@@ -45,6 +45,7 @@
 import * as THREE from 'three';
 
 import type { StaffRole } from '../types';
+import { GRAY_BOX_CAMERA } from '../content/grythyttan';
 
 import * as Restaurant from './restaurantRoom';
 import * as Brewpub from './brewpubRoom';
@@ -214,6 +215,20 @@ function moduleFor(roomClass: RoomClass): any {
 }
 
 /**
+ * ORDER 271 — rummets mått i spelarens byggnad. Vinbaren ur Designs paket 1
+ * kräver minst MIN_WIDTH_M × MIN_DEPTH_M (14,6 × 11,0 m); byggnadens OBB
+ * (w869907975, interiorLayout) är 14,5 × 10,1 m. Under minimimåtten står
+ * loungerna (z 5,1) utanför norra väggen och kameraprovet faller. Rummet
+ * byggs därför i minst minimimåtten, centrerat i byggnaden: väggarna står
+ * upp till 0,45 m utanför OSM-polygonen på långsidorna. Övriga klasser får
+ * byggnadens mått oförändrade. Öppen fråga till Design/VO i rapporten.
+ */
+export function roomSizeFor(roomClass: RoomClass, width: number, depth: number): { width: number; depth: number } {
+  if (roomClass !== 'vinbaren') return { width, depth };
+  return { width: Math.max(width, WineBar.MIN_WIDTH_M), depth: Math.max(depth, WineBar.MIN_DEPTH_M) };
+}
+
+/**
  * Bygger ett rum av valfri klass. `opts` skickas vidare oförändrat till
  * klassens egen fabrik — se respektive fil för vad den tar.
  */
@@ -337,6 +352,18 @@ export function updateRoom(room: BusinessRoom, phase: number): void {
  * ignorerar alpha.
  */
 const SHELL_MESH_NAMES = new Set(['wallN', 'wallS', 'wallE', 'wallW', 'roofSlab']);
+
+/**
+ * ORDER 271 — skalets opacitet vid ett kameraavstånd: samma smoothstep som
+ * PlayerBusiness roof-fade (ORDER 184), flyttad hit så att scenerna och
+ * vinbarens kameraprov läser samma formel. Helt borta under 28 m.
+ */
+export function shellOpacityForDistance(distance: number): number {
+  const a = GRAY_BOX_CAMERA.restaurantRoofFadeMid - GRAY_BOX_CAMERA.restaurantRoofFadeHalf;
+  const b = GRAY_BOX_CAMERA.restaurantRoofFadeMid + GRAY_BOX_CAMERA.restaurantRoofFadeHalf;
+  const t = Math.max(0, Math.min(1, (distance - a) / (b - a)));
+  return t * t * (3 - 2 * t);
+}
 
 export function setShellOpacity(room: BusinessRoom, opacity: number): void {
   const clamped = Math.max(0, Math.min(1, opacity));
@@ -576,7 +603,11 @@ const STATION_MAP: Record<RoomClass, Record<StaffRole, StationTarget>> = {
   // Öppen Design-fråga: STATION_ROLE_MAPPING_QUESTION_2026-09-10.md.
   ölkrogen:       { värd: 'taps',       servitör: 'barkeep', kock: 'brewer', lärling: 'cook' },
 
-  vinbaren:       { värd: '__entrance', servitör: 'runner', kock: 'cook',   lärling: 'runner' },
+  // ORDER 271 — vinbaren ur Designs paket 1 har stationerna bartender,
+  // sommelier, server, cookHot, cookCold, dish och dj. Värden i en vinbar
+  // är sommelieren (omdömet i rummet, INCIDENTS.takeoverRole.phronesis),
+  // lärlingen står vid disken. Samma mappning som WineBarFigures.tsx.
+  vinbaren:       { värd: 'sommelier',  servitör: 'server', kock: 'cookHot', lärling: 'dish' },
   gästgiveriet:   { värd: 'host',       servitör: 'hallA',  kock: 'chef',   lärling: null },
   foodtrucken:    { värd: null,         servitör: 'window', kock: 'cook',   lärling: null },
   nattklubben:    { värd: 'door',       servitör: 'floor',  kock: null,     lärling: null }

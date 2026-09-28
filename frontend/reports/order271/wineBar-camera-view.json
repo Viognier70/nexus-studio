@@ -1,0 +1,248 @@
+{
+  "source": "src/strategic/scene/__tests__/wineBarRoom.test.ts",
+  "shellOpacity": 0,
+  "camera": {
+    "preset": "myBusiness",
+    "distance": 24,
+    "pitch": 0.8726646259971648,
+    "fov": 45,
+    "apply": "CameraController.applyCameraState"
+  },
+  "neighbours": [
+    "w193810935",
+    "w869907971",
+    "w869907973",
+    "w869907976",
+    "w869907977"
+  ],
+  "rows": [
+    {
+      "level": "bas",
+      "yaw": 0.4,
+      "cut": [
+        "E"
+      ],
+      "seatsSeen": 20,
+      "seats": 20,
+      "stationsSeen": 7,
+      "stations": 7,
+      "entranceSeen": true,
+      "blocked": [],
+      "outOfFrame": []
+    },
+    {
+      "level": "bas",
+      "yaw": 1.185,
+      "cut": [
+        "S"
+      ],
+      "seatsSeen": 20,
+      "seats": 20,
+      "stationsSeen": 7,
+      "stations": 7,
+      "entranceSeen": true,
+      "blocked": [],
+      "outOfFrame": []
+    },
+    {
+      "level": "bas",
+      "yaw": 1.971,
+      "cut": [
+        "S"
+      ],
+      "seatsSeen": 20,
+      "seats": 20,
+      "stationsSeen": 7,
+      "stations": 7,
+      "entranceSeen": true,
+      "blocked": [],
+      "outOfFrame": []
+    },
+    {
+      "level": "bas",
+      "yaw": 2.756,
+      "cut": [
+        "S",
+        "W"
+      ],
+      "seatsSeen": 20,
+      "seats": 20,
+      "stationsSeen": 7,
+      "stations": 7,
+      "entranceSeen": true,
+      "blocked": [],
+      "outOfFrame": []
+    },
+    {
+      "level": "bas",
+      "yaw": 3.542,
+      "cut": [
+        "W"
+      ],
+      "seatsSeen": 20,
+      "seats": 20,
+      "stationsSeen": 7,
+      "stations": 7,
+      "entranceSeen": true,
+      "blocked": [],
+      "outOfFrame": []
+    },
+    {
+      "level": "bas",
+      "yaw": 4.327,
+      "cut": [
+        "N"
+      ],
+      "seatsSeen": 20,
+      "seats": 20,
+      "stationsSeen": 7,
+      "stations": 7,
+      "entranceSeen": true,
+      "blocked": [],
+      "outOfFrame": []
+    },
+    {
+      "level": "bas",
+      "yaw": 5.112,
+      "cut": [
+        "N"
+      ],
+      "seatsSeen": 20,
+      "seats": 20,
+      "stationsSeen": 7,
+      "stations": 7,
+      "entranceSeen": true,
+      "blocked": [],
+      "outOfFrame": []
+    },
+    {
+      "level": "bas",
+      "yaw": 5.898,
+      "cut": [
+        "N",
+        "E"
+      ],
+      "seatsSeen": 20,
+      "seats": 20,
+      "stationsSeen": 7,
+      "stations": 7,
+      "entranceSeen": true,
+      "blocked": [],
+      "outOfFrame": []
+    },
+    {
+      "level": "platina",
+      "yaw": 0.4,
+      "cut": [
+        "E"
+      ],
+      "seatsSeen": 20,
+      "seats": 20,
+      "stationsSeen": 7,
+      "stations": 7,
+      "entranceSeen": true,
+      "blocked": [],
+      "outOfFrame": []
+    },
+    {
+      "level": "platina",
+      "yaw": 1.185,
+      "cut": [
+        "S"
+      ],
+      "seatsSeen": 20,
+      "seats": 20,
+      "stationsSeen": 7,
+      "stations": 7,
+      "entranceSeen": true,
+      "blocked": [],
+      "outOfFrame": []
+    },
+    {
+      "level": "platina",
+      "yaw": 1.971,
+      "cut": [
+        "S"
+      ],
+      "seatsSeen": 20,
+      "seats": 20,
+      "stationsSeen": 7,
+      "stations": 7,
+      "entranceSeen": true,
+      "blocked": [],
+      "outOfFrame": []
+    },
+    {
+      "level": "platina",
+      "yaw": 2.756,
+      "cut": [
+        "S",
+        "W"
+      ],
+      "seatsSeen": 20,
+      "seats": 20,
+      "stationsSeen": 7,
+      "stations": 7,
+      "entranceSeen": true,
+      "blocked": [],
+      "outOfFrame": []
+    },
+    {
+      "level": "platina",
+      "yaw": 3.542,
+      "cut": [
+        "W"
+      ],
+      "seatsSeen": 20,
+      "seats": 20,
+      "stationsSeen": 7,
+      "stations": 7,
+      "entranceSeen": true,
+      "blocked": [],
+      "outOfFrame": []
+    },
+    {
+      "level": "platina",
+      "yaw": 4.327,
+      "cut": [
+        "N"
+      ],
+      "seatsSeen": 20,
+      "seats": 20,
+      "stationsSeen": 7,
+      "stations": 7,
+      "entranceSeen": true,
+      "blocked": [],
+      "outOfFrame": []
+    },
+    {
+      "level": "platina",
+      "yaw": 5.112,
+      "cut": [
+        "N"
+      ],
+      "seatsSeen": 20,
+      "seats": 20,
+      "stationsSeen": 7,
+      "stations": 7,
+      "entranceSeen": true,
+      "blocked": [],
+      "outOfFrame": []
+    },
+    {
+      "level": "platina",
+      "yaw": 5.898,
+      "cut": [
+        "N",
+        "E"
+      ],
+      "seatsSeen": 20,
+      "seats": 20,
+      "stationsSeen": 7,
+      "stations": 7,
+      "entranceSeen": true,
+      "blocked": [],
+      "outOfFrame": []
+    }
+  ]
+}

@@ -10,56 +10,21 @@ import { useSimState } from '../simulation/SimulationProvider';
 import { PREP_ITEMS } from '../simulation/miseEnPlace';
 import { businessHasMiseEnPlace } from './businessClass';
 import { strings } from '../../content/strings.sv';
+import { NxLabel, NxSteps, u } from '../ui/system/components';
+import '../ui/screens/screens.css';
 
+// ORDER 271 — formen efter Designs system (paket 1, 00-SYS): en panel på
+// rutnätet över spelvyn, och beredskapen som tio steg utan tal
+// ("Inga siffertavlor", LEVERANSNOT §3). Beredskapen är densamma
+// (day.prepReadiness), bara visad som steg i stället för procent.
 const PANEL_STYLE: React.CSSProperties = {
   position: 'absolute',
-  top: 260,
-  left: 20,
-  width: 220,
-  padding: '10px 14px',
-  background: 'rgba(20, 14, 10, 0.62)',
-  color: '#f0e8d4',
-  border: '1px solid rgba(168, 146, 106, 0.35)',
-  borderRadius: 3,
-  fontFamily: 'system-ui, sans-serif',
-  fontSize: 12,
-  zIndex: 33,
-  pointerEvents: 'auto'
+  top: u(160),
+  left: u(72),
+  width: `max(240px, ${u(420)})`,
+  padding: `${u(24)} ${u(28)}`,
+  zIndex: 33
 };
-
-const HEADING_STYLE: React.CSSProperties = {
-  fontSize: 10,
-  letterSpacing: 1.4,
-  textTransform: 'uppercase',
-  opacity: 0.62,
-  marginBottom: 6
-};
-
-const ROW_STYLE: React.CSSProperties = {
-  display: 'grid',
-  gridTemplateColumns: '1fr 40px',
-  gap: 6,
-  alignItems: 'center',
-  padding: '3px 0',
-  fontFamily: 'ui-monospace, "SF Mono", Menlo, Consolas, monospace',
-  fontSize: 12
-};
-
-const BAR_TRACK_STYLE: React.CSSProperties = {
-  gridColumn: '1 / -1',
-  height: 4,
-  background: 'rgba(30, 20, 15, 0.55)',
-  borderRadius: 2,
-  overflow: 'hidden',
-  marginTop: 2,
-  marginBottom: 4
-};
-
-function readinessColour(r: number): string {
-  if (r >= 0.7) return '#7bce8f';   // green
-  if (r >= 0.4) return '#e8c169';   // amber
-  return '#d97070';                  // red
-}
 
 export function PrepPanel() {
   const sim = useSimState();
@@ -78,25 +43,15 @@ export function PrepPanel() {
   if (!readiness || Object.keys(readiness).length === 0) return null;
 
   return (
-    <div style={PANEL_STYLE} aria-label={strings.panels.prep.heading}>
-      <div style={HEADING_STYLE}>{strings.panels.prep.heading}</div>
+    <div className="nx nx-panel" style={PANEL_STYLE} aria-label={strings.panels.prep.heading} data-testid="prep-panel">
+      <NxLabel>{strings.panels.prep.heading}</NxLabel>
       {PREP_ITEMS.map((item) => {
         const r = readiness[item.id] ?? 0;
+        const name = strings.panels.prep.items[item.id] ?? item.id;
         return (
-          <div key={item.id}>
-            <div style={ROW_STYLE}>
-              <span>{strings.panels.prep.items[item.id] ?? item.id}</span>
-              <span style={{ color: readinessColour(r), textAlign: 'right' }}>
-                {(r * 100).toFixed(0)}%
-              </span>
-            </div>
-            <div style={BAR_TRACK_STYLE}>
-              <div style={{
-                width: `${(r * 100).toFixed(0)}%`,
-                height: '100%',
-                background: readinessColour(r)
-              }} />
-            </div>
+          <div key={item.id} style={{ display: 'grid', gridTemplateColumns: `${u(150)} 1fr`, gap: u(16), alignItems: 'center', marginTop: u(14) }}>
+            <span className="nx-small">{name}</span>
+            <NxSteps value={r * 10} label={name} testId={`prep-${item.id}`} />
           </div>
         );
       })}

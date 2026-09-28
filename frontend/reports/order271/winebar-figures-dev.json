@@ -1,0 +1,355 @@
+{
+  "url": "http://localhost:5179/#playtest=1&business=vinbaren&start=dinner15",
+  "shots": [
+    {
+      "file": "w01-vinbaren-spelarens-kamera.png",
+      "what": "myBusiness-kameran (24 m, 50°), strax efter öppning",
+      "probe": {
+        "simTime": 39.000000000000014,
+        "simGuests": [],
+        "staff": [
+          {
+            "i": 0,
+            "pose": "idle",
+            "x": -4.1,
+            "z": 2.7,
+            "stress": 0
+          },
+          {
+            "i": 1,
+            "pose": "idle",
+            "x": -4.1,
+            "z": -2,
+            "stress": 0
+          },
+          {
+            "i": 2,
+            "pose": "pour",
+            "x": -0.9,
+            "z": -0.74,
+            "stress": 0
+          },
+          {
+            "i": 3,
+            "pose": "idle",
+            "x": 1.3,
+            "z": 0.74,
+            "stress": 0
+          },
+          {
+            "i": 4,
+            "pose": "cook",
+            "x": -6.2,
+            "z": 3.9,
+            "stress": 0
+          },
+          {
+            "i": 5,
+            "pose": "dish",
+            "x": -6.4,
+            "z": 2.75,
+            "stress": 0
+          }
+        ],
+        "guests": [],
+        "pending": 0
+      }
+    },
+    {
+      "file": "w02-kvallen-tidpunkt-1.png",
+      "what": "kvällen, när minst fyra gäster sitter i simuleringen",
+      "probe": {
+        "simTime": 174.9999999999986,
+        "simGuests": [
+          "dining",
+          "dining",
+          "dining",
+          "ordering",
+          "ordering",
+          "ordering",
+          "arriving"
+        ],
+        "staff": [
+          {
+            "i": 0,
+            "pose": "idle",
+            "x": -4.1,
+            "z": 2.7,
+            "stress": 0
+          },
+          {
+            "i": 1,
+            "pose": "takeOrder",
+            "x": -4.2,
+            "z": -3.6,
+            "stress": 0
+          },
+          {
+            "i": 2,
+            "pose": "walk",
+            "x": -2.67,
+            "z": -0.64,
+            "stress": 0
+          },
+          {
+            "i": 3,
+            "pose": "idle",
+            "x": 1.3,
+            "z": 0.74,
+            "stress": 0
+          },
+          {
+            "i": 4,
+            "pose": "cook",
+            "x": -6.2,
+            "z": 3.9,
+            "stress": 0
+          },
+          {
+            "i": 5,
+            "pose": "dish",
+            "x": -6.4,
+            "z": 2.75,
+            "stress": 0
+          }
+        ],
+        "guests": [
+          {
+            "id": "gst-1",
+            "pose": "talk",
+            "seated": true
+          },
+          {
+            "id": "gst-2",
+            "pose": "order",
+            "seated": true
+          },
+          {
+            "id": "gst-3",
+            "pose": "readMenu",
+            "seated": true
+          },
+          {
+            "id": "gst-4",
+            "pose": "readMenu",
+            "seated": true
+          },
+          {
+            "id": "gst-5",
+            "pose": "arrive",
+            "seated": false
+          },
+          {
+            "id": "gst-6",
+            "pose": "arrive",
+            "seated": false
+          },
+          {
+            "id": "gst-7",
+            "pose": "arrive",
+            "seated": false
+          }
+        ],
+        "pending": 0
+      }
+    },
+    {
+      "file": "w03-kvallen-tidpunkt-2.png",
+      "what": "kvällen, 35 s senare",
+      "probe": {
+        "simTime": 249.59999999999437,
+        "simGuests": [
+          "dining",
+          "dining",
+          "dining",
+          "dining",
+          "dining",
+          "dining",
+          "dining"
+        ],
+        "staff": [
+          {
+            "i": 0,
+            "pose": "walk",
+            "x": -4.1,
+            "z": -0.49,
+            "stress": 0
+          },
+          {
+            "i": 1,
+            "pose": "walk",
+            "x": -1.04,
+            "z": -3.25,
+            "stress": 0
+          },
+          {
+            "i": 2,
+            "pose": "pour",
+            "x": -0.9,
+            "z": -0.74,
+            "stress": 0
+          },
+          {
+            "i": 3,
+            "pose": "idle",
+            "x": 1.3,
+            "z": 0.74,
+            "stress": 0
+          },
+          {
+            "i": 4,
+            "pose": "serveWalk",
+            "x": -5.05,
+            "z": 2.7,
+            "stress": 0
+          },
+          {
+            "i": 5,
+            "pose": "dish",
+            "x": -6.4,
+            "z": 2.75,
+            "stress": 0
+          }
+        ],
+        "guests": [
+          {
+            "id": "gst-1",
+            "pose": "talk",
+            "seated": true
+          },
+          {
+            "id": "gst-2",
+            "pose": "talk",
+            "seated": true
+          },
+          {
+            "id": "gst-3",
+            "pose": "talk",
+            "seated": true
+          },
+          {
+            "id": "gst-4",
+            "pose": "eat",
+            "seated": true
+          },
+          {
+            "id": "gst-5",
+            "pose": "toast",
+            "seated": true
+          },
+          {
+            "id": "gst-6",
+            "pose": "drink",
+            "seated": true
+          },
+          {
+            "id": "gst-7",
+            "pose": "talk",
+            "seated": true
+          }
+        ],
+        "pending": 2
+      }
+    },
+    {
+      "file": "w04-kvallen-vriden.png",
+      "what": "kameran vriden (q): väggarna på kamerasidan kapade",
+      "probe": {
+        "simTime": 262.39999999999367,
+        "simGuests": [
+          "dining",
+          "dining",
+          "dining",
+          "dining",
+          "dining",
+          "dining",
+          "dining"
+        ],
+        "staff": [
+          {
+            "i": 0,
+            "pose": "walk",
+            "x": -2.1,
+            "z": -3.31,
+            "stress": 0
+          },
+          {
+            "i": 1,
+            "pose": "serveWalk",
+            "x": -4.1,
+            "z": 1.75,
+            "stress": 0
+          },
+          {
+            "i": 2,
+            "pose": "pour",
+            "x": -0.9,
+            "z": -0.74,
+            "stress": 0
+          },
+          {
+            "i": 3,
+            "pose": "idle",
+            "x": 1.3,
+            "z": 0.74,
+            "stress": 0
+          },
+          {
+            "i": 4,
+            "pose": "walk",
+            "x": -5.85,
+            "z": 3.54,
+            "stress": 0
+          },
+          {
+            "i": 5,
+            "pose": "dish",
+            "x": -6.4,
+            "z": 2.75,
+            "stress": 0
+          }
+        ],
+        "guests": [
+          {
+            "id": "gst-1",
+            "pose": "eat",
+            "seated": true
+          },
+          {
+            "id": "gst-2",
+            "pose": "eat",
+            "seated": true
+          },
+          {
+            "id": "gst-3",
+            "pose": "eat",
+            "seated": true
+          },
+          {
+            "id": "gst-4",
+            "pose": "talk",
+            "seated": true
+          },
+          {
+            "id": "gst-5",
+            "pose": "eat",
+            "seated": true
+          },
+          {
+            "id": "gst-6",
+            "pose": "eat",
+            "seated": true
+          },
+          {
+            "id": "gst-7",
+            "pose": "drink",
+            "seated": true
+          }
+        ],
+        "pending": 0
+      }
+    }
+  ],
+  "samples": [],
+  "errors": []
+}

@@ -1,119 +1,127 @@
-// wineBarRoom — vinbar med lounger och DJ.
+// wineBarRoom — vinbaren, omgjord för Nexus v1 (DESIGN_SPEC_NEXUS_V1 §2.1, paket 1).
 //
 // SUPERSEDING_DIRECTIVE_004 (3D-scen, kroppar utan ansikten).
 // Formmall: brewpubRoom.ts. Samma kontrakt, samma koordinatkonvention,
-// samma exportmönster, samma FLAGS-disciplin.
+// samma exportmönster, samma FLAGS-disciplin. Ersätter wineBarRoom.ts
+// ur leveransen 2026-08-30 — se LEVERANS.md.
 //
-// Kontrakt (oförändrat från ölkrogen):
+// Kontrakt (oförändrat):
 //   • Ren three.js. Inga externa beroenden, ingen skinning, inga
 //     loaders, inga binära assets.
 //   • Byggs imperativt EN gång (createWineBarRoom). Inget skapas i
-//     renderloopen.
-//   • Ingen egen klocka. Det enda som rör sig (skivtallriken) drivs av
-//     en fas anroparen skickar in.
+//     renderloopen — vinväggens två lägen och kvällens två stämningar
+//     byggs båda från början och växlas med `visible`.
+//   • Ingen egen klocka. Skivtallriken och ljuslågorna drivs av faser
+//     anroparen skickar in.
 //   • Ingen simuleringslogik. Rummet är geometri.
 //
-// ── Tre avvikelser från formmallen, och varför ────────────────────
+// ── Vad specen ändrade, och vad det kostade ───────────────────────
 //
-// 1. BAKHYLLAN ÄR OBLIGATORISK HÄR. I ölkrogen var frånvaron av
-//    bakhylla ett krav — den skulle skymt tankarna, som var det
-//    gästen skulle se. I vinbaren är hyllan själv målet: flaskraden
-//    är presentationen. Samma siktlinjeresonemang, motsatt slutsats.
-//    checkSightLines() mäter därför sikten TILL hyllan, inte förbi
-//    den.
+// 1. BAREN ÄR CENTRAL. Förra planen hade disken mot västra väggen och
+//    hyllan bakom den. Specen säger "central, med synlig vinvägg", och
+//    då räcker det inte att flytta disken: en vinvägg mot en vägg är en
+//    lodrät yta, och en lodrät yta är det den strategiska kameran ser
+//    sämst (samma lärdom som glaspartiet i ölkrogen och luckan i food
+//    trucken). Vinväggen står därför MITT I baren som en dubbelsidig
+//    ryggrad: en bardisk runt tre sidor, två bartenderstråk, och
+//    flaskorna liggande med halsen ut mot båda stråken. Ovanifrån läser
+//    krönet som ett rutnät av flaskhalsar — den vågräta ytan är
+//    presentationen.
 //
-// 2. GOLVET ÄR EN PALETTPARAMETER, INTE DEKOR. silhouetteContrast.ts
-//    har EN konstant FLOOR_COLOUR ('#a89577', ur Restaurant.tsx) som
-//    hela kontrastbandet vilar på. Vinbaren har fyra golvzoner, och då
-//    gäller bandet per zon. ZONE_FLOORS + checkPaletteAgainstFloors()
-//    hävdar det i kod. Se FLAGS.zoneFloorConstant — den behöver ett
-//    beslut i silhouetteContrast.ts, inte i det här rummet.
+// 2. VINVÄGGEN VÄXER — PÅ LÄNGDEN, INTE BARA PÅ HÖJDEN. Platina i
+//    Stensöta ger fler hyllplan, men höjd syns dåligt ovanifrån och
+//    kostar sikt (en högre vägg skymmer bortre stråket). Tillväxten
+//    läggs därför i tre led som alla syns från kamerahöjd: längre
+//    (3,2 → 4,1 m), ett krön med magnumrad och en upplyst hylla på
+//    toppen. Höjden går 1,60 → 2,06 m och inte längre: 2,06 m är den
+//    höjd där en bartender i bortre stråket fortfarande syns från
+//    axlarna och upp vid PLAYER_CAMERA.pitch. Se WINE_WALL.
 //
-// 3. LOUNGEN ÄR FYRA DYNOR, INTE EN SOFFA. Uppifrån läser en
-//    genomgående sittsoffa som ett bord: en avlång platta utan
-//    platsindelning. Varje loungeplats är därför en egen dyna med
-//    0,08 m glapp emellan. Fyra dynor räknas som fyra platser av
-//    ögat, vilket är hela poängen med en läsbar plats.
+// 3. KAMERASIDANS VÄGGAR ÄR KAPADE. Specen §1: skymmer en vägg
+//    interiören är det leveransens fel. Varje vägg är två delar — sockel
+//    0–0,90 m och överdel — och updateCutaway(room, camera) döljer
+//    överdelen på de sidor kameran står utanför. checkCameraView() är
+//    provet: raycast från kameran till varje plats och station.
+//
+// 4. DJ:N STÅR I ETT HÖRN, som specen säger — sydöstra, vid entrén.
+//    Hörnet valdes för att DJ:n ska adressera det öppna golvet mellan
+//    barens östra kortände och dörren. Det golvet är tomt på en
+//    tisdag och fullt av stående gäster på en lördag: samma yta bär
+//    båda stämningarna.
+//
+// 5. LJUSET ÄR DATA, INTE LAMPOR. DayLighting och kvällscykeln äger
+//    ljuset (LEVERANSDIREKTIV §6). Rummet levererar pendlarna och
+//    ljusen som geometri med självlysande material, deras positioner
+//    som data (candles[], pendants[]) och en ljusstämning per kväll i
+//    LIGHT_MOODS — värden att läsa, inte ljuskällor rummet skapar.
 //
 // ── Koordinater (identiskt med brewpubRoom.ts) ─────────────────────
-// Byggs i byggnadens OBB-lokala ram, samma som interiorLayout.ts:
 //   lokal +X = byggnadens långa axel, entrén ligger i +X-änden
 //   lokal +Z = korta axeln
-//   origo    = polygonens centroid, golvplanet y = 0
+//   origo    = polygonens centroid, golvplanet y = 0,11 (sockeln)
 // Anroparen placerar gruppen:
 //   room.group.position.set(obb.centre[0], 0, obb.centre[1]);
 //   room.group.rotation.y = -obb.angle;
-// Alla mått i meter, alla vinklar i radianer. Kurs (`facing`) är yaw i
-// figurens ram: 0 = tittar mot lokal +Z, +PI/2 = mot +X.
+// Kurs (`facing`) är yaw i figurens ram: 0 = mot lokal +Z, +PI/2 = mot +X.
 //
-// ── Planlösningen, i ett stycke ───────────────────────────────────
-// Rummet läses tvärs mot ölkrogens logik. Där ölen gick tank → disk →
-// gäst längs en axel har vinbaren ingen produktionslinje: bardisken
-// är mitten, och allt annat vänder sig mot den. Flaskhyllan står i
-// -X mot väggen, disken framför den, barstolarna framför disken.
-//   Loungen ligger längs norra väggen i två grupper, tvåorna i södra
-// bandet öster om DJ:n. DJ:n står vid södra väggen mitt för det öppna
-// golvet mellan disk och tvåor — inte i ett bakre hörn, för en pult
-// som ingen plats vänder sig mot är en pult ingen ser. Köket är
-// instängt i NV-hörnet med två stationer och en passlucka; bakre
-// SV-hörnet är vinförråd.
+// ── Planen, i ett stycke ──────────────────────────────────────────
+// Rummet 15,6 × 11,8 m. Baren står mitt i, 6,0 × 3,6 m, öppen mot väster
+// där personalen går in från köket. Köket är instängt i NV-hörnet med
+// två stationer (kallskänk, varm) och en diskplats. Loungerna står längs
+// norra väggen, tvåorna längs södra, DJ:n i SO-hörnet och vinförrådet i
+// SV-hörnet. Det öppna golvet mellan barens östra kortände och dörren
+// har huvudgolvets färg och ingen egen zon.
 //
-// Det öppna golvet i mitten har med flit HUVUDGOLVETS färg och ingen
-// egen zon. En sjätte golvzon skulle krympa figurfönstret ytterligare
-// (se paletten nedan) — dansgolvet är värt en zonmarkering först den
-// dag den inte kostar silhuettläsbarhet.
+// ── Platserna (tjugo) ─────────────────────────────────────────────
+//   6 loungeplatser (2 × 3 dynor) — norra väggen, sitthöjd 0,38
+//   6 platser vid tre tvåor — södra bandet, stol 0,45
+//   8 barstolar (4 + 4) — vända mot vinväggen, sits 0,75
+// Åtta ståplatser (fyra vid barens östra kortände, fyra vid två ståbord)
+// finns som geometri men räknas INTE. Se FLAGS.standing.
 //
-// ── Platsfördelningen (tjugo) ─────────────────────────────────────
-//   8 loungeplatser (2 × 4 dynor) — norra väggen, sitthöjd 0,38
-//   6 barstolar — vända mot flaskhyllan
-//   6 platser vid tre tvåor — södra bandet
-// Fyra ståplatser vid diskens norra kortände finns som geometri men
-// räknas INTE i de tjugo. Se FLAGS.standingAtBar.
-//
-// ── Fast geometri kontra ändringsbart ─────────────────────────────
-// FAST: bardiskens läge som rummets mitt, flaskhyllan bakom den,
-//   sommelierens runway på 1,00 m, DJ-plattans zon (platta + golvbyte
-//   + fond, inte bara pulten), loungens fyra separata dynor,
-//   passagerna 0,82–1,32 m, taket 3,40 m.
-// ÄNDRINGSBART: antal flaskhyllplan (4), sitsfördelningen inom de
-//   tjugo, ståkantens längd, kökets två stationer, rummets bredd och
-//   djup — understiger de MIN_WIDTH_M / MIN_DEPTH_M returneras
-//   `fits: false` med underskott i stället för en omtolkad plan.
+// ── Fast kontra ändringsbart ──────────────────────────────────────
+// FAST: baren mitt i rummet; vinväggen som dubbelsidig ryggrad i baren;
+//   stråken 0,98 m; vinväggens höjdtak 2,06 m; DJ-hörnet med platta,
+//   golvbyte och fond; loungens separata dynor; golvzonernas smala
+//   luminansspann; kapade väggar på kamerasidan; taket 3,40 m.
+// ÄNDRINGSBART: sitsfördelningen inom de tjugo, ståbordens läge,
+//   kökets två stationer, rummets bredd och djup inom MIN_WIDTH_M /
+//   MIN_DEPTH_M — under dem returneras `fits: false` med underskott.
 
 import * as THREE from 'three';
-import { ROLE_COLOUR_VALUES } from './staffColour';
 
 // #region types
 
 export type Vec2 = [number, number];
-
+export type Vec3 = [number, number, number];
 export type SeatKind = 'bar' | 'lounge' | 'twotop';
-
-export type LaneId = 'spine' | 'barLane' | 'perimS' | 'loungeN';
+export type LaneId = 'spine' | 'north' | 'south' | 'staff';
+export type WineWallLevel = 'bas' | 'platina';
+export type MoodId = 'tidig' | 'helg';
+export type WallSide = 'N' | 'S' | 'E' | 'W';
 
 export interface SeatSpec {
-  /** Stabilt id, t.ex. 'bar3' eller 'loungeA2'. */
   id: string;
   kind: SeatKind;
-  /** Sim-lagrets platta seatIndex, 0..19. Samma konvention som
-   *  interiorLayout.ts: bordsplatser före barstolar. */
+  /** Sim-lagrets platta seatIndex, 0..19. Bordsplatser före barstolar. */
   seatIndex: number;
-  /** Möbelns id platsen hör till. */
+  /** Bordet/disken platsen hör till. Gruppering av sällskap läser detta. */
   furnitureId: string;
-  /** Sitsens mittpunkt i lokal XZ. */
+  /** Sittmöbelns egen nod (dynan, stolen, pallen). */
+  seatNodeId: string;
   local: Vec2;
-  /** Sitsens höjd — lounge 0,38, stol 0,45, barstol 0,75. */
+  /** Nominell sitshöjd över golvet — lounge 0,38, stol 0,45, barstol 0,75. */
   seatHeight: number;
-  /** Kurs så figuren tittar mot bord respektive disk. */
+  /** Överkant sits i rummets lokala Y = PLINTH_M + seatHeight. Läs denna. */
+  seatSurfaceY: number;
   facing: number;
-  /** Gånggrafens nod platsen nås ifrån. */
   approach: Vec2;
-  /** Vilken korridor `approach` sitter i. */
   lane: LaneId;
 }
 
 export interface StandSpec {
   id: string;
+  kind: 'barEnd' | 'highTable';
   local: Vec2;
   facing: number;
   approach: Vec2;
@@ -121,70 +129,71 @@ export interface StandSpec {
 }
 
 export interface StaffStation {
-  /** 'sommelier' | 'dj' | 'cook' | 'runner' */
+  /** 'bartender' | 'sommelier' | 'server' | 'cookHot' | 'cookCold' | 'dish' | 'dj' */
   id: string;
+  /** Rollen i FigureActs — flera stationer kan dela roll (kocken har två). */
+  role: string;
   local: Vec2;
-  /** Golvhöjd stationen står på — DJ:n står 0,25 m upp. */
   standHeight: number;
   facing: number;
-  // ORDER 155 — `uniform`-fält borttaget. Personalens färg läses ur
-  // `ROLE_COLOUR` (staffColour.ts) via sim-rollen, inte per station.
+  uniform: string;
   note: string;
 }
 
 export interface RoomParts {
-  /** Skivtallriken på DJ-pulten. Enda rörliga delen. */
   turntable: THREE.Object3D;
-  /** Taket som egen grupp — anroparen tonar den med avståndet,
-   *  precis som Restaurant.tsx gör. */
   roof: THREE.Object3D;
-  /** Väggarna som egen grupp, av samma skäl. */
+  /** Alla väggar. Barnen är per sida: wallN, wallS, wallE, wallW, var och en
+   *  med `lower` (0–0,90 m, alltid synlig) och `upper`. */
   walls: THREE.Object3D;
-  /** Inredningen — tonas in när kameran närmar sig. */
+  wallUpper: Record<WallSide, THREE.Object3D>;
   interior: THREE.Object3D;
-  /** Bargruppen (disk + hylla + stolar) — mäts som helhet. */
   bar: THREE.Object3D;
-  /** Flaskhyllans hyllplan. Siktlinjens måltavlor. */
-  shelfTargets: THREE.Object3D[];
-  /** DJ:n själv som siktlinjemål — en punkt i brösthöjd på plattan. */
+  /** Vinväggens två lägen. Växlas med setWineWallLevel. */
+  wineWall: Record<WineWallLevel, THREE.Object3D>;
+  /** Hyllplanens mittpunkter per läge och sida — siktlinjens måltavlor. */
+  shelfTargets: Record<WineWallLevel, THREE.Object3D[]>;
   djTarget: THREE.Object3D;
-  /** Fäste på disken där ett glas kan monteras. */
+  /** Ljuslågorna. Skalas av flicker-fasen. */
+  flames: THREE.Object3D[];
+  /** Ljus som bara tänds i helgstämningen (bardisk, ståbord). */
+  weekendCandles: THREE.Object3D[];
+  /** DJ-plattans kantljus — lyser bara i helgstämningen. */
+  djGlow: THREE.MeshStandardMaterial;
   glassAnchor: THREE.Object3D;
-  /** Fäste vid passluckan där en tallrik kan monteras. */
   passAnchor: THREE.Object3D;
-  /** Fäste i hyllan där en flaska kan monteras (sommelierens ärende). */
   bottleAnchor: THREE.Object3D;
 }
 
 export interface WineBarOptions {
-  /** Byggnadens OBB-bredd (långa axeln). Default 15,6. */
   width?: number;
-  /** OBB-djup (korta axeln). Default 11,8. */
   depth?: number;
-  /** Innertakets höjd. Default 3,40. */
   interiorHeight?: number;
-  /** Antal hyllplan i flaskhyllan. Default 4. */
-  shelfTiers?: number;
+  /** Vilket läge vinväggen startar i. Default 'bas'. */
+  wineWall?: WineWallLevel;
+  /** Vilken stämning rummet startar i. Default 'tidig'. */
+  mood?: MoodId;
 }
 
 export interface WineBarRoom {
   group: THREE.Group;
   parts: RoomParts;
-  /** Tjugo platser, i seatIndex-ordning. */
   seats: SeatSpec[];
-  /** Fyra ståplatser. Ingår inte i de tjugo. */
   standing: StandSpec[];
   staffStations: StaffStation[];
-  /** Innanför entrédörren, lokal XZ. */
+  candles: { id: string; local: Vec3; weekendOnly: boolean }[];
+  pendants: { id: string; local: Vec3 }[];
   entrance: Vec2;
-  /** Utanför dörren — samma standoff som interiorLayout (2,5 m). */
   waitingSpot: Vec2;
+  /** Golvplanets lokala Y — en stående figurs sulor ligger här. */
+  floorY: number;
+  capacity: number;
   width: number;
   depth: number;
-  /** false om rummet är mindre än planlösningen kräver. */
   fits: boolean;
-  /** Underskott i meter [x, z] när fits === false. */
   shortfall: Vec2;
+  wineWallLevel: WineWallLevel;
+  mood: MoodId;
   dispose: () => void;
 }
 
@@ -193,123 +202,117 @@ export interface WineBarRoom {
 // ---------- Låsta mått ----------
 
 export const TOTAL_SEATS = 20;
-export const STANDING_SPOTS = 4;
+export const STANDING_SPOTS = 8;
+export const MIN_WIDTH_M = 14.6;
+export const MIN_DEPTH_M = 11.0;
 
-/** Under detta går planlösningen inte in. */
-export const MIN_WIDTH_M = 13.8;
-export const MIN_DEPTH_M = 10.2;
+export const PLINTH_M = 0.11;
+export const EYE_ABOVE_SEAT_M = 0.84;
+export const EYE_STANDING_M = 1.66;
+/** Sockelns höjd på kapade väggar. Brösthöjd: gränsen läses, rummet syns. */
+export const CUT_H = 0.9;
 
 const WALL_T = 0.2;
-const BOH_EDGE_X = -4.4;        // kökets vägglinje mot rummet
-const BOH_EDGE_Z = 1.5;         // kökets andra vägglinje
-const SHELF_X = -3.3;           // flaskhyllans mittlinje
-const SHELF_T = 0.36;
-const SHELF_H = 2.4;
-const SHELF_Z0 = -3.6;
-const SHELF_Z1 = 1.6;
-const BAR_X = -1.75;            // bardiskens mittlinje
-const BAR_DEPTH = 0.75;
-const BAR_HEIGHT = 1.1;
-const BAR_Z0 = -3.0;
-const BAR_Z1 = 1.8;
-const STOOL_X = -0.95;
-const STOOL_PITCH = 0.8;
-const STOOL_HEIGHT = 0.75;
-const LOUNGE_Z = 4.95;          // dynornas mittlinje
-const LOUNGE_SEAT_H = 0.38;
-const LOUNGE_PITCH = 0.8;
-const LOUNGE_TABLE_Z = 3.1;
-const TWOTOP_Z = -4.5;
-const TABLE_TOP_Y = 0.72;       // Restaurant.tsx
-const TABLE_TOP_T = 0.06;
-const CHAIR_HEIGHT = 0.45;
-const DJ_X = -0.2;
-const DJ_Z = -4.4;
-const DJ_PLATFORM = 0.25;
+const BAR = { x0: -3.6, x1: 2.4, z0: -1.8, z1: 1.8, depth: 0.6, height: 1.1 };
+const RACK_T = 0.44;
+const TABLE_TOP_Y = 0.72;
+const CHAIR_H = 0.45;
+const STOOL_H = 0.75;
+const LOUNGE_H = 0.38;
+const LOUNGE_TOP_Y = 0.45;
+const KITCHEN = { x0: -7.6, x1: -4.6, z0: 1.6, z1: 5.7 };
+const DJ = { x0: 4.4, x1: 7.4, z0: -5.6, z1: -3.3, cx: 5.7, cz: -4.2, platform: 0.25 };
+const STOOL_X = [-2.7, -1.8, -0.9, 0.0];
+const STOOL_Z = 2.3;
+const LOUNGE_Z = 5.1;
+const LOUNGE_TABLE_Z = 3.75;
+const LOUNGE_CX = [-1.8, 2.0];
+const TWO_Z = -4.4;
+const TWO_X = [-4.2, -2.1, 0.0];
+/** ORDER 271 — se staffStations. */
+const STATION_LANE_Z = 0.74;
+const DISH_X = -6.4;
 
 /**
- * Ögonhöjd är en funktion av SITSEN, inte av golvet.
- *
- * Första versionen använde en fast 1,29 m för alla sittande, och då
- * rapporterade siktlinjeprovet att NOLL av sex barstolar såg
- * flaskhyllan — för 1,29 m ligger 0,03 m under diskens egen skiva.
- * En gäst på en barstol på 0,75 m sitter självklart högre än en gäst
- * på en stol på 0,45 m. Talet 0,84 är figurRiggens sittande ögonhöjd
- * över sitsen (1,29 − 0,45), och 0,11 är sockelns tjocklek.
+ * Vinväggen i två lägen. Tillväxten syns ovanifrån: längden och krönet,
+ * inte bara höjden. 2,06 m är taket — se avvikelse 2 i headern.
  */
-export const EYE_ABOVE_SEAT_M = 0.84;
-export const PLINTH_M = 0.11;
-export const EYE_STANDING_M = 1.66;
+export const WINE_WALL = {
+  bas: { x0: -2.4, x1: 0.8, tiers: 4, height: 1.60, crown: false },
+  platina: { x0: -2.9, x1: 1.2, tiers: 6, height: 2.06, crown: true },
+  tierY0: 0.62,
+  tierPitch: 0.24,
+  bottlePitch: 0.085
+};
 
-/** Ögonhöjd för en given plats, i lokal y. */
+/** Den strategiska kamerans värden som modellerna använt sedan SD-004.
+ *  ÖVERTAGET — ska läsas ur spelets scen, inte härifrån. Se FLAGS.camera. */
+export const PLAYER_CAMERA = { pitch: 0.84, fov: 38, distance: 23, yaw: 0.7, target: [0.2, 0.9, 0.2] as Vec3 };
+
 export function eyeHeightForSeat(seat: SeatSpec): number {
   return PLINTH_M + seat.seatHeight + EYE_ABOVE_SEAT_M;
 }
 
+/**
+ * Högsta grannhus som inte skymmer golvet innanför en kapad vägg, på
+ * avståndet `gap` meter från fasaden. FÖLJER ur kamerans lutning: strålen
+ * mot golvet vid väggens insida passerar höjden gap · tan(pitch) där
+ * grannen står. Vid 48° och en 6 m gata: 6,7 m — två våningar går,
+ * tre gör det inte. Se FLAGS.neighbours.
+ */
+export function maxNeighbourHeight(gap: number, pitch?: number): number {
+  return gap * Math.tan(pitch ?? PLAYER_CAMERA.pitch) + PLINTH_M;
+}
+
 // ---------- Palett och kontrastband ----------
 //
-// silhouetteContrast.ts (ORDER 123 §5) håller bandet:
-//   FLOOR_COLOUR = '#a89577', MIN 1.8, MAX 3.6 kontrastförhållande,
-//   MIN_ROLE_DISTINCTION_DELTA_E = 12.
-//
-// Räkna igenom vad bandet faktiskt tillåter, för det är snävare än
-// det ser ut. Golvet '#a89577' har relativ luminans 0,3115. Ett band
-// på [1,8 · 3,6] mot DET golvet ger figurfönstret L ∈ [0,050 · 0,151].
-// Men vinbaren har fem golvzoner, och fönstret krymper till
-// SNITTET över alla fem: undre gränsen sätts av det ljusaste golvet,
-// övre av det mörkaste. Med zonerna nedan blir fönstret
-// L ∈ [0,0509 · 0,1154] och paletten siktar på mitten, L ≈ 0,083.
-//
-// Det är därför golvzonerna ligger tätt ihop (0,248–0,313 luminans)
-// i stället för att spänna vidare: varje steg mörkare golv äter
-// direkt av det utrymme figurfärgerna har. Ett mörkt loungegolv
-// stänger fönstret helt — vilket är exakt vad briefen varnade för.
-// Uppmätt resultat: kontrast 2,22–2,75 mot samtliga fem zoner,
-// roll-ΔE minst 16,6. checkPaletteAgainstFloors() räknar om det.
+// Golvzonerna är OFÖRÄNDRADE från förra leveransen — det är dem
+// kontrastbandet vilar på (fönster L 0,0509–0,1154). Personalen har fått
+// två nya roller (bartender, diskare) och spelaren och mentorn har fått
+// egna färger. Diskaren delar köksuniform med kocken, som gästgiveriet
+// gör: "Tio stationer, fem uniformer". Rollen läses av var figuren står,
+// och sju parvis skilda färger på ΔE ≥ 12 i det här fönstret är den
+// gräns som håller. Uppmätt: minsta par 14,6.
 
-/** Huvudgolvet. Samma värde som silhouetteContrast.FLOOR_COLOUR. */
 export const BASE_FLOOR = '#a89577';
 
-/**
- * Golvzonerna. Färgbytet är zonmarkeringen en hög kamera läser — men
- * varje zon är också ett nytt kontrastunderlag för figurerna, så
- * spannet hålls smalt med flit: 0,248–0,313 relativ luminans. Den
- * mörkaste zonen (DJ) ligger 0,064 under huvudgolvet, inte 0,20.
- */
 export const ZONE_FLOORS: { id: string; colour: string; note: string }[] = [
-  { id: 'main', colour: BASE_FLOOR, note: 'Mittstråk och tvåor. Referensen i silhouetteContrast.ts. L 0,3115.' },
-  { id: 'lounge', colour: '#a49075', note: 'Loungen. Ett steg varmare, en aning mörkare. L 0,2912.' },
-  { id: 'barRunway', colour: '#a08d74', note: 'Bakom disken. Sliten yta. L 0,2778.' },
-  { id: 'dj', colour: '#97866f', note: 'DJ-zonen. Mörkast av de fem — och det som sätter figurfönstrets övre gräns. L 0,2478.' },
+  { id: 'main', colour: BASE_FLOOR, note: 'Huvudgolvet och det öppna golvet vid entrén. L 0,3115.' },
+  { id: 'lounge', colour: '#a49075', note: 'Loungebandet längs norra väggen. L 0,2912.' },
+  { id: 'barRunway', colour: '#a08d74', note: 'Barens två stråk runt vinväggen. L 0,2778.' },
+  { id: 'dj', colour: '#97866f', note: 'DJ-hörnet. Mörkast — sätter fönstrets övre gräns. L 0,2478.' },
   { id: 'kitchen', colour: '#a09786', note: 'Köket. Kallare, gråare. L 0,3133.' }
 ];
 
-/** Gästernas garment-färger. Alla på L ≈ 0,083, mitt i fönstret. */
 export const GUEST_GARMENTS = [
   '#52505d', '#5b5045', '#465452', '#5c4d58',
   '#49544a', '#555144', '#554f61', '#5b4f4d'
 ];
 
-// ORDER 155 — `STAFF_UNIFORMS` borttagen. Personalens färg läses ur
-// `ROLE_COLOUR` (staffColour.ts) — den palett riggen faktiskt ritar.
-// Silhuett-kontrast-checkarna nedan iterrerar `ROLE_COLOUR_VALUES`.
+export const STAFF_UNIFORMS = {
+  sommelier: '#445269',
+  bartender: '#455d5f',
+  server: '#5e4f37',
+  kitchen: '#425741',
+  dj: '#664958'
+};
 
-// WCAG-luminans och kontrast, samma formel som silhouetteContrast.ts.
-// Duplicerad här med flit: rummet ska kunna hävda sin egen palett utan
-// att importera ur scene/ — men talen är per definition identiska.
+/** Spelaren. Den enda mättade figurfärgen i rummet — igenkänningen ligger i
+ *  kalotten, den yta kameran säkert ser. L 0,0956, ΔE ≥ 29 mot alla gäster. */
+export const PLAYER_UNIFORM = '#933945';
+/** Mentorn från Campus. Oliv, ΔE ≥ 13 mot personal och ≥ 17 mot gäster. */
+export const MENTOR_GARMENT = '#585b31';
 
 function srgbToLinear(channel: number): number {
   const c = channel / 255;
-  if (c <= 0.03928) return c / 12.92;
-  return Math.pow((c + 0.055) / 1.055, 2.4);
+  return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
 }
 
 function luminance(hex: string): number {
   const h = hex.replace('#', '');
-  const r = srgbToLinear(parseInt(h.substring(0, 2), 16));
-  const g = srgbToLinear(parseInt(h.substring(2, 4), 16));
-  const b = srgbToLinear(parseInt(h.substring(4, 6), 16));
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return 0.2126 * srgbToLinear(parseInt(h.substring(0, 2), 16)) +
+    0.7152 * srgbToLinear(parseInt(h.substring(2, 4), 16)) +
+    0.0722 * srgbToLinear(parseInt(h.substring(4, 6), 16));
 }
 
 function contrast(a: string, b: string): number {
@@ -318,99 +321,129 @@ function contrast(a: string, b: string): number {
   return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
 }
 
-/**
- * Prövar hela paletten mot varje golvzon. Returnerar de par som
- * faller utanför bandet — tom lista betyder att paletten går igenom.
- *
- * Detta är rummets svar på §4: paletten hävdas i kod, mot samma band
- * silhouetteContrast.ts håller, per zon.
- */
-export function checkPaletteAgainstFloors(
-  minRatio: number = 1.8,
-  maxRatio: number = 3.6
-): { figure: string; floor: string; zone: string; ratio: number }[] {
-  const fails = [];
-  const figures = GUEST_GARMENTS.concat(ROLE_COLOUR_VALUES);
-  for (let i = 0; i < figures.length; i++) {
+function allFigureColours(): string[] {
+  const staff = Object.keys(STAFF_UNIFORMS).map(function (k) { return (STAFF_UNIFORMS as any)[k]; });
+  return GUEST_GARMENTS.concat(staff, [PLAYER_UNIFORM, MENTOR_GARMENT]);
+}
+
+/** Hela paletten mot varje golvzon. Tom lista = godkänt. */
+export function checkPaletteAgainstFloors(minRatio?: number, maxRatio?: number) {
+  const lo = minRatio ?? 1.8;
+  const hi = maxRatio ?? 3.6;
+  const fails: { figure: string; zone: string; ratio: number }[] = [];
+  const figs = allFigureColours();
+  for (let i = 0; i < figs.length; i++) {
     for (let z = 0; z < ZONE_FLOORS.length; z++) {
-      const r = contrast(figures[i], ZONE_FLOORS[z].colour);
-      if (r < minRatio || r > maxRatio) {
-        fails.push({
-          figure: figures[i],
-          floor: ZONE_FLOORS[z].colour,
-          zone: ZONE_FLOORS[z].id,
-          ratio: r
-        });
-      }
+      const r = contrast(figs[i], ZONE_FLOORS[z].colour);
+      if (r < lo || r > hi) fails.push({ figure: figs[i], zone: ZONE_FLOORS[z].id, ratio: r });
     }
   }
   return fails;
 }
 
-/** Kontrastförhållande figur↔golvzon, för mätningen i modellen. */
-export function paletteContrastRange(): { min: number; max: number } {
+export function paletteContrastRange(): { min: number; max: number; pairs: number } {
   let lo = 99;
   let hi = 0;
-  const figures = GUEST_GARMENTS.concat(ROLE_COLOUR_VALUES);
-  for (let i = 0; i < figures.length; i++) {
+  const figs = allFigureColours();
+  for (let i = 0; i < figs.length; i++) {
     for (let z = 0; z < ZONE_FLOORS.length; z++) {
-      const r = contrast(figures[i], ZONE_FLOORS[z].colour);
+      const r = contrast(figs[i], ZONE_FLOORS[z].colour);
       if (r < lo) lo = r;
       if (r > hi) hi = r;
     }
   }
-  return { min: lo, max: hi };
+  return { min: lo, max: hi, pairs: figs.length * ZONE_FLOORS.length };
 }
 
+// ---------- Kvällens två stämningar ----------
+
 /**
- * FLAGS — det planlösningen inte kan avgöra själv.
- * Presentationslagret fattar inga simuleringsbeslut.
+ * Presentationens två lägen. Rummet växlar geometri (vilka ljus som
+ * brinner, DJ-kantljuset); beläggningen och ljusnivån är VÄRDEN för
+ * sim-lagret respektive DayLighting att läsa. Se FLAGS.mood, FLAGS.lighting.
  */
+export const LIGHT_MOODS = {
+  tidig: {
+    label: 'Vardag, tidig kväll',
+    occupancyShare: 0.35,
+    standingGuests: 0,
+    candles: 'bord' as const,
+    djPlaying: false,
+    /** Relativt DayLightings kvällsnivå. */
+    ambientScale: 0.62,
+    ambientColour: '#ffd9ae',
+    pendantColour: '#ffb46a',
+    candleColour: '#ff9a3c',
+    note: 'Intimt och lugnt. Ljus på borden, pendlarna över baren, musiken låg.'
+  },
+  helg: {
+    label: 'Fredag och lördag, sent',
+    occupancyShare: 1.0,
+    standingGuests: 8,
+    candles: 'alla' as const,
+    djPlaying: true,
+    ambientScale: 0.48,
+    ambientColour: '#ffc98f',
+    pendantColour: '#ffa555',
+    candleColour: '#ff9a3c',
+    note: 'Fyllt och livligt. Varje ljus tänt, DJ-kanten lyser, rummet mörkare runt ljuspunkterna.'
+  }
+};
+
+// ---------- FLAGS ----------
+
 export const FLAGS = {
-  businessClass:
-    "BusinessClass har ingen 'vinbar'. Rummet kan inte väljas förrän " +
-    'klassen finns i businessClass.ts med capacityFor = 20. ' +
-    'Förutsättning för monteringen, inte en del av leveransen. ' +
-    'BLOCKERANDE.',
-  djState:
-    'DJ:n är det troliga fallet, precis som briefen förutsåg. ' +
-    'Geometrin har pult, platta, fond och skivtallrik. Men ingenting ' +
-    'i simulationen säger om det spelas nu: det finns ingen ' +
-    'kvällsfas, ingen musiknivå, ingen publikrespons. ' +
-    'updateWineBarRoom(room, phase) vrider tallriken när anroparen ' +
-    'skickar en fas; skicka 0 tills ett sådant tillstånd finns. ' +
-    'DJ-figuren står i poseWork som rollkonstant, inte som händelse.',
-  sommelierErrand:
-    'Sommelierens rörelse mellan gäst och hylla är rummets signatur, ' +
-    'och den kan inte drivas härifrån. Det finns inget ärende-tillstånd ' +
-    '— ingen "hämtar flaska till bord 3". parts.bottleAnchor och ' +
-    'parts.glassAnchor finns; ärendet gör det inte. Fram till dess ' +
-    'står sommelieren vid disken.',
-  standingAtBar:
-    'Fyra ståplatser vid diskens norra kortände finns som geometri. ' +
-    'Sim-lagret känner bara seats[] och TOTAL_SEATS — en stående gäst ' +
-    'har inget tillstånd. Räknas därför inte i kapaciteten.',
+  wineWallLevel:
+    "Vinväggen har två lägen, 'bas' och 'platina'. Specen säger att den " +
+    'växer när spelaren når platina i Stensöta. Rummet växlar med ' +
+    'setWineWallLevel(room, level), men rummet vet inte om medaljen finns — ' +
+    'medaljtillståndet är sim-lagrets. Skicka "bas" tills det finns.',
+  mood:
+    "Två stämningar: 'tidig' (vardag) och 'helg' (fredag–lördag sent). " +
+    'setMood(room, mood) tänder bardiskens och ståbordens ljus och ' +
+    'DJ-kanten. Vilken stämning som gäller kräver veckodag och klockslag ' +
+    'från sim-lagret; LIGHT_MOODS.occupancyShare är ett presentationsmål, ' +
+    'inte en efterfrågemodell.',
+  lighting:
+    'Rummet skapar inga ljuskällor. Pendlar och ljuslågor är självlysande ' +
+    'material; positionerna finns i room.pendants och room.candles, ' +
+    'stämningen i LIGHT_MOODS. DayLighting äger ljuset. OBS: kontrastbandet ' +
+    'är mätt mot golvfärgen, inte mot det dämpade ljuset — vid ambientScale ' +
+    '0,48 sjunker figurernas och golvets luminans lika mycket, så kvoten ' +
+    'håller, men ljuskäglorna kring ljusen gör golvet ojämnt. Det kan ge ' +
+    'lokalt lägre kontrast än 1,8 intill ett ljus. Mät i vyn.',
+  camera:
+    'PLAYER_CAMERA (lutning 0,84 rad, fov 38°, avstånd 23 m) är värdena ' +
+    'modellerna använt sedan SD-004. De ska läsas ur spelets scen. ' +
+    'checkCameraView() tar kameran som argument och räknar på den som skickas.',
+  cutaway:
+    'updateCutaway(room, camera) döljer överdelen på väggarna kameran står ' +
+    'utanför. Anropas när kameran vridits — inte varje bildruta. Utan det ' +
+    'skymmer norra och östra väggen loungerna och entrén vid standardvinkeln.',
+  neighbours:
+    'Grannhus är inte rummets geometri men specen §1 gör skymning till ' +
+    'leveransens fel. maxNeighbourHeight(gap) ger högsta byggnad som inte ' +
+    'skymmer golvet på gap meters avstånd. checkCameraView() tar extra ' +
+    'hinder som tredje argument — skicka grannhusen dit.',
+  standing:
+    'Åtta ståplatser: fyra vid barens östra kortände, fyra vid två ståbord. ' +
+    'Geometri utan tillstånd. Räknas inte i kapaciteten (FRAGOR §7).',
   loungeParty:
-    'En loungegrupp är fyra dynor kring ett bord. Sim-lagret tilldelar ' +
-    'platser som en platt lista och känner inte sällskap, så en ensam ' +
-    'gäst kan hamna mitt i en tom lounge medan en fyra splittras över ' +
-    'två grupper. Rummet exponerar furnitureId per plats så en ' +
-    'gruppering blir möjlig — men urvalet är sim-lagrets.',
+    'Loungerna är tre dynor kring ett bord. Sim-lagret tilldelar platser som ' +
+    'en platt lista. furnitureId finns per plats; grupperingen är sim-lagrets.',
   kitchenStations:
-    'Två stationer (plancha, kall prep) är geometri. Smårätter betyder ' +
-    'färre stationer än ölkrogens tre, men vilken station en given ' +
-    'rätt använder kräver en meny-/rättmodell som inte finns.',
+    "Två stationer enligt specen: 'cookCold' (kallskänk) och 'cookHot' (varm). " +
+    'Diskplatsen är en tredje plats i köket men ingen matstation. Vilken ' +
+    'station en rätt går till kräver en rättmodell som inte finns.',
+  djState:
+    'Skivtallriken vrids av updateWineBarRoom(room, phase). Om det spelas ' +
+    "kommer ur stämningen: LIGHT_MOODS.helg.djPlaying. Skicka 0 i 'tidig'.",
+  sommelierErrand:
+    'Sommelierens väg vinvägg → bord är rummets signatur. bottleAnchor ligger ' +
+    'i vinväggens östra ände, mot golvet. Ärendet saknas i sim-lagret.',
   zoneFloorConstant:
-    'silhouetteContrast.ts har EN konstant FLOOR_COLOUR ur ' +
-    'Restaurant.tsx. Vinbaren har fem golvzoner, och bandet gäller per ' +
-    'zon — annars godkänns en figur mot ett golv den aldrig står på. ' +
-    'Värre: zonerna krymper figurfönstret till snittet över alla fem ' +
-    '(L 0,0509–0,1154 här mot 0,050–0,151 för huvudgolvet ensamt), ' +
-    'så en ny zon kan underkänna en palett som redan är godkänd. ' +
-    'checkPaletteAgainstFloors() hävdar bandet mot alla fem här, men ' +
-    'den riktiga lösningen är att FLOOR_COLOUR blir en lista eller en ' +
-    'funktion av zon i silhouetteContrast.ts. Beslutet hör där, inte ' +
-    'i det här rummet.'
+    'Oförändrad: silhouetteContrast.ts har ett golv, rummet har fem zoner. ' +
+    'checkPaletteAgainstFloors() hävdar bandet mot alla fem (FRAGOR §10).'
 };
 
 // ---------- Geometricache ----------
@@ -418,22 +451,16 @@ export const FLAGS = {
 const geometryCache = new Map<string, THREE.BufferGeometry>();
 
 function box(w: number, h: number, d: number): THREE.BufferGeometry {
-  const key = 'b' + w + '_' + h + '_' + d;
+  const key = 'b' + w.toFixed(3) + '_' + h.toFixed(3) + '_' + d.toFixed(3);
   let g = geometryCache.get(key);
-  if (!g) {
-    g = new THREE.BoxGeometry(w, h, d);
-    geometryCache.set(key, g);
-  }
+  if (!g) { g = new THREE.BoxGeometry(w, h, d); geometryCache.set(key, g); }
   return g;
 }
 
-function cyl(r: number, h: number, seg: number): THREE.BufferGeometry {
-  const key = 'c' + r + '_' + h + '_' + seg;
+function cyl(r: number, h: number, seg: number, r2?: number): THREE.BufferGeometry {
+  const key = 'c' + r + '_' + h + '_' + seg + '_' + (r2 ?? r);
   let g = geometryCache.get(key);
-  if (!g) {
-    g = new THREE.CylinderGeometry(r, r, h, seg);
-    geometryCache.set(key, g);
-  }
+  if (!g) { g = new THREE.CylinderGeometry(r2 ?? r, r, h, seg); geometryCache.set(key, g); }
   return g;
 }
 
@@ -442,101 +469,99 @@ export function disposeWineBarGeometry(): void {
   geometryCache.clear();
 }
 
-// Restaurant.tsx-paletten för fast inredning, plus mörk ek och messing
-// för baren. Ingen av dessa är figurfärger — bandet gäller golv mot
-// kropp, inte möbler.
 const COLOUR = {
   slab: '#6d6a5f',
   wall: '#8f8b7f',
+  wallCap: '#7d796e',
   roof: '#5c5951',
-  door: '#1a1815',
-  kerb: '#7a746a',
+  mat: '#5a4a3c',
   tableTop: '#8b8477',
   tableLeg: '#4a453d',
   chair: '#b9b3ac',
   bar: '#5b4636',
   barTop: '#6f5945',
-  shelf: '#4b3a2c',
-  bottle: '#6f7a52',
+  rack: '#3f3126',
+  rackCrown: '#6f5945',
   brass: '#9a7f45',
   lounge: '#7d6f63',
   loungeTable: '#6b6157',
   dj: '#3a3630',
   djFront: '#57503f',
   kitchen: '#767268',
-  hood: '#403c36'
+  cold: '#9ea3a3',
+  hood: '#403c36',
+  crate: '#4b3a2c',
+  candle: '#e9e0cc',
+  flame: '#ffb24a',
+  shade: '#3a2f24',
+  bulb: '#ffc27a'
 };
+
+/** Flaskornas färger. Mörk grön, burgunder, bärnsten — läser som vin på
+ *  avstånd, och ingen av dem är en figurfärg. */
+const BOTTLE_COLOURS = ['#2f4a2c', '#4a1f26', '#3a4a2a', '#6a4a22', '#2c3b2a', '#5a2430'];
 
 // ---------- Konstruktion ----------
 
-/**
- * Bygger hela rummet en gång. Returnerar gruppen plus de namngivna
- * platser, stationer och fästen monteringskoden behöver — ingen
- * grävning i scengrafen.
- */
 export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
   const opts = options ?? {};
   const width = opts.width ?? 15.6;
   const depth = opts.depth ?? 11.8;
-  const interiorHeight = opts.interiorHeight ?? 3.4;
-  const shelfTiers = opts.shelfTiers ?? 4;
-
+  const H = opts.interiorHeight ?? 3.4;
   const fits = width >= MIN_WIDTH_M && depth >= MIN_DEPTH_M;
-  const shortfall: Vec2 = [
-    Math.max(0, MIN_WIDTH_M - width),
-    Math.max(0, MIN_DEPTH_M - depth)
-  ];
-
+  const shortfall: Vec2 = [Math.max(0, MIN_WIDTH_M - width), Math.max(0, MIN_DEPTH_M - depth)];
   const halfW = width / 2;
   const halfD = depth / 2;
   const inX = halfW - WALL_T;
   const inZ = halfD - WALL_T;
+  const Y = PLINTH_M;
 
   const group = new THREE.Group();
   group.name = 'wineBarRoom';
-
   const materials: THREE.Material[] = [];
-  function mat(colour: string, rough: number, metal: number): THREE.MeshStandardMaterial {
+  function mat(colour: string, rough: number, metal: number, emissive?: string, ei?: number): THREE.MeshStandardMaterial {
     const m = new THREE.MeshStandardMaterial({ color: colour, roughness: rough, metalness: metal });
+    if (emissive) { m.emissive = new THREE.Color(emissive); m.emissiveIntensity = ei ?? 1; }
     materials.push(m);
     return m;
   }
 
-  const matSlab = mat(COLOUR.slab, 0.9, 0);
-  const matWall = mat(COLOUR.wall, 0.9, 0);
-  const matRoof = mat(COLOUR.roof, 0.9, 0);
-  const matKerb = mat(COLOUR.kerb, 0.9, 0);
-  const matTableTop = mat(COLOUR.tableTop, 0.7, 0);
-  const matTableLeg = mat(COLOUR.tableLeg, 0.9, 0);
-  const matChair = mat(COLOUR.chair, 0.9, 0);
-  const matBar = mat(COLOUR.bar, 0.8, 0);
-  const matBarTop = mat(COLOUR.barTop, 0.5, 0);
-  const matShelf = mat(COLOUR.shelf, 0.85, 0);
-  const matBottle = mat(COLOUR.bottle, 0.35, 0.1);
-  const matBrass = mat(COLOUR.brass, 0.4, 0.6);
-  const matLounge = mat(COLOUR.lounge, 0.95, 0);
-  const matLoungeTable = mat(COLOUR.loungeTable, 0.8, 0);
-  const matDj = mat(COLOUR.dj, 0.85, 0);
-  const matDjFront = mat(COLOUR.djFront, 0.7, 0.1);
-  const matKitchen = mat(COLOUR.kitchen, 0.9, 0);
-  const matHood = mat(COLOUR.hood, 0.85, 0.2);
+  const M = {
+    slab: mat(COLOUR.slab, 0.9, 0), wall: mat(COLOUR.wall, 0.9, 0), wallCap: mat(COLOUR.wallCap, 0.9, 0),
+    roof: mat(COLOUR.roof, 0.9, 0), mat: mat(COLOUR.mat, 0.95, 0),
+    tableTop: mat(COLOUR.tableTop, 0.7, 0), tableLeg: mat(COLOUR.tableLeg, 0.9, 0), chair: mat(COLOUR.chair, 0.9, 0),
+    bar: mat(COLOUR.bar, 0.8, 0), barTop: mat(COLOUR.barTop, 0.5, 0), rack: mat(COLOUR.rack, 0.85, 0),
+    rackCrown: mat(COLOUR.rackCrown, 0.6, 0), brass: mat(COLOUR.brass, 0.4, 0.6),
+    lounge: mat(COLOUR.lounge, 0.95, 0), loungeTable: mat(COLOUR.loungeTable, 0.8, 0),
+    dj: mat(COLOUR.dj, 0.85, 0), djFront: mat(COLOUR.djFront, 0.7, 0.1),
+    kitchen: mat(COLOUR.kitchen, 0.9, 0), cold: mat(COLOUR.cold, 0.5, 0.2), hood: mat(COLOUR.hood, 0.85, 0.2),
+    crate: mat(COLOUR.crate, 0.9, 0), candle: mat(COLOUR.candle, 0.8, 0),
+    flame: mat(COLOUR.flame, 0.5, 0, COLOUR.flame, 2.2), shade: mat(COLOUR.shade, 0.7, 0.2),
+    bulb: mat(COLOUR.bulb, 0.4, 0, COLOUR.bulb, 1.6), crownGlow: mat('#e8c89a', 0.5, 0, '#ffb46a', 0.9),
+    djGlow: mat('#57503f', 0.6, 0, '#ff8a3c', 0)
+  };
+  const bottleMats = BOTTLE_COLOURS.map(function (c) { return mat(c, 0.3, 0.1); });
 
   function put(parent: THREE.Object3D, geo: THREE.BufferGeometry, material: THREE.Material,
-               x: number, y: number, z: number, name: string): THREE.Mesh {
+               x: number, y: number, z: number, name: string, ry?: number): THREE.Mesh {
     const m = new THREE.Mesh(geo, material);
     m.position.set(x, y, z);
+    if (ry) m.rotation.y = ry;
     m.castShadow = true;
     m.receiveShadow = true;
     m.name = name;
     parent.add(m);
     return m;
   }
-
-  function floorPlate(parent: THREE.Object3D, material: THREE.Material,
-                      w: number, d: number, x: number, z: number, name: string): THREE.Mesh {
-    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), material);
+  function rectBox(parent: THREE.Object3D, material: THREE.Material, x0: number, x1: number, z0: number, z1: number,
+                   y0: number, y1: number, name: string): THREE.Mesh {
+    return put(parent, box(x1 - x0, y1 - y0, z1 - z0), material, (x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2, name);
+  }
+  function floorPlate(parent: THREE.Object3D, material: THREE.Material, x0: number, x1: number,
+                      z0: number, z1: number, lift: number, name: string): THREE.Mesh {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(x1 - x0, z1 - z0), material);
     m.rotation.x = -Math.PI / 2;
-    m.position.set(x, 0.11, z);
+    m.position.set((x0 + x1) / 2, Y + lift, (z0 + z1) / 2);
     m.receiveShadow = true;
     m.name = name;
     parent.add(m);
@@ -544,34 +569,43 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
   }
 
   // ── Skal ──────────────────────────────────────────────────────
-  put(group, box(width + 0.3, 0.1, depth + 0.3), matSlab, 0, 0.05, 0, 'slab');
+  put(group, box(width + 0.3, 0.1, depth + 0.3), M.slab, 0, 0.05, 0, 'slab');
 
   const walls = new THREE.Group();
   walls.name = 'walls';
   group.add(walls);
-  const wy = interiorHeight / 2 + 0.1;
-  put(walls, box(WALL_T, interiorHeight, depth), matWall, -halfW + WALL_T / 2, wy, 0, 'wallW');
-  put(walls, box(WALL_T, interiorHeight, depth), matWall, halfW - WALL_T / 2, wy, 0, 'wallE');
-  put(walls, box(width, interiorHeight, WALL_T), matWall, 0, wy, -halfD + WALL_T / 2, 'wallS');
-  put(walls, box(width, interiorHeight, WALL_T), matWall, 0, wy, halfD - WALL_T / 2, 'wallN');
+  const wallUpper = {} as Record<WallSide, THREE.Object3D>;
+  // Varje sida: sockel (alltid) + överdel (döljs när kameran står utanför).
+  function wallSide(side: WallSide, segs: { x0: number; x1: number; z0: number; z1: number; top?: number; bottom?: number }[]) {
+    const g = new THREE.Group();
+    g.name = 'wall' + side;
+    walls.add(g);
+    const up = new THREE.Group();
+    up.name = 'wall' + side + 'Upper';
+    g.add(up);
+    wallUpper[side] = up;
+    segs.forEach(function (s, i) {
+      const b0 = s.bottom ?? 0;
+      if (b0 < CUT_H) rectBox(g, M.wall, s.x0, s.x1, s.z0, s.z1, 0.1 + b0, 0.1 + CUT_H, 'wall' + side + 'Lower' + i);
+      // Kapkanten får en mörkare list, så sockeln läser som vägg och inte som bänk.
+      if (b0 < CUT_H) rectBox(g, M.wallCap, s.x0, s.x1, s.z0, s.z1, 0.1 + CUT_H, 0.1 + CUT_H + 0.03, 'wall' + side + 'Cap' + i);
+      rectBox(up, M.wall, s.x0, s.x1, s.z0, s.z1, 0.1 + Math.max(CUT_H, b0), 0.1 + (s.top ?? H), 'wall' + side + 'Upper' + i);
+    });
+  }
+  wallSide('W', [{ x0: -halfW, x1: -halfW + WALL_T, z0: -halfD, z1: halfD }]);
+  wallSide('N', [{ x0: -halfW, x1: halfW, z0: halfD - WALL_T, z1: halfD }]);
+  wallSide('S', [{ x0: -halfW, x1: halfW, z0: -halfD, z1: -halfD + WALL_T }]);
+  // Östra väggen bär dörren: två segment och en överstycke från 2,2 m.
+  wallSide('E', [
+    { x0: halfW - WALL_T, x1: halfW, z0: -halfD, z1: -0.7 },
+    { x0: halfW - WALL_T, x1: halfW, z0: 0.7, z1: halfD },
+    { x0: halfW - WALL_T, x1: halfW, z0: -0.7, z1: 0.7, bottom: 2.2 }
+  ]);
 
   const roof = new THREE.Group();
   roof.name = 'roof';
   group.add(roof);
-  put(roof, box(width + 0.4, 0.3, depth + 0.4), matRoof, 0, interiorHeight + 0.25, 0, 'roofSlab');
-
-  const doorMat = new THREE.MeshBasicMaterial({ color: COLOUR.door });
-  materials.push(doorMat);
-  const door = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 2.1), doorMat);
-  door.position.set(halfW - 0.05, 1.05, 0);
-  door.rotation.y = Math.PI / 2;
-  door.name = 'entranceDoor';
-  group.add(door);
-  const hatch = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 2.0), doorMat);
-  hatch.position.set(-halfW + 0.05, 1.0, 3.6);
-  hatch.rotation.y = -Math.PI / 2;
-  hatch.name = 'deliveryHatch';
-  group.add(hatch);
+  put(roof, box(width + 0.4, 0.3, depth + 0.4), M.roof, 0, H + 0.25, 0, 'roofSlab');
 
   // ── Inredning ─────────────────────────────────────────────────
   const interior = new THREE.Group();
@@ -580,569 +614,622 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
 
   const zoneMats: { [k: string]: THREE.MeshStandardMaterial } = {};
   ZONE_FLOORS.forEach(function (z) { zoneMats[z.id] = mat(z.colour, 0.9, 0); });
+  floorPlate(interior, zoneMats.main, -inX, inX, -inZ, inZ, 0, 'floorMain');
+  floorPlate(interior, zoneMats.lounge, -3.2, 3.4, 3.2, inZ, 0.002, 'floorLounge');
+  floorPlate(interior, zoneMats.barRunway, BAR.x0, BAR.x1 - BAR.depth, BAR.z0 + BAR.depth, BAR.z1 - BAR.depth, 0.002, 'floorBarRunway');
+  floorPlate(interior, zoneMats.dj, DJ.x0 - 0.2, inX, -inZ, DJ.z1 + 0.2, 0.002, 'floorDj');
+  floorPlate(interior, zoneMats.kitchen, KITCHEN.x0, KITCHEN.x1, KITCHEN.z0, KITCHEN.z1, 0.002, 'floorKitchen');
+  // Dörrmattan — entrén läst som vågrät yta, eftersom dörren försvinner med väggen.
+  floorPlate(interior, M.mat, inX - 1.1, inX, -0.75, 0.75, 0.004, 'floorEntranceMat');
 
-  // Golvzonerna. Huvudgolvet först, sedan zonerna ovanpå.
-  floorPlate(interior, zoneMats.main, inX * 2, inZ * 2, 0, 0, 'floorMain');
-  floorPlate(interior, zoneMats.lounge, 8.0, 3.4, 3.4, 4.0, 'floorLounge');
-  floorPlate(interior, zoneMats.barRunway, SHELF_X - BAR_X + 0.9, BAR_Z1 - BAR_Z0 + 0.6,
-             (SHELF_X + BAR_X) / 2, (BAR_Z0 + BAR_Z1) / 2, 'floorBarRunway');
-  floorPlate(interior, zoneMats.dj, 3.4, 2.6, DJ_X, DJ_Z, 'floorDj');
-  floorPlate(interior, zoneMats.kitchen, BOH_EDGE_X + inX, inZ - BOH_EDGE_Z,
-             -inX + (BOH_EDGE_X + inX) / 2, BOH_EDGE_Z + (inZ - BOH_EDGE_Z) / 2, 'floorKitchen');
-
-  // ── Köket ─────────────────────────────────────────────────────
-  // Instängt i NV-hörnet med två halvväggar på 1,5 m — högt nog att
-  // läsas som gräns uppifrån, lågt nog att inte skymma flaskhyllan.
+  // ── Köket (NV) ────────────────────────────────────────────────
   const kitchen = new THREE.Group();
   kitchen.name = 'kitchen';
   interior.add(kitchen);
-  put(kitchen, box(0.15, 1.5, inZ - BOH_EDGE_Z), matWall,
-      BOH_EDGE_X, 0.86, BOH_EDGE_Z + (inZ - BOH_EDGE_Z) / 2, 'kitchenWallX');
-  put(kitchen, box(BOH_EDGE_X + inX, 1.5, 0.15), matWall,
-      -inX + (BOH_EDGE_X + inX) / 2, 0.86, BOH_EDGE_Z, 'kitchenWallZ');
-  put(kitchen, box(1.2, 0.9, 1.8), matKitchen, -6.7, 0.56, 2.6, 'stationPlancha');
-  put(kitchen, box(1.3, 0.35, 1.9), matHood, -6.7, 2.05, 2.6, 'planchaHood');
-  put(kitchen, box(2.0, 0.9, 0.8), matKitchen, -5.4, 0.56, 4.9, 'stationColdPrep');
-  put(kitchen, box(0.4, 1.05, 1.8), matBar, BOH_EDGE_X - 0.2, 0.635, 3.3, 'passCounter');
-  put(kitchen, box(0.5, 0.05, 1.9), matBarTop, BOH_EDGE_X - 0.2, 1.185, 3.3, 'passCounterTop');
+  // Halvväggar 1,5 m. Östra har passluckan z 2,1–3,3; södra har köksdörren x −5,5…−4,7.
+  rectBox(kitchen, M.wall, KITCHEN.x1 - 0.15, KITCHEN.x1, 3.3, KITCHEN.z1, Y, Y + 1.5, 'kitchenWallE');
+  rectBox(kitchen, M.wall, KITCHEN.x1 - 0.15, KITCHEN.x1, KITCHEN.z0, 2.1, Y, Y + 1.5, 'kitchenWallE2');
+  rectBox(kitchen, M.wall, KITCHEN.x0, -5.5, KITCHEN.z0, KITCHEN.z0 + 0.15, Y, Y + 1.5, 'kitchenWallS');
+  rectBox(kitchen, M.wall, -4.7, KITCHEN.x1, KITCHEN.z0, KITCHEN.z0 + 0.15, Y, Y + 1.5, 'kitchenWallSe');
+  rectBox(kitchen, M.bar, KITCHEN.x1 - 0.4, KITCHEN.x1, 2.1, 3.3, Y, Y + 1.05, 'passCounter');
+  rectBox(kitchen, M.barTop, KITCHEN.x1 - 0.48, KITCHEN.x1 + 0.08, 2.05, 3.35, Y + 1.05, Y + 1.1, 'passCounterTop');
+  // Varm station: plancha längs västra väggen med kåpa.
+  rectBox(kitchen, M.kitchen, -7.6, -6.8, 3.0, 4.8, Y, Y + 0.9, 'stationHot');
+  // Kåpan är 0,75 m djup, inte djupare: från väster skymde en 0,90 m kåpa kockens kalott.
+  rectBox(kitchen, M.hood, -7.6, -6.85, 2.95, 4.85, Y + 1.95, Y + 2.3, 'stationHotHood');
+  // Kallskänk: längs norra väggen, ljusare skiva så den läser kall uppifrån.
+  rectBox(kitchen, M.kitchen, -6.6, -4.9, 4.95, 5.65, Y, Y + 0.86, 'stationCold');
+  rectBox(kitchen, M.cold, -6.6, -4.9, 4.95, 5.65, Y + 0.86, Y + 0.9, 'stationColdTop');
+  // Diskplatsen — ingen matstation. Se FLAGS.kitchenStations.
+  rectBox(kitchen, M.cold, -7.45, -6.25, 1.78, 2.38, Y, Y + 0.9, 'dishSink');
   const passAnchor = new THREE.Object3D();
   passAnchor.name = 'passAnchor';
-  passAnchor.position.set(BOH_EDGE_X - 0.2, 1.21, 3.3);
+  passAnchor.position.set(KITCHEN.x1 - 0.2, Y + 1.12, 2.7);
   kitchen.add(passAnchor);
 
-  // ── Baren: hylla, disk, stolar ────────────────────────────────
-  // Rummets mitt. Hyllan är målet, inte hindret — se avvikelse 1.
+  // ── Baren ─────────────────────────────────────────────────────
   const bar = new THREE.Group();
   bar.name = 'bar';
   interior.add(bar);
+  const bh = BAR.height;
+  // Disken runt tre sidor, öppen mot väster.
+  rectBox(bar, M.bar, BAR.x0, BAR.x1, BAR.z1 - BAR.depth, BAR.z1, Y, Y + bh, 'barCounterN');
+  rectBox(bar, M.bar, BAR.x0, BAR.x1, BAR.z0, BAR.z0 + BAR.depth, Y, Y + bh, 'barCounterS');
+  rectBox(bar, M.bar, BAR.x1 - BAR.depth, BAR.x1, BAR.z0 + BAR.depth, BAR.z1 - BAR.depth, Y, Y + bh, 'barCounterE');
+  rectBox(bar, M.barTop, BAR.x0 - 0.04, BAR.x1 + 0.06, BAR.z1 - BAR.depth - 0.02, BAR.z1 + 0.06, Y + bh, Y + bh + 0.05, 'barTopN');
+  rectBox(bar, M.barTop, BAR.x0 - 0.04, BAR.x1 + 0.06, BAR.z0 - 0.06, BAR.z0 + BAR.depth + 0.02, Y + bh, Y + bh + 0.05, 'barTopS');
+  rectBox(bar, M.barTop, BAR.x1 - BAR.depth - 0.02, BAR.x1 + 0.06, BAR.z0 + BAR.depth, BAR.z1 - BAR.depth, Y + bh, Y + bh + 0.05, 'barTopE');
+  // Messingfotlisten — den enda detalj som fångar ljus ovanifrån.
+  rectBox(bar, M.brass, BAR.x0, BAR.x1, BAR.z1 + 0.02, BAR.z1 + 0.07, Y + 0.18, Y + 0.23, 'barFootRailN');
+  rectBox(bar, M.brass, BAR.x0, BAR.x1, BAR.z0 - 0.07, BAR.z0 - 0.02, Y + 0.18, Y + 0.23, 'barFootRailS');
+  rectBox(bar, M.brass, BAR.x1 + 0.02, BAR.x1 + 0.07, BAR.z0, BAR.z1, Y + 0.18, Y + 0.23, 'barFootRailE');
 
-  const shelfLen = SHELF_Z1 - SHELF_Z0;
-  const shelfZc = (SHELF_Z0 + SHELF_Z1) / 2;
-  put(bar, box(SHELF_T, SHELF_H, shelfLen), matShelf, SHELF_X, SHELF_H / 2 + 0.11, shelfZc, 'bottleShelfBody');
+  // Vinväggen, två lägen. Flaskorna ligger med halsen ut mot båda stråken;
+  // en InstancedMesh per färg och läge, byggd en gång.
+  const wineWall = {} as Record<WineWallLevel, THREE.Object3D>;
+  const shelfTargets = {} as Record<WineWallLevel, THREE.Object3D[]>;
+  const bottleGeo = cyl(0.036, 0.11, 8);
+  const bottleSlots: Record<WineWallLevel, number> = { bas: 0, platina: 0 };
+  (['bas', 'platina'] as WineWallLevel[]).forEach(function (level) {
+    const spec = WINE_WALL[level];
+    const g = new THREE.Group();
+    g.name = 'wineWall_' + level;
+    bar.add(g);
+    wineWall[level] = g;
+    shelfTargets[level] = [];
+    const len = spec.x1 - spec.x0;
+    const cx = (spec.x0 + spec.x1) / 2;
+    rectBox(g, M.rack, spec.x0, spec.x1, -RACK_T / 2 + 0.06, RACK_T / 2 - 0.06, Y, Y + spec.height, 'wineWallCore_' + level);
+    // Gavlar i ek, så väggens ändar läser som möbel och inte som låda.
+    rectBox(g, M.rackCrown, spec.x0 - 0.04, spec.x0, -RACK_T / 2, RACK_T / 2, Y, Y + spec.height + 0.02, 'wineWallEndW_' + level);
+    rectBox(g, M.rackCrown, spec.x1, spec.x1 + 0.04, -RACK_T / 2, RACK_T / 2, Y, Y + spec.height + 0.02, 'wineWallEndE_' + level);
+    const perRow = Math.floor((len - 0.1) / WINE_WALL.bottlePitch);
+    const counts = bottleMats.map(function () { return 0; });
+    const plan: { i: number; x: number; y: number; z: number; rx: number }[] = [];
+    let n = 0;
+    for (let t = 0; t < spec.tiers; t++) {
+      const y = Y + WINE_WALL.tierY0 + t * WINE_WALL.tierPitch;
+      for (let side = -1; side <= 1; side += 2) {
+        const zFace = side * (RACK_T / 2 - 0.05);
+        rectBox(g, M.rackCrown, spec.x0, spec.x1, Math.min(zFace, zFace + side * 0.06), Math.max(zFace, zFace + side * 0.06),
+                y - 0.075, y - 0.055, 'shelfTier_' + level + '_' + t + (side < 0 ? 'S' : 'N'));
+        const tgt = new THREE.Object3D();
+        tgt.name = 'shelfTarget_' + level + '_' + t + (side < 0 ? 'S' : 'N');
+        tgt.position.set(cx, y, zFace + side * 0.02);
+        g.add(tgt);
+        shelfTargets[level].push(tgt);
+        for (let b = 0; b < perRow; b++) {
+          const ci = (b * 7 + t * 3 + (side > 0 ? 1 : 0)) % bottleMats.length;
+          counts[ci]++;
+          plan.push({ i: ci, x: spec.x0 + 0.09 + b * WINE_WALL.bottlePitch, y: y, z: zFace + side * 0.02, rx: Math.PI / 2 });
+          n++;
+        }
+      }
+    }
+    // Krönet: magnumrad liggande längs toppen + en upplyst list. Bara platina.
+    if (spec.crown) {
+      const topY = Y + spec.height + 0.06;
+      for (let b = 0; b < Math.floor(len / 0.12); b++) {
+        for (let r = -1; r <= 1; r += 2) {
+          const ci = (b + (r > 0 ? 2 : 0)) % bottleMats.length;
+          counts[ci]++;
+          plan.push({ i: ci, x: spec.x0 + 0.1 + b * 0.12, y: topY, z: r * 0.1, rx: Math.PI / 2 });
+          n++;
+        }
+      }
+      rectBox(g, M.crownGlow, spec.x0 + 0.05, spec.x1 - 0.05, -0.03, 0.03, Y + spec.height, Y + spec.height + 0.02, 'wineWallCrownGlow');
+    }
+    bottleSlots[level] = n;
+    const meshes = bottleMats.map(function (m, ci) {
+      const im = new THREE.InstancedMesh(bottleGeo, m, Math.max(1, counts[ci]));
+      im.name = 'bottles_' + level + '_' + ci;
+      im.castShadow = false;
+      im.receiveShadow = true;
+      g.add(im);
+      return im;
+    });
+    const k = counts.map(function () { return 0; });
+    const dummy = new THREE.Object3D();
+    plan.forEach(function (p) {
+      dummy.position.set(p.x, p.y, p.z);
+      dummy.rotation.set(p.rx, 0, 0);
+      dummy.updateMatrix();
+      meshes[p.i].setMatrixAt(k[p.i]++, dummy.matrix);
+    });
+    meshes.forEach(function (im) { im.instanceMatrix.needsUpdate = true; });
+  });
+  const startLevel: WineWallLevel = opts.wineWall ?? 'bas';
+  wineWall.bas.visible = startLevel === 'bas';
+  wineWall.platina.visible = startLevel === 'platina';
 
-  const shelfTargets: THREE.Object3D[] = [];
-  // Visningsbandet börjar ÖVER diskens överkant (1,26 m). Första
-  // versionen startade hyllplanen på 0,63 m och då rapporterade
-  // siktlinjeprovet att noll av sex barstolar såg alla fyra plan —
-  // helt riktigt, för det nedersta låg bakom en disk på 1,10 m.
-  // Under 1,24 m är hyllan skåp, inte skyltning; hyllstommen är redan
-  // en sluten box och läser som sockel.
-  for (let i = 0; i < shelfTiers; i++) {
-    const y = 1.24 + i * 0.26;
-    const plank = put(bar, box(SHELF_T + 0.06, 0.04, shelfLen - 0.1), matBarTop,
-                      SHELF_X + 0.04, y + 0.11, shelfZc, 'shelfTier' + i);
-    shelfTargets.push(plank);
-    // Flaskraden: en låg box per hyllplan i stället för femtio
-    // cylindrar. Uppifrån och på avstånd läser den likadant.
-    put(bar, box(0.12, 0.18, shelfLen - 0.3), matBottle,
-        SHELF_X + 0.06, y + 0.13, shelfZc, 'bottleRow' + i);
-  }
   const bottleAnchor = new THREE.Object3D();
   bottleAnchor.name = 'bottleAnchor';
-  bottleAnchor.position.set(SHELF_X + 0.16, 1.61, shelfZc);
+  bottleAnchor.position.set(WINE_WALL.bas.x1 - 0.1, Y + 1.34, RACK_T / 2 + 0.05);
   bar.add(bottleAnchor);
-
-  const barLen = BAR_Z1 - BAR_Z0;
-  const barZc = (BAR_Z0 + BAR_Z1) / 2;
-  put(bar, box(BAR_DEPTH, BAR_HEIGHT, barLen), matBar, BAR_X, BAR_HEIGHT / 2 + 0.11, barZc, 'barCounter');
-  put(bar, box(BAR_DEPTH + 0.12, 0.05, barLen + 0.12), matBarTop,
-      BAR_X, BAR_HEIGHT + 0.135, barZc, 'barCounterTop');
-  // Fotlist i messing längs diskens framkant — den enda detalj som
-  // faktiskt fångar ljus i en hög kamera.
-  put(bar, box(0.06, 0.06, barLen), matBrass, BAR_X + BAR_DEPTH / 2 + 0.02, 0.24, barZc, 'barFootRail');
   const glassAnchor = new THREE.Object3D();
   glassAnchor.name = 'glassAnchor';
-  glassAnchor.position.set(BAR_X + 0.22, BAR_HEIGHT + 0.16, barZc - 0.8);
+  glassAnchor.position.set(BAR.x1 - 0.3, Y + bh + 0.06, BAR.z1 - 0.3);
   bar.add(glassAnchor);
 
-  // ── DJ ────────────────────────────────────────────────────────
-  // Platta + golvbyte + fond. Pulten själv är 1,1 m och skulle vara
-  // en liten låda utan zonen omkring den.
-  //
-  // Läget är ett andra beslut: DJ:n står vid södra väggen mitt för
-  // det öppna golvet, inte i bakre hörnet bakom disken. En pult som
-  // ingen plats vänder sig mot är en pult ingen ser. Härifrån
-  // adresserar den golvet mellan disken och tvåorna — och det golvet
-  // får därmed en uppgift i stället för att vara ett tomrum.
+  // Pendlarna över baren: fyra skärmar längs vinväggen, 2,55 m.
+  const pendants: { id: string; local: Vec3 }[] = [];
+  [-2.4, -1.1, 0.2, 1.5].forEach(function (x, i) {
+    const py = Y + 2.55;
+    put(bar, cyl(0.008, H - 2.55, 4), M.shade, x, py + (H - 2.55) / 2, 0, 'pendantCord' + i);
+    put(bar, cyl(0.17, 0.16, 16, 0.05), M.shade, x, py + 0.08, 0, 'pendantShade' + i);
+    put(bar, cyl(0.07, 0.04, 12), M.bulb, x, py - 0.01, 0, 'pendantBulb' + i);
+    pendants.push({ id: 'pendant' + (i + 1), local: [x, py, 0] });
+  });
+
+  // ── DJ-hörnet (SO) ────────────────────────────────────────────
   const dj = new THREE.Group();
   dj.name = 'dj';
   interior.add(dj);
-  put(dj, box(3.0, DJ_PLATFORM, 2.2), matKerb, DJ_X, DJ_PLATFORM / 2 + 0.11, DJ_Z, 'djPlatform');
-  put(dj, box(3.0, 1.9, 0.18), matDjFront, DJ_X, 1.06 + 0.11, DJ_Z - 1.1, 'djBackdrop');  put(dj, box(1.4, 0.95, 0.6), matDj, DJ_X, 0.475 + 0.11 + DJ_PLATFORM, DJ_Z + 0.2, 'djBooth');
-  put(dj, box(1.5, 0.05, 0.7), matBarTop, DJ_X, 0.98 + 0.11 + DJ_PLATFORM, DJ_Z + 0.2, 'djBoothTop');
-  // Siktlinjens mål är DJ:n, inte panelen bakom: en punkt i brösthöjd
-  // där figuren står. Att mäta fonden hade gett svar på frågan "syns
-  // en skiva plywood", vilket ingen ställde.
+  const pY = Y + DJ.platform;
+  rectBox(dj, M.djFront, DJ.x0, DJ.x1, DJ.z0, DJ.z1, Y, pY, 'djPlatform');
+  // Kantljuset — lyser i helgstämningen. Vågrätt, så det syns uppifrån.
+  rectBox(dj, M.djGlow, DJ.x0, DJ.x1, DJ.z1 - 0.06, DJ.z1, pY, pY + 0.02, 'djGlowN');
+  rectBox(dj, M.djGlow, DJ.x0, DJ.x0 + 0.06, DJ.z0, DJ.z1, pY, pY + 0.02, 'djGlowW');
+  // Fonden mot södra väggen — den enda sidan som aldrig kapas vid standardvinkeln.
+  rectBox(dj, M.dj, DJ.x0, DJ.x1, -inZ, -inZ + 0.14, Y, Y + 2.2, 'djBackdrop');
+  const faceNW = -Math.PI / 4;
+  put(dj, box(1.4, 0.95, 0.6), M.dj, DJ.cx, pY + 0.475, DJ.cz, 'djBooth', faceNW);
+  put(dj, box(1.5, 0.05, 0.7), M.barTop, DJ.cx, pY + 0.975, DJ.cz, 'djBoothTop', faceNW);
   const djTarget = new THREE.Object3D();
   djTarget.name = 'djTarget';
-  djTarget.position.set(DJ_X - 0.35, 0.11 + DJ_PLATFORM + 1.45, DJ_Z - 0.55);
+  djTarget.position.set(DJ.cx + 0.45, pY + 1.45, DJ.cz - 0.45);
   dj.add(djTarget);
   const turntable = new THREE.Group();
   turntable.name = 'turntable';
-  turntable.position.set(DJ_X - 0.35, 1.03 + 0.11 + DJ_PLATFORM, DJ_Z + 0.2);
+  turntable.position.set(DJ.cx - 0.25, pY + 1.02, DJ.cz - 0.25);
   dj.add(turntable);
-  put(turntable, cyl(0.16, 0.03, 16), matDj, 0, 0, 0, 'platter');
-  put(turntable, box(0.03, 0.035, 0.3), matBrass, 0, 0.02, 0.08, 'platterMark');
+  put(turntable, cyl(0.16, 0.03, 16), M.dj, 0, 0, 0, 'platter');
+  put(turntable, box(0.03, 0.035, 0.3), M.brass, 0, 0.02, 0.08, 'platterMark');
 
-  // ── Vinförrådet ───────────────────────────────────────────────
-  // Bakre hörnet där DJ:n stod. Låga lådstaplar, 0,9 m — de läser som
-  // förråd uppifrån och ger rummet ett slut i stället för ett tomrum.
+  // ── Vinförrådet (SV) ──────────────────────────────────────────
   const store = new THREE.Group();
   store.name = 'wineStore';
   interior.add(store);
-  put(store, box(1.1, 0.9, 0.8), matShelf, -6.7, 0.56, -1.9, 'crateStackA');
-  put(store, box(1.0, 0.62, 0.75), matShelf, -6.6, 0.42, -3.1, 'crateStackB');
-  put(store, box(1.15, 1.05, 0.85), matShelf, -6.75, 0.64, -4.3, 'crateStackC');
-  put(store, box(0.9, 0.45, 0.7), matShelf, -5.4, 0.335, -4.6, 'crateStackD');
+  rectBox(store, M.crate, -7.6, -6.6, -2.4, -1.4, Y, Y + 1.9, 'wineFridge');
+  rectBox(store, M.crate, -7.5, -6.5, -3.6, -2.8, Y, Y + 0.9, 'crateStackA');
+  rectBox(store, M.crate, -7.5, -6.6, -4.7, -3.9, Y, Y + 0.62, 'crateStackB');
+  rectBox(store, M.crate, -6.4, -5.6, -5.55, -4.9, Y, Y + 0.45, 'crateStackC');
 
   // ── Möbler och platser ────────────────────────────────────────
   const seats: SeatSpec[] = [];
   const furniture = new THREE.Group();
   furniture.name = 'furniture';
   interior.add(furniture);
+  const candles: { id: string; local: Vec3; weekendOnly: boolean }[] = [];
+  const flames: THREE.Object3D[] = [];
+  const weekendCandles: THREE.Object3D[] = [];
 
-  function tableBox(id: string, x: number, z: number, lx: number, lz: number): void {
+  function candle(x: number, topY: number, z: number, id: string, weekendOnly: boolean): void {
+    const c = new THREE.Group();
+    c.name = 'candle_' + id;
+    c.position.set(x, topY, z);
+    furniture.add(c);
+    put(c, cyl(0.035, 0.1, 10), M.candle, 0, 0.05, 0, 'candleBody_' + id);
+    const f = put(c, cyl(0.001, 0.07, 8, 0.024), M.flame, 0, 0.135, 0, 'candleFlame_' + id);
+    f.castShadow = false;
+    flames.push(f);
+    if (weekendOnly) weekendCandles.push(c);
+    candles.push({ id: id, local: [x, topY + 0.14, z], weekendOnly: weekendOnly });
+  }
+
+  function table(id: string, x: number, z: number, lx: number, lz: number, topY: number, legMat: THREE.Material): void {
     const t = new THREE.Group();
     t.name = id;
     t.position.set(x, 0, z);
     furniture.add(t);
-    put(t, box(lx, TABLE_TOP_T, lz), matTableTop, 0, TABLE_TOP_Y + 0.11, 0, id + 'Top');
-    put(t, cyl(0.05, TABLE_TOP_Y, 8), matTableLeg, 0, TABLE_TOP_Y / 2 + 0.11, 0, id + 'Leg');
-    put(t, cyl(0.22, 0.03, 12), matTableLeg, 0, 0.125, 0, id + 'Base');
+    put(t, box(lx, 0.05, lz), M.tableTop, 0, Y + topY, 0, id + 'Top');
+    put(t, cyl(0.05, topY, 8), legMat, 0, Y + topY / 2, 0, id + 'Leg');
+    put(t, cyl(0.22, 0.03, 12), legMat, 0, Y + 0.015, 0, id + 'Base');
   }
 
-  function chair(x: number, z: number, facing: number, id: string): void {
-    const c = new THREE.Group();
-    c.name = id;
-    c.position.set(x, 0, z);
-    c.rotation.y = facing;
-    furniture.add(c);
-    put(c, cyl(0.22, 0.05, 12), matChair, 0, CHAIR_HEIGHT + 0.11, 0, id + 'Seat');
-    put(c, cyl(0.04, CHAIR_HEIGHT, 8), matChair, 0, CHAIR_HEIGHT / 2 + 0.11, 0, id + 'Stem');
-    put(c, box(0.42, 0.4, 0.04), matChair, 0, CHAIR_HEIGHT + 0.32, -0.2, id + 'Back');
-  }
-
-  // Loungen: två grupper om fyra separata dynor. Se avvikelse 3.
-  const loungeSpec = [
-    { id: 'loungeA', cx: 1.6 },
-    { id: 'loungeB', cx: 5.2 }
-  ];
-  for (let li = 0; li < loungeSpec.length; li++) {
-    const L = loungeSpec[li];
-    // Ryggstödet är genomgående, dynorna är inte.
-    put(furniture, box(LOUNGE_PITCH * 4, 0.62, 0.16), matLounge,
-        L.cx, 0.42 + 0.11, LOUNGE_Z + 0.32, L.id + 'Back');
-    put(furniture, box(LOUNGE_PITCH * 4 + 0.1, 0.2, 0.86), matLoungeTable,
-        L.cx, 0.11 + 0.1, LOUNGE_Z + 0.06, L.id + 'Plinth');
-    tableBox(L.id + 'Table', L.cx, LOUNGE_TABLE_Z, 1.6, 0.7);
-    for (let k = 0; k < 4; k++) {
-      const sx = L.cx + (k - 1.5) * LOUNGE_PITCH;
-      // 0,08 m glapp mellan dynorna — det som gör fyra platser till
-      // fyra platser uppifrån.
-      put(furniture, box(LOUNGE_PITCH - 0.08, 0.14, 0.72), matLounge,
-          sx, LOUNGE_SEAT_H + 0.04, LOUNGE_Z, L.id + 'Cushion' + k);
+  // Loungerna: två grupper om tre separata dynor, 0,08 m glapp.
+  LOUNGE_CX.forEach(function (cx, li) {
+    const id = li === 0 ? 'loungeA' : 'loungeB';
+    rectBox(furniture, M.lounge, cx - 1.24, cx + 1.24, LOUNGE_Z + 0.34, LOUNGE_Z + 0.52, Y, Y + 0.95, id + 'Back');
+    rectBox(furniture, M.loungeTable, cx - 1.26, cx + 1.26, LOUNGE_Z - 0.4, LOUNGE_Z + 0.34, Y, Y + 0.2, id + 'Plinth');
+    table(id + 'Table', cx, LOUNGE_TABLE_Z, 1.2, 0.55, LOUNGE_TOP_Y, M.tableLeg);
+    candle(cx, Y + LOUNGE_TOP_Y + 0.025, LOUNGE_TABLE_Z, id, false);
+    for (let k = 0; k < 3; k++) {
+      const sx = cx + (k - 1) * 0.8;
+      put(furniture, box(0.72, 0.16, 0.72), M.lounge, sx, Y + LOUNGE_H - 0.06, LOUNGE_Z, id + 'Cushion' + k);
       seats.push({
-        id: L.id + (k + 1),
-        kind: 'lounge',
-        seatIndex: seats.length,
-        furnitureId: L.id,
-        local: [sx, LOUNGE_Z],
-        seatHeight: LOUNGE_SEAT_H,
-        facing: Math.PI,
-        approach: [sx, LOUNGE_LANE_Z],
-        lane: 'loungeN'
+        id: id + (k + 1), kind: 'lounge', seatIndex: seats.length, furnitureId: id + 'Table',
+        seatNodeId: id + 'Cushion' + k, local: [sx, LOUNGE_Z], seatHeight: LOUNGE_H,
+        seatSurfaceY: Y + LOUNGE_H, facing: Math.PI, approach: [sx, 4.45], lane: 'north'
       });
     }
-  }
+  });
 
-  // Tre tvåor i södra bandet, öster om DJ-zonen. Sitsoffset längs X,
-  // som interiorLayout.
-  const twoSpec = [{ id: 'twoA', x: 2.9 }, { id: 'twoB', x: 4.7 }, { id: 'twoC', x: 6.5 }];
-  for (let ti = 0; ti < twoSpec.length; ti++) {
-    const T = twoSpec[ti];
-    tableBox(T.id, T.x, TWOTOP_Z, 0.95, 0.95);
+  // Tvåorna längs södra väggen.
+  TWO_X.forEach(function (x, ti) {
+    const id = 'two' + String.fromCharCode(65 + ti);
+    table(id, x, TWO_Z, 0.8, 0.8, TABLE_TOP_Y, M.tableLeg);
+    candle(x, Y + TABLE_TOP_Y + 0.025, TWO_Z, id, false);
     for (let k = 0; k < 2; k++) {
-      const sx = T.x + (k === 0 ? -0.6 : 0.6);
+      const sx = x + (k === 0 ? -0.58 : 0.58);
       const facing = k === 0 ? Math.PI / 2 : -Math.PI / 2;
-      chair(sx, TWOTOP_Z, facing, 'chair_' + T.id + (k + 1));
+      const cid = 'chair_' + id + (k + 1);
+      const c = new THREE.Group();
+      c.name = cid;
+      c.position.set(sx, 0, TWO_Z);
+      c.rotation.y = facing;
+      furniture.add(c);
+      put(c, cyl(0.22, 0.05, 12), M.chair, 0, Y + CHAIR_H, 0, cid + 'Seat');
+      put(c, cyl(0.04, CHAIR_H, 8), M.chair, 0, Y + CHAIR_H / 2, 0, cid + 'Stem');
+      put(c, box(0.42, 0.4, 0.04), M.chair, 0, Y + CHAIR_H + 0.22, -0.2, cid + 'Back');
       seats.push({
-        id: T.id + (k + 1),
-        kind: 'twotop',
-        seatIndex: seats.length,
-        furnitureId: T.id,
-        local: [sx, TWOTOP_Z],
-        seatHeight: CHAIR_HEIGHT,
-        facing: facing,
-        approach: [sx, -3.4],
-        lane: 'perimS'
+        id: id + (k + 1), kind: 'twotop', seatIndex: seats.length, furnitureId: id,
+        seatNodeId: cid, local: [sx, TWO_Z], seatHeight: CHAIR_H, seatSurfaceY: Y + CHAIR_H,
+        facing: facing, approach: [sx, -3.25], lane: 'south'
       });
     }
-  }
+  });
 
-  // Barstolarna sist — samma ordning som interiorLayout.
-  const stoolZ0 = -2.3;
-  for (let i = 0; i < 6; i++) {
-    const z = stoolZ0 + i * STOOL_PITCH;
-    const c = new THREE.Group();
-    c.name = 'stool' + i;
-    c.position.set(STOOL_X, 0, z);
-    furniture.add(c);
-    put(c, cyl(0.19, 0.05, 12), matChair, 0, STOOL_HEIGHT + 0.11, 0, 'stool' + i + 'Seat');
-    put(c, cyl(0.045, STOOL_HEIGHT, 8), matChair, 0, STOOL_HEIGHT / 2 + 0.11, 0, 'stool' + i + 'Stem');
-    put(c, cyl(0.17, 0.03, 12), matBrass, 0, 0.13, 0, 'stool' + i + 'Foot');
-    seats.push({
-      id: 'bar' + (i + 1),
-      kind: 'bar',
-      seatIndex: seats.length,
-      furnitureId: 'barCounter',
-      local: [STOOL_X, z],
-      seatHeight: STOOL_HEIGHT,
-      facing: -Math.PI / 2,
-      approach: [-0.1, z],
-      lane: 'barLane'
+  // Barstolarna sist, norr först.
+  [1, -1].forEach(function (side) {
+    STOOL_X.forEach(function (x) {
+      const n = seats.length - 11;
+      const sid = 'stool' + n;
+      const z = side * STOOL_Z;
+      const c = new THREE.Group();
+      c.name = sid;
+      c.position.set(x, 0, z);
+      furniture.add(c);
+      put(c, cyl(0.19, 0.05, 12), M.chair, 0, Y + STOOL_H, 0, sid + 'Seat');
+      put(c, cyl(0.045, STOOL_H, 8), M.chair, 0, Y + STOOL_H / 2, 0, sid + 'Stem');
+      put(c, cyl(0.17, 0.03, 12), M.brass, 0, Y + 0.02, 0, sid + 'Foot');
+      seats.push({
+        id: 'bar' + n, kind: 'bar', seatIndex: seats.length, furnitureId: side > 0 ? 'barCounterN' : 'barCounterS',
+        seatNodeId: sid, local: [x, z], seatHeight: STOOL_H, seatSurfaceY: Y + STOOL_H,
+        facing: side > 0 ? Math.PI : 0, approach: [x, side * 3.1], lane: side > 0 ? 'north' : 'south'
+      });
     });
-  }
+  });
+  // Diskens ljus — bara helg.
+  candle(-1.35, Y + bh + 0.05, BAR.z1 - 0.3, 'barN1', true);
+  candle(0.9, Y + bh + 0.05, BAR.z1 - 0.3, 'barN2', true);
+  candle(-1.35, Y + bh + 0.05, BAR.z0 + 0.3, 'barS1', true);
+  candle(0.9, Y + bh + 0.05, BAR.z0 + 0.3, 'barS2', true);
 
-  // ── Ståplatser vid diskens norra kortände ─────────────────────
-  // Norra änden, inte södra: söder ligger DJ-plattan nu.
+  // ── Ståplatser: barens östra kortände + två ståbord ───────────
   const standing: StandSpec[] = [];
-  for (let k = 0; k < STANDING_SPOTS; k++) {
-    const sx = BAR_X - 0.65 + k * 0.55;
-    standing.push({
-      id: 'standBar' + (k + 1),
-      local: [sx, BAR_Z1 + 0.35],
-      facing: Math.PI,
-      approach: [sx, 3.2],
-      lane: 'spine'
-    });
-  }
+  [-0.9, -0.3, 0.3, 0.9].forEach(function (z, k) {
+    standing.push({ id: 'standBar' + (k + 1), kind: 'barEnd', local: [BAR.x1 + 0.45, z], facing: -Math.PI / 2, approach: [3.6, z], lane: 'spine' });
+  });
+  [[5.0, 2.9], [5.6, 4.6]].forEach(function (p, k) {
+    const id = 'highTable' + (k + 1);
+    table(id, p[0], p[1], 0.62, 0.62, 1.08, M.brass);
+    candle(p[0], Y + 1.08 + 0.025, p[1], id, true);
+    standing.push({ id: id + 'a', kind: 'highTable', local: [p[0] - 0.55, p[1]], facing: Math.PI / 2, approach: [p[0] - 0.9, p[1]], lane: 'spine' });
+    standing.push({ id: id + 'b', kind: 'highTable', local: [p[0] + 0.55, p[1]], facing: -Math.PI / 2, approach: [p[0] + 0.9, p[1]], lane: 'spine' });
+  });
+  // Klädhängaren vid dörren — dit "på väg att gå" tittar.
+  rectBox(furniture, M.brass, inX - 0.12, inX - 0.06, 1.1, 2.3, Y + 1.7, Y + 1.74, 'coatRail');
+  rectBox(furniture, M.brass, inX - 0.12, inX - 0.06, 1.1, 1.14, Y, Y + 1.74, 'coatRailPostA');
+  rectBox(furniture, M.brass, inX - 0.12, inX - 0.06, 2.26, 2.3, Y, Y + 1.74, 'coatRailPostB');
 
-  const entrance: Vec2 = [halfW - 0.6, 0];
+  const entrance: Vec2 = [inX - 0.55, 0];
   const waitingSpot: Vec2 = [halfW + 2.5, 0];
 
+  // ORDER 271 (montering): tre stationer flyttade inom sin plats efter
+  // kameraprovet med SPELETS kamera (lutning 50°, 24 m, åtta vinklar i
+  // världen — rummet ligger vridet 83°): bartendern och sommelieren till
+  // stråkets mitt (0,62 → 0,74 m från barens mittlinje), så att platina-
+  // väggen inte skymmer kalotten när kameran står vinkelrätt över väggen;
+  // diskaren 0,45 m österut (x −6,85 → −6,40), vid diskhons östra del och
+  // ut under kåpans kant (kåpan skymde kalotten från nordväst). Planen
+  // och stråken är oförändrade. Se reports/order271/wineBar-camera-view.json.
   const staffStations: StaffStation[] = [
-    {
-      id: 'sommelier',
-      local: [-2.6, -0.6],
-      standHeight: 0,
-      facing: Math.PI / 2,
-      note: 'Bakom disken, mitt för flaskhyllan. Runway 1,00 m, fri passage i båda ändar (Z < -3,8 och Z > 1,8).'
-    },
-    {
-      id: 'dj',
-      local: [DJ_X - 0.35, DJ_Z - 0.55],
-      standHeight: DJ_PLATFORM,
-      facing: 0,
-      note: 'Mellan fonden och pulten, 0,25 m upp, vänd mot golvet. Se FLAGS.djState.'
-    },
-    {
-      id: 'cook',
-      local: [-6.0, 3.4],
-      standHeight: 0,
-      facing: -Math.PI / 2,
-      note: 'Vid planchan. Två stationer inom ett steg: plancha, kall prep.'
-    },
-    {
-      id: 'runner',
-      local: [-3.9, 3.3],
-      standHeight: 0,
-      facing: -Math.PI / 2,
-      note: 'Vid passluckan. Bär ut smårätter; vinet hämtas vid disken.'
-    }
+    { id: 'bartender', role: 'bartender', local: [-0.9, -STATION_LANE_Z], standHeight: 0, facing: 0, uniform: STAFF_UNIFORMS.bartender,
+      note: 'Södra stråket, vänd mot vinväggen när hon häller, mot södra stolarna när hon serverar. Stråk 0,98 m.' },
+    { id: 'sommelier', role: 'sommelier', local: [1.3, STATION_LANE_Z], standHeight: 0, facing: Math.PI / 2, uniform: STAFF_UNIFORMS.sommelier,
+      note: 'Norra stråkets östra ände, vid bottleAnchor. Går ut på golvet med flaskan.' },
+    { id: 'server', role: 'server', local: [KITCHEN.x1 + 0.5, 2.7], standHeight: 0, facing: -Math.PI / 2, uniform: STAFF_UNIFORMS.server,
+      note: 'Utanför passluckan. Bär smårätter; vinet hämtas vid barens NO-hörn.' },
+    { id: 'cookHot', role: 'cook', local: [-6.2, 3.9], standHeight: 0, facing: -Math.PI / 2, uniform: STAFF_UNIFORMS.kitchen,
+      note: 'Varm station. Plancha under kåpa.' },
+    { id: 'cookCold', role: 'cook', local: [-5.75, 4.5], standHeight: 0, facing: 0, uniform: STAFF_UNIFORMS.kitchen,
+      note: 'Kallskänk. Ett steg från varm station — en kock kan ta båda en tisdag.' },
+    { id: 'dish', role: 'dish', local: [DISH_X, 2.75], standHeight: 0, facing: Math.PI, uniform: STAFF_UNIFORMS.kitchen,
+      note: 'Diskplatsen. Delar köksuniform; rollen läses av platsen.' },
+    { id: 'dj', role: 'dj', local: [DJ.cx + 0.45, DJ.cz - 0.45], standHeight: DJ.platform, facing: faceNW, uniform: STAFF_UNIFORMS.dj,
+      note: 'Bakom pulten i SO-hörnet, 0,25 m upp, vänd mot det öppna golvet.' }
   ];
 
   const parts: RoomParts = {
-    turntable: turntable,
-    roof: roof,
-    walls: walls,
-    interior: interior,
-    bar: bar,
-    shelfTargets: shelfTargets,
-    djTarget: djTarget,
-    glassAnchor: glassAnchor,
-    passAnchor: passAnchor,
-    bottleAnchor: bottleAnchor
+    turntable: turntable, roof: roof, walls: walls, wallUpper: wallUpper, interior: interior, bar: bar,
+    wineWall: wineWall, shelfTargets: shelfTargets, djTarget: djTarget, flames: flames,
+    weekendCandles: weekendCandles, djGlow: M.djGlow,
+    glassAnchor: glassAnchor, passAnchor: passAnchor, bottleAnchor: bottleAnchor
   };
 
-  return {
-    group: group,
-    parts: parts,
-    seats: seats,
-    standing: standing,
-    staffStations: staffStations,
-    entrance: entrance,
-    waitingSpot: waitingSpot,
-    width: width,
-    depth: depth,
-    fits: fits,
-    shortfall: shortfall,
+  const room: WineBarRoom = {
+    group: group, parts: parts, seats: seats, standing: standing, staffStations: staffStations,
+    candles: candles, pendants: pendants, entrance: entrance, waitingSpot: waitingSpot,
+    floorY: Y, capacity: TOTAL_SEATS, width: width, depth: depth, fits: fits, shortfall: shortfall,
+    wineWallLevel: startLevel, mood: opts.mood ?? 'tidig',
     dispose: function () {
       materials.forEach(function (m) { m.dispose(); });
       group.removeFromParent();
     }
   };
+  (room as any).bottleSlots = bottleSlots;
+  setMood(room, room.mood);
+  return room;
+}
+
+// ---------- Lägen ----------
+
+export function setWineWallLevel(room: WineBarRoom, level: WineWallLevel): void {
+  room.wineWallLevel = level;
+  room.parts.wineWall.bas.visible = level === 'bas';
+  room.parts.wineWall.platina.visible = level === 'platina';
+  // Flaskfästet följer väggens östra ände.
+  room.parts.bottleAnchor.position.x = WINE_WALL[level].x1 - 0.1;
+}
+
+export function setMood(room: WineBarRoom, mood: MoodId): void {
+  room.mood = mood;
+  const weekend = mood === 'helg';
+  room.parts.weekendCandles.forEach(function (c) { c.visible = weekend; });
+  room.parts.djGlow.emissiveIntensity = weekend ? 1.4 : 0;
 }
 
 /**
- * Enda rörliga delen. `phase` är 0..1 och kommer från anroparen —
- * rummet äger ingen klocka. Se FLAGS.djState: om tallriken ska vrida
- * sig alls är ett kvällstillstånd som inte finns ännu.
+ * Tallriken och lågorna. `phase` 0..1 vrider tallriken (skicka 0 när det
+ * inte spelas); `flicker` är valfri sekundräkning för lågorna. Allokerar inget.
  */
-// ORDER 221 §2.1 — hinder ur rummets egen geometri. Se brewpubRoom.ts.
-export function getObstacles(_room?: WineBarRoom): { id: string; local: Vec2; halfW: number; halfD: number }[] {
-  void _room;
-  const obstacles: { id: string; local: Vec2; halfW: number; halfD: number }[] = [];
-
-  // Bardisken (matBar, BAR_X ± BAR_DEPTH/2, BAR_Z0..BAR_Z1).
-  obstacles.push({
-    id: 'barCounter',
-    local: [BAR_X, (BAR_Z0 + BAR_Z1) / 2],
-    halfW: BAR_DEPTH / 2,
-    halfD: (BAR_Z1 - BAR_Z0) / 2
-  });
-
-  // Flaskhyllan (matShelf, SHELF_X ± SHELF_T/2, SHELF_Z0..SHELF_Z1).
-  obstacles.push({
-    id: 'bottleShelf',
-    local: [SHELF_X, (SHELF_Z0 + SHELF_Z1) / 2],
-    halfW: SHELF_T / 2,
-    halfD: (SHELF_Z1 - SHELF_Z0) / 2
-  });
-
-  // Lounge-borden (två grupper) + plintarna. Plinthen är sätesbasen +
-  // ryggstödet — dynorna sitter ovanpå så vi räknar plinthen som
-  // hinder (0.86 m djup, LOUNGE_PITCH*4+0.1 bred) för att förhindra
-  // att figurer går bakifrån in i soffan.
-  const loungeSpec = [{ id: 'loungeA', cx: 1.6 }, { id: 'loungeB', cx: 5.2 }];
-  for (const L of loungeSpec) {
-    obstacles.push({
-      id: L.id + 'Plinth',
-      local: [L.cx, LOUNGE_Z + 0.06],
-      halfW: (LOUNGE_PITCH * 4 + 0.1) / 2,
-      halfD: 0.86 / 2
-    });
-    obstacles.push({
-      id: L.id + 'Table',
-      local: [L.cx, LOUNGE_TABLE_Z],
-      halfW: 1.6 / 2,
-      halfD: 0.7 / 2
-    });
+export function updateWineBarRoom(room: WineBarRoom, phase: number, flicker?: number): void {
+  room.parts.turntable.rotation.y = (phase ?? 0) * Math.PI * 2;
+  if (flicker === undefined) return;
+  const f = room.parts.flames;
+  for (let i = 0; i < f.length; i++) {
+    const s = 1 + 0.12 * Math.sin(flicker * 9.1 + i * 1.7) + 0.06 * Math.sin(flicker * 23 + i);
+    f[i].scale.set(1, s, 1);
   }
-
-  // Tvåor-borden (0.95 × 0.95).
-  const twoSpec = [{ id: 'twoA', x: 2.9 }, { id: 'twoB', x: 4.7 }, { id: 'twoC', x: 6.5 }];
-  for (const T of twoSpec) {
-    obstacles.push({
-      id: T.id,
-      local: [T.x, TWOTOP_Z],
-      halfW: 0.95 / 2,
-      halfD: 0.95 / 2
-    });
-  }
-
-  return obstacles;
 }
 
-export function updateWineBarRoom(room: WineBarRoom, phase: number): void {
-  room.parts.turntable.rotation.y = (phase ?? 0) * Math.PI * 2;
+const _cam = new THREE.Vector3();
+
+/**
+ * Kapar väggarna på kamerasidan. Anropas när kameran vridits. En sida kapas
+ * när kameran står utanför den med mer än 0,5 m marginal — vid rakt
+ * ovanifrån kapas ingen, vid standardvinkeln kapas N och E.
+ */
+export function updateCutaway(room: WineBarRoom, camera: THREE.Object3D): WallSide[] {
+  camera.getWorldPosition(_cam);
+  room.group.worldToLocal(_cam);
+  const hx = room.width / 2 + 0.5;
+  const hz = room.depth / 2 + 0.5;
+  const cut: Record<WallSide, boolean> = { E: _cam.x > hx, W: _cam.x < -hx, N: _cam.z > hz, S: _cam.z < -hz };
+  const out: WallSide[] = [];
+  (['N', 'S', 'E', 'W'] as WallSide[]).forEach(function (s) {
+    room.parts.wallUpper[s].visible = !cut[s];
+    if (cut[s]) out.push(s);
+  });
+  return out;
 }
 
 // ---------- Gånggrafen ----------
 
-const LANE_ENTRY_X = 6.9;
-const BAR_LANE_X = -0.1;
-const PERIM_S_Z = -3.4;
-const PERIM_N_Z = 2.0;
-const LOUNGE_LANE_Z = 4.02;
-const LOUNGE_GAP_X = 3.4;   // slitsen mellan loungegruppernas bord
+const SPINE_X = 3.6;
+const NORTH_Z = 3.1;
+const SOUTH_Z = -3.25;
+const LOUNGE_INNER_Z = 4.45;
 
-/**
- * Vägpunkter från entrén till en plats, i lokal XZ. Rummet deklarerar
- * sina egna passager i stället för att lämna framkomligheten åt
- * gissningar — playwright-provet går den här listan.
- */
 export function walkPathToSeat(room: WineBarRoom, seatId: string): Vec2[] {
   const seat = room.seats.find(function (s) { return s.id === seatId; });
   if (!seat) return [];
-  const path: Vec2[] = [[room.entrance[0], room.entrance[1]]];
-  if (seat.lane === 'barLane') {
-    path.push([BAR_LANE_X, 0]);
-    path.push([BAR_LANE_X, seat.approach[1]]);
-  } else if (seat.lane === 'perimS') {
-    path.push([LANE_ENTRY_X, 0]);
-    path.push([LANE_ENTRY_X, PERIM_S_Z]);
-    path.push([seat.approach[0], PERIM_S_Z]);
-    if (seat.approach[1] !== PERIM_S_Z) path.push([seat.approach[0], seat.approach[1]]);
-  } else if (seat.lane === 'loungeN') {
-    path.push([LANE_ENTRY_X, 0]);
-    path.push([LANE_ENTRY_X, PERIM_N_Z]);
-    path.push([LOUNGE_GAP_X, PERIM_N_Z]);
-    path.push([LOUNGE_GAP_X, LOUNGE_LANE_Z]);
-    path.push([seat.approach[0], LOUNGE_LANE_Z]);
+  const p: Vec2[] = [[room.entrance[0], room.entrance[1]], [SPINE_X, 0]];
+  if (seat.kind === 'lounge') {
+    const cx = LOUNGE_CX[seat.furnitureId === 'loungeATable' ? 0 : 1];
+    const endX = seat.local[0] <= cx ? cx - 0.85 : cx + 0.85;
+    p.push([SPINE_X, NORTH_Z], [endX, NORTH_Z], [endX, LOUNGE_INNER_Z], [seat.local[0], LOUNGE_INNER_Z]);
+  } else if (seat.lane === 'north') {
+    p.push([SPINE_X, NORTH_Z], [seat.local[0], NORTH_Z]);
   } else {
-    path.push([seat.approach[0], 0]);
+    p.push([SPINE_X, SOUTH_Z], [seat.local[0], SOUTH_Z]);
   }
-  path.push([seat.local[0], seat.local[1]]);
-  return path;
+  p.push([seat.local[0], seat.local[1]]);
+  return p;
 }
 
-/** Vägen ut: samma korridorer baklänges, ut till väntplatsen. */
 export function exitPathFromSeat(room: WineBarRoom, seatId: string): Vec2[] {
   const back = walkPathToSeat(room, seatId).slice().reverse();
   back.push([room.waitingSpot[0], room.waitingSpot[1]]);
   return back;
 }
 
+/** Personalens väg kök → bar: köksdörren, sedan barens öppna västra ände. */
+export function staffPathKitchenToBar(): Vec2[] {
+  return [[-5.1, 2.7], [-5.1, 1.2], [-4.2, 0.62], [-3.4, 0.62]];
+}
+
 // ---------- Mätning ----------
 
-/**
- * Mäter rummet i den scen som faktiskt renderas — samma tal
- * playwright ska hitta efter montering. Ett rum som finns i grafen men
- * inte har utbredning ger nollor här.
- */
-export function measureWineBarRoom(room: WineBarRoom): {
-  footprint: Vec2;
-  interiorHeight: number;
-  seatCount: number;
-  standingCount: number;
-  loungeSeats: number;
-  barSeats: number;
-  tableSeats: number;
-  shelfHeight: number;
-  djZoneArea: number;
-} {
+export function measureWineBarRoom(room: WineBarRoom) {
   room.group.updateWorldMatrix(true, true);
   const bb = new THREE.Box3().setFromObject(room.parts.interior);
-  const barBox = new THREE.Box3().setFromObject(room.parts.bar);
-  let lounge = 0;
-  let barSeats = 0;
-  let table = 0;
-  room.seats.forEach(function (s) {
-    if (s.kind === 'lounge') lounge++;
-    else if (s.kind === 'bar') barSeats++;
-    else table++;
-  });
+  const wall = new THREE.Box3().setFromObject(room.parts.walls);
+  const split = { lounge: 0, bar: 0, twotop: 0 };
+  room.seats.forEach(function (s) { (split as any)[s.kind]++; });
+  const wwSpec = WINE_WALL[room.wineWallLevel];
   let djArea = 0;
-  const tmp = new THREE.Box3();
   room.parts.interior.traverse(function (o) {
     if (o.name === 'djPlatform') {
-      tmp.setFromObject(o);
-      djArea = (tmp.max.x - tmp.min.x) * (tmp.max.z - tmp.min.z);
+      const t = new THREE.Box3().setFromObject(o);
+      djArea = (t.max.x - t.min.x) * (t.max.z - t.min.z);
     }
   });
   return {
-    footprint: [bb.max.x - bb.min.x, bb.max.z - bb.min.z],
-    interiorHeight: bb.max.y - bb.min.y,
+    footprint: [bb.max.x - bb.min.x, bb.max.z - bb.min.z] as Vec2,
+    height: wall.max.y - wall.min.y,
     seatCount: room.seats.length,
     standingCount: room.standing.length,
-    loungeSeats: lounge,
-    barSeats: barSeats,
-    tableSeats: table,
-    shelfHeight: barBox.max.y,
-    djZoneArea: djArea
+    split: split,
+    floorZones: ZONE_FLOORS.length,
+    wineWall: {
+      level: room.wineWallLevel,
+      length: wwSpec.x1 - wwSpec.x0,
+      height: wwSpec.height,
+      tiers: wwSpec.tiers,
+      bottles: (room as any).bottleSlots[room.wineWallLevel]
+    },
+    runway: (BAR.z1 - BAR.depth) - RACK_T / 2,
+    djZoneArea: djArea,
+    candles: room.candles.length,
+    candlesLit: room.candles.filter(function (c) { return room.mood === 'helg' || !c.weekendOnly; }).length
   };
 }
 
+function isShown(o: THREE.Object3D | null): boolean {
+  while (o) { if (!o.visible) return false; o = o.parent; }
+  return true;
+}
+
 /**
- * Siktlinjeprovet, inverterat mot ölkrogen: här mäts sikten TILL
- * flaskhyllan, inte förbi den. Plus DJ-fonden som andra måltavla.
- * Kroppar och annotationer ska ligga utanför `room.group` när provet
- * körs.
+ * Siktlinjen: barstolarna till vinväggens hyllplan på sin sida, och alla
+ * platser till DJ:n. Kroppar ska ligga utanför room.group när provet körs.
  */
-export function checkSightLines(room: WineBarRoom): {
-  perSeat: { seatId: string; shelf: number; dj: boolean }[];
-  seatsSeeingShelf: number;
-  seatsSeeingDj: number;
-  barSeatsSeeingAllTiers: number;
-  blindSeats: string[];
-} {
+export function checkSightLines(room: WineBarRoom) {
   room.group.updateWorldMatrix(true, true);
   const ray = new THREE.Raycaster();
   const origin = new THREE.Vector3();
   const target = new THREE.Vector3();
   const dir = new THREE.Vector3();
-  const tiers = room.parts.shelfTargets;
-  const perSeat = [];
-  const blindSeats = [];
-  let seeingShelf = 0;
-  let seeingDj = 0;
-  let barAll = 0;
-
-  function clearTo(node: THREE.Object3D, from: THREE.Vector3, allow: string[]): boolean {
+  const tiers = room.parts.shelfTargets[room.wineWallLevel];
+  function clear(node: THREE.Object3D, from: THREE.Vector3, allow: string[]): boolean {
     node.getWorldPosition(target);
     dir.copy(target).sub(from);
     const dist = dir.length();
     ray.set(from, dir.normalize());
-    ray.far = dist - 0.15;
+    ray.far = dist - 0.12;
     const hits = ray.intersectObject(room.group, true);
     for (let h = 0; h < hits.length; h++) {
-      const n = hits[h].object.name;
-      if (n.indexOf('floor') === 0) continue;
-      let ok = false;
-      for (let a = 0; a < allow.length; a++) {
-        if (n.indexOf(allow[a]) === 0) { ok = true; break; }
-      }
-      if (!ok) return false;
+      const o = hits[h].object;
+      if (!isShown(o) || o.name.indexOf('floor') === 0) continue;
+      if (allow.some(function (a) { return o.name.indexOf(a) === 0; })) continue;
+      return false;
     }
     return true;
   }
-
-  for (let i = 0; i < room.seats.length; i++) {
-    const s = room.seats[i];
-    let eye = eyeHeightForSeat(s);
-    origin.set(s.local[0], eye, s.local[1]);
+  const perSeat: { seatId: string; tiers: number; of: number; dj: boolean }[] = [];
+  let barAll = 0;
+  let seeDj = 0;
+  let seeWall = 0;
+  room.seats.forEach(function (s) {
+    origin.set(s.local[0], eyeHeightForSeat(s), s.local[1]);
     room.group.localToWorld(origin);
-    let visible = 0;
-    for (let t = 0; t < tiers.length; t++) {
-      if (clearTo(tiers[t], origin, ['shelfTier', 'bottleRow', 'bottleShelf'])) visible++;
-    }
-    const djVisible = clearTo(room.parts.djTarget, origin, []);
-    if (visible > 0) seeingShelf++;
-    else blindSeats.push(s.id);
-    if (djVisible) seeingDj++;
-    if (s.kind === 'bar' && visible === tiers.length) barAll++;
-    perSeat.push({ seatId: s.id, shelf: visible, dj: djVisible });
-  }
-  return {
-    perSeat: perSeat,
-    seatsSeeingShelf: seeingShelf,
-    seatsSeeingDj: seeingDj,
-    barSeatsSeeingAllTiers: barAll,
-    blindSeats: blindSeats
-  };
+    const side = s.local[1] > 0 ? 'N' : 'S';
+    const mine = tiers.filter(function (t) { return t.name.slice(-1) === side; });
+    let vis = 0;
+    mine.forEach(function (t) { if (clear(t, origin, ['bottles_', 'shelfTier_', 'wineWall'])) vis++; });
+    const d = clear(room.parts.djTarget, origin, ['candle']);
+    if (s.kind === 'bar' && vis === mine.length) barAll++;
+    if (vis > 0) seeWall++;
+    if (d) seeDj++;
+    perSeat.push({ seatId: s.id, tiers: vis, of: mine.length, dj: d });
+  });
+  return { perSeat: perSeat, barSeatsSeeingAllTiers: barAll, seatsSeeingWineWall: seeWall, seatsSeeingDj: seeDj };
 }
 
 /**
- * Världskoordinater för platser, ståplatser, stationer och entré efter
- * att gruppen placerats. Bron till interiorLayout: sim-lagret får en
- * platt seats-lista i seatIndex-ordning, precis som i dag.
+ * Specens kontroll före leverans, som kod: från den kamera som skickas, syns
+ * varje plats och varje station? Mäter mot huvudhöjd (sittande: sitsen +
+ * 0,95 m, stående: 1,55 m) — det är kalotten kameran läser. `extra` är
+ * hinder utanför rummet, t.ex. grannhusen. Kör updateCutaway först.
  */
-export function resolveWorldPositions(room: WineBarRoom): {
-  seats: Vec2[];
-  seatFacings: number[];
-  standing: Vec2[];
-  staffStations: Vec2[];
-  entrance: Vec2;
-  waitingSpot: Vec2;
-} {
+export function checkCameraView(room: WineBarRoom, camera: THREE.Object3D, extra?: THREE.Object3D[]) {
+  room.group.updateWorldMatrix(true, true);
+  const ray = new THREE.Raycaster();
+  const from = new THREE.Vector3();
+  const to = new THREE.Vector3();
+  const dir = new THREE.Vector3();
+  camera.getWorldPosition(from);
+  const targets = [room.group as THREE.Object3D].concat(extra ?? []);
+  function test(local: Vec3): string | null {
+    to.set(local[0], local[1], local[2]);
+    room.group.localToWorld(to);
+    dir.copy(to).sub(from);
+    const dist = dir.length();
+    ray.set(from, dir.normalize());
+    ray.far = dist - 0.25;
+    const hits = ray.intersectObjects(targets, true);
+    for (let h = 0; h < hits.length; h++) {
+      const o = hits[h].object;
+      if (!isShown(o)) continue;
+      if (/^(floor|candle|pendantCord)/.test(o.name)) continue;
+      return o.name || 'namnlös';
+    }
+    return null;
+  }
+  const blocked: { id: string; by: string }[] = [];
+  let seatsSeen = 0;
+  room.seats.forEach(function (s) {
+    const by = test([s.local[0], s.seatSurfaceY + 0.95, s.local[1]]);
+    if (by) blocked.push({ id: s.id, by: by }); else seatsSeen++;
+  });
+  let stationsSeen = 0;
+  room.staffStations.forEach(function (s) {
+    const by = test([s.local[0], PLINTH_M + s.standHeight + 1.55, s.local[1]]);
+    if (by) blocked.push({ id: s.id, by: by }); else stationsSeen++;
+  });
+  const e = test([room.entrance[0], PLINTH_M + 1.55, room.entrance[1]]);
+  if (e) blocked.push({ id: 'entrance', by: e });
+  return { seatsSeen: seatsSeen, seats: room.seats.length, stationsSeen: stationsSeen,
+           stations: room.staffStations.length, entranceSeen: !e, blocked: blocked };
+}
+
+/**
+ * Planritningens underlag: varje namngiven möbel och zon som rektangel i
+ * lokal XZ, läst ur samma meshar som renderas. Rektanglar är AABB — DJ-pulten
+ * står 45° vriden och ritas därför större än den är.
+ */
+export function planRects(room: WineBarRoom): { name: string; x0: number; x1: number; z0: number; z1: number; top: number }[] {
+  room.group.updateWorldMatrix(true, true);
+  const inv = new THREE.Matrix4().copy(room.group.matrixWorld).invert();
+  const out: { name: string; x0: number; x1: number; z0: number; z1: number; top: number }[] = [];
+  const b = new THREE.Box3();
+  room.parts.interior.traverse(function (o: any) {
+    if (!o.isMesh || o.isInstancedMesh || !isShown(o)) return;
+    if (/^(candle|pendant|platter|bottle)/.test(o.name)) return;
+    b.setFromObject(o).applyMatrix4(inv);
+    out.push({ name: o.name, x0: b.min.x, x1: b.max.x, z0: b.min.z, z1: b.max.z, top: b.max.y });
+  });
+  return out;
+}
+
+export function resolveWorldPositions(room: WineBarRoom) {
   room.group.updateWorldMatrix(true, true);
   const v = new THREE.Vector3();
-  function toWorld(p: Vec2): Vec2 {
-    v.set(p[0], 0, p[1]);
-    room.group.localToWorld(v);
-    return [v.x, v.z];
-  }
-  // ORDER 267 — världs-facing per sitsplats, som brewpubRoom (ORDER 186
-  // fynd 2). Utan den läste InteriorGuests `seatFacings` som undefined
-  // och renderingen av gästerna kastade varje bildruta när vinbaren
-  // monterades i spelet.
-  const groupYaw = room.group.rotation.y;
+  function w(p: Vec2): Vec2 { v.set(p[0], 0, p[1]); room.group.localToWorld(v); return [v.x, v.z]; }
   return {
-    seats: room.seats.map(function (s) { return toWorld(s.local); }),
-    seatFacings: room.seats.map(function (s) { return s.facing + groupYaw; }),
-    standing: room.standing.map(function (s) { return toWorld(s.local); }),
-    staffStations: room.staffStations.map(function (s) { return toWorld(s.local); }),
-    entrance: toWorld(room.entrance),
-    waitingSpot: toWorld(room.waitingSpot)
+    seats: room.seats.map(function (s) { return w(s.local); }),
+    standing: room.standing.map(function (s) { return w(s.local); }),
+    staffStations: room.staffStations.map(function (s) { return w(s.local); }),
+    entrance: w(room.entrance),
+    waitingSpot: w(room.waitingSpot)
   };
+}
+
+// ---------- ORDER 271 — tillägg vid montering ----------
+
+/**
+ * Hinder för navigeringen (businessRoom.ts läser `getObstacles(raw)`, ORDER
+ * 221 §2.1). Läst ur samma meshar som renderas, via planRects(): allt i
+ * interiören som når över 0,30 m, utom golvzonerna och sittmöblerna (platserna
+ * undantas ändå av nav-grafen). Förra filen hade en handskriven lista; den
+ * här följer geometrin om Design flyttar en möbel.
+ */
+export function getObstacles(room: WineBarRoom): { id: string; local: Vec2; halfW: number; halfD: number }[] {
+  return planRects(room)
+    .filter(function (r) { return r.top > PLINTH_M + 0.3 && !/^(floor|stool|rug|mat)|Cushion/.test(r.name); })
+    .map(function (r) {
+      return { id: r.name, local: [(r.x0 + r.x1) / 2, (r.z0 + r.z1) / 2] as Vec2, halfW: (r.x1 - r.x0) / 2, halfD: (r.z1 - r.z0) / 2 };
+    });
 }

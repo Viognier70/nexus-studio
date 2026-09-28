@@ -1,0 +1,28 @@
+{
+  "url": "http://localhost:4174/",
+  "build": "produktion (vite build + preview)",
+  "flags": "inga",
+  "steps": [
+    {
+      "name": "nytt spel",
+      "atSeconds": 19
+    },
+    {
+      "name": "bussen framme",
+      "atSeconds": 37
+    },
+    {
+      "name": "samtalet",
+      "atSeconds": 40
+    },
+    {
+      "name": "registreringen",
+      "atSeconds": 50
+    }
+  ],
+  "shots": [],
+  "errors": [],
+  "mentor": {
+    "practice": "Måndag · Campus · Vecka 1 av 8Mentorn · från CampusVälkommen till Grythyttan.Jag kommer från Campus och följer dig i dag. Banken lånar inte ut något förrän den har sett vad du kan, så vi börjar med att öva. Öppna Måltidens hus och öva i Stensöta, där sommelierna håller till. Inget står på spel.Nästa→Jag klarar mig — hoppa över guiden"
+  }
+}

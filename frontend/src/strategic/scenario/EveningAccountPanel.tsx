@@ -245,6 +245,9 @@ export function EveningAccountPanel() {
   }, [account]);
 
   if (!account || opacity <= 0) return null;
+  // ORDER 271 — under kvällen står berättelsen på kvällsberättelsens
+  // skärm (EveningBar, Designs K1), som täcker rummet.
+  if (sim.day.period === 'evening') return null;
 
   // ORDER 050 §7 step 6 (2026-08-10) — filter the ledger to the
   // current day (the day whose evening this is). The evening account

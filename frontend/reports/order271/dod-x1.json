@@ -1,0 +1,25 @@
+{
+  "url": "http://localhost:4174/",
+  "build": "produktion (vite build + preview)",
+  "flags": "inga",
+  "viewport": "1920×1080",
+  "steps": [
+    {
+      "name": "X1",
+      "atSeconds": 18
+    }
+  ],
+  "shots": [
+    {
+      "file": "dod-50-X1-utan-verksamhet-och-pengar.png",
+      "what": "X1 utan verksamhet och pengar (sparfil)"
+    }
+  ],
+  "rockets": [],
+  "errors": [],
+  "x1": {
+    "save": "reports/order270/save-utan-verksamhet.json",
+    "cashInSave": 30372,
+    "cashLoaded": 0
+  }
+}

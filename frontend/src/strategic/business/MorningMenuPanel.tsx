@@ -6,6 +6,10 @@
 //   2. Buy stock — supplier + ingredient dropdown + units input +
 //      confirm button; posts a labelled stock ledger line per buy.
 //
+// ORDER 271 — formen efter Designs S1 (paket 1): högerspalten i
+// morgonens schema (scenario/DayActionBar.tsx). Menyn som en lista med
+// rutor, inköpen under. Samma utkast, samma COMPOSE_MENU och BUY_STOCK.
+//
 // Morning-only per §5 of the report gate: "menu is set in the
 // morning and stands". Once service opens, the reducer refuses
 // further COMPOSE_MENU / BUY_STOCK dispatches (period check).
@@ -21,78 +25,10 @@ import {
   findSupplier
 } from '../simulation/m4Catalogue';
 import { strings } from '../../content/strings.sv';
+import { NxLabel } from '../ui/system/components';
+import '../ui/screens/screens.css';
 
 const T = strings.panels.menu;
-
-const PANEL_STYLE: React.CSSProperties = {
-  position: 'absolute',
-  top: 72,
-  right: 380,
-  width: 340,
-  padding: '10px 14px',
-  background: 'rgba(20, 14, 10, 0.62)',
-  color: '#f0e8d4',
-  border: '1px solid rgba(168, 146, 106, 0.35)',
-  borderRadius: 3,
-  fontFamily: 'system-ui, sans-serif',
-  fontSize: 13,
-  zIndex: 33,
-  pointerEvents: 'auto',
-  maxHeight: 'calc(100vh - 120px)',
-  overflowY: 'auto'
-};
-
-const HEADING_STYLE: React.CSSProperties = {
-  fontSize: 10,
-  letterSpacing: 1.4,
-  textTransform: 'uppercase',
-  opacity: 0.62,
-  marginBottom: 8
-};
-
-const SECTION_STYLE: React.CSSProperties = {
-  marginBottom: 14,
-  paddingBottom: 10,
-  borderBottom: '1px solid rgba(168, 146, 106, 0.18)'
-};
-
-const CARD_STYLE = (picked: boolean): React.CSSProperties => ({
-  padding: '6px 8px',
-  marginBottom: 4,
-  background: picked ? 'rgba(216, 190, 130, 0.18)' : 'rgba(30, 20, 15, 0.55)',
-  border: `1px solid ${picked ? 'rgba(216, 190, 130, 0.55)' : 'rgba(168, 146, 106, 0.28)'}`,
-  borderRadius: 3,
-  display: 'grid',
-  gridTemplateColumns: '1fr auto',
-  alignItems: 'center',
-  gap: 6
-});
-
-const INPUT_STYLE: React.CSSProperties = {
-  width: 60,
-  padding: '2px 4px',
-  background: 'rgba(0,0,0,0.35)',
-  color: '#f0e8d4',
-  border: '1px solid rgba(168, 146, 106, 0.35)',
-  borderRadius: 2,
-  fontFamily: 'ui-monospace, "SF Mono", Menlo, Consolas, monospace',
-  fontSize: 12
-};
-
-const SELECT_STYLE: React.CSSProperties = {
-  ...INPUT_STYLE,
-  width: 130
-};
-
-const BUTTON_STYLE: React.CSSProperties = {
-  padding: '4px 10px',
-  background: 'rgba(216, 190, 130, 0.25)',
-  color: '#f0e8d4',
-  border: '1px solid rgba(216, 190, 130, 0.55)',
-  borderRadius: 2,
-  cursor: 'pointer',
-  fontSize: 12
-};
 
 interface DraftEntry {
   dishId: string;
@@ -145,34 +81,33 @@ export function MorningMenuPanel() {
   };
 
   return (
-    <div style={PANEL_STYLE} aria-label={T.aria}>
-      <div style={SECTION_STYLE}>
-        <div style={HEADING_STYLE}>{T.menuHeading}</div>
+    <div className="nx" aria-label={T.aria} data-testid="morning-menu">
+      <div className="nxs-list-head"><NxLabel>{T.menuHeading}</NxLabel></div>
+      <div className="nxs-mt-8">
         {DISHES.map((d, idx) => {
           const draft = drafts[idx];
           const ingredientCost = estimateDishIngredientCost(d.id);
           return (
-            <div key={d.id} style={CARD_STYLE(draft.included)}>
-              <div>
-                <label style={{ cursor: 'pointer' }}>
-                  <input
-                    type="checkbox"
-                    checked={draft.included}
-                    onChange={(e) => {
-                      const copy = drafts.slice();
-                      copy[idx] = { ...draft, included: e.target.checked };
-                      setDrafts(copy);
-                    }}
-                    style={{ marginRight: 6 }}
-                  />
-                  {d.name}
-                </label>
-                <div style={{ fontSize: 10, opacity: 0.6, marginTop: 2 }}>
-                  {T.ingredientCost(ingredientCost.toFixed(0))}
-                </div>
-              </div>
+            <div key={d.id} className="nxs-menu-row" data-testid={`menu-dish-${d.id}`}>
+              <label>
+                <input
+                  type="checkbox"
+                  className="nxs-check"
+                  checked={draft.included}
+                  onChange={(e) => {
+                    const copy = drafts.slice();
+                    copy[idx] = { ...draft, included: e.target.checked };
+                    setDrafts(copy);
+                  }}
+                />
+                <span>
+                  <span className="nxs-menu-name" data-off={!draft.included} style={{ display: 'block' }}>{d.name}</span>
+                  <span className="nxs-row-sub" style={{ display: 'block' }}>{T.ingredientCost(ingredientCost.toFixed(0))}</span>
+                </span>
+              </label>
               <input
                 type="number"
+                className="nxs-input"
                 value={draft.price}
                 min={0}
                 step={5}
@@ -181,75 +116,64 @@ export function MorningMenuPanel() {
                   copy[idx] = { ...draft, price: Number(e.target.value) || 0 };
                   setDrafts(copy);
                 }}
-                style={INPUT_STYLE}
                 aria-label={T.priceAria(d.name)}
               />
             </div>
           );
         })}
-        <button
-          type="button"
-          onClick={commitMenu}
-          style={{ ...BUTTON_STYLE, marginTop: 6 }}
-          aria-label={T.confirmAria}
-        >
-          {T.confirm(drafts.filter((d) => d.included).length)}
+      </div>
+      <div className="nxs-mt-8">
+        <button type="button" className="nx-btn nx-btn-quiet" onClick={commitMenu} aria-label={T.confirmAria} data-testid="confirm-menu">
+          <span>{T.confirm(drafts.filter((d) => d.included).length)}</span>
         </button>
       </div>
 
-      <div>
-        <div style={HEADING_STYLE}>{T.stockHeading}</div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, marginBottom: 6 }}>
-          <select
-            value={supplierId}
-            onChange={(e) => setSupplierId(e.target.value)}
-            style={SELECT_STYLE}
-            aria-label={T.supplierAria}
-          >
-            {SUPPLIERS.map((s) => (
-              <option key={s.id} value={s.id}>{s.name}</option>
-            ))}
-          </select>
-          <select
-            value={currentIngredient}
-            onChange={(e) => setIngredientId(e.target.value)}
-            style={SELECT_STYLE}
-            aria-label={T.ingredientAria}
-          >
-            {validIngredients.map((i) => (
-              <option key={i.id} value={i.id}>{i.name}</option>
-            ))}
-          </select>
+      <div className="nxs-list-head nxs-mt-24"><NxLabel>{T.stockHeading}</NxLabel></div>
+      <div className="nxs-mt-16" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'calc(12 * var(--nx-u))' }}>
+        <select
+          value={supplierId}
+          onChange={(e) => setSupplierId(e.target.value)}
+          className="nxs-input nxs-select"
+          aria-label={T.supplierAria}
+        >
+          {SUPPLIERS.map((s) => (
+            <option key={s.id} value={s.id}>{s.name}</option>
+          ))}
+        </select>
+        <select
+          value={currentIngredient}
+          onChange={(e) => setIngredientId(e.target.value)}
+          className="nxs-input nxs-select"
+          aria-label={T.ingredientAria}
+        >
+          {validIngredients.map((i) => (
+            <option key={i.id} value={i.id}>{i.name}</option>
+          ))}
+        </select>
+      </div>
+      <div className="nxs-mt-16" style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', gap: 'calc(12 * var(--nx-u))', alignItems: 'center' }}>
+        <div className="nxs-row-sub">
+          {(() => {
+            const sup = findSupplier(supplierId);
+            const ing = findIngredient(currentIngredient);
+            if (!sup || !ing) return '';
+            const perUnit = ing.baseCostSek * sup.priceIndex;
+            return T.offer((perUnit * units).toFixed(0), (sup.reliability * 100).toFixed(0));
+          })()}
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 6, alignItems: 'center' }}>
-          <div style={{ fontSize: 11, opacity: 0.7 }}>
-            {(() => {
-              const sup = findSupplier(supplierId);
-              const ing = findIngredient(currentIngredient);
-              if (!sup || !ing) return '';
-              const perUnit = ing.baseCostSek * sup.priceIndex;
-              return T.offer((perUnit * units).toFixed(0), (sup.reliability * 100).toFixed(0));
-            })()}
-          </div>
-          <div style={{ display: 'flex', gap: 4 }}>
-            <input
-              type="number"
-              value={units}
-              min={1}
-              step={1}
-              onChange={(e) => setUnits(Number(e.target.value) || 0)}
-              style={INPUT_STYLE}
-              aria-label={T.unitsAria}
-            />
-            <button
-              type="button"
-              onClick={buyStock}
-              style={BUTTON_STYLE}
-              aria-label={T.buyAria}
-            >
-              {T.buy}
-            </button>
-          </div>
+        <input
+          type="number"
+          className="nxs-input"
+          value={units}
+          min={1}
+          step={1}
+          onChange={(e) => setUnits(Number(e.target.value) || 0)}
+          aria-label={T.unitsAria}
+        />
+        <div style={{ minWidth: 'calc(140 * var(--nx-u))' }}>
+          <button type="button" className="nx-btn nx-btn-secondary" onClick={buyStock} aria-label={T.buyAria} data-testid="buy-stock">
+            <span>{T.buy}</span>
+          </button>
         </div>
       </div>
     </div>

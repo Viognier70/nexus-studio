@@ -203,7 +203,8 @@ describe('ORDER 270 — en raket', () => {
     s = reducer(s, { type: 'ANSWER_INCIDENT', optionId: 'c' });
     s = { ...s, knowledgeCredits: { ...s.knowledgeCredits, techne: 3 }, knowledgeTracks: { ...s.knowledgeTracks, techne: { ...s.knowledgeTracks.techne, untagged: 3 } } };
     // Farten 2: en tick är 0,1 s i verkligheten.
-    const ticks = Math.ceil(s.incidents.active!.secondsTotal / (0.2 / 2));
+    // ORDER 271: först visas det förra svaret i revealSeconds.
+    const ticks = Math.ceil((s.incidents.active!.secondsTotal + (s.incidents.active!.revealLeft ?? 0)) / (0.2 / 2));
     const before = tick(s, ticks - 2);
     expect(before.incidents.active?.step).toBe(1);
     const after = tick(before, 3);
@@ -425,7 +426,8 @@ describe('ORDER 270 — tillägg efter provspel 2026-09-27', () => {
   it('utan verksamhet: dagen slutar av sig själv när schemat är fullt (rutan har bara en knapp)', async () => {
     const { changeClass: change, isStrandedWithoutBusiness } = await import('../economy');
     let s = makeNewGameState(5);
-    s = change({ ...s, introduction: null }, null as never, true);
+    // ORDER 271 (FRAGOR §50): rutan gäller när kassan är under minsta insats.
+    s = { ...change({ ...s, introduction: null }, null as never, true), cash: 0 };
     expect(isStrandedWithoutBusiness(s)).toBe(true);
     const day = s.day.dayNumber;
     for (let i = 0; i < 4 && s.day.dayNumber === day && s.day.period !== 'evening'; i++) {
@@ -455,30 +457,86 @@ describe('ORDER 270 — den svaga spelaren står till slut utan verksamhet', () 
   it('vinbar → food truck → ingen verksamhet, och rutan visas', async () => {
     const { runWeeks } = await import('../../strategic/testHarness/weekHarness');
     const { weakMorning } = await import('../../strategic/testHarness/scenarios');
-    const { isStrandedWithoutBusiness } = await import('../economy');
+    const { isStrandedWithoutBusiness, minimumStakeSek } = await import('../economy');
     const { makeSaveFile } = await import('../save');
-    let stranded: SimulationState | null = null;
+    // ORDER 271 (FRAGOR §50): utan verksamhet visas rutan bara när kassan
+    // är under minsta insats. Den svaga spelaren får sälja food trucken och
+    // har kassa kvar; rutan prövas därför i samma läge med kassan under
+    // insatsen (redovisat, inte spelarens eget flöde).
+    let noBusiness: SimulationState | null = null;
     const run = runWeeks({
       seed: 11,
       weeks: 4,
       // Som ORDER 268:s svaga spelare: ingen kassa och inga medaljer.
       setup: (s) => ({ ...s, cash: 0 }),
       plan: (s) => {
-        if (!stranded && isStrandedWithoutBusiness(s)) stranded = s;
-        return stranded ? {} : weakMorning();
+        if (!noBusiness && s.economy.businessClass === null && s.economy.withoutBusiness && !s.introduction) noBusiness = s;
+        return noBusiness ? {} : weakMorning();
       }
     });
     const classes = [...new Set(run.days.map((d) => d.businessClass))];
     expect(classes).toContain('foodtruck');
-    expect(stranded).not.toBeNull();
+    expect(noBusiness).not.toBeNull();
+    const nb = noBusiness!;
+    expect(isStrandedWithoutBusiness(nb)).toBe(nb.cash < minimumStakeSek(nb));
+    const stranded: SimulationState = nb.cash < minimumStakeSek(nb) ? nb : { ...nb, cash: 0 };
+    expect(isStrandedWithoutBusiness(stranded)).toBe(true);
     if (process.env.WRITE_REPORTS === '1') {
       const { mkdirSync, writeFileSync } = await import('node:fs');
       const { dirname, resolve } = await import('node:path');
       const { fileURLToPath } = await import('node:url');
       const out = resolve(dirname(fileURLToPath(import.meta.url)), '../../../reports/order270');
       mkdirSync(out, { recursive: true });
-      writeFileSync(resolve(out, 'save-utan-verksamhet.json'), JSON.stringify(makeSaveFile(stranded!, 'Vinbaren vid torget', 'auto', new Date('2026-09-27T12:00:00Z'))) + '\n');
-      writeFileSync(resolve(out, 'vag-till-ingen-verksamhet.json'), JSON.stringify({ seed: 11, classes, strandedDay: stranded!.day.dayNumber, days: run.days.map((d) => ({ day: d.dayNumber, week: d.week, weekday: d.weekday, class: d.businessClass, cash: Math.round(d.cash) })) }, null, 2) + '\n');
+      writeFileSync(resolve(out, 'save-utan-verksamhet.json'), JSON.stringify(makeSaveFile(stranded, 'Vinbaren vid torget', 'auto', new Date('2026-09-27T12:00:00Z'))) + '\n');
+      writeFileSync(resolve(out, 'vag-till-ingen-verksamhet.json'), JSON.stringify({ seed: 11, classes, strandedDay: stranded.day.dayNumber, cashAtNoBusiness: Math.round(nb.cash), minimumStakeSek: minimumStakeSek(nb), days: run.days.map((d) => ({ day: d.dayNumber, week: d.week, weekday: d.weekday, class: d.businessClass, cash: Math.round(d.cash) })) }, null, 2) + '\n');
     }
   }, 600000);
+});
+
+// ORDER 271 — Designs paket 6 (R2/R3) och FRAGOR §49.
+describe('ORDER 271 — svaret i stunden och vem som tar över', () => {
+  it('ett klarat steg visar svaret i 2,4 s innan nästa stegs tid börjar', () => {
+    const s = reducer(openNow(wineBarService(), 'vb09-getosten'), { type: 'ANSWER_INCIDENT', optionId: 'c' });
+    const a = s.incidents.active!;
+    expect(a.revealed).toMatchObject({ step: 0, optionId: 'c', correctId: 'c', cleared: true });
+    expect(a.revealLeft).toBe(INCIDENTS.revealSeconds);
+    // Farten 2: en tick är 0,1 s. Under visningen står nedräkningen still.
+    const mid = tick(s, 10);
+    expect(mid.incidents.active!.secondsLeft).toBe(a.secondsTotal);
+    const after = tick(s, Math.ceil(INCIDENTS.revealSeconds / 0.1) + 5);
+    expect(after.incidents.active!.revealed).toBeNull();
+    expect(after.incidents.active!.secondsLeft).toBeLessThan(a.secondsTotal);
+  });
+
+  it('vid fel tar den ordinarie personalen i rollen över en stund', async () => {
+    const { takeoverActive } = await import('../incidents');
+    const s = openNow(wineBarService(), 'vb09-getosten');
+    const after = reducer(s, { type: 'ANSWER_INCIDENT', optionId: 'a' });
+    const o = after.incidents.lastOutcome!;
+    expect(o.reveal).toMatchObject({ step: 0, optionId: 'a', correctId: 'c', cleared: false });
+    expect(o.takeover?.role).toBeDefined();
+    expect(takeoverActive(after)).not.toBeNull();
+    expect(takeoverActive(tick(after, Math.ceil(INCIDENTS.takeoverSimSeconds / 0.2) + 2))).toBeNull();
+  });
+});
+
+// ORDER 271 — Vision Owner FRAGOR §50: minsta insats är en fjärdedel av en
+// veckas golv (som ORDER 268), och rutan gäller först under den.
+describe('ORDER 271 — minsta insats utan verksamhet', () => {
+  it('insatsen är en fjärdedel av golvet i den billigaste klassen, och rutan följer kassan', async () => {
+    const { changeClass: change, floorSek, isStrandedWithoutBusiness, minimumStakeSek } = await import('../economy');
+    const { NO_BUSINESS, UPGRADE } = await import('../balance');
+    expect(NO_BUSINESS.minimumStakeShareOfWeekFloor).toBe(UPGRADE.depositShareOfWeekFloor);
+    let s = makeNewGameState(5);
+    s = change({ ...s, introduction: null }, null as never, true);
+    const stake = minimumStakeSek(s);
+    expect(stake).toBeGreaterThan(0);
+    // Vinbarens krav (brons i tre, varav Stensöta) ger det lägsta golvet här.
+    const vinbar = Math.round(floorSek('vinbar', { stensota: 'brons', maltidbiblioteket: 'brons', kalastorget: 'brons' }) * 0.25);
+    expect(stake).toBeLessThanOrEqual(vinbar);
+    expect(isStrandedWithoutBusiness({ ...s, cash: stake - 1 })).toBe(true);
+    expect(isStrandedWithoutBusiness({ ...s, cash: stake })).toBe(false);
+    // Med verksamhet gäller rutan aldrig.
+    expect(isStrandedWithoutBusiness({ ...wineBarService(), cash: 0 })).toBe(false);
+  });
 });
