@@ -51,6 +51,8 @@ Midsommar och kräftskiva är fasta. Veckorna 3 och 5 är förslag som kan bytas
 
 *Beslut 2026-09-28 (Vision Owner, efter provspel):* tiden kvar av servicen syns hela kvällen.
 
+*Beslut 2026-09-28 (Vision Owner, andra provspelet):* klockan för servicen ska synas tydligt. Den kontrolleras när resten av spelet går över till engelska.
+
 ## Kunskapen
 
 Kunskap mäts på två sätt. **Medaljer** per paviljong visar vilken nivå spelaren har bevisat, och styr banken och golvet. **Krediter** per axel (episteme, techne, fronesis) samlas av varje rätt svar och bildar kunskapsprofilen som bankmötet och portfolion läser.
@@ -207,6 +209,26 @@ Det här ersätter punkterna ovan om 3–6 händelser per kväll, 20 sekunders n
 
 *Beslut 2026-09-28 (Vision Owner, efter provspel): raketerna styr gästflödet.* Fler rätta svar ger fler gäster in i lokalen, och de köper mer ur lagret. Vid fel svar tar personalen i rollen över, och resultatet beror på deras kunskap (se Personalen).
 
+*Beslut 2026-09-28 (Vision Owner, andra provspelet): gästerna frågar om kvällens meny.*
+- Raketer där gäster frågar om kvällens rätter och drycker, utifrån menyn och dryckeslistan som spelaren satt på morgonen: druvan, fisken, råvarans ursprung.
+- Rätt svar ger högre dricks.
+
+### Händelseströmmen
+
+*Beslut 2026-09-28 (Vision Owner, andra provspelet): servicen syns.*
+- En händelseström visar i stunden beställningar, betalningar som tickar in, dricks och slumpens händelser.
+- Lagret syns under servicen: portioner och flaskor per artikel.
+- Det som tar slut ger missnöjda gäster.
+
+### Insatsen
+
+*Beslut 2026-09-28 (Vision Owner, andra provspelet): action-knappen kommer tillbaka som live betting.*
+- Spelaren startar själv en trestegsraket och satsar krediter, med vinst och förlust.
+- Kassa och krediter tickar upp och ner med tydlig animation.
+- Förlusterna ska kunna bli stora, och en dålig vecka ska kunna leda till nedgradering.
+
+*Att bekräfta (Claude Code):* beslutet möter regeln under Ekonomin att kassa och krediter aldrig byter plats. Tolkningen tills Vision Owner bekräftar: insatsen görs i krediter, och storleken på insatsen avgör hur mycket raketen flyttar kassan åt båda hållen. Krediter blir aldrig pengar direkt. En vunnen raket ger tillbaka insatsen med vinst och en intäkt från sällskapet raketen gäller. En förlorad raket tar insatsen och kostar kassan det sällskapet skulle ha betalat, och mer.
+
 ### Personalen
 
 *Beslut 2026-09-28 (Vision Owner, efter provspel): personal är en investering.*
@@ -216,6 +238,8 @@ Det här ersätter punkterna ovan om 3–6 händelser per kväll, 20 sekunders n
 - Matsalen: runner, servitör, sommelier och hovmästare ersätter värd och servitör. Hovmästaren tar över värdens uppgifter.
 - Köket: kocken finns kvar, och lärlingen blir kökets billiga roll, med fler misstag.
 
+*Beslut 2026-09-28 (Vision Owner, andra provspelet):* personalen byggs efter morgonen som insats, servicen som syns, frågorna och insatsen, och resten av engelskan. Den får då också personalnöjdhet.
+
 ### Ritualerna
 
 *Beslut 2026-09-28 (Vision Owner, efter provspel): hantverket syns som ritualer i servicen.*
@@ -223,9 +247,11 @@ Det här ersätter punkterna ovan om 3–6 händelser per kväll, 20 sekunders n
 - En ritual kan utlösa en raket.
 - Avecvagn, vintageport, flambering, ostvagn och cigarr kommer senare, som uppgraderingar per klass.
 
+*Beslut 2026-09-28 (Vision Owner, andra provspelet):* ritualerna byggs sist, efter personalen.
+
 ### Action-knappen (utgår)
 
-*Ersatt 2026-09-26 av Händelserna i servicen.* Texten står kvar som historik.
+*Ersatt 2026-09-26 av Händelserna i servicen.* Texten står kvar som historik. *Tillbaka 2026-09-28 i ny form, se Insatsen.*
 
 Spelaren kan rycka in själv. Hon väljer en uppgift ur kön, till exempel att ta en beställning, bära ut en rätt eller lugna en gäst som väntat länge, och hennes figur utför den. Insatsen går snabbare ju fler techne-krediter hon har. Under tiden ser hon inte resten av rummet i tjugo spelsekunder, så hon kan missa något annat.
 
@@ -245,6 +271,20 @@ Spelaren får öppna med för lite råvaror. Före öppning visas en prognos i o
 - Under servicen säljs portioner ur lagret.
 - Det som inte säljs blir svinn.
 - Paketen ersätter inköpen i morgonens gränssnitt, och leverantörerna tas bort därifrån. Under ytan finns ingredienserna kvar: ett paket är en samling ingredienser, så att recept, lager och svinn fungerar som förut.
+
+*Beslut 2026-09-28 (Vision Owner, andra provspelet): morgonen är insatsen.*
+- Menyn och dryckeslistan, med viner på glas och flaska, öl och alkoholfritt, och mängderna måste sättas innan servicen kan starta.
+- Kassan syns hela tiden och räknas ner animerat vid varje inköp.
+
+*Att bekräfta (Claude Code):* beslutet möter meningen ovan att spelaren inte ska bli stoppad. Tolkningen: servicen startar inte förrän minst en rätt och en dryck finns i lager, men mängden är spelarens sak. Den som köper för lite får öppna.
+
+*Beslut 2026-09-28 (Vision Owner, andra provspelet): svinnet kostar.*
+- Svinnet räknas efter kvällen. En del kan användas nästa dag.
+- Resten hämtas av sopbilen mot en miljöavgift som växer med råvarans pris och mängd.
+
+### Gästerna
+
+*Beslut 2026-09-28 (Vision Owner, andra provspelet):* gästerna har kost, till exempel vegetarian, vegan eller allergi, och en plånbok. Saknas ett alternativ för gästen tappar spelaren försäljning och rykte, och ett sällskap kan lämna.
 
 ### Händelser
 
@@ -311,7 +351,7 @@ Varje ny funktion ska klara de här sju principerna. Den som inte gör det hör 
 3. **Det finns alltid en väg tillbaka.** Medaljer förloras aldrig, nedgradering är inte slutet, och paviljongerna är alltid öppna.
 4. **Val, inte optimering.** Ingen satsning, klass eller paviljong är alltid rätt. Spelet belönar avvägningar.
 5. **Närvaro framför åskådande.** Spelaren ska kunna ingripa när det gäller, men insatsen har ett pris.
-6. **Berättelse framför siffror.** Resultat visas som händelser, repliker och tidningstext, aldrig som stat-paneler. *Undantag 2026-09-26 (Vision Owner):* servicens tre mätare, kassa, gästernas nöjdhet och personalens ork.
+6. **Berättelse framför siffror.** Resultat visas som händelser, repliker och tidningstext, aldrig som stat-paneler. *Undantag 2026-09-26 (Vision Owner):* servicens tre mätare, kassa, gästernas nöjdhet och personalens ork. *Undantag 2026-09-28 (Vision Owner, andra provspelet):* kassan i kronor hela tiden, lagret under servicen, betalningar och dricks i händelseströmmen, och krediterna vid insatsen.
 7. **Något att se fram emot.** Nästa medalj, nästa klass, nästa högtid. Det ska alltid finnas ett mål som ligger en eller två dagar bort och ett som ligger veckor bort.
 
 Den sjunde principen är den som får spelaren att fortsätta. Den är lånad från *Stardew Valley* och *Animal Crossing*: små mål varje dag, stora mål varje säsong.
