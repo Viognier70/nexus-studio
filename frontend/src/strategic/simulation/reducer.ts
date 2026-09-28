@@ -1,6 +1,6 @@
 import { calendarFor } from '../../sim/calendar';
 import { bestAnswerFactor, drinkRevenueFactor, enablersWithCredits } from '../../sim/knowledgeInService';
-import { EVENING, SERVICE, STOCK, type BusinessClassId } from '../../sim/balance';
+import { EVENING, SERVICE, type BusinessClassId } from '../../sim/balance';
 import { closeIncidents, countDown, isIncidentOpen, maybeOpenIncident, planIncidents, resolveIncident, tickOngoing, type CreditChange } from '../../sim/incidents';
 import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
 import { afterVisitClosed, beginIntroduction } from '../../sim/introduction';
@@ -86,7 +86,8 @@ import {
 // report per the three-voices split. Observer voice moved out of
 // during-service into the evening account only.
 import { SERVICE_REPORT_PREP_CARRYOVER } from '../../content/serviceReport';
-import { buyPackage, computePlatesRemaining, drawDrinkForGuest, menuAtServiceStart, usesPackages, wasteAtDayEnd } from './stockPackages';
+import { buyItems, buyPackage, computePlatesRemaining, menuAtServiceStart, stockReadiness, usesPackages, wasteAtDayEnd } from './stockPackages';
+import { orderForGuest } from './guestOrders';
 import { generateWeather, waitingAtOpeningCount } from './weather';
 import {
   generateWorldFactors,
@@ -384,6 +385,8 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       return buyStock(state, action.supplierId, action.ingredientId, action.units);
     case 'BUY_PACKAGE':
       return buyPackage(state, action.packageId);
+    case 'BUY_ITEMS':
+      return buyItems(state, action.items);
     case 'COMPOSE_MENU':
       return composeMenu(state, action.dishes);
     default:
@@ -1135,6 +1138,9 @@ function startService(state: SimulationState): SimulationState {
   if (state.economy.businessClass === null) return state;
   if (state.scaleDown.closedDinner) return state;
   if (state.day.period !== 'morning' && state.day.period !== 'afternoon') return state;
+  // ORDER 277 — menyn och dryckeslistan måste sättas innan servicen kan
+  // starta: minst en rätt och en dryck i lager (klasser med paket).
+  if (!stockReadiness(state).ready) return state;
   const fromAfternoon = state.day.period === 'morning' ? skipLunch(state) : state;
   const opened = openService(fromAfternoon, 'dinner', SERVICE.simMinutes);
   if (opened === fromAfternoon || opened.day.doorsOpenAt === null) return opened;
@@ -2264,14 +2270,21 @@ function advanceTick(state: SimulationState): SimulationState {
       // Vid legacy no-menu-branch är per-rätt-cost 0 (paras ej gäster
       // till specifik rätt). Flat 4|7|12/min borttagen i costPerMinuteToTick.
       let ingredientCostSek = 0;
-      // ORDER 275 — klasser med paket: utan något i lagret finns inget att
-      // beställa, och gästen går utan att betala (ingen gammal väg).
+      // ORDER 275 — klasser med paket: gästen beställer ur lagret, och
+      // portionerna är betalda vid köpet (ingen kostnad vid betalningen).
+      // ORDER 277 — beställningen följer gästens kost och plånbok
+      // (guestOrders.ts). Finns inget som passar går gästen utan att betala.
       const packaged = usesPackages(draft);
-      if (packaged && !draft.menu.some((m) => findDish(m.dishId)?.kind !== 'drink' && (draft.day.platesRemaining[m.dishId] ?? 0) > 0)) {
-        draft.day.walkedCount = (draft.day.walkedCount ?? 0) + 1;
-        continue;
-      }
-      if (draft.menu.length > 0) {
+      if (packaged) {
+        const orderRng = createRng(draft.rngState);
+        const order = orderForGuest(draft, guest, () => orderRng.next());
+        draft.rngState = orderRng.state;
+        if (order.kind === 'lost' || order.revenueSek <= 0) {
+          draft.day.walkedCount = (draft.day.walkedCount ?? 0) + 1;
+          continue;
+        }
+        rev = order.revenueSek * revenueMult;
+      } else if (draft.menu.length > 0) {
         const rng = createRng(draft.rngState);
         const targetRoll = rng.next();
         const substituteRoll = rng.next();
@@ -2284,20 +2297,6 @@ function advanceTick(state: SimulationState): SimulationState {
         if (draw.kind === 'served' || draw.kind === 'substituted') {
           rev = draw.price * revenueMult;
           ingredientCostSek = draw.ingredientCostSek;
-          if (packaged) {
-            // ORDER 275 — portionerna är betalda vid köpet: ingen kostnad
-            // vid betalningen. En dryck ur lagret till rätten.
-            ingredientCostSek = 0;
-            const drinkRng = createRng(draft.rngState);
-            const drink = drawDrinkForGuest(draft, drinkRng.next());
-            if (drink) rev += drink.price * revenueMult;
-            // Ett andra glas (balance.ts STOCK.secondDrinkChance).
-            if (drink && drinkRng.next() < STOCK.secondDrinkChance) {
-              const second = drawDrinkForGuest(draft, drinkRng.next());
-              if (second) rev += second.price * revenueMult;
-            }
-            draft.rngState = drinkRng.state;
-          }
         } else {
           continue;
         }

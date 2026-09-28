@@ -690,6 +690,58 @@ export const STOCK = {
   secondDrinkChance: 0.5
 } as const;
 
+// ORDER 277 — morgonen är insatsen (Vision Owner 2026-09-28, andra
+// provspelet): "Menyn och dryckeslistan (viner på glas och flaska, öl,
+// alkoholfritt) och mängder måste sättas innan servicen kan starta."
+// Servicen startar när minst så här många rätter och drycker finns i
+// lager (speldesignen, att bekräfta: mängden är spelarens sak).
+export const MORNING_STAKE = {
+  section: 'Servicen > Lagret',
+  openQuestion: 'F50',
+  minDishesToOpen: 1,
+  minDrinksToOpen: 1,
+  // Kassan räknas ner (och upp) så här länge i gränssnittet, i ms, och
+  // förändringar från så här många kronor visas bredvid beloppet.
+  cashTickMs: 700,
+  cashDeltaMinSek: 20
+} as const;
+
+// ORDER 277 — gästerna har kost och plånbok (Vision Owner 2026-09-28,
+// andra provspelet): "Gästerna får kost (till exempel vegetarian, vegan,
+// allergi) och plånbok. Saknas ett alternativ tappar man försäljning och
+// rykte, och ett sällskap kan lämna." Valda tal (F50).
+export const GUESTS = {
+  section: 'Servicen > Gästerna',
+  openQuestion: 'F50',
+  // Andel av gästerna med varje kost; resten äter allt.
+  dietShare: { vegetarian: 0.12, vegan: 0.05 },
+  // Andel med en allergi (oberoende av kosten).
+  allergyShare: { lactose: 0.08, gluten: 0.05 },
+  // Andel som inte dricker alkohol.
+  noAlcoholShare: 0.12,
+  // Plånboken per sällskap: andel och vad en gäst högst betalar för rätt
+  // och dryck, i kronor.
+  walletShare: { tight: 0.3, normal: 0.5, generous: 0.2 },
+  walletSek: { tight: 300, normal: 520, generous: 1100 },
+  // Så mycket av plånboken går högst till rätten; resten till drycken.
+  dishShareOfWallet: 0.7,
+  // Smaken för pris: vikten för en rätt är pris upphöjt till detta.
+  // Den snåla väljer billigt, den generösa dyrt.
+  priceTaste: { tight: -1, normal: 0, generous: 1 },
+  // Ett generöst sällskap med minst två gäster beställer en flaska med
+  // den här sannolikheten, när flaskan finns. Flaskan räcker till bordet.
+  bottleChance: 0.6,
+  minPartyForBottle: 2,
+  // Saknas ett alternativ för gästen (kost, allergi, alkoholfritt eller
+  // plånbok): ryktet sjunker så här mycket (skala 0–1), och sällskapet
+  // går med den här sannolikheten.
+  missingOptionReputation: 0.02,
+  missingDrinkReputation: 0.01,
+  partyLeavesChance: 0.5,
+  // Nöjdheten hos gästen som bara fick en dryck (plånboken räckte inte).
+  drinkOnlySatisfaction: -0.2
+} as const;
+
 export const SAVING = {
   section: 'Ramar för version 1 > Sparande',
   slots: 3,                    // "Tre sparplatser per spelare"

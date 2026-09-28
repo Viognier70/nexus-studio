@@ -14,7 +14,7 @@
 // innehåll (som katalogens priser), valda i ORDER 275 (F48).
 
 import type { BusinessClassId } from '../../sim/balance';
-import { findDish, minIngredientCost } from './m4Catalogue';
+import { DISHES, findDish, minIngredientCost } from './m4Catalogue';
 
 export interface StockPackage {
   id: string;
@@ -31,24 +31,32 @@ export interface ClassPackages {
 // (harnessen: 19–34 gäster en vardag i vecka 1–2). Tillköpen är vin och
 // rätter till fler gäster eller en dyrare kväll.
 const VINBAR: ClassPackages = {
+  // ORDER 277 — baspaketet har något för varje gäst: en vegansk rätt och
+  // en vegansk dessert, vin på glas och flaska, öl och alkoholfritt.
   base: {
     id: 'vinbar-base',
     items: [
       { dishId: 'root-soup', portions: 6 },
       { dishId: 'chicken-plate', portions: 10 },
       { dishId: 'pork-plate', portions: 8 },
-      { dishId: 'dairy-dessert', portions: 6 },
-      { dishId: 'house-wine-glass', portions: 30 },
-      { dishId: 'beer-pairing', portions: 8 }
+      { dishId: 'lentil-plate', portions: 4 },
+      { dishId: 'dairy-dessert', portions: 4 },
+      { dishId: 'lingon-sorbet', portions: 2 },
+      { dishId: 'house-wine-glass', portions: 24 },
+      { dishId: 'house-wine-bottle', portions: 2 },
+      { dishId: 'beer-pairing', portions: 8 },
+      { dishId: 'alcohol-free-glass', portions: 6 }
     ]
   },
   addOns: [
     { id: 'vinbar-extra-covers', items: [{ dishId: 'chicken-plate', portions: 6 }, { dishId: 'pork-plate', portions: 6 }, { dishId: 'house-wine-glass', portions: 12 }] },
+    { id: 'vinbar-green', items: [{ dishId: 'lentil-plate', portions: 4 }, { dishId: 'chanterelle-toast', portions: 4 }] },
     { id: 'vinbar-fish', items: [{ dishId: 'fish-plate', portions: 6 }] },
     { id: 'vinbar-lamb', items: [{ dishId: 'lamb-plate', portions: 6 }] },
     { id: 'vinbar-game', items: [{ dishId: 'game-plate', portions: 4 }] },
-    { id: 'vinbar-fine-wine', items: [{ dishId: 'fine-wine-glass', portions: 12 }] },
-    { id: 'vinbar-house-wine', items: [{ dishId: 'house-wine-glass', portions: 18 }] }
+    { id: 'vinbar-fine-wine', items: [{ dishId: 'fine-wine-glass', portions: 12 }, { dishId: 'fine-wine-bottle', portions: 2 }] },
+    { id: 'vinbar-house-wine', items: [{ dishId: 'house-wine-glass', portions: 18 }, { dishId: 'house-wine-bottle', portions: 2 }] },
+    { id: 'vinbar-alcohol-free', items: [{ dishId: 'alcohol-free-glass', portions: 8 }] }
   ]
 };
 
@@ -91,4 +99,23 @@ export function packageDishIds(cls: BusinessClassId | null | undefined): string[
   const ids = new Set<string>();
   for (const pkg of [p.base, ...p.addOns]) for (const item of pkg.items) ids.add(item.dishId);
   return [...ids];
+}
+
+// ORDER 277 — morgonens inköpslista: det som klassen kan sätta på menyn och
+// dryckeslistan, i katalogens ordning (rätter först, sedan drycker).
+export function orderSheetDishIds(cls: BusinessClassId | null | undefined): string[] {
+  const ids = new Set(packageDishIds(cls));
+  const all = DISHES.filter((d) => ids.has(d.id));
+  return [...all.filter((d) => d.kind !== 'drink'), ...all.filter((d) => d.kind === 'drink')].map((d) => d.id);
+}
+
+// Portionerna av en rätt eller dryck i kronor, som paketen.
+export function itemsCostSek(items: Record<string, number>): number {
+  return packageCostSek({ id: 'sheet', items: Object.entries(items).filter(([, n]) => n > 0).map(([dishId, portions]) => ({ dishId, portions })) });
+}
+
+export function packageItems(pkg: StockPackage): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const i of pkg.items) out[i.dishId] = (out[i.dishId] ?? 0) + i.portions;
+  return out;
 }

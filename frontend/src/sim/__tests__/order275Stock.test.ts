@@ -7,6 +7,7 @@ import { findDish } from '../../strategic/simulation/m4Catalogue';
 import { packageCostSek, packageIngredients, packagesFor } from '../../strategic/simulation/packages';
 import { firstDayOfWeek } from '../calendar';
 import type { SimulationState } from '../../strategic/types';
+import { stocked } from '../../strategic/testHarness/stocked';
 
 const TICK = { type: 'TICK', dt: 0.2 } as const;
 const BASE = packagesFor('vinbar')!.base;
@@ -17,7 +18,7 @@ function morning(seed = 5): SimulationState {
 }
 
 function playService(s: SimulationState): SimulationState {
-  s = reducer(s, { type: 'START_SERVICE' });
+  s = reducer(stocked(s), { type: 'START_SERVICE' });
   for (let i = 0; i < 20000 && s.day.period === 'dinner'; i++) {
     const a = s.incidents?.active;
     if (a) s = reducer(s, { type: 'ANSWER_INCIDENT', optionId: 'a' });
@@ -40,7 +41,8 @@ describe('ORDER 275 — paketen', () => {
   it('ett paket är en samling ingredienser via recepten, och priset är deras kostnad', () => {
     const ing = packageIngredients(BASE);
     expect(ing.chicken).toBe(10);
-    expect(ing['house-wine']).toBe(30);
+    // ORDER 277 — 24 glas och två flaskor à fem glas.
+    expect(ing['house-wine']).toBe(34);
     expect(packageCostSek(BASE)).toBeGreaterThan(0);
   });
 });
@@ -57,7 +59,7 @@ describe('ORDER 275 — köpet', () => {
   });
 
   it('paket köps bara på morgonen', () => {
-    const s = reducer(morning(), { type: 'START_SERVICE' });
+    const s = reducer(stocked(morning()), { type: 'START_SERVICE' });
     expect(reducer(s, { type: 'BUY_PACKAGE', packageId: BASE.id })).toBe(s);
   });
 
@@ -77,10 +79,12 @@ describe('ORDER 275 — servicen', () => {
     expect(s.stock['house-wine'] ?? 0).toBeLessThan(bought.stock['house-wine']);
   });
 
-  it('utan lager finns inget att beställa: gästerna går utan att betala', () => {
-    const s = playService(morning());
-    expect(s.serviceRevenueToday.dinner).toBe(0);
-    expect(s.ledger.filter((l) => l.category === 'revenue' && l.amount > 0)).toHaveLength(0);
+  // ORDER 277 — utan lager öppnar servicen inte alls (morgonen är
+  // insatsen). Gäster som inte hittar något när lagret tagit slut prövas
+  // i order277MorningStake.test.ts.
+  it('utan lager öppnar servicen inte', () => {
+    const s = morning();
+    expect(reducer(s, { type: 'START_SERVICE' })).toBe(s);
   });
 });
 

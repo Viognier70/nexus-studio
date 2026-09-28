@@ -14,6 +14,7 @@ import { arcFor, clockMinutes, formatIncidentText, incidentsTonight, rankedStepO
 import vinbarMeta from '../../content/incidents/vinbar.meta.json';
 import vinbarText from '../../content/incidents/vinbar.text.sv.draft.json';
 import type { SimulationState } from '../../strategic/types';
+import { stocked } from '../../strategic/testHarness/stocked';
 
 const TICK = { type: 'TICK', dt: 0.2 } as const;
 
@@ -27,7 +28,7 @@ function wineBarService(weekdayOffset = 0, medals: SimulationState['medals'] = {
   let s = makeNewGameState(7);
   s = { ...s, medals: { stensota: 'brons', metodkoket: 'brons', kalastorget: 'brons', ...medals }, speed: 2 };
   s = { ...s, day: { ...s.day, dayNumber: firstDayOfWeek(2) + weekdayOffset } };
-  s = reducer(s, { type: 'START_SERVICE' });
+  s = reducer(stocked(s), { type: 'START_SERVICE' });
   expect(s.day.period).toBe('dinner');
   return s;
 }
@@ -137,7 +138,7 @@ describe('ORDER 270 — kvällens båge', () => {
   it('en klass utan händelsebank behåller scenarierna', () => {
     let s = makeNewGameState(7);
     s = changeClass({ ...s, day: { ...s.day, dayNumber: firstDayOfWeek(2) } }, 'foodtruck', false);
-    s = reducer(s, { type: 'START_SERVICE' });
+    s = reducer(stocked(s), { type: 'START_SERVICE' });
     expect(s.incidents.enabled).toBe(false);
     expect(s.day.scenarioTriggerTimes.length).toBeGreaterThan(0);
   });
@@ -395,7 +396,7 @@ describe('ORDER 270 — tillägg efter provspel 2026-09-27', () => {
     for (const seed of [1, 2, 3, 4]) {
       let s = makeNewGameState(seed);
       s = { ...s, medals: { stensota: 'brons', metodkoket: 'brons', kalastorget: 'brons' }, day: { ...s.day, dayNumber: firstDayOfWeek(2) } };
-      s = reducer(s, { type: 'START_SERVICE' });
+      s = reducer(stocked(s), { type: 'START_SERVICE' });
       for (let i = 0; i < 6000 && s.day.period === 'dinner'; i++) {
         const a = s.incidents.active;
         if (a && a.openedAt === s.simTime && a.step === 0) {

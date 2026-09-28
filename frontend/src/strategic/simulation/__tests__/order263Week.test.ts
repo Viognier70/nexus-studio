@@ -16,6 +16,7 @@ import { arrivalProbability } from '../arrivals';
 import type { SimulationState } from '../../types';
 // Samma avbildning som gränssnittet visar (DayBadge).
 import { phaseOf } from '../../ui/DayBadge';
+import { stocked } from '../../testHarness/stocked';
 
 function tickUntil(s: SimulationState, done: (s: SimulationState) => boolean, maxTicks = 20000): SimulationState {
   for (let i = 0; i < maxTicks && !done(s); i++) s = reducer(s, { type: 'TICK', dt: 0.2 });
@@ -30,7 +31,7 @@ function playDay(s: SimulationState): { s: SimulationState; phases: DayPhase[] }
     if (phases[phases.length - 1] !== p) phases.push(p);
   };
   if (calendarFor(day).isServiceDay) {
-    s = reducer(s, { type: 'START_SERVICE' });
+    s = reducer(stocked(s), { type: 'START_SERVICE' });
     note(s);
     expect(s.day.period).toBe('dinner');
     expect(s.day.currentServiceLengthMinutes).toBe(SERVICE.simMinutes);
@@ -72,7 +73,8 @@ describe('ORDER 263 — en hel vecka', () => {
     let s = makeInitialState(1);
     expect(reducer(s, { type: 'CLOSE_DAY' })).toBe(s);
     s = { ...s, day: { ...s.day, dayNumber: 7 } };
-    expect(reducer(s, { type: 'START_SERVICE' })).toBe(s);
+    const withStock = stocked(s);
+    expect(reducer(withStock, { type: 'START_SERVICE' })).toBe(withStock);
     expect(reducer(s, { type: 'OPEN_SERVICE', service: 'dinner', lengthMinutes: 10 })).toBe(s);
   });
 
@@ -80,7 +82,7 @@ describe('ORDER 263 — en hel vecka', () => {
     // Samma tillstånd med dörrarna öppna; bara dagen byts.
     let open = makeInitialState(7);
     open = { ...open, day: { ...open.day, dayNumber: 8 } };
-    open = reducer(open, { type: 'START_SERVICE' });
+    open = reducer(stocked(open), { type: 'START_SERVICE' });
     open = tickUntil(open, (x) => x.day.doorsOpenAt === null || x.simTime >= x.day.doorsOpenAt);
     const rateOn = (dayNumber: number) => arrivalProbability({ ...open, day: { ...open.day, dayNumber } });
     // Vecka 2 (ingen första-veckan-faktor, ingen högtid): dag 8 = måndag, 12 = fredag.

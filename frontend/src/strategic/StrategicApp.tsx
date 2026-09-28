@@ -47,6 +47,7 @@ import { detectWebGL, WebGLFallback } from '../webgl/WebGLFallback';
 import { devToggles } from '../lib/devToggles';
 import './strategic.css';
 import { ServiceClock } from './ui/service/ServiceClock';
+import { CashCounter } from './ui/CashCounter';
 import { useLanguage } from '../content/language';
 
 interface StrategicAppProps {
@@ -285,6 +286,8 @@ function StrategicShell() {
         onClose={() => setSelectedId(null)}
       />
       <ScenarioOverlay />
+      {/* ORDER 277 — kassan syns hela tiden, överst i mitten. */}
+      <CashCounter />
       <DayActionBar
         onOpenHouse={() => setHouseOpen(true)}
         onOpenBank={() => setBankOpen(true)}

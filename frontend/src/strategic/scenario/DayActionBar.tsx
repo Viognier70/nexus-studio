@@ -36,7 +36,7 @@ import { MorningActivityPanel } from '../business/MorningActivityPanel';
 import { MorningMenuPanel } from '../business/MorningMenuPanel';
 import { StockPackagesPanel } from '../business/StockPackagesPanel';
 import { packagesFor } from '../simulation/packages';
-import { menuFromStock } from '../simulation/stockPackages';
+import { menuFromStock, stockReadiness } from '../simulation/stockPackages';
 import { findDish } from '../simulation/m4Catalogue';
 import { NxButton, NxLabel } from '../ui/system/components';
 import { NxIcon, ACTIVITY_ICON, PAVILION_ICON } from '../ui/screens/icons';
@@ -90,9 +90,12 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper }: Props
       ? strings.service.stock.none
       : strings.service.stock.forecast(numberWord(forecast.covers));
   const canStart = cal.isServiceDay && !sim.scaleDown.closedDinner && business !== null;
+  // ORDER 277 — servicen startar inte förrän menyn och dryckeslistan har
+  // minst en rätt och en dryck i lager (stockPackages.ts stockReadiness).
+  const readiness = stockReadiness(sim);
 
   const primary = canStart ? (
-    <NxButton testId="start-service" onClick={() => dispatch({ type: 'START_SERVICE' })}>
+    <NxButton testId="start-service" disabled={!readiness.ready} onClick={() => dispatch({ type: 'START_SERVICE' })}>
       {strings.morning.startService}
     </NxButton>
   ) : sim.introduction ? null : (
@@ -242,6 +245,11 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper }: Props
 
       <footer className="nxs-foot">
         <div className="nxs-measure">
+          {canStart && !readiness.ready && (
+            <p className="nx-small nx-accent-text" style={{ fontWeight: 700 }} data-testid="start-blocked" role="status">
+              {strings.stock.notReady(readiness.dishes, readiness.drinks)}
+            </p>
+          )}
           {mentorLine && (
             <p className="nx-small nx-muted" data-testid="mentor-line" data-step={mentor.step ?? undefined}>
               {strings.introduction.mentor}: <span className="nxs-quote-mark">{mentorLine}</span>

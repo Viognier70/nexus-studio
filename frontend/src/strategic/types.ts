@@ -858,6 +858,9 @@ export interface DayState {
   // at day rollover with the rest of DayState.
   substitutedCount: number;
   walkedCount: number;
+  // ORDER 277 — sällskap som har en flaska på bordet i kväll (den räcker
+  // till hela bordet). Nollas med resten av dagen.
+  bottlePartyIds?: string[];
 }
 
 // ORDER 077 §4 (M4) — supplier, ingredient, and dish domain types.
@@ -878,7 +881,18 @@ export interface Ingredient {
   baseCostSek: number;
   unit: string;
   suppliers: readonly string[];   // supplier ids this ingredient can be sourced from
+  // ORDER 277 — gästernas kost läses ur recepten: köttet, fisken och det
+  // vegetariska i en rätt (utelämnat = veganskt), och allergenerna.
+  diet?: 'meat' | 'fish' | 'vegetarian';
+  allergen?: Allergen;
 }
+
+// ORDER 277 — allergierna som gästerna kan ha (speldesign > Gästerna).
+export type Allergen = 'lactose' | 'gluten';
+// ORDER 277 — kosten: vad en rätt är, och vad en gäst äter.
+export type DishDiet = 'meat' | 'fish' | 'vegetarian' | 'vegan';
+// ORDER 277 — dryckeslistan: viner på glas och flaska, öl, alkoholfritt.
+export type DrinkKind = 'wine-glass' | 'wine-bottle' | 'beer' | 'alcohol-free';
 
 export interface DishRecipe {
   ingredientId: string;
@@ -893,6 +907,10 @@ export interface Dish {
   // ORDER 275 — en dryck säljs vid sidan av rätten (en per gäst) och
   // blir inte svinn vid dagens slut. Utelämnat = rätt.
   kind?: 'dish' | 'drink';
+  // ORDER 277 — dryckens sort på dryckeslistan, och hur många glas en
+  // flaska räcker till (ett bord delar på den).
+  drink?: DrinkKind;
+  glassesPerBottle?: number;
 }
 
 // One entry per dish on today's menu. `ingredientCostSek` frozen at
@@ -1593,6 +1611,8 @@ export type SimAction =
   | { type: 'BUY_STOCK'; supplierId: string; ingredientId: string; units: number }
   // ORDER 275 — lagret är insatsen: köp ett paket (baspaket eller tillköp).
   | { type: 'BUY_PACKAGE'; packageId: string }
+  // ORDER 277 — morgonens inköpslista: portioner per rätt och dryck.
+  | { type: 'BUY_ITEMS'; items: Record<string, number> }
   // ORDER 077 §4 (M4) — morning menu composition. Freezes today's
   // dish list + pricing + ingredient cost per entry. Blocked once
   // service opens (§6 report gate: "set in the morning and stands").
