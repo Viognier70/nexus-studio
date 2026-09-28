@@ -398,6 +398,9 @@ export interface Guest {
   // ORDER 278 — gästens beställning, lagd när maten beställs (dining) och
   // betald när gästen betalar (guestOrders.ts). Klasser med paket.
   order?: { dishId: string | null; drinks: string[]; revenueSek: number };
+  // ORDER 279 — "rätt svar ger högre dricks": extra andel av notan i
+  // dricks, från raketer som gällde gästens bord.
+  tipBonus?: number;
   partySize?: number;
   // ORDER 260 — timing-diagnostik. Sätts när guest transitionerar in i
   // seated respektive dining. `orderCompleteAtSimTime − seatedAtSimTime`
@@ -998,6 +1001,7 @@ export type LedgerCategory =
   | 'floor'               // ORDER 265 — golvets påfyllnad vid veckoavräkningen
   | 'amortisation'        // ORDER 265 — lånets amortering vid veckoavräkningen
   | 'waste'               // ORDER 278 — sopbilens miljöavgift för svinnet
+  | 'bet'                 // ORDER 279 — insatsens vinst eller förlust
   | 'other';              // fallback with mandatory descriptive cause
 
 export interface LedgerLine {
@@ -1621,6 +1625,8 @@ export type SimAction =
   | { type: 'BUY_PACKAGE'; packageId: string }
   // ORDER 277 — morgonens inköpslista: portioner per rätt och dryck.
   | { type: 'BUY_ITEMS'; items: Record<string, number> }
+  // ORDER 279 — insatsen: spelaren startar själv en raket och satsar krediter.
+  | { type: 'START_BET'; stake: number }
   // ORDER 077 §4 (M4) — morning menu composition. Freezes today's
   // dish list + pricing + ingredient cost per entry. Blocked once
   // service opens (§6 report gate: "set in the morning and stands").

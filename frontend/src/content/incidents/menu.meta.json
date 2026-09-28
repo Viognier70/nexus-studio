@@ -1,0 +1,1164 @@
+{
+  "schemaVersion": 2,
+  "businessClass": "vinbar",
+  "status": "draft",
+  "note": "ORDER 279 — raketer där gäster frågar om kvällens rätter och drycker, utifrån menyn och dryckeslistan (Vision Owner 2026-09-28, andra provspelet). 'requiresOnMenu': raketen kan komma när minst en av rätterna eller dryckerna står på kvällens meny. Utkast av Claude Code för Vision Owners granskning; fakta om druvor, fisk och råvaror är allmän kunskap, referenserna tomma tills Vision Owner levererar dem..",
+  "incidents": [
+    {
+      "id": "mn01-veltliner",
+      "track": "sommellerie",
+      "arc": "opening",
+      "chainOnly": false,
+      "needsTable": true,
+      "placeholder": false,
+      "reference": null,
+      "requiresOnMenu": [
+        "house-wine-glass",
+        "house-wine-bottle"
+      ],
+      "steps": [
+        {
+          "axis": "episteme",
+          "options": [
+            {
+              "id": "a",
+              "quality": "best"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.06,
+              "stamina": 0,
+              "reputation": 0
+            },
+            "target": "table"
+          }
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "best"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.1,
+              "stamina": -0.02,
+              "reputation": 0
+            },
+            "target": "table",
+            "ongoing": {
+              "satisfactionPerMinute": -0.04,
+              "staminaPerMinute": -0.01,
+              "tempoFactor": 1.25,
+              "target": "table"
+            }
+          }
+        },
+        {
+          "axis": "phronesis",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "best"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": 0,
+              "reputation": -1
+            },
+            "target": "table",
+            "ongoing": {
+              "satisfactionPerMinute": -0.04,
+              "staminaPerMinute": -0.01,
+              "tempoFactor": 1.25,
+              "target": "table"
+            }
+          }
+        }
+      ],
+      "success": {
+        "effects": {
+          "cash": 0.15,
+          "satisfaction": 0.15,
+          "stamina": 0,
+          "reputation": 1
+        },
+        "target": "table"
+      },
+      "staff": {
+        "effects": {
+          "cash": 0,
+          "satisfaction": -0.05,
+          "stamina": 0,
+          "reputation": 0
+        },
+        "target": "table",
+        "ongoing": {
+          "satisfactionPerMinute": -0.04,
+          "staminaPerMinute": -0.01,
+          "tempoFactor": 1.25,
+          "target": "table"
+        }
+      }
+    },
+    {
+      "id": "mn02-pinot",
+      "track": "sommellerie",
+      "arc": "rush",
+      "chainOnly": false,
+      "needsTable": true,
+      "placeholder": false,
+      "reference": null,
+      "requiresOnMenu": [
+        "fine-wine-glass",
+        "fine-wine-bottle"
+      ],
+      "steps": [
+        {
+          "axis": "episteme",
+          "options": [
+            {
+              "id": "a",
+              "quality": "best"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.06,
+              "stamina": 0,
+              "reputation": 0
+            },
+            "target": "table"
+          }
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "best"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.1,
+              "stamina": -0.02,
+              "reputation": 0
+            },
+            "target": "table",
+            "ongoing": {
+              "satisfactionPerMinute": -0.04,
+              "staminaPerMinute": -0.01,
+              "tempoFactor": 1.25,
+              "target": "table"
+            }
+          }
+        },
+        {
+          "axis": "phronesis",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "best"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": 0,
+              "reputation": -1
+            },
+            "target": "table",
+            "ongoing": {
+              "satisfactionPerMinute": -0.04,
+              "staminaPerMinute": -0.01,
+              "tempoFactor": 1.25,
+              "target": "table"
+            }
+          }
+        }
+      ],
+      "success": {
+        "effects": {
+          "cash": 0.15,
+          "satisfaction": 0.15,
+          "stamina": 0,
+          "reputation": 1
+        },
+        "target": "table"
+      },
+      "staff": {
+        "effects": {
+          "cash": 0,
+          "satisfaction": -0.05,
+          "stamina": 0,
+          "reputation": 0
+        },
+        "target": "table",
+        "ongoing": {
+          "satisfactionPerMinute": -0.04,
+          "staminaPerMinute": -0.01,
+          "tempoFactor": 1.25,
+          "target": "table"
+        }
+      }
+    },
+    {
+      "id": "mn03-gos",
+      "track": "kok",
+      "arc": "rush",
+      "chainOnly": false,
+      "needsTable": true,
+      "placeholder": false,
+      "reference": null,
+      "requiresOnMenu": [
+        "fish-plate"
+      ],
+      "steps": [
+        {
+          "axis": "episteme",
+          "options": [
+            {
+              "id": "a",
+              "quality": "best"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.06,
+              "stamina": 0,
+              "reputation": 0
+            },
+            "target": "table"
+          }
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "best"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.1,
+              "stamina": -0.02,
+              "reputation": 0
+            },
+            "target": "table",
+            "ongoing": {
+              "satisfactionPerMinute": -0.04,
+              "staminaPerMinute": -0.01,
+              "tempoFactor": 1.25,
+              "target": "table"
+            }
+          }
+        },
+        {
+          "axis": "phronesis",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "best"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": 0,
+              "reputation": -1
+            },
+            "target": "table",
+            "ongoing": {
+              "satisfactionPerMinute": -0.04,
+              "staminaPerMinute": -0.01,
+              "tempoFactor": 1.25,
+              "target": "table"
+            }
+          }
+        }
+      ],
+      "success": {
+        "effects": {
+          "cash": 0.15,
+          "satisfaction": 0.15,
+          "stamina": 0,
+          "reputation": 1
+        },
+        "target": "table"
+      },
+      "staff": {
+        "effects": {
+          "cash": 0,
+          "satisfaction": -0.05,
+          "stamina": 0,
+          "reputation": 0
+        },
+        "target": "table",
+        "ongoing": {
+          "satisfactionPerMinute": -0.04,
+          "staminaPerMinute": -0.01,
+          "tempoFactor": 1.25,
+          "target": "table"
+        }
+      }
+    },
+    {
+      "id": "mn04-kantareller",
+      "track": "kok",
+      "arc": "rush",
+      "chainOnly": false,
+      "needsTable": true,
+      "placeholder": false,
+      "reference": null,
+      "requiresOnMenu": [
+        "chanterelle-toast"
+      ],
+      "steps": [
+        {
+          "axis": "episteme",
+          "options": [
+            {
+              "id": "a",
+              "quality": "best"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.06,
+              "stamina": 0,
+              "reputation": 0
+            },
+            "target": "table"
+          }
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "best"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.1,
+              "stamina": -0.02,
+              "reputation": 0
+            },
+            "target": "table",
+            "ongoing": {
+              "satisfactionPerMinute": -0.04,
+              "staminaPerMinute": -0.01,
+              "tempoFactor": 1.25,
+              "target": "table"
+            }
+          }
+        },
+        {
+          "axis": "phronesis",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "best"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": 0,
+              "reputation": -1
+            },
+            "target": "table",
+            "ongoing": {
+              "satisfactionPerMinute": -0.04,
+              "staminaPerMinute": -0.01,
+              "tempoFactor": 1.25,
+              "target": "table"
+            }
+          }
+        }
+      ],
+      "success": {
+        "effects": {
+          "cash": 0.15,
+          "satisfaction": 0.15,
+          "stamina": 0,
+          "reputation": 1
+        },
+        "target": "table"
+      },
+      "staff": {
+        "effects": {
+          "cash": 0,
+          "satisfaction": -0.05,
+          "stamina": 0,
+          "reputation": 0
+        },
+        "target": "table",
+        "ongoing": {
+          "satisfactionPerMinute": -0.04,
+          "staminaPerMinute": -0.01,
+          "tempoFactor": 1.25,
+          "target": "table"
+        }
+      }
+    },
+    {
+      "id": "mn05-linser",
+      "track": "kok",
+      "arc": "opening",
+      "chainOnly": false,
+      "needsTable": true,
+      "placeholder": false,
+      "reference": null,
+      "requiresOnMenu": [
+        "lentil-plate"
+      ],
+      "steps": [
+        {
+          "axis": "episteme",
+          "options": [
+            {
+              "id": "a",
+              "quality": "best"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.06,
+              "stamina": 0,
+              "reputation": 0
+            },
+            "target": "table"
+          }
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "best"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.1,
+              "stamina": -0.02,
+              "reputation": 0
+            },
+            "target": "table",
+            "ongoing": {
+              "satisfactionPerMinute": -0.04,
+              "staminaPerMinute": -0.01,
+              "tempoFactor": 1.25,
+              "target": "table"
+            }
+          }
+        },
+        {
+          "axis": "phronesis",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "best"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": 0,
+              "reputation": -1
+            },
+            "target": "table",
+            "ongoing": {
+              "satisfactionPerMinute": -0.04,
+              "staminaPerMinute": -0.01,
+              "tempoFactor": 1.25,
+              "target": "table"
+            }
+          }
+        }
+      ],
+      "success": {
+        "effects": {
+          "cash": 0.15,
+          "satisfaction": 0.15,
+          "stamina": 0,
+          "reputation": 1
+        },
+        "target": "table"
+      },
+      "staff": {
+        "effects": {
+          "cash": 0,
+          "satisfaction": -0.05,
+          "stamina": 0,
+          "reputation": 0
+        },
+        "target": "table",
+        "ongoing": {
+          "satisfactionPerMinute": -0.04,
+          "staminaPerMinute": -0.01,
+          "tempoFactor": 1.25,
+          "target": "table"
+        }
+      }
+    },
+    {
+      "id": "mn06-lingon",
+      "track": "kok",
+      "arc": "closing",
+      "chainOnly": false,
+      "needsTable": true,
+      "placeholder": false,
+      "reference": null,
+      "requiresOnMenu": [
+        "lingon-sorbet",
+        "alcohol-free-glass"
+      ],
+      "steps": [
+        {
+          "axis": "episteme",
+          "options": [
+            {
+              "id": "a",
+              "quality": "best"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.06,
+              "stamina": 0,
+              "reputation": 0
+            },
+            "target": "table"
+          }
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "best"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.1,
+              "stamina": -0.02,
+              "reputation": 0
+            },
+            "target": "table",
+            "ongoing": {
+              "satisfactionPerMinute": -0.04,
+              "staminaPerMinute": -0.01,
+              "tempoFactor": 1.25,
+              "target": "table"
+            }
+          }
+        },
+        {
+          "axis": "phronesis",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "best"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": 0,
+              "reputation": -1
+            },
+            "target": "table",
+            "ongoing": {
+              "satisfactionPerMinute": -0.04,
+              "staminaPerMinute": -0.01,
+              "tempoFactor": 1.25,
+              "target": "table"
+            }
+          }
+        }
+      ],
+      "success": {
+        "effects": {
+          "cash": 0.15,
+          "satisfaction": 0.15,
+          "stamina": 0,
+          "reputation": 1
+        },
+        "target": "table"
+      },
+      "staff": {
+        "effects": {
+          "cash": 0,
+          "satisfaction": -0.05,
+          "stamina": 0,
+          "reputation": 0
+        },
+        "target": "table",
+        "ongoing": {
+          "satisfactionPerMinute": -0.04,
+          "staminaPerMinute": -0.01,
+          "tempoFactor": 1.25,
+          "target": "table"
+        }
+      }
+    },
+    {
+      "id": "mn07-soppan",
+      "track": "kok",
+      "arc": "opening",
+      "chainOnly": false,
+      "needsTable": true,
+      "placeholder": false,
+      "reference": null,
+      "requiresOnMenu": [
+        "root-soup"
+      ],
+      "steps": [
+        {
+          "axis": "episteme",
+          "options": [
+            {
+              "id": "a",
+              "quality": "best"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.06,
+              "stamina": 0,
+              "reputation": 0
+            },
+            "target": "table"
+          }
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "best"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.1,
+              "stamina": -0.02,
+              "reputation": 0
+            },
+            "target": "table",
+            "ongoing": {
+              "satisfactionPerMinute": -0.04,
+              "staminaPerMinute": -0.01,
+              "tempoFactor": 1.25,
+              "target": "table"
+            }
+          }
+        },
+        {
+          "axis": "phronesis",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "best"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": 0,
+              "reputation": -1
+            },
+            "target": "table",
+            "ongoing": {
+              "satisfactionPerMinute": -0.04,
+              "staminaPerMinute": -0.01,
+              "tempoFactor": 1.25,
+              "target": "table"
+            }
+          }
+        }
+      ],
+      "success": {
+        "effects": {
+          "cash": 0.15,
+          "satisfaction": 0.15,
+          "stamina": 0,
+          "reputation": 1
+        },
+        "target": "table"
+      },
+      "staff": {
+        "effects": {
+          "cash": 0,
+          "satisfaction": -0.05,
+          "stamina": 0,
+          "reputation": 0
+        },
+        "target": "table",
+        "ongoing": {
+          "satisfactionPerMinute": -0.04,
+          "staminaPerMinute": -0.01,
+          "tempoFactor": 1.25,
+          "target": "table"
+        }
+      }
+    },
+    {
+      "id": "mn08-flaskan",
+      "track": "sommellerie",
+      "arc": "rush",
+      "chainOnly": false,
+      "needsTable": true,
+      "placeholder": false,
+      "reference": null,
+      "requiresOnMenu": [
+        "house-wine-bottle",
+        "fine-wine-bottle"
+      ],
+      "steps": [
+        {
+          "axis": "episteme",
+          "options": [
+            {
+              "id": "a",
+              "quality": "best"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.06,
+              "stamina": 0,
+              "reputation": 0
+            },
+            "target": "table"
+          }
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "best"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.1,
+              "stamina": -0.02,
+              "reputation": 0
+            },
+            "target": "table",
+            "ongoing": {
+              "satisfactionPerMinute": -0.04,
+              "staminaPerMinute": -0.01,
+              "tempoFactor": 1.25,
+              "target": "table"
+            }
+          }
+        },
+        {
+          "axis": "phronesis",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "best"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": 0,
+              "reputation": -1
+            },
+            "target": "table",
+            "ongoing": {
+              "satisfactionPerMinute": -0.04,
+              "staminaPerMinute": -0.01,
+              "tempoFactor": 1.25,
+              "target": "table"
+            }
+          }
+        }
+      ],
+      "success": {
+        "effects": {
+          "cash": 0.15,
+          "satisfaction": 0.15,
+          "stamina": 0,
+          "reputation": 1
+        },
+        "target": "table"
+      },
+      "staff": {
+        "effects": {
+          "cash": 0,
+          "satisfaction": -0.05,
+          "stamina": 0,
+          "reputation": 0
+        },
+        "target": "table",
+        "ongoing": {
+          "satisfactionPerMinute": -0.04,
+          "staminaPerMinute": -0.01,
+          "tempoFactor": 1.25,
+          "target": "table"
+        }
+      }
+    },
+    {
+      "id": "mn09-olet",
+      "track": "sommellerie",
+      "arc": "closing",
+      "chainOnly": false,
+      "needsTable": true,
+      "placeholder": false,
+      "reference": null,
+      "requiresOnMenu": [
+        "beer-pairing"
+      ],
+      "steps": [
+        {
+          "axis": "episteme",
+          "options": [
+            {
+              "id": "a",
+              "quality": "best"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.06,
+              "stamina": 0,
+              "reputation": 0
+            },
+            "target": "table"
+          }
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "best"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.1,
+              "stamina": -0.02,
+              "reputation": 0
+            },
+            "target": "table",
+            "ongoing": {
+              "satisfactionPerMinute": -0.04,
+              "staminaPerMinute": -0.01,
+              "tempoFactor": 1.25,
+              "target": "table"
+            }
+          }
+        },
+        {
+          "axis": "phronesis",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "best"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": 0,
+              "reputation": -1
+            },
+            "target": "table",
+            "ongoing": {
+              "satisfactionPerMinute": -0.04,
+              "staminaPerMinute": -0.01,
+              "tempoFactor": 1.25,
+              "target": "table"
+            }
+          }
+        }
+      ],
+      "success": {
+        "effects": {
+          "cash": 0.15,
+          "satisfaction": 0.15,
+          "stamina": 0,
+          "reputation": 1
+        },
+        "target": "table"
+      },
+      "staff": {
+        "effects": {
+          "cash": 0,
+          "satisfaction": -0.05,
+          "stamina": 0,
+          "reputation": 0
+        },
+        "target": "table",
+        "ongoing": {
+          "satisfactionPerMinute": -0.04,
+          "staminaPerMinute": -0.01,
+          "tempoFactor": 1.25,
+          "target": "table"
+        }
+      }
+    }
+  ]
+}

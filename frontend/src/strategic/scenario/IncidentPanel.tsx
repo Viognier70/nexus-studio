@@ -264,6 +264,11 @@ export function IncidentCard() {
         <div className="nx-label">{view.context.staff} · {where}</div>
         <div className="nx-rocket-count">{t.rocketOf(String(Math.max(1, n)), String(Math.max(1, rockets, n)))}</div>
       </div>
+      {sim.incidents?.active?.bet && (
+        <p className="nx-label nx-accent-text" data-testid="incident-bet" data-stake={sim.incidents.active.bet.stake} style={{ marginTop: 'calc(8 * var(--nx-u))' }}>
+          {strings.bet.own(sim.incidents.active.bet.stake)}
+        </p>
+      )}
       <p className="nx-rocket-story">{f(incident.text.body)}</p>
       {view.situation && incident.text.situations?.[view.situation] && (
         <p className="nx-rocket-situation" data-testid="incident-situation" data-situation={view.situation}>

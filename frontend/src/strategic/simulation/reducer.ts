@@ -1,7 +1,7 @@
 import { calendarFor } from '../../sim/calendar';
 import { bestAnswerFactor, drinkRevenueFactor, enablersWithCredits } from '../../sim/knowledgeInService';
 import { EVENING, SERVICE, type BusinessClassId } from '../../sim/balance';
-import { closeIncidents, countDown, isIncidentOpen, maybeOpenIncident, planIncidents, resolveIncident, tickOngoing, type CreditChange } from '../../sim/incidents';
+import { canStartBet, closeIncidents, countDown, isIncidentOpen, maybeOpenIncident, planIncidents, resolveIncident, startBet, tickOngoing, type CreditChange } from '../../sim/incidents';
 import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
 import { afterVisitClosed, beginIntroduction } from '../../sim/introduction';
 import { isStrandedWithoutBusiness, canChangeClassToday, changeClass, classOptions, openFirstBusiness, recordEvening, creditLineSek, dailyGuestCap, dayEnd, dayEndHeadroom, dailyWagesSek, recordExamWithoutBusiness, scenarioUnitSek, scenarioChoiceUnits, clampScenarioCash, postDailyInterest, settleWeek } from '../../sim/economy';
@@ -217,9 +217,12 @@ const CHOICE_CAPITAL_SIGN: Record<ScenarioChoice, number> = {
 export function reducer(state: SimulationState, action: SimAction): SimulationState {
   const base = action.type === 'LOAD_STATE' ? action.state : state;
   loadIdCounters(base);
-  const next = reduce(base, action);
+  let next = reduce(base, action);
   // Oförändrat tillstånd (åtgärden avvisades): inga id delades ut.
   if (next === base) return base;
+  // ORDER 279 — en vunnen insats ger tillbaka krediter (incidents.ts
+  // settleBet), bokförda här oavsett vilken väg raketen avgjordes.
+  if ((next.incidents?.betCreditsDue ?? 0) > 0) next = creditBetReturn(next);
   // ORDER 266 — ryktets golv (10 av 100) gäller efter varje åtgärd.
   if (next.reputation < REPUTATION_FLOOR) {
     return withIdCounters({ ...next, reputation: REPUTATION_FLOOR });
@@ -244,6 +247,12 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       const draft: SimulationState = { ...next, guests: next.guests.map((g) => ({ ...g })) };
       if (!countDown(draft, action.dt)) return draft;
       return applyCreditChange(draft, resolveIncident(draft, null));
+    }
+    case 'START_BET': {
+      // ORDER 279 — insatsen: krediterna dras när raketen startar.
+      if (!canStartBet(state, action.stake)) return state;
+      const draft: SimulationState = { ...debitBetStake(state, action.stake), guests: state.guests.map((g) => ({ ...g })) };
+      return startBet(draft, action.stake) ? draft : state;
     }
     case 'ANSWER_INCIDENT': {
       if (!isIncidentOpen(state)) return state;
@@ -1163,6 +1172,28 @@ function applyCreditChange(state: SimulationState, credit: CreditChange | null):
   return credit.amount > 0
     ? creditQuestion(state, credit.axis, credit.track, credit.amount)
     : debitQuestion(state, credit.axis, credit.track, -credit.amount);
+}
+
+// ORDER 279 — insatsens krediter. Insatsen dras en kredit i taget från
+// axeln med flest krediter; en vunnen insats fördelas tillbaka över
+// raketens tre axlar i tur och ordning (utan spår).
+const BET_AXES: KnowledgeAxis[] = ['episteme', 'techne', 'phronesis'];
+
+function debitBetStake(state: SimulationState, stake: number): SimulationState {
+  let s = state;
+  for (let i = 0; i < stake; i++) {
+    const axis = BET_AXES.reduce((best, a) => (s.knowledgeCredits[a] > s.knowledgeCredits[best] ? a : best), BET_AXES[0]);
+    if (s.knowledgeCredits[axis] <= 0) break;
+    s = debitQuestion(s, axis, null, 1);
+  }
+  return s;
+}
+
+function creditBetReturn(state: SimulationState): SimulationState {
+  const due = state.incidents?.betCreditsDue ?? 0;
+  let s: SimulationState = { ...state, incidents: { ...state.incidents!, betCreditsDue: 0 } };
+  for (let i = 0; i < due; i++) s = creditQuestion(s, BET_AXES[i % BET_AXES.length], null, 1);
+  return s;
 }
 
 // ORDER 263 — söndagen är stängd: morgonen (fyra schemaplatser) följs
@@ -2351,7 +2382,8 @@ function advanceTick(state: SimulationState): SimulationState {
       // ORDER 278 — dricksen efter gästens nöjdhet, och betalningen i
       // strömmen.
       if (packaged) {
-        const tip = Math.round(rev * tipShare(guest.satisfaction));
+        // ORDER 279 — rätt svar i raketer vid gästens bord höjer dricksen.
+        const tip = Math.round(rev * (tipShare(guest.satisfaction) + (guest.tipBonus ?? 0)));
         const sekText = (v: number) => strings.service.meters.sek(Math.round(v).toLocaleString('en-GB'));
         streamOrderLine(draft, strings.guests.paid(tableOf(guest), sekText(rev), tip > 0 ? sekText(tip) : null), 'guest_paid');
         rev += tip;

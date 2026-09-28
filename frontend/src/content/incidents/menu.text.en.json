@@ -1,0 +1,683 @@
+{
+  "language": "en",
+  "status": "draft",
+  "reviewedBy": null,
+  "note": "ORDER 279 — menyraketer, engelska (spelet läser den här filen).",
+  "texts": {
+    "mn01-veltliner": {
+      "title": "Grüner Veltliner?",
+      "body": "{gäst} at table {bord} points at the drinks list: \"Grüner Veltliner. What is that, exactly?\"",
+      "steps": [
+        {
+          "question": "What is Grüner Veltliner?",
+          "options": {
+            "a": {
+              "label": "A white grape, Austria's most planted",
+              "explanation": "Grüner Veltliner is a white grape and Austria's most planted variety, grown above all along the Danube in Lower Austria: the Wachau, Kamptal and Kremstal."
+            },
+            "b": {
+              "label": "A red grape from Germany",
+              "explanation": "It is a white grape, and its home is Austria, not Germany."
+            },
+            "c": {
+              "label": "A blend of several grapes from the Alps",
+              "explanation": "Grüner Veltliner is a single grape variety, and the wine on the list is made from it alone."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} guesses at an answer. The guest nods politely, unconvinced."
+          }
+        },
+        {
+          "question": "At what temperature do you serve it?",
+          "options": {
+            "a": {
+              "label": "Well chilled, about 8–10 °C",
+              "explanation": "A fresh, crisp white is served chilled. At 8–10 °C the acidity and the peppery note that Grüner Veltliner is known for come through."
+            },
+            "b": {
+              "label": "Ice-cold, 2–4 °C, straight from the freezer",
+              "explanation": "So cold that the aroma closes up. The guest tastes cold, not wine."
+            },
+            "c": {
+              "label": "Room temperature, 18–20 °C",
+              "explanation": "Too warm for a fresh white wine: the alcohol takes over and the crisp acidity goes flat."
+            }
+          },
+          "fail": {
+            "outcome": "The glass arrives at the wrong temperature. The guest sips and pushes it aside.",
+            "ongoing": "{personal} is still at table {bord}, putting it right, while other tables wait."
+          }
+        },
+        {
+          "question": "What on the menu goes best with it?",
+          "options": {
+            "a": {
+              "label": "Only the dessert",
+              "explanation": "A dry white wine tastes sour next to something sweet. Dessert wants a sweeter wine."
+            },
+            "b": {
+              "label": "Light dishes: fish, vegetables, the chanterelles",
+              "explanation": "A fresh, light white wine suits light food. Its acidity lifts fish and vegetables without drowning them."
+            },
+            "c": {
+              "label": "The game, the richest plate we have",
+              "explanation": "Deer wants a wine with more body, such as a red. A light white disappears next to it."
+            }
+          },
+          "fail": {
+            "outcome": "The guest orders something that does not suit the wine, and it shows.",
+            "ongoing": "{personal} is still at table {bord}, smoothing things over, while other tables wait."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "The guest orders another glass and asks {personal} for the name of the producer."
+      },
+      "staff": {
+        "outcome": "{personal} takes over and recommends something at random. The guest drinks without much joy.",
+        "ongoing": "{personal} is tied up at table {bord}, and the other tables wait longer."
+      }
+    },
+    "mn02-pinot": {
+      "title": "The Pinot Noir",
+      "body": "{gäst} at table {bord} is choosing between the reds: \"Tell me about the Pinot Noir.\"",
+      "steps": [
+        {
+          "question": "Where does Pinot Noir have its classic home?",
+          "options": {
+            "a": {
+              "label": "Burgundy, in France",
+              "explanation": "Pinot Noir is the red grape of Burgundy, where the great red wines are made from it alone. It is also grown in Champagne, Germany, Oregon and New Zealand."
+            },
+            "b": {
+              "label": "Rioja, in Spain",
+              "explanation": "Rioja's red wines are made mainly from Tempranillo, not Pinot Noir."
+            },
+            "c": {
+              "label": "The Douro, in Portugal",
+              "explanation": "The Douro is the home of port, made from grapes such as Touriga Nacional."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} mixes up the regions. The guest knows better and says so."
+          }
+        },
+        {
+          "question": "How do you serve Pinot Noir?",
+          "options": {
+            "a": {
+              "label": "Warm, about 22 °C, so that it opens up",
+              "explanation": "At 22 °C the alcohol dominates and the wine tastes heavy. Room temperature is warmer today than when the rule was made."
+            },
+            "b": {
+              "label": "Straight from the fridge, about 5 °C",
+              "explanation": "Too cold for a red: the fruit closes up and the tannins feel harsher."
+            },
+            "c": {
+              "label": "Slightly cool, about 14–16 °C, in a wide glass",
+              "explanation": "A light red gains from being a little cool: the fruit stays fresh and the alcohol in the background. A wide bowl gathers the aroma."
+            }
+          },
+          "fail": {
+            "outcome": "The wine arrives too warm. The guest waits for it to cool.",
+            "ongoing": "{personal} is still at table {bord}, putting it right, while other tables wait."
+          }
+        },
+        {
+          "question": "Which dish on tonight's menu goes with it?",
+          "options": {
+            "a": {
+              "label": "Nothing: a good red is drunk without food",
+              "explanation": "Pinot Noir is one of the most food-friendly reds. Saying no loses a sale and a good pairing."
+            },
+            "b": {
+              "label": "The earthy dishes: lamb, game or the chanterelles",
+              "explanation": "Pinot Noir has red berries and an earthy, forest-floor character. It suits lamb, game and mushrooms without drowning them."
+            },
+            "c": {
+              "label": "The lingonberry sorbet",
+              "explanation": "A tart, sweet sorbet makes a dry red wine taste thin and bitter."
+            }
+          },
+          "fail": {
+            "outcome": "The guest shrugs and orders the house wine instead.",
+            "ongoing": "{personal} is still at table {bord}, smoothing things over, while other tables wait."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "The guest orders the bottle for the table and thanks {personal} for the advice."
+      },
+      "staff": {
+        "outcome": "{personal} takes over. The advice is vague and the guest settles for a glass.",
+        "ongoing": "{personal} is tied up at table {bord}, and the other tables wait longer."
+      }
+    },
+    "mn03-gos": {
+      "title": "The pike-perch",
+      "body": "{gäst} at table {bord} looks at the menu: \"Poached pike-perch. Is it a local fish?\"",
+      "steps": [
+        {
+          "question": "What is pike-perch?",
+          "options": {
+            "a": {
+              "label": "A freshwater fish of the perch family, from Hjälmaren",
+              "explanation": "Pike-perch (zander) is a freshwater fish of the perch family, with firm white flesh. Hjälmaren, a lake south of Grythyttan, is known for it."
+            },
+            "b": {
+              "label": "A saltwater fish from the North Sea",
+              "explanation": "Pike-perch lives in lakes and slow rivers, and in the brackish water of the Baltic, not the salty North Sea."
+            },
+            "c": {
+              "label": "A farmed salmon",
+              "explanation": "Salmon has pink, fatty flesh. Pike-perch is a lean white fish, and ours is caught in the lake."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} is not sure where the fish comes from. The guest orders something else."
+          }
+        },
+        {
+          "question": "How is it poached so it stays juicy?",
+          "options": {
+            "a": {
+              "label": "At a rolling boil for ten minutes",
+              "explanation": "Far too hard and long: the fish falls apart and turns dry and stringy."
+            },
+            "b": {
+              "label": "Poached in the morning and reheated to order",
+              "explanation": "Reheated fish loses its texture and can be a food-safety risk if it has stood warm."
+            },
+            "c": {
+              "label": "Just below a simmer, about 80 °C, for a few minutes",
+              "explanation": "Gentle heat keeps the delicate flesh together and juicy. A rolling boil tears it apart and dries it out."
+            }
+          },
+          "fail": {
+            "outcome": "The fish comes out dry. The guest leaves half of it.",
+            "ongoing": "{personal} is still at table {bord}, putting it right, while other tables wait."
+          }
+        },
+        {
+          "question": "Another guest at the table is allergic to fish. What do you answer when they ask if the kitchen can keep things apart?",
+          "options": {
+            "a": {
+              "label": "Say that freshwater fish does not count",
+              "explanation": "A fish allergy usually covers freshwater fish too. It is not true, and it is dangerous."
+            },
+            "b": {
+              "label": "Ask the kitchen, and tell the guest honestly what can and cannot be promised",
+              "explanation": "With allergies, honesty comes first. The kitchen knows about shared pans and oil. A promise you cannot keep is a risk to the guest."
+            },
+            "c": {
+              "label": "Say it will be fine without asking",
+              "explanation": "An unchecked promise about an allergy can make a guest seriously ill."
+            }
+          },
+          "fail": {
+            "outcome": "The table grows uneasy. They order little and leave early.",
+            "ongoing": "{personal} is still at table {bord}, smoothing things over, while other tables wait."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "The guest orders the pike-perch and asks {personal} to thank the kitchen."
+      },
+      "staff": {
+        "outcome": "{personal} takes over, but the answers are vague. The table orders the cheapest dish.",
+        "ongoing": "{personal} is tied up at table {bord}, and the other tables wait longer."
+      }
+    },
+    "mn04-kantareller": {
+      "title": "The chanterelles",
+      "body": "{gäst} at table {bord} reads the menu aloud: \"Chanterelles on toast. Are they from around here?\"",
+      "steps": [
+        {
+          "question": "What are chanterelles?",
+          "options": {
+            "a": {
+              "label": "Wild forest mushrooms, picked in late summer",
+              "explanation": "Chanterelles grow wild in Swedish forests, in moss near birch and spruce. The season runs from July into autumn, and they are not cultivated."
+            },
+            "b": {
+              "label": "Cultivated button mushrooms",
+              "explanation": "Button mushrooms are grown indoors. Chanterelles are picked wild in the forest."
+            },
+            "c": {
+              "label": "A kind of truffle imported from Italy",
+              "explanation": "Truffles grow underground and are something else. Chanterelles are golden mushrooms found above the moss."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} does not know what they are. The guest loses interest."
+          }
+        },
+        {
+          "question": "How are chanterelles cleaned in the kitchen?",
+          "options": {
+            "a": {
+              "label": "Soaked in water for an hour",
+              "explanation": "Soaked chanterelles boil in their own water instead of frying, and the flavour goes flat."
+            },
+            "b": {
+              "label": "Not at all, the forest soil gives flavour",
+              "explanation": "Soil and needles grate between the teeth. The flavour is in the mushroom, not the dirt."
+            },
+            "c": {
+              "label": "With a brush or small knife, as dry as possible",
+              "explanation": "Chanterelles soak up water and go soggy in the pan. Brush off soil and needles, and trim the stem."
+            }
+          },
+          "fail": {
+            "outcome": "The chanterelles come out soggy and gritty.",
+            "ongoing": "{personal} is still at table {bord}, putting it right, while other tables wait."
+          }
+        },
+        {
+          "question": "A guest with coeliac disease wants the chanterelles. What do you say?",
+          "options": {
+            "a": {
+              "label": "Scrape off the butter",
+              "explanation": "Butter contains lactose, not gluten. The problem is the bread."
+            },
+            "b": {
+              "label": "Say the toast contains gluten, and offer another dish or the mushrooms without bread",
+              "explanation": "Coeliac disease means no gluten at all. The toast is wheat. Say so clearly, and ask the kitchen what can be served safely."
+            },
+            "c": {
+              "label": "Serve it, a little bread is fine",
+              "explanation": "For someone with coeliac disease even a small amount of gluten causes harm."
+            }
+          },
+          "fail": {
+            "outcome": "The guest gets the wrong answer and does not trust the menu after that.",
+            "ongoing": "{personal} is still at table {bord}, smoothing things over, while other tables wait."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "The guest orders the chanterelles and takes a photo of the plate."
+      },
+      "staff": {
+        "outcome": "{personal} takes over. The guest orders, but without much enthusiasm.",
+        "ongoing": "{personal} is tied up at table {bord}, and the other tables wait longer."
+      }
+    },
+    "mn05-linser": {
+      "title": "Is it vegan?",
+      "body": "{gäst} at table {bord} is vegan and asks about the roast roots with lentils.",
+      "steps": [
+        {
+          "question": "Is the dish vegan?",
+          "options": {
+            "a": {
+              "label": "Yes: lentils, root vegetables and herbs, nothing from animals",
+              "explanation": "The dish is lentils, root vegetables and herbs. Lentils are legumes and a good source of protein, so the plate is filling without meat or dairy."
+            },
+            "b": {
+              "label": "No, lentils are a dairy product",
+              "explanation": "Lentils are legumes, seeds of a plant. They have nothing to do with dairy."
+            },
+            "c": {
+              "label": "Only if the cream is left out",
+              "explanation": "There is no cream in the dish. Guessing makes the guest doubt the whole answer."
+            }
+          },
+          "fail": {
+            "outcome": "The guest is unsure what is in the dish and orders only a drink."
+          }
+        },
+        {
+          "question": "How are the lentils cooked?",
+          "options": {
+            "a": {
+              "label": "Soaked overnight and boiled hard for two hours",
+              "explanation": "That turns lentils to mush. It is how some dried beans are treated, not lentils."
+            },
+            "b": {
+              "label": "Served raw for the crunch",
+              "explanation": "Raw lentils are hard to digest and not eaten as they are."
+            },
+            "c": {
+              "label": "Rinsed and simmered gently until tender, no soaking needed",
+              "explanation": "Unlike dried beans, lentils need no soaking. Rinse them and simmer gently so they hold their shape."
+            }
+          },
+          "fail": {
+            "outcome": "The lentils come out mushy.",
+            "ongoing": "{personal} is still at table {bord}, putting it right, while other tables wait."
+          }
+        },
+        {
+          "question": "The vegan guest asks for a dessert. What do you suggest?",
+          "options": {
+            "a": {
+              "label": "Say there is nothing and bring the bill",
+              "explanation": "It loses a sale and the guest leaves feeling unwelcome, when there was an option."
+            },
+            "b": {
+              "label": "Check the list: the sorbet is only berries, the cream dessert is not vegan",
+              "explanation": "The lingonberry sorbet has no cream or egg. The cream dessert has both. Knowing the list saves the guest a question."
+            },
+            "c": {
+              "label": "The cream dessert, it is light",
+              "explanation": "Cream and egg are animal products. Light is not the same as vegan."
+            }
+          },
+          "fail": {
+            "outcome": "The guest skips dessert and leaves.",
+            "ongoing": "{personal} is still at table {bord}, smoothing things over, while other tables wait."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "The guest orders the lentils and says they will come back with friends."
+      },
+      "staff": {
+        "outcome": "{personal} takes over and answers carefully, but the guest remains doubtful.",
+        "ongoing": "{personal} is tied up at table {bord}, and the other tables wait longer."
+      }
+    },
+    "mn06-lingon": {
+      "title": "Lingonberries",
+      "body": "{gäst} at table {bord} is visiting from abroad and has spotted lingonberries on the list: \"What are those?\"",
+      "steps": [
+        {
+          "question": "What are lingonberries?",
+          "options": {
+            "a": {
+              "label": "A wild Nordic berry of the heather family, tart and red",
+              "explanation": "Lingonberries grow wild in Nordic forests, on a low evergreen shrub of the heather family. They are red and tart."
+            },
+            "b": {
+              "label": "A cultivated strawberry variety",
+              "explanation": "Lingonberries are small, wild and tart. Strawberries are another plant."
+            },
+            "c": {
+              "label": "A citrus fruit from Spain",
+              "explanation": "They are a Nordic forest berry, not a citrus fruit."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} fumbles the answer. The guest orders what they know."
+          }
+        },
+        {
+          "question": "Why do lingonberries keep so well?",
+          "options": {
+            "a": {
+              "label": "They are always frozen",
+              "explanation": "Many are frozen, but the reason they keep even raw is the benzoic acid."
+            },
+            "b": {
+              "label": "They contain a lot of sugar",
+              "explanation": "Lingonberries are tart, with little sugar. It is the acid that keeps them."
+            },
+            "c": {
+              "label": "They contain natural benzoic acid, which preserves them",
+              "explanation": "Lingonberries contain benzoic acid, a natural preservative. That is why raw-stirred lingonberries keep without cooking."
+            }
+          },
+          "fail": {
+            "outcome": "The guest gets a muddled answer and loses interest.",
+            "ongoing": "{personal} is still at table {bord}, putting it right, while other tables wait."
+          }
+        },
+        {
+          "question": "The guest does not drink alcohol. What should they have with the meal?",
+          "options": {
+            "a": {
+              "label": "A small glass of wine, it is almost nothing",
+              "explanation": "A guest who does not drink alcohol means none. Pushing it is disrespectful."
+            },
+            "b": {
+              "label": "The alcohol-free lingonberry sparkling: tart and fresh, it works like a wine with food",
+              "explanation": "Acidity is what makes a drink work with food. A tart, sparkling lingonberry drink does the job of a wine without alcohol."
+            },
+            "c": {
+              "label": "Water only, we have nothing else",
+              "explanation": "It is not true if the list has an alcohol-free drink, and it loses a sale."
+            }
+          },
+          "fail": {
+            "outcome": "The guest drinks water and leaves without dessert.",
+            "ongoing": "{personal} is still at table {bord}, smoothing things over, while other tables wait."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "The guest orders the lingonberry drink and the sorbet, and asks where to pick lingonberries."
+      },
+      "staff": {
+        "outcome": "{personal} takes over and points at the list. The guest orders water.",
+        "ongoing": "{personal} is tied up at table {bord}, and the other tables wait longer."
+      }
+    },
+    "mn07-soppan": {
+      "title": "The soup",
+      "body": "{gäst} at table {bord} cannot tolerate lactose and asks about the root vegetable soup.",
+      "steps": [
+        {
+          "question": "What makes the soup creamy?",
+          "options": {
+            "a": {
+              "label": "Cream, so it contains lactose",
+              "explanation": "The soup is finished with cream, a dairy product, so it contains lactose."
+            },
+            "b": {
+              "label": "Only the root vegetables, so it is lactose-free",
+              "explanation": "The recipe has cream. Saying it is lactose-free is wrong and harms the guest."
+            },
+            "c": {
+              "label": "Coconut milk",
+              "explanation": "Not in this soup. Guessing about ingredients is a risk with intolerances."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} is not sure what is in the soup. The guest orders nothing."
+          }
+        },
+        {
+          "question": "How do you bring out the sweetness of the root vegetables?",
+          "options": {
+            "a": {
+              "label": "Boil them for a long time in plenty of water",
+              "explanation": "Long boiling leaches flavour into the water and gives no browning."
+            },
+            "b": {
+              "label": "Add sugar at the end",
+              "explanation": "It makes the soup sweet, not deep. Roasting gives the roots' own sweetness."
+            },
+            "c": {
+              "label": "Roast them at high heat, about 200 °C, until the surface browns",
+              "explanation": "At high heat the surface browns and caramelises, and the natural sugars in the roots taste sweeter and deeper."
+            }
+          },
+          "fail": {
+            "outcome": "The soup tastes thin.",
+            "ongoing": "{personal} is still at table {bord}, putting it right, while other tables wait."
+          }
+        },
+        {
+          "question": "What do you suggest for the guest who cannot tolerate lactose?",
+          "options": {
+            "a": {
+              "label": "Say the lactose disappears if the soup is heated more",
+              "explanation": "Heating does not remove lactose. It is simply not true."
+            },
+            "b": {
+              "label": "Say the soup has cream, and suggest a lactose-free dish such as the lentils",
+              "explanation": "Be clear about the cream and offer something the guest can eat. The lentils have no dairy."
+            },
+            "c": {
+              "label": "Say it is only a little cream",
+              "explanation": "A little cream still contains lactose. The guest decides, and needs the truth."
+            }
+          },
+          "fail": {
+            "outcome": "The guest orders the soup, trusting the answer, and regrets it.",
+            "ongoing": "{personal} is still at table {bord}, smoothing things over, while other tables wait."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "The guest orders the lentils and thanks {personal} for being clear."
+      },
+      "staff": {
+        "outcome": "{personal} takes over. The guest gets an answer, but feels unsure.",
+        "ongoing": "{personal} is tied up at table {bord}, and the other tables wait longer."
+      }
+    },
+    "mn08-flaskan": {
+      "title": "A bottle for the table",
+      "body": "A party of four at table {bord} want a glass or two each. {gäst} asks: \"Glasses or a bottle?\"",
+      "steps": [
+        {
+          "question": "How many glasses does a 75 cl bottle give?",
+          "options": {
+            "a": {
+              "label": "About five glasses of 15 cl",
+              "explanation": "A standard serving is about 15 cl, so a 75 cl bottle gives five glasses."
+            },
+            "b": {
+              "label": "Two glasses",
+              "explanation": "That would be glasses of almost 40 cl each, far more than a serving."
+            },
+            "c": {
+              "label": "Ten glasses",
+              "explanation": "That would be 7.5 cl each, a tasting pour rather than a glass."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} gets the numbers wrong. The table orders single glasses."
+          }
+        },
+        {
+          "question": "How do you open the bottle at the table?",
+          "options": {
+            "a": {
+              "label": "Open it at the bar and pour everyone straight away",
+              "explanation": "The guest never sees the bottle or tastes it first. A faulty bottle ends up in every glass."
+            },
+            "b": {
+              "label": "Pop the cork loudly for effect",
+              "explanation": "A still wine is opened quietly. A bang belongs to nothing on this list."
+            },
+            "c": {
+              "label": "Show the label, cut the capsule below the lip, draw the cork quietly and let the host taste first",
+              "explanation": "The guest sees they got what they ordered, the wine does not touch the capsule, and the host checks the wine before everyone is poured."
+            }
+          },
+          "fail": {
+            "outcome": "The bottle is opened clumsily and the host frowns.",
+            "ongoing": "{personal} is still at table {bord}, putting it right, while other tables wait."
+          }
+        },
+        {
+          "question": "What do you suggest for the party?",
+          "options": {
+            "a": {
+              "label": "A bottle each",
+              "explanation": "Four bottles is twenty glasses for four people. Upselling that far loses trust."
+            },
+            "b": {
+              "label": "A bottle: five glasses cost less than five by the glass, and the table shares",
+              "explanation": "On our list a bottle costs less than five single glasses. For a table of four it is better value and a nicer moment."
+            },
+            "c": {
+              "label": "Four glasses of four different wines, always",
+              "explanation": "It can be fun, but the table asked for value, and it costs them more."
+            }
+          },
+          "fail": {
+            "outcome": "The table orders glass by glass and the bill surprises them.",
+            "ongoing": "{personal} is still at table {bord}, smoothing things over, while other tables wait."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "The table orders a bottle and a second one later."
+      },
+      "staff": {
+        "outcome": "{personal} takes over. The table orders glasses and stays for one round.",
+        "ongoing": "{personal} is tied up at table {bord}, and the other tables wait longer."
+      }
+    },
+    "mn09-olet": {
+      "title": "The local beer",
+      "body": "{gäst} at table {bord} would rather have a beer: \"Is the beer local?\"",
+      "steps": [
+        {
+          "question": "Where does tonight's beer come from?",
+          "options": {
+            "a": {
+              "label": "The brewery in Nora, a short drive from Grythyttan",
+              "explanation": "The beer comes from the brewery in Nora, the neighbouring town. Local suppliers are part of the story the guest pays for."
+            },
+            "b": {
+              "label": "Imported from Belgium",
+              "explanation": "Not tonight's beer. Getting the origin wrong undermines the local story."
+            },
+            "c": {
+              "label": "Brewed in our own kitchen",
+              "explanation": "The wine bar does not brew. The ale house has its own brewery; we buy from Nora."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} guesses wrong about the beer. The guest notices."
+          }
+        },
+        {
+          "question": "How do you pour the beer into the glass?",
+          "options": {
+            "a": {
+              "label": "Straight down, fast, into the middle",
+              "explanation": "The glass fills with foam, the beer goes flat and the guest waits."
+            },
+            "b": {
+              "label": "Into a warm glass straight from the dishwasher",
+              "explanation": "A warm glass makes the beer foam over and warm up."
+            },
+            "c": {
+              "label": "Tilt the glass, pour down the side, then straighten it for a small head",
+              "explanation": "Pouring down the side keeps the carbonation, and straightening at the end builds a head that carries the aroma."
+            }
+          },
+          "fail": {
+            "outcome": "The beer arrives flat and foamy at the same time.",
+            "ongoing": "{personal} is still at table {bord}, putting it right, while other tables wait."
+          }
+        },
+        {
+          "question": "The guest having the pork asks: wine or beer?",
+          "options": {
+            "a": {
+              "label": "Only the most expensive wine will do",
+              "explanation": "The guest asked for advice, not a sales pitch."
+            },
+            "b": {
+              "label": "Either works: a malty beer suits pork and roots, and costs less",
+              "explanation": "Pork with roasted roots suits the malt in a beer as well as a fresh wine. Give the guest a real choice."
+            },
+            "c": {
+              "label": "Beer never goes with food in a wine bar",
+              "explanation": "Beer is an excellent food drink, and it is on our list for a reason."
+            }
+          },
+          "fail": {
+            "outcome": "The guest feels steered and orders nothing more.",
+            "ongoing": "{personal} is still at table {bord}, smoothing things over, while other tables wait."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "The guest orders a beer and a second one with dessert."
+      },
+      "staff": {
+        "outcome": "{personal} takes over and pours a beer. It is fine, nothing more.",
+        "ongoing": "{personal} is tied up at table {bord}, and the other tables wait longer."
+      }
+    }
+  }
+}

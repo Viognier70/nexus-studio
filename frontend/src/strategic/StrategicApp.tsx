@@ -48,6 +48,7 @@ import { devToggles } from '../lib/devToggles';
 import './strategic.css';
 import { ServiceClock } from './ui/service/ServiceClock';
 import { CashCounter } from './ui/CashCounter';
+import { BetPanel } from './scenario/BetPanel';
 import { useLanguage } from '../content/language';
 
 interface StrategicAppProps {
@@ -309,6 +310,8 @@ function StrategicShell() {
       />
       <EveningBar />
       <IncidentCard />
+      {/* ORDER 279 — insatsen: spelaren startar själv en raket och satsar krediter. */}
+      <BetPanel />
       <MaltidensHusDialog open={houseOpen} onClose={() => setHouseOpen(false)} />
       {/* ORDER 271 — mentorn (M1/M2) inne i .gb-root, så att banken, huset och tidningen ligger över den. */}
       <MentorPanel />
