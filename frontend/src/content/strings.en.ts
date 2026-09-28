@@ -526,6 +526,34 @@ export const strings: Widen<typeof Sv> = {
     numberWords: ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty'],
     manyWord: 'more than twenty'
   },
+  // ORDER 275 — lagret är insatsen.
+  stock: {
+    heading: "Tonight's stock",
+    intro: 'Buy the stock before you open. The money leaves the till at once. Portions are sold from the stock during service, and unsold food goes to waste tonight.',
+    base: 'Base package',
+    addOns: 'Add more',
+    buy: (price: string) => `Buy · ${price}`,
+    boughtTimes: (n: number) => (n === 1 ? 'Bought today' : `Bought ${n}× today`),
+    inStock: 'In stock now',
+    empty: 'Nothing in stock. Guests who come in will find nothing to order.',
+    // Rätterna delar ingredienser: talet är taket om inget annat säljs.
+    portions: (n: number) => `up to ${n} ${n === 1 ? 'portion' : 'portions'}`,
+    covers: (n: number) => `Enough for about ${n} ${n === 1 ? 'guest' : 'guests'}.`,
+    drinksKeep: 'Drinks keep until tomorrow. Food does not.',
+    lastWaste: (sek: string) => `Yesterday's unsold food went to waste: ${sek}.`,
+    wasteEvent: (sek: string) => `Unsold food went to waste at closing: ${sek}.`,
+    packageLedger: (name: string) => `Stock: ${name}`,
+    item: (portions: number, name: string) => `${portions} × ${name}`,
+    packages: {
+      'vinbar-base': { name: 'Base package', description: 'An ordinary weekday evening: soup, chicken, pork and a dessert, with house wine and local beer.' },
+      'vinbar-extra-covers': { name: 'More covers', description: 'Chicken, pork and house wine for a busier evening.' },
+      'vinbar-fish': { name: 'Lake fish', description: 'Poached lake fish, for guests who want something lighter.' },
+      'vinbar-lamb': { name: 'Lamb', description: 'Lamb with root vegetables, a dearer plate.' },
+      'vinbar-game': { name: 'Game', description: 'Deer from Bergslagen, the dearest plate on the menu.' },
+      'vinbar-fine-wine': { name: 'Fine wine', description: 'A better wine by the glass, at a higher price.' },
+      'vinbar-house-wine': { name: 'More house wine', description: 'House wine by the glass, for a thirsty evening.' }
+    } as Record<string, { name: string; description: string }>
+  },
   save: {
     menuItem: 'Save and load',
     continueSaved: 'Continue a saved game',

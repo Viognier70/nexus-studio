@@ -20,6 +20,7 @@ import { mountRoomLikeScene } from './roomParity';
 import { WEEK } from '../../sim/balance';
 import { rankedScenarioChoice } from '../simulation/scenarios';
 import { incidentById } from '../../sim/incidentBank';
+import { packagesFor } from '../simulation/packages';
 import { rankedStepOption } from '../../sim/incidents';
 import type { PavilionKey, ScenarioChoice, SimAction, SimulationState } from '../types';
 
@@ -34,6 +35,10 @@ export interface MorningPlan {
   activities?: string[];
   // Godtyckliga åtgärder på morgonen (t.ex. klassbyte på söndag).
   actions?: SimAction[];
+  // ORDER 275 — lagret är insatsen. Den rimliga spelaren köper klassens
+  // baspaket varje morgon ('base', förvalt); den svaga handlar själv
+  // ('none', se scenarios.ts weakMorning). Klasser utan paket påverkas inte.
+  stock?: 'base' | 'none';
   // Stäng kvällens service (skala ner, samma som spelarens knapp) och
   // avsluta dagen utan service.
   closeEvening?: boolean;
@@ -133,6 +138,8 @@ export function playMorning(s: SimulationState, plan: MorningPlan): SimulationSt
     s = answer(s, Number.MAX_SAFE_INTEGER);
   }
   for (const id of plan.activities ?? []) s = reducer(s, { type: 'PICK_ACTIVITY', id });
+  const pkgs = packagesFor(s.economy.businessClass);
+  if (pkgs && (plan.stock ?? 'base') === 'base') s = reducer(s, { type: 'BUY_PACKAGE', packageId: pkgs.base.id });
   for (const a of plan.actions ?? []) s = reducer(s, a);
   // Kvällen stängd eller öppen enligt planen (växeln ligger kvar mellan dagar).
   if (Boolean(plan.closeEvening) !== s.scaleDown.closedDinner) {

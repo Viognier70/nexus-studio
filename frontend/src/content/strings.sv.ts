@@ -512,6 +512,34 @@ export const strings = {
     numberWords: ['noll', 'en', 'två', 'tre', 'fyra', 'fem', 'sex', 'sju', 'åtta', 'nio', 'tio', 'elva', 'tolv', 'tretton', 'fjorton', 'femton', 'sexton', 'sjutton', 'arton', 'nitton', 'tjugo'],
     manyWord: 'fler än tjugo'
   },
+  // ORDER 275 — lagret är insatsen.
+  stock: {
+    heading: 'Kvällens lager',
+    intro: 'Köp lagret innan du öppnar. Pengarna går ur kassan direkt. Portionerna säljs ur lagret under servicen, och osåld mat blir svinn i kväll.',
+    base: 'Baspaket',
+    addOns: 'Köp till',
+    buy: (price: string) => `Köp · ${price}`,
+    boughtTimes: (n: number) => (n === 1 ? 'Köpt i dag' : `Köpt ${n}× i dag`),
+    inStock: 'I lager nu',
+    empty: 'Inget i lager. Gäster som kommer in hittar inget att beställa.',
+    // Rätterna delar ingredienser: talet är taket om inget annat säljs.
+    portions: (n: number) => `upp till ${n} ${n === 1 ? 'portion' : 'portioner'}`,
+    covers: (n: number) => `Räcker till ungefär ${n} ${n === 1 ? 'gäst' : 'gäster'}.`,
+    drinksKeep: 'Drycken står sig till i morgon. Maten gör det inte.',
+    lastWaste: (sek: string) => `Gårdagens osålda mat blev svinn: ${sek}.`,
+    wasteEvent: (sek: string) => `Osåld mat blev svinn vid stängning: ${sek}.`,
+    packageLedger: (name: string) => `Lager: ${name}`,
+    item: (portions: number, name: string) => `${portions} × ${name}`,
+    packages: {
+      'vinbar-base': { name: 'Baspaket', description: 'En vanlig vardagskväll: soppa, kyckling, fläsk och en dessert, med husets vin och lokal öl.' },
+      'vinbar-extra-covers': { name: 'Fler kuvert', description: 'Kyckling, fläsk och husets vin till en livligare kväll.' },
+      'vinbar-fish': { name: 'Insjöfisk', description: 'Pocherad insjöfisk, till gäster som vill ha något lättare.' },
+      'vinbar-lamb': { name: 'Lamm', description: 'Lamm med rotfrukter, en dyrare tallrik.' },
+      'vinbar-game': { name: 'Vilt', description: 'Hjort från Bergslagen, menyns dyraste tallrik.' },
+      'vinbar-fine-wine': { name: 'Finare vin', description: 'Ett bättre vin på glas, till ett högre pris.' },
+      'vinbar-house-wine': { name: 'Mer husets vin', description: 'Husets vin på glas, till en törstig kväll.' }
+    } as Record<string, { name: string; description: string }>
+  },
   save: {
     menuItem: 'Spara och ladda',
     continueSaved: 'Fortsätt ett sparat spel',

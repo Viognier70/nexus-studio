@@ -669,6 +669,17 @@ export const INTRODUCTION = {
   openQuestion: 'F5'
 } as const;
 
+// ORDER 275 — lagret är insatsen (Vision Owner 2026-09-28, provspel).
+// Paketen och deras innehåll står i strategic/simulation/packages.ts.
+// Valda tal (F48).
+export const STOCK = {
+  section: 'Servicen > Lagret',
+  openQuestion: 'F48',
+  // Varje gäst tar en dryck till rätten, och ett andra glas med den här
+  // sannolikheten.
+  secondDrinkChance: 0.5
+} as const;
+
 export const SAVING = {
   section: 'Ramar för version 1 > Sparande',
   slots: 3,                    // "Tre sparplatser per spelare"

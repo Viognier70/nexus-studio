@@ -321,7 +321,8 @@ describe('ORDER 270 — harnessen svarar på händelserna', () => {
       const { mkdirSync, writeFileSync } = await import('node:fs');
       const { dirname, resolve } = await import('node:path');
       const { fileURLToPath } = await import('node:url');
-      const out = resolve(dirname(fileURLToPath(import.meta.url)), '../../../reports/order270');
+      // REPORT_ORDER skriver under en senare orders katalog (ORDER 275).
+      const out = resolve(dirname(fileURLToPath(import.meta.url)), '../../../reports', process.env.REPORT_ORDER ?? 'order270');
       mkdirSync(out, { recursive: true });
       writeFileSync(resolve(out, 'week-players.json'), JSON.stringify({
         definition: 'Vecka 2, vinbaren, brons i Stensöta, Metodköket och Kalastorget. rimlig = bästa svaret och ingen morgon; svag = sämsta svaret, två rätter och råvaror till fyra kuvert (scenarios.ts weakMorning). resultSek = kassans förändring måndag–söndag utan avräkningens påfyllnad och amortering (randomness.ts). incidentCashShare = händelsernas kassa (kassabokens rader med händelsens id) som andel av vinbarens normala veckointäkt.',

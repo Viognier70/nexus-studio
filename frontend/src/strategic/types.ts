@@ -890,6 +890,9 @@ export interface Dish {
   name: string;
   recipe: readonly DishRecipe[];
   suggestedPrice: number;         // SEK
+  // ORDER 275 — en dryck säljs vid sidan av rätten (en per gäst) och
+  // blir inte svinn vid dagens slut. Utelämnat = rätt.
+  kind?: 'dish' | 'drink';
 }
 
 // One entry per dish on today's menu. `ingredientCostSek` frozen at
@@ -1348,6 +1351,10 @@ export interface SimulationState {
   // Unbounded across days (§13 defers ageing to M4b); a slow leak
   // will show up on the reconciliation baseline.
   stock: Record<string, number>;
+  // ORDER 275 — paket köpta i dag (morgonens gränssnitt), och gårdagens
+  // svinn: osåld mat som kastades vid dagens slut.
+  packagesBoughtToday?: string[];
+  lastWaste?: { dayNumber: number; units: number; sek: number } | null;
   // ORDER 043 outcome layer — non-economic capitals the scenarios
   // move (§3.1). Economic moved to `state.cash`. Separate from `eco`
   // above (§8.2's visible sustainability *reading*), which stays
@@ -1584,6 +1591,8 @@ export type SimAction =
   // immediately + a labelled ledger line (DoD 4). Short-delivery
   // rolled per supplier reliability (§7 report gate).
   | { type: 'BUY_STOCK'; supplierId: string; ingredientId: string; units: number }
+  // ORDER 275 — lagret är insatsen: köp ett paket (baspaket eller tillköp).
+  | { type: 'BUY_PACKAGE'; packageId: string }
   // ORDER 077 §4 (M4) — morning menu composition. Freezes today's
   // dish list + pricing + ingredient cost per entry. Blocked once
   // service opens (§6 report gate: "set in the morning and stands").

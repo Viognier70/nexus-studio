@@ -14,7 +14,9 @@ export const SUPPLIERS: readonly Supplier[] = [
   { id: 'organic',    name: 'Örebro organic farms',   priceIndex: 1.35, quality: 0.85, reliability: 0.70, ecoDelta: +0.045 },
   { id: 'meat-game',  name: 'Bergslagen meat & game', priceIndex: 1.25, quality: 0.85, reliability: 0.80, ecoDelta: +0.025 },
   { id: 'lake-fish',  name: 'Hjälmaren lake fish',    priceIndex: 1.40, quality: 0.90, reliability: 0.55, ecoDelta: +0.035 },
-  { id: 'brewery',    name: 'Nora brewery',           priceIndex: 1.00, quality: 0.75, reliability: 0.90, ecoDelta: +0.010 }
+  { id: 'brewery',    name: 'Nora brewery',           priceIndex: 1.00, quality: 0.75, reliability: 0.90, ecoDelta: +0.010 },
+  // ORDER 275 — vinet blir en lagervara (lagret är insatsen).
+  { id: 'wine-merchant', name: 'Bergslagen wine merchant', priceIndex: 1.00, quality: 0.80, reliability: 0.95, ecoDelta: 0 }
 ] as const;
 
 export const INGREDIENTS: readonly Ingredient[] = [
@@ -29,7 +31,9 @@ export const INGREDIENTS: readonly Ingredient[] = [
   { id: 'eggs',      name: 'eggs',         baseCostSek:  3, unit: 'egg',     suppliers: ['wholesaler', 'local-veg', 'organic'] },
   { id: 'dairy',     name: 'dairy',        baseCostSek:  8, unit: 'portion', suppliers: ['wholesaler', 'local-veg', 'organic'] },
   { id: 'flour',     name: 'flour',        baseCostSek:  2, unit: 'portion', suppliers: ['wholesaler'] },
-  { id: 'beer',      name: 'beer (drink)',  baseCostSek: 18, unit: 'glass',   suppliers: ['brewery'] }
+  { id: 'beer',      name: 'beer (drink)',  baseCostSek: 18, unit: 'glass',   suppliers: ['brewery'] },
+  { id: 'house-wine', name: 'house wine',   baseCostSek: 24, unit: 'glass',   suppliers: ['wine-merchant'] },
+  { id: 'fine-wine',  name: 'fine wine',    baseCostSek: 60, unit: 'glass',   suppliers: ['wine-merchant'] }
 ] as const;
 
 export const DISHES: readonly Dish[] = [
@@ -47,8 +51,13 @@ export const DISHES: readonly Dish[] = [
     recipe: [{ ingredientId: 'lake-fish', units: 1 }, { ingredientId: 'leaf-veg', units: 1 }, { ingredientId: 'herbs', units: 1 }] },
   { id: 'dairy-dessert', name: 'Cream dessert',            suggestedPrice:  85,
     recipe: [{ ingredientId: 'dairy', units: 2 }, { ingredientId: 'eggs', units: 1 }] },
-  { id: 'beer-pairing',  name: 'Local beer with the meal', suggestedPrice: 55,
-    recipe: [{ ingredientId: 'beer', units: 1 }] }
+  { id: 'beer-pairing',  name: 'Local beer with the meal', suggestedPrice: 55, kind: 'drink',
+    recipe: [{ ingredientId: 'beer', units: 1 }] },
+  // ORDER 275 — vinet per glas, ur lagret.
+  { id: 'house-wine-glass', name: 'House wine, by the glass', suggestedPrice: 115, kind: 'drink',
+    recipe: [{ ingredientId: 'house-wine', units: 1 }] },
+  { id: 'fine-wine-glass',  name: 'Fine wine, by the glass',  suggestedPrice: 195, kind: 'drink',
+    recipe: [{ ingredientId: 'fine-wine', units: 1 }] }
 ] as const;
 
 export function findSupplier(id: string): Supplier | undefined {
