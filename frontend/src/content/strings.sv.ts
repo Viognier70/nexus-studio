@@ -477,6 +477,15 @@ export const strings = {
       noGuests: 'inga gäster',
       sek: (amount: string) => `${amount} kr`
     },
+    // ORDER 274 — tiden kvar av servicen, hela kvällen.
+    clock: {
+      label: 'Servicen',
+      now: (hhmm: string) => hhmm,
+      left: (h: number, m: number) => (h > 0 ? `${h} h ${String(m).padStart(2, '0')} min kvar` : `${m} min kvar`),
+      closes: (hhmm: string) => `Stänger ${hhmm}`,
+      closed: 'Stänger',
+      aria: (left: string, closes: string) => `${left}. ${closes}.`
+    },
     events: {
       reviewerBooked: 'En recensent har bokat bord i kväll. Ryktet har nått ut.',
       reviewGood: 'Recensenten gick nöjd. Kvällen höll, och det kommer att stå i tidningen.',
