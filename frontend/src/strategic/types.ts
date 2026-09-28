@@ -395,6 +395,9 @@ export interface Guest {
   // bar och långbord. Valfritt (undefined = solo, bakåtkompat med
   // existerande tester + tidigare guests-fixtures).
   partyId?: string;
+  // ORDER 278 — gästens beställning, lagd när maten beställs (dining) och
+  // betald när gästen betalar (guestOrders.ts). Klasser med paket.
+  order?: { dishId: string | null; drinks: string[]; revenueSek: number };
   partySize?: number;
   // ORDER 260 — timing-diagnostik. Sätts när guest transitionerar in i
   // seated respektive dining. `orderCompleteAtSimTime − seatedAtSimTime`
@@ -861,6 +864,10 @@ export interface DayState {
   // ORDER 277 — sällskap som har en flaska på bordet i kväll (den räcker
   // till hela bordet). Nollas med resten av dagen.
   bottlePartyIds?: string[];
+  // ORDER 278 — kvällens dricks i kronor, och tidpunkterna (spelsekunder)
+  // för slumpens händelser i kväll.
+  tipsSek?: number;
+  chanceTimes?: number[];
 }
 
 // ORDER 077 §4 (M4) — supplier, ingredient, and dish domain types.
@@ -990,6 +997,7 @@ export type LedgerCategory =
   | 'stock'               // ORDER 077 §4 (M4) — ingredient purchase from a supplier
   | 'floor'               // ORDER 265 — golvets påfyllnad vid veckoavräkningen
   | 'amortisation'        // ORDER 265 — lånets amortering vid veckoavräkningen
+  | 'waste'               // ORDER 278 — sopbilens miljöavgift för svinnet
   | 'other';              // fallback with mandatory descriptive cause
 
 export interface LedgerLine {
@@ -1372,7 +1380,7 @@ export interface SimulationState {
   // ORDER 275 — paket köpta i dag (morgonens gränssnitt), och gårdagens
   // svinn: osåld mat som kastades vid dagens slut.
   packagesBoughtToday?: string[];
-  lastWaste?: { dayNumber: number; units: number; sek: number } | null;
+  lastWaste?: { dayNumber: number; units: number; sek: number; kept?: number; feeSek?: number } | null;
   // ORDER 043 outcome layer — non-economic capitals the scenarios
   // move (§3.1). Economic moved to `state.cash`. Separate from `eco`
   // above (§8.2's visible sustainability *reading*), which stays

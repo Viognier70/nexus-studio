@@ -59,18 +59,22 @@ const ARRIVAL_SLIDE_PX = 24;
 // narrow viewport doesn't spill the panel past the gutter, but the
 // arrival-cue anchor is now the column's flow position rather than
 // a hardcoded top offset.
+// ORDER 278 — servicen syns (Vision Owner 2026-09-28, andra provspelet):
+// strömmen visar beställningar, betalningar, dricks och slumpens händelser
+// i stunden, i designsystemets färger (paket 1, 00-SYS). Placeringen
+// (nederst i mitten, fri från raketkortet) sätts i StrategicApp.
 const PANEL_STYLE: React.CSSProperties = {
-  width: 'min(320px, calc(100vw - 40px))',
+  width: 'min(calc(640 * var(--nx-u, 1px)), calc(100vw - 40px))',
   minWidth: 220,
   boxSizing: 'border-box',
-  padding: '10px 14px',
-  background: 'rgba(20, 14, 10, 0.62)',
-  color: '#f0e8d4',
-  border: '1px solid rgba(168, 146, 106, 0.35)',
-  borderRadius: 3,
-  fontFamily: 'system-ui, sans-serif',
-  fontSize: 13,
-  lineHeight: 1.42,
+  padding: 'calc(12 * var(--nx-u, 1px)) calc(20 * var(--nx-u, 1px))',
+  background: '#f3f2f2',
+  color: '#201e1d',
+  border: '2px solid #201e1d',
+  borderRadius: 0,
+  fontFamily: 'inherit',
+  fontSize: 'max(13px, calc(18 * var(--nx-u, 1px)))',
+  lineHeight: 1.4,
   letterSpacing: 0.15,
   pointerEvents: 'none',
   zIndex: 30,
@@ -82,7 +86,7 @@ const PANEL_STYLE: React.CSSProperties = {
 const ENTRY_BASE_STYLE: React.CSSProperties = {
   marginTop: 6,
   paddingLeft: 6,
-  borderLeft: '2px solid rgba(168, 146, 106, 0.55)',
+  borderLeft: '3px solid #cfcccb',
   wordBreak: 'normal',
   overflowWrap: 'normal',
   hyphens: 'none',
@@ -94,8 +98,8 @@ const ENTRY_BASE_STYLE: React.CSSProperties = {
 // arrival window. Runs alongside the slide + fade so an eye
 // glancing away from the panel still catches the flick of colour
 // where the new line landed.
-const ARRIVAL_BORDER_COLOUR = 'rgba(240, 214, 152, 1)';
-const SETTLED_BORDER_COLOUR = 'rgba(168, 146, 106, 0.55)';
+const ARRIVAL_BORDER_COLOUR = '#ec3013';
+const SETTLED_BORDER_COLOUR = '#cfcccb';
 
 export function EventStreamPanel() {
   const sim = useSimState();

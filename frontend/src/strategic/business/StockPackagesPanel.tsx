@@ -110,7 +110,12 @@ export function StockPackagesPanel() {
       <div className="nxs-list-head"><NxLabel>{T.sheetHeading}</NxLabel></div>
       <p className="nxs-row-sub nxs-mt-8">{T.sheetIntro}</p>
       {sim.lastWaste && sim.lastWaste.dayNumber === sim.day.dayNumber - 1 && (
-        <p className="nxs-row-sub" data-testid="stock-last-waste">{T.lastWaste(formatSek(sim.lastWaste.sek))}</p>
+        <p className="nxs-row-sub" data-testid="stock-last-waste">
+          {/* ORDER 278 — det som sparades, svinnet och sopbilens avgift. */}
+          {sim.lastWaste.kept !== undefined
+            ? strings.waste.morning(sim.lastWaste.kept, sim.lastWaste.units, formatSek(sim.lastWaste.sek), formatSek(sim.lastWaste.feeSek ?? 0))
+            : T.lastWaste(formatSek(sim.lastWaste.sek))}
+        </p>
       )}
 
       <div className="nxs-list-head nxs-mt-8"><NxLabel>{T.fillHeading}</NxLabel></div>

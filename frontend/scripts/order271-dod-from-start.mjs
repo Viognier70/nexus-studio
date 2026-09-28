@@ -261,6 +261,18 @@ try {
     report.clock.push({ text: await page.textContent('[data-testid=service-clock]').catch(() => null), leftMinutes: await page.getAttribute('[data-testid=service-clock]', 'data-left-minutes').catch(() => null) });
     await shot(`dod-25-tiden-kvar-${i}.png`, `tiden kvar av servicen (tidpunkt ${i})`);
   }
+  // ORDER 278 — servicen syns: lagret under servicen och strömmen med
+  // beställningar, betalningar, dricks och slumpens händelser.
+  report.serviceStock = await page.$$eval('[data-testid^=service-stock-]', (els) => els.map((e) => ({ id: e.getAttribute('data-testid'), left: e.getAttribute('data-left'), text: e.textContent })));
+  await shot('dod-33-lagret-under-servicen.png', 'lagret under servicen: portioner, glas och flaskor per artikel');
+  report.stream = [];
+  const streamSeen = new Set();
+  const collectStream = async () => {
+    const lines = await page.$$eval('[data-testid=event-stream] > div', (els) => els.map((e) => e.textContent)).catch(() => []);
+    for (const l of lines) if (l && !streamSeen.has(l)) { streamSeen.add(l); report.stream.push(l); }
+  };
+  for (let i = 0; i < 20; i++) { await collectStream(); await delay(500); }
+  await shot('dod-34-strommen.png', 'strömmen i stunden: beställningar, betalningar och dricks');
   if (process.env.STOP_AFTER === 'clock') throw new Error('STOP_AFTER=clock');
   await delay(4000);
   await shot('dod-20-vinbaren-spelarens-kamera.png', 'vinbaren från spelarens kamera, under servicen');
@@ -271,6 +283,12 @@ try {
   let movement = 0;
   while (!(await page.$('[data-testid=evening-bar]'))) {
     const card = await page.$('[data-testid=incident-card]');
+    await collectStream();
+    // ORDER 278 — en slumpens händelse och en rätt som tagit slut, på bild.
+    if (!report.chanceShot && report.stream.some((l) => /knocked over|buys the bar a round|birthday|walk in without|neighbour complains|best wine bar/.test(l))) {
+      report.chanceShot = report.stream.find((l) => /knocked over|buys the bar a round|birthday|walk in without|neighbour complains|best wine bar/.test(l));
+      await shot('dod-35-slumpens-handelse.png', 'strömmen: en slumpens händelse');
+    }
     // ORDER 277 — en gäst som inte hittade något för sin kost eller
     // plånbok: raden i strömmen, och kassan överst under servicen.
     if (!report.lostSale) {
@@ -316,6 +334,14 @@ try {
   await page.click('[data-testid=end-evening]');
   await page.waitForSelector('[data-testid=day-action-bar]', { timeout: 120000 });
   step('tisdag morgon');
+  // ORDER 278 — svinnet efter kvällen: det som sparades, svinnet och
+  // sopbilens miljöavgift, på morgonens lista.
+  report.waste = await page.textContent('[data-testid=stock-last-waste]').catch(() => null);
+  if (report.waste) {
+    await page.$eval('[data-testid=stock-last-waste]', (e) => e.scrollIntoView({ block: 'center' }));
+    await shot('dod-36-svinnet-morgonen.png', 'morgonen efter: sparat till i dag, svinn och miljöavgift');
+    await page.evaluate(() => document.querySelector('[data-testid=day-action-bar]')?.scrollTo(0, 0));
+  }
 
   // Veckan till söndagen: det bästa svaret i varje steg.
   // Morgonen som den rimliga spelaren i harnessen: inga ändringar (spelets

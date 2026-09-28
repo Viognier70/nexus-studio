@@ -87,7 +87,8 @@ import {
 // during-service into the evening account only.
 import { SERVICE_REPORT_PREP_CARRYOVER } from '../../content/serviceReport';
 import { buyItems, buyPackage, computePlatesRemaining, menuAtServiceStart, stockReadiness, usesPackages, wasteAtDayEnd } from './stockPackages';
-import { orderForGuest } from './guestOrders';
+import { orderForGuest, orderItemNames, tableOf, tipShare, streamOrderLine } from './guestOrders';
+import { maybeChance, planChance } from '../../sim/serviceChance';
 import { generateWeather, waitingAtOpeningCount } from './weather';
 import {
   generateWorldFactors,
@@ -1149,7 +1150,9 @@ function startService(state: SimulationState): SimulationState {
   // flyttar in som händelser"); övriga behåller scenarierna tills deras
   // bank är skriven.
   const endsAt = opened.day.periodStartAt + SERVICE.simMinutes * 60;
-  const planned = planIncidents(opened, opened.day.doorsOpenAt, endsAt);
+  // ORDER 278 — slumpens händelser i kväll (klasser med paket).
+  const withChance = usesPackages(opened) ? planChance(opened, opened.day.doorsOpenAt, endsAt) : opened;
+  const planned = planIncidents(withChance, withChance.day.doorsOpenAt ?? opened.day.doorsOpenAt, endsAt);
   if (!planned.incidents?.enabled) return planned;
   return { ...planned, day: { ...planned.day, scenariosPlanned: 0, scenarioTriggerTimes: [] } };
 }
@@ -1749,7 +1752,10 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
         eventStream: dayEndWaste.waste
           ? [...state.eventStream, {
               at: simTime,
-              text: strings.stock.wasteEvent(strings.service.meters.sek(dayEndWaste.waste.sek.toLocaleString('en-GB'))),
+              // ORDER 278 — det som sparas till i morgon, och sopbilens avgift.
+              text: dayEndWaste.waste.units > 0
+                ? strings.waste.event(dayEndWaste.waste.kept, dayEndWaste.waste.units, strings.service.meters.sek(dayEndWaste.waste.feeSek.toLocaleString('en-GB')))
+                : strings.waste.keptOnly(dayEndWaste.waste.kept),
               category: 'ambient' as const,
               causeTag: 'stock_out' as const,
               causeChainId: null,
@@ -1819,6 +1825,11 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           knowledgeCreditsAtDayStart: { ...state.knowledgeCredits }
         }
       };
+      // ORDER 278 — sopbilens miljöavgift för svinnet.
+      if (dayEndWaste.waste && dayEndWaste.waste.feeSek > 0) {
+        applyCashCost(nextForDay, dayEndWaste.waste.feeSek);
+        postLedger(nextForDay, { category: 'waste', amount: -dayEndWaste.waste.feeSek, cause: strings.waste.ledger, causeId: 'waste' });
+      }
       if (wageTotal > 0) {
         applyCashCost(nextForDay, wageTotal);
         // §7 step 3 — one line per member per day so the book names
@@ -2233,6 +2244,32 @@ function advanceTick(state: SimulationState): SimulationState {
   // Move / advance guests and staff.
   tickGuests(draft);
   tickStaff(draft);
+  // ORDER 278 — i klasser med paket beställer gästen när maten beställs
+  // (dining), så att beställningen syns i strömmen i stunden och lagret
+  // går ner då. Hittar gästen inget går hen direkt. Utan meny (en service
+  // öppnad utan inköp, som i äldre tester via OPEN_SERVICE) beställer
+  // gästen vid betalningen som i ORDER 277.
+  if (usesPackages(draft) && draft.menu.length > 0 && (draft.day.period === 'lunch' || draft.day.period === 'dinner')) {
+    for (const guest of draft.guests) {
+      if (guest.state !== 'dining' || guest.stateTime !== draft.simTime || guest.order) continue;
+      const orderRng = createRng(draft.rngState);
+      const order = orderForGuest(draft, guest, () => orderRng.next());
+      draft.rngState = orderRng.state;
+      if (order.kind === 'lost' || order.revenueSek <= 0) {
+        draft.day.walkedCount = (draft.day.walkedCount ?? 0) + 1;
+        guest.order = { dishId: null, drinks: [], revenueSek: 0 };
+        draft.seatedIds = draft.seatedIds.filter((id) => id !== guest.id);
+        guest.state = 'leaving';
+        guest.stateTime = draft.simTime;
+        guest.seatIndex = null;
+        guest.targetPosition = { x: 0, z: 8 };
+        guest.moveProgress = 0;
+        continue;
+      }
+      guest.order = { dishId: order.dishId, drinks: order.drinks, revenueSek: order.revenueSek };
+      streamOrderLine(draft, strings.guests.ordered(tableOf(guest), orderItemNames(order)), 'guest_ordered');
+    }
+  }
 
   // ORDER 078 (M5) — service rhythm reading, refreshed each tick
   // during lunch/dinner. Read by the staff-puck colour ring in
@@ -2276,14 +2313,20 @@ function advanceTick(state: SimulationState): SimulationState {
       // (guestOrders.ts). Finns inget som passar går gästen utan att betala.
       const packaged = usesPackages(draft);
       if (packaged) {
-        const orderRng = createRng(draft.rngState);
-        const order = orderForGuest(draft, guest, () => orderRng.next());
-        draft.rngState = orderRng.state;
-        if (order.kind === 'lost' || order.revenueSek <= 0) {
-          draft.day.walkedCount = (draft.day.walkedCount ?? 0) + 1;
+        // ORDER 278 — beställningen lades vid bordet; en gäst utan
+        // beställning (till exempel mitt i en laddning) beställer nu.
+        let bill = guest.order?.revenueSek ?? null;
+        if (bill === null) {
+          const orderRng = createRng(draft.rngState);
+          const order = orderForGuest(draft, guest, () => orderRng.next());
+          draft.rngState = orderRng.state;
+          bill = order.kind === 'lost' ? 0 : order.revenueSek;
+        }
+        if (bill <= 0) {
+          if (!guest.order) draft.day.walkedCount = (draft.day.walkedCount ?? 0) + 1;
           continue;
         }
-        rev = order.revenueSek * revenueMult;
+        rev = bill * revenueMult;
       } else if (draft.menu.length > 0) {
         const rng = createRng(draft.rngState);
         const targetRoll = rng.next();
@@ -2305,6 +2348,15 @@ function advanceTick(state: SimulationState): SimulationState {
       }
       // ORDER 269 — Stensöta höjer intäkten per gäst via dryck.
       rev *= drinkRevenueFactor(draft);
+      // ORDER 278 — dricksen efter gästens nöjdhet, och betalningen i
+      // strömmen.
+      if (packaged) {
+        const tip = Math.round(rev * tipShare(guest.satisfaction));
+        const sekText = (v: number) => strings.service.meters.sek(Math.round(v).toLocaleString('en-GB'));
+        streamOrderLine(draft, strings.guests.paid(tableOf(guest), sekText(rev), tip > 0 ? sekText(tip) : null), 'guest_paid');
+        rev += tip;
+        draft.day.tipsSek = (draft.day.tipsSek ?? 0) + tip;
+      }
       // ORDER 050 §3 (2026-08-10) — paired write: revenue accumulator
       // + cash till stay in sync via applyCashRevenue. serviceRevenue
       // panel arrays continue to receive the kSEK share.
@@ -2535,6 +2587,7 @@ function advanceTick(state: SimulationState): SimulationState {
   // kvällens nästa händelse öppnas när dess tid har kommit.
   tickOngoing(draft, tickSeconds);
   maybeOpenIncident(draft);
+  maybeChance(draft);
 
   // ORDER 043 v3 step 5b — scheduled scenario firing.
   //
