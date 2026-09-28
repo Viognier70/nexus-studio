@@ -1223,14 +1223,14 @@ export const TABLE = {
     none: { sv: 'Inga insatser kvar i kväll.', en: 'No stakes left tonight.' },
     credits: { sv: 'Krediter', en: 'Credits' },
     creditsAria: { sv: (n: number) => `Krediter: ${n}`, en: (n: number) => `Credits: ${n}` },
-    own: { sv: (n: number) => `Din insats: ${n} krediter`, en: (n: number) => `Your stake: ${n} credits` },
+    own: { sv: (n: number) => `Din insats: ${n} ${n === 1 ? 'kredit' : 'krediter'}`, en: (n: number) => `Your stake: ${n} ${n === 1 ? 'credit' : 'credits'}` },
     won: {
-      sv: (stake: number, credits: number, cash: number) => `Insatsen vann: ${stake} krediter blev ${credits}, och kassan fick ${Math.round(cash).toLocaleString('sv-SE')} kr.`,
-      en: (stake: number, credits: number, cash: number) => `The stake won: ${stake} credits became ${credits}, and the till gained SEK ${Math.round(cash).toLocaleString('en-GB')}.`
+      sv: (stake: number, credits: number, cash: number) => `Insatsen vann: ${stake} ${stake === 1 ? 'kredit' : 'krediter'} blev ${credits}, och kassan fick ${Math.round(cash).toLocaleString('sv-SE')} kr.`,
+      en: (stake: number, credits: number, cash: number) => `The stake won: ${stake} ${stake === 1 ? 'credit' : 'credits'} became ${credits}, and the till gained SEK ${Math.round(cash).toLocaleString('en-GB')}.`
     },
     lost: {
-      sv: (stake: number, cash: number) => `Insatsen förlorade: ${stake} krediter borta, och kassan tappade ${Math.round(cash).toLocaleString('sv-SE')} kr.`,
-      en: (stake: number, cash: number) => `The stake lost: ${stake} credits gone, and the till lost SEK ${Math.round(cash).toLocaleString('en-GB')}.`
+      sv: (stake: number, cash: number) => `Insatsen förlorade: ${stake} ${stake === 1 ? 'kredit' : 'krediter'} borta, och kassan tappade ${Math.round(cash).toLocaleString('sv-SE')} kr.`,
+      en: (stake: number, cash: number) => `The stake lost: ${stake} ${stake === 1 ? 'credit' : 'credits'} gone, and the till lost SEK ${Math.round(cash).toLocaleString('en-GB')}.`
     },
     ledger: { sv: (title: string, stake: number) => `Insats (${stake} kred.): ${title}`, en: (title: string, stake: number) => `Stake (${stake} cr.): ${title}` }
   },

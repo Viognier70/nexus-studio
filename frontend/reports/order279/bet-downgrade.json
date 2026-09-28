@@ -1,0 +1,111 @@
+{
+  "definition": "Vecka 2, vinbaren, brons i tre, 40 krediter per axel. Svag spelare (scenarios.ts weakMorning, sämsta svaret) med insatsen 10 så ofta det går (högst tre per kväll) mot samma spelare utan insats, frö 7. downgradedTo läses ur veckoavräkningen (economy.lastSettlement).",
+  "bettor": {
+    "downgradedTo": "foodtruck",
+    "days": [
+      {
+        "day": 8,
+        "weekday": "mon",
+        "cash": 2641,
+        "floor": 5051,
+        "class": "vinbar"
+      },
+      {
+        "day": 9,
+        "weekday": "tue",
+        "cash": -115279,
+        "floor": 5051,
+        "class": "vinbar"
+      },
+      {
+        "day": 10,
+        "weekday": "wed",
+        "cash": -231874,
+        "floor": 5051,
+        "class": "vinbar"
+      },
+      {
+        "day": 11,
+        "weekday": "thu",
+        "cash": -311200,
+        "floor": 5051,
+        "class": "vinbar"
+      },
+      {
+        "day": 12,
+        "weekday": "fri",
+        "cash": -314858,
+        "floor": 5051,
+        "class": "vinbar"
+      },
+      {
+        "day": 13,
+        "weekday": "sat",
+        "cash": 21045,
+        "floor": 7289,
+        "class": "foodtruck"
+      },
+      {
+        "day": 14,
+        "weekday": "sun",
+        "cash": 20960,
+        "floor": 7289,
+        "class": "foodtruck"
+      }
+    ]
+  },
+  "calm": {
+    "downgradedTo": null,
+    "days": [
+      {
+        "day": 8,
+        "weekday": "mon",
+        "cash": 116769,
+        "floor": 5051,
+        "class": "vinbar"
+      },
+      {
+        "day": 9,
+        "weekday": "tue",
+        "cash": 113370,
+        "floor": 5051,
+        "class": "vinbar"
+      },
+      {
+        "day": 10,
+        "weekday": "wed",
+        "cash": 109721,
+        "floor": 5051,
+        "class": "vinbar"
+      },
+      {
+        "day": 11,
+        "weekday": "thu",
+        "cash": 106315,
+        "floor": 5051,
+        "class": "vinbar"
+      },
+      {
+        "day": 12,
+        "weekday": "fri",
+        "cash": 103058,
+        "floor": 5051,
+        "class": "vinbar"
+      },
+      {
+        "day": 13,
+        "weekday": "sat",
+        "cash": 89125,
+        "floor": 5051,
+        "class": "vinbar"
+      },
+      {
+        "day": 14,
+        "weekday": "sun",
+        "cash": 88779,
+        "floor": 5051,
+        "class": "vinbar"
+      }
+    ]
+  }
+}

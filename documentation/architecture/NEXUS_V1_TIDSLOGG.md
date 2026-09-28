@@ -1,5 +1,27 @@
 # Nexus v1 — tidslogg
 
+## Överlämning (2026-09-28, stopp för provspel efter ORDER 279)
+
+**Var vi är.**
+- ORDER 277 (morgonen som insats), 278 (servicen syns) och 279 (frågorna och insatsen) är mergade till `main`. Vision Owner spelar nu.
+- Slumpmålet efter 279: `winShare` 0,734 (`frontend/reports/order279/randomness.json`, 1 000 veckor), inom 70–80 %. Harnessens spelare satsar inte.
+- En hel vecka går att spela från bussen till söndagen i produktionsbygget (`frontend/reports/order279/dod.json`).
+
+**Att pröva i provspelet.**
+1. Morgonen: fyll inköpslistan (paketen fyller den, − och + ändrar), köp, och se kassan räknas ner. "Open for the evening" är avstängd tills en rätt och en dryck finns i lager.
+2. Servicen: strömmen nederst i mitten (beställningar, betalningar med dricks, slumpens händelser), lagret till vänster, kassan och krediterna överst.
+3. Raketer där gästerna frågar om kvällens meny: köp fisk, kantareller eller Pinot Noir så kommer deras raketer.
+4. Insatsen i högerkanten när ingen raket står öppen: satsa 1–10 krediter. Förlusterna är stora (insatsen 10 kostar 37 500 kr).
+5. Morgonen efter: vad som sparades, svinnet och sopbilens avgift.
+
+**Öppet.**
+- Två tolkningar att bekräfta i speldesignen: spärren vid öppning (F50) och insatsen i krediter (F52).
+- F50–F52: talen är valda.
+- Kassan överst ligger på samma höjd som raden i rummet mitt i servicen. Klockan kontrolleras i ORDER 280.
+- Nästa: 280 (resten av engelskan och klockan), 281 (personalen med personalnöjdhet), 282 (ritualerna).
+
+---
+
 ## Överlämning (2026-09-26, SPELSTOPP 1)
 
 **Var vi är.**
@@ -41,7 +63,7 @@ Uppskattningen skrivs innan etappen börjar. Faktisk tid fylls i när etappen ä
 | Före etapp 6 — Servicen som händelser | 270 | ~25: händelsebanken (data, 30 utkast för vinbaren), händelsemotorn (båge, nedräkning, kedjor, medaljernas verkan, personalens eget beslut), tre mätare, rummets reaktion, scenarierna in som händelser, action-knappen och quizen bort, kvällens lärdom, `balance.ts`, harnessens rimliga och svaga spelare, slumpmätningen, strängar, tester, playwright-skript, rapport | 4–7 h | Att action-knappen, scenarierna och quizen sitter i många kalibrerade tester och i veckoskriptet; och att slumpmålet flyttas när händelserna ger kassa, nöjdhet och ork varje kväll | ~35 (`git diff --stat main..order-270`), varav 14 skärmdumpar och 3 JSON-rapporter | — | 37 min (18:42–19:19, ej mergad: stopp för provning) | Kortare än uppskattat. Risken bet mindre än väntat: tre tester föll (en importcirkel, en regel för scenens attribut, kvällens väntan). Slumpmålet höll utan kalibrering (73,0 %). Mest tid gick till händelsebanken (30 händelser med text och förklaringar) och verifieringen i spelarens vy (en körning, ~7 min). |
 | Andra provspelet 2026-09-28 — Morgonen som insats | 277 | ~15: katalogen (kost, allergener, viner på glas och flaska, alkoholfritt), gästernas profil (kost, plånbok), beställningen per gäst i `reducer.ts`, inköpssedeln (`BUY_ITEMS`), spärren vid `START_SERVICE`, kassan som räknas (ny komponent), `balance.ts`, strängar, harnessens svaga spelare, tester, DoD-skriptet, rapport | 3–5 h | Att beställningen per gäst byter slumpflödet i vinbarens kalibrerade tester (ORDER 270–276), och att spärren vid öppning stoppar harnessens svaga spelare och veckoskriptet | 34 (`git diff --stat main..order-277`), varav 13 skärmdumpar och 2 JSON-rapporter | — | 1 h 5 min (15:06–16:11; rättat efter mergen, 16:26 var en uppskattning) | Kortare än uppskattat. Risken bet som väntat: spärren vid öppning stoppade 13 testfiler som öppnade vinbaren utan att handla (löst med `stocked.ts`), och tre äldre tester av den gamla menyvägen flyttades till en klass utan paket. Veckan från bussen tog 34 min i produktionsbygget. |
 | Andra provspelet 2026-09-28 — Servicen syns | 278 | ~12: händelseströmmen (beställning, betalning, dricks, slumpens händelser), dricksen, lagret under servicen (panel i designsystemet), missnöje när något tar slut, svinnet med överföring och sopbilens miljöavgift, `balance.ts`, strängar, tester, DoD-skriptet, rapport | 2–4 h | Att strömmen blir för tät för att läsas under en lördag, och att miljöavgiften flyttar veckans resultat så att rimlig spelare går minus | 14 (`git diff --stat main..order-278`) plus 11 skärmdumpar och 2 JSON-rapporter | — | 40 min (16:11–16:51) | Kortare än uppskattat. Koden skrevs medan ORDER 277:s vecka kördes. Risken med en för tät ström bet inte: 60 rader på en måndagskväll, fyra synliga åt gången. Miljöavgiften vägs upp av maten som sparas; den rimliga spelaren gick upp. Två tester behövde en regel för service utan meny (äldre tester öppnar med `OPEN_SERVICE` utan inköp). Veckan från bussen tog 34 min. |
-| Andra provspelet 2026-09-28 — Frågorna och insatsen | 279 | ~15: raketer ur kvällens meny (fakta per rätt och dryck: druva, fisk, ursprung), dricks efter svaren, action-knappen som insats (krediter, vinst och förlust, kassan), animationen för krediterna, harnessens insats, slumpmätningen (1 000 veckor), `balance.ts`, strängar, tester, DoD-skriptet, rapport | 4–6 h | Att stora förluster från insatsen flyttar slumpmålet utanför 70–80 %, och att menyraketerna behöver text som är sann om druvor och fisk utan att hitta på referenser | | — | | |
+| Andra provspelet 2026-09-28 — Frågorna och insatsen | 279 | ~15: raketer ur kvällens meny (fakta per rätt och dryck: druva, fisk, ursprung), dricks efter svaren, action-knappen som insats (krediter, vinst och förlust, kassan), animationen för krediterna, harnessens insats, slumpmätningen (1 000 veckor), `balance.ts`, strängar, tester, DoD-skriptet, rapport | 4–6 h | Att stora förluster från insatsen flyttar slumpmålet utanför 70–80 %, och att menyraketerna behöver text som är sann om druvor och fisk utan att hitta på referenser | 17 (`git diff --stat main..order-279`) plus 13 skärmdumpar och 4 JSON-rapporter | — | 42 min (16:50–17:32) | Kortare än uppskattat, eftersom koden och menyraketernas text skrevs medan 277:s och 278:s veckor kördes. Risken med slumpmålet bet inte (0,734 utan kalibrering). Det som tog tid var fredagens kö i `order267Pressure`: menyraketerna är lugnare än bankens övriga, och andelen fick sänkas från 0,5 till 0,35. Slumpmätningen tog 10 min och veckan från bussen 37 min. |
 
 ## Omräkning efter etapp 2
 
