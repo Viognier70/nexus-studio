@@ -6,6 +6,7 @@ import { makeNewGameState } from '../../strategic/simulation/model';
 import { findDish } from '../../strategic/simulation/m4Catalogue';
 import { packageCostSek, packageIngredients, packagesFor } from '../../strategic/simulation/packages';
 import { firstDayOfWeek } from '../calendar';
+import { WASTE } from '../balance';
 import type { SimulationState } from '../../strategic/types';
 import { stocked } from '../../strategic/testHarness/stocked';
 
@@ -103,9 +104,12 @@ describe('ORDER 275 — svinnet', () => {
     expect(t.day.dayNumber).toBe(s.day.dayNumber + 1);
     expect(t.lastWaste).toMatchObject({ dayNumber: s.day.dayNumber });
     expect(t.lastWaste!.sek).toBeGreaterThan(0);
-    expect((t.stock.chicken ?? 0) + (t.stock.pork ?? 0)).toBe(0);
+    // ORDER 278 — en del av maten sparas till nästa dag (WASTE.carryShare).
+    expect(t.stock.chicken ?? 0).toBe(Math.floor((s.stock.chicken ?? 0) * (WASTE.carryShare.chicken ?? 0)));
+    expect(t.stock.herbs ?? 0).toBe(0);
     expect(t.stock['house-wine'] ?? 0).toBe(wineLeft);
     expect(t.packagesBoughtToday).toEqual([]);
     expect(t.eventStream.some((e) => e.kind === 'stock_waste')).toBe(true);
+    expect(t.lastWaste!.feeSek ?? 0).toBeGreaterThan(0);
   });
 });

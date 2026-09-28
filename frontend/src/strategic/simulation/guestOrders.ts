@@ -18,7 +18,7 @@
 // sällskapet kan gå med hen.
 
 import type { Allergen, Guest, SimulationState } from '../types';
-import { GUESTS, INCIDENTS, STOCK } from '../../sim/balance';
+import { GUESTS, INCIDENTS, SERVICE_STREAM, STOCK } from '../../sim/balance';
 import { strings } from '../../content/strings';
 import { clampReputation } from './reputation';
 import { dishAllergens, dishDiet, findDish } from './m4Catalogue';
@@ -101,6 +101,15 @@ export function tableOf(guest: Pick<Guest, 'seatIndex'>): number | null {
   return guest.seatIndex === null || guest.seatIndex === undefined ? null : Math.floor(guest.seatIndex / INCIDENTS.seatsPerTable) + 1;
 }
 
+// ORDER 278 — beställningen och betalningen i strömmen (positiva rader).
+export function streamOrderLine(draft: SimulationState, text: string, kind: string): void {
+  if (draft.eventStream.some((e) => e.text === text && draft.simTime - e.at <= REPEAT_GUARD_SEC)) return;
+  draft.eventStream = [...draft.eventStream, {
+    at: draft.simTime, text, category: 'positive', causeTag: null, causeChainId: null,
+    sustainability: 'economic', kind, scenarioId: null
+  }];
+}
+
 // Samma mening upprepas inte inom strömmens spärr (eventStream.ts).
 function streamLine(draft: SimulationState, text: string, kind: string): void {
   if (draft.eventStream.some((e) => e.text === text && draft.simTime - e.at <= REPEAT_GUARD_SEC)) return;
@@ -138,19 +147,36 @@ export function orderForGuest(draft: SimulationState, guest: Guest, rand: () => 
   const inStock = suits.filter((m) => left(draft, m.dishId) > 0);
   const affordable = inStock.filter((m) => m.price <= walletSek * GUESTS.dishShareOfWallet);
 
+  // ORDER 278 — gästen vill ha en rätt (också en som tagit slut). Finns den
+  // inte får hen en annan som passar, och blir missnöjd.
+  const wanted = suits.filter((m) => m.price <= walletSek * GUESTS.dishShareOfWallet);
   let dish: Entry | null = null;
   let missing: MissingReason | null = null;
-  if (affordable.length > 0) {
-    dish = pickByTaste(affordable, p.wallet, rand());
-  } else if (inStock.length > 0) {
-    // Plånboken räcker inte till någon rätt: gästen tar bara en dryck.
-    missing = 'wallet';
-  } else {
-    const reason: MissingReason = suits.length === 0 ? dietReason(p, food.map((m) => m.dishId)) : 'soldOut';
+  const lost = (reason: MissingReason): GuestOrder => {
     draft.reputation = clampReputation(draft.reputation - GUESTS.missingOptionReputation);
     const partyLeft = rand() < GUESTS.partyLeavesChance ? partyLeaves(draft, guest) : 0;
     streamLine(draft, s.lost(reason, table, partyLeft), 'guest_lost_sale');
     return { kind: 'lost', reason, partyLeft };
+  };
+  if (wanted.length > 0) {
+    const target = pickByTaste(wanted, p.wallet, rand());
+    if (left(draft, target.dishId) > 0) {
+      dish = target;
+    } else if (affordable.length > 0) {
+      dish = pickByTaste(affordable, p.wallet, rand());
+      guest.satisfaction = Math.max(0, guest.satisfaction + SERVICE_STREAM.soldOutSatisfaction);
+      draft.day.substitutedCount = (draft.day.substitutedCount ?? 0) + 1;
+      streamLine(draft, s.wantedButOut(table, findDish(target.dishId)?.name ?? target.dishId, findDish(dish.dishId)?.name ?? dish.dishId), 'guest_substituted');
+    } else if (inStock.length > 0) {
+      missing = 'wallet';
+    } else {
+      return lost('soldOut');
+    }
+  } else if (inStock.length > 0) {
+    // Plånboken räcker inte till någon rätt: gästen tar bara en dryck.
+    missing = 'wallet';
+  } else {
+    return lost(suits.length === 0 ? dietReason(p, food.map((m) => m.dishId)) : 'soldOut');
   }
 
   let revenueSek = 0;
@@ -203,4 +229,15 @@ export function orderForGuest(draft: SimulationState, guest: Guest, rand: () => 
     streamLine(draft, s.drinkOnly(table), 'guest_wallet');
   }
   return { kind: 'served', dishId: dish?.dishId ?? null, drinks, revenueSek, missing };
+}
+
+// ORDER 278 — dricksen: en andel av notan efter gästens nöjdhet när hen
+// betalar (balance.ts SERVICE_STREAM.tipBands).
+export function tipShare(satisfaction: number): number {
+  return SERVICE_STREAM.tipBands.find((b) => satisfaction >= b.minSatisfaction)?.share ?? 0;
+}
+
+// Vad gästen beställde, som text i strömmen.
+export function orderItemNames(order: { dishId: string | null; drinks: string[] }): string[] {
+  return [order.dishId, ...order.drinks].filter((id): id is string => !!id).map((id) => findDish(id)?.name ?? id);
 }

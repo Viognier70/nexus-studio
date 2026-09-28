@@ -1164,6 +1164,45 @@ export const TABLE = {
         } as Record<string, { name: string; description: string }>
     }
   },
+  // ORDER 278 — slumpens händelser i servicen, lagret under servicen och
+  // svinnet efter kvällen.
+  chance: {
+    glassBroken: { sv: 'Ett glas vin välte vid baren. Ett glas ur lagret är borta.', en: 'A glass of wine was knocked over at the bar. One glass from the stock is gone.' },
+    regularRound: {
+      sv: (n: number, sek: string) => `En stamgäst bjuder baren på en runda: ${n} glas, ${sek}.`,
+      en: (n: number, sek: string) => `A regular buys the bar a round: ${n} glasses, ${sek}.`
+    },
+    birthday: {
+      sv: (name: string, sek: string) => `Ett sällskap firar en födelsedag och beställer en flaska ${name.replace(/, bottle$/, '')}: ${sek}.`,
+      en: (name: string, sek: string) => `A party is celebrating a birthday and orders a bottle of ${name.replace(/, bottle$/, '')}: ${sek}.`
+    },
+    walkIns: { sv: (n: number) => `${n} gäster kommer in utan att ha bokat.`, en: (n: number) => `${n} guests walk in without a booking.` },
+    neighbour: { sv: 'Grannen klagar på ljudet. Gästerna märker det.', en: 'The neighbour complains about the noise. The guests notice.' },
+    goodWord: { sv: 'En gäst säger högt att det här är ortens bästa vinbar. Rummet ler.', en: 'A guest says out loud that this is the best wine bar in town. The room smiles.' }
+  },
+  serviceStock: {
+    heading: { sv: 'Lagret i kväll', en: 'Stock tonight' },
+    portions: { sv: (n: number) => `${n}`, en: (n: number) => `${n}` },
+    glasses: { sv: (n: number) => `${n} glas`, en: (n: number) => `${n} gl.` },
+    bottles: { sv: (n: number) => `${n} fl.`, en: (n: number) => `${n} btl.` },
+    out: { sv: 'SLUT', en: 'OUT' },
+    aria: { sv: 'Lagret under servicen: portioner och flaskor per artikel', en: 'Stock during service: portions and bottles per item' }
+  },
+  waste: {
+    event: {
+      sv: (kept: number, units: number, fee: string) => `Efter kvällen: ${kept} portioner går att använda i morgon. Sopbilen hämtade ${units} portioner, miljöavgift ${fee}.`,
+      en: (kept: number, units: number, fee: string) => `After the evening: ${kept} portions can be used tomorrow. The refuse truck took ${units} portions, environmental fee ${fee}.`
+    },
+    keptOnly: {
+      sv: (kept: number) => `Efter kvällen: ${kept} portioner går att använda i morgon. Inget svinn.`,
+      en: (kept: number) => `After the evening: ${kept} portions can be used tomorrow. No waste.`
+    },
+    morning: {
+      sv: (kept: number, units: number, value: string, fee: string) => `I går: ${kept} portioner sparades till i dag. ${units} portioner blev svinn (${value}), och sopbilen tog ${fee} i miljöavgift.`,
+      en: (kept: number, units: number, value: string, fee: string) => `Yesterday: ${kept} portions were kept for today. ${units} portions went to waste (${value}), and the refuse truck charged ${fee} as an environmental fee.`
+    },
+    ledger: { sv: 'Sopbilen: miljöavgift för svinnet', en: 'Refuse truck: environmental fee for the waste' }
+  },
   // ORDER 277 — kassan syns hela tiden.
   cashCounter: {
     label: { sv: 'Kassa', en: 'Cash' },
@@ -1200,6 +1239,19 @@ export const TABLE = {
         const party = partyLeft > 0 ? ` Their party left with them, ${partyLeft === 1 ? 'one more' : `${partyLeft} more`}.` : '';
         return `${at} ${why[reason] ?? why.soldOut} and left without ordering.${party}`;
       }
+    },
+    // ORDER 278 — servicen syns: beställningen, betalningen och dricksen.
+    wantedButOut: {
+      sv: (table: number | null, wanted: string, got: string) => `${table === null ? 'En gäst' : `Bord ${table}`} ville ha ${wanted.toLowerCase()}, men den var slut. Det blev ${got.toLowerCase()}, och gästen är missnöjd.`,
+      en: (table: number | null, wanted: string, got: string) => `${table === null ? 'A guest' : `Table ${table}`} wanted the ${wanted.toLowerCase()}, but it had run out. They took the ${got.toLowerCase()}, and they are not pleased.`
+    },
+    ordered: {
+      sv: (table: number | null, items: string[]) => `${table === null ? 'En gäst' : `Bord ${table}`} beställer: ${items.join(', ')}.`,
+      en: (table: number | null, items: string[]) => `${table === null ? 'A guest' : `Table ${table}`} orders: ${items.join(', ')}.`
+    },
+    paid: {
+      sv: (table: number | null, bill: string, tip: string | null) => `${table === null ? 'En gäst' : `Bord ${table}`} betalar ${bill}${tip ? ` och lämnar ${tip} i dricks` : ''}.`,
+      en: (table: number | null, bill: string, tip: string | null) => `${table === null ? 'A guest' : `Table ${table}`} pays ${bill}${tip ? ` and leaves ${tip} as a tip` : ''}.`
     },
     noAlcoholFree: {
       sv: (table: number | null) => `${table === null ? 'En gäst' : `En gäst vid bord ${table}`} dricker inte alkohol, och det fanns inget alkoholfritt på listan.`,
@@ -1649,6 +1701,7 @@ export const TABLE = {
         scenario: { sv: 'Händ.', en: 'Incid.' },
         buyout: { sv: 'Avg.', en: 'Fee' },
         stock: { sv: 'Inköp', en: 'Stock' },
+        waste: { sv: 'Svinn', en: 'Waste' },
         floor: { sv: 'Golv', en: 'Floor' },
         amortisation: { sv: 'Amort.', en: 'Repay.' },
         other: { sv: '—', en: '—' }

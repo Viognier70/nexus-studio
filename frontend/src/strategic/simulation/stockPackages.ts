@@ -13,7 +13,7 @@ import type { SimulationState } from '../types';
 import { strings } from '../../content/strings';
 import { applyCashDelta, postLedger } from './cashReading';
 import { findDish, findIngredient, minIngredientCost } from './m4Catalogue';
-import { MORNING_STAKE } from '../../sim/balance';
+import { MORNING_STAKE, WASTE } from '../../sim/balance';
 import { findPackage, itemsCostSek, packageCostSek, packageDishIds, packageIngredients, packagesFor } from './packages';
 
 type Menu = SimulationState['menu'];
@@ -182,15 +182,29 @@ function drinkOnlyIngredients(state: SimulationState): Set<string> {
 // Vid dagens slut: osåld mat blir svinn. Returnerar lagret efteråt och
 // svinnet (portioner räknas som ingrediensenheter, i kronor till
 // inköpspris).
-export function wasteAtDayEnd(state: SimulationState): { stock: Record<string, number>; waste: { dayNumber: number; units: number; sek: number } | null } {
+// ORDER 278 — svinnet kostar: en del av maten går att använda nästa dag
+// (balance.ts WASTE.carryShare), resten hämtas av sopbilen mot en
+// miljöavgift som växer med råvarans pris och mängd.
+export function wasteAtDayEnd(state: SimulationState): {
+  stock: Record<string, number>;
+  waste: { dayNumber: number; units: number; sek: number; kept: number; feeSek: number } | null;
+} {
   if (!usesPackages(state)) return { stock: state.stock, waste: null };
   const keep = drinkOnlyIngredients(state);
   const stock: Record<string, number> = {};
   let units = 0;
   let sek = 0;
+  let kept = 0;
   for (const [id, n] of Object.entries(state.stock)) {
     if (keep.has(id) || !findIngredient(id)) { stock[id] = n; continue; }
-    if (n > 0) { units += n; sek += n * minIngredientCost(id); }
+    if (n <= 0) continue;
+    const saved = Math.floor(n * (WASTE.carryShare[id] ?? 0));
+    if (saved > 0) stock[id] = saved;
+    kept += saved;
+    units += n - saved;
+    sek += (n - saved) * minIngredientCost(id);
   }
-  return { stock, waste: units > 0 ? { dayNumber: state.day.dayNumber, units, sek: Math.round(sek) } : null };
+  if (units === 0 && kept === 0) return { stock, waste: null };
+  const feeSek = units > 0 ? Math.round(WASTE.feeBaseSek + WASTE.feeShareOfValue * sek + WASTE.feePerUnitSek * units) : 0;
+  return { stock, waste: { dayNumber: state.day.dayNumber, units, sek: Math.round(sek), kept, feeSek } };
 }

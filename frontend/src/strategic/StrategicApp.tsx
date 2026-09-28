@@ -288,6 +288,10 @@ function StrategicShell() {
       <ScenarioOverlay />
       {/* ORDER 277 — kassan syns hela tiden, överst i mitten. */}
       <CashCounter />
+      {/* ORDER 278 — strömmen i stunden, nederst i mitten (fri från raketkortet och mätarna). */}
+      <div className="nx" data-testid="event-stream-dock" style={{ position: 'fixed', left: 'calc(600 * var(--nx-u))', bottom: 'calc(72 * var(--nx-u))', zIndex: 41, pointerEvents: 'none' }}>
+        <EventStreamPanel />
+      </div>
       <DayActionBar
         onOpenHouse={() => setHouseOpen(true)}
         onOpenBank={() => setBankOpen(true)}
@@ -336,7 +340,6 @@ function StrategicShell() {
         <ServiceMeters />
         {/* ORDER 274 — tiden kvar av servicen, hela kvällen. */}
         <ServiceClock />
-        <EventStreamPanel />
         {/*
           ORDER 270 (provspel 2026-09-27): "inga engelska paneler".
           InstrumentsPanel (Room pace, Guest mood, Team stamina, Tonight's

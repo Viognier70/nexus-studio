@@ -706,6 +706,55 @@ export const MORNING_STAKE = {
   cashDeltaMinSek: 20
 } as const;
 
+// ORDER 278 — servicen syns (Vision Owner 2026-09-28, andra provspelet).
+// Speldesign > Servicen > Händelseströmmen och > Lagret. Valda tal (F51).
+export const SERVICE_STREAM = {
+  section: 'Servicen > Händelseströmmen',
+  openQuestion: 'F51',
+  // Dricksen: andel av notan efter gästens nöjdhet när hen betalar.
+  // Nöjdheten på 0–1; under lägsta gränsen ingen dricks.
+  tipBands: [
+    { minSatisfaction: 0.8, share: 0.12 },
+    { minSatisfaction: 0.6, share: 0.06 },
+    { minSatisfaction: 0.45, share: 0.02 }
+  ] as readonly { minSatisfaction: number; share: number }[],
+  // Gästen som ville ha en rätt som tagit slut och fick en annan: så här
+  // mycket sjunker nöjdheten (0–1).
+  soldOutSatisfaction: -0.15,
+  // Slumpens händelser: mellan så här många per kväll, utspridda över
+  // tiden med öppna dörrar.
+  chanceMin: 2,
+  chanceMax: 6,
+  // Kvällens intäkt per service förs i tusental kronor (serviceRevenueToday).
+  sekPerKsek: 1000,
+  // Händelsernas vikt (hur ofta var och en kommer) och verkan.
+  chance: {
+    glassBroken: { weight: 3, glasses: 1 },
+    regularRound: { weight: 2, glasses: 3 },
+    birthday: { weight: 1, bottles: 1 },
+    walkIns: { weight: 2, guests: 2 },
+    neighbour: { weight: 1, satisfaction: -0.04 },
+    goodWord: { weight: 1, satisfaction: 0.05 }
+  }
+} as const;
+
+// ORDER 278 — svinnet kostar (Vision Owner 2026-09-28, andra
+// provspelet): "Svinn räknas efter kvällen, en del kan användas nästa
+// dag, resten hämtas av sopbilen mot en miljöavgift som växer med
+// råvarans pris och mängd." Valda tal (F51).
+export const WASTE = {
+  section: 'Servicen > Lagret',
+  openQuestion: 'F51',
+  // Andel av den osålda maten som går att använda nästa dag, per råvara.
+  // Det som inte står här blir svinn helt (färsk fisk, örter, sallad).
+  carryShare: { 'root-veg': 0.75, lentils: 1, flour: 1, eggs: 0.75, dairy: 0.5, chicken: 0.5, pork: 0.5, lamb: 0.5, game: 0.5, mushrooms: 0.5, berries: 0.5 } as Record<string, number>,
+  // Miljöavgiften: en fast avgift när sopbilen kommer, en del av
+  // råvarans värde och en avgift per portion.
+  feeBaseSek: 60,
+  feeShareOfValue: 0.3,
+  feePerUnitSek: 2
+} as const;
+
 // ORDER 277 — gästerna har kost och plånbok (Vision Owner 2026-09-28,
 // andra provspelet): "Gästerna får kost (till exempel vegetarian, vegan,
 // allergi) och plånbok. Saknas ett alternativ tappar man försäljning och
