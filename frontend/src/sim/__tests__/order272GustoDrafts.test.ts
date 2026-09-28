@@ -22,7 +22,7 @@ const OUT = {
     body: 'Ett par vid bord {bord} väntar.',
     steps: { episteme: step('Vad?', 0), techne: step('Hur?', 1), phronesis: step('När?', 2) },
     success_outcome: 'Bordet skålar.',
-    staff_outcome: 'Personalen tar över: det tar tid.'
+    staff_outcome: 'The staff take over: it takes time.'
   },
   questions: { episteme: question(0), techne: question(1), phronesis: question(3) }
 };

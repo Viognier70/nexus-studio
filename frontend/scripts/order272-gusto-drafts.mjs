@@ -19,12 +19,13 @@
 //      enligt fördelningen nedan.
 //   4. Visar uppskattad kostnad och frågar innan Claude anropas.
 //   5. Per artikel skriver Claude en raket (tre steg) och tre provfrågor
-//      (en per paviljong), på svenska. Den engelska originaltexten sparas i
-//      fältet `source`, för en engelsk version senare.
+//      (en per paviljong), på engelska: spelet är på engelska (Vision Owner
+//      2026-09-28), och utkasten översätts inte. Artikelns originaltext
+//      sparas i fältet `source`.
 //   6. Skriver utkasten med status "utkast":
 //        src/content/incidents/gusto.draft.json   (raketerna)
 //        src/content/questions/gusto.draft.json   (provfrågorna)
-//      Spelet läser inte filerna. Vision Owner granskar den svenska texten.
+//      Spelet läser inte filerna. Vision Owner granskar texten.
 //      En artikel som redan finns i utkasten hoppas över.
 
 import { createInterface } from 'node:readline/promises';
@@ -73,7 +74,7 @@ const DEFAULT_OUTCOMES = {
 
 // Frågebanken kräver ett ankare (när frågan hör hemma i dagen). Utkastet
 // sätter servicen; Vision Owner ändrar vid granskningen.
-const DRAFT_ANCHOR = { phase: 'service', rawText: 'under servicen' };
+const DRAFT_ANCHOR = { phase: 'service', rawText: 'during service' };
 
 const GUSTO_ARTICLE_URL = (id) => `https://gusto.science/?article=${id}`;
 const OUT_ROCKETS = resolve(FRONTEND, 'src/content/incidents/gusto.draft.json');
@@ -224,42 +225,42 @@ const OUTPUT_SCHEMA = {
 };
 
 // Fast systemprompt (cachas): spelet, formen och språket.
-const SYSTEM = `Du skriver spelinnehåll till Nexus, ett lärospel på svenska om gastronomi och service. Spelaren driver en vinbar i Grythyttan och lär sig i Måltidens hus, där fyra paviljonger övar var sin kunskapsform:
-- Måltidsbiblioteket: episteme, vad forskningen visar (fakta, begrepp).
-- Metodköket (köket) och Stensöta (vin och sensorik): techne, hur man gör (hantverket).
-- Kalastorget: phronesis, när och varför (omdömet i en situation med gäster och kollegor).
+const SYSTEM = `You write game content for Nexus, a learning game in English about gastronomy and hospitality. The player runs a wine bar in Grythyttan, Sweden, and learns in the House of Meals, where four pavilions each train one form of knowledge:
+- Måltidsbiblioteket (the Meal Library): episteme, what the research shows (facts, concepts).
+- Metodköket (the Method Kitchen) and Stensöta (wine and sensory): techne, how it is done (the craft).
+- Kalastorget (the Feast Square): phronesis, when and why (judgement in a situation with guests and colleagues).
 
-Du får en vetenskaplig artikel från gusto.science med tre avsnitt på engelska: EPISTEME (vad studien visar), TECHNE (hantverket för en yrkesroll) och PHRONESIS (omdömet för en yrkesroll). Skriv ur dem, på svenska:
+You receive a scientific article from gusto.science with three sections: EPISTEME (what the study shows), TECHNE (the craft for one professional role) and PHRONESIS (judgement for one professional role). From them, write in English:
 
-1. En RAKET: en händelse under kvällens service i vinbaren, med tre frågor i samma sammanhang. "title" är en kort rubrik (2–4 ord). "body" är 1–3 meningar om vad som händer i rummet just nu (vem, vid vilket bord, vad som syns), utan att avslöja svaret.
-   - steps.episteme: vad (fakta ur EPISTEME). Kort fråga, korta alternativ (högst ca 8 ord). Spelaren har 15 sekunder.
-   - steps.techne: hur (hantverket ur TECHNE). Alternativ högst ca 14 ord. 20 sekunder.
-   - steps.phronesis: när och varför (omdömet ur PHRONESIS, i händelsens läge). Alternativ högst ca 20 ord. 30 sekunder.
-   Varje steg: "question" slutar med "?", exakt fyra alternativ, exakt ett med "correct": true. "explanation" på varje alternativ (1–3 meningar): varför det är rätt eller fel. "fail_outcome": en mening om vad som syns i rummet när spelaren svarar fel på steget.
-   "success_outcome": en mening om vad som syns när hela raketen klarats. "staff_outcome": en mening som börjar "Personalen tar över:" och beskriver ett sämre utfall när personalen får avgöra resten.
-2. Tre PROVFRÅGOR till Måltidens hus, en per avsnitt: questions.episteme (Måltidsbiblioteket), questions.techne (Metodköket eller Stensöta enligt artikeln), questions.phronesis (Kalastorget). Varje fråga: "prompt" (en fråga som står på egen hand, utan raketens berättelse), exakt fyra alternativ i "options", "correct_index" (0–3) och "explanation" (2–4 meningar som lär ut varför).
+1. A ROCKET: an event during the evening service in the wine bar, with three questions in the same situation. "title" is a short heading (2–4 words). "body" is 1–3 sentences about what is happening in the room right now (who, at which table, what can be seen), without giving the answer away.
+   - steps.episteme: what (facts from EPISTEME). Short question, short options (about 8 words at most). The player has 15 seconds.
+   - steps.techne: how (the craft from TECHNE). Options about 14 words at most. 20 seconds.
+   - steps.phronesis: when and why (judgement from PHRONESIS, in the event's situation). Options about 20 words at most. 30 seconds.
+   Each step: "question" ends with "?", exactly four options, exactly one with "correct": true. An "explanation" on every option (1–3 sentences): why it is right or wrong. "fail_outcome": one sentence about what is seen in the room when the player answers the step wrongly.
+   "success_outcome": one sentence about what is seen when the whole rocket is cleared. "staff_outcome": one sentence starting "The staff take over:" describing a worse outcome when the staff decide the rest.
+2. Three QUIZ QUESTIONS for the House of Meals, one per section: questions.episteme (Meal Library), questions.techne (Method Kitchen or Stensöta according to the article), questions.phronesis (Feast Square). Each question: "prompt" (a question that stands on its own, without the rocket's story), exactly four options in "options", "correct_index" (0–3) and "explanation" (2–4 sentences that teach why).
 
-Regler:
-- Allt ska gå att spåra till artikelns text. Hitta aldrig på siffror, temperaturer, tider, mängder, namn på studier, platser eller referenser. Saknar texten ett tal, skriv utan tal.
-- Säger artikeln att abstraktet inte räcker för en roll, skriv frågan på den nivå texten bär (vad en yrkesperson ska vara uppmärksam på), inte ett påhittat recept.
-- Felaktiga alternativ är rimliga missförstånd, inte skämt, och ungefär lika långa som det rätta.
-- Förklara fackord i en bisats första gången.
-- Enkel, konkret restaurangsvenska, korta meningar, inga anglicismer där svenska finns. Skriv "gästen" eller omformulera; gissa inte kön.
-- Nämn inte artikeln, forskarna eller gusto.science i spelartexten.`;
+Rules:
+- Everything must be traceable to the article text. Never invent numbers, temperatures, times, quantities, names of studies, places or references. If the text lacks a number, write without one.
+- If the article says the abstract is not enough for a role, write the question at the level the text supports (what a professional should watch for), not an invented recipe.
+- Wrong options are plausible misunderstandings, not jokes, and about as long as the right one.
+- Explain technical terms in a clause the first time.
+- Plain, concrete restaurant English, short sentences. Write "the guest" or "they"; do not guess gender.
+- Do not mention the article, the researchers or gusto.science in the player text.`;
 
 function userContent(a) {
   const pavilion = a.track === 'kok' ? 'Metodköket' : 'Stensöta';
-  return `Artikel: ${a.title}
-Tidskrift: ${a.journal ?? 'okänd'} (${a.year ?? 'okänt år'})
-Ämne: ${a.topic}. Techne-steget och techne-frågan hör till ${pavilion}.
+  return `Article: ${a.title}
+Journal: ${a.journal ?? 'unknown'} (${a.year ?? 'unknown year'})
+Topic: ${a.topic}. The techne step and the techne question belong to ${pavilion}.
 
 EPISTEME (What the research supports):
 ${a.episteme}
 
-TECHNE (roll: ${a.techneRole}):
+TECHNE (role: ${a.techneRole}):
 ${a.techne}
 
-PHRONESIS (roll: ${a.phronesisRole}):
+PHRONESIS (role: ${a.phronesisRole}):
 ${a.phronesis}`;
 }
 
@@ -296,7 +297,7 @@ function validate(out) {
     if (q.options.length !== 4) errs.push(`fråga ${axis}: ${q.options.length} alternativ`);
     if (!(q.correct_index >= 0 && q.correct_index < q.options.length)) errs.push(`fråga ${axis}: correct_index ${q.correct_index}`);
   }
-  if (!out.rocket.staff_outcome.startsWith('Personalen tar över')) errs.push('staff_outcome börjar inte med "Personalen tar över"');
+  if (!out.rocket.staff_outcome.startsWith('The staff take over')) errs.push('staff_outcome börjar inte med "The staff take over"');
   return errs;
 }
 
@@ -338,7 +339,7 @@ function seededOrder(seed, n) {
 
 function readDraft(file, emptyNote) {
   if (existsSync(file)) return JSON.parse(readFileSync(file, 'utf8'));
-  return { schemaVersion: 1, language: 'sv', status: 'utkast', reviewedBy: null, source: 'gusto.science', note: emptyNote, entries: [] };
+  return { schemaVersion: 1, language: 'en', status: 'utkast', reviewedBy: null, source: 'gusto.science', note: emptyNote, entries: [] };
 }
 
 function buildEntries(a, out, meta) {
@@ -413,8 +414,8 @@ async function main() {
   if (!(args.limit > 0)) throw new Error('--limit måste vara ett positivt tal');
   loadEnv();
 
-  const rockets = readDraft(OUT_ROCKETS, 'Raketer ur gusto.science (ORDER 272), en per artikel med ett steg ur vart och ett av artikelns tre avsnitt. Skrivna av Claude och översatta till svenska; den engelska originaltexten står i `source`. Spelet läser inte filen förrän Vision Owner har granskat den. `meta` och `text` har samma form som vinbarens bank (sim/incidentBank.ts); utfallen är medelvärden tills Vision Owner sätter dem.');
-  const questions = readDraft(OUT_QUESTIONS, 'Provfrågor till Måltidens hus ur gusto.science (ORDER 272): episteme till Måltidsbiblioteket, techne till Metodköket eller Stensöta enligt ämnet, phronesis till Kalastorget. Skrivna av Claude och översatta till svenska; den engelska originaltexten står i `source`. Spelet läser inte filen förrän Vision Owner har granskat den. `meta` och `text` har samma form som frågebanken (strategic/content/questions).');
+  const rockets = readDraft(OUT_ROCKETS, 'Raketer ur gusto.science (ORDER 272), en per artikel med ett steg ur vart och ett av artikelns tre avsnitt. Skrivna av Claude på engelska (Vision Owner 2026-09-28: spelet är på engelska); artikelns originaltext står i `source`. Spelet läser inte filen förrän Vision Owner har granskat den. `meta` och `text` har samma form som vinbarens bank (sim/incidentBank.ts); utfallen är medelvärden tills Vision Owner sätter dem.');
+  const questions = readDraft(OUT_QUESTIONS, 'Provfrågor till Måltidens hus ur gusto.science (ORDER 272): episteme till Måltidsbiblioteket, techne till Metodköket eller Stensöta enligt ämnet, phronesis till Kalastorget. Skrivna av Claude på engelska (Vision Owner 2026-09-28: spelet är på engelska); artikelns originaltext står i `source`. Spelet läser inte filen förrän Vision Owner har granskat den. `meta` och `text` har samma form som frågebanken (strategic/content/questions).');
   const done = new Set(rockets.entries.map((e) => e.articleId));
 
   console.log(`Hämtar ${args.limit} artiklar i ${args.topic} från gusto.science …`);

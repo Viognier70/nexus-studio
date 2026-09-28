@@ -11,7 +11,7 @@
 - Episteme kommer från "What the research supports", samma text oavsett roll.
 - Techne kommer från `culinary_pro` för köksämnena (`culinary_science`, `fermentation_science`, `food_science`, till Metodköket) och från `sensory_pro` för vin och sensorik (`sommellerie`, `sensory_evaluation`, `flavor_science`, till Stensöta).
 - Phronesis kommer från `hospitality_mgmt` (Kalastorget och servicen).
-- Skriptet översätter till svenska och sparar den engelska originaltexten i ett eget fält.
+- ~~Skriptet översätter till svenska och sparar den engelska originaltexten i ett eget fält.~~ **Ändrat 2026-09-28 (Vision Owner, provspel):** spelet är på engelska. Skriptet skriver utkasten på engelska och översätter inte. Artikelns originaltext står kvar i `source`.
 - Modellen är `claude-opus-5-5`, i en konstant. Skriptet visar uppskattad kostnad och frågar innan det börjar.
 - `@anthropic-ai/sdk` och `@supabase/supabase-js` är devDependencies och följer inte med i spelets bygge.
 
@@ -40,7 +40,7 @@ node scripts/order272-gusto-drafts.mjs --topic culinary_science --limit 5
    - `frontend/src/content/incidents/gusto.draft.json`: raketerna. `meta` och `text` har samma form som vinbarens bank. Utfallen är medelvärden tills Vision Owner sätter dem.
    - `frontend/src/content/questions/gusto.draft.json`: provfrågorna i frågebankens form. Nivån är brons och ankaret servicen, tills Vision Owner ändrar.
    - Varje post har `status: "utkast"` och `reference`: titel, länk till artikeln på gusto.science, DOI och källänk.
-   - Varje post har också `source`: den engelska originaltexten med de tre avsnitten.
+   - Varje post har också `source`: artikelns originaltext med de tre avsnitten.
    - Alternativen blandas med en fast ordning per artikel, så att det rätta svaret inte alltid står först.
 
 Spelet läser inte filerna.
