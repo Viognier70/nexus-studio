@@ -26,6 +26,7 @@ import {
 import { bankQuestionById } from '../questionBank';
 import { createRng } from '../../util/rng';
 import type { PavilionKey, SimAction, SimulationState } from '../../types';
+import { stocked } from '../../testHarness/stocked';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SRC = resolve(HERE, '../../..');
@@ -83,7 +84,7 @@ describe('ORDER 264 — öva', () => {
 
   it('inget besök utanför morgonen', () => {
     let s = makeInitialState(3);
-    s = reducer(s, { type: 'START_SERVICE' });
+    s = reducer(stocked(s), { type: 'START_SERVICE' });
     expect(reducer(s, { type: 'VISIT_PAVILION', pavilion: 'stensota', mode: 'practice' })).toBe(s);
   });
 });
@@ -218,7 +219,8 @@ describe('ORDER 264 — ingen väg sänker en medalj', () => {
       }
       else if (r < 0.62) action = { type: 'NEXT_VISIT_QUESTION' };
       else if (r < 0.7) action = { type: 'CLOSE_VISIT' };
-      else if (r < 0.74) action = { type: 'START_SERVICE' };
+      // ORDER 277 — servicen öppnar bara med lager: baspaketet först.
+      else if (r < 0.74) { s = stocked(s); action = { type: 'START_SERVICE' }; }
       else if (r < 0.76) action = { type: 'CLOSE_DAY' };
       // ORDER 270 — quizen är borttagen; kvällens händelser besvaras.
       else if (r < 0.92) action = { type: 'ANSWER_INCIDENT', optionId: rng.pick(['a', 'b', 'c', 'd']) };

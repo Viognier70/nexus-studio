@@ -29,6 +29,7 @@ import { isSeatedCapacity } from '../../simulation/service';
 import { dailyGuestCap, V1_CLASS_TO_ROOM } from '../../../sim/economy';
 import { GAME_MINUTES_PER_SIM_SECOND } from '../../../sim/balance';
 import type { SimulationState } from '../../types';
+import { stocked } from '../stocked';
 
 const OUT = resolve(dirname(fileURLToPath(import.meta.url)), '../../../../reports/order267');
 // Rummet som spelarens vinbar spelar i (sim/economy.ts V1_CLASS_TO_ROOM).
@@ -53,7 +54,7 @@ function evening(dayNumber: number) {
     day: { ...s.day, dayNumber },
     medals: { stensota: 'brons', metodkoket: 'brons', kalastorget: 'brons' }
   };
-  s = reducer(s, { type: 'START_SERVICE' });
+  s = reducer(stocked(s), { type: 'START_SERVICE' });
   const seatedAt: Record<string, number> = {};
   const sitting: number[] = [];
   let prev: Record<string, string> = {};

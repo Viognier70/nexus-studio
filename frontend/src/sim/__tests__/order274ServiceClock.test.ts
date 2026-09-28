@@ -8,13 +8,14 @@ import { SITTING } from '../balance';
 import { serviceClock } from '../serviceClock';
 import { formatClock } from '../incidents';
 import { setLanguage } from '../../content/language';
+import { stocked } from '../../strategic/testHarness/stocked';
 
 const TICK = { type: 'TICK', dt: 0.2 } as const;
 
 function opened() {
   let s = makeNewGameState(4);
   s = { ...s, medals: { stensota: 'brons', metodkoket: 'brons', kalastorget: 'brons' }, day: { ...s.day, dayNumber: firstDayOfWeek(2) } };
-  return reducer(s, { type: 'START_SERVICE' });
+  return reducer(stocked(s), { type: 'START_SERVICE' });
 }
 
 describe('ORDER 274 — tiden kvar av servicen', () => {

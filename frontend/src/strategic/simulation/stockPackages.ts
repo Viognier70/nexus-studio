@@ -13,7 +13,8 @@ import type { SimulationState } from '../types';
 import { strings } from '../../content/strings';
 import { applyCashDelta, postLedger } from './cashReading';
 import { findDish, findIngredient, minIngredientCost } from './m4Catalogue';
-import { findPackage, packageCostSek, packageDishIds, packageIngredients, packagesFor } from './packages';
+import { MORNING_STAKE } from '../../sim/balance';
+import { findPackage, itemsCostSek, packageCostSek, packageDishIds, packageIngredients, packagesFor } from './packages';
 
 type Menu = SimulationState['menu'];
 
@@ -76,6 +77,64 @@ export function buyPackage(state: SimulationState, packageId: string): Simulatio
   applyCashDelta(next, -costSek);
   postLedger(next, { category: 'stock', amount: -costSek, cause: strings.stock.packageLedger(strings.stock.packages[packageId]?.name ?? packageId), causeId: packageId });
   return next;
+}
+
+// ORDER 277 — morgonens inköpslista: portioner per rätt och dryck, som ett
+// paket. Kassan sjunker direkt.
+export function buyItems(state: SimulationState, items: Record<string, number>): SimulationState {
+  if (state.day.period !== 'morning' || !usesPackages(state)) return state;
+  const allowed = new Set(packageDishIds(state.economy.businessClass));
+  const clean: Record<string, number> = {};
+  for (const [id, n] of Object.entries(items)) if (allowed.has(id) && n > 0) clean[id] = Math.floor(n);
+  if (Object.keys(clean).length === 0) return state;
+  const costSek = itemsCostSek(clean);
+  const stock = { ...state.stock };
+  for (const [id, units] of Object.entries(packageIngredients({ id: 'sheet', items: Object.entries(clean).map(([dishId, portions]) => ({ dishId, portions })) }))) {
+    stock[id] = (stock[id] ?? 0) + units;
+  }
+  const next = withMenuFromStock({ ...state, stock });
+  applyCashDelta(next, -costSek);
+  postLedger(next, { category: 'stock', amount: -costSek, cause: strings.stock.sheetLedger, causeId: 'order-sheet' });
+  return next;
+}
+
+// ORDER 277 — "Menyn och dryckeslistan och mängder måste sättas innan
+// servicen kan starta." Minst en rätt och en dryck i lager (balance.ts
+// MORNING_STAKE). Klasser utan paket spärras inte.
+export function stockReadiness(state: SimulationState): { ready: boolean; dishes: number; drinks: number } {
+  if (!usesPackages(state)) return { ready: true, dishes: 0, drinks: 0 };
+  const menu = menuFromStock(state);
+  const dishes = menu.filter((m) => findDish(m.dishId)?.kind !== 'drink').length;
+  const drinks = menu.length - dishes;
+  return { ready: dishes >= MORNING_STAKE.minDishesToOpen && drinks >= MORNING_STAKE.minDrinksToOpen, dishes, drinks };
+}
+
+// ORDER 277 — en portion ur lagret: lagret och portionerna kvar räknas om,
+// och raden "har tagit slut" skrivs en gång per rätt och service (samma
+// text som reducerns drawMenuDishForGuest).
+export function takeFromStock(draft: SimulationState, dishId: string, simTime: number): void {
+  const dish = findDish(dishId);
+  if (!dish) return;
+  const stock = { ...draft.stock };
+  for (const r of dish.recipe) stock[r.ingredientId] = (stock[r.ingredientId] ?? 0) - r.units;
+  draft.stock = stock;
+  draft.day.platesRemaining = computePlatesRemaining(draft.menu, stock);
+  for (const m of draft.menu) {
+    if ((draft.day.platesRemaining[m.dishId] ?? 0) > 0 || draft.day.stockOutEvents.includes(m.dishId)) continue;
+    const out = findDish(m.dishId);
+    if (!out) continue;
+    draft.day.stockOutEvents = [...draft.day.stockOutEvents, m.dishId];
+    draft.eventStream = [...draft.eventStream, {
+      at: simTime,
+      text: strings.stock.ranOut(out.name),
+      category: 'ambient',
+      causeTag: 'stock_out',
+      causeChainId: null,
+      sustainability: 'economic',
+      kind: 'dish_ran_out',
+      scenarioId: null
+    }];
+  }
 }
 
 // Vid servicens början: menyn är det som finns i lagret (också drycker

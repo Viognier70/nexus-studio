@@ -37,7 +37,10 @@ export function weakMorning(): MorningPlan {
       { type: 'BUY_STOCK', supplierId: 'wholesaler', ingredientId: 'chicken', units: n / 2 },
       { type: 'BUY_STOCK', supplierId: 'wholesaler', ingredientId: 'root-veg', units: n * 1.5 },
       { type: 'BUY_STOCK', supplierId: 'local-veg', ingredientId: 'herbs', units: n },
-      { type: 'BUY_STOCK', supplierId: 'wholesaler', ingredientId: 'dairy', units: n / 2 }
+      { type: 'BUY_STOCK', supplierId: 'wholesaler', ingredientId: 'dairy', units: n / 2 },
+      // ORDER 277 — servicen startar inte utan en dryck i lager: den svaga
+      // köper ett glas vin per kuvert, sist, så att menyn räknas ur lagret.
+      { type: 'BUY_ITEMS', items: { 'house-wine-glass': n } }
     ]
   };
 }

@@ -9,6 +9,7 @@ import { EVENTS, REPUTATION } from '../balance';
 import { stockForecast } from '../stockForecast';
 import { createRng } from '../../strategic/util/rng';
 import type { SimAction, SimulationState } from '../../strategic/types';
+import { stocked } from '../../strategic/testHarness/stocked';
 
 function tick(s: SimulationState, n: number): SimulationState {
   for (let i = 0; i < n; i++) s = reducer(s, { type: 'TICK', dt: 0.2 });
@@ -34,7 +35,7 @@ describe('ORDER 266 — ryktet', () => {
 
   it('självläkning mot 50 av 100 varje ny morgon, och en rad i strömmen', () => {
     let s = { ...makeInitialState(1), reputation: 0.2 };
-    s = reducer(s, { type: 'START_SERVICE' });
+    s = reducer(stocked(s), { type: 'START_SERVICE' });
     for (let i = 0; i < 20000 && s.day.dayNumber === 1; i++) {
       if (s.day.period === 'evening') s = reducer(s, { type: 'END_EVENING' });
       s = reducer(s, { type: 'TICK', dt: 0.2 });
@@ -46,7 +47,7 @@ describe('ORDER 266 — ryktet', () => {
 describe('ORDER 266 — händelser med orsak', () => {
   it('ostädade stationer ger inspektion nästa morgon: avgift, rykte, orsak i strömmen', () => {
     let s = makeInitialState(1);
-    s = reducer(s, { type: 'START_SERVICE' });
+    s = reducer(stocked(s), { type: 'START_SERVICE' });
     s = tick(s, 700);
     s = { ...s, day: { ...s.day, prepReadiness: { ...s.day.prepReadiness, stations: EVENTS.inspectionStationsBelow / 2 } } };
     for (let i = 0; i < 20000 && s.day.period !== 'evening'; i++) s = reducer(s, { type: 'TICK', dt: 0.2 });
@@ -62,14 +63,14 @@ describe('ORDER 266 — händelser med orsak', () => {
 
   it('gott rykte ger en recensent som bokar bord', () => {
     let s = { ...makeInitialState(1), reputation: EVENTS.reviewerReputationAtLeast / REPUTATION.scale + 0.01 };
-    s = reducer(s, { type: 'START_SERVICE' });
+    s = reducer(stocked(s), { type: 'START_SERVICE' });
     expect(s.serviceEvents.reviewerTonight).toBe(true);
     expect(s.eventStream.some((x) => x.kind === 'v1_reviewer_booked')).toBe(true);
   });
 
   it('svag kassa ger ett samtal från banken nästa morgon', () => {
     let s = { ...makeInitialState(1), cash: -20000 };
-    s = reducer(s, { type: 'START_SERVICE' });
+    s = reducer(stocked(s), { type: 'START_SERVICE' });
     for (let i = 0; i < 20000 && s.day.period !== 'evening'; i++) s = reducer(s, { type: 'TICK', dt: 0.2 });
     expect(s.economy.warning).not.toBeNull();
     s = tick(reducer(s, { type: 'END_EVENING' }), 2);
@@ -80,7 +81,7 @@ describe('ORDER 266 — händelser med orsak', () => {
 describe('ORDER 266 — kvällsberättelsen börjar med det som gick bra', () => {
   it('nöjda gäster nämns före kvällens omdöme', () => {
     let s = makeInitialState(5);
-    s = reducer(s, { type: 'START_SERVICE' });
+    s = reducer(stocked(s), { type: 'START_SERVICE' });
     for (let i = 0; i < 20000 && s.day.period !== 'evening'; i++) s = reducer(s, { type: 'TICK', dt: 0.2 });
     const p = s.eveningAccount!.paragraph;
     expect(p).toMatch(/^(One guest left happy|[A-Z][a-z]+ guests left happy)/);
@@ -99,6 +100,6 @@ describe('ORDER 266 — lagret', () => {
 
   it('öppning blockeras inte av tomt lager', () => {
     const s = makeInitialState(1);
-    expect(reducer(s, { type: 'START_SERVICE' }).day.period).toBe('dinner');
+    expect(reducer(stocked(s), { type: 'START_SERVICE' }).day.period).toBe('dinner');
   });
 });

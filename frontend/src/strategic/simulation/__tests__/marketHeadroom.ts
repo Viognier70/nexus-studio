@@ -16,3 +16,12 @@ import type { SimulationState } from '../../types';
 export function withoutMarketCap(s: SimulationState): SimulationState {
   return { ...s, policies: { ...s.policies, marketCapEnabled: false } };
 }
+
+// ORDER 277 — testhjälp: den gamla menyvägen (M4/M4a: rätten ur menyn,
+// byte eller gäst som går) gäller klasser utan paket. Vinbaren har paket,
+// och där beställer gästen efter kost och plånbok (guestOrders.ts). Tester
+// av den gamla vägen och av rummets mekanik utan inköp körs i en klass
+// utan paket (restaurangen), som vinbaren före ORDER 275.
+export function withoutPackages(s: SimulationState): SimulationState {
+  return { ...s, economy: { ...s.economy, businessClass: 'restaurang' } };
+}

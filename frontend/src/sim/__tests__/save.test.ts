@@ -25,6 +25,7 @@ import {
 } from '../save';
 import { SAVING } from '../balance';
 import { V1_CLASS_TO_ROOM } from '../economy';
+import { stocked } from '../../strategic/testHarness/stocked';
 
 class MemoryStore implements SaveStore {
   data = new Map<string, string>();
@@ -41,7 +42,7 @@ function ticks(s: SimulationState, n: number): SimulationState {
 function midService(): SimulationState {
   let s = makeInitialState(42);
   s = reducer(s, { type: 'PICK_ACTIVITY', id: 'train-service' });
-  s = reducer(s, { type: 'START_SERVICE' });
+  s = reducer(stocked(s), { type: 'START_SERVICE' });
   return ticks(s, 1800);
 }
 

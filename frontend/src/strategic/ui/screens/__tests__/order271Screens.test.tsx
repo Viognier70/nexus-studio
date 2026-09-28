@@ -18,6 +18,7 @@ import { DayActionBar } from '../../../scenario/DayActionBar';
 import { bankQuestionById } from '../../../knowledge/questionBank';
 import { EXAM } from '../../../../sim/balance';
 import type { SimAction, SimulationState } from '../../../types';
+import { stocked } from '../../../testHarness/stocked';
 
 afterEach(() => cleanup());
 beforeEach(() => {
@@ -123,7 +124,14 @@ describe('ORDER 271 — Måltidens hus (O1, O2, MD1, MD2)', () => {
 
 describe('ORDER 271 — morgonens schema (S1, S2)', () => {
   it('vardag: S1 med schemaplatserna; knappen öppnar för kvällen som förut', () => {
-    const s = makeNewGameState(7);
+    // ORDER 277 — knappen är avstängd tills menyn och dryckeslistan har en
+    // rätt och en dryck i lager; efter köpet öppnar den som förut.
+    const empty = makeNewGameState(7);
+    const blocked = render(withSim(empty, <DayActionBar onOpenHouse={() => {}} onOpenBank={() => {}} />, () => {}));
+    expect((blocked.getByTestId('start-service') as HTMLButtonElement).disabled).toBe(true);
+    expect(blocked.getByTestId('start-blocked')).toBeTruthy();
+    blocked.unmount();
+    const s = stocked(makeNewGameState(7));
     const actions: SimAction[] = [];
     const { getByTestId } = render(withSim(s, <DayActionBar onOpenHouse={() => {}} onOpenBank={() => {}} />, (a) => actions.push(a)));
     expect(getByTestId('screen-S1')).toBeTruthy();

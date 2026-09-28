@@ -37,6 +37,7 @@ import { IncidentCard, ServiceMeters } from '../../../scenario/IncidentPanel';
 import { EveningBar } from '../../../scenario/EveningBar';
 import { NoBusinessBox } from '../../../economy/NoBusinessBox';
 import { cellsFor, deltaSteps, pickLessonIndex, rocketCounter, METER_EMPHASIS_MS } from '../serviceView';
+import { stocked } from '../../../testHarness/stocked';
 
 afterEach(() => {
   cleanup();
@@ -54,7 +55,7 @@ function wineBarService(): SimulationState {
   let s = makeNewGameState(7);
   s = { ...s, medals: { stensota: 'brons', metodkoket: 'brons', kalastorget: 'brons' }, speed: 2 };
   s = { ...s, day: { ...s.day, dayNumber: firstDayOfWeek(2) } };
-  return reducer(s, { type: 'START_SERVICE' });
+  return reducer(stocked(s), { type: 'START_SERVICE' });
 }
 
 function answer(s: SimulationState, rank: 'best' | 'worst' = 'best'): SimulationState {

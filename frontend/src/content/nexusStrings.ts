@@ -1093,29 +1093,121 @@ export const TABLE = {
       en: (sek: string) => `Unsold food went to waste at closing: ${sek}.`
     },
     packageLedger: { sv: (name: string) => `Lager: ${name}`, en: (name: string) => `Stock: ${name}` },
+    // ORDER 277 — morgonen är insatsen: menyn, dryckeslistan och mängderna.
+    sheetHeading: { sv: 'Kvällens meny och dryckeslista', en: "Tonight's menu and drinks list" },
+    sheetIntro: {
+      sv: 'Välj vad som står på menyn och dryckeslistan, och hur mycket. Du kan inte öppna förrän minst en rätt och en dryck finns i lager. Gäster som inte hittar något för sin kost eller plånbok går, och ryktet sjunker.',
+      en: 'Choose what goes on the menu and the drinks list, and how much. You cannot open until at least one dish and one drink are in stock. Guests who find nothing for their diet or their wallet leave, and the reputation drops.'
+    },
+    sheetDishes: { sv: 'Menyn', en: 'The menu' },
+    sheetDrinks: { sv: 'Dryckeslistan', en: 'The drinks list' },
+    drinkGroups: {
+      sv: { 'wine-glass': 'Vin på glas', 'wine-bottle': 'Vin på flaska', beer: 'Öl', 'alcohol-free': 'Alkoholfritt' } as Record<string, string>,
+      en: { 'wine-glass': 'Wine by the glass', 'wine-bottle': 'Wine by the bottle', beer: 'Beer', 'alcohol-free': 'Alcohol-free' } as Record<string, string>
+    },
+    tags: {
+      sv: { vegan: 'vegansk', vegetarian: 'vegetarisk', fish: 'fisk', meat: 'kött', lactose: 'laktos', gluten: 'gluten' } as Record<string, string>,
+      en: { vegan: 'vegan', vegetarian: 'vegetarian', fish: 'fish', meat: 'meat', lactose: 'lactose', gluten: 'gluten' } as Record<string, string>
+    },
+    priceAndCost: {
+      sv: (price: string, cost: string) => `Gästen betalar ${price} · kostar ${cost}`,
+      en: (price: string, cost: string) => `Guest pays ${price} · costs ${cost}`
+    },
+    bottleNote: { sv: (n: number) => `${n} glas, ett bord delar`, en: (n: number) => `${n} glasses, one table shares it` },
+    haveNow: { sv: (n: number) => `${n} i lager`, en: (n: number) => `${n} in stock` },
+    less: { sv: (name: string) => `Färre ${name}`, en: (name: string) => `Fewer ${name}` },
+    more: { sv: (name: string) => `Fler ${name}`, en: (name: string) => `More ${name}` },
+    fillHeading: { sv: 'Fyll på listan', en: 'Fill the list' },
+    fillWith: { sv: (name: string) => `+ ${name}`, en: (name: string) => `+ ${name}` },
+    clear: { sv: 'Töm listan', en: 'Clear the list' },
+    buySheet: { sv: (price: string) => `Köp listan · ${price}`, en: (price: string) => `Buy the list · ${price}` },
+    sheetEmpty: { sv: 'Listan är tom.', en: 'The list is empty.' },
+    sheetLedger: { sv: 'Lager: morgonens inköpslista', en: "Stock: the morning's order" },
+    ranOut: {
+      sv: (name: string) => `${name} är slut — köket har inga råvaror kvar.`,
+      en: (name: string) => `${name} has run out — the kitchen has no ingredients left.`
+    },
+    notReady: {
+      sv: (dishes: number, drinks: number) => dishes === 0 && drinks === 0
+        ? 'Sätt menyn och dryckeslistan innan du öppnar: minst en rätt och en dryck i lager.'
+        : dishes === 0 ? 'Menyn är tom. Köp minst en rätt innan du öppnar.' : 'Dryckeslistan är tom. Köp minst en dryck innan du öppnar.',
+      en: (dishes: number, drinks: number) => dishes === 0 && drinks === 0
+        ? 'Set the menu and the drinks list before you open: at least one dish and one drink in stock.'
+        : dishes === 0 ? 'The menu is empty. Buy at least one dish before you open.' : 'The drinks list is empty. Buy at least one drink before you open.'
+    },
     item: {
       sv: (portions: number, name: string) => `${portions} × ${name}`,
       en: (portions: number, name: string) => `${portions} × ${name}`
     },
     packages: {
       sv: {
-          'vinbar-base': { name: 'Baspaket', description: 'En vanlig vardagskväll: soppa, kyckling, fläsk och en dessert, med husets vin och lokal öl.' },
+          'vinbar-base': { name: 'Baspaket', description: 'En vanlig vardagskväll: soppa, kyckling, fläsk, en vegansk rätt och desserter, med husets vin på glas och flaska, lokal öl och alkoholfritt.' },
+          'vinbar-green': { name: 'Grönt', description: 'Linser med rostade rotfrukter (vegansk) och kantareller på toast (vegetarisk).' },
+          'vinbar-alcohol-free': { name: 'Mer alkoholfritt', description: 'Alkoholfri lingondricka, till gäster som inte dricker vin eller öl.' },
           'vinbar-extra-covers': { name: 'Fler kuvert', description: 'Kyckling, fläsk och husets vin till en livligare kväll.' },
-          'vinbar-fish': { name: 'Insjöfisk', description: 'Pocherad insjöfisk, till gäster som vill ha något lättare.' },
+          'vinbar-fish': { name: 'Insjöfisk', description: 'Pocherad gös från Hjälmaren, till gäster som vill ha något lättare.' },
           'vinbar-lamb': { name: 'Lamm', description: 'Lamm med rotfrukter, en dyrare tallrik.' },
           'vinbar-game': { name: 'Vilt', description: 'Hjort från Bergslagen, menyns dyraste tallrik.' },
-          'vinbar-fine-wine': { name: 'Finare vin', description: 'Ett bättre vin på glas, till ett högre pris.' },
-          'vinbar-house-wine': { name: 'Mer husets vin', description: 'Husets vin på glas, till en törstig kväll.' }
+          'vinbar-fine-wine': { name: 'Finare vin', description: 'Pinot Noir på glas och flaska, till ett högre pris.' },
+          'vinbar-house-wine': { name: 'Mer husets vin', description: 'Grüner Veltliner på glas och flaska, till en törstig kväll.' }
         } as Record<string, { name: string; description: string }>,
       en: {
-          'vinbar-base': { name: 'Base package', description: 'An ordinary weekday evening: soup, chicken, pork and a dessert, with house wine and local beer.' },
+          'vinbar-base': { name: 'Base package', description: 'An ordinary weekday evening: soup, chicken, pork, a vegan plate and desserts, with house wine by the glass and bottle, local beer and alcohol-free.' },
+          'vinbar-green': { name: 'Green', description: 'Roast roots with lentils (vegan) and chanterelles on toast (vegetarian).' },
+          'vinbar-alcohol-free': { name: 'More alcohol-free', description: 'Alcohol-free lingonberry sparkling, for guests who drink neither wine nor beer.' },
           'vinbar-extra-covers': { name: 'More covers', description: 'Chicken, pork and house wine for a busier evening.' },
-          'vinbar-fish': { name: 'Lake fish', description: 'Poached lake fish, for guests who want something lighter.' },
+          'vinbar-fish': { name: 'Lake fish', description: 'Poached pike-perch from Hjälmaren, for guests who want something lighter.' },
           'vinbar-lamb': { name: 'Lamb', description: 'Lamb with root vegetables, a dearer plate.' },
           'vinbar-game': { name: 'Game', description: 'Deer from Bergslagen, the dearest plate on the menu.' },
-          'vinbar-fine-wine': { name: 'Fine wine', description: 'A better wine by the glass, at a higher price.' },
-          'vinbar-house-wine': { name: 'More house wine', description: 'House wine by the glass, for a thirsty evening.' }
+          'vinbar-fine-wine': { name: 'Fine wine', description: 'Pinot Noir by the glass and bottle, at a higher price.' },
+          'vinbar-house-wine': { name: 'More house wine', description: 'Grüner Veltliner by the glass and bottle, for a thirsty evening.' }
         } as Record<string, { name: string; description: string }>
+    }
+  },
+  // ORDER 277 — kassan syns hela tiden.
+  cashCounter: {
+    label: { sv: 'Kassa', en: 'Cash' },
+    aria: { sv: (amount: string) => `Kassan: ${amount}`, en: (amount: string) => `Cash: ${amount}` }
+  },
+  // ORDER 277 — gästerna har kost och plånbok.
+  guests: {
+    lost: {
+      sv: (reason: string, table: number | null, partyLeft: number) => {
+        const at = table === null ? 'En gäst' : `En gäst vid bord ${table}`;
+        const why: Record<string, string> = {
+          vegetarian: 'hittade inget vegetariskt på menyn',
+          vegan: 'hittade inget veganskt på menyn',
+          lactose: 'hittade inget utan laktos på menyn',
+          gluten: 'hittade inget utan gluten på menyn',
+          soldOut: 'fick höra att allt hen kunde äta var slut',
+          wallet: 'hittade inget i sin prisklass',
+          alcoholFree: 'hittade inget alkoholfritt'
+        };
+        const party = partyLeft > 0 ? ` Sällskapet gick med, ${partyLeft === 1 ? 'en till' : `${partyLeft} till`}.` : '';
+        return `${at} ${why[reason] ?? why.soldOut} och gick utan att beställa.${party}`;
+      },
+      en: (reason: string, table: number | null, partyLeft: number) => {
+        const at = table === null ? 'A guest' : `A guest at table ${table}`;
+        const why: Record<string, string> = {
+          vegetarian: 'found nothing vegetarian on the menu',
+          vegan: 'found nothing vegan on the menu',
+          lactose: 'found nothing without lactose on the menu',
+          gluten: 'found nothing without gluten on the menu',
+          soldOut: 'heard that everything they could eat had run out',
+          wallet: 'found nothing in their price range',
+          alcoholFree: 'found nothing alcohol-free'
+        };
+        const party = partyLeft > 0 ? ` Their party left with them, ${partyLeft === 1 ? 'one more' : `${partyLeft} more`}.` : '';
+        return `${at} ${why[reason] ?? why.soldOut} and left without ordering.${party}`;
+      }
+    },
+    noAlcoholFree: {
+      sv: (table: number | null) => `${table === null ? 'En gäst' : `En gäst vid bord ${table}`} dricker inte alkohol, och det fanns inget alkoholfritt på listan.`,
+      en: (table: number | null) => `${table === null ? 'A guest' : `A guest at table ${table}`} does not drink alcohol, and there was nothing alcohol-free on the list.`
+    },
+    drinkOnly: {
+      sv: (table: number | null) => `${table === null ? 'En gäst' : `En gäst vid bord ${table}`} hittade ingen rätt i sin prisklass och tog bara något att dricka.`,
+      en: (table: number | null) => `${table === null ? 'A guest' : `A guest at table ${table}`} found no dish in their price range and only had a drink.`
     }
   },
   save: {
