@@ -46,6 +46,7 @@ import { ViewLabel } from './ui/ViewLabel';
 import { detectWebGL, WebGLFallback } from '../webgl/WebGLFallback';
 import { devToggles } from '../lib/devToggles';
 import './strategic.css';
+import { ServiceClock } from './ui/service/ServiceClock';
 
 interface StrategicAppProps {
   // ORDER 267 — spelaren kommer från bussen (VS001): introduktionen börjar.
@@ -325,6 +326,8 @@ function StrategicShell() {
       <PanelColumn side="right">
         {/* ORDER 271 — satsningarna och menyn ligger i morgonens schema (DayActionBar, S1). */}
         <ServiceMeters />
+        {/* ORDER 274 — tiden kvar av servicen, hela kvällen. */}
+        <ServiceClock />
         <EventStreamPanel />
         {/*
           ORDER 270 (provspel 2026-09-27): "inga engelska paneler".

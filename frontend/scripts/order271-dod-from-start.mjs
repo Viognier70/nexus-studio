@@ -215,6 +215,15 @@ try {
   await page.click('[data-testid=mentor-close-service]');
   step('servicen öppnad');
   report.fpsService = await fps();
+  // ORDER 274 — tiden kvar av servicen, vid två tidpunkter. STOP_AFTER=clock
+  // avslutar körningen här (utan veckan).
+  for (const [i, wait] of [[1, 2000], [2, 60000]]) {
+    await delay(wait);
+    report.clock = report.clock ?? [];
+    report.clock.push({ text: await page.textContent('[data-testid=service-clock]').catch(() => null), leftMinutes: await page.getAttribute('[data-testid=service-clock]', 'data-left-minutes').catch(() => null) });
+    await shot(`dod-25-tiden-kvar-${i}.png`, `tiden kvar av servicen (tidpunkt ${i})`);
+  }
+  if (process.env.STOP_AFTER === 'clock') throw new Error('STOP_AFTER=clock');
   await delay(4000);
   await shot('dod-20-vinbaren-spelarens-kamera.png', 'vinbaren från spelarens kamera, under servicen');
 

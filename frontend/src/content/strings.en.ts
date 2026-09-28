@@ -491,6 +491,15 @@ export const strings: Widen<typeof Sv> = {
       noGuests: 'no guests',
       sek: (amount: string) => `${amount} SEK`
     },
+    // ORDER 274 — tiden kvar av servicen, hela kvällen.
+    clock: {
+      label: 'Service',
+      now: (hhmm: string) => hhmm,
+      left: (h: number, m: number) => (h > 0 ? `${h} h ${String(m).padStart(2, '0')} min left` : `${m} min left`),
+      closes: (hhmm: string) => `Closes ${hhmm}`,
+      closed: 'Closing',
+      aria: (left: string, closes: string) => `${left}. ${closes}.`
+    },
     events: {
       reviewerBooked: 'A reviewer has booked a table tonight. Word has got out.',
       reviewGood: 'The reviewer left happy. The evening held, and it will be in the paper.',
