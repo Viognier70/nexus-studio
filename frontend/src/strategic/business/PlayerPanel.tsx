@@ -27,23 +27,22 @@ import {
   targetQualityFood,
   targetQualityService
 } from '../simulation/quality';
-import { strings } from '../../content/strings.sv';
+import { strings } from '../../content/strings';
 
 const T = strings.panels.cash;
 
 // Same word-band pattern as the four instruments panel.
 function reputationBand(v: number): string {
-  if (v >= 0.85) return 'Utmärkt';
-  if (v >= 0.65) return 'God';
-  if (v >= 0.45) return 'Godtagbar';
-  if (v >= 0.25) return 'Bristfällig';
-  return 'Under acceptabel';
+  if (v >= 0.85) return 'Excellent';
+  if (v >= 0.65) return 'Good';
+  if (v >= 0.45) return 'Acceptable';
+  if (v >= 0.25) return 'Poor';
+  return 'Below acceptable';
 }
 
 function formatKSEK(v: number): string {
   const rounded = Math.round(v);
-  // Thin space between thousand groups — Swedish typography.
-  return rounded.toLocaleString('sv-SE').replace(/ /g, ' ') + ' ' + T.unit;
+  return rounded.toLocaleString('en-GB') + ' ' + T.unit;
 }
 
 // -------- styles --------------------------------------------------------
@@ -245,8 +244,8 @@ export function PlayerPanel() {
         {trend !== 'flat' && (
           <span
             data-reputation-trend={trend}
-            aria-label={trend === 'up' ? 'rykte trend uppåt' : 'rykte trend nedåt'}
-            title={trend === 'up' ? 'Rykte-trend uppåt' : 'Rykte-trend nedåt'}
+            aria-label={trend === 'up' ? 'reputation trending up' : 'reputation trending down'}
+            title={trend === 'up' ? 'Reputation trending up' : 'Reputation trending down'}
             style={{
               color: TREND_COLOURS[trend],
               fontSize: 12,
@@ -269,7 +268,7 @@ export function PlayerPanel() {
           </div>
 
           <div style={ROW_STYLE}>
-            <span style={{ opacity: 0.72 }}>Materiellt</span>
+            <span style={{ opacity: 0.72 }}>Tangible</span>
             <span>{formatKSEK(val.tangible)}</span>
           </div>
           <div style={ROW_STYLE}>
@@ -277,28 +276,28 @@ export function PlayerPanel() {
             <span>{formatKSEK(val.goodwill)}</span>
           </div>
           <div style={ROW_STYLE}>
-            <span style={{ opacity: 0.72 }}>Skuld</span>
+            <span style={{ opacity: 0.72 }}>Debt</span>
             <span>−{formatKSEK(val.debt)}</span>
           </div>
 
           <div style={SECTION_DIVIDER} />
 
-          <div style={HEADING_STYLE}>Driftskapital</div>
+          <div style={HEADING_STYLE}>Operating capital</div>
 
-          <Reading label="Rykte"            band={reputationBand(sim.reputation)} fraction={sim.reputation} ceiling={sim.reputationCeiling} trend={reputationTrend(sim)} />
-          <Reading label="Mat-kvalitet"     band={qualityBand(sim.qualityFood)}    fraction={sim.qualityFood}    ceiling={targetQualityFood(sim)} />
-          <Reading label="Dryck-kvalitet"   band={qualityBand(sim.qualityDrink)}   fraction={sim.qualityDrink}   ceiling={targetQualityDrink(sim)} />
-          <Reading label="Service-kvalitet" band={qualityBand(sim.qualityService)} fraction={sim.qualityService} ceiling={targetQualityService(sim)} />
+          <Reading label="Reputation"       band={reputationBand(sim.reputation)} fraction={sim.reputation} ceiling={sim.reputationCeiling} trend={reputationTrend(sim)} />
+          <Reading label="Food quality"     band={qualityBand(sim.qualityFood)}    fraction={sim.qualityFood}    ceiling={targetQualityFood(sim)} />
+          <Reading label="Drink quality"    band={qualityBand(sim.qualityDrink)}   fraction={sim.qualityDrink}   ceiling={targetQualityDrink(sim)} />
+          <Reading label="Service quality"  band={qualityBand(sim.qualityService)} fraction={sim.qualityService} ceiling={targetQualityService(sim)} />
 
           <div style={SECTION_DIVIDER} />
 
-          <div style={HEADING_STYLE}>Omsättning</div>
+          <div style={HEADING_STYLE}>Turnover</div>
           <div style={ROW_STYLE}>
-            <span style={{ opacity: 0.72 }}>Per stol · dag</span>
-            <span>{rev.perSeatPerDay > 0 ? `${rev.perSeatPerDay.toFixed(2).replace('.', ',')} ${T.unit}` : '—'}</span>
+            <span style={{ opacity: 0.72 }}>Per seat · day</span>
+            <span>{rev.perSeatPerDay > 0 ? `${rev.perSeatPerDay.toFixed(2)} ${T.unit}` : '—'}</span>
           </div>
           <div style={{ ...ROW_STYLE, marginBottom: 2 }}>
-            <span style={{ opacity: 0.72 }}>Lunch / Kväll</span>
+            <span style={{ opacity: 0.72 }}>Lunch / Dinner</span>
             <span style={{ fontSize: 11, opacity: 0.75 }}>
               {rev.lunchShare > 0 || rev.dinnerShare > 0
                 ? `${Math.round(rev.lunchShare * 100)} % / ${Math.round(rev.dinnerShare * 100)} %`
@@ -306,17 +305,17 @@ export function PlayerPanel() {
             </span>
           </div>
           {(rev.lunchShare > 0 || rev.dinnerShare > 0) && (
-            <div style={SPLIT_STYLE} aria-label={`Lunch ${Math.round(rev.lunchShare * 100)} procent, middag ${Math.round(rev.dinnerShare * 100)} procent`}>
+            <div style={SPLIT_STYLE} aria-label={`Lunch ${Math.round(rev.lunchShare * 100)} per cent, dinner ${Math.round(rev.dinnerShare * 100)} per cent`}>
               <div style={{ width: `${rev.lunchShare * 100}%`, background: 'rgba(216, 190, 130, 0.55)' }} />
               <div style={{ width: `${rev.dinnerShare * 100}%`, background: 'rgba(216, 190, 130, 0.85)' }} />
             </div>
           )}
 
           <button type="button" style={SELL_BUTTON_STYLE} onClick={() => setOpen(false)}>
-            Sälj verksamheten
+            Sell the business
           </button>
           <div style={SELL_NOTE_STYLE}>
-            Försäljningsflödet kopplas in när bankmötet (§5.1) landar.
+            The sale flow is connected once the bank meeting (§5.1) lands.
           </div>
         </div>
       )}
@@ -354,7 +353,7 @@ const TREND_COLOURS: Record<ReputationTrend, string> = {
 
 function Reading({ label, band, fraction, ceiling, trend }: ReadingProps) {
   const ariaLabel = ceiling !== undefined
-    ? `${label}: ${band}. Möjligt tak vid ${Math.round(ceiling * 100)} procent, aktuellt ${Math.round(fraction * 100)} procent.`
+    ? `${label}: ${band}. Possible ceiling at ${Math.round(ceiling * 100)} per cent, currently ${Math.round(fraction * 100)} per cent.`
     : `${label}: ${band}.`;
   return (
     <div style={READING_STYLE} aria-label={ariaLabel}>
@@ -363,9 +362,9 @@ function Reading({ label, band, fraction, ceiling, trend }: ReadingProps) {
         <span
           data-reputation-trend={trend}
           aria-label={
-            trend === 'up' ? 'trend uppåt' :
-            trend === 'down' ? 'trend nedåt' :
-            'trend stilla'
+            trend === 'up' ? 'trending up' :
+            trend === 'down' ? 'trending down' :
+            'trend steady'
           }
           style={{ fontSize: 11, color: TREND_COLOURS[trend], marginRight: 4 }}
         >

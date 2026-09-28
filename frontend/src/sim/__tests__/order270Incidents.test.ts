@@ -185,7 +185,7 @@ describe('ORDER 270 — en raket', () => {
     expect(after.incidents.log.at(-1)).toMatchObject({ id: 'vb09-getosten', step: 0, optionId: 'a', quality: 'wrong' });
     const inc = incidentById('vinbar', 'vb09-getosten')!;
     expect(after.incidents.lastOutcome?.text).toContain(inc.steps[0].text.fail.outcome.slice(0, 20));
-    expect(after.incidents.lastOutcome?.text).toContain('Personalen tar över');
+    expect(after.incidents.lastOutcome?.text).toContain('The staff take over');
     expect(after.cash).toBeLessThan(s.cash);
     // Ingen kredit för ett fel svar, och ingen straffkredit.
     expect(after.knowledgeCredits.episteme).toBe(s.knowledgeCredits.episteme);
@@ -276,8 +276,8 @@ describe('ORDER 270 — kvällens lärdom', () => {
     expect(lesson.map((l) => l.incidentId)).toEqual(['vb12-varmt-rott']);
     expect(lesson[0].stepAxis).toBe('episteme');
     expect(lesson[0].question).toBe(incidentById('vinbar', 'vb12-varmt-rott')!.steps[0].text.question);
-    expect(lesson[0].chosen).toContain('Rumstemperatur');
-    expect(lesson[0].better).toContain('16–18 grader');
+    expect(lesson[0].chosen).toContain('Room temperature');
+    expect(lesson[0].better).toContain('16–18 degrees');
     expect(s.incidents.lessonEvenings).toBe(1);
     const next = tick(reducer(s, { type: 'END_EVENING' }), 5);
     expect(next.day.period).toBe('morning');
@@ -359,7 +359,7 @@ describe('ORDER 270 — tillägg efter provspel 2026-09-27', () => {
     }
     s = openNow(s, 'vb31-servetter-och-isen');
     expect(s.incidents.active?.situation).toBe('efter-middag');
-    expect(s.incidents.active?.context.clock.startsWith('20.')).toBe(true);
+    expect(s.incidents.active?.context.clock.startsWith('20:')).toBe(true);
   });
 
   it('fel val låser: följden pågår i rummet tills nästa raket, och svaret går inte att ändra', () => {

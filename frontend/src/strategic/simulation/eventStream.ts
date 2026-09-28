@@ -50,7 +50,7 @@ import {
   SERVICE_REPORT_PREP,
   SERVICE_REPORT_PREP_POSITIVE
 } from '../../content/serviceReport';
-import type { AmbientEventKind, PrepEventKind } from '../../content/eventStream.sv';
+import type { AmbientEventKind, PrepEventKind } from '../../content/eventStream.en';
 import { currentRhythmMultiplier } from './rhythm';
 import { teamCapacity, teamCompetence } from './team';
 import {

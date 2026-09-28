@@ -10,7 +10,7 @@
 // Text per strings.sv.ts (CLAUDE.md rule 7). No numbers, no HUD.
 
 import { useState, type FormEvent, type KeyboardEvent as ReactKeyboardEvent } from 'react';
-import { strings } from '../../content/strings.sv';
+import { strings } from '../../content/strings';
 import { useBusiness } from './BusinessContext';
 import { useCamera } from '../camera/CameraContext';
 import './name-entry.css';

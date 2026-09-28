@@ -15,7 +15,7 @@ import {
   reducer
 } from './state/gameState';
 import { ambience } from './audio/AmbienceEngine';
-import { strings } from './content/strings.sv';
+import { strings } from './content/strings';
 import { Scene, type LookDelta, type MoveVector } from './scene/Scene';
 import { BusStage } from './stages/BusStage';
 import { EndStage } from './stages/EndStage';

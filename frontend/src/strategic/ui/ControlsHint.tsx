@@ -4,7 +4,7 @@ import { useState } from 'react';
 // keys were only wired to jumpToPreset (village / district /
 // business / myBusiness) via the desktop-controls hook — no label
 // anywhere told the player they existed. This hint now names them
-// in plain Swedish alongside the mouse/keyboard basics.
+// in plain English alongside the mouse/keyboard basics.
 //
 // Compact two-line layout so the hint sits over the room without
 // dominating; kept dismissable via the × button. Same anchor at
@@ -17,19 +17,19 @@ export function ControlsHint() {
     <div className="gb-hint" role="note">
       <div>
         <div>
-          <b>1</b> byn · <b>2</b> kvarteret · <b>3</b> ditt kvarter ·{' '}
-          <b>4</b> din verksamhet
+          <b>1</b> the village · <b>2</b> the district · <b>3</b> your block ·{' '}
+          <b>4</b> your business
         </div>
         <div style={{ opacity: 0.72, marginTop: 4 }}>
-          <b>Mushjul</b> zoomar · <b>vänsterdrag</b> panorerar ·{' '}
-          <b>höger-/mellandrag</b> roterar · <b>klick</b> väljer · <b>Esc</b> ut
+          <b>Mouse wheel</b> zooms · <b>left drag</b> pans ·{' '}
+          <b>right/middle drag</b> rotates · <b>click</b> selects · <b>Esc</b> out
         </div>
       </div>
       <button
         type="button"
         className="gb-hint-close"
         onClick={() => setOpen(false)}
-        aria-label="Dölj kontroller"
+        aria-label="Hide controls"
       >
         ×
       </button>

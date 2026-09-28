@@ -11,7 +11,7 @@
 // (no interaction blocked) but visually dominant during its brief
 // window, per Vision Owner's brief.
 
-import { strings } from '../../content/strings.sv';
+import { strings } from '../../content/strings';
 import { useSimState } from '../simulation/SimulationProvider';
 import { FACTOR_BODY, FACTOR_LABEL } from '../simulation/worldFactors';
 
@@ -117,7 +117,7 @@ export function OpeningPanel() {
 
   const precipText = strings.opening.precipitation[weather.precipitation];
   const cloudText = strings.opening.clouds[weather.cloudCover];
-  const weatherLine = `${weather.tempC}${strings.opening.tempSuffix}, vind ${weather.windMS} ${strings.opening.windSuffix}, ${precipText}, ${cloudText}.`;
+  const weatherLine = `${weather.tempC}${strings.opening.tempSuffix}, wind ${weather.windMS} ${strings.opening.windSuffix}, ${precipText}, ${cloudText}.`;
 
   const waitingLine: string =
     waitingAtOpening === 0

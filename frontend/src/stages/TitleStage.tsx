@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { strings } from '../content/strings.sv';
+import { strings } from '../content/strings';
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
 
 interface Props {

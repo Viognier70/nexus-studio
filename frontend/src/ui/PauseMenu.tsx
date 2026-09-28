@@ -1,4 +1,4 @@
-import { strings } from '../content/strings.sv';
+import { strings } from '../content/strings';
 
 interface Props {
   isTouch: boolean;

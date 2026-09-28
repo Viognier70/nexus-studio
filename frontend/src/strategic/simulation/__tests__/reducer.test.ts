@@ -97,7 +97,7 @@ describe('reducer SET_POLICY', () => {
     expect(s1.events).toHaveLength(s0.events.length + 1);
     const last = s1.events[s1.events.length - 1];
     expect(last.kind).toBe('policy');
-    expect(last.text).toContain('pris');
+    expect(last.text).toContain('price');
   });
 });
 

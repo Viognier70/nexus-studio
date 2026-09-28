@@ -299,7 +299,7 @@ const WALK_IN_OF_FIVE: ScenarioSpec = {
         amplifyThemeDelta: 1,
         amplifySecondary: 2,
         extraOutcome:
-          'Diskstationen svämmade över med tallrikar från sammanslagningen — halva restpartierna gick till spillo utan att någon hann sortera. Hm, den där sortens svinn kommer inte tillbaka.'
+          'The dish station overflowed with plates from the joined tables — half the leftovers went to waste before anyone had time to sort them. Hm, that kind of waste doesn\'t come back.'
       },
       // ORDER 049 §7 step 3 (2026-08-10) — bank-drawn question at
       // the moment it matters. Host-side topic (guest reading /
@@ -314,8 +314,8 @@ const WALK_IN_OF_FIVE: ScenarioSpec = {
       },
       immediateOutcome: 'The party got the four-top and two-top joined. The neighbouring table shifted.',
       outcomes: [
-        'Fyran och tvåan har slagits ihop — grannbordet får hasa in mot väggen för att hämta besticket. Ingen sa något men jag såg blicken; undrar om vi skulle ha lämnat en förklaring innan de fick lista ut det själva.',
-        'Sällskapets ordering kom in i klump på passet — köket har fem huvudrätter samtidigt istället för spridda i tid. Kocken vid grillen ser sammanbiten ut; hm, det var vi som valde det när vi sa ja.'
+        'The four-top and the two-top have been joined — the next table has to shuffle towards the wall to reach their cutlery. Nobody said anything, but I saw the look; I wonder if we should have explained before they had to work it out themselves.',
+        'The party\'s order hit the pass all at once — the kitchen has five mains at the same time instead of spread out. The chef at the grill looks tight-lipped; hm, we chose that when we said yes.'
       ],
       mentor: 'Joining tables works when the floor is with you. Keep an eye on the two-top next door.'
     },
@@ -327,8 +327,8 @@ const WALK_IN_OF_FIVE: ScenarioSpec = {
       capitalSign: 1,
       immediateOutcome: 'Four at the four-top, one at the bar. The bartender greets the fifth.',
       outcomes: [
-        'Fyra sitter vid fyran och en sitter vid baren — den femte hänger jackan över barstolen och försöker se avslappnad ut. Sällskapet vid bordet tittar dit lite för ofta; undrar om han vet att vi vet att vi delade honom.',
-        'Bartendern hälsade sent på den femte — han hann vänta ut sin egen tystnad först. Nu står drinken framför honom men samtalet vid bordet har gått vidare utan honom. Hm, den där ensamheten är svår att ta tillbaka i efterhand.'
+        'Four sit at the four-top and one sits at the bar — the fifth hangs his jacket over the bar stool and tries to look relaxed. The party at the table glances over a little too often; I wonder if he knows that we know we split him off.',
+        'The bartender greeted the fifth late — he had time to sit out his own silence first. Now the drink is in front of him, but the conversation at the table has moved on without him. Hm, that kind of loneliness is hard to take back afterwards.'
       ],
       mentor: 'Sensible split. The bar seat only works if a staff member gets there in time.'
     },
@@ -340,8 +340,8 @@ const WALK_IN_OF_FIVE: ScenarioSpec = {
       capitalSign: -0.5,
       immediateOutcome: 'The party was turned away. Two lingered in the entrance, three left.',
       outcomes: [
-        'Två av sällskapet vände redan i entrén innan värden hade sagt hela meningen — de andra tre följde efter utan att fråga varför. Kvar står värden med en artighet på tungan som ingen tog emot; hm, den där ansiktet är svårare att glömma än beslutet var att fatta.',
-        'En stamgäst vid fönsterbordet såg hela utbytet och höjde på ögonbrynen mot sin sällskapare. De sa inget till oss men växlade en blick. Undrar hur många kvällar det tar innan den blicken kommer tillbaka som en avbokning.'
+        'Two of the party turned in the entrance before the host had finished the sentence — the other three followed without asking why. The host is left standing with a courtesy on their tongue that nobody took; hm, that face is harder to forget than the decision was to make.',
+        'A regular at the window table saw the whole exchange and raised an eyebrow at their companion. They said nothing to us, but they exchanged a look. I wonder how many evenings it takes before that look comes back as a cancellation.'
       ],
       mentor: 'Declining is a choice too. The evening keeps its rhythm — but the room notes it.'
     }
@@ -396,7 +396,7 @@ const TIME_PRESSURE: ScenarioSpec = {
         amplifyThemeDelta: 1,
         amplifySecondary: 2,
         extraOutcome:
-          'Kocken vände sig bort utan att svara när jag nämnde bokningen — jag har sett den blicken innan. Hm, den där sortens tystnad kostar mer än en kväll.'
+          'The chef turned away without answering when I mentioned the booking — I\'ve seen that look before. Hm, that kind of silence costs more than one evening.'
       },
       // ORDER 049 §7 step 3 (2026-08-10) — bank-drawn question.
       // Kitchen-technical topics (food_science, fermentation_science,
@@ -410,8 +410,8 @@ const TIME_PRESSURE: ScenarioSpec = {
       },
       immediateOutcome: 'The menu is swapped mid-service. Two in-flight orders are reset.',
       outcomes: [
-        'Menyn byts mitt på passet — köket noterar med en nick och börjar tömma om stationerna. Två pågående beställningar får läggas ner halvfärdiga och tas om. Undrar om vi förklarade tydligt nog för dem att detta var mitt beslut, inte deras.',
-        'Notan svullnar snabbt när delegationen bokas för imorgon — men resten av kvällen betalar i tempo. Två stambord får sitt bröd senare än vanligt; hm, det är räkningen för morgondagens seger, betald i kvällens andrum.'
+        'The menu is swapped mid-service — the kitchen acknowledges with a nod and starts clearing the stations. Two orders in progress have to be dropped half-done and started again. I wonder if we explained clearly enough that this was my decision, not theirs.',
+        'The bill swells quickly when the delegation is booked for tomorrow — but the rest of the evening pays in tempo. Two regular tables get their bread later than usual; hm, that\'s the price of tomorrow\'s win, paid in tonight\'s breathing room.'
       ],
       mentor: 'Gain in aim, strain in practice. Give the team more planning time next round.'
     },
@@ -423,8 +423,8 @@ const TIME_PRESSURE: ScenarioSpec = {
       capitalSign: 1,
       immediateOutcome: 'Booking written for tomorrow. Tonight carries on unchanged.',
       outcomes: [
-        'Bokningen skrevs för morgondagen — kvällen fick andas ut. Servitören sa till köket och båda log lätt utan att kommentera. Undrar om det är den där sortens signal som håller ett lag ihop längre än en bonus gör.',
-        'Kocken började planera imorgondagens meny i huvudet mitt i pass 5 — han var redan hemma i tanken. Hm, det är den luxuösa sortens uppmärksamhet vi köpte oss med att säga nej ikväll och ja i morgon.'
+        'The booking was written for tomorrow — the evening could breathe out. The waiter told the kitchen and both smiled slightly without comment. I wonder if that kind of signal holds a team together longer than a bonus does.',
+        'The chef started planning tomorrow\'s menu in his head in the middle of service 5 — he was already at home in his thoughts. Hm, that\'s the luxurious kind of attention we bought by saying no tonight and yes tomorrow.'
       ],
       mentor: 'Good judgement. The delegation comes tomorrow without the evening taking a hit.'
     },
@@ -436,8 +436,8 @@ const TIME_PRESSURE: ScenarioSpec = {
       capitalSign: -0.5,
       immediateOutcome: 'The booking was declined. The delegation hung up without pressing further.',
       outcomes: [
-        'Delegationen tackade artigt och la på — inom en halvtimme såg vi via en av stamgästerna att de bokat sig på hotellrestaurangen istället. Undrar om vår rytm värderas till vad vi tror den värderas till, eller om vi lagt ett golv där ingen annan skulle ha lagt det.',
-        'Kvällens takt behölls — inga fler överraskningar nådde passet. Servitörerna rör sig som om de vet vad de gör i två timmar till. Hm, det är den där stillheten som är svår att räkna in i kassan men lätt att räkna in i vem som orkar komma i morgon.'
+        'The delegation thanked us politely and hung up — within half an hour we heard from one of the regulars that they had booked the hotel restaurant instead. I wonder if our rhythm is worth what we think it is, or if we set a floor where nobody else would have.',
+        'The evening kept its pace — no more surprises reached the pass. The waiters move as if they know what they\'re doing for two more hours. Hm, that calm is hard to count in the till but easy to count in who has the energy to come in tomorrow.'
       ],
       mentor: 'Declining is an answer too. The evening holds, but the revenue goes to someone else.'
     }
@@ -498,12 +498,12 @@ const MORAL_DILEMMA: ScenarioSpec = {
         amplifyThemeDelta: 2,
         amplifySecondary: 1.5,
         extraOutcome:
-          'Två stamgäster har lagt märke till att ursprunget aldrig nämns längre — jag hörde dem prata om det vid utpasseringen. Hm, den där tystnaden är svår att hämta tillbaka.'
+          'Two regulars have noticed that the origin is never mentioned any more — I heard them talking about it on the way out. Hm, that silence is hard to win back.'
       },
       immediateOutcome: 'The fish goes out. Traceability is not mentioned.',
       outcomes: [
-        'Två av förrätterna gick ut utan att någon nämnde att spårbarheten fattades — värden viker undan frågor från stamgäster på bord tre. Han svarar utan att svara. Undrar om han vet att den där ovilligheten själv säger något som gästen läser utan att formulera det.',
-        'En gäst frågade rakt ut om fiskens ursprung — servitören blev tyst en sekund för länge innan hon svarade "från vår vanliga leverantör". Bordet nöjde sig med det men växlade en blick. Hm, den där sekunden är den enda tid vi kommer att kunna ta tillbaka det på.'
+        'Two of the starters went out without anyone mentioning that traceability was missing — the host dodges questions from the regulars at table three. He answers without answering. I wonder if he knows that the reluctance itself says something the guest reads without putting it into words.',
+        'A guest asked straight out where the fish came from — the waiter went quiet a second too long before she answered "from our usual supplier". The table accepted that but exchanged a look. Hm, that second is the only time we could have taken it back.'
       ],
       mentor: 'Choosing tempo over traceability. It only shows if something goes wrong.'
     },
@@ -518,8 +518,8 @@ const MORAL_DILEMMA: ScenarioSpec = {
       capitalSign: 0.5,
       immediateOutcome: 'The menu is swapped. The kitchen pulls out chicken instead of the fish.',
       outcomes: [
-        'Menytavlan skrevs om i sista stund — köket bytte till kyckling utan gnäll och började plocka fram vad som fanns. Ingen kommenterade förändringen. Undrar om det där lugnet är en effekt av att beslutet var mitt att fatta och deras att verkställa.',
-        'Alternativet presenterades utan ursäkter — servitören sa "vi har justerat menyn efter dagens leverans" och bordet nickade utan att fråga vidare. Hm, det är det där språket som gör en substitution till ett val istället för ett problem.'
+        'The menu board was rewritten at the last minute — the kitchen switched to chicken without complaint and started pulling out what there was. Nobody commented on the change. I wonder if that calm comes from the decision being mine to make and theirs to carry out.',
+        'The alternative was presented without apology — the waiter said "we have adjusted the menu to today\'s delivery" and the table nodded without asking further. Hm, it\'s that kind of language that turns a substitution into a choice instead of a problem.'
       ],
       mentor: 'Sensible compromise. The menu yields to safety without breaking.'
     },
@@ -533,8 +533,8 @@ const MORAL_DILEMMA: ScenarioSpec = {
       capitalSign: 1,
       immediateOutcome: 'The menu is fully rewritten. The season\'s greens take the front.',
       outcomes: [
-        'De gröna alternativen presenterades med sin egen berättelse — servitören berättade om odlaren och veckans skörd. Bordspratet steg märkbart över tre bord. Undrar om vi kommer att se det här som en punkt där menyn ändrades permanent, eller som en engångskväll.',
-        'En gäst vid pass 4 noterade uttryckligen att kvällens meny hade ändrats och nickade uppskattande — hon frågade var grönsakerna kom ifrån. Servitören visste svaret. Hm, det där svaret är resultatet av morgonens beslut att inte ta genvägen.'
+        'The green dishes were presented with their own story — the waiter told the table about the grower and the week\'s harvest. The chatter rose noticeably across three tables. I wonder if we will look back on this as the point where the menu changed for good, or as a one-off evening.',
+        'A guest at service 4 remarked that tonight\'s menu had changed and nodded approvingly — she asked where the vegetables came from. The waiter knew the answer. Hm, that answer is the result of this morning\'s decision not to take the shortcut.'
       ],
       mentor: 'An ecological move. The menu gains a direction and the season becomes readable.',
       // ORDER 049 §7 step 3 (2026-08-10) — bank-drawn question.

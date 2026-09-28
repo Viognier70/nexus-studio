@@ -39,7 +39,7 @@ import {
   SERVICE_LENGTH_MAX_MINUTES,
   SERVICE_LENGTH_MIN_MINUTES
 } from '../types';
-import { strings } from '../../content/strings.sv';
+import { strings } from '../../content/strings';
 import {
   ALL_PAVILION_IDS,
   type PavilionId
@@ -432,7 +432,7 @@ function pickActivity(state: SimulationState, id: string): SimulationState {
     postLedger(next, {
       category: 'other',
       amount: -activity.costSek,
-      cause: `Satsning: ${activity.name}`,
+      cause: `Investment: ${activity.name}`,
       causeId: id
     });
   }
@@ -465,7 +465,7 @@ function unpickActivity(state: SimulationState, id: string): SimulationState {
     postLedger(next, {
       category: 'other',
       amount: activity.costSek,
-      cause: `Återbetald satsning: ${activity.name}`,
+      cause: `Investment refunded: ${activity.name}`,
       causeId: id
     });
   }
@@ -487,7 +487,7 @@ function applyActivityEffectsOnDayClose(draft: SimulationState): void {
       postLedger(draft, {
         category: 'other',
         amount: activity.effect.economic,
-        cause: `Satsningens effekt: ${activity.name}`,
+        cause: `Investment effect: ${activity.name}`,
         causeId: id
       });
     }
@@ -582,7 +582,7 @@ function buyStock(
   postLedger(next, {
     category: 'stock',
     amount: -costSek,
-    cause: `Inköp ${units}× ${ingredient.name} från ${supplier.name}`,
+    cause: `Purchase ${units}× ${ingredient.name} from ${supplier.name}`,
     causeId: `${supplierId}:${ingredientId}`
   });
   if (received < units) {
@@ -590,7 +590,7 @@ function buyStock(
       ...next.eventStream,
       {
         at: state.simTime,
-        text: `Kort leverans: ${supplier.name} levererade ${received} av ${units} ${ingredient.name}.`,
+        text: `Short delivery: ${supplier.name} delivered ${received} of ${units} ${ingredient.name}.`,
         category: 'ambient',
         causeTag: 'stock_out',
         causeChainId: null,
@@ -755,7 +755,7 @@ export function drawMenuDishForGuest(
           ...draft.eventStream,
           {
             at: simTime,
-            text: `${runOutDish.name} tog slut — köket har inga råvaror kvar.`,
+            text: `${runOutDish.name} has run out — the kitchen has no ingredients left.`,
             category: 'ambient',
             causeTag: 'stock_out',
             causeChainId: null,
@@ -792,7 +792,7 @@ export function drawMenuDishForGuest(
       ...draft.eventStream,
       {
         at: simTime,
-        text: `En gäst gick — ${targetDish.name} fanns inte i kväll.`,
+        text: `A guest left — ${targetDish.name} was not available tonight.`,
         category: 'ambient',
         causeTag: 'stock_out',
         causeChainId: null,
@@ -823,7 +823,7 @@ export function drawMenuDishForGuest(
       ...draft.eventStream,
       {
         at: simTime,
-        text: `En gäst ville ha ${targetDish.name}; köket serverade ${cheapestDish.name} i stället.`,
+        text: `A guest wanted ${targetDish.name}; the kitchen served ${cheapestDish.name} instead.`,
         category: 'ambient',
         causeTag: 'stock_out',
         causeChainId: null,
@@ -850,7 +850,7 @@ export function drawMenuDishForGuest(
     ...draft.eventStream,
     {
       at: simTime,
-      text: `En gäst gick — ${targetDish.name} fanns inte i kväll.`,
+      text: `A guest left — ${targetDish.name} was not available tonight.`,
       category: 'ambient',
       causeTag: 'stock_out',
       causeChainId: null,
@@ -987,7 +987,7 @@ function requestBankLoan(state: SimulationState): SimulationState {
   postLedger(draft, {
     category: 'other',
     amount: outcome.loanAmountSek,
-    cause: `Banklån (${outcome.loanTier})`,
+    cause: `Bank loan (${outcome.loanTier})`,
     causeId: `bank-loan-${outcome.loanTier}`
   });
   // ORDER 110 — R4 realiserar bankmötets tilldelning. Byt verksamhet om
@@ -1456,22 +1456,27 @@ function skipLunch(state: SimulationState): SimulationState {
 // mapping is per (scenarioId, choice) for cycle-1's three scenarios;
 // unmapped combinations fall back to a legible generic form.
 const SCENARIO_LEDGER_TITLE: Record<string, string> = {
-  'walk-in-of-five': 'Fem gäster utan bokning',
-  'time-pressure': 'Sen bokning från en delegation',
-  'moral-dilemma': 'Fisk med bruten kylkedja'
+  'walk-in-of-five': 'Five guests without a booking',
+  'time-pressure': 'Late booking from a delegation',
+  'moral-dilemma': 'Fish with a broken cold chain'
 };
 
 const SCENARIO_LEDGER_CHOICE: Record<string, string> = {
-  'walk-in-of-five|A': 'tog emot sällskapet',
-  'walk-in-of-five|B': 'fyra vid bordet och en i baren',
-  'walk-in-of-five|C': 'nekade i dörren',
-  'time-pressure|A': 'körde menyn i kväll',
-  'time-pressure|B': 'sköt upp till i morgon',
-  'time-pressure|C': 'tackade nej till bokningen',
-  'moral-dilemma|A': 'serverade fisken',
-  'moral-dilemma|B': 'bytte rätt',
-  'moral-dilemma|C': 'gjorde om tallriken'
+  'walk-in-of-five|A': 'seated the party',
+  'walk-in-of-five|B': 'four at the table and one at the bar',
+  'walk-in-of-five|C': 'turned them away at the door',
+  'time-pressure|A': 'ran the menu tonight',
+  'time-pressure|B': 'moved it to tomorrow',
+  'time-pressure|C': 'declined the booking',
+  'moral-dilemma|A': 'served the fish',
+  'moral-dilemma|B': 'changed the dish',
+  'moral-dilemma|C': 'remade the plate'
 };
+
+// ORDER 273 — role ids stay Swedish identifiers; the text reads the English label.
+function roleText(role: keyof typeof strings.team.roleLabel): string {
+  return strings.team.roleLabel[role].toLowerCase();
+}
 
 function scenarioLedgerCause(
   scenarioId: string | undefined,
@@ -1480,10 +1485,10 @@ function scenarioLedgerCause(
   const title = scenarioId && SCENARIO_LEDGER_TITLE[scenarioId]
     ? SCENARIO_LEDGER_TITLE[scenarioId]
     : scenarioId
-      ? `Händelse: ${scenarioId}`
-      : 'Händelse';
+      ? `Event: ${scenarioId}`
+      : 'Event';
   const choiceKey = scenarioId ? `${scenarioId}|${choice}` : '';
-  const choiceLabel = SCENARIO_LEDGER_CHOICE[choiceKey] ?? `val ${choice}`;
+  const choiceLabel = SCENARIO_LEDGER_CHOICE[choiceKey] ?? `choice ${choice}`;
   return `${title}: ${choiceLabel}`;
 }
 
@@ -1808,7 +1813,7 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           postLedger(nextForDay, {
             category: 'wage',
             amount: -m.dailyCost,
-            cause: `Lön: ${m.role}`,
+            cause: `Wage: ${roleText(m.role)}`,
             causeId: m.id
           });
         }
@@ -1824,7 +1829,7 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
         postLedger(nextForDay, {
           category: 'other',
           amount: -idleAccrued,
-          cause: `Personalkostnad utanför service (dag ${state.day.dayNumber})`
+          cause: `Staff cost outside service (day ${state.day.dayNumber})`
         });
       }
       // ORDER 075 (M2) — apply picked-activity end-of-day effects.
@@ -1957,7 +1962,7 @@ function acceptAgency(state: SimulationState): SimulationState {
       {
         at: state.simTime,
         kind: 'system',
-        text: 'Hyrpersonal inkallad — laget växer för kvällen.'
+        text: 'Agency staff called in — the team grows for the evening.'
       }
     ]
   };
@@ -1965,7 +1970,7 @@ function acceptAgency(state: SimulationState): SimulationState {
   postLedger(next, {
     category: 'agency',
     amount: -AGENCY_HIRE_COST,
-    cause: `Hyrpersonal: ${state.agencyOffer.role} i kväll`,
+    cause: `Agency staff: ${roleText(state.agencyOffer.role)} tonight`,
     causeId: state.agencyOffer.role
   });
   bumpMorale(next, MORALE_AGENCY_ACCEPT_BUMP);
@@ -1991,7 +1996,7 @@ function declineAgency(state: SimulationState): SimulationState {
       {
         at: state.simTime,
         kind: 'system',
-        text: 'Avstod hyrpersonal — laget märker att det inte kom hjälp.'
+        text: 'Declined agency staff — the team notices that no help came.'
       }
     ]
   };
@@ -2030,7 +2035,7 @@ function hireTeamMember(state: SimulationState, role: StaffRole): SimulationStat
       {
         at: state.simTime,
         kind: 'system',
-        text: `Anställde ${role} — kontrakt till dag ${member.contractEndsDay}.`
+        text: `Hired ${roleText(role)} — contract until day ${member.contractEndsDay}.`
       }
     ]
   };
@@ -2059,8 +2064,8 @@ function fireTeamMember(state: SimulationState, memberId: string): SimulationSta
         kind: 'system',
         text:
           buyout > 0
-            ? `Sa upp ${member.role} — buyout ${buyout} kr (${remainingDays} dagar kvar av kontraktet).`
-            : `Sa upp ${member.role} — kontraktet var slut.`
+            ? `Let go ${roleText(member.role)} — buyout ${buyout} SEK (${remainingDays} days left on the contract).`
+            : `Let go ${roleText(member.role)} — the contract had ended.`
       }
     ]
   };
@@ -2072,7 +2077,7 @@ function fireTeamMember(state: SimulationState, memberId: string): SimulationSta
     postLedger(next, {
       category: 'buyout',
       amount: -buyout,
-      cause: `Avgångsvederlag: ${member.role} (${remainingDays} dagar kvar)`,
+      cause: `Severance pay: ${roleText(member.role)} (${remainingDays} days left)`,
       causeId: member.id
     });
   }
@@ -2302,7 +2307,7 @@ function advanceTick(state: SimulationState): SimulationState {
         postLedger(draft, {
           category: 'other',
           amount: rev,
-          cause: `Sen betalning från gäst (${draft.day.period === 'dinner' ? 'middag' : draft.day.period})`,
+          cause: `Late payment from a guest (${draft.day.period})`,
           causeId: guest.id
         });
       }
@@ -2340,8 +2345,8 @@ function advanceTick(state: SimulationState): SimulationState {
       amount: -interestKr,
       cause:
         daysToCharge === 1
-          ? `Låneränta (dag ${draft.day.dayNumber})`
-          : `Låneränta (dag ${draft.loan.lastAccrualDay + 1}–${draft.day.dayNumber})`
+          ? `Loan interest (day ${draft.day.dayNumber})`
+          : `Loan interest (days ${draft.loan.lastAccrualDay + 1}–${draft.day.dayNumber})`
     });
     draft.loan = { ...draft.loan, lastAccrualDay: draft.day.dayNumber };
   }
@@ -2378,7 +2383,7 @@ function advanceTick(state: SimulationState): SimulationState {
     draft.policies = { ...draft.policies, hasUteplats: true };
     draft.events = [
       ...draft.events,
-      { at: draft.simTime, kind: 'scenario', text: 'Uteplats öppnad. Ståbord ute på gatan.' }
+      { at: draft.simTime, kind: 'scenario', text: 'Terrace opened. Standing tables out on the street.' }
     ];
   }
 
@@ -2739,26 +2744,26 @@ function observerVoiceForPolicyChange(
 ): string | null {
   const lines: string[] = [];
   if (patch.trainingLevel !== undefined && patch.trainingLevel !== before.trainingLevel) {
-    const direction = patch.trainingLevel > before.trainingLevel ? 'höjde' : 'sänkte';
-    lines.push(`Du ${direction} utbildningsnivån inför i dag`);
+    const direction = patch.trainingLevel > before.trainingLevel ? 'raised' : 'lowered';
+    lines.push(`You ${direction} the training level for today`);
   }
   if (patch.pricing && patch.pricing !== before.pricing) {
     const to = patch.pricing;
     const map: Record<typeof to, string> = {
-      'låg': 'sänkte prislägen',
-      'medel': 'la prislägen på medel',
-      'hög': 'höjde prislägen'
+      'låg': 'lowered prices',
+      'medel': 'set prices to medium',
+      'hög': 'raised prices'
     };
-    lines.push(`Du ${map[to]} inför i dag`);
+    lines.push(`You ${map[to]} for today`);
   }
   if (patch.ingredientTier && patch.ingredientTier !== before.ingredientTier) {
     const to = patch.ingredientTier;
     const map: Record<typeof to, string> = {
-      'grund': 'gick ner till grundleverantören',
-      'utvald': 'valde utvalda leverantörer',
-      'premium': 'gick över till premiumleverans'
+      'grund': 'went down to the basic supplier',
+      'utvald': 'chose selected suppliers',
+      'premium': 'moved to premium supply'
     };
-    lines.push(`Du ${map[to]} inför i dag`);
+    lines.push(`You ${map[to]} for today`);
   }
   if (lines.length === 0) return null;
   return lines.join(', ') + '.';
@@ -2766,17 +2771,17 @@ function observerVoiceForPolicyChange(
 
 function describePolicyPatch(patch: Partial<Policies>): string {
   const parts: string[] = [];
-  if (patch.staffCount !== undefined) parts.push(`personal ${patch.staffCount}`);
-  if (patch.trainingLevel !== undefined) parts.push(`utbildning ${patch.trainingLevel}`);
-  if (patch.service) parts.push(`koncept ${patch.service}`);
-  if (patch.pricing) parts.push(`pris ${patch.pricing}`);
-  if (patch.capacity !== undefined) parts.push(`platser ${patch.capacity}`);
-  if (patch.ingredientTier) parts.push(`inköp ${patch.ingredientTier}`);
+  if (patch.staffCount !== undefined) parts.push(`staff ${patch.staffCount}`);
+  if (patch.trainingLevel !== undefined) parts.push(`training ${patch.trainingLevel}`);
+  if (patch.service) parts.push(`concept ${patch.service}`);
+  if (patch.pricing) parts.push(`price ${patch.pricing}`);
+  if (patch.capacity !== undefined) parts.push(`seats ${patch.capacity}`);
+  if (patch.ingredientTier) parts.push(`purchasing ${patch.ingredientTier}`);
   if (patch.welcomeDrink !== undefined)
-    parts.push(`välkomstdryck ${patch.welcomeDrink ? 'på' : 'av'}`);
+    parts.push(`welcome drink ${patch.welcomeDrink ? 'on' : 'off'}`);
   if (patch.localSourcing !== undefined)
-    parts.push(`lokala leverantörer ${patch.localSourcing ? 'på' : 'av'}`);
-  return `Ändrat: ${parts.join(', ')}`;
+    parts.push(`local suppliers ${patch.localSourcing ? 'on' : 'off'}`);
+  return `Changed: ${parts.join(', ')}`;
 }
 
 function triggerScenario(
@@ -2891,7 +2896,7 @@ function triggerScenario(
           ? sender
             ? `${SENDER_PREFIX[sender.role]}: ${scenarioSpec.subjectBody}`
             : scenarioSpec.subjectBody
-          : 'Scenariot spelas om (utvecklarläge)'
+          : 'The scenario is replayed (developer mode)'
       }
     ]
   };
@@ -3174,7 +3179,7 @@ function resolveScenario(
       {
         at: state.simTime,
         kind: 'scenario' as const,
-        text: `Scenario: valde ${choice}`
+        text: `Scenario: chose ${choice}`
       }
     ]
   };

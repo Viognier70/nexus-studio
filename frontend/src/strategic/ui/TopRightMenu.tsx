@@ -14,7 +14,7 @@
 // vanish until the player asks for them.
 
 import { useEffect, useRef, useState } from 'react';
-import { strings } from '../../content/strings.sv';
+import { strings } from '../../content/strings';
 
 interface Props {
   onOpenAbout: () => void;
@@ -91,11 +91,11 @@ export function TopRightMenu({ onOpenAbout, onOpenSave }: Props) {
         type="button"
         className="gb-btn"
         onClick={() => setOpen((o) => !o)}
-        aria-label="Fler val"
+        aria-label="More options"
         data-testid="menu-button"
         aria-haspopup="menu"
         aria-expanded={open}
-        title="Fler val"
+        title="More options"
       >
         ⋯
       </button>
@@ -123,7 +123,7 @@ export function TopRightMenu({ onOpenAbout, onOpenSave }: Props) {
             onMouseLeave={() => setHoverIdx(null)}
             onClick={() => setOpen(false)}
           >
-            Första-personsprototyp
+            First-person prototype
           </a>
           <button
             role="menuitem"
@@ -136,7 +136,7 @@ export function TopRightMenu({ onOpenAbout, onOpenSave }: Props) {
               setOpen(false);
             }}
           >
-            Om denna prototyp
+            About this prototype
           </button>
         </div>
       )}

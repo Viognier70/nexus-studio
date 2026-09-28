@@ -93,7 +93,7 @@ describe('DollhouseFrame — SD-003 §2 alt C (rev. 2, 2026-08-16)', () => {
     const clickTargets = container.querySelectorAll('rect[fill="transparent"]');
     fireEvent.click(clickTargets[1] as SVGElement);
     const barLabel = Array.from(container.querySelectorAll('text'))
-      .find((el) => el.textContent === 'Baren');
+      .find((el) => el.textContent === 'The bar');
     expect(barLabel).toBeTruthy();
   });
 
@@ -135,8 +135,8 @@ describe('DollhouseFrame — SD-003 §2 alt C (rev. 2, 2026-08-16)', () => {
     const { container } = renderWithBusiness('kvarterskrogen');
     const texts = Array.from(container.querySelectorAll('text')).map((el) => el.textContent);
     // Etiketterna "passluckan · Köket" och "bardisken · Baren" ska finnas.
-    expect(texts.some((t) => t?.includes('passluckan') && t?.includes('Köket'))).toBe(true);
-    expect(texts.some((t) => t?.includes('bardisken') && t?.includes('Baren'))).toBe(true);
+    expect(texts.some((t) => t?.includes('the pass') && t?.includes('The kitchen'))).toBe(true);
+    expect(texts.some((t) => t?.includes('the bar counter') && t?.includes('The bar'))).toBe(true);
   });
 
   // ---------------------------------------------------------------------------
@@ -186,7 +186,7 @@ describe('DollhouseFrame — SD-003 §2 alt C (rev. 2, 2026-08-16)', () => {
     // 2560 − 344 − 284 = 1932. Under 2240 → panorering krävs.
     expect(svg.style.width).toBe('1932px');
     const metaText = Array.from(container.querySelectorAll('text'))
-      .find((el) => el.textContent?.includes('panorering krävs'));
+      .find((el) => el.textContent?.includes('panning needed'));
     expect(metaText, 'panorering-varning ska visas när 1932 < 2240').toBeTruthy();
   });
 
@@ -206,7 +206,7 @@ describe('DollhouseFrame — SD-003 §2 alt C (rev. 2, 2026-08-16)', () => {
     // 1280 − 304 − 264 = 712
     expect(svg.style.width).toBe('712px');
     const metaText = Array.from(container.querySelectorAll('text'))
-      .find((el) => el.textContent?.includes('panorering krävs'));
+      .find((el) => el.textContent?.includes('panning needed'));
     expect(metaText).toBeTruthy();
   });
 
@@ -227,15 +227,15 @@ describe('DollhouseFrame — SD-003 §2 alt C (rev. 2, 2026-08-16)', () => {
     expect(container.querySelector('[data-figure="staff-hatch"]')).toBeTruthy();
     // "SKEPNAD EJ BYGGD" får inte läcka in i food truck-vägen (ORDER 113 DoD 1)
     expect(container.textContent).not.toContain('SKEPNAD EJ BYGGD');
-    expect(container.textContent).not.toContain('Skepnad ej byggd');
+    expect(container.textContent).not.toContain('Shape not built');
   });
 
   it('businessClass=gästgiveriet → placeholder med gästgiveri-specifik text', () => {
     const { container } = renderWithBusiness('gästgiveriet');
     const placeholder = container.querySelector('[data-placeholder-business="gästgiveriet"]');
     expect(placeholder).toBeTruthy();
-    expect(container.textContent).toContain('Gästgiveriet');
-    expect(container.textContent).toContain('dygnsstruktur');
+    expect(container.textContent).toContain('The Inn');
+    expect(container.textContent).toContain('round-the-clock rhythm');
   });
 
   it('businessClass=restaurant → fokusrum-skepnaden syns fortfarande', () => {
@@ -260,6 +260,6 @@ describe('DollhouseFrame — SD-003 §2 alt C (rev. 2, 2026-08-16)', () => {
     // vad scenbredden räknades mot.
     const meta = Array.from(container.querySelectorAll('text'))
       .find((el) => el.textContent?.includes('viewport'));
-    expect(meta?.textContent).toMatch(/vä.*hö/);
+    expect(meta?.textContent).toMatch(/L.*R\)/);
   });
 });

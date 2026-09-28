@@ -11,7 +11,7 @@
 // spelet och är inte byggda.
 
 import { useEffect, useState } from 'react';
-import { strings } from '../../content/strings.sv';
+import { strings } from '../../content/strings';
 import { calendarFor } from '../../sim/calendar';
 import { newspaperFor } from '../../sim/newspaper';
 import { requirementsFor } from '../../sim/economy';

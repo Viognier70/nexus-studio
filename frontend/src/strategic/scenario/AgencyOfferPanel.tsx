@@ -15,7 +15,7 @@
 // is the reading; if it disappears without being pressed, that's the
 // service telling the player they didn't answer in time.
 
-import { strings } from '../../content/strings.sv';
+import { strings } from '../../content/strings';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 
 const OVERLAY_STYLE: React.CSSProperties = {

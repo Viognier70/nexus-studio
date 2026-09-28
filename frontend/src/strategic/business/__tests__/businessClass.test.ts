@@ -27,7 +27,7 @@ import { TOTAL_SEATS } from '../interiorLayout';
 import { reducer } from '../../simulation/reducer';
 import { makeInitialState } from '../../simulation/model';
 import type { BankMeetingKlass, SimAction } from '../../types';
-import { strings } from '../../../content/strings.sv';
+import { strings } from '../../../content/strings';
 
 function accumulate(
   state: ReturnType<typeof makeInitialState>,
@@ -276,7 +276,7 @@ describe('ORDER 110 §7 DoD 8 — grep + Gästgiveriet', () => {
   });
 
   it('Gästgiveriet finns som spelartext i strings.sv.ts:businessClass', () => {
-    expect(strings.businessClass.gästgiveriet).toBe('Gästgiveriet');
+    expect(strings.businessClass.gästgiveriet).toBe('The Inn');
   });
 
   it('alla verksamhets-nycklar har spelartext', () => {

@@ -27,48 +27,48 @@ export interface Activity {
 export const ACTIVITY_CATALOGUE: readonly Activity[] = [
   {
     id: 'train-service',
-    name: 'Träna serveringspersonalen',
-    description: 'En halvtimmes genomgång av tempot vid passet och rytmen vid borden.',
+    name: 'Train the floor staff',
+    description: 'A half-hour run-through of the pace at the pass and the rhythm at the tables.',
     costSek: 3000,
     effect: { economic: -3000, social: 0.04, ecological: 0 },
     availability: 'always'
   },
   {
     id: 'runner-shift',
-    name: 'Ta in en springare',
-    description: 'Ett extra par händer som bär ut tallrikar och dukar av.',
+    name: 'Bring in a runner',
+    description: 'An extra pair of hands to carry out plates and clear tables.',
     costSek: 1800,
     effect: { economic: -1800, social: 0.03, ecological: 0 },
     availability: 'always'
   },
   {
     id: 'local-sourcing',
-    name: 'Lokala råvaror i kväll',
-    description: 'Små gårdar i närheten: högre styckpris, kortare leveranskedja.',
+    name: 'Local ingredients tonight',
+    description: 'Small farms nearby: a higher unit price, a shorter supply chain.',
     costSek: 2500,
     effect: { economic: -2500, social: 0.02, ecological: 0.05 },
     availability: 'always'
   },
   {
     id: 'wine-tasting',
-    name: 'Vinprovning med laget',
-    description: 'Laget kan vinlistan, och merförsäljningen kommer av sig själv.',
+    name: 'Wine tasting with the team',
+    description: 'The team knows the wine list, and the extra sales come on their own.',
     costSek: 2000,
     effect: { economic: 1000, social: 0.02, ecological: 0 },
     availability: 'always'
   },
   {
     id: 'guest-chef',
-    name: 'Gästkock för kvällen',
-    description: 'En vän till huset lagar maten, och passet skickar ut något som gästerna pratar om.',
+    name: 'Guest chef for the evening',
+    description: 'A friend of the house cooks, and the pass sends out something the guests talk about.',
     costSek: 8000,
     effect: { economic: 6000, social: 0.02, ecological: 0 },
     availability: 'weekly'
   },
   {
     id: 'compost-audit',
-    name: 'Genomgång av kökets kompost',
-    description: 'Gå igenom sopkärlen och flödet i förberedelserna. Små ändringar håller när någon tittar på dem.',
+    name: 'Review of the kitchen compost',
+    description: 'Go through the bins and the flow in the prep. Small changes hold when someone keeps an eye on them.',
     costSek: 4000,
     effect: { economic: -4000, social: 0.01, ecological: 0.04 },
     availability: 'weekly'

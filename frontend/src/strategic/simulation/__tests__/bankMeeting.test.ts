@@ -22,7 +22,7 @@ import {
 import { reducer } from '../reducer';
 import { makeInitialState } from '../model';
 import { ALL_PAVILION_IDS } from '../../knowledge/pavilions';
-import { strings } from '../../../content/strings.sv';
+import { strings } from '../../../content/strings';
 import type { KnowledgeCredits, SimAction } from '../../types';
 
 const ZERO_CREDITS: KnowledgeCredits = { episteme: 0, techne: 0, phronesis: 0 };

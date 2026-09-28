@@ -1,6 +1,6 @@
 import { createContext, useContext, type Dispatch } from 'react';
 import type { GameAction, GameState } from '../types';
-import { strings } from '../content/strings.sv';
+import { strings } from '../content/strings';
 
 export const initialState: GameState = {
   stage: 'title',

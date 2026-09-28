@@ -137,6 +137,7 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 - `ORDER_270_RAPPORT.md`: ORDER 270 — Servicen som händelser (rapport, stopp för provning).
 - `ORDER_271_RAPPORT.md`: ORDER 271 — Designs paket 1 och 6 i spelet (rapport).
 - `ORDER_272_RAPPORT.md`: ORDER 272 — Utkast till raketer och provfrågor ur gusto.science (rapport).
+- `ORDER_273_RAPPORT.md`: ORDER 273 — Spelet på engelska (rapport).
 - `ORDER_RECONSTRUCTION_004_005_019_020.md`: ORDER_RECONSTRUCTION_004_005_019_020 — Evidence record for four sprint orders.
 - `ORDER_REGISTRY.md`: ORDER REGISTRY.
 - `PERFORMANCE_PREPARATION_REFERENCE.md`: Performance Preparation Reference.

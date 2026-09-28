@@ -98,8 +98,8 @@ describe('M5 DoD — mise en place + rhythm + after-countdown', () => {
       `expected at least one 'doors_open' event; found ${doorLines.length}`
     ).toBeGreaterThanOrEqual(1);
     const first = doorLines[0];
-    expect(first.text, `doors_open text should start with 'Dörrarna öppnas —'; got '${first.text}'`)
-      .toMatch(/^Dörrarna öppnas —/);
+    expect(first.text, `doors_open text should start with 'The doors open —'; got '${first.text}'`)
+      .toMatch(/^The doors open —/);
     expect(first.category, "doors_open should be 'ambient' category").toBe('ambient');
     console.log(`[M5] door-open line: "${first.text}"`);
   });

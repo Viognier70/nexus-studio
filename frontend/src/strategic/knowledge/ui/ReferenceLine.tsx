@@ -2,7 +2,7 @@
 // visad med förklaringen när den finns. Fälten är tomma tills Vision
 // Owner levererar referenserna; då visas ingenting.
 
-import { strings } from '../../../content/strings.sv';
+import { strings } from '../../../content/strings';
 import type { Reference } from '../../../sim/incidentBank';
 
 export function ReferenceLine({ reference }: { reference: Reference | null | undefined }) {

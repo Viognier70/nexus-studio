@@ -5,7 +5,7 @@
 // inga siffertavlor (princip 6). Läser kalendern ur `src/sim/calendar.ts`,
 // samma källa som simuleringen använder.
 
-import { strings } from '../../content/strings.sv';
+import { strings } from '../../content/strings';
 import { calendarFor, type DayPhase } from '../../sim/calendar';
 import { SEASON } from '../../sim/balance';
 import { useSimState } from '../simulation/SimulationProvider';

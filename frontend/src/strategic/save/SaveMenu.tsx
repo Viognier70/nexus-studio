@@ -4,7 +4,7 @@
 // kopia [per veckoavräkning], så att spelaren kan gå tillbaka en vecka".
 // Varje plats visas med verksamhetens namn, veckodag och vecka i ord.
 
-import { strings } from '../../content/strings.sv';
+import { strings } from '../../content/strings';
 import { calendarFor } from '../../sim/calendar';
 import { listWeeklyCopies, readSlot, slotNumbers } from '../../sim/save';
 import { useSave } from './SaveContext';

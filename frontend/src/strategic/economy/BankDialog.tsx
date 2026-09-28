@@ -12,7 +12,7 @@
 // introduktionen gäller klassens startkrav (F33, brons i Stensöta räcker
 // för den första vinbaren), annars klasstabellens krav.
 
-import { strings } from '../../content/strings.sv';
+import { strings } from '../../content/strings';
 import { BUSINESS_CLASSES, MEDAL_LEVELS, type BusinessClassId, type MedalRequirement } from '../../sim/balance';
 import { ALL_PAVILIONS, canChangeClassToday, classOptions, classSpec, meetsRequirement, requirementsFor, type ClassOption } from '../../sim/economy';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';

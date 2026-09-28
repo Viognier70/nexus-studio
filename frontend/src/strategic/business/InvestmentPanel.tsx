@@ -13,7 +13,7 @@
 // Layout: left column under TeamPanel (top: 72 + TeamPanel height +
 // gap). Morning-only, same visibility gate as TeamPanel. Non-modal.
 
-import { strings } from '../../content/strings.sv';
+import { strings } from '../../content/strings';
 import type { IngredientTier, PricingTier } from '../types';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 

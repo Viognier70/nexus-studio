@@ -377,7 +377,7 @@ function StreetMap({ queueCount }: MapProps) {
         letterSpacing={2}
         style={{ textTransform: 'uppercase' }}
       >
-        Karta · kö {queueCount}
+        Map · queue {queueCount}
       </text>
     </g>
   );
@@ -1133,12 +1133,12 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
           fontSize={16}
           fontFamily="system-ui, sans-serif"
         >
-          ORDER 113 · food truck · scene {widthPx} px · kö {queueCount}
-          {' · scen '}{positionedGuests.length}
+          ORDER 113 · food truck · scene {widthPx} px · queue {queueCount}
+          {' · scene '}{positionedGuests.length}
           {' · '}
           {sim.day.weather
             ? `${sim.day.weather.tempC}°C ${sim.day.weather.precipitation}`
-            : 'väder ej satt'}
+            : 'weather not set'}
         </text>
       </svg>
     </div>

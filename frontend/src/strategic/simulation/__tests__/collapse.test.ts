@@ -21,7 +21,7 @@
 
 import { REPUTATION_FLOOR } from '../reputation';
 import { describe, expect, it } from 'vitest';
-import { COLLAPSE_TEXTS } from '../../../content/collapse.sv';
+import { COLLAPSE_TEXTS } from '../../../content/collapse.en';
 import {
   COLLAPSE_FLOOR,
   COLLAPSE_REPUTATION_DROP,

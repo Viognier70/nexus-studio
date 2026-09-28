@@ -92,13 +92,13 @@ export function resolveLoanOutcome(credits: KnowledgeCredits): LoanOutcome {
       return {
         klass,
         loanTier: 'restaurant-full',
-        message: 'Du har omdömet för matsalen. Vi ger dig fulla medel.'
+        message: 'You have the judgement for the dining room. We will give you full funding.'
       };
     case 'foodtrucken':
       return {
         klass,
         loanTier: 'foodtrucken',
-        message: 'Du har händerna. Börja mindre, växla upp.'
+        message: 'You have the hands. Start smaller, then scale up.'
       };
     case 'nearEpisteme':
       // Vision Owner 2026-08-15: avsiktligt utan lån. ~26 % av kuben
@@ -107,7 +107,7 @@ export function resolveLoanOutcome(credits: KnowledgeCredits): LoanOutcome {
       return {
         klass,
         loanTier: 'none',
-        message: 'Du vet men har inte gjort. Vi kan inte finansiera.'
+        message: 'You know, but you have not done. We cannot fund you.'
       };
     case 'balanced':
       // Placeholder-tier tills R4 §3.7 p2 namnger fjärde klassen och
@@ -116,13 +116,13 @@ export function resolveLoanOutcome(credits: KnowledgeCredits): LoanOutcome {
       return {
         klass,
         loanTier: 'restaurant-small',
-        message: 'Ett brett kunnande. Vi ger dig en start.'
+        message: 'A broad set of skills. We will give you a start.'
       };
     case 'noLoan':
       return {
         klass,
         loanTier: 'none',
-        message: 'Vi ser inget bärande kunnande. Kom tillbaka när du kan mer.'
+        message: 'We see no knowledge to build on. Come back when you know more.'
       };
   }
 }

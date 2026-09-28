@@ -129,9 +129,9 @@ export function tickQualityDrift(draft: SimulationState): void {
 
 // Same style as morale bands. No numbers.
 export function qualityBand(v: number): string {
-  if (v >= 0.85) return 'Utmärkt';
-  if (v >= 0.65) return 'God';
-  if (v >= 0.45) return 'Godtagbar';
-  if (v >= 0.25) return 'Bristfällig';
-  return 'Under acceptabel';
+  if (v >= 0.85) return 'Excellent';
+  if (v >= 0.65) return 'Good';
+  if (v >= 0.45) return 'Acceptable';
+  if (v >= 0.25) return 'Poor';
+  return 'Below acceptable';
 }

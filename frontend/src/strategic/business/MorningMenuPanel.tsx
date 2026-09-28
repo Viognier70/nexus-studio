@@ -24,7 +24,7 @@ import {
   findIngredient,
   findSupplier
 } from '../simulation/m4Catalogue';
-import { strings } from '../../content/strings.sv';
+import { strings } from '../../content/strings';
 import { NxLabel } from '../ui/system/components';
 import '../ui/screens/screens.css';
 

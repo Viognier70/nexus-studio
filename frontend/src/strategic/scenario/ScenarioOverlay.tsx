@@ -10,7 +10,7 @@
 // comment that closes the loop lives in the 3D scene as MentorComment,
 // not here.
 
-import { strings } from '../../content/strings.sv';
+import { strings } from '../../content/strings';
 import { ASKER_PREFIX, SENDER_PREFIX, scenarioById } from '../simulation/scenarios';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 

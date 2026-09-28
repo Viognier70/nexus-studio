@@ -40,7 +40,7 @@ import type {
   TeamState
 } from '../types';
 import { createRng } from '../util/rng';
-import { COLLAPSE_TEXTS } from '../../content/collapse.sv';
+import { COLLAPSE_TEXTS } from '../../content/collapse.en';
 import { loadOf, strainMultiplier, STREAM_KEEP } from './eventStream';
 import { computeEveningAccount } from './eveningAccount';
 import { postServiceSummaryLines } from './cashReading';
@@ -284,7 +284,7 @@ export function fireCollapse(draft: SimulationState): void {
     {
       at: draft.simTime,
       kind: 'system',
-      text: `Kvällen avbröts — ${axis === 'scientific' ? 'köket' : axis === 'cultural' ? 'rummet' : 'huset'} höll inte.`
+      text: `The evening was cut short — ${axis === 'scientific' ? 'the kitchen' : axis === 'cultural' ? 'the room' : 'the house'} did not hold.`
     }
   ];
 }

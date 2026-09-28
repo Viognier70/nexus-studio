@@ -92,17 +92,17 @@ const OPENINGS_BY_FOCUS: Record<FokusRum, [FokusRum, FokusRum]> = {
 };
 
 const ROOM_LABELS: Record<FokusRum, string> = {
-  fokusrum: 'Matsalen',
-  kok:      'Köket',
-  bar:      'Baren'
+  fokusrum: 'The dining room',
+  kok:      'The kitchen',
+  bar:      'The bar'
 };
 
 // Öppningens beskrivning per målrum — passluckan för kök, bardisken för
 // bar, "matsalen" när fokus-swap gör matsalen till öppning.
 const OPENING_LABELS: Record<FokusRum, string> = {
-  kok:      'passluckan',
-  bar:      'bardisken',
-  fokusrum: 'matsalen'
+  kok:      'the pass',
+  bar:      'the bar counter',
+  fokusrum: 'the dining room'
 };
 
 interface PanelInsets {
@@ -361,9 +361,9 @@ export function DollhouseFrame() {
           fontSize={18}
           fontFamily="system-ui, sans-serif"
         >
-          SD-003 rev. 2 — rekognosering · scene {widthPx} px (viewport −{' '}
-          {Math.round(insets.left)} vä − {Math.round(insets.right)} hö){' '}
-          · {panningNeeded ? 'panorering krävs (<2240)' : 'full bredd'}
+          SD-003 rev. 2 — reconnaissance · scene {widthPx} px (viewport −{' '}
+          {Math.round(insets.left)} L − {Math.round(insets.right)} R){' '}
+          · {panningNeeded ? 'panning needed (<2240)' : 'full width'}
         </text>
       </svg>
     </div>
@@ -455,14 +455,14 @@ const PLACEHOLDER_LABELS: Record<PlaceholderProps['businessClass'], {
   waitingFor: string;
 }> = {
   foodtrucken: {
-    name: 'Foodtrucken',
+    name: 'The Food Truck',
     waitingFor:
-      'ORDER 112 §4 — vagn som bakvägg, luckan som öppning, kön på gatan som scen'
+      'ORDER 112 §4 — truck as back wall, the hatch as the opening, the queue on the street as the stage'
   },
   gästgiveriet: {
-    name: 'Gästgiveriet',
+    name: 'The Inn',
     waitingFor:
-      'SD-003 §4 följdorder — dygnsstruktur, gäster som stannar över, frukost'
+      'SD-003 §4 follow-up order — round-the-clock rhythm, guests staying overnight, breakfast'
   }
 };
 
@@ -510,7 +510,7 @@ function UnbuiltShapeholder({ businessClass, widthPx, insets }: PlaceholderProps
             opacity: 0.6
           }}
         >
-          Skepnad ej byggd
+          Shape not built
         </div>
         <div style={{ fontSize: 42, letterSpacing: 3, color: '#f0e8d4' }}>
           {info.name}
@@ -519,7 +519,7 @@ function UnbuiltShapeholder({ businessClass, widthPx, insets }: PlaceholderProps
           {info.waitingFor}
         </div>
         <div style={{ fontSize: 12, opacity: 0.5, marginTop: 16 }}>
-          scene {widthPx} px (viewport − {Math.round(insets.left)} vä − {Math.round(insets.right)} hö)
+          scene {widthPx} px (viewport − {Math.round(insets.left)} L − {Math.round(insets.right)} R)
         </div>
       </div>
     </div>

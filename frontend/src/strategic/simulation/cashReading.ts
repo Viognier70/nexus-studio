@@ -162,27 +162,27 @@ export function postServiceSummaryLines(
   service: 'lunch' | 'dinner',
   prev: SimulationState
 ): void {
-  const serviceLabel = service === 'lunch' ? 'Lunch' : 'Middag';
+  const serviceLabel = service === 'lunch' ? 'Lunch' : 'Dinner';
   const revenueKsek = prev.serviceRevenueToday[service];
   const covers = prev.day.serviceCovers;
   if (revenueKsek > 0) {
     const coverSuffix = covers > 0
-      ? ` (${covers} kuvert)`
+      ? ` (${covers} covers)`
       : '';
     postLedger(draft, {
       category: 'revenue',
       amount: revenueKsek * 1000,
-      cause: `Intäkter ${serviceLabel.toLowerCase()}${coverSuffix}`,
+      cause: `Revenue ${serviceLabel.toLowerCase()}${coverSuffix}`,
       causeId: service
     });
   }
   const ingredientSek = prev.day.serviceIngredientAccrued;
   if (ingredientSek > 0) {
-    const coverSuffix = covers > 0 ? ` — ${covers} kuvert` : '';
+    const coverSuffix = covers > 0 ? ` — ${covers} covers` : '';
     postLedger(draft, {
       category: 'ingredient',
       amount: -ingredientSek,
-      cause: `Råvaror — ${serviceLabel.toLowerCase()}${coverSuffix}`,
+      cause: `Ingredients — ${serviceLabel.toLowerCase()}${coverSuffix}`,
       causeId: service
     });
   }
@@ -198,7 +198,7 @@ export function postServiceSummaryLines(
 // spammas. Enda källa till value-läsning i strömmen; övriga event
 // (bottleneck, kitchen_slip, etc.) fortsätter opåverkade.
 import { valueQuota } from './valueQuota';
-import { VALUE_HIGH_TEXTS, VALUE_LOW_TEXTS } from '../../content/eventStream.sv';
+import { VALUE_HIGH_TEXTS, VALUE_LOW_TEXTS } from '../../content/eventStream.en';
 
 const VALUE_LOW_THRESHOLD = 0.9;    // under 0.9 → poor value narrative
 const VALUE_HIGH_THRESHOLD = 1.35;  // över 1.35 → excellent value narrative

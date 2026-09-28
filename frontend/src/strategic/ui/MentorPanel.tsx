@@ -12,7 +12,7 @@
 // schema delar på repliken. M2: vid första servicen pekar mentorn på
 // raketkortet och mätarna.
 
-import { strings } from '../../content/strings.sv';
+import { strings } from '../../content/strings';
 import { calendarFor } from '../../sim/calendar';
 import { SEASON } from '../../sim/balance';
 import { useSimState } from '../simulation/SimulationProvider';

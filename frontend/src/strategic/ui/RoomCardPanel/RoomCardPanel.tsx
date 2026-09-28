@@ -63,7 +63,7 @@ function toneFromRhythm(rhythm: 'green' | 'amber' | 'red' | null): CardTone {
 
 const ROLE_LABEL: Record<StaffRole, string> = {
   kock: 'Chef',
-  servitör: 'Server',
+  servitör: 'Waiter',
   värd: 'Host',
   lärling: 'Apprentice'
 };

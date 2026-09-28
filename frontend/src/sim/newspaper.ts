@@ -11,7 +11,7 @@
 // kväll som flyttade ryktet mest (F34): uppåt blir den veckans bästa,
 // nedåt veckans sämsta.
 
-import { strings } from '../content/strings.sv';
+import { strings } from '../content/strings';
 import { NEWSPAPER, HOLIDAYS, SEASON, type BusinessClassId } from './balance';
 import { calendarFor } from './calendar';
 import { BUSINESS_CLASSES } from './balance';

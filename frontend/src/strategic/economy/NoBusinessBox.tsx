@@ -16,7 +16,7 @@
 // visas på morgonen och eftermiddagen, aldrig mitt i en kväll.
 
 import { useEffect } from 'react';
-import { strings } from '../../content/strings.sv';
+import { strings } from '../../content/strings';
 import { NEW_START } from '../../sim/balance';
 import { bankReadyAfterNoBusiness, isStrandedWithoutBusiness } from '../../sim/economy';
 import { NxButton, NxLabel } from '../ui/system/components';

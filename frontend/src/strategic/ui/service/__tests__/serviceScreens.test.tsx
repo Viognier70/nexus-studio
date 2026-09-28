@@ -32,7 +32,7 @@ import { firstDayOfWeek } from '../../../../sim/calendar';
 import { INCIDENTS } from '../../../../sim/balance';
 import { incidentById } from '../../../../sim/incidentBank';
 import { lessonFor, rankedStepOption, type IncidentRecord } from '../../../../sim/incidents';
-import { strings } from '../../../../content/strings.sv';
+import { strings } from '../../../../content/strings';
 import { IncidentCard, ServiceMeters } from '../../../scenario/IncidentPanel';
 import { EveningBar } from '../../../scenario/EveningBar';
 import { NoBusinessBox } from '../../../economy/NoBusinessBox';

@@ -116,7 +116,7 @@ describe('M4 DoD — menu + kitchen + stock', () => {
     const line = stockLines[0];
     console.log(`[M4] stock line: category=${line.category} amount=${line.amount.toFixed(2)} cause="${line.cause}"`);
     expect(line.amount, 'stock ledger line should be negative (cash out)').toBeLessThan(0);
-    expect(line.cause, `stock line does not name the supplier: "${line.cause}"`).toContain('Örebro ekoproducenter');
-    expect(line.cause, `stock line does not name the ingredient: "${line.cause}"`).toContain('bladgrönt');
+    expect(line.cause, `stock line does not name the supplier: "${line.cause}"`).toContain('Örebro organic farms');
+    expect(line.cause, `stock line does not name the ingredient: "${line.cause}"`).toContain('leafy greens');
   });
 });

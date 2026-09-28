@@ -9,45 +9,45 @@
 import type { Dish, Ingredient, Supplier } from '../types';
 
 export const SUPPLIERS: readonly Supplier[] = [
-  { id: 'wholesaler', name: 'Bergslagens grossist',    priceIndex: 0.85, quality: 0.55, reliability: 0.95, ecoDelta: -0.010 },
-  { id: 'local-veg',  name: 'Grythyttans odlare',      priceIndex: 1.10, quality: 0.80, reliability: 0.75, ecoDelta: +0.020 },
-  { id: 'organic',    name: 'Örebro ekoproducenter',   priceIndex: 1.35, quality: 0.85, reliability: 0.70, ecoDelta: +0.045 },
-  { id: 'meat-game',  name: 'Bergslagens kött & vilt', priceIndex: 1.25, quality: 0.85, reliability: 0.80, ecoDelta: +0.025 },
-  { id: 'lake-fish',  name: 'Hjälmarens insjöfisk',    priceIndex: 1.40, quality: 0.90, reliability: 0.55, ecoDelta: +0.035 },
-  { id: 'brewery',    name: 'Nora bryggeri',           priceIndex: 1.00, quality: 0.75, reliability: 0.90, ecoDelta: +0.010 }
+  { id: 'wholesaler', name: 'Bergslagen wholesaler',  priceIndex: 0.85, quality: 0.55, reliability: 0.95, ecoDelta: -0.010 },
+  { id: 'local-veg',  name: 'Grythyttan growers',     priceIndex: 1.10, quality: 0.80, reliability: 0.75, ecoDelta: +0.020 },
+  { id: 'organic',    name: 'Örebro organic farms',   priceIndex: 1.35, quality: 0.85, reliability: 0.70, ecoDelta: +0.045 },
+  { id: 'meat-game',  name: 'Bergslagen meat & game', priceIndex: 1.25, quality: 0.85, reliability: 0.80, ecoDelta: +0.025 },
+  { id: 'lake-fish',  name: 'Hjälmaren lake fish',    priceIndex: 1.40, quality: 0.90, reliability: 0.55, ecoDelta: +0.035 },
+  { id: 'brewery',    name: 'Nora brewery',           priceIndex: 1.00, quality: 0.75, reliability: 0.90, ecoDelta: +0.010 }
 ] as const;
 
 export const INGREDIENTS: readonly Ingredient[] = [
-  { id: 'root-veg',  name: 'rotfrukter',    baseCostSek:  4, unit: 'portion', suppliers: ['wholesaler', 'local-veg', 'organic'] },
-  { id: 'leaf-veg',  name: 'bladgrönt',     baseCostSek:  6, unit: 'portion', suppliers: ['wholesaler', 'local-veg', 'organic'] },
-  { id: 'herbs',     name: 'färska örter',  baseCostSek:  3, unit: 'pinch',   suppliers: ['local-veg', 'organic'] },
-  { id: 'chicken',   name: 'kyckling',      baseCostSek: 22, unit: 'portion', suppliers: ['wholesaler', 'meat-game'] },
-  { id: 'pork',      name: 'fläsk',         baseCostSek: 28, unit: 'portion', suppliers: ['wholesaler', 'meat-game'] },
-  { id: 'lamb',      name: 'lamm',          baseCostSek: 55, unit: 'portion', suppliers: ['meat-game'] },
-  { id: 'game',      name: 'vilt (hjort)',  baseCostSek: 85, unit: 'portion', suppliers: ['meat-game'] },
-  { id: 'lake-fish', name: 'insjöfisk',     baseCostSek: 45, unit: 'portion', suppliers: ['lake-fish'] },
-  { id: 'eggs',      name: 'ägg',           baseCostSek:  3, unit: 'egg',     suppliers: ['wholesaler', 'local-veg', 'organic'] },
-  { id: 'dairy',     name: 'mejeri',        baseCostSek:  8, unit: 'portion', suppliers: ['wholesaler', 'local-veg', 'organic'] },
-  { id: 'flour',     name: 'mjöl',          baseCostSek:  2, unit: 'portion', suppliers: ['wholesaler'] },
-  { id: 'beer',      name: 'öl (dryck)',    baseCostSek: 18, unit: 'glass',   suppliers: ['brewery'] }
+  { id: 'root-veg',  name: 'root vegetables', baseCostSek:  4, unit: 'portion', suppliers: ['wholesaler', 'local-veg', 'organic'] },
+  { id: 'leaf-veg',  name: 'leafy greens',  baseCostSek:  6, unit: 'portion', suppliers: ['wholesaler', 'local-veg', 'organic'] },
+  { id: 'herbs',     name: 'fresh herbs',  baseCostSek:  3, unit: 'pinch',   suppliers: ['local-veg', 'organic'] },
+  { id: 'chicken',   name: 'chicken',      baseCostSek: 22, unit: 'portion', suppliers: ['wholesaler', 'meat-game'] },
+  { id: 'pork',      name: 'pork',         baseCostSek: 28, unit: 'portion', suppliers: ['wholesaler', 'meat-game'] },
+  { id: 'lamb',      name: 'lamb',         baseCostSek: 55, unit: 'portion', suppliers: ['meat-game'] },
+  { id: 'game',      name: 'game (deer)',  baseCostSek: 85, unit: 'portion', suppliers: ['meat-game'] },
+  { id: 'lake-fish', name: 'lake fish',    baseCostSek: 45, unit: 'portion', suppliers: ['lake-fish'] },
+  { id: 'eggs',      name: 'eggs',         baseCostSek:  3, unit: 'egg',     suppliers: ['wholesaler', 'local-veg', 'organic'] },
+  { id: 'dairy',     name: 'dairy',        baseCostSek:  8, unit: 'portion', suppliers: ['wholesaler', 'local-veg', 'organic'] },
+  { id: 'flour',     name: 'flour',        baseCostSek:  2, unit: 'portion', suppliers: ['wholesaler'] },
+  { id: 'beer',      name: 'beer (drink)',  baseCostSek: 18, unit: 'glass',   suppliers: ['brewery'] }
 ] as const;
 
 export const DISHES: readonly Dish[] = [
-  { id: 'root-soup',     name: 'Rotfruktssoppa',           suggestedPrice:  95,
+  { id: 'root-soup',     name: 'Root vegetable soup',      suggestedPrice:  95,
     recipe: [{ ingredientId: 'root-veg', units: 2 }, { ingredientId: 'dairy', units: 1 }, { ingredientId: 'herbs', units: 1 }] },
-  { id: 'chicken-plate', name: 'Kyckling med rotfrukter',  suggestedPrice: 175,
+  { id: 'chicken-plate', name: 'Chicken with root veg',    suggestedPrice: 175,
     recipe: [{ ingredientId: 'chicken', units: 1 }, { ingredientId: 'root-veg', units: 1 }, { ingredientId: 'herbs', units: 1 }] },
-  { id: 'pork-plate',    name: 'Fläsk med rotfrukter',     suggestedPrice: 195,
+  { id: 'pork-plate',    name: 'Pork with root veg',       suggestedPrice: 195,
     recipe: [{ ingredientId: 'pork', units: 1 }, { ingredientId: 'root-veg', units: 1 }, { ingredientId: 'herbs', units: 1 }] },
-  { id: 'lamb-plate',    name: 'Lamm med rotfrukter',      suggestedPrice: 285,
+  { id: 'lamb-plate',    name: 'Lamb with root veg',       suggestedPrice: 285,
     recipe: [{ ingredientId: 'lamb', units: 1 }, { ingredientId: 'root-veg', units: 1 }, { ingredientId: 'herbs', units: 1 }] },
-  { id: 'game-plate',    name: 'Vilt med rotfrukter',      suggestedPrice: 385,
+  { id: 'game-plate',    name: 'Game with root veg',       suggestedPrice: 385,
     recipe: [{ ingredientId: 'game', units: 1 }, { ingredientId: 'root-veg', units: 1 }, { ingredientId: 'herbs', units: 1 }] },
-  { id: 'fish-plate',    name: 'Pocherad insjöfisk',       suggestedPrice: 265,
+  { id: 'fish-plate',    name: 'Poached lake fish',        suggestedPrice: 265,
     recipe: [{ ingredientId: 'lake-fish', units: 1 }, { ingredientId: 'leaf-veg', units: 1 }, { ingredientId: 'herbs', units: 1 }] },
-  { id: 'dairy-dessert', name: 'Gräddessert',              suggestedPrice:  85,
+  { id: 'dairy-dessert', name: 'Cream dessert',            suggestedPrice:  85,
     recipe: [{ ingredientId: 'dairy', units: 2 }, { ingredientId: 'eggs', units: 1 }] },
-  { id: 'beer-pairing',  name: 'Lokal öl till maten',      suggestedPrice: 55,
+  { id: 'beer-pairing',  name: 'Local beer with the meal', suggestedPrice: 55,
     recipe: [{ ingredientId: 'beer', units: 1 }] }
 ] as const;
 

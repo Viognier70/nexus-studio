@@ -148,7 +148,7 @@ describe('ORDER 115 rev 2 DoD B/C — auto-unlock uteplats', () => {
     s = reducer(s, { type: 'TICK', dt: 0.2 });
     expect(s.policies.hasUteplats).toBe(true);
     expect(s.events.length).toBe(eventsBefore + 1);
-    expect(s.events[s.events.length - 1].text).toContain('Uteplats');
+    expect(s.events[s.events.length - 1].text).toContain('Terrace');
   });
 
   it('reducer TICK: fires bara EN GÅNG (permanent, ingen upprepad log)', () => {
@@ -160,7 +160,7 @@ describe('ORDER 115 rev 2 DoD B/C — auto-unlock uteplats', () => {
     for (let i = 0; i < 20; i++) {
       s = reducer(s, { type: 'TICK', dt: 0.2 });
     }
-    const uteplatsEvents = s.events.filter((e) => e.text.includes('Uteplats öppnad'));
+    const uteplatsEvents = s.events.filter((e) => e.text.includes('Terrace opened'));
     expect(uteplatsEvents).toHaveLength(1);
     expect(s.policies.hasUteplats).toBe(true);
     // eventsAfterUnlock var direkt efter unlock; efter 20 tick till kan

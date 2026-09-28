@@ -160,9 +160,11 @@ function textFile(language: BankLanguage): BankTextFile {
   return f;
 }
 
-// Språket spelet läser frågorna på. Svenska först när utkastet är granskat.
+// Språket spelet läser frågorna på. ORDER 273 (Vision Owner 2026-09-28):
+// allt i spelet är på engelska, så spelet läser alltid `en`. Den svenska
+// texten sparas för en svensk version senare.
 export function activeBankLanguage(): BankLanguage {
-  return textFile('sv').status === 'reviewed' ? 'sv' : 'en';
+  return 'en';
 }
 
 function join(meta: BankQuestionMeta, language: BankLanguage): BankQuestion {

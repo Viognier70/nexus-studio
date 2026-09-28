@@ -180,8 +180,8 @@ describe('ORDER 264 — ingen väg sänker en medalj', () => {
     for (const f of files) {
       // balance.ts: `medals` där är mognadsstegens krav (data), inte tillstånd.
       if (f.endsWith('/sim/balance.ts')) continue;
-      // strings.sv.ts: `medals` där är medaljernas namn (text), inte tillstånd.
-      if (f.endsWith('/content/strings.sv.ts')) continue;
+      // strings.sv.ts/strings.en.ts: `medals` där är medaljernas namn (text), inte tillstånd.
+      if (f.endsWith('/content/strings.sv.ts') || f.endsWith('/content/strings.en.ts')) continue;
       // testHarness/: testverktyg som skriver rapportrader, inte speltillstånd.
       if (f.includes('/strategic/testHarness/')) continue;
       const code = readFileSync(f, 'utf8').replace(/\/\/.*$/gm, '');
