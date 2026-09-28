@@ -49,6 +49,8 @@ En säsong är åtta veckor, från midsommar till kräftskiva. En genomspelning 
 
 Midsommar och kräftskiva är fasta. Veckorna 3 och 5 är förslag som kan bytas mot riktiga evenemang i Grythyttan.
 
+*Beslut 2026-09-28 (Vision Owner, efter provspel):* tiden kvar av servicen syns hela kvällen.
+
 ## Kunskapen
 
 Kunskap mäts på två sätt. **Medaljer** per paviljong visar vilken nivå spelaren har bevisat, och styr banken och golvet. **Krediter** per axel (episteme, techne, fronesis) samlas av varje rätt svar och bildar kunskapsprofilen som bankmötet och portfolion läser.
@@ -203,6 +205,24 @@ Morgonens satsningar påverkar de tre kapitalen: ekonomiskt, socialt och ekologi
 
 Det här ersätter punkterna ovan om 3–6 händelser per kväll, 20 sekunders nedräkning och en axel per händelse.
 
+*Beslut 2026-09-28 (Vision Owner, efter provspel): raketerna styr gästflödet.* Fler rätta svar ger fler gäster in i lokalen, och de köper mer ur lagret. Vid fel svar tar personalen i rollen över, och resultatet beror på deras kunskap (se Personalen).
+
+### Personalen
+
+*Beslut 2026-09-28 (Vision Owner, efter provspel): personal är en investering.*
+- Rollerna har olika lön och kunskap, till exempel runner, servitör, sommelier och hovmästare.
+- Vid fel svar tar personalen i rollen över, och resultatet beror på deras kunskap.
+- En runner är billig men tappar glas och kan inte svara gästerna, och det sänker ryktet.
+- Matsalen: runner, servitör, sommelier och hovmästare ersätter värd och servitör. Hovmästaren tar över värdens uppgifter.
+- Köket: kocken finns kvar, och lärlingen blir kökets billiga roll, med fler misstag.
+
+### Ritualerna
+
+*Beslut 2026-09-28 (Vision Owner, efter provspel): hantverket syns som ritualer i servicen.*
+- Ritualerna är: välkomna och placera, ta upp beställning, bröd och vatten, fördrink, vinservering på bricka, dukning, servering på tallrik och dekantering.
+- En ritual kan utlösa en raket.
+- Avecvagn, vintageport, flambering, ostvagn och cigarr kommer senare, som uppgraderingar per klass.
+
 ### Action-knappen (utgår)
 
 *Ersatt 2026-09-26 av Händelserna i servicen.* Texten står kvar som historik.
@@ -218,6 +238,13 @@ Ryktet kan inte gå under 10 av 100. Det återhämtar sig långsamt av sig själ
 ### Lagret
 
 Spelaren får öppna med för lite råvaror. Före öppning visas en prognos i ord, till exempel ”råvaror till ungefär elva kuvert”. Ett medvetet dåligt beslut är både roligt och lärorikt. Att bli stoppad är det inte.
+
+*Beslut 2026-09-28 (Vision Owner, efter provspel): lagret är insatsen.*
+- Före servicen köper spelaren ett baspaket av rätter och drycker, och kan köpa till fler viner och rätter.
+- Kassan sjunker direkt när spelaren köper.
+- Under servicen säljs portioner ur lagret.
+- Det som inte säljs blir svinn.
+- Paketen ersätter inköpen i morgonens gränssnitt, och leverantörerna tas bort därifrån. Under ytan finns ingredienserna kvar: ett paket är en samling ingredienser, så att recept, lager och svinn fungerar som förut.
 
 ### Händelser
 
@@ -265,7 +292,9 @@ Veckoavräkningen visas som söndagsnumret av en lokaltidning i Grythyttan. Den 
 
 ### Språk och målgrupp
 
-Spelet är på svenska i version 1. *Beslut 2026-09-27 (Vision Owner):* inga engelska paneler. Frågorna skrivs med spelartext och metadata separerade, så att engelska kan läggas till senare. Bronsbanken har i dag spelartext på engelska. Claude översätter den som utkast, och Vision Owner granskar.
+*Beslut 2026-09-28 (Vision Owner, efter provspel):* **allt i spelet är på engelska**, både text och repliker. Det ersätter beslutet om svenska nedan. Frågor och händelser skrivs fortfarande med spelartext och metadata separerade. Gusto.science-utkasten behålls på engelska och översätts inte.
+
+*Ersatt 2026-09-28:* Spelet är på svenska i version 1. *Beslut 2026-09-27 (Vision Owner):* inga engelska paneler. Frågorna skrivs med spelartext och metadata separerade, så att engelska kan läggas till senare. Bronsbanken har i dag spelartext på engelska. Claude översätter den som utkast, och Vision Owner granskar.
 
 Målgruppen är studenter och blivande studenter i måltidskunskap. Brons ska gå att klara för en intresserad lekman som har övat, platina ska kräva yrkeskunskap.
 

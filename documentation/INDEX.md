@@ -136,6 +136,7 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 - `ORDER_267_RAPPORT.md`: ORDER 267 — Nexus v1 etapp 5: Vinbaren och introduktionen (rapport, SPELSTOPP 1).
 - `ORDER_270_RAPPORT.md`: ORDER 270 — Servicen som händelser (rapport, stopp för provning).
 - `ORDER_271_RAPPORT.md`: ORDER 271 — Designs paket 1 och 6 i spelet (rapport).
+- `ORDER_272_RAPPORT.md`: ORDER 272 — Utkast till raketer och provfrågor ur gusto.science (rapport).
 - `ORDER_RECONSTRUCTION_004_005_019_020.md`: ORDER_RECONSTRUCTION_004_005_019_020 — Evidence record for four sprint orders.
 - `ORDER_REGISTRY.md`: ORDER REGISTRY.
 - `PERFORMANCE_PREPARATION_REFERENCE.md`: Performance Preparation Reference.
@@ -214,6 +215,7 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 - `BRIEF_DESIGN_FOODTRUCKEN.md`: Brief till Claude Design — Food trucken.
 - `BRIEF_DESIGN_GASTGIVERIET.md`: Brief till Claude Design — Gästgiveriet.
 - `BRIEF_DESIGN_REKVISITAN.md`: Brief till Claude Design — Rekvisitan.
+- `BRIEF_DESIGN_RITUALERNA.md`: Brief till Claude Design — Ritualerna i servicen.
 - `DESIGN_SPEC_NEXUS_V1.md`: Designspecifikation — Nexus version 1.
 - `SVAR_TILL_DESIGN.md`: Svar till Design — FRAGOR §1–50.
 
