@@ -8,7 +8,7 @@
 // `clockMinutes`, samma som raketernas klockslag.
 
 import type { SimulationState } from '../strategic/types';
-import { GAME_MINUTES_PER_SIM_SECOND, SITTING } from './balance';
+import { GAME_MINUTES_PER_SIM_SECOND, INCIDENTS, SITTING } from './balance';
 import { clockMinutes } from './incidents';
 
 export interface ServiceClock {
@@ -21,8 +21,9 @@ export interface ServiceClock {
   elapsedShare: number;
 }
 
-const SECONDS_PER_MINUTE = 60;
-const MINUTES_PER_HOUR = 60;
+// Samma tidsenheter som klockan i incidents.ts (balance.ts INCIDENTS).
+const SECONDS_PER_MINUTE = INCIDENTS.simSecondsPerMinute;
+const MINUTES_PER_HOUR = INCIDENTS.minutesPerHour;
 
 // Tiden kvar under en service (lunch eller middag), annars null.
 export function serviceClock(state: SimulationState): ServiceClock | null {

@@ -22,4 +22,8 @@
   - servicen börjar 18:00 och stänger 23:00;
   - tiden kvar sjunker hela kvällen och når noll när reducern stänger servicen.
 - **Spelarens flöde:** `frontend/scripts/order271-dod-from-start.mjs` med `REPORT_ORDER=order274 STOP_AFTER=clock` går från normal start till första kvällen. Bilderna `dod-25-tiden-kvar-1.png` och `-2.png` är tagna med en minut emellan, och `frontend/reports/order274/dod.json` `clock` visar `leftMinutes` 293 och 233 (2×).
-- Typkontrollen, sviten och bygget är gröna.
+- Typkontrollen, sviten och bygget är gröna efter rättelsen nedan.
+
+## 3. Rättelse efter mergen
+
+ORDER 274 mergades först med ett rött test: `balance.test.ts` kräver att inga talvärden utom 0 och 1 står i `src/sim/`, och `serviceClock.ts` hade 60 för minuter och sekunder. Kedjan av kommandon kontrollerade att `grep` hittade testraden, inte att sviten gick igenom, så mergen gick vidare. Rättelsen (`order-274-fix`) läser tidsenheterna ur `balance.ts` `INCIDENTS` (`simSecondsPerMinute`, `minutesPerHour`), samma som klockan i `incidents.ts`. Från och med nu kontrolleras sviten på sitt eget slutstatus (`vitest exit=0`) före varje merge.

@@ -6,13 +6,14 @@
 // så att den inte krockar med raketkortet (höger) och mätarna (vänster).
 
 import { strings } from '../../../content/strings';
+import { INCIDENTS } from '../../../sim/balance';
 import { formatClock } from '../../../sim/incidents';
 import { serviceClock } from '../../../sim/serviceClock';
 import { useSimState } from '../../simulation/SimulationProvider';
 import { NxLabel, u } from '../system/components';
 import '../system/system.css';
 
-const MINUTES_PER_HOUR = 60;
+const MINUTES_PER_HOUR = INCIDENTS.minutesPerHour;
 
 export function ServiceClock() {
   const sim = useSimState();
