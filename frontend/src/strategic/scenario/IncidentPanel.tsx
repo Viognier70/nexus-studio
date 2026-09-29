@@ -107,10 +107,13 @@ export function IncidentCard() {
   // ORDER 284 — svaret låses i simuleringen, och stegets klocka stannar.
   const pick = backed ? active?.picked ?? null : null;
   const setPick = (optionId: string) => dispatch({ type: 'PICK_BACK_ANSWER', optionId });
-  const [conf, setConf] = useState<Confidence | null>(null);
+  // Provspel av 285: "Think so" är förvald i varje steg (BACK.defaultConfidence),
+  // eller Guessing när krediterna inte räcker.
+  const defaultConf = (): Confidence => (canBack(sim, BACK.defaultConfidence) ? BACK.defaultConfidence : 0);
+  const [conf, setConf] = useState<Confidence | null>(defaultConf);
   const cardRef = useRef<HTMLElement>(null);
   const stepKey = active ? `${active.id}:${active.step}` : null;
-  useEffect(() => { setConf(null); }, [stepKey]);
+  useEffect(() => { setConf(defaultConf()); }, [stepKey]);
   const lastBack = sim.incidents?.lastBack ?? null;
   const backKey = lastBack ? `${lastBack.at}:${lastBack.step}` : null;
   const seenBack = useRef<string | null>(backKey);
@@ -221,7 +224,11 @@ export function IncidentCard() {
   // på det värde den hade.
   let left: number;
   let total: number;
-  if (view.mode === 'ask' && active) {
+  if (view.mode === 'ask' && active && backed && active.picked) {
+    // Det låsta svarets andra tidsgräns.
+    left = Math.max(0, Math.ceil(active.lockLeft ?? BACK.lockSeconds));
+    total = BACK.lockSeconds;
+  } else if (view.mode === 'ask' && active) {
     left = Math.max(0, Math.ceil(active.secondsLeft));
     total = active.secondsTotal;
     frozen.current = { key: rocketKey, left, total };
@@ -231,7 +238,7 @@ export function IncidentCard() {
     left = 0;
     total = secondsFor(sim, step);
   }
-  const isFrozen = view.mode !== 'ask' || pick !== null;
+  const isFrozen = view.mode !== 'ask';
   const lastFive = !isFrozen && left <= COUNTDOWN_ACCENT_SECONDS;
   const barShare = total > 0 ? Math.max(0, Math.min(1, left / total)) : 0;
 
@@ -307,7 +314,7 @@ export function IncidentCard() {
     >
       <div className="nx-rocket-head">
         <div className="nx-label" data-testid={backed ? 'incident-back-kicker' : undefined}>{backed ? strings.back.kicker(view.context.staff, where) : `${view.context.staff} · ${where}`}</div>
-        <div className="nx-rocket-count">{t.rocketOf(String(Math.max(1, n)), String(Math.max(1, rockets, n)))}</div>
+        <div className="nx-rocket-count" data-testid="rocket-count">{active?.backed ? t.backOf(sim.incidents?.betsTonight ?? 1, BACK.maxPerEvening) : active?.chained ? t.followUp : t.rocketOf(String(Math.max(1, n)), String(Math.max(1, rockets, n)))}</div>
       </div>
       {/* ORDER 284 — introduktionen står där raketen startas (EventsPanel):
           på kortet tryckte den ned svaren under skärmen (tredje provspelet). */}
@@ -393,7 +400,7 @@ export function IncidentCard() {
       )}
       {backed && view.mode === 'ask' && pick !== null && (
         <div className="nx-back" data-testid="back-confidence">
-          <div className="nx-label">{strings.back.howSure} <span className="nx-muted" style={{ textTransform: 'none', letterSpacing: 0, fontWeight: 400 }} data-testid="back-picked-hint" data-picked="true">{strings.back.pickedHint}</span></div>
+          <div className="nx-label">{strings.back.howSure} <span className="nx-muted" style={{ textTransform: 'none', letterSpacing: 0, fontWeight: 400 }} data-testid="back-picked-hint" data-picked="true">{strings.back.pickedHint(Math.max(0, Math.ceil(active?.lockLeft ?? BACK.lockSeconds)))}</span></div>
           {!canBack(sim, 1) && <div className="nx-small" data-testid="back-earn-card">{strings.back.earnShort}</div>}
           <div className="nx-back-levels">
             {BACK.confidence.map((c, i) => {
@@ -415,7 +422,8 @@ export function IncidentCard() {
               if (pick === null || conf === null) { shake(cardRef.current, 10); return; }
               dispatch({ type: 'ANSWER_INCIDENT', optionId: pick, confidence: conf });
             }}>
-            <span>{strings.back.lock}</span>
+            {/* Provspel av 285: en grå knapp säger varför. */}
+            <span>{conf === null ? strings.back.chooseHow : strings.back.lock}</span>
           </button>
         </div>
       )}

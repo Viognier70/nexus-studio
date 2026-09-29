@@ -1,12 +1,14 @@
 :root {
-  --gb-bg: #0d1112;
-  --gb-panel: rgba(20, 22, 24, 0.94);
-  --gb-panel-soft: rgba(20, 22, 24, 0.78);
-  --gb-border: rgba(255, 255, 255, 0.09);
-  --gb-text: #ece7de;
-  --gb-text-dim: #b3ada2;
-  --gb-accent: #d9c199;
-  --gb-focus: #e6c98c;
+  /* ORDER 289 — de äldre panelerna (personalen, satsningarna) i den varma
+     formen (provspel av 285): trä, mässing och grädde som designsystemet. */
+  --gb-bg: var(--w-walnut-900, #1a120d);
+  --gb-panel: var(--w-hud, rgba(44,30,21,.94));
+  --gb-panel-soft: var(--w-hud, rgba(44,30,21,.94));
+  --gb-border: rgba(215, 162, 76, 0.38);
+  --gb-text: var(--w-cream, #f4e6cc);
+  --gb-text-dim: var(--w-cream-soft, #cdb898);
+  --gb-accent: var(--w-gold, #e8b93a);
+  --gb-focus: var(--w-brass-light, #f0cd82);
 }
 
 .gb-root {
@@ -15,8 +17,7 @@
   overflow: hidden;
   background: var(--gb-bg);
   color: var(--gb-text);
-  font-family: 'Iowan Old Style', 'Palatino Linotype', 'Palatino',
-    'URW Palladio L', 'Georgia', serif;
+  font-family: var(--w-font-body, system-ui, sans-serif);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: transparent;
@@ -188,6 +189,12 @@
    (morgonen, inköpen, kvällen) låg den över knapparna som behövs för att gå
    vidare (tredje provspelet). */
 body:has(.nx-screen) .gb-outward, body:has(.nx-rocket) .gb-outward { display: none; }
+/* ORDER 289 — byns lager (platsrutan, kartkrediten, raden med zoomnivåerna
+   och platsnamnet) syns inte över en öppen skärm (provspel av 285). */
+body:has(.nx-screen) .gb-selection,
+body:has(.nx-screen) .gb-hint,
+body:has(.nx-screen) .gb-verify-badge,
+body:has(.nx-screen) .gb-viewlabel { display: none; }
 .gb-outward:hover {
   background: rgba(255, 255, 255, 0.13);
 }
@@ -406,3 +413,14 @@ body[data-room-grade] .gb-canvas-host::after {
   content: ''; position: absolute; inset: 0; pointer-events: none;
   background: radial-gradient(ellipse at 50% 45%, rgba(255,170,80,.12), rgba(20,10,5,.72) 85%);
 }
+
+/* ORDER 289 — panelkolumnerna börjar under HUD:en och slutar ovanför
+   bottenraden (morgonens rad och kontrollraden), så att ingenting ligger
+   över panelerna (provspel av 285). Panelerna får designsystemets radie. */
+[data-panel-column] {
+  top: calc(220 * var(--nx-u)) !important;
+  max-height: calc(100vh - 220 * var(--nx-u) - max(120px, 150 * var(--nx-u))) !important;
+}
+[data-panel-column] > * > [class^='gb-'], [data-panel-column] section, [data-panel-column] aside { border-radius: max(10px, calc(18 * var(--nx-u))); }
+
+@media (max-width: 640px) { [data-panel-column] { top: 150px !important; max-height: calc(100vh - 150px - 120px) !important; } }

@@ -88,6 +88,8 @@ export interface ActiveIncident {
   // ORDER 285 — det raketen gett hittills (klarade steg): krediter, varav
   // Back your knowledge, och gäster som kommit in. Summeras i loggen.
   earned?: { credits: number; guestsIn: number };
+  // Den andra tidsgränsen efter att svaret är låst (BACK.lockSeconds).
+  lockLeft?: number;
 }
 
 // ORDER 280 — säkerheten spelaren valde (balance.ts Confidence).
@@ -122,6 +124,8 @@ export interface IncidentRecord {
   // leverans 2026-09-29, kvällens resultat): kassan och ryktet ur utfallet
   // (samma tal som lastOutcome.deltas), krediterna och gästerna över alla steg.
   deltas?: { cashSek: number; reputation: number; credits: number; guestsIn: number };
+  // ORDER 289 — planerad, följd eller egen (Back your knowledge).
+  kind?: 'planned' | 'chained' | 'backed';
 }
 
 // ORDER 271 — ett svar i stunden (Design paket 6, R2/R3): valt svar,
@@ -181,6 +185,7 @@ export interface IncidentsState {
   // Sant under en service där klassen har en händelsebank.
   enabled: boolean;
   slots: { at: number; phase: ArcPhase }[];
+  plannedCount?: number;
   queued: string[];
   // Den kedjade händelsens sammanhang (samma bord som valet gällde).
   queuedContext: Record<string, IncidentContext>;
@@ -314,7 +319,9 @@ export function planIncidents(state: SimulationState, doorsOpenAt: number, servi
   return {
     ...state,
     rngState: rng.state,
-    incidents: { ...reset, enabled: true, slots, serviceEndsAt }
+    // ORDER 289 — antalet raketer som planerats i kväll; står still hela
+    // kvällen (följdraketer och egna raketer räknas för sig).
+    incidents: { ...reset, enabled: true, slots, serviceEndsAt, plannedCount: slots.length }
   };
 }
 
@@ -476,6 +483,16 @@ function openIncident(
 // spelaren startar själv en raket när ingen annan står öppen, högst
 // BACK.maxPerEvening gånger per kväll. Ingen insats krävs för att starta
 // (gissar kostar inget); säkerheten väljs för varje steg.
+// Provspel av 285 — varför Back your knowledge inte går att starta just nu,
+// eller null när den går (samma villkor som canStartBack).
+export function whyNotBack(state: SimulationState): 'busy' | 'maxed' | 'noneFits' | 'notOpen' | null {
+  const inc = state.incidents;
+  if (!inc?.enabled || state.day.period !== 'dinner' || !state.day.doorsOpenedThisService) return 'notOpen';
+  if (inc.active) return 'busy';
+  if ((inc.betsTonight ?? 0) >= BACK.maxPerEvening) return 'maxed';
+  return backPool(state).length > 0 ? null : 'noneFits';
+}
+
 export function canStartBack(state: SimulationState): boolean {
   const inc = state.incidents;
   if (!inc?.enabled || inc.active || state.day.period !== 'dinner' || !state.day.doorsOpenedThisService) return false;
@@ -791,6 +808,7 @@ export function resolveIncident(draft: SimulationState, optionId: string | null,
     situation: active.situation,
     context: ctx,
     at: draft.simTime,
+    kind: active.backed ? 'backed' : active.chained ? 'chained' : 'planned',
     deltas: {
       cashSek,
       reputation: draft.reputation - repBefore,
@@ -851,8 +869,14 @@ export function countDown(draft: SimulationState, dt: number): boolean {
     real = -rest;
   }
   const a = draft.incidents.active!;
-  // ORDER 284 — ett låst svar i Back your knowledge: klockan står.
-  if (a.backed && a.picked) return false;
+  // ORDER 284 — ett låst svar i Back your knowledge: stegets klocka står.
+  // Provspel av 285: i stället går den andra tidsgränsen (BACK.lockSeconds);
+  // när den är slut satsas Guessing på det låsta svaret (reducer.ts TICK).
+  if (a.backed && a.picked) {
+    const lock = (a.lockLeft ?? BACK.lockSeconds) - real;
+    draft.incidents = { ...draft.incidents, active: { ...a, lockLeft: Math.max(0, lock) } };
+    return lock <= 0;
+  }
   const left = a.secondsLeft - real;
   draft.incidents = { ...draft.incidents, active: { ...a, secondsLeft: Math.max(0, left) } };
   return left <= 0;
@@ -866,7 +890,7 @@ export function pickBackAnswer(state: SimulationState, optionId: string): Simula
   const inc = incidentById(state.economy.businessClass, a.id);
   const step = inc?.steps[a.step];
   if (!step?.options.some((o) => o.id === optionId)) return state;
-  return { ...state, incidents: { ...state.incidents!, active: { ...a, picked: optionId } } };
+  return { ...state, incidents: { ...state.incidents!, active: { ...a, picked: optionId, lockLeft: BACK.lockSeconds } } };
 }
 
 // Kvällens lärdom: förklaringen till steget där raketen föll, när spelaren

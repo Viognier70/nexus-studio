@@ -26,10 +26,15 @@ export const COUNTDOWN_ACCENT_SECONDS = 5;
 
 // Raket n av totalt: de som redan gått, den som står öppen och de som är
 // planerade (kedjade raketer läggs till i planen när de uppstår).
+// ORDER 289 — "Rocket 1 of 3" följdes av "Rocket 2 of 4" (provspel av 285).
+// Antalet är kvällens planerade raketer och står still; följdraketer och
+// egna raketer (Back your knowledge) räknas inte in.
 export function rocketCounter(state: SimulationState): { n: number; total: number } {
   const inc = incidentsOf(state);
-  const open = inc.active ? 1 : 0;
-  return { n: inc.log.length + open, total: inc.log.length + open + inc.slots.length };
+  const planned = (r: { kind?: string }) => (r.kind ?? 'planned') === 'planned';
+  const open = inc.active && !inc.active.backed && !inc.active.chained ? 1 : 0;
+  const n = inc.log.filter(planned).length + open;
+  return { n, total: Math.max(inc.plannedCount ?? inc.log.length + open + inc.slots.length, n) };
 }
 
 export type CellState = 'cleared' | 'failed' | 'unreached';

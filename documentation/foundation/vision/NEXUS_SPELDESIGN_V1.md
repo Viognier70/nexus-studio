@@ -387,6 +387,7 @@ Förebilden är karriärstegen i *The Sims*: en titel man vill nå, med tydliga 
 - Vägen från morgonen till inköpen är tydlig.
 - Klockan täcker aldrig dagens namn eller en rubrik.
 - I Back your knowledge räknas tiden så att spelaren hinner välja säkerhet efter att hen valt svar.
+  *Beslut 2026-09-29 (Vision Owner, provspel av kvällens resultat):* "Think so" är förvald i varje steg. Efter att svaret är låst finns en andra tidsgräns på 10 sekunder, och när den går ut satsas "Guessing" automatiskt. En grå knapp säger alltid varför. Raketräkningen står still hela kvällen.
 - Tar krediterna slut visas hur man tjänar nya.
 - Kvällsberättelsen säger aldrig att det inte fanns något att lära om den sedan listar fel.
 

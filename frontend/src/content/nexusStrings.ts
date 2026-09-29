@@ -35,6 +35,11 @@
 // add the `en` value from here.
 
 export type Lang = 'sv' | 'en';
+// ORDER 289 — singular eller plural efter antalet ("1 bottles" skulle vara
+// "1 bottle", provspel av 285). Används i alla texter med antal.
+// Talet kan vara skrivet som ord ("one", "en", "ett").
+const pl = (n: number | string, one: string, many: string): string =>
+  (n === 1 || (typeof n === 'string' && /^(1|one|en|ett)$/i.test(n.trim())) ? one : many);
 type Entry = { sv: string; en: string };
 
 export const STRINGS = {
@@ -383,8 +388,8 @@ export const TABLE = {
     },
     holidayNextWeek: { sv: (name: string) => `${name} nästa vecka.`, en: (name: string) => `${name} next week.` },
     holidayInWeeks: {
-      sv: (name: string, weeks: string) => `${name} om ${weeks} veckor.`,
-      en: (name: string, weeks: string) => `${name} in ${weeks} weeks.`
+      sv: (name: string, weeks: string) => `${name} om ${weeks} ${pl(weeks, 'vecka', 'veckor')}.`,
+      en: (name: string, weeks: string) => `${name} in ${weeks} ${pl(weeks, 'week', 'weeks')}.`
     },
     holidayNone: { sv: 'Ingen högtid före säsongens slut.', en: 'No holiday before the end of the season.' },
     weekdaysLower: {
@@ -509,8 +514,8 @@ export const TABLE = {
       en: 'Sunday. The restaurant is closed, and you have four slots in the schedule.'
     },
     slots: {
-      sv: (used: number, total: number) => `Schemat: ${used} av ${total} platser`,
-      en: (used: number, total: number) => `Schedule: ${used} of ${total} slots`
+      sv: (used: number, total: number) => `Schemat: ${used} av ${total} ${pl(total, 'plats', 'platser')}`,
+      en: (used: number, total: number) => `Schedule: ${used} of ${total} ${pl(total, 'slot', 'slots')}`
     },
     startService: { sv: 'Öppna för kvällen', en: 'Open for the evening' },
     closeSunday: { sv: 'Avsluta söndagen', en: 'End Sunday' },
@@ -670,7 +675,7 @@ export const TABLE = {
       none: { sv: 'ingen än', en: 'none yet' },
       startLoan: { sv: 'Startlån', en: 'Start-up loan' },
       queue: { sv: 'Kö i stället för platser.', en: 'A queue instead of seats.' },
-      seats: { sv: (n: number) => `${n} platser.`, en: (n: number) => `${n} seats.` },
+      seats: { sv: (n: number) => `${n} ${pl(n, 'plats', 'platser')}.`, en: (n: number) => `${n} ${pl(n, 'seat', 'seats')}.` },
       // Speldesign > Verksamhetsklasserna, kolumnen Särdrag.
       traits: {
         vinbar: { sv: 'Smårätter, lounger, DJ, vinlista.', en: 'Small plates, lounges, DJ, wine list.' },
@@ -700,6 +705,15 @@ export const TABLE = {
       firstOpening: {
         sv: 'Mentorn sa att du gjorde provet i dag. Låt mig se.',
         en: 'The Mentor said you took the exam today. Let me see.'
+      },
+      // ORDER 289 — repliken efter vad spelaren har gjort (provspel av 285).
+      firstOpeningNoMedal: {
+        sv: 'Mentorn sa att du gjorde ett prov i dag, men det räckte inte till en medalj. Låt mig se vad du har.',
+        en: 'The Mentor said you took an exam today, but it did not earn a medal. Let me see what you have.'
+      },
+      firstOpeningNoExam: {
+        sv: 'Du har inte gjort något prov än. Banken lånar ut på det du har visat, så låt mig se vad som finns.',
+        en: 'You have not taken an exam yet. The bank lends on what you have shown, so let me see what there is.'
       },
       firstVerdict: {
         vinbar: {
@@ -1041,7 +1055,7 @@ export const TABLE = {
     stock: {
       forecast: {
         sv: (covers: string) => `Råvaror till ungefär ${covers} kuvert.`,
-        en: (covers: string) => `Ingredients for about ${covers} covers.`
+        en: (covers: string) => `Ingredients for about ${covers} ${pl(covers, 'cover', 'covers')}.`
       },
       none: {
         sv: 'Inga råvaror i lager. Du kan ändå öppna, men köket har inget att laga.',
@@ -1051,7 +1065,7 @@ export const TABLE = {
     },
     morningEvents: { sv: 'I morse', en: 'This morning' },
     wentWell: {
-      happy: { sv: (n: string) => `${n} gick härifrån nöjda.`, en: (n: string) => `${n} guests left happy.` },
+      happy: { sv: (n: string) => `${n} gick härifrån nöjda.`, en: (n: string) => `${n} ${pl(n, 'guest', 'guests')} left happy.` },
       happyOne: { sv: 'En gäst gick härifrån nöjd.', en: 'One guest left happy.' },
       clean: { sv: 'Ingen gav upp i kön.', en: 'No one gave up in the queue.' },
       turned: {
@@ -1126,7 +1140,7 @@ export const TABLE = {
       sv: (price: string, cost: string) => `Gästen betalar ${price} · kostar ${cost}`,
       en: (price: string, cost: string) => `Guest pays ${price} · costs ${cost}`
     },
-    bottleNote: { sv: (n: number) => `${n} glas, ett bord delar`, en: (n: number) => `${n} glasses, one table shares it` },
+    bottleNote: { sv: (n: number) => `${n} glas, ett bord delar`, en: (n: number) => `${n} ${pl(n, 'glass', 'glasses')}, one table shares it` },
     haveNow: { sv: (n: number) => `${n} i lager`, en: (n: number) => `${n} in stock` },
     less: { sv: (name: string) => `Färre ${name}`, en: (name: string) => `Fewer ${name}` },
     more: { sv: (name: string) => `Fler ${name}`, en: (name: string) => `More ${name}` },
@@ -1184,13 +1198,13 @@ export const TABLE = {
     glassBroken: { sv: 'Ett glas vin välte vid baren. Ett glas ur lagret är borta.', en: 'A glass of wine was knocked over at the bar. One glass from the stock is gone.' },
     regularRound: {
       sv: (n: number, sek: string) => `En stamgäst bjuder baren på en runda: ${n} glas, ${sek}.`,
-      en: (n: number, sek: string) => `A regular buys the bar a round: ${n} glasses, ${sek}.`
+      en: (n: number, sek: string) => `A regular buys the bar a round: ${n} ${pl(n, 'glass', 'glasses')}, ${sek}.`
     },
     birthday: {
       sv: (name: string, sek: string) => `Ett sällskap firar en födelsedag och beställer en flaska ${name.replace(/, bottle$/, '')}: ${sek}.`,
       en: (name: string, sek: string) => `A party is celebrating a birthday and orders a bottle of ${name.replace(/, bottle$/, '')}: ${sek}.`
     },
-    walkIns: { sv: (n: number) => `${n} gäster kommer in utan att ha bokat.`, en: (n: number) => `${n} guests walk in without a booking.` },
+    walkIns: { sv: (n: number) => `${n} ${pl(n, 'gäst', 'gäster')} kommer in utan att ha bokat.`, en: (n: number) => `${n} ${pl(n, 'guest', 'guests')} walk in without a booking.` },
     neighbour: { sv: 'Grannen klagar på ljudet. Gästerna märker det.', en: 'The neighbour complains about the noise. The guests notice.' },
     goodWord: { sv: 'En gäst säger högt att det här är ortens bästa vinbar. Rummet ler.', en: 'A guest says out loud that this is the best wine bar in town. The room smiles.' }
   },
@@ -1204,16 +1218,16 @@ export const TABLE = {
   },
   waste: {
     event: {
-      sv: (kept: number, units: number, fee: string) => `Efter kvällen: ${kept} portioner går att använda i morgon. Sopbilen hämtade ${units} portioner, miljöavgift ${fee}.`,
-      en: (kept: number, units: number, fee: string) => `After the evening: ${kept} portions can be used tomorrow. The refuse truck took ${units} portions, environmental fee ${fee}.`
+      sv: (kept: number, units: number, fee: string) => `Efter kvällen: ${kept} ${pl(kept, 'portion', 'portioner')} går att använda i morgon. Sopbilen hämtade ${units} ${pl(units, 'portion', 'portioner')}, miljöavgift ${fee}.`,
+      en: (kept: number, units: number, fee: string) => `After the evening: ${kept} ${pl(kept, 'portion', 'portions')} can be used tomorrow. The refuse truck took ${units} ${pl(units, 'portion', 'portions')}, environmental fee ${fee}.`
     },
     keptOnly: {
-      sv: (kept: number) => `Efter kvällen: ${kept} portioner går att använda i morgon. Inget svinn.`,
-      en: (kept: number) => `After the evening: ${kept} portions can be used tomorrow. No waste.`
+      sv: (kept: number) => `Efter kvällen: ${kept} ${pl(kept, 'portion', 'portioner')} går att använda i morgon. Inget svinn.`,
+      en: (kept: number) => `After the evening: ${kept} ${pl(kept, 'portion', 'portions')} can be used tomorrow. No waste.`
     },
     morning: {
-      sv: (kept: number, units: number, value: string, fee: string) => `I går: ${kept} portioner sparades till i dag. ${units} portioner blev svinn (${value}), och sopbilen tog ${fee} i miljöavgift.`,
-      en: (kept: number, units: number, value: string, fee: string) => `Yesterday: ${kept} portions were kept for today. ${units} portions went to waste (${value}), and the refuse truck charged ${fee} as an environmental fee.`
+      sv: (kept: number, units: number, value: string, fee: string) => `I går: ${kept} ${pl(kept, 'portion', 'portioner')} sparades till i dag. ${units} ${pl(units, 'portion', 'portioner')} blev svinn (${value}), och sopbilen tog ${fee} i miljöavgift.`,
+      en: (kept: number, units: number, value: string, fee: string) => `Yesterday: ${kept} ${pl(kept, 'portion', 'portions')} were kept for today. ${units} ${pl(units, 'portion', 'portions')} went to waste (${value}), and the refuse truck charged ${fee} as an environmental fee.`
     },
     ledger: { sv: 'Sopbilen: miljöavgift för svinnet', en: 'Refuse truck: environmental fee for the waste' }
   },
@@ -1221,12 +1235,12 @@ export const TABLE = {
   // svar gör resterna säljbara i dag; annars går de till sopbilen.
   salvage: {
     kicker: { sv: 'Gårdagens rester', en: "Yesterday's leftovers" },
-    title: { sv: (n: number, dish: string) => `${n} portioner ${dish} står kvar i kylrummet`, en: (n: number, dish: string) => `${n} portions of ${dish} are left in the cold room` },
-    right: { sv: (n: number) => `Rätt. ${n} portioner går att sälja i kväll.`, en: (n: number) => `Right. ${n} portions can be sold tonight.` },
+    title: { sv: (n: number, dish: string) => `${n} ${pl(n, 'portion', 'portioner')} ${dish} står kvar i kylrummet`, en: (n: number, dish: string) => `${n} ${pl(n, 'portion', 'portions')} of ${dish} are left in the cold room` },
+    right: { sv: (n: number) => `Rätt. ${n} ${pl(n, 'portion', 'portioner')} går att sälja i kväll.`, en: (n: number) => `Right. ${n} ${pl(n, 'portion', 'portions')} can be sold tonight.` },
     wrong: { sv: (fee: string) => `Inte så. Resterna går till sopbilen (${fee}).`, en: (fee: string) => `Not like that. The leftovers go to the bin lorry (${fee}).` },
     done: { sv: 'Vidare', en: 'Continue' },
     ledger: { sv: 'Sopbilen: gårdagens rester', en: "Bin lorry: yesterday's leftovers" },
-    discarded: { sv: (n: number, fee: string) => `Gårdagens rester, ${n} portioner, gick till sopbilen (${fee}).`, en: (n: number, fee: string) => `Yesterday's leftovers, ${n} portions, went to the bin lorry (${fee}).` },
+    discarded: { sv: (n: number, fee: string) => `Gårdagens rester, ${n} ${pl(n, 'portion', 'portioner')}, gick till sopbilen (${fee}).`, en: (n: number, fee: string) => `Yesterday's leftovers, ${n} ${pl(n, 'portion', 'portions')}, went to the bin lorry (${fee}).` },
     questions: {
       'root-veg': {
         question: { sv: 'Rostade rotfrukter från i går. Vad gör du av dem?', en: "Roasted root vegetables from yesterday. What do you make of them?" },
@@ -1319,11 +1333,11 @@ export const TABLE = {
     title: { sv: 'Så gick kvällen', en: 'How the evening went' },
     stream: { sv: 'Kvällen, i den ordning det hände', en: 'The evening, in the order it happened' },
     gains: { sv: 'Det kvällen gav', en: 'What the evening gave' },
-    stepsOf: { sv: (c: number, n: number) => `${c} av ${n} steg`, en: (c: number, n: number) => `${c} of ${n} steps` },
+    stepsOf: { sv: (c: number, n: number) => `${c} av ${n} steg`, en: (c: number, n: number) => `${c} of ${n} ${pl(n, 'step', 'steps')}` },
     truck: { sv: 'Sopbilen', en: 'The bin lorry' },
     truckLine: { sv: (kg: string) => `${kg} till sopbilen`, en: (kg: string) => `${kg} to the bin lorry` },
     chance: { sv: 'I rummet', en: 'In the room' },
-    guests: { sv: (n: number) => `${n} gäster in`, en: (n: number) => `${n} guests in` },
+    guests: { sv: (n: number) => `${n} ${pl(n, 'gäst', 'gäster')} in`, en: (n: number) => `${n} ${pl(n, 'guest', 'guests')} in` },
     none: { sv: 'Inga raketer eller händelser i kväll.', en: 'No rockets or events tonight.' },
     waste: { sv: 'Svinn', en: 'Waste' },
     wasteNote: { sv: 'Till sopbilen efter stängning', en: 'To the bin lorry after closing' },
@@ -1344,8 +1358,8 @@ export const TABLE = {
       money: { sv: (rev: string, cost: string) => `Intäkter ${rev} minus inköp, löner och avgifter ${cost}`, en: (rev: string, cost: string) => `Takings ${rev} minus purchases, wages and fees ${cost}` },
       credits: { sv: 'Rätta svar i raketerna, och Back your knowledge', en: 'Right answers in the rockets, and Back your knowledge' },
       reputation: { sv: 'Nöjda gäster höjer, gäster som går sänker', en: 'Happy guests raise it, guests who leave lower it' },
-      knowledge: { sv: (r: number, n: number) => `${r} av ${n} steg rätt i kvällens raketer`, en: (r: number, n: number) => `${r} of ${n} steps right in tonight's rockets` },
-      experience: { sv: (g: number, rk: number) => `${g} gäster serverade, ${rk} raketer tagna`, en: (g: number, rk: number) => `${g} guests served, ${rk} rockets handled` },
+      knowledge: { sv: (r: number, n: number) => `${r} av ${n} steg rätt i kvällens raketer`, en: (r: number, n: number) => `${r} of ${n} ${pl(n, 'step', 'steps')} right in tonight's rockets` },
+      experience: { sv: (g: number, rk: number) => `${g} ${pl(g, 'gäst', 'gäster')} serverade, ${rk} ${pl(rk, 'raket', 'raketer')} tagna`, en: (g: number, rk: number) => `${g} ${pl(g, 'guest', 'guests')} served, ${rk} ${pl(rk, 'rocket', 'rockets')} handled` },
       social: { sv: 'Gästerna och laget: nöjdhet, köer och ork', en: 'The guests and the team: satisfaction, queues and stamina' },
       economic: { sv: (m: string) => `Marginal ${m} av kvällens intäkt`, en: (m: string) => `Margin ${m} of tonight's takings` },
       ecological: { sv: (kg: string) => `Råvarorna och svinnet: ${kg} till sopbilen`, en: (kg: string) => `Ingredients and waste: ${kg} to the bin lorry` }
@@ -1443,8 +1457,8 @@ export const TABLE = {
   morningBuy: {
     open: { sv: 'Köp in för kvällen', en: "Buy in for tonight" },
     summary: {
-      sv: (dishes: number, bottles: number) => `I lager: ${dishes} portioner och ${bottles} flaskor.`,
-      en: (dishes: number, bottles: number) => `In stock: ${dishes} portions and ${bottles} bottles.`
+      sv: (dishes: number, bottles: number) => `I lager: ${dishes} ${pl(dishes, 'portion', 'portioner')} och ${bottles} ${pl(bottles, 'flaska', 'flaskor')}.`,
+      en: (dishes: number, bottles: number) => `In stock: ${dishes} ${pl(dishes, 'portion', 'portions')} and ${bottles} ${pl(bottles, 'bottle', 'bottles')}.`
     },
     phase: { sv: 'Morgonen', en: 'Morning' },
     menu: { sv: 'Meny', en: 'Menu' },
@@ -1452,20 +1466,20 @@ export const TABLE = {
     wine: { sv: 'Dryckeslista', en: 'Wine list' },
     wineStep: { sv: '+ köper 2 flaskor', en: '+ buys 2 bottles' },
     dishSub: { sv: (cost: string, price: string) => `Inköp ${cost} · säljs för ${price}`, en: (cost: string, price: string) => `Cost ${cost} · sells for ${price}` },
-    wineSub: { sv: (cost: string, glasses: number, price: string) => `Inköp ${cost}/fl · ${glasses} glas à ${price}`, en: (cost: string, glasses: number, price: string) => `Cost ${cost}/btl · ${glasses} glasses at ${price}` },
+    wineSub: { sv: (cost: string, glasses: number, price: string) => `Inköp ${cost}/fl · ${glasses} glas à ${price}`, en: (cost: string, glasses: number, price: string) => `Cost ${cost}/btl · ${glasses} ${pl(glasses, 'glass', 'glasses')} at ${price}` },
     beerSub: { sv: (cost: string, price: string) => `Inköp ${cost}/fl · säljs för ${price}`, en: (cost: string, price: string) => `Cost ${cost}/btl · sells for ${price}` },
-    dishSum: { sv: (n: number, kr: string) => `${n} portioner · ${kr} i inköp`, en: (n: number, kr: string) => `${n} portions · ${kr} spent` },
-    wineSum: { sv: (n: number, kr: string) => `${n} flaskor · ${kr} i inköp`, en: (n: number, kr: string) => `${n} bottles · ${kr} spent` },
+    dishSum: { sv: (n: number, kr: string) => `${n} ${pl(n, 'portion', 'portioner')} · ${kr} i inköp`, en: (n: number, kr: string) => `${n} ${pl(n, 'portion', 'portions')} · ${kr} spent` },
+    wineSum: { sv: (n: number, kr: string) => `${n} ${pl(n, 'flaska', 'flaskor')} · ${kr} i inköp`, en: (n: number, kr: string) => `${n} ${pl(n, 'bottle', 'bottles')} · ${kr} spent` },
     spent: { sv: 'Inköp i dag', en: 'Bought today' },
     mains: { sv: 'Rätter', en: 'Dishes' },
-    mainsCover: { sv: (n: number, booked: number) => `${n} av ${booked} gäster`, en: (n: number, booked: number) => `${n} of ${booked} guests` },
-    booked: { sv: (n: number) => `Omkring ${n} gäster väntas i kväll`, en: (n: number) => `About ${n} guests expected tonight` },
+    mainsCover: { sv: (n: number, booked: number) => `${n} av ${booked} ${pl(booked, 'gäst', 'gäster')}`, en: (n: number, booked: number) => `${n} of ${booked} ${pl(booked, 'guest', 'guests')}` },
+    booked: { sv: (n: number) => `Omkring ${n} ${pl(n, 'gäst', 'gäster')} väntas i kväll`, en: (n: number) => `About ${n} ${pl(n, 'guest', 'guests')} expected tonight` },
     // ORDER 285 — bokningsboken i Designs morgon, med det spelet redan har:
     // kvällens väntade gäster (gästtyperna kommer med 287).
     bookKicker: { sv: 'Bokningsboken', en: 'The booking book' },
     bookTitle: { sv: (day: string) => `${day} kväll`, en: (day: string) => `${day} evening` },
     bookNote: { sv: 'Väntade gäster i kväll. Köp så att det räcker, men inte mer.', en: 'Guests expected tonight. Buy enough, but no more.' },
-    wineCover: { sv: (n: number, per: string) => `${n} glas · ${per} per gäst`, en: (n: number, per: string) => `${n} glasses · ${per} per guest` },
+    wineCover: { sv: (n: number, per: string) => `${n} glas · ${per} per gäst`, en: (n: number, per: string) => `${n} ${pl(n, 'glass', 'glasses')} · ${per} per guest` },
     wineLabel: { sv: 'Dryck', en: 'Drinks' },
     potential: { sv: 'Om allt säljs', en: 'If everything sells' },
     potentialNote: { sv: 'Det som inte säljs blir svinn när sopbilen kommer.', en: 'Whatever doesn’t sell is waste when the bin lorry comes.' },
@@ -1482,7 +1496,7 @@ export const TABLE = {
   stockL1: {
     kitchen: { sv: 'Lagret · kök', en: 'Stock · kitchen' },
     bar: { sv: 'Lagret · bar', en: 'Stock · bar' },
-    of: { sv: (n: number) => `av ${n} portioner`, en: (n: number) => `of ${n} portions` },
+    of: { sv: (n: number) => `av ${n} ${pl(n, 'portion', 'portioner')}`, en: (n: number) => `of ${n} ${pl(n, 'portion', 'portions')}` },
     open: { sv: (g: number, n: number) => `${g} glas i öppen · av ${n} fl`, en: (g: number, n: number) => `${g} in open bottle · of ${n} btl` },
     ok: { sv: 'I lager', en: 'In stock' },
     low: { sv: 'Snart slut', en: 'Running low' },
@@ -1492,6 +1506,8 @@ export const TABLE = {
     // ORDER 284 — när varje rätt är slut, inte bara en.
     kitchenOut: { sv: 'Köket har ingen mat kvar · alla rätter slut', en: 'The kitchen is out of food · every dish sold out' },
     unitGlass: { sv: 'glas', en: 'glasses' },
+    // ORDER 289 — ett glas.
+    unitGlassOne: { sv: 'glas', en: 'glass' },
     heading: { sv: 'Lagret i kväll', en: 'Stock tonight' }
   },
   feed: {
@@ -1511,7 +1527,7 @@ export const TABLE = {
     tonightPaid: { sv: 'Betalt', en: 'Paid' },
     tonightTips: { sv: 'Dricks till personalen', en: 'Tips to the staff' },
     tonightTabs: { sv: 'Öppna notor', en: 'Open tabs' },
-    tonightTabsValue: { sv: (n: number, kr: string) => `${n} bord · ${kr}`, en: (n: number, kr: string) => `${n} tables · ${kr}` },
+    tonightTabsValue: { sv: (n: number, kr: string) => `${n} bord · ${kr}`, en: (n: number, kr: string) => `${n} ${pl(n, 'table', 'tables')} · ${kr}` },
     tonightTabsNone: { sv: 'Inga', en: 'None' }
   },
   back: {
@@ -1539,7 +1555,15 @@ export const TABLE = {
     earnShort: { sv: 'Krediterna räcker bara till Gissar. Nya tjänas med rätta svar, i Måltidens hus och i raketerna.', en: 'Your credits only cover Guessing. You earn more with right answers, in the House of the Meal and in the rockets.' },
     // ORDER 284 — klockan stannar när svaret är valt.
     pickFirst: { sv: 'Välj ett svar först, då stannar klockan.', en: 'Pick an answer first; the clock then stops.' },
-    pickedHint: { sv: 'Svaret är låst, klockan står.', en: 'Answer locked, the clock has stopped.' },
+    pickedHint: { sv: (s: number) => `Svaret är låst. Välj hur säker du är, annars räknas Gissar om ${s} s.`, en: (s: number) => `Answer locked. Choose how sure you are, or it counts as Guessing in ${s} s.` },
+    // Provspel av 285: en grå knapp säger alltid varför.
+    chooseHow: { sv: 'Välj hur säker du är', en: 'Choose how sure you are' },
+    why: {
+      busy: { sv: 'En raket pågår redan', en: 'A rocket is already under way' },
+      maxed: { sv: 'Alla tre är använda i kväll', en: 'All three are used tonight' },
+      noneFits: { sv: 'Ingen fråga passar kvällens meny just nu', en: "No question fits tonight's menu right now" },
+      notOpen: { sv: 'Öppnar när dörrarna öppnar', en: 'Opens when the doors open' }
+    },
     odds: { sv: (win: number, loss: number) => `+${win} om rätt · ${loss > 0 ? `−${loss}` : '±0'} om fel`, en: (win: number, loss: number) => `+${win} if right · ${loss > 0 ? `−${loss}` : '±0'} if wrong` },
     lock: { sv: 'Stå för svaret', en: 'Back it' },
     confidence: { sv: ['Gissar', 'Tror det', 'Vet det'], en: ['Guessing', 'Think so', 'Know it'] },
@@ -1571,7 +1595,8 @@ export const TABLE = {
     phase: { sv: 'Efter stängning', en: 'After closing' },
     kicker: { sv: 'Sopbilen · 23.40', en: 'Bin lorry · 23:40' },
     title: { sv: 'Det som blev över', en: 'What was left' },
-    hauler: { sv: 'Stensöta renhållning', en: 'Stensöta Waste' },
+    // ORDER 289 — sopbilen hos krogen, med krogens namn (provspel av 285).
+    hauler: { sv: (name: string) => `Sopbilen hos ${name}`, en: (name: string) => `The bin lorry at ${name}` },
     colFraction: { sv: 'Fraktion', en: 'Fraction' },
     colWhat: { sv: 'Vad', en: 'What' },
     colKg: { sv: 'Vikt', en: 'Weight' },
@@ -1582,9 +1607,9 @@ export const TABLE = {
     },
     unsoldNone: { sv: 'Allt såldes', en: 'Everything sold' },
     // ORDER 285 — portionerna som lagts undan till morgonens fråga.
-    asideLine: { sv: (n: number, dish: string) => `${n} portioner ${dish} läggs undan i kylrummet. I morgon avgör en fråga om de går att använda.`, en: (n: number, dish: string) => `${n} portions of ${dish} are set aside in the cold room. Tomorrow a question decides whether they can be used.` },
+    asideLine: { sv: (n: number, dish: string) => `${n} ${pl(n, 'portion', 'portioner')} ${dish} läggs undan i kylrummet. I morgon avgör en fråga om de går att använda.`, en: (n: number, dish: string) => `${n} ${pl(n, 'portion', 'portions')} of ${dish} are set aside in the cold room. Tomorrow a question decides whether they can be used.` },
     unsoldDetail: { sv: (n: number, kept: number) => `${n} osålda portioner${kept > 0 ? ` · ${kept} sparas till i morgon` : ''}`, en: (n: number, kept: number) => `${n} unsold portions${kept > 0 ? ` · ${kept} kept for tomorrow` : ''}` },
-    platesDetail: { sv: (n: number) => `Rester från ${n} tallrikar`, en: (n: number) => `Leftovers from ${n} plates` },
+    platesDetail: { sv: (n: number) => `Rester från ${n} ${pl(n, 'tallrik', 'tallrikar')}`, en: (n: number) => `Leftovers from ${n} ${pl(n, 'plate', 'plates')}` },
     glassDetail: { sv: (n: number) => `${n} tomma flaskor`, en: (n: number) => `${n} empty bottles` },
     cardboardDetail: { sv: 'Morgonens leveranser', en: 'This morning’s deliveries' },
     total: { sv: 'Totalt', en: 'Total' },
@@ -1596,6 +1621,12 @@ export const TABLE = {
     adviceKicker: { sv: 'I morgon bitti', en: 'Tomorrow morning' },
     advice: { sv: (n: number, item: string, kr: string) => `Köp ${n} färre ${item} i morgon. Det sparar ${kr} i inköp.`, en: (n: number, item: string, kr: string) => `Buy ${n} fewer ${item} tomorrow. It saves ${kr}.` },
     adviceNone: { sv: 'Nästan inget blev över. Köp samma mängder i morgon.', en: 'Almost nothing was left. Buy the same tomorrow.' },
+    // ORDER 289 — maten tog slut före stängning (provspel av 285).
+    adviceMore: {
+      sv: (clock: string | null, guests: number, n: number) => `${clock ? `Maten tog slut ${clock}` : 'Maten tog slut'} och ${guests} ${pl(guests, 'gäst', 'gäster')} gick utan. Köp omkring ${n} ${pl(n, 'portion', 'portioner')} mer i morgon.`,
+      en: (clock: string | null, guests: number, n: number) => `${clock ? `The food ran out at ${clock}` : 'The food ran out'} and ${guests} ${pl(guests, 'guest', 'guests')} went without. Buy about ${n} more ${pl(n, 'portion', 'portions')} tomorrow.`
+    },
+    adviceOutNoGuests: { sv: (clock: string) => `Maten tog slut ${clock}, men ingen gick utan. Köp gärna ett parti till i morgon.`, en: (clock: string) => `The food ran out at ${clock}, but nobody went without. Consider one more batch tomorrow.` },
     continue: { sv: 'Till kvällens lärdom', en: "To tonight's lesson" }
   },
   // ORDER 280 — resten av engelskan: äldre komponenter som hade texten
@@ -1966,7 +1997,7 @@ export const TABLE = {
     },
     waitingPlural: {
       sv: (n: number) => `${n} personer står redan utanför dörren.`,
-      en: (n: number) => `${n} people are already standing outside the door.`
+      en: (n: number) => `${n} ${pl(n, 'person', 'people')} are already standing outside the door.`
     },
     waitingNone: { sv: 'Ingen står utanför ännu.', en: 'No one is outside yet.' },
     countdownPrefix: { sv: 'Dörrarna öppnar om', en: 'The doors open in' },
@@ -2172,6 +2203,9 @@ export const TABLE = {
         sv: (n: string, total: string) => `Raket ${n} av ${total}`,
         en: (n: string, total: string) => `Rocket ${n} of ${total}`
       },
+      // ORDER 289 — följdraketer och egna raketer står utanför räkningen.
+      followUp: { sv: 'Följd', en: 'Follow-up' },
+      backOf: { sv: (n: number, max: number) => `Egen raket ${n} av ${max}`, en: (n: number, max: number) => `Your rocket ${n} of ${max}` },
       table: { sv: (n: string) => `Bord ${n}`, en: (n: string) => `Table ${n}` },
       room: { sv: 'Rummet', en: 'The room' },
       stepCleared: { sv: (ask: string) => `${ask} · klar ✓`, en: (ask: string) => `${ask} · done ✓` },
@@ -2194,7 +2228,7 @@ export const TABLE = {
       rightDone: { sv: 'Rätt · raketen klar', en: 'Right · rocket complete' },
       // ORDER 276 — raketerna styr gästflödet.
       guestsIn: {
-        sv: (n: number) => (n === 1 ? 'En gäst till kommer in.' : `${n} gäster till kommer in.`),
+        sv: (n: number) => (n === 1 ? 'En gäst till kommer in.' : `${n} ${pl(n, 'gäst', 'gäster')} till kommer in.`),
         en: (n: number) => (n === 1 ? 'One more guest comes in.' : `${n} more guests come in.`)
       },
       wrong: { sv: (role: string) => `Fel · ${role} tar över`, en: (role: string) => `Wrong · ${role} takes over` },
@@ -2254,7 +2288,7 @@ export const TABLE = {
       cellUnreached: { sv: 'nåddes inte', en: 'not reached' },
       summary: {
         sv: (n: string, total: string) => `${n} av ${total} steg klarade i kväll.`,
-        en: (n: string, total: string) => `${n} of ${total} steps cleared tonight.`
+        en: (n: string, total: string) => `${n} of ${total} ${pl(total, 'step', 'steps')} cleared tonight.`
       },
       practice: {
         sv: (pavilion: string) => `Öva i ${pavilion} i morgon`,

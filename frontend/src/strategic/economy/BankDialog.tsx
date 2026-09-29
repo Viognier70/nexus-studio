@@ -182,7 +182,8 @@ export function BankDialog({ open, onClose }: Props) {
         </div>
         <div className="nxs-bank-grid">
           <div>
-            <Say who={sb.speaker}>{sb.firstOpening}</Say>
+            {/* ORDER 289 — repliken efter vad spelaren faktiskt har gjort. */}
+            <Say who={sb.speaker}>{(sim.examsTaken ?? 0) === 0 ? sb.firstOpeningNoExam : Object.keys(sim.medals).length > 0 ? sb.firstOpening : sb.firstOpeningNoMedal}</Say>
             <MedalsSeen held={sim.medals} onlyHeld />
             <div className="nxs-mt-16">
               <Say who={sb.speaker}>{verdict}</Say>

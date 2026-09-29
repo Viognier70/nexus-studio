@@ -1,0 +1,35 @@
+{
+  "build": "produktion (vite build + preview)",
+  "lang": "sv",
+  "click": "single",
+  "evenings": [
+    {
+      "evening": 1,
+      "sequence": [
+        "S1",
+        "R1",
+        "L1",
+        "K1",
+        "morning"
+      ],
+      "r1VisibleMs": 1203,
+      "r1Shown": true,
+      "order": "S1 → R1 → L1 → K1 → morning"
+    },
+    {
+      "evening": 2,
+      "sequence": [
+        "S1",
+        "R1",
+        "L1",
+        "K1",
+        "morning"
+      ],
+      "r1VisibleMs": 1202,
+      "r1Shown": true,
+      "order": "S1 → R1 → L1 → K1 → morning"
+    }
+  ],
+  "errors": [],
+  "ok": true
+}

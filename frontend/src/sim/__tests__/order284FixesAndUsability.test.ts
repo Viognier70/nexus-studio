@@ -15,6 +15,7 @@ import { describe, expect, it } from 'vitest';
 import { reducer } from '../../strategic/simulation/reducer';
 import { makeNewGameState } from '../../strategic/simulation/model';
 import { firstDayOfWeek } from '../calendar';
+import { BACK } from '../balance';
 import { incidentById } from '../incidentBank';
 import { canStartBack, rankedStepOption } from '../incidents';
 import { PLAYERS } from '../../strategic/testHarness/randomness';
@@ -94,9 +95,11 @@ describe('ORDER 284 — klockan i Back your knowledge', () => {
     expect(running).toBeLessThan(a.secondsLeft);
     s = reducer(s, { type: 'PICK_BACK_ANSWER', optionId: first });
     expect(s.incidents.active!.picked).toBe(first);
-    // Efter valet står klockan, hur länge spelaren än väljer säkerhet.
-    for (let i = 0; i < 2000; i++) s = reducer(s, TICK);
+    // Efter valet står stegets klocka; i stället går den andra tidsgränsen
+    // (ORDER 289, BACK.lockSeconds), och när den är ute satsas Guessing.
+    for (let i = 0; i < 5; i++) s = reducer(s, TICK);
     expect(s.incidents.active!.secondsLeft).toBe(running);
+    expect(s.incidents.active!.lockLeft!).toBeLessThan(BACK.lockSeconds);
     // Ett annat svar går inte att välja eller stå för.
     expect(reducer(s, { type: 'PICK_BACK_ANSWER', optionId: second }).incidents.active!.picked).toBe(first);
     expect(reducer(s, { type: 'ANSWER_INCIDENT', optionId: second, confidence: 0 })).toBe(s);

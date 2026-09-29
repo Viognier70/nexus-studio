@@ -16,6 +16,7 @@ import { applyCashCost, applyCashDelta, postLedger } from './cashReading';
 import { findDish, findIngredient, minIngredientCost } from './m4Catalogue';
 import { ITEM_BATCH, MORNING_STAKE, WASTE } from '../../sim/balance';
 import { discardUnresolvedSalvage, pickSalvage } from './salvage';
+import { clockMinutes, formatClock } from '../../sim/incidents';
 import { findPackage, itemsCostSek, packageCostSek, packageDishIds, packageIngredients, packagesFor } from './packages';
 
 type Menu = SimulationState['menu'];
@@ -244,7 +245,7 @@ function warnStock(draft: SimulationState, simTime: number): void {
     changed = true;
     const text = r.status === 'out'
       ? strings.stockL1.warnOut(r.name)
-      : strings.stockL1.warnLow(r.name, r.left, r.kind === 'dish' ? strings.morningBuy.unitPortion : strings.stockL1.unitGlass);
+      : strings.stockL1.warnLow(r.name, r.left, r.kind === 'dish' ? strings.morningBuy.unitPortion : r.left === 1 ? strings.stockL1.unitGlassOne : strings.stockL1.unitGlass);
     if (r.status === 'out' && r.kind === 'dish' && !draft.day.stockOutEvents.includes(r.id)) {
       draft.day.stockOutEvents = [...draft.day.stockOutEvents, r.id];
     }
@@ -259,6 +260,8 @@ function warnStock(draft: SimulationState, simTime: number): void {
   if (dishes.length > 0 && dishes.every((r) => r.status === 'out') && !warned.kitchen) {
     warned.kitchen = 'out';
     changed = true;
+    // ORDER 289 — klockslaget till rådet efter kvällen.
+    draft.day = { ...draft.day, foodOutClock: formatClock(clockMinutes(draft)) };
     draft.eventStream = [...draft.eventStream, {
       at: simTime, text: strings.stockL1.kitchenOut, category: 'ambient', causeTag: 'stock_out', causeChainId: null,
       sustainability: 'economic', kind: 'dish_ran_out', scenarioId: null, feed: 'warn'
@@ -335,6 +338,8 @@ export interface WasteSettlement {
   // Rådet: rätten vars råvara kostade mest i svinn, med antalet att köpa
   // färre av (avrundat nedåt till ett parti) och vad det sparar.
   advice: { dishId: string; fewer: number; savesSek: number } | null;
+  // ORDER 289 — maten tog slut före stängning.
+  shortage?: { clock: string | null; guests: number; more: number } | null;
   // ORDER 285 — portionerna som lagts undan till morgonens fråga.
   aside?: { dishId: string; portions: number } | null;
 }
@@ -448,7 +453,13 @@ export function wasteAtDayEnd(state: SimulationState): { stock: Record<string, n
       advice = { dishId, fewer, savesSek: Math.round(fewer * dishCostSek(dishId)) };
     }
   }
-  return { stock, dishPortions, waste: { dayNumber: state.day.dayNumber, units, sek: Math.round(sek), kept, feeSek, kg: Math.round(kg * 10) / 10, fractions, advice, aside } };
+  // ORDER 289 — tog maten slut före stängning och gick gäster utan mat är
+  // rådet att köpa mer: gästerna som blev utan, avrundat uppåt till parti.
+  const without = state.day.soldOutGuests ?? 0;
+  const shortage = without > 0 || state.day.foodOutClock
+    ? { clock: state.day.foodOutClock ?? null, guests: without, more: without > 0 ? Math.ceil(without / ITEM_BATCH.dish) * ITEM_BATCH.dish : 0 }
+    : null;
+  return { stock, dishPortions, waste: { dayNumber: state.day.dayNumber, units, sek: Math.round(sek), kept, feeSek, kg: Math.round(kg * 10) / 10, fractions, advice: shortage ? null : advice, aside, shortage } };
 }
 
 // ORDER 280 — sopbilen kommer när servicen stänger (Designs S1): lagret

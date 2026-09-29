@@ -54,11 +54,12 @@ interface Props {
   // ORDER 280 — morgonens inköp (Designs M1); schemat döljs medan M1 är öppen.
   onOpenBuy?: () => void;
   hidden?: boolean;
+  waitForName?: boolean;
 }
 
 const s = strings.screens.morning;
 
-export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenBuy, hidden }: Props) {
+export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenBuy, hidden, waitForName }: Props) {
   const sim = useSimState();
   const dispatch = useSimDispatch();
   const mentor = useMentor();
@@ -72,6 +73,9 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenB
   const period = sim.day.period;
   if (period !== 'morning' && period !== 'afternoon') return null;
   if (hidden) return null;
+  // ORDER 289 — namnet frågas innan morgonen visas (NameEntryOverlay har
+  // samma villkor: inte i introduktionen).
+  if (waitForName && !sim.introduction) return null;
   // ORDER 270 — utan verksamhet och utan pengar finns bara rutan mitt på
   // skärmen (NoBusinessBox), inga andra knappar.
   if (isStrandedWithoutBusiness(sim)) return null;

@@ -90,7 +90,8 @@ async function visibleNth(sel, nth) {
     const inside = r.width > 0 && r.height > 0 && r.left >= -0.5 && r.top >= -0.5 && r.right <= W + 0.5 && r.bottom <= H + 0.5;
     const top = document.elementFromPoint(Math.min(W - 1, Math.max(0, r.left + r.width / 2)), Math.min(H - 1, Math.max(0, r.top + r.height / 2)));
     const onTop = !!top && (top === el || el.contains(top));
-    return { found: true, inside, onTop, ok: inside && onTop, rect: [Math.round(r.left), Math.round(r.top), Math.round(r.right), Math.round(r.bottom)] };
+    const over = onTop || !top ? null : `${top.tagName.toLowerCase()}.${String(top.className).slice(0, 60)}`;
+    return { found: true, inside, onTop, over, ok: inside && onTop, rect: [Math.round(r.left), Math.round(r.top), Math.round(r.right), Math.round(r.bottom)] };
   }, [sel, nth]);
 }
 
@@ -147,6 +148,51 @@ try {
   // Morgonen: inköpen och öppna. Utan lager är huvudknappen inköpen.
   await measure('morgonen', ['open-buy-foot'], '[data-testid=day-action-bar] h1');
 
+  // ORDER 289 — allt på morgonen går att nå: varje satsning och paviljong
+  // skrollas fram och ska då ligga överst (inte under bottenraden).
+  const reach = [];
+  for (const [w, h] of SIZES) {
+    await page.setViewportSize({ width: w, height: h });
+    await delay(400);
+    const ids = await page.$$eval('[data-testid^=activity-], [data-testid^=shelf-]', (els) => els.map((e) => e.getAttribute('data-testid')));
+    const bad = [];
+    for (const id of ids) {
+      await page.$eval(`[data-testid="${id}"]`, (el) => el.scrollIntoView({ block: 'center' })).catch(() => {});
+      await delay(60);
+      const v = await visibleNth(`[data-testid="${id}"]`, 0);
+      if (!v.ok) bad.push({ id, over: v.over, rect: v.rect });
+    }
+    reach.push({ size: `${w}×${h}`, items: ids.length, bad, ok: ids.length > 0 && bad.length === 0 });
+  }
+  await page.setViewportSize({ width: SIZES[0][0], height: SIZES[0][1] });
+  await page.$eval('[data-testid=day-action-bar]', (el) => el.scrollTo(0, 0)).catch(() => {});
+  report.screens.morgonenNas = { ok: reach.every((r) => r.ok), rows: reach };
+  console.log('morgonenNas', reach.map((r) => `${r.size}:${r.ok ? 'ok' : 'FEL'}`).join(' '));
+
+  // ORDER 289 — personalen och satsningarna (rummet och personalen): panelerna
+  // i den varma formen, och bottenraden ligger inte över dem.
+  await page.click('[data-testid=morning-aside]');
+  await delay(700);
+  const staff = [];
+  for (const [w, h] of SIZES) {
+    await page.setViewportSize({ width: w, height: h });
+    await delay(450);
+    const raw = await page.evaluate(() => {
+      const bar = document.querySelector('.nxs-minibar')?.getBoundingClientRect();
+      const cols = [...document.querySelectorAll('[data-panel-column]')].map((c) => c.getBoundingClientRect());
+      const clock = document.querySelector('[data-testid=service-clock]')?.getBoundingClientRect();
+      const ov = (a, b) => (a && b ? Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left)) * Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top)) : 0);
+      return { barOverPanels: Math.round(cols.reduce((x, c) => x + ov(bar, c), 0)), hudOverPanels: Math.round(cols.reduce((x, c) => x + ov(clock, c), 0)), bottomOfColumns: Math.round(Math.max(0, ...cols.map((c) => c.bottom))), barTop: bar ? Math.round(bar.top) : null };
+    });
+    staff.push({ size: `${w}×${h}`, ...raw, ok: raw.barOverPanels === 0 && raw.hudOverPanels === 0 });
+    await page.screenshot({ path: resolve(OUT, `layout-personalen-${w}x${h}.png`) });
+  }
+  await page.setViewportSize({ width: SIZES[0][0], height: SIZES[0][1] });
+  report.screens.personalen = { ok: staff.every((r) => r.ok), rows: staff };
+  console.log('personalen', staff.map((r) => `${r.size}:${r.ok ? 'ok' : 'FEL'}`).join(' '));
+  await page.click('[data-testid=morning-schedule]');
+  await delay(700);
+
   // M1: tillbaka och öppna dörrarna.
   await page.click('[data-testid=open-buy]');
   await page.waitForSelector('[data-testid=screen-M1]');
@@ -170,7 +216,7 @@ try {
     if (card && (await card.getAttribute('data-backed')) !== 'true') {
       // En vanlig raket: svaren ska synas (mäts en gång), sedan första
       // alternativet som går.
-      if (!report.screens.raketkortet && !(await page.$('[data-testid=incident-band]'))) await measure('raketkortet', ['incident-option-*'], null);
+      if (!report.screens.raketkortet && !(await page.$('[data-testid=incident-band]')) && await page.$('[data-testid^=incident-option-]:not([disabled])')) await measure('raketkortet', ['incident-option-*'], null);
       const opt = await page.$('[data-testid^=incident-option-]:not([disabled])');
       if (opt) await opt.click().catch(() => {});
       await delay(800);
@@ -186,20 +232,37 @@ try {
     await delay(2500);
     const t1 = Number(await page.textContent('[data-testid=incident-countdown]'));
     await page.click('[data-testid^=incident-option-]:not([disabled])');
-    await delay(300);
-    const t2 = Number(await page.textContent('[data-testid=incident-countdown]'));
-    await delay(6000);
-    const t3 = Number(await page.textContent('[data-testid=incident-countdown]'));
-    const optionsShownAfterPick = await page.$$eval('[data-testid^=incident-option-]', (els) => els.length);
-    const hint = await page.textContent('[data-testid=back-picked-hint]').catch(() => null);
-    const earn = await page.textContent('[data-testid=back-earn-card]').catch(() => null);
+    // ORDER 289 — efter låst svar går en andra tidsgräns (10 s). Skärmarna
+    // mäts direkt, sedan att klockan räknar ned och att Guessing satsas.
+    const B1_SETTLE = 150;
+    const b1rows = [];
+    for (const [w, h] of SIZES) {
+      await page.setViewportSize({ width: w, height: h });
+      await delay(B1_SETTLE);
+      const row = { size: `${w}×${h}`, buttons: {} };
+      for (const b of ['incident-option-*', 'back-level-0', 'back-level-1', 'back-level-2', 'back-lock']) row.buttons[b] = await visible(`[data-testid=${b}]`);
+      row.ok = Object.values(row.buttons).every((v) => v.ok);
+      if (!row.ok) await page.screenshot({ path: resolve(OUT, `layout-B1-${w}x${h}.png`) });
+      b1rows.push(row);
+    }
+    await page.setViewportSize({ width: SIZES[0][0], height: SIZES[0][1] });
     await page.screenshot({ path: resolve(OUT, 'layout-back-klockan-star.png') });
-    // Med klockan stående: svaren, säkerheten och Stå för svaret ska synas.
-    await measure('B1', ['incident-option-*', 'back-level-0', 'back-level-1', 'back-level-2', 'back-lock'], null);
-    report.backClock = { beforePick: [t0, t1], afterPick: [t2, t3], runsBeforePick: t1 < t0, stopsAfterPick: t3 === t2, optionsShownAfterPick, hint, earn };
+    report.screens.B1 = { ok: b1rows.every((r) => r.ok), rows: b1rows };
+    console.log('B1', b1rows.map((r) => `${r.size}:${r.ok ? 'ok' : 'FEL'}`).join(' '));
+    const lock0 = Number(await page.textContent('[data-testid=incident-countdown]').catch(() => 'NaN'));
+    const chosen = await page.getAttribute('[data-testid=back-level-1]', 'data-chosen').catch(() => null);
+    const hint = await page.textContent('[data-testid=back-picked-hint]').catch(() => null);
+    const optionsShownAfterPick = await page.$$eval('[data-testid^=incident-option-]', (els) => els.length);
+    await delay(1500);
+    const lock1 = Number(await page.textContent('[data-testid=incident-countdown]').catch(() => 'NaN'));
+    const stepBefore = await page.getAttribute('[data-testid=incident-card]', 'data-step');
+    // Ingen nivå väljs: efter tidsgränsen ska Guessing ha satsats och raketen gått vidare.
+    await delay(11000);
+    const band = await page.textContent('[data-testid=incident-band]').catch(() => null);
+    const stepAfter = await page.getAttribute('[data-testid=incident-card]', 'data-step').catch(() => null);
+    report.backClock = { beforePick: [t0, t1], lock: [lock0, lock1], runsBeforePick: t1 < t0, lockCountsDown: lock1 < lock0, thinkSoPreselected: chosen === 'true', optionsShownAfterPick, hint, autoGuessed: band !== null || stepAfter !== stepBefore, band: band?.slice(0, 120) ?? null };
     console.log('backClock', JSON.stringify(report.backClock));
-    await page.click('[data-testid=back-level-0]');
-    await page.click('[data-testid=back-lock]');
+    // Resten av raketen spelas av slingan nedan.
   }
 
   // Resten av kvällen: svara på raketerna tills sopbilen kommer.
@@ -207,7 +270,7 @@ try {
     const card = await page.$('[data-testid=incident-card]');
     if (card && !(await page.$('[data-testid=incident-band]'))) {
       const backed = await card.getAttribute('data-backed');
-      if (backed !== 'true' && !report.screens.raketkortet) await measure('raketkortet', ['incident-option-*'], null);
+      if (backed !== 'true' && !report.screens.raketkortet && await page.$('[data-testid^=incident-option-]:not([disabled])')) await measure('raketkortet', ['incident-option-*'], null);
       const opt = await page.$('[data-testid^=incident-option-]:not([disabled])');
       if (opt) await opt.click().catch(() => {});
       if (backed === 'true') { await page.click('[data-testid=back-level-0]').catch(() => {}); await page.click('[data-testid=back-lock]').catch(() => {}); }

@@ -1,3 +1,4 @@
+import { useBusiness } from './business/BusinessContext';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { BusinessProvider } from './business/BusinessContext';
 import { InvestmentPanel } from './business/InvestmentPanel';
@@ -85,6 +86,8 @@ export function StrategicApp({ startIntroduction = false, onNewGame }: Strategic
 
 function StrategicShell() {
   const hostRef = useRef<HTMLDivElement>(null);
+  // ORDER 289 — morgonen visas först när krogen har ett namn.
+  const { hasName } = useBusiness();
   const [aboutOpen, setAboutOpen] = useState(false);
   // ORDER 264 — Måltidens hus öppnas från morgonens rad.
   const [houseOpen, setHouseOpen] = useState(false);
@@ -306,6 +309,9 @@ function StrategicShell() {
         onOpenNewspaper={newspaper.available ? newspaper.openAgain : undefined}
         onOpenBuy={() => setBuyOpen(true)}
         hidden={buyOpen}
+        // ORDER 289 — morgonen visas först när krogen har ett namn (utanför
+        // introduktionen, där namnet frågas efteråt).
+        waitForName={!hasName}
       />
       {/* ORDER 280 — morgonens inköp (Designs M1). */}
       <MorningBuyScreen open={buyOpen} onClose={() => setBuyOpen(false)} />

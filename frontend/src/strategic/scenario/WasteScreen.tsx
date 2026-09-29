@@ -8,6 +8,7 @@
 // 1,3 s senare; först då räknas kassan i HUD:en ner (CashCounter håller
 // avgiften tills dess). Rådet visas sist på bläckgrund.
 
+import { useBusiness } from '../business/BusinessContext';
 import { useEffect, useRef } from 'react';
 import { strings } from '../../content/strings';
 import { WASTE } from '../../sim/balance';
@@ -35,6 +36,7 @@ export function WasteScreen({ sim, onContinue }: { sim: SimulationState; onConti
   const feeRef = useRef<HTMLSpanElement>(null);
   const feeBox = useRef<HTMLDivElement>(null);
   const key = wasteHoldKey(sim);
+  const { business } = useBusiness();
   useEffect(() => {
     const timers: number[] = [];
     const rows = rowsRef.current?.querySelectorAll('[data-fraction]') ?? [];
@@ -83,7 +85,7 @@ export function WasteScreen({ sim, onContinue }: { sim: SimulationState; onConti
             <svg width={u(90)} height={u(70)} viewBox="0 0 24 18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" aria-hidden>
               <path d="M1 2h13v11H1z" /><path d="M14 6h5l3 4v3h-8z" /><circle cx="5" cy="14.5" r="2" /><circle cx="18" cy="14.5" r="2" />
             </svg>
-            <span className="nx-label">{t.hauler}</span>
+            <span className="nx-label" data-testid="waste-hauler">{t.hauler(business.name ?? '')}</span>
           </div>
           <div className="nx-waste-table" ref={rowsRef}>
             <div className="nx-waste-row nx-label"><span>{t.colFraction}</span><span>{t.colWhat}</span><span>{t.colKg}</span><span>{t.colValue}</span></div>
@@ -117,7 +119,9 @@ export function WasteScreen({ sim, onContinue }: { sim: SimulationState; onConti
           <div className="nx-waste-advice" data-testid="waste-advice">
             <div className="nx-label" style={{ color: 'rgba(255,255,255,0.7)' }}>{t.adviceKicker}</div>
             <p style={{ margin: `${u(8)} 0 0`, fontSize: u(28), fontWeight: 800 }}>
-              {advice ? t.advice(advice.fewer, (findDish(advice.dishId)?.name ?? advice.dishId).toLowerCase(), formatSek(advice.savesSek)) : t.adviceNone}
+              {w.shortage && w.shortage.guests > 0 ? t.adviceMore(w.shortage.clock, w.shortage.guests, w.shortage.more)
+                : w.shortage && w.shortage.clock ? t.adviceOutNoGuests(w.shortage.clock)
+                : advice ? t.advice(advice.fewer, (findDish(advice.dishId)?.name ?? advice.dishId).toLowerCase(), formatSek(advice.savesSek)) : t.adviceNone}
             </p>
           </div>
         </aside>

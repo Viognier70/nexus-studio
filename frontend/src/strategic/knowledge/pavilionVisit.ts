@@ -132,6 +132,7 @@ export function startVisit(state: SimulationState, pavilion: PavilionKey, mode: 
     ...state,
     rngState,
     pavilionVisit: visit,
+    examsTaken: (state.examsTaken ?? 0) + (mode === 'exam' ? 1 : 0),
     day: state.introduction
       ? state.day
       : { ...state.day, pavilionVisitsToday: [...(state.day.pavilionVisitsToday ?? []), pavilion] }

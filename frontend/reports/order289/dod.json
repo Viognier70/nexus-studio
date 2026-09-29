@@ -1,0 +1,792 @@
+{
+  "url": "http://localhost:4176/",
+  "build": "produktion (vite build + preview)",
+  "flags": "inga",
+  "viewport": "1920×1080",
+  "steps": [
+    {
+      "name": "framme i Grythyttan",
+      "atSeconds": 42
+    },
+    {
+      "name": "vinbaren öppnad",
+      "atSeconds": 119
+    },
+    {
+      "name": "inköpen på M1",
+      "atSeconds": 137
+    },
+    {
+      "name": "servicen öppnad",
+      "atSeconds": 141
+    },
+    {
+      "name": "raket 1: mn07-soppan",
+      "atSeconds": 240
+    },
+    {
+      "name": "back your knowledge (best)",
+      "atSeconds": 256
+    },
+    {
+      "name": "back your knowledge (wrong)",
+      "atSeconds": 264
+    },
+    {
+      "name": "raket 2: vb25-efter-stangning",
+      "atSeconds": 426
+    },
+    {
+      "name": "tisdag morgon",
+      "atSeconds": 457
+    },
+    {
+      "name": "morgon 3",
+      "atSeconds": 768
+    },
+    {
+      "name": "morgon 4",
+      "atSeconds": 1082
+    },
+    {
+      "name": "morgon 5",
+      "atSeconds": 1395
+    },
+    {
+      "name": "morgon 6",
+      "atSeconds": 1710
+    },
+    {
+      "name": "morgon 7",
+      "atSeconds": 2021
+    },
+    {
+      "name": "söndag",
+      "atSeconds": 2026
+    },
+    {
+      "name": "X1",
+      "atSeconds": 2048
+    }
+  ],
+  "shots": [
+    {
+      "file": "dod-00-startrutan.png",
+      "what": "normal start"
+    },
+    {
+      "file": "dod-01-M1-mentorn-dag-1.png",
+      "what": "M1 mentorn (practice)"
+    },
+    {
+      "file": "dod-02-S1-schema-introduktionen.png",
+      "what": "S1 schemat i introduktionen"
+    },
+    {
+      "file": "dod-05-introduktionen-kunskapsformerna.png",
+      "what": "första besöket i Måltidens hus: de tre kunskapsformerna"
+    },
+    {
+      "file": "dod-14-MD1-medaljerna.png",
+      "what": "MD1 medaljerna"
+    },
+    {
+      "file": "dod-12-O1-ova-forklaring.png",
+      "what": "O1 öva, förklaringen efter fel svar"
+    },
+    {
+      "file": "dod-13-O2-ova-resultat.png",
+      "what": "O2 resultatet (practice)"
+    },
+    {
+      "file": "dod-15-MD2-ny-medalj.png",
+      "what": "MD2 ny medalj (efter 1,2 s)"
+    },
+    {
+      "file": "dod-13-O2-prov-resultat.png",
+      "what": "O2 resultatet (exam)"
+    },
+    {
+      "file": "dod-14-MD1-ny-medalj.png",
+      "what": "MD1 med dagens medalj"
+    },
+    {
+      "file": "dod-01b-B0a-forsta-bankmotet-foodtruck.png",
+      "what": "B0a första bankmötet, food trucken"
+    },
+    {
+      "file": "dod-01c-B0b-forsta-bankmotet-vinbaren.png",
+      "what": "B0b första bankmötet, vinbaren"
+    },
+    {
+      "file": "dod-02-S1-schema-mandag.png",
+      "what": "S1 morgonens schema, måndag"
+    },
+    {
+      "file": "dod-26-lagret-spärren.png",
+      "what": "morgonen: servicen går inte att starta utan meny och dryckeslista"
+    },
+    {
+      "file": "dod-26b-M1-morgonen-tom.png",
+      "what": "M1 morgonens inköp innan något är köpt"
+    },
+    {
+      "file": "dod-27-M1-lappen-flyger.png",
+      "what": "M1: lappen flyger till kassan; kassan väntar tills den landat"
+    },
+    {
+      "file": "dod-27-M1-morgonen.png",
+      "what": "M1 efter inköpen: rätter, dryckeslista, dagens inköp och täckningen"
+    },
+    {
+      "file": "dod-04-M2-mentorn-service.png",
+      "what": "M2 mentorn första servicen"
+    },
+    {
+      "file": "dod-25-tiden-kvar-1.png",
+      "what": "tiden kvar av servicen (tidpunkt 1)"
+    },
+    {
+      "file": "dod-25-tiden-kvar-2.png",
+      "what": "tiden kvar av servicen (tidpunkt 2)"
+    },
+    {
+      "file": "dod-33-lagret-under-servicen.png",
+      "what": "lagret under servicen: portioner, glas och flaskor per artikel"
+    },
+    {
+      "file": "dod-34-strommen.png",
+      "what": "strömmen i stunden: beställningar, betalningar och dricks"
+    },
+    {
+      "file": "dod-20-vinbaren-spelarens-kamera.png",
+      "what": "vinbaren från spelarens kamera, under servicen"
+    },
+    {
+      "file": "dod-37-menyraket.png",
+      "what": "raket om kvällens meny (mn07-soppan)"
+    },
+    {
+      "file": "dod-30-raket-1-steg-1-fraga.png",
+      "what": "R1 raketkortet, steg 1 (episteme)"
+    },
+    {
+      "file": "dod-30-raket-1-steg-1-svar.png",
+      "what": "R2 rätt svar, steg 1"
+    },
+    {
+      "file": "dod-30-raket-1-steg-2-fraga.png",
+      "what": "R1 raketkortet, steg 2 (techne)"
+    },
+    {
+      "file": "dod-30-raket-1-steg-2-svar.png",
+      "what": "R2 rätt svar, steg 2"
+    },
+    {
+      "file": "dod-30-raket-1-steg-3-fraga.png",
+      "what": "R1 raketkortet, steg 3 (phronesis)"
+    },
+    {
+      "file": "dod-30-raket-1-steg-3-svar.png",
+      "what": "R2 rätt svar, steg 3"
+    },
+    {
+      "file": "dod-32-raket-1-utfallet.png",
+      "what": "efter raket 1: raden i rummet och mätarna"
+    },
+    {
+      "file": "dod-38-H1-handelser.png",
+      "what": "H1 händelserna: beställt, betalt, dricks, i kväll och Back your knowledge"
+    },
+    {
+      "file": "dod-39-B1-ratt-fraga.png",
+      "what": "B1: valt svar och säkerhet, före Stå för svaret (best)"
+    },
+    {
+      "file": "dod-40-B1-ratt-steg-1.png",
+      "what": "B1: svaret, krediterna flyger till HUD:en"
+    },
+    {
+      "file": "dod-40-B1-ratt-steg-3.png",
+      "what": "B1: svaret, krediterna flyger till HUD:en"
+    },
+    {
+      "file": "dod-39-B1-fel-fraga.png",
+      "what": "B1: valt svar och säkerhet, före Stå för svaret (wrong)"
+    },
+    {
+      "file": "dod-40-B1-fel.png",
+      "what": "B1: svaret, krediterna faller ur HUD:en"
+    },
+    {
+      "file": "dod-21-kvallen-figurerna-1.png",
+      "what": "kvällen, figurerna i rörelse (tidpunkt 1)"
+    },
+    {
+      "file": "dod-21-kvallen-figurerna-2.png",
+      "what": "kvällen, figurerna i rörelse (tidpunkt 2)"
+    },
+    {
+      "file": "dod-35-slumpens-handelse.png",
+      "what": "strömmen: en slumpens händelse"
+    },
+    {
+      "file": "dod-28-gast-utan-alternativ.png",
+      "what": "servicen: en gäst utan alternativ för sin kost eller plånbok (strömmen), kassan överst"
+    },
+    {
+      "file": "dod-31-raket-2-fel-fraga.png",
+      "what": "R1 raketkortet, steg 2 (techne)"
+    },
+    {
+      "file": "dod-31-raket-2-fel-svar.png",
+      "what": "R3 fel svar, steg 2"
+    },
+    {
+      "file": "dod-32-raket-2-utfallet.png",
+      "what": "efter raket 2: raden i rummet och mätarna"
+    },
+    {
+      "file": "dod-42-S1-sopbilen-bilen.png",
+      "what": "S1: bilen rullar in, fraktionerna läggs fram"
+    },
+    {
+      "file": "dod-42-S1-sopbilen.png",
+      "what": "S1 sopbilen: fraktionerna, svinnet, miljöavgiften och rådet"
+    },
+    {
+      "file": "dod-43-R1-kvallens-resultat.png",
+      "what": "R1 kvällens resultat: vad kvällen gav och tog"
+    },
+    {
+      "file": "dod-40-L1-kvallens-lardom.png",
+      "what": "L1 kvällens lärdom"
+    },
+    {
+      "file": "dod-41-K1-kvallsberattelsen.png",
+      "what": "K1 kvällsberättelsen"
+    },
+    {
+      "file": "dod-44-rester-fragan.png",
+      "what": "morgonen: gårdagens rester och frågan om tillvaratagande"
+    },
+    {
+      "file": "dod-45-rester-svaret.png",
+      "what": "morgonen: svaret och förklaringen"
+    },
+    {
+      "file": "dod-22-lordag-figurerna-1.png",
+      "what": "lördagskvällen, figurerna i rörelse (tidpunkt 1)"
+    },
+    {
+      "file": "dod-22-lordag-figurerna-2.png",
+      "what": "lördagskvällen, figurerna i rörelse (tidpunkt 2)"
+    },
+    {
+      "file": "dod-10-T1-sondagstidningen.png",
+      "what": "T1 söndagstidningen"
+    },
+    {
+      "file": "dod-11-B1-bankmotet.png",
+      "what": "B1 bankmötet"
+    },
+    {
+      "file": "dod-03-S2-schema-sondag.png",
+      "what": "S2 morgonens schema, söndag"
+    },
+    {
+      "file": "dod-50-X1-utan-verksamhet-och-pengar.png",
+      "what": "X1 utan verksamhet och pengar (sparfil)"
+    }
+  ],
+  "rockets": [
+    {
+      "n": 1,
+      "id": "mn07-soppan",
+      "steps": [
+        {
+          "step": 0,
+          "axis": "episteme",
+          "question": "What makes the soup creamy?",
+          "countdown": "19",
+          "answer": {
+            "id": "a",
+            "quality": "best"
+          },
+          "band": "Right · on to TechneOne more guest comes in. The soup is finished with cream, a dairy product, so it contains lactose."
+        },
+        {
+          "step": 1,
+          "axis": "techne",
+          "question": "How do you bring out the sweetness of the root vegetables?",
+          "countdown": "20",
+          "answer": {
+            "id": "c",
+            "quality": "best"
+          },
+          "band": "Right · on to PhronesisOne more guest comes in. At high heat the surface browns and caramelises, and the natural sugars in the roots taste sweeter and deeper."
+        },
+        {
+          "step": 2,
+          "axis": "phronesis",
+          "question": "What do you suggest for the guest who cannot tolerate lactose?",
+          "countdown": "25",
+          "answer": {
+            "id": "b",
+            "quality": "best"
+          },
+          "band": "Right · rocket complete2 more guests come in. The guest orders the lentils and thanks the host for being clear."
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "id": "vb25-efter-stangning",
+      "steps": [
+        {
+          "step": 0,
+          "axis": "episteme",
+          "question": "What decides how late the wine bar may serve alcohol?",
+          "countdown": "20",
+          "answer": {
+            "id": "c",
+            "quality": "best"
+          },
+          "band": "Right · on to TechneOne more guest comes in. The licence states when serving must stop. If that time has not passed you may serve, and then the question is not whether you may but whether you should."
+        },
+        {
+          "step": 1,
+          "axis": "techne",
+          "question": "How do you serve three glasses when the bar is already being cleaned?",
+          "countdown": "25",
+          "answer": {
+            "id": "c",
+            "quality": "wrong"
+          },
+          "band": "Wrong · the waiter takes overThe glasses are smeared and the wine tastes flat. The party exchange disappointed looks. The staff take over: the party are allowed to stay for a long time, and closing drags on."
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "houseIntro": {
+    "forms": [
+      "Episteme · Scientific knowledge",
+      "Techne · Craft knowledge",
+      "Phronesis · Practical wisdom"
+    ]
+  },
+  "s1ScrollTopBeforeShot": 0,
+  "stock": {
+    "counterBefore": {
+      "value": "119931",
+      "shown": "119931",
+      "credits": "19",
+      "creditsShown": "19"
+    },
+    "buyIsPrimary": true,
+    "blockedText": "Set the menu and the drinks list before you open: at least one dish and one drink in stock.",
+    "startDisabledBefore": true,
+    "beforeBigBuy": {
+      "value": "118941",
+      "shown": "118948",
+      "credits": "19",
+      "creditsShown": "19"
+    },
+    "midFly": {
+      "value": "118340",
+      "shown": "118940",
+      "credits": "19",
+      "creditsShown": "19"
+    },
+    "afterBigBuy": {
+      "value": "118338",
+      "shown": "118338",
+      "credits": "19",
+      "creditsShown": "19"
+    },
+    "coverage": {
+      "covers": "25",
+      "guests": "17"
+    },
+    "spent": "1580",
+    "qty": {
+      "root-soup": "5",
+      "chicken-plate": "5",
+      "pork-plate": "5",
+      "lentil-plate": "5",
+      "dairy-dessert": "5",
+      "lingon-sorbet": "0",
+      "chanterelle-toast": "0",
+      "fish-plate": "0",
+      "lamb-plate": "0",
+      "game-plate": "0",
+      "house-wine": "2",
+      "beer": "6",
+      "alcohol-free": "2",
+      "fine-wine": "2"
+    },
+    "afterReturn": {
+      "value": "118489",
+      "shown": "118487",
+      "credits": "19",
+      "creditsShown": "19",
+      "qtyPork": "0"
+    },
+    "openDoorsDisabled": false
+  },
+  "fpsService": 28,
+  "clock": [
+    {
+      "text": "18:07Service4 h 53 min left181920212223",
+      "leftMinutes": "293"
+    },
+    {
+      "text": "19:07Service3 h 53 min left181920212223",
+      "leftMinutes": "233"
+    }
+  ],
+  "serviceStock": [
+    {
+      "id": "service-stock-root-soup",
+      "left": "5",
+      "text": "Root vegetable soup5 ptnIn stock"
+    },
+    {
+      "id": "service-stock-chicken-plate",
+      "left": "5",
+      "text": "Chicken with root veg5 ptnIn stock"
+    },
+    {
+      "id": "service-stock-lentil-plate",
+      "left": "5",
+      "text": "Roast roots with lentils5 ptnIn stock"
+    },
+    {
+      "id": "service-stock-dairy-dessert",
+      "left": "5",
+      "text": "Cream dessert5 ptnIn stock"
+    },
+    {
+      "id": "service-stock-house-wine",
+      "left": "10",
+      "text": "Grüner Veltliner2 btlIn stock"
+    },
+    {
+      "id": "service-stock-beer",
+      "left": "6",
+      "text": "Local beer with the meal6 btlIn stock"
+    },
+    {
+      "id": "service-stock-alcohol-free",
+      "left": "10",
+      "text": "Alcohol-free lingonberry sparkling2 btlIn stock"
+    },
+    {
+      "id": "service-stock-fine-wine",
+      "left": "10",
+      "text": "Pinot Noir2 btlIn stock"
+    }
+  ],
+  "stream": [
+    "Doors open. Service begins.",
+    "A sauce from yesterday sat untasted in the freezer.",
+    "The delivery notes were signed and filed the minute they arrived.",
+    "The briefing on the bookings reached all three stations.",
+    "The vegetable crates blocked the way to the dish station.",
+    "Table 4 · 1 × Cream dessert · 1 glass Pinot Noir · 1 glass Grüner Veltliner",
+    "Table 4 · 1 × Root vegetable soup · 1 × Local beer with the meal",
+    "Local beer with the meal running low · 5 glasses left",
+    "Table 5 · 1 × Root vegetable soup · 2 glasses Grüner Veltliner",
+    "Root vegetable soup running low · 3 ptn left",
+    "Table 5 · 1 × Cream dessert · 1 glass Pinot Noir",
+    "Cream dessert running low · 3 ptn left",
+    "Table 6 · 1 × Chicken with root veg · 2 glasses Pinot Noir",
+    "The guest orders the lentils and thanks the host for being clear.",
+    "Table 6 · 1 × Root vegetable soup · 1 × Local beer with the meal",
+    "Table 8 · 1 × Cream dessert · 1 glass Grüner Veltliner",
+    "The waiter guesses at an answer. The guest nods politely, unconvinced. The waiter takes over and recommends something at random. The guest drinks without much joy.",
+    "Table 7 · 1 × Root vegetable soup · 1 glass Grüner Veltliner",
+    "Grüner Veltliner running low · 5 glasses left",
+    "Root vegetable soup sold out · off the menu",
+    "The guest orders the lentils and says they will come back with friends.",
+    "Table 8 · 1 × Roast roots with lentils · 1 × Local beer with the meal · 1 glass Pinot Noir",
+    "Pinot Noir running low · 5 glasses left",
+    "The neighbour complains about the noise. The guests notice.",
+    "Tip table 4 · to the staff",
+    "Table 4 pays",
+    "Table 9 · 1 × Chicken with root veg · 1 glass Alcohol-free lingonberry sparkling",
+    "Chicken with root veg running low · 3 ptn left",
+    "Tip table 5 · to the staff",
+    "Table 5 pays",
+    "Table 9 · 1 × Cream dessert · 2 × Local beer with the meal",
+    "Two tables raised a hand a few seconds apart.",
+    "Tip table 6 · to the staff",
+    "Table 6 pays",
+    "Table 10 · 1 × Chicken with root veg · 1 glass Pinot Noir · 1 glass Grüner Veltliner",
+    "A wallenbergare came out perfect and the table said so.",
+    "Table 10 · 1 × Roast roots with lentils · 1 glass Grüner Veltliner",
+    "Roast roots with lentils running low · 3 ptn left",
+    "Table 10 wanted Root vegetable soup · sold out",
+    "Tip table 7 · to the staff",
+    "Table 7 pays",
+    "A guest says out loud that this is the best wine bar in town. The room smiles.",
+    "Table 1 · 1 × Cream dessert · 1 × Local beer with the meal · 1 glass Pinot Noir",
+    "Local beer with the meal sold out · off the menu",
+    "Cream dessert sold out · off the menu",
+    "Table 1 wanted Root vegetable soup · sold out",
+    "Tip table 8 · to the staff",
+    "Table 8 pays",
+    "Table 1 · 1 × Roast roots with lentils · 1 glass Pinot Noir",
+    "Tip table 9 · to the staff",
+    "Table 9 pays",
+    "Tip table 10 · to the staff",
+    "Table 10 pays",
+    "Table 2 · 1 × Chicken with root veg · 1 glass Grüner Veltliner · 1 glass Pinot Noir",
+    "Table 2 wanted Cream dessert · sold out",
+    "A regular buys the bar a round: 2 glasses, SEK 310.",
+    "Pinot Noir sold out · off the menu",
+    "Grüner Veltliner sold out · off the menu",
+    "Tip table 1 · to the staff",
+    "Table 1 pays",
+    "Table 2 pays",
+    "Table 2 · 1 × Chicken with root veg",
+    "Chicken with root veg sold out · off the menu",
+    "Table 4 · 1 × Roast roots with lentils",
+    "Table 4 wanted Root vegetable soup · sold out",
+    "A regular was welcomed by name at the door.",
+    "2 guests walk in without a booking.",
+    "The kitchen is out of food · every dish sold out",
+    "Roast roots with lentils sold out · off the menu",
+    "A guest at table 5 heard that everything they could eat had run out and left without ordering.",
+    "A guest at table 6 heard that everything they could eat had run out and left without ordering.",
+    "A guest at table 7 heard that everything they could eat had run out and left without ordering.",
+    "The table by the window ordered a second bottle.",
+    "A guest at table 4 heard that everything they could eat had run out and left without ordering.",
+    "Two extra notes were left as a tip on the bill.",
+    "The butter knife was missing at three covers — the table setting was cut short when prep ran late elsewhere.",
+    "The glasses are smeared and the wine tastes flat. The party exchange disappointed looks. The staff take over: the party are allowed to stay for a long time, and closing drags on."
+  ],
+  "menuRocket": {
+    "id": "mn07-soppan",
+    "question": "What makes the soup creamy?"
+  },
+  "backs": [
+    {
+      "want": "best",
+      "id": "mn05-linser",
+      "before": {
+        "value": "118552",
+        "shown": "118552",
+        "credits": "22",
+        "creditsShown": "22"
+      },
+      "steps": [
+        {
+          "step": 0,
+          "option": "a",
+          "quality": "best",
+          "level": 2,
+          "band": "Right · on to Techne · +3 creditsYou knew it, and you backed it. One more guest comes in. The dish is lentils, root vegetables and herbs. Lentils are legumes and a good source of protein, so the plate is filling without meat or dairy.",
+          "mid": {
+            "value": "118549",
+            "shown": "118549",
+            "credits": "26",
+            "creditsShown": "24"
+          }
+        },
+        {
+          "step": 1,
+          "option": "c",
+          "quality": "best",
+          "level": 1,
+          "band": "Right · on to Phronesis · +3 creditsRight. You thought so, and you were. One more guest comes in. Unlike dried beans, lentils need no soaking. Rinse them and simmer gently so they hold their shape.",
+          "mid": {
+            "value": "118545",
+            "shown": "118545",
+            "credits": "30",
+            "creditsShown": "27"
+          }
+        },
+        {
+          "step": 2,
+          "option": "b",
+          "quality": "best",
+          "level": 1,
+          "band": "Right · rocket complete · +4 creditsRight. You thought so, and you were. 2 more guests come in. The guest orders the lentils and says they will come back with friends.",
+          "mid": {
+            "value": "118699",
+            "shown": "118700",
+            "credits": "35",
+            "creditsShown": "31"
+          }
+        }
+      ],
+      "defaults": [
+        "true",
+        "true",
+        "true"
+      ],
+      "after": {
+        "value": "118696",
+        "shown": "118696",
+        "credits": "35",
+        "creditsShown": "35"
+      }
+    },
+    {
+      "want": "wrong",
+      "id": "mn01-veltliner",
+      "before": {
+        "value": "118696",
+        "shown": "118696",
+        "credits": "35",
+        "creditsShown": "35"
+      },
+      "steps": [
+        {
+          "step": 0,
+          "option": "b",
+          "quality": "wrong",
+          "level": 1,
+          "band": "Wrong · the waiter takes over · −2 creditsYou thought so, but it wasn’t. The rocket ends here. The waiter guesses at an answer. The guest nods politely, unconvinced. The waiter takes over and recommends something at random. The guest drinks without much joy.",
+          "mid": {
+            "value": "118692",
+            "shown": "118692",
+            "credits": "33",
+            "creditsShown": "33"
+          }
+        }
+      ],
+      "defaults": [
+        "true"
+      ],
+      "after": {
+        "value": "118689",
+        "shown": "118689",
+        "credits": "33",
+        "creditsShown": "33"
+      }
+    }
+  ],
+  "chanceShot": "The neighbour complains about the noise. The guests notice.",
+  "lostSale": {
+    "line": "Wine bar Vinbaren vid torgetErik AndersgatanLinnskällvägenBaluns vägLokstallsgatanStentrygatanOngoing until the next incidentThe waiter is tied up at table 6, and the other tables wait longer.The Wine BarGREY SKETCH — © OpenStreetMap contributors (ODbL) · building heights and materials stylisedMonday · Week 1 of 8ServiceMon · wk 1 · ServiceMidsummer this week21:44Service1 h 16 min left181920212223CashSEK 125,093Credits331×2×4×☰Back1 the village · 2 the district · 3 your block · 4 your businessMouse wheel zooms · left drag pans · right/middle drag rotates · click selects · Esc out×EventsOrderedPaidTips21:44A guest at table 5 heard that everything they could eat had run out and left without ordering.21:39Table 4 pays+SEK 18221:38Table 4 · 1 × Roast roots with lentilsSEK 16521:38The kitchen is out of food · every dish sold out21:38Roast roots with lentils sold out · off the menu21:372 guests walk in without a booking.21:31Table 2 pays+SEK 19321:31A regular was welcomed by name at the door.21:29Table 4 · 1 × Roast roots with lentilsSEK 16521:29Table 4 wanted Root vegetable soup · sold out21:21Table 2 · 1 × Chicken with root vegSEK 17521:21Chicken with root veg sold out · off the menu21:19Table 2 pays+SEK 534TonightPaidSEK 6,492Tips to the staffSEK 531Open tabs1 table · SEK 165Back your knowledge1 left tonightLaunch the rocket→TakingsGuestsStaffTen steps per meter. Direction, not amounts.Stock · kitchenRoot vegetable soup0 ptnSold outChicken with root veg0 ptnSold outRoast roots with lentils0 ptnSold outCream dessert0 ptnSold outStock · barGrüner Veltliner0 btlSold outLocal beer with the meal0 btlSold outAlcohol-free lingonberry sparkling1 btl + 4In stockPinot Noir0 btlSold outMise en placeicenapkinscutlerystationsgarnish",
+    "cash": "125093"
+  },
+  "s1": {
+    "cashAtOpen": {
+      "value": "124541",
+      "shown": "125010",
+      "credits": "34",
+      "creditsShown": "34"
+    },
+    "beforeFly": {
+      "value": "124535",
+      "shown": "124535",
+      "credits": "34",
+      "creditsShown": "34"
+    },
+    "fee": "469",
+    "value": "0",
+    "kg": "16.8 kg",
+    "fractions": [
+      {
+        "key": "unsold",
+        "kg": "0"
+      },
+      {
+        "key": "plates",
+        "kg": "3"
+      },
+      {
+        "key": "glass",
+        "kg": "2.75"
+      },
+      {
+        "key": "cardboard",
+        "kg": "11"
+      }
+    ],
+    "advice": "Tomorrow morningThe food ran out at 21:38 and 12 guests went without. Buy about 15 more portions tomorrow.",
+    "afterFly": {
+      "value": "124532",
+      "shown": "124532",
+      "credits": "34",
+      "creditsShown": "34"
+    }
+  },
+  "r1": [
+    {
+      "key": "result-money",
+      "tone": "won",
+      "delta": "4528"
+    },
+    {
+      "key": "result-credits",
+      "tone": "won",
+      "delta": "34"
+    },
+    {
+      "key": "result-reputation",
+      "tone": "lost",
+      "delta": "-33.6"
+    },
+    {
+      "key": "result-knowledge",
+      "tone": "won",
+      "delta": "7"
+    },
+    {
+      "key": "result-experience",
+      "tone": "won",
+      "delta": "24"
+    },
+    {
+      "key": "result-social",
+      "tone": "even",
+      "delta": "0"
+    },
+    {
+      "key": "result-economic",
+      "tone": "won",
+      "delta": "0.6785622237228268"
+    },
+    {
+      "key": "result-ecological",
+      "tone": "even",
+      "delta": "0"
+    }
+  ],
+  "eveningSequences": [
+    "S1 → R1 → L1 → K1",
+    "S1 → R1 → L1 → K1",
+    "S1 → R1 → L1 → K1",
+    "S1 → R1 → L1 → K1",
+    "S1 → R1 → L1 → K1"
+  ],
+  "salvage": [
+    {
+      "title": "Yesterday's leftovers5 portions of chicken with root veg are left in the cold roomCooked chicken from yesterday, chilled overnight. How is it used?AThe same pla",
+      "resolved": "wrong"
+    },
+    {
+      "title": "Yesterday's leftovers6 portions of chicken with root veg are left in the cold roomCooked chicken from yesterday, chilled overnight. How is it used?AThe same pla",
+      "resolved": "wrong"
+    },
+    {
+      "title": "Yesterday's leftovers5 portions of chicken with root veg are left in the cold roomCooked chicken from yesterday, chilled overnight. How is it used?AThe same pla",
+      "resolved": "wrong"
+    }
+  ],
+  "saturdayGuests": [
+    "TakingsGuestsStaffTen steps per meter. Direction, not amounts.",
+    "TakingsGuestsStaffTen steps per meter. Direction, not amounts."
+  ],
+  "newspaper": "The Grythyttan LocalSundaySunday · week 1",
+  "x1": {
+    "save": "reports/order270/save-utan-verksamhet.json",
+    "cashInSave": 30372,
+    "cashLoaded": 0
+  }
+}

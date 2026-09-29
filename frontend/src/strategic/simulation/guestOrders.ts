@@ -174,6 +174,8 @@ export function orderForGuest(draft: SimulationState, guest: Guest, rand: () => 
   const lost = (reason: MissingReason): GuestOrder => {
     draft.reputation = clampReputation(draft.reputation - GUESTS.missingOptionReputation);
     const partyLeft = rand() < GUESTS.partyLeavesChance ? partyLeaves(draft, guest) : 0;
+    // ORDER 289 — gäster som gick utan mat, till rådet efter kvällen.
+    if (reason === 'soldOut') draft.day.soldOutGuests = (draft.day.soldOutGuests ?? 0) + 1 + partyLeft;
     streamLine(draft, s.lost(reason, table, partyLeft), 'guest_lost_sale');
     return { kind: 'lost', reason, partyLeft };
   };
