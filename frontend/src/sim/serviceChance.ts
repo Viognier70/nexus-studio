@@ -9,6 +9,7 @@
 // stället. Varje händelse verkar direkt (lagret, kassan, gästerna) och
 // står i strömmen. Talen står i `balance.ts` `SERVICE_STREAM`.
 
+import { clockMinutes, formatClock } from './incidents';
 import type { SimulationState } from '../strategic/types';
 import { createRng } from '../strategic/util/rng';
 import { applyCashRevenue } from '../strategic/simulation/cashReading';
@@ -108,16 +109,21 @@ export function maybeChance(draft: SimulationState): void {
   }
   let text: string | null = null;
   let kind: ChanceKind = KINDS[start];
+  // ORDER 285 — vad händelsen sålde, till kvällens händelselogg.
+  const cashBefore = draft.cash;
   for (let i = 0; i < KINDS.length && text === null; i++) {
     kind = KINDS[(start + i) % KINDS.length];
     text = apply(draft, kind, r);
   }
+  const soldSek = Math.round(draft.cash - cashBefore);
   draft.rngState = rng.state;
   draft.day = { ...draft.day, chanceTimes: times.slice(1) };
   if (text) {
     draft.eventStream = [...draft.eventStream, {
       at: draft.simTime, text, category: kind === 'neighbour' || kind === 'glassBroken' ? 'ambient' : 'positive',
-      causeTag: null, causeChainId: null, sustainability: 'social', kind: `chance_${kind}`, scenarioId: null
+      causeTag: null, causeChainId: null, sustainability: 'social', kind: `chance_${kind}`, scenarioId: null,
+      clock: formatClock(clockMinutes(draft)),
+      ...(soldSek !== 0 ? { chanceSek: soldSek } : {})
     }];
   }
 }

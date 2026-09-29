@@ -96,7 +96,7 @@ export function fly(layer: HTMLElement, text: string, from: DOMRect, to: DOMRect
   d.className = 'nx-fly';   // position:absolute; font: 700 var(--size) var(--font-heading); padding 8px 12px; shadow-md; tabular-nums; nowrap
   const L = layer.getBoundingClientRect(), k = L.width / 1920;
   const ax = (from.left + from.width / 2 - L.left) / k, ay = (from.top + from.height / 2 - L.top) / k;
-  Object.assign(d.style, { left: ax + 'px', top: ay + 'px', background: o.bg, color: o.fg ?? '#fff', fontSize: (o.size ?? 30) + 'px' });
+  Object.assign(d.style, { left: ax + 'px', top: ay + 'px', background: o.bg, color: o.fg ?? 'var(--w-ink)', fontSize: (o.size ?? 30) + 'px' });
   layer.appendChild(d);
   if (typeof d.animate !== "function") { layer.removeChild(d); o.done?.(); return; }
   const b = 'translate(-50%,-50%)'; let kf: Keyframe[], dur = 900, easing = 'cubic-bezier(.45,0,.25,1)';

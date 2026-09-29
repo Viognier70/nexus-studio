@@ -95,6 +95,11 @@ export function WasteScreen({ sim, onContinue }: { sim: SimulationState; onConti
                 <strong className={k === 'unsold' && (f[k]?.valueSek ?? 0) > 0 ? 'nx-accent-text' : undefined}>{k === 'unsold' && (f[k]?.valueSek ?? 0) > 0 ? formatSek(f[k]!.valueSek) : '—'}</strong>
               </div>
             ))}
+            {w.aside && (
+              <div className="nx-waste-row" data-testid="waste-aside" style={{ gridTemplateColumns: '1fr' }}>
+                <span className="nx-accent-text" style={{ fontWeight: 700 }}>{t.asideLine(w.aside.portions, (findDish(w.aside.dishId)?.name ?? w.aside.dishId).toLowerCase())}</span>
+              </div>
+            )}
             <div className="nx-waste-row nx-waste-total"><strong>{t.total}</strong><span /><span /><strong data-testid="waste-total-kg">{kg(w.kg ?? 0)}</strong></div>
           </div>
         </section>

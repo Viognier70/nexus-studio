@@ -94,7 +94,7 @@ function MedalsSeen({ held: medals, onlyHeld }: { held: SimulationState["medals"
   const rows = SEEN_ORDER.filter((p) => !onlyHeld || medals[p]);
   return (
     <div className="nxs-mt-24" data-testid="bank-seen">
-      <div className="nx-label" style={{ paddingBottom: 'calc(12 * var(--nx-u))', borderBottom: 'var(--nx-line) solid var(--nx-ink)' }}>{sb.seen}</div>
+      <div className="nx-label" style={{ paddingBottom: 'calc(12 * var(--nx-u))', borderBottom: '1px solid var(--nx-rule)' }}>{sb.seen}</div>
       {rows.length === 0 && <p className="nx-body nx-muted nxs-mt-16">{e.shownNothing}</p>}
       {rows.map((p) => {
         const level = medals[p];

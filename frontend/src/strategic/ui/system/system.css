@@ -99,54 +99,87 @@
 
 :root {
   --nx-u: min(calc(100vw / 1920), calc(100vh / 1080));
-  --nx-ground: #f3f2f2;
-  --nx-ink: #201e1d;
-  --nx-ink-2: #6f6b69;
-  --nx-rule: #cfcccb;
-  --nx-accent: #ec3013;
-  --nx-accent-700: #b01a00;
+  /* ORDER 285 — den varma formen (Designs leverans 2026-09-29, nexus-warm.css):
+     det man styr med är mörkt trä med en tunn mässingskant, det man läser är
+     papper (.nx-paper). Variablernas namn står kvar så att alla skärmar blir
+     varma på en gång; värdena är trä: grädde för text, mässing för etiketter,
+     guld för handling och klarat. Rött finns bara som --nx-ember. */
+  --nx-ground: var(--w-walnut-700);
+  --nx-ink: var(--w-cream);
+  --nx-ink-2: var(--w-cream-soft);
+  --nx-rule: rgba(215, 162, 76, 0.25);
+  --nx-accent: var(--w-gold);
+  --nx-accent-700: var(--w-brass);
+  --nx-accent-100: rgba(232, 185, 58, 0.16);
+  --nx-on-accent: var(--w-ink);
+  --nx-ember: var(--w-ember);
+  --nx-surface: var(--w-panel);
+  --nx-border: var(--w-panel-border);
+  --nx-radius: max(12px, calc(26 * var(--nx-u)));
+  --nx-radius-card: max(10px, calc(18 * var(--nx-u)));
   --nx-margin: calc(72 * var(--nx-u));
   --nx-gutter: calc(24 * var(--nx-u));
   --nx-col: calc(126 * var(--nx-u));
   --nx-line: max(1px, calc(2 * var(--nx-u)));
 }
 
+/* Papper: menyn, lärdomen, tidningen, svarsraderna. Samma variabler, med
+   papperets värden, så att allt inuti blir mörk text på papper. */
+.nx-paper {
+  --nx-ground: var(--w-paper);
+  --nx-ink: var(--w-ink);
+  --nx-ink-2: var(--w-ink-soft);
+  --nx-rule: rgba(42, 28, 19, 0.18);
+  --nx-accent: var(--w-ink);
+  --nx-accent-700: var(--w-ink-label);
+  --nx-accent-100: rgba(232, 185, 58, 0.22);
+  --nx-on-accent: var(--w-paper);
+  --nx-surface: var(--w-paper);
+  --nx-border: 1px solid rgba(42, 28, 19, 0.12);
+  color: var(--nx-ink);
+}
+
 .nx {
-  font-family: 'Archivo', system-ui, sans-serif;
+  font-family: var(--w-font-body);
   color: var(--nx-ink);
   font-size: calc(28 * var(--nx-u));
   line-height: 1.4;
-  font-weight: 400;
+  font-weight: 500;
   -webkit-font-smoothing: antialiased;
+  font-variant-numeric: tabular-nums;
   box-sizing: border-box;
 }
 .nx *, .nx *::before, .nx *::after { box-sizing: border-box; }
 
-.nx-display { font-size: calc(88 * var(--nx-u)); line-height: 0.95; font-weight: 800; letter-spacing: -0.01em; margin: 0; }
-.nx-heading { font-size: calc(56 * var(--nx-u)); line-height: 1.05; font-weight: 800; letter-spacing: -0.005em; margin: 0; }
-.nx-mid { font-size: calc(36 * var(--nx-u)); line-height: 1.15; font-weight: 700; margin: 0; }
+.nx-display { font-family: var(--w-font-heading); font-size: calc(88 * var(--nx-u)); line-height: 1.02; font-weight: 400; letter-spacing: 0; margin: 0; }
+.nx-heading { font-family: var(--w-font-heading); font-size: calc(56 * var(--nx-u)); line-height: 1.1; font-weight: 400; letter-spacing: 0; margin: 0; }
+.nx-mid { font-family: var(--w-font-heading); font-size: calc(36 * var(--nx-u)); line-height: 1.2; font-weight: 400; margin: 0; }
+/* Siffror i HUD:en och på skärmarna: Young Serif (Designs leverans). */
+.nx-num { font-family: var(--w-font-heading); font-weight: 400; font-variant-numeric: tabular-nums; }
 .nx-body { font-size: calc(28 * var(--nx-u)); line-height: 1.4; font-weight: 400; margin: 0; }
-.nx-small { font-size: calc(22 * var(--nx-u)); line-height: 1.4; font-weight: 400; margin: 0; }
-.nx-label { font-size: calc(20 * var(--nx-u)); line-height: 1.3; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; margin: 0; }
+.nx-small { font-size: max(12px, calc(22 * var(--nx-u))); line-height: 1.4; font-weight: 500; margin: 0; }
+.nx-label { font-size: max(12px, calc(20 * var(--nx-u))); line-height: 1.3; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; margin: 0; color: var(--nx-accent-700); }
 .nx-muted { color: var(--nx-ink-2); }
 .nx-accent-text { color: var(--nx-accent-700); }
 
 /* Ytor: en skärm täcker spelvyn, en panel ligger över den på samma rutnät. */
 .nx-screen {
   position: fixed; inset: 0; z-index: 60;
-  background: var(--nx-ground);
+  background: var(--w-walnut-900);
+  color: var(--nx-ink);
   padding: calc(72 * var(--nx-u)) var(--nx-margin);
   overflow: auto;
   pointer-events: auto;
 }
 .nx-panel {
-  background: var(--nx-ground);
-  border: var(--nx-line) solid var(--nx-ink);
-  border-radius: 0;
-  box-shadow: none;
+  background: var(--nx-surface);
+  border: var(--nx-border);
+  border-radius: var(--nx-radius);
+  box-shadow: var(--w-shadow-panel), var(--w-panel-inset, inset 0 1px 0 rgba(255,220,160,.10));
+  overflow: hidden;
   pointer-events: auto;
 }
-.nx-rule { border: 0; border-top: var(--nx-line) solid var(--nx-ink); margin: 0; }
+.nx-rule { border: 0; border-top: 1px solid var(--nx-rule); margin: 0; }
 .nx-rule-thin { border: 0; border-top: max(1px, calc(1 * var(--nx-u))) solid var(--nx-rule); margin: 0; }
 
 /* Knappar: 72 px höga, etiketten flush vänster, pil till höger. */
@@ -154,26 +187,33 @@
   display: flex; align-items: center; justify-content: space-between; gap: calc(16 * var(--nx-u));
   width: 100%; min-height: max(44px, calc(72 * var(--nx-u)));
   padding: 0 calc(28 * var(--nx-u));
-  font: inherit; font-size: calc(28 * var(--nx-u)); font-weight: 700; text-align: left;
-  border-radius: 0; cursor: pointer; box-shadow: none;
+  font: inherit; font-size: max(15px, calc(28 * var(--nx-u))); font-weight: 800; text-align: left;
+  border-radius: max(10px, calc(20 * var(--nx-u))); cursor: pointer; box-shadow: none;
 }
-.nx-btn-primary { background: var(--nx-accent); color: #fff; border: var(--nx-line) solid var(--nx-accent); }
-.nx-btn-primary:hover { background: var(--nx-accent-700); border-color: var(--nx-accent-700); }
-.nx-btn-secondary { background: transparent; color: var(--nx-ink); border: var(--nx-line) solid var(--nx-ink); }
-.nx-btn-secondary:hover { background: #e7e5e4; }
+/* På trä: guld med mörk text; på papper: mörk med ljus text (WARM.button). */
+.nx-btn-primary { background: var(--nx-accent); color: var(--nx-on-accent); border: 1px solid var(--nx-accent); box-shadow: 0 10px 30px rgba(232,185,58,.22); }
+.nx-btn-primary:hover { background: var(--w-gold-hover); border-color: var(--w-gold-hover); }
+.nx-paper .nx-btn-primary { box-shadow: none; }
+.nx-paper .nx-btn-primary:hover { background: #4a3322; border-color: #4a3322; }
+.nx-btn-secondary { background: transparent; color: var(--nx-ink); border: 1px solid rgba(215,162,76,.35); }
+.nx-btn-secondary:hover { background: var(--w-wash-strong); }
+.nx-paper .nx-btn-secondary { border-color: rgba(42,28,19,.3); }
+.nx-paper .nx-btn-secondary:hover { background: rgba(42,28,19,.06); }
 .nx-btn-quiet {
   width: auto; min-height: max(44px, calc(56 * var(--nx-u))); padding: 0;
-  background: transparent; border: 0; color: var(--nx-accent-700);
+  background: transparent; border: 0; color: var(--w-brass-light);
 }
-.nx-btn:focus-visible { outline: calc(3 * var(--nx-u)) solid var(--nx-accent); outline-offset: calc(3 * var(--nx-u)); }
+.nx-paper .nx-btn-quiet { color: var(--w-ink-label); }
+.nx-btn:focus-visible { outline: 2px solid var(--w-brass-light); outline-offset: 2px; }
 .nx-btn:disabled { cursor: default; opacity: 0.45; }
 
 /* Tio steg utan tal (mätarna, provets rutor). */
 .nx-steps { display: flex; gap: calc(4 * var(--nx-u)); }
-.nx-step { flex: 1; height: calc(18 * var(--nx-u)); border: var(--nx-line) solid var(--nx-ink); background: transparent; }
-.nx-step[data-on='true'] { background: var(--nx-ink); }
-.nx-step[data-accent='true'] { background: var(--nx-accent); border-color: var(--nx-accent); }
-.nx-step[data-lost='true'] { background: repeating-linear-gradient(135deg, var(--nx-ink) 0 calc(2 * var(--nx-u)), transparent calc(2 * var(--nx-u)) calc(6 * var(--nx-u))); }
+/* Stegen: guld när de är fyllda, streckade i grädde när de gått förlorade (aldrig röda). */
+.nx-step { flex: 1; height: calc(18 * var(--nx-u)); border: 0; border-radius: 999px; background: rgba(244,230,204,.12); }
+.nx-step[data-on='true'] { background: var(--w-gold); }
+.nx-step[data-accent='true'] { background: var(--w-candle); }
+.nx-step[data-lost='true'] { background: transparent; outline: 1px dashed rgba(244,230,204,.75); outline-offset: -1px; }
 
 @media (prefers-reduced-motion: reduce) {
   .nx *, .nx *::before, .nx *::after { transition: none !important; animation: none !important; }

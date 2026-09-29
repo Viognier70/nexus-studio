@@ -106,7 +106,12 @@ describe('ORDER 268 — vägen tillbaka efter nedgradering', () => {
   it('scenarierna ger högst 20 % av en normal veckointäkt, åt båda hållen', () => {
     const cap = ECONOMY.normalWeeklyRevenueSek.vinbar * SCENARIO_CASH.weeklyCapShareOfNormalRevenue;
     for (const w of [...scenarioWeeks(rational), ...scenarioWeeks(weakRun)]) expect(Math.abs(w.sek)).toBeLessThanOrEqual(cap + 1);
-    expect(scenarioWeeks(rational).every((w) => w.sek > 0)).toBe(true);
+    // ORDER 285 — en kort första vecka kan gå något minus också med bästa
+    // svaret: några raketer kostar kassa även när de klaras (vb06-kylen
+    // −168 kr), och vilka som kommer beror på kvällarnas förlopp. Över
+    // veckorna går den rimliga plus.
+    const sumRational = scenarioWeeks(rational).reduce((a, w) => a + w.sek, 0);
+    expect(sumRational).toBeGreaterThan(0);
     // Bara kvällar med ekonomiskt tema drar av, och genvägen med fisken
     // (A, sämsta svaret) ger alltid lite kassa; den svaga kan därför gå
     // jämnt upp. Över fyra veckor får hon klart mindre än den rimliga.

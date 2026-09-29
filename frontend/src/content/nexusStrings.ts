@@ -311,6 +311,8 @@ export const TABLE = {
   },
   // ORDER 267 (Nexus v1 etapp 5) — söndagstidningen (sim/newspaper.ts).
   newspaper: {
+    // ORDER 285 — bildtexten till tidningens foto (spelets egen rendering).
+    photoCaption: { sv: 'Vår krog, fotograferad på söndagsmorgonen.', en: 'Our place, photographed on Sunday morning.' },
     masthead: { sv: 'Lokaltidningen i Grythyttan', en: 'The Grythyttan Local' },
     subhead: { sv: (week: number) => `Söndag · vecka ${week}`, en: (week: number) => `Sunday · week ${week}` },
     open: { sv: 'Söndagsnumret', en: 'The Sunday Edition' },
@@ -1215,6 +1217,143 @@ export const TABLE = {
     },
     ledger: { sv: 'Sopbilen: miljöavgift för svinnet', en: 'Refuse truck: environmental fee for the waste' }
   },
+  // ORDER 285 — gårdagens rester: en fråga om hur råvaran tas tillvara. Rätt
+  // svar gör resterna säljbara i dag; annars går de till sopbilen.
+  salvage: {
+    kicker: { sv: 'Gårdagens rester', en: "Yesterday's leftovers" },
+    title: { sv: (n: number, dish: string) => `${n} portioner ${dish} står kvar i kylrummet`, en: (n: number, dish: string) => `${n} portions of ${dish} are left in the cold room` },
+    right: { sv: (n: number) => `Rätt. ${n} portioner går att sälja i kväll.`, en: (n: number) => `Right. ${n} portions can be sold tonight.` },
+    wrong: { sv: (fee: string) => `Inte så. Resterna går till sopbilen (${fee}).`, en: (fee: string) => `Not like that. The leftovers go to the bin lorry (${fee}).` },
+    done: { sv: 'Vidare', en: 'Continue' },
+    ledger: { sv: 'Sopbilen: gårdagens rester', en: "Bin lorry: yesterday's leftovers" },
+    discarded: { sv: (n: number, fee: string) => `Gårdagens rester, ${n} portioner, gick till sopbilen (${fee}).`, en: (n: number, fee: string) => `Yesterday's leftovers, ${n} portions, went to the bin lorry (${fee}).` },
+    questions: {
+      'root-veg': {
+        question: { sv: 'Rostade rotfrukter från i går. Vad gör du av dem?', en: "Roasted root vegetables from yesterday. What do you make of them?" },
+        options: {
+          a: { sv: 'Mixar dem i dagens soppa och smakar av saltet på nytt', en: "Blend them into today's soup and taste for salt again" },
+          b: { sv: 'Serverar dem som de är, till fullt pris', en: 'Serve them as they are, at full price' },
+          c: { sv: 'Låter dem stå framme så att de är klara till kvällen', en: 'Leave them out so they are ready for the evening' }
+        },
+        why: { sv: 'Rester som kylts snabbt och stått kallt går att laga om. En soppa tar vara på smaken, och den kokas upp ordentligt innan den serveras.', en: 'Leftovers that were cooled quickly and kept cold can be cooked again. A soup keeps the flavour, and it is brought to the boil before it is served.' }
+      },
+      chicken: {
+        question: { sv: 'Tillagad kyckling från i går, kyld över natten. Hur används den?', en: 'Cooked chicken from yesterday, chilled overnight. How is it used?' },
+        options: {
+          a: { sv: 'Samma tallrik igen, uppvärmd lite lätt', en: 'The same plate again, lightly warmed' },
+          b: { sv: 'Rivs till en paj eller gratäng som värms genom till minst 70 °C', en: 'Pulled into a pie or gratin that is heated through to at least 70 °C' },
+          c: { sv: 'Står i rumstemperatur till lunch, så går den fortare att värma', en: 'Kept at room temperature until lunch, so it warms faster' }
+        },
+        why: { sv: 'Kyckling som värms om ska bli genomvarm, minst 70 °C i mitten. En ny rätt ger också en ny tallrik, inte gårdagens.', en: 'Reheated chicken must be hot all the way through, at least 70 °C in the centre. A new dish also gives a new plate, not yesterday\'s.' }
+      },
+      pork: {
+        question: { sv: 'Stekt fläsk från i går. Vilken rätt tar vara på det?', en: 'Fried pork from yesterday. Which dish makes use of it?' },
+        options: {
+          a: { sv: 'Pytt i panna med potatis och lök, stekt het', en: 'Pytt i panna, a hash with potato and onion, fried hot' },
+          b: { sv: 'Kallt på tallrik som i går', en: "Cold on the plate, as yesterday's" },
+          c: { sv: 'Fryses och tinas igen till i kväll', en: 'Frozen and thawed again for tonight' }
+        },
+        why: { sv: 'Pytt i panna är en klassisk resträtt: köttet tärnas och steks hett tillsammans med potatis och lök.', en: 'Pytt i panna is a classic leftover dish: the meat is diced and fried hot with potato and onion.' }
+      },
+      'lake-fish': {
+        question: { sv: 'Pocherad gös från i går, kyld direkt efter servicen. Vad gör du?', en: 'Poached pike-perch from yesterday, chilled right after service. What do you do?' },
+        options: {
+          a: { sv: 'Serverar den kall som varmrätt', en: 'Serve it cold as a main course' },
+          b: { sv: 'Sparar den en vecka till', en: 'Keep it another week' },
+          c: { sv: 'Gör fiskbiffar som steks genom i dag', en: 'Make fish cakes that are fried through today' }
+        },
+        why: { sv: 'Tillagad fisk håller kort. Den används nästa dag, och fiskbiffar som steks genom är ett sätt att ta vara på den.', en: 'Cooked fish keeps only a short time. It is used the next day, and fish cakes fried through are one way to make use of it.' }
+      },
+      dairy: {
+        question: { sv: 'Gräddig efterrätt från i går. Hur hanteras den?', en: 'A cream dessert from yesterday. How is it handled?' },
+        options: {
+          a: { sv: 'Står framme vid kassan så att den är redo', en: 'Kept out by the till so it is ready' },
+          b: { sv: 'Hålls kall hela tiden och serveras i dag', en: 'Kept cold the whole time and served today' },
+          c: { sv: 'Fryses och tinas till kvällen', en: 'Frozen and thawed for the evening' }
+        },
+        why: { sv: 'Gräddiga efterrätter ska stå kallt hela tiden. Frysta och tinade separerar de ofta och blir grynig.', en: 'Cream desserts must be kept cold the whole time. Frozen and thawed, they often split and turn grainy.' }
+      },
+      lentils: {
+        question: { sv: 'Kokta linser från i går. Vad gäller?', en: 'Cooked lentils from yesterday. What applies?' },
+        options: {
+          a: { sv: 'De håller i kylen några dagar och går till soppa eller sallad', en: 'They keep in the fridge for a few days and go into a soup or a salad' },
+          b: { sv: 'Kokta linser måste kastas samma kväll', en: 'Cooked lentils must be thrown away the same evening' },
+          c: { sv: 'De ska blötläggas igen innan de används', en: 'They must be soaked again before use' }
+        },
+        why: { sv: 'Kokta linser som kylts snabbt håller några dagar i kylen. De passar i soppa och sallad.', en: 'Cooked lentils cooled quickly keep a few days in the fridge. They suit a soup or a salad.' }
+      },
+      mushrooms: {
+        question: { sv: 'Stekta kantareller från i går. Hur används de?', en: 'Fried chanterelles from yesterday. How are they used?' },
+        options: {
+          a: { sv: 'I en omelett eller sås, värmda ordentligt', en: 'In an omelette or a sauce, heated well' },
+          b: { sv: 'Läggs i vatten över natten så att de håller sig fräscha', en: 'Put in water overnight to keep them fresh' },
+          c: { sv: 'Serveras råa på toast', en: 'Served raw on toast' }
+        },
+        why: { sv: 'Stekta svampar går att använda nästa dag i en varm rätt. Kantareller äts tillagade, och vatten gör dem sladdriga.', en: 'Fried mushrooms can be used the next day in a hot dish. Chanterelles are eaten cooked, and water makes them soggy.' }
+      },
+      berries: {
+        question: { sv: 'Lingonsorbet som stod i frysen hela natten. Vad gäller?', en: 'Lingonberry sorbet that stayed in the freezer all night. What applies?' },
+        options: {
+          a: { sv: 'Den ska kastas efter en natt', en: 'It must be thrown away after one night' },
+          b: { sv: 'Om den aldrig tinat går den att servera i dag', en: 'If it never thawed, it can be served today' },
+          c: { sv: 'Den tinas och fryses om så att den blir mjukare', en: 'It is thawed and refrozen to make it softer' }
+        },
+        why: { sv: 'En sorbet som stått fryst hela tiden går att servera. Tinad och omfryst får den iskristaller och blir sämre.', en: 'A sorbet kept frozen the whole time can be served. Thawed and refrozen, it forms ice crystals and gets worse.' }
+      },
+      meat: {
+        question: { sv: 'Långkokt kött från i går. Vilken rätt tar vara på det?', en: 'Slow-cooked meat from yesterday. Which dish makes use of it?' },
+        options: {
+          a: { sv: 'En ragu eller gryta som kokas upp i dag', en: 'A ragù or a stew brought to the boil today' },
+          b: { sv: 'Kallt på tallrik som i går', en: "Cold on the plate, as yesterday's" },
+          c: { sv: 'Står framme så att köttet mjuknar', en: 'Left out so the meat softens' }
+        },
+        why: { sv: 'Långkokt kött blir ofta bättre dagen efter i en ragu eller gryta. Den kokas upp ordentligt innan den serveras.', en: 'Slow-cooked meat is often better the next day in a ragù or a stew. It is brought to the boil before it is served.' }
+      }
+    }
+  },
+  // ORDER 285 — kvällens resultat (R1): vad spelaren vann och förlorade.
+  result: {
+    // ORDER 285 — texterna ur Designs leverans 2026-09-29 (evening.*), utan
+    // premiärens namngivna gäster och personal (de kommer med 286–288).
+    kicker: { sv: (day: string) => `${day} · kvällens resultat`, en: (day: string) => `${day} · tonight's result` },
+    title: { sv: 'Så gick kvällen', en: 'How the evening went' },
+    stream: { sv: 'Kvällen, i den ordning det hände', en: 'The evening, in the order it happened' },
+    gains: { sv: 'Det kvällen gav', en: 'What the evening gave' },
+    stepsOf: { sv: (c: number, n: number) => `${c} av ${n} steg`, en: (c: number, n: number) => `${c} of ${n} steps` },
+    truck: { sv: 'Sopbilen', en: 'The bin lorry' },
+    truckLine: { sv: (kg: string) => `${kg} till sopbilen`, en: (kg: string) => `${kg} to the bin lorry` },
+    chance: { sv: 'I rummet', en: 'In the room' },
+    guests: { sv: (n: number) => `${n} gäster in`, en: (n: number) => `${n} guests in` },
+    none: { sv: 'Inga raketer eller händelser i kväll.', en: 'No rockets or events tonight.' },
+    waste: { sv: 'Svinn', en: 'Waste' },
+    wasteNote: { sv: 'Till sopbilen efter stängning', en: 'To the bin lorry after closing' },
+    won: { sv: 'Vann', en: 'Won' },
+    lost: { sv: 'Förlorade', en: 'Lost' },
+    even: { sv: 'Oförändrat', en: 'Unchanged' },
+    rows: {
+      money: { sv: 'Pengar', en: 'Money' },
+      credits: { sv: 'Krediter', en: 'Credits' },
+      reputation: { sv: 'Rykte', en: 'Reputation' },
+      knowledge: { sv: 'Kunskap', en: 'Knowledge' },
+      experience: { sv: 'Erfarenhet', en: 'Experience' },
+      social: { sv: 'Social hållbarhet', en: 'Social sustainability' },
+      economic: { sv: 'Ekonomisk hållbarhet', en: 'Economic sustainability' },
+      ecological: { sv: 'Ekologisk hållbarhet', en: 'Ecological sustainability' }
+    },
+    notes: {
+      money: { sv: (rev: string, cost: string) => `Intäkter ${rev} minus inköp, löner och avgifter ${cost}`, en: (rev: string, cost: string) => `Takings ${rev} minus purchases, wages and fees ${cost}` },
+      credits: { sv: 'Rätta svar i raketerna, och Back your knowledge', en: 'Right answers in the rockets, and Back your knowledge' },
+      reputation: { sv: 'Nöjda gäster höjer, gäster som går sänker', en: 'Happy guests raise it, guests who leave lower it' },
+      knowledge: { sv: (r: number, n: number) => `${r} av ${n} steg rätt i kvällens raketer`, en: (r: number, n: number) => `${r} of ${n} steps right in tonight's rockets` },
+      experience: { sv: (g: number, rk: number) => `${g} gäster serverade, ${rk} raketer tagna`, en: (g: number, rk: number) => `${g} guests served, ${rk} rockets handled` },
+      social: { sv: 'Gästerna och laget: nöjdhet, köer och ork', en: 'The guests and the team: satisfaction, queues and stamina' },
+      economic: { sv: (m: string) => `Marginal ${m} av kvällens intäkt`, en: (m: string) => `Margin ${m} of tonight's takings` },
+      ecological: { sv: (kg: string) => `Råvarorna och svinnet: ${kg} till sopbilen`, en: (kg: string) => `Ingredients and waste: ${kg} to the bin lorry` }
+    },
+    continue: { sv: 'Till kvällens lärdom', en: "To tonight's lesson" },
+    points: { sv: (v: string) => `${v} poäng`, en: (v: string) => `${v} pts` },
+    kg: { sv: (v: string) => `${v} kg`, en: (v: string) => `${v} kg` }
+  },
   // ORDER 283 — introduktionen till de tre kunskapsformerna, första gången
   // spelaren kommer till Måltidens hus. Utkast för Vision Owners granskning,
   // ur DOMAIN_INTRO i Sommelier Championship.
@@ -1321,6 +1460,11 @@ export const TABLE = {
     mains: { sv: 'Rätter', en: 'Dishes' },
     mainsCover: { sv: (n: number, booked: number) => `${n} av ${booked} gäster`, en: (n: number, booked: number) => `${n} of ${booked} guests` },
     booked: { sv: (n: number) => `Omkring ${n} gäster väntas i kväll`, en: (n: number) => `About ${n} guests expected tonight` },
+    // ORDER 285 — bokningsboken i Designs morgon, med det spelet redan har:
+    // kvällens väntade gäster (gästtyperna kommer med 287).
+    bookKicker: { sv: 'Bokningsboken', en: 'The booking book' },
+    bookTitle: { sv: (day: string) => `${day} kväll`, en: (day: string) => `${day} evening` },
+    bookNote: { sv: 'Väntade gäster i kväll. Köp så att det räcker, men inte mer.', en: 'Guests expected tonight. Buy enough, but no more.' },
     wineCover: { sv: (n: number, per: string) => `${n} glas · ${per} per gäst`, en: (n: number, per: string) => `${n} glasses · ${per} per guest` },
     wineLabel: { sv: 'Dryck', en: 'Drinks' },
     potential: { sv: 'Om allt säljs', en: 'If everything sells' },
@@ -1392,6 +1536,7 @@ export const TABLE = {
     howSure: { sv: 'Hur säker är du?', en: 'How sure are you?' },
     // ORDER 284 — när krediterna inte räcker till mer än en gissning.
     earn: { sv: 'Slut på krediter? Du tjänar dem med rätta svar: en för varje rätt svar när du övar eller gör prov i Måltidens hus, och för det bästa svaret i kvällens raketer.', en: 'Out of credits? You earn them with right answers: one for each right answer when you practise or take a test in the House of the Meal, and for the best answer in the evening\'s rockets.' },
+    earnShort: { sv: 'Krediterna räcker bara till Gissar. Nya tjänas med rätta svar, i Måltidens hus och i raketerna.', en: 'Your credits only cover Guessing. You earn more with right answers, in the House of the Meal and in the rockets.' },
     // ORDER 284 — klockan stannar när svaret är valt.
     pickFirst: { sv: 'Välj ett svar först, då stannar klockan.', en: 'Pick an answer first; the clock then stops.' },
     pickedHint: { sv: 'Svaret är låst, klockan står.', en: 'Answer locked, the clock has stopped.' },
@@ -1436,6 +1581,8 @@ export const TABLE = {
       en: { unsold: 'Food waste · unsold', plates: 'Plate waste', glass: 'Glass', cardboard: 'Cardboard and paper' } as Record<string, string>
     },
     unsoldNone: { sv: 'Allt såldes', en: 'Everything sold' },
+    // ORDER 285 — portionerna som lagts undan till morgonens fråga.
+    asideLine: { sv: (n: number, dish: string) => `${n} portioner ${dish} läggs undan i kylrummet. I morgon avgör en fråga om de går att använda.`, en: (n: number, dish: string) => `${n} portions of ${dish} are set aside in the cold room. Tomorrow a question decides whether they can be used.` },
     unsoldDetail: { sv: (n: number, kept: number) => `${n} osålda portioner${kept > 0 ? ` · ${kept} sparas till i morgon` : ''}`, en: (n: number, kept: number) => `${n} unsold portions${kept > 0 ? ` · ${kept} kept for tomorrow` : ''}` },
     platesDetail: { sv: (n: number) => `Rester från ${n} tallrikar`, en: (n: number) => `Leftovers from ${n} plates` },
     glassDetail: { sv: (n: number) => `${n} tomma flaskor`, en: (n: number) => `${n} empty bottles` },

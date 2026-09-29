@@ -1,0 +1,38 @@
+{
+  "definition": "rimlig: vecka 2, vinbaren, brons i tre, baspaketet och bästa svaret; andel = resultat (kassans förändring utan påfyllnad och amortering) / veckans intäkt ur avräkningen, medel över fröna. svag: från vecka 1, vinbaren, brons i tre, weakMorning, normal startkassa; veckan då avräkningen nedgraderar (null = inte inom fem veckor).",
+  "chosenShare": 0.17,
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "rows": [
+    {
+      "share": 0.17,
+      "reasonable": {
+        "meanShare": 0.0817087610845226,
+        "meanResultSek": 4035.6,
+        "meanRevenueSek": 45450.9
+      },
+      "weakDowngradeWeeks": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ]
+    }
+  ]
+}

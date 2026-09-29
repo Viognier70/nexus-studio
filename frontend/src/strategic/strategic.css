@@ -395,3 +395,14 @@ body:has(.nx-screen) .gb-outward, body:has(.nx-rocket) .gb-outward { display: no
 }
 
 /* Fallback screen (shared with VS-01 index.css) — nothing to override */
+
+/* ORDER 285 — rummet graderas varmt bakom panelerna (WARM.roomGrade), med en
+   varm vinjett. Filtren är Designs; när scenen ljussätts live ska ljuset göra
+   samma sak (LEVERANSNOT §2). */
+body[data-room-grade='morning'] .gb-canvas-host canvas { filter: sepia(.45) saturate(1.15) brightness(.62) contrast(1.05); }
+body[data-room-grade='service'] .gb-canvas-host canvas { filter: saturate(1.1) brightness(.92); }
+body[data-room-grade='afterClose'] .gb-canvas-host canvas { filter: brightness(.45) saturate(.9); }
+body[data-room-grade] .gb-canvas-host::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse at 50% 45%, rgba(255,170,80,.12), rgba(20,10,5,.72) 85%);
+}

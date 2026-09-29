@@ -199,6 +199,22 @@ export const FLOOR = {
 // veckor." Hyran per klass i kronor i veckan; vinbaren är kalibrerad
 // (reports/order280/rent-calibration.json), de andra klasserna har samma
 // andel av sin normala veckointäkt tills deras paket är skrivna (F53).
+// ORDER 285 — gårdagens rester (Vision Owner 2026-09-29, tredje
+// provspelet: "Svinnet ska kunna användas nästa dag, med frågor om hur
+// råvarorna tas tillvara"). Den rätt som hade flest osålda portioner läggs
+// undan i kylrummet, om de var minst minPortions; en fråga på morgonen
+// avgör. Rätt svar: portionerna går att sälja och den ekologiska
+// hållbarheten stiger per portion. Fel svar eller inget svar före
+// öppning: sopbilen tar dem (kilo × taxan, utan ny hämtningsavgift) och
+// den ekologiska sjunker. Talen är valda (F55).
+export const SALVAGE = {
+  section: 'Servicen > Kvällens resultat',
+  openQuestion: 'F55',
+  minPortions: 3,
+  ecologicalPerPortion: 0.004,
+  ecologicalWrongPerPortion: 0.002
+} as const;
+
 // ORDER 284 — 0,15 → 0,17 efter portionsboken (stockPackages.ts
 // dishPortions): mindre svinn gav den rimliga spelaren 11,8 % vid 0,15
 // (reports/order284/rent-check.json vid 0,17: 9,9 %; week-players.json: 5,0 %).
@@ -415,7 +431,9 @@ export const INCIDENTS = {
   // (vad, 15 s), Techne (hur, 20 s), Phronesis (när och varför, 30 s)."
   // Nedräkningen går i verklig tid.
   stepAxes: ['episteme', 'techne', 'phronesis'] as readonly KnowledgeAxis[],
-  stepSeconds: { episteme: 15, techne: 20, phronesis: 30 } as Record<KnowledgeAxis, number>,
+  // Vision Owner 2026-09-29 (tredje provspelet): "Raketens tid blir 20
+  // sekunder" i varje steg (var 15, 20 och 30).
+  stepSeconds: { episteme: 20, techne: 20, phronesis: 20 } as Record<KnowledgeAxis, number>,
   timeoutCreditPenalty: 1,     // "−1 kredit" när personalen beslutar själv
   // "Fel svar på ett steg ger stegets konsekvens och personalen tar över
   // resten, med sämre utfall." Personalens utfall skalas efter stegen som

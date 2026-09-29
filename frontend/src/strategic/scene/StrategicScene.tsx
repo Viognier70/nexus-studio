@@ -1,3 +1,4 @@
+import { SceneSnapshot } from './SceneSnapshot';
 import { Canvas } from '@react-three/fiber';
 import { Suspense, type CSSProperties } from 'react';
 import * as THREE from 'three';
@@ -106,6 +107,8 @@ export function StrategicScene({ onSelect, selectedId, showScaleRef = false }: P
           DayLighting passes fogRange=[1000, 3600] appropriate to the
           village-scale scene. */}
       <DayLighting />
+      {/* ORDER 285 — tidningens foto ur scenen. */}
+      <SceneSnapshot />
       <Suspense fallback={null}>
         <OsmTerrain />
         <OsmDistricts />

@@ -394,7 +394,7 @@ export function IncidentCard() {
       {backed && view.mode === 'ask' && pick !== null && (
         <div className="nx-back" data-testid="back-confidence">
           <div className="nx-label">{strings.back.howSure} <span className="nx-muted" style={{ textTransform: 'none', letterSpacing: 0, fontWeight: 400 }} data-testid="back-picked-hint" data-picked="true">{strings.back.pickedHint}</span></div>
-          {!canBack(sim, 1) && <div className="nx-small" data-testid="back-earn-card">{strings.back.earn}</div>}
+          {!canBack(sim, 1) && <div className="nx-small" data-testid="back-earn-card">{strings.back.earnShort}</div>}
           <div className="nx-back-levels">
             {BACK.confidence.map((c, i) => {
               const level = i as Confidence;

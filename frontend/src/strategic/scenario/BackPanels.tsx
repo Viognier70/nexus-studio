@@ -64,8 +64,8 @@ export function BackPanels() {
         {cal.map(([r, n], i) => (
           <div key={i} className="nx-back-calib-row" data-testid={`calib-${i}`} data-right={r} data-total={n}>
             <strong>{t.confidence[i]}</strong>
-            <span style={{ height: u(12), border: '1px solid var(--nx-ink)', position: 'relative' }}>
-              <span style={{ position: 'absolute', inset: 0, width: `${n > 0 ? (r / n) * 100 : 0}%`, background: 'var(--nx-ink)' }} />
+            <span style={{ height: u(12), background: 'rgba(244,230,204,.12)', borderRadius: 999, overflow: 'hidden', position: 'relative' }}>
+              <span style={{ position: 'absolute', inset: 0, width: `${n > 0 ? (r / n) * 100 : 0}%`, background: 'var(--w-gold)', borderRadius: 999 }} />
             </span>
             <span className="nx-small">{t.calibRow(r, n)}</span>
           </div>

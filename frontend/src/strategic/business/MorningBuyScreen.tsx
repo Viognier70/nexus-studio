@@ -29,7 +29,8 @@ const BOX = u(52);
 function Stepper({ id, qty, unit, name, onLess, onMore }: { id: string; qty: number; unit: string; name: string; onLess: (el: HTMLElement) => void; onMore: (el: HTMLElement) => void }) {
   const lessRef = useRef<HTMLButtonElement>(null);
   const moreRef = useRef<HTMLButtonElement>(null);
-  const btn: React.CSSProperties = { width: BOX, height: BOX, minWidth: 0, padding: 0, display: 'grid', placeItems: 'center', fontSize: u(28), fontWeight: 800, cursor: 'pointer' };
+  // ORDER 285 — runda plus och minus, minst 36 px (Designs inköpen).
+  const btn: React.CSSProperties = { width: `max(36px, ${BOX})`, height: `max(36px, ${BOX})`, minWidth: 0, padding: 0, display: 'grid', placeItems: 'center', fontSize: u(28), fontWeight: 800, cursor: 'pointer', borderRadius: 999, justifyContent: 'center' };
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: u(14) }}>
       <button ref={lessRef} type="button" className="nx-btn nx-btn-secondary" style={btn} aria-label={T.less(name)} data-testid={`buy-less-${id}`} onClick={() => lessRef.current && onLess(lessRef.current)}>
@@ -39,7 +40,7 @@ function Stepper({ id, qty, unit, name, onLess, onMore }: { id: string; qty: num
         <div className="nx-num" style={{ fontSize: u(34), lineHeight: 1 }} data-testid={`buy-qty-${id}`}>{qty}</div>
         <div className="nx-label" style={{ fontSize: u(14) }}>{unit}</div>
       </div>
-      <button ref={moreRef} type="button" className="nx-btn nx-btn-primary nxs-buy-more" style={{ ...btn, background: 'var(--nx-ink)', color: '#fff' }} aria-label={T.more(name)} data-testid={`buy-more-${id}`} onClick={() => moreRef.current && onMore(moreRef.current)}>
+      <button ref={moreRef} type="button" className="nx-btn nx-btn-primary nxs-buy-more" style={{ ...btn, background: 'var(--w-ink)', color: 'var(--w-paper)' }} aria-label={T.more(name)} data-testid={`buy-more-${id}`} onClick={() => moreRef.current && onMore(moreRef.current)}>
         <span>+</span>
       </button>
     </div>
@@ -101,12 +102,12 @@ export function MorningBuyScreen({ open, onClose }: { open: boolean; onClose: ()
   return (
     <div className="nx nx-screen nxs-buy" role="dialog" aria-label={T.phase} data-testid="screen-M1">
       <div className="nxs-buy-grid">
-        <section className="nx-panel nxs-buy-col" data-testid="buy-menu">
+        <section className="nx-panel nx-paper nxs-buy-col" data-testid="buy-menu">
           <header className="nxs-buy-head"><NxLabel>{T.menu}</NxLabel><span className="nxs-row-sub">{T.menuStep}</span></header>
           <div className="nxs-buy-rows">{dishes.map(dishRow)}</div>
           <footer className="nxs-buy-foot">{T.dishSum(portionsTotal, formatSek(stockValueSek(sim, 'food')))}</footer>
         </section>
-        <section className="nx-panel nxs-buy-col" data-testid="buy-wine">
+        <section className="nx-panel nx-paper nxs-buy-col" data-testid="buy-wine">
           <header className="nxs-buy-head"><NxLabel>{T.wine}</NxLabel><span className="nxs-row-sub">{T.wineStep}</span></header>
           <div className="nxs-buy-rows">{drinks.map(drinkRow)}</div>
           <footer className="nxs-buy-foot">{T.wineSum(bottlesTotal, formatSek(stockValueSek(sim, 'drink')))}</footer>
@@ -121,8 +122,8 @@ export function MorningBuyScreen({ open, onClose }: { open: boolean; onClose: ()
               <NxLabel>{T.mains}</NxLabel>
               <strong data-testid="buy-coverage" data-covers={cov.covers} data-guests={cov.guests}>{T.mainsCover(cov.covers, cov.guests)}</strong>
             </div>
-            <div style={{ height: u(14), border: 'var(--nx-line) solid var(--nx-ink)', marginTop: u(10) }}>
-              <div style={{ height: '100%', width: `${cov.share * 100}%`, background: cov.share < 1 ? 'var(--nx-accent)' : 'var(--nx-ink)' }} />
+            <div style={{ height: u(14), background: 'rgba(244,230,204,.12)', borderRadius: 999, overflow: 'hidden', marginTop: u(10) }}>
+              <div style={{ height: '100%', width: `${cov.share * 100}%`, background: cov.share < 1 ? 'var(--nx-ember)' : 'var(--w-gold)', borderRadius: 999 }} />
             </div>
             <div className="nxs-row-sub" style={{ marginTop: u(8) }}>{T.booked(cov.guests)}</div>
           </div>

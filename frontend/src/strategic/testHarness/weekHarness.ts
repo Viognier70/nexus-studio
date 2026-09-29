@@ -11,6 +11,7 @@
 //
 // En "spelare" är en plan: vad som görs på morgonen varje dag.
 
+import { SALVAGE_BEST, SALVAGE_OPTIONS, salvageGroup } from '../simulation/salvage';
 import { reducer } from '../simulation/reducer';
 import { makeNewGameState } from '../simulation/model';
 import { bankQuestionById } from '../knowledge/questionBank';
@@ -156,6 +157,16 @@ export function playMorning(s: SimulationState, plan: MorningPlan): SimulationSt
   for (const id of plan.activities ?? []) s = reducer(s, { type: 'PICK_ACTIVITY', id });
   const pkgs = packagesFor(s.economy.businessClass);
   if (pkgs && (plan.stock ?? 'base') === 'base') s = reducer(s, { type: 'BUY_PACKAGE', packageId: pkgs.base.id });
+  // ORDER 285 — gårdagens rester: bästa svaret tar vara på dem, det sämsta
+  // skickar dem till sopbilen (salvage.ts), som svaren på raketerna.
+  if (s.salvage && s.salvage.resolved === null) {
+    const group = salvageGroup(s.salvage.dishId);
+    if (group) {
+      const best = SALVAGE_BEST[group];
+      const pick = (plan.scenarioAnswer ?? 'best') === 'worst' ? SALVAGE_OPTIONS.find((o) => o !== best)! : best;
+      s = reducer(s, { type: 'ANSWER_SALVAGE', optionId: pick });
+    }
+  }
   const actions = typeof plan.actions === 'function' ? plan.actions(s) : plan.actions ?? [];
   for (const a of actions) s = reducer(s, a);
   // Kvällen stängd eller öppen enligt planen (växeln ligger kvar mellan dagar).

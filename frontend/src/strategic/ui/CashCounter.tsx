@@ -57,7 +57,7 @@ function useCountedNumber(id: FxTarget, value: number, format: (v: number) => st
       ticks: down ? ticks.down : ticks.up,
       pop: el,
       box: boxRef.current,
-      flashColor: down ? '#f7c6bb' : '#e2e0df'
+      flashColor: down ? 'rgba(244,230,204,.18)' : 'rgba(232,185,58,.28)'
     });
   }, [target, format, id, ticks.up, ticks.down]);
   return { numRef, boxRef };

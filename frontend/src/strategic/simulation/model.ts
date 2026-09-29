@@ -443,7 +443,9 @@ export function makeInitialState(
     revenueAtDayStart: base.revenue,
     costAtDayStart: base.cost,
     reputationAtDayStart: base.reputation,
-    knowledgeCreditsAtDayStart: { ...base.knowledgeCredits }
+    knowledgeCreditsAtDayStart: { ...base.knowledgeCredits },
+    capitalsAtDayStart: { social: base.capitals.values.social, ecological: base.capitals.values.ecological },
+    cashAtDayStart: base.cash
   };
   return base;
 }
