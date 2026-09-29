@@ -1,0 +1,376 @@
+{
+  "language": "sv",
+  "status": "draft",
+  "texts": {
+    "somm-v1": {
+      "prompt": "Du provar igenom ett ungt Barolo inför en stor viltsupé. Vinet är kraftigt strävt och du undrar om det passar till rätterna. Vad händer kemiskt när ett tanninrikt vin möter proteinet i viltkött?",
+      "options": [
+        "Tanniner löser upp sig och försvinner ur upplevelsen",
+        "Tanniner binder till proteiner i köttet — strävheten minskar och vinet upplevs mjukare",
+        "Tanniner förstärker köttets umamismak markant",
+        "Proteinet blockerar alla smakintryck från vinet"
+      ],
+      "explanation": "Tanninbindning är kärnan: tanniner reagerar med proteiner och binder till dem. Köttet 'tar hand om' tanninet — strävheten mildras och vinet öppnar sig. Herdenstam beskriver hur denna analys sker under de 12 sekunderna i gommen, i den faktiska situationen."
+    },
+    "somm-v2": {
+      "prompt": "En gäst på Herrgårdsköket beställer en fyllig Alsace Riesling till sin foie gras. Din kollega ifrågasätter valet — 'Riesling och foie gras? Det kan inte fungera.' Vilket vetenskapligt resonemang försvarar kombinationen bäst?",
+      "options": [
+        "Rieslings höga syra skär igenom foie gras' fetma och rensar gommen — palate cleansing — medan en eventuell restsötma balanserar leversmaken",
+        "Rieslings petrolnyanser kompletterar leveraromen direkt",
+        "Foie gras är alltid bättre med rött vin oavsett region",
+        "Rieslings höga alkohol balanserar fettets tyngd"
+      ],
+      "explanation": "Palate cleansing: hög syra skär igenom fett och återställer gommens känslighet. Restsötma i en demi-sec Riesling balanserar dessutom leversmakens intensitet. Harringtons pyramid: grundsmaknivån (syra vs fett) löses innan man adresserar flavours."
+    },
+    "somm-v3": {
+      "prompt": "Du är på en vinmässa och ska prova igenom 80 viner på en dag. Du börjar med lätta vita och avslutar med kraftiga röda. Halvvägs in märker du att din gom inte längre reagerar lika distinkt. Vad är den primära fysiologiska orsaken till att bedömningsförmågan försämras under en lång provningssession?",
+      "options": [
+        "Rumstemperaturen stiger och påverkar vinets flyktiga ämnen negativt",
+        "Hunger påverkar hjärnans signalsubstanser",
+        "Du glömmer de första vinerna",
+        "Alkohol, tanniner och hög smakintensitet tröttar ut smakreceptorerna — palate fatigue — vilket gör att distinktioner suddas ut"
+      ],
+      "explanation": "Herdenstam beskriver detta precist ur sin yrkesvardag: alkoholen bedövar, tanninsträvheten sitter kvar, och smakintensiteten från kraftiga viner gör det svårt att ställa om gommen till subtila viner. Lösningen är vatten, neutrala livsmedel och rätt provningsordning."
+    },
+    "somm-v4": {
+      "prompt": "Du utbildar ny personal på Lärkan. En ny medarbetare frågar varför ni alltid börjar provningen med syn, sedan doft, sedan smak — i den ordningen. Varför är WSET SAT-ordningen (Appearance → Nose → Palate → Conclusions) utformad just så?",
+      "options": [
+        "Synbedömningen är alltid det viktigaste för kvalitetsbedömning",
+        "Det är en gammal tradition utan vetenskaplig grund",
+        "Ordningen är slumpmässig — alla ordningar ger samma resultat",
+        "Strukturen säkerställer att varje sinne bedöms utan att påverkas av det nästa — visuella intryck färgar inte doftbedömningen, doften färgar inte smakbedömningen — objektiv systematik"
+      ],
+      "explanation": "WSET SAT är designad för att minimera bias. Herdenstam lyfter fram att den sensoriska analysen kräver systematik för att fånga det mätbara — men påminner också om att denna analytiska metod måste kompletteras med det gestaltande greppet för att fånga helheten."
+    },
+    "somm-v5": {
+      "prompt": "Nocturne ska bygga en ny vinlista med fokus på hållbarhet. Du ska argumentera inför ägaren varför biodynamisk odling (Demeter) är ett starkare val än vanlig ekologisk certifiering. Vilket argument är vetenskapligt mest välgrundat?",
+      "options": [
+        "Biodynamisk odling producerar alltid bättre vin",
+        "Biodynamisk odling (Demeter) behandlar vingården som ett slutet ekosystem med biologisk mångfald, utan syntetiska insatser — ger ekologisk resiliens och trovärdighet utöver det som ekocertifiering kräver",
+        "Demeter-certifiering är billigare än ekocertifiering",
+        "Biodynamisk odling eliminerar all risk för klimatpåverkan"
+      ],
+      "explanation": "Demeter kräver att hela gården ses som ett levande system med biologisk mångfald och månkalender-anpassad odling. Det går längre än EU:s ekologiska certifiering som tillåter vissa insatser. För en hållbarhetsprofil ger Demeter starkast argumentation gentemot gäster och revisorer."
+    },
+    "somm-v6": {
+      "prompt": "En gäst på Ekbacken frågar varför ett vin som luktar körsbär på flaskan börjar smaka av smör och rostat bröd när det väl är i munnen. Vad är den vetenskapliga förklaringen till skillnaden mellan retronasal och orthonasal arom?",
+      "options": [
+        "Orthonasal olfaktion är lukten via näsan utifrån — retronasal olfaktion är aromerna som stiger upp via svalget under tuggning och utgör vad vi kallar 'smak' till upp emot 80%",
+        "Muntemperaturen bryter ned körsbärsaromer till smörföreningar",
+        "Gästens smakminne är defekt",
+        "Glasets form förändrar aromerna kemiskt"
+      ],
+      "explanation": "Herdenstam betonar retronasal olfaktion som central för vinprovarens arbete — 'det som vi kallar smak är till stor del en luktupplevelse bakvägen'. Dryckeskombinering handlar i hög grad om att harmonisera just dessa retronasala aromer mellan mat och vin."
+    },
+    "somm-v7": {
+      "prompt": "Du håller en utbildning för personalen på Järnvägshotellet. Du ska förklara Harringtons Food & Beverage Pyramid och varför man alltid börjar med grundsmaker. Varför är Harringtons hierarki (grundsmaker → textur → flavours) pedagogiskt och praktiskt riktig?",
+      "options": [
+        "Varje nivå måste vara i harmoni innan nästa adresseras: om grundsmaknivån är i konflikt (t.ex. hög syra mot sött) kan ingen mängd smaklig likhet på flavour-nivå rädda kombinationen",
+        "Pyramiden gäller bara vita viner",
+        "Grundsmaker är lättast att förstå för nybörjare, utan annan praktisk relevans",
+        "Flavours är de viktigaste och bör alltid adresseras först"
+      ],
+      "explanation": "Harringtons pyramid är en processhierarki, inte bara en taxonomi. Om grundsmakbalansen misslyckas — t.ex. ett torrt tanninrikt vin till en söt sås — störs upplevelsen på nivå ett och inga aromer kan rädda kombinationen. Metodisk provning börjar alltid i botten av pyramiden."
+    },
+    "somm-h1": {
+      "prompt": "En stor sällskapsmiddag på Herrgårdsköket. En gäst beställer ett ungt Barolo 2021 till sin viltrygg. Vinet plockas upp ur källaren. Vad gör du omedelbart och varför?",
+      "options": [
+        "Serverar med is i glaset för att gästen ska välja temperatur själv",
+        "Serverar vinet direkt — kalla viner är alltid bäst",
+        "Dekantera i 30 minuter och kontrollera att temperaturen är 16–18°C — unga kraftiga röda behöver syre för att öppna sig och rätt temperatur för att visa sin komplexitet",
+        "Värmer flaskan under varmt vatten till 22°C"
+      ],
+      "explanation": "Herdenstam beskriver detta som hantverkskunskapens kärna: att veta hur verktyget ska användas. Ung Barolo har höga tanniner och komplex struktur som behöver syre. 16–18°C är optimal serveringstemperatur för fylliga röda — varmare dämpar frukten, kallare döljer komplexiteten och förstärker tanninerna."
+    },
+    "somm-h2": {
+      "prompt": "En stamgäst på Bryggan tar med en flaska Chambolle-Musigny 2005 (Premier Cru, 20 år gammal). Han vill att du ska hantera den professionellt. Vad är rätt hantering av en gammal fin Bourgogne?",
+      "options": [
+        "Dekanteras i minst 2 timmar för maximal syresättning",
+        "Stå upprätt 24h i rumstemperatur innan service, sedan öppna och servera direkt — gammal fin Bourgogne är känslig och kollapsar vid lång dekantering",
+        "Serveras direkt ur källartemperatur (10°C)",
+        "Skakas lätt för att väcka sedimentet"
+      ],
+      "explanation": "Herdenstam beskriver hur erfarenhetsbaserat omdöme — förtrogenhetskunskapen — avgör dessa beslut. Gammal fin Bourgogne har en delikat struktur som riskerar att kollapsa vid för lång exponering mot syre. Sediment avskiljs med lätt dekantering men exponering minimeras. Rätt temperatur: 14–16°C."
+    },
+    "somm-h3": {
+      "prompt": "Halvvägs genom en stor bröllopsbankett på Ekbacken börjar champagnegästerna klaga på att mousset är platt och aromen svag. Du byter ut glas och häller upp nytt vin. Vad var troligen den primära orsaken och hur förebygger du det framöver?",
+      "options": [
+        "Diskmedelsrester i glasen dödar mousse och dämpar aromen — förebygg med vinrinsning (häll lite vin i glaset, snurra och häll ut) och kontrollera alltid glashygien innan service",
+        "Temperaturen i matsalen var för hög",
+        "Champagnen var av för låg kvalitet",
+        "Champagnen har stått för länge och förlorat kolsyra naturligt"
+      ],
+      "explanation": "Diskmedelsrester är den vanligaste orsaken till platt champagne. Herdenstam betonar att hantverkskunnandet handlar om att veta hur verktygen fungerar och vilka felkällor som finns. Vinrinsning är en enkel professionell rutin som eliminerar problemet."
+    },
+    "somm-h4": {
+      "prompt": "Du bygger en avsmakningsmeny med sju rätter på Qvarnen och ska presentera sju viner. En kollega föreslår att starta med en kraftig Amarone för att 'imponera direkt'. Varför är det fel att starta med ett kraftigt vin och vad är korrekt ordning?",
+      "options": [
+        "Ordningen spelar ingen roll om vinerna är av hög kvalitet",
+        "Starta alltid med rött för att imponera",
+        "Det är inte fel — börja alltid med det dyraste",
+        "Kraftiga viner tröttar ut gommen tidigt — korrekt ordning är Mousserande → Lätta vita → Fylliga vita → Lätta röda → Fylliga röda → Dessertviner, torrt → sött, lätt → fylligt"
+      ],
+      "explanation": "Herdenstam beskriver ur egen mässerfarenhet hur gommen tröttnar och hur en fel ordning gör att subtila viner upplevs platta efter kraftiga. Progressionsprincipen är ett av hantverkets grundläggande verktyg — Mousserande öppnar gommen, dessertviner avslutar utan att söta igen den."
+    },
+    "somm-h5": {
+      "prompt": "En av Nocturnes bäst säljande viner är ett naturvin som klarnas med äggvita. En ny stamgäst berättar diskret att hennes son är allergisk mot ägg. Vad gör du och vad borde du redan ha gjort?",
+      "options": [
+        "Ta bort vinet från menyn tills vidare",
+        "Servera vinet — en liten mängd äggvita är inga problem",
+        "Informera gästen om att vinet innehåller äggvita och erbjud ett alternativ utan djurbaserade klarningsmedel — proaktiv kommunikation är sommelierlagets ansvar, inte producentens",
+        "Säg att alla naturviner är veganska och servera"
+      ],
+      "explanation": "Social hållbarhet kräver inkludering och proaktiv kommunikation. Herdenstam betonar att sommelierens yrkeskunnande inbegriper att känna sina produkter in i minsta detalj. Att kommunicera allergener är både lagkrav och professionell etik — och skapar förtroende hos gästerna."
+    },
+    "somm-h6": {
+      "prompt": "Lärkan vill minska sin vinlistas klimatavtryck med 40% inom ett år utan att kompromissa med kvaliteten. Du presenterar en plan för ägaren. Vilket konkret åtgärdspaket ger störst ekologisk effekt?",
+      "options": [
+        "Byta alla korkar till skruv och servera vin kallare",
+        "Prioritera lokala och nordiska producenter + introducera bag-in-box för husviner (70% lägre CO₂ per liter vs glasflaska) + dokumentera hela listans klimatavtryck",
+        "Ta bort alla importerade viner och servera bara svensk cider",
+        "Minska portionsstorlekarna med 20%"
+      ],
+      "explanation": "Transport och förpackning dominerar vinets klimatavtryck. Lokala producenter eliminerar långa transportkedjor. Bag-in-box ger dramatiskt lägre förpackningsavtryck per liter. Dokumentation möjliggör dessutom gästkommunikation om klimatval — en social och ekologisk vinst i ett."
+    },
+    "somm-e1": {
+      "prompt": "Ekbacken ska ta emot en känd matskribent för en utvärdering. Du funderar på hur du kan skapa en minnesvärd upplevelse utan att byta ut en enda rätt på menyn. Vilket tillvägagångssätt är mest i linje med Herdenstams dubbla grepp och Crichton-Focks atmospheric influence?",
+      "options": [
+        "Anpassa rummets belysning, musikval och serveringstempo till vinernas karaktär — och berätta aktivt om varje vins ursprung, odlarens filosofi och årgångens karaktär",
+        "Byt till dyrare viner för recensentens skull",
+        "Låt recensenten välja allt själv utan guidning",
+        "Sänk priset den kvällen för att imponera"
+      ],
+      "explanation": "Herdenstam: 'Det som sker, handlandets kunskap, är det viktiga.' Crichton-Fock visar att rummets alla sinnesintryck samverkar och skapar en stämningsbas. Crossmodal correspondence (Spence) bekräftar att ljus och musik konkret förändrar smakupplevelsen. Gestaltningen handlar om att orkestrera hela miljön."
+    },
+    "somm-e2": {
+      "prompt": "En stammis på Bryggan beställer alltid 'det bästa rödvinet'. Idag avslöjar han att han fyller 60 år. Du har tre alternativ: Barolo 2015, Châteauneuf-du-Pape 2018, och Pinot Noir från Bourgogne 2010. Vad är det estetiskt gestaltande beslutet — och hur fattar du det?",
+      "options": [
+        "Servera det vin som du personligen föredrar",
+        "Låt gästen välja bland de tre utan guidning",
+        "Välj det dyraste automatiskt — det är alltid säkrast",
+        "Fråga diskret om gästen har en koppling till en region, ett minne eller ett livsögonblick — och välj sedan det vin vars historia bäst resonerar med hans berättelse"
+      ],
+      "explanation": "Herdenstam visar att estetisk gestaltning börjar med lyssning och situationsläsning. Expectation priming: när gästen förstår berättelsen bakom vinet aktiveras fler kognitiva lager och upplevelsen djupnar. Personalisering överstiger alltid prisets signalvärde."
+    },
+    "somm-e3": {
+      "prompt": "Du ska skriva menytexterna för en ny avsmakningsmeny på Herrgårdsköket. Din kollega föreslår korta neutrala beskrivningar: 'Riesling, Mosel, 2019'. Varför är Herdenstams kunskap om expectation priming relevant här — och hur skriver du bättre menytexten?",
+      "options": [
+        "Menytexten påverkar inte smakupplevelsen",
+        "Neutrala beskrivningar är alltid bäst — gästerna vill inte bli påverkade",
+        "Menytexten privar gästens upplevelse innan första klunken — en text som väcker en bild, ett minne eller en känsla förändrar bokstavligen hur gästen smakar vinet. Skriv: 'Riesling från Mosel — bergig mineralitet, citrusblomstersyrlig friskhet, en doft av skiffersten efter regn'",
+        "Längre texter är alltid sämre — håll det kort"
+      ],
+      "explanation": "Expectation priming är vetenskapligt belagd: studier visar att en välskriven menytext aktiverar förväntningar som konkret förändrar hur gästen upplever smaken. Herdenstam: 'I naturvetenskapen mäter vi det som är. I gestaltningen skapar vi det som blir.' Menytexten är ett gestaltande verktyg."
+    },
+    "somm-e4": {
+      "prompt": "Du håller en terroir-middag på Viken med fokus på Loire Valley. En av gästerna, en professor i kulturgeografi, frågar hur du kan förmedla känslan av floden och kalkstenen utan att gästen befinner sig där. Vilket svar bäst illustrerar Herdenstams gestaltande grepp?",
+      "options": [
+        "Det är omöjligt — terroir kan bara upplevas på plats",
+        "Berätta odlarens historia, lägg fram en bit kalksten på bordet, visa en bild av flodlandskapet, och låt doften av mineralitet i vinet bära berättelsen — analogier och sinnesintryck skapar gemensam förståelse utan att gästen behöver vara på plats",
+        "Servera bara viner med starka egenskaper och hoppas att gästen förstår",
+        "Förklara terroir med kemiska termer"
+      ],
+      "explanation": "Herdenstam: 'Kopplingen till verkligheten blir viktig, och insikten att det inte finns en verklighet utan flera ännu viktigare.' Analogier, sinnesintryck och berättelser skapar intransitiv förståelse — gästen smakar med hela sin kulturella förståelse. Det är estetisk gestaltning i praktiken."
+    },
+    "somm-e5": {
+      "prompt": "Nocturne ska lansera en alkoholfri parningsmeny. En kollega är skeptisk: 'Ingen riktig sommelier ägnar tid åt alkoholfritt — det är inte prestige nog.' Hur bemöter du argumentet ur ett hållbarhets- och gestaltningsperspektiv?",
+      "options": [
+        "Alkoholfria alternativ med samma omsorg, berättelse och presentation som vinmenyn är ett uttryck för social hållbarhet och inkludering — och ett växande affärssegment. En sommelier som inte behärskar alkoholfri parning behärskar inte hela sitt hantverk",
+        "Erbjud bara alkoholfritt om gästen frågar specifikt",
+        "Alkoholfritt är alltid underlägset och bör minimeras",
+        "Kollegan har rätt — prioritera vinmenyn"
+      ],
+      "explanation": "Social hållbarhet innebär att alla gäster är välkomna oavsett val. Herdenstam visar att gestaltningskunskapen handlar om att skapa en upplevelse för gästen — inte om den egna prestigen. En alkoholfri parningsmeny med samma berättelse och presentation är fullt värdig sommelierens hantverk."
+    },
+    "somm-e6": {
+      "prompt": "Under en avsmakningsmeny på Ekbacken spelar du musik som du valt ut. En gäst kommenterar att det tredje vinet, en kraftig Syrah, verkar 'sötare och rundare' nu än vid förprovningen i kväll — du spelade då tyngre jazzmusik, nu spelar du lättare stråkkvartett. Vilket fenomen förklarar gästens upplevelse och vad lär det oss om sommelierens roll?",
+      "options": [
+        "Temperaturen i lokalen har förändrat vinets egenskaper",
+        "Gästen har druckit för mycket och bedömer felaktigt",
+        "Gästen har fel — vinet förändras inte av musik",
+        "Crossmodal correspondence (Spence): hög, ljus musik framhäver upplevd sötma och elegans; tyngre musik framhäver bitterhet och strävhet. Sommelieren som orkestrerar miljön är en del av smakupplevelsen"
+      ],
+      "explanation": "Spences forskning (Oxford) är vetenskapligt belagd: ljud, ljus och miljö förändrar bokstavligen smakperceptionen. Herdenstam och Crichton-Fock: alla sinnesintryck i matsalen samverkar. Sommelieren som medvetet orkestrerar miljön utövar estetisk gestaltningskunskap på sin högsta nivå."
+    },
+    "somm-h7": {
+      "prompt": "Du provar ett vin vid ett mässbesök. Redan efter tre sekunder känner du att något är fundamentalt fel — vinet har en skarp, unken doft. Vad är mest troligt fel och vad gör du?",
+      "options": [
+        "Rumstemperaturen har skämt vinet temporärt",
+        "Vinet är för ungt och behöver mer tid på flaska",
+        "Vinet är troligen korksmakat (TCA — trikloranisol) — tacka nej artigt och be om en ny flaska eller ett annat vin. Korksmak förstör alla aromkvaliteter",
+        "Doften är en typisk karaktär för den aktuella druvsorten"
+      ],
+      "explanation": "Herdenstam beskriver att erfarna sommelierer kan göra omdömet på sekunder — 'redan innan det får en gestalt'. TCA-korksmak är den vanligaste felaktigheten och känns igen som en fuktig, mustig, unken ton. Att snabbt identifiera och hantera detta är kärnhantverk."
+    },
+    "somm-v8": {
+      "prompt": "En gäst på Qvarnen undrar varför hennes favorit-Sauvignon Blanc smakar 'plattare' när hon dricker det till sin gräddsås jämfört med ostron. Vad är den vetenskapliga förklaringen?",
+      "options": [
+        "Sauvignon Blanc passar aldrig till gräddsåser",
+        "Gräddsåsens höga fetthalt och sötma dämpar Sauvignon Blancs syra och aromer — syrliga viner upplevs tunnare mot fett eftersom fettet 'tar' syran. Ostron förstärker istället vinets mineralitet och fräschör",
+        "Gästen har fel — vinet smakar likadant oavsett mat",
+        "Grädden koagulerar vinets proteiner kemiskt"
+      ],
+      "explanation": "Grundsmakinteraktion: syra mot fett ger ett komplext samspel där fettet dämpar syrans skärpa — men om fetthalten är för hög upplevs vinet tunnare. Ostronens mineralitet och sälta kompletterar och förstärker istället vinets egna egenskaper. Harringtons pyramid, grundsmaknivå."
+    },
+    "somm-e7": {
+      "prompt": "En ensam gäst sitter tyst vid Vikens fönsterbord med utsikt mot sjön. Hon ser ledsen ut och beställer 'ett glas vitt vin — valfritt'. Du märker hennes humör. Vad gör du — och hur använder du sommelierens gestaltande kompetens i denna situation?",
+      "options": [
+        "Väljer ett vin med en berättelse som matchar stunden — kanske ett mineraliskt naturvin från en liten producent vid havet — och presenterar det kort med ett enkelt berättande: 'Det här är från en familj som odlat vid Atlantkusten i tre generationer. Något lugnt och rent.' Läser av om hon vill ha mer kontakt",
+        "Frågar ingående om hennes kvälls- och livssituation",
+        "Erbjuder det dyraste vinet för att kompensera",
+        "Häller upp närmaste öppna flaska och lämnar henne i fred"
+      ],
+      "explanation": "Herdenstam visar att sommelier-hantverket inbegriper situationsläsning och social förmåga. Det gestaltande greppet handlar om att skapa en upplevelse som möter gästen där hon är. En kort berättelse med rätt ton är ett estetiskt val — inte bara en produktpresentation."
+    },
+    "somm-dg1": {
+      "prompt": "Du leder en Double-Grip Analysis-session med ditt sommelierlag inför en avsmakningsmeny på Ekbacken. Du delar ut papper och ber alla prova en Bourgogne tyst — utan WSET-protokollet. Första frågan du ställer är inte 'Vad hittar ni i glaset?' Vilken är den korrekta inledningsfrågan i den analogiska provningen enligt Double-Grip Analysis? (Crichton-Fock & Spence, 2024)",
+      "options": [
+        "'Vilken druvsort är detta troligen?'",
+        "'Beskriv doftprofilen med WSET-terminologi'",
+        "'Identifiera syrans intensitet på en skala 1–9'",
+        "'Vad väcks i er när era sinnen möter vinet?' — autobiografiskt flöde, utan analytiskt filter"
+      ],
+      "explanation": "Double-Grip Analysis har två parallella provningar: analytisk (deduktiv — vad hittar jag i glaset?) och analogisk (induktiv — vad väcks i mig?). Den analogiska startar med autobiografisk provning där personliga luktminnen och associationer flödar fritt utan a priori-mallar. Grupper i studien nådde 8 gemensamma attribut i båda kategorierna och skapade analogviner som fick högre betyg än kommersiella motsvarigheter."
+    },
+    "somm-dg2": {
+      "prompt": "Under ett dialogseminarium (Herdenstam et al., 2018) delar en sommelier sin autobiografiska provning: 'Det är sommar, högt gräs, min mormors trädgård, jordgubbskakan har stått för länge i solen...' En kollega avbryter: 'Det där är inte en vinbeskrivning — det är en saga.' Varför är kollegans invändning fel ur ett Phronesis-perspektiv?",
+      "options": [
+        "Autobiografiska beskrivningar är bara pedagogiska övningar, inte professionella verktyg",
+        "Kollegan har rätt — vinbeskrivningar ska vara objektiva och analytiska",
+        "Analogier och autobiografiska minnen är kunskapsbärare med lägre mätbarhet men hög förståelsekraft — de fångar helhetskaraktären som isolerade analytiska attribut inte kan",
+        "Beskrivningen är användbar bara om sommelier och gäst delar exakt kulturell bakgrund"
+      ],
+      "explanation": "Herdenstam (2011, 2018, 2020): analogier och autobiografiska berättelser är legitima kunskapsbärare — de har 'lägre mätbarhet men hög förståelsekraft' och fångar vinets gestalt. 'Breaking the Silence' (2020) visar att analogisk träning faktiskt ökar konsistensen i bedömningar och utökar det gemensamma vokabuläret från 3 till 8 kategorier."
+    },
+    "somm-cc1": {
+      "prompt": "Crichton-Fock, Spence & Pettersson (2023, Frontiers in Psychology) genomförde en studie med 329 vinkonsumenter om crossmodal kommunikation. Laget på Nocturne diskuterar hur ni kan använda resultaten i er gästkommunikation. Vilket fynd är viktigast från studien för en sommelier som vill kommunicera sitt sortiment mer effektivt?",
+      "options": [
+        "Konsumenterna föredrar uteslutande analytisk terminologi — druvsorter och syranivåer",
+        "Visuell kommunikation via former och färger rankades högst (54%) och 91% var positiva till vin baserat enbart på sensorisk information — konsumenter är mer öppna för crossmodal kommunikation än branschen antar",
+        "Auditiv kommunikation (musik, ljud) var den mest populära alternativa kommunikationsformen",
+        "Konsumenterna vill inte ha alternativ kommunikation — pris och ursprung räcker"
+      ],
+      "explanation": "Crichton-Fock et al. (2023): 91% var positiva till att köpa vin baserat enbart på sensorisk information. Former och färger (54%), smak (45%) och doft (38%) dominerade. En sommelier som använder crossmodal kommunikation — former, analogier, berättande — möter bättre konsumenternas faktiska preferenser och kan minska svinnet av viner med okonventionell profil."
+    },
+    "somm-bs1": {
+      "prompt": "I 'Breaking the Silence' (Herdenstam et al., 2020) genomfördes dialogseminarier med klassisk litteratur — Proust, Faulkner, Woolf, Joyce — för att stimulera analogiskt tänkande hos sommelierer. Din kollega frågar varför man använder skönlitteratur i vinprovningsutbildning. Vad var det vetenskapliga skälet till att använda modernistiska litteraturutdrag i träningen?",
+      "options": [
+        "Modernistiska texter stimulerar analogiskt och associativt tänkande — de inspirerar till att fånga helheten och progressionen av en upplevelse snarare än att analysera delar, vilket är exakt vad Phronesis-kompetensen kräver vid provning",
+        "Litteraturen distraherade sommeliererna från teknisk terminologi vilket var oönskat",
+        "Det var en slumpmässig metod utan specifikt pedagogiskt syfte",
+        "Litteraturen lärde sommeliererna ny vinvokabulär direkt"
+      ],
+      "explanation": "Herdenstam et al. (2020): Proust, Faulkner, Woolf och Joyce valdes för sin avant-garde-experimentalism och förmåga att fånga sensorisk progression, gestalt och dynamik. Resultaten: deltagarna gick från analytiska listbeskrivningar till narrativa helhetsbeskrivningar med starkare personliga ankare, och konsistensen i bedömningarna ökade trots att antalet attribut nästan fördubblades."
+    },
+    "somm-hs1": {
+      "prompt": "Nocturne har en öppen kökslösning — inga dörrar, delad toalett med gäster, vinflaskor synliga längs hela baren. Gästerna ser sommelierlaget skölja glas, smaka av och ibland ta en klunk vatten. En kollega är obekväm: 'Vi borde ha en tydligare backstage-zon.' Vilket perspektiv stöder Hult & Scander (2024) om upplösningen av frontstage och backstage?",
+      "options": [
+        "Transparens fungerar bara i informella restauranger, aldrig i fine dining",
+        "Gäster som ser backstage-aktiviteter tappar alltid förtroendet för servicen",
+        "Kollegan har rätt — gäster ska aldrig se service-backstage",
+        "Upplöst gräns mellan frontstage och backstage skapar organisk, transparent service som bygger förtroende och gemenskap med gästerna — förutsatt att laget behärskar situationsläsning och kan visa sig 'som sig själva' professionellt"
+      ],
+      "explanation": "Hult & Scander (2024): i samtida restauranger skapar upplöst frontstage/backstage ett 'fellowship' och transparens som stärker gästupplevelsen. Goffman: nya scener skapas ständigt. Organisk service kräver att laget behärskar självrepresentation — att vara sig själv är en professionell kompetens, inte en brist på formalism."
+    },
+    "somm-hs2": {
+      "prompt": "På Bergsmannen diskuterar laget hur man ska sälja ett naturvin från en udda producent i Jura. Vinet är tekniskt sett lite instabilt men har en fantastisk historia: producenten lämnade en etablerad vingård efter en konflikt och startade eget. Sommelieren berättar historien för gästen — inte om druvsorten. Vilket koncept från Hult & Scander (2024) förklarar bäst varför producentens personliga historia kan vara mer säljande än vinets sensoriska profil?",
+      "options": [
+        "Berättelsen är irrelevant — gäster vill ha objektiva smakbeskrivningar",
+        "Gäster väljer alltid på pris och ursprung, aldrig på berättelse",
+        "Sommelieren fungerar som kulturell intermediär — vinmakarens personlighet och historia kommunicerar smak symboliskt. Gästen köper berättelsen och identiteten, inte bara drycken i glaset",
+        "Tekniska defekter i vinet kan aldrig kompenseras med storytelling"
+      ],
+      "explanation": "Hult & Scander (2024): i studien säljs ett vin med 'instabila' egenskaper via producentens personliga historia — gästerna utbrister 'Vilken härlig berättelse, vi tar det!' Smaken kommuniceras symboliskt, inte analytiskt. Sommelieren är en kulturell intermediär vars förmåga att gestalta personlighet och autenticitet är lika viktig som WSET-kunskapen."
+    },
+    "somm-hs3": {
+      "prompt": "Under en fullbokad lördagskväll på Bryggan arbetar Sara och Maja i matsalen utan att kommunicera verbalt. Sara lägger bestick när Maja plockar tallrikar; Maja häller vin när Sara satt ut nya glas. Deras koordination är sömlös. Vad är den Techne-kompetens som möjliggör detta samarbete utan ord? (Hult & Scander, 2024)",
+      "options": [
+        "De har memorerat ett formellt serviceskript",
+        "Förtrogenhetskunskap — djup förståelse för varandras arbetsstilar och situationsläsning gör att de kan improvisera som 'en koreograferad dans' utan verbal kommunikation",
+        "De är personliga vänner och det är det enda som spelar roll",
+        "Deras arbete är rutiniserat och kräver ingen aktiv kompetens"
+      ],
+      "explanation": "Hult & Scander (2024) beskriver detta som organisk service: 'Utan att ha kommunicerat med varandra följer en den andras arbete.' Detta är Techne i sin mest raffinerade form — förtrogenhetskunskap om kollegans rytm och situationsläsning som möjliggör tyst koordination. Herdenstam (2011) kallar liknande fenomen 'den arbetande gommens tysta vetenskap.'"
+    },
+    "somm-hs4": {
+      "prompt": "Ekbacken ska rekrytera en ny matsalssommelier. Kandidat A är tekniskt perfekt — korrekt, formell, felfri WSET-kunskap. Kandidat B har lite mer varierande teknisk stil men en stark personlighet, djupa smakpreferenser för naturvin och förmåga att berätta om producenter på ett levande sätt. Gästerna minns Kandidat B:s bord länge. Vilket synsätt stöder Hult & Scander (2024) om vad samtida gästrumsprofessionalism kräver?",
+      "options": [
+        "Samtida restaurangkultur kräver en kulturell intermediär vars självrepresentation, smakpreferenser och personlighet är en del av servicekompetensen — Kandidat B:s förmåga att inkarnera autenticitet och skapa minnesvärda upplevelser är lika värdefull som formell teknik",
+        "Personlighet och teknik är alltid likvärdiga — välj på lön",
+        "Kandidat B:s stil fungerar bara på hipsterrestauranger, aldrig på fine dining",
+        "Kandidat A är alltid bäst — teknik övervinner allt"
+      ],
+      "explanation": "Hult & Scander (2024): 'Det är inte bara servitören som behöver verka genuin; det är hela restaurangens personlighet.' Samtida gästrumsprofessionalism handlar om att vara sig själv autentiskt, inte att spela en roll. Sommelierens identitet och smakpreferenser är en resurs, inte ett problem — förutsatt att det kombineras med grundläggande Techne-kompetens."
+    },
+    "somm-hs5": {
+      "prompt": "Qvarnen genomgår en renovering. Laget diskuterar den nya interiören: ska man gå för polerade ytor och vit-svart estetik, eller naturmaterial, synliga förvaringsytor och enkelt hantverk? Ägaren frågar vad som passar restaurangens identitet och gästprofil. Hur relaterar estetisk inramning (aesthetical framing) till sommelierlagets kompetensuttryck? (Hult & Scander, 2024)",
+      "options": [
+        "Estetik handlar bara om att ta bra Instagram-bilder",
+        "Polerade ytor signalerar alltid högre kompetens än naturmaterial",
+        "Inredning är orelaterad till sommelierens yrkeskompetens",
+        "Restaurangens estetiska inramning — material, belysning, vinflaskornas exponering, matpresentation — är en förlängning av lagets smakidentitet och kommunicerar direkt vad gästerna kan förvänta sig av upplevelsen"
+      ],
+      "explanation": "Hult & Scander (2024): 'Aesthetical framing' är en av tre kärnkategorier i samtida restaurangprestationer. Inredning, produktexponering och matpresentation kommunicerar smakidentitet och sätter förväntningarna. En vinlista som speglar autenticitet och hantverksproduktion, exponerad på rätt sätt i rummet, är en del av sommelierens Phronesis-kompetens."
+    },
+    "somm-sc1": {
+      "prompt": "En ung sommelier på Bryggan har just fått en inbjudan att delta som medhjälpare under en vinmakarmiddag arrangerad av en berömd Bourgogne-producent i Göteborg. Kollegan frågar: 'Är det verkligen värt att åka dit — du lär dig mer av att läsa böcker?' Varför är deltagandet i sådana nätverk avgörande för sommelierens kompetensutveckling? (Scander et al., 2020)",
+      "options": [
+        "Vinmakarmiddagar är bara för gäster, inte för sommelierer i utbildning",
+        "Böcker räcker — praktisk erfarenhet tillför inget teorin inte täcker",
+        "Socialt kapital omvandlas till kulturellt kapital: rätt nätverk ger tillgång till legitim smak och erfarenhet som inte kan läras ur böcker — att smaka rätt viner i rätt sällskap inbäddas i kroppen som förtrogenhetskunskap",
+        "Det handlar bara om prestige — nätverket ger inga faktiska kunskaper"
+      ],
+      "explanation": "Scander et al. (2020): socialt kapital (att känna rätt personer) konverteras till kulturellt kapital (att veta vad som är gott). Studien visar att sommelierens kompetens i hög grad formas av vem man umgås med, vilka erfarenheter man får tillgång till och hur dessa inbäddas som förtrogenhetskunskap — inte enbart av formell utbildning."
+    },
+    "somm-sc2": {
+      "prompt": "Under en temakväll på Nocturne serverar ditt lag enkel mat: potatischips, enkla smörgåsar och ett fåtal tillbehör. Priset per kuvert är ändå 800 kr. En gäst höjer ett ögonbryn. Du förklarar valet. Vilket resonemang speglar bäst Scander et al.:s fynd om dryckens roll som kulturbärare?",
+      "options": [
+        "Enkel mat är ett misstag — priset motiveras aldrig av enkel mat oavsett dryck",
+        "Vinet ger maten legitimitet: ett enastående vin kan adla det mest anspråkslösa mål. Sommelierens kompetens ligger i att visa hur rätt dryck höjer hela upplevelsens kulturella och sensoriska värde",
+        "Gästen har rätt — enkel mat och högt pris är alltid felaktigt",
+        "Det viktiga är att maten är dyr, inte vinet"
+      ],
+      "explanation": "Scander et al. (2020): sommeliererna i studien betonade att 'ett bra vin är förenligt med enkel mat — men inte tvärtom.' Drycken fungerar som kulturbärare och ger legitimitet åt kombinationen. Att kombinera potatischips med champagne är ett uttryck för sommelierens kulturella kapital, inte ett tecken på bristande kompetens."
+    },
+    "somm-sc3": {
+      "prompt": "En ny medarbetare på Järnvägshotellet frågar hur lång tid det tar att bli en kompetent sommelier. Din seniorkollega svarar: 'Det beror på vad du menar med kompetens.' Vilket tvåstegsperspektiv på kompetensutveckling beskriver Scander et al. (2020)?",
+      "options": [
+        "Steg 1: tillägna sig grundläggande kunskaper om grundsmaker, textur och kombinationsregler — relativt snabbt. Steg 2: utveckla fördjupad förtrogenhetskunskap genom långsiktig praktisk erfarenhet och rätt sociala nätverk — tar år",
+        "Steg 1: läsa om alla vinregioner. Steg 2: memorera parningskombinationer",
+        "Det finns bara ett steg — antingen kan man kombinera mat och dryck eller inte",
+        "Steg 1: ta WSET-examen. Steg 2: börja arbeta"
+      ],
+      "explanation": "Scander et al. (2020): grundkunskaperna (grundsmaker, syra, vikt) är relativt lätta att förstå men har lägre kulturellt värde. Det är det andra steget — den djupa förtrogenhetskunskapen förvärvad genom år av praktik och rätt sällskap — som utgör sommelierens egentliga kulturella kapital och yrkesidentitet."
+    },
+    "somm-sc4": {
+      "prompt": "Bergsmannen lanserar en ny matsedel med utpräglade 'lowbrow'-rätter: varmkorv med tillbehör, potatissallad och klassisk falukorv. Priset är högt. Ditt lag diskuterar om konceptet är rimligt ur ett professionellt sommelierperspektiv. Hur motiverar ni konceptet med stöd av Scander et al.:s forskning?",
+      "options": [
+        "Konceptet fungerar bara om man inte berättar om råvarorna för gästerna",
+        "Enkla råvaror motiverar alltid lägre pris — det finns inga undantag",
+        "Konceptet är omöjligt att motivera — priset är alltid knutet till råvarornas kvalitet",
+        "Sommelierens kulturella kapital gör att 'lowbrow'-mat kan ges legitimitet genom rätt dryckeskombination. Konceptet kräver att lagets kompetensnivå är hög nog att välja och kommunicera viner som höjer och transformerar rätternas kulturella status"
+      ],
+      "explanation": "Scander et al. (2020): studien visar att 'lowbrow'-mat — inklusive potatischips och enkel korv — legitimeras i kombination med rätt dryck. Det är sommelierens förmåga att kommunicera denna transformation som utgör det kulturella kapitalets kärna. Konceptet kräver hög kompetens, inte hög råvarukostnad."
+    },
+    "somm-sc5": {
+      "prompt": "Lärkan ska rekrytera en ny sommelier. Två kandidater söker: Kandidat A har WSET Level 3 och tre år på skolrestaurang. Kandidat B saknar formell utbildning men har arbetat fem år på välkända restauranger, deltagit i sommeliertävlingar och har ett brett professionellt nätverk. Vilket resonemang om kompetensvärdering är mest i linje med Scander et al.:s forskning?",
+      "options": [
+        "Kandidat B är alltid bättre — praktisk erfarenhet övertrumfar alltid utbildning",
+        "Kandidat A är alltid bättre — formell utbildning är det enda som räknas",
+        "Kandidat B:s informellt förvärvade sociala och kulturella kapital — praktisk erfarenhet, rätt nätverk, tävlingsexponering — kan vara lika eller mer värdefullt än formella meriter, beroende på restaurangens behov",
+        "Kandidaterna är identiska — erfarenhet och utbildning väger alltid lika"
+      ],
+      "explanation": "Scander et al. (2020) visar att sommelierens kompetens förvärvas genom en kombination av formell kunskap och socialt kapital. Tävlingsdeltagande, mentorskap av framstående sommelierer och professionella nätverk bygger en förtrogenhetskunskap som är svår att ersätta med enbart skolstudier — men inte heller tillräcklig utan grundläggande analytisk kompetens."
+    },
+    "somm-sc6": {
+      "prompt": "Under ett möte i sommelierlaget på Ekbacken diskuterar ni hur ni ska presentera en ovanlig kombination för kvällens gäster: ett kraftigt orange naturvin från Georgien till traditionell husmanskost. Kollegan är nervös: 'Tänk om gästerna tycker att det är konstigt?' Vilket förhållningssätt speglar bäst Scander et al.:s syn på sommelierens agens och experimentlust?",
+      "options": [
+        "Välj alltid det trygga — ovanliga kombinationer skadar alltid gästernas förtroende",
+        "Sommelierens agens innebär frihet och ansvar att experimentera och prova oortodoxa kombinationer. Med rätt kommunikation — berättelse om vinets ursprung, analogier om smakprogression — kan laget transformera gästernas förväntan och öppna nya smakupplevelser",
+        "Experimentella kombinationer ska bara göras på temakvällar, aldrig reguljärt",
+        "Gästens preferenser avgör alltid — sommelieren ska aldrig utmana gästens komfortzon"
+      ],
+      "explanation": "Scander et al. (2020): 'Den enskilda sommelierens agens är lika viktig som strukturella villkor. Socialisering in i professionen kräver sällskaplighet, kreativitet och en vilja att experimentera med ibland udda kombinationer.' Att kommunicera experimentella val professionellt — med berättelse och kunnig vägledning — är ett tecken på hög Phronesis-kompetens."
+    }
+  }
+}

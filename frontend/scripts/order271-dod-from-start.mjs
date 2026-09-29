@@ -106,6 +106,14 @@ async function answerQuestion(wantCorrect) {
 }
 async function visit(kind, pavilion, n, opts = {}) {
   await page.click('[data-testid=open-house]');
+  // ORDER 283 — första besöket: introduktionen till de tre kunskapsformerna.
+  await page.waitForSelector('[data-testid=screen-MD1], [data-testid=house-intro]');
+  if (await page.$('[data-testid=house-intro]')) {
+    await delay(400);
+    report.houseIntro = { forms: await page.$$eval('[data-testid^=house-intro-] .nx-label:first-child', (els) => els.map((e) => e.textContent)) };
+    await shot('dod-05-introduktionen-kunskapsformerna.png', 'första besöket i Måltidens hus: de tre kunskapsformerna');
+    await page.click('[data-testid=house-intro-continue]');
+  }
   await page.waitForSelector('[data-testid=screen-MD1]');
   if (opts.md1) await shot(opts.md1, 'MD1 medaljerna');
   await page.click(`[data-testid=${kind}-${pavilion}]`);

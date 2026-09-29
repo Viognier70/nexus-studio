@@ -1,0 +1,316 @@
+{
+  "definition": "Vecka 2 (måndag till och med söndagens avräkning), vinbaren, brons i Stensöta, Metodköket och Kalastorget, den rimliga spelaren (baspaketet varje morgon, bästa svaret), frö 1–20. Summor per kassabokskategori (state.ledger), negativa = kostnader. normalWeeklyRevenueSek ur balance.ts ECONOMY.",
+  "normalWeeklyRevenueSek": 42090,
+  "mean": {
+    "amortisation": -10523,
+    "ingredient": -1520,
+    "interest": -525,
+    "revenue": 47026,
+    "scenario": 2529,
+    "stock": -12530,
+    "wage": -21600,
+    "waste": -1197
+  },
+  "rows": [
+    {
+      "seed": 1,
+      "byCategory": {
+        "stock": -12530,
+        "scenario": 2613,
+        "revenue": 50876,
+        "ingredient": -1620,
+        "waste": -1076,
+        "wage": -21600,
+        "interest": -525,
+        "amortisation": -10523
+      },
+      "revenue": 50876,
+      "resultSek": 5609
+    },
+    {
+      "seed": 2,
+      "byCategory": {
+        "stock": -12530,
+        "scenario": 1652,
+        "revenue": 47336,
+        "ingredient": -1545,
+        "waste": -1176,
+        "wage": -21600,
+        "interest": -525,
+        "amortisation": -10523
+      },
+      "revenue": 47336,
+      "resultSek": 1086
+    },
+    {
+      "seed": 3,
+      "byCategory": {
+        "stock": -12530,
+        "scenario": 1560,
+        "revenue": 49390,
+        "ingredient": -1620,
+        "waste": -1171,
+        "wage": -21600,
+        "interest": -525,
+        "amortisation": -10523
+      },
+      "revenue": 49390,
+      "resultSek": 2976
+    },
+    {
+      "seed": 4,
+      "byCategory": {
+        "stock": -12530,
+        "scenario": 2663,
+        "revenue": 44472,
+        "ingredient": -1418,
+        "waste": -1343,
+        "wage": -21600,
+        "interest": -525,
+        "amortisation": -10523
+      },
+      "revenue": 44472,
+      "resultSek": -807
+    },
+    {
+      "seed": 5,
+      "byCategory": {
+        "stock": -12530,
+        "scenario": 2726,
+        "revenue": 59398,
+        "ingredient": -1603,
+        "waste": -822,
+        "wage": -21600,
+        "interest": -525,
+        "amortisation": -10523
+      },
+      "revenue": 59398,
+      "resultSek": 14518
+    },
+    {
+      "seed": 6,
+      "byCategory": {
+        "stock": -12530,
+        "scenario": 3137,
+        "revenue": 50393,
+        "ingredient": -1591,
+        "waste": -1001,
+        "wage": -21600,
+        "interest": -525,
+        "amortisation": -10523
+      },
+      "revenue": 50393,
+      "resultSek": 5757
+    },
+    {
+      "seed": 7,
+      "byCategory": {
+        "stock": -12530,
+        "scenario": 1958,
+        "revenue": 44980,
+        "ingredient": -1620,
+        "waste": -1321,
+        "wage": -21600,
+        "interest": -525,
+        "amortisation": -10523
+      },
+      "revenue": 44980,
+      "resultSek": -1185
+    },
+    {
+      "seed": 8,
+      "byCategory": {
+        "stock": -12530,
+        "scenario": 3494,
+        "revenue": 50230,
+        "ingredient": -1501,
+        "waste": -1131,
+        "wage": -21600,
+        "interest": -525,
+        "amortisation": -10523
+      },
+      "revenue": 50230,
+      "resultSek": 5911
+    },
+    {
+      "seed": 9,
+      "byCategory": {
+        "stock": -12530,
+        "scenario": 2978,
+        "revenue": 48123,
+        "ingredient": -1620,
+        "waste": -1076,
+        "wage": -21600,
+        "interest": -525,
+        "amortisation": -10523
+      },
+      "revenue": 48123,
+      "resultSek": 3224
+    },
+    {
+      "seed": 10,
+      "byCategory": {
+        "stock": -12530,
+        "scenario": 3221,
+        "revenue": 44253,
+        "ingredient": -1467,
+        "waste": -1289,
+        "wage": -21600,
+        "interest": -525,
+        "amortisation": -10523
+      },
+      "revenue": 44253,
+      "resultSek": -464
+    },
+    {
+      "seed": 11,
+      "byCategory": {
+        "stock": -12530,
+        "scenario": 2493,
+        "revenue": 46070,
+        "ingredient": -1454,
+        "waste": -1205,
+        "wage": -21600,
+        "interest": -525,
+        "amortisation": -10523
+      },
+      "revenue": 46070,
+      "resultSek": 725
+    },
+    {
+      "seed": 12,
+      "byCategory": {
+        "stock": -12530,
+        "scenario": 2453,
+        "revenue": 46512,
+        "ingredient": -1597,
+        "waste": -1142,
+        "wage": -21600,
+        "interest": -525,
+        "amortisation": -10523
+      },
+      "revenue": 46512,
+      "resultSek": 1044
+    },
+    {
+      "seed": 13,
+      "byCategory": {
+        "stock": -12530,
+        "scenario": 1200,
+        "revenue": 47979,
+        "ingredient": -1541,
+        "waste": -1218,
+        "wage": -21600,
+        "interest": -525,
+        "amortisation": -10523
+      },
+      "revenue": 47979,
+      "resultSek": 1240
+    },
+    {
+      "seed": 14,
+      "byCategory": {
+        "stock": -12530,
+        "scenario": 1632,
+        "revenue": 38192,
+        "ingredient": -1370,
+        "waste": -1517,
+        "wage": -21600,
+        "interest": -525,
+        "amortisation": -10523
+      },
+      "revenue": 38192,
+      "resultSek": -8244
+    },
+    {
+      "seed": 15,
+      "byCategory": {
+        "stock": -12530,
+        "scenario": 1800,
+        "revenue": 43798,
+        "ingredient": -1432,
+        "waste": -1343,
+        "wage": -21600,
+        "interest": -525,
+        "amortisation": -10523
+      },
+      "revenue": 43798,
+      "resultSek": -2358
+    },
+    {
+      "seed": 16,
+      "byCategory": {
+        "stock": -12530,
+        "scenario": 3190,
+        "revenue": 54717,
+        "ingredient": -1620,
+        "waste": -977,
+        "wage": -21600,
+        "interest": -525,
+        "amortisation": -10523
+      },
+      "revenue": 54717,
+      "resultSek": 10127
+    },
+    {
+      "seed": 17,
+      "byCategory": {
+        "stock": -12530,
+        "scenario": 3274,
+        "revenue": 40144,
+        "ingredient": -1392,
+        "waste": -1365,
+        "wage": -21600,
+        "interest": -525,
+        "amortisation": -10523
+      },
+      "revenue": 40144,
+      "resultSek": -4521
+    },
+    {
+      "seed": 18,
+      "byCategory": {
+        "stock": -12530,
+        "scenario": 2422,
+        "ingredient": -1469,
+        "waste": -1282,
+        "wage": -21600,
+        "interest": -525,
+        "revenue": 45419,
+        "amortisation": -10523
+      },
+      "revenue": 45419,
+      "resultSek": -93
+    },
+    {
+      "seed": 19,
+      "byCategory": {
+        "stock": -12530,
+        "scenario": 2389,
+        "revenue": 46529,
+        "ingredient": -1459,
+        "wage": -21600,
+        "interest": -525,
+        "waste": -1111,
+        "amortisation": -10523
+      },
+      "revenue": 46529,
+      "resultSek": 1166
+    },
+    {
+      "seed": 20,
+      "byCategory": {
+        "stock": -12530,
+        "scenario": 3725,
+        "revenue": 41717,
+        "ingredient": -1459,
+        "waste": -1367,
+        "wage": -21600,
+        "interest": -525,
+        "amortisation": -10523
+      },
+      "revenue": 41717,
+      "resultSek": -2564
+    }
+  ]
+}

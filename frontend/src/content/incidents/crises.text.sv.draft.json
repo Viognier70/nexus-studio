@@ -1,0 +1,692 @@
+{
+  "language": "sv",
+  "status": "draft",
+  "reviewedBy": null,
+  "note": "ORDER 283 — kriserna, svenska (originalet och nya steg av Claude Code).",
+  "texts": {
+    "somm-k1": {
+      "title": "Dålig recension",
+      "body": "Aftontidningen publicerar en kritisk recension av lagets vinlista. Alla gäster i er zon läser den.",
+      "steps": [
+        {
+          "question": "Vad bedömer en recensent oftast en vinlista efter?",
+          "options": {
+            "a": {
+              "label": "Om den passar maten och stället, och om personalen kan förklara den",
+              "explanation": "En lista bedöms som en del av måltiden: hur väl vinerna passar maten och rummet, och hur väl personalen kan vägleda gästen."
+            },
+            "b": {
+              "label": "Bara hur många flaskor den har",
+              "explanation": "En lång lista är inte en bra lista i sig. Längd utan vägledning kan göra valet svårare."
+            },
+            "c": {
+              "label": "Bara priset på den dyraste flaskan",
+              "explanation": "En dyr flaska säger lite om den lista gästerna faktiskt dricker ur."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} kan inte säga vad recensionen handlade om. Gästerna börjar undra."
+          }
+        },
+        {
+          "question": "En gäst tar upp recensionen vid bordet. Hur svarar du?",
+          "options": {
+            "a": {
+              "label": "Lyssna, tacka och säg kort vad ni gör åt det",
+              "explanation": "Lugna, öppna svar visar att laget tar gäster och kritiker på allvar. Det gör ett obekvämt ögonblick till förtroende."
+            },
+            "b": {
+              "label": "Låtsas att du inte har läst den",
+              "explanation": "Gästen har läst den. Att låtsas att man inte sett den ser undvikande ut."
+            },
+            "c": {
+              "label": "Säg att recensenten inte kan något om vin",
+              "explanation": "Att angripa recensenten får gästen att ta kritiken på större allvar, inte mindre."
+            }
+          },
+          "fail": {
+            "outcome": "Gästen känner sig avfärdad och bordet tystnar."
+          }
+        },
+        {
+          "question": "Hur bemöter laget kritiken professionellt?",
+          "options": {
+            "a": {
+              "label": "Sänk priserna omedelbart",
+              "explanation": "Lägre priser besvarar inte kritik av listan, och de kostar marginal."
+            },
+            "b": {
+              "label": "Byt vinlista helt",
+              "explanation": "Att slänga listan erkänner mer än recensionen sa och tappar det som fungerade."
+            },
+            "c": {
+              "label": "Ignorera recensionen",
+              "explanation": "Tystnad lämnar recensionen som den enda berättelsen folk hör."
+            },
+            "d": {
+              "label": "Bjud in journalisten på en ny provning och demonstrera er kompetens",
+              "explanation": "En öppen dialog och demonstrerad kompetens vänder negativ press till positiv synlighet. Proaktiv kommunikation är sommelierlagets starkaste verktyg."
+            }
+          },
+          "fail": {
+            "outcome": "Recensionen står obesvarad, och färre gäster bokar den här veckan."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Journalisten kommer tillbaka, provar och skriver en kort uppföljning. Gästerna märker det."
+      },
+      "staff": {
+        "outcome": "{personal} tar frågorna så gott det går, men det är recensionen folk pratar om."
+      }
+    },
+    "somm-k2": {
+      "title": "Leverantörskris",
+      "body": "Er primära vinleverantör kan inte leverera inför helgens stora middag.",
+      "steps": [
+        {
+          "question": "Vilka viner är lättast att ersätta med kort varsel utan att ändra middagen?",
+          "options": {
+            "a": {
+              "label": "Bara viner av samma årgång",
+              "explanation": "Årgången betyder mindre än druva och stil för att behålla en parning."
+            },
+            "b": {
+              "label": "Viner av samma druva och stil från en annan producent",
+              "explanation": "Samma druva och stil behåller parningens balans av syra, kropp och sötma, så att rätterna fortfarande fungerar."
+            },
+            "c": {
+              "label": "Vilket vin som helst till samma pris",
+              "explanation": "Priset säger inget om syra, kropp eller sötma, som avgör om parningen fungerar."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} väljer ersättare på måfå. Två av dem krockar med maten."
+          }
+        },
+        {
+          "question": "Vad säger du till gästerna som bokat middagen?",
+          "options": {
+            "a": {
+              "label": "Ingenting, och hoppas att ingen märker något",
+              "explanation": "Gäster som bokat en parning märker det. Att få veta vid bordet känns som att bli lurad."
+            },
+            "b": {
+              "label": "Ställ in parningen och servera vatten",
+              "explanation": "Gästerna bokade en vinmiddag. Att ställa in är det sämsta utfallet för dem och för er."
+            },
+            "c": {
+              "label": "Säg det innan de kommer, nämn ersättarna och varför de passar",
+              "explanation": "Att säga det tidigt, med skäl, behåller gästernas förtroende och gör ändringen till en del av berättelsen."
+            }
+          },
+          "fail": {
+            "outcome": "Gästerna får veta vid bordet och känner sig lurade."
+          }
+        },
+        {
+          "question": "Vilket alternativ räddar kvällen bäst?",
+          "options": {
+            "a": {
+              "label": "Stäng restaurangen",
+              "explanation": "Att stänga tappar kvällen, intäkterna och gästernas förtroende."
+            },
+            "b": {
+              "label": "Ring ett grannlags sommelier och samarbeta om reservlager",
+              "explanation": "Sommelier-nätverket i Grythyttan är en resurs. Kollegialt samarbete i kris är praktiskt och bygger social hållbarhet på lång sikt."
+            },
+            "c": {
+              "label": "Servera bara öl",
+              "explanation": "Öl kan vara gott till mat, men gästerna bokade en vinmiddag."
+            },
+            "d": {
+              "label": "Köp från Systembolaget till butikspris",
+              "explanation": "Att köpa till butikspris äter upp marginalen, och rätt viner finns kanske inte i butiken."
+            }
+          },
+          "fail": {
+            "outcome": "Middagen blir av med luckor i parningen, och intäkterna blir lidande."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Grannarnas reservflaskor räddar middagen, och gästerna får höra hur det gick till."
+      },
+      "staff": {
+        "outcome": "{personal} lappar ihop parningen. Det fungerar, men inte bra."
+      }
+    },
+    "somm-k3": {
+      "title": "Extremväder",
+      "body": "Ovädret skadar skörden hos er biodynamiska leverantör i Bergslagen. Priserna stiger för alla i byn.",
+      "steps": [
+        {
+          "question": "Varför har en biodynamisk odlare färre snabba lösningar efter oväder?",
+          "options": {
+            "a": {
+              "label": "Biodynamiska vinstockar skadas aldrig av väder",
+              "explanation": "Ingen odlingsmetod skyddar vinstockar mot oväder."
+            },
+            "b": {
+              "label": "Certifieringen förbjuder skörd efter regn",
+              "explanation": "Någon sådan regel finns inte. Gränserna gäller vad som får tillsättas, inte när man skördar."
+            },
+            "c": {
+              "label": "Syntetiska besprutningar och insatser är inte tillåtna, så odlaren förlitar sig på vingårdens egen motståndskraft",
+              "explanation": "Biodynamisk odling utesluter syntetiska kemikalier. Efter skador arbetar odlaren med det levande systemet i stället för att ta till besprutning."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} kan inte förklara prishöjningen för gästerna."
+          }
+        },
+        {
+          "question": "Hur justerar du vinlistan den här veckan?",
+          "options": {
+            "a": {
+              "label": "Ta bort alla viner från regionen på en gång",
+              "explanation": "Att släppa en partner vid första dåliga året tappar en relation ni vill ha tillbaka."
+            },
+            "b": {
+              "label": "Behåll odlarens viner i mindre mängd och berätta om årgången för gästerna",
+              "explanation": "Att behålla relationen och berätta om en svår årgång gör bristen till en del av det gästerna uppskattar."
+            },
+            "c": {
+              "label": "Häll mindre glas utan att säga något",
+              "explanation": "Dolda nedskärningar märks, och de kostar mer förtroende än en prishöjning."
+            }
+          },
+          "fail": {
+            "outcome": "Gästerna märker de mindre glasen och säger det."
+          }
+        },
+        {
+          "question": "Vilket svar är mest hållbart på lång sikt?",
+          "options": {
+            "a": {
+              "label": "Höj priserna på alla rätter",
+              "explanation": "Att lägga kostnaden på allt döljer orsaken och drabbar gäster som aldrig dricker vinet."
+            },
+            "b": {
+              "label": "Ta bort vinlistan tillfälligt",
+              "explanation": "En vinbar utan vinlista har inget att sälja."
+            },
+            "c": {
+              "label": "Byt till billigare konventionell leverantör",
+              "explanation": "Det löser den här veckan och försvagar profilen och relationerna åren efter."
+            },
+            "d": {
+              "label": "Minska vinlistan och gå djupare med färre ekologiska producenter",
+              "explanation": "Hållbar inköpsstrategi handlar om djup snarare än bredd. Färre producenter med stark relation ger resiliens mot klimatstörningar."
+            }
+          },
+          "fail": {
+            "outcome": "Listan blir billigare och tunnare, och stamgästerna märker det."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Odlaren tackar för att ni stannade. Nästa års tilldelning är er."
+      },
+      "staff": {
+        "outcome": "{personal} håller listan igång vecka för vecka, utan plan."
+      }
+    },
+    "somm-k4": {
+      "title": "VIP-gäst",
+      "body": "En känd matskribent bokar bord ikväll utan förvarning. Hela byn pratar om det.",
+      "steps": [
+        {
+          "question": "Vad visar forskningen om crossmodal correspondence om musik och smak?",
+          "options": {
+            "a": {
+              "label": "Musik påverkar inte smaken",
+              "explanation": "Studier visar att ljud förändrar hur vi uppfattar smak, så musikvalet spelar roll."
+            },
+            "b": {
+              "label": "Musik kan förändra hur söt, besk eller fyllig ett vin upplevs",
+              "explanation": "Crossmodal forskning (Spence) visar att hög, ljus musik kan framhäva sötma och tyngre musik beska och strävhet."
+            },
+            "c": {
+              "label": "Bara hög musik påverkar smaken",
+              "explanation": "Det är musikens karaktär, inte bara volymen, som spelar roll."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} vet inte varför rummet spelar roll. Kvällen börjar platt."
+          }
+        },
+        {
+          "question": "Hur lägger du tempot för en gäst som är där för att recensera?",
+          "options": {
+            "a": {
+              "label": "Servera allt på en gång för att visa effektivitet",
+              "explanation": "Att stressa fram en måltid förstör den, hur effektivt det än ser ut."
+            },
+            "b": {
+              "label": "Låt skribenten vänta för att bygga förväntan",
+              "explanation": "Väntan läses som dålig service, inte som dramatik."
+            },
+            "c": {
+              "label": "Samma tempo som för alla gäster, bara med omsorg: ingen brådska, ingen svävande närvaro",
+              "explanation": "En recensent vill se den verkliga servicen. Omsorg utan särbehandling är det hen skriver om."
+            }
+          },
+          "fail": {
+            "outcome": "Skribenten märker uppståndelsen, och det gör alla andra också."
+          }
+        },
+        {
+          "question": "Vilken crossmodal strategi väljer ni för att maximera upplevelsen?",
+          "options": {
+            "a": {
+              "label": "Servera det dyraste vinet",
+              "explanation": "Priset är inte upplevelsen. Helheten är det."
+            },
+            "b": {
+              "label": "Anpassa musik, ljus och serveringstempo till vinernas karaktär och gästens förväntningar",
+              "explanation": "Crichton-Focks atmospheric influence: alla sinnesintryck i matsalen samverkar. Ett medvetet sommelierlag orkestrerar helheten — inte bara glaset."
+            },
+            "c": {
+              "label": "Låt gästen välja själv utan guidning",
+              "explanation": "Vägledningen är en del av servicen som recenseras."
+            },
+            "d": {
+              "label": "Fokusera bara på maten",
+              "explanation": "Vinet och rummet är halva upplevelsen."
+            }
+          },
+          "fail": {
+            "outcome": "Kvällen blir korrekt men lätt att glömma."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Skribenten stannar länge, frågar om vinerna, och byn får höra om det."
+      },
+      "staff": {
+        "outcome": "{personal} tar bordet. Det går hyggligt, men inget sticker ut."
+      }
+    },
+    "somm-k5": {
+      "title": "Personalbrist",
+      "body": "En i laget är sjuk. Ni måste sköta hela vinservicen med en person under en fullbokad kväll.",
+      "steps": [
+        {
+          "question": "Vad står WSET SAT för?",
+          "options": {
+            "a": {
+              "label": "En standard för serveringstemperaturer",
+              "explanation": "Temperaturer spelar roll, men SAT handlar om hur man provar och bedömer ett vin."
+            },
+            "b": {
+              "label": "Wine & Spirit Education Trusts systematiska metod för provning (Systematic Approach to Tasting)",
+              "explanation": "SAT är WSET:s strukturerade metod: utseende, doft, smak och slutsats, i den ordningen."
+            },
+            "c": {
+              "label": "Ett lämplighetstest för sommelierer",
+              "explanation": "Det är en provningsmetod, inte ett test av sommelieren."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} tappar grunderna under press."
+          }
+        },
+        {
+          "question": "Vilken provningsteknik prioriterar ni under tidspress?",
+          "options": {
+            "a": {
+              "label": "Använd WSET SAT — syn, doft, smak, slutsats — snabbt men konsekvent",
+              "explanation": "WSET SAT är designad för effektivitet utan att kompromissa med precision. Ett tränat sommelierlag gör en korrekt bedömning på under 60 sekunder."
+            },
+            "b": {
+              "label": "Gissa baserat på etiketten",
+              "explanation": "Etiketten kan inte säga om just den här flaskan är felfri."
+            },
+            "c": {
+              "label": "Be kökschefen provsmaka",
+              "explanation": "Köket har lika bråttom, och vinet är sommelierens uppgift."
+            },
+            "d": {
+              "label": "Hoppa över provningen helt",
+              "explanation": "Utan provning går en korkad eller felaktig flaska direkt till gästen."
+            }
+          },
+          "fail": {
+            "outcome": "En felaktig flaska når ett bord innan någon märker det."
+          }
+        },
+        {
+          "question": "Halvvägs in i kvällen hinner du inte med. Vad prioriterar du?",
+          "options": {
+            "a": {
+              "label": "Prova varje vin grundligt innan du häller upp, oavsett kön",
+              "explanation": "Grundlighet som låter bord vänta hjälper ingen i kväll."
+            },
+            "b": {
+              "label": "Låt gästerna hämta och hälla upp sina flaskor i baren",
+              "explanation": "Det ger upp den service gästerna betalar för."
+            },
+            "c": {
+              "label": "Bord som fortfarande väntar på sin första dryck, sedan öppna flaskor; säg ärligt till de andra att de får vänta en stund",
+              "explanation": "Den första drycken sätter kvällen för ett bord. Ärlighet om en kort väntan behåller de andras tålamod."
+            }
+          },
+          "fail": {
+            "outcome": "Borden väntar utan besked, och stämningen sjunker."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "En person håller hela rummet serverat, och gästerna märker aldrig luckan."
+      },
+      "staff": {
+        "outcome": "{personal} springer mellan borden. Alla får något, sent."
+      }
+    },
+    "somm-k6": {
+      "title": "Hållbarhetsrevision",
+      "body": "Kommunen granskar alla restaurangers miljöprofil inför utmärkelsen Årets Hållbara Krog.",
+      "steps": [
+        {
+          "question": "Vad står för den största delen av ett vins klimatavtryck?",
+          "options": {
+            "a": {
+              "label": "Korkarna",
+              "explanation": "Korkar är en mycket liten del av avtrycket."
+            },
+            "b": {
+              "label": "Serveringstemperaturen",
+              "explanation": "Kylning drar energi, men långt mindre än transport och glas."
+            },
+            "c": {
+              "label": "Transport och förpackning, framför allt tunga glasflaskor",
+              "explanation": "Transport och förpackning dominerar vinets avtryck; tungt glas är en stor del av det."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} kan inte svara på revisorns första fråga."
+          }
+        },
+        {
+          "question": "Hur dokumenterar du listans avtryck så att gästerna kan använda det?",
+          "options": {
+            "a": {
+              "label": "Lämna det till leverantören",
+              "explanation": "Revisorn granskar er restaurang, inte leverantören."
+            },
+            "b": {
+              "label": "En siffra för hela restaurangen, inga detaljer",
+              "explanation": "En enda siffra ger gästen inget val att göra."
+            },
+            "c": {
+              "label": "Märk varje vins ursprung och förpackning, och visa ett val med lågt avtryck i varje kategori",
+              "explanation": "Gästerna kan bara välja om informationen står där de väljer: på listan, per vin."
+            }
+          },
+          "fail": {
+            "outcome": "Dokumentationen är vag och revisorn säger det."
+          }
+        },
+        {
+          "question": "Vilket initiativ ger störst ekologisk trovärdighet?",
+          "options": {
+            "a": {
+              "label": "Sätt upp en grön blomma i fönstret",
+              "explanation": "En symbol utan innehåll övertygar ingen."
+            },
+            "b": {
+              "label": "Dokumentera hela vinlistans CO₂-avtryck och erbjud gästen ett klimatval",
+              "explanation": "Transparens och gästens möjlighet att göra aktiva val är kärnan i social-ekologisk hållbarhet. Dokumentation ger dessutom konkurrensfördelar."
+            },
+            "c": {
+              "label": "Köp klimatkompensation",
+              "explanation": "Kompensation ändrar inte det ni serverar."
+            },
+            "d": {
+              "label": "Byt alla glas mot återvunnet material",
+              "explanation": "Det är ett litet steg jämfört med det som finns i flaskorna och hur de reser."
+            }
+          },
+          "fail": {
+            "outcome": "Revisionen noterar goda avsikter och lite annat."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Revisorn lyfter fram vinlistan som ett exempel för byn."
+      },
+      "staff": {
+        "outcome": "{personal} svarar det de kan. Revisionen går igenom, utan beröm."
+      }
+    },
+    "somm-k7": {
+      "title": "Naturvinsfestival",
+      "body": "Grythyttan arrangerar sin första naturvinsfestival. Alla restauranger konkurrerar om uppmärksamheten.",
+      "steps": [
+        {
+          "question": "Vad menas oftast med naturvin?",
+          "options": {
+            "a": {
+              "label": "Vin av ekologiskt odlade druvor, jäst med egna jästsvampar och med lite eller inget tillsatt",
+              "explanation": "Det finns ingen gemensam juridisk definition, men naturvin betyder oftast ekologiska eller biodynamiska druvor, vildjäst och minimala tillsatser."
+            },
+            "b": {
+              "label": "Vilket vin som helst med skruvkork",
+              "explanation": "Förslutningen har inget med saken att göra."
+            },
+            "c": {
+              "label": "Vin utan alkohol",
+              "explanation": "Naturvin är jäst och innehåller alkohol som annat vin."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} kan inte förklara vad festivalen handlar om."
+          }
+        },
+        {
+          "question": "Hur serverar du ett grumligt, ofiltrerat naturvin?",
+          "options": {
+            "a": {
+              "label": "Säg till gästen att det är ofiltrerat, så att grumligheten är väntad, och häll försiktigt",
+              "explanation": "Att förklara grumligheten gör ett möjligt klagomål till en del av vinets berättelse."
+            },
+            "b": {
+              "label": "Säg inget och låt gästen tro att det är fel på det",
+              "explanation": "En oförklarad grumlighet ser ut som ett fel."
+            },
+            "c": {
+              "label": "Filtrera det genom ett kaffefilter i baren",
+              "explanation": "Det tar bort det producenten avsåg och utsätter vinet för luft och pappersmak."
+            }
+          },
+          "fail": {
+            "outcome": "En gäst skickar tillbaka vinet som felaktigt."
+          }
+        },
+        {
+          "question": "Hur positionerar ni er restaurang under festivalen?",
+          "options": {
+            "a": {
+              "label": "Kopiera grannlagets meny",
+              "explanation": "Att kopiera gör er till andrahandsvalet."
+            },
+            "b": {
+              "label": "Ta ledigt under festivalen",
+              "explanation": "Ni ger byns största vecka till konkurrenterna."
+            },
+            "c": {
+              "label": "Sänk alla priser",
+              "explanation": "Priskrig ger uppmärksamhet åt de billigaste, inte de bästa."
+            },
+            "d": {
+              "label": "Curera en tematisk provning med storytelling om producenten och terroir",
+              "explanation": "Terroir-kommunikation och curated experiences differentierar. Gäster betalar premium för berättelsen bakom flaskan — inte bara vinet i glaset."
+            }
+          },
+          "fail": {
+            "outcome": "Festivalen passerar, och folket går någon annanstans."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Er provning är den folk pratar om när festivalen är slut."
+      },
+      "staff": {
+        "outcome": "{personal} håller dörrarna öppna. Några festivalgäster kommer in."
+      }
+    },
+    "somm-k8": {
+      "title": "Allergikris",
+      "body": "En gäst reagerar på ett vin som innehöll osmärkt äggvita (klarningsmedel). Situationen eskalerar.",
+      "steps": [
+        {
+          "question": "Varför kan vin innehålla äggvita?",
+          "options": {
+            "a": {
+              "label": "Det kommer från korken",
+              "explanation": "Korken har inget med ägg att göra."
+            },
+            "b": {
+              "label": "Äggvita används som klarningsmedel, för att mjuka upp tanniner och klara vinet",
+              "explanation": "Klarningsmedel som äggvita binder tanniner och partiklar, som sedan sjunker undan. Spår kan finnas kvar."
+            },
+            "c": {
+              "label": "Ägg tillsätts för smakens skull",
+              "explanation": "Ägg är ingen smaksättning i vin. Det är ett hjälpmedel i framställningen."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} vet inte var ägget kom ifrån. Dyrbara minuter går."
+          }
+        },
+        {
+          "question": "Vad gör du just nu för gästen som reagerar?",
+          "options": {
+            "a": {
+              "label": "Erbjud ett glas vatten och fortsätt",
+              "explanation": "En allergisk reaktion kan snabbt bli värre. Vatten räcker inte."
+            },
+            "b": {
+              "label": "Ta det på allvar: sluta servera, fråga om medicin och ring efter vård om symtomen är allvarliga",
+              "explanation": "Vid allergi agerar man först och frågar sedan. Allvarliga symtom betyder att man ringer efter hjälp direkt."
+            },
+            "c": {
+              "label": "Säg att det inte kan vara vinet",
+              "explanation": "Att förneka slösar tid och kan vara fel."
+            }
+          },
+          "fail": {
+            "outcome": "Gästen får vänta på hjälp medan rummet tittar på."
+          }
+        },
+        {
+          "question": "Vad borde laget ha gjort INNAN servering?",
+          "options": {
+            "a": {
+              "label": "Ingenting — det är producentens ansvar",
+              "explanation": "Gästen litar på restaurangen, inte på producenten. Att känna listan är lagets uppgift."
+            },
+            "b": {
+              "label": "Kommunicerat alla klarningsmedel proaktivt och haft alternativ redo för allergiker",
+              "explanation": "Social hållbarhet innebär inkludering och proaktiv kommunikation. Ett ansvarsfullt sommelierlag känner sin vinlista och kommunicerar proaktivt — inte reaktivt."
+            },
+            "c": {
+              "label": "Serverat bara naturvin",
+              "explanation": "Även naturvin kan klaras. Beteckningen naturvin är ingen garanti."
+            },
+            "d": {
+              "label": "Frågat alla gäster om allergier vid bokning",
+              "explanation": "Det hjälper, men det ersätter inte att veta vad som finns i de egna vinerna."
+            }
+          },
+          "fail": {
+            "outcome": "Kvällen slutar med en incidentrapport och ett skakat lag."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Gästen tas om hand, listan märks om nästa morgon, och stamgästerna märker det."
+      },
+      "staff": {
+        "outcome": "{personal} hanterar stunden, men frågan om hur det kunde hända står kvar."
+      }
+    },
+    "somm-k9": {
+      "title": "Tävlingsinbjudan",
+      "body": "Svenska Sommelierföreningen bjuder in ett lag att delta i regionala mästerskapen. Det kräver fem veckors intensiv förberedelse.",
+      "steps": [
+        {
+          "question": "Vad prövas oftast i en sommeliertävling?",
+          "options": {
+            "a": {
+              "label": "Bara hur snabbt man öppnar flaskor",
+              "explanation": "Tempo spelar roll i serviceuppgifterna, men det är en liten del."
+            },
+            "b": {
+              "label": "Bara kunskap om priser",
+              "explanation": "Priser kan förekomma, men provning, teori och service dominerar."
+            },
+            "c": {
+              "label": "Blindprovning, teori och praktisk service inför en jury",
+              "explanation": "Sommeliertävlingar kombinerar blindprovning, teori och serviceuppgifter som bedöms på plats."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} underskattar vad tävlingen kräver."
+          }
+        },
+        {
+          "question": "Hur tränar ni inför blindprovningen?",
+          "options": {
+            "a": {
+              "label": "Memorera juryns favoritviner",
+              "explanation": "Vinerna är okända i förväg. Bara färdigheten följer med."
+            },
+            "b": {
+              "label": "Läs om vin men prova aldrig",
+              "explanation": "Blindprovning är en färdighet för sinnena. Den lärs genom att prova."
+            },
+            "c": {
+              "label": "Prova regelbundet och systematiskt i grupp, jämför anteckningar och lär av misstagen",
+              "explanation": "Regelbunden, strukturerad provning i grupp bygger de gemensamma referenspunkter som blindprovning bygger på."
+            }
+          },
+          "fail": {
+            "outcome": "Laget tränar utan plan och veckorna går."
+          }
+        },
+        {
+          "question": "Hur motiverar ni deltagandet för restaurangägaren? (Scander et al., 2020)",
+          "options": {
+            "a": {
+              "label": "Det ger bra PR men inga verkliga kunskapsvinster",
+              "explanation": "PR är en bieffekt. Kunskapen är poängen."
+            },
+            "b": {
+              "label": "Tävlingar är bara för individer, inte för sommelierlag",
+              "explanation": "Det en person lär sig lyfter hela laget."
+            },
+            "c": {
+              "label": "Det är onödigt — tävlingar ger inga praktiska kunskaper",
+              "explanation": "Forskningen säger motsatsen: tävlingar bygger kunskap som böcker inte kan."
+            },
+            "d": {
+              "label": "Tävlingsdeltagande bygger socialt kapital som konverteras till kulturellt kapital: kontakt med ledande sommelierer, exponering för legitima smakdomar och nätverksbygge som direkt stärker restaurangens kompetensprofil och gästupplevelse",
+              "explanation": "Scander et al. (2020): sommeliernas kompetens byggs i hög grad via tävlingsdeltagande och kontakt med ledande yrkesutövare. En av informanterna beskriver hur han tränade med 'kända sommelierer' som lärde honom rätt ord, positionering och kommunikationsstil — kunskap som inte finns i böcker."
+            }
+          },
+          "fail": {
+            "outcome": "Ägaren säger nej, och chansen går förbi."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Laget kommer tillbaka med en placering, nya kontakter och en bättre lista."
+      },
+      "staff": {
+        "outcome": "{personal} åker ensam, dåligt förberedd. Det blir en läxa, inte ett resultat."
+      }
+    }
+  }
+}

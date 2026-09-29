@@ -35,6 +35,11 @@ import { OPTIONS_PER_QUESTION } from '../../sim/balance';
 import metaJson from '../content/questions/bank.meta.json';
 import textEnJson from '../content/questions/bank.text.en.json';
 import textSvJson from '../content/questions/bank.text.sv.draft.json';
+// ORDER 283 — utkast ur Vision Owners tidigare spel (Sommelier
+// Championship), status 'utkast', inte i spelet förrän de är granskade.
+import draftMetaJson from '../content/questions/drafts.meta.json';
+import draftTextEnJson from '../content/questions/drafts.text.en.json';
+import draftTextSvJson from '../content/questions/drafts.text.sv.draft.json';
 
 export type BankLanguage = 'en' | 'sv';
 
@@ -53,6 +58,11 @@ export interface BankQuestionMeta {
   // ORDER 270 — referensen bakom frågan (titel och länk), visas med
   // förklaringen. Tom tills Vision Owner levererar referenserna.
   reference: Reference | null;
+  // ORDER 283 — 'utkast' = inte granskad av Vision Owner; används inte i
+  // spelet (utkasten ligger i drafts.*.json, DRAFT_META nedan).
+  status?: 'utkast';
+  // ORDER 283 — var utkastet kommer ifrån.
+  source?: string;
 }
 
 // Spelartext — det enda som översätts.
@@ -100,7 +110,9 @@ export function validateMeta(q: unknown): string[] {
   if (typeof r?.placeholder !== 'boolean') fail('placeholder saknas');
   const ref = r?.reference as Record<string, unknown> | null | undefined;
   if (ref === undefined) fail('reference saknas (null när den är tom)');
-  else if (ref !== null && (typeof ref.title !== 'string' || typeof ref.url !== 'string' || !ref.title || !ref.url)) fail('referensen ska ha titel och länk');
+  // ORDER 283 — länken får vara null tills Vision Owner levererar den;
+  // titeln krävs alltid.
+  else if (ref !== null && (typeof ref.title !== 'string' || !ref.title || (ref.url !== null && (typeof ref.url !== 'string' || !ref.url)))) fail('referensen ska ha titel, och länk eller null');
   const a = r?.anchor as Record<string, unknown> | undefined;
   if (!a || !PHASES.includes(a.phase as QuestionAnchor['phase'])) fail('ankare saknar giltig fas');
   else {
@@ -152,6 +164,15 @@ export const BANK_META: readonly BankQuestionMeta[] = metaJson.questions as Bank
 export const BANK_TEXT_FILES: readonly BankTextFile[] = [
   textEnJson as BankTextFile,
   textSvJson as BankTextFile
+];
+
+// ORDER 283 — utkasten: samma form och samma validering som banken, men
+// utanför BANK_META, så att proven och övningen bara drar granskade frågor.
+// En fråga blir spelbar när den flyttas till bank.*.json utan status.
+export const DRAFT_META: readonly BankQuestionMeta[] = draftMetaJson.questions as BankQuestionMeta[];
+export const DRAFT_TEXT_FILES: readonly BankTextFile[] = [
+  draftTextEnJson as BankTextFile,
+  draftTextSvJson as BankTextFile
 ];
 
 function textFile(language: BankLanguage): BankTextFile {

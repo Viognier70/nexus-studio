@@ -1,0 +1,692 @@
+{
+  "language": "en",
+  "status": "draft",
+  "reviewedBy": null,
+  "note": "ORDER 283 — kriserna, engelska (översättning och nya steg av Claude Code).",
+  "texts": {
+    "somm-k1": {
+      "title": "A bad review",
+      "body": "Aftontidningen has published a critical review of the wine list. Every guest in your part of town has read it.",
+      "steps": [
+        {
+          "question": "What does a reviewer usually judge a wine list on?",
+          "options": {
+            "a": {
+              "label": "Whether it suits the food and the place, and whether the staff can explain it",
+              "explanation": "A list is judged as part of the meal: how well the wines fit the food and the room, and how well the staff can guide the guest."
+            },
+            "b": {
+              "label": "Only how many bottles are on it",
+              "explanation": "A long list is not a good list in itself. Length without guidance can make choosing harder."
+            },
+            "c": {
+              "label": "Only the price of the dearest bottle",
+              "explanation": "One expensive bottle says little about the list the guests actually drink from."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} cannot say what the review was about. Guests start to wonder."
+          }
+        },
+        {
+          "question": "A guest mentions the review at the table. How do you answer?",
+          "options": {
+            "a": {
+              "label": "Listen, thank them, and say briefly what you are doing about it",
+              "explanation": "Calm, open answers show that the team takes guests and critics seriously. It turns an awkward moment into trust."
+            },
+            "b": {
+              "label": "Pretend you have not read it",
+              "explanation": "The guest has read it. Pretending not to have seen it looks evasive."
+            },
+            "c": {
+              "label": "Say the reviewer knows nothing about wine",
+              "explanation": "Attacking the reviewer makes the guest take the criticism more seriously, not less."
+            }
+          },
+          "fail": {
+            "outcome": "The guest feels brushed off and the table goes quiet."
+          }
+        },
+        {
+          "question": "How does the team respond to the criticism professionally?",
+          "options": {
+            "a": {
+              "label": "Cut prices at once",
+              "explanation": "Lower prices do not answer criticism of the list, and they cost you margin."
+            },
+            "b": {
+              "label": "Replace the whole list",
+              "explanation": "Throwing out the list admits more than the review said and loses what worked."
+            },
+            "c": {
+              "label": "Ignore the review",
+              "explanation": "Silence leaves the review as the only story people hear."
+            },
+            "d": {
+              "label": "Invite the journalist to a new tasting and show what you can do",
+              "explanation": "An open dialogue and demonstrated skill turn bad press into good visibility. Speaking up first is the sommelier team's strongest tool."
+            }
+          },
+          "fail": {
+            "outcome": "The review stands unanswered, and fewer guests book this week."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "The journalist comes back, tastes, and writes a short follow-up. Guests notice."
+      },
+      "staff": {
+        "outcome": "{personal} handles the questions as best they can, but the review is still what people talk about."
+      }
+    },
+    "somm-k2": {
+      "title": "Supplier crisis",
+      "body": "Your main wine supplier cannot deliver before the weekend's big dinner.",
+      "steps": [
+        {
+          "question": "Which wines are easiest to replace at short notice without changing the dinner?",
+          "options": {
+            "a": {
+              "label": "Only wines of the same vintage",
+              "explanation": "The vintage matters less than grape and style for keeping a pairing."
+            },
+            "b": {
+              "label": "Wines of the same grape and style from another producer",
+              "explanation": "The same grape and style keep the pairing's balance of acidity, body and sweetness, so the dishes still work."
+            },
+            "c": {
+              "label": "Any wine at the same price",
+              "explanation": "Price says nothing about acidity, body or sweetness, which decide whether the pairing works."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} picks replacements at random. Two of them clash with the food."
+          }
+        },
+        {
+          "question": "What do you tell the guests who booked the dinner?",
+          "options": {
+            "a": {
+              "label": "Nothing, and hope no one notices",
+              "explanation": "Guests who booked a pairing notice. Finding out at the table feels like being misled."
+            },
+            "b": {
+              "label": "Cancel the pairing and serve water",
+              "explanation": "The guests booked a wine dinner. Cancelling is the worst outcome for them and for you."
+            },
+            "c": {
+              "label": "Tell them before they arrive, name the replacements and why they fit",
+              "explanation": "Telling guests early, with reasons, keeps their trust and turns a change into part of the story."
+            }
+          },
+          "fail": {
+            "outcome": "The guests find out at the table and feel misled."
+          }
+        },
+        {
+          "question": "Which option saves the evening best?",
+          "options": {
+            "a": {
+              "label": "Close the restaurant",
+              "explanation": "Closing loses the evening, the takings and the guests' trust."
+            },
+            "b": {
+              "label": "Call a neighbouring team's sommelier and share a reserve stock",
+              "explanation": "The sommelier network in Grythyttan is a resource. Working together in a crisis is practical and builds social sustainability in the long run."
+            },
+            "c": {
+              "label": "Serve only beer",
+              "explanation": "Beer can be good with food, but the guests booked a wine dinner."
+            },
+            "d": {
+              "label": "Buy from Systembolaget at retail price",
+              "explanation": "Buying at retail price wipes out the margin, and the right wines may not be in stock."
+            }
+          },
+          "fail": {
+            "outcome": "The dinner goes ahead with gaps in the pairing, and the takings suffer."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "The neighbours' reserve bottles save the dinner, and the guests hear how it was done."
+      },
+      "staff": {
+        "outcome": "{personal} patches the pairing together. It works, but not well."
+      }
+    },
+    "somm-k3": {
+      "title": "Extreme weather",
+      "body": "A storm has damaged the harvest at your biodynamic supplier in Bergslagen. Prices are rising for everyone in the village.",
+      "steps": [
+        {
+          "question": "Why does a biodynamic grower have fewer quick fixes after storm damage?",
+          "options": {
+            "a": {
+              "label": "Biodynamic vines are never damaged by weather",
+              "explanation": "No farming method protects vines from storms."
+            },
+            "b": {
+              "label": "The certification forbids harvesting after rain",
+              "explanation": "There is no such rule. The limits are on what may be added, not when to pick."
+            },
+            "c": {
+              "label": "Synthetic sprays and inputs are not allowed, so the grower relies on the vineyard's own resilience",
+              "explanation": "Biodynamic farming rules out synthetic chemicals. After damage, the grower works with the living system rather than reaching for a spray."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} cannot explain the price rise to the guests."
+          }
+        },
+        {
+          "question": "How do you adjust the wine list this week?",
+          "options": {
+            "a": {
+              "label": "Remove every wine from the region at once",
+              "explanation": "Dropping a partner at the first bad year loses a relationship you will want back."
+            },
+            "b": {
+              "label": "Keep the grower's wines in smaller amounts and tell guests about the vintage",
+              "explanation": "Keeping the relationship and telling the story of a hard vintage makes the scarcity part of what guests value."
+            },
+            "c": {
+              "label": "Pour smaller glasses without saying so",
+              "explanation": "Hidden cuts are noticed, and they cost more trust than a price rise."
+            }
+          },
+          "fail": {
+            "outcome": "Guests notice smaller glasses and say so."
+          }
+        },
+        {
+          "question": "Which answer is the most sustainable in the long run?",
+          "options": {
+            "a": {
+              "label": "Raise the price of every dish",
+              "explanation": "Passing the cost to everything hides the cause and hurts guests who never drink the wine."
+            },
+            "b": {
+              "label": "Take the wine list off for now",
+              "explanation": "A wine bar without a list has nothing to sell."
+            },
+            "c": {
+              "label": "Switch to a cheaper conventional supplier",
+              "explanation": "It solves this week and weakens your profile and your relationships for the years after."
+            },
+            "d": {
+              "label": "Shorten the list and go deeper with fewer organic producers",
+              "explanation": "A sustainable buying strategy is about depth rather than breadth. Fewer producers with strong relationships give resilience against climate disruption."
+            }
+          },
+          "fail": {
+            "outcome": "The list gets cheaper and thinner, and regulars notice."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "The grower thanks you for staying. Next year's allocation is yours."
+      },
+      "staff": {
+        "outcome": "{personal} keeps the list going week by week, without a plan."
+      }
+    },
+    "somm-k4": {
+      "title": "A VIP guest",
+      "body": "A well-known food writer books a table tonight without warning. The whole village is talking about it.",
+      "steps": [
+        {
+          "question": "What does research on crossmodal correspondence show about music and taste?",
+          "options": {
+            "a": {
+              "label": "Music has no effect on taste",
+              "explanation": "Studies show that sound changes how we perceive taste, so the choice of music matters."
+            },
+            "b": {
+              "label": "Music can change how sweet, bitter or rich a wine seems",
+              "explanation": "Crossmodal research (Spence) shows that high, bright music can bring out sweetness and heavier music bitterness and astringency."
+            },
+            "c": {
+              "label": "Only loud music affects taste",
+              "explanation": "It is the character of the music, not only its volume, that matters."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} does not know why the room matters. The evening starts flat."
+          }
+        },
+        {
+          "question": "How do you pace the service for a guest who is there to review?",
+          "options": {
+            "a": {
+              "label": "Serve everything at once to show efficiency",
+              "explanation": "Rushing a meal spoils it, however efficient it looks."
+            },
+            "b": {
+              "label": "Keep the writer waiting to build anticipation",
+              "explanation": "Waiting reads as poor service, not as drama."
+            },
+            "c": {
+              "label": "The same pace as for every guest, just with care: no rushing, no hovering",
+              "explanation": "A reviewer wants to see the real service. Care without special treatment is what they will write about."
+            }
+          },
+          "fail": {
+            "outcome": "The writer notices the fuss, and so does everyone else."
+          }
+        },
+        {
+          "question": "Which crossmodal strategy do you choose to make the most of the evening?",
+          "options": {
+            "a": {
+              "label": "Serve the most expensive wine",
+              "explanation": "Price is not the experience. The whole setting is."
+            },
+            "b": {
+              "label": "Match music, light and pace to the character of the wines and the guest's expectations",
+              "explanation": "Crichton-Fock's atmospheric influence: every sensory impression in the dining room works together. A thoughtful sommelier team orchestrates the whole, not just the glass."
+            },
+            "c": {
+              "label": "Let the guest choose alone, without guidance",
+              "explanation": "Guidance is part of the service being reviewed."
+            },
+            "d": {
+              "label": "Focus only on the food",
+              "explanation": "The wine and the room are half the experience."
+            }
+          },
+          "fail": {
+            "outcome": "The evening is correct but forgettable."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "The writer stays late, asks about the wines, and the village hears about it."
+      },
+      "staff": {
+        "outcome": "{personal} takes the table. It goes well enough, but nothing stands out."
+      }
+    },
+    "somm-k5": {
+      "title": "Short-staffed",
+      "body": "Someone on the team is ill. One person has to handle all the wine service on a fully booked night.",
+      "steps": [
+        {
+          "question": "What does WSET SAT stand for?",
+          "options": {
+            "a": {
+              "label": "A standard for serving temperatures",
+              "explanation": "Temperatures matter, but SAT is about how to taste and judge a wine."
+            },
+            "b": {
+              "label": "The Wine & Spirit Education Trust's Systematic Approach to Tasting",
+              "explanation": "SAT is WSET's structured method: appearance, nose, palate and conclusions, in that order."
+            },
+            "c": {
+              "label": "A sommelier aptitude test",
+              "explanation": "It is a tasting method, not a test of the sommelier."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} fumbles the basics under pressure."
+          }
+        },
+        {
+          "question": "Which tasting technique do you prioritise under time pressure?",
+          "options": {
+            "a": {
+              "label": "Use WSET SAT — sight, smell, taste, conclusion — quickly but consistently",
+              "explanation": "WSET SAT is designed for efficiency without losing precision. A trained sommelier makes a correct judgement in under 60 seconds."
+            },
+            "b": {
+              "label": "Guess from the label",
+              "explanation": "The label cannot tell you whether this bottle is sound."
+            },
+            "c": {
+              "label": "Ask the head chef to taste",
+              "explanation": "The kitchen is just as busy, and wine is the sommelier's job."
+            },
+            "d": {
+              "label": "Skip tasting altogether",
+              "explanation": "Without tasting, a corked or faulty bottle goes straight to the guest."
+            }
+          },
+          "fail": {
+            "outcome": "A faulty bottle reaches a table before anyone notices."
+          }
+        },
+        {
+          "question": "Halfway through the evening you cannot keep up. What do you prioritise?",
+          "options": {
+            "a": {
+              "label": "Taste every wine thoroughly before pouring, whatever the queue",
+              "explanation": "Thoroughness that leaves tables waiting helps no one tonight."
+            },
+            "b": {
+              "label": "Let guests pour their own bottles from the bar",
+              "explanation": "It gives up the service guests are paying for."
+            },
+            "c": {
+              "label": "Tables still waiting for a first drink, then open bottles; tell the others honestly that they will wait a little",
+              "explanation": "The first drink sets the evening for a table. Honesty about a short wait keeps the others' patience."
+            }
+          },
+          "fail": {
+            "outcome": "Tables wait without a word, and the mood sinks."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "One person keeps the whole room served, and the guests never notice the gap."
+      },
+      "staff": {
+        "outcome": "{personal} runs between tables. Everyone gets something, late."
+      }
+    },
+    "somm-k6": {
+      "title": "Sustainability audit",
+      "body": "The municipality is reviewing every restaurant's environmental profile before the Sustainable Restaurant of the Year award.",
+      "steps": [
+        {
+          "question": "What makes up most of a wine's climate footprint?",
+          "options": {
+            "a": {
+              "label": "The corks",
+              "explanation": "Corks are a very small part of the footprint."
+            },
+            "b": {
+              "label": "The serving temperature",
+              "explanation": "Cooling uses energy, but far less than transport and glass."
+            },
+            "c": {
+              "label": "Transport and packaging, above all heavy glass bottles",
+              "explanation": "Transport and packaging dominate a wine's footprint; heavy glass is a large part of it."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} cannot answer the auditor's first question."
+          }
+        },
+        {
+          "question": "How do you document the list's footprint so that guests can use it?",
+          "options": {
+            "a": {
+              "label": "Leave it to the supplier",
+              "explanation": "The auditor is reviewing your restaurant, not the supplier."
+            },
+            "b": {
+              "label": "One number for the whole restaurant, no detail",
+              "explanation": "A single number gives the guest no choice to make."
+            },
+            "c": {
+              "label": "Mark each wine's origin and packaging, and show a low-footprint choice in every category",
+              "explanation": "Guests can only choose if the information sits where they choose: on the list, per wine."
+            }
+          },
+          "fail": {
+            "outcome": "The documentation is vague and the auditor says so."
+          }
+        },
+        {
+          "question": "Which initiative gives the most environmental credibility?",
+          "options": {
+            "a": {
+              "label": "Put a green plant in the window",
+              "explanation": "A symbol without substance convinces no one."
+            },
+            "b": {
+              "label": "Document the whole list's CO₂ footprint and offer guests a climate choice",
+              "explanation": "Transparency and the guest's chance to make active choices are the core of social and environmental sustainability. Documentation also gives you an edge."
+            },
+            "c": {
+              "label": "Buy climate offsets",
+              "explanation": "Offsets do not change what you serve."
+            },
+            "d": {
+              "label": "Swap every glass for recycled material",
+              "explanation": "It is a small step compared with what is in the bottles and how they travel."
+            }
+          },
+          "fail": {
+            "outcome": "The audit notes good intentions and little else."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "The auditor singles out the wine list as an example for the village."
+      },
+      "staff": {
+        "outcome": "{personal} answers what they can. The audit passes, without praise."
+      }
+    },
+    "somm-k7": {
+      "title": "Natural wine festival",
+      "body": "Grythyttan is holding its first natural wine festival. Every restaurant is competing for attention.",
+      "steps": [
+        {
+          "question": "What is usually meant by natural wine?",
+          "options": {
+            "a": {
+              "label": "Wine from organically grown grapes, fermented with its own yeasts, with little or nothing added",
+              "explanation": "There is no single legal definition, but natural wine usually means organic or biodynamic grapes, wild yeasts and minimal additions."
+            },
+            "b": {
+              "label": "Any wine with a screwcap",
+              "explanation": "The closure has nothing to do with it."
+            },
+            "c": {
+              "label": "Wine with no alcohol",
+              "explanation": "Natural wine is fermented and contains alcohol like other wine."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} cannot explain what the festival is about."
+          }
+        },
+        {
+          "question": "How do you serve a cloudy, unfiltered natural wine?",
+          "options": {
+            "a": {
+              "label": "Tell the guest it is unfiltered, so the haze is expected, and pour gently",
+              "explanation": "Explaining the haze turns a possible complaint into part of the wine's story."
+            },
+            "b": {
+              "label": "Say nothing and let the guest think it is faulty",
+              "explanation": "An unexplained haze looks like a fault."
+            },
+            "c": {
+              "label": "Filter it through a coffee filter at the bar",
+              "explanation": "It strips the wine of what the producer intended and exposes it to air and paper taste."
+            }
+          },
+          "fail": {
+            "outcome": "A guest sends the wine back as faulty."
+          }
+        },
+        {
+          "question": "How do you position your restaurant during the festival?",
+          "options": {
+            "a": {
+              "label": "Copy the neighbours' menu",
+              "explanation": "Copying makes you the second choice."
+            },
+            "b": {
+              "label": "Take the festival off",
+              "explanation": "You give the village's biggest week to your rivals."
+            },
+            "c": {
+              "label": "Cut every price",
+              "explanation": "Price wars give attention to the cheapest, not the best."
+            },
+            "d": {
+              "label": "Curate a themed tasting with stories about the producers and terroir",
+              "explanation": "Terroir stories and curated experiences set you apart. Guests pay more for the story behind the bottle, not just the wine in the glass."
+            }
+          },
+          "fail": {
+            "outcome": "The festival passes, and the crowds go elsewhere."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Your tasting is the one people talk about when the festival ends."
+      },
+      "staff": {
+        "outcome": "{personal} keeps the doors open. Some festival guests come in."
+      }
+    },
+    "somm-k8": {
+      "title": "Allergy crisis",
+      "body": "A guest reacts to a wine that contained undeclared egg white used for fining. The situation escalates.",
+      "steps": [
+        {
+          "question": "Why can wine contain egg white?",
+          "options": {
+            "a": {
+              "label": "It comes from the cork",
+              "explanation": "The cork has nothing to do with egg."
+            },
+            "b": {
+              "label": "Egg white is used for fining, to soften tannins and clarify the wine",
+              "explanation": "Fining agents such as egg white bind to tannins and particles, which then settle out. Traces can remain."
+            },
+            "c": {
+              "label": "Egg is added for flavour",
+              "explanation": "Egg is not a flavouring in wine. It is a processing aid."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} does not know where the egg came from. Precious minutes pass."
+          }
+        },
+        {
+          "question": "What do you do right now for the guest who is reacting?",
+          "options": {
+            "a": {
+              "label": "Offer a glass of water and carry on",
+              "explanation": "An allergic reaction can get worse quickly. Water is not enough."
+            },
+            "b": {
+              "label": "Take it seriously: stop serving it, ask about medication, and call for medical help if the symptoms are serious",
+              "explanation": "With allergies, act first and ask questions later. Serious symptoms mean calling for help at once."
+            },
+            "c": {
+              "label": "Tell them it cannot be the wine",
+              "explanation": "Denying it wastes time and may be wrong."
+            }
+          },
+          "fail": {
+            "outcome": "The guest is left waiting for help while the room watches."
+          }
+        },
+        {
+          "question": "What should the team have done before serving?",
+          "options": {
+            "a": {
+              "label": "Nothing — it is the producer's responsibility",
+              "explanation": "The guest trusts the restaurant, not the producer. Knowing the list is the team's job."
+            },
+            "b": {
+              "label": "Declared every fining agent up front and had alternatives ready for guests with allergies",
+              "explanation": "Social sustainability means inclusion and speaking up first. A responsible sommelier team knows its list and says so before anyone asks."
+            },
+            "c": {
+              "label": "Served only natural wine",
+              "explanation": "Natural wine can also be fined. The label 'natural' is no guarantee."
+            },
+            "d": {
+              "label": "Asked every guest about allergies when booking",
+              "explanation": "It helps, but it does not replace knowing what is in your own wines."
+            }
+          },
+          "fail": {
+            "outcome": "The evening ends with an incident report and a shaken team."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "The guest is cared for, the list is relabelled the next morning, and the regulars notice."
+      },
+      "staff": {
+        "outcome": "{personal} handles the moment, but the question of how it could happen remains."
+      }
+    },
+    "somm-k9": {
+      "title": "A competition invitation",
+      "body": "The Swedish Sommelier Association invites a team to the regional championship. It takes five weeks of intensive preparation.",
+      "steps": [
+        {
+          "question": "What is usually tested in a sommelier competition?",
+          "options": {
+            "a": {
+              "label": "Only how fast you can open bottles",
+              "explanation": "Speed matters in service tasks, but it is a small part."
+            },
+            "b": {
+              "label": "Only knowledge of prices",
+              "explanation": "Prices come up, but tasting, theory and service dominate."
+            },
+            "c": {
+              "label": "Blind tasting, theory and practical service in front of a jury",
+              "explanation": "Sommelier competitions combine blind tasting, written or oral theory and service tasks judged live."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} underestimates what the competition asks."
+          }
+        },
+        {
+          "question": "How do you train for the blind tasting?",
+          "options": {
+            "a": {
+              "label": "Memorise the jury's favourite wines",
+              "explanation": "The wines are unknown in advance. Only skill carries over."
+            },
+            "b": {
+              "label": "Read about wine but never taste",
+              "explanation": "Blind tasting is a skill of the senses. It is learned by tasting."
+            },
+            "c": {
+              "label": "Taste regularly and systematically as a group, compare notes and learn from mistakes",
+              "explanation": "Regular, structured group tasting builds the shared reference points that blind tasting depends on."
+            }
+          },
+          "fail": {
+            "outcome": "The team trains without a plan and the weeks slip by."
+          }
+        },
+        {
+          "question": "How do you justify taking part to the owner? (Scander et al., 2020)",
+          "options": {
+            "a": {
+              "label": "It is good PR but gives no real knowledge",
+              "explanation": "PR is a side effect. The knowledge is the point."
+            },
+            "b": {
+              "label": "Competitions are for individuals, not teams",
+              "explanation": "What one person learns lifts the whole team."
+            },
+            "c": {
+              "label": "It is unnecessary — competitions give no practical knowledge",
+              "explanation": "The research says the opposite: competitions build knowledge that books cannot."
+            },
+            "d": {
+              "label": "Competing builds social capital that turns into cultural capital: contact with leading sommeliers, exposure to legitimate judgements of taste and a network that strengthens the restaurant",
+              "explanation": "Scander et al. (2020): sommeliers' skill is built largely through competitions and contact with leading practitioners. One informant describes training with 'well-known sommeliers' who taught him the right words, positioning and style — knowledge that is not in books."
+            }
+          },
+          "fail": {
+            "outcome": "The owner says no, and the chance passes."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "The team comes back with a placing, new contacts and a better list."
+      },
+      "staff": {
+        "outcome": "{personal} goes alone, underprepared. It is a lesson, not a result."
+      }
+    }
+  }
+}

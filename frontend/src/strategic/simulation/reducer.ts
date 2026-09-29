@@ -248,6 +248,8 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       if (!countDown(draft, action.dt)) return draft;
       return applyCreditChange(draft, resolveIncident(draft, null));
     }
+    case 'SEE_HOUSE_INTRO':
+      return state.houseIntroSeen ? state : { ...state, houseIntroSeen: true };
     case 'START_BET': {
       // ORDER 279 — insatsen: krediterna dras när raketen startar.
       if (!canStartBet(state, action.stake)) return state;

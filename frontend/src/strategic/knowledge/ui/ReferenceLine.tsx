@@ -10,9 +10,14 @@ export function ReferenceLine({ reference }: { reference: Reference | null | und
   return (
     <div style={{ marginTop: 6, fontSize: 12, opacity: 0.85 }} data-testid="reference">
       {strings.knowledge.referenceLabel}{' '}
-      <a href={reference.url} target="_blank" rel="noopener noreferrer" style={{ color: '#e8d9a8' }}>
-        {reference.title}
-      </a>
+      {/* ORDER 283 — utan länk visas titeln ensam. */}
+      {reference.url ? (
+        <a href={reference.url} target="_blank" rel="noopener noreferrer" style={{ color: '#e8d9a8' }}>
+          {reference.title}
+        </a>
+      ) : (
+        <span>{reference.title}</span>
+      )}
     </div>
   );
 }

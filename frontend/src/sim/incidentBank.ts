@@ -22,6 +22,10 @@ import vinbarText from '../content/incidents/vinbar.text.en.json';
 // svenska sparas bredvid).
 import menuMeta from '../content/incidents/menu.meta.json';
 import menuText from '../content/incidents/menu.text.en.json';
+// ORDER 283 — kriskorten ur Vision Owners tidigare spel (Sommelier
+// Championship) som raketutkast, inte i spelet förrän de är granskade.
+import crisesMeta from '../content/incidents/crises.meta.json';
+import crisesText from '../content/incidents/crises.text.en.json';
 
 export type ArcPhase = 'opening' | 'rush' | 'crisis' | 'closing';
 export const ARC_PHASES: readonly ArcPhase[] = ['opening', 'rush', 'crisis', 'closing'];
@@ -64,7 +68,9 @@ export interface IncidentOngoingMeta {
 // Tom tills Vision Owner levererar referenserna.
 export interface Reference {
   title: string;
-  url: string;
+  // ORDER 283 — null tills Vision Owner levererar länken (inga länkar
+  // hittas på); titeln visas då utan länk.
+  url: string | null;
 }
 
 export interface IncidentOutcomeMeta {
@@ -232,7 +238,7 @@ export function validateIncidentBank(meta: MetaFile, text: TextFile): string[] {
     errors.push(...outcomeErrors(`${m.id}/klarad`, m.success, t.success, out));
     errors.push(...outcomeErrors(`${m.id}/personalen`, m.staff, t.staff, out));
     refs.push({ from: m.id, to: out });
-    if (m.reference !== null && (!m.reference.title || !m.reference.url)) errors.push(`${m.id}: referensen saknar titel eller länk`);
+    if (m.reference !== null && (!m.reference.title || m.reference.url === '')) errors.push(`${m.id}: referensen saknar titel, eller länken är tom (null när den saknas)`);
   }
   for (const r of refs) for (const to of r.to) if (!ids.has(to)) errors.push(`${r.from}: kedjan pekar på okänd händelse ${to}`);
   for (const id of Object.keys(text.texts)) if (!ids.has(id)) errors.push(`${id}: text utan metadata`);
@@ -265,6 +271,12 @@ const BANKS: Partial<Record<BusinessClassId, Incident[]>> = {
     ...build(menuMeta as unknown as MetaFile, menuText as unknown as TextFile)
   ]
 };
+
+// ORDER 283 — utkasten: validerade och byggda som banken, men inte med i
+// någon klass bank. En raket blir spelbar när den flyttas till klassens
+// bankfil utan status 'utkast'.
+export const CRISIS_DRAFTS: Incident[] = build(crisesMeta as unknown as MetaFile, crisesText as unknown as TextFile);
+export const CRISIS_DRAFT_FILES = { meta: crisesMeta as unknown as MetaFile, text: crisesText as unknown as TextFile };
 
 export function incidentBankFor(cls: BusinessClassId | null | undefined): Incident[] {
   return (cls && BANKS[cls]) || [];

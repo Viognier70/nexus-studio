@@ -1384,6 +1384,9 @@ export interface SimulationState {
   // ORDER 275 — paket köpta i dag (morgonens gränssnitt), och gårdagens
   // svinn: osåld mat som kastades vid dagens slut.
   packagesBoughtToday?: string[];
+  // ORDER 283 — introduktionen till de tre kunskapsformerna är visad
+  // (första besöket i Måltidens hus).
+  houseIntroSeen?: boolean;
   lastWaste?: { dayNumber: number; units: number; sek: number; kept?: number; feeSek?: number } | null;
   // ORDER 043 outcome layer — non-economic capitals the scenarios
   // move (§3.1). Economic moved to `state.cash`. Separate from `eco`
@@ -1627,6 +1630,8 @@ export type SimAction =
   | { type: 'BUY_ITEMS'; items: Record<string, number> }
   // ORDER 279 — insatsen: spelaren startar själv en raket och satsar krediter.
   | { type: 'START_BET'; stake: number }
+  // ORDER 283 — spelaren har läst introduktionen i Måltidens hus.
+  | { type: 'SEE_HOUSE_INTRO' }
   // ORDER 077 §4 (M4) — morning menu composition. Freezes today's
   // dish list + pricing + ingredient cost per entry. Blocked once
   // service opens (§6 report gate: "set in the morning and stands").

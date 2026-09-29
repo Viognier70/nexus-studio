@@ -342,6 +342,63 @@ Målgruppen är studenter och blivande studenter i måltidskunskap. Brons ska g�
 
 Följande ur ORDER 100 byggs inte i version 1: NPC:er med egna liv, byggnader som byter funktion, andra årstider än sommar, flera spelare och export av forskningsdata. De är inte bortvalda, bara senare.
 
+## Förslag att pröva efter provspel
+
+*Förslag 2026-09-29 (Claude Code, på Vision Owners uppdrag). Inget av detta är beslutat eller byggt. Vision Owner beslutar efter provspel.* Förslagen bygger på innehåll ur Vision Owners tidigare spel Sommelier Championship och Gastronoma. Koden därifrån tas inte in.
+
+### Rivalerna
+
+Grythyttan har fler krogar än spelarens. I dag är de bara en andel av marknaden (Ekonomin > Marknaden). Förslaget är att de får namn, plats och en ställning som syns.
+
+- **Namn och plats.** Varje rival har ett namn, en adress och en plats på kartan, i en av byns zoner: väst, centrum, öst och vid sjön. Förlagan är Sommelier Championships lokaler, till exempel Järnvägshotellet, Lärkan, Kopparkannan, Ekbacken, Nocturne, Gropen, Herrgårdsköket, Källan, Bergsmannen, Qvarnen, Viken och Bryggan, var och en med sin inriktning (bykrog, terroir, bistro, fine dining, naturvin, gastropub, campus, säsongsmat).
+- **En synlig ställning.** Varje rival har samma tre kapital som spelaren, ekonomiskt, socialt och ekologiskt. Ställningen syns på kartan som en markering vid lokalen, i ord och steg, inte i tabeller (princip 6). Rivalernas andel av dagens gästpool följer ställningen.
+- **Rivaler kan slås ut.** En rival vars kapital går under ett golv stänger, och lokalen står tom eller tas över. Spelaren slår ut en rival genom att ta dess gäster, inte genom att angripa den. En stängd rival kan öppna igen senare säsonger.
+- **Rankning i söndagstidningen.** Tidningen får en rankning av byns krogar efter veckans ställning, med spelarens plats och en rad om den som steg eller föll mest. Det passar tidningens roll att göra siffror till berättelse (Veckoavräkningen).
+
+### Styrka och svaghet per lokal
+
+Varje lokal, spelarens och rivalernas, har en styrka och en svaghet som gör att den spelar olika. Förlagan är Sommelier Championship, där en lokal kan få extra socialt kapital på hantverksfrågor men betala dubbelt för ekologiska kriser.
+
+- **Styrkan** kopplas till en kunskapsform eller ett kapital: till exempel att rätt svar i en episteme-fråga ger mer, eller att hållbara val lönar sig bättre.
+- **Svagheten** gör en sorts kris dyrare, eller sätter ett tak: till exempel att ekonomiska kriser kostar dubbelt, eller att det ekologiska kapitalet inte kan nå högst upp.
+- Spelarens lokal väljs efter styrkan och svagheten, inte bara efter klassen. Det gör valet av lokal till en avvägning (princip 4). Styrka och svaghet visas i ord när spelaren väljer, och påminns om i kvällsberättelsen när de spelar roll.
+
+### Kriser med räckvidd
+
+Händelserna i servicen gäller i dag spelarens rum. Förslaget är kriser med tre räckvidder, som i Sommelier Championship:
+
+- **Du:** krisen gäller bara spelarens krog, till exempel att leverantören inte levererar eller att någon i personalen är sjuk.
+- **Zonen:** krisen gäller alla krogar i spelarens del av byn, till exempel en dålig recension som alla i zonen läser, eller en naturvinsfestival där krogarna tävlar om gästerna.
+- **Hela byn:** krisen gäller alla, till exempel ett oväder som skadar skörden hos en leverantör och höjer priserna, eller en hållbarhetsrevision inför en utmärkelse.
+
+Kriserna är raketer med tre steg, som händelserna i servicen. Nio utkast finns i raketbankens form, med räckvidden angiven (`content/incidents/crises.*.json`, status utkast). En kris i zonen eller byn drabbar också rivalerna, efter deras styrka och svaghet, och det syns i ställningen och i tidningen.
+
+### Beredskapen före utfallet
+
+Förlagan är Gastronoma. När en händelse eller kris prövar spelarens beredskap visas det i två steg:
+
+1. **Vad som prövas och hur förberedd spelaren är.** Kortet säger vad situationen kräver (till exempel personalen, ekonomin, marknaden eller råvarorna) och visar spelarens beredskap på det området, i ord och steg. Spelaren ser vad som står på spel innan något har hänt.
+2. **Utfallet, först när spelaren trycker vidare.** Utfallet har tre nivåer efter beredskapen: god beredskap ger ett gott utfall, medel ger en kostsam lösning, svag ger ett dåligt utfall. Kvällsberättelsen pekar på beredskapen som orsak (princip 2).
+
+Beredskapen byggs av det spelaren gjort före: satsningarna på morgonen, lagret, personalen och medaljerna. Det gör förberedelsen synlig i stunden den lönar sig, och passar kriserna ovan. Raketernas svar kan komma efter avslöjandet, som ett sätt att lyfta utfallet ett steg.
+
+### Fasta kostnader varje vecka
+
+*Redovisning 2026-09-29 (Claude Code, på Vision Owners uppdrag):* en vanlig vecka i vinbaren har löner och lånet som fasta kostnader, men ingen hyra. Talen och mätningen står i rapporten om Sommelier Championship-innehållet i `documentation/architecture/` (se ORDER-registret).
+
+- **Löner** dras varje servicedag, efter kvällens intäkt (Ekonomin > Nedgradering), inte på söndagen och inte en dag då spelaren stänger kvällen.
+- **Lånet** amorteras och räntan betalas vid veckoavräkningen.
+- **Hyra** finns inte. Lokalen ingår i startlånet.
+- En dålig vecka märks därför mindre än den borde: startlånet ger en stor kassa från början, och golvet fyller på när intäkten är låg.
+
+Förslaget är en veckohyra per klass, dragen vid veckoavräkningen och synlig i tidningen, och att lönerna redovisas som en veckorad i avräkningen även om de dras per dag. Hyran bör vara en tydlig andel av klassens normala veckointäkt, så att en vecka med för få gäster syns i kassan redan samma söndag.
+
+## Idéer för version 2
+
+*Idé 2026-09-29 (Vision Owner, från Gastronoma). Byggs inte i version 1.*
+
+- **Flera spelare i klassrummet.** Läraren startar ett spel och får en spelkod. Eleverna går med på koden, var och en med sin krog i samma Grythyttan. Ställningen, rivalerna och kriserna i zonen och byn delas i realtid via Supabase, så att en kris i byn drabbar alla samtidigt och söndagstidningen rankar klassens krogar. Kräver inloggning, en server för spelets tillstånd och ett beslut om vad som får sparas om eleverna (Utanför version 1: flera spelare).
+
 ## Principer för spelglädje och lärande
 
 Varje ny funktion ska klara de här sju principerna. Den som inte gör det hör inte hemma i version 1.

@@ -1,0 +1,1049 @@
+{
+  "schemaVersion": 2,
+  "businessClass": "vinbar",
+  "status": "utkast",
+  "note": "ORDER 283 — CRISIS_CARDS ur Vision Owners tidigare spel Sommelier Championship som raketutkast (status 'utkast', inte i spelet förrän de är granskade; incidentBank.ts CRISIS_DRAFTS). Kortets egen fråga, alternativ och förklaring står i steget originalStep (0 episteme, 1 techne, 2 phronesis). De två andra stegen är skrivna av Claude Code i samma sammanhang. 'reach' är vem krisen drabbar i originalet: self (du), zone (zonen), village (hela byn) — underlag för förslaget om kriser i speldesignen. Referensen är tom där originalet inte anger någon forskning; länkarna är null.",
+  "incidents": [
+    {
+      "id": "somm-k1",
+      "track": "sommellerie",
+      "arc": "crisis",
+      "chainOnly": false,
+      "needsTable": false,
+      "placeholder": false,
+      "status": "utkast",
+      "reach": "zone",
+      "originalStep": 2,
+      "source": "SommelierChampionship.jsx CRISIS_CARDS k1",
+      "reference": null,
+      "steps": [
+        {
+          "axis": "episteme",
+          "options": [
+            {
+              "id": "a",
+              "quality": "best"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": -0.02,
+              "reputation": -1
+            },
+            "target": "room"
+          }
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "best"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": -0.02,
+              "reputation": -1
+            },
+            "target": "room"
+          }
+        },
+        {
+          "axis": "phronesis",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            },
+            {
+              "id": "d",
+              "quality": "best"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": -0.02,
+              "reputation": -1
+            },
+            "target": "room"
+          }
+        }
+      ],
+      "success": {
+        "effects": {
+          "cash": 0.2,
+          "satisfaction": 0.1,
+          "stamina": 0,
+          "reputation": 2
+        },
+        "target": "room"
+      },
+      "staff": {
+        "effects": {
+          "cash": -0.1,
+          "satisfaction": -0.05,
+          "stamina": -0.02,
+          "reputation": -1
+        },
+        "target": "room"
+      }
+    },
+    {
+      "id": "somm-k2",
+      "track": "sommellerie",
+      "arc": "crisis",
+      "chainOnly": false,
+      "needsTable": false,
+      "placeholder": false,
+      "status": "utkast",
+      "reach": "self",
+      "originalStep": 2,
+      "source": "SommelierChampionship.jsx CRISIS_CARDS k2",
+      "reference": null,
+      "steps": [
+        {
+          "axis": "episteme",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "best"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": -0.02,
+              "reputation": -1
+            },
+            "target": "room"
+          }
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "best"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": -0.02,
+              "reputation": -1
+            },
+            "target": "room"
+          }
+        },
+        {
+          "axis": "phronesis",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "best"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            },
+            {
+              "id": "d",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": -0.02,
+              "reputation": -1
+            },
+            "target": "room"
+          }
+        }
+      ],
+      "success": {
+        "effects": {
+          "cash": 0.2,
+          "satisfaction": 0.1,
+          "stamina": 0,
+          "reputation": 2
+        },
+        "target": "room"
+      },
+      "staff": {
+        "effects": {
+          "cash": -0.1,
+          "satisfaction": -0.05,
+          "stamina": -0.02,
+          "reputation": -1
+        },
+        "target": "room"
+      }
+    },
+    {
+      "id": "somm-k3",
+      "track": "sommellerie",
+      "arc": "crisis",
+      "chainOnly": false,
+      "needsTable": false,
+      "placeholder": false,
+      "status": "utkast",
+      "reach": "village",
+      "originalStep": 2,
+      "source": "SommelierChampionship.jsx CRISIS_CARDS k3",
+      "reference": null,
+      "steps": [
+        {
+          "axis": "episteme",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "best"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": -0.02,
+              "reputation": -1
+            },
+            "target": "room"
+          }
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "best"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": -0.02,
+              "reputation": -1
+            },
+            "target": "room"
+          }
+        },
+        {
+          "axis": "phronesis",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            },
+            {
+              "id": "d",
+              "quality": "best"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": -0.02,
+              "reputation": -1
+            },
+            "target": "room"
+          }
+        }
+      ],
+      "success": {
+        "effects": {
+          "cash": 0.2,
+          "satisfaction": 0.1,
+          "stamina": 0,
+          "reputation": 2
+        },
+        "target": "room"
+      },
+      "staff": {
+        "effects": {
+          "cash": -0.1,
+          "satisfaction": -0.05,
+          "stamina": -0.02,
+          "reputation": -1
+        },
+        "target": "room"
+      }
+    },
+    {
+      "id": "somm-k4",
+      "track": "sommellerie",
+      "arc": "crisis",
+      "chainOnly": false,
+      "needsTable": false,
+      "placeholder": false,
+      "status": "utkast",
+      "reach": "zone",
+      "originalStep": 2,
+      "source": "SommelierChampionship.jsx CRISIS_CARDS k4",
+      "reference": {
+        "title": "Crichton-Fock, atmospheric influence (as cited in Sommelier Championship)",
+        "url": null
+      },
+      "steps": [
+        {
+          "axis": "episteme",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "best"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": -0.02,
+              "reputation": -1
+            },
+            "target": "room"
+          }
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "best"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": -0.02,
+              "reputation": -1
+            },
+            "target": "room"
+          }
+        },
+        {
+          "axis": "phronesis",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "best"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            },
+            {
+              "id": "d",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": -0.02,
+              "reputation": -1
+            },
+            "target": "room"
+          }
+        }
+      ],
+      "success": {
+        "effects": {
+          "cash": 0.2,
+          "satisfaction": 0.1,
+          "stamina": 0,
+          "reputation": 2
+        },
+        "target": "room"
+      },
+      "staff": {
+        "effects": {
+          "cash": -0.1,
+          "satisfaction": -0.05,
+          "stamina": -0.02,
+          "reputation": -1
+        },
+        "target": "room"
+      }
+    },
+    {
+      "id": "somm-k5",
+      "track": "sommellerie",
+      "arc": "crisis",
+      "chainOnly": false,
+      "needsTable": false,
+      "placeholder": false,
+      "status": "utkast",
+      "reach": "self",
+      "originalStep": 1,
+      "source": "SommelierChampionship.jsx CRISIS_CARDS k5",
+      "reference": null,
+      "steps": [
+        {
+          "axis": "episteme",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "best"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": -0.02,
+              "reputation": -1
+            },
+            "target": "room"
+          }
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "best"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            },
+            {
+              "id": "d",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": -0.02,
+              "reputation": -1
+            },
+            "target": "room"
+          }
+        },
+        {
+          "axis": "phronesis",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "best"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": -0.02,
+              "reputation": -1
+            },
+            "target": "room"
+          }
+        }
+      ],
+      "success": {
+        "effects": {
+          "cash": 0.2,
+          "satisfaction": 0.1,
+          "stamina": 0,
+          "reputation": 2
+        },
+        "target": "room"
+      },
+      "staff": {
+        "effects": {
+          "cash": -0.1,
+          "satisfaction": -0.05,
+          "stamina": -0.02,
+          "reputation": -1
+        },
+        "target": "room"
+      }
+    },
+    {
+      "id": "somm-k6",
+      "track": "sommellerie",
+      "arc": "crisis",
+      "chainOnly": false,
+      "needsTable": false,
+      "placeholder": false,
+      "status": "utkast",
+      "reach": "village",
+      "originalStep": 2,
+      "source": "SommelierChampionship.jsx CRISIS_CARDS k6",
+      "reference": null,
+      "steps": [
+        {
+          "axis": "episteme",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "best"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": -0.02,
+              "reputation": -1
+            },
+            "target": "room"
+          }
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "best"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": -0.02,
+              "reputation": -1
+            },
+            "target": "room"
+          }
+        },
+        {
+          "axis": "phronesis",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "best"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            },
+            {
+              "id": "d",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": -0.02,
+              "reputation": -1
+            },
+            "target": "room"
+          }
+        }
+      ],
+      "success": {
+        "effects": {
+          "cash": 0.2,
+          "satisfaction": 0.1,
+          "stamina": 0,
+          "reputation": 2
+        },
+        "target": "room"
+      },
+      "staff": {
+        "effects": {
+          "cash": -0.1,
+          "satisfaction": -0.05,
+          "stamina": -0.02,
+          "reputation": -1
+        },
+        "target": "room"
+      }
+    },
+    {
+      "id": "somm-k7",
+      "track": "sommellerie",
+      "arc": "crisis",
+      "chainOnly": false,
+      "needsTable": false,
+      "placeholder": false,
+      "status": "utkast",
+      "reach": "zone",
+      "originalStep": 2,
+      "source": "SommelierChampionship.jsx CRISIS_CARDS k7",
+      "reference": null,
+      "steps": [
+        {
+          "axis": "episteme",
+          "options": [
+            {
+              "id": "a",
+              "quality": "best"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": -0.02,
+              "reputation": -1
+            },
+            "target": "room"
+          }
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "best"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": -0.02,
+              "reputation": -1
+            },
+            "target": "room"
+          }
+        },
+        {
+          "axis": "phronesis",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            },
+            {
+              "id": "d",
+              "quality": "best"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": -0.02,
+              "reputation": -1
+            },
+            "target": "room"
+          }
+        }
+      ],
+      "success": {
+        "effects": {
+          "cash": 0.2,
+          "satisfaction": 0.1,
+          "stamina": 0,
+          "reputation": 2
+        },
+        "target": "room"
+      },
+      "staff": {
+        "effects": {
+          "cash": -0.1,
+          "satisfaction": -0.05,
+          "stamina": -0.02,
+          "reputation": -1
+        },
+        "target": "room"
+      }
+    },
+    {
+      "id": "somm-k8",
+      "track": "sommellerie",
+      "arc": "crisis",
+      "chainOnly": false,
+      "needsTable": false,
+      "placeholder": false,
+      "status": "utkast",
+      "reach": "self",
+      "originalStep": 2,
+      "source": "SommelierChampionship.jsx CRISIS_CARDS k8",
+      "reference": null,
+      "steps": [
+        {
+          "axis": "episteme",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "best"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": -0.02,
+              "reputation": -1
+            },
+            "target": "room"
+          }
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "best"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": -0.02,
+              "reputation": -1
+            },
+            "target": "room"
+          }
+        },
+        {
+          "axis": "phronesis",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "best"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            },
+            {
+              "id": "d",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": -0.02,
+              "reputation": -1
+            },
+            "target": "room"
+          }
+        }
+      ],
+      "success": {
+        "effects": {
+          "cash": 0.2,
+          "satisfaction": 0.1,
+          "stamina": 0,
+          "reputation": 2
+        },
+        "target": "room"
+      },
+      "staff": {
+        "effects": {
+          "cash": -0.1,
+          "satisfaction": -0.05,
+          "stamina": -0.02,
+          "reputation": -1
+        },
+        "target": "room"
+      }
+    },
+    {
+      "id": "somm-k9",
+      "track": "sommellerie",
+      "arc": "crisis",
+      "chainOnly": false,
+      "needsTable": false,
+      "placeholder": false,
+      "status": "utkast",
+      "reach": "self",
+      "originalStep": 2,
+      "source": "SommelierChampionship.jsx CRISIS_CARDS k9",
+      "reference": {
+        "title": "Scander et al. (2020)",
+        "url": null
+      },
+      "steps": [
+        {
+          "axis": "episteme",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "best"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": -0.02,
+              "reputation": -1
+            },
+            "target": "room"
+          }
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "best"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": -0.02,
+              "reputation": -1
+            },
+            "target": "room"
+          }
+        },
+        {
+          "axis": "phronesis",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            },
+            {
+              "id": "d",
+              "quality": "best"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.08,
+              "stamina": -0.02,
+              "reputation": -1
+            },
+            "target": "room"
+          }
+        }
+      ],
+      "success": {
+        "effects": {
+          "cash": 0.2,
+          "satisfaction": 0.1,
+          "stamina": 0,
+          "reputation": 2
+        },
+        "target": "room"
+      },
+      "staff": {
+        "effects": {
+          "cash": -0.1,
+          "satisfaction": -0.05,
+          "stamina": -0.02,
+          "reputation": -1
+        },
+        "target": "room"
+      }
+    }
+  ]
+}
