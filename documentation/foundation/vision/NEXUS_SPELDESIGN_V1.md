@@ -111,6 +111,13 @@ G = 0,6 × huvudpaviljongens värde + 0,4 × snittet av övriga paviljonger
 
 G kan aldrig bli högre än 90. Veckogolvet är G procent av klassens normala veckointäkt. Om veckans intäkt blir lägre än golvet fylls mellanskillnaden på vid veckoavräkningen. Samma belopp är också spelarens kreditram för satsningar under veckan. Alla paviljonger bidrar alltså, men huvudpaviljongen väger mest.
 
+### Hyran och lönerna
+
+*Beslut 2026-09-29 (Vision Owner):* trycket i ekonomin kommer från de fasta kostnaderna.
+- Varje klass har en veckohyra. Den dras vid veckoavräkningen och står i söndagstidningen.
+- Lönerna visas som en veckorad i avräkningen, även om de dras varje servicedag.
+- Hyran kalibreras så att den rimliga spelaren går plus med ungefär 5–10 % av veckointäkten, och den svaga spelaren nedgraderas inom två till tre veckor. Slumpmålet mäts om.
+
 ### Lånet
 
 Bankmötet ger ett startlån som täcker lokal och inventarier för klassen. Lånet amorteras lika under säsongens åtta veckor, med fem procents ränta. Bankens besked formuleras som en diagnos i ord, aldrig som siffror: vad spelaren visat att hon kan och vad som saknas för nästa klass.
@@ -213,6 +220,8 @@ Det här ersätter punkterna ovan om 3–6 händelser per kväll, 20 sekunders n
 - Raketer där gäster frågar om kvällens rätter och drycker, utifrån menyn och dryckeslistan som spelaren satt på morgonen: druvan, fisken, råvarans ursprung.
 - Rätt svar ger högre dricks.
 
+*Beslut 2026-09-29 (Vision Owner, Designs leverans kassan och kvällen):* dricksen går till personalens pott och aldrig till kassan. Den syns i händelseströmmen och i kvällens summa.
+
 ### Händelseströmmen
 
 *Beslut 2026-09-28 (Vision Owner, andra provspelet): servicen syns.*
@@ -227,7 +236,15 @@ Det här ersätter punkterna ovan om 3–6 händelser per kväll, 20 sekunders n
 - Kassa och krediter tickar upp och ner med tydlig animation.
 - Förlusterna ska kunna bli stora, och en dålig vecka ska kunna leda till nedgradering.
 
-*Att bekräfta (Claude Code):* beslutet möter regeln under Ekonomin att kassa och krediter aldrig byter plats. Tolkningen tills Vision Owner bekräftar: insatsen görs i krediter, och storleken på insatsen avgör hur mycket raketen flyttar kassan åt båda hållen. Krediter blir aldrig pengar direkt. En vunnen raket ger tillbaka insatsen med vinst och en intäkt från sällskapet raketen gäller. En förlorad raket tar insatsen och kostar kassan det sällskapet skulle ha betalat, och mer.
+*Ersatt 2026-09-29:* tolkningen att insatsens storlek flyttade kassan gäller inte längre.
+
+*Beslut 2026-09-29 (Vision Owner): insatsen görs bara i krediter, och heter Back your knowledge.*
+- Kassa och krediter byter aldrig plats. Inget belopp dras från eller läggs till kassan av insatsen. Krediter kan aldrig köpas.
+- Spelaren startar själv en raket och väljer för varje steg hur säker hen är på svaret: gissar, tror det eller vet det. Ju säkrare, desto mer vinner hen om svaret stämmer och desto mer förlorar hen om det inte gör det. Steget multiplicerar bara rätt svar: episteme minst, phronesis mest. Ett fel kostar insatsen och avslutar raketen. Går tiden ut räknas det som fel på den lägsta säkerheten.
+- Raketens vanliga följder gäller som i servicen: ett rätt svar ger raketens goda följd, ett fel den dåliga.
+- Utfallet avgörs bara av svaren. Inga casinodrag: inga hjul, spelautomater, tärningar eller jetonger, och inga ord som betting, gamble eller jackpot.
+- Efter kvällen visas hur säker spelaren var och hur ofta det höll, så att den som satsade högt och hade fel ser att hon trodde sig kunna mer än hon kunde.
+- Förlusterna och trycket kommer inte längre från insatsen, utan från de fasta kostnaderna (se Ekonomin > Hyran och lönerna).
 
 ### Personalen
 
@@ -276,7 +293,11 @@ Spelaren får öppna med för lite råvaror. Före öppning visas en prognos i o
 - Menyn och dryckeslistan, med viner på glas och flaska, öl och alkoholfritt, och mängderna måste sättas innan servicen kan starta.
 - Kassan syns hela tiden och räknas ner animerat vid varje inköp.
 
-*Att bekräfta (Claude Code):* beslutet möter meningen ovan att spelaren inte ska bli stoppad. Tolkningen: servicen startar inte förrän minst en rätt och en dryck finns i lager, men mängden är spelarens sak. Den som köper för lite får öppna.
+*Bekräftat 2026-09-29 (Vision Owner):* servicen startar inte förrän minst en rätt och en dryck finns i lager, men mängden är spelarens sak. Den som köper för lite får öppna.
+
+*Beslut 2026-09-29 (Vision Owner, Designs leverans kassan och kvällen):* morgonens inköp görs i partier: ett klick köper ett parti rätter eller flaskor, och ett klick tillbaka ger inköpspriset tillbaka. En flaska är ett antal glas, och priset för hela flaskan är något lägre än glasen var för sig.
+
+*Beslut 2026-09-29 (Vision Owner, Designs leverans kassan och kvällen):* sopbilen tar betalt per kilo, med en fast avgift för hämtningen. Kilona räknas i fraktioner: osåld mat, tallrikssvinn, glas och kartong. Svinnets värde är redan betalt vid inköpet och visas bara; bara miljöavgiften dras från kassan.
 
 *Beslut 2026-09-28 (Vision Owner, andra provspelet): svinnet kostar.*
 - Svinnet räknas efter kvällen. En del kan användas nästa dag.

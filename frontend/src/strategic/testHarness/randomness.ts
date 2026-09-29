@@ -40,6 +40,8 @@ export interface WeekResult {
   // kväll får gå riktigt illa även för en duktig spelare."
   worstEveningSek: number;
   bestEveningSek: number;
+  // ORDER 280 — veckans intäkt ur avräkningen (hyrans kalibrering).
+  revenueSek: number;
 }
 
 export function playMeasuredWeek(seed: number, medals: SimulationState['medals']): WeekResult {
@@ -62,7 +64,8 @@ export function playMeasuredWeek(seed: number, medals: SimulationState['medals']
     guests,
     reputationEnd: s.reputation,
     worstEveningSek: evenings.length ? Math.min(...evenings) : 0,
-    bestEveningSek: evenings.length ? Math.max(...evenings) : 0
+    bestEveningSek: evenings.length ? Math.max(...evenings) : 0,
+    revenueSek: settlement?.revenueSek ?? 0
   };
 }
 

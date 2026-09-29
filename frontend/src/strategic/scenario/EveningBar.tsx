@@ -19,6 +19,7 @@
 // ("Kvällens tre frågor", Q1) byggs inte (ORDER 271).
 
 import { useState } from 'react';
+import { WasteScreen } from './WasteScreen';
 import { strings } from '../../content/strings';
 import { SITTING } from '../../sim/balance';
 import { calendarFor } from '../../sim/calendar';
@@ -245,10 +246,15 @@ function StoryScreen({ sim, onBack }: { sim: SimulationState; onBack: (() => voi
 
 export function EveningBar() {
   const sim = useSimState();
-  const [stage, setStage] = useState<{ day: number; screen: 'lesson' | 'story' }>({ day: -1, screen: 'lesson' });
+  const [stage, setStage] = useState<{ day: number; screen: 'waste' | 'lesson' | 'story' }>({ day: -1, screen: 'lesson' });
   if (sim.day.period !== 'evening') return null;
   const lesson = sim.incidents?.lesson ?? null;
-  const screen = stage.day === sim.day.dayNumber ? stage.screen : 'lesson';
+  // ORDER 280 — sopbilen först (Designs S1), när kvällen gav ett svinn.
+  const hasWaste = !!sim.lastWaste && sim.lastWaste.dayNumber === sim.day.dayNumber && !!sim.lastWaste.fractions;
+  const screen = stage.day === sim.day.dayNumber ? stage.screen : hasWaste ? 'waste' : 'lesson';
+  if (screen === 'waste' && hasWaste) {
+    return <WasteScreen sim={sim} onContinue={() => setStage({ day: sim.day.dayNumber, screen: lesson !== null ? 'lesson' : 'story' })} />;
+  }
   // En kväll utan raketer har ingen lärdom: bara berättelsen.
   if (lesson === null || screen === 'story') {
     return (

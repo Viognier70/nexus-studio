@@ -15,9 +15,10 @@ import {
   marketShareCap,
   meetsClass,
   settleWeek,
-  startLoanSek
+  startLoanSek,
+  weeklyRentSek
 } from '../economy';
-import { ECONOMY, FLOOR, LOAN, MARKET, SEASON } from '../balance';
+import { ECONOMY, FLOOR, LOAN, MARKET, RENT, SEASON } from '../balance';
 import { calendarFor } from '../calendar';
 import { makeInitialState } from '../../strategic/simulation/model';
 import { reducer } from '../../strategic/simulation/reducer';
@@ -85,8 +86,24 @@ describe('ORDER 265 — veckoavräkningen', () => {
     const cash = s.cash;
     s = settleWeek(s);
     expect(s.economy.lastSettlement!.topUpSek).toBe(floor - Math.round(floor / 2));
-    expect(s.cash).toBe(cash + s.economy.lastSettlement!.topUpSek - s.economy.lastSettlement!.amortisationSek);
+    // ORDER 280 — veckohyran dras vid avräkningen.
+    expect(s.cash).toBe(cash + s.economy.lastSettlement!.topUpSek - s.economy.lastSettlement!.amortisationSek - (s.economy.lastSettlement!.rentSek ?? 0));
     expect(s.ledger.some((l) => l.category === 'floor')).toBe(true);
+  });
+
+  it('ORDER 280 — veckohyran dras vid avräkningen och lönerna står som en veckorad', () => {
+    let s = { ...makeInitialState(1), medals: bronzeIn('stensota') };
+    s = { ...s, revenue: ECONOMY.normalWeeklyRevenueSek.vinbar, day: { ...s.day, dayNumber: 7 }, economy: { ...s.economy, weekWagesSek: 21600 } };
+    const cash = s.cash;
+    s = settleWeek(s);
+    const st = s.economy.lastSettlement!;
+    expect(st.rentSek).toBe(weeklyRentSek('vinbar'));
+    expect(st.rentSek).toBe(Math.round(RENT.shareOfNormalWeeklyRevenue * ECONOMY.normalWeeklyRevenueSek.vinbar));
+    expect(st.wagesSek).toBe(21600);
+    expect(s.economy.weekWagesSek).toBe(0);
+    expect(s.cash).toBe(cash - st.amortisationSek - st.rentSek!);
+    expect(s.ledger.at(-1)).toMatchObject({ category: 'rent', amount: -st.rentSek! });
+    expect(weeklyRentSek(null)).toBe(0);
   });
 
   it('ingen påfyllnad när veckan gav mer än golvet', () => {

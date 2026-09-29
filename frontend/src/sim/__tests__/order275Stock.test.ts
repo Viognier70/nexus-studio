@@ -105,7 +105,11 @@ describe('ORDER 275 — svinnet', () => {
     expect(t.lastWaste).toMatchObject({ dayNumber: s.day.dayNumber });
     expect(t.lastWaste!.sek).toBeGreaterThan(0);
     // ORDER 278 — en del av maten sparas till nästa dag (WASTE.carryShare).
-    expect(t.stock.chicken ?? 0).toBe(Math.floor((s.stock.chicken ?? 0) * (WASTE.carryShare.chicken ?? 0)));
+    // ORDER 280 — det avräknas när servicen stänger, och dygnsskiftet rör
+    // inte lagret igen.
+    expect(s.day.wasteSettled).toBe(true);
+    expect(t.stock.chicken ?? 0).toBe(s.stock.chicken ?? 0);
+    expect(WASTE.carryShare.chicken).toBeGreaterThan(0);
     expect(t.stock.herbs ?? 0).toBe(0);
     expect(t.stock['house-wine'] ?? 0).toBe(wineLeft);
     expect(t.packagesBoughtToday).toEqual([]);

@@ -218,46 +218,51 @@ try {
   await page.evaluate(() => document.querySelector('[data-testid=day-action-bar]')?.scrollTo(0, 0));
   await delay(200); await shot('dod-02-S1-schema-mandag.png', 'S1 morgonens schema, måndag');
   step('vinbaren öppnad');
-  // ORDER 275 — lagret är insatsen. ORDER 277 — morgonen är insatsen:
-  // servicen går inte att starta förrän menyn och dryckeslistan har en
-  // rätt och en dryck i lager. Spelaren fyller listan med baspaketet och
-  // en tillsats, köper den och ser kassan räknas ner.
-  if (await page.$('[data-testid=stock-packages]')) {
-    const cashText = () => page.textContent('[aria-label="Cash"]').catch(() => null);
-    const counter = async () => ({
-      value: await page.getAttribute('[data-testid=cash-counter]', 'data-value').catch(() => null),
-      shown: await page.getAttribute('[data-testid=cash-counter]', 'data-shown').catch(() => null),
-      delta: await page.getAttribute('[data-testid=cash-counter-delta]', 'data-delta').catch(() => null)
-    });
-    report.stock = { before: await cashText(), counterBefore: await counter() };
+  // ORDER 277 — servicen går inte att starta förrän menyn och dryckeslistan
+  // har en rätt och en dryck i lager. ORDER 280 — inköpen görs på Designs
+  // M1: + köper ett parti och lappen flyger till kassan, som räknas först
+  // när lappen landat.
+  const counter = async () => ({
+    value: await page.getAttribute('[data-testid=cash-counter]', 'data-value').catch(() => null),
+    shown: await page.getAttribute('[data-testid=cash-counter-num]', 'data-shown').catch(() => null),
+    credits: await page.getAttribute('[data-testid=credits-counter]', 'data-value').catch(() => null),
+    creditsShown: await page.getAttribute('[data-testid=credits-counter-num]', 'data-shown').catch(() => null)
+  });
+  let m1Open = false;
+  if (await page.$('[data-testid=open-buy]')) {
+    report.stock = { counterBefore: await counter() };
     report.stock.startDisabledBefore = await page.$eval('[data-testid=start-service]', (b) => b.disabled).catch(() => null);
     report.stock.blockedText = await page.textContent('[data-testid=start-blocked]').catch(() => null);
     await shot('dod-26-lagret-spärren.png', 'morgonen: servicen går inte att starta utan meny och dryckeslista');
-    await page.click('[data-testid=fill-vinbar-base]');
-    await page.click('[data-testid=fill-vinbar-green]');
-    await page.click('[data-testid=sheet-more-house-wine-bottle]');
-    await delay(200);
-    report.stock.sheetTotal = await page.getAttribute('[data-testid=buy-sheet]', 'data-total');
-    await page.$eval('[data-testid=stock-packages]', (e) => e.scrollIntoView({ block: 'start' }));
-    await shot('dod-26-lagret-fore-kop.png', 'inköpslistan ifylld: menyn och dryckeslistan med mängder');
-    await page.$eval('[data-testid=sheet-group-wine-bottle]', (e) => e.scrollIntoView({ block: 'center' }));
-    await shot('dod-26b-dryckeslistan.png', 'dryckeslistan: vin på glas och flaska, öl, alkoholfritt');
-    await page.click('[data-testid=buy-sheet]');
-    await delay(250);
-    report.stock.counterMid = await counter();
-    await shot('dod-27-kassan-raknas-ner.png', 'kassan räknas ner medan köpet dras (mitt i animationen)');
-    await delay(900);
-    report.stock.after = await cashText();
-    report.stock.counterAfter = await counter();
-    report.stock.inStock = await page.getAttribute('[data-testid=stock-in-stock]', 'data-covers');
-    report.stock.startDisabledAfter = await page.$eval('[data-testid=start-service]', (b) => b.disabled).catch(() => null);
-    await page.$eval('[data-testid=stock-in-stock]', (e) => e.scrollIntoView({ block: 'center' }));
-    await shot('dod-27-lagret-efter-kop.png', 'lagret efter köpet: kassan lägre, servicen kan starta');
-    await page.evaluate(() => document.querySelector('[data-testid=day-action-bar]')?.scrollTo(0, 0));
-    step('inköpslistan köpt');
+    await page.click('[data-testid=open-buy]');
+    await page.waitForSelector('[data-testid=screen-M1]');
+    m1Open = true;
+    await delay(400);
+    await shot('dod-26b-M1-morgonen-tom.png', 'M1 morgonens inköp innan något är köpt');
+    for (const id of ['chicken-plate', 'pork-plate', 'root-soup', 'lentil-plate', 'dairy-dessert', 'house-wine', 'beer', 'alcohol-free']) {
+      await page.click(`[data-testid=buy-more-${id}]`).catch(() => {});
+      await delay(320);
+    }
+    await delay(1400);
+    report.stock.beforeBigBuy = await counter();
+    await page.click('[data-testid=buy-more-fine-wine]');
+    await delay(380);
+    report.stock.midFly = await counter();
+    await shot('dod-27-M1-lappen-flyger.png', 'M1: lappen flyger till kassan; kassan väntar tills den landat');
+    await delay(1700);
+    report.stock.afterBigBuy = await counter();
+    report.stock.coverage = { covers: await page.getAttribute('[data-testid=buy-coverage]', 'data-covers'), guests: await page.getAttribute('[data-testid=buy-coverage]', 'data-guests') };
+    report.stock.spent = await page.getAttribute('[data-testid=buy-spent]', 'data-value');
+    report.stock.qty = await page.$$eval('[data-testid^=buy-qty-]', (els) => Object.fromEntries(els.map((e) => [e.getAttribute('data-testid').slice(8), e.textContent])));
+    await page.click('[data-testid=buy-less-pork-plate]');
+    await delay(1600);
+    report.stock.afterReturn = { ...(await counter()), qtyPork: await page.textContent('[data-testid=buy-qty-pork-plate]') };
+    report.stock.openDoorsDisabled = await page.$eval('[data-testid=open-doors]', (b) => b.disabled);
+    await shot('dod-27-M1-morgonen.png', 'M1 efter inköpen: rätter, dryckeslista, dagens inköp och täckningen');
+    step('inköpen på M1');
   }
 
-  await page.click('[data-testid=start-service]');
+  await page.click(m1Open ? '[data-testid=open-doors]' : '[data-testid=start-service]');
   await page.waitForSelector('[data-testid=mentor][data-step=service]', { timeout: 60000 });
   await delay(3000); await shot('dod-04-M2-mentorn-service.png', 'M2 mentorn första servicen');
   await page.click('[data-testid=mentor-close-service]');
@@ -278,7 +283,7 @@ try {
   report.stream = [];
   const streamSeen = new Set();
   const collectStream = async () => {
-    const lines = await page.$$eval('[data-testid=event-stream] > div', (els) => els.map((e) => e.textContent)).catch(() => []);
+    const lines = await page.$$eval('[data-testid=feed-row] .nx-feed-text', (els) => els.map((e) => e.textContent)).catch(() => []);
     for (const l of lines) if (l && !streamSeen.has(l)) { streamSeen.add(l); report.stream.push(l); }
   };
   for (let i = 0; i < 20; i++) { await collectStream(); await delay(500); }
@@ -291,7 +296,7 @@ try {
   // fälld på techne. Mellan raketerna: figurerna vid två tidpunkter.
   let n = 0;
   let movement = 0;
-  while (!(await page.$('[data-testid=evening-bar]'))) {
+  while (!(await page.$('[data-testid=evening-bar], [data-testid=screen-S1]'))) {
     const card = await page.$('[data-testid=incident-card]');
     await collectStream();
     // ORDER 278 — en slumpens händelse och en rätt som tagit slut, på bild.
@@ -316,34 +321,42 @@ try {
         await shot('dod-37-menyraket.png', `raket om kvällens meny (${cid})`);
       }
     }
-    // ORDER 279 — insatsen: en vunnen och en förlorad, med kassan och
-    // krediterna som tickar.
-    if (!card && n >= 1 && !report.bets && await page.$('[data-testid=bet-panel]')) {
-      report.bets = [];
-      await shot('dod-38-insatsen.png', 'insatsen: panelen med insatserna, vinst och förlust i kronor');
-      for (const [stake, want] of [[1, 'best'], [1, 'wrong']]) {
-        const btn = await page.$(`[data-testid=bet-stake-${stake}]`);
-        if (!btn || await btn.isDisabled()) { report.bets.push({ stake, skipped: 'knappen avstängd (krediter eller tid)' }); continue; }
-        const before = { cash: await page.getAttribute('[data-testid=cash-counter]', 'data-value'), credits: await page.getAttribute('[data-testid=credits-counter]', 'data-value') };
+    // ORDER 280 — Back your knowledge (Designs B1): en raket med rätta svar
+    // och hög säkerhet, och en med fel svar. Bara krediterna rör sig.
+    if (!card && n >= 1 && !report.backs && await page.$('[data-testid=back-start]')) {
+      report.backs = [];
+      await shot('dod-38-H1-handelser.png', 'H1 händelserna: beställt, betalt, dricks, i kväll och Back your knowledge');
+      for (const want of ['best', 'wrong']) {
+        const btn = await page.$('[data-testid=back-start]');
+        if (!btn || await btn.isDisabled()) { report.backs.push({ want, skipped: 'knappen avstängd' }); continue; }
+        const before = await counter();
         await btn.click();
-        await page.waitForSelector('[data-testid=incident-bet]', { timeout: 10000 });
+        await page.waitForSelector('[data-testid=incident-card][data-backed=true]', { timeout: 10000 });
         const bid = await page.getAttribute('[data-testid=incident-card]', 'data-incident-id');
-        const afterStake = await page.getAttribute('[data-testid=credits-counter]', 'data-value');
-        const entry = { stake, want, id: bid, before, creditsAfterStake: afterStake, steps: [] };
-        if (want === 'best') {
-          for (let st = 0; st < 3; st++) entry.steps.push(await answerStep(bid, st, 'best', st === 0 ? 'dod-39-insats-raket' : null));
-        } else {
-          entry.steps.push(await answerStep(bid, 0, 'wrong', null));
+        const entry = { want, id: bid, before, steps: [] };
+        const steps = want === 'best' ? [0, 1, 2] : [0];
+        for (const st of steps) {
+          await page.waitForFunction((x) => { const c = document.querySelector('[data-testid=incident-card]'); return c && c.getAttribute('data-step') === String(x) && !c.querySelector('[data-testid=incident-band]'); }, st, { timeout: 60000 });
+          const struck = await page.$$eval('[data-struck=true]', (els) => els.map((e) => e.getAttribute('data-option-id')));
+          const opts = rocketMeta.get(bid).steps[st].options.filter((o) => !struck.includes(o.id));
+          const pick = (want === 'best' ? opts.find((o) => o.quality === 'best') : opts.find((o) => o.quality === 'wrong')) ?? opts[0];
+          await page.click(`[data-testid=incident-option-${pick.id}]`);
+          const level = want === 'best' ? (st === 0 ? 2 : 1) : 1;
+          const levelBtn = await page.$(`[data-testid=back-level-${level}][data-allowed=true]`);
+          await page.click(levelBtn ? `[data-testid=back-level-${level}]` : '[data-testid=back-level-0]');
+          if (st === 0) await shot(`dod-39-B1-${want === 'best' ? 'ratt' : 'fel'}-fraga.png`, `B1: valt svar och säkerhet, före Stå för svaret (${want})`);
+          await page.click('[data-testid=back-lock]');
+          await page.waitForSelector('[data-testid=incident-band]', { timeout: 5000 }).catch(() => {});
+          await delay(350);
+          const mid = await counter();
+          if (st === 0 || st === 2) await shot(`dod-40-B1-${want === 'best' ? `ratt-steg-${st + 1}` : 'fel'}.png`, `B1: svaret, krediterna ${want === 'best' ? 'flyger till' : 'faller ur'} HUD:en`);
+          entry.steps.push({ step: st, option: pick.id, quality: pick.quality, level: levelBtn ? level : 0, band: await page.textContent('[data-testid=incident-band]').catch(() => null), mid });
         }
         await page.waitForSelector('[data-testid=incident-card]', { state: 'detached', timeout: 30000 });
-        await page.waitForSelector('[data-testid=bet-result]', { timeout: 10000 }).catch(() => {});
-        await delay(250);
-        entry.mid = { cashShown: await page.getAttribute('[data-testid=cash-counter]', 'data-shown'), cash: await page.getAttribute('[data-testid=cash-counter]', 'data-value'), creditsShown: await page.getAttribute('[data-testid=credits-counter]', 'data-shown'), credits: await page.getAttribute('[data-testid=credits-counter]', 'data-value') };
-        await shot(`dod-40-insats-${want === 'best' ? 'vinst' : 'forlust'}.png`, `insatsen ${want === 'best' ? 'vann' : 'förlorade'}: resultatet, kassan och krediterna tickar`);
-        entry.result = await page.textContent('[data-testid=bet-result]').catch(() => null);
-        entry.after = { cash: await page.getAttribute('[data-testid=cash-counter]', 'data-value'), credits: await page.getAttribute('[data-testid=credits-counter]', 'data-value') };
-        report.bets.push(entry);
-        step(`insats ${stake} (${want})`);
+        await delay(1500);
+        entry.after = await counter();
+        report.backs.push(entry);
+        step(`back your knowledge (${want})`);
       }
       continue;
     }
@@ -375,6 +388,24 @@ try {
     report.rockets.push(entry);
     step(`raket ${n}: ${id}`);
   }
+  // ORDER 280 — sopbilen (Designs S1) först på kvällen: avgiften räknas
+  // upp och flyger till kassan, som räknas ner först när lappen landat.
+  if (await page.waitForSelector('[data-testid=screen-S1]', { timeout: 30000 }).then(() => true).catch(() => false)) {
+    report.s1 = { cashAtOpen: await counter() };
+    await delay(1600);
+    await shot('dod-42-S1-sopbilen-bilen.png', 'S1: bilen rullar in, fraktionerna läggs fram');
+    await delay(5200);
+    report.s1.beforeFly = await counter();
+    report.s1.fee = await page.getAttribute('[data-testid=waste-fee]', 'data-value');
+    report.s1.value = await page.getAttribute('[data-testid=waste-value]', 'data-value');
+    report.s1.kg = await page.textContent('[data-testid=waste-total-kg]');
+    report.s1.fractions = await page.$$eval('[data-fraction]', (els) => els.map((e) => ({ key: e.getAttribute('data-fraction'), kg: e.getAttribute('data-kg') })));
+    report.s1.advice = await page.textContent('[data-testid=waste-advice]');
+    await delay(3000);
+    report.s1.afterFly = await counter();
+    await shot('dod-42-S1-sopbilen.png', 'S1 sopbilen: fraktionerna, svinnet, miljöavgiften och rådet');
+    await page.click('[data-testid=waste-continue]');
+  }
   await page.waitForSelector('[data-testid=screen-L1]', { timeout: 30000 });
   await delay(600); await shot('dod-40-L1-kvallens-lardom.png', 'L1 kvällens lärdom');
   await page.click('[data-testid=to-evening-story]');
@@ -383,29 +414,28 @@ try {
   await page.click('[data-testid=end-evening]');
   await page.waitForSelector('[data-testid=day-action-bar]', { timeout: 120000 });
   step('tisdag morgon');
-  // ORDER 278 — svinnet efter kvällen: det som sparades, svinnet och
-  // sopbilens miljöavgift, på morgonens lista.
-  report.waste = await page.textContent('[data-testid=stock-last-waste]').catch(() => null);
-  if (report.waste) {
-    await page.$eval('[data-testid=stock-last-waste]', (e) => e.scrollIntoView({ block: 'center' }));
-    await shot('dod-36-svinnet-morgonen.png', 'morgonen efter: sparat till i dag, svinn och miljöavgift');
-    await page.evaluate(() => document.querySelector('[data-testid=day-action-bar]')?.scrollTo(0, 0));
-  }
-
   // Veckan till söndagen: det bästa svaret i varje steg.
   // Morgonen som den rimliga spelaren i harnessen: inga ändringar (spelets
   // förvalda meny och lager). En egen meny med tre rätter tömde köket.
   async function playEvening(figures) {
     // ORDER 275/277 — baspaketet varje morgon, som den rimliga spelaren:
     // listan fylls med paketet och köps.
-    const fillBase = await page.$('[data-testid=fill-vinbar-base]');
-    if (fillBase) { await fillBase.click().catch(() => {}); await page.click('[data-testid=buy-sheet]').catch(() => {}); await delay(300); }
-    await page.click('[data-testid=start-service]');
+    // ORDER 280 — M1: baspaketet och öppna dörrarna.
+    const openBuy = await page.$('[data-testid=open-buy]');
+    if (openBuy) {
+      await openBuy.click().catch(() => {});
+      await page.waitForSelector('[data-testid=screen-M1]').catch(() => {});
+      await page.click('[data-testid=buy-base]').catch(() => {});
+      await delay(400);
+      await page.click('[data-testid=open-doors]');
+    } else {
+      await page.click('[data-testid=start-service]');
+    }
     let shotsTaken = 0;
     const openedAt = Date.now();
     const until = Date.now() + 15 * 60000;
     while (Date.now() < until) {
-      if (await page.$('[data-testid=evening-bar]')) break;
+      if (await page.$('[data-testid=evening-bar], [data-testid=screen-S1]')) break;
       const card = await page.$('[data-testid=incident-card]');
       // Lördagen: figurerna vid två tidpunkter mitt i kvällen (130 och 142 s
       // efter öppning i 2×, när rummet har fyllts), utan kort.
@@ -424,6 +454,8 @@ try {
       await delay(500);
     }
     for (let i = 0; i < 4 && !(await page.$('[data-testid=day-action-bar]')); i++) {
+      const waste = await page.$('[data-testid=waste-continue]');
+      if (waste) { await waste.click().catch(() => {}); await delay(500); }
       const story = await page.$('[data-testid=to-evening-story]');
       if (story) { await story.click().catch(() => {}); await delay(500); }
       const end = await page.$('[data-testid=end-evening]');
@@ -435,6 +467,8 @@ try {
   for (let d = 0; d < 5; d++) { await playEvening(d === 4); step(`morgon ${d + 3}`); }
   await page.waitForSelector('[data-testid=screen-T1]', { timeout: 60000 });
   await delay(600); await shot('dod-10-T1-sondagstidningen.png', 'T1 söndagstidningen');
+  // ORDER 280 — hyran och veckans löner i tidningen.
+  report.newspaper = await page.textContent('[data-testid=screen-T1]').catch(() => null);
   await page.click('[data-testid=newspaper-to-bank]');
   await page.waitForSelector('[data-testid=screen-B1]');
   await delay(400); await shot('dod-11-B1-bankmotet.png', 'B1 bankmötet');

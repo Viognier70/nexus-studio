@@ -29,9 +29,10 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { strings } from '../../content/strings';
-import { INCIDENTS } from '../../sim/balance';
+import { BACK, INCIDENTS, type Confidence } from '../../sim/balance';
 import { incidentById, type Incident, type IncidentStep } from '../../sim/incidentBank';
 import {
+  canBack,
   formatIncidentText,
   secondsFor,
   serviceMeters,
@@ -44,6 +45,8 @@ import { NxSteps } from '../ui/system/components';
 import { COUNTDOWN_ACCENT_SECONDS, METER_EMPHASIS_MS, deltaSteps, meterSteps, rocketCounter } from '../ui/service/serviceView';
 import '../ui/service/service.css';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
+import { shake, slam } from '../ui/juice/juice';
+import { fallFrom, flyTo, targetElement } from '../ui/juice/fx';
 
 const capitalise = (t: string) => (t ? t[0].toUpperCase() + t.slice(1) : t);
 
@@ -98,6 +101,34 @@ export function IncidentCard() {
   const frozen = useRef<{ key: string; left: number; total: number } | null>(null);
   const active = sim.incidents?.active ?? null;
   const cls = sim.economy.businessClass;
+  // ORDER 280 — Back your knowledge (Designs B1): i en egen raket väljer
+  // spelaren svar och säkerhet, och står sedan för svaret.
+  const backed = !!active?.backed;
+  const [pick, setPick] = useState<string | null>(null);
+  const [conf, setConf] = useState<Confidence | null>(null);
+  const cardRef = useRef<HTMLElement>(null);
+  const stepKey = active ? `${active.id}:${active.step}` : null;
+  useEffect(() => { setPick(null); setConf(null); }, [stepKey]);
+  const lastBack = sim.incidents?.lastBack ?? null;
+  const backKey = lastBack ? `${lastBack.at}:${lastBack.step}` : null;
+  const seenBack = useRef<string | null>(backKey);
+  useEffect(() => {
+    if (!lastBack || backKey === seenBack.current) return;
+    seenBack.current = backKey;
+    const card = cardRef.current;
+    if (lastBack.correct) {
+      // Rätt: rutorna smäller in, krediterna flyger till HUD:en och
+      // panelen skakar 14 px.
+      card?.querySelectorAll('[data-back-box]').forEach((el) => slam(el, true));
+      if (lastBack.delta > 0) flyTo('credits', card, `+${lastBack.delta}`, lastBack.delta, { bg: 'var(--nx-ink)', mode: 'to' });
+      shake(card, 14);
+    } else {
+      // Fel: panelen skakar 16 px och insatsen faller ur krediterna.
+      shake(card, 16);
+      if (lastBack.delta < 0) fallFrom('credits', `−${-lastBack.delta}`, { bg: 'var(--nx-accent)' });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [backKey]);
 
   // Vad kortet visar just nu.
   let view: {
@@ -169,11 +200,13 @@ export function IncidentCard() {
       e.preventDefault();
       e.stopImmediatePropagation();
       const o = step.options[i];
-      if (o && !(active?.struck ?? []).includes(o.id)) dispatch({ type: 'ANSWER_INCIDENT', optionId: o.id });
+      if (!o || (active?.struck ?? []).includes(o.id)) return;
+      if (backed) setPick(o.id);
+      else dispatch({ type: 'ANSWER_INCIDENT', optionId: o.id });
     };
     window.addEventListener('keydown', onKey, true);
     return () => window.removeEventListener('keydown', onKey, true);
-  }, [mode, step, active?.struck, dispatch]);
+  }, [mode, step, active?.struck, dispatch, backed]);
 
   if (!view || !step) return null;
   const { incident } = view;
@@ -250,10 +283,20 @@ export function IncidentCard() {
     band = { kind: 'wrong', label: view.chosen === null ? t.outOfTime(role) : t.wrong(role), text: view.outcomeText ?? '' };
   }
 
+  // ORDER 280 — Back your knowledge: bandet säger vad svaret gav i krediter.
+  const backResult = lastBack && (view.mode === 'right' ? lastBack.step === view.shown : view.mode === 'done' || view.mode === 'wrong') ? lastBack : null;
+  if (band && backResult && (backed || held?.outcome.back)) {
+    const sentence = backResult.correct ? strings.back.bandRight[backResult.confidence] : strings.back.bandWrong[backResult.confidence];
+    const credits = backResult.delta === 0 ? '±0' : `${backResult.delta > 0 ? '+' : '−'}${Math.abs(backResult.delta)}`;
+    band = { ...band, label: `${band.label} · ${credits} ${strings.back.credits.toLowerCase()}`, text: `${sentence} ${band.text}` };
+  }
+
   return (
     <section
+      ref={cardRef}
       className="nx nx-rocket"
       data-testid="incident-card"
+      data-backed={backed}
       data-incident-id={incident.id}
       data-step={view.mode === 'done' || view.mode === 'wrong' ? 'closed' : view.shown}
       data-step-axis={step.axis}
@@ -261,12 +304,12 @@ export function IncidentCard() {
       aria-label={f(incident.text.title)}
     >
       <div className="nx-rocket-head">
-        <div className="nx-label">{view.context.staff} · {where}</div>
+        <div className="nx-label" data-testid={backed ? 'incident-back-kicker' : undefined}>{backed ? strings.back.kicker(view.context.staff, where) : `${view.context.staff} · ${where}`}</div>
         <div className="nx-rocket-count">{t.rocketOf(String(Math.max(1, n)), String(Math.max(1, rockets, n)))}</div>
       </div>
-      {sim.incidents?.active?.bet && (
-        <p className="nx-label nx-accent-text" data-testid="incident-bet" data-stake={sim.incidents.active.bet.stake} style={{ marginTop: 'calc(8 * var(--nx-u))' }}>
-          {strings.bet.own(sim.incidents.active.bet.stake)}
+      {backed && view.shown === 0 && view.mode === 'ask' && (
+        <p className="nx-small nx-muted" data-testid="incident-back-intro" style={{ marginTop: 'calc(8 * var(--nx-u))' }}>
+          <strong style={{ color: 'var(--nx-ink)' }}>{strings.back.introTitle}</strong> {strings.back.introBody} {strings.back.introSource}
         </p>
       )}
       <p className="nx-rocket-story">{f(incident.text.body)}</p>
@@ -327,7 +370,8 @@ export function IncidentCard() {
               disabled={view!.mode !== 'ask' || struck}
               title={struck ? s.struck : undefined}
               aria-keyshortcuts={String(i + 1)}
-              onClick={() => dispatch({ type: 'ANSWER_INCIDENT', optionId: o.id })}
+              data-picked={backed && pick === o.id}
+              onClick={() => (backed ? setPick(o.id) : dispatch({ type: 'ANSWER_INCIDENT', optionId: o.id }))}
             >
               <span className="nx-rocket-key" aria-hidden>{i + 1}</span>
               <span>{f(step.text.options[o.id].label)}</span>
@@ -338,6 +382,34 @@ export function IncidentCard() {
           );
         })}
       </div>
+
+      {backed && view.mode === 'ask' && (
+        <div className="nx-back" data-testid="back-confidence">
+          <div className="nx-label">{strings.back.howSure}</div>
+          <div className="nx-back-levels">
+            {BACK.confidence.map((c, i) => {
+              const level = i as Confidence;
+              const win = Math.round(c.win * (BACK.stepMultiplier[view!.shown] ?? 1));
+              const ok = canBack(sim, level);
+              return (
+                <button key={i} type="button" className="nx-back-level" data-testid={`back-level-${i}`} data-chosen={conf === level} data-allowed={ok}
+                  aria-pressed={conf === level}
+                  onClick={() => { if (!ok) { shake(targetElement('credits'), 10); return; } setConf(level); }}>
+                  <span className="nx-back-level-name">{strings.back.confidence[i]}</span>
+                  <span className="nx-back-level-odds">{strings.back.odds(win, c.loss)}</span>
+                </button>
+              );
+            })}
+          </div>
+          <button type="button" className="nx-btn nx-btn-primary nx-back-lock" data-testid="back-lock" data-ready={pick !== null && conf !== null}
+            onClick={() => {
+              if (pick === null || conf === null) { shake(cardRef.current, 10); return; }
+              dispatch({ type: 'ANSWER_INCIDENT', optionId: pick, confidence: conf });
+            }}>
+            <span>{strings.back.lock}</span>
+          </button>
+        </div>
+      )}
 
       {band ? (
         <div className="nx-rocket-band" data-kind={band.kind} data-testid="incident-band" aria-live="polite">
@@ -374,6 +446,8 @@ export function ServiceMeters() {
   }, [key]);
 
   if (!sim.incidents?.enabled || sim.day.period !== 'dinner') return null;
+  // ORDER 280 — under en egen raket står raketen och träffsäkerheten här.
+  if (sim.incidents.active?.backed) return null;
   const m = serviceMeters(sim);
   const steps = meterSteps(sim);
   const d = emph ? deltaSteps(sim, emph.deltas) : null;

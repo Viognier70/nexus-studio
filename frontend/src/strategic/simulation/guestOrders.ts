@@ -102,12 +102,31 @@ export function tableOf(guest: Pick<Guest, 'seatIndex'>): number | null {
 }
 
 // ORDER 278 — beställningen och betalningen i strömmen (positiva rader).
-export function streamOrderLine(draft: SimulationState, text: string, kind: string): void {
-  if (draft.eventStream.some((e) => e.text === text && draft.simTime - e.at <= REPEAT_GUARD_SEC)) return;
+// ORDER 280 — med Designs H1-fält (slag, bord, belopp).
+export function streamOrderLine(draft: SimulationState, text: string, kind: string, meta?: { feed: 'ordered' | 'paid' | 'tip' | 'miss'; table: number | null; amountSek?: number }): void {
+  // Beställningar, betalningar och dricks upprepas med samma text (samma
+  // bord), och de räknas alla; spärren gäller bara övriga meningar.
+  const counted = meta && meta.feed !== 'miss';
+  if (!counted && draft.eventStream.some((e) => e.text === text && draft.simTime - e.at <= REPEAT_GUARD_SEC)) return;
   draft.eventStream = [...draft.eventStream, {
-    at: draft.simTime, text, category: 'positive', causeTag: null, causeChainId: null,
-    sustainability: 'economic', kind, scenarioId: null
+    at: draft.simTime, text, category: meta?.feed === 'miss' ? 'ambient' : 'positive', causeTag: null, causeChainId: null,
+    sustainability: 'economic', kind, scenarioId: null, ...(meta ?? {})
   }];
+}
+
+// ORDER 280 — beställningen som rader i Designs H1: "1 × Pork with root veg
+// · 2 glasses Grüner Veltliner".
+export function orderFeedLines(order: { dishId: string | null; drinks: string[] }): string {
+  const parts: string[] = [];
+  if (order.dishId) parts.push(strings.feed.linePortion(1, findDish(order.dishId)?.name ?? order.dishId));
+  const counts = new Map<string, number>();
+  for (const d of order.drinks) counts.set(d, (counts.get(d) ?? 0) + 1);
+  for (const [id, n] of counts) {
+    const dish = findDish(id);
+    const name = (dish?.name ?? id).replace(/, by the glass$/, '').replace(/, bottle$/, '');
+    parts.push(dish?.drink === 'wine-bottle' ? strings.feed.lineBottle(name) : dish?.drink === 'beer' ? strings.feed.linePortion(n, name) : strings.feed.lineGlass(n, name));
+  }
+  return parts.join(' · ');
 }
 
 // Samma mening upprepas inte inom strömmens spärr (eventStream.ts).
@@ -166,7 +185,7 @@ export function orderForGuest(draft: SimulationState, guest: Guest, rand: () => 
       dish = pickByTaste(affordable, p.wallet, rand());
       guest.satisfaction = Math.max(0, guest.satisfaction + SERVICE_STREAM.soldOutSatisfaction);
       draft.day.substitutedCount = (draft.day.substitutedCount ?? 0) + 1;
-      streamLine(draft, s.wantedButOut(table, findDish(target.dishId)?.name ?? target.dishId, findDish(dish.dishId)?.name ?? dish.dishId), 'guest_substituted');
+      streamOrderLine(draft, strings.feed.miss(table === null ? strings.feed.guest : String(table), findDish(target.dishId)?.name ?? target.dishId), 'guest_substituted', { feed: 'miss', table });
     } else if (inStock.length > 0) {
       missing = 'wallet';
     } else {

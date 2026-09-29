@@ -14,6 +14,7 @@
 // vanish until the player asks for them.
 
 import { useEffect, useRef, useState } from 'react';
+import { getJuice, setJuice, type Juice } from './juice/juice';
 import { strings } from '../../content/strings';
 import { LANGUAGES, setLanguage, useLanguage, type Lang } from '../../content/language';
 
@@ -107,6 +108,7 @@ export function TopRightMenu({ onOpenAbout, onOpenSave }: Props) {
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const lang = useLanguage();
+  const [juice, setJuiceState] = useState<Juice>(getJuice());
 
   useEffect(() => {
     if (!open) return;
@@ -132,7 +134,8 @@ export function TopRightMenu({ onOpenAbout, onOpenSave }: Props) {
     <div ref={containerRef} style={{ position: 'relative' }}>
       <button
         type="button"
-        className="gb-btn"
+        className="nx"
+        style={{ height: '100%', minWidth: 'calc(62 * var(--nx-u))', background: 'var(--nx-ground, #f3f2f2)', color: 'var(--nx-ink, #201e1d)', border: 'none', fontSize: 'max(14px, calc(26 * var(--nx-u)))', cursor: 'pointer' }}
         onClick={() => setOpen((o) => !o)}
         aria-label={strings.menu.button}
         data-testid="menu-button"
@@ -140,7 +143,7 @@ export function TopRightMenu({ onOpenAbout, onOpenSave }: Props) {
         aria-expanded={open}
         title={strings.menu.button}
       >
-        ⋯
+        ☰
       </button>
       {open && (
         <div role="menu" style={DROPDOWN_STYLE}>
@@ -181,6 +184,23 @@ export function TopRightMenu({ onOpenAbout, onOpenSave }: Props) {
           >
             {strings.pause.aboutHeading}
           </button>
+          {/* ORDER 280 — Designs inställning: Animationer · Balatro / Lugn. */}
+          <div role="group" aria-label={strings.back.juice} data-testid="menu-juice" style={LANGUAGE_ROW_STYLE}>
+            <span style={LANGUAGE_LABEL_STYLE}>{strings.back.juice}</span>
+            {(['balatro', 'calm'] as const).map((j) => (
+              <button
+                key={j}
+                role="menuitemradio"
+                type="button"
+                aria-checked={juice === j}
+                data-testid={`menu-juice-${j}`}
+                style={juice === j ? LANGUAGE_ACTIVE_STYLE : LANGUAGE_BUTTON_STYLE}
+                onClick={() => { setJuice(j); setJuiceState(j); }}
+              >
+                {j === 'calm' ? strings.back.juiceCalm : strings.back.juiceBalatro}
+              </button>
+            ))}
+          </div>
           <div role="group" aria-label={strings.menu.language} data-testid="menu-language" style={LANGUAGE_ROW_STYLE}>
             <span style={LANGUAGE_LABEL_STYLE}>{strings.menu.language}</span>
             {LANGUAGES.map((l) => (

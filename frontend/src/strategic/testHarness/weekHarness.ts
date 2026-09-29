@@ -21,7 +21,7 @@ import { WEEK } from '../../sim/balance';
 import { rankedScenarioChoice } from '../simulation/scenarios';
 import { incidentById } from '../../sim/incidentBank';
 import { packagesFor } from '../simulation/packages';
-import { canStartBet, rankedStepOption } from '../../sim/incidents';
+import { canBack, canStartBack, rankedStepOption } from '../../sim/incidents';
 import type { PavilionKey, ScenarioChoice, SimAction, SimulationState } from '../types';
 
 // Simuleringens tick är 0,2 s (5 Hz), samma som SimulationProvider.
@@ -48,11 +48,11 @@ export interface MorningPlan {
   // ORDER 270 — samma val gäller kvällens händelser: den rimliga spelaren
   // väljer det bästa svaret i varje steg, den svaga det sämsta (rankedStepOption).
   scenarioAnswer?: ScenarioAnswer;
-  // ORDER 279 — insatsen: spelaren startar en egen raket med den här
-  // insatsen så fort det går (högst BET.maxPerEvening per kväll) och svarar
-  // som i scenarioAnswer. Utelämnat = ingen insats (harnessens spelare
-  // satsar inte i slumpmätningen).
-  betStake?: number;
+  // ORDER 280 — Back your knowledge: spelaren startar en egen raket så fort
+  // det går (högst BACK.maxPerEvening per kväll) och står för varje svar
+  // med den här säkerheten (svaren som i scenarioAnswer). Utelämnat =
+  // ingen egen raket (harnessens spelare gör det inte i slumpmätningen).
+  backConfidence?: 0 | 1 | 2;
 }
 
 export type ScenarioAnswer = 'best' | 'worst';
@@ -75,10 +75,10 @@ export interface DayRecord {
   events: string[];
 }
 
-function tickUntil(s: SimulationState, done: (s: SimulationState) => boolean, answer: ScenarioAnswer = 'best', betStake?: number): SimulationState {
+function tickUntil(s: SimulationState, done: (s: SimulationState) => boolean, answer: ScenarioAnswer = 'best', backConfidence?: 0 | 1 | 2): SimulationState {
   for (let i = 0; i < MAX_TICKS_PER_PHASE && !done(s); i++) {
-    s = answerScenario(reducer(s, { type: 'TICK', dt: TICK_DT }), answer);
-    if (betStake !== undefined && canStartBet(s, betStake)) s = reducer(s, { type: 'START_BET', stake: betStake });
+    s = answerScenario(reducer(s, { type: 'TICK', dt: TICK_DT }), answer, backConfidence);
+    if (backConfidence !== undefined && canStartBack(s)) s = reducer(s, { type: 'START_BACK' });
   }
   return s;
 }
@@ -95,7 +95,7 @@ export function rankedChoice(scenarioId: string | null, answer: ScenarioAnswer):
 // scenarier fyrades, och deras gäster och kassa uteblev. Mätt från
 // reports/order268/save-lordag-vecka1.json: lördagens intäkt 7 140 SEK
 // i harnessen mot 17 850 SEK + 8 000 SEK (scenario) i spelarens vy.
-export function answerScenario(s: SimulationState, answer: ScenarioAnswer = 'best'): SimulationState {
+export function answerScenario(s: SimulationState, answer: ScenarioAnswer = 'best', backConfidence?: 0 | 1 | 2): SimulationState {
   // ORDER 270 — raketens aktuella steg besvaras direkt, som spelaren gör i
   // IncidentCard (samma åtgärd, ANSWER_INCIDENT). Nästa tick svarar på
   // nästa steg.
@@ -103,7 +103,13 @@ export function answerScenario(s: SimulationState, answer: ScenarioAnswer = 'bes
   if (active) {
     const incident = incidentById(s.economy.businessClass, active.id);
     const step = incident?.steps[active.step ?? 0];
-    if (step) return reducer(s, { type: 'ANSWER_INCIDENT', optionId: rankedStepOption(step, answer, active.struck, active.situation) });
+    if (step) {
+      // ORDER 280 — i en egen raket står spelaren för svaret, så högt
+      // krediterna räcker till.
+      let c: 0 | 1 | 2 = active.backed ? (backConfidence ?? 0) : 0;
+      while (c > 0 && !canBack(s, c)) c = (c - 1) as 0 | 1 | 2;
+      return reducer(s, { type: 'ANSWER_INCIDENT', optionId: rankedStepOption(step, answer, active.struck, active.situation), confidence: c });
+    }
   }
   switch (s.scenario.phase) {
     case 'subject':
@@ -168,7 +174,7 @@ export function playDay(s: SimulationState, plan: MorningPlan): { state: Simulat
     s = tickUntil(opened, (x) => {
       for (const g of x.guests) seen.add(g.id);
       return x.day.period === 'evening' || x.day.period === 'morning';
-    }, plan.scenarioAnswer, plan.betStake);
+    }, plan.scenarioAnswer, plan.backConfidence);
   } else {
     s = reducer(s, { type: 'CLOSE_DAY' });
   }

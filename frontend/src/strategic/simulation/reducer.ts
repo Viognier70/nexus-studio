@@ -1,7 +1,7 @@
 import { calendarFor } from '../../sim/calendar';
 import { bestAnswerFactor, drinkRevenueFactor, enablersWithCredits } from '../../sim/knowledgeInService';
 import { EVENING, SERVICE, type BusinessClassId } from '../../sim/balance';
-import { canStartBet, closeIncidents, countDown, isIncidentOpen, maybeOpenIncident, planIncidents, resolveIncident, startBet, tickOngoing, type CreditChange } from '../../sim/incidents';
+import { canBack, canStartBack, closeIncidents, countDown, isIncidentOpen, maybeOpenIncident, planIncidents, resolveIncident, startBack, tickOngoing, type CreditChange } from '../../sim/incidents';
 import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
 import { afterVisitClosed, beginIntroduction } from '../../sim/introduction';
 import { isStrandedWithoutBusiness, canChangeClassToday, changeClass, classOptions, openFirstBusiness, recordEvening, creditLineSek, dailyGuestCap, dayEnd, dayEndHeadroom, dailyWagesSek, recordExamWithoutBusiness, scenarioUnitSek, scenarioChoiceUnits, clampScenarioCash, postDailyInterest, settleWeek } from '../../sim/economy';
@@ -86,8 +86,8 @@ import {
 // report per the three-voices split. Observer voice moved out of
 // during-service into the evening account only.
 import { SERVICE_REPORT_PREP_CARRYOVER } from '../../content/serviceReport';
-import { buyItems, buyPackage, computePlatesRemaining, menuAtServiceStart, stockReadiness, usesPackages, wasteAtDayEnd } from './stockPackages';
-import { orderForGuest, orderItemNames, tableOf, tipShare, streamOrderLine } from './guestOrders';
+import { buyItems, buyPackage, computePlatesRemaining, menuAtServiceStart, recordStockAtOpen, returnItems, settleWaste, stockReadiness, usesPackages } from './stockPackages';
+import { orderFeedLines, orderForGuest, tableOf, tipShare, streamOrderLine } from './guestOrders';
 import { maybeChance, planChance } from '../../sim/serviceChance';
 import { generateWeather, waitingAtOpeningCount } from './weather';
 import {
@@ -220,9 +220,10 @@ export function reducer(state: SimulationState, action: SimAction): SimulationSt
   let next = reduce(base, action);
   // Oförändrat tillstånd (åtgärden avvisades): inga id delades ut.
   if (next === base) return base;
-  // ORDER 279 — en vunnen insats ger tillbaka krediter (incidents.ts
-  // settleBet), bokförda här oavsett vilken väg raketen avgjordes.
-  if ((next.incidents?.betCreditsDue ?? 0) > 0) next = creditBetReturn(next);
+  // ORDER 280 — Back your knowledge: krediterna från låsta svar
+  // (incidents.ts settleBack), bokförda här oavsett vilken väg raketen
+  // avgjordes. Kassan rörs aldrig.
+  if ((next.incidents?.betCreditsDue ?? 0) !== 0) next = settleBackCredits(next);
   // ORDER 266 — ryktets golv (10 av 100) gäller efter varje åtgärd.
   if (next.reputation < REPUTATION_FLOOR) {
     return withIdCounters({ ...next, reputation: REPUTATION_FLOOR });
@@ -250,16 +251,20 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
     }
     case 'SEE_HOUSE_INTRO':
       return state.houseIntroSeen ? state : { ...state, houseIntroSeen: true };
-    case 'START_BET': {
-      // ORDER 279 — insatsen: krediterna dras när raketen startar.
-      if (!canStartBet(state, action.stake)) return state;
-      const draft: SimulationState = { ...debitBetStake(state, action.stake), guests: state.guests.map((g) => ({ ...g })) };
-      return startBet(draft, action.stake) ? draft : state;
+    case 'START_BACK': {
+      // ORDER 280 — Back your knowledge: spelaren startar själv en raket.
+      if (!canStartBack(state)) return state;
+      const draft: SimulationState = { ...state, guests: state.guests.map((g) => ({ ...g })) };
+      return startBack(draft) ? draft : state;
     }
     case 'ANSWER_INCIDENT': {
       if (!isIncidentOpen(state)) return state;
+      // ORDER 280 — i Back your knowledge måste krediterna räcka till
+      // förlusten på den valda säkerheten.
+      const confidence = action.confidence ?? 0;
+      if (state.incidents?.active?.backed && !canBack(state, confidence)) return state;
       const draft: SimulationState = { ...state, guests: state.guests.map((g) => ({ ...g })) };
-      const credit = resolveIncident(draft, action.optionId);
+      const credit = resolveIncident(draft, action.optionId, confidence);
       // Ett struket eller okänt svar ändrar ingenting. Ett klarat steg
       // lämnar raketen öppen på nästa steg (ORDER 270, 2026-09-27).
       if (draft.incidents === state.incidents) return state;
@@ -399,6 +404,8 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       return buyPackage(state, action.packageId);
     case 'BUY_ITEMS':
       return buyItems(state, action.items);
+    case 'RETURN_ITEMS':
+      return returnItems(state, action.items);
     case 'COMPOSE_MENU':
       return composeMenu(state, action.dishes);
     default:
@@ -1162,7 +1169,8 @@ function startService(state: SimulationState): SimulationState {
   // bank är skriven.
   const endsAt = opened.day.periodStartAt + SERVICE.simMinutes * 60;
   // ORDER 278 — slumpens händelser i kväll (klasser med paket).
-  const withChance = usesPackages(opened) ? planChance(opened, opened.day.doorsOpenAt, endsAt) : opened;
+  // ORDER 280 — och lagret när dörrarna öppnar (Designs L1).
+  const withChance = usesPackages(opened) ? recordStockAtOpen(planChance(opened, opened.day.doorsOpenAt, endsAt)) : opened;
   const planned = planIncidents(withChance, withChance.day.doorsOpenAt ?? opened.day.doorsOpenAt, endsAt);
   if (!planned.incidents?.enabled) return planned;
   return { ...planned, day: { ...planned.day, scenariosPlanned: 0, scenarioTriggerTimes: [] } };
@@ -1176,25 +1184,23 @@ function applyCreditChange(state: SimulationState, credit: CreditChange | null):
     : debitQuestion(state, credit.axis, credit.track, -credit.amount);
 }
 
-// ORDER 279 — insatsens krediter. Insatsen dras en kredit i taget från
-// axeln med flest krediter; en vunnen insats fördelas tillbaka över
-// raketens tre axlar i tur och ordning (utan spår).
-const BET_AXES: KnowledgeAxis[] = ['episteme', 'techne', 'phronesis'];
+// ORDER 280 — Back your knowledge rör bara krediterna. En förlust dras
+// en kredit i taget från axeln med flest; en vinst fördelas över de tre
+// axlarna i tur och ordning (utan spår).
+const BACK_AXES: KnowledgeAxis[] = ['episteme', 'techne', 'phronesis'];
 
-function debitBetStake(state: SimulationState, stake: number): SimulationState {
-  let s = state;
-  for (let i = 0; i < stake; i++) {
-    const axis = BET_AXES.reduce((best, a) => (s.knowledgeCredits[a] > s.knowledgeCredits[best] ? a : best), BET_AXES[0]);
-    if (s.knowledgeCredits[axis] <= 0) break;
-    s = debitQuestion(s, axis, null, 1);
-  }
-  return s;
-}
-
-function creditBetReturn(state: SimulationState): SimulationState {
+function settleBackCredits(state: SimulationState): SimulationState {
   const due = state.incidents?.betCreditsDue ?? 0;
   let s: SimulationState = { ...state, incidents: { ...state.incidents!, betCreditsDue: 0 } };
-  for (let i = 0; i < due; i++) s = creditQuestion(s, BET_AXES[i % BET_AXES.length], null, 1);
+  if (due > 0) {
+    for (let i = 0; i < due; i++) s = creditQuestion(s, BACK_AXES[i % BACK_AXES.length], null, 1);
+  } else {
+    for (let i = 0; i < -due; i++) {
+      const axis = BACK_AXES.reduce((best, a) => (s.knowledgeCredits[a] > s.knowledgeCredits[best] ? a : best), BACK_AXES[0]);
+      if (s.knowledgeCredits[axis] <= 0) break;
+      s = debitQuestion(s, axis, null, 1);
+    }
+  }
   return s;
 }
 
@@ -1697,6 +1703,8 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       // ORDER 270 — kvällens lärdom ur kvällens händelser. En händelse som
       // står öppen när servicen tar slut beslutas av personalen.
       const closingCredit = closeIncidents(next);
+      // ORDER 280 — sopbilen kommer när servicen stänger (Designs S1).
+      settleWaste(next);
       if (next.eveningAccount?.metrics) {
         next.eveningAccount = {
           ...next.eveningAccount,
@@ -1778,25 +1786,12 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       const startInBreakfast =
         businessHasOvernight(state.businessClass) &&
         guestsAfterRollover.some((g) => g.state === 'sleeping');
-      // ORDER 275 — osåld mat blir svinn vid dagens slut (klasser med paket).
-      const dayEndWaste = wasteAtDayEnd(state);
+      // ORDER 275/280 — osåld mat blir svinn. Sopbilen kom när servicen
+      // stängde (settleWaste); en dag utan service avräknas här.
+      const wasteDraft: SimulationState = { ...state, ledger: [...state.ledger] };
+      settleWaste(wasteDraft);
       const nextForDay: SimulationState = {
-        ...state,
-        eventStream: dayEndWaste.waste
-          ? [...state.eventStream, {
-              at: simTime,
-              // ORDER 278 — det som sparas till i morgon, och sopbilens avgift.
-              text: dayEndWaste.waste.units > 0
-                ? strings.waste.event(dayEndWaste.waste.kept, dayEndWaste.waste.units, strings.service.meters.sek(dayEndWaste.waste.feeSek.toLocaleString('en-GB')))
-                : strings.waste.keptOnly(dayEndWaste.waste.kept),
-              category: 'ambient' as const,
-              causeTag: 'stock_out' as const,
-              causeChainId: null,
-              sustainability: 'ecological' as const,
-              kind: 'stock_waste',
-              scenarioId: null
-            }]
-          : state.eventStream,
+        ...wasteDraft,
         guests: guestsAfterRollover,
         // Rensa waitingIds + seatedIds för allt utom överlevande gäster.
         // Sleeping-gäster behåller seatIndex och räknas som seated här
@@ -1837,8 +1832,8 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
         // ORDER 275 — i klasser med paket blir osåld mat svinn vid dagens
         // slut; drycken står sig (stockPackages.ts wasteAtDayEnd).
         menu: [],
-        stock: dayEndWaste.stock,
-        lastWaste: dayEndWaste.waste,
+        stock: wasteDraft.stock,
+        lastWaste: wasteDraft.lastWaste,
         packagesBoughtToday: [],
         day: {
           ...initialDay(),
@@ -1858,13 +1853,10 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           knowledgeCreditsAtDayStart: { ...state.knowledgeCredits }
         }
       };
-      // ORDER 278 — sopbilens miljöavgift för svinnet.
-      if (dayEndWaste.waste && dayEndWaste.waste.feeSek > 0) {
-        applyCashCost(nextForDay, dayEndWaste.waste.feeSek);
-        postLedger(nextForDay, { category: 'waste', amount: -dayEndWaste.waste.feeSek, cause: strings.waste.ledger, causeId: 'waste' });
-      }
       if (wageTotal > 0) {
         applyCashCost(nextForDay, wageTotal);
+        // ORDER 280 — veckans löner, en rad i avräkningen och tidningen.
+        nextForDay.economy = { ...nextForDay.economy, weekWagesSek: (nextForDay.economy.weekWagesSek ?? 0) + wageTotal };
         // §7 step 3 — one line per member per day so the book names
         // who was paid, not just the aggregate.
         for (const m of nonAgencyMembers) {
@@ -2300,7 +2292,9 @@ function advanceTick(state: SimulationState): SimulationState {
         continue;
       }
       guest.order = { dishId: order.dishId, drinks: order.drinks, revenueSek: order.revenueSek };
-      streamOrderLine(draft, strings.guests.ordered(tableOf(guest), orderItemNames(order)), 'guest_ordered');
+      // ORDER 280 — Designs H1: "Bord 12 · 1 × Oxfilé · 2 glas Barolo", beloppet på väg.
+      const t = tableOf(guest);
+      streamOrderLine(draft, strings.feed.order(t === null ? strings.feed.guest : String(t), orderFeedLines(order)), 'guest_ordered', { feed: 'ordered', table: t, amountSek: order.revenueSek });
     }
   }
 
@@ -2382,14 +2376,18 @@ function advanceTick(state: SimulationState): SimulationState {
       // ORDER 269 — Stensöta höjer intäkten per gäst via dryck.
       rev *= drinkRevenueFactor(draft);
       // ORDER 278 — dricksen efter gästens nöjdhet, och betalningen i
-      // strömmen.
+      // strömmen. ORDER 280 (Designs H1): dricksen går till personalens
+      // pott och aldrig till kassan.
       if (packaged) {
         // ORDER 279 — rätt svar i raketer vid gästens bord höjer dricksen.
         const tip = Math.round(rev * (tipShare(guest.satisfaction) + (guest.tipBonus ?? 0)));
-        const sekText = (v: number) => strings.service.meters.sek(Math.round(v).toLocaleString('en-GB'));
-        streamOrderLine(draft, strings.guests.paid(tableOf(guest), sekText(rev), tip > 0 ? sekText(tip) : null), 'guest_paid');
-        rev += tip;
+        // ORDER 280 — Designs H1: betalningen och dricksen som två rader.
+        const t = tableOf(guest);
+        const tt = t === null ? strings.feed.guest : String(t);
+        streamOrderLine(draft, strings.feed.pay(tt), 'guest_paid', { feed: 'paid', table: t, amountSek: Math.round(rev) });
+        if (tip > 0) streamOrderLine(draft, strings.feed.tipLine(tt), 'guest_tip', { feed: 'tip', table: t, amountSek: tip });
         draft.day.tipsSek = (draft.day.tipsSek ?? 0) + tip;
+        draft.staffTipPotSek = (draft.staffTipPotSek ?? 0) + tip;
       }
       // ORDER 050 §3 (2026-08-10) — paired write: revenue accumulator
       // + cash till stay in sync via applyCashRevenue. serviceRevenue

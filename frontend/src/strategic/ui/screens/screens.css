@@ -270,3 +270,21 @@
   .nxs-mentor-portrait { display: none; }
   .nxs-mentor-dialog { left: 16px; right: 16px; }
 }
+
+/* ORDER 280 — Designs M1 morgonens inköp: Meny, Dryckeslista och en
+ * högerspalt, under HUD:ens översta rad. */
+.nx-screen.nxs-buy { z-index: 44; padding: calc(220 * var(--nx-u)) calc(72 * var(--nx-u)) calc(60 * var(--nx-u)); background: rgba(36, 31, 29, 0.35); overflow: hidden; }
+.nxs-buy-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr) minmax(0, 0.9fr); gap: calc(24 * var(--nx-u)); align-items: stretch; height: 100%; }
+@media (max-width: 900px) { .nxs-buy-grid { grid-template-columns: 1fr; } }
+.nxs-buy-col, .nxs-buy-side { display: flex; flex-direction: column; padding: 0; }
+.nxs-buy-head { display: flex; justify-content: space-between; align-items: baseline; padding: calc(22 * var(--nx-u)) calc(24 * var(--nx-u)); border-bottom: var(--nx-line) solid var(--nx-ink); }
+.nxs-buy-rows { flex: 1; min-height: 0; overflow-y: auto; }
+.nxs-buy-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: calc(16 * var(--nx-u)); padding: calc(10 * var(--nx-u)) calc(24 * var(--nx-u)); border-bottom: 1px solid var(--nx-rule); }
+.nxs-buy-row .nxs-row-sub { font-size: calc(17 * var(--nx-u)); }
+@media (max-width: 900px) { .nx-screen.nxs-buy { overflow: auto; } .nxs-buy-grid { height: auto; } }
+.nxs-buy-foot { padding: calc(20 * var(--nx-u)) calc(24 * var(--nx-u)); border-top: var(--nx-line) solid var(--nx-ink); font-weight: 700; }
+.nxs-buy-side { padding: calc(24 * var(--nx-u)); gap: 0; }
+.nxs-buy-block { padding: calc(18 * var(--nx-u)) 0; border-bottom: 1px solid var(--nx-rule); }
+.nxs-buy-more:hover { background: var(--nx-accent) !important; }
+/* HUD:ens rad ligger över morgonens schema. */
+.nx-screen.nxs-morning { padding-top: calc(150 * var(--nx-u)); }

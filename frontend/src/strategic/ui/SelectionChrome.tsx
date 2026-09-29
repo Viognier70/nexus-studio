@@ -1,3 +1,4 @@
+import { strings } from '../../content/strings';
 import type { Landmark } from '../content/world';
 
 interface Props {
@@ -33,7 +34,7 @@ export function SelectionChrome({ landmark, onClose }: Props) {
           type="button"
           className="gb-selection-close"
           onClick={onClose}
-          aria-label="Close selection"
+          aria-label={strings.legacy.closeSelection}
         >
           ×
         </button>

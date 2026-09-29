@@ -10,10 +10,11 @@
 // - Vid dagens slut blir osåld mat svinn. Drycken står sig till nästa dag.
 
 import type { SimulationState } from '../types';
+import { GLASSES_PER_BOTTLE } from './m4Catalogue';
 import { strings } from '../../content/strings';
-import { applyCashDelta, postLedger } from './cashReading';
+import { applyCashCost, applyCashDelta, postLedger } from './cashReading';
 import { findDish, findIngredient, minIngredientCost } from './m4Catalogue';
-import { MORNING_STAKE, WASTE } from '../../sim/balance';
+import { ITEM_BATCH, MORNING_STAKE, WASTE } from '../../sim/balance';
 import { findPackage, itemsCostSek, packageCostSek, packageDishIds, packageIngredients, packagesFor } from './packages';
 
 type Menu = SimulationState['menu'];
@@ -72,7 +73,8 @@ export function buyPackage(state: SimulationState, packageId: string): Simulatio
   const next = withMenuFromStock({
     ...state,
     stock,
-    packagesBoughtToday: [...(state.packagesBoughtToday ?? []), packageId]
+    packagesBoughtToday: [...(state.packagesBoughtToday ?? []), packageId],
+    day: { ...state.day, stockBoughtToday: true }
   });
   applyCashDelta(next, -costSek);
   postLedger(next, { category: 'stock', amount: -costSek, cause: strings.stock.packageLedger(strings.stock.packages[packageId]?.name ?? packageId), causeId: packageId });
@@ -92,9 +94,32 @@ export function buyItems(state: SimulationState, items: Record<string, number>):
   for (const [id, units] of Object.entries(packageIngredients({ id: 'sheet', items: Object.entries(clean).map(([dishId, portions]) => ({ dishId, portions })) }))) {
     stock[id] = (stock[id] ?? 0) + units;
   }
-  const next = withMenuFromStock({ ...state, stock });
+  const next = withMenuFromStock({ ...state, stock, day: { ...state.day, stockBoughtToday: true } });
   applyCashDelta(next, -costSek);
   postLedger(next, { category: 'stock', amount: -costSek, cause: strings.stock.sheetLedger, causeId: 'order-sheet' });
+  return next;
+}
+
+// ORDER 280 — ångra ett inköp på morgonen (Designs M1: "− ger tillbaka
+// inköpspriset"). Bara det som finns i lager går att lämna tillbaka.
+export function returnItems(state: SimulationState, items: Record<string, number>): SimulationState {
+  if (state.day.period !== 'morning' || !usesPackages(state)) return state;
+  const allowed = new Set(packageDishIds(state.economy.businessClass));
+  const stock = { ...state.stock };
+  const back: Record<string, number> = {};
+  for (const [id, n] of Object.entries(items)) {
+    const dish = findDish(id);
+    if (!dish || !allowed.has(id) || n <= 0) continue;
+    const can = Math.min(Math.floor(n), ...dish.recipe.map((r) => Math.floor((stock[r.ingredientId] ?? 0) / r.units)));
+    if (can <= 0) continue;
+    for (const r of dish.recipe) stock[r.ingredientId] = (stock[r.ingredientId] ?? 0) - r.units * can;
+    back[id] = can;
+  }
+  if (Object.keys(back).length === 0) return state;
+  const refundSek = itemsCostSek(back);
+  const next = withMenuFromStock({ ...state, stock });
+  applyCashDelta(next, refundSek);
+  postLedger(next, { category: 'stock', amount: refundSek, cause: strings.stock.returnLedger, causeId: 'order-sheet' });
   return next;
 }
 
@@ -119,22 +144,97 @@ export function takeFromStock(draft: SimulationState, dishId: string, simTime: n
   for (const r of dish.recipe) stock[r.ingredientId] = (stock[r.ingredientId] ?? 0) - r.units;
   draft.stock = stock;
   draft.day.platesRemaining = computePlatesRemaining(draft.menu, stock);
-  for (const m of draft.menu) {
-    if ((draft.day.platesRemaining[m.dishId] ?? 0) > 0 || draft.day.stockOutEvents.includes(m.dishId)) continue;
-    const out = findDish(m.dishId);
-    if (!out) continue;
-    draft.day.stockOutEvents = [...draft.day.stockOutEvents, m.dishId];
+  // ORDER 280 — till sopbilen: serverade rätter och glas ur flaskor.
+  if (dish.kind !== 'drink') draft.day.portionsServed = (draft.day.portionsServed ?? 0) + 1;
+  else if (dish.drink !== 'beer') draft.day.bottleGlassesPoured = (draft.day.bottleGlassesPoured ?? 0) + dish.recipe.reduce((a, r) => a + r.units, 0);
+  warnStock(draft, simTime);
+}
+
+// ORDER 280 — lagret under servicen enligt Designs L1: köket i portioner,
+// baren i flaskor och glas i den öppna flaskan. Status: Slut vid noll,
+// Snart slut vid högst ITEM_BATCH.lowShare av kvällens start eller högst
+// lowMinPortions portioner, i baren vid högst lowGlasses glas.
+export type StockStatus = 'ok' | 'low' | 'out';
+export interface StockRow {
+  id: string;
+  kind: 'dish' | 'drink';
+  name: string;
+  left: number;
+  start: number;
+  status: StockStatus;
+  // Baren: hela flaskor och glas i den öppna.
+  bottles?: number;
+  openGlasses?: number;
+  startBottles?: number;
+  beer?: boolean;
+}
+
+function statusFor(kind: 'dish' | 'drink', left: number, start: number): StockStatus {
+  if (left <= 0) return 'out';
+  if (kind === 'drink') return left <= ITEM_BATCH.lowGlasses ? 'low' : 'ok';
+  return left <= ITEM_BATCH.lowMinPortions || left <= start * ITEM_BATCH.lowShare ? 'low' : 'ok';
+}
+
+export function stockRows(state: SimulationState): StockRow[] {
+  const at = state.day.stockAtOpen ?? {};
+  const rows: StockRow[] = [];
+  for (const m of state.menu) {
+    const d = findDish(m.dishId);
+    if (!d || d.kind === 'drink') continue;
+    const left = state.day.platesRemaining[m.dishId] ?? 0;
+    const start = at[m.dishId] ?? left;
+    rows.push({ id: m.dishId, kind: 'dish', name: d.name, left, start, status: statusFor('dish', left, start) });
+  }
+  const seen = new Set<string>();
+  for (const m of state.menu) {
+    const d = findDish(m.dishId);
+    if (!d || d.kind !== 'drink' || d.recipe.length !== 1) continue;
+    const ing = d.recipe[0].ingredientId;
+    if (seen.has(ing)) continue;
+    seen.add(ing);
+    const beer = d.drink === 'beer';
+    const gpb = beer ? 1 : GLASSES_PER_BOTTLE;
+    const left = Math.max(0, Math.floor(state.stock[ing] ?? 0));
+    const start = at[ing] ?? left;
+    const name = (d.drink === 'wine-bottle' ? d.name.replace(/, bottle$/, '') : d.name.replace(/, by the glass$/, ''));
+    rows.push({
+      id: ing, kind: 'drink', name, left, start, status: statusFor('drink', left, start),
+      bottles: Math.floor(left / gpb), openGlasses: left % gpb, startBottles: Math.ceil(start / gpb), beer
+    });
+  }
+  return rows;
+}
+
+// När servicen öppnar: lagret att räkna andelarna mot.
+export function recordStockAtOpen(state: SimulationState): SimulationState {
+  if (!usesPackages(state)) return state;
+  const at: Record<string, number> = {};
+  for (const r of stockRows({ ...state, day: { ...state.day, stockAtOpen: {} } })) at[r.id] = r.left;
+  return { ...state, day: { ...state.day, stockAtOpen: at, stockWarned: {} } };
+}
+
+// En varning i strömmen när en rad blir Snart slut eller Slut, en gång per
+// nivå (Designs L1: "Statusbyte ger en stock-händelse").
+function warnStock(draft: SimulationState, simTime: number): void {
+  if (!usesPackages(draft)) return;
+  const warned = { ...(draft.day.stockWarned ?? {}) };
+  let changed = false;
+  for (const r of stockRows(draft)) {
+    if (r.status === 'ok' || warned[r.id] === r.status || (warned[r.id] === 'out')) continue;
+    warned[r.id] = r.status;
+    changed = true;
+    const text = r.status === 'out'
+      ? strings.stockL1.warnOut(r.name)
+      : strings.stockL1.warnLow(r.name, r.left, r.kind === 'dish' ? strings.morningBuy.unitPortion : strings.stockL1.unitGlass);
+    if (r.status === 'out' && r.kind === 'dish' && !draft.day.stockOutEvents.includes(r.id)) {
+      draft.day.stockOutEvents = [...draft.day.stockOutEvents, r.id];
+    }
     draft.eventStream = [...draft.eventStream, {
-      at: simTime,
-      text: strings.stock.ranOut(out.name),
-      category: 'ambient',
-      causeTag: 'stock_out',
-      causeChainId: null,
-      sustainability: 'economic',
-      kind: 'dish_ran_out',
-      scenarioId: null
+      at: simTime, text, category: 'ambient', causeTag: 'stock_out', causeChainId: null,
+      sustainability: 'economic', kind: r.status === 'out' ? 'dish_ran_out' : 'stock_low', scenarioId: null, feed: 'warn'
     }];
   }
+  if (changed) draft.day = { ...draft.day, stockWarned: warned };
 }
 
 // Vid servicens början: menyn är det som finns i lagret (också drycker
@@ -179,32 +279,106 @@ function drinkOnlyIngredients(state: SimulationState): Set<string> {
   return new Set([...drink].filter((i) => !food.has(i)));
 }
 
-// Vid dagens slut: osåld mat blir svinn. Returnerar lagret efteråt och
-// svinnet (portioner räknas som ingrediensenheter, i kronor till
-// inköpspris).
-// ORDER 278 — svinnet kostar: en del av maten går att använda nästa dag
-// (balance.ts WASTE.carryShare), resten hämtas av sopbilen mot en
-// miljöavgift som växer med råvarans pris och mängd.
-export function wasteAtDayEnd(state: SimulationState): {
-  stock: Record<string, number>;
-  waste: { dayNumber: number; units: number; sek: number; kept: number; feeSek: number } | null;
-} {
+// ORDER 280 — sopbilen (Designs S1): efter kvällen. En del av den osålda
+// maten sparas till nästa dag (ORDER 278, WASTE.carryShare), resten blir
+// svinn. Miljöavgiften räknas i kilo i fyra fraktioner — osåld mat,
+// tallrikssvinn, glas och kartong — gånger taxan, plus hämtningen.
+// Svinnets värde är redan betalt vid inköpet och visas bara; bara avgiften
+// dras från kassan.
+export interface WasteFraction {
+  key: 'unsold' | 'plates' | 'glass' | 'cardboard';
+  kg: number;
+  valueSek: number;
+  // Osålt: portioner per ingrediens; tallrikar: serverade; glas: flaskor.
+  count: number;
+}
+
+export interface WasteSettlement {
+  dayNumber: number;
+  units: number;
+  sek: number;
+  kept: number;
+  feeSek: number;
+  kg: number;
+  fractions: WasteFraction[];
+  // Rådet: rätten vars råvara kostade mest i svinn, med antalet att köpa
+  // färre av (avrundat nedåt till ett parti) och vad det sparar.
+  advice: { dishId: string; fewer: number; savesSek: number } | null;
+}
+
+export function wasteAtDayEnd(state: SimulationState): { stock: Record<string, number>; waste: WasteSettlement | null } {
   if (!usesPackages(state)) return { stock: state.stock, waste: null };
   const keep = drinkOnlyIngredients(state);
   const stock: Record<string, number> = {};
   let units = 0;
   let sek = 0;
   let kept = 0;
+  let unsoldKg = 0;
+  const wastedValue: Record<string, number> = {};
+  const wastedUnits: Record<string, number> = {};
   for (const [id, n] of Object.entries(state.stock)) {
-    if (keep.has(id) || !findIngredient(id)) { stock[id] = n; continue; }
+    const ing = findIngredient(id);
+    if (keep.has(id) || !ing) { stock[id] = n; continue; }
     if (n <= 0) continue;
     const saved = Math.floor(n * (WASTE.carryShare[id] ?? 0));
     if (saved > 0) stock[id] = saved;
     kept += saved;
-    units += n - saved;
-    sek += (n - saved) * minIngredientCost(id);
+    const lost = n - saved;
+    units += lost;
+    sek += lost * minIngredientCost(id);
+    unsoldKg += lost * (WASTE.kgPerUnit[ing.unit] ?? 0);
+    wastedValue[id] = lost * minIngredientCost(id);
+    wastedUnits[id] = lost;
   }
-  if (units === 0 && kept === 0) return { stock, waste: null };
-  const feeSek = units > 0 ? Math.round(WASTE.feeBaseSek + WASTE.feeShareOfValue * sek + WASTE.feePerUnitSek * units) : 0;
-  return { stock, waste: { dayNumber: state.day.dayNumber, units, sek: Math.round(sek), kept, feeSek } };
+  const served = state.day.portionsServed ?? 0;
+  const bottles = Math.ceil((state.day.bottleGlassesPoured ?? 0) / GLASSES_PER_BOTTLE);
+  const fractions: WasteFraction[] = [
+    { key: 'unsold', kg: unsoldKg, valueSek: Math.round(sek), count: units },
+    { key: 'plates', kg: served > 0 ? Math.max(WASTE.plateKgMin, served * WASTE.plateKgPerServed) : 0, valueSek: 0, count: served },
+    { key: 'glass', kg: bottles * WASTE.kgPerBottle, valueSek: 0, count: bottles },
+    { key: 'cardboard', kg: state.day.stockBoughtToday ? WASTE.cardboardKg : 0, valueSek: 0, count: 0 }
+  ];
+  const kg = fractions.reduce((a, f) => a + f.kg, 0);
+  if (kg <= 0 && kept === 0) return { stock, waste: null };
+  const feeSek = kg > 0 ? Math.round(kg * WASTE.feePerKg + WASTE.pickupFeeSek) : 0;
+  // Rådet: den dyraste råvaran i svinnet och den rätt på menyn som bär den.
+  let advice: WasteSettlement['advice'] = null;
+  const worst = Object.keys(wastedValue).sort((a, b) => wastedValue[b] - wastedValue[a])[0];
+  if (worst && wastedUnits[worst] >= WASTE.adviceMinPortions) {
+    const dishId = packageDishIds(state.economy.businessClass).find((d) => findDish(d)?.kind !== 'drink' && findDish(d)?.recipe[0]?.ingredientId === worst)
+      ?? packageDishIds(state.economy.businessClass).find((d) => findDish(d)?.recipe.some((r) => r.ingredientId === worst));
+    if (dishId) {
+      const step = ITEM_BATCH.dish;
+      const fewer = Math.max(step, Math.floor(wastedUnits[worst] / step) * step);
+      advice = { dishId, fewer, savesSek: Math.round(fewer * dishCostSek(dishId)) };
+    }
+  }
+  return { stock, waste: { dayNumber: state.day.dayNumber, units, sek: Math.round(sek), kept, feeSek, kg: Math.round(kg * 10) / 10, fractions, advice } };
+}
+
+// ORDER 280 — sopbilen kommer när servicen stänger (Designs S1): lagret
+// efteråt, avgiften ur kassan, raden i kassaboken och strömmen. Muterar
+// draft. Görs en gång per dag (day.wasteSettled); en dag utan service
+// avräknas vid dygnsskiftet.
+export function settleWaste(draft: SimulationState): void {
+  if (draft.day.wasteSettled || !usesPackages(draft)) return;
+  const { stock, waste } = wasteAtDayEnd(draft);
+  draft.stock = stock;
+  draft.lastWaste = waste;
+  draft.day = { ...draft.day, wasteSettled: true };
+  if (!waste) return;
+  if (waste.feeSek > 0) {
+    // Miljöavgiften är en kostnad (state.cost), som i ORDER 278, och den
+    // hör till kvällens avräkning när sopbilen kommer efter servicen.
+    applyCashCost(draft, waste.feeSek);
+    postLedger(draft, { category: 'waste', amount: -waste.feeSek, cause: strings.waste.ledger, causeId: 'waste' });
+    const m = draft.eveningAccount?.metrics;
+    if (m) draft.eveningAccount = { ...draft.eveningAccount!, metrics: { ...m, cost: m.cost + waste.feeSek, result: m.result - waste.feeSek } };
+  }
+  const fee = strings.service.meters.sek(waste.feeSek.toLocaleString('en-GB'));
+  draft.eventStream = [...draft.eventStream, {
+    at: draft.simTime,
+    text: waste.units > 0 ? strings.waste.event(waste.kept, waste.units, fee) : strings.waste.keptOnly(waste.kept),
+    category: 'ambient', causeTag: 'stock_out', causeChainId: null, sustainability: 'ecological', kind: 'stock_waste', scenarioId: null
+  }];
 }

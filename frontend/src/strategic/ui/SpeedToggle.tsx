@@ -15,33 +15,30 @@ import { strings } from '../../content/strings';
 
 const OPTIONS: readonly (1 | 2 | 4)[] = [1, 2, 4];
 
+// ORDER 280 — Designs K1: tre rutor i designsystemets form, den valda i
+// bläck. Farten styr också tempot i händelseströmmen.
 const CONTAINER_STYLE: React.CSSProperties = {
   display: 'inline-flex',
-  gap: 2,
-  background: 'rgba(20, 14, 10, 0.62)',
-  border: '1px solid rgba(168, 146, 106, 0.55)',
-  borderRadius: 3,
-  padding: 2
+  gap: 0,
+  background: 'var(--nx-ground, #f3f2f2)'
 };
 
 const BUTTON_BASE: React.CSSProperties = {
-  minWidth: 30,
-  padding: '4px 8px',
+  minWidth: 'calc(54 * var(--nx-u))',
+  padding: '0 calc(10 * var(--nx-u))',
   background: 'transparent',
-  color: '#f0e8d4',
+  color: 'var(--nx-ink, #201e1d)',
   border: 'none',
-  fontFamily: 'ui-monospace, "SF Mono", Menlo, Consolas, monospace',
-  fontSize: 12,
-  letterSpacing: 0.3,
-  cursor: 'pointer',
-  borderRadius: 2
+  fontFamily: 'inherit',
+  fontSize: 'max(12px, calc(22 * var(--nx-u)))',
+  fontWeight: 800,
+  cursor: 'pointer'
 };
 
 const BUTTON_ACTIVE: React.CSSProperties = {
   ...BUTTON_BASE,
-  background: '#5a4126',
-  color: '#f7ecd0',
-  fontWeight: 700
+  background: 'var(--nx-ink, #201e1d)',
+  color: '#fff'
 };
 
 export function SpeedToggle() {
@@ -49,7 +46,7 @@ export function SpeedToggle() {
   const dispatch = useSimDispatch();
 
   return (
-    <div style={CONTAINER_STYLE} role="group" aria-label={strings.hud.speed}>
+    <div style={CONTAINER_STYLE} className="nx" role="group" aria-label={strings.hud.speed} data-testid="speed-toggle">
       {OPTIONS.map((speed) => {
         const active = sim.speed === speed;
         return (

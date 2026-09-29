@@ -303,7 +303,7 @@ describe('ORDER 270 — harnessen svarar på händelserna', () => {
     const { weakMorning } = await import('../../strategic/testHarness/scenarios');
     const { ECONOMY } = await import('../balance');
     const seeds = process.env.WRITE_REPORTS === '1' ? Array.from({ length: 20 }, (_, i) => i + 1) : [1, 2, 3];
-    const rows: { seed: number; player: string; resultSek: number; incidentsWithCash: number; incidentCashShare: number }[] = [];
+    const rows: { seed: number; player: string; resultSek: number; revenueSek: number; resultShare: number; incidentsWithCash: number; incidentCashShare: number }[] = [];
     for (const seed of seeds) {
       for (const player of ['rimlig', 'svag'] as const) {
         let s = makeNewGameState(seed);
@@ -314,14 +314,18 @@ describe('ORDER 270 — harnessen svarar på händelserna', () => {
         const resultSek = Math.round(s.cash - cashStart - (st?.topUpSek ?? 0) + (st?.amortisationSek ?? 0));
         // Händelsernas kassa står i kassaboken med händelsens id.
         const lines = s.ledger.filter((l) => l.category === 'scenario' && (l.causeId ?? '').startsWith('vb'));
+        // ORDER 280 — veckans intäkt ur avräkningen, så att resultatet kan
+        // läsas som andel (hyrans mål, balance.ts RENT.reasonableResultShare).
+        const revenueSek = st?.revenueSek ?? 0;
         rows.push({
-          seed, player, resultSek,
+          seed, player, resultSek, revenueSek,
+          resultShare: Math.round((resultSek / Math.max(1, revenueSek)) * 1000) / 1000,
           incidentsWithCash: lines.length,
           incidentCashShare: Math.round((lines.reduce((x, l) => x + l.amount, 0) / ECONOMY.normalWeeklyRevenueSek.vinbar) * 1000) / 1000
         });
       }
     }
-    const mean = (p: string, k: 'resultSek' | 'incidentCashShare') => rows.filter((r) => r.player === p).reduce((x, r) => x + r[k], 0) / seeds.length;
+    const mean = (p: string, k: 'resultSek' | 'revenueSek' | 'resultShare' | 'incidentCashShare') => rows.filter((r) => r.player === p).reduce((x, r) => x + r[k], 0) / seeds.length;
     if (process.env.WRITE_REPORTS === '1') {
       const { mkdirSync, writeFileSync } = await import('node:fs');
       const { dirname, resolve } = await import('node:path');
@@ -330,10 +334,10 @@ describe('ORDER 270 — harnessen svarar på händelserna', () => {
       const out = resolve(dirname(fileURLToPath(import.meta.url)), '../../../reports', process.env.REPORT_ORDER ?? 'order270');
       mkdirSync(out, { recursive: true });
       writeFileSync(resolve(out, 'week-players.json'), JSON.stringify({
-        definition: 'Vecka 2, vinbaren, brons i Stensöta, Metodköket och Kalastorget. rimlig = bästa svaret och ingen morgon; svag = sämsta svaret, två rätter och råvaror till fyra kuvert (scenarios.ts weakMorning). resultSek = kassans förändring måndag–söndag utan avräkningens påfyllnad och amortering (randomness.ts). incidentCashShare = händelsernas kassa (kassabokens rader med händelsens id) som andel av vinbarens normala veckointäkt.',
+        definition: 'Vecka 2, vinbaren, brons i Stensöta, Metodköket och Kalastorget. rimlig = bästa svaret och ingen morgon; svag = sämsta svaret, två rätter och råvaror till fyra kuvert (scenarios.ts weakMorning). resultSek = kassans förändring måndag–söndag utan avräkningens påfyllnad och amortering (randomness.ts). revenueSek = veckans intäkt ur avräkningen; resultShare = resultSek / revenueSek. incidentCashShare = händelsernas kassa (kassabokens rader med händelsens id) som andel av vinbarens normala veckointäkt.',
         mean: {
-          rimlig: { resultSek: mean('rimlig', 'resultSek'), incidentCashShare: mean('rimlig', 'incidentCashShare') },
-          svag: { resultSek: mean('svag', 'resultSek'), incidentCashShare: mean('svag', 'incidentCashShare') }
+          rimlig: { resultSek: mean('rimlig', 'resultSek'), revenueSek: mean('rimlig', 'revenueSek'), resultShare: mean('rimlig', 'resultShare'), incidentCashShare: mean('rimlig', 'incidentCashShare') },
+          svag: { resultSek: mean('svag', 'resultSek'), revenueSek: mean('svag', 'revenueSek'), resultShare: mean('svag', 'resultShare'), incidentCashShare: mean('svag', 'incidentCashShare') }
         },
         svagMinusWeeks: rows.filter((r) => r.player === 'svag' && r.resultSek < 0).length,
         weeks: seeds.length,

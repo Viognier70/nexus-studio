@@ -8,7 +8,7 @@
 // `clockMinutes`, samma som raketernas klockslag.
 
 import type { SimulationState } from '../strategic/types';
-import { GAME_MINUTES_PER_SIM_SECOND, INCIDENTS, SITTING } from './balance';
+import { CLOCK, GAME_MINUTES_PER_SIM_SECOND, INCIDENTS, SITTING } from './balance';
 import { clockMinutes } from './incidents';
 
 export interface ServiceClock {
@@ -46,4 +46,25 @@ export function serviceClock(state: SimulationState): ServiceClock | null {
     elapsedShare: Math.max(0, Math.min(1, elapsed / lengthSimSeconds)),
     lastOrders: leftMinutes <= SITTING.lastOrdersMinutes
   };
+}
+
+// ORDER 280 — klockans etikett och rutor (Designs K1, economy.ts
+// serviceClock): Servicen, Rusning (19.30–21.00), Sista beställning och
+// Stängt; tio halvtimmesrutor där passerade är fyllda och den aktuella
+// fylls från vänster. Den sista rutan har accent hela kvällen.
+export type ClockLabel = 'service' | 'rush' | 'lastOrders' | 'closed';
+
+export function clockLabel(c: ServiceClock): ClockLabel {
+  const since = c.nowMinutes - c.startMinutes;
+  if (c.leftMinutes === 0) return 'closed';
+  if (c.lastOrders) return 'lastOrders';
+  if (since >= CLOCK.rushFromMinutes && since < CLOCK.rushToMinutes) return 'rush';
+  return 'service';
+}
+
+export function clockCells(sinceStartMinutes: number): { fill: number; accent: boolean }[] {
+  return Array.from({ length: CLOCK.cells }, (_, i) => ({
+    fill: Math.max(0, Math.min(1, (sinceStartMinutes - i * CLOCK.cellMinutes) / CLOCK.cellMinutes)),
+    accent: i === CLOCK.cells - 1
+  }));
 }

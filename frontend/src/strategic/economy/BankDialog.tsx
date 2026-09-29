@@ -308,6 +308,10 @@ export function settlementInWords(sim: SimulationState): string[] {
   else if (s.topUpSek > 0) lines.push(e.settlement.topUp);
   else lines.push(e.settlement.aboveFloor);
   if (s.amortisationSek > 0) lines.push(e.settlement.amortised);
+  // ORDER 280 — hyran och veckans löner står i avräkningen och i tidningen.
+  const sek = (v: number) => strings.service.meters.sek(Math.round(v).toLocaleString('en-GB'));
+  if ((s.rentSek ?? 0) > 0) lines.push(e.settlement.rent(sek(s.rentSek!)));
+  if ((s.wagesSek ?? 0) > 0) lines.push(e.settlement.wages(sek(s.wagesSek!)));
   if (s.downgradedFrom) {
     lines.push(
       s.downgradedTo

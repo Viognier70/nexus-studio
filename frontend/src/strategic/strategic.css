@@ -66,10 +66,13 @@
 /* Top-right controls */
 .gb-topright {
   position: absolute;
-  top: 1.2rem;
-  right: 1.2rem;
+  /* ORDER 280 — Designs K1: kassan, krediterna, farten och menyn i översta
+     raden till höger, i designens mått. */
+  top: calc(50 * var(--nx-u));
+  right: calc(72 * var(--nx-u));
   display: flex;
-  gap: 0.5rem;
+  align-items: stretch;
+  gap: calc(12 * var(--nx-u));
   /* ORDER 263 — över panelkolumnerna (z 33) så att menyns rullgardin
      (Spara och ladda, Om denna prototyp) går att klicka. Var 10: då
      låg högerkolumnen över rullgardinen och fångade klicken. */

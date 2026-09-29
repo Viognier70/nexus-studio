@@ -204,7 +204,7 @@ export function ScenarioOverlay() {
             style={BUTTON_STYLE}
             onClick={() => dispatch({ type: 'ACK_QUESTION_EXPLANATION' })}
           >
-            Continue
+            {strings.legacy.continue}
           </button>
         </div>
       </div>

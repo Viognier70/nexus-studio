@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { strings } from '../../content/strings';
 
 // ORDER 048 §7 — the player must know what to press. Camera preset
 // keys were only wired to jumpToPreset (village / district /
@@ -13,23 +14,26 @@ import { useState } from 'react';
 export function ControlsHint() {
   const [open, setOpen] = useState(true);
   if (!open) return null;
+  const c = strings.legacy.controls;
   return (
     <div className="gb-hint" role="note">
       <div>
+        {/* ORDER 280 — texten i strängtabellen (svenska och engelska). */}
         <div>
-          <b>1</b> the village · <b>2</b> the district · <b>3</b> your block ·{' '}
-          <b>4</b> your business
+          <b>1</b> {c.village} · <b>2</b> {c.district} · <b>3</b> {c.block} ·{' '}
+          <b>4</b> {c.business}
         </div>
         <div style={{ opacity: 0.72, marginTop: 4 }}>
-          <b>Mouse wheel</b> zooms · <b>left drag</b> pans ·{' '}
-          <b>right/middle drag</b> rotates · <b>click</b> selects · <b>Esc</b> out
+          {[0, 2, 4, 6, 8].map((i) => (
+            <span key={i}>{i > 0 ? ' · ' : ''}<b>{c.mouse[i]}</b> {c.mouse[i + 1]}</span>
+          ))}
         </div>
       </div>
       <button
         type="button"
         className="gb-hint-close"
         onClick={() => setOpen(false)}
-        aria-label="Hide controls"
+        aria-label={c.hide}
       >
         ×
       </button>
