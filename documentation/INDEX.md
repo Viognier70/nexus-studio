@@ -519,6 +519,15 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 
 - 6 bilder (6 .png): bl.a. `G1-hud-servicen.png`, `G2-raketkortet.png`.
 
+## documentation/leveranser/nexus-leverans-2026-09-28-kassan/
+
+- `INSTRUKTION till Claude Code.md`: INSTRUKTION till Claude Code — kassan och kvällen (komplement till `nexus-leverans-2026-09-28`).
+- 3 tillhörande filer (kod, strängar) (3 .ts): `economy.ts`, `juice.ts`, `nexusStrings.kassan.ts`.
+
+## documentation/leveranser/nexus-leverans-2026-09-28-kassan/skarmar/
+
+- 6 bilder (6 .png): `B1-back-your-knowledge.png`, `H1-handelser.png`, `K1-klockan.png`, `L1-lagret.png`, `M1-morgonen.png`, `S1-sopbilen.png`.
+
 ## documentation/orders/
 
 - `ORDER - vinbaren.md`: ORDER — Vinbaren: montering av `wineBarRoom.ts`.
