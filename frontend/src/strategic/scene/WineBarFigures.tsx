@@ -21,8 +21,15 @@
 // `until` och går tillbaka; det den inte hann göra läggs tillbaka i kön.
 // Ringen på golvet står vid sällskapet raketen gäller och fylls med
 // stegets tid (active.secondsLeft / secondsTotal).
+//
+// ORDER 286a (Designs leverans 2, teaterns grund): klippen i stället för
+// poserna, rekvisitan ur regissörens ägarbok och raketen som börjar i rummet
+// (theatreStage.ts). Figuren som raketen pekar på (IncidentContext.figure)
+// spelar sitt klipp, kameran glider in, ringen står vid figuren och
+// bildtexten visas vid den tills svaret är satt.
 
 import { useEffect, useMemo, useRef } from 'react';
+import { Html } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useSimState } from '../simulation/SimulationProvider';
@@ -84,8 +91,15 @@ import {
   STAFF_KEYS,
   type FigureSample,
   type StaffKey,
-  type TakeoverInput
+  type TakeoverInput,
+  PASS_FLOOR
 } from './wineBarDirector';
+import { TheatreStage } from './theatreStage';
+import { seatKindFromRoom, type ClipSample } from './figureClips';
+import { THEATRE } from '../../sim/balance';
+import type { ActiveIncident } from '../../sim/incidents';
+import { strings } from '../../content/strings';
+import { TheatreCaption } from '../ui/TheatreCaption';
 
 /** Så många gäster kan synas samtidigt: tjugo platser och en kö. */
 export const WINE_BAR_GUEST_POOL = 36;
@@ -175,12 +189,12 @@ export function poseForSample(s: FigureSample, staff: boolean): FigurePose {
   }
 }
 
-function applySample(rig: FigureRig, sample: FigureSample, staff: boolean, visibility: number): void {
+function applySample(rig: FigureRig, sample: FigureSample, staff: boolean, visibility: number, clip?: ClipSample | null): void {
   rig.root.visible = sample.visible;
   if (!sample.visible) return;
   rig.root.position.set(sample.x, sample.y, sample.z);
   rig.root.rotation.y = sample.facing;
-  applyPose(rig, poseForSample(sample, staff));
+  applyPose(rig, clip ? clip.pose : poseForSample(sample, staff));
   const wantTransparent = visibility < 0.99;
   for (let m = 0; m < rig.materials.length; m++) {
     const mat = rig.materials[m];
@@ -200,6 +214,26 @@ interface Cast {
   ring: ActionRing;
   shadowsOn: boolean;
   lights: Lights;
+  stage: TheatreStage;
+  staffClips: (ClipSample | null)[];
+  guestClips: (ClipSample | null)[];
+  guestClipIds: (string | null)[];
+  /** Gästen som går mot köket (raketen walkToKitchen): hur långt hon kommit, 0..1. */
+  kitchenWalk: { guestId: string | null; u: number };
+}
+
+/** Bildtexten vid figuren när raketen börjar i rummet (nexusStrings theatre.caption). */
+function theatreCaption(active: ActiveIncident | null): string | null {
+  const fig = active?.context.figure;
+  if (!active || !fig || active.backed) return null;
+  const c = strings.theatre.caption;
+  switch (fig.clip) {
+    case 'cutHand': return c.cutHand;
+    case 'smellWine': return c.smellWine;
+    case 'askPointMenu': return c.askPointMenu(String(active.context.table));
+    case 'walkToKitchen': return c.walkToKitchen;
+    default: return null;
+  }
 }
 
 interface Props {
@@ -213,8 +247,9 @@ export function WineBarFigures({ room, mood }: Props) {
   const sim = useSimState();
   const simRef = useRef<SimulationState>(sim);
   simRef.current = sim;
-  const { actualRef } = useCamera();
+  const { actualRef, targetRef } = useCamera();
   const castRef = useRef<Cast | null>(null);
+  const captionRef = useRef<THREE.Group>(null);
   const clockRef = useRef<number>(-Infinity);
 
   // Övertagandet som direktören läser: byggs när utfallet byts, inte per bildruta.
@@ -302,16 +337,24 @@ export function WineBarFigures({ room, mood }: Props) {
     const ring = createActionRing();
     ring.group.visible = false;
     group.add(ring.group);
+    const stage = new TheatreStage(group, room.floorY, STAFF_KEYS.length, WINE_BAR_GUEST_POOL);
     castRef.current = {
-      director, group, guestRigs, guestIds: guestRigs.map(() => null), staffRigs, ring, shadowsOn: true, lights
+      director, group, guestRigs, guestIds: guestRigs.map(() => null), staffRigs, ring, shadowsOn: true, lights,
+      stage,
+      staffClips: staffRigs.map(() => null),
+      guestClips: guestRigs.map(() => null),
+      guestClipIds: guestRigs.map(() => null),
+      kitchenWalk: { guestId: null, u: 0 }
     };
     if (import.meta.env.DEV && typeof window !== 'undefined') {
       (window as unknown as { __nxWineBarDirector?: unknown }).__nxWineBarDirector = director;
+      (window as unknown as { __nxWineBarGroup?: unknown }).__nxWineBarGroup = group;
     }
     return () => {
       guestRigs.forEach(disposeFigureRig);
       staffRigs.forEach(disposeFigureRig);
       ring.dispose();
+      stage.dispose();
       group.removeFromParent();
       castRef.current = null;
     };
@@ -360,7 +403,13 @@ export function WineBarFigures({ room, mood }: Props) {
     for (const l of cast.lights.tables) l.intensity = WINE_BAR_LIGHTS.tables.intensity * k;
     const shadows = visibility > 0.5;
 
+    const active = s.incidents?.active ?? null;
+    const fig = active && !active.backed ? active.context.figure ?? null : null;
+    const now = s.simTime;
+    let figureLocal: { x: number; y: number; z: number } | null = null;
+
     const gs = cast.director.guestSamples;
+    const kw = cast.kitchenWalk;
     for (let i = 0; i < gs.length; i++) {
       const rig = cast.guestRigs[i];
       const sample = gs[i];
@@ -368,10 +417,62 @@ export function WineBarFigures({ room, mood }: Props) {
         cast.guestIds[i] = sample.guestId;
         if (sample.guestId) rig.garment.color.set(garmentFor(sample.guestId));
       }
-      applySample(rig, sample, false, visibility);
+      // Sittregeln för alla sitsar (tillägget till leverans 2): barstol, lounge och stol.
+      const seat = sample.guestId ? cast.director.guestSeat(sample.guestId) : null;
+      const seatKind = seat ? seatKindFromRoom(room.seats[seat.seatIndex]?.kind ?? 'twotop') : null;
+      const isFigure = !!fig && fig.kind === 'guest' && fig.guestId === sample.guestId && sample.visible;
+      // Raketen walkToKitchen: gästen reser sig och går mot köket medan introt
+      // går, står kvar tills svaret är satt och går sedan tillbaka till stolen.
+      let walkSample = sample;
+      if (sample.guestId && (kw.guestId === sample.guestId || (isFigure && fig!.clip === 'walkToKitchen'))) {
+        const going = isFigure && fig!.clip === 'walkToKitchen';
+        if (going) { kw.guestId = sample.guestId; kw.u = Math.min(1, kw.u + delta / THEATRE.rocketIntroSeconds.walkToKitchen); }
+        else kw.u = Math.max(0, kw.u - delta / THEATRE.rocketIntroSeconds.walkToKitchen);
+        if (kw.u <= 0 && !going) kw.guestId = null;
+        if (kw.u > 0) {
+          const k = kw.u * kw.u * (3 - 2 * kw.u) * THEATRE.kitchenWalkShare;
+          const dx = PASS_FLOOR[0] - sample.x; const dz = PASS_FLOOR[1] - sample.z;
+          walkSample = {
+            ...sample,
+            x: sample.x + dx * k, y: room.floorY, z: sample.z + dz * k,
+            facing: going ? Math.atan2(dx, dz) : Math.atan2(-dx, -dz),
+            pose: going && kw.u >= 1 ? 'idle' : 'walk', seated: false, phase: kw.u * 4
+          };
+        }
+      }
+      const clip = walkSample !== sample
+        ? (walkSample.pose === 'walk' ? cast.stage.guestPose(i, walkSample, null, null) : null)
+        : cast.stage.guestPose(i, sample, seatKind, active && !active.backed ? active : null);
+      // Klippen sänker höften själva från golvet (SEAT_KINDS[sort].drop); regissörens
+      // höjd för sittande (seatSurfaceY − SEATED_HIP_Y) gäller figureActs-poserna.
+      if (clip && walkSample === sample && seat && (sample.seated || sample.pose === 'sitDown' || sample.pose === 'standUp')) {
+        walkSample = { ...sample, y: room.floorY };
+      }
+      cast.guestClips[i] = clip;
+      cast.guestClipIds[i] = clip ? cast.stage.guestClipId(i) : null;
+      applySample(rig, walkSample, false, visibility, clip);
+      if (isFigure) figureLocal = { x: rig.root.position.x, y: rig.root.position.y, z: rig.root.position.z };
     }
     const ss = cast.director.staffSamples;
-    for (let i = 0; i < ss.length; i++) applySample(cast.staffRigs[i], ss[i], true, visibility);
+    for (let i = 0; i < ss.length; i++) {
+      const key = STAFF_KEYS[i];
+      const clip = cast.stage.staffPose(i, key, ss[i], active && !active.backed ? active : null, now);
+      cast.staffClips[i] = clip;
+      applySample(cast.staffRigs[i], ss[i], true, visibility, clip);
+      const rig = cast.staffRigs[i];
+      if (fig && fig.kind === 'staff' && fig.staffKey === key && ss[i].visible) {
+        // Den som skär sig backar ett steg (klippets root, i figurens ram).
+        if (clip) {
+          const f = rig.root.rotation.y;
+          rig.root.position.x += Math.sin(f) * clip.root[1] + Math.cos(f) * clip.root[0];
+          rig.root.position.z += Math.cos(f) * clip.root[1] - Math.sin(f) * clip.root[0];
+        }
+        figureLocal = { x: rig.root.position.x, y: rig.root.position.y, z: rig.root.position.z };
+      }
+    }
+
+    // Rekvisitan: ägarboken och klippens händer (en tallrik på ett ställe).
+    cast.stage.props(cast.director, t, STAFF_KEYS, cast.staffRigs, cast.staffClips, cast.guestRigs, cast.guestClips, cast.guestClipIds);
 
     // CLAUDE.md renderregler: skuggan följer opaciteten.
     if (shadows !== cast.shadowsOn) {
@@ -379,27 +480,51 @@ export function WineBarFigures({ room, mood }: Props) {
       cast.group.traverse((o) => { if ((o as THREE.Mesh).isMesh && o.parent !== cast.ring.group) o.castShadow = shadows; });
     }
 
-    // Ringen: vid sällskapet raketen gäller, fylld med stegets tid.
-    const active = s.incidents?.active ?? null;
-    if (active && active.context.guestIds.length > 0) {
+    // Kameran glider in mot figuren och tillbaka efter svaret.
+    cast.stage.camera(targetRef, active, figureLocal, Math.min(delta, 0.1));
+
+    // Ringen: vid figuren raketen pekar på (annars vid sällskapet), fylld med stegets tid.
+    let ringAt: { x: number; z: number } | null = figureLocal;
+    if (!ringAt && active && active.context.guestIds.length > 0) {
       let x = 0; let z = 0; let n = 0;
       for (let i = 0; i < gs.length; i++) {
         const g = gs[i];
         if (!g.visible || !g.guestId || !active.context.guestIds.includes(g.guestId)) continue;
         x += g.x; z += g.z; n++;
       }
-      if (n > 0) {
-        cast.ring.group.visible = true;
-        cast.ring.group.position.set(x / n, room.floorY, z / n);
-        const total = active.secondsTotal > 0 ? active.secondsTotal : 1;
-        updateActionRing(cast.ring, 1 - Math.max(0, active.secondsLeft) / total);
-      } else {
-        cast.ring.group.visible = false;
-      }
+      if (n > 0) ringAt = { x: x / n, z: z / n };
+    }
+    if (active && ringAt) {
+      cast.ring.group.visible = true;
+      cast.ring.group.position.set(ringAt.x, room.floorY, ringAt.z);
+      const total = active.secondsTotal > 0 ? active.secondsTotal : 1;
+      const intro = (active.introLeft ?? 0) > 0;
+      updateActionRing(cast.ring, intro ? 0 : 1 - Math.max(0, active.secondsLeft) / total);
     } else {
       cast.ring.group.visible = false;
     }
+
+    // Bildtexten står ovanför figuren.
+    const cap = captionRef.current;
+    if (cap) {
+      const w = cast.stage.figureWorld;
+      cap.visible = !!w;
+      if (w && cap.parent) {
+        const p = w.clone();
+        p.y += THEATRE.captionHeightM;
+        cap.parent.worldToLocal(p);
+        cap.position.copy(p);
+      }
+    }
   });
 
-  return null;
+  const caption = theatreCaption(sim.incidents?.active ?? null);
+  return caption ? (
+    <group ref={captionRef} visible={false}>
+      <Html center zIndexRange={[20, 0]}>
+        <TheatreCaption text={caption} />
+      </Html>
+    </group>
+  ) : null;
 }
+

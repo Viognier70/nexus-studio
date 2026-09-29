@@ -52,6 +52,9 @@ function openNow(s: SimulationState, id: string): SimulationState {
   }
   expect(s.incidents.active?.id).toBe(id);
   expect(s.incidents.active?.step).toBe(0);
+  // ORDER 286a — raketen börjar i rummet: figurens klipp spelas innan kortet
+  // öppnas och stegets klocka går.
+  for (let i = 0; i < 2000 && (s.incidents.active?.introLeft ?? 0) > 0; i++) s = reducer(s, TICK);
   return s;
 }
 

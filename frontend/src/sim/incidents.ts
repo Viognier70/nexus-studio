@@ -28,7 +28,8 @@ import { bumpMorale } from '../strategic/simulation/morale';
 import { applyCashDelta, postLedger } from '../strategic/simulation/cashReading';
 import { clampReputation } from '../strategic/simulation/reputation';
 import { strings } from '../content/strings';
-import { BACK, type Confidence, GAME_MINUTES_PER_SIM_SECOND, INCIDENTS, MENU_ROCKETS, REPUTATION, SITTING } from './balance';
+import { rocketClipFor, rocketFigure, type RocketFigure } from './theatreTriggers';
+import { THEATRE, BACK, type Confidence, GAME_MINUTES_PER_SIM_SECOND, INCIDENTS, MENU_ROCKETS, REPUTATION, SITTING } from './balance';
 import { calendarFor } from './calendar';
 import { clampScenarioCash, scenarioUnitSek } from './economy';
 import { bestAnswerFactor, medalSteps } from './knowledgeInService';
@@ -57,6 +58,8 @@ export interface IncidentContext {
   staff: string;
   // Klockslaget i speltid när händelsen kom ("20.30").
   clock: string;
+  // ORDER 286a — vem i rummet raketen börjar med, och klippet som spelas först.
+  figure?: RocketFigure | null;
 }
 
 export interface ActiveIncident {
@@ -90,6 +93,9 @@ export interface ActiveIncident {
   earned?: { credits: number; guestsIn: number };
   // Den andra tidsgränsen efter att svaret är låst (BACK.lockSeconds).
   lockLeft?: number;
+  // ORDER 286a — raketen börjar i rummet: figurens klipp spelas i så här
+  // många verkliga sekunder innan kortet öppnas och stegets klocka går.
+  introLeft?: number;
 }
 
 // ORDER 280 — säkerheten spelaren valde (balance.ts Confidence).
@@ -467,7 +473,13 @@ function openIncident(
   const struck = struckFor(draft, first, situation, r);
   const secondsTotal = secondsFor(draft, first);
   const fresh = contextFor(draft, r);
-  const context = given ? { ...given, clock: fresh.clock } : fresh;
+  const base = given ? { ...given, clock: fresh.clock } : fresh;
+  // ORDER 286a — figuren och klippet som spelas först (theatreTriggers.ts).
+  // Egna raketer (Back your knowledge) börjar direkt.
+  const clip = backed ? null : rocketClipFor(incident);
+  const figure = rocketFigure(draft, clip, base);
+  const context = { ...base, figure };
+  const introLeft = figure ? THEATRE.rocketIntroSeconds[figure.clip] : 0;
   const { [incident.id]: _used, ...queuedContext } = inc.queuedContext;
   draft.incidents = {
     ...inc,
@@ -475,7 +487,7 @@ function openIncident(
     queuedContext,
     fired: [...inc.fired, incident.id],
     ongoing: null,
-    active: { id: incident.id, openedAt: draft.simTime, step: 0, secondsTotal, secondsLeft: secondsTotal, struck, chained, situation, context, backed }
+    active: { id: incident.id, openedAt: draft.simTime, step: 0, secondsTotal, secondsLeft: secondsTotal, struck, chained, situation, context, backed, introLeft }
   };
 }
 
@@ -860,6 +872,12 @@ export function countDown(draft: SimulationState, dt: number): boolean {
   const inc = draft.incidents;
   if (!inc?.active) return false;
   let real = dt / Math.max(1, draft.speed);
+  // ORDER 286a — först figurens klipp i rummet; stegets klocka står under tiden.
+  const intro = inc.active.introLeft ?? 0;
+  if (intro > 0) {
+    draft.incidents = { ...inc, active: { ...inc.active, introLeft: Math.max(0, intro - real) } };
+    return false;
+  }
   const reveal = inc.active.revealLeft ?? 0;
   if (reveal > 0) {
     // Svaret i stunden visas först; stegets tid börjar sedan på full tid.

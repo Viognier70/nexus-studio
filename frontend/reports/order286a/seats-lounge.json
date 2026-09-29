@@ -1,0 +1,101 @@
+{
+  "url": "http://localhost:5181/",
+  "distanceM": 12,
+  "shots": [
+    {
+      "file": "seats-lounge-1-1.png",
+      "what": "lounge: gästen sätter sig (loungeA1)",
+      "camera": {
+        "actual": 12,
+        "target": 12
+      },
+      "guest": {
+        "seatWorld": [
+          26.22,
+          -18.7
+        ],
+        "id": "gst-15",
+        "seat": "loungeA1",
+        "pose": "sitDown",
+        "progress": 0.47,
+        "seated": false,
+        "world": [
+          26.22,
+          -18.7
+        ]
+      }
+    },
+    {
+      "file": "seats-lounge-1-2.png",
+      "what": "lounge: gästen sätter sig (loungeA1)",
+      "camera": {
+        "actual": 12,
+        "target": 12
+      },
+      "guest": {
+        "seatWorld": [
+          26.22,
+          -18.7
+        ],
+        "id": "gst-15",
+        "seat": "loungeA1",
+        "pose": "readMenu",
+        "progress": 0,
+        "seated": true,
+        "world": [
+          26.22,
+          -18.7
+        ]
+      }
+    },
+    {
+      "file": "seats-lounge-1-3.png",
+      "what": "lounge: gästen sätter sig (loungeA1)",
+      "camera": {
+        "actual": 12,
+        "target": 12
+      },
+      "guest": {
+        "seatWorld": [
+          26.22,
+          -18.7
+        ],
+        "id": "gst-15",
+        "seat": "loungeA1",
+        "pose": "readMenu",
+        "progress": 0,
+        "seated": true,
+        "world": [
+          26.22,
+          -18.7
+        ]
+      }
+    },
+    {
+      "file": "seats-lounge-1-sitter.png",
+      "what": "lounge: gästen sitter (loungeA1)",
+      "camera": {
+        "actual": 12,
+        "target": 12
+      },
+      "guest": {
+        "seatWorld": [
+          26.22,
+          -18.7
+        ],
+        "id": "gst-15",
+        "seat": "loungeA1",
+        "pose": "readMenu",
+        "progress": 0,
+        "seated": true,
+        "world": [
+          26.22,
+          -18.7
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "answerTimer": true,
+  "lounge": 1
+}

@@ -129,6 +129,56 @@ describe('ORDER 271 — en kväll i vinbaren', () => {
     expect(end.find((r) => r.key === 'bartender')!.pose).toBe('pour');
   });
 
+  // ORDER 286a — ägandet av föremålen (Designs leverans 2, LEVERANSNOT §8):
+  // ett föremål har högst en ägare i varje bildruta, och den som enligt boken
+  // bär något har det i handen. Tallriken hamnar på bordet och tas av avdukningen.
+  it('286a: samma tallrik finns aldrig på två ställen', () => {
+    const { d, sim } = evening();
+    const keys = ['server', 'server2', 'bartender', 'sommelier', 'cook', 'dish'] as StaffKey[];
+    const dup: unknown[] = [];
+    const mismatch: unknown[] = [];
+    let onTable = 0;
+    let carried = 0;
+    const check = (t0: number, t1: number) => {
+      for (let t = t0; t < t1; t += 0.1) {
+        d.update(frame(t, sim));
+        const led = d.propLedger(t);
+        const ids = led.map((e) => e.id);
+        if (new Set(ids).size !== ids.length) dup.push({ t, ids });
+        for (const e of led) {
+          if (e.owner.kind === 'table') onTable++;
+          else {
+            carried++;
+            const i = keys.indexOf(e.owner.key);
+            if (d.staffSamples[i].carrying !== e.item && d.staffSamples[i].pose !== 'serve') mismatch.push({ t, key: e.owner.key, item: e.item, sample: d.staffSamples[i].carrying, pose: d.staffSamples[i].pose });
+          }
+        }
+      }
+    };
+    sim.set('g1', 'arriving', 0, { partyId: 'p1' }); sim.set('g2', 'arriving', 0, { partyId: 'p1' });
+    check(0, 3);
+    sim.set('g1', 'seated', 3, { seatIndex: 6 }); sim.set('g2', 'seated', 3, { seatIndex: 7 });
+    check(3, 7);
+    sim.set('g1', 'ordering', 7); sim.set('g2', 'ordering', 7);
+    check(7, 60);
+    sim.set('g1', 'dining', 60); sim.set('g2', 'dining', 60);
+    check(60, 120);
+    sim.set('g1', 'paying', 120); sim.set('g2', 'paying', 120);
+    check(120, 128);
+    sim.set('g1', 'leaving', 128); sim.set('g2', 'leaving', 128);
+    check(128, 131);
+    sim.drop('g1'); sim.drop('g2');
+    check(131, 175);
+    expect(dup).toEqual([]);
+    expect(mismatch).toEqual([]);
+    expect(carried).toBeGreaterThan(0);
+    expect(onTable).toBeGreaterThan(0);
+    // Efter avdukningen står inget kvar på bordet.
+    expect(d.propLedger(175).filter((e) => e.owner.kind === 'table')).toEqual([]);
+    // En stol per sittande gäst.
+    expect(d.guestSeat('g1')).toBeNull();
+  });
+
   it('personalen går inte genom baren eller vinväggen', () => {
     const { room, sim, log, step } = evening();
     // Tre sällskap på olika bord: tvåbord, lounge och bar.

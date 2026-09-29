@@ -1,0 +1,101 @@
+{
+  "url": "http://localhost:5181/#playtest=1&business=vinbaren&start=dinner15",
+  "distanceM": 12,
+  "shots": [
+    {
+      "file": "seats-barstol-1-1.png",
+      "what": "barstol: gästen sätter sig (bar1)",
+      "camera": {
+        "actual": 12,
+        "target": 12
+      },
+      "guest": {
+        "seatWorld": [
+          28.99,
+          -19.14
+        ],
+        "id": "gst-7",
+        "seat": "bar1",
+        "pose": "sitDown",
+        "progress": 0.38,
+        "seated": false,
+        "world": [
+          28.99,
+          -19.14
+        ]
+      }
+    },
+    {
+      "file": "seats-barstol-1-2.png",
+      "what": "barstol: gästen sätter sig (bar1)",
+      "camera": {
+        "actual": 12,
+        "target": 12
+      },
+      "guest": {
+        "seatWorld": [
+          28.99,
+          -19.14
+        ],
+        "id": "gst-7",
+        "seat": "bar1",
+        "pose": "readMenu",
+        "progress": 0,
+        "seated": true,
+        "world": [
+          28.99,
+          -19.14
+        ]
+      }
+    },
+    {
+      "file": "seats-barstol-1-3.png",
+      "what": "barstol: gästen sätter sig (bar1)",
+      "camera": {
+        "actual": 12,
+        "target": 12
+      },
+      "guest": {
+        "seatWorld": [
+          28.99,
+          -19.14
+        ],
+        "id": "gst-7",
+        "seat": "bar1",
+        "pose": "readMenu",
+        "progress": 0,
+        "seated": true,
+        "world": [
+          28.99,
+          -19.14
+        ]
+      }
+    },
+    {
+      "file": "seats-barstol-1-sitter.png",
+      "what": "barstol: gästen sitter (bar1)",
+      "camera": {
+        "actual": 12,
+        "target": 12
+      },
+      "guest": {
+        "seatWorld": [
+          28.99,
+          -19.14
+        ],
+        "id": "gst-7",
+        "seat": "bar1",
+        "pose": "readMenu",
+        "progress": 0,
+        "seated": true,
+        "world": [
+          28.99,
+          -19.14
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "answerTimer": true,
+  "bar": 1
+}

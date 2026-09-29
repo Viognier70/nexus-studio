@@ -71,6 +71,9 @@ function openNow(s: SimulationState, id: string): SimulationState {
     if (s.incidents.active) s = answer(s);
     s = reducer(s, TICK);
   }
+  // ORDER 286a — raketen börjar i rummet: figurens klipp spelas innan kortet
+  // öppnas och stegets klocka går.
+  for (let i = 0; i < 2000 && (s.incidents.active?.introLeft ?? 0) > 0; i++) s = reducer(s, TICK);
   return s;
 }
 
