@@ -1,7 +1,7 @@
 import { calendarFor } from '../../sim/calendar';
 import { bestAnswerFactor, drinkRevenueFactor, enablersWithCredits } from '../../sim/knowledgeInService';
 import { EVENING, SERVICE, type BusinessClassId } from '../../sim/balance';
-import { canBack, canStartBack, closeIncidents, countDown, isIncidentOpen, maybeOpenIncident, planIncidents, resolveIncident, startBack, tickOngoing, type CreditChange } from '../../sim/incidents';
+import { canBack, canStartBack, pickBackAnswer, closeIncidents, countDown, isIncidentOpen, maybeOpenIncident, planIncidents, resolveIncident, startBack, tickOngoing, type CreditChange } from '../../sim/incidents';
 import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
 import { afterVisitClosed, beginIntroduction } from '../../sim/introduction';
 import { isStrandedWithoutBusiness, canChangeClassToday, changeClass, classOptions, openFirstBusiness, recordEvening, creditLineSek, dailyGuestCap, dayEnd, dayEndHeadroom, dailyWagesSek, recordExamWithoutBusiness, scenarioUnitSek, scenarioChoiceUnits, clampScenarioCash, postDailyInterest, settleWeek } from '../../sim/economy';
@@ -263,6 +263,9 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       // förlusten på den valda säkerheten.
       const confidence = action.confidence ?? 0;
       if (state.incidents?.active?.backed && !canBack(state, confidence)) return state;
+      // ORDER 284 — ett låst svar går inte att byta.
+      const lockedPick = state.incidents?.active?.backed ? state.incidents.active.picked : null;
+      if (lockedPick && lockedPick !== action.optionId) return state;
       const draft: SimulationState = { ...state, guests: state.guests.map((g) => ({ ...g })) };
       const credit = resolveIncident(draft, action.optionId, confidence);
       // Ett struket eller okänt svar ändrar ingenting. Ett klarat steg
@@ -270,6 +273,8 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       if (draft.incidents === state.incidents) return state;
       return applyCreditChange(draft, credit);
     }
+    case 'PICK_BACK_ANSWER':
+      return pickBackAnswer(state, action.optionId);
     case 'SET_SPEED':
       return { ...state, speed: action.speed };
     case 'SET_POLICY':
@@ -576,7 +581,7 @@ function buyStock(
     },
     day: {
       ...state.day,
-      platesRemaining: computePlatesRemaining(state.menu, nextStock)
+      platesRemaining: computePlatesRemaining(state.menu, nextStock, state.dishPortions)
     }
   };
   // ORDER 259 (VO 2026-09-22): stock-inköp är asset-conversion (kassa
@@ -644,7 +649,7 @@ function composeMenu(
     menu: entries,
     day: {
       ...state.day,
-      platesRemaining: computePlatesRemaining(entries, state.stock),
+      platesRemaining: computePlatesRemaining(entries, state.stock, state.dishPortions),
       stockOutEvents: []
     }
   };
@@ -751,7 +756,7 @@ export function drawMenuDishForGuest(
       nextStock[r.ingredientId] = (nextStock[r.ingredientId] ?? 0) - r.units;
     }
     draft.stock = nextStock;
-    draft.day.platesRemaining = computePlatesRemaining(draft.menu, nextStock);
+    draft.day.platesRemaining = computePlatesRemaining(draft.menu, nextStock, draft.dishPortions);
     // Fire stock_out (M4 DoD 3 mechanic) for any menu dish whose plate
     // count just hit 0 and hasn't fired yet this service.
     for (const m of draft.menu) {

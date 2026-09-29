@@ -98,7 +98,14 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenB
   // minst en rätt och en dryck i lager (stockPackages.ts stockReadiness).
   const readiness = stockReadiness(sim);
 
-  const primary = canStart ? (
+  // ORDER 284 — vägen från morgonen till inköpen (tredje provspelet): utan
+  // lager är huvudknappen inköpen, inte en avstängd Öppna för kvällen.
+  const needsBuy = canStart && !readiness.ready && period === 'morning' && !!onOpenBuy && !!packagesFor(sim.economy.businessClass);
+  const primary = needsBuy ? (
+    <NxButton testId="open-buy-foot" onClick={onOpenBuy}>
+      {strings.morningBuy.open}
+    </NxButton>
+  ) : canStart ? (
     <NxButton testId="start-service" disabled={!readiness.ready} onClick={() => dispatch({ type: 'START_SERVICE' })}>
       {strings.morning.startService}
     </NxButton>

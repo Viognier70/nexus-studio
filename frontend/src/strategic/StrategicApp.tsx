@@ -279,8 +279,10 @@ function StrategicShell() {
       {/* ORDER 280 — Designs K1: dagen till vänster, klockan i mitten,
           kassan och krediterna, farten och menyn till höger. Kontot
           (PlayerPanel) står inte längre i raden; kassan är rutan. */}
-      <DayBadge />
-      <ServiceClock />
+      <div className="gb-topleft">
+        <DayBadge />
+        <ServiceClock />
+      </div>
       <div className="gb-topright">
         <CashCounter />
         <SpeedToggle />

@@ -284,7 +284,22 @@
 @media (max-width: 900px) { .nx-screen.nxs-buy { overflow: auto; } .nxs-buy-grid { height: auto; } }
 .nxs-buy-foot { padding: calc(20 * var(--nx-u)) calc(24 * var(--nx-u)); border-top: var(--nx-line) solid var(--nx-ink); font-weight: 700; }
 .nxs-buy-side { padding: calc(24 * var(--nx-u)); gap: 0; }
+/* ORDER 284 — "Open for the evening" hamnade under skärmen (tredje
+   provspelet). Kolumnerna får krympa till fönstret, sidokolumnen skrollar,
+   och knapparna står fast längst ned i den. */
+.nxs-buy-grid > * { min-height: 0; }
+.nxs-buy-side { overflow-y: auto; }
+.nxs-buy-actions { position: sticky; bottom: calc(-24 * var(--nx-u)); margin-top: auto; display: grid; gap: calc(10 * var(--nx-u)); background: var(--nx-ground); padding: calc(12 * var(--nx-u)) 0 calc(24 * var(--nx-u)); z-index: 1; }
 .nxs-buy-block { padding: calc(18 * var(--nx-u)) 0; border-bottom: 1px solid var(--nx-rule); }
 .nxs-buy-more:hover { background: var(--nx-accent) !important; }
 /* HUD:ens rad ligger över morgonens schema. */
-.nx-screen.nxs-morning { padding-top: calc(150 * var(--nx-u)); }
+/* ORDER 284 — rubriken under klockan (tredje provspelet: "Klockan täcker morgonens rubrik"). */
+.nx-screen.nxs-morning { padding-top: calc(235 * var(--nx-u)); }
+@media (max-width: 640px) { .nx-screen.nxs-morning, .nx-screen.nxs-buy { padding-top: 150px; } }
+/* ORDER 284 — inköpen i en kolumn (smal skärm): knapparna i en list längst
+   ned i fönstret, inte sist på sidan. */
+@media (max-width: 900px) {
+  .nxs-buy-actions { position: fixed; left: 0; right: 0; bottom: 0; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: end; padding: 8px 16px; border-top: var(--nx-line) solid var(--nx-ink); z-index: 3; }
+  .nxs-buy-actions > p { grid-column: 1 / -1; margin: 0; }
+  .nx-screen.nxs-buy { padding-bottom: 140px; }
+}

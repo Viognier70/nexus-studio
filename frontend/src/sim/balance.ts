@@ -199,10 +199,13 @@ export const FLOOR = {
 // veckor." Hyran per klass i kronor i veckan; vinbaren är kalibrerad
 // (reports/order280/rent-calibration.json), de andra klasserna har samma
 // andel av sin normala veckointäkt tills deras paket är skrivna (F53).
+// ORDER 284 — 0,15 → 0,17 efter portionsboken (stockPackages.ts
+// dishPortions): mindre svinn gav den rimliga spelaren 11,8 % vid 0,15
+// (reports/order284/rent-check.json vid 0,17: 9,9 %; week-players.json: 5,0 %).
 export const RENT = {
   section: 'Ekonomin > Hyran och lönerna',
-  openQuestion: 'F53',
-  shareOfNormalWeeklyRevenue: 0.15,
+  openQuestion: 'F54',
+  shareOfNormalWeeklyRevenue: 0.17,
   reasonableResultShare: [0.05, 0.1] as readonly number[],
   weakDowngradeWeeks: [2, 3] as readonly number[]
 } as const;

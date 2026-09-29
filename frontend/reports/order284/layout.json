@@ -1,0 +1,1939 @@
+{
+  "url": "http://localhost:4175/",
+  "build": "produktion (vite build + preview)",
+  "save": "reports/order284/save-mandag-vinbaren.json",
+  "sizes": [
+    "1920×1080",
+    "1440×900",
+    "1366×768",
+    "1280×720",
+    "1024×768",
+    "844×390",
+    "390×844"
+  ],
+  "screens": {
+    "morgonen": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1920×1080",
+          "buttons": {
+            "open-buy-foot": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                1428,
+                920,
+                1848,
+                992
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": 0,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1440×900",
+          "buttons": {
+            "open-buy-foot": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                1071,
+                758,
+                1386,
+                812
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": 0,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1366×768",
+          "buttons": {
+            "open-buy-foot": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                1016,
+                629,
+                1315,
+                680
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": 0,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1280×720",
+          "buttons": {
+            "open-buy-foot": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                952,
+                584,
+                1232,
+                632
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": 0,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1024×768",
+          "buttons": {
+            "open-buy-foot": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                762,
+                636,
+                986,
+                680
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": 0,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "844×390",
+          "buttons": {
+            "open-buy-foot": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                598,
+                258,
+                818,
+                302
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": 0,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "390×844",
+          "buttons": {
+            "open-buy-foot": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                155,
+                712,
+                375,
+                756
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": 0,
+          "clockOverCash": 0,
+          "ok": true
+        }
+      ]
+    },
+    "M1": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1920×1080",
+          "buttons": {
+            "buy-back": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                1347,
+                840,
+                1822,
+                912
+              ]
+            },
+            "open-doors": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                1347,
+                922,
+                1822,
+                994
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": null,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1440×900",
+          "buttons": {
+            "buy-back": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                1010,
+                703,
+                1367,
+                757
+              ]
+            },
+            "open-doors": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                1010,
+                764,
+                1367,
+                818
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": null,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1366×768",
+          "buttons": {
+            "buy-back": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                958,
+                598,
+                1297,
+                649
+              ]
+            },
+            "open-doors": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                958,
+                656,
+                1297,
+                707
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": null,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1280×720",
+          "buttons": {
+            "buy-back": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                898,
+                560,
+                1215,
+                608
+              ]
+            },
+            "open-doors": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                898,
+                615,
+                1215,
+                663
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": null,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1024×768",
+          "buttons": {
+            "buy-back": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                718,
+                616,
+                972,
+                660
+              ]
+            },
+            "open-doors": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                718,
+                665,
+                972,
+                709
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": null,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "844×390",
+          "buttons": {
+            "buy-back": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                288,
+                338,
+                556,
+                382
+              ]
+            },
+            "open-doors": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                560,
+                338,
+                828,
+                382
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": null,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "390×844",
+          "buttons": {
+            "buy-back": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                136,
+                792,
+                254,
+                836
+              ]
+            },
+            "open-doors": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                256,
+                792,
+                374,
+                836
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": null,
+          "clockOverCash": 0,
+          "ok": true
+        }
+      ]
+    },
+    "servicen": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1920×1080",
+          "buttons": {
+            "back-start": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                1564,
+                700,
+                1824,
+                783
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": null,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1440×900",
+          "buttons": {
+            "back-start": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                1174,
+                594,
+                1369,
+                655
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": null,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1366×768",
+          "buttons": {
+            "back-start": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                1113,
+                473,
+                1298,
+                531
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": null,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1280×720",
+          "buttons": {
+            "back-start": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                1043,
+                438,
+                1216,
+                492
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": null,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1024×768",
+          "buttons": {
+            "back-start": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                834,
+                524,
+                973,
+                568
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": null,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "844×390",
+          "buttons": {
+            "back-start": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                715,
+                212,
+                809,
+                256
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": null,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "390×844",
+          "buttons": {
+            "back-start": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                317,
+                708,
+                370,
+                752
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": null,
+          "clockOverCash": 0,
+          "ok": true
+        }
+      ]
+    },
+    "B1": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1920×1080",
+          "buttons": {
+            "incident-option-*": {
+              "found": true,
+              "count": 1,
+              "ok": true,
+              "parts": [
+                {
+                  "found": true,
+                  "inside": true,
+                  "onTop": true,
+                  "ok": true,
+                  "rect": [
+                    1248,
+                    616,
+                    1816,
+                    680
+                  ]
+                }
+              ]
+            },
+            "back-level-0": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                1248,
+                888,
+                1432,
+                959
+              ]
+            },
+            "back-level-1": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                1440,
+                888,
+                1624,
+                959
+              ]
+            },
+            "back-level-2": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                1632,
+                888,
+                1816,
+                959
+              ]
+            },
+            "back-lock": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                1248,
+                971,
+                1816,
+                1043
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": null,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1440×900",
+          "buttons": {
+            "incident-option-*": {
+              "found": true,
+              "count": 1,
+              "ok": true,
+              "parts": [
+                {
+                  "found": true,
+                  "inside": true,
+                  "onTop": true,
+                  "ok": true,
+                  "rect": [
+                    936,
+                    462,
+                    1362,
+                    510
+                  ]
+                }
+              ]
+            },
+            "back-level-0": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                936,
+                665,
+                1074,
+                718
+              ]
+            },
+            "back-level-1": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                1080,
+                665,
+                1218,
+                718
+              ]
+            },
+            "back-level-2": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                1224,
+                665,
+                1362,
+                718
+              ]
+            },
+            "back-lock": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                936,
+                727,
+                1362,
+                781
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": null,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1366×768",
+          "buttons": {
+            "incident-option-*": {
+              "found": true,
+              "count": 1,
+              "ok": true,
+              "parts": [
+                {
+                  "found": true,
+                  "inside": true,
+                  "onTop": true,
+                  "ok": true,
+                  "rect": [
+                    888,
+                    437,
+                    1292,
+                    483
+                  ]
+                }
+              ]
+            },
+            "back-level-0": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                888,
+                630,
+                1019,
+                679
+              ]
+            },
+            "back-level-1": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                1025,
+                630,
+                1156,
+                679
+              ]
+            },
+            "back-level-2": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                1161,
+                630,
+                1292,
+                679
+              ]
+            },
+            "back-lock": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                888,
+                687,
+                1292,
+                738
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": null,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1280×720",
+          "buttons": {
+            "incident-option-*": {
+              "found": true,
+              "count": 1,
+              "ok": true,
+              "parts": [
+                {
+                  "found": true,
+                  "inside": true,
+                  "onTop": true,
+                  "ok": true,
+                  "rect": [
+                    832,
+                    409,
+                    1211,
+                    453
+                  ]
+                }
+              ]
+            },
+            "back-level-0": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                832,
+                591,
+                955,
+                638
+              ]
+            },
+            "back-level-1": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                960,
+                591,
+                1083,
+                638
+              ]
+            },
+            "back-level-2": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                1088,
+                591,
+                1211,
+                638
+              ]
+            },
+            "back-lock": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                832,
+                646,
+                1211,
+                694
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": null,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1024×768",
+          "buttons": {
+            "incident-option-*": {
+              "found": true,
+              "count": 1,
+              "ok": true,
+              "parts": [
+                {
+                  "found": true,
+                  "inside": true,
+                  "onTop": true,
+                  "ok": true,
+                  "rect": [
+                    666,
+                    328,
+                    969,
+                    372
+                  ]
+                }
+              ]
+            },
+            "back-level-0": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                666,
+                482,
+                764,
+                519
+              ]
+            },
+            "back-level-1": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                768,
+                482,
+                866,
+                519
+              ]
+            },
+            "back-level-2": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                870,
+                482,
+                969,
+                519
+              ]
+            },
+            "back-lock": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                666,
+                525,
+                969,
+                569
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": null,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "844×390",
+          "buttons": {
+            "incident-option-*": {
+              "found": true,
+              "count": 1,
+              "ok": true,
+              "parts": [
+                {
+                  "found": true,
+                  "inside": true,
+                  "onTop": true,
+                  "ok": true,
+                  "rect": [
+                    510,
+                    197,
+                    806,
+                    241
+                  ]
+                }
+              ]
+            },
+            "back-level-0": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                510,
+                295,
+                607,
+                321
+              ]
+            },
+            "back-level-1": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                609,
+                295,
+                707,
+                321
+              ]
+            },
+            "back-level-2": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                709,
+                295,
+                806,
+                321
+              ]
+            },
+            "back-lock": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                510,
+                325,
+                806,
+                369
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": null,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "390×844",
+          "buttons": {
+            "incident-option-*": {
+              "found": true,
+              "count": 1,
+              "ok": true,
+              "parts": [
+                {
+                  "found": true,
+                  "inside": true,
+                  "onTop": true,
+                  "ok": true,
+                  "rect": [
+                    62,
+                    111,
+                    369,
+                    155
+                  ]
+                }
+              ]
+            },
+            "back-level-0": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                62,
+                180,
+                163,
+                196
+              ]
+            },
+            "back-level-1": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                165,
+                180,
+                266,
+                196
+              ]
+            },
+            "back-level-2": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                268,
+                180,
+                369,
+                196
+              ]
+            },
+            "back-lock": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                62,
+                199,
+                369,
+                243
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": null,
+          "clockOverCash": 0,
+          "ok": true
+        }
+      ]
+    },
+    "raketkortet": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1920×1080",
+          "buttons": {
+            "incident-option-*": {
+              "found": true,
+              "count": 3,
+              "ok": true,
+              "parts": [
+                {
+                  "found": true,
+                  "inside": true,
+                  "onTop": true,
+                  "ok": true,
+                  "rect": [
+                    1248,
+                    645,
+                    1816,
+                    709
+                  ]
+                },
+                {
+                  "found": true,
+                  "inside": true,
+                  "onTop": true,
+                  "ok": true,
+                  "rect": [
+                    1248,
+                    717,
+                    1816,
+                    797
+                  ]
+                },
+                {
+                  "found": true,
+                  "inside": true,
+                  "onTop": true,
+                  "ok": true,
+                  "rect": [
+                    1248,
+                    805,
+                    1816,
+                    869
+                  ]
+                }
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": null,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1440×900",
+          "buttons": {
+            "incident-option-*": {
+              "found": true,
+              "count": 3,
+              "ok": true,
+              "parts": [
+                {
+                  "found": true,
+                  "inside": true,
+                  "onTop": true,
+                  "ok": true,
+                  "rect": [
+                    936,
+                    483,
+                    1362,
+                    531
+                  ]
+                },
+                {
+                  "found": true,
+                  "inside": true,
+                  "onTop": true,
+                  "ok": true,
+                  "rect": [
+                    936,
+                    537,
+                    1362,
+                    596
+                  ]
+                },
+                {
+                  "found": true,
+                  "inside": true,
+                  "onTop": true,
+                  "ok": true,
+                  "rect": [
+                    936,
+                    602,
+                    1362,
+                    650
+                  ]
+                }
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": null,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1366×768",
+          "buttons": {
+            "incident-option-*": {
+              "found": true,
+              "count": 3,
+              "ok": true,
+              "parts": [
+                {
+                  "found": true,
+                  "inside": true,
+                  "onTop": true,
+                  "ok": true,
+                  "rect": [
+                    888,
+                    457,
+                    1292,
+                    503
+                  ]
+                },
+                {
+                  "found": true,
+                  "inside": true,
+                  "onTop": true,
+                  "ok": true,
+                  "rect": [
+                    888,
+                    509,
+                    1292,
+                    564
+                  ]
+                },
+                {
+                  "found": true,
+                  "inside": true,
+                  "onTop": true,
+                  "ok": true,
+                  "rect": [
+                    888,
+                    570,
+                    1292,
+                    616
+                  ]
+                }
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": null,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1280×720",
+          "buttons": {
+            "incident-option-*": {
+              "found": true,
+              "count": 3,
+              "ok": true,
+              "parts": [
+                {
+                  "found": true,
+                  "inside": true,
+                  "onTop": true,
+                  "ok": true,
+                  "rect": [
+                    832,
+                    429,
+                    1211,
+                    473
+                  ]
+                },
+                {
+                  "found": true,
+                  "inside": true,
+                  "onTop": true,
+                  "ok": true,
+                  "rect": [
+                    832,
+                    479,
+                    1211,
+                    531
+                  ]
+                },
+                {
+                  "found": true,
+                  "inside": true,
+                  "onTop": true,
+                  "ok": true,
+                  "rect": [
+                    832,
+                    536,
+                    1211,
+                    580
+                  ]
+                }
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": null,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1024×768",
+          "buttons": {
+            "incident-option-*": {
+              "found": true,
+              "count": 3,
+              "ok": true,
+              "parts": [
+                {
+                  "found": true,
+                  "inside": true,
+                  "onTop": true,
+                  "ok": true,
+                  "rect": [
+                    666,
+                    344,
+                    969,
+                    388
+                  ]
+                },
+                {
+                  "found": true,
+                  "inside": true,
+                  "onTop": true,
+                  "ok": true,
+                  "rect": [
+                    666,
+                    392,
+                    969,
+                    436
+                  ]
+                },
+                {
+                  "found": true,
+                  "inside": true,
+                  "onTop": true,
+                  "ok": true,
+                  "rect": [
+                    666,
+                    440,
+                    969,
+                    484
+                  ]
+                }
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": null,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "844×390",
+          "buttons": {
+            "incident-option-*": {
+              "found": true,
+              "count": 3,
+              "ok": true,
+              "parts": [
+                {
+                  "found": true,
+                  "inside": true,
+                  "onTop": true,
+                  "ok": true,
+                  "rect": [
+                    510,
+                    224,
+                    806,
+                    268
+                  ]
+                },
+                {
+                  "found": true,
+                  "inside": true,
+                  "onTop": true,
+                  "ok": true,
+                  "rect": [
+                    510,
+                    271,
+                    806,
+                    315
+                  ]
+                },
+                {
+                  "found": true,
+                  "inside": true,
+                  "onTop": true,
+                  "ok": true,
+                  "rect": [
+                    510,
+                    318,
+                    806,
+                    362
+                  ]
+                }
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": null,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "390×844",
+          "buttons": {
+            "incident-option-*": {
+              "found": true,
+              "count": 3,
+              "ok": true,
+              "parts": [
+                {
+                  "found": true,
+                  "inside": true,
+                  "onTop": true,
+                  "ok": true,
+                  "rect": [
+                    62,
+                    120,
+                    369,
+                    164
+                  ]
+                },
+                {
+                  "found": true,
+                  "inside": true,
+                  "onTop": true,
+                  "ok": true,
+                  "rect": [
+                    62,
+                    166,
+                    369,
+                    210
+                  ]
+                },
+                {
+                  "found": true,
+                  "inside": true,
+                  "onTop": true,
+                  "ok": true,
+                  "rect": [
+                    62,
+                    212,
+                    369,
+                    256
+                  ]
+                }
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": null,
+          "clockOverCash": 0,
+          "ok": true
+        }
+      ]
+    },
+    "S1": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1920×1080",
+          "buttons": {
+            "waste-continue": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                1428,
+                924,
+                1848,
+                996
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": 0,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1440×900",
+          "buttons": {
+            "waste-continue": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                1071,
+                717,
+                1386,
+                771
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": 0,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1366×768",
+          "buttons": {
+            "waste-continue": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                1016,
+                657,
+                1315,
+                708
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": 0,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1280×720",
+          "buttons": {
+            "waste-continue": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                952,
+                616,
+                1232,
+                664
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": 0,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1024×768",
+          "buttons": {
+            "waste-continue": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                762,
+                513,
+                986,
+                557
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": 0,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "844×390",
+          "buttons": {
+            "waste-continue": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                598,
+                316,
+                818,
+                360
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": 0,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "390×844",
+          "buttons": {
+            "waste-continue": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                155,
+                325,
+                375,
+                369
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": 0,
+          "clockOverCash": 0,
+          "ok": true
+        }
+      ]
+    },
+    "L1": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1920×1080",
+          "buttons": {
+            "to-evening-story": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                1428,
+                912,
+                1848,
+                984
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": 0,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1440×900",
+          "buttons": {
+            "to-evening-story": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                1071,
+                774,
+                1386,
+                828
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": 0,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1366×768",
+          "buttons": {
+            "to-evening-story": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                1016,
+                649,
+                1315,
+                700
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": 0,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1280×720",
+          "buttons": {
+            "to-evening-story": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                952,
+                608,
+                1232,
+                656
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": 0,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1024×768",
+          "buttons": {
+            "to-evening-story": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                762,
+                673,
+                986,
+                717
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": 0,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "844×390",
+          "buttons": {
+            "to-evening-story": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                598,
+                311,
+                818,
+                355
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": 0,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "390×844",
+          "buttons": {
+            "to-evening-story": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                155,
+                781,
+                375,
+                825
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": 0,
+          "clockOverCash": 0,
+          "ok": true
+        }
+      ]
+    },
+    "K1": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1920×1080",
+          "buttons": {
+            "end-evening": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                1428,
+                912,
+                1848,
+                984
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": 0,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1440×900",
+          "buttons": {
+            "end-evening": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                1071,
+                774,
+                1386,
+                828
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": 0,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1366×768",
+          "buttons": {
+            "end-evening": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                1016,
+                649,
+                1315,
+                700
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": 0,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1280×720",
+          "buttons": {
+            "end-evening": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                952,
+                608,
+                1232,
+                656
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": 0,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "1024×768",
+          "buttons": {
+            "end-evening": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                762,
+                673,
+                986,
+                717
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": 0,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "844×390",
+          "buttons": {
+            "end-evening": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                598,
+                311,
+                818,
+                355
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": 0,
+          "clockOverCash": 0,
+          "ok": true
+        },
+        {
+          "size": "390×844",
+          "buttons": {
+            "end-evening": {
+              "found": true,
+              "inside": true,
+              "onTop": true,
+              "ok": true,
+              "rect": [
+                155,
+                781,
+                375,
+                825
+              ]
+            }
+          },
+          "clockOverDay": 0,
+          "clockOverHeading": 0,
+          "clockOverCash": 0,
+          "ok": true
+        }
+      ]
+    }
+  },
+  "backClock": {
+    "beforePick": [
+      12,
+      10
+    ],
+    "afterPick": [
+      9,
+      9
+    ],
+    "runsBeforePick": true,
+    "stopsAfterPick": true,
+    "optionsShownAfterPick": 1,
+    "hint": "Answer locked, the clock has stopped.",
+    "earn": "Out of credits? You earn them with right answers: one for each right answer when you practise or take a test in the House of the Meal, and for the best answer in the evening's rockets."
+  },
+  "story": {
+    "saysNothingToLearn": false,
+    "wrongItems": 3,
+    "agrees": true
+  },
+  "errors": []
+}

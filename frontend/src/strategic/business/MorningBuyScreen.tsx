@@ -135,7 +135,7 @@ export function MorningBuyScreen({ open, onClose }: { open: boolean; onClose: ()
             <div className="nx-num" style={{ fontSize: u(30), marginTop: u(6) }}>{T.potentialIn(formatSek(cov.potentialSek))}</div>
             <div className="nxs-row-sub" style={{ marginTop: u(6) }}>{T.potentialNote}</div>
           </div>
-          <div style={{ marginTop: 'auto', display: 'grid', gap: u(10) }}>
+          <div className="nxs-buy-actions" data-testid="buy-actions">
             {notice && <p className="nx-small nx-accent-text" style={{ fontWeight: 700 }} role="status" data-testid="buy-notice">{notice}</p>}
             {!readiness.ready && <p className="nx-small nx-accent-text" style={{ fontWeight: 700 }} data-testid="start-blocked-m1">{strings.stock.notReady(readiness.dishes, readiness.drinks)}</p>}
             <button type="button" className="nx-btn nx-btn-quiet" style={{ width: 'auto' }} data-testid="buy-base"

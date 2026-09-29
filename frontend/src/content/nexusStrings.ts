@@ -1345,6 +1345,8 @@ export const TABLE = {
     out: { sv: 'Slut', en: 'Sold out' },
     warnLow: { sv: (item: string, n: number, unit: string) => `${item} snart slut · ${n} ${unit} kvar`, en: (item: string, n: number, unit: string) => `${item} running low · ${n} ${unit} left` },
     warnOut: { sv: (item: string) => `${item} slut · stryks från menyn`, en: (item: string) => `${item} sold out · off the menu` },
+    // ORDER 284 — när varje rätt är slut, inte bara en.
+    kitchenOut: { sv: 'Köket har ingen mat kvar · alla rätter slut', en: 'The kitchen is out of food · every dish sold out' },
     unitGlass: { sv: 'glas', en: 'glasses' },
     heading: { sv: 'Lagret i kväll', en: 'Stock tonight' }
   },
@@ -1388,6 +1390,11 @@ export const TABLE = {
     trackSub: { sv: 'Varje rätt steg lyfter den', en: 'Each right step lifts it' },
     trackGoal: { sv: 'Mål', en: 'Goal' },
     howSure: { sv: 'Hur säker är du?', en: 'How sure are you?' },
+    // ORDER 284 — när krediterna inte räcker till mer än en gissning.
+    earn: { sv: 'Slut på krediter? Du tjänar dem med rätta svar: en för varje rätt svar när du övar eller gör prov i Måltidens hus, och för det bästa svaret i kvällens raketer.', en: 'Out of credits? You earn them with right answers: one for each right answer when you practise or take a test in the House of the Meal, and for the best answer in the evening\'s rockets.' },
+    // ORDER 284 — klockan stannar när svaret är valt.
+    pickFirst: { sv: 'Välj ett svar först, då stannar klockan.', en: 'Pick an answer first; the clock then stops.' },
+    pickedHint: { sv: 'Svaret är låst, klockan står.', en: 'Answer locked, the clock has stopped.' },
     odds: { sv: (win: number, loss: number) => `+${win} om rätt · ${loss > 0 ? `−${loss}` : '±0'} om fel`, en: (win: number, loss: number) => `+${win} if right · ${loss > 0 ? `−${loss}` : '±0'} if wrong` },
     lock: { sv: 'Stå för svaret', en: 'Back it' },
     confidence: { sv: ['Gissar', 'Tror det', 'Vet det'], en: ['Guessing', 'Think so', 'Know it'] },
@@ -1429,7 +1436,7 @@ export const TABLE = {
       en: { unsold: 'Food waste · unsold', plates: 'Plate waste', glass: 'Glass', cardboard: 'Cardboard and paper' } as Record<string, string>
     },
     unsoldNone: { sv: 'Allt såldes', en: 'Everything sold' },
-    unsoldDetail: { sv: (n: number, kept: number) => `${n} portioner råvaror${kept > 0 ? ` · ${kept} sparas till i morgon` : ''}`, en: (n: number, kept: number) => `${n} portions of ingredients${kept > 0 ? ` · ${kept} kept for tomorrow` : ''}` },
+    unsoldDetail: { sv: (n: number, kept: number) => `${n} osålda portioner${kept > 0 ? ` · ${kept} sparas till i morgon` : ''}`, en: (n: number, kept: number) => `${n} unsold portions${kept > 0 ? ` · ${kept} kept for tomorrow` : ''}` },
     platesDetail: { sv: (n: number) => `Rester från ${n} tallrikar`, en: (n: number) => `Leftovers from ${n} plates` },
     glassDetail: { sv: (n: number) => `${n} tomma flaskor`, en: (n: number) => `${n} empty bottles` },
     cardboardDetail: { sv: 'Morgonens leveranser', en: 'This morning’s deliveries' },

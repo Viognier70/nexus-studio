@@ -34,7 +34,9 @@ export interface MorningPlan {
   practice?: PavilionKey[];
   activities?: string[];
   // Godtyckliga åtgärder på morgonen (t.ex. klassbyte på söndag).
-  actions?: SimAction[];
+  // ORDER 284 — eller en funktion av morgonens läge (t.ex. inköp som
+  // beror på om klassen har paket).
+  actions?: SimAction[] | ((s: SimulationState) => SimAction[]);
   // ORDER 275 — lagret är insatsen. Den rimliga spelaren köper klassens
   // baspaket varje morgon ('base', förvalt); den svaga handlar själv
   // ('none', se scenarios.ts weakMorning). Klasser utan paket påverkas inte.
@@ -154,7 +156,8 @@ export function playMorning(s: SimulationState, plan: MorningPlan): SimulationSt
   for (const id of plan.activities ?? []) s = reducer(s, { type: 'PICK_ACTIVITY', id });
   const pkgs = packagesFor(s.economy.businessClass);
   if (pkgs && (plan.stock ?? 'base') === 'base') s = reducer(s, { type: 'BUY_PACKAGE', packageId: pkgs.base.id });
-  for (const a of plan.actions ?? []) s = reducer(s, a);
+  const actions = typeof plan.actions === 'function' ? plan.actions(s) : plan.actions ?? [];
+  for (const a of actions) s = reducer(s, a);
   // Kvällen stängd eller öppen enligt planen (växeln ligger kvar mellan dagar).
   if (Boolean(plan.closeEvening) !== s.scaleDown.closedDinner) {
     s = reducer(s, { type: 'CLOSE_SERVICE', service: 'dinner' });

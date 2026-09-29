@@ -218,7 +218,10 @@ const RACK_T = 0.44;
 const TABLE_TOP_Y = 0.72;
 const CHAIR_H = 0.45;
 const STOOL_H = 0.75;
-const LOUNGE_H = 0.38;
+// ORDER 284 — 0,45 m som stolssitsen (CLAUDE.md, referensmåtten): på 0,38 m
+// hamnade den sittande figurens rot under golvet ("en gäst satte sig på
+// golvet", tredje provspelet). Figuren är byggd för 0,45 m.
+const LOUNGE_H = 0.45;
 const LOUNGE_TOP_Y = 0.45;
 const KITCHEN = { x0: -7.6, x1: -4.6, z0: 1.6, z1: 5.7 };
 const DJ = { x0: 4.4, x1: 7.4, z0: -5.6, z1: -3.3, cx: 5.7, cz: -4.2, platform: 0.25 };

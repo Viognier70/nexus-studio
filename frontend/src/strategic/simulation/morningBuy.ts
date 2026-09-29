@@ -55,7 +55,7 @@ const BY_THE_GLASS = /, by the glass$/;
 
 export function morningRows(state: SimulationState): { dishes: DishRow[]; drinks: DrinkRow[] } {
   const ids = packageDishIds(state.economy.businessClass);
-  const plates = computePlatesRemaining(ids.map((dishId) => ({ dishId, price: 0, ingredientCostSek: 0 })), state.stock);
+  const plates = computePlatesRemaining(ids.map((dishId) => ({ dishId, price: 0, ingredientCostSek: 0 })), state.stock, state.dishPortions);
   const dishes: DishRow[] = ids
     .filter((id) => findDish(id)?.kind !== 'drink')
     .map((id) => ({

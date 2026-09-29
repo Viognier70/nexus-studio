@@ -110,7 +110,10 @@ describe('ORDER 275 — svinnet', () => {
     expect(s.day.wasteSettled).toBe(true);
     expect(t.stock.chicken ?? 0).toBe(s.stock.chicken ?? 0);
     expect(WASTE.carryShare.chicken).toBeGreaterThan(0);
-    expect(t.stock.herbs ?? 0).toBe(0);
+    // ORDER 284 — en sparad portion sparas hel: örterna följer bara med de
+    // portioner som sparas (portionsboken), resten går till sopbilen.
+    const herbsForKept = Object.entries(t.dishPortions ?? {}).reduce((a, [id, p]) => a + p * (findDish(id)?.recipe.find((r) => r.ingredientId === 'herbs')?.units ?? 0), 0);
+    expect(t.stock.herbs ?? 0).toBe(herbsForKept);
     expect(t.stock['house-wine'] ?? 0).toBe(wineLeft);
     expect(t.packagesBoughtToday).toEqual([]);
     expect(t.eventStream.some((e) => e.kind === 'stock_waste')).toBe(true);

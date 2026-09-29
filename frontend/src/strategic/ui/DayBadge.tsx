@@ -19,10 +19,10 @@ export function phaseOf(period: DayPeriod): DayPhase {
 
 // ORDER 280 — Designs K1: dagen i en ruta överst till vänster, i
 // designsystemets form ("LÖRDAG · VECKA 1 AV 8   Servicen").
+// ORDER 284 — märket står först i raden uppe till vänster (.gb-topleft i
+// strategic.css), med klockan efter sig, så att klockan aldrig täcker dagens
+// namn (tredje provspelet).
 const BADGE_STYLE: React.CSSProperties = {
-  position: 'fixed',
-  top: 'calc(50 * var(--nx-u))',
-  left: 'calc(72 * var(--nx-u))',
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',

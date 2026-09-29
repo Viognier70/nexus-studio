@@ -30,6 +30,10 @@ export interface EveningAccountInputs {
   // diverges across scenario strategies at the same seed — the
   // 0.15/0.30 divergence target in M6 §5 depends on this signal.
   lastChoice: 'A' | 'B' | 'C' | null;
+  // ORDER 284 — kvällens raketer som gick fel (samma logg som K1:s lista
+  // "Det här gick fel"). Över noll får berättelsen inte säga att det inte
+  // fanns något att lära.
+  failedCount?: number;
 }
 
 const CAPITAL_NOUN: Record<SustainabilityKey, string> = {
@@ -122,12 +126,14 @@ function thinParagraph(drew: SustainabilityKey | null): string {
   ].join(' ');
 }
 
-function mediocreParagraph(drew: SustainabilityKey | null): string {
+function mediocreParagraph(drew: SustainabilityKey | null, failed = 0): string {
   const lead = drew ? MEDIOCRE_LEAD_BY_CAPITAL[drew] : 'Kvällen gick.';
   return [
     lead,
     'Rummet fyllde sig i sin egen takt, laget gjorde det de brukar göra, och gästerna gick utan att någon hade en historia att ta med sig därifrån.',
-    'Det finns inget att lära av kvällar som den här — inget att fira, inget att laga.',
+    failed > 0
+      ? 'Kassan säger inte mycket, men kvällens beslut lämnade något att titta på — se nedan.'
+      : 'Det finns inget att lära av kvällar som den här — inget att fira, inget att laga.',
     'De flesta kvällar är så, och det är därför de sällsynta är det de är.'
   ].join(' ');
 }
@@ -164,7 +170,7 @@ export function pickParagraph(inputs: EveningAccountInputs): string {
       case 'high_wager_loss':  return highWagerLossParagraph(inputs.wagerCapital, inputs.drewCapital);
       case 'good':             return goodParagraph(inputs.drewCapital);
       case 'thin':             return thinParagraph(inputs.drewCapital);
-      case 'mediocre':         return mediocreParagraph(inputs.drewCapital);
+      case 'mediocre':         return mediocreParagraph(inputs.drewCapital, inputs.failedCount ?? 0);
       default: {
         // Exhaustive switch guard — if the branch union grows, this
         // path becomes unreachable at type-check time.

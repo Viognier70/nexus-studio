@@ -1397,6 +1397,11 @@ export interface SimulationState {
   // Unbounded across days (§13 defers ageing to M4b); a slow leak
   // will show up on the reconciliation baseline.
   stock: Record<string, number>;
+  // ORDER 284 — köpta portioner per rätt (mat), i klasser med paket. En
+  // rätt kan bara säljas ur sina egna portioner, så att rätter som delar
+  // råvaror inte tar slut för varandra (stockPackages.ts). Saknas fältet
+  // räknas portionerna ur lagret som förut.
+  dishPortions?: Record<string, number>;
   // ORDER 275 — paket köpta i dag (morgonens gränssnitt), och gårdagens
   // svinn: osåld mat som kastades vid dagens slut.
   packagesBoughtToday?: string[];
@@ -1657,6 +1662,8 @@ export type SimAction =
   | { type: 'RETURN_ITEMS'; items: Record<string, number> }
   // ORDER 280 — Back your knowledge: spelaren startar själv en raket.
   | { type: 'START_BACK' }
+  // ORDER 284 — Back your knowledge: svaret låses och klockan stannar.
+  | { type: 'PICK_BACK_ANSWER'; optionId: string }
   // ORDER 283 — spelaren har läst introduktionen i Måltidens hus.
   | { type: 'SEE_HOUSE_INTRO' }
   // ORDER 077 §4 (M4) — morning menu composition. Freezes today's

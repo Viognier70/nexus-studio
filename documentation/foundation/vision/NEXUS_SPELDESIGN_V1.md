@@ -130,6 +130,13 @@ Bankmötet ger ett startlån som täcker lokal och inventarier för klassen. Lå
 
 Varje dag har Grythyttan en gästpool som följer veckodag, säsong och högtid. Poolen delas mellan spelaren och ortens krogar efter attraktivitet. Spelarens andel har ett tak som växer med kunskapen: 20 % plus 3 procentenheter per medaljsteg, där brons är ett steg och platina fyra. Förebilden är *Two Point Hospital*, där ryktet drar folk men kapaciteten sätter gränsen.
 
+### Byn
+
+*Beslut 2026-09-29 (Vision Owner, tredje provspelet):* förslaget om rivalerna byggs som byn.
+- Spelaren ser vilka krogar som har öppet, deras mat och priser, och gästflödet på gatorna.
+- Efter kvällen jämförs spelarens gäster och intäkt per stol med de andra krogarnas.
+- Spelaren kan zooma ut över byn och planera nästa kväll.
+
 ### Slumpen
 
 En enskild kväll får gå riktigt illa även för en duktig spelare. Över en vecka ska den bättre förberedda spelaren vinna ungefär tre veckor av fyra. Förebilden är *Slay the Spire*: slumpen avgör enskilda strider, skickligheten avgör resultatet över tid. Målet mäts med 1 000 simulerade veckor och fast fröslump.
@@ -257,6 +264,8 @@ Det här ersätter punkterna ovan om 3–6 händelser per kväll, 20 sekunders n
 
 *Beslut 2026-09-28 (Vision Owner, andra provspelet):* personalen byggs efter morgonen som insats, servicen som syns, frågorna och insatsen, och resten av engelskan. Den får då också personalnöjdhet.
 
+*Beslut 2026-09-29 (Vision Owner, tredje provspelet):* personalen byggs inte som en egen del. Den slås ihop med ritualerna i Servicen som teater, och personalnöjdheten följer med dit.
+
 ### Ritualerna
 
 *Beslut 2026-09-28 (Vision Owner, efter provspel): hantverket syns som ritualer i servicen.*
@@ -265,6 +274,16 @@ Det här ersätter punkterna ovan om 3–6 händelser per kväll, 20 sekunders n
 - Avecvagn, vintageport, flambering, ostvagn och cigarr kommer senare, som uppgraderingar per klass.
 
 *Beslut 2026-09-28 (Vision Owner, andra provspelet):* ritualerna byggs sist, efter personalen.
+
+*Beslut 2026-09-29 (Vision Owner, tredje provspelet):* ritualerna slås ihop med personalen i Servicen som teater.
+
+### Servicen som teater
+
+*Beslut 2026-09-29 (Vision Owner, tredje provspelet):* servicen spelas som teater i rummet.
+- Personal och gäster samspelar, med olika tempo och gester, och med tallrikar, glas och brickor som syns.
+- Oförutsedda händelser spelas upp i rummet, till exempel en födelsedag, en gäst i rullstol som välter en vas, en berusad gäst och en razzia från tillståndsenheten, som kan ge böter eller stängning.
+- Raketerna utlöses av det som syns i rummet: händelsen spelas upp först, och sedan kommer frågan.
+- Personalen, personalnöjdheten och ritualerna byggs här. Kräver Designs leverans.
 
 ### Action-knappen (utgår)
 
@@ -307,6 +326,15 @@ Spelaren får öppna med för lite råvaror. Före öppning visas en prognos i o
 
 *Beslut 2026-09-28 (Vision Owner, andra provspelet):* gästerna har kost, till exempel vegetarian, vegan eller allergi, och en plånbok. Saknas ett alternativ för gästen tappar spelaren försäljning och rykte, och ett sällskap kan lämna.
 
+*Beslut 2026-09-29 (Vision Owner, tredje provspelet):* gästerna har olika kapital, i Bourdieus mening.
+- Studenten har lite pengar och tar platser för billig öl. Därtill gäster med medelinkomst och med hög inkomst.
+- Gäster med socialt kapital drar fler gäster om de behandlas väl.
+- En miljardär i guld promenerar i byn, väljer ibland en krog och bjuder hela salen.
+
+### Stjärnorna
+
+*Beslut 2026-09-29 (Vision Owner, tredje provspelet):* krogen kan få stjärnor för en jämn och hög nivå, och kan förlora dem. En stjärna öppnar exklusiva råvaror, egna priser och gäster som kommer med bil utifrån.
+
 ### Händelser
 
 Händelser uppstår ur simuleringen, inte ur en kortlek. Dålig hygien leder till inspektion, gott rykte till en recensent, svag kassa till ett samtal från banken. Varje händelse har en orsak som kvällsberättelsen kan peka på.
@@ -316,6 +344,11 @@ Händelser uppstår ur simuleringen, inte ur en kortlek. Dålig hygien leder til
 ### Medgång
 
 Kvällsberättelsen börjar med det som gick bra, och först därefter det som gick fel. Personalens känslor som saknar avläsare, som `proud`, tas bort. Glädjen i spelet ska komma från kunskap som syns i verksamheten, från räddade kvällar och från medaljer, inte från fler röda varningar.
+
+### Kvällens resultat
+
+*Beslut 2026-09-29 (Vision Owner, tredje provspelet):* efter kvällen visas tydligt vad spelaren vann och förlorade: pengar, krediter, rykte, kunskap, erfarenhet, och social, ekonomisk och ekologisk hållbarhet.
+- Svinnet ska kunna användas nästa dag, med frågor om hur råvarorna tas tillvara.
 
 ## Professionell mognad och portfolio
 
@@ -338,6 +371,16 @@ Portfolion fylls i automatiskt av det spelaren gör, aldrig av henne själv. Var
 Förebilden är karriärstegen i *The Sims*: en titel man vill nå, med tydliga krav som går att arbeta mot.
 
 ## Ramar för version 1
+
+### Användbarheten
+
+*Beslut 2026-09-29 (Vision Owner, tredje provspelet):*
+- Knappar som behövs för att gå vidare syns alltid, på alla skärmstorlekar, och vyerna går att scrolla.
+- Vägen från morgonen till inköpen är tydlig.
+- Klockan täcker aldrig dagens namn eller en rubrik.
+- I Back your knowledge räknas tiden så att spelaren hinner välja säkerhet efter att hen valt svar.
+- Tar krediterna slut visas hur man tjänar nya.
+- Kvällsberättelsen säger aldrig att det inte fanns något att lära om den sedan listar fel.
 
 ### Introduktionen
 
@@ -368,6 +411,8 @@ Följande ur ORDER 100 byggs inte i version 1: NPC:er med egna liv, byggnader so
 *Förslag 2026-09-29 (Claude Code, på Vision Owners uppdrag). Inget av detta är beslutat eller byggt. Vision Owner beslutar efter provspel.* Förslagen bygger på innehåll ur Vision Owners tidigare spel Sommelier Championship och Gastronoma. Koden därifrån tas inte in.
 
 ### Rivalerna
+
+*Beslutat 2026-09-29 (Vision Owner, tredje provspelet):* byggs som byn, se Ekonomin > Byn.
 
 Grythyttan har fler krogar än spelarens. I dag är de bara en andel av marknaden (Ekonomin > Marknaden). Förslaget är att de får namn, plats och en ställning som syns.
 
@@ -419,6 +464,8 @@ Förslaget är en veckohyra per klass, dragen vid veckoavräkningen och synlig i
 *Idé 2026-09-29 (Vision Owner, från Gastronoma). Byggs inte i version 1.*
 
 - **Flera spelare i klassrummet.** Läraren startar ett spel och får en spelkod. Eleverna går med på koden, var och en med sin krog i samma Grythyttan. Ställningen, rivalerna och kriserna i zonen och byn delas i realtid via Supabase, så att en kris i byn drabbar alla samtidigt och söndagstidningen rankar klassens krogar. Kräver inloggning, en server för spelets tillstånd och ett beslut om vad som får sparas om eleverna (Utanför version 1: flera spelare).
+
+- **Flera spelare som följer miljardären.** *Idé 2026-09-29 (Vision Owner, tredje provspelet).* Flera spelare följer miljardären genom byn tillsammans.
 
 ## Principer för spelglädje och lärande
 

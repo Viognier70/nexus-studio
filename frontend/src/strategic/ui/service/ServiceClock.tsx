@@ -79,14 +79,13 @@ export function ServiceClock() {
       data-left-minutes={c?.leftMinutes ?? ''}
       data-last-orders={c?.lastOrders ?? false}
       style={{
-        position: 'fixed',
-        top: u(50),
-        // Designs x 740 krockar med kassan, krediterna, farten och menyn i
-        // spelets högra kluster; klockan står därför mellan dagen och klustret.
-        left: u(540),
+        // ORDER 284 — klockan står efter dagsmärket i raden uppe till vänster
+        // (.gb-topleft i strategic.css), inte på en fast x: med ett långt
+        // dagsnamn täckte den märket (tredje provspelet). Designs x 740
+        // krockar med kassan, krediterna, farten och menyn till höger.
+        flexShrink: 0,
         width: u(440),
         padding: `${u(12)} ${u(22)} ${u(10)}`,
-        zIndex: 46,
         pointerEvents: 'none',
         boxSizing: 'border-box'
       }}
