@@ -555,6 +555,14 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 
 - `Teaterns grund - prototyp.html` (läses, monteras inte) och `servering-bord-4.webm` (en hel servering vid bord 4).
 
+## documentation/leveranser/nexus-leverans-2026-09-29-teaterns-grund-tillagg/
+
+- `LEVERANSNOT.md`: LEVERANSNOT — tillägg till leverans 2 (teaterns grund): sittklipp för barstol och lounge, rättad nyckelfil för leverans 1, kameran i manusen inför leverans 3.
+- 2 tillhörande filer (kod, strängar): `figureClips.ts` (ersätter leverans 2:s), `theatreStrings.ts` (ersätter leverans 2:s).
+- `rattelse-leverans-1/nexusStrings.varm.ts`: nyckelfilen för leverans 1 med platshållare i stället för tal (ersätter `nexus-leverans-2026-09-29-varma-designsystemet/nexusStrings.varm.ts`).
+- `prototyp/Teaterns grund - prototyp.html` (läses, monteras inte).
+- 15 bilder (15 .png) i `bilder/`: bl.a. `vinbar-02-upp-pa-barstolen.png`, `vinbar-03-ned-i-loungen.png`, `sitsen-barstol-02-foten-pa-ringen.png`, `tempo-04-lounge-lugn-normal-stressad.png`.
+
 ## documentation/orders/
 
 - `ORDER - vinbaren.md`: ORDER — Vinbaren: montering av `wineBarRoom.ts`.

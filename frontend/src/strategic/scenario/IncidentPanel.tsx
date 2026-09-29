@@ -202,6 +202,8 @@ export function IncidentCard() {
       if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
       const i = ['1', '2', '3', '4'].indexOf(e.key);
       if (i < 0) return;
+      // ORDER 286a — inga svar medan figurens klipp spelas i rummet.
+      if ((active?.introLeft ?? 0) > 0) return;
       e.preventDefault();
       e.stopImmediatePropagation();
       const o = step.options[i];
@@ -214,6 +216,9 @@ export function IncidentCard() {
   }, [mode, step, active?.struck, dispatch, backed]);
 
   if (!view || !step) return null;
+  // ORDER 286a — raketen börjar i rummet: kortet öppnas när figurens klipp
+  // har spelats (introLeft).
+  if (view.mode === 'ask' && active && (active.introLeft ?? 0) > 0) return null;
   const { incident } = view;
   const s = strings.service.incident;
   const t = strings.rocket.card;

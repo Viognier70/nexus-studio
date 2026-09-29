@@ -758,6 +758,25 @@ export const MORNING_STAKE = {
 // ORDER 279 — frågorna och insatsen (Vision Owner 2026-09-28, andra
 // provspelet). Speldesign > Servicen > Händelserna i servicen och
 // > Insatsen. Valda tal (F52). Insatsen ersattes i ORDER 280 (BACK nedan).
+// ORDER 286a — servicen som teater (Designs leverans 2, teaterns grund;
+// Vision Owner 2026-09-29). Raketen börjar i rummet: figuren spelar sitt
+// raketklipp först, och raketkortet öppnas efter det. Längderna är klippens
+// vid normalt tempo (figureClips.ts; ett test kräver att de är lika). Gången
+// mot köket spelas lika länge som frågan. Kameran glider in mot figuren till
+// distanceM och tillbaka efter svaret. Tempot per anställd följer trycket
+// (regissörens stress 0..1): lugnt under calmBelow, stressat från
+// stressedFrom.
+export const THEATRE = {
+  section: 'Servicen > Servicen som teater',
+  rocketIntroSeconds: { cutHand: 3.4, smellWine: 4, askPointMenu: 4, walkToKitchen: 4 } as Record<'cutHand' | 'smellWine' | 'askPointMenu' | 'walkToKitchen', number>,
+  camera: { distanceM: 12, glideInSeconds: 1.2, glideOutSeconds: 1.0 },
+  /** Bildtexten står så högt över figurens fötter (ovanför huvudet). */
+  captionHeightM: 2.1,
+  /** Gästen som går mot köket hinner så stor del av vägen till passet under introt. */
+  kitchenWalkShare: 0.6,
+  tempo: { calmBelow: 0.34, stressedFrom: 0.67 }
+} as const;
+
 export const MENU_ROCKETS = {
   section: 'Servicen > Händelserna i servicen',
   openQuestion: 'F52',

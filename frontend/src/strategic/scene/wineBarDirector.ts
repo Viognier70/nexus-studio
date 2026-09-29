@@ -182,7 +182,7 @@ const ENJOY_BLOCK_S = 14;
 /** Poseen 'waitLeaving' är en envelopp på ≈ 6 s (figureActs). */
 const LEAVING_ENVELOPE_S = 6;
 /** Passet: servitörens sida (serviceFlow CORR_X, z 2,7) och kockens sida. */
-const PASS_FLOOR: Vec2 = [CORR_X, 2.7];
+export const PASS_FLOOR: Vec2 = [CORR_X, 2.7];
 const PASS_KITCHEN: Vec2 = [-5.05, 2.7];
 /** Sommelierens flaska hämtas vid vinväggens östra ände (serviceFlow). */
 const BOTTLE_PICKUP: Vec2 = [1.3, 0.62];
@@ -337,6 +337,26 @@ interface PartyTrack {
 
 // #endregion
 
+// ORDER 286a — ett föremål och dess ägare (propLedger).
+interface PropItem {
+  id: string;
+  item: NonNullable<FigureSample['carrying']>;
+  task: Task;
+  group: Group | null;
+  clearTask: Task | null;
+  /** Disken som bärs tillbaka till passet efter avdukningen. */
+  back: boolean;
+}
+
+export type PropOwner =
+  | { kind: 'staff'; key: StaffKey }
+  | { kind: 'table'; group: string; groupKind: Group['kind']; at: Vec2; facing: number; slot: number };
+
+export interface LedgerEntry { id: string; item: NonNullable<FigureSample['carrying']>; owner: PropOwner }
+
+/** En anställds uppgift just nu: vad hen bär, varifrån och vart (LEVERANSNOT §8). */
+export interface StaffTaskView { pose: DirectorPose; carry: FigureSample['carrying'] | null; from: Vec2 | null; to: Vec2; done: number }
+
 export class WineBarDirector {
   readonly guestSamples: FigureSample[];
   readonly staffSamples: FigureSample[];
@@ -357,6 +377,10 @@ export class WineBarDirector {
   private partySeq = 0;
   /** Gäster som inte fick plats i poolen (DEV-diagnos). */
   overflow = 0;
+  // ORDER 286a — föremålen som bärs och står på borden (Designs leverans 2,
+  // LEVERANSNOT §8: "Ägandet av föremålen … så att en tallrik inte finns på
+  // två ställen"). Ett föremål per uppgift som bär något.
+  private readonly items: PropItem[] = [];
 
   constructor(room: DirectorRoom, opts: DirectorOptions) {
     this.room = room;
@@ -395,6 +419,7 @@ export class WineBarDirector {
   reset(): void {
     this.tracks.clear();
     this.parties.clear();
+    this.items.length = 0;
     this.pending = [];
     this.freeSlots.length = 0;
     for (let i = 0; i < this.opts.poolSize; i++) this.freeSlots.push(this.opts.poolSize - 1 - i);
@@ -416,6 +441,7 @@ export class WineBarDirector {
     this.readGuests(input);
     this.advanceParties(input);
     this.completeTasks(t);
+    this.pruneItems(t);
     this.handleTakeover(input);
     this.assignPending(t);
     this.sendIdleHome(t);
@@ -628,10 +654,14 @@ export class WineBarDirector {
     if (!p.cleared && p.orderTask) {
       p.cleared = true;
       const bar = p.group.kind === 'bar';
-      this.addTask({
+      const clear = this.addTask({
         party: null, roles: [bar ? 'bartender' : 'server'], target: p.group.serveAt, facing: p.group.serveFacing,
         pose: 'clear', dur: 3, carryBack: bar ? null : 'dishes', ready: t + 2
       });
+      // Det som står på bordet tas av avdukningen.
+      for (const it of this.items) if (it.group === p.group && !it.back && !it.clearTask) it.clearTask = clear;
+    } else {
+      for (const it of this.items) if (it.group === p.group && !it.back && !it.clearTask) it.clearTask = { state: 'done', done: t } as Task;
     }
   }
 
@@ -706,12 +736,67 @@ export class WineBarDirector {
 
   // ---------- personalen ----------
 
+  /** ORDER 286a — vem som har vilket föremål vid tiden t. Ett föremål har
+   *  högst en ägare: den som bär det (från att det tas upp tills uppgiften
+   *  är klar), sedan bordet tills det dukas av. Föremål som inte har tagits
+   *  upp än, eller som är borta, står inte med. */
+  propLedger(t: number): LedgerEntry[] {
+    const out: LedgerEntry[] = [];
+    const perGroup = new Map<string, number>();
+    for (const it of this.items) {
+      const task = it.task;
+      if (task.state === 'cancelled' || !task.actor) continue;
+      const a = task.actor;
+      if (it.back) {
+        // Disken: från avdukningen till passet.
+        const last = a.segs.slice(task.firstSeg).filter((s) => s.carrying === it.item).pop();
+        if (last && t >= task.done && t < last.t1) out.push({ id: it.id, item: it.item, owner: { kind: 'staff', key: a.key } });
+        continue;
+      }
+      const first = a.segs.slice(task.firstSeg).find((s) => s.carrying === it.item);
+      const carryFrom = first ? first.t0 : task.done;
+      if (t >= carryFrom && t < task.done) {
+        out.push({ id: it.id, item: it.item, owner: { kind: 'staff', key: a.key } });
+      } else if (t >= task.done && it.group && !(it.clearTask && t >= it.clearTask.done)) {
+        const g = it.group;
+        const slot = perGroup.get(g.id) ?? 0;
+        perGroup.set(g.id, slot + 1);
+        out.push({ id: it.id, item: it.item, owner: { kind: 'table', group: g.id, groupKind: g.kind, at: g.serveAt, facing: g.serveFacing, slot } });
+      }
+    }
+    return out;
+  }
+
+  /** ORDER 286a — den anställdas pågående eller nästa uppgift. */
+  staffTask(key: StaffKey, t: number): StaffTaskView | null {
+    const a = this.actors.find((x) => x.key === key);
+    const task = a?.tasks.find((k) => k.state !== 'cancelled' && k.done > t);
+    if (!task) return null;
+    return { pose: task.pose, carry: task.carry ?? task.carryBack ?? null, from: task.pickup ?? null, to: task.target, done: task.done };
+  }
+
+  /** ORDER 286a — stolen en sittande gäst har (LEVERANSNOT §8: en stol per sittande gäst). */
+  guestSeat(guestId: string): DirectorSeat | null {
+    return this.tracks.get(guestId)?.seat ?? null;
+  }
+
+  /** Föremål som är borta sedan länge tas bort, så att listan inte växer. */
+  private pruneItems(t: number): void {
+    for (let i = this.items.length - 1; i >= 0; i--) {
+      const it = this.items[i];
+      const gone = it.task.state === 'cancelled' || (it.clearTask && t > it.clearTask.done + 5) || (it.back && t > it.task.done + 120);
+      if (gone) this.items.splice(i, 1);
+    }
+  }
+
   private addTask(o: Partial<Task> & { roles: StaffRoleKey[]; target: Vec2; facing: number; pose: DirectorPose; dur: number; ready: number; party: PartyTrack | null }): Task {
     const task: Task = {
       id: this.taskSeq++, state: 'pending', actor: null, arrive: Infinity, done: Infinity, firstSeg: -1,
       ...o
     } as Task;
     this.pending.push(task);
+    if (task.carry && task.party) this.items.push({ id: `${task.carry}:${task.id}`, item: task.carry, task, group: task.party.group, clearTask: null, back: false });
+    if (task.carryBack) this.items.push({ id: `${task.carryBack}:${task.id}`, item: task.carryBack, task, group: null, clearTask: null, back: true });
     return task;
   }
 
@@ -1049,7 +1134,9 @@ export class WineBarDirector {
 
     const seat = tr.seat;
     if (!seat) { out.visible = false; return; }
-    const seatedY = seat.seatSurfaceY - this.opts.seatedHipY;
+    // ORDER 286a: roten står aldrig under golvet. Sittklippen (figureClips) sänker
+    // höften från golvet till sitsen själva; höjden här gäller figureActs-poserna.
+    const seatedY = Math.max(this.room.floorY, seat.seatSurfaceY - this.opts.seatedHipY);
     out.x = seat.local[0]; out.z = seat.local[1];
     out.facing = seat.facing;
     out.phase = t + (tr.seed % 97) * 0.13;

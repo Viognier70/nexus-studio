@@ -163,6 +163,9 @@ export type PoseName =
 export const FIGURE = {
   totalHeight: 1.70,
   hipY: 0.86,
+  // ORDER 286a — höftens sänkning sittande på en sits på 0,45 m (hipY − 0,45),
+  // samma som poseSeated; Designs figureClips.ts (leverans 2) läser den här.
+  seatedHipDrop: 0.41,
   torsoHeight: 0.588,
   neckLength: 0.012,
   headRadius: 0.12,

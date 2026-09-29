@@ -1235,7 +1235,7 @@ export const TABLE = {
   // svar gör resterna säljbara i dag; annars går de till sopbilen.
   salvage: {
     kicker: { sv: 'Gårdagens rester', en: "Yesterday's leftovers" },
-    title: { sv: (n: number, dish: string) => `${n} ${pl(n, 'portion', 'portioner')} ${dish} står kvar i kylrummet`, en: (n: number, dish: string) => `${n} ${pl(n, 'portion', 'portions')} of ${dish} are left in the cold room` },
+    title: { sv: (n: number, dish: string) => `${n} ${pl(n, 'portion', 'portioner')} ${dish} står kvar i kylrummet`, en: (n: number, dish: string) => `${n} ${pl(n, 'portion', 'portions')} of ${dish} ${pl(n, 'is', 'are')} left in the cold room` },
     right: { sv: (n: number) => `Rätt. ${n} ${pl(n, 'portion', 'portioner')} går att sälja i kväll.`, en: (n: number) => `Right. ${n} ${pl(n, 'portion', 'portions')} can be sold tonight.` },
     wrong: { sv: (fee: string) => `Inte så. Resterna går till sopbilen (${fee}).`, en: (fee: string) => `Not like that. The leftovers go to the bin lorry (${fee}).` },
     done: { sv: 'Vidare', en: 'Continue' },
@@ -1367,6 +1367,16 @@ export const TABLE = {
     continue: { sv: 'Till kvällens lärdom', en: "To tonight's lesson" },
     points: { sv: (v: string) => `${v} poäng`, en: (v: string) => `${v} pts` },
     kg: { sv: (v: string) => `${v} kg`, en: (v: string) => `${v} kg` }
+  },
+  // ORDER 286a — bildtexten vid figuren när raketen börjar i rummet (Designs
+  // leverans 2, theatreStrings.ts rocket.*; bordet formateras i koden).
+  theatre: {
+    caption: {
+      cutHand: { sv: 'Bartendern skär sig på en flaska', en: 'The bartender cuts a hand on a bottle' },
+      smellWine: { sv: 'Värden luktar på vinet och ställer ned glaset', en: 'The host smells the wine and puts the glass down' },
+      askPointMenu: { sv: (table: string) => `Gästen vid bord ${table} frågar och pekar i menyn`, en: (table: string) => `The guest at table ${table} asks and points at the menu` },
+      walkToKitchen: { sv: 'En gäst går mot köket', en: 'A guest heads for the kitchen' }
+    }
   },
   // ORDER 283 — introduktionen till de tre kunskapsformerna, första gången
   // spelaren kommer till Måltidens hus. Utkast för Vision Owners granskning,
@@ -1583,7 +1593,7 @@ export const TABLE = {
     calibRow: { sv: (r: number, n: number) => `${r} av ${n} rätt`, en: (r: number, n: number) => `${r} of ${n} right` },
     calibNote: {
       sv: { overconfident: (r: number, n: number) => `Vet det höll i ${r} av ${n}. Här tror du dig kunna mer än du kan.`, underconfident: () => 'Dina gissningar stämmer oftare än du tror. Stå för dem.', default: () => 'Stå för så mycket som du kan. Då mäter krediterna vad du vet.' } as Record<string, (r: number, n: number) => string>,
-      en: { overconfident: (r: number, n: number) => `Know it held ${r} of ${n} times. Here you think you know more than you do.`, underconfident: () => 'Your guesses are right more often than you think. Back them.', default: () => 'Back what you know. Then your credits measure what you know.' } as Record<string, (r: number, n: number) => string>
+      en: { overconfident: (r: number, n: number) => `Know it held ${r} of ${n} ${pl(n, 'time', 'times')}. Here you think you know more than you do.`, underconfident: () => 'Your guesses are right more often than you think. Back them.', default: () => 'Back what you know. Then your credits measure what you know.' } as Record<string, (r: number, n: number) => string>
     },
     credits: { sv: 'Krediter', en: 'Credits' },
     creditsAria: { sv: (n: number) => `Krediter: ${n}`, en: (n: number) => `Credits: ${n}` },

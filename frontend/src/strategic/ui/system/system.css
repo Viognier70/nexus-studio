@@ -218,3 +218,20 @@
 @media (prefers-reduced-motion: reduce) {
   .nx *, .nx *::before, .nx *::after { transition: none !important; animation: none !important; }
 }
+
+/* ORDER 286a — bildtexten vid figuren när raketen börjar i rummet
+   (Designs leverans 2, rocket.*). Mörkt trä, grädde, mässingskant. */
+.nx-theatre-caption {
+  font-family: var(--nx-font-body, 'Figtree', sans-serif);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--w-cream, #f3e6cc);
+  background: rgba(43, 28, 18, 0.86);
+  border: 1px solid rgba(215, 162, 76, 0.55);
+  border-radius: 6px;
+  padding: 0.3rem 0.6rem;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+}

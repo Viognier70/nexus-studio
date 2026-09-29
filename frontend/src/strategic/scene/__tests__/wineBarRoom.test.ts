@@ -44,7 +44,7 @@ import { isRenderedByOsmBuildings, osmBuildingVolume } from '../OsmBuildings';
 import { SKIP_PROCEDURAL_IDS } from '../ProceduralFacades';
 import { paramsFor } from '../../../lib/facade/paramsFor';
 import { buildFacade } from '../../../lib/facade/buildFacade';
-import { SEATED_HIP_Y } from '../WineBarFigures';
+import { SEAT_KINDS, SEAT_RULE, seatKindFromRoom } from '../figureClips';
 
 const REPORT_DIR = resolve(__dirname, '../../../../reports/order271');
 
@@ -119,11 +119,16 @@ describe('ORDER 271 — vinbaren (paket 1), kontraktet', () => {
 
   // ORDER 284 — "en gäst satte sig på golvet" (tredje provspelet): loungens
   // dyna låg på 0,38 m, och den sittande figurens rot (sits − SEATED_HIP_Y,
-  // wineBarDirector.ts) hamnade under golvet. Ingen plats får vara lägre än
-  // figuren är byggd för.
+  // wineBarDirector.ts) hamnade under golvet. ORDER 286a (tillägget till
+  // leverans 2): sittklippen sänker höften från golvet till sitsens egen höjd
+  // (SEAT_KINDS), så varje sits ska passa sin sort; regissörens rot spärras
+  // vid golvet (wineBarDirector.ts seatedY).
   it('ingen sittande gäst hamnar under golvet', () => {
     const { room } = mountLikeScene();
-    for (const s of room.seats) expect(s.seatSurfaceY - SEATED_HIP_Y).toBeGreaterThanOrEqual(room.floorY - 1e-9);
+    for (const s of room.seats) {
+      const kind = seatKindFromRoom(s.kind);
+      expect(Math.abs(s.seatHeight - SEAT_KINDS[kind].height), s.id).toBeLessThanOrEqual(SEAT_RULE.seatHeightTolerance);
+    }
   });
 
   it('platsordningen: 20 platser, seatIndex 0..19, bordsplatser före barstolar', () => {

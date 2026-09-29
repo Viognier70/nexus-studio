@@ -218,17 +218,27 @@ const RACK_T = 0.44;
 const TABLE_TOP_Y = 0.72;
 const CHAIR_H = 0.45;
 const STOOL_H = 0.75;
-// ORDER 284 — 0,45 m som stolssitsen (CLAUDE.md, referensmåtten): på 0,38 m
-// hamnade den sittande figurens rot under golvet ("en gäst satte sig på
-// golvet", tredje provspelet). Figuren är byggd för 0,45 m.
-const LOUNGE_H = 0.45;
+// ORDER 286a (tillägget till leverans 2): fotringen, där barstolens klipp sätter
+// sulan (figureClips SEAT_KINDS.stool.footrest).
+const STOOL_FOOTRING = { y: 0.30, radius: 0.2, tube: 0.014 };
+// ORDER 284 höjde dynan till 0,45 m, eftersom de gamla sittposerna var byggda
+// för stolens 0,45 m och rotens höjd räknades ur sitsen. ORDER 286a (tillägget
+// till leverans 2): loungens sittklipp är författade för 0,38 m
+// (figureClips SEAT_KINDS.lounge) och sänker höften från golvet, så dynan står
+// åter på 0,38 m och fötterna i golvet.
+const LOUNGE_H = 0.38;
 const LOUNGE_TOP_Y = 0.45;
+// ORDER 286a — ytorna rekvisitan ställs på (över golvet, utan sockeln), samma
+// höjder som rummet ritar borden och disken med.
+export const SURFACE_HEIGHT: Record<'two' | 'lounge' | 'bar', number> = { two: TABLE_TOP_Y, lounge: LOUNGE_TOP_Y, bar: BAR.height };
 const KITCHEN = { x0: -7.6, x1: -4.6, z0: 1.6, z1: 5.7 };
 const DJ = { x0: 4.4, x1: 7.4, z0: -5.6, z1: -3.3, cx: 5.7, cz: -4.2, platform: 0.25 };
 const STOOL_X = [-2.7, -1.8, -0.9, 0.0];
 const STOOL_Z = 2.3;
 const LOUNGE_Z = 5.1;
-const LOUNGE_TABLE_Z = 3.75;
+// ORDER 286a (tillägget till leverans 2, Vision Owner 2026-09-29): bordet
+// 0,95 m framför dynans mitt, inom räckhåll för den som sitter (förut 1,35 m).
+const LOUNGE_TABLE_Z = 4.15;
 const LOUNGE_CX = [-1.8, 2.0];
 const TWO_Z = -4.4;
 const TWO_X = [-4.2, -2.1, 0.0];
@@ -457,6 +467,12 @@ function box(w: number, h: number, d: number): THREE.BufferGeometry {
   const key = 'b' + w.toFixed(3) + '_' + h.toFixed(3) + '_' + d.toFixed(3);
   let g = geometryCache.get(key);
   if (!g) { g = new THREE.BoxGeometry(w, h, d); geometryCache.set(key, g); }
+  return g;
+}
+
+function footring(): THREE.BufferGeometry {
+  let g = geometryCache.get('footring');
+  if (!g) { g = new THREE.TorusGeometry(STOOL_FOOTRING.radius, STOOL_FOOTRING.tube, 6, 20); geometryCache.set('footring', g); }
   return g;
 }
 
@@ -843,7 +859,7 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
       seats.push({
         id: id + (k + 1), kind: 'lounge', seatIndex: seats.length, furnitureId: id + 'Table',
         seatNodeId: id + 'Cushion' + k, local: [sx, LOUNGE_Z], seatHeight: LOUNGE_H,
-        seatSurfaceY: Y + LOUNGE_H, facing: Math.PI, approach: [sx, 4.45], lane: 'north'
+        seatSurfaceY: Y + LOUNGE_H, facing: Math.PI, approach: [sx, LOUNGE_INNER_Z], lane: 'north'
       });
     }
   });
@@ -886,6 +902,8 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
       put(c, cyl(0.19, 0.05, 12), M.chair, 0, Y + STOOL_H, 0, sid + 'Seat');
       put(c, cyl(0.045, STOOL_H, 8), M.chair, 0, Y + STOOL_H / 2, 0, sid + 'Stem');
       put(c, cyl(0.17, 0.03, 12), M.brass, 0, Y + 0.02, 0, sid + 'Foot');
+      const ring = put(c, footring(), M.brass, 0, Y + STOOL_FOOTRING.y, 0, sid + 'Footring');
+      ring.rotation.x = Math.PI / 2;
       seats.push({
         id: 'bar' + n, kind: 'bar', seatIndex: seats.length, furnitureId: side > 0 ? 'barCounterN' : 'barCounterS',
         seatNodeId: sid, local: [x, z], seatHeight: STOOL_H, seatSurfaceY: Y + STOOL_H,
@@ -1023,7 +1041,8 @@ export function updateCutaway(room: WineBarRoom, camera: THREE.Object3D): WallSi
 const SPINE_X = 3.6;
 const NORTH_Z = 3.1;
 const SOUTH_Z = -3.25;
-const LOUNGE_INNER_Z = 4.45;
+// Gången mellan loungebordet och dynornas sockel (bordets kant 4,425, sockeln 4,70).
+const LOUNGE_INNER_Z = 4.56;
 
 export function walkPathToSeat(room: WineBarRoom, seatId: string): Vec2[] {
   const seat = room.seats.find(function (s) { return s.id === seatId; });
