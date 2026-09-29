@@ -87,7 +87,12 @@ describe('ORDER 271 — första bankmötet (B0a, B0b)', () => {
 
 describe('ORDER 271 — Måltidens hus (O1, O2, MD1, MD2)', () => {
   it('MD1 utan besök; O2 med en ruta per fråga och ingen poängsiffra', () => {
-    const base = makeNewGameState(7);
+    // ORDER 283 — första besöket visar introduktionen till kunskapsformerna;
+    // efter den MD1.
+    const first = render(withSim(makeNewGameState(7), <MaltidensHusDialog open onClose={() => {}} />));
+    expect(first.getByTestId('house-intro')).toBeTruthy();
+    cleanup();
+    const base = { ...makeNewGameState(7), houseIntroSeen: true };
     const md1 = render(withSim(base, <MaltidensHusDialog open onClose={() => {}} />));
     expect(md1.getByTestId('screen-MD1')).toBeTruthy();
     cleanup();

@@ -1,0 +1,740 @@
+{
+  "schemaVersion": 1,
+  "note": "ORDER 283 — utkast ur Vision Owners tidigare spel Sommelier Championship (SommelierChampionship.jsx, QUESTIONS). Varje fråga har status 'utkast' och används inte i spelet förrän Vision Owner godkänt den (questionBank.ts authoredQuestions hoppar över utkast). Domän → paviljong och axel: vetenskap → Måltidsbiblioteket, episteme; hantverk → Stensöta, techne (sommellerie); estetisk gestaltning → Kalastorget, phronesis. Svårighet 1/2/3 → brons/silver/guld. Referensen är den forskning frågan eller förklaringen bygger på, som den står i originalet; länken är tom (null) tills Vision Owner levererar den. Alternativens ordning är roterad så att rätt svar inte alltid står på samma plats. Engelska: Claude Codes översättning. Svenska: originalet, med scenariot före frågan.",
+  "questions": [
+    {
+      "id": "somm-v1",
+      "pavilion": "maltidbiblioteket",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Herdenstam (2011), Den arbetande gommen, KTH",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS v1"
+    },
+    {
+      "id": "somm-v2",
+      "pavilion": "maltidbiblioteket",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Harrington, the Food & Beverage Pyramid",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS v2"
+    },
+    {
+      "id": "somm-v3",
+      "pavilion": "maltidbiblioteket",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 3,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Herdenstam (2011), Den arbetande gommen, KTH",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS v3"
+    },
+    {
+      "id": "somm-v4",
+      "pavilion": "maltidbiblioteket",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 3,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Herdenstam (2011), Den arbetande gommen, KTH",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS v4"
+    },
+    {
+      "id": "somm-v5",
+      "pavilion": "maltidbiblioteket",
+      "level": "guld",
+      "asker": "sommelier",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS v5"
+    },
+    {
+      "id": "somm-v6",
+      "pavilion": "maltidbiblioteket",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Herdenstam (2011), Den arbetande gommen, KTH",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS v6"
+    },
+    {
+      "id": "somm-v7",
+      "pavilion": "maltidbiblioteket",
+      "level": "guld",
+      "asker": "sommelier",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Harrington, the Food & Beverage Pyramid",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS v7"
+    },
+    {
+      "id": "somm-h1",
+      "pavilion": "stensota",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Herdenstam (2011), Den arbetande gommen, KTH",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS h1"
+    },
+    {
+      "id": "somm-h2",
+      "pavilion": "stensota",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Herdenstam (2011), Den arbetande gommen, KTH",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS h2"
+    },
+    {
+      "id": "somm-h3",
+      "pavilion": "stensota",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Herdenstam (2011), Den arbetande gommen, KTH",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS h3"
+    },
+    {
+      "id": "somm-h4",
+      "pavilion": "stensota",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 3,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Herdenstam (2011), Den arbetande gommen, KTH",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS h4"
+    },
+    {
+      "id": "somm-h5",
+      "pavilion": "stensota",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Herdenstam (2011), Den arbetande gommen, KTH",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS h5"
+    },
+    {
+      "id": "somm-h6",
+      "pavilion": "stensota",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS h6"
+    },
+    {
+      "id": "somm-e1",
+      "pavilion": "kalastorget",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Herdenstam (2011), Den arbetande gommen, KTH; Crichton-Fock, Spence & Pettersson (2023), Frontiers in Psychology",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS e1"
+    },
+    {
+      "id": "somm-e2",
+      "pavilion": "kalastorget",
+      "level": "guld",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 3,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Herdenstam (2011), Den arbetande gommen, KTH",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS e2"
+    },
+    {
+      "id": "somm-e3",
+      "pavilion": "kalastorget",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Herdenstam (2011), Den arbetande gommen, KTH",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS e3"
+    },
+    {
+      "id": "somm-e4",
+      "pavilion": "kalastorget",
+      "level": "guld",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Herdenstam (2011), Den arbetande gommen, KTH",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS e4"
+    },
+    {
+      "id": "somm-e5",
+      "pavilion": "kalastorget",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Herdenstam (2011), Den arbetande gommen, KTH",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS e5"
+    },
+    {
+      "id": "somm-e6",
+      "pavilion": "kalastorget",
+      "level": "guld",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 3,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Crichton-Fock, Spence & Pettersson (2023), Frontiers in Psychology",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS e6"
+    },
+    {
+      "id": "somm-h7",
+      "pavilion": "stensota",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Herdenstam (2011), Den arbetande gommen, KTH",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS h7"
+    },
+    {
+      "id": "somm-v8",
+      "pavilion": "maltidbiblioteket",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Harrington, the Food & Beverage Pyramid",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS v8"
+    },
+    {
+      "id": "somm-e7",
+      "pavilion": "kalastorget",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Herdenstam (2011), Den arbetande gommen, KTH",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS e7"
+    },
+    {
+      "id": "somm-dg1",
+      "pavilion": "kalastorget",
+      "level": "guld",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 3,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Crichton-Fock & Spence (2024), Journal of Wine Research",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS dg1"
+    },
+    {
+      "id": "somm-dg2",
+      "pavilion": "kalastorget",
+      "level": "guld",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Herdenstam et al. (2018), International Journal of Gastronomy and Food Science; Herdenstam et al. (2020), \"Breaking the Silence\", International Journal of Gastronomy and Food Science",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS dg2"
+    },
+    {
+      "id": "somm-cc1",
+      "pavilion": "kalastorget",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Crichton-Fock, Spence & Pettersson (2023), Frontiers in Psychology",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS cc1"
+    },
+    {
+      "id": "somm-bs1",
+      "pavilion": "maltidbiblioteket",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Herdenstam et al. (2020), \"Breaking the Silence\", International Journal of Gastronomy and Food Science",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS bs1"
+    },
+    {
+      "id": "somm-hs1",
+      "pavilion": "kalastorget",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 3,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Hult & Scander (2024), Gastronomy & Tourism",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS hs1"
+    },
+    {
+      "id": "somm-hs2",
+      "pavilion": "kalastorget",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Hult & Scander (2024), Gastronomy & Tourism",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS hs2"
+    },
+    {
+      "id": "somm-hs3",
+      "pavilion": "stensota",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Hult & Scander (2024), Gastronomy & Tourism",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS hs3"
+    },
+    {
+      "id": "somm-hs4",
+      "pavilion": "kalastorget",
+      "level": "guld",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Hult & Scander (2024), Gastronomy & Tourism",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS hs4"
+    },
+    {
+      "id": "somm-hs5",
+      "pavilion": "kalastorget",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 3,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Hult & Scander (2024), Gastronomy & Tourism",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS hs5"
+    },
+    {
+      "id": "somm-sc1",
+      "pavilion": "kalastorget",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Scander et al. (2020)",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS sc1"
+    },
+    {
+      "id": "somm-sc2",
+      "pavilion": "kalastorget",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Scander et al. (2020)",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS sc2"
+    },
+    {
+      "id": "somm-sc3",
+      "pavilion": "maltidbiblioteket",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Scander et al. (2020)",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS sc3"
+    },
+    {
+      "id": "somm-sc4",
+      "pavilion": "kalastorget",
+      "level": "guld",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 3,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Scander et al. (2020)",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS sc4"
+    },
+    {
+      "id": "somm-sc5",
+      "pavilion": "stensota",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Scander et al. (2020)",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS sc5"
+    },
+    {
+      "id": "somm-sc6",
+      "pavilion": "kalastorget",
+      "level": "guld",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "morning",
+        "rawText": "i paviljongen"
+      },
+      "placeholder": false,
+      "reference": {
+        "title": "Scander et al. (2020)",
+        "url": null
+      },
+      "status": "utkast",
+      "source": "SommelierChampionship.jsx QUESTIONS sc6"
+    }
+  ]
+}

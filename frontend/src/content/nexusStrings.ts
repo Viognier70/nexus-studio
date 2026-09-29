@@ -1203,6 +1203,72 @@ export const TABLE = {
     },
     ledger: { sv: 'Sopbilen: miljöavgift för svinnet', en: 'Refuse truck: environmental fee for the waste' }
   },
+  // ORDER 283 — introduktionen till de tre kunskapsformerna, första gången
+  // spelaren kommer till Måltidens hus. Utkast för Vision Owners granskning,
+  // ur DOMAIN_INTRO i Sommelier Championship.
+  houseIntro: {
+    label: { sv: 'Måltidens hus', en: 'The House of the Meal' },
+    heading: { sv: 'Tre sätt att kunna', en: 'Three ways of knowing' },
+    lead: {
+      sv: 'Allt du lär dig här hör till en av tre kunskapsformer, efter Aristoteles. En skicklig sommelier behöver alla tre, och byter mellan dem i stunden.',
+      en: 'Everything you learn here belongs to one of three forms of knowledge, after Aristotle. A skilled sommelier needs all three, and moves between them in the moment.'
+    },
+    forms: {
+      sv: [
+        {
+          name: 'Episteme', title: 'Vetenskaplig kunskap', pavilion: 'Måltidsbiblioteket',
+          question: 'Vad kan jag identifiera i glaset?',
+          summary: 'Den teoretiska och analytiska kunskapen om vin och måltid: det som går att mäta, pröva och generalisera. Syra, sötma, tannin och arom, bedömda med en systematisk metod.',
+          practice: ['Prova systematiskt: utseende, doft, smak, slutsats.', 'Förklara varför tannin mjuknar mot protein och syra skär igenom fett.', 'Förstå hur ljus, musik och form påverkar smaken.'],
+          quote: '”Det som pågår här är en form av sensorisk analys — inte i ett laboratorium utan på golvet, i en faktisk situation.” — Herdenstam, Den arbetande gommen (2011)'
+        },
+        {
+          name: 'Techne', title: 'Hantverksmässig kunskap', pavilion: 'Metodköket och Stensöta',
+          question: 'Hur gör jag det här rätt, just nu?',
+          summary: 'Färdighetskunskapen: att veta hur man gör, i rörelse, med rätt teknik och i rätt ordning. Temperatur, glas, dekantering och provningsordning.',
+          practice: ['Välja temperatur, glas och dekantering efter vinet.', 'Hitta felen i tid: korksmak, diskmedel, fel temperatur.', 'Arbeta i takt med kollegorna, utan ord.'],
+          quote: '”Novisen har verktygen men vet inte hur han skall använda dem.” — Herdenstam, Den arbetande gommen (2011)'
+        },
+        {
+          name: 'Phronesis', title: 'Praktisk klokhet', pavilion: 'Kalastorget',
+          question: 'Vad behöver den här gästen, i den här stunden?',
+          summary: 'Omdömet och förtrogenheten: att läsa situationen och forma en upplevelse för gästen. Berättelsen, stämningen och valet som passar just nu.',
+          practice: ['Lyssna på gästen innan du väljer.', 'Berätta om vinet så att gästen smakar mer.', 'Ge alla gäster samma omsorg, också den som inte dricker alkohol.'],
+          quote: '”I gestaltande aktiviteter är det formella kravet på sanning inte intressant. Det som blir är det väsentliga.” — Herdenstam, Den arbetande gommen (2011)'
+        }
+      ] as { name: string; title: string; pavilion: string; question: string; summary: string; practice: string[]; quote: string }[],
+      en: [
+        {
+          name: 'Episteme', title: 'Scientific knowledge', pavilion: 'Måltidsbiblioteket',
+          question: 'What can I identify in the glass?',
+          summary: 'The theoretical and analytical knowledge of wine and the meal: what can be measured, tested and generalised. Acidity, sweetness, tannin and aroma, judged with a systematic method.',
+          practice: ['Taste systematically: appearance, nose, palate, conclusions.', 'Explain why tannin softens against protein and acidity cuts through fat.', 'Understand how light, music and shape change taste.'],
+          quote: '“What goes on here is a form of sensory analysis — not in a laboratory but on the floor, in a real situation.” — Herdenstam, Den arbetande gommen (2011)'
+        },
+        {
+          name: 'Techne', title: 'Craft knowledge', pavilion: 'Metodköket and Stensöta',
+          question: 'How do I do this right, right now?',
+          summary: 'Skill: knowing how, in motion, with the right technique and in the right order. Temperature, glass, decanting and the order of a tasting.',
+          practice: ['Choose temperature, glass and decanting to suit the wine.', 'Catch faults in time: cork taint, detergent, the wrong temperature.', 'Work in step with your colleagues, without words.'],
+          quote: '“The novice has the tools but does not know how to use them.” — Herdenstam, Den arbetande gommen (2011)'
+        },
+        {
+          name: 'Phronesis', title: 'Practical wisdom', pavilion: 'Kalastorget',
+          question: 'What does this guest need, in this moment?',
+          summary: 'Judgement and familiarity: reading the situation and shaping an experience for the guest. The story, the mood and the choice that fits right now.',
+          practice: ['Listen to the guest before you choose.', 'Tell the wine\'s story so the guest tastes more.', 'Give every guest the same care, including those who do not drink alcohol.'],
+          quote: '“In creative work the formal demand for truth is not what matters. What becomes is what is essential.” — Herdenstam, Den arbetande gommen (2011)'
+        }
+      ] as { name: string; title: string; pavilion: string; question: string; summary: string; practice: string[]; quote: string }[]
+    },
+    inPractice: { sv: 'I praktiken', en: 'In practice' },
+    where: { sv: (p: string) => `Övas i ${p}`, en: (p: string) => `Practised in ${p}` },
+    sources: {
+      sv: 'Bygger på Herdenstam (2011), Crichton-Fock & Spence (2024), Herdenstam m.fl. (2018, 2020), Crichton-Fock, Spence & Pettersson (2023). Utkast.',
+      en: 'Based on Herdenstam (2011), Crichton-Fock & Spence (2024), Herdenstam et al. (2018, 2020), Crichton-Fock, Spence & Pettersson (2023). Draft.'
+    },
+    continue: { sv: 'Till paviljongerna', en: 'To the pavilions' }
+  },
   // ORDER 279 — insatsen: action-knappen som live betting.
   bet: {
     heading: { sv: 'Insatsen', en: 'Your stake' },

@@ -211,6 +211,37 @@ export function MaltidensHusDialog({ open, onClose }: Props) {
     );
   }
 
+  // ORDER 283 — första besöket: introduktionen till de tre kunskapsformerna.
+  if (!sim.houseIntroSeen) {
+    const t = strings.houseIntro;
+    return (
+      <div className="nx nx-screen nxs-over" role="dialog" aria-modal="true" aria-label={t.heading} data-testid="house-intro">
+        <div className="nx-label nx-accent-text">{t.label}</div>
+        <h1 className="nx-heading">{t.heading}</h1>
+        <p className="nx-body nxs-measure" style={{ marginTop: 'calc(12 * var(--nx-u))' }}>{t.lead}</p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, calc(480 * var(--nx-u))), 1fr))', gap: 'calc(32 * var(--nx-u))', marginTop: 'calc(32 * var(--nx-u))' }}>
+          {t.forms.map((f) => (
+            <section key={f.name} data-testid={`house-intro-${f.name.toLowerCase()}`} style={{ borderTop: 'var(--nx-line) solid var(--nx-ink)', paddingTop: 'calc(16 * var(--nx-u))' }}>
+              <div className="nx-label">{f.name} · {f.title}</div>
+              <h2 className="nx-heading" style={{ fontSize: 'calc(30 * var(--nx-u))', marginTop: 'calc(8 * var(--nx-u))' }}>{f.question}</h2>
+              <p className="nx-body" style={{ marginTop: 'calc(8 * var(--nx-u))' }}>{f.summary}</p>
+              <div className="nx-label nx-muted" style={{ marginTop: 'calc(12 * var(--nx-u))' }}>{t.inPractice}</div>
+              <ul className="nx-small" style={{ margin: 'calc(6 * var(--nx-u)) 0 0', paddingLeft: '1.2em' }}>
+                {f.practice.map((line) => <li key={line}>{line}</li>)}
+              </ul>
+              <p className="nx-small nx-muted" style={{ marginTop: 'calc(12 * var(--nx-u))', fontStyle: 'italic' }}>{f.quote}</p>
+              <div className="nx-small" style={{ marginTop: 'calc(8 * var(--nx-u))', fontWeight: 700 }}>{t.where(f.pavilion)}</div>
+            </section>
+          ))}
+        </div>
+        <p className="nx-small nx-muted" style={{ marginTop: 'calc(24 * var(--nx-u))' }}>{t.sources}</p>
+        <div style={{ marginTop: 'calc(24 * var(--nx-u))', maxWidth: 'calc(420 * var(--nx-u))' }}>
+          <NxButton testId="house-intro-continue" onClick={() => dispatch({ type: 'SEE_HOUSE_INTRO' })} autoFocus>{t.continue}</NxButton>
+        </div>
+      </div>
+    );
+  }
+
   // MD1 — medaljerna, och vägen till övning och prov.
   const slotsLeft = scheduleSlotsLeft(sim);
   return (
