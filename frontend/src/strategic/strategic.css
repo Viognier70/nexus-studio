@@ -78,6 +78,19 @@
      låg högerkolumnen över rullgardinen och fångade klicken. */
   z-index: 45;
 }
+/* ORDER 284 — dagsmärket och klockan i en rad uppe till vänster: klockan
+   står alltid efter märket och kan inte täcka dagens namn (tredje
+   provspelet). */
+.gb-topleft {
+  position: fixed;
+  top: calc(50 * var(--nx-u));
+  left: calc(72 * var(--nx-u));
+  display: flex;
+  align-items: flex-start;
+  gap: calc(20 * var(--nx-u));
+  z-index: 46;
+  pointer-events: none;
+}
 /* ORDER 263 — dagsmärket: kort form på smala skärmar (telefon), så att
    märket ryms på en rad bredvid kassan och fartknapparna. */
 .gb-daybadge-short { display: none; }
@@ -94,6 +107,13 @@
     max-width: calc(100vw - 32px);
     right: 16px;
   }
+}
+/* ORDER 284 — telefon på höjden: kassan, krediterna, farten och menyn i
+   översta raden, dagen och klockan i raden under, så att de inte täcker
+   varandra (tredje provspelet: "på alla skärmstorlekar"). */
+@media (max-width: 640px) {
+  .gb-topright { top: 8px; right: 8px; max-width: calc(100vw - 16px); }
+  .gb-topleft { top: 64px; left: 8px; gap: 8px; }
 }
 .gb-btn {
   border: 1px solid var(--gb-border);
@@ -164,6 +184,10 @@
   z-index: 50;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
+/* ORDER 284 — kamerans Tillbaka hör till kartan. Över en helskärmsvy
+   (morgonen, inköpen, kvällen) låg den över knapparna som behövs för att gå
+   vidare (tredje provspelet). */
+body:has(.nx-screen) .gb-outward, body:has(.nx-rocket) .gb-outward { display: none; }
 .gb-outward:hover {
   background: rgba(255, 255, 255, 0.13);
 }

@@ -165,6 +165,9 @@
 .nx-evening-head .nx-label { color: var(--nx-accent-700); margin-bottom: calc(18 * var(--nx-u)); }
 .nx-evening-body { display: grid; grid-template-columns: minmax(0, 876fr) minmax(0, 726fr); gap: calc(174 * var(--nx-u)); padding-top: calc(36 * var(--nx-u)); flex: 1; }
 .nx-evening-body[data-cols='even'] { grid-template-columns: 1fr 1fr; gap: calc(174 * var(--nx-u)); }
+/* ORDER 284 — knappen som leder vidare syns alltid: foten står fast
+   längst ned när kvällens skärm är längre än fönstret (tredje provspelet). */
+.nx-evening-foot { position: sticky; bottom: 0; background: var(--nx-ground); z-index: 1; padding-bottom: calc(24 * var(--nx-u)); }
 .nx-evening-foot {
   display: flex; justify-content: space-between; align-items: center; gap: calc(24 * var(--nx-u));
   margin-top: calc(40 * var(--nx-u)); padding-top: calc(24 * var(--nx-u));
@@ -237,7 +240,9 @@
   position: fixed;
   top: calc(220 * var(--nx-u));
   right: calc(72 * var(--nx-u));
-  bottom: calc(60 * var(--nx-u));
+  /* ORDER 284 — ovanför kamerans Tillbaka nere till höger (strategic.css
+     .gb-outward), som annars täckte Launch the rocket. */
+  bottom: max(calc(60 * var(--nx-u)), 88px);
   width: calc(676 * var(--nx-u));
   min-width: min(320px, calc(100vw - 32px));
   display: flex;

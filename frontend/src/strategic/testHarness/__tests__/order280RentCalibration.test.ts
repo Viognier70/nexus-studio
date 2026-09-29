@@ -66,7 +66,7 @@ describe('ORDER 280 — veckohyran', () => {
       const { mkdirSync, writeFileSync } = await import('node:fs');
       const { dirname, resolve } = await import('node:path');
       const { fileURLToPath } = await import('node:url');
-      const out = resolve(dirname(fileURLToPath(import.meta.url)), '../../../../reports/order280');
+      const out = resolve(dirname(fileURLToPath(import.meta.url)), '../../../../reports', process.env.REPORT_ORDER ?? 'order280');
       mkdirSync(out, { recursive: true });
       writeFileSync(resolve(out, process.env.CALIBRATE === '1' ? 'rent-calibration.json' : 'rent-check.json'), JSON.stringify({
         definition: 'rimlig: vecka 2, vinbaren, brons i tre, baspaketet och bästa svaret; andel = resultat (kassans förändring utan påfyllnad och amortering) / veckans intäkt ur avräkningen, medel över fröna. svag: från vecka 1, vinbaren, brons i tre, weakMorning, normal startkassa; veckan då avräkningen nedgraderar (null = inte inom fem veckor).',

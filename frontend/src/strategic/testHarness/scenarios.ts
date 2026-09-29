@@ -6,6 +6,7 @@
 import { runWeeks, type HarnessRun, type MorningPlan } from './weekHarness';
 import { calendarFor } from '../../sim/calendar';
 import type { PavilionKey, SimulationState } from '../types';
+import { packagesFor } from '../simulation/packages';
 
 const ALL = Number.MAX_SAFE_INTEGER;
 
@@ -32,16 +33,24 @@ export function weakMorning(): MorningPlan {
     scenarioAnswer: 'worst',
     // ORDER 275 — den svaga köper inget baspaket, bara råvarorna nedan.
     stock: 'none',
-    actions: [
-      { type: 'COMPOSE_MENU', dishes: [{ dishId: 'chicken-plate', price: 175 }, { dishId: 'root-soup', price: 95 }] },
-      { type: 'BUY_STOCK', supplierId: 'wholesaler', ingredientId: 'chicken', units: n / 2 },
-      { type: 'BUY_STOCK', supplierId: 'wholesaler', ingredientId: 'root-veg', units: n * 1.5 },
-      { type: 'BUY_STOCK', supplierId: 'local-veg', ingredientId: 'herbs', units: n },
-      { type: 'BUY_STOCK', supplierId: 'wholesaler', ingredientId: 'dairy', units: n / 2 },
-      // ORDER 277 — servicen startar inte utan en dryck i lager: den svaga
-      // köper ett glas vin per kuvert, sist, så att menyn räknas ur lagret.
-      { type: 'BUY_ITEMS', items: { 'house-wine-glass': n } }
-    ]
+    // ORDER 284 — i klasser med paket köps samma råvaror som portioner (två
+    // rätter till n kuvert: kyckling n/2, rotfrukter n × 1,5, örter n, mejeri
+    // n/2). Lösa råvaror finns inte i spelarens inköp där och hamnar utanför
+    // portionsboken (stockPackages.ts dishPortions). I övriga klasser köps
+    // råvarorna som förut.
+    actions: (s: SimulationState) => packagesFor(s.economy.businessClass)
+      ? [
+          // ORDER 277 — servicen startar inte utan en dryck: ett glas vin per kuvert.
+          { type: 'BUY_ITEMS', items: { 'chicken-plate': n / 2, 'root-soup': n / 2, 'house-wine-glass': n } }
+        ]
+      : [
+          { type: 'COMPOSE_MENU', dishes: [{ dishId: 'chicken-plate', price: 175 }, { dishId: 'root-soup', price: 95 }] },
+          { type: 'BUY_STOCK', supplierId: 'wholesaler', ingredientId: 'chicken', units: n / 2 },
+          { type: 'BUY_STOCK', supplierId: 'wholesaler', ingredientId: 'root-veg', units: n * 1.5 },
+          { type: 'BUY_STOCK', supplierId: 'local-veg', ingredientId: 'herbs', units: n },
+          { type: 'BUY_STOCK', supplierId: 'wholesaler', ingredientId: 'dairy', units: n / 2 },
+          { type: 'BUY_ITEMS', items: { 'house-wine-glass': n } }
+        ]
   };
 }
 

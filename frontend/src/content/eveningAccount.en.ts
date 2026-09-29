@@ -114,12 +114,14 @@ function thinParagraph(drew: SustainabilityKey | null): string {
   ].join(' ');
 }
 
-function mediocreParagraph(drew: SustainabilityKey | null): string {
+function mediocreParagraph(drew: SustainabilityKey | null, failed = 0): string {
   const lead = drew ? MEDIOCRE_LEAD_BY_CAPITAL[drew] : 'The evening passed.';
   return [
     lead,
     'The room filled at its own pace, the team did what they usually do, and the guests left without anyone having a story to take away with them.',
-    'There is nothing to learn from evenings like this one — nothing to celebrate, nothing to fix.',
+    failed > 0
+      ? 'The till says little, but the evening\'s decisions left something to look at — see below.'
+      : 'There is nothing to learn from evenings like this one — nothing to celebrate, nothing to fix.',
     'Most evenings are like this, and that is why the rare ones are what they are.'
   ].join(' ');
 }
@@ -156,7 +158,7 @@ export const pickParagraph: typeof svPickParagraph = (inputs: EveningAccountInpu
       case 'high_wager_loss':  return highWagerLossParagraph(inputs.wagerCapital, inputs.drewCapital);
       case 'good':             return goodParagraph(inputs.drewCapital);
       case 'thin':             return thinParagraph(inputs.drewCapital);
-      case 'mediocre':         return mediocreParagraph(inputs.drewCapital);
+      case 'mediocre':         return mediocreParagraph(inputs.drewCapital, inputs.failedCount ?? 0);
       default: {
         // Exhaustive switch guard — if the branch union grows, this
         // path becomes unreachable at type-check time.

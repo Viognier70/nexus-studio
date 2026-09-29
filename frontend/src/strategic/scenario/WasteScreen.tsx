@@ -115,9 +115,14 @@ export function WasteScreen({ sim, onContinue }: { sim: SimulationState; onConti
               {advice ? t.advice(advice.fewer, (findDish(advice.dishId)?.name ?? advice.dishId).toLowerCase(), formatSek(advice.savesSek)) : t.adviceNone}
             </p>
           </div>
-          <NxButton testId="waste-continue" onClick={leave}>{t.continue}</NxButton>
         </aside>
       </div>
+      {/* ORDER 284 — knappen vidare står i en fot som syns också när skärmen
+          är längre än fönstret (tredje provspelet), som på L1 och K1. */}
+      <footer className="nx-evening-foot">
+        <span />
+        <div><NxButton testId="waste-continue" onClick={leave}>{t.continue}</NxButton></div>
+      </footer>
     </NxScreen>
   );
 }

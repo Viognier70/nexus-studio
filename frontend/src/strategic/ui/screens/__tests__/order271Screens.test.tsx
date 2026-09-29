@@ -144,4 +144,18 @@ describe('ORDER 271 — morgonens schema (S1, S2)', () => {
     fireEvent.click(getByTestId('start-service'));
     expect(actions).toEqual([{ type: 'START_SERVICE' }]);
   });
+
+  // ORDER 284 — vägen från morgonen till inköpen: utan lager är huvudknappen
+  // inköpen (tredje provspelet).
+  it('utan lager är huvudknappen Buy in for tonight, med lager Open for the evening', () => {
+    let opened = 0;
+    const empty = render(withSim(makeNewGameState(7), <DayActionBar onOpenHouse={() => {}} onOpenBank={() => {}} onOpenBuy={() => { opened++; }} />, () => {}));
+    expect(empty.queryByTestId('start-service')).toBeNull();
+    fireEvent.click(empty.getByTestId('open-buy-foot'));
+    expect(opened).toBe(1);
+    empty.unmount();
+    const full = render(withSim(stocked(makeNewGameState(7)), <DayActionBar onOpenHouse={() => {}} onOpenBank={() => {}} onOpenBuy={() => {}} />, () => {}));
+    expect(full.queryByTestId('open-buy-foot')).toBeNull();
+    expect(full.getByTestId('start-service')).toBeTruthy();
+  });
 });

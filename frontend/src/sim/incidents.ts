@@ -81,6 +81,10 @@ export interface ActiveIncident {
   // ORDER 280 — Back your knowledge: spelaren startade raketen själv och
   // väljer säkerhet för varje steg. Rör bara krediterna.
   backed?: boolean;
+  // ORDER 284 — i Back your knowledge låses svaret när spelaren väljer det,
+  // och stegets klocka stannar, så att hen hinner välja säkerhet ("två
+  // raketer gick ut på tid", tredje provspelet).
+  picked?: string | null;
 }
 
 // ORDER 280 — säkerheten spelaren valde (balance.ts Confidence).
@@ -727,7 +731,7 @@ export function resolveIncident(draft: SimulationState, optionId: string | null,
     const revealed: StepReveal = { step: stepIndex, optionId: option.id, correctId: correctOptionId(step, active.situation), cleared: true, guestsIn };
     draft.incidents = {
       ...draft.incidents!,
-      active: { ...active, step: stepIndex + 1, secondsTotal, secondsLeft: secondsTotal, struck, revealed, revealLeft: INCIDENTS.revealSeconds }
+      active: { ...active, step: stepIndex + 1, secondsTotal, secondsLeft: secondsTotal, struck, revealed, revealLeft: INCIDENTS.revealSeconds, picked: null }
     };
     return creditFor(quality === 'best' ? INCIDENTS.bestAnswerCredit : 0);
   }
@@ -832,9 +836,22 @@ export function countDown(draft: SimulationState, dt: number): boolean {
     real = -rest;
   }
   const a = draft.incidents.active!;
+  // ORDER 284 — ett låst svar i Back your knowledge: klockan står.
+  if (a.backed && a.picked) return false;
   const left = a.secondsLeft - real;
   draft.incidents = { ...draft.incidents, active: { ...a, secondsLeft: Math.max(0, left) } };
   return left <= 0;
+}
+
+// ORDER 284 — Back your knowledge: spelaren väljer svar. Svaret låses och
+// stegets klocka stannar tills hen valt säkerhet och står för svaret.
+export function pickBackAnswer(state: SimulationState, optionId: string): SimulationState {
+  const a = state.incidents?.active;
+  if (!a?.backed || a.picked || (a.revealLeft ?? 0) > 0 || a.secondsLeft <= 0 || a.struck.includes(optionId)) return state;
+  const inc = incidentById(state.economy.businessClass, a.id);
+  const step = inc?.steps[a.step];
+  if (!step?.options.some((o) => o.id === optionId)) return state;
+  return { ...state, incidents: { ...state.incidents!, active: { ...a, picked: optionId } } };
 }
 
 // Kvällens lärdom: förklaringen till steget där raketen föll, när spelaren

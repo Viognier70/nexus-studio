@@ -32,7 +32,8 @@ const FRONTEND = resolve(HERE, '..');
 // REPORT_ORDER=order273 skriver under en senare orders katalog.
 const OUT = resolve(FRONTEND, 'reports', process.env.REPORT_ORDER ?? 'order271');
 mkdirSync(OUT, { recursive: true });
-const PORT = 4174;
+// ORDER 284 — PORT=… när 4174 är upptagen av annat.
+const PORT = Number(process.env.PORT ?? 4174);
 const URL = `http://localhost:${PORT}`;
 const W = 1920;
 const H = 1080;
@@ -231,13 +232,15 @@ try {
   let m1Open = false;
   if (await page.$('[data-testid=open-buy]')) {
     report.stock = { counterBefore: await counter() };
-    report.stock.startDisabledBefore = await page.$eval('[data-testid=start-service]', (b) => b.disabled).catch(() => null);
+    // ORDER 284 — utan lager är huvudknappen inköpen; öppna finns i M1 och är avstängd där.
+    report.stock.buyIsPrimary = !!(await page.$('[data-testid=open-buy-foot]'));
     report.stock.blockedText = await page.textContent('[data-testid=start-blocked]').catch(() => null);
     await shot('dod-26-lagret-spärren.png', 'morgonen: servicen går inte att starta utan meny och dryckeslista');
     await page.click('[data-testid=open-buy]');
     await page.waitForSelector('[data-testid=screen-M1]');
     m1Open = true;
     await delay(400);
+    report.stock.startDisabledBefore = await page.$eval('[data-testid=open-doors]', (b) => b.disabled).catch(() => null);
     await shot('dod-26b-M1-morgonen-tom.png', 'M1 morgonens inköp innan något är köpt');
     for (const id of ['chicken-plate', 'pork-plate', 'root-soup', 'lentil-plate', 'dairy-dessert', 'house-wine', 'beer', 'alcohol-free']) {
       await page.click(`[data-testid=buy-more-${id}]`).catch(() => {});

@@ -128,7 +128,9 @@ export function computeEveningAccount(state: SimulationState): EveningAccount {
     drewCapital: state.day.drawnCapital,
     // ORDER 076 (M6) — the day's last scenario choice; feeds the
     // per-choice aside sentence so parallel A/B/C runs diverge.
-    lastChoice: state.day.lastScenarioChoice
+    lastChoice: state.day.lastScenarioChoice,
+    // ORDER 284 — samma logg som K1:s lista över det som gick fel.
+    failedCount: (state.incidents?.log ?? []).filter((r) => r.step !== null).length
   });
   // ORDER 047 §6 — if a morning policy change was made this day, name
   // it once at the head of the paragraph so the investment reads

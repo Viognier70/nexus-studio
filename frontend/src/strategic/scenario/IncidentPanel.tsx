@@ -104,11 +104,13 @@ export function IncidentCard() {
   // ORDER 280 — Back your knowledge (Designs B1): i en egen raket väljer
   // spelaren svar och säkerhet, och står sedan för svaret.
   const backed = !!active?.backed;
-  const [pick, setPick] = useState<string | null>(null);
+  // ORDER 284 — svaret låses i simuleringen, och stegets klocka stannar.
+  const pick = backed ? active?.picked ?? null : null;
+  const setPick = (optionId: string) => dispatch({ type: 'PICK_BACK_ANSWER', optionId });
   const [conf, setConf] = useState<Confidence | null>(null);
   const cardRef = useRef<HTMLElement>(null);
   const stepKey = active ? `${active.id}:${active.step}` : null;
-  useEffect(() => { setPick(null); setConf(null); }, [stepKey]);
+  useEffect(() => { setConf(null); }, [stepKey]);
   const lastBack = sim.incidents?.lastBack ?? null;
   const backKey = lastBack ? `${lastBack.at}:${lastBack.step}` : null;
   const seenBack = useRef<string | null>(backKey);
@@ -229,7 +231,7 @@ export function IncidentCard() {
     left = 0;
     total = secondsFor(sim, step);
   }
-  const isFrozen = view.mode !== 'ask';
+  const isFrozen = view.mode !== 'ask' || pick !== null;
   const lastFive = !isFrozen && left <= COUNTDOWN_ACCENT_SECONDS;
   const barShare = total > 0 ? Math.max(0, Math.min(1, left / total)) : 0;
 
@@ -307,19 +309,21 @@ export function IncidentCard() {
         <div className="nx-label" data-testid={backed ? 'incident-back-kicker' : undefined}>{backed ? strings.back.kicker(view.context.staff, where) : `${view.context.staff} · ${where}`}</div>
         <div className="nx-rocket-count">{t.rocketOf(String(Math.max(1, n)), String(Math.max(1, rockets, n)))}</div>
       </div>
-      {backed && view.shown === 0 && view.mode === 'ask' && (
-        <p className="nx-small nx-muted" data-testid="incident-back-intro" style={{ marginTop: 'calc(8 * var(--nx-u))' }}>
-          <strong style={{ color: 'var(--nx-ink)' }}>{strings.back.introTitle}</strong> {strings.back.introBody} {strings.back.introSource}
-        </p>
-      )}
-      <p className="nx-rocket-story">{f(incident.text.body)}</p>
-      {view.situation && incident.text.situations?.[view.situation] && (
+      {/* ORDER 284 — introduktionen står där raketen startas (EventsPanel):
+          på kortet tryckte den ned svaren under skärmen (tredje provspelet). */}
+      {/* ORDER 284 — i Back your knowledge med ett låst svar (klockan står)
+          visar kortet bara frågan, svaret, säkerheten och Stå för svaret, så
+          att allt ryms (tredje provspelet). */}
+      {!(backed && pick !== null) && <p className="nx-rocket-story">{f(incident.text.body)}</p>}
+      {!(backed && pick !== null) && view.situation && incident.text.situations?.[view.situation] && (
         <p className="nx-rocket-situation" data-testid="incident-situation" data-situation={view.situation}>
           {f(incident.text.situations[view.situation])}
         </p>
       )}
 
-      <ol className="nx-rocket-steps" data-testid="incident-steps" aria-label={s.stepOf(String(view.shown + 1), String(incident.steps.length))}>
+      {/* ORDER 284 — i Back your knowledge visar raketen till vänster stegen
+          (BackPanels); rutorna här tas bort så att svaren ryms. */}
+      <ol hidden={backed} className="nx-rocket-steps" data-testid="incident-steps" aria-label={s.stepOf(String(view.shown + 1), String(incident.steps.length))}>
         {incident.steps.map((st, i) => {
           const state = boxFor(i);
           return (
@@ -356,6 +360,7 @@ export function IncidentCard() {
 
       <div role="group" aria-label={f(step.text.question)}>
         {step.options.map((o, i) => {
+          if (backed && pick !== null && o.id !== pick && view!.mode === 'ask') return null;
           const look = lookFor(o.id);
           const struck = look === 'struck';
           return (
@@ -367,7 +372,7 @@ export function IncidentCard() {
               data-option-id={o.id}
               data-struck={view!.mode === 'ask' && struck}
               data-look={look}
-              disabled={view!.mode !== 'ask' || struck}
+              disabled={view!.mode !== 'ask' || struck || (pick !== null && pick !== o.id)}
               title={struck ? s.struck : undefined}
               aria-keyshortcuts={String(i + 1)}
               data-picked={backed && pick === o.id}
@@ -383,9 +388,13 @@ export function IncidentCard() {
         })}
       </div>
 
-      {backed && view.mode === 'ask' && (
+      {backed && view.mode === 'ask' && pick === null && (
+        <p className="nx-small nx-muted" data-testid="back-picked-hint" data-picked="false">{strings.back.pickFirst}</p>
+      )}
+      {backed && view.mode === 'ask' && pick !== null && (
         <div className="nx-back" data-testid="back-confidence">
-          <div className="nx-label">{strings.back.howSure}</div>
+          <div className="nx-label">{strings.back.howSure} <span className="nx-muted" style={{ textTransform: 'none', letterSpacing: 0, fontWeight: 400 }} data-testid="back-picked-hint" data-picked="true">{strings.back.pickedHint}</span></div>
+          {!canBack(sim, 1) && <div className="nx-small" data-testid="back-earn-card">{strings.back.earn}</div>}
           <div className="nx-back-levels">
             {BACK.confidence.map((c, i) => {
               const level = i as Confidence;
