@@ -363,7 +363,7 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 
 ## documentation/game-design/
 
-- `FORSLAG_HALLBARHETERNA_0_10.md`: Förslag: de tre hållbarheterna som nivåer 0–10 (inte beslutat, ORDER 285).
+- `FORSLAG_HALLBARHETERNA_0_10.md`: Förslag: de tre hållbarheterna som nivåer 0–10 (godkänt med villkor 2026-09-29, byggs i nästa order).
 - `CAMERA_AND_GAMEPLAY_BIBLE.md`: Camera and Gameplay Bible.
 - `CAMERA_AND_VIEW_SYSTEM.md`: Camera and View System.
 - `GRYTHYTTAN_WORLD_SPECIFICATION.md`: Grythyttan World Specification.

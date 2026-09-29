@@ -58,7 +58,9 @@ function measure(share: number, seeds: number[]) {
 describe('ORDER 280 — veckohyran', () => {
   it('den rimliga spelaren går plus med 5–10 % och den svaga nedgraderas inom två till tre veckor', async () => {
     const chosen = RENT.shareOfNormalWeeklyRevenue;
-    const seeds = Array.from({ length: 10 }, (_, i) => i + 1);
+    // Vision Owner 2026-09-29: mät hyran med fler frön (minst 20) innan den
+    // rörs. RENT_SEEDS väljer antalet; tio som förut.
+    const seeds = Array.from({ length: Number(process.env.RENT_SEEDS ?? 10) }, (_, i) => i + 1);
     const shares = process.env.CALIBRATE === '1' ? [0, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35] : [chosen];
     const rows = shares.map((sh) => measure(sh, seeds));
     (RENT as { shareOfNormalWeeklyRevenue: number }).shareOfNormalWeeklyRevenue = chosen;

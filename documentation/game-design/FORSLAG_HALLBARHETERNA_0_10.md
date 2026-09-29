@@ -1,6 +1,6 @@
 # Förslag: de tre hållbarheterna som nivåer 0–10
 
-*Förslag 2026-09-29 (Claude Code, på Vision Owners uppdrag). Inte beslutat och inte byggt.* Vision Owner, villkor för Designs leverans 2026-09-29: "Lägg till … de tre hållbarheterna som nivåer 0–10 med förra kvällens nivå. Föreslå hur hållbarheterna räknas, med talen i balance.ts, och rapportera innan du bestämmer."
+*Förslag 2026-09-29 (Claude Code, på Vision Owners uppdrag).* **Godkänt av Vision Owner 2026-09-29, med villkor:** den ekonomiska marginalen räknar med morgonens inköp (kassans förändring över dagen), inte kvällens avräkning. Byggs i nästa order. Vision Owner, villkor för Designs leverans 2026-09-29: "Lägg till … de tre hållbarheterna som nivåer 0–10 med förra kvällens nivå. Föreslå hur hållbarheterna räknas, med talen i balance.ts, och rapportera innan du bestämmer."
 
 Kvällens resultat (R1) visar i dag hållbarheterna som förändringen i poäng: social och ekologisk mot dygnets gryning, ekonomisk som kvällens marginal. Nedan är förslaget till nivåer.
 
@@ -16,7 +16,7 @@ Nivån räknas **ur kvällen**, så att den säger något om just den kvällen. 
 | Hållbarhet | Nivå 0–10 | Tal i `balance.ts` |
 | --- | --- | --- |
 | **Social** | 10 × (andel av kvällens gäster som gick nöjda × vikt + personalens ork vid stängning × vikt) | vikterna 0,7 och 0,3 |
-| **Ekonomisk** | kvällens marginal (resultat mot intäkt) på en skala där en förlust på 25 % eller mer är 0 och en vinst på 35 % eller mer är 10 | gränserna −0,25 och 0,35 |
+| **Ekonomisk** | dagens marginal (kassans förändring över dagen, med morgonens inköp, mot kvällens intäkt) på en skala där en förlust på 25 % eller mer är 0 och en vinst på 35 % eller mer är 10 | gränserna −0,25 och 0,35 |
 | **Ekologisk** | 10 × (1 − osålda portioner som gick till sopbilen / portioner som fanns i kväll), minus 1 om gårdagens rester gick till sopbilen | straffet 1 nivå |
 
 Nivåerna avrundas till heltal, och nedgångar visas streckade.
