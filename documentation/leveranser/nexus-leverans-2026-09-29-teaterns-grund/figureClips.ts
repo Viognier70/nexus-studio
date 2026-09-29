@@ -1,0 +1,1119 @@
+// figureClips — rummets kroppsspråk: namngivna klipp på den befintliga riggen.
+//
+// Leverans 2 efter tredje provspelet (teaterns grund), 2026-09-29.
+// Bygger på figureRig.ts (applyPose, blendPose, poseWalk, FIGURE) och tableware.ts
+// (vad händerna håller). Ersätter inget. figureActs.ts poser gäller som förut; klippen är
+// lagret ovanpå, med längd, tempo, början och slut.
+//
+// Kontrakt (samma som riggen):
+//   • Rena funktioner. sampleClip(id, tid, tempo, ctx) ger samma bildruta för samma indata.
+//     Ingen klocka, inget tillstånd, inga slumptal.
+//   • Inga nya led och inga nya mått. Allt är ledvinklar på riggen som redan finns.
+//   • Varje klipp har ett namn, en längd per tempo, loop eller engång, vad händerna håller
+//     vid start och slut, händelserna (grepp, släpp, överlämning) och vilka klipp som får följa.
+//
+// ── Varför klipp ──────────────────────────────────────────────────
+// I provspelet stod det i raketen att servitören skar sig i handen, men i rummet syntes
+// ingenting. Personalen gick slumpvis och robotaktigt. Med klippen kan en raket börja med
+// något spelaren ser: den som ska göra något gör det i rummet först, och frågan kommer sedan.
+//
+// ── Läsbarhet från 24 m ───────────────────────────────────────────
+// Spelets kamera står på 24 m med 50° lutning (SVAR §25). En figur är 55–80 px hög. Det som
+// läses är höjd, riktning, armar över axelhöjd och föremål i handen. Därför är gesterna
+// förstorade: vinkningen går över huvudet, hällningen tippar flaskan 1,9 rad, skålen möts
+// över bordets mitt och den som skär sig viker sig framåt och backar ett steg.
+//
+// ── Tempo ─────────────────────────────────────────────────────────
+// Tre tempon: lugn, normal och stressad. Tempot ändrar tre saker: takten (klippets längd),
+// gångfarten och hållningen (bålen fram, blicken som rycker upp). Driv klippets tid med en
+// integrerad klocka, clipTime += dt × 1, och byt tempo bara vid klippgräns, annars hoppar
+// fasen. Det är samma regel som staffTempo() i figureActs.ts.
+
+import { FIGURE, blendPose, poseWalk } from './figureRig';
+import type { FigurePose, PoseArm } from './figureRig';
+import type { PropId, HandSide, Tilt, Surface } from './tableware';
+
+// #region types
+
+export type TempoId = 'calm' | 'normal' | 'stressed';
+export type Role = 'waiter' | 'bartender' | 'sommelier' | 'cook' | 'dishwasher' | 'guest' | 'staff';
+export type ClipGroup = 'staff' | 'waiter' | 'bartender' | 'sommelier' | 'cook' | 'dishwasher' | 'guest' | 'rocket';
+/** Kroppens läge vid klippets start och slut. Två klipp kan följa på varandra bara om
+ *  slutet på det ena är början på det andra. */
+export type Stance = 'stand' | 'seated' | 'walk' | 'hurt';
+/** Platsen klippet kräver. 'chair' betyder en stol som följer sittregeln (SEAT_RULE). */
+export type Needs = 'floor' | 'chair' | 'table' | 'bar' | 'pass' | 'station' | 'sink';
+export type ClipEventType =
+  | 'grab' | 'release' | 'give' | 'switch' | 'stack'
+  | 'clink' | 'cork' | 'plated' | 'bell' | 'pay' | 'cut';
+
+export interface ClipEvent {
+  /** Var i klippet, 0..1. */
+  u: number;
+  type: ClipEventType;
+  hand?: HandSide;
+  /** Varifrån (grab) eller vart (release). 'partner' = den andra figuren i samspelet. */
+  at?: Surface | 'partner';
+}
+
+export interface Hands { L?: PropId | 'any'; R?: PropId | 'any' }
+
+export interface ClipCtx {
+  /** Sekunder sedan klippet började (sätts av sampleClip). */
+  t?: number;
+  /** 0..1. Sätts av tempot om den saknas. */
+  stress?: number;
+  /** Gångfas i cykler, för klipp som går (travel). Från sträckan, inte klockan. */
+  phase?: number;
+  /** Vridning mot den figuren vänder sig till, radianer i figurens ram. */
+  yaw?: number;
+  /** 1 eller -1. Vilken sida figuren kliver åt (sitta, resa sig, väja). */
+  side?: number;
+  /** Vilken hand ett enhandsklipp använder. Default 'R'. Speglar klippet. */
+  hand?: HandSide;
+  /** Skål och gester finns både sittande och stående. Default: klippets 'from'. */
+  seated?: boolean;
+  /** Armar som håller något från ett tidigare klipp och inte ska röras. */
+  keep?: { L?: PoseArm; R?: PoseArm };
+  /** Sätts av sampleClip. */
+  stride?: number;
+}
+
+export interface ClipSpec {
+  id: string;
+  group: ClipGroup;
+  /** Vilka som kan spela klippet. */
+  roles: Role[];
+  loop: boolean;
+  /** Går figuren under klippet? Benen drivs då av ctx.phase och roten av anroparen. */
+  travel: boolean;
+  /** Längd vid normalt tempo, sekunder. För loopar: en cykel. */
+  base: number;
+  /** Längd per tempo, sekunder. Fylls i av def(). */
+  seconds: Record<TempoId, number>;
+  from: Stance;
+  to: Stance;
+  needs: Needs;
+  /** Vad händerna håller vid start och vid slut. */
+  holds: Hands;
+  ends: Hands;
+  events: ClipEvent[];
+  next: string[];
+  /** Enhandsklipp kan speglas med ctx.hand = 'L'. */
+  handed?: boolean;
+  pose: (u: number, c: ClipCtx) => FigurePose;
+  /** Lutning på det som hålls (flaskan vid hällning, glaset vid klunken). */
+  tilt?: (u: number, c: ClipCtx) => { L?: Tilt; R?: Tilt };
+  /** Förflyttning under klippet i figurens ram vid start: [x, z, vridning]. x åt höger
+   *  hands sida, z framåt. Används av sitta, resa sig, väja och backa. */
+  root?: (u: number, c: ClipCtx) => [number, number, number];
+  /** Hur långt stolen är utdragen, meter bakåt från sitt läge. */
+  chair?: (u: number) => number;
+}
+
+export interface ClipSample {
+  pose: FigurePose;
+  tilt: { L?: Tilt; R?: Tilt };
+  root: [number, number, number];
+  chair: number;
+  u: number;
+}
+
+export interface Seat {
+  /** Sitsens mitt i världen. */
+  x: number;
+  z: number;
+  /** Vart den som sitter tittar (mot bordet). */
+  yaw: number;
+  /** Sitshöjd över golvet. */
+  seatHeight: number;
+}
+
+// #endregion types
+
+// ---------- tempo -----------------------------------------------------
+
+export const TEMPO: Record<TempoId, { rate: number; walkSpeed: number; stride: number; stress: number; blendSec: number }> = {
+  /** Lugnt: 0,8 × takten, 0,9 m/s. Bålen upprätt, blicken stilla. */
+  calm: { rate: 0.8, walkSpeed: 0.9, stride: 0.9, stress: 0, blendSec: 0.4 },
+  /** Normalt: 1,2 m/s, som gästernas gång i rummen. */
+  normal: { rate: 1.0, walkSpeed: 1.2, stride: 1.0, stress: 0.3, blendSec: 0.3 },
+  /** Stressat: 1,5 × takten, 1,6 m/s, längre steg. Bålen fram, blicken rycker upp. Över 1,6
+   *  blir hällningen ryckig vid 60 bildrutor. */
+  stressed: { rate: 1.5, walkSpeed: 1.6, stride: 1.2, stress: 1, blendSec: 0.18 }
+};
+
+/** En gångcykel (två fotisättningar) vid stride 1. */
+export const CYCLE_M = 1.25;
+
+// ---------- sittregeln ------------------------------------------------
+//
+// I provspelet satt en gäst på golvet. Orsaken var att den sittande posen spelades där
+// gästen råkade stå, utan stol under. Regeln:
+//   1. En sittande pose får bara spelas av en figur som har en stol (Seat) och vars rot står
+//      på stolens sitsmitt. canSit() säger nej om stolen saknas eller har fel höjd.
+//   2. Man kommer till stolen från sidan, inte bakifrån: sitApproach() ger punkten. Gången
+//      ska sluta där, och guest.sit börjar där.
+//   3. Höften sänks först när roten är över sitsen. I guest.sit har höften sjunkit 0,1 m
+//      först vid u = 0,70, och då står bäckenet 0,04 m från sitsens mitt (uppmätt).
+//   4. Stolen dras ut 0,26 m medan gästen kliver in och skjuts in medan hen sätter sig
+//      (chair(u)). Rummet ska flytta stolen efter klippet, inte tvärtom.
+//   5. checkSeated() mäter efteråt: höftens höjd mot sitsen och avståndet till sitsens mitt.
+//      Kör den på varje sittande gäst i provet. Tolerans 2 cm och 12 cm.
+// Poserna är författade för sitshöjd 0,45 m (figureRig poseSeated, hipDrop 0,41). Barstolar
+// och loungesoffor behöver egna klipp; de ingår inte här (FRÅGOR i LEVERANSNOT).
+
+export const SEAT_RULE = {
+  seatHeight: 0.45,
+  seatHeightTolerance: 0.03,
+  approachSide: 0.45,
+  approachFront: 0.12,
+  chairPull: 0.26,
+  hipTolerance: 0.02,
+  xzTolerance: 0.12
+};
+
+/** Lokal punkt i stolens ram (x åt höger hands sida, z framåt) till världen. */
+export function seatToWorld(seat: Seat, lx: number, lz: number): [number, number] {
+  const s = Math.sin(seat.yaw), c = Math.cos(seat.yaw);
+  return [seat.x + lx * c + lz * s, seat.z - lx * s + lz * c];
+}
+
+/** Var gången ska sluta innan guest.sit. side = 1 höger om stolen, -1 vänster. */
+export function sitApproach(seat: Seat, side: number): [number, number] {
+  return seatToWorld(seat, (side ?? 1) * SEAT_RULE.approachSide, SEAT_RULE.approachFront);
+}
+
+export function canSit(seat: Seat | null | undefined): boolean {
+  if (!seat) return false;
+  return Math.abs(seat.seatHeight - SEAT_RULE.seatHeight) <= SEAT_RULE.seatHeightTolerance;
+}
+
+/** Höftens höjd mot sitsen och avståndet till sitsens mitt, efter applyPose. */
+export function checkSeated(rig: { joints: { pelvis: { getWorldPosition: (v: any) => any } } }, seat: Seat, V: any) {
+  const p = rig.joints.pelvis.getWorldPosition(V);
+  const hipError = p.y - seat.seatHeight;
+  const xzError = Math.hypot(p.x - seat.x, p.z - seat.z);
+  return { hipError: hipError, xzError: xzError, ok: Math.abs(hipError) <= SEAT_RULE.hipTolerance && xzError <= SEAT_RULE.xzTolerance };
+}
+
+// ---------- hjälpare --------------------------------------------------
+
+function clamp01(u: number): number { return Math.max(0, Math.min(1, u)); }
+function smooth(u: number): number { const k = clamp01(u); return k * k * (3 - 2 * k); }
+/** 0 → 1 mellan a och b. */
+function ramp(u: number, a: number, b: number): number { return smooth((u - a) / (b - a)); }
+/** 0 → 1 → 0 över [a, b] med mjuka kanter. */
+function win(u: number, a: number, b: number, e: number): number { return ramp(u, a, a + e) * (1 - ramp(u, b - e, b)); }
+function bell(u: number, c: number, w: number): number { const x = (u - c) / w; return Math.exp(-x * x); }
+const TAU = Math.PI * 2;
+
+function A(swing: number, lift: number, elbow: number): PoseArm { return { swing: swing, lift: lift, elbow: elbow }; }
+
+const LEG_STAND = { swing: 0.02, spread: 0.035, knee: 0.06, ankle: 0.04 };
+const LEG_FRONT = { swing: 0.14, spread: 0.05, knee: 0.12, ankle: 0.1 };
+const LEG_BACK = { swing: -0.12, spread: 0.05, knee: 0.16, ankle: 0.02 };
+const LEG_SEAT = { swing: 1.46, spread: 0.06, knee: 1.77, ankle: 0.31 };
+/** Halvvägs ned: höft 0,8, knä 1,3, fotled 0,5 = knä − höft, så sulan står plan. */
+const LEG_CROUCH = { swing: 0.8, spread: 0.06, knee: 1.3, ankle: 0.5 };
+
+const STAND: FigurePose = {
+  lift: 0, hipDrop: 0,
+  torso: { pitch: 0.02, yaw: 0, roll: 0 }, head: { pitch: 0.04, yaw: 0 },
+  armL: A(0.03, 0.06, 0.18), armR: A(0.03, 0.06, 0.18),
+  legL: LEG_STAND, legR: LEG_STAND
+};
+/** Sittande med underarmarna på bordet (bordsskiva 0,75 m, sits 0,45 m). */
+const SEAT: FigurePose = {
+  lift: 0, hipDrop: FIGURE.seatedHipDrop,
+  torso: { pitch: 0.06, yaw: 0, roll: 0 }, head: { pitch: 0.06, yaw: 0 },
+  armL: A(0.78, 0.1, 0.95), armR: A(0.78, 0.1, 0.95),
+  legL: LEG_SEAT, legR: LEG_SEAT
+};
+const CROUCH: FigurePose = {
+  lift: 0, hipDrop: 0.18,
+  torso: { pitch: 0.46, yaw: 0, roll: 0 }, head: { pitch: 0.1, yaw: 0 },
+  armL: A(0.45, 0.12, 0.6), armR: A(0.45, 0.12, 0.6),
+  legL: LEG_CROUCH, legR: LEG_CROUCH
+};
+
+/** Bär-armen: underarmen vågrät framåt, handankaret på 1,12 m. */
+export const CARRY_ARM: PoseArm = A(0.35, 0.12, 1.1);
+/** Brickarmen: handen i axelhöjd, ut från kroppen. */
+export const TRAY_ARM: PoseArm = A(0.25, 0.3, 2.0);
+/** Hålla en flaska eller ett kort framför bröstet. */
+export const CHEST_ARM: PoseArm = A(0.5, 0.1, 1.3);
+
+/** Ett led djupt: det som anges ersätter basens värden, resten ärvs. */
+function P(base: FigurePose, o: any): FigurePose {
+  const b: any = base;
+  const r: any = { ...b, ...o };
+  ['torso', 'head', 'armL', 'armR', 'legL', 'legR'].forEach(function (k) {
+    if (o[k]) r[k] = { ...(b[k] ?? {}), ...o[k] };
+  });
+  return r;
+}
+
+/** Nyckelposer längs u, mjukt blandade. Listan ska vara sorterad. */
+function keys(u: number, ks: [number, FigurePose][]): FigurePose {
+  if (u <= ks[0][0]) return ks[0][1];
+  for (let i = 0; i < ks.length - 1; i++) {
+    if (u <= ks[i + 1][0]) {
+      const k = (u - ks[i][0]) / (ks[i + 1][0] - ks[i][0]);
+      return blendPose(ks[i][1], ks[i + 1][1], smooth(k));
+    }
+  }
+  return ks[ks.length - 1][1];
+}
+
+function breathe(p: FigurePose, t: number): FigurePose {
+  return { ...p, lift: (p.lift ?? 0) + (Math.sin(t * TAU * 0.22) - 1) * 0.004 };
+}
+
+/** Stress i hållningen: bålen fram, huvudet fram. Tempot sköts av längden. */
+function strain(p: FigurePose, s: number): FigurePose {
+  const t = p.torso ?? {}, h = p.head ?? {};
+  return { ...p, torso: { ...t, pitch: (t.pitch ?? 0) + 0.08 * s }, head: { ...h, pitch: (h.pitch ?? 0) + 0.04 * s } };
+}
+
+/** Lägger gångens ben, studs och bålsvaj på en pose. `free` = armarna som svänger med. */
+function walking(p: FigurePose, phase: number, k: number, free: 'none' | 'L' | 'R' | 'both'): FigurePose {
+  const w = poseWalk(phase ?? 0, { intensity: k });
+  const t = p.torso ?? {}, wt = w.torso ?? {};
+  const r: FigurePose = {
+    ...p, lift: w.lift, hipDrop: 0, legL: w.legL, legR: w.legR,
+    torso: { pitch: (t.pitch ?? 0) + 0.04, yaw: (t.yaw ?? 0) + (wt.yaw ?? 0) * 0.7, roll: (wt.roll ?? 0) + (t.roll ?? 0) }
+  };
+  if (free === 'L' || free === 'both') r.armL = w.armL;
+  if (free === 'R' || free === 'both') r.armR = w.armR;
+  return r;
+}
+
+function withYaw(p: FigurePose, torsoYaw: number, headYaw: number): FigurePose {
+  const t = p.torso ?? {}, h = p.head ?? {};
+  return { ...p, torso: { ...t, yaw: (t.yaw ?? 0) + torsoYaw }, head: { ...h, yaw: (h.yaw ?? 0) + headYaw } };
+}
+
+function base(c: ClipCtx, seatedDefault: boolean): FigurePose {
+  const seated = c.seated ?? seatedDefault;
+  return seated ? SEAT : STAND;
+}
+
+function mirrorPose(p: FigurePose): FigurePose {
+  const t = p.torso ?? {}, h = p.head ?? {};
+  return {
+    ...p, armL: p.armR, armR: p.armL, legL: p.legR, legR: p.legL,
+    torso: { ...t, yaw: -(t.yaw ?? 0), roll: -(t.roll ?? 0) }, head: { ...h, yaw: -(h.yaw ?? 0) }
+  };
+}
+
+// ---------- katalogen ------------------------------------------------
+
+function round05(x: number): number { return Math.round(x * 20) / 20; }
+
+function def(c: Omit<ClipSpec, 'seconds'>): ClipSpec {
+  const seconds: any = {};
+  (['calm', 'normal', 'stressed'] as TempoId[]).forEach(function (k) {
+    const T = TEMPO[k];
+    seconds[k] = c.travel ? round05((CYCLE_M * T.stride) / T.walkSpeed) : round05(c.base / T.rate);
+  });
+  return { ...c, seconds: seconds };
+}
+
+const STAFF: Role[] = ['waiter', 'bartender', 'sommelier', 'cook', 'dishwasher', 'staff'];
+const FLOOR_STAFF: Role[] = ['waiter', 'bartender', 'sommelier'];
+
+// Kroppens delposer som flera klipp delar.
+// Handankaret på 0,81 m och 0,23 m framför roten; med steget in (root) 0,45 m. Tallriken
+// släpps där handen är och sjunker högst 7 cm till bordsskivan.
+const LEAN_SERVE: FigurePose = P(STAND, { lift: -0.08, torso: { pitch: 0.5 }, head: { pitch: 0.3 }, armR: A(0.3, 0.08, 0.0), armL: A(0.1, 0.1, 0.4), legL: { ...LEG_FRONT, knee: 0.3, ankle: 0.16 }, legR: { ...LEG_BACK, knee: 0.3 } });
+const SERVE_BACK: FigurePose = P(STAND, { torso: { pitch: 0.12 }, armR: A(0.12, 0.06, 0.35) });
+const HURT: FigurePose = P(STAND, { lift: -0.04, torso: { pitch: 0.36 }, head: { pitch: 0.5 }, armR: A(0.5, 0.05, 1.9), armL: A(0.64, -0.12, 1.65), legL: { ...LEG_FRONT, knee: 0.22, ankle: 0.18 }, legR: { ...LEG_BACK, knee: 0.26 } });
+
+export const CLIPS: Record<string, ClipSpec> = {};
+function reg(c: ClipSpec): void { CLIPS[c.id] = c; }
+
+// ===== personal, alla roller ==========================================
+
+reg(def({
+  id: 'staff.idle', group: 'staff', roles: STAFF, loop: true, travel: false, base: 4,
+  from: 'stand', to: 'stand', needs: 'floor', holds: {}, ends: {}, events: [],
+  next: ['staff.walk', 'staff.idle', 'waiter.takeOrder', 'waiter.pickUp', 'waiter.clear', 'bar.pour', 'bar.wipe', 'somm.present', 'cook.station', 'dish.receive'],
+  pose: function (u, c) {
+    const s = c.stress ?? 0;
+    const scan = s > 0.5 ? 0.4 * Math.sin(u * TAU * 2) : 0.22 * Math.sin(u * TAU);
+    return breathe(P(STAND, { torso: { roll: 0.025 * Math.sin(u * TAU) }, head: { yaw: scan + (c.yaw ?? 0) * 0.5 }, legL: { knee: 0.06 + 0.05 * Math.max(0, Math.sin(u * TAU)) }, legR: { knee: 0.06 + 0.05 * Math.max(0, -Math.sin(u * TAU)) } }), c.t ?? 0);
+  }
+}));
+
+reg(def({
+  id: 'staff.walk', group: 'staff', roles: STAFF, loop: true, travel: true, base: 1,
+  from: 'walk', to: 'walk', needs: 'floor', holds: {}, ends: {}, events: [],
+  next: ['staff.idle', 'staff.walk', 'staff.dodge', 'waiter.takeOrder', 'waiter.pickUp', 'waiter.clear', 'waiter.presentBill', 'somm.present', 'somm.pour', 'dish.receive'],
+  pose: function (u, c) { return walking(STAND, c.phase ?? u, c.stride ?? 1, 'both'); }
+}));
+
+reg(def({
+  id: 'staff.dodge', group: 'staff', roles: STAFF, loop: false, travel: false, base: 1.4,
+  from: 'walk', to: 'walk', needs: 'floor', holds: {}, ends: {}, events: [],
+  next: ['staff.walk'],
+  pose: function (u, c) {
+    const side = c.side ?? 1;
+    const aside = win(u, 0.05, 1, 0.3);
+    const p = walking(P(STAND, { armL: A(0.2, 0.02, 0.9), armR: A(0.2, 0.02, 0.9) }), u * 2, 0.7, 'none');
+    return withYaw(p, side * 0.6 * aside, side * 0.3 * aside);
+  },
+  root: function (u, c) { const side = c.side ?? 1; return [side * 0.4 * (ramp(u, 0.05, 0.35) - ramp(u, 0.7, 1)), 0.25 * u, 0]; }
+}));
+
+// ===== servitören =====================================================
+
+reg(def({
+  id: 'waiter.carryPlate', group: 'waiter', roles: ['waiter'], loop: true, travel: true, base: 1, handed: true,
+  from: 'walk', to: 'walk', needs: 'floor', holds: { R: 'plate' }, ends: { R: 'plate' }, events: [],
+  next: ['waiter.carryPlate', 'waiter.serve', 'staff.dodge'],
+  pose: function (u, c) {
+    const s = c.stress ?? 0;
+    return walking(P(STAND, { torso: { pitch: -0.02 }, head: { pitch: 0.06 }, armR: A(0.35, 0.12, 1.1 + 0.1 * s) }), c.phase ?? u, c.stride ?? 1, 'L');
+  }
+}));
+
+reg(def({
+  id: 'waiter.carryTwoPlates', group: 'waiter', roles: ['waiter'], loop: true, travel: true, base: 1,
+  from: 'walk', to: 'walk', needs: 'floor', holds: { L: 'plate', R: 'plate' }, ends: { L: 'plate', R: 'plate' }, events: [],
+  next: ['waiter.carryTwoPlates', 'waiter.serve', 'staff.dodge'],
+  pose: function (u, c) {
+    return walking(P(STAND, { torso: { pitch: -0.03 }, head: { pitch: 0.06 }, armL: A(0.35, 0.2, 1.1), armR: A(0.35, 0.2, 1.1) }), c.phase ?? u, (c.stride ?? 1) * 0.85, 'none');
+  }
+}));
+
+reg(def({
+  id: 'waiter.carryTray', group: 'waiter', roles: ['waiter', 'bartender'], loop: true, travel: true, base: 1,
+  from: 'walk', to: 'walk', needs: 'floor', holds: { L: 'tray' }, ends: { L: 'tray' }, events: [],
+  next: ['waiter.carryTray', 'waiter.serve', 'staff.dodge'],
+  pose: function (u, c) {
+    const s = c.stress ?? 0;
+    const tray = s > 0.6 ? A(0.3, 0.28, 1.7) : TRAY_ARM;
+    return walking(P(STAND, { torso: { pitch: -0.02, roll: 0.04 }, head: { pitch: 0.04 }, armL: tray }), c.phase ?? u, (c.stride ?? 1) * 0.9, 'R');
+  }
+}));
+
+reg(def({
+  id: 'waiter.pickUp', group: 'waiter', roles: ['waiter'], loop: false, travel: false, base: 1.4, handed: true,
+  from: 'stand', to: 'stand', needs: 'pass', holds: {}, ends: { R: 'plate' },
+  events: [{ u: 0.5, type: 'grab', hand: 'R', at: 'pass' }],
+  next: ['waiter.pickUp', 'waiter.carryPlate', 'waiter.carryTwoPlates', 'waiter.carryTray'],
+  pose: function (u) {
+    return keys(u, [
+      [0, P(STAND, { armR: A(0.12, 0.06, 0.4) })],
+      [0.45, P(STAND, { torso: { pitch: 0.3 }, head: { pitch: 0.35 }, armR: A(0.55, 0.08, 0.4), legL: LEG_FRONT, legR: LEG_BACK })],
+      [0.55, P(STAND, { torso: { pitch: 0.28 }, head: { pitch: 0.3 }, armR: A(0.5, 0.1, 0.6), legL: LEG_FRONT, legR: LEG_BACK })],
+      [1, P(STAND, { torso: { pitch: -0.02 }, armR: CARRY_ARM })]
+    ]);
+  }
+}));
+
+reg(def({
+  id: 'waiter.serve', group: 'waiter', roles: ['waiter'], loop: false, travel: false, base: 2.4, handed: true,
+  from: 'stand', to: 'stand', needs: 'table', holds: { R: 'any' }, ends: {},
+  events: [{ u: 0.55, type: 'release', hand: 'R', at: 'table' }],
+  next: ['staff.idle', 'staff.walk', 'waiter.serve', 'waiter.clear'],
+  pose: function (u, c) {
+    const toward = (c.yaw ?? 0) * 0.3;
+    return withYaw(keys(u, [
+      [0, P(STAND, { armR: CARRY_ARM })],
+      [0.25, P(STAND, { torso: { pitch: 0.1 }, armR: CARRY_ARM })],
+      [0.5, LEAN_SERVE],
+      [0.62, LEAN_SERVE],
+      [0.8, SERVE_BACK],
+      [1, STAND]
+    ]), toward * win(u, 0.15, 0.9, 0.2), (c.yaw ?? 0) * 0.6 * win(u, 0.7, 1.01, 0.1));
+  },
+  root: function (u) { return [0, 0.22 * win(u, 0.2, 0.92, 0.22), 0]; }
+}));
+
+reg(def({
+  id: 'waiter.clear', group: 'waiter', roles: ['waiter'], loop: false, travel: false, base: 3, handed: true,
+  from: 'stand', to: 'stand', needs: 'table', holds: {}, ends: { R: 'plate' },
+  events: [{ u: 0.4, type: 'grab', hand: 'R', at: 'table' }, { u: 0.82, type: 'stack', hand: 'R' }],
+  next: ['waiter.clear', 'waiter.carryPlate', 'waiter.carryTwoPlates', 'staff.walk'],
+  pose: function (u) {
+    return keys(u, [
+      [0, STAND],
+      [0.3, LEAN_SERVE],
+      [0.45, P(LEAN_SERVE, { armR: A(0.2, 0.1, 0.5) })],
+      [0.7, P(STAND, { torso: { pitch: 0.05 }, armR: CARRY_ARM })],
+      [1, P(STAND, { torso: { pitch: -0.02 }, armR: CARRY_ARM })]
+    ]);
+  },
+  root: function (u) { return [0, 0.22 * win(u, 0.15, 0.85, 0.2), 0]; }
+}));
+
+reg(def({
+  id: 'waiter.takeOrder', group: 'waiter', roles: ['waiter'], loop: true, travel: false, base: 4,
+  from: 'stand', to: 'stand', needs: 'table', holds: { L: 'pad' }, ends: { L: 'pad' }, events: [],
+  next: ['waiter.takeOrder', 'staff.walk', 'staff.idle'],
+  pose: function (u, c) {
+    const t = c.t ?? 0;
+    const up = win(u, 0, 0.35, 0.08) + win(u, 0.55, 0.8, 0.08);
+    const write = 1 - up;
+    const p = P(STAND, {
+      torso: { pitch: 0.1 + 0.04 * up },
+      head: { pitch: 0.45 - 0.5 * up + 0.08 * bell(u, 0.22, 0.04), yaw: (c.yaw ?? 0) * 0.8 * up },
+      armL: A(0.55, 0.08, 1.55),
+      armR: A(0.45, 0.02, 1.7 + 0.07 * write * Math.sin(t * TAU * 3)),
+      legL: LEG_FRONT, legR: LEG_STAND
+    });
+    return breathe(withYaw(p, (c.yaw ?? 0) * 0.25, 0), t);
+  }
+}));
+
+reg(def({
+  id: 'waiter.presentBill', group: 'waiter', roles: ['waiter'], loop: false, travel: false, base: 3.2,
+  from: 'stand', to: 'stand', needs: 'table', holds: { R: 'billFolder' }, ends: { R: 'billFolder' },
+  events: [{ u: 0.38, type: 'release', hand: 'R', at: 'table' }, { u: 0.9, type: 'grab', hand: 'R', at: 'table' }],
+  next: ['staff.walk', 'staff.idle'],
+  pose: function (u, c) {
+    const wait = P(STAND, { torso: { pitch: 0.06 }, head: { pitch: 0.12 }, armL: A(0.3, -0.05, 1.0), armR: A(0.3, -0.05, 1.0) });
+    return withYaw(keys(u, [
+      [0, P(STAND, { armR: CHEST_ARM })],
+      [0.32, P(STAND, { torso: { pitch: 0.3 }, head: { pitch: 0.25 }, armR: A(0.75, 0.06, 0.4), legL: LEG_FRONT, legR: LEG_BACK })],
+      [0.45, wait],
+      [0.82, wait],
+      [0.9, P(STAND, { torso: { pitch: 0.3 }, armR: A(0.7, 0.06, 0.45), legL: LEG_FRONT, legR: LEG_BACK })],
+      [1, P(STAND, { armR: CHEST_ARM })]
+    ]), (c.yaw ?? 0) * 0.2, (c.yaw ?? 0) * 0.5);
+  }
+}));
+
+// ===== bartendern =====================================================
+
+reg(def({
+  id: 'bar.pour', group: 'bartender', roles: ['bartender'], loop: false, travel: false, base: 2.6,
+  from: 'stand', to: 'stand', needs: 'bar', holds: { R: 'wineBottle' }, ends: { R: 'wineBottle' }, events: [],
+  next: ['bar.pour', 'bar.setDown', 'bar.wipe', 'staff.idle'],
+  pose: function (u, c) {
+    const s = c.stress ?? 0;
+    const p = keys(u, [
+      [0, P(STAND, { armR: CHEST_ARM })],
+      [0.25, P(STAND, { torso: { pitch: 0.15 }, head: { pitch: 0.3 }, armR: A(0.95, 0.14, 0.6), armL: A(0.75, 0.05, 0.7) })],
+      [0.8, P(STAND, { torso: { pitch: 0.15 }, head: { pitch: 0.3 }, armR: A(0.95, 0.14, 0.6), armL: A(0.75, 0.05, 0.7) })],
+      [1, P(STAND, { armR: CHEST_ARM })]
+    ]);
+    // Stressad: blicken upp mot baren mitt i hällningen.
+    return withYaw({ ...p, head: { ...(p.head ?? {}), pitch: (p.head?.pitch ?? 0) - 0.35 * s * win(u, 0.45, 0.65, 0.06) } }, 0, (c.yaw ?? 0) * s * win(u, 0.45, 0.65, 0.06));
+  },
+  tilt: function (u) { return { R: { pitch: 1.9 * (ramp(u, 0.28, 0.42) - ramp(u, 0.68, 0.82)), roll: 0.5 * win(u, 0.82, 0.95, 0.04) } }; }
+}));
+
+reg(def({
+  id: 'bar.setDown', group: 'bartender', roles: ['bartender', 'sommelier', 'waiter'], loop: false, travel: false, base: 1.6, handed: true,
+  from: 'stand', to: 'stand', needs: 'bar', holds: { R: 'any' }, ends: {},
+  events: [{ u: 0.55, type: 'release', hand: 'R', at: 'bar' }],
+  next: ['bar.wipe', 'bar.pour', 'staff.idle', 'staff.walk'],
+  pose: function (u, c) {
+    return withYaw(keys(u, [
+      [0, P(STAND, { armR: A(0.45, 0.08, 1.3) })],
+      [0.5, P(STAND, { torso: { pitch: 0.18 }, head: { pitch: 0.25 }, armR: A(1.0, 0.05, 0.35), legL: LEG_FRONT, legR: LEG_BACK })],
+      [0.6, P(STAND, { torso: { pitch: 0.16 }, armR: A(0.95, 0.06, 0.4), legL: LEG_FRONT, legR: LEG_BACK })],
+      [1, P(STAND, { armR: A(0.2, 0.06, 0.5) })]
+    ]), 0, (c.yaw ?? 0) * 0.7 * ramp(u, 0.6, 0.9));
+  }
+}));
+
+reg(def({
+  id: 'bar.wipe', group: 'bartender', roles: ['bartender'], loop: true, travel: false, base: 2.2,
+  from: 'stand', to: 'stand', needs: 'bar', holds: { R: 'napkin' }, ends: { R: 'napkin' }, events: [],
+  next: ['bar.wipe', 'bar.pour', 'staff.idle'],
+  pose: function (u, c) {
+    const s = c.stress ?? 0;
+    const w = u * TAU * (s > 0.6 ? 2 : 1);
+    return P(STAND, {
+      torso: { pitch: 0.22, yaw: 0.06 * Math.sin(w) }, head: { pitch: 0.35 - 0.3 * s * win(u, 0.4, 0.7, 0.08) },
+      armR: A(0.85 + 0.12 * Math.sin(w), 0.18 + 0.12 * Math.cos(w), 0.7), armL: A(0.7, 0.1, 0.8)
+    });
+  }
+}));
+
+// ===== sommeliern =====================================================
+
+reg(def({
+  id: 'somm.present', group: 'sommelier', roles: ['sommelier'], loop: false, travel: false, base: 3,
+  from: 'stand', to: 'stand', needs: 'table', holds: { R: 'wineBottle' }, ends: { R: 'wineBottle' }, events: [],
+  next: ['somm.open'],
+  pose: function (u, c) {
+    const show = P(STAND, { torso: { pitch: 0.1 }, head: { pitch: 0.15 }, armR: A(0.75, 0.12, 1.05), armL: A(0.7, 0.02, 1.35) });
+    return withYaw(keys(u, [
+      [0, P(STAND, { armR: CHEST_ARM })],
+      [0.2, show],
+      [0.45, P(show, { torso: { pitch: 0.3 }, head: { pitch: 0.28 } })],
+      [0.7, show],
+      [1, P(STAND, { armR: CHEST_ARM })]
+    ]), (c.yaw ?? 0) * 0.3, (c.yaw ?? 0) * 0.6);
+  },
+  tilt: function (u) { return { R: { pitch: 1.2 * win(u, 0.12, 0.9, 0.12) } }; }
+}));
+
+reg(def({
+  id: 'somm.open', group: 'sommelier', roles: ['sommelier', 'bartender'], loop: false, travel: false, base: 4,
+  from: 'stand', to: 'stand', needs: 'floor', holds: { R: 'wineBottle' }, ends: { R: 'wineBottle' },
+  events: [{ u: 0.05, type: 'switch', hand: 'R' }, { u: 0.76, type: 'cork', hand: 'R' }, { u: 0.95, type: 'switch', hand: 'L' }],
+  next: ['somm.hostTaste', 'somm.pour', 'bar.pour'],
+  pose: function (u) {
+    const twist = win(u, 0.15, 0.7, 0.05);
+    const r = Math.sin(u * TAU * 5);
+    return keys(u, [
+      [0, P(STAND, { armR: CHEST_ARM })],
+      [0.1, P(STAND, { torso: { pitch: 0.12 }, head: { pitch: 0.4 }, armL: A(0.55, 0.1, 1.45), armR: A(0.62, 0.2, 1.3) })],
+      [0.7, P(STAND, { torso: { pitch: 0.12 }, head: { pitch: 0.4 }, armL: A(0.55, 0.1, 1.45), armR: A(0.62, 0.2 + 0.1 * r * twist, 1.3 + 0.08 * r * twist) })],
+      [0.78, P(STAND, { torso: { pitch: 0.06 }, head: { pitch: 0.3 }, armL: A(0.55, 0.1, 1.45), armR: A(0.3, 0.38, 1.75) })],
+      [0.9, P(STAND, { torso: { pitch: 0.06 }, armL: A(0.55, 0.1, 1.45), armR: A(0.45, 0.1, 1.3) })],
+      [1, P(STAND, { armR: CHEST_ARM })]
+    ]);
+  }
+}));
+
+reg(def({
+  id: 'somm.hostTaste', group: 'sommelier', roles: ['sommelier'], loop: false, travel: false, base: 4.5,
+  from: 'stand', to: 'stand', needs: 'table', holds: { R: 'wineBottle' }, ends: { R: 'wineBottle' }, events: [],
+  next: ['somm.pour', 'staff.walk'],
+  pose: function (u, c) {
+    const lean = P(STAND, { torso: { pitch: 0.35 }, head: { pitch: 0.35 }, armR: A(0.8, 0.12, 0.55), armL: A(-0.25, 0.1, 1.5), legL: LEG_FRONT, legR: LEG_BACK });
+    const wait = P(STAND, { torso: { pitch: 0.05 }, head: { pitch: 0.1 }, armR: A(0.45, 0.08, 1.35), armL: A(0.35, -0.02, 1.2) });
+    const p = keys(u, [[0, P(STAND, { armR: CHEST_ARM })], [0.18, lean], [0.38, lean], [0.55, wait], [1, wait]]);
+    return withYaw({ ...p, head: { ...(p.head ?? {}), pitch: (p.head?.pitch ?? 0) + 0.22 * bell(u, 0.9, 0.035) } }, (c.yaw ?? 0) * 0.3 * ramp(u, 0.5, 0.6), (c.yaw ?? 0) * 0.7 * ramp(u, 0.5, 0.6));
+  },
+  tilt: function (u) { return { R: { pitch: 1.7 * (ramp(u, 0.2, 0.27) - ramp(u, 0.33, 0.4)) } }; },
+  root: function (u) { return [0, -0.18 * ramp(u, 0.42, 0.6), 0]; }
+}));
+
+reg(def({
+  id: 'somm.pour', group: 'sommelier', roles: ['sommelier'], loop: false, travel: false, base: 2.4,
+  from: 'stand', to: 'stand', needs: 'table', holds: { R: 'wineBottle' }, ends: { R: 'wineBottle' }, events: [],
+  next: ['somm.pour', 'bar.setDown', 'staff.walk'],
+  pose: function (u) {
+    const lean = P(STAND, { torso: { pitch: 0.34 }, head: { pitch: 0.35 }, armR: A(0.82, 0.12, 0.55), armL: A(-0.25, 0.1, 1.5), legL: LEG_FRONT, legR: LEG_BACK });
+    return keys(u, [[0, P(STAND, { armR: CHEST_ARM })], [0.22, lean], [0.72, lean], [1, P(STAND, { armR: CHEST_ARM, armL: A(-0.2, 0.1, 1.4) })]]);
+  },
+  tilt: function (u) { return { R: { pitch: 1.85 * (ramp(u, 0.28, 0.4) - ramp(u, 0.62, 0.74)), roll: 0.5 * win(u, 0.64, 0.76, 0.04) } }; }
+}));
+
+// ===== kocken =========================================================
+
+reg(def({
+  id: 'cook.station', group: 'cook', roles: ['cook'], loop: true, travel: false, base: 2.4,
+  from: 'stand', to: 'stand', needs: 'station', holds: {}, ends: {}, events: [],
+  next: ['cook.station', 'cook.plate', 'staff.idle'],
+  pose: function (u, c) {
+    const s = c.stress ?? 0;
+    const k = Math.sin(u * TAU * 2);
+    const look = s * win(u, 0.55, 0.78, 0.06);
+    const p = P(STAND, {
+      torso: { pitch: 0.25 - 0.1 * look }, head: { pitch: 0.38 - 0.4 * look },
+      armL: A(0.8, 0.16, 1.0), armR: A(0.85 + 0.18 * k, 0.12, 0.9 - 0.25 * k),
+      legL: { swing: 0.04, spread: 0.07, knee: 0.1, ankle: 0.06 }, legR: { swing: -0.06, spread: 0.07, knee: 0.14, ankle: 0.2 }
+    });
+    return withYaw(p, (c.yaw ?? 0) * 0.3 * look, (c.yaw ?? 0) * 0.8 * look);
+  }
+}));
+
+reg(def({
+  id: 'cook.plate', group: 'cook', roles: ['cook'], loop: false, travel: false, base: 3,
+  from: 'stand', to: 'stand', needs: 'pass', holds: {}, ends: {},
+  events: [{ u: 0.7, type: 'plated' }],
+  next: ['cook.plate', 'cook.toPass'],
+  pose: function (u) {
+    const dab = bell(u, 0.2, 0.04) + bell(u, 0.42, 0.04) + bell(u, 0.64, 0.04);
+    const wipe = win(u, 0.78, 0.95, 0.05);
+    return P(STAND, {
+      torso: { pitch: 0.32 }, head: { pitch: 0.45 },
+      armL: A(0.75, 0.22, 0.75),
+      armR: A(0.8 + 0.12 * dab - 0.1 * wipe, 0.14 + 0.2 * wipe, 0.8 - 0.25 * dab),
+      legL: LEG_FRONT, legR: LEG_STAND
+    });
+  }
+}));
+
+reg(def({
+  id: 'cook.toPass', group: 'cook', roles: ['cook'], loop: false, travel: false, base: 2,
+  from: 'stand', to: 'stand', needs: 'pass', holds: {}, ends: {},
+  events: [{ u: 0.15, type: 'grab', hand: 'R', at: 'pass' }, { u: 0.5, type: 'release', hand: 'R', at: 'pass' }, { u: 0.75, type: 'bell' }],
+  next: ['cook.station', 'cook.plate'],
+  pose: function (u, c) {
+    const s = c.stress ?? 0;
+    const p = keys(u, [
+      [0, P(STAND, { torso: { pitch: 0.28 }, head: { pitch: 0.4 }, armR: A(0.8, 0.1, 0.7) })],
+      [0.15, P(STAND, { torso: { pitch: 0.3 }, head: { pitch: 0.4 }, armR: A(0.8, 0.1, 0.55) })],
+      [0.48, P(STAND, { torso: { pitch: 0.4 }, head: { pitch: 0.3 }, armR: A(1.05, 0.08, 0.2), legL: LEG_FRONT, legR: LEG_BACK })],
+      [0.66, P(STAND, { torso: { pitch: 0.15 }, head: { pitch: 0.1 }, armR: A(0.95, 0.28, 0.7) })],
+      [0.76, P(STAND, { torso: { pitch: 0.18 }, head: { pitch: 0.1 }, armR: A(0.9, 0.22, 0.45) })],
+      [1, P(STAND, { torso: { pitch: 0.02 }, head: { pitch: -0.05 - 0.15 * s } })]
+    ]);
+    return p;
+  }
+}));
+
+// ===== diskaren ========================================================
+
+reg(def({
+  id: 'dish.receive', group: 'dishwasher', roles: ['dishwasher'], loop: false, travel: false, base: 1.8,
+  from: 'stand', to: 'stand', needs: 'sink', holds: {}, ends: { R: 'plate' },
+  events: [{ u: 0.45, type: 'grab', hand: 'R', at: 'partner' }],
+  next: ['dish.wash'],
+  pose: function (u, c) {
+    return withYaw(keys(u, [
+      [0, STAND],
+      [0.4, P(STAND, { torso: { pitch: 0.2 }, head: { pitch: 0.3 }, armR: A(0.85, 0.1, 0.4), legL: LEG_FRONT, legR: LEG_BACK })],
+      [0.8, P(STAND, { torso: { pitch: 0.1 }, armR: A(0.45, 0.1, 1.3) })],
+      [1, P(STAND, { armR: A(0.45, 0.1, 1.3) })]
+    ]), (c.yaw ?? 0) * 0.4 * ramp(u, 0.6, 1), (c.yaw ?? 0) * 0.6 * ramp(u, 0.55, 0.9));
+  }
+}));
+
+reg(def({
+  id: 'dish.wash', group: 'dishwasher', roles: ['dishwasher'], loop: true, travel: false, base: 2,
+  from: 'stand', to: 'stand', needs: 'sink', holds: { R: 'any' }, ends: { R: 'any' }, events: [],
+  next: ['dish.wash', 'dish.receive', 'staff.idle'],
+  pose: function (u) {
+    const w = u * TAU * 2;
+    return P(STAND, {
+      torso: { pitch: 0.32 }, head: { pitch: 0.45 },
+      armL: A(0.62, 0.15, 0.75), armR: A(0.62 + 0.08 * Math.sin(w), 0.12 + 0.08 * Math.cos(w), 0.72),
+      legL: LEG_FRONT, legR: LEG_STAND
+    });
+  },
+  tilt: function () { return { R: { pitch: 0.9 } }; }
+}));
+
+// ===== gästerna =======================================================
+
+reg(def({
+  id: 'guest.walk', group: 'guest', roles: ['guest'], loop: true, travel: true, base: 1,
+  from: 'walk', to: 'walk', needs: 'floor', holds: {}, ends: {}, events: [],
+  next: ['guest.walk', 'guest.sit', 'staff.idle'],
+  pose: function (u, c) {
+    const ph = c.phase ?? u;
+    const p = walking(STAND, ph, (c.stride ?? 1) * 0.95, 'both');
+    // Den som kommer in letar: huvudet sveper två gånger per fyra steg.
+    return withYaw(p, 0, (c.yaw ?? 0) * 0.5 + 0.3 * Math.sin(ph * Math.PI * 0.5));
+  }
+}));
+
+reg(def({
+  id: 'guest.sit', group: 'guest', roles: ['guest'], loop: false, travel: false, base: 2.2,
+  from: 'stand', to: 'seated', needs: 'chair', holds: {}, ends: {}, events: [],
+  next: ['guest.readMenu', 'guest.seatedIdle', 'guest.gesture'],
+  pose: function (u, c) {
+    const side = c.side ?? 1;
+    let p = keys(u, [
+      [0, STAND],
+      [0.3, P(STAND, { armR: A(0.6, 0.15, 0.5) })],
+      [0.58, P(STAND, { torso: { pitch: 0.12 } })],
+      [0.78, CROUCH],
+      [1, SEAT]
+    ]);
+    // Kliver in från sidan (u 0,25–0,55): två små steg.
+    const step = win(u, 0.25, 0.58, 0.06);
+    if (step > 0) {
+      const w = walking(p, (u - 0.25) / 0.33, 0.45, 'none');
+      p = blendPose(p, w, step);
+    }
+    return withYaw(p, 0, -side * 0.35 * win(u, 0, 0.5, 0.15));
+  },
+  root: function (u, c) {
+    const side = c.side ?? 1;
+    const out = ramp(u, 0.05, 0.3) - ramp(u, 0.65, 0.95);
+    const x = side * SEAT_RULE.approachSide * (1 - ramp(u, 0.25, 0.55));
+    const z = -SEAT_RULE.chairPull * out + SEAT_RULE.approachFront * (1 - ramp(u, 0.55, 0.8));
+    return [x, z, 0];
+  },
+  chair: function (u) { return SEAT_RULE.chairPull * (ramp(u, 0.05, 0.3) - ramp(u, 0.65, 0.95)); }
+}));
+
+reg(def({
+  id: 'guest.seatedIdle', group: 'guest', roles: ['guest'], loop: true, travel: false, base: 5,
+  from: 'seated', to: 'seated', needs: 'chair', holds: {}, ends: {}, events: [],
+  next: ['guest.seatedIdle', 'guest.readMenu', 'guest.gesture', 'guest.lean', 'guest.toast', 'guest.waveStaff', 'guest.eat', 'guest.pay', 'guest.leave', 'guest.riseGreet', 'rocket.smellWine', 'rocket.askPointMenu'],
+  pose: function (u, c) {
+    const look = win(u, 0.3, 0.7, 0.12);
+    return breathe(withYaw(P(SEAT, { torso: { pitch: 0.02 }, armL: A(0.52, 0.06, 1.14) }), (c.yaw ?? 0) * 0.2 * look, (c.yaw ?? 0) * 0.7 * look + 0.25 * Math.sin(u * TAU) * (1 - look)), c.t ?? 0);
+  }
+}));
+
+reg(def({
+  id: 'guest.readMenu', group: 'guest', roles: ['guest'], loop: true, travel: false, base: 5,
+  from: 'seated', to: 'seated', needs: 'chair', holds: { R: 'menu' }, ends: { R: 'menu' }, events: [],
+  next: ['guest.readMenu', 'guest.order', 'guest.waveStaff', 'rocket.askPointMenu'],
+  pose: function (u, c) {
+    const turn = win(u, 0.55, 0.72, 0.05);
+    return breathe(P(SEAT, {
+      torso: { pitch: 0.14 }, head: { pitch: 0.38, yaw: 0.15 * turn },
+      armL: A(0.62, 0.08, 1.55), armR: A(0.62 + 0.1 * turn, 0.08 + 0.25 * turn, 1.55)
+    }), c.t ?? 0);
+  }
+}));
+
+reg(def({
+  id: 'guest.order', group: 'guest', roles: ['guest'], loop: false, travel: false, base: 4,
+  from: 'seated', to: 'seated', needs: 'chair', holds: { R: 'menu' }, ends: {},
+  events: [{ u: 0.02, type: 'switch', hand: 'R' }, { u: 0.9, type: 'give', hand: 'L', at: 'partner' }],
+  next: ['guest.seatedIdle', 'guest.gesture', 'guest.lean'],
+  pose: function (u, c) {
+    const point = win(u, 0.12, 0.48, 0.06);
+    const dip = bell(u, 0.24, 0.03) + bell(u, 0.37, 0.03);
+    const palm = win(u, 0.52, 0.78, 0.06);
+    const hand = win(u, 0.82, 1.01, 0.06);
+    const up = ramp(u, 0.45, 0.55);
+    return withYaw(P(SEAT, {
+      torso: { pitch: 0.1 },
+      head: { pitch: 0.35 - 0.45 * up },
+      armL: A(0.62 + 0.3 * hand, 0.12 + 0.12 * hand, 1.4 - 0.7 * hand),
+      armR: A(0.78 + point * 0.0 + 0.14 * palm, 0.1 + 0.18 * palm, 0.95 + 0.12 * point + 0.12 * dip - 0.3 * palm)
+    }), (c.yaw ?? 0) * 0.25 * up, (c.yaw ?? 0) * 0.75 * up);
+  }
+}));
+
+reg(def({
+  id: 'guest.eat', group: 'guest', roles: ['guest'], loop: true, travel: false, base: 3.5,
+  from: 'seated', to: 'seated', needs: 'chair', holds: { L: 'knife', R: 'fork' }, ends: { L: 'knife', R: 'fork' }, events: [],
+  next: ['guest.eat', 'guest.seatedIdle', 'guest.toast', 'guest.gesture'],
+  pose: function (u, c) {
+    const cut = win(u, 0, 0.42, 0.06);
+    const bite = win(u, 0.45, 0.85, 0.1);
+    const saw = Math.sin((c.t ?? 0) * TAU * 3.5);
+    return P(SEAT, {
+      torso: { pitch: 0.2 + 0.07 * bite }, head: { pitch: 0.35 - 0.2 * bite },
+      armL: A(0.7, 0.12, 1.05 + 0.06 * saw * cut),
+      armR: A(0.72 - 0.22 * bite, 0.12, 1.05 + 1.1 * bite + 0.04 * saw * cut)
+    });
+  },
+  tilt: function (u) { return { R: { pitch: -1.2 * win(u, 0.45, 0.85, 0.1) } }; }
+}));
+
+reg(def({
+  id: 'guest.toast', group: 'guest', roles: ['guest'], loop: false, travel: false, handed: true, base: 3,
+  from: 'seated', to: 'seated', needs: 'table', holds: {}, ends: {},
+  events: [{ u: 0.1, type: 'grab', hand: 'R', at: 'table' }, { u: 0.45, type: 'clink' }, { u: 0.9, type: 'release', hand: 'R', at: 'table' }],
+  next: ['guest.seatedIdle', 'guest.gesture', 'guest.lean', 'guest.eat'],
+  pose: function (u, c) {
+    const b = base(c, true);
+    const toward = (c.yaw ?? 0) * win(u, 0.2, 0.55, 0.1);
+    return withYaw(keys(u, [
+      [0, b],
+      [0.12, P(b, { armR: A(0.8, 0.1, 0.9) })],
+      [0.38, P(b, { torso: { pitch: 0.16 }, head: { pitch: -0.05 }, armR: A(1.2, 0.1, 0.72) })],
+      [0.5, P(b, { torso: { pitch: 0.16 }, head: { pitch: -0.05 }, armR: A(1.2, 0.1, 0.72) })],
+      [0.6, P(b, { torso: { pitch: 0.02 }, head: { pitch: -0.15 }, armR: A(0.55, 0.1, 2.15) })],
+      [0.72, P(b, { torso: { pitch: 0.02 }, head: { pitch: -0.12 }, armR: A(0.55, 0.1, 2.15) })],
+      [0.88, P(b, { armR: A(0.8, 0.1, 0.92) })],
+      [1, b]
+    ]), toward * 0.35, toward * 0.6);
+  },
+  tilt: function (u) { return { R: { pitch: -0.6 * win(u, 0.58, 0.74, 0.04) } }; }
+}));
+
+reg(def({
+  id: 'guest.tasteApprove', group: 'guest', roles: ['guest'], loop: false, travel: false, handed: true, base: 3,
+  from: 'seated', to: 'seated', needs: 'table', holds: {}, ends: {},
+  events: [{ u: 0.08, type: 'grab', hand: 'R', at: 'table' }, { u: 0.82, type: 'release', hand: 'R', at: 'table' }],
+  next: ['guest.seatedIdle', 'guest.gesture'],
+  pose: function (u, c) {
+    const swirl = win(u, 0.15, 0.32, 0.03);
+    const sw = Math.sin(u * TAU * 8);
+    const p = keys(u, [
+      [0, SEAT],
+      [0.12, P(SEAT, { armR: A(0.8, 0.12, 1.0) })],
+      [0.32, P(SEAT, { armR: A(0.8, 0.12, 1.0) })],
+      [0.4, P(SEAT, { torso: { pitch: 0.12 }, head: { pitch: 0.12 }, armR: A(0.6, 0.06, 2.2) })],
+      [0.68, P(SEAT, { torso: { pitch: 0.04 }, head: { pitch: -0.12 }, armR: A(0.58, 0.08, 2.2) })],
+      [0.8, P(SEAT, { armR: A(0.8, 0.1, 0.95) })],
+      [1, SEAT]
+    ]);
+    const arm = p.armR ?? {};
+    const nod = 0.3 * bell(u, 0.9, 0.035);
+    return withYaw({ ...p, armR: { ...arm, lift: (arm.lift ?? 0) + 0.05 * sw * swirl }, head: { ...(p.head ?? {}), pitch: (p.head?.pitch ?? 0) + nod } }, 0, (c.yaw ?? 0) * 0.7 * ramp(u, 0.82, 0.9));
+  },
+  tilt: function (u) { return { R: { pitch: -0.5 * win(u, 0.55, 0.7, 0.04), roll: 0.12 * Math.sin(u * TAU * 8) * win(u, 0.15, 0.32, 0.03) } }; }
+}));
+
+reg(def({
+  id: 'guest.gesture', group: 'guest', roles: ['guest'], loop: true, travel: false, base: 3,
+  from: 'seated', to: 'seated', needs: 'chair', holds: {}, ends: {}, events: [],
+  next: ['guest.gesture', 'guest.lean', 'guest.seatedIdle', 'guest.toast', 'guest.eat'],
+  pose: function (u, c) {
+    const s1 = Math.sin(u * TAU), s2 = Math.sin(u * TAU * 2 + 1);
+    const b = base(c, true);
+    return breathe(withYaw(P(b, {
+      torso: { pitch: 0.1 + 0.04 * s2 },
+      head: { pitch: 0.02 + 0.06 * Math.sin(u * TAU * 3) },
+      armR: A(0.85 + 0.25 * s1, 0.22 + 0.12 * s2, 1.3 - 0.35 * s1),
+      armL: A(0.75 + 0.12 * s2, 0.15, 1.2)
+    }), (c.yaw ?? 0) * 0.3, (c.yaw ?? 0) * 0.75), c.t ?? 0);
+  }
+}));
+
+reg(def({
+  id: 'guest.lean', group: 'guest', roles: ['guest'], loop: true, travel: false, base: 4,
+  from: 'seated', to: 'seated', needs: 'chair', holds: {}, ends: {}, events: [],
+  next: ['guest.lean', 'guest.gesture', 'guest.seatedIdle', 'guest.toast'],
+  pose: function (u, c) {
+    const side = c.side ?? 1;
+    const laugh = bell(u, 0.62, 0.05);
+    const b = base(c, true);
+    return breathe(withYaw(P(b, {
+      torso: { pitch: 0.3 - 0.35 * laugh, roll: side * 0.12 },
+      head: { pitch: 0.1 + 0.06 * Math.sin(u * TAU * 2) - 0.2 * laugh },
+      armR: A(0.8, 0.05, 1.0), armL: A(0.5, 0.1, 1.15)
+    }), (c.yaw ?? 0) * 0.4, (c.yaw ?? 0) * 0.8), c.t ?? 0);
+  }
+}));
+
+reg(def({
+  id: 'guest.waveStaff', group: 'guest', roles: ['guest'], loop: false, travel: false, base: 2.2,
+  from: 'seated', to: 'seated', needs: 'chair', holds: {}, ends: {}, events: [],
+  next: ['guest.seatedIdle', 'guest.order', 'guest.pay'],
+  pose: function (u, c) {
+    const up = win(u, 0.12, 0.85, 0.12);
+    const wv = Math.sin(u * TAU * 4) * win(u, 0.25, 0.7, 0.05);
+    const b = base(c, true);
+    return withYaw(P(b, {
+      torso: { pitch: 0.02, roll: 0.06 * up },
+      armR: A(0.78 + 1.6 * up, 0.1 + 0.08 * up + 0.1 * wv, 0.95 - 0.6 * up)
+    }), (c.yaw ?? 0) * 0.25 * up, (c.yaw ?? 0) * 0.8 * up);
+  }
+}));
+
+reg(def({
+  id: 'guest.riseGreet', group: 'guest', roles: ['guest'], loop: false, travel: false, base: 4.4,
+  from: 'seated', to: 'seated', needs: 'chair', holds: {}, ends: {}, events: [],
+  next: ['guest.seatedIdle', 'guest.gesture', 'guest.readMenu'],
+  pose: function (u, c) {
+    const shake = win(u, 0.36, 0.62, 0.05);
+    const pump = Math.sin(u * TAU * 7) * shake;
+    const greet = P(STAND, { torso: { pitch: 0.1 }, head: { pitch: 0.05 + 0.08 * pump }, armR: A(0.9, 0.06, 0.35 + 0.08 * pump) });
+    return withYaw(keys(u, [
+      [0, SEAT], [0.14, CROUCH], [0.28, STAND], [0.36, greet], [0.62, greet], [0.7, STAND], [0.84, CROUCH], [1, SEAT]
+    ]), (c.yaw ?? 0) * 0.5 * win(u, 0.25, 0.72, 0.08), (c.yaw ?? 0) * 0.8 * win(u, 0.2, 0.75, 0.08));
+  },
+  root: function (u) {
+    const out = ramp(u, 0.02, 0.2) - ramp(u, 0.74, 0.95);
+    return [0, -SEAT_RULE.chairPull * out + SEAT_RULE.approachFront * win(u, 0.2, 0.78, 0.08), 0];
+  },
+  chair: function (u) { return SEAT_RULE.chairPull * (ramp(u, 0.02, 0.2) - ramp(u, 0.74, 0.95)); }
+}));
+
+reg(def({
+  id: 'guest.pay', group: 'guest', roles: ['guest'], loop: false, travel: false, base: 3,
+  from: 'seated', to: 'seated', needs: 'chair', holds: {}, ends: {},
+  events: [{ u: 0.6, type: 'pay', at: 'partner' }],
+  next: ['guest.seatedIdle', 'guest.leave'],
+  pose: function (u, c) {
+    const toward = win(u, 0.4, 0.85, 0.1);
+    return withYaw(keys(u, [
+      [0, SEAT],
+      [0.2, P(SEAT, { torso: { pitch: 0.02, roll: -0.06 }, armR: A(0.35, -0.15, 2.2) })],
+      [0.32, P(SEAT, { torso: { pitch: 0.02, roll: -0.06 }, armR: A(0.35, -0.15, 2.2) })],
+      [0.5, P(SEAT, { torso: { pitch: 0.14 }, armR: A(1.05, 0.18, 0.35) })],
+      [0.7, P(SEAT, { torso: { pitch: 0.14 }, armR: A(1.05, 0.18, 0.35) })],
+      [0.9, SEAT],
+      [1, SEAT]
+    ]), (c.yaw ?? 0) * 0.3 * toward, (c.yaw ?? 0) * 0.7 * ramp(u, 0.3, 0.45));
+  }
+}));
+
+reg(def({
+  id: 'guest.leave', group: 'guest', roles: ['guest'], loop: false, travel: false, base: 2.6,
+  from: 'seated', to: 'stand', needs: 'chair', holds: {}, ends: {}, events: [],
+  next: ['guest.walk'],
+  pose: function (u) {
+    return keys(u, [
+      [0, SEAT], [0.2, CROUCH], [0.4, STAND],
+      [0.72, P(STAND, { armR: A(0.2, 0.12, 0.4) })],
+      [0.82, P(STAND, { torso: { pitch: 0.12 }, armR: A(0.55, 0.15, 0.45) })],
+      [1, STAND]
+    ]);
+  },
+  root: function (u, c) {
+    const side = c.side ?? 1;
+    const out = ramp(u, 0.05, 0.3);
+    const x = side * 0.5 * ramp(u, 0.42, 0.78);
+    const z = -SEAT_RULE.chairPull * out + SEAT_RULE.approachFront * ramp(u, 0.3, 0.5);
+    return [x, z, (c.yaw ?? 0) * ramp(u, 0.5, 0.95)];
+  },
+  chair: function (u) { return SEAT_RULE.chairPull * (ramp(u, 0.05, 0.3) - ramp(u, 0.76, 0.98)); }
+}));
+
+// ===== raketerna =====================================================
+//
+// Klippen till raketerna som finns i dag. Var och en är gjord för att läsas från 24 m
+// innan frågan kommer: det ska synas vem det gäller och att något har hänt.
+
+reg(def({
+  id: 'rocket.cutHand', group: 'rocket', roles: FLOOR_STAFF, loop: false, travel: false, base: 3.4,
+  from: 'stand', to: 'hurt', needs: 'floor', holds: { R: 'wineBottle' }, ends: {},
+  events: [{ u: 0.03, type: 'switch', hand: 'R' }, { u: 0.28, type: 'cut' }, { u: 0.42, type: 'release', hand: 'L', at: 'bar' }],
+  next: ['rocket.holdHand'],
+  pose: function (u) {
+    const work = P(STAND, { torso: { pitch: 0.14 }, head: { pitch: 0.42 }, armL: A(0.55, 0.1, 1.45), armR: A(0.62, 0.22, 1.45) });
+    const flinch = P(STAND, { lift: -0.02, torso: { pitch: -0.1 }, head: { pitch: 0.5 }, armL: A(0.55, 0.1, 1.45), armR: A(0.25, 0.38, 2.1), legL: LEG_BACK, legR: LEG_FRONT });
+    const putDown = P(STAND, { torso: { pitch: 0.25 }, head: { pitch: 0.45 }, armL: A(0.8, 0.1, 0.5), armR: A(0.3, 0.3, 2.0), legL: LEG_FRONT, legR: LEG_BACK });
+    const r = Math.sin(u * TAU * 12) * win(u, 0.06, 0.26, 0.03);
+    return keys(u, [
+      [0, P(STAND, { armR: CHEST_ARM })],
+      [0.08, work],
+      [0.25, P(work, { armR: A(0.62, 0.22 + 0.04 * r, 1.45) })],
+      [0.3, flinch],
+      [0.42, putDown],
+      [0.55, HURT],
+      [1, HURT]
+    ]);
+  },
+  root: function (u) { return [0, -0.25 * ramp(u, 0.28, 0.5), 0]; }
+}));
+
+reg(def({
+  id: 'rocket.holdHand', group: 'rocket', roles: FLOOR_STAFF, loop: true, travel: false, base: 2,
+  from: 'hurt', to: 'hurt', needs: 'floor', holds: {}, ends: {}, events: [],
+  next: ['rocket.holdHand', 'staff.walk'],
+  pose: function (u, c) {
+    const look = win(u, 0.6, 0.85, 0.06);
+    return withYaw(P(HURT, {
+      torso: { pitch: 0.36 + 0.04 * Math.sin(u * TAU) - 0.15 * look },
+      head: { pitch: 0.5 - 0.45 * look }
+    }), 0, (c.yaw ?? 0) * 0.8 * look);
+  }
+}));
+
+reg(def({
+  id: 'rocket.smellWine', group: 'rocket', roles: ['guest'], loop: false, travel: false, handed: true, base: 4,
+  from: 'seated', to: 'seated', needs: 'table', holds: {}, ends: {},
+  events: [{ u: 0.08, type: 'grab', hand: 'R', at: 'table' }, { u: 0.82, type: 'release', hand: 'R', at: 'table' }],
+  next: ['guest.waveStaff', 'guest.seatedIdle'],
+  pose: function (u, c) {
+    const swirl = win(u, 0.15, 0.33, 0.03);
+    const sw = Math.sin(u * TAU * 9);
+    const nose = P(SEAT, { torso: { pitch: 0.14 }, head: { pitch: 0.14 }, armR: A(0.6, 0.06, 2.2) });
+    const p = keys(u, [
+      [0, SEAT],
+      [0.12, P(SEAT, { armR: A(0.82, 0.12, 1.0) })],
+      [0.33, P(SEAT, { armR: A(0.82, 0.12, 1.0) })],
+      [0.42, nose],
+      [0.6, nose],
+      [0.66, P(SEAT, { torso: { pitch: -0.1 }, head: { pitch: -0.28 }, armR: A(0.95, 0.14, 0.95) })],
+      [0.8, P(SEAT, { torso: { pitch: 0.02 }, head: { pitch: 0.0 }, armR: A(0.82, 0.1, 0.95) })],
+      [0.9, P(SEAT, { torso: { pitch: -0.04 }, armL: A(0.5, 0.06, 1.14) })],
+      [1, P(SEAT, { torso: { pitch: -0.04 }, armL: A(0.5, 0.06, 1.14) })]
+    ]);
+    const arm = p.armR ?? {};
+    return withYaw({ ...p, armR: { ...arm, lift: (arm.lift ?? 0) + 0.06 * sw * swirl } }, (c.yaw ?? 0) * 0.3 * ramp(u, 0.85, 1), (c.yaw ?? 0) * 0.85 * ramp(u, 0.84, 0.96));
+  },
+  tilt: function (u) { return { R: { roll: 0.14 * Math.sin(u * TAU * 9) * win(u, 0.15, 0.33, 0.03), pitch: -0.25 * win(u, 0.42, 0.62, 0.04) } }; }
+}));
+
+reg(def({
+  id: 'rocket.askPointMenu', group: 'rocket', roles: ['guest'], loop: false, travel: false, base: 4,
+  from: 'seated', to: 'seated', needs: 'chair', holds: { R: 'menu' }, ends: { L: 'menu' },
+  events: [{ u: 0.02, type: 'switch', hand: 'R' }],
+  next: ['guest.order', 'guest.seatedIdle', 'rocket.askPointMenu'],
+  pose: function (u, c) {
+    const up = win(u, 0.08, 1.01, 0.08) * (1 - 0.8 * (bell(u, 0.33, 0.05) + bell(u, 0.56, 0.05)));
+    const dip = bell(u, 0.33, 0.03) + bell(u, 0.56, 0.03);
+    const palm = win(u, 0.7, 0.96, 0.06);
+    return withYaw(P(SEAT, {
+      torso: { pitch: 0.12, roll: 0.1 * palm },
+      head: { pitch: 0.35 - 0.5 * up, yaw: 0 },
+      armL: A(0.68, 0.1, 1.2),
+      armR: A(0.8 + 0.2 * palm, 0.04 + 0.28 * palm, 1.0 + 0.2 * dip - 0.3 * palm)
+    }), (c.yaw ?? 0) * 0.3 * up, (c.yaw ?? 0) * 0.8 * up);
+  }
+}));
+
+reg(def({
+  id: 'rocket.walkToKitchen', group: 'rocket', roles: ['guest'], loop: true, travel: true, base: 1,
+  from: 'walk', to: 'walk', needs: 'floor', holds: {}, ends: {}, events: [],
+  next: ['rocket.walkToKitchen', 'staff.idle'],
+  pose: function (u, c) {
+    const p = walking(P(STAND, { torso: { pitch: 0.1 }, head: { pitch: -0.02 }, armR: A(0.4, 0.1, 0.9) }), c.phase ?? u, (c.stride ?? 1) * 1.15, 'L');
+    return p;
+  }
+}));
+
+// ---------- uppspelning -----------------------------------------------
+
+export function clipSeconds(id: string, tempo: TempoId): number {
+  return CLIPS[id].seconds[tempo];
+}
+
+/** Sekunder från klippets start till första händelsen av en typ (och hand, om angiven). */
+export function eventTime(id: string, type: ClipEventType, tempo: TempoId, hand?: HandSide): number {
+  const c = CLIPS[id];
+  const e = c.events.find(function (x) { return x.type === type && (hand === undefined || x.hand === hand); });
+  if (!e) return -1;
+  return e.u * c.seconds[tempo];
+}
+
+/**
+ * Ett klipp vid tiden `time` sekunder sedan klippet började. Loopar tar fasen modulo en
+ * cykel. Klipp som går (travel) tar ctx.phase från sträckan och bryr sig inte om tiden.
+ */
+export function sampleClip(id: string, time: number, tempo: TempoId, ctx?: ClipCtx): ClipSample {
+  const c = CLIPS[id];
+  const T = TEMPO[tempo];
+  const sec = c.seconds[tempo];
+  const t = Math.max(0, time);
+  let u = c.loop ? (t / sec) % 1 : clamp01(t / sec);
+  const cx: ClipCtx = { ...(ctx ?? {}), t: t, stress: ctx?.stress ?? T.stress, stride: T.stride };
+  if (c.travel) { cx.phase = ctx?.phase ?? t / sec; u = ((cx.phase % 1) + 1) % 1; }
+  const mirror = c.handed === true && cx.hand === 'L';
+  if (mirror) cx.yaw = -(cx.yaw ?? 0);
+  let pose = c.pose(u, cx);
+  let tilt = c.tilt ? c.tilt(u, cx) : {};
+  let root: [number, number, number] = c.root ? c.root(u, cx) : [0, 0, 0];
+  if (mirror) {
+    pose = mirrorPose(pose);
+    tilt = { L: tilt.R, R: tilt.L };
+    root = [-root[0], root[1], -root[2]];
+  }
+  if (c.roles.indexOf('guest') < 0 && c.group !== 'rocket') pose = strain(pose, (cx.stress ?? 0) * 0.6);
+  const keep = ctx?.keep;
+  if (keep) pose = { ...pose, armL: keep.L ?? pose.armL, armR: keep.R ?? pose.armR };
+  return { pose: pose, tilt: tilt, root: root, chair: c.chair ? c.chair(u) : 0, u: u };
+}
+
+/** Övergång mellan två klipp: blanda från föregående klipps sista pose under TEMPO.blendSec. */
+export function crossfade(prev: ClipSample, next: ClipSample, sinceStart: number, tempo: TempoId): ClipSample {
+  const k = clamp01(sinceStart / TEMPO[tempo].blendSec);
+  if (k >= 1) return next;
+  return { ...next, pose: blendPose(prev.pose, next.pose, smooth(k)) };
+}
+
+// ---------- prov ------------------------------------------------------
+
+/** Kontrollerar katalogen: att varje efterföljare finns, att läget i slutet av ett klipp är
+ *  läget i början av efterföljaren, och att det ett klipp håller i slutet är det nästa
+ *  klipp börjar med. Returnerar en lista med fel; tom lista = godkänt. */
+export function validateClips(): string[] {
+  const errors: string[] = [];
+  const compatible = function (a: Stance, b: Stance): boolean {
+    if (a === b) return true;
+    return (a === 'walk' && b === 'stand') || (a === 'stand' && b === 'walk') || (a === 'hurt' && b === 'walk');
+  };
+  Object.keys(CLIPS).forEach(function (id) {
+    const c = CLIPS[id];
+    c.next.forEach(function (n) {
+      const d = CLIPS[n];
+      if (!d) { errors.push(id + ' → ' + n + ': finns inte'); return; }
+      if (!compatible(c.to, d.from)) errors.push(id + ' → ' + n + ': slutar ' + c.to + ', nästa börjar ' + d.from);
+    });
+    c.events.forEach(function (e) { if (e.u < 0 || e.u > 1) errors.push(id + ': händelse utanför 0..1'); });
+  });
+  return errors;
+}
+
+/** Tabellen i LEVERANSNOT byggs ur den här. */
+export function clipTable() {
+  return Object.keys(CLIPS).map(function (id) {
+    const c = CLIPS[id];
+    return { id: id, group: c.group, loop: c.loop, travel: c.travel, seconds: c.seconds, from: c.from, to: c.to, needs: c.needs, holds: c.holds, ends: c.ends, events: c.events, next: c.next };
+  });
+}

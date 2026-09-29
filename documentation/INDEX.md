@@ -542,6 +542,19 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 
 - 12 bilder (12 .png) i `1280x720/` och `1440x900/`: `1-morgonen.png`, `2-inkopen.png`, `3-raketkortet.png`, `4-lardomen.png`, `5-tidningen.png`, `6-kvallens-resultat.png`.
 
+## documentation/leveranser/nexus-leverans-2026-09-29-teaterns-grund/
+
+- `LEVERANSNOT.md`: LEVERANSNOT — teaterns grund (leverans 2 av 5 efter tredje provspelet).
+- 4 tillhörande filer (kod, strängar): `figureClips.ts`, `figureInteractions.ts`, `tableware.ts`, `theatreStrings.ts`.
+
+## documentation/leveranser/nexus-leverans-2026-09-29-teaterns-grund/bilder/
+
+- 24 bilder (24 .png): bl.a. `servering-01-gasterna-kommer-in.png`, `raket-01-bartendern-skar-sig.png`, `sitsen-02-landar-pa-stolen.png`, `tempo-01-bar-bricka-lugn-normal-stressad.png`.
+
+## documentation/leveranser/nexus-leverans-2026-09-29-teaterns-grund/prototyp/ och video/
+
+- `Teaterns grund - prototyp.html` (läses, monteras inte) och `servering-bord-4.webm` (en hel servering vid bord 4).
+
 ## documentation/orders/
 
 - `ORDER - vinbaren.md`: ORDER — Vinbaren: montering av `wineBarRoom.ts`.
