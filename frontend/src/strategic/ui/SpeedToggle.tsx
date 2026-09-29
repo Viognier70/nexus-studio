@@ -20,14 +20,18 @@ const OPTIONS: readonly (1 | 2 | 4)[] = [1, 2, 4];
 const CONTAINER_STYLE: React.CSSProperties = {
   display: 'inline-flex',
   gap: 0,
-  background: 'var(--nx-ground, #f3f2f2)'
+  background: 'var(--w-hud)',
+  border: 'var(--w-hud-border)',
+  borderRadius: 999,
+  overflow: 'hidden',
+  boxShadow: 'var(--w-shadow-hud)'
 };
 
 const BUTTON_BASE: React.CSSProperties = {
   minWidth: 'calc(54 * var(--nx-u))',
   padding: '0 calc(10 * var(--nx-u))',
   background: 'transparent',
-  color: 'var(--nx-ink, #201e1d)',
+  color: 'var(--w-cream)',
   border: 'none',
   fontFamily: 'inherit',
   fontSize: 'max(12px, calc(22 * var(--nx-u)))',
@@ -37,8 +41,8 @@ const BUTTON_BASE: React.CSSProperties = {
 
 const BUTTON_ACTIVE: React.CSSProperties = {
   ...BUTTON_BASE,
-  background: 'var(--nx-ink, #201e1d)',
-  color: '#fff'
+  background: 'var(--w-gold)',
+  color: 'var(--w-ink)'
 };
 
 export function SpeedToggle() {

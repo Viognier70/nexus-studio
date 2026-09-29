@@ -1,6 +1,7 @@
 import { calendarFor } from '../../sim/calendar';
 import { bestAnswerFactor, drinkRevenueFactor, enablersWithCredits } from '../../sim/knowledgeInService';
 import { EVENING, SERVICE, type BusinessClassId } from '../../sim/balance';
+import { answerSalvage, closeSalvage, discardUnresolvedSalvage } from './salvage';
 import { canBack, canStartBack, pickBackAnswer, closeIncidents, countDown, isIncidentOpen, maybeOpenIncident, planIncidents, resolveIncident, startBack, tickOngoing, type CreditChange } from '../../sim/incidents';
 import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
 import { afterVisitClosed, beginIntroduction } from '../../sim/introduction';
@@ -275,6 +276,10 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
     }
     case 'PICK_BACK_ANSWER':
       return pickBackAnswer(state, action.optionId);
+    case 'ANSWER_SALVAGE':
+      return answerSalvage(state, action.optionId);
+    case 'CLOSE_SALVAGE':
+      return closeSalvage(state);
     case 'SET_SPEED':
       return { ...state, speed: action.speed };
     case 'SET_POLICY':
@@ -1165,7 +1170,15 @@ function startService(state: SimulationState): SimulationState {
   // ORDER 277 — menyn och dryckeslistan måste sättas innan servicen kan
   // starta: minst en rätt och en dryck i lager (klasser med paket).
   if (!stockReadiness(state).ready) return state;
-  const fromAfternoon = state.day.period === 'morning' ? skipLunch(state) : state;
+  // ORDER 285 — gårdagens rester utan svar går till sopbilen när dörrarna
+  // öppnar; ett besvarat kort stängs.
+  let base = state;
+  if (state.salvage) {
+    const d: SimulationState = { ...state };
+    discardUnresolvedSalvage(d);
+    base = { ...d, salvage: d.salvage && d.salvage.resolved === 'discarded' ? d.salvage : null };
+  }
+  const fromAfternoon = base.day.period === 'morning' ? skipLunch(base) : base;
   const opened = openService(fromAfternoon, 'dinner', SERVICE.simMinutes);
   if (opened === fromAfternoon || opened.day.doorsOpenAt === null) return opened;
   // ORDER 270 — kvällens händelser. Klasser med händelsebank får
@@ -1855,7 +1868,9 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           revenueAtDayStart: state.revenue,
           costAtDayStart: state.cost,
           reputationAtDayStart: state.reputation,
-          knowledgeCreditsAtDayStart: { ...state.knowledgeCredits }
+          knowledgeCreditsAtDayStart: { ...state.knowledgeCredits },
+          capitalsAtDayStart: { social: state.capitals.values.social, ecological: state.capitals.values.ecological },
+          cashAtDayStart: state.cash
         }
       };
       if (wageTotal > 0) {

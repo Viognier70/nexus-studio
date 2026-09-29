@@ -4,6 +4,8 @@ import App from './App';
 import { StrategicApp } from './strategic/StrategicApp';
 import { useLanguage } from './content/language';
 import './index.css';
+// ORDER 285 — den varma formen: typsnitten och tokens (Designs leverans 2026-09-29).
+import './ui/theme/fonts';
 
 const VS01_HASH = '#/first-person-prototype';
 

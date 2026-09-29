@@ -803,6 +803,12 @@ export interface DayState {
   costAtDayStart?: number | null;
   reputationAtDayStart?: number | null;
   knowledgeCreditsAtDayStart?: KnowledgeCredits | null;
+  // ORDER 285 — social och ekologisk hållbarhet vid dygnets gryning, till
+  // kvällens resultat (eveningResult.ts).
+  capitalsAtDayStart?: { social: number; ecological: number } | null;
+  // ORDER 285 — kassan vid dygnets gryning: kvällens resultat visar kassans
+  // förändring, med morgonens inköp (som kvällsavräkningen räknar som tillgång).
+  cashAtDayStart?: number | null;
   // ORDER 234 — anchor-fråge-picker rate-limit-räknare.
   // `anchorQuestionsFiredThisService` reset:as vid OPEN_SERVICE (samma
   // sitrs som `scenariosFiredThisService`); räknar bara anchor-frågor,
@@ -1128,6 +1134,10 @@ export interface EventStreamEntry {
   feed?: 'ordered' | 'paid' | 'tip' | 'miss' | 'warn';
   table?: number | null;
   amountSek?: number;
+  // ORDER 285 — slumpens händelse: vad den sålde (kvällens händelselogg).
+  chanceSek?: number;
+  // ORDER 285 — klockslaget då händelsen skedde (som raketernas context.clock).
+  clock?: string;
 }
 
 // ORDER 046 §3 — evening account, captured at evening period start.
@@ -1402,6 +1412,17 @@ export interface SimulationState {
   // råvaror inte tar slut för varandra (stockPackages.ts). Saknas fältet
   // räknas portionerna ur lagret som förut.
   dishPortions?: Record<string, number>;
+  // ORDER 285 — gårdagens rester: osålda portioner av en rätt som lagts
+  // undan i kylrummet. En fråga på morgonen om hur råvaran tas tillvara
+  // avgör om de går att sälja i dag eller går till sopbilen (salvage.ts).
+  salvage?: {
+    fromDay: number;
+    dishId: string;
+    portions: number;
+    resolved: null | 'right' | 'wrong' | 'discarded';
+    optionId?: string | null;
+    feeSek?: number;
+  } | null;
   // ORDER 275 — paket köpta i dag (morgonens gränssnitt), och gårdagens
   // svinn: osåld mat som kastades vid dagens slut.
   packagesBoughtToday?: string[];
@@ -1417,6 +1438,8 @@ export interface SimulationState {
     kg?: number;
     fractions?: { key: 'unsold' | 'plates' | 'glass' | 'cardboard'; kg: number; valueSek: number; count: number }[];
     advice?: { dishId: string; fewer: number; savesSek: number } | null;
+    // ORDER 285 — portionerna som lagts undan till morgonens fråga.
+    aside?: { dishId: string; portions: number } | null;
   } | null;
   // ORDER 043 outcome layer — non-economic capitals the scenarios
   // move (§3.1). Economic moved to `state.cash`. Separate from `eco`
@@ -1664,6 +1687,9 @@ export type SimAction =
   | { type: 'START_BACK' }
   // ORDER 284 — Back your knowledge: svaret låses och klockan stannar.
   | { type: 'PICK_BACK_ANSWER'; optionId: string }
+  // ORDER 285 — gårdagens rester: svaret på frågan, och kortet stängt.
+  | { type: 'ANSWER_SALVAGE'; optionId: string }
+  | { type: 'CLOSE_SALVAGE' }
   // ORDER 283 — spelaren har läst introduktionen i Måltidens hus.
   | { type: 'SEE_HOUSE_INTRO' }
   // ORDER 077 §4 (M4) — morning menu composition. Freezes today's

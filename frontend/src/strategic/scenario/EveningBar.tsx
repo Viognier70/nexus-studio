@@ -20,6 +20,7 @@
 
 import { useState } from 'react';
 import { WasteScreen } from './WasteScreen';
+import { ResultScreen } from './ResultScreen';
 import { strings } from '../../content/strings';
 import { SITTING } from '../../sim/balance';
 import { calendarFor } from '../../sim/calendar';
@@ -123,7 +124,8 @@ function LessonScreen({ sim, lesson, onStory }: { sim: SimulationState; lesson: 
           <span className="nx-mid" aria-hidden><BookIcon /></span>
         </header>
         <div className="nx-evening-body">
-          <div data-testid="evening-lesson" data-items={lesson.length}>
+          {/* ORDER 285 — lärdomen på papper, raketerna på trä (Designs lärdomen). */}
+          <div className="nx-paper nx-lesson-paper" data-testid="evening-lesson" data-items={lesson.length}>
             {main && mainItem && mainFail ? (
               <div data-testid={`lesson-${mainItem.incidentId}`}>
                 <div data-testid={`lesson-step-${mainItem.incidentId}`} data-step-axis={mainItem.stepAxis}>
@@ -246,14 +248,21 @@ function StoryScreen({ sim, onBack }: { sim: SimulationState; onBack: (() => voi
 
 export function EveningBar() {
   const sim = useSimState();
-  const [stage, setStage] = useState<{ day: number; screen: 'waste' | 'lesson' | 'story' }>({ day: -1, screen: 'lesson' });
+  const [stage, setStage] = useState<{ day: number; screen: 'waste' | 'result' | 'lesson' | 'story' }>({ day: -1, screen: 'lesson' });
   if (sim.day.period !== 'evening') return null;
   const lesson = sim.incidents?.lesson ?? null;
   // ORDER 280 — sopbilen först (Designs S1), när kvällen gav ett svinn.
   const hasWaste = !!sim.lastWaste && sim.lastWaste.dayNumber === sim.day.dayNumber && !!sim.lastWaste.fractions;
-  const screen = stage.day === sim.day.dayNumber ? stage.screen : hasWaste ? 'waste' : 'lesson';
+  // ORDER 285 — kvällens resultat (R1) efter sopbilen, före lärdomen.
+  const hasResult = !!sim.eveningAccount?.metrics;
+  const afterResult = lesson !== null ? 'lesson' : 'story';
+  const first = hasWaste ? 'waste' : hasResult ? 'result' : 'lesson';
+  const screen = stage.day === sim.day.dayNumber ? stage.screen : first;
   if (screen === 'waste' && hasWaste) {
-    return <WasteScreen sim={sim} onContinue={() => setStage({ day: sim.day.dayNumber, screen: lesson !== null ? 'lesson' : 'story' })} />;
+    return <WasteScreen sim={sim} onContinue={() => setStage({ day: sim.day.dayNumber, screen: hasResult ? 'result' : afterResult })} />;
+  }
+  if (screen === 'result' && hasResult) {
+    return <ResultScreen sim={sim} onContinue={() => setStage({ day: sim.day.dayNumber, screen: afterResult })} />;
   }
   // En kväll utan raketer har ingen lärdom: bara berättelsen.
   if (lesson === null || screen === 'story') {

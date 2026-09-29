@@ -113,7 +113,10 @@ describe('ORDER 275 — svinnet', () => {
     // ORDER 284 — en sparad portion sparas hel: örterna följer bara med de
     // portioner som sparas (portionsboken), resten går till sopbilen.
     const herbsForKept = Object.entries(t.dishPortions ?? {}).reduce((a, [id, p]) => a + p * (findDish(id)?.recipe.find((r) => r.ingredientId === 'herbs')?.units ?? 0), 0);
-    expect(t.stock.herbs ?? 0).toBe(herbsForKept);
+    // ORDER 285 — och de portioner som lagts undan till morgonens fråga.
+    const aside = t.salvage && t.salvage.resolved === null ? t.salvage : null;
+    const herbsAside = aside ? aside.portions * (findDish(aside.dishId)?.recipe.find((r) => r.ingredientId === 'herbs')?.units ?? 0) : 0;
+    expect(t.stock.herbs ?? 0).toBe(herbsForKept + herbsAside);
     expect(t.stock['house-wine'] ?? 0).toBe(wineLeft);
     expect(t.packagesBoughtToday).toEqual([]);
     expect(t.eventStream.some((e) => e.kind === 'stock_waste')).toBe(true);

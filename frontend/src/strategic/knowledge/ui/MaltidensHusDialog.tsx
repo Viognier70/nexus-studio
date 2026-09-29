@@ -221,7 +221,7 @@ export function MaltidensHusDialog({ open, onClose }: Props) {
         <p className="nx-body nxs-measure" style={{ marginTop: 'calc(12 * var(--nx-u))' }}>{t.lead}</p>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, calc(480 * var(--nx-u))), 1fr))', gap: 'calc(32 * var(--nx-u))', marginTop: 'calc(32 * var(--nx-u))' }}>
           {t.forms.map((f) => (
-            <section key={f.name} data-testid={`house-intro-${f.name.toLowerCase()}`} style={{ borderTop: 'var(--nx-line) solid var(--nx-ink)', paddingTop: 'calc(16 * var(--nx-u))' }}>
+            <section key={f.name} data-testid={`house-intro-${f.name.toLowerCase()}`} style={{ borderTop: '1px solid var(--nx-rule)', paddingTop: 'calc(16 * var(--nx-u))' }}>
               <div className="nx-label">{f.name} · {f.title}</div>
               <h2 className="nx-heading" style={{ fontSize: 'calc(30 * var(--nx-u))', marginTop: 'calc(8 * var(--nx-u))' }}>{f.question}</h2>
               <p className="nx-body" style={{ marginTop: 'calc(8 * var(--nx-u))' }}>{f.summary}</p>
@@ -246,7 +246,7 @@ export function MaltidensHusDialog({ open, onClose }: Props) {
   const slotsLeft = scheduleSlotsLeft(sim);
   return (
     <div className="nx nx-screen nxs-over" role="dialog" aria-modal="true" aria-label={k.houseHeading} data-testid="maltidens-hus">
-      <div className="nxs-mtable-row" style={{ borderBottom: 'var(--nx-line) solid var(--nx-ink)', alignItems: 'end', minHeight: 0, paddingBottom: 'calc(24 * var(--nx-u))' }} data-testid="screen-MD1">
+      <div className="nxs-mtable-row" style={{ borderBottom: '1px solid var(--nx-rule)', alignItems: 'end', minHeight: 0, paddingBottom: 'calc(24 * var(--nx-u))' }} data-testid="screen-MD1">
         <div>
           <div className="nx-label nx-accent-text">{k.houseHeading}</div>
           <h1 className="nx-heading">{h.medals}</h1>

@@ -99,14 +99,16 @@ export function ServiceClock() {
           {time ?? '—'}
         </span>
         <div style={{ minWidth: 0 }}>
-          <div className="nx-label" data-testid="service-clock-label" style={{ fontSize: u(16), color: accentLabel ? 'var(--nx-accent-700)' : undefined }}>{label}</div>
+          <div className="nx-label" data-testid="service-clock-label" style={{ fontSize: u(16), color: accentLabel ? 'var(--nx-ember)' : undefined }}>{label}</div>
           <div data-testid="service-clock-left" style={{ fontSize: u(22), fontWeight: 700, whiteSpace: 'nowrap' }}>{sub}</div>
         </div>
       </div>
       <div aria-hidden style={{ display: 'grid', gridTemplateColumns: `repeat(${CLOCK.cells}, 1fr)`, gap: u(4), marginTop: u(12) }} data-testid="service-clock-cells">
         {cells.map((cell, i) => (
-          <div key={i} data-fill={cell.fill.toFixed(2)} style={{ height: u(12), border: `var(--nx-line) solid ${cell.accent ? 'var(--nx-accent)' : 'var(--nx-ink)'}`, position: 'relative', overflow: 'hidden' }}>
-            <div style={{ position: 'absolute', inset: 0, width: `${cell.fill * 100}%`, background: cell.accent ? 'var(--nx-accent)' : 'var(--nx-ink)' }} />
+          // ORDER 285 — den varma formen: passerad tid i guld, den sista
+          // halvtimmen i glöd (enda stället rött finns, WARM.color.ember).
+          <div key={i} data-fill={cell.fill.toFixed(2)} style={{ height: u(12), borderRadius: 999, background: cell.accent ? 'rgba(194,85,58,.35)' : 'rgba(244,230,204,.12)', position: 'relative', overflow: 'hidden' }}>
+            <div style={{ position: 'absolute', inset: 0, width: `${cell.fill * 100}%`, background: cell.accent ? 'var(--nx-ember)' : 'var(--w-gold)' }} />
           </div>
         ))}
       </div>

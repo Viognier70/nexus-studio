@@ -38,9 +38,9 @@ const DROPDOWN_STYLE: React.CSSProperties = {
   right: 0,
   minWidth: 220,
   padding: 4,
-  background: 'rgba(20, 14, 10, 0.94)',
-  border: '1px solid var(--gb-border)',
-  borderRadius: 3,
+  background: 'var(--w-hud)',
+  border: 'var(--w-hud-border)',
+  borderRadius: 14,
   boxShadow: '0 6px 18px rgba(0,0,0,0.45)',
   display: 'flex',
   flexDirection: 'column',
@@ -135,7 +135,7 @@ export function TopRightMenu({ onOpenAbout, onOpenSave }: Props) {
       <button
         type="button"
         className="nx"
-        style={{ height: '100%', minWidth: 'calc(62 * var(--nx-u))', background: 'var(--nx-ground, #f3f2f2)', color: 'var(--nx-ink, #201e1d)', border: 'none', fontSize: 'max(14px, calc(26 * var(--nx-u)))', cursor: 'pointer' }}
+        style={{ height: '100%', minWidth: 'calc(62 * var(--nx-u))', background: 'var(--w-hud)', color: 'var(--w-cream)', border: 'var(--w-hud-border)', borderRadius: 999, boxShadow: 'var(--w-shadow-hud)', fontSize: 'max(14px, calc(26 * var(--nx-u)))', cursor: 'pointer' }}
         onClick={() => setOpen((o) => !o)}
         aria-label={strings.menu.button}
         data-testid="menu-button"

@@ -25,6 +25,7 @@ import { BankDialog } from './economy/BankDialog';
 import { NewspaperDialog, useNewspaper } from './economy/NewspaperDialog';
 import { SaveProvider, useSave } from './save/SaveContext';
 import { SaveMenu } from './save/SaveMenu';
+import { RoomGrade } from './ui/RoomGrade';
 import { DayBadge } from './ui/DayBadge';
 import { StrategicScene } from './scene/StrategicScene';
 import { DollhouseFrame } from './ui/DollhouseFrame';
@@ -242,6 +243,7 @@ function StrategicShell() {
 
   return (
     <div className="gb-root">
+      <RoomGrade />
       <div ref={hostRef} className="gb-canvas-host">
         {/*
           TEMPORÄR växel (Vision Owner-begäran 2026-08-15): två villkor,

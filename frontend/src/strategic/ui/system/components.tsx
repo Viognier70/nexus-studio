@@ -5,13 +5,14 @@
 import type { ReactNode } from 'react';
 import './system.css';
 
+// ORDER 285 — den varma formen (src/ui/theme/nexusTheme.warm.ts): trä och grädde.
 export const NX = {
-  ground: '#f3f2f2',
-  ink: '#201e1d',
-  ink2: '#6f6b69',
-  rule: '#cfcccb',
-  accent: '#ec3013',
-  accent700: '#b01a00'
+  ground: '#2e2016',
+  ink: '#f4e6cc',
+  ink2: '#cdb898',
+  rule: 'rgba(215,162,76,.25)',
+  accent: '#e8b93a',
+  accent700: '#d7a24c'
 } as const;
 
 // Designens pixlar (1920 × 1080) i skärmens mått.

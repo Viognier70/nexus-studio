@@ -55,7 +55,8 @@ describe('ORDER 284 — portionerna per rätt', () => {
     const left = Object.entries(d.day.platesRemaining).filter(([id]) => id !== 'house-wine-glass' && !id.includes('wine')).reduce((a, [, n]) => a + n, 0);
     const { waste, dishPortions } = wasteAtDayEnd(d);
     // Osålda portioner = det lagret visade kvar: det som sparas plus svinnet.
-    expect(waste!.units + waste!.kept).toBe(left);
+    // ORDER 285 — plus portionerna som lagts undan till morgonens fråga.
+    expect(waste!.units + waste!.kept + (waste!.aside?.portions ?? 0)).toBe(left);
     expect(waste!.fractions.find((f) => f.key === 'unsold')!.count).toBe(waste!.units);
     // De sparade portionerna har kvar sina råvaror till nästa dag.
     const kept = Object.values(dishPortions ?? {}).reduce((a, n) => a + n, 0);

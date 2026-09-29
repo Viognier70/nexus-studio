@@ -149,8 +149,9 @@ describe('ORDER 270 — kvällens båge', () => {
 });
 
 describe('ORDER 270 — en raket', () => {
-  it('tiderna står i balance.ts: episteme 15 s, techne 20 s, phronesis 30 s', () => {
-    expect(INCIDENTS.stepSeconds).toEqual({ episteme: 15, techne: 20, phronesis: 30 });
+  // Vision Owner 2026-09-29 (tredje provspelet): raketens tid blir 20 s i varje steg.
+  it('tiderna står i balance.ts: 20 s i varje steg', () => {
+    expect(INCIDENTS.stepSeconds).toEqual({ episteme: 20, techne: 20, phronesis: 20 });
   });
 
   it('rummet står inte still: servicen fortsätter medan nedräkningen går', () => {

@@ -81,7 +81,7 @@ export function QuestionCard(props: Props) {
   const asker = k.askers[question.asker];
   return (
     <div className="nx" data-testid="question-card" style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-      <div className="nxs-row-between" style={{ alignItems: 'center', paddingBottom: 'calc(24 * var(--nx-u))', borderBottom: 'var(--nx-line) solid var(--nx-ink)' }}>
+      <div className="nxs-row-between" style={{ alignItems: 'center', paddingBottom: 'calc(24 * var(--nx-u))', borderBottom: '1px solid var(--nx-rule)' }}>
         <div className="nx-label nx-accent-text">
           {props.label ? <>{props.label} · </> : null}
           <span data-testid="question-of">{k.questionOf(props.index + 1, props.total)}</span>

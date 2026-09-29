@@ -15,6 +15,7 @@ import { strings } from '../../content/strings';
 import { applyCashCost, applyCashDelta, postLedger } from './cashReading';
 import { findDish, findIngredient, minIngredientCost } from './m4Catalogue';
 import { ITEM_BATCH, MORNING_STAKE, WASTE } from '../../sim/balance';
+import { discardUnresolvedSalvage, pickSalvage } from './salvage';
 import { findPackage, itemsCostSek, packageCostSek, packageDishIds, packageIngredients, packagesFor } from './packages';
 
 type Menu = SimulationState['menu'];
@@ -334,6 +335,8 @@ export interface WasteSettlement {
   // Rådet: rätten vars råvara kostade mest i svinn, med antalet att köpa
   // färre av (avrundat nedåt till ett parti) och vad det sparar.
   advice: { dishId: string; fewer: number; savesSek: number } | null;
+  // ORDER 285 — portionerna som lagts undan till morgonens fråga.
+  aside?: { dishId: string; portions: number } | null;
 }
 
 // ORDER 284 — hur stor del av en osåld portion som sparas: råvarornas
@@ -363,17 +366,29 @@ export function wasteAtDayEnd(state: SimulationState): { stock: Record<string, n
   const wastedValue: Record<string, number> = {};
   const wastedUnits: Record<string, number> = {};
   let dishPortions: Record<string, number> | undefined;
+  let aside: { dishId: string; portions: number } | null = null;
   if (state.dishPortions) {
     // ORDER 284 — svinnet i portioner per rätt, samma enhet som lagret under
     // servicen (L1) och morgonens inköp (M1). Sparade portioner får sina
     // råvaror med sig; resten av matens råvaror går till sopbilen.
     dishPortions = {};
     const need: Record<string, number> = {};
+    // ORDER 285 — den rätt med flest förlorade portioner läggs undan till
+    // morgonens fråga (salvage.ts); dess råvaror står kvar i lagret.
+    const lostBy: Record<string, number> = {};
+    for (const [dishId, p] of Object.entries(state.dishPortions)) {
+      const dish = findDish(dishId);
+      if (!dish || dish.kind === 'drink' || p <= 0) continue;
+      lostBy[dishId] = p - Math.floor(p * dishCarryShare(dishId));
+    }
+    aside = pickSalvage(lostBy);
     for (const [dishId, p] of Object.entries(state.dishPortions)) {
       const dish = findDish(dishId);
       if (!dish || dish.kind === 'drink' || p <= 0) continue;
       const saved = Math.floor(p * dishCarryShare(dishId));
-      const lost = p - saved;
+      const setAside = aside?.dishId === dishId ? aside.portions : 0;
+      for (const r of dish.recipe) need[r.ingredientId] = (need[r.ingredientId] ?? 0) + setAside * r.units;
+      const lost = p - saved - setAside;
       if (saved > 0) dishPortions[dishId] = saved;
       for (const r of dish.recipe) need[r.ingredientId] = (need[r.ingredientId] ?? 0) + saved * r.units;
       kept += saved;
@@ -418,7 +433,7 @@ export function wasteAtDayEnd(state: SimulationState): { stock: Record<string, n
     { key: 'cardboard', kg: state.day.stockBoughtToday ? WASTE.cardboardKg : 0, valueSek: 0, count: 0 }
   ];
   const kg = fractions.reduce((a, f) => a + f.kg, 0);
-  if (kg <= 0 && kept === 0) return { stock, waste: null, dishPortions };
+  if (kg <= 0 && kept === 0 && !aside) return { stock, waste: null, dishPortions };
   const feeSek = kg > 0 ? Math.round(kg * WASTE.feePerKg + WASTE.pickupFeeSek) : 0;
   // Rådet: den dyraste råvaran i svinnet och den rätt på menyn som bär den.
   let advice: WasteSettlement['advice'] = null;
@@ -433,7 +448,7 @@ export function wasteAtDayEnd(state: SimulationState): { stock: Record<string, n
       advice = { dishId, fewer, savesSek: Math.round(fewer * dishCostSek(dishId)) };
     }
   }
-  return { stock, dishPortions, waste: { dayNumber: state.day.dayNumber, units, sek: Math.round(sek), kept, feeSek, kg: Math.round(kg * 10) / 10, fractions, advice } };
+  return { stock, dishPortions, waste: { dayNumber: state.day.dayNumber, units, sek: Math.round(sek), kept, feeSek, kg: Math.round(kg * 10) / 10, fractions, advice, aside } };
 }
 
 // ORDER 280 — sopbilen kommer när servicen stänger (Designs S1): lagret
@@ -442,12 +457,17 @@ export function wasteAtDayEnd(state: SimulationState): { stock: Record<string, n
 // avräknas vid dygnsskiftet.
 export function settleWaste(draft: SimulationState): void {
   if (draft.day.wasteSettled || !usesPackages(draft)) return;
+  // ORDER 285 — gårdagens rester som aldrig fick svar går till sopbilen
+  // innan kvällens svinn räknas.
+  discardUnresolvedSalvage(draft);
+  if (draft.salvage) draft.salvage = null;
   const { stock, waste, dishPortions } = wasteAtDayEnd(draft);
   draft.stock = stock;
   if (draft.dishPortions) draft.dishPortions = dishPortions ?? {};
   draft.lastWaste = waste;
   draft.day = { ...draft.day, wasteSettled: true };
   if (!waste) return;
+  if (waste.aside) draft.salvage = { fromDay: waste.dayNumber, dishId: waste.aside.dishId, portions: waste.aside.portions, resolved: null };
   if (waste.feeSek > 0) {
     // Miljöavgiften är en kostnad (state.cost), som i ORDER 278, och den
     // hör till kvällens avräkning när sopbilen kommer efter servicen.

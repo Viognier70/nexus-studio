@@ -409,6 +409,13 @@ try {
     await shot('dod-42-S1-sopbilen.png', 'S1 sopbilen: fraktionerna, svinnet, miljöavgiften och rådet');
     await page.click('[data-testid=waste-continue]');
   }
+  // ORDER 285 — kvällens resultat (R1) efter sopbilen.
+  if (await page.waitForSelector('[data-testid=screen-R1]', { timeout: 8000 }).then(() => true).catch(() => false)) {
+    await delay(2500);
+    report.r1 = await page.$$eval('[data-result-row]', (els) => els.map((e) => ({ key: e.getAttribute('data-testid'), tone: e.getAttribute('data-tone'), delta: e.getAttribute('data-delta') })));
+    await shot('dod-43-R1-kvallens-resultat.png', 'R1 kvällens resultat: vad kvällen gav och tog');
+    await page.click('[data-testid=result-continue]');
+  }
   await page.waitForSelector('[data-testid=screen-L1]', { timeout: 30000 });
   await delay(600); await shot('dod-40-L1-kvallens-lardom.png', 'L1 kvällens lärdom');
   await page.click('[data-testid=to-evening-story]');
@@ -424,6 +431,19 @@ try {
     // ORDER 275/277 — baspaketet varje morgon, som den rimliga spelaren:
     // listan fylls med paketet och köps.
     // ORDER 280 — M1: baspaketet och öppna dörrarna.
+    // ORDER 285 — gårdagens rester: kortet besvaras (första alternativet)
+    // och utfallet noteras; första gången på bild.
+    if (await page.$('[data-testid=salvage-option-a]:not([disabled])')) {
+      report.salvage = report.salvage ?? [];
+      const title = await page.textContent('[data-testid=salvage-card]').catch(() => null);
+      if (report.salvage.length === 0) await shot('dod-44-rester-fragan.png', 'morgonen: gårdagens rester och frågan om tillvaratagande');
+      await page.click('[data-testid=salvage-option-a]');
+      await delay(500);
+      const resolved = await page.getAttribute('[data-testid=salvage-card]', 'data-resolved').catch(() => null);
+      if (report.salvage.length === 0) await shot('dod-45-rester-svaret.png', 'morgonen: svaret och förklaringen');
+      report.salvage.push({ title: title?.slice(0, 160), resolved });
+      await page.click('[data-testid=salvage-close]').catch(() => {});
+    }
     const openBuy = await page.$('[data-testid=open-buy]');
     if (openBuy) {
       await openBuy.click().catch(() => {});
@@ -459,6 +479,8 @@ try {
     for (let i = 0; i < 4 && !(await page.$('[data-testid=day-action-bar]')); i++) {
       const waste = await page.$('[data-testid=waste-continue]');
       if (waste) { await waste.click().catch(() => {}); await delay(500); }
+      const result = await page.$('[data-testid=result-continue]');
+      if (result) { await result.click().catch(() => {}); await delay(500); }
       const story = await page.$('[data-testid=to-evening-story]');
       if (story) { await story.click().catch(() => {}); await delay(500); }
       const end = await page.$('[data-testid=end-evening]');

@@ -43,7 +43,7 @@ function Row({ r }: { r: StockRow }) {
         </span>
         <span className="nx-label" style={{
           fontSize: u(12), padding: `${u(2)} ${u(6)}`, minWidth: u(84), textAlign: 'center',
-          background: low ? 'var(--nx-accent)' : undefined, color: low ? '#fff' : 'var(--nx-ink-2)',
+          background: low ? 'var(--nx-ember)' : undefined, color: low ? 'var(--w-cream)' : 'var(--nx-ink-2)',
           border: out ? '1px dashed var(--nx-ink)' : low ? '1px solid var(--nx-accent)' : '1px solid var(--nx-rule)'
         }}>{out ? t.out : low ? t.low : t.ok}</span>
       </span>

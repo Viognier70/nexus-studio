@@ -85,6 +85,9 @@ export interface ActiveIncident {
   // och stegets klocka stannar, så att hen hinner välja säkerhet ("två
   // raketer gick ut på tid", tredje provspelet).
   picked?: string | null;
+  // ORDER 285 — det raketen gett hittills (klarade steg): krediter, varav
+  // Back your knowledge, och gäster som kommit in. Summeras i loggen.
+  earned?: { credits: number; guestsIn: number };
 }
 
 // ORDER 280 — säkerheten spelaren valde (balance.ts Confidence).
@@ -115,6 +118,10 @@ export interface IncidentRecord {
   situation: string | null;
   context: IncidentContext;
   at: number;
+  // ORDER 285 — vad raketen ändrade, till kvällens händelselogg (Designs
+  // leverans 2026-09-29, kvällens resultat): kassan och ryktet ur utfallet
+  // (samma tal som lastOutcome.deltas), krediterna och gästerna över alla steg.
+  deltas?: { cashSek: number; reputation: number; credits: number; guestsIn: number };
 }
 
 // ORDER 271 — ett svar i stunden (Design paket 6, R2/R3): valt svar,
@@ -729,11 +736,13 @@ export function resolveIncident(draft: SimulationState, optionId: string | null,
     const guestsIn = letGuestsIn(draft, INCIDENTS.guestsPerClearedStep);
     raiseTips(draft, active.context, MENU_ROCKETS.tipBonusPerClearedStep);
     const revealed: StepReveal = { step: stepIndex, optionId: option.id, correctId: correctOptionId(step, active.situation), cleared: true, guestsIn };
+    const stepCredit = quality === 'best' ? INCIDENTS.bestAnswerCredit : 0;
+    const earned = { credits: (active.earned?.credits ?? 0) + stepCredit + (backResult?.delta ?? 0), guestsIn: (active.earned?.guestsIn ?? 0) + guestsIn };
     draft.incidents = {
       ...draft.incidents!,
-      active: { ...active, step: stepIndex + 1, secondsTotal, secondsLeft: secondsTotal, struck, revealed, revealLeft: INCIDENTS.revealSeconds, picked: null }
+      active: { ...active, step: stepIndex + 1, secondsTotal, secondsLeft: secondsTotal, struck, revealed, revealLeft: INCIDENTS.revealSeconds, picked: null, earned }
     };
-    return creditFor(quality === 'best' ? INCIDENTS.bestAnswerCredit : 0);
+    return creditFor(stepCredit);
   }
 
   const ctx = active.context;
@@ -781,7 +790,13 @@ export function resolveIncident(draft: SimulationState, optionId: string | null,
     quality: cleared ? 'best' : option ? 'wrong' : 'staff',
     situation: active.situation,
     context: ctx,
-    at: draft.simTime
+    at: draft.simTime,
+    deltas: {
+      cashSek,
+      reputation: draft.reputation - repBefore,
+      credits: (active.earned?.credits ?? 0) + credit + (backResult?.delta ?? 0),
+      guestsIn: (active.earned?.guestsIn ?? 0) + guestsIn
+    }
   };
   draft.incidents = {
     ...now,

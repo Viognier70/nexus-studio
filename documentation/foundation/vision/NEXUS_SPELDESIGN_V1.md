@@ -213,6 +213,7 @@ Morgonens satsningar påverkar de tre kapitalen: ekonomiskt, socialt och ekologi
 *Beslut 2026-09-27 (Vision Owner): trestegsraketer i servicen.*
 - Måltidens hus är oförändrat. Paviljongerna övar och prövar var sin kunskapsform. Provfrågorna har 30 sekunder.
 - I servicen är varje händelse en raket med tre frågor i samma sammanhang: **Episteme** (vad, 15 sekunder), **Techne** (hur, 20 sekunder) och **Phronesis** (när och varför, 30 sekunder). Man når nästa steg bara genom att klara det förra.
+  *Beslut 2026-09-29 (Vision Owner, tredje provspelet):* raketens tid blir 20 sekunder i varje steg. Det ersätter tiderna per steg.
 - Fel svar på ett steg ger stegets konsekvens, och personalen tar över resten med sämre utfall. Hela raketen klarad ger bästa utfall. Konsekvensen syns direkt i rummet och på mätarna.
 - Medaljer i den paviljong som hör till stegets axel ger mer tid på just det steget. Episteme hör till Måltidsbiblioteket, Techne till Metodköket eller Stensöta efter händelsens ämne, och Phronesis till Kalastorget.
 - 2–4 raketer per kväll, fler fredag och lördag. Rummet fortsätter medan nedräkningen går.

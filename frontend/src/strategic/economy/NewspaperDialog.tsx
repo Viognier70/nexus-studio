@@ -10,6 +10,7 @@
 // vinglas, citat och tidningsnamn är platshållare utan motsvarighet i
 // spelet och är inte byggda.
 
+import { snapshotScene } from '../scene/SceneSnapshot';
 import { useEffect, useState } from 'react';
 import { strings } from '../../content/strings';
 import { calendarFor } from '../../sim/calendar';
@@ -22,6 +23,8 @@ import { NxButton } from '../ui/system/components';
 import '../ui/screens/screens.css';
 
 const t = strings.newspaper;
+const PHOTO_TRIES = 40;
+const PHOTO_RETRY_MS = 250;
 
 // Öppen söndag morgon för veckan som just avräknats, tills spelaren
 // lägger ifrån sig tidningen; `openAgain` öppnar den igen.
@@ -50,6 +53,23 @@ export function useNewspaper() {
 export function NewspaperDialog({ open, onClose, onOpenBank }: { open: boolean; onClose: () => void; onOpenBank?: () => void }) {
   const sim = useSimState();
   const { business } = useBusiness();
+  // ORDER 285 — fotot: scenen från spelarens kamera när tidningen öppnas,
+  // med den varma graderingen i CSS (screens.css .nxs-paper-photo).
+  const [photo, setPhoto] = useState<string | null>(null);
+  // Scenen kan monteras efter tidningen (spelet laddat på en söndag); då
+  // prövas bilden igen en stund.
+  useEffect(() => {
+    if (!open) return;
+    let tries = 0;
+    let timer = 0;
+    const attempt = () => {
+      const url = snapshotScene();
+      if (url) { setPhoto(url); return; }
+      if (++tries < PHOTO_TRIES) timer = window.setTimeout(attempt, PHOTO_RETRY_MS);
+    };
+    attempt();
+    return () => window.clearTimeout(timer);
+  }, [open]);
   if (!open) return null;
   const paper = newspaperFor(sim, business.name ?? '', settlementInWords(sim), (id) =>
     missingInWords(id, sim.medals, requirementsFor(sim, id))
@@ -60,7 +80,7 @@ export function NewspaperDialog({ open, onClose, onOpenBank }: { open: boolean; 
   const cal = calendarFor(sim.day.dayNumber);
   return (
     <div className="nx nx-screen nxs-paper-back" role="dialog" aria-modal="true" aria-label={paper.masthead}>
-      <article className="nxs-paper" data-testid="newspaper">
+      <article className="nxs-paper nx-paper" data-testid="newspaper">
         <header className="nxs-paper-head" data-testid="screen-T1">
           <h1 className="nxs-masthead">{paper.masthead}</h1>
           <div className="nx-small" style={{ fontWeight: 700, textAlign: 'right' }}>
@@ -76,6 +96,12 @@ export function NewspaperDialog({ open, onClose, onOpenBank }: { open: boolean; 
                   <span className="nx-label nxs-chip">{review.heading}</span>
                 </div>
                 {review.title && <h2 className="nx-heading nxs-mt-24">{review.title}</h2>}
+                {photo && (
+                  <figure className="nxs-paper-figure">
+                    <img className="nxs-paper-photo" src={photo} alt="" data-testid="newspaper-photo" />
+                    <figcaption className="nx-small nx-muted">{t.photoCaption}</figcaption>
+                  </figure>
+                )}
                 <p className="nx-small nxs-columns">{review.lines.join(' ')}</p>
               </section>
             )}
