@@ -34,7 +34,7 @@ import { numberWord } from '../simulation/eveningAccount';
 import { activityById } from '../simulation/activities';
 import { MorningActivityPanel } from '../business/MorningActivityPanel';
 import { MorningMenuPanel } from '../business/MorningMenuPanel';
-import { StockPackagesPanel } from '../business/StockPackagesPanel';
+import { morningRows } from '../simulation/morningBuy';
 import { packagesFor } from '../simulation/packages';
 import { menuFromStock, stockReadiness } from '../simulation/stockPackages';
 import { findDish } from '../simulation/m4Catalogue';
@@ -50,11 +50,14 @@ interface Props {
   onOpenBank: () => void;
   // ORDER 267 — söndagstidningen (bara söndag morgon efter en avräkning).
   onOpenNewspaper?: () => void;
+  // ORDER 280 — morgonens inköp (Designs M1); schemat döljs medan M1 är öppen.
+  onOpenBuy?: () => void;
+  hidden?: boolean;
 }
 
 const s = strings.screens.morning;
 
-export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper }: Props) {
+export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenBuy, hidden }: Props) {
   const sim = useSimState();
   const dispatch = useSimDispatch();
   const mentor = useMentor();
@@ -67,6 +70,7 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper }: Props
   useEffect(() => { if (rootRef.current) rootRef.current.scrollTop = 0; }, [sim.day.dayNumber, sim.day.period]);
   const period = sim.day.period;
   if (period !== 'morning' && period !== 'afternoon') return null;
+  if (hidden) return null;
   // ORDER 270 — utan verksamhet och utan pengar finns bara rutan mitt på
   // skärmen (NoBusinessBox), inga andra knappar.
   if (isStrandedWithoutBusiness(sim)) return null;
@@ -217,8 +221,22 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper }: Props
         <div>
           {business !== null ? (
             <>
-              {/* ORDER 275 — klasser med paket köper lagret som paket. */}
-              {packagesFor(sim.economy.businessClass) ? <StockPackagesPanel /> : <MorningMenuPanel />}
+              {/* ORDER 275 — klasser med paket köper lagret som paket.
+                  ORDER 280 — inköpen görs på en egen skärm (Designs M1). */}
+              {packagesFor(sim.economy.businessClass) ? (
+                <div className="nxs-dark-box" data-testid="morning-buy-card" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
+                  <div className="nx-label" style={{ color: 'inherit' }}>{strings.morningBuy.menu} · {strings.morningBuy.wine}</div>
+                  <p className="nx-body" data-testid="morning-buy-summary">
+                    {strings.morningBuy.summary(
+                      morningRows(sim).dishes.reduce((a, d) => a + d.portions, 0),
+                      morningRows(sim).drinks.reduce((a, d) => a + d.bottles, 0)
+                    )}
+                  </p>
+                  {period === 'morning' && onOpenBuy && (
+                    <NxButton testId="open-buy" onClick={onOpenBuy}>{strings.morningBuy.open}</NxButton>
+                  )}
+                </div>
+              ) : <MorningMenuPanel />}
               {/* ORDER 275 — i klasser med paket står prognosen i lagerpanelen. */}
               {cal.isServiceDay && !packagesFor(sim.economy.businessClass) && (
                 <div className="nxs-dark-box nxs-mt-24" data-testid="stock-forecast">

@@ -1,3 +1,4 @@
+import { strings } from '../../content/strings';
 // ORDER 049 §5.3 + ORDER 050 §7 step 6 (2026-08-10) — scale-down panel.
 //
 // Vision Owner ordered the split under the UX pass (Addendum A §6.3
@@ -97,12 +98,14 @@ export function ScaleDownPanel() {
   const wineReduced = sim.scaleDown.wineListReduced;
   const lunchClosed = sim.scaleDown.closedLunch;
   const dinnerClosed = sim.scaleDown.closedDinner;
+  // ORDER 280 — texten i strängtabellen (svenska och engelska).
+  const L = strings.legacy.scaleDown;
 
   return (
     <div style={PANEL_STYLE}>
-      <div style={HEADING_STYLE}>Scale down</div>
+      <div style={HEADING_STYLE}>{L.heading}</div>
       <div style={BODY_STYLE}>
-        An active retreat when the pass is bleeding. Reversible — reopen when the cash can take it.
+        {L.body}
       </div>
 
       <button
@@ -111,11 +114,9 @@ export function ScaleDownPanel() {
         onClick={() => dispatch({ type: 'SHORTEN_MENU' })}
         disabled={!menuShortened && sim.policies.ingredientTier === 'grund'}
       >
-        <div>{menuShortened ? 'Restore the menu' : 'Shorten the menu'}</div>
+        <div>{menuShortened ? L.restoreMenu : L.shortenMenu}</div>
         <div style={OPTION_DESC_STYLE}>
-          {menuShortened
-            ? 'Raise the ingredient level back to where it was.'
-            : 'Lower the ingredient level one step. Saves per guest, dampens food quality over time.'}
+          {menuShortened ? L.restoreMenuDesc : L.shortenMenuDesc}
         </div>
       </button>
 
@@ -124,11 +125,9 @@ export function ScaleDownPanel() {
         style={wineReduced ? OPTION_BUTTON_ACTIVE_STYLE : OPTION_BUTTON_STYLE}
         onClick={() => dispatch({ type: 'THIN_WINE_LIST' })}
       >
-        <div>{wineReduced ? 'Restore the wine list' : 'Thin the wine list'}</div>
+        <div>{wineReduced ? L.restoreWine : L.thinWine}</div>
         <div style={OPTION_DESC_STYLE}>
-          {wineReduced
-            ? 'Open the list again. The quality reading starts to recover.'
-            : 'Scale back the drinks side. The service has less to carry, drink quality falls over time.'}
+          {wineReduced ? L.restoreWineDesc : L.thinWineDesc}
         </div>
       </button>
 
@@ -137,11 +136,9 @@ export function ScaleDownPanel() {
         style={lunchClosed ? OPTION_BUTTON_ACTIVE_STYLE : OPTION_BUTTON_STYLE}
         onClick={() => dispatch({ type: 'CLOSE_SERVICE', service: 'lunch' })}
       >
-        <div>{lunchClosed ? 'Open lunch again' : 'Close lunch'}</div>
+        <div>{lunchClosed ? L.openLunch : L.closeLunch}</div>
         <div style={OPTION_DESC_STYLE}>
-          {lunchClosed
-            ? 'Bring lunch back. The reputation starts to recover.'
-            : 'No lunch until you open again. Saves staff + ingredients; the room\'s regular tables notice the door.'}
+          {lunchClosed ? L.openLunchDesc : L.closeLunchDesc}
         </div>
       </button>
 
@@ -150,11 +147,9 @@ export function ScaleDownPanel() {
         style={dinnerClosed ? OPTION_BUTTON_ACTIVE_STYLE : OPTION_BUTTON_STYLE}
         onClick={() => dispatch({ type: 'CLOSE_SERVICE', service: 'dinner' })}
       >
-        <div>{dinnerClosed ? 'Open dinner again' : 'Close dinner'}</div>
+        <div>{dinnerClosed ? L.openDinner : L.closeDinner}</div>
         <div style={OPTION_DESC_STYLE}>
-          {dinnerClosed
-            ? 'Bring dinner back.'
-            : 'No dinner until you open again. The biggest saving, the biggest cost to reputation.'}
+          {dinnerClosed ? L.openDinnerDesc : L.closeDinnerDesc}
         </div>
       </button>
     </div>

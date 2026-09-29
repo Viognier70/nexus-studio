@@ -6,7 +6,6 @@ import { PrepPanel } from './business/PrepPanel';
 import { ScaleDownPanel } from './business/ScaleDownPanel';
 import { NameEntryOverlay } from './business/NameEntryOverlay';
 import { MentorPanel } from './ui/MentorPanel';
-import { PlayerPanel } from './business/PlayerPanel';
 import { TeamPanel } from './business/TeamPanel';
 import { CameraProvider, useCamera } from './camera/CameraContext';
 import { useDesktopControls } from './camera/useDesktopControls';
@@ -34,7 +33,8 @@ import { SimulationProvider, useSimDispatch } from './simulation/SimulationProvi
 import { AboutPanel } from './ui/AboutPanel';
 import { ControlsHint } from './ui/ControlsHint';
 import { DevPanel } from './ui/DevPanel';
-import { EventStreamPanel } from './ui/EventStreamPanel';
+import { EventsPanel } from './ui/service/EventsPanel';
+import { BackPanels } from './scenario/BackPanels';
 import { PanelColumn, PanelRow } from './ui/PanelColumn';
 import { primeStreamAudio } from './ui/streamArrivalCue';
 import { OutwardButton } from './ui/OutwardButton';
@@ -48,7 +48,7 @@ import { devToggles } from '../lib/devToggles';
 import './strategic.css';
 import { ServiceClock } from './ui/service/ServiceClock';
 import { CashCounter } from './ui/CashCounter';
-import { BetPanel } from './scenario/BetPanel';
+import { MorningBuyScreen } from './business/MorningBuyScreen';
 import { useLanguage } from '../content/language';
 
 interface StrategicAppProps {
@@ -87,6 +87,8 @@ function StrategicShell() {
   const [aboutOpen, setAboutOpen] = useState(false);
   // ORDER 264 — Måltidens hus öppnas från morgonens rad.
   const [houseOpen, setHouseOpen] = useState(false);
+  // ORDER 280 — morgonens inköp (Designs M1).
+  const [buyOpen, setBuyOpen] = useState(false);
   // ORDER 265 — banken öppnas från morgonens rad.
   const [bankOpen, setBankOpen] = useState(false);
   // ORDER 267 — söndagstidningen.
@@ -274,9 +276,13 @@ function StrategicShell() {
       </div>
       <ViewLabel />
       <VerifyBadge />
+      {/* ORDER 280 — Designs K1: dagen till vänster, klockan i mitten,
+          kassan och krediterna, farten och menyn till höger. Kontot
+          (PlayerPanel) står inte längre i raden; kassan är rutan. */}
+      <DayBadge />
+      <ServiceClock />
       <div className="gb-topright">
-        <DayBadge />
-        <PlayerPanel />
+        <CashCounter />
         <SpeedToggle />
         <TopRightMenu onOpenAbout={() => setAboutOpen(true)} onOpenSave={save.openMenu} />
       </div>
@@ -287,17 +293,18 @@ function StrategicShell() {
         onClose={() => setSelectedId(null)}
       />
       <ScenarioOverlay />
-      {/* ORDER 277 — kassan syns hela tiden, överst i mitten. */}
-      <CashCounter />
-      {/* ORDER 278 — strömmen i stunden, nederst i mitten (fri från raketkortet och mätarna). */}
-      <div className="nx" data-testid="event-stream-dock" style={{ position: 'fixed', left: 'calc(600 * var(--nx-u))', bottom: 'calc(72 * var(--nx-u))', zIndex: 41, pointerEvents: 'none' }}>
-        <EventStreamPanel />
-      </div>
+      {/* ORDER 280 — händelserna i högerkanten (Designs H1), med Back your knowledge. */}
+      <EventsPanel />
+      <BackPanels />
       <DayActionBar
         onOpenHouse={() => setHouseOpen(true)}
         onOpenBank={() => setBankOpen(true)}
         onOpenNewspaper={newspaper.available ? newspaper.openAgain : undefined}
+        onOpenBuy={() => setBuyOpen(true)}
+        hidden={buyOpen}
       />
+      {/* ORDER 280 — morgonens inköp (Designs M1). */}
+      <MorningBuyScreen open={buyOpen} onClose={() => setBuyOpen(false)} />
       <NoBusinessBox hidden={houseOpen || bankOpen} onOpenHouse={() => setHouseOpen(true)} onOpenBank={() => setBankOpen(true)} />
       <BankDialog open={bankOpen} onClose={() => setBankOpen(false)} />
       <NewspaperDialog
@@ -310,8 +317,6 @@ function StrategicShell() {
       />
       <EveningBar />
       <IncidentCard />
-      {/* ORDER 279 — insatsen: spelaren startar själv en raket och satsar krediter. */}
-      <BetPanel />
       <MaltidensHusDialog open={houseOpen} onClose={() => setHouseOpen(false)} />
       {/* ORDER 271 — mentorn (M1/M2) inne i .gb-root, så att banken, huset och tidningen ligger över den. */}
       <MentorPanel />
@@ -341,8 +346,6 @@ function StrategicShell() {
       <PanelColumn side="right">
         {/* ORDER 271 — satsningarna och menyn ligger i morgonens schema (DayActionBar, S1). */}
         <ServiceMeters />
-        {/* ORDER 274 — tiden kvar av servicen, hela kvällen. */}
-        <ServiceClock />
         {/*
           ORDER 270 (provspel 2026-09-27): "inga engelska paneler".
           InstrumentsPanel (Room pace, Guest mood, Team stamina, Tonight's

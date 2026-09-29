@@ -17,29 +17,29 @@ export function phaseOf(period: DayPeriod): DayPhase {
   return 'morning';
 }
 
+// ORDER 280 — Designs K1: dagen i en ruta överst till vänster, i
+// designsystemets form ("LÖRDAG · VECKA 1 AV 8   Servicen").
 const BADGE_STYLE: React.CSSProperties = {
+  position: 'fixed',
+  top: 'calc(50 * var(--nx-u))',
+  left: 'calc(72 * var(--nx-u))',
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
-  padding: '4px 10px',
-  background: 'rgba(20, 14, 10, 0.62)',
-  border: '1px solid rgba(168, 146, 106, 0.55)',
-  borderRadius: 3,
-  color: '#f0e8d4',
-  fontFamily: 'system-ui, sans-serif',
-  fontSize: 12,
+  padding: 'calc(16 * var(--nx-u)) calc(22 * var(--nx-u))',
+  background: 'var(--nx-ground, #f3f2f2)',
+  color: 'var(--nx-ink, #201e1d)',
+  fontSize: 'max(12px, calc(20 * var(--nx-u)))',
   lineHeight: 1.3,
-  letterSpacing: 0.2,
-  minHeight: 26,
   boxSizing: 'border-box',
   flexShrink: 0,
-  whiteSpace: 'nowrap'
+  whiteSpace: 'nowrap',
+  zIndex: 46
 };
 
 const HOLIDAY_STYLE: React.CSSProperties = {
-  fontSize: 11,
-  opacity: 0.8,
-  color: '#e8c98a'
+  fontSize: 'max(11px, calc(16 * var(--nx-u)))',
+  color: 'var(--nx-ink-2, #6f6b69)'
 };
 
 export function DayBadge() {
@@ -56,14 +56,15 @@ export function DayBadge() {
       ? strings.calendar.holidayThisWeek(strings.calendar.holidays[cal.holidayThisWeek.id])
       : null;
   return (
-    <div style={BADGE_STYLE} className="gb-daybadge" data-testid="day-badge" aria-live="polite">
+    <div style={BADGE_STYLE} className="nx gb-daybadge" data-testid="day-badge" aria-live="polite">
       {/* Full form; på smala skärmar visas den korta formen (strategic.css). */}
       <span className="gb-daybadge-full">
-        <strong data-testid="day-badge-weekday">{strings.calendar.weekdays[cal.weekday]}</strong>
-        {' · '}
-        <span data-testid="day-badge-week">{strings.calendar.week(cal.week, SEASON.weeks)}</span>
-        {' · '}
-        <span data-testid="day-badge-phase">{phase}</span>
+        <span className="nx-label" style={{ fontSize: 'inherit' }}>
+          <span data-testid="day-badge-weekday">{strings.calendar.weekdays[cal.weekday]}</span>
+          {' · '}
+          <span data-testid="day-badge-week">{strings.calendar.week(cal.week, SEASON.weeks)}</span>
+        </span>
+        <span style={{ marginLeft: 'calc(20 * var(--nx-u))', color: 'var(--nx-ink-2, #6f6b69)' }} data-testid="day-badge-phase">{phase}</span>
       </span>
       <span className="gb-daybadge-short" aria-hidden="true">
         <strong>{strings.calendar.weekdaysShort[cal.weekday]}</strong>

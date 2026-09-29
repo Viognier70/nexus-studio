@@ -12,7 +12,8 @@
 
 .nx-rocket {
   position: fixed;
-  top: calc(56 * var(--nx-u));
+  /* ORDER 280 — under HUD:ens översta rad (Designs K1/B1: 220). */
+  top: calc(220 * var(--nx-u));
   right: calc(72 * var(--nx-u));
   bottom: calc(60 * var(--nx-u));
   width: calc(632 * var(--nx-u));
@@ -228,3 +229,88 @@
 .nx-stranded-rows { list-style: none; margin: calc(24 * var(--nx-u)) 0 calc(28 * var(--nx-u)); padding: 0; border-top: var(--nx-line) solid var(--nx-ink); }
 .nx-stranded-rows li { display: grid; grid-template-columns: calc(52 * var(--nx-u)) 1fr; align-items: start; padding: calc(16 * var(--nx-u)) 0; border-bottom: max(1px, calc(1 * var(--nx-u))) solid var(--nx-rule); font-size: calc(24 * var(--nx-u)); line-height: 1.45; }
 .nx-stranded-rows svg { width: calc(30 * var(--nx-u)); height: calc(30 * var(--nx-u)); margin-top: calc(4 * var(--nx-u)); }
+
+/* ------------------------------------------------------------------ */
+/* ORDER 280 — H1 händelserna (Designs leverans kassan och kvällen)     */
+/* ------------------------------------------------------------------ */
+.nx-feed {
+  position: fixed;
+  top: calc(220 * var(--nx-u));
+  right: calc(72 * var(--nx-u));
+  bottom: calc(60 * var(--nx-u));
+  width: calc(676 * var(--nx-u));
+  min-width: min(320px, calc(100vw - 32px));
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  z-index: 41;
+  pointer-events: auto;
+}
+.nx-feed-head { display: flex; justify-content: space-between; align-items: baseline; padding: calc(20 * var(--nx-u)) calc(22 * var(--nx-u)); border-bottom: var(--nx-line) solid var(--nx-ink); }
+.nx-feed-key { display: flex; gap: calc(18 * var(--nx-u)); font-size: calc(15 * var(--nx-u)); font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
+.nx-feed-rows { flex: 1; overflow: hidden; }
+.nx-feed-row {
+  display: grid;
+  grid-template-columns: calc(70 * var(--nx-u)) calc(34 * var(--nx-u)) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: calc(12 * var(--nx-u));
+  padding: calc(10 * var(--nx-u)) calc(22 * var(--nx-u));
+  border-bottom: 1px solid var(--nx-rule);
+  font-size: calc(19 * var(--nx-u));
+}
+.nx-feed-row[data-fresh='true'] { animation: nx-feed-in 900ms ease-out; }
+@keyframes nx-feed-in {
+  from { transform: translateX(calc(-28 * var(--nx-u))); background: var(--nx-accent-100, #fde7e2); }
+  to { transform: none; background: transparent; }
+}
+.nx-feed-time { color: var(--nx-ink-2); font-variant-numeric: tabular-nums; font-weight: 700; }
+.nx-feed-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nx-feed-amount { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.nx-feed-tonight { padding: calc(14 * var(--nx-u)) calc(22 * var(--nx-u)); border-top: var(--nx-line) solid var(--nx-ink); }
+.nx-feed-tonight-row { display: flex; justify-content: space-between; padding-top: calc(6 * var(--nx-u)); font-size: calc(19 * var(--nx-u)); font-weight: 700; }
+.nx-feed-back { display: flex; align-items: center; justify-content: space-between; gap: calc(16 * var(--nx-u)); padding: calc(14 * var(--nx-u)) calc(22 * var(--nx-u)); border-top: 1px solid var(--nx-rule); }
+.nx-feed-back .nx-btn { width: auto; min-width: calc(260 * var(--nx-u)); }
+@media (prefers-reduced-motion: reduce) { .nx-feed-row[data-fresh='true'] { animation: none; } }
+
+/* ORDER 280 — B1 Back your knowledge i raketkortet: säkerheten och låset. */
+.nx-rocket[data-backed='true'] { border-top-color: var(--nx-accent); }
+.nx-rocket-option[data-picked='true'] { background: var(--nx-ink); color: #fff; border-color: var(--nx-ink); }
+.nx-back { margin-top: calc(16 * var(--nx-u)); }
+.nx-back-levels { display: grid; grid-template-columns: repeat(3, 1fr); gap: calc(8 * var(--nx-u)); margin-top: calc(8 * var(--nx-u)); }
+.nx-back-level { display: flex; flex-direction: column; align-items: flex-start; gap: calc(4 * var(--nx-u)); padding: calc(12 * var(--nx-u)); border: var(--nx-line) solid var(--nx-ink); background: var(--nx-ground); color: var(--nx-ink); cursor: pointer; text-align: left; }
+.nx-back-level[data-chosen='true'] { background: var(--nx-ink); color: #fff; }
+.nx-back-level[data-allowed='false'] { opacity: 0.45; }
+.nx-back-level-name { font-weight: 800; font-size: calc(20 * var(--nx-u)); }
+.nx-back-level-odds { font-size: calc(16 * var(--nx-u)); }
+.nx-back-lock { margin-top: calc(12 * var(--nx-u)); width: 100%; }
+.nx-back-lock[data-ready='false'] { opacity: 0.45; }
+
+/* ORDER 280 — B1 raketen och hur säker du var, till vänster. */
+.nx-back-track { position: fixed; top: calc(220 * var(--nx-u)); left: calc(72 * var(--nx-u)); width: calc(636 * var(--nx-u)); padding: 0; z-index: 34; }
+.nx-back-track-head { display: flex; justify-content: space-between; align-items: baseline; padding: calc(18 * var(--nx-u)) calc(22 * var(--nx-u)); border-bottom: var(--nx-line) solid var(--nx-ink); }
+.nx-back-track-body { position: relative; padding: calc(14 * var(--nx-u)) calc(22 * var(--nx-u)) calc(14 * var(--nx-u)) calc(120 * var(--nx-u)); }
+.nx-back-track-step { display: flex; justify-content: space-between; align-items: center; min-height: calc(96 * var(--nx-u)); margin-top: calc(10 * var(--nx-u)); padding: calc(10 * var(--nx-u)) calc(18 * var(--nx-u)); border: var(--nx-line) solid var(--nx-rule); color: var(--nx-ink-2); }
+.nx-back-track-step[data-state='cleared'] { background: var(--nx-ink); border-color: var(--nx-ink); color: #fff; }
+.nx-back-track-step[data-state='current'] { border: calc(3 * var(--nx-u)) solid var(--nx-accent); color: var(--nx-ink); }
+.nx-back-mult { font-size: calc(44 * var(--nx-u)); font-weight: 800; }
+.nx-back-rocket { position: absolute; left: calc(24 * var(--nx-u)); width: calc(64 * var(--nx-u)); height: calc(64 * var(--nx-u)); padding: calc(12 * var(--nx-u)); background: var(--nx-accent); transition: bottom 700ms cubic-bezier(.2,1.4,.4,1), transform 700ms ease, background 700ms ease; box-sizing: border-box; }
+.nx-back-rocket[data-failed='true'] { transform: rotate(24deg) translateY(calc(44 * var(--nx-u))); background: #8c8784; }
+.nx-back-calib { position: fixed; top: calc(640 * var(--nx-u)); left: calc(72 * var(--nx-u)); width: calc(636 * var(--nx-u)); padding: 0; z-index: 34; }
+.nx-back-calib-row { display: grid; grid-template-columns: calc(130 * var(--nx-u)) minmax(0, 1fr) calc(130 * var(--nx-u)); align-items: center; gap: calc(14 * var(--nx-u)); padding: calc(8 * var(--nx-u)) calc(22 * var(--nx-u)); border-bottom: 1px solid var(--nx-rule); }
+@media (prefers-reduced-motion: reduce) { .nx-back-rocket { transition: none; } }
+
+/* ORDER 280 — S1 sopbilen (Designs leverans kassan och kvällen). */
+.nx-screen.nx-waste-screen { background: rgba(36, 31, 29, 0.55); padding: calc(220 * var(--nx-u)) calc(72 * var(--nx-u)) calc(60 * var(--nx-u)); z-index: 44; }
+.nx-waste-grid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: calc(36 * var(--nx-u)); align-items: start; }
+@media (max-width: 900px) { .nx-waste-grid { grid-template-columns: 1fr; } }
+.nx-waste-main { padding: 0; }
+.nx-waste-head { padding: calc(28 * var(--nx-u)) calc(30 * var(--nx-u)); border-bottom: var(--nx-line) solid var(--nx-ink); }
+.nx-waste-truck { display: flex; align-items: center; gap: calc(20 * var(--nx-u)); padding: calc(20 * var(--nx-u)) calc(30 * var(--nx-u)); border-bottom: var(--nx-line) solid var(--nx-ink); animation: nx-truck-in 1400ms cubic-bezier(.2,.9,.3,1); }
+.nx-waste-truck[data-still='true'] { animation: none; }
+@keyframes nx-truck-in { from { transform: translateX(60%); opacity: 0; } to { transform: none; opacity: 1; } }
+.nx-waste-row { display: grid; grid-template-columns: 1.2fr 1.5fr 0.6fr 0.7fr; gap: calc(16 * var(--nx-u)); align-items: center; padding: calc(18 * var(--nx-u)) calc(30 * var(--nx-u)); border-bottom: 1px solid var(--nx-rule); font-size: calc(20 * var(--nx-u)); }
+.nx-waste-total { border-top: var(--nx-line) solid var(--nx-ink); border-bottom: none; }
+.nx-waste-side { display: grid; gap: calc(20 * var(--nx-u)); }
+.nx-waste-box { padding: calc(24 * var(--nx-u)) calc(28 * var(--nx-u)); }
+.nx-waste-advice { background: var(--nx-ink); color: #fff; padding: calc(24 * var(--nx-u)) calc(28 * var(--nx-u)); }
+@media (prefers-reduced-motion: reduce) { .nx-waste-truck { animation: none; } }

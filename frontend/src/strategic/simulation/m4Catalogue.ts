@@ -8,6 +8,10 @@
 
 import type { Allergen, Dish, DishDiet, Ingredient, Supplier } from '../types';
 
+// ORDER 280 — en flaska vin eller alkoholfritt är fem glas (Designs
+// economy.ts GLASSES_PER_BOTTLE).
+export const GLASSES_PER_BOTTLE = 5;
+
 export const SUPPLIERS: readonly Supplier[] = [
   { id: 'wholesaler', name: 'Bergslagen wholesaler',  priceIndex: 0.85, quality: 0.55, reliability: 0.95, ecoDelta: -0.010 },
   { id: 'local-veg',  name: 'Grythyttan growers',     priceIndex: 1.10, quality: 0.80, reliability: 0.75, ecoDelta: +0.020 },
@@ -67,14 +71,15 @@ export const DISHES: readonly Dish[] = [
   { id: 'beer-pairing',  name: 'Local beer with the meal', suggestedPrice: 55, kind: 'drink', drink: 'beer',
     recipe: [{ ingredientId: 'beer', units: 1 }] },
   // ORDER 275 — vinet per glas, ur lagret. ORDER 277 — och per flaska: en
-  // flaska är fem glas av samma vin, och ett bord delar på den.
+  // flaska är fem glas av samma vin, och ett bord delar på den. ORDER 280 —
+  // flaskans pris är fem glas × 0,9 (ITEM_BATCH.bottleDiscount).
   { id: 'house-wine-glass', name: 'Grüner Veltliner, by the glass', suggestedPrice: 115, kind: 'drink', drink: 'wine-glass',
     recipe: [{ ingredientId: 'house-wine', units: 1 }] },
   { id: 'fine-wine-glass',  name: 'Pinot Noir, by the glass',  suggestedPrice: 195, kind: 'drink', drink: 'wine-glass',
     recipe: [{ ingredientId: 'fine-wine', units: 1 }] },
-  { id: 'house-wine-bottle', name: 'Grüner Veltliner, bottle', suggestedPrice: 495, kind: 'drink', drink: 'wine-bottle', glassesPerBottle: 5,
+  { id: 'house-wine-bottle', name: 'Grüner Veltliner, bottle', suggestedPrice: 518, kind: 'drink', drink: 'wine-bottle', glassesPerBottle: 5,
     recipe: [{ ingredientId: 'house-wine', units: 5 }] },
-  { id: 'fine-wine-bottle',  name: 'Pinot Noir, bottle',  suggestedPrice: 850, kind: 'drink', drink: 'wine-bottle', glassesPerBottle: 5,
+  { id: 'fine-wine-bottle',  name: 'Pinot Noir, bottle',  suggestedPrice: 878, kind: 'drink', drink: 'wine-bottle', glassesPerBottle: 5,
     recipe: [{ ingredientId: 'fine-wine', units: 5 }] },
   { id: 'alcohol-free-glass', name: 'Alcohol-free lingonberry sparkling', suggestedPrice: 65, kind: 'drink', drink: 'alcohol-free',
     recipe: [{ ingredientId: 'alcohol-free', units: 1 }] }

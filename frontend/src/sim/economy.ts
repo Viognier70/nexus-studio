@@ -25,7 +25,8 @@ import {
   type BusinessClassId,
   type BusinessClassSpec,
   type MedalLevel,
-  type MedalRequirement
+  type MedalRequirement,
+  RENT
 } from './balance';
 import { calendarFor } from './calendar';
 import type { PavilionKey, SimulationState } from '../strategic/types';
@@ -96,6 +97,10 @@ export interface SettlementRecord {
   floorSek: number;
   topUpSek: number;
   amortisationSek: number;
+  // ORDER 280 — veckohyran och veckans löner (lönerna dras per servicedag,
+  // här summerade för avräkningen och tidningen).
+  rentSek?: number;
+  wagesSek?: number;
   downgradedFrom: BusinessClassId | null;
   downgradedTo: BusinessClassId | null;
 }
@@ -118,6 +123,8 @@ export interface EconomyState {
   withoutBusiness?: { sinceDay: number; examsTaken: number } | null;
   // ORDER 268 — scenariernas kassa sedan veckoavräkningen (taket ±20 %).
   weekScenarioCashSek?: number;
+  // ORDER 280 — veckans löner sedan förra avräkningen.
+  weekWagesSek?: number;
 }
 
 export function classSpec(id: BusinessClassId): BusinessClassSpec {
@@ -477,6 +484,12 @@ export function postDailyInterest(draft: SimulationState): void {
 // veckans intäkt mot golvet, påfyllnad, amortering och en väntande
 // nedgradering. Påfyllnaden och amorteringen flyttar bara kassa (inte
 // intäkt eller kostnad), så att nästa veckas intäkt mäts rent.
+// ORDER 280 — veckohyran för klassen (balance.ts RENT).
+export function weeklyRentSek(id: BusinessClassId | null): number {
+  if (!id) return 0;
+  return Math.round(RENT.shareOfNormalWeeklyRevenue * ECONOMY.normalWeeklyRevenueSek[id]);
+}
+
 export function settleWeek(state: SimulationState): SimulationState {
   const e = state.economy;
   const week = calendarFor(state.day.dayNumber).week;
@@ -493,12 +506,19 @@ export function settleWeek(state: SimulationState): SimulationState {
     applyCashDelta(draft, -amortisationSek);
     postLedger(draft, { category: 'amortisation', amount: -amortisationSek, cause: strings.economy.ledger.amortisation });
   }
+  // ORDER 280 — veckohyran dras vid avräkningen.
+  const rentSek = weeklyRentSek(e.businessClass);
+  if (rentSek > 0) {
+    applyCashDelta(draft, -rentSek);
+    postLedger(draft, { category: 'rent', amount: -rentSek, cause: strings.economy.ledger.rent });
+  }
+  const wagesSek = Math.round(e.weekWagesSek ?? 0);
   const loan = e.loan
     ? { ...e.loan, principalSek: Math.max(0, e.loan.principalSek - amortisationSek), weeksLeft: Math.max(0, e.loan.weeksLeft - 1) }
     : null;
   let next: SimulationState = {
     ...draft,
-    economy: { ...e, loan, weekRevenueStartSek: state.revenue, weekEvenings: [], weekScenarioCashSek: 0 }
+    economy: { ...e, loan, weekRevenueStartSek: state.revenue, weekEvenings: [], weekScenarioCashSek: 0, weekWagesSek: 0 }
   };
   let downgradedTo: BusinessClassId | null = null;
   const downgradedFrom = e.downgradePending ? e.businessClass : null;
@@ -510,7 +530,7 @@ export function settleWeek(state: SimulationState): SimulationState {
     ...next,
     economy: {
       ...next.economy,
-      lastSettlement: { week, evenings: e.weekEvenings ?? [], revenueSek, floorSek: floor, topUpSek, amortisationSek, downgradedFrom, downgradedTo }
+      lastSettlement: { week, evenings: e.weekEvenings ?? [], revenueSek, floorSek: floor, topUpSek, amortisationSek, rentSek, wagesSek, downgradedFrom, downgradedTo }
     }
   };
 }

@@ -1,4 +1,5 @@
 import { useCamera } from '../camera/CameraContext';
+import { strings } from '../../content/strings';
 
 export function OutwardButton() {
   const { outward } = useCamera();
@@ -7,9 +8,9 @@ export function OutwardButton() {
       type="button"
       className="gb-outward"
       onClick={outward}
-      aria-label="Zoom out one step"
+      aria-label={strings.legacy.outwardAria}
     >
-      Back
+      {strings.legacy.outward}
     </button>
   );
 }

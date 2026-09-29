@@ -8,11 +8,9 @@ import { describe, expect, it } from 'vitest';
 import { reducer } from '../../strategic/simulation/reducer';
 import { makeNewGameState } from '../../strategic/simulation/model';
 import { firstDayOfWeek } from '../calendar';
-import { BET, MENU_ROCKETS } from '../balance';
+import { MENU_ROCKETS } from '../balance';
 import { fitsMenu, incidentBankFor, incidentById } from '../incidentBank';
-import { canStartBet, rankedStepOption } from '../incidents';
-import { runWeeks } from '../../strategic/testHarness/weekHarness';
-import { weakMorning } from '../../strategic/testHarness/scenarios';
+import { rankedStepOption } from '../incidents';
 import { PLAYERS } from '../../strategic/testHarness/randomness';
 import type { SimulationState } from '../../strategic/types';
 
@@ -38,22 +36,11 @@ function evening(seed: number, items: Record<string, number> | 'base' = 'base'):
   return reducer(s, { type: 'START_SERVICE' });
 }
 
-const total = (s: SimulationState) => s.knowledgeCredits.episteme + s.knowledgeCredits.techne + s.knowledgeCredits.phronesis;
 
 function answer(s: SimulationState, rank: 'best' | 'worst'): SimulationState {
   const a = s.incidents.active!;
   const step = incidentById('vinbar', a.id)!.steps[a.step];
   return reducer(s, { type: 'ANSWER_INCIDENT', optionId: rankedStepOption(step, rank, a.struck, a.situation) });
-}
-
-// Till första tillfället en insats går att starta (dörrarna öppna, ingen raket).
-function toBettable(s: SimulationState, stake: number): SimulationState {
-  for (let i = 0; i < 20000 && !canStartBet(s, stake) && s.day.period === 'dinner'; i++) {
-    if (s.incidents.active) s = answer(s, 'best');
-    s = reducer(s, TICK);
-  }
-  expect(canStartBet(s, stake)).toBe(true);
-  return s;
 }
 
 function finishRocket(s: SimulationState, rank: 'best' | 'worst'): SimulationState {
@@ -101,78 +88,5 @@ describe('ORDER 279 — gästerna frågar om kvällens meny', () => {
   });
 });
 
-describe('ORDER 279 — insatsen', () => {
-  it('insatsen drar krediterna och öppnar en egen raket', () => {
-    const s = toBettable(evening(3), 5);
-    const b = reducer(s, { type: 'START_BET', stake: 5 });
-    expect(total(b)).toBe(total(s) - 5);
-    expect(b.incidents.active?.bet).toEqual({ stake: 5 });
-    expect(b.incidents.betsTonight).toBe(1);
-    // Inte medan en raket står öppen, och bara de valbara insatserna.
-    expect(canStartBet(b, 1)).toBe(false);
-    expect(canStartBet(s, 7)).toBe(false);
-  });
-
-  it('en vunnen insats ger dubbla krediterna tillbaka och en intäkt', () => {
-    const s = reducer(toBettable(evening(3), 10), { type: 'START_BET', stake: 10 });
-    const cash = s.cash;
-    const done = finishRocket(s, 'best');
-    expect(done.incidents.lastBet).toMatchObject({ won: true, stake: 10, credits: 10 * BET.winCreditFactor });
-    expect(total(done)).toBeGreaterThanOrEqual(total(s) + 10 * BET.winCreditFactor);
-    const betLine = done.ledger.filter((l) => l.category === 'bet').at(-1)!;
-    expect(betLine.amount).toBe(Math.round(10 * BET.cashPerCredit * BET.winCashFactor));
-    expect(done.cash).toBeGreaterThan(cash);
-  });
-
-  it('en förlorad insats tar krediterna och ett större belopp ur kassan', () => {
-    const s = reducer(toBettable(evening(3), 10), { type: 'START_BET', stake: 10 });
-    const done = finishRocket(s, 'worst');
-    expect(done.incidents.lastBet).toMatchObject({ won: false, stake: 10, credits: 0 });
-    expect(total(done)).toBeLessThanOrEqual(total(s));
-    expect(done.ledger.filter((l) => l.category === 'bet').at(-1)!.amount).toBe(-Math.round(10 * BET.cashPerCredit * BET.lossCashFactor));
-    expect(BET.lossCashFactor).toBeGreaterThan(BET.winCashFactor);
-  });
-
-  it('en insats som får tiden att rinna ut förlorar', () => {
-    let s = reducer(toBettable(evening(3), 3), { type: 'START_BET', stake: 3 });
-    for (let i = 0; i < 20000 && s.incidents.active?.bet; i++) s = reducer(s, TICK);
-    expect(s.incidents.lastBet).toMatchObject({ won: false, stake: 3 });
-  });
-
-  it('högst BET.maxPerEvening insatser per kväll, och inte fler krediter än spelaren har', () => {
-    let s = toBettable(evening(3), 1);
-    for (let n = 0; n < BET.maxPerEvening; n++) {
-      s = toBettable(s, 1);
-      s = finishRocket(reducer(s, { type: 'START_BET', stake: 1 }), 'best');
-    }
-    expect(s.incidents.betsTonight).toBe(BET.maxPerEvening);
-    expect(canStartBet(s, 1)).toBe(false);
-    // En kredit per axel: tre sammanlagt.
-    const poor = withCredits(toBettable(evening(4), 1), 1);
-    expect(canStartBet(poor, 5)).toBe(false);
-    expect(canStartBet(poor, 3)).toBe(true);
-  });
-
-  it('en dålig vecka med stora insatser leder till nedgradering; samma spelare utan insats klarar sig', () => {
-    const setup = (s: SimulationState) => withCredits({ ...s, medals: { ...PLAYERS.baseline }, day: { ...s.day, dayNumber: firstDayOfWeek(2) } });
-    const play = (betStake?: number) => runWeeks({ seed: 7, weeks: 1, setup, plan: () => ({ ...weakMorning(), betStake }) });
-    const bettor = play(10);
-    const calm = play(undefined);
-    expect(bettor.final.economy.lastSettlement?.downgradedTo).toBe('foodtruck');
-    expect(calm.final.economy.lastSettlement?.downgradedTo ?? null).toBeNull();
-    if (process.env.WRITE_REPORTS === '1') {
-      void (async () => {
-        const { mkdirSync, writeFileSync } = await import('node:fs');
-        const { dirname, resolve } = await import('node:path');
-        const { fileURLToPath } = await import('node:url');
-        const out = resolve(dirname(fileURLToPath(import.meta.url)), '../../../reports/order279');
-        mkdirSync(out, { recursive: true });
-        writeFileSync(resolve(out, 'bet-downgrade.json'), JSON.stringify({
-          definition: 'Vecka 2, vinbaren, brons i tre, 40 krediter per axel. Svag spelare (scenarios.ts weakMorning, sämsta svaret) med insatsen 10 så ofta det går (högst tre per kväll) mot samma spelare utan insats, frö 7. downgradedTo läses ur veckoavräkningen (economy.lastSettlement).',
-          bettor: { downgradedTo: bettor.final.economy.lastSettlement?.downgradedTo ?? null, days: bettor.days.map((d) => ({ day: d.dayNumber, weekday: d.weekday, cash: d.cash, floor: d.floor, class: d.businessClass })) },
-          calm: { downgradedTo: calm.final.economy.lastSettlement?.downgradedTo ?? null, days: calm.days.map((d) => ({ day: d.dayNumber, weekday: d.weekday, cash: d.cash, floor: d.floor, class: d.businessClass })) }
-        }, null, 2) + '\n');
-      })();
-    }
-  }, 120000);
-});
+// ORDER 280 (Vision Owner 2026-09-29): insatsen görs bara i krediter och
+// heter Back your knowledge. Testerna står i order280BackYourKnowledge.test.ts.

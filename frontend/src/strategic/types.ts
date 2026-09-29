@@ -871,6 +871,16 @@ export interface DayState {
   // för slumpens händelser i kväll.
   tipsSek?: number;
   chanceTimes?: number[];
+  // ORDER 280 — till sopbilen: serverade rätter, glas ur flaskor, om
+  // något köpts i dag, och om svinnet redan är avräknat.
+  portionsServed?: number;
+  bottleGlassesPoured?: number;
+  stockBoughtToday?: boolean;
+  wasteSettled?: boolean;
+  // ORDER 280 — lagret när dörrarna öppnade (rättens portioner, dryckens
+  // glas) och den nivå varningen senast gällde (Designs L1).
+  stockAtOpen?: Record<string, number>;
+  stockWarned?: Record<string, 'low' | 'out'>;
 }
 
 // ORDER 077 §4 (M4) — supplier, ingredient, and dish domain types.
@@ -1001,7 +1011,8 @@ export type LedgerCategory =
   | 'floor'               // ORDER 265 — golvets påfyllnad vid veckoavräkningen
   | 'amortisation'        // ORDER 265 — lånets amortering vid veckoavräkningen
   | 'waste'               // ORDER 278 — sopbilens miljöavgift för svinnet
-  | 'bet'                 // ORDER 279 — insatsens vinst eller förlust
+  | 'bet'                 // ORDER 279 — (utgått i ORDER 280: insatsen rör aldrig kassan)
+  | 'rent'                // ORDER 280 — veckohyran vid veckoavräkningen
   | 'other';              // fallback with mandatory descriptive cause
 
 export interface LedgerLine {
@@ -1112,6 +1123,11 @@ export interface EventStreamEntry {
   sustainability: SustainabilityKey;
   kind: string;               // ambient event kind name, or 'outcome'
   scenarioId: string | null;  // set for outcome events
+  // ORDER 280 — Designs H1: raden i händelserna (beställt, betalt, dricks,
+  // en rätt som var slut, en varning om lagret), bordet och beloppet.
+  feed?: 'ordered' | 'paid' | 'tip' | 'miss' | 'warn';
+  table?: number | null;
+  amountSek?: number;
 }
 
 // ORDER 046 §3 — evening account, captured at evening period start.
@@ -1387,7 +1403,16 @@ export interface SimulationState {
   // ORDER 283 — introduktionen till de tre kunskapsformerna är visad
   // (första besöket i Måltidens hus).
   houseIntroSeen?: boolean;
-  lastWaste?: { dayNumber: number; units: number; sek: number; kept?: number; feeSek?: number } | null;
+  // ORDER 280 — personalens dricks (Designs H1: aldrig i kassan), hela
+  // säsongen. Kvällens del står i day.tipsSek.
+  staffTipPotSek?: number;
+  lastWaste?: {
+    dayNumber: number; units: number; sek: number; kept?: number; feeSek?: number;
+    // ORDER 280 — sopbilens kilo och fraktioner, och rådet.
+    kg?: number;
+    fractions?: { key: 'unsold' | 'plates' | 'glass' | 'cardboard'; kg: number; valueSek: number; count: number }[];
+    advice?: { dishId: string; fewer: number; savesSek: number } | null;
+  } | null;
   // ORDER 043 outcome layer — non-economic capitals the scenarios
   // move (§3.1). Economic moved to `state.cash`. Separate from `eco`
   // above (§8.2's visible sustainability *reading*), which stays
@@ -1566,7 +1591,7 @@ export type SimAction =
   | { type: 'ANSWER_VISIT'; chosenIndex: number }
   | { type: 'NEXT_VISIT_QUESTION' }
   | { type: 'CLOSE_VISIT' }
-  | { type: 'ANSWER_INCIDENT'; optionId: string }
+  | { type: 'ANSWER_INCIDENT'; optionId: string; confidence?: 0 | 1 | 2 }
   | { type: 'END_EVENING' }
   // ORDER 265 — byt verksamhet vid veckoavräkningen (banken).
   | { type: 'CHOOSE_CLASS'; to: import('../sim/balance').BusinessClassId }
@@ -1628,8 +1653,10 @@ export type SimAction =
   | { type: 'BUY_PACKAGE'; packageId: string }
   // ORDER 277 — morgonens inköpslista: portioner per rätt och dryck.
   | { type: 'BUY_ITEMS'; items: Record<string, number> }
-  // ORDER 279 — insatsen: spelaren startar själv en raket och satsar krediter.
-  | { type: 'START_BET'; stake: number }
+  // ORDER 280 — ångra ett inköp på morgonen: inköpspriset tillbaka.
+  | { type: 'RETURN_ITEMS'; items: Record<string, number> }
+  // ORDER 280 — Back your knowledge: spelaren startar själv en raket.
+  | { type: 'START_BACK' }
   // ORDER 283 — spelaren har läst introduktionen i Måltidens hus.
   | { type: 'SEE_HOUSE_INTRO' }
   // ORDER 077 §4 (M4) — morning menu composition. Freezes today's

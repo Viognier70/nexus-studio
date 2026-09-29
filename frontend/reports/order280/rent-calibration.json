@@ -1,0 +1,158 @@
+{
+  "definition": "rimlig: vecka 2, vinbaren, brons i tre, baspaketet och bästa svaret; andel = resultat (kassans förändring utan påfyllnad och amortering) / veckans intäkt ur avräkningen, medel över fröna. svag: från vecka 1, vinbaren, brons i tre, weakMorning, normal startkassa; veckan då avräkningen nedgraderar (null = inte inom fem veckor).",
+  "chosenShare": 0.2,
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "rows": [
+    {
+      "share": 0,
+      "reasonable": {
+        "meanShare": 0.23606700914799617,
+        "meanResultSek": 11095,
+        "meanRevenueSek": 45742.9
+      },
+      "weakDowngradeWeeks": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ]
+    },
+    {
+      "share": 0.1,
+      "reasonable": {
+        "meanShare": 0.14331265835266266,
+        "meanResultSek": 6886,
+        "meanRevenueSek": 45742.9
+      },
+      "weakDowngradeWeeks": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ]
+    },
+    {
+      "share": 0.15,
+      "reasonable": {
+        "meanShare": 0.09692446438160617,
+        "meanResultSek": 4781,
+        "meanRevenueSek": 45742.9
+      },
+      "weakDowngradeWeeks": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ]
+    },
+    {
+      "share": 0.2,
+      "reasonable": {
+        "meanShare": 0.05055830755732921,
+        "meanResultSek": 2677,
+        "meanRevenueSek": 45742.9
+      },
+      "weakDowngradeWeeks": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ]
+    },
+    {
+      "share": 0.25,
+      "reasonable": {
+        "meanShare": 0.004170113586272657,
+        "meanResultSek": 572,
+        "meanRevenueSek": 45742.9
+      },
+      "weakDowngradeWeeks": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ]
+    },
+    {
+      "share": 0.3,
+      "reasonable": {
+        "meanShare": -0.04219604323800428,
+        "meanResultSek": -1532,
+        "meanRevenueSek": 45742.9
+      },
+      "weakDowngradeWeeks": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ]
+    },
+    {
+      "share": 0.35,
+      "reasonable": {
+        "meanShare": -0.08856220006228123,
+        "meanResultSek": -3636,
+        "meanRevenueSek": 45742.9
+      },
+      "weakDowngradeWeeks": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ]
+    }
+  ]
+}

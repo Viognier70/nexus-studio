@@ -1,0 +1,14 @@
+/* ORDER 280 — Designs lapp (juice.ts fly): position absolute i ett lager
+ * över hela skärmen, Archivo 700, tabular-nums, ingen radbrytning. */
+.nx-fly-layer { position: fixed; inset: 0; pointer-events: none; z-index: 200; overflow: hidden; }
+.nx-fly {
+  position: absolute;
+  font-family: 'Archivo', system-ui, sans-serif;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  padding: 8px 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  transform: translate(-50%, -50%);
+}
+.nx-num { display: inline-block; transform-origin: left center; font-variant-numeric: tabular-nums; font-weight: 700; }

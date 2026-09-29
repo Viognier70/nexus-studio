@@ -108,6 +108,18 @@ export interface Holiday {
   fixed: boolean;
 }
 
+// ORDER 280 — klockan (Designs K1, leveransen kassan och kvällen): tio
+// halvtimmesrutor från 18 till 23, rusningen 19.30–21.00 och sopbilen
+// 23.40. Minuter efter servicens start.
+export const CLOCK = {
+  section: 'Tiden',
+  cells: 10,
+  cellMinutes: 30,
+  rushFromMinutes: 90,
+  rushToMinutes: 180,
+  pickupAfterCloseMinutes: 40
+} as const;
+
 export const HOLIDAYS = {
   section: 'Tiden',
   openQuestion: 'F2',
@@ -177,6 +189,22 @@ export const FLOOR = {
   maxPercent: 90,
   // Golvet anges i procent; andel = procent / 100.
   percentBase: 100
+} as const;
+
+// ORDER 280 — hyran och lönerna (Vision Owner 2026-09-29): "Inför en
+// veckohyra per klass, dragen vid veckoavräkningen och synlig i
+// tidningen, och visa lönerna som en veckorad i avräkningen. Kalibrera
+// hyran så att den rimliga spelaren går plus med ungefär 5–10 % av
+// veckointäkten, och den svaga spelaren nedgraderas inom två till tre
+// veckor." Hyran per klass i kronor i veckan; vinbaren är kalibrerad
+// (reports/order280/rent-calibration.json), de andra klasserna har samma
+// andel av sin normala veckointäkt tills deras paket är skrivna (F53).
+export const RENT = {
+  section: 'Ekonomin > Hyran och lönerna',
+  openQuestion: 'F53',
+  shareOfNormalWeeklyRevenue: 0.15,
+  reasonableResultShare: [0.05, 0.1] as readonly number[],
+  weakDowngradeWeeks: [2, 3] as readonly number[]
 } as const;
 
 export const LOAN = {
@@ -708,7 +736,7 @@ export const MORNING_STAKE = {
 
 // ORDER 279 — frågorna och insatsen (Vision Owner 2026-09-28, andra
 // provspelet). Speldesign > Servicen > Händelserna i servicen och
-// > Insatsen. Valda tal (F52).
+// > Insatsen. Valda tal (F52). Insatsen ersattes i ORDER 280 (BACK nedan).
 export const MENU_ROCKETS = {
   section: 'Servicen > Händelserna i servicen',
   openQuestion: 'F52',
@@ -725,24 +753,34 @@ export const MENU_ROCKETS = {
   tipBonusOnRocketCleared: 0.04
 } as const;
 
-export const BET = {
+// ORDER 280 — Back your knowledge (Vision Owner 2026-09-29, Designs B1):
+// insatsen görs bara i krediter och rör aldrig kassan. Spelaren startar
+// själv en raket och väljer för varje steg hur säker hen är. Skalan är den
+// klassiska för säkerhetsbaserad bedömning, 1 : 0, 2 : −2, 3 : −6 (Designs
+// economy.ts), i spelets krediter (en per bästa svar). Steget multiplicerar
+// bara rätt svar: episteme ×1, techne ×1,5, phronesis ×2. Ett fel kostar
+// insatsen och avslutar raketen; tiden ute räknas som fel på lägsta
+// säkerheten. Valda tal i spelets skala (F53).
+// ORDER 280 — säkerheten spelaren väljer: 0 gissar, 1 tror det, 2 vet det.
+export type Confidence = 0 | 1 | 2;
+
+export const BACK = {
   section: 'Servicen > Insatsen',
-  openQuestion: 'F52',
-  // "Spelaren startar själv en trestegsraket och satsar krediter, med
-  // vinst och förlust." Insatserna spelaren kan välja, i krediter.
-  stakes: [1, 3, 5, 10] as readonly number[],
+  openQuestion: 'F53',
+  confidence: [
+    { win: 1, loss: 0 },
+    { win: 2, loss: 2 },
+    { win: 3, loss: 6 }
+  ] as readonly { win: number; loss: number }[],
+  stepMultiplier: [1, 1.5, 2] as readonly number[],
   maxPerEvening: 3,
-  // Insatsen avgör hur mycket raketen flyttar kassan: kronor per kredit.
-  cashPerCredit: 2500,
-  // En vunnen raket (alla tre stegen klarade) ger tillbaka insatsen gånger
-  // winCreditFactor i krediter och insatsen × cashPerCredit × winCashFactor
-  // i kassan. En förlorad raket tar insatsen och insatsen × cashPerCredit ×
-  // lossCashFactor ur kassan. "Förlusterna ska kunna bli stora."
-  winCreditFactor: 2,
-  winCashFactor: 0.6,
-  lossCashFactor: 1.5,
   // Resultatet syns i gränssnittet så här länge (ms).
-  resultVisibleMs: 5000
+  resultVisibleMs: 5000,
+  // "Hur säker du var": Vet det räknas som för säkert under den här
+  // träffsäkerheten efter minst så här många svar, och gissningarna som
+  // för försiktiga över den (Designs calibrationNote).
+  calibrationShare: 0.75,
+  calibrationMinAnswers: 2
 } as const;
 
 // ORDER 278 — servicen syns (Vision Owner 2026-09-28, andra provspelet).
@@ -787,11 +825,43 @@ export const WASTE = {
   // Andel av den osålda maten som går att använda nästa dag, per råvara.
   // Det som inte står här blir svinn helt (färsk fisk, örter, sallad).
   carryShare: { 'root-veg': 0.75, lentils: 1, flour: 1, eggs: 0.75, dairy: 0.5, chicken: 0.5, pork: 0.5, lamb: 0.5, game: 0.5, mushrooms: 0.5, berries: 0.5 } as Record<string, number>,
-  // Miljöavgiften: en fast avgift när sopbilen kommer, en del av
-  // råvarans värde och en avgift per portion.
-  feeBaseSek: 60,
-  feeShareOfValue: 0.3,
-  feePerUnitSek: 2
+  // ORDER 280 (Designs leverans kassan och kvällen, S1, Vision Owner
+  // 2026-09-29): sopbilen tar betalt per kilo plus en hämtningsavgift, och
+  // kilona räknas i fyra fraktioner. Talen är Designs (economy.ts WASTE).
+  feePerKg: 2.9,
+  pickupFeeSek: 420,
+  // Osåld mat: kilo per ingrediensenhet, efter enhet (en portion, en nypa
+  // örter, ett ägg).
+  kgPerUnit: { portion: 0.22, pinch: 0.005, egg: 0.06 } as Record<string, number>,
+  // Tallrikssvinn per serverad rätt, och minst så här mycket en kväll.
+  plateKgPerServed: 0.06,
+  plateKgMin: 3,
+  // Glas: tomma flaskor (vin och alkoholfritt i flaska).
+  kgPerBottle: 0.55,
+  // Kartong och papper från morgonens leveranser, när något köpts.
+  cardboardKg: 11,
+  // Rådet efter kvällen: minst så här många osålda portioner, avrundat
+  // nedåt till ett parti.
+  adviceMinPortions: 3
+} as const;
+
+// ORDER 280 — morgonens inköp i partier (Designs leverans kassan och
+// kvällen, M1, Vision Owner 2026-09-29): ett klick köper ett parti. Rätter
+// i portioner, vin och alkoholfritt i flaskor (fem glas), öl i flaskor
+// (ett glas). En hel flaska kostar gästen glasen gånger bottleDiscount.
+export const ITEM_BATCH = {
+  section: 'Servicen > Lagret',
+  openQuestion: 'F53',
+  dish: 5,
+  bottle: 2,
+  beer: 6,
+  bottleDiscount: 0.9,
+  // Lagret under servicen (Designs L1): Snart slut vid högst så stor andel
+  // av kvällens start eller högst så många portioner, och i baren vid högst
+  // en flaska kvar (glas).
+  lowShare: 0.2,
+  lowMinPortions: 3,
+  lowGlasses: 5
 } as const;
 
 // ORDER 277 — gästerna har kost och plånbok (Vision Owner 2026-09-28,

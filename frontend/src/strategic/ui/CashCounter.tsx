@@ -1,131 +1,117 @@
 // ORDER 277 — kassan syns hela tiden och räknas ner animerat vid varje
-// inköp (Vision Owner 2026-09-28, andra provspelet). Speldesign > Servicen >
-// Lagret, och undantaget från princip 6 (kassan i kronor hela tiden).
-//
-// Överst i mitten, över morgonens schema och ovanför servicens klocka.
-// Beloppet läses ur `state.cash`, samma källa som kassaboken. När kassan
-// ändras räknas talet mot det nya beloppet under MORNING_STAKE.cashTickMs,
-// och förändringen visas bredvid (röd nedåt, mörk uppåt). Med
-// prefers-reduced-motion byts talet direkt.
-//
-// ORDER 279 — krediterna står bredvid kassan och tickar på samma sätt
-// (insatsen: "Kassa och krediter tickar upp och ner med tydlig animation").
+// inköp (Vision Owner 2026-09-28, andra provspelet).
+// ORDER 280 — Designs leverans kassan och kvällen (K1, B1): kassan och
+// krediterna står som två rutor i HUD:ens högra del, bredvid fartknapparna.
+// Siffrorna räknas i steg med Designs juice.ts (countTo: bump per steg,
+// slam på sista), inte mjukt, och skrivs med textContent i en span som
+// React inte äger, så att HUD:en inte renderas om vid varje steg. En lapp
+// som flyger hit (ui/juice/fx.ts) räknas först när den har landat.
+// Krediterna har accentkant upptill. Lugn och reduced motion skalar
+// utslagen och stänger av skaket (juice.ts).
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useSyncExternalStore } from 'react';
 import { strings } from '../../content/strings';
-import { MORNING_STAKE } from '../../sim/balance';
-import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
 import { useSimState } from '../simulation/SimulationProvider';
 import { isStrandedWithoutBusiness } from '../../sim/economy';
-import { u } from './system/components';
+import { totalCredits } from '../../sim/incidents';
+import { countTo, type Counter } from './juice/juice';
+import { isReleased, pendingFor, registerTarget, subscribeFx, type FxTarget } from './juice/fx';
+import './juice/juice.css';
 import './system/system.css';
-
-const DELTA_VISIBLE_MS = 1800;
-
-// Ett tal som räknas mot sitt mål. Returnerar talet som visas och den
-// senaste förändringen (null när den har visats klart).
-export function useTickingNumber(target: number, ms: number = MORNING_STAKE.cashTickMs, deltaMin: number = MORNING_STAKE.cashDeltaMinSek): { shown: number; delta: number | null } {
-  const reduced = usePrefersReducedMotion();
-  const [shown, setShown] = useState(target);
-  const [delta, setDelta] = useState<{ value: number; key: number } | null>(null);
-  const shownRef = useRef(target);
-  const prev = useRef(target);
-  // Förändringen som visas: ett inköp, en betalning, en insats. Små steg
-  // (dagens kostnad per tick) visas inte.
-  useEffect(() => {
-    const change = target - prev.current;
-    prev.current = target;
-    if (Math.abs(change) < deltaMin) return;
-    setDelta((d) => ({ value: change, key: (d?.key ?? 0) + 1 }));
-  }, [target, deltaMin]);
-  useEffect(() => {
-    if (!delta) return;
-    const hide = window.setTimeout(() => setDelta(null), DELTA_VISIBLE_MS);
-    return () => window.clearTimeout(hide);
-  }, [delta]);
-  useEffect(() => {
-    const from = shownRef.current;
-    if (reduced || from === target) {
-      shownRef.current = target;
-      setShown(target);
-      return;
-    }
-    const start = performance.now();
-    let raf = 0;
-    const step = (now: number) => {
-      const k = Math.min(1, (now - start) / ms);
-      const eased = 1 - Math.pow(1 - k, 3);
-      const v = from + (target - from) * eased;
-      shownRef.current = v;
-      setShown(v);
-      if (k < 1) raf = requestAnimationFrame(step);
-    };
-    raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
-  }, [target, ms, reduced]);
-  return { shown, delta: delta?.value ?? null };
-}
 
 export const formatSek = (v: number): string => strings.service.meters.sek(Math.round(v).toLocaleString('en-GB'));
 
+// Små steg (kvällens kostnad per tick) målas direkt; större förändringar
+// räknas i steg.
+const STEP_FROM: Record<FxTarget, number> = { cash: 20, credits: 1 };
+
+function useCountedNumber(id: FxTarget, value: number, format: (v: number) => string, ticks: { up: number; down: number }, held = 0) {
+  const pend = useSyncExternalStore(subscribeFx, () => pendingFor(id), () => 0);
+  const target = Math.round(value - pend + held);
+  const numRef = useRef<HTMLSpanElement>(null);
+  const boxRef = useRef<HTMLDivElement>(null);
+  const counter = useRef<Counter | null>(null);
+  useEffect(() => {
+    registerTarget(id, boxRef.current);
+    return () => registerTarget(id, null);
+  }, [id]);
+  useEffect(() => {
+    const el = numRef.current;
+    if (!el) return;
+    if (!counter.current) {
+      counter.current = { value: target, shown: target, paint: (v) => { el.textContent = format(v); el.dataset.shown = String(v); } };
+      counter.current.paint(target);
+      return;
+    }
+    const c = counter.current;
+    const change = target - c.value;
+    if (change === 0) return;
+    if (Math.abs(change) < STEP_FROM[id]) {
+      c.value = target;
+      c.shown = target;
+      c.paint(target);
+      return;
+    }
+    const down = change < 0;
+    countTo(c, target, {
+      ticks: down ? ticks.down : ticks.up,
+      pop: el,
+      box: boxRef.current,
+      flashColor: down ? '#f7c6bb' : '#e2e0df'
+    });
+  }, [target, format, id, ticks.up, ticks.down]);
+  return { numRef, boxRef };
+}
+
+const CASH_TICKS = { up: 8, down: 9 };
+const CREDIT_TICKS = { up: 12, down: 8 };
+const plain = (v: number) => String(v);
+
 export function CashCounter() {
   const sim = useSimState();
-  // Kassan ändras i små steg varje tick under servicen (kostnaden per
-  // minut); talet följer i hela kronor.
-  const target = Math.round(sim.cash);
-  const { shown, delta } = useTickingNumber(target);
-  // ORDER 279 — krediterna tickar bredvid kassan (insatsen).
-  const creditsTarget = sim.knowledgeCredits.episteme + sim.knowledgeCredits.techne + sim.knowledgeCredits.phronesis;
-  const credits = useTickingNumber(creditsTarget, MORNING_STAKE.cashTickMs, 1);
-  if (isStrandedWithoutBusiness(sim)) return null;
+  // Sopbilens avgift hålls utanför rutan tills lappen i S1 landat.
+  const wasteKey = wasteHoldKey(sim);
+  const releasedNow = useSyncExternalStore(subscribeFx, () => (wasteKey ? isReleased(wasteKey) : true), () => true);
+  const heldFee = wasteKey && !releasedNow ? sim.lastWaste?.feeSek ?? 0 : 0;
+  const cash = useCountedNumber('cash', sim.cash, formatSek, CASH_TICKS, heldFee);
+  const creditsValue = totalCredits(sim);
+  const credits = useCountedNumber('credits', creditsValue, plain, CREDIT_TICKS);
+  const hidden = isStrandedWithoutBusiness(sim);
   const t = strings.cashCounter;
-  const signed = delta === null ? null : `${delta < 0 ? '−' : '+'}${formatSek(Math.abs(delta))}`;
   return (
-    <div
-      className="nx nx-panel"
-      role="status"
-      aria-label={t.aria(formatSek(target))}
-      data-testid="cash-counter"
-      data-value={target}
-      data-shown={Math.round(shown)}
-      style={{
-        position: 'fixed',
-        top: u(12),
-        left: '50%',
-        transform: 'translateX(-50%)',
-        display: 'flex',
-        alignItems: 'baseline',
-        gap: u(14),
-        padding: `${u(8)} ${u(20)}`,
-        zIndex: 45,
-        pointerEvents: 'none',
-        whiteSpace: 'nowrap'
-      }}
-    >
-      <span className="nx-label">{t.label}</span>
-      <span style={{ fontSize: u(34), fontWeight: 800, fontVariantNumeric: 'tabular-nums', color: shown < 0 ? 'var(--nx-accent-700)' : 'var(--nx-ink)' }}>
-        {formatSek(shown)}
-      </span>
-      {signed && (
-        <span
-          data-testid="cash-counter-delta"
-          data-delta={delta ?? 0}
-          style={{ fontSize: u(22), fontWeight: 800, fontVariantNumeric: 'tabular-nums', color: (delta ?? 0) < 0 ? 'var(--nx-accent-700)' : 'var(--nx-ink)' }}
-        >
-          {signed}
-        </span>
-      )}
-      <span className="nx-label" style={{ marginLeft: u(10) }}>{strings.bet.credits}</span>
-      <span data-testid="credits-counter" data-value={creditsTarget} data-shown={Math.round(credits.shown)} aria-label={strings.bet.creditsAria(creditsTarget)}
-        style={{ fontSize: u(34), fontWeight: 800, fontVariantNumeric: 'tabular-nums' }}>
-        {Math.round(credits.shown)}
-      </span>
-      {credits.delta !== null && (
-        <span data-testid="credits-counter-delta" data-delta={credits.delta}
-          style={{ fontSize: u(22), fontWeight: 800, color: credits.delta < 0 ? 'var(--nx-accent-700)' : 'var(--nx-ink)' }}>
-          {credits.delta < 0 ? '−' : '+'}{Math.abs(credits.delta)}
-        </span>
-      )}
+    <div className="nx nx-hud-money" data-hidden={hidden} style={{ display: hidden ? 'none' : 'flex', gap: 'calc(12 * var(--nx-u))', alignItems: 'stretch' }}>
+      <div
+        ref={cash.boxRef}
+        className="nx-panel"
+        role="status"
+        aria-label={t.aria(formatSek(sim.cash))}
+        data-testid="cash-counter"
+        data-value={Math.round(sim.cash)}
+        style={{ display: 'flex', alignItems: 'baseline', gap: 'calc(14 * var(--nx-u))', padding: 'calc(14 * var(--nx-u)) calc(18 * var(--nx-u))', whiteSpace: 'nowrap' }}
+      >
+        <span className="nx-label">{t.label}</span>
+        <span ref={cash.numRef} className="nx-num" data-testid="cash-counter-num" style={{ fontSize: 'calc(30 * var(--nx-u))', color: sim.cash < 0 ? 'var(--nx-accent-700)' : 'var(--nx-ink)' }} />
+      </div>
+      <div
+        ref={credits.boxRef}
+        className="nx-panel"
+        role="status"
+        aria-label={strings.back.creditsAria(creditsValue)}
+        data-testid="credits-counter"
+        data-value={creditsValue}
+        style={{ display: 'flex', alignItems: 'baseline', gap: 'calc(12 * var(--nx-u))', padding: 'calc(14 * var(--nx-u)) calc(18 * var(--nx-u))', borderTop: 'calc(6 * var(--nx-u)) solid var(--nx-accent)', whiteSpace: 'nowrap' }}
+      >
+        <span className="nx-label">{strings.back.credits}</span>
+        <span ref={credits.numRef} className="nx-num" data-testid="credits-counter-num" style={{ fontSize: 'calc(30 * var(--nx-u))' }} />
+      </div>
     </div>
   );
+}
+
+// ORDER 280 — nyckeln för kvällens sopbil: bara på kvällen samma dag som
+// avräkningen, med en avgift.
+export function wasteHoldKey(sim: { day: { period: string; dayNumber: number }; lastWaste?: { dayNumber: number; feeSek?: number } | null }): string | null {
+  const w = sim.lastWaste;
+  if (sim.day.period !== 'evening' || !w || w.dayNumber !== sim.day.dayNumber || !(w.feeSek && w.feeSek > 0)) return null;
+  return `waste-${w.dayNumber}`;
 }

@@ -1,71 +1,120 @@
 // ORDER 274 — tiden kvar av servicen syns hela kvällen (Vision Owner
-// 2026-09-28, provspel). Klockslaget, tiden kvar och en stapel som töms
-// mot stängning, i designsystemets form (paket 1, 00-SYS). Läser
-// sim/serviceClock.ts, samma tider som reducern stänger servicen på.
-// Visas under hela servicen, i alla klasser, och ligger överst i mitten
-// så att den inte krockar med raketkortet (höger) och mätarna (vänster).
+// 2026-09-28, provspel).
+// ORDER 280 — klockan enligt Designs K1 (leveransen kassan och kvällen,
+// Vision Owner: "Kontrollera också att klockan för servicen syns
+// tydligt"). Mitt i översta raden, 440 px bred. Klockslaget är 60 px,
+// tabular-nums, med fast bredd och white-space: nowrap, så att det aldrig
+// bryts (buggen i G1), också på engelska och vid 200 % textstorlek.
+// Etiketten (Servicen, Rusning, Sista beställning, Stängt) och tiden kvar
+// står på var sin rad till höger. Tio halvtimmesrutor från 18 till 23:
+// passerade fyllda, den aktuella fylls från vänster, den sista har
+// accentkant hela kvällen och fylls med accent. På morgonen står
+// "Dörrarna öppnar 18.00" och rutorna är tomma; på kvällen efter
+// stängning står sopbilens tid.
 //
-// ORDER 273 (Designs leverans 2026-09-28 §3): de sista minuterna
-// (SITTING.lastOrdersMinutes, via sim/serviceClock.ts `lastOrders`) blir
-// stapeln accentfärgad och texten "Last orders" visas. Under stapeln står
-// öppningsklockslaget och stängningen, som i G1. Klockslagen skrivs per
-// språk (formatClock → strängtabellen: "18:00" / "18.00").
+// Tiderna läses ur sim/serviceClock.ts, samma som reducern stänger på.
 
 import { strings } from '../../../content/strings';
-import { INCIDENTS } from '../../../sim/balance';
-import { formatClock } from '../../../sim/incidents';
-import { serviceClock } from '../../../sim/serviceClock';
+import { CLOCK, INCIDENTS, SITTING } from '../../../sim/balance';
+import { clockCells, clockLabel, serviceClock } from '../../../sim/serviceClock';
 import { useSimState } from '../../simulation/SimulationProvider';
-import { NxLabel, u } from '../system/components';
+import { u } from '../system/components';
 import '../system/system.css';
 
 const MINUTES_PER_HOUR = INCIDENTS.minutesPerHour;
+const START = SITTING.serviceStartHour * MINUTES_PER_HOUR;
+
+function hhmm(minutes: number): string {
+  const h = Math.floor(minutes / MINUTES_PER_HOUR);
+  const m = minutes % MINUTES_PER_HOUR;
+  return strings.clock.time(String(h), String(m).padStart(INCIDENTS.clockDigits, '0'));
+}
 
 export function ServiceClock() {
   const sim = useSimState();
+  const business = sim.economy.businessClass;
   const c = serviceClock(sim);
-  if (!c) return null;
-  const t = strings.service.clock;
-  const h = Math.floor(c.leftMinutes / MINUTES_PER_HOUR);
-  const m = c.leftMinutes % MINUTES_PER_HOUR;
-  const left = c.leftMinutes > 0 ? t.left(h, m) : t.closed;
-  const closes = t.closes(formatClock(c.endMinutes));
-  const aria = c.lastOrders ? `${t.lastOrders}. ${t.aria(left, closes)}` : t.aria(left, closes);
+  const period = sim.day.period;
+  const t = strings.clock;
+  if (!c && !business) return null;
+
+  let time: string | null;
+  let label: string;
+  let sub: string;
+  let since: number;
+  let dataLabel: string;
+  let accentLabel = false;
+  const endOfService = START + CLOCK.cells * CLOCK.cellMinutes;
+  if (c) {
+    const l = clockLabel(c);
+    time = hhmm(c.nowMinutes);
+    label = t.label[l];
+    const h = Math.floor(c.leftMinutes / MINUTES_PER_HOUR);
+    const m = c.leftMinutes % MINUTES_PER_HOUR;
+    sub = c.leftMinutes === 0 ? t.label.closed : h > 0 ? t.left(h, String(m).padStart(INCIDENTS.clockDigits, '0')) : t.leftMin(m);
+    since = c.nowMinutes - c.startMinutes;
+    dataLabel = l;
+    accentLabel = l === 'lastOrders';
+  } else if (period === 'evening') {
+    time = hhmm(endOfService + CLOCK.pickupAfterCloseMinutes);
+    label = t.label.closed;
+    sub = t.pickup;
+    since = CLOCK.cells * CLOCK.cellMinutes;
+    dataLabel = 'closed';
+  } else {
+    time = null;
+    label = t.label.morning;
+    sub = t.doorsAt;
+    since = 0;
+    dataLabel = 'morning';
+  }
+  const cells = clockCells(since);
   return (
     <div
       className="nx nx-panel"
       role="timer"
-      aria-label={aria}
+      aria-label={t.aria(label, time ?? '', sub)}
       data-testid="service-clock"
-      data-left-minutes={c.leftMinutes}
-      data-last-orders={c.lastOrders}
+      data-label={dataLabel}
+      data-left-minutes={c?.leftMinutes ?? ''}
+      data-last-orders={c?.lastOrders ?? false}
       style={{
         position: 'fixed',
-        top: u(92),
-        left: '50%',
-        transform: 'translateX(-50%)',
-        width: u(420),
-        padding: `${u(12)} ${u(20)}`,
-        zIndex: 40,
-        pointerEvents: 'none'
+        top: u(50),
+        // Designs x 740 krockar med kassan, krediterna, farten och menyn i
+        // spelets högra kluster; klockan står därför mellan dagen och klustret.
+        left: u(540),
+        width: u(440),
+        padding: `${u(12)} ${u(22)} ${u(10)}`,
+        zIndex: 46,
+        pointerEvents: 'none',
+        boxSizing: 'border-box'
       }}
     >
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: u(12) }}>
-        <NxLabel>{t.label} · {t.now(formatClock(c.nowMinutes))}</NxLabel>
-        <span className="nx-small" style={{ fontWeight: 700 }} data-testid="service-clock-left">{left}</span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: u(20) }}>
+        <span
+          className="nx-num"
+          data-testid="service-clock-time"
+          style={{ fontSize: u(60), lineHeight: 1, width: u(176), minWidth: u(176), whiteSpace: 'nowrap', fontWeight: 800 }}
+        >
+          {time ?? '—'}
+        </span>
+        <div style={{ minWidth: 0 }}>
+          <div className="nx-label" data-testid="service-clock-label" style={{ fontSize: u(16), color: accentLabel ? 'var(--nx-accent-700)' : undefined }}>{label}</div>
+          <div data-testid="service-clock-left" style={{ fontSize: u(22), fontWeight: 700, whiteSpace: 'nowrap' }}>{sub}</div>
+        </div>
       </div>
-      <div aria-hidden style={{ height: u(8), marginTop: u(8), border: 'var(--nx-line) solid var(--nx-ink)' }}>
-        <div
-          data-testid="service-clock-bar"
-          style={{ height: '100%', width: `${(1 - c.elapsedShare) * 100}%`, background: c.lastOrders ? 'var(--nx-accent)' : 'var(--nx-ink)' }}
-        />
+      <div aria-hidden style={{ display: 'grid', gridTemplateColumns: `repeat(${CLOCK.cells}, 1fr)`, gap: u(4), marginTop: u(12) }} data-testid="service-clock-cells">
+        {cells.map((cell, i) => (
+          <div key={i} data-fill={cell.fill.toFixed(2)} style={{ height: u(12), border: `var(--nx-line) solid ${cell.accent ? 'var(--nx-accent)' : 'var(--nx-ink)'}`, position: 'relative', overflow: 'hidden' }}>
+            <div style={{ position: 'absolute', inset: 0, width: `${cell.fill * 100}%`, background: cell.accent ? 'var(--nx-accent)' : 'var(--nx-ink)' }} />
+          </div>
+        ))}
       </div>
-      <div className="nx-small nx-muted" style={{ display: 'flex', justifyContent: 'space-between', marginTop: u(4) }}>
-        <span>{formatClock(c.startMinutes)}</span>
-        {c.lastOrders ? (
-          <span className="nx-accent-text" style={{ fontWeight: 700 }} data-testid="service-clock-last-orders">{t.lastOrders}</span>
-        ) : null}
-        <span>{closes}</span>
+      <div aria-hidden className="nx-small nx-muted" style={{ display: 'flex', justifyContent: 'space-between', marginTop: u(6), fontWeight: 700 }}>
+        {Array.from({ length: CLOCK.cells / 2 + 1 }, (_, i) => (
+          <span key={i}>{Math.floor((START + i * 2 * CLOCK.cellMinutes) / MINUTES_PER_HOUR)}</span>
+        ))}
       </div>
     </div>
   );

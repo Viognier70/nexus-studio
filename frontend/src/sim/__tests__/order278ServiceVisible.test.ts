@@ -107,7 +107,7 @@ describe('ORDER 278 — det som tar slut ger missnöjda gäster', () => {
       const before = g.satisfaction;
       // Högsta slumpen väljer den dyraste rätten för en generös plånbok: fisken.
       const order = orderForGuest(draft, g, () => 0.999);
-      if (order.kind === 'served' && order.dishId === 'chicken-plate' && draft.eventStream.at(-1)?.kind === 'guest_substituted') {
+      if (order.kind === 'served' && order.dishId === 'chicken-plate' && draft.eventStream.some((e) => e.kind === 'guest_substituted')) {
         expect(g.satisfaction).toBeCloseTo(before + SERVICE_STREAM.soldOutSatisfaction, 9);
         return;
       }
@@ -117,25 +117,31 @@ describe('ORDER 278 — det som tar slut ger missnöjda gäster', () => {
 });
 
 describe('ORDER 278 — svinnet efter kvällen', () => {
-  it('en del sparas till nästa dag, resten kostar miljöavgift efter pris och mängd', () => {
+  // ORDER 280 — Designs kg-taxa (S1): kilo i fyra fraktioner × taxan +
+  // hämtningen. Svinnets värde visas men dras inte igen.
+  it('en del sparas till nästa dag, resten kostar miljöavgift efter kilona', () => {
     const s = { ...morning(), stock: { chicken: 4, herbs: 3, 'house-wine': 5 } };
     const { stock, waste } = wasteAtDayEnd(s);
     expect(stock.chicken).toBe(Math.floor(4 * (WASTE.carryShare.chicken ?? 0)));
     expect(stock.herbs ?? 0).toBe(0);
     expect(stock['house-wine']).toBe(5);
-    const units = (4 - stock.chicken) + 3;
-    const value = (4 - stock.chicken) * minIngredientCost('chicken') + 3 * minIngredientCost('herbs');
+    const lostChicken = 4 - stock.chicken;
+    const units = lostChicken + 3;
+    const value = lostChicken * minIngredientCost('chicken') + 3 * minIngredientCost('herbs');
+    const kg = lostChicken * WASTE.kgPerUnit.portion + 3 * WASTE.kgPerUnit.pinch;
     expect(waste).toMatchObject({ units, kept: stock.chicken, sek: Math.round(value) });
-    expect(waste!.feeSek).toBe(Math.round(WASTE.feeBaseSek + WASTE.feeShareOfValue * value + WASTE.feePerUnitSek * units));
-    // Dyrare råvara ger högre avgift vid samma mängd.
-    const game = wasteAtDayEnd({ ...morning(), stock: { game: 4, herbs: 3 } }).waste!;
-    expect(game.feeSek).toBeGreaterThan(waste!.feeSek);
+    expect(waste!.fractions.map((f) => f.key)).toEqual(['unsold', 'plates', 'glass', 'cardboard']);
+    expect(waste!.feeSek).toBe(Math.round(kg * WASTE.feePerKg + WASTE.pickupFeeSek));
+    // Mer svinn ger högre avgift; tallrikar, flaskor och kartong räknas med.
+    const busy = wasteAtDayEnd({ ...s, day: { ...s.day, portionsServed: 90, bottleGlassesPoured: 20, stockBoughtToday: true } }).waste!;
+    const kgBusy = kg + Math.max(WASTE.plateKgMin, 90 * WASTE.plateKgPerServed) + 4 * WASTE.kgPerBottle + WASTE.cardboardKg;
+    expect(busy.feeSek).toBe(Math.round(kgBusy * WASTE.feePerKg + WASTE.pickupFeeSek));
   });
 
-  it('vid dagens slut dras avgiften ur kassan med en rad i kassaboken', () => {
-    let { s } = playEvening(open({ 'chicken-plate': 30, 'pork-plate': 20, 'house-wine-glass': 10 }));
-    if (s.day.period === 'evening') s = reducer(s, { type: 'END_EVENING' });
-    for (let i = 0; i < 30000 && s.day.period !== 'morning'; i++) s = reducer(s, TICK);
+  // ORDER 280 — sopbilen kommer när servicen stänger.
+  it('när servicen stänger dras avgiften ur kassan med en rad i kassaboken', () => {
+    const { s } = playEvening(open({ 'chicken-plate': 30, 'pork-plate': 20, 'house-wine-glass': 10 }));
+    expect(s.day.wasteSettled).toBe(true);
     expect(s.lastWaste?.feeSek ?? 0).toBeGreaterThan(0);
     expect(s.ledger.some((l) => l.category === 'waste' && l.amount === -(s.lastWaste!.feeSek ?? 0))).toBe(true);
     expect((s.lastWaste?.kept ?? 0)).toBeGreaterThan(0);

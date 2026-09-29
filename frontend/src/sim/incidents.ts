@@ -28,7 +28,7 @@ import { bumpMorale } from '../strategic/simulation/morale';
 import { applyCashDelta, postLedger } from '../strategic/simulation/cashReading';
 import { clampReputation } from '../strategic/simulation/reputation';
 import { strings } from '../content/strings';
-import { BET, GAME_MINUTES_PER_SIM_SECOND, INCIDENTS, MENU_ROCKETS, REPUTATION, SITTING } from './balance';
+import { BACK, type Confidence, GAME_MINUTES_PER_SIM_SECOND, INCIDENTS, MENU_ROCKETS, REPUTATION, SITTING } from './balance';
 import { calendarFor } from './calendar';
 import { clampScenarioCash, scenarioUnitSek } from './economy';
 import { bestAnswerFactor, medalSteps } from './knowledgeInService';
@@ -78,20 +78,27 @@ export interface ActiveIncident {
   // Kvällens läge när händelsen kom (händelsens `situations`), annars null.
   situation: string | null;
   context: IncidentContext;
-  // ORDER 279 — insatsen: spelaren startade raketen själv och satsade så
-  // här många krediter (dragna när raketen startade).
-  bet?: { stake: number } | null;
+  // ORDER 280 — Back your knowledge: spelaren startade raketen själv och
+  // väljer säkerhet för varje steg. Rör bara krediterna.
+  backed?: boolean;
 }
 
-// ORDER 279 — en avgjord insats.
-export interface BetResult {
-  stake: number;
-  won: boolean;
-  cashSek: number;
-  // Krediter tillbaka (vinst), 0 vid förlust.
-  credits: number;
+// ORDER 280 — säkerheten spelaren valde (balance.ts Confidence).
+export type { Confidence } from './balance';
+
+// ORDER 280 — ett låst svar i Back your knowledge.
+export interface BackResult {
+  step: number;
+  confidence: Confidence;
+  correct: boolean;
+  // Krediterna svaret gav (negativt vid fel).
+  delta: number;
+  endsRocket: boolean;
   at: number;
 }
+
+// ORDER 280 — kvällens träffsäkerhet per säkerhet: [rätt, totalt].
+export type Calibration = [[number, number], [number, number], [number, number]];
 
 // En raket i kvällens logg. `step` är steget där raketen föll (null när
 // hela raketen klarades); `optionId` svaret där, null när personalen
@@ -134,8 +141,8 @@ export interface IncidentOutcomeView {
   text: string;
   at: number;
   deltas: IncidentDeltas;
-  // ORDER 279 — insatsen, när raketen var spelarens egen.
-  bet?: BetResult | null;
+  // ORDER 280 — Back your knowledge: svaret på det sista steget.
+  back?: BackResult | null;
 }
 
 // Följden av ett fel val, som pågår i rummet tills nästa händelse.
@@ -180,11 +187,13 @@ export interface IncidentsState {
   eveningsTurned: number;
   lessonEvenings: number;
   turnedTonight: boolean;
-  // ORDER 279 — kvällens insatser, krediter som en vunnen insats ska ge
-  // tillbaka (reducern bokför dem), och den senaste insatsen.
+  // ORDER 280 — Back your knowledge: kvällens raketer, krediter att bokföra
+  // (positivt = tillbaka, negativt = dras; reducern bokför dem), det
+  // senaste låsta svaret och kvällens träffsäkerhet.
   betsTonight?: number;
   betCreditsDue?: number;
-  lastBet?: BetResult | null;
+  lastBack?: BackResult | null;
+  calibration?: Calibration;
 }
 
 export function initialIncidents(): IncidentsState {
@@ -420,7 +429,7 @@ export function maybeOpenIncident(draft: SimulationState): void {
     return;
   }
   draft.incidents = { ...inc, slots };
-  openIncident(draft, chosen.incident, chosen.chained, chosen.context, null, r);
+  openIncident(draft, chosen.incident, chosen.chained, chosen.context, false, r);
   draft.rngState = rng.state;
 }
 
@@ -431,7 +440,7 @@ function openIncident(
   incident: Incident,
   chained: boolean,
   given: IncidentContext | undefined,
-  bet: { stake: number } | null,
+  backed: boolean,
   r: () => number
 ): void {
   const inc = draft.incidents!;
@@ -448,44 +457,91 @@ function openIncident(
     queuedContext,
     fired: [...inc.fired, incident.id],
     ongoing: null,
-    active: { id: incident.id, openedAt: draft.simTime, step: 0, secondsTotal, secondsLeft: secondsTotal, struck, chained, situation, context, bet }
+    active: { id: incident.id, openedAt: draft.simTime, step: 0, secondsTotal, secondsLeft: secondsTotal, struck, chained, situation, context, backed }
   };
 }
 
-// ORDER 279 — insatsen (Vision Owner 2026-09-28, andra provspelet):
-// "Spelaren startar själv en trestegsraket och satsar krediter, med vinst
-// och förlust." Kan startas under kvällen när ingen raket står öppen,
-// högst BET.maxPerEvening gånger. Krediterna dras av reducern innan.
-// Returnerar true när raketen öppnades.
-export function canStartBet(state: SimulationState, stake: number): boolean {
+// ORDER 280 — Back your knowledge (Vision Owner 2026-09-29, Designs B1):
+// spelaren startar själv en raket när ingen annan står öppen, högst
+// BACK.maxPerEvening gånger per kväll. Ingen insats krävs för att starta
+// (gissar kostar inget); säkerheten väljs för varje steg.
+export function canStartBack(state: SimulationState): boolean {
   const inc = state.incidents;
   if (!inc?.enabled || inc.active || state.day.period !== 'dinner' || !state.day.doorsOpenedThisService) return false;
-  if ((inc.betsTonight ?? 0) >= BET.maxPerEvening) return false;
-  if (!BET.stakes.includes(stake)) return false;
-  const credits = state.knowledgeCredits.episteme + state.knowledgeCredits.techne + state.knowledgeCredits.phronesis;
-  if (credits < stake) return false;
-  const bank = incidentBankFor(state.economy.businessClass);
-  const menuIds = state.menu.map((m) => m.dishId);
-  return bank.some((i) => !i.chainOnly && !inc.fired.includes(i.id) && fitsMenu(i, menuIds) && !i.needsTable) ||
-    (bank.some((i) => !i.chainOnly && !inc.fired.includes(i.id) && fitsMenu(i, menuIds)) && seatedGuests(state).length > 0);
+  if ((inc.betsTonight ?? 0) >= BACK.maxPerEvening) return false;
+  return backPool(state).length > 0;
 }
 
-export function startBet(draft: SimulationState, stake: number): boolean {
-  if (!canStartBet(draft, stake)) return false;
+function backPool(state: SimulationState): Incident[] {
+  const inc = incidentsOf(state);
+  const menuIds = state.menu.map((m) => m.dishId);
+  const seated = seatedGuests(state).length > 0;
+  return incidentBankFor(state.economy.businessClass).filter((i) =>
+    !i.chainOnly && !inc.fired.includes(i.id) && fitsMenu(i, menuIds) && (!i.needsTable || seated));
+}
+
+export function startBack(draft: SimulationState): boolean {
+  if (!canStartBack(draft)) return false;
   const rng = createRng(draft.rngState);
   const r = () => rng.next();
+  const pool = backPool(draft);
+  // Helst en raket om kvällens meny.
+  const onMenu = pool.filter((i) => i.requiresOnMenu);
   const inc = draft.incidents!;
-  const menuIds = draft.menu.map((m) => m.dishId);
-  // Spelarens egen raket: helst en om kvällens meny, annars en ur banken.
-  const bank = incidentBankFor(draft.economy.businessClass).filter((i) =>
-    !i.chainOnly && !inc.fired.includes(i.id) && fitsMenu(i, menuIds) && (!i.needsTable || seatedGuests(draft).length > 0));
-  const onMenu = bank.filter((i) => i.requiresOnMenu);
-  const pool = onMenu.length > 0 ? onMenu : bank;
-  if (pool.length === 0) return false;
-  openIncident(draft, pick(pool, r()), false, undefined, { stake }, r);
+  openIncident(draft, pick(onMenu.length > 0 ? onMenu : pool, r()), false, undefined, true, r);
   draft.incidents = { ...draft.incidents!, betsTonight: (inc.betsTonight ?? 0) + 1 };
   draft.rngState = rng.state;
   return true;
+}
+
+export function totalCredits(state: SimulationState): number {
+  return state.knowledgeCredits.episteme + state.knowledgeCredits.techne + state.knowledgeCredits.phronesis;
+}
+
+// Kan spelaren stå för ett svar på den här säkerheten? Bara om krediterna
+// räcker till förlusten (Designs canBack).
+export function canBack(state: SimulationState, c: Confidence): boolean {
+  return totalCredits(state) >= BACK.confidence[c].loss;
+}
+
+// Ett låst svar: krediterna efter säkerhet och steg (Designs backAnswer).
+// Ingen slump: samma svar och samma säkerhet ger alltid samma krediter.
+export function backAnswer(correct: boolean, c: Confidence, step: number): { delta: number; endsRocket: boolean } {
+  const conf = BACK.confidence[c];
+  const last = INCIDENTS.stepAxes.length - 1;
+  return correct
+    ? { delta: Math.round(conf.win * (BACK.stepMultiplier[step] ?? 1)), endsRocket: step === last }
+    : { delta: 0 - conf.loss, endsRocket: true };
+}
+
+export function recordCalibration(cal: Calibration | undefined, c: Confidence, correct: boolean): Calibration {
+  const n = (cal ?? [[0, 0], [0, 0], [0, 0]]).map((x) => [...x]) as Calibration;
+  n[c][1]++;
+  if (correct) n[c][0]++;
+  return n;
+}
+
+export type CalibrationNote = 'overconfident' | 'underconfident' | 'default';
+export function calibrationNote(cal: Calibration | undefined): CalibrationNote {
+  if (!cal) return 'default';
+  const [g, , k] = cal;
+  if (k[1] >= BACK.calibrationMinAnswers && k[0] / k[1] < BACK.calibrationShare) return 'overconfident';
+  if (g[1] >= BACK.calibrationMinAnswers && g[0] / g[1] >= BACK.calibrationShare) return 'underconfident';
+  return 'default';
+}
+
+// Bokför ett låst svar i Back your knowledge (anropas av resolveIncident).
+function settleBack(draft: SimulationState, step: number, c: Confidence, correct: boolean): BackResult {
+  const { delta, endsRocket } = backAnswer(correct, c, step);
+  const inc = draft.incidents!;
+  const result: BackResult = { step, confidence: c, correct, delta, endsRocket, at: draft.simTime };
+  draft.incidents = {
+    ...inc,
+    betCreditsDue: (inc.betCreditsDue ?? 0) + delta,
+    lastBack: result,
+    calibration: recordCalibration(inc.calibration, c, correct)
+  };
+  return result;
 }
 
 // ORDER 279 — "Rätt svar ger högre dricks": bordets gäster lämnar en större
@@ -493,23 +549,6 @@ export function startBet(draft: SimulationState, stake: number): boolean {
 function raiseTips(draft: SimulationState, ctx: IncidentContext, share: number): void {
   if (share <= 0) return;
   for (const g of draft.guests) if (ctx.guestIds.includes(g.id)) g.tipBonus = (g.tipBonus ?? 0) + share;
-}
-
-// ORDER 279 — insatsen avgörs när raketen är slut: alla tre stegen
-// klarade vinner, allt annat förlorar. Kassan flyttas här; krediterna
-// tillbaka bokförs av reducern (betCreditsDue).
-function settleBet(draft: SimulationState, incident: Incident, bet: { stake: number }, won: boolean): BetResult {
-  const cashSek = Math.round(bet.stake * BET.cashPerCredit * (won ? BET.winCashFactor : -BET.lossCashFactor));
-  applyCashDelta(draft, cashSek);
-  postLedger(draft, { category: 'bet', amount: cashSek, cause: strings.bet.ledger(incident.text.title, bet.stake), causeId: incident.id });
-  const credits = won ? bet.stake * BET.winCreditFactor : 0;
-  const result: BetResult = { stake: bet.stake, won, cashSek, credits, at: draft.simTime };
-  draft.incidents = { ...draft.incidents!, betCreditsDue: (draft.incidents!.betCreditsDue ?? 0) + credits, lastBet: result };
-  draft.eventStream = [...draft.eventStream, {
-    at: draft.simTime, text: won ? strings.bet.won(bet.stake, credits, cashSek) : strings.bet.lost(bet.stake, -cashSek),
-    category: won ? 'positive' : 'ambient', causeTag: null, causeChainId: null, sustainability: 'economic', kind: won ? 'bet_won' : 'bet_lost', scenarioId: incident.id
-  }];
-  return result;
 }
 
 export interface CreditChange { axis: KnowledgeAxis; track: YrkesSpar | null; amount: number }
@@ -654,7 +693,7 @@ function applyOutcome(
 // konsekvens, och personalen tar över resten. Muterar draft (samma mönster
 // som advanceTick) och returnerar krediten som reducern bokför via
 // ACCUMULATE_KNOWLEDGE. Svaret går inte att ändra.
-export function resolveIncident(draft: SimulationState, optionId: string | null): CreditChange | null {
+export function resolveIncident(draft: SimulationState, optionId: string | null, confidence: Confidence = 0): CreditChange | null {
   const inc = draft.incidents;
   const active = inc?.active;
   if (!inc || !active) return null;
@@ -671,6 +710,11 @@ export function resolveIncident(draft: SimulationState, optionId: string | null)
   const creditFor = (amount: number): CreditChange | null =>
     amount === 0 ? null : { axis: step.axis, track: step.track, amount };
 
+  // ORDER 280 — Back your knowledge: varje låst svar ger eller tar
+  // krediter efter säkerheten. Tiden ute räknas som fel på gissar.
+  const backC: Confidence = option ? confidence : 0;
+  const backResult = active.backed ? settleBack(draft, stepIndex, backC, option !== null && quality !== 'wrong') : null;
+
   // Klarat steg: nästa steg öppnas i samma sammanhang.
   if (option && quality !== 'wrong' && stepIndex < incident.steps.length - 1) {
     const next = incident.steps[stepIndex + 1];
@@ -682,7 +726,7 @@ export function resolveIncident(draft: SimulationState, optionId: string | null)
     raiseTips(draft, active.context, MENU_ROCKETS.tipBonusPerClearedStep);
     const revealed: StepReveal = { step: stepIndex, optionId: option.id, correctId: correctOptionId(step, active.situation), cleared: true, guestsIn };
     draft.incidents = {
-      ...inc,
+      ...draft.incidents!,
       active: { ...active, step: stepIndex + 1, secondsTotal, secondsLeft: secondsTotal, struck, revealed, revealLeft: INCIDENTS.revealSeconds }
     };
     return creditFor(quality === 'best' ? INCIDENTS.bestAnswerCredit : 0);
@@ -723,7 +767,6 @@ export function resolveIncident(draft: SimulationState, optionId: string | null)
   // ORDER 276 — det sista klarade steget och hela raketen släpper in gäster.
   const guestsIn = cleared ? letGuestsIn(draft, INCIDENTS.guestsPerClearedStep + INCIDENTS.guestsOnRocketCleared) : 0;
   if (cleared) raiseTips(draft, ctx, MENU_ROCKETS.tipBonusPerClearedStep + MENU_ROCKETS.tipBonusOnRocketCleared);
-  const betResult = active.bet ? settleBet(draft, incident, active.bet, cleared) : null;
   const reveal: StepReveal = { step: stepIndex, optionId: option?.id ?? null, correctId: correctOptionId(step, active.situation), cleared, guestsIn };
   const takeover = cleared ? null : takeoverFor(draft, incident, step);
   const now = draft.incidents!;
@@ -750,12 +793,12 @@ export function resolveIncident(draft: SimulationState, optionId: string | null)
       text,
       at: draft.simTime,
       deltas: {
-        cashSek: cashSek + (betResult?.cashSek ?? 0),
+        cashSek,
         satisfaction: before !== null && after !== null ? after - before : 0,
         stamina: draft.morale - moraleBefore,
         reputation: draft.reputation - repBefore
       },
-      bet: betResult
+      back: backResult
     }
   };
   return creditFor(credit);

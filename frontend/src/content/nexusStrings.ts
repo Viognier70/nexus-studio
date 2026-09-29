@@ -777,6 +777,7 @@ export const TABLE = {
       interest: { sv: 'Ränta på lånet', en: 'Interest on the loan' },
       floor: { sv: 'Golvet fyllde på veckan', en: 'The floor topped up the week' },
       amortisation: { sv: 'Amortering på lånet', en: 'Repayment on the loan' },
+      rent: { sv: 'Veckohyra för lokalen', en: "The week's rent for the premises" },
       sale: { sv: 'Lokalen såld till banken', en: 'Premises sold to the bank' },
       deposit: { sv: 'Kontantinsats för den nya lokalen', en: 'Cash deposit for the new premises' }
     },
@@ -903,6 +904,15 @@ export const TABLE = {
         en: 'You have no floor yet. It grows with your medals.'
       },
       amortised: { sv: 'Banken drog veckans amortering.', en: "The bank took this week's repayment." },
+      // ORDER 280 — hyran och veckans löner.
+      rent: {
+        sv: (sek: string) => `Veckans hyra för lokalen, ${sek}, är betald.`,
+        en: (sek: string) => `The week's rent for the premises, ${sek}, has been paid.`
+      },
+      wages: {
+        sv: (sek: string) => `Lönerna för veckan blev ${sek}.`,
+        en: (sek: string) => `Wages for the week came to ${sek}.`
+      },
       downgraded: {
         sv: (from: string, to: string) => `Banken tog ${from} och köpte inventarierna. Det blir din kassa när du fortsätter med ${to}.`,
         en: (from: string, to: string) => `The bank took ${from} and bought the fittings. That becomes your cash as you carry on with ${to}.`
@@ -971,7 +981,8 @@ export const TABLE = {
       satisfaction: { sv: 'Gästernas nöjdhet', en: 'Guest satisfaction' },
       stamina: { sv: 'Personalens ork', en: 'Staff stamina' },
       noGuests: { sv: 'inga gäster', en: 'no guests' },
-      sek: { sv: (amount: string) => `${amount} kr`, en: (amount: string) => `${amount} SEK` }
+      // ORDER 280 — Designs money.kr: "SEK n" på engelska.
+      sek: { sv: (amount: string) => `${amount} kr`, en: (amount: string) => `SEK ${amount}` }
     },
     // ORDER 274 — tiden kvar av servicen, hela kvällen.
     clock: {
@@ -1123,6 +1134,7 @@ export const TABLE = {
     buySheet: { sv: (price: string) => `Köp listan · ${price}`, en: (price: string) => `Buy the list · ${price}` },
     sheetEmpty: { sv: 'Listan är tom.', en: 'The list is empty.' },
     sheetLedger: { sv: 'Lager: morgonens inköpslista', en: "Stock: the morning's order" },
+    returnLedger: { sv: 'Lager: inköp tillbaka', en: 'Stock: purchase returned' },
     ranOut: {
       sv: (name: string) => `${name} är slut — köket har inga råvaror kvar.`,
       en: (name: string) => `${name} has run out — the kitchen has no ingredients left.`
@@ -1269,36 +1281,207 @@ export const TABLE = {
     },
     continue: { sv: 'Till paviljongerna', en: 'To the pavilions' }
   },
-  // ORDER 279 — insatsen: action-knappen som live betting.
-  bet: {
-    heading: { sv: 'Insatsen', en: 'Your stake' },
-    intro: {
-      sv: 'Ta ett bord själv: starta en raket och satsa krediter. Klarar du alla tre stegen får du tillbaka dubbla insatsen och en intäkt. Faller raketen förlorar du krediterna, och kassan tar en större smäll.',
-      en: 'Take a table yourself: start a rocket and stake credits. Clear all three steps and you get double your stake back, plus takings. If the rocket falls you lose the credits, and the till takes a bigger hit.'
+  // ORDER 280 — Designs leverans kassan och kvällen (nexusStrings.kassan.ts),
+  // i spelets form: M1 morgonens inköp, L1 lagret, H1 händelserna, B1 Back
+  // your knowledge, S1 sopbilen och K1 klockan. Designs ordval gäller, utom
+  // "the House of the Meal" (CLAUDE.md regel 7).
+  clock: {
+    time: { sv: (h: string, mm: string) => `${h}.${mm}`, en: (h: string, mm: string) => `${h}:${mm}` },
+    left: { sv: (h: number, mm: string) => `${h} h ${mm} min kvar`, en: (h: number, mm: string) => `${h} h ${mm} min left` },
+    leftMin: { sv: (m: number) => `${m} min kvar`, en: (m: number) => `${m} min left` },
+    label: {
+      sv: { service: 'Servicen', rush: 'Rusning', lastOrders: 'Sista beställning', closed: 'Stängt', morning: 'Morgon', evening: 'Kväll' } as Record<string, string>,
+      en: { service: 'Service', rush: 'Rush', lastOrders: 'Last orders', closed: 'Closed', morning: 'Morning', evening: 'Evening' } as Record<string, string>
     },
-    stake: { sv: (n: number) => `Satsa ${n}`, en: (n: number) => `Stake ${n}` },
-    stakeAria: {
-      sv: (n: number, win: string, loss: string) => `Satsa ${n} krediter: vinst ${win}, förlust ${loss}`,
-      en: (n: number, win: string, loss: string) => `Stake ${n} credits: win ${win}, loss ${loss}`
+    doorsAt: { sv: 'Dörrarna öppnar 18.00', en: 'Doors open 18:00' },
+    pickup: { sv: 'Sopbilen hämtar', en: 'Bin lorry collecting' },
+    aria: { sv: (label: string, time: string, left: string) => `${label}, klockan ${time}, ${left}`, en: (label: string, time: string, left: string) => `${label}, ${time}, ${left}` }
+  },
+  money: {
+    plus: { sv: (n: string) => `+${n} kr`, en: (n: string) => `+SEK ${n}` },
+    minus: { sv: (n: string) => `−${n} kr`, en: (n: string) => `−SEK ${n}` }
+  },
+  morningBuy: {
+    open: { sv: 'Köp in för kvällen', en: "Buy in for tonight" },
+    summary: {
+      sv: (dishes: number, bottles: number) => `I lager: ${dishes} portioner och ${bottles} flaskor.`,
+      en: (dishes: number, bottles: number) => `In stock: ${dishes} portions and ${bottles} bottles.`
     },
-    odds: {
-      sv: (win: string, loss: string) => `Vinst ${win} · förlust ${loss}`,
-      en: (win: string, loss: string) => `Win ${win} · loss ${loss}`
+    phase: { sv: 'Morgonen', en: 'Morning' },
+    menu: { sv: 'Meny', en: 'Menu' },
+    menuStep: { sv: '+ köper 5 portioner', en: '+ buys 5 portions' },
+    wine: { sv: 'Dryckeslista', en: 'Wine list' },
+    wineStep: { sv: '+ köper 2 flaskor', en: '+ buys 2 bottles' },
+    dishSub: { sv: (cost: string, price: string) => `Inköp ${cost} · säljs för ${price}`, en: (cost: string, price: string) => `Cost ${cost} · sells for ${price}` },
+    wineSub: { sv: (cost: string, glasses: number, price: string) => `Inköp ${cost}/fl · ${glasses} glas à ${price}`, en: (cost: string, glasses: number, price: string) => `Cost ${cost}/btl · ${glasses} glasses at ${price}` },
+    beerSub: { sv: (cost: string, price: string) => `Inköp ${cost}/fl · säljs för ${price}`, en: (cost: string, price: string) => `Cost ${cost}/btl · sells for ${price}` },
+    dishSum: { sv: (n: number, kr: string) => `${n} portioner · ${kr} i inköp`, en: (n: number, kr: string) => `${n} portions · ${kr} spent` },
+    wineSum: { sv: (n: number, kr: string) => `${n} flaskor · ${kr} i inköp`, en: (n: number, kr: string) => `${n} bottles · ${kr} spent` },
+    spent: { sv: 'Inköp i dag', en: 'Bought today' },
+    mains: { sv: 'Rätter', en: 'Dishes' },
+    mainsCover: { sv: (n: number, booked: number) => `${n} av ${booked} gäster`, en: (n: number, booked: number) => `${n} of ${booked} guests` },
+    booked: { sv: (n: number) => `Omkring ${n} gäster väntas i kväll`, en: (n: number) => `About ${n} guests expected tonight` },
+    wineCover: { sv: (n: number, per: string) => `${n} glas · ${per} per gäst`, en: (n: number, per: string) => `${n} glasses · ${per} per guest` },
+    wineLabel: { sv: 'Dryck', en: 'Drinks' },
+    potential: { sv: 'Om allt säljs', en: 'If everything sells' },
+    potentialNote: { sv: 'Det som inte säljs blir svinn när sopbilen kommer.', en: 'Whatever doesn’t sell is waste when the bin lorry comes.' },
+    potentialIn: { sv: (kr: string) => `${kr} in`, en: (kr: string) => `${kr} in` },
+    openDoors: { sv: 'Öppna dörrarna 18.00', en: 'Open the doors 18:00' },
+    base: { sv: '+ Baspaketet', en: '+ Base package' },
+    back: { sv: 'Tillbaka till schemat', en: 'Back to the schedule' },
+    notEnough: { sv: 'Kassan räcker inte till partiet.', en: 'The till cannot cover that batch.' },
+    unitPortion: { sv: 'port', en: 'ptn' },
+    unitBottle: { sv: 'fl', en: 'btl' },
+    less: { sv: (name: string) => `Ett parti färre ${name}`, en: (name: string) => `One batch less ${name}` },
+    more: { sv: (name: string) => `Ett parti till ${name}`, en: (name: string) => `One more batch ${name}` }
+  },
+  stockL1: {
+    kitchen: { sv: 'Lagret · kök', en: 'Stock · kitchen' },
+    bar: { sv: 'Lagret · bar', en: 'Stock · bar' },
+    of: { sv: (n: number) => `av ${n} portioner`, en: (n: number) => `of ${n} portions` },
+    open: { sv: (g: number, n: number) => `${g} glas i öppen · av ${n} fl`, en: (g: number, n: number) => `${g} in open bottle · of ${n} btl` },
+    ok: { sv: 'I lager', en: 'In stock' },
+    low: { sv: 'Snart slut', en: 'Running low' },
+    out: { sv: 'Slut', en: 'Sold out' },
+    warnLow: { sv: (item: string, n: number, unit: string) => `${item} snart slut · ${n} ${unit} kvar`, en: (item: string, n: number, unit: string) => `${item} running low · ${n} ${unit} left` },
+    warnOut: { sv: (item: string) => `${item} slut · stryks från menyn`, en: (item: string) => `${item} sold out · off the menu` },
+    unitGlass: { sv: 'glas', en: 'glasses' },
+    heading: { sv: 'Lagret i kväll', en: 'Stock tonight' }
+  },
+  feed: {
+    title: { sv: 'Händelser', en: 'Events' },
+    ordered: { sv: 'Beställt', en: 'Ordered' },
+    paid: { sv: 'Betalt', en: 'Paid' },
+    tip: { sv: 'Dricks', en: 'Tips' },
+    order: { sv: (t: string, lines: string) => `Bord ${t} · ${lines}`, en: (t: string, lines: string) => `Table ${t} · ${lines}` },
+    linePortion: { sv: (n: number, item: string) => `${n} × ${item}`, en: (n: number, item: string) => `${n} × ${item}` },
+    lineGlass: { sv: (n: number, item: string) => `${n} glas ${item}`, en: (n: number, item: string) => `${n} ${n === 1 ? 'glass' : 'glasses'} ${item}` },
+    lineBottle: { sv: (item: string) => `1 fl ${item}`, en: (item: string) => `1 btl ${item}` },
+    miss: { sv: (t: string, item: string) => `Bord ${t} ville ha ${item} · slut`, en: (t: string, item: string) => `Table ${t} wanted ${item} · sold out` },
+    pay: { sv: (t: string) => `Bord ${t} betalar`, en: (t: string) => `Table ${t} pays` },
+    tipLine: { sv: (t: string) => `Dricks bord ${t} · till personalen`, en: (t: string) => `Tip table ${t} · to the staff` },
+    guest: { sv: 'en gäst', en: 'a guest' },
+    tonight: { sv: 'I kväll', en: 'Tonight' },
+    tonightPaid: { sv: 'Betalt', en: 'Paid' },
+    tonightTips: { sv: 'Dricks till personalen', en: 'Tips to the staff' },
+    tonightTabs: { sv: 'Öppna notor', en: 'Open tabs' },
+    tonightTabsValue: { sv: (n: number, kr: string) => `${n} bord · ${kr}`, en: (n: number, kr: string) => `${n} tables · ${kr}` },
+    tonightTabsNone: { sv: 'Inga', en: 'None' }
+  },
+  back: {
+    title: { sv: 'Stå för ditt svar', en: 'Back your knowledge' },
+    kicker: { sv: (role: string, place: string) => `Stå för ditt svar · ${role} · ${place}`, en: (role: string, place: string) => `Back your knowledge · ${role} · ${place}` },
+    steps: { sv: 'Tre steg', en: 'Three steps' },
+    introTitle: { sv: 'Tre frågor. Du bestämmer hur mycket du står för varje svar.', en: 'Three questions. You decide how firmly you back each answer.' },
+    introBody: {
+      sv: 'Efter varje svar väljer du hur säker du är. Ju säkrare du är, desto mer vinner du om det stämmer och desto mer förlorar du om det inte gör det. Steget du har kommit till multiplicerar vinsten.',
+      en: 'After each answer, choose how sure you are. The surer you are, the more you gain if you’re right and the more you lose if you’re not. The step you’ve reached multiplies the gain.'
     },
-    left: { sv: (n: number) => `${n} insatser kvar i kväll`, en: (n: number) => `${n} stakes left tonight` },
-    none: { sv: 'Inga insatser kvar i kväll.', en: 'No stakes left tonight.' },
+    introSource: {
+      sv: 'Krediterna har du tjänat på proven i Måltidens hus och på raketerna i servicen. De kan inte köpas och växlas aldrig mot kassan.',
+      en: 'You earned your credits in the House of the Meal exams and the service rockets. They can’t be bought and never convert to cash.'
+    },
+    start: { sv: 'Starta raketen', en: 'Launch the rocket' },
+    left: { sv: (n: number) => `${n} kvar i kväll`, en: (n: number) => `${n} left tonight` },
+    none: { sv: 'Inga fler i kväll.', en: 'No more tonight.' },
+    track: { sv: 'Raketen', en: 'The rocket' },
+    trackSub: { sv: 'Varje rätt steg lyfter den', en: 'Each right step lifts it' },
+    trackGoal: { sv: 'Mål', en: 'Goal' },
+    howSure: { sv: 'Hur säker är du?', en: 'How sure are you?' },
+    odds: { sv: (win: number, loss: number) => `+${win} om rätt · ${loss > 0 ? `−${loss}` : '±0'} om fel`, en: (win: number, loss: number) => `+${win} if right · ${loss > 0 ? `−${loss}` : '±0'} if wrong` },
+    lock: { sv: 'Stå för svaret', en: 'Back it' },
+    confidence: { sv: ['Gissar', 'Tror det', 'Vet det'], en: ['Guessing', 'Think so', 'Know it'] },
+    boxCredits: { sv: 'Krediter', en: 'Credits' },
+    boxWrong: { sv: (level: string) => `${level} · fel`, en: (level: string) => `${level} · wrong` },
+    wrongNoMult: { sv: 'Steget multiplicerar bara rätt svar.', en: 'The step only multiplies right answers.' },
+    bandRight: {
+      sv: ['Rätt, men du gissade. Nästa gång kan du stå för det.', 'Rätt. Du trodde det, och det stämde.', 'Du visste, och du stod för det.'],
+      en: ['Right, but you guessed. Next time, back it.', 'Right. You thought so, and you were.', 'You knew it, and you backed it.']
+    },
+    bandWrong: {
+      sv: ['Fel, men en gissning kostar inget. Nu vet du svaret. Raketen slutar här.', 'Du trodde det, men det stämde inte. Raketen slutar här.', 'Du var säker, men det stämde inte. Det är värt att veta. Raketen slutar här.'],
+      en: ['Wrong, but a guess costs nothing. Now you know. The rocket ends here.', 'You thought so, but it wasn’t. The rocket ends here.', 'You were sure, and you were wrong. That’s worth knowing. The rocket ends here.']
+    },
+    calibTitle: { sv: 'Hur säker du var', en: 'How sure you were' },
+    calibTonight: { sv: 'I kväll', en: 'Tonight' },
+    calibRow: { sv: (r: number, n: number) => `${r} av ${n} rätt`, en: (r: number, n: number) => `${r} of ${n} right` },
+    calibNote: {
+      sv: { overconfident: (r: number, n: number) => `Vet det höll i ${r} av ${n}. Här tror du dig kunna mer än du kan.`, underconfident: () => 'Dina gissningar stämmer oftare än du tror. Stå för dem.', default: () => 'Stå för så mycket som du kan. Då mäter krediterna vad du vet.' } as Record<string, (r: number, n: number) => string>,
+      en: { overconfident: (r: number, n: number) => `Know it held ${r} of ${n} times. Here you think you know more than you do.`, underconfident: () => 'Your guesses are right more often than you think. Back them.', default: () => 'Back what you know. Then your credits measure what you know.' } as Record<string, (r: number, n: number) => string>
+    },
     credits: { sv: 'Krediter', en: 'Credits' },
     creditsAria: { sv: (n: number) => `Krediter: ${n}`, en: (n: number) => `Credits: ${n}` },
-    own: { sv: (n: number) => `Din insats: ${n} ${n === 1 ? 'kredit' : 'krediter'}`, en: (n: number) => `Your stake: ${n} ${n === 1 ? 'credit' : 'credits'}` },
-    won: {
-      sv: (stake: number, credits: number, cash: number) => `Insatsen vann: ${stake} ${stake === 1 ? 'kredit' : 'krediter'} blev ${credits}, och kassan fick ${Math.round(cash).toLocaleString('sv-SE')} kr.`,
-      en: (stake: number, credits: number, cash: number) => `The stake won: ${stake} ${stake === 1 ? 'credit' : 'credits'} became ${credits}, and the till gained SEK ${Math.round(cash).toLocaleString('en-GB')}.`
+    juice: { sv: 'Animationer', en: 'Animations' },
+    juiceBalatro: { sv: 'Balatro', en: 'Balatro' },
+    juiceCalm: { sv: 'Lugn', en: 'Calm' }
+  },
+  wasteScreen: {
+    phase: { sv: 'Efter stängning', en: 'After closing' },
+    kicker: { sv: 'Sopbilen · 23.40', en: 'Bin lorry · 23:40' },
+    title: { sv: 'Det som blev över', en: 'What was left' },
+    hauler: { sv: 'Stensöta renhållning', en: 'Stensöta Waste' },
+    colFraction: { sv: 'Fraktion', en: 'Fraction' },
+    colWhat: { sv: 'Vad', en: 'What' },
+    colKg: { sv: 'Vikt', en: 'Weight' },
+    colValue: { sv: 'Inköpspris', en: 'Cost price' },
+    fractions: {
+      sv: { unsold: 'Matsvinn · osålt', plates: 'Tallrikssvinn', glass: 'Glas', cardboard: 'Kartong och papper' } as Record<string, string>,
+      en: { unsold: 'Food waste · unsold', plates: 'Plate waste', glass: 'Glass', cardboard: 'Cardboard and paper' } as Record<string, string>
     },
-    lost: {
-      sv: (stake: number, cash: number) => `Insatsen förlorade: ${stake} ${stake === 1 ? 'kredit' : 'krediter'} borta, och kassan tappade ${Math.round(cash).toLocaleString('sv-SE')} kr.`,
-      en: (stake: number, cash: number) => `The stake lost: ${stake} ${stake === 1 ? 'credit' : 'credits'} gone, and the till lost SEK ${Math.round(cash).toLocaleString('en-GB')}.`
+    unsoldNone: { sv: 'Allt såldes', en: 'Everything sold' },
+    unsoldDetail: { sv: (n: number, kept: number) => `${n} portioner råvaror${kept > 0 ? ` · ${kept} sparas till i morgon` : ''}`, en: (n: number, kept: number) => `${n} portions of ingredients${kept > 0 ? ` · ${kept} kept for tomorrow` : ''}` },
+    platesDetail: { sv: (n: number) => `Rester från ${n} tallrikar`, en: (n: number) => `Leftovers from ${n} plates` },
+    glassDetail: { sv: (n: number) => `${n} tomma flaskor`, en: (n: number) => `${n} empty bottles` },
+    cardboardDetail: { sv: 'Morgonens leveranser', en: 'This morning’s deliveries' },
+    total: { sv: 'Totalt', en: 'Total' },
+    kg: { sv: (kg: string) => `${kg} kg`, en: (kg: string) => `${kg} kg` },
+    value: { sv: 'Svinn', en: 'Waste' },
+    valueNote: { sv: 'Betalt redan i morse. Nu ligger det i soporna.', en: 'Paid for this morning. Now it’s in the bin.' },
+    fee: { sv: 'Miljöavgift', en: 'Environmental fee' },
+    feeLine: { sv: (kg: string, perKg: string, pickup: string) => `${kg} kg × ${perKg} + hämtning ${pickup}`, en: (kg: string, perKg: string, pickup: string) => `${kg} kg × ${perKg} + ${pickup} collection` },
+    adviceKicker: { sv: 'I morgon bitti', en: 'Tomorrow morning' },
+    advice: { sv: (n: number, item: string, kr: string) => `Köp ${n} färre ${item} i morgon. Det sparar ${kr} i inköp.`, en: (n: number, item: string, kr: string) => `Buy ${n} fewer ${item} tomorrow. It saves ${kr}.` },
+    adviceNone: { sv: 'Nästan inget blev över. Köp samma mängder i morgon.', en: 'Almost nothing was left. Buy the same tomorrow.' },
+    continue: { sv: 'Till kvällens lärdom', en: "To tonight's lesson" }
+  },
+  // ORDER 280 — resten av engelskan: äldre komponenter som hade texten
+  // direkt i koden, nu i strängtabellen med svenska och engelska.
+  legacy: {
+    controls: {
+      mouse: {
+        sv: ['Mushjulet', 'zoomar', 'vänsterdrag', 'panorerar', 'höger- eller mittdrag', 'roterar', 'klick', 'väljer', 'Esc', 'ut'],
+        en: ['Mouse wheel', 'zooms', 'left drag', 'pans', 'right/middle drag', 'rotates', 'click', 'selects', 'Esc', 'out']
+      },
+      hide: { sv: 'Dölj kontrollerna', en: 'Hide controls' },
+      village: { sv: 'byn', en: 'the village' },
+      district: { sv: 'kvarteret', en: 'the district' },
+      block: { sv: 'ditt kvarter', en: 'your block' },
+      business: { sv: 'din verksamhet', en: 'your business' }
     },
-    ledger: { sv: (title: string, stake: number) => `Insats (${stake} kred.): ${title}`, en: (title: string, stake: number) => `Stake (${stake} cr.): ${title}` }
+    outward: { sv: 'Tillbaka', en: 'Back' },
+    outwardAria: { sv: 'Zooma ut ett steg', en: 'Zoom out one step' },
+    closeSelection: { sv: 'Stäng valet', en: 'Close selection' },
+    continue: { sv: 'Fortsätt', en: 'Continue' },
+    scaleDown: {
+      heading: { sv: 'Skala ner', en: 'Scale down' },
+      body: { sv: 'En aktiv reträtt när passet blöder. Går att ångra — öppna igen när kassan tål det.', en: 'An active retreat when the pass is bleeding. Reversible — reopen when the cash can take it.' },
+      shortenMenu: { sv: 'Korta menyn', en: 'Shorten the menu' },
+      restoreMenu: { sv: 'Återställ menyn', en: 'Restore the menu' },
+      shortenMenuDesc: { sv: 'Sänk råvarunivån ett steg. Sparar per gäst, sänker matens kvalitet över tid.', en: 'Lower the ingredient level one step. Saves per guest, dampens food quality over time.' },
+      restoreMenuDesc: { sv: 'Höj råvarunivån till där den var.', en: 'Raise the ingredient level back to where it was.' },
+      thinWine: { sv: 'Gallra vinlistan', en: 'Thin the wine list' },
+      restoreWine: { sv: 'Återställ vinlistan', en: 'Restore the wine list' },
+      thinWineDesc: { sv: 'Dra ner på drycken. Servicen har mindre att bära, dryckens kvalitet sjunker över tid.', en: 'Scale back the drinks side. The service has less to carry, drink quality falls over time.' },
+      restoreWineDesc: { sv: 'Öppna listan igen. Kvaliteten börjar återhämta sig.', en: 'Open the list again. The quality reading starts to recover.' },
+      closeLunch: { sv: 'Stäng lunchen', en: 'Close lunch' },
+      openLunch: { sv: 'Öppna lunchen igen', en: 'Open lunch again' },
+      closeLunchDesc: { sv: 'Ingen lunch förrän du öppnar igen. Sparar personal och råvaror; stamgästerna märker den stängda dörren.', en: "No lunch until you open again. Saves staff + ingredients; the room's regular tables notice the door." },
+      openLunchDesc: { sv: 'Ta tillbaka lunchen. Ryktet börjar återhämta sig.', en: 'Bring lunch back. The reputation starts to recover.' },
+      closeDinner: { sv: 'Stäng kvällen', en: 'Close dinner' },
+      openDinner: { sv: 'Öppna kvällen igen', en: 'Open dinner again' },
+      closeDinnerDesc: { sv: 'Ingen kvällsservice förrän du öppnar igen. Den största besparingen, den största kostnaden för ryktet.', en: 'No dinner until you open again. The biggest saving, the biggest cost to reputation.' },
+      openDinnerDesc: { sv: 'Ta tillbaka kvällen.', en: 'Bring dinner back.' }
+    }
   },
   // ORDER 277 — kassan syns hela tiden.
   cashCounter: {
@@ -1347,8 +1530,8 @@ export const TABLE = {
       en: (table: number | null, items: string[]) => `${table === null ? 'A guest' : `Table ${table}`} orders: ${items.join(', ')}.`
     },
     paid: {
-      sv: (table: number | null, bill: string, tip: string | null) => `${table === null ? 'En gäst' : `Bord ${table}`} betalar ${bill}${tip ? ` och lämnar ${tip} i dricks` : ''}.`,
-      en: (table: number | null, bill: string, tip: string | null) => `${table === null ? 'A guest' : `Table ${table}`} pays ${bill}${tip ? ` and leaves ${tip} as a tip` : ''}.`
+      sv: (table: number | null, bill: string, tip: string | null) => `${table === null ? 'En gäst' : `Bord ${table}`} betalar ${bill}${tip ? ` och lämnar ${tip} i dricks till personalen` : ''}.`,
+      en: (table: number | null, bill: string, tip: string | null) => `${table === null ? 'A guest' : `Table ${table}`} pays ${bill}${tip ? ` and leaves ${tip} as a tip for the staff` : ''}.`
     },
     noAlcoholFree: {
       sv: (table: number | null) => `${table === null ? 'En gäst' : `En gäst vid bord ${table}`} dricker inte alkohol, och det fanns inget alkoholfritt på listan.`,
@@ -1802,6 +1985,7 @@ export const TABLE = {
         bet: { sv: 'Insats', en: 'Stake' },
         floor: { sv: 'Golv', en: 'Floor' },
         amortisation: { sv: 'Amort.', en: 'Repay.' },
+        rent: { sv: 'Hyra', en: 'Rent' },
         other: { sv: '—', en: '—' }
       }
     },
