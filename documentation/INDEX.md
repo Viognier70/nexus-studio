@@ -528,6 +528,19 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 
 - 6 bilder (6 .png): `B1-back-your-knowledge.png`, `H1-handelser.png`, `K1-klockan.png`, `L1-lagret.png`, `M1-morgonen.png`, `S1-sopbilen.png`.
 
+## documentation/leveranser/nexus-leverans-2026-09-29-varma-designsystemet/
+
+- `LEVERANSNOT.md`: LEVERANSNOT — det varma designsystemet (leverans 1 av 5 efter tredje provspelet).
+- 3 tillhörande filer (tokens, CSS, strängar): `nexusTheme.warm.ts`, `nexus-warm.css`, `nexusStrings.varm.ts`.
+
+## documentation/leveranser/nexus-leverans-2026-09-29-varma-designsystemet/prototyp/
+
+- `Varma formen - prototyper.html`: de sex skärmarna i båda storlekarna, fristående (läses, monteras inte).
+
+## documentation/leveranser/nexus-leverans-2026-09-29-varma-designsystemet/skarmar/
+
+- 12 bilder (12 .png) i `1280x720/` och `1440x900/`: `1-morgonen.png`, `2-inkopen.png`, `3-raketkortet.png`, `4-lardomen.png`, `5-tidningen.png`, `6-kvallens-resultat.png`.
+
 ## documentation/orders/
 
 - `ORDER - vinbaren.md`: ORDER — Vinbaren: montering av `wineBarRoom.ts`.

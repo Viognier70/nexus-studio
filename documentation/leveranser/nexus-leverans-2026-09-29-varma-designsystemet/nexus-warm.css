@@ -1,0 +1,30 @@
+/* nexus-warm.css — den varma formen som CSS-variabler. Samma värden som nexusTheme.warm.ts. */
+@import url('https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --w-walnut-950: #140d09; --w-walnut-900: #1a120d; --w-walnut-800: #231811; --w-walnut-700: #2e2016; --w-walnut-600: #3a281c; --w-walnut-500: #5a3e2a;
+  --w-brass: #d7a24c; --w-brass-light: #f0cd82; --w-gold: #e8b93a; --w-gold-hover: #f0c955; --w-gold-pressed: #d4a52c;
+  --w-candle: #ffd58f; --w-ember: #c2553a;
+  --w-paper: #f5ead5; --w-paper-shade: #e9d9bc; --w-newsprint: #f1e6d0;
+  --w-cream: #f4e6cc; --w-cream-muted: #e7d6b8; --w-cream-soft: #cdb898;
+  --w-ink: #2a1c13; --w-ink-soft: #6b5443; --w-ink-label: #9a6a2a;
+
+  --w-panel: linear-gradient(180deg, #2e2016 0%, #231811 100%);
+  --w-panel-border: 1px solid rgba(215,162,76,.38);
+  --w-hud: rgba(44,30,21,.94); --w-hud-border: 1px solid rgba(215,162,76,.45);
+  --w-wash: rgba(245,234,213,.08); --w-wash-strong: rgba(245,234,213,.14);
+  --w-divider: 1px solid rgba(215,162,76,.25);
+
+  --w-font-heading: "Young Serif", Georgia, serif;
+  --w-font-body: "Figtree", system-ui, sans-serif;
+
+  --w-fs-kicker: max(12px, 1.7vh); --w-fs-small: max(12px, 1.8vh); --w-fs-body: max(14px, 2.1vh); --w-fs-body-lg: max(16px, 2.4vh);
+  --w-fs-button: max(15px, 2.2vh); --w-fs-title: max(24px, 3.6vh); --w-fs-question: max(21px, 3.1vh); --w-fs-display: max(36px, 5.6vh); --w-fs-clock: max(36px, 5.4vh);
+
+  --w-radius-panel: 22px; --w-radius-card: 14px; --w-radius-button: 16px; --w-radius-pill: 999px;
+  --w-shadow-panel: 0 30px 80px rgba(0,0,0,.55); --w-shadow-hud: 0 10px 30px rgba(0,0,0,.4); --w-shadow-answer: 0 4px 14px rgba(0,0,0,.25);
+  --w-glow-current: 0 0 0 4px rgba(255,213,143,.22), 0 0 18px rgba(255,190,90,.7); --w-glow-cleared: 0 0 12px rgba(232,185,58,.6);
+  --w-icon-on-wood: invert(92%) sepia(14%) saturate(380%) hue-rotate(340deg);
+}
+:focus-visible { outline: 2px solid var(--w-brass-light); outline-offset: 2px; }
+::selection { background: rgba(232,185,58,.35); }
