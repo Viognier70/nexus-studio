@@ -303,7 +303,8 @@ describe('ORDER 270 — harnessen svarar på händelserna', () => {
     const { PLAYERS } = await import('../../strategic/testHarness/randomness');
     const { weakMorning } = await import('../../strategic/testHarness/scenarios');
     const { ECONOMY } = await import('../balance');
-    const seeds = process.env.WRITE_REPORTS === '1' ? Array.from({ length: 20 }, (_, i) => i + 1) : [1, 2, 3];
+    // WEEK_SEEDS väljer antalet frön i rapporten (Vision Owner 2026-09-29: minst 20).
+    const seeds = process.env.WRITE_REPORTS === '1' ? Array.from({ length: Number(process.env.WEEK_SEEDS ?? 20) }, (_, i) => i + 1) : [1, 2, 3];
     const rows: { seed: number; player: string; resultSek: number; revenueSek: number; resultShare: number; incidentsWithCash: number; incidentCashShare: number }[] = [];
     for (const seed of seeds) {
       for (const player of ['rimlig', 'svag'] as const) {

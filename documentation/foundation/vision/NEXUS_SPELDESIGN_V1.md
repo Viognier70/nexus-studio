@@ -118,6 +118,8 @@ G kan aldrig bli högre än 90. Veckogolvet är G procent av klassens normala ve
 - Lönerna visas som en veckorad i avräkningen, även om de dras varje servicedag.
 - Hyran kalibreras så att den rimliga spelaren går plus med ungefär 5–10 % av veckointäkten, och den svaga spelaren nedgraderas inom två till tre veckor. Slumpmålet mäts om.
 
+*Beslut 2026-09-29 (Vision Owner, efter rapporterna om felen och kvällens resultat):* hyran ändras inte nu. Den rimliga spelaren mäts med fler frön, minst 20, och mätningen rapporteras innan hyran rörs.
+
 ### Lånet
 
 Bankmötet ger ett startlån som täcker lokal och inventarier för klassen. Lånet amorteras lika under säsongens åtta veckor, med fem procents ränta. Bankens besked formuleras som en diagnos i ord, aldrig som siffror: vad spelaren visat att hon kan och vad som saknas för nästa klass.
@@ -214,6 +216,7 @@ Morgonens satsningar påverkar de tre kapitalen: ekonomiskt, socialt och ekologi
 - Måltidens hus är oförändrat. Paviljongerna övar och prövar var sin kunskapsform. Provfrågorna har 30 sekunder.
 - I servicen är varje händelse en raket med tre frågor i samma sammanhang: **Episteme** (vad, 15 sekunder), **Techne** (hur, 20 sekunder) och **Phronesis** (när och varför, 30 sekunder). Man når nästa steg bara genom att klara det förra.
   *Beslut 2026-09-29 (Vision Owner, tredje provspelet):* raketens tid blir 20 sekunder i varje steg. Det ersätter tiderna per steg.
+  *Beslut 2026-09-29 (Vision Owner, efter rapporterna om felen och kvällens resultat):* stegtiderna blir episteme 20 sekunder, techne 20 sekunder och phronesis 30 sekunder. Omdömet ska ha mest tid. Det ersätter 20 sekunder i varje steg och byggs i nästa order.
 - Fel svar på ett steg ger stegets konsekvens, och personalen tar över resten med sämre utfall. Hela raketen klarad ger bästa utfall. Konsekvensen syns direkt i rummet och på mätarna.
 - Medaljer i den paviljong som hör till stegets axel ger mer tid på just det steget. Episteme hör till Måltidsbiblioteket, Techne till Metodköket eller Stensöta efter händelsens ämne, och Phronesis till Kalastorget.
 - 2–4 raketer per kväll, fler fredag och lördag. Rummet fortsätter medan nedräkningen går.
@@ -332,6 +335,8 @@ Spelaren får öppna med för lite råvaror. Före öppning visas en prognos i o
 - Gäster med socialt kapital drar fler gäster om de behandlas väl.
 - En miljardär i guld promenerar i byn, väljer ibland en krog och bjuder hela salen.
 
+*Beslut 2026-09-29 (Vision Owner, efter rapporterna om felen och kvällens resultat):* miljardären kommer i enkel form redan med gästtyperna: en gästtyp som syns i tidningen och ibland väljer en krog. Promenaden i byn kommer med byn uppifrån.
+
 ### Stjärnorna
 
 *Beslut 2026-09-29 (Vision Owner, tredje provspelet):* krogen kan få stjärnor för en jämn och hög nivå, och kan förlora dem. En stjärna öppnar exklusiva råvaror, egna priser och gäster som kommer med bil utifrån.
@@ -350,6 +355,8 @@ Kvällsberättelsen börjar med det som gick bra, och först därefter det som g
 
 *Beslut 2026-09-29 (Vision Owner, tredje provspelet):* efter kvällen visas tydligt vad spelaren vann och förlorade: pengar, krediter, rykte, kunskap, erfarenhet, och social, ekonomisk och ekologisk hållbarhet.
 - Svinnet ska kunna användas nästa dag, med frågor om hur råvarorna tas tillvara.
+
+*Beslut 2026-09-29 (Vision Owner, efter rapporterna om felen och kvällens resultat):* de tre hållbarheterna visas som nivåer 0–10 med förra kvällens nivå, enligt förslaget (`documentation/game-design/FORSLAG_HALLBARHETERNA_0_10.md`). Villkor: den ekonomiska marginalen räknar med morgonens inköp, det vill säga kassans förändring över dagen, inte kvällens avräkning. Byggs i nästa order.
 
 ## Professionell mognad och portfolio
 
