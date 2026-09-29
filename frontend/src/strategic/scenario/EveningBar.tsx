@@ -18,7 +18,7 @@
 // och det som gick fel med orsaken, och vägen till nästa morgon. Quizen
 // ("Kvällens tre frågor", Q1) byggs inte (ORDER 271).
 
-import { useState } from 'react';
+import { useRef } from 'react';
 import { WasteScreen } from './WasteScreen';
 import { ResultScreen } from './ResultScreen';
 import { strings } from '../../content/strings';
@@ -97,8 +97,7 @@ function Grid({ grid, lessonIndex }: { grid: GridRow[]; lessonIndex: number | nu
   );
 }
 
-function LessonScreen({ sim, lesson, onStory }: { sim: SimulationState; lesson: LessonItem[]; onStory: () => void }) {
-  const dispatch = useSimDispatch();
+function LessonScreen({ sim, lesson, onStory, onEnd }: { sim: SimulationState; lesson: LessonItem[]; onStory: () => void; onEnd: () => void }) {
   const l = strings.rocket.lesson;
   const s = strings.service.incident;
   const weekday = strings.calendar.weekdays[calendarFor(sim.day.dayNumber).weekday];
@@ -162,7 +161,7 @@ function LessonScreen({ sim, lesson, onStory }: { sim: SimulationState; lesson: 
             type="button"
             className="nx-btn nx-btn-quiet"
             data-testid="end-evening"
-            onClick={() => dispatch({ type: 'END_EVENING' })}
+            onClick={onEnd}
           >
             <span aria-hidden style={{ marginRight: '0.4em' }}><BookIcon /></span>
             {pavilion ? l.practice(pavilion) : strings.lesson.nextMorning}
@@ -176,8 +175,7 @@ function LessonScreen({ sim, lesson, onStory }: { sim: SimulationState; lesson: 
   );
 }
 
-function StoryScreen({ sim, onBack }: { sim: SimulationState; onBack: (() => void) | null }) {
-  const dispatch = useSimDispatch();
+function StoryScreen({ sim, onBack, onEnd }: { sim: SimulationState; onBack: (() => void) | null; onEnd: () => void }) {
   const k = strings.rocket.story;
   const cal = calendarFor(sim.day.dayNumber);
   const cls = sim.economy.businessClass;
@@ -236,7 +234,7 @@ function StoryScreen({ sim, onBack }: { sim: SimulationState; onBack: (() => voi
             <button type="button" className="nx-btn nx-btn-quiet" data-testid="back-to-lesson" onClick={onBack}>{k.back}</button>
           ) : <span />}
           <div>
-            <NxButton testId="end-evening" onClick={() => dispatch({ type: 'END_EVENING' })} autoFocus>
+            <NxButton testId="end-evening" onClick={onEnd} autoFocus>
               {strings.lesson.nextMorning}
             </NxButton>
           </div>
@@ -246,33 +244,43 @@ function StoryScreen({ sim, onBack }: { sim: SimulationState; onBack: (() => voi
   );
 }
 
+// ORDER 289 — en skärm tar inte emot klick de första stunderna efter att den
+// visats. Knapparna vidare ligger på samma plats på kvällens skärmar, och ett
+// dubbelklick eller ett klick som landar när skärmen byts hoppade över nästa
+// skärm (provspel av 285: kvällens resultat syntes aldrig).
+const ARRIVAL_GUARD_MS = 700;
+
+function useArrivalGuard(key: string): (fn: () => void) => () => void {
+  const arrived = useRef(0);
+  const last = useRef<string | null>(null);
+  if (last.current !== key) { last.current = key; arrived.current = performance.now(); }
+  return (fn) => () => { if (performance.now() - arrived.current >= ARRIVAL_GUARD_MS) fn(); };
+}
+
 export function EveningBar() {
   const sim = useSimState();
-  const [stage, setStage] = useState<{ day: number; screen: 'waste' | 'result' | 'lesson' | 'story' }>({ day: -1, screen: 'lesson' });
-  if (sim.day.period !== 'evening') return null;
+  const dispatch = useSimDispatch();
   const lesson = sim.incidents?.lesson ?? null;
   // ORDER 280 — sopbilen först (Designs S1), när kvällen gav ett svinn.
   const hasWaste = !!sim.lastWaste && sim.lastWaste.dayNumber === sim.day.dayNumber && !!sim.lastWaste.fractions;
   // ORDER 285 — kvällens resultat (R1) efter sopbilen, före lärdomen.
-  const hasResult = !!sim.eveningAccount?.metrics;
+  // ORDER 289 — ordningen står i simuleringen (day.eveningStep) och går bara
+  // framåt; äldre sparfiler utan steget börjar som förut.
+  const step = sim.day.eveningStep ?? (hasWaste ? 'waste' : 'result');
+  const guard = useArrivalGuard(`${sim.day.dayNumber}:${step}`);
+  if (sim.day.period !== 'evening' || sim.day.eveningEndRequested) return null;
   const afterResult = lesson !== null ? 'lesson' : 'story';
-  const first = hasWaste ? 'waste' : hasResult ? 'result' : 'lesson';
-  const screen = stage.day === sim.day.dayNumber ? stage.screen : first;
-  if (screen === 'waste' && hasWaste) {
-    return <WasteScreen sim={sim} onContinue={() => setStage({ day: sim.day.dayNumber, screen: hasResult ? 'result' : afterResult })} />;
+  const go = (to: 'result' | 'lesson' | 'story') => dispatch({ type: 'EVENING_STEP', to });
+  const end = guard(() => dispatch({ type: 'END_EVENING' }));
+  if (step === 'waste' && hasWaste) {
+    return <WasteScreen sim={sim} onContinue={guard(() => go('result'))} />;
   }
-  if (screen === 'result' && hasResult) {
-    return <ResultScreen sim={sim} onContinue={() => setStage({ day: sim.day.dayNumber, screen: afterResult })} />;
+  if (step === 'waste' || step === 'result') {
+    return <ResultScreen sim={sim} onContinue={guard(() => go(afterResult))} />;
   }
   // En kväll utan raketer har ingen lärdom: bara berättelsen.
-  if (lesson === null || screen === 'story') {
-    return (
-      <StoryScreen
-        sim={sim}
-        onBack={lesson !== null ? () => setStage({ day: sim.day.dayNumber, screen: 'lesson' }) : null}
-      />
-    );
+  if (lesson === null || step === 'story') {
+    return <StoryScreen sim={sim} onBack={lesson !== null ? guard(() => go('lesson')) : null} onEnd={end} />;
   }
-  return <LessonScreen sim={sim} lesson={lesson} onStory={() => setStage({ day: sim.day.dayNumber, screen: 'story' })} />;
+  return <LessonScreen sim={sim} lesson={lesson} onStory={guard(() => go('story'))} onEnd={end} />;
 }
-

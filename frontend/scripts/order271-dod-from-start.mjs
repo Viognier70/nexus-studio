@@ -344,6 +344,9 @@ try {
           const opts = rocketMeta.get(bid).steps[st].options.filter((o) => !struck.includes(o.id));
           const pick = (want === 'best' ? opts.find((o) => o.quality === 'best') : opts.find((o) => o.quality === 'wrong')) ?? opts[0];
           await page.click(`[data-testid=incident-option-${pick.id}]`);
+          // ORDER 289 — Think so ska vara förvald i varje steg.
+          entry.defaults = entry.defaults ?? [];
+          entry.defaults.push(await page.getAttribute('[data-testid=back-level-1]', 'data-chosen').catch(() => null));
           const level = want === 'best' ? (st === 0 ? 2 : 1) : 1;
           const levelBtn = await page.$(`[data-testid=back-level-${level}][data-allowed=true]`);
           await page.click(levelBtn ? `[data-testid=back-level-${level}]` : '[data-testid=back-level-0]');
@@ -417,10 +420,11 @@ try {
     await page.click('[data-testid=result-continue]');
   }
   await page.waitForSelector('[data-testid=screen-L1]', { timeout: 30000 });
-  await delay(600); await shot('dod-40-L1-kvallens-lardom.png', 'L1 kvällens lärdom');
+  // ORDER 289 — varje skärm tar emot klick först efter 700 ms.
+  await delay(900); await shot('dod-40-L1-kvallens-lardom.png', 'L1 kvällens lärdom');
   await page.click('[data-testid=to-evening-story]');
   await page.waitForSelector('[data-testid=evening-story]', { timeout: 10000 });
-  await delay(400); await shot('dod-41-K1-kvallsberattelsen.png', 'K1 kvällsberättelsen');
+  await delay(900); await shot('dod-41-K1-kvallsberattelsen.png', 'K1 kvällsberättelsen');
   await page.click('[data-testid=end-evening]');
   await page.waitForSelector('[data-testid=day-action-bar]', { timeout: 120000 });
   step('tisdag morgon');
@@ -476,17 +480,25 @@ try {
       }
       await delay(500);
     }
-    for (let i = 0; i < 4 && !(await page.$('[data-testid=day-action-bar]')); i++) {
-      const waste = await page.$('[data-testid=waste-continue]');
-      if (waste) { await waste.click().catch(() => {}); await delay(500); }
-      const result = await page.$('[data-testid=result-continue]');
-      if (result) { await result.click().catch(() => {}); await delay(500); }
-      const story = await page.$('[data-testid=to-evening-story]');
-      if (story) { await story.click().catch(() => {}); await delay(500); }
-      const end = await page.$('[data-testid=end-evening]');
-      if (end) await end.click().catch(() => {});
-      await delay(1500);
+    // ORDER 289 — kvällens skärmar i tur och ordning, en i taget; varje kväll
+    // noteras vilka som visades, och R1 krävs (report.eveningSequences).
+    const seq = [];
+    for (let i = 0; i < 40 && !(await page.$('[data-testid=day-action-bar]')); i++) {
+      let screen = null;
+      // Sopbilen känns igen på sin knapp (morgonens schema har också testid screen-S1).
+      if (await page.$('[data-testid=waste-continue]')) screen = 'S1';
+      else for (const sc of ['R1', 'L1', 'K1']) if (await page.$(`[data-testid=screen-${sc}]`)) { screen = sc; break; }
+      if (screen && seq[seq.length - 1] !== screen) seq.push(screen);
+      await delay(900);
+      if (screen === 'S1') await page.click('[data-testid=waste-continue]').catch(() => {});
+      else if (screen === 'R1') await page.click('[data-testid=result-continue]').catch(() => {});
+      else if (screen === 'L1') await page.click('[data-testid=to-evening-story]').catch(() => {});
+      else if (screen === 'K1') await page.click('[data-testid=end-evening]').catch(() => {});
+      await delay(400);
     }
+    report.eveningSequences = report.eveningSequences ?? [];
+    report.eveningSequences.push(seq.join(' → '));
+    if (!seq.includes('R1')) throw new Error(`kvällens resultat visades inte: ${seq.join(' → ')}`);
     await page.waitForSelector('[data-testid=day-action-bar]', { timeout: 120000 });
   }
   for (let d = 0; d < 5; d++) { await playEvening(d === 4); step(`morgon ${d + 3}`); }

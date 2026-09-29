@@ -9,8 +9,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(20, 18, 15, 0.55);
-  backdrop-filter: blur(2px);
+  /* ORDER 289 — namnet frågas innan morgonen visas, inte ovanpå den
+     (provspel av 285): en egen skärm på mörkt trä. */
+  background: var(--w-walnut-950, #140d09);
   animation: business-name-fade-in 220ms ease-out;
 }
 
@@ -23,21 +24,22 @@
   max-width: 460px;
   width: 92%;
   padding: 28px 30px 22px;
-  background: #f5f0e0;
-  color: #2c241c;
-  border: 1px solid #a8926a;
-  border-radius: 6px;
+  background: var(--w-paper, #f5ead5);
+  color: var(--w-ink, #2a1c13);
+  border: 0;
+  border-radius: 22px;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
   display: flex;
   flex-direction: column;
   gap: 12px;
-  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family: var(--w-font-body, system-ui, sans-serif);
 }
 
 .business-name-card h2 {
   margin: 0;
-  font-size: 22px;
-  font-weight: 600;
+  font-family: var(--w-font-heading, Georgia, serif);
+  font-size: 26px;
+  font-weight: 400;
   letter-spacing: 0.01em;
 }
 

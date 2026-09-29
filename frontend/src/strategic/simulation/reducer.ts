@@ -248,7 +248,10 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       if (!isIncidentOpen(next)) return next;
       const draft: SimulationState = { ...next, guests: next.guests.map((g) => ({ ...g })) };
       if (!countDown(draft, action.dt)) return draft;
-      return applyCreditChange(draft, resolveIncident(draft, null));
+      // Provspel av 285: ett låst svar vars andra tidsgräns gått ut satsas
+      // som Guessing; annars är tiden ute som förut.
+      const locked = draft.incidents?.active?.backed ? draft.incidents.active.picked ?? null : null;
+      return applyCreditChange(draft, resolveIncident(draft, locked, 0));
     }
     case 'SEE_HOUSE_INTRO':
       return state.houseIntroSeen ? state : { ...state, houseIntroSeen: true };
@@ -280,6 +283,15 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       return answerSalvage(state, action.optionId);
     case 'CLOSE_SALVAGE':
       return closeSalvage(state);
+    case 'EVENING_STEP': {
+      // ORDER 289 — sopbilen → kvällens resultat → lärdomen ↔ berättelsen.
+      // Kvällens resultat kan inte hoppas över.
+      if (state.day.period !== 'evening') return state;
+      const from = state.day.eveningStep ?? 'result';
+      const allowed: Record<string, string[]> = { waste: ['result'], result: ['lesson', 'story'], lesson: ['story'], story: ['lesson'] };
+      if (!allowed[from]?.includes(action.to)) return state;
+      return { ...state, day: { ...state.day, eveningStep: action.to } };
+    }
     case 'SET_SPEED':
       return { ...state, speed: action.speed };
     case 'SET_POLICY':
@@ -1365,6 +1377,9 @@ function openService(
     // kvällsavräkningen kan visa dagens delta per axel. Deep-copy för
     // att undvika share med state.knowledgeCredits.
     knowledgeCreditsAtServiceStart: { ...state.knowledgeCredits },
+    // ORDER 289 — kvällens rad till rådet efter kvällen börjar om.
+    foodOutClock: null,
+    soldOutGuests: 0,
     // ORDER 234 — nollställ anchor-fråge-räknarna per service.
     // Räknarna är per-service (samma pattern som scenariosFired-
     // ThisService); frågelistan lever över hela dagen.
@@ -1723,6 +1738,9 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       const closingCredit = closeIncidents(next);
       // ORDER 280 — sopbilen kommer när servicen stänger (Designs S1).
       settleWaste(next);
+      // ORDER 289 — kvällens första skärm: sopbilen när den kom, annars
+      // kvällens resultat.
+      next.day = { ...next.day, eveningStep: next.lastWaste && next.lastWaste.dayNumber === next.day.dayNumber && next.lastWaste.fractions ? 'waste' : 'result' };
       if (next.eveningAccount?.metrics) {
         next.eveningAccount = {
           ...next.eveningAccount,

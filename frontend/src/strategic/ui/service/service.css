@@ -348,3 +348,12 @@
 .nx-lesson-paper { background: var(--w-paper); border-radius: var(--nx-radius); padding: calc(36 * var(--nx-u)) calc(40 * var(--nx-u)); box-shadow: var(--w-shadow-panel); transform: rotate(-0.6deg); align-self: start; }
 .nx-lesson-paper .nx-lesson-principle { border-left-color: var(--w-gold); }
 @media (prefers-reduced-motion: reduce) { .nx-lesson-paper { transform: none; } }
+
+/* ORDER 289 — på låga skärmar står säkerheten och Stå för svaret fast
+   längst ned i kortet, och R1:s knapp längst ned i fönstret. */
+.nx-back { position: sticky; bottom: 0; background: var(--w-walnut-800, #231811); padding-bottom: calc(12 * var(--nx-u)); z-index: 1; }
+@media (max-width: 900px) { .nx-result-foot { position: fixed; left: 16px; right: 16px; bottom: 12px; margin: 0; background: none; } .nx-result-grid { padding-bottom: 80px; } }
+
+/* ORDER 289 — på mycket låga skärmar (telefon på bredden) visar händelse-
+   panelen bara I kväll och Back your knowledge, så att knappen inte klipps. */
+@media (max-height: 520px) { .nx-feed-rows, .nx-feed-head { display: none; } }

@@ -1,0 +1,19 @@
+{
+  "build": "produktion (vite build + preview)",
+  "lang": "en",
+  "click": "double",
+  "evenings": [
+    {
+      "evening": 1,
+      "sequence": [
+        "R1",
+        "L1",
+        "S1"
+      ],
+      "r1VisibleMs": 1203
+    }
+  ],
+  "errors": [],
+  "ok": false,
+  "error": "page.dblclick: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=waste-continue]')\u001b[22m\n"
+}

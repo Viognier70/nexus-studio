@@ -795,6 +795,11 @@ export const BACK = {
   ] as readonly { win: number; loss: number }[],
   stepMultiplier: [1, 1.5, 2] as readonly number[],
   maxPerEvening: 3,
+  // Vision Owner 2026-09-29 (provspel av 285): "Think so" är förvald i varje
+  // steg, och efter att svaret är låst finns en andra tidsgräns; när den går
+  // ut satsas "Guessing" automatiskt.
+  defaultConfidence: 1 as Confidence,
+  lockSeconds: 10,
   // Resultatet syns i gränssnittet så här länge (ms).
   resultVisibleMs: 5000,
   // "Hur säker du var": Vet det räknas som för säkert under den här

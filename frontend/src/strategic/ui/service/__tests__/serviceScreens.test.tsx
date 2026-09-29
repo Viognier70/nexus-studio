@@ -108,7 +108,8 @@ describe('ORDER 271 — raketkortet (R1–R3)', () => {
     expect(byTestId(container, 'incident-step-techne')!.getAttribute('data-state')).toBe('ahead');
     expect(byTestId(container, 'incident-countdown')!.textContent).toBe(String(Math.ceil(s.incidents.active!.secondsLeft)));
     const { n, total } = rocketCounter(s);
-    expect(card.textContent).toContain(strings.rocket.card.rocketOf(String(n), String(total)));
+    // ORDER 289 — en raket ur kön är en följd och står utanför räkningen.
+    expect(card.textContent).toContain(s.incidents.active!.chained ? strings.rocket.card.followUp : strings.rocket.card.rocketOf(String(n), String(total)));
     fireEvent.keyDown(window, { key: '3' });
     const third = incidentById('vinbar', 'vb09-getosten')!.steps[0].options[2].id;
     expect(sim.dispatch).toHaveBeenCalledWith({ type: 'ANSWER_INCIDENT', optionId: third });
@@ -190,9 +191,27 @@ describe('ORDER 271 — kvällens lärdom (L1) och kvällsberättelsen (K1)', ()
     return { ...withLog, day: { ...withLog.day, period: 'evening' }, incidents: { ...withLog.incidents, lesson: lessonFor(withLog) } };
   }
 
+  // ORDER 289 — kvällens steg står i simuleringen, och en skärm tar inte emot
+  // klick de första 700 ms (tiden flyttas fram före klicken).
+  const later = () => { const t = performance.now() + 1000; vi.spyOn(performance, 'now').mockReturnValue(t); };
+
+  it('ORDER 289: kvällen börjar med kvällens resultat, som inte går att hoppa över', () => {
+    const s = evening();
+    sim.state = { ...s, day: { ...s.day, eveningStep: 'result' } };
+    const { container } = render(<EveningBar />);
+    expect(byTestId(container, 'screen-R1')).not.toBeNull();
+    // Ett klick direkt när skärmen visas (dubbelklick) räknas inte.
+    fireEvent.click(byTestId(container, 'result-continue')!);
+    expect(sim.dispatch).not.toHaveBeenCalledWith({ type: 'EVENING_STEP', to: 'lesson' });
+    later();
+    fireEvent.click(byTestId(container, 'result-continue')!);
+    expect(sim.dispatch).toHaveBeenCalledWith({ type: 'EVENING_STEP', to: 'lesson' });
+    vi.restoreAllMocks();
+  });
+
   it('L1: rutnätet, lärdomen ur det tidigaste fallet och vägen vidare utan fråga', () => {
     const s = evening();
-    sim.state = s;
+    sim.state = { ...s, day: { ...s.day, eveningStep: 'lesson' } };
     const { container } = render(<EveningBar />);
     expect(byTestId(container, 'screen-L1')).not.toBeNull();
     expect(byTestId(container, 'evening-bar')).not.toBeNull();
@@ -206,21 +225,24 @@ describe('ORDER 271 — kvällens lärdom (L1) och kvällsberättelsen (K1)', ()
     expect(byTestId(container, 'lesson-principle')!.textContent).toBe(item.betterExplanation);
     expect(byTestId(container, 'lesson-vb09-getosten')).not.toBeNull();
     expect(container.querySelectorAll('input, [role=radio]')).toHaveLength(0);
+    later();
     fireEvent.click(byTestId(container, 'end-evening')!);
     expect(sim.dispatch).toHaveBeenCalledWith({ type: 'END_EVENING' });
+    vi.restoreAllMocks();
   });
 
   it('K1: berättelsen, det som gick bra och fel, och nästa morgon', () => {
     const s = evening();
-    sim.state = { ...s, eveningAccount: { branch: 'calm' as never, paragraph: 'Kvällen i ord.', presentedAt: 0 } };
+    sim.state = { ...s, day: { ...s.day, eveningStep: 'story' }, eveningAccount: { branch: 'calm' as never, paragraph: 'Kvällen i ord.', presentedAt: 0 } };
     const { container } = render(<EveningBar />);
-    fireEvent.click(byTestId(container, 'to-evening-story')!);
     expect(byTestId(container, 'screen-K1')).not.toBeNull();
     expect(byTestId(container, 'evening-story')!.textContent).toBe('Kvällen i ord.');
     expect(byTestId(container, 'story-well')!.querySelectorAll('li')).toHaveLength(1);
     expect(byTestId(container, 'story-wrong')!.querySelectorAll('li')).toHaveLength(2);
+    later();
     fireEvent.click(byTestId(container, 'end-evening')!);
     expect(sim.dispatch).toHaveBeenCalledWith({ type: 'END_EVENING' });
+    vi.restoreAllMocks();
   });
 });
 

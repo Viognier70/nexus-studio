@@ -739,6 +739,11 @@ export interface DayState {
   pavilionVisitsToday?: PavilionKey[];
   // ORDER 264 — spelaren har valt att gå vidare till nästa morgon.
   eveningEndRequested?: boolean;
+  // ORDER 289 — kvällens skärm i tur och ordning: sopbilen, kvällens
+  // resultat, lärdomen, berättelsen. Sätts när servicen stänger; går bara
+  // framåt (EVENING_STEP), så att en omritning eller ett dubbelklick inte
+  // hoppar över kvällens resultat (provspel av 285).
+  eveningStep?: 'waste' | 'result' | 'lesson' | 'story' | null;
   // ORDER 265 — dagens ankomster, mot marknadens tak (dailyGuestCap).
   arrivalsToday?: number;
   // ORDER 266 — nöjda gäster totalt när servicen öppnade (kvällsberättelsen).
@@ -809,6 +814,10 @@ export interface DayState {
   // ORDER 285 — kassan vid dygnets gryning: kvällens resultat visar kassans
   // förändring, med morgonens inköp (som kvällsavräkningen räknar som tillgång).
   cashAtDayStart?: number | null;
+  // ORDER 289 — när köket tog slut på mat (klockslag) och hur många gäster
+  // som gick utan mat, till rådet efter kvällen.
+  foodOutClock?: string | null;
+  soldOutGuests?: number;
   // ORDER 234 — anchor-fråge-picker rate-limit-räknare.
   // `anchorQuestionsFiredThisService` reset:as vid OPEN_SERVICE (samma
   // sitrs som `scenariosFiredThisService`); räknar bara anchor-frågor,
@@ -1338,6 +1347,9 @@ export interface SimulationState {
   incidents: import('../sim/incidents').IncidentsState;
   serviceEvents: import('../sim/serviceEvents').ServiceEventsState;
   examSlotsUsed: number;
+  // ORDER 289 — prov som spelaren har påbörjat (bankens replik vid första
+  // mötet väljs efter det, provspel av 285).
+  examsTaken?: number;
   // ORDER 109 — M7b bankmötet. Sätts av REQUEST_BANK_LOAN via
   // `resolveBankMeeting`. Persistar tills mötet hålls igen (repeat-
   // dispatch skriver över). Null tills spelaren gått in i mötet.
@@ -1440,6 +1452,9 @@ export interface SimulationState {
     advice?: { dishId: string; fewer: number; savesSek: number } | null;
     // ORDER 285 — portionerna som lagts undan till morgonens fråga.
     aside?: { dishId: string; portions: number } | null;
+    // ORDER 289 — maten tog slut före stängning: när, hur många blev utan, och
+    // hur många portioner mer rådet föreslår.
+    shortage?: { clock: string | null; guests: number; more: number } | null;
   } | null;
   // ORDER 043 outcome layer — non-economic capitals the scenarios
   // move (§3.1). Economic moved to `state.cash`. Separate from `eco`
@@ -1690,6 +1705,8 @@ export type SimAction =
   // ORDER 285 — gårdagens rester: svaret på frågan, och kortet stängt.
   | { type: 'ANSWER_SALVAGE'; optionId: string }
   | { type: 'CLOSE_SALVAGE' }
+  // ORDER 289 — nästa skärm i kvällens flöde.
+  | { type: 'EVENING_STEP'; to: 'result' | 'lesson' | 'story' }
   // ORDER 283 — spelaren har läst introduktionen i Måltidens hus.
   | { type: 'SEE_HOUSE_INTRO' }
   // ORDER 077 §4 (M4) — morning menu composition. Freezes today's
