@@ -353,7 +353,7 @@ export function IncidentCard() {
           />
         </div>
       )}
-      <ol hidden className="nx-rocket-steps" data-testid="incident-steps" aria-label={s.stepOf(String(view.shown + 1), String(incident.steps.length))}>
+      <ol hidden style={{ display: 'none' }} className="nx-rocket-steps" data-testid="incident-steps" aria-label={s.stepOf(String(view.shown + 1), String(incident.steps.length))}>
         {incident.steps.map((st, i) => {
           const state = boxFor(i);
           return (

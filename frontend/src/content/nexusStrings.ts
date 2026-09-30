@@ -1440,7 +1440,9 @@ export const TABLE = {
       en: (w: number) => `With this concept you last ${w} ${pl(w, 'week', 'weeks')}.`
     },
     forecastSeason: { sv: 'Med det här konceptet klarar du dig resten av säsongen.', en: 'With this concept you last the rest of the season.' },
-    continue: { sv: 'Till kvällens resultat', en: "To tonight's result" }
+    continue: { sv: 'Till kvällens resultat', en: "To tonight's result" },
+    // Raketernas kassa i kväll (negativt belopp = en intäkt).
+    incidents: { sv: 'Kvällens händelser', en: "Tonight's events" }
   },
   // DJ som satsning (activities.ts book-dj).
   activityText: {

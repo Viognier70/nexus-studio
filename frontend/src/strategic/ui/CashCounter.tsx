@@ -14,7 +14,7 @@ import { strings } from '../../content/strings';
 import { useSimState } from '../simulation/SimulationProvider';
 import { isStrandedWithoutBusiness } from '../../sim/economy';
 import type { SimulationState } from '../types';
-import { accountAfterEvening, tillSek } from '../simulation/eveningEconomy';
+import { tillSek } from '../simulation/eveningEconomy';
 import { totalCredits } from '../../sim/incidents';
 import { countTo, type Counter } from './juice/juice';
 import { isReleased, pendingFor, registerTarget, subscribeFx, type FxTarget } from './juice/fx';
@@ -81,7 +81,8 @@ export function moneyMode(sim: SimulationState): MoneyMode {
 }
 
 export function accountShown(sim: SimulationState): number {
-  return sim.day.period === 'evening' && sim.day.transfer && sim.day.transfer.dayNumber === sim.day.dayNumber ? accountAfterEvening(sim) : sim.cash;
+  // Efter överföringen: kontot som skärmen efter servicen visade.
+  return sim.day.period === 'evening' && sim.day.transfer && sim.day.transfer.dayNumber === sim.day.dayNumber ? sim.day.transfer.accountAfterSek : sim.cash;
 }
 
 export function CashCounter() {

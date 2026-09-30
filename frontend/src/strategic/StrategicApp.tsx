@@ -1,4 +1,5 @@
 import { useBusiness } from './business/BusinessContext';
+import { ServiceCamera } from './camera/ServiceCamera';
 import { SoundDirector } from './ui/sound/SoundDirector';
 import { VillageButton } from './ui/VillageButton';
 import { ServiceTabs } from './ui/service/ServiceTabs';
@@ -338,6 +339,8 @@ function StrategicShell() {
       <EveningBar />
       {/* ORDER 290 — ljudet (Web Audio), efter vad som händer i simuleringen. */}
       <SoundDirector />
+      {/* ORDER 290 — kameran till krogen när servicen och raketen börjar. */}
+      <ServiceCamera />
       <IncidentCard />
       <MaltidensHusDialog open={houseOpen} onClose={() => setHouseOpen(false)} />
       {/* ORDER 271 — mentorn (M1/M2) inne i .gb-root, så att banken, huset och tidningen ligger över den. */}

@@ -966,7 +966,7 @@ export interface EveningTransfer {
   // Resten av insatsen: personal (med köksdriften och räntan), DJ, kompetens
   // och satsningar; och hur många som var i tjänst.
   fixedSek: number;
-  rest: { staff: number; dj: number; competence: number; investments: number };
+  rest: { staff: number; dj: number; competence: number; investments: number; incidents: number };
   staffOnShift: number;
   resultSek: number;
   wasteFeeSek: number;

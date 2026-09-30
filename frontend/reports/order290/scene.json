@@ -6,31 +6,31 @@
   "steps": [
     {
       "name": "morgonen",
-      "atSeconds": 21
+      "atSeconds": 17
     },
     {
       "name": "insatsen",
-      "atSeconds": 95
+      "atSeconds": 87
     },
     {
       "name": "serviceläget",
-      "atSeconds": 110
+      "atSeconds": 102
     },
     {
       "name": "byn",
-      "atSeconds": 127
+      "atSeconds": 117
     },
     {
       "name": "24 m",
-      "atSeconds": 143
+      "atSeconds": 129
     },
     {
       "name": "raketerna",
-      "atSeconds": 165
+      "atSeconds": 315
     },
     {
       "name": "överföringen",
-      "atSeconds": 341
+      "atSeconds": 336
     }
   ],
   "shots": [
@@ -44,11 +44,15 @@
     },
     {
       "file": "scene-20-servicelaget.png",
-      "what": "servicen med panelerna ihopfällda: klockan och kvällskassan mot break-even"
+      "what": "serviceläget: klockan och kvällskassan mot insatsen, flikarna nere till vänster"
     },
     {
-      "file": "scene-21-panelerna.png",
-      "what": "panelerna öppnade med knappen, händelselistan utan belopp"
+      "file": "scene-21-lagret.png",
+      "what": "fliken Lagret öppnad"
+    },
+    {
+      "file": "scene-22-kvallen.png",
+      "what": "fliken Kvällen med tangenten 2, strömmen utan belopp"
     },
     {
       "file": "scene-30-byn.png",
@@ -71,11 +75,15 @@
       "what": "fel svar: röd markering, skakning, våningen spricker"
     },
     {
-      "file": "scene-60-overforingen.png",
-      "what": "överföringen: täckningsbidrag, täckningsgrad, resultat och prognos"
+      "file": "scene-60-efter-servicen.png",
+      "what": "efter servicen: pappret och överföringen före knappen"
     },
     {
-      "file": "scene-61-R1-pyramiderna.png",
+      "file": "scene-61-overfort.png",
+      "what": "överfört: kontot efter, mot i morse, prognosen"
+    },
+    {
+      "file": "scene-62-R1-pyramiderna.png",
       "what": "kvällens resultat med kvällens pyramider"
     }
   ],
@@ -85,27 +93,22 @@
     {
       "id": "stake-card",
       "value": null,
-      "text": "Tonight's stakeIngredientsSEK 1,790StaffSEK 3,812DJSEK 1,500InterestSEK 75Break-evenSEK 7,177The till has to reach the line before the evening makes money."
+      "text": "Tonight's outlayProduceThis morning's orderSEK 1,790Staff3 on shift tonightSEK 3,887DJWeekend eveningsSEK 1,500The lineSEK 7,177What tonight cost before the first guest arrived. Once the till passes the line, the evening is in profit."
     },
     {
       "id": "stake-ingredients",
       "value": "1790",
-      "text": "IngredientsSEK 1,790"
+      "text": "ProduceThis morning's orderSEK 1,790"
     },
     {
       "id": "stake-staff",
-      "value": "3812",
-      "text": "StaffSEK 3,812"
+      "value": "3887",
+      "text": "Staff3 on shift tonightSEK 3,887"
     },
     {
       "id": "stake-dj",
       "value": "1500",
-      "text": "DJSEK 1,500"
-    },
-    {
-      "id": "stake-interest",
-      "value": "75",
-      "text": "InterestSEK 75"
+      "text": "DJWeekend eveningsSEK 1,500"
     },
     {
       "id": "stake-total",
@@ -113,89 +116,117 @@
       "text": "SEK 7,177"
     }
   ],
-  "drawerClosed": {
+  "serviceMode": {
+    "tabs": [
+      "service-tab-stock",
+      "service-tab-dot-stock",
+      "service-tab-stream",
+      "service-tab-dot-stream",
+      "service-tab-room"
+    ],
+    "panelsOpen": 0,
     "stock": false,
-    "prep": false,
     "meters": false,
-    "feedRows": 0,
-    "till": "till",
-    "tillValue": "0",
-    "breakEven": "7177",
+    "till": "0",
+    "stake": "7177",
+    "over": "false",
+    "cashBox": false,
+    "dayBadge": "none",
     "villageText": "none"
   },
-  "drawerOpen": {
-    "stock": true,
-    "prep": true,
-    "meters": true,
+  "tabStock": {
+    "panel": true,
+    "stock": true
+  },
+  "tabStream": {
+    "panel": true,
     "amounts": 0
   },
-  "village": {
-    "before": 900,
-    "out": 900,
-    "back": 900
+  "tabRoom": {
+    "panel": true,
+    "meters": [
+      "meter-satisfaction",
+      "meter-stamina"
+    ]
   },
-  "at24": 900,
+  "tabsClosed": 0,
+  "village": {
+    "before": 24,
+    "out": 551,
+    "back": 12
+  },
+  "cam24": {
+    "actual": 12,
+    "target": 12
+  },
+  "at24": 12,
   "rockets": [
     {
-      "id": "vb02-rosen",
-      "step": 1,
-      "camAtOpen": 900,
+      "id": "vb03-notallergi",
+      "step": 0,
+      "camAtOpen": 12,
       "cam": [
-        900,
-        900,
-        900,
-        900,
-        900,
-        900,
-        900,
-        900
+        12,
+        12,
+        12,
+        12,
+        12,
+        14,
+        18,
+        379
       ],
       "answer": "best",
-      "look": "chosen",
+      "look": "wrong",
       "pyramid": [
-        "empty",
-        "filled",
-        "filled"
+        "cracked",
+        "above",
+        "above"
       ]
     },
     {
-      "id": "vb02-rosen",
-      "step": 2,
-      "camAtOpen": 900,
+      "id": "vb23-sott",
+      "step": 0,
+      "camAtOpen": 29,
       "cam": [
-        900,
-        900,
-        900,
-        900,
-        900,
-        900,
-        900,
-        900
+        22,
+        18,
+        16,
+        14,
+        13,
+        13,
+        12,
+        12
       ],
       "answer": "wrong",
       "look": "wrong",
       "pyramid": [
         "cracked",
-        "filled",
-        "filled"
+        "above",
+        "above"
       ]
     }
   ],
   "transfer": {
-    "revenue": "8233",
-    "contribution": "5967",
-    "ratio": "0.724766184865784",
-    "result": "-3675",
-    "move": "3870",
-    "account": "120514",
-    "forecast": "With this concept you last 3 weeks."
+    "revenue": "5001",
+    "contribution": "3211",
+    "ratio": "0.6420715856828634",
+    "result": "-3197",
+    "move": "-1407",
+    "account": "116230",
+    "forecast": "With this concept you last 3 weeks.",
+    "after": {
+      "account": "SEK 116,230",
+      "till": "SEK 0",
+      "vsMorning": "−SEK 3,675 on this morning"
+    }
   },
   "r1Pyramids": [
     "false",
-    "true"
+    "false",
+    "false"
   ],
   "hudAfter": {
     "mode": "account",
-    "value": "120969"
+    "value": "116230"
   }
 }

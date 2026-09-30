@@ -60,15 +60,19 @@ export function eveningStake(state: SimulationState, overheadSek: number): Eveni
   return { lines, total: lines.reduce((a, l) => a + l.sek, 0) };
 }
 
-// Kvällskassan: intäkten sedan dörrarna öppnade och raketernas kassa. Efter
-// stängningen står kvällens kassa kvar (day.tillAtClose).
+// Kvällskassan: notorna sedan servicen öppnade (Designs serviceläget §2:
+// "fylls när en nota betalas"). Efter stängningen står kvällens kassa kvar
+// (day.tillAtClose).
 export function tillSek(state: SimulationState): number {
   const start = state.day.revenueAtServiceStart;
   if (start === null || start === undefined) return state.day.tillAtClose ?? 0;
-  const revenue = state.revenue - start;
+  return state.revenue - start;
+}
+
+// Raketernas kassa i kväll (kassabokens 'scenario'), som egen rad efter servicen.
+export function incidentCashToday(state: SimulationState): number {
   const day = state.day.dayNumber;
-  const incidents = state.ledger.filter((l) => l.day === day && l.category === 'scenario').reduce((a, l) => a + l.amount, 0);
-  return revenue + incidents;
+  return state.ledger.filter((l) => l.day === day && l.category === 'scenario').reduce((a, l) => a + l.amount, 0);
 }
 
 // Satsningarnas följd som dras eller läggs till vid dygnsskiftet.
@@ -103,6 +107,8 @@ export function eveningTransfer(state: SimulationState): EveningTransfer {
   const dj = byKey('dj');
   const competence = byKey('competence');
   const investments = byKey('investments');
+  // Raketernas kassa (positiv eller negativ) står som egen rad i resten.
+  const incidents = -Math.round(incidentCashToday(state));
   const before = after - revenueSek + fixedSek;
   return {
     dayNumber: d.dayNumber,
@@ -112,7 +118,7 @@ export function eveningTransfer(state: SimulationState): EveningTransfer {
     contributionSek,
     contributionRatio: revenueSek > 0 ? contributionSek / revenueSek : 0,
     fixedSek,
-    rest: { staff: fixedSek - dj - competence - investments, dj, competence, investments },
+    rest: { staff: fixedSek - dj - competence - investments - incidents, dj, competence, investments, incidents },
     staffOnShift: state.team.members.filter((m) => !m.isAgency).length,
     resultSek,
     wasteFeeSek,

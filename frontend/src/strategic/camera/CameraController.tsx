@@ -65,6 +65,12 @@ export function CameraController() {
       dt
     );
     apply(camera, actual);
+    // ORDER 290 — spelarens kamera i sidan (avstånd och mål), så att
+    // produktionsbygget kan mätas mot samma kamera som ritar bilden.
+    if (typeof document !== 'undefined') {
+      document.body.dataset.camDistance = String(Math.round(actual.distance));
+      document.body.dataset.camTarget = String(Math.round(target.distance));
+    }
   });
 
   return null;

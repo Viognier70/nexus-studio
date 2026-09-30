@@ -84,28 +84,35 @@ try {
   step('insatsen');
   await delay(9000);
 
-  // Serviceläget: panelerna ihopfällda.
-  report.drawerClosed = {
+  // Serviceläget (Designs §2–3): bara klockan och kvällskassan; panelerna
+  // som tre flikar nere till vänster.
+  report.serviceMode = {
+    tabs: await page.$$eval('[data-testid^=service-tab-]', (els) => els.map((e) => e.getAttribute('data-testid'))),
+    panelsOpen: (await page.$$('[data-testid^=service-panel-]')).length,
     stock: !!(await page.$('[data-testid=service-stock]')),
-    prep: !!(await page.$('[data-testid=prep-panel]')),
     meters: !!(await page.$('[data-testid=service-meters]')),
-    feedRows: (await page.$$('[data-testid=feed-row]')).length,
-    till: await attr('[data-testid=cash-counter]', 'data-mode'),
-    tillValue: await attr('[data-testid=cash-counter]', 'data-value'),
-    breakEven: await attr('[data-testid=cash-counter]', 'data-break-even'),
+    till: await attr('[data-testid=till]', 'data-value'),
+    stake: await attr('[data-testid=till]', 'data-stake'),
+    over: await attr('[data-testid=till]', 'data-over'),
+    cashBox: !!(await page.$('[data-testid=cash-counter]:visible')),
+    dayBadge: await page.$eval('[data-testid=day-badge]', (e) => getComputedStyle(e).display).catch(() => 'saknas'),
     villageText: await page.$eval('.gb-hint', (e) => getComputedStyle(e).display).catch(() => 'saknas')
   };
-  await shot('scene-20-servicelaget.png', 'servicen med panelerna ihopfällda: klockan och kvällskassan mot break-even');
-  await page.click('[data-testid=service-drawer]');
-  await delay(700);
-  report.drawerOpen = {
-    stock: !!(await page.$('[data-testid=service-stock]')),
-    prep: !!(await page.$('[data-testid=prep-panel]')),
-    meters: !!(await page.$('[data-testid=service-meters]')),
-    amounts: (await page.$$('.nx-feed-amount')).length
-  };
-  await shot('scene-21-panelerna.png', 'panelerna öppnade med knappen, händelselistan utan belopp');
-  await page.click('[data-testid=service-drawer]');
+  await shot('scene-20-servicelaget.png', 'serviceläget: klockan och kvällskassan mot insatsen, flikarna nere till vänster');
+  await page.click('[data-testid=service-tab-stock]');
+  await delay(600);
+  report.tabStock = { panel: !!(await page.$('[data-testid=service-panel-stock]')), stock: !!(await page.$('[data-testid=service-stock]')) };
+  await shot('scene-21-lagret.png', 'fliken Lagret öppnad');
+  await page.keyboard.press('2');
+  await delay(600);
+  report.tabStream = { panel: !!(await page.$('[data-testid=service-panel-stream]')), amounts: (await page.$$('.nx-feed-amount')).length };
+  await shot('scene-22-kvallen.png', 'fliken Kvällen med tangenten 2, strömmen utan belopp');
+  await page.keyboard.press('3');
+  await delay(600);
+  report.tabRoom = { panel: !!(await page.$('[data-testid=service-panel-room]')), meters: await page.$$eval('[data-testid^=meter-]', (els) => els.map((e) => e.getAttribute('data-testid'))) };
+  await page.keyboard.press('Escape');
+  await delay(400);
+  report.tabsClosed = (await page.$$('[data-testid^=service-panel-]')).length;
   step('serviceläget');
 
   // Byn och tillbaka.
@@ -120,9 +127,10 @@ try {
   step('byn');
 
   // Från 24 m (myBusiness): ringarna, linjerna och rekvisitan.
-  await page.mouse.click(960, 600);
-  await page.keyboard.press('4');
-  await delay(6000);
+  // Servicen öppnar med kameran vid krogen (ServiceCamera, myBusiness 24 m).
+  // Kamerans tangenter 1–4 gäller bara med #playtest=1 och används inte här.
+  await delay(3000);
+  report.cam24 = { actual: await cam(), target: await page.evaluate(() => Number(document.body.dataset.camTarget ?? NaN)) };
   report.at24 = await cam();
   await shot('scene-40-24m-1.png', 'från 24 m: personalen med ring och linje, rekvisitan på borden');
   await delay(8000);
@@ -135,7 +143,7 @@ try {
   let answeredRight = false;
   let answeredWrong = false;
   while (Date.now() < until && !(answeredRight && answeredWrong)) {
-    if (await page.$('[data-testid=screen-S1], [data-testid=screen-T2], [data-testid=screen-R1]')) break;
+    if (await page.$('[data-testid=waste-continue], [data-testid=screen-T2], [data-testid=screen-R1]')) break;
     const card = await page.$('[data-testid=incident-card][data-mode=ask]');
     if (!card || (await page.$('[data-testid=incident-band]'))) { await delay(400); continue; }
     const id = await card.getAttribute('data-incident-id');
@@ -173,6 +181,7 @@ try {
   }
   await page.waitForSelector('[data-testid=screen-T2]', { timeout: 30000 });
   await delay(2500);
+  await shot('scene-60-efter-servicen.png', 'efter servicen: pappret och överföringen före knappen');
   report.transfer = {
     revenue: await attr('[data-testid=transfer-revenue]', 'data-value'),
     contribution: await attr('[data-testid=transfer-contribution]', 'data-value'),
@@ -182,13 +191,16 @@ try {
     account: await attr('[data-testid=transfer-account]', 'data-value'),
     forecast: await page.textContent('[data-testid=transfer-forecast]').catch(() => null)
   };
-  await shot('scene-60-overforingen.png', 'överföringen: täckningsbidrag, täckningsgrad, resultat och prognos');
   await delay(900);
+  await page.click('[data-testid=transfer-do]');
+  await delay(2500);
+  report.transfer.after = { account: await page.textContent('[data-testid=transfer-account]'), till: await page.textContent('[data-testid=transfer-till]'), vsMorning: await page.textContent('[data-testid=transfer-vs-morning]').catch(() => null) };
+  await shot('scene-61-overfort.png', 'överfört: kontot efter, mot i morse, prognosen');
   await page.click('[data-testid=transfer-continue]');
   await page.waitForSelector('[data-testid=screen-R1]', { timeout: 10000 });
   await delay(2500);
   report.r1Pyramids = await page.$$eval('[data-testid^=result-pyramid-]', (els) => els.filter((e) => e.classList.contains('nx-pyramid')).map((e) => e.getAttribute('data-full')));
-  await shot('scene-61-R1-pyramiderna.png', 'kvällens resultat med kvällens pyramider');
+  await shot('scene-62-R1-pyramiderna.png', 'kvällens resultat med kvällens pyramider');
   report.hudAfter = { mode: await attr('[data-testid=cash-counter]', 'data-mode'), value: await attr('[data-testid=cash-counter]', 'data-value') };
   step('överföringen');
 } catch (e) {

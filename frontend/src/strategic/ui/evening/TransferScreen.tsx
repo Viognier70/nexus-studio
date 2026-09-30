@@ -65,7 +65,8 @@ export function TransferScreen({ sim, onContinue }: { sim: SimulationState; onCo
     { key: 'staff', label: tt(lang, 'cost.staff'), sub: tt(lang, 'cost.staff.sub', { n: tr.staffOnShift }), sek: tr.rest.staff },
     { key: 'dj', label: tt(lang, 'cost.dj'), sub: tt(lang, 'cost.dj.sub'), sek: tr.rest.dj },
     { key: 'competence', label: tt(lang, 'cost.skills'), sub: tt(lang, 'cost.skills.sub'), sek: tr.rest.competence },
-    { key: 'investments', label: strings.stake.lines.investments, sub: '', sek: tr.rest.investments }
+    { key: 'investments', label: strings.stake.lines.investments, sub: '', sek: tr.rest.investments },
+    { key: 'incidents', label: strings.transfer.incidents, sub: '', sek: tr.rest.incidents }
   ].filter((r) => r.key === 'staff' || r.sek !== 0);
   return (
     <NxScreen testId="screen-T2" label={tt(lang, 'settle.title')} className="nx-transfer-screen">

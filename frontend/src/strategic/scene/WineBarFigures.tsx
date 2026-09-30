@@ -401,20 +401,7 @@ export function WineBarFigures({ room, mood }: Props) {
       dist
     );
     cast.group.visible = visibility > 0.02;
-    // ORDER 290 — kamerans avstånd i sidan, så att produktionsbygget kan
-    // mätas (kameran glider in vid raketen).
-    if (typeof document !== 'undefined') document.body.dataset.camDistance = String(Math.round(actualRef.current.distance));
-    if (!cast.group.visible) {
-      // ORDER 290 — raketen glider in också när kameran står för långt bort
-      // för att rummet ska ritas (provspel: kameran gled aldrig in).
-      const rocket = s.incidents?.active ?? null;
-      const f = rocket && !rocket.backed ? rocket.context.figure ?? null : null;
-      let at: { x: number; y: number; z: number } | null = null;
-      if (f && f.kind === 'guest') { const g = cast.director.guestSamples.find((x) => x.guestId === f.guestId); if (g) at = { x: g.x, y: room.floorY, z: g.z }; }
-      if (f && f.kind === 'staff' && f.staffKey) { const i = STAFF_KEYS.indexOf(f.staffKey); const g = i >= 0 ? cast.director.staffSamples[i] : null; if (g) at = { x: g.x, y: room.floorY, z: g.z }; }
-      cast.stage.camera(targetRef, rocket, at, Math.min(delta, 0.1));
-      return;
-    }
+    if (!cast.group.visible) return;
 
     // Kvällsljuset: stämningen och servicen.
     const m = LIGHT_MOODS[moodRef.current];

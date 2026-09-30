@@ -83,7 +83,7 @@ describe('ORDER 290 — överföringen efter servicen', () => {
     // utan sopbilens avgift (den dras på sopbilens skärm, inte i insatsen).
     expect(tr.resultSek).toBe(tr.accountAfterSek - tr.accountMorningSek + tr.wasteFeeSek);
     expect(Math.abs(tr.accountAfterSek - dayEndCash(closed))).toBeLessThanOrEqual(1);
-    expect(tr.rest.staff + tr.rest.dj + tr.rest.competence + tr.rest.investments).toBe(tr.fixedSek);
+    expect(tr.rest.staff + tr.rest.dj + tr.rest.competence + tr.rest.investments + tr.rest.incidents).toBe(tr.fixedSek);
     expect(tr.accountBeforeSek).toBe(tr.accountMorningSek - tr.variableSek - tr.wasteFeeSek);
     // Kvällen börjar med sopbilen eller överföringen, och går sedan till resultatet.
     expect(['waste', 'transfer']).toContain(closed.day.eveningStep);

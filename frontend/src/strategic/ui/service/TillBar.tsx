@@ -94,8 +94,8 @@ export function TillBar() {
         <span className="nx-till-bar" data-testid="till-bar" data-over={over}>
           <span className="nx-till-fill" style={{ width: `${fill * 100}%` }} />
           {stake > 0 && <span className="nx-till-line" style={{ left: `${line * 100}%` }} />}
+          {stake > 0 && <span className="nx-till-caption" style={{ left: `${line * 100}%` }}>{tt(lang, 'serviceMode.stake', { n: formatSek(stake) })}</span>}
         </span>
-        {stake > 0 && <span className="nx-till-caption" style={{ left: `${line * 100}%` }}>{tt(lang, 'serviceMode.stake', { n: formatSek(stake) })}</span>}
       </button>
       {open && s && (
         <div className="nx-paper nx-stake-paper" data-testid="stake-card" role="status">

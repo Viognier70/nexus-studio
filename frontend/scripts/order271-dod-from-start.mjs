@@ -417,6 +417,22 @@ try {
     await shot('dod-42-S1-sopbilen.png', 'S1 sopbilen: fraktionerna, svinnet, miljöavgiften och rådet');
     await page.click('[data-testid=waste-continue]');
   }
+  // ORDER 290 — skärmen efter servicen (T2): överföringen till kontot.
+  if (await page.waitForSelector('[data-testid=screen-T2]', { timeout: 8000 }).then(() => true).catch(() => false)) {
+    await delay(2000);
+    await shot('dod-48-T2-efter-servicen.png', 'T2 efter servicen: täckningsbidrag, täckningsgrad och överföringen');
+    await delay(900);
+    await page.click('[data-testid=transfer-do]');
+    await delay(2200);
+    report.t2 = {
+      result: await page.getAttribute('[data-testid=transfer-result]', 'data-value'),
+      contribution: await page.getAttribute('[data-testid=transfer-contribution]', 'data-value'),
+      ratio: await page.getAttribute('[data-testid=transfer-ratio]', 'data-value'),
+      forecast: await page.textContent('[data-testid=transfer-forecast]').catch(() => null)
+    };
+    await shot('dod-49-T2-overfort.png', 'T2 överfört');
+    await page.click('[data-testid=transfer-continue]');
+  }
   // ORDER 285 — kvällens resultat (R1) efter sopbilen.
   if (await page.waitForSelector('[data-testid=screen-R1]', { timeout: 8000 }).then(() => true).catch(() => false)) {
     await delay(2500);
@@ -499,7 +515,7 @@ try {
     while (Date.now() < until) {
       // ORDER 287a — en kväll som faller ihop går direkt till R1 (ingen sopbil);
       // skriptet väntade förut bara på S1 och kvällen tog slut av sig själv.
-      if (await page.$('[data-testid=evening-bar], [data-testid=screen-S1], [data-testid=screen-R1], [data-testid=screen-L1]')) break;
+      if (await page.$('[data-testid=evening-bar], [data-testid=screen-S1], [data-testid=screen-T2], [data-testid=screen-R1], [data-testid=screen-L1]')) break;
       const card = await page.$('[data-testid=incident-card]');
       // Lördagen: figurerna vid två tidpunkter mitt i kvällen (130 och 142 s
       // efter öppning i 2×, när rummet har fyllts), utan kort.
@@ -524,10 +540,15 @@ try {
       let screen = null;
       // Sopbilen känns igen på sin knapp (morgonens schema har också testid screen-S1).
       if (await page.$('[data-testid=waste-continue]')) screen = 'S1';
-      else for (const sc of ['R1', 'L1', 'K1']) if (await page.$(`[data-testid=screen-${sc}]`)) { screen = sc; break; }
+      else for (const sc of ['T2', 'R1', 'L1', 'K1']) if (await page.$(`[data-testid=screen-${sc}]`)) { screen = sc; break; }
       if (screen && seq[seq.length - 1] !== screen) seq.push(screen);
       await delay(900);
       if (screen === 'S1') await page.click('[data-testid=waste-continue]').catch(() => {});
+      else if (screen === 'T2') {
+        // ORDER 290 — överföringen: knappen flyttar kvällskassan, sedan vidare.
+        if (await page.$('[data-testid=transfer-do]')) { await page.click('[data-testid=transfer-do]').catch(() => {}); await delay(1500); }
+        await page.click('[data-testid=transfer-continue]').catch(() => {});
+      }
       else if (screen === 'R1') {
         // ORDER 287a — kvällens gäster; en bild första gången miljardären eller
         // gästen med socialt kapital syns.
