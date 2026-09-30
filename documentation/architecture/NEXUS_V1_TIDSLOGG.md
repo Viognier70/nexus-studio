@@ -1,5 +1,20 @@
 # Nexus v1 — tidslogg
 
+## Överlämning (2026-09-30, stopp för provspel efter ORDER 290)
+
+**Var vi är.**
+- ORDER 287a (gästerna med kapital) och 290 (kvällens ekonomi och scenen, med Designs fyra leveranser 2026-09-30) är mergade till `main`. Vision Owner spelar.
+- Slumpmålet efter 290: `winShare` 0,736 (`frontend/reports/order290/randomness.json`, 1 000 veckor). Hela veckan från bussen gick i produktionsbygget (`frontend/reports/order290/dod.json`).
+
+**Väntar på Vision Owner.**
+1. Svaren på Designs frågor om början i Grythyttan (`documentation/leveranser/nexus-leverans-2026-09-30-borjan-i-grythyttan/LEVERANSNOT.md` §4) och listan över registreringens fält i dag. Manuset byggs i en egen order.
+2. Frågorna i Designs leverans ringen: ska ringen synas hela tiden, och hovmästarens färg.
+3. F57 (gästtypernas tal) och F58 (kvällens ekonomi och svarens följd).
+
+**Ordningen framåt:** 288a, 288b, 287b, 288c, 287c, och början i Grythyttan.
+
+---
+
 ## Överlämning (2026-09-30, efter ORDER 286a)
 
 **Var vi är.**
