@@ -1,6 +1,6 @@
 import { calendarFor } from '../../sim/calendar';
 import { bestAnswerFactor, drinkRevenueFactor, enablersWithCredits } from '../../sim/knowledgeInService';
-import { EVENING, EVENING_ECONOMY, SERVICE, type BusinessClassId } from '../../sim/balance';
+import { EVENING, EVENING_ECONOMY, GUEST_TYPES, SERVICE, type BusinessClassId } from '../../sim/balance';
 import { answerSalvage, closeSalvage, discardUnresolvedSalvage } from './salvage';
 import { clockMinutes, formatClock, canBack, canStartBack, pickBackAnswer, closeIncidents, countDown, isIncidentOpen, maybeOpenIncident, planIncidents, resolveIncident, startBack, tickOngoing, type CreditChange } from '../../sim/incidents';
 import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
@@ -161,7 +161,7 @@ import {
   postValueQuotaLine
 } from './cashReading';
 import { drawNextTheme } from './themeSelection';
-import { eveningStake, eveningTransfer, passedStake, tillSek } from './eveningEconomy';
+import { coursesSekToday, eveningStake, eveningTransfer, passedStake, tillSek } from './eveningEconomy';
 import { assignGuestTypes, billionaireTreat, maybeBillionaireArrives, bookingFor, recordTypeRevenue, settleSocialGuest, settleSocialGuestAtClose } from './guestTypes';
 import { sustainabilityLevelsFor } from '../../sim/sustainabilityLevels';
 import {
@@ -1633,7 +1633,9 @@ function payGuest(draft: SimulationState, guest: Guest, revenueMult: number, inL
       // + no-menu produce no revenue (and drawMenuDishForGuest
       // already fired the ambient line + rep hit).
       if (draw.kind === 'served' || draw.kind === 'substituted') {
-        rev = draw.price * revenueMult;
+        // ORDER 291 — plånboken ger olika notor även utan lagerpaket.
+        const wallet = guest.guestType ? GUEST_TYPES.wallet[guest.guestType] : 'normal';
+        rev = draw.price * revenueMult * GUEST_TYPES.legacyBillFactor[wallet];
         ingredientCostSek = draw.ingredientCostSek;
       } else {
         return;
@@ -2053,6 +2055,12 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           cashAtDayStart: state.cash
         }
       };
+      // ORDER 291 — kurserna (kompetens) är investeringar: summan för veckan
+      // står i veckoavräkningen, inte i kvällens resultat.
+      const coursesToday = coursesSekToday(state);
+      if (coursesToday > 0) {
+        nextForDay.economy = { ...nextForDay.economy, weekCoursesSek: (nextForDay.economy.weekCoursesSek ?? 0) + coursesToday };
+      }
       if (wageTotal > 0) {
         applyCashCost(nextForDay, wageTotal);
         // ORDER 280 — veckans löner, en rad i avräkningen och tidningen.

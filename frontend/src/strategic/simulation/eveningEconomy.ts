@@ -50,6 +50,11 @@ function activityKey(id: string): StakeKey {
   return EVENING_ECONOMY.competenceActivities.includes(id) ? 'competence' : 'investments';
 }
 
+// ORDER 291 — dagens kurser (kompetens), en investering.
+export function coursesSekToday(state: SimulationState): number {
+  return Math.round(state.day.pickedActivityIds.filter((id) => activityKey(id) === 'competence').reduce((a, id) => a + activityNetCost(id), 0));
+}
+
 // Kvällens insats. `overheadSek` är köksdriften under servicen, uppskattad
 // av reducern när dörrarna öppnar.
 export function eveningStake(state: SimulationState, overheadSek: number): EveningStake {

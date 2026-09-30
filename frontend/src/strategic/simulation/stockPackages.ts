@@ -17,7 +17,8 @@ import { findDish, findIngredient, minIngredientCost } from './m4Catalogue';
 import { ITEM_BATCH, MORNING_STAKE, WASTE } from '../../sim/balance';
 import { discardUnresolvedSalvage, pickSalvage } from './salvage';
 import { clockMinutes, formatClock } from '../../sim/incidents';
-import { findPackage, itemsCostSek, packageCostSek, packageDishIds, packageIngredients, packagesFor } from './packages';
+import { findPackage, itemsCostSek, packageCostSek, packageDishIds, packageIngredients, packagesFor, scaledBaseItems } from './packages';
+import { dailyGuestCap } from '../../sim/economy';
 import { numberLocale } from '../../content/language';
 
 type Menu = SimulationState['menu'];
@@ -83,8 +84,12 @@ function withMenuFromStock(state: SimulationState): SimulationState {
 // Köp ett paket på morgonen. Kassan sjunker direkt.
 export function buyPackage(state: SimulationState, packageId: string): SimulationState {
   if (state.day.period !== 'morning') return state;
-  const pkg = findPackage(state.economy.businessClass, packageId);
-  if (!pkg) return state;
+  const found = findPackage(state.economy.businessClass, packageId);
+  if (!found) return state;
+  // ORDER 291 — baspaketet följer kvällens bokning (morningBuy.ts baseItemsFor).
+  const pkg = found.id === packagesFor(state.economy.businessClass)?.base.id
+    ? { ...found, items: Object.entries(scaledBaseItems(found, dailyGuestCap(state))).map(([dishId, portions]) => ({ dishId, portions })) }
+    : found;
   const costSek = packageCostSek(pkg);
   const stock = { ...state.stock };
   for (const [id, units] of Object.entries(packageIngredients(pkg))) stock[id] = (stock[id] ?? 0) + units;

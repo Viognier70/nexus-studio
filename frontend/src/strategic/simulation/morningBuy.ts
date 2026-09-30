@@ -18,7 +18,7 @@ import { dailyGuestCap } from '../../sim/economy';
 import { stockForecast } from '../../sim/stockForecast';
 import type { SimulationState } from '../types';
 import { findDish, GLASSES_PER_BOTTLE, minIngredientCost } from './m4Catalogue';
-import { packageDishIds } from './packages';
+import { packageDishIds, scaledBaseItems, type StockPackage } from './packages';
 import { computePlatesRemaining, menuFromStock } from './stockPackages';
 
 export interface DishRow {
@@ -105,6 +105,11 @@ export function spentTodaySek(state: SimulationState): number {
   return Math.round(-state.ledger
     .filter((l) => l.day === state.day.dayNumber && l.category === 'stock')
     .reduce((a, l) => a + l.amount, 0));
+}
+
+// ORDER 291 — baspaketet efter kvällens bokning (packages.ts scaledBaseItems).
+export function baseItemsFor(state: SimulationState, pkg: StockPackage): Record<string, number> {
+  return scaledBaseItems(pkg, dailyGuestCap(state));
 }
 
 export function coverage(state: SimulationState) {

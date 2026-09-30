@@ -14,8 +14,8 @@ import { useRef, useState } from 'react';
 import { strings } from '../../content/strings';
 import { creditLineSek } from '../../sim/economy';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
-import { itemsCostSek, packageItems, packagesFor } from '../simulation/packages';
-import { coverage, morningRows, spentTodaySek, stockValueSek, type DishRow, type DrinkRow } from '../simulation/morningBuy';
+import { itemsCostSek, packagesFor } from '../simulation/packages';
+import { baseItemsFor, coverage, morningRows, spentTodaySek, stockValueSek, type DishRow, type DrinkRow } from '../simulation/morningBuy';
 import { stockReadiness } from '../simulation/stockPackages';
 import { NxButton, NxLabel, u } from '../ui/system/components';
 import { formatSek } from '../ui/CashCounter';
@@ -148,7 +148,7 @@ export function MorningBuyScreen({ open, onClose }: { open: boolean; onClose: ()
             {notice && <p className="nx-small nx-accent-text" style={{ fontWeight: 700 }} role="status" data-testid="buy-notice">{notice}</p>}
             {!readiness.ready && <p className="nx-small nx-accent-text" style={{ fontWeight: 700 }} data-testid="start-blocked-m1">{strings.stock.notReady(readiness.dishes, readiness.drinks)}</p>}
             <button type="button" className="nx-btn nx-btn-quiet" style={{ width: 'auto' }} data-testid="buy-base"
-              onClick={(e) => buy(packageItems(base), e.currentTarget)}>
+              onClick={(e) => buy(baseItemsFor(sim, base), e.currentTarget)}>
               <span>{T.base}</span>
             </button>
             <NxButton kind="secondary" testId="buy-back" onClick={onClose} arrow={false}>{T.back}</NxButton>

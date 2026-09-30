@@ -316,6 +316,7 @@ export function settlementInWords(sim: SimulationState): string[] {
   const sek = (v: number) => strings.service.meters.sek(Math.round(v).toLocaleString(numberLocale()));
   if ((s.rentSek ?? 0) > 0) lines.push(e.settlement.rent(sek(s.rentSek!)));
   if ((s.wagesSek ?? 0) > 0) lines.push(e.settlement.wages(sek(s.wagesSek!)));
+  if ((s.coursesSek ?? 0) > 0) lines.push(e.settlement.courses(sek(s.coursesSek!)));
   if (s.downgradedFrom) {
     lines.push(
       s.downgradedTo

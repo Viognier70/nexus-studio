@@ -120,6 +120,8 @@ export interface SettlementRecord {
   // här summerade för avräkningen och tidningen).
   rentSek?: number;
   wagesSek?: number;
+  // ORDER 291 — veckans kurser, redovisade som investering.
+  coursesSek?: number;
   downgradedFrom: BusinessClassId | null;
   downgradedTo: BusinessClassId | null;
 }
@@ -147,6 +149,7 @@ export interface EconomyState {
   weekScenarioCashSek?: number;
   // ORDER 280 — veckans löner sedan förra avräkningen.
   weekWagesSek?: number;
+  weekCoursesSek?: number;
 }
 
 export function classSpec(id: BusinessClassId): BusinessClassSpec {
@@ -549,12 +552,13 @@ export function settleWeek(state: SimulationState): SimulationState {
     postLedger(draft, { category: 'rent', amount: -rentSek, cause: strings.economy.ledger.rent });
   }
   const wagesSek = Math.round(e.weekWagesSek ?? 0);
+  const coursesSek = Math.round(e.weekCoursesSek ?? 0);
   const loan = e.loan
     ? { ...e.loan, principalSek: Math.max(0, e.loan.principalSek - amortisationSek), weeksLeft: Math.max(0, e.loan.weeksLeft - 1) }
     : null;
   let next: SimulationState = {
     ...draft,
-    economy: { ...e, loan, weekRevenueStartSek: state.revenue, weekEvenings: [], weekScenarioCashSek: 0, weekWagesSek: 0 }
+    economy: { ...e, loan, weekRevenueStartSek: state.revenue, weekEvenings: [], weekScenarioCashSek: 0, weekWagesSek: 0, weekCoursesSek: 0 }
   };
   let downgradedTo: BusinessClassId | null = null;
   const downgradedFrom = e.downgradePending ? e.businessClass : null;
@@ -566,7 +570,7 @@ export function settleWeek(state: SimulationState): SimulationState {
     ...next,
     economy: {
       ...next.economy,
-      lastSettlement: { week, evenings: e.weekEvenings ?? [], revenueSek, floorSek: floor, topUpSek, amortisationSek, rentSek, wagesSek, downgradedFrom, downgradedTo }
+      lastSettlement: { week, evenings: e.weekEvenings ?? [], revenueSek, floorSek: floor, topUpSek, amortisationSek, rentSek, wagesSek, coursesSek, downgradedFrom, downgradedTo }
     }
   };
 }

@@ -941,6 +941,11 @@ export const TABLE = {
         sv: (sek: string) => `Lönerna för veckan blev ${sek}.`,
         en: (sek: string) => `Wages for the week came to ${sek}.`
       },
+      // ORDER 291 — kurserna är investeringar, inte kvällens kostnad.
+      courses: {
+        sv: (sek: string) => `Kurserna för laget kostade ${sek}, en investering i vad laget kan.`,
+        en: (sek: string) => `Courses for the team cost ${sek}, an investment in what the team knows.`
+      },
       downgraded: {
         sv: (from: string, to: string) => `Banken tog ${from} och köpte inventarierna. Det blir din kassa när du fortsätter med ${to}.`,
         en: (from: string, to: string) => `The bank took ${from} and bought the fittings. That becomes your cash as you carry on with ${to}.`
