@@ -29,7 +29,7 @@ import {
   RENT
 } from './balance';
 import { calendarFor } from './calendar';
-import type { PavilionKey, SimulationState } from '../strategic/types';
+import type { GuestType, PavilionKey, SimulationState } from '../strategic/types';
 import { applyCashCost, applyCashDelta, postLedger } from '../strategic/simulation/cashReading';
 import { teamForClass } from '../strategic/simulation/team';
 import { strings } from '../content/strings';
@@ -70,6 +70,13 @@ export interface EveningRecord {
   guests: number;
   marketCap: number;
   gaveUp: number;
+  // ORDER 287a — gästerna och intäkten per typ, gästen med socialt kapital
+  // och miljardären (i byn, hos oss, och om han bjöd salen).
+  typeGuests?: Partial<Record<GuestType, number>>;
+  typeRevenue?: Partial<Record<GuestType, number>>;
+  social?: { nameIndex: number; outcome: 'good' | 'bad' | 'neutral' | null } | null;
+  // ours: han åt och betalade hos spelaren; came: han kom (och kan ha gått utan bord).
+  billionaire?: { inTown: boolean; ours: boolean; came?: boolean; treated: boolean; glasses: number; billSek: number };
 }
 
 // Kvällen till veckans lista när servicen stänger, både vid vanlig
@@ -84,7 +91,18 @@ export function recordEvening(before: SimulationState, after: SimulationState): 
     reputationDelta: after.reputation - (d.reputationAtServiceStart ?? before.reputation),
     guests: d.arrivalsToday ?? 0,
     marketCap: dailyGuestCap(before),
-    gaveUp: before.metrics.giveUpsThisService
+    gaveUp: before.metrics.giveUpsThisService,
+    typeGuests: { ...(d.guestTypeArrivals ?? {}) },
+    typeRevenue: { ...(d.guestTypeRevenue ?? {}) },
+    social: d.booking?.social ? { nameIndex: d.booking.social.nameIndex, outcome: (after.day.socialGuest ?? d.socialGuest)?.outcome ?? null } : null,
+    billionaire: {
+      inTown: d.booking?.billionaireInTown ?? false,
+      ours: (d.billionaireVisit?.billSek ?? 0) > 0,
+      came: !!d.billionaireVisit,
+      treated: d.billionaireVisit?.treated ?? false,
+      glasses: d.billionaireVisit?.glasses ?? 0,
+      billSek: Math.round(d.billionaireVisit?.billSek ?? 0)
+    }
   };
   return { ...after.economy, weekEvenings: [...(after.economy.weekEvenings ?? []), record] };
 }
@@ -190,7 +208,11 @@ export function marketShareCap(medals: SimulationState['medals']): number {
 export function dailyGuestCap(state: SimulationState): number {
   if (state.policies.marketCapEnabled === false) return Number.POSITIVE_INFINITY;
   const pool = MARKET.basePoolPerDay * calendarFor(state.day.dayNumber).guestFactor;
-  return Math.floor(pool * marketShareCap(state.medals));
+  // ORDER 287a — ryktet från gästen med socialt kapital de närmaste
+  // kvällarna (strategic/simulation/guestTypes.ts settleSocialGuest).
+  const d = state.day.dayNumber;
+  const buzz = (state.guestBuzz ?? []).reduce((f, b) => (b.fromDay <= d && d <= b.untilDay ? f + b.factor : f), 0);
+  return Math.floor(pool * marketShareCap(state.medals) * Math.max(0, 1 + buzz));
 }
 
 // Nedgraderingskedjan (speldesign > Nedgradering).

@@ -1,0 +1,3412 @@
+{
+  "definition": "Vecka 2, vinbaren, brons i Stensöta, Metodköket och Kalastorget, den rimliga spelaren (weekHarness playDay med {}). Per typ: gäster som kom (day.guestTypeArrivals) och intäkt när de betalade (day.guestTypeRevenue), ur kvällens post i veckan (economy.ts recordEvening). perGuestSek = intäkt / gäster.",
+  "weeks": 20,
+  "meanEveningRevenueSek": 7329,
+  "perType": {
+    "student": {
+      "guests": 918,
+      "revenueSek": 122486,
+      "perGuestSek": 133
+    },
+    "middle": {
+      "guests": 2375,
+      "revenueSek": 437744,
+      "perGuestSek": 184
+    },
+    "high": {
+      "guests": 1138,
+      "revenueSek": 243714,
+      "perGuestSek": 214
+    },
+    "social": {
+      "guests": 56,
+      "revenueSek": 13746,
+      "perGuestSek": 245
+    },
+    "billionaire": {
+      "guests": 4,
+      "revenueSek": 6228,
+      "perGuestSek": 1557
+    }
+  },
+  "social": {
+    "booked": 56,
+    "good": 49,
+    "bad": 0,
+    "neutral": 7
+  },
+  "billionaire": {
+    "eveningsHere": 4,
+    "treated": 2
+  },
+  "rows": [
+    {
+      "seed": 1,
+      "dayNumber": 8,
+      "weekday": "mon",
+      "revenueSek": 8459,
+      "guests": 27,
+      "typeGuests": {
+        "student": 9,
+        "middle": 19,
+        "high": 9
+      },
+      "typeRevenue": {
+        "middle": 4400,
+        "high": 2403.5,
+        "student": 1655.5
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 1,
+      "dayNumber": 9,
+      "weekday": "tue",
+      "revenueSek": 5432,
+      "guests": 20,
+      "typeGuests": {
+        "middle": 16,
+        "high": 8,
+        "student": 5,
+        "social": 1
+      },
+      "typeRevenue": {
+        "middle": 2405.7,
+        "high": 1405.8000000000002,
+        "student": 554.4000000000001,
+        "social": 202.95000000000002
+      },
+      "social": {
+        "nameIndex": 3,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 1,
+      "dayNumber": 10,
+      "weekday": "wed",
+      "revenueSek": 9114,
+      "guests": 33,
+      "typeGuests": {
+        "middle": 27,
+        "high": 14,
+        "student": 10
+      },
+      "typeRevenue": {
+        "middle": 5164.5,
+        "high": 2607,
+        "student": 1342.0000000000002
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 1,
+      "dayNumber": 11,
+      "weekday": "thu",
+      "revenueSek": 7064,
+      "guests": 34,
+      "typeGuests": {
+        "student": 7,
+        "high": 13,
+        "middle": 27,
+        "social": 1
+      },
+      "typeRevenue": {
+        "high": 1919.3212499999997,
+        "middle": 4182.254999999999,
+        "student": 716.6775,
+        "social": 245.43750000000003
+      },
+      "social": {
+        "nameIndex": 2,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 1,
+      "dayNumber": 12,
+      "weekday": "fri",
+      "revenueSek": 8333,
+      "guests": 33,
+      "typeGuests": {
+        "high": 13,
+        "middle": 28,
+        "social": 1,
+        "student": 11
+      },
+      "typeRevenue": {
+        "high": 2755.5,
+        "middle": 4449.5,
+        "social": 242.00000000000003,
+        "student": 885.5
+      },
+      "social": {
+        "nameIndex": 3,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 1,
+      "dayNumber": 13,
+      "weekday": "sat",
+      "revenueSek": 7671,
+      "guests": 28,
+      "typeGuests": {
+        "middle": 27,
+        "high": 10,
+        "student": 9
+      },
+      "typeRevenue": {
+        "middle": 4477,
+        "high": 1677.5,
+        "student": 1171.5
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 2,
+      "dayNumber": 8,
+      "weekday": "mon",
+      "revenueSek": 8790,
+      "guests": 27,
+      "typeGuests": {
+        "middle": 21,
+        "student": 11,
+        "high": 8,
+        "social": 1
+      },
+      "typeRevenue": {
+        "middle": 4697.55,
+        "high": 2301.75,
+        "student": 1237.5,
+        "social": 207.9
+      },
+      "social": {
+        "nameIndex": 5,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 2,
+      "dayNumber": 9,
+      "weekday": "tue",
+      "revenueSek": 5863,
+      "guests": 22,
+      "typeGuests": {
+        "high": 8,
+        "middle": 17,
+        "student": 7
+      },
+      "typeRevenue": {
+        "high": 2002.0000000000002,
+        "middle": 3173.5,
+        "student": 687.5000000000001
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 2,
+      "dayNumber": 10,
+      "weekday": "wed",
+      "revenueSek": 8204,
+      "guests": 21,
+      "typeGuests": {
+        "student": 7,
+        "middle": 17,
+        "high": 9
+      },
+      "typeRevenue": {
+        "middle": 3938,
+        "high": 2332,
+        "student": 1589.5
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 2,
+      "dayNumber": 11,
+      "weekday": "thu",
+      "revenueSek": 3953,
+      "guests": 13,
+      "typeGuests": {
+        "middle": 10,
+        "high": 5,
+        "student": 6
+      },
+      "typeRevenue": {
+        "middle": 1760,
+        "high": 731.5000000000001,
+        "student": 891
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 2,
+      "dayNumber": 12,
+      "weekday": "fri",
+      "revenueSek": 9861,
+      "guests": 28,
+      "typeGuests": {
+        "high": 11,
+        "student": 11,
+        "middle": 26
+      },
+      "typeRevenue": {
+        "high": 2293.5,
+        "middle": 6187.5,
+        "student": 1094.5
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 2,
+      "dayNumber": 13,
+      "weekday": "sat",
+      "revenueSek": 5891,
+      "guests": 13,
+      "typeGuests": {
+        "student": 6,
+        "high": 8,
+        "social": 1,
+        "middle": 16
+      },
+      "typeRevenue": {
+        "high": 1166,
+        "student": 1149.5,
+        "social": 346.5,
+        "middle": 3063.5
+      },
+      "social": {
+        "nameIndex": 0,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 3,
+      "dayNumber": 8,
+      "weekday": "mon",
+      "revenueSek": 9350,
+      "guests": 27,
+      "typeGuests": {
+        "middle": 19,
+        "high": 7,
+        "student": 12,
+        "social": 1
+      },
+      "typeRevenue": {
+        "middle": 4048,
+        "high": 2293.5,
+        "social": 220.00000000000003,
+        "student": 1985.5
+      },
+      "social": {
+        "nameIndex": 2,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 3,
+      "dayNumber": 9,
+      "weekday": "tue",
+      "revenueSek": 7793,
+      "guests": 24,
+      "typeGuests": {
+        "high": 10,
+        "middle": 16,
+        "student": 8
+      },
+      "typeRevenue": {
+        "high": 2854.5,
+        "middle": 3146,
+        "student": 929.5
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 3,
+      "dayNumber": 10,
+      "weekday": "wed",
+      "revenueSek": 9045,
+      "guests": 26,
+      "typeGuests": {
+        "high": 10,
+        "middle": 20,
+        "social": 1,
+        "student": 7
+      },
+      "typeRevenue": {
+        "high": 2750,
+        "middle": 3916,
+        "social": 319,
+        "student": 1204.5
+      },
+      "social": {
+        "nameIndex": 0,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 3,
+      "dayNumber": 11,
+      "weekday": "thu",
+      "revenueSek": 9010,
+      "guests": 37,
+      "typeGuests": {
+        "student": 10,
+        "middle": 26,
+        "high": 14,
+        "social": 1
+      },
+      "typeRevenue": {
+        "middle": 3682.8000000000006,
+        "high": 2658.150000000001,
+        "student": 1291.95,
+        "social": 341.55
+      },
+      "social": {
+        "nameIndex": 1,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 3,
+      "dayNumber": 12,
+      "weekday": "fri",
+      "revenueSek": 8470,
+      "guests": 25,
+      "typeGuests": {
+        "high": 13,
+        "student": 8,
+        "middle": 24
+      },
+      "typeRevenue": {
+        "high": 3542,
+        "student": 1617,
+        "middle": 3311
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 3,
+      "dayNumber": 13,
+      "weekday": "sat",
+      "revenueSek": 3114,
+      "guests": 31,
+      "typeGuests": {
+        "middle": 23,
+        "student": 7,
+        "high": 10,
+        "social": 1
+      },
+      "typeRevenue": {
+        "middle": 1512.5,
+        "high": 638,
+        "social": 242.00000000000003,
+        "student": 203.50000000000003
+      },
+      "social": {
+        "nameIndex": 4,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 4,
+      "dayNumber": 8,
+      "weekday": "mon",
+      "revenueSek": 7651,
+      "guests": 27,
+      "typeGuests": {
+        "student": 6,
+        "middle": 20,
+        "high": 11
+      },
+      "typeRevenue": {
+        "middle": 4399.175000000001,
+        "student": 663.85,
+        "high": 1725.0750000000003
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 4,
+      "dayNumber": 9,
+      "weekday": "tue",
+      "revenueSek": 9152,
+      "guests": 31,
+      "typeGuests": {
+        "high": 10,
+        "middle": 22,
+        "student": 6,
+        "social": 1
+      },
+      "typeRevenue": {
+        "high": 2271.5,
+        "middle": 4295.5,
+        "student": 1320,
+        "social": 401.50000000000006
+      },
+      "social": {
+        "nameIndex": 2,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 4,
+      "dayNumber": 10,
+      "weekday": "wed",
+      "revenueSek": 8844,
+      "guests": 27,
+      "typeGuests": {
+        "student": 7,
+        "middle": 21,
+        "high": 11
+      },
+      "typeRevenue": {
+        "student": 1391.5,
+        "middle": 5120.5,
+        "high": 2332
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 4,
+      "dayNumber": 11,
+      "weekday": "thu",
+      "revenueSek": 7393,
+      "guests": 20,
+      "typeGuests": {
+        "middle": 17,
+        "student": 7,
+        "high": 9,
+        "social": 1
+      },
+      "typeRevenue": {
+        "middle": 3316.5,
+        "high": 1831.5,
+        "student": 1193.5,
+        "social": 368.50000000000006
+      },
+      "social": {
+        "nameIndex": 5,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 4,
+      "dayNumber": 12,
+      "weekday": "fri",
+      "revenueSek": 0,
+      "guests": 2,
+      "typeGuests": {
+        "student": 1,
+        "middle": 1
+      },
+      "typeRevenue": {},
+      "social": null,
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 4,
+      "dayNumber": 13,
+      "weekday": "sat",
+      "revenueSek": 7395,
+      "guests": 27,
+      "typeGuests": {
+        "middle": 25,
+        "social": 1,
+        "student": 9,
+        "high": 10
+      },
+      "typeRevenue": {
+        "middle": 3758.7000000000007,
+        "social": 303.875,
+        "student": 1379.125,
+        "high": 1435.2250000000001
+      },
+      "social": {
+        "nameIndex": 4,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 5,
+      "dayNumber": 8,
+      "weekday": "mon",
+      "revenueSek": 7026,
+      "guests": 22,
+      "typeGuests": {
+        "middle": 15,
+        "student": 8,
+        "high": 7
+      },
+      "typeRevenue": {
+        "middle": 3751,
+        "high": 1892,
+        "student": 693.0000000000001
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 5,
+      "dayNumber": 9,
+      "weekday": "tue",
+      "revenueSek": 9986,
+      "guests": 31,
+      "typeGuests": {
+        "middle": 24,
+        "high": 9,
+        "student": 8
+      },
+      "typeRevenue": {
+        "middle": 5186.5,
+        "high": 2079,
+        "student": 1512.5
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 5,
+      "dayNumber": 10,
+      "weekday": "wed",
+      "revenueSek": 6389,
+      "guests": 19,
+      "typeGuests": {
+        "middle": 16,
+        "student": 7,
+        "high": 7,
+        "social": 1
+      },
+      "typeRevenue": {
+        "middle": 3509.55,
+        "student": 1019.7,
+        "high": 1267.2000000000003,
+        "social": 247.50000000000003
+      },
+      "social": {
+        "nameIndex": 3,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 5,
+      "dayNumber": 11,
+      "weekday": "thu",
+      "revenueSek": 9538,
+      "guests": 32,
+      "typeGuests": {
+        "middle": 27,
+        "high": 9,
+        "student": 10
+      },
+      "typeRevenue": {
+        "middle": 4906,
+        "high": 3179,
+        "student": 935.0000000000001
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 5,
+      "dayNumber": 12,
+      "weekday": "fri",
+      "revenueSek": 8348,
+      "guests": 24,
+      "typeGuests": {
+        "middle": 18,
+        "high": 12,
+        "social": 1,
+        "student": 9
+      },
+      "typeRevenue": {
+        "middle": 3124.0000000000005,
+        "high": 2172.5,
+        "social": 231.00000000000003,
+        "student": 1507
+      },
+      "social": {
+        "nameIndex": 5,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 5,
+      "dayNumber": 13,
+      "weekday": "sat",
+      "revenueSek": 7687,
+      "guests": 32,
+      "typeGuests": {
+        "middle": 23,
+        "social": 1,
+        "high": 11,
+        "student": 9
+      },
+      "typeRevenue": {
+        "middle": 3861.000000000001,
+        "social": 222.75000000000003,
+        "high": 1262.25,
+        "student": 960.3000000000002
+      },
+      "social": {
+        "nameIndex": 5,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 6,
+      "dayNumber": 8,
+      "weekday": "mon",
+      "revenueSek": 7887,
+      "guests": 27,
+      "typeGuests": {
+        "middle": 19,
+        "high": 10,
+        "student": 6
+      },
+      "typeRevenue": {
+        "middle": 4343.075,
+        "high": 2000.9,
+        "student": 1257.575
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 6,
+      "dayNumber": 9,
+      "weekday": "tue",
+      "revenueSek": 8562,
+      "guests": 31,
+      "typeGuests": {
+        "middle": 22,
+        "high": 12,
+        "student": 7
+      },
+      "typeRevenue": {
+        "middle": 4450.05,
+        "high": 2762.1000000000004,
+        "student": 1004.8499999999999
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 6,
+      "dayNumber": 10,
+      "weekday": "wed",
+      "revenueSek": 9334,
+      "guests": 18,
+      "typeGuests": {
+        "middle": 17,
+        "student": 6,
+        "high": 8,
+        "social": 1
+      },
+      "typeRevenue": {
+        "middle": 5109.5,
+        "high": 1754.5,
+        "student": 935,
+        "social": 154
+      },
+      "social": {
+        "nameIndex": 3,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 6,
+      "dayNumber": 11,
+      "weekday": "thu",
+      "revenueSek": 5738,
+      "guests": 15,
+      "typeGuests": {
+        "middle": 17,
+        "high": 8,
+        "student": 4
+      },
+      "typeRevenue": {
+        "middle": 3239.5,
+        "high": 1545.5,
+        "student": 434.5
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 6,
+      "dayNumber": 12,
+      "weekday": "fri",
+      "revenueSek": 7480,
+      "guests": 37,
+      "typeGuests": {
+        "middle": 31,
+        "high": 12,
+        "student": 10
+      },
+      "typeRevenue": {
+        "middle": 3729,
+        "high": 2777.5000000000005,
+        "student": 973.5
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 6,
+      "dayNumber": 13,
+      "weekday": "sat",
+      "revenueSek": 8365,
+      "guests": 33,
+      "typeGuests": {
+        "middle": 28,
+        "high": 13,
+        "student": 8
+      },
+      "typeRevenue": {
+        "middle": 4026,
+        "high": 2953.5,
+        "student": 1100
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 7,
+      "dayNumber": 8,
+      "weekday": "mon",
+      "revenueSek": 7315,
+      "guests": 26,
+      "typeGuests": {
+        "high": 7,
+        "middle": 18,
+        "student": 11
+      },
+      "typeRevenue": {
+        "high": 1738,
+        "middle": 4620,
+        "student": 957
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 7,
+      "dayNumber": 9,
+      "weekday": "tue",
+      "revenueSek": 6051,
+      "guests": 17,
+      "typeGuests": {
+        "high": 7,
+        "middle": 14,
+        "social": 1,
+        "student": 5
+      },
+      "typeRevenue": {
+        "high": 1644.5,
+        "middle": 3025,
+        "social": 368.50000000000006,
+        "student": 495
+      },
+      "social": {
+        "nameIndex": 2,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 7,
+      "dayNumber": 10,
+      "weekday": "wed",
+      "revenueSek": 7761,
+      "guests": 22,
+      "typeGuests": {
+        "high": 9,
+        "middle": 20,
+        "student": 7
+      },
+      "typeRevenue": {
+        "high": 2469.5,
+        "middle": 4345,
+        "student": 946
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 7,
+      "dayNumber": 11,
+      "weekday": "thu",
+      "revenueSek": 4854,
+      "guests": 12,
+      "typeGuests": {
+        "high": 7,
+        "middle": 14,
+        "student": 5
+      },
+      "typeRevenue": {
+        "high": 1518,
+        "middle": 2260.5,
+        "student": 445.5
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 7,
+      "dayNumber": 12,
+      "weekday": "fri",
+      "revenueSek": 12743,
+      "guests": 51,
+      "typeGuests": {
+        "middle": 33,
+        "student": 15,
+        "high": 21,
+        "billionaire": 1
+      },
+      "typeRevenue": {
+        "middle": 4950,
+        "high": 2656.5,
+        "student": 2051.5,
+        "billionaire": 2049.3
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": true,
+        "ours": true,
+        "came": true,
+        "treated": true,
+        "glasses": 10,
+        "billSek": 2049
+      }
+    },
+    {
+      "seed": 7,
+      "dayNumber": 13,
+      "weekday": "sat",
+      "revenueSek": 9213,
+      "guests": 36,
+      "typeGuests": {
+        "middle": 27,
+        "high": 14,
+        "student": 10,
+        "social": 1,
+        "billionaire": 1
+      },
+      "typeRevenue": {
+        "middle": 3938.55,
+        "high": 2985.675,
+        "social": 231.00000000000003,
+        "student": 912.45,
+        "billionaire": 800.4150000000001
+      },
+      "social": {
+        "nameIndex": 1,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": true,
+        "ours": true,
+        "came": true,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 800
+      }
+    },
+    {
+      "seed": 8,
+      "dayNumber": 8,
+      "weekday": "mon",
+      "revenueSek": 2830,
+      "guests": 16,
+      "typeGuests": {
+        "middle": 10,
+        "student": 5,
+        "high": 5
+      },
+      "typeRevenue": {
+        "middle": 1917.3000000000002,
+        "high": 352.27500000000003,
+        "student": 560.1750000000001
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 8,
+      "dayNumber": 9,
+      "weekday": "tue",
+      "revenueSek": 9048,
+      "guests": 31,
+      "typeGuests": {
+        "high": 13,
+        "middle": 24,
+        "student": 8
+      },
+      "typeRevenue": {
+        "high": 2992,
+        "middle": 4702.5,
+        "student": 1353
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 8,
+      "dayNumber": 10,
+      "weekday": "wed",
+      "revenueSek": 5269,
+      "guests": 16,
+      "typeGuests": {
+        "high": 7,
+        "middle": 15,
+        "student": 6
+      },
+      "typeRevenue": {
+        "high": 2117.5,
+        "middle": 2062.5,
+        "student": 1089
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 8,
+      "dayNumber": 11,
+      "weekday": "thu",
+      "revenueSek": 9791,
+      "guests": 25,
+      "typeGuests": {
+        "high": 11,
+        "student": 6,
+        "middle": 21,
+        "social": 1
+      },
+      "typeRevenue": {
+        "high": 2937,
+        "middle": 4955.5,
+        "student": 1072.5,
+        "social": 308
+      },
+      "social": {
+        "nameIndex": 2,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 8,
+      "dayNumber": 12,
+      "weekday": "fri",
+      "revenueSek": 10644,
+      "guests": 24,
+      "typeGuests": {
+        "middle": 20,
+        "high": 11,
+        "student": 8,
+        "social": 1,
+        "billionaire": 1
+      },
+      "typeRevenue": {
+        "middle": 4591.125000000001,
+        "high": 3337.9500000000007,
+        "student": 773.85,
+        "social": 254.10000000000002,
+        "billionaire": 823.515
+      },
+      "social": {
+        "nameIndex": 3,
+        "outcome": "neutral"
+      },
+      "billionaire": {
+        "inTown": true,
+        "ours": true,
+        "came": true,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 824
+      }
+    },
+    {
+      "seed": 8,
+      "dayNumber": 13,
+      "weekday": "sat",
+      "revenueSek": 9840,
+      "guests": 29,
+      "typeGuests": {
+        "middle": 28,
+        "student": 10,
+        "high": 11
+      },
+      "typeRevenue": {
+        "middle": 4251.5,
+        "high": 2640,
+        "student": 1688.5
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 9,
+      "dayNumber": 8,
+      "weekday": "mon",
+      "revenueSek": 8911,
+      "guests": 27,
+      "typeGuests": {
+        "high": 9,
+        "student": 7,
+        "middle": 22,
+        "social": 1
+      },
+      "typeRevenue": {
+        "high": 2238.5,
+        "middle": 4631,
+        "student": 1182.5,
+        "social": 341
+      },
+      "social": {
+        "nameIndex": 5,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 9,
+      "dayNumber": 9,
+      "weekday": "tue",
+      "revenueSek": 10219,
+      "guests": 35,
+      "typeGuests": {
+        "middle": 23,
+        "high": 14,
+        "student": 8
+      },
+      "typeRevenue": {
+        "middle": 4464.075000000001,
+        "high": 3320.625,
+        "student": 1744.05
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 9,
+      "dayNumber": 10,
+      "weekday": "wed",
+      "revenueSek": 7099,
+      "guests": 22,
+      "typeGuests": {
+        "high": 9,
+        "middle": 17,
+        "student": 7,
+        "social": 1
+      },
+      "typeRevenue": {
+        "high": 2101,
+        "middle": 3102.0000000000005,
+        "social": 209.00000000000003,
+        "student": 1342
+      },
+      "social": {
+        "nameIndex": 2,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 9,
+      "dayNumber": 11,
+      "weekday": "thu",
+      "revenueSek": 7611,
+      "guests": 24,
+      "typeGuests": {
+        "middle": 19,
+        "high": 11,
+        "student": 8
+      },
+      "typeRevenue": {
+        "middle": 4312,
+        "high": 2728,
+        "student": 225.50000000000003
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 9,
+      "dayNumber": 12,
+      "weekday": "fri",
+      "revenueSek": 9004,
+      "guests": 30,
+      "typeGuests": {
+        "middle": 25,
+        "high": 12,
+        "student": 10,
+        "social": 1
+      },
+      "typeRevenue": {
+        "middle": 3415.5,
+        "high": 2707.65,
+        "social": 341.55,
+        "student": 1158.3000000000002
+      },
+      "social": {
+        "nameIndex": 0,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 9,
+      "dayNumber": 13,
+      "weekday": "sat",
+      "revenueSek": 7733,
+      "guests": 27,
+      "typeGuests": {
+        "high": 13,
+        "student": 8,
+        "middle": 22
+      },
+      "typeRevenue": {
+        "high": 2130.9750000000004,
+        "middle": 3551.6250000000005,
+        "student": 1247.4
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 10,
+      "dayNumber": 8,
+      "weekday": "mon",
+      "revenueSek": 4935,
+      "guests": 13,
+      "typeGuests": {
+        "middle": 11,
+        "student": 5,
+        "high": 6,
+        "social": 1
+      },
+      "typeRevenue": {
+        "middle": 1716,
+        "high": 1595.0000000000002,
+        "social": 302.5,
+        "student": 803
+      },
+      "social": {
+        "nameIndex": 1,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 10,
+      "dayNumber": 9,
+      "weekday": "tue",
+      "revenueSek": 4719,
+      "guests": 35,
+      "typeGuests": {
+        "high": 10,
+        "middle": 21,
+        "student": 11,
+        "social": 1
+      },
+      "typeRevenue": {
+        "high": 1683.0000000000002,
+        "middle": 2431,
+        "student": 440,
+        "social": 165
+      },
+      "social": {
+        "nameIndex": 1,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 10,
+      "dayNumber": 10,
+      "weekday": "wed",
+      "revenueSek": 10136,
+      "guests": 45,
+      "typeGuests": {
+        "student": 12,
+        "middle": 29,
+        "high": 17,
+        "social": 1
+      },
+      "typeRevenue": {
+        "middle": 4048,
+        "high": 3113,
+        "student": 1771,
+        "social": 341
+      },
+      "social": {
+        "nameIndex": 4,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 10,
+      "dayNumber": 11,
+      "weekday": "thu",
+      "revenueSek": 7929,
+      "guests": 22,
+      "typeGuests": {
+        "student": 9,
+        "middle": 21,
+        "high": 8
+      },
+      "typeRevenue": {
+        "middle": 4389,
+        "student": 1424.5,
+        "high": 1485
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 10,
+      "dayNumber": 12,
+      "weekday": "fri",
+      "revenueSek": 3389,
+      "guests": 15,
+      "typeGuests": {
+        "middle": 15,
+        "high": 8,
+        "student": 6
+      },
+      "typeRevenue": {
+        "middle": 1265.0000000000002,
+        "high": 1386,
+        "student": 220.00000000000003
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 10,
+      "dayNumber": 13,
+      "weekday": "sat",
+      "revenueSek": 5499,
+      "guests": 16,
+      "typeGuests": {
+        "middle": 18,
+        "high": 9,
+        "student": 5
+      },
+      "typeRevenue": {
+        "middle": 2431,
+        "high": 935,
+        "student": 984.5
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 11,
+      "dayNumber": 8,
+      "weekday": "mon",
+      "revenueSek": 9854,
+      "guests": 27,
+      "typeGuests": {
+        "middle": 19,
+        "student": 10,
+        "high": 8
+      },
+      "typeRevenue": {
+        "middle": 5340.5,
+        "high": 2447.5,
+        "student": 1435.5
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 11,
+      "dayNumber": 9,
+      "weekday": "tue",
+      "revenueSek": 3985,
+      "guests": 11,
+      "typeGuests": {
+        "high": 6,
+        "middle": 10,
+        "student": 3
+      },
+      "typeRevenue": {
+        "high": 1565.025,
+        "middle": 1709.4,
+        "student": 710.325
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 11,
+      "dayNumber": 10,
+      "weekday": "wed",
+      "revenueSek": 6002,
+      "guests": 15,
+      "typeGuests": {
+        "student": 7,
+        "middle": 16,
+        "high": 7,
+        "social": 1
+      },
+      "typeRevenue": {
+        "student": 676.5,
+        "middle": 2442,
+        "high": 1963.5,
+        "social": 401.50000000000006
+      },
+      "social": {
+        "nameIndex": 4,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 11,
+      "dayNumber": 11,
+      "weekday": "thu",
+      "revenueSek": 9239,
+      "guests": 37,
+      "typeGuests": {
+        "student": 9,
+        "middle": 29,
+        "high": 13
+      },
+      "typeRevenue": {
+        "middle": 4988.5,
+        "high": 2568.5,
+        "student": 1336.5
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 11,
+      "dayNumber": 12,
+      "weekday": "fri",
+      "revenueSek": 0,
+      "guests": 8,
+      "typeGuests": {
+        "middle": 7,
+        "high": 4,
+        "social": 1
+      },
+      "typeRevenue": {},
+      "social": {
+        "nameIndex": 4,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 11,
+      "dayNumber": 13,
+      "weekday": "sat",
+      "revenueSek": 7908,
+      "guests": 26,
+      "typeGuests": {
+        "high": 9,
+        "middle": 24,
+        "student": 9
+      },
+      "typeRevenue": {
+        "high": 1886.5,
+        "middle": 4394.5,
+        "student": 1281.5
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 12,
+      "dayNumber": 8,
+      "weekday": "mon",
+      "revenueSek": 7423,
+      "guests": 27,
+      "typeGuests": {
+        "high": 8,
+        "middle": 17,
+        "student": 10
+      },
+      "typeRevenue": {
+        "high": 1402.5,
+        "middle": 4163.5,
+        "student": 1226.5000000000002
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 12,
+      "dayNumber": 9,
+      "weekday": "tue",
+      "revenueSek": 8514,
+      "guests": 27,
+      "typeGuests": {
+        "high": 13,
+        "middle": 19,
+        "social": 1,
+        "student": 6
+      },
+      "typeRevenue": {
+        "high": 3580.5,
+        "middle": 3487,
+        "social": 154,
+        "student": 1067
+      },
+      "social": {
+        "nameIndex": 0,
+        "outcome": "neutral"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 12,
+      "dayNumber": 10,
+      "weekday": "wed",
+      "revenueSek": 7683,
+      "guests": 27,
+      "typeGuests": {
+        "middle": 22,
+        "student": 8,
+        "high": 8,
+        "social": 1
+      },
+      "typeRevenue": {
+        "middle": 3510.9249999999997,
+        "student": 813.45,
+        "high": 1771.825,
+        "social": 205.70000000000002
+      },
+      "social": {
+        "nameIndex": 5,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 12,
+      "dayNumber": 11,
+      "weekday": "thu",
+      "revenueSek": 5273,
+      "guests": 17,
+      "typeGuests": {
+        "middle": 15,
+        "student": 6,
+        "high": 7,
+        "social": 1
+      },
+      "typeRevenue": {
+        "middle": 2421.65,
+        "high": 1299.65,
+        "student": 766.7,
+        "social": 215.05
+      },
+      "social": {
+        "nameIndex": 1,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 12,
+      "dayNumber": 12,
+      "weekday": "fri",
+      "revenueSek": 9201,
+      "guests": 38,
+      "typeGuests": {
+        "high": 14,
+        "student": 11,
+        "middle": 30,
+        "social": 1
+      },
+      "typeRevenue": {
+        "high": 2559.1500000000005,
+        "middle": 4227.299999999999,
+        "student": 1871.1000000000004,
+        "social": 198.00000000000003
+      },
+      "social": {
+        "nameIndex": 5,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 12,
+      "dayNumber": 13,
+      "weekday": "sat",
+      "revenueSek": 6848,
+      "guests": 36,
+      "typeGuests": {
+        "middle": 30,
+        "high": 11,
+        "student": 11
+      },
+      "typeRevenue": {
+        "middle": 4086.5,
+        "high": 2447.5,
+        "student": 313.5
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 13,
+      "dayNumber": 8,
+      "weekday": "mon",
+      "revenueSek": 8904,
+      "guests": 27,
+      "typeGuests": {
+        "middle": 18,
+        "student": 9,
+        "high": 8
+      },
+      "typeRevenue": {
+        "middle": 4840,
+        "student": 1270.5,
+        "high": 1930.5
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 13,
+      "dayNumber": 9,
+      "weekday": "tue",
+      "revenueSek": 5410,
+      "guests": 16,
+      "typeGuests": {
+        "high": 7,
+        "middle": 13,
+        "student": 5,
+        "social": 1
+      },
+      "typeRevenue": {
+        "high": 1424.5,
+        "middle": 2321,
+        "social": 319,
+        "student": 715
+      },
+      "social": {
+        "nameIndex": 1,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 13,
+      "dayNumber": 10,
+      "weekday": "wed",
+      "revenueSek": 5000,
+      "guests": 30,
+      "typeGuests": {
+        "middle": 21,
+        "high": 10,
+        "student": 7
+      },
+      "typeRevenue": {
+        "middle": 3289,
+        "high": 1710.5
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 13,
+      "dayNumber": 11,
+      "weekday": "thu",
+      "revenueSek": 9117,
+      "guests": 27,
+      "typeGuests": {
+        "middle": 23,
+        "high": 10,
+        "student": 8
+      },
+      "typeRevenue": {
+        "middle": 5185.95,
+        "high": 2604.525,
+        "student": 981.75
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 13,
+      "dayNumber": 12,
+      "weekday": "fri",
+      "revenueSek": 7904,
+      "guests": 16,
+      "typeGuests": {
+        "middle": 19,
+        "high": 11,
+        "student": 8,
+        "social": 1
+      },
+      "typeRevenue": {
+        "middle": 4411,
+        "high": 2029.5,
+        "student": 1232,
+        "social": 231.00000000000003
+      },
+      "social": {
+        "nameIndex": 1,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 13,
+      "dayNumber": 13,
+      "weekday": "sat",
+      "revenueSek": 6105,
+      "guests": 21,
+      "typeGuests": {
+        "middle": 21,
+        "high": 10,
+        "student": 7,
+        "social": 1
+      },
+      "typeRevenue": {
+        "middle": 3289,
+        "high": 1782,
+        "student": 781,
+        "social": 253.00000000000003
+      },
+      "social": {
+        "nameIndex": 5,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 14,
+      "dayNumber": 8,
+      "weekday": "mon",
+      "revenueSek": 8532,
+      "guests": 27,
+      "typeGuests": {
+        "student": 8,
+        "middle": 17,
+        "high": 9,
+        "social": 1
+      },
+      "typeRevenue": {
+        "middle": 4064.5,
+        "high": 2458.5,
+        "student": 1270.5,
+        "social": 220.00000000000003
+      },
+      "social": {
+        "nameIndex": 3,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 14,
+      "dayNumber": 9,
+      "weekday": "tue",
+      "revenueSek": 7161,
+      "guests": 23,
+      "typeGuests": {
+        "middle": 15,
+        "high": 10,
+        "student": 7,
+        "social": 1
+      },
+      "typeRevenue": {
+        "middle": 3861,
+        "high": 1900.8,
+        "student": 663.3,
+        "social": 217.8
+      },
+      "social": {
+        "nameIndex": 2,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 14,
+      "dayNumber": 10,
+      "weekday": "wed",
+      "revenueSek": 0,
+      "guests": 8,
+      "typeGuests": {
+        "middle": 10,
+        "student": 3,
+        "high": 3
+      },
+      "typeRevenue": {},
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 14,
+      "dayNumber": 11,
+      "weekday": "thu",
+      "revenueSek": 9690,
+      "guests": 25,
+      "typeGuests": {
+        "student": 7,
+        "middle": 19,
+        "social": 1,
+        "high": 10
+      },
+      "typeRevenue": {
+        "student": 1501.5,
+        "middle": 5181,
+        "social": 231.00000000000003,
+        "high": 2431
+      },
+      "social": {
+        "nameIndex": 0,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 14,
+      "dayNumber": 12,
+      "weekday": "fri",
+      "revenueSek": 9300,
+      "guests": 34,
+      "typeGuests": {
+        "student": 10,
+        "middle": 27,
+        "high": 13
+      },
+      "typeRevenue": {
+        "middle": 5236,
+        "student": 610.5,
+        "high": 3228.5
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 14,
+      "dayNumber": 13,
+      "weekday": "sat",
+      "revenueSek": 2131,
+      "guests": 19,
+      "typeGuests": {
+        "middle": 18,
+        "high": 4,
+        "student": 4,
+        "social": 1
+      },
+      "typeRevenue": {
+        "middle": 1634.3250000000003,
+        "high": 219.45000000000002,
+        "student": 277.20000000000005
+      },
+      "social": {
+        "nameIndex": 2,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 15,
+      "dayNumber": 8,
+      "weekday": "mon",
+      "revenueSek": 8300,
+      "guests": 27,
+      "typeGuests": {
+        "middle": 17,
+        "student": 8,
+        "high": 9,
+        "social": 1
+      },
+      "typeRevenue": {
+        "middle": 4064.5,
+        "high": 2458.5,
+        "student": 1545.5,
+        "social": 231.00000000000003
+      },
+      "social": {
+        "nameIndex": 0,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 15,
+      "dayNumber": 9,
+      "weekday": "tue",
+      "revenueSek": 10149,
+      "guests": 35,
+      "typeGuests": {
+        "middle": 26,
+        "student": 12,
+        "high": 11
+      },
+      "typeRevenue": {
+        "middle": 5093.55,
+        "student": 1541.9249999999997,
+        "high": 2650.7250000000004
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 15,
+      "dayNumber": 10,
+      "weekday": "wed",
+      "revenueSek": 8413,
+      "guests": 26,
+      "typeGuests": {
+        "student": 8,
+        "high": 10,
+        "middle": 19,
+        "social": 1
+      },
+      "typeRevenue": {
+        "high": 2530,
+        "student": 1232,
+        "middle": 3712.5,
+        "social": 308
+      },
+      "social": {
+        "nameIndex": 0,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 15,
+      "dayNumber": 11,
+      "weekday": "thu",
+      "revenueSek": 8892,
+      "guests": 26,
+      "typeGuests": {
+        "middle": 19,
+        "student": 9,
+        "high": 11,
+        "social": 1
+      },
+      "typeRevenue": {
+        "middle": 3361.0500000000006,
+        "high": 3984.75,
+        "social": 259.875,
+        "student": 941.325
+      },
+      "social": {
+        "nameIndex": 0,
+        "outcome": "neutral"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 15,
+      "dayNumber": 12,
+      "weekday": "fri",
+      "revenueSek": 0,
+      "guests": 3,
+      "typeGuests": {
+        "student": 2,
+        "middle": 2,
+        "high": 3
+      },
+      "typeRevenue": {},
+      "social": null,
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 15,
+      "dayNumber": 13,
+      "weekday": "sat",
+      "revenueSek": 9884,
+      "guests": 32,
+      "typeGuests": {
+        "middle": 25,
+        "student": 10,
+        "high": 12,
+        "social": 1
+      },
+      "typeRevenue": {
+        "middle": 5302,
+        "high": 2266,
+        "student": 1364,
+        "social": 209.00000000000003
+      },
+      "social": {
+        "nameIndex": 3,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 16,
+      "dayNumber": 8,
+      "weekday": "mon",
+      "revenueSek": 9016,
+      "guests": 27,
+      "typeGuests": {
+        "high": 8,
+        "middle": 21,
+        "student": 8
+      },
+      "typeRevenue": {
+        "high": 1875.5,
+        "middle": 4466,
+        "student": 1699.5
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 16,
+      "dayNumber": 9,
+      "weekday": "tue",
+      "revenueSek": 7875,
+      "guests": 24,
+      "typeGuests": {
+        "student": 8,
+        "middle": 18,
+        "high": 8
+      },
+      "typeRevenue": {
+        "middle": 4504.5,
+        "high": 2194.5,
+        "student": 830.5
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 16,
+      "dayNumber": 10,
+      "weekday": "wed",
+      "revenueSek": 10168,
+      "guests": 31,
+      "typeGuests": {
+        "middle": 29,
+        "high": 11,
+        "student": 9
+      },
+      "typeRevenue": {
+        "middle": 5258,
+        "high": 3041.5,
+        "student": 1523.5
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 16,
+      "dayNumber": 11,
+      "weekday": "thu",
+      "revenueSek": 7225,
+      "guests": 14,
+      "typeGuests": {
+        "high": 6,
+        "middle": 15,
+        "student": 6,
+        "social": 1
+      },
+      "typeRevenue": {
+        "high": 2073.5,
+        "middle": 3047,
+        "social": 165,
+        "student": 1309
+      },
+      "social": {
+        "nameIndex": 1,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 16,
+      "dayNumber": 12,
+      "weekday": "fri",
+      "revenueSek": 8957,
+      "guests": 29,
+      "typeGuests": {
+        "middle": 25,
+        "high": 11,
+        "social": 1,
+        "student": 10
+      },
+      "typeRevenue": {
+        "middle": 4900.5,
+        "high": 1650,
+        "social": 253.00000000000003,
+        "student": 1463
+      },
+      "social": {
+        "nameIndex": 4,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 16,
+      "dayNumber": 13,
+      "weekday": "sat",
+      "revenueSek": 8983,
+      "guests": 31,
+      "typeGuests": {
+        "high": 12,
+        "middle": 24,
+        "student": 11
+      },
+      "typeRevenue": {
+        "high": 2574,
+        "middle": 4862.000000000001,
+        "student": 1028.5
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 17,
+      "dayNumber": 8,
+      "weekday": "mon",
+      "revenueSek": 4580,
+      "guests": 26,
+      "typeGuests": {
+        "student": 6,
+        "middle": 19,
+        "high": 7
+      },
+      "typeRevenue": {
+        "middle": 2035,
+        "high": 1639,
+        "student": 561
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 17,
+      "dayNumber": 9,
+      "weekday": "tue",
+      "revenueSek": 10366,
+      "guests": 31,
+      "typeGuests": {
+        "student": 6,
+        "high": 11,
+        "middle": 21,
+        "social": 1
+      },
+      "typeRevenue": {
+        "high": 3322,
+        "middle": 4867.5,
+        "student": 1545.5,
+        "social": 286
+      },
+      "social": {
+        "nameIndex": 4,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 17,
+      "dayNumber": 10,
+      "weekday": "wed",
+      "revenueSek": 0,
+      "guests": 4,
+      "typeGuests": {
+        "middle": 3,
+        "high": 3,
+        "student": 1,
+        "social": 1
+      },
+      "typeRevenue": {},
+      "social": {
+        "nameIndex": 5,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 17,
+      "dayNumber": 11,
+      "weekday": "thu",
+      "revenueSek": 5699,
+      "guests": 15,
+      "typeGuests": {
+        "high": 6,
+        "student": 7,
+        "middle": 16
+      },
+      "typeRevenue": {
+        "high": 1914,
+        "middle": 2304.5000000000005,
+        "student": 962.5000000000001
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 17,
+      "dayNumber": 12,
+      "weekday": "fri",
+      "revenueSek": 8261,
+      "guests": 17,
+      "typeGuests": {
+        "middle": 18,
+        "high": 7,
+        "student": 10
+      },
+      "typeRevenue": {
+        "middle": 4026,
+        "high": 2546.5,
+        "student": 1688.5
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 17,
+      "dayNumber": 13,
+      "weekday": "sat",
+      "revenueSek": 10063,
+      "guests": 24,
+      "typeGuests": {
+        "middle": 20,
+        "high": 10,
+        "student": 9,
+        "social": 1
+      },
+      "typeRevenue": {
+        "middle": 4822.125,
+        "high": 2032.8,
+        "social": 254.10000000000002,
+        "student": 1461.075
+      },
+      "social": {
+        "nameIndex": 1,
+        "outcome": "neutral"
+      },
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 18,
+      "dayNumber": 8,
+      "weekday": "mon",
+      "revenueSek": 0,
+      "guests": 8,
+      "typeGuests": {
+        "high": 3,
+        "middle": 8,
+        "student": 3
+      },
+      "typeRevenue": {},
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 18,
+      "dayNumber": 9,
+      "weekday": "tue",
+      "revenueSek": 9526,
+      "guests": 31,
+      "typeGuests": {
+        "middle": 23,
+        "student": 7,
+        "high": 10,
+        "social": 1
+      },
+      "typeRevenue": {
+        "middle": 5874,
+        "high": 2057,
+        "student": 1303.5,
+        "social": 291.5
+      },
+      "social": {
+        "nameIndex": 4,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 18,
+      "dayNumber": 10,
+      "weekday": "wed",
+      "revenueSek": 5594,
+      "guests": 18,
+      "typeGuests": {
+        "high": 8,
+        "student": 7,
+        "middle": 17
+      },
+      "typeRevenue": {
+        "high": 1727,
+        "middle": 2970,
+        "student": 896.5
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 18,
+      "dayNumber": 11,
+      "weekday": "thu",
+      "revenueSek": 5691,
+      "guests": 19,
+      "typeGuests": {
+        "middle": 17,
+        "student": 7,
+        "high": 9
+      },
+      "typeRevenue": {
+        "middle": 2425.5,
+        "high": 2112,
+        "student": 808.5
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 18,
+      "dayNumber": 12,
+      "weekday": "fri",
+      "revenueSek": 12264,
+      "guests": 37,
+      "typeGuests": {
+        "middle": 30,
+        "student": 10,
+        "high": 13,
+        "billionaire": 1
+      },
+      "typeRevenue": {
+        "middle": 5670.5,
+        "student": 968,
+        "high": 2552,
+        "billionaire": 2555.3
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": true,
+        "ours": true,
+        "came": true,
+        "treated": true,
+        "glasses": 14,
+        "billSek": 2555
+      }
+    },
+    {
+      "seed": 18,
+      "dayNumber": 13,
+      "weekday": "sat",
+      "revenueSek": 6161,
+      "guests": 18,
+      "typeGuests": {
+        "middle": 20,
+        "student": 7,
+        "high": 9
+      },
+      "typeRevenue": {
+        "middle": 3420.4500000000003,
+        "student": 965.25,
+        "high": 1430.55
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 19,
+      "dayNumber": 8,
+      "weekday": "mon",
+      "revenueSek": 9544,
+      "guests": 27,
+      "typeGuests": {
+        "student": 10,
+        "high": 10,
+        "middle": 18,
+        "social": 1
+      },
+      "typeRevenue": {
+        "high": 2409,
+        "middle": 4521.000000000001,
+        "student": 1864.5,
+        "social": 231.00000000000003
+      },
+      "social": {
+        "nameIndex": 5,
+        "outcome": "neutral"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 19,
+      "dayNumber": 9,
+      "weekday": "tue",
+      "revenueSek": 0,
+      "guests": 10,
+      "typeGuests": {
+        "high": 4,
+        "student": 2,
+        "middle": 7,
+        "social": 1
+      },
+      "typeRevenue": {},
+      "social": {
+        "nameIndex": 1,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 19,
+      "dayNumber": 10,
+      "weekday": "wed",
+      "revenueSek": 9386,
+      "guests": 33,
+      "typeGuests": {
+        "middle": 23,
+        "student": 10,
+        "high": 12
+      },
+      "typeRevenue": {
+        "middle": 5159,
+        "student": 1463,
+        "high": 2134
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 19,
+      "dayNumber": 11,
+      "weekday": "thu",
+      "revenueSek": 9554,
+      "guests": 32,
+      "typeGuests": {
+        "middle": 28,
+        "high": 11,
+        "student": 7
+      },
+      "typeRevenue": {
+        "middle": 5049,
+        "high": 2145,
+        "student": 1556.5
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 19,
+      "dayNumber": 12,
+      "weekday": "fri",
+      "revenueSek": 8765,
+      "guests": 24,
+      "typeGuests": {
+        "student": 9,
+        "high": 12,
+        "middle": 22,
+        "social": 1
+      },
+      "typeRevenue": {
+        "high": 3262.8750000000005,
+        "student": 1276.275,
+        "middle": 3453.4500000000007,
+        "social": 254.10000000000002
+      },
+      "social": {
+        "nameIndex": 1,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 19,
+      "dayNumber": 13,
+      "weekday": "sat",
+      "revenueSek": 7259,
+      "guests": 36,
+      "typeGuests": {
+        "high": 14,
+        "middle": 29,
+        "student": 16,
+        "social": 1
+      },
+      "typeRevenue": {
+        "high": 2337.5,
+        "middle": 3206.5,
+        "social": 335.5,
+        "student": 869
+      },
+      "social": {
+        "nameIndex": 0,
+        "outcome": "neutral"
+      },
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 20,
+      "dayNumber": 8,
+      "weekday": "mon",
+      "revenueSek": 9464,
+      "guests": 27,
+      "typeGuests": {
+        "middle": 18,
+        "high": 11,
+        "student": 8
+      },
+      "typeRevenue": {
+        "middle": 4878.5,
+        "high": 3404.5000000000005,
+        "student": 836
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 20,
+      "dayNumber": 9,
+      "weekday": "tue",
+      "revenueSek": 0,
+      "guests": 3,
+      "typeGuests": {
+        "high": 2,
+        "middle": 3,
+        "student": 1,
+        "social": 1
+      },
+      "typeRevenue": {},
+      "social": {
+        "nameIndex": 3,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 20,
+      "dayNumber": 10,
+      "weekday": "wed",
+      "revenueSek": 8541,
+      "guests": 15,
+      "typeGuests": {
+        "middle": 15,
+        "high": 9,
+        "student": 6,
+        "social": 1
+      },
+      "typeRevenue": {
+        "middle": 3850.0000000000005,
+        "high": 2161.5,
+        "student": 1287,
+        "social": 379.50000000000006
+      },
+      "social": {
+        "nameIndex": 4,
+        "outcome": "good"
+      },
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 20,
+      "dayNumber": 11,
+      "weekday": "thu",
+      "revenueSek": 7990,
+      "guests": 24,
+      "typeGuests": {
+        "student": 8,
+        "middle": 21,
+        "high": 9
+      },
+      "typeRevenue": {
+        "student": 1552.1,
+        "middle": 4707.725000000001,
+        "high": 1729.75
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": false,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 20,
+      "dayNumber": 12,
+      "weekday": "fri",
+      "revenueSek": 8072,
+      "guests": 22,
+      "typeGuests": {
+        "high": 12,
+        "middle": 23,
+        "student": 5
+      },
+      "typeRevenue": {
+        "high": 2523.0975000000003,
+        "middle": 3549.02625,
+        "student": 618.5024999999999
+      },
+      "social": null,
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    },
+    {
+      "seed": 20,
+      "dayNumber": 13,
+      "weekday": "sat",
+      "revenueSek": 8940,
+      "guests": 39,
+      "typeGuests": {
+        "high": 13,
+        "middle": 28,
+        "student": 11,
+        "social": 1
+      },
+      "typeRevenue": {
+        "high": 1355.2000000000003,
+        "middle": 5263.5,
+        "social": 477.9500000000001,
+        "student": 1324.95
+      },
+      "social": {
+        "nameIndex": 5,
+        "outcome": "neutral"
+      },
+      "billionaire": {
+        "inTown": true,
+        "ours": false,
+        "came": false,
+        "treated": false,
+        "glasses": 0,
+        "billSek": 0
+      }
+    }
+  ]
+}

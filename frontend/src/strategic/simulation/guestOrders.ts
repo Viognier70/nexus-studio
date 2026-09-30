@@ -18,7 +18,7 @@
 // sällskapet kan gå med hen.
 
 import type { Allergen, Guest, SimulationState } from '../types';
-import { GUESTS, INCIDENTS, SERVICE_STREAM, STOCK } from '../../sim/balance';
+import { GUESTS, GUEST_TYPES, INCIDENTS, SERVICE_STREAM, STOCK } from '../../sim/balance';
 import { strings } from '../../content/strings';
 import { clampReputation } from './reputation';
 import { dishAllergens, dishDiet, findDish } from './m4Catalogue';
@@ -43,7 +43,7 @@ export type GuestOrder =
   | { kind: 'lost'; reason: MissingReason; partyLeft: number };
 
 // Ett tal i [0, 1) ur fröet och en nyckel (FNV-1a).
-function hash01(seed: number, key: string): number {
+export function hash01(seed: number, key: string): number {
   let h = (2166136261 ^ seed) >>> 0;
   for (let i = 0; i < key.length; i++) {
     h ^= key.charCodeAt(i);
@@ -52,7 +52,9 @@ function hash01(seed: number, key: string): number {
   return h / 4294967296;
 }
 
-export function profileFor(seed: number, guest: Pick<Guest, 'id' | 'partyId'>): GuestProfile {
+// ORDER 287a — gästens typ ger plånboken (balance.ts GUEST_TYPES.wallet);
+// en gäst utan typ (äldre fixturer) har plånboken ur fröet som förut.
+export function profileFor(seed: number, guest: Pick<Guest, 'id' | 'partyId' | 'guestType'>): GuestProfile {
   const d = hash01(seed, `${guest.id}|diet`);
   const diet: GuestDiet = d < GUESTS.dietShare.vegan ? 'vegan'
     : d < GUESTS.dietShare.vegan + GUESTS.dietShare.vegetarian ? 'vegetarian' : 'any';
@@ -61,7 +63,8 @@ export function profileFor(seed: number, guest: Pick<Guest, 'id' | 'partyId'>): 
     : a < GUESTS.allergyShare.lactose + GUESTS.allergyShare.gluten ? 'gluten' : null;
   const noAlcohol = hash01(seed, `${guest.id}|alcohol`) < GUESTS.noAlcoholShare;
   const w = hash01(seed, `${guest.partyId ?? guest.id}|wallet`);
-  const wallet: Wallet = w < GUESTS.walletShare.tight ? 'tight'
+  const wallet: Wallet = guest.guestType ? GUEST_TYPES.wallet[guest.guestType]
+    : w < GUESTS.walletShare.tight ? 'tight'
     : w < GUESTS.walletShare.tight + GUESTS.walletShare.normal ? 'normal' : 'generous';
   return { diet, allergy, noAlcohol, wallet };
 }
@@ -216,13 +219,15 @@ export function orderForGuest(draft: SimulationState, guest: Guest, rand: () => 
     let budget = walletSek - revenueSek;
     const bottles = avail.filter((m) => findDish(m.dishId)?.drink === 'wine-bottle' && m.price <= walletSek);
     const bottleRoll = rand();
-    if (!p.noAlcohol && p.wallet === 'generous' && partyKey !== null && (guest.partySize ?? 1) >= GUESTS.minPartyForBottle
-      && bottles.length > 0 && bottleRoll < GUESTS.bottleChance) {
+    // ORDER 287a — miljardären tar det dyraste, en flaska också ensam.
+    const gold = p.wallet === 'gold';
+    if (!p.noAlcohol && bottles.length > 0 && (gold || (p.wallet === 'generous' && partyKey !== null && (guest.partySize ?? 1) >= GUESTS.minPartyForBottle
+      && bottleRoll < GUESTS.bottleChance))) {
       const b = pickByTaste(bottles, p.wallet, rand());
       takeFromStock(draft, b.dishId, draft.simTime);
       drinks.push(b.dishId);
       revenueSek += b.price;
-      draft.day = { ...draft.day, bottlePartyIds: [...(draft.day.bottlePartyIds ?? []), partyKey] };
+      if (partyKey !== null) draft.day = { ...draft.day, bottlePartyIds: [...(draft.day.bottlePartyIds ?? []), partyKey] };
     } else {
       const kinds = p.noAlcohol ? ['alcohol-free'] : ['wine-glass', 'beer'];
       const fits = (m: Entry) => kinds.includes(findDish(m.dishId)?.drink ?? '') && m.price <= budget;

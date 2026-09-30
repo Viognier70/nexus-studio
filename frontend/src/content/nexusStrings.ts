@@ -1366,7 +1366,100 @@ export const TABLE = {
     },
     continue: { sv: 'Till kvällens lärdom', en: "To tonight's lesson" },
     points: { sv: (v: string) => `${v} poäng`, en: (v: string) => `${v} pts` },
+    // ORDER 287a — hållbarheterna som nivåer 0–10 med förra kvällens nivå.
+    level: { sv: (n: number, max: number) => `${n} av ${max}`, en: (n: number, max: number) => `${n} of ${max}` },
+    previousLevel: { sv: (n: number) => `Förra kvällen ${n}`, en: (n: number) => `Last evening ${n}` },
     kg: { sv: (v: string) => `${v} kg`, en: (v: string) => `${v} kg` }
+  },
+  // ORDER 287a — gästerna med kapital: bokningsboken (Designs skärm 1,
+  // brief.book.*), strömmen, kvällens resultat och söndagstidningen (Designs
+  // paper.seen.*). Namnen på gästerna med socialt kapital är egennamn.
+  guestTypes: {
+    socialNames: { sv: ['Lova Berg', 'Maja Lind', 'Ebba Strand', 'Hugo Ek', 'Nils Holm', 'Signe Dahl'], en: ['Lova Berg', 'Maja Lind', 'Ebba Strand', 'Hugo Ek', 'Nils Holm', 'Signe Dahl'] },
+    label: {
+      student: { sv: 'Studenter', en: 'Students' },
+      middle: { sv: 'Medelinkomst', en: 'Middle income' },
+      high: { sv: 'Höginkomst', en: 'High income' },
+      social: { sv: 'Socialt kapital', en: 'Social capital' },
+      billionaire: { sv: 'Mannen i guld', en: 'The man in gold' }
+    },
+    book: {
+      student: { sv: 'Studenter från Måltidens hus', en: 'Students from Måltidens hus' },
+      middle: { sv: 'Par och familjer från byn', en: 'Couples and families from the village' },
+      high: { sv: 'Bilar från Örebro och Karlstad', en: 'Cars from Örebro and Karlstad' },
+      social: { sv: (name: string) => name, en: (name: string) => name },
+      walkIns: { sv: 'Utan bokning', en: 'Walk-ins' }
+    },
+    bookNote: {
+      student: { sv: 'Billig öl · tar platsen länge', en: 'Cheap beer · keep the table a long time' },
+      middle: { sv: 'Den vanliga notan', en: 'The usual bill' },
+      high: { sv: 'Frågar efter vinlistan · förväntar sig mer', en: 'Ask for the wine list · expect more' },
+      social: { sv: 'Hälsar på alla · tar med sig byn om hen trivs', en: 'Greets everyone · brings the village if they enjoy it' },
+      walkIns: { sv: 'Kommer när det finns plats', en: 'Come when there is room' }
+    },
+    bookNoteBuzz: {
+      sv: (name: string, up: boolean) => up ? `${name} talade gott om er: fler gäster i kväll.` : `${name} talade illa om er: färre gäster i kväll.`,
+      en: (name: string, up: boolean) => up ? `${name} spoke well of you: more guests tonight.` : `${name} spoke badly of you: fewer guests tonight.`
+    },
+    // Designs brief.greet.aside: miljardären är i byn.
+    billionaireAside: { sv: 'Hotellet ringde. De har en ovanlig gäst i helgen.', en: 'The hotel called. They have an unusual guest this weekend.' },
+    stream: {
+      socialArrives: { sv: (name: string) => `${name} kommer in och hälsar på alla.`, en: (name: string) => `${name} comes in and greets everyone.` },
+      socialGood: { sv: (name: string) => `${name} gick nöjd. Byn kommer att höra om kvällen.`, en: (name: string) => `${name} left happy. The village will hear about tonight.` },
+      socialBad: { sv: (name: string) => `${name} gick missnöjd. Det sprids i byn.`, en: (name: string) => `${name} left unhappy. Word will spread.` },
+      socialNeutral: { sv: (name: string) => `${name} gick. Inget att berätta om.`, en: (name: string) => `${name} left. Nothing to tell anyone.` },
+      billionaireArrives: { sv: 'Mannen i guld kliver in. Rummet tystnar.', en: 'The man in gold walks in. The room goes quiet.' },
+      billionaireTreats: {
+        sv: (n: number) => `Mannen i guld bjuder hela salen på champagne: ${n} glas.`,
+        en: (n: number) => `The man in gold buys champagne for the whole room: ${n} ${pl(n, 'glass', 'glasses')}.`
+      }
+    },
+    result: {
+      heading: { sv: 'Vilka som kom', en: 'Who came' },
+      row: {
+        sv: (n: number, kr: string) => `${n} ${pl(n, 'gäst', 'gäster')} · ${kr}`,
+        en: (n: number, kr: string) => `${n} ${pl(n, 'guest', 'guests')} · ${kr}`
+      },
+      perGuest: { sv: (kr: string) => `${kr} per gäst`, en: (kr: string) => `${kr} per guest` },
+      socialGood: { sv: (name: string) => `${name} gick nöjd: fler gäster de närmaste kvällarna.`, en: (name: string) => `${name} left happy: more guests the next few evenings.` },
+      socialBad: { sv: (name: string) => `${name} gick missnöjd: färre gäster de närmaste kvällarna.`, en: (name: string) => `${name} left unhappy: fewer guests the next few evenings.` },
+      socialNeutral: { sv: (name: string) => `${name} gick utan att bli imponerad. Inget sprids.`, en: (name: string) => `${name} left unimpressed. Nothing spreads.` },
+      socialAway: { sv: (name: string) => `${name} kom aldrig.`, en: (name: string) => `${name} never came.` },
+      billionaire: { sv: (kr: string) => `Mannen i guld åt här. Hans nota: ${kr}.`, en: (kr: string) => `The man in gold dined here. His bill: ${kr}.` },
+      billionaireTreat: { sv: (n: number) => `Han bjöd salen på champagne, ${n} glas.`, en: (n: number) => `He bought the room champagne, ${n} ${pl(n, 'glass', 'glasses')}.` },
+      billionaireElsewhere: { sv: 'Mannen i guld var i byn, men åt någon annanstans.', en: 'The man in gold was in the village, but dined somewhere else.' },
+      billionaireLeft: { sv: 'Mannen i guld kom, men fick inget bord och gick.', en: 'The man in gold came in, but got no table and left.' }
+    },
+    paper: {
+      seenKicker: { sv: 'Sett på stan', en: 'Seen in town' },
+      oursTitle: { sv: (name: string) => `Mannen i guld åt på ${name}`, en: (name: string) => `The man in gold dined at ${name}` },
+      oursBody: {
+        sv: (weekday: string) => `Hela Storgatan stannade i ${weekday} när en hotellgäst i guld steg in. Han beställde det dyraste på listan.`,
+        en: (weekday: string) => `All of Storgatan stopped on ${weekday} when a hotel guest in gold walked in. He ordered the most expensive things on the list.`
+      },
+      oursTreat: { sv: 'Sedan bjöd han hela salen på champagne.', en: 'Then he bought the whole room champagne.' },
+      elsewhereTitle: { sv: 'Mannen i guld gick längs sjön', en: 'The man in gold walked by the lake' },
+      // Designs paper.seen.body: han bor på hotellet och åt där. Byns övriga
+      // krogar kommer med rivalerna (288a).
+      hotel: { sv: 'Hotellets matsal', en: 'the hotel dining room' },
+
+      elsewhereBody: {
+        sv: (weekday: string, rival: string) => `Hela Sjövägen stannade i ${weekday} när en hotellgäst i guld tog en promenad runt sjön. Han åt på ${rival}.`,
+        en: (weekday: string, rival: string) => `The whole lake road stopped on ${weekday} when a hotel guest in gold took a walk round the lake. He dined at ${rival}.`
+      },
+      // Tidningen skriver i ord, utan siffror (ORDER 267): vilka som kom mest.
+      guestsMost: {
+        sv: (first: string, second: string | null) => second ? `Flest gäster var ${first}, därefter ${second}.` : `Flest gäster var ${first}.`,
+        en: (first: string, second: string | null) => second ? `Most guests were ${first}, followed by ${second}.` : `Most guests were ${first}.`
+      },
+      who: {
+        student: { sv: 'studenter från Måltidens hus', en: 'students from Måltidens hus' },
+        middle: { sv: 'par och familjer från byn', en: 'couples and families from the village' },
+        high: { sv: 'bilar från Örebro och Karlstad', en: 'cars from Örebro and Karlstad' }
+      },
+      socialGood: { sv: (name: string) => `${name} talade gott om er i byn.`, en: (name: string) => `${name} spoke well of you around the village.` },
+      socialBad: { sv: (name: string) => `${name} talade illa om er i byn.`, en: (name: string) => `${name} spoke badly of you around the village.` }
+    }
   },
   // ORDER 286a — bildtexten vid figuren när raketen börjar i rummet (Designs
   // leverans 2, theatreStrings.ts rocket.*; bordet formateras i koden).

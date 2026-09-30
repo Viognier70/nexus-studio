@@ -152,9 +152,10 @@ describe('ORDER 270 — kvällens båge', () => {
 });
 
 describe('ORDER 270 — en raket', () => {
-  // Vision Owner 2026-09-29 (tredje provspelet): raketens tid blir 20 s i varje steg.
-  it('tiderna står i balance.ts: 20 s i varje steg', () => {
-    expect(INCIDENTS.stepSeconds).toEqual({ episteme: 20, techne: 20, phronesis: 20 });
+  // Vision Owner 2026-09-29 (efter rapporterna om felen och kvällens resultat):
+  // episteme 20 s, techne 20 s och phronesis 30 s. Byggs med ORDER 287a.
+  it('tiderna står i balance.ts: 20, 20 och 30 s', () => {
+    expect(INCIDENTS.stepSeconds).toEqual({ episteme: 20, techne: 20, phronesis: 30 });
   });
 
   it('rummet står inte still: servicen fortsätter medan nedräkningen går', () => {

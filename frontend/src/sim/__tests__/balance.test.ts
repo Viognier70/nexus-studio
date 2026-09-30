@@ -141,8 +141,9 @@ describe('ORDER 262 — balance.ts mot speldesignen', () => {
     expect(balance.DOWNGRADE).toMatchObject({ consecutiveNegativeDayEnds: 3, warningDays: 2 });
     // Vision Owner 2026-09-27: trestegsraketer, 2–4 per kväll, 15/20/30 s.
     expect(balance.INCIDENTS).toMatchObject({ minPerEvening: 2, maxPerEvening: 4, optionsMin: 3, optionsMax: 4, timeoutCreditPenalty: 1 });
-    // Vision Owner 2026-09-29: raketens tid blir 20 sekunder i varje steg.
-    expect(balance.INCIDENTS.stepSeconds).toEqual({ episteme: 20, techne: 20, phronesis: 20 });
+    // Vision Owner 2026-09-29 (efter rapporterna om felen och kvällens resultat):
+    // episteme 20, techne 20 och phronesis 30 sekunder. Byggs med ORDER 287a.
+    expect(balance.INCIDENTS.stepSeconds).toEqual({ episteme: 20, techne: 20, phronesis: 30 });
     expect(balance.EXAM).toMatchObject({ questionsDrawn: 8, questionsPerLevel: 10, correctToPass: 6 });
     expect(balance.PRACTICE.questions).toBe(5);
     expect(balance.DAY).toMatchObject({ scheduleSlots: 2, sundayScheduleSlots: 4 });

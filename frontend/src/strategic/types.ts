@@ -409,6 +409,37 @@ export interface Guest {
   // med äldre testfixturer.
   seatedAtSimTime?: number;
   orderCompleteAtSimTime?: number;
+  // ORDER 287a — gästens typ efter kapital (sim/guestTypes.ts). Sätts när
+  // gästen kommer; saknas den (äldre fixturer) gäller plånboken ur fröet.
+  guestType?: GuestType;
+}
+
+// ORDER 287a — gästerna med kapital (speldesign > Servicen > Gästerna).
+export interface SustainabilityLevels { social: number; economic: number; ecological: number }
+
+export type GuestType = 'student' | 'middle' | 'high' | 'social' | 'billionaire';
+export const GUEST_TYPE_IDS: readonly GuestType[] = ['student', 'middle', 'high', 'social', 'billionaire'];
+
+// ORDER 287a — kvällens bokningsbok (Designs skärm 1): väntade gäster per
+// typ, gästen med socialt kapital, de utan bokning, och om miljardären är
+// i byn och väljer spelarens krog. Låses när dörrarna öppnar.
+export interface GuestBooking {
+  dayNumber: number;
+  counts: { student: number; middle: number; high: number };
+  // Gästen med socialt kapital: index i strängtabellens namnlista.
+  social: { nameIndex: number } | null;
+  walkIns: number;
+  total: number;
+  billionaireInTown: boolean;
+  billionaire: boolean;
+}
+
+// ORDER 287a — vad miljardären gjorde i kväll.
+export interface BillionaireVisit {
+  guestId: string;
+  billSek: number;
+  treated: boolean;
+  glasses: number;
 }
 
 export type SustainabilityDirection =
@@ -896,6 +927,13 @@ export interface DayState {
   // glas) och den nivå varningen senast gällde (Designs L1).
   stockAtOpen?: Record<string, number>;
   stockWarned?: Record<string, 'low' | 'out'>;
+  // ORDER 287a — kvällens bokningsbok, gästerna och intäkten per typ,
+  // gästen med socialt kapital och miljardären.
+  booking?: GuestBooking;
+  guestTypeArrivals?: Partial<Record<GuestType, number>>;
+  guestTypeRevenue?: Partial<Record<GuestType, number>>;
+  socialGuest?: { guestId: string; outcome: 'good' | 'bad' | 'neutral' | null } | null;
+  billionaireVisit?: BillionaireVisit | null;
 }
 
 // ORDER 077 §4 (M4) — supplier, ingredient, and dish domain types.
@@ -1444,6 +1482,16 @@ export interface SimulationState {
   // ORDER 280 — personalens dricks (Designs H1: aldrig i kassan), hela
   // säsongen. Kvällens del står i day.tipsSek.
   staffTipPotSek?: number;
+  // ORDER 287a — ryktet från gästen med socialt kapital: marknadens tak
+  // gånger 1 + factor dag fromDay till untilDay (sim/guestTypes.ts).
+  guestBuzz?: { fromDay: number; untilDay: number; factor: number; nameIndex: number }[];
+  // ORDER 287a — kvällens hållbarheter som nivåer 0–10, och förra kvällens
+  // (sim/sustainabilityLevels.ts). Sätts när servicen stänger.
+  sustainabilityLevels?: {
+    dayNumber: number;
+    levels: SustainabilityLevels;
+    previous: SustainabilityLevels | null;
+  } | null;
   lastWaste?: {
     dayNumber: number; units: number; sek: number; kept?: number; feeSek?: number;
     // ORDER 280 — sopbilens kilo och fraktioner, och rådet.

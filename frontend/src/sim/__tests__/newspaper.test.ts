@@ -25,7 +25,8 @@ describe('ORDER 267 — söndagstidningen', () => {
       Array.from({ length: WEEK.daysPerWeek - 1 }, (_, i) => i + 1)
     );
     const paper = newspaperFor(run.final, 'Vinbaren vid torget', ['Banken säger något.'], () => 'För restaurangen saknas silver i tre paviljonger.');
-    expect(paper?.sections.map((x) => x.id)).toEqual(['review', 'market', 'bank', 'holiday']);
+    // ORDER 287a — Sett på stan när miljardären var i byn (fredag och lördag).
+    expect(paper?.sections.map((x) => x.id)).toEqual(['review', 'market', 'bank', 'holiday', 'seen']);
     expect(paper?.sections[0].title).toContain('Vinbaren vid torget');
     for (const section of paper!.sections) {
       for (const line of section.lines) expect(line).not.toMatch(/\d/);

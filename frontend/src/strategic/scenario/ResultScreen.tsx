@@ -9,9 +9,9 @@
 // nedgångar streckade i grädde. Inga tabeller.
 //
 // Talen läses ur eveningResult.ts (eveningResult, eveningEvents).
-// Hållbarheterna visas tills vidare som förändringen i poäng; nivåerna 0–10
-// med förra kvällens nivå väntar på Vision Owners beslut om hur de räknas
-// (ORDER_285_RAPPORT.md).
+// ORDER 287a — hållbarheterna som nivåer 0–10: tio prickar där förra
+// kvällens nivå är streckad (Designs skärm 6), och kvällens gäster efter typ
+// med vad de betydde (guestTypes.ts eveningGuests).
 
 import { useEffect, useRef } from 'react';
 import type { LucideIcon } from 'lucide-react';
@@ -19,7 +19,9 @@ import { ArrowDownRight, ArrowUpRight, BadgeCheck, BookOpen, Cake, Coins, GlassW
 import { strings } from '../../content/strings';
 import { useLanguage } from '../../content/language';
 import { calendarFor } from '../../sim/calendar';
-import { GAME_MINUTES_PER_SIM_SECOND, INCIDENTS, SITTING, CLOCK } from '../../sim/balance';
+import { GAME_MINUTES_PER_SIM_SECOND, INCIDENTS, SITTING, CLOCK, SUSTAINABILITY_LEVELS } from '../../sim/balance';
+import { WARM } from '../../ui/theme/nexusTheme.warm';
+import { eveningGuests } from '../simulation/guestTypes';
 import type { SimulationState } from '../types';
 import { NxButton, NxScreen } from '../ui/system/components';
 import { formatSek } from '../ui/CashCounter';
@@ -29,6 +31,52 @@ import { eveningEvents, eveningResult, type EveningEvent, type ResultRow } from 
 import '../ui/service/service.css';
 
 const GAP_MS = 120;
+
+// ORDER 287a — nivån som tio prickar; förra kvällens nivå är streckad.
+function LevelDots({ level, previous, label }: { level: number; previous: number | null; label?: string }) {
+  return (
+    <div className="nx-level-dots" data-testid="level-dots" data-level={level} data-previous={previous ?? ''} title={label}>
+      {Array.from({ length: SUSTAINABILITY_LEVELS.max }, (_, i) => (
+        <span key={i} className="nx-level-dot" data-on={i < level} data-prev={previous !== null && i === previous - 1} />
+      ))}
+    </div>
+  );
+}
+
+// ORDER 287a — vilka som kom och vad de betydde.
+function EveningGuestsPanel({ sim }: { sim: SimulationState }) {
+  const g = strings.guestTypes;
+  const e = eveningGuests(sim);
+  if (e.rows.length === 0 && !e.social && !e.billionaire) return null;
+  return (
+    <div className="nx-result-guests" data-testid="result-guests">
+      <div className="nx-label">{g.result.heading}</div>
+      {e.rows.map((r) => (
+        <div key={r.type} className="nx-result-guest" data-testid={`result-guests-${r.type}`} data-guests={r.guests} data-revenue={r.revenueSek}>
+          <span className="nxs-book-dot" style={{ background: WARM.guest[r.type] }} aria-hidden />
+          <span className="nx-result-guest-label">{g.label[r.type]}</span>
+          <span className="nx-num">{g.result.row(r.guests, formatSek(r.revenueSek))}</span>
+          <span className="nx-small nx-muted">{g.result.perGuest(formatSek(r.guests > 0 ? Math.round(r.revenueSek / r.guests) : 0))}</span>
+        </div>
+      ))}
+      {e.social && (
+        <p className="nx-small" data-testid="result-social" data-outcome={e.social.outcome ?? 'open'} style={{ margin: 0 }}>
+          {e.social.outcome === 'good' ? g.result.socialGood(e.social.name)
+            : e.social.outcome === 'bad' ? g.result.socialBad(e.social.name)
+            : e.social.outcome === 'away' ? g.result.socialAway(e.social.name)
+            : g.result.socialNeutral(e.social.name)}
+        </p>
+      )}
+      {e.billionaire && (
+        <p className="nx-small" data-testid="result-billionaire" style={{ margin: 0 }}>
+          {e.billionaire === 'elsewhere' ? g.result.billionaireElsewhere
+            : e.billionaire === 'left' ? g.result.billionaireLeft
+            : `${g.result.billionaire(formatSek(e.billionaire.billSek))}${e.billionaire.treated ? ` ${g.result.billionaireTreat(e.billionaire.glasses)}` : ''}`}
+        </p>
+      )}
+    </div>
+  );
+}
 const MPH = INCIDENTS.minutesPerHour;
 
 const ICON: Record<ResultRow['key'] | 'waste', LucideIcon> = {
@@ -71,9 +119,10 @@ export function ResultScreen({ sim, onContinue }: { sim: SimulationState; onCont
     switch (r.key) {
       case 'money': return signedSek(r.delta);
       case 'credits': case 'experience': return `${sign(r.delta)}${num(r.delta)}`;
-      case 'reputation': case 'social': case 'ecological': return t.points(`${sign(r.delta)}${num(r.delta, 1)}`);
+      case 'social': case 'ecological': return r.level !== undefined ? t.level(r.level, SUSTAINABILITY_LEVELS.max) : t.points(`${sign(r.delta)}${num(r.delta, 1)}`);
+      case 'reputation': return t.points(`${sign(r.delta)}${num(r.delta, 1)}`);
       case 'knowledge': return `${r.detail.cleared}/${r.detail.total}`;
-      case 'economic': return pct(r.delta);
+      case 'economic': return r.level !== undefined ? t.level(r.level, SUSTAINABILITY_LEVELS.max) : pct(r.delta);
     }
   };
   const note = (r: ResultRow): string => {
@@ -137,6 +186,7 @@ export function ResultScreen({ sim, onContinue }: { sim: SimulationState; onCont
               );
             })}
           </ol>
+          <EveningGuestsPanel sim={sim} />
         </section>
         <section className="nx-result-gains" aria-label={t.gains}>
           <div className="nx-label" style={{ marginBottom: 'calc(12 * var(--nx-u))' }}>{t.gains}</div>
@@ -151,6 +201,7 @@ export function ResultScreen({ sim, onContinue }: { sim: SimulationState; onCont
                     {r.tone !== 'even' && <Arrow size={20} strokeWidth={2} aria-label={r.tone === 'won' ? t.won : t.lost} />}
                   </div>
                   <div className="nx-num nx-result-value">{value(r)}</div>
+                  {r.level !== undefined && <LevelDots level={r.level} previous={r.previousLevel ?? null} label={r.previousLevel != null ? t.previousLevel(r.previousLevel) : undefined} />}
                   <div className="nx-result-medal-label">{t.rows[r.key]}</div>
                   <div className="nx-small nx-muted">{note(r)}</div>
                 </div>

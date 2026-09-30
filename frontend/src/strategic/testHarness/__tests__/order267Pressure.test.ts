@@ -57,6 +57,7 @@ function evening(dayNumber: number) {
   s = reducer(stocked(s), { type: 'START_SERVICE' });
   const seatedAt: Record<string, number> = {};
   const sitting: number[] = [];
+  const studentSitting: number[] = [];
   let prev: Record<string, string> = {};
   let maxQueue = 0;
   let declined = 0;
@@ -71,11 +72,14 @@ function evening(dayNumber: number) {
       if (p === g.state) continue;
       if (g.state === 'seated') seatedAt[g.id] = s.simTime;
       if (g.state === 'declined' && p === 'arriving') declined++;
-      if (g.state === 'leaving' && seatedAt[g.id] !== undefined) sitting.push(s.simTime - seatedAt[g.id]);
+      // ORDER 287a — studenten tar platsen längre (GUEST_TYPES.stayFactor);
+      // sittiden 60–90 min (F31) gäller övriga gäster, studenten redovisas för sig.
+      if (g.state === 'leaving' && seatedAt[g.id] !== undefined) (g.guestType === 'student' ? studentSitting : sitting).push(s.simTime - seatedAt[g.id]);
     }
     prev = Object.fromEntries(s.guests.map((g) => [g.id, g.state]));
   }
   const meanSimSec = sitting.reduce((a, b) => a + b, 0) / Math.max(1, sitting.length);
+  const studentMeanSimSec = studentSitting.reduce((a, b) => a + b, 0) / Math.max(1, studentSitting.length);
   return {
     seats: isSeatedCapacity(s),
     marketCap: dailyGuestCap(s),
@@ -84,7 +88,8 @@ function evening(dayNumber: number) {
     gaveUp,
     declinedAtDoor: declined,
     departures: sitting.length,
-    sittingGameMinutes: Math.round(meanSimSec * GAME_MINUTES_PER_SIM_SECOND)
+    sittingGameMinutes: Math.round(meanSimSec * GAME_MINUTES_PER_SIM_SECOND),
+    studentSittingGameMinutes: Math.round(studentMeanSimSec * GAME_MINUTES_PER_SIM_SECOND)
   };
 }
 

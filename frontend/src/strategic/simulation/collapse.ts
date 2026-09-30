@@ -26,6 +26,8 @@
 // 15-min service; a strong team at rest sees ~1 %. See §1.1 in the
 // order document for the full expected-rate table.
 
+import { settleSocialGuestAtClose } from './guestTypes';
+import { sustainabilityLevelsFor } from '../../sim/sustainabilityLevels';
 import { closeIncidents } from '../../sim/incidents';
 import { clampReputation } from './reputation';
 import { dayEnd, dayEndHeadroom, recordEvening } from '../../sim/economy';
@@ -243,6 +245,14 @@ export function fireCollapse(draft: SimulationState): void {
   draft.economy = dayEnd(draft.economy, dayEndHeadroom(draft));
   // ORDER 266 — recensentens omdöme och stationernas skick även här.
   onServiceClose(draft, { ...draft }, 'collapsed');
+  // ORDER 287a — gästen med socialt kapital och hållbarheterna 0–10 även
+  // när kvällen föll ihop.
+  settleSocialGuestAtClose(draft);
+  draft.sustainabilityLevels = {
+    dayNumber: draft.day.dayNumber,
+    levels: sustainabilityLevelsFor(draft, draft),
+    previous: draft.sustainabilityLevels?.levels ?? null
+  };
   // ORDER 267 — kvällen till veckans lista (söndagstidningen).
   draft.economy = recordEvening(draft, draft);
   draft.day = {

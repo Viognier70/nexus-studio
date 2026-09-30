@@ -20,6 +20,7 @@
 // Visas på morgonen (och eftermiddagen). Döljs under service och kväll.
 
 import { SalvageCard } from './SalvageCard';
+import { BookingBook } from './BookingBook';
 import { useEffect, useRef, useState } from 'react';
 import { isStrandedWithoutBusiness } from '../../sim/economy';
 import { strings } from '../../content/strings';
@@ -35,7 +36,7 @@ import { numberWord } from '../simulation/eveningAccount';
 import { activityById } from '../simulation/activities';
 import { MorningActivityPanel } from '../business/MorningActivityPanel';
 import { MorningMenuPanel } from '../business/MorningMenuPanel';
-import { coverage, morningRows } from '../simulation/morningBuy';
+import { morningRows } from '../simulation/morningBuy';
 import { packagesFor } from '../simulation/packages';
 import { menuFromStock, stockReadiness } from '../simulation/stockPackages';
 import { findDish } from '../simulation/m4Catalogue';
@@ -236,16 +237,8 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenB
               {/* ORDER 275 — klasser med paket köper lagret som paket.
                   ORDER 280 — inköpen görs på en egen skärm (Designs M1). */}
               {/* ORDER 285 — bokningsboken (Designs morgon): kvällens väntade gäster. */}
-              {packagesFor(sim.economy.businessClass) && cal.isServiceDay && (
-                <div className="nx-paper nxs-book" data-testid="booking-book">
-                  <div className="nx-label">{strings.morningBuy.bookKicker}</div>
-                  <div className="nxs-book-row">
-                    <span className="nx-mid">{strings.morningBuy.bookTitle(strings.calendar.weekdays[cal.weekday])}</span>
-                    <span className="nx-num nxs-book-n" data-testid="booking-guests">{coverage(sim).guests}</span>
-                  </div>
-                  <p className="nx-small nx-muted" style={{ margin: 0 }}>{strings.morningBuy.bookNote}</p>
-                </div>
-              )}
+              {/* ORDER 287a — med kvällens gäster efter typ (Designs skärm 1). */}
+              {packagesFor(sim.economy.businessClass) && cal.isServiceDay && <BookingBook sim={sim} />}
               {/* ORDER 285 — gårdagens rester: en fråga om tillvaratagande. */}
               <SalvageCard />
               {packagesFor(sim.economy.businessClass) ? (

@@ -13,6 +13,7 @@
 // away veers laterally on the arrival arc, then heads back out. Same
 // puck, opposite trajectories.
 
+import { WARM } from '../../ui/theme/nexusTheme.warm';
 import { useFrame } from '@react-three/fiber';
 import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
@@ -327,6 +328,8 @@ const GARMENT_VARIANTS: Record<'seated' | 'ordering' | 'dining' | 'paying' | 'sl
 };
 
 function garmentColourFor(guest: Guest): string {
+  // ORDER 287a — sittande gäster bär gästtypens färg ur Designs WARM.guest.
+  if (guest.guestType) return WARM.guest[guest.guestType];
   const state = guest.state;
   const table = GARMENT_VARIANTS[state as keyof typeof GARMENT_VARIANTS];
   if (!table) return GUEST_COLOUR[state];

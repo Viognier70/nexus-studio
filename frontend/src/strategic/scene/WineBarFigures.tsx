@@ -96,6 +96,8 @@ import {
 } from './wineBarDirector';
 import { TheatreStage } from './theatreStage';
 import { seatKindFromRoom, type ClipSample } from './figureClips';
+import { WARM } from '../../ui/theme/nexusTheme.warm';
+import type { GuestType } from '../types';
 import { THEATRE } from '../../sim/balance';
 import type { ActiveIncident } from '../../sim/incidents';
 import { strings } from '../../content/strings';
@@ -210,6 +212,7 @@ interface Cast {
   group: THREE.Group;
   guestRigs: FigureRig[];
   guestIds: (string | null)[];
+  guestTypes: (GuestType | null)[];
   staffRigs: FigureRig[];
   ring: ActionRing;
   shadowsOn: boolean;
@@ -339,7 +342,7 @@ export function WineBarFigures({ room, mood }: Props) {
     group.add(ring.group);
     const stage = new TheatreStage(group, room.floorY, STAFF_KEYS.length, WINE_BAR_GUEST_POOL);
     castRef.current = {
-      director, group, guestRigs, guestIds: guestRigs.map(() => null), staffRigs, ring, shadowsOn: true, lights,
+      director, group, guestRigs, guestIds: guestRigs.map(() => null), guestTypes: guestRigs.map(() => null), staffRigs, ring, shadowsOn: true, lights,
       stage,
       staffClips: staffRigs.map(() => null),
       guestClips: guestRigs.map(() => null),
@@ -413,9 +416,14 @@ export function WineBarFigures({ room, mood }: Props) {
     for (let i = 0; i < gs.length; i++) {
       const rig = cast.guestRigs[i];
       const sample = gs[i];
-      if (sample.guestId !== cast.guestIds[i]) {
+      // ORDER 287a — gästtypens färg ur Designs WARM.guest (studenten,
+      // medelinkomst, höginkomst, socialt kapital, miljardären i guld).
+      // Gäster utan typ (äldre fixturer) behåller rummets dova plagg.
+      const guestType = sample.guestId ? s.guests.find((g) => g.id === sample.guestId)?.guestType ?? null : null;
+      if (sample.guestId !== cast.guestIds[i] || guestType !== cast.guestTypes[i]) {
         cast.guestIds[i] = sample.guestId;
-        if (sample.guestId) rig.garment.color.set(garmentFor(sample.guestId));
+        cast.guestTypes[i] = guestType;
+        if (sample.guestId) rig.garment.color.set(guestType ? WARM.guest[guestType] : garmentFor(sample.guestId));
       }
       // Sittregeln för alla sitsar (tillägget till leverans 2): barstol, lounge och stol.
       const seat = sample.guestId ? cast.director.guestSeat(sample.guestId) : null;

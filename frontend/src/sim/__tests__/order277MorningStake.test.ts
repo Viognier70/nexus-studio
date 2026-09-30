@@ -117,7 +117,7 @@ describe('ORDER 277 — gästernas kost och plånbok', () => {
       if (p.diet !== 'any') count[p.diet]++;
       if (p.allergy) count[p.allergy]++;
       if (p.noAlcohol) count.noAlcohol++;
-      if (p.wallet !== 'normal') count[p.wallet]++;
+      if (p.wallet === 'tight' || p.wallet === 'generous') count[p.wallet]++;
     }
     const near = (k: keyof typeof count, want: number) => expect(Math.abs(count[k] / n - want), k).toBeLessThan(0.01);
     near('vegetarian', GUESTS.dietShare.vegetarian);

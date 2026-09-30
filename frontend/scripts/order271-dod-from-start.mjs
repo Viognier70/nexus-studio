@@ -218,6 +218,11 @@ try {
   report.s1ScrollTopBeforeShot = await page.evaluate(() => document.querySelector('[data-testid=day-action-bar]')?.scrollTop ?? null);
   await page.evaluate(() => document.querySelector('[data-testid=day-action-bar]')?.scrollTo(0, 0));
   await delay(200); await shot('dod-02-S1-schema-mandag.png', 'S1 morgonens schema, måndag');
+  // ORDER 287a — bokningsboken måndag morgon (recordBooking definieras längre ned).
+  {
+    const rows = await page.$$eval('[data-testid^=booking-row-]', (els) => els.map((e) => ({ key: e.getAttribute('data-testid').replace('booking-row-', ''), text: e.textContent }))).catch(() => []);
+    report.bookings = [{ morning: 'måndag', total: await page.textContent('[data-testid=booking-guests]').catch(() => null), rows }];
+  }
   step('vinbaren öppnad');
   // ORDER 277 — servicen går inte att starta förrän menyn och dryckeslistan
   // har en rätt och en dryck i lager. ORDER 280 — inköpen görs på Designs
@@ -416,6 +421,9 @@ try {
   if (await page.waitForSelector('[data-testid=screen-R1]', { timeout: 8000 }).then(() => true).catch(() => false)) {
     await delay(2500);
     report.r1 = await page.$$eval('[data-result-row]', (els) => els.map((e) => ({ key: e.getAttribute('data-testid'), tone: e.getAttribute('data-tone'), delta: e.getAttribute('data-delta') })));
+    // ORDER 287a — nivåerna 0–10 och kvällens gäster efter typ.
+    report.r1Levels = await page.$$eval('[data-testid=level-dots]', (els) => els.map((e) => ({ level: e.getAttribute('data-level'), previous: e.getAttribute('data-previous') })));
+    await recordGuests('mån');
     await shot('dod-43-R1-kvallens-resultat.png', 'R1 kvällens resultat: vad kvällen gav och tog');
     await page.click('[data-testid=result-continue]');
   }
@@ -431,7 +439,34 @@ try {
   // Veckan till söndagen: det bästa svaret i varje steg.
   // Morgonen som den rimliga spelaren i harnessen: inga ändringar (spelets
   // förvalda meny och lager). En egen meny med tre rätter tömde köket.
+  // ORDER 287a — kvällens gäster efter typ i R1 (result-guests-*), gästen med
+  // socialt kapital och miljardären.
+  async function recordGuests(label) {
+    const rows = await page.$$eval('[data-testid^=result-guests-]', (els) => els.map((e) => ({ type: e.getAttribute('data-testid').replace('result-guests-', ''), guests: Number(e.getAttribute('data-guests')), revenueSek: Number(e.getAttribute('data-revenue')) }))).catch(() => []);
+    const social = await page.$eval('[data-testid=result-social]', (e) => ({ outcome: e.getAttribute('data-outcome'), text: e.textContent })).catch(() => null);
+    const billionaire = await page.textContent('[data-testid=result-billionaire]').catch(() => null);
+    report.eveningGuests = report.eveningGuests ?? [];
+    report.eveningGuests.push({ evening: label, rows, social, billionaire });
+    return { rows, social, billionaire };
+  }
+  // ORDER 287a — bokningsboken på morgonen (Designs skärm 1).
+  async function recordBooking(label, shotName) {
+    const rows = await page.$$eval('[data-testid^=booking-row-]', (els) => els.map((e) => ({ key: e.getAttribute('data-testid').replace('booking-row-', ''), text: e.textContent }))).catch(() => []);
+    const total = await page.textContent('[data-testid=booking-guests]').catch(() => null);
+    const billionaire = await page.textContent('[data-testid=booking-billionaire]').catch(() => null);
+    const buzz = await page.textContent('[data-testid=booking-buzz]').catch(() => null);
+    report.bookings = report.bookings ?? [];
+    report.bookings.push({ morning: label, total, rows, billionaire, buzz });
+    if (shotName) {
+      await page.$eval('[data-testid=booking-book]', (e) => e.scrollIntoView({ block: 'center' })).catch(() => {});
+      await delay(300);
+      await shot(shotName, `bokningsboken ${label}: kvällens gäster efter typ`);
+    }
+  }
+  let eveningNo = 0;
   async function playEvening(figures) {
+    eveningNo++;
+    await recordBooking(`kväll ${eveningNo + 1}`, eveningNo === 1 || figures ? `dod-46-bokningsboken-${eveningNo + 1}.png` : null);
     // ORDER 275/277 — baspaketet varje morgon, som den rimliga spelaren:
     // listan fylls med paketet och köps.
     // ORDER 280 — M1: baspaketet och öppna dörrarna.
@@ -462,7 +497,9 @@ try {
     const openedAt = Date.now();
     const until = Date.now() + 15 * 60000;
     while (Date.now() < until) {
-      if (await page.$('[data-testid=evening-bar], [data-testid=screen-S1]')) break;
+      // ORDER 287a — en kväll som faller ihop går direkt till R1 (ingen sopbil);
+      // skriptet väntade förut bara på S1 och kvällen tog slut av sig själv.
+      if (await page.$('[data-testid=evening-bar], [data-testid=screen-S1], [data-testid=screen-R1], [data-testid=screen-L1]')) break;
       const card = await page.$('[data-testid=incident-card]');
       // Lördagen: figurerna vid två tidpunkter mitt i kvällen (130 och 142 s
       // efter öppning i 2×, när rummet har fyllts), utan kort.
@@ -491,7 +528,18 @@ try {
       if (screen && seq[seq.length - 1] !== screen) seq.push(screen);
       await delay(900);
       if (screen === 'S1') await page.click('[data-testid=waste-continue]').catch(() => {});
-      else if (screen === 'R1') await page.click('[data-testid=result-continue]').catch(() => {});
+      else if (screen === 'R1') {
+        // ORDER 287a — kvällens gäster; en bild första gången miljardären eller
+        // gästen med socialt kapital syns.
+        const g = await recordGuests(`kväll ${eveningNo + 1}`);
+        if ((g.billionaire || g.social) && !report.guestShot) {
+          report.guestShot = true;
+          await page.$eval('[data-testid=result-guests]', (e) => e.scrollIntoView({ block: 'center' })).catch(() => {});
+          await delay(400);
+          await shot('dod-47-R1-gasterna.png', 'R1: vilka som kom och vad de betydde');
+        }
+        await page.click('[data-testid=result-continue]').catch(() => {});
+      }
       else if (screen === 'L1') await page.click('[data-testid=to-evening-story]').catch(() => {});
       else if (screen === 'K1') await page.click('[data-testid=end-evening]').catch(() => {});
       await delay(400);
@@ -506,6 +554,9 @@ try {
   await delay(600); await shot('dod-10-T1-sondagstidningen.png', 'T1 söndagstidningen');
   // ORDER 280 — hyran och veckans löner i tidningen.
   report.newspaper = await page.textContent('[data-testid=screen-T1]').catch(() => null);
+  // ORDER 287a — Sett på stan och veckans gäster.
+  report.newspaperSeen = await page.textContent('[data-testid=newspaper-seen]').catch(() => null);
+  report.newspaperMarket = await page.textContent('[data-testid=newspaper-market]').catch(() => null);
   await page.click('[data-testid=newspaper-to-bank]');
   await page.waitForSelector('[data-testid=screen-B1]');
   await delay(400); await shot('dod-11-B1-bankmotet.png', 'B1 bankmötet');
