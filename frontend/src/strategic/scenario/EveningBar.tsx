@@ -150,7 +150,7 @@ function LessonScreen({ sim, lesson, onStory, onEnd }: { sim: SimulationState; l
                   <div data-testid={`lesson-step-${item.incidentId}`} data-step-axis={item.stepAxis}>
                     <NxLabel muted>{l.also(rec.context.clock, s.stepName[item.stepAxis], s.stepAsks[item.stepAxis])}</NxLabel>
                   </div>
-                  <p>{item.title}: {item.betterExplanation}</p>
+                  <p>{/[?!.]$/.test(item.title) ? item.title : `${item.title}:`} {item.betterExplanation}</p>
                 </div>
               );
             })}

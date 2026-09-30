@@ -33,6 +33,7 @@ const FRONTEND = resolve(HERE, '..');
 const OUT = resolve(FRONTEND, 'reports', process.env.REPORT_ORDER ?? 'order271');
 mkdirSync(OUT, { recursive: true });
 // ORDER 284 — PORT=… när 4174 är upptagen av annat.
+// ORDER 291 — GAME_LANG=sv spelar på svenska.
 const PORT = Number(process.env.PORT ?? 4174);
 const URL = `http://localhost:${PORT}`;
 const W = 1920;
@@ -74,6 +75,9 @@ const step = (name, extra = {}) => { const e = { name, atSeconds: Math.round((Da
 
 async function newPage() {
   const ctx = await browser.newContext({ viewport: { width: W, height: H } });
+  // ORDER 291 — GAME_LANG=sv spelar veckan på svenska (spelarens val i
+  // menyn sparas i nexus.lang; här sätts det före första sidladdningen).
+  if (process.env.GAME_LANG) await ctx.addInitScript((lang) => { if (!sessionStorage.getItem('n-lang')) { localStorage.setItem('nexus.lang', lang); sessionStorage.setItem('n-lang', '1'); } }, process.env.GAME_LANG);
   const p = await ctx.newPage();
   p.on('pageerror', (e) => errors.push(`${e.message}\n${(e.stack ?? '').slice(0, 600)}`));
   return p;
@@ -178,14 +182,14 @@ try {
   await page.click('[data-testid=new-game]');
   await page.waitForSelector('.hud', { timeout: 90000 });
   await delay(2000);
-  if (!(await walkUntilPrompt('w', 'Talk', 20000))) throw new Error('prata');
+  if (!(await walkUntilPrompt('w', process.env.GAME_LANG === 'sv' ? 'Prata' : 'Talk', 20000))) throw new Error('prata');
   await page.keyboard.press('e');
   await page.waitForSelector('.dialogue-panel .choice');
   await page.$eval('.dialogue-panel .choice', (b) => b.click());
   await page.waitForSelector('.dialogue-actions .btn');
   await page.$eval('.dialogue-actions .btn', (b) => b.click());
   await page.waitForSelector('.dialogue-panel', { state: 'detached', timeout: 10000 });
-  if (!(await walkUntilPrompt('w', 'Register', 30000))) throw new Error('registrera');
+  if (!(await walkUntilPrompt('w', process.env.GAME_LANG === 'sv' ? 'Registrera' : 'Register', 30000))) throw new Error('registrera');
   await page.keyboard.press('e');
   await page.waitForSelector('.end-stage', { timeout: 10000 });
   await page.$eval('.end-buttons .btn.primary', (b) => b.click());
