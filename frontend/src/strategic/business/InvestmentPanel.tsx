@@ -14,84 +14,9 @@
 // gap). Morning-only, same visibility gate as TeamPanel. Non-modal.
 
 import { strings } from '../../content/strings';
+import '../ui/screens/room.css';
 import type { IngredientTier, PricingTier } from '../types';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
-
-// ORDER 090 §6 — was `top: 500, left: 16` next to TeamPanel; both are
-// now inside the LEFT PanelColumn (see ui/PanelColumn.tsx). The old
-// hardcoded top:500 assumed TeamPanel stayed ≤ 428 px; TeamPanel's
-// own maxHeight of calc(100vh - 120px) contradicted that at every
-// viewport tall enough for a real team, hence the reported overlap.
-// InvestmentPanel now sits under TeamPanel via DOM flow — no top
-// offset can drift out of sync again.
-const PANEL_STYLE: React.CSSProperties = {
-  width: 320,
-  padding: '14px 16px 16px',
-  background: 'rgba(30, 22, 16, 0.86)',
-  color: '#f5f0e0',
-  border: '1px solid #a8926a',
-  borderRadius: 5,
-  fontFamily: 'system-ui, sans-serif',
-  fontSize: 13,
-  lineHeight: 1.4,
-  letterSpacing: 0.2,
-  boxShadow: '0 6px 20px rgba(0,0,0,0.35)',
-  pointerEvents: 'auto',
-  zIndex: 35
-};
-
-const HEADING_STYLE: React.CSSProperties = {
-  fontSize: 11,
-  letterSpacing: 1.2,
-  textTransform: 'uppercase',
-  opacity: 0.72,
-  marginBottom: 4
-};
-
-const BODY_STYLE: React.CSSProperties = {
-  marginBottom: 10,
-  opacity: 0.9
-};
-
-const GROUP_HEADING_STYLE: React.CSSProperties = {
-  fontSize: 11,
-  letterSpacing: 1.2,
-  textTransform: 'uppercase',
-  opacity: 0.72,
-  marginTop: 12,
-  marginBottom: 6
-};
-
-const OPTION_BUTTON_STYLE: React.CSSProperties = {
-  display: 'block',
-  width: '100%',
-  textAlign: 'left',
-  padding: '7px 10px',
-  marginBottom: 4,
-  background: '#2a1e14',
-  color: '#f5f0e0',
-  border: '1px solid #6c5a3a',
-  borderRadius: 3,
-  fontFamily: 'inherit',
-  fontSize: 12,
-  fontWeight: 500,
-  letterSpacing: 0.3,
-  cursor: 'pointer'
-};
-
-const OPTION_BUTTON_ACTIVE_STYLE: React.CSSProperties = {
-  ...OPTION_BUTTON_STYLE,
-  background: '#5a4126',
-  border: '1px solid #d4b878',
-  fontWeight: 700
-};
-
-const OPTION_DESC_STYLE: React.CSSProperties = {
-  fontSize: 11,
-  fontWeight: 400,
-  opacity: 0.8,
-  marginTop: 2
-};
 
 const TRAINING_LEVELS: readonly (1 | 2 | 3)[] = [1, 2, 3];
 const PRICING_LEVELS: readonly PricingTier[] = ['låg', 'medel', 'hög'];
@@ -107,60 +32,60 @@ export function InvestmentPanel() {
   const s = strings.invest;
 
   return (
-    <div style={PANEL_STYLE}>
-      <div style={HEADING_STYLE}>{s.heading}</div>
-      <div style={BODY_STYLE}>{s.body}</div>
+    <div className="nx nxr-panel">
+      <div className="nx-label">{s.heading}</div>
+      <div className="nx-small nx-muted nxr-body">{s.body}</div>
 
-      <div style={GROUP_HEADING_STYLE}>{s.trainingHeading}</div>
+      <div className="nx-label nxr-group">{s.trainingHeading}</div>
       {TRAINING_LEVELS.map((level) => {
         const active = policies.trainingLevel === level;
         return (
           <button
             key={`training-${level}`}
             type="button"
-            style={active ? OPTION_BUTTON_ACTIVE_STYLE : OPTION_BUTTON_STYLE}
+            className="nxs-list-row nxr-option" aria-pressed={active}
             onClick={() =>
               dispatch({ type: 'SET_POLICY', patch: { trainingLevel: level } })
             }
           >
             <div>{s.trainingLevels[level]}</div>
-            <div style={OPTION_DESC_STYLE}>{s.trainingDescriptions[level]}</div>
+            <div className="nxs-row-sub">{s.trainingDescriptions[level]}</div>
           </button>
         );
       })}
 
-      <div style={GROUP_HEADING_STYLE}>{s.pricingHeading}</div>
+      <div className="nx-label nxr-group">{s.pricingHeading}</div>
       {PRICING_LEVELS.map((tier) => {
         const active = policies.pricing === tier;
         return (
           <button
             key={`pricing-${tier}`}
             type="button"
-            style={active ? OPTION_BUTTON_ACTIVE_STYLE : OPTION_BUTTON_STYLE}
+            className="nxs-list-row nxr-option" aria-pressed={active}
             onClick={() =>
               dispatch({ type: 'SET_POLICY', patch: { pricing: tier } })
             }
           >
             <div>{s.pricingLevels[tier]}</div>
-            <div style={OPTION_DESC_STYLE}>{s.pricingDescriptions[tier]}</div>
+            <div className="nxs-row-sub">{s.pricingDescriptions[tier]}</div>
           </button>
         );
       })}
 
-      <div style={GROUP_HEADING_STYLE}>{s.ingredientHeading}</div>
+      <div className="nx-label nxr-group">{s.ingredientHeading}</div>
       {INGREDIENT_LEVELS.map((tier) => {
         const active = policies.ingredientTier === tier;
         return (
           <button
             key={`ingredient-${tier}`}
             type="button"
-            style={active ? OPTION_BUTTON_ACTIVE_STYLE : OPTION_BUTTON_STYLE}
+            className="nxs-list-row nxr-option" aria-pressed={active}
             onClick={() =>
               dispatch({ type: 'SET_POLICY', patch: { ingredientTier: tier } })
             }
           >
             <div>{s.ingredientLevels[tier]}</div>
-            <div style={OPTION_DESC_STYLE}>{s.ingredientDescriptions[tier]}</div>
+            <div className="nxs-row-sub">{s.ingredientDescriptions[tier]}</div>
           </button>
         );
       })}

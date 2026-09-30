@@ -763,7 +763,11 @@ export const STOCK = {
   openQuestion: 'F48',
   // Varje gäst tar en dryck till rätten, och ett andra glas med den här
   // sannolikheten.
-  secondDrinkChance: 0.5
+  secondDrinkChance: 0.5,
+  // ORDER 291 (Vision Owner 2026-09-30: "Varna när spelaren köper mer än
+  // dubbelt så mycket som behövs, både mat och dryck"). Behovet är en
+  // varmrätt per väntad gäst och 1 + secondDrinkChance glas per gäst.
+  overBuyFactor: 2
 } as const;
 
 // ORDER 277 — morgonen är insatsen (Vision Owner 2026-09-28, andra

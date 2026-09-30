@@ -24,6 +24,9 @@ import { BookingBook } from './BookingBook';
 import { useEffect, useRef, useState } from 'react';
 import { isStrandedWithoutBusiness } from '../../sim/economy';
 import { strings } from '../../content/strings';
+import { TeamPanel } from '../business/TeamPanel';
+import { InvestmentPanel } from '../business/InvestmentPanel';
+import { ScaleDownPanel } from '../business/ScaleDownPanel';
 import { calendarFor } from '../../sim/calendar';
 import { SEASON } from '../../sim/balance';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
@@ -128,6 +131,16 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenB
 
   if (aside) {
     return (
+      <>
+      {/* ORDER 291 punkt 8 — laget, investeringen och skala ner i den varma
+          formen, till vänster om rummet och ovanför bottenraden. */}
+      <div className="nxr-aside" data-testid="room-and-staff">
+        <TeamPanel />
+        <div className="nxr-stack">
+          <InvestmentPanel />
+          <ScaleDownPanel />
+        </div>
+      </div>
       <div className="nx nxs-minibar" data-testid="day-action-bar" data-aside="true" role="region" aria-label={s.heading}>
         <div className="nxs-btn-secondary-w">
           <NxButton kind="secondary" testId="morning-schedule" onClick={() => setAside(false)} arrow={false}>
@@ -137,6 +150,7 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenB
         {bankButton && <div className="nxs-btn-secondary-w">{bankButton}</div>}
         {primary && <div className="nxs-btn-primary-w">{primary}</div>}
       </div>
+      </>
     );
   }
 

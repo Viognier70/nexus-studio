@@ -13,7 +13,7 @@
 //   väntade gäster (marknadens tak, dailyGuestCap), glasen per gäst, och vad
 //   lagret ger om allt säljs.
 
-import { ITEM_BATCH } from '../../sim/balance';
+import { ITEM_BATCH, STOCK } from '../../sim/balance';
 import { dailyGuestCap } from '../../sim/economy';
 import { stockForecast } from '../../sim/stockForecast';
 import type { SimulationState } from '../types';
@@ -118,7 +118,11 @@ export function coverage(state: SimulationState) {
   const glasses = drinks.reduce((a, d) => a + d.bottles * d.glassesPerBottle + d.openGlasses, 0);
   const meanFood = food.length > 0 ? food.reduce((a, m) => a + m.price, 0) / food.length : 0;
   const potentialSek = Math.round(covers * meanFood + drinks.reduce((a, d) => a + (d.bottles * d.glassesPerBottle + d.openGlasses) * d.glassPriceSek, 0));
-  return { covers, guests, share: guests > 0 ? Math.min(1, covers / guests) : 0, glasses, glassesPerGuest: guests > 0 ? glasses / guests : 0, potentialSek };
+  // ORDER 291 — behovet och varningen när inköpet är mer än dubbelt behovet.
+  const glassesNeeded = Math.ceil(guests * (1 + STOCK.secondDrinkChance));
+  const overFood = guests > 0 && covers > guests * STOCK.overBuyFactor;
+  const overDrink = glassesNeeded > 0 && glasses > glassesNeeded * STOCK.overBuyFactor;
+  return { covers, guests, share: guests > 0 ? Math.min(1, covers / guests) : 0, glasses, glassesPerGuest: guests > 0 ? glasses / guests : 0, potentialSek, glassesNeeded, overFood, overDrink };
 }
 
 // Värdet av det som står i lagret, mat eller dryck, till inköpspris.

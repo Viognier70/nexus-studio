@@ -1580,6 +1580,12 @@ export const TABLE = {
     supplyPremium: { sv: 'Du gick över till premiumleveranser för i dag', en: 'You moved to premium supply for today' },
     changed: { sv: (parts: string) => `Ändrat: ${parts}`, en: (parts: string) => `Changed: ${parts}` }
   },
+  // ORDER 291 — platsnamnet överst i byn (ui/ViewLabel.tsx).
+  viewLabel: {
+    grythyttan: { sv: 'Grythyttan', en: 'Grythyttan' },
+    kvarteret: { sv: 'Kvarteret', en: 'The District' },
+    vinbaren: { sv: 'Vinbaren', en: 'The Wine Bar' }
+  },
   // ORDER 291 — kvällsberättelsens första mening om morgonens val.
   activityChosen: {
     sv: (list: string) => `I dag valde du: ${list}.`,
@@ -1801,7 +1807,10 @@ export const TABLE = {
     wineSum: { sv: (n: number, kr: string) => `${n} ${pl(n, 'flaska', 'flaskor')} · ${kr} i inköp`, en: (n: number, kr: string) => `${n} ${pl(n, 'bottle', 'bottles')} · ${kr} spent` },
     spent: { sv: 'Inköp i dag', en: 'Bought today' },
     mains: { sv: 'Rätter', en: 'Dishes' },
-    mainsCover: { sv: (n: number, booked: number) => `${n} av ${booked} ${pl(booked, 'gäst', 'gäster')}`, en: (n: number, booked: number) => `${n} of ${booked} ${pl(booked, 'guest', 'guests')}` },
+    // ORDER 291 — "79 portioner till 15 väntade gäster", inte "79 av 15 gäster".
+    mainsCover: { sv: (n: number, booked: number) => `${n} ${pl(n, 'portion', 'portioner')} till ${booked} ${pl(booked, 'väntad gäst', 'väntade gäster')}`, en: (n: number, booked: number) => `${n} ${pl(n, 'portion', 'portions')} for ${booked} expected ${pl(booked, 'guest', 'guests')}` },
+    overFood: { sv: (n: number, need: number) => `Mer än dubbelt så mycket mat som behövs: ${n} portioner till omkring ${need} gäster. Det som inte säljs i kväll blir svinn.`, en: (n: number, need: number) => `More than twice the food you need: ${n} portions for about ${need} guests. What does not sell tonight becomes waste.` },
+    overDrink: { sv: (n: number, need: number) => `Mer än dubbelt så mycket dryck som behövs: ${n} glas där omkring ${need} räcker.`, en: (n: number, need: number) => `More than twice the drink you need: ${n} glasses where about ${need} will do.` },
     booked: { sv: (n: number) => `Omkring ${n} ${pl(n, 'gäst', 'gäster')} väntas i kväll`, en: (n: number) => `About ${n} ${pl(n, 'guest', 'guests')} expected tonight` },
     // ORDER 285 — bokningsboken i Designs morgon, med det spelet redan har:
     // kvällens väntade gäster (gästtyperna kommer med 287).
@@ -2163,6 +2172,7 @@ export const TABLE = {
     buyoutLabel: { sv: 'buyout', en: 'buyout' },
     kr: { sv: 'kr', en: 'SEK' },
     hireHeading: { sv: 'Anställ', en: 'Hire' },
+    agencyTag: { sv: ' (bemanning)', en: ' (agency)' },
     roleLabel: {
       'värd': { sv: 'Värd', en: 'Host' },
       'servitör': { sv: 'Servitör', en: 'Waiter' },

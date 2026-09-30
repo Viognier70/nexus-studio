@@ -1,0 +1,49 @@
+/* ORDER 291 punkt 8 — rummet och personalen i den varma formen (provspel av
+   4795192: "skärmen har fortfarande den gamla formen, och bottenraden ligger
+   över panelerna"). Laget, investeringen och skala ner är paneler i trä med
+   mässingskant (.nx-panel), rubrikerna är .nx-label och valen är
+   morgonens rader (.nxs-list-row). Panelerna ligger i en egen yta till
+   vänster: under HUD:en och ovanför bottenraden (.nxs-minibar), så att
+   rummet syns till höger och ingenting ligger över dem. */
+.nxr-aside {
+  position: fixed; z-index: 39; pointer-events: none;
+  left: var(--nx-margin);
+  top: max(150px, calc(220 * var(--nx-u)));
+  bottom: max(110px, calc(24 * var(--nx-u) + 140 * var(--nx-u)));
+  display: grid; grid-template-columns: repeat(2, minmax(0, max(260px, calc(520 * var(--nx-u)))));
+  gap: calc(24 * var(--nx-u));
+  max-width: calc(100vw - 2 * var(--nx-margin));
+}
+.nxr-aside > .nxr-stack { display: flex; flex-direction: column; gap: calc(24 * var(--nx-u)); min-height: 0; }
+.nxr-panel {
+  background: var(--nx-surface); border: var(--nx-border); border-radius: var(--nx-radius-card);
+  box-shadow: var(--w-shadow-panel), var(--w-panel-inset, inset 0 1px 0 rgba(255,220,160,.10));
+  padding: calc(28 * var(--nx-u)) calc(28 * var(--nx-u)) calc(20 * var(--nx-u));
+  overflow-y: auto; min-height: 0; pointer-events: auto;
+  font-size: max(13px, calc(24 * var(--nx-u)));
+}
+.nxr-aside > .nxr-panel, .nxr-stack > .nxr-panel { max-height: 100%; }
+.nxr-stack > .nxr-panel { flex: 0 1 auto; }
+.nxr-body { margin: calc(10 * var(--nx-u)) 0 calc(14 * var(--nx-u)); }
+.nxr-group { margin-top: calc(24 * var(--nx-u)); margin-bottom: calc(6 * var(--nx-u)); }
+.nxr-row {
+  display: flex; justify-content: space-between; align-items: center; gap: calc(16 * var(--nx-u));
+  padding: calc(12 * var(--nx-u)) 0; border-bottom: max(1px, calc(1 * var(--nx-u))) solid var(--nx-rule);
+}
+.nxr-row strong { font-weight: 800; }
+.nxr-fire {
+  font: inherit; font-size: max(12px, calc(20 * var(--nx-u))); font-weight: 700; white-space: nowrap;
+  color: var(--nx-ink); background: transparent; cursor: pointer;
+  border: 1px solid rgba(215, 162, 76, 0.35); border-radius: max(8px, calc(14 * var(--nx-u)));
+  padding: calc(8 * var(--nx-u)) calc(16 * var(--nx-u));
+}
+.nxr-fire:hover { background: rgba(244, 230, 204, 0.08); }
+.nxr-option { display: block; min-height: 0; padding: calc(12 * var(--nx-u)); }
+.nxr-option > div:first-child { font-weight: 800; }
+.nxr-option[aria-pressed='true'] { box-shadow: inset calc(6 * var(--nx-u)) 0 0 var(--w-gold); }
+.nxr-option:disabled { cursor: default; }
+/* Smalt fönster: en kolumn som rullar. */
+@media (max-width: 900px) {
+  .nxr-aside { grid-template-columns: minmax(0, 1fr); overflow-y: auto; pointer-events: auto; left: 16px; right: 16px; max-width: none; }
+  .nxr-aside > .nxr-panel, .nxr-stack > .nxr-panel { max-height: none; overflow: visible; }
+}

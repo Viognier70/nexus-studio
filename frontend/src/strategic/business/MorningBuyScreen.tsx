@@ -131,8 +131,14 @@ export function MorningBuyScreen({ open, onClose }: { open: boolean; onClose: ()
           </div>
           <div className="nxs-buy-block" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
             <NxLabel>{T.wineLabel}</NxLabel>
-            <strong data-testid="buy-glasses">{T.wineCover(cov.glasses, cov.glassesPerGuest.toFixed(1))}</strong>
+            <strong data-testid="buy-glasses">{T.wineCover(cov.glasses, cov.glassesPerGuest.toLocaleString(numberLocale(), { maximumFractionDigits: 1, minimumFractionDigits: 1 }))}</strong>
           </div>
+          {(cov.overFood || cov.overDrink) && (
+            <div className="nxs-buy-block" data-testid="buy-overbuy" role="status">
+              {cov.overFood && <p className="nx-small nx-accent-text" style={{ fontWeight: 700, margin: 0 }} data-testid="buy-over-food">{T.overFood(cov.covers, cov.guests)}</p>}
+              {cov.overDrink && <p className="nx-small nx-accent-text" style={{ fontWeight: 700, margin: 0 }} data-testid="buy-over-drink">{T.overDrink(cov.glasses, cov.glassesNeeded)}</p>}
+            </div>
+          )}
           <div className="nxs-buy-block">
             <NxLabel>{T.potential}</NxLabel>
             <div className="nx-num" style={{ fontSize: u(30), marginTop: u(6) }}>{T.potentialIn(formatSek(cov.potentialSek))}</div>

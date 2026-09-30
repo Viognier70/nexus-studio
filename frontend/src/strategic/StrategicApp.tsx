@@ -6,11 +6,8 @@ import { ServiceTabs } from './ui/service/ServiceTabs';
 import { TillBar } from './ui/service/TillBar';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { BusinessProvider } from './business/BusinessContext';
-import { InvestmentPanel } from './business/InvestmentPanel';
-import { ScaleDownPanel } from './business/ScaleDownPanel';
 import { NameEntryOverlay } from './business/NameEntryOverlay';
 import { MentorPanel } from './ui/MentorPanel';
-import { TeamPanel } from './business/TeamPanel';
 import { CameraProvider, useCamera } from './camera/CameraContext';
 import { useDesktopControls } from './camera/useDesktopControls';
 import { useTouchControls } from './camera/useTouchControls';
@@ -40,7 +37,6 @@ import { ControlsHint } from './ui/ControlsHint';
 import { DevPanel } from './ui/DevPanel';
 import { EventsPanel } from './ui/service/EventsPanel';
 import { BackPanels } from './scenario/BackPanels';
-import { PanelColumn, PanelRow } from './ui/PanelColumn';
 import { primeStreamAudio } from './ui/streamArrivalCue';
 import { OutwardButton } from './ui/OutwardButton';
 import { SpeedToggle } from './ui/SpeedToggle';
@@ -361,13 +357,8 @@ function StrategicShell() {
         Instruments + RoomCardPanel show during service. They never
         render at the same time.
       */}
-      <PanelColumn side="left">
-        <TeamPanel />
-        <PanelRow>
-          <InvestmentPanel />
-          <ScaleDownPanel />
-        </PanelRow>
-      </PanelColumn>
+      {/* ORDER 291 punkt 8 — laget, investeringen och skala ner visas i
+          morgonens Rummet och personalen (DayActionBar, RoomAndStaff). */}
       {/* ORDER 290 — högerkolumnen är tom i v1: mätarna ligger i fliken Rummet
           (ServiceTabs); InstrumentsPanel och RoomCardPanel visas inte (ORDER
           270, ORDER 112). */}
