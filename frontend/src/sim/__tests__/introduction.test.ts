@@ -56,7 +56,8 @@ describe('ORDER 267 — introduktionen', () => {
     s = visit(s, 'stensota', 'exam', EXAM.questionsDrawn);
     const status = Object.fromEntries(classOptions(s).map((o) => [o.id, o.status]));
     expect(status.vinbar).toBe('available');
-    expect(status.olkrog).toBe('requirements');
+    // ORDER 291 — ölkrogen är inte ett första val (och byggs i etapp 8).
+    expect(status.olkrog).toBe('notBuilt');
     const reputation = s.reputation;
     s = reducer(s, { type: 'CHOOSE_CLASS', to: 'vinbar' });
     expect(s.economy.businessClass).toBe('vinbar');
@@ -67,13 +68,19 @@ describe('ORDER 267 — introduktionen', () => {
     expect(introductionStep(s)).toBeNull();
   });
 
-  it('brons i Metodköket öppnar ölkrogen', () => {
+  // ORDER 291 (provspel av 4795192) — brons i Metodköket öppnade förut
+  // ölkrogen som första verksamhet. Den första verksamheten är vinbar eller
+  // food truck; ölkrogen byggs i etapp 8.
+  it('brons i Metodköket öppnar inte ölkrogen; banken erbjuder food trucken', () => {
     let s = newPlayer();
     s = visit(s, 'metodkoket', 'practice', 0);
     s = visit(s, 'metodkoket', 'exam', EXAM.questionsDrawn);
     const status = Object.fromEntries(classOptions(s).map((o) => [o.id, o.status]));
-    expect(status.olkrog).toBe('available');
+    expect(status.olkrog).toBe('notBuilt');
+    expect(status.restaurang).toBe('notFirst');
     expect(status.vinbar).toBe('requirements');
+    expect(status.foodtruck).toBe('available');
+    expect(reducer(s, { type: 'CHOOSE_CLASS', to: 'olkrog' }).economy.businessClass).toBeNull();
   });
 
   it('utanför introduktionen gäller klasstabellens krav (brons i tre för vinbaren)', () => {

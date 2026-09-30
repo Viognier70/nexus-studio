@@ -92,13 +92,14 @@ describe('ORDER 285 — kvällens resultat', () => {
     expect(s.day.period).toBe('evening');
     const rows = eveningResult(s);
     expect(rows.map((r) => r.key)).toEqual(['money', 'credits', 'reputation', 'knowledge', 'experience', 'social', 'economic', 'ecological']);
-    const m = s.eveningAccount!.metrics!;
-    // Pengar: kassans förändring sedan gryningen, med morgonens inköp.
-    const money = s.cash - s.day.cashAtDayStart!;
-    expect(rows[0].delta).toBe(Math.round(money));
-    expect(rows[0].detail.revenue).toBe(Math.round(m.revenue));
+    // ORDER 291 — Pengar är samma resultat som skärmen efter servicen
+    // (day.transfer), och intäkten dess försäljning.
+    const tr = s.day.transfer!;
+    expect(rows[0].delta).toBe(tr.resultSek);
+    expect(rows[0].detail.revenue).toBe(tr.revenueSek);
     const { cleared, total } = stepsCleared(eveningGrid(s));
     expect(rows[3].detail).toEqual({ cleared, total });
-    expect(rows[4].detail.served).toBe(s.day.portionsServed ?? 0);
+    // ORDER 291 — erfarenheten räknar serverade gäster (kvällens notor).
+    expect(rows[4].detail.served).toBe(s.day.billsTonight ?? 0);
   });
 });

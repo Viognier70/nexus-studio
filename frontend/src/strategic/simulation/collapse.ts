@@ -250,11 +250,6 @@ export function fireCollapse(draft: SimulationState): void {
   // ORDER 287a — gästen med socialt kapital och hållbarheterna 0–10 även
   // när kvällen föll ihop.
   settleSocialGuestAtClose(draft);
-  draft.sustainabilityLevels = {
-    dayNumber: draft.day.dayNumber,
-    levels: sustainabilityLevelsFor(draft, draft),
-    previous: draft.sustainabilityLevels?.levels ?? null
-  };
   // ORDER 290 — kvällskassan när kvällen föll ihop.
   const tillAtClose = tillSek(draft);
   // ORDER 267 — kvällen till veckans lista (söndagstidningen).
@@ -291,6 +286,12 @@ export function fireCollapse(draft: SimulationState): void {
   // ORDER 290 — överföringen till företagskontot, först bland kvällens skärmar.
   draft.day = { ...draft.day, transfer: eveningTransfer(draft), eveningStep: 'transfer' };
   draft.economy = { ...draft.economy, eveningResults: [...(draft.economy.eveningResults ?? []), { dayNumber: draft.day.dayNumber, resultSek: draft.day.transfer!.resultSek }].slice(-EVENING_ECONOMY.forecastEvenings) };
+  // ORDER 291 — nivåerna efter överföringen (samma resultat).
+  draft.sustainabilityLevels = {
+    dayNumber: draft.day.dayNumber,
+    levels: sustainabilityLevelsFor(draft, draft),
+    previous: draft.sustainabilityLevels?.levels ?? null
+  };
   // Also reset the top-level serviceRevenueToday bucket for the
   // service that just closed.
   draft.serviceRevenueToday = {

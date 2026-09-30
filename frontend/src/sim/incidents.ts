@@ -497,8 +497,10 @@ function openIncident(
 // (gissar kostar inget); säkerheten väljs för varje steg.
 // Provspel av 285 — varför Back your knowledge inte går att starta just nu,
 // eller null när den går (samma villkor som canStartBack).
-export function whyNotBack(state: SimulationState): 'busy' | 'maxed' | 'noneFits' | 'notOpen' | null {
+export function whyNotBack(state: SimulationState): 'busy' | 'maxed' | 'noneFits' | 'notOpen' | 'noRockets' | null {
   const inc = state.incidents;
+  // ORDER 291 — en verksamhet utan raketer säger det, inte att dörrarna är stängda.
+  if (incidentBankFor(state.economy.businessClass).length === 0) return 'noRockets';
   if (!inc?.enabled || state.day.period !== 'dinner' || !state.day.doorsOpenedThisService) return 'notOpen';
   if (inc.active) return 'busy';
   if ((inc.betsTonight ?? 0) >= BACK.maxPerEvening) return 'maxed';

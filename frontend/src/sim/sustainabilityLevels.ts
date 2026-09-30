@@ -25,6 +25,10 @@ export function socialLevel(before: SimulationState, after: SimulationState): nu
 // Ekonomisk: dagens marginal med morgonens inköp (kassans förändring
 // sedan gryningen) mot kvällens intäkt.
 export function economicMargin(before: SimulationState, after: SimulationState): number | null {
+  // ORDER 291 — samma resultat som skärmen efter servicen och kvällens
+  // resultat (day.transfer), när det finns.
+  const tr = after.day.transfer;
+  if (tr && tr.dayNumber === after.day.dayNumber) return tr.revenueSek > 0 ? tr.resultSek / tr.revenueSek : null;
   const revenue = after.eveningAccount?.metrics?.revenue ?? 0;
   const start = before.day.cashAtDayStart;
   if (revenue <= 0 || start === null || start === undefined) return null;
@@ -46,7 +50,11 @@ export function ecologicalLevel(before: SimulationState, after: SimulationState)
     .reduce((a, [, n]) => a + n, 0);
   const w = after.lastWaste;
   const unsold = w && w.dayNumber === day ? w.fractions?.find((f) => f.key === 'unsold')?.count ?? 0 : 0;
-  const base = atOpen > 0 ? L.max * clamp01(1 - unsold / atOpen) : L.max;
+  // ORDER 291 — utan lagret vid öppning (klasser utan paket) räknas osålt mot
+  // det som såldes (kvällens notor); utan någondera ingen nivå över noll.
+  const sold = after.day.billsTonight ?? before.day.billsTonight ?? 0;
+  const base = atOpen > 0 ? L.max * clamp01(1 - unsold / atOpen)
+    : sold + unsold > 0 ? L.max * clamp01(1 - unsold / (sold + unsold)) : 0;
   const s = before.salvage;
   const leftoversBinned = !!s && s.fromDay < day && (s.resolved === 'wrong' || s.resolved === 'discarded');
   return Math.max(0, Math.round(base) - (leftoversBinned ? L.ecologicalLeftoverPenalty : 0));

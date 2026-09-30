@@ -65,6 +65,8 @@ function optionLine(o: ClassOption, sim: SimulationState): string {
     case 'cash': return e.cashShort(e.classesDefinite[o.id]);
     case 'upgradeOnly': return e.upgradeOnly;
     case 'bankWait': return e.bankWait;
+    case 'notBuilt': return e.notBuilt;
+    case 'notFirst': return e.notFirst;
     case 'available': return '';
   }
 }

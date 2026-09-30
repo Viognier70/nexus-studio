@@ -50,17 +50,22 @@ function tone(delta: number): Tone {
 
 export function eveningResult(state: SimulationState): ResultRow[] {
   const m = state.eveningAccount?.metrics;
-  const revenue = m?.revenue ?? 0;
+  // ORDER 291 (Vision Owner: "Ett tal, räknat på ett sätt, på alla
+  // skärmar") — Pengar är kvällens resultat från skärmen efter servicen
+  // (day.transfer, fryst när servicen stängde), och intäkten dess
+  // försäljning. Utan den (äldre sparfiler), kassans förändring sedan gryningen.
+  const tr = state.day.transfer && state.day.transfer.dayNumber === state.day.dayNumber ? state.day.transfer : null;
+  const revenue = tr ? tr.revenueSek : m?.revenue ?? 0;
   const cost = m?.cost ?? 0;
-  // Pengar: kassans förändring sedan gryningen (inköp, löner, händelser,
-  // sopbilen); saknas startvärdet, kvällsavräkningens resultat.
   const cashStart = state.day.cashAtDayStart;
-  const result = cashStart !== null && cashStart !== undefined ? state.cash - cashStart : m?.result ?? revenue - cost;
+  const result = tr ? tr.resultSek : cashStart !== null && cashStart !== undefined ? state.cash - cashStart : m?.result ?? revenue - cost;
   const kd = m?.knowledgeDelta ?? { episteme: 0, techne: 0, phronesis: 0 };
   const credits = kd.episteme + kd.techne + kd.phronesis;
   const reputation = Math.round((m?.reputationDelta ?? 0) * POINTS * 10) / 10;
   const { cleared, total } = stepsCleared(eveningGrid(state));
-  const served = state.day.portionsServed ?? 0;
+  // ORDER 291 — erfarenheten räknar serverade gäster (kvällens notor), i alla
+  // klasser; utan notor, portionerna ur lagret.
+  const served = state.day.billsTonight ?? state.day.portionsServed ?? 0;
   const rockets = incidentsOf(state).log.length;
   const start = state.day.capitalsAtDayStart;
   const social = start ? Math.round((state.capitals.values.social - start.social) * POINTS * 10) / 10 : 0;

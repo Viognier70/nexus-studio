@@ -8,7 +8,11 @@ import { EVENING_ECONOMY, WEEK } from '../../sim/balance';
 import type { SustainabilityKey } from '../types';
 
 export interface CapitalDelta {
-  economic: number;    // SEK, positive = income, negative = cost, applied at end of day
+  // SEK, positive = income, negative = cost, applied at end of day.
+  // ORDER 291 (provspel av 4795192): satsningarna hade en negativ följd lika
+  // stor som priset, så att priset drogs två gånger (när den valdes och vid
+  // dygnsskiftet). Priset dras nu en gång; följden är bara en intäkt.
+  economic: number;
   social: number;      // [-0.05, +0.05], capital-scale
   ecological: number;  // [-0.05, +0.05], capital-scale
 }
@@ -30,7 +34,7 @@ export const ACTIVITY_CATALOGUE: readonly Activity[] = [
     name: 'Train the floor staff',
     description: 'A half-hour run-through of the pace at the pass and the rhythm at the tables.',
     costSek: 3000,
-    effect: { economic: -3000, social: 0.04, ecological: 0 },
+    effect: { economic: 0, social: 0.04, ecological: 0 },
     availability: 'always'
   },
   {
@@ -38,7 +42,7 @@ export const ACTIVITY_CATALOGUE: readonly Activity[] = [
     name: 'Bring in a runner',
     description: 'An extra pair of hands to carry out plates and clear tables.',
     costSek: 1800,
-    effect: { economic: -1800, social: 0.03, ecological: 0 },
+    effect: { economic: 0, social: 0.03, ecological: 0 },
     availability: 'always'
   },
   {
@@ -46,7 +50,7 @@ export const ACTIVITY_CATALOGUE: readonly Activity[] = [
     name: 'Local ingredients tonight',
     description: 'Small farms nearby: a higher unit price, a shorter supply chain.',
     costSek: 2500,
-    effect: { economic: -2500, social: 0.02, ecological: 0.05 },
+    effect: { economic: 0, social: 0.02, ecological: 0.05 },
     availability: 'always'
   },
   {
@@ -80,7 +84,7 @@ export const ACTIVITY_CATALOGUE: readonly Activity[] = [
     name: 'Review of the kitchen compost',
     description: 'Go through the bins and the flow in the prep. Small changes hold when someone keeps an eye on them.',
     costSek: 4000,
-    effect: { economic: -4000, social: 0.01, ecological: 0.04 },
+    effect: { economic: 0, social: 0.01, ecological: 0.04 },
     availability: 'weekly'
   }
 ];

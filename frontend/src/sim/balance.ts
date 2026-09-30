@@ -371,6 +371,11 @@ export interface BusinessClassSpec {
 
 export const BUSINESS_CLASSES = {
   section: 'Verksamhetsklasserna',
+  // ORDER 291 (provspel av 4795192) — den första verksamheten är vinbar eller
+  // food truck (speldesign > Verksamhetsklasserna, beslut 2026-09-30).
+  // Ölkrogen byggs i etapp 8 och erbjuds inte förrän den finns.
+  firstChoices: ['vinbar', 'foodtruck'] as readonly BusinessClassId[],
+  notYetBuilt: ['olkrog'] as readonly BusinessClassId[],
   list: [
     { id: 'vinbar', seats: 20, mainPavilion: 'stensota', upgradeOnly: false, buildOrder: 1, sizeRank: 2,
       requirements: [{ level: 'brons', count: 3, including: ['stensota'] }],

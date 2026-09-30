@@ -62,9 +62,11 @@ describe('ORDER 290 — kvällens insats och kvällskassan', () => {
     expect(stake.lines.find((l) => l.key === 'dj')?.sek).toBe(EVENING_ECONOMY.djCostSek);
   });
 
-  it('en satsning som är kompetens står som kompetens', () => {
+  // ORDER 291 (Vision Owner 2026-09-30): kurserna är investeringar, inte
+  // kvällskostnader; insatsen räknar råvaror, personal, DJ och satsningar.
+  it('en kurs står inte i kvällens insats', () => {
     const s = reducer(week2(), { type: 'PICK_ACTIVITY', id: 'train-service' });
-    expect(eveningStake(s, 0).lines.some((l) => l.key === 'competence')).toBe(true);
+    expect(eveningStake(s, 0).lines.some((l) => l.key === 'competence')).toBe(false);
   });
 });
 
@@ -81,10 +83,11 @@ describe('ORDER 290 — överföringen efter servicen', () => {
     expect(tr.transferSek).toBe(tr.accountAfterSek - tr.accountBeforeSek);
     // Resultatet (Designs serviceläget §4) är kontot efter mot kontot i morse,
     // utan sopbilens avgift (den dras på sopbilens skärm, inte i insatsen).
-    expect(tr.resultSek).toBe(tr.accountAfterSek - tr.accountMorningSek + tr.wasteFeeSek);
+    // ORDER 291 — ett resultat: kassans förändring över dagen, utom kurserna.
+    expect(tr.resultSek).toBe(tr.accountAfterSek - tr.accountMorningSek + tr.coursesSek);
     expect(Math.abs(tr.accountAfterSek - dayEndCash(closed))).toBeLessThanOrEqual(1);
-    expect(tr.rest.staff + tr.rest.dj + tr.rest.competence + tr.rest.investments + tr.rest.incidents).toBe(tr.fixedSek);
-    expect(tr.accountBeforeSek).toBe(tr.accountMorningSek - tr.variableSek - tr.wasteFeeSek);
+    expect(tr.rest.staff + tr.rest.dj + tr.rest.investments + tr.rest.incidents + tr.rest.waste).toBe(tr.fixedSek);
+    expect(tr.accountBeforeSek).toBe(tr.accountMorningSek - tr.variableSek - tr.coursesSek);
     // Kvällen börjar med sopbilen eller överföringen, och går sedan till resultatet.
     expect(['waste', 'transfer']).toContain(closed.day.eveningStep);
     let e = closed;

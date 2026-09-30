@@ -897,6 +897,9 @@ export const TABLE = {
       sv: 'Nås bara genom att växa från en annan verksamhet.',
       en: 'Only reached by growing from another business.'
     },
+    // ORDER 291 — ölkrogen byggs i etapp 8; den första verksamheten är vinbar eller food truck.
+    notBuilt: { sv: 'Öppnar senare i säsongen.', en: 'Opens later in the season.' },
+    notFirst: { sv: 'Den första verksamheten är en vinbar eller en food truck.', en: 'Your first business is a wine bar or a food truck.' },
     choose: {
       sv: (cls: string) => `Byt till ${cls.toLowerCase()}`,
       en: (cls: string) => `Switch to ${cls.toLowerCase()}`
@@ -1442,7 +1445,11 @@ export const TABLE = {
     forecastSeason: { sv: 'Med det här konceptet klarar du dig resten av säsongen.', en: 'With this concept you last the rest of the season.' },
     continue: { sv: 'Till kvällens resultat', en: "To tonight's result" },
     // Raketernas kassa i kväll (negativt belopp = en intäkt).
-    incidents: { sv: 'Kvällens händelser', en: "Tonight's events" }
+    incidents: { sv: 'Kvällens händelser', en: "Tonight's events" },
+    // ORDER 291 — sopbilen i resten, och kurserna som investering.
+    waste: { sv: 'Sopbilen', en: 'The bin lorry' },
+    courses: { sv: 'Kurser', en: 'Courses' },
+    coursesSub: { sv: 'En investering, inte kvällens kostnad', en: "An investment, not tonight's cost" }
   },
   // DJ som satsning (activities.ts book-dj).
   activityText: {
@@ -1756,7 +1763,9 @@ export const TABLE = {
       busy: { sv: 'En raket pågår redan', en: 'A rocket is already under way' },
       maxed: { sv: 'Alla tre är använda i kväll', en: 'All three are used tonight' },
       noneFits: { sv: 'Ingen fråga passar kvällens meny just nu', en: "No question fits tonight's menu right now" },
-      notOpen: { sv: 'Öppnar när dörrarna öppnar', en: 'Opens when the doors open' }
+      notOpen: { sv: 'Öppnar när dörrarna öppnar', en: 'Opens when the doors open' },
+      // ORDER 291 — verksamheter utan egna raketer ännu (food trucken).
+      noRockets: { sv: 'Den här verksamheten har inga raketer ännu', en: 'This business has no rockets yet' }
     },
     odds: { sv: (win: number, loss: number) => `+${win} om rätt · ${loss > 0 ? `−${loss}` : '±0'} om fel`, en: (win: number, loss: number) => `+${win} if right · ${loss > 0 ? `−${loss}` : '±0'} if wrong` },
     lock: { sv: 'Stå för svaret', en: 'Back it' },

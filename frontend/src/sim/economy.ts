@@ -228,7 +228,8 @@ export function downgradeTarget(id: BusinessClassId | null, medals: SimulationSt
     case 'nattklubb':
       return 'restaurang';
     case 'restaurang':
-      return medalRank(medals.metodkoket) > medalRank(medals.stensota) ? 'olkrog' : 'vinbar';
+      // ORDER 291 — ölkrogen byggs i etapp 8; tills dess går man ner till vinbaren.
+      return medalRank(medals.metodkoket) > medalRank(medals.stensota) && !BUSINESS_CLASSES.notYetBuilt.includes('olkrog') ? 'olkrog' : 'vinbar';
     case 'vinbar':
     case 'olkrog':
       return 'foodtruck';
@@ -422,7 +423,10 @@ export type ClassOption =
   | { id: BusinessClassId; status: 'requirements' }
   | { id: BusinessClassId; status: 'cash' }
   | { id: BusinessClassId; status: 'bankWait' }
-  | { id: BusinessClassId; status: 'upgradeOnly' };
+  | { id: BusinessClassId; status: 'upgradeOnly' }
+  // ORDER 291 — ännu inte byggd (ölkrogen, etapp 8), och inte ett första val.
+  | { id: BusinessClassId; status: 'notBuilt' }
+  | { id: BusinessClassId; status: 'notFirst' };
 
 export function canChangeClassToday(state: SimulationState): boolean {
   if (state.day.period !== 'morning') return false;
@@ -449,6 +453,10 @@ export function classOptions(state: SimulationState): ClassOption[] {
   const first = isFirstBusiness(state);
   return BUSINESS_CLASSES.list.map((c) => {
     if (c.id === current) return { id: c.id, status: 'current' as const };
+    // ORDER 291 — ölkrogen byggs i etapp 8; den första verksamheten är vinbar
+    // eller food truck.
+    if (BUSINESS_CLASSES.notYetBuilt.includes(c.id)) return { id: c.id, status: 'notBuilt' as const };
+    if (first && !BUSINESS_CLASSES.firstChoices.includes(c.id)) return { id: c.id, status: 'notFirst' as const };
     // Gästgiveri och nattklubb nås bara genom uppgradering, inte som start.
     if (c.upgradeOnly && current === null) return { id: c.id, status: 'upgradeOnly' as const };
     if (!requirementsFor(state, c.id).every((r) => meetsRequirement(r, state.medals))) {
