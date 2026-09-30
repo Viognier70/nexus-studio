@@ -118,6 +118,8 @@ Playtest-genvägar, satta i `useDesktopControls.ts` (kamera) och `StrategicApp.t
 | `Escape` | Zooma utåt | `useDesktopControls.ts:57` |
 | `g` / `G` (DEV) | Toggle scale-reference | `StrategicApp.tsx:180-185` |
 | `h` / `H` (DEV) | Toggle säsong (autumn ↔ summer) | `StrategicApp.tsx:189-194` |
+| `v` / `V` | Byn och tillbaka (ORDER 290). Gäller utan `#playtest=1`. | `ui/VillageButton.tsx` |
+| `1`–`3` under servicen | Öppnar panelerna Lagret, Kvällen, Rummet; `Escape` stänger (ORDER 290). Går före kamerans förval under servicen. | `ui/service/ServiceTabs.tsx` |
 
 Ingen tangent är "nivå 5" i kamera-mening. `TRIGGER_SCENARIO` visar `ScenarioOverlay` (nedre kanten). Fjorton ordrar har historiskt utretts under fel antagande att `5` var en preset — se ORDER 184.
 

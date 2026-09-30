@@ -26,8 +26,15 @@ const TICKS = { up: 8, down: 9 };
 
 export function TillBar() {
   const sim = useSimState();
-  const lang = useLanguage();
   const inService = sim.day.period === 'lunch' || sim.day.period === 'dinner';
+  // Stapeln monteras först under servicen, så att beloppet ritas från början.
+  return inService ? <TillBarInService /> : null;
+}
+
+function TillBarInService() {
+  const sim = useSimState();
+  const lang = useLanguage();
+  const inService = true;
   const till = tillSek(sim);
   const stake = sim.day.stake?.total ?? 0;
   const over = stake > 0 && till >= stake;

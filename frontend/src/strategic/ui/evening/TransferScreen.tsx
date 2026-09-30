@@ -25,7 +25,8 @@ import { formatSek } from '../CashCounter';
 import { countTo, popIn, type Counter } from '../juice/juice';
 import { usePrefersReducedMotion } from '../../../hooks/usePrefersReducedMotion';
 import { forecastWeeks } from '../../simulation/eveningEconomy';
-import { formatClock, clockMinutes } from '../../../sim/incidents';
+import { formatClock } from '../../../sim/incidents';
+import { CLOCK, INCIDENTS, SITTING } from '../../../sim/balance';
 import { play } from '../sound/sound';
 import '../service/service.css';
 
@@ -52,7 +53,8 @@ export function TransferScreen({ sim, onContinue }: { sim: SimulationState; onCo
   }, [tr.dayNumber]);
   const transfer = () => {
     if (done) return;
-    setDone(formatClock(clockMinutes(sim)));
+    // Klockan efter stängning, som servicens klocka visar den (ServiceClock).
+    setDone(formatClock(SITTING.serviceStartHour * INCIDENTS.minutesPerHour + CLOCK.cells * CLOCK.cellMinutes + CLOCK.pickupAfterCloseMinutes));
     const till: Counter = { value: tr.revenueSek, shown: tr.revenueSek, paint: (v) => { if (tillRef.current) tillRef.current.textContent = formatSek(v); } };
     const acc: Counter = { value: tr.accountBeforeSek, shown: tr.accountBeforeSek, paint: (v) => { if (accountRef.current) accountRef.current.textContent = formatSek(v); } };
     countTo(till, 0, { ticks: 10, pop: tillRef.current });
@@ -100,9 +102,9 @@ export function TransferScreen({ sim, onContinue }: { sim: SimulationState; onCo
           <div className="nx-label nx-settle-rest">{tt(lang, 'settle.rest')}</div>
           {restRows.map((r) => (
             <div key={r.key} className="nx-settle-row nx-settle-row-small" data-pop data-testid={`transfer-rest-${r.key}`} data-value={r.sek}>
-              <span className="nx-settle-sign">−</span>
+              <span className="nx-settle-sign">{r.sek < 0 ? '+' : '−'}</span>
               <span><strong>{r.label}</strong> <span className="nx-small">{r.sub}</span></span>
-              <span className="nx-num nx-settle-sek">{formatSek(r.sek)}</span>
+              <span className="nx-num nx-settle-sek">{formatSek(Math.abs(r.sek))}</span>
             </div>
           ))}
           <div className="nx-settle-result" data-pop data-tone={loss ? 'lost' : 'won'}>
