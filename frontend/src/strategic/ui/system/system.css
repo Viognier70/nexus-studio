@@ -112,7 +112,9 @@
   --nx-accent-700: var(--w-brass);
   --nx-accent-100: rgba(232, 185, 58, 0.16);
   --nx-on-accent: var(--w-ink);
-  --nx-ember: var(--w-ember);
+  /* ORDER 290 (Designs beslut 2026-09-30): rött betyder bara fel svar;
+     det som var glöd är ljuslåga. */
+  --nx-ember: var(--w-candle);
   --nx-surface: var(--w-panel);
   --nx-border: var(--w-panel-border);
   --nx-radius: max(12px, calc(26 * var(--nx-u)));
@@ -247,5 +249,11 @@
 
 /* ORDER 290 — rätt och fel: färgerna och skakningen, för raketen (service.css)
    och frågorna (screens.css). */
-:root { --w-right: #7cc576; --w-right-glow: rgba(124,197,118,.55); --w-wrong: #d9503c; --w-wrong-glow: rgba(217,80,60,.5); --w-wrong-bg: rgba(217,80,60,.22); }
+:root { --w-right: #5cb86a; --w-right-glow: rgba(92,184,106,.55); --w-wrong: #e0533f; --w-wrong-glow: rgba(224,83,63,.45); --w-wrong-bg: #e0533f; }
 @keyframes nx-shake-x { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-9px); } 40% { transform: translateX(8px); } 60% { transform: translateX(-6px); } 80% { transform: translateX(4px); } }
+
+/* ORDER 290 — det som pockar på uppmärksamhet utan att vara fel pulserar i
+   ljuslåga (Designs WARM_RIGHT_WRONG.pulse): 55–100 % på 1,6 s. */
+@keyframes nx-pulse-candle { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
+.nx-pulse { animation: nx-pulse-candle 1.6s ease-in-out infinite; color: var(--w-candle, #ffd58f); text-shadow: 0 0 12px rgba(255,190,90,.75); }
+@media (prefers-reduced-motion: reduce) { .nx-pulse { animation: none; opacity: 1; } }

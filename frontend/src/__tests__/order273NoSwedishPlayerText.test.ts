@@ -42,6 +42,11 @@ const ALLOWED = [
 const NOT_PLAYER_TEXT = [
   // Strängtabellen: svenska och engelska sida vid sida (ORDER 273).
   /^content\/nexusStrings\.ts$/,
+  // ORDER 290 — Designs strängtabeller (sv och en sida vid sida), inslagna i
+  // STRINGS i nexusStrings.ts.
+  /^content\/design\/[A-Za-z]+Strings\.ts$/,
+  // Designs tokens för rätt och fel (anteckningar om vad som ersätts, visas inte).
+  /^ui\/theme\/nexusTheme\.warm\.rattfel\.ts$/,
   /^strategic\/scene\/[A-Za-z.]+\.ts$/,
   /^strategic\/content\/(roadRoles|streetProfiles|grythyttan|layout)\.ts$/,
   /^sim\/(balance|incidentBank)\.ts$/,

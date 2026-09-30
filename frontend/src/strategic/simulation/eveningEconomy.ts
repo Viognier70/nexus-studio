@@ -51,9 +51,11 @@ function activityKey(id: string): StakeKey {
 // Kvällens insats. `overheadSek` är köksdriften under servicen, uppskattad
 // av reducern när dörrarna öppnar.
 export function eveningStake(state: SimulationState, overheadSek: number): EveningStake {
-  const sums: Record<StakeKey, number> = { ingredients: stockSpentToday(state), staff: dailyWagesSek(state) + Math.max(0, overheadSek), dj: 0, investments: 0, competence: 0, interest: dailyInterestSek(state.economy.loan) };
+  // Designs fyra rader (råvaror, personal, DJ, kompetens), och satsningarna när
+  // spelaren valt någon. Räntan och köksdriften räknas till personalen.
+  const sums: Record<StakeKey, number> = { ingredients: stockSpentToday(state), staff: dailyWagesSek(state) + Math.max(0, overheadSek) + dailyInterestSek(state.economy.loan), dj: 0, investments: 0, competence: 0, interest: 0 };
   for (const id of state.day.pickedActivityIds) sums[activityKey(id)] += activityNetCost(id);
-  const order: StakeKey[] = ['ingredients', 'staff', 'dj', 'investments', 'competence', 'interest'];
+  const order: StakeKey[] = ['ingredients', 'staff', 'dj', 'competence', 'investments'];
   const lines = order.filter((k) => sums[k] > 0 || k === 'ingredients' || k === 'staff').map((k) => ({ key: k, sek: Math.round(sums[k]) }));
   return { lines, total: lines.reduce((a, l) => a + l.sek, 0) };
 }
@@ -79,31 +81,55 @@ export function accountAfterEvening(state: SimulationState): number {
   return dayEndCash(state) + pendingActivityEffects(state);
 }
 
-// Efter stängningen (reducern, när sopbilen avräknats).
+// Efter stängningen (reducern, när sopbilen avräknats). Designs serviceläget
+// §4: försäljning − råvaror = täckningsbidrag; − personal, DJ och kompetens =
+// kvällens resultat. Kontot efter överföringen är kassan vid dagsavslut
+// (accountAfterEvening), och resultatet räknas så att det går ihop med den:
+// resultat = kontot efter − kontot i morse + sopbilens avgift (som dras på
+// sopbilens skärm och inte hör till insatsen). Personalens rad är det som
+// återstår av resten när DJ, kompetens och satsningar är räknade: lönerna,
+// köksdriften och räntan.
 export function eveningTransfer(state: SimulationState): EveningTransfer {
   const d = state.day;
   const revenueSek = Math.round(tillSek(state));
-  const wasteFee = state.lastWaste && state.lastWaste.dayNumber === d.dayNumber ? state.lastWaste.feeSek ?? 0 : 0;
-  const variableSek = Math.round(stockSpentToday(state) + wasteFee);
+  const wasteFeeSek = Math.round(state.lastWaste && state.lastWaste.dayNumber === d.dayNumber ? state.lastWaste.feeSek ?? 0 : 0);
+  const variableSek = Math.round(stockSpentToday(state));
   const contributionSek = revenueSek - variableSek;
-  const dawn = d.cashAtDayStart ?? state.cash;
-  const after = accountAfterEvening(state);
-  const resultSek = Math.round(after - dawn);
-  const before = Math.round(d.cashAtDoorsOpen ?? dawn);
-  const afterSek = Math.round(after);
+  const morning = Math.round(d.cashAtDayStart ?? state.cash);
+  const after = Math.round(accountAfterEvening(state));
+  const resultSek = after - morning + wasteFeeSek;
+  const fixedSek = contributionSek - resultSek;
+  const byKey = (k: StakeKey) => Math.round(d.pickedActivityIds.filter((id) => activityKey(id) === k).reduce((a, id) => a + activityNetCost(id), 0));
+  const dj = byKey('dj');
+  const competence = byKey('competence');
+  const investments = byKey('investments');
+  const before = after - revenueSek + fixedSek;
   return {
     dayNumber: d.dayNumber,
     revenueSek,
+    bills: d.billsTonight ?? 0,
     variableSek,
     contributionSek,
     contributionRatio: revenueSek > 0 ? contributionSek / revenueSek : 0,
-    fixedSek: contributionSek - resultSek,
+    fixedSek,
+    rest: { staff: fixedSek - dj - competence - investments, dj, competence, investments },
+    staffOnShift: state.team.members.filter((m) => !m.isAgency).length,
     resultSek,
+    wasteFeeSek,
     breakEvenSek: d.stake?.total ?? 0,
+    passedAt: d.tillPassedAt ?? null,
+    accountMorningSek: morning,
     accountBeforeSek: before,
-    accountAfterSek: afterSek,
-    transferSek: afterSek - before
+    accountAfterSek: after,
+    transferSek: after - before
   };
+}
+
+// Kvällskassan passerar insatsen (reducern, efter kvällens betalningar):
+// klockslaget sparas en gång per kväll.
+export function passedStake(state: SimulationState): boolean {
+  const stake = state.day.stake?.total ?? 0;
+  return stake > 0 && !state.day.tillPassedAt && tillSek(state) >= stake;
 }
 
 // Prognosen: hur många veckor kassan och kreditramen räcker med kvällarnas

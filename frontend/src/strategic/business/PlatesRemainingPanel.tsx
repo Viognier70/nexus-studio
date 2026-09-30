@@ -12,7 +12,7 @@
 // Kompakt i vänsterkanten under mise en place och ovanför mätarna, så att
 // rummet syns. Under en egen raket (Back your knowledge) står raketen här.
 
-import { useServiceDrawer } from '../ui/service/serviceDrawer';
+import { panelOpen, useServiceDrawer } from '../ui/service/serviceDrawer';
 import { useEffect, useRef } from 'react';
 import { useSimState } from '../simulation/SimulationProvider';
 import { stockRows, type StockRow } from '../simulation/stockPackages';
@@ -44,7 +44,8 @@ function Row({ r }: { r: StockRow }) {
         </span>
         <span className="nx-label" style={{
           fontSize: u(12), padding: `${u(2)} ${u(6)}`, minWidth: u(84), textAlign: 'center',
-          background: low ? 'var(--nx-ember)' : undefined, color: low ? 'var(--w-cream)' : 'var(--nx-ink-2)',
+          // ORDER 290 — rött betyder bara fel svar: snart slut är ljuslåga.
+          background: low ? 'var(--w-candle)' : undefined, color: low ? 'var(--w-ink)' : 'var(--nx-ink-2)',
           border: out ? '1px dashed var(--nx-ink)' : low ? '1px solid var(--nx-accent)' : '1px solid var(--nx-rule)'
         }}>{out ? t.out : low ? t.low : t.ok}</span>
       </span>
@@ -57,7 +58,7 @@ export function PlatesRemainingPanel() {
   const inService = sim.day.period === 'lunch' || sim.day.period === 'dinner';
   // ORDER 290 — serviceläget: lagret visas när panelerna är öppnade.
   const drawer = useServiceDrawer();
-  if (!inService || !drawer.open || sim.menu.length === 0 || sim.incidents?.active?.backed) return null;
+  if (!inService || !panelOpen(drawer, 'stock') || sim.menu.length === 0 || sim.incidents?.active?.backed) return null;
   const t = strings.stockL1;
   const rows = stockRows(sim);
   const kitchen = rows.filter((r) => r.kind === 'dish');

@@ -14,7 +14,7 @@
 // Läser strömmen (state.eventStream) med fälten feed, table och amountSek,
 // som simuleringen sätter (reducer.ts, guestOrders.ts, stockPackages.ts).
 
-import { setServiceAmounts, useServiceDrawer } from './serviceDrawer';
+import { panelOpen, setServiceAmounts, useServiceDrawer } from './serviceDrawer';
 import { useEffect, useRef } from 'react';
 import { strings } from '../../../content/strings';
 import { GAME_MINUTES_PER_SIM_SECOND, INCIDENTS, SERVICE_STREAM, SITTING } from '../../../sim/balance';
@@ -87,7 +87,7 @@ function CountedSek({ value, testId }: { value: number; testId: string }) {
   return <span ref={ref} className="nx-num" data-testid={testId} data-value={Math.round(value)} />;
 }
 
-export function EventsPanel() {
+export function EventsPanel({ mode = 'both' }: { mode?: 'both' | 'feed' | 'back' } = {}) {
   const sim = useSimState();
   const dispatch = useSimDispatch();
   const seen = useRef<EventStreamEntry | null>(null);
@@ -108,9 +108,12 @@ export function EventsPanel() {
   const tabSek = tabs.reduce((a, g) => a + (g.order?.revenueSek ?? 0), 0);
   const backsLeft = BACK.maxPerEvening - (sim.incidents?.betsTonight ?? 0);
   // ORDER 290 — serviceläget: ihopfällt visas bara Back your knowledge.
-  const open = drawer.open;
+  // ORDER 290 — Kvällen (fliken) visar strömmen; Back your knowledge står
+  // kvar nere till höger när panelen är stängd.
+  const open = mode === 'feed' || (mode === 'both' && panelOpen(drawer, 'stream'));
+  const showBack = mode !== 'feed';
   return (
-    <section className="nx nx-panel nx-feed" data-testid="event-stream" data-open={open} aria-label={t.title}>
+    <section className="nx nx-panel nx-feed" data-testid={mode === "feed" ? "service-feed" : "event-stream"} data-open={open} data-mode={mode} aria-label={t.title}>
       {open && <header className="nx-feed-head">
         <NxLabel>{t.title}</NxLabel>
         <button type="button" className="nx-btn nx-btn-quiet nx-feed-amounts" data-testid="feed-amounts" aria-pressed={drawer.amounts} onClick={() => setServiceAmounts(!drawer.amounts)}>
@@ -128,23 +131,23 @@ export function EventsPanel() {
         <div className="nx-feed-tonight-row" style={{ color: 'var(--nx-accent-700)' }}><span>{t.tonightTips}</span><CountedSek value={sim.day.tipsSek ?? 0} testId="tonight-tips" /></div>
         <div className="nx-feed-tonight-row"><span>{t.tonightTabs}</span><strong data-testid="tonight-tabs">{tabs.length > 0 ? t.tonightTabsValue(tabTables.size, formatSek(tabSek)) : t.tonightTabsNone}</strong></div>
       </div>}
-      <div className="nx-feed-back">
+      {showBack && <div className="nx-feed-back">
         <div style={{ minWidth: 0 }}>
           <div className="nx-label nx-accent-text">{strings.back.title}</div>
           {/* ORDER 289 — när knappen är grå står skälet här, bredvid den. */}
           <div className="nx-small nx-muted" data-testid="back-why" id="back-why">{whyNotBack(sim) ? strings.back.why[whyNotBack(sim)!] : backsLeft > 0 ? strings.back.left(backsLeft) : strings.back.none}</div>
           {/* ORDER 284 — introduktionen före kvällens första raket (flyttad från kortet). */}
-          {(sim.incidents?.betsTonight ?? 0) === 0 && (
+          {open && (sim.incidents?.betsTonight ?? 0) === 0 && (
             <p className="nx-small" data-testid="incident-back-intro" style={{ margin: 'calc(6 * var(--nx-u)) 0 0' }}>
               <strong>{strings.back.introTitle}</strong> {strings.back.introBody}
             </p>
           )}
           {/* ORDER 284 — räcker krediterna bara till en gissning: hur man tjänar nya. */}
-          {totalCredits(sim) < BACK.confidence[1].loss && <div className="nx-small" data-testid="back-earn" style={{ marginTop: 'calc(6 * var(--nx-u))' }}>{strings.back.earn}</div>}
+          {open && totalCredits(sim) < BACK.confidence[1].loss && <div className="nx-small" data-testid="back-earn" style={{ marginTop: 'calc(6 * var(--nx-u))' }}>{strings.back.earn}</div>}
         </div>
         {/* Provspel av 285: en grå knapp säger varför. */}
         <NxButton testId="back-start" disabled={!canStartBack(sim)} onClick={() => dispatch({ type: 'START_BACK' })}>{strings.back.start}</NxButton>
-      </div>
+      </div>}
     </section>
   );
 }

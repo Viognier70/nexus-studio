@@ -34,6 +34,10 @@
 // the repo already has a string for the same place, keep the repo's key and
 // add the `en` value from here.
 
+import { SERVICE_MODE_STRINGS } from './design/serviceModeStrings';
+import { PYRAMID_STRINGS } from './design/pyramidStrings';
+import { STAFF_RING_STRINGS } from './design/staffRingStrings';
+
 export type Lang = 'sv' | 'en';
 // ORDER 289 — singular eller plural efter antalet ("1 bottles" skulle vara
 // "1 bottle", provspel av 285). Används i alla texter med antal.
@@ -165,7 +169,12 @@ export const STRINGS = {
   'stranded.body': { sv: 'Kassan räcker inte till en ny insats. Det som öppnar en ny lokal är det du kan: en vecka i Måltidens hus med minst ett prov, så lyssnar banken igen.', en: 'Your cash won’t cover a new stake. What opens a new venue is what you know: a week in the House of the Meal with at least one exam, and the bank will listen again.' },
   'stranded.medals': { sv: 'Dina medaljer finns kvar. Det du har lärt dig tas aldrig ifrån dig.', en: 'Your medals stay. What you have learned is never taken from you.' },
   'stranded.go': { sv: 'Gå till Måltidens hus', en: 'Go to the House of the Meal' },
-  'stranded.bank': { sv: 'Gå till banken', en: 'Go to the bank' }
+  'stranded.bank': { sv: 'Gå till banken', en: 'Go to the bank' },
+  // ORDER 290 — Designs leveranser 2026-09-30 (serviceläget, rätt och fel med
+  // pyramiden, ringen), inslagna oförändrade.
+  ...SERVICE_MODE_STRINGS,
+  ...PYRAMID_STRINGS,
+  ...STAFF_RING_STRINGS
 } satisfies Record<string, Entry>;
 
 export type StringKey = keyof typeof STRINGS;

@@ -943,6 +943,10 @@ export interface DayState {
   cashAtDoorsOpen?: number | null;
   tillAtClose?: number | null;
   transfer?: EveningTransfer | null;
+  // ORDER 290 (Designs serviceläget) — notorna i kväll, och klockslaget när
+  // kvällskassan passerade insatsen.
+  billsTonight?: number;
+  tillPassedAt?: string | null;
   // ORDER 290 — händelser i rummet efter svaren (över bordet).
   roomReactions?: RoomReaction[];
 }
@@ -952,13 +956,23 @@ export type StakeKey = 'ingredients' | 'staff' | 'dj' | 'investments' | 'compete
 export interface EveningStake { lines: { key: StakeKey; sek: number }[]; total: number }
 export interface EveningTransfer {
   dayNumber: number;
+  // Försäljningen: kvällskassan (notorna och raketernas kassa), och antalet notor.
   revenueSek: number;
+  bills: number;
+  // Råvarorna: allt som köptes i morse.
   variableSek: number;
   contributionSek: number;
   contributionRatio: number;
+  // Resten av insatsen: personal (med köksdriften och räntan), DJ, kompetens
+  // och satsningar; och hur många som var i tjänst.
   fixedSek: number;
+  rest: { staff: number; dj: number; competence: number; investments: number };
+  staffOnShift: number;
   resultSek: number;
+  wasteFeeSek: number;
   breakEvenSek: number;
+  passedAt: string | null;
+  accountMorningSek: number;
   accountBeforeSek: number;
   accountAfterSek: number;
   transferSek: number;

@@ -209,7 +209,7 @@
 .nxs-option-letter { color: #8a8685; flex: none; }
 /* ORDER 290 — rätt och fel syns tydligt: grön glöd och lyft, röd markering och en kort skakning. */
 .nxs-option[data-state='correct'] { background: var(--w-right, #7cc576); color: var(--w-ink); border-color: var(--w-right, #7cc576); box-shadow: 0 0 22px 3px var(--w-right-glow, rgba(124,197,118,.55)); transform: translateY(-4px); transition: transform .3s cubic-bezier(.2,.9,.3,1.3); }
-.nxs-option[data-state='wrong'] { border: var(--nx-line) solid var(--w-wrong, #d9503c); background: var(--w-wrong-bg, rgba(217,80,60,.22)); color: var(--nx-ink); animation: nx-shake-x .42s ease-in-out both; }
+.nxs-option[data-state='wrong'] { border: var(--nx-line) solid var(--w-wrong, #e0533f); background: var(--w-wrong-bg, #e0533f); color: #2a1c13; animation: nx-shake-x .42s ease-in-out both; }
 @media (prefers-reduced-motion: reduce) { .nxs-option[data-state='correct'], .nxs-option[data-state='wrong'] { animation: none; transition: none; transform: none; } }
 .nxs-option[data-state='other'] { color: #8a8685; }
 .nxs-option .nxs-tag { color: var(--nx-ink-2); }

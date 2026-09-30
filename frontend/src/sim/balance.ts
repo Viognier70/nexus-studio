@@ -797,11 +797,9 @@ export const THEATRE = {
   /** Gästen som går mot köket hinner så stor del av vägen till passet under introt. */
   kitchenWalkShare: 0.6,
   tempo: { calmBelow: 0.34, stressedFrom: 0.67 },
-  // ORDER 290 — ringen och linjen under personalen (vem gör vad), i meter.
-  staffMark: { innerM: 0.42, outerM: 0.52, opacity: 0.8, dashM: 0.18, liftM: 0.012 },
-  // ORDER 290 — rekvisitan förstoras så här mycket för att läsas från
-  // spelarens höjd (24 m). Måtten i tableware.ts är verkliga.
-  propScale: 1.6
+  // ORDER 290 — linjen från ringen till uppgiften (ringens mått och färger
+  // står i Designs scene/staffRing.ts): streck och mellanrum i meter.
+  staffLine: { dashM: 0.18, opacity: 0.55 }
 } as const;
 
 export const MENU_ROCKETS = {

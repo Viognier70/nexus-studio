@@ -493,7 +493,8 @@ export function WineBarFigures({ room, mood }: Props) {
       const rig = cast.staffRigs[i];
       // ORDER 290 — ringen under figuren och linjen till uppgiften.
       const task = inService ? cast.director.staffTask(key, t) : null;
-      updateStaffMark(cast.staffMarks[i], inService && ss[i].visible, { x: rig.root.position.x, z: rig.root.position.z }, task && task.to ? { x: task.to[0], z: task.to[1] } : null, room.floorY);
+      const working = task && t >= task.arrive && task.done > task.arrive ? Math.min(1, (t - task.arrive) / (task.done - task.arrive)) : null;
+      updateStaffMark(cast.staffMarks[i], inService && ss[i].visible, { x: rig.root.position.x, z: rig.root.position.z }, task && task.to ? { x: task.to[0], z: task.to[1] } : null, working, room.floorY);
       if (fig && fig.kind === 'staff' && fig.staffKey === key && ss[i].visible) {
         // Den som skär sig backar ett steg (klippets root, i figurens ram).
         if (clip) {

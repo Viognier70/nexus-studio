@@ -1,0 +1,201 @@
+{
+  "url": "http://localhost:4178",
+  "build": "produktion (vite build + preview)",
+  "save": "reports/order284/save-mandag-vinbaren.json",
+  "viewport": "1920×1080",
+  "steps": [
+    {
+      "name": "morgonen",
+      "atSeconds": 21
+    },
+    {
+      "name": "insatsen",
+      "atSeconds": 95
+    },
+    {
+      "name": "serviceläget",
+      "atSeconds": 110
+    },
+    {
+      "name": "byn",
+      "atSeconds": 127
+    },
+    {
+      "name": "24 m",
+      "atSeconds": 143
+    },
+    {
+      "name": "raketerna",
+      "atSeconds": 165
+    },
+    {
+      "name": "överföringen",
+      "atSeconds": 341
+    }
+  ],
+  "shots": [
+    {
+      "file": "scene-00-startrutan.png",
+      "what": "startrutan i den varma formen"
+    },
+    {
+      "file": "scene-10-insatsen.png",
+      "what": "kvällens insats när dörrarna öppnas"
+    },
+    {
+      "file": "scene-20-servicelaget.png",
+      "what": "servicen med panelerna ihopfällda: klockan och kvällskassan mot break-even"
+    },
+    {
+      "file": "scene-21-panelerna.png",
+      "what": "panelerna öppnade med knappen, händelselistan utan belopp"
+    },
+    {
+      "file": "scene-30-byn.png",
+      "what": "byn under servicen (knappen Byn)"
+    },
+    {
+      "file": "scene-40-24m-1.png",
+      "what": "från 24 m: personalen med ring och linje, rekvisitan på borden"
+    },
+    {
+      "file": "scene-41-24m-2.png",
+      "what": "från 24 m, åtta sekunder senare"
+    },
+    {
+      "file": "scene-50-raket-best.png",
+      "what": "rätt svar: grön glöd, svaret lyfter, pyramidens våning fylls"
+    },
+    {
+      "file": "scene-51-raket-wrong.png",
+      "what": "fel svar: röd markering, skakning, våningen spricker"
+    },
+    {
+      "file": "scene-60-overforingen.png",
+      "what": "överföringen: täckningsbidrag, täckningsgrad, resultat och prognos"
+    },
+    {
+      "file": "scene-61-R1-pyramiderna.png",
+      "what": "kvällens resultat med kvällens pyramider"
+    }
+  ],
+  "errors": [],
+  "djPicked": "true",
+  "stake": [
+    {
+      "id": "stake-card",
+      "value": null,
+      "text": "Tonight's stakeIngredientsSEK 1,790StaffSEK 3,812DJSEK 1,500InterestSEK 75Break-evenSEK 7,177The till has to reach the line before the evening makes money."
+    },
+    {
+      "id": "stake-ingredients",
+      "value": "1790",
+      "text": "IngredientsSEK 1,790"
+    },
+    {
+      "id": "stake-staff",
+      "value": "3812",
+      "text": "StaffSEK 3,812"
+    },
+    {
+      "id": "stake-dj",
+      "value": "1500",
+      "text": "DJSEK 1,500"
+    },
+    {
+      "id": "stake-interest",
+      "value": "75",
+      "text": "InterestSEK 75"
+    },
+    {
+      "id": "stake-total",
+      "value": "7177",
+      "text": "SEK 7,177"
+    }
+  ],
+  "drawerClosed": {
+    "stock": false,
+    "prep": false,
+    "meters": false,
+    "feedRows": 0,
+    "till": "till",
+    "tillValue": "0",
+    "breakEven": "7177",
+    "villageText": "none"
+  },
+  "drawerOpen": {
+    "stock": true,
+    "prep": true,
+    "meters": true,
+    "amounts": 0
+  },
+  "village": {
+    "before": 900,
+    "out": 900,
+    "back": 900
+  },
+  "at24": 900,
+  "rockets": [
+    {
+      "id": "vb02-rosen",
+      "step": 1,
+      "camAtOpen": 900,
+      "cam": [
+        900,
+        900,
+        900,
+        900,
+        900,
+        900,
+        900,
+        900
+      ],
+      "answer": "best",
+      "look": "chosen",
+      "pyramid": [
+        "empty",
+        "filled",
+        "filled"
+      ]
+    },
+    {
+      "id": "vb02-rosen",
+      "step": 2,
+      "camAtOpen": 900,
+      "cam": [
+        900,
+        900,
+        900,
+        900,
+        900,
+        900,
+        900,
+        900
+      ],
+      "answer": "wrong",
+      "look": "wrong",
+      "pyramid": [
+        "cracked",
+        "filled",
+        "filled"
+      ]
+    }
+  ],
+  "transfer": {
+    "revenue": "8233",
+    "contribution": "5967",
+    "ratio": "0.724766184865784",
+    "result": "-3675",
+    "move": "3870",
+    "account": "120514",
+    "forecast": "With this concept you last 3 weeks."
+  },
+  "r1Pyramids": [
+    "false",
+    "true"
+  ],
+  "hudAfter": {
+    "mode": "account",
+    "value": "120969"
+  }
+}

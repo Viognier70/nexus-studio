@@ -166,16 +166,18 @@ describe('ORDER 271 — raketkortet (R1–R3)', () => {
 });
 
 describe('ORDER 271 — mätarna', () => {
-  it('tre mätare med tio steg, som växer efter ett svar och blir vanliga efter 3,2 s', () => {
+  // ORDER 290 — Designs serviceläget §3: kassans mätare utgår (kvällskassan
+  // ersätter den); Rummet har gästernas och personalens mätare.
+  it('två mätare med tio steg, som växer efter ett svar och blir vanliga efter 3,2 s', () => {
     vi.useFakeTimers();
     const open = openNow(wineBarService(), 'vb09-getosten');
     sim.state = open;
     const { container, rerender } = render(<ServiceMeters />);
-    for (const id of ['meter-cash', 'meter-satisfaction', 'meter-stamina']) {
+    for (const id of ['meter-satisfaction', 'meter-stamina']) {
       expect(byTestId(container, id)!.getAttribute('data-value')).not.toBeNull();
       expect(byTestId(container, id)!.querySelectorAll('.nx-step')).toHaveLength(10);
     }
-    expect(byTestId(container, 'meter-cash')!.getAttribute('data-value')).toBe(String(Math.round(open.cash)));
+    expect(byTestId(container, 'meter-cash')).toBeNull();
     expect(byTestId(container, 'service-meters')!.getAttribute('data-emph')).toBe('false');
     sim.state = reducer(open, { type: 'ANSWER_INCIDENT', optionId: 'a' });
     rerender(<ServiceMeters />);

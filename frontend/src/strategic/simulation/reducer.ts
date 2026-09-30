@@ -2,7 +2,7 @@ import { calendarFor } from '../../sim/calendar';
 import { bestAnswerFactor, drinkRevenueFactor, enablersWithCredits } from '../../sim/knowledgeInService';
 import { EVENING, EVENING_ECONOMY, SERVICE, type BusinessClassId } from '../../sim/balance';
 import { answerSalvage, closeSalvage, discardUnresolvedSalvage } from './salvage';
-import { canBack, canStartBack, pickBackAnswer, closeIncidents, countDown, isIncidentOpen, maybeOpenIncident, planIncidents, resolveIncident, startBack, tickOngoing, type CreditChange } from '../../sim/incidents';
+import { clockMinutes, formatClock, canBack, canStartBack, pickBackAnswer, closeIncidents, countDown, isIncidentOpen, maybeOpenIncident, planIncidents, resolveIncident, startBack, tickOngoing, type CreditChange } from '../../sim/incidents';
 import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
 import { afterVisitClosed, beginIntroduction } from '../../sim/introduction';
 import { isStrandedWithoutBusiness, canChangeClassToday, changeClass, classOptions, openFirstBusiness, recordEvening, creditLineSek, dailyGuestCap, dayEnd, dayEndHeadroom, dailyWagesSek, recordExamWithoutBusiness, scenarioUnitSek, scenarioChoiceUnits, clampScenarioCash, postDailyInterest, settleWeek } from '../../sim/economy';
@@ -158,7 +158,7 @@ import {
   postValueQuotaLine
 } from './cashReading';
 import { drawNextTheme } from './themeSelection';
-import { eveningStake, eveningTransfer, tillSek } from './eveningEconomy';
+import { eveningStake, eveningTransfer, passedStake, tillSek } from './eveningEconomy';
 import { assignGuestTypes, billionaireTreat, maybeBillionaireArrives, bookingFor, recordTypeRevenue, settleSocialGuest, settleSocialGuestAtClose } from './guestTypes';
 import { sustainabilityLevelsFor } from '../../sim/sustainabilityLevels';
 import {
@@ -2463,6 +2463,11 @@ function advanceTick(state: SimulationState): SimulationState {
       applyCashRevenue(draft, rev);
       // ORDER 287a — kvällens intäkt per gästtyp.
       recordTypeRevenue(draft, guest, rev);
+      // ORDER 290 — notorna i kväll, och klockslaget när kvällskassan passerar insatsen.
+      if (inDinner) {
+        draft.day = { ...draft.day, billsTonight: (draft.day.billsTonight ?? 0) + 1 };
+        if (passedStake(draft)) draft.day = { ...draft.day, tillPassedAt: formatClock(clockMinutes(draft)) };
+      }
       // ORDER 258 — debitera per-rätt ingredient-cost vid samma paying-
       // tick som revenue. Bokförs vid BETALNING (rekognosering i register
       // §5: en gäst som lämnar utan att betala kostar ingenting idag —

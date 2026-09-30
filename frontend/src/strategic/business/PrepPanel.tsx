@@ -6,7 +6,7 @@
 // carries into the causeTag chain). Visible from doors-open onward
 // during a service; hidden in morning / opening / prep / evening.
 
-import { useServiceDrawer } from '../ui/service/serviceDrawer';
+import { panelOpen, useServiceDrawer } from '../ui/service/serviceDrawer';
 import { useSimState } from '../simulation/SimulationProvider';
 import { PREP_ITEMS } from '../simulation/miseEnPlace';
 import { businessHasMiseEnPlace } from './businessClass';
@@ -41,7 +41,7 @@ export function PrepPanel() {
   // frigör scenbredden till gäst-figurerna.
   if (!businessHasMiseEnPlace(sim.businessClass)) return null;
   const inService = sim.day.period === 'lunch' || sim.day.period === 'dinner';
-  if (!inService || !drawer.open) return null;
+  if (!inService || !panelOpen(drawer, 'stock')) return null;
   // ORDER 280 — under en egen raket står raketen här (BackPanels).
   if (sim.incidents?.active?.backed) return null;
   const readiness = sim.day.prepReadiness;

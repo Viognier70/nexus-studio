@@ -21,6 +21,7 @@ import { guestClipFor, sampleForFigure, staffClipFor, tempoFor } from './theatre
 import type { FigureSample, LedgerEntry, StaffKey, WineBarDirector } from './wineBarDirector';
 import { SURFACE_HEIGHT } from './wineBarRoom';
 import { THEATRE } from '../../sim/balance';
+import { PROP_VISUAL_SCALE } from './staffRing';
 import type { CameraTarget } from '../types';
 import type { ActiveIncident } from '../../sim/incidents';
 
@@ -104,9 +105,11 @@ export class TheatreStage {
   private take(id: PropId): PropHandle {
     const i = this.free.findIndex((p) => p.id === id);
     const p = i >= 0 ? this.free.splice(i, 1)[0] : createProp(id);
-    // ORDER 290 — rekvisitan förstoras för att läsas från spelarens höjd
-    // (THEATRE.propScale); måtten i tableware.ts är verkliga.
-    p.group.scale.setScalar(THEATRE.propScale);
+    // ORDER 290 — Designs ringen §3 (beslut 2026-09-30): tallrikar, glas och
+    // mat i 1,5 gånger storlek för att läsas från 24 m, samma vid raketens
+    // avstånd; brickan, tårtan, menyn, blocket och notan står kvar i 1,0.
+    // Skalan är bara visuell, kring föremålets nollpunkt.
+    p.group.scale.setScalar((PROP_VISUAL_SCALE.appliesTo as readonly string[]).includes(id) ? PROP_VISUAL_SCALE.game : 1);
     p.group.visible = true;
     return p;
   }

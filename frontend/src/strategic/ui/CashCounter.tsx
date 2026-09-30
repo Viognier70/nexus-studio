@@ -27,7 +27,7 @@ export const formatSek = (v: number): string => strings.service.meters.sek(Math.
 // räknas i steg.
 const STEP_FROM: Record<FxTarget, number> = { cash: 20, credits: 1 };
 
-function useCountedNumber(id: FxTarget, value: number, format: (v: number) => string, ticks: { up: number; down: number }, held = 0) {
+export function useCountedNumber(id: FxTarget, value: number, format: (v: number) => string, ticks: { up: number; down: number }, held = 0) {
   const pend = useSyncExternalStore(subscribeFx, () => pendingFor(id), () => 0);
   const target = Math.round(value - pend + held);
   const numRef = useRef<HTMLSpanElement>(null);
@@ -98,7 +98,10 @@ export function CashCounter() {
   const fill = breakEven > 0 ? Math.max(0, Math.min(1.25, till / breakEven)) : 0;
   const creditsValue = totalCredits(sim);
   const credits = useCountedNumber('credits', creditsValue, plain, CREDIT_TICKS);
-  const hidden = isStrandedWithoutBusiness(sim);
+  // ORDER 290 — Designs serviceläget: under servicen syns bara klockan och
+  // kvällskassan (TillBar).
+  const inService = sim.day.period === 'lunch' || sim.day.period === 'dinner';
+  const hidden = isStrandedWithoutBusiness(sim) || inService;
   const t = strings.cashCounter;
   return (
     <div className="nx nx-hud-money" data-hidden={hidden} style={{ display: hidden ? 'none' : 'flex', gap: 'calc(12 * var(--nx-u))', alignItems: 'stretch' }}>

@@ -79,8 +79,12 @@ describe('ORDER 290 — överföringen efter servicen', () => {
     expect(tr.resultSek).toBe(tr.contributionSek - tr.fixedSek);
     expect(tr.accountAfterSek).toBe(Math.round(accountAfterEvening(closed)));
     expect(tr.transferSek).toBe(tr.accountAfterSek - tr.accountBeforeSek);
-    // Resultatet är dagens: kassan vid dagsavslut mot gryningen.
-    expect(Math.abs(tr.resultSek - (dayEndCash(closed) - (closed.day.cashAtDayStart ?? 0)))).toBeLessThanOrEqual(1);
+    // Resultatet (Designs serviceläget §4) är kontot efter mot kontot i morse,
+    // utan sopbilens avgift (den dras på sopbilens skärm, inte i insatsen).
+    expect(tr.resultSek).toBe(tr.accountAfterSek - tr.accountMorningSek + tr.wasteFeeSek);
+    expect(Math.abs(tr.accountAfterSek - dayEndCash(closed))).toBeLessThanOrEqual(1);
+    expect(tr.rest.staff + tr.rest.dj + tr.rest.competence + tr.rest.investments).toBe(tr.fixedSek);
+    expect(tr.accountBeforeSek).toBe(tr.accountMorningSek - tr.variableSek - tr.wasteFeeSek);
     // Kvällen börjar med sopbilen eller överföringen, och går sedan till resultatet.
     expect(['waste', 'transfer']).toContain(closed.day.eveningStep);
     let e = closed;

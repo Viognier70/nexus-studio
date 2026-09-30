@@ -7,7 +7,6 @@
 import { useEffect, useRef } from 'react';
 import { useSimState } from '../../simulation/SimulationProvider';
 import { installSoundUnlock, play, setMurmur } from './sound';
-import { isSeatedCapacity } from '../../simulation/service';
 
 export function SoundDirector() {
   const sim = useSimState();
@@ -45,8 +44,10 @@ export function SoundDirector() {
   useEffect(() => {
     if (!rk || rk === revealKey.current) return;
     revealKey.current = rk;
+    // Rätt när svaret låses; våningen när den är full (900 ms, LJUDEN.md §3).
     play('right');
-    play('level', active?.revealed?.step ?? 0);
+    const floor = active?.revealed?.step ?? 0;
+    window.setTimeout(() => play('floor', floor), 900);
   }, [rk]);
   const last = sim.incidents?.lastOutcome ?? null;
   const ok = last ? `${last.incidentId}:${last.at}` : null;
@@ -56,18 +57,19 @@ export function SoundDirector() {
     outcomeKey.current = ok;
     if (first && !inService) return;
     if (last?.reveal?.cleared) {
+      // Den sista våningen: hela pyramiden ersätter våningens ljud (§4),
+      // 300 ms in i firandet som börjar när våningen fyllts (1 300 ms).
       play('right');
-      play('level', last.reveal.step);
-      window.setTimeout(() => play('full'), 260);
+      window.setTimeout(() => play('full'), 1600);
     } else {
       play('wrong');
     }
   }, [ok]);
 
-  // Sorlet: gästerna i rummet och kön mot rummets platser.
-  const seats = inService ? Math.max(1, isSeatedCapacity(sim)) : 1;
-  const pressure = inService ? (sim.seatedIds.length + sim.waitingIds.length) / seats : 0;
-  useEffect(() => { setMurmur(pressure); }, [pressure]);
+  // Sorlet: gästerna i rummet (LJUDEN.md §8), dämpat när raketkortet är öppet.
+  const guests = inService ? sim.seatedIds.length + sim.waitingIds.length : 0;
+  const rocketOpen = !!sim.incidents?.active;
+  useEffect(() => { setMurmur(guests, rocketOpen); }, [guests, rocketOpen]);
   useEffect(() => () => setMurmur(0), []);
   return null;
 }
