@@ -1,0 +1,381 @@
+{
+  "definition": "Vecka 2, vinbaren, brons i Stensöta, Metodköket och Kalastorget. rimlig = bästa svaret och ingen morgon; svag = sämsta svaret, två rätter och råvaror till fyra kuvert (scenarios.ts weakMorning). resultSek = kassans förändring måndag–söndag utan avräkningens påfyllnad och amortering (randomness.ts). revenueSek = veckans intäkt ur avräkningen; resultShare = resultSek / revenueSek. incidentCashShare = händelsernas kassa (kassabokens rader med händelsens id) som andel av vinbarens normala veckointäkt.",
+  "mean": {
+    "rimlig": {
+      "resultSek": 10233.7,
+      "revenueSek": 51952,
+      "resultShare": 0.19185000000000002,
+      "incidentCashShare": 0.03875000000000001
+    },
+    "svag": {
+      "resultSek": -33233.95,
+      "revenueSek": 5633.4,
+      "resultShare": -5.9423,
+      "incidentCashShare": -0.1016
+    }
+  },
+  "svagMinusWeeks": 20,
+  "weeks": 20,
+  "rows": [
+    {
+      "seed": 1,
+      "player": "rimlig",
+      "resultSek": 7262,
+      "revenueSek": 50084,
+      "resultShare": 0.145,
+      "incidentsWithCash": 10,
+      "incidentCashShare": 0.012
+    },
+    {
+      "seed": 1,
+      "player": "svag",
+      "resultSek": -34970,
+      "revenueSek": 5776,
+      "resultShare": -6.054,
+      "incidentsWithCash": 27,
+      "incidentCashShare": -0.144
+    },
+    {
+      "seed": 2,
+      "player": "rimlig",
+      "resultSek": 11554,
+      "revenueSek": 54042,
+      "resultShare": 0.214,
+      "incidentsWithCash": 8,
+      "incidentCashShare": 0.018
+    },
+    {
+      "seed": 2,
+      "player": "svag",
+      "resultSek": -32057,
+      "revenueSek": 5498,
+      "resultShare": -5.831,
+      "incidentsWithCash": 13,
+      "incidentCashShare": -0.07
+    },
+    {
+      "seed": 3,
+      "player": "rimlig",
+      "resultSek": 10867,
+      "revenueSek": 53718,
+      "resultShare": 0.202,
+      "incidentsWithCash": 7,
+      "incidentCashShare": 0.005
+    },
+    {
+      "seed": 3,
+      "player": "svag",
+      "resultSek": -33346,
+      "revenueSek": 6052,
+      "resultShare": -5.51,
+      "incidentsWithCash": 20,
+      "incidentCashShare": -0.112
+    },
+    {
+      "seed": 4,
+      "player": "rimlig",
+      "resultSek": 1933,
+      "revenueSek": 44812,
+      "resultShare": 0.043,
+      "incidentsWithCash": 10,
+      "incidentCashShare": 0.017
+    },
+    {
+      "seed": 4,
+      "player": "svag",
+      "resultSek": -34708,
+      "revenueSek": 4748,
+      "resultShare": -7.31,
+      "incidentsWithCash": 20,
+      "incidentCashShare": -0.118
+    },
+    {
+      "seed": 5,
+      "player": "rimlig",
+      "resultSek": 13688,
+      "revenueSek": 55474,
+      "resultShare": 0.247,
+      "incidentsWithCash": 7,
+      "incidentCashShare": 0.032
+    },
+    {
+      "seed": 5,
+      "player": "svag",
+      "resultSek": -31460,
+      "revenueSek": 5564,
+      "resultShare": -5.654,
+      "incidentsWithCash": 14,
+      "incidentCashShare": -0.056
+    },
+    {
+      "seed": 6,
+      "player": "rimlig",
+      "resultSek": 12400,
+      "revenueSek": 52551,
+      "resultShare": 0.236,
+      "incidentsWithCash": 8,
+      "incidentCashShare": 0.067
+    },
+    {
+      "seed": 6,
+      "player": "svag",
+      "resultSek": -33701,
+      "revenueSek": 5655,
+      "resultShare": -5.96,
+      "incidentsWithCash": 25,
+      "incidentCashShare": -0.111
+    },
+    {
+      "seed": 7,
+      "player": "rimlig",
+      "resultSek": 12575,
+      "revenueSek": 55714,
+      "resultShare": 0.226,
+      "incidentsWithCash": 13,
+      "incidentCashShare": 0.015
+    },
+    {
+      "seed": 7,
+      "player": "svag",
+      "resultSek": -31998,
+      "revenueSek": 5801,
+      "resultShare": -5.516,
+      "incidentsWithCash": 17,
+      "incidentCashShare": -0.074
+    },
+    {
+      "seed": 8,
+      "player": "rimlig",
+      "resultSek": 14967,
+      "revenueSek": 55852,
+      "resultShare": 0.268,
+      "incidentsWithCash": 9,
+      "incidentCashShare": 0.052
+    },
+    {
+      "seed": 8,
+      "player": "svag",
+      "resultSek": -33068,
+      "revenueSek": 5918,
+      "resultShare": -5.588,
+      "incidentsWithCash": 23,
+      "incidentCashShare": -0.105
+    },
+    {
+      "seed": 9,
+      "player": "rimlig",
+      "resultSek": 16103,
+      "revenueSek": 57315,
+      "resultShare": 0.281,
+      "incidentsWithCash": 9,
+      "incidentCashShare": 0.043
+    },
+    {
+      "seed": 9,
+      "player": "svag",
+      "resultSek": -35548,
+      "revenueSek": 5661,
+      "resultShare": -6.279,
+      "incidentsWithCash": 28,
+      "incidentCashShare": -0.155
+    },
+    {
+      "seed": 10,
+      "player": "rimlig",
+      "resultSek": 7405,
+      "revenueSek": 48045,
+      "resultShare": 0.154,
+      "incidentsWithCash": 10,
+      "incidentCashShare": 0.064
+    },
+    {
+      "seed": 10,
+      "player": "svag",
+      "resultSek": -32746,
+      "revenueSek": 5826,
+      "resultShare": -5.621,
+      "incidentsWithCash": 19,
+      "incidentCashShare": -0.096
+    },
+    {
+      "seed": 11,
+      "player": "rimlig",
+      "resultSek": 2508,
+      "revenueSek": 43995,
+      "resultShare": 0.057,
+      "incidentsWithCash": 9,
+      "incidentCashShare": 0.047
+    },
+    {
+      "seed": 11,
+      "player": "svag",
+      "resultSek": -35577,
+      "revenueSek": 6138,
+      "resultShare": -5.796,
+      "incidentsWithCash": 26,
+      "incidentCashShare": -0.171
+    },
+    {
+      "seed": 12,
+      "player": "rimlig",
+      "resultSek": 16270,
+      "revenueSek": 56481,
+      "resultShare": 0.288,
+      "incidentsWithCash": 9,
+      "incidentCashShare": 0.077
+    },
+    {
+      "seed": 12,
+      "player": "svag",
+      "resultSek": -33382,
+      "revenueSek": 4520,
+      "resultShare": -7.385,
+      "incidentsWithCash": 16,
+      "incidentCashShare": -0.077
+    },
+    {
+      "seed": 13,
+      "player": "rimlig",
+      "resultSek": 11610,
+      "revenueSek": 52799,
+      "resultShare": 0.22,
+      "incidentsWithCash": 11,
+      "incidentCashShare": 0.06
+    },
+    {
+      "seed": 13,
+      "player": "svag",
+      "resultSek": -32184,
+      "revenueSek": 6377,
+      "resultShare": -5.047,
+      "incidentsWithCash": 21,
+      "incidentCashShare": -0.094
+    },
+    {
+      "seed": 14,
+      "player": "rimlig",
+      "resultSek": 4992,
+      "revenueSek": 48129,
+      "resultShare": 0.104,
+      "incidentsWithCash": 9,
+      "incidentCashShare": 0.005
+    },
+    {
+      "seed": 14,
+      "player": "svag",
+      "resultSek": -32160,
+      "revenueSek": 5356,
+      "resultShare": -6.004,
+      "incidentsWithCash": 18,
+      "incidentCashShare": -0.071
+    },
+    {
+      "seed": 15,
+      "player": "rimlig",
+      "resultSek": 8581,
+      "revenueSek": 51161,
+      "resultShare": 0.168,
+      "incidentsWithCash": 11,
+      "incidentCashShare": 0.028
+    },
+    {
+      "seed": 15,
+      "player": "svag",
+      "resultSek": -31352,
+      "revenueSek": 5502,
+      "resultShare": -5.698,
+      "incidentsWithCash": 13,
+      "incidentCashShare": -0.056
+    },
+    {
+      "seed": 16,
+      "player": "rimlig",
+      "resultSek": 15607,
+      "revenueSek": 57257,
+      "resultShare": 0.273,
+      "incidentsWithCash": 9,
+      "incidentCashShare": 0.036
+    },
+    {
+      "seed": 16,
+      "player": "svag",
+      "resultSek": -33306,
+      "revenueSek": 6387,
+      "resultShare": -5.215,
+      "incidentsWithCash": 24,
+      "incidentCashShare": -0.119
+    },
+    {
+      "seed": 17,
+      "player": "rimlig",
+      "resultSek": 4080,
+      "revenueSek": 46586,
+      "resultShare": 0.088,
+      "incidentsWithCash": 8,
+      "incidentCashShare": 0.018
+    },
+    {
+      "seed": 17,
+      "player": "svag",
+      "resultSek": -32980,
+      "revenueSek": 5896,
+      "resultShare": -5.594,
+      "incidentsWithCash": 20,
+      "incidentCashShare": -0.105
+    },
+    {
+      "seed": 18,
+      "player": "rimlig",
+      "resultSek": 10637,
+      "revenueSek": 51577,
+      "resultShare": 0.206,
+      "incidentsWithCash": 10,
+      "incidentCashShare": 0.057
+    },
+    {
+      "seed": 18,
+      "player": "svag",
+      "resultSek": -32710,
+      "revenueSek": 5359,
+      "resultShare": -6.104,
+      "incidentsWithCash": 19,
+      "incidentCashShare": -0.084
+    },
+    {
+      "seed": 19,
+      "player": "rimlig",
+      "resultSek": 12505,
+      "revenueSek": 52904,
+      "resultShare": 0.236,
+      "incidentsWithCash": 9,
+      "incidentCashShare": 0.066
+    },
+    {
+      "seed": 19,
+      "player": "svag",
+      "resultSek": -32387,
+      "revenueSek": 5294,
+      "resultShare": -6.118,
+      "incidentsWithCash": 18,
+      "incidentCashShare": -0.075
+    },
+    {
+      "seed": 20,
+      "player": "rimlig",
+      "resultSek": 9130,
+      "revenueSek": 50544,
+      "resultShare": 0.181,
+      "incidentsWithCash": 11,
+      "incidentCashShare": 0.056
+    },
+    {
+      "seed": 20,
+      "player": "svag",
+      "resultSek": -35039,
+      "revenueSek": 5340,
+      "resultShare": -6.562,
+      "incidentsWithCash": 24,
+      "incidentCashShare": -0.139
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "classes": {
+    "vinbar": {
+      "camDistance": "24",
+      "roomGrade": "service",
+      "errors": []
+    },
+    "foodtruck": {
+      "camDistance": "24",
+      "roomGrade": "service",
+      "errors": []
+    }
+  }
+}

@@ -11,17 +11,37 @@
     7,
     8,
     9,
-    10
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
   ],
   "rows": [
     {
       "share": 0.17,
       "reasonable": {
-        "meanShare": 0.17041592572435318,
-        "meanResultSek": 9086.8,
-        "meanRevenueSek": 50993.4
+        "meanShare": 0.19177515188297953,
+        "meanResultSek": 10233.7,
+        "meanRevenueSek": 51952
       },
       "weakDowngradeWeeks": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
         3,
         3,
         3,
