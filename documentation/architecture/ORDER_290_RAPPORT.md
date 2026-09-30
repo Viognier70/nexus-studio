@@ -113,6 +113,10 @@ Hela sviten är grön (139 testfiler; 2 222 tester, 4 överhoppade).
 
 ## 5. Avvikelser och öppet
 
+**Vision Owners beslut 2026-09-30 efter rapporten:** insatsen med Designs fyra rader och satsningar som egen rad godkänns. DJ och satsningar dras på morgonen och räknas in i linjen, som byggt. Linjen från ringen står kvar tills vidare. Pyramiden i lärdomen och etiketten vid hovring tas i nästa order, gästerna på väg mot krogen med 288c. Ringen syns under hela servicen men inte på morgonen, som byggt. Hovmästaren får en egen färg, och ingen roll får ha rött eller grönt; Design kontrollerar färgerna (`documentation/briefs/SVAR_TILL_DESIGN_2026-09-30.md`).
+
+Före besluten:
+
 - **Designs fyra rader i insatsen** är råvaror, personal, DJ och kompetens. Ordern nämner också satsningar; de står som egen rad när spelaren valt någon. Räntan och köksdriften räknas till personalen.
 - **Satsningar och DJ betalas på morgonen när de väljs**, som förut, inte vid överföringen som i Designs text. Därför kan kontot *före* på skärmen efter servicen vara högre än det spelaren såg på morgonen, med satsningarnas pris.
 - **Linjen till uppgiften** finns inte i Designs ring (den har en båge i stället). Den är kvar eftersom ordern säger "ring och linje".
