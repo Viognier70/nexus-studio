@@ -633,7 +633,7 @@ export function PlayerBusiness() {
         >
           <div
             ref={signRef}
-            data-testid="business-sign"
+            className="nx-business-sign"
             style={{
               color: '#f5f0e0',
               background: 'rgba(45, 32, 22, 0.85)',
