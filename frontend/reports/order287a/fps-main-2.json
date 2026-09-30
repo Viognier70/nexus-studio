@@ -1,0 +1,15 @@
+{
+  "label": "main-2",
+  "frontend": "/private/tmp/claude-501/-Users-acf-dev-nexus-studio/1ccbf044-d72f-4fa0-8654-f701e05f9115/scratchpad/wt-main/frontend",
+  "save": "reports/order284/save-mandag-vinbaren.json",
+  "viewport": "1920×1080",
+  "samples": [
+    10,
+    9,
+    10,
+    10,
+    10
+  ],
+  "median": 10,
+  "errors": []
+}
