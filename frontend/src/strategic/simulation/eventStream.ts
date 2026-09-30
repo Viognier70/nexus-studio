@@ -51,6 +51,20 @@ import {
   SERVICE_REPORT_PREP_POSITIVE
 } from '../../content/serviceReport';
 import type { AmbientEventKind, PrepEventKind } from '../../content/eventStream.en';
+import {
+  SERVICE_REPORT_AMBIENT_SV,
+  SERVICE_REPORT_POSITIVE_SV,
+  SERVICE_REPORT_PREP_POSITIVE_SV,
+  SERVICE_REPORT_PREP_SV
+} from '../../content/serviceReport.sv';
+import { getLanguage } from '../../content/language';
+
+// ORDER 291 — servicerapportens rader på spelarens språk.
+const sv = () => getLanguage() === 'sv';
+const bankAmbient = () => (sv() ? SERVICE_REPORT_AMBIENT_SV : SERVICE_REPORT_AMBIENT);
+const bankPrep = () => (sv() ? SERVICE_REPORT_PREP_SV : SERVICE_REPORT_PREP);
+const bankPrepPositive = () => (sv() ? SERVICE_REPORT_PREP_POSITIVE_SV : SERVICE_REPORT_PREP_POSITIVE);
+const bankPositive = (): readonly string[] => (sv() ? SERVICE_REPORT_POSITIVE_SV : SERVICE_REPORT_POSITIVE);
 import { currentRhythmMultiplier } from './rhythm';
 import { teamCapacity, teamCompetence } from './team';
 import {
@@ -434,7 +448,7 @@ function makeAmbientEntry(
   const causeTag = entryCauseTagFor(def, state);
   return {
     at: state.simTime,
-    text: pickCausedText(SERVICE_REPORT_AMBIENT[def.kind], def.kind, state, rng),
+    text: pickCausedText(bankAmbient()[def.kind] as CauseBank, def.kind, state, rng),
     category: 'ambient',
     causeTag,
     causeChainId: null,   // assigned at push-to-state time (see assignCauseChain)
@@ -458,7 +472,7 @@ function makePrepEntry(
   const causeTag = detected !== 'ambient' ? detected : 'ignorance';
   return {
     at: state.simTime,
-    text: pickCausedText(SERVICE_REPORT_PREP[def.kind], def.kind, state, rng),
+    text: pickCausedText(bankPrep()[def.kind] as CauseBank, def.kind, state, rng),
     category: 'ambient',
     causeTag,
     causeChainId: null,
@@ -519,7 +533,7 @@ function makePositiveEntry(
 ): EventStreamEntry {
   return {
     at: state.simTime,
-    text: pickTextWithRepeatGuard(SERVICE_REPORT_POSITIVE, state, rng),
+    text: pickTextWithRepeatGuard(bankPositive(), state, rng),
     category: 'positive',
     causeTag: null,
     causeChainId: null,
@@ -642,7 +656,7 @@ export function tickEventStream(state: SimulationState, rng: Rng): void {
             // Positive polarity — prep going well.
             emitted.push({
               at: state.simTime,
-              text: pickTextWithRepeatGuard(SERVICE_REPORT_PREP_POSITIVE[slot.kind], state, rng),
+              text: pickTextWithRepeatGuard(bankPrepPositive()[slot.kind], state, rng),
               category: 'positive',
               causeTag: null,
               causeChainId: null,
@@ -655,7 +669,7 @@ export function tickEventStream(state: SimulationState, rng: Rng): void {
             // picker per ORDER 052 §9 step 1.
             emitted.push({
               at: state.simTime,
-              text: pickCausedText(SERVICE_REPORT_PREP[slot.kind], slot.kind, state, rng),
+              text: pickCausedText(bankPrep()[slot.kind] as CauseBank, slot.kind, state, rng),
               category: 'ambient',
               causeTag: 'ignorance',
               causeChainId: null,

@@ -1451,13 +1451,141 @@ export const TABLE = {
     courses: { sv: 'Kurser', en: 'Courses' },
     coursesSub: { sv: 'En investering, inte kvällens kostnad', en: "An investment, not tonight's cost" }
   },
-  // DJ som satsning (activities.ts book-dj).
+  // Satsningarna (activities.ts ACTIVITY_CATALOGUE). ORDER 291: alla på
+  // båda språken, inte bara DJ:n.
   activityText: {
+    'train-service': {
+      name: { sv: 'Utbilda salen', en: 'Train the floor staff' },
+      description: { sv: 'En halvtimmes genomgång av tempot vid passet och rytmen vid borden.', en: 'A half-hour run-through of the pace at the pass and the rhythm at the tables.' }
+    },
+    'runner-shift': {
+      name: { sv: 'Ta in en springare', en: 'Bring in a runner' },
+      description: { sv: 'Ett par extra händer som bär ut tallrikar och dukar av.', en: 'An extra pair of hands to carry out plates and clear tables.' }
+    },
+    'local-sourcing': {
+      name: { sv: 'Lokala råvaror i kväll', en: 'Local ingredients tonight' },
+      description: { sv: 'Små gårdar i närheten: högre styckpris, kortare kedja.', en: 'Small farms nearby: a higher unit price, a shorter supply chain.' }
+    },
+    'wine-tasting': {
+      name: { sv: 'Vinprovning med laget', en: 'Wine tasting with the team' },
+      description: { sv: 'Laget kan vinlistan, och merförsäljningen kommer av sig själv.', en: 'The team knows the wine list, and the extra sales come on their own.' }
+    },
+    'guest-chef': {
+      name: { sv: 'Gästkock för kvällen', en: 'Guest chef for the evening' },
+      description: { sv: 'En vän till huset lagar maten, och passet skickar ut något gästerna pratar om.', en: 'A friend of the house cooks, and the pass sends out something the guests talk about.' }
+    },
+    'compost-audit': {
+      name: { sv: 'Genomgång av kökets kompost', en: 'Review of the kitchen compost' },
+      description: { sv: 'Gå igenom kärlen och flödet i förberedelsen. Små ändringar håller när någon har ett öga på dem.', en: 'Go through the bins and the flow in the prep. Small changes hold when someone keeps an eye on them.' }
+    },
     'book-dj': {
       name: { sv: 'DJ i kväll', en: 'A DJ tonight' },
       description: { sv: 'Musik från nio. Fler gäster kommer, men bara en full kväll betalar den.', en: 'Music from nine o’clock. More guests come, but only a full evening pays for it.' }
     }
   },
+  // ORDER 291 — rätter, råvaror och leverantörer (m4Catalogue.ts) på
+  // spelarens språk. Katalogens `name` läser härifrån.
+  catalogue: {
+    dish: {
+      'root-soup': { sv: 'Rotfruktssoppa', en: 'Root vegetable soup' },
+      'chicken-plate': { sv: 'Kyckling med rotfrukter', en: 'Chicken with root veg' },
+      'pork-plate': { sv: 'Fläsk med rotfrukter', en: 'Pork with root veg' },
+      'lamb-plate': { sv: 'Lamm med rotfrukter', en: 'Lamb with root veg' },
+      'game-plate': { sv: 'Vilt med rotfrukter', en: 'Game with root veg' },
+      'fish-plate': { sv: 'Pocherad gös', en: 'Poached pike-perch' },
+      'dairy-dessert': { sv: 'Gräddessert', en: 'Cream dessert' },
+      'lentil-plate': { sv: 'Rostade rotfrukter med linser', en: 'Roast roots with lentils' },
+      'chanterelle-toast': { sv: 'Kantareller på toast', en: 'Chanterelles on toast' },
+      'lingon-sorbet': { sv: 'Lingonsorbet', en: 'Lingonberry sorbet' },
+      'beer-pairing': { sv: 'Lokal öl till maten', en: 'Local beer with the meal' },
+      'house-wine-glass': { sv: 'Grüner Veltliner, per glas', en: 'Grüner Veltliner, by the glass' },
+      'fine-wine-glass': { sv: 'Pinot Noir, per glas', en: 'Pinot Noir, by the glass' },
+      'house-wine-bottle': { sv: 'Grüner Veltliner, flaska', en: 'Grüner Veltliner, bottle' },
+      'fine-wine-bottle': { sv: 'Pinot Noir, flaska', en: 'Pinot Noir, bottle' },
+      'alcohol-free-glass': { sv: 'Alkoholfritt mousserande lingon', en: 'Alcohol-free lingonberry sparkling' }
+    },
+    ingredient: {
+      'root-veg': { sv: 'rotfrukter', en: 'root vegetables' },
+      'leaf-veg': { sv: 'bladgrönt', en: 'leafy greens' },
+      herbs: { sv: 'färska örter', en: 'fresh herbs' },
+      chicken: { sv: 'kyckling', en: 'chicken' },
+      pork: { sv: 'fläsk', en: 'pork' },
+      lamb: { sv: 'lamm', en: 'lamb' },
+      game: { sv: 'vilt (hjort)', en: 'game (deer)' },
+      'lake-fish': { sv: 'gös', en: 'pike-perch' },
+      eggs: { sv: 'ägg', en: 'eggs' },
+      dairy: { sv: 'mejeri', en: 'dairy' },
+      flour: { sv: 'mjöl', en: 'flour' },
+      lentils: { sv: 'linser', en: 'lentils' },
+      mushrooms: { sv: 'kantareller', en: 'chanterelles' },
+      berries: { sv: 'lingon', en: 'lingonberries' },
+      beer: { sv: 'öl (dryck)', en: 'beer (drink)' },
+      'house-wine': { sv: 'husets vin', en: 'house wine' },
+      'fine-wine': { sv: 'fint vin', en: 'fine wine' },
+      'alcohol-free': { sv: 'alkoholfritt mousserande', en: 'alcohol-free sparkling' }
+    },
+    supplier: {
+      wholesaler: { sv: 'Bergslagens grossist', en: 'Bergslagen wholesaler' },
+      'local-veg': { sv: 'Grythyttans odlare', en: 'Grythyttan growers' },
+      organic: { sv: 'Örebros ekogårdar', en: 'Örebro organic farms' },
+      'meat-game': { sv: 'Bergslagens kött & vilt', en: 'Bergslagen meat & game' },
+      'lake-fish': { sv: 'Hjälmarens insjöfisk', en: 'Hjälmaren lake fish' },
+      brewery: { sv: 'Nora bryggeri', en: 'Nora brewery' },
+      'wine-merchant': { sv: 'Bergslagens vinhandlare', en: 'Bergslagen wine merchant' }
+    }
+  },
+  // ORDER 291 — händelseloggens rader ur reducer.ts på spelarens språk.
+  simEvent: {
+    shortDelivery: { sv: (s: string, r: number, u: number, i: string) => `Kort leverans: ${s} levererade ${r} av ${u} ${i}.`, en: (s: string, r: number, u: number, i: string) => `Short delivery: ${s} delivered ${r} of ${u} ${i}.` },
+    ranOut: { sv: (d: string) => `${d} är slut — köket har inga råvaror kvar.`, en: (d: string) => `${d} has run out — the kitchen has no ingredients left.` },
+    guestLeftMissing: { sv: (d: string) => `En gäst gick — ${d} fanns inte i kväll.`, en: (d: string) => `A guest left — ${d} was not available tonight.` },
+    substituted: { sv: (want: string, got: string) => `En gäst ville ha ${want}; köket serverade ${got} i stället.`, en: (want: string, got: string) => `A guest wanted ${want}; the kitchen served ${got} instead.` },
+    agencyIn: { sv: 'Bemanning inringd — laget växer för kvällen.', en: 'Agency staff called in — the team grows for the evening.' },
+    agencyDeclined: { sv: 'Bemanningen tackades nej till — laget märker att ingen hjälp kom.', en: 'Declined agency staff — the team notices that no help came.' },
+    hired: { sv: (r: string, d: number) => `Anställde ${r} — kontrakt till dag ${d}.`, en: (r: string, d: number) => `Hired ${r} — contract until day ${d}.` },
+    terrace: { sv: 'Uteplatsen öppnade. Ståbord ute på gatan.', en: 'Terrace opened. Standing tables out on the street.' },
+    mentor: { sv: (c: string) => `Mentorn: ${c}`, en: (c: string) => `Mentor: ${c}` },
+    scenarioChose: { sv: (c: string) => `Scenario: valde ${c}`, en: (c: string) => `Scenario: chose ${c}` }
+  },
+  // ORDER 291 — kassabokens rader (EveningAccountPanel) på spelarens språk.
+  ledgerCause: {
+    investment: { sv: (n: string) => `Satsning: ${n}`, en: (n: string) => `Investment: ${n}` },
+    investmentRefunded: { sv: (n: string) => `Satsning återbetald: ${n}`, en: (n: string) => `Investment refunded: ${n}` },
+    investmentEffect: { sv: (n: string) => `Satsningens följd: ${n}`, en: (n: string) => `Investment effect: ${n}` },
+    purchase: { sv: (u: number, i: string, s: string) => `Inköp ${u}× ${i} från ${s}`, en: (u: number, i: string, s: string) => `Purchase ${u}× ${i} from ${s}` },
+    bankLoan: { sv: (tier: string) => `Banklån (${tier})`, en: (tier: string) => `Bank loan (${tier})` },
+    latePayment: { sv: 'Sen betalning från en gäst', en: 'Late payment from a guest' },
+    wage: { sv: (r: string) => `Lön: ${r}`, en: (r: string) => `Wage: ${r}` },
+    idleStaff: { sv: (d: number) => `Personal utanför servicen (dag ${d})`, en: (d: number) => `Staff cost outside service (day ${d})` },
+    agency: { sv: (r: string) => `Bemanning: ${r} i kväll`, en: (r: string) => `Agency staff: ${r} tonight` },
+    revenue: {
+      sv: (lunch: boolean, covers: number) => `Försäljning ${lunch ? 'lunch' : 'middag'}${covers > 0 ? ` (${covers} kuvert)` : ''}`,
+      en: (lunch: boolean, covers: number) => `Revenue ${lunch ? 'lunch' : 'dinner'}${covers > 0 ? ` (${covers} covers)` : ''}`
+    },
+    ingredients: {
+      sv: (lunch: boolean, covers: number) => `Råvaror — ${lunch ? 'lunch' : 'middag'}${covers > 0 ? ` — ${covers} kuvert` : ''}`,
+      en: (lunch: boolean, covers: number) => `Ingredients — ${lunch ? 'lunch' : 'dinner'}${covers > 0 ? ` — ${covers} covers` : ''}`
+    }
+  },
+  // ORDER 291 — morgonens ändringar i kvällsberättelsen (reducer.ts
+  // observerVoiceForPolicyChange) och i händelseloggen.
+  policyVoice: {
+    trainingUp: { sv: 'Du höjde utbildningsnivån för i dag', en: 'You raised the training level for today' },
+    trainingDown: { sv: 'Du sänkte utbildningsnivån för i dag', en: 'You lowered the training level for today' },
+    pricesLow: { sv: 'Du sänkte priserna för i dag', en: 'You lowered prices for today' },
+    pricesMid: { sv: 'Du satte priserna på mellannivå för i dag', en: 'You set prices to medium for today' },
+    pricesHigh: { sv: 'Du höjde priserna för i dag', en: 'You raised prices for today' },
+    supplyBasic: { sv: 'Du gick ner till grundleverantören för i dag', en: 'You went down to the basic supplier for today' },
+    supplySelected: { sv: 'Du valde utvalda leverantörer för i dag', en: 'You chose selected suppliers for today' },
+    supplyPremium: { sv: 'Du gick över till premiumleveranser för i dag', en: 'You moved to premium supply for today' },
+    changed: { sv: (parts: string) => `Ändrat: ${parts}`, en: (parts: string) => `Changed: ${parts}` }
+  },
+  // ORDER 291 — kvällsberättelsens första mening om morgonens val.
+  activityChosen: {
+    sv: (list: string) => `I dag valde du: ${list}.`,
+    en: (list: string) => `Today you chose: ${list}.`
+  },
+  listAnd: { sv: 'och', en: 'and' },
   // ORDER 290 — svarens följd som händelser i rummet, över bordet.
   answerEffects: {
     up: {

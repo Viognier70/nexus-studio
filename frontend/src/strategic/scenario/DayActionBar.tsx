@@ -33,7 +33,7 @@ import { settlementInWords, shownInWords } from '../economy/BankDialog';
 import { stockForecast } from '../../sim/stockForecast';
 import { eventsSince } from '../../sim/serviceEvents';
 import { numberWord } from '../simulation/eveningAccount';
-import { activityById } from '../simulation/activities';
+import { activityById, activityName } from '../simulation/activities';
 import { MorningActivityPanel } from '../business/MorningActivityPanel';
 import { MorningMenuPanel } from '../business/MorningMenuPanel';
 import { morningRows } from '../simulation/morningBuy';
@@ -152,7 +152,7 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenB
     ...sim.day.pickedActivityIds.map((id) => ({
       kind: 'activity' as const,
       key: `a-${id}`,
-      title: activityById(id)?.name ?? id,
+      title: (() => { const a = activityById(id); return a ? activityName(a) : id; })(),
       icon: <NxIcon name={ACTIVITY_ICON[id] ?? 'users'} size={32} />
     }))
   ];

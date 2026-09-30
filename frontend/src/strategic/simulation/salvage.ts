@@ -20,6 +20,7 @@ import { SALVAGE, WASTE } from '../../sim/balance';
 import { strings } from '../../content/strings';
 import { applyCashCost, postLedger } from './cashReading';
 import { findDish, findIngredient } from './m4Catalogue';
+import { numberLocale } from '../../content/language';
 
 export type SalvageGroup = 'root-veg' | 'chicken' | 'pork' | 'lake-fish' | 'dairy' | 'lentils' | 'mushrooms' | 'berries' | 'meat';
 
@@ -107,7 +108,7 @@ export function answerSalvage(state: SimulationState, optionId: string): Simulat
   }
   const fee = discard(draft, sv.dishId, sv.portions);
   draft.salvage = { ...sv, resolved: 'wrong', optionId, feeSek: fee };
-  streamLine(draft, strings.salvage.wrong(strings.service.meters.sek(fee.toLocaleString('en-GB'))));
+  streamLine(draft, strings.salvage.wrong(strings.service.meters.sek(fee.toLocaleString(numberLocale()))));
   return draft;
 }
 
@@ -118,7 +119,7 @@ export function discardUnresolvedSalvage(draft: SimulationState): void {
   if (!sv || sv.resolved !== null) return;
   const fee = discard(draft, sv.dishId, sv.portions);
   draft.salvage = { ...sv, resolved: 'discarded', optionId: null, feeSek: fee };
-  streamLine(draft, strings.salvage.discarded(sv.portions, strings.service.meters.sek(fee.toLocaleString('en-GB'))));
+  streamLine(draft, strings.salvage.discarded(sv.portions, strings.service.meters.sek(fee.toLocaleString(numberLocale()))));
 }
 
 export function closeSalvage(state: SimulationState): SimulationState {

@@ -44,7 +44,9 @@ import type {
   TeamState
 } from '../types';
 import { createRng } from '../util/rng';
-import { COLLAPSE_TEXTS } from '../../content/collapse.en';
+import { COLLAPSE_TEXTS as COLLAPSE_EN } from '../../content/collapse.en';
+import { COLLAPSE_TEXTS as COLLAPSE_SV } from '../../content/collapse.sv';
+import { getLanguage } from '../../content/language';
 import { loadOf, strainMultiplier, STREAM_KEEP } from './eventStream';
 import { computeEveningAccount } from './eveningAccount';
 import { postServiceSummaryLines } from './cashReading';
@@ -179,7 +181,8 @@ export function fireCollapse(draft: SimulationState): void {
   // enough that a repeat would take multiple bad evenings to surface.
   // Picking round-robin by day + service parity so back-to-back
   // collapses at least differ in wording.
-  const bank = COLLAPSE_TEXTS[axis];
+  // ORDER 291 — på spelarens språk.
+  const bank = (getLanguage() === 'sv' ? COLLAPSE_SV : COLLAPSE_EN)[axis];
   const parity = draft.day.period === 'lunch' ? 0 : 1;
   const idx = (draft.day.dayNumber - 1 + parity) % bank.length;
   const text = bank[idx];

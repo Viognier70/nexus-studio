@@ -17,6 +17,7 @@ import { findDish } from '../strategic/simulation/m4Catalogue';
 import { takeFromStock } from '../strategic/simulation/stockPackages';
 import { strings } from '../content/strings';
 import { INCIDENTS, SERVICE_STREAM } from './balance';
+import { numberLocale } from '../content/language';
 
 export type ChanceKind = keyof typeof SERVICE_STREAM.chance;
 const KINDS = Object.keys(SERVICE_STREAM.chance) as ChanceKind[];
@@ -48,7 +49,7 @@ function sell(draft: SimulationState, dishId: string): number {
   return entry.price;
 }
 
-const sek = (v: number) => strings.service.meters.sek(Math.round(v).toLocaleString('en-GB'));
+const sek = (v: number) => strings.service.meters.sek(Math.round(v).toLocaleString(numberLocale()));
 
 // En händelse: verkan och raden i strömmen. Null när den inte kan hända
 // just nu (till exempel inget vin i lager).

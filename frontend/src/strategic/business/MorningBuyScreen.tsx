@@ -22,6 +22,7 @@ import { formatSek } from '../ui/CashCounter';
 import { shake } from '../ui/juice/juice';
 import { flyTo, targetElement } from '../ui/juice/fx';
 import '../ui/screens/screens.css';
+import { numberLocale } from '../../content/language';
 
 const T = strings.morningBuy;
 const BOX = u(52);
@@ -66,13 +67,13 @@ export function MorningBuyScreen({ open, onClose }: { open: boolean; onClose: ()
     }
     setNotice(null);
     dispatch({ type: 'BUY_ITEMS', items });
-    flyTo('cash', from, strings.money.minus(Math.round(cost).toLocaleString('en-GB')), -cost, { bg: 'var(--nx-accent)' });
+    flyTo('cash', from, strings.money.minus(Math.round(cost).toLocaleString(numberLocale())), -cost, { bg: 'var(--nx-accent)' });
   };
   const giveBack = (items: Record<string, number>, have: number, from: HTMLElement) => {
     if (have <= 0) { shake(from, 6); return; }
     const refund = itemsCostSek(Object.fromEntries(Object.entries(items).map(([k, n]) => [k, Math.min(n, have)])));
     dispatch({ type: 'RETURN_ITEMS', items });
-    flyTo('cash', from, strings.money.plus(Math.round(refund).toLocaleString('en-GB')), refund, { bg: 'var(--nx-ink)' });
+    flyTo('cash', from, strings.money.plus(Math.round(refund).toLocaleString(numberLocale())), refund, { bg: 'var(--nx-ink)' });
   };
   const dishRow = (r: DishRow) => (
     <div key={r.dishId} className="nxs-buy-row" data-testid={`buy-row-${r.dishId}`}>

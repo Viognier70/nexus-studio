@@ -22,6 +22,7 @@ import { NxButton } from '../ui/system/components';
 import { CLASS_ICON, NxIcon, PAVILION_ICON } from '../ui/screens/icons';
 import { MedalDisc } from '../ui/screens/MedalDisc';
 import '../ui/screens/screens.css';
+import { numberLocale } from '../../content/language';
 
 const e = strings.economy;
 
@@ -312,7 +313,7 @@ export function settlementInWords(sim: SimulationState): string[] {
   else lines.push(e.settlement.aboveFloor);
   if (s.amortisationSek > 0) lines.push(e.settlement.amortised);
   // ORDER 280 — hyran och veckans löner står i avräkningen och i tidningen.
-  const sek = (v: number) => strings.service.meters.sek(Math.round(v).toLocaleString('en-GB'));
+  const sek = (v: number) => strings.service.meters.sek(Math.round(v).toLocaleString(numberLocale()));
   if ((s.rentSek ?? 0) > 0) lines.push(e.settlement.rent(sek(s.rentSek!)));
   if ((s.wagesSek ?? 0) > 0) lines.push(e.settlement.wages(sek(s.wagesSek!)));
   if (s.downgradedFrom) {

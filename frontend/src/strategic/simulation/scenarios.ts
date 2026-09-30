@@ -17,6 +17,8 @@
 // weighted); the reducer looks up the spec for the drawn theme and
 // uses that spec end-to-end.
 
+import { getLanguage } from '../../content/language';
+import { SCENARIO_TEXT_SV, SENDER_PREFIX_SV } from '../../content/scenarios.sv';
 import type {
   EnablerKey,
   Register,
@@ -631,6 +633,29 @@ export const ALL_SCENARIOS: readonly ScenarioSpec[] = [
 // ORDER 269 — det bästa svaret: valet som lyfter kvällens tema mest
 // (`capitalSign`); vid lika det första. Samma rangordning som harnessens
 // rimliga spelare och playwright-skripten läser.
+// ORDER 291 — texten på spelarens språk: fälten blir getters som läser den
+// svenska texten (content/scenarios.sv.ts) när spelet går på svenska.
+function localised<T extends object>(obj: T, key: keyof T & string, sv: () => unknown): void {
+  const en = obj[key];
+  Object.defineProperty(obj, key, { get: () => (getLanguage() === 'sv' ? (sv() ?? en) : en), enumerable: true, configurable: true });
+}
+for (const spec of ALL_SCENARIOS) {
+  const t = SCENARIO_TEXT_SV[spec.id];
+  if (!t) continue;
+  localised(spec, 'subjectBody', () => t.subjectBody);
+  localised(spec, 'subjectCta', () => t.subjectCta);
+  localised(spec, 'situationBody', () => t.situationBody);
+  for (const c of ['A', 'B', 'C'] as const) {
+    const choice = spec.choices[c];
+    const ct = t.choices[c];
+    localised(choice, 'label', () => ct.label);
+    localised(choice, 'outcomes', () => ct.outcomes);
+    localised(choice, 'mentor', () => ct.mentor);
+    if (choice.immediateOutcome !== undefined) localised(choice, 'immediateOutcome', () => ct.immediateOutcome);
+    if (choice.belowThreshold) localised(choice.belowThreshold, 'extraOutcome', () => ct.extraOutcome);
+  }
+}
+
 export function rankedScenarioChoice(scenarioId: string | null, answer: 'best' | 'worst'): ScenarioChoice {
   const spec = scenarioId ? scenarioById(scenarioId) : null;
   if (!spec) return 'A';
@@ -741,3 +766,10 @@ type QuestionAskerLocal =
   | 'värd'
   | 'servitör'
   | 'lärling';
+
+// ORDER 291 — rollernas prefix på spelarens språk.
+for (const table of [SENDER_PREFIX, ASKER_PREFIX] as Record<string, string>[]) {
+  for (const role of Object.keys(table)) {
+    localised(table, role, () => (SENDER_PREFIX_SV as Record<string, string>)[role]);
+  }
+}

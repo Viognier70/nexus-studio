@@ -11,6 +11,8 @@
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 import {
   ACTIVITY_CATALOGUE,
+  activityDescription,
+  activityName,
   scheduleSlotsFor,
   WEEKLY_GATE_DAYS
 } from '../simulation/activities';
@@ -59,9 +61,9 @@ export function MorningActivityPanel() {
           >
             <NxIcon name={ACTIVITY_ICON[a.id] ?? 'users'} size={32} />
             <span style={{ flex: 1 }}>
-              <span className="nxs-row-title" style={{ display: 'block' }}>{a.id === 'book-dj' ? strings.activityText['book-dj'].name : a.name}</span>
+              <span className="nxs-row-title" style={{ display: 'block' }}>{activityName(a)}</span>
               <span className="nxs-row-sub" style={{ display: 'block' }}>
-                {a.id === 'book-dj' ? strings.activityText['book-dj'].description : a.description}
+                {activityDescription(a)}
                 {a.availability === 'weekly' && <> · {strings.morning.weekly}</>}
               </span>
             </span>

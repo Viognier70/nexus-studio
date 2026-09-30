@@ -31,6 +31,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 import type { EveningAccountMetrics, LedgerCategory, LedgerLine } from '../types';
 import { strings } from '../../content/strings';
+import { numberLocale } from '../../content/language';
 
 const T = strings.panels.evening;
 
@@ -163,7 +164,7 @@ const LEDGER_CATEGORY_LABEL: Record<LedgerCategory, string> = T.category;
 function formatLedgerAmount(sek: number): string {
   const abs = Math.abs(sek);
   if (abs < 10_000) {
-    return `${sek >= 0 ? '+' : '−'}${Math.round(abs).toLocaleString('en-GB')}`;
+    return `${sek >= 0 ? '+' : '−'}${Math.round(abs).toLocaleString(numberLocale())}`;
   }
   return `${sek >= 0 ? '+' : '−'}${strings.panels.cash.thousands((abs / 1000).toFixed(1))}`;
 }
@@ -171,7 +172,7 @@ function formatLedgerAmount(sek: number): string {
 function formatRunningCash(sek: number): string {
   const abs = Math.abs(sek);
   if (abs < 10_000) {
-    return `${Math.round(sek).toLocaleString('en-GB')}`;
+    return `${Math.round(sek).toLocaleString(numberLocale())}`;
   }
   return strings.panels.cash.thousands((sek / 1000).toFixed(1));
 }
@@ -331,7 +332,7 @@ function MetricsBlock({ metrics }: { metrics: EveningAccountMetrics }) {
 function formatSek(amount: number): string {
   const sign = amount >= 0 ? '+' : '−';
   const abs = Math.abs(Math.round(amount));
-  return `${sign}${abs.toLocaleString('en-GB')} ${T.currency}`;
+  return `${sign}${abs.toLocaleString(numberLocale())} ${T.currency}`;
 }
 
 function formatDelta(value: number, decimals: number): string {
@@ -355,7 +356,7 @@ function TodaysLedger({ lines }: TodaysLedgerProps) {
         <div
           key={`${line.at}-${line.category}-${i}`}
           style={LEDGER_ROW_STYLE}
-          aria-label={T.entryAria(line.cause, Math.round(line.amount).toLocaleString('en-GB'), Math.round(line.runningCash).toLocaleString('en-GB'))}
+          aria-label={T.entryAria(line.cause, Math.round(line.amount).toLocaleString(numberLocale()), Math.round(line.runningCash).toLocaleString(numberLocale()))}
         >
           <span style={{ opacity: 0.55, fontSize: 10, letterSpacing: 0.5 }}>
             {LEDGER_CATEGORY_LABEL[line.category]}

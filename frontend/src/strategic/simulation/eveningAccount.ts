@@ -30,8 +30,12 @@ import type {
   KnowledgeCredits,
   SimulationState
 } from '../types';
-import { pickParagraph } from '../../content/eveningAccount.en';
-import { ACTIVITY_CATALOGUE } from './activities';
+import { pickParagraph as pickParagraphEn } from '../../content/eveningAccount.en';
+import { pickParagraph as pickParagraphSv } from '../../content/eveningAccount.sv';
+import { getLanguage } from '../../content/language';
+// ORDER 291 — kvällens berättelse på spelarens språk.
+const pickParagraph: typeof pickParagraphEn = (i) => (getLanguage() === 'sv' ? pickParagraphSv : pickParagraphEn)(i);
+import { ACTIVITY_CATALOGUE, activityName } from './activities';
 import { strings } from '../../content/strings';
 
 // "Good night" thresholds. Net revenue = (current revenue − snapshot).
@@ -149,16 +153,15 @@ export function computeEveningAccount(state: SimulationState): EveningAccount {
     const names = state.day.pickedActivityIds
       .map((id) => {
         const a = ACTIVITY_CATALOGUE.find((x) => x.id === id);
-        return a ? a.name : null;
+        return a ? activityName(a) : null;
       })
       .filter((n): n is string => n !== null);
     if (names.length > 0) {
+      const and = strings.listAnd;
       const list = names.length === 1
         ? names[0]
-        : names.length === 2
-          ? `${names[0]} and ${names[1]}`
-          : `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;
-      paragraph = `Today you chose: ${list}. ` + paragraph;
+        : `${names.slice(0, -1).join(', ')} ${and} ${names[names.length - 1]}`;
+      paragraph = strings.activityChosen(list) + ' ' + paragraph;
     }
   }
   // ORDER 266 — speldesign > Medgång: "Kvällsberättelsen börjar med det

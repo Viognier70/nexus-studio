@@ -61,3 +61,12 @@ export function onLanguageChange(listener: (lang: Lang) => void): () => void {
 export function useLanguage(): Lang {
   return useSyncExternalStore(onLanguageChange, getLanguage, getLanguage);
 }
+
+// ORDER 291 — talen skrivs i spelarens språk (Vision Owner 2026-09-30: "Talen
+// ska skrivas med svenskt format på svenska ('6 069 kr')").
+export function numberLocale(lang: Lang = current): string {
+  return lang === 'sv' ? 'sv-SE' : 'en-GB';
+}
+export function formatNumber(v: number, lang: Lang = current): string {
+  return v.toLocaleString(numberLocale(lang));
+}

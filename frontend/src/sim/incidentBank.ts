@@ -26,6 +26,12 @@ import menuText from '../content/incidents/menu.text.en.json';
 // Championship) som raketutkast, inte i spelet förrän de är granskade.
 import crisesMeta from '../content/incidents/crises.meta.json';
 import crisesText from '../content/incidents/crises.text.en.json';
+// ORDER 291 — spelarens språk (Vision Owner 2026-09-30: "Allt innehåll ska
+// finnas på båda språken"). De svenska texterna är utkasten som skrevs
+// bredvid den engelska; metadata är densamma, så kvällen spelar likadant.
+import vinbarTextSv from '../content/incidents/vinbar.text.sv.draft.json';
+import menuTextSv from '../content/incidents/menu.text.sv.draft.json';
+import { getLanguage } from '../content/language';
 
 export type ArcPhase = 'opening' | 'rush' | 'crisis' | 'closing';
 export const ARC_PHASES: readonly ArcPhase[] = ['opening', 'rush', 'crisis', 'closing'];
@@ -271,6 +277,12 @@ const BANKS: Partial<Record<BusinessClassId, Incident[]>> = {
     ...build(menuMeta as unknown as MetaFile, menuText as unknown as TextFile)
   ]
 };
+const BANKS_SV: Partial<Record<BusinessClassId, Incident[]>> = {
+  vinbar: [
+    ...build(vinbarMeta as unknown as MetaFile, vinbarTextSv as unknown as TextFile),
+    ...build(menuMeta as unknown as MetaFile, menuTextSv as unknown as TextFile)
+  ]
+};
 
 // ORDER 283 — utkasten: validerade och byggda som banken, men inte med i
 // någon klass bank. En raket blir spelbar när den flyttas till klassens
@@ -279,7 +291,7 @@ export const CRISIS_DRAFTS: Incident[] = build(crisesMeta as unknown as MetaFile
 export const CRISIS_DRAFT_FILES = { meta: crisesMeta as unknown as MetaFile, text: crisesText as unknown as TextFile };
 
 export function incidentBankFor(cls: BusinessClassId | null | undefined): Incident[] {
-  return (cls && BANKS[cls]) || [];
+  return (cls && (getLanguage() === 'sv' ? BANKS_SV : BANKS)[cls]) || [];
 }
 
 export function incidentById(cls: BusinessClassId | null | undefined, id: string): Incident | undefined {

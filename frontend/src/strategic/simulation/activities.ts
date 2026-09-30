@@ -6,6 +6,7 @@
 import { calendarFor } from '../../sim/calendar';
 import { EVENING_ECONOMY, WEEK } from '../../sim/balance';
 import type { SustainabilityKey } from '../types';
+import { strings } from '../../content/strings';
 
 export interface CapitalDelta {
   // SEK, positive = income, negative = cost, applied at end of day.
@@ -19,7 +20,7 @@ export interface CapitalDelta {
 
 export interface Activity {
   id: string;
-  name: string;                // spelartext på svenska (CLAUDE.md regel 7)
+  name: string;                // engelsk reserv; spelartexten i strings.activityText
   description: string;
   costSek: number;             // upfront cost paid when the activity is picked
   effect: CapitalDelta;        // applied at end-of-day, alongside wages
@@ -98,6 +99,17 @@ export function scheduleSlotsFor(dayNumber: number): number {
 }
 // Veckospärren: en veckoaktivitet kan väljas en gång per sju dagar.
 export const WEEKLY_GATE_DAYS = WEEK.daysPerWeek;
+
+// ORDER 291 — namnet och beskrivningen på spelarens språk ur
+// strängtabellen; fälten ovan är den engelska reserven.
+export function activityName(a: Activity): string {
+  const t = (strings.activityText as Record<string, { name: string; description: string } | undefined>)[a.id];
+  return t?.name ?? a.name;
+}
+export function activityDescription(a: Activity): string {
+  const t = (strings.activityText as Record<string, { name: string; description: string } | undefined>)[a.id];
+  return t?.description ?? a.description;
+}
 
 export function activityById(id: string): Activity | undefined {
   return ACTIVITY_CATALOGUE.find((a) => a.id === id);

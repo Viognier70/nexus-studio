@@ -51,7 +51,7 @@ function dishCost(dishId: string): number {
   return (findDish(dishId)?.recipe ?? []).reduce((a, r) => a + minIngredientCost(r.ingredientId) * r.units, 0);
 }
 
-const BY_THE_GLASS = /, by the glass$/;
+const BY_THE_GLASS = /, (by the glass|per glas)$/;
 
 export function morningRows(state: SimulationState): { dishes: DishRow[]; drinks: DrinkRow[] } {
   const ids = packageDishIds(state.economy.businessClass);

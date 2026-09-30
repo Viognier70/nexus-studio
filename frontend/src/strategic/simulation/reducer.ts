@@ -88,6 +88,8 @@ import {
 // report per the three-voices split. Observer voice moved out of
 // during-service into the evening account only.
 import { SERVICE_REPORT_PREP_CARRYOVER } from '../../content/serviceReport';
+import { SERVICE_REPORT_PREP_CARRYOVER_SV } from '../../content/serviceReport.sv';
+import { getLanguage } from '../../content/language';
 import { buyItems, buyPackage, computePlatesRemaining, menuAtServiceStart, recordStockAtOpen, returnItems, settleWaste, stockReadiness, usesPackages } from './stockPackages';
 import { orderFeedLines, orderForGuest, tableOf, tipShare, streamOrderLine } from './guestOrders';
 import { maybeChance, planChance } from '../../sim/serviceChance';
@@ -164,7 +166,8 @@ import { assignGuestTypes, billionaireTreat, maybeBillionaireArrives, bookingFor
 import { sustainabilityLevelsFor } from '../../sim/sustainabilityLevels';
 import {
   WEEKLY_GATE_DAYS,
-  activityById
+  activityById,
+  activityName
 } from './activities';
 import {
   findDish,
@@ -485,7 +488,7 @@ function pickActivity(state: SimulationState, id: string): SimulationState {
     postLedger(next, {
       category: 'other',
       amount: -activity.costSek,
-      cause: `Investment: ${activity.name}`,
+      cause: strings.ledgerCause.investment(activityName(activity)),
       causeId: id
     });
   }
@@ -518,7 +521,7 @@ function unpickActivity(state: SimulationState, id: string): SimulationState {
     postLedger(next, {
       category: 'other',
       amount: activity.costSek,
-      cause: `Investment refunded: ${activity.name}`,
+      cause: strings.ledgerCause.investmentRefunded(activityName(activity)),
       causeId: id
     });
   }
@@ -540,7 +543,7 @@ function applyActivityEffectsOnDayClose(draft: SimulationState): void {
       postLedger(draft, {
         category: 'other',
         amount: activity.effect.economic,
-        cause: `Investment effect: ${activity.name}`,
+        cause: strings.ledgerCause.investmentEffect(activityName(activity)),
         causeId: id
       });
     }
@@ -615,7 +618,7 @@ function buyStock(
   postLedger(next, {
     category: 'stock',
     amount: -costSek,
-    cause: `Purchase ${units}× ${ingredient.name} from ${supplier.name}`,
+    cause: strings.ledgerCause.purchase(units, ingredient.name, supplier.name),
     causeId: `${supplierId}:${ingredientId}`
   });
   if (received < units) {
@@ -623,7 +626,7 @@ function buyStock(
       ...next.eventStream,
       {
         at: state.simTime,
-        text: `Short delivery: ${supplier.name} delivered ${received} of ${units} ${ingredient.name}.`,
+        text: strings.simEvent.shortDelivery(supplier.name, received, units, ingredient.name),
         category: 'ambient',
         causeTag: 'stock_out',
         causeChainId: null,
@@ -792,7 +795,7 @@ export function drawMenuDishForGuest(
           ...draft.eventStream,
           {
             at: simTime,
-            text: `${runOutDish.name} has run out — the kitchen has no ingredients left.`,
+            text: strings.simEvent.ranOut(runOutDish.name),
             category: 'ambient',
             causeTag: 'stock_out',
             causeChainId: null,
@@ -829,7 +832,7 @@ export function drawMenuDishForGuest(
       ...draft.eventStream,
       {
         at: simTime,
-        text: `A guest left — ${targetDish.name} was not available tonight.`,
+        text: strings.simEvent.guestLeftMissing(targetDish.name),
         category: 'ambient',
         causeTag: 'stock_out',
         causeChainId: null,
@@ -860,7 +863,7 @@ export function drawMenuDishForGuest(
       ...draft.eventStream,
       {
         at: simTime,
-        text: `A guest wanted ${targetDish.name}; the kitchen served ${cheapestDish.name} instead.`,
+        text: strings.simEvent.substituted(targetDish.name, cheapestDish.name),
         category: 'ambient',
         causeTag: 'stock_out',
         causeChainId: null,
@@ -887,7 +890,7 @@ export function drawMenuDishForGuest(
     ...draft.eventStream,
     {
       at: simTime,
-      text: `A guest left — ${targetDish.name} was not available tonight.`,
+      text: strings.simEvent.guestLeftMissing(targetDish.name),
       category: 'ambient',
       causeTag: 'stock_out',
       causeChainId: null,
@@ -1024,7 +1027,7 @@ function requestBankLoan(state: SimulationState): SimulationState {
   postLedger(draft, {
     category: 'other',
     amount: outcome.loanAmountSek,
-    cause: `Bank loan (${outcome.loanTier})`,
+    cause: strings.ledgerCause.bankLoan(outcome.loanTier),
     causeId: `bank-loan-${outcome.loanTier}`
   });
   // ORDER 110 — R4 realiserar bankmötets tilldelning. Byt verksamhet om
@@ -1694,7 +1697,7 @@ function payGuest(draft: SimulationState, guest: Guest, revenueMult: number, inL
       postLedger(draft, {
         category: 'other',
         amount: rev,
-        cause: `Late payment from a guest (${draft.day.period})`,
+        cause: strings.ledgerCause.latePayment,
         causeId: guest.id
       });
     }
@@ -1833,6 +1836,12 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
         ...state,
         team: removeAgencyMembers(state.team),
         agencyOffer: null,
+        // ORDER 291 punkt 10 — ett scenario eller en fråga som väntar på
+        // svar när servicen stänger läggs undan, så att rutan inte blir
+        // kvar bakom skärmarna efter servicen.
+        scenario: ['subject', 'situation', 'question', 'question-explanation'].includes(state.scenario.phase)
+          ? { ...state.scenario, phase: 'idle', active: false, awaitingChoice: false, pendingQuestion: null }
+          : state.scenario,
         eveningAccount: withEconomyWarning(eveningAccount, dayEnd(state.economy, dayEndHeadroom(state))),
         economy: dayEnd(state.economy, dayEndHeadroom(state)),
         metrics: {
@@ -2055,7 +2064,7 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           postLedger(nextForDay, {
             category: 'wage',
             amount: -m.dailyCost,
-            cause: `Wage: ${roleText(m.role)}`,
+            cause: strings.ledgerCause.wage(roleText(m.role)),
             causeId: m.id
           });
         }
@@ -2071,7 +2080,7 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
         postLedger(nextForDay, {
           category: 'other',
           amount: -idleAccrued,
-          cause: `Staff cost outside service (day ${state.day.dayNumber})`
+          cause: strings.ledgerCause.idleStaff(state.day.dayNumber)
         });
       }
       // ORDER 075 (M2) — apply picked-activity end-of-day effects.
@@ -2205,7 +2214,7 @@ function acceptAgency(state: SimulationState): SimulationState {
       {
         at: state.simTime,
         kind: 'system',
-        text: 'Agency staff called in — the team grows for the evening.'
+        text: strings.simEvent.agencyIn
       }
     ]
   };
@@ -2213,7 +2222,7 @@ function acceptAgency(state: SimulationState): SimulationState {
   postLedger(next, {
     category: 'agency',
     amount: -AGENCY_HIRE_COST,
-    cause: `Agency staff: ${roleText(state.agencyOffer.role)} tonight`,
+    cause: strings.ledgerCause.agency(roleText(state.agencyOffer.role)),
     causeId: state.agencyOffer.role
   });
   bumpMorale(next, MORALE_AGENCY_ACCEPT_BUMP);
@@ -2239,7 +2248,7 @@ function declineAgency(state: SimulationState): SimulationState {
       {
         at: state.simTime,
         kind: 'system',
-        text: 'Declined agency staff — the team notices that no help came.'
+        text: strings.simEvent.agencyDeclined
       }
     ]
   };
@@ -2278,7 +2287,7 @@ function hireTeamMember(state: SimulationState, role: StaffRole): SimulationStat
       {
         at: state.simTime,
         kind: 'system',
-        text: `Hired ${roleText(role)} — contract until day ${member.contractEndsDay}.`
+        text: strings.simEvent.hired(roleText(role), member.contractEndsDay)
       }
     ]
   };
@@ -2596,7 +2605,7 @@ function advanceTick(state: SimulationState): SimulationState {
     draft.policies = { ...draft.policies, hasUteplats: true };
     draft.events = [
       ...draft.events,
-      { at: draft.simTime, kind: 'scenario', text: 'Terrace opened. Standing tables out on the street.' }
+      { at: draft.simTime, kind: 'scenario', text: strings.simEvent.terrace }
     ];
   }
 
@@ -2639,7 +2648,7 @@ function advanceTick(state: SimulationState): SimulationState {
         ...draft.pendingOutcomes,
         {
           dueAt: draft.simTime + PREP_CARRYOVER_OFFSET_SEC,
-          text: SERVICE_REPORT_PREP_CARRYOVER,
+          text: getLanguage() === 'sv' ? SERVICE_REPORT_PREP_CARRYOVER_SV : SERVICE_REPORT_PREP_CARRYOVER,
           sustainability: 'social',
           scenarioId: 'prep-carryover',
           flavor: 'prep-carryover'
@@ -2876,7 +2885,7 @@ function advanceTick(state: SimulationState): SimulationState {
     };
     draft.events = [
       ...draft.events,
-      { at: draft.simTime, kind: 'scenario', text: `Mentor: ${comment}` }
+      { at: draft.simTime, kind: 'scenario', text: strings.simEvent.mentor(comment) }
     ];
   }
 
@@ -2966,27 +2975,15 @@ function observerVoiceForPolicyChange(
   patch: Partial<Policies>
 ): string | null {
   const lines: string[] = [];
+  const V = strings.policyVoice;
   if (patch.trainingLevel !== undefined && patch.trainingLevel !== before.trainingLevel) {
-    const direction = patch.trainingLevel > before.trainingLevel ? 'raised' : 'lowered';
-    lines.push(`You ${direction} the training level for today`);
+    lines.push(patch.trainingLevel > before.trainingLevel ? V.trainingUp : V.trainingDown);
   }
   if (patch.pricing && patch.pricing !== before.pricing) {
-    const to = patch.pricing;
-    const map: Record<typeof to, string> = {
-      'låg': 'lowered prices',
-      'medel': 'set prices to medium',
-      'hög': 'raised prices'
-    };
-    lines.push(`You ${map[to]} for today`);
+    lines.push(patch.pricing === 'låg' ? V.pricesLow : patch.pricing === 'hög' ? V.pricesHigh : V.pricesMid);
   }
   if (patch.ingredientTier && patch.ingredientTier !== before.ingredientTier) {
-    const to = patch.ingredientTier;
-    const map: Record<typeof to, string> = {
-      'grund': 'went down to the basic supplier',
-      'utvald': 'chose selected suppliers',
-      'premium': 'moved to premium supply'
-    };
-    lines.push(`You ${map[to]} for today`);
+    lines.push(patch.ingredientTier === 'grund' ? V.supplyBasic : patch.ingredientTier === 'premium' ? V.supplyPremium : V.supplySelected);
   }
   if (lines.length === 0) return null;
   return lines.join(', ') + '.';
@@ -3004,7 +3001,7 @@ function describePolicyPatch(patch: Partial<Policies>): string {
     parts.push(`welcome drink ${patch.welcomeDrink ? 'on' : 'off'}`);
   if (patch.localSourcing !== undefined)
     parts.push(`local suppliers ${patch.localSourcing ? 'on' : 'off'}`);
-  return `Changed: ${parts.join(', ')}`;
+  return strings.policyVoice.changed(parts.join(', '));
 }
 
 function triggerScenario(
@@ -3402,7 +3399,7 @@ function resolveScenario(
       {
         at: state.simTime,
         kind: 'scenario' as const,
-        text: `Scenario: chose ${choice}`
+        text: strings.simEvent.scenarioChose(String(choice))
       }
     ]
   };
