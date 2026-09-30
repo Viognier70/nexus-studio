@@ -126,6 +126,8 @@ G kan aldrig bli högre än 90. Veckogolvet är G procent av klassens normala ve
 - Efter servicen visas täckningsbidrag, täckningsgrad och kvällens resultat. Resultatet förs till företagskontot, eller dras från det vid förlust, och det syns som en överföring.
 - En prognos säger hur många veckor spelaren klarar sig med konceptet, räknad på de senaste kvällarna och de fasta kostnaderna.
 
+*Beslut 2026-09-30 (Vision Owner, efter kvällens ekonomi):* insatsen visas med Designs fyra rader (råvaror, personal, DJ, kompetens), och satsningar som egen rad när spelaren valt någon. DJ och satsningar dras från kassan på morgonen när de väljs, och de räknas in i linjen för kvällens insats.
+
 ### Lånet
 
 Bankmötet ger ett startlån som täcker lokal och inventarier för klassen. Lånet amorteras lika under säsongens åtta veckor, med fem procents ränta. Bankens besked formuleras som en diagnos i ord, aldrig som siffror: vad spelaren visat att hon kan och vad som saknas för nästa klass.
@@ -314,6 +316,10 @@ Det här ersätter punkterna ovan om 3–6 händelser per kväll, 20 sekunders n
 - Tallrikar, glas och mat ska synas från spelarens höjd. Rekvisitan förstoras för läsbarhet på avstånd om det behövs.
 - Raketen: kameran glider in mot den som gör något, också i produktionsbygget.
 
+*Beslut 2026-09-30 (Vision Owner, efter kvällens ekonomi):*
+- Ringen under personalen syns under hela servicen men inte på morgonen. Linjen från ringen till uppgiften står kvar tills vidare och tas bort om rummet blir plottrigt.
+- Varje roll har en egen färg, också hovmästaren. Ingen roll får ha rött eller grönt, eftersom de färgerna betyder fel och rätt.
+
 ### Action-knappen (utgår)
 
 *Ersatt 2026-09-26 av Händelserna i servicen.* Texten står kvar som historik. *Tillbaka 2026-09-28 i ny form, se Insatsen.*
@@ -433,6 +439,8 @@ Förebilden är karriärstegen i *The Sims*: en titel man vill nå, med tydliga 
 ### Introduktionen
 
 Spelet börjar med bussen till Grythyttan i förstaperson (VS001). En mentor från Campus möter spelaren och följer henne genom första dagen: ett övningsbesök, ett prov och bankmötet. Målet är att en ny spelare står i sin första verksamhet inom 20 minuter. Mentorn försvinner sedan och dyker bara upp igen om spelaren nedgraderas. Första veckan har färre gäster än resten av säsongen, så att spelaren hinner lära sig rummet.
+
+*Beslut 2026-09-30 (Vision Owner, början i Grythyttan):* ankomsten frågar efter spelarens namn och efter samtycke. Namnet gör spelet personligt, och samtycket behövs om framstegen senare ska användas i forskning. Krogens namn skrivs i liggaren innan banken ger den första verksamheten (food truck eller vinbar), och namnet gäller därför företaget, oavsett vilken verksamhet banken ger.
 
 ### Sparande
 
