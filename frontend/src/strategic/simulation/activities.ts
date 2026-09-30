@@ -4,7 +4,7 @@
 // named work carrying visible three-column effects.
 
 import { calendarFor } from '../../sim/calendar';
-import { WEEK } from '../../sim/balance';
+import { EVENING_ECONOMY, WEEK } from '../../sim/balance';
 import type { SustainabilityKey } from '../types';
 
 export interface CapitalDelta {
@@ -64,6 +64,16 @@ export const ACTIVITY_CATALOGUE: readonly Activity[] = [
     costSek: 8000,
     effect: { economic: 6000, social: 0.02, ecological: 0 },
     availability: 'weekly'
+  },
+  // ORDER 290 — DJ som satsning i kvällens insats (balance.ts EVENING_ECONOMY):
+  // fler gäster i kväll (sim/economy.ts dailyGuestCap). Texten i strängtabellen.
+  {
+    id: 'book-dj',
+    name: 'A DJ tonight',
+    description: 'Music from nine o’clock. More guests come, but only a full evening pays for it.',
+    costSek: EVENING_ECONOMY.djCostSek,
+    effect: { economic: 0, social: 0.01, ecological: 0 },
+    availability: 'always'
   },
   {
     id: 'compost-audit',

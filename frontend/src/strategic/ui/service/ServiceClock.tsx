@@ -92,23 +92,24 @@ export function ServiceClock() {
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: u(20) }}>
         <span
-          className="nx-num"
+          className={`nx-num${c?.lastOrders ? ' nx-pulse' : ''}`}
           data-testid="service-clock-time"
           style={{ fontSize: u(60), lineHeight: 1, width: u(176), minWidth: u(176), whiteSpace: 'nowrap', fontWeight: 800 }}
         >
           {time ?? '—'}
         </span>
         <div style={{ minWidth: 0 }}>
-          <div className="nx-label" data-testid="service-clock-label" style={{ fontSize: u(16), color: accentLabel ? 'var(--nx-ember)' : undefined }}>{label}</div>
+          <div className="nx-label" data-testid="service-clock-label" style={{ fontSize: u(16), color: accentLabel ? 'var(--w-candle)' : undefined }}>{label}</div>
           <div data-testid="service-clock-left" style={{ fontSize: u(22), fontWeight: 700, whiteSpace: 'nowrap' }}>{sub}</div>
         </div>
       </div>
       <div aria-hidden style={{ display: 'grid', gridTemplateColumns: `repeat(${CLOCK.cells}, 1fr)`, gap: u(4), marginTop: u(12) }} data-testid="service-clock-cells">
         {cells.map((cell, i) => (
-          // ORDER 285 — den varma formen: passerad tid i guld, den sista
-          // halvtimmen i glöd (enda stället rött finns, WARM.color.ember).
-          <div key={i} data-fill={cell.fill.toFixed(2)} style={{ height: u(12), borderRadius: 999, background: cell.accent ? 'rgba(194,85,58,.35)' : 'rgba(244,230,204,.12)', position: 'relative', overflow: 'hidden' }}>
-            <div style={{ position: 'absolute', inset: 0, width: `${cell.fill * 100}%`, background: cell.accent ? 'var(--nx-ember)' : 'var(--w-gold)' }} />
+          // ORDER 285 — den varma formen: passerad tid i guld.
+          // ORDER 290 (Designs rätt och fel, beslut 2026-09-30): rött betyder
+          // bara fel svar; den sista halvtimmen är ljuslåga och pulserar.
+          <div key={i} className={cell.accent && c?.lastOrders ? 'nx-pulse' : undefined} data-fill={cell.fill.toFixed(2)} style={{ height: u(12), borderRadius: 999, background: cell.accent ? 'rgba(255,213,143,.28)' : 'rgba(244,230,204,.12)', position: 'relative', overflow: 'hidden' }}>
+            <div style={{ position: 'absolute', inset: 0, width: `${cell.fill * 100}%`, background: cell.accent ? 'var(--w-candle)' : 'var(--w-gold)' }} />
           </div>
         ))}
       </div>

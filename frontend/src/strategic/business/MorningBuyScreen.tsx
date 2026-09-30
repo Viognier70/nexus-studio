@@ -120,10 +120,11 @@ export function MorningBuyScreen({ open, onClose }: { open: boolean; onClose: ()
           <div className="nxs-buy-block">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
               <NxLabel>{T.mains}</NxLabel>
-              <strong data-testid="buy-coverage" data-covers={cov.covers} data-guests={cov.guests}>{T.mainsCover(cov.covers, cov.guests)}</strong>
+              {/* ORDER 290 — varmrätter som inte räcker pulserar i ljuslåga (Designs beslut 2026-09-30). */}
+              <strong className={cov.share < 1 ? 'nx-pulse' : undefined} data-testid="buy-coverage" data-covers={cov.covers} data-guests={cov.guests}>{T.mainsCover(cov.covers, cov.guests)}</strong>
             </div>
             <div style={{ height: u(14), background: 'rgba(244,230,204,.12)', borderRadius: 999, overflow: 'hidden', marginTop: u(10) }}>
-              <div style={{ height: '100%', width: `${cov.share * 100}%`, background: cov.share < 1 ? 'var(--nx-ember)' : 'var(--w-gold)', borderRadius: 999 }} />
+              <div className={cov.share < 1 ? 'nx-pulse' : undefined} style={{ height: '100%', width: `${cov.share * 100}%`, background: cov.share < 1 ? 'var(--w-candle)' : 'var(--w-gold)', borderRadius: 999 }} />
             </div>
             <div className="nxs-row-sub" style={{ marginTop: u(8) }}>{T.booked(cov.guests)}</div>
           </div>

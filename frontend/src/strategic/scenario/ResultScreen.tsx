@@ -13,6 +13,7 @@
 // kvällens nivå är streckad (Designs skärm 6), och kvällens gäster efter typ
 // med vad de betydde (guestTypes.ts eveningGuests).
 
+import { KnowledgePyramid } from '../ui/service/KnowledgePyramid';
 import { useEffect, useRef } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { ArrowDownRight, ArrowUpRight, BadgeCheck, BookOpen, Cake, Coins, GlassWater, GraduationCap, HeartHandshake, Leaf, Scale, Sparkles, Star, Trash2, Truck, Users, Wine } from 'lucide-react';
@@ -162,6 +163,16 @@ export function ResultScreen({ sim, onContinue }: { sim: SimulationState; onCont
             <div className="nx-label">{t.kicker(day)}</div>
             <h1 className="nx-heading" style={{ margin: 0 }}>{t.title}</h1>
             <div className="nx-small nx-muted">{t.stream}</div>
+            {/* ORDER 290 — kvällens pyramider: en per raket, fyllda med klarade steg. */}
+            {events.some((e) => e.kind === 'rocket') && (
+              <div className="nx-result-pyramids" data-testid="result-pyramids">
+                <span className="nx-label">{strings.pyramid.tonight}</span>
+                {events.filter((e) => e.kind === 'rocket' && e.steps).map((e, i) => (
+                  <KnowledgePyramid key={`${e.id}-${i}`} small testId={`result-pyramid-${i}`} full={e.steps!.cleared === e.steps!.total}
+                    levels={Array.from({ length: e.steps!.total }, (_, k) => (k < e.steps!.cleared ? 'filled' : k === e.steps!.cleared ? 'cracked' : 'empty'))} />
+                ))}
+              </div>
+            )}
           </header>
           <ol className="nx-result-events">
             {events.length === 0 && <li className="nx-small nx-muted" style={{ padding: 'calc(20 * var(--nx-u)) calc(30 * var(--nx-u))' }}>{t.none}</li>}

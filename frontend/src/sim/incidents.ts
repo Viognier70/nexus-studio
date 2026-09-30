@@ -29,7 +29,7 @@ import { applyCashDelta, postLedger } from '../strategic/simulation/cashReading'
 import { clampReputation } from '../strategic/simulation/reputation';
 import { strings } from '../content/strings';
 import { rocketClipFor, rocketFigure, type RocketFigure } from './theatreTriggers';
-import { THEATRE, BACK, type Confidence, GAME_MINUTES_PER_SIM_SECOND, INCIDENTS, MENU_ROCKETS, REPUTATION, SITTING } from './balance';
+import { ANSWER_EFFECTS, THEATRE, BACK, type Confidence, GAME_MINUTES_PER_SIM_SECOND, INCIDENTS, MENU_ROCKETS, REPUTATION, SITTING } from './balance';
 import { calendarFor } from './calendar';
 import { clampScenarioCash, scenarioUnitSek } from './economy';
 import { bestAnswerFactor, medalSteps } from './knowledgeInService';
@@ -591,6 +591,31 @@ function raiseTips(draft: SimulationState, ctx: IncidentContext, share: number):
   for (const g of draft.guests) if (ctx.guestIds.includes(g.id)) g.tipBonus = (g.tipBonus ?? 0) + share;
 }
 
+// ORDER 290 — svarens följd syns i rummet (Vision Owner 2026-09-30): rätt
+// svar ger en högre nota vid bordet (och gäster som kommer in, letGuestsIn);
+// fel svar ger en lägre nota, missnöjda gäster vid bordet och en gäst i kön
+// som går. Händelsen står över bordet i rummet (day.roomReactions).
+function answerConsequence(draft: SimulationState, ctx: IncidentContext, right: boolean, guestsIn: number): void {
+  const table = draft.guests.filter((g) => ctx.guestIds.includes(g.id) && g.state !== 'leaving' && g.state !== 'declined');
+  let left = 0;
+  if (right) {
+    for (const g of table) g.billBonus = (g.billBonus ?? 0) + ANSWER_EFFECTS.rightBillShare;
+  } else {
+    for (const g of table) {
+      g.billBonus = (g.billBonus ?? 0) + ANSWER_EFFECTS.wrongBillShare;
+      g.satisfaction = Math.max(0, g.satisfaction + ANSWER_EFFECTS.wrongSatisfaction);
+    }
+    const queue = draft.guests.filter((g) => g.state === 'waiting' || g.state === 'arriving');
+    left = Math.min(queue.length, ANSWER_EFFECTS.wrongGuestsLeave);
+    sendAway(draft, queue, left);
+  }
+  const t = strings.answerEffects;
+  const text = right ? t.up(ctx.table, guestsIn) : t.down(ctx.table, left);
+  const now = draft.simTime;
+  const keep = (draft.day.roomReactions ?? []).filter((r) => now - r.at <= ANSWER_EFFECTS.reactionSimSeconds);
+  draft.day = { ...draft.day, roomReactions: [...keep, { at: now, kind: right ? 'up' : 'down', table: ctx.table, guestIds: table.map((g) => g.id), text }] };
+}
+
 export interface CreditChange { axis: KnowledgeAxis; track: YrkesSpar | null; amount: number }
 
 function targetsFor(draft: SimulationState, target: 'table' | 'room', ctx: IncidentContext): Guest[] {
@@ -764,6 +789,7 @@ export function resolveIncident(draft: SimulationState, optionId: string | null,
     const secondsTotal = secondsFor(draft, next);
     const guestsIn = letGuestsIn(draft, INCIDENTS.guestsPerClearedStep);
     raiseTips(draft, active.context, MENU_ROCKETS.tipBonusPerClearedStep);
+    answerConsequence(draft, active.context, true, guestsIn);
     const revealed: StepReveal = { step: stepIndex, optionId: option.id, correctId: correctOptionId(step, active.situation), cleared: true, guestsIn };
     const stepCredit = quality === 'best' ? INCIDENTS.bestAnswerCredit : 0;
     const earned = { credits: (active.earned?.credits ?? 0) + stepCredit + (backResult?.delta ?? 0), guestsIn: (active.earned?.guestsIn ?? 0) + guestsIn };
@@ -809,6 +835,7 @@ export function resolveIncident(draft: SimulationState, optionId: string | null,
   // ORDER 276 — det sista klarade steget och hela raketen släpper in gäster.
   const guestsIn = cleared ? letGuestsIn(draft, INCIDENTS.guestsPerClearedStep + INCIDENTS.guestsOnRocketCleared) : 0;
   if (cleared) raiseTips(draft, ctx, MENU_ROCKETS.tipBonusPerClearedStep + MENU_ROCKETS.tipBonusOnRocketCleared);
+  answerConsequence(draft, ctx, cleared, guestsIn);
   const reveal: StepReveal = { step: stepIndex, optionId: option?.id ?? null, correctId: correctOptionId(step, active.situation), cleared, guestsIn };
   const takeover = cleared ? null : takeoverFor(draft, incident, step);
   const now = draft.incidents!;

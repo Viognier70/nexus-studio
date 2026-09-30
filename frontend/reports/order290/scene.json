@@ -1,0 +1,232 @@
+{
+  "url": "http://localhost:4178",
+  "build": "produktion (vite build + preview)",
+  "save": "reports/order284/save-mandag-vinbaren.json",
+  "viewport": "1920×1080",
+  "steps": [
+    {
+      "name": "morgonen",
+      "atSeconds": 17
+    },
+    {
+      "name": "insatsen",
+      "atSeconds": 87
+    },
+    {
+      "name": "serviceläget",
+      "atSeconds": 102
+    },
+    {
+      "name": "byn",
+      "atSeconds": 117
+    },
+    {
+      "name": "24 m",
+      "atSeconds": 129
+    },
+    {
+      "name": "raketerna",
+      "atSeconds": 315
+    },
+    {
+      "name": "överföringen",
+      "atSeconds": 336
+    }
+  ],
+  "shots": [
+    {
+      "file": "scene-00-startrutan.png",
+      "what": "startrutan i den varma formen"
+    },
+    {
+      "file": "scene-10-insatsen.png",
+      "what": "kvällens insats när dörrarna öppnas"
+    },
+    {
+      "file": "scene-20-servicelaget.png",
+      "what": "serviceläget: klockan och kvällskassan mot insatsen, flikarna nere till vänster"
+    },
+    {
+      "file": "scene-21-lagret.png",
+      "what": "fliken Lagret öppnad"
+    },
+    {
+      "file": "scene-22-kvallen.png",
+      "what": "fliken Kvällen med tangenten 2, strömmen utan belopp"
+    },
+    {
+      "file": "scene-30-byn.png",
+      "what": "byn under servicen (knappen Byn)"
+    },
+    {
+      "file": "scene-40-24m-1.png",
+      "what": "från 24 m: personalen med ring och linje, rekvisitan på borden"
+    },
+    {
+      "file": "scene-41-24m-2.png",
+      "what": "från 24 m, åtta sekunder senare"
+    },
+    {
+      "file": "scene-50-raket-best.png",
+      "what": "rätt svar: grön glöd, svaret lyfter, pyramidens våning fylls"
+    },
+    {
+      "file": "scene-51-raket-wrong.png",
+      "what": "fel svar: röd markering, skakning, våningen spricker"
+    },
+    {
+      "file": "scene-60-efter-servicen.png",
+      "what": "efter servicen: pappret och överföringen före knappen"
+    },
+    {
+      "file": "scene-61-overfort.png",
+      "what": "överfört: kontot efter, mot i morse, prognosen"
+    },
+    {
+      "file": "scene-62-R1-pyramiderna.png",
+      "what": "kvällens resultat med kvällens pyramider"
+    }
+  ],
+  "errors": [],
+  "djPicked": "true",
+  "stake": [
+    {
+      "id": "stake-card",
+      "value": null,
+      "text": "Tonight's outlayProduceThis morning's orderSEK 1,790Staff3 on shift tonightSEK 3,887DJWeekend eveningsSEK 1,500The lineSEK 7,177What tonight cost before the first guest arrived. Once the till passes the line, the evening is in profit."
+    },
+    {
+      "id": "stake-ingredients",
+      "value": "1790",
+      "text": "ProduceThis morning's orderSEK 1,790"
+    },
+    {
+      "id": "stake-staff",
+      "value": "3887",
+      "text": "Staff3 on shift tonightSEK 3,887"
+    },
+    {
+      "id": "stake-dj",
+      "value": "1500",
+      "text": "DJWeekend eveningsSEK 1,500"
+    },
+    {
+      "id": "stake-total",
+      "value": "7177",
+      "text": "SEK 7,177"
+    }
+  ],
+  "serviceMode": {
+    "tabs": [
+      "service-tab-stock",
+      "service-tab-dot-stock",
+      "service-tab-stream",
+      "service-tab-dot-stream",
+      "service-tab-room"
+    ],
+    "panelsOpen": 0,
+    "stock": false,
+    "meters": false,
+    "till": "0",
+    "stake": "7177",
+    "over": "false",
+    "cashBox": false,
+    "dayBadge": "none",
+    "villageText": "none"
+  },
+  "tabStock": {
+    "panel": true,
+    "stock": true
+  },
+  "tabStream": {
+    "panel": true,
+    "amounts": 0
+  },
+  "tabRoom": {
+    "panel": true,
+    "meters": [
+      "meter-satisfaction",
+      "meter-stamina"
+    ]
+  },
+  "tabsClosed": 0,
+  "village": {
+    "before": 24,
+    "out": 551,
+    "back": 12
+  },
+  "cam24": {
+    "actual": 12,
+    "target": 12
+  },
+  "at24": 12,
+  "rockets": [
+    {
+      "id": "vb03-notallergi",
+      "step": 0,
+      "camAtOpen": 12,
+      "cam": [
+        12,
+        12,
+        12,
+        12,
+        12,
+        14,
+        18,
+        379
+      ],
+      "answer": "best",
+      "look": "wrong",
+      "pyramid": [
+        "cracked",
+        "above",
+        "above"
+      ]
+    },
+    {
+      "id": "vb23-sott",
+      "step": 0,
+      "camAtOpen": 29,
+      "cam": [
+        22,
+        18,
+        16,
+        14,
+        13,
+        13,
+        12,
+        12
+      ],
+      "answer": "wrong",
+      "look": "wrong",
+      "pyramid": [
+        "cracked",
+        "above",
+        "above"
+      ]
+    }
+  ],
+  "transfer": {
+    "revenue": "5001",
+    "contribution": "3211",
+    "ratio": "0.6420715856828634",
+    "result": "-3197",
+    "move": "-1407",
+    "account": "116230",
+    "forecast": "With this concept you last 3 weeks.",
+    "after": {
+      "account": "SEK 116,230",
+      "till": "SEK 0",
+      "vsMorning": "−SEK 3,675 on this morning"
+    }
+  },
+  "r1Pyramids": [
+    "false",
+    "false",
+    "false"
+  ],
+  "hudAfter": {
+    "mode": "account",
+    "value": "116230"
+  }
+}

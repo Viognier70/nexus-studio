@@ -42,8 +42,8 @@ export function NameEntryOverlay({ onNewGame }: Props) {
     return (
       <div className="business-name-overlay" role="dialog" aria-modal="true">
         <div className="business-name-card" data-testid="start-screen">
+          <div className="business-name-kicker">{intro.startSubtitle}</div>
           <h2>{intro.startHeading}</h2>
-          <p>{intro.startSubtitle}</p>
           <div className="business-name-actions">
             <button type="button" data-testid="new-game" onClick={onNewGame}>
               {intro.newGame}

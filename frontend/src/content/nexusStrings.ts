@@ -34,6 +34,10 @@
 // the repo already has a string for the same place, keep the repo's key and
 // add the `en` value from here.
 
+import { SERVICE_MODE_STRINGS } from './design/serviceModeStrings';
+import { PYRAMID_STRINGS } from './design/pyramidStrings';
+import { STAFF_RING_STRINGS } from './design/staffRingStrings';
+
 export type Lang = 'sv' | 'en';
 // ORDER 289 — singular eller plural efter antalet ("1 bottles" skulle vara
 // "1 bottle", provspel av 285). Används i alla texter med antal.
@@ -165,7 +169,12 @@ export const STRINGS = {
   'stranded.body': { sv: 'Kassan räcker inte till en ny insats. Det som öppnar en ny lokal är det du kan: en vecka i Måltidens hus med minst ett prov, så lyssnar banken igen.', en: 'Your cash won’t cover a new stake. What opens a new venue is what you know: a week in the House of the Meal with at least one exam, and the bank will listen again.' },
   'stranded.medals': { sv: 'Dina medaljer finns kvar. Det du har lärt dig tas aldrig ifrån dig.', en: 'Your medals stay. What you have learned is never taken from you.' },
   'stranded.go': { sv: 'Gå till Måltidens hus', en: 'Go to the House of the Meal' },
-  'stranded.bank': { sv: 'Gå till banken', en: 'Go to the bank' }
+  'stranded.bank': { sv: 'Gå till banken', en: 'Go to the bank' },
+  // ORDER 290 — Designs leveranser 2026-09-30 (serviceläget, rätt och fel med
+  // pyramiden, ringen), inslagna oförändrade.
+  ...SERVICE_MODE_STRINGS,
+  ...PYRAMID_STRINGS,
+  ...STAFF_RING_STRINGS
 } satisfies Record<string, Entry>;
 
 export type StringKey = keyof typeof STRINGS;
@@ -1371,6 +1380,88 @@ export const TABLE = {
     previousLevel: { sv: (n: number) => `Förra kvällen ${n}`, en: (n: number) => `Last evening ${n}` },
     kg: { sv: (v: string) => `${v} kg`, en: (v: string) => `${v} kg` }
   },
+  // ORDER 290 — ljudet i menyn.
+  sound: {
+    label: { sv: 'Ljud', en: 'Sound' },
+    on: { sv: 'På', en: 'On' },
+    off: { sv: 'Av', en: 'Off' },
+    volume: { sv: 'Volym', en: 'Volume' }
+  },
+  // ORDER 290 — kunskapspyramiden i raketkortet och kvällens resultat.
+  pyramid: {
+    aria: { sv: (n: number, of: number) => `Kunskapspyramiden: ${n} av ${of} våningar`, en: (n: number, of: number) => `Knowledge pyramid: ${n} of ${of} ${pl(of, 'level', 'levels')}` },
+    full: { sv: 'Hela pyramiden!', en: 'The whole pyramid!' },
+    tonight: { sv: 'Kvällens pyramider', en: "Tonight's pyramids" }
+  },
+  // ORDER 290 — byn och tillbaka.
+  village: {
+    out: { sv: 'Byn', en: 'Village' },
+    back: { sv: 'Tillbaka till krogen', en: 'Back to the bar' },
+    keyHint: { sv: 'Tangenten V', en: 'Key V' }
+  },
+  // ORDER 290 — serviceläget: panelerna fälls ihop under servicen.
+  drawer: {
+    show: { sv: 'Visa panelerna', en: 'Show panels' },
+    hide: { sv: 'Fäll ihop panelerna', en: 'Hide panels' },
+    amountsOn: { sv: 'Visa belopp', en: 'Show amounts' },
+    amountsOff: { sv: 'Dölj belopp', en: 'Hide amounts' }
+  },
+  // ORDER 290 — kvällens insats när dörrarna öppnas, och överföringen.
+  stake: {
+    kicker: { sv: 'Kvällens insats', en: "Tonight's stake" },
+    lines: {
+      ingredients: { sv: 'Råvaror', en: 'Ingredients' },
+      staff: { sv: 'Personal', en: 'Staff' },
+      dj: { sv: 'DJ', en: 'DJ' },
+      investments: { sv: 'Satsningar', en: 'Investments' },
+      competence: { sv: 'Kompetens', en: 'Training' },
+      interest: { sv: 'Räntan', en: 'Interest' }
+    },
+    total: { sv: 'Break-even', en: 'Break-even' },
+    note: { sv: 'Kvällskassan ska fylla linjen innan kvällen går plus.', en: 'The till has to reach the line before the evening makes money.' }
+  },
+  transfer: {
+    kicker: { sv: 'Efter servicen', en: 'After service' },
+    title: { sv: 'Kvällens resultat till kontot', en: "Tonight's result to the account" },
+    revenue: { sv: 'Kvällskassan', en: "Tonight's till" },
+    variable: { sv: 'Råvaror och sopbilen', en: 'Ingredients and the bin lorry' },
+    contribution: { sv: 'Täckningsbidrag', en: 'Contribution margin' },
+    ratio: { sv: 'Täckningsgrad', en: 'Contribution ratio' },
+    fixed: { sv: 'Personal, DJ, satsningar, kompetens och ränta', en: 'Staff, DJ, investments, training and interest' },
+    result: { sv: 'Kvällens resultat', en: "Tonight's result" },
+    till: { sv: 'Kvällskassan', en: "Tonight's till" },
+    account: { sv: 'Företagskontot', en: 'Company account' },
+    breakEven: { sv: (be: string) => `Break-even ${be}`, en: (be: string) => `Break-even ${be}` },
+    toAccount: { sv: 'Förs till kontot', en: 'Transferred to the account' },
+    fromAccount: { sv: 'Dras från kontot', en: 'Taken from the account' },
+    morningNote: { sv: 'Råvarorna och satsningarna betalades i morse. Lönerna och räntan dras i kväll.', en: 'The ingredients and investments were paid this morning. Wages and interest are paid tonight.' },
+    forecastWeeks: {
+      sv: (w: number) => `Med det här konceptet klarar du dig ${w} ${pl(w, 'vecka', 'veckor')}.`,
+      en: (w: number) => `With this concept you last ${w} ${pl(w, 'week', 'weeks')}.`
+    },
+    forecastSeason: { sv: 'Med det här konceptet klarar du dig resten av säsongen.', en: 'With this concept you last the rest of the season.' },
+    continue: { sv: 'Till kvällens resultat', en: "To tonight's result" },
+    // Raketernas kassa i kväll (negativt belopp = en intäkt).
+    incidents: { sv: 'Kvällens händelser', en: "Tonight's events" }
+  },
+  // DJ som satsning (activities.ts book-dj).
+  activityText: {
+    'book-dj': {
+      name: { sv: 'DJ i kväll', en: 'A DJ tonight' },
+      description: { sv: 'Musik från nio. Fler gäster kommer, men bara en full kväll betalar den.', en: 'Music from nine o’clock. More guests come, but only a full evening pays for it.' }
+    }
+  },
+  // ORDER 290 — svarens följd som händelser i rummet, över bordet.
+  answerEffects: {
+    up: {
+      sv: (table: number | null, n: number) => `${table !== null ? `Bord ${table} beställer mer` : 'Bordet beställer mer'}${n > 0 ? ` · ${n} ${pl(n, 'ny gäst', 'nya gäster')} in` : ''}`,
+      en: (table: number | null, n: number) => `${table !== null ? `Table ${table} orders more` : 'The table orders more'}${n > 0 ? ` · ${n} new ${pl(n, 'guest', 'guests')} in` : ''}`
+    },
+    down: {
+      sv: (table: number | null, n: number) => `${table !== null ? `Bord ${table} blir missnöjt` : 'Bordet blir missnöjt'}${n > 0 ? ` · ${n} ${pl(n, 'gäst', 'gäster')} i kön går` : ''}`,
+      en: (table: number | null, n: number) => `${table !== null ? `Table ${table} is unhappy` : 'The table is unhappy'}${n > 0 ? ` · ${n} ${pl(n, 'guest', 'guests')} in the queue ${pl(n, 'leaves', 'leave')}` : ''}`
+    }
+  },
   // ORDER 287a — gästerna med kapital: bokningsboken (Designs skärm 1,
   // brief.book.*), strömmen, kvällens resultat och söndagstidningen (Designs
   // paper.seen.*). Namnen på gästerna med socialt kapital är egennamn.
@@ -1774,7 +1865,11 @@ export const TABLE = {
   // ORDER 277 — kassan syns hela tiden.
   cashCounter: {
     label: { sv: 'Kassa', en: 'Cash' },
-    aria: { sv: (amount: string) => `Kassan: ${amount}`, en: (amount: string) => `Cash: ${amount}` }
+    aria: { sv: (amount: string) => `Kassan: ${amount}`, en: (amount: string) => `Cash: ${amount}` },
+    // ORDER 290 — kvällskassan under servicen, mot linjen för break-even.
+    tillLabel: { sv: 'Kvällskassan', en: 'Tonight' },
+    tillAria: { sv: (till: string, be: string) => `Kvällskassan: ${till} av ${be} till break-even`, en: (till: string, be: string) => `Tonight's till: ${till} of ${be} to break even` },
+    breakEven: { sv: (be: string) => `Break-even ${be}`, en: (be: string) => `Break-even ${be}` }
   },
   // ORDER 277 — gästerna har kost och plånbok.
   guests: {

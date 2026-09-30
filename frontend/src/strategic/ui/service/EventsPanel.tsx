@@ -14,6 +14,7 @@
 // Läser strömmen (state.eventStream) med fälten feed, table och amountSek,
 // som simuleringen sätter (reducer.ts, guestOrders.ts, stockPackages.ts).
 
+import { panelOpen, setServiceAmounts, useServiceDrawer } from './serviceDrawer';
 import { useEffect, useRef } from 'react';
 import { strings } from '../../../content/strings';
 import { GAME_MINUTES_PER_SIM_SECOND, INCIDENTS, SERVICE_STREAM, SITTING } from '../../../sim/balance';
@@ -54,7 +55,7 @@ function amountText(e: EventStreamEntry): string | null {
   return e.feed === 'ordered' ? formatSek(e.amountSek) : strings.money.plus(v);
 }
 
-function Row({ e, fresh, periodStartAt }: { e: EventStreamEntry; fresh: boolean; periodStartAt: number }) {
+function Row({ e, fresh, periodStartAt, amounts }: { e: EventStreamEntry; fresh: boolean; periodStartAt: number; amounts: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const flown = useRef(false);
   useEffect(() => {
@@ -69,7 +70,7 @@ function Row({ e, fresh, periodStartAt }: { e: EventStreamEntry; fresh: boolean;
       <span className="nx-feed-time">{e.at >= periodStartAt ? clockAt(e.at, periodStartAt) : ''}</span>
       <span className="nx-feed-icon" style={{ color: warn ? 'var(--nx-accent-700)' : 'var(--nx-ink-2)' }}><Icon feed={e.feed} /></span>
       <span className="nx-feed-text" style={{ color: warn ? 'var(--nx-accent-700)' : undefined, fontWeight: warn ? 700 : undefined }}>{e.text}</span>
-      <span className="nx-feed-amount" style={{ color, fontWeight: e.feed === 'ordered' ? 400 : 800 }}>{amountText(e)}</span>
+      {amounts && <span className="nx-feed-amount" style={{ color, fontWeight: e.feed === 'ordered' ? 400 : 800 }}>{amountText(e)}</span>}
     </div>
   );
 }
@@ -86,7 +87,7 @@ function CountedSek({ value, testId }: { value: number; testId: string }) {
   return <span ref={ref} className="nx-num" data-testid={testId} data-value={Math.round(value)} />;
 }
 
-export function EventsPanel() {
+export function EventsPanel({ mode = 'both' }: { mode?: 'both' | 'feed' | 'back' } = {}) {
   const sim = useSimState();
   const dispatch = useSimDispatch();
   const seen = useRef<EventStreamEntry | null>(null);
@@ -96,6 +97,7 @@ export function EventsPanel() {
   // Rader som kommit sedan förra renderingen glider in.
   const lastSeen = seen.current;
   useEffect(() => { seen.current = newest; }, [newest]);
+  const drawer = useServiceDrawer();
   if (!inService || sim.incidents?.active) return null;
   const t = strings.feed;
   // Första renderingen och rader som redan glidit ur listan är inte nya.
@@ -105,44 +107,47 @@ export function EventsPanel() {
   const tabTables = new Set(tabs.map((g) => g.seatIndex === null ? g.id : Math.floor(g.seatIndex / INCIDENTS.seatsPerTable)));
   const tabSek = tabs.reduce((a, g) => a + (g.order?.revenueSek ?? 0), 0);
   const backsLeft = BACK.maxPerEvening - (sim.incidents?.betsTonight ?? 0);
+  // ORDER 290 — serviceläget: ihopfällt visas bara Back your knowledge.
+  // ORDER 290 — Kvällen (fliken) visar strömmen; Back your knowledge står
+  // kvar nere till höger när panelen är stängd.
+  const open = mode === 'feed' || (mode === 'both' && panelOpen(drawer, 'stream'));
+  const showBack = mode !== 'feed';
   return (
-    <section className="nx nx-panel nx-feed" data-testid="event-stream" aria-label={t.title}>
-      <header className="nx-feed-head">
+    <section className="nx nx-panel nx-feed" data-testid={mode === "feed" ? "service-feed" : "event-stream"} data-open={open} data-mode={mode} aria-label={t.title}>
+      {open && <header className="nx-feed-head">
         <NxLabel>{t.title}</NxLabel>
-        <span className="nx-feed-key">
-          <span style={{ color: 'var(--nx-ink-2)' }}>{t.ordered}</span>
-          <span>{t.paid}</span>
-          <span style={{ color: 'var(--nx-accent-700)' }}>{t.tip}</span>
-        </span>
-      </header>
-      <div className="nx-feed-rows" aria-live="polite">
+        <button type="button" className="nx-btn nx-btn-quiet nx-feed-amounts" data-testid="feed-amounts" aria-pressed={drawer.amounts} onClick={() => setServiceAmounts(!drawer.amounts)}>
+          {drawer.amounts ? strings.drawer.amountsOff : strings.drawer.amountsOn}
+        </button>
+      </header>}
+      {open && <div className="nx-feed-rows" aria-live="polite">
         {entries.map((e, i) => (
-          <Row key={`${e.at.toFixed(3)}-${e.kind}-${e.text}`} e={e} fresh={i < freshUntil} periodStartAt={sim.day.periodStartAt} />
+          <Row key={`${e.at.toFixed(3)}-${e.kind}-${e.text}`} e={e} fresh={i < freshUntil} periodStartAt={sim.day.periodStartAt} amounts={drawer.amounts} />
         ))}
-      </div>
-      <div className="nx-feed-tonight" data-testid="feed-tonight">
+      </div>}
+      {open && drawer.amounts && <div className="nx-feed-tonight" data-testid="feed-tonight">
         <div className="nx-label">{t.tonight}</div>
         <div className="nx-feed-tonight-row"><span>{t.tonightPaid}</span><CountedSek value={paid} testId="tonight-paid" /></div>
         <div className="nx-feed-tonight-row" style={{ color: 'var(--nx-accent-700)' }}><span>{t.tonightTips}</span><CountedSek value={sim.day.tipsSek ?? 0} testId="tonight-tips" /></div>
         <div className="nx-feed-tonight-row"><span>{t.tonightTabs}</span><strong data-testid="tonight-tabs">{tabs.length > 0 ? t.tonightTabsValue(tabTables.size, formatSek(tabSek)) : t.tonightTabsNone}</strong></div>
-      </div>
-      <div className="nx-feed-back">
+      </div>}
+      {showBack && <div className="nx-feed-back">
         <div style={{ minWidth: 0 }}>
           <div className="nx-label nx-accent-text">{strings.back.title}</div>
           {/* ORDER 289 — när knappen är grå står skälet här, bredvid den. */}
           <div className="nx-small nx-muted" data-testid="back-why" id="back-why">{whyNotBack(sim) ? strings.back.why[whyNotBack(sim)!] : backsLeft > 0 ? strings.back.left(backsLeft) : strings.back.none}</div>
           {/* ORDER 284 — introduktionen före kvällens första raket (flyttad från kortet). */}
-          {(sim.incidents?.betsTonight ?? 0) === 0 && (
+          {open && (sim.incidents?.betsTonight ?? 0) === 0 && (
             <p className="nx-small" data-testid="incident-back-intro" style={{ margin: 'calc(6 * var(--nx-u)) 0 0' }}>
               <strong>{strings.back.introTitle}</strong> {strings.back.introBody}
             </p>
           )}
           {/* ORDER 284 — räcker krediterna bara till en gissning: hur man tjänar nya. */}
-          {totalCredits(sim) < BACK.confidence[1].loss && <div className="nx-small" data-testid="back-earn" style={{ marginTop: 'calc(6 * var(--nx-u))' }}>{strings.back.earn}</div>}
+          {open && totalCredits(sim) < BACK.confidence[1].loss && <div className="nx-small" data-testid="back-earn" style={{ marginTop: 'calc(6 * var(--nx-u))' }}>{strings.back.earn}</div>}
         </div>
         {/* Provspel av 285: en grå knapp säger varför. */}
         <NxButton testId="back-start" disabled={!canStartBack(sim)} onClick={() => dispatch({ type: 'START_BACK' })}>{strings.back.start}</NxButton>
-      </div>
+      </div>}
     </section>
   );
 }

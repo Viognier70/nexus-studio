@@ -370,7 +370,7 @@ export type PropOwner =
 export interface LedgerEntry { id: string; item: NonNullable<FigureSample['carrying']>; owner: PropOwner }
 
 /** En anställds uppgift just nu: vad hen bär, varifrån och vart (LEVERANSNOT §8). */
-export interface StaffTaskView { pose: DirectorPose; carry: FigureSample['carrying'] | null; from: Vec2 | null; to: Vec2; done: number }
+export interface StaffTaskView { pose: DirectorPose; carry: FigureSample['carrying'] | null; from: Vec2 | null; to: Vec2; done: number; /** ORDER 290 — när arbetet på platsen börjar (ringens båge). */ arrive: number }
 
 export class WineBarDirector {
   readonly guestSamples: FigureSample[];
@@ -793,7 +793,7 @@ export class WineBarDirector {
     const a = this.actors.find((x) => x.key === key);
     const task = a?.tasks.find((k) => k.state !== 'cancelled' && k.done > t);
     if (!task) return null;
-    return { pose: task.pose, carry: task.carry ?? task.carryBack ?? null, from: task.pickup ?? null, to: task.target, done: task.done };
+    return { pose: task.pose, carry: task.carry ?? task.carryBack ?? null, from: task.pickup ?? null, to: task.target, done: task.done, arrive: task.arrive };
   }
 
   /** ORDER 286a — stolen en sittande gäst har (LEVERANSNOT §8: en stol per sittande gäst). */

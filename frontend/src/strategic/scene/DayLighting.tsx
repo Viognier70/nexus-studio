@@ -32,6 +32,10 @@ const HOUR_BY_PERIOD: Record<DayPeriod, number> = {
   evening:  21.5    // below horizon in autumn — night lighting
 };
 
+// ORDER 290 — kvällens by var för mörk för att se gäster på väg mot krogen
+// (provspel av cae53c9). Ljuset lyfts under servicen och kvällen.
+const EVENING_LIFT: Partial<Record<DayPeriod, number>> = { dinner: 1.35, evening: 1.9 };
+
 // Village-scale fog range. Fog starts far out (1 km) so nothing
 // mid-distance gets washed, and hits full attenuation at 3.6 km so
 // the fog envelope sits inside the sky sphere.
@@ -72,6 +76,7 @@ export function DayLighting() {
       hourOfDay={hour}
       date={date}
       fogRange={STRATEGIC_FOG_RANGE}
+      intensityScale={EVENING_LIFT[effectivePeriod] ?? 1}
     />
   );
 }

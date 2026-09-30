@@ -27,6 +27,11 @@
 // som simuleringen (sim/incidents.ts `serviceMeters`; stegen räknas i
 // ui/service/serviceView.ts).
 
+import { Check, X } from 'lucide-react';
+import { t as tt } from '../../content/nexusStrings';
+import { useLanguage } from '../../content/language';
+import { KnowledgePyramid } from '../ui/service/KnowledgePyramid';
+import { panelOpen, useServiceDrawer } from '../ui/service/serviceDrawer';
 import { useEffect, useRef, useState } from 'react';
 import { strings } from '../../content/strings';
 import { BACK, INCIDENTS, type Confidence } from '../../sim/balance';
@@ -97,6 +102,7 @@ type OptionLook = 'open' | 'struck' | 'chosen' | 'dim' | 'correct' | 'wrong';
 export function IncidentCard() {
   const sim = useSimState();
   const dispatch = useSimDispatch();
+  const lang = useLanguage();
   const held = useHeldOutcome(sim);
   const frozen = useRef<{ key: string; left: number; total: number } | null>(null);
   const active = sim.incidents?.active ?? null;
@@ -335,7 +341,19 @@ export function IncidentCard() {
 
       {/* ORDER 284 — i Back your knowledge visar raketen till vänster stegen
           (BackPanels); rutorna här tas bort så att svaren ryms. */}
-      <ol hidden={backed} className="nx-rocket-steps" data-testid="incident-steps" aria-label={s.stepOf(String(view.shown + 1), String(incident.steps.length))}>
+      {/* ORDER 290 — Designs rätt, fel och pyramiden §3: lyktorna blir
+          kunskapspyramiden, under rubriken, med våningarnas namn till höger. */}
+      {!(backed && pick !== null) && (
+        <div className="nx-rocket-pyramid">
+          <KnowledgePyramid
+            testId="incident-pyramid"
+            full={view.mode === 'done'}
+            showMult={backed}
+            levels={incident.steps.map((_, i) => { const b = boxFor(i); return b === 'cleared' ? 'filled' : b === 'current' ? 'current' : b === 'failed' ? 'cracked' : 'empty'; })}
+          />
+        </div>
+      )}
+      <ol hidden style={{ display: 'none' }} className="nx-rocket-steps" data-testid="incident-steps" aria-label={s.stepOf(String(view.shown + 1), String(incident.steps.length))}>
         {incident.steps.map((st, i) => {
           const state = boxFor(i);
           return (
@@ -390,10 +408,13 @@ export function IncidentCard() {
               data-picked={backed && pick === o.id}
               onClick={() => (backed ? setPick(o.id) : dispatch({ type: 'ANSWER_INCIDENT', optionId: o.id }))}
             >
-              <span className="nx-rocket-key" aria-hidden>{i + 1}</span>
-              <span>{f(step.text.options[o.id].label)}</span>
-              <span className="nx-rocket-tag">
-                {look === 'chosen' ? '✓' : look === 'correct' ? t.correctTag : look === 'wrong' ? t.yourTag : ''}
+              <span className="nx-rocket-key" aria-hidden>{look === 'chosen' ? <Check size={16} /> : look === 'wrong' ? <X size={16} /> : i + 1}</span>
+              <span className="nx-rocket-option-text">
+                <span>{f(step.text.options[o.id].label)}</span>
+                {/* ORDER 290 — Designs domar: Rätt, Ditt svar, Det här hade hållit. */}
+                {(look === 'chosen' || look === 'correct' || look === 'wrong') && (
+                  <span className="nx-rocket-tag">{look === 'chosen' ? tt(lang, 'verdict.right') : look === 'correct' ? tt(lang, 'verdict.held') : t.yourTag}</span>
+                )}
               </span>
             </button>
           );
@@ -435,8 +456,11 @@ export function IncidentCard() {
 
       {band ? (
         <div className="nx-rocket-band" data-kind={band.kind} data-testid="incident-band" aria-live="polite">
-          <div className="nx-label">{band.label}</div>
+          {/* ORDER 290 — domen är Rätt eller Inte den här gången, aldrig Fel;
+              förklaringen är lika vänlig i båda fallen. */}
+          <span className="nx-verdict" data-kind={band.kind}>{band.kind === 'right' ? <Check size={16} aria-hidden /> : <X size={16} aria-hidden />}{band.kind === 'right' ? tt(lang, 'verdict.right') : tt(lang, 'verdict.wrong')}</span>
           <p className="nx-rocket-band-text">{band.text}</p>
+          <div className="nx-rocket-band-foot">{view.mode === 'done' ? tt(lang, 'pyramid.full.sub') : band.label}</div>
         </div>
       ) : (
         <div className="nx-rocket-foot">
@@ -458,6 +482,8 @@ export function ServiceMeters() {
   const key = outcomeKey(last);
   const seen = useRef<string | null>(key);
   const [emph, setEmph] = useState<IncidentOutcomeView | null>(null);
+  // ORDER 290 — serviceläget: mätarna visas när panelerna är öppnade.
+  const drawer = useServiceDrawer();
   useEffect(() => {
     if (!last || key === seen.current) return;
     seen.current = key;
@@ -467,15 +493,16 @@ export function ServiceMeters() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
 
-  if (!sim.incidents?.enabled || sim.day.period !== 'dinner') return null;
+  if (!sim.incidents?.enabled || sim.day.period !== 'dinner' || !panelOpen(drawer, 'room')) return null;
   // ORDER 280 — under en egen raket står raketen och träffsäkerheten här.
   if (sim.incidents.active?.backed) return null;
   const m = serviceMeters(sim);
   const steps = meterSteps(sim);
   const d = emph ? deltaSteps(sim, emph.deltas) : null;
   const t = strings.rocket.meters;
+  // ORDER 290 — Designs serviceläget §3: kassans mätare utgår, eftersom
+  // kvällskassan ersätter den. Rummet har gästernas och personalens mätare.
   const rows = [
-    { id: 'cash', label: t.cash, value: steps.cash, delta: d?.cash ?? 0, data: String(Math.round(m.cashSek)) },
     { id: 'satisfaction', label: t.guests, value: steps.satisfaction, delta: d?.satisfaction ?? 0, data: m.satisfaction === null ? '' : m.satisfaction.toFixed(2) },
     { id: 'stamina', label: t.staff, value: steps.stamina, delta: d?.stamina ?? 0, data: m.stamina.toFixed(2) }
   ];

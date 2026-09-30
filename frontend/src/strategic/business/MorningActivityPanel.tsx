@@ -59,9 +59,9 @@ export function MorningActivityPanel() {
           >
             <NxIcon name={ACTIVITY_ICON[a.id] ?? 'users'} size={32} />
             <span style={{ flex: 1 }}>
-              <span className="nxs-row-title" style={{ display: 'block' }}>{a.name}</span>
+              <span className="nxs-row-title" style={{ display: 'block' }}>{a.id === 'book-dj' ? strings.activityText['book-dj'].name : a.name}</span>
               <span className="nxs-row-sub" style={{ display: 'block' }}>
-                {a.description}
+                {a.id === 'book-dj' ? strings.activityText['book-dj'].description : a.description}
                 {a.availability === 'weekly' && <> · {strings.morning.weekly}</>}
               </span>
             </span>

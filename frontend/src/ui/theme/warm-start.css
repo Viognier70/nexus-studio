@@ -1,0 +1,54 @@
+/* ORDER 290 — början i den varma formen (Vision Owner 2026-09-30, provspel av
+   cae53c9): "Registreringen och skärmarna före första morgonen har kvar det
+   gamla gränssnittet. Flytta dem till den varma formen." Bussen (VS001),
+   registreringens dialog, slutskärmen, pausmenyn, startrutan och namnet får
+   Designs trä, papper, mässing och typsnitt (nexus-warm.css). */
+
+/* Titel och buss: mörkt trä i stället för svart, Young Serif. */
+.stage, .title-stage, .bus-stage { background: var(--w-walnut-950, #140d09); }
+.title { font-family: var(--w-font-heading, 'Young Serif', Georgia, serif); font-weight: 400; letter-spacing: 0.08em; color: var(--w-cream, #f4e6cc); }
+.subtitle { font-family: var(--w-font-body, 'Figtree', system-ui, sans-serif); color: var(--w-brass-light, #d8b877); letter-spacing: 0.24em; text-transform: uppercase; font-weight: 700; }
+.bus-text { font-family: var(--w-font-heading, 'Young Serif', Georgia, serif); color: var(--w-cream, #f4e6cc); }
+
+/* Dialogen vid registreringsbordet och pausmenyn: papper. */
+.dialogue-overlay, .end-stage { background: rgba(20, 13, 9, 0.66); }
+.pause-panel, .dialogue-panel, .end-inner {
+  background: var(--w-paper, #f5ead5); color: var(--w-ink, #2a1c13); border: 0;
+  border-radius: 22px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  font-family: var(--w-font-body, 'Figtree', system-ui, sans-serif);
+}
+.pause-panel h2, .end-heading { font-family: var(--w-font-heading, 'Young Serif', Georgia, serif); color: var(--w-ink, #2a1c13); letter-spacing: 0.01em; }
+.pause-panel h3 { color: var(--w-ink-label, #9a6a2a); text-transform: uppercase; letter-spacing: 0.14em; font-weight: 800; }
+.npc-line { font-family: var(--w-font-heading, 'Young Serif', Georgia, serif); font-size: 1.25rem; line-height: 1.4; color: var(--w-ink, #2a1c13); }
+.player-line, .disclaimer, .control-list { color: var(--w-ink-soft, #6b5443); }
+.choice { background: rgba(42, 28, 19, 0.05); border: 1px solid rgba(42, 28, 19, 0.18); color: var(--w-ink, #2a1c13); border-radius: 14px; font-weight: 600; }
+.choice:hover { background: rgba(42, 28, 19, 0.1); }
+.choice-index { color: var(--w-ink-label, #9a6a2a); font-weight: 800; }
+
+/* Knappar: på papper mörk med ljus text, på trä guld med mörk text (WARM.button). */
+.btn { border-radius: 999px; font-family: var(--w-font-body, 'Figtree', system-ui, sans-serif); font-weight: 700; background: transparent; color: var(--w-ink, #2a1c13); border: 1px solid rgba(42, 28, 19, 0.3); }
+.btn:hover { background: rgba(42, 28, 19, 0.08); }
+.btn.primary { background: var(--w-ink, #2a1c13); color: var(--w-cream, #f4e6cc); border-color: transparent; }
+.stage > .btn.primary, .hud .btn.primary { background: var(--w-gold, #e8b93a); color: var(--w-ink, #2a1c13); }
+.btn:focus-visible, .choice:focus-visible, .hud-btn:focus-visible { outline: 2px solid var(--w-brass-light, #d8b877); }
+
+/* HUD i bussen och vid bordet: trä med mässingskant. */
+.hud-objective, .hud-context, .hud-btn {
+  background: rgba(38, 25, 17, 0.88); color: var(--w-cream, #f4e6cc);
+  border: 1px solid rgba(216, 184, 119, 0.45); border-radius: 999px;
+  font-family: var(--w-font-body, 'Figtree', system-ui, sans-serif);
+}
+
+/* Startrutan och namnet: helskärm på trä, över spelets HUD. */
+.business-name-overlay { z-index: 200; }
+.business-name-card { max-width: 560px; padding: 36px 40px 28px; gap: 16px; }
+.business-name-card h2 { font-size: 40px; }
+.business-name-card p { font-size: 17px; color: var(--w-ink-soft, #6b5443); }
+.business-name-card input { border-radius: 12px; border: 1px solid rgba(42, 28, 19, 0.25); background: #fffaf0; font-size: 18px; padding: 12px 14px; }
+.business-name-card input:focus { outline: 2px solid var(--w-brass-light, #d8b877); }
+.business-name-actions { gap: 10px; }
+.business-name-card button { border-radius: 999px; padding: 12px 24px; font-size: 16px; font-weight: 700; background: var(--w-ink, #2a1c13); color: var(--w-cream, #f4e6cc); border: 0; }
+.business-name-card button:hover:not(:disabled) { background: #3a2a1d; }
+.business-name-card button[data-testid='continue-saved'] { background: transparent; color: var(--w-ink, #2a1c13); border: 1px solid rgba(42, 28, 19, 0.3); }
+.business-name-hint { color: var(--w-ink-soft, #6b5443); }
+.business-name-kicker { font-family: var(--w-font-body, 'Figtree', system-ui, sans-serif); font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; font-size: 13px; color: var(--w-ink-label, #9a6a2a); }

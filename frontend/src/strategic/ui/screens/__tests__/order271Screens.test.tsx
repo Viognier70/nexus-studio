@@ -114,7 +114,9 @@ describe('ORDER 271 — Måltidens hus (O1, O2, MD1, MD2)', () => {
     expect(getByTestId('screen-O2')).toBeTruthy();
   });
 
-  it('ett fel svar är streckat, aldrig markerat som rött', () => {
+  // ORDER 290 — rätt och fel syns tydligt (grönt och rött); regeln att fel
+  // aldrig är rött gäller inte längre. Tillstånden är desamma.
+  it('ett fel svar och det rätta svaret har var sitt tillstånd', () => {
     const s = reducer(makeNewGameState(7), { type: 'VISIT_PAVILION', pavilion: 'stensota', mode: 'practice' });
     const q = bankQuestionById(s.pavilionVisit!.questionIds[0])!;
     const wrong = (q.correctIndex + 1) % q.options.length;

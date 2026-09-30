@@ -1,9 +1,12 @@
 import { useBusiness } from './business/BusinessContext';
+import { ServiceCamera } from './camera/ServiceCamera';
+import { SoundDirector } from './ui/sound/SoundDirector';
+import { VillageButton } from './ui/VillageButton';
+import { ServiceTabs } from './ui/service/ServiceTabs';
+import { TillBar } from './ui/service/TillBar';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { BusinessProvider } from './business/BusinessContext';
 import { InvestmentPanel } from './business/InvestmentPanel';
-import { PlatesRemainingPanel } from './business/PlatesRemainingPanel';
-import { PrepPanel } from './business/PrepPanel';
 import { ScaleDownPanel } from './business/ScaleDownPanel';
 import { NameEntryOverlay } from './business/NameEntryOverlay';
 import { MentorPanel } from './ui/MentorPanel';
@@ -19,7 +22,7 @@ import { OpeningPanel } from './scenario/OpeningPanel';
 import { ScenarioOverlay } from './scenario/ScenarioOverlay';
 import { DayActionBar } from './scenario/DayActionBar';
 import { EveningBar } from './scenario/EveningBar';
-import { IncidentCard, ServiceMeters } from './scenario/IncidentPanel';
+import { IncidentCard } from './scenario/IncidentPanel';
 import { NoBusinessBox } from './economy/NoBusinessBox';
 import { MaltidensHusDialog } from './knowledge/ui/MaltidensHusDialog';
 import { BankDialog } from './economy/BankDialog';
@@ -287,7 +290,15 @@ function StrategicShell() {
       <div className="gb-topleft">
         <DayBadge />
         <ServiceClock />
+        {/* ORDER 290 — Designs serviceläget: kvällskassan bredvid klockan. */}
+        <TillBar />
       </div>
+      {/* ORDER 290 — byn och tillbaka (knappen och tangenten V). */}
+      <div className="nx-hud-tools">
+        <VillageButton />
+      </div>
+      {/* ORDER 290 — Designs serviceläget: panelerna som tre flikar nere till vänster. */}
+      <ServiceTabs />
       <div className="gb-topright">
         <CashCounter />
         <SpeedToggle />
@@ -301,7 +312,7 @@ function StrategicShell() {
       />
       <ScenarioOverlay />
       {/* ORDER 280 — händelserna i högerkanten (Designs H1), med Back your knowledge. */}
-      <EventsPanel />
+      <EventsPanel mode="back" />
       <BackPanels />
       <DayActionBar
         onOpenHouse={() => setHouseOpen(true)}
@@ -326,6 +337,10 @@ function StrategicShell() {
         }}
       />
       <EveningBar />
+      {/* ORDER 290 — ljudet (Web Audio), efter vad som händer i simuleringen. */}
+      <SoundDirector />
+      {/* ORDER 290 — kameran till krogen när servicen och raketen börjar. */}
+      <ServiceCamera />
       <IncidentCard />
       <MaltidensHusDialog open={houseOpen} onClose={() => setHouseOpen(false)} />
       {/* ORDER 271 — mentorn (M1/M2) inne i .gb-root, så att banken, huset och tidningen ligger över den. */}
@@ -353,27 +368,10 @@ function StrategicShell() {
           <ScaleDownPanel />
         </PanelRow>
       </PanelColumn>
-      <PanelColumn side="right">
-        {/* ORDER 271 — satsningarna och menyn ligger i morgonens schema (DayActionBar, S1). */}
-        <ServiceMeters />
-        {/*
-          ORDER 270 (provspel 2026-09-27): "inga engelska paneler".
-          InstrumentsPanel (Room pace, Guest mood, Team stamina, Tonight's
-          take, kapitalflikarna) och RoomCardPanel visas inte i v1: de
-          engelska panelerna ersätts av servicens tre mätare
-          (ServiceMeters) och av rummet självt. Koden står kvar.
-        */}
-        {/*
-          ORDER 112 DoD 1 (delimplementation): RoomCardPanel renderas inte
-          i nivå 4 när dockskåpet är aktivt. Panelen byggdes i ORDER 085
-          som omväg runt att rummet inte kunde visa uttryck; dockskåpet
-          tar bort det skälet. Koden behålls — panelen visas fortfarande
-          i nivå 1-3 samt när dollhouse=1 inte är satt.
-        */}
-
-      </PanelColumn>
-      <PlatesRemainingPanel />
-      <PrepPanel />
+      {/* ORDER 290 — högerkolumnen är tom i v1: mätarna ligger i fliken Rummet
+          (ServiceTabs); InstrumentsPanel och RoomCardPanel visas inte (ORDER
+          270, ORDER 112). */}
+      {/* ORDER 290 — lagret och mise en place ligger i fliken Lagret (ServiceTabs). */}
       <AgencyOfferPanel />
       <OpeningPanel />
       <EveningAccountPanel />

@@ -195,6 +195,12 @@ body:has(.nx-screen) .gb-selection,
 body:has(.nx-screen) .gb-hint,
 body:has(.nx-screen) .gb-verify-badge,
 body:has(.nx-screen) .gb-viewlabel { display: none; }
+/* ORDER 290 — byns text (zoomnivåerna, kartkrediten, platsnamnet) syns inte
+   under servicen (RoomGrade sätter data-room-grade='service'). */
+body[data-room-grade='service'] .gb-selection,
+body[data-room-grade='service'] .gb-hint,
+body[data-room-grade='service'] .gb-verify-badge,
+body[data-room-grade='service'] .gb-viewlabel { display: none; }
 .gb-outward:hover {
   background: rgba(255, 255, 255, 0.13);
 }
@@ -408,10 +414,16 @@ body:has(.nx-screen) .gb-viewlabel { display: none; }
    samma sak (LEVERANSNOT §2). */
 body[data-room-grade='morning'] .gb-canvas-host canvas { filter: sepia(.45) saturate(1.15) brightness(.62) contrast(1.05); }
 body[data-room-grade='service'] .gb-canvas-host canvas { filter: saturate(1.1) brightness(.92); }
-body[data-room-grade='afterClose'] .gb-canvas-host canvas { filter: brightness(.45) saturate(.9); }
+/* ORDER 290 — kvällens by ljusare (provspel av cae53c9): stängt .45 → .7,
+   och vinjetten lättare under servicen och kvällen. */
+body[data-room-grade='afterClose'] .gb-canvas-host canvas { filter: brightness(.7) saturate(.95); }
 body[data-room-grade] .gb-canvas-host::after {
   content: ''; position: absolute; inset: 0; pointer-events: none;
   background: radial-gradient(ellipse at 50% 45%, rgba(255,170,80,.12), rgba(20,10,5,.72) 85%);
+}
+body[data-room-grade='service'] .gb-canvas-host::after,
+body[data-room-grade='afterClose'] .gb-canvas-host::after {
+  background: radial-gradient(ellipse at 50% 45%, rgba(255,170,80,.10), rgba(20,10,5,.45) 90%);
 }
 
 /* ORDER 289 — panelkolumnerna börjar under HUD:en och slutar ovanför

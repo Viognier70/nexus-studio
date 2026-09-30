@@ -95,6 +95,8 @@ import {
   PASS_FLOOR
 } from './wineBarDirector';
 import { TheatreStage } from './theatreStage';
+import { play } from '../ui/sound/sound';
+import { createStaffMark, disposeStaffMark, updateStaffMark, type StaffMark } from './staffMarks';
 import { seatKindFromRoom, type ClipSample } from './figureClips';
 import { WARM } from '../../ui/theme/nexusTheme.warm';
 import type { GuestType } from '../types';
@@ -215,6 +217,8 @@ interface Cast {
   guestTypes: (GuestType | null)[];
   staffRigs: FigureRig[];
   ring: ActionRing;
+  staffMarks: StaffMark[];
+  lastPose: (string | null)[];
   shadowsOn: boolean;
   lights: Lights;
   stage: TheatreStage;
@@ -340,9 +344,11 @@ export function WineBarFigures({ room, mood }: Props) {
     const ring = createActionRing();
     ring.group.visible = false;
     group.add(ring.group);
+    // ORDER 290 — ring och linje under personalen, med rollens färg.
+    const staffMarks = STAFF_KEYS.map((k) => { const m = createStaffMark(k); group.add(m.group); return m; });
     const stage = new TheatreStage(group, room.floorY, STAFF_KEYS.length, WINE_BAR_GUEST_POOL);
     castRef.current = {
-      director, group, guestRigs, guestIds: guestRigs.map(() => null), guestTypes: guestRigs.map(() => null), staffRigs, ring, shadowsOn: true, lights,
+      director, group, guestRigs, guestIds: guestRigs.map(() => null), guestTypes: guestRigs.map(() => null), lastPose: guestRigs.map(() => null), staffRigs, ring, staffMarks, shadowsOn: true, lights,
       stage,
       staffClips: staffRigs.map(() => null),
       guestClips: guestRigs.map(() => null),
@@ -357,6 +363,7 @@ export function WineBarFigures({ room, mood }: Props) {
       guestRigs.forEach(disposeFigureRig);
       staffRigs.forEach(disposeFigureRig);
       ring.dispose();
+      staffMarks.forEach(disposeStaffMark);
       stage.dispose();
       group.removeFromParent();
       castRef.current = null;
@@ -420,6 +427,9 @@ export function WineBarFigures({ room, mood }: Props) {
       // medelinkomst, höginkomst, socialt kapital, miljardären i guld).
       // Gäster utan typ (äldre fixturer) behåller rummets dova plagg.
       const guestType = sample.guestId ? s.guests.find((g) => g.id === sample.guestId)?.guestType ?? null : null;
+      // ORDER 290 — klirr när gäster skålar (ljudet, sound.ts).
+      if (sample.visible && sample.pose === 'toast' && cast.lastPose[i] !== 'toast') play('clink');
+      cast.lastPose[i] = sample.visible ? sample.pose : null;
       if (sample.guestId !== cast.guestIds[i] || guestType !== cast.guestTypes[i]) {
         cast.guestIds[i] = sample.guestId;
         cast.guestTypes[i] = guestType;
@@ -468,6 +478,10 @@ export function WineBarFigures({ room, mood }: Props) {
       cast.staffClips[i] = clip;
       applySample(cast.staffRigs[i], ss[i], true, visibility, clip);
       const rig = cast.staffRigs[i];
+      // ORDER 290 — ringen under figuren och linjen till uppgiften.
+      const task = inService ? cast.director.staffTask(key, t) : null;
+      const working = task && t >= task.arrive && task.done > task.arrive ? Math.min(1, (t - task.arrive) / (task.done - task.arrive)) : null;
+      updateStaffMark(cast.staffMarks[i], inService && ss[i].visible, { x: rig.root.position.x, z: rig.root.position.z }, task && task.to ? { x: task.to[0], z: task.to[1] } : null, working, room.floorY);
       if (fig && fig.kind === 'staff' && fig.staffKey === key && ss[i].visible) {
         // Den som skär sig backar ett steg (klippets root, i figurens ram).
         if (clip) {
@@ -485,7 +499,8 @@ export function WineBarFigures({ room, mood }: Props) {
     // CLAUDE.md renderregler: skuggan följer opaciteten.
     if (shadows !== cast.shadowsOn) {
       cast.shadowsOn = shadows;
-      cast.group.traverse((o) => { if ((o as THREE.Mesh).isMesh && o.parent !== cast.ring.group) o.castShadow = shadows; });
+      const marks = new Set(cast.staffMarks.map((m) => m.group));
+      cast.group.traverse((o) => { if ((o as THREE.Mesh).isMesh && o.parent !== cast.ring.group && !(o.parent && marks.has(o.parent as THREE.Group))) o.castShadow = shadows; });
     }
 
     // Kameran glider in mot figuren och tillbaka efter svaret.

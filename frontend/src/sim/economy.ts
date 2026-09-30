@@ -8,6 +8,7 @@
 
 import {
   BUSINESS_CLASSES,
+  EVENING_ECONOMY,
   DOWNGRADE,
   ECONOMY,
   NEW_START,
@@ -130,6 +131,9 @@ export interface EconomyState {
   weekRevenueStartSek: number;
   // ORDER 267 — kvällarna sedan förra avräkningen (söndagstidningen).
   weekEvenings?: EveningRecord[];
+  // ORDER 290 — kvällarnas resultat över veckorna, till prognosen
+  // (strategic/simulation/eveningEconomy.ts forecastWeeks).
+  eveningResults?: { dayNumber: number; resultSek: number }[];
   consecutiveNegativeDayEnds: number;
   downgradePending: boolean;
   lastSettlement: SettlementRecord | null;
@@ -212,7 +216,9 @@ export function dailyGuestCap(state: SimulationState): number {
   // kvällarna (strategic/simulation/guestTypes.ts settleSocialGuest).
   const d = state.day.dayNumber;
   const buzz = (state.guestBuzz ?? []).reduce((f, b) => (b.fromDay <= d && d <= b.untilDay ? f + b.factor : f), 0);
-  return Math.floor(pool * marketShareCap(state.medals) * Math.max(0, 1 + buzz));
+  // ORDER 290 — en DJ i kväll drar fler gäster (satsningen book-dj).
+  const dj = state.day.pickedActivityIds?.includes('book-dj') ? EVENING_ECONOMY.djGuestShare : 0;
+  return Math.floor(pool * marketShareCap(state.medals) * Math.max(0, 1 + buzz + dj));
 }
 
 // Nedgraderingskedjan (speldesign > Nedgradering).
