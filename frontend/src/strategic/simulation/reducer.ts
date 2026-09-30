@@ -1,6 +1,6 @@
 import { calendarFor } from '../../sim/calendar';
 import { bestAnswerFactor, drinkRevenueFactor, enablersWithCredits } from '../../sim/knowledgeInService';
-import { EVENING, SERVICE, type BusinessClassId } from '../../sim/balance';
+import { EVENING, EVENING_ECONOMY, SERVICE, type BusinessClassId } from '../../sim/balance';
 import { answerSalvage, closeSalvage, discardUnresolvedSalvage } from './salvage';
 import { canBack, canStartBack, pickBackAnswer, closeIncidents, countDown, isIncidentOpen, maybeOpenIncident, planIncidents, resolveIncident, startBack, tickOngoing, type CreditChange } from '../../sim/incidents';
 import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
@@ -158,6 +158,7 @@ import {
   postValueQuotaLine
 } from './cashReading';
 import { drawNextTheme } from './themeSelection';
+import { eveningStake, eveningTransfer, tillSek } from './eveningEconomy';
 import { assignGuestTypes, billionaireTreat, maybeBillionaireArrives, bookingFor, recordTypeRevenue, settleSocialGuest, settleSocialGuestAtClose } from './guestTypes';
 import { sustainabilityLevelsFor } from '../../sim/sustainabilityLevels';
 import {
@@ -288,9 +289,11 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
     case 'EVENING_STEP': {
       // ORDER 289 — sopbilen → kvällens resultat → lärdomen ↔ berättelsen.
       // Kvällens resultat kan inte hoppas över.
+      // ORDER 290 — överföringen till företagskontot efter sopbilen, före
+      // kvällens resultat.
       if (state.day.period !== 'evening') return state;
       const from = state.day.eveningStep ?? 'result';
-      const allowed: Record<string, string[]> = { waste: ['result'], result: ['lesson', 'story'], lesson: ['story'], story: ['lesson'] };
+      const allowed: Record<string, string[]> = { waste: ['transfer', 'result'], transfer: ['result'], result: ['lesson', 'story'], lesson: ['story'], story: ['lesson'] };
       if (!allowed[from]?.includes(action.to)) return state;
       return { ...state, day: { ...state.day, eveningStep: action.to } };
     }
@@ -1745,7 +1748,11 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       settleWaste(next);
       // ORDER 289 — kvällens första skärm: sopbilen när den kom, annars
       // kvällens resultat.
-      next.day = { ...next.day, eveningStep: next.lastWaste && next.lastWaste.dayNumber === next.day.dayNumber && next.lastWaste.fractions ? 'waste' : 'result' };
+      // ORDER 290 — kvällskassan vid stängning och överföringen till
+      // företagskontot (eveningEconomy.ts); utan sopbil börjar kvällen där.
+      next.day = { ...next.day, tillAtClose: tillSek(state) };
+      next.day = { ...next.day, transfer: eveningTransfer(next), eveningStep: next.lastWaste && next.lastWaste.dayNumber === next.day.dayNumber && next.lastWaste.fractions ? 'waste' : 'transfer' };
+      next.economy = { ...next.economy, eveningResults: [...(next.economy.eveningResults ?? []), { dayNumber: day.dayNumber, resultSek: next.day.transfer!.resultSek }].slice(-EVENING_ECONOMY.forecastEvenings) };
       if (next.eveningAccount?.metrics) {
         next.eveningAccount = {
           ...next.eveningAccount,
@@ -2413,7 +2420,8 @@ function advanceTick(state: SimulationState): SimulationState {
           if (!guest.order) draft.day.walkedCount = (draft.day.walkedCount ?? 0) + 1;
           continue;
         }
-        rev = bill * revenueMult;
+        // ORDER 290 — rätt och fel svar vid bordet höjer eller sänker notan.
+        rev = bill * revenueMult * Math.max(0, 1 + (guest.billBonus ?? 0));
       } else if (draft.menu.length > 0) {
         const rng = createRng(draft.rngState);
         const targetRoll = rng.next();
@@ -2626,6 +2634,10 @@ function advanceTick(state: SimulationState): SimulationState {
     // report gate.
     const firstDoorOpen = !draft.day.doorsOpenedThisService;
     if (firstDoorOpen) {
+      // ORDER 290 — kvällens insats när dörrarna öppnar, med köksdriften
+      // under resten av servicen, och kassan då (överföringens utgångsläge).
+      const serviceLeftMin = Math.max(0, draft.day.periodStartAt + SERVICE.simMinutes * 60 - draft.simTime) / 60;
+      draft.day = { ...draft.day, stake: eveningStake(draft, costPerMinuteToTick(draft) * serviceLeftMin), stakeShownAt: draft.simTime, cashAtDoorsOpen: draft.cash };
       const readiness = computePrepReadinessFromState(draft);
       const weakest = weakestPrepItem(readiness);
       const line = afterCountdownLine(readiness);

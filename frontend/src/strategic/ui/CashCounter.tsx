@@ -13,6 +13,8 @@ import { useEffect, useRef, useSyncExternalStore } from 'react';
 import { strings } from '../../content/strings';
 import { useSimState } from '../simulation/SimulationProvider';
 import { isStrandedWithoutBusiness } from '../../sim/economy';
+import type { SimulationState } from '../types';
+import { accountAfterEvening, tillSek } from '../simulation/eveningEconomy';
 import { totalCredits } from '../../sim/incidents';
 import { countTo, type Counter } from './juice/juice';
 import { isReleased, pendingFor, registerTarget, subscribeFx, type FxTarget } from './juice/fx';
@@ -67,13 +69,33 @@ const CASH_TICKS = { up: 8, down: 9 };
 const CREDIT_TICKS = { up: 12, down: 8 };
 const plain = (v: number) => String(v);
 
+// ORDER 290 — vad kassarutan visar: kvällskassan under servicen och fram
+// till överföringen, företagskontot efter kvällens överföring (med kvällens
+// löner och ränta), annars kassan.
+export type MoneyMode = 'till' | 'account';
+export function moneyMode(sim: SimulationState): MoneyMode {
+  const p = sim.day.period;
+  if (p === 'lunch' || p === 'dinner') return 'till';
+  if (p === 'evening' && !sim.day.eveningEndRequested && (sim.day.eveningStep === 'waste' || sim.day.eveningStep === 'transfer')) return 'till';
+  return 'account';
+}
+
+export function accountShown(sim: SimulationState): number {
+  return sim.day.period === 'evening' && sim.day.transfer && sim.day.transfer.dayNumber === sim.day.dayNumber ? accountAfterEvening(sim) : sim.cash;
+}
+
 export function CashCounter() {
   const sim = useSimState();
+  const mode = moneyMode(sim);
   // Sopbilens avgift hålls utanför rutan tills lappen i S1 landat.
-  const wasteKey = wasteHoldKey(sim);
+  const wasteKey = mode === 'account' ? wasteHoldKey(sim) : null;
   const releasedNow = useSyncExternalStore(subscribeFx, () => (wasteKey ? isReleased(wasteKey) : true), () => true);
   const heldFee = wasteKey && !releasedNow ? sim.lastWaste?.feeSek ?? 0 : 0;
-  const cash = useCountedNumber('cash', sim.cash, formatSek, CASH_TICKS, heldFee);
+  const till = tillSek(sim);
+  const account = accountShown(sim);
+  const cash = useCountedNumber('cash', mode === 'till' ? till : account, formatSek, CASH_TICKS, heldFee);
+  const breakEven = sim.day.stake?.total ?? 0;
+  const fill = breakEven > 0 ? Math.max(0, Math.min(1.25, till / breakEven)) : 0;
   const creditsValue = totalCredits(sim);
   const credits = useCountedNumber('credits', creditsValue, plain, CREDIT_TICKS);
   const hidden = isStrandedWithoutBusiness(sim);
@@ -84,13 +106,24 @@ export function CashCounter() {
         ref={cash.boxRef}
         className="nx-panel"
         role="status"
-        aria-label={t.aria(formatSek(sim.cash))}
+        aria-label={mode === 'till' ? t.tillAria(formatSek(till), formatSek(breakEven)) : t.aria(formatSek(account))}
         data-testid="cash-counter"
-        data-value={Math.round(sim.cash)}
-        style={{ display: 'flex', alignItems: 'baseline', gap: 'calc(14 * var(--nx-u))', padding: 'calc(14 * var(--nx-u)) calc(18 * var(--nx-u))', whiteSpace: 'nowrap' }}
+        data-mode={mode}
+        data-value={Math.round(mode === 'till' ? till : account)}
+        data-break-even={mode === 'till' ? breakEven : undefined}
+        style={{ display: 'flex', flexDirection: 'column', gap: 'calc(6 * var(--nx-u))', padding: 'calc(14 * var(--nx-u)) calc(18 * var(--nx-u))', whiteSpace: 'nowrap' }}
       >
-        <span className="nx-label">{t.label}</span>
-        <span ref={cash.numRef} className="nx-num" data-testid="cash-counter-num" style={{ fontSize: 'calc(30 * var(--nx-u))', color: sim.cash < 0 ? 'var(--nx-accent-700)' : 'var(--nx-ink)' }} />
+        <span style={{ display: 'flex', alignItems: 'baseline', gap: 'calc(14 * var(--nx-u))' }}>
+          <span className="nx-label">{mode === 'till' ? t.tillLabel : t.label}</span>
+          <span ref={cash.numRef} className="nx-num" data-testid="cash-counter-num" style={{ fontSize: 'calc(30 * var(--nx-u))', color: mode === 'account' && account < 0 ? 'var(--nx-accent-700)' : 'var(--nx-ink)' }} />
+        </span>
+        {mode === 'till' && breakEven > 0 && (
+          <span className="nx-till" data-testid="till-bar" data-over={till >= breakEven} title={t.breakEven(formatSek(breakEven))}>
+            <span className="nx-till-fill" style={{ width: `${(fill / 1.25) * 100}%` }} />
+            <span className="nx-till-line" style={{ left: `${(1 / 1.25) * 100}%` }} />
+            <span className="nx-till-caption nx-small">{t.breakEven(formatSek(breakEven))}</span>
+          </span>
+        )}
       </div>
       <div
         ref={credits.boxRef}

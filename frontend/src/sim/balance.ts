@@ -796,7 +796,12 @@ export const THEATRE = {
   captionHeightM: 2.1,
   /** Gästen som går mot köket hinner så stor del av vägen till passet under introt. */
   kitchenWalkShare: 0.6,
-  tempo: { calmBelow: 0.34, stressedFrom: 0.67 }
+  tempo: { calmBelow: 0.34, stressedFrom: 0.67 },
+  // ORDER 290 — ringen och linjen under personalen (vem gör vad), i meter.
+  staffMark: { innerM: 0.42, outerM: 0.52, opacity: 0.8, dashM: 0.18, liftM: 0.012 },
+  // ORDER 290 — rekvisitan förstoras så här mycket för att läsas från
+  // spelarens höjd (24 m). Måtten i tableware.ts är verkliga.
+  propScale: 1.6
 } as const;
 
 export const MENU_ROCKETS = {
@@ -995,6 +1000,41 @@ export const GUEST_TYPES = {
   // När typen brukar komma, i spelminuter efter att servicen börjat
   // (18.00). Före den tiden kommer inga bokade gäster av typen.
   arrivesAfterMinutes: { student: 0, middle: 30, high: 60, social: 90, billionaire: 120 }
+} as const;
+
+// ORDER 290 — kvällens ekonomi (Vision Owner 2026-09-30, provspel):
+// kvällskassan från noll, kvällens insats när dörrarna öppnas (råvaror,
+// personal, DJ, satsningar, kompetens) och linjen för break-even; efter
+// servicen täckningsbidrag, täckningsgrad och resultat som överförs till
+// företagskontot, och prognosen i veckor. Valda tal (F58).
+export const EVENING_ECONOMY = {
+  section: 'Ekonomin > Hyran och lönerna',
+  openQuestion: 'F58',
+  // DJ som satsning: kostnaden, och fler gäster i kväll (marknadens tak
+  // gånger 1 + djGuestShare). Lönar sig en fullsatt kväll, inte en lugn.
+  djCostSek: 1500,
+  djGuestShare: 0.15,
+  // Satsningar som räknas som kompetens i kvällens insats.
+  competenceActivities: ['train-service', 'wine-tasting'] as readonly string[],
+  // Kortet med kvällens insats står så här länge (verkliga sekunder).
+  stakeCardSeconds: 9,
+  // Prognosen räknas på så här många av de senaste kvällarna.
+  forecastEvenings: 6
+} as const;
+
+// ORDER 290 — svarens följd i rummet (Vision Owner 2026-09-30): rätt svar
+// ger fler gäster (INCIDENTS.guestsPerClearedStep) och högre nota vid
+// bordet; fel svar ger lägre nota, missnöjda gäster och gäster som går.
+// Valda tal (F58).
+export const ANSWER_EFFECTS = {
+  section: 'Servicen > Händelserna i servicen',
+  openQuestion: 'F58',
+  rightBillShare: 0.06,
+  wrongBillShare: -0.06,
+  wrongSatisfaction: -0.08,
+  wrongGuestsLeave: 1,
+  // Hur länge händelsen står över bordet i rummet (spelsekunder).
+  reactionSimSeconds: 6
 } as const;
 
 // ORDER 287a — gästen med socialt kapital sprider ryktet (speldesign >

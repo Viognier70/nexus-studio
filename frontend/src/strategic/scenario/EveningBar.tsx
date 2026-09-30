@@ -18,6 +18,7 @@
 // och det som gick fel med orsaken, och vägen till nästa morgon. Quizen
 // ("Kvällens tre frågor", Q1) byggs inte (ORDER 271).
 
+import { TransferScreen } from '../ui/evening/TransferScreen';
 import { useRef } from 'react';
 import { WasteScreen } from './WasteScreen';
 import { ResultScreen } from './ResultScreen';
@@ -270,12 +271,17 @@ export function EveningBar() {
   const guard = useArrivalGuard(`${sim.day.dayNumber}:${step}`);
   if (sim.day.period !== 'evening' || sim.day.eveningEndRequested) return null;
   const afterResult = lesson !== null ? 'lesson' : 'story';
-  const go = (to: 'result' | 'lesson' | 'story') => dispatch({ type: 'EVENING_STEP', to });
+  const go = (to: 'transfer' | 'result' | 'lesson' | 'story') => dispatch({ type: 'EVENING_STEP', to });
+  // ORDER 290 — överföringen till företagskontot efter sopbilen.
+  const hasTransfer = !!sim.day.transfer && sim.day.transfer.dayNumber === sim.day.dayNumber;
   const end = guard(() => dispatch({ type: 'END_EVENING' }));
   if (step === 'waste' && hasWaste) {
-    return <WasteScreen sim={sim} onContinue={guard(() => go('result'))} />;
+    return <WasteScreen sim={sim} onContinue={guard(() => go(hasTransfer ? 'transfer' : 'result'))} />;
   }
-  if (step === 'waste' || step === 'result') {
+  if ((step === 'transfer' || step === 'waste') && hasTransfer) {
+    return <TransferScreen sim={sim} onContinue={guard(() => go('result'))} />;
+  }
+  if (step === 'waste' || step === 'transfer' || step === 'result') {
     return <ResultScreen sim={sim} onContinue={guard(() => go(afterResult))} />;
   }
   // En kväll utan raketer har ingen lärdom: bara berättelsen.

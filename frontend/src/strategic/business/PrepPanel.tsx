@@ -6,6 +6,7 @@
 // carries into the causeTag chain). Visible from doors-open onward
 // during a service; hidden in morning / opening / prep / evening.
 
+import { useServiceDrawer } from '../ui/service/serviceDrawer';
 import { useSimState } from '../simulation/SimulationProvider';
 import { PREP_ITEMS } from '../simulation/miseEnPlace';
 import { businessHasMiseEnPlace } from './businessClass';
@@ -28,6 +29,8 @@ const PANEL_STYLE: React.CSSProperties = {
 
 export function PrepPanel() {
   const sim = useSimState();
+  // ORDER 290 — serviceläget: mise en place visas när panelerna är öppnade.
+  const drawer = useServiceDrawer();
   // ORDER 114 Steg 1 DoD 1 — verksamheter utan mise-en-place
   // (foodtruck) ska inte visa MISE EN PLACE-panelen. Flaggan
   // hasMiseEnPlace finns sedan ORDER 111 men konsumerades bara i
@@ -38,7 +41,7 @@ export function PrepPanel() {
   // frigör scenbredden till gäst-figurerna.
   if (!businessHasMiseEnPlace(sim.businessClass)) return null;
   const inService = sim.day.period === 'lunch' || sim.day.period === 'dinner';
-  if (!inService) return null;
+  if (!inService || !drawer.open) return null;
   // ORDER 280 — under en egen raket står raketen här (BackPanels).
   if (sim.incidents?.active?.backed) return null;
   const readiness = sim.day.prepReadiness;

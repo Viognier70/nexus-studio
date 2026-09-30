@@ -34,6 +34,10 @@ import { incidentById } from '../../../../sim/incidentBank';
 import { lessonFor, rankedStepOption, type IncidentRecord } from '../../../../sim/incidents';
 import { strings } from '../../../../content/strings';
 import { IncidentCard, ServiceMeters } from '../../../scenario/IncidentPanel';
+import { setServiceDrawerOpen } from '../serviceDrawer';
+
+// ORDER 290 — serviceläget: panelerna visas när spelaren öppnat dem.
+setServiceDrawerOpen(true);
 import { EveningBar } from '../../../scenario/EveningBar';
 import { NoBusinessBox } from '../../../economy/NoBusinessBox';
 import { cellsFor, deltaSteps, pickLessonIndex, rocketCounter, METER_EMPHASIS_MS } from '../serviceView';

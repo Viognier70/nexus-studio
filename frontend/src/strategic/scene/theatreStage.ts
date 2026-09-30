@@ -104,6 +104,9 @@ export class TheatreStage {
   private take(id: PropId): PropHandle {
     const i = this.free.findIndex((p) => p.id === id);
     const p = i >= 0 ? this.free.splice(i, 1)[0] : createProp(id);
+    // ORDER 290 — rekvisitan förstoras för att läsas från spelarens höjd
+    // (THEATRE.propScale); måtten i tableware.ts är verkliga.
+    p.group.scale.setScalar(THEATRE.propScale);
     p.group.visible = true;
     return p;
   }

@@ -17,6 +17,10 @@ import { SimStateCtx } from '../../simulation/SimulationProvider';
 import { makeInitialState } from '../../simulation/model';
 import { capacityForBusiness } from '../businessClass';
 import type { SimulationState } from '../../types';
+import { setServiceDrawerOpen } from '../../ui/service/serviceDrawer';
+
+// ORDER 290 — serviceläget: panelerna visas när spelaren öppnat dem.
+setServiceDrawerOpen(true);
 
 function withProvider(state: SimulationState): ReactNode {
   return (

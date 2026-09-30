@@ -12,6 +12,7 @@
 // Kompakt i vänsterkanten under mise en place och ovanför mätarna, så att
 // rummet syns. Under en egen raket (Back your knowledge) står raketen här.
 
+import { useServiceDrawer } from '../ui/service/serviceDrawer';
 import { useEffect, useRef } from 'react';
 import { useSimState } from '../simulation/SimulationProvider';
 import { stockRows, type StockRow } from '../simulation/stockPackages';
@@ -54,7 +55,9 @@ function Row({ r }: { r: StockRow }) {
 export function PlatesRemainingPanel() {
   const sim = useSimState();
   const inService = sim.day.period === 'lunch' || sim.day.period === 'dinner';
-  if (!inService || sim.menu.length === 0 || sim.incidents?.active?.backed) return null;
+  // ORDER 290 — serviceläget: lagret visas när panelerna är öppnade.
+  const drawer = useServiceDrawer();
+  if (!inService || !drawer.open || sim.menu.length === 0 || sim.incidents?.active?.backed) return null;
   const t = strings.stockL1;
   const rows = stockRows(sim);
   const kitchen = rows.filter((r) => r.kind === 'dish');

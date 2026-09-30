@@ -401,6 +401,8 @@ export interface Guest {
   // ORDER 279 — "rätt svar ger högre dricks": extra andel av notan i
   // dricks, från raketer som gällde gästens bord.
   tipBonus?: number;
+  // ORDER 290 — rätt och fel svar vid bordet: notan gånger 1 + billBonus.
+  billBonus?: number;
   partySize?: number;
   // ORDER 260 — timing-diagnostik. Sätts när guest transitionerar in i
   // seated respektive dining. `orderCompleteAtSimTime − seatedAtSimTime`
@@ -774,7 +776,7 @@ export interface DayState {
   // resultat, lärdomen, berättelsen. Sätts när servicen stänger; går bara
   // framåt (EVENING_STEP), så att en omritning eller ett dubbelklick inte
   // hoppar över kvällens resultat (provspel av 285).
-  eveningStep?: 'waste' | 'result' | 'lesson' | 'story' | null;
+  eveningStep?: 'waste' | 'transfer' | 'result' | 'lesson' | 'story' | null;
   // ORDER 265 — dagens ankomster, mot marknadens tak (dailyGuestCap).
   arrivalsToday?: number;
   // ORDER 266 — nöjda gäster totalt när servicen öppnade (kvällsberättelsen).
@@ -934,6 +936,42 @@ export interface DayState {
   guestTypeRevenue?: Partial<Record<GuestType, number>>;
   socialGuest?: { guestId: string; outcome: 'good' | 'bad' | 'neutral' | null } | null;
   billionaireVisit?: BillionaireVisit | null;
+  // ORDER 290 — kvällens ekonomi: insatsen när dörrarna öppnade, kassan
+  // då, kvällskassan vid stängning och överföringen till företagskontot.
+  stake?: EveningStake | null;
+  stakeShownAt?: number | null;
+  cashAtDoorsOpen?: number | null;
+  tillAtClose?: number | null;
+  transfer?: EveningTransfer | null;
+  // ORDER 290 — händelser i rummet efter svaren (över bordet).
+  roomReactions?: RoomReaction[];
+}
+
+// ORDER 290 — kvällens ekonomi (strategic/simulation/eveningEconomy.ts).
+export type StakeKey = 'ingredients' | 'staff' | 'dj' | 'investments' | 'competence' | 'interest';
+export interface EveningStake { lines: { key: StakeKey; sek: number }[]; total: number }
+export interface EveningTransfer {
+  dayNumber: number;
+  revenueSek: number;
+  variableSek: number;
+  contributionSek: number;
+  contributionRatio: number;
+  fixedSek: number;
+  resultSek: number;
+  breakEvenSek: number;
+  accountBeforeSek: number;
+  accountAfterSek: number;
+  transferSek: number;
+}
+
+// ORDER 290 — en händelse i rummet efter ett svar: gäster som kommer in och
+// en högre nota, eller en lägre nota och gäster som går.
+export interface RoomReaction {
+  at: number;
+  kind: 'up' | 'down';
+  table: number | null;
+  guestIds: string[];
+  text: string;
 }
 
 // ORDER 077 §4 (M4) — supplier, ingredient, and dish domain types.
@@ -1754,7 +1792,7 @@ export type SimAction =
   | { type: 'ANSWER_SALVAGE'; optionId: string }
   | { type: 'CLOSE_SALVAGE' }
   // ORDER 289 — nästa skärm i kvällens flöde.
-  | { type: 'EVENING_STEP'; to: 'result' | 'lesson' | 'story' }
+  | { type: 'EVENING_STEP'; to: 'transfer' | 'result' | 'lesson' | 'story' }
   // ORDER 283 — spelaren har läst introduktionen i Måltidens hus.
   | { type: 'SEE_HOUSE_INTRO' }
   // ORDER 077 §4 (M4) — morning menu composition. Freezes today's

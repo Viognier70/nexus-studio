@@ -5,7 +5,9 @@
 // Provspel 3, 2026-09-29. Samma värden finns som CSS-variabler i nexus-warm.css.
 //
 // Grundregel: det man styr med är mörkt trä med en tunn mässingskant. Det man läser i lugn och ro
-// ligger på papper. Ljuset kommer från rummet: guld och ljuslåga, aldrig rött för fel.
+// ligger på papper. Ljuset kommer från rummet: guld och ljuslåga. ORDER 290 (Vision Owner
+// 2026-09-30): rätt och fel syns tydligt, med grön glöd och röd markering (service.css
+// --w-right, --w-wrong); det ersätter "aldrig rött för fel".
 
 export const WARM = {
   color: {
@@ -101,7 +103,7 @@ export const WARM = {
   /** Avstånd i andel av skärmhöjden (vh). Kanten mot skärmen är 3,5 vw. */
   space: { edgeVw: 3.5, hudTopVh: 3.5, panelTopVh: 13, gapVh: 1.2, padVh: 2.8 },
 
-  /** Stegens tillstånd. Fel är streckat, aldrig rött. */
+  /** Stegens tillstånd. ORDER 290: i raketen och frågorna är fel rött (service.css --w-wrong). */
   step: {
     cleared: { fill: '#e8b93a', border: '2px solid #e8b93a', glow: 'glowCleared' },
     current: { fill: '#ffd58f', border: '2px solid rgba(255,213,143,.7)', glow: 'glowCurrent' },

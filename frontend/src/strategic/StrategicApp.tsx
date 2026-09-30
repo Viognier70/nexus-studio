@@ -1,4 +1,8 @@
 import { useBusiness } from './business/BusinessContext';
+import { SoundDirector } from './ui/sound/SoundDirector';
+import { VillageButton } from './ui/VillageButton';
+import { ServiceDrawerButton } from './ui/service/ServiceDrawerButton';
+import { StakeCard } from './ui/evening/StakeCard';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { BusinessProvider } from './business/BusinessContext';
 import { InvestmentPanel } from './business/InvestmentPanel';
@@ -287,6 +291,10 @@ function StrategicShell() {
       <div className="gb-topleft">
         <DayBadge />
         <ServiceClock />
+        {/* ORDER 290 — serviceläget: panelerna öppnas med en knapp. */}
+        <ServiceDrawerButton />
+        {/* ORDER 290 — byn och tillbaka (knappen och tangenten V). */}
+        <VillageButton />
       </div>
       <div className="gb-topright">
         <CashCounter />
@@ -326,6 +334,10 @@ function StrategicShell() {
         }}
       />
       <EveningBar />
+      {/* ORDER 290 — ljudet (Web Audio), efter vad som händer i simuleringen. */}
+      <SoundDirector />
+      {/* ORDER 290 — kvällens insats när dörrarna öppnas. */}
+      <StakeCard />
       <IncidentCard />
       <MaltidensHusDialog open={houseOpen} onClose={() => setHouseOpen(false)} />
       {/* ORDER 271 — mentorn (M1/M2) inne i .gb-root, så att banken, huset och tidningen ligger över den. */}

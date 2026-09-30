@@ -26,6 +26,8 @@
 // 15-min service; a strong team at rest sees ~1 %. See §1.1 in the
 // order document for the full expected-rate table.
 
+import { eveningTransfer, tillSek } from './eveningEconomy';
+import { EVENING_ECONOMY } from '../../sim/balance';
 import { settleSocialGuestAtClose } from './guestTypes';
 import { sustainabilityLevelsFor } from '../../sim/sustainabilityLevels';
 import { closeIncidents } from '../../sim/incidents';
@@ -253,6 +255,8 @@ export function fireCollapse(draft: SimulationState): void {
     levels: sustainabilityLevelsFor(draft, draft),
     previous: draft.sustainabilityLevels?.levels ?? null
   };
+  // ORDER 290 — kvällskassan när kvällen föll ihop.
+  const tillAtClose = tillSek(draft);
   // ORDER 267 — kvällen till veckans lista (söndagstidningen).
   draft.economy = recordEvening(draft, draft);
   draft.day = {
@@ -281,8 +285,12 @@ export function fireCollapse(draft: SimulationState): void {
     // close reset in reducer.ts.
     serviceIngredientAccrued: 0,
     idleCostAccrued: 0,
-    serviceCovers: 0
+    serviceCovers: 0,
+    tillAtClose
   };
+  // ORDER 290 — överföringen till företagskontot, först bland kvällens skärmar.
+  draft.day = { ...draft.day, transfer: eveningTransfer(draft), eveningStep: 'transfer' };
+  draft.economy = { ...draft.economy, eveningResults: [...(draft.economy.eveningResults ?? []), { dayNumber: draft.day.dayNumber, resultSek: draft.day.transfer!.resultSek }].slice(-EVENING_ECONOMY.forecastEvenings) };
   // Also reset the top-level serviceRevenueToday bucket for the
   // service that just closed.
   draft.serviceRevenueToday = {

@@ -27,6 +27,8 @@
 // som simuleringen (sim/incidents.ts `serviceMeters`; stegen räknas i
 // ui/service/serviceView.ts).
 
+import { KnowledgePyramid } from '../ui/service/KnowledgePyramid';
+import { useServiceDrawer } from '../ui/service/serviceDrawer';
 import { useEffect, useRef, useState } from 'react';
 import { strings } from '../../content/strings';
 import { BACK, INCIDENTS, type Confidence } from '../../sim/balance';
@@ -317,6 +319,12 @@ export function IncidentCard() {
       data-mode={view.mode}
       aria-label={f(incident.text.title)}
     >
+      {/* ORDER 290 — kunskapspyramiden: episteme i botten, phronesis i toppen. */}
+      <KnowledgePyramid
+        testId="incident-pyramid"
+        full={view.mode === 'done'}
+        levels={incident.steps.map((_, i) => { const b = boxFor(i); return b === 'cleared' ? 'filled' : b === 'current' ? 'current' : b === 'failed' ? 'cracked' : 'empty'; })}
+      />
       <div className="nx-rocket-head">
         <div className="nx-label" data-testid={backed ? 'incident-back-kicker' : undefined}>{backed ? strings.back.kicker(view.context.staff, where) : `${view.context.staff} · ${where}`}</div>
         <div className="nx-rocket-count" data-testid="rocket-count">{active?.backed ? t.backOf(sim.incidents?.betsTonight ?? 1, BACK.maxPerEvening) : active?.chained ? t.followUp : t.rocketOf(String(Math.max(1, n)), String(Math.max(1, rockets, n)))}</div>
@@ -458,6 +466,8 @@ export function ServiceMeters() {
   const key = outcomeKey(last);
   const seen = useRef<string | null>(key);
   const [emph, setEmph] = useState<IncidentOutcomeView | null>(null);
+  // ORDER 290 — serviceläget: mätarna visas när panelerna är öppnade.
+  const drawer = useServiceDrawer();
   useEffect(() => {
     if (!last || key === seen.current) return;
     seen.current = key;
@@ -467,7 +477,7 @@ export function ServiceMeters() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
 
-  if (!sim.incidents?.enabled || sim.day.period !== 'dinner') return null;
+  if (!sim.incidents?.enabled || sim.day.period !== 'dinner' || !drawer.open) return null;
   // ORDER 280 — under en egen raket står raketen och träffsäkerheten här.
   if (sim.incidents.active?.backed) return null;
   const m = serviceMeters(sim);

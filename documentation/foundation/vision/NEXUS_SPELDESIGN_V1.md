@@ -120,6 +120,12 @@ G kan aldrig bli högre än 90. Veckogolvet är G procent av klassens normala ve
 
 *Beslut 2026-09-29 (Vision Owner, efter rapporterna om felen och kvällens resultat):* hyran ändras inte nu. Den rimliga spelaren mäts med fler frön, minst 20, och mätningen rapporteras innan hyran rörs.
 
+*Beslut 2026-09-30 (Vision Owner, provspel): kvällens ekonomi gör kvällen spännande.*
+- Under servicen visas kvällskassan, inte företagskontot. Den börjar på noll och visar kvällens intäkter.
+- När dörrarna öppnas visas kvällens insats: råvaror, personal, DJ, satsningar och kompetens. Kvällskassan fylls mot en synlig linje för break-even, så att spelaren ser om kvällen går mot vinst eller förlust.
+- Efter servicen visas täckningsbidrag, täckningsgrad och kvällens resultat. Resultatet förs till företagskontot, eller dras från det vid förlust, och det syns som en överföring.
+- En prognos säger hur många veckor spelaren klarar sig med konceptet, räknad på de senaste kvällarna och de fasta kostnaderna.
+
 ### Lånet
 
 Bankmötet ger ett startlån som täcker lokal och inventarier för klassen. Lånet amorteras lika under säsongens åtta veckor, med fem procents ränta. Bankens besked formuleras som en diagnos i ord, aldrig som siffror: vad spelaren visat att hon kan och vad som saknas för nästa klass.
@@ -138,6 +144,8 @@ Varje dag har Grythyttan en gästpool som följer veckodag, säsong och högtid.
 - Spelaren ser vilka krogar som har öppet, deras mat och priser, och gästflödet på gatorna.
 - Efter kvällen jämförs spelarens gäster och intäkt per stol med de andra krogarnas.
 - Spelaren kan zooma ut över byn och planera nästa kväll.
+
+*Beslut 2026-09-30 (Vision Owner, provspel):* en knapp och en tangent zoomar ut till byn och tillbaka. Kvällens by görs ljusare, så att man ser gäster på väg mot krogen. Byns text (zoomnivåerna, kartkrediten) syns inte under servicen.
 
 ### Slumpen
 
@@ -233,6 +241,15 @@ Det här ersätter punkterna ovan om 3–6 händelser per kväll, 20 sekunders n
 
 *Beslut 2026-09-29 (Vision Owner, Designs leverans kassan och kvällen):* dricksen går till personalens pott och aldrig till kassan. Den syns i händelseströmmen och i kvällens summa.
 
+*Beslut 2026-09-30 (Vision Owner, provspel): följden av svaren syns i rummet.* Rätt svar ger fler gäster som kommer in och högre nota. Fel svar ger färre gäster, lägre nota och missnöjda gäster. Det visas med händelser i rummet, inte med siffror i en lista.
+
+*Beslut 2026-09-30 (Vision Owner, provspel): rätt och fel syns tydligt.* Det ersätter regeln att fel aldrig är rött.
+- Rätt: grön glöd, svaret lyfter och kunskapspyramidens våning fylls med en tydlig rörelse uppåt.
+- Fel: röd markering, en kort skakning, och våningen spricker eller mörknar.
+- Förklaringen efteråt är vänlig som förut. Det är ögonblicket som ska vara tydligt, inte lärdomen som ska straffa.
+
+*Beslut 2026-09-30 (Vision Owner, provspel): kunskapspyramiden.* Raketkortet har en pyramid med episteme i botten, techne i mitten och phronesis i toppen. Varje rätt svar fyller sin våning, och stegets multiplikator syns på våningen. En full pyramid firas. Kvällens resultat visar kvällens pyramider.
+
 ### Händelseströmmen
 
 *Beslut 2026-09-28 (Vision Owner, andra provspelet): servicen syns.*
@@ -290,6 +307,12 @@ Det här ersätter punkterna ovan om 3–6 händelser per kväll, 20 sekunders n
 - Personalen, personalnöjdheten och ritualerna byggs här. Kräver Designs leverans.
 
 *Beslut 2026-09-30 (Vision Owner):* sittklippen spelas i sin egen längd på alla sitsar, stol, barstol och lounge, och sällskapet räknas som sittande när den sista gästen har landat. Loungedynans höjd i Designs leverans är godkänd.
+
+*Beslut 2026-09-30 (Vision Owner, provspel): scenen ska synas.*
+- Serviceläge: panelerna för mise en place, lagret, händelselistan och mätarna fälls ihop under servicen. Bara klockan och kvällskassan syns, och resten öppnas med en knapp. Händelselistan med belopp tas bort som standard.
+- En ring och en linje under personalen visar vem som gör vad, med rollens färg.
+- Tallrikar, glas och mat ska synas från spelarens höjd. Rekvisitan förstoras för läsbarhet på avstånd om det behövs.
+- Raketen: kameran glider in mot den som gör något, också i produktionsbygget.
 
 ### Action-knappen (utgår)
 
@@ -351,6 +374,8 @@ Spelaren får öppna med för lite råvaror. Före öppning visas en prognos i o
 
 *Beslut 2026-09-29 (Vision Owner, tredje provspelet):* krogen kan få stjärnor för en jämn och hög nivå, och kan förlora dem. En stjärna öppnar exklusiva råvaror, egna priser och gäster som kommer med bil utifrån.
 
+*Beslut 2026-09-30 (Vision Owner, provspel): stegen mot stjärnan.* Spelet börjar med ett basutbud. Krediter öppnar dyrare råvaror, viner och rätter, som ger högre priser. Den första stjärnan är spelets första mål.
+
 ### Händelser
 
 Händelser uppstår ur simuleringen, inte ur en kortlek. Dålig hygien leder till inspektion, gott rykte till en recensent, svag kassa till ett samtal från banken. Varje händelse har en orsak som kvällsberättelsen kan peka på.
@@ -400,6 +425,10 @@ Förebilden är karriärstegen i *The Sims*: en titel man vill nå, med tydliga 
   *Beslut 2026-09-29 (Vision Owner, provspel av kvällens resultat):* "Think so" är förvald i varje steg. Efter att svaret är låst finns en andra tidsgräns på 10 sekunder, och när den går ut satsas "Guessing" automatiskt. En grå knapp säger alltid varför. Raketräkningen står still hela kvällen.
 - Tar krediterna slut visas hur man tjänar nya.
 - Kvällsberättelsen säger aldrig att det inte fanns något att lära om den sedan listar fel.
+
+*Beslut 2026-09-30 (Vision Owner, provspel):*
+- Registreringen och skärmarna före första morgonen flyttas till den varma formen.
+- Ljud skapas i webbläsaren, utan ljudfiler med okänd licens: rätt svar, fel svar, en våning som fylls, full pyramid, en ny gäst som kommer in, kassan som tar betalt, klirr när gäster skålar, och ett sorl i rummet som stiger med trycket. Ljudet går att stänga av och ställa in, och det är lågt som standard.
 
 ### Introduktionen
 

@@ -62,6 +62,7 @@ function evening(dayNumber: number) {
   let maxQueue = 0;
   let declined = 0;
   let gaveUp = 0;
+  let queueLeft = 0;
   for (let i = 0; i < MAX_TICKS && s.day.period === 'dinner'; i++) {
     const before = s.metrics.giveUpsThisService;
     s = reducer(s, { type: 'TICK', dt: TICK });
@@ -72,6 +73,10 @@ function evening(dayNumber: number) {
       if (p === g.state) continue;
       if (g.state === 'seated') seatedAt[g.id] = s.simTime;
       if (g.state === 'declined' && p === 'arriving') declined++;
+      // ORDER 290 — ett fel svar (här: raketen som ingen svarar på) låter en
+      // gäst i kön gå (ANSWER_EFFECTS.wrongGuestsLeave); de räknas som gäster
+      // som går ur kön, bredvid dem som ger upp.
+      if (g.state === 'leaving' && p === 'waiting') queueLeft++;
       // ORDER 287a — studenten tar platsen längre (GUEST_TYPES.stayFactor);
       // sittiden 60–90 min (F31) gäller övriga gäster, studenten redovisas för sig.
       if (g.state === 'leaving' && seatedAt[g.id] !== undefined) (g.guestType === 'student' ? studentSitting : sitting).push(s.simTime - seatedAt[g.id]);
@@ -86,6 +91,7 @@ function evening(dayNumber: number) {
     arrivals: s.day.arrivalsToday ?? 0,
     maxQueue,
     gaveUp,
+    queueLeft,
     declinedAtDoor: declined,
     departures: sitting.length,
     sittingGameMinutes: Math.round(meanSimSec * GAME_MINUTES_PER_SIM_SECOND),
@@ -105,7 +111,7 @@ describe('ORDER 267 — trycket i vinbarens rum, vecka 2', () => {
     }
     for (const name of ['fre', 'lör'] as const) {
       expect(report[name].maxQueue, `${name}: kö`).toBeGreaterThan(0);
-      expect(report[name].gaveUp, `${name}: gäster som ger upp i kön`).toBeGreaterThan(0);
+      expect(report[name].queueLeft, `${name}: gäster som går ur kön`).toBeGreaterThan(0);
     }
     for (const e of EVENINGS) {
       expect(report[e.name].seats).toBe(20);

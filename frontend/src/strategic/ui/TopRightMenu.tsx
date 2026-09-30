@@ -13,6 +13,7 @@
 // visible elements down from four, and the two occasional items
 // vanish until the player asks for them.
 
+import { setSound, useSoundSettings } from './sound/sound';
 import { useEffect, useRef, useState } from 'react';
 import { getJuice, setJuice, type Juice } from './juice/juice';
 import { strings } from '../../content/strings';
@@ -104,6 +105,7 @@ const LANGUAGE_ACTIVE_STYLE: React.CSSProperties = {
 };
 
 export function TopRightMenu({ onOpenAbout, onOpenSave }: Props) {
+  const sound = useSoundSettings();
   const [open, setOpen] = useState(false);
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -200,6 +202,32 @@ export function TopRightMenu({ onOpenAbout, onOpenSave }: Props) {
                 {j === 'calm' ? strings.back.juiceCalm : strings.back.juiceBalatro}
               </button>
             ))}
+          </div>
+          {/* ORDER 290 — ljudet: på eller av, och volymen (lågt som standard). */}
+          <div role="group" aria-label={strings.sound.label} data-testid="menu-sound" style={LANGUAGE_ROW_STYLE}>
+            <span style={LANGUAGE_LABEL_STYLE}>{strings.sound.label}</span>
+            <button
+              role="menuitemcheckbox"
+              type="button"
+              aria-checked={sound.enabled}
+              data-testid="menu-sound-toggle"
+              style={sound.enabled ? LANGUAGE_ACTIVE_STYLE : LANGUAGE_BUTTON_STYLE}
+              onClick={() => setSound({ enabled: !sound.enabled })}
+            >
+              {sound.enabled ? strings.sound.on : strings.sound.off}
+            </button>
+            <input
+              type="range"
+              min={0}
+              max={100}
+              step={5}
+              value={Math.round(sound.volume * 100)}
+              aria-label={strings.sound.volume}
+              data-testid="menu-sound-volume"
+              disabled={!sound.enabled}
+              onChange={(e) => setSound({ volume: Number(e.target.value) / 100 })}
+              style={{ flex: 1, minWidth: 80, accentColor: '#e8b93a' }}
+            />
           </div>
           <div role="group" aria-label={strings.menu.language} data-testid="menu-language" style={LANGUAGE_ROW_STYLE}>
             <span style={LANGUAGE_LABEL_STYLE}>{strings.menu.language}</span>
