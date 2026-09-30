@@ -13,6 +13,8 @@
 //   - kvällens resultat (result-money data-delta), fem gånger två sekunder isär;
 //   - kassan nästa morgon.
 //
+//   - raketen: knappen Back your knowledge prövas och trycks när den går (punkt 1).
+//
 //   REPORT_ORDER=order291 LABEL=before [ACTIVITIES=train-service,book-dj] [SKIP_BUILD=1] node scripts/order291-numbers.mjs
 import { spawn } from 'node:child_process';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
@@ -78,6 +80,10 @@ try {
   step('servicen');
   // Kvällen med det bästa svaret; kvällskassan noteras varje halvminut.
   report.tillSamples = [];
+  // ORDER 291 punkt 1 — spelaren startar en raket under servicen: knappen
+  // (back-start) prövas varje halv sekund; när den går att trycka på trycks
+  // den, och kortet ska öppnas (incident-card). Varför den är grå noteras.
+  report.rocket = { started: false, cardOpened: false, enabledAtSec: null, whyTexts: [] };
   let lastSample = 0;
   const until = Date.now() + 14 * 60000;
   while (Date.now() < until) {
@@ -88,6 +94,21 @@ try {
       const s = Number(await card.getAttribute('data-step'));
       const o = rocketMeta.get(id)?.steps[s]?.options.find((x) => x.quality === 'best');
       if (o) await page.click(`[data-testid=incident-option-${o.id}]`).catch(() => {});
+    }
+    if (!report.rocket.started && !(await page.$('[data-testid=incident-card]'))) {
+      const btn = await page.$('[data-testid=back-start]');
+      if (btn) {
+        if (await btn.isEnabled()) {
+          report.rocket.enabledAtSec = Math.round((Date.now() - t0) / 1000);
+          await btn.click().catch(() => {});
+          report.rocket.started = true;
+          report.rocket.cardOpened = await page.waitForSelector('[data-testid=incident-card]', { timeout: 5000 }).then(() => true).catch(() => false);
+          await page.screenshot({ path: resolve(OUT, `numbers-${LABEL}-05-raket.png`) });
+        } else {
+          const why = await page.textContent('[data-testid=back-why]').catch(() => null);
+          if (why && !report.rocket.whyTexts.includes(why)) report.rocket.whyTexts.push(why);
+        }
+      }
     }
     if (Date.now() - lastSample > 30000) {
       lastSample = Date.now();

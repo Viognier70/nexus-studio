@@ -31,6 +31,7 @@ import { EVENING_ECONOMY } from '../../sim/balance';
 import { settleSocialGuestAtClose } from './guestTypes';
 import { sustainabilityLevelsFor } from '../../sim/sustainabilityLevels';
 import { closeIncidents } from '../../sim/incidents';
+import { settleWaste } from './stockPackages';
 import { clampReputation } from './reputation';
 import { dayEnd, dayEndHeadroom, recordEvening } from '../../sim/economy';
 import { COLLAPSE } from '../../sim/balance';
@@ -150,7 +151,10 @@ export function collapseProbabilityPerTick(state: SimulationState): number {
 // downstream arrival / walk-away random draw, invalidating pinned
 // invariants elsewhere. The tick-derived seed keeps this roll
 // deterministic per (seed, tick) without perturbing the main draws.
-export function tickCollapseRoll(draft: SimulationState): void {
+// ORDER 291 — `closeBills` är reducerns closeOpenBills: gästerna som sitter
+// kvar betalar när kvällen faller ihop, som när den stänger (annars betalade
+// de efter överföringen).
+export function tickCollapseRoll(draft: SimulationState, closeBills?: (d: SimulationState) => void): void {
   const period = draft.day.period;
   if (period !== 'lunch' && period !== 'dinner') return;
   // Must be post-opening + post-prep — no collapse during briefings.
@@ -166,13 +170,14 @@ export function tickCollapseRoll(draft: SimulationState): void {
   const rng = createRng(seed);
   if (!rng.chance(p)) return;
 
-  fireCollapse(draft);
+  fireCollapse(draft, closeBills);
 }
 
 // Extracted so tests can construct a scripted collapse deterministically
 // (without needing to seed the RNG to a specific value that lands the
 // probability roll).
-export function fireCollapse(draft: SimulationState): void {
+export function fireCollapse(draft: SimulationState, closeBills?: (d: SimulationState) => void): void {
+  closeBills?.(draft);
   const { axis } = weakestAxis(draft.team);
   const sustainability = AXIS_SUSTAINABILITY[axis];
 
@@ -246,6 +251,11 @@ export function fireCollapse(draft: SimulationState): void {
   draft.agencyOffer = null;
   // ORDER 270 — kvällens lärdom även när kvällen föll ihop.
   closeIncidents(draft);
+  // ORDER 291 — sopbilen och scenariot som när servicen stänger.
+  settleWaste(draft);
+  if (['subject', 'situation', 'question', 'question-explanation'].includes(draft.scenario.phase)) {
+    draft.scenario = { ...draft.scenario, phase: 'idle', active: false, awaitingChoice: false, pendingQuestion: null };
+  }
   // ORDER 265 — dagsavslut också efter en kväll som föll ihop.
   draft.economy = dayEnd(draft.economy, dayEndHeadroom(draft));
   // ORDER 266 — recensentens omdöme och stationernas skick även här.
@@ -287,7 +297,8 @@ export function fireCollapse(draft: SimulationState): void {
     tillAtClose
   };
   // ORDER 290 — överföringen till företagskontot, först bland kvällens skärmar.
-  draft.day = { ...draft.day, transfer: eveningTransfer(draft), eveningStep: 'transfer' };
+  const truck = Boolean(draft.lastWaste && draft.lastWaste.dayNumber === draft.day.dayNumber && draft.lastWaste.fractions);
+  draft.day = { ...draft.day, transfer: eveningTransfer(draft), eveningStep: truck ? 'waste' : 'transfer' };
   draft.economy = { ...draft.economy, eveningResults: [...(draft.economy.eveningResults ?? []), { dayNumber: draft.day.dayNumber, resultSek: draft.day.transfer!.resultSek }].slice(-EVENING_ECONOMY.forecastEvenings) };
   // ORDER 291 — nivåerna efter överföringen (samma resultat).
   draft.sustainabilityLevels = {

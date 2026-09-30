@@ -20,6 +20,8 @@ import { scenarioById, SENDER_PREFIX } from '../../strategic/simulation/scenario
 import { activityById, activityName } from '../../strategic/simulation/activities';
 import { formatNumber } from '../../content/language';
 import type { GuestType, SimulationState } from '../../strategic/types';
+import { playMorning, tickUntil } from '../../strategic/testHarness/weekHarness';
+import { PLAYERS } from '../../strategic/testHarness/randomness';
 
 afterEach(() => setLanguage('en'));
 
@@ -122,5 +124,28 @@ describe('ORDER 291 — kurserna är investeringar', () => {
     const settled = settleWeek(s);
     expect(settled.economy.lastSettlement?.coursesSek).toBe(5000);
     expect(settled.economy.weekCoursesSek).toBe(0);
+  });
+});
+
+describe('ORDER 291 — ett resultat: kontot efter överföringen är kassan nästa morgon', () => {
+  // Provspelet: "Pengar räknar ned medan R1 är öppen" och kassan föll mer än
+  // resultatet. Efter överföringen dras bara lönerna och räntan, som redan
+  // står i kontot efter; sopbilen och gästerna som satt kvar räknas vid
+  // stängningen, också när kvällen faller ihop.
+  it('för åtta frön, med utbildningen och DJ:n', () => {
+    for (let seed = 1; seed <= 8; seed++) {
+      let s = makeNewGameState(seed);
+      s = { ...s, medals: { ...PLAYERS.baseline }, day: { ...s.day, dayNumber: firstDayOfWeek(2) } };
+      const day = s.day.dayNumber;
+      s = playMorning(s, { activities: ['train-service', 'book-dj'] });
+      const morning = s.day.cashAtDayStart!;
+      s = tickUntil(reducer(s, { type: 'START_SERVICE' }), (x) => x.day.period === 'evening', 'best', 1);
+      const tr = s.day.transfer!;
+      // Resultatet är kontot efter mot kontot i morse, utom kursen (utbildningen).
+      expect(tr.resultSek).toBe(Math.round(tr.accountAfterSek) - Math.round(morning) + activityById('train-service')!.costSek);
+      s = reducer(s, { type: 'END_EVENING' });
+      s = tickUntil(s, (x) => x.day.dayNumber > day && x.day.period === 'morning');
+      expect(Math.round(s.cash)).toBe(tr.accountAfterSek);
+    }
   });
 });

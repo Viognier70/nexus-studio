@@ -361,7 +361,11 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
     case 'CLOSE_DAY':
       return closeDay(state);
     case 'LOAD_STATE':
-      return action.state;
+      // ORDER 291 — en sparfil från före ORDER 291 saknar dygnets
+      // utgångskassa; på morgonen är den kassan som den står.
+      return action.state.day.cashAtDayStart == null && action.state.day.period === 'morning'
+        ? { ...action.state, day: { ...action.state.day, cashAtDayStart: action.state.cash } }
+        : action.state;
     case 'VISIT_PAVILION':
       return startVisit(state, action.pavilion, action.mode);
     case 'ANSWER_VISIT': {
@@ -1022,7 +1026,8 @@ function requestBankLoan(state: SimulationState): SimulationState {
   // Beviljande: cash + ledger. Vi jobbar mot ett draft-objekt eftersom
   // postLedger + applyCashDelta muterar in-place; samma pattern som
   // buyStock och scenariernas ekonomilinjer.
-  const draft: SimulationState = { ...state, bankMeetingOutcome: outcomeState };
+  // ORDER 291 — lånet är inte kvällens resultat: dygnets utgångskassa flyttas lika mycket.
+  const draft: SimulationState = { ...state, bankMeetingOutcome: outcomeState, day: { ...state.day, cashAtDayStart: (state.day.cashAtDayStart ?? state.cash) + outcome.loanAmountSek } };
   applyCashDelta(draft, outcome.loanAmountSek);
   postLedger(draft, {
     category: 'other',
@@ -1063,7 +1068,7 @@ function forceCollapseAction(state: SimulationState): SimulationState {
     events: [...state.events],
     consequenceEvents: [...state.consequenceEvents]
   };
-  fireCollapse(draft);
+  fireCollapse(draft, closeOpenBills);
   return draft;
 }
 
@@ -2728,7 +2733,7 @@ function advanceTick(state: SimulationState): SimulationState {
   // Guarded internally to post-opening + post-prep service and to
   // once-per-service; on fire, force-transitions period to evening.
   // Uses a tick-derived RNG so downstream random draws aren't shifted.
-  tickCollapseRoll(draft);
+  tickCollapseRoll(draft, closeOpenBills);
 
   // ORDER 047 §2 — morale drift toward mean-satisfaction-derived
   // target. Guarded internally to post-opening + post-prep service

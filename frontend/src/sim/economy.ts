@@ -346,8 +346,12 @@ export function changeClass(state: SimulationState, to: BusinessClassId | null, 
     applyCashDelta(draft, -deposit);
     postLedger(draft, { category: 'other', amount: -deposit, cause: strings.economy.ledger.deposit });
   }
+  // ORDER 291 — försäljningen och kontantinsatsen är inte kvällens resultat:
+  // dygnets utgångskassa flyttas lika mycket (eveningEconomy.ts eveningTransfer).
+  const moved = draft.cash - state.cash;
   return {
     ...draft,
+    day: moved !== 0 ? { ...draft.day, cashAtDayStart: (state.day.cashAtDayStart ?? state.cash) + moved } : draft.day,
     team: teamForClass(state.team, to ? TEAM_BY_CLASS.roles[to] : [], up, state.day.dayNumber),
     businessClass: to ? V1_CLASS_TO_ROOM[to] : state.businessClass,
     reputation: up ? Math.max(REPUTATION.floor / REPUTATION.scale, state.reputation * UPGRADE.reputationFactor) : state.reputation,
