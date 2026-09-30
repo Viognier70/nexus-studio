@@ -442,6 +442,13 @@ Spelet börjar med bussen till Grythyttan i förstaperson (VS001). En mentor fr�
 
 *Beslut 2026-09-30 (Vision Owner, början i Grythyttan):* ankomsten frågar efter spelarens namn och efter samtycke. Namnet gör spelet personligt, och samtycket behövs om framstegen senare ska användas i forskning. Krogens namn skrivs i liggaren innan banken ger den första verksamheten (food truck eller vinbar), och namnet gäller därför företaget, oavsett vilken verksamhet banken ger.
 
+*Beslut 2026-09-30 (Vision Owner, början i Grythyttan, inarbetat i Designs andra utkast):*
+- Spelet använder bara spelarens namn, utan pronomen.
+- Bussen tillbaka avslutar säsongen. Det spelaren har lärt sig följer med.
+- Lova säger en replik om vinbaren när spelaren går förbi den.
+- Design skriver förslag till frågorna vid långbordet om köket och vinet, och Vision Owner granskar dem.
+- Rätt svar vid långbordet ger spelarens första krediter.
+
 ### Sparande
 
 Spelet sparas automatiskt vid varje dagsavslut. Varje veckoavräkning sparas dessutom som en egen kopia, så att spelaren kan gå tillbaka en vecka. Tre sparplatser per spelare.
