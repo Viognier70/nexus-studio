@@ -215,6 +215,27 @@ export const SALVAGE = {
   ecologicalWrongPerPortion: 0.002
 } as const;
 
+// ORDER 287a — de tre hållbarheterna som nivåer 0–10 med förra kvällens
+// nivå (documentation/game-design/FORSLAG_HALLBARHETERNA_0_10.md, godkänt
+// av Vision Owner 2026-09-29 med villkoret att den ekonomiska marginalen
+// räknar med morgonens inköp). Nivån räknas ur kvällen:
+// - social: 10 × (andelen av kvällens gäster som gick nöjda × socialHappy
+//   + personalens ork vid stängning × socialMorale);
+// - ekonomisk: dagens marginal (kassans förändring över dagen mot kvällens
+//   intäkt), där economicFloor är nivå 0 och economicCeil nivå 10;
+// - ekologisk: 10 × (1 − osålda portioner till sopbilen / portionerna vid
+//   öppning), minus ecologicalLeftoverPenalty om gårdagens rester gick till
+//   sopbilen.
+export const SUSTAINABILITY_LEVELS = {
+  section: 'Servicen > Kvällens resultat',
+  max: 10,
+  socialHappy: 0.7,
+  socialMorale: 0.3,
+  economicFloor: -0.25,
+  economicCeil: 0.35,
+  ecologicalLeftoverPenalty: 1
+} as const;
+
 // ORDER 284 — 0,15 → 0,17 efter portionsboken (stockPackages.ts
 // dishPortions): mindre svinn gav den rimliga spelaren 11,8 % vid 0,15
 // (reports/order284/rent-check.json vid 0,17: 9,9 %; week-players.json: 5,0 %).
@@ -431,9 +452,10 @@ export const INCIDENTS = {
   // (vad, 15 s), Techne (hur, 20 s), Phronesis (när och varför, 30 s)."
   // Nedräkningen går i verklig tid.
   stepAxes: ['episteme', 'techne', 'phronesis'] as readonly KnowledgeAxis[],
-  // Vision Owner 2026-09-29 (tredje provspelet): "Raketens tid blir 20
-  // sekunder" i varje steg (var 15, 20 och 30).
-  stepSeconds: { episteme: 20, techne: 20, phronesis: 20 } as Record<KnowledgeAxis, number>,
+  // Vision Owner 2026-09-29 (efter rapporterna om felen och kvällens
+  // resultat): "episteme 20 sekunder, techne 20 sekunder och phronesis 30
+  // sekunder. Omdömet ska ha mest tid." Byggs med ORDER 287a (registret).
+  stepSeconds: { episteme: 20, techne: 20, phronesis: 30 } as Record<KnowledgeAxis, number>,
   timeoutCreditPenalty: 1,     // "−1 kredit" när personalen beslutar själv
   // "Fel svar på ett steg ger stegets konsekvens och personalen tar över
   // resten, med sämre utfall." Personalens utfall skalas efter stegen som
@@ -925,12 +947,13 @@ export const GUESTS = {
   // Plånboken per sällskap: andel och vad en gäst högst betalar för rätt
   // och dryck, i kronor.
   walletShare: { tight: 0.3, normal: 0.5, generous: 0.2 },
-  walletSek: { tight: 300, normal: 520, generous: 1100 },
+  // ORDER 287a — miljardärens plånbok (gold) och smak: det dyraste.
+  walletSek: { tight: 300, normal: 520, generous: 1100, gold: 8000 },
   // Så mycket av plånboken går högst till rätten; resten till drycken.
   dishShareOfWallet: 0.7,
   // Smaken för pris: vikten för en rätt är pris upphöjt till detta.
   // Den snåla väljer billigt, den generösa dyrt.
-  priceTaste: { tight: -1, normal: 0, generous: 1 },
+  priceTaste: { tight: -1, normal: 0, generous: 1, gold: 4 },
   // Ett generöst sällskap med minst två gäster beställer en flaska med
   // den här sannolikheten, när flaskan finns. Flaskan räcker till bordet.
   bottleChance: 0.6,
@@ -943,6 +966,67 @@ export const GUESTS = {
   partyLeavesChance: 0.5,
   // Nöjdheten hos gästen som bara fick en dryck (plånboken räckte inte).
   drinkOnlySatisfaction: -0.2
+} as const;
+
+// ORDER 287a — gästerna med kapital (speldesign > Servicen > Gästerna,
+// Vision Owner 2026-09-29 och 2026-09-30). Varje gäst har en typ med eget
+// ekonomiskt och socialt kapital. Typen ger plånboken (GUESTS.walletSek),
+// hur länge gästen sitter och vad hen förväntar sig. Färgerna står i
+// Designs WARM.guest. Talen är valda (F57) och prövade mot hyrans mål för
+// den rimliga spelaren (RENT.reasonableResultShare, ORDER_287a_RAPPORT.md):
+// med sittiden 1,4 och förväntan −0,08 föll andelen från 8,2 % till 3,7 %.
+export const GUEST_TYPES = {
+  section: 'Servicen > Gästerna',
+  openQuestion: 'F57',
+  // Plånboken per typ (nycklar i GUESTS.walletSek).
+  wallet: { student: 'tight', middle: 'normal', high: 'generous', social: 'normal', billionaire: 'gold' },
+  // Sittiden gånger detta: studenten tar platsen en lång stund.
+  stayFactor: { student: 1.25, middle: 1, high: 1, social: 1, billionaire: 1 },
+  // Nöjdheten vid ankomst plus detta: höginkomsttagaren förväntar sig mer.
+  satisfactionOffset: { student: 0, middle: 0, high: -0.05, social: 0, billionaire: -0.05 },
+  // Bokningsboken: andelen av kvällens väntade gäster per typ (studenter,
+  // medelinkomst, höginkomst) efter rummet. Resten av klasserna läser
+  // `default`. Andelen utan bokning står i walkInShare.
+  share: {
+    default: { student: 0.2, middle: 0.55, high: 0.25 },
+    ölkrogen: { student: 0.4, middle: 0.45, high: 0.15 }
+  } as Record<string, { student: number; middle: number; high: number }>,
+  walkInShare: 0.15,
+  // När typen brukar komma, i spelminuter efter att servicen börjat
+  // (18.00). Före den tiden kommer inga bokade gäster av typen.
+  arrivesAfterMinutes: { student: 0, middle: 30, high: 60, social: 90, billionaire: 120 }
+} as const;
+
+// ORDER 287a — gästen med socialt kapital sprider ryktet (speldesign >
+// Servicen > Gästerna: "drar fler gäster om de behandlas väl"). Nöjd när
+// hen går: fler gäster de närmaste kvällarna (marknadens tak gånger
+// 1 + buzzGood); missnöjd eller om hen ger upp: färre. Valda tal (F57).
+export const SOCIAL_GUEST = {
+  section: 'Servicen > Gästerna',
+  openQuestion: 'F57',
+  // Sannolikheten att en gäst med socialt kapital har bokat en servicedag.
+  chancePerEvening: 0.5,
+  goodFrom: 0.7,
+  badBelow: 0.5,
+  buzzGood: 0.15,
+  buzzBad: -0.12,
+  buzzEvenings: 3
+} as const;
+
+// ORDER 287a — miljardären i enkel form (Vision Owner 2026-09-30: "klädd
+// i guld. Syns i söndagstidningen under Sett på stan, väljer ibland en
+// krog, köper det dyraste och kan bjuda hela salen på champagne").
+// Han är i byn fredag och lördag. Chansen att han väljer spelarens krog
+// en av de kvällarna växer med ryktet. Champagnen hälls ur det dyraste
+// vinet i lagret, ett glas per gäst i rummet. Valda tal (F57).
+export const BILLIONAIRE = {
+  section: 'Servicen > Gästerna',
+  openQuestion: 'F57',
+  inTown: ['fri', 'sat'] as readonly Weekday[],
+  chooseBase: 0.1,
+  chooseByReputation: 0.4,
+  treatChance: 0.5,
+  treatSatisfaction: 0.1
 } as const;
 
 export const SAVING = {

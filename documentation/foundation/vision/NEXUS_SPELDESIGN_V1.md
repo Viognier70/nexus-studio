@@ -289,6 +289,8 @@ Det här ersätter punkterna ovan om 3–6 händelser per kväll, 20 sekunders n
 - Raketerna utlöses av det som syns i rummet: händelsen spelas upp först, och sedan kommer frågan.
 - Personalen, personalnöjdheten och ritualerna byggs här. Kräver Designs leverans.
 
+*Beslut 2026-09-30 (Vision Owner):* sittklippen spelas i sin egen längd på alla sitsar, stol, barstol och lounge, och sällskapet räknas som sittande när den sista gästen har landat. Loungedynans höjd i Designs leverans är godkänd.
+
 ### Action-knappen (utgår)
 
 *Ersatt 2026-09-26 av Händelserna i servicen.* Texten står kvar som historik. *Tillbaka 2026-09-28 i ny form, se Insatsen.*
@@ -336,6 +338,14 @@ Spelaren får öppna med för lite råvaror. Före öppning visas en prognos i o
 - En miljardär i guld promenerar i byn, väljer ibland en krog och bjuder hela salen.
 
 *Beslut 2026-09-29 (Vision Owner, efter rapporterna om felen och kvällens resultat):* miljardären kommer i enkel form redan med gästtyperna: en gästtyp som syns i tidningen och ibland väljer en krog. Promenaden i byn kommer med byn uppifrån.
+
+*Beslut 2026-09-30 (Vision Owner, gästerna med kapital):* varje gästtyp har eget ekonomiskt och socialt kapital, och det ska märkas i spelet.
+- Studenten har lite pengar och dricker billig öl. Hen tar platsen en lång stund men ger liten intäkt.
+- Medelinkomsttagaren är den vanliga gästen, med normal nota.
+- Höginkomsttagaren beställer dyrare vin och rätter och förväntar sig mer.
+- Gästen med socialt kapital sprider ryktet. Behandlas hen väl kommer fler gäster de närmaste kvällarna, behandlas hen illa sprids det också.
+- Miljardären i enkel form är klädd i guld. Han syns i söndagstidningen under *Sett på stan*, väljer ibland en krog, köper det dyraste och kan bjuda hela salen på champagne.
+- Gästtyperna syns i rummet med färgerna ur Designs leverans, i bokningsboken på morgonen efter typ, och i kvällens resultat och söndagstidningen med vilka som kom och vad de betydde. Talen står i `balance.ts`.
 
 ### Stjärnorna
 

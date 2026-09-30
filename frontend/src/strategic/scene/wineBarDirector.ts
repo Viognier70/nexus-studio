@@ -45,6 +45,7 @@ import {
   type Vec2
 } from './serviceFlow';
 import { staffTempo, waitStateFor, WAIT_THRESHOLDS } from './figureActs';
+import { clipSeconds, SEAT_KINDS, seatKindFromRoom } from './figureClips';
 
 // #region typer
 
@@ -104,6 +105,8 @@ export interface DirectorSeat {
   local: Vec2;
   facing: number;
   seatSurfaceY: number;
+  /** Rummets sort (wineBarRoom: 'twotop', 'bar', 'lounge'); ger sittklippet. */
+  kind?: string;
 }
 
 export interface DirectorRoom {
@@ -171,8 +174,20 @@ export interface FrameInput {
 /** Menyn läses 9–16 s innan servitören kallas (serviceFlow: seatedAll + 9 + hash·7). */
 const MENU_MIN_S = 9;
 const MENU_SPAN_S = 7;
-/** Att sätta sig och resa sig (serviceFlow 'sit', 1,2 s). */
+/** Att sätta sig och resa sig (serviceFlow 'sit', 1,2 s) på en plats utan sort. */
 const SIT_S = 1.2;
+
+/**
+ * ORDER 287a (Vision Owner 2026-09-30): sittklippen spelas i sin egen längd
+ * på alla sitsar — stol, barstol och lounge — i gästens tempo (normalt).
+ * Platser utan sort (äldre testrum) behåller serviceFlows 1,2 s.
+ */
+function sitSeconds(seat: DirectorSeat | null): number {
+  return seat?.kind ? clipSeconds(SEAT_KINDS[seatKindFromRoom(seat.kind)].sit, 'normal') : SIT_S;
+}
+function standSeconds(seat: DirectorSeat | null): number {
+  return seat?.kind ? clipSeconds(SEAT_KINDS[seatKindFromRoom(seat.kind)].leave, 'normal') : SIT_S;
+}
 /** Be om notan innan väntan börjar (serviceFlow askBill 2,4 s). */
 const ASK_BILL_S = 2.4;
 /** Skålen (serviceFlow toast 5 s) och tiden mellan servering och skål (4–10 s). */
@@ -475,7 +490,7 @@ export class WineBarDirector {
         if (tr.mode === 'queue') this.walkToSeat(tr, seat, t, g);
         else if ((tr.mode === 'toSeat' || tr.mode === 'seated') && tr.seat !== seat) {
           // Simuleringen flyttade gästen. Ovanligt; placera om utan promenad.
-          tr.seat = seat; tr.pos = [seat.local[0], seat.local[1]]; tr.walk = null; tr.mode = 'seated'; tr.sitT0 = t - SIT_S;
+          tr.seat = seat; tr.pos = [seat.local[0], seat.local[1]]; tr.walk = null; tr.mode = 'seated'; tr.sitT0 = t - sitSeconds(seat);
           this.joinParty(tr, g, t);
         }
       } else if (GONE_STATES.includes(g.state)) {
@@ -492,7 +507,7 @@ export class WineBarDirector {
     }
     // Promenader som är klara.
     for (const tr of Array.from(this.tracks.values())) {
-      if (tr.mode === 'standing' && t >= tr.standT0 + SIT_S && !tr.walk) this.walkOut(tr, tr.standT0 + SIT_S);
+      if (tr.mode === 'standing' && t >= tr.standT0 + standSeconds(tr.seat) && !tr.walk) this.walkOut(tr, tr.standT0 + standSeconds(tr.seat));
       if (!tr.walk) continue;
       const end = tr.walk.t0 + tr.walk.dur;
       if (t < end) continue;
@@ -573,8 +588,10 @@ export class WineBarDirector {
     tr.mode = 'toSeat';
     tr.walk = this.walkPath(path, t, WALK_GUEST, 'arrive');
     tr.leavingSince = -Infinity;
-    // Sällskapet samlas vid sitt bord när den första satt sig.
-    this.joinParty(tr, g, t + tr.walk.dur + SIT_S);
+    // ORDER 287a — sällskapet räknas som sittande när den sista gästen har
+    // landat (Vision Owner 2026-09-30): varje gäst som går till bordet
+    // flyttar sällskapets tid till sin egen landning, om den är senare.
+    this.joinParty(tr, g, t + tr.walk.dur + sitSeconds(seat));
   }
 
   private standUp(tr: GuestTrack, t: number, unhappy: boolean): void {
@@ -636,6 +653,9 @@ export class WineBarDirector {
         billAskAt: -1, billTask: null, cleared: false, visits: [], hIx
       };
       this.parties.set(key, p);
+    } else if (!p.orderTask && seatedAt > p.seatedAt) {
+      p.seatedAt = seatedAt;
+      p.menuDoneAt = seatedAt + MENU_MIN_S + hash(p.hIx, 3) * MENU_SPAN_S;
     }
     if (!p.members.includes(tr)) p.members.push(tr);
     tr.party = p;
@@ -680,8 +700,9 @@ export class WineBarDirector {
         continue;
       }
       if (p.billAskAt >= 0 || p.orderTask) continue;
-      const seatedCount = p.members.filter((m) => m.mode === 'seated').length;
-      if (seatedCount === 0 || t < p.menuDoneAt) continue;
+      // ORDER 287a — alla i sällskapet har landat på sina sitsar.
+      const landed = p.members.length > 0 && p.members.every((m) => m.mode === 'seated' && t >= m.sitT0 + sitSeconds(m.seat));
+      if (!landed || t < p.menuDoneAt) continue;
       const g = p.group;
       p.orderTask = this.addTask({
         party: p, roles: rolesFor(g.kind), target: g.serveAt, facing: g.serveFacing, pose: 'takeOrder', dur: 4, ready: p.menuDoneAt,
@@ -1142,14 +1163,15 @@ export class WineBarDirector {
     out.phase = t + (tr.seed % 97) * 0.13;
 
     if (tr.mode === 'standing') {
-      const u = clamp01((t - tr.standT0) / SIT_S);
+      const u = clamp01((t - tr.standT0) / standSeconds(seat));
       out.pose = 'standUp'; out.progress = u; out.seated = false;
       out.y = seatedY + (this.room.floorY - seatedY) * u;
       return;
     }
     // Sitter ner.
-    if (t < tr.sitT0 + SIT_S) {
-      const u = clamp01((t - tr.sitT0) / SIT_S);
+    const sitS = sitSeconds(seat);
+    if (t < tr.sitT0 + sitS) {
+      const u = clamp01((t - tr.sitT0) / sitS);
       out.pose = 'sitDown'; out.progress = u; out.seated = false;
       out.y = this.room.floorY + (seatedY - this.room.floorY) * u;
       return;

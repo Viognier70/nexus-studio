@@ -1,6 +1,6 @@
 # Förslag: de tre hållbarheterna som nivåer 0–10
 
-*Förslag 2026-09-29 (Claude Code, på Vision Owners uppdrag).* **Godkänt av Vision Owner 2026-09-29, med villkor:** den ekonomiska marginalen räknar med morgonens inköp (kassans förändring över dagen), inte kvällens avräkning. Byggs i nästa order. Vision Owner, villkor för Designs leverans 2026-09-29: "Lägg till … de tre hållbarheterna som nivåer 0–10 med förra kvällens nivå. Föreslå hur hållbarheterna räknas, med talen i balance.ts, och rapportera innan du bestämmer."
+*Förslag 2026-09-29 (Claude Code, på Vision Owners uppdrag).* **Byggt i ORDER 287a** (`frontend/src/sim/sustainabilityLevels.ts`, talen i `balance.ts` `SUSTAINABILITY_LEVELS`), med förslagets tal. **Godkänt av Vision Owner 2026-09-29, med villkor:** den ekonomiska marginalen räknar med morgonens inköp (kassans förändring över dagen), inte kvällens avräkning. Byggs i nästa order. Vision Owner, villkor för Designs leverans 2026-09-29: "Lägg till … de tre hållbarheterna som nivåer 0–10 med förra kvällens nivå. Föreslå hur hållbarheterna räknas, med talen i balance.ts, och rapportera innan du bestämmer."
 
 Kvällens resultat (R1) visar i dag hållbarheterna som förändringen i poäng: social och ekologisk mot dygnets gryning, ekonomisk som kvällens marginal. Nedan är förslaget till nivåer.
 

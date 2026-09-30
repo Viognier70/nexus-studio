@@ -16,12 +16,13 @@ import { NEWSPAPER, HOLIDAYS, SEASON, type BusinessClassId } from './balance';
 import { calendarFor } from './calendar';
 import { BUSINESS_CLASSES } from './balance';
 import { classOptions, classSpec, meetsRequirement, requirementsFor, type EveningRecord } from './economy';
-import type { SimulationState } from '../strategic/types';
+import type { GuestType, SimulationState } from '../strategic/types';
+import { socialName } from '../strategic/simulation/guestTypes';
 
 const t = strings.newspaper;
 
 export interface NewspaperSection {
-  id: 'review' | 'market' | 'bank' | 'holiday';
+  id: 'review' | 'market' | 'bank' | 'holiday' | 'seen';
   heading: string;
   title?: string;
   lines: string[];
@@ -75,7 +76,43 @@ function market(evenings: readonly EveningRecord[], sim: SimulationState): Newsp
   if (!cls) return { id: 'market', heading: t.marketHeading, lines: [t.marketNoBusiness] };
   const who = strings.economy.classesDefinite[cls];
   const capitalised = who.charAt(0).toUpperCase() + who.slice(1);
-  return { id: 'market', heading: t.marketHeading, lines: [t.market[shareWord(cap > 0 ? guests / cap : 0)](capitalised)] };
+  return { id: 'market', heading: t.marketHeading, lines: [t.market[shareWord(cap > 0 ? guests / cap : 0)](capitalised), ...guestLines(evenings)] };
+}
+
+// ORDER 287a — veckans gäster efter typ, och vad gästerna med socialt
+// kapital sa om krogen.
+const TYPE_ORDER: readonly GuestType[] = ['student', 'middle', 'high', 'social', 'billionaire'];
+const BOOKED_TYPES = ['student', 'middle', 'high'] as const;
+function guestLines(evenings: readonly EveningRecord[]): string[] {
+  const g = strings.guestTypes;
+  const sum: Partial<Record<GuestType, number>> = {};
+  for (const e of evenings) for (const k of TYPE_ORDER) sum[k] = (sum[k] ?? 0) + (e.typeGuests?.[k] ?? 0);
+  const ranked = BOOKED_TYPES.filter((k) => (sum[k] ?? 0) > 0).sort((a, b) => (sum[b] ?? 0) - (sum[a] ?? 0));
+  const lines = ranked.length > 0 ? [g.paper.guestsMost(g.paper.who[ranked[0]], ranked[1] ? g.paper.who[ranked[1]] : null)] : [];
+  for (const e of evenings) {
+    if (!e.social || (e.social.outcome !== 'good' && e.social.outcome !== 'bad')) continue;
+    const name = socialName(e.social.nameIndex);
+    lines.push(e.social.outcome === 'good' ? g.paper.socialGood(name) : g.paper.socialBad(name));
+  }
+  return lines;
+}
+
+// ORDER 287a — Sett på stan: mannen i guld (Designs paper.seen.*). Åt han
+// hos spelaren står kvällen och notan här; annars gick han längs sjön och
+// åt på hotellet. Promenaden i byn kommer med 288c.
+function seen(evenings: readonly EveningRecord[], name: string): NewspaperSection | null {
+  const g = strings.guestTypes.paper;
+  const ours = evenings.find((e) => e.billionaire?.ours);
+  if (ours && ours.billionaire) {
+    const weekday = t.weekdaysLower[calendarFor(ours.dayNumber).weekday];
+    const lines = [g.oursBody(weekday)];
+    if (ours.billionaire.treated) lines.push(g.oursTreat);
+    return { id: 'seen', heading: g.seenKicker, title: g.oursTitle(name), lines };
+  }
+  const inTown = [...evenings].reverse().find((e) => e.billionaire?.inTown);
+  if (!inTown) return null;
+  const weekday = t.weekdaysLower[calendarFor(inTown.dayNumber).weekday];
+  return { id: 'seen', heading: g.seenKicker, title: g.elsewhereTitle, lines: [g.elsewhereBody(weekday, g.hotel)] };
 }
 
 // Nästa klass spelaren kan växa till, och vad som saknas (i ord).
@@ -119,6 +156,7 @@ export function newspaperFor(
   const evenings = s.evenings ?? [];
   const next = nextStep(sim);
   const missing = next ? missingForNext(next) : null;
+  const seenSection = seen(evenings, businessName);
   return {
     masthead: t.masthead,
     subhead: t.subhead(s.week),
@@ -126,7 +164,8 @@ export function newspaperFor(
       review(reviewedEvening(evenings), businessName),
       market(evenings, sim),
       { id: 'bank', heading: t.bankHeading, lines: [...bankLines, ...(missing ? [t.bankNext(missing)] : [])] },
-      holiday(sim)
+      holiday(sim),
+      ...(seenSection ? [seenSection] : [])
     ]
   };
 }

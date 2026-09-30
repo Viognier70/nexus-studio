@@ -1,4 +1,5 @@
 import { GAME_MINUTES_PER_SIM_SECOND, SITTING } from '../../sim/balance';
+import { settleSocialGuest, stayFactor } from './guestTypes';
 import { INITIAL_CAPITAL_VALUE } from './model';
 import { INTERIOR } from '../content/layout';
 import { businessHasOvernight, businessHasSeats, capacityForBusiness } from '../business/businessClass';
@@ -450,6 +451,8 @@ export function tickGuests(state: SimulationState) {
         moveGuest(guest, { x: 0, z: 8 });
         reputationEventGiveUp(state);
         bumpMorale(state, -MORALE_GIVE_UP_HIT);
+        // ORDER 287a — gästen med socialt kapital gav upp i kön.
+        settleSocialGuest(state, guest, true);
       }
       continue;
     }
@@ -494,6 +497,8 @@ export function tickGuests(state: SimulationState) {
         seatedAtSimTime: guest.seatedAtSimTime,
         orderCompleteAtSimTime: guest.orderCompleteAtSimTime
       });
+      // ORDER 287a — gästen med socialt kapital sprider det hen tyckte.
+      settleSocialGuest(state, guest, false);
       // ORDER 047 §2 — same satisfaction band drives morale. A happy
       // departure lifts; an unhappy one drags; a mediocre departure is
       // silent (the team doesn't register a neutral customer).
@@ -639,7 +644,8 @@ function diningDuration(state: SimulationState, guest: Guest): number {
   // (SITTING.stayGameMinutes i balance.ts), räknad mot startvärdet så att
   // en gäst i ett nystartat spel sitter just stayGameMinutes.
   const social = Math.max(0, Math.min(1, state.capitals.values.social));
-  const linger = (2 - social) / (2 - INITIAL_CAPITAL_VALUE);
+  // ORDER 287a — studenten tar platsen en längre stund (GUEST_TYPES.stayFactor).
+  const linger = ((2 - social) / (2 - INITIAL_CAPITAL_VALUE)) * stayFactor(guest);
   const minDining = (SITTING.minDiningGameMinutes / GAME_MINUTES_PER_SIM_SECOND) * linger;
   const stay = (SITTING.stayGameMinutes[state.policies.service] / GAME_MINUTES_PER_SIM_SECOND) * linger;
   const seatedFor = guest.stateTime - (guest.seatedAtSimTime ?? guest.stateTime);

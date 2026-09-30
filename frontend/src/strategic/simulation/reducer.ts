@@ -158,6 +158,8 @@ import {
   postValueQuotaLine
 } from './cashReading';
 import { drawNextTheme } from './themeSelection';
+import { assignGuestTypes, billionaireTreat, maybeBillionaireArrives, bookingFor, recordTypeRevenue, settleSocialGuest, settleSocialGuestAtClose } from './guestTypes';
+import { sustainabilityLevelsFor } from '../../sim/sustainabilityLevels';
 import {
   WEEKLY_GATE_DAYS,
   activityById
@@ -1190,7 +1192,10 @@ function startService(state: SimulationState): SimulationState {
     discardUnresolvedSalvage(d);
     base = { ...d, salvage: d.salvage && d.salvage.resolved === 'discarded' ? d.salvage : null };
   }
-  const fromAfternoon = base.day.period === 'morning' ? skipLunch(base) : base;
+  // ORDER 287a — bokningsboken låses när dörrarna öppnar, så som morgonen
+  // visade den.
+  const booked = { ...base, day: { ...base.day, booking: bookingFor(base) } };
+  const fromAfternoon = booked.day.period === 'morning' ? skipLunch(booked) : booked;
   const opened = openService(fromAfternoon, 'dinner', SERVICE.simMinutes);
   if (opened === fromAfternoon || opened.day.doorsOpenAt === null) return opened;
   // ORDER 270 — kvällens händelser. Klasser med händelsebank får
@@ -1750,6 +1755,14 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           }
         };
       }
+      // ORDER 287a — gästen med socialt kapital som satt kvar vid stängning,
+      // och kvällens hållbarheter som nivåer 0–10.
+      settleSocialGuestAtClose(next);
+      next.sustainabilityLevels = {
+        dayNumber: day.dayNumber,
+        levels: sustainabilityLevelsFor(state, next),
+        previous: state.sustainabilityLevels?.levels ?? null
+      };
       // ORDER 267 — kvällen till veckans lista (söndagstidningen).
       next.economy = recordEvening(state, next);
       postServiceSummaryLines(next, 'dinner', state);
@@ -2303,6 +2316,10 @@ function advanceTick(state: SimulationState): SimulationState {
     draft.scenario.nextSpawnAt = draft.simTime + 2.2;
     draft.scenario.visibleGuestIds.push(scenarioGuest.id);
   }
+  // ORDER 287a — varje gäst som kom får sin typ ur kvällens bokningsbok, och
+  // miljardären kommer på sin tid när han valt krogen.
+  assignGuestTypes(draft);
+  maybeBillionaireArrives(draft);
 
   // Move / advance guests and staff.
   tickGuests(draft);
@@ -2320,6 +2337,8 @@ function advanceTick(state: SimulationState): SimulationState {
       draft.rngState = orderRng.state;
       if (order.kind === 'lost' || order.revenueSek <= 0) {
         draft.day.walkedCount = (draft.day.walkedCount ?? 0) + 1;
+        // ORDER 287a — gästen med socialt kapital gick utan mat.
+        settleSocialGuest(draft, guest, true);
         guest.order = { dishId: null, drinks: [], revenueSek: 0 };
         draft.seatedIds = draft.seatedIds.filter((id) => id !== guest.id);
         guest.state = 'leaving';
@@ -2329,7 +2348,10 @@ function advanceTick(state: SimulationState): SimulationState {
         guest.moveProgress = 0;
         continue;
       }
-      guest.order = { dishId: order.dishId, drinks: order.drinks, revenueSek: order.revenueSek };
+      // ORDER 287a — miljardären kan bjuda salen på champagne; det läggs på
+      // hans nota.
+      const treat = guest.guestType === 'billionaire' ? billionaireTreat(draft, guest) : 0;
+      guest.order = { dishId: order.dishId, drinks: order.drinks, revenueSek: order.revenueSek + treat };
       // ORDER 280 — Designs H1: "Bord 12 · 1 × Oxfilé · 2 glas Barolo", beloppet på väg.
       const t = tableOf(guest);
       streamOrderLine(draft, strings.feed.order(t === null ? strings.feed.guest : String(t), orderFeedLines(order)), 'guest_ordered', { feed: 'ordered', table: t, amountSek: order.revenueSek });
@@ -2431,6 +2453,8 @@ function advanceTick(state: SimulationState): SimulationState {
       // + cash till stay in sync via applyCashRevenue. serviceRevenue
       // panel arrays continue to receive the kSEK share.
       applyCashRevenue(draft, rev);
+      // ORDER 287a — kvällens intäkt per gästtyp.
+      recordTypeRevenue(draft, guest, rev);
       // ORDER 258 — debitera per-rätt ingredient-cost vid samma paying-
       // tick som revenue. Bokförs vid BETALNING (rekognosering i register
       // §5: en gäst som lämnar utan att betala kostar ingenting idag —
@@ -2814,6 +2838,8 @@ function advanceTick(state: SimulationState): SimulationState {
     ];
   }
 
+  // ORDER 287a — gäster som kom senare i ticken (dörrarna, raketerna).
+  assignGuestTypes(draft);
   draft.rngState = rng.state;
   // ORDER 043 v3 step 1 — auto-transition day periods based on
   // elapsed sim-time in a running service. Runs last so scenario /

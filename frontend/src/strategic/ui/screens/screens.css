@@ -320,4 +320,13 @@
 .nxs-book { background: var(--w-paper); border-radius: var(--nx-radius); padding: calc(24 * var(--nx-u)) calc(28 * var(--nx-u)); box-shadow: var(--w-shadow-paper); transform: rotate(0.6deg); display: grid; gap: calc(8 * var(--nx-u)); margin-bottom: calc(24 * var(--nx-u)); }
 .nxs-book-row { display: flex; justify-content: space-between; align-items: baseline; gap: calc(16 * var(--nx-u)); }
 .nxs-book-n { font-size: calc(64 * var(--nx-u)); line-height: 1; }
+/* ORDER 287a — bokningsbokens rader efter gästtyp (Designs skärm 1): tid, prick
+   i typens färg (WARM.guest), vem och en rad om dem, antalet. */
+.nxs-book-list { display: grid; }
+.nxs-book-line { display: grid; grid-template-columns: max(46px, calc(76 * var(--nx-u))) calc(14 * var(--nx-u)) 1fr auto; align-items: center; gap: calc(10 * var(--nx-u)); padding: calc(10 * var(--nx-u)) 0; border-top: 1px solid rgba(42, 28, 19, 0.12); }
+.nxs-book-time { color: var(--w-ink-soft); font-family: var(--w-font-body); font-weight: 700; font-size: max(12px, calc(20 * var(--nx-u))); white-space: nowrap; }
+.nxs-book-dot { width: calc(12 * var(--nx-u)); height: calc(12 * var(--nx-u)); border-radius: 50%; }
+.nxs-book-who { display: grid; gap: calc(2 * var(--nx-u)); min-width: 0; }
+.nxs-book-name { font-weight: 700; }
+.nxs-book-count { font-family: var(--w-font-heading); font-size: calc(26 * var(--nx-u)); }
 @media (prefers-reduced-motion: reduce) { .nxs-book { transform: none; } }

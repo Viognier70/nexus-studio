@@ -86,6 +86,9 @@ export function sampleForFigure(id: string, s: FigureSample, tempo: TempoId, sea
   const travel = id.endsWith('walk') || id.startsWith('waiter.carry') || id === 'rocket.walkToKitchen';
   if (travel) return sampleClip(id, 0, tempo, { phase: s.phase, stress: s.stress });
   const oneShot = ['guest.sit', 'guest.leave', 'guest.sitStool', 'guest.leaveStool', 'guest.sitLounge', 'guest.leaveLounge', 'guest.order', 'guest.toast', 'guest.waveStaff', 'guest.pay', 'waiter.serve', 'waiter.pickUp', 'waiter.clear', 'bar.pour', 'somm.pour', 'somm.present', 'cook.plate'].includes(id);
-  const time = oneShot && s.progress > 0 ? s.progress * clipSeconds(id, tempo) : s.phase;
+  // ORDER 287a — att sätta sig och resa sig börjar alltid i klippets början
+  // (progress 0 är första bildrutan, inte slutposen).
+  const seatMove = ['guest.sit', 'guest.leave', 'guest.sitStool', 'guest.leaveStool', 'guest.sitLounge', 'guest.leaveLounge'].includes(id);
+  const time = oneShot && (s.progress > 0 || seatMove) ? s.progress * clipSeconds(id, tempo) : s.phase;
   return sampleClip(id, time, tempo, { yaw: s.targetYaw, stress: s.stress, seated: s.seated, seatKind });
 }

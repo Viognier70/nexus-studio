@@ -1,0 +1,15 @@
+{
+  "label": "order-287a-2",
+  "frontend": "/Users/acf/dev/nexus-studio/frontend",
+  "save": "reports/order284/save-mandag-vinbaren.json",
+  "viewport": "1920×1080",
+  "samples": [
+    17,
+    19,
+    20,
+    20,
+    21
+  ],
+  "median": 20,
+  "errors": []
+}

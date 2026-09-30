@@ -13,6 +13,8 @@
 // - social och ekologisk: kapitalen mot dygnets gryning
 //   (day.capitalsAtDayStart);
 // - ekonomisk: kvällens marginal, resultatet mot intäkten.
+// ORDER 287a — de tre hållbarheterna har också sin nivå 0–10 och förra
+// kvällens nivå (state.sustainabilityLevels), som skärmen visar som prickar.
 
 import type { SimulationState } from '../types';
 import { eveningGrid, stepsCleared } from '../ui/service/serviceView';
@@ -31,6 +33,10 @@ export interface ResultRow {
   delta: number;
   // Underlag till radens förklaring.
   detail: Record<string, number>;
+  // ORDER 287a — hållbarheterna som nivåer 0–10 och förra kvällens nivå
+  // (sim/sustainabilityLevels.ts; null före första kvällen).
+  level?: number;
+  previousLevel?: number | null;
 }
 
 // Kapital och rykte står i 0–1 och visas som poäng av 100.
@@ -61,6 +67,12 @@ export function eveningResult(state: SimulationState): ResultRow[] {
   const ecological = start ? Math.round((state.capitals.values.ecological - start.ecological) * POINTS * 10) / 10 : 0;
   const margin = revenue > 0 ? result / revenue : 0;
   const wasteKg = state.lastWaste && state.lastWaste.dayNumber === state.day.dayNumber ? state.lastWaste.kg ?? 0 : 0;
+  // ORDER 287a — nivåerna 0–10, satta när servicen stängde. Riktningen är
+  // nivån mot förra kvällens; utan förra kvällen, förändringen i poäng.
+  const lv = state.sustainabilityLevels && state.sustainabilityLevels.dayNumber === state.day.dayNumber ? state.sustainabilityLevels : null;
+  const levelOf = (k: 'social' | 'economic' | 'ecological', fallback: Tone) => lv
+    ? { level: lv.levels[k], previousLevel: lv.previous ? lv.previous[k] : null, tone: lv.previous ? tone(lv.levels[k] - lv.previous[k]) : fallback }
+    : { tone: fallback };
   return [
     { key: 'money', tone: tone(Math.round(result)), delta: Math.round(result), detail: { revenue: Math.round(revenue), cost: Math.round(revenue - result) } },
     { key: 'credits', tone: tone(credits), delta: credits, detail: {} },
@@ -68,9 +80,9 @@ export function eveningResult(state: SimulationState): ResultRow[] {
     // Kunskap: fler steg rätt än fel är en vinst.
     { key: 'knowledge', tone: total === 0 ? 'even' : cleared * 2 >= total ? 'won' : 'lost', delta: cleared, detail: { cleared, total } },
     { key: 'experience', tone: served + rockets > 0 ? 'won' : 'even', delta: served + rockets, detail: { served, rockets } },
-    { key: 'social', tone: tone(social), delta: social, detail: {} },
-    { key: 'economic', tone: tone(Math.round(result)), delta: margin, detail: { margin } },
-    { key: 'ecological', tone: tone(ecological), delta: ecological, detail: { kg: wasteKg } }
+    { key: 'social', delta: social, detail: {}, ...levelOf('social', tone(social)) },
+    { key: 'economic', delta: margin, detail: { margin }, ...levelOf('economic', tone(Math.round(result))) },
+    { key: 'ecological', delta: ecological, detail: { kg: wasteKg }, ...levelOf('ecological', tone(ecological)) }
   ];
 }
 
