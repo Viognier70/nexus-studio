@@ -94,7 +94,7 @@ export function ServiceClock() {
         <span
           className={`nx-num${c?.lastOrders ? ' nx-pulse' : ''}`}
           data-testid="service-clock-time"
-          style={{ fontSize: u(60), lineHeight: 1, width: u(176), minWidth: u(176), whiteSpace: 'nowrap', fontWeight: 800 }}
+          style={{ fontSize: u(60), lineHeight: 1, width: time ? u(176) : 'auto', minWidth: time ? u(176) : 0, whiteSpace: 'nowrap', fontWeight: 800 }}
         >
           {time ?? '—'}
         </span>

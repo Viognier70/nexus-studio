@@ -28,6 +28,7 @@ import { flyTo } from '../juice/fx';
 import { countTo, type Counter } from '../juice/juice';
 import '../system/system.css';
 import './service.css';
+import { numberLocale } from '../../../content/language';
 
 const ROWS = 13;
 const MPH = INCIDENTS.minutesPerHour;
@@ -51,7 +52,7 @@ function Icon({ feed }: { feed: EventStreamEntry['feed'] | undefined }) {
 
 function amountText(e: EventStreamEntry): string | null {
   if (e.amountSek === undefined) return null;
-  const v = Math.round(e.amountSek).toLocaleString('en-GB');
+  const v = Math.round(e.amountSek).toLocaleString(numberLocale());
   return e.feed === 'ordered' ? formatSek(e.amountSek) : strings.money.plus(v);
 }
 
@@ -61,7 +62,7 @@ function Row({ e, fresh, periodStartAt, amounts }: { e: EventStreamEntry; fresh:
   useEffect(() => {
     if (!fresh || flown.current) return;
     flown.current = true;
-    if (e.feed === 'paid' && e.amountSek) flyTo('cash', ref.current, strings.money.plus(Math.round(e.amountSek).toLocaleString('en-GB')), e.amountSek, { bg: 'var(--nx-ink)' });
+    if (e.feed === 'paid' && e.amountSek) flyTo('cash', ref.current, strings.money.plus(Math.round(e.amountSek).toLocaleString(numberLocale())), e.amountSek, { bg: 'var(--nx-ink)' });
   }, [fresh, e.feed, e.amountSek]);
   const warn = e.feed === 'warn';
   const color = e.feed === 'tip' ? 'var(--nx-accent-700)' : e.feed === 'ordered' ? 'var(--nx-ink-2)' : 'var(--nx-ink)';

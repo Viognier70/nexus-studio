@@ -268,10 +268,19 @@ export function PlayerBusiness() {
     return { wallGeo, capGeo };
   }, [layout]);
 
+  const signRef = useRef<HTMLDivElement>(null);
   // Camera-distance driven opacity — the roof crossfade and interior
   // reveal that CAMERA_AND_GAMEPLAY_BIBLE.md §4.1 specifies.
   useFrame(() => {
     const dist = actualRef.current.distance;
+    // ORDER 291 punkt 4 — skylten står över taket och växer när kameran
+    // kommer nära; vid krogens avstånd (24 m) låg den i skärmens överkant
+    // och klipptes till en halv rad ("Ölkrog …"). När taket tonas bort och
+    // rummet syns behövs den inte: den döljs under takets tonings mitt.
+    if (signRef.current) {
+      const show = dist > GRAY_BOX_CAMERA.restaurantRoofFadeMid;
+      if ((signRef.current.style.display !== 'none') !== show) signRef.current.style.display = show ? '' : 'none';
+    }
     // Roof opaque above (mid + half), transparent below (mid - half)
     const roofOpacity = smoothstep(
       GRAY_BOX_CAMERA.restaurantRoofFadeMid - GRAY_BOX_CAMERA.restaurantRoofFadeHalf,
@@ -623,6 +632,8 @@ export function PlayerBusiness() {
           style={{ pointerEvents: 'none' }}
         >
           <div
+            ref={signRef}
+            className="nx-business-sign"
             style={{
               color: '#f5f0e0',
               background: 'rgba(45, 32, 22, 0.85)',

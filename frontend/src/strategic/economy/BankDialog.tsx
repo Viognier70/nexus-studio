@@ -22,6 +22,7 @@ import { NxButton } from '../ui/system/components';
 import { CLASS_ICON, NxIcon, PAVILION_ICON } from '../ui/screens/icons';
 import { MedalDisc } from '../ui/screens/MedalDisc';
 import '../ui/screens/screens.css';
+import { numberLocale } from '../../content/language';
 
 const e = strings.economy;
 
@@ -65,6 +66,8 @@ function optionLine(o: ClassOption, sim: SimulationState): string {
     case 'cash': return e.cashShort(e.classesDefinite[o.id]);
     case 'upgradeOnly': return e.upgradeOnly;
     case 'bankWait': return e.bankWait;
+    case 'notBuilt': return e.notBuilt;
+    case 'notFirst': return e.notFirst;
     case 'available': return '';
   }
 }
@@ -310,9 +313,10 @@ export function settlementInWords(sim: SimulationState): string[] {
   else lines.push(e.settlement.aboveFloor);
   if (s.amortisationSek > 0) lines.push(e.settlement.amortised);
   // ORDER 280 — hyran och veckans löner står i avräkningen och i tidningen.
-  const sek = (v: number) => strings.service.meters.sek(Math.round(v).toLocaleString('en-GB'));
+  const sek = (v: number) => strings.service.meters.sek(Math.round(v).toLocaleString(numberLocale()));
   if ((s.rentSek ?? 0) > 0) lines.push(e.settlement.rent(sek(s.rentSek!)));
   if ((s.wagesSek ?? 0) > 0) lines.push(e.settlement.wages(sek(s.wagesSek!)));
+  if ((s.coursesSek ?? 0) > 0) lines.push(e.settlement.courses(sek(s.coursesSek!)));
   if (s.downgradedFrom) {
     lines.push(
       s.downgradedTo

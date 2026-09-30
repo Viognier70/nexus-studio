@@ -1,0 +1,229 @@
+{
+  "label": "before-ui",
+  "sizes": {
+    "1920x1080": {
+      "startButtons": [
+        "Byn",
+        "1×",
+        "2×",
+        "4×",
+        "☰",
+        "Tillbaka",
+        "×",
+        "Säg upp (8400 kr)",
+        "Säg upp (7000 kr)",
+        "Säg upp (9800 kr)",
+        "Värd — 1200 kr/dagHälsar och styr rummet — hög kulturell kompetens.",
+        "Servitör — 1000 kr/dagBär order och håller flöde — balanserad rustning.",
+        "Kock — 1400 kr/dagHåller köket — hög vetenskaplig kompetens.",
+        "Lärling — 500 kr/dagLärling som avlastar överallt — låg kompetens, låg kostnad.",
+        "GrundnivåRäcker för att öppna dörrarna. Rummet får bära det som händer.",
+        "ErfarenKockar och servitörer har rutin. Slag jämnas ut innan de syns.",
+        "SpecialiseradAlla vet mer än det som krävs i stunden. Servicen har djup att gå till.",
+        "LågtFyllt hus, tunnare marginal. Krogen håller pulsen uppe.",
+        "MedelBalans mellan volym och intäkt. Kvällens standardläge.",
+        "HögtFärre gäster, mer per bord. Rummet måste bära förväntan.",
+        "GrundStandardleverantör. Kvällen bygger på hantverket, inte på råvaran.",
+        "UtvaldUtvalda leverantörer när det räknas. Något att prata om vid ett par bord.",
+        "PremiumDet bästa av det som finns. Kvällen står och faller med det köket gör med det.",
+        "Korta menynSänk råvarunivån ett steg. Sparar per gäst, sänker matens kvalitet över tid.",
+        "Gallra vinlistanDra ner på drycken. Servicen har mindre att bära, dryckens kvalitet sjunker över tid.",
+        "Stäng lunchenIngen lunch förrän du öppnar igen. Sparar personal och råvaror; stamgästerna märker den stängda dörren.",
+        "Stäng kvällenIngen kvällsservice förrän du öppnar igen. Den största besparingen, den största kostnaden för ryktet.",
+        "Nytt spel",
+        "Fortsätt ett sparat spel"
+      ],
+      "head": {
+        "x": 72,
+        "y": 235,
+        "w": 1776,
+        "h": 122.59375,
+        "text": "Måndag morgon · vecka 2 av 8 · VinbarVad gör du i dag?Schemat: 0 av 2 platser"
+      },
+      "hudBoxes": [
+        {
+          "id": "day-badge",
+          "x": 72,
+          "y": 50,
+          "w": 444.40625,
+          "h": 60
+        },
+        {
+          "id": "cash-counter",
+          "x": 1099.4375,
+          "y": 50,
+          "w": 296.84375,
+          "h": 77
+        },
+        {
+          "id": "credits-counter",
+          "x": 1408.28125,
+          "y": 50,
+          "w": 189.71875,
+          "h": 77
+        }
+      ],
+      "hudOverHead": [],
+      "clipped": [],
+      "activities": [
+        "Utbilda salenEn halvtimmes genomgång av tempot vid passet oc",
+        "Ta in en springareEtt par extra händer som bär ut tallrikar ",
+        "Lokala råvaror i kvällSmå gårdar i närheten: högre styckpris",
+        "Vinprovning med lagetLaget kan vinlistan, och merförsäljning",
+        "Gästkock för kvällenEn vän till huset lagar maten, och passe",
+        "DJ i kvällMusik från nio. Fler gäster kommer, men bara en fu",
+        "Genomgång av kökets kompostGå igenom kärlen och flödet i för"
+      ],
+      "hover": {
+        "bg": "rgb(235, 233, 232)",
+        "color": "rgb(244, 230, 204)",
+        "testid": "shelf-metodkoket"
+      },
+      "asideBar": {
+        "x": 555,
+        "y": 950,
+        "w": 810,
+        "h": 106,
+        "scrollH": 104,
+        "clientH": 104
+      },
+      "asidePanels": [
+        {
+          "id": "service-clock",
+          "x": 536.40625,
+          "y": 50,
+          "w": 440,
+          "h": 144.796875
+        },
+        {
+          "id": "cash-counter",
+          "x": 1099.4375,
+          "y": 50,
+          "w": 296.84375,
+          "h": 77
+        },
+        {
+          "id": "credits-counter",
+          "x": 1408.28125,
+          "y": 50,
+          "w": 189.71875,
+          "h": 77
+        }
+      ],
+      "barOverPanels": [],
+      "errors": []
+    },
+    "1440x900": {
+      "startButtons": [
+        "Byn",
+        "1×",
+        "2×",
+        "4×",
+        "☰",
+        "Tillbaka",
+        "×",
+        "Säg upp (8400 kr)",
+        "Säg upp (7000 kr)",
+        "Säg upp (9800 kr)",
+        "Värd — 1200 kr/dagHälsar och styr rummet — hög kulturell kompetens.",
+        "Servitör — 1000 kr/dagBär order och håller flöde — balanserad rustning.",
+        "Kock — 1400 kr/dagHåller köket — hög vetenskaplig kompetens.",
+        "Lärling — 500 kr/dagLärling som avlastar överallt — låg kompetens, låg kostnad.",
+        "GrundnivåRäcker för att öppna dörrarna. Rummet får bära det som händer.",
+        "ErfarenKockar och servitörer har rutin. Slag jämnas ut innan de syns.",
+        "SpecialiseradAlla vet mer än det som krävs i stunden. Servicen har djup att gå till.",
+        "LågtFyllt hus, tunnare marginal. Krogen håller pulsen uppe.",
+        "MedelBalans mellan volym och intäkt. Kvällens standardläge.",
+        "HögtFärre gäster, mer per bord. Rummet måste bära förväntan.",
+        "GrundStandardleverantör. Kvällen bygger på hantverket, inte på råvaran.",
+        "UtvaldUtvalda leverantörer när det räknas. Något att prata om vid ett par bord.",
+        "PremiumDet bästa av det som finns. Kvällen står och faller med det köket gör med det.",
+        "Korta menynSänk råvarunivån ett steg. Sparar per gäst, sänker matens kvalitet över tid.",
+        "Gallra vinlistanDra ner på drycken. Servicen har mindre att bära, dryckens kvalitet sjunker över tid.",
+        "Stäng lunchenIngen lunch förrän du öppnar igen. Sparar personal och råvaror; stamgästerna märker den stängda dörren.",
+        "Stäng kvällenIngen kvällsservice förrän du öppnar igen. Den största besparingen, den största kostnaden för ryktet.",
+        "Nytt spel",
+        "Fortsätt ett sparat spel"
+      ],
+      "head": {
+        "x": 54,
+        "y": 176.25,
+        "w": 1332,
+        "h": 92.1875,
+        "text": "Måndag morgon · vecka 2 av 8 · VinbarVad gör du i dag?Schemat: 0 av 2 platser"
+      },
+      "hudBoxes": [
+        {
+          "id": "day-badge",
+          "x": 54,
+          "y": 37.5,
+          "w": 333.8125,
+          "h": 45.5
+        },
+        {
+          "id": "cash-counter",
+          "x": 823.09375,
+          "y": 37.5,
+          "w": 223.125,
+          "h": 57.5
+        },
+        {
+          "id": "credits-counter",
+          "x": 1055.21875,
+          "y": 37.5,
+          "w": 142.78125,
+          "h": 57.5
+        }
+      ],
+      "hudOverHead": [],
+      "clipped": [],
+      "activities": [
+        "Utbilda salenEn halvtimmes genomgång av tempot vid passet oc",
+        "Ta in en springareEtt par extra händer som bär ut tallrikar ",
+        "Lokala råvaror i kvällSmå gårdar i närheten: högre styckpris",
+        "Vinprovning med lagetLaget kan vinlistan, och merförsäljning",
+        "Gästkock för kvällenEn vän till huset lagar maten, och passe",
+        "DJ i kvällMusik från nio. Fler gäster kommer, men bara en fu",
+        "Genomgång av kökets kompostGå igenom kärlen och flödet i för"
+      ],
+      "hover": {
+        "bg": "rgb(235, 233, 232)",
+        "color": "rgb(244, 230, 204)",
+        "testid": "shelf-metodkoket"
+      },
+      "asideBar": {
+        "x": 416,
+        "y": 802,
+        "w": 608,
+        "h": 80,
+        "scrollH": 78,
+        "clientH": 78
+      },
+      "asidePanels": [
+        {
+          "id": "service-clock",
+          "x": 402.8125,
+          "y": 37.5,
+          "w": 330,
+          "h": 109.09375
+        },
+        {
+          "id": "cash-counter",
+          "x": 823.09375,
+          "y": 37.5,
+          "w": 223.125,
+          "h": 57.5
+        },
+        {
+          "id": "credits-counter",
+          "x": 1055.21875,
+          "y": 37.5,
+          "w": 142.78125,
+          "h": 57.5
+        }
+      ],
+      "barOverPanels": [],
+      "errors": []
+    }
+  }
+}

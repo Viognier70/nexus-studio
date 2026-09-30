@@ -11,14 +11,8 @@ import { strings } from '../../content/strings';
 // `strings.businessClass` (post-ORDER 140, samma tabell TeamPanel
 // och andra HUD-texter använder). För andra preset (village/district)
 // står labeln kvar oförändrad — de är ortsnivåer, inte klassnivåer.
-const CAMERA_LABEL_SV: Record<string, string> = {
-  grythyttan: 'Grythyttan',
-  kvarteret: 'The District',
-  // 'vinbaren' behålls som fallback för klass som saknar spelartext,
-  // men läses aldrig i praktiken eftersom sim.businessClass alltid är
-  // satt när business/myBusiness-preseterna är aktiva.
-  vinbaren: 'The Wine Bar'
-};
+// ORDER 291 — ortsnivåernas namn på spelarens språk (strings.viewLabel).
+const cameraLabel = (label: string): string | undefined => (strings.viewLabel as Record<string, string>)[label];
 
 export function ViewLabel() {
   const { label } = useCamera();
@@ -28,8 +22,8 @@ export function ViewLabel() {
   // preset-labeln, så spelaren ser sin egen verksamhet.
   const isBusinessView = label === 'vinbaren';
   const displayLabel = isBusinessView
-    ? strings.businessClass[sim.businessClass] ?? CAMERA_LABEL_SV[label] ?? label
-    : CAMERA_LABEL_SV[label] ?? label;
+    ? strings.businessClass[sim.businessClass] ?? cameraLabel(label) ?? label
+    : cameraLabel(label) ?? label;
   return (
     <div className="gb-viewlabel" aria-live="polite">
       {displayLabel}

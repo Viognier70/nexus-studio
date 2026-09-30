@@ -371,6 +371,11 @@ export interface BusinessClassSpec {
 
 export const BUSINESS_CLASSES = {
   section: 'Verksamhetsklasserna',
+  // ORDER 291 (provspel av 4795192) — den första verksamheten är vinbar eller
+  // food truck (speldesign > Verksamhetsklasserna, beslut 2026-09-30).
+  // Ölkrogen byggs i etapp 8 och erbjuds inte förrän den finns.
+  firstChoices: ['vinbar', 'foodtruck'] as readonly BusinessClassId[],
+  notYetBuilt: ['olkrog'] as readonly BusinessClassId[],
   list: [
     { id: 'vinbar', seats: 20, mainPavilion: 'stensota', upgradeOnly: false, buildOrder: 1, sizeRank: 2,
       requirements: [{ level: 'brons', count: 3, including: ['stensota'] }],
@@ -758,7 +763,15 @@ export const STOCK = {
   openQuestion: 'F48',
   // Varje gäst tar en dryck till rätten, och ett andra glas med den här
   // sannolikheten.
-  secondDrinkChance: 0.5
+  secondDrinkChance: 0.5,
+  // ORDER 291 (Vision Owner 2026-09-30: "Varna när spelaren köper mer än
+  // dubbelt så mycket som behövs, både mat och dryck"). Behovet är en
+  // varmrätt per väntad gäst och 1 + secondDrinkChance glas per gäst.
+  overBuyFactor: 2,
+  // ORDER 291 — baspaketet följer kvällens bokning: portioner per väntad
+  // gäst (rätter och efterrätter), högst paketets storlek och minst en av
+  // varje. Utan det gav baspaketet en lugn måndag mer än dubbelt behovet.
+  baseCoversPerGuest: 1.3
 } as const;
 
 // ORDER 277 — morgonen är insatsen (Vision Owner 2026-09-28, andra
@@ -983,6 +996,11 @@ export const GUEST_TYPES = {
   openQuestion: 'F57',
   // Plånboken per typ (nycklar i GUESTS.walletSek).
   wallet: { student: 'tight', middle: 'normal', high: 'generous', social: 'normal', billionaire: 'gold' },
+  // ORDER 291 (provspel av 4795192: "Gästtyperna betalar lika") — i klasserna
+  // utan lagerpaket (food truck, ölkrogen) väljer gästen ur menyn utan
+  // plånbok; notan gånger detta per plånbok. Med andelarna 0,2/0,55/0,25
+  // blir snittet 1,05.
+  legacyBillFactor: { tight: 0.8, normal: 1, generous: 1.35, gold: 3 },
   // Sittiden gånger detta: studenten tar platsen en lång stund.
   stayFactor: { student: 1.25, middle: 1, high: 1, social: 1, billionaire: 1 },
   // Nöjdheten vid ankomst plus detta: höginkomsttagaren förväntar sig mer.

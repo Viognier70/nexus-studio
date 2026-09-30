@@ -195,6 +195,14 @@ body:has(.nx-screen) .gb-selection,
 body:has(.nx-screen) .gb-hint,
 body:has(.nx-screen) .gb-verify-badge,
 body:has(.nx-screen) .gb-viewlabel { display: none; }
+/* ORDER 291 punkt 4–5 — platsnamnet låg bakom klockan i HUD-raden och
+   klipptes till en halv rad ("Ölkrog …"). Det står under HUD-raden, och
+   döljs när rummet och personalen är öppet. */
+.gb-viewlabel { top: max(150px, calc(210 * var(--nx-u))); }
+body:has(.nxr-aside) .gb-viewlabel,
+body:has(.nxr-aside) .gb-selection,
+body:has(.nxr-aside) .gb-hint,
+body:has(.nxr-aside) .gb-verify-badge { display: none; }
 /* ORDER 290 — byns text (zoomnivåerna, kartkrediten, platsnamnet) syns inte
    under servicen (RoomGrade sätter data-room-grade='service'). */
 body[data-room-grade='service'] .gb-selection,

@@ -14,14 +14,15 @@ import { useRef, useState } from 'react';
 import { strings } from '../../content/strings';
 import { creditLineSek } from '../../sim/economy';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
-import { itemsCostSek, packageItems, packagesFor } from '../simulation/packages';
-import { coverage, morningRows, spentTodaySek, stockValueSek, type DishRow, type DrinkRow } from '../simulation/morningBuy';
+import { itemsCostSek, packagesFor } from '../simulation/packages';
+import { baseItemsFor, coverage, morningRows, spentTodaySek, stockValueSek, type DishRow, type DrinkRow } from '../simulation/morningBuy';
 import { stockReadiness } from '../simulation/stockPackages';
 import { NxButton, NxLabel, u } from '../ui/system/components';
 import { formatSek } from '../ui/CashCounter';
 import { shake } from '../ui/juice/juice';
 import { flyTo, targetElement } from '../ui/juice/fx';
 import '../ui/screens/screens.css';
+import { numberLocale } from '../../content/language';
 
 const T = strings.morningBuy;
 const BOX = u(52);
@@ -66,13 +67,13 @@ export function MorningBuyScreen({ open, onClose }: { open: boolean; onClose: ()
     }
     setNotice(null);
     dispatch({ type: 'BUY_ITEMS', items });
-    flyTo('cash', from, strings.money.minus(Math.round(cost).toLocaleString('en-GB')), -cost, { bg: 'var(--nx-accent)' });
+    flyTo('cash', from, strings.money.minus(Math.round(cost).toLocaleString(numberLocale())), -cost, { bg: 'var(--nx-accent)' });
   };
   const giveBack = (items: Record<string, number>, have: number, from: HTMLElement) => {
     if (have <= 0) { shake(from, 6); return; }
     const refund = itemsCostSek(Object.fromEntries(Object.entries(items).map(([k, n]) => [k, Math.min(n, have)])));
     dispatch({ type: 'RETURN_ITEMS', items });
-    flyTo('cash', from, strings.money.plus(Math.round(refund).toLocaleString('en-GB')), refund, { bg: 'var(--nx-ink)' });
+    flyTo('cash', from, strings.money.plus(Math.round(refund).toLocaleString(numberLocale())), refund, { bg: 'var(--nx-ink)' });
   };
   const dishRow = (r: DishRow) => (
     <div key={r.dishId} className="nxs-buy-row" data-testid={`buy-row-${r.dishId}`}>
@@ -130,8 +131,14 @@ export function MorningBuyScreen({ open, onClose }: { open: boolean; onClose: ()
           </div>
           <div className="nxs-buy-block" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
             <NxLabel>{T.wineLabel}</NxLabel>
-            <strong data-testid="buy-glasses">{T.wineCover(cov.glasses, cov.glassesPerGuest.toFixed(1))}</strong>
+            <strong data-testid="buy-glasses">{T.wineCover(cov.glasses, cov.glassesPerGuest.toLocaleString(numberLocale(), { maximumFractionDigits: 1, minimumFractionDigits: 1 }))}</strong>
           </div>
+          {(cov.overFood || cov.overDrink) && (
+            <div className="nxs-buy-block" data-testid="buy-overbuy" role="status">
+              {cov.overFood && <p className="nx-small nx-accent-text" style={{ fontWeight: 700, margin: 0 }} data-testid="buy-over-food">{T.overFood(cov.covers, cov.guests)}</p>}
+              {cov.overDrink && <p className="nx-small nx-accent-text" style={{ fontWeight: 700, margin: 0 }} data-testid="buy-over-drink">{T.overDrink(cov.glasses, cov.glassesNeeded)}</p>}
+            </div>
+          )}
           <div className="nxs-buy-block">
             <NxLabel>{T.potential}</NxLabel>
             <div className="nx-num" style={{ fontSize: u(30), marginTop: u(6) }}>{T.potentialIn(formatSek(cov.potentialSek))}</div>
@@ -141,7 +148,7 @@ export function MorningBuyScreen({ open, onClose }: { open: boolean; onClose: ()
             {notice && <p className="nx-small nx-accent-text" style={{ fontWeight: 700 }} role="status" data-testid="buy-notice">{notice}</p>}
             {!readiness.ready && <p className="nx-small nx-accent-text" style={{ fontWeight: 700 }} data-testid="start-blocked-m1">{strings.stock.notReady(readiness.dishes, readiness.drinks)}</p>}
             <button type="button" className="nx-btn nx-btn-quiet" style={{ width: 'auto' }} data-testid="buy-base"
-              onClick={(e) => buy(packageItems(base), e.currentTarget)}>
+              onClick={(e) => buy(baseItemsFor(sim, base), e.currentTarget)}>
               <span>{T.base}</span>
             </button>
             <NxButton kind="secondary" testId="buy-back" onClick={onClose} arrow={false}>{T.back}</NxButton>

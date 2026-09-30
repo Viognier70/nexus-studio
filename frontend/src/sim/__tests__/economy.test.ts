@@ -137,7 +137,8 @@ describe('ORDER 265 — nedgradering', () => {
   it('nedgraderingskedjan följer speldesignen', () => {
     expect(downgradeTarget('gastgiveri', {})).toBe('restaurang');
     expect(downgradeTarget('nattklubb', {})).toBe('restaurang');
-    expect(downgradeTarget('restaurang', { metodkoket: 'silver', stensota: 'brons' })).toBe('olkrog');
+    // ORDER 291 — ölkrogen byggs i etapp 8; tills dess går restaurangen ner till vinbaren.
+    expect(downgradeTarget('restaurang', { metodkoket: 'silver', stensota: 'brons' })).toBe('vinbar');
     expect(downgradeTarget('restaurang', { stensota: 'silver' })).toBe('vinbar');
     expect(downgradeTarget('vinbar', {})).toBe('foodtruck');
     expect(downgradeTarget('olkrog', {})).toBe('foodtruck');
@@ -166,16 +167,17 @@ describe('ORDER 265 — klasser och krav', () => {
   });
 
   it('byte bara på söndagen (eller utan verksamhet); ny lokal: nytt lån och halverat rykte', () => {
-    let s = { ...makeInitialState(1), medals: bronzeIn('stensota', 'metodkoket', 'maltidbiblioteket') };
-    expect(reducer(s, { type: 'CHOOSE_CLASS', to: 'olkrog' })).toBe(s);
+    // ORDER 291 — ölkrogen byggs i etapp 8 och erbjuds inte; bytet prövas med restaurangen.
+    let s = { ...makeInitialState(1), medals: { stensota: 'silver', metodkoket: 'silver', maltidbiblioteket: 'silver' } as SimulationState['medals'], cash: 1e7 };
+    expect(reducer(s, { type: 'CHOOSE_CLASS', to: 'restaurang' })).toBe(s);
     s = { ...s, day: { ...s.day, dayNumber: 7 } };
-    expect(classOptions(s).find((o) => o.id === 'olkrog')?.status).toBe('available');
+    expect(classOptions(s).find((o) => o.id === 'olkrog')?.status).toBe('notBuilt');
+    expect(classOptions(s).find((o) => o.id === 'restaurang')?.status).toBe('available');
     const rep = s.reputation;
-    s = reducer(s, { type: 'CHOOSE_CLASS', to: 'olkrog' });
-    expect(s.economy.businessClass).toBe('olkrog');
-    expect(s.businessClass).toBe('ölkrogen');
+    s = reducer(s, { type: 'CHOOSE_CLASS', to: 'restaurang' });
+    expect(s.economy.businessClass).toBe('restaurang');
     expect(s.reputation).toBeCloseTo(rep / 2, 9);
-    expect(s.economy.loan?.originalSek).toBe(startLoanSek('olkrog'));
+    expect(s.economy.loan?.originalSek).toBe(startLoanSek('restaurang'));
   });
 
   it('nedgradering till mindre klass: skuldfri, ryktet orört (F22)', () => {

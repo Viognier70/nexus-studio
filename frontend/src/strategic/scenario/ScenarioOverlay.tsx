@@ -74,6 +74,8 @@ export function ScenarioOverlay() {
   const { phase, scenarioId, senderRole, pendingQuestion } = sim.scenario;
 
   if (phase === 'idle' || phase === 'resolving' || phase === 'settled') return null;
+  // ORDER 291 punkt 10 — rutan hör till servicen.
+  if (sim.day.period !== 'lunch' && sim.day.period !== 'dinner') return null;
 
   // Prefer the spec (post-ORDER 043 v3 §10 step 5). Falls back to the
   // legacy strings.scenario keys for pre-refactor tests / manual

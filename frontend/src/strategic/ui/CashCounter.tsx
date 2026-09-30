@@ -20,8 +20,9 @@ import { countTo, type Counter } from './juice/juice';
 import { isReleased, pendingFor, registerTarget, subscribeFx, type FxTarget } from './juice/fx';
 import './juice/juice.css';
 import './system/system.css';
+import { numberLocale } from '../../content/language';
 
-export const formatSek = (v: number): string => strings.service.meters.sek(Math.round(v).toLocaleString('en-GB'));
+export const formatSek = (v: number): string => strings.service.meters.sek(Math.round(v).toLocaleString(numberLocale()));
 
 // Små steg (kvällens kostnad per tick) målas direkt; större förändringar
 // räknas i steg.

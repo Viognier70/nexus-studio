@@ -1,0 +1,155 @@
+{
+  "label": "before",
+  "save": "reports/order284/save-mandag-vinbaren.json",
+  "language": "sv",
+  "activities": [
+    "train-service",
+    "book-dj"
+  ],
+  "errors": [],
+  "cashMorningStart": 119998,
+  "cashAfterActivities": 115496,
+  "buy": {
+    "coverage": "34 av 31 gäster",
+    "spent": 1790
+  },
+  "cashAtOpen": 0,
+  "tillSamples": [
+    {
+      "till": 0,
+      "stake": 0
+    },
+    {
+      "till": 0,
+      "stake": 0
+    },
+    {
+      "till": 0,
+      "stake": 13177
+    },
+    {
+      "till": 518,
+      "stake": 13177
+    },
+    {
+      "till": 863,
+      "stake": 13177
+    },
+    {
+      "till": 2349,
+      "stake": 13177
+    },
+    {
+      "till": 3377,
+      "stake": 13177
+    },
+    {
+      "till": 4290,
+      "stake": 13177
+    },
+    {
+      "till": 5297,
+      "stake": 13177
+    },
+    {
+      "till": 6870,
+      "stake": 13177
+    }
+  ],
+  "waste": {
+    "fee": 476
+  },
+  "T2": {
+    "sales": 7321,
+    "produce": null,
+    "contribution": 5531,
+    "ratio": 0.7554978828028958,
+    "rest": [
+      {
+        "id": "transfer-rest-staff",
+        "value": 5177
+      },
+      {
+        "id": "transfer-rest-dj",
+        "value": 1500
+      },
+      {
+        "id": "transfer-rest-competence",
+        "value": 6000
+      },
+      {
+        "id": "transfer-rest-incidents",
+        "value": -947
+      }
+    ],
+    "result": -6199,
+    "transfer": -4409,
+    "accountAfter": 114549,
+    "forecast": "Med det här konceptet klarar du dig 2 veckor.",
+    "button": "För över 7,321 kr"
+  },
+  "R1": {
+    "money": [
+      2067,
+      2067,
+      2067,
+      2067,
+      2067
+    ],
+    "rows": [
+      {
+        "key": "result-money",
+        "delta": "2067",
+        "text": "+2,067 krPengarIntäkter 7,321 kr minus inköp, löner och avgifter 5,254 kr"
+      },
+      {
+        "key": "result-credits",
+        "delta": "6",
+        "text": "+6KrediterRätta svar i raketerna, och Back your knowledge"
+      },
+      {
+        "key": "result-reputation",
+        "delta": "-5.1",
+        "text": "−5,1 poängRykteNöjda gäster höjer, gäster som går sänker"
+      },
+      {
+        "key": "result-knowledge",
+        "delta": "6",
+        "text": "6/6Kunskap6 av 6 steg rätt i kvällens raketer"
+      },
+      {
+        "key": "result-experience",
+        "delta": "30",
+        "text": "+30Erfarenhet28 gäster serverade, 2 raketer tagna"
+      },
+      {
+        "key": "result-social",
+        "delta": "0",
+        "text": "5 av 10Social hållbarhetGästerna och laget: nöjdhet, köer och ork"
+      },
+      {
+        "key": "result-economic",
+        "delta": "0.28236374042615137",
+        "text": "0 av 10Ekonomisk hållbarhetMarginal 28 % av kvällens intäkt"
+      },
+      {
+        "key": "result-ecological",
+        "delta": "0",
+        "text": "10 av 10Ekologisk hållbarhetRåvarorna och svinnet: 19,3 kg till sopbilen"
+      }
+    ]
+  },
+  "cashDuringR1": 114549,
+  "cashNextMorning": 115751,
+  "sideBySide": {
+    "kassan i morse": 119998,
+    "kassan vid öppning (efter satsningar och inköp)": 0,
+    "kvällskassan (T2 försäljning)": 7321,
+    "T2 kvällens resultat": -6199,
+    "T2 kontot efter överföringen": 114549,
+    "R1 Pengar (första läsningen)": 2067,
+    "R1 Pengar (sista läsningen, 8 s senare)": 2067,
+    "kassan nästa morgon": 115751,
+    "kassans förändring över dygnet": -4247
+  }
+}

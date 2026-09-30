@@ -128,6 +128,8 @@ G kan aldrig bli högre än 90. Veckogolvet är G procent av klassens normala ve
 
 *Beslut 2026-09-30 (Vision Owner, efter kvällens ekonomi):* insatsen visas med Designs fyra rader (råvaror, personal, DJ, kompetens), och satsningar som egen rad när spelaren valt någon. DJ och satsningar dras från kassan på morgonen när de väljs, och de räknas in i linjen för kvällens insats.
 
+*Beslut 2026-09-30 (Vision Owner, provspelet av kvällens ekonomi): kurser är investeringar, inte kvällens kostnader.* Kvällens insats räknar bara råvaror, personal, DJ och kvällens satsningar. Kurserna, det laget lär sig (utbildningen av salen och vinprovningen med laget), dras från kassan när de väljs men står utanför kvällens resultat. De redovisas som investering i veckoavräkningen. Kvällens resultat är ett tal, räknat på ett sätt, och står likadant efter servicen, i kvällens resultat och i kassan.
+
 ### Lånet
 
 Bankmötet ger ett startlån som täcker lokal och inventarier för klassen. Lånet amorteras lika under säsongens åtta veckor, med fem procents ränta. Bankens besked formuleras som en diagnos i ord, aldrig som siffror: vad spelaren visat att hon kan och vad som saknas för nästa klass.

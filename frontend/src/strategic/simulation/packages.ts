@@ -13,7 +13,7 @@
 // (`minIngredientCost`), samma som menyns frusna kostnad. Talen här är
 // innehåll (som katalogens priser), valda i ORDER 275 (F48).
 
-import type { BusinessClassId } from '../../sim/balance';
+import { STOCK, type BusinessClassId } from '../../sim/balance';
 import { DISHES, findDish, minIngredientCost } from './m4Catalogue';
 
 export interface StockPackage {
@@ -112,6 +112,16 @@ export function orderSheetDishIds(cls: BusinessClassId | null | undefined): stri
 // Portionerna av en rätt eller dryck i kronor, som paketen.
 export function itemsCostSek(items: Record<string, number>): number {
   return packageCostSek({ id: 'sheet', items: Object.entries(items).filter(([, n]) => n > 0).map(([dishId, portions]) => ({ dishId, portions })) });
+}
+
+// ORDER 291 — baspaketet efter kvällens bokning (STOCK.baseCoversPerGuest):
+// alla rader i samma andel, minst en av varje, aldrig mer än paketet.
+export function scaledBaseItems(pkg: StockPackage, expectedGuests: number): Record<string, number> {
+  const foodPortions = pkg.items.filter((i) => findDish(i.dishId)?.kind !== 'drink').reduce((a, i) => a + i.portions, 0);
+  const factor = Number.isFinite(expectedGuests) && foodPortions > 0 ? Math.min(1, (expectedGuests * STOCK.baseCoversPerGuest) / foodPortions) : 1;
+  const out: Record<string, number> = {};
+  for (const i of pkg.items) out[i.dishId] = (out[i.dishId] ?? 0) + Math.max(1, Math.round(i.portions * factor));
+  return out;
 }
 
 export function packageItems(pkg: StockPackage): Record<string, number> {

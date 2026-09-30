@@ -28,6 +28,7 @@ import {
   targetQualityService
 } from '../simulation/quality';
 import { strings } from '../../content/strings';
+import { numberLocale } from '../../content/language';
 
 const T = strings.panels.cash;
 
@@ -42,7 +43,7 @@ function reputationBand(v: number): string {
 
 function formatKSEK(v: number): string {
   const rounded = Math.round(v);
-  return T.thousands(rounded.toLocaleString('en-GB'));
+  return T.thousands(rounded.toLocaleString(numberLocale()));
 }
 
 // -------- styles --------------------------------------------------------

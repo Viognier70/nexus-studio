@@ -1,0 +1,373 @@
+{
+  "label": "after-ui",
+  "sizes": {
+    "1920x1080": {
+      "startButtons": [
+        "Byn",
+        "1×",
+        "2×",
+        "4×",
+        "☰",
+        "Tillbaka",
+        "×",
+        "Nytt spel",
+        "Fortsätt ett sparat spel"
+      ],
+      "head": {
+        "x": 72,
+        "y": 235,
+        "w": 1776,
+        "h": 122.59375,
+        "text": "Måndag morgon · vecka 2 av 8 · VinbarVad gör du i dag?Schemat: 0 av 2 platser"
+      },
+      "hudBoxes": [
+        {
+          "id": "day-badge",
+          "x": 72,
+          "y": 50,
+          "w": 444.40625,
+          "h": 60
+        },
+        {
+          "id": "cash-counter",
+          "x": 1099.4375,
+          "y": 50,
+          "w": 296.84375,
+          "h": 77
+        },
+        {
+          "id": "credits-counter",
+          "x": 1408.28125,
+          "y": 50,
+          "w": 189.71875,
+          "h": 77
+        }
+      ],
+      "hudOverHead": [],
+      "clipped": [],
+      "activities": [
+        "Utbilda salenEn halvtimmes genomgång av tempot vid passet oc",
+        "Ta in en springareEtt par extra händer som bär ut tallrikar ",
+        "Lokala råvaror i kvällSmå gårdar i närheten: högre styckpris",
+        "Vinprovning med lagetLaget kan vinlistan, och merförsäljning",
+        "Gästkock för kvällenEn vän till huset lagar maten, och passe",
+        "DJ i kvällMusik från nio. Fler gäster kommer, men bara en fu",
+        "Genomgång av kökets kompostGå igenom kärlen och flödet i för"
+      ],
+      "hover": {
+        "bg": "rgba(244, 230, 204, 0.08)",
+        "color": "rgb(244, 230, 204)",
+        "testid": "shelf-metodkoket"
+      },
+      "asideBar": {
+        "x": 555,
+        "y": 950,
+        "w": 810,
+        "h": 106,
+        "scrollH": 104,
+        "clientH": 104
+      },
+      "asidePanels": [
+        {
+          "id": "service-clock",
+          "x": 536.40625,
+          "y": 50,
+          "w": 440,
+          "h": 144.796875
+        },
+        {
+          "id": "cash-counter",
+          "x": 1099.4375,
+          "y": 50,
+          "w": 296.84375,
+          "h": 77
+        },
+        {
+          "id": "credits-counter",
+          "x": 1408.28125,
+          "y": 50,
+          "w": 189.71875,
+          "h": 77
+        }
+      ],
+      "barOverPanels": [],
+      "errors": []
+    },
+    "1440x900": {
+      "startButtons": [
+        "Byn",
+        "1×",
+        "2×",
+        "4×",
+        "☰",
+        "Tillbaka",
+        "×",
+        "Nytt spel",
+        "Fortsätt ett sparat spel"
+      ],
+      "head": {
+        "x": 54,
+        "y": 176.25,
+        "w": 1332,
+        "h": 92.1875,
+        "text": "Måndag morgon · vecka 2 av 8 · VinbarVad gör du i dag?Schemat: 0 av 2 platser"
+      },
+      "hudBoxes": [
+        {
+          "id": "day-badge",
+          "x": 54,
+          "y": 37.5,
+          "w": 333.8125,
+          "h": 45.5
+        },
+        {
+          "id": "cash-counter",
+          "x": 823.09375,
+          "y": 37.5,
+          "w": 223.125,
+          "h": 57.5
+        },
+        {
+          "id": "credits-counter",
+          "x": 1055.21875,
+          "y": 37.5,
+          "w": 142.78125,
+          "h": 57.5
+        }
+      ],
+      "hudOverHead": [],
+      "clipped": [],
+      "activities": [
+        "Utbilda salenEn halvtimmes genomgång av tempot vid passet oc",
+        "Ta in en springareEtt par extra händer som bär ut tallrikar ",
+        "Lokala råvaror i kvällSmå gårdar i närheten: högre styckpris",
+        "Vinprovning med lagetLaget kan vinlistan, och merförsäljning",
+        "Gästkock för kvällenEn vän till huset lagar maten, och passe",
+        "DJ i kvällMusik från nio. Fler gäster kommer, men bara en fu",
+        "Genomgång av kökets kompostGå igenom kärlen och flödet i för"
+      ],
+      "hover": {
+        "bg": "rgba(244, 230, 204, 0.08)",
+        "color": "rgb(244, 230, 204)",
+        "testid": "shelf-metodkoket"
+      },
+      "asideBar": {
+        "x": 416,
+        "y": 802,
+        "w": 608,
+        "h": 80,
+        "scrollH": 78,
+        "clientH": 78
+      },
+      "asidePanels": [
+        {
+          "id": "service-clock",
+          "x": 402.8125,
+          "y": 37.5,
+          "w": 330,
+          "h": 109.09375
+        },
+        {
+          "id": "cash-counter",
+          "x": 823.09375,
+          "y": 37.5,
+          "w": 223.125,
+          "h": 57.5
+        },
+        {
+          "id": "credits-counter",
+          "x": 1055.21875,
+          "y": 37.5,
+          "w": 142.78125,
+          "h": 57.5
+        }
+      ],
+      "barOverPanels": [],
+      "errors": []
+    },
+    "1366x768": {
+      "startButtons": [
+        "Byn",
+        "1×",
+        "2×",
+        "4×",
+        "☰",
+        "Tillbaka",
+        "×",
+        "Nytt spel",
+        "Fortsätt ett sparat spel"
+      ],
+      "head": {
+        "x": 51.1875,
+        "y": 167.109375,
+        "w": 1263.625,
+        "h": 87.453125,
+        "text": "Måndag morgon · vecka 2 av 8 · VinbarVad gör du i dag?Schemat: 0 av 2 platser"
+      },
+      "hudBoxes": [
+        {
+          "id": "day-badge",
+          "x": 51.1875,
+          "y": 35.546875,
+          "w": 316.578125,
+          "h": 43.234375
+        },
+        {
+          "id": "cash-counter",
+          "x": 780.875,
+          "y": 35.546875,
+          "w": 211.625,
+          "h": 54.765625
+        },
+        {
+          "id": "credits-counter",
+          "x": 1001.03125,
+          "y": 35.546875,
+          "w": 135.46875,
+          "h": 54.765625
+        }
+      ],
+      "hudOverHead": [],
+      "clipped": [],
+      "activities": [
+        "Utbilda salenEn halvtimmes genomgång av tempot vid passet oc",
+        "Ta in en springareEtt par extra händer som bär ut tallrikar ",
+        "Lokala råvaror i kvällSmå gårdar i närheten: högre styckpris",
+        "Vinprovning med lagetLaget kan vinlistan, och merförsäljning",
+        "Gästkock för kvällenEn vän till huset lagar maten, och passe",
+        "DJ i kvällMusik från nio. Fler gäster kommer, men bara en fu",
+        "Genomgång av kökets kompostGå igenom kärlen och flödet i för"
+      ],
+      "hover": {
+        "bg": "rgba(244, 230, 204, 0.08)",
+        "color": "rgb(244, 230, 204)",
+        "testid": "shelf-metodkoket"
+      },
+      "asideBar": {
+        "x": 394.7265625,
+        "y": 675,
+        "w": 576.546875,
+        "h": 75.9375,
+        "scrollH": 74,
+        "clientH": 74
+      },
+      "asidePanels": [
+        {
+          "id": "service-clock",
+          "x": 381.984375,
+          "y": 35.546875,
+          "w": 312.875,
+          "h": 103.53125
+        },
+        {
+          "id": "cash-counter",
+          "x": 780.875,
+          "y": 35.546875,
+          "w": 211.625,
+          "h": 54.765625
+        },
+        {
+          "id": "credits-counter",
+          "x": 1001.03125,
+          "y": 35.546875,
+          "w": 135.46875,
+          "h": 54.765625
+        }
+      ],
+      "barOverPanels": [],
+      "errors": []
+    },
+    "1280x720": {
+      "startButtons": [
+        "Byn",
+        "1×",
+        "2×",
+        "4×",
+        "☰",
+        "Tillbaka",
+        "×",
+        "Nytt spel",
+        "Fortsätt ett sparat spel"
+      ],
+      "head": {
+        "x": 48,
+        "y": 156.65625,
+        "w": 1184,
+        "h": 82.015625,
+        "text": "Måndag morgon · vecka 2 av 8 · VinbarVad gör du i dag?Schemat: 0 av 2 platser"
+      },
+      "hudBoxes": [
+        {
+          "id": "day-badge",
+          "x": 48,
+          "y": 33.328125,
+          "w": 296.875,
+          "h": 40.625
+        },
+        {
+          "id": "cash-counter",
+          "x": 731,
+          "y": 33.328125,
+          "w": 198.546875,
+          "h": 51.65625
+        },
+        {
+          "id": "credits-counter",
+          "x": 937.546875,
+          "y": 33.328125,
+          "w": 127.125,
+          "h": 51.65625
+        }
+      ],
+      "hudOverHead": [],
+      "clipped": [],
+      "activities": [
+        "Utbilda salenEn halvtimmes genomgång av tempot vid passet oc",
+        "Ta in en springareEtt par extra händer som bär ut tallrikar ",
+        "Lokala råvaror i kvällSmå gårdar i närheten: högre styckpris",
+        "Vinprovning med lagetLaget kan vinlistan, och merförsäljning",
+        "Gästkock för kvällenEn vän till huset lagar maten, och passe",
+        "DJ i kvällMusik från nio. Fler gäster kommer, men bara en fu",
+        "Genomgång av kökets kompostGå igenom kärlen och flödet i för"
+      ],
+      "hover": {
+        "bg": "rgba(244, 230, 204, 0.08)",
+        "color": "rgb(244, 230, 204)",
+        "testid": "shelf-metodkoket"
+      },
+      "asideBar": {
+        "x": 369.671875,
+        "y": 632.6875,
+        "w": 540.65625,
+        "h": 71.3125,
+        "scrollH": 69,
+        "clientH": 69
+      },
+      "asidePanels": [
+        {
+          "id": "service-clock",
+          "x": 358.203125,
+          "y": 33.328125,
+          "w": 293.328125,
+          "h": 97.1875
+        },
+        {
+          "id": "cash-counter",
+          "x": 731,
+          "y": 33.328125,
+          "w": 198.546875,
+          "h": 51.65625
+        },
+        {
+          "id": "credits-counter",
+          "x": 937.546875,
+          "y": 33.328125,
+          "w": 127.125,
+          "h": 51.65625
+        }
+      ],
+      "barOverPanels": [],
+      "errors": []
+    }
+  }
+}

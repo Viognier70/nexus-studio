@@ -120,6 +120,8 @@ export interface SettlementRecord {
   // här summerade för avräkningen och tidningen).
   rentSek?: number;
   wagesSek?: number;
+  // ORDER 291 — veckans kurser, redovisade som investering.
+  coursesSek?: number;
   downgradedFrom: BusinessClassId | null;
   downgradedTo: BusinessClassId | null;
 }
@@ -147,6 +149,7 @@ export interface EconomyState {
   weekScenarioCashSek?: number;
   // ORDER 280 — veckans löner sedan förra avräkningen.
   weekWagesSek?: number;
+  weekCoursesSek?: number;
 }
 
 export function classSpec(id: BusinessClassId): BusinessClassSpec {
@@ -228,7 +231,8 @@ export function downgradeTarget(id: BusinessClassId | null, medals: SimulationSt
     case 'nattklubb':
       return 'restaurang';
     case 'restaurang':
-      return medalRank(medals.metodkoket) > medalRank(medals.stensota) ? 'olkrog' : 'vinbar';
+      // ORDER 291 — ölkrogen byggs i etapp 8; tills dess går man ner till vinbaren.
+      return medalRank(medals.metodkoket) > medalRank(medals.stensota) && !BUSINESS_CLASSES.notYetBuilt.includes('olkrog') ? 'olkrog' : 'vinbar';
     case 'vinbar':
     case 'olkrog':
       return 'foodtruck';
@@ -342,8 +346,12 @@ export function changeClass(state: SimulationState, to: BusinessClassId | null, 
     applyCashDelta(draft, -deposit);
     postLedger(draft, { category: 'other', amount: -deposit, cause: strings.economy.ledger.deposit });
   }
+  // ORDER 291 — försäljningen och kontantinsatsen är inte kvällens resultat:
+  // dygnets utgångskassa flyttas lika mycket (eveningEconomy.ts eveningTransfer).
+  const moved = draft.cash - state.cash;
   return {
     ...draft,
+    day: moved !== 0 ? { ...draft.day, cashAtDayStart: (state.day.cashAtDayStart ?? state.cash) + moved } : draft.day,
     team: teamForClass(state.team, to ? TEAM_BY_CLASS.roles[to] : [], up, state.day.dayNumber),
     businessClass: to ? V1_CLASS_TO_ROOM[to] : state.businessClass,
     reputation: up ? Math.max(REPUTATION.floor / REPUTATION.scale, state.reputation * UPGRADE.reputationFactor) : state.reputation,
@@ -422,7 +430,10 @@ export type ClassOption =
   | { id: BusinessClassId; status: 'requirements' }
   | { id: BusinessClassId; status: 'cash' }
   | { id: BusinessClassId; status: 'bankWait' }
-  | { id: BusinessClassId; status: 'upgradeOnly' };
+  | { id: BusinessClassId; status: 'upgradeOnly' }
+  // ORDER 291 — ännu inte byggd (ölkrogen, etapp 8), och inte ett första val.
+  | { id: BusinessClassId; status: 'notBuilt' }
+  | { id: BusinessClassId; status: 'notFirst' };
 
 export function canChangeClassToday(state: SimulationState): boolean {
   if (state.day.period !== 'morning') return false;
@@ -449,6 +460,10 @@ export function classOptions(state: SimulationState): ClassOption[] {
   const first = isFirstBusiness(state);
   return BUSINESS_CLASSES.list.map((c) => {
     if (c.id === current) return { id: c.id, status: 'current' as const };
+    // ORDER 291 — ölkrogen byggs i etapp 8; den första verksamheten är vinbar
+    // eller food truck.
+    if (BUSINESS_CLASSES.notYetBuilt.includes(c.id)) return { id: c.id, status: 'notBuilt' as const };
+    if (first && !BUSINESS_CLASSES.firstChoices.includes(c.id)) return { id: c.id, status: 'notFirst' as const };
     // Gästgiveri och nattklubb nås bara genom uppgradering, inte som start.
     if (c.upgradeOnly && current === null) return { id: c.id, status: 'upgradeOnly' as const };
     if (!requirementsFor(state, c.id).every((r) => meetsRequirement(r, state.medals))) {
@@ -541,12 +556,13 @@ export function settleWeek(state: SimulationState): SimulationState {
     postLedger(draft, { category: 'rent', amount: -rentSek, cause: strings.economy.ledger.rent });
   }
   const wagesSek = Math.round(e.weekWagesSek ?? 0);
+  const coursesSek = Math.round(e.weekCoursesSek ?? 0);
   const loan = e.loan
     ? { ...e.loan, principalSek: Math.max(0, e.loan.principalSek - amortisationSek), weeksLeft: Math.max(0, e.loan.weeksLeft - 1) }
     : null;
   let next: SimulationState = {
     ...draft,
-    economy: { ...e, loan, weekRevenueStartSek: state.revenue, weekEvenings: [], weekScenarioCashSek: 0, weekWagesSek: 0 }
+    economy: { ...e, loan, weekRevenueStartSek: state.revenue, weekEvenings: [], weekScenarioCashSek: 0, weekWagesSek: 0, weekCoursesSek: 0 }
   };
   let downgradedTo: BusinessClassId | null = null;
   const downgradedFrom = e.downgradePending ? e.businessClass : null;
@@ -558,7 +574,7 @@ export function settleWeek(state: SimulationState): SimulationState {
     ...next,
     economy: {
       ...next.economy,
-      lastSettlement: { week, evenings: e.weekEvenings ?? [], revenueSek, floorSek: floor, topUpSek, amortisationSek, rentSek, wagesSek, downgradedFrom, downgradedTo }
+      lastSettlement: { week, evenings: e.weekEvenings ?? [], revenueSek, floorSek: floor, topUpSek, amortisationSek, rentSek, wagesSek, coursesSek, downgradedFrom, downgradedTo }
     }
   };
 }

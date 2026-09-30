@@ -17,7 +17,9 @@ import { findDish, findIngredient, minIngredientCost } from './m4Catalogue';
 import { ITEM_BATCH, MORNING_STAKE, WASTE } from '../../sim/balance';
 import { discardUnresolvedSalvage, pickSalvage } from './salvage';
 import { clockMinutes, formatClock } from '../../sim/incidents';
-import { findPackage, itemsCostSek, packageCostSek, packageDishIds, packageIngredients, packagesFor } from './packages';
+import { findPackage, itemsCostSek, packageCostSek, packageDishIds, packageIngredients, packagesFor, scaledBaseItems } from './packages';
+import { dailyGuestCap } from '../../sim/economy';
+import { numberLocale } from '../../content/language';
 
 type Menu = SimulationState['menu'];
 
@@ -82,8 +84,12 @@ function withMenuFromStock(state: SimulationState): SimulationState {
 // Köp ett paket på morgonen. Kassan sjunker direkt.
 export function buyPackage(state: SimulationState, packageId: string): SimulationState {
   if (state.day.period !== 'morning') return state;
-  const pkg = findPackage(state.economy.businessClass, packageId);
-  if (!pkg) return state;
+  const found = findPackage(state.economy.businessClass, packageId);
+  if (!found) return state;
+  // ORDER 291 — baspaketet följer kvällens bokning (morningBuy.ts baseItemsFor).
+  const pkg = found.id === packagesFor(state.economy.businessClass)?.base.id
+    ? { ...found, items: Object.entries(scaledBaseItems(found, dailyGuestCap(state))).map(([dishId, portions]) => ({ dishId, portions })) }
+    : found;
   const costSek = packageCostSek(pkg);
   const stock = { ...state.stock };
   for (const [id, units] of Object.entries(packageIngredients(pkg))) stock[id] = (stock[id] ?? 0) + units;
@@ -216,7 +222,7 @@ export function stockRows(state: SimulationState): StockRow[] {
     const gpb = beer ? 1 : GLASSES_PER_BOTTLE;
     const left = Math.max(0, Math.floor(state.stock[ing] ?? 0));
     const start = at[ing] ?? left;
-    const name = (d.drink === 'wine-bottle' ? d.name.replace(/, bottle$/, '') : d.name.replace(/, by the glass$/, ''));
+    const name = (d.drink === 'wine-bottle' ? d.name.replace(/, (bottle|flaska)$/, '') : d.name.replace(/, (by the glass|per glas)$/, ''));
     rows.push({
       id: ing, kind: 'drink', name, left, start, status: statusFor('drink', left, start),
       bottles: Math.floor(left / gpb), openGlasses: left % gpb, startBottles: Math.ceil(start / gpb), beer
@@ -487,7 +493,7 @@ export function settleWaste(draft: SimulationState): void {
     const m = draft.eveningAccount?.metrics;
     if (m) draft.eveningAccount = { ...draft.eveningAccount!, metrics: { ...m, cost: m.cost + waste.feeSek, result: m.result - waste.feeSek } };
   }
-  const fee = strings.service.meters.sek(waste.feeSek.toLocaleString('en-GB'));
+  const fee = strings.service.meters.sek(waste.feeSek.toLocaleString(numberLocale()));
   draft.eventStream = [...draft.eventStream, {
     at: draft.simTime,
     text: waste.units > 0 ? strings.waste.event(waste.kept, waste.units, fee) : strings.waste.keptOnly(waste.kept),

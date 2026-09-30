@@ -108,9 +108,15 @@
   border: 0; border-bottom: max(1px, calc(1 * var(--nx-u))) solid var(--nx-rule); background: transparent;
   font: inherit; color: inherit; text-align: left; cursor: pointer; border-radius: 0;
 }
-.nxs-list-row:hover:not(:disabled):not([aria-disabled='true']) { background: #ebe9e8; }
-.nxs-list-row[aria-pressed='true'] { background: #fdeeea; }
-.nxs-list-row:disabled, .nxs-list-row[aria-disabled='true'] { cursor: default; color: #8a8685; }
+/* ORDER 291 punkt 6 — raderna ligger på den mörka morgonen: hovringen och
+   valet tonas i grädde och guld, inte i det ljusa papprets grå (texten är
+   grädde och försvann på #ebe9e8). På papper gäller de ljusa tonerna. */
+.nxs-list-row:hover:not(:disabled):not([aria-disabled='true']) { background: rgba(244, 230, 204, 0.08); }
+.nxs-list-row[aria-pressed='true'] { background: rgba(232, 178, 58, 0.16); }
+.nxs-list-row:disabled, .nxs-list-row[aria-disabled='true'] { cursor: default; color: rgba(244, 230, 204, 0.45); }
+.nx-paper .nxs-list-row:hover:not(:disabled):not([aria-disabled='true']) { background: #ebe9e8; }
+.nx-paper .nxs-list-row[aria-pressed='true'] { background: #fdeeea; }
+.nx-paper .nxs-list-row:disabled, .nx-paper .nxs-list-row[aria-disabled='true'] { color: #8a8685; }
 .nxs-list-row:focus-visible { outline: calc(3 * var(--nx-u)) solid var(--nx-accent); outline-offset: calc(-3 * var(--nx-u)); }
 .nxs-list-row[data-static='true'] { cursor: default; }
 .nxs-row-title { font-size: calc(28 * var(--nx-u)); line-height: 1.2; font-weight: 700; }

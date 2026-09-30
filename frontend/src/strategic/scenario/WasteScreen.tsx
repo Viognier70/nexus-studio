@@ -19,7 +19,7 @@ import { formatSek, wasteHoldKey } from '../ui/CashCounter';
 import { countTo, popIn, type Counter } from '../ui/juice/juice';
 import { flyTo, release } from '../ui/juice/fx';
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
-import { useLanguage } from '../../content/language';
+import { useLanguage, numberLocale } from '../../content/language';
 import '../ui/service/service.css';
 
 const FRACTION_GAP_MS = 650;
@@ -50,7 +50,7 @@ export function WasteScreen({ sim, onContinue }: { sim: SimulationState; onConti
     timers.push(window.setTimeout(() => countTo(fee, w.feeSek ?? 0, { ticks: 14, pop: feeRef.current, big: true }), afterRows + 400));
     timers.push(window.setTimeout(() => {
       if (!key) return;
-      flyTo('cash', feeBox.current, strings.money.minus(Math.round(w.feeSek ?? 0).toLocaleString('en-GB')), 0, { bg: 'var(--nx-accent)' });
+      flyTo('cash', feeBox.current, strings.money.minus(Math.round(w.feeSek ?? 0).toLocaleString(numberLocale())), 0, { bg: 'var(--nx-accent)' });
       // Lappen tar Designs 900 ms; kassan släpps när den landat.
       timers.push(window.setTimeout(() => release(key), still ? 0 : 900));
     }, afterRows + 400 + FEE_FLY_DELAY_MS));

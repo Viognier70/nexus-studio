@@ -934,6 +934,8 @@ export interface DayState {
   booking?: GuestBooking;
   guestTypeArrivals?: Partial<Record<GuestType, number>>;
   guestTypeRevenue?: Partial<Record<GuestType, number>>;
+  // ORDER 291 — notorna per gästtyp i kväll (snittnotan = intäkt / notor).
+  guestTypeBills?: Partial<Record<GuestType, number>>;
   socialGuest?: { guestId: string; outcome: 'good' | 'bad' | 'neutral' | null } | null;
   billionaireVisit?: BillionaireVisit | null;
   // ORDER 290 — kvällens ekonomi: insatsen när dörrarna öppnade, kassan
@@ -947,6 +949,8 @@ export interface DayState {
   // kvällskassan passerade insatsen.
   billsTonight?: number;
   tillPassedAt?: string | null;
+  // ORDER 291 — råvarorna som betalas när gästen betalar (klasser utan paket).
+  ingredientPaidTonight?: number;
   // ORDER 290 — händelser i rummet efter svaren (över bordet).
   roomReactions?: RoomReaction[];
 }
@@ -966,7 +970,10 @@ export interface EveningTransfer {
   // Resten av insatsen: personal (med köksdriften och räntan), DJ, kompetens
   // och satsningar; och hur många som var i tjänst.
   fixedSek: number;
-  rest: { staff: number; dj: number; competence: number; investments: number; incidents: number };
+  rest: { staff: number; dj: number; investments: number; incidents: number; waste: number };
+  // ORDER 291 — kurserna (satsningarna som är kompetens) är investeringar,
+  // inte kvällskostnader (Vision Owner 2026-09-30). De står under resultatet.
+  coursesSek: number;
   staffOnShift: number;
   resultSek: number;
   wasteFeeSek: number;

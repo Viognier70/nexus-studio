@@ -150,7 +150,9 @@ describe('ORDER 289 — singular och plural', () => {
     expect(en.morningBuy.summary(1, 2)).toContain('1 portion ');
     expect(sv.morningBuy.summary(9, 1)).toContain('1 flaska');
     expect(sv.morningBuy.summary(1, 2)).toMatch(/1 portion\b/);
-    expect(en.morningBuy.mainsCover(1, 1)).toBe('1 of 1 guest');
+    // ORDER 291 — "79 portioner till 15 väntade gäster".
+    expect(en.morningBuy.mainsCover(1, 1)).toBe('1 portion for 1 expected guest');
+    expect(sv.morningBuy.mainsCover(79, 15)).toBe('79 portioner till 15 väntade gäster');
     expect(en.result.stepsOf(1, 1)).toBe('1 of 1 step');
   });
 });

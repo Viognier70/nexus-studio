@@ -13,12 +13,12 @@
 //   väntade gäster (marknadens tak, dailyGuestCap), glasen per gäst, och vad
 //   lagret ger om allt säljs.
 
-import { ITEM_BATCH } from '../../sim/balance';
+import { ITEM_BATCH, STOCK } from '../../sim/balance';
 import { dailyGuestCap } from '../../sim/economy';
 import { stockForecast } from '../../sim/stockForecast';
 import type { SimulationState } from '../types';
 import { findDish, GLASSES_PER_BOTTLE, minIngredientCost } from './m4Catalogue';
-import { packageDishIds } from './packages';
+import { packageDishIds, scaledBaseItems, type StockPackage } from './packages';
 import { computePlatesRemaining, menuFromStock } from './stockPackages';
 
 export interface DishRow {
@@ -51,7 +51,7 @@ function dishCost(dishId: string): number {
   return (findDish(dishId)?.recipe ?? []).reduce((a, r) => a + minIngredientCost(r.ingredientId) * r.units, 0);
 }
 
-const BY_THE_GLASS = /, by the glass$/;
+const BY_THE_GLASS = /, (by the glass|per glas)$/;
 
 export function morningRows(state: SimulationState): { dishes: DishRow[]; drinks: DrinkRow[] } {
   const ids = packageDishIds(state.economy.businessClass);
@@ -107,6 +107,11 @@ export function spentTodaySek(state: SimulationState): number {
     .reduce((a, l) => a + l.amount, 0));
 }
 
+// ORDER 291 — baspaketet efter kvällens bokning (packages.ts scaledBaseItems).
+export function baseItemsFor(state: SimulationState, pkg: StockPackage): Record<string, number> {
+  return scaledBaseItems(pkg, dailyGuestCap(state));
+}
+
 export function coverage(state: SimulationState) {
   const menu = menuFromStock(state);
   const food = menu.filter((m) => findDish(m.dishId)?.kind !== 'drink');
@@ -118,7 +123,11 @@ export function coverage(state: SimulationState) {
   const glasses = drinks.reduce((a, d) => a + d.bottles * d.glassesPerBottle + d.openGlasses, 0);
   const meanFood = food.length > 0 ? food.reduce((a, m) => a + m.price, 0) / food.length : 0;
   const potentialSek = Math.round(covers * meanFood + drinks.reduce((a, d) => a + (d.bottles * d.glassesPerBottle + d.openGlasses) * d.glassPriceSek, 0));
-  return { covers, guests, share: guests > 0 ? Math.min(1, covers / guests) : 0, glasses, glassesPerGuest: guests > 0 ? glasses / guests : 0, potentialSek };
+  // ORDER 291 — behovet och varningen när inköpet är mer än dubbelt behovet.
+  const glassesNeeded = Math.ceil(guests * (1 + STOCK.secondDrinkChance));
+  const overFood = guests > 0 && covers > guests * STOCK.overBuyFactor;
+  const overDrink = glassesNeeded > 0 && glasses > glassesNeeded * STOCK.overBuyFactor;
+  return { covers, guests, share: guests > 0 ? Math.min(1, covers / guests) : 0, glasses, glassesPerGuest: guests > 0 ? glasses / guests : 0, potentialSek, glassesNeeded, overFood, overDrink };
 }
 
 // Värdet av det som står i lagret, mat eller dryck, till inköpspris.

@@ -149,7 +149,9 @@ describe('M2 DoD — morning activity model', () => {
 
   it('activity effect applies at day rollover (capitals move, ledger records)', () => {
     const script = [
-      { atSec: 1, action: { type: 'PICK_ACTIVITY', id: 'local-sourcing' } },
+      // ORDER 291 — bara satsningar med en ekonomisk följd bokför en rad; de
+      // med en negativ följd lika stor som priset drog priset två gånger.
+      { atSec: 1, action: { type: 'PICK_ACTIVITY', id: 'wine-tasting' } },
       { atSec: 2, action: { type: 'SKIP_LUNCH' } },
       { atSec: 60, action: { type: 'OPEN_SERVICE', service: 'dinner', lengthMinutes: 5 } }
     ] as { atSec: number; action: import('../../types').SimAction }[];
@@ -161,7 +163,7 @@ describe('M2 DoD — morning activity model', () => {
       l.cause.startsWith('Investment effect')
     );
     expect(effectLine, 'no Investment effect ledger line found').toBeDefined();
-    expect(effectLine!.cause).toContain('Local ingredients tonight');
-    expect(effectLine!.amount).toBe(-2500);
+    expect(effectLine!.cause).toContain('Wine tasting with the team');
+    expect(effectLine!.amount).toBe(1000);
   });
 });

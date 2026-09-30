@@ -166,7 +166,9 @@ export function recordTypeRevenue(draft: SimulationState, guest: Guest, sek: num
   if (!guest.guestType || sek <= 0) return;
   const rev = { ...(draft.day.guestTypeRevenue ?? {}) };
   rev[guest.guestType] = (rev[guest.guestType] ?? 0) + sek;
-  draft.day = { ...draft.day, guestTypeRevenue: rev };
+  const bills = { ...(draft.day.guestTypeBills ?? {}) };
+  bills[guest.guestType] = (bills[guest.guestType] ?? 0) + 1;
+  draft.day = { ...draft.day, guestTypeRevenue: rev, guestTypeBills: bills };
   const v = draft.day.billionaireVisit;
   if (guest.guestType === 'billionaire' && v && v.guestId === guest.id) {
     draft.day = { ...draft.day, billionaireVisit: { ...v, billSek: v.billSek + sek } };

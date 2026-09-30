@@ -1,6 +1,6 @@
 import { calendarFor } from '../../sim/calendar';
 import { bestAnswerFactor, drinkRevenueFactor, enablersWithCredits } from '../../sim/knowledgeInService';
-import { EVENING, EVENING_ECONOMY, SERVICE, type BusinessClassId } from '../../sim/balance';
+import { EVENING, EVENING_ECONOMY, GUEST_TYPES, SERVICE, type BusinessClassId } from '../../sim/balance';
 import { answerSalvage, closeSalvage, discardUnresolvedSalvage } from './salvage';
 import { clockMinutes, formatClock, canBack, canStartBack, pickBackAnswer, closeIncidents, countDown, isIncidentOpen, maybeOpenIncident, planIncidents, resolveIncident, startBack, tickOngoing, type CreditChange } from '../../sim/incidents';
 import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
@@ -17,6 +17,7 @@ import type {
   DayPeriod,
   DayState,
   EnablerKey,
+  Guest,
   IngredientTier,
   PendingQuestion,
   Policies,
@@ -87,6 +88,8 @@ import {
 // report per the three-voices split. Observer voice moved out of
 // during-service into the evening account only.
 import { SERVICE_REPORT_PREP_CARRYOVER } from '../../content/serviceReport';
+import { SERVICE_REPORT_PREP_CARRYOVER_SV } from '../../content/serviceReport.sv';
+import { getLanguage } from '../../content/language';
 import { buyItems, buyPackage, computePlatesRemaining, menuAtServiceStart, recordStockAtOpen, returnItems, settleWaste, stockReadiness, usesPackages } from './stockPackages';
 import { orderFeedLines, orderForGuest, tableOf, tipShare, streamOrderLine } from './guestOrders';
 import { maybeChance, planChance } from '../../sim/serviceChance';
@@ -158,12 +161,13 @@ import {
   postValueQuotaLine
 } from './cashReading';
 import { drawNextTheme } from './themeSelection';
-import { eveningStake, eveningTransfer, passedStake, tillSek } from './eveningEconomy';
+import { coursesSekToday, eveningStake, eveningTransfer, passedStake, tillSek } from './eveningEconomy';
 import { assignGuestTypes, billionaireTreat, maybeBillionaireArrives, bookingFor, recordTypeRevenue, settleSocialGuest, settleSocialGuestAtClose } from './guestTypes';
 import { sustainabilityLevelsFor } from '../../sim/sustainabilityLevels';
 import {
   WEEKLY_GATE_DAYS,
-  activityById
+  activityById,
+  activityName
 } from './activities';
 import {
   findDish,
@@ -357,7 +361,11 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
     case 'CLOSE_DAY':
       return closeDay(state);
     case 'LOAD_STATE':
-      return action.state;
+      // ORDER 291 — en sparfil från före ORDER 291 saknar dygnets
+      // utgångskassa; på morgonen är den kassan som den står.
+      return action.state.day.cashAtDayStart == null && action.state.day.period === 'morning'
+        ? { ...action.state, day: { ...action.state.day, cashAtDayStart: action.state.cash } }
+        : action.state;
     case 'VISIT_PAVILION':
       return startVisit(state, action.pavilion, action.mode);
     case 'ANSWER_VISIT': {
@@ -484,7 +492,7 @@ function pickActivity(state: SimulationState, id: string): SimulationState {
     postLedger(next, {
       category: 'other',
       amount: -activity.costSek,
-      cause: `Investment: ${activity.name}`,
+      cause: strings.ledgerCause.investment(activityName(activity)),
       causeId: id
     });
   }
@@ -517,7 +525,7 @@ function unpickActivity(state: SimulationState, id: string): SimulationState {
     postLedger(next, {
       category: 'other',
       amount: activity.costSek,
-      cause: `Investment refunded: ${activity.name}`,
+      cause: strings.ledgerCause.investmentRefunded(activityName(activity)),
       causeId: id
     });
   }
@@ -539,7 +547,7 @@ function applyActivityEffectsOnDayClose(draft: SimulationState): void {
       postLedger(draft, {
         category: 'other',
         amount: activity.effect.economic,
-        cause: `Investment effect: ${activity.name}`,
+        cause: strings.ledgerCause.investmentEffect(activityName(activity)),
         causeId: id
       });
     }
@@ -614,7 +622,7 @@ function buyStock(
   postLedger(next, {
     category: 'stock',
     amount: -costSek,
-    cause: `Purchase ${units}× ${ingredient.name} from ${supplier.name}`,
+    cause: strings.ledgerCause.purchase(units, ingredient.name, supplier.name),
     causeId: `${supplierId}:${ingredientId}`
   });
   if (received < units) {
@@ -622,7 +630,7 @@ function buyStock(
       ...next.eventStream,
       {
         at: state.simTime,
-        text: `Short delivery: ${supplier.name} delivered ${received} of ${units} ${ingredient.name}.`,
+        text: strings.simEvent.shortDelivery(supplier.name, received, units, ingredient.name),
         category: 'ambient',
         causeTag: 'stock_out',
         causeChainId: null,
@@ -791,7 +799,7 @@ export function drawMenuDishForGuest(
           ...draft.eventStream,
           {
             at: simTime,
-            text: `${runOutDish.name} has run out — the kitchen has no ingredients left.`,
+            text: strings.simEvent.ranOut(runOutDish.name),
             category: 'ambient',
             causeTag: 'stock_out',
             causeChainId: null,
@@ -828,7 +836,7 @@ export function drawMenuDishForGuest(
       ...draft.eventStream,
       {
         at: simTime,
-        text: `A guest left — ${targetDish.name} was not available tonight.`,
+        text: strings.simEvent.guestLeftMissing(targetDish.name),
         category: 'ambient',
         causeTag: 'stock_out',
         causeChainId: null,
@@ -859,7 +867,7 @@ export function drawMenuDishForGuest(
       ...draft.eventStream,
       {
         at: simTime,
-        text: `A guest wanted ${targetDish.name}; the kitchen served ${cheapestDish.name} instead.`,
+        text: strings.simEvent.substituted(targetDish.name, cheapestDish.name),
         category: 'ambient',
         causeTag: 'stock_out',
         causeChainId: null,
@@ -886,7 +894,7 @@ export function drawMenuDishForGuest(
     ...draft.eventStream,
     {
       at: simTime,
-      text: `A guest left — ${targetDish.name} was not available tonight.`,
+      text: strings.simEvent.guestLeftMissing(targetDish.name),
       category: 'ambient',
       causeTag: 'stock_out',
       causeChainId: null,
@@ -1018,12 +1026,13 @@ function requestBankLoan(state: SimulationState): SimulationState {
   // Beviljande: cash + ledger. Vi jobbar mot ett draft-objekt eftersom
   // postLedger + applyCashDelta muterar in-place; samma pattern som
   // buyStock och scenariernas ekonomilinjer.
-  const draft: SimulationState = { ...state, bankMeetingOutcome: outcomeState };
+  // ORDER 291 — lånet är inte kvällens resultat: dygnets utgångskassa flyttas lika mycket.
+  const draft: SimulationState = { ...state, bankMeetingOutcome: outcomeState, day: { ...state.day, cashAtDayStart: (state.day.cashAtDayStart ?? state.cash) + outcome.loanAmountSek } };
   applyCashDelta(draft, outcome.loanAmountSek);
   postLedger(draft, {
     category: 'other',
     amount: outcome.loanAmountSek,
-    cause: `Bank loan (${outcome.loanTier})`,
+    cause: strings.ledgerCause.bankLoan(outcome.loanTier),
     causeId: `bank-loan-${outcome.loanTier}`
   });
   // ORDER 110 — R4 realiserar bankmötets tilldelning. Byt verksamhet om
@@ -1059,7 +1068,7 @@ function forceCollapseAction(state: SimulationState): SimulationState {
     events: [...state.events],
     consequenceEvents: [...state.consequenceEvents]
   };
-  fireCollapse(draft);
+  fireCollapse(draft, closeOpenBills);
   return draft;
 }
 
@@ -1584,6 +1593,152 @@ function scenarioLedgerCause(
 // hör till senare arbete (§7 avgränsning).
 const BREAKFAST_DURATION_SEC = 30;
 
+// ORDER 291 — gästens betalning, i servicen när gästen går till kassan och
+// när servicen stänger för de gäster som ännu sitter kvar (closeOpenBills).
+// ORDER 291 (provspel: "Gästtyperna betalar lika") — notan per plånbok i
+// klasserna utan lagerpaket (balance.ts GUEST_TYPES.legacyBillFactor).
+function legacyBillFactor(guest: Guest): number {
+  return GUEST_TYPES.legacyBillFactor[guest.guestType ? GUEST_TYPES.wallet[guest.guestType] : 'normal'];
+}
+
+function payGuest(draft: SimulationState, guest: Guest, revenueMult: number, inLunch: boolean, inDinner: boolean): void {
+    // ORDER 291 — efter kvällens stängning betalar ingen: notorna togs vid
+    // stängningen (closeOpenBills), och kvällens resultat står still medan
+    // spelaren läser skärmarna.
+    if (draft.day.period === 'evening' && !inDinner) return;
+    // ORDER 077 §4 (M4) — if a menu is composed, the guest orders
+    // from it and pays the dish price (drawing recipe from stock).
+    // If every menu dish is out or menu is empty, fall back to the
+    // legacy policies-based revenue path so pre-M4 tests still hold.
+    let rev: number;
+    // ORDER 258 — per-rätt ingredient-cost lagras vid draw, används
+    // nedan vid samma paying-tick. Menyns frozen `ingredientCostSek`.
+    // Vid legacy no-menu-branch är per-rätt-cost 0 (paras ej gäster
+    // till specifik rätt). Flat 4|7|12/min borttagen i costPerMinuteToTick.
+    let ingredientCostSek = 0;
+    // ORDER 275 — klasser med paket: gästen beställer ur lagret, och
+    // portionerna är betalda vid köpet (ingen kostnad vid betalningen).
+    // ORDER 277 — beställningen följer gästens kost och plånbok
+    // (guestOrders.ts). Finns inget som passar går gästen utan att betala.
+    const packaged = usesPackages(draft);
+    if (packaged) {
+      // ORDER 278 — beställningen lades vid bordet; en gäst utan
+      // beställning (till exempel mitt i en laddning) beställer nu.
+      let bill = guest.order?.revenueSek ?? null;
+      if (bill === null) {
+        const orderRng = createRng(draft.rngState);
+        const order = orderForGuest(draft, guest, () => orderRng.next());
+        draft.rngState = orderRng.state;
+        bill = order.kind === 'lost' ? 0 : order.revenueSek;
+      }
+      if (bill <= 0) {
+        if (!guest.order) draft.day.walkedCount = (draft.day.walkedCount ?? 0) + 1;
+        return;
+      }
+      // ORDER 290 — rätt och fel svar vid bordet höjer eller sänker notan.
+      rev = bill * revenueMult * Math.max(0, 1 + (guest.billBonus ?? 0));
+    } else if (draft.menu.length > 0) {
+      const rng = createRng(draft.rngState);
+      const targetRoll = rng.next();
+      const substituteRoll = rng.next();
+      draft.rngState = rng.state;
+      const draw = drawMenuDishForGuest(draft, guest.id, draft.simTime, targetRoll, substituteRoll);
+      // ORDER 079 §3 (M4a) — four outcomes: served / substituted /
+      // walked / no-menu. Served + substituted pay a price; walked
+      // + no-menu produce no revenue (and drawMenuDishForGuest
+      // already fired the ambient line + rep hit).
+      if (draw.kind === 'served' || draw.kind === 'substituted') {
+        // ORDER 291 — plånboken ger olika notor även utan lagerpaket.
+        rev = draw.price * revenueMult * legacyBillFactor(guest);
+        ingredientCostSek = draw.ingredientCostSek;
+      } else {
+        return;
+      }
+    } else {
+      // ORDER 291 — food trucken och ölkrogen utan meny: samma plånbok.
+      rev = revenuePerGuest(draft.policies) * revenueMult * legacyBillFactor(guest);
+    }
+    // ORDER 269 — Stensöta höjer intäkten per gäst via dryck.
+    rev *= drinkRevenueFactor(draft);
+    // ORDER 278 — dricksen efter gästens nöjdhet, och betalningen i
+    // strömmen. ORDER 280 (Designs H1): dricksen går till personalens
+    // pott och aldrig till kassan.
+    if (packaged) {
+      // ORDER 279 — rätt svar i raketer vid gästens bord höjer dricksen.
+      const tip = Math.round(rev * (tipShare(guest.satisfaction) + (guest.tipBonus ?? 0)));
+      // ORDER 280 — Designs H1: betalningen och dricksen som två rader.
+      const t = tableOf(guest);
+      const tt = t === null ? strings.feed.guest : String(t);
+      streamOrderLine(draft, strings.feed.pay(tt), 'guest_paid', { feed: 'paid', table: t, amountSek: Math.round(rev) });
+      if (tip > 0) streamOrderLine(draft, strings.feed.tipLine(tt), 'guest_tip', { feed: 'tip', table: t, amountSek: tip });
+      draft.day.tipsSek = (draft.day.tipsSek ?? 0) + tip;
+      draft.staffTipPotSek = (draft.staffTipPotSek ?? 0) + tip;
+    }
+    // ORDER 050 §3 (2026-08-10) — paired write: revenue accumulator
+    // + cash till stay in sync via applyCashRevenue. serviceRevenue
+    // panel arrays continue to receive the kSEK share.
+    applyCashRevenue(draft, rev);
+    // ORDER 287a — kvällens intäkt per gästtyp.
+    recordTypeRevenue(draft, guest, rev);
+    // ORDER 290 — notorna i kväll, och klockslaget när kvällskassan passerar insatsen.
+    if (inDinner) {
+      draft.day = { ...draft.day, billsTonight: (draft.day.billsTonight ?? 0) + 1 };
+      if (passedStake(draft)) draft.day = { ...draft.day, tillPassedAt: formatClock(clockMinutes(draft)) };
+    }
+    // ORDER 258 — debitera per-rätt ingredient-cost vid samma paying-
+    // tick som revenue. Bokförs vid BETALNING (rekognosering i register
+    // §5: en gäst som lämnar utan att betala kostar ingenting idag —
+    // förslag om flytt till servering väntar VO-beslut).
+    if (ingredientCostSek > 0) {
+      applyCashCost(draft, ingredientCostSek);
+      draft.day.serviceIngredientAccrued += ingredientCostSek;
+      // ORDER 291 — råvarorna för det som såldes, till skärmen efter servicen.
+      draft.day.ingredientPaidTonight = (draft.day.ingredientPaidTonight ?? 0) + ingredientCostSek;
+    }
+    const revKsek = rev / 1000;
+    if (inLunch) draft.serviceRevenueToday.lunch += revKsek;
+    else if (inDinner) draft.serviceRevenueToday.dinner += revKsek;
+    // ORDER 050 §7 step 3 (2026-08-10) — cover count for the
+    // per-service ledger summary. One increment per completed
+    // payment during a service; enriches the revenue line's cause.
+    if (inLunch || inDinner) draft.day.serviceCovers += 1;
+    // ORDER 073 (M3) — post-service straggler payments. A guest
+    // whose 'paying' transition lands on the very tick that
+    // period flipped to evening still has applyCashRevenue fire,
+    // but serviceRevenueToday no longer accumulates for them
+    // (inLunch / inDinner false). Without this ledger line the
+    // aggregate 'revenue' line at the next service close would
+    // undercount the straggler's contribution, breaking DoD 3
+    // reconciliation. Posts one 'other' line per straggler.
+    if (!inLunch && !inDinner) {
+      postLedger(draft, {
+        category: 'other',
+        amount: rev,
+        cause: strings.ledgerCause.latePayment,
+        causeId: guest.id
+      });
+    }
+}
+
+// ORDER 291 (provspel av 4795192) — när servicen stänger betalar de gäster
+// som sitter kvar med en beställning, så att kvällens kassa, resultatet och
+// kassan nästa morgon är samma tal (förut betalade de efter stängning, och
+// kvällens resultat ändrades medan skärmen var öppen).
+function closeOpenBills(draft: SimulationState): void {
+  const revenueMult = worldFactorRevenueMultiplier(draft.day.worldFactors);
+  for (const guest of draft.guests) {
+    // Den som har beställt betalar: vid bordet, under serveringen och
+    // medan maten äts. I klasserna med paket är beställningen lagd vid
+    // bordet (guest.order); utan paket beställer gästen när hen betalar.
+    const ordered = usesPackages(draft) ? Boolean(guest.order) : guest.state === 'ordering';
+    if (guest.state !== 'dining' && guest.state !== 'serving' && !((guest.state === 'seated' || guest.state === 'ordering') && ordered)) continue;
+    if (usesPackages(draft) && !guest.order) continue;
+    guest.state = 'paying';
+    guest.stateTime = draft.simTime;
+    payGuest(draft, guest, revenueMult, false, true);
+  }
+}
+
 export function tickDayTransitions(state: SimulationState): SimulationState {
   const { day, simTime } = state;
   // ORDER 111 §4 — frukost-pass. Endast värdshus når hit (dygnsrollovern
@@ -1681,6 +1836,8 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
   if (day.period === 'dinner' && day.currentServiceLengthMinutes !== null) {
     const endsAt = day.periodStartAt + day.currentServiceLengthMinutes * 60;
     if (simTime >= endsAt) {
+      // ORDER 291 — gästerna som sitter kvar betalar när servicen stänger.
+      closeOpenBills(state);
       // ORDER 046 §3 — snapshot the evening account BEFORE the day
       // fields are cleared. The account reads day.revenueAtServiceStart
       // and friends; if we cleared them first, every account would
@@ -1700,6 +1857,12 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
         ...state,
         team: removeAgencyMembers(state.team),
         agencyOffer: null,
+        // ORDER 291 punkt 10 — ett scenario eller en fråga som väntar på
+        // svar när servicen stänger läggs undan, så att rutan inte blir
+        // kvar bakom skärmarna efter servicen.
+        scenario: ['subject', 'situation', 'question', 'question-explanation'].includes(state.scenario.phase)
+          ? { ...state.scenario, phase: 'idle', active: false, awaitingChoice: false, pendingQuestion: null }
+          : state.scenario,
         eveningAccount: withEconomyWarning(eveningAccount, dayEnd(state.economy, dayEndHeadroom(state))),
         economy: dayEnd(state.economy, dayEndHeadroom(state)),
         metrics: {
@@ -1911,6 +2074,12 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           cashAtDayStart: state.cash
         }
       };
+      // ORDER 291 — kurserna (kompetens) är investeringar: summan för veckan
+      // står i veckoavräkningen, inte i kvällens resultat.
+      const coursesToday = coursesSekToday(state);
+      if (coursesToday > 0) {
+        nextForDay.economy = { ...nextForDay.economy, weekCoursesSek: (nextForDay.economy.weekCoursesSek ?? 0) + coursesToday };
+      }
       if (wageTotal > 0) {
         applyCashCost(nextForDay, wageTotal);
         // ORDER 280 — veckans löner, en rad i avräkningen och tidningen.
@@ -1922,7 +2091,7 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
           postLedger(nextForDay, {
             category: 'wage',
             amount: -m.dailyCost,
-            cause: `Wage: ${roleText(m.role)}`,
+            cause: strings.ledgerCause.wage(roleText(m.role)),
             causeId: m.id
           });
         }
@@ -1938,7 +2107,7 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
         postLedger(nextForDay, {
           category: 'other',
           amount: -idleAccrued,
-          cause: `Staff cost outside service (day ${state.day.dayNumber})`
+          cause: strings.ledgerCause.idleStaff(state.day.dayNumber)
         });
       }
       // ORDER 075 (M2) — apply picked-activity end-of-day effects.
@@ -1957,10 +2126,11 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       // ORDER 265 — v1-lånets ränta varje dygn, och veckoavräkningen när
       // söndagen (den stängda dagen) börjar.
       postDailyInterest(nextForDay);
-      if (!calendarFor(nextForDay.day.dayNumber).isServiceDay) {
-        return settleWeek(nextForDay);
-      }
-      return nextForDay;
+      // ORDER 291 — morgonens kassa noteras efter gårdagens löner, ränta,
+      // satsningarnas följd och veckoavräkningen, så att dagens resultat bara
+      // räknar dagens egna pengar (förut räknades lönerna två gånger).
+      const settled = !calendarFor(nextForDay.day.dayNumber).isServiceDay ? settleWeek(nextForDay) : nextForDay;
+      return { ...settled, day: { ...settled.day, cashAtDayStart: settled.cash } };
     }
   }
   return state;
@@ -2071,7 +2241,7 @@ function acceptAgency(state: SimulationState): SimulationState {
       {
         at: state.simTime,
         kind: 'system',
-        text: 'Agency staff called in — the team grows for the evening.'
+        text: strings.simEvent.agencyIn
       }
     ]
   };
@@ -2079,7 +2249,7 @@ function acceptAgency(state: SimulationState): SimulationState {
   postLedger(next, {
     category: 'agency',
     amount: -AGENCY_HIRE_COST,
-    cause: `Agency staff: ${roleText(state.agencyOffer.role)} tonight`,
+    cause: strings.ledgerCause.agency(roleText(state.agencyOffer.role)),
     causeId: state.agencyOffer.role
   });
   bumpMorale(next, MORALE_AGENCY_ACCEPT_BUMP);
@@ -2105,7 +2275,7 @@ function declineAgency(state: SimulationState): SimulationState {
       {
         at: state.simTime,
         kind: 'system',
-        text: 'Declined agency staff — the team notices that no help came.'
+        text: strings.simEvent.agencyDeclined
       }
     ]
   };
@@ -2144,7 +2314,7 @@ function hireTeamMember(state: SimulationState, role: StaffRole): SimulationStat
       {
         at: state.simTime,
         kind: 'system',
-        text: `Hired ${roleText(role)} — contract until day ${member.contractEndsDay}.`
+        text: strings.simEvent.hired(roleText(role), member.contractEndsDay)
       }
     ]
   };
@@ -2186,7 +2356,7 @@ function fireTeamMember(state: SimulationState, memberId: string): SimulationSta
     postLedger(next, {
       category: 'buyout',
       amount: -buyout,
-      cause: `Severance pay: ${roleText(member.role)} (${remainingDays} days left)`,
+      cause: strings.ledgerCause.severance(roleText(member.role), remainingDays),
       causeId: member.id
     });
   }
@@ -2390,116 +2560,7 @@ function advanceTick(state: SimulationState): SimulationState {
   const inLunch = draft.day.period === 'lunch';
   const inDinner = draft.day.period === 'dinner';
   for (const guest of draft.guests) {
-    if (guest.state === 'paying' && guest.stateTime === draft.simTime) {
-      // ORDER 077 §4 (M4) — if a menu is composed, the guest orders
-      // from it and pays the dish price (drawing recipe from stock).
-      // If every menu dish is out or menu is empty, fall back to the
-      // legacy policies-based revenue path so pre-M4 tests still hold.
-      let rev: number;
-      // ORDER 258 — per-rätt ingredient-cost lagras vid draw, används
-      // nedan vid samma paying-tick. Menyns frozen `ingredientCostSek`.
-      // Vid legacy no-menu-branch är per-rätt-cost 0 (paras ej gäster
-      // till specifik rätt). Flat 4|7|12/min borttagen i costPerMinuteToTick.
-      let ingredientCostSek = 0;
-      // ORDER 275 — klasser med paket: gästen beställer ur lagret, och
-      // portionerna är betalda vid köpet (ingen kostnad vid betalningen).
-      // ORDER 277 — beställningen följer gästens kost och plånbok
-      // (guestOrders.ts). Finns inget som passar går gästen utan att betala.
-      const packaged = usesPackages(draft);
-      if (packaged) {
-        // ORDER 278 — beställningen lades vid bordet; en gäst utan
-        // beställning (till exempel mitt i en laddning) beställer nu.
-        let bill = guest.order?.revenueSek ?? null;
-        if (bill === null) {
-          const orderRng = createRng(draft.rngState);
-          const order = orderForGuest(draft, guest, () => orderRng.next());
-          draft.rngState = orderRng.state;
-          bill = order.kind === 'lost' ? 0 : order.revenueSek;
-        }
-        if (bill <= 0) {
-          if (!guest.order) draft.day.walkedCount = (draft.day.walkedCount ?? 0) + 1;
-          continue;
-        }
-        // ORDER 290 — rätt och fel svar vid bordet höjer eller sänker notan.
-        rev = bill * revenueMult * Math.max(0, 1 + (guest.billBonus ?? 0));
-      } else if (draft.menu.length > 0) {
-        const rng = createRng(draft.rngState);
-        const targetRoll = rng.next();
-        const substituteRoll = rng.next();
-        draft.rngState = rng.state;
-        const draw = drawMenuDishForGuest(draft, guest.id, draft.simTime, targetRoll, substituteRoll);
-        // ORDER 079 §3 (M4a) — four outcomes: served / substituted /
-        // walked / no-menu. Served + substituted pay a price; walked
-        // + no-menu produce no revenue (and drawMenuDishForGuest
-        // already fired the ambient line + rep hit).
-        if (draw.kind === 'served' || draw.kind === 'substituted') {
-          rev = draw.price * revenueMult;
-          ingredientCostSek = draw.ingredientCostSek;
-        } else {
-          continue;
-        }
-      } else {
-        rev = revenuePerGuest(draft.policies) * revenueMult;
-      }
-      // ORDER 269 — Stensöta höjer intäkten per gäst via dryck.
-      rev *= drinkRevenueFactor(draft);
-      // ORDER 278 — dricksen efter gästens nöjdhet, och betalningen i
-      // strömmen. ORDER 280 (Designs H1): dricksen går till personalens
-      // pott och aldrig till kassan.
-      if (packaged) {
-        // ORDER 279 — rätt svar i raketer vid gästens bord höjer dricksen.
-        const tip = Math.round(rev * (tipShare(guest.satisfaction) + (guest.tipBonus ?? 0)));
-        // ORDER 280 — Designs H1: betalningen och dricksen som två rader.
-        const t = tableOf(guest);
-        const tt = t === null ? strings.feed.guest : String(t);
-        streamOrderLine(draft, strings.feed.pay(tt), 'guest_paid', { feed: 'paid', table: t, amountSek: Math.round(rev) });
-        if (tip > 0) streamOrderLine(draft, strings.feed.tipLine(tt), 'guest_tip', { feed: 'tip', table: t, amountSek: tip });
-        draft.day.tipsSek = (draft.day.tipsSek ?? 0) + tip;
-        draft.staffTipPotSek = (draft.staffTipPotSek ?? 0) + tip;
-      }
-      // ORDER 050 §3 (2026-08-10) — paired write: revenue accumulator
-      // + cash till stay in sync via applyCashRevenue. serviceRevenue
-      // panel arrays continue to receive the kSEK share.
-      applyCashRevenue(draft, rev);
-      // ORDER 287a — kvällens intäkt per gästtyp.
-      recordTypeRevenue(draft, guest, rev);
-      // ORDER 290 — notorna i kväll, och klockslaget när kvällskassan passerar insatsen.
-      if (inDinner) {
-        draft.day = { ...draft.day, billsTonight: (draft.day.billsTonight ?? 0) + 1 };
-        if (passedStake(draft)) draft.day = { ...draft.day, tillPassedAt: formatClock(clockMinutes(draft)) };
-      }
-      // ORDER 258 — debitera per-rätt ingredient-cost vid samma paying-
-      // tick som revenue. Bokförs vid BETALNING (rekognosering i register
-      // §5: en gäst som lämnar utan att betala kostar ingenting idag —
-      // förslag om flytt till servering väntar VO-beslut).
-      if (ingredientCostSek > 0) {
-        applyCashCost(draft, ingredientCostSek);
-        draft.day.serviceIngredientAccrued += ingredientCostSek;
-      }
-      const revKsek = rev / 1000;
-      if (inLunch) draft.serviceRevenueToday.lunch += revKsek;
-      else if (inDinner) draft.serviceRevenueToday.dinner += revKsek;
-      // ORDER 050 §7 step 3 (2026-08-10) — cover count for the
-      // per-service ledger summary. One increment per completed
-      // payment during a service; enriches the revenue line's cause.
-      if (inLunch || inDinner) draft.day.serviceCovers += 1;
-      // ORDER 073 (M3) — post-service straggler payments. A guest
-      // whose 'paying' transition lands on the very tick that
-      // period flipped to evening still has applyCashRevenue fire,
-      // but serviceRevenueToday no longer accumulates for them
-      // (inLunch / inDinner false). Without this ledger line the
-      // aggregate 'revenue' line at the next service close would
-      // undercount the straggler's contribution, breaking DoD 3
-      // reconciliation. Posts one 'other' line per straggler.
-      if (!inLunch && !inDinner) {
-        postLedger(draft, {
-          category: 'other',
-          amount: rev,
-          cause: `Late payment from a guest (${draft.day.period})`,
-          causeId: guest.id
-        });
-      }
-    }
+    if (guest.state === 'paying' && guest.stateTime === draft.simTime) payGuest(draft, guest, revenueMult, inLunch, inDinner);
   }
   // Accumulate cost — paired write to till.
   const tickCost = (costPerMinuteToTick(draft) * tickSeconds) / 60;
@@ -2571,7 +2632,7 @@ function advanceTick(state: SimulationState): SimulationState {
     draft.policies = { ...draft.policies, hasUteplats: true };
     draft.events = [
       ...draft.events,
-      { at: draft.simTime, kind: 'scenario', text: 'Terrace opened. Standing tables out on the street.' }
+      { at: draft.simTime, kind: 'scenario', text: strings.simEvent.terrace }
     ];
   }
 
@@ -2614,7 +2675,7 @@ function advanceTick(state: SimulationState): SimulationState {
         ...draft.pendingOutcomes,
         {
           dueAt: draft.simTime + PREP_CARRYOVER_OFFSET_SEC,
-          text: SERVICE_REPORT_PREP_CARRYOVER,
+          text: getLanguage() === 'sv' ? SERVICE_REPORT_PREP_CARRYOVER_SV : SERVICE_REPORT_PREP_CARRYOVER,
           sustainability: 'social',
           scenarioId: 'prep-carryover',
           flavor: 'prep-carryover'
@@ -2686,7 +2747,7 @@ function advanceTick(state: SimulationState): SimulationState {
   // Guarded internally to post-opening + post-prep service and to
   // once-per-service; on fire, force-transitions period to evening.
   // Uses a tick-derived RNG so downstream random draws aren't shifted.
-  tickCollapseRoll(draft);
+  tickCollapseRoll(draft, closeOpenBills);
 
   // ORDER 047 §2 — morale drift toward mean-satisfaction-derived
   // target. Guarded internally to post-opening + post-prep service
@@ -2851,7 +2912,7 @@ function advanceTick(state: SimulationState): SimulationState {
     };
     draft.events = [
       ...draft.events,
-      { at: draft.simTime, kind: 'scenario', text: `Mentor: ${comment}` }
+      { at: draft.simTime, kind: 'scenario', text: strings.simEvent.mentor(comment) }
     ];
   }
 
@@ -2875,6 +2936,9 @@ function costPerMinuteToTick(state: SimulationState): number {
   // separat om behövs.
   // ORDER 268 — utan verksamhet finns inget kök och ingen personal.
   if (state.economy.businessClass === null && !state.introduction) return 0;
+  // ORDER 291 (provspel av 4795192) — efter stängning går köket inte:
+  // kvällens resultat räknade förut nedåt medan skärmen var öppen.
+  if (state.day.period === 'evening') return 0;
   const base = 9 * state.policies.staffCount;
   const wastePenalty = state.waste * 0.4;
   return base + wastePenalty;
@@ -2938,27 +3002,15 @@ function observerVoiceForPolicyChange(
   patch: Partial<Policies>
 ): string | null {
   const lines: string[] = [];
+  const V = strings.policyVoice;
   if (patch.trainingLevel !== undefined && patch.trainingLevel !== before.trainingLevel) {
-    const direction = patch.trainingLevel > before.trainingLevel ? 'raised' : 'lowered';
-    lines.push(`You ${direction} the training level for today`);
+    lines.push(patch.trainingLevel > before.trainingLevel ? V.trainingUp : V.trainingDown);
   }
   if (patch.pricing && patch.pricing !== before.pricing) {
-    const to = patch.pricing;
-    const map: Record<typeof to, string> = {
-      'låg': 'lowered prices',
-      'medel': 'set prices to medium',
-      'hög': 'raised prices'
-    };
-    lines.push(`You ${map[to]} for today`);
+    lines.push(patch.pricing === 'låg' ? V.pricesLow : patch.pricing === 'hög' ? V.pricesHigh : V.pricesMid);
   }
   if (patch.ingredientTier && patch.ingredientTier !== before.ingredientTier) {
-    const to = patch.ingredientTier;
-    const map: Record<typeof to, string> = {
-      'grund': 'went down to the basic supplier',
-      'utvald': 'chose selected suppliers',
-      'premium': 'moved to premium supply'
-    };
-    lines.push(`You ${map[to]} for today`);
+    lines.push(patch.ingredientTier === 'grund' ? V.supplyBasic : patch.ingredientTier === 'premium' ? V.supplyPremium : V.supplySelected);
   }
   if (lines.length === 0) return null;
   return lines.join(', ') + '.';
@@ -2976,7 +3028,7 @@ function describePolicyPatch(patch: Partial<Policies>): string {
     parts.push(`welcome drink ${patch.welcomeDrink ? 'on' : 'off'}`);
   if (patch.localSourcing !== undefined)
     parts.push(`local suppliers ${patch.localSourcing ? 'on' : 'off'}`);
-  return `Changed: ${parts.join(', ')}`;
+  return strings.policyVoice.changed(parts.join(', '));
 }
 
 function triggerScenario(
@@ -3374,7 +3426,7 @@ function resolveScenario(
       {
         at: state.simTime,
         kind: 'scenario' as const,
-        text: `Scenario: chose ${choice}`
+        text: strings.simEvent.scenarioChose(String(choice))
       }
     ]
   };

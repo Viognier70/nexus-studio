@@ -1,0 +1,189 @@
+{
+  "label": "after-ui-small",
+  "sizes": {
+    "1024x768": {
+      "startButtons": [
+        "Byn",
+        "1×",
+        "2×",
+        "4×",
+        "☰",
+        "Tillbaka",
+        "×",
+        "Nytt spel",
+        "Fortsätt ett sparat spel"
+      ],
+      "head": {
+        "x": 38.390625,
+        "y": 125.328125,
+        "w": 947.21875,
+        "h": 67.5625,
+        "text": "Måndag morgon · vecka 2 av 8 · VinbarVad gör du i dag?Schemat: 0 av 2 platser"
+      },
+      "hudBoxes": [
+        {
+          "id": "day-badge",
+          "x": 38.390625,
+          "y": 26.65625,
+          "w": 263.15625,
+          "h": 34.65625
+        },
+        {
+          "id": "cash-counter",
+          "x": 570.03125,
+          "y": 26.65625,
+          "w": 164.78125,
+          "h": 41.296875
+        },
+        {
+          "id": "credits-counter",
+          "x": 741.203125,
+          "y": 26.65625,
+          "w": 110.171875,
+          "h": 41.296875
+        }
+      ],
+      "hudOverHead": [],
+      "clipped": [],
+      "activities": [
+        "Utbilda salenEn halvtimmes genomgång av tempot vid passet oc",
+        "Ta in en springareEtt par extra händer som bär ut tallrikar ",
+        "Lokala råvaror i kvällSmå gårdar i närheten: högre styckpris",
+        "Vinprovning med lagetLaget kan vinlistan, och merförsäljning",
+        "Gästkock för kvällenEn vän till huset lagar maten, och passe",
+        "DJ i kvällMusik från nio. Fler gäster kommer, men bara en fu",
+        "Genomgång av kökets kompostGå igenom kärlen och flödet i för"
+      ],
+      "hover": {
+        "bg": "rgba(244, 230, 204, 0.08)",
+        "color": "rgb(244, 230, 204)",
+        "testid": "shelf-metodkoket"
+      },
+      "asideBar": {
+        "x": 290.875,
+        "y": 692.140625,
+        "w": 442.25,
+        "h": 63.0625,
+        "scrollH": 61,
+        "clientH": 61
+      },
+      "asidePanels": [
+        {
+          "id": "service-clock",
+          "x": 312.203125,
+          "y": 26.65625,
+          "w": 234.65625,
+          "h": 78.484375
+        },
+        {
+          "id": "cash-counter",
+          "x": 570.03125,
+          "y": 26.65625,
+          "w": 164.78125,
+          "h": 41.296875
+        },
+        {
+          "id": "credits-counter",
+          "x": 741.203125,
+          "y": 26.65625,
+          "w": 110.171875,
+          "h": 41.296875
+        }
+      ],
+      "barOverPanels": [],
+      "errors": []
+    },
+    "1180x820": {
+      "startButtons": [
+        "Byn",
+        "1×",
+        "2×",
+        "4×",
+        "☰",
+        "Tillbaka",
+        "×",
+        "Nytt spel",
+        "Fortsätt ett sparat spel"
+      ],
+      "head": {
+        "x": 44.25,
+        "y": 144.421875,
+        "w": 1091.5,
+        "h": 75.734375,
+        "text": "Måndag morgon · vecka 2 av 8 · VinbarVad gör du i dag?Schemat: 0 av 2 platser"
+      },
+      "hudBoxes": [
+        {
+          "id": "day-badge",
+          "x": 44.25,
+          "y": 30.71875,
+          "w": 273.859375,
+          "h": 37.640625
+        },
+        {
+          "id": "cash-counter",
+          "x": 673.46875,
+          "y": 30.71875,
+          "w": 183.140625,
+          "h": 47
+        },
+        {
+          "id": "credits-counter",
+          "x": 863.984375,
+          "y": 30.71875,
+          "w": 117.359375,
+          "h": 47
+        }
+      ],
+      "hudOverHead": [],
+      "clipped": [],
+      "activities": [
+        "Utbilda salenEn halvtimmes genomgång av tempot vid passet oc",
+        "Ta in en springareEtt par extra händer som bär ut tallrikar ",
+        "Lokala råvaror i kvällSmå gårdar i närheten: högre styckpris",
+        "Vinprovning med lagetLaget kan vinlistan, och merförsäljning",
+        "Gästkock för kvällenEn vän till huset lagar maten, och passe",
+        "DJ i kvällMusik från nio. Fler gäster kommer, men bara en fu",
+        "Genomgång av kökets kompostGå igenom kärlen och flödet i för"
+      ],
+      "hover": {
+        "bg": "rgba(244, 230, 204, 0.08)",
+        "color": "rgb(244, 230, 204)",
+        "testid": "shelf-metodkoket"
+      },
+      "asideBar": {
+        "x": 340.71875,
+        "y": 739.34375,
+        "w": 498.5625,
+        "h": 65.90625,
+        "scrollH": 64,
+        "clientH": 64
+      },
+      "asidePanels": [
+        {
+          "id": "service-clock",
+          "x": 330.390625,
+          "y": 30.71875,
+          "w": 270.40625,
+          "h": 89.75
+        },
+        {
+          "id": "cash-counter",
+          "x": 673.46875,
+          "y": 30.71875,
+          "w": 183.140625,
+          "h": 47
+        },
+        {
+          "id": "credits-counter",
+          "x": 863.984375,
+          "y": 30.71875,
+          "w": 117.359375,
+          "h": 47
+        }
+      ],
+      "barOverPanels": [],
+      "errors": []
+    }
+  }
+}

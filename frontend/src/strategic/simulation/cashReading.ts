@@ -162,27 +162,22 @@ export function postServiceSummaryLines(
   service: 'lunch' | 'dinner',
   prev: SimulationState
 ): void {
-  const serviceLabel = service === 'lunch' ? 'Lunch' : 'Dinner';
   const revenueKsek = prev.serviceRevenueToday[service];
   const covers = prev.day.serviceCovers;
   if (revenueKsek > 0) {
-    const coverSuffix = covers > 0
-      ? ` (${covers} covers)`
-      : '';
     postLedger(draft, {
       category: 'revenue',
       amount: revenueKsek * 1000,
-      cause: `Revenue ${serviceLabel.toLowerCase()}${coverSuffix}`,
+      cause: strings.ledgerCause.revenue(service === 'lunch', covers),
       causeId: service
     });
   }
   const ingredientSek = prev.day.serviceIngredientAccrued;
   if (ingredientSek > 0) {
-    const coverSuffix = covers > 0 ? ` — ${covers} covers` : '';
     postLedger(draft, {
       category: 'ingredient',
       amount: -ingredientSek,
-      cause: `Ingredients — ${serviceLabel.toLowerCase()}${coverSuffix}`,
+      cause: strings.ledgerCause.ingredients(service === 'lunch', covers),
       causeId: service
     });
   }
@@ -198,7 +193,10 @@ export function postServiceSummaryLines(
 // spammas. Enda källa till value-läsning i strömmen; övriga event
 // (bottleneck, kitchen_slip, etc.) fortsätter opåverkade.
 import { valueQuota } from './valueQuota';
-import { VALUE_HIGH_TEXTS, VALUE_LOW_TEXTS } from '../../content/eventStream.en';
+import { strings } from '../../content/strings';
+import * as STREAM_EN from '../../content/eventStream.en';
+import * as STREAM_SV from '../../content/eventStream.sv';
+import { getLanguage } from '../../content/language';
 
 const VALUE_LOW_THRESHOLD = 0.9;    // under 0.9 → poor value narrative
 const VALUE_HIGH_THRESHOLD = 1.35;  // över 1.35 → excellent value narrative
@@ -209,8 +207,10 @@ export function postValueQuotaLine(
 ): void {
   const v = valueQuota(draft);
   let bank: readonly string[] | null = null;
-  if (v < VALUE_LOW_THRESHOLD) bank = VALUE_LOW_TEXTS;
-  else if (v > VALUE_HIGH_THRESHOLD) bank = VALUE_HIGH_TEXTS;
+  // ORDER 291 — på spelarens språk.
+  const T = getLanguage() === 'sv' ? STREAM_SV : STREAM_EN;
+  if (v < VALUE_LOW_THRESHOLD) bank = T.VALUE_LOW_TEXTS;
+  else if (v > VALUE_HIGH_THRESHOLD) bank = T.VALUE_HIGH_TEXTS;
   if (!bank || bank.length === 0) return;
   // Deterministiskt val per (service, dayNumber) — samma frö → samma
   // mening. Bytet till en RNG-driven pick är trivialt om variation

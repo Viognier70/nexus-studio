@@ -29,11 +29,13 @@ import { activityById } from './activities';
 
 export const DJ_ACTIVITY_ID = 'book-dj';
 
-// Dagens inköp av råvaror (kassabokens 'stock', netto efter återköp).
+// Dagens inköp av råvaror (kassabokens 'stock', netto efter återköp), och i
+// klasser utan paket råvarorna som betalas när gästen betalar (ORDER 291:
+// "kostnaden för det som såldes ska alltid räknas").
 export function stockSpentToday(state: SimulationState): number {
   const day = state.day.dayNumber;
   const net = state.ledger.filter((l) => l.day === day && l.category === 'stock').reduce((a, l) => a + l.amount, 0);
-  return Math.max(0, -net);
+  return Math.max(0, -net) + (state.day.ingredientPaidTonight ?? 0);
 }
 
 // En satsnings kostnad för kassan i dag: priset när den valdes och den
@@ -48,14 +50,21 @@ function activityKey(id: string): StakeKey {
   return EVENING_ECONOMY.competenceActivities.includes(id) ? 'competence' : 'investments';
 }
 
+// ORDER 291 — dagens kurser (kompetens), en investering.
+export function coursesSekToday(state: SimulationState): number {
+  return Math.round(state.day.pickedActivityIds.filter((id) => activityKey(id) === 'competence').reduce((a, id) => a + activityNetCost(id), 0));
+}
+
 // Kvällens insats. `overheadSek` är köksdriften under servicen, uppskattad
 // av reducern när dörrarna öppnar.
 export function eveningStake(state: SimulationState, overheadSek: number): EveningStake {
-  // Designs fyra rader (råvaror, personal, DJ, kompetens), och satsningarna när
-  // spelaren valt någon. Räntan och köksdriften räknas till personalen.
+  // ORDER 291 (Vision Owner 2026-09-30): kvällens insats räknar bara
+  // råvaror, personal, DJ och kvällens satsningar. Kurserna (kompetens) är
+  // investeringar och står utanför. Räntan och köksdriften räknas till
+  // personalen.
   const sums: Record<StakeKey, number> = { ingredients: stockSpentToday(state), staff: dailyWagesSek(state) + Math.max(0, overheadSek) + dailyInterestSek(state.economy.loan), dj: 0, investments: 0, competence: 0, interest: 0 };
   for (const id of state.day.pickedActivityIds) sums[activityKey(id)] += activityNetCost(id);
-  const order: StakeKey[] = ['ingredients', 'staff', 'dj', 'competence', 'investments'];
+  const order: StakeKey[] = ['ingredients', 'staff', 'dj', 'investments'];
   const lines = order.filter((k) => sums[k] > 0 || k === 'ingredients' || k === 'staff').map((k) => ({ key: k, sek: Math.round(sums[k]) }));
   return { lines, total: lines.reduce((a, l) => a + l.sek, 0) };
 }
@@ -86,13 +95,13 @@ export function accountAfterEvening(state: SimulationState): number {
 }
 
 // Efter stängningen (reducern, när sopbilen avräknats). Designs serviceläget
-// §4: försäljning − råvaror = täckningsbidrag; − personal, DJ och kompetens =
-// kvällens resultat. Kontot efter överföringen är kassan vid dagsavslut
-// (accountAfterEvening), och resultatet räknas så att det går ihop med den:
-// resultat = kontot efter − kontot i morse + sopbilens avgift (som dras på
-// sopbilens skärm och inte hör till insatsen). Personalens rad är det som
-// återstår av resten när DJ, kompetens och satsningar är räknade: lönerna,
-// köksdriften och räntan.
+// §4: försäljning − råvaror = täckningsbidrag; − resten = kvällens resultat.
+// ORDER 291 (Vision Owner: "Ett tal, räknat på ett sätt, på alla skärmar"):
+// kontot efter överföringen är kassan vid dagsavslut (accountAfterEvening),
+// och resultatet är kontot efter mot kontot i morse, utom kurserna, som är
+// investeringar. Samma tal står i kvällens resultat (R1). Personalens rad är
+// det som återstår av resten när DJ, satsningar, raketernas kassa och
+// sopbilen är räknade: lönerna, köksdriften och räntan.
 export function eveningTransfer(state: SimulationState): EveningTransfer {
   const d = state.day;
   const revenueSek = Math.round(tillSek(state));
@@ -101,11 +110,13 @@ export function eveningTransfer(state: SimulationState): EveningTransfer {
   const contributionSek = revenueSek - variableSek;
   const morning = Math.round(d.cashAtDayStart ?? state.cash);
   const after = Math.round(accountAfterEvening(state));
-  const resultSek = after - morning + wasteFeeSek;
-  const fixedSek = contributionSek - resultSek;
   const byKey = (k: StakeKey) => Math.round(d.pickedActivityIds.filter((id) => activityKey(id) === k).reduce((a, id) => a + activityNetCost(id), 0));
+  // ORDER 291 — ett resultat, räknat på ett sätt: kassans förändring över
+  // dagen, utom kurserna, som är investeringar. Sopbilen står i resten.
+  const coursesSek = byKey('competence');
+  const resultSek = after - morning + coursesSek;
+  const fixedSek = contributionSek - resultSek;
   const dj = byKey('dj');
-  const competence = byKey('competence');
   const investments = byKey('investments');
   // Raketernas kassa (positiv eller negativ) står som egen rad i resten.
   const incidents = -Math.round(incidentCashToday(state));
@@ -118,7 +129,8 @@ export function eveningTransfer(state: SimulationState): EveningTransfer {
     contributionSek,
     contributionRatio: revenueSek > 0 ? contributionSek / revenueSek : 0,
     fixedSek,
-    rest: { staff: fixedSek - dj - competence - investments - incidents, dj, competence, investments, incidents },
+    rest: { staff: fixedSek - dj - investments - incidents - wasteFeeSek, dj, investments, incidents, waste: wasteFeeSek },
+    coursesSek,
     staffOnShift: state.team.members.filter((m) => !m.isAgency).length,
     resultSek,
     wasteFeeSek,

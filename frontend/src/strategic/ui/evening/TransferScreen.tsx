@@ -66,9 +66,9 @@ export function TransferScreen({ sim, onContinue }: { sim: SimulationState; onCo
   const restRows: { key: string; label: string; sub: string; sek: number }[] = [
     { key: 'staff', label: tt(lang, 'cost.staff'), sub: tt(lang, 'cost.staff.sub', { n: tr.staffOnShift }), sek: tr.rest.staff },
     { key: 'dj', label: tt(lang, 'cost.dj'), sub: tt(lang, 'cost.dj.sub'), sek: tr.rest.dj },
-    { key: 'competence', label: tt(lang, 'cost.skills'), sub: tt(lang, 'cost.skills.sub'), sek: tr.rest.competence },
     { key: 'investments', label: strings.stake.lines.investments, sub: '', sek: tr.rest.investments },
-    { key: 'incidents', label: strings.transfer.incidents, sub: '', sek: tr.rest.incidents }
+    { key: 'incidents', label: strings.transfer.incidents, sub: '', sek: tr.rest.incidents },
+    { key: 'waste', label: strings.transfer.waste, sub: '', sek: tr.rest.waste }
   ].filter((r) => r.key === 'staff' || r.sek !== 0);
   return (
     <NxScreen testId="screen-T2" label={tt(lang, 'settle.title')} className="nx-transfer-screen">
@@ -111,6 +111,14 @@ export function TransferScreen({ sim, onContinue }: { sim: SimulationState; onCo
             <span><strong className="nx-heading">{tt(lang, 'settle.result')}</strong><span className="nx-small">{tt(lang, 'settle.result.sub')}</span></span>
             <span className="nx-num nx-settle-result-sek" data-testid="transfer-result" data-value={tr.resultSek}>{signed(tr.resultSek)}</span>
           </div>
+          {/* ORDER 291 — kurserna är investeringar, inte kvällens kostnad (Vision Owner 2026-09-30). */}
+          {tr.coursesSek > 0 && (
+            <div className="nx-settle-row nx-settle-row-small" data-testid="transfer-courses" data-value={tr.coursesSek}>
+              <span className="nx-settle-sign">−</span>
+              <span><strong>{strings.transfer.courses}</strong> <span className="nx-small">{strings.transfer.coursesSub}</span></span>
+              <span className="nx-num nx-settle-sek">{formatSek(tr.coursesSek)}</span>
+            </div>
+          )}
         </section>
         <section className="nx-panel nx-settle-transfer" data-testid="transfer-move" data-value={tr.transferSek} data-done={!!done}>
           <div className="nx-label">{tt(lang, 'settle.transfer.kicker')}</div>
@@ -137,6 +145,7 @@ export function TransferScreen({ sim, onContinue }: { sim: SimulationState; onCo
             <div><dt>{tt(lang, 'settle.flow.out')}</dt><dd className="nx-num">{signed(-tr.fixedSek)}</dd></div>
             <div><dt>{tt(lang, 'settle.flow.morning')}</dt><dd className="nx-num">{signed(-tr.variableSek)}</dd></div>
             <div className="nx-settle-flow-net"><dt>{tt(lang, 'settle.flow.net')}</dt><dd className="nx-num">{signed(tr.resultSek)}</dd></div>
+            {tr.coursesSek > 0 && <div><dt>{strings.transfer.courses}</dt><dd className="nx-num">{signed(-tr.coursesSek)}</dd></div>}
           </dl>
           <p className="nx-small" style={{ margin: 0 }}>{loss ? tt(lang, 'settle.loss.note') : tt(lang, 'settle.transfer.note')}</p>
           <div className="nx-settle-mentor">
@@ -149,7 +158,8 @@ export function TransferScreen({ sim, onContinue }: { sim: SimulationState; onCo
             <NxButton testId="transfer-continue" onClick={onContinue}>{tt(lang, 'settle.next')}</NxButton>
           ) : (
             <button type="button" className="nx-btn nx-btn-primary nx-settle-do" data-testid="transfer-do" onClick={transfer}>
-              <span>{tt(lang, 'settle.transfer.do', { n: formatSek(tr.revenueSek) })}</span>
+              {/* ORDER 291 — knappen visar kvällens resultat, inte kvällskassan. */}
+              <span>{tt(lang, 'settle.transfer.do', { n: signed(tr.resultSek) })}</span>
               <ArrowRightLeft size={20} aria-hidden />
             </button>
           )}

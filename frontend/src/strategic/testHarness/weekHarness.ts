@@ -78,7 +78,7 @@ export interface DayRecord {
   events: string[];
 }
 
-function tickUntil(s: SimulationState, done: (s: SimulationState) => boolean, answer: ScenarioAnswer = 'best', backConfidence?: 0 | 1 | 2): SimulationState {
+export function tickUntil(s: SimulationState, done: (s: SimulationState) => boolean, answer: ScenarioAnswer = 'best', backConfidence?: 0 | 1 | 2): SimulationState {
   for (let i = 0; i < MAX_TICKS_PER_PHASE && !done(s); i++) {
     s = answerScenario(reducer(s, { type: 'TICK', dt: TICK_DT }), answer, backConfidence);
     if (backConfidence !== undefined && canStartBack(s)) s = reducer(s, { type: 'START_BACK' });

@@ -126,7 +126,7 @@ export function orderFeedLines(order: { dishId: string | null; drinks: string[] 
   for (const d of order.drinks) counts.set(d, (counts.get(d) ?? 0) + 1);
   for (const [id, n] of counts) {
     const dish = findDish(id);
-    const name = (dish?.name ?? id).replace(/, by the glass$/, '').replace(/, bottle$/, '');
+    const name = (dish?.name ?? id).replace(/, (by the glass|per glas)$/, '').replace(/, (bottle|flaska)$/, '');
     parts.push(dish?.drink === 'wine-bottle' ? strings.feed.lineBottle(name) : dish?.drink === 'beer' ? strings.feed.linePortion(n, name) : strings.feed.lineGlass(n, name));
   }
   return parts.join(' · ');

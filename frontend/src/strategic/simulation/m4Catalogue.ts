@@ -7,6 +7,7 @@
 // CLAUDE.md rule 7 (Vision Owner 2026-09: "inga engelska paneler").
 
 import type { Allergen, Dish, DishDiet, Ingredient, Supplier } from '../types';
+import { strings } from '../../content/strings';
 
 // ORDER 280 — en flaska vin eller alkoholfritt är fem glas (Designs
 // economy.ts GLASSES_PER_BOTTLE).
@@ -84,6 +85,18 @@ export const DISHES: readonly Dish[] = [
   { id: 'alcohol-free-glass', name: 'Alcohol-free lingonberry sparkling', suggestedPrice: 65, kind: 'drink', drink: 'alcohol-free',
     recipe: [{ ingredientId: 'alcohol-free', units: 1 }] }
 ] as const;
+
+// ORDER 291 — namnen på spelarens språk: `name` blir en getter som läser
+// strängtabellen (strings.catalogue). Fälten ovan är den engelska reserven.
+function localiseNames(items: readonly { id: string; name: string }[], table: () => Record<string, string>): void {
+  for (const item of items) {
+    const fallback = item.name;
+    Object.defineProperty(item, 'name', { get: () => table()[item.id] ?? fallback, enumerable: true, configurable: true });
+  }
+}
+localiseNames(DISHES, () => strings.catalogue.dish as Record<string, string>);
+localiseNames(INGREDIENTS, () => strings.catalogue.ingredient as Record<string, string>);
+localiseNames(SUPPLIERS, () => strings.catalogue.supplier as Record<string, string>);
 
 export function findSupplier(id: string): Supplier | undefined {
   return SUPPLIERS.find((s) => s.id === id);

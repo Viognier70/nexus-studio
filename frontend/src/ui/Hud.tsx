@@ -32,7 +32,7 @@ export function Hud({
           aria-label={muted ? strings.hud.unmuteAria : strings.hud.muteAria}
           aria-pressed={muted}
         >
-          {strings.hud.soundLabel}{' '}
+          {/* ORDER 291 punkt 9: tillståndet ensamt, inte "Ljud Ljud på". */}
           {muted ? strings.pause.muteOff : strings.pause.muteOn}
         </button>
         <button

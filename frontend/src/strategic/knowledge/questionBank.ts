@@ -32,6 +32,7 @@ import type { PavilionId } from './pavilions';
 import type { Reference } from '../../sim/incidentBank';
 import { ALL_PAVILION_IDS } from './pavilions';
 import { OPTIONS_PER_QUESTION } from '../../sim/balance';
+import { getLanguage } from '../../content/language';
 import metaJson from '../content/questions/bank.meta.json';
 import textEnJson from '../content/questions/bank.text.en.json';
 import textSvJson from '../content/questions/bank.text.sv.draft.json';
@@ -181,11 +182,11 @@ function textFile(language: BankLanguage): BankTextFile {
   return f;
 }
 
-// Språket spelet läser frågorna på. ORDER 273 (Vision Owner 2026-09-28):
-// allt i spelet är på engelska, så spelet läser alltid `en`. Den svenska
-// texten sparas för en svensk version senare.
+// Språket spelet läser frågorna på: spelarens språk (ORDER 291, Vision
+// Owner 2026-09-30: "Allt innehåll ska finnas på båda språken"). Engelska
+// är förval (ORDER 273); den svenska texten är utkastet bredvid.
 export function activeBankLanguage(): BankLanguage {
-  return 'en';
+  return getLanguage() === 'sv' ? 'sv' : 'en';
 }
 
 function join(meta: BankQuestionMeta, language: BankLanguage): BankQuestion {
