@@ -1595,7 +1595,17 @@ const BREAKFAST_DURATION_SEC = 30;
 
 // ORDER 291 — gästens betalning, i servicen när gästen går till kassan och
 // när servicen stänger för de gäster som ännu sitter kvar (closeOpenBills).
+// ORDER 291 (provspel: "Gästtyperna betalar lika") — notan per plånbok i
+// klasserna utan lagerpaket (balance.ts GUEST_TYPES.legacyBillFactor).
+function legacyBillFactor(guest: Guest): number {
+  return GUEST_TYPES.legacyBillFactor[guest.guestType ? GUEST_TYPES.wallet[guest.guestType] : 'normal'];
+}
+
 function payGuest(draft: SimulationState, guest: Guest, revenueMult: number, inLunch: boolean, inDinner: boolean): void {
+    // ORDER 291 — efter kvällens stängning betalar ingen: notorna togs vid
+    // stängningen (closeOpenBills), och kvällens resultat står still medan
+    // spelaren läser skärmarna.
+    if (draft.day.period === 'evening' && !inDinner) return;
     // ORDER 077 §4 (M4) — if a menu is composed, the guest orders
     // from it and pays the dish price (drawing recipe from stock).
     // If every menu dish is out or menu is empty, fall back to the
@@ -1639,14 +1649,14 @@ function payGuest(draft: SimulationState, guest: Guest, revenueMult: number, inL
       // already fired the ambient line + rep hit).
       if (draw.kind === 'served' || draw.kind === 'substituted') {
         // ORDER 291 — plånboken ger olika notor även utan lagerpaket.
-        const wallet = guest.guestType ? GUEST_TYPES.wallet[guest.guestType] : 'normal';
-        rev = draw.price * revenueMult * GUEST_TYPES.legacyBillFactor[wallet];
+        rev = draw.price * revenueMult * legacyBillFactor(guest);
         ingredientCostSek = draw.ingredientCostSek;
       } else {
         return;
       }
     } else {
-      rev = revenuePerGuest(draft.policies) * revenueMult;
+      // ORDER 291 — food trucken och ölkrogen utan meny: samma plånbok.
+      rev = revenuePerGuest(draft.policies) * revenueMult * legacyBillFactor(guest);
     }
     // ORDER 269 — Stensöta höjer intäkten per gäst via dryck.
     rev *= drinkRevenueFactor(draft);
@@ -1717,7 +1727,11 @@ function payGuest(draft: SimulationState, guest: Guest, revenueMult: number, inL
 function closeOpenBills(draft: SimulationState): void {
   const revenueMult = worldFactorRevenueMultiplier(draft.day.worldFactors);
   for (const guest of draft.guests) {
-    if (guest.state !== 'dining' && guest.state !== 'serving') continue;
+    // Den som har beställt betalar: vid bordet, under serveringen och
+    // medan maten äts. I klasserna med paket är beställningen lagd vid
+    // bordet (guest.order); utan paket beställer gästen när hen betalar.
+    const ordered = usesPackages(draft) ? Boolean(guest.order) : guest.state === 'ordering';
+    if (guest.state !== 'dining' && guest.state !== 'serving' && !((guest.state === 'seated' || guest.state === 'ordering') && ordered)) continue;
     if (usesPackages(draft) && !guest.order) continue;
     guest.state = 'paying';
     guest.stateTime = draft.simTime;

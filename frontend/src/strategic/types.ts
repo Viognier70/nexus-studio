@@ -934,6 +934,8 @@ export interface DayState {
   booking?: GuestBooking;
   guestTypeArrivals?: Partial<Record<GuestType, number>>;
   guestTypeRevenue?: Partial<Record<GuestType, number>>;
+  // ORDER 291 — notorna per gästtyp i kväll (snittnotan = intäkt / notor).
+  guestTypeBills?: Partial<Record<GuestType, number>>;
   socialGuest?: { guestId: string; outcome: 'good' | 'bad' | 'neutral' | null } | null;
   billionaireVisit?: BillionaireVisit | null;
   // ORDER 290 — kvällens ekonomi: insatsen när dörrarna öppnade, kassan

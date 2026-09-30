@@ -38,14 +38,14 @@ describe('ORDER 291 — gästtyperna betalar olika även utan lagerpaket', () =>
     expect(f.gold).toBeGreaterThan(f.generous);
   });
 
-  it('i food trucken blir intäkten per gäst olika per typ', () => {
+  it('i food trucken blir snittnotan olika per typ', () => {
     const perGuest: Partial<Record<GuestType, number[]>> = {};
     for (let seed = 1; seed <= 6; seed++) {
       let s = makeNewGameState(seed);
       s = changeClass({ ...s, day: { ...s.day, dayNumber: firstDayOfWeek(2) } }, 'foodtruck', false);
       s = tickToClose(reducer(stocked(s), { type: 'START_SERVICE' }));
       const rev = s.day.guestTypeRevenue ?? {};
-      const arr = s.day.guestTypeArrivals ?? {};
+      const arr = s.day.guestTypeBills ?? {};
       for (const t of ['student', 'middle', 'high'] as const) {
         if ((arr[t] ?? 0) > 0 && (rev[t] ?? 0) > 0) (perGuest[t] ??= []).push((rev[t] ?? 0) / (arr[t] ?? 1));
       }
@@ -143,6 +143,11 @@ describe('ORDER 291 — ett resultat: kontot efter överföringen är kassan nä
       const tr = s.day.transfer!;
       // Resultatet är kontot efter mot kontot i morse, utom kursen (utbildningen).
       expect(tr.resultSek).toBe(Math.round(tr.accountAfterSek) - Math.round(morning) + activityById('train-service')!.costSek);
+      // Spelaren läser skärmarna en stund (T2, R1, lärdomen): gästerna rör
+      // sig vidare i rummet, men kassan står still.
+      const atClose = s.cash;
+      for (let i = 0; i < 600 && s.day.period === 'evening'; i++) s = reducer(s, { type: 'TICK', dt: 1 });
+      expect(s.cash).toBe(atClose);
       s = reducer(s, { type: 'END_EVENING' });
       s = tickUntil(s, (x) => x.day.dayNumber > day && x.day.period === 'morning');
       expect(Math.round(s.cash)).toBe(tr.accountAfterSek);
