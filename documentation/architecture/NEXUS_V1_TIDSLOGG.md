@@ -1,5 +1,23 @@
 # Nexus v1 — tidslogg
 
+## Överlämning (2026-09-30, efter ORDER 286a)
+
+**Var vi är.**
+- `main` står på `d2a9f6c` (merge av `order-286a`): servicen som teater med Designs leverans 2 och tillägget (`ORDER_286a_RAPPORT.md`). Vision Owner spelar.
+
+**Beslut (Vision Owner 2026-09-30).**
+1. Loungedynan på 0,38 m är godkänd (ORDER 284:s 0,45 m gäller inte längre).
+2. Att sätta sig: sittklippen spelas i sin egen längd på alla sitsar (stol, barstol och lounge), och sällskapet räknas som sittande när den sista gästen har landat. Byggs i 287a.
+3. Bilderna från 12 m tagna i dev-servern är godkända som kontroll.
+
+**Väntar.**
+- 287a väntar på Vision Owners klartecken.
+- Designs leverans 3 (händelserna) är under arbete.
+
+**Ordningen framåt:** 287a, 288a, 288b, 287b, 288c, 287c. Miljardären kommer i enkel form redan i 287a.
+
+---
+
 ## Överlämning (2026-09-29, stopp för provspel efter ORDER 285)
 
 **Var vi är.**
