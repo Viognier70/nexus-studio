@@ -30,6 +30,6 @@ Vision Owner: manuset lägger till namnet och samtycket, och det är bra. Namnet
 
 **En justering i manuset.** Den första verksamheten väljs hos banken (food truck eller vinbar), *efter* att krogens namn har skrivits i liggaren. Namnet ska därför gälla företaget, oavsett vilken verksamhet banken ger. Texten vid liggaren får inte förutsätta vinbaren.
 
-**Fråga 2–5** (tilltalet, att lämna med bussen, vinbaren på vägen, frågorna vid långbordet) har Vision Owner inte besvarat ännu.
+**Fråga 2–5** är besvarade och inarbetade i Designs andra utkast (speldesignen, Introduktionen): bara namnet utan pronomen; bussen tillbaka avslutar säsongen och kunskapen följer med; Lova säger en replik om vinbaren; Design skriver förslag till frågorna om köket och vinet, som Vision Owner granskar. Rätt svar vid långbordet ger de första krediterna.
 
 Manuset skrivs om efter svaren och byggs i en egen order.
