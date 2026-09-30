@@ -2342,7 +2342,7 @@ function fireTeamMember(state: SimulationState, memberId: string): SimulationSta
     postLedger(next, {
       category: 'buyout',
       amount: -buyout,
-      cause: `Severance pay: ${roleText(member.role)} (${remainingDays} days left)`,
+      cause: strings.ledgerCause.severance(roleText(member.role), remainingDays),
       causeId: member.id
     });
   }

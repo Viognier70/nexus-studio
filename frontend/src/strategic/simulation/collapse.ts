@@ -32,6 +32,7 @@ import { settleSocialGuestAtClose } from './guestTypes';
 import { sustainabilityLevelsFor } from '../../sim/sustainabilityLevels';
 import { closeIncidents } from '../../sim/incidents';
 import { settleWaste } from './stockPackages';
+import { strings } from '../../content/strings';
 import { clampReputation } from './reputation';
 import { dayEnd, dayEndHeadroom, recordEvening } from '../../sim/economy';
 import { COLLAPSE } from '../../sim/balance';
@@ -317,7 +318,7 @@ export function fireCollapse(draft: SimulationState, closeBills?: (d: Simulation
     {
       at: draft.simTime,
       kind: 'system',
-      text: `The evening was cut short — ${axis === 'scientific' ? 'the kitchen' : axis === 'cultural' ? 'the room' : 'the house'} did not hold.`
+      text: strings.simEvent.cutShort(axis === 'scientific' ? 'kitchen' : axis === 'cultural' ? 'room' : 'house')
     }
   ];
 }

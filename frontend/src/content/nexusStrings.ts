@@ -1549,6 +1549,10 @@ export const TABLE = {
     agencyDeclined: { sv: 'Bemanningen tackades nej till — laget märker att ingen hjälp kom.', en: 'Declined agency staff — the team notices that no help came.' },
     hired: { sv: (r: string, d: number) => `Anställde ${r} — kontrakt till dag ${d}.`, en: (r: string, d: number) => `Hired ${r} — contract until day ${d}.` },
     terrace: { sv: 'Uteplatsen öppnade. Ståbord ute på gatan.', en: 'Terrace opened. Standing tables out on the street.' },
+    cutShort: {
+      sv: (where: 'kitchen' | 'room' | 'house') => `Kvällen tog slut i förtid — ${where === 'kitchen' ? 'köket' : where === 'room' ? 'salen' : 'huset'} höll inte.`,
+      en: (where: 'kitchen' | 'room' | 'house') => `The evening was cut short — ${where === 'kitchen' ? 'the kitchen' : where === 'room' ? 'the room' : 'the house'} did not hold.`
+    },
     mentor: { sv: (c: string) => `Mentorn: ${c}`, en: (c: string) => `Mentor: ${c}` },
     scenarioChose: { sv: (c: string) => `Scenario: valde ${c}`, en: (c: string) => `Scenario: chose ${c}` }
   },
@@ -1563,6 +1567,7 @@ export const TABLE = {
     wage: { sv: (r: string) => `Lön: ${r}`, en: (r: string) => `Wage: ${r}` },
     idleStaff: { sv: (d: number) => `Personal utanför servicen (dag ${d})`, en: (d: number) => `Staff cost outside service (day ${d})` },
     agency: { sv: (r: string) => `Bemanning: ${r} i kväll`, en: (r: string) => `Agency staff: ${r} tonight` },
+    severance: { sv: (r: string, d: number) => `Avgångsvederlag: ${r} (${d} ${d === 1 ? 'dag' : 'dagar'} kvar)`, en: (r: string, d: number) => `Severance pay: ${r} (${d} ${d === 1 ? 'day' : 'days'} left)` },
     revenue: {
       sv: (lunch: boolean, covers: number) => `Försäljning ${lunch ? 'lunch' : 'middag'}${covers > 0 ? ` (${covers} kuvert)` : ''}`,
       en: (lunch: boolean, covers: number) => `Revenue ${lunch ? 'lunch' : 'dinner'}${covers > 0 ? ` (${covers} covers)` : ''}`
