@@ -140,3 +140,17 @@ describe('ORDER 292 — följder nästa dag i bokningsboken', () => {
     }
   });
 });
+
+describe('ORDER 292b — prototypgästen är borta ur scenen', () => {
+  // Provspel av e079883: "En figur ligger på golvet nere till höger vid
+  // väggen när servicen börjar" var AnimationPrototype (pre-ORDER 053), som
+  // satte sig på den gamla krogens plats där vinbaren inte har någon stol.
+  it('StrategicScene monterar inte AnimationPrototype, och den är avstängd', async () => {
+    const { readFileSync } = await import('node:fs');
+    const { resolve, dirname } = await import('node:path');
+    const { fileURLToPath } = await import('node:url');
+    const dir = resolve(dirname(fileURLToPath(import.meta.url)), '../../strategic/scene');
+    expect(readFileSync(resolve(dir, 'StrategicScene.tsx'), 'utf8')).not.toMatch(/<AnimationPrototype/);
+    expect(readFileSync(resolve(dir, 'AnimationPrototype.tsx'), 'utf8')).toMatch(/const ENABLED = false;/);
+  });
+});

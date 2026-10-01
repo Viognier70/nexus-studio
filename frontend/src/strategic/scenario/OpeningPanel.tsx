@@ -117,7 +117,7 @@ export function OpeningPanel() {
 
   const precipText = strings.opening.precipitation[weather.precipitation];
   const cloudText = strings.opening.clouds[weather.cloudCover];
-  const weatherLine = `${weather.tempC}${strings.opening.tempSuffix}, wind ${weather.windMS} ${strings.opening.windSuffix}, ${precipText}, ${cloudText}.`;
+  const weatherLine = `${weather.tempC}${strings.opening.tempSuffix}, ${strings.opening.windWord} ${weather.windMS} ${strings.opening.windSuffix}, ${precipText}, ${cloudText}.`;
 
   const waitingLine: string =
     waitingAtOpening === 0

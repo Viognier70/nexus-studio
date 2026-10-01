@@ -28,7 +28,7 @@
 // spelar sitt klipp, kameran glider in, ringen står vid figuren och
 // bildtexten visas vid den tills svaret är satt.
 
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Html } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
@@ -107,6 +107,10 @@ import { TheatreCaption } from '../ui/TheatreCaption';
 import { RoomReactionTag } from '../ui/RoomReactionTag';
 import { InteractionDirector } from './theatreInteractions';
 import { attachProps, type HeadToppingId, type PropHandle } from './figureProps';
+import { auditRig, publishFaults, type FigureFault } from './figureAudit';
+
+// ORDER 292b — figurmätningen var femtonde bildruta.
+const AUDIT_EVERY_FRAMES = 15;
 
 // ORDER 292 — gästernas frisyrer och bonader (figureProps.ts), mest hår.
 const GUEST_TOPPINGS: readonly HeadToppingId[] = ['shortCut', 'ruffled', 'grayHair', 'shortCut', 'ruffled', 'workCap', 'shortCut', 'grayHair', 'ruffled', 'sunHat', 'shortCut', 'hoodRaised'];
@@ -241,6 +245,8 @@ interface Cast {
   interactions: InteractionDirector;
   /** ORDER 292 — handrekvisitan per gästfigur (figureProps.ts). */
   guestHandProps: { briefcase: PropHandle; camera: PropHandle }[];
+  /** ORDER 292b — räknaren för figurmätningen (figureAudit.ts). */
+  auditTick: number;
 }
 
 /** Bildtexten vid figuren när raketen börjar i rummet (nexusStrings theatre.caption). */
@@ -273,6 +279,10 @@ export function WineBarFigures({ room, mood }: Props) {
   const captionRef = useRef<THREE.Group>(null);
   // ORDER 292 — svarets händelse står över bordet (rummets reaktion).
   const reactionRef = useRef<THREE.Group>(null);
+  // ORDER 292b — rummets etiketter (bildtexten och händelsen) ritas bara när
+  // rummet syns; drei:s Html ritar annars sin DOM över byn när kameran är ute.
+  const [roomShown, setRoomShown] = useState(false);
+  const roomShownRef = useRef(false);
   const reactionAt = useRef<{ x: number; z: number } | null>(null);
   const clockRef = useRef<number>(-Infinity);
 
@@ -381,6 +391,7 @@ export function WineBarFigures({ room, mood }: Props) {
       guestClipIds: guestRigs.map(() => null),
       kitchenWalk: { guestId: null, u: 0 },
       guestHandProps,
+      auditTick: 0,
       interactions: new InteractionDirector()
     };
     if (import.meta.env.DEV && typeof window !== 'undefined') {
@@ -429,6 +440,10 @@ export function WineBarFigures({ room, mood }: Props) {
       dist
     );
     cast.group.visible = visibility > 0.02;
+    if (cast.group.visible !== roomShownRef.current) {
+      roomShownRef.current = cast.group.visible;
+      setRoomShown(cast.group.visible);
+    }
     if (!cast.group.visible) return;
 
     // Kvällsljuset: stämningen och servicen.
@@ -531,6 +546,24 @@ export function WineBarFigures({ room, mood }: Props) {
       }
     }
 
+    // ORDER 292b — ingen figur ligger ned eller sitter utan sits
+    // (figureAudit.ts): riggarna som ritas, var femtonde bildruta.
+    cast.auditTick = (cast.auditTick + 1) % AUDIT_EVERY_FRAMES;
+    if (cast.auditTick === 0) {
+      const floor = cast.group.localToWorld(new THREE.Vector3(0, room.floorY, 0)).y;
+      const faults: FigureFault[] = [];
+      for (let i = 0; i < gs.length; i++) {
+        const id = gs[i].guestId;
+        const f = id ? auditRig(cast.guestRigs[i], floor, gs[i], 'guest', id, cast.guestClipIds[i], !!cast.director.guestSeat(id)) : null;
+        if (f) faults.push(f);
+      }
+      for (let i = 0; i < ss.length; i++) {
+        const f = auditRig(cast.staffRigs[i], floor, ss[i], 'staff', STAFF_KEYS[i], cast.stage.staffClipId(i), false);
+        if (f) faults.push(f);
+      }
+      publishFaults(faults);
+    }
+
     // Rekvisitan: ägarboken och klippens händer (en tallrik på ett ställe).
     cast.stage.props(cast.director, t, STAFF_KEYS, cast.staffRigs, cast.staffClips, cast.guestRigs, cast.guestClips, cast.guestClipIds);
 
@@ -610,14 +643,14 @@ export function WineBarFigures({ room, mood }: Props) {
   const reaction = sim.day.roomReactions?.at(-1) ?? null;
   return (
     <>
-      {caption && (
+      {caption && roomShown && (
         <group ref={captionRef} visible={false}>
           <Html center zIndexRange={[20, 0]}>
             <TheatreCaption text={caption} />
           </Html>
         </group>
       )}
-      {reaction && (
+      {reaction && roomShown && (
         <group ref={reactionRef} visible={false}>
           <Html center zIndexRange={[20, 0]} style={{ pointerEvents: 'none' }}>
             <RoomReactionTag reaction={reaction} />

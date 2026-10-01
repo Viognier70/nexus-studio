@@ -9,6 +9,7 @@ import { strings } from '../../content/strings';
 import { calendarFor } from '../../sim/calendar';
 import { GUEST_TYPES, SITTING, INCIDENTS } from '../../sim/balance';
 import { formatClock } from '../../sim/incidents';
+import { doorsOpenMinutes } from '../../sim/clock';
 import { WARM } from '../../ui/theme/nexusTheme.warm';
 import { buzzFactor, currentBooking, socialName } from '../simulation/guestTypes';
 
@@ -28,6 +29,9 @@ export function BookingBook({ sim }: { sim: SimulationState }) {
   const b = currentBooking(sim);
   const g = strings.guestTypes;
   const at = GUEST_TYPES.arrivesAfterMinutes;
+  // ORDER 292b — ingen kommer före dörrarna (sim/clock.ts doorsOpenMinutes).
+  const doors = doorsOpenMinutes(sim);
+  const when = (afterStart: number) => formatClock(Math.max(doors, START + afterStart));
   const rows: Row[] = [];
   const typed = [
     { key: 'student', n: b.counts.student },
@@ -36,10 +40,10 @@ export function BookingBook({ sim }: { sim: SimulationState }) {
   ] as const;
   for (const r of typed) {
     if (r.n <= 0) continue;
-    rows.push({ key: r.key, time: formatClock(START + at[r.key]), colour: WARM.guest[r.key], who: g.book[r.key], note: g.bookNote[r.key], n: r.n });
+    rows.push({ key: r.key, time: when(at[r.key]), colour: WARM.guest[r.key], who: g.book[r.key], note: g.bookNote[r.key], n: r.n });
   }
   if (b.social) {
-    rows.push({ key: 'social', time: formatClock(START + at.social), colour: WARM.guest.social, who: g.book.social(socialName(b.social.nameIndex)), note: g.bookNote.social, n: 1 });
+    rows.push({ key: 'social', time: when(at.social), colour: WARM.guest.social, who: g.book.social(socialName(b.social.nameIndex)), note: g.bookNote.social, n: 1 });
   }
   // ORDER 292 — gårdagens svar: bokningar tack vare och avbokningar.
   for (const a of b.answers ?? []) {

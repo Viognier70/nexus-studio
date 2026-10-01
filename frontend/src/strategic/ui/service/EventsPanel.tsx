@@ -18,6 +18,7 @@ import { panelOpen, setServiceAmounts, useServiceDrawer } from './serviceDrawer'
 import { useEffect, useRef } from 'react';
 import { strings } from '../../../content/strings';
 import { GAME_MINUTES_PER_SIM_SECOND, INCIDENTS, SERVICE_STREAM, SITTING } from '../../../sim/balance';
+import { beforeDoors, doorsOpenMinutes, formatClock as clockText } from '../../../sim/clock';
 import { canStartBack, totalCredits, whyNotBack } from '../../../sim/incidents';
 import { BACK } from '../../../sim/balance';
 import { useSimDispatch, useSimState } from '../../simulation/SimulationProvider';
@@ -136,7 +137,7 @@ export function EventsPanel({ mode = 'both' }: { mode?: 'both' | 'feed' | 'back'
         <div style={{ minWidth: 0 }}>
           <div className="nx-label nx-accent-text">{strings.back.title}</div>
           {/* ORDER 289 — när knappen är grå står skälet här, bredvid den. */}
-          <div className="nx-small nx-muted" data-testid="back-why" id="back-why">{whyNotBack(sim) ? strings.back.why[whyNotBack(sim)!] : backsLeft > 0 ? strings.back.left(backsLeft) : strings.back.none}</div>
+          <div className="nx-small nx-muted" data-testid="back-why" id="back-why">{whyNotBack(sim) === 'notOpen' && beforeDoors(sim) ? strings.back.why.notOpenAt(clockText(doorsOpenMinutes(sim))) : whyNotBack(sim) ? strings.back.why[whyNotBack(sim)!] : backsLeft > 0 ? strings.back.left(backsLeft) : strings.back.none}</div>
           {/* ORDER 284 — introduktionen före kvällens första raket (flyttad från kortet). */}
           {open && (sim.incidents?.betsTonight ?? 0) === 0 && (
             <p className="nx-small" data-testid="incident-back-intro" style={{ margin: 'calc(6 * var(--nx-u)) 0 0' }}>

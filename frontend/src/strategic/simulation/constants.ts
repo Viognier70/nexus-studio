@@ -77,3 +77,5 @@ export const WEEKLY_OPERATING_BASELINE_SEK = 40_000;
 // — rhythm.ts needed this constant to compute serviceFraction and
 // was pulling the whole eventStream graph for it.
 export const PREP_DURATION_SEC = 120;
+// ORDER 045 — öppningens korta bild före förberedelserna (flyttad hit ur reducer.ts i ORDER 292b).
+export const OPENING_DURATION_SEC = 10;

@@ -29,7 +29,11 @@ import { GRAY_BOX_CAMERA } from '../content/grythyttan';
 
 // Master switch — kept here so the file can be included in the scene
 // tree unconditionally and turned on/off without a re-export dance.
-const ENABLED = true;
+// ORDER 292b (provspel av e079883: "En figur ligger på golvet nere till
+// höger vid väggen") — av, och inte monterad i StrategicScene: prototypen
+// sätter sig på den gamla krogens plats 4 vid långväggen, där vinbaren
+// inte har någon stol.
+const ENABLED = false;
 
 // ---------- character dimensions (procedural) --------------------------
 

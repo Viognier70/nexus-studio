@@ -5,6 +5,8 @@
 import type { SimulationState } from '../strategic/types';
 import { GAME_MINUTES_PER_SIM_SECOND, INCIDENTS, SITTING } from './balance';
 import { strings } from '../content/strings';
+import { OPENING_DURATION_SEC, PREP_DURATION_SEC } from '../strategic/simulation/constants';
+import { businessHasMiseEnPlace } from '../strategic/business/businessClass';
 
 const MINUTES_PER_HOUR = INCIDENTS.minutesPerHour;
 
@@ -12,6 +14,25 @@ const MINUTES_PER_HOUR = INCIDENTS.minutesPerHour;
 export function clockMinutes(state: SimulationState): number {
   const since = Math.max(0, state.simTime - state.day.periodStartAt);
   return SITTING.serviceStartHour * MINUTES_PER_HOUR + Math.floor(since * GAME_MINUTES_PER_SIM_SECOND);
+}
+
+// ORDER 292b (provspel av e079883: "Raketknappen säger 'Öppnar när dörrarna
+// öppnar' klockan 18.10, efter att dörrarna har öppnat") — dörrarna öppnar
+// efter öppningen och förberedelserna (reducer.ts openService), alltså inte
+// 18.00. Klockslaget när de öppnar, i spelminuter: under servicen ur
+// day.doorsOpenAt, annars ur öppningens och förberedelsernas längd för klassen.
+export function doorsOpenMinutes(state: SimulationState): number {
+  const start = SITTING.serviceStartHour * MINUTES_PER_HOUR;
+  const inService = state.day.period === 'dinner' || state.day.period === 'lunch';
+  const sinceStart = inService && state.day.doorsOpenAt !== null
+    ? state.day.doorsOpenAt - state.day.periodStartAt
+    : OPENING_DURATION_SEC + (businessHasMiseEnPlace(state.businessClass) ? PREP_DURATION_SEC : 0);
+  return start + Math.round(sinceStart * GAME_MINUTES_PER_SIM_SECOND);
+}
+
+// Är dörrarna fortfarande stängda under servicen (öppningen och förberedelserna)?
+export function beforeDoors(state: SimulationState): boolean {
+  return (state.day.period === 'dinner' || state.day.period === 'lunch') && state.day.doorsOpenAt !== null && state.simTime < state.day.doorsOpenAt;
 }
 
 // Klockslaget som text i det aktuella språket (ORDER 273, Designs §2):

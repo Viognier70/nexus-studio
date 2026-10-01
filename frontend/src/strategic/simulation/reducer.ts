@@ -105,7 +105,9 @@ import {
 // after OPEN_SERVICE, before prep begins. Ten seconds reads as an
 // anticipation moment — long enough to notice the weather and the
 // waiting count, short enough not to become its own act.
-export const OPENING_DURATION_SEC = 10;
+// ORDER 292b — flyttad till constants.ts (klockan läser den, sim/clock.ts).
+export { OPENING_DURATION_SEC } from './constants';
+import { OPENING_DURATION_SEC } from './constants';
 import {
   SENDER_PREFIX,
   pickScenarioSender,

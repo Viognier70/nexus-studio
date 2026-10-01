@@ -17,6 +17,7 @@
 import { strings } from '../../../content/strings';
 import { CLOCK, INCIDENTS, SITTING } from '../../../sim/balance';
 import { clockCells, clockLabel, serviceClock } from '../../../sim/serviceClock';
+import { beforeDoors, doorsOpenMinutes } from '../../../sim/clock';
 import { useSimState } from '../../simulation/SimulationProvider';
 import { u } from '../system/components';
 import '../system/system.css';
@@ -45,7 +46,15 @@ export function ServiceClock() {
   let dataLabel: string;
   let accentLabel = false;
   const endOfService = START + CLOCK.cells * CLOCK.cellMinutes;
-  if (c) {
+  if (c && beforeDoors(sim)) {
+    // ORDER 292b — förberedelserna: dörrarna är inte öppna än, och klockan
+    // säger när de öppnar (förut stod "Servicen" och tiden kvar).
+    time = hhmm(c.nowMinutes);
+    label = t.label.prep;
+    sub = t.doorsAtTime(hhmm(doorsOpenMinutes(sim)));
+    since = c.nowMinutes - c.startMinutes;
+    dataLabel = 'prep';
+  } else if (c) {
     const l = clockLabel(c);
     time = hhmm(c.nowMinutes);
     label = t.label[l];
@@ -64,7 +73,7 @@ export function ServiceClock() {
   } else {
     time = null;
     label = t.label.morning;
-    sub = t.doorsAt;
+    sub = t.doorsAtTime(hhmm(doorsOpenMinutes(sim)));
     since = 0;
     dataLabel = 'morning';
   }

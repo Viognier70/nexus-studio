@@ -1,0 +1,3223 @@
+{
+  "definition": "Första kvällen: vinbaren vecka 1 måndag, brons i Stensöta och Kalastorget, bästa svaret. stake = day.stake när dörrarna öppnar (eveningStake). till2111 = tillSek klockan 21.11 (sim/clock.ts clockMinutes). tillAtClose = day.tillAtClose. passed = kvällskassan vid stängningen minst insatsen (break-even). Vardagarna: måndag–torsdag vecka 1 och 2 utan satsningar.",
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+  ],
+  "first": {
+    "ingaSatsningar": {
+      "stakeMean": 5037,
+      "lines": {
+        "ingredients": 1150,
+        "staff": 3887,
+        "dj": 0,
+        "investments": 0
+      },
+      "till2111Mean": 1554,
+      "tillAtCloseMean": 4684,
+      "passedStake": 8,
+      "n": 20,
+      "rows": [
+        {
+          "seed": 1,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1150
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5037
+          },
+          "till2111": 2053,
+          "tillAtClose": 5259,
+          "passed": true,
+          "result": -815
+        },
+        {
+          "seed": 2,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1150
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5037
+          },
+          "till2111": 3137,
+          "tillAtClose": 5003,
+          "passed": false,
+          "result": -988
+        },
+        {
+          "seed": 3,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1150
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5037
+          },
+          "till2111": 1502,
+          "tillAtClose": 4877,
+          "passed": false,
+          "result": -1110
+        },
+        {
+          "seed": 4,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1150
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5037
+          },
+          "till2111": 1472,
+          "tillAtClose": 4342,
+          "passed": false,
+          "result": -1647
+        },
+        {
+          "seed": 5,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1150
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5037
+          },
+          "till2111": 1928,
+          "tillAtClose": 5558,
+          "passed": true,
+          "result": -684
+        },
+        {
+          "seed": 6,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1150
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5037
+          },
+          "till2111": 2337,
+          "tillAtClose": 4963,
+          "passed": false,
+          "result": -1491
+        },
+        {
+          "seed": 7,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1150
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5037
+          },
+          "till2111": 792,
+          "tillAtClose": 4741,
+          "passed": false,
+          "result": -993
+        },
+        {
+          "seed": 8,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1150
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5037
+          },
+          "till2111": null,
+          "tillAtClose": 1865,
+          "passed": false,
+          "result": -3585
+        },
+        {
+          "seed": 9,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1150
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5037
+          },
+          "till2111": 2163,
+          "tillAtClose": 5061,
+          "passed": true,
+          "result": -673
+        },
+        {
+          "seed": 10,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1150
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5037
+          },
+          "till2111": 1195,
+          "tillAtClose": 4594,
+          "passed": false,
+          "result": -1480
+        },
+        {
+          "seed": 11,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1150
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5037
+          },
+          "till2111": 2514,
+          "tillAtClose": 5209,
+          "passed": true,
+          "result": -1155
+        },
+        {
+          "seed": 12,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1150
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5037
+          },
+          "till2111": 253,
+          "tillAtClose": 4349,
+          "passed": false,
+          "result": -1726
+        },
+        {
+          "seed": 13,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1150
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5037
+          },
+          "till2111": 2261,
+          "tillAtClose": 6412,
+          "passed": true,
+          "result": 341
+        },
+        {
+          "seed": 14,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1150
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5037
+          },
+          "till2111": 986,
+          "tillAtClose": 4693,
+          "passed": false,
+          "result": -1545
+        },
+        {
+          "seed": 15,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1150
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5037
+          },
+          "till2111": 1546,
+          "tillAtClose": 3872,
+          "passed": false,
+          "result": -2030
+        },
+        {
+          "seed": 16,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1150
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5037
+          },
+          "till2111": 1566,
+          "tillAtClose": 5152,
+          "passed": true,
+          "result": -585
+        },
+        {
+          "seed": 17,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1150
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5037
+          },
+          "till2111": 1983,
+          "tillAtClose": 4645,
+          "passed": false,
+          "result": -2027
+        },
+        {
+          "seed": 18,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1150
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5037
+          },
+          "till2111": null,
+          "tillAtClose": 1650,
+          "passed": false,
+          "result": -4062
+        },
+        {
+          "seed": 19,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1150
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5037
+          },
+          "till2111": 1716,
+          "tillAtClose": 5566,
+          "passed": true,
+          "result": -2
+        },
+        {
+          "seed": 20,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1150
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5037
+          },
+          "till2111": 1672,
+          "tillAtClose": 5874,
+          "passed": true,
+          "result": -197
+        }
+      ]
+    },
+    "utbildningOchDj": {
+      "stakeMean": 6609,
+      "lines": {
+        "ingredients": 1222,
+        "staff": 3887,
+        "dj": 1500,
+        "investments": 0
+      },
+      "till2111Mean": 1586,
+      "tillAtCloseMean": 5325,
+      "passedStake": 1,
+      "n": 20,
+      "rows": [
+        {
+          "seed": 1,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              }
+            ],
+            "total": 6609
+          },
+          "till2111": 2338,
+          "tillAtClose": 5770,
+          "passed": false,
+          "result": -1879
+        },
+        {
+          "seed": 2,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              }
+            ],
+            "total": 6609
+          },
+          "till2111": 2470,
+          "tillAtClose": 5791,
+          "passed": false,
+          "result": -1936
+        },
+        {
+          "seed": 3,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              }
+            ],
+            "total": 6609
+          },
+          "till2111": 1573,
+          "tillAtClose": 6193,
+          "passed": false,
+          "result": -1364
+        },
+        {
+          "seed": 4,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              }
+            ],
+            "total": 6609
+          },
+          "till2111": 1738,
+          "tillAtClose": 4833,
+          "passed": false,
+          "result": -2729
+        },
+        {
+          "seed": 5,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              }
+            ],
+            "total": 6609
+          },
+          "till2111": 1928,
+          "tillAtClose": 5871,
+          "passed": false,
+          "result": -1944
+        },
+        {
+          "seed": 6,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              }
+            ],
+            "total": 6609
+          },
+          "till2111": 2172,
+          "tillAtClose": 5617,
+          "passed": false,
+          "result": -2405
+        },
+        {
+          "seed": 7,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              }
+            ],
+            "total": 6609
+          },
+          "till2111": 792,
+          "tillAtClose": 4824,
+          "passed": false,
+          "result": -2482
+        },
+        {
+          "seed": 8,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              }
+            ],
+            "total": 6609
+          },
+          "till2111": null,
+          "tillAtClose": 4054,
+          "passed": false,
+          "result": -2967
+        },
+        {
+          "seed": 9,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              }
+            ],
+            "total": 6609
+          },
+          "till2111": 2097,
+          "tillAtClose": 5633,
+          "passed": false,
+          "result": -2013
+        },
+        {
+          "seed": 10,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              }
+            ],
+            "total": 6609
+          },
+          "till2111": 1129,
+          "tillAtClose": 4528,
+          "passed": false,
+          "result": -3116
+        },
+        {
+          "seed": 11,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              }
+            ],
+            "total": 6609
+          },
+          "till2111": 2448,
+          "tillAtClose": 5803,
+          "passed": false,
+          "result": -1630
+        },
+        {
+          "seed": 12,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              }
+            ],
+            "total": 6609
+          },
+          "till2111": 253,
+          "tillAtClose": 5033,
+          "passed": false,
+          "result": -2608
+        },
+        {
+          "seed": 13,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              }
+            ],
+            "total": 6609
+          },
+          "till2111": 2625,
+          "tillAtClose": 6513,
+          "passed": false,
+          "result": -794
+        },
+        {
+          "seed": 14,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              }
+            ],
+            "total": 6609
+          },
+          "till2111": 986,
+          "tillAtClose": 5369,
+          "passed": false,
+          "result": -2109
+        },
+        {
+          "seed": 15,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              }
+            ],
+            "total": 6609
+          },
+          "till2111": 1551,
+          "tillAtClose": 5209,
+          "passed": false,
+          "result": -2434
+        },
+        {
+          "seed": 16,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              }
+            ],
+            "total": 6609
+          },
+          "till2111": 1819,
+          "tillAtClose": 6604,
+          "passed": false,
+          "result": -873
+        },
+        {
+          "seed": 17,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              }
+            ],
+            "total": 6609
+          },
+          "till2111": 2054,
+          "tillAtClose": 5046,
+          "passed": false,
+          "result": -3201
+        },
+        {
+          "seed": 18,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              }
+            ],
+            "total": 6609
+          },
+          "till2111": null,
+          "tillAtClose": 1650,
+          "passed": false,
+          "result": -5634
+        },
+        {
+          "seed": 19,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              }
+            ],
+            "total": 6609
+          },
+          "till2111": 2079,
+          "tillAtClose": 5352,
+          "passed": false,
+          "result": -2124
+        },
+        {
+          "seed": 20,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              }
+            ],
+            "total": 6609
+          },
+          "till2111": 1672,
+          "tillAtClose": 6804,
+          "passed": true,
+          "result": -503
+        }
+      ]
+    },
+    "djOchSpringare": {
+      "stakeMean": 8409,
+      "lines": {
+        "ingredients": 1222,
+        "staff": 3887,
+        "dj": 1500,
+        "investments": 1800
+      },
+      "till2111Mean": 1586,
+      "tillAtCloseMean": 5325,
+      "passedStake": 0,
+      "n": 20,
+      "rows": [
+        {
+          "seed": 1,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              },
+              {
+                "key": "investments",
+                "sek": 1800
+              }
+            ],
+            "total": 8409
+          },
+          "till2111": 2338,
+          "tillAtClose": 5770,
+          "passed": false,
+          "result": -3679
+        },
+        {
+          "seed": 2,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              },
+              {
+                "key": "investments",
+                "sek": 1800
+              }
+            ],
+            "total": 8409
+          },
+          "till2111": 2470,
+          "tillAtClose": 5791,
+          "passed": false,
+          "result": -3736
+        },
+        {
+          "seed": 3,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              },
+              {
+                "key": "investments",
+                "sek": 1800
+              }
+            ],
+            "total": 8409
+          },
+          "till2111": 1573,
+          "tillAtClose": 6193,
+          "passed": false,
+          "result": -3164
+        },
+        {
+          "seed": 4,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              },
+              {
+                "key": "investments",
+                "sek": 1800
+              }
+            ],
+            "total": 8409
+          },
+          "till2111": 1738,
+          "tillAtClose": 4833,
+          "passed": false,
+          "result": -4529
+        },
+        {
+          "seed": 5,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              },
+              {
+                "key": "investments",
+                "sek": 1800
+              }
+            ],
+            "total": 8409
+          },
+          "till2111": 1928,
+          "tillAtClose": 5871,
+          "passed": false,
+          "result": -3744
+        },
+        {
+          "seed": 6,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              },
+              {
+                "key": "investments",
+                "sek": 1800
+              }
+            ],
+            "total": 8409
+          },
+          "till2111": 2172,
+          "tillAtClose": 5617,
+          "passed": false,
+          "result": -4205
+        },
+        {
+          "seed": 7,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              },
+              {
+                "key": "investments",
+                "sek": 1800
+              }
+            ],
+            "total": 8409
+          },
+          "till2111": 792,
+          "tillAtClose": 4824,
+          "passed": false,
+          "result": -4282
+        },
+        {
+          "seed": 8,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              },
+              {
+                "key": "investments",
+                "sek": 1800
+              }
+            ],
+            "total": 8409
+          },
+          "till2111": null,
+          "tillAtClose": 4054,
+          "passed": false,
+          "result": -4767
+        },
+        {
+          "seed": 9,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              },
+              {
+                "key": "investments",
+                "sek": 1800
+              }
+            ],
+            "total": 8409
+          },
+          "till2111": 2097,
+          "tillAtClose": 5633,
+          "passed": false,
+          "result": -3813
+        },
+        {
+          "seed": 10,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              },
+              {
+                "key": "investments",
+                "sek": 1800
+              }
+            ],
+            "total": 8409
+          },
+          "till2111": 1129,
+          "tillAtClose": 4528,
+          "passed": false,
+          "result": -4916
+        },
+        {
+          "seed": 11,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              },
+              {
+                "key": "investments",
+                "sek": 1800
+              }
+            ],
+            "total": 8409
+          },
+          "till2111": 2448,
+          "tillAtClose": 5803,
+          "passed": false,
+          "result": -3430
+        },
+        {
+          "seed": 12,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              },
+              {
+                "key": "investments",
+                "sek": 1800
+              }
+            ],
+            "total": 8409
+          },
+          "till2111": 253,
+          "tillAtClose": 5033,
+          "passed": false,
+          "result": -4408
+        },
+        {
+          "seed": 13,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              },
+              {
+                "key": "investments",
+                "sek": 1800
+              }
+            ],
+            "total": 8409
+          },
+          "till2111": 2625,
+          "tillAtClose": 6513,
+          "passed": false,
+          "result": -2594
+        },
+        {
+          "seed": 14,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              },
+              {
+                "key": "investments",
+                "sek": 1800
+              }
+            ],
+            "total": 8409
+          },
+          "till2111": 986,
+          "tillAtClose": 5369,
+          "passed": false,
+          "result": -3909
+        },
+        {
+          "seed": 15,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              },
+              {
+                "key": "investments",
+                "sek": 1800
+              }
+            ],
+            "total": 8409
+          },
+          "till2111": 1551,
+          "tillAtClose": 5209,
+          "passed": false,
+          "result": -4234
+        },
+        {
+          "seed": 16,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              },
+              {
+                "key": "investments",
+                "sek": 1800
+              }
+            ],
+            "total": 8409
+          },
+          "till2111": 1819,
+          "tillAtClose": 6604,
+          "passed": false,
+          "result": -2673
+        },
+        {
+          "seed": 17,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              },
+              {
+                "key": "investments",
+                "sek": 1800
+              }
+            ],
+            "total": 8409
+          },
+          "till2111": 2054,
+          "tillAtClose": 5046,
+          "passed": false,
+          "result": -5001
+        },
+        {
+          "seed": 18,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              },
+              {
+                "key": "investments",
+                "sek": 1800
+              }
+            ],
+            "total": 8409
+          },
+          "till2111": null,
+          "tillAtClose": 1650,
+          "passed": false,
+          "result": -7434
+        },
+        {
+          "seed": 19,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              },
+              {
+                "key": "investments",
+                "sek": 1800
+              }
+            ],
+            "total": 8409
+          },
+          "till2111": 2079,
+          "tillAtClose": 5352,
+          "passed": false,
+          "result": -3924
+        },
+        {
+          "seed": 20,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1222
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              },
+              {
+                "key": "dj",
+                "sek": 1500
+              },
+              {
+                "key": "investments",
+                "sek": 1800
+              }
+            ],
+            "total": 8409
+          },
+          "till2111": 1672,
+          "tillAtClose": 6804,
+          "passed": false,
+          "result": -2303
+        }
+      ]
+    },
+    "tvaTillkop": {
+      "stakeMean": 5816,
+      "lines": {
+        "ingredients": 1929,
+        "staff": 3887,
+        "dj": 0,
+        "investments": 0
+      },
+      "till2111Mean": 1595,
+      "tillAtCloseMean": 5122,
+      "passedStake": 6,
+      "n": 20,
+      "rows": [
+        {
+          "seed": 1,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1929
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5816
+          },
+          "till2111": 2130,
+          "tillAtClose": 6062,
+          "passed": true,
+          "result": -801
+        },
+        {
+          "seed": 2,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1929
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5816
+          },
+          "till2111": 3256,
+          "tillAtClose": 5181,
+          "passed": false,
+          "result": -1597
+        },
+        {
+          "seed": 3,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1929
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5816
+          },
+          "till2111": 1579,
+          "tillAtClose": 5503,
+          "passed": false,
+          "result": -1281
+        },
+        {
+          "seed": 4,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1929
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5816
+          },
+          "till2111": 1472,
+          "tillAtClose": 4534,
+          "passed": false,
+          "result": -2240
+        },
+        {
+          "seed": 5,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1929
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5816
+          },
+          "till2111": 1840,
+          "tillAtClose": 5717,
+          "passed": false,
+          "result": -1315
+        },
+        {
+          "seed": 6,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1929
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5816
+          },
+          "till2111": 2154,
+          "tillAtClose": 5093,
+          "passed": false,
+          "result": -2318
+        },
+        {
+          "seed": 7,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1929
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5816
+          },
+          "till2111": 891,
+          "tillAtClose": 5368,
+          "passed": false,
+          "result": -1156
+        },
+        {
+          "seed": 8,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1929
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5816
+          },
+          "till2111": null,
+          "tillAtClose": 1721,
+          "passed": false,
+          "result": -4520
+        },
+        {
+          "seed": 9,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1929
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5816
+          },
+          "till2111": 2163,
+          "tillAtClose": 6213,
+          "passed": true,
+          "result": -655
+        },
+        {
+          "seed": 10,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1929
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5816
+          },
+          "till2111": 1195,
+          "tillAtClose": 4495,
+          "passed": false,
+          "result": -2369
+        },
+        {
+          "seed": 11,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1929
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5816
+          },
+          "till2111": 2530,
+          "tillAtClose": 6546,
+          "passed": true,
+          "result": -613
+        },
+        {
+          "seed": 12,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1929
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5816
+          },
+          "till2111": 253,
+          "tillAtClose": 4102,
+          "passed": false,
+          "result": -2759
+        },
+        {
+          "seed": 13,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1929
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5816
+          },
+          "till2111": 2519,
+          "tillAtClose": 7457,
+          "passed": true,
+          "result": 597
+        },
+        {
+          "seed": 14,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1929
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5816
+          },
+          "till2111": 975,
+          "tillAtClose": 5210,
+          "passed": false,
+          "result": -1819
+        },
+        {
+          "seed": 15,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1929
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5816
+          },
+          "till2111": 1639,
+          "tillAtClose": 4642,
+          "passed": false,
+          "result": -2052
+        },
+        {
+          "seed": 16,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1929
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5816
+          },
+          "till2111": 1731,
+          "tillAtClose": 5609,
+          "passed": false,
+          "result": -918
+        },
+        {
+          "seed": 17,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1929
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5816
+          },
+          "till2111": 2071,
+          "tillAtClose": 6035,
+          "passed": true,
+          "result": -1429
+        },
+        {
+          "seed": 18,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1929
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5816
+          },
+          "till2111": null,
+          "tillAtClose": 1518,
+          "passed": false,
+          "result": -4983
+        },
+        {
+          "seed": 19,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1929
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5816
+          },
+          "till2111": 1788,
+          "tillAtClose": 5423,
+          "passed": false,
+          "result": -1101
+        },
+        {
+          "seed": 20,
+          "stake": {
+            "lines": [
+              {
+                "key": "ingredients",
+                "sek": 1929
+              },
+              {
+                "key": "staff",
+                "sek": 3887
+              }
+            ],
+            "total": 5816
+          },
+          "till2111": 1722,
+          "tillAtClose": 6001,
+          "passed": true,
+          "result": -689
+        }
+      ]
+    }
+  },
+  "weekdaysWithoutActivities": {
+    "week1": {
+      "evenings": 80,
+      "passed": 48,
+      "stakeMean": 5485,
+      "tillMean": 5642
+    },
+    "week2": {
+      "evenings": 80,
+      "passed": 28,
+      "stakeMean": 5677,
+      "tillMean": 4742
+    },
+    "rows": [
+      {
+        "seed": 1,
+        "week": 1,
+        "weekday": "mon",
+        "stake": 5037,
+        "till": 5259,
+        "passed": true
+      },
+      {
+        "seed": 1,
+        "week": 1,
+        "weekday": "tue",
+        "stake": 5504,
+        "till": 7064,
+        "passed": true
+      },
+      {
+        "seed": 1,
+        "week": 1,
+        "weekday": "wed",
+        "stake": 5653,
+        "till": 5667,
+        "passed": true
+      },
+      {
+        "seed": 1,
+        "week": 1,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 7170,
+        "passed": true
+      },
+      {
+        "seed": 1,
+        "week": 2,
+        "weekday": "mon",
+        "stake": 5677,
+        "till": 7812,
+        "passed": true
+      },
+      {
+        "seed": 1,
+        "week": 2,
+        "weekday": "tue",
+        "stake": 5677,
+        "till": 600,
+        "passed": false
+      },
+      {
+        "seed": 1,
+        "week": 2,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 5088,
+        "passed": false
+      },
+      {
+        "seed": 1,
+        "week": 2,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 5334,
+        "passed": false
+      },
+      {
+        "seed": 2,
+        "week": 1,
+        "weekday": "mon",
+        "stake": 5037,
+        "till": 5003,
+        "passed": false
+      },
+      {
+        "seed": 2,
+        "week": 1,
+        "weekday": "tue",
+        "stake": 5504,
+        "till": 6836,
+        "passed": true
+      },
+      {
+        "seed": 2,
+        "week": 1,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 9046,
+        "passed": true
+      },
+      {
+        "seed": 2,
+        "week": 1,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 1243,
+        "passed": false
+      },
+      {
+        "seed": 2,
+        "week": 2,
+        "weekday": "mon",
+        "stake": 5677,
+        "till": 6205,
+        "passed": true
+      },
+      {
+        "seed": 2,
+        "week": 2,
+        "weekday": "tue",
+        "stake": 5677,
+        "till": 1012,
+        "passed": false
+      },
+      {
+        "seed": 2,
+        "week": 2,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 3300,
+        "passed": false
+      },
+      {
+        "seed": 2,
+        "week": 2,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 8088,
+        "passed": true
+      },
+      {
+        "seed": 3,
+        "week": 1,
+        "weekday": "mon",
+        "stake": 5037,
+        "till": 4877,
+        "passed": false
+      },
+      {
+        "seed": 3,
+        "week": 1,
+        "weekday": "tue",
+        "stake": 5677,
+        "till": 3920,
+        "passed": false
+      },
+      {
+        "seed": 3,
+        "week": 1,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 7831,
+        "passed": true
+      },
+      {
+        "seed": 3,
+        "week": 1,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 2932,
+        "passed": false
+      },
+      {
+        "seed": 3,
+        "week": 2,
+        "weekday": "mon",
+        "stake": 5677,
+        "till": 231,
+        "passed": false
+      },
+      {
+        "seed": 3,
+        "week": 2,
+        "weekday": "tue",
+        "stake": 5677,
+        "till": 1969,
+        "passed": false
+      },
+      {
+        "seed": 3,
+        "week": 2,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 4037,
+        "passed": false
+      },
+      {
+        "seed": 3,
+        "week": 2,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 4807,
+        "passed": false
+      },
+      {
+        "seed": 4,
+        "week": 1,
+        "weekday": "mon",
+        "stake": 5037,
+        "till": 4342,
+        "passed": false
+      },
+      {
+        "seed": 4,
+        "week": 1,
+        "weekday": "tue",
+        "stake": 5677,
+        "till": 6532,
+        "passed": true
+      },
+      {
+        "seed": 4,
+        "week": 1,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 5686,
+        "passed": true
+      },
+      {
+        "seed": 4,
+        "week": 1,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 7245,
+        "passed": true
+      },
+      {
+        "seed": 4,
+        "week": 2,
+        "weekday": "mon",
+        "stake": 5677,
+        "till": 2819,
+        "passed": false
+      },
+      {
+        "seed": 4,
+        "week": 2,
+        "weekday": "tue",
+        "stake": 5677,
+        "till": 4307,
+        "passed": false
+      },
+      {
+        "seed": 4,
+        "week": 2,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 7615,
+        "passed": true
+      },
+      {
+        "seed": 4,
+        "week": 2,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 8370,
+        "passed": true
+      },
+      {
+        "seed": 5,
+        "week": 1,
+        "weekday": "mon",
+        "stake": 5037,
+        "till": 5558,
+        "passed": true
+      },
+      {
+        "seed": 5,
+        "week": 1,
+        "weekday": "tue",
+        "stake": 5677,
+        "till": 6417,
+        "passed": true
+      },
+      {
+        "seed": 5,
+        "week": 1,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 7338,
+        "passed": true
+      },
+      {
+        "seed": 5,
+        "week": 1,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 6416,
+        "passed": true
+      },
+      {
+        "seed": 5,
+        "week": 2,
+        "weekday": "mon",
+        "stake": 5677,
+        "till": 220,
+        "passed": false
+      },
+      {
+        "seed": 5,
+        "week": 2,
+        "weekday": "tue",
+        "stake": 5677,
+        "till": 3938,
+        "passed": false
+      },
+      {
+        "seed": 5,
+        "week": 2,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 3574,
+        "passed": false
+      },
+      {
+        "seed": 5,
+        "week": 2,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 9128,
+        "passed": true
+      },
+      {
+        "seed": 6,
+        "week": 1,
+        "weekday": "mon",
+        "stake": 5037,
+        "till": 4963,
+        "passed": false
+      },
+      {
+        "seed": 6,
+        "week": 1,
+        "weekday": "tue",
+        "stake": 5504,
+        "till": 7870,
+        "passed": true
+      },
+      {
+        "seed": 6,
+        "week": 1,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 5481,
+        "passed": false
+      },
+      {
+        "seed": 6,
+        "week": 1,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 6734,
+        "passed": true
+      },
+      {
+        "seed": 6,
+        "week": 2,
+        "weekday": "mon",
+        "stake": 5677,
+        "till": 2486,
+        "passed": false
+      },
+      {
+        "seed": 6,
+        "week": 2,
+        "weekday": "tue",
+        "stake": 5677,
+        "till": 3339,
+        "passed": false
+      },
+      {
+        "seed": 6,
+        "week": 2,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 6284,
+        "passed": true
+      },
+      {
+        "seed": 6,
+        "week": 2,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 4317,
+        "passed": false
+      },
+      {
+        "seed": 7,
+        "week": 1,
+        "weekday": "mon",
+        "stake": 5037,
+        "till": 4741,
+        "passed": false
+      },
+      {
+        "seed": 7,
+        "week": 1,
+        "weekday": "tue",
+        "stake": 5677,
+        "till": 7695,
+        "passed": true
+      },
+      {
+        "seed": 7,
+        "week": 1,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 6813,
+        "passed": true
+      },
+      {
+        "seed": 7,
+        "week": 1,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 6621,
+        "passed": true
+      },
+      {
+        "seed": 7,
+        "week": 2,
+        "weekday": "mon",
+        "stake": 5677,
+        "till": 2469,
+        "passed": false
+      },
+      {
+        "seed": 7,
+        "week": 2,
+        "weekday": "tue",
+        "stake": 5677,
+        "till": 5515,
+        "passed": false
+      },
+      {
+        "seed": 7,
+        "week": 2,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 5076,
+        "passed": false
+      },
+      {
+        "seed": 7,
+        "week": 2,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 7797,
+        "passed": true
+      },
+      {
+        "seed": 8,
+        "week": 1,
+        "weekday": "mon",
+        "stake": 5037,
+        "till": 1865,
+        "passed": false
+      },
+      {
+        "seed": 8,
+        "week": 1,
+        "weekday": "tue",
+        "stake": 5556,
+        "till": 6304,
+        "passed": true
+      },
+      {
+        "seed": 8,
+        "week": 1,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 5492,
+        "passed": false
+      },
+      {
+        "seed": 8,
+        "week": 1,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 8607,
+        "passed": true
+      },
+      {
+        "seed": 8,
+        "week": 2,
+        "weekday": "mon",
+        "stake": 5677,
+        "till": 2867,
+        "passed": false
+      },
+      {
+        "seed": 8,
+        "week": 2,
+        "weekday": "tue",
+        "stake": 5677,
+        "till": 6605,
+        "passed": true
+      },
+      {
+        "seed": 8,
+        "week": 2,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 996,
+        "passed": false
+      },
+      {
+        "seed": 8,
+        "week": 2,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 4698,
+        "passed": false
+      },
+      {
+        "seed": 9,
+        "week": 1,
+        "weekday": "mon",
+        "stake": 5037,
+        "till": 5061,
+        "passed": true
+      },
+      {
+        "seed": 9,
+        "week": 1,
+        "weekday": "tue",
+        "stake": 5504,
+        "till": 7471,
+        "passed": true
+      },
+      {
+        "seed": 9,
+        "week": 1,
+        "weekday": "wed",
+        "stake": 5653,
+        "till": 5760,
+        "passed": true
+      },
+      {
+        "seed": 9,
+        "week": 1,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 3673,
+        "passed": false
+      },
+      {
+        "seed": 9,
+        "week": 2,
+        "weekday": "mon",
+        "stake": 5677,
+        "till": 4373,
+        "passed": false
+      },
+      {
+        "seed": 9,
+        "week": 2,
+        "weekday": "tue",
+        "stake": 5677,
+        "till": 3817,
+        "passed": false
+      },
+      {
+        "seed": 9,
+        "week": 2,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 8348,
+        "passed": true
+      },
+      {
+        "seed": 9,
+        "week": 2,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 809,
+        "passed": false
+      },
+      {
+        "seed": 10,
+        "week": 1,
+        "weekday": "mon",
+        "stake": 5037,
+        "till": 4594,
+        "passed": false
+      },
+      {
+        "seed": 10,
+        "week": 1,
+        "weekday": "tue",
+        "stake": 5504,
+        "till": 7112,
+        "passed": true
+      },
+      {
+        "seed": 10,
+        "week": 1,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 6975,
+        "passed": true
+      },
+      {
+        "seed": 10,
+        "week": 1,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 3533,
+        "passed": false
+      },
+      {
+        "seed": 10,
+        "week": 2,
+        "weekday": "mon",
+        "stake": 5677,
+        "till": 6324,
+        "passed": true
+      },
+      {
+        "seed": 10,
+        "week": 2,
+        "weekday": "tue",
+        "stake": 5677,
+        "till": 6540,
+        "passed": true
+      },
+      {
+        "seed": 10,
+        "week": 2,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 6928,
+        "passed": true
+      },
+      {
+        "seed": 10,
+        "week": 2,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 4857,
+        "passed": false
+      },
+      {
+        "seed": 11,
+        "week": 1,
+        "weekday": "mon",
+        "stake": 5037,
+        "till": 5209,
+        "passed": true
+      },
+      {
+        "seed": 11,
+        "week": 1,
+        "weekday": "tue",
+        "stake": 5677,
+        "till": 5528,
+        "passed": false
+      },
+      {
+        "seed": 11,
+        "week": 1,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 5443,
+        "passed": false
+      },
+      {
+        "seed": 11,
+        "week": 1,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 7498,
+        "passed": true
+      },
+      {
+        "seed": 11,
+        "week": 2,
+        "weekday": "mon",
+        "stake": 5677,
+        "till": 621,
+        "passed": false
+      },
+      {
+        "seed": 11,
+        "week": 2,
+        "weekday": "tue",
+        "stake": 5677,
+        "till": 2445,
+        "passed": false
+      },
+      {
+        "seed": 11,
+        "week": 2,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 2724,
+        "passed": false
+      },
+      {
+        "seed": 11,
+        "week": 2,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 7335,
+        "passed": true
+      },
+      {
+        "seed": 12,
+        "week": 1,
+        "weekday": "mon",
+        "stake": 5037,
+        "till": 4349,
+        "passed": false
+      },
+      {
+        "seed": 12,
+        "week": 1,
+        "weekday": "tue",
+        "stake": 5504,
+        "till": 8471,
+        "passed": true
+      },
+      {
+        "seed": 12,
+        "week": 1,
+        "weekday": "wed",
+        "stake": 5653,
+        "till": 3818,
+        "passed": false
+      },
+      {
+        "seed": 12,
+        "week": 1,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 6455,
+        "passed": true
+      },
+      {
+        "seed": 12,
+        "week": 2,
+        "weekday": "mon",
+        "stake": 5677,
+        "till": 3906,
+        "passed": false
+      },
+      {
+        "seed": 12,
+        "week": 2,
+        "weekday": "tue",
+        "stake": 5677,
+        "till": 4928,
+        "passed": false
+      },
+      {
+        "seed": 12,
+        "week": 2,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 3666,
+        "passed": false
+      },
+      {
+        "seed": 12,
+        "week": 2,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 7320,
+        "passed": true
+      },
+      {
+        "seed": 13,
+        "week": 1,
+        "weekday": "mon",
+        "stake": 5037,
+        "till": 6412,
+        "passed": true
+      },
+      {
+        "seed": 13,
+        "week": 1,
+        "weekday": "tue",
+        "stake": 5504,
+        "till": 3603,
+        "passed": false
+      },
+      {
+        "seed": 13,
+        "week": 1,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 3671,
+        "passed": false
+      },
+      {
+        "seed": 13,
+        "week": 1,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 2019,
+        "passed": false
+      },
+      {
+        "seed": 13,
+        "week": 2,
+        "weekday": "mon",
+        "stake": 5677,
+        "till": 5636,
+        "passed": false
+      },
+      {
+        "seed": 13,
+        "week": 2,
+        "weekday": "tue",
+        "stake": 5677,
+        "till": 5564,
+        "passed": false
+      },
+      {
+        "seed": 13,
+        "week": 2,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 5214,
+        "passed": false
+      },
+      {
+        "seed": 13,
+        "week": 2,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 3287,
+        "passed": false
+      },
+      {
+        "seed": 14,
+        "week": 1,
+        "weekday": "mon",
+        "stake": 5037,
+        "till": 4693,
+        "passed": false
+      },
+      {
+        "seed": 14,
+        "week": 1,
+        "weekday": "tue",
+        "stake": 5504,
+        "till": 7101,
+        "passed": true
+      },
+      {
+        "seed": 14,
+        "week": 1,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 2344,
+        "passed": false
+      },
+      {
+        "seed": 14,
+        "week": 1,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 6156,
+        "passed": true
+      },
+      {
+        "seed": 14,
+        "week": 2,
+        "weekday": "mon",
+        "stake": 5677,
+        "till": 3788,
+        "passed": false
+      },
+      {
+        "seed": 14,
+        "week": 2,
+        "weekday": "tue",
+        "stake": 5677,
+        "till": 6106,
+        "passed": true
+      },
+      {
+        "seed": 14,
+        "week": 2,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 6046,
+        "passed": true
+      },
+      {
+        "seed": 14,
+        "week": 2,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 10066,
+        "passed": true
+      },
+      {
+        "seed": 15,
+        "week": 1,
+        "weekday": "mon",
+        "stake": 5037,
+        "till": 3872,
+        "passed": false
+      },
+      {
+        "seed": 15,
+        "week": 1,
+        "weekday": "tue",
+        "stake": 5504,
+        "till": 6580,
+        "passed": true
+      },
+      {
+        "seed": 15,
+        "week": 1,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 9228,
+        "passed": true
+      },
+      {
+        "seed": 15,
+        "week": 1,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 5783,
+        "passed": true
+      },
+      {
+        "seed": 15,
+        "week": 2,
+        "weekday": "mon",
+        "stake": 5677,
+        "till": 6863,
+        "passed": true
+      },
+      {
+        "seed": 15,
+        "week": 2,
+        "weekday": "tue",
+        "stake": 5677,
+        "till": 3162,
+        "passed": false
+      },
+      {
+        "seed": 15,
+        "week": 2,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 7292,
+        "passed": true
+      },
+      {
+        "seed": 15,
+        "week": 2,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 6768,
+        "passed": true
+      },
+      {
+        "seed": 16,
+        "week": 1,
+        "weekday": "mon",
+        "stake": 5037,
+        "till": 5152,
+        "passed": true
+      },
+      {
+        "seed": 16,
+        "week": 1,
+        "weekday": "tue",
+        "stake": 5677,
+        "till": 7520,
+        "passed": true
+      },
+      {
+        "seed": 16,
+        "week": 1,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 8715,
+        "passed": true
+      },
+      {
+        "seed": 16,
+        "week": 1,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 5739,
+        "passed": true
+      },
+      {
+        "seed": 16,
+        "week": 2,
+        "weekday": "mon",
+        "stake": 5677,
+        "till": 5116,
+        "passed": false
+      },
+      {
+        "seed": 16,
+        "week": 2,
+        "weekday": "tue",
+        "stake": 5677,
+        "till": 5946,
+        "passed": true
+      },
+      {
+        "seed": 16,
+        "week": 2,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 5188,
+        "passed": false
+      },
+      {
+        "seed": 16,
+        "week": 2,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 5836,
+        "passed": true
+      },
+      {
+        "seed": 17,
+        "week": 1,
+        "weekday": "mon",
+        "stake": 5037,
+        "till": 4645,
+        "passed": false
+      },
+      {
+        "seed": 17,
+        "week": 1,
+        "weekday": "tue",
+        "stake": 5350,
+        "till": 7489,
+        "passed": true
+      },
+      {
+        "seed": 17,
+        "week": 1,
+        "weekday": "wed",
+        "stake": 5653,
+        "till": 1062,
+        "passed": false
+      },
+      {
+        "seed": 17,
+        "week": 1,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 3735,
+        "passed": false
+      },
+      {
+        "seed": 17,
+        "week": 2,
+        "weekday": "mon",
+        "stake": 5677,
+        "till": 4670,
+        "passed": false
+      },
+      {
+        "seed": 17,
+        "week": 2,
+        "weekday": "tue",
+        "stake": 5677,
+        "till": 4008,
+        "passed": false
+      },
+      {
+        "seed": 17,
+        "week": 2,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 8482,
+        "passed": true
+      },
+      {
+        "seed": 17,
+        "week": 2,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 4579,
+        "passed": false
+      },
+      {
+        "seed": 18,
+        "week": 1,
+        "weekday": "mon",
+        "stake": 5037,
+        "till": 1650,
+        "passed": false
+      },
+      {
+        "seed": 18,
+        "week": 1,
+        "weekday": "tue",
+        "stake": 5556,
+        "till": 8365,
+        "passed": true
+      },
+      {
+        "seed": 18,
+        "week": 1,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 2342,
+        "passed": false
+      },
+      {
+        "seed": 18,
+        "week": 1,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 6662,
+        "passed": true
+      },
+      {
+        "seed": 18,
+        "week": 2,
+        "weekday": "mon",
+        "stake": 5677,
+        "till": 835,
+        "passed": false
+      },
+      {
+        "seed": 18,
+        "week": 2,
+        "weekday": "tue",
+        "stake": 5677,
+        "till": 3097,
+        "passed": false
+      },
+      {
+        "seed": 18,
+        "week": 2,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 3165,
+        "passed": false
+      },
+      {
+        "seed": 18,
+        "week": 2,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 3711,
+        "passed": false
+      },
+      {
+        "seed": 19,
+        "week": 1,
+        "weekday": "mon",
+        "stake": 5037,
+        "till": 5566,
+        "passed": true
+      },
+      {
+        "seed": 19,
+        "week": 1,
+        "weekday": "tue",
+        "stake": 5504,
+        "till": 765,
+        "passed": false
+      },
+      {
+        "seed": 19,
+        "week": 1,
+        "weekday": "wed",
+        "stake": 5504,
+        "till": 5165,
+        "passed": false
+      },
+      {
+        "seed": 19,
+        "week": 1,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 11523,
+        "passed": true
+      },
+      {
+        "seed": 19,
+        "week": 2,
+        "weekday": "mon",
+        "stake": 5677,
+        "till": 7158,
+        "passed": true
+      },
+      {
+        "seed": 19,
+        "week": 2,
+        "weekday": "tue",
+        "stake": 5677,
+        "till": 6343,
+        "passed": true
+      },
+      {
+        "seed": 19,
+        "week": 2,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 9116,
+        "passed": true
+      },
+      {
+        "seed": 19,
+        "week": 2,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 1661,
+        "passed": false
+      },
+      {
+        "seed": 20,
+        "week": 1,
+        "weekday": "mon",
+        "stake": 5037,
+        "till": 5874,
+        "passed": true
+      },
+      {
+        "seed": 20,
+        "week": 1,
+        "weekday": "tue",
+        "stake": 5677,
+        "till": 2316,
+        "passed": false
+      },
+      {
+        "seed": 20,
+        "week": 1,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 8062,
+        "passed": true
+      },
+      {
+        "seed": 20,
+        "week": 1,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 7053,
+        "passed": true
+      },
+      {
+        "seed": 20,
+        "week": 2,
+        "weekday": "mon",
+        "stake": 5677,
+        "till": 1551,
+        "passed": false
+      },
+      {
+        "seed": 20,
+        "week": 2,
+        "weekday": "tue",
+        "stake": 5677,
+        "till": 2937,
+        "passed": false
+      },
+      {
+        "seed": 20,
+        "week": 2,
+        "weekday": "wed",
+        "stake": 5677,
+        "till": 6913,
+        "passed": true
+      },
+      {
+        "seed": 20,
+        "week": 2,
+        "weekday": "thu",
+        "stake": 5677,
+        "till": 3386,
+        "passed": false
+      }
+    ]
+  }
+}

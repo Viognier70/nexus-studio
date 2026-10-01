@@ -11,7 +11,8 @@
 
 import { Html } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
+import { GRAY_BOX_CAMERA } from '../content/grythyttan';
 import * as THREE from 'three';
 import { useCamera } from '../camera/CameraContext';
 import { strings } from '../../content/strings';
@@ -35,18 +36,26 @@ const FADE_SIM_S = 2;
 // mellan rummets takhöjd och BUBBLE_HEIGHT_M.
 const BUBBLE_SHARE_OF_DISTANCE = 0.2;
 const BUBBLE_MIN_M = 2.6;
+// Rummet syns närmare än tonbandets yttre kant (som WineBarFigures).
+const ROOM_SHOWN_BELOW_M = GRAY_BOX_CAMERA.restaurantInteriorFadeMid + GRAY_BOX_CAMERA.restaurantInteriorFadeHalf;
 
 export function IncidentOutcomeBubble() {
   const groupRef = useRef<THREE.Group>(null);
   const { actualRef } = useCamera();
+  // ORDER 292b — bubblan hör till rummet: den ritas bara när rummet syns
+  // (samma tonband som figurerna), inte över byn när kameran är ute.
+  const [roomShown, setRoomShown] = useState(false);
   useFrame(() => {
+    const d = actualRef.current.distance;
     const g = groupRef.current;
-    if (g) g.position.y = Math.min(BUBBLE_HEIGHT_M, Math.max(BUBBLE_MIN_M, actualRef.current.distance * BUBBLE_SHARE_OF_DISTANCE));
+    if (g) g.position.y = Math.min(BUBBLE_HEIGHT_M, Math.max(BUBBLE_MIN_M, d * BUBBLE_SHARE_OF_DISTANCE));
+    const shown = d < ROOM_SHOWN_BELOW_M;
+    if (shown !== roomShown) setRoomShown(shown);
   });
   const layout = usePlayerBusinessInterior();
   const sim = useSimState();
   const inc = sim.incidents;
-  if (!layout || !inc || inc.active || sim.day.period !== 'dinner') return null;
+  if (!layout || !inc || inc.active || sim.day.period !== 'dinner' || !roomShown) return null;
   const [cx, cz] = layout.centre;
   const last = inc.lastOutcome;
   const elapsed = last ? sim.simTime - last.at : Infinity;

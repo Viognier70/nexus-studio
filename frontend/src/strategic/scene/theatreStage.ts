@@ -105,6 +105,11 @@ export class TheatreStage {
   }
 
   /** Klippet gästen spelar just nu (för händernas rekvisita). */
+  /** ORDER 292b — klippet personen spelar just nu (figureAudit.ts). */
+  staffClipId(i: number): string | null {
+    return this.staffClip[i]?.id ?? null;
+  }
+
   guestClipId(i: number): string | null {
     return this.guestClip[i].id;
   }
