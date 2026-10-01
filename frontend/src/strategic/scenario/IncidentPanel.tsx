@@ -34,7 +34,7 @@ import { KnowledgePyramid } from '../ui/service/KnowledgePyramid';
 import { panelOpen, useServiceDrawer } from '../ui/service/serviceDrawer';
 import { useEffect, useRef, useState } from 'react';
 import { strings } from '../../content/strings';
-import { BACK, INCIDENTS, type Confidence } from '../../sim/balance';
+import { ANSWER_EFFECTS, BACK, INCIDENTS, type Confidence } from '../../sim/balance';
 import { incidentById, type Incident, type IncidentStep } from '../../sim/incidentBank';
 import {
   canBack,
@@ -45,7 +45,9 @@ import {
   type IncidentRecord
 } from '../../sim/incidents';
 import { medalSteps } from '../../sim/knowledgeInService';
-import type { SimulationState } from '../types';
+import type { RoomReaction, SimulationState } from '../types';
+import { formatSek } from '../ui/CashCounter';
+import { numberWord } from '../simulation/eveningAccount';
 import { NxSteps } from '../ui/system/components';
 import { COUNTDOWN_ACCENT_SECONDS, METER_EMPHASIS_MS, deltaSteps, meterSteps, rocketCounter } from '../ui/service/serviceView';
 import '../ui/service/service.css';
@@ -303,6 +305,11 @@ export function IncidentCard() {
     band = { kind: 'wrong', label: view.chosen === null ? t.outOfTime(role) : t.wrong(role), text: view.outcomeText ?? '' };
   }
 
+  // ORDER 292 — följden i kassan: svarets händelse vid bordet (rummets reaktion
+  // just nu), med beloppet som flyger till kvällskassan eller försvinner.
+  const lastReaction = sim.day.roomReactions?.at(-1);
+  const reaction = band && lastReaction && sim.simTime - lastReaction.at <= ANSWER_EFFECTS.reactionSimSeconds && lastReaction.amountSek ? lastReaction : null;
+
   // ORDER 280 — Back your knowledge: bandet säger vad svaret gav i krediter.
   const backResult = lastBack && (view.mode === 'right' ? lastBack.step === view.shown : view.mode === 'done' || view.mode === 'wrong') ? lastBack : null;
   if (band && backResult && (backed || held?.outcome.back)) {
@@ -332,6 +339,12 @@ export function IncidentCard() {
       {/* ORDER 284 — i Back your knowledge med ett låst svar (klockan står)
           visar kortet bara frågan, svaret, säkerheten och Stå för svaret, så
           att allt ryms (tredje provspelet). */}
+      {/* ORDER 292 — insatsen före svaret: bordets nota och gästerna. */}
+      {view.mode === 'ask' && active?.stake && (
+        <p className="nx-rocket-stake" data-testid="incident-stake" data-value={active.stake.billSek} data-guests={active.stake.guests} aria-label={strings.rocketStakeAria}>
+          {strings.rocketStake(incident.needsTable ? view.context.table : null, formatSek(active.stake.billSek), numberWord(active.stake.guests), active.stake.guests, (active.stake.types.social ?? 0) > 0)}
+        </p>
+      )}
       {!(backed && pick !== null) && <p className="nx-rocket-story">{f(incident.text.body)}</p>}
       {!(backed && pick !== null) && view.situation && incident.text.situations?.[view.situation] && (
         <p className="nx-rocket-situation" data-testid="incident-situation" data-situation={view.situation}>
@@ -460,6 +473,7 @@ export function IncidentCard() {
               förklaringen är lika vänlig i båda fallen. */}
           <span className="nx-verdict" data-kind={band.kind}>{band.kind === 'right' ? <Check size={16} aria-hidden /> : <X size={16} aria-hidden />}{band.kind === 'right' ? tt(lang, 'verdict.right') : tt(lang, 'verdict.wrong')}</span>
           <p className="nx-rocket-band-text">{band.text}</p>
+          {reaction && <BandAmount reaction={reaction} />}
           <div className="nx-rocket-band-foot">{view.mode === 'done' ? tt(lang, 'pyramid.full.sub') : band.label}</div>
         </div>
       ) : (
@@ -529,5 +543,26 @@ export function ServiceMeters() {
       ))}
       <div className="nx-meters-note" aria-live="polite">{sentence}</div>
     </div>
+  );
+}
+
+// ORDER 292 (Vision Owner 2026-10-01: "rätt svar ger en synlig händelse (gästen
+// beställer mer, beloppet flyger till kvällskassan och stapeln hoppar), och fel
+// svar ger en tom stol, ett belopp som försvinner och en gäst som går").
+function BandAmount({ reaction }: { reaction: RoomReaction }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const amount = reaction.amountSek ?? 0;
+  const key = `${reaction.at}:${reaction.kind}:${amount}`;
+  const flown = useRef<string | null>(null);
+  useEffect(() => {
+    if (amount <= 0 || flown.current === key) return;
+    flown.current = key;
+    flyTo('cash', ref.current, `+${formatSek(amount)}`, amount, { bg: 'var(--w-gold)', fg: 'var(--w-ink)' });
+  }, [key, amount]);
+  return (
+    <span ref={ref} key={key} className="nx-band-amount" data-kind={amount > 0 ? 'in' : 'lost'} data-testid="incident-band-amount" data-value={amount}>
+      <strong className="nx-num">{amount > 0 ? '+' : '−'}{formatSek(Math.abs(amount))}</strong>
+      <span className="nx-small">{reaction.text}</span>
+    </span>
   );
 }

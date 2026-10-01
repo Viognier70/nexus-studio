@@ -1611,8 +1611,19 @@ export const TABLE = {
     down: {
       sv: (table: number | null, n: number) => `${table !== null ? `Bord ${table} blir missnöjt` : 'Bordet blir missnöjt'}${n > 0 ? ` · ${n} ${pl(n, 'gäst', 'gäster')} i kön går` : ''}`,
       en: (table: number | null, n: number) => `${table !== null ? `Table ${table} is unhappy` : 'The table is unhappy'}${n > 0 ? ` · ${n} ${pl(n, 'guest', 'guests')} in the queue ${pl(n, 'leaves', 'leave')}` : ''}`
+    },
+    // ORDER 292 — fel svar: en gäst vid bordet går och stolen blir tom.
+    tableLeaves: {
+      sv: (table: number | null) => `${table !== null ? `En gäst vid bord ${table} går` : 'En gäst går'} · stolen står tom`,
+      en: (table: number | null) => `${table !== null ? `A guest at table ${table} leaves` : 'A guest leaves'} · the chair stands empty`
     }
   },
+  // ORDER 292 — insatsen på raketkortet: bordet, notan och gästerna.
+  rocketStake: {
+    sv: (table: number | null, kr: string, guestsWord: string, guests: number, social: boolean) => `${table !== null ? `Bord ${table}` : 'Bordet'}: ${kr} och ${guestsWord} ${pl(guests, 'gäst', 'gäster')}${social ? `, ${guests > 1 ? 'en av dem tar' : 'som tar'} med sig byn` : ''}`,
+    en: (table: number | null, kr: string, guestsWord: string, guests: number, social: boolean) => `${table !== null ? `Table ${table}` : 'The table'}: ${kr} and ${guestsWord} ${pl(guests, 'guest', 'guests')}${social ? `, ${guests > 1 ? 'one of them brings' : 'who brings'} the village along` : ''}`
+  },
+  rocketStakeAria: { sv: 'Det som står på spel', en: 'What is at stake' },
   // ORDER 287a — gästerna med kapital: bokningsboken (Designs skärm 1,
   // brief.book.*), strömmen, kvällens resultat och söndagstidningen (Designs
   // paper.seen.*). Namnen på gästerna med socialt kapital är egennamn.

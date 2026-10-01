@@ -165,7 +165,11 @@ export class TheatreStage {
 
   /** Kameran glider in mot figuren när en raket börjar, och tillbaka efter svaret. */
   camera(target: MutableRefObject<CameraTarget>, rocket: ActiveIncident | null, figureLocal: { x: number; y: number; z: number } | null, dt: number): void {
-    const key = rocket && rocket.context.figure && !rocket.backed ? `${rocket.id}:${rocket.openedAt}` : '';
+    // ORDER 292 (provspel av 316b4c3: "Kameran glider in vid alla raketer. I
+    // provspelet gjorde den det bara ibland") — varje raket, också den spelaren
+    // startar själv och den utan figur; punkten är figuren, annars bordet,
+    // annars rummets mitt (WineBarFigures). Saknas punkten väntar glidningen.
+    const key = rocket ? `${rocket.id}:${rocket.openedAt}` : '';
     this.figureWorld = null;
     if (key && figureLocal) {
       this.v.set(figureLocal.x, figureLocal.y, figureLocal.z);
@@ -179,7 +183,8 @@ export class TheatreStage {
     } else if (!key && this.rocketKey && this.glide && !this.glide.out) {
       this.glide = { ...this.glide, from: { x: cur.focus.x, z: cur.focus.z, distance: cur.distance }, to: this.glide.saved, t: 0, dur: THEATRE.camera.glideOutSeconds, out: true };
     }
-    this.rocketKey = key;
+    // Utan punkt än: raketen räknas inte som påbörjad, så glidningen kommer när punkten finns.
+    if (!(key && key !== this.rocketKey && !this.figureWorld)) this.rocketKey = key;
     const g = this.glide;
     if (!g) return;
     g.t = Math.min(g.dur, g.t + dt);

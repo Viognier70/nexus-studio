@@ -681,7 +681,7 @@ function answerConsequence(draft: SimulationState, ctx: IncidentContext, right: 
     sendAway(draft, queue, left);
   }
   const t = strings.answerEffects;
-  const text = right ? t.up(ctx.table, guestsIn) : t.down(ctx.table, left);
+  const text = right ? t.up(ctx.table, guestsIn) : leftGuestId ? t.tableLeaves(ctx.table) : t.down(ctx.table, left);
   const now = draft.simTime;
   const keep = (draft.day.roomReactions ?? []).filter((r) => now - r.at <= ANSWER_EFFECTS.reactionSimSeconds);
   draft.day = { ...draft.day, roomReactions: [...keep, { at: now, kind: right ? 'up' : 'down', table: ctx.table, guestIds: table.map((g) => g.id), text, amountSek, leftGuestId }] };

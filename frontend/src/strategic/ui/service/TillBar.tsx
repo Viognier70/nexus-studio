@@ -9,7 +9,8 @@
 //
 // Talen: kvällskassan ur eveningEconomy.ts tillSek, insatsen ur day.stake.
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { pendingFor, subscribeFx } from '../juice/fx';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { t as tt } from '../../../content/nexusStrings';
 import { strings } from '../../../content/strings';
@@ -39,6 +40,20 @@ function TillBarInService() {
   const stake = sim.day.stake?.total ?? 0;
   const over = stake > 0 && till >= stake;
   const counted = useCountedNumber('cash', till, formatSek, TICKS);
+  // ORDER 292 — stapeln fylls när lappen har landat (beloppet i luften
+  // räknas bort), och den hoppar när den landar.
+  const pending = useSyncExternalStore(subscribeFx, () => pendingFor('cash'), () => 0);
+  const [bump, setBump] = useState(false);
+  const lastPending = useRef(pending);
+  useEffect(() => {
+    if (pending < lastPending.current) {
+      setBump(true);
+      const timer = window.setTimeout(() => setBump(false), 520);
+      lastPending.current = pending;
+      return () => window.clearTimeout(timer);
+    }
+    lastPending.current = pending;
+  }, [pending]);
   const shownKey = `${sim.day.dayNumber}:${sim.day.stakeShownAt ?? ''}`;
   const [open, setOpen] = useState(false);
   const autoKey = useRef<string | null>(null);
@@ -56,7 +71,7 @@ function TillBarInService() {
     if (over && passedKey.current !== k) { passedKey.current = k; play('passed'); }
   }, [over, sim.day.dayNumber]);
   if (!inService) return null;
-  const fill = stake > 0 ? Math.min(1, till / (stake * OVERSHOOT)) : 0;
+  const fill = stake > 0 ? Math.min(1, Math.max(0, till - pending) / (stake * OVERSHOOT)) : 0;
   const line = 1 / OVERSHOOT;
   const status = stake <= 0 ? '' : over ? tt(lang, 'serviceMode.over', { n: formatSek(till - stake) }) : tt(lang, 'serviceMode.toGo', { n: formatSek(stake - till) });
   const Chevron = open ? ChevronUp : ChevronDown;
@@ -89,6 +104,7 @@ function TillBarInService() {
         data-value={Math.round(till)}
         data-stake={stake}
         data-over={over}
+        data-bump={bump}
         aria-expanded={open}
         aria-label={strings.cashCounter.tillAria(formatSek(till), formatSek(stake))}
         onClick={() => setOpen((v) => !v)}

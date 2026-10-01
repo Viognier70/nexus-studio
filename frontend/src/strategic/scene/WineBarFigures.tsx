@@ -100,10 +100,11 @@ import { createStaffMark, disposeStaffMark, updateStaffMark, type StaffMark } fr
 import { seatKindFromRoom, type ClipSample } from './figureClips';
 import { WARM } from '../../ui/theme/nexusTheme.warm';
 import type { GuestType } from '../types';
-import { THEATRE } from '../../sim/balance';
+import { ANSWER_EFFECTS, THEATRE } from '../../sim/balance';
 import type { ActiveIncident } from '../../sim/incidents';
 import { strings } from '../../content/strings';
 import { TheatreCaption } from '../ui/TheatreCaption';
+import { RoomReactionTag } from '../ui/RoomReactionTag';
 
 /** Så många gäster kan synas samtidigt: tjugo platser och en kö. */
 export const WINE_BAR_GUEST_POOL = 36;
@@ -257,6 +258,9 @@ export function WineBarFigures({ room, mood }: Props) {
   const { actualRef, targetRef } = useCamera();
   const castRef = useRef<Cast | null>(null);
   const captionRef = useRef<THREE.Group>(null);
+  // ORDER 292 — svarets händelse står över bordet (rummets reaktion).
+  const reactionRef = useRef<THREE.Group>(null);
+  const reactionAt = useRef<{ x: number; z: number } | null>(null);
   const clockRef = useRef<number>(-Infinity);
 
   // Övertagandet som direktören läser: byggs när utfallet byts, inte per bildruta.
@@ -503,9 +507,6 @@ export function WineBarFigures({ room, mood }: Props) {
       cast.group.traverse((o) => { if ((o as THREE.Mesh).isMesh && o.parent !== cast.ring.group && !(o.parent && marks.has(o.parent as THREE.Group))) o.castShadow = shadows; });
     }
 
-    // Kameran glider in mot figuren och tillbaka efter svaret.
-    cast.stage.camera(targetRef, active, figureLocal, Math.min(delta, 0.1));
-
     // Ringen: vid figuren raketen pekar på (annars vid sällskapet), fylld med stegets tid.
     let ringAt: { x: number; z: number } | null = figureLocal;
     if (!ringAt && active && active.context.guestIds.length > 0) {
@@ -517,6 +518,11 @@ export function WineBarFigures({ room, mood }: Props) {
       }
       if (n > 0) ringAt = { x: x / n, z: z / n };
     }
+
+    // Kameran glider in mot figuren och tillbaka efter svaret. ORDER 292 —
+    // vid varje raket: figuren, annars bordet, annars rummets mitt.
+    const focusLocal = figureLocal ?? (ringAt ? { x: ringAt.x, y: room.floorY, z: ringAt.z } : active ? { x: 0, y: room.floorY, z: 0 } : null);
+    cast.stage.camera(targetRef, active, focusLocal, Math.min(delta, 0.1));
     if (active && ringAt) {
       cast.ring.group.visible = true;
       cast.ring.group.position.set(ringAt.x, room.floorY, ringAt.z);
@@ -525,6 +531,31 @@ export function WineBarFigures({ room, mood }: Props) {
       updateActionRing(cast.ring, intro ? 0 : 1 - Math.max(0, active.secondsLeft) / total);
     } else {
       cast.ring.group.visible = false;
+    }
+
+    // ORDER 292 — svarets händelse över bordet: vid sällskapet (eller gästen
+    // som gick, så länge hen syns), annars där den senast stod.
+    const reactionGroup = reactionRef.current;
+    const react = simRef.current.day.roomReactions?.at(-1);
+    if (reactionGroup) {
+      const fresh = !!react && simRef.current.simTime - react.at <= ANSWER_EFFECTS.reactionSimSeconds;
+      if (fresh && react) {
+        const ids = react.leftGuestId ? [react.leftGuestId, ...react.guestIds] : react.guestIds;
+        let x = 0; let z = 0; let n = 0;
+        for (let i = 0; i < gs.length; i++) {
+          const g = gs[i];
+          if (!g.visible || !g.guestId || !ids.includes(g.guestId)) continue;
+          x += g.x; z += g.z; n++;
+        }
+        if (n > 0) reactionAt.current = { x: x / n, z: z / n };
+      }
+      const at = reactionAt.current;
+      reactionGroup.visible = fresh && !!at;
+      if (fresh && at && reactionGroup.parent) {
+        const p = cast.group.localToWorld(new THREE.Vector3(at.x, room.floorY + THEATRE.captionHeightM, at.z));
+        reactionGroup.parent.worldToLocal(p);
+        reactionGroup.position.copy(p);
+      }
     }
 
     // Bildtexten står ovanför figuren.
@@ -542,12 +573,24 @@ export function WineBarFigures({ room, mood }: Props) {
   });
 
   const caption = theatreCaption(sim.incidents?.active ?? null);
-  return caption ? (
-    <group ref={captionRef} visible={false}>
-      <Html center zIndexRange={[20, 0]}>
-        <TheatreCaption text={caption} />
-      </Html>
-    </group>
-  ) : null;
+  const reaction = sim.day.roomReactions?.at(-1) ?? null;
+  return (
+    <>
+      {caption && (
+        <group ref={captionRef} visible={false}>
+          <Html center zIndexRange={[20, 0]}>
+            <TheatreCaption text={caption} />
+          </Html>
+        </group>
+      )}
+      {reaction && (
+        <group ref={reactionRef} visible={false}>
+          <Html center zIndexRange={[20, 0]} style={{ pointerEvents: 'none' }}>
+            <RoomReactionTag reaction={reaction} />
+          </Html>
+        </group>
+      )}
+    </>
+  );
 }
 
