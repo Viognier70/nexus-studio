@@ -1,0 +1,92 @@
+diff --git a/frontend/src/sim/balance.ts b/frontend/src/sim/balance.ts
+index d1e5aff..f3f984e 100644
+--- a/frontend/src/sim/balance.ts
++++ b/frontend/src/sim/balance.ts
+@@ -1030,6 +1030,15 @@ export const EVENING_ECONOMY = {
+   // gånger 1 + djGuestShare). Lönar sig en fullsatt kväll, inte en lugn.
+   djCostSek: 1500,
+   djGuestShare: 0.15,
++  // PROTOTYP (förslag 2026-10-01, inte i spelet): DJ:n spelar från 21.00;
++  // gäster som beställer efter det tar fler glas. Springaren är en extra hand
++  // i kväll (som bemanningen).
++  djFromMinute: 21 * 60,
++  djSecondDrinkChance: 0.5,
++  djMaxGlasses: 2,
++  djCostSekProto: 1500,
++  runnerExtraHand: false,
++  runnerCostSek: 1800,
+   // Satsningar som räknas som kompetens i kvällens insats.
+   competenceActivities: ['train-service', 'wine-tasting'] as readonly string[],
+   // Kortet med kvällens insats står så här länge (verkliga sekunder).
+diff --git a/frontend/src/strategic/simulation/activities.ts b/frontend/src/strategic/simulation/activities.ts
+index 5d7834b..a23091d 100644
+--- a/frontend/src/strategic/simulation/activities.ts
++++ b/frontend/src/strategic/simulation/activities.ts
+@@ -42,7 +42,7 @@ export const ACTIVITY_CATALOGUE: readonly Activity[] = [
+     id: 'runner-shift',
+     name: 'Bring in a runner',
+     description: 'An extra pair of hands to carry out plates and clear tables.',
+-    costSek: 1800,
++    get costSek() { return EVENING_ECONOMY.runnerCostSek; },
+     effect: { economic: 0, social: 0.03, ecological: 0 },
+     availability: 'always'
+   },
+@@ -76,7 +76,7 @@ export const ACTIVITY_CATALOGUE: readonly Activity[] = [
+     id: 'book-dj',
+     name: 'A DJ tonight',
+     description: 'Music from nine o’clock. More guests come, but only a full evening pays for it.',
+-    costSek: EVENING_ECONOMY.djCostSek,
++    get costSek() { return EVENING_ECONOMY.djCostSekProto; },
+     effect: { economic: 0, social: 0.01, ecological: 0 },
+     availability: 'always'
+   },
+diff --git a/frontend/src/strategic/simulation/guestOrders.ts b/frontend/src/strategic/simulation/guestOrders.ts
+index 064b793..b3e0317 100644
+--- a/frontend/src/strategic/simulation/guestOrders.ts
++++ b/frontend/src/strategic/simulation/guestOrders.ts
+@@ -18,7 +18,8 @@
+ // sällskapet kan gå med hen.
+ 
+ import type { Allergen, Guest, SimulationState } from '../types';
+-import { GUESTS, GUEST_TYPES, INCIDENTS, SERVICE_STREAM, STOCK } from '../../sim/balance';
++import { EVENING_ECONOMY, GUESTS, GUEST_TYPES, INCIDENTS, SERVICE_STREAM, STOCK } from '../../sim/balance';
++import { clockMinutes } from '../../sim/incidents';
+ import { strings } from '../../content/strings';
+ import { clampReputation } from './reputation';
+ import { dishAllergens, dishDiet, findDish } from './m4Catalogue';
+@@ -236,10 +237,13 @@ export function orderForGuest(draft: SimulationState, guest: Guest, rand: () =>
+         streamLine(draft, s.noAlcoholFree(table), 'guest_missing_drink');
+         missing = missing ?? 'alcoholFree';
+       }
+-      for (let glass = 0; glass < 2; glass++) {
++      const dj = (draft.day.pickedActivityIds ?? []).includes('book-dj') && clockMinutes(draft) >= EVENING_ECONOMY.djFromMinute;
++      const maxGlasses = dj ? EVENING_ECONOMY.djMaxGlasses : 2;
++      const more = dj ? EVENING_ECONOMY.djSecondDrinkChance : STOCK.secondDrinkChance;
++      for (let glass = 0; glass < maxGlasses; glass++) {
+         const options = avail.filter((m) => fits(m) && left(draft, m.dishId) > 0);
+         if (options.length === 0) break;
+-        if (glass > 0 && rand() >= STOCK.secondDrinkChance) break;
++        if (glass > 0 && rand() >= more) break;
+         const d = pickByTaste(options, p.wallet, rand());
+         takeFromStock(draft, d.dishId, draft.simTime);
+         drinks.push(d.dishId);
+diff --git a/frontend/src/strategic/simulation/reducer.ts b/frontend/src/strategic/simulation/reducer.ts
+index 2ee9fa6..e7b5c34 100644
+--- a/frontend/src/strategic/simulation/reducer.ts
++++ b/frontend/src/strategic/simulation/reducer.ts
+@@ -1208,8 +1208,13 @@ function startService(state: SimulationState): SimulationState {
+   // visade den.
+   const booked = { ...base, day: { ...base.day, booking: bookingFor(base) } };
+   const fromAfternoon = booked.day.period === 'morning' ? skipLunch(booked) : booked;
+-  const opened = openService(fromAfternoon, 'dinner', SERVICE.simMinutes);
+-  if (opened === fromAfternoon || opened.day.doorsOpenAt === null) return opened;
++  const opened0 = openService(fromAfternoon, 'dinner', SERVICE.simMinutes);
++  if (opened0 === fromAfternoon || opened0.day.doorsOpenAt === null) return opened0;
++  // PROTOTYP — springaren som en extra hand i kväll.
++  const opened = EVENING_ECONOMY.runnerExtraHand && opened0.day.pickedActivityIds.includes('runner-shift')
++    ? { ...opened0, team: addAgencyMember(opened0.team, opened0.day.dayNumber) }
++    : opened0;
++  if (opened.day.doorsOpenAt === null) return opened;
+   // ORDER 270 — kvällens händelser. Klasser med händelsebank får
+   // händelser i stället för scenarierna vid dörren ("Dagens scenarier
+   // flyttar in som händelser"); övriga behåller scenarierna tills deras

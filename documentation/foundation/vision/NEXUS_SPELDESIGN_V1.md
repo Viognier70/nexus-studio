@@ -120,6 +120,8 @@ G kan aldrig bli högre än 90. Veckogolvet är G procent av klassens normala ve
 
 *Beslut 2026-09-29 (Vision Owner, efter rapporterna om felen och kvällens resultat):* hyran ändras inte nu. Den rimliga spelaren mäts med fler frön, minst 20, och mätningen rapporteras innan hyran rörs.
 
+*Beslut 2026-10-01 (Vision Owner, efter rättelserna från provspelet):* hyran ändras inte nu, fast den rimliga spelaren går plus med mer än målet. Vinsten kalibreras när rivalerna delar gästerna.
+
 *Beslut 2026-09-30 (Vision Owner, provspel): kvällens ekonomi gör kvällen spännande.*
 - Under servicen visas kvällskassan, inte företagskontot. Den börjar på noll och visar kvällens intäkter.
 - När dörrarna öppnas visas kvällens insats: råvaror, personal, DJ, satsningar och kompetens. Kvällskassan fylls mot en synlig linje för break-even, så att spelaren ser om kvällen går mot vinst eller förlust.
@@ -181,6 +183,8 @@ Sex klasser, och varje klass är ett eget spel, inte en storlek. Klasserna skilj
 
 Utan någon brons blir bankens besked inget lån: gå och öva.
 
+*Beslut 2026-10-01 (Vision Owner, efter rättelserna från provspelet): vinbaren är det enda första valet tills food trucken är byggd i etapp 6.* Banken erbjuder vinbaren oavsett vilken paviljong spelaren tog brons i. Food trucken saknar ännu sin plats i byn och sina raketer.
+
 ### Uppgradering
 
 Vid varje veckoavräkning kan spelaren byta till en klass vars krav hon uppfyller, om kassan räcker till kontantinsatsen: 25 % av en veckas golv i den nya klassen, resten lånas (beslut 2026-09-26, Vision Owner). Kunskapen följer med, personalen får följa med, och ryktet halveras eftersom gästerna inte känner den nya lokalen. Spelaren kan också frivilligt gå ner en klass vid veckoavräkningen, utan att först ha gått under.
@@ -203,6 +207,8 @@ Slumpmålet mäts med scenarierna inräknade, och den bättre förberedda spelar
 ### Satsningarna
 
 Morgonens satsningar påverkar de tre kapitalen: ekonomiskt, socialt och ekologiskt. Personalfest och utbildning gör personalen lojal och minskar misstag. Ekologiska råvaror höjer kvaliteten men kostar mer. Ingen satsning är alltid rätt, bara bättre eller sämre för veckan som kommer. Det finns ingen optimal strategi, bara avvägningar, precis som ORDER 100 kräver.
+
+*Beslut 2026-10-01 (Vision Owner): satsningarna ska löna sig när de används klokt.* En DJ lönar sig när det är fullt en fredag eller lördag, en springare när bokningen är stor. I dag ger de förlust varje gång. Ett förslag till balans prövas i harnessen och granskas av Vision Owner innan något ändras.
 
 ### Händelserna i servicen
 
