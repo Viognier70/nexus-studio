@@ -10,6 +10,7 @@ import { valueQuotaArrivalMultiplier } from './valueQuota';
 import { computeShareFactor } from './competitors';
 import { calendarFor } from '../../sim/calendar';
 import { dailyGuestCap } from '../../sim/economy';
+import { waveShareTonight } from './rush';
 
 // ORDER 111 §3 — food truck-specifika viktningar.
 //
@@ -117,21 +118,9 @@ export function reputationArrivalMultiplier(reputation: number): number {
 // simTime hasn't crossed it, the doors haven't opened yet — no
 // arrivals, no queue. The prep event stream carries the reading
 // during this window.
-export function arrivalProbability(state: SimulationState): number {
-  // ORDER 045 opening image — no arrivals during the 10-s opening
-  // panel either (doors haven't opened yet).
-  if (
-    state.day.openingEndsAt !== null &&
-    state.simTime < state.day.openingEndsAt
-  ) {
-    return 0;
-  }
-  if (
-    state.day.doorsOpenAt !== null &&
-    state.simTime < state.day.doorsOpenAt
-  ) {
-    return 0;
-  }
+// ORDER 292 — rummets dragningskraft (pris, rykte, väder, värdekvot …),
+// omkring 1 en vanlig kväll; ankomsterna och rusningens vågor (rush.ts) läser den.
+export function arrivalAttraction(state: SimulationState): number {
   // ORDER 043 Addendum A rhythm + ORDER 045 weather. Weather is a
   // reading: warm + still + clear lifts to ~1.28×; cold + windy +
   // drizzle drops to ~0.55×. The reading shows up in the room by
@@ -158,10 +147,7 @@ export function arrivalProbability(state: SimulationState): number {
   // och avgränsas i SHARE_FACTOR_FLOOR..CEIL i competitors.ts.
   // BASE_ARRIVAL_RATE och rykteskurvan rörs inte (§3 explicit).
   const shareMult = computeShareFactor(state.reputation, state.businessClass);
-  // ORDER 263 — kalenderns gästfaktor: veckodag × högtid × första
-  // veckan (speldesign > Tiden, balance.ts WEEK/HOLIDAYS/INTRODUCTION).
-  const calendarMult = calendarFor(state.day.dayNumber).guestFactor;
-  const attraction =
+  return (
     SERVICE_ARRIVAL_MULT[state.policies.service] *
     PRICE_ARRIVAL_MULT[state.policies.pricing] *
     economicArrivalMultiplier(state) *
@@ -171,7 +157,31 @@ export function arrivalProbability(state: SimulationState): number {
     currentRhythmMultiplier(state) *
     competitionMult *
     valueMult *
-    shareMult;
+    shareMult
+  );
+}
+
+export function arrivalProbability(state: SimulationState): number {
+  // ORDER 045 opening image — no arrivals during the 10-s opening
+  // panel either (doors haven't opened yet).
+  if (
+    state.day.openingEndsAt !== null &&
+    state.simTime < state.day.openingEndsAt
+  ) {
+    return 0;
+  }
+  if (
+    state.day.doorsOpenAt !== null &&
+    state.simTime < state.day.doorsOpenAt
+  ) {
+    return 0;
+  }
+  const attraction = arrivalAttraction(state);
+  // ORDER 263 — kalenderns gästfaktor: veckodag × högtid × första
+  // veckan (speldesign > Tiden, balance.ts WEEK/HOLIDAYS/INTRODUCTION).
+  const calendarMult = calendarFor(state.day.dayNumber).guestFactor;
+  // ORDER 292 — rusningens vågor tar sin del av kvällens gäster (rush.ts).
+  const steady = 1 - waveShareTonight(state);
   // ORDER 267 — med marknadens tak (speldesign > Marknaden) kommer
   // kvällens gäster ur dagens tak, fördelade över minuterna med öppna
   // dörrar och vägda med rummets dragningskraft (pris, rykte, väder,
@@ -184,7 +194,7 @@ export function arrivalProbability(state: SimulationState): number {
   const openMinutes = state.day.doorsOpenMinutes;
   const perMinute =
     Number.isFinite(cap) && openMinutes !== undefined && openMinutes > 0
-      ? (cap / openMinutes) * attraction
+      ? (cap / openMinutes) * attraction * steady
       : ARRIVAL_BASE_PER_MINUTE * periodArrivalMultiplier(state.day.period) * attraction * calendarMult;
   return perMinute / (60 * 5); // 5 Hz tick.
 }

@@ -41,6 +41,11 @@ export function BookingBook({ sim }: { sim: SimulationState }) {
   if (b.social) {
     rows.push({ key: 'social', time: formatClock(START + at.social), colour: WARM.guest.social, who: g.book.social(socialName(b.social.nameIndex)), note: g.bookNote.social, n: 1 });
   }
+  // ORDER 292 — gårdagens svar: bokningar tack vare och avbokningar.
+  for (const a of b.answers ?? []) {
+    const what = strings.nextDay.what[a.track];
+    rows.unshift({ key: `answer-${a.track}`, time: '—', colour: a.n > 0 ? 'var(--w-gold)' : 'var(--w-candle)', who: a.n > 0 ? strings.nextDay.thanks(a.n, what) : strings.nextDay.lost(-a.n, what), note: strings.nextDay.note, n: a.n });
+  }
   if (b.walkIns > 0) rows.push({ key: 'walkIns', time: '—', colour: 'rgba(42,28,19,.3)', who: g.book.walkIns, note: g.bookNote.walkIns, n: b.walkIns });
   // Ryktet från en gäst med socialt kapital som gäller i kväll.
   const buzz = (sim.guestBuzz ?? []).find((x) => x.fromDay <= sim.day.dayNumber && sim.day.dayNumber <= x.untilDay);

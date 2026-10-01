@@ -46,6 +46,12 @@ export function staffClipFor(s: FigureSample, key: StaffKey): string | null {
     case 'present': return 'somm.present';
     case 'cook': return 'cook.station';
     case 'dish': return 'dish.wash';
+    // ORDER 292 — IDLE_RULE: fyllnadsarbete vid stationen. Bartendern torkar
+    // baren (bar.wipe), kocken och diskaren arbetar vid sin; servitörerna och
+    // värden i dörren har inget klipp och får Designs poser (WineBarFigures).
+    case 'fillWork': return key === 'bartender' ? 'bar.wipe' : key === 'cook' ? 'cook.station' : key === 'dish' ? 'dish.wash' : null;
+    case 'attend':
+    case 'welcome': return null;
     default: return null;
   }
 }
@@ -65,6 +71,8 @@ export function guestClipFor(s: FigureSample, seat: SeatKind | null): string | n
     case 'sit': return SEAT_KINDS[seat].sit;
     case 'standUp': return SEAT_KINDS[seat].leave;
     case 'readMenu': return 'guest.readMenu';
+    // ORDER 292 — hälsningen när någon i sällskapet kommer.
+    case 'riseGreet': return 'guest.riseGreet';
     case 'order': return 'guest.order';
     case 'eat': return 'guest.eat';
     case 'toast': return 'guest.toast';
@@ -85,7 +93,7 @@ export function guestClipFor(s: FigureSample, seat: SeatKind | null): string | n
 export function sampleForFigure(id: string, s: FigureSample, tempo: TempoId, seatKind?: SeatKind): ClipSample {
   const travel = id.endsWith('walk') || id.startsWith('waiter.carry') || id === 'rocket.walkToKitchen';
   if (travel) return sampleClip(id, 0, tempo, { phase: s.phase, stress: s.stress });
-  const oneShot = ['guest.sit', 'guest.leave', 'guest.sitStool', 'guest.leaveStool', 'guest.sitLounge', 'guest.leaveLounge', 'guest.order', 'guest.toast', 'guest.waveStaff', 'guest.pay', 'waiter.serve', 'waiter.pickUp', 'waiter.clear', 'bar.pour', 'somm.pour', 'somm.present', 'cook.plate'].includes(id);
+  const oneShot = ['guest.riseGreet', 'guest.sit', 'guest.leave', 'guest.sitStool', 'guest.leaveStool', 'guest.sitLounge', 'guest.leaveLounge', 'guest.order', 'guest.toast', 'guest.waveStaff', 'guest.pay', 'waiter.serve', 'waiter.pickUp', 'waiter.clear', 'bar.pour', 'somm.pour', 'somm.present', 'cook.plate'].includes(id);
   // ORDER 287a — att sätta sig och resa sig börjar alltid i klippets början
   // (progress 0 är första bildrutan, inte slutposen).
   const seatMove = ['guest.sit', 'guest.leave', 'guest.sitStool', 'guest.leaveStool', 'guest.sitLounge', 'guest.leaveLounge'].includes(id);

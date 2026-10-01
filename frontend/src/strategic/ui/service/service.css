@@ -559,3 +559,64 @@ body[data-room-grade='service'] .gb-daybadge { display: none !important; }
 body:has(.nx-transfer-screen) .gb-topleft,
 body:has(.nx-transfer-screen) .gb-topright,
 body:has(.nx-rocket) .nx-hud-tools { display: none; }
+
+/* ORDER 292 — insatsen före svaret (raketkortet) och följden i kassan. */
+.nx-rocket-stake {
+  margin: calc(12 * var(--nx-u)) 0 0; padding: calc(10 * var(--nx-u)) calc(14 * var(--nx-u));
+  border-left: calc(6 * var(--nx-u)) solid var(--w-candle); background: rgba(232, 178, 58, 0.10);
+  font-size: calc(24 * var(--nx-u)); font-weight: 800; line-height: 1.3; color: var(--nx-ink);
+}
+.nx-band-amount { display: flex; align-items: baseline; gap: calc(12 * var(--nx-u)); margin-top: calc(10 * var(--nx-u)); }
+.nx-band-amount strong { font-size: calc(36 * var(--nx-u)); }
+.nx-band-amount[data-kind='in'] strong { color: var(--w-gold); }
+/* Fel svar: beloppet streckas och tonas bort. */
+.nx-band-amount[data-kind='lost'] strong { color: var(--w-candle); text-decoration: line-through; animation: nx-amount-vanish 2.4s ease-in 0.6s forwards; }
+@keyframes nx-amount-vanish { to { opacity: 0.15; transform: translateY(calc(10 * var(--nx-u))); } }
+/* Kvällskassan hoppar när en lapp landar. */
+.nx-till-box[data-bump='true'] .nx-till-bar { animation: nx-till-bump 0.5s ease-out; }
+@keyframes nx-till-bump { 0% { transform: scaleY(1); } 35% { transform: scaleY(1.9); } 100% { transform: scaleY(1); } }
+@media (prefers-reduced-motion: reduce) {
+  .nx-band-amount[data-kind='lost'] strong, .nx-till-box[data-bump='true'] .nx-till-bar { animation: none; }
+}
+/* ORDER 292 — svarets händelse över bordet i rummet. */
+.nx-room-reaction {
+  display: flex; flex-direction: column; align-items: center; gap: 2px; white-space: nowrap;
+  padding: 6px 12px; border-radius: 12px; font-size: max(13px, calc(22 * var(--nx-u))); font-weight: 800;
+  background: var(--w-walnut-700); color: var(--w-cream); border: 2px solid var(--w-gold);
+  animation: nx-reaction-rise 0.5s ease-out;
+}
+.nx-room-reaction strong { font-size: max(16px, calc(30 * var(--nx-u))); color: var(--w-gold); }
+.nx-room-reaction[data-kind='down'] { border-color: var(--w-candle); }
+.nx-room-reaction[data-kind='down'] strong { color: var(--w-candle); text-decoration: line-through; }
+@keyframes nx-reaction-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .nx-room-reaction { animation: none; } }
+/* ORDER 292 — kön vid dörren. */
+.nx-queue {
+  position: fixed; left: var(--nx-margin); top: max(150px, calc(230 * var(--nx-u))); z-index: 42;
+  width: min(calc(520 * var(--nx-u)), calc(100vw - 32px)); max-height: calc(100vh - max(150px, calc(230 * var(--nx-u))) - max(110px, calc(170 * var(--nx-u))));
+  overflow-y: auto; padding: calc(18 * var(--nx-u)) calc(22 * var(--nx-u)); font-size: max(13px, calc(22 * var(--nx-u)));
+}
+.nx-queue-notice { margin-bottom: calc(12 * var(--nx-u)); padding: calc(10 * var(--nx-u)) calc(14 * var(--nx-u)); background: var(--w-gold); color: var(--w-ink); font-weight: 800; border-radius: calc(10 * var(--nx-u)); animation: nx-reaction-rise 0.4s ease-out; }
+.nx-queue-head { display: flex; flex-direction: column; gap: calc(4 * var(--nx-u)); margin-bottom: calc(8 * var(--nx-u)); }
+.nx-queue-list { list-style: none; margin: 0; padding: 0; }
+.nx-queue-row { display: flex; align-items: center; justify-content: space-between; gap: calc(14 * var(--nx-u)); padding: calc(10 * var(--nx-u)) 0; border-top: 1px solid var(--nx-rule); }
+.nx-queue-row[data-chosen='true'] { box-shadow: inset calc(6 * var(--nx-u)) 0 0 var(--w-gold); padding-left: calc(12 * var(--nx-u)); }
+.nx-queue-who { display: flex; flex-direction: column; gap: calc(4 * var(--nx-u)); min-width: 0; flex: 1; }
+.nx-queue-patience { display: block; height: calc(8 * var(--nx-u)); min-height: 4px; background: rgba(244, 230, 204, 0.14); border-radius: 999px; overflow: hidden; }
+.nx-queue-patience > span { display: block; height: 100%; background: var(--w-gold); transition: width 0.4s linear; }
+.nx-queue-patience > span[data-low='true'] { background: var(--w-candle); }
+.nx-queue-btn { font: inherit; font-weight: 800; white-space: nowrap; min-height: 44px; padding: 0 calc(16 * var(--nx-u)); border-radius: calc(12 * var(--nx-u)); border: 1px solid rgba(215, 162, 76, 0.45); background: transparent; color: var(--nx-ink); cursor: pointer; }
+.nx-queue-btn[aria-pressed='true'] { background: var(--w-gold); color: var(--w-ink); border-color: var(--w-gold); }
+.nx-queue-row[data-impatient='true'] .nx-queue-who .nx-small { color: var(--w-candle); }
+@media (prefers-reduced-motion: reduce) { .nx-queue-notice { animation: none; } .nx-queue-patience > span { transition: none; } }
+/* ORDER 292 — bemanningens erbjudande ovanför flikarna, och kön smal nog att
+   sluta före kvällskassan. */
+.nx-agency {
+  position: fixed; left: calc(36 * var(--nx-u)); bottom: max(84px, calc(130 * var(--nx-u))); z-index: 44;
+  width: min(calc(440 * var(--nx-u)), calc(100vw - 32px)); padding: calc(18 * var(--nx-u)) calc(22 * var(--nx-u));
+  font-size: max(13px, calc(22 * var(--nx-u)));
+}
+.nx-agency-buttons { display: flex; gap: calc(10 * var(--nx-u)); margin-top: calc(10 * var(--nx-u)); }
+.nx-agency-accept { flex: 1; background: var(--w-gold); color: var(--w-ink); border-color: var(--w-gold); }
+.nx-queue { width: min(calc(440 * var(--nx-u)), calc(100vw - 32px)); }
+body:has(.nx-agency) .nx-queue { max-height: calc(100vh - max(150px, calc(230 * var(--nx-u))) - max(300px, calc(440 * var(--nx-u)))); }

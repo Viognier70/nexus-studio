@@ -195,6 +195,17 @@ Förebilden är *Two Point Hospital* och *Game Dev Tycoon*: att flytta till stö
 
 Servicen är slumpen, viktad av spelarens förberedelser. Det spelaren gjort på morgonen, och det hon kan, avgör hur ofta saker går rätt. Hon ser konsekvenserna i rummet, inte i siffertavlor.
 
+*Beslut 2026-10-01 (Vision Owner, provspel: "spelaren tittar mest på, kunskapens följder syns inte, och varje kväll är likadan"): följden syns.*
+- **Insatsen före svaret.** Raketkortet visar vad som står på spel i kronor och gäster, till exempel bordets nota och att två av gästerna är stamgäster.
+- **Följden efter svaret, i rummet och i kassan.** Rätt svar ger en synlig händelse: gästen beställer mer, beloppet flyger till kvällskassan och stapeln hoppar. Fel svar ger en tom stol, ett belopp som försvinner och en gäst som går.
+- **Kameran glider in vid alla raketer.**
+- **Rusningar.** Gäster i sällskap kommer i vågor (bilarna från Örebro och Karlstad, bussen). En kö bildas vid dörren, tålamodet sjunker, och spelaren väljer vem som får bord först.
+- **Följder nästa dag.** Bokningsboken visar vad gårdagens svar gav, till exempel bokningar tack vare gårdagens vin.
+- **Personalen står aldrig still.** Före öppning gör de mise en place med de klipp som finns, tills Design levererar nya.
+- **Kassan står still efter servicen**, från stängningen till nästa morgon.
+
+*Beslut 2026-10-01 (Vision Owner): ordningen efter följden.* Först rivalerna och food truckarna som styrs av datorn (på olika platser i byn, med eget namn, mat, pris och rykte), aviseringar när en grupp kommer till byn med gruppen synlig på kartan, och jämförelsen efter kvällen. Sedan veckomålen, stjärnan och stegen mot den, dagens läge och stamgäster med namn. Rivalerna byggs så att en rival senare kan vara en människa.
+
 *Beslut 2026-09-26 (Vision Owner): kunskapen verkar i servicen.* Medaljerna verkar per medaljsteg, där brons är ett steg och platina fyra:
 - **Metodköket** sänker köksmisstagen och risken att kvällen faller ihop, med 10 % per steg.
 - **Stensöta** höjer intäkten per gäst via dryck, med 10 % per steg.
@@ -531,6 +542,8 @@ Beredskapen byggs av det spelaren gjort före: satsningarna på morgonen, lagret
 Förslaget är en veckohyra per klass, dragen vid veckoavräkningen och synlig i tidningen, och att lönerna redovisas som en veckorad i avräkningen även om de dras per dag. Hyran bör vara en tydlig andel av klassens normala veckointäkt, så att en vecka med för få gäster syns i kassan redan samma söndag.
 
 ## Idéer för version 2
+
+*Beslut 2026-10-01 (Vision Owner):* flera spelare samtidigt via en länk under en bestämd tid är beslutat för version 2. Rivalerna i version 1 byggs så att en rival kan vara en människa.
 
 *Idé 2026-09-29 (Vision Owner, från Gastronoma). Byggs inte i version 1.*
 

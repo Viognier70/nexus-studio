@@ -26,7 +26,8 @@ export function ServiceCamera() {
   const period = sim.day.period;
   const inService = period === 'lunch' || period === 'dinner';
   const rocket = sim.incidents?.active ?? null;
-  const rocketKey = rocket && rocket.context.figure && !rocket.backed ? `${rocket.id}:${rocket.openedAt}` : null;
+  // ORDER 292 — vid alla raketer (theatreStage.ts camera).
+  const rocketKey = rocket ? `${rocket.id}:${rocket.openedAt}` : null;
   const saved = useRef<CameraTarget | null>(null);
 
   useEffect(() => {

@@ -16,7 +16,7 @@ import { applyCashCost, applyCashDelta, postLedger } from './cashReading';
 import { findDish, findIngredient, minIngredientCost } from './m4Catalogue';
 import { ITEM_BATCH, MORNING_STAKE, WASTE } from '../../sim/balance';
 import { discardUnresolvedSalvage, pickSalvage } from './salvage';
-import { clockMinutes, formatClock } from '../../sim/incidents';
+import { clockMinutes, formatClock } from '../../sim/clock';
 import { findPackage, itemsCostSek, packageCostSek, packageDishIds, packageIngredients, packagesFor, scaledBaseItems } from './packages';
 import { dailyGuestCap } from '../../sim/economy';
 import { numberLocale } from '../../content/language';

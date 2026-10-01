@@ -1,0 +1,1399 @@
+{
+  "definition": "vinbaren från vecka 1, brons i tre, startkassan, bästa svaret, baspaketet efter bokningen. Kvällens resultat = day.transfer.resultSek. Veckans resultat = kassans förändring måndag till måndag efter avräkningen, utan golvets påfyllnad och med amorteringen återlagd. Introduktionen och startlånet spelas inte.",
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+  ],
+  "players": {
+    "mentorn": {
+      "weeks": 20,
+      "weeksWithLoss": 0,
+      "shareWeeksWithLoss": 0,
+      "downgradedOrPending": 0,
+      "meanWeekResultSek": 7738,
+      "worstWeekResultSek": 1021,
+      "firstEvening": {
+        "mean": 1326,
+        "worst": -2459,
+        "best": 2217,
+        "losses": 1
+      },
+      "evenings": {
+        "mean": 2621,
+        "worst": -5808,
+        "losses": 12,
+        "count": 120
+      },
+      "lowestCashSek": 110498,
+      "rows": [
+        {
+          "seed": 1,
+          "evenings": [
+            1773,
+            2695,
+            2948,
+            4147,
+            2966,
+            3323,
+            null
+          ],
+          "weekResultSek": 9865,
+          "cashEnd": 119342,
+          "downgraded": false,
+          "minCash": 119342
+        },
+        {
+          "seed": 2,
+          "evenings": [
+            1015,
+            3470,
+            4634,
+            -920,
+            5578,
+            4227,
+            null
+          ],
+          "weekResultSek": 10016,
+          "cashEnd": 119493,
+          "downgraded": false,
+          "minCash": 119493
+        },
+        {
+          "seed": 3,
+          "evenings": [
+            1982,
+            1980,
+            3144,
+            3518,
+            3940,
+            -6,
+            null
+          ],
+          "weekResultSek": 6567,
+          "cashEnd": 116044,
+          "downgraded": false,
+          "minCash": 116044
+        },
+        {
+          "seed": 4,
+          "evenings": [
+            298,
+            3789,
+            3194,
+            3438,
+            -5808,
+            5976,
+            null
+          ],
+          "weekResultSek": 2897,
+          "cashEnd": 112374,
+          "downgraded": false,
+          "minCash": 112374
+        },
+        {
+          "seed": 5,
+          "evenings": [
+            1759,
+            3632,
+            3807,
+            2071,
+            4120,
+            2777,
+            null
+          ],
+          "weekResultSek": 10178,
+          "cashEnd": 119655,
+          "downgraded": false,
+          "minCash": 119655
+        },
+        {
+          "seed": 6,
+          "evenings": [
+            1068,
+            2853,
+            4541,
+            4229,
+            -1581,
+            4434,
+            null
+          ],
+          "weekResultSek": 7555,
+          "cashEnd": 117032,
+          "downgraded": false,
+          "minCash": 117032
+        },
+        {
+          "seed": 7,
+          "evenings": [
+            1487,
+            4435,
+            2864,
+            3035,
+            4369,
+            2848,
+            null
+          ],
+          "weekResultSek": 11048,
+          "cashEnd": 120525,
+          "downgraded": false,
+          "minCash": 120000
+        },
+        {
+          "seed": 8,
+          "evenings": [
+            369,
+            4133,
+            4255,
+            3381,
+            4126,
+            4256,
+            null
+          ],
+          "weekResultSek": 12532,
+          "cashEnd": 122009,
+          "downgraded": false,
+          "minCash": 120000
+        },
+        {
+          "seed": 9,
+          "evenings": [
+            2078,
+            3562,
+            4314,
+            4445,
+            4445,
+            2160,
+            null
+          ],
+          "weekResultSek": 13017,
+          "cashEnd": 122494,
+          "downgraded": false,
+          "minCash": 120000
+        },
+        {
+          "seed": 10,
+          "evenings": [
+            1115,
+            656,
+            6091,
+            4272,
+            2292,
+            3637,
+            null
+          ],
+          "weekResultSek": 10075,
+          "cashEnd": 119552,
+          "downgraded": false,
+          "minCash": 119552
+        },
+        {
+          "seed": 11,
+          "evenings": [
+            2044,
+            3541,
+            3564,
+            3127,
+            -3943,
+            4708,
+            null
+          ],
+          "weekResultSek": 5051,
+          "cashEnd": 114528,
+          "downgraded": false,
+          "minCash": 114528
+        },
+        {
+          "seed": 12,
+          "evenings": [
+            1254,
+            3995,
+            1190,
+            3760,
+            4820,
+            4077,
+            null
+          ],
+          "weekResultSek": 11109,
+          "cashEnd": 120586,
+          "downgraded": false,
+          "minCash": 120000
+        },
+        {
+          "seed": 13,
+          "evenings": [
+            1974,
+            -36,
+            1513,
+            4769,
+            1363,
+            2954,
+            null
+          ],
+          "weekResultSek": 4550,
+          "cashEnd": 114027,
+          "downgraded": false,
+          "minCash": 114027
+        },
+        {
+          "seed": 14,
+          "evenings": [
+            2217,
+            3923,
+            -3840,
+            4515,
+            5687,
+            620,
+            null
+          ],
+          "weekResultSek": 5131,
+          "cashEnd": 114608,
+          "downgraded": false,
+          "minCash": 114608
+        },
+        {
+          "seed": 15,
+          "evenings": [
+            1242,
+            712,
+            2999,
+            1755,
+            -4780,
+            7574,
+            null
+          ],
+          "weekResultSek": 1511,
+          "cashEnd": 110988,
+          "downgraded": false,
+          "minCash": 110988
+        },
+        {
+          "seed": 16,
+          "evenings": [
+            1967,
+            2750,
+            3687,
+            2315,
+            4094,
+            2173,
+            null
+          ],
+          "weekResultSek": 8998,
+          "cashEnd": 118475,
+          "downgraded": false,
+          "minCash": 118475
+        },
+        {
+          "seed": 17,
+          "evenings": [
+            1224,
+            1869,
+            -3192,
+            5871,
+            743,
+            2494,
+            null
+          ],
+          "weekResultSek": 1021,
+          "cashEnd": 110498,
+          "downgraded": false,
+          "minCash": 110498
+        },
+        {
+          "seed": 18,
+          "evenings": [
+            -2459,
+            6487,
+            3731,
+            2655,
+            3429,
+            3949,
+            null
+          ],
+          "weekResultSek": 9804,
+          "cashEnd": 119281,
+          "downgraded": false,
+          "minCash": 117541
+        },
+        {
+          "seed": 19,
+          "evenings": [
+            2113,
+            -3614,
+            3702,
+            3048,
+            6669,
+            3793,
+            null
+          ],
+          "weekResultSek": 7723,
+          "cashEnd": 117200,
+          "downgraded": false,
+          "minCash": 117200
+        },
+        {
+          "seed": 20,
+          "evenings": [
+            2001,
+            -2979,
+            3626,
+            3283,
+            3974,
+            4195,
+            null
+          ],
+          "weekResultSek": 6112,
+          "cashEnd": 115589,
+          "downgraded": false,
+          "minCash": 115589
+        }
+      ]
+    },
+    "forstaKvallen": {
+      "weeks": 20,
+      "weeksWithLoss": 0,
+      "shareWeeksWithLoss": 0,
+      "downgradedOrPending": 0,
+      "meanWeekResultSek": 6533,
+      "worstWeekResultSek": 1016,
+      "firstEvening": {
+        "mean": 551,
+        "worst": -4166,
+        "best": 1907,
+        "losses": 4
+      },
+      "evenings": {
+        "mean": 2920,
+        "worst": -5850,
+        "losses": 14,
+        "count": 120
+      },
+      "lowestCashSek": 110493,
+      "rows": [
+        {
+          "seed": 1,
+          "evenings": [
+            1348,
+            2887,
+            2564,
+            3752,
+            4780,
+            3893,
+            null
+          ],
+          "weekResultSek": 8235,
+          "cashEnd": 117712,
+          "downgraded": false,
+          "minCash": 117712
+        },
+        {
+          "seed": 2,
+          "evenings": [
+            358,
+            4082,
+            3223,
+            -490,
+            5709,
+            5057,
+            null
+          ],
+          "weekResultSek": 6951,
+          "cashEnd": 116428,
+          "downgraded": false,
+          "minCash": 116428
+        },
+        {
+          "seed": 3,
+          "evenings": [
+            1305,
+            2440,
+            1734,
+            4368,
+            3429,
+            924,
+            null
+          ],
+          "weekResultSek": 3209,
+          "cashEnd": 112686,
+          "downgraded": false,
+          "minCash": 112686
+        },
+        {
+          "seed": 4,
+          "evenings": [
+            -135,
+            4209,
+            2243,
+            5065,
+            -5850,
+            7912,
+            null
+          ],
+          "weekResultSek": 2456,
+          "cashEnd": 111933,
+          "downgraded": false,
+          "minCash": 111933
+        },
+        {
+          "seed": 5,
+          "evenings": [
+            1126,
+            4542,
+            4333,
+            3304,
+            5492,
+            3309,
+            null
+          ],
+          "weekResultSek": 11119,
+          "cashEnd": 120596,
+          "downgraded": false,
+          "minCash": 118126
+        },
+        {
+          "seed": 6,
+          "evenings": [
+            107,
+            3862,
+            3126,
+            3907,
+            4819,
+            4052,
+            null
+          ],
+          "weekResultSek": 8884,
+          "cashEnd": 118361,
+          "downgraded": false,
+          "minCash": 117107
+        },
+        {
+          "seed": 7,
+          "evenings": [
+            -462,
+            4790,
+            5061,
+            3588,
+            3244,
+            2496,
+            null
+          ],
+          "weekResultSek": 7728,
+          "cashEnd": 117205,
+          "downgraded": false,
+          "minCash": 116538
+        },
+        {
+          "seed": 8,
+          "evenings": [
+            -2128,
+            4628,
+            5589,
+            3888,
+            4352,
+            5157,
+            null
+          ],
+          "weekResultSek": 10499,
+          "cashEnd": 119976,
+          "downgraded": false,
+          "minCash": 114872
+        },
+        {
+          "seed": 9,
+          "evenings": [
+            1757,
+            3898,
+            2815,
+            4007,
+            4484,
+            3767,
+            null
+          ],
+          "weekResultSek": 9741,
+          "cashEnd": 119218,
+          "downgraded": false,
+          "minCash": 118757
+        },
+        {
+          "seed": 10,
+          "evenings": [
+            555,
+            5013,
+            4673,
+            3393,
+            -2778,
+            5545,
+            null
+          ],
+          "weekResultSek": 5413,
+          "cashEnd": 114890,
+          "downgraded": false,
+          "minCash": 114890
+        },
+        {
+          "seed": 11,
+          "evenings": [
+            1907,
+            507,
+            5376,
+            3646,
+            -3957,
+            4548,
+            null
+          ],
+          "weekResultSek": 1039,
+          "cashEnd": 110516,
+          "downgraded": false,
+          "minCash": 110516
+        },
+        {
+          "seed": 12,
+          "evenings": [
+            666,
+            3174,
+            4511,
+            3890,
+            4867,
+            3742,
+            null
+          ],
+          "weekResultSek": 9863,
+          "cashEnd": 119340,
+          "downgraded": false,
+          "minCash": 117666
+        },
+        {
+          "seed": 13,
+          "evenings": [
+            1462,
+            3176,
+            1010,
+            5757,
+            4764,
+            4169,
+            null
+          ],
+          "weekResultSek": 9351,
+          "cashEnd": 118828,
+          "downgraded": false,
+          "minCash": 118462
+        },
+        {
+          "seed": 14,
+          "evenings": [
+            1829,
+            4085,
+            -3350,
+            5143,
+            5109,
+            -811,
+            null
+          ],
+          "weekResultSek": 1016,
+          "cashEnd": 110493,
+          "downgraded": false,
+          "minCash": 110493
+        },
+        {
+          "seed": 15,
+          "evenings": [
+            822,
+            3570,
+            5379,
+            4557,
+            -5366,
+            6935,
+            null
+          ],
+          "weekResultSek": 4908,
+          "cashEnd": 114385,
+          "downgraded": false,
+          "minCash": 114385
+        },
+        {
+          "seed": 16,
+          "evenings": [
+            1522,
+            4072,
+            4002,
+            3729,
+            4091,
+            774,
+            null
+          ],
+          "weekResultSek": 7202,
+          "cashEnd": 116679,
+          "downgraded": false,
+          "minCash": 116679
+        },
+        {
+          "seed": 17,
+          "evenings": [
+            197,
+            3951,
+            -3110,
+            6630,
+            5237,
+            4449,
+            null
+          ],
+          "weekResultSek": 6366,
+          "cashEnd": 115843,
+          "downgraded": false,
+          "minCash": 115843
+        },
+        {
+          "seed": 18,
+          "evenings": [
+            -4166,
+            4615,
+            3726,
+            4670,
+            5736,
+            4457,
+            null
+          ],
+          "weekResultSek": 8050,
+          "cashEnd": 117527,
+          "downgraded": false,
+          "minCash": 112834
+        },
+        {
+          "seed": 19,
+          "evenings": [
+            1381,
+            -2988,
+            4961,
+            3946,
+            4762,
+            3648,
+            null
+          ],
+          "weekResultSek": 4723,
+          "cashEnd": 114200,
+          "downgraded": false,
+          "minCash": 114200
+        },
+        {
+          "seed": 20,
+          "evenings": [
+            1577,
+            -3701,
+            3295,
+            3987,
+            5403,
+            4342,
+            null
+          ],
+          "weekResultSek": 3916,
+          "cashEnd": 113393,
+          "downgraded": false,
+          "minCash": 113393
+        }
+      ]
+    },
+    "satsningar": {
+      "weeks": 20,
+      "weeksWithLoss": 20,
+      "shareWeeksWithLoss": 1,
+      "downgradedOrPending": 0,
+      "meanWeekResultSek": -11601,
+      "worstWeekResultSek": -17014,
+      "firstEvening": {
+        "mean": -1249,
+        "worst": -5966,
+        "best": 107,
+        "losses": 18
+      },
+      "evenings": {
+        "mean": -52,
+        "worst": -9094,
+        "losses": 47,
+        "count": 120
+      },
+      "lowestCashSek": 92463,
+      "rows": [
+        {
+          "seed": 1,
+          "evenings": [
+            -452,
+            -522,
+            -768,
+            99,
+            1753,
+            595,
+            null
+          ],
+          "weekResultSek": -10582,
+          "cashEnd": 98895,
+          "downgraded": false,
+          "minCash": 98895
+        },
+        {
+          "seed": 2,
+          "evenings": [
+            -1442,
+            885,
+            373,
+            -3233,
+            3427,
+            788,
+            null
+          ],
+          "weekResultSek": -10490,
+          "cashEnd": 98987,
+          "downgraded": false,
+          "minCash": 98987
+        },
+        {
+          "seed": 3,
+          "evenings": [
+            -495,
+            902,
+            -804,
+            162,
+            758,
+            -2457,
+            null
+          ],
+          "weekResultSek": -13222,
+          "cashEnd": 96255,
+          "downgraded": false,
+          "minCash": 96255
+        },
+        {
+          "seed": 4,
+          "evenings": [
+            -1731,
+            261,
+            143,
+            -857,
+            -9094,
+            5553,
+            null
+          ],
+          "weekResultSek": -17014,
+          "cashEnd": 92463,
+          "downgraded": false,
+          "minCash": 92463
+        },
+        {
+          "seed": 5,
+          "evenings": [
+            -674,
+            1306,
+            509,
+            775,
+            534,
+            1824,
+            null
+          ],
+          "weekResultSek": -7015,
+          "cashEnd": 102462,
+          "downgraded": false,
+          "minCash": 102462
+        },
+        {
+          "seed": 6,
+          "evenings": [
+            -1332,
+            1785,
+            888,
+            104,
+            -4245,
+            3151,
+            null
+          ],
+          "weekResultSek": -10938,
+          "cashEnd": 98539,
+          "downgraded": false,
+          "minCash": 98539
+        },
+        {
+          "seed": 7,
+          "evenings": [
+            -2262,
+            2696,
+            556,
+            -216,
+            -349,
+            1855,
+            null
+          ],
+          "weekResultSek": -9008,
+          "cashEnd": 100469,
+          "downgraded": false,
+          "minCash": 100469
+        },
+        {
+          "seed": 8,
+          "evenings": [
+            -3928,
+            2441,
+            2134,
+            446,
+            849,
+            1052,
+            null
+          ],
+          "weekResultSek": -8293,
+          "cashEnd": 101184,
+          "downgraded": false,
+          "minCash": 101184
+        },
+        {
+          "seed": 9,
+          "evenings": [
+            -43,
+            1291,
+            483,
+            -734,
+            951,
+            1781,
+            null
+          ],
+          "weekResultSek": -7558,
+          "cashEnd": 101919,
+          "downgraded": false,
+          "minCash": 101919
+        },
+        {
+          "seed": 10,
+          "evenings": [
+            -1651,
+            -2625,
+            3642,
+            909,
+            -1619,
+            1189,
+            null
+          ],
+          "weekResultSek": -11442,
+          "cashEnd": 98035,
+          "downgraded": false,
+          "minCash": 98035
+        },
+        {
+          "seed": 11,
+          "evenings": [
+            107,
+            -2076,
+            1854,
+            1150,
+            -6968,
+            948,
+            null
+          ],
+          "weekResultSek": -16273,
+          "cashEnd": 93204,
+          "downgraded": false,
+          "minCash": 93204
+        },
+        {
+          "seed": 12,
+          "evenings": [
+            -1134,
+            458,
+            94,
+            -1881,
+            2077,
+            538,
+            null
+          ],
+          "weekResultSek": -11136,
+          "cashEnd": 98341,
+          "downgraded": false,
+          "minCash": 98341
+        },
+        {
+          "seed": 13,
+          "evenings": [
+            -338,
+            177,
+            -2267,
+            1706,
+            1076,
+            934,
+            null
+          ],
+          "weekResultSek": -9999,
+          "cashEnd": 99478,
+          "downgraded": false,
+          "minCash": 99478
+        },
+        {
+          "seed": 14,
+          "evenings": [
+            29,
+            1460,
+            -6167,
+            1398,
+            2153,
+            -2628,
+            null
+          ],
+          "weekResultSek": -15045,
+          "cashEnd": 94432,
+          "downgraded": false,
+          "minCash": 94432
+        },
+        {
+          "seed": 15,
+          "evenings": [
+            -1136,
+            -605,
+            1996,
+            372,
+            -8777,
+            6450,
+            null
+          ],
+          "weekResultSek": -12990,
+          "cashEnd": 96487,
+          "downgraded": false,
+          "minCash": 96487
+        },
+        {
+          "seed": 16,
+          "evenings": [
+            -278,
+            574,
+            1553,
+            -850,
+            2241,
+            -2524,
+            null
+          ],
+          "weekResultSek": -10573,
+          "cashEnd": 98904,
+          "downgraded": false,
+          "minCash": 98904
+        },
+        {
+          "seed": 17,
+          "evenings": [
+            -1603,
+            246,
+            -6257,
+            1135,
+            3512,
+            1212,
+            null
+          ],
+          "weekResultSek": -13044,
+          "cashEnd": 96433,
+          "downgraded": false,
+          "minCash": 96433
+        },
+        {
+          "seed": 18,
+          "evenings": [
+            -5966,
+            4005,
+            -697,
+            -368,
+            2608,
+            842,
+            null
+          ],
+          "weekResultSek": -10864,
+          "cashEnd": 98613,
+          "downgraded": false,
+          "minCash": 98613
+        },
+        {
+          "seed": 19,
+          "evenings": [
+            -419,
+            -6497,
+            1815,
+            1791,
+            2137,
+            1719,
+            null
+          ],
+          "weekResultSek": -10741,
+          "cashEnd": 98736,
+          "downgraded": false,
+          "minCash": 98736
+        },
+        {
+          "seed": 20,
+          "evenings": [
+            -223,
+            -6594,
+            -155,
+            1057,
+            402,
+            1005,
+            null
+          ],
+          "weekResultSek": -15795,
+          "cashEnd": 93682,
+          "downgraded": false,
+          "minCash": 93682
+        }
+      ]
+    },
+    "kurser": {
+      "weeks": 20,
+      "weeksWithLoss": 20,
+      "shareWeeksWithLoss": 1,
+      "downgradedOrPending": 0,
+      "meanWeekResultSek": -17460,
+      "worstWeekResultSek": -25303,
+      "firstEvening": {
+        "mean": 1341,
+        "worst": -2459,
+        "best": 2168,
+        "losses": 1
+      },
+      "evenings": {
+        "mean": 3105,
+        "worst": -5760,
+        "losses": 10,
+        "count": 120
+      },
+      "lowestCashSek": 84174,
+      "rows": [
+        {
+          "seed": 1,
+          "evenings": [
+            1773,
+            2649,
+            2819,
+            3442,
+            5340,
+            4535,
+            null
+          ],
+          "weekResultSek": -15430,
+          "cashEnd": 94047,
+          "downgraded": false,
+          "minCash": 94047
+        },
+        {
+          "seed": 2,
+          "evenings": [
+            1015,
+            3494,
+            4471,
+            889,
+            4989,
+            4696,
+            null
+          ],
+          "weekResultSek": -16434,
+          "cashEnd": 93043,
+          "downgraded": false,
+          "minCash": 93043
+        },
+        {
+          "seed": 3,
+          "evenings": [
+            1982,
+            1824,
+            3839,
+            4391,
+            3374,
+            1583,
+            null
+          ],
+          "weekResultSek": -18995,
+          "cashEnd": 90482,
+          "downgraded": false,
+          "minCash": 90482
+        },
+        {
+          "seed": 4,
+          "evenings": [
+            295,
+            1161,
+            5502,
+            4661,
+            -5760,
+            6721,
+            null
+          ],
+          "weekResultSek": -23409,
+          "cashEnd": 86068,
+          "downgraded": false,
+          "minCash": 86068
+        },
+        {
+          "seed": 5,
+          "evenings": [
+            1759,
+            3813,
+            3120,
+            3599,
+            5062,
+            4358,
+            null
+          ],
+          "weekResultSek": -14276,
+          "cashEnd": 95201,
+          "downgraded": false,
+          "minCash": 95201
+        },
+        {
+          "seed": 6,
+          "evenings": [
+            1068,
+            3113,
+            4363,
+            2740,
+            3688,
+            7014,
+            null
+          ],
+          "weekResultSek": -14001,
+          "cashEnd": 95476,
+          "downgraded": false,
+          "minCash": 95476
+        },
+        {
+          "seed": 7,
+          "evenings": [
+            1668,
+            3604,
+            5183,
+            3496,
+            3708,
+            5150,
+            null
+          ],
+          "weekResultSek": -13179,
+          "cashEnd": 96298,
+          "downgraded": false,
+          "minCash": 96298
+        },
+        {
+          "seed": 8,
+          "evenings": [
+            369,
+            4095,
+            5556,
+            3487,
+            4276,
+            7064,
+            null
+          ],
+          "weekResultSek": -11140,
+          "cashEnd": 98337,
+          "downgraded": false,
+          "minCash": 98337
+        },
+        {
+          "seed": 9,
+          "evenings": [
+            2078,
+            2530,
+            5173,
+            2696,
+            5236,
+            4599,
+            null
+          ],
+          "weekResultSek": -13675,
+          "cashEnd": 95802,
+          "downgraded": false,
+          "minCash": 95802
+        },
+        {
+          "seed": 10,
+          "evenings": [
+            1115,
+            1289,
+            5663,
+            3566,
+            2307,
+            5030,
+            null
+          ],
+          "weekResultSek": -17017,
+          "cashEnd": 92460,
+          "downgraded": false,
+          "minCash": 92460
+        },
+        {
+          "seed": 11,
+          "evenings": [
+            2044,
+            3348,
+            3765,
+            944,
+            -3644,
+            9517,
+            null
+          ],
+          "weekResultSek": -22016,
+          "cashEnd": 87461,
+          "downgraded": false,
+          "minCash": 87461
+        },
+        {
+          "seed": 12,
+          "evenings": [
+            1254,
+            2846,
+            4731,
+            2420,
+            4637,
+            3731,
+            null
+          ],
+          "weekResultSek": -16368,
+          "cashEnd": 93109,
+          "downgraded": false,
+          "minCash": 93109
+        },
+        {
+          "seed": 13,
+          "evenings": [
+            1974,
+            -877,
+            2384,
+            3854,
+            2778,
+            4403,
+            null
+          ],
+          "weekResultSek": -21472,
+          "cashEnd": 88005,
+          "downgraded": false,
+          "minCash": 88005
+        },
+        {
+          "seed": 14,
+          "evenings": [
+            2168,
+            5051,
+            -3665,
+            -1005,
+            7173,
+            964,
+            null
+          ],
+          "weekResultSek": -25303,
+          "cashEnd": 84174,
+          "downgraded": false,
+          "minCash": 84174
+        },
+        {
+          "seed": 15,
+          "evenings": [
+            1223,
+            2033,
+            3830,
+            5438,
+            -4487,
+            8300,
+            null
+          ],
+          "weekResultSek": -19650,
+          "cashEnd": 89827,
+          "downgraded": false,
+          "minCash": 89827
+        },
+        {
+          "seed": 16,
+          "evenings": [
+            2003,
+            1037,
+            2742,
+            4937,
+            5058,
+            3779,
+            null
+          ],
+          "weekResultSek": -16431,
+          "cashEnd": 93046,
+          "downgraded": false,
+          "minCash": 93046
+        },
+        {
+          "seed": 17,
+          "evenings": [
+            1224,
+            1972,
+            -3330,
+            5556,
+            6592,
+            3322,
+            null
+          ],
+          "weekResultSek": -20651,
+          "cashEnd": 88826,
+          "downgraded": false,
+          "minCash": 88826
+        },
+        {
+          "seed": 18,
+          "evenings": [
+            -2459,
+            4923,
+            3888,
+            5113,
+            5810,
+            6067,
+            null
+          ],
+          "weekResultSek": -12645,
+          "cashEnd": 96832,
+          "downgraded": false,
+          "minCash": 96832
+        },
+        {
+          "seed": 19,
+          "evenings": [
+            2113,
+            -3516,
+            2527,
+            2636,
+            7396,
+            6147,
+            null
+          ],
+          "weekResultSek": -18684,
+          "cashEnd": 90793,
+          "downgraded": false,
+          "minCash": 90793
+        },
+        {
+          "seed": 20,
+          "evenings": [
+            2158,
+            -3647,
+            1262,
+            7846,
+            4771,
+            5171,
+            null
+          ],
+          "weekResultSek": -18426,
+          "cashEnd": 91051,
+          "downgraded": false,
+          "minCash": 91051
+        }
+      ]
+    }
+  }
+}

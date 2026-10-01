@@ -26,6 +26,8 @@ export interface StaffMark {
   arcs: THREE.Mesh[];
   line: THREE.Line;
   positions: Float32Array;
+  /** ORDER 292 — rollen vars färg ringen har nu (sommeliern som värd i dörren). */
+  role: StaffRole;
 }
 
 function basic(colour: THREE.Color, opacity: number, depthTest = true, additive = false): THREE.MeshBasicMaterial {
@@ -77,7 +79,17 @@ export function createStaffMark(key: StaffKey): StaffMark {
   const line = new THREE.Line(geo, new THREE.LineDashedMaterial({ color: colour, transparent: true, opacity: THEATRE.staffLine.opacity, dashSize: THEATRE.staffLine.dashM, gapSize: THEATRE.staffLine.dashM, depthWrite: false, toneMapped: false }));
   line.renderOrder = 3;
   group.add(glow, ring, xray, ...arcs, line);
-  return { group, ring, xray, glow, arcs, line, positions };
+  return { group, ring, xray, glow, arcs, line, positions, role: ROLE_OF[key] };
+}
+
+// ORDER 292 — ringen byter färg när personen tar en annan roll (sommeliern som
+// värd i dörren får värdens färg, Designs staffRing.ts ROLE_COLOUR.host).
+export function setStaffMarkRole(mark: StaffMark, role: StaffRole): void {
+  if (mark.role === role) return;
+  mark.role = role;
+  const c = new THREE.Color(ROLE_COLOUR[role]);
+  for (const m of [mark.ring, mark.xray, mark.glow, ...mark.arcs]) (m.material as THREE.MeshBasicMaterial).color.copy(c);
+  (mark.line.material as THREE.LineDashedMaterial).color.copy(c);
 }
 
 // `progress` är uppgiftens andel (0..1), eller null när personen är ledig

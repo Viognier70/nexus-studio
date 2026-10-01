@@ -364,6 +364,8 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 ## documentation/game-design/
 
 - `FORSLAG_HALLBARHETERNA_0_10.md`: Förslag: de tre hållbarheterna som nivåer 0–10 (godkänt med villkor 2026-09-29, byggs i nästa order).
+- `INVENTERING_DESIGNLEVERANSER_2026-10-01.md`: Inventering av Designs leveranser mot koden: det som inte var inbyggt (2026-10-01).
+- `ORDER_292_RAPPORT.md`: ORDER 292 — Följden syns (rapport).
 - `FORSLAG_SATSNINGAR_2026-10-01.md`: Förslag: DJ:n och springaren som lönar sig när de används klokt; mätningen visar att helgen inte är fullare än måndagen och att ryktet faller varje kväll (väntar på Vision Owner).
 - `CAMERA_AND_GAMEPLAY_BIBLE.md`: Camera and Gameplay Bible.
 - `CAMERA_AND_VIEW_SYSTEM.md`: Camera and View System.

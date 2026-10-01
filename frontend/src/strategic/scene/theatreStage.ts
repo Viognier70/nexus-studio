@@ -24,6 +24,7 @@ import { THEATRE } from '../../sim/balance';
 import { PROP_VISUAL_SCALE } from './staffRing';
 import type { CameraTarget } from '../types';
 import type { ActiveIncident } from '../../sim/incidents';
+import type { ClipOverride } from './theatreInteractions';
 
 const LEDGER_PROP: Record<LedgerEntry['item'], PropId> = { plate: 'plate', dishes: 'plate', glass: 'wineGlass', bottle: 'wineBottle' };
 // Det som följer klippets händer (inte ägarboken): kort, block, mapp, servett, bestick, bricka.
@@ -61,13 +62,18 @@ export class TheatreStage {
   }
 
   /** Personalens pose ur klippet, eller null när figureActs-posen gäller. */
-  staffPose(i: number, key: StaffKey, s: FigureSample, rocket: ActiveIncident | null, now: number): ClipSample | null {
+  staffPose(i: number, key: StaffKey, s: FigureSample, rocket: ActiveIncident | null, now: number, together?: ClipOverride | null): ClipSample | null {
     const fig = rocket?.context.figure;
     if (fig && fig.kind === 'staff' && fig.staffKey === key) {
       const introTotal = THEATRE.rocketIntroSeconds[fig.clip];
       const elapsed = introTotal - Math.max(0, rocket.introLeft ?? 0);
       if ((rocket.introLeft ?? 0) > 0) return sampleClip('rocket.cutHand', elapsed, 'normal');
       return sampleClip('rocket.holdHand', now, 'normal');
+    }
+    // ORDER 292 — samspelen (theatreInteractions.ts): klippet och tiden ur samspelet.
+    if (together) {
+      this.staffClip[i] = { id: together.id, tempo: 'normal' };
+      return sampleClip(together.id, together.time, 'normal', { yaw: s.targetYaw, stress: s.stress });
     }
     const id = staffClipFor(s, key);
     if (!id) { this.staffClip[i].id = null; return null; }
@@ -77,7 +83,7 @@ export class TheatreStage {
   }
 
   /** Gästens pose ur klippet (sitsen avgör sittklippet), eller null när figureActs-posen gäller. */
-  guestPose(i: number, s: FigureSample, seat: SeatKind | null, rocket: ActiveIncident | null): ClipSample | null {
+  guestPose(i: number, s: FigureSample, seat: SeatKind | null, rocket: ActiveIncident | null, together?: ClipOverride | null): ClipSample | null {
     const fig = rocket?.context.figure;
     if (fig && fig.kind === 'guest' && fig.guestId === s.guestId && seat && s.seated && fig.clip !== 'walkToKitchen') {
       const clip = fig.clip === 'smellWine' ? 'rocket.smellWine' : 'rocket.askPointMenu';
@@ -87,6 +93,11 @@ export class TheatreStage {
     }
     if (fig && fig.kind === 'guest' && fig.guestId === s.guestId && fig.clip === 'walkToKitchen' && (rocket.introLeft ?? 0) > 0) {
       return sampleClip('rocket.walkToKitchen', 0, 'normal', { phase: (THEATRE.rocketIntroSeconds.walkToKitchen - (rocket.introLeft ?? 0)) / CLIPS['rocket.walkToKitchen'].seconds.normal });
+    }
+    // ORDER 292 — samspelen vid bordet (beställningen, notan, vinet, skålen, samtalet).
+    if (together && seat && s.seated) {
+      this.guestClip[i].id = together.id;
+      return sampleClip(together.id, together.time, 'normal', { yaw: s.targetYaw, seatKind: seat, seated: true });
     }
     const id = guestClipFor(s, seat);
     this.guestClip[i].id = id;
@@ -165,7 +176,11 @@ export class TheatreStage {
 
   /** Kameran glider in mot figuren när en raket börjar, och tillbaka efter svaret. */
   camera(target: MutableRefObject<CameraTarget>, rocket: ActiveIncident | null, figureLocal: { x: number; y: number; z: number } | null, dt: number): void {
-    const key = rocket && rocket.context.figure && !rocket.backed ? `${rocket.id}:${rocket.openedAt}` : '';
+    // ORDER 292 (provspel av 316b4c3: "Kameran glider in vid alla raketer. I
+    // provspelet gjorde den det bara ibland") — varje raket, också den spelaren
+    // startar själv och den utan figur; punkten är figuren, annars bordet,
+    // annars rummets mitt (WineBarFigures). Saknas punkten väntar glidningen.
+    const key = rocket ? `${rocket.id}:${rocket.openedAt}` : '';
     this.figureWorld = null;
     if (key && figureLocal) {
       this.v.set(figureLocal.x, figureLocal.y, figureLocal.z);
@@ -179,7 +194,8 @@ export class TheatreStage {
     } else if (!key && this.rocketKey && this.glide && !this.glide.out) {
       this.glide = { ...this.glide, from: { x: cur.focus.x, z: cur.focus.z, distance: cur.distance }, to: this.glide.saved, t: 0, dur: THEATRE.camera.glideOutSeconds, out: true };
     }
-    this.rocketKey = key;
+    // Utan punkt än: raketen räknas inte som påbörjad, så glidningen kommer när punkten finns.
+    if (!(key && key !== this.rocketKey && !this.figureWorld)) this.rocketKey = key;
     const g = this.glide;
     if (!g) return;
     g.t = Math.min(g.dur, g.t + dt);

@@ -22,14 +22,16 @@
 //
 // Talen står i `balance.ts` `INCIDENTS`; händelserna i händelsebanken.
 
-import type { Guest, KnowledgeAxis, SimulationState, StaffRole, YrkesSpar } from '../strategic/types';
+import type { Guest, GuestType, KnowledgeAxis, SimulationState, StaffRole, YrkesSpar } from '../strategic/types';
 import { createRng } from '../strategic/util/rng';
 import { bumpMorale } from '../strategic/simulation/morale';
-import { applyCashDelta, postLedger } from '../strategic/simulation/cashReading';
+import { applyCashDelta, applyCashRevenue, postLedger } from '../strategic/simulation/cashReading';
+import { takeFromStock } from '../strategic/simulation/stockPackages';
+import { clockMinutes, formatClock } from './clock';
 import { clampReputation } from '../strategic/simulation/reputation';
 import { strings } from '../content/strings';
 import { rocketClipFor, rocketFigure, type RocketFigure } from './theatreTriggers';
-import { ANSWER_EFFECTS, THEATRE, BACK, type Confidence, GAME_MINUTES_PER_SIM_SECOND, INCIDENTS, MENU_ROCKETS, REPUTATION, SITTING } from './balance';
+import { ANSWER_EFFECTS, THEATRE, BACK, type Confidence, INCIDENTS, MENU_ROCKETS, REPUTATION, SERVICE_STREAM } from './balance';
 import { calendarFor } from './calendar';
 import { clampScenarioCash, scenarioUnitSek } from './economy';
 import { bestAnswerFactor, medalSteps } from './knowledgeInService';
@@ -96,6 +98,38 @@ export interface ActiveIncident {
   // ORDER 286a — raketen börjar i rummet: figurens klipp spelas i så här
   // många verkliga sekunder innan kortet öppnas och stegets klocka går.
   introLeft?: number;
+  // ORDER 292 — vad som står på spel vid bordet när raketen öppnas.
+  stake?: TableStake | null;
+}
+
+// ORDER 292 (Vision Owner 2026-10-01: "Insatsen före svaret: raketkortet visar
+// vad som står på spel i kronor och gäster") — bordets nota (beställda notor,
+// och kvällens snittnota för den som inte har beställt), antalet gäster och
+// gästtyperna. Stamgäster med namn kommer med veckomålen (287b).
+export interface TableStake {
+  billSek: number;
+  guests: number;
+  types: Partial<Record<GuestType, number>>;
+}
+
+export function expectedBillSek(state: SimulationState): number {
+  const bills = state.day.billsTonight ?? 0;
+  const start = state.day.revenueAtServiceStart;
+  if (bills > 0 && start !== null && start !== undefined) return Math.round((state.revenue - start) / bills);
+  return ANSWER_EFFECTS.stakeDefaultBillSek;
+}
+
+export function tableStake(state: SimulationState, guestIds: string[]): TableStake | null {
+  const table = state.guests.filter((g) => guestIds.includes(g.id) && PRESENT.includes(g.state));
+  if (table.length === 0) return null;
+  const typical = expectedBillSek(state);
+  const types: Partial<Record<GuestType, number>> = {};
+  let billSek = 0;
+  for (const g of table) {
+    billSek += g.order?.revenueSek ?? typical;
+    if (g.guestType) types[g.guestType] = (types[g.guestType] ?? 0) + 1;
+  }
+  return { billSek: Math.round(billSek), guests: table.length, types };
 }
 
 // ORDER 280 — säkerheten spelaren valde (balance.ts Confidence).
@@ -258,19 +292,9 @@ export function arcFor(n: number): ArcPhase[] {
 
 const MINUTES_PER_HOUR = INCIDENTS.minutesPerHour;
 
-// Klockslaget i spelminuter efter midnatt (servicen 18–23, F31).
-export function clockMinutes(state: SimulationState): number {
-  const since = Math.max(0, state.simTime - state.day.periodStartAt);
-  return SITTING.serviceStartHour * MINUTES_PER_HOUR + Math.floor(since * GAME_MINUTES_PER_SIM_SECOND);
-}
-
-// Klockslaget som text i det aktuella språket (ORDER 273, Designs §2):
-// "18:00" på engelska, "18.00" på svenska (strängtabellen service.clock.hhmm).
-export function formatClock(minutes: number): string {
-  const h = Math.floor(minutes / MINUTES_PER_HOUR);
-  const m = minutes % MINUTES_PER_HOUR;
-  return strings.service.clock.hhmm(String(h), String(m).padStart(INCIDENTS.clockDigits, '0'));
-}
+// Kvällens klocka (sim/clock.ts, ORDER 292: egen modul så att lagret kan
+// läsa den utan cirkelberoende).
+export { clockMinutes, formatClock } from './clock';
 
 function parseClock(hhmm: string): number {
   const [h, m] = hhmm.split(':').map(Number);
@@ -487,7 +511,7 @@ function openIncident(
     queuedContext,
     fired: [...inc.fired, incident.id],
     ongoing: null,
-    active: { id: incident.id, openedAt: draft.simTime, step: 0, secondsTotal, secondsLeft: secondsTotal, struck, chained, situation, context, backed, introLeft }
+    active: { id: incident.id, openedAt: draft.simTime, step: 0, secondsTotal, secondsLeft: secondsTotal, struck, chained, situation, context, backed, introLeft, stake: tableStake(draft, context.guestIds) }
   };
 }
 
@@ -597,25 +621,70 @@ function raiseTips(draft: SimulationState, ctx: IncidentContext, share: number):
 // svar ger en högre nota vid bordet (och gäster som kommer in, letGuestsIn);
 // fel svar ger en lägre nota, missnöjda gäster vid bordet och en gäst i kön
 // som går. Händelsen står över bordet i rummet (day.roomReactions).
-function answerConsequence(draft: SimulationState, ctx: IncidentContext, right: boolean, guestsIn: number): void {
-  const table = draft.guests.filter((g) => ctx.guestIds.includes(g.id) && g.state !== 'leaving' && g.state !== 'declined');
+// ORDER 292 (Vision Owner 2026-10-01: "Följden efter svaret, i rummet och i
+// kassan") — rätt svar: bordet beställer mer nu, och beloppet går in i
+// kvällskassan direkt (bordets nota gånger rightBillShare; förut lades samma
+// andel på notan vid betalningen). Fel svar: en gäst vid bordet går utan att
+// betala, stolen blir tom och hens nota går förlorad; de andra vid bordet blir
+// missnöjda. Utan gäster vid bordet går en gäst i kön, som förut.
+function answerConsequence(draft: SimulationState, ctx: IncidentContext, right: boolean, guestsIn: number, keepTable = false): void {
+  const table = draft.guests.filter((g) => ctx.guestIds.includes(g.id) && PRESENT.includes(g.state));
   let left = 0;
+  let amountSek = 0;
+  let leftGuestId: string | null = null;
   if (right) {
-    for (const g of table) g.billBonus = (g.billBonus ?? 0) + ANSWER_EFFECTS.rightBillShare;
-  } else {
+    // ORDER 292 — ett glas till ur lagret, till listans pris; annars en andel av notan.
+    const extra = draft.menu.find((m) => m.dishId === ANSWER_EFFECTS.rightExtraDishId);
+    const inStock = extra && (draft.day.platesRemaining[extra.dishId] ?? 0) > 0;
+    if (extra && inStock && table.length > 0) {
+      takeFromStock(draft, extra.dishId, draft.simTime);
+      amountSek = Math.round(extra.price);
+    } else {
+      const stake = tableStake(draft, ctx.guestIds);
+      amountSek = stake ? Math.round(stake.billSek * ANSWER_EFFECTS.rightBillShare) : 0;
+    }
+    if (amountSek > 0 && (draft.day.period === 'dinner' || draft.day.period === 'lunch')) {
+      applyCashRevenue(draft, amountSek);
+      // Kassabokens försäljningsrad vid stängningen läser serviceperiodens summa (kSEK).
+      if (draft.day.period === 'dinner') draft.serviceRevenueToday = { ...draft.serviceRevenueToday, dinner: draft.serviceRevenueToday.dinner + amountSek / SERVICE_STREAM.sekPerKsek };
+      else draft.serviceRevenueToday = { ...draft.serviceRevenueToday, lunch: draft.serviceRevenueToday.lunch + amountSek / SERVICE_STREAM.sekPerKsek };
+      // Gästtypens intäkt i kväll (som guestTypes.ts recordTypeRevenue;
+      // importeras inte, för att undvika ett cirkelberoende).
+      const payer = table[0];
+      if (payer?.guestType) {
+        const rev = { ...(draft.day.guestTypeRevenue ?? {}) };
+        rev[payer.guestType] = (rev[payer.guestType] ?? 0) + amountSek;
+        draft.day = { ...draft.day, guestTypeRevenue: rev };
+      }
+    }
+  } else if (table.length > 0 && keepTable) {
+    // Felet köade en följdraket vid samma bord: gästerna stannar (följden är
+    // nästa raket), men bordet beställer mindre.
+    const stake = tableStake(draft, ctx.guestIds);
+    amountSek = stake ? Math.round(stake.billSek * ANSWER_EFFECTS.wrongBillShare) : 0;
     for (const g of table) {
       g.billBonus = (g.billBonus ?? 0) + ANSWER_EFFECTS.wrongBillShare;
       g.satisfaction = Math.max(0, g.satisfaction + ANSWER_EFFECTS.wrongSatisfaction);
     }
+  } else if (table.length > 0) {
+    const typical = expectedBillSek(draft);
+    const goer = [...table].sort((a, b) => (b.order?.revenueSek ?? typical) - (a.order?.revenueSek ?? typical))[0];
+    amountSek = -Math.round(goer.order?.revenueSek ?? typical);
+    leftGuestId = goer.id;
+    goer.order = undefined;
+    sendAway(draft, [goer], 1);
+    left = 1;
+    for (const g of table) if (g.id !== goer.id) g.satisfaction = Math.max(0, g.satisfaction + ANSWER_EFFECTS.wrongSatisfaction);
+  } else {
     const queue = draft.guests.filter((g) => g.state === 'waiting' || g.state === 'arriving');
     left = Math.min(queue.length, ANSWER_EFFECTS.wrongGuestsLeave);
     sendAway(draft, queue, left);
   }
   const t = strings.answerEffects;
-  const text = right ? t.up(ctx.table, guestsIn) : t.down(ctx.table, left);
+  const text = right ? t.up(ctx.table, guestsIn) : leftGuestId ? t.tableLeaves(ctx.table) : t.down(ctx.table, left);
   const now = draft.simTime;
   const keep = (draft.day.roomReactions ?? []).filter((r) => now - r.at <= ANSWER_EFFECTS.reactionSimSeconds);
-  draft.day = { ...draft.day, roomReactions: [...keep, { at: now, kind: right ? 'up' : 'down', table: ctx.table, guestIds: table.map((g) => g.id), text }] };
+  draft.day = { ...draft.day, roomReactions: [...keep, { at: now, kind: right ? 'up' : 'down', table: ctx.table, guestIds: table.map((g) => g.id), text, amountSek, leftGuestId }] };
 }
 
 export interface CreditChange { axis: KnowledgeAxis; track: YrkesSpar | null; amount: number }
@@ -837,7 +906,9 @@ export function resolveIncident(draft: SimulationState, optionId: string | null,
   // ORDER 276 — det sista klarade steget och hela raketen släpper in gäster.
   const guestsIn = cleared ? letGuestsIn(draft, INCIDENTS.guestsPerClearedStep + INCIDENTS.guestsOnRocketCleared) : 0;
   if (cleared) raiseTips(draft, ctx, MENU_ROCKETS.tipBonusPerClearedStep + MENU_ROCKETS.tipBonusOnRocketCleared);
-  answerConsequence(draft, ctx, cleared, guestsIn);
+  // ORDER 292 — ett fel som köar en följdraket vid samma bord låter gästerna sitta kvar.
+  const chains = cleared ? [] : [...((option?.fail ?? step.fail).triggers ?? []), ...(incident.staff.triggers ?? [])];
+  answerConsequence(draft, ctx, cleared, guestsIn, chains.length > 0);
   const reveal: StepReveal = { step: stepIndex, optionId: option?.id ?? null, correctId: correctOptionId(step, active.situation), cleared, guestsIn };
   const takeover = cleared ? null : takeoverFor(draft, incident, step);
   const now = draft.incidents!;

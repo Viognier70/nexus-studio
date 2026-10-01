@@ -414,6 +414,8 @@ export interface Guest {
   // ORDER 287a — gästens typ efter kapital (sim/guestTypes.ts). Sätts när
   // gästen kommer; saknas den (äldre fixturer) gäller plånboken ur fröet.
   guestType?: GuestType;
+  // ORDER 292 — vågen gästen kom med (rush.ts), till exempel 'cars'.
+  waveId?: string;
 }
 
 // ORDER 287a — gästerna med kapital (speldesign > Servicen > Gästerna).
@@ -434,6 +436,8 @@ export interface GuestBooking {
   total: number;
   billionaireInTown: boolean;
   billionaire: boolean;
+  // ORDER 292 — gårdagens svar: bokningar per raketens spår (sim/nextDay.ts).
+  answers?: Array<{ track: 'sommellerie' | 'kok' | 'service'; n: number }>;
 }
 
 // ORDER 287a — vad miljardären gjorde i kväll.
@@ -847,6 +851,8 @@ export interface DayState {
   // ORDER 285 — kassan vid dygnets gryning: kvällens resultat visar kassans
   // förändring, med morgonens inköp (som kvällsavräkningen räknar som tillgång).
   cashAtDayStart?: number | null;
+  // ORDER 292 — lönerna, räntan och satsningarnas följd är dragna vid stängningen.
+  dayEndCharged?: boolean;
   // ORDER 289 — när köket tog slut på mat (klockslag) och hur många gäster
   // som gick utan mat, till rådet efter kvällen.
   foodOutClock?: string | null;
@@ -953,6 +959,13 @@ export interface DayState {
   ingredientPaidTonight?: number;
   // ORDER 290 — händelser i rummet efter svaren (över bordet).
   roomReactions?: RoomReaction[];
+  // ORDER 292 — rusningarna (rush.ts): vågorna som börjat, sällskapen på väg
+  // till dörren, aviseringen om den senaste vågen och sällskapet spelaren
+  // valt att ge bord först (partyId eller gästens id).
+  wavesStarted?: string[];
+  wavePending?: Array<{ waveId: string; size: number; type: GuestType; at: number }>;
+  waveNotice?: { waveId: string; at: number; guests: number; parties: number } | null;
+  queuePriority?: string | null;
 }
 
 // ORDER 290 — kvällens ekonomi (strategic/simulation/eveningEconomy.ts).
@@ -993,6 +1006,11 @@ export interface RoomReaction {
   table: number | null;
   guestIds: string[];
   text: string;
+  // ORDER 292 — beloppet: rätt svar, bordets extra beställning (in i
+  // kvällskassan nu); fel svar, notan som gick förlorad med gästen som gick.
+  amountSek?: number;
+  // ORDER 292 — gästen som gick vid fel svar (den tomma stolen).
+  leftGuestId?: string | null;
 }
 
 // ORDER 077 §4 (M4) — supplier, ingredient, and dish domain types.
@@ -1544,6 +1562,10 @@ export interface SimulationState {
   // ORDER 287a — ryktet från gästen med socialt kapital: marknadens tak
   // gånger 1 + factor dag fromDay till untilDay (sim/guestTypes.ts).
   guestBuzz?: { fromDay: number; untilDay: number; factor: number; nameIndex: number }[];
+  // ORDER 292 — gårdagens svar i bokningsboken (sim/nextDay.ts): bokningar
+  // per raketens spår till nästa servicedag (positivt tack vare, negativt
+  // avbokat).
+  answerBookings?: { forDay: number; items: Array<{ track: 'sommellerie' | 'kok' | 'service'; n: number }> } | null;
   // ORDER 287a — kvällens hållbarheter som nivåer 0–10, och förra kvällens
   // (sim/sustainabilityLevels.ts). Sätts när servicen stänger.
   sustainabilityLevels?: {
@@ -1671,6 +1693,8 @@ export interface EventLogEntry {
 
 export type SimAction =
   | { type: 'TICK'; dt: number }
+  // ORDER 292 — spelaren ger ett sällskap i kön bord först (null tar bort valet).
+  | { type: 'SEAT_FIRST'; key: string | null }
   | { type: 'SET_SPEED'; speed: 0 | 1 | 2 | 4 }
   | { type: 'SET_POLICY'; patch: Partial<Policies> }
   | { type: 'RESOLVE_SCENARIO'; choice: ScenarioChoice }

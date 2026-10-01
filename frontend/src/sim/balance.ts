@@ -1050,7 +1050,16 @@ export const ANSWER_EFFECTS = {
   wrongSatisfaction: -0.08,
   wrongGuestsLeave: 1,
   // Hur länge händelsen står över bordet i rummet (spelsekunder).
-  reactionSimSeconds: 6
+  reactionSimSeconds: 6,
+  // ORDER 292 (Vision Owner 2026-10-01: "raketkortet visar vad som står på
+  // spel i kronor och gäster") — en gäst som inte har beställt än räknas
+  // med kvällens snittnota, och utan notor i kväll med det här beloppet.
+  stakeDefaultBillSek: 350,
+  // ORDER 292 (provspel av 316b4c3: "gästen beställer mer, beloppet flyger
+  // till kvällskassan") — ett rätt svar: bordet beställer ett glas till av
+  // den här drycken, ur lagret och till listans pris. Finns den inte i lagret
+  // gäller rightBillShare av bordets nota.
+  rightExtraDishId: 'house-wine-glass'
 } as const;
 
 // ORDER 287a — gästen med socialt kapital sprider ryktet (speldesign >
@@ -1097,4 +1106,35 @@ export const SAVING = {
   // och quizen. Filer i version 1 och 2 förs över (save.ts migrate).
   formatVersion: 3,
   migratableVersions: [1, 2]
+} as const;
+
+// ORDER 292 — rusningarna (Vision Owner 2026-10-01: "gäster i sällskap kommer
+// i vågor (bilarna 19.30, bussen), en kö bildas vid dörren med tålamod som
+// sjunker, och spelaren väljer vem som får bord först"). En våg tar sin andel
+// av kvällens gäster (marknadens tak gånger rummets dragningskraft), och det
+// jämna flödet minskas lika mycket. Måndag och tisdag är lugna (speldesign >
+// Tiden), så vågorna kommer från onsdag. Klockslaget i minuter efter midnatt.
+// Valda tal (F61).
+export const RUSH = {
+  section: 'Servicen',
+  openQuestion: 'F61',
+  waves: [
+    { id: 'cars', atMinute: 1170, share: 0.2, type: 'high', partySizes: [2, 4], weekdays: ['wed', 'thu', 'fri', 'sat'] },
+    { id: 'bus', atMinute: 1215, share: 0.25, type: 'middle', partySizes: [3, 5], weekdays: ['fri', 'sat'] }
+  ] as ReadonlyArray<{ id: string; atMinute: number; share: number; type: 'student' | 'middle' | 'high'; partySizes: readonly [number, number]; weekdays: readonly Weekday[] }>,
+  // Sällskapen i en våg kommer inom så här många spelsekunder.
+  spreadSimSeconds: 8,
+  // Klasser med matsal och bokningsbok har rusningar (vinbaren).
+  classes: ['vinbaren'] as readonly string[]
+} as const;
+
+// ORDER 292 — följder nästa dag (Vision Owner 2026-10-01: "Bokningsboken visar
+// vad gårdagens svar gav, till exempel '3 bokningar tack vare gårdagens
+// vin'"). En raket som klaras helt ger bokningar till nästa servicedag, en
+// fälld raket kostar. Raderna i bokningsboken efter raketens spår. Valda tal (F61).
+export const NEXT_DAY = {
+  section: 'Servicen',
+  openQuestion: 'F61',
+  bookingsPerClearedRocket: 2,
+  bookingsLostPerFailedRocket: 1
 } as const;

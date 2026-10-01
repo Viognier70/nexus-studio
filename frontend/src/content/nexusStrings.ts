@@ -1603,6 +1603,50 @@ export const TABLE = {
   },
   listAnd: { sv: 'och', en: 'and' },
   // ORDER 290 — svarens följd som händelser i rummet, över bordet.
+  // ORDER 292 — följder nästa dag i bokningsboken (sim/nextDay.ts).
+  nextDay: {
+    what: {
+      sommellerie: { sv: 'vin', en: 'wine' },
+      kok: { sv: 'mat', en: 'food' },
+      service: { sv: 'service', en: 'service' }
+    },
+    thanks: {
+      sv: (n: number, what: string) => `${n} ${pl(n, 'bokning', 'bokningar')} tack vare gårdagens ${what}`,
+      en: (n: number, what: string) => `${n} ${pl(n, 'booking', 'bookings')} thanks to yesterday's ${what}`
+    },
+    lost: {
+      sv: (n: number, what: string) => `${n} ${pl(n, 'avbokning', 'avbokningar')} efter gårdagens ${what}`,
+      en: (n: number, what: string) => `${n} ${pl(n, 'cancellation', 'cancellations')} after yesterday's ${what}`
+    },
+    note: { sv: 'Gårdagens svar', en: "Yesterday's answers" }
+  },
+  // ORDER 292 — rusningarna: vågorna, kön vid dörren och spelarens val.
+  rush: {
+    waves: {
+      cars: { sv: 'Bilarna från Örebro och Karlstad', en: 'The cars from Örebro and Karlstad' },
+      bus: { sv: 'Bussen', en: 'The coach' }
+    },
+    arrives: {
+      sv: (label: string, n: number) => `${label} kommer: ${n} ${pl(n, 'gäst', 'gäster')} på väg till dörren.`,
+      en: (label: string, n: number) => `${label} ${label.startsWith('The cars') ? 'arrive' : 'arrives'}: ${n} ${pl(n, 'guest', 'guests')} on the way to the door.`
+    },
+    notice: {
+      sv: (label: string, n: number, parties: number) => `${label} är här · ${n} ${pl(n, 'gäst', 'gäster')} i ${parties} ${pl(parties, 'sällskap', 'sällskap')}`,
+      en: (label: string, n: number, parties: number) => `${label} ${label.startsWith('The cars') ? 'are' : 'is'} here · ${n} ${pl(n, 'guest', 'guests')} in ${parties} ${pl(parties, 'party', 'parties')}`
+    },
+    queueTitle: { sv: 'Kön vid dörren', en: 'The queue at the door' },
+    queueHint: { sv: 'Den som kom först får bord först. Välj ett sällskap för att ge det nästa lediga bord.', en: 'First come, first seated. Pick a party to give it the next free table.' },
+    party: {
+      sv: (n: number, who: string) => `${n === 1 ? 'En gäst' : `${n} gäster`} · ${who}`,
+      en: (n: number, who: string) => `${n === 1 ? 'One guest' : `${n} guests`} · ${who}`
+    },
+    waited: { sv: (sec: number) => `väntat ${sec} s`, en: (sec: number) => `waited ${sec} s` },
+    impatient: { sv: 'otålig', en: 'impatient' },
+    seatFirst: { sv: 'Bord först', en: 'Seat first' },
+    chosen: { sv: 'Får nästa bord', en: 'Gets the next table' },
+    patienceAria: { sv: (pct: number) => `Tålamod ${pct} %`, en: (pct: number) => `Patience ${pct}%` },
+    walkIn: { sv: 'utan bokning', en: 'walk-in' }
+  },
   answerEffects: {
     up: {
       sv: (table: number | null, n: number) => `${table !== null ? `Bord ${table} beställer mer` : 'Bordet beställer mer'}${n > 0 ? ` · ${n} ${pl(n, 'ny gäst', 'nya gäster')} in` : ''}`,
@@ -1611,8 +1655,19 @@ export const TABLE = {
     down: {
       sv: (table: number | null, n: number) => `${table !== null ? `Bord ${table} blir missnöjt` : 'Bordet blir missnöjt'}${n > 0 ? ` · ${n} ${pl(n, 'gäst', 'gäster')} i kön går` : ''}`,
       en: (table: number | null, n: number) => `${table !== null ? `Table ${table} is unhappy` : 'The table is unhappy'}${n > 0 ? ` · ${n} ${pl(n, 'guest', 'guests')} in the queue ${pl(n, 'leaves', 'leave')}` : ''}`
+    },
+    // ORDER 292 — fel svar: en gäst vid bordet går och stolen blir tom.
+    tableLeaves: {
+      sv: (table: number | null) => `${table !== null ? `En gäst vid bord ${table} går` : 'En gäst går'} · stolen står tom`,
+      en: (table: number | null) => `${table !== null ? `A guest at table ${table} leaves` : 'A guest leaves'} · the chair stands empty`
     }
   },
+  // ORDER 292 — insatsen på raketkortet: bordet, notan och gästerna.
+  rocketStake: {
+    sv: (table: number | null, kr: string, guestsWord: string, guests: number, social: boolean) => `${table !== null ? `Bord ${table}` : 'Bordet'}: ${kr} och ${guestsWord} ${pl(guests, 'gäst', 'gäster')}${social ? `, ${guests > 1 ? 'en av dem tar' : 'som tar'} med sig byn` : ''}`,
+    en: (table: number | null, kr: string, guestsWord: string, guests: number, social: boolean) => `${table !== null ? `Table ${table}` : 'The table'}: ${kr} and ${guestsWord} ${pl(guests, 'guest', 'guests')}${social ? `, ${guests > 1 ? 'one of them brings' : 'who brings'} the village along` : ''}`
+  },
+  rocketStakeAria: { sv: 'Det som står på spel', en: 'What is at stake' },
   // ORDER 287a — gästerna med kapital: bokningsboken (Designs skärm 1,
   // brief.book.*), strömmen, kvällens resultat och söndagstidningen (Designs
   // paper.seen.*). Namnen på gästerna med socialt kapital är egennamn.
