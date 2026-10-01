@@ -24,6 +24,7 @@ import { THEATRE } from '../../sim/balance';
 import { PROP_VISUAL_SCALE } from './staffRing';
 import type { CameraTarget } from '../types';
 import type { ActiveIncident } from '../../sim/incidents';
+import type { ClipOverride } from './theatreInteractions';
 
 const LEDGER_PROP: Record<LedgerEntry['item'], PropId> = { plate: 'plate', dishes: 'plate', glass: 'wineGlass', bottle: 'wineBottle' };
 // Det som följer klippets händer (inte ägarboken): kort, block, mapp, servett, bestick, bricka.
@@ -61,13 +62,18 @@ export class TheatreStage {
   }
 
   /** Personalens pose ur klippet, eller null när figureActs-posen gäller. */
-  staffPose(i: number, key: StaffKey, s: FigureSample, rocket: ActiveIncident | null, now: number): ClipSample | null {
+  staffPose(i: number, key: StaffKey, s: FigureSample, rocket: ActiveIncident | null, now: number, together?: ClipOverride | null): ClipSample | null {
     const fig = rocket?.context.figure;
     if (fig && fig.kind === 'staff' && fig.staffKey === key) {
       const introTotal = THEATRE.rocketIntroSeconds[fig.clip];
       const elapsed = introTotal - Math.max(0, rocket.introLeft ?? 0);
       if ((rocket.introLeft ?? 0) > 0) return sampleClip('rocket.cutHand', elapsed, 'normal');
       return sampleClip('rocket.holdHand', now, 'normal');
+    }
+    // ORDER 292 — samspelen (theatreInteractions.ts): klippet och tiden ur samspelet.
+    if (together) {
+      this.staffClip[i] = { id: together.id, tempo: 'normal' };
+      return sampleClip(together.id, together.time, 'normal', { yaw: s.targetYaw, stress: s.stress });
     }
     const id = staffClipFor(s, key);
     if (!id) { this.staffClip[i].id = null; return null; }
@@ -77,7 +83,7 @@ export class TheatreStage {
   }
 
   /** Gästens pose ur klippet (sitsen avgör sittklippet), eller null när figureActs-posen gäller. */
-  guestPose(i: number, s: FigureSample, seat: SeatKind | null, rocket: ActiveIncident | null): ClipSample | null {
+  guestPose(i: number, s: FigureSample, seat: SeatKind | null, rocket: ActiveIncident | null, together?: ClipOverride | null): ClipSample | null {
     const fig = rocket?.context.figure;
     if (fig && fig.kind === 'guest' && fig.guestId === s.guestId && seat && s.seated && fig.clip !== 'walkToKitchen') {
       const clip = fig.clip === 'smellWine' ? 'rocket.smellWine' : 'rocket.askPointMenu';
@@ -87,6 +93,11 @@ export class TheatreStage {
     }
     if (fig && fig.kind === 'guest' && fig.guestId === s.guestId && fig.clip === 'walkToKitchen' && (rocket.introLeft ?? 0) > 0) {
       return sampleClip('rocket.walkToKitchen', 0, 'normal', { phase: (THEATRE.rocketIntroSeconds.walkToKitchen - (rocket.introLeft ?? 0)) / CLIPS['rocket.walkToKitchen'].seconds.normal });
+    }
+    // ORDER 292 — samspelen vid bordet (beställningen, notan, vinet, skålen, samtalet).
+    if (together && seat && s.seated) {
+      this.guestClip[i].id = together.id;
+      return sampleClip(together.id, together.time, 'normal', { yaw: s.targetYaw, seatKind: seat, seated: true });
     }
     const id = guestClipFor(s, seat);
     this.guestClip[i].id = id;
