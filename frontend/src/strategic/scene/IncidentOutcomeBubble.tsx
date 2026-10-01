@@ -10,6 +10,10 @@
 // gästernas nöjdhet sjunker och personalen arbetar långsammare.
 
 import { Html } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
+import { useRef } from 'react';
+import * as THREE from 'three';
+import { useCamera } from '../camera/CameraContext';
 import { strings } from '../../content/strings';
 import { INCIDENTS } from '../../sim/balance';
 import { takeoverActive } from '../../sim/incidents';
@@ -26,7 +30,19 @@ import '../ui/service/service.css';
 const BUBBLE_HEIGHT_M = 7.6;
 const FADE_SIM_S = 2;
 
+// ORDER 292 — bubblan står lägre när kameran är nära (raketens 12 m), så att
+// den inte klipps i skärmens överkant: höjden är en andel av kamerans avstånd,
+// mellan rummets takhöjd och BUBBLE_HEIGHT_M.
+const BUBBLE_SHARE_OF_DISTANCE = 0.2;
+const BUBBLE_MIN_M = 2.6;
+
 export function IncidentOutcomeBubble() {
+  const groupRef = useRef<THREE.Group>(null);
+  const { actualRef } = useCamera();
+  useFrame(() => {
+    const g = groupRef.current;
+    if (g) g.position.y = Math.min(BUBBLE_HEIGHT_M, Math.max(BUBBLE_MIN_M, actualRef.current.distance * BUBBLE_SHARE_OF_DISTANCE));
+  });
   const layout = usePlayerBusinessInterior();
   const sim = useSimState();
   const inc = sim.incidents;
@@ -44,7 +60,8 @@ export function IncidentOutcomeBubble() {
   const s = strings.service.incident;
   const role = takeover ? s.staffRoles[takeover.role] ?? s.staffFallback : '';
   return (
-    <Html position={[cx, BUBBLE_HEIGHT_M, cz]} center zIndexRange={[30, 0]} style={{ pointerEvents: 'none' }}>
+    <group ref={groupRef} position={[cx, BUBBLE_HEIGHT_M, cz]}>
+    <Html center zIndexRange={[30, 0]} style={{ pointerEvents: 'none' }}>
       <div className="nx nx-room-labels">
         {takeover && (
           <div className="nx-room-label nx-room-label--right incident-takeover">
@@ -65,5 +82,6 @@ export function IncidentOutcomeBubble() {
         <div className="nx-room-leader" />
       </div>
     </Html>
+    </group>
   );
 }

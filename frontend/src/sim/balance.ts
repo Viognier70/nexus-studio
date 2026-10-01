@@ -1054,7 +1054,12 @@ export const ANSWER_EFFECTS = {
   // ORDER 292 (Vision Owner 2026-10-01: "raketkortet visar vad som står på
   // spel i kronor och gäster") — en gäst som inte har beställt än räknas
   // med kvällens snittnota, och utan notor i kväll med det här beloppet.
-  stakeDefaultBillSek: 350
+  stakeDefaultBillSek: 350,
+  // ORDER 292 (provspel av 316b4c3: "gästen beställer mer, beloppet flyger
+  // till kvällskassan") — ett rätt svar: bordet beställer ett glas till av
+  // den här drycken, ur lagret och till listans pris. Finns den inte i lagret
+  // gäller rightBillShare av bordets nota.
+  rightExtraDishId: 'house-wine-glass'
 } as const;
 
 // ORDER 287a — gästen med socialt kapital sprider ryktet (speldesign >

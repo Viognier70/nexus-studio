@@ -26,10 +26,12 @@ import type { Guest, GuestType, KnowledgeAxis, SimulationState, StaffRole, Yrkes
 import { createRng } from '../strategic/util/rng';
 import { bumpMorale } from '../strategic/simulation/morale';
 import { applyCashDelta, applyCashRevenue, postLedger } from '../strategic/simulation/cashReading';
+import { takeFromStock } from '../strategic/simulation/stockPackages';
+import { clockMinutes, formatClock } from './clock';
 import { clampReputation } from '../strategic/simulation/reputation';
 import { strings } from '../content/strings';
 import { rocketClipFor, rocketFigure, type RocketFigure } from './theatreTriggers';
-import { ANSWER_EFFECTS, THEATRE, BACK, type Confidence, GAME_MINUTES_PER_SIM_SECOND, INCIDENTS, MENU_ROCKETS, REPUTATION, SERVICE_STREAM, SITTING } from './balance';
+import { ANSWER_EFFECTS, THEATRE, BACK, type Confidence, INCIDENTS, MENU_ROCKETS, REPUTATION, SERVICE_STREAM } from './balance';
 import { calendarFor } from './calendar';
 import { clampScenarioCash, scenarioUnitSek } from './economy';
 import { bestAnswerFactor, medalSteps } from './knowledgeInService';
@@ -290,19 +292,9 @@ export function arcFor(n: number): ArcPhase[] {
 
 const MINUTES_PER_HOUR = INCIDENTS.minutesPerHour;
 
-// Klockslaget i spelminuter efter midnatt (servicen 18–23, F31).
-export function clockMinutes(state: SimulationState): number {
-  const since = Math.max(0, state.simTime - state.day.periodStartAt);
-  return SITTING.serviceStartHour * MINUTES_PER_HOUR + Math.floor(since * GAME_MINUTES_PER_SIM_SECOND);
-}
-
-// Klockslaget som text i det aktuella språket (ORDER 273, Designs §2):
-// "18:00" på engelska, "18.00" på svenska (strängtabellen service.clock.hhmm).
-export function formatClock(minutes: number): string {
-  const h = Math.floor(minutes / MINUTES_PER_HOUR);
-  const m = minutes % MINUTES_PER_HOUR;
-  return strings.service.clock.hhmm(String(h), String(m).padStart(INCIDENTS.clockDigits, '0'));
-}
+// Kvällens klocka (sim/clock.ts, ORDER 292: egen modul så att lagret kan
+// läsa den utan cirkelberoende).
+export { clockMinutes, formatClock } from './clock';
 
 function parseClock(hhmm: string): number {
   const [h, m] = hhmm.split(':').map(Number);
@@ -641,8 +633,16 @@ function answerConsequence(draft: SimulationState, ctx: IncidentContext, right: 
   let amountSek = 0;
   let leftGuestId: string | null = null;
   if (right) {
-    const stake = tableStake(draft, ctx.guestIds);
-    amountSek = stake ? Math.round(stake.billSek * ANSWER_EFFECTS.rightBillShare) : 0;
+    // ORDER 292 — ett glas till ur lagret, till listans pris; annars en andel av notan.
+    const extra = draft.menu.find((m) => m.dishId === ANSWER_EFFECTS.rightExtraDishId);
+    const inStock = extra && (draft.day.platesRemaining[extra.dishId] ?? 0) > 0;
+    if (extra && inStock && table.length > 0) {
+      takeFromStock(draft, extra.dishId, draft.simTime);
+      amountSek = Math.round(extra.price);
+    } else {
+      const stake = tableStake(draft, ctx.guestIds);
+      amountSek = stake ? Math.round(stake.billSek * ANSWER_EFFECTS.rightBillShare) : 0;
+    }
     if (amountSek > 0 && (draft.day.period === 'dinner' || draft.day.period === 'lunch')) {
       applyCashRevenue(draft, amountSek);
       // Kassabokens försäljningsrad vid stängningen läser serviceperiodens summa (kSEK).

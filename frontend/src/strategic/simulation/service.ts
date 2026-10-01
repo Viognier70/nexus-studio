@@ -392,6 +392,13 @@ function seatChosenFirst(state: SimulationState): void {
   }
 }
 
+// Väntar det valda sällskapet (någon annan än den här gästen) fortfarande i kön?
+function chosenWaiting(state: SimulationState, guest: Guest): boolean {
+  const key = state.day.queuePriority;
+  if (!key || queueKey(guest) === key) return false;
+  return state.guests.some((g) => queueKey(g) === key && g.state === 'waiting');
+}
+
 export function tickGuests(state: SimulationState) {
   const now = state.simTime;
   seatChosenFirst(state);
@@ -425,7 +432,7 @@ export function tickGuests(state: SimulationState) {
         // sig gästen sist i den, i stället för att ta en ledig plats förbi kön.
         // Det valda sällskapet får försöka först.
         seatChosenFirst(state);
-        const queued = state.waitingIds.length > 0;
+        const queued = state.waitingIds.length > 0 || chosenWaiting(state, guest);
         const seat = queued ? null : findFreeSeat(state, guest.scenarioSource, guest.partyId);
         if (seat !== null && !state.scenario.awaitingChoice) {
           setGuestSeated(state, guest, seat);
@@ -464,9 +471,10 @@ export function tickGuests(state: SimulationState) {
       // rate sänkt 0.02 → 0.007 sat/sim-sek så 40 s kö landar sat ≈ 0.6.
       const drop = WAITING_SAT_DROP_PER_SEC * TICK_SECONDS;
       guest.satisfaction = Math.max(0, guest.satisfaction - drop);
-      // ORDER 292 — det valda sällskapet får en plats som blev ledig nyss först.
+      // ORDER 292 — det valda sällskapet får varje plats som blir ledig tills
+      // alla i det sitter; de andra i kön väntar (spelarens val: Bord först).
       if (state.day.queuePriority && queueKey(guest) !== state.day.queuePriority) seatChosenFirst(state);
-      const seat = findFreeSeat(state, guest.scenarioSource, guest.partyId);
+      const seat = chosenWaiting(state, guest) ? null : findFreeSeat(state, guest.scenarioSource, guest.partyId);
       if (seat !== null) {
         state.waitingIds = state.waitingIds.filter((id) => id !== guest.id);
         setGuestSeated(state, guest, seat);
@@ -1337,7 +1345,7 @@ function completeStaffTask(state: SimulationState, staff: StaffMember) {
         }
         // ORDER 292 — det valda sällskapet i kön får platsen först.
         if (state.day.queuePriority && queueKey(guest) !== state.day.queuePriority) seatChosenFirst(state);
-        const seat = findFreeSeat(state, guest.scenarioSource, guest.partyId);
+        const seat = chosenWaiting(state, guest) ? null : findFreeSeat(state, guest.scenarioSource, guest.partyId);
         if (seat !== null) {
           state.waitingIds = state.waitingIds.filter((id) => id !== guest.id);
           guest.state = 'seated';

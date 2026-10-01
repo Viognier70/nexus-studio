@@ -93,11 +93,11 @@ describe('ORDER 292 — rusningarna', () => {
     for (let i = 0; i < 40000 && s.day.period === 'dinner'; i++) {
       s = reducer(s, { type: 'TICK', dt: 0.2 });
       const waiting = s.guests.filter((g) => g.state === 'waiting');
-      // En ensam gäst längst bak i kön (ett sällskap kan inte ta en ensam
-      // barstol, och då får en annan i kön den, så att kön inte låser sig).
-      const solo = waiting.filter((g) => !g.partyId);
-      if (!chosenKey && waiting.length >= 2 && solo.length > 0 && solo[solo.length - 1] !== waiting[0]) {
-        const last = solo[solo.length - 1];
+      // Den som står längst bak i kön, ensam eller i sällskap: det valda
+      // sällskapet får varje ledig plats tills alla i det sitter.
+      const lastKey = waiting.length > 0 ? (waiting[waiting.length - 1].partyId ?? waiting[waiting.length - 1].id) : null;
+      if (!chosenKey && waiting.length >= 2 && lastKey !== (waiting[0].partyId ?? waiting[0].id)) {
+        const last = waiting[waiting.length - 1];
         chosenKey = last.partyId ?? last.id;
         s = reducer(s, { type: 'SEAT_FIRST', key: chosenKey });
         const earlier = waiting.filter((g) => (g.partyId ?? g.id) !== chosenKey).map((g) => g.id);

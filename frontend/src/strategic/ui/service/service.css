@@ -609,3 +609,14 @@ body:has(.nx-rocket) .nx-hud-tools { display: none; }
 .nx-queue-btn[aria-pressed='true'] { background: var(--w-gold); color: var(--w-ink); border-color: var(--w-gold); }
 .nx-queue-row[data-impatient='true'] .nx-queue-who .nx-small { color: var(--w-candle); }
 @media (prefers-reduced-motion: reduce) { .nx-queue-notice { animation: none; } .nx-queue-patience > span { transition: none; } }
+/* ORDER 292 — bemanningens erbjudande ovanför flikarna, och kön smal nog att
+   sluta före kvällskassan. */
+.nx-agency {
+  position: fixed; left: calc(36 * var(--nx-u)); bottom: max(84px, calc(130 * var(--nx-u))); z-index: 44;
+  width: min(calc(440 * var(--nx-u)), calc(100vw - 32px)); padding: calc(18 * var(--nx-u)) calc(22 * var(--nx-u));
+  font-size: max(13px, calc(22 * var(--nx-u)));
+}
+.nx-agency-buttons { display: flex; gap: calc(10 * var(--nx-u)); margin-top: calc(10 * var(--nx-u)); }
+.nx-agency-accept { flex: 1; background: var(--w-gold); color: var(--w-ink); border-color: var(--w-gold); }
+.nx-queue { width: min(calc(440 * var(--nx-u)), calc(100vw - 32px)); }
+body:has(.nx-agency) .nx-queue { max-height: calc(100vh - max(150px, calc(230 * var(--nx-u))) - max(300px, calc(440 * var(--nx-u)))); }

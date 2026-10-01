@@ -1,6 +1,6 @@
 // ORDER 292 — kön vid dörren under servicen (Vision Owner 2026-10-01:
 // "en kö bildas vid dörren med tålamod som sjunker, och spelaren väljer vem
-// som får bord först"). Sällskapen i kön (gäster i 'waiting' och 'arriving'),
+// som får bord först"). Sällskapen i kön (gäster i 'waiting'),
 // i ankomstordning: storlek, vem de är (vågen eller gästtypen), väntan och
 // tålamod. Tålamodet är väntan mot queuePatienceSeconds (sim/knowledgeInService.ts),
 // samma gräns som service.ts låter gästen ge upp vid; otålig efter
@@ -26,7 +26,8 @@ export function QueuePanel() {
   const dispatch = useSimDispatch();
   if (sim.day.period !== 'dinner') return null;
   const now = sim.simTime;
-  const inQueue = sim.guests.filter((g) => g.state === 'waiting' || (g.state === 'arriving' && !g.walkAwayOnArrival));
+  // Bara de som står i kön (service.ts waiting); de som är på väg till dörren visas inte.
+  const inQueue = sim.guests.filter((g) => g.state === 'waiting');
   const parties: QueueParty[] = [];
   for (const g of inQueue) {
     const key = queueKey(g);

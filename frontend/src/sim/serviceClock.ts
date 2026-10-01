@@ -9,7 +9,7 @@
 
 import type { SimulationState } from '../strategic/types';
 import { CLOCK, GAME_MINUTES_PER_SIM_SECOND, INCIDENTS, SITTING } from './balance';
-import { clockMinutes } from './incidents';
+import { clockMinutes } from './clock';
 
 export interface ServiceClock {
   // Klockslaget när servicen öppnade, nu och när den stänger, i spelminuter efter midnatt.
