@@ -1050,7 +1050,11 @@ export const ANSWER_EFFECTS = {
   wrongSatisfaction: -0.08,
   wrongGuestsLeave: 1,
   // Hur länge händelsen står över bordet i rummet (spelsekunder).
-  reactionSimSeconds: 6
+  reactionSimSeconds: 6,
+  // ORDER 292 (Vision Owner 2026-10-01: "raketkortet visar vad som står på
+  // spel i kronor och gäster") — en gäst som inte har beställt än räknas
+  // med kvällens snittnota, och utan notor i kväll med det här beloppet.
+  stakeDefaultBillSek: 350
 } as const;
 
 // ORDER 287a — gästen med socialt kapital sprider ryktet (speldesign >

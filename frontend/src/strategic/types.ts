@@ -995,6 +995,11 @@ export interface RoomReaction {
   table: number | null;
   guestIds: string[];
   text: string;
+  // ORDER 292 — beloppet: rätt svar, bordets extra beställning (in i
+  // kvällskassan nu); fel svar, notan som gick förlorad med gästen som gick.
+  amountSek?: number;
+  // ORDER 292 — gästen som gick vid fel svar (den tomma stolen).
+  leftGuestId?: string | null;
 }
 
 // ORDER 077 §4 (M4) — supplier, ingredient, and dish domain types.

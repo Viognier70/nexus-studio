@@ -11,7 +11,7 @@ import { describe, expect, it } from 'vitest';
 import { reducer } from '../../strategic/simulation/reducer';
 import { makeNewGameState } from '../../strategic/simulation/model';
 import { firstDayOfWeek } from '../calendar';
-import { ANSWER_EFFECTS, EVENING_ECONOMY } from '../balance';
+import { EVENING_ECONOMY } from '../balance';
 import { dailyGuestCap, dayEndCash } from '../economy';
 import { stocked } from '../../strategic/testHarness/stocked';
 import { accountAfterEvening, eveningStake, forecastWeeks, stockSpentToday, tillSek } from '../../strategic/simulation/eveningEconomy';
@@ -120,13 +120,16 @@ describe('ORDER 290 — överföringen efter servicen', () => {
 });
 
 describe('ORDER 290 — svarens följd i rummet', () => {
-  it('rätt svar höjer notan vid bordet, fel svar sänker den, gör bordet missnöjt och en gäst i kön går', async () => {
+  // ORDER 292 — följden syns: rätt svar betalas in i kvällskassan nu (bordets
+  // nota gånger rightBillShare), fel svar låter en gäst vid bordet gå utan att
+  // betala (tom stol), eller sänker notan när felet köar en följdraket.
+  it('rätt svar: bordet beställer mer nu, in i kvällskassan; fel svar: en gäst går och notan försvinner', async () => {
     const { resolveIncident } = await import('../incidents');
     const s0 = stocked(week2());
     let s = reducer(s0, { type: 'START_SERVICE' });
-    for (let i = 0; i < 6000 && !s.incidents?.active; i++) s = reducer(s, { type: 'TICK', dt: 0.2 });
+    for (let i = 0; i < 6000 && !(s.incidents?.active && s.incidents.active.stake); i++) s = reducer(s, { type: 'TICK', dt: 0.2 });
     const active = s.incidents!.active!;
-    expect(active).toBeTruthy();
+    expect(active.stake!.billSek).toBeGreaterThan(0);
     const { incidentById, optionQuality } = await import('../incidentBank');
     const inc = incidentById(s.economy.businessClass, active.id)!;
     const step = inc.steps[active.step ?? 0];
@@ -135,18 +138,20 @@ describe('ORDER 290 — svarens följd i rummet', () => {
 
     const right: SimulationState = structuredClone(s);
     resolveIncident(right, best.id);
-    const table = right.guests.filter((g) => active.context.guestIds.includes(g.id));
-    for (const g of table) expect(g.billBonus ?? 0).toBeGreaterThan(0);
-    expect(right.day.roomReactions?.at(-1)?.kind).toBe('up');
+    const up = right.day.roomReactions!.at(-1)!;
+    expect(up.kind).toBe('up');
+    expect(up.amountSek!).toBeGreaterThan(0);
+    expect(right.revenue - s.revenue).toBeCloseTo(up.amountSek!, 6);
 
     const wrong: SimulationState = structuredClone(s);
-    // En gäst i kön, så att följden syns.
-    const queued = wrong.guests.find((g) => g.state === 'waiting') ?? null;
     resolveIncident(wrong, worst.id);
-    expect(wrong.day.roomReactions?.at(-1)?.kind).toBe('down');
-    const tableW = wrong.guests.filter((g) => active.context.guestIds.includes(g.id) && g.state !== 'leaving');
-    for (const g of tableW) expect(g.billBonus ?? 0).toBeLessThan(0);
-    if (queued) expect(wrong.guests.find((g) => g.id === queued.id)?.state).toBe('leaving');
-    expect(ANSWER_EFFECTS.wrongBillShare).toBeLessThan(0);
+    const down = wrong.day.roomReactions!.at(-1)!;
+    expect(down.kind).toBe('down');
+    expect(down.amountSek!).toBeLessThan(0);
+    if (down.leftGuestId) {
+      const g = wrong.guests.find((x) => x.id === down.leftGuestId)!;
+      expect(g.state).toBe('leaving');
+      expect(g.seatIndex).toBeNull();
+    }
   });
 });
