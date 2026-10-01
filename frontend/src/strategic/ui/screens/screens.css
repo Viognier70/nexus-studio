@@ -338,3 +338,12 @@
 .nxs-book-name { font-weight: 700; }
 .nxs-book-count { font-family: var(--w-font-heading); font-size: calc(26 * var(--nx-u)); }
 @media (prefers-reduced-motion: reduce) { .nxs-book { transform: none; } }
+/* ORDER 292 — när morgonen rullas gick innehållet in under HUD:en (dag,
+   klocka, kassa) och rubriken klipptes (veckan från bussen, bokningsboken).
+   Ett band i skärmens färg bakom HUD:en döljer det som rullar dit; HUD:en
+   ligger ovanför bandet. */
+.nx-screen.nxs-morning::before {
+  content: ''; position: fixed; left: 0; right: 0; top: 0; z-index: 2; pointer-events: none;
+  height: max(110px, calc(200 * var(--nx-u)));
+  background: var(--w-walnut-900);
+}

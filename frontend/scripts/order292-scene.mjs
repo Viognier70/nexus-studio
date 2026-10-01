@@ -3,6 +3,7 @@
 // Sparfilen måndag i vinbaren (reports/order284/save-mandag-vinbaren.json)
 // flyttas till fredagen samma vecka (sim.day.dayNumber + 4), så att bilarna
 // och bussen kommer. Morgonen: baspaketet. Kvällen:
+//   - morgonen rullad: bild på att inget innehåll ligger under HUD:en;
 //   - före öppning: bild på personalen (IDLE_RULE: ingen står still);
 //   - raketerna: insatsen på kortet (incident-stake), första raketen rätt och
 //     resten fel; beloppet i bandet (incident-band-amount) och händelsen över
@@ -61,6 +62,12 @@ try {
   await delay(1500);
   report.weekday = await page.textContent('[data-testid=booking-book] .nx-mid').catch(() => null);
   await page.screenshot({ path: resolve(OUT, 'scene-00-morgonen.png') });
+  // Morgonen rullad: inget innehåll under HUD:en (bandet i screens.css).
+  await page.$eval('.nxs-morning', (e) => { e.scrollTop = 400; }).catch(() => {});
+  await delay(400);
+  report.morningScrolled = await page.$eval('.nxs-morning', (e) => e.scrollTop).catch(() => null);
+  await page.screenshot({ path: resolve(OUT, 'scene-00b-morgonen-rullad.png') });
+  await page.$eval('.nxs-morning', (e) => { e.scrollTop = 0; }).catch(() => {});
   await page.click('[data-testid=open-buy-foot]');
   await page.waitForSelector('[data-testid=screen-M1]', { timeout: 20000 });
   await page.click('[data-testid=buy-base]').catch(() => {});
