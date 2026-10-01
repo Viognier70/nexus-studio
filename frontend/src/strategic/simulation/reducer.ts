@@ -161,6 +161,7 @@ import {
   postValueQuotaLine
 } from './cashReading';
 import { drawNextTheme } from './themeSelection';
+import { chargeDayEnd, chargeWages } from './dayEnd';
 import { coursesSekToday, eveningStake, eveningTransfer, passedStake, tillSek } from './eveningEconomy';
 import { assignGuestTypes, billionaireTreat, maybeBillionaireArrives, bookingFor, recordTypeRevenue, settleSocialGuest, settleSocialGuestAtClose } from './guestTypes';
 import { sustainabilityLevelsFor } from '../../sim/sustainabilityLevels';
@@ -537,12 +538,12 @@ function unpickActivity(state: SimulationState, id: string): SimulationState {
 // "wage lines → activity effect lines → next morning". Capital
 // deltas mutate capitals directly (not via enablers — enabler
 // routing is M6/M7 scope).
-function applyActivityEffectsOnDayClose(draft: SimulationState): void {
+function applyActivityEffectsOnDayClose(draft: SimulationState, cashCharged = false): void {
   for (const id of draft.day.pickedActivityIds) {
     const activity = activityById(id);
     if (!activity) continue;
     // Economic effect posts as a signed 'other' ledger line.
-    if (activity.effect.economic !== 0) {
+    if (activity.effect.economic !== 0 && !cashCharged) {
       applyCashDelta(draft, activity.effect.economic);
       postLedger(draft, {
         category: 'other',
@@ -1914,6 +1915,8 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       // ORDER 290 — kvällskassan vid stängning och överföringen till
       // företagskontot (eveningEconomy.ts); utan sopbil börjar kvällen där.
       next.day = { ...next.day, tillAtClose: tillSek(state) };
+      // ORDER 292 — dygnets kostnader dras vid stängningen, före överföringen.
+      chargeDayEnd(next);
       next.day = { ...next.day, transfer: eveningTransfer(next), eveningStep: next.lastWaste && next.lastWaste.dayNumber === next.day.dayNumber && next.lastWaste.fractions ? 'waste' : 'transfer' };
       next.economy = { ...next.economy, eveningResults: [...(next.economy.eveningResults ?? []), { dayNumber: day.dayNumber, resultSek: next.day.transfer!.resultSek }].slice(-EVENING_ECONOMY.forecastEvenings) };
       if (next.eveningAccount?.metrics) {
@@ -1982,7 +1985,6 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       // refactor: sum non-agency dailyCost and post via applyCashCost.
       // §7 step 3 — one ledger line per non-agency member per day so
       // the book names who was paid.
-      const nonAgencyMembers = state.team.members.filter((m) => !m.isAgency);
       // ORDER 268 — lön bara på servicedagar, efter kvällens intäkt
       // (dailyWagesSek läser dagen som slutar; söndag ingen lön).
       const wageTotal = dailyWagesSek(state);
@@ -2080,22 +2082,10 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       if (coursesToday > 0) {
         nextForDay.economy = { ...nextForDay.economy, weekCoursesSek: (nextForDay.economy.weekCoursesSek ?? 0) + coursesToday };
       }
-      if (wageTotal > 0) {
-        applyCashCost(nextForDay, wageTotal);
-        // ORDER 280 — veckans löner, en rad i avräkningen och tidningen.
-        nextForDay.economy = { ...nextForDay.economy, weekWagesSek: (nextForDay.economy.weekWagesSek ?? 0) + wageTotal };
-        // §7 step 3 — one line per member per day so the book names
-        // who was paid, not just the aggregate.
-        for (const m of nonAgencyMembers) {
-          if (m.dailyCost <= 0) continue;
-          postLedger(nextForDay, {
-            category: 'wage',
-            amount: -m.dailyCost,
-            cause: strings.ledgerCause.wage(roleText(m.role)),
-            causeId: m.id
-          });
-        }
-      }
+      // ORDER 292 — lönerna, räntan och satsningarnas följd i kronor drogs
+      // när servicen stängde (chargeDayEnd); en dag utan service dras här.
+      const charged = Boolean(state.day.dayEndCharged);
+      if (!charged) chargeWages(nextForDay, state);
       // ORDER 073 (M3) — post the day's accumulated idle-period cost
       // (staff cost during morning / opening / prep / afternoon /
       // evening) as one 'other' line. Bookkeeping is idle-period cost
@@ -2117,7 +2107,7 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       const preRolloverDay = state.day;
       // Mutate nextForDay in place — same pattern as postLedger.
       nextForDay.day = { ...nextForDay.day, pickedActivityIds: preRolloverDay.pickedActivityIds };
-      applyActivityEffectsOnDayClose(nextForDay);
+      applyActivityEffectsOnDayClose(nextForDay, charged);
       // Clear again after effect application so the new day starts
       // clean.
       nextForDay.day = { ...nextForDay.day, pickedActivityIds: [] };
@@ -2125,7 +2115,7 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       onNewMorning(nextForDay, state.economy.warning);
       // ORDER 265 — v1-lånets ränta varje dygn, och veckoavräkningen när
       // söndagen (den stängda dagen) börjar.
-      postDailyInterest(nextForDay);
+      if (!charged) postDailyInterest(nextForDay);
       // ORDER 291 — morgonens kassa noteras efter gårdagens löner, ränta,
       // satsningarnas följd och veckoavräkningen, så att dagens resultat bara
       // räknar dagens egna pengar (förut räknades lönerna två gånger).
@@ -2936,9 +2926,9 @@ function costPerMinuteToTick(state: SimulationState): number {
   // separat om behövs.
   // ORDER 268 — utan verksamhet finns inget kök och ingen personal.
   if (state.economy.businessClass === null && !state.introduction) return 0;
-  // ORDER 291 (provspel av 4795192) — efter stängning går köket inte:
-  // kvällens resultat räknade förut nedåt medan skärmen var öppen.
-  if (state.day.period === 'evening') return 0;
+  // ORDER 291/292 — köksdriften är en kostnad under servicen (insatsen räknar
+  // den så). Utanför servicen rullar kassan inte (provspel av 316b4c3).
+  if (state.day.period !== 'lunch' && state.day.period !== 'dinner') return 0;
   const base = 9 * state.policies.staffCount;
   const wastePenalty = state.waste * 0.4;
   return base + wastePenalty;

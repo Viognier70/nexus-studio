@@ -32,6 +32,7 @@ import { settleSocialGuestAtClose } from './guestTypes';
 import { sustainabilityLevelsFor } from '../../sim/sustainabilityLevels';
 import { closeIncidents } from '../../sim/incidents';
 import { settleWaste } from './stockPackages';
+import { chargeDayEnd } from './dayEnd';
 import { strings } from '../../content/strings';
 import { clampReputation } from './reputation';
 import { dayEnd, dayEndHeadroom, recordEvening } from '../../sim/economy';
@@ -298,6 +299,8 @@ export function fireCollapse(draft: SimulationState, closeBills?: (d: Simulation
     tillAtClose
   };
   // ORDER 290 — överföringen till företagskontot, först bland kvällens skärmar.
+  // ORDER 292 — dygnets kostnader dras vid stängningen, också när kvällen faller ihop.
+  chargeDayEnd(draft);
   const truck = Boolean(draft.lastWaste && draft.lastWaste.dayNumber === draft.day.dayNumber && draft.lastWaste.fractions);
   draft.day = { ...draft.day, transfer: eveningTransfer(draft), eveningStep: truck ? 'waste' : 'transfer' };
   draft.economy = { ...draft.economy, eveningResults: [...(draft.economy.eveningResults ?? []), { dayNumber: draft.day.dayNumber, resultSek: draft.day.transfer!.resultSek }].slice(-EVENING_ECONOMY.forecastEvenings) };

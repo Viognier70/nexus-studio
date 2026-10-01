@@ -847,6 +847,8 @@ export interface DayState {
   // ORDER 285 — kassan vid dygnets gryning: kvällens resultat visar kassans
   // förändring, med morgonens inköp (som kvällsavräkningen räknar som tillgång).
   cashAtDayStart?: number | null;
+  // ORDER 292 — lönerna, räntan och satsningarnas följd är dragna vid stängningen.
+  dayEndCharged?: boolean;
   // ORDER 289 — när köket tog slut på mat (klockslag) och hur många gäster
   // som gick utan mat, till rådet efter kvällen.
   foodOutClock?: string | null;

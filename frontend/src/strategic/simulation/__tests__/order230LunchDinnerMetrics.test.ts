@@ -207,8 +207,11 @@ describe('ORDER 230 — dag-start-snapshotarna sätts om vid dygnsrollover', () 
     // >= det vi fångade vid dinner-close.
     expect(s.day.revenueAtDayStart).toBeGreaterThanOrEqual(afterDay1Revenue);
     expect(s.day.costAtDayStart).toBeGreaterThanOrEqual(afterDay1Cost);
-    // Wages appliceras direkt efter snapshotet så state.cost är strikt
-    // större än costAtDayStart post-rollover.
-    expect(s.cost).toBeGreaterThan(s.day.costAtDayStart!);
+    // ORDER 292 — lönerna dras när servicen stänger (dayEnd.ts), inte vid
+    // dygnsskiftet: kassan står still från stängningen till nästa morgon.
+    // Kostnaden efter skiftet är därför samma som vid snapshotet.
+    expect(s.day.dayEndCharged).toBeFalsy();
+    expect(s.cost).toBe(s.day.costAtDayStart!);
+    expect(afterDay1Cost).toBeGreaterThan(0);
   });
 });

@@ -91,6 +91,8 @@ function pendingActivityEffects(state: SimulationState): number {
 
 // Kassan när dagen är slut: efter löner, ränta och satsningarnas följd.
 export function accountAfterEvening(state: SimulationState): number {
+  // ORDER 292 — när dygnets kostnader är dragna (vid stängningen) är kassan kontot efter.
+  if (state.day.dayEndCharged) return state.cash;
   return dayEndCash(state) + pendingActivityEffects(state);
 }
 

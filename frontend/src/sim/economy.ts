@@ -263,6 +263,8 @@ export function dailyInterestSek(loan: LoanState | null): number {
 // kvällens löner och lånets ränta (som bokförs vid dygnsskiftet).
 // Räknas när kvällen börjar, så att kvällsberättelsen kan bära varningen.
 export function dayEndCash(state: SimulationState): number {
+  // ORDER 292 — lönerna och räntan är dragna vid stängningen (dayEnd.ts).
+  if (state.day.dayEndCharged) return state.cash;
   return state.cash - dailyWagesSek(state) - dailyInterestSek(state.economy.loan);
 }
 
