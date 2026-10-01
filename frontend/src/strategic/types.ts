@@ -414,6 +414,8 @@ export interface Guest {
   // ORDER 287a — gästens typ efter kapital (sim/guestTypes.ts). Sätts när
   // gästen kommer; saknas den (äldre fixturer) gäller plånboken ur fröet.
   guestType?: GuestType;
+  // ORDER 292 — vågen gästen kom med (rush.ts), till exempel 'cars'.
+  waveId?: string;
 }
 
 // ORDER 287a — gästerna med kapital (speldesign > Servicen > Gästerna).
@@ -955,6 +957,13 @@ export interface DayState {
   ingredientPaidTonight?: number;
   // ORDER 290 — händelser i rummet efter svaren (över bordet).
   roomReactions?: RoomReaction[];
+  // ORDER 292 — rusningarna (rush.ts): vågorna som börjat, sällskapen på väg
+  // till dörren, aviseringen om den senaste vågen och sällskapet spelaren
+  // valt att ge bord först (partyId eller gästens id).
+  wavesStarted?: string[];
+  wavePending?: Array<{ waveId: string; size: number; type: GuestType; at: number }>;
+  waveNotice?: { waveId: string; at: number; guests: number; parties: number } | null;
+  queuePriority?: string | null;
 }
 
 // ORDER 290 — kvällens ekonomi (strategic/simulation/eveningEconomy.ts).
@@ -1678,6 +1687,8 @@ export interface EventLogEntry {
 
 export type SimAction =
   | { type: 'TICK'; dt: number }
+  // ORDER 292 — spelaren ger ett sällskap i kön bord först (null tar bort valet).
+  | { type: 'SEAT_FIRST'; key: string | null }
   | { type: 'SET_SPEED'; speed: 0 | 1 | 2 | 4 }
   | { type: 'SET_POLICY'; patch: Partial<Policies> }
   | { type: 'RESOLVE_SCENARIO'; choice: ScenarioChoice }

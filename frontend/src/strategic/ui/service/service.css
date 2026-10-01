@@ -590,3 +590,22 @@ body:has(.nx-rocket) .nx-hud-tools { display: none; }
 .nx-room-reaction[data-kind='down'] strong { color: var(--w-candle); text-decoration: line-through; }
 @keyframes nx-reaction-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .nx-room-reaction { animation: none; } }
+/* ORDER 292 — kön vid dörren. */
+.nx-queue {
+  position: fixed; left: var(--nx-margin); top: max(150px, calc(230 * var(--nx-u))); z-index: 42;
+  width: min(calc(520 * var(--nx-u)), calc(100vw - 32px)); max-height: calc(100vh - max(150px, calc(230 * var(--nx-u))) - max(110px, calc(170 * var(--nx-u))));
+  overflow-y: auto; padding: calc(18 * var(--nx-u)) calc(22 * var(--nx-u)); font-size: max(13px, calc(22 * var(--nx-u)));
+}
+.nx-queue-notice { margin-bottom: calc(12 * var(--nx-u)); padding: calc(10 * var(--nx-u)) calc(14 * var(--nx-u)); background: var(--w-gold); color: var(--w-ink); font-weight: 800; border-radius: calc(10 * var(--nx-u)); animation: nx-reaction-rise 0.4s ease-out; }
+.nx-queue-head { display: flex; flex-direction: column; gap: calc(4 * var(--nx-u)); margin-bottom: calc(8 * var(--nx-u)); }
+.nx-queue-list { list-style: none; margin: 0; padding: 0; }
+.nx-queue-row { display: flex; align-items: center; justify-content: space-between; gap: calc(14 * var(--nx-u)); padding: calc(10 * var(--nx-u)) 0; border-top: 1px solid var(--nx-rule); }
+.nx-queue-row[data-chosen='true'] { box-shadow: inset calc(6 * var(--nx-u)) 0 0 var(--w-gold); padding-left: calc(12 * var(--nx-u)); }
+.nx-queue-who { display: flex; flex-direction: column; gap: calc(4 * var(--nx-u)); min-width: 0; flex: 1; }
+.nx-queue-patience { display: block; height: calc(8 * var(--nx-u)); min-height: 4px; background: rgba(244, 230, 204, 0.14); border-radius: 999px; overflow: hidden; }
+.nx-queue-patience > span { display: block; height: 100%; background: var(--w-gold); transition: width 0.4s linear; }
+.nx-queue-patience > span[data-low='true'] { background: var(--w-candle); }
+.nx-queue-btn { font: inherit; font-weight: 800; white-space: nowrap; min-height: 44px; padding: 0 calc(16 * var(--nx-u)); border-radius: calc(12 * var(--nx-u)); border: 1px solid rgba(215, 162, 76, 0.45); background: transparent; color: var(--nx-ink); cursor: pointer; }
+.nx-queue-btn[aria-pressed='true'] { background: var(--w-gold); color: var(--w-ink); border-color: var(--w-gold); }
+.nx-queue-row[data-impatient='true'] .nx-queue-who .nx-small { color: var(--w-candle); }
+@media (prefers-reduced-motion: reduce) { .nx-queue-notice { animation: none; } .nx-queue-patience > span { transition: none; } }

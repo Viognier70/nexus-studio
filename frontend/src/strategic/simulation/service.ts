@@ -366,8 +366,35 @@ export function moveStaff(staff: StaffMember, target: Vec2) {
 // Guest state transitions driven by time and by staff task completion.
 // -------------------------------------------------------------------------
 
+// ORDER 292 — spelaren ger ett sällskap i kön bord först (day.queuePriority,
+// partyId eller gästens id): det sällskapet får varje ledig plats före de
+// andra. Annars tar personalen den som kom först (gästerna går igenom i
+// ankomstordning, som serviceFlow.ts:s turordning). Valet släpper när
+// sällskapet sitter eller har gått.
+export function queueKey(g: Guest): string {
+  return g.partyId ?? g.id;
+}
+
+function seatChosenFirst(state: SimulationState): void {
+  const key = state.day.queuePriority;
+  if (!key) return;
+  const party = state.guests.filter((g) => queueKey(g) === key);
+  const waiting = party.filter((g) => g.state === 'waiting');
+  if (waiting.length === 0) {
+    if (!party.some((g) => g.state === 'arriving')) state.day = { ...state.day, queuePriority: null };
+    return;
+  }
+  for (const g of waiting) {
+    const seat = findFreeSeat(state, g.scenarioSource, g.partyId);
+    if (seat === null) break;
+    state.waitingIds = state.waitingIds.filter((id) => id !== g.id);
+    setGuestSeated(state, g, seat);
+  }
+}
+
 export function tickGuests(state: SimulationState) {
   const now = state.simTime;
+  seatChosenFirst(state);
   for (const guest of state.guests) {
     stepEntityMotion(guest);
 
@@ -394,7 +421,12 @@ export function tickGuests(state: SimulationState) {
         // hasBeenGreeted (rad 1072-1075) så schemaläggaren pushar
         // greet-task automatiskt — ingen deadlock-risk.
         if (!guest.hasBeenGreeted) continue;
-        const seat = findFreeSeat(state, guest.scenarioSource, guest.partyId);
+        // ORDER 292 — den som kom först får bord först: finns en kö ställer
+        // sig gästen sist i den, i stället för att ta en ledig plats förbi kön.
+        // Det valda sällskapet får försöka först.
+        seatChosenFirst(state);
+        const queued = state.waitingIds.length > 0;
+        const seat = queued ? null : findFreeSeat(state, guest.scenarioSource, guest.partyId);
         if (seat !== null && !state.scenario.awaitingChoice) {
           setGuestSeated(state, guest, seat);
         } else {
@@ -432,6 +464,8 @@ export function tickGuests(state: SimulationState) {
       // rate sänkt 0.02 → 0.007 sat/sim-sek så 40 s kö landar sat ≈ 0.6.
       const drop = WAITING_SAT_DROP_PER_SEC * TICK_SECONDS;
       guest.satisfaction = Math.max(0, guest.satisfaction - drop);
+      // ORDER 292 — det valda sällskapet får en plats som blev ledig nyss först.
+      if (state.day.queuePriority && queueKey(guest) !== state.day.queuePriority) seatChosenFirst(state);
       const seat = findFreeSeat(state, guest.scenarioSource, guest.partyId);
       if (seat !== null) {
         state.waitingIds = state.waitingIds.filter((id) => id !== guest.id);
@@ -1301,6 +1335,8 @@ function completeStaffTask(state: SimulationState, staff: StaffMember) {
           guest.stateTime = now;
           break;
         }
+        // ORDER 292 — det valda sällskapet i kön får platsen först.
+        if (state.day.queuePriority && queueKey(guest) !== state.day.queuePriority) seatChosenFirst(state);
         const seat = findFreeSeat(state, guest.scenarioSource, guest.partyId);
         if (seat !== null) {
           state.waitingIds = state.waitingIds.filter((id) => id !== guest.id);

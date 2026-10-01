@@ -75,7 +75,7 @@ const EXAM_QUESTION_BANK: readonly Question[] = [
   ...ALL_TEMPLATE_EXAMPLES,
   ...R2_SEED_QUESTIONS
 ];
-import { maybeSpawnGuest, scenarioSpawnStep, walkAwayProbability } from './arrivals';
+import { arrivalAttraction, maybeSpawnGuest, scenarioSpawnStep, walkAwayProbability } from './arrivals';
 import { planScenariosForService, scheduleScenarioTriggerTimes } from './day';
 import { revenuePerGuest } from './economics';
 import {
@@ -162,6 +162,7 @@ import {
 } from './cashReading';
 import { drawNextTheme } from './themeSelection';
 import { chargeDayEnd, chargeWages } from './dayEnd';
+import { tickRush } from './rush';
 import { coursesSekToday, eveningStake, eveningTransfer, passedStake, tillSek } from './eveningEconomy';
 import { assignGuestTypes, billionaireTreat, maybeBillionaireArrives, bookingFor, recordTypeRevenue, settleSocialGuest, settleSocialGuestAtClose } from './guestTypes';
 import { sustainabilityLevelsFor } from '../../sim/sustainabilityLevels';
@@ -361,6 +362,10 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       return startService(state);
     case 'CLOSE_DAY':
       return closeDay(state);
+    case 'SEAT_FIRST': {
+      if (state.day.period !== 'dinner' && state.day.period !== 'lunch') return state;
+      return { ...state, day: { ...state.day, queuePriority: action.key } };
+    }
     case 'LOAD_STATE':
       // ORDER 291 — en sparfil från före ORDER 291 saknar dygnets
       // utgångskassa; på morgonen är den kassan som den står.
@@ -2472,6 +2477,12 @@ function advanceTick(state: SimulationState): SimulationState {
     // ORDER 265 — dagens ankomster mot marknadens tak.
     if (arrival.length > 0) {
       draft.day = { ...draft.day, arrivalsToday: (draft.day.arrivalsToday ?? 0) + arrival.length };
+    }
+    // ORDER 292 — rusningens vågor (rush.ts): sällskap som når dörren nu.
+    const wave = tickRush(draft, rng, arrivalAttraction(draft));
+    for (const g of wave) draft.guests.push(g);
+    if (wave.length > 0) {
+      draft.day = { ...draft.day, arrivalsToday: (draft.day.arrivalsToday ?? 0) + wave.length };
     }
   }
 

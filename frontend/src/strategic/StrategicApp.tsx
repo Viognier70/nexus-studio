@@ -2,6 +2,7 @@ import { useBusiness } from './business/BusinessContext';
 import { ServiceCamera } from './camera/ServiceCamera';
 import { SoundDirector } from './ui/sound/SoundDirector';
 import { VillageButton } from './ui/VillageButton';
+import { QueuePanel } from './ui/service/QueuePanel';
 import { ServiceTabs } from './ui/service/ServiceTabs';
 import { TillBar } from './ui/service/TillBar';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -295,6 +296,8 @@ function StrategicShell() {
       </div>
       {/* ORDER 290 — Designs serviceläget: panelerna som tre flikar nere till vänster. */}
       <ServiceTabs />
+      {/* ORDER 292 — kön vid dörren och vågorna under servicen. */}
+      <QueuePanel />
       <div className="gb-topright">
         <CashCounter />
         <SpeedToggle />

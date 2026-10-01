@@ -1603,6 +1603,33 @@ export const TABLE = {
   },
   listAnd: { sv: 'och', en: 'and' },
   // ORDER 290 — svarens följd som händelser i rummet, över bordet.
+  // ORDER 292 — rusningarna: vågorna, kön vid dörren och spelarens val.
+  rush: {
+    waves: {
+      cars: { sv: 'Bilarna från Örebro och Karlstad', en: 'The cars from Örebro and Karlstad' },
+      bus: { sv: 'Bussen', en: 'The coach' }
+    },
+    arrives: {
+      sv: (label: string, n: number) => `${label} kommer: ${n} ${pl(n, 'gäst', 'gäster')} på väg till dörren.`,
+      en: (label: string, n: number) => `${label} ${label.startsWith('The cars') ? 'arrive' : 'arrives'}: ${n} ${pl(n, 'guest', 'guests')} on the way to the door.`
+    },
+    notice: {
+      sv: (label: string, n: number, parties: number) => `${label} är här · ${n} ${pl(n, 'gäst', 'gäster')} i ${parties} ${pl(parties, 'sällskap', 'sällskap')}`,
+      en: (label: string, n: number, parties: number) => `${label} ${label.startsWith('The cars') ? 'are' : 'is'} here · ${n} ${pl(n, 'guest', 'guests')} in ${parties} ${pl(parties, 'party', 'parties')}`
+    },
+    queueTitle: { sv: 'Kön vid dörren', en: 'The queue at the door' },
+    queueHint: { sv: 'Den som kom först får bord först. Välj ett sällskap för att ge det nästa lediga bord.', en: 'First come, first seated. Pick a party to give it the next free table.' },
+    party: {
+      sv: (n: number, who: string) => `${n === 1 ? 'En gäst' : `${n} gäster`} · ${who}`,
+      en: (n: number, who: string) => `${n === 1 ? 'One guest' : `${n} guests`} · ${who}`
+    },
+    waited: { sv: (sec: number) => `väntat ${sec} s`, en: (sec: number) => `waited ${sec} s` },
+    impatient: { sv: 'otålig', en: 'impatient' },
+    seatFirst: { sv: 'Bord först', en: 'Seat first' },
+    chosen: { sv: 'Får nästa bord', en: 'Gets the next table' },
+    patienceAria: { sv: (pct: number) => `Tålamod ${pct} %`, en: (pct: number) => `Patience ${pct}%` },
+    walkIn: { sv: 'utan bokning', en: 'walk-in' }
+  },
   answerEffects: {
     up: {
       sv: (table: number | null, n: number) => `${table !== null ? `Bord ${table} beställer mer` : 'Bordet beställer mer'}${n > 0 ? ` · ${n} ${pl(n, 'ny gäst', 'nya gäster')} in` : ''}`,

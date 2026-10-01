@@ -1102,3 +1102,23 @@ export const SAVING = {
   formatVersion: 3,
   migratableVersions: [1, 2]
 } as const;
+
+// ORDER 292 — rusningarna (Vision Owner 2026-10-01: "gäster i sällskap kommer
+// i vågor (bilarna 19.30, bussen), en kö bildas vid dörren med tålamod som
+// sjunker, och spelaren väljer vem som får bord först"). En våg tar sin andel
+// av kvällens gäster (marknadens tak gånger rummets dragningskraft), och det
+// jämna flödet minskas lika mycket. Måndag och tisdag är lugna (speldesign >
+// Tiden), så vågorna kommer från onsdag. Klockslaget i minuter efter midnatt.
+// Valda tal (F61).
+export const RUSH = {
+  section: 'Servicen',
+  openQuestion: 'F61',
+  waves: [
+    { id: 'cars', atMinute: 1170, share: 0.2, type: 'high', partySizes: [2, 4], weekdays: ['wed', 'thu', 'fri', 'sat'] },
+    { id: 'bus', atMinute: 1215, share: 0.25, type: 'middle', partySizes: [3, 5], weekdays: ['fri', 'sat'] }
+  ] as ReadonlyArray<{ id: string; atMinute: number; share: number; type: 'student' | 'middle' | 'high'; partySizes: readonly [number, number]; weekdays: readonly Weekday[] }>,
+  // Sällskapen i en våg kommer inom så här många spelsekunder.
+  spreadSimSeconds: 8,
+  // Klasser med matsal och bokningsbok har rusningar (vinbaren).
+  classes: ['vinbaren'] as readonly string[]
+} as const;
