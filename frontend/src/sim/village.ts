@@ -153,7 +153,8 @@ export function venueWeight(type: PoolType, taste: { student: number; middle: nu
 
 // Spelarens nota: veckans intäkt per gäst hittills, annars klassens.
 export function playerBillSek(state: SimulationState): number {
-  const ev = state.economy?.weekEvenings ?? [];
+  // Kvällens rad i byn räknar alla som kom in (sim/economy.ts recordEvening).
+  const ev = (state.economy?.weekEvenings ?? []).map((e) => e.village?.[0]).filter((r): r is VenueEvening => !!r);
   const guests = ev.reduce((a, e) => a + e.guests, 0);
   const revenue = ev.reduce((a, e) => a + e.revenueSek, 0);
   return guests > 0 ? revenue / guests : VILLAGE.playerBillSek;

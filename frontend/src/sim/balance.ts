@@ -241,7 +241,7 @@ export const SUSTAINABILITY_LEVELS = {
 // (reports/order284/rent-check.json vid 0,17: 9,9 %; week-players.json: 5,0 %).
 // ORDER 288 (F59, Vision Owner 2026-10-01: "kalibrera vinsten mot målet
 // 5–10 % när rivalerna delar gästerna") — 0,17 → 0,32 med rivalerna och
-// bussen i byn: 0,30 gav den rimliga spelaren 8,8 % och 0,35 4,8 %
+// bussen i byn: 0,30 gav den rimliga spelaren 9,8 % och 0,35 5,8 %
 // (reports/order288/rent-calibration.json, 20 frön); 0,32 ligger i målet.
 export const RENT = {
   section: 'Ekonomin > Hyran och lönerna',

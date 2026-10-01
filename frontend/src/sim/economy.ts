@@ -110,7 +110,10 @@ export function recordEvening(before: SimulationState, after: SimulationState): 
       billSek: Math.round(d.billionaireVisit?.billSek ?? 0)
     }
   };
-  record.village = villageEvening(before, { guests: record.guests, revenueSek: record.revenueSek, typeGuests: record.typeGuests ?? {}, tourists: d.touristsToday ?? 0 });
+  // ORDER 288 — i byn räknas alla som kom in (typerna), också gästerna som
+  // ett rätt svar släppte in (de räknas inte i arrivalsToday).
+  const cameIn = Object.values(record.typeGuests ?? {}).reduce((a, n) => a + (n ?? 0), 0);
+  record.village = villageEvening(before, { guests: Math.max(record.guests, cameIn), revenueSek: record.revenueSek, typeGuests: record.typeGuests ?? {}, tourists: d.touristsToday ?? 0 });
   return { ...after.economy, weekEvenings: [...(after.economy.weekEvenings ?? []), record] };
 }
 
