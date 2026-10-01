@@ -4,7 +4,6 @@ import { Suspense, type CSSProperties } from 'react';
 import * as THREE from 'three';
 import { CameraController } from '../camera/CameraController';
 import type { Landmark } from '../content/world';
-import { AnimationPrototype } from './AnimationPrototype';
 import { BrewpubScene, WineBarScene } from './BrewpubScene';
 import { RestaurantScene } from './RestaurantScene';
 import { ChimneySmoke } from './ChimneySmoke';
@@ -138,7 +137,8 @@ export function StrategicScene({ onSelect, selectedId, showScaleRef = false }: P
         <WineBarScene />
         <InteriorGuests />
         <InteriorStaff />
-        <AnimationPrototype />
+        {/* ORDER 292b — prototypgästen (AnimationPrototype.tsx) monteras inte:
+            den satte sig på golvet där den gamla krogens stol stod. */}
         <EntranceDoorPulse />
         <DeliveryVan />
         <MentorComment />

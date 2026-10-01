@@ -1,0 +1,1060 @@
+{
+  "url": "http://localhost:4176/",
+  "build": "produktion (vite build + preview)",
+  "flags": "inga",
+  "viewport": "1920×1080",
+  "steps": [
+    {
+      "name": "framme i Grythyttan",
+      "atSeconds": 42
+    },
+    {
+      "name": "vinbaren öppnad",
+      "atSeconds": 119
+    },
+    {
+      "name": "inköpen på M1",
+      "atSeconds": 137
+    },
+    {
+      "name": "servicen öppnad",
+      "atSeconds": 141
+    },
+    {
+      "name": "raket 1: vb04-dubbelbokning",
+      "atSeconds": 239
+    },
+    {
+      "name": "back your knowledge (best)",
+      "atSeconds": 258
+    },
+    {
+      "name": "back your knowledge (wrong)",
+      "atSeconds": 266
+    },
+    {
+      "name": "raket 2: vb24-terroir",
+      "atSeconds": 428
+    },
+    {
+      "name": "tisdag morgon",
+      "atSeconds": 495
+    },
+    {
+      "name": "morgon 3",
+      "atSeconds": 909
+    },
+    {
+      "name": "morgon 4",
+      "atSeconds": 1325
+    },
+    {
+      "name": "morgon 5",
+      "atSeconds": 1740
+    },
+    {
+      "name": "morgon 6",
+      "atSeconds": 2089
+    },
+    {
+      "name": "morgon 7",
+      "atSeconds": 2313
+    },
+    {
+      "name": "söndag",
+      "atSeconds": 2317
+    },
+    {
+      "name": "X1",
+      "atSeconds": 2340
+    }
+  ],
+  "shots": [
+    {
+      "file": "dod-00-startrutan.png",
+      "what": "normal start"
+    },
+    {
+      "file": "dod-01-M1-mentorn-dag-1.png",
+      "what": "M1 mentorn (practice)"
+    },
+    {
+      "file": "dod-02-S1-schema-introduktionen.png",
+      "what": "S1 schemat i introduktionen"
+    },
+    {
+      "file": "dod-05-introduktionen-kunskapsformerna.png",
+      "what": "första besöket i Måltidens hus: de tre kunskapsformerna"
+    },
+    {
+      "file": "dod-14-MD1-medaljerna.png",
+      "what": "MD1 medaljerna"
+    },
+    {
+      "file": "dod-12-O1-ova-forklaring.png",
+      "what": "O1 öva, förklaringen efter fel svar"
+    },
+    {
+      "file": "dod-13-O2-ova-resultat.png",
+      "what": "O2 resultatet (practice)"
+    },
+    {
+      "file": "dod-15-MD2-ny-medalj.png",
+      "what": "MD2 ny medalj (efter 1,2 s)"
+    },
+    {
+      "file": "dod-13-O2-prov-resultat.png",
+      "what": "O2 resultatet (exam)"
+    },
+    {
+      "file": "dod-14-MD1-ny-medalj.png",
+      "what": "MD1 med dagens medalj"
+    },
+    {
+      "file": "dod-01b-B0a-forsta-bankmotet-foodtruck.png",
+      "what": "B0a första bankmötet, food trucken"
+    },
+    {
+      "file": "dod-01c-B0b-forsta-bankmotet-vinbaren.png",
+      "what": "B0b första bankmötet, vinbaren"
+    },
+    {
+      "file": "dod-02-S1-schema-mandag.png",
+      "what": "S1 morgonens schema, måndag"
+    },
+    {
+      "file": "dod-26-lagret-spärren.png",
+      "what": "morgonen: servicen går inte att starta utan meny och dryckeslista"
+    },
+    {
+      "file": "dod-26b-M1-morgonen-tom.png",
+      "what": "M1 morgonens inköp innan något är köpt"
+    },
+    {
+      "file": "dod-27-M1-lappen-flyger.png",
+      "what": "M1: lappen flyger till kassan; kassan väntar tills den landat"
+    },
+    {
+      "file": "dod-27-M1-morgonen.png",
+      "what": "M1 efter inköpen: rätter, dryckeslista, dagens inköp och täckningen"
+    },
+    {
+      "file": "dod-04-M2-mentorn-service.png",
+      "what": "M2 mentorn första servicen"
+    },
+    {
+      "file": "dod-25-tiden-kvar-1.png",
+      "what": "tiden kvar av servicen (tidpunkt 1)"
+    },
+    {
+      "file": "dod-25-tiden-kvar-2.png",
+      "what": "tiden kvar av servicen (tidpunkt 2)"
+    },
+    {
+      "file": "dod-33-lagret-under-servicen.png",
+      "what": "lagret under servicen: portioner, glas och flaskor per artikel"
+    },
+    {
+      "file": "dod-34-strommen.png",
+      "what": "strömmen i stunden: beställningar, betalningar och dricks"
+    },
+    {
+      "file": "dod-20-vinbaren-spelarens-kamera.png",
+      "what": "vinbaren från spelarens kamera, under servicen"
+    },
+    {
+      "file": "dod-30-raket-1-steg-1-fraga.png",
+      "what": "R1 raketkortet, steg 1 (episteme)"
+    },
+    {
+      "file": "dod-30-raket-1-steg-1-svar.png",
+      "what": "R2 rätt svar, steg 1"
+    },
+    {
+      "file": "dod-30-raket-1-steg-2-fraga.png",
+      "what": "R1 raketkortet, steg 2 (techne)"
+    },
+    {
+      "file": "dod-30-raket-1-steg-2-svar.png",
+      "what": "R2 rätt svar, steg 2"
+    },
+    {
+      "file": "dod-30-raket-1-steg-3-fraga.png",
+      "what": "R1 raketkortet, steg 3 (phronesis)"
+    },
+    {
+      "file": "dod-30-raket-1-steg-3-svar.png",
+      "what": "R2 rätt svar, steg 3"
+    },
+    {
+      "file": "dod-32-raket-1-utfallet.png",
+      "what": "efter raket 1: raden i rummet och mätarna"
+    },
+    {
+      "file": "dod-38-H1-handelser.png",
+      "what": "H1 händelserna: beställt, betalt, dricks, i kväll och Back your knowledge"
+    },
+    {
+      "file": "dod-39-B1-ratt-fraga.png",
+      "what": "B1: valt svar och säkerhet, före Stå för svaret (best)"
+    },
+    {
+      "file": "dod-40-B1-ratt-steg-1.png",
+      "what": "B1: svaret, krediterna flyger till HUD:en"
+    },
+    {
+      "file": "dod-40-B1-ratt-steg-3.png",
+      "what": "B1: svaret, krediterna flyger till HUD:en"
+    },
+    {
+      "file": "dod-39-B1-fel-fraga.png",
+      "what": "B1: valt svar och säkerhet, före Stå för svaret (wrong)"
+    },
+    {
+      "file": "dod-40-B1-fel.png",
+      "what": "B1: svaret, krediterna faller ur HUD:en"
+    },
+    {
+      "file": "dod-21-kvallen-figurerna-1.png",
+      "what": "kvällen, figurerna i rörelse (tidpunkt 1)"
+    },
+    {
+      "file": "dod-21-kvallen-figurerna-2.png",
+      "what": "kvällen, figurerna i rörelse (tidpunkt 2)"
+    },
+    {
+      "file": "dod-31-raket-2-fel-fraga.png",
+      "what": "R1 raketkortet, steg 2 (techne)"
+    },
+    {
+      "file": "dod-31-raket-2-fel-svar.png",
+      "what": "R3 fel svar, steg 2"
+    },
+    {
+      "file": "dod-32-raket-2-utfallet.png",
+      "what": "efter raket 2: raden i rummet och mätarna"
+    },
+    {
+      "file": "dod-42-S1-sopbilen-bilen.png",
+      "what": "S1: bilen rullar in, fraktionerna läggs fram"
+    },
+    {
+      "file": "dod-42-S1-sopbilen.png",
+      "what": "S1 sopbilen: fraktionerna, svinnet, miljöavgiften och rådet"
+    },
+    {
+      "file": "dod-48-T2-efter-servicen.png",
+      "what": "T2 efter servicen: täckningsbidrag, täckningsgrad och överföringen"
+    },
+    {
+      "file": "dod-49-T2-overfort.png",
+      "what": "T2 överfört"
+    },
+    {
+      "file": "dod-43-R1-kvallens-resultat.png",
+      "what": "R1 kvällens resultat: vad kvällen gav och tog"
+    },
+    {
+      "file": "dod-40-L1-kvallens-lardom.png",
+      "what": "L1 kvällens lärdom"
+    },
+    {
+      "file": "dod-41-K1-kvallsberattelsen.png",
+      "what": "K1 kvällsberättelsen"
+    },
+    {
+      "file": "dod-46-bokningsboken-2.png",
+      "what": "bokningsboken kväll 2: kvällens gäster efter typ"
+    },
+    {
+      "file": "dod-47-R1-gasterna.png",
+      "what": "R1: vilka som kom och vad de betydde"
+    },
+    {
+      "file": "dod-44-rester-fragan.png",
+      "what": "morgonen: gårdagens rester och frågan om tillvaratagande"
+    },
+    {
+      "file": "dod-45-rester-svaret.png",
+      "what": "morgonen: svaret och förklaringen"
+    },
+    {
+      "file": "dod-46-bokningsboken-6.png",
+      "what": "bokningsboken kväll 6: kvällens gäster efter typ"
+    },
+    {
+      "file": "dod-22-lordag-figurerna-1.png",
+      "what": "lördagskvällen, figurerna i rörelse (tidpunkt 1)"
+    },
+    {
+      "file": "dod-22-lordag-figurerna-2.png",
+      "what": "lördagskvällen, figurerna i rörelse (tidpunkt 2)"
+    },
+    {
+      "file": "dod-10-T1-sondagstidningen.png",
+      "what": "T1 söndagstidningen"
+    },
+    {
+      "file": "dod-11-B1-bankmotet.png",
+      "what": "B1 bankmötet"
+    },
+    {
+      "file": "dod-03-S2-schema-sondag.png",
+      "what": "S2 morgonens schema, söndag"
+    },
+    {
+      "file": "dod-50-X1-utan-verksamhet-och-pengar.png",
+      "what": "X1 utan verksamhet och pengar (sparfil)"
+    }
+  ],
+  "rockets": [
+    {
+      "n": 1,
+      "id": "vb04-dubbelbokning",
+      "steps": [
+        {
+          "step": 0,
+          "axis": "episteme",
+          "question": "Vad är en bekräftad bokning för gästen?",
+          "countdown": "19",
+          "answer": {
+            "id": "b",
+            "quality": "best"
+          },
+          "band": "RättEn gäst till kommer in. En bekräftelse är krogens löfte. Båda sällskapen har ett sådant löfte, så felet är krogens och ska lösas av krogen.+115 krBord 4 beställer mer · 1 ny gäst inRätt · vidare till Techne"
+        },
+        {
+          "step": 1,
+          "axis": "techne",
+          "question": "Hur tar du reda på vilken bokning som kom först?",
+          "countdown": "20",
+          "answer": {
+            "id": "a",
+            "quality": "best"
+          },
+          "band": "RättEn gäst till kommer in. Bokningssystemet visar när varje bokning gjordes. Det ger ett svar på en minut, utan att gästerna behöver argumentera.+115 krBord 4 beställer mer · 1 ny gäst inRätt · vidare till Phronesis"
+        },
+        {
+          "step": 2,
+          "axis": "phronesis",
+          "question": "Du vet vem som bokade först. Vad gör du nu?",
+          "countdown": "35",
+          "answer": {
+            "id": "c",
+            "quality": "best"
+          },
+          "band": "Rätt2 gäster till kommer in. Det ena sällskapet sätter sig. Det andra får glas i baren och skålar.+115 krBord 4 beställer mer · 2 nya gäster inVad, hur, när och varför. Du visste alla tre."
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "id": "vb24-terroir",
+      "steps": [
+        {
+          "step": 0,
+          "axis": "episteme",
+          "question": "Vad betyder terroir?",
+          "countdown": "19",
+          "answer": {
+            "id": "b",
+            "quality": "best"
+          },
+          "band": "RättEn gäst till kommer in. Terroir är platsens samlade inverkan på vinet: jordmån, klimat, läge och den lokala traditionen. Ordet finns också i matens värld, till exempel om ost.Rätt · vidare till Techne"
+        },
+        {
+          "step": 1,
+          "axis": "techne",
+          "question": "Hur låter du gästen smaka på terroir?",
+          "countdown": "25",
+          "answer": {
+            "id": "a",
+            "quality": "wrong"
+          },
+          "band": "Inte den här gångenGästen smakar men hittar inget att hålla fast vid. Personalen tar över: gästen får höra att det är svårt att förklara.Fel · servitören tar över"
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "figures": {
+    "samples": 9169,
+    "audited": 8744,
+    "maxDown": 0,
+    "faults": []
+  },
+  "houseIntro": {
+    "forms": [
+      "Episteme · Vetenskaplig kunskap",
+      "Techne · Hantverksmässig kunskap",
+      "Phronesis · Praktisk klokhet"
+    ]
+  },
+  "s1ScrollTopBeforeShot": 0,
+  "bookings": [
+    {
+      "morning": "måndag",
+      "total": "17",
+      "rows": [
+        {
+          "key": "student",
+          "text": "19.05Studenter från Måltidens husBillig öl · tar platsen länge3"
+        },
+        {
+          "key": "middle",
+          "text": "19.05Par och familjer från bynDen vanliga notan6"
+        },
+        {
+          "key": "high",
+          "text": "19.05Bilar från Örebro och KarlstadFrågar efter vinlistan · förväntar sig mer4"
+        },
+        {
+          "key": "social",
+          "text": "19.30Maja LindHälsar på alla · tar med sig byn om hen trivs1"
+        },
+        {
+          "key": "walkIns",
+          "text": "—Utan bokningKommer när det finns plats3"
+        }
+      ]
+    },
+    {
+      "morning": "kväll 2",
+      "total": "21",
+      "rows": [
+        {
+          "key": "answer-sommellerie",
+          "text": "—2 avbokningar efter gårdagens vinGårdagens svar-2"
+        },
+        {
+          "key": "answer-kok",
+          "text": "—4 bokningar tack vare gårdagens matGårdagens svar4"
+        },
+        {
+          "key": "student",
+          "text": "19.05Studenter från Måltidens husBillig öl · tar platsen länge3"
+        },
+        {
+          "key": "middle",
+          "text": "19.05Par och familjer från bynDen vanliga notan9"
+        },
+        {
+          "key": "high",
+          "text": "19.05Bilar från Örebro och KarlstadFrågar efter vinlistan · förväntar sig mer4"
+        },
+        {
+          "key": "walkIns",
+          "text": "—Utan bokningKommer när det finns plats3"
+        }
+      ],
+      "billionaire": null,
+      "buzz": null
+    },
+    {
+      "morning": "kväll 3",
+      "total": "25",
+      "rows": [
+        {
+          "key": "answer-sommellerie",
+          "text": "—2 bokningar tack vare gårdagens vinGårdagens svar2"
+        },
+        {
+          "key": "answer-kok",
+          "text": "—2 bokningar tack vare gårdagens matGårdagens svar2"
+        },
+        {
+          "key": "student",
+          "text": "19.05Studenter från Måltidens husBillig öl · tar platsen länge4"
+        },
+        {
+          "key": "middle",
+          "text": "19.05Par och familjer från bynDen vanliga notan9"
+        },
+        {
+          "key": "high",
+          "text": "19.05Bilar från Örebro och KarlstadFrågar efter vinlistan · förväntar sig mer5"
+        },
+        {
+          "key": "walkIns",
+          "text": "—Utan bokningKommer när det finns plats3"
+        }
+      ],
+      "billionaire": null,
+      "buzz": null
+    },
+    {
+      "morning": "kväll 4",
+      "total": "30",
+      "rows": [
+        {
+          "key": "answer-sommellerie",
+          "text": "—4 bokningar tack vare gårdagens vinGårdagens svar4"
+        },
+        {
+          "key": "answer-kok",
+          "text": "—2 bokningar tack vare gårdagens matGårdagens svar2"
+        },
+        {
+          "key": "student",
+          "text": "19.05Studenter från Måltidens husBillig öl · tar platsen länge4"
+        },
+        {
+          "key": "middle",
+          "text": "19.05Par och familjer från bynDen vanliga notan11"
+        },
+        {
+          "key": "high",
+          "text": "19.05Bilar från Örebro och KarlstadFrågar efter vinlistan · förväntar sig mer5"
+        },
+        {
+          "key": "walkIns",
+          "text": "—Utan bokningKommer när det finns plats4"
+        }
+      ],
+      "billionaire": null,
+      "buzz": null
+    },
+    {
+      "morning": "kväll 5",
+      "total": "53",
+      "rows": [
+        {
+          "key": "answer-sommellerie",
+          "text": "—6 bokningar tack vare gårdagens vinGårdagens svar6"
+        },
+        {
+          "key": "student",
+          "text": "19.05Studenter från Måltidens husBillig öl · tar platsen länge8"
+        },
+        {
+          "key": "middle",
+          "text": "19.05Par och familjer från bynDen vanliga notan21"
+        },
+        {
+          "key": "high",
+          "text": "19.05Bilar från Örebro och KarlstadFrågar efter vinlistan · förväntar sig mer10"
+        },
+        {
+          "key": "social",
+          "text": "19.30Signe DahlHälsar på alla · tar med sig byn om hen trivs1"
+        },
+        {
+          "key": "walkIns",
+          "text": "—Utan bokningKommer när det finns plats7"
+        }
+      ],
+      "billionaire": "Hotellet ringde. De har en ovanlig gäst i helgen.",
+      "buzz": null
+    },
+    {
+      "morning": "kväll 6",
+      "total": "66",
+      "rows": [
+        {
+          "key": "answer-sommellerie",
+          "text": "—8 bokningar tack vare gårdagens vinGårdagens svar8"
+        },
+        {
+          "key": "student",
+          "text": "19.05Studenter från Måltidens husBillig öl · tar platsen länge10"
+        },
+        {
+          "key": "middle",
+          "text": "19.05Par och familjer från bynDen vanliga notan26"
+        },
+        {
+          "key": "high",
+          "text": "19.05Bilar från Örebro och KarlstadFrågar efter vinlistan · förväntar sig mer12"
+        },
+        {
+          "key": "social",
+          "text": "19.30Ebba StrandHälsar på alla · tar med sig byn om hen trivs1"
+        },
+        {
+          "key": "walkIns",
+          "text": "—Utan bokningKommer när det finns plats9"
+        }
+      ],
+      "billionaire": "Hotellet ringde. De har en ovanlig gäst i helgen.",
+      "buzz": "Signe Dahl talade gott om er: fler gäster i kväll."
+    }
+  ],
+  "stock": {
+    "counterBefore": {
+      "value": "120000",
+      "shown": "120000",
+      "credits": "19",
+      "creditsShown": "19"
+    },
+    "buyIsPrimary": true,
+    "blockedText": "Sätt menyn och dryckeslistan innan du öppnar: minst en rätt och en dryck i lager.",
+    "startDisabledBefore": true,
+    "beforeBigBuy": {
+      "value": "119020",
+      "shown": "119020",
+      "credits": "19",
+      "creditsShown": "19"
+    },
+    "midFly": {
+      "value": "118420",
+      "shown": "119020",
+      "credits": "19",
+      "creditsShown": "19"
+    },
+    "afterBigBuy": {
+      "value": "118420",
+      "shown": "118420",
+      "credits": "19",
+      "creditsShown": "19"
+    },
+    "coverage": {
+      "covers": "25",
+      "guests": "17"
+    },
+    "spent": "1580",
+    "qty": {
+      "root-soup": "5",
+      "chicken-plate": "5",
+      "pork-plate": "5",
+      "lentil-plate": "5",
+      "dairy-dessert": "5",
+      "lingon-sorbet": "0",
+      "chanterelle-toast": "0",
+      "fish-plate": "0",
+      "lamb-plate": "0",
+      "game-plate": "0",
+      "house-wine": "2",
+      "beer": "6",
+      "alcohol-free": "2",
+      "fine-wine": "2"
+    },
+    "afterReturn": {
+      "value": "118573",
+      "shown": "118571",
+      "credits": "19",
+      "creditsShown": "19",
+      "qtyPork": "0"
+    },
+    "openDoorsDisabled": false
+  },
+  "fpsService": 28,
+  "clock": [
+    {
+      "text": "18.07FörberedelserDörrarna öppnar 19.05181920212223",
+      "leftMinutes": "293"
+    },
+    {
+      "text": "19.07Servicen3 h 53 min kvar181920212223",
+      "leftMinutes": "233"
+    }
+  ],
+  "serviceStock": [],
+  "stream": [],
+  "backs": [
+    {
+      "want": "best",
+      "id": "mn07-soppan",
+      "before": {
+        "value": "345",
+        "shown": "345",
+        "credits": "22",
+        "creditsShown": "22"
+      },
+      "steps": [
+        {
+          "step": 0,
+          "option": "a",
+          "quality": "best",
+          "level": 2,
+          "band": "RättDu visste, och du stod för det. En gäst till kommer in. Soppan avslutas med grädde, en mejeriprodukt, så den innehåller laktos.+115 krBord 7 beställer mer · 1 ny gäst inRätt · vidare till Techne · +3 krediter",
+          "mid": {
+            "value": "460",
+            "shown": "346",
+            "credits": "26",
+            "creditsShown": "26"
+          }
+        },
+        {
+          "step": 1,
+          "option": "c",
+          "quality": "best",
+          "level": 1,
+          "band": "RättRätt. Du trodde det, och det stämde. En gäst till kommer in. I hög värme får ytan färg och karamelliseras, och rötternas eget socker smakar sötare och djupare.+115 krBord 7 beställer mer · 1 ny gäst inRätt · vidare till Phronesis · +3 krediter",
+          "mid": {
+            "value": "575",
+            "shown": "463",
+            "credits": "30",
+            "creditsShown": "29"
+          }
+        },
+        {
+          "step": 2,
+          "option": "b",
+          "quality": "best",
+          "level": 1,
+          "band": "RättRätt. Du trodde det, och det stämde. 2 gäster till kommer in. Gästen beställer linserna och tackar servitören för ett tydligt svar.+115 krBord 7 beställer mer · 2 nya gäster inVad, hur, när och varför. Du visste alla tre.",
+          "mid": {
+            "value": "690",
+            "shown": "578",
+            "credits": "35",
+            "creditsShown": "34"
+          }
+        }
+      ],
+      "defaults": [
+        "true",
+        "true",
+        "true"
+      ],
+      "after": {
+        "value": "690",
+        "shown": "690",
+        "credits": "35",
+        "creditsShown": "35"
+      }
+    },
+    {
+      "want": "wrong",
+      "id": "mn09-olet",
+      "before": {
+        "value": "690",
+        "shown": "690",
+        "credits": "35",
+        "creditsShown": "35"
+      },
+      "steps": [
+        {
+          "step": 0,
+          "option": "b",
+          "quality": "wrong",
+          "level": 1,
+          "band": "Inte den här gångenDu trodde det, men det stämde inte. Raketen slutar här. Servitören gissar fel om ölet. Gästen märker det. Servitören tar över och häller upp en öl. Det duger, inget mer.−350 krEn gäst vid bord 8 går · stolen står tomFel · servitören tar över · −2 krediter",
+          "mid": {
+            "value": "690",
+            "shown": "690",
+            "credits": "33",
+            "creditsShown": "33"
+          }
+        }
+      ],
+      "defaults": [
+        "true"
+      ],
+      "after": {
+        "value": "690",
+        "shown": "690",
+        "credits": "33",
+        "creditsShown": "33"
+      }
+    }
+  ],
+  "s1": {
+    "cashAtOpen": {
+      "value": "6564",
+      "shown": "6564",
+      "credits": "34",
+      "creditsShown": "34"
+    },
+    "beforeFly": {
+      "value": "6564",
+      "shown": "6564",
+      "credits": "34",
+      "creditsShown": "34"
+    },
+    "fee": "469",
+    "value": "0",
+    "kg": "16,8 kg",
+    "fractions": [
+      {
+        "key": "unsold",
+        "kg": "0"
+      },
+      {
+        "key": "plates",
+        "kg": "3"
+      },
+      {
+        "key": "glass",
+        "kg": "2.75"
+      },
+      {
+        "key": "cardboard",
+        "kg": "11"
+      }
+    ],
+    "advice": "I morgon bittiMaten tog slut 21.47 och 9 gäster gick utan. Köp omkring 10 portioner mer i morgon.",
+    "afterFly": {
+      "value": "6564",
+      "shown": "6564",
+      "credits": "34",
+      "creditsShown": "34"
+    }
+  },
+  "t2": {
+    "result": "600",
+    "contribution": "5137",
+    "ratio": "0.7826020719073735",
+    "forecast": "Med det här konceptet klarar du dig resten av säsongen."
+  },
+  "r1": [
+    {
+      "key": "result-money",
+      "tone": "won",
+      "delta": "600"
+    },
+    {
+      "key": "result-credits",
+      "tone": "won",
+      "delta": "34"
+    },
+    {
+      "key": "result-reputation",
+      "tone": "lost",
+      "delta": "-29.2"
+    },
+    {
+      "key": "result-knowledge",
+      "tone": "won",
+      "delta": "7"
+    },
+    {
+      "key": "result-experience",
+      "tone": "won",
+      "delta": "24"
+    },
+    {
+      "key": "result-social",
+      "tone": "even",
+      "delta": "0"
+    },
+    {
+      "key": "result-economic",
+      "tone": "won",
+      "delta": "0.09140767824497258"
+    },
+    {
+      "key": "result-ecological",
+      "tone": "even",
+      "delta": "0"
+    }
+  ],
+  "r1Levels": [
+    {
+      "level": "5",
+      "previous": ""
+    },
+    {
+      "level": "6",
+      "previous": ""
+    },
+    {
+      "level": "10",
+      "previous": ""
+    }
+  ],
+  "eveningGuests": [
+    {
+      "evening": "mån",
+      "rows": [
+        {
+          "type": "student",
+          "guests": 9,
+          "revenueSek": 1155
+        },
+        {
+          "type": "middle",
+          "guests": 14,
+          "revenueSek": 2584
+        },
+        {
+          "type": "high",
+          "guests": 8,
+          "revenueSek": 2826
+        },
+        {
+          "type": "social",
+          "guests": 1,
+          "revenueSek": 0
+        }
+      ],
+      "social": {
+        "outcome": "open",
+        "text": "Maja Lind gick utan att bli imponerad. Inget sprids."
+      },
+      "billionaire": null
+    },
+    {
+      "evening": "kväll 2",
+      "rows": [
+        {
+          "type": "student",
+          "guests": 5,
+          "revenueSek": 472
+        },
+        {
+          "type": "middle",
+          "guests": 13,
+          "revenueSek": 3400
+        },
+        {
+          "type": "high",
+          "guests": 6,
+          "revenueSek": 1373
+        }
+      ],
+      "social": {
+        "outcome": null,
+        "text": "10 av 10Social hållbarhetGästerna och laget: nöjdhet, köer och ork"
+      },
+      "billionaire": null
+    },
+    {
+      "evening": "kväll 3",
+      "rows": [
+        {
+          "type": "student",
+          "guests": 7,
+          "revenueSek": 1439
+        },
+        {
+          "type": "middle",
+          "guests": 18,
+          "revenueSek": 2800
+        },
+        {
+          "type": "high",
+          "guests": 8,
+          "revenueSek": 3022
+        }
+      ],
+      "social": {
+        "outcome": null,
+        "text": "4 av 10Social hållbarhetGästerna och laget: nöjdhet, köer och ork"
+      },
+      "billionaire": null
+    },
+    {
+      "evening": "kväll 4",
+      "rows": [
+        {
+          "type": "student",
+          "guests": 5,
+          "revenueSek": 913
+        },
+        {
+          "type": "middle",
+          "guests": 18,
+          "revenueSek": 3590
+        },
+        {
+          "type": "high",
+          "guests": 8,
+          "revenueSek": 3255
+        }
+      ],
+      "social": {
+        "outcome": null,
+        "text": "7 av 10Social hållbarhetGästerna och laget: nöjdhet, köer och ork"
+      },
+      "billionaire": null
+    },
+    {
+      "evening": "kväll 5",
+      "rows": [
+        {
+          "type": "student",
+          "guests": 8,
+          "revenueSek": 1297
+        },
+        {
+          "type": "middle",
+          "guests": 21,
+          "revenueSek": 5344
+        },
+        {
+          "type": "high",
+          "guests": 10,
+          "revenueSek": 2469
+        },
+        {
+          "type": "social",
+          "guests": 1,
+          "revenueSek": 341
+        }
+      ],
+      "social": {
+        "outcome": "good",
+        "text": "Signe Dahl gick nöjd: fler gäster de närmaste kvällarna."
+      },
+      "billionaire": "Mannen i guld var i byn, men åt någon annanstans."
+    },
+    {
+      "evening": "kväll 6",
+      "rows": [
+        {
+          "type": "student",
+          "guests": 6,
+          "revenueSek": 446
+        },
+        {
+          "type": "middle",
+          "guests": 11,
+          "revenueSek": 2406
+        },
+        {
+          "type": "high",
+          "guests": 4,
+          "revenueSek": 1950
+        },
+        {
+          "type": "social",
+          "guests": 1,
+          "revenueSek": 226
+        }
+      ],
+      "social": {
+        "outcome": "good",
+        "text": "Ebba Strand gick nöjd: fler gäster de närmaste kvällarna."
+      },
+      "billionaire": "Mannen i guld var i byn, men åt någon annanstans."
+    }
+  ],
+  "guestShot": true,
+  "eveningSequences": [
+    "S1 → T2 → R1 → L1 → K1",
+    "S1 → T2 → R1 → L1 → K1",
+    "S1 → T2 → R1 → L1 → K1",
+    "S1 → T2 → R1 → L1 → K1",
+    "S1 → T2 → R1 → L1 → K1"
+  ],
+  "salvage": [
+    {
+      "title": "Gårdagens rester4 portioner kyckling med rotfrukter står kvar i kylrummetTillagad kyckling från i går, kyld över natten. Hur används den?ASamma tallrik igen, up",
+      "resolved": "wrong"
+    },
+    {
+      "title": "Gårdagens rester4 portioner kyckling med rotfrukter står kvar i kylrummetTillagad kyckling från i går, kyld över natten. Hur används den?ASamma tallrik igen, up",
+      "resolved": "wrong"
+    },
+    {
+      "title": "Gårdagens rester4 portioner kyckling med rotfrukter står kvar i kylrummetTillagad kyckling från i går, kyld över natten. Hur används den?ASamma tallrik igen, up",
+      "resolved": "wrong"
+    },
+    {
+      "title": "Gårdagens rester3 portioner kyckling med rotfrukter står kvar i kylrummetTillagad kyckling från i går, kyld över natten. Hur används den?ASamma tallrik igen, up",
+      "resolved": "wrong"
+    }
+  ],
+  "saturdayGuests": [
+    null,
+    null
+  ],
+  "newspaper": "Lokaltidningen i GrythyttanSöndagSöndag · vecka 1",
+  "newspaperSeen": "Sett på stanMannen i guld gick längs sjönHela Sjövägen stannade i lördags när en hotellgäst i guld tog en promenad runt sjön. Han åt på Hotellets matsal.",
+  "newspaperMarket": "MarknadenVinbaren fick ungefär hälften av gästerna den kunde få den här veckan. Flest gäster var par och familjer från byn, därefter bilar från Örebro och Karlstad. Signe Dahl talade gott om er i byn. Ebba Strand talade gott om er i byn.",
+  "x1": {
+    "save": "reports/order270/save-utan-verksamhet.json",
+    "cashInSave": 30372,
+    "cashLoaded": 0
+  }
+}

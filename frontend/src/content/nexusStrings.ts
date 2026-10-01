@@ -1843,10 +1843,12 @@ export const TABLE = {
     left: { sv: (h: number, mm: string) => `${h} h ${mm} min kvar`, en: (h: number, mm: string) => `${h} h ${mm} min left` },
     leftMin: { sv: (m: number) => `${m} min kvar`, en: (m: number) => `${m} min left` },
     label: {
-      sv: { service: 'Servicen', rush: 'Rusning', lastOrders: 'Sista beställning', closed: 'Stängt', morning: 'Morgon', evening: 'Kväll' } as Record<string, string>,
-      en: { service: 'Service', rush: 'Rush', lastOrders: 'Last orders', closed: 'Closed', morning: 'Morning', evening: 'Evening' } as Record<string, string>
+      sv: { service: 'Servicen', rush: 'Rusning', lastOrders: 'Sista beställning', closed: 'Stängt', morning: 'Morgon', evening: 'Kväll', prep: 'Förberedelser' } as Record<string, string>,
+      en: { service: 'Service', rush: 'Rush', lastOrders: 'Last orders', closed: 'Closed', morning: 'Morning', evening: 'Evening', prep: 'Getting ready' } as Record<string, string>
     },
     doorsAt: { sv: 'Dörrarna öppnar 18.00', en: 'Doors open 18:00' },
+    // ORDER 292b — när dörrarna faktiskt öppnar (efter förberedelserna).
+    doorsAtTime: { sv: (hhmm: string) => `Dörrarna öppnar ${hhmm}`, en: (hhmm: string) => `Doors open ${hhmm}` },
     pickup: { sv: 'Sopbilen hämtar', en: 'Bin lorry collecting' },
     aria: { sv: (label: string, time: string, left: string) => `${label}, klockan ${time}, ${left}`, en: (label: string, time: string, left: string) => `${label}, ${time}, ${left}` }
   },
@@ -1966,6 +1968,8 @@ export const TABLE = {
       maxed: { sv: 'Alla tre är använda i kväll', en: 'All three are used tonight' },
       noneFits: { sv: 'Ingen fråga passar kvällens meny just nu', en: "No question fits tonight's menu right now" },
       notOpen: { sv: 'Öppnar när dörrarna öppnar', en: 'Opens when the doors open' },
+      // ORDER 292b — med klockslaget när dörrarna öppnar.
+      notOpenAt: { sv: (hhmm: string) => `Öppnar ${hhmm}, när dörrarna öppnar`, en: (hhmm: string) => `Opens at ${hhmm}, when the doors open` },
       // ORDER 291 — verksamheter utan egna raketer ännu (food trucken).
       noRockets: { sv: 'Den här verksamheten har inga raketer ännu', en: 'This business has no rockets yet' }
     },
@@ -2388,6 +2392,8 @@ export const TABLE = {
     heading: { sv: 'Kvällen', en: 'The evening' },
     tempSuffix: { sv: '°C', en: '°C' },
     windSuffix: { sv: 'm/s', en: 'm/s' },
+    // ORDER 292b — ordet för vinden (stod på engelska i den svenska raden).
+    windWord: { sv: 'vind', en: 'wind' },
     precipitation: {
       none: { sv: 'uppehåll', en: 'dry' },
       drizzle: { sv: 'duggregn', en: 'drizzle' },

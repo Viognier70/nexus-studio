@@ -84,6 +84,36 @@ async function newPage() {
 }
 let page = await newPage();
 const shot = async (file, what) => { await page.screenshot({ path: resolve(OUT, file) }); report.shots.push({ file, what }); };
+// ORDER 292b — ingen figur ligger ned eller sitter utan sits, under hela
+// körningen (rummets mätning scene/figureAudit.ts, body.dataset.figuresDown).
+// Läses var 250:e millisekund; varje ny avvikelse sparas med klockslaget och en bild.
+report.figures = { samples: 0, audited: 0, maxDown: 0, faults: [] };
+{
+  const seenFaults = new Set();
+  let busy = false;
+  setInterval(async () => {
+    if (busy) return;
+    busy = true;
+    try {
+      report.figures.samples += 1;
+      const raw = await page.evaluate(() => document.body.dataset.figuresDown ?? null);
+      if (raw) {
+        report.figures.audited += 1;
+        const d = JSON.parse(raw);
+        report.figures.maxDown = Math.max(report.figures.maxDown, d.n);
+        for (const ft of d.faults) {
+          const key = `${ft.kind}:${ft.id}:${ft.fault}:${ft.pose}:${ft.clip}`;
+          if (seenFaults.has(key)) continue;
+          seenFaults.add(key);
+          const clock = await page.textContent('[data-testid=service-clock-time]').catch(() => null);
+          report.figures.faults.push({ ...ft, clock, step: report.steps.at(-1)?.name ?? null });
+          if (report.figures.faults.length <= 4) await page.screenshot({ path: resolve(OUT, `dod-figur-fel-${report.figures.faults.length}.png`) }).catch(() => {});
+        }
+      }
+    } catch { /* sidan byts */ }
+    busy = false;
+  }, 250).unref();
+}
 
 // Simuleringens klocka ur kortets och dagens etiketter (fps och speltid).
 const fps = () => page.evaluate(() => new Promise((res) => {
