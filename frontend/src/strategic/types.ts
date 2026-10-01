@@ -436,6 +436,8 @@ export interface GuestBooking {
   total: number;
   billionaireInTown: boolean;
   billionaire: boolean;
+  // ORDER 292 — gårdagens svar: bokningar per raketens spår (sim/nextDay.ts).
+  answers?: Array<{ track: 'sommellerie' | 'kok' | 'service'; n: number }>;
 }
 
 // ORDER 287a — vad miljardären gjorde i kväll.
@@ -1560,6 +1562,10 @@ export interface SimulationState {
   // ORDER 287a — ryktet från gästen med socialt kapital: marknadens tak
   // gånger 1 + factor dag fromDay till untilDay (sim/guestTypes.ts).
   guestBuzz?: { fromDay: number; untilDay: number; factor: number; nameIndex: number }[];
+  // ORDER 292 — gårdagens svar i bokningsboken (sim/nextDay.ts): bokningar
+  // per raketens spår till nästa servicedag (positivt tack vare, negativt
+  // avbokat).
+  answerBookings?: { forDay: number; items: Array<{ track: 'sommellerie' | 'kok' | 'service'; n: number }> } | null;
   // ORDER 287a — kvällens hållbarheter som nivåer 0–10, och förra kvällens
   // (sim/sustainabilityLevels.ts). Sätts när servicen stänger.
   sustainabilityLevels?: {

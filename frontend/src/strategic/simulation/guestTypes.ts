@@ -18,6 +18,7 @@
 import type { Guest, GuestBooking, GuestType, SimulationState } from '../types';
 import { BILLIONAIRE, GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, SOCIAL_GUEST } from '../../sim/balance';
 import { dailyGuestCap } from '../../sim/economy';
+import { answerBookingsFor } from '../../sim/nextDay';
 import { calendarFor } from '../../sim/calendar';
 import { strings } from '../../content/strings';
 import { findDish } from './m4Catalogue';
@@ -39,7 +40,10 @@ export function bookingFor(state: SimulationState): GuestBooking {
   const seed = state.seed ?? 0;
   const cal = calendarFor(day);
   const capRaw = cal.isServiceDay ? dailyGuestCap(state) : 0;
-  const cap = Number.isFinite(capRaw) ? capRaw : 0;
+  const capAll = Number.isFinite(capRaw) ? capRaw : 0;
+  // ORDER 292 — gårdagens svar står som egna rader; typerna delar resten.
+  const answerNet = answerBookingsFor(state);
+  const cap = Math.max(0, capAll - answerNet);
   const socialComing = cap > 0 && hash01(seed, `day${day}|social`) < SOCIAL_GUEST.chancePerEvening;
   const booked = Math.round(cap * (1 - GUEST_TYPES.walkInShare));
   const shares = typeShares(state);
@@ -54,9 +58,10 @@ export function bookingFor(state: SimulationState): GuestBooking {
     counts: { student, middle, high },
     social: socialComing ? { nameIndex: Math.floor(hash01(seed, `day${day}|name`) * names) } : null,
     walkIns: Math.max(0, cap - booked),
-    total: cap,
+    total: capAll,
     billionaireInTown: inTown,
-    billionaire: inTown && hash01(seed, `day${day}|billionaire`) < chance
+    billionaire: inTown && hash01(seed, `day${day}|billionaire`) < chance,
+    answers: state.answerBookings && state.answerBookings.forDay === day ? state.answerBookings.items : []
   };
 }
 

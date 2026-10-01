@@ -116,3 +116,27 @@ describe('ORDER 292 — rusningarna', () => {
     expect(seatedChosenBeforeOthers).toBe(true);
   });
 });
+
+describe('ORDER 292 — följder nästa dag i bokningsboken', () => {
+  it('rätta svar ger bokningar tack vare gårdagens svar, fel svar avbokningar; taket följer', async () => {
+    const { bookingFor } = await import('../../strategic/simulation/guestTypes');
+    const { NEXT_DAY } = await import('../balance');
+    for (const answer of ['best', 'worst'] as const) {
+      let s = makeNewGameState(3);
+      s = { ...s, medals: { ...PLAYERS.baseline }, day: { ...s.day, dayNumber: firstDayOfWeek(2) } };
+      const day = s.day.dayNumber;
+      s = playMorning(s, {});
+      s = tickUntil(reducer(s, { type: 'START_SERVICE' }), (x) => x.day.period === 'evening', answer);
+      const log = s.incidents.log;
+      expect(log.length).toBeGreaterThan(0);
+      const expected = log.reduce((a, r) => a + (r.step === null ? NEXT_DAY.bookingsPerClearedRocket : -NEXT_DAY.bookingsLostPerFailedRocket), 0);
+      expect(s.answerBookings!.items.reduce((a, i) => a + i.n, 0)).toBe(expected);
+      s = reducer(s, { type: 'END_EVENING' });
+      s = tickUntil(s, (x) => x.day.dayNumber > day && x.day.period === 'morning');
+      const b = bookingFor(s);
+      expect((b.answers ?? []).reduce((a, i) => a + i.n, 0)).toBe(expected);
+      if (answer === 'best') expect(expected).toBeGreaterThan(0);
+      else expect(expected).toBeLessThan(0);
+    }
+  });
+});

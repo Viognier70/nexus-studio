@@ -1603,6 +1603,23 @@ export const TABLE = {
   },
   listAnd: { sv: 'och', en: 'and' },
   // ORDER 290 — svarens följd som händelser i rummet, över bordet.
+  // ORDER 292 — följder nästa dag i bokningsboken (sim/nextDay.ts).
+  nextDay: {
+    what: {
+      sommellerie: { sv: 'vin', en: 'wine' },
+      kok: { sv: 'mat', en: 'food' },
+      service: { sv: 'service', en: 'service' }
+    },
+    thanks: {
+      sv: (n: number, what: string) => `${n} ${pl(n, 'bokning', 'bokningar')} tack vare gårdagens ${what}`,
+      en: (n: number, what: string) => `${n} ${pl(n, 'booking', 'bookings')} thanks to yesterday's ${what}`
+    },
+    lost: {
+      sv: (n: number, what: string) => `${n} ${pl(n, 'avbokning', 'avbokningar')} efter gårdagens ${what}`,
+      en: (n: number, what: string) => `${n} ${pl(n, 'cancellation', 'cancellations')} after yesterday's ${what}`
+    },
+    note: { sv: 'Gårdagens svar', en: "Yesterday's answers" }
+  },
   // ORDER 292 — rusningarna: vågorna, kön vid dörren och spelarens val.
   rush: {
     waves: {

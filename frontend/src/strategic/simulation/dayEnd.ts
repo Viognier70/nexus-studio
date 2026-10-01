@@ -5,6 +5,7 @@ import { dailyWagesSek, postDailyInterest } from '../../sim/economy';
 import type { SimulationState } from '../types';
 import { activityById, activityName } from './activities';
 import { applyCashCost, applyCashDelta, postLedger } from './cashReading';
+import { recordAnswerBookings } from '../../sim/nextDay';
 
 function roleText(role: keyof typeof strings.team.roleLabel): string {
   return strings.team.roleLabel[role].toLowerCase();
@@ -27,6 +28,8 @@ export function chargeDayEnd(draft: SimulationState): void {
     postLedger(draft, { category: 'other', amount: activity.effect.economic, cause: strings.ledgerCause.investmentEffect(activityName(activity)), causeId: id });
   }
   draft.day = { ...draft.day, dayEndCharged: true };
+  // Kvällens raketer blir bokningar (eller avbokningar) till nästa servicedag.
+  recordAnswerBookings(draft);
   // Kvällens redovisning (eveningAccount) räknades före stängningens
   // kostnader; de läggs till som sopbilens avgift (stockPackages.ts settleWaste).
   const added = draft.cost - costBefore;

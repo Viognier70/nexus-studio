@@ -1122,3 +1122,14 @@ export const RUSH = {
   // Klasser med matsal och bokningsbok har rusningar (vinbaren).
   classes: ['vinbaren'] as readonly string[]
 } as const;
+
+// ORDER 292 — följder nästa dag (Vision Owner 2026-10-01: "Bokningsboken visar
+// vad gårdagens svar gav, till exempel '3 bokningar tack vare gårdagens
+// vin'"). En raket som klaras helt ger bokningar till nästa servicedag, en
+// fälld raket kostar. Raderna i bokningsboken efter raketens spår. Valda tal (F61).
+export const NEXT_DAY = {
+  section: 'Servicen',
+  openQuestion: 'F61',
+  bookingsPerClearedRocket: 2,
+  bookingsLostPerFailedRocket: 1
+} as const;

@@ -32,6 +32,7 @@ import {
 import { calendarFor } from './calendar';
 import type { GuestType, PavilionKey, SimulationState } from '../strategic/types';
 import { applyCashCost, applyCashDelta, postLedger } from '../strategic/simulation/cashReading';
+import { answerBookingsFor } from './nextDay';
 import { teamForClass } from '../strategic/simulation/team';
 import { strings } from '../content/strings';
 
@@ -221,7 +222,8 @@ export function dailyGuestCap(state: SimulationState): number {
   const buzz = (state.guestBuzz ?? []).reduce((f, b) => (b.fromDay <= d && d <= b.untilDay ? f + b.factor : f), 0);
   // ORDER 290 — en DJ i kväll drar fler gäster (satsningen book-dj).
   const dj = state.day.pickedActivityIds?.includes('book-dj') ? EVENING_ECONOMY.djGuestShare : 0;
-  return Math.floor(pool * marketShareCap(state.medals) * Math.max(0, 1 + buzz + dj));
+  // ORDER 292 — gårdagens svar: bokningar tack vare (eller avbokade), sim/nextDay.ts.
+  return Math.max(0, Math.floor(pool * marketShareCap(state.medals) * Math.max(0, 1 + buzz + dj)) + answerBookingsFor(state));
 }
 
 // Nedgraderingskedjan (speldesign > Nedgradering).
