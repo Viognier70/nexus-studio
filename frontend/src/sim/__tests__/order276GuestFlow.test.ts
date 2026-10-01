@@ -53,8 +53,8 @@ describe('ORDER 276 — raketerna styr gästflödet', () => {
   });
 
   it('en kväll med rätta svar har fler gäster och säljer mer ur lagret än en med fel', () => {
-    const play = (rank: 'best' | 'worst') => {
-      let s = evening(3);
+    const play = (rank: 'best' | 'worst', seed: number) => {
+      let s = evening(seed);
       const seen = new Set<string>();
       for (let i = 0; i < 20000 && s.day.period === 'dinner'; i++) {
         if (s.incidents.active && !(s.incidents.active.revealLeft ?? 0)) s = answer(s, rank);
@@ -64,8 +64,12 @@ describe('ORDER 276 — raketerna styr gästflödet', () => {
       const revenue = s.ledger.filter((l) => l.category === 'revenue' && l.causeId === 'dinner').reduce((sum, l) => sum + l.amount, 0);
       return { guests: seen.size, revenue };
     };
-    const good = play('best');
-    const bad = play('worst');
+    // ORDER 288 — med rivalerna i byn är kvällens tak lägre och en enskild
+    // kväll brusigare (frö 3 gav fler gäster men lägre intäkt med rätt
+    // svar). Summan över fyra frön.
+    const sum = (rank: 'best' | 'worst') => [1, 2, 3, 4].map((seed) => play(rank, seed)).reduce((a, b) => ({ guests: a.guests + b.guests, revenue: a.revenue + b.revenue }));
+    const good = sum('best');
+    const bad = sum('worst');
     expect(good.guests).toBeGreaterThan(bad.guests);
     expect(good.revenue).toBeGreaterThan(bad.revenue);
   });

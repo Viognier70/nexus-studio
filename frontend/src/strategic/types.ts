@@ -780,9 +780,15 @@ export interface DayState {
   // resultat, lärdomen, berättelsen. Sätts när servicen stänger; går bara
   // framåt (EVENING_STEP), så att en omritning eller ett dubbelklick inte
   // hoppar över kvällens resultat (provspel av 285).
-  eveningStep?: 'waste' | 'transfer' | 'result' | 'lesson' | 'story' | null;
+  eveningStep?: 'waste' | 'transfer' | 'result' | 'compare' | 'lesson' | 'story' | null;
   // ORDER 265 — dagens ankomster, mot marknadens tak (dailyGuestCap).
   arrivalsToday?: number;
+  // ORDER 288 — turisterna från bussen (ingår i arrivalsToday men inte i
+  // byns pool, sim/village.ts poolArrivals), och byns avisering.
+  touristsToday?: number;
+  // Byns händelser i kväll som redan har hänt (bussens avisering och val).
+  villageEvents?: string[];
+  villageNotice?: { kind: 'busAnnounce' | 'busChose'; at: number; tourists: number; venueId: string | null; arriveMinute: number } | null;
   // ORDER 266 — nöjda gäster totalt när servicen öppnade (kvällsberättelsen).
   happyAtServiceStart?: number;
   // ORDER 266 — stationernas lägsta mise en place under kvällen (hygien,
@@ -1562,6 +1568,9 @@ export interface SimulationState {
   // ORDER 287a — ryktet från gästen med socialt kapital: marknadens tak
   // gånger 1 + factor dag fromDay till untilDay (sim/guestTypes.ts).
   guestBuzz?: { fromDay: number; untilDay: number; factor: number; nameIndex: number }[];
+  // ORDER 288 — konkurrensen i byn: rivalerna (rykte och vem som styr dem).
+  // Saknas i äldre sparfiler; sim/village.ts villageOf ger startläget.
+  competition?: import('../sim/village').VillageState;
   // ORDER 292 — gårdagens svar i bokningsboken (sim/nextDay.ts): bokningar
   // per raketens spår till nästa servicedag (positivt tack vare, negativt
   // avbokat).
@@ -1695,6 +1704,10 @@ export type SimAction =
   | { type: 'TICK'; dt: number }
   // ORDER 292 — spelaren ger ett sällskap i kön bord först (null tar bort valet).
   | { type: 'SEAT_FIRST'; key: string | null }
+  // ORDER 288 — rivalen som gränssnitt: vem som styr en rival, och en
+  // människas plan för kvällen (sim/village.ts RIVAL_CONTROLLERS).
+  | { type: 'SET_RIVAL_CONTROL'; rivalId: string; control: 'computer' | 'human' }
+  | { type: 'SET_RIVAL_PLAN'; rivalId: string; plan: import('../sim/village').RivalPlan | null }
   | { type: 'SET_SPEED'; speed: 0 | 1 | 2 | 4 }
   | { type: 'SET_POLICY'; patch: Partial<Policies> }
   | { type: 'RESOLVE_SCENARIO'; choice: ScenarioChoice }
@@ -1837,7 +1850,7 @@ export type SimAction =
   | { type: 'ANSWER_SALVAGE'; optionId: string }
   | { type: 'CLOSE_SALVAGE' }
   // ORDER 289 — nästa skärm i kvällens flöde.
-  | { type: 'EVENING_STEP'; to: 'transfer' | 'result' | 'lesson' | 'story' }
+  | { type: 'EVENING_STEP'; to: 'transfer' | 'result' | 'compare' | 'lesson' | 'story' }
   // ORDER 283 — spelaren har läst introduktionen i Måltidens hus.
   | { type: 'SEE_HOUSE_INTRO' }
   // ORDER 077 §4 (M4) — morning menu composition. Freezes today's

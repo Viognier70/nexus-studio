@@ -17,6 +17,9 @@ import { strings } from '../../content/strings';
 import type { Guest, SimulationState } from '../types';
 import type { Rng } from '../util/rng';
 import { makeGuest, nextPartyId } from './model';
+import { busTonight, PLAYER_VENUE, poolArrivals } from '../../sim/village';
+import { VILLAGE } from '../../sim/balance';
+import { formatClock } from '../../sim/clock';
 
 export type Wave = (typeof RUSH.waves)[number];
 
@@ -51,8 +54,16 @@ function startWaves(draft: SimulationState, rng: Rng, attraction: number): void 
   for (const w of wavesTonight(draft)) {
     if (started.includes(w.id) || now < w.atMinute) continue;
     const cap = dailyGuestCap(draft);
-    const room = Number.isFinite(cap) ? Math.max(0, cap - (draft.day.arrivalsToday ?? 0)) : 0;
-    let guests = Math.min(room, Math.round((Number.isFinite(cap) ? cap : 0) * w.share * attraction));
+    const room = Number.isFinite(cap) ? Math.max(0, cap - poolArrivals(draft.day)) : 0;
+    // ORDER 288 — bussen: turisterna har valt krog efter rykte. Väljer de
+    // spelarens krog kommer alla, utöver poolen; annars ingen.
+    const bus = w.village ? busTonight(draft) : null;
+    let guests = w.village
+      ? (bus && bus.venueId === PLAYER_VENUE ? bus.tourists : 0)
+      : Math.min(room, Math.round((Number.isFinite(cap) ? cap : 0) * w.share * attraction));
+    if (w.village) {
+      draft.day = { ...draft.day, touristsToday: (draft.day.touristsToday ?? 0) + guests };
+    }
     const pending = [...(draft.day.wavePending ?? [])];
     let parties = 0;
     while (guests > 0) {
@@ -78,9 +89,43 @@ function startWaves(draft: SimulationState, rng: Rng, attraction: number): void 
   }
 }
 
+// ORDER 288 — aviseringen om bussen en halvtimme före: "En buss med 30
+// turister anländer 20.15. De väljer krog efter rykte." Gäller alla klasser.
+function announceBus(draft: SimulationState): void {
+  if (draft.day.villageEvents?.includes('bus-announce')) return;
+  if (clockNow(draft) < VILLAGE.bus.announceMinute) return;
+  const bus = busTonight(draft);
+  draft.day = { ...draft.day, villageEvents: [...(draft.day.villageEvents ?? []), 'bus-announce'] };
+  if (!bus) return;
+  draft.day = { ...draft.day, villageNotice: { kind: 'busAnnounce', at: draft.simTime, tourists: bus.tourists, venueId: null, arriveMinute: VILLAGE.bus.arriveMinute } };
+  draft.eventStream = [...draft.eventStream, {
+    at: draft.simTime, text: strings.village.notice.busAnnounce(bus.tourists, formatClock(VILLAGE.bus.arriveMinute)), category: 'ambient',
+    causeTag: null, causeChainId: null, sustainability: 'social', kind: 'village_bus', scenarioId: null
+  }];
+}
+
+// ORDER 288 — när bussen kommer: vart turisterna gick (alla klasser).
+function chooseBus(draft: SimulationState): void {
+  if (draft.day.villageEvents?.includes('bus-chose')) return;
+  if (clockNow(draft) < VILLAGE.bus.arriveMinute) return;
+  const bus = busTonight(draft);
+  draft.day = { ...draft.day, villageEvents: [...(draft.day.villageEvents ?? []), 'bus-chose'] };
+  if (!bus) return;
+  draft.day = { ...draft.day, villageNotice: { kind: 'busChose', at: draft.simTime, tourists: bus.tourists, venueId: bus.venueId, arriveMinute: VILLAGE.bus.arriveMinute } };
+  const text = bus.venueId === PLAYER_VENUE
+    ? strings.village.notice.busChoseYou(bus.tourists)
+    : strings.village.notice.busChose(bus.tourists, strings.village.venues[bus.venueId] ?? bus.venueId);
+  draft.eventStream = [...draft.eventStream, {
+    at: draft.simTime, text, category: 'ambient',
+    causeTag: null, causeChainId: null, sustainability: 'social', kind: 'village_bus', scenarioId: null
+  }];
+}
+
 // Ett tick: vågor som börjar, och sällskap ur vågorna som når dörren.
 export function tickRush(draft: SimulationState, rng: Rng, attraction: number): Guest[] {
   if (draft.day.period !== 'dinner' || !draft.day.doorsOpenedThisService) return [];
+  announceBus(draft);
+  chooseBus(draft);
   startWaves(draft, rng, attraction);
   const pending = draft.day.wavePending ?? [];
   const due = pending.filter((p) => p.at <= draft.simTime);

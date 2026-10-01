@@ -87,7 +87,10 @@ describe('ORDER 292 — rusningarna', () => {
   });
 
   it('sällskapet spelaren väljer får nästa lediga plats före de andra i kön', () => {
-    let s = reducer(atWeekday(2, 'sat'), { type: 'START_SERVICE' });
+    // ORDER 288 — rivalerna tar en del av byns gäster, så alla frön får inte
+    // en kö med två sällskap en lördag. Första fröet som får det prövas.
+    const attempt = (seed: number) => {
+    let s = reducer(atWeekday(seed, 'sat'), { type: 'START_SERVICE' });
     let chosenKey: string | null = null;
     let seatedChosenBeforeOthers = false;
     for (let i = 0; i < 40000 && s.day.period === 'dinner'; i++) {
@@ -112,8 +115,11 @@ describe('ORDER 292 — rusningarna', () => {
         break;
       }
     }
-    expect(chosenKey).not.toBeNull();
-    expect(seatedChosenBeforeOthers).toBe(true);
+    return { chosenKey, seatedChosenBeforeOthers };
+    };
+    const tried = [2, 1, 3, 4, 5, 6, 7, 8].map((seed) => attempt(seed)).find((r) => r.chosenKey !== null) ?? { chosenKey: null, seatedChosenBeforeOthers: false };
+    expect(tried.chosenKey).not.toBeNull();
+    expect(tried.seatedChosenBeforeOthers).toBe(true);
   });
 });
 

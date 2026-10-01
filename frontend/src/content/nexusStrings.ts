@@ -1402,11 +1402,6 @@ export const TABLE = {
     tonight: { sv: 'Kvällens pyramider', en: "Tonight's pyramids" }
   },
   // ORDER 290 — byn och tillbaka.
-  village: {
-    out: { sv: 'Byn', en: 'Village' },
-    back: { sv: 'Tillbaka till krogen', en: 'Back to the bar' },
-    keyHint: { sv: 'Tangenten V', en: 'Key V' }
-  },
   // ORDER 290 — serviceläget: panelerna fälls ihop under servicen.
   drawer: {
     show: { sv: 'Visa panelerna', en: 'Show panels' },
@@ -1646,6 +1641,111 @@ export const TABLE = {
     chosen: { sv: 'Får nästa bord', en: 'Gets the next table' },
     patienceAria: { sv: (pct: number) => `Tålamod ${pct} %`, en: (pct: number) => `Patience ${pct}%` },
     walkIn: { sv: 'utan bokning', en: 'walk-in' }
+  },
+  // ORDER 288 — byn och konkurrensen: rivalerna, nivåerna, aviseringarna,
+  // jämförelsen efter kvällen och tidningens rankning.
+  village: {
+    // ORDER 290 — knappen till byn och tillbaka.
+    out: { sv: 'Byn', en: 'Village' },
+    back: { sv: 'Tillbaka till krogen', en: 'Back to the bar' },
+    keyHint: { sv: 'Tangenten V', en: 'Key V' },
+    venues: {
+      player: { sv: 'Din krog', en: 'Your place' },
+      torgkrogen: { sv: 'Torgkrogen', en: 'Torgkrogen' },
+      'pizzeria-grytan': { sv: 'Pizzeria Grytan', en: 'Pizzeria Grytan' },
+      sjoboden: { sv: 'Sjöboden', en: 'The Boathouse' },
+      'hotellets-matsal': { sv: 'Hotellets matsal', en: 'The hotel dining room' },
+      grillvagnen: { sv: 'Grillvagnen', en: 'The grill truck' },
+      tacovagnen: { sv: 'Tacovagnen', en: 'The taco truck' }
+    } as Record<string, { sv: string; en: string }>,
+    food: {
+      torgkrogen: { sv: 'Husmanskost och dagens rätt', en: 'Home cooking and a dish of the day' },
+      'pizzeria-grytan': { sv: 'Pizza och kebab, stora portioner', en: 'Pizza and kebab, large portions' },
+      sjoboden: { sv: 'Fisk och skaldjur från sjöarna', en: 'Fish from the lakes' },
+      'hotellets-matsal': { sv: 'Vita dukar och ett stort vinkort', en: 'White tablecloths and a long wine list' },
+      grillvagnen: { sv: 'Burgare från vagnen', en: 'Burgers from the truck' },
+      tacovagnen: { sv: 'Tacos och lemonad', en: 'Tacos and lemonade' }
+    } as Record<string, { sv: string; en: string }>,
+    spots: {
+      torget: { sv: 'på torget', en: 'on the square' },
+      'maltidens-hus': { sv: 'vid Måltidens hus', en: 'by the House of the Meal' },
+      sjon: { sv: 'vid sjön', en: 'by the lake' }
+    } as Record<string, { sv: string; en: string }>,
+    open: { sv: 'Öppet', en: 'Open' },
+    closed: { sv: 'Stängt i kväll', en: 'Closed tonight' },
+    tonight: {
+      sv: (n: number) => `${n} ${pl(n, 'gäst', 'gäster')} i kväll`,
+      en: (n: number) => `${n} ${pl(n, 'guest', 'guests')} tonight`
+    },
+    priceTag: { sv: (sek: string) => `omkring ${sek} kr per gäst`, en: (sek: string) => `about ${sek} kr per guest` },
+    starsAria: { sv: (n: number) => `${n} av 5 stjärnor`, en: (n: number) => `${n} of 5 stars` },
+    controlHuman: { sv: 'spelare', en: 'player' },
+    levels: {
+      aria: { sv: 'Nivåer', en: 'Levels' },
+      village: { sv: 'Byn', en: 'Village' },
+      district: { sv: 'Kvarteret', en: 'Quarter' },
+      street: { sv: 'Gatan', en: 'Street' },
+      room: { sv: 'Krogen', en: 'Your place' },
+      hint: {
+        village: { sv: 'Krogarna och grupperna i byn', en: 'The restaurants and the groups in the village' },
+        district: { sv: 'Gästflödet i kvarteret', en: 'The flow of guests in the quarter' },
+        street: { sv: 'Vem som är på väg in', en: 'Who is on the way in' },
+        room: { sv: 'Rummet', en: 'The room' }
+      }
+    },
+    group: {
+      sv: (n: number, who: string, to: string) => `${n === 1 ? 'En gäst' : `${n} gäster`} · ${who} · mot ${to}`,
+      en: (n: number, who: string, to: string) => `${n === 1 ? 'One guest' : `${n} guests`} · ${who} · to ${to}`
+    },
+    onTheWay: {
+      sv: (n: number) => `${n} ${pl(n, 'gäst', 'gäster')} på väg in`,
+      en: (n: number) => `${n} ${pl(n, 'guest', 'guests')} on the way in`
+    },
+    notice: {
+      busAnnounce: {
+        sv: (n: number, at: string) => `En buss med ${n} turister anländer ${at}. De väljer krog efter rykte.`,
+        en: (n: number, at: string) => `A coach with ${n} tourists arrives at ${at}. They choose by reputation.`
+      },
+      busChose: {
+        sv: (n: number, to: string) => `Bussens ${n} turister går till ${to}.`,
+        en: (n: number, to: string) => `The coach's ${n} tourists head for ${to}.`
+      },
+      busChoseYou: {
+        sv: (n: number) => `Bussens ${n} turister valde din krog. De är på väg.`,
+        en: (n: number) => `The coach's ${n} tourists chose your place. They are on their way.`
+      },
+      trucks: {
+        sv: (lines: string) => `Vagnarna i kväll: ${lines}.`,
+        en: (lines: string) => `The trucks tonight: ${lines}.`
+      }
+    },
+    compare: {
+      title: { sv: 'Kvällen i byn', en: 'The evening in the village' },
+      lead: { sv: 'Så gick kvällen för byns krogar.', en: 'How the evening went for the village restaurants.' },
+      venue: { sv: 'Krog', en: 'Restaurant' },
+      guests: { sv: 'Gäster', en: 'Guests' },
+      perGuest: { sv: 'Per gäst', en: 'Per guest' },
+      perSeat: { sv: 'Per stol', en: 'Per seat' },
+      stars: { sv: 'Stjärnor', en: 'Stars' },
+      noSeats: { sv: 'står vid luckan', en: 'eats standing' },
+      bus: { sv: (n: number) => `varav ${n} från bussen`, en: (n: number) => `${n} from the coach` },
+      place: {
+        sv: (rank: number, of: number) => `Din krog kom ${rank} av ${of} i gäster i kväll.`,
+        en: (rank: number, of: number) => `Your place came ${rank} of ${of} in guests tonight.`
+      },
+      kr: { sv: (sek: string) => `${sek} kr`, en: (sek: string) => `${sek} kr` },
+      next: { sv: 'Vidare', en: 'Continue' }
+    },
+    newspaper: {
+      kicker: { sv: 'Byns krogar', en: 'The village restaurants' },
+      title: { sv: 'Veckans rankning', en: "This week's ranking" },
+      row: {
+        sv: (rank: number, name: string, guests: number, perGuest: string) => `${rank}. ${name}: ${guests} gäster, ${perGuest} kr per gäst`,
+        en: (rank: number, name: string, guests: number, perGuest: string) => `${rank}. ${name}: ${guests} guests, ${perGuest} kr per guest`
+      },
+      rose: { sv: (name: string) => `${name} steg mest i ryktet den här veckan.`, en: (name: string) => `${name} rose the most in reputation this week.` },
+      fell: { sv: (name: string) => `${name} föll mest.`, en: (name: string) => `${name} fell the most.` }
+    }
   },
   answerEffects: {
     up: {

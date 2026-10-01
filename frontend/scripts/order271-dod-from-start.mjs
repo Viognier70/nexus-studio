@@ -477,6 +477,13 @@ try {
     await shot('dod-43-R1-kvallens-resultat.png', 'R1 kvällens resultat: vad kvällen gav och tog');
     await page.click('[data-testid=result-continue]');
   }
+  // ORDER 288 — kvällen i byn (J1): krogarnas gäster, intäkt per gäst och per stol.
+  if (await page.waitForSelector('[data-testid=screen-J1]', { timeout: 8000 }).then(() => true).catch(() => false)) {
+    await delay(900);
+    report.j1 = await page.$$eval('[data-testid=compare-row]', (rows) => rows.map((r) => ({ venue: r.getAttribute('data-venue'), text: r.textContent })));
+    await shot('dod-44-J1-kvallen-i-byn.png', 'J1 kvällen i byn: krogarna jämförda');
+    await page.click('[data-testid=compare-continue]');
+  }
   await page.waitForSelector('[data-testid=screen-L1]', { timeout: 30000 });
   // ORDER 289 — varje skärm tar emot klick först efter 700 ms.
   await delay(900); await shot('dod-40-L1-kvallens-lardom.png', 'L1 kvällens lärdom');
@@ -549,7 +556,7 @@ try {
     while (Date.now() < until) {
       // ORDER 287a — en kväll som faller ihop går direkt till R1 (ingen sopbil);
       // skriptet väntade förut bara på S1 och kvällen tog slut av sig själv.
-      if (await page.$('[data-testid=evening-bar], [data-testid=screen-S1], [data-testid=screen-T2], [data-testid=screen-R1], [data-testid=screen-L1]')) break;
+      if (await page.$('[data-testid=evening-bar], [data-testid=screen-S1], [data-testid=screen-T2], [data-testid=screen-R1], [data-testid=screen-J1], [data-testid=screen-L1]')) break;
       const card = await page.$('[data-testid=incident-card]');
       // Lördagen: figurerna vid två tidpunkter mitt i kvällen (130 och 142 s
       // efter öppning i 2×, när rummet har fyllts), utan kort.
@@ -574,7 +581,7 @@ try {
       let screen = null;
       // Sopbilen känns igen på sin knapp (morgonens schema har också testid screen-S1).
       if (await page.$('[data-testid=waste-continue]')) screen = 'S1';
-      else for (const sc of ['T2', 'R1', 'L1', 'K1']) if (await page.$(`[data-testid=screen-${sc}]`)) { screen = sc; break; }
+      else for (const sc of ['T2', 'R1', 'J1', 'L1', 'K1']) if (await page.$(`[data-testid=screen-${sc}]`)) { screen = sc; break; }
       if (screen && seq[seq.length - 1] !== screen) seq.push(screen);
       await delay(900);
       if (screen === 'S1') await page.click('[data-testid=waste-continue]').catch(() => {});
@@ -595,6 +602,7 @@ try {
         }
         await page.click('[data-testid=result-continue]').catch(() => {});
       }
+      else if (screen === 'J1') await page.click('[data-testid=compare-continue]').catch(() => {});
       else if (screen === 'L1') await page.click('[data-testid=to-evening-story]').catch(() => {});
       else if (screen === 'K1') await page.click('[data-testid=end-evening]').catch(() => {});
       await delay(400);
@@ -612,6 +620,9 @@ try {
   // ORDER 287a — Sett på stan och veckans gäster.
   report.newspaperSeen = await page.textContent('[data-testid=newspaper-seen]').catch(() => null);
   report.newspaperMarket = await page.textContent('[data-testid=newspaper-market]').catch(() => null);
+  // ORDER 288 — tidningens rankning av byns krogar.
+  report.newspaperRanking = await page.$$eval('[data-testid=newspaper-ranking-list] li', (els) => els.map((e) => e.textContent)).catch(() => null);
+  report.newspaperRankingText = await page.textContent('[data-testid=newspaper-ranking]').catch(() => null);
   await page.click('[data-testid=newspaper-to-bank]');
   await page.waitForSelector('[data-testid=screen-B1]');
   await delay(400); await shot('dod-11-B1-bankmotet.png', 'B1 bankmötet');

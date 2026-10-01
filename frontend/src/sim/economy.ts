@@ -33,6 +33,7 @@ import { calendarFor } from './calendar';
 import type { GuestType, PavilionKey, SimulationState } from '../strategic/types';
 import { applyCashCost, applyCashDelta, postLedger } from '../strategic/simulation/cashReading';
 import { answerBookingsFor } from './nextDay';
+import { playerChoiceShare, villageEvening, type VenueEvening } from './village';
 import { teamForClass } from '../strategic/simulation/team';
 import { strings } from '../content/strings';
 
@@ -79,6 +80,9 @@ export interface EveningRecord {
   social?: { nameIndex: number; outcome: 'good' | 'bad' | 'neutral' | null } | null;
   // ours: han åt och betalade hos spelaren; came: han kom (och kan ha gått utan bord).
   billionaire?: { inTown: boolean; ours: boolean; came?: boolean; treated: boolean; glasses: number; billSek: number };
+  // ORDER 288 — kvällen i byn: alla krogars gäster och intäkt (spelarens
+  // rad först, id 'player'), för jämförelsen efter kvällen och tidningen.
+  village?: VenueEvening[];
 }
 
 // Kvällen till veckans lista när servicen stänger, både vid vanlig
@@ -106,6 +110,7 @@ export function recordEvening(before: SimulationState, after: SimulationState): 
       billSek: Math.round(d.billionaireVisit?.billSek ?? 0)
     }
   };
+  record.village = villageEvening(before, { guests: record.guests, revenueSek: record.revenueSek, typeGuests: record.typeGuests ?? {}, tourists: d.touristsToday ?? 0 });
   return { ...after.economy, weekEvenings: [...(after.economy.weekEvenings ?? []), record] };
 }
 
@@ -211,6 +216,12 @@ export function marketShareCap(medals: SimulationState['medals']): number {
   return Math.min(1, MARKET.baseShareCap + MARKET.shareCapPerMedalStep * totalMedalSteps(medals));
 }
 
+// ORDER 288 — spelarens andel i kväll: andelen byns gäster ger efter rykte,
+// pris och smak mot rivalerna (sim/village.ts), högst kunskapens tak.
+export function playerShareTonight(state: SimulationState): number {
+  return Math.min(marketShareCap(state.medals), playerChoiceShare(state));
+}
+
 // Dagens tak på gäster: spelarens andel av dagens pool. Tester av
 // rummets mekanik kan stänga av taket med policies.marketCapEnabled.
 export function dailyGuestCap(state: SimulationState): number {
@@ -223,7 +234,7 @@ export function dailyGuestCap(state: SimulationState): number {
   // ORDER 290 — en DJ i kväll drar fler gäster (satsningen book-dj).
   const dj = state.day.pickedActivityIds?.includes('book-dj') ? EVENING_ECONOMY.djGuestShare : 0;
   // ORDER 292 — gårdagens svar: bokningar tack vare (eller avbokade), sim/nextDay.ts.
-  return Math.max(0, Math.floor(pool * marketShareCap(state.medals) * Math.max(0, 1 + buzz + dj)) + answerBookingsFor(state));
+  return Math.max(0, Math.floor(pool * playerShareTonight(state) * Math.max(0, 1 + buzz + dj)) + answerBookingsFor(state));
 }
 
 // Nedgraderingskedjan (speldesign > Nedgradering).

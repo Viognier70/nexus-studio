@@ -54,6 +54,7 @@ import { loadOf, strainMultiplier, STREAM_KEEP } from './eventStream';
 import { computeEveningAccount } from './eveningAccount';
 import { postServiceSummaryLines } from './cashReading';
 import { logRepDelta } from './reputation';
+import { settleVillage } from '../../sim/village';
 import {
   MORALE_COLLAPSE_HIT,
   bumpMorale,
@@ -269,6 +270,8 @@ export function fireCollapse(draft: SimulationState, closeBills?: (d: Simulation
   const tillAtClose = tillSek(draft);
   // ORDER 267 — kvällen till veckans lista (söndagstidningen).
   draft.economy = recordEvening(draft, draft);
+  // ORDER 288 — rivalernas rykte efter kvällen i byn.
+  draft.competition = settleVillage(draft, draft.economy.weekEvenings?.at(-1)?.village ?? []);
   draft.day = {
     ...draft.day,
     period: 'evening',

@@ -620,3 +620,65 @@ body:has(.nx-rocket) .nx-hud-tools { display: none; }
 .nx-agency-accept { flex: 1; background: var(--w-gold); color: var(--w-ink); border-color: var(--w-gold); }
 .nx-queue { width: min(calc(440 * var(--nx-u)), calc(100vw - 32px)); }
 body:has(.nx-agency) .nx-queue { max-height: calc(100vh - max(150px, calc(230 * var(--nx-u))) - max(300px, calc(440 * var(--nx-u)))); }
+
+/* ORDER 288 — byn och konkurrensen: nivåraden (byn, kvarteret, gatan,
+   krogen), byns aviseringar, krogarnas etiketter och gatans etiketter. */
+.nx-levels { display: flex; align-items: center; gap: calc(6 * var(--nx-u)); padding: calc(5 * var(--nx-u)); background: rgba(38, 25, 17, 0.9); border: 1px solid rgba(216, 184, 119, 0.5); border-radius: 999px; }
+.nx-level { display: inline-flex; align-items: center; gap: calc(8 * var(--nx-u)); min-height: 36px; padding: 0 calc(14 * var(--nx-u)); border: 0; border-radius: 999px; background: transparent; color: var(--w-cream, #f4e6cc); font: inherit; font-size: max(12px, calc(18 * var(--nx-u))); font-weight: 700; cursor: pointer; }
+.nx-level:hover { background: rgba(244, 230, 204, 0.08); }
+.nx-level.is-on { background: var(--w-gold, #e8b93a); color: var(--w-ink, #2a1c13); }
+.nx-level-key { font: inherit; font-size: 0.72em; font-weight: 800; opacity: 0.7; padding: 0 calc(5 * var(--nx-u)); border: 1px solid currentColor; border-radius: calc(5 * var(--nx-u)); line-height: 1.3; }
+.nx-level-onway { padding: 0 calc(12 * var(--nx-u)); color: var(--w-gold, #e8b93a); font-weight: 800; font-size: max(12px, calc(17 * var(--nx-u))); white-space: nowrap; }
+.nx-village-notice {
+  position: fixed; top: max(calc(110 * var(--nx-u)), 76px); left: 50%; transform: translateX(-50%); z-index: 46;
+  max-width: min(calc(820 * var(--nx-u)), calc(100vw - 32px)); padding: calc(12 * var(--nx-u)) calc(20 * var(--nx-u));
+  background: rgba(38, 25, 17, 0.94); border: 1px solid var(--w-gold, #e8b93a); border-radius: calc(12 * var(--nx-u));
+  color: var(--w-cream, #f4e6cc); font-weight: 700; font-size: max(13px, calc(21 * var(--nx-u))); text-align: center;
+  animation: nx-reaction-rise 0.4s ease-out; pointer-events: none;
+}
+.nx-village-notice[data-kind='busAnnounce'] { color: var(--w-gold, #e8b93a); }
+body:has(.nx-screen) .nx-village-notice, body:has(.nx-rocket) .nx-village-notice { display: none; }
+.nx-venue-label {
+  min-width: 150px; max-width: 230px; padding: 6px 10px; border-radius: 10px; text-align: left;
+  background: rgba(30, 20, 13, 0.88); border: 1px solid rgba(216, 184, 119, 0.45); color: #f4e6cc;
+  font-family: inherit; font-size: 12px; line-height: 1.3; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35); white-space: normal;
+}
+.nx-venue-label.is-player { border-color: #e8b93a; box-shadow: 0 0 0 1px #e8b93a, 0 4px 14px rgba(0, 0, 0, 0.35); }
+.nx-venue-label.is-closed { opacity: 0.62; }
+.nx-venue-name { font-weight: 800; font-size: 13px; }
+.nx-venue-human { font-weight: 600; color: #e8b93a; }
+.nx-venue-food { opacity: 0.85; }
+.nx-venue-meta { display: flex; justify-content: space-between; gap: 8px; margin-top: 2px; }
+.nx-venue-stars span { color: rgba(244, 230, 204, 0.22); }
+.nx-venue-stars span.on { color: #e8b93a; }
+.nx-venue-price { opacity: 0.8; white-space: nowrap; }
+.nx-venue-state { margin-top: 2px; font-weight: 700; color: #e8b93a; }
+.nx-venue-label.is-closed .nx-venue-state { color: #f4e6cc; }
+.nx-street-tag { padding: 4px 9px; border-radius: 999px; background: rgba(30, 20, 13, 0.9); border: 1px solid rgba(216, 184, 119, 0.5); color: #f4e6cc; font-size: 12px; font-weight: 700; white-space: nowrap; }
+.nx-street-dist { opacity: 0.75; font-weight: 600; }
+@media (max-width: 640px) {
+  .nx-level { padding: 0 calc(10 * var(--nx-u)); }
+  .nx-level-key { display: none; }
+  .nx-venue-label { min-width: 120px; font-size: 11px; }
+}
+@media (prefers-reduced-motion: reduce) { .nx-village-notice { animation: none; } }
+/* ORDER 288 — jämförelsen efter kvällen (J1). */
+.nx-screen.nx-compare-screen { background: rgba(20, 13, 9, 0.62); padding: calc(160 * var(--nx-u)) calc(72 * var(--nx-u)) calc(48 * var(--nx-u)); z-index: 44; display: flex; justify-content: center; align-items: flex-start; overflow-y: auto; }
+.nx-compare { width: min(calc(1180 * var(--nx-u)), 100%); padding: calc(28 * var(--nx-u)) calc(34 * var(--nx-u)); }
+.nx-compare-head { display: flex; flex-direction: column; gap: calc(6 * var(--nx-u)); margin-bottom: calc(18 * var(--nx-u)); }
+.nx-compare-place { font-weight: 800; color: var(--w-gold, #e8b93a); font-size: max(14px, calc(24 * var(--nx-u))); }
+.nx-compare-table { width: 100%; border-collapse: collapse; font-size: max(13px, calc(22 * var(--nx-u))); }
+.nx-compare-table th, .nx-compare-table td { text-align: left; padding: calc(12 * var(--nx-u)) calc(10 * var(--nx-u)); border-top: 1px solid var(--nx-rule, rgba(244,230,204,.14)); vertical-align: baseline; }
+.nx-compare-table thead th { border-top: 0; font-size: 0.8em; font-weight: 700; opacity: 0.75; }
+.nx-compare-table td.nx-num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.nx-compare-table tr.is-player { background: rgba(232, 185, 58, 0.12); box-shadow: inset calc(6 * var(--nx-u)) 0 0 var(--w-gold, #e8b93a); }
+.nx-compare-sub { font-weight: 500; opacity: 0.7; font-size: 0.85em; }
+.nx-compare-foot { display: flex; justify-content: flex-end; margin-top: calc(22 * var(--nx-u)); }
+.nx-compare-foot .nx-btn { width: auto; min-width: max(220px, calc(420 * var(--nx-u))); }
+@media (max-width: 720px) {
+  .nx-screen.nx-compare-screen { padding: 72px 16px 24px; }
+  .nx-compare-table th:nth-child(4), .nx-compare-table td:nth-child(4) { display: none; }
+}
+@media (pointer: coarse) { .nx-level { min-height: 44px; } }
+.nxs-ranking { margin: 0; padding-left: 1.4em; } .nxs-ranking li { margin: 2px 0; }
+.nx-venue-label.is-compact { min-width: 0; padding: 4px 8px; }

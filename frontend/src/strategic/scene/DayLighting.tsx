@@ -19,6 +19,7 @@ import { SunLightRig } from '../../lib/lighting/SunLightRig';
 import { devToggles, SEASON_DATE, type SeasonKey } from '../../lib/devToggles';
 import { harnessParams } from '../testHarness/urlParams';
 import type { DayPeriod } from '../types';
+import { clockMinutes } from '../../sim/clock';
 
 // Hour-of-day per game period. Local civil time. Autumn-calibrated
 // so the sun tracks the season the game is set in.
@@ -35,6 +36,11 @@ const HOUR_BY_PERIOD: Record<DayPeriod, number> = {
 // ORDER 290 — kvällens by var för mörk för att se gäster på väg mot krogen
 // (provspel av cae53c9). Ljuset lyfts under servicen och kvällen.
 const EVENING_LIFT: Partial<Record<DayPeriod, number>> = { dinner: 1.35, evening: 1.9 };
+const DUSK_HOUR = 18.5;
+const NIGHT_HOUR = 21.75;
+// ORDER 288 — lyftet under middagen, från skymningen till natt: byn ska gå
+// att läsa (gator, hus, människor) också när den är mörk.
+const DINNER_LIFT: [number, number] = [1.6, 2.9];
 
 // Village-scale fog range. Fog starts far out (1 km) so nothing
 // mid-distance gets washed, and hits full attenuation at 3.6 km so
@@ -62,10 +68,21 @@ export function DayLighting() {
   // ORDER 249 §1 — `#playtest=1&light=day` tvingar lunch-timmen (12:30)
   // så VO kan provspela middag utan att invänta IndoorLamps-monteringen.
   // Overrider periodmappningen; ingen effekt utan flaggan.
+  // ORDER 288 — kvällsbyn: under middagen följer ljuset klockan, från
+  // skymningen när dörrarna öppnar till natt mot slutet (DUSK_HOUR →
+  // NIGHT_HOUR), i steg om tre spelminuter. Lyftet följer med, så att gator,
+  // hus och människor syns också när gatlyktorna och fönstren har tänts.
+  const dinnerHour = effectivePeriod === 'dinner' && sim.day.period === 'dinner'
+    ? Math.round(Math.min(NIGHT_HOUR, Math.max(DUSK_HOUR, clockMinutes(sim) / 60)) * 20) / 20
+    : null;
   const hour = useMemo(
-    () => (harnessParams.light === 'day' ? HOUR_BY_PERIOD.lunch : HOUR_BY_PERIOD[effectivePeriod]),
-    [effectivePeriod]
+    () => (harnessParams.light === 'day' ? HOUR_BY_PERIOD.lunch : dinnerHour ?? HOUR_BY_PERIOD[effectivePeriod]),
+    [effectivePeriod, dinnerHour]
   );
+  const night = dinnerHour === null ? 0 : (dinnerHour - DUSK_HOUR) / (NIGHT_HOUR - DUSK_HOUR);
+  const lift = dinnerHour === null
+    ? EVENING_LIFT[effectivePeriod] ?? 1
+    : DINNER_LIFT[0] + (DINNER_LIFT[1] - DINNER_LIFT[0]) * night;
   // ORDER 056 Del A — season is a dev-toggle (default autumn = 25 Sep
   // per ORDER 054). Summer selects 21 Jun for comparison. Non-dev
   // builds always read 'autumn' (the module default).
@@ -76,7 +93,7 @@ export function DayLighting() {
       hourOfDay={hour}
       date={date}
       fogRange={STRATEGIC_FOG_RANGE}
-      intensityScale={EVENING_LIFT[effectivePeriod] ?? 1}
+      intensityScale={lift}
     />
   );
 }

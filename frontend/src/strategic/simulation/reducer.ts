@@ -78,6 +78,7 @@ const EXAM_QUESTION_BANK: readonly Question[] = [
 import { arrivalAttraction, maybeSpawnGuest, scenarioSpawnStep, walkAwayProbability } from './arrivals';
 import { planScenariosForService, scheduleScenarioTriggerTimes } from './day';
 import { revenuePerGuest } from './economics';
+import { poolArrivals, settleVillage, villageOf } from '../../sim/village';
 import {
   PREP_CARRYOVER_OFFSET_SEC,
   PREP_CARRYOVER_THRESHOLD,
@@ -301,7 +302,8 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       // kvällens resultat.
       if (state.day.period !== 'evening') return state;
       const from = state.day.eveningStep ?? 'result';
-      const allowed: Record<string, string[]> = { waste: ['transfer', 'result'], transfer: ['result'], result: ['lesson', 'story'], lesson: ['story'], story: ['lesson'] };
+      // ORDER 288 — kvällen i byn (jämförelsen) efter kvällens resultat.
+      const allowed: Record<string, string[]> = { waste: ['transfer', 'result'], transfer: ['result'], result: ['compare', 'lesson', 'story'], compare: ['lesson', 'story'], lesson: ['story'], story: ['lesson'] };
       if (!allowed[from]?.includes(action.to)) return state;
       return { ...state, day: { ...state.day, eveningStep: action.to } };
     }
@@ -364,6 +366,15 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       return startService(state);
     case 'CLOSE_DAY':
       return closeDay(state);
+    case 'SET_RIVAL_CONTROL':
+    case 'SET_RIVAL_PLAN': {
+      const village = villageOf(state);
+      const rivals = village.rivals.map((r) => {
+        if (r.id !== action.rivalId) return r;
+        return action.type === 'SET_RIVAL_CONTROL' ? { ...r, control: action.control } : { ...r, plan: action.plan };
+      });
+      return { ...state, competition: { ...village, rivals } };
+    }
     case 'SEAT_FIRST': {
       if (state.day.period !== 'dinner' && state.day.period !== 'lunch') return state;
       return { ...state, day: { ...state.day, queuePriority: action.key } };
@@ -1945,6 +1956,8 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       };
       // ORDER 267 — kvällen till veckans lista (söndagstidningen).
       next.economy = recordEvening(state, next);
+      // ORDER 288 — rivalernas rykte efter kvällen i byn.
+      next.competition = settleVillage(state, next.economy.weekEvenings?.at(-1)?.village ?? []);
       postServiceSummaryLines(next, 'dinner', state);
       // ORDER 117 §5.1 — värdekvot-mening i strömmen efter middag-close.
       postValueQuotaLine(next, 'dinner');
@@ -2690,7 +2703,7 @@ function advanceTick(state: SimulationState): SimulationState {
     if (!draft.day.doorsOpenedThisService && draft.day.waitingAtOpening > 0) {
       const walkAwayCeil = walkAwayProbability(draft);
       // ORDER 265 — de som väntar vid dörren räknas också mot marknadens tak.
-      const waitingAllowed = Math.max(0, Math.min(draft.day.waitingAtOpening, dailyGuestCap(draft) - (draft.day.arrivalsToday ?? 0)));
+      const waitingAllowed = Math.max(0, Math.min(draft.day.waitingAtOpening, dailyGuestCap(draft) - poolArrivals(draft.day)));
       draft.day = { ...draft.day, arrivalsToday: (draft.day.arrivalsToday ?? 0) + waitingAllowed };
       for (let i = 0; i < waitingAllowed; i++) {
         const walkAway = rng.chance(walkAwayCeil);
