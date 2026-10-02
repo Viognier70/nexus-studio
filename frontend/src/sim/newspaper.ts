@@ -12,13 +12,15 @@
 // nedåt veckans sämsta.
 
 import { strings } from '../content/strings';
-import { NEWSPAPER, HOLIDAYS, SEASON, type BusinessClassId } from './balance';
+import { NEWSPAPER, HOLIDAYS, REPUTATION, SEASON, type BusinessClassId } from './balance';
 import { calendarFor } from './calendar';
 import { BUSINESS_CLASSES } from './balance';
 import { classOptions, classSpec, meetsRequirement, requirementsFor, type EveningRecord } from './economy';
 import type { GuestType, SimulationState } from '../strategic/types';
 import { socialName } from '../strategic/simulation/guestTypes';
 import { PLAYER_VENUE, weekRanking } from './village';
+import { t as tt } from '../content/nexusStrings';
+import { getLanguage } from '../content/language';
 
 // ORDER 288 — byns krogar rankade efter veckans gäster (speldesign >
 // Rivalerna: "Tidningen får en rankning av byns krogar efter veckans
@@ -42,7 +44,7 @@ function ranking(evenings: readonly EveningRecord[], name: string): NewspaperSec
 const t = strings.newspaper;
 
 export interface NewspaperSection {
-  id: 'review' | 'market' | 'ranking' | 'bank' | 'holiday' | 'seen';
+  id: 'review' | 'market' | 'ranking' | 'bank' | 'holiday' | 'seen' | 'star';
   heading: string;
   title?: string;
   lines: string[];
@@ -165,6 +167,20 @@ function holiday(sim: SimulationState): NewspaperSection {
   return { id: 'holiday', heading: t.holidayHeading, lines: [line] };
 }
 
+// ORDER 296c — stjärnan i söndagstidningen: delad, behållen eller förlorad,
+// eller hur långt det är kvar (balance.ts STAR).
+function starSection(sim: SimulationState, name: string): NewspaperSection | null {
+  const st = sim.economy.lastSettlement?.star;
+  if (!st) return null;
+  const lang = getLanguage();
+  const pct = (v: number) => Math.round(v * REPUTATION.scale);
+  if (st.earnedNow) return { id: 'star', heading: tt(lang, 'star.heading'), title: tt(lang, 'star.earned.title', { name }), lines: [tt(lang, 'star.earned.body')] };
+  if (st.lostNow) return { id: 'star', heading: tt(lang, 'star.heading'), title: tt(lang, 'star.lost.title', { name }), lines: [tt(lang, 'star.lost.body', { rep: pct(st.reputation), judgement: Math.round(st.judgement * REPUTATION.scale) })] };
+  if (st.held) return { id: 'star', heading: tt(lang, 'star.heading'), lines: [tt(lang, 'star.kept', { name })] };
+  if (st.weeksQualified > 0) return { id: 'star', heading: tt(lang, 'star.heading'), lines: [tt(lang, 'star.close', { name })] };
+  return null;
+}
+
 // Bankens rader skickas in av anroparen (economy/BankDialog.tsx
 // settlementInWords, missingInWords) så att texten är densamma som i banken.
 export function newspaperFor(
@@ -180,11 +196,13 @@ export function newspaperFor(
   const missing = next ? missingForNext(next) : null;
   const seenSection = seen(evenings, businessName);
   const rankingSection = ranking(evenings, businessName);
+  const starPart = starSection(sim, businessName);
   return {
     masthead: t.masthead,
     subhead: t.subhead(s.week),
     sections: [
       review(reviewedEvening(evenings), businessName),
+      ...(starPart ? [starPart] : []),
       market(evenings, sim),
       ...(rankingSection ? [rankingSection] : []),
       { id: 'bank', heading: t.bankHeading, lines: [...bankLines, ...(missing ? [t.bankNext(missing)] : [])] },

@@ -1599,6 +1599,8 @@ export interface SimulationState {
   djWeek?: { week: number; evenings: number };
   // ORDER 296 — butiken: köpta förmågor (behålls) och facket (gäller nästa kväll).
   shop?: { owned: string[]; slot: string[] };
+  // ORDER 296c — stjärnan (balance.ts STAR): hålls den, och veckorna i rad på nivån.
+  star?: { held: boolean; weeksQualified: number; earnedWeek: number | null; lostWeek: number | null };
   // ORDER 288 — konkurrensen i byn: rivalerna (rykte och vem som styr dem).
   // Saknas i äldre sparfiler; sim/village.ts villageOf ger startläget.
   competition?: import('../sim/village').VillageState;

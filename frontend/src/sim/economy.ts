@@ -18,6 +18,7 @@ import {
   LOAN,
   RISK,
   SHOP,
+  STAR,
   REPUTATION,
   MARKET,
   MEDAL_LEVELS,
@@ -97,6 +98,9 @@ export interface EveningRecord {
   // ORDER 288 — kvällen i byn: alla krogars gäster och intäkt (spelarens
   // rad först, id 'player'), för jämförelsen efter kvällen och tidningen.
   village?: VenueEvening[];
+  // ORDER 296c — kvällens raketer (inte egna eller följder) och de som klarades,
+  // till stjärnans serviceomdöme.
+  rockets?: { fired: number; cleared: number };
 }
 
 // Kvällen till veckans lista när servicen stänger, både vid vanlig
@@ -115,6 +119,10 @@ export function recordEvening(before: SimulationState, after: SimulationState): 
     typeGuests: { ...(d.guestTypeArrivals ?? {}) },
     typeRevenue: { ...(d.guestTypeRevenue ?? {}) },
     social: d.booking?.social ? { nameIndex: d.booking.social.nameIndex, outcome: (after.day.socialGuest ?? d.socialGuest)?.outcome ?? null } : null,
+    rockets: (() => {
+      const log = (after.incidents?.log ?? []).filter((r) => (r.kind ?? 'planned') === 'planned');
+      return { fired: log.length, cleared: log.filter((r) => r.quality === 'best').length };
+    })(),
     billionaire: {
       inTown: d.booking?.billionaireInTown ?? false,
       ours: (d.billionaireVisit?.billSek ?? 0) > 0,
@@ -151,6 +159,8 @@ export interface SettlementRecord {
   renegotiatedNow?: boolean;
   closedNow?: boolean;
   cashAfterSek?: number;
+  // ORDER 296c — stjärnan vid avräkningen (söndagstidningen).
+  star?: { earnedNow: boolean; lostNow: boolean; held: boolean; judgement: number; reputation: number; weeksQualified: number };
   downgradedFrom: BusinessClassId | null;
   downgradedTo: BusinessClassId | null;
 }
@@ -620,6 +630,18 @@ export function settleWeek(state: SimulationState): SimulationState {
   }
   const wagesSek = Math.round(e.weekWagesSek ?? 0);
   const coursesSek = Math.round(e.weekCoursesSek ?? 0);
+  // ORDER 296c — stjärnan: guld i Teatern, högt rykte och gott serviceomdöme
+  // två veckor i rad; en vecka under någon gräns tar den.
+  const rockets = (e.weekEvenings ?? []).reduce((a, x) => ({ fired: a.fired + (x.rockets?.fired ?? 0), cleared: a.cleared + (x.rockets?.cleared ?? 0) }), { fired: 0, cleared: 0 });
+  const judgement = rockets.fired > 0 ? rockets.cleared / rockets.fired : 0;
+  const starLevel = MEDAL_LEVELS.indexOf(state.medals[STAR.pavilion] as typeof MEDAL_LEVELS[number]) >= MEDAL_LEVELS.indexOf(STAR.medal)
+    && state.reputation >= STAR.reputationAtLeast
+    && rockets.fired >= STAR.minRocketsInWeek && judgement >= STAR.judgementAtLeast;
+  const prevStar = state.star ?? { held: false, weeksQualified: 0, earnedWeek: null, lostWeek: null };
+  const weeksQualified = starLevel ? prevStar.weeksQualified + 1 : 0;
+  const earnedNow = !prevStar.held && weeksQualified >= STAR.weeksToEarn;
+  const lostNow = prevStar.held && !starLevel;
+  const star = { held: (prevStar.held && starLevel) || earnedNow, weeksQualified, earnedWeek: earnedNow ? week : prevStar.earnedWeek, lostWeek: lostNow ? week : prevStar.lostWeek };
   // ORDER 296 — veckomålet, omförhandlingen och stängningen.
   const prevRisk: RiskState = e.risk ?? { missedInRow: 0, belowZeroInRow: 0, renegotiated: false, closedWeek: null };
   const targetSek = weeklyTargetSek(e.businessClass);
@@ -640,6 +662,7 @@ export function settleWeek(state: SimulationState): SimulationState {
     : null;
   let next: SimulationState = {
     ...draft,
+    star,
     economy: { ...e, loan, risk, weekRevenueStartSek: state.revenue, weekEvenings: [], weekScenarioCashSek: 0, weekWagesSek: 0, weekCoursesSek: 0 }
   };
   let downgradedTo: BusinessClassId | null = null;
@@ -652,7 +675,7 @@ export function settleWeek(state: SimulationState): SimulationState {
     ...next,
     economy: {
       ...next.economy,
-      lastSettlement: { week, evenings: e.weekEvenings ?? [], revenueSek, floorSek: floor, topUpSek, amortisationSek, rentSek, wagesSek, coursesSek, targetSek, targetHit, renegotiatedNow, closedNow, cashAfterSek: Math.round(next.cash), downgradedFrom, downgradedTo }
+      lastSettlement: { week, evenings: e.weekEvenings ?? [], revenueSek, floorSek: floor, topUpSek, amortisationSek, rentSek, wagesSek, coursesSek, targetSek, targetHit, renegotiatedNow, closedNow, cashAfterSek: Math.round(next.cash), star: { earnedNow, lostNow, held: star.held, judgement, reputation: state.reputation, weeksQualified }, downgradedFrom, downgradedTo }
     }
   };
 }

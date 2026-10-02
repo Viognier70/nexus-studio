@@ -2848,7 +2848,7 @@ function advanceTick(state: SimulationState): SimulationState {
   tickPrepBacklog(draft, tickSeconds);
   // ORDER 296 — hovmästarens nålar.
   tickPins(draft, tickSeconds);
-  maybeOpenIncident(draft);
+  maybeOpenIncident(draft, tickSeconds);
   maybeChance(draft);
 
   // ORDER 043 v3 step 5b — scheduled scenario firing.

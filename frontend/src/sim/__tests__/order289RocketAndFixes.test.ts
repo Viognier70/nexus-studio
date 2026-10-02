@@ -95,13 +95,18 @@ describe('ORDER 289 — en egen raket spelas till slut', () => {
 });
 
 describe('ORDER 289 — raketräkningen', () => {
-  it('antalet raketer står still hela kvällen, också med egna raketer', () => {
+  // ORDER 296c — raketerna utlöses av rummet; räkningen är "raket n i kväll"
+  // och växer bara med kvällens egna raketer (inte med egna eller följder).
+  it('räkningen växer bara med kvällens raketer, inte med egna raketer', () => {
     let s = evening(5);
     const totals = new Set<number>();
+    let prevN = 0;
     let backs = 0;
     for (let i = 0; i < 40000 && s.day.period === 'dinner'; i++) {
       if (s.incidents.active) {
-        totals.add(rocketCounter(s).total);
+        const { n } = rocketCounter(s);
+        if (s.incidents.active.backed || s.incidents.active.chained) totals.add(n - prevN);
+        prevN = Math.max(prevN, n - (s.incidents.active.backed || s.incidents.active.chained ? 0 : 1));
         if (s.incidents.active.backed) {
           const a = s.incidents.active;
           if (!a.picked && (a.revealLeft ?? 0) <= 0) s = reducer(s, { type: 'PICK_BACK_ANSWER', optionId: best(s) });
@@ -111,7 +116,8 @@ describe('ORDER 289 — raketräkningen', () => {
       s = reducer(s, TICK);
     }
     expect(backs).toBeGreaterThan(0);
-    expect(totals.size).toBe(1);
+    // En egen raket räknas inte: räkningen står där den stod.
+    for (const d of totals) expect(d).toBeLessThanOrEqual(0);
   });
 });
 

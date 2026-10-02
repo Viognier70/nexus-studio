@@ -60,8 +60,11 @@ describe('ORDER 296 — butiken', () => {
     expect(s.shop?.owned).toContain('sommBottle');
   });
 
-  it('vid stjärnan (guld i Teatern) har facket fler platser', () => {
-    expect(slotCount(player(0, { gastronomiskateatern: 'guld' }))).toBe(SHOP.slotsAtStar);
+  // ORDER 296c — stjärnan delas ut i söndagstidningen (order296cStar.test.ts);
+  // medaljen ensam ger ingen plats.
+  it('med stjärnan har facket fler platser; guld i Teatern ensamt räcker inte', () => {
+    expect(slotCount(player(0, { gastronomiskateatern: 'guld' }))).toBe(SHOP.slots);
+    expect(slotCount({ ...player(0, {}), star: { held: true, weeksQualified: 2, earnedWeek: 3, lostWeek: null } })).toBe(SHOP.slotsAtStar);
   });
 
   it('mise en place-rutinen ger förberedelsen fler minuter', () => {

@@ -36,6 +36,7 @@ import { abilityActive } from './shop';
 import { calendarFor } from './calendar';
 import { clampScenarioCash, scenarioUnitSek } from './economy';
 import { bestAnswerFactor, medalSteps } from './knowledgeInService';
+import { businessRoomRef } from '../strategic/scene/interiorSharedState';
 import {
   fitsMenu,
   incidentBankFor,
@@ -227,6 +228,8 @@ export interface IncidentsState {
   enabled: boolean;
   slots: { at: number; phase: ArcPhase }[];
   plannedCount?: number;
+  // ORDER 296c — när dörrarna öppnade (kvällens fönster för raketerna).
+  doorsOpenAt?: number | null;
   queued: string[];
   // Den kedjade händelsens sammanhang (samma bord som valet gällde).
   queuedContext: Record<string, IncidentContext>;
@@ -350,22 +353,25 @@ export function planIncidents(state: SimulationState, doorsOpenAt: number, servi
     lessonEvenings: prev.lessonEvenings
   };
   if (incidentBankFor(state.economy.businessClass).length === 0) return { ...state, incidents: reset };
-  const rng = createRng(state.rngState);
-  const n = incidentsTonight(state.day.dayNumber);
-  const window = serviceEndsAt - doorsOpenAt;
-  const phases = arcFor(n);
-  const slots = phases.map((phase, i) => {
-    const frac = INCIDENTS.windowStart + (INCIDENTS.windowEnd - INCIDENTS.windowStart) * (n === 1 ? 0 : i / (n - 1));
-    const jitter = rng.range(-INCIDENTS.jitter, INCIDENTS.jitter);
-    return { at: doorsOpenAt + window * Math.min(INCIDENTS.windowEnd, Math.max(INCIDENTS.windowStart, frac + jitter)), phase };
-  }).sort((a, b) => a.at - b.at);
+  // ORDER 296c — ingen plan: raketerna mognar ur rummet (maybeOpenIncident).
   return {
     ...state,
-    rngState: rng.state,
-    // ORDER 289 — antalet raketer som planerats i kväll; står still hela
-    // kvällen (följdraketer och egna raketer räknas för sig).
-    incidents: { ...reset, enabled: true, slots, serviceEndsAt, plannedCount: slots.length }
+    incidents: { ...reset, enabled: true, slots: [], serviceEndsAt, doorsOpenAt }
   };
+}
+
+// ORDER 296c — rummets tryck: de som sitter och kön mot rummets platser.
+export function roomPressure(state: SimulationState): number {
+  const seats = businessRoomRef.current?.capacity ?? INCIDENTS.fallbackSeats;
+  return Math.min(INCIDENTS.pressureMax, (seatedGuests(state).length + state.waitingIds.length) / Math.max(1, seats));
+}
+
+// Bågens fas efter kvällens andel.
+function phaseAt(frac: number): ArcPhase {
+  if (frac >= INCIDENTS.arcClosingFrom) return 'closing';
+  if (frac >= INCIDENTS.arcCrisisFrom) return 'crisis';
+  if (frac >= INCIDENTS.arcRushFrom) return 'rush';
+  return 'opening';
 }
 
 function pick<T>(items: readonly T[], r: number): T {
@@ -474,25 +480,32 @@ function struckFor(state: SimulationState, step: IncidentStep, situation: string
   return wrong.length > 0 ? [pick(wrong, r()).id] : [];
 }
 
-// Öppna nästa händelse när dess tid har kommit (anropas varje tick under
-// servicen, efter att dörrarna öppnat). Den förra följden slutar här.
-export function maybeOpenIncident(draft: SimulationState): void {
+// ORDER 296c — en raket mognar ur rummet (anropas varje tick under servicen,
+// efter att dörrarna öppnat): inom kvällens fönster, efter pausen sedan
+// förra raketen, med en chans som växer med fullheten, och när bankens
+// villkor stämmer just nu. En kedjad raket går först. Inget tak per kväll.
+// Den förra följden slutar här.
+export function maybeOpenIncident(draft: SimulationState, dt: number): void {
   const inc = draft.incidents;
-  if (!inc || !inc.enabled || inc.active || inc.slots.length === 0) return;
+  if (!inc || !inc.enabled || inc.active) return;
   if (draft.day.period !== 'dinner' || !draft.day.doorsOpenedThisService) return;
-  const slot = inc.slots[0];
-  if (draft.simTime < slot.at) return;
+  const from = inc.doorsOpenAt ?? draft.day.doorsOpenAt ?? draft.simTime;
+  const until = inc.serviceEndsAt ?? draft.simTime;
+  const frac = (draft.simTime - from) / Math.max(1, until - from);
+  if (frac < INCIDENTS.windowStart || frac > INCIDENTS.windowEnd) return;
+  const lastAt = inc.log.length > 0 ? inc.log[inc.log.length - 1].at : -Infinity;
+  if (draft.simTime < lastAt + INCIDENTS.minGapSimSeconds) return;
   const rng = createRng(draft.rngState);
   const r = () => rng.next();
-  const chosen = chooseIncident(draft, slot.phase, r());
-  const slots = inc.slots.slice(1);
-  if (!chosen) {
+  const p = roomPressure(draft);
+  const chance = (INCIDENTS.triggerBasePerSimSecond + INCIDENTS.triggerFullPerSimSecond * p * p) * dt;
+  const hit = r() < chance;
+  if (!hit) {
     draft.rngState = rng.state;
-    draft.incidents = { ...inc, slots };
     return;
   }
-  draft.incidents = { ...inc, slots };
-  openIncident(draft, chosen.incident, chosen.chained, chosen.context, false, r);
+  const chosen = chooseIncident(draft, phaseAt(frac), r());
+  if (chosen) openIncident(draft, chosen.incident, chosen.chained, chosen.context, false, r);
   draft.rngState = rng.state;
 }
 

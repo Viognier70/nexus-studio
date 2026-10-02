@@ -20,6 +20,11 @@ import type {
   SimulationState
 } from '../../types';
 import type { Rng } from '../../util/rng';
+import { useLegacyEconomy } from '../../testHarness/legacyEconomy';
+
+// ORDER 296c — filen prövar regeln att kassan styr gästerna, som är avstängd i
+// spelet (balance.ts RISK.cashTurnsAwayGuests); här är den påslagen.
+useLegacyEconomy();
 
 // Deterministic rng harness — lets each test control chance() outcomes.
 function fakeRng(values: number[]): Rng {

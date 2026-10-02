@@ -1,3 +1,4 @@
+import { RISK } from '../../sim/balance';
 import type { Rng } from '../util/rng';
 import type { DayPeriod, Guest, SimulationState } from '../types';
 import { makeGuest, nextPartyId } from './model';
@@ -204,6 +205,8 @@ export function arrivalProbability(state: SimulationState): number {
 // off state.cash rather than the retired capitals.values.economic
 // scalar. The curve shape is unchanged.
 export function economicArrivalMultiplier(state: SimulationState): number {
+  // ORDER 296c — kassan styr inte gästerna (balance.ts RISK.cashTurnsAwayGuests).
+  if (!RISK.cashTurnsAwayGuests) return 1;
   const normalised = economicReadingNormalised(state);
   return ECONOMIC_ARRIVAL_FLOOR + (1 - ECONOMIC_ARRIVAL_FLOOR) * normalised;
 }
@@ -213,6 +216,8 @@ export function economicArrivalMultiplier(state: SimulationState): number {
 // same-guest outcome is deterministic (a guest whose reading-at-spawn
 // said "walk away" walks away, no re-roll on the way).
 export function walkAwayProbability(state: SimulationState): number {
+  // ORDER 296c — ingen vänder vid dörren för att kassan är låg.
+  if (!RISK.cashTurnsAwayGuests) return 0;
   const normalised = economicReadingNormalised(state);
   return ECONOMIC_WALKAWAY_CEIL * (1 - normalised);
 }

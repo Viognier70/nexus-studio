@@ -398,8 +398,10 @@ export const RANDOMNESS = {
   simulatedWeeks: 1000         // "mäts med 1 000 simulerade veckor"
 } as const;
 
-// ORDER 296 (Vision Owner 2026-10-02, kärnan punkt 2): risken. Talen är
-// godkända som utgångsläge och låses efter harnessen (ORDER_296B_RAPPORT.md).
+// ORDER 296 (Vision Owner 2026-10-02, kärnan punkt 2): risken. ORDER 296c:
+// talen är låsta. Startkassan kalibrerad så att den som har hälften rätt
+// stänger i 30–50 % av säsongerna (7 av 20 med 15 000 kr, mentorns och den
+// rimliga spelaren aldrig, reports/order296c/kal-*.json och karnan-slut.json).
 //   - startkassan sänks kraftigt; banklånet finansierar lokalen som förut;
 //   - bara ränta under säsongen, ingen amortering;
 //   - banken sätter ett veckomål på intäkten (andel av klassens normala
@@ -410,14 +412,19 @@ export const RANDOMNESS = {
 //     påfyllnad, som harnessen räknade utan (reports/order296b/karnan-*.json).
 export const RISK = {
   section: 'Ekonomin',
-  startCashSek: 25000,
+  startCashSek: 15000,
   amortiseDuringSeason: false,
   weeklyTargetShareOfNormalRevenue: 0.95,
   renegotiateAfterMissedWeeks: 2,
   renegotiatedInterestFactor: 2,
   closeAfterWeeksBelowZero: 3,
   floorTopUp: false,
-  downgrade: false
+  downgrade: false,
+  // ORDER 296c (Vision Owner 2026-10-02): "Ta bort den dolda regeln om att
+  // låg kassa vänder bort gäster i dörren." Kassan (det ekonomiska kapitalet,
+  // cashReading.ts) styr inte längre vilka som vänder vid dörren eller hur
+  // många som kommer (arrivals.ts walkAwayProbability, economicArrivalMultiplier).
+  cashTurnsAwayGuests: false
 } as const;
 
 // ORDER 296 (kärnan punkt 5, Vision Owner 2026-10-02): mise en place efter
@@ -449,13 +456,11 @@ export const MISE_EN_PLACE = {
 // facket gäller nästa kväll. Kraven är Designs förslag (proposedRequires);
 // priserna är satta så att en rimlig spelare (omkring 53 krediter i veckan,
 // reports/order296b/karnan-spel.json) köper fyra till sex förmågor under
-// säsongen. Stjärnan: guld i Gastronomiska Teatern (vägens slut).
+// säsongen. Stjärnan står i STAR (ORDER 296c).
 export const SHOP = {
   section: 'Kunskapen',
   slots: 2,
   slotsAtStar: 3,
-  starPavilion: 'gastronomiskateatern' as const,
-  starMedal: 'guld' as const,
   abilities: {
     sommBottle: { requires: 'brons', price: 40 },
     wineFridge: { requires: 'silver', price: 70 },
@@ -531,6 +536,26 @@ export const HOST = {
   apologySatisfaction: 0.08,
   upsellChance: 0.5,
   upsellDeclineSatisfaction: -0.02
+} as const;
+
+// ORDER 296c (Vision Owner 2026-10-02): stjärnan. "Kräver guld i
+// Gastronomiska Teatern och högt rykte och gott serviceomdöme två veckor i
+// rad. Den delas ut i söndagstidningen och kan förloras om nivån sjunker under
+// en vecka. Stjärnan ger facket en tredje plats." Gränserna är föreslagna:
+//   - högt rykte: minst reputationAtLeast vid veckoavräkningen (60 av 100;
+//     mentorns spelare ligger omkring 45, reports/order296b/karnan-slut.json);
+//   - gott serviceomdöme: minst judgementAtLeast av veckans raketer klarade
+//     (omdömet i servicen), av minst minRocketsInWeek raketer;
+//   - två veckor i rad (weeksToEarn) ger stjärnan, en vecka under någon
+//     gräns tar den.
+export const STAR = {
+  section: 'Kunskapen',
+  pavilion: 'gastronomiskateatern' as const,
+  medal: 'guld' as const,
+  reputationAtLeast: 0.6,
+  judgementAtLeast: 0.7,
+  minRocketsInWeek: 5,
+  weeksToEarn: 2
 } as const;
 
 export const DOWNGRADE = {
@@ -723,6 +748,26 @@ export const INCIDENTS = {
   windowStart: 0.08,
   windowEnd: 0.92,
   jitter: 0.03,
+  // ORDER 296c (Vision Owner 2026-10-02): "Raketerna utlöses av det som händer
+  // i rummet (de fem händelserna, incidenterna, gästernas situationer), oftare
+  // när det är fullt och utan tak på tre per kväll." Ingen plan med ett antal
+  // per kväll: i fönstret windowStart–windowEnd mognar en raket med chansen
+  // (triggerBase + triggerFull × rummets fullhet) per simsekund, när bankens
+  // villkor stämmer (kön, de som sitter, kvällens tid, händelserna), med en
+  // paus på minGapSimSeconds efter förra raketen. Rummets tryck = (de som
+  // sitter + kön) / platserna, högst pressureMax; chansen växer med trycket i
+  // kvadrat, så att ett fullt rum med kö ger klart fler raketer än ett lugnt.
+  // Fasen i bågen följer kvällens andel: öppning, rusning från arcRushFrom,
+  // kris från arcCrisisFrom, avslut från arcClosingFrom.
+  triggerBasePerSimSecond: 0.001,
+  triggerFullPerSimSecond: 0.012,
+  pressureMax: 1.5,
+  minGapSimSeconds: 25,
+  arcRushFrom: 0.2,
+  arcCrisisFrom: 0.65,
+  arcClosingFrom: 0.85,
+  // Rummets platser när inget rum är monterat (fullheten).
+  fallbackSeats: 20,
   // "Medaljer i den paviljong som hör till stegets axel ger mer tid på
   // just det steget": så här många sekunder per medaljsteg. Från silver
   // stryks dessutom ett fel alternativ i steget (beslutet 2026-09-26).
