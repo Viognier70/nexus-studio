@@ -189,3 +189,9 @@
 .nx-host-verbs { position: absolute; bottom: calc(100% + 8px); display: grid; gap: 6px; justify-items: start; }
 .nx-host-verb-row { display: flex; gap: 6px; }
 @media (prefers-reduced-motion: reduce) { .nx-pin-done { animation: none; } .nx-pin-timer > span { transition: none; } }
+/* Papperet till höger (skärm 6–7) har sin egen bakgrund i butikens mörka rum. */
+.nx-shop-card { background: var(--w-paper, #f5ead5); }
+.nx-shop-card .nx-heading { color: var(--w-ink, #2a1c13); }
+/* Grenen är 0 bred (den står på vägens punkt); stenarna och grinden tar sin egen bredd. */
+.nx-shop-branch { align-items: flex-start; }
+.nx-shop-gate, .nx-shop-stone, .nx-shop-star { flex: none; width: max-content; }
