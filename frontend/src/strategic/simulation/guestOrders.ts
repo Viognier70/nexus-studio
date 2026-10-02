@@ -24,6 +24,7 @@ import { clampReputation } from './reputation';
 import { dishAllergens, dishDiet, findDish } from './m4Catalogue';
 import { takeFromStock } from './stockPackages';
 import { REPEAT_GUARD_SEC } from './eventStream';
+import { hashKey } from '../util/hash';
 
 export type GuestDiet = 'any' | 'vegetarian' | 'vegan';
 export type Wallet = keyof typeof GUESTS.walletSek;
@@ -44,12 +45,7 @@ export type GuestOrder =
 
 // Ett tal i [0, 1) ur fröet och en nyckel (FNV-1a).
 export function hash01(seed: number, key: string): number {
-  let h = (2166136261 ^ seed) >>> 0;
-  for (let i = 0; i < key.length; i++) {
-    h ^= key.charCodeAt(i);
-    h = Math.imul(h, 16777619) >>> 0;
-  }
-  return h / 4294967296;
+  return hashKey(seed, key);
 }
 
 // ORDER 287a — gästens typ ger plånboken (balance.ts GUEST_TYPES.wallet);

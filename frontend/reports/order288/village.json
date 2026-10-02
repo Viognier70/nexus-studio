@@ -1,0 +1,1783 @@
+{
+  "levels": [
+    {
+      "key": "v",
+      "name": "byn",
+      "level": "village",
+      "cam": 791,
+      "lamps": 505,
+      "groups": 18,
+      "onWay": 6,
+      "venues": 7,
+      "streetTags": [],
+      "clock": "20.27",
+      "venueTexts": [
+        {
+          "id": "player",
+          "text": "Din krog★★★★★28 gäster i kväll"
+        },
+        {
+          "id": "torgkrogen",
+          "text": "Torgkrogen★★★★★1 gäst i kväll"
+        },
+        {
+          "id": "pizzeria-grytan",
+          "text": "Pizzeria Grytan★★★★★0 gäster i kväll"
+        },
+        {
+          "id": "sjoboden",
+          "text": "Sjöboden★★★★★1 gäst i kväll"
+        },
+        {
+          "id": "hotellets-matsal",
+          "text": "Hotellets matsal★★★★★33 gäster i kväll"
+        },
+        {
+          "id": "grillvagnen",
+          "text": "Grillvagnen★★★★★4 gäster i kväll"
+        },
+        {
+          "id": "tacovagnen",
+          "text": "Tacovagnen★★★★★10 gäster i kväll"
+        }
+      ]
+    },
+    {
+      "key": "c",
+      "name": "kvarteret",
+      "level": "district",
+      "cam": 257,
+      "lamps": 505,
+      "groups": 17,
+      "onWay": 6,
+      "venues": 7,
+      "streetTags": [],
+      "clock": "20.30",
+      "venueTexts": [
+        {
+          "id": "player",
+          "text": "Din krog★★★★★28 gäster i kväll"
+        },
+        {
+          "id": "torgkrogen",
+          "text": "TorgkrogenHusmanskost och dagens rätt★★★★★omkring 210 kr per gäst3 gäster i kväll"
+        },
+        {
+          "id": "pizzeria-grytan",
+          "text": "Pizzeria GrytanPizza och kebab, stora portioner★★★★★omkring 130 kr per gäst0 gäster i kväll"
+        },
+        {
+          "id": "sjoboden",
+          "text": "SjöbodenFisk och skaldjur från sjöarna★★★★★omkring 250 kr per gäst1 gäst i kväll"
+        },
+        {
+          "id": "hotellets-matsal",
+          "text": "Hotellets matsalVita dukar och ett stort vinkort★★★★★omkring 400 kr per gäst33 gäster i kväll"
+        },
+        {
+          "id": "grillvagnen",
+          "text": "GrillvagnenBurgare från vagnen på torget★★★★★omkring 100 kr per gäst4 gäster i kväll"
+        },
+        {
+          "id": "tacovagnen",
+          "text": "TacovagnenTacos och lemonad vid sjön★★★★★omkring 90 kr per gäst10 gäster i kväll"
+        }
+      ]
+    },
+    {
+      "key": "x",
+      "name": "gatan",
+      "level": "street",
+      "cam": 59,
+      "lamps": 505,
+      "groups": 24,
+      "onWay": 6,
+      "venues": 0,
+      "streetTags": [
+        "3 gäster · Medelinkomst · mot Din krog · 61 m",
+        "3 gäster · Höginkomst · mot Din krog · 68 m"
+      ],
+      "clock": "20.34",
+      "venueTexts": []
+    },
+    {
+      "key": "z",
+      "name": "krogen",
+      "level": "room",
+      "cam": 18,
+      "lamps": 505,
+      "groups": 25,
+      "onWay": 8,
+      "venues": 0,
+      "streetTags": [],
+      "clock": "20.36",
+      "venueTexts": []
+    }
+  ],
+  "notices": [
+    {
+      "kind": "busAnnounce",
+      "text": "En buss med 30 turister anländer 20.15. De väljer krog efter rykte.",
+      "clock": "19.45",
+      "level": "room"
+    },
+    {
+      "kind": "busChose",
+      "text": "Bussens 30 turister går till Hotellets matsal.",
+      "clock": "20.15",
+      "level": "room"
+    }
+  ],
+  "samples": [
+    {
+      "atSec": 34,
+      "clock": "18.15",
+      "groups": 0,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 35,
+      "clock": "18.16",
+      "groups": 0,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 35,
+      "clock": "18.16",
+      "groups": 0,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 36,
+      "clock": "18.17",
+      "groups": 0,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 37,
+      "clock": "18.18",
+      "groups": 0,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 37,
+      "clock": "18.18",
+      "groups": 0,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 38,
+      "clock": "18.19",
+      "groups": 0,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 39,
+      "clock": "18.20",
+      "groups": 0,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 39,
+      "clock": "18.20",
+      "groups": 0,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 40,
+      "clock": "18.21",
+      "groups": 0,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 40,
+      "clock": "18.21",
+      "groups": 0,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 41,
+      "clock": "18.22",
+      "groups": 0,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 42,
+      "clock": "18.23",
+      "groups": 0,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 42,
+      "clock": "18.23",
+      "groups": 0,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 43,
+      "clock": "18.24",
+      "groups": 0,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 43,
+      "clock": "18.25",
+      "groups": 0,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 44,
+      "clock": "18.25",
+      "groups": 0,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 45,
+      "clock": "18.26",
+      "groups": 0,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 45,
+      "clock": "18.26",
+      "groups": 0,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 46,
+      "clock": "18.27",
+      "groups": 0,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 47,
+      "clock": "18.28",
+      "groups": 0,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 47,
+      "clock": "18.28",
+      "groups": 0,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 48,
+      "clock": "18.29",
+      "groups": 0,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 49,
+      "clock": "18.30",
+      "groups": 0,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 49,
+      "clock": "18.30",
+      "groups": 0,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 50,
+      "clock": "18.31",
+      "groups": 0,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 50,
+      "clock": "18.31",
+      "groups": 0,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 51,
+      "clock": "18.32",
+      "groups": 0,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 52,
+      "clock": "18.33",
+      "groups": 1,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 52,
+      "clock": "18.33",
+      "groups": 1,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 53,
+      "clock": "18.34",
+      "groups": 1,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 54,
+      "clock": "18.35",
+      "groups": 1,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 54,
+      "clock": "18.35",
+      "groups": 1,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 55,
+      "clock": "18.36",
+      "groups": 2,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 55,
+      "clock": "18.37",
+      "groups": 2,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 56,
+      "clock": "18.37",
+      "groups": 2,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 57,
+      "clock": "18.38",
+      "groups": 2,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 57,
+      "clock": "18.38",
+      "groups": 2,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 58,
+      "clock": "18.39",
+      "groups": 2,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 59,
+      "clock": "18.40",
+      "groups": 2,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 59,
+      "clock": "18.40",
+      "groups": 2,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 60,
+      "clock": "18.41",
+      "groups": 2,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 61,
+      "clock": "18.42",
+      "groups": 2,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 61,
+      "clock": "18.42",
+      "groups": 2,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 62,
+      "clock": "18.43",
+      "groups": 2,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 62,
+      "clock": "18.43",
+      "groups": 2,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 63,
+      "clock": "18.44",
+      "groups": 2,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 64,
+      "clock": "18.45",
+      "groups": 2,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 64,
+      "clock": "18.45",
+      "groups": 2,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 65,
+      "clock": "18.46",
+      "groups": 2,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 66,
+      "clock": "18.47",
+      "groups": 2,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 66,
+      "clock": "18.47",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 67,
+      "clock": "18.48",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 67,
+      "clock": "18.49",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 68,
+      "clock": "18.49",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 69,
+      "clock": "18.50",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 69,
+      "clock": "18.51",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 70,
+      "clock": "18.51",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 71,
+      "clock": "18.52",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 71,
+      "clock": "18.52",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 72,
+      "clock": "18.53",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 73,
+      "clock": "18.54",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 73,
+      "clock": "18.54",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 74,
+      "clock": "18.55",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 74,
+      "clock": "18.56",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 75,
+      "clock": "18.56",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 76,
+      "clock": "18.57",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 76,
+      "clock": "18.57",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 77,
+      "clock": "18.58",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 78,
+      "clock": "18.59",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 78,
+      "clock": "18.59",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 79,
+      "clock": "19.00",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 80,
+      "clock": "19.01",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 80,
+      "clock": "19.01",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 81,
+      "clock": "19.02",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 81,
+      "clock": "19.03",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 82,
+      "clock": "19.03",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 83,
+      "clock": "19.04",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 83,
+      "clock": "19.04",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 84,
+      "clock": "19.05",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 85,
+      "clock": "19.06",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 85,
+      "clock": "19.06",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 86,
+      "clock": "19.07",
+      "groups": 4,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 87,
+      "clock": "19.08",
+      "groups": 5,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 87,
+      "clock": "19.08",
+      "groups": 5,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 88,
+      "clock": "19.09",
+      "groups": 5,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 89,
+      "clock": "19.10",
+      "groups": 5,
+      "onWay": 1,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 89,
+      "clock": "19.10",
+      "groups": 5,
+      "onWay": 1,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 90,
+      "clock": "19.11",
+      "groups": 5,
+      "onWay": 1,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 91,
+      "clock": "19.12",
+      "groups": 5,
+      "onWay": 1,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 91,
+      "clock": "19.12",
+      "groups": 5,
+      "onWay": 1,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 92,
+      "clock": "19.13",
+      "groups": 5,
+      "onWay": 1,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 93,
+      "clock": "19.14",
+      "groups": 5,
+      "onWay": 1,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 93,
+      "clock": "19.14",
+      "groups": 5,
+      "onWay": 1,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 94,
+      "clock": "19.15",
+      "groups": 5,
+      "onWay": 1,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 95,
+      "clock": "19.16",
+      "groups": 5,
+      "onWay": 1,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 95,
+      "clock": "19.16",
+      "groups": 6,
+      "onWay": 1,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 96,
+      "clock": "19.17",
+      "groups": 6,
+      "onWay": 1,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 97,
+      "clock": "19.18",
+      "groups": 6,
+      "onWay": 1,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 97,
+      "clock": "19.18",
+      "groups": 6,
+      "onWay": 1,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 98,
+      "clock": "19.19",
+      "groups": 6,
+      "onWay": 1,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 99,
+      "clock": "19.19",
+      "groups": 6,
+      "onWay": 1,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 99,
+      "clock": "19.20",
+      "groups": 6,
+      "onWay": 1,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 100,
+      "clock": "19.21",
+      "groups": 6,
+      "onWay": 1,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 100,
+      "clock": "19.21",
+      "groups": 6,
+      "onWay": 1,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 101,
+      "clock": "19.22",
+      "groups": 6,
+      "onWay": 1,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 102,
+      "clock": "19.23",
+      "groups": 6,
+      "onWay": 1,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 102,
+      "clock": "19.23",
+      "groups": 6,
+      "onWay": 1,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 103,
+      "clock": "19.24",
+      "groups": 6,
+      "onWay": 1,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 104,
+      "clock": "19.25",
+      "groups": 6,
+      "onWay": 1,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 104,
+      "clock": "19.25",
+      "groups": 6,
+      "onWay": 1,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 105,
+      "clock": "19.26",
+      "groups": 5,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 106,
+      "clock": "19.27",
+      "groups": 5,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 107,
+      "clock": "19.27",
+      "groups": 5,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 107,
+      "clock": "19.28",
+      "groups": 5,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 108,
+      "clock": "19.29",
+      "groups": 5,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 110,
+      "clock": "19.30",
+      "groups": 5,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 110,
+      "clock": "19.31",
+      "groups": 5,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 111,
+      "clock": "19.32",
+      "groups": 8,
+      "onWay": 8,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 113,
+      "clock": "19.34",
+      "groups": 8,
+      "onWay": 8,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 114,
+      "clock": "19.35",
+      "groups": 8,
+      "onWay": 8,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 115,
+      "clock": "19.36",
+      "groups": 8,
+      "onWay": 8,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 117,
+      "clock": "19.38",
+      "groups": 8,
+      "onWay": 8,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 118,
+      "clock": "19.38",
+      "groups": 8,
+      "onWay": 8,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 118,
+      "clock": "19.39",
+      "groups": 8,
+      "onWay": 8,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 119,
+      "clock": "19.40",
+      "groups": 8,
+      "onWay": 8,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 120,
+      "clock": "19.41",
+      "groups": 8,
+      "onWay": 8,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 121,
+      "clock": "19.41",
+      "groups": 8,
+      "onWay": 8,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 121,
+      "clock": "19.42",
+      "groups": 8,
+      "onWay": 8,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 122,
+      "clock": "19.43",
+      "groups": 8,
+      "onWay": 8,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 123,
+      "clock": "19.44",
+      "groups": 5,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 123,
+      "clock": "19.44",
+      "groups": 5,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 125,
+      "clock": "19.46",
+      "groups": 5,
+      "onWay": 0,
+      "level": "room",
+      "notice": "busAnnounce"
+    },
+    {
+      "atSec": 126,
+      "clock": "19.47",
+      "groups": 4,
+      "onWay": 0,
+      "level": "room",
+      "notice": "busAnnounce"
+    },
+    {
+      "atSec": 127,
+      "clock": "19.48",
+      "groups": 4,
+      "onWay": 0,
+      "level": "room",
+      "notice": "busAnnounce"
+    },
+    {
+      "atSec": 128,
+      "clock": "19.49",
+      "groups": 4,
+      "onWay": 0,
+      "level": "room",
+      "notice": "busAnnounce"
+    },
+    {
+      "atSec": 129,
+      "clock": "19.50",
+      "groups": 4,
+      "onWay": 0,
+      "level": "room",
+      "notice": "busAnnounce"
+    },
+    {
+      "atSec": 130,
+      "clock": "19.51",
+      "groups": 4,
+      "onWay": 0,
+      "level": "room",
+      "notice": "busAnnounce"
+    },
+    {
+      "atSec": 132,
+      "clock": "19.52",
+      "groups": 3,
+      "onWay": 0,
+      "level": "room",
+      "notice": "busAnnounce"
+    },
+    {
+      "atSec": 133,
+      "clock": "19.54",
+      "groups": 9,
+      "onWay": 3,
+      "level": "room",
+      "notice": "busAnnounce"
+    },
+    {
+      "atSec": 134,
+      "clock": "19.55",
+      "groups": 9,
+      "onWay": 3,
+      "level": "room",
+      "notice": "busAnnounce"
+    },
+    {
+      "atSec": 135,
+      "clock": "19.56",
+      "groups": 10,
+      "onWay": 3,
+      "level": "room",
+      "notice": "busAnnounce"
+    },
+    {
+      "atSec": 136,
+      "clock": "19.57",
+      "groups": 10,
+      "onWay": 3,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 136,
+      "clock": "19.57",
+      "groups": 10,
+      "onWay": 3,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 137,
+      "clock": "19.58",
+      "groups": 10,
+      "onWay": 3,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 138,
+      "clock": "19.59",
+      "groups": 10,
+      "onWay": 3,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 138,
+      "clock": "19.59",
+      "groups": 10,
+      "onWay": 3,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 139,
+      "clock": "20.00",
+      "groups": 10,
+      "onWay": 3,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 140,
+      "clock": "20.01",
+      "groups": 10,
+      "onWay": 3,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 140,
+      "clock": "20.01",
+      "groups": 10,
+      "onWay": 3,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 141,
+      "clock": "20.02",
+      "groups": 12,
+      "onWay": 3,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 142,
+      "clock": "20.03",
+      "groups": 11,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 142,
+      "clock": "20.03",
+      "groups": 11,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 143,
+      "clock": "20.04",
+      "groups": 11,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 144,
+      "clock": "20.05",
+      "groups": 11,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 145,
+      "clock": "20.05",
+      "groups": 11,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 145,
+      "clock": "20.06",
+      "groups": 11,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 146,
+      "clock": "20.07",
+      "groups": 11,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 147,
+      "clock": "20.08",
+      "groups": 11,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 147,
+      "clock": "20.08",
+      "groups": 10,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 148,
+      "clock": "20.09",
+      "groups": 10,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 149,
+      "clock": "20.09",
+      "groups": 9,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 149,
+      "clock": "20.10",
+      "groups": 9,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 150,
+      "clock": "20.11",
+      "groups": 9,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 151,
+      "clock": "20.12",
+      "groups": 8,
+      "onWay": 0,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 151,
+      "clock": "20.12",
+      "groups": 20,
+      "onWay": 1,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 152,
+      "clock": "20.13",
+      "groups": 20,
+      "onWay": 4,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 153,
+      "clock": "20.14",
+      "groups": 20,
+      "onWay": 4,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 153,
+      "clock": "20.14",
+      "groups": 22,
+      "onWay": 10,
+      "level": "room",
+      "notice": null
+    },
+    {
+      "atSec": 155,
+      "clock": "20.16",
+      "groups": 28,
+      "onWay": 10,
+      "level": "room",
+      "notice": "busChose"
+    },
+    {
+      "atSec": 156,
+      "clock": "20.17",
+      "groups": 28,
+      "onWay": 10,
+      "level": "room",
+      "notice": "busChose"
+    },
+    {
+      "atSec": 157,
+      "clock": "20.18",
+      "groups": 26,
+      "onWay": 10,
+      "level": "room",
+      "notice": "busChose"
+    },
+    {
+      "atSec": 158,
+      "clock": "20.19",
+      "groups": 22,
+      "onWay": 10,
+      "level": "room",
+      "notice": "busChose"
+    },
+    {
+      "atSec": 159,
+      "clock": "20.20",
+      "groups": 22,
+      "onWay": 10,
+      "level": "room",
+      "notice": "busChose"
+    },
+    {
+      "atSec": 160,
+      "clock": "20.21",
+      "groups": 21,
+      "onWay": 9,
+      "level": "room",
+      "notice": "busChose"
+    },
+    {
+      "atSec": 162,
+      "clock": "20.23",
+      "groups": 21,
+      "onWay": 9,
+      "level": "room",
+      "notice": "busChose"
+    },
+    {
+      "atSec": 163,
+      "clock": "20.24",
+      "groups": 21,
+      "onWay": 9,
+      "level": "room",
+      "notice": "busChose"
+    },
+    {
+      "atSec": 164,
+      "clock": "20.25",
+      "groups": 19,
+      "onWay": 6,
+      "level": "room",
+      "notice": "busChose"
+    },
+    {
+      "atSec": 202,
+      "clock": "21.03",
+      "groups": 20,
+      "onWay": 5,
+      "level": "street",
+      "notice": null
+    },
+    {
+      "atSec": 203,
+      "clock": "21.04",
+      "groups": 20,
+      "onWay": 5,
+      "level": "street",
+      "notice": null
+    },
+    {
+      "atSec": 203,
+      "clock": "21.04",
+      "groups": 20,
+      "onWay": 5,
+      "level": "street",
+      "notice": null
+    },
+    {
+      "atSec": 204,
+      "clock": "21.05",
+      "groups": 17,
+      "onWay": 3,
+      "level": "street",
+      "notice": null
+    },
+    {
+      "atSec": 205,
+      "clock": "21.06",
+      "groups": 17,
+      "onWay": 3,
+      "level": "street",
+      "notice": null
+    },
+    {
+      "atSec": 205,
+      "clock": "21.06",
+      "groups": 15,
+      "onWay": 3,
+      "level": "street",
+      "notice": null
+    },
+    {
+      "atSec": 206,
+      "clock": "21.07",
+      "groups": 15,
+      "onWay": 3,
+      "level": "street",
+      "notice": null
+    },
+    {
+      "atSec": 207,
+      "clock": "21.08",
+      "groups": 15,
+      "onWay": 3,
+      "level": "street",
+      "notice": null
+    },
+    {
+      "atSec": 207,
+      "clock": "21.08",
+      "groups": 26,
+      "onWay": 3,
+      "level": "street",
+      "notice": null
+    },
+    {
+      "atSec": 208,
+      "clock": "21.09",
+      "groups": 26,
+      "onWay": 3,
+      "level": "street",
+      "notice": null
+    },
+    {
+      "atSec": 209,
+      "clock": "21.10",
+      "groups": 26,
+      "onWay": 3,
+      "level": "street",
+      "notice": null
+    },
+    {
+      "atSec": 210,
+      "clock": "21.10",
+      "groups": 26,
+      "onWay": 3,
+      "level": "street",
+      "notice": null
+    },
+    {
+      "atSec": 210,
+      "clock": "21.11",
+      "groups": 27,
+      "onWay": 3,
+      "level": "street",
+      "notice": null
+    },
+    {
+      "atSec": 211,
+      "clock": "21.12",
+      "groups": 26,
+      "onWay": 3,
+      "level": "street",
+      "notice": null
+    },
+    {
+      "atSec": 212,
+      "clock": "21.13",
+      "groups": 25,
+      "onWay": 3,
+      "level": "street",
+      "notice": null
+    },
+    {
+      "atSec": 212,
+      "clock": "21.13",
+      "groups": 24,
+      "onWay": 0,
+      "level": "street",
+      "notice": null
+    },
+    {
+      "atSec": 213,
+      "clock": "21.14",
+      "groups": 24,
+      "onWay": 0,
+      "level": "street",
+      "notice": null
+    },
+    {
+      "atSec": 214,
+      "clock": "21.15",
+      "groups": 24,
+      "onWay": 0,
+      "level": "street",
+      "notice": null
+    },
+    {
+      "atSec": 214,
+      "clock": "21.15",
+      "groups": 24,
+      "onWay": 0,
+      "level": "street",
+      "notice": null
+    },
+    {
+      "atSec": 215,
+      "clock": "21.16",
+      "groups": 24,
+      "onWay": 0,
+      "level": "street",
+      "notice": null
+    },
+    {
+      "atSec": 216,
+      "clock": "21.17",
+      "groups": 24,
+      "onWay": 0,
+      "level": "street",
+      "notice": null
+    },
+    {
+      "atSec": 216,
+      "clock": "21.17",
+      "groups": 23,
+      "onWay": 0,
+      "level": "street",
+      "notice": null
+    },
+    {
+      "atSec": 217,
+      "clock": "21.18",
+      "groups": 22,
+      "onWay": 0,
+      "level": "street",
+      "notice": null
+    },
+    {
+      "atSec": 218,
+      "clock": "23.40",
+      "groups": 20,
+      "onWay": 0,
+      "level": "street",
+      "notice": null
+    }
+  ],
+  "compare": [
+    {
+      "venue": "hotellets-matsal",
+      "text": "Hotellets matsal48 · varav 30 från bussen366 kr314 kr★★★★★"
+    },
+    {
+      "venue": "player",
+      "text": "Din krog44116 kr255 kr★★★★★"
+    },
+    {
+      "venue": "torgkrogen",
+      "text": "Torgkrogen31193 kr136 kr★★★★★"
+    },
+    {
+      "venue": "grillvagnen",
+      "text": "Grillvagnen på torget26100 krstår vid luckan★★★★★"
+    },
+    {
+      "venue": "sjoboden",
+      "text": "Sjöboden21262 kr183 kr★★★★★"
+    },
+    {
+      "venue": "pizzeria-grytan",
+      "text": "Pizzeria Grytan20123 kr73 kr★★★★★"
+    },
+    {
+      "venue": "tacovagnen",
+      "text": "Tacovagnen vid sjön2096 krstår vid luckan★★★★★"
+    }
+  ],
+  "errors": [],
+  "buttonVillage": "village",
+  "buttonBack": "street",
+  "compareLead": "Din krog kom 2 av 7 i gäster i kväll."
+}

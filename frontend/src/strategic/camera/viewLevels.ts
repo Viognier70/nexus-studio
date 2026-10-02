@@ -39,7 +39,7 @@ const VILLAGE_FOCUS: [number, number] = [
 // APPROXIMATION_REGISTER.md.
 const PLAYER_BUSINESS_CENTROID: [number, number] = [31.6, -16.7];
 
-export const PRESETS: Record<'village' | 'district' | 'business' | 'myBusiness', Preset> = {
+export const PRESETS: Record<'village' | 'district' | 'business' | 'street' | 'myBusiness', Preset> = {
   village: {
     label: 'grythyttan',
     // Composition, not overview. The camera sits lower and tilts further
@@ -84,6 +84,19 @@ export const PRESETS: Record<'village' | 'district' | 'business' | 'myBusiness',
       distance: 55,
       yaw: 0.15,
       pitch: (34 * Math.PI) / 180
+    }
+  },
+  // ORDER 288 — gatans nivå (Vision Owner 2026-10-01: "vem som är på väg in
+  // på gatan"): spelarens krog och gatorna in mot den, ovanför rummets tonband
+  // (GRAY_BOX_CAMERA.restaurantInteriorFadeMid + Half = 75 m) så att gatan
+  // syns och inte rummet.
+  street: {
+    label: 'kvarteret',
+    target: {
+      focus: { x: PLAYER_BUSINESS_CENTROID[0], z: PLAYER_BUSINESS_CENTROID[1] },
+      distance: 95,
+      yaw: 0.4,
+      pitch: (38 * Math.PI) / 180
     }
   },
   myBusiness: {

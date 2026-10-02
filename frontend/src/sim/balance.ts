@@ -239,10 +239,14 @@ export const SUSTAINABILITY_LEVELS = {
 // ORDER 284 — 0,15 → 0,17 efter portionsboken (stockPackages.ts
 // dishPortions): mindre svinn gav den rimliga spelaren 11,8 % vid 0,15
 // (reports/order284/rent-check.json vid 0,17: 9,9 %; week-players.json: 5,0 %).
+// ORDER 288 (F59, Vision Owner 2026-10-01: "kalibrera vinsten mot målet
+// 5–10 % när rivalerna delar gästerna") — 0,17 → 0,32 med rivalerna och
+// bussen i byn: 0,30 gav den rimliga spelaren 9,8 % och 0,35 5,8 %
+// (reports/order288/rent-calibration.json, 20 frön); 0,32 ligger i målet.
 export const RENT = {
   section: 'Ekonomin > Hyran och lönerna',
-  openQuestion: 'F54',
-  shareOfNormalWeeklyRevenue: 0.17,
+  openQuestion: 'F59',
+  shareOfNormalWeeklyRevenue: 0.32,
   reasonableResultShare: [0.05, 0.1] as readonly number[],
   weakDowngradeWeeks: [2, 3] as readonly number[]
 } as const;
@@ -254,6 +258,88 @@ export const LOAN = {
   // säsongen, fördelat lika per vecka.
   interestRate: 0.05,
   openQuestion: 'F3'
+} as const;
+
+// ORDER 288 — byn och konkurrensen (Vision Owner 2026-10-01: "Rivaler som
+// styrs av datorn: Torgkrogen, Pizzeria Grytan, Sjöboden och Hotellets
+// matsal, med eget namn, egen mat, egna priser, eget rykte och egna
+// stjärnor, plus food trucks som parkerar på olika platser varje kväll. De
+// drar gäster från samma gemensamma flöde som du."). Logiken ur Designs
+// nexus-leverans-2026-10-01-byn-och-gasterna (Byn och gasterna.html PREF,
+// choose; byTruckar.js SPOTS, TRUCKS, EVENINGS), talen omräknade till
+// spelets notor (GUESTS.walletSek) och valda (F63). sim/village.ts läser dem.
+export const VILLAGE = {
+  section: 'Ekonomin > Byn',
+  openQuestion: 'F63',
+  // Byns gäster per typ: andelen av dagens pool (MARKET.basePoolPerDay).
+  poolMix: { student: 0.3, middle: 0.5, high: 0.2 },
+  // Stjärnorna ur ryktet (0–1): 1 + ryktet × 4, avrundat, 1–5.
+  stars: { min: 1, max: 5 },
+  // Prototypens choose(): smaken gånger (bas + per stjärna × stjärnor).
+  // Studenten bryr sig inte om stjärnorna (prototypen: "Stjärnorna spelar
+  // minst roll").
+  starWeight: { base: 0.4, perStar: 0.35, ignoredBy: ['student'] as readonly string[] },
+  // Priset: en nota per gäst över vad typen helst betalar i byn väger
+  // (gränsen / notan) upphöjt till priceExponent. Gränserna är på spelets
+  // skala: vinbarens nota per gäst är omkring 110–220 kr (veckans intäkt per
+  // gäst i reports/order288/village.json), inte plånboken i GUESTS.walletSek
+  // som är vad gästen högst kan lägga.
+  priceComfortSek: { student: 130, middle: 260, high: 520 },
+  priceExponent: 2,
+  // Spelarens krog: smaken per rum (prototypens "Vår krog", var, gånger
+  // 1,75), och notan när veckan ännu saknar kvällar (sedan veckans intäkt
+  // per gäst). Med prototypens tal tog rivalerna en tredjedel av spelarens
+  // gäster onsdag–lördag, och fredagens kö försvann (ORDER 267). Gånger 1,75
+  // når den rimliga spelaren (brons i tre, ryktet 0,6) kunskapens tak också
+  // en lördag; rivalerna tar gäster när ryktet faller eller en rival stiger.
+  playerTaste: {
+    default: { student: 2.1, middle: 4.2, high: 3.5 },
+    vinbaren: { student: 2.1, middle: 4.2, high: 4.2 },
+    ölkrogen: { student: 5.25, middle: 4.2, high: 1.05 }
+  } as Record<string, { student: number; middle: number; high: number }>,
+  playerBillSek: 160,
+  // Krogarna. reputation är startryktet (0–1); stjärnorna följer ryktet.
+  // seats och turns sätter hur många de kan ta en kväll; billSek är notan
+  // per gäst. openDays: kvällarna de har öppet.
+  rivals: [
+    { id: 'torgkrogen', kind: 'restaurant', reputation: 0.5, billSek: 210, seats: 44, turns: 1.6, taste: { student: 1, middle: 3, high: 1.5 }, openDays: ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'] },
+    { id: 'pizzeria-grytan', kind: 'restaurant', reputation: 0.1, billSek: 120, seats: 34, turns: 2, taste: { student: 5, middle: 1, high: 0 }, openDays: ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'] },
+    { id: 'sjoboden', kind: 'restaurant', reputation: 0.3, billSek: 250, seats: 30, turns: 1.4, taste: { student: 2, middle: 2.6, high: 1 }, openDays: ['wed', 'thu', 'fri', 'sat'] },
+    { id: 'hotellets-matsal', kind: 'restaurant', reputation: 0.75, billSek: 430, seats: 56, turns: 1.2, taste: { student: 0, middle: 0.6, high: 3 }, openDays: ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'] },
+    { id: 'grillvagnen', kind: 'truck', reputation: 0.3, billSek: 95, seats: 0, turns: 0, taste: { student: 4, middle: 2, high: 0.2 }, openDays: ['tue', 'wed', 'thu', 'fri', 'sat'] },
+    { id: 'tacovagnen', kind: 'truck', reputation: 0.1, billSek: 85, seats: 0, turns: 0, taste: { student: 4.5, middle: 1.5, high: 0.1 }, openDays: ['wed', 'thu', 'fri', 'sat'] }
+  ] as ReadonlyArray<{ id: string; kind: 'restaurant' | 'truck'; reputation: number; billSek: number; seats: number; turns: number; taste: { student: number; middle: number; high: number }; openDays: readonly Weekday[] }>,
+  // Vagnarna tar så här många gäster en kväll (de äter stående vid luckan).
+  truckGuestsPerEvening: 40,
+  // Paket 2:s tre platser (byTruckar.js SPOTS), och var vagnarna står varje
+  // veckodag (EVENINGS, utökat till hela veckan): olika platser varje kväll.
+  truckSpots: ['torget', 'maltidens-hus', 'sjon'] as const,
+  truckSchedule: {
+    mon: { grillvagnen: 'torget', tacovagnen: 'sjon' },
+    tue: { grillvagnen: 'maltidens-hus', tacovagnen: 'torget' },
+    wed: { grillvagnen: 'sjon', tacovagnen: 'maltidens-hus' },
+    thu: { grillvagnen: 'torget', tacovagnen: 'maltidens-hus' },
+    fri: { grillvagnen: 'torget', tacovagnen: 'sjon' },
+    sat: { grillvagnen: 'sjon', tacovagnen: 'maltidens-hus' },
+    sun: { grillvagnen: 'torget', tacovagnen: 'sjon' }
+  } as Record<Weekday, Record<string, 'torget' | 'maltidens-hus' | 'sjon'>>,
+  // Rivalens pris en kväll: notan gånger 1 ± detta (fröets slump).
+  priceSpread: 0.08,
+  // Kvällens intäkt per gäst: notan gånger 1 ± detta.
+  billSpread: 0.12,
+  // Rivalens rykte efter kvällen: + step × (fullhet − målet) ± brus,
+  // inom min–max. Fullheten är gästerna mot platserna gånger sittningarna.
+  reputationStep: 0.02,
+  reputationTargetFullness: 0.6,
+  reputationNoise: 0.015,
+  reputationRange: [0.05, 0.95] as readonly number[],
+  // Bussen med turister (Vision Owner: "En buss med 30 turister anländer
+  // 20.15. De väljer krog efter rykte."). Aviseringen kommer en halvtimme
+  // före. De väljer en krog (inte vagnarna) med vikten stjärnor upphöjt
+  // till starsExponent, och kommer utöver dagens pool. Sällskapen i bussen.
+  bus: { tourists: 30, announceMinute: 1185, arriveMinute: 1215, weekdays: ['fri', 'sat'] as readonly Weekday[], starsExponent: 2, partySizes: [3, 5] as readonly [number, number], type: 'middle' as const },
+  // Hur länge aviseringen syns, i spelsekunder.
+  noticeSimSeconds: 24
 } as const;
 
 export const MARKET = {
@@ -1120,8 +1206,11 @@ export const RUSH = {
   openQuestion: 'F61',
   waves: [
     { id: 'cars', atMinute: 1170, share: 0.2, type: 'high', partySizes: [2, 4], weekdays: ['wed', 'thu', 'fri', 'sat'] },
-    { id: 'bus', atMinute: 1215, share: 0.25, type: 'middle', partySizes: [3, 5], weekdays: ['fri', 'sat'] }
-  ] as ReadonlyArray<{ id: string; atMinute: number; share: number; type: 'student' | 'middle' | 'high'; partySizes: readonly [number, number]; weekdays: readonly Weekday[] }>,
+    // ORDER 288 — bussen är byns: turisterna väljer krog efter rykte
+    // (VILLAGE.bus, sim/village.ts busTonight) och kommer utöver poolen.
+    // Andelen 0: det jämna flödet minskas inte.
+    { id: 'bus', atMinute: 1215, share: 0, type: 'middle', partySizes: [3, 5], weekdays: ['fri', 'sat'], village: true }
+  ] as ReadonlyArray<{ id: string; atMinute: number; share: number; type: 'student' | 'middle' | 'high'; partySizes: readonly [number, number]; weekdays: readonly Weekday[]; village?: boolean }>,
   // Sällskapen i en våg kommer inom så här många spelsekunder.
   spreadSimSeconds: 8,
   // Klasser med matsal och bokningsbok har rusningar (vinbaren).

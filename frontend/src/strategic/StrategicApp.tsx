@@ -1,7 +1,8 @@
 import { useBusiness } from './business/BusinessContext';
 import { ServiceCamera } from './camera/ServiceCamera';
 import { SoundDirector } from './ui/sound/SoundDirector';
-import { VillageButton } from './ui/VillageButton';
+import { LevelBar } from './ui/LevelBar';
+import { VillageNotice } from './ui/VillageNotice';
 import { QueuePanel } from './ui/service/QueuePanel';
 import { ServiceTabs } from './ui/service/ServiceTabs';
 import { TillBar } from './ui/service/TillBar';
@@ -290,10 +291,12 @@ function StrategicShell() {
         {/* ORDER 290 — Designs serviceläget: kvällskassan bredvid klockan. */}
         <TillBar />
       </div>
-      {/* ORDER 290 — byn och tillbaka (knappen och tangenten V). */}
+      {/* ORDER 288 — fyra nivåer med egna knappar och tangenter (byn och
+          tillbaka med V som i ORDER 290), och byns aviseringar. */}
       <div className="nx-hud-tools">
-        <VillageButton />
+        <LevelBar />
       </div>
+      <VillageNotice />
       {/* ORDER 290 — Designs serviceläget: panelerna som tre flikar nere till vänster. */}
       <ServiceTabs />
       {/* ORDER 292 — kön vid dörren och vågorna under servicen. */}

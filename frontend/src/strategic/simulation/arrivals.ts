@@ -11,6 +11,7 @@ import { computeShareFactor } from './competitors';
 import { calendarFor } from '../../sim/calendar';
 import { dailyGuestCap } from '../../sim/economy';
 import { waveShareTonight } from './rush';
+import { poolArrivals } from '../../sim/village';
 
 // ORDER 111 §3 — food truck-specifika viktningar.
 //
@@ -227,7 +228,7 @@ const PARTY_PAIR_P = 0.35;
 export function maybeSpawnGuest(state: SimulationState, rng: Rng): Guest[] {
   // ORDER 265 — marknadens tak: spelarens andel av dagens gästpool
   // (speldesign > Marknaden, src/sim/economy.ts dailyGuestCap).
-  if ((state.day.arrivalsToday ?? 0) >= dailyGuestCap(state)) return [];
+  if (poolArrivals(state.day) >= dailyGuestCap(state)) return [];
   // ORDER 111 §3 — kögate för food truck.
   if (state.businessClass === 'foodtrucken') {
     if (state.waitingIds.length >= state.policies.capacity) return [];
@@ -254,7 +255,7 @@ export function maybeSpawnGuest(state: SimulationState, rng: Rng): Guest[] {
   }
 
   // Ett sällskap får inte blåsa marknadens tak för dagen.
-  const marketRoom = Math.max(1, dailyGuestCap(state) - (state.day.arrivalsToday ?? 0));
+  const marketRoom = Math.max(1, dailyGuestCap(state) - poolArrivals(state.day));
   const effectiveSize = Math.min(partySize, marketRoom);
 
   const party = effectiveSize > 1

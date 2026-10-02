@@ -33,6 +33,7 @@ import { NxButton, NxLabel, NxScreen } from '../ui/system/components';
 import { eveningGrid, pickLessonIndex, stepsCleared, type CellState, type GridRow } from '../ui/service/serviceView';
 import '../ui/service/service.css';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
+import { CompareScreen, eveningVillage } from './CompareScreen';
 
 function BookIcon() {
   return (
@@ -271,7 +272,7 @@ export function EveningBar() {
   const guard = useArrivalGuard(`${sim.day.dayNumber}:${step}`);
   if (sim.day.period !== 'evening' || sim.day.eveningEndRequested) return null;
   const afterResult = lesson !== null ? 'lesson' : 'story';
-  const go = (to: 'transfer' | 'result' | 'lesson' | 'story') => dispatch({ type: 'EVENING_STEP', to });
+  const go = (to: 'transfer' | 'result' | 'compare' | 'lesson' | 'story') => dispatch({ type: 'EVENING_STEP', to });
   // ORDER 290 — överföringen till företagskontot efter sopbilen.
   const hasTransfer = !!sim.day.transfer && sim.day.transfer.dayNumber === sim.day.dayNumber;
   const end = guard(() => dispatch({ type: 'END_EVENING' }));
@@ -281,8 +282,13 @@ export function EveningBar() {
   if ((step === 'transfer' || step === 'waste') && hasTransfer) {
     return <TransferScreen sim={sim} onContinue={guard(() => go('result'))} />;
   }
+  // ORDER 288 — kvällen i byn (J1) efter kvällens resultat, när byns rader finns.
+  const hasCompare = eveningVillage(sim) !== null;
   if (step === 'waste' || step === 'transfer' || step === 'result') {
-    return <ResultScreen sim={sim} onContinue={guard(() => go(afterResult))} />;
+    return <ResultScreen sim={sim} onContinue={guard(() => go(hasCompare ? 'compare' : afterResult))} />;
+  }
+  if (step === 'compare') {
+    return <CompareScreen sim={sim} onContinue={guard(() => go(afterResult))} />;
   }
   // En kväll utan raketer har ingen lärdom: bara berättelsen.
   if (lesson === null || step === 'story') {

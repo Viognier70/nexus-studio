@@ -1,0 +1,596 @@
+// ORDER 288 — gästerna i byn (Vision Owner 2026-10-01): "gästtyperna går
+// genom byn och väljer krog efter rykte, pris och smak. Bilar utifrån
+// parkerar och släpper av sällskap." och "Gruppen syns på kartan och går mot
+// den krog den väljer."
+//
+// Logiken ur Designs Byn och gasterna.html (spawn, advance, arrive, bilarna)
+// och byTruckar.js (vagnarna och kön vid luckan), på byns riktiga gator
+// (content/villageNetwork.ts) och med simuleringens tal:
+//   - Kvällens gäster per krog och typ läses ur simuleringen (sim/village.ts
+//     villageEvening med spelarens tak, sim/economy.ts dailyGuestCap). Varje
+//     krog får sina sällskap utspridda över kvällen; de går från där typen
+//     kommer ifrån (studenterna från Måltidens hus, paren från husen,
+//     höginkomsttagarna från hotellet eller med bil) till krogens dörr.
+//   - Rusningens bilar (day.wavePending, rush.ts) och bussen (day.villageNotice,
+//     sim/village.ts busTonight) är simuleringens egna: bilarna kör in när
+//     vågen börjar, bussen kör in när aviseringen kommer och turisterna går
+//     till krogen de valde.
+//   - Miljardären promenerar från hotellet genom byn när han är i byn, och
+//     går till krogen han valde (bokningsboken).
+// Figurerna till spelarens krog är byns bild av flödet, inte gästerna i
+// rummet: rummets gäster kommer när simuleringen släpper in dem.
+//
+// Tiden följer simuleringen (spelminuter), så att en gata på 600 m tar
+// ungefär sju spelminuter att gå.
+
+import { useFrame, useThree } from '@react-three/fiber';
+import { useEffect, useMemo, useRef } from 'react';
+import * as THREE from 'three';
+import { useCamera } from '../../camera/CameraContext';
+import { useSimState } from '../../simulation/SimulationProvider';
+import { WARM } from '../../../ui/theme/nexusTheme.warm';
+import { GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, VILLAGE } from '../../../sim/balance';
+import { clockMinutes } from '../../../sim/clock';
+import { dailyGuestCap } from '../../../sim/economy';
+import { busTonight, PLAYER_VENUE, POOL_TYPES, venuesTonight, villageEvening, type PoolType } from '../../../sim/village';
+import { driveNetwork, pointAlong, routeBetween, routeLength, walkNetwork } from '../../content/villageNetwork';
+import { truckSpotPlace, venuePlaces, villageSources } from '../../content/villagePlaces';
+import { createRng } from '../../util/rng';
+import { readabilityScale } from '../../util/readability';
+import { publishVillageLive, type OnWayGroup } from './villageLive';
+import type { SimulationState } from '../../types';
+
+type Vec2 = [number, number];
+type WalkerKind = PoolType | 'social' | 'billionaire' | 'tourist';
+
+// Gångfarten i meter per spelminut. Spelets klocka går fort (en spelminut är
+// två simuleringssekunder); med verklig gångfart (78 m per spelminut) sprang
+// figurerna över gatan på en sekund. Byns bild går i stället i en fart som
+// går att följa på gatans nivå, och sällskapen ger sig av tidigare.
+const WALK_M_PER_GAME_MIN = 12;
+const DRIVE_M_PER_GAME_MIN = 700;
+const TYPE_PACE: Record<WalkerKind, number> = { student: 1.2, middle: 1, high: 0.9, social: 0.95, billionaire: 0.55, tourist: 0.85 };
+// Kvällens fönster för ankomsterna, i spelminuter (19.05–22.30).
+const ARRIVE_FROM = 19 * 60 + 5;
+const ARRIVE_UNTIL = 22 * 60 + 30;
+const EAT_AT_TRUCK_MIN = 12;
+// Gästerna går hem efter måltiden (spelminuter vid bordet).
+const STAY_MIN: [number, number] = [70, 130];
+const MAX_FIGURES = 360;
+const MAX_CARS = 24;
+const FIGURE_CURVE = { rampStart: 30, rampEnd: 700, maxScale: 6 };
+const MARKER_FROM_M = 150;
+const ON_WAY_RADIUS_M = 160;
+const MAX_HEAT = 700;
+const HEAT_CELL_M = 8;
+// Hur mycket en gäst som går genom en ruta lyser upp den (per spelminut).
+const HEAT_PER_GUEST_MIN = 0.6;
+
+const TYPE_COLOUR: Record<WalkerKind, string> = {
+  student: WARM.guest.student,
+  middle: WARM.guest.middle,
+  high: WARM.guest.high,
+  social: WARM.guest.social,
+  billionaire: WARM.guest.billionaire,
+  tourist: WARM.guest.middle
+};
+
+interface Planned {
+  at: number;
+  venueId: string;
+  type: WalkerKind;
+  n: number;
+  byCar: boolean;
+  source: number;
+  key: string;
+}
+
+interface Walker {
+  key: string;
+  type: WalkerKind;
+  n: number;
+  venueId: string;
+  route: Vec2[];
+  length: number;
+  s: number;
+  pace: number;
+  eatUntil: number | null;
+  standAt: Vec2 | null;
+  ring: string | null;
+  arrived: boolean;
+  // På väg hem efter måltiden (räknas inte som gäst på väg in).
+  homeward: boolean;
+  source: number;
+}
+
+interface Car {
+  route: Vec2[];
+  length: number;
+  s: number;
+  parkedAt: number | null;
+  drop: Planned | null;
+  colour: string;
+  bus: boolean;
+  // Meter per spelminut.
+  speed: number;
+}
+
+function startNode(type: WalkerKind, rnd: () => number): { node: number; byCar: boolean } {
+  const src = villageSources();
+  if (type === 'student') return { node: src.campus, byCar: false };
+  if (type === 'high') return rnd() < 0.5 ? { node: src.hotel, byCar: false } : { node: src.parking, byCar: true };
+  if (type === 'middle' && rnd() < 0.25) return { node: src.parking, byCar: true };
+  return { node: src.homes[Math.floor(rnd() * src.homes.length)], byCar: false };
+}
+
+function doorFor(venueId: string, _state: SimulationState, venues: ReturnType<typeof venuesTonight>): number {
+  const v = venues.find((x) => x.id === venueId);
+  if (v?.spot) return truckSpotPlace(v.spot).door;
+  return (venuePlaces()[venueId] ?? venuePlaces()[PLAYER_VENUE]).door;
+}
+
+// Kvällens plan: varje krogs sällskap med ankomsttid, typ och startpunkt.
+function planEvening(state: SimulationState): Planned[] {
+  const venues = venuesTonight(state);
+  const capRaw = dailyGuestCap(state);
+  const cap = Number.isFinite(capRaw) ? capRaw : 0;
+  const shares = GUEST_TYPES.share[state.businessClass] ?? GUEST_TYPES.share.default;
+  const playerTypes = { student: cap * shares.student, middle: cap * shares.middle, high: cap * shares.high };
+  const rows = villageEvening(state, { guests: cap, revenueSek: 0, typeGuests: playerTypes });
+  const rng = createRng(((state.seed ?? 0) * 7919 + state.day.dayNumber * 104729) >>> 0);
+  const rnd = () => rng.next();
+  const out: Planned[] = [];
+  rows.forEach((row) => {
+    if (!row.open) return;
+    for (const t of POOL_TYPES) {
+      let left = Math.round(row.typeGuests[t]);
+      while (left > 0) {
+        const n = Math.min(left, t === 'student' ? 2 + Math.floor(rnd() * 3) : 1 + Math.floor(rnd() * 3));
+        left -= n;
+        const s = startNode(t, rnd);
+        // Flest kommer mitt i kvällen (triangelfördelning över fönstret).
+        out.push({ at: ARRIVE_FROM + ((rnd() + rnd()) / 2) * (ARRIVE_UNTIL - ARRIVE_FROM), venueId: row.id, type: t, n, byCar: s.byCar, source: s.node, key: `${row.id}:${t}:${out.length}` });
+      }
+    }
+  });
+  // Gästen med socialt kapital går till spelarens krog när hon kommer.
+  const social = state.day.booking?.social;
+  if (social && venues[0].open) {
+    out.push({ at: 18 * 60 + GUEST_TYPES.arrivesAfterMinutes.social, venueId: PLAYER_VENUE, type: 'social', n: 1, byCar: false, source: villageSources().homes[0], key: 'social' });
+  }
+  return out.sort((a, b) => a.at - b.at);
+}
+
+function makeFigureMesh(): THREE.InstancedMesh {
+  const body = new THREE.CylinderGeometry(0.2, 0.26, 1.15, 8);
+  body.translate(0, 0.62, 0);
+  const head = new THREE.SphereGeometry(0.15, 10, 8);
+  head.translate(0, 1.42, 0);
+  const geo = mergeTwo(body, head);
+  // Oupplysta färger: gästerna ska synas i kvällsbyn (typens färg ur WARM.guest).
+  const mat = new THREE.MeshBasicMaterial();
+  const mesh = new THREE.InstancedMesh(geo, mat, MAX_FIGURES);
+  mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  mesh.count = 0;
+  mesh.frustumCulled = false;
+  mesh.castShadow = false;
+  return mesh;
+}
+
+function mergeTwo(a: THREE.BufferGeometry, b: THREE.BufferGeometry): THREE.BufferGeometry {
+  const ai = a.toNonIndexed();
+  const bi = b.toNonIndexed();
+  const pos = new Float32Array(ai.attributes.position.array.length + bi.attributes.position.array.length);
+  pos.set(ai.attributes.position.array as Float32Array, 0);
+  pos.set(bi.attributes.position.array as Float32Array, ai.attributes.position.array.length);
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  g.computeVertexNormals();
+  return g;
+}
+
+export function VillageLife() {
+  const sim = useSimState();
+  const simRef = useRef(sim);
+  simRef.current = sim;
+  const { actualRef } = useCamera();
+  const camera = useThree((x) => x.camera);
+  const root = useMemo(() => new THREE.Group(), []);
+  const clockRef = useRef(sim.simTime);
+  const live = useRef({
+    day: -1,
+    plan: [] as Planned[],
+    next: 0,
+    walkers: [] as Walker[],
+    cars: [] as Car[],
+    arrived: {} as Record<string, number>,
+    wavesSeen: new Set<string>(),
+    leaving: [] as Array<{ at: number; w: Walker }>,
+    busDone: { announce: false, chose: false },
+    billionaire: false,
+    heat: new Map<string, { a: Vec2; b: Vec2; h: number }>(),
+    lastPublish: 0,
+    lastHeat: 0
+  });
+
+  const meshes = useMemo(() => {
+    const figures = makeFigureMesh();
+    // Gruppens markering i byn: en skiva som vänder sig mot kameran.
+    const markerGeo = new THREE.CircleGeometry(1, 20);
+    const markers = new THREE.InstancedMesh(markerGeo, new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.92, depthWrite: false }), MAX_FIGURES);
+    markers.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    markers.count = 0;
+    markers.frustumCulled = false;
+    markers.renderOrder = 3;
+    const ringGeo = new THREE.RingGeometry(0.9, 1.2, 28);
+    ringGeo.rotateX(-Math.PI / 2);
+    const rings = new THREE.InstancedMesh(ringGeo, new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.95, depthWrite: false, side: THREE.DoubleSide }), 16);
+    rings.count = 0;
+    rings.frustumCulled = false;
+    const carGeo = new THREE.BoxGeometry(1.8, 1.4, 4.3);
+    carGeo.translate(0, 0.75, 0);
+    const cars = new THREE.InstancedMesh(carGeo, new THREE.MeshStandardMaterial({ roughness: 0.5, metalness: 0.2 }), MAX_CARS);
+    cars.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    cars.count = 0;
+    cars.frustumCulled = false;
+    const busGeo = new THREE.BoxGeometry(2.6, 3.2, 12);
+    busGeo.translate(0, 1.7, 0);
+    const bus = new THREE.Mesh(busGeo, new THREE.MeshStandardMaterial({ color: '#c8a24a', roughness: 0.5, emissive: new THREE.Color('#5a3d10'), emissiveIntensity: 0.3 }));
+    bus.visible = false;
+    // Gästflödet som breda band längs gatorna (kvarteret).
+    const heatGeo = new THREE.PlaneGeometry(1, 1);
+    heatGeo.rotateX(-Math.PI / 2);
+    const heat = new THREE.InstancedMesh(heatGeo, new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.85, blending: THREE.AdditiveBlending, depthWrite: false }), MAX_HEAT);
+    heat.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    heat.count = 0;
+    heat.frustumCulled = false;
+    heat.renderOrder = 2;
+    root.add(figures, markers, rings, cars, bus, heat);
+    return { figures, markers, rings, cars, bus, heat };
+  }, [root]);
+
+  useEffect(() => () => {
+    root.traverse((o) => {
+      const m = o as THREE.Mesh;
+      m.geometry?.dispose?.();
+      const mat = m.material as THREE.Material | undefined;
+      mat?.dispose?.();
+    });
+  }, [root]);
+
+  const tmp = useMemo(() => ({ m: new THREE.Matrix4(), q: new THREE.Quaternion(), p: new THREE.Vector3(), s: new THREE.Vector3(), c: new THREE.Color(), up: new THREE.Vector3(0, 1, 0) }), []);
+
+  useFrame((_, delta) => {
+    const s = simRef.current;
+    const L = live.current;
+    const g = walkNetwork();
+    const speed = s.speed ?? 1;
+    let t = clockRef.current + Math.min(delta, 0.1) * speed;
+    if (!Number.isFinite(t) || Math.abs(t - s.simTime) > 1) t = s.simTime;
+    t = Math.min(Math.max(t, s.simTime - 0.25), s.simTime + 0.2);
+    const dGameMin = Math.max(0, t - clockRef.current) * GAME_MINUTES_PER_SIM_SECOND;
+    clockRef.current = t;
+    // Sällskapen ger sig av redan under förberedelserna och når dörren när den öppnar.
+    const inEvening = s.day.period === 'dinner';
+    const now = s.day.period === 'dinner' ? clockMinutes(s) + ((t - s.simTime) * GAME_MINUTES_PER_SIM_SECOND) : 0;
+    const venues = venuesTonight(s);
+
+    // Ny dag: kvällens plan, och byn töms.
+    if (L.day !== s.day.dayNumber) {
+      L.day = s.day.dayNumber;
+      L.plan = planEvening(s);
+      L.next = 0;
+      L.walkers = [];
+      L.cars = [];
+      L.arrived = {};
+      L.wavesSeen = new Set();
+      L.leaving = [];
+      L.busDone = { announce: false, chose: false };
+      L.billionaire = false;
+      L.heat.clear();
+    }
+    if (s.day.period !== 'dinner' && s.day.period !== 'evening') {
+      L.walkers = [];
+      L.cars = [];
+    }
+
+    if (inEvening) {
+      // Sällskapen ur planen ger sig av så att de når dörren på sin tid.
+      while (L.next < L.plan.length) {
+        const p = L.plan[L.next];
+        const door = doorFor(p.venueId, s, venues);
+        const route = routeBetween(g, p.source, door);
+        const len = routeLength(route);
+        const travel = len / (WALK_M_PER_GAME_MIN * TYPE_PACE[p.type]) + (p.byCar ? 2 : 0);
+        if (now < p.at - travel) break;
+        L.next++;
+        if (p.byCar) spawnCar(L, p);
+        else spawnWalker(L, p, route, venues);
+      }
+      // Rusningens bilar: sällskapen ur vågen kör in till spelarens krog.
+      for (const id of s.day.wavesStarted ?? []) {
+        if (L.wavesSeen.has(id) || id === 'bus') continue;
+        L.wavesSeen.add(id);
+        const parties = (s.day.wavePending ?? []).filter((w) => w.waveId === id);
+        parties.forEach((w, i) => spawnCar(L, { at: now, venueId: PLAYER_VENUE, type: w.type as PoolType, n: w.size, byCar: true, source: villageSources().parking, key: `${id}:${i}` }));
+      }
+      // Bussen: kör in när aviseringen kommer, turisterna går till krogen de valde.
+      const notice = s.day.villageNotice;
+      if (notice?.kind === 'busAnnounce' && !L.busDone.announce) {
+        L.busDone.announce = true;
+        spawnBus(L, now);
+      }
+      if (s.day.villageEvents?.includes('bus-chose') && !L.busDone.chose) {
+        L.busDone.chose = true;
+        const bus = busTonight(s);
+        if (bus) {
+          const src = villageSources();
+          const door = doorFor(bus.venueId, s, venues);
+          const route = routeBetween(g, src.busStop, door);
+          let left = bus.tourists;
+          let i = 0;
+          while (left > 0) {
+            const n = Math.min(left, VILLAGE.bus.partySizes[1]);
+            left -= n;
+            spawnWalker(L, { at: now, venueId: bus.venueId, type: 'tourist', n, byCar: false, source: src.busStop, key: `bus:${i++}` }, route, venues, -i * 3);
+          }
+        }
+      }
+      // Miljardären: en promenad från hotellet runt torget och sjön, sedan
+      // till krogen han valde (bokningsboken; annars hotellets matsal).
+      const book = s.day.booking;
+      if (book?.billionaireInTown && !L.billionaire && now >= 18 * 60 + GUEST_TYPES.arrivesAfterMinutes.billionaire - 45) {
+        L.billionaire = true;
+        const src = villageSources();
+        const dest = book.billionaire ? PLAYER_VENUE : 'hotellets-matsal';
+        const torget = venuePlaces().torgkrogen.door;
+        const lake = truckSpotPlace('sjon').door;
+        const route = [...routeBetween(g, src.hotel, torget), ...routeBetween(g, torget, lake).slice(1), ...routeBetween(g, lake, doorFor(dest, s, venues)).slice(1)];
+        spawnWalker(L, { at: now, venueId: dest, type: 'billionaire', n: 1, byCar: false, source: src.hotel, key: 'billionaire' }, route, venues);
+      }
+    }
+
+    // Gå, köra, äta vid luckan.
+    for (const w of L.walkers) {
+      if (w.arrived) continue;
+      if (w.eatUntil !== null) {
+        if (now >= w.eatUntil) w.arrived = true;
+        continue;
+      }
+      const before = pointAlong(w.route, w.s);
+      w.s += dGameMin * WALK_M_PER_GAME_MIN * w.pace;
+      const at = pointAlong(w.route, w.s);
+      addHeat(L, before, at, w.n * dGameMin);
+      if (w.s >= w.length && w.homeward) {
+        w.arrived = true;
+        continue;
+      }
+      if (w.s >= w.length) {
+        L.arrived[w.venueId] = (L.arrived[w.venueId] ?? 0) + w.n;
+        const v = venues.find((x) => x.id === w.venueId);
+        if (v?.kind === 'truck') {
+          // Ställer sig i kön vid luckan och äter stående en stund.
+          const k = L.walkers.filter((o) => o.venueId === w.venueId && o.eatUntil !== null && !o.arrived).length;
+          const end = w.route[w.route.length - 1];
+          w.standAt = [end[0] + ((k % 3) - 1) * 1.6, end[1] + 2 + Math.floor(k / 3) * 1.4];
+          w.eatUntil = now + EAT_AT_TRUCK_MIN;
+        } else {
+          w.arrived = true;
+          // Efter måltiden går sällskapet hem igen.
+          if (!w.homeward && w.type !== 'billionaire') {
+            const stay = STAY_MIN[0] + (Math.abs(Math.sin(w.length * 7.13)) * (STAY_MIN[1] - STAY_MIN[0]));
+            L.leaving.push({ at: now + stay, w });
+          }
+        }
+      }
+    }
+    L.walkers = L.walkers.filter((w) => !w.arrived);
+    // Sällskap som har ätit klart går hem.
+    if (L.leaving.length > 0) {
+      const due = L.leaving.filter((x) => x.at <= now);
+      if (due.length > 0) {
+        L.leaving = L.leaving.filter((x) => x.at > now);
+        for (const { w } of due) {
+          const from = w.route[w.route.length - 1];
+          const back = [...w.route].reverse();
+          if (back.length >= 2 && from) {
+            L.walkers.push({ ...w, key: `${w.key}:home`, route: back, length: routeLength(back), s: 0, arrived: false, homeward: true, eatUntil: null, standAt: null, ring: null });
+          }
+        }
+      }
+    }
+    for (const c of L.cars) {
+      if (c.parkedAt !== null) continue;
+      c.s += dGameMin * c.speed;
+      if (c.s >= c.length) {
+        c.parkedAt = now;
+        if (c.drop) {
+          const src = villageSources();
+          const d = c.drop;
+          const route = routeBetween(g, c.bus ? src.busStop : src.parking, doorFor(d.venueId, s, venues));
+          spawnWalker(L, d, route, venues);
+          c.drop = null;
+        }
+      }
+    }
+    // Parkerade bilar står kvar kvällen ut, högst MAX_CARS.
+    if (L.cars.length > MAX_CARS) L.cars.splice(0, L.cars.length - MAX_CARS);
+
+    draw(s, now);
+
+    // Etiketterna och HUD:en några gånger i sekunden.
+    if (t - L.lastPublish > 0.4 || t < L.lastPublish) {
+      L.lastPublish = t;
+      const door = venuePlaces()[PLAYER_VENUE].doorPoint;
+      const onWay: OnWayGroup[] = L.walkers
+        .filter((w) => w.venueId === PLAYER_VENUE && w.eatUntil === null && !w.homeward)
+        .map((w) => {
+          const p = pointAlong(w.route, w.s);
+          return { key: w.key, n: w.n, type: w.type, metres: Math.max(0, w.length - w.s), x: p.x, z: p.z, near: Math.hypot(p.x - door[0], p.z - door[1]) };
+        })
+        .filter((w) => w.near < ON_WAY_RADIUS_M)
+        .sort((a, b) => a.metres - b.metres)
+        .map(({ near: _n, ...rest }) => rest);
+      publishVillageLive({ arrived: { ...L.arrived }, onWay, groupsWalking: L.walkers.length });
+    }
+  });
+
+  function spawnWalker(L: typeof live.current, p: Planned, route: Vec2[], _venues: ReturnType<typeof venuesTonight>, startOffset = 0): void {
+    if (route.length < 2) return;
+    L.walkers.push({
+      key: p.key, type: p.type, n: p.n, venueId: p.venueId, route, length: routeLength(route), s: startOffset,
+      pace: TYPE_PACE[p.type], eatUntil: null, standAt: null,
+      ring: p.type === 'billionaire' ? WARM.guest.billionaire : p.type === 'social' ? WARM.guest.social : null,
+      arrived: false,
+      homeward: false,
+      source: p.source
+    });
+  }
+
+  function spawnCar(L: typeof live.current, p: Planned): void {
+    const d = driveNetwork();
+    const src = villageSources();
+    const entry = src.driveEntry[Math.floor(Math.abs(Math.sin(L.cars.length * 12.9898 + p.at)) * src.driveEntry.length) % src.driveEntry.length];
+    const route = routeBetween(d, entry, src.driveParking);
+    const colours = ['#2b2f3a', '#5a2226', '#1f2a24', '#8a8478', '#3a3f4a'];
+    L.cars.push({ route, length: routeLength(route), s: 0, parkedAt: null, drop: p, colour: colours[L.cars.length % colours.length], bus: false, speed: DRIVE_M_PER_GAME_MIN });
+  }
+
+  // Bussen kör in så att den står vid hållplatsen när den ska vara där (20.15).
+  function spawnBus(L: typeof live.current, now: number): void {
+    const d = driveNetwork();
+    const src = villageSources();
+    const route = routeBetween(d, src.driveEntry[0], src.driveBusStop);
+    const length = routeLength(route);
+    const minutes = Math.max(1, VILLAGE.bus.arriveMinute - now);
+    L.cars.push({ route, length, s: 0, parkedAt: null, drop: null, colour: '#c8a24a', bus: true, speed: length / minutes });
+  }
+
+  function addHeat(L: typeof live.current, a: { x: number; z: number }, b: { x: number; z: number }, amount: number): void {
+    if (amount <= 0) return;
+    const key = `${Math.round(a.x / HEAT_CELL_M)}:${Math.round(a.z / HEAT_CELL_M)}`;
+    const cell = L.heat.get(key);
+    if (cell) {
+      cell.h = Math.min(6, cell.h + amount * HEAT_PER_GUEST_MIN);
+      cell.b = [b.x, b.z];
+    } else {
+      L.heat.set(key, { a: [a.x, a.z], b: [b.x, b.z], h: amount * HEAT_PER_GUEST_MIN });
+    }
+  }
+
+  function draw(_s: SimulationState, now: number): void {
+    const L = live.current;
+    const dist = actualRef.current.distance;
+    const scale = readabilityScale(dist, FIGURE_CURVE);
+    const { figures, markers, rings, cars, bus, heat } = meshes;
+    let fi = 0;
+    let mi = 0;
+    let ri = 0;
+    const markerSize = Math.max(1.6, dist * 0.012);
+    const showMarkers = dist > MARKER_FROM_M;
+    for (const w of L.walkers) {
+      const p = w.standAt ? { x: w.standAt[0], z: w.standAt[1], heading: 0 } : pointAlong(w.route, w.s);
+      tmp.c.set(TYPE_COLOUR[w.type]);
+      for (let k = 0; k < w.n && fi < MAX_FIGURES; k++) {
+        const back = w.standAt ? null : pointAlong(w.route, w.s - k * 0.9 * scale);
+        const side = ((k % 2) * 2 - 1) * 0.35 * scale * (k > 0 ? 1 : 0);
+        const x = (back?.x ?? p.x) + Math.cos(p.heading) * side;
+        const z = (back?.z ?? p.z) - Math.sin(p.heading) * side;
+        tmp.q.setFromAxisAngle(tmp.up, back?.heading ?? p.heading);
+        tmp.p.set(x, 0.05, z);
+        tmp.s.setScalar(scale * (w.type === 'billionaire' ? 1.1 : 1));
+        tmp.m.compose(tmp.p, tmp.q, tmp.s);
+        figures.setMatrixAt(fi, tmp.m);
+        figures.setColorAt(fi, tmp.c);
+        fi++;
+      }
+      if (showMarkers && mi < MAX_FIGURES) {
+        const r = markerSize * (0.8 + Math.min(4, w.n) * 0.18);
+        tmp.q.copy(camera.quaternion);
+        tmp.p.set(p.x, 2.5 + r, p.z);
+        tmp.s.set(r, r, 1);
+        tmp.m.compose(tmp.p, tmp.q, tmp.s);
+        markers.setMatrixAt(mi, tmp.m);
+        markers.setColorAt(mi, tmp.c);
+        mi++;
+      }
+      if (w.ring && ri < 16) {
+        tmp.q.identity();
+        tmp.p.set(p.x, 0.15, p.z);
+        const r = Math.max(1.4 * scale, showMarkers ? markerSize * 2 : 0);
+        tmp.s.set(r, 1, r);
+        tmp.m.compose(tmp.p, tmp.q, tmp.s);
+        rings.setMatrixAt(ri, tmp.m);
+        tmp.c.set(w.ring);
+        rings.setColorAt(ri, tmp.c);
+        ri++;
+      }
+    }
+    figures.count = fi;
+    figures.instanceMatrix.needsUpdate = true;
+    if (figures.instanceColor) figures.instanceColor.needsUpdate = true;
+    markers.count = mi;
+    markers.instanceMatrix.needsUpdate = true;
+    if (markers.instanceColor) markers.instanceColor.needsUpdate = true;
+    rings.count = ri;
+    rings.instanceMatrix.needsUpdate = true;
+    if (rings.instanceColor) rings.instanceColor.needsUpdate = true;
+
+    let ci = 0;
+    bus.visible = false;
+    const carScale = readabilityScale(dist, { rampStart: 300, rampEnd: 1400, maxScale: 3 });
+    for (const c of L.cars) {
+      const p = pointAlong(c.route, Math.min(c.s, c.length));
+      if (c.bus) {
+        bus.visible = true;
+        bus.position.set(p.x, 0, p.z);
+        bus.rotation.y = p.heading;
+        bus.scale.setScalar(carScale);
+        continue;
+      }
+      if (ci >= MAX_CARS) continue;
+      tmp.q.setFromAxisAngle(tmp.up, p.heading);
+      tmp.p.set(p.x, 0, p.z);
+      tmp.s.setScalar(carScale);
+      tmp.m.compose(tmp.p, tmp.q, tmp.s);
+      cars.setMatrixAt(ci, tmp.m);
+      tmp.c.set(c.colour);
+      cars.setColorAt(ci, tmp.c);
+      ci++;
+    }
+    cars.count = ci;
+    cars.instanceMatrix.needsUpdate = true;
+    if (cars.instanceColor) cars.instanceColor.needsUpdate = true;
+
+    // Gästflödet: gatorna lyser där många går (kvarteret).
+    if (now - L.lastHeat > 0.5 || now < L.lastHeat) {
+      L.lastHeat = now;
+      let hi = 0;
+      const width = Math.max(3, dist * 0.012);
+      for (const [k, cell] of L.heat) {
+        cell.h *= 0.985;
+        if (cell.h < 0.02) { L.heat.delete(k); continue; }
+        if (hi >= MAX_HEAT) continue;
+        const dx = cell.b[0] - cell.a[0];
+        const dz = cell.b[1] - cell.a[1];
+        const len = Math.max(HEAT_CELL_M, Math.hypot(dx, dz));
+        const v = Math.min(1, cell.h / 2);
+        tmp.q.setFromAxisAngle(tmp.up, Math.atan2(dx, dz));
+        tmp.p.set((cell.a[0] + cell.b[0]) / 2, 0.35, (cell.a[1] + cell.b[1]) / 2);
+        tmp.s.set(width, 1, len);
+        tmp.m.compose(tmp.p, tmp.q, tmp.s);
+        heat.setMatrixAt(hi, tmp.m);
+        tmp.c.setRGB(1 * v, 0.68 * v, 0.3 * v);
+        heat.setColorAt(hi, tmp.c);
+        hi++;
+      }
+      heat.count = hi;
+      heat.instanceMatrix.needsUpdate = true;
+      if (heat.instanceColor) heat.instanceColor.needsUpdate = true;
+    }
+    heat.visible = dist > 60 && dist < 900;
+    figures.visible = dist > 20;
+  }
+
+  return <primitive object={root} />;
+}

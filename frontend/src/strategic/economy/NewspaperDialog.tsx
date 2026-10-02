@@ -119,7 +119,12 @@ export function NewspaperDialog({ open, onClose, onOpenBank }: { open: boolean; 
               <section key={section.id} className="nxs-side-section" data-testid={`newspaper-${section.id}`}>
                 <div className="nx-label">{section.heading}</div>
                 {section.title && <h3>{section.title}</h3>}
-                <p className="nx-small nxs-mt-8">{section.lines.join(' ')}</p>
+                {section.items && (
+                  <ol className="nx-small nxs-mt-8 nxs-ranking" data-testid="newspaper-ranking-list">
+                    {section.items.map((it) => <li key={it}>{it.replace(/^\d+\.\s*/, '')}</li>)}
+                  </ol>
+                )}
+                {section.lines.length > 0 && <p className="nx-small nxs-mt-8">{section.lines.join(' ')}</p>}
               </section>
             ))}
           </aside>

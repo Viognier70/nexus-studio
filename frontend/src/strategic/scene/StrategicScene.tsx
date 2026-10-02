@@ -48,6 +48,10 @@ import { PublicRealm } from './PublicRealm';
 import { RetainingWalls } from './RetainingWalls';
 import { StreetTrees } from './StreetTrees';
 import { TorgetPlaza } from './TorgetPlaza';
+import { StreetLamps } from './village/StreetLamps';
+import { VillageVenues } from './village/VillageVenues';
+import { VillageLife } from './village/VillageLife';
+import { StreetArrivals } from './village/StreetArrivals';
 
 // GL config for stable rendering.
 //
@@ -146,6 +150,13 @@ export function StrategicScene({ onSelect, selectedId, showScaleRef = false }: P
         <OsmLandmarks onSelect={onSelect} selectedId={selectedId} />
         <OsmTraffic />
         <OsmPedestrians />
+        {/* ORDER 288 — byn och konkurrensen: gatlyktorna, krogarna som lyser
+            när de har öppet (med etiketter i HUD-lagret), gästerna, bilarna,
+            bussen och vagnarna, och vem som är på väg in på gatan. */}
+        <StreetLamps />
+        <VillageVenues />
+        <VillageLife />
+        <StreetArrivals />
         <LandmarkGatherers />
         <OsmBoats />
         <ChimneySmoke />

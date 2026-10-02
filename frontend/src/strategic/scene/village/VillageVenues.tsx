@@ -1,0 +1,226 @@
+// ORDER 288 — byns krogar på kartan (Vision Owner 2026-10-01): "krogar som
+// lyser när de har öppet" och "Varje nivå visar det som är viktigt på den
+// höjden: krogarna och grupperna i byn".
+//
+// Varje krog (spelarens och rivalerna, sim/village.ts venuesTonight) får
+//   - ett varmt sken vid dörren när den har öppet i kväll (en lykta och en
+//     gloria som syns från byns höjd), och mörkt när den är stängd;
+//   - en etikett i HUD-lagret (Designs leveransnot §4: namnen i HUD:en, inte
+//     i bilden) med namn, mat, stjärnor, öppet och kvällens gäster. Den syns
+//     i byn och kvarteret, inte nära krogen där rummet tar över.
+// Vagnarna står på kvällens plats (paket 2:s tre platser) med markis och
+// upplyst lucka, som i Designs byTruckar.js.
+
+import { Html } from '@react-three/drei';
+import { useFrame, useThree } from '@react-three/fiber';
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
+import * as THREE from 'three';
+import { useCamera } from '../../camera/CameraContext';
+import { useSimState } from '../../simulation/SimulationProvider';
+import { skyState } from '../../../lib/lighting/skyState';
+import { PLAYER_VENUE, venuesTonight } from '../../../sim/village';
+import { truckSpotPlace, venuePlaces } from '../../content/villagePlaces';
+import { walkNetwork } from '../../content/villageNetwork';
+import { readabilityScale } from '../../util/readability';
+import { subscribeVillageLive, villageLive } from './villageLive';
+import { VenueLabel } from '../../ui/VillageLabels';
+
+const LABELS_FROM_M = 110;
+const COMPACT_FROM_M = 450;
+const TRUCK_COLOURS: Record<string, { body: string; awning: [string, string] }> = {
+  grillvagnen: { body: '#8a3f2c', awning: ['#e9c46a', '#8a3f2c'] },
+  tacovagnen: { body: '#2f6b5a', awning: ['#f0e2c4', '#2f6b5a'] }
+};
+
+function glowTexture(): THREE.Texture {
+  const c = document.createElement('canvas');
+  c.width = c.height = 64;
+  const x = c.getContext('2d')!;
+  const g = x.createRadialGradient(32, 32, 0, 32, 32, 32);
+  g.addColorStop(0, 'rgba(255,214,150,1)');
+  g.addColorStop(0.35, 'rgba(255,170,90,0.45)');
+  g.addColorStop(1, 'rgba(255,140,60,0)');
+  x.fillStyle = g;
+  x.fillRect(0, 0, 64, 64);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+
+function makeTruck(id: string): THREE.Group {
+  const col = TRUCK_COLOURS[id] ?? TRUCK_COLOURS.grillvagnen;
+  const g = new THREE.Group();
+  const m = (c: string, e?: string) => new THREE.MeshStandardMaterial({ color: c, roughness: 0.6, emissive: e ? new THREE.Color(e) : undefined, emissiveIntensity: e ? 1.2 : 0 });
+  const add = (geo: THREE.BufferGeometry, mat: THREE.Material, x: number, y: number, z: number) => {
+    const o = new THREE.Mesh(geo, mat);
+    o.position.set(x, y, z);
+    g.add(o);
+    return o;
+  };
+  add(new THREE.BoxGeometry(2.4, 2.5, 5.6), m(col.body), 0, 1.65, -0.4);
+  add(new THREE.BoxGeometry(2.3, 1.7, 1.4), m(new THREE.Color(col.body).multiplyScalar(0.6).getStyle()), 0, 1.25, 2.9);
+  for (const wz of [-2.2, 1.0, 2.9]) for (const wx of [-1.15, 1.15]) {
+    const wh = add(new THREE.CylinderGeometry(0.45, 0.45, 0.3, 12), m('#1c1a19'), wx, 0.45, wz);
+    wh.rotation.z = Math.PI / 2;
+  }
+  add(new THREE.BoxGeometry(0.06, 0.9, 3.6), m('#ffe2a0', '#ffb050'), 1.22, 2.0, -0.6);
+  for (let i = 0; i < 6; i++) {
+    const st = add(new THREE.BoxGeometry(1.2, 0.06, 0.62), m(col.awning[i % 2]), 1.8, 2.6, -2.2 + i * 0.64);
+    st.rotation.z = -0.25;
+  }
+  return g;
+}
+
+export function VillageVenues() {
+  const sim = useSimState();
+  const { actualRef } = useCamera();
+  const venues = useMemo(() => venuesTonight(sim), [sim.day.dayNumber, sim.competition, sim.reputation, sim.economy?.businessClass]); // eslint-disable-line react-hooks/exhaustive-deps
+  const places = useMemo(() => venuePlaces(), []);
+  const live = useSyncExternalStore(subscribeVillageLive, villageLive, villageLive);
+  const [labelsShown, setLabelsShown] = useState(false);
+  // I byn (längre bort än kvarteret) är etiketterna korta: namn, stjärnor, gäster.
+  const [compact, setCompact] = useState(false);
+  const compactRef = useRef(false);
+  const camera = useThree((x) => x.camera);
+  const size = useThree((x) => x.size);
+  const labelEls = useRef<Map<string, HTMLDivElement>>(new Map());
+  const frame = useRef(0);
+  const proj = useMemo(() => new THREE.Vector3(), []);
+  const shownRef = useRef(false);
+  const tex = useMemo(() => glowTexture(), []);
+  const root = useMemo(() => new THREE.Group(), []);
+  const glows = useRef<Array<{ id: string; sprite: THREE.Sprite; lamp: THREE.Mesh }>>([]);
+  const trucks = useRef<Map<string, THREE.Group>>(new Map());
+
+  // Skenet vid varje krog med dörr (vagnarna har sin lucka).
+  useEffect(() => {
+    const made: typeof glows.current = [];
+    for (const [id, p] of Object.entries(places)) {
+      const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
+      sprite.position.set(p.doorPoint[0] * 0.6 + p.centre[0] * 0.4, 5, p.doorPoint[1] * 0.6 + p.centre[1] * 0.4);
+      const lamp = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.5, 0.5), new THREE.MeshStandardMaterial({ color: '#4a3020', emissive: new THREE.Color('#ffb060'), emissiveIntensity: 0 }));
+      lamp.position.copy(sprite.position).setY(3.2);
+      root.add(sprite, lamp);
+      made.push({ id, sprite, lamp });
+    }
+    glows.current = made;
+    return () => {
+      for (const gl of made) {
+        root.remove(gl.sprite, gl.lamp);
+        gl.sprite.material.dispose();
+        gl.lamp.geometry.dispose();
+        (gl.lamp.material as THREE.Material).dispose();
+      }
+    };
+  }, [places, root, tex]);
+
+  // Vagnarna på kvällens plats.
+  useEffect(() => {
+    const g = walkNetwork();
+    for (const v of venues) {
+      if (v.kind !== 'truck') continue;
+      let truck = trucks.current.get(v.id);
+      if (!truck) {
+        truck = makeTruck(v.id);
+        trucks.current.set(v.id, truck);
+        root.add(truck);
+      }
+      truck.visible = v.open && !!v.spot;
+      if (!v.spot) continue;
+      const place = truckSpotPlace(v.spot);
+      const node = place.door;
+      const nb = g.adj[node][0]?.to ?? node;
+      const [ax, az] = g.nodes[node];
+      const [bx, bz] = g.nodes[nb];
+      const heading = Math.atan2(bx - ax, bz - az);
+      // Vid sidan av gatan, luckan mot gatan; två vagnar på samma plats står efter varandra.
+      const same = venues.filter((o) => o.kind === 'truck' && o.spot === v.spot);
+      const k = same.findIndex((o) => o.id === v.id);
+      const side = 4.2;
+      truck.position.set(ax + Math.cos(heading) * side + Math.sin(heading) * k * 7, 0, az - Math.sin(heading) * side + Math.cos(heading) * k * 7);
+      truck.rotation.y = heading + Math.PI;
+    }
+  }, [venues, root]);
+
+  useEffect(() => () => {
+    for (const t of trucks.current.values()) {
+      t.traverse((o) => {
+        const m = o as THREE.Mesh;
+        m.geometry?.dispose?.();
+        (m.material as THREE.Material | undefined)?.dispose?.();
+      });
+      root.remove(t);
+    }
+    trucks.current.clear();
+    tex.dispose();
+  }, [root, tex]);
+
+  useFrame(() => {
+    const dist = actualRef.current.distance;
+    const night = Math.max(0.35, skyState.nightFactor);
+    const evening = sim.day.period === 'dinner' || sim.day.period === 'evening';
+    const scale = readabilityScale(dist, { rampStart: 150, rampEnd: 1200, maxScale: 6 });
+    for (const gl of glows.current) {
+      const v = venues.find((x) => x.id === gl.id);
+      const on = !!v?.open && evening;
+      const target = on ? night : 0;
+      (gl.sprite.material as THREE.SpriteMaterial).opacity = target;
+      gl.sprite.visible = target > 0.01 && dist > 40;
+      gl.sprite.scale.setScalar(16 * scale);
+      (gl.lamp.material as THREE.MeshStandardMaterial).emissiveIntensity = on ? 1.6 * night : 0;
+    }
+    const want = dist > LABELS_FROM_M;
+    if (want !== shownRef.current) {
+      shownRef.current = want;
+      setLabelsShown(want);
+    }
+    const c = dist > COMPACT_FROM_M;
+    if (c !== compactRef.current) {
+      compactRef.current = c;
+      setCompact(c);
+    }
+    // Etiketterna får inte ligga över varandra: de som skulle överlappa på
+    // skärmen flyttas uppåt, närmast först (några gånger i sekunden).
+    if (want && ++frame.current % 6 === 0) {
+      const placed: Array<{ x0: number; x1: number; y0: number; y1: number }> = [];
+      const items = venues.flatMap((v) => {
+        const el = labelEls.current.get(v.id);
+        const p = v.spot ? truckSpotPlace(v.spot).doorPoint : places[v.id]?.centre;
+        if (!el || !p) return [];
+        proj.set(p[0], v.kind === 'truck' ? 6 : 14, p[1]).project(camera);
+        return [{ el, x: (proj.x * 0.5 + 0.5) * size.width, y: (-proj.y * 0.5 + 0.5) * size.height, w: el.offsetWidth, h: el.offsetHeight }];
+      }).sort((a, b) => b.y - a.y);
+      for (const it of items) {
+        let y0 = it.y - it.h / 2;
+        const x0 = it.x - it.w / 2;
+        const x1 = x0 + it.w;
+        for (let guard = 0; guard < 12; guard++) {
+          const hit = placed.find((r) => x0 < r.x1 && x1 > r.x0 && y0 < r.y1 && y0 + it.h > r.y0);
+          if (!hit) break;
+          y0 = hit.y0 - it.h - 4;
+        }
+        placed.push({ x0, x1, y0, y1: y0 + it.h });
+        const dy = Math.round(y0 - (it.y - it.h / 2));
+        it.el.style.transform = dy !== 0 ? `translateY(${dy}px)` : '';
+      }
+    }
+  });
+
+  return (
+    <>
+      <primitive object={root} />
+      {labelsShown && venues.map((v) => {
+        const p = v.spot ? truckSpotPlace(v.spot).doorPoint : places[v.id]?.centre;
+        if (!p) return null;
+        const guests = v.id === PLAYER_VENUE ? sim.day.arrivalsToday ?? 0 : live.arrived[v.id] ?? 0;
+        return (
+          <group key={v.id} position={[p[0], v.kind === 'truck' ? 6 : 14, p[1]]}>
+            <Html center zIndexRange={[12, 0]} style={{ pointerEvents: 'none' }}>
+              <VenueLabel v={v} guests={guests} compact={compact} innerRef={(el) => { if (el) labelEls.current.set(v.id, el); else labelEls.current.delete(v.id); }} />
+            </Html>
+          </group>
+        );
+      })}
+    </>
+  );
+}

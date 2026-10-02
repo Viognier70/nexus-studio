@@ -1,0 +1,135 @@
+// ORDER 288 — var byns krogar, vagnarnas platser och gästernas startpunkter
+// ligger i Grythyttan (meter, samma koordinater som scenen).
+//
+// Krogarna står i byggnader ur OSM-datan, valda för att passa rivalen:
+//   - spelarens krog: w869907975 (torgets södra kant, PLAYER_BUSINESS_BUILDING_IDS)
+//   - Torgkrogen: w869907973, på torget
+//   - Pizzeria Grytan: w598989255, huset som heter Pizzans Hus i byns data
+//   - Sjöboden: w241105722, närmast vattnet söder om byn (r8482507-r0)
+//   - Hotellets matsal: w869907964, hotellet (Gästgivaregården)
+// Vagnarnas tre platser (paket 2, Designs byTruckar.js SPOTS): torget, vid
+// Måltidens hus (campus, gry-campus) och vid sjön (vattnets norra strand).
+// Dörren är gatunätets nod närmast byggnaden.
+
+import { LANDMARK_BY_ID, WORLD_RAW_BUILDINGS } from './world';
+import { driveNetwork, nearestNode, walkNetwork } from './villageNetwork';
+import type { TruckSpot } from '../../sim/village';
+
+type Vec2 = [number, number];
+
+export const VENUE_BUILDINGS: Record<string, string> = {
+  player: 'w869907975',
+  torgkrogen: 'w869907973',
+  'pizzeria-grytan': 'w598989255',
+  sjoboden: 'w241105722',
+  'hotellets-matsal': 'w869907964'
+};
+
+const TORGET: Vec2 = [12.49, -27.59];
+const CAMPUS: Vec2 = [568.05, -85.84];
+// Vattnets norra strand (r8482507-r0 spänner x 301–451, z 240–297).
+const LAKE_SHORE: Vec2 = [376, 236];
+
+export const TRUCK_SPOT_POINTS: Record<TruckSpot, Vec2> = {
+  torget: [TORGET[0] - 6, TORGET[1] + 6],
+  'maltidens-hus': [CAMPUS[0] - 22, CAMPUS[1] + 18],
+  sjon: LAKE_SHORE
+};
+
+function centroid(poly: Vec2[]): Vec2 {
+  let x = 0;
+  let z = 0;
+  for (const p of poly) { x += p[0]; z += p[1]; }
+  return [x / poly.length, z / poly.length];
+}
+
+export interface VenuePlace {
+  id: string;
+  centre: Vec2;
+  door: number;
+  doorPoint: Vec2;
+}
+
+let venuesCache: Record<string, VenuePlace> | null = null;
+
+export function venuePlaces(): Record<string, VenuePlace> {
+  if (venuesCache) return venuesCache;
+  const g = walkNetwork();
+  const out: Record<string, VenuePlace> = {};
+  for (const [id, bid] of Object.entries(VENUE_BUILDINGS)) {
+    const b = WORLD_RAW_BUILDINGS.find((x) => x.id === bid);
+    const centre = b ? centroid(b.poly as Vec2[]) : TORGET;
+    const door = nearestNode(g, centre[0], centre[1]);
+    out[id] = { id, centre, door, doorPoint: g.nodes[door] };
+  }
+  venuesCache = out;
+  return out;
+}
+
+export function truckSpotPlace(spot: TruckSpot): VenuePlace {
+  const g = walkNetwork();
+  const p = TRUCK_SPOT_POINTS[spot];
+  const door = nearestNode(g, p[0], p[1]);
+  return { id: spot, centre: g.nodes[door], door, doorPoint: g.nodes[door] };
+}
+
+// Där gästtyperna kommer ifrån: studenterna från Måltidens hus, par och
+// familjer från bostadshusen, höginkomsttagarna från hotellet eller bilarna.
+export interface Sources {
+  campus: number;
+  hotel: number;
+  homes: number[];
+  parking: number;
+  // Bilarnas och bussens väg in: noden i bilnätet där de kommer in, och
+  // parkeringen och hållplatsen i bilnätet.
+  driveEntry: number[];
+  driveParking: number;
+  driveBusStop: number;
+  busStop: number;
+}
+
+let sourcesCache: Sources | null = null;
+
+export function villageSources(): Sources {
+  if (sourcesCache) return sourcesCache;
+  const g = walkNetwork();
+  const d = driveNetwork();
+  const homesKinds = new Set(['house', 'residential', 'apartments', 'detached', 'terrace']);
+  const homes = WORLD_RAW_BUILDINGS
+    .filter((b) => homesKinds.has(b.kind ?? ''))
+    .map((b) => centroid(b.poly as Vec2[]))
+    .filter((c) => Math.hypot(c[0] - TORGET[0], c[1] - TORGET[1]) < 700)
+    .filter((_, i) => i % 3 === 0)
+    .map((c) => nearestNode(g, c[0], c[1]));
+  const hotel = venuePlaces()['hotellets-matsal'].door;
+  // Bilarna kommer in där bilnätet slutar längst bort från torget åt två håll.
+  const ends = d.nodes
+    .map((p, i) => ({ i, r: Math.hypot(p[0] - TORGET[0], p[1] - TORGET[1]), deg: d.adj[i].length }))
+    .filter((n) => d.main[n.i] && n.r > 500 && n.r < 1400);
+  ends.sort((a, b) => b.r - a.r);
+  const driveEntry: number[] = [];
+  for (const e of ends) {
+    const p = d.nodes[e.i];
+    if (driveEntry.every((k) => Math.hypot(d.nodes[k][0] - p[0], d.nodes[k][1] - p[1]) > 600)) driveEntry.push(e.i);
+    if (driveEntry.length >= 3) break;
+  }
+  const parkingPoint: Vec2 = [TORGET[0] + 58, TORGET[1] - 22];
+  const driveParking = nearestNode(d, parkingPoint[0], parkingPoint[1]);
+  const driveBusStop = nearestNode(d, TORGET[0] + 30, TORGET[1] + 30);
+  sourcesCache = {
+    campus: nearestNode(g, CAMPUS[0], CAMPUS[1]),
+    hotel,
+    homes: homes.length > 0 ? homes : [nearestNode(g, TORGET[0], TORGET[1])],
+    parking: nearestNode(g, d.nodes[driveParking][0], d.nodes[driveParking][1]),
+    driveEntry: driveEntry.length > 0 ? driveEntry : [driveParking],
+    driveParking,
+    driveBusStop,
+    busStop: nearestNode(g, d.nodes[driveBusStop][0], d.nodes[driveBusStop][1])
+  };
+  return sourcesCache;
+}
+
+export function landmarkPoint(id: string): Vec2 | null {
+  const l = LANDMARK_BY_ID[id];
+  return l ? [l.position[0], l.position[1]] : null;
+}

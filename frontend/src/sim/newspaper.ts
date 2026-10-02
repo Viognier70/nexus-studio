@@ -18,14 +18,36 @@ import { BUSINESS_CLASSES } from './balance';
 import { classOptions, classSpec, meetsRequirement, requirementsFor, type EveningRecord } from './economy';
 import type { GuestType, SimulationState } from '../strategic/types';
 import { socialName } from '../strategic/simulation/guestTypes';
+import { PLAYER_VENUE, weekRanking } from './village';
+
+// ORDER 288 — byns krogar rankade efter veckans gäster (speldesign >
+// Rivalerna: "Tidningen får en rankning av byns krogar efter veckans
+// ställning, med spelarens plats och en rad om den som steg eller föll
+// mest"). Spelarens krog står med sitt namn.
+function ranking(evenings: readonly EveningRecord[], name: string): NewspaperSection | null {
+  const rows = weekRanking(evenings);
+  // En rankning kräver minst två krogar.
+  if (rows.length <= 1) return null;
+  const v = strings.village;
+  const label = (id: string) => (id === PLAYER_VENUE ? name : v.venues[id] ?? id);
+  const items = rows.map((r, i) => v.newspaper.row(i + 1, label(r.id), r.guests, String(r.guests > 0 ? Math.round(r.revenueSek / r.guests) : 0)));
+  const lines: string[] = [];
+  const byChange = [...rows].sort((a, b) => b.reputationChange - a.reputationChange);
+  if (byChange[0].reputationChange > 0) lines.push(v.newspaper.rose(label(byChange[0].id)));
+  const worst = byChange[byChange.length - 1];
+  if (worst.reputationChange < 0) lines.push(v.newspaper.fell(label(worst.id)));
+  return { id: 'ranking', heading: v.newspaper.kicker, title: v.newspaper.title, items, lines };
+}
 
 const t = strings.newspaper;
 
 export interface NewspaperSection {
-  id: 'review' | 'market' | 'bank' | 'holiday' | 'seen';
+  id: 'review' | 'market' | 'ranking' | 'bank' | 'holiday' | 'seen';
   heading: string;
   title?: string;
   lines: string[];
+  // ORDER 288 — en lista (tidningens rankning), före raderna.
+  items?: string[];
 }
 
 export interface Newspaper {
@@ -157,12 +179,14 @@ export function newspaperFor(
   const next = nextStep(sim);
   const missing = next ? missingForNext(next) : null;
   const seenSection = seen(evenings, businessName);
+  const rankingSection = ranking(evenings, businessName);
   return {
     masthead: t.masthead,
     subhead: t.subhead(s.week),
     sections: [
       review(reviewedEvening(evenings), businessName),
       market(evenings, sim),
+      ...(rankingSection ? [rankingSection] : []),
       { id: 'bank', heading: t.bankHeading, lines: [...bankLines, ...(missing ? [t.bankNext(missing)] : [])] },
       holiday(sim),
       ...(seenSection ? [seenSection] : [])
