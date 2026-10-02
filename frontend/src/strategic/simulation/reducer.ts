@@ -78,6 +78,7 @@ const EXAM_QUESTION_BANK: readonly Question[] = [
 import { tickDjRound } from '../../sim/satsningar';
 import { applyMiseAtDoors, hirePrepHand, tickPrepBacklog } from '../../sim/miseEnPlace';
 import { abilityUnlocked, creditsOf, setSlot, shopOf } from '../../sim/shop';
+import { answerPin, comp, moveHelp, seatPartyNow, tickPins, upsell } from '../../sim/hostPins';
 import { arrivalAttraction, maybeSpawnGuest, scenarioSpawnStep, walkAwayProbability } from './arrivals';
 import { planScenariosForService, scheduleScenarioTriggerTimes } from './day';
 import { revenuePerGuest } from './economics';
@@ -442,6 +443,12 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       return makeNewGameState(state.seed, state.policies);
     case 'HIRE_PREP_HAND':
       return hirePrepHand(state);
+    case 'HOST_PIN_ANSWER':
+    case 'HOST_SEAT':
+    case 'HOST_COMP':
+    case 'HOST_UPSELL':
+    case 'HOST_MOVE':
+      return hostAction(state, action);
     case 'SHOP_BUY':
       return shopBuy(state, action.id);
     case 'SHOP_SLOT':
@@ -1294,6 +1301,21 @@ function settleBackCredits(state: SimulationState): SimulationState {
     }
   }
   return s;
+}
+
+// ORDER 296 — hovmästarens beslut och handgrepp (sim/hostPins.ts), bara
+// under servicen.
+function hostAction(state: SimulationState, action: Extract<SimAction, { type: 'HOST_PIN_ANSWER' | 'HOST_SEAT' | 'HOST_COMP' | 'HOST_UPSELL' | 'HOST_MOVE' }>): SimulationState {
+  if (state.day.period !== 'dinner') return state;
+  const draft: SimulationState = { ...state, day: { ...state.day }, guests: state.guests.map((g) => ({ ...g })), ledger: [...state.ledger], waitingIds: [...state.waitingIds], seatedIds: [...state.seatedIds] };
+  switch (action.type) {
+    case 'HOST_PIN_ANSWER': answerPin(draft, action.id, action.answer); break;
+    case 'HOST_SEAT': seatPartyNow(draft, action.key, action.seats); break;
+    case 'HOST_COMP': comp(draft, action.key, action.what); break;
+    case 'HOST_UPSELL': upsell(draft, action.key, action.what); break;
+    case 'HOST_MOVE': moveHelp(draft, action.zone); break;
+  }
+  return draft;
 }
 
 // ORDER 296 — butiken: medaljen öppnar, krediterna betalar (en i taget från
@@ -2824,6 +2846,8 @@ function advanceTick(state: SimulationState): SimulationState {
   tickDjRound(draft);
   // ORDER 296 — eftersläpet i förberedelsen arbetas ned.
   tickPrepBacklog(draft, tickSeconds);
+  // ORDER 296 — hovmästarens nålar.
+  tickPins(draft, tickSeconds);
   maybeOpenIncident(draft);
   maybeChance(draft);
 

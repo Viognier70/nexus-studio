@@ -492,6 +492,47 @@ export const SHOP = {
   }
 } as const;
 
+// ORDER 296 (kärnan punkt 1, Vision Owner 2026-10-02): hovmästarens beslut
+// under hela servicen, med Designs nålar och handgrepp (leveransen
+// hovmästaren och butiken §2–3, hostShop.ts PIN och HANDS). Tiden på en nål
+// går i verkliga sekunder och står still under en raket; när den gått ut
+// väljer Per det säkra svaret (aldrig förlust, sällan mest).
+export const HOST = {
+  section: 'Servicen',
+  pinSeconds: 12,
+  maxOpen: 3,
+  // Verkliga sekunder mellan två nya nålar när rummet är fullt (andelen
+  // upptagna platser minst fullShare): ett beslut med några sekunders
+  // mellanrum. En lugnare kväll gånger quietGapFactor.
+  spawnGapSeconds: 6,
+  fullShare: 0.8,
+  quietGapFactor: 2.5,
+  // Mognaden: så många sällskap i kön (dörren); så många vid baren som väntar
+  // på sin beställning, igen efter barRepeatSimSeconds; en gäst vid ett bord
+  // som inte har beställt (vinlistan); en gäst i kön under otålighetens
+  // gräns (QUEUE_MOOD.impatientBelow).
+  doorMinQueue: 2,
+  barRepeatSimSeconds: 60,
+  barMinWaiting: 3,
+  // Utfallen.
+  seatSatisfaction: 0.05,
+  barDrinkSatisfaction: 0.05,
+  bottleChance: 0.6,
+  bottleDishId: 'house-wine-bottle',
+  glassDishId: 'house-wine-glass',
+  dessertDishIds: ['dairy-dessert', 'lingon-sorbet'] as readonly string[],
+  wineSatisfaction: 0.03,
+  helpSimSeconds: 60,
+  helpZoneTaskTime: 0.7,
+  helpOtherTaskTime: 1.15,
+  compGlassSatisfaction: 0.2,
+  compCoffeeSatisfaction: 0.12,
+  compCoffeeCostSek: 25,
+  apologySatisfaction: 0.08,
+  upsellChance: 0.5,
+  upsellDeclineSatisfaction: -0.02
+} as const;
+
 export const DOWNGRADE = {
   section: 'Ekonomin > Nedgradering',
   consecutiveNegativeDayEnds: 3, // "under minus veckogolvet vid tre dagsavslut i rad"

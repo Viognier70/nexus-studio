@@ -125,6 +125,8 @@ export interface SharedBusinessRoom {
    * mot bordet — Vision Owner observation 2026-09-07 fynd 2.
    */
   seatFacings: number[];
+  /** ORDER 296 — sitsens sort per plats (bar, lounge, twotop …), för hovmästarens zoner. */
+  seatKinds?: string[];
   /**
    * ORDER 200 fynd 1 — sitshöjd (Y-mätt från golvet till stolsits/stols-
    * top) per sitsplats. Chair = 0.45 m, bar stool = 0.75 m, lounge-soffa

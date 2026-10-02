@@ -213,6 +213,8 @@ function ContractRoomScene({ roomClass, plinth, disposeGeometry }: ContractRoomS
       walkPathsToSeatsByIndex: resolveWalkPathsToSeatsWorld(room),
       // ORDER 219 (A) — seat-positioner i ROOM-LOKAL XZ, för sim.seatSlot.
       seatsLocal: room.seats.map((s) => s.local as [number, number]),
+      // ORDER 296 — sitsens sort, för hovmästarens zoner (sim/hostPins.ts).
+      seatKinds: room.seats.map((s) => (s as { kind?: string }).kind ?? ''),
       entrance: world.entrance as [number, number],
       waitingSpot: world.waitingSpot as [number, number],
       // ORDER 203 — brewpub har idag ingen egen queue-form (vestibul

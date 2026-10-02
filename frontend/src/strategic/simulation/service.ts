@@ -1,5 +1,6 @@
 import { EVENING_ECONOMY, GAME_MINUTES_PER_SIM_SECOND, SHOP, SITTING } from '../../sim/balance';
 import { abilityActive } from '../../sim/shop';
+import { helpTaskTime } from '../../sim/hostZones';
 import { clockMinutes as clockNowMinutes } from '../../sim/clock';
 import { backlogTaskTime } from '../../sim/miseEnPlace';
 import { settleSocialGuest, stayFactor } from './guestTypes';
@@ -387,12 +388,29 @@ function seatChosenFirst(state: SimulationState): void {
     if (!party.some((g) => g.state === 'arriving')) state.day = { ...state.day, queuePriority: null };
     return;
   }
+  // ORDER 296 — hovmästarens Ge bord: bordet spelaren pekade på först.
+  const hint = state.day.seatHint && state.day.seatHint.key === key ? state.day.seatHint.seats : [];
+  const cap = isSeatedCapacity(state);
   for (const g of waiting) {
-    const seat = findFreeSeat(state, g.scenarioSource, g.partyId);
+    const hinted = hint.find((s) => s < cap && !seatTaken(state, s));
+    const seat = hinted ?? findFreeSeat(state, g.scenarioSource, g.partyId);
     if (seat === null) break;
     state.waitingIds = state.waitingIds.filter((id) => id !== g.id);
     setGuestSeated(state, g, seat);
   }
+}
+
+// ORDER 296 — borden (sitsgrupperna) och deras lediga platser, för
+// hovmästarens Ge bord (vilka bord sällskapet får plats vid).
+export function seatGroupsFree(state: SimulationState): { seats: readonly number[]; free: number[] }[] {
+  const cap = isSeatedCapacity(state);
+  return seatGroupsFor(state.businessClass).map((g) => ({ seats: g, free: g.filter((s) => s < cap && !seatTaken(state, s)) }));
+}
+
+// ORDER 296 — sätt en gäst ur kön på en ledig plats nu (hovmästarens nål vid dörren).
+export function seatWaitingNow(state: SimulationState, guest: Guest, seat: number): void {
+  state.waitingIds = state.waitingIds.filter((id) => id !== guest.id);
+  setGuestSeated(state, guest, seat);
 }
 
 // Väntar det valda sällskapet (någon annan än den här gästen) fortfarande i kön?
@@ -1278,13 +1296,15 @@ function beginStaffTask(
   const runner = (state.day.pickedActivityIds ?? []).includes(EVENING_ECONOMY.runnerActivityId) ? EVENING_ECONOMY.runnerTableTaskTime : 1;
   // ORDER 296 — snabbare pass: maten kommer ut fortare.
   const pass = type === 'order' && abilityActive(state, 'fastPass') ? SHOP.effects.fastPassOrderTime : 1;
+  // ORDER 296 — hovmästaren flyttade personal dit det brinner.
+  const help = helpTaskTime(state, state.guests.find((g) => g.id === targetGuestId)?.seatIndex);
   // ORDER 214 (C2 §4) — staff-rollens praktiska kompetens skalar duration.
   staff.taskDuration = taskDurationTicks(
     state.policies,
     type,
     state.capitals.values.social,
     roleCompetence(state.team, staff.role),
-    runner * pass * backlogTaskTime(state) * staffTempoFactor(state) *
+    runner * pass * help * backlogTaskTime(state) * staffTempoFactor(state) *
     // ORDER 270 — följden av ett fel val kan göra personalen långsammare
     // tills nästa händelse (läses här för att undvika en importcirkel).
     (state.incidents?.ongoing?.tempoFactor ?? 1)

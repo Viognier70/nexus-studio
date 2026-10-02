@@ -403,6 +403,8 @@ export interface Guest {
   tipBonus?: number;
   // ORDER 290 — rätt och fel svar vid bordet: notan gånger 1 + billBonus.
   billBonus?: number;
+  // ORDER 296 — hovmästarens vinbeslut: flaskan (sommeliern) eller husets vin (Per).
+  hostDrink?: 'bottle' | 'house';
   partySize?: number;
   // ORDER 260 — timing-diagnostik. Sätts när guest transitionerar in i
   // seated respektive dining. `orderCompleteAtSimTime − seatedAtSimTime`
@@ -938,6 +940,11 @@ export interface DayState {
   prepBacklogMin?: number;
   // ORDER 296 — kockens bord i kväll: sällskapets nyckel (förmågan chefsTable).
   chefsTableParty?: string | null;
+  // ORDER 296 — hovmästarens Ge bord: bordet spelaren valde för sällskapet.
+  seatHint?: { key: string; seats: readonly number[] } | null;
+  // ORDER 296 — hovmästarens nålar och den flyttade personalen (sim/hostPins.ts).
+  pins?: import('../sim/hostPins').PinsState;
+  helpZone?: { zone: 'bar' | 'floor' | 'lounge'; until: number } | null;
   // ORDER 296 — gästen med socialt kapital som gick missnöjd till en rival.
   socialWalkout?: { rivalId: string; at: number; nameIndex: number } | null;
   // ORDER 296 — födelsedagspaketet sålt i kväll (förmågan birthday).
@@ -1826,6 +1833,12 @@ export type SimAction =
   // ORDER 296 — butiken: köp en förmåga, lägg i eller ta ur facket.
   | { type: 'SHOP_BUY'; id: string }
   | { type: 'SHOP_SLOT'; id: string; on: boolean }
+  // ORDER 296 — hovmästaren: svaret på en nål, och handgreppen.
+  | { type: 'HOST_PIN_ANSWER'; id: string; answer: 0 | 1 }
+  | { type: 'HOST_SEAT'; key: string; seats?: readonly number[] }
+  | { type: 'HOST_COMP'; key: string; what: 'glass' | 'coffee' }
+  | { type: 'HOST_UPSELL'; key: string; what: 'dessert' | 'wine' }
+  | { type: 'HOST_MOVE'; zone: 'bar' | 'floor' | 'lounge' }
   // ORDER 047 §8 dev-only — force the current service to collapse on
   // the next tick, so the mechanic can be seen, judged and tuned
   // without waiting for the rare RNG roll. Guarded at the caller

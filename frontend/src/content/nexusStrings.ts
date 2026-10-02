@@ -202,6 +202,27 @@ export const STRINGS = {
   'social.walkout': { sv: '{name} går missnöjd till {rival}.', en: '{name} leaves unhappy for {rival}.' },
   'social.cancellations': { sv: '{name} talade illa om er: {n} avbokningar i kväll.', en: '{name} spoke badly of you: {n} cancellations tonight.' },
   'rep.label': { sv: 'Ryktet', en: 'Reputation' },
+  // ORDER 296 (punkt 1) — nålarnas frågor med tal och bord (Designs exempel
+  // pin.door.q och pin.wine.q gäller en bestämd kväll), och nålen för gästen
+  // som väntat länge.
+  'pin.door.qn': { sv: '{n} sällskap i kön, och rummet är nästan fullt.', en: '{n} parties in the queue, and the room is nearly full.' },
+  'pin.door.a1n': { sv: 'Ge dem bord nu, på det som är ledigt', en: 'Seat them now, wherever there is room' },
+  'pin.wine.qn': { sv: 'Bord {table} har tittat länge på vinlistan.', en: 'Table {table} has been studying the wine list for a while.' },
+  'pin.wine.done1n': { sv: 'Sommeliern går till bord {table}.', en: 'The sommelier goes to table {table}.' },
+  'pin.where.tableN': { sv: 'Bord {table}', en: 'Table {table}' },
+  'pin.where.queue': { sv: 'I kön', en: 'In the queue' },
+  'pin.waited.q': { sv: 'En gäst i kön har väntat länge och börjar bli otålig.', en: 'A guest in the queue has waited a long time and is getting restless.' },
+  'pin.waited.a1': { sv: 'Bjud på ett glas medan hen väntar', en: 'Offer a glass on the house while they wait' },
+  'pin.waited.a2': { sv: 'Be om ursäkt och lova bord snart', en: 'Apologise and promise a table soon' },
+  'pin.waited.done1': { sv: 'Ett glas på huset i kön.', en: 'A glass on the house in the queue.' },
+  'pin.waited.done2': { sv: 'Per ber om ursäkt vid dörren.', en: 'Per apologises at the door.' },
+  'host.zone.floor': { sv: 'Till golvet', en: 'To the floor' },
+  'host.zone.lounge': { sv: 'Till loungerna', en: 'To the lounges' },
+  'host.place.table': { sv: 'Bord {table}', en: 'Table {table}' },
+  'host.state.menu': { sv: 'Läser menyn', en: 'Reading the menu' },
+  'host.state.paying': { sv: 'Betalar', en: 'Paying' },
+  // ORDER 296 (punkt 1) — hovmästarens kaffe på huset i kassaboken.
+  'host.coffeeLedger': { sv: 'Kaffe på huset', en: 'Coffee on the house' },
   // ORDER 296 (punkt 5) — förberedelsen på morgonen.
   'prep.label': { sv: 'Förberedelsen', en: 'The prep' },
   'prep.minutes': { sv: '{need} min · personalen hinner {capacity}', en: '{need} min · the team manages {capacity}' },
