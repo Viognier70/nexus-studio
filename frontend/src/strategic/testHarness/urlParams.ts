@@ -128,6 +128,9 @@ interface ParsedParams {
   // så före/efter-mätning kan köras utan att växla branch. Ingen annan
   // effekt. Kräver playtest=1. `null` = ORDER 253-tempo (default).
   tempo: '251' | null;
+  // ORDER 293 — provspel av händelserna som teater: `#playtest=1&rocket=vb32-fodelsedagen`
+  // köar raketen till kvällens nästa plats (QUEUE_INCIDENT). Kräver playtest=1.
+  rocket: string | null;
 }
 
 function parseHash(): ParsedParams {
@@ -146,7 +149,8 @@ function parseHash(): ParsedParams {
       seed: null,
       start: null,
       light: null,
-      tempo: null
+      tempo: null,
+      rocket: null
     };
   }
   const hash = window.location.hash.replace('#', '');
@@ -177,7 +181,9 @@ function parseHash(): ParsedParams {
   const start = playtest ? parseStart(params.get('start') ?? null) : null;
   const light = playtest ? parseLight(params.get('light') ?? null) : null;
   const tempo = playtest ? parseTempo(params.get('tempo') ?? null) : null;
-  return { period, camera, roi, poseId, calibrationQuad, playtest, dollhouse, business, foodtruckSeed, uteplats, seed, start, light, tempo };
+  const rocketRaw = playtest ? params.get('rocket') ?? null : null;
+  const rocket = rocketRaw && /^[a-z0-9-]+$/.test(rocketRaw) ? rocketRaw : null;
+  return { period, camera, roi, poseId, calibrationQuad, playtest, dollhouse, business, foodtruckSeed, uteplats, seed, start, light, tempo, rocket };
 }
 
 function parseTempo(s: string | null): '251' | null {

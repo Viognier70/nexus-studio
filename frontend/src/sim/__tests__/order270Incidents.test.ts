@@ -65,8 +65,9 @@ describe('ORDER 270 — händelsebanken som raketer', () => {
   const bank = incidentBankFor('vinbar');
 
   // ORDER 279 — och nio raketer om kvällens meny och dryckeslista.
-  it('31 raketer för vinbaren (30 utkast och servetterna och isen) och 9 om menyn, som data, utan fel', () => {
-    expect(bank).toHaveLength(31 + 9);
+  // ORDER 293 — Designs fem händelser (leverans 3), tillsynen i fyra varianter: 39.
+  it('39 raketer för vinbaren (30 utkast, servetterna och isen, och Designs händelser) och 9 om menyn, som data, utan fel', () => {
+    expect(bank).toHaveLength(39 + 9);
     expect(validateIncidentBank(vinbarMeta as never, vinbarText as never)).toEqual([]);
     expect(validateIncidentBank(menuMeta as never, menuText as never)).toEqual([]);
   });

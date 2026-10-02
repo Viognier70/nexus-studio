@@ -33,7 +33,7 @@ import { DayBadge } from './ui/DayBadge';
 import { StrategicScene } from './scene/StrategicScene';
 import { DollhouseFrame } from './ui/DollhouseFrame';
 import { harnessParams } from './testHarness/urlParams';
-import { SimulationProvider, useSimDispatch } from './simulation/SimulationProvider';
+import { SimulationProvider, useSimDispatch, useSimState } from './simulation/SimulationProvider';
 import { AboutPanel } from './ui/AboutPanel';
 import { ControlsHint } from './ui/ControlsHint';
 import { DevPanel } from './ui/DevPanel';
@@ -108,6 +108,16 @@ function StrategicShell() {
   const [showScaleRef, setShowScaleRef] = useState(false);
   const { focusOn, jumpToPreset, atLevel4 } = useCamera();
   const simDispatch = useSimDispatch();
+  // ORDER 293 — provspel av händelserna: #playtest=1&rocket=<id> köar raketen
+  // när dörrarna öppnar, en gång per kväll.
+  const simForRocket = useSimState();
+  const queuedRocketDay = useRef(-1);
+  useEffect(() => {
+    const id = harnessParams.rocket;
+    if (!id || !simForRocket.day.doorsOpenedThisService || queuedRocketDay.current === simForRocket.day.dayNumber) return;
+    queuedRocketDay.current = simForRocket.day.dayNumber;
+    simDispatch({ type: 'QUEUE_INCIDENT', incidentId: id });
+  }, [simForRocket.day.doorsOpenedThisService, simForRocket.day.dayNumber, simDispatch]);
   const save = useSave();
 
   const getHost = useCallback(() => hostRef.current, []);

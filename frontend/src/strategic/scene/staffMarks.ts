@@ -15,7 +15,9 @@ import { THEATRE } from '../../sim/balance';
 
 // Vinbarens personal mot Designs roller.
 export const ROLE_OF: Record<StaffKey, StaffRole> = {
-  server: 'waiter', server2: 'waiter', bartender: 'bartender', sommelier: 'sommelier', cook: 'cook', dish: 'dishwasher'
+  server: 'waiter', server2: 'waiter', bartender: 'bartender', sommelier: 'sommelier', cook: 'cook', dish: 'dishwasher',
+  // ORDER 293 — Per, hovmästaren (Designs leverans 3 och vardagens koreografi).
+  host: 'host'
 };
 
 export interface StaffMark {

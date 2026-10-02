@@ -96,7 +96,7 @@ import {
 } from './wineBarDirector';
 import { TheatreStage } from './theatreStage';
 import { play } from '../ui/sound/sound';
-import { createStaffMark, disposeStaffMark, updateStaffMark, type StaffMark, setStaffMarkRole } from './staffMarks';
+import { createStaffMark, disposeStaffMark, updateStaffMark, type StaffMark } from './staffMarks';
 import { seatKindFromRoom, type ClipSample } from './figureClips';
 import { WARM } from '../../ui/theme/nexusTheme.warm';
 import type { GuestType } from '../types';
@@ -108,6 +108,15 @@ import { RoomReactionTag } from '../ui/RoomReactionTag';
 import { InteractionDirector } from './theatreInteractions';
 import { attachProps, type HeadToppingId, type PropHandle } from './figureProps';
 import { auditRig, publishFaults, type FigureFault } from './figureAudit';
+import { beforeDoors } from '../../sim/clock';
+import { EventPlayer } from './theatreEvents';
+import { theatreSeats } from './eventTheatre';
+import type { CameraTarget } from '../types';
+
+// ORDER 293 — strålkastaren sänker rummets ljus (Designs teaterScen.js: 45 %),
+// och klipp där manuset lägger figuren lågt (figurvakten räknar dem inte).
+const THEATRE_SPOT = { dim: 0.55 };
+const THEATRE_LOW_CLIPS = new Set(['staff.kneelTalk', 'staff.sweep', 'staff.wipeFloor', 'guest.slip', 'staff.smother', 'guest.wheel', 'guest.wheelRoll', 'guest.wheelTurn', 'guest.wheelToTable', 'bar.stockFridge', 'staff.carryCrate']);
 
 // ORDER 292b — figurmätningen var femtonde bildruta.
 const AUDIT_EVERY_FRAMES = 15;
@@ -145,7 +154,8 @@ const STAFF_COLOUR: Record<StaffKey, string> = {
   bartender: STAFF_UNIFORMS.bartender,
   sommelier: STAFF_UNIFORMS.sommelier,
   cook: STAFF_UNIFORMS.kitchen,
-  dish: STAFF_UNIFORMS.kitchen
+  dish: STAFF_UNIFORMS.kitchen,
+  host: STAFF_UNIFORMS.host
 };
 
 function smoothstep(a: number, b: number, x: number): number {
@@ -247,6 +257,10 @@ interface Cast {
   guestHandProps: { briefcase: PropHandle; camera: PropHandle }[];
   /** ORDER 292b — räknaren för figurmätningen (figureAudit.ts). */
   auditTick: number;
+  /** ORDER 293 — händelserna som teater (theatreEvents.ts) och kameran före. */
+  events: EventPlayer;
+  eventSaved: CameraTarget | null;
+  spotK: number;
 }
 
 /** Bildtexten vid figuren när raketen börjar i rummet (nexusStrings theatre.caption). */
@@ -314,13 +328,27 @@ export function WineBarFigures({ room, mood }: Props) {
     if (!parent) return;
     parent.add(group);
 
-    // Kön utanför dörren: interiorLayouts köplatser är OBB-lokala på samma
-    // axlar som rummet (rummet placeras i OBB:ns centrum med -angle), så de
-    // ligger i +X-änden bortom entrén. Här läggs de på rad från väntplatsen.
+    // ORDER 293 — Designs köplatser (wineBarRoom queueSpots, vardagens
+    // koreografi §3): två på dörrmattan och fem på trottoaren, ett sällskap per
+    // plats och medlemmarna inom 0,6 m från punkten (fyra platser runt punkten).
+    const QUEUE_SPOT_SIZE = 4;
     const queueSlots: Vec2[] = [];
-    for (let i = 0; i < 10; i++) {
-      const row = Math.floor(i / 2);
-      queueSlots.push([room.waitingSpot[0] + 0.8 * row, (i % 2 === 0 ? -0.5 : 0.5)]);
+    const queueFacings: number[] = [];
+    const spots = [...(room.queueSpots ?? [])].sort((a, b) => a.order - b.order);
+    for (const q of spots) {
+      const f = q.facing;
+      // Sidled och bakåt i förhållande till riktningen (framåt är +sin/+cos).
+      const fx = Math.sin(f), fz = Math.cos(f), sx = Math.cos(f), sz = -Math.sin(f);
+      for (const [side, back] of [[-0.28, 0], [0.28, 0], [-0.28, -0.45], [0.28, -0.45]]) {
+        queueSlots.push([q.local[0] + sx * side + fx * back, q.local[1] + sz * side + fz * back]);
+        queueFacings.push(f);
+      }
+    }
+    if (queueSlots.length === 0) {
+      for (let i = 0; i < 10; i++) {
+        const row = Math.floor(i / 2);
+        queueSlots.push([room.waitingSpot[0] + 0.8 * row, (i % 2 === 0 ? -0.5 : 0.5)]);
+      }
     }
     const director = new WineBarDirector(
       {
@@ -337,6 +365,9 @@ export function WineBarFigures({ room, mood }: Props) {
         exitPathFromSeat: (id) => exitPathFromSeat(room, id),
         groups: groupsFor(room),
         queueSlots,
+        queueFacings: queueFacings.length > 0 ? queueFacings : undefined,
+        queueSpotSize: queueFacings.length > 0 ? QUEUE_SPOT_SIZE : 1,
+        miseSpots: room.miseSpots,
         spawn: [room.waitingSpot[0] + 6, 0],
         poolSize: WINE_BAR_GUEST_POOL,
         seatedHipY: SEATED_HIP_Y
@@ -392,7 +423,10 @@ export function WineBarFigures({ room, mood }: Props) {
       kitchenWalk: { guestId: null, u: 0 },
       guestHandProps,
       auditTick: 0,
-      interactions: new InteractionDirector()
+      interactions: new InteractionDirector(),
+      events: new EventPlayer(group, room.floorY, theatreSeats(room.seats)),
+      eventSaved: null,
+      spotK: 0
     };
     if (import.meta.env.DEV && typeof window !== 'undefined') {
       (window as unknown as { __nxWineBarDirector?: unknown }).__nxWineBarDirector = director;
@@ -404,6 +438,7 @@ export function WineBarFigures({ room, mood }: Props) {
       ring.dispose();
       staffMarks.forEach(disposeStaffMark);
       stage.dispose();
+      castRef.current?.events.dispose();
       group.removeFromParent();
       castRef.current = null;
     };
@@ -429,7 +464,9 @@ export function WineBarFigures({ room, mood }: Props) {
       patienceSeconds: queuePatienceSeconds(s),
       giveUpSatisfaction: giveUpSatisfaction(s),
       unhappyThreshold: UNHAPPY_THRESHOLD,
-      takeover: to && s.simTime < to.until ? to : null
+      takeover: to && s.simTime < to.until ? to : null,
+      // ORDER 293 — före dörrarna: mise en place.
+      prep: beforeDoors(s)
     });
 
     // Samma tonband som InteriorGuests: figurerna syns när kameran är nära.
@@ -449,7 +486,8 @@ export function WineBarFigures({ room, mood }: Props) {
     // Kvällsljuset: stämningen och servicen.
     const m = LIGHT_MOODS[moodRef.current];
     const inService = s.day.period === 'lunch' || s.day.period === 'dinner';
-    const k = (m.ambientScale / WINE_BAR_LIGHTS.referenceScale) * (inService ? 1 : WINE_BAR_LIGHTS.offServiceShare) * visibility;
+    // ORDER 293 — strålkastaren: resten av rummet till 45 % ljus (Designs teaterScen.js spot).
+    const k = (m.ambientScale / WINE_BAR_LIGHTS.referenceScale) * (inService ? 1 : WINE_BAR_LIGHTS.offServiceShare) * visibility * (1 - THEATRE_SPOT.dim * cast.spotK);
     cast.lights.fill.intensity = WINE_BAR_LIGHTS.fill.intensity * k;
     cast.lights.fill.color.set(m.ambientColour);
     for (const l of cast.lights.bar) { l.intensity = WINE_BAR_LIGHTS.bar.intensity * k; l.color.set(m.pendantColour); }
@@ -533,7 +571,7 @@ export function WineBarFigures({ room, mood }: Props) {
       const task = inService ? cast.director.staffTask(key, t) : null;
       const working = task && t >= task.arrive && task.done > task.arrive ? Math.min(1, (t - task.arrive) / (task.done - task.arrive)) : null;
       // ORDER 292 — sommeliern i dörren bär värdens färg.
-      if (key === 'sommelier') setStaffMarkRole(cast.staffMarks[i], cast.director.hosting ? 'host' : 'sommelier');
+      // ORDER 293 — Per är värden; sommeliern är sommelier hela kvällen.
       updateStaffMark(cast.staffMarks[i], inService && ss[i].visible, { x: rig.root.position.x, z: rig.root.position.z }, task && task.to ? { x: task.to[0], z: task.to[1] } : null, working, room.floorY);
       if (fig && fig.kind === 'staff' && fig.staffKey === key && ss[i].visible) {
         // Den som skär sig backar ett steg (klippets root, i figurens ram).
@@ -560,6 +598,16 @@ export function WineBarFigures({ room, mood }: Props) {
       for (let i = 0; i < ss.length; i++) {
         const f = auditRig(cast.staffRigs[i], floor, ss[i], 'staff', STAFF_KEYS[i], cast.stage.staffClipId(i), false);
         if (f) faults.push(f);
+      }
+      // ORDER 293 — händelsernas figurer. Klipp där manuset lägger någon lågt
+      // (på huk, sopar, halkar, i rullstol) räknas inte som fel.
+      if (cast.events.playing) {
+        for (const r of cast.events.theatre.rigs()) {
+          if (r.clip && THEATRE_LOW_CLIPS.has(r.clip)) continue;
+          const pseudo = { visible: r.rig.root.visible, seated: r.seated, pose: 'idle' } as FigureSample;
+          const f = auditRig(r.rig, floor, pseudo, r.kind, `event:${r.id}`, r.clip, r.seated);
+          if (f) faults.push(f);
+        }
       }
       publishFaults(faults);
     }
@@ -589,8 +637,29 @@ export function WineBarFigures({ room, mood }: Props) {
     // Kameran glider in mot figuren och tillbaka efter svaret. ORDER 292 —
     // vid varje raket: figuren, annars bordet, annars rummets mitt.
     const focusLocal = figureLocal ?? (ringAt ? { x: ringAt.x, y: room.floorY, z: ringAt.z } : active ? { x: 0, y: room.floorY, z: 0 } : null);
-    cast.stage.camera(targetRef, active, focusLocal, Math.min(delta, 0.1));
-    if (active && ringAt) {
+    // ORDER 293 — händelserna spelas som teater: manusets kamera och strålkastare,
+    // och rummets egna figurer vilar medan scenen spelas.
+    const ev = cast.events.update(active, s.incidents?.log ?? [], Math.min(delta, 0.1));
+    cast.spotK = ev.spotK;
+    cast.events.theatre.setSpot(ev.spot, ev.spotK);
+    if (ev.playing) {
+      if (!cast.eventSaved) { const c = targetRef.current; cast.eventSaved = { ...c, focus: { ...c.focus } }; }
+      if (ev.view && !ev.game) {
+        const p = cast.group.localToWorld(new THREE.Vector3(ev.view.tx, room.floorY, ev.view.tz));
+        const yaw0 = new THREE.Euler().setFromQuaternion(cast.group.getWorldQuaternion(new THREE.Quaternion()), 'YXZ').y;
+        targetRef.current = { focus: { x: p.x, z: p.z }, distance: ev.view.dist, yaw: ev.view.yaw + yaw0, pitch: ev.view.pitch };
+      } else if (cast.eventSaved) {
+        targetRef.current = { ...cast.eventSaved, focus: { ...cast.eventSaved.focus } };
+      }
+      for (const r of cast.guestRigs) r.root.visible = false;
+      for (const r of cast.staffRigs) r.root.visible = false;
+      for (const mk of cast.staffMarks) mk.group.visible = false;
+      cast.ring.group.visible = false;
+    } else {
+      if (cast.eventSaved) { targetRef.current = { ...cast.eventSaved, focus: { ...cast.eventSaved.focus } }; cast.eventSaved = null; }
+      cast.stage.camera(targetRef, active, focusLocal, Math.min(delta, 0.1));
+    }
+    if (active && ringAt && !ev.playing) {
       cast.ring.group.visible = true;
       cast.ring.group.position.set(ringAt.x, room.floorY, ringAt.z);
       const total = active.secondsTotal > 0 ? active.secondsTotal : 1;

@@ -316,7 +316,19 @@ export function conditionHolds(state: SimulationState, c: IncidentCondition | un
   const seated = seatedGuests(state).length;
   if (c.minSeated !== undefined && seated < c.minSeated) return false;
   if (c.maxSeated !== undefined && seated > c.maxSeated) return false;
+  if (c.inspection !== undefined && inspectionVariant(state) !== c.inspection) return false;
   return true;
+}
+
+// ORDER 293 — tillsynens steg 3 väljs efter kvällens läge, i ordningen A nekad
+// gäst (gästen som vinglade har nekats i kväll), B ålderskontroll (studenter i
+// rummet), D kravet på mat (köket har slut, någon gick utan), annars C
+// egenkontroll (Designs manus 4, "Utlösare").
+export function inspectionVariant(state: SimulationState): 'A' | 'B' | 'C' | 'D' {
+  if (incidentsOf(state).fired.includes(INCIDENTS.drunkIncidentId)) return 'A';
+  if (presentGuests(state).some((g) => g.guestType === 'student')) return 'B';
+  if ((state.day.soldOutGuests ?? 0) > 0) return 'D';
+  return 'C';
 }
 
 export function situationFor(state: SimulationState, incident: Incident): string | null {
@@ -430,8 +442,10 @@ function chooseIncident(
   }
   const weekday = calendarFor(state.day.dayNumber).weekday;
   const menuIds = state.menu.map((m) => m.dishId);
+  // ORDER 293 — en familj (tillsynens varianter) högst en gång per kväll.
+  const firedFamilies = new Set(bank.filter((i) => i.family && inc.fired.includes(i.id)).map((i) => i.family));
   const free = bank.filter((i) =>
-    !i.chainOnly && !inc.fired.includes(i.id) && !inc.blocked.includes(i.id) &&
+    !i.chainOnly && !inc.fired.includes(i.id) && !inc.blocked.includes(i.id) && !(i.family && firedFamilies.has(i.family)) &&
     (!i.weekdays || i.weekdays.includes(weekday)) && fitsMenu(i, menuIds) && eligibleNow(state, i));
   // ORDER 279 — gästerna frågar om kvällens meny: en raket om en rätt eller
   // dryck på menyn väljs med sannolikheten MENU_ROCKETS.share.
@@ -503,7 +517,9 @@ function openIncident(
   const clip = backed ? null : rocketClipFor(incident);
   const figure = rocketFigure(draft, clip, base);
   const context = { ...base, figure };
-  const introLeft = figure ? THEATRE.rocketIntroSeconds[figure.clip] : 0;
+  // ORDER 293 — händelserna som teater: kortet väntar på manusets uppbyggnad.
+  const eventAsk = backed ? undefined : THEATRE.eventAskSeconds[incident.id];
+  const introLeft = figure ? THEATRE.rocketIntroSeconds[figure.clip] : eventAsk ? eventAsk[0] : 0;
   const { [incident.id]: _used, ...queuedContext } = inc.queuedContext;
   draft.incidents = {
     ...inc,
@@ -728,7 +744,8 @@ function correctOptionId(step: IncidentStep, situation: string | null): string {
 // stegets roll tar över och lämnar sin uppgift en stund.
 function takeoverFor(draft: SimulationState, incident: Incident, step: IncidentStep): { role: StaffRole; memberId: string | null; until: number } {
   const key = step.axis === 'phronesis' ? 'phronesis' : incident.track;
-  const role = INCIDENTS.takeoverRole[key] ?? 'servitör';
+  // ORDER 293 — i händelserna som teater tar Per, värden, över (Designs leverans 3).
+  const role = THEATRE.eventAskSeconds[incident.id] ? 'värd' : INCIDENTS.takeoverRole[key] ?? 'servitör';
   const member = draft.team.members.find((m) => m.role === role) ?? draft.team.members[0] ?? null;
   return { role: (member?.role as StaffRole) ?? role, memberId: member?.id ?? null, until: draft.simTime + INCIDENTS.takeoverSimSeconds };
 }
@@ -866,7 +883,7 @@ export function resolveIncident(draft: SimulationState, optionId: string | null,
     const earned = { credits: (active.earned?.credits ?? 0) + stepCredit + (backResult?.delta ?? 0), guestsIn: (active.earned?.guestsIn ?? 0) + guestsIn };
     draft.incidents = {
       ...draft.incidents!,
-      active: { ...active, step: stepIndex + 1, secondsTotal, secondsLeft: secondsTotal, struck, revealed, revealLeft: INCIDENTS.revealSeconds, picked: null, earned }
+      active: { ...active, step: stepIndex + 1, secondsTotal, secondsLeft: secondsTotal, struck, revealed, revealLeft: eventRevealSeconds(active, stepIndex), picked: null, earned }
     };
     return creditFor(stepCredit);
   }
@@ -964,6 +981,14 @@ export function tickOngoing(draft: SimulationState, dt: number): void {
     for (const g of targets) g.satisfaction = Math.max(0, Math.min(1, g.satisfaction + o.satisfactionPerMinute * perTick));
   }
   if (o.staminaPerMinute !== 0) bumpMorale(draft, o.staminaPerMinute * perTick);
+}
+
+// ORDER 293 — i en händelse som teater visas svaret tills scenen har kommit
+// till nästa fråga (THEATRE.eventAskSeconds), minst INCIDENTS.revealSeconds.
+function eventRevealSeconds(active: ActiveIncident, stepIndex: number): number {
+  const ask = active.backed ? undefined : THEATRE.eventAskSeconds[active.id];
+  if (!ask || ask[stepIndex + 1] === undefined) return INCIDENTS.revealSeconds;
+  return Math.max(INCIDENTS.revealSeconds, ask[stepIndex + 1] - ask[stepIndex]);
 }
 
 // Nedräkningen går i verklig tid: en tick är dt spelsekunder, och i farten

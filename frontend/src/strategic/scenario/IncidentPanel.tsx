@@ -54,6 +54,13 @@ import '../ui/service/service.css';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 import { shake, slam } from '../ui/juice/juice';
 import { fallFrom, flyTo, targetElement } from '../ui/juice/fx';
+import type { StringKey } from '../../content/nexusStrings';
+
+const EVENT_ROLE_KEY: Record<string, StringKey> = {
+  'vb32-fodelsedagen': 'event.bday.role', 'vb33-vasen': 'event.vase.role', 'vb34-vinglar': 'event.drunk.role',
+  'vb35-tillsynen-a': 'event.inspection.role', 'vb35-tillsynen-b': 'event.inspection.role', 'vb35-tillsynen-c': 'event.inspection.role', 'vb35-tillsynen-d': 'event.inspection.role',
+  'vb36-passet': 'event.kitchen.role'
+};
 
 const capitalise = (t: string) => (t ? t[0].toUpperCase() + t.slice(1) : t);
 
@@ -257,6 +264,9 @@ export function IncidentCard() {
 
   const { n, total: rockets } = rocketCounter(sim);
   const where = incident.needsTable ? t.table(String(view.context.table)) : t.room;
+  // ORDER 293 — händelserna som teater: manusets roll och plats (Designs
+  // event.<händelse>.role, t.ex. "Hovmästaren · lounge A").
+  const eventRole = EVENT_ROLE_KEY[incident.id] ? tt(lang, EVENT_ROLE_KEY[incident.id]) : null;
   const extra = view.mode === 'ask' && medalSteps(sim.medals, step.pavilion) > 0 && total > INCIDENTS.stepSeconds[step.axis];
   const pavilionName = strings.knowledge.pavilions[step.pavilion];
 
@@ -331,7 +341,7 @@ export function IncidentCard() {
       aria-label={f(incident.text.title)}
     >
       <div className="nx-rocket-head">
-        <div className="nx-label" data-testid={backed ? 'incident-back-kicker' : undefined}>{backed ? strings.back.kicker(view.context.staff, where) : `${view.context.staff} · ${where}`}</div>
+        <div className="nx-label" data-testid={backed ? 'incident-back-kicker' : undefined}>{backed ? strings.back.kicker(view.context.staff, where) : eventRole ?? `${view.context.staff} · ${where}`}</div>
         <div className="nx-rocket-count" data-testid="rocket-count">{active?.backed ? t.backOf(sim.incidents?.betsTonight ?? 1, BACK.maxPerEvening) : active?.chained ? t.followUp : t.rocketOf(String(Math.max(1, n)), String(Math.max(1, rockets, n)))}</div>
       </div>
       {/* ORDER 284 — introduktionen står där raketen startas (EventsPanel):

@@ -533,6 +533,9 @@ export const TEAM_BY_CLASS = {
 // Händelserna står som data i `src/content/incidents/` (händelsebanken).
 export const INCIDENTS = {
   section: 'Servicen > Händelserna i servicen',
+  // ORDER 293 — gästen som vinglar (Designs manus 3); nekas han i kväll blir
+  // tillsynens steg 3 variant A (sim/incidents.ts inspectionVariant).
+  drunkIncidentId: 'vb34-vinglar',
   // ORDER 270 (Vision Owner 2026-09-27): "2–4 raketer per kväll, fler
   // fredag och lördag."
   minPerEvening: 2,
@@ -890,6 +893,20 @@ export const MORNING_STAKE = {
 export const THEATRE = {
   section: 'Servicen > Servicen som teater',
   rocketIntroSeconds: { cutHand: 3.4, smellWine: 4, askPointMenu: 4, walkToKitchen: 4 } as Record<'cutHand' | 'smellWine' | 'askPointMenu' | 'walkToKitchen', number>,
+  // ORDER 293 — händelserna som teater (Designs handelserManus.js, takterna
+  // `card`): när manuset ställer varje fråga, i sekunder från raketens start.
+  // Kortet väntar på uppbyggnaden (introt) och på scenen mellan stegen
+  // (svarets visning), så att frågan kommer när scenen har kommit dit.
+  eventAskSeconds: {
+    'vb32-fodelsedagen': [9.5, 16, 32.5],
+    'vb33-vasen': [7, 15, 31],
+    'vb34-vinglar': [7, 14.5, 26],
+    'vb35-tillsynen-a': [14.5, 22, 38.5],
+    'vb35-tillsynen-b': [14.5, 22, 38.5],
+    'vb35-tillsynen-c': [14.5, 22, 38.5],
+    'vb35-tillsynen-d': [14.5, 22, 38.5],
+    'vb36-passet': [7.2, 14.5, 27.5]
+  } as Record<string, readonly number[]>,
   camera: { distanceM: 12, glideInSeconds: 1.2, glideOutSeconds: 1.0 },
   /** Bildtexten står så högt över figurens fötter (ovanför huvudet). */
   captionHeightM: 2.1,
@@ -1201,6 +1218,20 @@ export const SAVING = {
 // jämna flödet minskas lika mycket. Måndag och tisdag är lugna (speldesign >
 // Tiden), så vågorna kommer från onsdag. Klockslaget i minuter efter midnatt.
 // Valda tal (F61).
+// ORDER 293 — kön vid dörren (Designs vardagens koreografi, LEVERANSNOT §6:
+// "tålamodet väljer klippet: queueCalm över ett gränsvärde, queueImpatient
+// under det och queueLeaving när gästen går. Gränserna hör hemma i
+// balance.ts."). Tålamodet är 0–1 (wineBarDirector.ts guestPatience). Talen är
+// de som rummet använt sedan ORDER 286a (figureActs WAIT_THRESHOLDS). När
+// värden pratar med ett sällskap i kön är det lugnt så här många sekunder.
+export const QUEUE_MOOD = {
+  section: 'Servicen',
+  openQuestion: 'F65',
+  impatientBelow: 0.55,
+  leavingBelow: 0.2,
+  hostCalmSeconds: 6
+} as const;
+
 export const RUSH = {
   section: 'Servicen',
   openQuestion: 'F61',

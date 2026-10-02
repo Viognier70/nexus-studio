@@ -1,0 +1,430 @@
+{
+  "runs": [
+    {
+      "run": "fodelsedagen-ratt",
+      "id": "vb32-fodelsedagen",
+      "wrongAt": null,
+      "shots": [
+        {
+          "label": "uppbyggnaden",
+          "file": "events-fodelsedagen-ratt-00-uppbyggnaden.jpg",
+          "cam": 12
+        },
+        {
+          "label": "fraga-1",
+          "file": "events-fodelsedagen-ratt-01-fraga-1.jpg",
+          "cam": 12
+        },
+        {
+          "label": "svar-1-ratt",
+          "file": "events-fodelsedagen-ratt-02-svar-1-ratt.jpg",
+          "cam": 12
+        },
+        {
+          "label": "fraga-2",
+          "file": "events-fodelsedagen-ratt-03-fraga-2.jpg",
+          "cam": 12
+        },
+        {
+          "label": "svar-2-ratt",
+          "file": "events-fodelsedagen-ratt-04-svar-2-ratt.jpg",
+          "cam": 12
+        },
+        {
+          "label": "fraga-3",
+          "file": "events-fodelsedagen-ratt-05-fraga-3.jpg",
+          "cam": 12
+        },
+        {
+          "label": "svar-3-ratt",
+          "file": "events-fodelsedagen-ratt-06-svar-3-ratt.jpg",
+          "cam": 12
+        },
+        {
+          "label": "slutet",
+          "file": "events-fodelsedagen-ratt-07-slutet.jpg",
+          "cam": 13
+        },
+        {
+          "label": "tillbaka",
+          "file": "events-fodelsedagen-ratt-08-tillbaka.jpg",
+          "cam": 23
+        }
+      ],
+      "maxDown": 0,
+      "faults": [],
+      "opened": true,
+      "finished": true,
+      "errors": []
+    },
+    {
+      "run": "fodelsedagen-fel2",
+      "id": "vb32-fodelsedagen",
+      "wrongAt": 1,
+      "shots": [
+        {
+          "label": "uppbyggnaden",
+          "file": "events-fodelsedagen-fel2-00-uppbyggnaden.jpg",
+          "cam": 12
+        },
+        {
+          "label": "fraga-1",
+          "file": "events-fodelsedagen-fel2-01-fraga-1.jpg",
+          "cam": 12
+        },
+        {
+          "label": "svar-1-ratt",
+          "file": "events-fodelsedagen-fel2-02-svar-1-ratt.jpg",
+          "cam": 12
+        },
+        {
+          "label": "fraga-2",
+          "file": "events-fodelsedagen-fel2-03-fraga-2.jpg",
+          "cam": 12
+        },
+        {
+          "label": "svar-2-fel",
+          "file": "events-fodelsedagen-fel2-04-svar-2-fel.jpg",
+          "cam": 12
+        },
+        {
+          "label": "slutet",
+          "file": "events-fodelsedagen-fel2-05-slutet.jpg",
+          "cam": 13
+        },
+        {
+          "label": "tillbaka",
+          "file": "events-fodelsedagen-fel2-06-tillbaka.jpg",
+          "cam": 23
+        }
+      ],
+      "maxDown": 0,
+      "faults": [],
+      "opened": true,
+      "finished": true,
+      "errors": []
+    },
+    {
+      "run": "vasen-ratt",
+      "id": "vb33-vasen",
+      "wrongAt": null,
+      "shots": [
+        {
+          "label": "uppbyggnaden",
+          "file": "events-vasen-ratt-00-uppbyggnaden.jpg",
+          "cam": 10
+        },
+        {
+          "label": "fraga-1",
+          "file": "events-vasen-ratt-01-fraga-1.jpg",
+          "cam": 10
+        },
+        {
+          "label": "svar-1-ratt",
+          "file": "events-vasen-ratt-02-svar-1-ratt.jpg",
+          "cam": 10
+        },
+        {
+          "label": "fraga-2",
+          "file": "events-vasen-ratt-03-fraga-2.jpg",
+          "cam": 10
+        },
+        {
+          "label": "svar-2-ratt",
+          "file": "events-vasen-ratt-04-svar-2-ratt.jpg",
+          "cam": 10
+        },
+        {
+          "label": "fraga-3",
+          "file": "events-vasen-ratt-05-fraga-3.jpg",
+          "cam": 10
+        },
+        {
+          "label": "svar-3-ratt",
+          "file": "events-vasen-ratt-06-svar-3-ratt.jpg",
+          "cam": 10
+        },
+        {
+          "label": "slutet",
+          "file": "events-vasen-ratt-07-slutet.jpg",
+          "cam": 13
+        },
+        {
+          "label": "tillbaka",
+          "file": "events-vasen-ratt-08-tillbaka.jpg",
+          "cam": 23
+        }
+      ],
+      "maxDown": 0,
+      "faults": [],
+      "opened": true,
+      "finished": true,
+      "errors": []
+    },
+    {
+      "run": "vasen-fel1",
+      "id": "vb33-vasen",
+      "wrongAt": 0,
+      "shots": [
+        {
+          "label": "uppbyggnaden",
+          "file": "events-vasen-fel1-00-uppbyggnaden.jpg",
+          "cam": 10
+        },
+        {
+          "label": "fraga-1",
+          "file": "events-vasen-fel1-01-fraga-1.jpg",
+          "cam": 10
+        },
+        {
+          "label": "svar-1-fel",
+          "file": "events-vasen-fel1-02-svar-1-fel.jpg",
+          "cam": 10
+        },
+        {
+          "label": "slutet",
+          "file": "events-vasen-fel1-03-slutet.jpg",
+          "cam": 10
+        },
+        {
+          "label": "tillbaka",
+          "file": "events-vasen-fel1-04-tillbaka.jpg",
+          "cam": 24
+        }
+      ],
+      "maxDown": 0,
+      "faults": [],
+      "opened": true,
+      "finished": true,
+      "errors": []
+    },
+    {
+      "run": "vinglar-ratt",
+      "id": "vb34-vinglar",
+      "wrongAt": null,
+      "shots": [
+        {
+          "label": "uppbyggnaden",
+          "file": "events-vinglar-ratt-00-uppbyggnaden.jpg",
+          "cam": 12
+        },
+        {
+          "label": "fraga-1",
+          "file": "events-vinglar-ratt-01-fraga-1.jpg",
+          "cam": 12
+        },
+        {
+          "label": "svar-1-ratt",
+          "file": "events-vinglar-ratt-02-svar-1-ratt.jpg",
+          "cam": 12
+        },
+        {
+          "label": "fraga-2",
+          "file": "events-vinglar-ratt-03-fraga-2.jpg",
+          "cam": 12
+        },
+        {
+          "label": "svar-2-ratt",
+          "file": "events-vinglar-ratt-04-svar-2-ratt.jpg",
+          "cam": 12
+        },
+        {
+          "label": "fraga-3",
+          "file": "events-vinglar-ratt-05-fraga-3.jpg",
+          "cam": 12
+        },
+        {
+          "label": "svar-3-ratt",
+          "file": "events-vinglar-ratt-06-svar-3-ratt.jpg",
+          "cam": 12
+        },
+        {
+          "label": "slutet",
+          "file": "events-vinglar-ratt-07-slutet.jpg",
+          "cam": 12
+        },
+        {
+          "label": "tillbaka",
+          "file": "events-vinglar-ratt-08-tillbaka.jpg",
+          "cam": 23
+        }
+      ],
+      "maxDown": 0,
+      "faults": [],
+      "opened": true,
+      "finished": true,
+      "errors": []
+    },
+    {
+      "run": "tillsynen-c-ratt",
+      "id": "vb35-tillsynen-c",
+      "wrongAt": null,
+      "shots": [
+        {
+          "label": "uppbyggnaden",
+          "file": "events-tillsynen-c-ratt-00-uppbyggnaden.jpg",
+          "cam": 13
+        },
+        {
+          "label": "fraga-1",
+          "file": "events-tillsynen-c-ratt-01-fraga-1.jpg",
+          "cam": 13
+        },
+        {
+          "label": "svar-1-ratt",
+          "file": "events-tillsynen-c-ratt-02-svar-1-ratt.jpg",
+          "cam": 13
+        },
+        {
+          "label": "fraga-2",
+          "file": "events-tillsynen-c-ratt-03-fraga-2.jpg",
+          "cam": 13
+        },
+        {
+          "label": "svar-2-ratt",
+          "file": "events-tillsynen-c-ratt-04-svar-2-ratt.jpg",
+          "cam": 13
+        },
+        {
+          "label": "fraga-3",
+          "file": "events-tillsynen-c-ratt-05-fraga-3.jpg",
+          "cam": 11
+        },
+        {
+          "label": "svar-3-ratt",
+          "file": "events-tillsynen-c-ratt-06-svar-3-ratt.jpg",
+          "cam": 11
+        },
+        {
+          "label": "slutet",
+          "file": "events-tillsynen-c-ratt-07-slutet.jpg",
+          "cam": 12
+        },
+        {
+          "label": "tillbaka",
+          "file": "events-tillsynen-c-ratt-08-tillbaka.jpg",
+          "cam": 24
+        }
+      ],
+      "maxDown": 0,
+      "faults": [],
+      "opened": true,
+      "finished": true,
+      "errors": []
+    },
+    {
+      "run": "passet-ratt",
+      "id": "vb36-passet",
+      "wrongAt": null,
+      "shots": [
+        {
+          "label": "uppbyggnaden",
+          "file": "events-passet-ratt-00-uppbyggnaden.jpg",
+          "cam": 12
+        },
+        {
+          "label": "fraga-1",
+          "file": "events-passet-ratt-01-fraga-1.jpg",
+          "cam": 12
+        },
+        {
+          "label": "svar-1-ratt",
+          "file": "events-passet-ratt-02-svar-1-ratt.jpg",
+          "cam": 12
+        },
+        {
+          "label": "fraga-2",
+          "file": "events-passet-ratt-03-fraga-2.jpg",
+          "cam": 12
+        },
+        {
+          "label": "svar-2-ratt",
+          "file": "events-passet-ratt-04-svar-2-ratt.jpg",
+          "cam": 12
+        },
+        {
+          "label": "fraga-3",
+          "file": "events-passet-ratt-05-fraga-3.jpg",
+          "cam": 12
+        },
+        {
+          "label": "svar-3-ratt",
+          "file": "events-passet-ratt-06-svar-3-ratt.jpg",
+          "cam": 12
+        },
+        {
+          "label": "slutet",
+          "file": "events-passet-ratt-07-slutet.jpg",
+          "cam": 12
+        },
+        {
+          "label": "tillbaka",
+          "file": "events-passet-ratt-08-tillbaka.jpg",
+          "cam": 23
+        }
+      ],
+      "maxDown": 0,
+      "faults": [],
+      "opened": true,
+      "finished": true,
+      "errors": []
+    },
+    {
+      "run": "passet-fel3",
+      "id": "vb36-passet",
+      "wrongAt": 2,
+      "shots": [
+        {
+          "label": "uppbyggnaden",
+          "file": "events-passet-fel3-00-uppbyggnaden.jpg",
+          "cam": 12
+        },
+        {
+          "label": "fraga-1",
+          "file": "events-passet-fel3-01-fraga-1.jpg",
+          "cam": 12
+        },
+        {
+          "label": "svar-1-ratt",
+          "file": "events-passet-fel3-02-svar-1-ratt.jpg",
+          "cam": 12
+        },
+        {
+          "label": "fraga-2",
+          "file": "events-passet-fel3-03-fraga-2.jpg",
+          "cam": 12
+        },
+        {
+          "label": "svar-2-ratt",
+          "file": "events-passet-fel3-04-svar-2-ratt.jpg",
+          "cam": 12
+        },
+        {
+          "label": "fraga-3",
+          "file": "events-passet-fel3-05-fraga-3.jpg",
+          "cam": 12
+        },
+        {
+          "label": "svar-3-fel",
+          "file": "events-passet-fel3-06-svar-3-fel.jpg",
+          "cam": 12
+        },
+        {
+          "label": "slutet",
+          "file": "events-passet-fel3-07-slutet.jpg",
+          "cam": 12
+        },
+        {
+          "label": "tillbaka",
+          "file": "events-passet-fel3-08-tillbaka.jpg",
+          "cam": 23
+        }
+      ],
+      "maxDown": 0,
+      "faults": [],
+      "opened": true,
+      "finished": true,
+      "errors": []
+    }
+  ]
+}

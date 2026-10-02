@@ -10,8 +10,10 @@ import { checkInteractions } from '../figureInteractions';
 import { CATALOGUE, createProp, measureProp } from '../tableware';
 
 describe('ORDER 286a — leveransens kontroller', () => {
-  it('46 klipp (tillägget: barstol och lounge), och varje efterföljare finns och passar', () => {
-    expect(Object.keys(CLIPS)).toHaveLength(46);
+  // ORDER 293 — leverans 3 (38 klipp och guest.showIdSeated) och vardagens
+  // koreografi (21 klipp, guest.wheelRoll m.fl.): 107 klipp.
+  it('107 klipp (till och med vardagens koreografi), och varje efterföljare finns och passar', () => {
+    expect(Object.keys(CLIPS)).toHaveLength(107);
     expect(validateClips()).toEqual([]);
   });
 
@@ -21,9 +23,10 @@ describe('ORDER 286a — leveransens kontroller', () => {
     expect(rows.filter((r) => !r.ok)).toEqual([]);
   });
 
-  it('rekvisitan: 17 föremål, mått inom 2 mm och undersidan på y = 0', () => {
+  // ORDER 293 — leverans 3 (tio föremål) och vardagens koreografi (fyra): 31.
+  it('rekvisitan: 31 föremål, mått inom 2 mm och undersidan på y = 0', () => {
     const ids = Object.keys(CATALOGUE) as (keyof typeof CATALOGUE)[];
-    expect(ids).toHaveLength(17);
+    expect(ids).toHaveLength(31);
     for (const id of ids) expect(measureProp(createProp(id)).ok).toBe(true);
   });
 

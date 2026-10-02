@@ -128,8 +128,16 @@ export interface StandSpec {
   lane: LaneId;
 }
 
+/** Köplatserna vid dörren (vardagens koreografi). En plats är ett sällskap; medlemmarna står
+ *  inom 0,6 m från punkten. 'inside' står på dörrmattan och väntar på värden, 'outside' på
+ *  trottoaren längs fasaden. order = 1 är först i kön. */
+export interface QueueSpot { id: string; side: 'inside' | 'outside'; order: number; local: Vec2; facing: number; }
+
+/** Platserna för mise en place före öppning: där personalen står när de gör i ordning. */
+export interface MiseSpot { id: string; role: string; local: Vec2; facing: number; note: string; }
+
 export interface StaffStation {
-  /** 'bartender' | 'sommelier' | 'server' | 'cookHot' | 'cookCold' | 'dish' | 'dj' */
+  /** 'host' | 'bartender' | 'sommelier' | 'server' | 'cookHot' | 'cookCold' | 'dish' | 'dj' */
   id: string;
   /** Rollen i FigureActs — flera stationer kan dela roll (kocken har två). */
   role: string;
@@ -185,6 +193,8 @@ export interface WineBarRoom {
   pendants: { id: string; local: Vec3 }[];
   entrance: Vec2;
   waitingSpot: Vec2;
+  queueSpots: QueueSpot[];
+  miseSpots: MiseSpot[];
   /** Golvplanets lokala Y — en stående figurs sulor ligger här. */
   floorY: number;
   capacity: number;
@@ -307,7 +317,11 @@ export const STAFF_UNIFORMS = {
   bartender: '#455d5f',
   server: '#5e4f37',
   kitchen: '#425741',
-  dj: '#664958'
+  dj: '#664958',
+  // ORDER 293 — Designs '#2e2a2b' (vardagens koreografi) låg utanför rummets
+  // kontrastband mot golven (4,0–4,9, checkPaletteAgainstFloors 1,8–3,6). Den
+  // mörkaste kostymen inom bandet.
+  host: '#4a4243'
 };
 
 /** Spelaren. Den enda mättade figurfärgen i rummet — igenkänningen ligger i
@@ -933,9 +947,47 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
   rectBox(furniture, M.brass, inX - 0.12, inX - 0.06, 1.1, 2.3, Y + 1.7, Y + 1.74, 'coatRail');
   rectBox(furniture, M.brass, inX - 0.12, inX - 0.06, 1.1, 1.14, Y, Y + 1.74, 'coatRailPostA');
   rectBox(furniture, M.brass, inX - 0.12, inX - 0.06, 2.26, 2.3, Y, Y + 1.74, 'coatRailPostB');
+  // Värdpulten söder om dörrmattan (leverans 3, godkänd 2026-09-30). Framsidan mot dörren (+x).
+  // 0,60 bred längs z, 0,45 djup längs x, 1,10 hög. Samma mått som tableware 'hostDesk'. Vasen står på den.
+  rectBox(furniture, M.bar, 6.375, 6.825, -0.85, -0.25, Y, Y + 0.06, 'hostDeskPlinth');
+  rectBox(furniture, M.bar, 6.395, 6.805, -0.83, -0.27, Y + 0.06, Y + 1.06, 'hostDesk');
+  rectBox(furniture, M.barTop, 6.375, 6.825, -0.85, -0.25, Y + 1.06, Y + 1.10, 'hostDeskTop');
+  rectBox(furniture, M.brass, 6.805, 6.811, -0.83, -0.27, Y + 0.91, Y + 0.93, 'hostDeskBrass');
+
+  // ── Vardagens koreografi (efter leverans 3) ──────────────────────
+  // Trottoaren utanför dörren, där kön står. Samma höjd som golvet, en kantsten mot gatan.
+  const paveM = mat('#4b433c', 0.95, 0), boardM = mat('#23221f', 0.9, 0), steelM = mat('#9a978f', 0.35, 0.6);
+  floorPlate(furniture, paveM, halfW, halfW + 3.4, -halfD - 3.2, 2.8, 0, 'pavement');
+  rectBox(furniture, M.wallCap, halfW + 3.4, halfW + 3.55, -halfD - 3.2, 2.8, Y - 0.02, Y + 0.1, 'kerb');
+  // Tavlan på staffli söder om pulten, framsidan mot dörren (+x). Per skriver kvällens viner på den.
+  rectBox(furniture, M.bar, 6.91, 6.95, -2.08, -2.04, Y, Y + 1.55, 'easelLegS');
+  rectBox(furniture, M.bar, 6.91, 6.95, -1.46, -1.42, Y, Y + 1.55, 'easelLegN');
+  rectBox(furniture, boardM, 6.95, 6.99, -2.05, -1.45, Y + 0.72, Y + 1.48, 'menuBoard');
+  rectBox(furniture, M.brass, 6.95, 7.0, -2.07, -1.43, Y + 1.48, Y + 1.51, 'menuBoardTop');
+  // Vinkylen i södra stråkets östra ände, glasdörren mot väster. Elin fyller den före öppning.
+  // Stående och 1,45 m hög, så att den som fyller syns över norra disken från spelets kamera.
+  rectBox(furniture, steelM, 2.0, 2.38, -1.15, -0.3, Y, Y + 1.45, 'barFridge');
+  rectBox(furniture, mat('#3a4a4c', 0.15, 0.3, '#9fd0d0', 0.25), 1.985, 2.0, -1.1, -0.35, Y + 0.12, Y + 1.38, 'barFridgeGlass');
+  rectBox(furniture, M.brass, 1.97, 1.985, -0.4, -0.37, Y + 0.6, Y + 1.0, 'barFridgeHandle');
 
   const entrance: Vec2 = [inX - 0.55, 0];
   const waitingSpot: Vec2 = [halfW + 2.5, 0];
+  const door: Vec2 = [halfW, 0];
+  const faceDoor = function (p: Vec2) { return Math.atan2(door[0] - p[0], door[1] - p[1]); };
+  const queueSpots: QueueSpot[] = [
+    { id: 'queueIn1', side: 'inside', order: 1, local: [7.2, 0.3], facing: -Math.PI / 2 },
+    { id: 'queueIn2', side: 'inside', order: 2, local: [7.3, 0.85], facing: -Math.PI / 2 }
+  ];
+  [[8.35, 0.1], [8.5, -1.8], [8.6, -3.7], [8.7, -5.6], [8.75, -7.5]].forEach(function (p, i) {
+    queueSpots.push({ id: 'queueOut' + (i + 1), side: 'outside', order: i + 3, local: p as Vec2, facing: faceDoor(p as Vec2) });
+  });
+  const miseSpots: MiseSpot[] = [
+    { id: 'board', role: 'host', local: [7.4, -1.75], facing: -Math.PI / 2, note: 'Framför tavlan. Per skriver kvällens viner.' },
+    { id: 'fridge', role: 'sommelier', local: [1.55, -0.72], facing: Math.PI / 2, note: 'Framför vinkylen i södra stråkets östra ände.' },
+    { id: 'store', role: 'sommelier', local: [-6.25, -1.9], facing: -Math.PI / 2, note: 'Vid vinkylen i förrådet, där backarna hämtas.' },
+    { id: 'polish', role: 'bartender', local: [-0.9, -0.74], facing: Math.PI, note: 'Södra stråket, vänd mot disken. Glasen ställs på rad.' },
+    { id: 'setTables', role: 'server', local: [-2.1, -3.85], facing: Math.PI, note: 'Norr om småborden. Dukar kuvert för kuvert.' }
+  ];
 
   // ORDER 271 (montering): tre stationer flyttade inom sin plats efter
   // kameraprovet med SPELETS kamera (lutning 50°, 24 m, åtta vinklar i
@@ -958,6 +1010,8 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
       note: 'Kallskänk. Ett steg från varm station — en kock kan ta båda en tisdag.' },
     { id: 'dish', role: 'dish', local: [DISH_X, 2.75], standHeight: 0, facing: Math.PI, uniform: STAFF_UNIFORMS.kitchen,
       note: 'Diskplatsen. Delar köksuniform; rollen läses av platsen.' },
+    { id: 'host', role: 'host', local: [6.1, -0.55], standHeight: 0, facing: Math.PI / 2, uniform: STAFF_UNIFORMS.host,
+      note: 'Per bakom värdpulten, vänd mot dörren. Hovmästare och kvällens anmälda serveringsansvarige.' },
     { id: 'dj', role: 'dj', local: [DJ.cx + 0.45, DJ.cz - 0.45], standHeight: DJ.platform, facing: faceNW, uniform: STAFF_UNIFORMS.dj,
       note: 'Bakom pulten i SO-hörnet, 0,25 m upp, vänd mot det öppna golvet.' }
   ];
@@ -972,6 +1026,7 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
   const room: WineBarRoom = {
     group: group, parts: parts, seats: seats, standing: standing, staffStations: staffStations,
     candles: candles, pendants: pendants, entrance: entrance, waitingSpot: waitingSpot,
+    queueSpots: queueSpots, miseSpots: miseSpots,
     floorY: Y, capacity: TOTAL_SEATS, width: width, depth: depth, fits: fits, shortfall: shortfall,
     wineWallLevel: startLevel, mood: opts.mood ?? 'tidig',
     dispose: function () {
@@ -1235,7 +1290,9 @@ export function resolveWorldPositions(room: WineBarRoom) {
     standing: room.standing.map(function (s) { return w(s.local); }),
     staffStations: room.staffStations.map(function (s) { return w(s.local); }),
     entrance: w(room.entrance),
-    waitingSpot: w(room.waitingSpot)
+    waitingSpot: w(room.waitingSpot),
+    queueSpots: room.queueSpots.map(function (s) { return w(s.local); }),
+    miseSpots: room.miseSpots.map(function (s) { return w(s.local); })
   };
 }
 

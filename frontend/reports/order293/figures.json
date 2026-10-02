@@ -1,0 +1,87 @@
+{
+  "samples": 171,
+  "auditedSamples": 171,
+  "maxDown": 0,
+  "faults": [],
+  "button": [
+    {
+      "atSec": 34,
+      "clockLabel": "prep",
+      "clock": "18.15",
+      "sub": "Dörrarna öppnar 19.05",
+      "enabled": false,
+      "why": "Öppnar 19.05, när dörrarna öppnar"
+    },
+    {
+      "atSec": 84,
+      "clockLabel": "prep",
+      "clock": "19.04",
+      "sub": "Dörrarna öppnar 19.05",
+      "enabled": true,
+      "why": "3 kvar i kväll"
+    },
+    {
+      "atSec": 85,
+      "clockLabel": "service",
+      "clock": "19.05",
+      "sub": "3 h 54 min kvar",
+      "enabled": true,
+      "why": "3 kvar i kväll"
+    },
+    {
+      "atSec": 128,
+      "clockLabel": "service",
+      "clock": "19.25",
+      "sub": "3 h 34 min kvar",
+      "enabled": null,
+      "why": "3 kvar i kväll"
+    },
+    {
+      "atSec": 134,
+      "clockLabel": "rush",
+      "clock": "19.55",
+      "sub": "3 h 05 min kvar",
+      "enabled": true,
+      "why": "3 kvar i kväll"
+    },
+    {
+      "atSec": 196,
+      "clockLabel": "rush",
+      "clock": "20.33",
+      "sub": "2 h 27 min kvar",
+      "enabled": null,
+      "why": "3 kvar i kväll"
+    },
+    {
+      "atSec": 197,
+      "clockLabel": "rush",
+      "clock": "20.58",
+      "sub": "2 h 02 min kvar",
+      "enabled": true,
+      "why": "3 kvar i kväll"
+    },
+    {
+      "atSec": 200,
+      "clockLabel": "service",
+      "clock": "21.00",
+      "sub": "2 h 00 min kvar",
+      "enabled": true,
+      "why": "3 kvar i kväll"
+    },
+    {
+      "atSec": 248,
+      "clockLabel": "service",
+      "clock": "21.18",
+      "sub": "1 h 42 min kvar",
+      "enabled": true,
+      "why": null
+    }
+  ],
+  "errors": [],
+  "village": {
+    "labelsInRoom": 2,
+    "camDistanceRoom": 17,
+    "camDistanceVillage": 482,
+    "labelsInVillage": 0
+  }
+}

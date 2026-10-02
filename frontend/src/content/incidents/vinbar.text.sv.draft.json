@@ -2542,6 +2542,710 @@
         "outcome": "Personalen tar över: de gör lite av båda, och baren står utan is en lång stund.",
         "ongoing": "Isen är slut i baren. Gästerna väntar på sina drinkar."
       }
+    },
+    "vb32-fodelsedagen": {
+      "title": "Födelsedagen",
+      "body": "Värden i lounge A vinkar diskret till Per, lutar sig fram och viskar att det är Karins födelsedag i kväll.",
+      "steps": [
+        {
+          "question": "Vad behöver köket veta först?",
+          "options": {
+            "a": {
+              "label": "Att ljus och tändare ska ligga på brickan",
+              "explanation": "Köket planerar i antal och tid. Allergier går före allt annat, också på en fest."
+            },
+            "b": {
+              "label": "Hur många som ska ha och när den ska ut",
+              "explanation": "Köket planerar i antal och tid. Allergier går före allt annat, också på en fest."
+            },
+            "c": {
+              "label": "Antal, allergier och när den ska ut",
+              "explanation": "Köket planerar i antal och tid. Allergier går före allt annat, också på en fest."
+            },
+            "d": {
+              "label": "Vilken efterrätt värden helst vill ha",
+              "explanation": "Köket planerar i antal och tid. Allergier går före allt annat, också på en fest."
+            }
+          },
+          "fail": {
+            "outcome": "Jag tar hand om det."
+          }
+        },
+        {
+          "question": "Hur bär Sara ut en efterrätt med tända ljus?",
+          "options": {
+            "a": {
+              "label": "Fort, så att ljusen inte hinner brinna ned",
+              "explanation": "Öppen låga bland gäster kräver fri väg, lågt grepp och lugnt tempo."
+            },
+            "b": {
+              "label": "Tänds vid luckan, bärs lågt och sakta i fri gång",
+              "explanation": "Öppen låga bland gäster kräver fri väg, lågt grepp och lugnt tempo."
+            },
+            "c": {
+              "label": "Tänds vid luckan och bärs högt över gästerna",
+              "explanation": "Öppen låga bland gäster kräver fri väg, lågt grepp och lugnt tempo."
+            },
+            "d": {
+              "label": "Genom barens stråk, den kortaste vägen till loungen",
+              "explanation": "Öppen låga bland gäster kräver fri väg, lågt grepp och lugnt tempo."
+            }
+          },
+          "fail": {
+            "outcome": "Jag tar hand om det."
+          }
+        },
+        {
+          "question": "I lounge B sitter två gäster i ett affärssamtal och vill ha lugn. Sällskapet vill sjunga. Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Ber sällskapet vänta tills grannarna har gått",
+              "explanation": "Hänsynsfullt, men grannarna kan sitta kvar länge, och då blir det ingen sång alls."
+            },
+            "b": {
+              "label": "Frågar grannarna först om en kort sång går bra",
+              "explanation": "Artigt, men då får grannarna säga nej till en födelsedag. Det är ett val du ska göra, inte de."
+            },
+            "c": {
+              "label": "Låter dem sjunga en vers och bjuder grannarna",
+              "explanation": "Kvällen tillhör alla bord. En kort fest och en gest till grannarna håller båda nöjda."
+            },
+            "d": {
+              "label": "Ber DJ:n höja musiken så att sången smälter in",
+              "explanation": "Kvällen tillhör alla bord. En kort fest och en gest till grannarna håller båda nöjda."
+            }
+          },
+          "fail": {
+            "outcome": "Jag tar hand om det.",
+            "ongoing": "Jag tar hand om det."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "En vers, sedan dämpar vi."
+      },
+      "staff": {
+        "outcome": "Per tar över."
+      }
+    },
+    "vb33-vasen": {
+      "title": "Vasen på pulten",
+      "body": "En gäst i rullstol kommer in mellan värdpulten och klädhängaren. Handen på hjulet tar i pulten, och vasen går i golvet.",
+      "steps": [
+        {
+          "question": "Vad är risken just nu?",
+          "options": {
+            "a": {
+              "label": "Att gästen har skadat handen mot pulten",
+              "explanation": "Glas och vatten i entrén är en risk för alla som går in, också för gästen i rullstolen. Hur gästen mår frågar du i nästa steg."
+            },
+            "b": {
+              "label": "Att entrén blockeras för nästa sällskap",
+              "explanation": "Glas och vatten i entrén är en risk för alla som går in, också för gästen i rullstolen. Hur gästen mår frågar du i nästa steg."
+            },
+            "c": {
+              "label": "Glassplitter och vatten där gäster går in",
+              "explanation": "Glas och vatten i entrén är en risk för alla som går in, också för gästen i rullstolen. Hur gästen mår frågar du i nästa steg."
+            },
+            "d": {
+              "label": "Att vattnet förstör bokningsboken på pulten",
+              "explanation": "Glas och vatten i entrén är en risk för alla som går in, också för gästen i rullstolen. Hur gästen mår frågar du i nästa steg."
+            }
+          },
+          "fail": {
+            "outcome": "Jag tar hand om det."
+          }
+        },
+        {
+          "question": "Hur tar du hand om det?",
+          "options": {
+            "a": {
+              "label": "Torkar upp vattnet först, så att ingen halkar",
+              "explanation": "Människan först, sedan risken, sedan städningen."
+            },
+            "b": {
+              "label": "Frågar hur gästen mår, spärrar av, sopar och torkar",
+              "explanation": "Människan först, sedan risken, sedan städningen."
+            },
+            "c": {
+              "label": "Plockar de stora skärvorna för hand, sedan torkar du",
+              "explanation": "Människan först, sedan risken, sedan städningen."
+            },
+            "d": {
+              "label": "Hämtar borste och skyffel och sopar upp allt direkt",
+              "explanation": "Människan först, sedan risken, sedan städningen."
+            }
+          },
+          "fail": {
+            "outcome": "Jag tar hand om det."
+          }
+        },
+        {
+          "question": "Gästen skäms och vill gå hem. Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Bjuder sällskapet på kvällen och ber om ursäkt",
+              "explanation": "Generöst, men utan förklaring kan gästen tro att du bjuder för att hen gjorde fel."
+            },
+            "b": {
+              "label": "Säger att det kan hända vem som helst och visar vägen",
+              "explanation": "Entrén var för trång för en rullstol. Felet är vårt, inte gästens. Säg det och rätta till det."
+            },
+            "c": {
+              "label": "Säger att felet var vårt, flyttar vasen och visar vägen",
+              "explanation": "Entrén var för trång för en rullstol. Felet är vårt, inte gästens. Säg det och rätta till det."
+            },
+            "d": {
+              "label": "Respekterar det och bokar ett bord åt dem en annan kväll",
+              "explanation": "Respektfullt, men felet står kvar i entrén till nästa gäst."
+            }
+          },
+          "fail": {
+            "outcome": "Jag tar hand om det.",
+            "ongoing": "Jag tar hand om det."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Vasen stod fel. Vi flyttar den nu."
+      },
+      "staff": {
+        "outcome": "Per tar över."
+      }
+    },
+    "vb34-vinglar": {
+      "title": "Gästen som vinglar",
+      "body": "En gäst glider ned från barstolen, tar ett steg för långt bakåt och går rakt in i Saras bricka.",
+      "steps": [
+        {
+          "question": "Vad säger alkohollagen om en gäst som är märkbart påverkad?",
+          "options": {
+            "a": {
+              "label": "Han får serveras om han äter något först",
+              "explanation": "Den som är märkbart påverkad får inte serveras alkohol, vilken dryck det än är. Om han får stanna avgör ni efter hur han mår och uppför sig."
+            },
+            "b": {
+              "label": "Han får serveras öl, men inte starksprit",
+              "explanation": "Den som är märkbart påverkad får inte serveras alkohol, vilken dryck det än är. Om han får stanna avgör ni efter hur han mår och uppför sig."
+            },
+            "c": {
+              "label": "Han måste lämna lokalen på en gång",
+              "explanation": "Den som är märkbart påverkad får inte serveras alkohol, vilken dryck det än är. Om han får stanna avgör ni efter hur han mår och uppför sig."
+            },
+            "d": {
+              "label": "Han får inte serveras mer alkohol",
+              "explanation": "Den som är märkbart påverkad får inte serveras alkohol, vilken dryck det än är. Om han får stanna avgör ni efter hur han mår och uppför sig."
+            }
+          },
+          "fail": {
+            "outcome": "Jag tar det här."
+          }
+        },
+        {
+          "question": "Hur säger Mira det till honom?",
+          "options": {
+            "a": {
+              "label": "Högt nog att vännerna hör och kan hjälpa till",
+              "explanation": "Ett nej som ges lugnt och enskilt, med något i utbyte, tas emot bättre."
+            },
+            "b": {
+              "label": "Lugnt och lågt, och bjuder på vatten och mat",
+              "explanation": "Ett nej som ges lugnt och enskilt, med något i utbyte, tas emot bättre."
+            },
+            "c": {
+              "label": "Säger att baren stänger snart för kvällen",
+              "explanation": "Ett nej som ges lugnt och enskilt, med något i utbyte, tas emot bättre."
+            },
+            "d": {
+              "label": "Häller upp en lättöl utan att säga något",
+              "explanation": "Ett nej som ges lugnt och enskilt, med något i utbyte, tas emot bättre."
+            }
+          },
+          "fail": {
+            "outcome": "Jag tar det här."
+          }
+        },
+        {
+          "question": "Hans vänner är stamgäster och vill beställa åt honom. Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Serverar vännerna men ber dem inte ge honom något",
+              "explanation": "Vännerna får serveras, men går glaset vidare till honom har ni serverat honom. Det måste du se."
+            },
+            "b": {
+              "label": "Säger nej, skriver upp tiden och erbjuder en taxi",
+              "explanation": "Förbudet gäller oavsett vem som beställer. Att skriva upp tiden visar att ni gjort rätt."
+            },
+            "c": {
+              "label": "Säger nej och ber hela sällskapet gå för kvällen",
+              "explanation": "Tydligt, men vännerna har inte gjort något fel, och ni förlorar stamgäster."
+            },
+            "d": {
+              "label": "Låter dem beställa, han har ju bara fått vatten",
+              "explanation": "Förbudet gäller oavsett vem som beställer. Att skriva upp tiden visar att ni gjort rätt."
+            }
+          },
+          "fail": {
+            "outcome": "Jag tar det här.",
+            "ongoing": "Jag tar det här."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Jag skriver upp det: nekad {klockan}."
+      },
+      "staff": {
+        "outcome": "Per tar över."
+      }
+    },
+    "vb36-passet": {
+      "title": "Gästen vid passet",
+      "body": "En gäst reser sig från lounge A och går rakt mot köket. Vid passluckan frågar hon om hon får titta in.",
+      "steps": [
+        {
+          "question": "Vad gäller när en gäst vill in i ett restaurangkök?",
+          "options": {
+            "a": {
+              "label": "Att hon inte rör något och håller sig vid dörren",
+              "explanation": "Köket är en livsmedelslokal. Den som går in följer samma hygienregler som personalen."
+            },
+            "b": {
+              "label": "Skyddskläder, handtvätt och att någon följer med",
+              "explanation": "Köket är en livsmedelslokal. Den som går in följer samma hygienregler som personalen."
+            },
+            "c": {
+              "label": "Att hon inte är sjuk, resten svarar kocken för",
+              "explanation": "Köket är en livsmedelslokal. Den som går in följer samma hygienregler som personalen."
+            },
+            "d": {
+              "label": "Att det bara går när köket inte lagar mat",
+              "explanation": "Köket är en livsmedelslokal. Den som går in följer samma hygienregler som personalen."
+            }
+          },
+          "fail": {
+            "outcome": "Vi tar det efter servicen."
+          }
+        },
+        {
+          "question": "Hur gör du det mitt i rusningen?",
+          "options": {
+            "a": {
+              "label": "Ber Sara visa henne runt medan du lagar klart",
+              "explanation": "Ett kort och tryggt ja slår både ett nej och ett kök i oordning."
+            },
+            "b": {
+              "label": "Tar in henne direkt och visar stationerna",
+              "explanation": "Ett kort och tryggt ja slår både ett nej och ett kök i oordning."
+            },
+            "c": {
+              "label": "Ber henne vänta och visar från dörren, i förkläde",
+              "explanation": "Ett kort och tryggt ja slår både ett nej och ett kök i oordning."
+            },
+            "d": {
+              "label": "Säger vänligt att köket inte tar emot gäster i kväll",
+              "explanation": "Ett kort och tryggt ja slår både ett nej och ett kök i oordning."
+            }
+          },
+          "fail": {
+            "outcome": "Vi tar det efter servicen."
+          }
+        },
+        {
+          "question": "Du känner igen henne: hon skriver om mat i Grythyttebladet. Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Behandlar henne som alla andra och säger inget om det",
+              "explanation": "Rättvist, men hon bad om något ni kan ge. Att inte svara på det är också ett nej."
+            },
+            "b": {
+              "label": "Erbjuder en rundtur efter servicen och en smakbit nu",
+              "explanation": "Samma regler för alla. Det du kan ge extra är tid, när köket har tid."
+            },
+            "c": {
+              "label": "Ber Elin ta särskild hand om henne resten av kvällen",
+              "explanation": "Samma regler för alla. Det du kan ge extra är tid, när köket har tid."
+            },
+            "d": {
+              "label": "Ber henne komma tillbaka en lugnare kväll för en visning",
+              "explanation": "Rimligt, men hon är här i kväll. Kom hon inte tillbaka, blev det inget."
+            }
+          },
+          "fail": {
+            "outcome": "Vi tar det efter servicen.",
+            "ongoing": "Vi tar det efter servicen."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "En rundtur efter servicen? Gärna!"
+      },
+      "staff": {
+        "outcome": "Per tar över."
+      }
+    },
+    "vb35-tillsynen-a": {
+      "title": "Tillsynen",
+      "body": "Två gäster vid ståbordet har inte rört sina glas på en stund. Nu visar de var sin legitimation för Per.",
+      "steps": [
+        {
+          "question": "Vem ska finnas på plats under hela serveringstiden?",
+          "options": {
+            "a": {
+              "label": "Någon som har gått kursen i ansvarsfull alkoholservering",
+              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+            },
+            "b": {
+              "label": "Bartendern, eftersom det är hon som häller upp",
+              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+            },
+            "c": {
+              "label": "Tillståndshavaren eller en anmäld serveringsansvarig",
+              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+            },
+            "d": {
+              "label": "Krögaren själv, varje kväll serveringen pågår",
+              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+            }
+          },
+          "fail": {
+            "outcome": "Risk för erinran"
+          }
+        },
+        {
+          "question": "Vad visar du dem?",
+          "options": {
+            "a": {
+              "label": "Tillståndet och personalliggaren för kvällen",
+              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
+            },
+            "b": {
+              "label": "Kassarapporten och kvittona från kvällen",
+              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
+            },
+            "c": {
+              "label": "Tillståndet och kursintygen för hela personalen",
+              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
+            },
+            "d": {
+              "label": "Tillståndet, ansvarslistan och egenkontrollen",
+              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
+            }
+          },
+          "fail": {
+            "outcome": "Risk för erinran"
+          }
+        },
+        {
+          "question": "Polisen nickar mot gästen vid baren som vinglade tidigare. Vad säger du?",
+          "options": {
+            "a": {
+              "label": "Säger att han bara har druckit vatten i kväll",
+              "explanation": "Öppenhet och en anteckning väger tyngst inför tillsynen.",
+              "fail": {
+                "outcome": "Risk för varning"
+              }
+            },
+            "b": {
+              "label": "Ber vännerna ta med honom hem innan de frågar",
+              "explanation": "Öppenhet och en anteckning väger tyngst inför tillsynen.",
+              "fail": {
+                "outcome": "Risk för erinran"
+              }
+            },
+            "c": {
+              "label": "Hänvisar till Mira, som var den som nekade honom i kväll",
+              "explanation": "Mira vet mest, men det är du som är serveringsansvarig. Svaret ska komma från dig."
+            },
+            "d": {
+              "label": "Säger som det är: nekad {klockan}, och visar lappen",
+              "explanation": "Öppenhet och en anteckning väger tyngst inför tillsynen."
+            }
+          },
+          "fail": {
+            "outcome": "Risk för erinran",
+            "ongoing": "Anmärkning i rapporten, ingen påföljd"
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Han nekades {klockan}. Här är lappen."
+      },
+      "staff": {
+        "outcome": "Vi skriver in det i rapporten."
+      }
+    },
+    "vb35-tillsynen-b": {
+      "title": "Tillsynen",
+      "body": "Två gäster vid ståbordet har inte rört sina glas på en stund. Nu visar de var sin legitimation för Per.",
+      "steps": [
+        {
+          "question": "Vem ska finnas på plats under hela serveringstiden?",
+          "options": {
+            "a": {
+              "label": "Någon som har gått kursen i ansvarsfull alkoholservering",
+              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+            },
+            "b": {
+              "label": "Bartendern, eftersom det är hon som häller upp",
+              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+            },
+            "c": {
+              "label": "Tillståndshavaren eller en anmäld serveringsansvarig",
+              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+            },
+            "d": {
+              "label": "Krögaren själv, varje kväll serveringen pågår",
+              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+            }
+          },
+          "fail": {
+            "outcome": "Risk för erinran"
+          }
+        },
+        {
+          "question": "Vad visar du dem?",
+          "options": {
+            "a": {
+              "label": "Tillståndet och personalliggaren för kvällen",
+              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
+            },
+            "b": {
+              "label": "Kassarapporten och kvittona från kvällen",
+              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
+            },
+            "c": {
+              "label": "Tillståndet och kursintygen för hela personalen",
+              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
+            },
+            "d": {
+              "label": "Tillståndet, ansvarslistan och egenkontrollen",
+              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
+            }
+          },
+          "fail": {
+            "outcome": "Risk för erinran"
+          }
+        },
+        {
+          "question": "Två unga gäster i lounge B beställer vin av Sara. Handläggaren tittar dit. Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Frågar dem hur gamla de är och litar på svaret",
+              "explanation": "Den som serverar ska vara säker på att gästen har fyllt 18. Är du osäker, be om legitimation.",
+              "fail": {
+                "outcome": "Risk för varning"
+              }
+            },
+            "b": {
+              "label": "Ber Sara be om legitimation innan hon häller",
+              "explanation": "Den som serverar ska vara säker på att gästen har fyllt 18. Är du osäker, be om legitimation."
+            },
+            "c": {
+              "label": "Ber om legitimation av alla i loungen, äldre också",
+              "explanation": "Lagligt och säkert, men de äldre gästerna känner sig misstrodda. Fråga dem det gäller."
+            },
+            "d": {
+              "label": "Litar på Sara, hon ser om någon är för ung",
+              "explanation": "Den som serverar ska vara säker på att gästen har fyllt 18. Är du osäker, be om legitimation.",
+              "fail": {
+                "outcome": "Risk för varning"
+              }
+            }
+          },
+          "fail": {
+            "outcome": "Risk för erinran",
+            "ongoing": "Anmärkning i rapporten, ingen påföljd"
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Får jag se legitimation, tack?"
+      },
+      "staff": {
+        "outcome": "Vi skriver in det i rapporten."
+      }
+    },
+    "vb35-tillsynen-c": {
+      "title": "Tillsynen",
+      "body": "Två gäster vid ståbordet har inte rört sina glas på en stund. Nu visar de var sin legitimation för Per.",
+      "steps": [
+        {
+          "question": "Vem ska finnas på plats under hela serveringstiden?",
+          "options": {
+            "a": {
+              "label": "Någon som har gått kursen i ansvarsfull alkoholservering",
+              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+            },
+            "b": {
+              "label": "Bartendern, eftersom det är hon som häller upp",
+              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+            },
+            "c": {
+              "label": "Tillståndshavaren eller en anmäld serveringsansvarig",
+              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+            },
+            "d": {
+              "label": "Krögaren själv, varje kväll serveringen pågår",
+              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+            }
+          },
+          "fail": {
+            "outcome": "Risk för erinran"
+          }
+        },
+        {
+          "question": "Vad visar du dem?",
+          "options": {
+            "a": {
+              "label": "Tillståndet och personalliggaren för kvällen",
+              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
+            },
+            "b": {
+              "label": "Kassarapporten och kvittona från kvällen",
+              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
+            },
+            "c": {
+              "label": "Tillståndet och kursintygen för hela personalen",
+              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
+            },
+            "d": {
+              "label": "Tillståndet, ansvarslistan och egenkontrollen",
+              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
+            }
+          },
+          "fail": {
+            "outcome": "Risk för erinran"
+          }
+        },
+        {
+          "question": "Handläggaren bläddrar i egenkontrollen och frågar hur personalen vet vad som står i den. Vad svarar du?",
+          "options": {
+            "a": {
+              "label": "Den ligger i pärmen vid kassan, där alla kan läsa",
+              "explanation": "Egenkontrollen ska vara känd av alla som serverar, inte bara finnas i en pärm.",
+              "fail": {
+                "outcome": "Risk för erinran"
+              }
+            },
+            "b": {
+              "label": "Alla har gått kursen i ansvarsfull servering",
+              "explanation": "Kursen är bra, men den handlar om lagen. Er egenkontroll är era egna rutiner."
+            },
+            "c": {
+              "label": "Jag skrev den själv, så jag svarar för den",
+              "explanation": "Egenkontrollen ska vara känd av alla som serverar, inte bara finnas i en pärm.",
+              "fail": {
+                "outcome": "Risk för erinran"
+              }
+            },
+            "d": {
+              "label": "Alla nya går igenom den, och vi ser över den ofta",
+              "explanation": "Egenkontrollen ska vara känd av alla som serverar, inte bara finnas i en pärm."
+            }
+          },
+          "fail": {
+            "outcome": "Risk för erinran",
+            "ongoing": "Anmärkning i rapporten, ingen påföljd"
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Alla nya går igenom den med mig."
+      },
+      "staff": {
+        "outcome": "Vi skriver in det i rapporten."
+      }
+    },
+    "vb35-tillsynen-d": {
+      "title": "Tillsynen",
+      "body": "Två gäster vid ståbordet har inte rört sina glas på en stund. Nu visar de var sin legitimation för Per.",
+      "steps": [
+        {
+          "question": "Vem ska finnas på plats under hela serveringstiden?",
+          "options": {
+            "a": {
+              "label": "Någon som har gått kursen i ansvarsfull alkoholservering",
+              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+            },
+            "b": {
+              "label": "Bartendern, eftersom det är hon som häller upp",
+              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+            },
+            "c": {
+              "label": "Tillståndshavaren eller en anmäld serveringsansvarig",
+              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+            },
+            "d": {
+              "label": "Krögaren själv, varje kväll serveringen pågår",
+              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+            }
+          },
+          "fail": {
+            "outcome": "Risk för erinran"
+          }
+        },
+        {
+          "question": "Vad visar du dem?",
+          "options": {
+            "a": {
+              "label": "Tillståndet och personalliggaren för kvällen",
+              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
+            },
+            "b": {
+              "label": "Kassarapporten och kvittona från kvällen",
+              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
+            },
+            "c": {
+              "label": "Tillståndet och kursintygen för hela personalen",
+              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
+            },
+            "d": {
+              "label": "Tillståndet, ansvarslistan och egenkontrollen",
+              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
+            }
+          },
+          "fail": {
+            "outcome": "Risk för erinran"
+          }
+        },
+        {
+          "question": "Handläggaren vill beställa något att äta. Kocken har just sagt att maten är slut. Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Säger att köket stänger tidigare än baren i kväll",
+              "explanation": "Lagad mat ska gå att beställa under hela serveringstiden. Ett enkelt utbud räcker, men snacks räknas inte.",
+              "fail": {
+                "outcome": "Risk för varning"
+              }
+            },
+            "b": {
+              "label": "Ber kocken laga något enkelt av det som finns kvar",
+              "explanation": "Lagad mat ska gå att beställa under hela serveringstiden. Ett enkelt utbud räcker, men snacks räknas inte."
+            },
+            "c": {
+              "label": "Bjuder på oliver och nötter från baren i stället",
+              "explanation": "Lagad mat ska gå att beställa under hela serveringstiden. Ett enkelt utbud räcker, men snacks räknas inte.",
+              "fail": {
+                "outcome": "Risk för erinran"
+              }
+            },
+            "d": {
+              "label": "Är ärlig och pausar alkoholen tills det finns mat",
+              "explanation": "Lagligt och ärligt, men baren tappar kvällen. Köket kan nästan alltid laga något enkelt."
+            }
+          },
+          "fail": {
+            "outcome": "Risk för erinran",
+            "ongoing": "Anmärkning i rapporten, ingen påföljd"
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Kocken gör en enkel rätt av det som finns."
+      },
+      "staff": {
+        "outcome": "Vi skriver in det i rapporten."
+      }
     }
   }
 }
