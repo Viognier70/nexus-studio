@@ -116,6 +116,8 @@ import type { CameraTarget } from '../types';
 // ORDER 293 — strålkastaren sänker rummets ljus (Designs teaterScen.js: 45 %),
 // och klipp där manuset lägger figuren lågt (figurvakten räknar dem inte).
 const THEATRE_SPOT = { dim: 0.55 };
+// ORDER 294b — manusens personal (Designs handelserManus.js) mot rummets roller.
+const SCRIPT_ACTOR_OF: Record<StaffKey, string> = { host: 'per', server: 'sara', server2: '-', sommelier: 'elin', bartender: 'mira', cook: 'cook', dish: 'dish1' };
 const THEATRE_LOW_CLIPS = new Set(['staff.kneelTalk', 'staff.sweep', 'staff.wipeFloor', 'guest.slip', 'staff.smother', 'guest.wheel', 'guest.wheelRoll', 'guest.wheelTurn', 'guest.wheelToTable', 'bar.stockFridge', 'staff.carryCrate']);
 
 // ORDER 292b — figurmätningen var femtonde bildruta.
@@ -662,8 +664,14 @@ export function WineBarFigures({ room, mood }: Props) {
         const seat = id ? cast.director.guestSeat(id) : null;
         if (seat && scriptSeats.has(seat.id)) cast.guestRigs[i].root.visible = false;
       }
-      for (const r of cast.staffRigs) r.root.visible = false;
-      for (const mk of cast.staffMarks) mk.group.visible = false;
+      // ORDER 294b (Vision Owner 2026-10-02): bara de roller manuset använder
+      // döljs; övrig personal står kvar och arbetar.
+      const used = cast.events.theatre.staffIds();
+      for (let i = 0; i < STAFF_KEYS.length; i++) {
+        if (!used.has(SCRIPT_ACTOR_OF[STAFF_KEYS[i]])) continue;
+        cast.staffRigs[i].root.visible = false;
+        cast.staffMarks[i].group.visible = false;
+      }
       cast.ring.group.visible = false;
     } else {
       if (cast.eventSaved) { targetRef.current = { ...cast.eventSaved, focus: { ...cast.eventSaved.focus } }; cast.eventSaved = null; }

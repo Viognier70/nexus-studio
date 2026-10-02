@@ -30,6 +30,15 @@ describe('ORDER 293 — händelsernas manus i vinbaren', () => {
     th.dispose();
   });
 
+  it('ORDER 294b — manusens personal är rummets roller (Per, Sara, Elin, Mira, kocken, diskaren)', () => {
+    const th = new EventTheatre(new THREE.Group(), 0, seats);
+    const known = new Set(['per', 'sara', 'elin', 'mira', 'cook', 'dish1']);
+    for (const ev of EVENTS) for (const v of ev.variants) {
+      th.load(ev.build(null, v));
+      for (const id of th.staffIds()) expect(known.has(id), `${ev.id}/${v}: ${id}`).toBe(true);
+    }
+  });
+
   it('sittplatserna i manusen finns i spelets vinbar', () => {
     const ids = new Set(seats.map((s) => s.id));
     for (const ev of EVENTS) for (const v of ev.variants) {
