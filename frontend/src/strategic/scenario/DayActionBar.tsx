@@ -47,6 +47,7 @@ import { NxButton, NxLabel } from '../ui/system/components';
 import { NxIcon, ACTIVITY_ICON, PAVILION_ICON } from '../ui/screens/icons';
 import { useMentor } from '../ui/screens/mentor';
 import '../ui/screens/screens.css';
+import { useOpenGuard } from '../ui/OpenGuard';
 
 interface Props {
   // ORDER 264 — öppnar Måltidens hus (paviljongerna).
@@ -65,6 +66,9 @@ const s = strings.screens.morning;
 
 export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenBuy, hidden, waitForName }: Props) {
   const sim = useSimState();
+  // ORDER 296 — ingen öppning med för lite i lagret utan att fråga först
+  // (hooken före komponentens tidiga returer).
+  const guard = useOpenGuard(onOpenBuy ?? null);
   const dispatch = useSimDispatch();
   const mentor = useMentor();
   const [aside, setAside] = useState(false);
@@ -115,7 +119,7 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenB
       {strings.morningBuy.open}
     </NxButton>
   ) : canStart ? (
-    <NxButton testId="start-service" disabled={!readiness.ready} onClick={() => dispatch({ type: 'START_SERVICE' })}>
+    <NxButton testId="start-service" disabled={!readiness.ready} onClick={() => guard.request()}>
       {strings.morning.startService}
     </NxButton>
   ) : sim.introduction ? null : (
@@ -132,6 +136,7 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenB
   if (aside) {
     return (
       <>
+      {guard.dialog}
       {/* ORDER 291 punkt 8 — laget, investeringen och skala ner i den varma
           formen, till vänster om rummet och ovanför bottenraden. */}
       <div className="nxr-aside" data-testid="room-and-staff">
@@ -177,6 +182,7 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenB
 
   return (
     <div ref={rootRef} className="nx nx-screen nxs-morning" data-testid="day-action-bar" role="region" aria-label={s.heading}>
+      {guard.dialog}
       <header className="nxs-head" data-testid={`screen-${screenId}`}>
         <div>
           <NxLabel>

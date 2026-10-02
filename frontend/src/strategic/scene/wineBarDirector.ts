@@ -427,7 +427,7 @@ interface PropItem {
 
 export type PropOwner =
   | { kind: 'staff'; key: StaffKey }
-  | { kind: 'table'; group: string; groupKind: Group['kind']; at: Vec2; facing: number; slot: number };
+  | { kind: 'table'; group: string; groupKind: Group['kind']; at: Vec2; facing: number; slot: number; tableAt?: Vec2 };
 
 export interface LedgerEntry { id: string; item: NonNullable<FigureSample['carrying']>; owner: PropOwner }
 
@@ -951,7 +951,7 @@ export class WineBarDirector {
         const g = it.group;
         const slot = perGroup.get(g.id) ?? 0;
         perGroup.set(g.id, slot + 1);
-        out.push({ id: it.id, item: it.item, owner: { kind: 'table', group: g.id, groupKind: g.kind, at: g.serveAt, facing: g.serveFacing, slot } });
+        out.push({ id: it.id, item: it.item, owner: { kind: 'table', group: g.id, groupKind: g.kind, at: g.serveAt, facing: g.serveFacing, slot, tableAt: g.tableAt } });
       }
     }
     return out;

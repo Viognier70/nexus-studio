@@ -151,8 +151,12 @@ export class TheatreStage {
         const f = e.owner.facing;
         const fx = Math.sin(f); const fz = Math.cos(f);
         const lateral = (e.owner.slot - 0.5) * TABLE_SPREAD;
-        const x = e.owner.at[0] + fx * TABLE_INSET + fz * lateral;
-        const z = e.owner.at[1] + fz * TABLE_INSET - fx * lateral;
+        // ORDER 296 (punkt 6, provspel av 64b27c0: "tallrikarna ska stå där
+        // gästerna sitter, inte på tomma bord") — på bordets mitt eller på
+        // disken framför gästerna, i sidled längs bordet.
+        const ta = e.owner.tableAt;
+        const x = ta ? ta[0] + lateral : e.owner.at[0] + fx * TABLE_INSET + fz * lateral;
+        const z = ta ? ta[1] : e.owner.at[1] + fz * TABLE_INSET - fx * lateral;
         placeProp(p, this.group, x, this.floorY + SURFACE_HEIGHT[e.owner.groupKind], z, f);
       }
     }

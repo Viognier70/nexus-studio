@@ -682,3 +682,10 @@ body:has(.nx-screen) .nx-village-notice, body:has(.nx-rocket) .nx-village-notice
 @media (pointer: coarse) { .nx-level { min-height: 44px; } }
 .nxs-ranking { margin: 0; padding-left: 1.4em; } .nxs-ranking li { margin: 2px 0; }
 .nx-venue-label.is-compact { min-width: 0; padding: 4px 8px; }
+/* ORDER 296 — frågan innan dörrarna öppnas med för lite i lagret. */
+.nx-screen[data-testid='open-short'] { display: flex; align-items: center; justify-content: center; z-index: 60; background: rgba(20, 13, 9, 0.62); }
+.nx-open-short { max-width: min(560px, calc(100vw - 32px)); padding: 24px 28px; display: flex; flex-direction: column; gap: 14px; }
+.nx-open-short-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.nx-open-short-actions .nx-btn { width: auto; }
+/* ORDER 296 — ringens förklaring vid hovring. */
+.nx-ring-tag { padding: 4px 10px; border-radius: 999px; background: rgba(30, 20, 13, 0.92); border: 1px solid rgba(216, 184, 119, 0.55); color: #f4e6cc; font-size: 13px; font-weight: 700; white-space: nowrap; pointer-events: none; }

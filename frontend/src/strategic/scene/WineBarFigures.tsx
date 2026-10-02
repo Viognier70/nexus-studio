@@ -30,7 +30,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Html } from '@react-three/drei';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useSimState } from '../simulation/SimulationProvider';
 import { useCamera } from '../camera/CameraContext';
@@ -108,17 +108,45 @@ import { RoomReactionTag } from '../ui/RoomReactionTag';
 import { InteractionDirector } from './theatreInteractions';
 import { attachProps, type HeadToppingId, type PropHandle } from './figureProps';
 import { auditRig, publishFaults, type FigureFault } from './figureAudit';
-import { beforeDoors } from '../../sim/clock';
+import { beforeDoors, clockMinutes } from '../../sim/clock';
+import { sampleClip } from './figureClips';
 import { calendarFor } from '../../sim/calendar';
 import { EventPlayer } from './theatreEvents';
 import { theatreSeats } from './eventTheatre';
 import type { CameraTarget } from '../types';
+import { StaffRingTag } from '../ui/StaffRingTag';
+import { ROLE_OF } from './staffMarks';
 
 // ORDER 293 — strålkastaren sänker rummets ljus (Designs teaterScen.js: 45 %),
 // och klipp där manuset lägger figuren lågt (figurvakten räknar dem inte).
 const THEATRE_SPOT = { dim: 0.55 };
+// ORDER 296 — ringens etikett står över huvudet, och uppgiften läses ur provet.
+const RING_TAG_HEIGHT_M = 2.2;
+function ringTaskFor(s: FigureSample, detail: string | null): string {
+  if (detail === 'bill') return 'bill';
+  if (detail === 'wine') return 'wine';
+  switch (s.pose) {
+    case 'walk': return s.carrying ? 'carry' : 'walk';
+    case 'serveWalk': case 'carry': return 'carry';
+    case 'takeOrder': case 'handle': return 'order';
+    case 'serve': return s.carrying ? 'serve' : 'pickUp';
+    case 'clear': return 'clear';
+    case 'pour': case 'pourWater': return 'pour';
+    case 'present': case 'serveAperitif': return 'wine';
+    case 'cook': return 'cook';
+    case 'dish': return 'wash';
+    case 'setBread': return 'setDown';
+    default: return 'idle';
+  }
+}
 // ORDER 295 — helgkvällarna, då DJ:n står i båset vid födelsedagen.
 const WEEKEND_DAYS: readonly string[] = ['fri', 'sat'];
+// ORDER 296 — DJ:ns plats bakom båset (Designs handelserManus.js, födelsedagen)
+// och när musiken börjar (satsningen: "Music from nine o'clock").
+const DJ_SPOT = { x: 6.15, z: -4.65, yaw: -Math.PI / 4, stand: 0.25 };
+const DJ_MUSIC_FROM_MIN = 21 * 60;
+// Båsets kantljus när DJ:n spelar (rummets helgnivå, wineBarRoom).
+const DJ_GLOW_ON = 1.4;
 // ORDER 294b — manusens personal (Designs handelserManus.js) mot rummets roller.
 const SCRIPT_ACTOR_OF: Record<StaffKey, string> = { host: 'per', server: 'sara', server2: '-', sommelier: 'elin', bartender: 'mira', cook: 'cook', dish: 'dish1' };
 const THEATRE_LOW_CLIPS = new Set(['staff.kneelTalk', 'staff.sweep', 'staff.wipeFloor', 'guest.slip', 'staff.smother', 'guest.wheel', 'guest.wheelRoll', 'guest.wheelTurn', 'guest.wheelToTable', 'bar.stockFridge', 'staff.carryCrate']);
@@ -264,6 +292,9 @@ interface Cast {
   auditTick: number;
   /** ORDER 293 — händelserna som teater (theatreEvents.ts) och kameran före. */
   events: EventPlayer;
+  /** ORDER 296 — DJ:n som spelaren betalat för, och båsets sken innan musiken tog över (−1: rummets egna gäller). */
+  djRig: FigureRig;
+  djGlowBase: number;
   eventSaved: CameraTarget | null;
   spotK: number;
 }
@@ -296,6 +327,13 @@ export function WineBarFigures({ room, mood }: Props) {
   const { actualRef, targetRef } = useCamera();
   const castRef = useRef<Cast | null>(null);
   const captionRef = useRef<THREE.Group>(null);
+  // ORDER 296 — ringens förklaring vid hovring.
+  const ringTagRef = useRef<THREE.Group>(null);
+  const [ringTag, setRingTag] = useState<{ i: number; role: string; task: string } | null>(null);
+  const ringTagKey = useRef('');
+  const pointer = useThree((x) => x.pointer);
+  const camera = useThree((x) => x.camera);
+  const raycaster = useMemo(() => new THREE.Raycaster(), []);
   // ORDER 292 — svarets händelse står över bordet (rummets reaktion).
   const reactionRef = useRef<THREE.Group>(null);
   // ORDER 292b — rummets etiketter (bildtexten och händelsen) ritas bara när
@@ -399,6 +437,13 @@ export function WineBarFigures({ room, mood }: Props) {
       group.add(rig.root);
       return rig;
     });
+    // ORDER 296 (punkt 6, "DJ:n som spelaren betalat för ska synas"): DJ:n bakom
+    // båset när satsningen book-dj är vald, på samma plats som i händelserna.
+    const djRig = createFigureRig({ variant: 'staff', garmentColour: STAFF_UNIFORMS.dj });
+    djRig.root.visible = false;
+    djRig.root.position.set(DJ_SPOT.x, room.floorY + DJ_SPOT.stand, DJ_SPOT.z);
+    djRig.root.rotation.y = DJ_SPOT.yaw;
+    group.add(djRig.root);
     // Kvällsljuset (WINE_BAR_LIGHTS), byggt en gång; styrkan sätts per bildruta.
     const L = WINE_BAR_LIGHTS;
     const point = (colour: string, x: number, y: number, z: number, distance: number) => {
@@ -429,6 +474,8 @@ export function WineBarFigures({ room, mood }: Props) {
       guestHandProps,
       auditTick: 0,
       interactions: new InteractionDirector(),
+      djRig,
+      djGlowBase: -1,
       events: new EventPlayer(group, room.floorY, theatreSeats(room.seats), room.parts.djGlow),
       eventSaved: null,
       spotK: 0
@@ -438,6 +485,7 @@ export function WineBarFigures({ room, mood }: Props) {
       (window as unknown as { __nxWineBarGroup?: unknown }).__nxWineBarGroup = group;
     }
     return () => {
+      if (castRef.current) disposeFigureRig(castRef.current.djRig);
       guestRigs.forEach(disposeFigureRig);
       staffRigs.forEach(disposeFigureRig);
       ring.dispose();
@@ -488,6 +536,34 @@ export function WineBarFigures({ room, mood }: Props) {
     }
     if (!cast.group.visible) return;
 
+    // ORDER 296 — DJ:n bakom båset när satsningen är vald (kockens klipp vid
+    // disken tills DJ-klippen finns, som i händelserna). Musiken börjar 21.00:
+    // båsets sken pulserar i takten. Under en händelse med egen DJ står hennes.
+    {
+      const booked = (s.day.pickedActivityIds ?? []).includes('book-dj') && (s.day.period === 'dinner' || s.day.period === 'lunch');
+      const scriptDj = cast.events.playing && cast.events.theatre.staffIds().has('dj');
+      cast.djRig.root.visible = booked && !scriptDj && cast.group.visible;
+      if (typeof document !== 'undefined') {
+        document.body.dataset.djShown = cast.djRig.root.visible ? '1' : '0';
+        // Var på skärmen (andel av bredd och höjd), så att mätningen kan se henne.
+        if (cast.djRig.root.visible) {
+          const p = cast.djRig.root.localToWorld(new THREE.Vector3(0, 1, 0)).project(camera);
+          document.body.dataset.djScreen = `${((p.x + 1) / 2).toFixed(3)},${((1 - p.y) / 2).toFixed(3)}`;
+        }
+      }
+      if (cast.djRig.root.visible) applyPose(cast.djRig, sampleClip('cook.station', s.simTime, 'normal').pose);
+      const playing = booked && clockMinutes(s) >= DJ_MUSIC_FROM_MIN && !(cast.events.playing && scriptDj);
+      // Båsets sken skrivs bara medan DJ:n spelar; annars står rummets eget
+      // (wineBarRoom sätter det efter stämningen).
+      if (playing) {
+        if (cast.djGlowBase < 0) cast.djGlowBase = room.parts.djGlow.emissiveIntensity;
+        const beat = Math.pow(0.5 + 0.5 * Math.cos(clockRef.current * Math.PI * 4), 3);
+        room.parts.djGlow.emissiveIntensity = Math.max(cast.djGlowBase, DJ_GLOW_ON) + 0.8 + 0.9 * beat;
+      } else if (cast.djGlowBase >= 0) {
+        room.parts.djGlow.emissiveIntensity = cast.djGlowBase;
+        cast.djGlowBase = -1;
+      }
+    }
     // Kvällsljuset: stämningen och servicen.
     const m = LIGHT_MOODS[moodRef.current];
     const inService = s.day.period === 'lunch' || s.day.period === 'dinner';
@@ -586,6 +662,36 @@ export function WineBarFigures({ room, mood }: Props) {
           rig.root.position.z += Math.cos(f) * clip.root[1] - Math.sin(f) * clip.root[0];
         }
         figureLocal = { x: rig.root.position.x, y: rig.root.position.y, z: rig.root.position.z };
+      }
+    }
+
+    // ORDER 296 — ringens förklaring: personen (eller ringen) under muspekaren.
+    {
+      let hit = -1;
+      if (cast.group.visible) {
+        raycaster.setFromCamera(pointer, camera);
+        const targets: THREE.Object3D[] = [];
+        const owner = new Map<THREE.Object3D, number>();
+        for (let i = 0; i < STAFF_KEYS.length; i++) {
+          if (!cast.staffRigs[i].root.visible) continue;
+          targets.push(cast.staffRigs[i].root, cast.staffMarks[i].ring);
+          owner.set(cast.staffRigs[i].root, i);
+          owner.set(cast.staffMarks[i].ring, i);
+        }
+        const h = raycaster.intersectObjects(targets, true)[0];
+        for (let o: THREE.Object3D | null = h?.object ?? null; o; o = o.parent) { if (owner.has(o)) { hit = owner.get(o)!; break; } }
+      }
+      const key = hit >= 0 ? `${hit}:${ringTaskFor(ss[hit], cast.director.staffTaskDetail(STAFF_KEYS[hit], t)?.kind ?? null)}` : '';
+      if (key !== ringTagKey.current) {
+        ringTagKey.current = key;
+        setRingTag(hit >= 0 ? { i: hit, role: ROLE_OF[STAFF_KEYS[hit]], task: key.split(':')[1] } : null);
+      }
+      const g = ringTagRef.current;
+      if (g && hit >= 0 && g.parent) {
+        // Personalens läge är i rummets ram; etiketten står i sin förälders.
+        const p = cast.group.localToWorld(new THREE.Vector3(ss[hit].x, room.floorY + RING_TAG_HEIGHT_M, ss[hit].z));
+        g.parent.worldToLocal(p);
+        g.position.copy(p);
       }
     }
 
@@ -733,6 +839,13 @@ export function WineBarFigures({ room, mood }: Props) {
   const reaction = sim.day.roomReactions?.at(-1) ?? null;
   return (
     <>
+      {ringTag && roomShown && (
+        <group ref={ringTagRef}>
+          <Html center zIndexRange={[22, 0]} style={{ pointerEvents: 'none' }}>
+            <StaffRingTag role={ringTag.role} task={ringTag.task} />
+          </Html>
+        </group>
+      )}
       {caption && roomShown && (
         <group ref={captionRef} visible={false}>
           <Html center zIndexRange={[20, 0]}>

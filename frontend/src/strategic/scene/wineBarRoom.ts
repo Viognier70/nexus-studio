@@ -249,6 +249,9 @@ const LOUNGE_Z = 5.1;
 // ORDER 286a (tillägget till leverans 2, Vision Owner 2026-09-29): bordet
 // 0,95 m framför dynans mitt, inom räckhåll för den som sitter (förut 1,35 m).
 const LOUNGE_TABLE_Z = 4.15;
+// ORDER 296 (punkt 6) — där tallrikarna ställs: mitt på loungebordet, mitt på
+// småbordet och på bardisken framför gästen (0,18 m in från gästens kant).
+export const PLATE_SURFACE = { loungeTableZ: 4.15, twoTableZ: -4.4, barGuestZ: 1.8 - 0.18 };
 const LOUNGE_CX = [-1.8, 2.0];
 const TWO_Z = -4.4;
 const TWO_X = [-4.2, -2.1, 0.0];
