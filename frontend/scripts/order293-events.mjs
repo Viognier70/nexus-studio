@@ -34,6 +34,8 @@ const RUNS = [
   { id: 'vb36-passet', wrongAt: null },
   { id: 'vb36-passet', wrongAt: 2 }
 ].filter((r) => !process.env.ONLY || r.id === process.env.ONLY);
+// ORDER 295 — andra körningar: RUNS='[{"id":"vb32-fodelsedagen","wrongAt":0}]'.
+if (process.env.RUNS) RUNS.splice(0, RUNS.length, ...JSON.parse(process.env.RUNS));
 
 if (process.env.SKIP_BUILD !== '1') {
   await new Promise((res, rej) => { const b = spawn('npm', ['run', 'build'], { cwd: FRONTEND, stdio: 'ignore' }); b.on('exit', (c) => (c === 0 ? res() : rej(new Error(`build ${c}`)))); });

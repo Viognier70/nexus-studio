@@ -10,39 +10,55 @@ const near = (x, z, dist, yaw) => ({ tx: x, ty: 0.6, tz: z, dist: dist || 12, ya
 const lounge = (x, z, dist) => ({ tx: x, ty: 0.6, tz: z, dist: dist || 12, yaw: Math.PI - 0.35, pitch: 0.96, rate: 1.7 }); // längre inglidning, ungefär 1,8 s
 
 // ---------- Manus 1 · Födelsedagen ----------
-// Rätt: alla tre steg. Fel: steg 2, *fort* — ljuset faller på loungebordet och Per kväver det.
+// Rätt: alla tre steg. Ett felslut per steg (raketen slutar vid första felet, scenen spelas klart):
+// steg 1 — köket får inte veta om nötallergin, Per stoppar tårtan vid luckan och går in till kocken;
+// steg 2, *fort* — ljuset faller på loungebordet och Per kväver det;
+// steg 3, *höja musiken* — Elin ber DJ:n höja, sällskapet sjunger över musiken och grannarna i lounge B ber om notan.
 export function birthday(C, variant) {
-  const wrong = variant === 'wrong2';
+  const fs = stepOf(variant), w1 = fs === 0, w2 = fs === 1, w3 = fs === 2, wrong = w2;
   const T = { ask1: 9.5, ans1: 13, ask2: 16, ans2: 19.5, ask3: 32.5, ans3: 36 };
-  const END = wrong ? 36 : 47, BACK = wrong ? 32.5 : 43.5;
-  const tableY = 0.45;
+  const END = w1 ? 36.4 : w2 ? 36 : w3 ? 58 : 47, BACK = w1 ? 32.8 : w2 ? 32.5 : w3 ? 54.8 : 43.5;
+  const tableY = 0.45, passY = 0.99;
 
   const props = {
     lighter: { type: 'lighter', hand: ['sara', 'R'] },
-    cake: { type: 'cake', at: [-4.62, 0.99, 2.75], hidden: true, fill: false },
+    cake: { type: 'cake', at: [-4.62, passY, 2.75], hidden: true, fill: false },
     tray: { type: 'tray', hand: ['elin', 'L'] },
     g1: { type: 'wineGlass', on: ['tray', -0.08, 0] }, g2: { type: 'wineGlass', on: ['tray', 0.08, 0.02] },
-    napkin: { type: 'apron', hand: ['per', 'R'], hidden: true }
+    napkin: { type: 'apron', hand: ['per', 'R'], hidden: true },
+    ...(w3 ? { bill: { type: 'billFolder', hand: ['per', 'R'], hidden: true } } : {})
   };
   const party = (id, seat, look, hm, lk) => ({ kind: 'guest', look, hm, pos: [0, 0], steps: [
-    { clip: 'guest.seatedIdle', until: id === 'host' ? 0.1 : 30, seat, look: lk },
+    { clip: 'guest.seatedIdle', until: id === 'host' ? 0.1 : (w1 ? END : 30), seat, look: lk },
     ...(id === 'host' ? [
       { clip: 'guest.waveStaff', look: 'per' },
       { clip: 'guest.seatedIdle', until: 6.6, look: 'per' },
       { clip: 'guest.whisper', side: -1, look: 'per' },
-      { clip: 'guest.seatedIdle', until: 30, look: 'per' }
+      // Steg 1 fel: värden ser tårtan komma ut på luckan och vinkar till Per. Det var han som sa nötallergi.
+      ...(w1 ? [{ clip: 'guest.seatedIdle', until: 19.6, look: 'per' }, { clip: 'guest.waveStaff', look: 'per' }, { clip: 'guest.seatedIdle', until: END, look: 'per' }]
+        : [{ clip: 'guest.seatedIdle', until: 30, look: 'per' }])
     ] : []),
-    ...(wrong ? [{ clip: 'guest.seatedIdle', until: END, look: 'per' }] : [
-      { clip: 'guest.clap', until: 33 }, { clip: 'guest.seatedIdle', until: 36 },
-      { clip: 'guest.sing', until: 42 }, { clip: 'guest.seatedIdle', until: END, look: 'nb1' }
+    ...(w1 ? [] : w2 ? [{ clip: 'guest.seatedIdle', until: END, look: 'per' }] : [
+      { clip: 'guest.clap', until: 33 }, { clip: 'guest.seatedIdle', until: w3 ? 43.2 : 36 },
+      { clip: 'guest.sing', until: w3 ? 49.2 : 42 }, { clip: 'guest.seatedIdle', until: END, look: 'nb1' }
     ])
   ] });
   const actors = {
     host: party('host', 'loungeA1', 'medel', 1.0, 'karin'),
     karin: { ...party('karin', 'loungeA2', 'social', 0.94, 'friend') },
     friend: party('friend', 'loungeA3', 'medel2', 1.02, 'karin'),
-    nb1: { kind: 'guest', look: 'hog', hm: 1.05, pos: [0, 0], steps: [{ clip: 'guest.lean', until: 40.4, seat: 'loungeB1', look: 'nb2' }, ...(wrong ? [{ clip: 'guest.seatedIdle', until: END }] : [{ clip: 'guest.toast', look: 'host' }, { clip: 'guest.seatedIdle', until: END, look: 'host' }])] },
-    nb2: { kind: 'guest', look: 'medel3', hm: 0.97, pos: [0, 0], steps: [{ clip: 'guest.gesture', until: 40.4, seat: 'loungeB2', look: 'nb1' }, ...(wrong ? [{ clip: 'guest.seatedIdle', until: END }] : [{ clip: 'guest.toast', look: 'host' }, { clip: 'guest.seatedIdle', until: END, look: 'host' }])] },
+    nb1: { kind: 'guest', look: 'hog', hm: 1.05, pos: [0, 0], steps: w3 ? [
+      { clip: 'guest.lean', until: 44.5, seat: 'loungeB1', look: 'nb2' },
+      { clip: 'guest.seatedIdle', until: 45.5, look: 'host' },
+      { clip: 'guest.waveStaff', look: 'per' },
+      { clip: 'guest.seatedIdle', until: 51.4, look: 'per' },
+      { clip: 'guest.pay', look: 'per' },
+      { clip: 'guest.seatedIdle', until: END, look: 'nb2' }
+    ] : [{ clip: 'guest.lean', until: 40.4, seat: 'loungeB1', look: 'nb2' }, ...(w1 || w2 ? [{ clip: 'guest.seatedIdle', until: END }] : [{ clip: 'guest.toast', look: 'host' }, { clip: 'guest.seatedIdle', until: END, look: 'host' }])] },
+    nb2: { kind: 'guest', look: 'medel3', hm: 0.97, pos: [0, 0], steps: w3 ? [
+      { clip: 'guest.gesture', until: 44.5, seat: 'loungeB2', look: 'nb1' },
+      { clip: 'guest.seatedIdle', until: END, look: 'host' }
+    ] : [{ clip: 'guest.gesture', until: 40.4, seat: 'loungeB2', look: 'nb1' }, ...(w1 || w2 ? [{ clip: 'guest.seatedIdle', until: END }] : [{ clip: 'guest.toast', look: 'host' }, { clip: 'guest.seatedIdle', until: END, look: 'host' }])] },
     b1: { kind: 'guest', look: 'student', hm: 0.98, pos: [0, 0], steps: [{ clip: 'guest.seatedIdle', until: END, seat: 'bar1', look: 'b2' }] },
     b2: { kind: 'guest', look: 'medel', hm: 1.03, pos: [0, 0], steps: wrong
       ? [{ clip: 'guest.seatedIdle', until: 23.9, seat: 'bar2', look: 'b1' }, { clip: 'guest.leaveStool', side: 1 }, { clip: 'guest.startle', face: 0.3 }, { clip: 'staff.idle', until: END, look: 'sara' }]
@@ -54,15 +70,53 @@ export function birthday(C, variant) {
       { clip: 'staff.walk', path: [[-2.9, 3.15], [-3.15, 4.5]], until: 6.4 },
       { clip: 'staff.listen', until: T.ans1 + 0.3, face: Math.PI / 2, look: 'host' },
       { clip: 'staff.walk', path: [[-3.6, 3.5], [-4.0, 3.35]], until: T.ans1 + 2.2 },
-      { clip: 'staff.idle', until: wrong ? 25.4 : END, face: -Math.PI / 2, look: 'cook' },
-      ...(wrong ? [
-        { clip: 'staff.walk', path: [[-2.4, 3.15], [-1.3, 3.2]], until: 27.9 },
-        { clip: 'staff.idle', until: 28.3, face: 0, ev: [{ type: 'show', prop: 'napkin', at: 0.1 }] },
-        { clip: 'staff.smother', face: 0, ev: [{ type: 'release', hand: 'R', prop: 'napkin', at: 'release', surface: tableY, put: [-1.45, 3.62] }] },
-        { clip: 'staff.idle', until: END, face: 0, look: 'karin' }
-      ] : [])
+      ...(w1 ? [
+        // Per säger antal och tid men inte allergin, och går tillbaka ut på golvet.
+        { clip: 'staff.idle', until: 16.4, face: -Math.PI / 2, look: 'cook' },
+        { clip: 'staff.walk', path: [[-3.4, 3.3], [-2.6, 3.25]], until: 18.3 },
+        { clip: 'staff.idle', until: 19.9, face: 0, look: 'host' },
+        // Värden vinkar. Per går tillbaka i stressat tempo och stoppar Sara innan hon går med tårtan.
+        { clip: 'staff.walk', tempo: 'stressed', path: [[-3.2, 3.2], [-3.5, 3.05]], until: 21.3 },
+        { clip: 'staff.halt', face: -1.75, look: 'sara' },
+        { clip: 'staff.idle', until: 24.4, face: -1.75, look: 'sara' },
+        { clip: 'staff.beckon', face: -1.75, look: 'cook' },
+        { clip: 'staff.walk', path: [[-3.9, 2.3], [-4.45, 1.3], [-5.1, 1.25], [-5.1, 2.15]], until: 29.6 },
+        { clip: 'staff.listen', until: END, face: -0.59, look: 'cook' }
+      ] : w3 ? [
+        // Steg 3 fel: Per vinkar till sig Elin och pekar mot DJ:n. Sedan tar han notan till lounge B.
+        { clip: 'staff.idle', until: T.ans3 + 0.3, face: -Math.PI / 2, look: 'cook' },
+        { clip: 'staff.beckon', face: 1.81, look: 'elin' },
+        { clip: 'host.point', face: 2.24 },
+        { clip: 'staff.idle', until: 46.0, face: 1.81, look: 'elin' },
+        { clip: 'staff.walk', path: [[-2.4, 3.15], [1.4, 3.15], [1.7, 3.3]], until: 50.4, ev: [{ type: 'show', prop: 'bill', at: 0 }] },
+        { clip: 'waiter.presentBill', face: 0 },
+        { clip: 'staff.idle', until: END, face: 0, look: 'nb1' }
+      ] : [
+        { clip: 'staff.idle', until: wrong ? 25.4 : END, face: -Math.PI / 2, look: 'cook' },
+        ...(wrong ? [
+          { clip: 'staff.walk', path: [[-2.4, 3.15], [-1.3, 3.2]], until: 27.9 },
+          { clip: 'staff.idle', until: 28.3, face: 0, ev: [{ type: 'show', prop: 'napkin', at: 0.1 }] },
+          { clip: 'staff.smother', face: 0, ev: [{ type: 'release', hand: 'R', prop: 'napkin', at: 'release', surface: tableY, put: [-1.45, 3.62] }] },
+          { clip: 'staff.idle', until: END, face: 0, look: 'karin' }
+        ] : [])
+      ])
     ] },
-    cook: { kind: 'staff', look: 'kock', pos: [-6.2, 3.9], yaw: -Math.PI / 2, steps: [
+    cook: { kind: 'staff', look: 'kock', pos: [-6.2, 3.9], yaw: -Math.PI / 2, steps: w1 ? [
+      { clip: 'cook.station', until: T.ans1 + 1.5, face: -Math.PI / 2 },
+      { clip: 'staff.idle', until: 16.4, face: Math.PI / 2, look: 'per' },
+      { clip: 'staff.walk', path: [[-5.6, 3.1], [-5.2, 2.75]], until: 17.6 },
+      { clip: 'cook.toPass', face: Math.PI / 2, ev: [{ type: 'show', prop: 'cake', at: 'release' }] },
+      { clip: 'staff.walk', path: [[-5.6, 3.3], [-6.2, 3.9]], until: 20.8 },
+      { clip: 'cook.station', until: 25.6, face: -Math.PI / 2 },
+      { clip: 'staff.walk', path: [[-5.6, 3.2], [-5.4, 2.6]], until: 27.2 },
+      { clip: 'staff.idle', until: 29.8, face: 2.55, look: 'per' },
+      { clip: 'staff.listen', until: 31.2, face: 2.55, look: 'per' },
+      // Kocken tar tillbaka tårtan från luckan. Den nya kommer senare, utan att kameran följer.
+      { clip: 'staff.walk', path: [[-5.2, 2.75]], until: 31.6 },
+      { clip: 'cook.toPass', face: Math.PI / 2, ev: [{ type: 'hide', prop: 'cake', at: 'grab' }] },
+      { clip: 'staff.walk', path: [[-5.6, 3.3], [-6.2, 3.9]] },
+      { clip: 'cook.station', until: END, face: -Math.PI / 2 }
+    ] : [
       { clip: 'cook.station', until: T.ans1 + 1.5, face: -Math.PI / 2 },
       { clip: 'staff.idle', until: T.ans2, face: Math.PI / 2, look: 'per' },
       { clip: 'staff.walk', path: [[-5.6, 3.1], [-5.2, 2.75]], until: T.ans2 + 1.4 },
@@ -71,9 +125,13 @@ export function birthday(C, variant) {
       { clip: 'cook.station', until: END, face: -Math.PI / 2 }
     ] },
     sara: { kind: 'staff', look: 'servitor', pos: [-4.1, 2.7], yaw: -Math.PI / 2, steps: [
-      { clip: 'staff.idle', until: 21.2, look: 'per' },
+      { clip: 'staff.idle', until: w1 ? 18.9 : 21.2, look: 'per' },
       { clip: 'waiter.lightCandles', face: -Math.PI / 2, ev: [{ type: 'fill', prop: 'cake', at: 'light' }, { type: 'hide', prop: 'lighter', at: 'end' }, { type: 'grab', hand: 'R', prop: 'cake', at: 'end' }] },
-      ...(wrong ? [
+      ...(w1 ? [
+        { clip: 'waiter.carryCake', tempo: 'calm', path: [[-4.05, 2.95]], until: 22.6 },
+        { clip: 'waiter.serve', face: -Math.PI / 2, ev: [{ type: 'release', hand: 'R', prop: 'cake', at: 'release', surface: passY, put: [-4.62, 2.85] }] },
+        { clip: 'staff.idle', until: END, face: Math.PI / 2, look: 'per' }
+      ] : wrong ? [
         { clip: 'waiter.carryCake', tempo: 'stressed', path: [[-4.1, 3.15], [-2.35, 3.15]], until: 24.6 },
         { clip: 'staff.dodge', side: -1, tempo: 'stressed' },
         { clip: 'waiter.carryCake', tempo: 'stressed', path: [[-1.8, 3.2]], until: 26.6 },
@@ -85,34 +143,47 @@ export function birthday(C, variant) {
         { clip: 'staff.idle', until: END, face: 0, look: 'karin' }
       ])
     ] },
-    elin: { kind: 'staff', look: 'sommelier', pos: [3.3, 1.6], yaw: 0, steps: wrong
+    elin: { kind: 'staff', look: 'sommelier', pos: [3.3, 1.6], yaw: 0, steps: w1 || w2
       ? [{ clip: 'staff.idle', until: END, look: 'nb1', keep: 'L' }]
-      : [
+      : w3 ? [
+        // Elin går med brickan till DJ-hörnet och tillbaka. Glasen till grannarna blir aldrig serverade.
+        { clip: 'staff.idle', until: 37.2, look: 'nb1', keep: 'L' },
+        { clip: 'staff.idle', until: 37.9, look: 'per', keep: 'L' },
+        { clip: 'waiter.carryTray', path: [[3.6, 0.6], [3.6, -2.9], [4.7, -3.1]], until: 42.0 },
+        { clip: 'staff.idle', until: 43.2, face: 2.39, look: 'dj', keep: 'L' },
+        { clip: 'waiter.carryTray', path: [[3.6, -2.9], [3.6, 0.6], [3.3, 1.6]], until: 47.6 },
+        { clip: 'staff.idle', until: END, face: 0, look: 'nb1', keep: 'L' }
+      ] : [
         { clip: 'staff.idle', until: T.ans3 + 0.3, look: 'nb1', keep: 'L' },
         { clip: 'waiter.carryTray', path: [[2.0, 2.4], [2.0, 3.2]], until: T.ans3 + 3 },
         { clip: 'waiter.serve', hand: 'L', face: 0, ev: [{ type: 'release', hand: 'L', prop: 'tray', at: 'release', surface: tableY, put: [2.0, 3.72] }] },
         { clip: 'staff.idle', until: END, face: 0, look: 'nb2' }
       ] },
-    mira: { kind: 'staff', look: 'bartender', pos: [-0.9, -0.74], yaw: 0, steps: [{ clip: 'bar.wipe', until: END, face: 0 }] }
+    mira: { kind: 'staff', look: 'bartender', pos: [-0.9, -0.74], yaw: 0, steps: [{ clip: 'bar.wipe', until: END, face: 0 }] },
+    // DJ:n står i sydöstra hörnet i alla varianter (helgkvällen). Inga egna klipp ännu: arbetet vid pulten är cook.station.
+    dj: { kind: 'staff', look: 'dj', pos: [6.15, -4.65], yaw: -Math.PI / 4, stand: 0.25, steps: w3 ? [
+      { clip: 'cook.station', until: 42.0, face: -Math.PI / 4 },
+      { clip: 'staff.listen', until: 43.0, face: -0.75, look: 'elin' },
+      { clip: 'cook.station', until: END, face: -Math.PI / 4 }
+    ] : [{ clip: 'cook.station', until: END, face: -Math.PI / 4 }] }
   };
-  const effects = wrong ? [{ type: 'candleDrop', t: 25.25, from: 'cake', to: [-1.45, tableY + 0.004, 3.62], out: 28.95 }] : [];
-  const cam = wrong
+  const effects = wrong ? [{ type: 'candleDrop', t: 25.25, from: 'cake', to: [-1.45, tableY + 0.004, 3.62], out: 28.95 }]
+    : w3 ? [{ type: 'musicUp', t: 43.0, at: [5.75, 1.45, -4.25] }] : [];
+  const cam = w1
+    ? [{ t: 0, v: GAME }, { t: 0.2, v: lounge(-1.8, 3.75) }, { t: T.ans1 + 0.3, v: near(-3.0, 3.6) }, { t: 19.6, v: near(-4.0, 3.0, 11, 0.6) }, { t: 25.6, v: near(-4.6, 2.4, 12, 0.8) }, { t: BACK, v: GAME, rate: 1.9 }]
+    : wrong
     ? [{ t: 0, v: GAME }, { t: 0.2, v: lounge(-1.8, 3.75) }, { t: 21.5, follow: 'sara', dist: 13 }, { t: 26.8, v: lounge(-1.7, 3.6) }, { t: BACK, v: GAME, rate: 1.9 }]
-    : [{ t: 0, v: GAME }, { t: 0.2, v: lounge(-1.8, 3.75) }, { t: T.ans1 + 0.3, v: near(-3.0, 3.6) }, { t: 21.5, follow: 'sara', dist: 13 }, { t: 28, v: lounge(-1.8, 3.75) }, { t: T.ans3 + 0.3, v: lounge(0.1, 3.9, 13) }, { t: BACK, v: GAME, rate: 1.9 }];
-  const spot = wrong
+    : [{ t: 0, v: GAME }, { t: 0.2, v: lounge(-1.8, 3.75) }, { t: T.ans1 + 0.3, v: near(-3.0, 3.6) }, { t: 21.5, follow: 'sara', dist: 13 }, { t: 28, v: lounge(-1.8, 3.75) },
+      ...(w3 ? [{ t: T.ans3 + 0.3, v: near(-1.2, 3.0, 13) }, { t: 37.9, follow: 'elin', dist: 13 }, { t: 44.4, v: lounge(0.1, 3.9, 13) }]
+        : [{ t: T.ans3 + 0.3, v: lounge(0.1, 3.9, 13) }]), { t: BACK, v: GAME, rate: 1.9 }];
+  const spot = w1
+    ? [{ t: 0.2, who: 'host' }, { t: 6.4, who: 'per' }, { t: 16.4, who: 'cook' }, { t: 18.9, who: 'sara' }, { t: 19.6, who: 'host' }, { t: 20.4, who: 'per' }, { t: 31.2, who: 'cook' }, { t: BACK, who: null }]
+    : wrong
     ? [{ t: 0.2, who: 'host' }, { t: 6.4, who: 'per' }, { t: T.ans1 + 0.3, who: 'per' }, { t: 21.2, who: 'sara' }, { t: 25.4, who: 'per' }, { t: BACK, who: null }]
-    : [{ t: 0.2, who: 'host' }, { t: 6.4, who: 'per' }, { t: 17.5, who: 'cook' }, { t: 21.2, who: 'sara' }, { t: 28.6, who: 'karin' }, { t: T.ans3 + 0.3, who: 'elin' }, { t: 40.4, who: 'nb1' }, { t: BACK, who: null }];
-  const card = [
-    { t: T.ask1, step: 0, ph: 'ask' }, { t: T.ans1, step: 0, ph: 'right' },
-    { t: T.ask2, step: 1, ph: 'ask' }, { t: T.ans2, step: 1, ph: wrong ? 'wrong' : 'right' },
-    ...(wrong ? [] : [{ t: T.ask3, step: 2, ph: 'ask' }, { t: T.ans3, step: 2, ph: 'right' }]),
-    { t: BACK, step: wrong ? 1 : 2, ph: 'off' }
-  ];
-  const chapters = [
-    { t: 0, key: 'build' }, { t: T.ask1, key: 'ask' }, { t: T.ans1, key: 'end1' }, { t: T.ans2, key: wrong ? 'fail2' : 'end2' },
-    ...(wrong ? [] : [{ t: T.ans3, key: 'end3' }]), { t: BACK, key: 'back' }
-  ];
-  return { set: 'winebar', roomOpts: { mood: 'helg' }, tempo: 'normal', end: END, props, actors, effects, beats: { cam, spot, card, chapters } };
+    : [{ t: 0.2, who: 'host' }, { t: 6.4, who: 'per' }, { t: 17.5, who: 'cook' }, { t: 21.2, who: 'sara' }, { t: 28.6, who: 'karin' },
+      ...(w3 ? [{ t: T.ans3 + 0.3, who: 'per' }, { t: 37.9, who: 'elin' }, { t: 42.0, who: 'dj' }, { t: 43.4, who: 'karin' }, { t: 45.5, who: 'nb1' }, { t: 46.0, who: 'per' }]
+        : [{ t: T.ans3 + 0.3, who: 'elin' }, { t: 40.4, who: 'nb1' }]), { t: BACK, who: null }];
+  return { set: 'winebar', roomOpts: { mood: 'helg' }, tempo: 'normal', end: END, props, actors, effects, beats: { cam, spot, card: cardOf(T, fs, BACK), chapters: chaptersOf('', T, fs, BACK) } };
 }
 
 // ---------- Manus 2 · Vasen på pulten ----------
@@ -256,7 +327,7 @@ function chaptersOf(p, T, failStep, BACK, extra = []) {
   return [...out, ...extra, { t: BACK, key: 'back' }].sort((a, b) => a.t - b.t);
 }
 const sit = (seat, look, hm, END, lk, steps) => ({ kind: 'guest', look, hm, pos: [0, 0], steps: steps || [{ clip: 'guest.seatedIdle', until: END, seat, look: lk }] });
-const stepOf = (v) => (v === 'wrong1' ? 0 : v === 'wrong2' ? 1 : v === 'wrong3' ? 2 : null);
+const stepOf = (v) => (v === 'wrong1' ? 0 : v === 'wrong2' ? 1 : /^wrong[A-D]?3$/.test(v || '') ? 2 : null);
 // ---------- Manus 3 · Gästen som vinglar ----------
 // Tre stamgäster på de norra barstolarna. Gästen på bar3 kliver bakåt in i Saras bricka.
 export function drunk(C, variant) {
@@ -354,11 +425,12 @@ export function drunk(C, variant) {
 
 // ---------- Manus 4 · Tillsynen ----------
 // Handläggaren och polisen vid barens östra kortände. Steg 3 i fyra varianter: A den nekade gästen, B ålderskontrollen,
-// C egenkontrollen och D kravet på mat. Felen i steg 3 visas i variant A.
+// C egenkontrollen och D kravet på mat. Felen i steg 3 är ritade i variant A, B (wrongB3) och C (wrongC3).
 export function inspection(C, variant) {
-  const D = variant === 'rightD', B = variant === 'rightB', SC = variant === 'rightC', fs = stepOf(variant), w1 = fs === 0, w2 = fs === 1, w3 = fs === 2;
+  const D = variant === 'rightD', B = variant === 'rightB' || variant === 'wrongB3', SC = variant === 'rightC' || variant === 'wrongC3';
+  const fs = stepOf(variant), w1 = fs === 0, w2 = fs === 1, w3 = fs === 2, wB = B && w3, wC = SC && w3, wA = w3 && !B && !SC;
   const T = { ask1: 14.5, ans1: 18, ask2: 22, ans2: 25.5, ask3: 38.5, ans3: 42 };
-  const exitAt = w1 ? 24 : w2 ? 41 : w3 ? 46.5 : D ? 60 : B ? 50 : SC ? 51 : 47;
+  const exitAt = w1 ? 24 : w2 ? 41 : wB ? 55 : wC ? 55.5 : w3 ? 46.5 : D ? 60 : B ? 50 : SC ? 51 : 47;
   const END = exitAt + 7.5, BACK = exitAt + 3.6;
   const barY = 1.16, toPer = 2.52, out = [[3.7, 1.1], [5.5, 1.35], [6.95, 0.4], [8.4, 0.3]];
   const props = {
@@ -373,15 +445,20 @@ export function inspection(C, variant) {
     b2glass: { type: 'wineGlass', at: [-1.8, 1.15, 1.4] },
     dish: { type: 'sidePlate', at: [-4.8, 1.1, 2.75], hidden: true, fill: false },
     spad: { type: 'pad', hand: ['sara', 'L'], hidden: true },
-    yid1: { type: 'councilId', hand: ['lb1', 'R'], hidden: true }, yid2: { type: 'councilId', hand: ['lb2', 'R'], hidden: true }
+    yid1: { type: 'councilId', hand: ['lb1', 'R'], hidden: true }, yid2: { type: 'councilId', hand: ['lb2', 'R'], hidden: true },
+    // Variant B, fel: flaskan Sara hämtar på disken och glasen hon häller i.
+    ...(wB ? { sbottle: { type: 'wineBottle', at: [1.55, barY, 1.5] }, yg1: { type: 'wineGlass', at: [1.85, 0.45, 3.62], hidden: true }, yg2: { type: 'wineGlass', at: [2.2, 0.45, 3.66], hidden: true } } : {})
   };
   const look3 = D ? [-4.8, 2.7] : B ? 'lb1' : SC ? [2.2, 0.0] : 'b3';
   const lookEnd = B ? 'sara' : SC ? 'mira' : 'per';
   const standSteps = (path, arrive, show) => {
-    const writeAt = w1 ? T.ans1 + 1.6 : w2 ? 37.2 : w3 ? T.ans3 + 1.2 : null;
+    const writeAt = w1 ? T.ans1 + 1.6 : w2 ? 37.2 : wB ? 50.4 : wC ? 51.6 : w3 ? T.ans3 + 1.2 : null;
     const mid = w1 || w2 ? [{ clip: 'guest.standBar', until: writeAt, face: -Math.PI / 2, look: 'per' }]
       : [{ clip: 'guest.standBar', until: T.ask3 - 2.4, face: -Math.PI / 2, look: 'per' },
-        SC ? { clip: 'host.checkBook', until: T.ans3, face: -Math.PI / 2, look: 'per' } : { clip: 'guest.standBar', until: w3 ? writeAt : T.ans3, face: -Math.PI / 2, look: look3 }];
+        SC ? { clip: 'host.checkBook', until: T.ans3, face: -Math.PI / 2, look: 'per' } : { clip: 'guest.standBar', until: w3 && !wB ? writeAt : T.ans3, face: -Math.PI / 2, look: look3 },
+        // B, fel: handläggaren ser Sara hälla upp. C, fel: handläggaren vänder sig till Mira och frågar henne.
+        ...(wB ? [{ clip: 'guest.standBar', until: writeAt, face: -Math.PI / 2, look: 'sara' }] : []),
+        ...(wC ? [{ clip: 'guest.standBar', until: 45.0, face: -Math.PI / 2, look: 'per' }, { clip: 'staff.beckon', face: -1.45, look: 'mira' }, { clip: 'guest.standBar', until: writeAt, face: -Math.PI / 2, look: 'mira' }] : [])];
     return [
       { clip: 'guest.walk', path, until: arrive },
       { clip: 'guest.standBar', until: 8, face: -Math.PI / 2, look: 'b3' },
@@ -404,8 +481,11 @@ export function inspection(C, variant) {
       { clip: 'host.fetchFolder', face: Math.PI / 2, ev: [{ type: 'grab', hand: 'R', prop: 'folder', at: 'grab' }] },
       { clip: 'staff.walk', path: [[5.2, -0.4], [3.4, -0.4]], until: T.ans2 + 7.6 },
       { clip: 'staff.openFolder', face: -0.62, ev: [{ type: 'place', prop: 'folder', at: 'end', pos: [2.2, barY, 0.0], yaw: Math.PI / 2 }] },
-      ...(SC ? [{ clip: 'staff.idle', until: T.ans3, face: -0.62, look: 'insp' }, { clip: 'staff.beckon', face: -1.31, look: 'mira' }] : []),
-      { clip: 'staff.idle', until: END, face: -0.62, look: SC ? 'mira' : 'insp' }
+      ...(SC && !wC ? [{ clip: 'staff.idle', until: T.ans3, face: -0.62, look: 'insp' }, { clip: 'staff.beckon', face: -1.31, look: 'mira' }] : []),
+      // C, fel: "Jag skrev den själv." Per visar på sig själv.
+      ...(wC ? [{ clip: 'staff.idle', until: T.ans3, face: -0.62, look: 'insp' }, { clip: 'host.introduce', face: -0.62 }] : []),
+      ...(wB ? [{ clip: 'staff.idle', until: T.ans3, face: -0.62, look: 'insp' }] : []),
+      { clip: 'staff.idle', until: END, face: -0.62, look: SC ? 'mira' : wB ? 'sara' : 'insp' }
     ])
   ];
   const actors = {
@@ -418,7 +498,9 @@ export function inspection(C, variant) {
       ...(w1 || w2 ? [{ clip: 'guest.standBar', until: exitAt, face: -Math.PI / 2, look: 'per' }] : [
         { clip: 'guest.standBar', until: T.ask3 - 2.4, face: -Math.PI / 2, look: 'per' },
         { clip: 'guest.standBar', until: T.ans3, face: -Math.PI / 2, look: look3 },
-        ...(w3 ? [{ clip: 'staff.decline', face: 2.3, look: 'per' }] : []),
+        ...(wA ? [{ clip: 'staff.decline', face: 2.3, look: 'per' }] : []),
+        ...(wB ? [{ clip: 'guest.standBar', until: 50.6, face: -Math.PI / 2, look: 'sara' }, { clip: 'staff.decline', face: 2.3, look: 'per' }] : []),
+        ...(wC ? [{ clip: 'guest.standBar', until: 46.6, face: -Math.PI / 2, look: 'per' }, { clip: 'guest.standBar', until: 51.6, face: -Math.PI / 2, look: 'mira' }] : []),
         { clip: 'guest.standBar', until: exitAt, face: -Math.PI / 2, look: 'per' }]),
       { clip: 'guest.walk', path: out.map(([x, z]) => [x + 0.3, z + 0.5]), until: exitAt + 6.8 }, { clip: 'staff.idle', until: END }
     ] },
@@ -429,7 +511,14 @@ export function inspection(C, variant) {
       { clip: 'bar.pourWater', face: Math.PI / 2, ev: [{ type: 'show', prop: 'carafe', at: 0 }, { type: 'show', prop: 'wa', at: 0.4 }, { type: 'show', prop: 'wb', at: 0.75 }, { type: 'hide', prop: 'carafe', at: 'end' }] },
       { clip: 'staff.idle', until: END, face: Math.PI / 2, look: 'insp' }
     ] },
-    mira: { kind: 'staff', look: 'bartender', pos: [-0.9, 0.74], yaw: 0, steps: SC ? [
+    mira: { kind: 'staff', look: 'bartender', pos: [-0.9, 0.74], yaw: 0, steps: wC ? [
+      // C, fel: Mira kommer när handläggaren vinkar, lyssnar och skakar på huvudet. Hon vet inte vad som står i egenkontrollen.
+      { clip: 'bar.wipe', until: 46.8, face: 0 },
+      { clip: 'staff.walk', path: [[1.0, 0.74], [1.95, 0.6]], until: 48.8 },
+      { clip: 'staff.listen', until: 49.2, face: Math.PI / 2, look: 'insp' },
+      { clip: 'staff.decline', face: Math.PI / 2, look: 'insp' },
+      { clip: 'staff.listen', until: END, face: Math.PI / 2, look: 'insp' }
+    ] : SC ? [
       { clip: 'bar.wipe', until: T.ans3 + 1.4, face: 0 },
       { clip: 'staff.walk', path: [[1.0, 0.74], [1.95, 0.6]], until: T.ans3 + 3.6 },
       { clip: 'staff.listen', until: T.ans3 + 5.6, face: Math.PI / 2, look: 'insp' },
@@ -447,9 +536,20 @@ export function inspection(C, variant) {
         { clip: 'staff.walk', path: [[-3.6, 3.12], [1.5, 3.12], [1.75, 3.25]], until: 31.2 },
         { clip: 'waiter.takeOrder', until: T.ask3 - 2.4, face: 0, look: 'lb1', ev: [{ type: 'show', prop: 'spad', at: 0 }, { type: 'hide', prop: 'spad', at: 'end' }] },
         { clip: 'staff.idle', until: T.ans3 + 0.2, face: 0, look: 'lb1' },
-        { clip: 'staff.checkId', face: 0, look: 'lb1' },
-        { clip: 'staff.checkId', face: 0.3, look: 'lb2' },
-        { clip: 'staff.idle', until: END, face: 0, look: 'lb2' }
+        ...(wB ? [
+          // B, fel: Sara frågar hur gamla de är, litar på svaret, hämtar flaskan på disken och häller upp.
+          { clip: 'staff.listen', until: 44.4, face: 0, look: 'lb1' },
+          { clip: 'staff.walk', path: [[1.6, 2.7], [1.5, 2.2]], until: 45.8 },
+          { clip: 'staff.idle', until: 46.8, face: Math.PI, ev: [{ type: 'grab', hand: 'R', prop: 'sbottle', at: 0.1 }] },
+          { clip: 'staff.walk', path: [[1.75, 3.25]], until: 48.0 },
+          { clip: 'somm.pour', face: 0, ev: [{ type: 'show', prop: 'yg1', at: 0.5 }] },
+          { clip: 'somm.pour', face: 0.35, ev: [{ type: 'show', prop: 'yg2', at: 0.5 }] },
+          { clip: 'staff.idle', until: END, face: 0, look: 'lb2' }
+        ] : [
+          { clip: 'staff.checkId', face: 0, look: 'lb1' },
+          { clip: 'staff.checkId', face: 0.3, look: 'lb2' },
+          { clip: 'staff.idle', until: END, face: 0, look: 'lb2' }
+        ])
       ] : []),
       ...(D ? [
         { clip: 'waiter.pickUp', face: -Math.PI / 2, ev: [{ type: 'grab', hand: 'R', prop: 'dish', at: 'grab' }] },
@@ -471,12 +571,17 @@ export function inspection(C, variant) {
     ] : [{ clip: 'cook.station', until: END, face: -Math.PI / 2 }] },
     b3: sit('bar3', 'medel2', 1.04, END, 'b2'), b2: sit('bar2', 'medel', 1.0, END, 'b3'), b1: sit('bar1', 'student', 0.98, END, 'b2'),
     la1: sit('loungeA1', 'medel3', 1.0, END, 'la2'), la2: sit('loungeA2', 'social', 0.94, END, 'la1'),
-    lb1: B ? sit('loungeB1', 'student', 0.93, END, 'lb2', [
+    lb1: wB ? sit('loungeB1', 'student', 0.93, END, 'lb2', [
+        { clip: 'guest.gesture', until: 31.2, seat: 'loungeB1', look: 'lb2' }, { clip: 'guest.seatedIdle', until: T.ans3 + 0.4, look: 'sara' },
+        { clip: 'guest.gesture', until: 44.4, look: 'sara' }, { clip: 'guest.seatedIdle', until: 50.6, look: 'sara' },
+        { clip: 'guest.lean', until: END, look: 'lb2' }])
+      : B ? sit('loungeB1', 'student', 0.93, END, 'lb2', [
         { clip: 'guest.gesture', until: 31.2, seat: 'loungeB1', look: 'lb2' }, { clip: 'guest.seatedIdle', until: T.ans3 + 0.5, look: 'sara' },
         { clip: 'guest.showIdSeated', ev: [{ type: 'show', prop: 'yid1', at: 'grab' }, { type: 'hide', prop: 'yid1', at: 'end' }] },
         { clip: 'guest.seatedIdle', until: END, look: 'lb2' }])
       : sit('loungeB1', 'hog', 1.05, END, 'lb2'),
-    lb2: B ? sit('loungeB2', 'jacka', 0.95, END, 'lb1', [
+    lb2: wB ? sit('loungeB2', 'jacka', 0.95, END, 'lb1', [{ clip: 'guest.seatedIdle', until: END, seat: 'loungeB2', look: 'sara' }])
+      : B ? sit('loungeB2', 'jacka', 0.95, END, 'lb1', [
         { clip: 'guest.seatedIdle', until: T.ans3 + 3.4, seat: 'loungeB2', look: 'sara' },
         { clip: 'guest.showIdSeated', ev: [{ type: 'show', prop: 'yid2', at: 'grab' }, { type: 'hide', prop: 'yid2', at: 'end' }] },
         { clip: 'guest.seatedIdle', until: END, look: 'lb1' }])
@@ -484,13 +589,14 @@ export function inspection(C, variant) {
   };
   const end = near(3.4, 0.5, 13, 0.62);
   const cam = [{ t: 0, v: GAME }, { t: 4.6, v: end },
-    ...(B ? [{ t: 27.5, v: near(2.6, 2.2, 13, 0.62) }, { t: T.ask3 - 2.4, v: near(2.0, 4.0, 11, 0.5), rate: 1.7 }, { t: T.ans3 + 7, v: end }] : []),
-    ...(SC ? [{ t: T.ask3 - 2.4, v: near(2.4, 0.2, 11, 0.62), rate: 1.7 }, { t: T.ans3, v: near(2.2, 0.4, 12, 0.62) }] : []),
+    ...(B ? [{ t: 27.5, v: near(2.6, 2.2, 13, 0.62) }, { t: T.ask3 - 2.4, v: near(2.0, 4.0, 11, 0.5), rate: 1.7 }, ...(wB ? [{ t: 44.6, v: near(1.8, 3.0, 11, 0.5) }, { t: 49.6, v: near(2.4, 2.0, 13, 0.62) }] : [{ t: T.ans3 + 7, v: end }])] : []),
+    ...(SC ? [{ t: T.ask3 - 2.4, v: near(2.4, 0.2, 11, 0.62), rate: 1.7 }, { t: T.ans3, v: near(2.2, 0.4, 12, 0.62) }, ...(wC ? [{ t: 46.6, v: near(1.4, 0.5, 12, 0.62) }] : [])] : []),
     ...((fs == null || w3) && !B && !SC ? [{ t: T.ask3 - 2.4, v: D ? near(-4.6, 2.8, 12, 0.9) : near(-0.9, 2.2, 12, 0.3), rate: 1.7 }, { t: T.ans3, v: end }] : []),
     ...(D ? [{ t: T.ans3 + 3, v: near(-4.6, 2.8, 12, 0.9) }, { t: T.ans3 + 7.5, follow: 'sara', dist: 13 }, { t: T.ans3 + 15, v: end }] : []),
     { t: BACK, v: GAME, rate: 1.9 }];
   const spot = [{ t: 4.6, who: 'insp' }, { t: 9.2, who: 'per' }, { t: 11.6, who: 'insp' }, { t: 13.1, who: 'pol' }, { t: T.ans1, who: 'per' },
-    ...(w1 ? [{ t: T.ans1 + 1.6, who: 'insp' }] : [
+    ...(w1 ? [{ t: T.ans1 + 1.6, who: 'insp' }] : wB ? [{ t: 27.5, who: 'sara' }, { t: T.ask3 - 2.4, who: 'lb1' }, { t: T.ans3, who: 'sara' }, { t: 42.4, who: 'lb1' }, { t: 44.6, who: 'sara' }, { t: 50.4, who: 'insp' }, { t: 50.6, who: 'pol' }]
+      : wC ? [{ t: T.ask3 - 2.4, who: 'insp' }, { t: T.ans3, who: 'per' }, { t: 45.0, who: 'insp' }, { t: 46.8, who: 'mira' }, { t: 51.6, who: 'insp' }] : [
       ...(w2 ? [{ t: 37.2, who: 'insp' }] : [
         ...(B ? [{ t: 27.5, who: 'sara' }] : []),
         { t: T.ask3 - 2.4, who: D ? 'cook' : B ? 'lb1' : SC ? 'insp' : 'b3' }, { t: T.ans3, who: D ? 'cook' : B ? 'sara' : w3 ? 'pol' : 'mira' },
@@ -498,7 +604,7 @@ export function inspection(C, variant) {
     { t: exitAt, who: 'insp' }, { t: BACK, who: null }];
   const V = D ? 'D' : B ? 'B' : SC ? 'C' : 'A';
   const extra = [{ t: exitAt, key: 'iexit' }, ...(fs == null || w3 ? [{ t: T.ask3 - 2.4, key: 'iask' + V }] : [])];
-  const ch = chaptersOf('i', T, fs, BACK, extra).map((c) => (V !== 'A' && c.key === 'iend3' ? { ...c, key: 'iend' + V } : c));
+  const ch = chaptersOf('i', T, fs, BACK, extra).map((c) => (V !== 'A' && (c.key === 'iend3' || c.key === 'ifail3') ? { ...c, key: c.key.slice(0, -1) + V } : c));
   return { set: 'winebar', roomOpts: { mood: 'helg' }, tempo: 'normal', end: END, props, actors, effects: [], beats: { cam, spot, card: cardOf(T, fs, BACK), chapters: ch } };
 }
 
@@ -624,10 +730,10 @@ export function kitchen(C, variant) {
 }
 
 export const EVENTS = [
-  { id: 'bday', build: birthday, variants: ['right', 'wrong2'] },
+  { id: 'bday', build: birthday, variants: ['right', 'wrong1', 'wrong2', 'wrong3'] },
   { id: 'vase', build: vase, variants: ['right', 'wrong1', 'wrong2', 'wrong3'] },
   { id: 'drunk', build: drunk, variants: ['right', 'wrong1', 'wrong2', 'wrong3'] },
-  { id: 'inspection', build: inspection, variants: ['right', 'rightB', 'rightC', 'rightD', 'wrong1', 'wrong2', 'wrong3'] },
+  { id: 'inspection', build: inspection, variants: ['right', 'rightB', 'rightC', 'rightD', 'wrong1', 'wrong2', 'wrong3', 'wrongB3', 'wrongC3'] },
   { id: 'kitchen', build: kitchen, variants: ['right', 'wrong1', 'wrong2', 'wrong3'] },
   { id: 'falls', build: propFalls, variants: ['right'] }
 ];

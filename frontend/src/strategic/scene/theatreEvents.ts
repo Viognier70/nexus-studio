@@ -39,16 +39,32 @@ export function isEventIncident(id: string | null | undefined): boolean {
   return !!id && id in EVENT_OF_INCIDENT;
 }
 
-function scriptFor(event: string, variant: string): EventScript {
+// ORDER 295 — DJ:n står bakom DJ-båset vid födelsedagen på helgkvällar
+// (Vision Owner 2026-10-02); andra kvällar tas hon ur manuset.
+export function scriptFor(event: string, variant: string, weekend = true): EventScript {
   const ev = EVENTS.find((e) => e.id === event);
   if (!ev) throw new Error('okänd händelse ' + event);
-  return ev.build(null, variant);
+  const sc = ev.build(null, variant);
+  if (!weekend && sc.actors.dj) {
+    const { dj: _dj, ...actors } = sc.actors;
+    return { ...sc, actors };
+  }
+  return sc;
 }
 
-/** Felvarianten för ett fel i steget (0-baserat), eller den närmaste som manuset har. */
-export function wrongVariant(event: string, step: number): string | null {
+/**
+ * Felvarianten för ett fel i steget (0-baserat). ORDER 295 (F65): varje steg
+ * har sitt eget slut; tillsynens variant B och C har egna slut i steg 3
+ * (`wrongB3`, `wrongC3`). Saknas slutet i manuset används det närmaste.
+ */
+export function wrongVariant(event: string, step: number, right = 'right'): string | null {
   const ev = EVENTS.find((e) => e.id === event);
   if (!ev) return null;
+  if (event === 'inspection' && step === 2 && (right === 'rightB' || right === 'rightC')) {
+    const own = right === 'rightB' ? 'wrongB3' : 'wrongC3';
+    if (ev.variants.includes(own)) return own;
+  }
+  if (ev.variants.includes(`wrong${step + 1}`)) return `wrong${step + 1}`;
   const wrong = ev.variants.filter((v) => v.startsWith('wrong')).map((v) => ({ v, k: Number(v.slice(5)) - 1 }));
   if (wrong.length === 0) return null;
   wrong.sort((a, b) => Math.abs(a.k - step) - Math.abs(b.k - step));
@@ -75,8 +91,8 @@ export class EventPlayer {
   private finished = false;
   private spotK = 0;
 
-  constructor(parent: THREE.Object3D, floorY: number, seats: TheatreSeat[]) {
-    this.theatre = new EventTheatre(parent, floorY, seats);
+  constructor(parent: THREE.Object3D, floorY: number, seats: TheatreSeat[], djGlow?: THREE.MeshStandardMaterial | null) {
+    this.theatre = new EventTheatre(parent, floorY, seats, djGlow);
     this.theatre.root.visible = false;
   }
 
@@ -85,6 +101,8 @@ export class EventPlayer {
   get currentVariant(): string { return this.variant; }
 
   dispose(): void { this.theatre.dispose(); }
+
+  private weekend = true;
 
   private start(active: ActiveIncident): void {
     const m = EVENT_OF_INCIDENT[active.id];
@@ -95,7 +113,7 @@ export class EventPlayer {
     this.variant = m.right;
     this.t = 0;
     this.finished = false;
-    this.theatre.load(scriptFor(this.event, this.variant));
+    this.theatre.load(scriptFor(this.event, this.variant, this.weekend));
     this.theatre.root.visible = true;
   }
 
@@ -108,7 +126,8 @@ export class EventPlayer {
   }
 
   /** En bildruta: raketens läge och verklig tid sedan förra rutan. */
-  update(active: ActiveIncident | null, log: readonly IncidentRecord[], dt: number): EventFrame {
+  update(active: ActiveIncident | null, log: readonly IncidentRecord[], dt: number, weekend = true): EventFrame {
+    if (!this.key) this.weekend = weekend;
     if (active && isEventIncident(active.id) && `${active.id}:${active.openedAt}` !== this.key) this.start(active);
     else if (active && this.key && `${active.id}:${active.openedAt}` !== this.key) this.stop();
     if (!this.key) return { playing: false, view: null, game: true, spot: null, spotK: 0 };
@@ -121,10 +140,10 @@ export class EventPlayer {
       this.finished = true;
       const rec = [...log].reverse().find((r) => r.id === this.incidentId && r.at >= this.openedAt);
       if (rec && rec.step !== null) {
-        const wrong = wrongVariant(this.event, rec.step);
+        const wrong = wrongVariant(this.event, rec.step, this.variant);
         if (wrong && wrong !== this.variant) {
           this.variant = wrong;
-          this.theatre.load(scriptFor(this.event, wrong));
+          this.theatre.load(scriptFor(this.event, wrong, this.weekend));
         }
       }
     }

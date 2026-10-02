@@ -19,6 +19,9 @@ import type { FigureSample } from './wineBarDirector';
 
 export const HEAD_MIN_M = 0.9;
 export const PELVIS_MIN_M = 0.35;
+// ORDER 295 — den som sitter på en sits ligger inte ned förrän huvudet är under
+// 0,7 m: en kort gäst i loungen (dynan 0,38 m) har huvudet på 0,90 m.
+export const HEAD_MIN_SEATED_M = 0.7;
 
 export interface FigureFault {
   kind: 'guest' | 'staff';
@@ -45,7 +48,7 @@ export function auditRig(rig: FigureRig, floorY: number, sample: FigureSample, k
   const x = v.x;
   const z = v.z;
   const onSeat = sample.seated && hasSeat;
-  const fault = headY < HEAD_MIN_M ? 'lying' : !onSeat && pelvisY < PELVIS_MIN_M ? 'floorSitting' : null;
+  const fault = headY < (onSeat ? HEAD_MIN_SEATED_M : HEAD_MIN_M) ? 'lying' : !onSeat && pelvisY < PELVIS_MIN_M ? 'floorSitting' : null;
   if (!fault) return null;
   const r = (n: number) => Math.round(n * 100) / 100;
   return { kind, id, fault, pose: sample.pose, clip, headY: r(headY), pelvisY: r(pelvisY), seated: sample.seated, hasSeat, x: r(x), z: r(z) };
