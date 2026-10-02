@@ -1,0 +1,98 @@
+{
+  "runs": [
+    {
+      "run": "vasen-ratt",
+      "id": "vb33-vasen",
+      "wrongAt": null,
+      "shots": [
+        {
+          "label": "uppbyggnaden",
+          "file": "events-vasen-ratt-00-uppbyggnaden.jpg",
+          "cam": 10
+        },
+        {
+          "label": "fraga-1",
+          "file": "events-vasen-ratt-01-fraga-1.jpg",
+          "cam": 10
+        },
+        {
+          "label": "svar-1-ratt",
+          "file": "events-vasen-ratt-02-svar-1-ratt.jpg",
+          "cam": 10
+        },
+        {
+          "label": "fraga-2",
+          "file": "events-vasen-ratt-03-fraga-2.jpg",
+          "cam": 10
+        },
+        {
+          "label": "svar-2-ratt",
+          "file": "events-vasen-ratt-04-svar-2-ratt.jpg",
+          "cam": 10
+        },
+        {
+          "label": "fraga-3",
+          "file": "events-vasen-ratt-05-fraga-3.jpg",
+          "cam": 10
+        },
+        {
+          "label": "svar-3-ratt",
+          "file": "events-vasen-ratt-06-svar-3-ratt.jpg",
+          "cam": 10
+        },
+        {
+          "label": "slutet",
+          "file": "events-vasen-ratt-07-slutet.jpg",
+          "cam": 13
+        },
+        {
+          "label": "tillbaka",
+          "file": "events-vasen-ratt-08-tillbaka.jpg",
+          "cam": 24
+        }
+      ],
+      "maxDown": 0,
+      "faults": [],
+      "opened": true,
+      "finished": true,
+      "errors": []
+    },
+    {
+      "run": "vasen-fel1",
+      "id": "vb33-vasen",
+      "wrongAt": 0,
+      "shots": [
+        {
+          "label": "uppbyggnaden",
+          "file": "events-vasen-fel1-00-uppbyggnaden.jpg",
+          "cam": 10
+        },
+        {
+          "label": "fraga-1",
+          "file": "events-vasen-fel1-01-fraga-1.jpg",
+          "cam": 10
+        },
+        {
+          "label": "svar-1-fel",
+          "file": "events-vasen-fel1-02-svar-1-fel.jpg",
+          "cam": 10
+        },
+        {
+          "label": "slutet",
+          "file": "events-vasen-fel1-03-slutet.jpg",
+          "cam": 10
+        },
+        {
+          "label": "tillbaka",
+          "file": "events-vasen-fel1-04-tillbaka.jpg",
+          "cam": 24
+        }
+      ],
+      "maxDown": 0,
+      "faults": [],
+      "opened": true,
+      "finished": true,
+      "errors": []
+    }
+  ]
+}

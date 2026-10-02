@@ -514,6 +514,11 @@ export class EventTheatre {
     this.updateFx(t);
   }
 
+  /** ORDER 294b — personalen manuset använder (skådespelarnas id, t.ex. 'sara'). */
+  staffIds(): Set<string> {
+    return new Set(Object.values(this.actors).filter((a) => a.kind !== 'guest').map((a) => a.id));
+  }
+
   /** ORDER 294 — sitsarna manuset använder (rummets egna gäster där döljs). */
   seatIds(): Set<string> {
     const out = new Set<string>();
