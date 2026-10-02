@@ -1,0 +1,5482 @@
+{
+  "variant": {},
+  "definition": "Parad mätning: varje kväll i vecka 2 från samma morgon utan och med satsningen. gainSek = resultSek med − utan (day.transfer.resultSek, priset ingår). paidOff = kvällar där satsningen gav mer än den kostade. Vinbaren, brons i tre, bästa svaret, baspaketet efter bokningen.",
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+  ],
+  "summary": {
+    "dj": {
+      "mon": {
+        "meanGainSek": -1477.8,
+        "paidOff": 0,
+        "n": 20,
+        "meanBooked": 27,
+        "meanBillsWithout": 24.9,
+        "meanBillsWith": 25.2,
+        "meanWalkedWithout": 1.1,
+        "meanWalkedWith": 1.2,
+        "meanRepWithout": -0.153,
+        "meanRepWith": -0.166,
+        "meanUnhappyWithout": -0.162,
+        "meanUnhappyWith": -0.168
+      },
+      "tue": {
+        "meanGainSek": -1785.2,
+        "paidOff": 0,
+        "n": 20,
+        "meanBooked": 35.5,
+        "meanBillsWithout": 26.5,
+        "meanBillsWith": 25.7,
+        "meanWalkedWithout": 1.5,
+        "meanWalkedWith": 1.2,
+        "meanRepWithout": -0.255,
+        "meanRepWith": -0.255,
+        "meanUnhappyWithout": -0.234,
+        "meanUnhappyWith": -0.213
+      },
+      "wed": {
+        "meanGainSek": -1554.2,
+        "paidOff": 0,
+        "n": 20,
+        "meanBooked": 31.3,
+        "meanBillsWithout": 26.1,
+        "meanBillsWith": 25.9,
+        "meanWalkedWithout": 1.3,
+        "meanWalkedWith": 0.8,
+        "meanRepWithout": -0.109,
+        "meanRepWith": -0.104,
+        "meanUnhappyWithout": -0.208,
+        "meanUnhappyWith": -0.192
+      },
+      "thu": {
+        "meanGainSek": -1506.2,
+        "paidOff": 0,
+        "n": 20,
+        "meanBooked": 34.1,
+        "meanBillsWithout": 25.7,
+        "meanBillsWith": 26.6,
+        "meanWalkedWithout": 1,
+        "meanWalkedWith": 0.8,
+        "meanRepWithout": -0.023,
+        "meanRepWith": -0.026,
+        "meanUnhappyWithout": -0.178,
+        "meanUnhappyWith": -0.195
+      },
+      "fri": {
+        "meanGainSek": -1548.3,
+        "paidOff": 0,
+        "n": 20,
+        "meanBooked": 43.1,
+        "meanBillsWithout": 20.7,
+        "meanBillsWith": 20.6,
+        "meanWalkedWithout": 0.5,
+        "meanWalkedWith": 0.5,
+        "meanRepWithout": -0.035,
+        "meanRepWith": -0.033,
+        "meanUnhappyWithout": -0.113,
+        "meanUnhappyWith": -0.106
+      },
+      "sat": {
+        "meanGainSek": -1831.3,
+        "paidOff": 0,
+        "n": 20,
+        "meanBooked": 42.1,
+        "meanBillsWithout": 23.5,
+        "meanBillsWith": 23.4,
+        "meanWalkedWithout": 0.7,
+        "meanWalkedWith": 0.7,
+        "meanRepWithout": -0.02,
+        "meanRepWith": -0.02,
+        "meanUnhappyWithout": -0.136,
+        "meanUnhappyWith": -0.131
+      }
+    },
+    "springare": {
+      "mon": {
+        "meanGainSek": -1820.4,
+        "paidOff": 0,
+        "n": 20,
+        "meanBooked": 27,
+        "meanBillsWithout": 24.9,
+        "meanBillsWith": 24.9,
+        "meanWalkedWithout": 1.1,
+        "meanWalkedWith": 1.2,
+        "meanRepWithout": -0.153,
+        "meanRepWith": -0.155,
+        "meanUnhappyWithout": -0.162,
+        "meanUnhappyWith": -0.161
+      },
+      "tue": {
+        "meanGainSek": -1808.4,
+        "paidOff": 0,
+        "n": 20,
+        "meanBooked": 35.5,
+        "meanBillsWithout": 26.5,
+        "meanBillsWith": 26.4,
+        "meanWalkedWithout": 1.5,
+        "meanWalkedWith": 1.4,
+        "meanRepWithout": -0.255,
+        "meanRepWith": -0.253,
+        "meanUnhappyWithout": -0.234,
+        "meanUnhappyWith": -0.234
+      },
+      "wed": {
+        "meanGainSek": -1772.4,
+        "paidOff": 0,
+        "n": 20,
+        "meanBooked": 31.3,
+        "meanBillsWithout": 26.1,
+        "meanBillsWith": 26.1,
+        "meanWalkedWithout": 1.3,
+        "meanWalkedWith": 1.3,
+        "meanRepWithout": -0.109,
+        "meanRepWith": -0.11,
+        "meanUnhappyWithout": -0.208,
+        "meanUnhappyWith": -0.207
+      },
+      "thu": {
+        "meanGainSek": -1774.9,
+        "paidOff": 0,
+        "n": 20,
+        "meanBooked": 34.1,
+        "meanBillsWithout": 25.7,
+        "meanBillsWith": 25.7,
+        "meanWalkedWithout": 1,
+        "meanWalkedWith": 1,
+        "meanRepWithout": -0.023,
+        "meanRepWith": -0.023,
+        "meanUnhappyWithout": -0.178,
+        "meanUnhappyWith": -0.178
+      },
+      "fri": {
+        "meanGainSek": -1778.3,
+        "paidOff": 0,
+        "n": 20,
+        "meanBooked": 43.1,
+        "meanBillsWithout": 20.7,
+        "meanBillsWith": 20.5,
+        "meanWalkedWithout": 0.5,
+        "meanWalkedWith": 0.5,
+        "meanRepWithout": -0.035,
+        "meanRepWith": -0.033,
+        "meanUnhappyWithout": -0.113,
+        "meanUnhappyWith": -0.108
+      },
+      "sat": {
+        "meanGainSek": -1800.8,
+        "paidOff": 0,
+        "n": 20,
+        "meanBooked": 42.1,
+        "meanBillsWithout": 23.5,
+        "meanBillsWith": 23.6,
+        "meanWalkedWithout": 0.7,
+        "meanWalkedWith": 0.6,
+        "meanRepWithout": -0.02,
+        "meanRepWith": -0.02,
+        "meanUnhappyWithout": -0.136,
+        "meanUnhappyWith": -0.135
+      }
+    }
+  },
+  "rows": [
+    {
+      "seed": 1,
+      "weekday": "mon",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4250,
+        "booked": 27,
+        "bills": 30,
+        "walked": 2,
+        "reputationDelta": -0.223,
+        "unhappy": -0.26
+      },
+      "with": {
+        "resultSek": 2941,
+        "booked": 31,
+        "bills": 31,
+        "walked": 3,
+        "reputationDelta": -0.332,
+        "unhappy": -0.3
+      },
+      "gainSek": -1309
+    },
+    {
+      "seed": 1,
+      "weekday": "mon",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4250,
+        "booked": 27,
+        "bills": 30,
+        "walked": 2,
+        "reputationDelta": -0.223,
+        "unhappy": -0.26
+      },
+      "with": {
+        "resultSek": 2450,
+        "booked": 27,
+        "bills": 30,
+        "walked": 2,
+        "reputationDelta": -0.223,
+        "unhappy": -0.26
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 1,
+      "weekday": "tue",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4658,
+        "booked": 35,
+        "bills": 30,
+        "walked": 2,
+        "reputationDelta": -0.298,
+        "unhappy": -0.3
+      },
+      "with": {
+        "resultSek": 3151,
+        "booked": 39,
+        "bills": 30,
+        "walked": 2,
+        "reputationDelta": -0.298,
+        "unhappy": -0.3
+      },
+      "gainSek": -1507
+    },
+    {
+      "seed": 1,
+      "weekday": "tue",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4658,
+        "booked": 35,
+        "bills": 30,
+        "walked": 2,
+        "reputationDelta": -0.298,
+        "unhappy": -0.3
+      },
+      "with": {
+        "resultSek": 2858,
+        "booked": 35,
+        "bills": 30,
+        "walked": 2,
+        "reputationDelta": -0.298,
+        "unhappy": -0.3
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 1,
+      "weekday": "wed",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3945,
+        "booked": 27,
+        "bills": 27,
+        "walked": 0,
+        "reputationDelta": 0.01,
+        "unhappy": -0.22
+      },
+      "with": {
+        "resultSek": 2087,
+        "booked": 30,
+        "bills": 26,
+        "walked": 0,
+        "reputationDelta": 0.01,
+        "unhappy": -0.2
+      },
+      "gainSek": -1858
+    },
+    {
+      "seed": 1,
+      "weekday": "wed",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3945,
+        "booked": 27,
+        "bills": 27,
+        "walked": 0,
+        "reputationDelta": 0.01,
+        "unhappy": -0.22
+      },
+      "with": {
+        "resultSek": 2145,
+        "booked": 27,
+        "bills": 27,
+        "walked": 0,
+        "reputationDelta": 0.01,
+        "unhappy": -0.22
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 1,
+      "weekday": "thu",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3427,
+        "booked": 40,
+        "bills": 26,
+        "walked": 1,
+        "reputationDelta": -0.05,
+        "unhappy": -0.2
+      },
+      "with": {
+        "resultSek": 1935,
+        "booked": 44,
+        "bills": 27,
+        "walked": 1,
+        "reputationDelta": -0.05,
+        "unhappy": -0.26
+      },
+      "gainSek": -1492
+    },
+    {
+      "seed": 1,
+      "weekday": "thu",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3427,
+        "booked": 40,
+        "bills": 26,
+        "walked": 1,
+        "reputationDelta": -0.05,
+        "unhappy": -0.2
+      },
+      "with": {
+        "resultSek": 1627,
+        "booked": 40,
+        "bills": 26,
+        "walked": 1,
+        "reputationDelta": -0.05,
+        "unhappy": -0.2
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 1,
+      "weekday": "fri",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3030,
+        "booked": 45,
+        "bills": 24,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.14
+      },
+      "with": {
+        "resultSek": 2356,
+        "booked": 49,
+        "bills": 25,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.16
+      },
+      "gainSek": -674
+    },
+    {
+      "seed": 1,
+      "weekday": "fri",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3030,
+        "booked": 45,
+        "bills": 24,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.14
+      },
+      "with": {
+        "resultSek": 1230,
+        "booked": 45,
+        "bills": 24,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.14
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 1,
+      "weekday": "sat",
+      "activity": "dj",
+      "without": {
+        "resultSek": 2724,
+        "booked": 41,
+        "bills": 23,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.08
+      },
+      "with": {
+        "resultSek": 1515,
+        "booked": 46,
+        "bills": 23,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.1
+      },
+      "gainSek": -1209
+    },
+    {
+      "seed": 1,
+      "weekday": "sat",
+      "activity": "springare",
+      "without": {
+        "resultSek": 2724,
+        "booked": 41,
+        "bills": 23,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.08
+      },
+      "with": {
+        "resultSek": 924,
+        "booked": 41,
+        "bills": 23,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.08
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 2,
+      "weekday": "mon",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3117,
+        "booked": 27,
+        "bills": 29,
+        "walked": 3,
+        "reputationDelta": -0.321,
+        "unhappy": -0.3
+      },
+      "with": {
+        "resultSek": 1750,
+        "booked": 31,
+        "bills": 30,
+        "walked": 3,
+        "reputationDelta": -0.25,
+        "unhappy": -0.24
+      },
+      "gainSek": -1367
+    },
+    {
+      "seed": 2,
+      "weekday": "mon",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3117,
+        "booked": 27,
+        "bills": 29,
+        "walked": 3,
+        "reputationDelta": -0.321,
+        "unhappy": -0.3
+      },
+      "with": {
+        "resultSek": 1317,
+        "booked": 27,
+        "bills": 29,
+        "walked": 3,
+        "reputationDelta": -0.321,
+        "unhappy": -0.3
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 2,
+      "weekday": "tue",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4687,
+        "booked": 38,
+        "bills": 31,
+        "walked": 1,
+        "reputationDelta": -0.199,
+        "unhappy": -0.3
+      },
+      "with": {
+        "resultSek": 3607,
+        "booked": 43,
+        "bills": 31,
+        "walked": 0,
+        "reputationDelta": -0.199,
+        "unhappy": -0.3
+      },
+      "gainSek": -1080
+    },
+    {
+      "seed": 2,
+      "weekday": "tue",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4687,
+        "booked": 38,
+        "bills": 31,
+        "walked": 1,
+        "reputationDelta": -0.199,
+        "unhappy": -0.3
+      },
+      "with": {
+        "resultSek": 2887,
+        "booked": 38,
+        "bills": 31,
+        "walked": 1,
+        "reputationDelta": -0.199,
+        "unhappy": -0.3
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 2,
+      "weekday": "wed",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3592,
+        "booked": 27,
+        "bills": 26,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.16
+      },
+      "with": {
+        "resultSek": 2671,
+        "booked": 31,
+        "bills": 26,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.18
+      },
+      "gainSek": -921
+    },
+    {
+      "seed": 2,
+      "weekday": "wed",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3592,
+        "booked": 27,
+        "bills": 26,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.16
+      },
+      "with": {
+        "resultSek": 1792,
+        "booked": 27,
+        "bills": 26,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.16
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 2,
+      "weekday": "thu",
+      "activity": "dj",
+      "without": {
+        "resultSek": -256,
+        "booked": 32,
+        "bills": 19,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.02
+      },
+      "with": {
+        "resultSek": -1756,
+        "booked": 35,
+        "bills": 19,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.02
+      },
+      "gainSek": -1500
+    },
+    {
+      "seed": 2,
+      "weekday": "thu",
+      "activity": "springare",
+      "without": {
+        "resultSek": -256,
+        "booked": 32,
+        "bills": 19,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.02
+      },
+      "with": {
+        "resultSek": -2056,
+        "booked": 32,
+        "bills": 19,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.02
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 2,
+      "weekday": "fri",
+      "activity": "dj",
+      "without": {
+        "resultSek": 5729,
+        "booked": 33,
+        "bills": 30,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.28
+      },
+      "with": {
+        "resultSek": 4654,
+        "booked": 38,
+        "bills": 31,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.28
+      },
+      "gainSek": -1075
+    },
+    {
+      "seed": 2,
+      "weekday": "fri",
+      "activity": "springare",
+      "without": {
+        "resultSek": 5729,
+        "booked": 33,
+        "bills": 30,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.28
+      },
+      "with": {
+        "resultSek": 3929,
+        "booked": 33,
+        "bills": 30,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.28
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 2,
+      "weekday": "sat",
+      "activity": "dj",
+      "without": {
+        "resultSek": 2645,
+        "booked": 40,
+        "bills": 25,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.08
+      },
+      "with": {
+        "resultSek": 1363,
+        "booked": 44,
+        "bills": 27,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.14
+      },
+      "gainSek": -1282
+    },
+    {
+      "seed": 2,
+      "weekday": "sat",
+      "activity": "springare",
+      "without": {
+        "resultSek": 2645,
+        "booked": 40,
+        "bills": 25,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.08
+      },
+      "with": {
+        "resultSek": 845,
+        "booked": 40,
+        "bills": 25,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.08
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 3,
+      "weekday": "mon",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4045,
+        "booked": 27,
+        "bills": 30,
+        "walked": 1,
+        "reputationDelta": -0.228,
+        "unhappy": -0.24
+      },
+      "with": {
+        "resultSek": 2999,
+        "booked": 31,
+        "bills": 30,
+        "walked": 1,
+        "reputationDelta": -0.172,
+        "unhappy": -0.18
+      },
+      "gainSek": -1046
+    },
+    {
+      "seed": 3,
+      "weekday": "mon",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4045,
+        "booked": 27,
+        "bills": 30,
+        "walked": 1,
+        "reputationDelta": -0.228,
+        "unhappy": -0.24
+      },
+      "with": {
+        "resultSek": 2245,
+        "booked": 27,
+        "bills": 30,
+        "walked": 1,
+        "reputationDelta": -0.228,
+        "unhappy": -0.24
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 3,
+      "weekday": "tue",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4229,
+        "booked": 38,
+        "bills": 31,
+        "walked": 1,
+        "reputationDelta": -0.292,
+        "unhappy": -0.32
+      },
+      "with": {
+        "resultSek": 2657,
+        "booked": 43,
+        "bills": 31,
+        "walked": 1,
+        "reputationDelta": -0.292,
+        "unhappy": -0.32
+      },
+      "gainSek": -1572
+    },
+    {
+      "seed": 3,
+      "weekday": "tue",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4229,
+        "booked": 38,
+        "bills": 31,
+        "walked": 1,
+        "reputationDelta": -0.292,
+        "unhappy": -0.32
+      },
+      "with": {
+        "resultSek": 2429,
+        "booked": 38,
+        "bills": 31,
+        "walked": 1,
+        "reputationDelta": -0.292,
+        "unhappy": -0.32
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 3,
+      "weekday": "wed",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3557,
+        "booked": 27,
+        "bills": 26,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.12
+      },
+      "with": {
+        "resultSek": 2348,
+        "booked": 31,
+        "bills": 26,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.14
+      },
+      "gainSek": -1209
+    },
+    {
+      "seed": 3,
+      "weekday": "wed",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3557,
+        "booked": 27,
+        "bills": 26,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.12
+      },
+      "with": {
+        "resultSek": 1757,
+        "booked": 27,
+        "bills": 26,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.12
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 3,
+      "weekday": "thu",
+      "activity": "dj",
+      "without": {
+        "resultSek": 2580,
+        "booked": 35,
+        "bills": 26,
+        "walked": 3,
+        "reputationDelta": -0.02,
+        "unhappy": -0.22
+      },
+      "with": {
+        "resultSek": 2254,
+        "booked": 39,
+        "bills": 28,
+        "walked": 0,
+        "reputationDelta": 0.01,
+        "unhappy": -0.22
+      },
+      "gainSek": -326
+    },
+    {
+      "seed": 3,
+      "weekday": "thu",
+      "activity": "springare",
+      "without": {
+        "resultSek": 2580,
+        "booked": 35,
+        "bills": 26,
+        "walked": 3,
+        "reputationDelta": -0.02,
+        "unhappy": -0.22
+      },
+      "with": {
+        "resultSek": 780,
+        "booked": 35,
+        "bills": 26,
+        "walked": 3,
+        "reputationDelta": -0.02,
+        "unhappy": -0.22
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 3,
+      "weekday": "fri",
+      "activity": "dj",
+      "without": {
+        "resultSek": 1087,
+        "booked": 44,
+        "bills": 16,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -1040,
+        "booked": 49,
+        "bills": 16,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "gainSek": -2127
+    },
+    {
+      "seed": 3,
+      "weekday": "fri",
+      "activity": "springare",
+      "without": {
+        "resultSek": 1087,
+        "booked": 44,
+        "bills": 16,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -713,
+        "booked": 44,
+        "bills": 16,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 3,
+      "weekday": "sat",
+      "activity": "dj",
+      "without": {
+        "resultSek": 1452,
+        "booked": 45,
+        "bills": 17,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -894,
+        "booked": 50,
+        "bills": 19,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "gainSek": -2346
+    },
+    {
+      "seed": 3,
+      "weekday": "sat",
+      "activity": "springare",
+      "without": {
+        "resultSek": 1452,
+        "booked": 45,
+        "bills": 17,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -348,
+        "booked": 45,
+        "bills": 17,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 4,
+      "weekday": "mon",
+      "activity": "dj",
+      "without": {
+        "resultSek": 2449,
+        "booked": 27,
+        "bills": 26,
+        "walked": 1,
+        "reputationDelta": -0.105,
+        "unhappy": -0.12
+      },
+      "with": {
+        "resultSek": 501,
+        "booked": 31,
+        "bills": 25,
+        "walked": 1,
+        "reputationDelta": -0.079,
+        "unhappy": -0.1
+      },
+      "gainSek": -1948
+    },
+    {
+      "seed": 4,
+      "weekday": "mon",
+      "activity": "springare",
+      "without": {
+        "resultSek": 2449,
+        "booked": 27,
+        "bills": 26,
+        "walked": 1,
+        "reputationDelta": -0.105,
+        "unhappy": -0.12
+      },
+      "with": {
+        "resultSek": 649,
+        "booked": 27,
+        "bills": 26,
+        "walked": 1,
+        "reputationDelta": -0.105,
+        "unhappy": -0.12
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 4,
+      "weekday": "tue",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4140,
+        "booked": 35,
+        "bills": 31,
+        "walked": 1,
+        "reputationDelta": -0.35,
+        "unhappy": -0.34
+      },
+      "with": {
+        "resultSek": -1339,
+        "booked": 39,
+        "bills": 19,
+        "walked": 1,
+        "reputationDelta": -0.174,
+        "unhappy": -0.04
+      },
+      "gainSek": -5479
+    },
+    {
+      "seed": 4,
+      "weekday": "tue",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4140,
+        "booked": 35,
+        "bills": 31,
+        "walked": 1,
+        "reputationDelta": -0.35,
+        "unhappy": -0.34
+      },
+      "with": {
+        "resultSek": 2340,
+        "booked": 35,
+        "bills": 31,
+        "walked": 1,
+        "reputationDelta": -0.35,
+        "unhappy": -0.34
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 4,
+      "weekday": "wed",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4121,
+        "booked": 34,
+        "bills": 31,
+        "walked": 2,
+        "reputationDelta": -0.07,
+        "unhappy": -0.28
+      },
+      "with": {
+        "resultSek": 2820,
+        "booked": 38,
+        "bills": 31,
+        "walked": 1,
+        "reputationDelta": -0.07,
+        "unhappy": -0.26
+      },
+      "gainSek": -1301
+    },
+    {
+      "seed": 4,
+      "weekday": "wed",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4121,
+        "booked": 34,
+        "bills": 31,
+        "walked": 2,
+        "reputationDelta": -0.07,
+        "unhappy": -0.28
+      },
+      "with": {
+        "resultSek": 2297,
+        "booked": 34,
+        "bills": 30,
+        "walked": 2,
+        "reputationDelta": -0.07,
+        "unhappy": -0.28
+      },
+      "gainSek": -1824
+    },
+    {
+      "seed": 4,
+      "weekday": "thu",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3570,
+        "booked": 32,
+        "bills": 28,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.24
+      },
+      "with": {
+        "resultSek": 2370,
+        "booked": 36,
+        "bills": 28,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.16
+      },
+      "gainSek": -1200
+    },
+    {
+      "seed": 4,
+      "weekday": "thu",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3570,
+        "booked": 32,
+        "bills": 28,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.24
+      },
+      "with": {
+        "resultSek": 1770,
+        "booked": 32,
+        "bills": 28,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.24
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 4,
+      "weekday": "fri",
+      "activity": "dj",
+      "without": {
+        "resultSek": -6005,
+        "booked": 44,
+        "bills": 0,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -7505,
+        "booked": 49,
+        "bills": 0,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "gainSek": -1500
+    },
+    {
+      "seed": 4,
+      "weekday": "fri",
+      "activity": "springare",
+      "without": {
+        "resultSek": -6005,
+        "booked": 44,
+        "bills": 0,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -7805,
+        "booked": 44,
+        "bills": 0,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 4,
+      "weekday": "sat",
+      "activity": "dj",
+      "without": {
+        "resultSek": 6009,
+        "booked": 37,
+        "bills": 26,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.18
+      },
+      "with": {
+        "resultSek": 4509,
+        "booked": 42,
+        "bills": 26,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.18
+      },
+      "gainSek": -1500
+    },
+    {
+      "seed": 4,
+      "weekday": "sat",
+      "activity": "springare",
+      "without": {
+        "resultSek": 6009,
+        "booked": 37,
+        "bills": 26,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.18
+      },
+      "with": {
+        "resultSek": 4209,
+        "booked": 37,
+        "bills": 26,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.18
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 5,
+      "weekday": "mon",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3050,
+        "booked": 27,
+        "bills": 20,
+        "walked": 0,
+        "reputationDelta": 0.062,
+        "unhappy": -0.02
+      },
+      "with": {
+        "resultSek": 2911,
+        "booked": 31,
+        "bills": 27,
+        "walked": 1,
+        "reputationDelta": -0.187,
+        "unhappy": -0.22
+      },
+      "gainSek": -139
+    },
+    {
+      "seed": 5,
+      "weekday": "mon",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3050,
+        "booked": 27,
+        "bills": 20,
+        "walked": 0,
+        "reputationDelta": 0.062,
+        "unhappy": -0.02
+      },
+      "with": {
+        "resultSek": 1250,
+        "booked": 27,
+        "bills": 20,
+        "walked": 0,
+        "reputationDelta": 0.062,
+        "unhappy": -0.02
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 5,
+      "weekday": "tue",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4232,
+        "booked": 35,
+        "bills": 30,
+        "walked": 2,
+        "reputationDelta": -0.268,
+        "unhappy": -0.26
+      },
+      "with": {
+        "resultSek": 3129,
+        "booked": 39,
+        "bills": 32,
+        "walked": 1,
+        "reputationDelta": -0.303,
+        "unhappy": -0.3
+      },
+      "gainSek": -1103
+    },
+    {
+      "seed": 5,
+      "weekday": "tue",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4232,
+        "booked": 35,
+        "bills": 30,
+        "walked": 2,
+        "reputationDelta": -0.268,
+        "unhappy": -0.26
+      },
+      "with": {
+        "resultSek": 2432,
+        "booked": 35,
+        "bills": 30,
+        "walked": 2,
+        "reputationDelta": -0.268,
+        "unhappy": -0.26
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 5,
+      "weekday": "wed",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3560,
+        "booked": 35,
+        "bills": 29,
+        "walked": 2,
+        "reputationDelta": -0.306,
+        "unhappy": -0.28
+      },
+      "with": {
+        "resultSek": 2693,
+        "booked": 40,
+        "bills": 30,
+        "walked": 0,
+        "reputationDelta": -0.314,
+        "unhappy": -0.32
+      },
+      "gainSek": -867
+    },
+    {
+      "seed": 5,
+      "weekday": "wed",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3560,
+        "booked": 35,
+        "bills": 29,
+        "walked": 2,
+        "reputationDelta": -0.306,
+        "unhappy": -0.28
+      },
+      "with": {
+        "resultSek": 1760,
+        "booked": 35,
+        "bills": 29,
+        "walked": 2,
+        "reputationDelta": -0.306,
+        "unhappy": -0.28
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 5,
+      "weekday": "thu",
+      "activity": "dj",
+      "without": {
+        "resultSek": 2894,
+        "booked": 26,
+        "bills": 26,
+        "walked": 0,
+        "reputationDelta": 0.002,
+        "unhappy": -0.22
+      },
+      "with": {
+        "resultSek": 1572,
+        "booked": 29,
+        "bills": 27,
+        "walked": 0,
+        "reputationDelta": 0.002,
+        "unhappy": -0.24
+      },
+      "gainSek": -1322
+    },
+    {
+      "seed": 5,
+      "weekday": "thu",
+      "activity": "springare",
+      "without": {
+        "resultSek": 2894,
+        "booked": 26,
+        "bills": 26,
+        "walked": 0,
+        "reputationDelta": 0.002,
+        "unhappy": -0.22
+      },
+      "with": {
+        "resultSek": 1094,
+        "booked": 26,
+        "bills": 26,
+        "walked": 0,
+        "reputationDelta": 0.002,
+        "unhappy": -0.22
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 5,
+      "weekday": "fri",
+      "activity": "dj",
+      "without": {
+        "resultSek": 671,
+        "booked": 40,
+        "bills": 15,
+        "walked": 0,
+        "reputationDelta": -0.05,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -829,
+        "booked": 45,
+        "bills": 15,
+        "walked": 0,
+        "reputationDelta": -0.05,
+        "unhappy": 0
+      },
+      "gainSek": -1500
+    },
+    {
+      "seed": 5,
+      "weekday": "fri",
+      "activity": "springare",
+      "without": {
+        "resultSek": 671,
+        "booked": 40,
+        "bills": 15,
+        "walked": 0,
+        "reputationDelta": -0.05,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -1129,
+        "booked": 40,
+        "bills": 15,
+        "walked": 0,
+        "reputationDelta": -0.05,
+        "unhappy": 0
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 5,
+      "weekday": "sat",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3821,
+        "booked": 39,
+        "bills": 27,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.22
+      },
+      "with": {
+        "resultSek": 2575,
+        "booked": 44,
+        "bills": 27,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.22
+      },
+      "gainSek": -1246
+    },
+    {
+      "seed": 5,
+      "weekday": "sat",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3821,
+        "booked": 39,
+        "bills": 27,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.22
+      },
+      "with": {
+        "resultSek": 2425,
+        "booked": 39,
+        "bills": 27,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.2
+      },
+      "gainSek": -1396
+    },
+    {
+      "seed": 6,
+      "weekday": "mon",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3114,
+        "booked": 27,
+        "bills": 30,
+        "walked": 1,
+        "reputationDelta": -0.183,
+        "unhappy": -0.2
+      },
+      "with": {
+        "resultSek": 1708,
+        "booked": 31,
+        "bills": 32,
+        "walked": 0,
+        "reputationDelta": -0.234,
+        "unhappy": -0.3
+      },
+      "gainSek": -1406
+    },
+    {
+      "seed": 6,
+      "weekday": "mon",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3114,
+        "booked": 27,
+        "bills": 30,
+        "walked": 1,
+        "reputationDelta": -0.183,
+        "unhappy": -0.2
+      },
+      "with": {
+        "resultSek": 1314,
+        "booked": 27,
+        "bills": 30,
+        "walked": 1,
+        "reputationDelta": -0.183,
+        "unhappy": -0.2
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 6,
+      "weekday": "tue",
+      "activity": "dj",
+      "without": {
+        "resultSek": -3422,
+        "booked": 35,
+        "bills": 8,
+        "walked": 0,
+        "reputationDelta": -0.143,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -4922,
+        "booked": 39,
+        "bills": 8,
+        "walked": 0,
+        "reputationDelta": -0.143,
+        "unhappy": 0
+      },
+      "gainSek": -1500
+    },
+    {
+      "seed": 6,
+      "weekday": "tue",
+      "activity": "springare",
+      "without": {
+        "resultSek": -3422,
+        "booked": 35,
+        "bills": 8,
+        "walked": 0,
+        "reputationDelta": -0.143,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -5222,
+        "booked": 35,
+        "bills": 8,
+        "walked": 0,
+        "reputationDelta": -0.143,
+        "unhappy": 0
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 6,
+      "weekday": "wed",
+      "activity": "dj",
+      "without": {
+        "resultSek": 7450,
+        "booked": 29,
+        "bills": 31,
+        "walked": 2,
+        "reputationDelta": -0.215,
+        "unhappy": -0.3
+      },
+      "with": {
+        "resultSek": 5530,
+        "booked": 33,
+        "bills": 31,
+        "walked": 2,
+        "reputationDelta": -0.195,
+        "unhappy": -0.16
+      },
+      "gainSek": -1920
+    },
+    {
+      "seed": 6,
+      "weekday": "wed",
+      "activity": "springare",
+      "without": {
+        "resultSek": 7450,
+        "booked": 29,
+        "bills": 31,
+        "walked": 2,
+        "reputationDelta": -0.215,
+        "unhappy": -0.3
+      },
+      "with": {
+        "resultSek": 5650,
+        "booked": 29,
+        "bills": 31,
+        "walked": 2,
+        "reputationDelta": -0.215,
+        "unhappy": -0.3
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 6,
+      "weekday": "thu",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4645,
+        "booked": 31,
+        "bills": 29,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.2
+      },
+      "with": {
+        "resultSek": 2830,
+        "booked": 35,
+        "bills": 30,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.28
+      },
+      "gainSek": -1815
+    },
+    {
+      "seed": 6,
+      "weekday": "thu",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4645,
+        "booked": 31,
+        "bills": 29,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.2
+      },
+      "with": {
+        "resultSek": 2845,
+        "booked": 31,
+        "bills": 29,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.2
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 6,
+      "weekday": "fri",
+      "activity": "dj",
+      "without": {
+        "resultSek": -416,
+        "booked": 39,
+        "bills": 13,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -1916,
+        "booked": 43,
+        "bills": 13,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "gainSek": -1500
+    },
+    {
+      "seed": 6,
+      "weekday": "fri",
+      "activity": "springare",
+      "without": {
+        "resultSek": -416,
+        "booked": 39,
+        "bills": 13,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -2216,
+        "booked": 39,
+        "bills": 13,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 6,
+      "weekday": "sat",
+      "activity": "dj",
+      "without": {
+        "resultSek": -122,
+        "booked": 40,
+        "bills": 13,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -2646,
+        "booked": 45,
+        "bills": 13,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "gainSek": -2524
+    },
+    {
+      "seed": 6,
+      "weekday": "sat",
+      "activity": "springare",
+      "without": {
+        "resultSek": -122,
+        "booked": 40,
+        "bills": 13,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -1922,
+        "booked": 40,
+        "bills": 13,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 7,
+      "weekday": "mon",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3119,
+        "booked": 27,
+        "bills": 25,
+        "walked": 5,
+        "reputationDelta": -0.286,
+        "unhappy": -0.22
+      },
+      "with": {
+        "resultSek": 2052,
+        "booked": 31,
+        "bills": 25,
+        "walked": 5,
+        "reputationDelta": -0.266,
+        "unhappy": -0.2
+      },
+      "gainSek": -1067
+    },
+    {
+      "seed": 7,
+      "weekday": "mon",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3119,
+        "booked": 27,
+        "bills": 25,
+        "walked": 5,
+        "reputationDelta": -0.286,
+        "unhappy": -0.22
+      },
+      "with": {
+        "resultSek": 1319,
+        "booked": 27,
+        "bills": 25,
+        "walked": 5,
+        "reputationDelta": -0.286,
+        "unhappy": -0.22
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 7,
+      "weekday": "tue",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4355,
+        "booked": 34,
+        "bills": 28,
+        "walked": 2,
+        "reputationDelta": -0.234,
+        "unhappy": -0.26
+      },
+      "with": {
+        "resultSek": 2611,
+        "booked": 38,
+        "bills": 28,
+        "walked": 2,
+        "reputationDelta": -0.232,
+        "unhappy": -0.22
+      },
+      "gainSek": -1744
+    },
+    {
+      "seed": 7,
+      "weekday": "tue",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4355,
+        "booked": 34,
+        "bills": 28,
+        "walked": 2,
+        "reputationDelta": -0.234,
+        "unhappy": -0.26
+      },
+      "with": {
+        "resultSek": 2555,
+        "booked": 34,
+        "bills": 28,
+        "walked": 2,
+        "reputationDelta": -0.234,
+        "unhappy": -0.26
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 7,
+      "weekday": "wed",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4472,
+        "booked": 27,
+        "bills": 28,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.24
+      },
+      "with": {
+        "resultSek": 2838,
+        "booked": 31,
+        "bills": 29,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.3
+      },
+      "gainSek": -1634
+    },
+    {
+      "seed": 7,
+      "weekday": "wed",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4472,
+        "booked": 27,
+        "bills": 28,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.24
+      },
+      "with": {
+        "resultSek": 2672,
+        "booked": 27,
+        "bills": 28,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.24
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 7,
+      "weekday": "thu",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4164,
+        "booked": 32,
+        "bills": 29,
+        "walked": 0,
+        "reputationDelta": 0.01,
+        "unhappy": -0.24
+      },
+      "with": {
+        "resultSek": 2245,
+        "booked": 35,
+        "bills": 29,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.26
+      },
+      "gainSek": -1919
+    },
+    {
+      "seed": 7,
+      "weekday": "thu",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4164,
+        "booked": 32,
+        "bills": 29,
+        "walked": 0,
+        "reputationDelta": 0.01,
+        "unhappy": -0.24
+      },
+      "with": {
+        "resultSek": 2364,
+        "booked": 32,
+        "bills": 29,
+        "walked": 0,
+        "reputationDelta": 0.01,
+        "unhappy": -0.24
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 7,
+      "weekday": "fri",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3175,
+        "booked": 50,
+        "bills": 23,
+        "walked": 0,
+        "reputationDelta": -0.05,
+        "unhappy": -0.12
+      },
+      "with": {
+        "resultSek": 957,
+        "booked": 56,
+        "bills": 22,
+        "walked": 1,
+        "reputationDelta": -0.05,
+        "unhappy": -0.1
+      },
+      "gainSek": -2218
+    },
+    {
+      "seed": 7,
+      "weekday": "fri",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3175,
+        "booked": 50,
+        "bills": 23,
+        "walked": 0,
+        "reputationDelta": -0.05,
+        "unhappy": -0.12
+      },
+      "with": {
+        "resultSek": 1375,
+        "booked": 50,
+        "bills": 23,
+        "walked": 0,
+        "reputationDelta": -0.05,
+        "unhappy": -0.12
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 7,
+      "weekday": "sat",
+      "activity": "dj",
+      "without": {
+        "resultSek": 2378,
+        "booked": 38,
+        "bills": 24,
+        "walked": 3,
+        "reputationDelta": -0.02,
+        "unhappy": -0.14
+      },
+      "with": {
+        "resultSek": 1197,
+        "booked": 43,
+        "bills": 24,
+        "walked": 3,
+        "reputationDelta": -0.02,
+        "unhappy": -0.14
+      },
+      "gainSek": -1181
+    },
+    {
+      "seed": 7,
+      "weekday": "sat",
+      "activity": "springare",
+      "without": {
+        "resultSek": 2378,
+        "booked": 38,
+        "bills": 24,
+        "walked": 3,
+        "reputationDelta": -0.02,
+        "unhappy": -0.14
+      },
+      "with": {
+        "resultSek": 578,
+        "booked": 38,
+        "bills": 24,
+        "walked": 3,
+        "reputationDelta": -0.02,
+        "unhappy": -0.14
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 8,
+      "weekday": "mon",
+      "activity": "dj",
+      "without": {
+        "resultSek": -738,
+        "booked": 27,
+        "bills": 15,
+        "walked": 0,
+        "reputationDelta": -0.119,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -2238,
+        "booked": 31,
+        "bills": 15,
+        "walked": 0,
+        "reputationDelta": -0.119,
+        "unhappy": 0
+      },
+      "gainSek": -1500
+    },
+    {
+      "seed": 8,
+      "weekday": "mon",
+      "activity": "springare",
+      "without": {
+        "resultSek": -738,
+        "booked": 27,
+        "bills": 15,
+        "walked": 0,
+        "reputationDelta": -0.119,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -2538,
+        "booked": 27,
+        "bills": 15,
+        "walked": 0,
+        "reputationDelta": -0.119,
+        "unhappy": 0
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 8,
+      "weekday": "tue",
+      "activity": "dj",
+      "without": {
+        "resultSek": 5226,
+        "booked": 33,
+        "bills": 33,
+        "walked": 0,
+        "reputationDelta": -0.189,
+        "unhappy": -0.24
+      },
+      "with": {
+        "resultSek": 3603,
+        "booked": 37,
+        "bills": 32,
+        "walked": 0,
+        "reputationDelta": -0.236,
+        "unhappy": -0.28
+      },
+      "gainSek": -1623
+    },
+    {
+      "seed": 8,
+      "weekday": "tue",
+      "activity": "springare",
+      "without": {
+        "resultSek": 5226,
+        "booked": 33,
+        "bills": 33,
+        "walked": 0,
+        "reputationDelta": -0.189,
+        "unhappy": -0.24
+      },
+      "with": {
+        "resultSek": 3426,
+        "booked": 33,
+        "bills": 33,
+        "walked": 0,
+        "reputationDelta": -0.189,
+        "unhappy": -0.24
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 8,
+      "weekday": "wed",
+      "activity": "dj",
+      "without": {
+        "resultSek": 5374,
+        "booked": 29,
+        "bills": 29,
+        "walked": 3,
+        "reputationDelta": -0.231,
+        "unhappy": -0.28
+      },
+      "with": {
+        "resultSek": 3525,
+        "booked": 33,
+        "bills": 32,
+        "walked": 2,
+        "reputationDelta": -0.231,
+        "unhappy": -0.26
+      },
+      "gainSek": -1849
+    },
+    {
+      "seed": 8,
+      "weekday": "wed",
+      "activity": "springare",
+      "without": {
+        "resultSek": 5374,
+        "booked": 29,
+        "bills": 29,
+        "walked": 3,
+        "reputationDelta": -0.231,
+        "unhappy": -0.28
+      },
+      "with": {
+        "resultSek": 3914,
+        "booked": 29,
+        "bills": 29,
+        "walked": 3,
+        "reputationDelta": -0.231,
+        "unhappy": -0.26
+      },
+      "gainSek": -1460
+    },
+    {
+      "seed": 8,
+      "weekday": "thu",
+      "activity": "dj",
+      "without": {
+        "resultSek": 2725,
+        "booked": 26,
+        "bills": 20,
+        "walked": 0,
+        "reputationDelta": 0.01,
+        "unhappy": -0.08
+      },
+      "with": {
+        "resultSek": 797,
+        "booked": 29,
+        "bills": 22,
+        "walked": 0,
+        "reputationDelta": 0.058,
+        "unhappy": -0.06
+      },
+      "gainSek": -1928
+    },
+    {
+      "seed": 8,
+      "weekday": "thu",
+      "activity": "springare",
+      "without": {
+        "resultSek": 2725,
+        "booked": 26,
+        "bills": 20,
+        "walked": 0,
+        "reputationDelta": 0.01,
+        "unhappy": -0.08
+      },
+      "with": {
+        "resultSek": 925,
+        "booked": 26,
+        "bills": 20,
+        "walked": 0,
+        "reputationDelta": 0.01,
+        "unhappy": -0.08
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 8,
+      "weekday": "fri",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4438,
+        "booked": 45,
+        "bills": 28,
+        "walked": 0,
+        "reputationDelta": -0.05,
+        "unhappy": -0.22
+      },
+      "with": {
+        "resultSek": 3235,
+        "booked": 50,
+        "bills": 28,
+        "walked": 1,
+        "reputationDelta": -0.05,
+        "unhappy": -0.26
+      },
+      "gainSek": -1203
+    },
+    {
+      "seed": 8,
+      "weekday": "fri",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4438,
+        "booked": 45,
+        "bills": 28,
+        "walked": 0,
+        "reputationDelta": -0.05,
+        "unhappy": -0.22
+      },
+      "with": {
+        "resultSek": 2638,
+        "booked": 45,
+        "bills": 28,
+        "walked": 0,
+        "reputationDelta": -0.05,
+        "unhappy": -0.22
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 8,
+      "weekday": "sat",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3752,
+        "booked": 44,
+        "bills": 25,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.18
+      },
+      "with": {
+        "resultSek": 2403,
+        "booked": 49,
+        "bills": 26,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.24
+      },
+      "gainSek": -1349
+    },
+    {
+      "seed": 8,
+      "weekday": "sat",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3752,
+        "booked": 44,
+        "bills": 25,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.18
+      },
+      "with": {
+        "resultSek": 1952,
+        "booked": 44,
+        "bills": 25,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.18
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 9,
+      "weekday": "mon",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4330,
+        "booked": 27,
+        "bills": 27,
+        "walked": 0,
+        "reputationDelta": -0.105,
+        "unhappy": -0.18
+      },
+      "with": {
+        "resultSek": 2440,
+        "booked": 31,
+        "bills": 27,
+        "walked": 0,
+        "reputationDelta": -0.1,
+        "unhappy": -0.16
+      },
+      "gainSek": -1890
+    },
+    {
+      "seed": 9,
+      "weekday": "mon",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4330,
+        "booked": 27,
+        "bills": 27,
+        "walked": 0,
+        "reputationDelta": -0.105,
+        "unhappy": -0.18
+      },
+      "with": {
+        "resultSek": 2121,
+        "booked": 27,
+        "bills": 26,
+        "walked": 2,
+        "reputationDelta": -0.16,
+        "unhappy": -0.16
+      },
+      "gainSek": -2209
+    },
+    {
+      "seed": 9,
+      "weekday": "tue",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4001,
+        "booked": 39,
+        "bills": 31,
+        "walked": 2,
+        "reputationDelta": -0.335,
+        "unhappy": -0.3
+      },
+      "with": {
+        "resultSek": 2585,
+        "booked": 44,
+        "bills": 30,
+        "walked": 2,
+        "reputationDelta": -0.374,
+        "unhappy": -0.32
+      },
+      "gainSek": -1416
+    },
+    {
+      "seed": 9,
+      "weekday": "tue",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4001,
+        "booked": 39,
+        "bills": 31,
+        "walked": 2,
+        "reputationDelta": -0.335,
+        "unhappy": -0.3
+      },
+      "with": {
+        "resultSek": 2483,
+        "booked": 39,
+        "bills": 31,
+        "walked": 1,
+        "reputationDelta": -0.388,
+        "unhappy": -0.36
+      },
+      "gainSek": -1518
+    },
+    {
+      "seed": 9,
+      "weekday": "wed",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3931,
+        "booked": 34,
+        "bills": 29,
+        "walked": 3,
+        "reputationDelta": -0.085,
+        "unhappy": -0.3
+      },
+      "with": {
+        "resultSek": 2944,
+        "booked": 38,
+        "bills": 30,
+        "walked": 1,
+        "reputationDelta": -0.085,
+        "unhappy": -0.24
+      },
+      "gainSek": -987
+    },
+    {
+      "seed": 9,
+      "weekday": "wed",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3931,
+        "booked": 34,
+        "bills": 29,
+        "walked": 3,
+        "reputationDelta": -0.085,
+        "unhappy": -0.3
+      },
+      "with": {
+        "resultSek": 2131,
+        "booked": 34,
+        "bills": 29,
+        "walked": 3,
+        "reputationDelta": -0.085,
+        "unhappy": -0.3
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 9,
+      "weekday": "thu",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3360,
+        "booked": 29,
+        "bills": 19,
+        "walked": 0,
+        "reputationDelta": 0.057,
+        "unhappy": -0.04
+      },
+      "with": {
+        "resultSek": 1765,
+        "booked": 32,
+        "bills": 22,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.12
+      },
+      "gainSek": -1595
+    },
+    {
+      "seed": 9,
+      "weekday": "thu",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3360,
+        "booked": 29,
+        "bills": 19,
+        "walked": 0,
+        "reputationDelta": 0.057,
+        "unhappy": -0.04
+      },
+      "with": {
+        "resultSek": 2061,
+        "booked": 29,
+        "bills": 19,
+        "walked": 0,
+        "reputationDelta": 0.057,
+        "unhappy": -0.04
+      },
+      "gainSek": -1299
+    },
+    {
+      "seed": 9,
+      "weekday": "fri",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3564,
+        "booked": 39,
+        "bills": 28,
+        "walked": 0,
+        "reputationDelta": -0.097,
+        "unhappy": -0.2
+      },
+      "with": {
+        "resultSek": 1791,
+        "booked": 45,
+        "bills": 27,
+        "walked": 1,
+        "reputationDelta": -0.097,
+        "unhappy": -0.16
+      },
+      "gainSek": -1773
+    },
+    {
+      "seed": 9,
+      "weekday": "fri",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3564,
+        "booked": 39,
+        "bills": 28,
+        "walked": 0,
+        "reputationDelta": -0.097,
+        "unhappy": -0.2
+      },
+      "with": {
+        "resultSek": 1764,
+        "booked": 39,
+        "bills": 28,
+        "walked": 0,
+        "reputationDelta": -0.097,
+        "unhappy": -0.2
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 9,
+      "weekday": "sat",
+      "activity": "dj",
+      "without": {
+        "resultSek": 1639,
+        "booked": 36,
+        "bills": 21,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.1
+      },
+      "with": {
+        "resultSek": -10,
+        "booked": 41,
+        "bills": 21,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.02
+      },
+      "gainSek": -1649
+    },
+    {
+      "seed": 9,
+      "weekday": "sat",
+      "activity": "springare",
+      "without": {
+        "resultSek": 1639,
+        "booked": 36,
+        "bills": 21,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.1
+      },
+      "with": {
+        "resultSek": -161,
+        "booked": 36,
+        "bills": 21,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.1
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 10,
+      "weekday": "mon",
+      "activity": "dj",
+      "without": {
+        "resultSek": 1309,
+        "booked": 27,
+        "bills": 15,
+        "walked": 0,
+        "reputationDelta": 0.088,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -191,
+        "booked": 31,
+        "bills": 15,
+        "walked": 0,
+        "reputationDelta": 0.088,
+        "unhappy": 0
+      },
+      "gainSek": -1500
+    },
+    {
+      "seed": 10,
+      "weekday": "mon",
+      "activity": "springare",
+      "without": {
+        "resultSek": 1309,
+        "booked": 27,
+        "bills": 15,
+        "walked": 0,
+        "reputationDelta": 0.088,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -491,
+        "booked": 27,
+        "bills": 15,
+        "walked": 0,
+        "reputationDelta": 0.088,
+        "unhappy": 0
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 10,
+      "weekday": "tue",
+      "activity": "dj",
+      "without": {
+        "resultSek": 819,
+        "booked": 39,
+        "bills": 21,
+        "walked": 0,
+        "reputationDelta": -0.144,
+        "unhappy": -0.02
+      },
+      "with": {
+        "resultSek": -681,
+        "booked": 44,
+        "bills": 21,
+        "walked": 0,
+        "reputationDelta": -0.144,
+        "unhappy": -0.02
+      },
+      "gainSek": -1500
+    },
+    {
+      "seed": 10,
+      "weekday": "tue",
+      "activity": "springare",
+      "without": {
+        "resultSek": 819,
+        "booked": 39,
+        "bills": 21,
+        "walked": 0,
+        "reputationDelta": -0.144,
+        "unhappy": -0.02
+      },
+      "with": {
+        "resultSek": -1001,
+        "booked": 39,
+        "bills": 21,
+        "walked": 0,
+        "reputationDelta": -0.141,
+        "unhappy": -0.02
+      },
+      "gainSek": -1820
+    },
+    {
+      "seed": 10,
+      "weekday": "wed",
+      "activity": "dj",
+      "without": {
+        "resultSek": 5243,
+        "booked": 43,
+        "bills": 30,
+        "walked": 0,
+        "reputationDelta": -0.258,
+        "unhappy": -0.3
+      },
+      "with": {
+        "resultSek": 4915,
+        "booked": 48,
+        "bills": 29,
+        "walked": 1,
+        "reputationDelta": -0.202,
+        "unhappy": -0.2
+      },
+      "gainSek": -328
+    },
+    {
+      "seed": 10,
+      "weekday": "wed",
+      "activity": "springare",
+      "without": {
+        "resultSek": 5243,
+        "booked": 43,
+        "bills": 30,
+        "walked": 0,
+        "reputationDelta": -0.258,
+        "unhappy": -0.3
+      },
+      "with": {
+        "resultSek": 3931,
+        "booked": 43,
+        "bills": 31,
+        "walked": 0,
+        "reputationDelta": -0.266,
+        "unhappy": -0.3
+      },
+      "gainSek": -1312
+    },
+    {
+      "seed": 10,
+      "weekday": "thu",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4822,
+        "booked": 44,
+        "bills": 22,
+        "walked": 1,
+        "reputationDelta": -0.11,
+        "unhappy": -0.14
+      },
+      "with": {
+        "resultSek": 3169,
+        "booked": 48,
+        "bills": 26,
+        "walked": 1,
+        "reputationDelta": -0.177,
+        "unhappy": -0.2
+      },
+      "gainSek": -1653
+    },
+    {
+      "seed": 10,
+      "weekday": "thu",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4822,
+        "booked": 44,
+        "bills": 22,
+        "walked": 1,
+        "reputationDelta": -0.11,
+        "unhappy": -0.14
+      },
+      "with": {
+        "resultSek": 3022,
+        "booked": 44,
+        "bills": 22,
+        "walked": 1,
+        "reputationDelta": -0.11,
+        "unhappy": -0.14
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 10,
+      "weekday": "fri",
+      "activity": "dj",
+      "without": {
+        "resultSek": 939,
+        "booked": 50,
+        "bills": 20,
+        "walked": 0,
+        "reputationDelta": -0.115,
+        "unhappy": -0.06
+      },
+      "with": {
+        "resultSek": -597,
+        "booked": 55,
+        "bills": 19,
+        "walked": 0,
+        "reputationDelta": -0.115,
+        "unhappy": -0.02
+      },
+      "gainSek": -1536
+    },
+    {
+      "seed": 10,
+      "weekday": "fri",
+      "activity": "springare",
+      "without": {
+        "resultSek": 939,
+        "booked": 50,
+        "bills": 20,
+        "walked": 0,
+        "reputationDelta": -0.115,
+        "unhappy": -0.06
+      },
+      "with": {
+        "resultSek": -861,
+        "booked": 50,
+        "bills": 20,
+        "walked": 0,
+        "reputationDelta": -0.115,
+        "unhappy": -0.06
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 10,
+      "weekday": "sat",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4864,
+        "booked": 38,
+        "bills": 27,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.2
+      },
+      "with": {
+        "resultSek": 2707,
+        "booked": 42,
+        "bills": 26,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.18
+      },
+      "gainSek": -2157
+    },
+    {
+      "seed": 10,
+      "weekday": "sat",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4864,
+        "booked": 38,
+        "bills": 27,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.2
+      },
+      "with": {
+        "resultSek": 3064,
+        "booked": 38,
+        "bills": 27,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.2
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 11,
+      "weekday": "mon",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4538,
+        "booked": 27,
+        "bills": 31,
+        "walked": 1,
+        "reputationDelta": -0.243,
+        "unhappy": -0.28
+      },
+      "with": {
+        "resultSek": 3172,
+        "booked": 31,
+        "bills": 31,
+        "walked": 1,
+        "reputationDelta": -0.3,
+        "unhappy": -0.32
+      },
+      "gainSek": -1366
+    },
+    {
+      "seed": 11,
+      "weekday": "mon",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4538,
+        "booked": 27,
+        "bills": 31,
+        "walked": 1,
+        "reputationDelta": -0.243,
+        "unhappy": -0.28
+      },
+      "with": {
+        "resultSek": 2738,
+        "booked": 27,
+        "bills": 31,
+        "walked": 1,
+        "reputationDelta": -0.243,
+        "unhappy": -0.28
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 11,
+      "weekday": "tue",
+      "activity": "dj",
+      "without": {
+        "resultSek": 2781,
+        "booked": 32,
+        "bills": 25,
+        "walked": 3,
+        "reputationDelta": -0.199,
+        "unhappy": -0.2
+      },
+      "with": {
+        "resultSek": 1580,
+        "booked": 36,
+        "bills": 26,
+        "walked": 3,
+        "reputationDelta": -0.219,
+        "unhappy": -0.2
+      },
+      "gainSek": -1201
+    },
+    {
+      "seed": 11,
+      "weekday": "tue",
+      "activity": "springare",
+      "without": {
+        "resultSek": 2781,
+        "booked": 32,
+        "bills": 25,
+        "walked": 3,
+        "reputationDelta": -0.199,
+        "unhappy": -0.2
+      },
+      "with": {
+        "resultSek": 1145,
+        "booked": 32,
+        "bills": 25,
+        "walked": 1,
+        "reputationDelta": -0.132,
+        "unhappy": -0.16
+      },
+      "gainSek": -1636
+    },
+    {
+      "seed": 11,
+      "weekday": "wed",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3978,
+        "booked": 30,
+        "bills": 30,
+        "walked": 0,
+        "reputationDelta": -0.068,
+        "unhappy": -0.28
+      },
+      "with": {
+        "resultSek": 2670,
+        "booked": 34,
+        "bills": 30,
+        "walked": 0,
+        "reputationDelta": -0.068,
+        "unhappy": -0.18
+      },
+      "gainSek": -1308
+    },
+    {
+      "seed": 11,
+      "weekday": "wed",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3978,
+        "booked": 30,
+        "bills": 30,
+        "walked": 0,
+        "reputationDelta": -0.068,
+        "unhappy": -0.28
+      },
+      "with": {
+        "resultSek": 2178,
+        "booked": 30,
+        "bills": 30,
+        "walked": 0,
+        "reputationDelta": -0.068,
+        "unhappy": -0.28
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 11,
+      "weekday": "thu",
+      "activity": "dj",
+      "without": {
+        "resultSek": 2407,
+        "booked": 40,
+        "bills": 27,
+        "walked": 2,
+        "reputationDelta": -0.05,
+        "unhappy": -0.24
+      },
+      "with": {
+        "resultSek": 1367,
+        "booked": 44,
+        "bills": 27,
+        "walked": 2,
+        "reputationDelta": -0.05,
+        "unhappy": -0.24
+      },
+      "gainSek": -1040
+    },
+    {
+      "seed": 11,
+      "weekday": "thu",
+      "activity": "springare",
+      "without": {
+        "resultSek": 2407,
+        "booked": 40,
+        "bills": 27,
+        "walked": 2,
+        "reputationDelta": -0.05,
+        "unhappy": -0.24
+      },
+      "with": {
+        "resultSek": 607,
+        "booked": 40,
+        "bills": 27,
+        "walked": 2,
+        "reputationDelta": -0.05,
+        "unhappy": -0.24
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 11,
+      "weekday": "fri",
+      "activity": "dj",
+      "without": {
+        "resultSek": -4138,
+        "booked": 40,
+        "bills": 6,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -5671,
+        "booked": 45,
+        "bills": 6,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "gainSek": -1533
+    },
+    {
+      "seed": 11,
+      "weekday": "fri",
+      "activity": "springare",
+      "without": {
+        "resultSek": -4138,
+        "booked": 40,
+        "bills": 6,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -5938,
+        "booked": 40,
+        "bills": 6,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 11,
+      "weekday": "sat",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3659,
+        "booked": 44,
+        "bills": 23,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.16
+      },
+      "with": {
+        "resultSek": -2079,
+        "booked": 49,
+        "bills": 12,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "gainSek": -5738
+    },
+    {
+      "seed": 11,
+      "weekday": "sat",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3659,
+        "booked": 44,
+        "bills": 23,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.16
+      },
+      "with": {
+        "resultSek": 1775,
+        "booked": 44,
+        "bills": 23,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.16
+      },
+      "gainSek": -1884
+    },
+    {
+      "seed": 12,
+      "weekday": "mon",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3307,
+        "booked": 27,
+        "bills": 23,
+        "walked": 2,
+        "reputationDelta": -0.086,
+        "unhappy": -0.1
+      },
+      "with": {
+        "resultSek": 273,
+        "booked": 31,
+        "bills": 17,
+        "walked": 0,
+        "reputationDelta": 0.04,
+        "unhappy": -0.02
+      },
+      "gainSek": -3034
+    },
+    {
+      "seed": 12,
+      "weekday": "mon",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3307,
+        "booked": 27,
+        "bills": 23,
+        "walked": 2,
+        "reputationDelta": -0.086,
+        "unhappy": -0.1
+      },
+      "with": {
+        "resultSek": 1507,
+        "booked": 27,
+        "bills": 23,
+        "walked": 2,
+        "reputationDelta": -0.086,
+        "unhappy": -0.1
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 12,
+      "weekday": "tue",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4691,
+        "booked": 35,
+        "bills": 31,
+        "walked": 1,
+        "reputationDelta": -0.319,
+        "unhappy": -0.3
+      },
+      "with": {
+        "resultSek": 3011,
+        "booked": 39,
+        "bills": 31,
+        "walked": 0,
+        "reputationDelta": -0.316,
+        "unhappy": -0.28
+      },
+      "gainSek": -1680
+    },
+    {
+      "seed": 12,
+      "weekday": "tue",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4691,
+        "booked": 35,
+        "bills": 31,
+        "walked": 1,
+        "reputationDelta": -0.319,
+        "unhappy": -0.3
+      },
+      "with": {
+        "resultSek": 2891,
+        "booked": 35,
+        "bills": 31,
+        "walked": 1,
+        "reputationDelta": -0.319,
+        "unhappy": -0.3
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 12,
+      "weekday": "wed",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3031,
+        "booked": 35,
+        "bills": 26,
+        "walked": 2,
+        "reputationDelta": -0.115,
+        "unhappy": -0.22
+      },
+      "with": {
+        "resultSek": 1795,
+        "booked": 39,
+        "bills": 27,
+        "walked": 2,
+        "reputationDelta": -0.115,
+        "unhappy": -0.28
+      },
+      "gainSek": -1236
+    },
+    {
+      "seed": 12,
+      "weekday": "wed",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3031,
+        "booked": 35,
+        "bills": 26,
+        "walked": 2,
+        "reputationDelta": -0.115,
+        "unhappy": -0.22
+      },
+      "with": {
+        "resultSek": 1231,
+        "booked": 35,
+        "bills": 26,
+        "walked": 2,
+        "reputationDelta": -0.115,
+        "unhappy": -0.22
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 12,
+      "weekday": "thu",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3310,
+        "booked": 36,
+        "bills": 25,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.12
+      },
+      "with": {
+        "resultSek": 1538,
+        "booked": 39,
+        "bills": 25,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.14
+      },
+      "gainSek": -1772
+    },
+    {
+      "seed": 12,
+      "weekday": "thu",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3310,
+        "booked": 36,
+        "bills": 25,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.12
+      },
+      "with": {
+        "resultSek": 1510,
+        "booked": 36,
+        "bills": 25,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.12
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 12,
+      "weekday": "fri",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3093,
+        "booked": 50,
+        "bills": 24,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.14
+      },
+      "with": {
+        "resultSek": 1511,
+        "booked": 54,
+        "bills": 24,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.16
+      },
+      "gainSek": -1582
+    },
+    {
+      "seed": 12,
+      "weekday": "fri",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3093,
+        "booked": 50,
+        "bills": 24,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.14
+      },
+      "with": {
+        "resultSek": 1293,
+        "booked": 50,
+        "bills": 24,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.14
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 12,
+      "weekday": "sat",
+      "activity": "dj",
+      "without": {
+        "resultSek": 2264,
+        "booked": 56,
+        "bills": 22,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.12
+      },
+      "with": {
+        "resultSek": 943,
+        "booked": 61,
+        "bills": 22,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.1
+      },
+      "gainSek": -1321
+    },
+    {
+      "seed": 12,
+      "weekday": "sat",
+      "activity": "springare",
+      "without": {
+        "resultSek": 2264,
+        "booked": 56,
+        "bills": 22,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.12
+      },
+      "with": {
+        "resultSek": 238,
+        "booked": 56,
+        "bills": 24,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.14
+      },
+      "gainSek": -2026
+    },
+    {
+      "seed": 13,
+      "weekday": "mon",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3504,
+        "booked": 27,
+        "bills": 28,
+        "walked": 2,
+        "reputationDelta": -0.272,
+        "unhappy": -0.26
+      },
+      "with": {
+        "resultSek": 2433,
+        "booked": 31,
+        "bills": 31,
+        "walked": 2,
+        "reputationDelta": -0.336,
+        "unhappy": -0.32
+      },
+      "gainSek": -1071
+    },
+    {
+      "seed": 13,
+      "weekday": "mon",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3504,
+        "booked": 27,
+        "bills": 28,
+        "walked": 2,
+        "reputationDelta": -0.272,
+        "unhappy": -0.26
+      },
+      "with": {
+        "resultSek": 1704,
+        "booked": 27,
+        "bills": 28,
+        "walked": 2,
+        "reputationDelta": -0.272,
+        "unhappy": -0.26
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 13,
+      "weekday": "tue",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3336,
+        "booked": 32,
+        "bills": 30,
+        "walked": 3,
+        "reputationDelta": -0.248,
+        "unhappy": -0.3
+      },
+      "with": {
+        "resultSek": 1676,
+        "booked": 36,
+        "bills": 31,
+        "walked": 2,
+        "reputationDelta": -0.248,
+        "unhappy": -0.3
+      },
+      "gainSek": -1660
+    },
+    {
+      "seed": 13,
+      "weekday": "tue",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3336,
+        "booked": 32,
+        "bills": 30,
+        "walked": 3,
+        "reputationDelta": -0.248,
+        "unhappy": -0.3
+      },
+      "with": {
+        "resultSek": 1536,
+        "booked": 32,
+        "bills": 30,
+        "walked": 3,
+        "reputationDelta": -0.248,
+        "unhappy": -0.3
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 13,
+      "weekday": "wed",
+      "activity": "dj",
+      "without": {
+        "resultSek": 1985,
+        "booked": 27,
+        "bills": 19,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.04
+      },
+      "with": {
+        "resultSek": -30,
+        "booked": 30,
+        "bills": 19,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.02
+      },
+      "gainSek": -2015
+    },
+    {
+      "seed": 13,
+      "weekday": "wed",
+      "activity": "springare",
+      "without": {
+        "resultSek": 1985,
+        "booked": 27,
+        "bills": 19,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.04
+      },
+      "with": {
+        "resultSek": 185,
+        "booked": 27,
+        "bills": 19,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.04
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 13,
+      "weekday": "thu",
+      "activity": "dj",
+      "without": {
+        "resultSek": 5172,
+        "booked": 30,
+        "bills": 28,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.26
+      },
+      "with": {
+        "resultSek": 3388,
+        "booked": 34,
+        "bills": 29,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.26
+      },
+      "gainSek": -1784
+    },
+    {
+      "seed": 13,
+      "weekday": "thu",
+      "activity": "springare",
+      "without": {
+        "resultSek": 5172,
+        "booked": 30,
+        "bills": 28,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.26
+      },
+      "with": {
+        "resultSek": 3372,
+        "booked": 30,
+        "bills": 28,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.26
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 13,
+      "weekday": "fri",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4384,
+        "booked": 40,
+        "bills": 27,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.14
+      },
+      "with": {
+        "resultSek": 2701,
+        "booked": 44,
+        "bills": 25,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.16
+      },
+      "gainSek": -1683
+    },
+    {
+      "seed": 13,
+      "weekday": "fri",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4384,
+        "booked": 40,
+        "bills": 27,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.14
+      },
+      "with": {
+        "resultSek": 2584,
+        "booked": 40,
+        "bills": 27,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.14
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 13,
+      "weekday": "sat",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4707,
+        "booked": 45,
+        "bills": 25,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.2
+      },
+      "with": {
+        "resultSek": 3272,
+        "booked": 50,
+        "bills": 26,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.22
+      },
+      "gainSek": -1435
+    },
+    {
+      "seed": 13,
+      "weekday": "sat",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4707,
+        "booked": 45,
+        "bills": 25,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.2
+      },
+      "with": {
+        "resultSek": 2907,
+        "booked": 45,
+        "bills": 25,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.2
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 14,
+      "weekday": "mon",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4204,
+        "booked": 27,
+        "bills": 26,
+        "walked": 3,
+        "reputationDelta": -0.218,
+        "unhappy": -0.2
+      },
+      "with": {
+        "resultSek": 2611,
+        "booked": 31,
+        "bills": 26,
+        "walked": 3,
+        "reputationDelta": -0.218,
+        "unhappy": -0.2
+      },
+      "gainSek": -1593
+    },
+    {
+      "seed": 14,
+      "weekday": "mon",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4204,
+        "booked": 27,
+        "bills": 26,
+        "walked": 3,
+        "reputationDelta": -0.218,
+        "unhappy": -0.2
+      },
+      "with": {
+        "resultSek": 2404,
+        "booked": 27,
+        "bills": 26,
+        "walked": 3,
+        "reputationDelta": -0.218,
+        "unhappy": -0.2
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 14,
+      "weekday": "tue",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3172,
+        "booked": 39,
+        "bills": 31,
+        "walked": 3,
+        "reputationDelta": -0.302,
+        "unhappy": -0.32
+      },
+      "with": {
+        "resultSek": 1913,
+        "booked": 44,
+        "bills": 31,
+        "walked": 2,
+        "reputationDelta": -0.302,
+        "unhappy": -0.3
+      },
+      "gainSek": -1259
+    },
+    {
+      "seed": 14,
+      "weekday": "tue",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3172,
+        "booked": 39,
+        "bills": 31,
+        "walked": 3,
+        "reputationDelta": -0.302,
+        "unhappy": -0.32
+      },
+      "with": {
+        "resultSek": 1372,
+        "booked": 39,
+        "bills": 31,
+        "walked": 3,
+        "reputationDelta": -0.302,
+        "unhappy": -0.32
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 14,
+      "weekday": "wed",
+      "activity": "dj",
+      "without": {
+        "resultSek": -2809,
+        "booked": 30,
+        "bills": 8,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -4309,
+        "booked": 34,
+        "bills": 8,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "gainSek": -1500
+    },
+    {
+      "seed": 14,
+      "weekday": "wed",
+      "activity": "springare",
+      "without": {
+        "resultSek": -2809,
+        "booked": 30,
+        "bills": 8,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -4609,
+        "booked": 30,
+        "bills": 8,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 14,
+      "weekday": "thu",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4685,
+        "booked": 32,
+        "bills": 23,
+        "walked": 0,
+        "reputationDelta": 0.01,
+        "unhappy": -0.12
+      },
+      "with": {
+        "resultSek": 2686,
+        "booked": 35,
+        "bills": 29,
+        "walked": 0,
+        "reputationDelta": 0.01,
+        "unhappy": -0.26
+      },
+      "gainSek": -1999
+    },
+    {
+      "seed": 14,
+      "weekday": "thu",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4685,
+        "booked": 32,
+        "bills": 23,
+        "walked": 0,
+        "reputationDelta": 0.01,
+        "unhappy": -0.12
+      },
+      "with": {
+        "resultSek": 2885,
+        "booked": 32,
+        "bills": 23,
+        "walked": 0,
+        "reputationDelta": 0.01,
+        "unhappy": -0.12
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 14,
+      "weekday": "fri",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4962,
+        "booked": 56,
+        "bills": 27,
+        "walked": 0,
+        "reputationDelta": -0.05,
+        "unhappy": -0.22
+      },
+      "with": {
+        "resultSek": 2857,
+        "booked": 61,
+        "bills": 28,
+        "walked": 0,
+        "reputationDelta": -0.05,
+        "unhappy": -0.18
+      },
+      "gainSek": -2105
+    },
+    {
+      "seed": 14,
+      "weekday": "fri",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4962,
+        "booked": 56,
+        "bills": 27,
+        "walked": 0,
+        "reputationDelta": -0.05,
+        "unhappy": -0.22
+      },
+      "with": {
+        "resultSek": 3162,
+        "booked": 56,
+        "bills": 27,
+        "walked": 0,
+        "reputationDelta": -0.05,
+        "unhappy": -0.22
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 14,
+      "weekday": "sat",
+      "activity": "dj",
+      "without": {
+        "resultSek": 370,
+        "booked": 46,
+        "bills": 16,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -1340,
+        "booked": 51,
+        "bills": 16,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "gainSek": -1710
+    },
+    {
+      "seed": 14,
+      "weekday": "sat",
+      "activity": "springare",
+      "without": {
+        "resultSek": 370,
+        "booked": 46,
+        "bills": 16,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -1430,
+        "booked": 46,
+        "bills": 16,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 15,
+      "weekday": "mon",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3843,
+        "booked": 27,
+        "bills": 27,
+        "walked": 1,
+        "reputationDelta": -0.141,
+        "unhappy": -0.2
+      },
+      "with": {
+        "resultSek": 2774,
+        "booked": 31,
+        "bills": 27,
+        "walked": 1,
+        "reputationDelta": -0.107,
+        "unhappy": -0.16
+      },
+      "gainSek": -1069
+    },
+    {
+      "seed": 15,
+      "weekday": "mon",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3843,
+        "booked": 27,
+        "bills": 27,
+        "walked": 1,
+        "reputationDelta": -0.141,
+        "unhappy": -0.2
+      },
+      "with": {
+        "resultSek": 2043,
+        "booked": 27,
+        "bills": 27,
+        "walked": 1,
+        "reputationDelta": -0.141,
+        "unhappy": -0.2
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 15,
+      "weekday": "tue",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4476,
+        "booked": 39,
+        "bills": 31,
+        "walked": 3,
+        "reputationDelta": -0.379,
+        "unhappy": -0.34
+      },
+      "with": {
+        "resultSek": 1623,
+        "booked": 44,
+        "bills": 27,
+        "walked": 0,
+        "reputationDelta": -0.379,
+        "unhappy": -0.24
+      },
+      "gainSek": -2853
+    },
+    {
+      "seed": 15,
+      "weekday": "tue",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4476,
+        "booked": 39,
+        "bills": 31,
+        "walked": 3,
+        "reputationDelta": -0.379,
+        "unhappy": -0.34
+      },
+      "with": {
+        "resultSek": 2676,
+        "booked": 39,
+        "bills": 31,
+        "walked": 3,
+        "reputationDelta": -0.379,
+        "unhappy": -0.34
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 15,
+      "weekday": "wed",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3900,
+        "booked": 28,
+        "bills": 28,
+        "walked": 0,
+        "reputationDelta": 0.01,
+        "unhappy": -0.22
+      },
+      "with": {
+        "resultSek": 2067,
+        "booked": 31,
+        "bills": 28,
+        "walked": 0,
+        "reputationDelta": 0.01,
+        "unhappy": -0.26
+      },
+      "gainSek": -1833
+    },
+    {
+      "seed": 15,
+      "weekday": "wed",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3900,
+        "booked": 28,
+        "bills": 28,
+        "walked": 0,
+        "reputationDelta": 0.01,
+        "unhappy": -0.22
+      },
+      "with": {
+        "resultSek": 2100,
+        "booked": 28,
+        "bills": 28,
+        "walked": 0,
+        "reputationDelta": 0.01,
+        "unhappy": -0.22
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 15,
+      "weekday": "thu",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3429,
+        "booked": 45,
+        "bills": 26,
+        "walked": 0,
+        "reputationDelta": -0.05,
+        "unhappy": -0.2
+      },
+      "with": {
+        "resultSek": 2368,
+        "booked": 49,
+        "bills": 26,
+        "walked": 0,
+        "reputationDelta": -0.05,
+        "unhappy": -0.2
+      },
+      "gainSek": -1061
+    },
+    {
+      "seed": 15,
+      "weekday": "thu",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3429,
+        "booked": 45,
+        "bills": 26,
+        "walked": 0,
+        "reputationDelta": -0.05,
+        "unhappy": -0.2
+      },
+      "with": {
+        "resultSek": 1629,
+        "booked": 45,
+        "bills": 26,
+        "walked": 0,
+        "reputationDelta": -0.05,
+        "unhappy": -0.2
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 15,
+      "weekday": "fri",
+      "activity": "dj",
+      "without": {
+        "resultSek": -5291,
+        "booked": 45,
+        "bills": 2,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -6791,
+        "booked": 49,
+        "bills": 2,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "gainSek": -1500
+    },
+    {
+      "seed": 15,
+      "weekday": "fri",
+      "activity": "springare",
+      "without": {
+        "resultSek": -5291,
+        "booked": 45,
+        "bills": 2,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -7091,
+        "booked": 45,
+        "bills": 2,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 15,
+      "weekday": "sat",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4837,
+        "booked": 42,
+        "bills": 25,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.12
+      },
+      "with": {
+        "resultSek": 3650,
+        "booked": 47,
+        "bills": 25,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.12
+      },
+      "gainSek": -1187
+    },
+    {
+      "seed": 15,
+      "weekday": "sat",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4837,
+        "booked": 42,
+        "bills": 25,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.12
+      },
+      "with": {
+        "resultSek": 3037,
+        "booked": 42,
+        "bills": 25,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.12
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 16,
+      "weekday": "mon",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4133,
+        "booked": 27,
+        "bills": 26,
+        "walked": 0,
+        "reputationDelta": -0.113,
+        "unhappy": -0.2
+      },
+      "with": {
+        "resultSek": 2580,
+        "booked": 31,
+        "bills": 26,
+        "walked": 0,
+        "reputationDelta": -0.107,
+        "unhappy": -0.2
+      },
+      "gainSek": -1553
+    },
+    {
+      "seed": 16,
+      "weekday": "mon",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4133,
+        "booked": 27,
+        "bills": 26,
+        "walked": 0,
+        "reputationDelta": -0.113,
+        "unhappy": -0.2
+      },
+      "with": {
+        "resultSek": 2333,
+        "booked": 27,
+        "bills": 26,
+        "walked": 0,
+        "reputationDelta": -0.113,
+        "unhappy": -0.2
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 16,
+      "weekday": "tue",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4773,
+        "booked": 35,
+        "bills": 27,
+        "walked": 2,
+        "reputationDelta": -0.25,
+        "unhappy": -0.24
+      },
+      "with": {
+        "resultSek": 3152,
+        "booked": 39,
+        "bills": 29,
+        "walked": 3,
+        "reputationDelta": -0.317,
+        "unhappy": -0.28
+      },
+      "gainSek": -1621
+    },
+    {
+      "seed": 16,
+      "weekday": "tue",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4773,
+        "booked": 35,
+        "bills": 27,
+        "walked": 2,
+        "reputationDelta": -0.25,
+        "unhappy": -0.24
+      },
+      "with": {
+        "resultSek": 2973,
+        "booked": 35,
+        "bills": 27,
+        "walked": 2,
+        "reputationDelta": -0.25,
+        "unhappy": -0.24
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 16,
+      "weekday": "wed",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3708,
+        "booked": 30,
+        "bills": 27,
+        "walked": 3,
+        "reputationDelta": -0.17,
+        "unhappy": -0.2
+      },
+      "with": {
+        "resultSek": -726,
+        "booked": 34,
+        "bills": 18,
+        "walked": 0,
+        "reputationDelta": -0.108,
+        "unhappy": 0
+      },
+      "gainSek": -4434
+    },
+    {
+      "seed": 16,
+      "weekday": "wed",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3708,
+        "booked": 30,
+        "bills": 27,
+        "walked": 3,
+        "reputationDelta": -0.17,
+        "unhappy": -0.2
+      },
+      "with": {
+        "resultSek": 1908,
+        "booked": 30,
+        "bills": 27,
+        "walked": 3,
+        "reputationDelta": -0.17,
+        "unhappy": -0.2
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 16,
+      "weekday": "thu",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3365,
+        "booked": 28,
+        "bills": 29,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.22
+      },
+      "with": {
+        "resultSek": 2054,
+        "booked": 32,
+        "bills": 28,
+        "walked": 3,
+        "reputationDelta": -0.02,
+        "unhappy": -0.24
+      },
+      "gainSek": -1311
+    },
+    {
+      "seed": 16,
+      "weekday": "thu",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3365,
+        "booked": 28,
+        "bills": 29,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.22
+      },
+      "with": {
+        "resultSek": 1565,
+        "booked": 28,
+        "bills": 29,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.22
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 16,
+      "weekday": "fri",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3785,
+        "booked": 35,
+        "bills": 29,
+        "walked": 3,
+        "reputationDelta": -0.02,
+        "unhappy": -0.16
+      },
+      "with": {
+        "resultSek": 2285,
+        "booked": 39,
+        "bills": 28,
+        "walked": 3,
+        "reputationDelta": -0.02,
+        "unhappy": -0.14
+      },
+      "gainSek": -1500
+    },
+    {
+      "seed": 16,
+      "weekday": "fri",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3785,
+        "booked": 35,
+        "bills": 29,
+        "walked": 3,
+        "reputationDelta": -0.02,
+        "unhappy": -0.16
+      },
+      "with": {
+        "resultSek": 1985,
+        "booked": 35,
+        "bills": 29,
+        "walked": 3,
+        "reputationDelta": -0.02,
+        "unhappy": -0.16
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 16,
+      "weekday": "sat",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4989,
+        "booked": 44,
+        "bills": 28,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.24
+      },
+      "with": {
+        "resultSek": 3791,
+        "booked": 49,
+        "bills": 30,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.24
+      },
+      "gainSek": -1198
+    },
+    {
+      "seed": 16,
+      "weekday": "sat",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4989,
+        "booked": 44,
+        "bills": 28,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.24
+      },
+      "with": {
+        "resultSek": 3189,
+        "booked": 44,
+        "bills": 28,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.24
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 17,
+      "weekday": "mon",
+      "activity": "dj",
+      "without": {
+        "resultSek": 1953,
+        "booked": 27,
+        "bills": 22,
+        "walked": 0,
+        "reputationDelta": -0.121,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": 129,
+        "booked": 31,
+        "bills": 21,
+        "walked": 1,
+        "reputationDelta": -0.124,
+        "unhappy": 0
+      },
+      "gainSek": -1824
+    },
+    {
+      "seed": 17,
+      "weekday": "mon",
+      "activity": "springare",
+      "without": {
+        "resultSek": 1953,
+        "booked": 27,
+        "bills": 22,
+        "walked": 0,
+        "reputationDelta": -0.121,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": 153,
+        "booked": 27,
+        "bills": 22,
+        "walked": 0,
+        "reputationDelta": -0.121,
+        "unhappy": 0
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 17,
+      "weekday": "tue",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4526,
+        "booked": 33,
+        "bills": 32,
+        "walked": 2,
+        "reputationDelta": -0.323,
+        "unhappy": -0.3
+      },
+      "with": {
+        "resultSek": 2380,
+        "booked": 37,
+        "bills": 30,
+        "walked": 4,
+        "reputationDelta": -0.344,
+        "unhappy": -0.26
+      },
+      "gainSek": -2146
+    },
+    {
+      "seed": 17,
+      "weekday": "tue",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4526,
+        "booked": 33,
+        "bills": 32,
+        "walked": 2,
+        "reputationDelta": -0.323,
+        "unhappy": -0.3
+      },
+      "with": {
+        "resultSek": 2131,
+        "booked": 33,
+        "bills": 31,
+        "walked": 3,
+        "reputationDelta": -0.312,
+        "unhappy": -0.28
+      },
+      "gainSek": -2395
+    },
+    {
+      "seed": 17,
+      "weekday": "wed",
+      "activity": "dj",
+      "without": {
+        "resultSek": -2280,
+        "booked": 34,
+        "bills": 9,
+        "walked": 0,
+        "reputationDelta": -0.096,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -4037,
+        "booked": 38,
+        "bills": 9,
+        "walked": 0,
+        "reputationDelta": -0.096,
+        "unhappy": 0
+      },
+      "gainSek": -1757
+    },
+    {
+      "seed": 17,
+      "weekday": "wed",
+      "activity": "springare",
+      "without": {
+        "resultSek": -2280,
+        "booked": 34,
+        "bills": 9,
+        "walked": 0,
+        "reputationDelta": -0.096,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -4080,
+        "booked": 34,
+        "bills": 9,
+        "walked": 0,
+        "reputationDelta": -0.096,
+        "unhappy": 0
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 17,
+      "weekday": "thu",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3780,
+        "booked": 31,
+        "bills": 29,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.1
+      },
+      "with": {
+        "resultSek": 2347,
+        "booked": 34,
+        "bills": 27,
+        "walked": 3,
+        "reputationDelta": -0.02,
+        "unhappy": -0.18
+      },
+      "gainSek": -1433
+    },
+    {
+      "seed": 17,
+      "weekday": "thu",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3780,
+        "booked": 31,
+        "bills": 29,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.1
+      },
+      "with": {
+        "resultSek": 1980,
+        "booked": 31,
+        "bills": 29,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.1
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 17,
+      "weekday": "fri",
+      "activity": "dj",
+      "without": {
+        "resultSek": 1354,
+        "booked": 44,
+        "bills": 20,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": 49,
+        "booked": 48,
+        "bills": 20,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "gainSek": -1305
+    },
+    {
+      "seed": 17,
+      "weekday": "fri",
+      "activity": "springare",
+      "without": {
+        "resultSek": 1354,
+        "booked": 44,
+        "bills": 20,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -446,
+        "booked": 44,
+        "bills": 20,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": 0
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 17,
+      "weekday": "sat",
+      "activity": "dj",
+      "without": {
+        "resultSek": 7031,
+        "booked": 42,
+        "bills": 27,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.22
+      },
+      "with": {
+        "resultSek": 4301,
+        "booked": 47,
+        "bills": 28,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.26
+      },
+      "gainSek": -2730
+    },
+    {
+      "seed": 17,
+      "weekday": "sat",
+      "activity": "springare",
+      "without": {
+        "resultSek": 7031,
+        "booked": 42,
+        "bills": 27,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.22
+      },
+      "with": {
+        "resultSek": 5231,
+        "booked": 42,
+        "bills": 27,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.22
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 18,
+      "weekday": "mon",
+      "activity": "dj",
+      "without": {
+        "resultSek": -2927,
+        "booked": 27,
+        "bills": 9,
+        "walked": 0,
+        "reputationDelta": -0.15,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -4468,
+        "booked": 31,
+        "bills": 10,
+        "walked": 0,
+        "reputationDelta": -0.151,
+        "unhappy": 0
+      },
+      "gainSek": -1541
+    },
+    {
+      "seed": 18,
+      "weekday": "mon",
+      "activity": "springare",
+      "without": {
+        "resultSek": -2927,
+        "booked": 27,
+        "bills": 9,
+        "walked": 0,
+        "reputationDelta": -0.15,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -4727,
+        "booked": 27,
+        "bills": 9,
+        "walked": 0,
+        "reputationDelta": -0.15,
+        "unhappy": 0
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 18,
+      "weekday": "tue",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4256,
+        "booked": 33,
+        "bills": 31,
+        "walked": 1,
+        "reputationDelta": -0.329,
+        "unhappy": -0.34
+      },
+      "with": {
+        "resultSek": 3104,
+        "booked": 37,
+        "bills": 30,
+        "walked": 1,
+        "reputationDelta": -0.301,
+        "unhappy": -0.3
+      },
+      "gainSek": -1152
+    },
+    {
+      "seed": 18,
+      "weekday": "tue",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4256,
+        "booked": 33,
+        "bills": 31,
+        "walked": 1,
+        "reputationDelta": -0.329,
+        "unhappy": -0.34
+      },
+      "with": {
+        "resultSek": 2456,
+        "booked": 33,
+        "bills": 31,
+        "walked": 1,
+        "reputationDelta": -0.329,
+        "unhappy": -0.34
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 18,
+      "weekday": "wed",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4989,
+        "booked": 35,
+        "bills": 26,
+        "walked": 3,
+        "reputationDelta": -0.061,
+        "unhappy": -0.16
+      },
+      "with": {
+        "resultSek": 4076,
+        "booked": 39,
+        "bills": 28,
+        "walked": 1,
+        "reputationDelta": -0.061,
+        "unhappy": -0.22
+      },
+      "gainSek": -913
+    },
+    {
+      "seed": 18,
+      "weekday": "wed",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4989,
+        "booked": 35,
+        "bills": 26,
+        "walked": 3,
+        "reputationDelta": -0.061,
+        "unhappy": -0.16
+      },
+      "with": {
+        "resultSek": 3189,
+        "booked": 35,
+        "bills": 26,
+        "walked": 3,
+        "reputationDelta": -0.061,
+        "unhappy": -0.16
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 18,
+      "weekday": "thu",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3786,
+        "booked": 32,
+        "bills": 27,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.2
+      },
+      "with": {
+        "resultSek": 1044,
+        "booked": 35,
+        "bills": 24,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.06
+      },
+      "gainSek": -2742
+    },
+    {
+      "seed": 18,
+      "weekday": "thu",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3786,
+        "booked": 32,
+        "bills": 27,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.2
+      },
+      "with": {
+        "resultSek": 1986,
+        "booked": 32,
+        "bills": 27,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.2
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 18,
+      "weekday": "fri",
+      "activity": "dj",
+      "without": {
+        "resultSek": 2902,
+        "booked": 39,
+        "bills": 27,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.16
+      },
+      "with": {
+        "resultSek": 1064,
+        "booked": 44,
+        "bills": 28,
+        "walked": 0,
+        "reputationDelta": 0.01,
+        "unhappy": -0.14
+      },
+      "gainSek": -1838
+    },
+    {
+      "seed": 18,
+      "weekday": "fri",
+      "activity": "springare",
+      "without": {
+        "resultSek": 2902,
+        "booked": 39,
+        "bills": 27,
+        "walked": 1,
+        "reputationDelta": -0.02,
+        "unhappy": -0.16
+      },
+      "with": {
+        "resultSek": 1535,
+        "booked": 39,
+        "bills": 23,
+        "walked": 1,
+        "reputationDelta": 0.008,
+        "unhappy": -0.06
+      },
+      "gainSek": -1367
+    },
+    {
+      "seed": 18,
+      "weekday": "sat",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3812,
+        "booked": 40,
+        "bills": 27,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.22
+      },
+      "with": {
+        "resultSek": 2312,
+        "booked": 44,
+        "bills": 27,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.22
+      },
+      "gainSek": -1500
+    },
+    {
+      "seed": 18,
+      "weekday": "sat",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3812,
+        "booked": 40,
+        "bills": 27,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.22
+      },
+      "with": {
+        "resultSek": 1902,
+        "booked": 40,
+        "bills": 27,
+        "walked": 2,
+        "reputationDelta": -0.02,
+        "unhappy": -0.2
+      },
+      "gainSek": -1910
+    },
+    {
+      "seed": 19,
+      "weekday": "mon",
+      "activity": "dj",
+      "without": {
+        "resultSek": 5000,
+        "booked": 27,
+        "bills": 30,
+        "walked": 0,
+        "reputationDelta": -0.171,
+        "unhappy": -0.24
+      },
+      "with": {
+        "resultSek": 3199,
+        "booked": 31,
+        "bills": 30,
+        "walked": 0,
+        "reputationDelta": -0.153,
+        "unhappy": -0.22
+      },
+      "gainSek": -1801
+    },
+    {
+      "seed": 19,
+      "weekday": "mon",
+      "activity": "springare",
+      "without": {
+        "resultSek": 5000,
+        "booked": 27,
+        "bills": 30,
+        "walked": 0,
+        "reputationDelta": -0.171,
+        "unhappy": -0.24
+      },
+      "with": {
+        "resultSek": 3200,
+        "booked": 27,
+        "bills": 30,
+        "walked": 0,
+        "reputationDelta": -0.171,
+        "unhappy": -0.24
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 19,
+      "weekday": "tue",
+      "activity": "dj",
+      "without": {
+        "resultSek": -3000,
+        "booked": 35,
+        "bills": 8,
+        "walked": 0,
+        "reputationDelta": -0.146,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -4500,
+        "booked": 39,
+        "bills": 8,
+        "walked": 0,
+        "reputationDelta": -0.146,
+        "unhappy": 0
+      },
+      "gainSek": -1500
+    },
+    {
+      "seed": 19,
+      "weekday": "tue",
+      "activity": "springare",
+      "without": {
+        "resultSek": -3000,
+        "booked": 35,
+        "bills": 8,
+        "walked": 0,
+        "reputationDelta": -0.146,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -4800,
+        "booked": 35,
+        "bills": 8,
+        "walked": 0,
+        "reputationDelta": -0.146,
+        "unhappy": 0
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 19,
+      "weekday": "wed",
+      "activity": "dj",
+      "without": {
+        "resultSek": 6224,
+        "booked": 33,
+        "bills": 31,
+        "walked": 0,
+        "reputationDelta": -0.193,
+        "unhappy": -0.24
+      },
+      "with": {
+        "resultSek": 5566,
+        "booked": 37,
+        "bills": 30,
+        "walked": 0,
+        "reputationDelta": -0.193,
+        "unhappy": -0.3
+      },
+      "gainSek": -658
+    },
+    {
+      "seed": 19,
+      "weekday": "wed",
+      "activity": "springare",
+      "without": {
+        "resultSek": 6224,
+        "booked": 33,
+        "bills": 31,
+        "walked": 0,
+        "reputationDelta": -0.193,
+        "unhappy": -0.24
+      },
+      "with": {
+        "resultSek": 4424,
+        "booked": 33,
+        "bills": 31,
+        "walked": 0,
+        "reputationDelta": -0.193,
+        "unhappy": -0.24
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 19,
+      "weekday": "thu",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3601,
+        "booked": 39,
+        "bills": 28,
+        "walked": 2,
+        "reputationDelta": -0.05,
+        "unhappy": -0.24
+      },
+      "with": {
+        "resultSek": 2699,
+        "booked": 44,
+        "bills": 29,
+        "walked": 1,
+        "reputationDelta": -0.05,
+        "unhappy": -0.24
+      },
+      "gainSek": -902
+    },
+    {
+      "seed": 19,
+      "weekday": "thu",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3601,
+        "booked": 39,
+        "bills": 28,
+        "walked": 2,
+        "reputationDelta": -0.05,
+        "unhappy": -0.24
+      },
+      "with": {
+        "resultSek": 1801,
+        "booked": 39,
+        "bills": 28,
+        "walked": 2,
+        "reputationDelta": -0.05,
+        "unhappy": -0.24
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 19,
+      "weekday": "fri",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4343,
+        "booked": 40,
+        "bills": 27,
+        "walked": 3,
+        "reputationDelta": -0.02,
+        "unhappy": -0.2
+      },
+      "with": {
+        "resultSek": 2913,
+        "booked": 44,
+        "bills": 27,
+        "walked": 3,
+        "reputationDelta": -0.02,
+        "unhappy": -0.18
+      },
+      "gainSek": -1430
+    },
+    {
+      "seed": 19,
+      "weekday": "fri",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4343,
+        "booked": 40,
+        "bills": 27,
+        "walked": 3,
+        "reputationDelta": -0.02,
+        "unhappy": -0.2
+      },
+      "with": {
+        "resultSek": 2543,
+        "booked": 40,
+        "bills": 27,
+        "walked": 3,
+        "reputationDelta": -0.02,
+        "unhappy": -0.2
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 19,
+      "weekday": "sat",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4541,
+        "booked": 40,
+        "bills": 26,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.2
+      },
+      "with": {
+        "resultSek": 2832,
+        "booked": 44,
+        "bills": 26,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.2
+      },
+      "gainSek": -1709
+    },
+    {
+      "seed": 19,
+      "weekday": "sat",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4541,
+        "booked": 40,
+        "bills": 26,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.2
+      },
+      "with": {
+        "resultSek": 2741,
+        "booked": 40,
+        "bills": 26,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.2
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 20,
+      "weekday": "mon",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4243,
+        "booked": 27,
+        "bills": 29,
+        "walked": 0,
+        "reputationDelta": -0.12,
+        "unhappy": -0.22
+      },
+      "with": {
+        "resultSek": 2711,
+        "booked": 31,
+        "bills": 28,
+        "walked": 1,
+        "reputationDelta": -0.211,
+        "unhappy": -0.22
+      },
+      "gainSek": -1532
+    },
+    {
+      "seed": 20,
+      "weekday": "mon",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4243,
+        "booked": 27,
+        "bills": 29,
+        "walked": 0,
+        "reputationDelta": -0.12,
+        "unhappy": -0.22
+      },
+      "with": {
+        "resultSek": 2443,
+        "booked": 27,
+        "bills": 29,
+        "walked": 0,
+        "reputationDelta": -0.12,
+        "unhappy": -0.22
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 20,
+      "weekday": "tue",
+      "activity": "dj",
+      "without": {
+        "resultSek": -2672,
+        "booked": 35,
+        "bills": 9,
+        "walked": 0,
+        "reputationDelta": -0.15,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -4781,
+        "booked": 39,
+        "bills": 9,
+        "walked": 0,
+        "reputationDelta": -0.14,
+        "unhappy": 0
+      },
+      "gainSek": -2109
+    },
+    {
+      "seed": 20,
+      "weekday": "tue",
+      "activity": "springare",
+      "without": {
+        "resultSek": -2672,
+        "booked": 35,
+        "bills": 9,
+        "walked": 0,
+        "reputationDelta": -0.15,
+        "unhappy": 0
+      },
+      "with": {
+        "resultSek": -4472,
+        "booked": 35,
+        "bills": 9,
+        "walked": 0,
+        "reputationDelta": -0.15,
+        "unhappy": 0
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 20,
+      "weekday": "wed",
+      "activity": "dj",
+      "without": {
+        "resultSek": 7041,
+        "booked": 31,
+        "bills": 32,
+        "walked": 0,
+        "reputationDelta": -0.24,
+        "unhappy": -0.32
+      },
+      "with": {
+        "resultSek": 4484,
+        "booked": 35,
+        "bills": 31,
+        "walked": 1,
+        "reputationDelta": -0.27,
+        "unhappy": -0.32
+      },
+      "gainSek": -2557
+    },
+    {
+      "seed": 20,
+      "weekday": "wed",
+      "activity": "springare",
+      "without": {
+        "resultSek": 7041,
+        "booked": 31,
+        "bills": 32,
+        "walked": 0,
+        "reputationDelta": -0.24,
+        "unhappy": -0.32
+      },
+      "with": {
+        "resultSek": 4989,
+        "booked": 31,
+        "bills": 32,
+        "walked": 0,
+        "reputationDelta": -0.24,
+        "unhappy": -0.32
+      },
+      "gainSek": -2052
+    },
+    {
+      "seed": 20,
+      "weekday": "thu",
+      "activity": "dj",
+      "without": {
+        "resultSek": 3706,
+        "booked": 41,
+        "bills": 28,
+        "walked": 1,
+        "reputationDelta": -0.05,
+        "unhappy": -0.26
+      },
+      "with": {
+        "resultSek": 2376,
+        "booked": 45,
+        "bills": 29,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.26
+      },
+      "gainSek": -1330
+    },
+    {
+      "seed": 20,
+      "weekday": "thu",
+      "activity": "springare",
+      "without": {
+        "resultSek": 3706,
+        "booked": 41,
+        "bills": 28,
+        "walked": 1,
+        "reputationDelta": -0.05,
+        "unhappy": -0.26
+      },
+      "with": {
+        "resultSek": 1906,
+        "booked": 41,
+        "bills": 28,
+        "walked": 1,
+        "reputationDelta": -0.05,
+        "unhappy": -0.26
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 20,
+      "weekday": "fri",
+      "activity": "dj",
+      "without": {
+        "resultSek": 4173,
+        "booked": 44,
+        "bills": 28,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.22
+      },
+      "with": {
+        "resultSek": 2788,
+        "booked": 48,
+        "bills": 27,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.18
+      },
+      "gainSek": -1385
+    },
+    {
+      "seed": 20,
+      "weekday": "fri",
+      "activity": "springare",
+      "without": {
+        "resultSek": 4173,
+        "booked": 44,
+        "bills": 28,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.22
+      },
+      "with": {
+        "resultSek": 2373,
+        "booked": 44,
+        "bills": 28,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.22
+      },
+      "gainSek": -1800
+    },
+    {
+      "seed": 20,
+      "weekday": "sat",
+      "activity": "dj",
+      "without": {
+        "resultSek": 2021,
+        "booked": 45,
+        "bills": 23,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.06
+      },
+      "with": {
+        "resultSek": 366,
+        "booked": 49,
+        "bills": 23,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.04
+      },
+      "gainSek": -1655
+    },
+    {
+      "seed": 20,
+      "weekday": "sat",
+      "activity": "springare",
+      "without": {
+        "resultSek": 2021,
+        "booked": 45,
+        "bills": 23,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.06
+      },
+      "with": {
+        "resultSek": 221,
+        "booked": 45,
+        "bills": 23,
+        "walked": 0,
+        "reputationDelta": -0.02,
+        "unhappy": -0.06
+      },
+      "gainSek": -1800
+    }
+  ]
+}
