@@ -31,8 +31,8 @@ import { useSimState } from '../../simulation/SimulationProvider';
 import { WARM } from '../../../ui/theme/nexusTheme.warm';
 import { GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, VILLAGE } from '../../../sim/balance';
 import { clockMinutes } from '../../../sim/clock';
-import { dailyGuestCap } from '../../../sim/economy';
-import { busTonight, PLAYER_VENUE, POOL_TYPES, venuesTonight, villageEvening, type PoolType } from '../../../sim/village';
+import { busTonight, PLAYER_VENUE, POOL_TYPES, venuesTonight, type PoolType } from '../../../sim/village';
+import { plannedVillage } from '../../../sim/villageLive';
 import { driveNetwork, pointAlong, routeBetween, routeLength, walkNetwork } from '../../content/villageNetwork';
 import { truckSpotPlace, venuePlaces, villageSources } from '../../content/villagePlaces';
 import { createRng } from '../../util/rng';
@@ -51,8 +51,9 @@ const WALK_M_PER_GAME_MIN = 12;
 const DRIVE_M_PER_GAME_MIN = 700;
 const TYPE_PACE: Record<WalkerKind, number> = { student: 1.2, middle: 1, high: 0.9, social: 0.95, billionaire: 0.55, tourist: 0.85 };
 // Kvällens fönster för ankomsterna, i spelminuter (19.05–22.30).
-const ARRIVE_FROM = 19 * 60 + 5;
-const ARRIVE_UNTIL = 22 * 60 + 30;
+// ORDER 296 — fönstret står i balance.ts (VILLAGE), som bandet i HUD:en läser.
+const ARRIVE_FROM = VILLAGE.arriveFromMinute;
+const ARRIVE_UNTIL = VILLAGE.arriveUntilMinute;
 const EAT_AT_TRUCK_MIN = 12;
 // Gästerna går hem efter måltiden (spelminuter vid bordet).
 const STAY_MIN: [number, number] = [70, 130];
@@ -132,11 +133,8 @@ function doorFor(venueId: string, _state: SimulationState, venues: ReturnType<ty
 // Kvällens plan: varje krogs sällskap med ankomsttid, typ och startpunkt.
 function planEvening(state: SimulationState): Planned[] {
   const venues = venuesTonight(state);
-  const capRaw = dailyGuestCap(state);
-  const cap = Number.isFinite(capRaw) ? capRaw : 0;
-  const shares = GUEST_TYPES.share[state.businessClass] ?? GUEST_TYPES.share.default;
-  const playerTypes = { student: cap * shares.student, middle: cap * shares.middle, high: cap * shares.high };
-  const rows = villageEvening(state, { guests: cap, revenueSek: 0, typeGuests: playerTypes });
+  // ORDER 296 — samma plan som bandet i HUD:en läser (sim/villageLive.ts).
+  const rows = plannedVillage(state);
   const rng = createRng(((state.seed ?? 0) * 7919 + state.day.dayNumber * 104729) >>> 0);
   const rnd = () => rng.next();
   const out: Planned[] = [];
@@ -208,6 +206,7 @@ export function VillageLife() {
     leaving: [] as Array<{ at: number; w: Walker }>,
     busDone: { announce: false, chose: false },
     billionaire: false,
+    socialWalkout: false,
     heat: new Map<string, { a: Vec2; b: Vec2; h: number }>(),
     lastPublish: 0,
     lastHeat: 0
@@ -287,6 +286,7 @@ export function VillageLife() {
       L.leaving = [];
       L.busDone = { announce: false, chose: false };
       L.billionaire = false;
+      L.socialWalkout = false;
       L.heat.clear();
     }
     if (s.day.period !== 'dinner' && s.day.period !== 'evening') {
@@ -347,6 +347,15 @@ export function VillageLife() {
         const lake = truckSpotPlace('sjon').door;
         const route = [...routeBetween(g, src.hotel, torget), ...routeBetween(g, torget, lake).slice(1), ...routeBetween(g, lake, doorFor(dest, s, venues)).slice(1)];
         spawnWalker(L, { at: now, venueId: dest, type: 'billionaire', n: 1, byCar: false, source: src.hotel, key: 'billionaire' }, route, venues);
+      }
+      // ORDER 296 (kärnan punkt 3) — gästen med socialt kapital som gick
+      // missnöjd syns gå från vår dörr till rivalen (day.socialWalkout).
+      const walkout = s.day.socialWalkout;
+      if (walkout && !L.socialWalkout) {
+        L.socialWalkout = true;
+        const from = doorFor(PLAYER_VENUE, s, venues);
+        const route = routeBetween(g, from, doorFor(walkout.rivalId, s, venues));
+        spawnWalker(L, { at: now, venueId: walkout.rivalId, type: 'social', n: 1, byCar: false, source: from, key: 'social-walkout' }, route, venues);
       }
     }
 

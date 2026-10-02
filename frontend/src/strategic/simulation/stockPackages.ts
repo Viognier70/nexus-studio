@@ -14,7 +14,8 @@ import { GLASSES_PER_BOTTLE } from './m4Catalogue';
 import { strings } from '../../content/strings';
 import { applyCashCost, applyCashDelta, postLedger } from './cashReading';
 import { findDish, findIngredient, minIngredientCost } from './m4Catalogue';
-import { ITEM_BATCH, MORNING_STAKE, WASTE } from '../../sim/balance';
+import { ITEM_BATCH, MORNING_STAKE, SHOP, WASTE } from '../../sim/balance';
+import { abilityActive } from '../../sim/shop';
 import { discardUnresolvedSalvage, pickSalvage } from './salvage';
 import { clockMinutes, formatClock } from '../../sim/clock';
 import { findPackage, itemsCostSek, packageCostSek, packageDishIds, packageIngredients, packagesFor, scaledBaseItems } from './packages';
@@ -478,7 +479,9 @@ export function settleWaste(draft: SimulationState): void {
   // innan kvällens svinn räknas.
   discardUnresolvedSalvage(draft);
   if (draft.salvage) draft.salvage = null;
-  const { stock, waste, dishPortions } = wasteAtDayEnd(draft);
+  const { stock, waste: raw, dishPortions } = wasteAtDayEnd(draft);
+  // ORDER 296 — dagens rätt av gårdagens rester (butiken): mindre till sopbilen.
+  const waste = raw && abilityActive(draft, 'leftovers') ? { ...raw, feeSek: Math.round(raw.feeSek * SHOP.effects.leftoversWasteShare) } : raw;
   draft.stock = stock;
   if (draft.dishPortions) draft.dishPortions = dishPortions ?? {};
   draft.lastWaste = waste;

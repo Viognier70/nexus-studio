@@ -46,7 +46,7 @@ const PLANS: Record<PlayerId, (s: SimulationState) => MorningPlan> = {
   slarvig: () => weakMorning()
 };
 
-interface Week { week: number; resultSek: number; revenueSek: number; rentSek: number; wagesSek: number; cashEnd: number; targetSek: number; targetHit: boolean; renegotiatedNow: boolean; closedNow: boolean }
+interface Week { week: number; credits: number; resultSek: number; revenueSek: number; rentSek: number; wagesSek: number; cashEnd: number; targetSek: number; targetHit: boolean; renegotiatedNow: boolean; closedNow: boolean }
 interface Morning { week: number; weekday: string; needMin: number; capacityMin: number; backlogMin: number; hand: boolean; booked: number; rep: number }
 
 function season(seed: number, player: PlayerId, weeks: number, start: number | null) {
@@ -71,6 +71,7 @@ function season(seed: number, player: PlayerId, weeks: number, start: number | n
       lastWeek = st.week;
       out.push({
         week: st.week,
+        credits: s.knowledgeCredits.episteme + s.knowledgeCredits.techne + s.knowledgeCredits.phronesis,
         resultSek: Math.round(s.cash - weekStartCash),
         revenueSek: st.revenueSek,
         rentSek: st.rentSek ?? 0,
@@ -103,7 +104,7 @@ describe.skipIf(!process.env.KARNAN_SEEDS)('ORDER 296 — kärnans tal', () => {
       const mean = (xs: number[]) => Math.round(xs.reduce((a, b) => a + b, 0) / Math.max(1, xs.length));
       const byWeek = Array.from({ length: weeks }, (_, i) => {
         const ws = runs.map((r) => r.weeks[i]).filter(Boolean);
-        return { week: i + 1, n: ws.length, meanResultSek: mean(ws.map((w) => w.resultSek)), meanRevenueSek: mean(ws.map((w) => w.revenueSek)), meanCashEnd: mean(ws.map((w) => w.cashEnd)), targetHit: ws.filter((w) => w.targetHit).length, rentSek: ws[0]?.rentSek ?? 0 };
+        return { week: i + 1, n: ws.length, meanResultSek: mean(ws.map((w) => w.resultSek)), meanRevenueSek: mean(ws.map((w) => w.revenueSek)), meanCashEnd: mean(ws.map((w) => w.cashEnd)), meanCredits: mean(ws.map((w) => w.credits)), targetHit: ws.filter((w) => w.targetHit).length, rentSek: ws[0]?.rentSek ?? 0 };
       });
       const allMornings = runs.flatMap((r) => r.mornings);
       const repByWeek = Array.from({ length: weeks }, (_, i) => {

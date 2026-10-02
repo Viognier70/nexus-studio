@@ -7,7 +7,8 @@ import { coverage } from '../strategic/simulation/morningBuy';
 import { bookingFor } from '../strategic/simulation/guestTypes';
 import { applyCashCost, postLedger } from '../strategic/simulation/cashReading';
 import { strings } from '../content/strings';
-import { GAME_MINUTES_PER_SIM_SECOND, MISE_EN_PLACE } from './balance';
+import { GAME_MINUTES_PER_SIM_SECOND, MISE_EN_PLACE, SHOP } from './balance';
+import { abilityActive } from './shop';
 
 export interface MisePlan {
   portions: number;
@@ -29,7 +30,9 @@ export function misePlan(state: SimulationState): MisePlan {
   const needMin = portions * MISE_EN_PLACE.perPortionMin + booked * MISE_EN_PLACE.perBookedGuestMin;
   const staff = state.team.members.filter((m) => !m.isAgency).length;
   const extraHand = !!state.day.prepHand;
-  const capacityMin = staff * MISE_EN_PLACE.minutesPerStaff + (extraHand ? MISE_EN_PLACE.extraHandMin : 0);
+  // ORDER 296 — mise en place-rutinen (butiken): kocken har allt framme tidigare.
+  const routine = abilityActive(state, 'mise') ? SHOP.effects.miseExtraMin : 0;
+  const capacityMin = staff * MISE_EN_PLACE.minutesPerStaff + (extraHand ? MISE_EN_PLACE.extraHandMin : 0) + routine;
   return { portions, booked, needMin, capacityMin, backlogMin: Math.max(0, needMin - capacityMin), extraHand };
 }
 

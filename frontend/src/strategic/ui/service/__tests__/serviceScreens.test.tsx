@@ -236,7 +236,9 @@ describe('ORDER 271 — kvällens lärdom (L1) och kvällsberättelsen (K1)', ()
     expect(container.querySelectorAll('input, [role=radio]')).toHaveLength(0);
     later();
     fireEvent.click(byTestId(container, 'end-evening')!);
-    expect(sim.dispatch).toHaveBeenCalledWith({ type: 'END_EVENING' });
+    // ORDER 296 — efter lärdomen och berättelsen kommer byn i kväll och butiken
+    // (här utan byns rader: direkt till butiken), sist före morgonen.
+    expect(sim.dispatch).toHaveBeenCalledWith({ type: 'EVENING_STEP', to: 'shop' });
     vi.restoreAllMocks();
   });
 
@@ -250,7 +252,9 @@ describe('ORDER 271 — kvällens lärdom (L1) och kvällsberättelsen (K1)', ()
     expect(byTestId(container, 'story-wrong')!.querySelectorAll('li')).toHaveLength(2);
     later();
     fireEvent.click(byTestId(container, 'end-evening')!);
-    expect(sim.dispatch).toHaveBeenCalledWith({ type: 'END_EVENING' });
+    // ORDER 296 — efter lärdomen och berättelsen kommer byn i kväll och butiken
+    // (här utan byns rader: direkt till butiken), sist före morgonen.
+    expect(sim.dispatch).toHaveBeenCalledWith({ type: 'EVENING_STEP', to: 'shop' });
     vi.restoreAllMocks();
   });
 });

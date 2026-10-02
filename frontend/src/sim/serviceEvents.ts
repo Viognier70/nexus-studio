@@ -16,11 +16,17 @@ import { EVENTS, REPUTATION } from './balance';
 import { strings } from '../content/strings';
 import { applyCashCost, postLedger } from '../strategic/simulation/cashReading';
 import { businessHasMiseEnPlace } from '../strategic/business/businessClass';
-import type { EventStreamEntry, SimulationState } from '../strategic/types';
+import type { EventStreamCauseTag, EventStreamEntry, SimulationState } from '../strategic/types';
+import { hashKey } from '../strategic/util/hash';
+import { abilityActive } from './shop';
+import { t as tt } from '../content/nexusStrings';
+import { getLanguage } from '../content/language';
 
 export interface ServiceEventsState {
   inspectionDue: boolean;
   reviewerTonight: boolean;
+  // ORDER 296 — gårdagens recension, som står i morgonens tidning.
+  paperReview?: 'good' | 'bad' | 'mixed' | null;
 }
 
 export function initialServiceEvents(): ServiceEventsState {
@@ -29,12 +35,12 @@ export function initialServiceEvents(): ServiceEventsState {
 
 const share = (points: number) => points / REPUTATION.scale;
 
-function post(draft: SimulationState, kind: string, text: string, positive: boolean): void {
+function post(draft: SimulationState, kind: string, text: string, positive: boolean, causeTag: EventStreamCauseTag | null = null): void {
   const entry: EventStreamEntry = {
     at: draft.simTime,
     text,
     category: positive ? 'positive' : 'ambient',
-    causeTag: null,
+    causeTag,
     causeChainId: null,
     sustainability: 'social',
     kind,
@@ -51,9 +57,19 @@ function lowerReputation(draft: SimulationState, points: number): void {
   draft.reputation = Math.max(share(REPUTATION.floor), draft.reputation - share(points));
 }
 
+// ORDER 296 — kommer recensenten i kväll? Gott rykte drar henne alltid
+// (reviewerReputationAtLeast); annars kommer hon ibland, oftare ju bättre
+// ryktet är. Samma svar på morgonen (förmågan critic) och när dörrarna öppnar.
+export function reviewerComes(state: SimulationState): boolean {
+  if (state.reputation >= share(EVENTS.reviewerReputationAtLeast)) return true;
+  const chance = EVENTS.reviewerChanceBase + EVENTS.reviewerChancePerReputation * state.reputation;
+  // Dagen först i nyckeln: FNV-1a sprider dåligt när bara slutet skiljer.
+  return hashKey(state.seed ?? 0, `${state.day.dayNumber}|reviewer`) < chance;
+}
+
 // När servicen öppnar: kommer det en recensent i kväll?
 export function onServiceOpen(draft: SimulationState): void {
-  const reviewer = draft.reputation >= share(EVENTS.reviewerReputationAtLeast);
+  const reviewer = reviewerComes(draft);
   draft.serviceEvents = { ...draft.serviceEvents, reviewerTonight: reviewer };
   if (reviewer) post(draft, 'v1_reviewer_booked', strings.service.events.reviewerBooked, false);
 }
@@ -73,7 +89,11 @@ export function onServiceClose(draft: SimulationState, prev: SimulationState, br
     post(draft, 'v1_recovery_clean', e.cleanEvening, true);
   }
   if (prev.serviceEvents.reviewerTonight) {
-    if (branch === 'good') {
+    // ORDER 296 — signaturrätten: recensenten frågar efter den, och en kväll
+    // som inte föll ihop blir en god recension.
+    const signature = abilityActive(prev, 'signature') && branch !== 'collapsed';
+    draft.serviceEvents = { ...draft.serviceEvents, paperReview: signature || branch === 'good' ? 'good' : branch === 'thin' || branch === 'collapsed' ? 'bad' : 'mixed' };
+    if (signature || branch === 'good') {
       raiseReputation(draft, EVENTS.reviewerReputationChange);
       post(draft, 'v1_review', e.reviewGood, true);
     } else if (branch === 'thin' || branch === 'collapsed') {
@@ -92,7 +112,7 @@ export function onServiceClose(draft: SimulationState, prev: SimulationState, br
     ? prev.day.minStationsReadiness ?? prev.day.prepReadiness?.stations
     : undefined;
   const dirty = stations !== undefined && stations < EVENTS.inspectionStationsBelow;
-  draft.serviceEvents = { inspectionDue: dirty, reviewerTonight: false };
+  draft.serviceEvents = { inspectionDue: dirty, reviewerTonight: false, paperReview: draft.serviceEvents.paperReview ?? null };
 }
 
 // När en ny morgon börjar: långsam självläkning, inspektion och banken.
@@ -112,6 +132,17 @@ export function onNewMorning(draft: SimulationState, bankWarning: string | null)
     draft.serviceEvents = { ...draft.serviceEvents, inspectionDue: false };
   }
   if (bankWarning) post(draft, 'v1_bank_call', e.bankCall, false);
+  // ORDER 296 — recensionen står i morgonens tidning.
+  const review = draft.serviceEvents.paperReview ?? null;
+  if (review) {
+    const lang = getLanguage();
+    post(draft, 'v1_review_paper', tt(lang, review === 'good' ? 'review.paper.good' : review === 'bad' ? 'review.paper.bad' : 'review.paper.mixed'), review === 'good', 'reviewer');
+    draft.serviceEvents = { ...draft.serviceEvents, paperReview: null };
+  }
+  // ORDER 296 — förvarning om recensenten (butiken): kommer hon i kväll?
+  if (abilityActive(draft, 'critic') && reviewerComes(draft)) {
+    post(draft, 'v1_reviewer_warning', tt(getLanguage(), 'review.warning'), false, 'reviewer');
+  }
 }
 
 // Dagens händelser från simuleringen (för morgonraden).

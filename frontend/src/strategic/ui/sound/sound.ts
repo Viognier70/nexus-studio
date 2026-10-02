@@ -151,11 +151,11 @@ function noiseBuffer(c: AudioContext, seconds: number, kind: 'white' | 'pink'): 
   return b;
 }
 
-export type Sfx = 'right' | 'wrong' | 'floor' | 'full' | 'guestIn' | 'pay' | 'passed' | 'clink';
+export type Sfx = 'right' | 'wrong' | 'floor' | 'full' | 'guestIn' | 'pay' | 'passed' | 'clink' | 'overtake';
 
 const lastPlayed: Partial<Record<Sfx, number>> = {};
 // Aldrig två av samma sort inom 250 ms; gäster in högst ett var fjärde sekund.
-const MIN_GAP_S: Record<Sfx, number> = { right: 0.25, wrong: 0.25, floor: 0.25, full: 0.25, guestIn: 4, pay: 0.25, passed: 0.25, clink: 0.25 };
+const MIN_GAP_S: Record<Sfx, number> = { right: 0.25, wrong: 0.25, floor: 0.25, full: 0.25, guestIn: 4, pay: 0.25, passed: 0.25, clink: 0.25, overtake: 2 };
 
 // Våningarnas toner: C5, E5, G5 (episteme, techne, phronesis).
 const FLOOR_HZ = [523, 659, 784];
@@ -228,6 +228,13 @@ export function play(sfx: Sfx, level = 0): void {
     case 'pay': {
       // Ett kvitto som rivs av och en träknack.
       const v = jitter(db(-22), 0.25);
+      noiseBurst(c, now, 0.04, v, 'bandpass', 3000, 2);
+      tone(c, jitter(620, 0.03), now + 0.02, 0.07, v, 'sine');
+      break;
+    }
+    case 'overtake': {
+      // ORDER 296 — omkörningen i bandet: kassan i svagare form (Designs §4).
+      const v = jitter(db(-30), 0.25);
       noiseBurst(c, now, 0.04, v, 'bandpass', 3000, 2);
       tone(c, jitter(620, 0.03), now + 0.02, 0.07, v, 'sine');
       break;

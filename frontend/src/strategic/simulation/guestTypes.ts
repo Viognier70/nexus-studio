@@ -16,8 +16,12 @@
 // kommer när boken är slut, får en typ efter andelarna.
 
 import type { Guest, GuestBooking, GuestType, SimulationState } from '../types';
-import { BILLIONAIRE, GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, SOCIAL_GUEST } from '../../sim/balance';
+import { BILLIONAIRE, GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, SHOP, SOCIAL_GUEST } from '../../sim/balance';
+import { abilityActive } from '../../sim/shop';
 import { dailyGuestCap } from '../../sim/economy';
+import { venuesTonight } from '../../sim/village';
+import { t as tt } from '../../content/nexusStrings';
+import { getLanguage } from '../../content/language';
 import { answerBookingsFor } from '../../sim/nextDay';
 import { calendarFor } from '../../sim/calendar';
 import { strings } from '../../content/strings';
@@ -44,7 +48,9 @@ export function bookingFor(state: SimulationState): GuestBooking {
   // ORDER 292 — gårdagens svar står som egna rader; typerna delar resten.
   const answerNet = answerBookingsFor(state);
   const cap = Math.max(0, capAll - answerNet);
-  const socialComing = cap > 0 && hash01(seed, `day${day}|social`) < SOCIAL_GUEST.chancePerEvening;
+  // ORDER 296 — Lovas nätverk: fler gäster med socialt kapital.
+  const socialChance = SOCIAL_GUEST.chancePerEvening + (abilityActive(state, 'lova') ? SHOP.effects.lovaSocialChance : 0);
+  const socialComing = cap > 0 && hash01(seed, `day${day}|social`) < socialChance;
   const booked = Math.round(cap * (1 - GUEST_TYPES.walkInShare));
   const shares = typeShares(state);
   const student = Math.round(booked * shares.student);
@@ -222,6 +228,15 @@ export function settleSocialGuest(state: SimulationState, guest: Guest, gaveUp: 
   const { from, until } = nextServiceDays(state.day.dayNumber, SOCIAL_GUEST.buzzEvenings);
   const factor = outcome === 'good' ? SOCIAL_GUEST.buzzGood : SOCIAL_GUEST.buzzBad;
   state.guestBuzz = [...(state.guestBuzz ?? []).filter((b) => b.untilDay >= state.day.dayNumber), { fromDay: from, untilDay: until, factor, nameIndex }];
+  // ORDER 296 (kärnan punkt 3) — den missnöjda gästen syns gå till en rival
+  // i byn: krogen med flest stjärnor som har öppet i kväll.
+  if (outcome === 'bad') {
+    const rival = venuesTonight(state).filter((v) => v.open && v.kind === 'restaurant').sort((a, b) => b.stars - a.stars)[0];
+    if (rival) {
+      state.day = { ...state.day, socialWalkout: { rivalId: rival.id, at: state.simTime, nameIndex } };
+      streamGuestLine(state, tt(getLanguage(), 'social.walkout', { name, rival: strings.village.venues[rival.id] ?? rival.id }), 'guest_social_walkout');
+    }
+  }
   const line = outcome === 'good' ? strings.guestTypes.stream.socialGood(name) : strings.guestTypes.stream.socialBad(name);
   state.eventStream = [...state.eventStream, {
     at: state.simTime, text: line, category: outcome === 'good' ? 'positive' : 'ambient', causeTag: null, causeChainId: null,

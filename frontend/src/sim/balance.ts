@@ -275,6 +275,13 @@ export const LOAN = {
 export const VILLAGE = {
   section: 'Ekonomin > Byn',
   openQuestion: 'F63',
+  // ORDER 296 — byns gäster kommer mellan de här klockslagen (minuter),
+  // flest mitt i kvällen (triangelfördelning). Byns figurer (VillageLife) och
+  // bandet i HUD:en (sim/villageLive.ts) läser samma fönster.
+  arriveFromMinute: 19 * 60 + 5,
+  arriveUntilMinute: 22 * 60 + 30,
+  // Triangelns topp, som andel av fönstret (mitt i kvällen).
+  arrivePeakShare: 0.5,
   // Byns gäster per typ: andelen av dagens pool (MARKET.basePoolPerDay).
   poolMix: { student: 0.3, middle: 0.5, high: 0.2 },
   // Stjärnorna ur ryktet (0–1): 1 + ryktet × 4, avrundat, 1–5.
@@ -436,6 +443,55 @@ export const MISE_EN_PLACE = {
   backlogTaskTime: 1.3
 } as const;
 
+// ORDER 296 — butiken mellan kvällarna (Designs leverans hovmästaren och
+// butiken §6, hostShop.ts SHOP och ABILITIES). Medaljen öppnar och förbrukas
+// inte; krediterna betalar. Köpta förmågor behålls; bara det som ligger i
+// facket gäller nästa kväll. Kraven är Designs förslag (proposedRequires);
+// priserna är satta så att en rimlig spelare (omkring 53 krediter i veckan,
+// reports/order296b/karnan-spel.json) köper fyra till sex förmågor under
+// säsongen. Stjärnan: guld i Gastronomiska Teatern (vägens slut).
+export const SHOP = {
+  section: 'Kunskapen',
+  slots: 2,
+  slotsAtStar: 3,
+  starPavilion: 'gastronomiskateatern' as const,
+  starMedal: 'guld' as const,
+  abilities: {
+    sommBottle: { requires: 'brons', price: 40 },
+    wineFridge: { requires: 'silver', price: 70 },
+    wineTasting: { requires: 'guld', price: 110 },
+    fastPass: { requires: 'brons', price: 40 },
+    leftovers: { requires: 'silver', price: 70 },
+    mise: { requires: 'guld', price: 110 },
+    menuStory: { requires: 'brons', price: 40 },
+    allergen: { requires: 'silver', price: 70 },
+    critic: { requires: 'guld', price: 110 },
+    regulars: { requires: 'brons', price: 40 },
+    birthday: { requires: 'silver', price: 70 },
+    lova: { requires: 'guld', price: 110 },
+    chefsTable: { requires: 'brons', price: 90 },
+    signature: { requires: 'guld', price: 150 }
+  } as Record<string, { requires: 'brons' | 'silver' | 'guld' | 'platina'; price: number }>,
+  // Förmågornas verkan när de ligger i facket (texterna ab.*.fx).
+  effects: {
+    sommBottleChance: 0.25,        // sällskapets chans att ta en flaska, utöver GUESTS.bottleChance
+    wineFridgeSatisfaction: 0.04,  // nöjdheten hos den som dricker vin
+    wineTastingSecondDrink: 0.15,  // chansen till ett glas till, utöver STOCK.secondDrinkChance
+    fastPassOrderTime: 0.8,        // tiden för köket att få ut maten (uppgiften order)
+    leftoversWasteShare: 0.5,      // sopbilens avgift
+    miseExtraMin: 25,              // förberedelsen hinner fler minuter före öppning
+    menuStoryBill: 0.05,           // notan för den som äter
+    regulersPatience: 0.8,         // nöjdheten sjunker långsammare i kön
+    regularsArrivals: 0.03,        // fler gäster (marknadens tak)
+    birthdayPackageSek: 600,       // tårta och bubbel när födelsedagen kommer
+    lovaSocialChance: 0.25,        // chansen att gästen med socialt kapital har bokat, utöver SOCIAL_GUEST
+    chefsTableBill: 0.5,           // notan för sällskapet vid kockens bord (ett per kväll, från 20.00)
+    chefsTableSatisfaction: 0.1,
+    chefsTableFromMinute: 20 * 60,
+    signatureBill: 0.05            // notan för den som äter
+  }
+} as const;
+
 export const DOWNGRADE = {
   section: 'Ekonomin > Nedgradering',
   consecutiveNegativeDayEnds: 3, // "under minus veckogolvet vid tre dagsavslut i rad"
@@ -585,6 +641,8 @@ export const INCIDENTS = {
   // ORDER 293 — gästen som vinglar (Designs manus 3); nekas han i kväll blir
   // tillsynens steg 3 variant A (sim/incidents.ts inspectionVariant).
   drunkIncidentId: 'vb34-vinglar',
+  // ORDER 296 — födelsedagen (vb32), som födelsedagspaketet i butiken gäller.
+  birthdayIncidentId: 'vb32-fodelsedagen',
   // ORDER 270 (Vision Owner 2026-09-27): "2–4 raketer per kväll, fler
   // fredag och lördag."
   minPerEvening: 2,
@@ -857,7 +915,12 @@ export const EVENTS = {
   // Recensent: ryktet minst detta när servicen öppnar ("gott rykte
   // till en recensent"). Utfallet följer kvällen.
   reviewerReputationAtLeast: 70,
-  reviewerReputationChange: 5
+  reviewerReputationChange: 5,
+  // ORDER 296 (kärnan punkt 3, "recensenten skriver i tidningen") — under
+  // gränsen kommer recensenten ändå ibland: chansen en kväll är bas + ryktet
+  // gånger perReputation (omkring en gång i veckan vid ryktet 0,45).
+  reviewerChanceBase: 0.06,
+  reviewerChancePerReputation: 0.2
 } as const;
 
 // ---------------------------------------------------------------------

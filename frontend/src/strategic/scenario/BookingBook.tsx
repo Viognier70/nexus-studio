@@ -12,6 +12,8 @@ import { formatClock } from '../../sim/incidents';
 import { doorsOpenMinutes } from '../../sim/clock';
 import { WARM } from '../../ui/theme/nexusTheme.warm';
 import { buzzFactor, currentBooking, socialName } from '../simulation/guestTypes';
+import { t as tt } from '../../content/nexusStrings';
+import { useLanguage } from '../../content/language';
 
 interface Row {
   key: string;
@@ -54,6 +56,9 @@ export function BookingBook({ sim }: { sim: SimulationState }) {
   // Ryktet från en gäst med socialt kapital som gäller i kväll.
   const buzz = (sim.guestBuzz ?? []).find((x) => x.fromDay <= sim.day.dayNumber && sim.day.dayNumber <= x.untilDay);
   const f = buzzFactor(sim);
+  // Gästerna som hade kommit utan ryktet, minus de som kommer nu.
+  const cancellations = f < 1 && f > 0 ? Math.round(b.total / f - b.total) : 0;
+  const lang = useLanguage();
   return (
     <div className="nx-paper nxs-book" data-testid="booking-book">
       <div className="nx-label">{strings.morningBuy.bookKicker}</div>
@@ -74,8 +79,14 @@ export function BookingBook({ sim }: { sim: SimulationState }) {
           </div>
         ))}
       </div>
-      {buzz && f !== 1 && (
-        <p className="nx-small" data-testid="booking-buzz" style={{ margin: 0 }}>{g.bookNoteBuzz(socialName(buzz.nameIndex), f > 1)}</p>
+      {buzz && f > 1 && (
+        <p className="nx-small" data-testid="booking-buzz" style={{ margin: 0 }}>{g.bookNoteBuzz(socialName(buzz.nameIndex), true)}</p>
+      )}
+      {/* ORDER 296 (kärnan punkt 3) — avbokningarna efter en missnöjd gäst med socialt kapital, som tal. */}
+      {buzz && f < 1 && (
+        <p className="nx-small" data-testid="booking-buzz" data-cancellations={cancellations} style={{ margin: 0, fontWeight: 700 }}>
+          {tt(lang, 'social.cancellations', { name: socialName(buzz.nameIndex), n: cancellations })}
+        </p>
       )}
       {b.billionaireInTown && (
         <p className="nx-small nx-muted" data-testid="booking-billionaire" style={{ margin: 0, fontStyle: 'italic' }}>{g.billionaireAside}</p>

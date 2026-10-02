@@ -1,6 +1,6 @@
 import { calendarFor } from '../../sim/calendar';
 import { bestAnswerFactor, drinkRevenueFactor, enablersWithCredits } from '../../sim/knowledgeInService';
-import { EVENING, EVENING_ECONOMY, GUEST_TYPES, QUEUE_CAP, SERVICE, type BusinessClassId } from '../../sim/balance';
+import { EVENING, EVENING_ECONOMY, GUEST_TYPES, QUEUE_CAP, SERVICE, SHOP, type BusinessClassId } from '../../sim/balance';
 import { answerSalvage, closeSalvage, discardUnresolvedSalvage } from './salvage';
 import { clockMinutes, formatClock, canBack, canStartBack, pickBackAnswer, closeIncidents, countDown, isIncidentOpen, maybeOpenIncident, planIncidents, resolveIncident, startBack, tickOngoing, type CreditChange } from '../../sim/incidents';
 import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
@@ -77,6 +77,7 @@ const EXAM_QUESTION_BANK: readonly Question[] = [
 ];
 import { tickDjRound } from '../../sim/satsningar';
 import { applyMiseAtDoors, hirePrepHand, tickPrepBacklog } from '../../sim/miseEnPlace';
+import { abilityUnlocked, creditsOf, setSlot, shopOf } from '../../sim/shop';
 import { arrivalAttraction, maybeSpawnGuest, scenarioSpawnStep, walkAwayProbability } from './arrivals';
 import { planScenariosForService, scheduleScenarioTriggerTimes } from './day';
 import { revenuePerGuest } from './economics';
@@ -312,7 +313,9 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       if (state.day.period !== 'evening') return state;
       const from = state.day.eveningStep ?? 'result';
       // ORDER 288 — kvällen i byn (jämförelsen) efter kvällens resultat.
-      const allowed: Record<string, string[]> = { waste: ['transfer', 'result'], transfer: ['result'], result: ['compare', 'lesson', 'story'], compare: ['lesson', 'story'], lesson: ['story'], story: ['lesson'] };
+      // ORDER 296 — Designs ordning: kvällens resultat, lärdomen och
+      // berättelsen, sedan byn i kväll och butiken (Till butiken, Till morgonen).
+      const allowed: Record<string, string[]> = { waste: ['transfer', 'result'], transfer: ['result'], result: ['lesson', 'story', 'compare', 'shop'], lesson: ['story', 'compare', 'shop'], story: ['lesson', 'compare', 'shop'], compare: ['shop'], shop: [] };
       if (!allowed[from]?.includes(action.to)) return state;
       return { ...state, day: { ...state.day, eveningStep: action.to } };
     }
@@ -439,11 +442,15 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       return makeNewGameState(state.seed, state.policies);
     case 'HIRE_PREP_HAND':
       return hirePrepHand(state);
+    case 'SHOP_BUY':
+      return shopBuy(state, action.id);
+    case 'SHOP_SLOT':
+      return setSlot(state, action.id, action.on);
     case 'RESTART_SEASON': {
       // ORDER 296 — efter stängningen: en ny säsong. Det spelaren lärt sig
       // (medaljerna och proven) följer med; kassan, lånet och krogen börjar om.
       const fresh = makeNewGameState(state.seed, state.policies);
-      return { ...fresh, medals: state.medals, examsTaken: state.examsTaken };
+      return { ...fresh, medals: state.medals, examsTaken: state.examsTaken, shop: state.shop };
     }
     case 'FORCE_COLLAPSE':
       return forceCollapseAction(state);
@@ -1287,6 +1294,22 @@ function settleBackCredits(state: SimulationState): SimulationState {
     }
   }
   return s;
+}
+
+// ORDER 296 — butiken: medaljen öppnar, krediterna betalar (en i taget från
+// axeln med flest, som en förlust i Stå för ditt svar). Köpet läggs i facket
+// om det finns plats.
+function shopBuy(state: SimulationState, id: string): SimulationState {
+  const spec = SHOP.abilities[id];
+  const shop = shopOf(state);
+  if (!spec || shop.owned.includes(id) || !abilityUnlocked(state, id) || creditsOf(state) < spec.price) return state;
+  let s: SimulationState = state;
+  for (let i = 0; i < spec.price; i++) {
+    const axis = BACK_AXES.reduce((best, a) => (s.knowledgeCredits[a] > s.knowledgeCredits[best] ? a : best), BACK_AXES[0]);
+    s = debitQuestion(s, axis, null, 1);
+  }
+  s = { ...s, shop: { owned: [...shop.owned, id], slot: shop.slot } };
+  return setSlot(s, id, true);
 }
 
 // ORDER 263 — söndagen är stängd: morgonen (fyra schemaplatser) följs

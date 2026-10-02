@@ -31,7 +31,8 @@ import { clockMinutes, formatClock } from './clock';
 import { clampReputation } from '../strategic/simulation/reputation';
 import { strings } from '../content/strings';
 import { rocketClipFor, rocketFigure, type RocketFigure } from './theatreTriggers';
-import { ANSWER_EFFECTS, THEATRE, BACK, type Confidence, INCIDENTS, MENU_ROCKETS, REPUTATION, SERVICE_STREAM } from './balance';
+import { ANSWER_EFFECTS, THEATRE, BACK, type Confidence, INCIDENTS, MENU_ROCKETS, REPUTATION, SERVICE_STREAM, SHOP } from './balance';
+import { abilityActive } from './shop';
 import { calendarFor } from './calendar';
 import { clampScenarioCash, scenarioUnitSek } from './economy';
 import { bestAnswerFactor, medalSteps } from './knowledgeInService';
@@ -520,6 +521,13 @@ function openIncident(
   // ORDER 293 — händelserna som teater: kortet väntar på manusets uppbyggnad.
   const eventAsk = backed ? undefined : THEATRE.eventAskSeconds[incident.id];
   const introLeft = figure ? THEATRE.rocketIntroSeconds[figure.clip] : eventAsk ? eventAsk[0] : 0;
+  // ORDER 296 — födelsedagspaketet (butiken): sällskapet har bokat tårta och
+  // bubbel i förväg, och köket vet i tid.
+  if (incident.id === INCIDENTS.birthdayIncidentId && abilityActive(draft, 'birthday') && !draft.day.birthdayPackageSek) {
+    applyCashRevenue(draft, SHOP.effects.birthdayPackageSek);
+    draft.serviceRevenueToday = { ...draft.serviceRevenueToday, dinner: draft.serviceRevenueToday.dinner + SHOP.effects.birthdayPackageSek / SERVICE_STREAM.sekPerKsek };
+    draft.day = { ...draft.day, birthdayPackageSek: SHOP.effects.birthdayPackageSek };
+  }
   const { [incident.id]: _used, ...queuedContext } = inc.queuedContext;
   draft.incidents = {
     ...inc,

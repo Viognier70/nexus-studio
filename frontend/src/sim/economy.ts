@@ -17,6 +17,7 @@ import {
   FLOOR,
   LOAN,
   RISK,
+  SHOP,
   REPUTATION,
   MARKET,
   MEDAL_LEVELS,
@@ -37,6 +38,7 @@ import { answerBookingsFor } from './nextDay';
 import { playerChoiceShare, villageEvening, type VenueEvening } from './village';
 import { teamForClass } from '../strategic/simulation/team';
 import { strings } from '../content/strings';
+import { abilityActive } from './shop';
 
 export const ALL_PAVILIONS: readonly PavilionKey[] = [
   'maltidbiblioteket',
@@ -256,8 +258,10 @@ export function dailyGuestCap(state: SimulationState): number {
   const buzz = (state.guestBuzz ?? []).reduce((f, b) => (b.fromDay <= d && d <= b.untilDay ? f + b.factor : f), 0);
   // ORDER 290 — en DJ i kväll drar fler gäster (satsningen book-dj).
   const dj = state.day.pickedActivityIds?.includes('book-dj') ? EVENING_ECONOMY.djGuestShare : 0;
+  // ORDER 296 — stamgästboken: stamgästerna kommer tillbaka oftare.
+  const regulars = abilityActive(state, 'regulars') ? SHOP.effects.regularsArrivals : 0;
   // ORDER 292 — gårdagens svar: bokningar tack vare (eller avbokade), sim/nextDay.ts.
-  return Math.max(0, Math.floor(pool * playerShareTonight(state) * Math.max(0, 1 + buzz + dj)) + answerBookingsFor(state));
+  return Math.max(0, Math.floor(pool * playerShareTonight(state) * Math.max(0, 1 + buzz + dj + regulars)) + answerBookingsFor(state));
 }
 
 // Nedgraderingskedjan (speldesign > Nedgradering).

@@ -23,6 +23,7 @@ import { DayActionBar } from './scenario/DayActionBar';
 import { EveningBar } from './scenario/EveningBar';
 import { IncidentCard } from './scenario/IncidentPanel';
 import { ClosedBox } from './economy/ClosedBox';
+import { RivalBand } from './ui/host/RivalBand';
 import { NoBusinessBox } from './economy/NoBusinessBox';
 import { MaltidensHusDialog } from './knowledge/ui/MaltidensHusDialog';
 import { BankDialog } from './economy/BankDialog';
@@ -298,9 +299,15 @@ function StrategicShell() {
           (PlayerPanel) står inte längre i raden; kassan är rutan. */}
       <div className="gb-topleft">
         <DayBadge />
-        <ServiceClock />
-        {/* ORDER 290 — Designs serviceläget: kvällskassan bredvid klockan. */}
-        <TillBar />
+        {/* ORDER 296 — bandet i byn under klockan och kvällskassan, lika brett som de två. */}
+        <div className="nx-hud-stack">
+          <div className="nx-hud-row">
+            <ServiceClock />
+            {/* ORDER 290 — Designs serviceläget: kvällskassan bredvid klockan. */}
+            <TillBar />
+          </div>
+          <RivalBand />
+        </div>
       </div>
       {/* ORDER 288 — fyra nivåer med egna knappar och tangenter (byn och
           tillbaka med V som i ORDER 290), och byns aviseringar. */}
