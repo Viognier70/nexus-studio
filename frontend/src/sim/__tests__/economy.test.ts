@@ -23,6 +23,12 @@ import { calendarFor } from '../calendar';
 import { makeInitialState } from '../../strategic/simulation/model';
 import { reducer } from '../../strategic/simulation/reducer';
 import type { SimulationState } from '../../strategic/types';
+import { useLegacyEconomy } from '../../strategic/testHarness/legacyEconomy';
+
+// ORDER 296 — filen prövar de äldre ekonomireglerna (nedgradering, golvets
+// påfyllnad, amortering och den förra startkassan); kärnans risk stänger av
+// dem i spelet.
+useLegacyEconomy();
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SRC = resolve(HERE, '../..');

@@ -18,7 +18,8 @@
 // sällskapet kan gå med hen.
 
 import type { Allergen, Guest, SimulationState } from '../types';
-import { GUESTS, GUEST_TYPES, INCIDENTS, SERVICE_STREAM, STOCK } from '../../sim/balance';
+import { GUESTS, GUEST_TYPES, HOST, INCIDENTS, SERVICE_STREAM, SHOP, STOCK } from '../../sim/balance';
+import { abilityActive } from '../../sim/shop';
 import { strings } from '../../content/strings';
 import { clampReputation } from './reputation';
 import { dishAllergens, dishDiet, findDish } from './m4Catalogue';
@@ -171,8 +172,11 @@ export function orderForGuest(draft: SimulationState, guest: Guest, rand: () => 
   let dish: Entry | null = null;
   let missing: MissingReason | null = null;
   const lost = (reason: MissingReason): GuestOrder => {
-    draft.reputation = clampReputation(draft.reputation - GUESTS.missingOptionReputation);
-    const partyLeft = rand() < GUESTS.partyLeavesChance ? partyLeaves(draft, guest) : 0;
+    // ORDER 296 — allergenkorten: en gäst som inte hittar något för sin kost
+    // vet det direkt, utan att fråga köket; ryktet rörs inte och sällskapet stannar.
+    const cards = abilityActive(draft, 'allergen') && reason !== 'soldOut' && reason !== 'wallet';
+    if (!cards) draft.reputation = clampReputation(draft.reputation - GUESTS.missingOptionReputation);
+    const partyLeft = !cards && rand() < GUESTS.partyLeavesChance ? partyLeaves(draft, guest) : 0;
     // ORDER 289 — gäster som gick utan mat, till rådet efter kvällen.
     if (reason === 'soldOut') draft.day.soldOutGuests = (draft.day.soldOutGuests ?? 0) + 1 + partyLeft;
     streamLine(draft, s.lost(reason, table, partyLeft), 'guest_lost_sale');
@@ -203,6 +207,9 @@ export function orderForGuest(draft: SimulationState, guest: Guest, rand: () => 
   if (dish) {
     takeFromStock(draft, dish.dishId, draft.simTime);
     revenueSek += dish.price;
+    // ORDER 296 — menyns berättelse och signaturrätten: gästen väljer det som kostar mer.
+    const more = (abilityActive(draft, 'menuStory') ? SHOP.effects.menuStoryBill : 0) + (abilityActive(draft, 'signature') ? SHOP.effects.signatureBill : 0);
+    if (more > 0) guest.billBonus = (guest.billBonus ?? 0) + more;
   }
 
   // Drycken. Ett sällskap som redan har en flaska på bordet delar på den.
@@ -217,8 +224,15 @@ export function orderForGuest(draft: SimulationState, guest: Guest, rand: () => 
     const bottleRoll = rand();
     // ORDER 287a — miljardären tar det dyraste, en flaska också ensam.
     const gold = p.wallet === 'gold';
-    if (!p.noAlcohol && bottles.length > 0 && (gold || (p.wallet === 'generous' && partyKey !== null && (guest.partySize ?? 1) >= GUESTS.minPartyForBottle
-      && bottleRoll < GUESTS.bottleChance))) {
+    // ORDER 296 — hovmästarens vinbeslut: sommeliern sålde in en flaska.
+    const hostBottle = guest.hostDrink === 'bottle' ? bottles.find((m) => m.dishId === HOST.bottleDishId) ?? bottles[0] : undefined;
+    if (!p.noAlcohol && hostBottle) {
+      takeFromStock(draft, hostBottle.dishId, draft.simTime);
+      drinks.push(hostBottle.dishId);
+      revenueSek += hostBottle.price;
+      if (partyKey !== null) draft.day = { ...draft.day, bottlePartyIds: [...(draft.day.bottlePartyIds ?? []), partyKey] };
+    } else if (!p.noAlcohol && bottles.length > 0 && (gold || (p.wallet === 'generous' && partyKey !== null && (guest.partySize ?? 1) >= GUESTS.minPartyForBottle
+      && bottleRoll < GUESTS.bottleChance + (abilityActive(draft, 'sommBottle') ? SHOP.effects.sommBottleChance : 0)))) {
       const b = pickByTaste(bottles, p.wallet, rand());
       takeFromStock(draft, b.dishId, draft.simTime);
       drinks.push(b.dishId);
@@ -233,9 +247,11 @@ export function orderForGuest(draft: SimulationState, guest: Guest, rand: () => 
         missing = missing ?? 'alcoholFree';
       }
       for (let glass = 0; glass < 2; glass++) {
-        const options = avail.filter((m) => fits(m) && left(draft, m.dishId) > 0);
+        // ORDER 296 — Per föreslog husets vin: det första glaset är husets.
+        const house = glass === 0 && guest.hostDrink === 'house' && !p.noAlcohol ? avail.filter((m) => m.dishId === HOST.glassDishId && left(draft, m.dishId) > 0) : [];
+        const options = house.length > 0 ? house : avail.filter((m) => fits(m) && left(draft, m.dishId) > 0);
         if (options.length === 0) break;
-        if (glass > 0 && rand() >= STOCK.secondDrinkChance) break;
+        if (glass > 0 && rand() >= STOCK.secondDrinkChance + (abilityActive(draft, 'wineTasting') ? SHOP.effects.wineTastingSecondDrink : 0)) break;
         const d = pickByTaste(options, p.wallet, rand());
         takeFromStock(draft, d.dishId, draft.simTime);
         drinks.push(d.dishId);
@@ -245,6 +261,10 @@ export function orderForGuest(draft: SimulationState, guest: Guest, rand: () => 
     }
   }
 
+  // ORDER 296 — vinkylen: vinet har rätt temperatur.
+  if (abilityActive(draft, 'wineFridge') && drinks.some((d) => (findDish(d)?.drink ?? '').startsWith('wine'))) {
+    guest.satisfaction = Math.min(1, guest.satisfaction + SHOP.effects.wineFridgeSatisfaction);
+  }
   if (missing === 'wallet') {
     guest.satisfaction = Math.max(0, guest.satisfaction + GUESTS.drinkOnlySatisfaction);
     draft.reputation = clampReputation(draft.reputation - GUESTS.missingDrinkReputation);

@@ -134,6 +134,7 @@ export function RestaurantScene() {
       walkPathsToSeatsByIndex: resolveWalkPathsToSeatsWorld(room),
       // ORDER 219 (A) — seat-positioner i ROOM-LOKAL XZ, för sim.seatSlot.
       seatsLocal: room.seats.map((s) => s.local as [number, number]),
+      seatKinds: room.seats.map((s) => (s as { kind?: string }).kind ?? ''),
       entrance: world.entrance as [number, number],
       waitingSpot: world.waitingSpot as [number, number],
       // ORDER 203 — restaurantRoom.resolveWorldPositions returnerar redan

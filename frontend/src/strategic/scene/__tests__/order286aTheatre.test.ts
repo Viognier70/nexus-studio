@@ -108,7 +108,8 @@ describe('ORDER 286a — raketen börjar i rummet', () => {
     let checked = 0;
     for (let i = 0; i < 40000 && s.day.period === 'dinner' && checked < 3; i++) {
       const a = s.incidents.active;
-      if (a && a.introLeft && a.introLeft > 0 && a.step === 0 && !a.backed) {
+      // Händelserna som teater (ORDER 293) väntar på manuset, utan figur.
+      if (a && a.introLeft && a.introLeft > 0 && a.step === 0 && !a.backed && !THEATRE.eventAskSeconds[a.id]) {
         const fig = a.context.figure!;
         expect(fig).toBeTruthy();
         expect(a.introLeft).toBeLessThanOrEqual(THEATRE.rocketIntroSeconds[fig.clip]);

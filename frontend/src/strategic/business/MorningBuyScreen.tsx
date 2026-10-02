@@ -15,6 +15,9 @@ import { strings } from '../../content/strings';
 import { creditLineSek } from '../../sim/economy';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 import { itemsCostSek, packagesFor } from '../simulation/packages';
+import { misePlan } from '../../sim/miseEnPlace';
+import { MISE_EN_PLACE } from '../../sim/balance';
+import { t as tt } from '../../content/nexusStrings';
 import { baseItemsFor, coverage, morningRows, spentTodaySek, stockValueSek, type DishRow, type DrinkRow } from '../simulation/morningBuy';
 import { stockReadiness } from '../simulation/stockPackages';
 import { NxButton, NxLabel, u } from '../ui/system/components';
@@ -22,7 +25,7 @@ import { formatSek } from '../ui/CashCounter';
 import { shake } from '../ui/juice/juice';
 import { flyTo, targetElement } from '../ui/juice/fx';
 import '../ui/screens/screens.css';
-import { numberLocale } from '../../content/language';
+import { numberLocale, useLanguage } from '../../content/language';
 import { useOpenGuard } from '../ui/OpenGuard';
 
 const T = strings.morningBuy;
@@ -54,12 +57,14 @@ export function MorningBuyScreen({ open, onClose }: { open: boolean; onClose: ()
   const guard = useOpenGuard(() => {});
   const sim = useSimState();
   const dispatch = useSimDispatch();
+  const lang = useLanguage();
   const [notice, setNotice] = useState<string | null>(null);
   if (!open || sim.day.period !== 'morning' || !packagesFor(sim.economy.businessClass)) return null;
   const { dishes, drinks } = morningRows(sim);
   const cov = coverage(sim);
   const spent = spentTodaySek(sim);
   const readiness = stockReadiness(sim);
+  const prep = misePlan(sim);
 
 
   const buy = (items: Record<string, number>, from: HTMLElement) => {
@@ -143,6 +148,21 @@ export function MorningBuyScreen({ open, onClose }: { open: boolean; onClose: ()
               {cov.overDrink && <p className="nx-small nx-accent-text" style={{ fontWeight: 700, margin: 0 }} data-testid="buy-over-drink">{T.overDrink(cov.glasses, cov.glassesNeeded)}</p>}
             </div>
           )}
+          {/* ORDER 296 (kärnan punkt 5) — förberedelsen efter inköpen och bokningen. */}
+          <div className="nxs-buy-block" data-testid="buy-prep" data-need={prep.needMin} data-capacity={prep.capacityMin} data-backlog={prep.backlogMin}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+              <NxLabel>{tt(lang, 'prep.label')}</NxLabel>
+              <strong className={prep.backlogMin > 0 ? 'nx-pulse' : undefined}>{tt(lang, 'prep.minutes', { need: prep.needMin, capacity: prep.capacityMin })}</strong>
+            </div>
+            <p className="nx-small" style={{ margin: `${u(6)} 0 0` }}>{prep.backlogMin > 0 ? tt(lang, 'prep.backlog', { n: prep.backlogMin }) : tt(lang, 'prep.ready')}</p>
+            {!prep.extraHand ? (
+              <button type="button" className="nx-btn nx-btn-quiet" style={{ width: 'auto', marginTop: u(8) }} data-testid="prep-hand" onClick={() => dispatch({ type: 'HIRE_PREP_HAND' })}>
+                {tt(lang, 'prep.hand', { price: formatSek(MISE_EN_PLACE.extraHandCostSek), n: MISE_EN_PLACE.extraHandMin })}
+              </button>
+            ) : (
+              <p className="nx-small" style={{ margin: `${u(6)} 0 0`, fontWeight: 700 }} data-testid="prep-hand-hired">{tt(lang, 'prep.handHired')}</p>
+            )}
+          </div>
           <div className="nxs-buy-block">
             <NxLabel>{T.potential}</NxLabel>
             <div className="nx-num" style={{ fontSize: u(30), marginTop: u(6) }}>{T.potentialIn(formatSek(cov.potentialSek))}</div>

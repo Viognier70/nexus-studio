@@ -368,7 +368,9 @@ describe('ORDER 287a — sittklippen (Vision Owner 2026-09-30)', () => {
 describe('ORDER 287a — gästtyperna över veckan (rapport)', () => {
   it('gäster och intäkt per typ, gästen med socialt kapital och miljardären', async () => {
     const { playDay } = await import('../../strategic/testHarness/weekHarness');
-    const seeds = process.env.WRITE_REPORTS === '1' ? Array.from({ length: Number(process.env.WEEK_SEEDS ?? 20) }, (_, i) => i + 1) : [1];
+    // ORDER 296b — fyra frön i sviten: ordningen per gäst är ett snitt, och en
+    // enda vecka (frö 1) kan vända den mellan studenten och medelinkomsttagaren.
+    const seeds = Array.from({ length: Number(process.env.WEEK_SEEDS ?? (process.env.WRITE_REPORTS === '1' ? 20 : 4)) }, (_, i) => i + 1);
     const rows: unknown[] = [];
     const perType: Record<string, { guests: number; revenueSek: number }> = {};
     let socialGood = 0, socialBad = 0, socialNeutral = 0, socialBooked = 0, billionaireOurs = 0, treated = 0;

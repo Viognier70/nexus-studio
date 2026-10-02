@@ -34,6 +34,7 @@ import { eveningGrid, pickLessonIndex, stepsCleared, type CellState, type GridRo
 import '../ui/service/service.css';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 import { CompareScreen, eveningVillage } from './CompareScreen';
+import { ShopScreen } from '../ui/host/ShopScreen';
 
 function BookIcon() {
   return (
@@ -272,27 +273,33 @@ export function EveningBar() {
   const guard = useArrivalGuard(`${sim.day.dayNumber}:${step}`);
   if (sim.day.period !== 'evening' || sim.day.eveningEndRequested) return null;
   const afterResult = lesson !== null ? 'lesson' : 'story';
-  const go = (to: 'transfer' | 'result' | 'compare' | 'lesson' | 'story') => dispatch({ type: 'EVENING_STEP', to });
+  const go = (to: 'transfer' | 'result' | 'compare' | 'lesson' | 'story' | 'shop') => dispatch({ type: 'EVENING_STEP', to });
   // ORDER 290 — överföringen till företagskontot efter sopbilen.
   const hasTransfer = !!sim.day.transfer && sim.day.transfer.dayNumber === sim.day.dayNumber;
   const end = guard(() => dispatch({ type: 'END_EVENING' }));
+  // ORDER 296 — efter berättelsen: byn i kväll (när byns rader finns) och
+  // butiken, sist före morgonen.
+  const hasCompare = eveningVillage(sim) !== null;
+  const afterStory = guard(() => go(hasCompare ? 'compare' : 'shop'));
   if (step === 'waste' && hasWaste) {
     return <WasteScreen sim={sim} onContinue={guard(() => go(hasTransfer ? 'transfer' : 'result'))} />;
   }
   if ((step === 'transfer' || step === 'waste') && hasTransfer) {
     return <TransferScreen sim={sim} onContinue={guard(() => go('result'))} />;
   }
-  // ORDER 288 — kvällen i byn (J1) efter kvällens resultat, när byns rader finns.
-  const hasCompare = eveningVillage(sim) !== null;
   if (step === 'waste' || step === 'transfer' || step === 'result') {
-    return <ResultScreen sim={sim} onContinue={guard(() => go(hasCompare ? 'compare' : afterResult))} />;
+    return <ResultScreen sim={sim} onContinue={guard(() => go(afterResult))} />;
   }
+  // ORDER 288 — kvällen i byn (J1); ORDER 296 — efter berättelsen, före butiken.
   if (step === 'compare') {
-    return <CompareScreen sim={sim} onContinue={guard(() => go(afterResult))} />;
+    return <CompareScreen sim={sim} onContinue={guard(() => go('shop'))} />;
+  }
+  if (step === 'shop') {
+    return <ShopScreen onDone={end} />;
   }
   // En kväll utan raketer har ingen lärdom: bara berättelsen.
   if (lesson === null || step === 'story') {
-    return <StoryScreen sim={sim} onBack={lesson !== null ? guard(() => go('lesson')) : null} onEnd={end} />;
+    return <StoryScreen sim={sim} onBack={lesson !== null ? guard(() => go('lesson')) : null} onEnd={afterStory} />;
   }
-  return <LessonScreen sim={sim} lesson={lesson} onStory={guard(() => go('story'))} onEnd={end} />;
+  return <LessonScreen sim={sim} lesson={lesson} onStory={guard(() => go('story'))} onEnd={afterStory} />;
 }

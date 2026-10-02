@@ -32,7 +32,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Html } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
-import { useSimState } from '../simulation/SimulationProvider';
+import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 import { useCamera } from '../camera/CameraContext';
 import { GRAY_BOX_CAMERA } from '../content/grythyttan';
 import { giveUpSatisfaction, queuePatienceSeconds } from '../../sim/knowledgeInService';
@@ -115,6 +115,9 @@ import { EventPlayer } from './theatreEvents';
 import { theatreSeats } from './eventTheatre';
 import type { CameraTarget } from '../types';
 import { StaffRingTag } from '../ui/StaffRingTag';
+import { HostLayer, WorldHtml } from './HostLayer';
+import { MoveMenu } from '../ui/host/HostViews';
+import { useLanguage } from '../../content/language';
 import { ROLE_OF } from './staffMarks';
 
 // ORDER 293 — strålkastaren sänker rummets ljus (Designs teaterScen.js: 45 %),
@@ -331,6 +334,21 @@ export function WineBarFigures({ room, mood }: Props) {
   const ringTagRef = useRef<THREE.Group>(null);
   const [ringTag, setRingTag] = useState<{ i: number; role: string; task: string } | null>(null);
   const ringTagKey = useRef('');
+  // ORDER 296 (kärnan punkt 1) — Flytta personal: klick på en ring öppnar zonerna.
+  const ringWorldRef = useRef<{ i: number; x: number; y: number; z: number } | null>(null);
+  const [moveMenu, setMoveMenu] = useState<{ i: number; x: number; y: number; z: number } | null>(null);
+  const glEl = useThree((x) => x.gl.domElement);
+  const dispatchSim = useSimDispatch();
+  const langNow = useLanguage();
+  useEffect(() => {
+    const onClick = () => {
+      const w = ringWorldRef.current;
+      if (w && simRef.current.day.period === 'dinner') setMoveMenu(w);
+      else setMoveMenu(null);
+    };
+    glEl.addEventListener('click', onClick);
+    return () => glEl.removeEventListener('click', onClick);
+  }, [glEl]);
   const pointer = useThree((x) => x.pointer);
   const camera = useThree((x) => x.camera);
   const raycaster = useMemo(() => new THREE.Raycaster(), []);
@@ -687,6 +705,8 @@ export function WineBarFigures({ room, mood }: Props) {
         setRingTag(hit >= 0 ? { i: hit, role: ROLE_OF[STAFF_KEYS[hit]], task: key.split(':')[1] } : null);
       }
       const g = ringTagRef.current;
+      // ORDER 296 — läget i världen, för hovmästarens Flytta (klick på ringen).
+      ringWorldRef.current = hit >= 0 ? (() => { const w = cast.group.localToWorld(new THREE.Vector3(ss[hit].x, room.floorY, ss[hit].z)); return { i: hit, x: w.x, y: w.y, z: w.z }; })() : null;
       if (g && hit >= 0 && g.parent) {
         // Personalens läge är i rummets ram; etiketten står i sin förälders.
         const p = cast.group.localToWorld(new THREE.Vector3(ss[hit].x, room.floorY + RING_TAG_HEIGHT_M, ss[hit].z));
@@ -839,6 +859,13 @@ export function WineBarFigures({ room, mood }: Props) {
   const reaction = sim.day.roomReactions?.at(-1) ?? null;
   return (
     <>
+      {/* ORDER 296 (kärnan punkt 1) — hovmästarens nålar och handgrepp. */}
+      {roomShown && <HostLayer room={room} />}
+      {moveMenu && roomShown && sim.day.period === 'dinner' && (
+        <WorldHtml at={[moveMenu.x, moveMenu.z]} y={moveMenu.y + RING_TAG_HEIGHT_M} z={38}>
+          <MoveMenu lang={langNow} role={ROLE_OF[STAFF_KEYS[moveMenu.i]]} onMove={(zone) => { dispatchSim({ type: 'HOST_MOVE', zone }); setMoveMenu(null); }} />
+        </WorldHtml>
+      )}
       {ringTag && roomShown && (
         <group ref={ringTagRef}>
           <Html center zIndexRange={[22, 0]} style={{ pointerEvents: 'none' }}>

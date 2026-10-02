@@ -16,6 +16,8 @@ import {
   SCENARIO_CASH,
   FLOOR,
   LOAN,
+  RISK,
+  SHOP,
   REPUTATION,
   MARKET,
   MEDAL_LEVELS,
@@ -36,6 +38,7 @@ import { answerBookingsFor } from './nextDay';
 import { playerChoiceShare, villageEvening, type VenueEvening } from './village';
 import { teamForClass } from '../strategic/simulation/team';
 import { strings } from '../content/strings';
+import { abilityActive } from './shop';
 
 export const ALL_PAVILIONS: readonly PavilionKey[] = [
   'maltidbiblioteket',
@@ -62,6 +65,17 @@ export interface LoanState {
   originalSek: number;
   principalSek: number;
   weeksLeft: number;
+  // ORDER 296 — omförhandlat lån: räntan gånger den här faktorn.
+  rateFactor?: number;
+}
+
+// ORDER 296 — risken (balance.ts RISK): veckomålet, omförhandlingen och
+// stängningen.
+export interface RiskState {
+  missedInRow: number;
+  belowZeroInRow: number;
+  renegotiated: boolean;
+  closedWeek: number | null;
 }
 
 // ORDER 267 — en kväll i veckan, för söndagstidningen (sim/newspaper.ts).
@@ -131,6 +145,12 @@ export interface SettlementRecord {
   wagesSek?: number;
   // ORDER 291 — veckans kurser, redovisade som investering.
   coursesSek?: number;
+  // ORDER 296 — bankens veckomål, och vad avräkningen ledde till.
+  targetSek?: number;
+  targetHit?: boolean;
+  renegotiatedNow?: boolean;
+  closedNow?: boolean;
+  cashAfterSek?: number;
   downgradedFrom: BusinessClassId | null;
   downgradedTo: BusinessClassId | null;
 }
@@ -159,6 +179,8 @@ export interface EconomyState {
   // ORDER 280 — veckans löner sedan förra avräkningen.
   weekWagesSek?: number;
   weekCoursesSek?: number;
+  // ORDER 296 — risken. Saknas i äldre sparfiler: då har inget hänt än.
+  risk?: RiskState;
 }
 
 export function classSpec(id: BusinessClassId): BusinessClassSpec {
@@ -236,8 +258,10 @@ export function dailyGuestCap(state: SimulationState): number {
   const buzz = (state.guestBuzz ?? []).reduce((f, b) => (b.fromDay <= d && d <= b.untilDay ? f + b.factor : f), 0);
   // ORDER 290 — en DJ i kväll drar fler gäster (satsningen book-dj).
   const dj = state.day.pickedActivityIds?.includes('book-dj') ? EVENING_ECONOMY.djGuestShare : 0;
+  // ORDER 296 — stamgästboken: stamgästerna kommer tillbaka oftare.
+  const regulars = abilityActive(state, 'regulars') ? SHOP.effects.regularsArrivals : 0;
   // ORDER 292 — gårdagens svar: bokningar tack vare (eller avbokade), sim/nextDay.ts.
-  return Math.max(0, Math.floor(pool * playerShareTonight(state) * Math.max(0, 1 + buzz + dj)) + answerBookingsFor(state));
+  return Math.max(0, Math.floor(pool * playerShareTonight(state) * Math.max(0, 1 + buzz + dj + regulars)) + answerBookingsFor(state));
 }
 
 // Nedgraderingskedjan (speldesign > Nedgradering).
@@ -272,7 +296,18 @@ export function initialEconomy(id: BusinessClassId | null, weeksLeft: number, re
 // Räntan per dag: 5 % av lånebeloppet över säsongens veckor (F3).
 export function dailyInterestSek(loan: LoanState | null): number {
   if (!loan || loan.principalSek <= 0) return 0;
-  return (LOAN.interestRate * loan.originalSek) / (LOAN.amortisationWeeks * WEEK.daysPerWeek);
+  return ((loan.rateFactor ?? 1) * LOAN.interestRate * loan.originalSek) / (LOAN.amortisationWeeks * WEEK.daysPerWeek);
+}
+
+// ORDER 296 — bankens veckomål: veckans intäkt, som andel av klassens
+// normala veckointäkt (balance.ts RISK).
+export function weeklyTargetSek(id: BusinessClassId | null): number {
+  if (!id) return 0;
+  return Math.round(RISK.weeklyTargetShareOfNormalRevenue * ECONOMY.normalWeeklyRevenueSek[id]);
+}
+
+export function isClosed(state: Pick<SimulationState, 'economy'>): boolean {
+  return (state.economy.risk?.closedWeek ?? null) !== null;
 }
 
 // Kassan vid dagsavslut (F24): som den blir när dagen är slut, efter
@@ -301,6 +336,8 @@ export function dayEndHeadroom(state: SimulationState): number {
 // och ger varningen till kvällsberättelsen. ORDER 268: `headroom` är
 // kassan plus kreditramen (dayEndHeadroom).
 export function dayEnd(economy: EconomyState, headroom: number): EconomyState {
+  // ORDER 296 — stängningen (RISK) ersätter nedgraderingen.
+  if (!RISK.downgrade) return { ...economy, consecutiveNegativeDayEnds: 0, warning: null };
   const negative = headroom < 0;
   const count = negative ? economy.consecutiveNegativeDayEnds + 1 : 0;
   const reached = count >= DOWNGRADE.consecutiveNegativeDayEnds;
@@ -562,8 +599,10 @@ export function settleWeek(state: SimulationState): SimulationState {
   const week = calendarFor(state.day.dayNumber).week;
   const revenueSek = Math.round(state.revenue - e.weekRevenueStartSek);
   const floor = floorSek(e.businessClass, state.medals);
-  const topUpSek = Math.max(0, floor - revenueSek);
-  const amortisationSek = e.loan && e.loan.weeksLeft > 0 ? Math.round(e.loan.principalSek / e.loan.weeksLeft) : 0;
+  // ORDER 296 — golvets påfyllnad och amorteringen under säsongen styrs av
+  // RISK (båda av i kärnan: bara ränta, och ingen påfyllnad).
+  const topUpSek = RISK.floorTopUp ? Math.max(0, floor - revenueSek) : 0;
+  const amortisationSek = RISK.amortiseDuringSeason && e.loan && e.loan.weeksLeft > 0 ? Math.round(e.loan.principalSek / e.loan.weeksLeft) : 0;
   const draft: SimulationState = { ...state, ledger: [...state.ledger] };
   if (topUpSek > 0) {
     applyCashDelta(draft, topUpSek);
@@ -581,12 +620,27 @@ export function settleWeek(state: SimulationState): SimulationState {
   }
   const wagesSek = Math.round(e.weekWagesSek ?? 0);
   const coursesSek = Math.round(e.weekCoursesSek ?? 0);
+  // ORDER 296 — veckomålet, omförhandlingen och stängningen.
+  const prevRisk: RiskState = e.risk ?? { missedInRow: 0, belowZeroInRow: 0, renegotiated: false, closedWeek: null };
+  const targetSek = weeklyTargetSek(e.businessClass);
+  const targetHit = !e.businessClass || revenueSek >= targetSek;
+  const missedInRow = targetHit ? 0 : prevRisk.missedInRow + 1;
+  const renegotiatedNow = !prevRisk.renegotiated && !!e.loan && missedInRow >= RISK.renegotiateAfterMissedWeeks;
+  const renegotiated = prevRisk.renegotiated || renegotiatedNow;
+  const belowZeroInRow = e.businessClass && draft.cash < 0 ? prevRisk.belowZeroInRow + 1 : 0;
+  const closedNow = prevRisk.closedWeek === null && belowZeroInRow >= RISK.closeAfterWeeksBelowZero;
+  const risk: RiskState = { missedInRow, belowZeroInRow, renegotiated, closedWeek: closedNow ? week : prevRisk.closedWeek };
   const loan = e.loan
-    ? { ...e.loan, principalSek: Math.max(0, e.loan.principalSek - amortisationSek), weeksLeft: Math.max(0, e.loan.weeksLeft - 1) }
+    ? {
+        ...e.loan,
+        principalSek: Math.max(0, e.loan.principalSek - amortisationSek),
+        weeksLeft: RISK.amortiseDuringSeason ? Math.max(0, e.loan.weeksLeft - 1) : e.loan.weeksLeft,
+        rateFactor: renegotiated ? RISK.renegotiatedInterestFactor : e.loan.rateFactor
+      }
     : null;
   let next: SimulationState = {
     ...draft,
-    economy: { ...e, loan, weekRevenueStartSek: state.revenue, weekEvenings: [], weekScenarioCashSek: 0, weekWagesSek: 0, weekCoursesSek: 0 }
+    economy: { ...e, loan, risk, weekRevenueStartSek: state.revenue, weekEvenings: [], weekScenarioCashSek: 0, weekWagesSek: 0, weekCoursesSek: 0 }
   };
   let downgradedTo: BusinessClassId | null = null;
   const downgradedFrom = e.downgradePending ? e.businessClass : null;
@@ -598,7 +652,7 @@ export function settleWeek(state: SimulationState): SimulationState {
     ...next,
     economy: {
       ...next.economy,
-      lastSettlement: { week, evenings: e.weekEvenings ?? [], revenueSek, floorSek: floor, topUpSek, amortisationSek, rentSek, wagesSek, coursesSek, downgradedFrom, downgradedTo }
+      lastSettlement: { week, evenings: e.weekEvenings ?? [], revenueSek, floorSek: floor, topUpSek, amortisationSek, rentSek, wagesSek, coursesSek, targetSek, targetHit, renegotiatedNow, closedNow, cashAfterSek: Math.round(next.cash), downgradedFrom, downgradedTo }
     }
   };
 }

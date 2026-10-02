@@ -403,6 +403,8 @@ export interface Guest {
   tipBonus?: number;
   // ORDER 290 — rätt och fel svar vid bordet: notan gånger 1 + billBonus.
   billBonus?: number;
+  // ORDER 296 — hovmästarens vinbeslut: flaskan (sommeliern) eller husets vin (Per).
+  hostDrink?: 'bottle' | 'house';
   partySize?: number;
   // ORDER 260 — timing-diagnostik. Sätts när guest transitionerar in i
   // seated respektive dining. `orderCompleteAtSimTime − seatedAtSimTime`
@@ -780,7 +782,7 @@ export interface DayState {
   // resultat, lärdomen, berättelsen. Sätts när servicen stänger; går bara
   // framåt (EVENING_STEP), så att en omritning eller ett dubbelklick inte
   // hoppar över kvällens resultat (provspel av 285).
-  eveningStep?: 'waste' | 'transfer' | 'result' | 'compare' | 'lesson' | 'story' | null;
+  eveningStep?: 'waste' | 'transfer' | 'result' | 'compare' | 'lesson' | 'story' | 'shop' | null;
   // ORDER 265 — dagens ankomster, mot marknadens tak (dailyGuestCap).
   arrivalsToday?: number;
   // ORDER 288 — turisterna från bussen (ingår i arrivalsToday men inte i
@@ -924,6 +926,29 @@ export interface DayState {
   // at day rollover with the rest of DayState.
   substitutedCount: number;
   walkedCount: number;
+  // ORDER 296b — gäster som kom när kön var full och valde en annan krog.
+  turnedAwayFull?: number;
+  // ORDER 296b — DJ:ns sena runda: när, hur många glas och vad den sålde.
+  djRoundAt?: number | null;
+  djRoundGlasses?: number;
+  djRoundSek?: number;
+  // ORDER 296 — mise en place efter inköpen (sim/miseEnPlace.ts): den extra
+  // handen på morgonen, och behovet, det som hanns och eftersläpet (spelminuter).
+  prepHand?: boolean;
+  prepNeedMin?: number;
+  prepCapacityMin?: number;
+  prepBacklogMin?: number;
+  // ORDER 296 — kockens bord i kväll: sällskapets nyckel (förmågan chefsTable).
+  chefsTableParty?: string | null;
+  // ORDER 296 — hovmästarens Ge bord: bordet spelaren valde för sällskapet.
+  seatHint?: { key: string; seats: readonly number[] } | null;
+  // ORDER 296 — hovmästarens nålar och den flyttade personalen (sim/hostPins.ts).
+  pins?: import('../sim/hostPins').PinsState;
+  helpZone?: { zone: 'bar' | 'floor' | 'lounge'; until: number } | null;
+  // ORDER 296 — gästen med socialt kapital som gick missnöjd till en rival.
+  socialWalkout?: { rivalId: string; at: number; nameIndex: number } | null;
+  // ORDER 296 — födelsedagspaketet sålt i kväll (förmågan birthday).
+  birthdayPackageSek?: number;
   // ORDER 277 — sällskap som har en flaska på bordet i kväll (den räcker
   // till hela bordet). Nollas med resten av dagen.
   bottlePartyIds?: string[];
@@ -1241,6 +1266,8 @@ export type EventStreamCauseTag =
   // the event names its own condition (service just started).
   // Counts as specific under M6 DoD 2 coverage.
   | 'doors_open'
+  // ORDER 296 — recensenten (morgonens tidning och förvarningen).
+  | 'reviewer'
   // Legacy fallbacks (three-value tag from earlier eventStream defs)
   | 'ignorance'
   | 'strain'
@@ -1568,6 +1595,10 @@ export interface SimulationState {
   // ORDER 287a — ryktet från gästen med socialt kapital: marknadens tak
   // gånger 1 + factor dag fromDay till untilDay (sim/guestTypes.ts).
   guestBuzz?: { fromDay: number; untilDay: number; factor: number; nameIndex: number }[];
+  // ORDER 296b — DJ-kvällarna den här veckan (sim/satsningar.ts).
+  djWeek?: { week: number; evenings: number };
+  // ORDER 296 — butiken: köpta förmågor (behålls) och facket (gäller nästa kväll).
+  shop?: { owned: string[]; slot: string[] };
   // ORDER 288 — konkurrensen i byn: rivalerna (rykte och vem som styr dem).
   // Saknas i äldre sparfiler; sim/village.ts villageOf ger startläget.
   competition?: import('../sim/village').VillageState;
@@ -1795,6 +1826,19 @@ export type SimAction =
   | { type: 'HIRE_TEAM_MEMBER'; role: StaffRole }
   | { type: 'FIRE_TEAM_MEMBER'; memberId: string }
   | { type: 'RESET' }
+  // ORDER 296 — krogen har stängt: en ny säsong, med medaljerna och proven kvar.
+  | { type: 'RESTART_SEASON' }
+  // ORDER 296 — en extra hand till förberedelsen på morgonen.
+  | { type: 'HIRE_PREP_HAND' }
+  // ORDER 296 — butiken: köp en förmåga, lägg i eller ta ur facket.
+  | { type: 'SHOP_BUY'; id: string }
+  | { type: 'SHOP_SLOT'; id: string; on: boolean }
+  // ORDER 296 — hovmästaren: svaret på en nål, och handgreppen.
+  | { type: 'HOST_PIN_ANSWER'; id: string; answer: 0 | 1 }
+  | { type: 'HOST_SEAT'; key: string; seats?: readonly number[] }
+  | { type: 'HOST_COMP'; key: string; what: 'glass' | 'coffee' }
+  | { type: 'HOST_UPSELL'; key: string; what: 'dessert' | 'wine' }
+  | { type: 'HOST_MOVE'; zone: 'bar' | 'floor' | 'lounge' }
   // ORDER 047 §8 dev-only — force the current service to collapse on
   // the next tick, so the mechanic can be seen, judged and tuned
   // without waiting for the rare RNG roll. Guarded at the caller
@@ -1852,7 +1896,7 @@ export type SimAction =
   | { type: 'ANSWER_SALVAGE'; optionId: string }
   | { type: 'CLOSE_SALVAGE' }
   // ORDER 289 — nästa skärm i kvällens flöde.
-  | { type: 'EVENING_STEP'; to: 'transfer' | 'result' | 'compare' | 'lesson' | 'story' }
+  | { type: 'EVENING_STEP'; to: 'transfer' | 'result' | 'compare' | 'lesson' | 'story' | 'shop' }
   // ORDER 283 — spelaren har läst introduktionen i Måltidens hus.
   | { type: 'SEE_HOUSE_INTRO' }
   // ORDER 077 §4 (M4) — morning menu composition. Freezes today's

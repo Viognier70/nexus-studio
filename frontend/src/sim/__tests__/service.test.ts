@@ -10,6 +10,12 @@ import { stockForecast } from '../stockForecast';
 import { createRng } from '../../strategic/util/rng';
 import type { SimAction, SimulationState } from '../../strategic/types';
 import { stocked } from '../../strategic/testHarness/stocked';
+import { useLegacyEconomy } from '../../strategic/testHarness/legacyEconomy';
+
+// ORDER 296 — filen prövar de äldre ekonomireglerna (nedgradering, golvets
+// påfyllnad, amortering och den förra startkassan); kärnans risk stänger av
+// dem i spelet.
+useLegacyEconomy();
 
 function tick(s: SimulationState, n: number): SimulationState {
   for (let i = 0; i < n; i++) s = reducer(s, { type: 'TICK', dt: 0.2 });

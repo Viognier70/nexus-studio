@@ -60,7 +60,9 @@ describe('ORDER 279 — gästerna frågar om kvällens meny', () => {
 
   it('en raket om en rätt kommer bara när rätten står på menyn, och menyn ger sina raketer', () => {
     const fired: string[] = [];
-    for (const seed of [1, 2, 3, 4, 5, 6]) {
+    // ORDER 296b — tolv kvällar: andelen är ett snitt (sex kvällar gav 0,17
+    // efter balansändringarna, trettio ger 0,26).
+    for (const seed of Array.from({ length: 12 }, (_, i) => i + 1)) {
       let s = evening(seed);
       for (let i = 0; i < 30000 && s.day.period === 'dinner'; i++) {
         if (s.incidents.active && !(s.incidents.active.revealLeft ?? 0)) s = answer(s, 'best');

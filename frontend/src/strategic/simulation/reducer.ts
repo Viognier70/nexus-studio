@@ -1,11 +1,11 @@
 import { calendarFor } from '../../sim/calendar';
 import { bestAnswerFactor, drinkRevenueFactor, enablersWithCredits } from '../../sim/knowledgeInService';
-import { EVENING, EVENING_ECONOMY, GUEST_TYPES, SERVICE, type BusinessClassId } from '../../sim/balance';
+import { EVENING, EVENING_ECONOMY, GUEST_TYPES, QUEUE_CAP, SERVICE, SHOP, type BusinessClassId } from '../../sim/balance';
 import { answerSalvage, closeSalvage, discardUnresolvedSalvage } from './salvage';
 import { clockMinutes, formatClock, canBack, canStartBack, pickBackAnswer, closeIncidents, countDown, isIncidentOpen, maybeOpenIncident, planIncidents, resolveIncident, startBack, tickOngoing, type CreditChange } from '../../sim/incidents';
 import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
 import { afterVisitClosed, beginIntroduction } from '../../sim/introduction';
-import { isStrandedWithoutBusiness, canChangeClassToday, changeClass, classOptions, openFirstBusiness, recordEvening, creditLineSek, dailyGuestCap, dayEnd, dayEndHeadroom, dailyWagesSek, recordExamWithoutBusiness, scenarioUnitSek, scenarioChoiceUnits, clampScenarioCash, postDailyInterest, settleWeek } from '../../sim/economy';
+import { isStrandedWithoutBusiness, canChangeClassToday, changeClass, classOptions, openFirstBusiness, recordEvening, creditLineSek, dailyGuestCap, dayEnd, dayEndHeadroom, dailyWagesSek, recordExamWithoutBusiness, scenarioUnitSek, scenarioChoiceUnits, clampScenarioCash, postDailyInterest, settleWeek, isClosed } from '../../sim/economy';
 import { answerVisit, closeVisit, nextVisitQuestion, scheduleSlotsLeft, startVisit } from '../knowledge/pavilionVisit';
 import { createRng } from '../util/rng';
 import type {
@@ -75,6 +75,10 @@ const EXAM_QUESTION_BANK: readonly Question[] = [
   ...ALL_TEMPLATE_EXAMPLES,
   ...R2_SEED_QUESTIONS
 ];
+import { tickDjRound } from '../../sim/satsningar';
+import { applyMiseAtDoors, hirePrepHand, tickPrepBacklog } from '../../sim/miseEnPlace';
+import { abilityUnlocked, creditsOf, setSlot, shopOf } from '../../sim/shop';
+import { answerPin, comp, moveHelp, seatPartyNow, tickPins, upsell } from '../../sim/hostPins';
 import { arrivalAttraction, maybeSpawnGuest, scenarioSpawnStep, walkAwayProbability } from './arrivals';
 import { planScenariosForService, scheduleScenarioTriggerTimes } from './day';
 import { revenuePerGuest } from './economics';
@@ -310,7 +314,9 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       if (state.day.period !== 'evening') return state;
       const from = state.day.eveningStep ?? 'result';
       // ORDER 288 — kvällen i byn (jämförelsen) efter kvällens resultat.
-      const allowed: Record<string, string[]> = { waste: ['transfer', 'result'], transfer: ['result'], result: ['compare', 'lesson', 'story'], compare: ['lesson', 'story'], lesson: ['story'], story: ['lesson'] };
+      // ORDER 296 — Designs ordning: kvällens resultat, lärdomen och
+      // berättelsen, sedan byn i kväll och butiken (Till butiken, Till morgonen).
+      const allowed: Record<string, string[]> = { waste: ['transfer', 'result'], transfer: ['result'], result: ['lesson', 'story', 'compare', 'shop'], lesson: ['story', 'compare', 'shop'], story: ['lesson', 'compare', 'shop'], compare: ['shop'], shop: [] };
       if (!allowed[from]?.includes(action.to)) return state;
       return { ...state, day: { ...state.day, eveningStep: action.to } };
     }
@@ -435,6 +441,24 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       return fireTeamMember(state, action.memberId);
     case 'RESET':
       return makeNewGameState(state.seed, state.policies);
+    case 'HIRE_PREP_HAND':
+      return hirePrepHand(state);
+    case 'HOST_PIN_ANSWER':
+    case 'HOST_SEAT':
+    case 'HOST_COMP':
+    case 'HOST_UPSELL':
+    case 'HOST_MOVE':
+      return hostAction(state, action);
+    case 'SHOP_BUY':
+      return shopBuy(state, action.id);
+    case 'SHOP_SLOT':
+      return setSlot(state, action.id, action.on);
+    case 'RESTART_SEASON': {
+      // ORDER 296 — efter stängningen: en ny säsong. Det spelaren lärt sig
+      // (medaljerna och proven) följer med; kassan, lånet och krogen börjar om.
+      const fresh = makeNewGameState(state.seed, state.policies);
+      return { ...fresh, medals: state.medals, examsTaken: state.examsTaken, shop: state.shop };
+    }
     case 'FORCE_COLLAPSE':
       return forceCollapseAction(state);
     case 'ANSWER_QUESTION':
@@ -1217,6 +1241,8 @@ function startService(state: SimulationState): SimulationState {
   // ORDER 265 — utan verksamhet, eller med kvällen stängd, finns ingen
   // service. Kontrolleras före lunchhoppet så att tillståndet står orört.
   if (state.economy.businessClass === null) return state;
+  // ORDER 296 — krogen har stängt (RISK): säsongen är slut.
+  if (isClosed(state)) return state;
   if (state.scaleDown.closedDinner) return state;
   if (state.day.period !== 'morning' && state.day.period !== 'afternoon') return state;
   // ORDER 277 — menyn och dryckeslistan måste sättas innan servicen kan
@@ -1275,6 +1301,37 @@ function settleBackCredits(state: SimulationState): SimulationState {
     }
   }
   return s;
+}
+
+// ORDER 296 — hovmästarens beslut och handgrepp (sim/hostPins.ts), bara
+// under servicen.
+function hostAction(state: SimulationState, action: Extract<SimAction, { type: 'HOST_PIN_ANSWER' | 'HOST_SEAT' | 'HOST_COMP' | 'HOST_UPSELL' | 'HOST_MOVE' }>): SimulationState {
+  if (state.day.period !== 'dinner') return state;
+  const draft: SimulationState = { ...state, day: { ...state.day }, guests: state.guests.map((g) => ({ ...g })), ledger: [...state.ledger], waitingIds: [...state.waitingIds], seatedIds: [...state.seatedIds] };
+  switch (action.type) {
+    case 'HOST_PIN_ANSWER': answerPin(draft, action.id, action.answer); break;
+    case 'HOST_SEAT': seatPartyNow(draft, action.key, action.seats); break;
+    case 'HOST_COMP': comp(draft, action.key, action.what); break;
+    case 'HOST_UPSELL': upsell(draft, action.key, action.what); break;
+    case 'HOST_MOVE': moveHelp(draft, action.zone); break;
+  }
+  return draft;
+}
+
+// ORDER 296 — butiken: medaljen öppnar, krediterna betalar (en i taget från
+// axeln med flest, som en förlust i Stå för ditt svar). Köpet läggs i facket
+// om det finns plats.
+function shopBuy(state: SimulationState, id: string): SimulationState {
+  const spec = SHOP.abilities[id];
+  const shop = shopOf(state);
+  if (!spec || shop.owned.includes(id) || !abilityUnlocked(state, id) || creditsOf(state) < spec.price) return state;
+  let s: SimulationState = state;
+  for (let i = 0; i < spec.price; i++) {
+    const axis = BACK_AXES.reduce((best, a) => (s.knowledgeCredits[a] > s.knowledgeCredits[best] ? a : best), BACK_AXES[0]);
+    s = debitQuestion(s, axis, null, 1);
+  }
+  s = { ...s, shop: { owned: [...shop.owned, id], slot: shop.slot } };
+  return setSlot(s, id, true);
 }
 
 // ORDER 263 — söndagen är stängd: morgonen (fyra schemaplatser) följs
@@ -2492,19 +2549,21 @@ function advanceTick(state: SimulationState): SimulationState {
   // stödja sällskap (par/trio). Alla member i partiet har samma partyId
   // så findFreeSeat kan hålla dem på samma seat-grupp.
   if (!draft.scenario.awaitingChoice) {
-    const arrival = maybeSpawnGuest(draft, rng);
-    for (const g of arrival) {
+    const arrival = admitToQueue(draft, maybeSpawnGuest(draft, rng));
+    for (const g of arrival.admitted) {
       draft.guests.push(g);
     }
     // ORDER 265 — dagens ankomster mot marknadens tak.
-    if (arrival.length > 0) {
-      draft.day = { ...draft.day, arrivalsToday: (draft.day.arrivalsToday ?? 0) + arrival.length };
+    // De som vänder vid en full kö räknas som ankomster (de tog sin plats ur
+    // byns flöde) men väljer en annan krog.
+    if (arrival.all > 0) {
+      draft.day = { ...draft.day, arrivalsToday: (draft.day.arrivalsToday ?? 0) + arrival.all };
     }
     // ORDER 292 — rusningens vågor (rush.ts): sällskap som når dörren nu.
-    const wave = tickRush(draft, rng, arrivalAttraction(draft));
-    for (const g of wave) draft.guests.push(g);
-    if (wave.length > 0) {
-      draft.day = { ...draft.day, arrivalsToday: (draft.day.arrivalsToday ?? 0) + wave.length };
+    const wave = admitToQueue(draft, tickRush(draft, rng, arrivalAttraction(draft)));
+    for (const g of wave.admitted) draft.guests.push(g);
+    if (wave.all > 0) {
+      draft.day = { ...draft.day, arrivalsToday: (draft.day.arrivalsToday ?? 0) + wave.all };
     }
   }
 
@@ -2727,7 +2786,9 @@ function advanceTick(state: SimulationState): SimulationState {
       // under resten av servicen, och kassan då (överföringens utgångsläge).
       const serviceLeftMin = Math.max(0, draft.day.periodStartAt + SERVICE.simMinutes * 60 - draft.simTime) / 60;
       draft.day = { ...draft.day, stake: eveningStake(draft, costPerMinuteToTick(draft) * serviceLeftMin), stakeShownAt: draft.simTime, cashAtDoorsOpen: draft.cash };
-      const readiness = computePrepReadinessFromState(draft);
+      // ORDER 296 — mise en place efter inköpen: det som inte hanns före
+      // öppning sänker readiness och står kvar som eftersläp.
+      const readiness = applyMiseAtDoors(draft, computePrepReadinessFromState(draft));
       const weakest = weakestPrepItem(readiness);
       const line = afterCountdownLine(readiness);
       draft.day = { ...draft.day, prepReadiness: readiness };
@@ -2781,6 +2842,12 @@ function advanceTick(state: SimulationState): SimulationState {
   // ORDER 270 — följden av ett fel val pågår till nästa händelse, och
   // kvällens nästa händelse öppnas när dess tid har kommit.
   tickOngoing(draft, tickSeconds);
+  // ORDER 296b — DJ:ns sena runda när musiken börjar.
+  tickDjRound(draft);
+  // ORDER 296 — eftersläpet i förberedelsen arbetas ned.
+  tickPrepBacklog(draft, tickSeconds);
+  // ORDER 296 — hovmästarens nålar.
+  tickPins(draft, tickSeconds);
   maybeOpenIncident(draft);
   maybeChance(draft);
 
@@ -3747,4 +3814,22 @@ function mentorCommentFor(
     return spec.choices[choice].mentor;
   }
   return strings.scenario.mentor[choice];
+}
+
+// ORDER 296b — kön har ett tak (balance.ts QUEUE_CAP). Ett sällskap som når
+// dörren när kön redan har maxParties sällskap väljer en annan krog: det
+// kommer inte in och kostar inget rykte, men räknas i day.turnedAwayFull.
+function admitToQueue(draft: SimulationState, arriving: Guest[]): { admitted: Guest[]; all: number } {
+  if (arriving.length === 0) return { admitted: arriving, all: 0 };
+  const parties = new Set<string>();
+  for (const g of draft.guests) if (g.state === 'waiting' || g.state === 'arriving') parties.add(g.partyId ?? g.id);
+  const admitted: Guest[] = [];
+  let turned = 0;
+  for (const g of arriving) {
+    const key = g.partyId ?? g.id;
+    if (parties.has(key) || parties.size < QUEUE_CAP.maxParties) { parties.add(key); admitted.push(g); }
+    else turned++;
+  }
+  if (turned > 0) draft.day = { ...draft.day, turnedAwayFull: (draft.day.turnedAwayFull ?? 0) + turned };
+  return { admitted, all: arriving.length };
 }

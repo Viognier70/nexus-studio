@@ -17,6 +17,12 @@ import type { SimulationState } from '../../strategic/types';
 import { stocked } from '../../strategic/testHarness/stocked';
 import menuMeta from '../../content/incidents/menu.meta.json';
 import menuText from '../../content/incidents/menu.text.en.json';
+import { useLegacyEconomy } from '../../strategic/testHarness/legacyEconomy';
+
+// ORDER 296 — filen prövar de äldre ekonomireglerna (nedgradering, golvets
+// påfyllnad, amortering och den förra startkassan); kärnans risk stänger av
+// dem i spelet.
+useLegacyEconomy();
 
 const TICK = { type: 'TICK', dt: 0.2 } as const;
 

@@ -65,6 +65,10 @@ Kärnan byggs före byn i kvällsljus. Därefter kommer butiken mellan kvällarn
 
 **Talen** (startkapital, veckomål, mise en place-tid) föreslås av Claude Code och prövas i harness. Målet är att en rimlig spelare klarar säsongen och att en slarvig riskerar att stänga. Förslaget rapporteras innan punkt 1–5 byggs.
 
+*Beslut 2026-10-02 (Vision Owner, efter förslaget om talen):* talen godkänns som utgångsläge: bara ränta under säsongen, veckomål i intäkt, dubbel ränta vid omförhandling, stängning efter tre veckoavräkningar under noll, och mise en place enligt förslaget. Startkassan sänks kraftigt. Felsvar ska kosta mindre, och ryktet ska hålla över veckan för en rimlig spelare. Målet är en jämn trappa: mentorns spelare stänger aldrig, den rimliga nästan aldrig, den som har hälften rätt i 30–50 % av säsongerna och den som alltid svarar fel nästan alltid. DJ och springare ska löna sig när de används klokt (DJ en fullbokad fredag eller lördag, springare vid stor bokning), men inte när de används varje kväll. Talen låses efter harnessen.
+
+*Beslut 2026-10-02 (Vision Owner, Designs leverans hovmästaren och butiken):* när tiden på en nål går ut väljer Per det säkra svaret, som aldrig går fel men sällan ger mest, och servicen stannar aldrig. Köpta förmågor behålls. Facket bestämmer vad som gäller nästa kväll; det har två platser i början och fler vid stjärnan. Jämförelsen med byn efter kvällen är en egen skärm före butiken. Medaljer öppnar förmågor och förbrukas inte; krediter betalar.
+
 ## Tiden
 
 En säsong är åtta veckor, från midsommar till kräftskiva. En genomspelning tar omkring åtta timmar, en timme per spelvecka. Förebilden är *Stardew Valley*: en tydlig dagsrytm, en vecka med båge och en säsong med högtider som man ser fram emot.

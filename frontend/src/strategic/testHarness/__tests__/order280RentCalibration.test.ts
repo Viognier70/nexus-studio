@@ -23,6 +23,12 @@ import { runWeeks } from '../weekHarness';
 import { weakMorning } from '../scenarios';
 import { RENT } from '../../../sim/balance';
 import { firstDayOfWeek } from '../../../sim/calendar';
+import { useLegacyEconomy } from '../legacyEconomy';
+
+// ORDER 296 — filen prövar de äldre ekonomireglerna (nedgradering, golvets
+// påfyllnad, amortering och den förra startkassan); kärnans risk stänger av
+// dem i spelet.
+useLegacyEconomy();
 
 function reasonableShare(seeds: number[]): { meanShare: number; meanResultSek: number; meanRevenueSek: number } {
   let share = 0;

@@ -1,0 +1,56 @@
+{
+  "errors": [],
+  "pins": {
+    "seen": {
+      "wine": 0,
+      "bar": 3,
+      "door": 1,
+      "waited": 1
+    },
+    "answered": 5,
+    "done": "Servitören går in bakom baren."
+  },
+  "prep": {
+    "need": "58",
+    "capacity": "75",
+    "backlog": "0",
+    "handHired": true,
+    "capacityAfter": "115"
+  },
+  "band": {
+    "rank": "1",
+    "venues": "7",
+    "rankText": "1:a i byn",
+    "reputation": "60"
+  },
+  "upsell": true,
+  "move": {
+    "at": [
+      1050,
+      450
+    ]
+  },
+  "clockAtEnd": "23.40",
+  "compare": {
+    "rows": 7,
+    "rank": "1"
+  },
+  "shop": {
+    "credits": "130",
+    "slotsBefore": "0",
+    "bought": "sommBottle",
+    "stoneBox": {
+      "x": 209,
+      "y": 369,
+      "w": 220,
+      "h": 34,
+      "display": "flex",
+      "visibility": "visible",
+      "opacity": "1"
+    },
+    "stateAfter": "owned",
+    "slotsAfter": "1",
+    "creditsAfter": "90"
+  },
+  "afterShop": true
+}

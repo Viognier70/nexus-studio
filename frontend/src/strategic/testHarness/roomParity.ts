@@ -42,6 +42,7 @@ export function mountRoomLikeScene(businessClass: SimulationState['businessClass
     businessClass,
     seats: world.seats as [number, number][],
     seatsLocal: room.seats.map((s: { local: [number, number] }) => s.local),
+    seatKinds: room.seats.map((s: { kind?: string }) => s.kind ?? ''),
     capacity: room.capacity
   } as unknown as typeof businessRoomRef.current;
 }

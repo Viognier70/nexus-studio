@@ -24,6 +24,7 @@
 // vilken post som saknas.
 
 import type { SimulationState } from '../types';
+import { MEP_EVENING } from '../../sim/balance';
 
 // Consumption per served guest, per item.
 export const MEP_CONSUMPTION_PER_GUEST = {
@@ -88,10 +89,14 @@ const MEP_HIT_THRESHOLD_MAP: Record<string, number> = {
 export function consumeMepForOneGuest(state: SimulationState): void {
   const readiness = state.day.prepReadiness;
   if (!readiness) return;
+  // ORDER 296b — förbrukningen skalas med kvällens bokning (låst när
+  // dörrarna öppnar), så att ett förberett kök räcker kvällen.
+  const expected = state.day.booking?.total ?? 0;
+  const scale = MEP_EVENING.calibratedGuests / Math.max(MEP_EVENING.calibratedGuests, expected);
   const next: Record<string, number> = { ...readiness };
   for (const [key, rate] of Object.entries(MEP_CONSUMPTION_PER_GUEST)) {
     const r = next[key] ?? 0;
-    next[key] = Math.max(0, r - rate);
+    next[key] = Math.max(0, r - rate * scale);
   }
   state.day = { ...state.day, prepReadiness: next };
 }

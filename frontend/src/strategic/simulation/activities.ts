@@ -42,7 +42,8 @@ export const ACTIVITY_CATALOGUE: readonly Activity[] = [
     id: 'runner-shift',
     name: 'Bring in a runner',
     description: 'An extra pair of hands to carry out plates and clear tables.',
-    costSek: 1800,
+    // ORDER 296b — priset i balance.ts.
+    costSek: EVENING_ECONOMY.runnerCostSek,
     effect: { economic: 0, social: 0.03, ecological: 0 },
     availability: 'always'
   },
@@ -70,12 +71,13 @@ export const ACTIVITY_CATALOGUE: readonly Activity[] = [
     effect: { economic: 6000, social: 0.02, ecological: 0 },
     availability: 'weekly'
   },
-  // ORDER 290 — DJ som satsning i kvällens insats (balance.ts EVENING_ECONOMY):
-  // fler gäster i kväll (sim/economy.ts dailyGuestCap). Texten i strängtabellen.
+  // ORDER 290 — DJ som satsning i kvällens insats (balance.ts EVENING_ECONOMY).
+  // ORDER 296b: den sena rundan när musiken börjar (sim/satsningar.ts), i
+  // stället för fler gäster. Texten i strängtabellen.
   {
     id: 'book-dj',
     name: 'A DJ tonight',
-    description: 'Music from nine o’clock. More guests come, but only a full evening pays for it.',
+    description: 'Music from nine o’clock, and everyone seated orders another glass. Buy wine for it. It pays on a full evening, and most when it isn’t every evening.',
     costSek: EVENING_ECONOMY.djCostSek,
     effect: { economic: 0, social: 0.01, ecological: 0 },
     availability: 'always'
