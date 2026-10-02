@@ -542,8 +542,11 @@ export const HOST = {
 // Gastronomiska Teatern och högt rykte och gott serviceomdöme två veckor i
 // rad. Den delas ut i söndagstidningen och kan förloras om nivån sjunker under
 // en vecka. Stjärnan ger facket en tredje plats." Gränserna är föreslagna:
-//   - högt rykte: minst reputationAtLeast vid veckoavräkningen (60 av 100;
-//     mentorns spelare ligger omkring 45, reports/order296b/karnan-slut.json);
+//   - högt rykte: minst reputationAtLeast vid veckoavräkningen. ORDER 296d:
+//     40 av 100 (förut 60, som ingen nådde). En klok spelare ligger på
+//     0,33–0,45 vid avräkningen, mentorns spelare lägre (reports/order296d/);
+//     med 40 når spelaren som siktar på stjärnan den i ungefär hälften av
+//     säsongerna;
 //   - gott serviceomdöme: minst judgementAtLeast av veckans raketer klarade
 //     (omdömet i servicen), av minst minRocketsInWeek raketer;
 //   - två veckor i rad (weeksToEarn) ger stjärnan, en vecka under någon
@@ -552,7 +555,7 @@ export const STAR = {
   section: 'Kunskapen',
   pavilion: 'gastronomiskateatern' as const,
   medal: 'guld' as const,
-  reputationAtLeast: 0.6,
+  reputationAtLeast: 0.4,
   judgementAtLeast: 0.7,
   minRocketsInWeek: 5,
   weeksToEarn: 2
