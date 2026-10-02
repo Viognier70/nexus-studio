@@ -1,0 +1,108 @@
+{
+  "runs": [
+    {
+      "run": "fodelsedagen-ratt",
+      "id": "vb32-fodelsedagen",
+      "wrongAt": null,
+      "shots": [
+        {
+          "label": "uppbyggnaden",
+          "file": "events-fodelsedagen-ratt-00-uppbyggnaden.jpg",
+          "cam": 12
+        },
+        {
+          "label": "fraga-1",
+          "file": "events-fodelsedagen-ratt-01-fraga-1.jpg",
+          "cam": 12
+        },
+        {
+          "label": "svar-1-ratt",
+          "file": "events-fodelsedagen-ratt-02-svar-1-ratt.jpg",
+          "cam": 12
+        },
+        {
+          "label": "fraga-2",
+          "file": "events-fodelsedagen-ratt-03-fraga-2.jpg",
+          "cam": 12
+        },
+        {
+          "label": "svar-2-ratt",
+          "file": "events-fodelsedagen-ratt-04-svar-2-ratt.jpg",
+          "cam": 12
+        },
+        {
+          "label": "fraga-3",
+          "file": "events-fodelsedagen-ratt-05-fraga-3.jpg",
+          "cam": 12
+        },
+        {
+          "label": "svar-3-ratt",
+          "file": "events-fodelsedagen-ratt-06-svar-3-ratt.jpg",
+          "cam": 12
+        },
+        {
+          "label": "slutet",
+          "file": "events-fodelsedagen-ratt-07-slutet.jpg",
+          "cam": 13
+        },
+        {
+          "label": "tillbaka",
+          "file": "events-fodelsedagen-ratt-08-tillbaka.jpg",
+          "cam": 23
+        }
+      ],
+      "maxDown": 0,
+      "faults": [],
+      "opened": true,
+      "finished": true,
+      "errors": []
+    },
+    {
+      "run": "fodelsedagen-fel2",
+      "id": "vb32-fodelsedagen",
+      "wrongAt": 1,
+      "shots": [
+        {
+          "label": "uppbyggnaden",
+          "file": "events-fodelsedagen-fel2-00-uppbyggnaden.jpg",
+          "cam": 12
+        },
+        {
+          "label": "fraga-1",
+          "file": "events-fodelsedagen-fel2-01-fraga-1.jpg",
+          "cam": 12
+        },
+        {
+          "label": "svar-1-ratt",
+          "file": "events-fodelsedagen-fel2-02-svar-1-ratt.jpg",
+          "cam": 12
+        },
+        {
+          "label": "fraga-2",
+          "file": "events-fodelsedagen-fel2-03-fraga-2.jpg",
+          "cam": 12
+        },
+        {
+          "label": "svar-2-fel",
+          "file": "events-fodelsedagen-fel2-04-svar-2-fel.jpg",
+          "cam": 12
+        },
+        {
+          "label": "slutet",
+          "file": "events-fodelsedagen-fel2-05-slutet.jpg",
+          "cam": 13
+        },
+        {
+          "label": "tillbaka",
+          "file": "events-fodelsedagen-fel2-06-tillbaka.jpg",
+          "cam": 23
+        }
+      ],
+      "maxDown": 0,
+      "faults": [],
+      "opened": true,
+      "finished": true,
+      "errors": []
+    }
+  ]
+}

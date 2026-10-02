@@ -97,8 +97,9 @@ describe('ORDER 265 — veckoavräkningen', () => {
     const cash = s.cash;
     s = settleWeek(s);
     const st = s.economy.lastSettlement!;
-    expect(st.rentSek).toBe(weeklyRentSek('vinbar'));
-    expect(st.rentSek).toBe(Math.round(RENT.shareOfNormalWeeklyRevenue * ECONOMY.normalWeeklyRevenueSek.vinbar));
+    // ORDER 294 — vecka 1 har introduktionshyra.
+    expect(st.rentSek).toBe(weeklyRentSek('vinbar', 1));
+    expect(st.rentSek).toBe(Math.round(RENT.introShareOfNormalWeeklyRevenue * ECONOMY.normalWeeklyRevenueSek.vinbar));
     expect(st.wagesSek).toBe(21600);
     expect(s.economy.weekWagesSek).toBe(0);
     expect(s.cash).toBe(cash - st.amortisationSek - st.rentSek!);

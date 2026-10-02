@@ -161,7 +161,7 @@ export function forecastWeeks(state: SimulationState): number | null {
   const perEvening = recent.reduce((a, r) => a + r.resultSek, 0) / recent.length;
   const loan = state.economy.loan;
   const amortisation = loan && loan.weeksLeft > 0 ? loan.principalSek / loan.weeksLeft : 0;
-  const weeklyNet = perEvening * WEEK.serviceDays - weeklyRentSek(state.economy.businessClass) - amortisation;
+  const weeklyNet = perEvening * WEEK.serviceDays - weeklyRentSek(state.economy.businessClass, calendarFor(state.day.dayNumber).week) - amortisation;
   if (weeklyNet >= 0) return null;
   const weeksLeft = Math.max(0, SEASON.weeks - calendarFor(state.day.dayNumber).week);
   const room = accountAfterEvening(state) + creditLineSek(state);

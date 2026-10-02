@@ -14,7 +14,7 @@
 
 import { strings } from '../../content/strings';
 import { BUSINESS_CLASSES, MEDAL_LEVELS, type BusinessClassId, type MedalRequirement } from '../../sim/balance';
-import { ALL_PAVILIONS, canChangeClassToday, classOptions, classSpec, meetsRequirement, requirementsFor, type ClassOption } from '../../sim/economy';
+import { ALL_PAVILIONS, canChangeClassToday, classOptions, classSpec, isIntroRentWeek, meetsRequirement, requirementsFor, weeklyRentSek, type ClassOption } from '../../sim/economy';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 import type { PavilionKey, SimulationState } from '../types';
 import { calendarFor } from '../../sim/calendar';
@@ -25,6 +25,12 @@ import '../ui/screens/screens.css';
 import { numberLocale } from '../../content/language';
 
 const e = strings.economy;
+
+// ORDER 294 — introduktionshyran och den fulla hyran, i kronor.
+function introRentLine(id: BusinessClassId, week: number): string {
+  const kr = (n: number) => n.toLocaleString(numberLocale());
+  return e.introRent(kr(weeklyRentSek(id, week)), kr(weeklyRentSek(id)));
+}
 
 function countWord(n: number): string {
   return e.counts[n] ?? String(n);
@@ -145,6 +151,7 @@ export function BankDialog({ open, onClose }: Props) {
   const dispatch = useSimDispatch();
   if (!open) return null;
   const current = sim.economy.businessClass;
+  const week = calendarFor(sim.day.dayNumber).week;
   const canChange = canChangeClassToday(sim);
   const options = classOptions(sim);
   const anyMedal = ALL_PAVILIONS.some((p) => sim.medals[p]);
@@ -191,6 +198,11 @@ export function BankDialog({ open, onClose }: Props) {
             <div className="nxs-mt-16">
               <Say who={sb.speaker}>{verdict}</Say>
             </div>
+            {offered && isIntroRentWeek(week) && (
+              <div className="nxs-mt-16" data-testid="bank-intro-rent">
+                <Say who={sb.speaker}>{introRentLine(offered, week)}</Say>
+              </div>
+            )}
           </div>
           <div>
             {diagnosis}
@@ -250,6 +262,7 @@ export function BankDialog({ open, onClose }: Props) {
             {current ? e.bankCurrent(e.classesDefinite[current]) : e.bankNone} {shownInWords(sim.medals)}
           </Say>
           {!canChange && <Say who={sb.speaker}>{e.onlySunday}</Say>}
+          {current && isIntroRentWeek(week) && <div data-testid="bank-intro-rent"><Say who={sb.speaker}>{introRentLine(current, week)}</Say></div>}
           <MedalsSeen held={sim.medals} />
         </div>
         <div>

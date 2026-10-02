@@ -514,6 +514,13 @@ export class EventTheatre {
     this.updateFx(t);
   }
 
+  /** ORDER 294 — sitsarna manuset använder (rummets egna gäster där döljs). */
+  seatIds(): Set<string> {
+    const out = new Set<string>();
+    for (const a of Object.values(this.actors)) for (const st of a.steps) if (st.seat) out.add(st.seat);
+    return out;
+  }
+
   /** Figurernas riggar (figurvakten, figureAudit.ts). */
   rigs(): Array<{ id: string; rig: FigureRig; seated: boolean; kind: 'guest' | 'staff'; clip: string | null }> {
     return Object.entries(this.figs).map(([id, rig]) => {

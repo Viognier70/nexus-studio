@@ -19,6 +19,7 @@ import { bankQuestionById } from '../../../knowledge/questionBank';
 import { EXAM } from '../../../../sim/balance';
 import type { SimAction, SimulationState } from '../../../types';
 import { stocked } from '../../../testHarness/stocked';
+import { firstDayOfWeek } from '../../../../sim/calendar';
 
 afterEach(() => cleanup());
 beforeEach(() => {
@@ -75,6 +76,8 @@ describe('ORDER 271 — första bankmötet (B0a, B0b)', () => {
     const { getByTestId } = render(withSim(s, <BankDialog open onClose={() => {}} />, (a) => actions.push(a)));
     expect(getByTestId('screen-B0b')).toBeTruthy();
     expect(getByTestId('choose-foodtruck')).toBeTruthy();
+    // ORDER 294 — introduktionshyran står i bankmötet de två första veckorna.
+    expect(getByTestId('bank-intro-rent').textContent).toMatch(/introduktionshyra|introductory rent/);
     fireEvent.click(getByTestId('choose-vinbar'));
     expect(actions).toEqual([{ type: 'CHOOSE_CLASS', to: 'vinbar' }]);
   });
@@ -82,6 +85,15 @@ describe('ORDER 271 — första bankmötet (B0a, B0b)', () => {
   it('med verksamhet: B1', () => {
     const { getByTestId } = render(withSim(makeNewGameState(7), <BankDialog open onClose={() => {}} />));
     expect(getByTestId('screen-B1')).toBeTruthy();
+  });
+
+  it('ORDER 294 — introduktionshyran i B1 vecka 1–2, inte från vecka 3', () => {
+    const base = makeNewGameState(7);
+    const w1 = render(withSim(base, <BankDialog open onClose={() => {}} />));
+    expect(w1.getByTestId('bank-intro-rent')).toBeTruthy();
+    w1.unmount();
+    const w3 = render(withSim({ ...base, day: { ...base.day, dayNumber: firstDayOfWeek(3) } }, <BankDialog open onClose={() => {}} />));
+    expect(w3.queryByTestId('bank-intro-rent')).toBeNull();
   });
 });
 

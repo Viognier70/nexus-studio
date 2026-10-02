@@ -546,9 +546,15 @@ export function postDailyInterest(draft: SimulationState): void {
 // nedgradering. Påfyllnaden och amorteringen flyttar bara kassa (inte
 // intäkt eller kostnad), så att nästa veckas intäkt mäts rent.
 // ORDER 280 — veckohyran för klassen (balance.ts RENT).
-export function weeklyRentSek(id: BusinessClassId | null): number {
+// ORDER 294 — introduktionshyran säsongens första veckor (RENT.introWeeks).
+export function isIntroRentWeek(week: number): boolean {
+  return week <= RENT.introWeeks;
+}
+
+export function weeklyRentSek(id: BusinessClassId | null, week?: number): number {
   if (!id) return 0;
-  return Math.round(RENT.shareOfNormalWeeklyRevenue * ECONOMY.normalWeeklyRevenueSek[id]);
+  const share = week !== undefined && isIntroRentWeek(week) ? RENT.introShareOfNormalWeeklyRevenue : RENT.shareOfNormalWeeklyRevenue;
+  return Math.round(share * ECONOMY.normalWeeklyRevenueSek[id]);
 }
 
 export function settleWeek(state: SimulationState): SimulationState {
@@ -568,7 +574,7 @@ export function settleWeek(state: SimulationState): SimulationState {
     postLedger(draft, { category: 'amortisation', amount: -amortisationSek, cause: strings.economy.ledger.amortisation });
   }
   // ORDER 280 — veckohyran dras vid avräkningen.
-  const rentSek = weeklyRentSek(e.businessClass);
+  const rentSek = weeklyRentSek(e.businessClass, week);
   if (rentSek > 0) {
     applyCashDelta(draft, -rentSek);
     postLedger(draft, { category: 'rent', amount: -rentSek, cause: strings.economy.ledger.rent });

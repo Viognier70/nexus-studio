@@ -47,9 +47,13 @@ const PLANS: Record<PlayerId, (day: number) => MorningPlan> = {
 
 interface WeekRow { seed: number; evenings: (number | null)[]; weekResultSek: number; cashEnd: number; downgraded: boolean; minCash: number }
 
+// ORDER 294 — veckan kan börja senare (FIRST_WEEK_START), så att veckorna med
+// introduktionshyra (1–2) och full hyra (3) mäts med samma spelare.
+const START_WEEK = Number(process.env.FIRST_WEEK_START ?? 1);
+
 function playWeek(seed: number, player: PlayerId): WeekRow {
   let s: SimulationState = makeNewGameState(seed);
-  s = { ...s, medals: { ...PLAYERS.baseline }, day: { ...s.day, dayNumber: firstDayOfWeek(1) } };
+  s = { ...s, medals: { ...PLAYERS.baseline }, day: { ...s.day, dayNumber: firstDayOfWeek(START_WEEK) } };
   const cashStart = s.cash;
   let minCash = s.cash;
   const evenings: (number | null)[] = [];
@@ -67,7 +71,7 @@ function playWeek(seed: number, player: PlayerId): WeekRow {
     s = tickUntil(s, (x) => x.day.dayNumber > day && x.day.period === 'morning');
     minCash = Math.min(minCash, s.cash);
     const st = s.economy.lastSettlement;
-    if (st && st.week === 1) { topUp = st.topUpSek; amortisation = st.amortisationSek; }
+    if (st && st.week === START_WEEK) { topUp = st.topUpSek; amortisation = st.amortisationSek; }
   }
   return {
     seed,
@@ -111,7 +115,8 @@ describe('ORDER 291 — första veckan', () => {
       const { fileURLToPath } = await import('node:url');
       const out = resolve(dirname(fileURLToPath(import.meta.url)), '../../../../reports', process.env.REPORT_ORDER ?? 'order291');
       mkdirSync(out, { recursive: true });
-      writeFileSync(resolve(out, 'first-week.json'), JSON.stringify({
+      writeFileSync(resolve(out, START_WEEK === 1 ? 'first-week.json' : `first-week-w${START_WEEK}.json`), JSON.stringify({
+        startWeek: START_WEEK,
         definition: 'vinbaren från vecka 1, brons i tre, startkassan, bästa svaret, baspaketet efter bokningen. Kvällens resultat = day.transfer.resultSek. Veckans resultat = kassans förändring måndag till måndag efter avräkningen, utan golvets påfyllnad och med amorteringen återlagd. Introduktionen och startlånet spelas inte.',
         seeds,
         players: result
