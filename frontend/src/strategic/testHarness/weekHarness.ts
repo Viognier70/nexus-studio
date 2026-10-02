@@ -58,7 +58,12 @@ export interface MorningPlan {
   backConfidence?: 0 | 1 | 2;
 }
 
-export type ScenarioAnswer = 'best' | 'worst';
+// ORDER 296 — 'half' svarar bäst och sämst vartannat (efter raketens
+// öppningstid och steg, eller dagen), en spelare som träffar ungefär hälften.
+export type ScenarioAnswer = 'best' | 'worst' | 'half';
+function resolveAnswer(answer: ScenarioAnswer, key: number): 'best' | 'worst' {
+  return answer === 'half' ? (Math.round(key) % 2 === 0 ? 'best' : 'worst') : answer;
+}
 
 export type PlayerPlan = (state: SimulationState) => MorningPlan;
 
@@ -88,7 +93,7 @@ export function tickUntil(s: SimulationState, done: (s: SimulationState) => bool
 
 // ORDER 268 — valen rangordnas efter hur de flyttar kvällens tema
 // (scenarios.ts `rankedScenarioChoice`, samma som simuleringen läser).
-export function rankedChoice(scenarioId: string | null, answer: ScenarioAnswer): ScenarioChoice {
+export function rankedChoice(scenarioId: string | null, answer: 'best' | 'worst'): ScenarioChoice {
   return rankedScenarioChoice(scenarioId, answer);
 }
 
@@ -98,7 +103,7 @@ export function rankedChoice(scenarioId: string | null, answer: ScenarioAnswer):
 // scenarier fyrades, och deras gäster och kassa uteblev. Mätt från
 // reports/order268/save-lordag-vecka1.json: lördagens intäkt 7 140 SEK
 // i harnessen mot 17 850 SEK + 8 000 SEK (scenario) i spelarens vy.
-export function answerScenario(s: SimulationState, answer: ScenarioAnswer = 'best', backConfidence?: 0 | 1 | 2): SimulationState {
+export function answerScenario(s: SimulationState, given: ScenarioAnswer = 'best', backConfidence?: 0 | 1 | 2): SimulationState {
   // ORDER 270 — raketens aktuella steg besvaras direkt, som spelaren gör i
   // IncidentCard (samma åtgärd, ANSWER_INCIDENT). Nästa tick svarar på
   // nästa steg.
@@ -111,9 +116,10 @@ export function answerScenario(s: SimulationState, answer: ScenarioAnswer = 'bes
       // krediterna räcker till.
       let c: 0 | 1 | 2 = active.backed ? (backConfidence ?? 0) : 0;
       while (c > 0 && !canBack(s, c)) c = (c - 1) as 0 | 1 | 2;
-      return reducer(s, { type: 'ANSWER_INCIDENT', optionId: rankedStepOption(step, answer, active.struck, active.situation), confidence: c });
+      return reducer(s, { type: 'ANSWER_INCIDENT', optionId: rankedStepOption(step, resolveAnswer(given, active.openedAt + (active.step ?? 0)), active.struck, active.situation), confidence: c });
     }
   }
+  const answer = resolveAnswer(given, s.day.dayNumber);
   switch (s.scenario.phase) {
     case 'subject':
       return reducer(s, { type: 'ADVANCE_SCENARIO_TO_SITUATION' });
@@ -163,7 +169,7 @@ export function playMorning(s: SimulationState, plan: MorningPlan): SimulationSt
     const group = salvageGroup(s.salvage.dishId);
     if (group) {
       const best = SALVAGE_BEST[group];
-      const pick = (plan.scenarioAnswer ?? 'best') === 'worst' ? SALVAGE_OPTIONS.find((o) => o !== best)! : best;
+      const pick = resolveAnswer(plan.scenarioAnswer ?? 'best', s.day.dayNumber) === 'worst' ? SALVAGE_OPTIONS.find((o) => o !== best)! : best;
       s = reducer(s, { type: 'ANSWER_SALVAGE', optionId: pick });
     }
   }

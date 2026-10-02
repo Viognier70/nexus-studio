@@ -24,6 +24,47 @@ Förebilden är *Hades* och *Rogue Legacy*: ett försök kan gå dåligt, men de
 
 Spelaren kan alltid gå tillbaka till Måltidens hus. Paviljongerna är en övningsslinga, inte en introduktion man passerar en gång.
 
+## Kärnan
+
+*Beslut 2026-10-02 (Vision Owner, efter provspelet samma dag).*
+
+Betygen var: spänning 2, följd 2, rummet mekaniskt, byn 1 och vilja att spela igen 1. Spelets kärna saknar handling, risk och belöning.
+
+Kärnan byggs före byn i kvällsljus. Därefter kommer butiken mellan kvällarna, där krediter och medaljer köper förmågor (stegen mot stjärnan), och sedan byn i kvällsljus.
+
+1. **Hovmästarens beslut under hela servicen.**
+   - Spelaren väljer vilket sällskap i kön som får bord.
+   - Spelaren kan bjuda en gäst som väntat för länge.
+   - Spelaren kan sälja in en flaska.
+   - Spelaren kan flytta personal dit det brinner.
+   - När det är fullt kommer ett beslut med några sekunders mellanrum.
+   - Raketerna kommer ur händelserna i rummet, utan taket på tre per kväll.
+2. **Risk.**
+   - Startkapitalet sänks kraftigt, och banklånet står kvar.
+   - Banken sätter ett veckomål.
+   - Missas målet två veckor i rad omförhandlas lånet.
+   - Efter tre veckor under golvet stängs krogen och säsongen är slut.
+3. **Följder per gästtyp, synliga.**
+   - En missnöjd gäst med socialt kapital syns gå till en rival i byn, och ger avbokningar nästa morgon.
+   - Recensenten skriver i tidningen.
+   - Ryktet syns i HUD:en och ändras under kvällen.
+4. **Konkurrens i realtid.**
+   - Ett band i HUD:en visar kvällens gäster per krog. Det uppdateras när en grupp väljer krog.
+   - Grupper som väljer en rival syns på gatan.
+5. **Mise en place efter inköpen.**
+   - Förberedelsen växer med inköpen och de bokade gästerna.
+   - Personalen hinner en viss mängd före öppning.
+   - Det som inte hinns görs under servicen och fördröjer gästerna.
+   - Spelaren kan ta in en extra hand på morgonen.
+6. **Fel som rättas.**
+   - Tallrikarna ska stå där gästerna sitter, inte på tomma bord.
+   - DJ:n som spelaren betalat för ska synas.
+   - Vid förlust står det "Dras från kontot", inte "För över".
+   - Spelet får inte öppna utan råvaror utan att stoppa och fråga.
+   - Ringarna får en förklaring (etiketten vid hovring) eller tas bort.
+
+**Talen** (startkapital, veckomål, mise en place-tid) föreslås av Claude Code och prövas i harness. Målet är att en rimlig spelare klarar säsongen och att en slarvig riskerar att stänga. Förslaget rapporteras innan punkt 1–5 byggs.
+
 ## Tiden
 
 En säsong är åtta veckor, från midsommar till kräftskiva. En genomspelning tar omkring åtta timmar, en timme per spelvecka. Förebilden är *Stardew Valley*: en tydlig dagsrytm, en vecka med båge och en säsong med högtider som man ser fram emot.
