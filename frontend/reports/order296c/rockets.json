@@ -1,0 +1,267 @@
+{
+  "definition": "Kvällens raketer (inte egna) per veckodag, vecka 2, vinbaren, baspaketet, bästa svaret. Trycket = (sittande + kön) / rummets platser i snitt (sim/incidents.ts roomPressure).",
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "byDay": {
+    "mon": {
+      "meanRockets": 3.5,
+      "min": 0,
+      "max": 6,
+      "meanPressure": 0.54
+    },
+    "tue": {
+      "meanRockets": 3.5,
+      "min": 1,
+      "max": 6,
+      "meanPressure": 0.63
+    },
+    "wed": {
+      "meanRockets": 3.5,
+      "min": 1,
+      "max": 5,
+      "meanPressure": 0.67
+    },
+    "thu": {
+      "meanRockets": 4,
+      "min": 3,
+      "max": 5,
+      "meanPressure": 0.76
+    },
+    "fri": {
+      "meanRockets": 3.5,
+      "min": 2,
+      "max": 5,
+      "meanPressure": 0.75
+    },
+    "sat": {
+      "meanRockets": 3.8,
+      "min": 3,
+      "max": 5,
+      "meanPressure": 0.79
+    }
+  },
+  "rows": [
+    {
+      "weekday": "mon",
+      "seed": 1,
+      "rockets": 6,
+      "pressure": 0.73
+    },
+    {
+      "weekday": "mon",
+      "seed": 2,
+      "rockets": 2,
+      "pressure": 0.5
+    },
+    {
+      "weekday": "mon",
+      "seed": 3,
+      "rockets": 0,
+      "pressure": 0.38
+    },
+    {
+      "weekday": "mon",
+      "seed": 4,
+      "rockets": 5,
+      "pressure": 0.61
+    },
+    {
+      "weekday": "mon",
+      "seed": 5,
+      "rockets": 2,
+      "pressure": 0.4
+    },
+    {
+      "weekday": "mon",
+      "seed": 6,
+      "rockets": 6,
+      "pressure": 0.64
+    },
+    {
+      "weekday": "tue",
+      "seed": 1,
+      "rockets": 3,
+      "pressure": 0.65
+    },
+    {
+      "weekday": "tue",
+      "seed": 2,
+      "rockets": 3,
+      "pressure": 0.65
+    },
+    {
+      "weekday": "tue",
+      "seed": 3,
+      "rockets": 4,
+      "pressure": 0.62
+    },
+    {
+      "weekday": "tue",
+      "seed": 4,
+      "rockets": 6,
+      "pressure": 0.74
+    },
+    {
+      "weekday": "tue",
+      "seed": 5,
+      "rockets": 1,
+      "pressure": 0.48
+    },
+    {
+      "weekday": "tue",
+      "seed": 6,
+      "rockets": 4,
+      "pressure": 0.62
+    },
+    {
+      "weekday": "wed",
+      "seed": 1,
+      "rockets": 4,
+      "pressure": 0.78
+    },
+    {
+      "weekday": "wed",
+      "seed": 2,
+      "rockets": 3,
+      "pressure": 0.57
+    },
+    {
+      "weekday": "wed",
+      "seed": 3,
+      "rockets": 1,
+      "pressure": 0.55
+    },
+    {
+      "weekday": "wed",
+      "seed": 4,
+      "rockets": 4,
+      "pressure": 0.59
+    },
+    {
+      "weekday": "wed",
+      "seed": 5,
+      "rockets": 5,
+      "pressure": 0.77
+    },
+    {
+      "weekday": "wed",
+      "seed": 6,
+      "rockets": 4,
+      "pressure": 0.74
+    },
+    {
+      "weekday": "thu",
+      "seed": 1,
+      "rockets": 3,
+      "pressure": 0.77
+    },
+    {
+      "weekday": "thu",
+      "seed": 2,
+      "rockets": 3,
+      "pressure": 0.66
+    },
+    {
+      "weekday": "thu",
+      "seed": 3,
+      "rockets": 3,
+      "pressure": 0.73
+    },
+    {
+      "weekday": "thu",
+      "seed": 4,
+      "rockets": 5,
+      "pressure": 0.82
+    },
+    {
+      "weekday": "thu",
+      "seed": 5,
+      "rockets": 5,
+      "pressure": 0.8
+    },
+    {
+      "weekday": "thu",
+      "seed": 6,
+      "rockets": 5,
+      "pressure": 0.79
+    },
+    {
+      "weekday": "fri",
+      "seed": 1,
+      "rockets": 5,
+      "pressure": 0.83
+    },
+    {
+      "weekday": "fri",
+      "seed": 2,
+      "rockets": 2,
+      "pressure": 0.7
+    },
+    {
+      "weekday": "fri",
+      "seed": 3,
+      "rockets": 2,
+      "pressure": 0.62
+    },
+    {
+      "weekday": "fri",
+      "seed": 4,
+      "rockets": 5,
+      "pressure": 0.79
+    },
+    {
+      "weekday": "fri",
+      "seed": 5,
+      "rockets": 4,
+      "pressure": 0.82
+    },
+    {
+      "weekday": "fri",
+      "seed": 6,
+      "rockets": 3,
+      "pressure": 0.77
+    },
+    {
+      "weekday": "sat",
+      "seed": 1,
+      "rockets": 5,
+      "pressure": 0.86
+    },
+    {
+      "weekday": "sat",
+      "seed": 2,
+      "rockets": 3,
+      "pressure": 0.75
+    },
+    {
+      "weekday": "sat",
+      "seed": 3,
+      "rockets": 3,
+      "pressure": 0.75
+    },
+    {
+      "weekday": "sat",
+      "seed": 4,
+      "rockets": 4,
+      "pressure": 0.78
+    },
+    {
+      "weekday": "sat",
+      "seed": 5,
+      "rockets": 4,
+      "pressure": 0.82
+    },
+    {
+      "weekday": "sat",
+      "seed": 6,
+      "rockets": 4,
+      "pressure": 0.78
+    }
+  ]
+}

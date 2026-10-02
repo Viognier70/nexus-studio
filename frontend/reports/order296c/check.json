@@ -1,0 +1,60 @@
+{
+  "errors": [],
+  "pins": {
+    "seen": {
+      "wine": 0,
+      "bar": 4,
+      "waited": 0,
+      "door": 0
+    },
+    "answered": 4,
+    "done": "Servitören går in bakom baren."
+  },
+  "prep": {
+    "need": "58",
+    "capacity": "75",
+    "backlog": "0",
+    "handHired": true,
+    "capacityAfter": "115"
+  },
+  "band": {
+    "rank": "1",
+    "venues": "7",
+    "rankText": "1:a i byn",
+    "reputation": "60"
+  },
+  "upsell": true,
+  "backWhy": "3 satsningar kvar i kväll",
+  "rocketCounts": [
+    "Raket 2 i kväll"
+  ],
+  "rocketIds": [
+    {
+      "id": "vb17-glasen",
+      "at": "22.10"
+    }
+  ],
+  "clockAtEnd": "23.40",
+  "compare": {
+    "rows": 7,
+    "rank": "1"
+  },
+  "shop": {
+    "credits": "128",
+    "slotsBefore": "0",
+    "bought": "sommBottle",
+    "stoneBox": {
+      "x": 209,
+      "y": 369,
+      "w": 220,
+      "h": 34,
+      "display": "flex",
+      "visibility": "visible",
+      "opacity": "1"
+    },
+    "stateAfter": "owned",
+    "slotsAfter": "1",
+    "creditsAfter": "88"
+  },
+  "afterShop": true
+}

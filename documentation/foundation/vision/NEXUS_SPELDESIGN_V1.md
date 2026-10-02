@@ -69,6 +69,8 @@ Kärnan byggs före byn i kvällsljus. Därefter kommer butiken mellan kvällarn
 
 *Beslut 2026-10-02 (Vision Owner, Designs leverans hovmästaren och butiken):* när tiden på en nål går ut väljer Per det säkra svaret, som aldrig går fel men sällan ger mest, och servicen stannar aldrig. Köpta förmågor behålls. Facket bestämmer vad som gäller nästa kväll; det har två platser i början och fler vid stjärnan. Jämförelsen med byn efter kvällen är en egen skärm före butiken. Medaljer öppnar förmågor och förbrukas inte; krediter betalar.
 
+*Beslut 2026-10-02 (Vision Owner, efter harnessen med fem spelare):* den dolda regeln att låg kassa vänder bort gäster i dörren tas bort. Startkapitalet kalibreras så att den som har hälften rätt stänger i 30–50 % av säsongerna, och talen låses. Stjärnan kräver guld i Gastronomiska Teatern, högt rykte och gott serviceomdöme två veckor i rad; den delas ut i söndagstidningen, kan förloras om nivån sjunker under en vecka, och ger facket en tredje plats. Raketerna utlöses av det som händer i rummet (de fem händelserna, incidenterna, gästernas situationer), oftare när det är fullt och utan tak per kväll. Det som begränsas till tre per kväll är att satsa krediter (Stå för ditt svar); knappen visar antalet satsningar som är kvar. Harnessen får en spelare som väljer klokt på nålarna och i butiken och en som låter Per välja allt; skillnaden ska märkas men inte vara avgörande. Flytta personal (figuren går dit, med den streckade ringen) väntar till efter provspelet.
+
 ## Tiden
 
 En säsong är åtta veckor, från midsommar till kräftskiva. En genomspelning tar omkring åtta timmar, en timme per spelvecka. Förebilden är *Stardew Valley*: en tydlig dagsrytm, en vecka med båge och en säsong med högtider som man ser fram emot.

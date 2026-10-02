@@ -9,6 +9,7 @@
 //     host-move-bar);
 //   - kvällen: överföringen, resultatet, berättelsen, byn i kväll (screen-J1)
 //     och butiken (screen-shop: krediter, köp av en öppen sten, facket).
+// ORDER 296c: raketräkningen (rocket-count) och satsningarnas knapp (back-why).
 // Raketerna besvaras rätt. Utdata: reports/<order>/check.json och check-*.png.
 //
 // Avvikelse mot spelarens flöde: sparfilen är skriven före ORDER 296 (kassan
@@ -78,6 +79,13 @@ try {
   while (Date.now() < until) {
     if (await page.$('[data-testid=waste-continue], [data-testid=screen-T2], [data-testid=transfer-do]')) break;
     const card = await page.$('[data-testid=incident-card]');
+    // ORDER 296c — raketräkningen ("Raket n i kväll"), läst innan raketen besvaras,
+    // och knappen för satsningarna när dörrarna har öppnat.
+    const rc = await page.$('[data-testid=rocket-count]');
+    if (rc) { const txt = await rc.textContent(); (report.rocketCounts ??= []); if (!report.rocketCounts.includes(txt)) report.rocketCounts.push(txt); }
+    if (card) { const id = await card.getAttribute('data-incident-id'); (report.rocketIds ??= []); if (!report.rocketIds.some((r) => r.id === id)) report.rocketIds.push({ id, at: await page.textContent('[data-testid=service-clock-time]').catch(() => null) }); }
+    const clk = await page.textContent('[data-testid=service-clock-time]').catch(() => null);
+    if (!report.backWhy && clk && clk >= '19.30') report.backWhy = await page.textContent('[data-testid=back-why]').catch(() => null);
     if (card && !(await page.$('[data-testid=incident-band]'))) {
       const o = bestOf(await card.getAttribute('data-incident-id'), Number(await card.getAttribute('data-step')));
       if (o) await page.click(`[data-testid=incident-option-${o}]`).catch(() => {});
