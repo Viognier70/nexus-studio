@@ -13,13 +13,13 @@
 //   väntade gäster (marknadens tak, dailyGuestCap), glasen per gäst, och vad
 //   lagret ger om allt säljs.
 
-import { ITEM_BATCH, STOCK } from '../../sim/balance';
+import { ITEM_BATCH, MORNING_STAKE, STOCK } from '../../sim/balance';
 import { dailyGuestCap } from '../../sim/economy';
 import { stockForecast } from '../../sim/stockForecast';
 import type { SimulationState } from '../types';
 import { findDish, GLASSES_PER_BOTTLE, minIngredientCost } from './m4Catalogue';
 import { packageDishIds, scaledBaseItems, type StockPackage } from './packages';
-import { computePlatesRemaining, menuFromStock } from './stockPackages';
+import { computePlatesRemaining, menuFromStock, usesPackages } from './stockPackages';
 
 export interface DishRow {
   kind: 'dish';
@@ -140,4 +140,20 @@ export function stockValueSek(state: SimulationState, part: 'food' | 'drink'): n
     sek += n * minIngredientCost(id);
   }
   return Math.round(sek);
+}
+
+// ORDER 296 (punkt 6) — räcker lagret till kvällens bokade gäster? Med
+// paketen läses täckningen ur coverage(); utan paket ur menyns prognos.
+// `short` när lagret räcker till färre än MORNING_STAKE.askBelowCoverShare av
+// gästerna: då stannar spelet och frågar innan dörrarna öppnas.
+export function openShortfall(state: SimulationState): { covers: number; guests: number; short: boolean } {
+  const expected = dailyGuestCap(state);
+  const guests = Number.isFinite(expected) ? expected : 0;
+  let covers: number;
+  if (usesPackages(state)) covers = coverage(state).covers;
+  else {
+    const f = stockForecast({ menu: state.menu, stock: state.stock });
+    covers = f.kind === 'covers' ? f.covers : 0;
+  }
+  return { covers, guests, short: guests > 0 && covers < guests * MORNING_STAKE.askBelowCoverShare };
 }

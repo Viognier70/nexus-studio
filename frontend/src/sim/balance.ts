@@ -880,7 +880,11 @@ export const MORNING_STAKE = {
   // Kassan räknas ner (och upp) så här länge i gränssnittet, i ms, och
   // förändringar från så här många kronor visas bredvid beloppet.
   cashTickMs: 700,
-  cashDeltaMinSek: 20
+  cashDeltaMinSek: 20,
+  // ORDER 296 (punkt 6, "spelet får inte öppna utan råvaror utan att stoppa
+  // och fråga"): räcker lagret till färre än den här andelen av de bokade
+  // gästerna stannar spelet och frågar innan dörrarna öppnas.
+  askBelowCoverShare: 0.5
 } as const;
 
 // ORDER 279 — frågorna och insatsen (Vision Owner 2026-09-28, andra

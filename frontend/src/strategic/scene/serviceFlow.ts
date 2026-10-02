@@ -1,4 +1,5 @@
 // serviceFlow — kvällens koreografi i Vinbaren som händelser i tid.
+import { PLATE_SURFACE } from './wineBarRoom';
 // Nexus v1, efter provspel 2026-09-26: servicen är en följd av händelser.
 //
 // SD-004. Ligger ovanpå wineBarRoom.ts, figureActs.ts och serviceScore.ts
@@ -150,24 +151,26 @@ export function staffRoute(from: Vec2, to: Vec2): Vec2[] {
 
 // ---------- kvällen ----------
 
-export interface Group { id: string; label: string; seats: string[]; serveAt: Vec2; serveFacing: number; kind: 'lounge' | 'two' | 'bar'; }
+// ORDER 296 — tableAt: där det som serveras står (bordets mitt eller disken framför gästerna).
+export interface Group { id: string; label: string; seats: string[]; serveAt: Vec2; serveFacing: number; kind: 'lounge' | 'two' | 'bar'; tableAt?: Vec2; }
 
 export function groupsFor(room: any): Group[] {
   const s = (id: string) => room.seats.find((x: any) => x.id === id);
   const g: Group[] = [];
   [['loungeA', 'Lounge A'], ['loungeB', 'Lounge B']].forEach(function (L) {
     const a = s(L[0] + '2');
-    g.push({ id: L[0], label: L[1], seats: [L[0] + '1', L[0] + '2', L[0] + '3'], serveAt: [a.local[0], NORTH_Z], serveFacing: 0, kind: 'lounge' });
+    g.push({ id: L[0], label: L[1], seats: [L[0] + '1', L[0] + '2', L[0] + '3'], serveAt: [a.local[0], NORTH_Z], serveFacing: 0, kind: 'lounge', tableAt: [a.local[0], PLATE_SURFACE.loungeTableZ] });
   });
   ['twoA', 'twoB', 'twoC'].forEach(function (id, i) {
     const a = s(id + '1'), b = s(id + '2');
-    g.push({ id: id, label: 'Bord ' + (i + 1), seats: [id + '1', id + '2'], serveAt: [(a.local[0] + b.local[0]) / 2, -3.6], serveFacing: Math.PI, kind: 'two' });
+    g.push({ id: id, label: 'Bord ' + (i + 1), seats: [id + '1', id + '2'], serveAt: [(a.local[0] + b.local[0]) / 2, -3.6], serveFacing: Math.PI, kind: 'two', tableAt: [(a.local[0] + b.local[0]) / 2, PLATE_SURFACE.twoTableZ] });
   });
   [[1, 2], [3, 4], [5, 6], [7, 8]].forEach(function (pr, i) {
     const a = s('bar' + pr[0]), b = s('bar' + pr[1]);
     const north = a.local[1] > 0;
     g.push({ id: 'barPair' + i, label: 'Bar ' + pr[0] + '–' + pr[1], seats: ['bar' + pr[0], 'bar' + pr[1]],
-             serveAt: [(a.local[0] + b.local[0]) / 2, north ? 0.62 : -0.62], serveFacing: north ? 0 : Math.PI, kind: 'bar' });
+             serveAt: [(a.local[0] + b.local[0]) / 2, north ? 0.62 : -0.62], serveFacing: north ? 0 : Math.PI, kind: 'bar',
+             tableAt: [(a.local[0] + b.local[0]) / 2, north ? PLATE_SURFACE.barGuestZ : -PLATE_SURFACE.barGuestZ] });
   });
   return g;
 }

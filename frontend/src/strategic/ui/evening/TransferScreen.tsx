@@ -153,13 +153,14 @@ export function TransferScreen({ sim, onContinue }: { sim: SimulationState; onCo
             <p style={{ margin: 0 }}>{tt(lang, 'settle.mentor')}</p>
           </div>
           <p className="nx-body nx-transfer-forecast" data-testid="transfer-forecast" data-weeks={weeks ?? 'season'}>{weeks === null ? strings.transfer.forecastSeason : strings.transfer.forecastWeeks(weeks)}</p>
-          {done && <div className="nx-small" data-testid="transfer-done">{tt(lang, 'settle.transfer.done', { time: done })}</div>}
+          {done && <div className="nx-small" data-testid="transfer-done">{tt(lang, loss ? 'settle.loss.done' : 'settle.transfer.done', { time: done })}</div>}
           {done ? (
             <NxButton testId="transfer-continue" onClick={onContinue}>{tt(lang, 'settle.next')}</NxButton>
           ) : (
             <button type="button" className="nx-btn nx-btn-primary nx-settle-do" data-testid="transfer-do" onClick={transfer}>
               {/* ORDER 291 — knappen visar kvällens resultat, inte kvällskassan. */}
-              <span>{tt(lang, 'settle.transfer.do', { n: signed(tr.resultSek) })}</span>
+              {/* ORDER 296 — vid förlust: "Dras från kontot", inte "För över". */}
+              <span>{loss ? tt(lang, 'settle.loss.do', { n: signed(tr.resultSek) }) : tt(lang, 'settle.transfer.do', { n: signed(tr.resultSek) })}</span>
               <ArrowRightLeft size={20} aria-hidden />
             </button>
           )}

@@ -23,6 +23,7 @@ import { shake } from '../ui/juice/juice';
 import { flyTo, targetElement } from '../ui/juice/fx';
 import '../ui/screens/screens.css';
 import { numberLocale } from '../../content/language';
+import { useOpenGuard } from '../ui/OpenGuard';
 
 const T = strings.morningBuy;
 const BOX = u(52);
@@ -49,6 +50,8 @@ function Stepper({ id, qty, unit, name, onLess, onMore }: { id: string; qty: num
 }
 
 export function MorningBuyScreen({ open, onClose }: { open: boolean; onClose: () => void }) {
+  // ORDER 296 — "Köp råvaror" stannar kvar i inköpen (hooken före de tidiga returerna).
+  const guard = useOpenGuard(() => {});
   const sim = useSimState();
   const dispatch = useSimDispatch();
   const [notice, setNotice] = useState<string | null>(null);
@@ -57,6 +60,7 @@ export function MorningBuyScreen({ open, onClose }: { open: boolean; onClose: ()
   const cov = coverage(sim);
   const spent = spentTodaySek(sim);
   const readiness = stockReadiness(sim);
+
 
   const buy = (items: Record<string, number>, from: HTMLElement) => {
     const cost = itemsCostSek(items);
@@ -152,7 +156,8 @@ export function MorningBuyScreen({ open, onClose }: { open: boolean; onClose: ()
               <span>{T.base}</span>
             </button>
             <NxButton kind="secondary" testId="buy-back" onClick={onClose} arrow={false}>{T.back}</NxButton>
-            <NxButton testId="open-doors" disabled={!readiness.ready} onClick={() => { onClose(); dispatch({ type: 'START_SERVICE' }); }}>{T.openDoors}</NxButton>
+            <NxButton testId="open-doors" disabled={!readiness.ready} onClick={() => guard.request(onClose)}>{T.openDoors}</NxButton>
+            {guard.dialog}
           </div>
         </aside>
       </div>

@@ -173,6 +173,15 @@ export const STRINGS = {
   'stranded.medals': { sv: 'Dina medaljer finns kvar. Det du har lärt dig tas aldrig ifrån dig.', en: 'Your medals stay. What you have learned is never taken from you.' },
   'stranded.go': { sv: 'Gå till Måltidens hus', en: 'Go to the House of the Meal' },
   'stranded.bank': { sv: 'Gå till banken', en: 'Go to the bank' },
+  // ORDER 296 (punkt 6) — vid förlust dras beloppet från kontot, det förs inte över.
+  'settle.loss.do': { sv: 'Dras från kontot {n}', en: 'Deduct from the account {n}' },
+  // ORDER 296 (punkt 6) — frågan innan dörrarna öppnas med för lite i lagret.
+  'open.short.title': { sv: 'Lagret räcker inte', en: 'The stock won’t last' },
+  'open.short.body': { sv: 'Lagret räcker till {covers} av {guests} väntade gäster. De andra får gå utan mat, och ryktet faller. Vill du öppna ändå?', en: 'The stock covers {covers} of {guests} expected guests. The others will leave without food, and your reputation will fall. Open anyway?' },
+  'open.short.buy': { sv: 'Köp råvaror', en: 'Buy stock' },
+  'open.short.open': { sv: 'Öppna ändå', en: 'Open anyway' },
+  'open.short.cancel': { sv: 'Inte än', en: 'Not yet' },
+  'settle.loss.done': { sv: 'Draget från kontot {time}', en: 'Deducted from the account at {time}' },
   // ORDER 290 — Designs leveranser 2026-09-30 (serviceläget, rätt och fel med
   // pyramiden, ringen), inslagna oförändrade.
   ...SERVICE_MODE_STRINGS,
