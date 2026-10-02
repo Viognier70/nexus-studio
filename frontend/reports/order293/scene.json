@@ -1,0 +1,87 @@
+{
+  "save": "reports/order284/save-mandag-vinbaren.json, dag + 4 (fredag)",
+  "rockets": [
+    {
+      "n": 1,
+      "id": "vb04-dubbelbokning",
+      "step": 0,
+      "answer": "best",
+      "stake": "Bordet: 350 kr och en gäst",
+      "camDistance": 13,
+      "bandAmount": 115,
+      "reaction": {
+        "text": "+115 krBord 6 beställer mer · 1 ny gäst in",
+        "kind": "up",
+        "visible": true
+      },
+      "tillBefore": 0,
+      "tillAfter": 115
+    },
+    {
+      "n": 1,
+      "id": "vb04-dubbelbokning",
+      "step": 1,
+      "answer": "best",
+      "stake": "Bordet: 350 kr och en gäst",
+      "camDistance": 12,
+      "bandAmount": 115,
+      "reaction": {
+        "text": "+115 krBord 6 beställer mer · 1 ny gäst in",
+        "kind": "up",
+        "visible": true
+      },
+      "tillBefore": 115,
+      "tillAfter": 230
+    },
+    {
+      "n": 1,
+      "id": "vb04-dubbelbokning",
+      "step": 2,
+      "answer": "best",
+      "stake": "Bordet: 350 kr och en gäst",
+      "camDistance": 12,
+      "bandAmount": 115,
+      "reaction": {
+        "text": "+115 krBord 6 beställer mer · 2 nya gäster in",
+        "kind": "up",
+        "visible": true
+      },
+      "tillBefore": 230,
+      "tillAfter": 345
+    },
+    {
+      "n": 2,
+      "id": "mn08-flaskan",
+      "step": 0,
+      "answer": "wrong",
+      "stake": "Bord 6: 280 kr och en gäst",
+      "camDistance": 12,
+      "bandAmount": null,
+      "reaction": {
+        "text": "Bord 6 blir missnöjt · 1 gäst i kön går",
+        "kind": "down",
+        "visible": true
+      },
+      "tillBefore": 2050,
+      "tillAfter": 6063
+    }
+  ],
+  "waves": [
+    {
+      "id": "cars",
+      "text": "Bilarna från Örebro och Karlstad är här · 9 gäster i 4 sällskap",
+      "atSec": 114
+    }
+  ],
+  "queue": {
+    "maxParties": 7,
+    "chosen": {
+      "key": "grp-24",
+      "parties": 3
+    },
+    "goneBeforeChosen": 0
+  },
+  "errors": [],
+  "weekday": "Fredag kväll",
+  "morningScrolled": 400
+}
