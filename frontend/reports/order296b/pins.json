@@ -1,0 +1,156 @@
+{
+  "definition": "Nålarna per kväll i vecka 2 (vinbaren, brons i tre, baspaketet), utan svar: Per väljer. secondsBetween = verkliga sekunder per nål.",
+  "seeds": [
+    1,
+    2,
+    3
+  ],
+  "byDay": {
+    "mon": {
+      "meanPins": 11.7,
+      "meanRealMinutes": 5,
+      "secondsBetween": 26
+    },
+    "wed": {
+      "meanPins": 13,
+      "meanRealMinutes": 5,
+      "secondsBetween": 23
+    },
+    "fri": {
+      "meanPins": 28.7,
+      "meanRealMinutes": 5,
+      "secondsBetween": 10
+    },
+    "sat": {
+      "meanPins": 26.3,
+      "meanRealMinutes": 5,
+      "secondsBetween": 11
+    }
+  },
+  "rows": [
+    {
+      "weekday": "mon",
+      "seed": 1,
+      "pins": 14,
+      "realMinutes": 5,
+      "kinds": {
+        "wine": 12,
+        "bar": 2
+      }
+    },
+    {
+      "weekday": "mon",
+      "seed": 2,
+      "pins": 10,
+      "realMinutes": 5,
+      "kinds": {
+        "wine": 8,
+        "bar": 2
+      }
+    },
+    {
+      "weekday": "mon",
+      "seed": 3,
+      "pins": 11,
+      "realMinutes": 5,
+      "kinds": {
+        "wine": 9,
+        "bar": 2
+      }
+    },
+    {
+      "weekday": "wed",
+      "seed": 1,
+      "pins": 12,
+      "realMinutes": 5,
+      "kinds": {
+        "wine": 6,
+        "bar": 6
+      }
+    },
+    {
+      "weekday": "wed",
+      "seed": 2,
+      "pins": 15,
+      "realMinutes": 5,
+      "kinds": {
+        "wine": 11,
+        "bar": 4
+      }
+    },
+    {
+      "weekday": "wed",
+      "seed": 3,
+      "pins": 12,
+      "realMinutes": 5,
+      "kinds": {
+        "wine": 8,
+        "bar": 4
+      }
+    },
+    {
+      "weekday": "fri",
+      "seed": 1,
+      "pins": 26,
+      "realMinutes": 5,
+      "kinds": {
+        "wine": 20,
+        "bar": 6
+      }
+    },
+    {
+      "weekday": "fri",
+      "seed": 2,
+      "pins": 30,
+      "realMinutes": 5,
+      "kinds": {
+        "wine": 19,
+        "bar": 5,
+        "door": 1,
+        "waited": 5
+      }
+    },
+    {
+      "weekday": "fri",
+      "seed": 3,
+      "pins": 30,
+      "realMinutes": 5,
+      "kinds": {
+        "wine": 23,
+        "bar": 7
+      }
+    },
+    {
+      "weekday": "sat",
+      "seed": 1,
+      "pins": 29,
+      "realMinutes": 5,
+      "kinds": {
+        "wine": 23,
+        "bar": 6
+      }
+    },
+    {
+      "weekday": "sat",
+      "seed": 2,
+      "pins": 30,
+      "realMinutes": 5,
+      "kinds": {
+        "wine": 19,
+        "bar": 5,
+        "door": 1,
+        "waited": 5
+      }
+    },
+    {
+      "weekday": "sat",
+      "seed": 3,
+      "pins": 20,
+      "realMinutes": 5,
+      "kinds": {
+        "wine": 13,
+        "bar": 7
+      }
+    }
+  ]
+}
