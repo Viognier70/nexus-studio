@@ -391,6 +391,51 @@ export const RANDOMNESS = {
   simulatedWeeks: 1000         // "mäts med 1 000 simulerade veckor"
 } as const;
 
+// ORDER 296 (Vision Owner 2026-10-02, kärnan punkt 2): risken. Talen är
+// godkända som utgångsläge och låses efter harnessen (ORDER_296B_RAPPORT.md).
+//   - startkassan sänks kraftigt; banklånet finansierar lokalen som förut;
+//   - bara ränta under säsongen, ingen amortering;
+//   - banken sätter ett veckomål på intäkten (andel av klassens normala
+//     veckointäkt); två missade mål i rad omförhandlar lånet, och räntan
+//     blir dubbel resten av säsongen;
+//   - kassan under noll vid tre veckoavräkningar i rad: krogen stänger och
+//     säsongen är slut. Det ersätter nedgraderingen (DOWNGRADE) och golvets
+//     påfyllnad, som harnessen räknade utan (reports/order296b/karnan-*.json).
+export const RISK = {
+  section: 'Ekonomin',
+  startCashSek: 25000,
+  amortiseDuringSeason: false,
+  weeklyTargetShareOfNormalRevenue: 0.95,
+  renegotiateAfterMissedWeeks: 2,
+  renegotiatedInterestFactor: 2,
+  closeAfterWeeksBelowZero: 3,
+  floorTopUp: false,
+  downgrade: false
+} as const;
+
+// ORDER 296 (kärnan punkt 5, Vision Owner 2026-10-02): mise en place efter
+// inköpen. "Förberedelsen växer med inköpen och bokningarna, personalen hinner
+// en viss mängd före öppning, resten görs under servicen och fördröjer
+// gästerna, och spelaren kan ta in en extra hand på morgonen." Spelminuter.
+//   behovet = portionerna som förbereds (lagret, högst kvällens bokning)
+//             × perPortionMin + bokade gäster × perBookedGuestMin
+//   hinns   = personalen × minutesPerStaff (+ den extra handen)
+// Det som inte hinns står kvar som eftersläp när dörrarna öppnar: mise en
+// place räcker då mindre (readiness gånger hinns / behovet), och personalens
+// uppgifter vid borden tar backlogTaskTime så länge eftersläpet finns kvar.
+export const MISE_EN_PLACE = {
+  section: 'Servicen',
+  // Kalibrerat (reports/order296b/karnan-spel.json): vardagarna hinns med
+  // laget, fredag och lördag behöver den extra handen. Bokningen ligger över
+  // gästerna som kommer, därför halv vikt per bokad gäst.
+  perPortionMin: 1,
+  perBookedGuestMin: 0.5,
+  minutesPerStaff: 25,
+  extraHandMin: 40,
+  extraHandCostSek: 800,
+  backlogTaskTime: 1.3
+} as const;
+
 export const DOWNGRADE = {
   section: 'Ekonomin > Nedgradering',
   consecutiveNegativeDayEnds: 3, // "under minus veckogolvet vid tre dagsavslut i rad"

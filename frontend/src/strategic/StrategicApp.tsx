@@ -22,6 +22,7 @@ import { ScenarioOverlay } from './scenario/ScenarioOverlay';
 import { DayActionBar } from './scenario/DayActionBar';
 import { EveningBar } from './scenario/EveningBar';
 import { IncidentCard } from './scenario/IncidentPanel';
+import { ClosedBox } from './economy/ClosedBox';
 import { NoBusinessBox } from './economy/NoBusinessBox';
 import { MaltidensHusDialog } from './knowledge/ui/MaltidensHusDialog';
 import { BankDialog } from './economy/BankDialog';
@@ -340,6 +341,8 @@ function StrategicShell() {
       <MorningBuyScreen open={buyOpen} onClose={() => setBuyOpen(false)} />
       <NoBusinessBox hidden={houseOpen || bankOpen} onOpenHouse={() => setHouseOpen(true)} onOpenBank={() => setBankOpen(true)} />
       <BankDialog open={bankOpen} onClose={() => setBankOpen(false)} />
+      {/* ORDER 296 — krogen har stängt: säsongen är slut. */}
+      <ClosedBox />
       <NewspaperDialog
         open={newspaper.open}
         onClose={newspaper.close}

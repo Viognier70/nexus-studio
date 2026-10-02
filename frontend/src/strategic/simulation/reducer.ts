@@ -5,7 +5,7 @@ import { answerSalvage, closeSalvage, discardUnresolvedSalvage } from './salvage
 import { clockMinutes, formatClock, canBack, canStartBack, pickBackAnswer, closeIncidents, countDown, isIncidentOpen, maybeOpenIncident, planIncidents, resolveIncident, startBack, tickOngoing, type CreditChange } from '../../sim/incidents';
 import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
 import { afterVisitClosed, beginIntroduction } from '../../sim/introduction';
-import { isStrandedWithoutBusiness, canChangeClassToday, changeClass, classOptions, openFirstBusiness, recordEvening, creditLineSek, dailyGuestCap, dayEnd, dayEndHeadroom, dailyWagesSek, recordExamWithoutBusiness, scenarioUnitSek, scenarioChoiceUnits, clampScenarioCash, postDailyInterest, settleWeek } from '../../sim/economy';
+import { isStrandedWithoutBusiness, canChangeClassToday, changeClass, classOptions, openFirstBusiness, recordEvening, creditLineSek, dailyGuestCap, dayEnd, dayEndHeadroom, dailyWagesSek, recordExamWithoutBusiness, scenarioUnitSek, scenarioChoiceUnits, clampScenarioCash, postDailyInterest, settleWeek, isClosed } from '../../sim/economy';
 import { answerVisit, closeVisit, nextVisitQuestion, scheduleSlotsLeft, startVisit } from '../knowledge/pavilionVisit';
 import { createRng } from '../util/rng';
 import type {
@@ -76,6 +76,7 @@ const EXAM_QUESTION_BANK: readonly Question[] = [
   ...R2_SEED_QUESTIONS
 ];
 import { tickDjRound } from '../../sim/satsningar';
+import { applyMiseAtDoors, hirePrepHand, tickPrepBacklog } from '../../sim/miseEnPlace';
 import { arrivalAttraction, maybeSpawnGuest, scenarioSpawnStep, walkAwayProbability } from './arrivals';
 import { planScenariosForService, scheduleScenarioTriggerTimes } from './day';
 import { revenuePerGuest } from './economics';
@@ -436,6 +437,14 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       return fireTeamMember(state, action.memberId);
     case 'RESET':
       return makeNewGameState(state.seed, state.policies);
+    case 'HIRE_PREP_HAND':
+      return hirePrepHand(state);
+    case 'RESTART_SEASON': {
+      // ORDER 296 — efter stängningen: en ny säsong. Det spelaren lärt sig
+      // (medaljerna och proven) följer med; kassan, lånet och krogen börjar om.
+      const fresh = makeNewGameState(state.seed, state.policies);
+      return { ...fresh, medals: state.medals, examsTaken: state.examsTaken };
+    }
     case 'FORCE_COLLAPSE':
       return forceCollapseAction(state);
     case 'ANSWER_QUESTION':
@@ -1218,6 +1227,8 @@ function startService(state: SimulationState): SimulationState {
   // ORDER 265 — utan verksamhet, eller med kvällen stängd, finns ingen
   // service. Kontrolleras före lunchhoppet så att tillståndet står orört.
   if (state.economy.businessClass === null) return state;
+  // ORDER 296 — krogen har stängt (RISK): säsongen är slut.
+  if (isClosed(state)) return state;
   if (state.scaleDown.closedDinner) return state;
   if (state.day.period !== 'morning' && state.day.period !== 'afternoon') return state;
   // ORDER 277 — menyn och dryckeslistan måste sättas innan servicen kan
@@ -2730,7 +2741,9 @@ function advanceTick(state: SimulationState): SimulationState {
       // under resten av servicen, och kassan då (överföringens utgångsläge).
       const serviceLeftMin = Math.max(0, draft.day.periodStartAt + SERVICE.simMinutes * 60 - draft.simTime) / 60;
       draft.day = { ...draft.day, stake: eveningStake(draft, costPerMinuteToTick(draft) * serviceLeftMin), stakeShownAt: draft.simTime, cashAtDoorsOpen: draft.cash };
-      const readiness = computePrepReadinessFromState(draft);
+      // ORDER 296 — mise en place efter inköpen: det som inte hanns före
+      // öppning sänker readiness och står kvar som eftersläp.
+      const readiness = applyMiseAtDoors(draft, computePrepReadinessFromState(draft));
       const weakest = weakestPrepItem(readiness);
       const line = afterCountdownLine(readiness);
       draft.day = { ...draft.day, prepReadiness: readiness };
@@ -2786,6 +2799,8 @@ function advanceTick(state: SimulationState): SimulationState {
   tickOngoing(draft, tickSeconds);
   // ORDER 296b — DJ:ns sena runda när musiken börjar.
   tickDjRound(draft);
+  // ORDER 296 — eftersläpet i förberedelsen arbetas ned.
+  tickPrepBacklog(draft, tickSeconds);
   maybeOpenIncident(draft);
   maybeChance(draft);
 

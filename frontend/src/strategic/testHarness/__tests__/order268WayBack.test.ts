@@ -28,6 +28,12 @@ import { ECONOMY, NEW_START, SCENARIO_CASH, TEAM_BY_CLASS } from '../../../sim/b
 import { changeClass, classOptions } from '../../../sim/economy';
 import { makeSaveFile } from '../../../sim/save';
 import type { PavilionKey, SimulationState } from '../../types';
+import { useLegacyEconomy } from '../legacyEconomy';
+
+// ORDER 296 — filen prövar de äldre ekonomireglerna (nedgradering, golvets
+// påfyllnad, amortering och den förra startkassan); kärnans risk stänger av
+// dem i spelet.
+useLegacyEconomy({ now: true });
 
 const OUT = resolve(dirname(fileURLToPath(import.meta.url)), '../../../../reports/order268');
 const WRITE = process.env.WRITE_REPORTS === '1';

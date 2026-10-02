@@ -1,4 +1,5 @@
 import { EVENING_ECONOMY, GAME_MINUTES_PER_SIM_SECOND, SITTING } from '../../sim/balance';
+import { backlogTaskTime } from '../../sim/miseEnPlace';
 import { settleSocialGuest, stayFactor } from './guestTypes';
 import { INITIAL_CAPITAL_VALUE } from './model';
 import { INTERIOR } from '../content/layout';
@@ -1277,7 +1278,7 @@ function beginStaffTask(
     type,
     state.capitals.values.social,
     roleCompetence(state.team, staff.role),
-    runner * staffTempoFactor(state) *
+    runner * backlogTaskTime(state) * staffTempoFactor(state) *
     // ORDER 270 — följden av ett fel val kan göra personalen långsammare
     // tills nästa händelse (läses här för att undvika en importcirkel).
     (state.incidents?.ongoing?.tempoFactor ?? 1)

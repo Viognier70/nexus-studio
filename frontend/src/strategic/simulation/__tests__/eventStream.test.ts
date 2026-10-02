@@ -28,6 +28,7 @@ import {
   strainMultiplier
 } from '../eventStream';
 import type { DayPeriod, SimulationState } from '../../types';
+import { useLegacyEconomy } from '../../testHarness/legacyEconomy';
 
 function inPeriod(seed: number, period: DayPeriod): SimulationState {
   const s = makeInitialState(seed);
@@ -292,6 +293,10 @@ describe('positive category — verksamhet som går bra', () => {
 });
 
 describe('repeat guard — no ambient sentence repeats within 4 min', () => {
+  // ORDER 296 — the seeded dinner was written against the old start cash; at
+  // 25 000 kr the economic reading picks other lines and the seeded run
+  // exhausts the bank. The guard itself is unchanged.
+  useLegacyEconomy();
   it('a full weak-team dinner produces no near-repeats inside REPEAT_GUARD_SEC', () => {
     let s = reducer(makeInitialState(3), { type: 'SKIP_LUNCH' });
     s = reducer(s, { type: 'SET_POLICY', patch: { trainingLevel: 1, staffCount: 2 } });

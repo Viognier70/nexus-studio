@@ -13,8 +13,9 @@
 // för den första vinbaren), annars klasstabellens krav.
 
 import { strings } from '../../content/strings';
-import { BUSINESS_CLASSES, MEDAL_LEVELS, type BusinessClassId, type MedalRequirement } from '../../sim/balance';
-import { ALL_PAVILIONS, canChangeClassToday, classOptions, classSpec, isIntroRentWeek, meetsRequirement, requirementsFor, weeklyRentSek, type ClassOption } from '../../sim/economy';
+import { BUSINESS_CLASSES, MEDAL_LEVELS, RISK, type BusinessClassId, type MedalRequirement } from '../../sim/balance';
+import { ALL_PAVILIONS, canChangeClassToday, classOptions, classSpec, isIntroRentWeek, meetsRequirement, requirementsFor, weeklyRentSek, weeklyTargetSek, type ClassOption } from '../../sim/economy';
+import { t as tt } from '../../content/nexusStrings';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 import type { PavilionKey, SimulationState } from '../types';
 import { calendarFor } from '../../sim/calendar';
@@ -22,11 +23,18 @@ import { NxButton } from '../ui/system/components';
 import { CLASS_ICON, NxIcon, PAVILION_ICON } from '../ui/screens/icons';
 import { MedalDisc } from '../ui/screens/MedalDisc';
 import '../ui/screens/screens.css';
-import { numberLocale } from '../../content/language';
+import { getLanguage, numberLocale } from '../../content/language';
 
 const e = strings.economy;
 
 // ORDER 294 — introduktionshyran och den fulla hyran, i kronor.
+// ORDER 296 — bankens villkor under säsongen: bara ränta, veckomålet,
+// omförhandlingen och stängningen (balance.ts RISK).
+function riskTermsLine(id: BusinessClassId): string {
+  const target = strings.service.meters.sek(weeklyTargetSek(id).toLocaleString(numberLocale()));
+  return tt(getLanguage(), 'risk.bank.terms', { target });
+}
+
 function introRentLine(id: BusinessClassId, week: number): string {
   const kr = (n: number) => n.toLocaleString(numberLocale());
   return e.introRent(kr(weeklyRentSek(id, week)), kr(weeklyRentSek(id)));
@@ -203,6 +211,11 @@ export function BankDialog({ open, onClose }: Props) {
                 <Say who={sb.speaker}>{introRentLine(offered, week)}</Say>
               </div>
             )}
+            {offered && (
+              <div className="nxs-mt-16" data-testid="bank-risk-terms">
+                <Say who={sb.speaker}>{riskTermsLine(offered)}</Say>
+              </div>
+            )}
           </div>
           <div>
             {diagnosis}
@@ -263,6 +276,7 @@ export function BankDialog({ open, onClose }: Props) {
           </Say>
           {!canChange && <Say who={sb.speaker}>{e.onlySunday}</Say>}
           {current && isIntroRentWeek(week) && <div data-testid="bank-intro-rent"><Say who={sb.speaker}>{introRentLine(current, week)}</Say></div>}
+          {current && <div data-testid="bank-risk-terms"><Say who={sb.speaker}>{riskTermsLine(current)}</Say></div>}
           <MedalsSeen held={sim.medals} />
         </div>
         <div>
@@ -330,6 +344,14 @@ export function settlementInWords(sim: SimulationState): string[] {
   if ((s.rentSek ?? 0) > 0) lines.push(e.settlement.rent(sek(s.rentSek!)));
   if ((s.wagesSek ?? 0) > 0) lines.push(e.settlement.wages(sek(s.wagesSek!)));
   if ((s.coursesSek ?? 0) > 0) lines.push(e.settlement.courses(sek(s.coursesSek!)));
+  // ORDER 296 — veckomålet, omförhandlingen och kassan under noll.
+  const lang = getLanguage();
+  if (s.targetSek !== undefined && s.targetSek > 0) {
+    lines.push(tt(lang, s.targetHit ? 'risk.settle.hit' : 'risk.settle.miss', { n: sek(s.revenueSek), target: sek(s.targetSek) }));
+  }
+  if (s.renegotiatedNow) lines.push(tt(lang, 'risk.settle.renegotiated'));
+  const below = sim.economy.risk?.belowZeroInRow ?? 0;
+  if (below > 0 && !s.closedNow) lines.push(tt(lang, 'risk.settle.below', { weeks: below, max: RISK.closeAfterWeeksBelowZero }));
   if (s.downgradedFrom) {
     lines.push(
       s.downgradedTo

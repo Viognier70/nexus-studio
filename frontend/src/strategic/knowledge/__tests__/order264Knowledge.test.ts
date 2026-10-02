@@ -196,7 +196,9 @@ describe('ORDER 264 — ingen väg sänker en medalj', () => {
     const allowed = [
       /^strategic\/knowledge\/pavilionVisit\.ts:\d+: (const medals = passed \? awardMedal|medals,$)/,
       /^strategic\/simulation\/model\.ts:\d+: medals: \{\},$/,
-      /^sim\/save\.ts:\d+: (let medals = loaded\.medals|if \(level\) medals = awardMedal\(medals|medals,$)/
+      /^sim\/save\.ts:\d+: (let medals = loaded\.medals|if \(level\) medals = awardMedal\(medals|medals,$)/,
+      // ORDER 296 — en ny säsong efter stängningen tar med medaljerna oförändrade.
+      /^strategic\/simulation\/reducer\.ts:\d+: return \{ \.\.\.fresh, medals: state\.medals, examsTaken: state\.examsTaken \};$/
     ];
     const unexpected = writers.filter((w) => !allowed.some((re) => re.test(w)));
     expect(unexpected).toEqual([]);

@@ -11,6 +11,12 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { daySummary, SCENARIOS, type ScenarioRun } from '../scenarios';
+import { useLegacyEconomy } from '../legacyEconomy';
+
+// ORDER 296 — filen prövar de äldre ekonomireglerna (nedgradering, golvets
+// påfyllnad, amortering och den förra startkassan); kärnans risk stänger av
+// dem i spelet.
+useLegacyEconomy();
 
 const OUT = resolve(dirname(fileURLToPath(import.meta.url)), '../../../../reports/order265');
 

@@ -11,6 +11,7 @@
 //
 // **Rule for this file:** no imports, ever. Anything imported here
 // re-enters the cycle. Only plain literal constants.
+import { RISK } from '../../sim/balance';
 
 // ORDER 050 §5 (2026-08-10) — the theme-wager retires entirely; the
 // stake now lives in each activity's own three-column effects. The
@@ -44,7 +45,10 @@ export const SCENARIO_CAPITAL_DELTA = 0.06;
 // venture at creation). 120 000 SEK ≈ three weeks of runway at cycle-1
 // operating baseline: enough to learn on, short enough that the first
 // bad decision is felt (Vision Owner 2026-08-10).
-export const INITIAL_CASH_SEK = 120_000;
+// ORDER 296 — startkassan ur balance.ts RISK (förut 120 000 kr). balance.ts
+// har bara typimporter, så importen nedan bryter inte modulens regel om
+// inga körbara beroenden.
+export const INITIAL_CASH_SEK = RISK.startCashSek;
 
 // ORDER 050 §11 (Addendum A) — the derived economic reading used by
 // the arrivals/walk-away curves and the sustainability display caps

@@ -7,6 +7,11 @@ import { playMorning, tickUntil } from '../../strategic/testHarness/weekHarness'
 import { PLAYERS } from '../../strategic/testHarness/randomness';
 import { calendarFor, firstDayOfWeek } from '../calendar';
 import { RUSH } from '../balance';
+import { useLegacyEconomy } from '../../strategic/testHarness/legacyEconomy';
+
+// ORDER 296 — kön prövas med den förra startkassan: med 25 000 kr vänder fler
+// gäster vid dörren (ekonomiska kapitalet) och kön blir sällan två lång.
+useLegacyEconomy();
 
 describe('ORDER 292 — kassan står still efter servicen', () => {
   // "Kassan rullar fortfarande efter servicen i 316b4c3. Rätta, med ett test

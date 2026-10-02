@@ -930,6 +930,12 @@ export interface DayState {
   djRoundAt?: number | null;
   djRoundGlasses?: number;
   djRoundSek?: number;
+  // ORDER 296 — mise en place efter inköpen (sim/miseEnPlace.ts): den extra
+  // handen på morgonen, och behovet, det som hanns och eftersläpet (spelminuter).
+  prepHand?: boolean;
+  prepNeedMin?: number;
+  prepCapacityMin?: number;
+  prepBacklogMin?: number;
   // ORDER 277 — sällskap som har en flaska på bordet i kväll (den räcker
   // till hela bordet). Nollas med resten av dagen.
   bottlePartyIds?: string[];
@@ -1803,6 +1809,10 @@ export type SimAction =
   | { type: 'HIRE_TEAM_MEMBER'; role: StaffRole }
   | { type: 'FIRE_TEAM_MEMBER'; memberId: string }
   | { type: 'RESET' }
+  // ORDER 296 — krogen har stängt: en ny säsong, med medaljerna och proven kvar.
+  | { type: 'RESTART_SEASON' }
+  // ORDER 296 — en extra hand till förberedelsen på morgonen.
+  | { type: 'HIRE_PREP_HAND' }
   // ORDER 047 §8 dev-only — force the current service to collapse on
   // the next tick, so the mechanic can be seen, judged and tuned
   // without waiting for the rare RNG roll. Guarded at the caller

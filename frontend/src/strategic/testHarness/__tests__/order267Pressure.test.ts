@@ -30,6 +30,13 @@ import { dailyGuestCap, V1_CLASS_TO_ROOM } from '../../../sim/economy';
 import { GAME_MINUTES_PER_SIM_SECOND } from '../../../sim/balance';
 import type { SimulationState } from '../../types';
 import { stocked } from '../stocked';
+import { useLegacyEconomy } from '../legacyEconomy';
+
+// ORDER 296 — trycket i rummet är kalibrerat med den förra startkassan: med
+// 25 000 kr vänder fler gäster vid dörren (ekonomiska kapitalet,
+// cashReading.ts), och fredagens kö försvinner. Rummets mekanik prövas här;
+// kassans följd mäts i ORDER 296b:s harness.
+useLegacyEconomy();
 
 const OUT = resolve(dirname(fileURLToPath(import.meta.url)), '../../../../reports/order267');
 // Rummet som spelarens vinbar spelar i (sim/economy.ts V1_CLASS_TO_ROOM).

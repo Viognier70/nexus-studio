@@ -25,6 +25,7 @@ import { formatSek } from '../CashCounter';
 import { countTo, popIn, type Counter } from '../juice/juice';
 import { usePrefersReducedMotion } from '../../../hooks/usePrefersReducedMotion';
 import { forecastWeeks } from '../../simulation/eveningEconomy';
+import { weeklyTargetSek } from '../../../sim/economy';
 import { formatClock } from '../../../sim/incidents';
 import { CLOCK, INCIDENTS, SITTING } from '../../../sim/balance';
 import { play } from '../sound/sound';
@@ -45,6 +46,8 @@ export function TransferScreen({ sim, onContinue }: { sim: SimulationState; onCo
   const signed = (v: number) => `${v > 0 ? '+' : v < 0 ? '−' : '±'}${formatSek(Math.abs(v))}`;
   const pct = (v: number) => `${(v * 100).toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} %`;
   const loss = tr.resultSek < 0;
+  const target = weeklyTargetSek(sim.economy.businessClass);
+  const weekSek = Math.round(sim.revenue - sim.economy.weekRevenueStartSek);
   useEffect(() => {
     (rootRef.current?.querySelectorAll('[data-pop]') ?? []).forEach((el, i) => popIn(el, still ? 0 : i * 110));
     if (tillRef.current) tillRef.current.textContent = formatSek(tr.revenueSek);
@@ -153,6 +156,12 @@ export function TransferScreen({ sim, onContinue }: { sim: SimulationState; onCo
             <p style={{ margin: 0 }}>{tt(lang, 'settle.mentor')}</p>
           </div>
           <p className="nx-body nx-transfer-forecast" data-testid="transfer-forecast" data-weeks={weeks ?? 'season'}>{weeks === null ? strings.transfer.forecastSeason : strings.transfer.forecastWeeks(weeks)}</p>
+          {/* ORDER 296 — veckans intäkt mot bankens veckomål (balance.ts RISK). */}
+          {target > 0 && (
+            <p className="nx-small" style={{ margin: 0 }} data-testid="transfer-week-target" data-hit={weekSek >= target}>
+              {tt(lang, 'risk.week.progress', { n: formatSek(weekSek), target: formatSek(target) })}
+            </p>
+          )}
           {done && <div className="nx-small" data-testid="transfer-done">{tt(lang, loss ? 'settle.loss.done' : 'settle.transfer.done', { time: done })}</div>}
           {done ? (
             <NxButton testId="transfer-continue" onClick={onContinue}>{tt(lang, 'settle.next')}</NxButton>

@@ -1,6 +1,6 @@
 import { TOTAL_SEATS } from '../business/interiorLayout';
 import { INTERIOR, RESIDENT_SPLINES } from '../content/layout';
-import { INITIAL_CASH_SEK } from './constants';
+import { RISK } from '../../sim/balance';
 import { MORALE_INITIAL } from './morale';
 import { initialTeam } from './team';
 import { SEASON, SERVICE } from '../../sim/balance';
@@ -298,7 +298,9 @@ export function makeInitialState(
     // revenue/cost writes at every mechanic so the invariant
     // `cash = INITIAL_CASH_SEK + revenue − cost + scenario deltas`
     // holds by construction.
-    cash: INITIAL_CASH_SEK,
+    // ORDER 296 — läses när spelet skapas (RISK.startCashSek), så att testerna
+    // av de äldre reglerna kan sätta den förra startkassan (legacyEconomy.ts).
+    cash: RISK.startCashSek,
     // ORDER 050 §7 step 3 (2026-08-10) — ledger starts empty; the
     // first line usually appears on day 1's first daily loan-interest
     // accrual or first scenario resolution.

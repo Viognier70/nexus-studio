@@ -182,6 +182,25 @@ export const STRINGS = {
   'open.short.open': { sv: 'Öppna ändå', en: 'Open anyway' },
   'open.short.cancel': { sv: 'Inte än', en: 'Not yet' },
   'settle.loss.done': { sv: 'Draget från kontot {time}', en: 'Deducted from the account at {time}' },
+  // ORDER 296 (punkt 2) — risken: bankens villkor, veckomålet och stängningen.
+  'risk.bank.terms': { sv: 'Under säsongen betalar du bara ränta på lånet. Banken vill se en intäkt på minst {target} i veckan. Missar du målet två veckor i rad förhandlar vi om lånet, och räntan blir dubbel. Står kassan under noll vid tre avräkningar i rad stänger krogen.', en: 'During the season you only pay interest on the loan. The bank wants to see at least {target} in takings each week. Miss the target two weeks running and we renegotiate the loan, at double the interest. If the account is below zero at three settlements in a row, the restaurant closes.' },
+  'risk.week.progress': { sv: 'Veckans intäkt hittills: {n} av bankens mål {target}.', en: 'Takings this week so far: {n} of the bank’s target of {target}.' },
+  'risk.settle.hit': { sv: 'Veckomålet är nått: {n} av {target}.', en: 'The weekly target is met: {n} of {target}.' },
+  'risk.settle.miss': { sv: 'Veckomålet är missat: {n} av {target}.', en: 'The weekly target is missed: {n} of {target}.' },
+  'risk.settle.renegotiated': { sv: 'Två missade veckor i rad. Banken har förhandlat om lånet, och räntan är dubbel resten av säsongen.', en: 'Two missed weeks running. The bank has renegotiated the loan, and the interest is doubled for the rest of the season.' },
+  'risk.settle.below': { sv: 'Kassan är under noll efter avräkningen, {weeks} av {max} veckor i rad. Vid {max} stänger krogen.', en: 'The account is below zero after the settlement, {weeks} of {max} weeks in a row. At {max} the restaurant closes.' },
+  'risk.closed.kicker': { sv: 'Säsongen är slut', en: 'The season is over' },
+  'risk.closed.title': { sv: 'Krogen stänger', en: 'The restaurant closes' },
+  'risk.closed.body': { sv: 'Kassan har stått under noll vid tre veckoavräkningar i rad. Banken säger upp lånet efter vecka {week}, och dörren förblir stängd.', en: 'The account has been below zero at three weekly settlements in a row. The bank calls in the loan after week {week}, and the door stays shut.' },
+  'risk.closed.medals': { sv: 'Dina medaljer och det du lärt dig är kvar. En ny säsong börjar med samma kunskap.', en: 'Your medals and what you have learned remain. A new season starts with the same knowledge.' },
+  // ORDER 296 (punkt 5) — förberedelsen på morgonen.
+  'prep.label': { sv: 'Förberedelsen', en: 'The prep' },
+  'prep.minutes': { sv: '{need} min · personalen hinner {capacity}', en: '{need} min · the team manages {capacity}' },
+  'prep.ready': { sv: 'Allt hinns före öppning.', en: 'Everything is ready before opening.' },
+  'prep.backlog': { sv: '{n} minuter görs efter öppning, och gästerna får vänta längre tills det är klart.', en: '{n} minutes are done after opening, and the guests wait longer until it is finished.' },
+  'prep.hand': { sv: 'Ta in en extra hand · {price} · +{n} min', en: 'Bring in an extra pair of hands · {price} · +{n} min' },
+  'prep.handHired': { sv: 'En extra hand förbereder med laget.', en: 'An extra pair of hands is prepping with the team.' },
+  'risk.closed.again': { sv: 'Börja om', en: 'Start again' },
   // ORDER 290 — Designs leveranser 2026-09-30 (serviceläget, rätt och fel med
   // pyramiden, ringen), inslagna oförändrade.
   ...SERVICE_MODE_STRINGS,
@@ -821,7 +840,9 @@ export const TABLE = {
       amortisation: { sv: 'Amortering på lånet', en: 'Repayment on the loan' },
       rent: { sv: 'Veckohyra för lokalen', en: "The week's rent for the premises" },
       sale: { sv: 'Lokalen såld till banken', en: 'Premises sold to the bank' },
-      deposit: { sv: 'Kontantinsats för den nya lokalen', en: 'Cash deposit for the new premises' }
+      deposit: { sv: 'Kontantinsats för den nya lokalen', en: 'Cash deposit for the new premises' },
+      // ORDER 296 — den extra handen till förberedelsen.
+      prepHand: { sv: 'En extra hand till förberedelsen', en: 'An extra pair of hands for the prep' }
     },
     classes: {
       vinbar: { sv: 'Vinbar', en: 'Wine bar' },
