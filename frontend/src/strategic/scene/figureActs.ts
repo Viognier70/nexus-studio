@@ -39,6 +39,7 @@ import {
   poseIdle, poseSeated, poseWalk, poseCarry, poseGreet, blendPose
 } from './figureRig';
 import { poseDine, poseTakeOrder, poseOffer, poseNod, posePoint, poseSignal } from './serviceScore';
+import { QUEUE_MOOD } from '../../sim/balance';
 
 // #region typer
 
@@ -117,7 +118,8 @@ export function staffTempo(stress: number): { rate: number; walkSpeed: number; s
  * brett med flit — det är där spelaren hinner göra något. Kräver ett
  * tålamodsvärde per gäst i sim-lagret (FRAGOR §21).
  */
-export const WAIT_THRESHOLDS = { impatient: 0.55, leaving: 0.20 };
+// ORDER 293 — gränserna står i balance.ts (QUEUE_MOOD).
+export const WAIT_THRESHOLDS = { impatient: QUEUE_MOOD.impatientBelow, leaving: QUEUE_MOOD.leavingBelow };
 export type WaitState = 'lugn' | 'otålig' | 'påVägAttGå';
 export function waitStateFor(patience: number): WaitState {
   if (patience < WAIT_THRESHOLDS.leaving) return 'påVägAttGå';

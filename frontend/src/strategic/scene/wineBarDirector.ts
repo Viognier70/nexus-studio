@@ -46,15 +46,17 @@ import {
 } from './serviceFlow';
 import { staffTempo, waitStateFor, WAIT_THRESHOLDS } from './figureActs';
 import { IDLE_RULE } from './serviceScore';
+import { QUEUE_MOOD } from '../../sim/balance';
 import { clipSeconds, SEAT_KINDS, seatKindFromRoom } from './figureClips';
 
 // #region typer
 
-export type StaffKey = 'server' | 'server2' | 'bartender' | 'sommelier' | 'cook' | 'dish';
-export type StaffRoleKey = 'server' | 'bartender' | 'sommelier' | 'cook' | 'dish';
+export type StaffKey = 'server' | 'server2' | 'bartender' | 'sommelier' | 'cook' | 'dish' | 'host';
+export type StaffRoleKey = 'server' | 'bartender' | 'sommelier' | 'cook' | 'dish' | 'host';
 
 /** Designs personal i vinbaren (paket 6 §1) plus köket. Ordningen är poolens. */
-export const STAFF_KEYS: readonly StaffKey[] = ['server', 'server2', 'bartender', 'sommelier', 'cook', 'dish'];
+// ORDER 293 — Per, hovmästaren, sist så att de andras platser i listan står kvar.
+export const STAFF_KEYS: readonly StaffKey[] = ['server', 'server2', 'bartender', 'sommelier', 'cook', 'dish', 'host'];
 
 /**
  * Simuleringens fyra roller mot vinbarens personal, för övertagandet (FRAGOR
@@ -62,9 +64,11 @@ export const STAFF_KEYS: readonly StaffKey[] = ['server', 'server2', 'bartender'
  * rummet), servitören är servitören, kocken är kocken och lärlingen den andra
  * servitören. Samma mappning som businessRoom.ts STATION_MAP.vinbaren.
  */
+// ORDER 293 — värden är Per, hovmästaren (Designs leverans 3: "Per behövs för
+// att *Per tog över* … ska stämma"), inte längre sommeliern.
 export const SIM_ROLE_TO_STAFF: Record<StaffRole, StaffKey> = {
   servitör: 'server',
-  värd: 'sommelier',
+  värd: 'host',
   kock: 'cook',
   lärling: 'server2'
 };
@@ -84,7 +88,23 @@ export type DirectorPose =
   | 'welcome'
   // ORDER 292 — den som redan sitter reser sig och hälsar när någon i
   // sällskapet kommer till bordet (Designs klipp guest.riseGreet).
-  | 'riseGreet';
+  | 'riseGreet'
+  // ORDER 293 — vardagens koreografi: värden, ritualerna, mise en place och
+  // personalens små stunder (Designs klipp, theatreClips.ts staffClipFor).
+  | 'checkBook'
+  | 'greetDoor'
+  | 'presentMenu'
+  | 'setBread'
+  | 'pourWater'
+  | 'serveAperitif'
+  | 'writeBoard'
+  | 'setTable'
+  | 'stockFridge'
+  | 'polishGlass'
+  | 'holdDoor'
+  | 'checkTable'
+  | 'wipeTable'
+  | 'chat';
 
 export interface FigureSample {
   visible: boolean;
@@ -142,6 +162,12 @@ export interface DirectorOptions {
   poolSize: number;
   /** Höftens höjd över riggens rot i poseSeated (FIGURE.hipY − hipDrop). */
   seatedHipY: number;
+  /** ORDER 293 — köplatsernas riktning (samma ordning som queueSlots), och
+   *  hur många platser en köplats har (ett sällskap per plats). */
+  queueFacings?: readonly number[];
+  queueSpotSize?: number;
+  /** ORDER 293 — platserna för mise en place (wineBarRoom miseSpots). */
+  miseSpots?: readonly { id: string; local: Vec2; facing: number }[];
 }
 
 export interface GuestInput {
@@ -174,6 +200,8 @@ export interface FrameInput {
   /** reputation.ts UNHAPPY_THRESHOLD. */
   unhappyThreshold: number;
   takeover: TakeoverInput | null;
+  /** ORDER 293 — före dörrarna: mise en place (LEVERANSNOT §6). */
+  prep?: boolean;
 }
 
 // #endregion
@@ -208,6 +236,11 @@ const LEAVING_ENVELOPE_S = 6;
 // ORDER 292 — värden i dörren: hur länge en nyanländ välkomnas, och hur långt
 // innanför entrén värden står (meter).
 const WELCOME_S = 3;
+// ORDER 293 — ritualernas längd i sekunder (klippens längd i normalt tempo,
+// figureClips.ts), väntan mellan de små stunderna och dörren vid öppning.
+// ORDER 293 — det som ställs ned bärs medan klippet spelas (ägarboken).
+const CARRY_WHILE_HOLDING: readonly DirectorPose[] = ['serve', 'setBread', 'serveAperitif'];
+const RITUAL_S = { bread: 2.2, water: 2.6, aperitif: 2.5, menus: 2.4, filler: 3.2, fillerGap: 4, door: 4 };
 const HOST_IN_M = 1;
 /** Passet: servitörens sida (serviceFlow CORR_X, z 2,7) och kockens sida. */
 export const PASS_FLOOR: Vec2 = [CORR_X, 2.7];
@@ -322,6 +355,11 @@ interface ActorTrack {
   stress: number;
   /** ORDER 292 — sekunder utan uppgift i bild (IDLE_RULE). */
   idleFor: number;
+  /** ORDER 293 — hemmet utanför mise en place och dörren (stationen). */
+  base?: { home: Vec2; facing: number; pose: DirectorPose };
+  /** ORDER 293 — när nästa lilla stund får börja (personalens små stunder). */
+  fillerAt?: number;
+  fillerIx?: number;
 }
 
 type GuestMode = 'queue' | 'toSeat' | 'seated' | 'standing' | 'out' | 'hidden';
@@ -347,6 +385,10 @@ interface GuestTrack {
   /** ORDER 292 — hälsningen när någon i sällskapet kommer (riseGreet), från/till. */
   greetFrom: number;
   greetUntil: number;
+  /** ORDER 293 — värden har pratat med sällskapet i kön: lugnt till hit. */
+  calmUntil: number;
+  partyKey: string;
+  arrivedAt: number;
 }
 
 interface PartyTrack {
@@ -366,6 +408,8 @@ interface PartyTrack {
   /** Övriga uppgifter vid bordet (dryck, mat), för att lägga posen rätt. */
   visits: Task[];
   hIx: number;
+  /** ORDER 293 — bröd och vatten (och fördrinken i loungen) är ställda. */
+  ritualsQueued: boolean;
 }
 
 // #endregion
@@ -443,8 +487,12 @@ export class WineBarDirector {
       mk('bartender', 'bartender', 'bartender', 'pour'),
       mk('sommelier', 'sommelier', 'sommelier', 'idle'),
       mk('cook', 'cook', 'cookHot', 'cook'),
-      mk('dish', 'dish', 'dish', 'dish')
+      mk('dish', 'dish', 'dish', 'dish'),
+      // ORDER 293 — Per bakom värdpulten, vänd mot dörren; läser bokningarna
+      // mellan gästerna (host.checkBook).
+      mk('host', 'host', 'host', 'checkBook')
     ];
+    for (const a of this.actors) a.base = { home: [a.home[0], a.home[1]], facing: a.homeFacing, pose: a.idlePose };
     this.staffSamples = this.actors.map(() => emptySample());
   }
 
@@ -477,7 +525,10 @@ export class WineBarDirector {
     this.pruneItems(t);
     this.handleTakeover(input);
     this.assignPending(t);
-    this.hostAtDoor(t);
+    this.advanceQueue(t);
+    this.miseEnPlace(t, !!input.prep);
+    this.hostAtDoor(t, input);
+    this.smallMoments(t, !!input.prep);
     this.sendIdleHome(t);
 
     for (let i = 0; i < this.actors.length; i++) {
@@ -550,7 +601,8 @@ export class WineBarDirector {
       id: g.id, slot, mode: 'queue', seat: null, party: null,
       pos: [this.opts.spawn[0], this.opts.spawn[1]], walk: null,
       sitT0: -Infinity, standT0: -Infinity, queueIx: -1, lastState: g.state,
-      satisfaction: g.satisfaction, unhappy: false, leavingSince: -Infinity, inSim: true, seed: hashStr(g.id), greetFrom: -Infinity, greetUntil: -Infinity
+      satisfaction: g.satisfaction, unhappy: false, leavingSince: -Infinity, inSim: true, seed: hashStr(g.id), greetFrom: -Infinity, greetUntil: -Infinity,
+      calmUntil: -Infinity, partyKey: g.partyId ?? g.id, arrivedAt: t
     };
     this.tracks.set(g.id, tr);
     const sample = this.guestSamples[slot];
@@ -565,17 +617,68 @@ export class WineBarDirector {
       return tr;
     }
     // Ny gäst: dyker upp ute och går till sin plats i kön.
-    tr.queueIx = this.takeQueueSlot(g.id);
+    tr.queueIx = this.takeQueueSlot(g.id, tr.partyKey);
     const q = this.queueSpot(tr.queueIx);
     tr.walk = this.walkPath([[tr.pos[0], tr.pos[1]], q], t, WALK_GUEST, 'arrive');
     return tr;
   }
 
-  private takeQueueSlot(id: string): number {
+  // ORDER 293 — Designs köplatser (wineBarRoom queueSpots): en köplats per
+  // sällskap, medlemmarna inom 0,6 m från punkten. Ett sällskap ställer sig
+  // där någon i sällskapet redan står, annars på första helt lediga köplats.
+  private takeQueueSlot(id: string, partyKey: string): number {
+    const size = this.opts.queueSpotSize ?? 1;
+    const spots = Math.ceil(this.queueTaken.length / size);
+    const take = (spot: number) => {
+      for (let k = 0; k < size; k++) {
+        const i = spot * size + k;
+        if (i < this.queueTaken.length && this.queueTaken[i] === null) { this.queueTaken[i] = id; return i; }
+      }
+      return -1;
+    };
+    for (let spot = 0; spot < spots; spot++) {
+      const mates = [...this.tracks.values()].some((tr) => tr.partyKey === partyKey && tr.queueIx >= spot * size && tr.queueIx < (spot + 1) * size);
+      if (mates) { const i = take(spot); if (i >= 0) return i; }
+    }
+    for (let spot = 0; spot < spots; spot++) {
+      let free = true;
+      for (let k = 0; k < size; k++) { const i = spot * size + k; if (i < this.queueTaken.length && this.queueTaken[i] !== null) free = false; }
+      if (free) { const i = take(spot); if (i >= 0) return i; }
+    }
     for (let i = 0; i < this.queueTaken.length; i++) {
       if (this.queueTaken[i] === null) { this.queueTaken[i] = id; return i; }
     }
     return this.queueTaken.length; // längre kö än platserna: ställ sig sist
+  }
+
+  /** ORDER 293 — när kön flyttar fram går varje sällskap till platsen före
+   *  (LEVERANSNOT §6: "platsen med order − 1"). */
+  private advanceQueue(t: number): void {
+    const size = this.opts.queueSpotSize ?? 1;
+    if (size <= 1) return;
+    const spots = Math.ceil(this.queueTaken.length / size);
+    for (let spot = 0; spot < spots - 1; spot++) {
+      const empty = Array.from({ length: size }, (_, k) => spot * size + k).every((i) => i >= this.queueTaken.length || this.queueTaken[i] === null);
+      if (!empty) continue;
+      const movers = [...this.tracks.values()].filter((tr) => tr.mode === 'queue' && !tr.walk && tr.queueIx >= (spot + 1) * size && tr.queueIx < (spot + 2) * size);
+      if (movers.length === 0) continue;
+      for (const tr of movers) {
+        const k = tr.queueIx - (spot + 1) * size;
+        this.queueTaken[tr.queueIx] = null;
+        tr.queueIx = spot * size + k;
+        this.queueTaken[tr.queueIx] = tr.id;
+        const to = this.queueSpot(tr.queueIx);
+        tr.walk = this.walkPath([[tr.pos[0], tr.pos[1]], to], t, WALK_GUEST * 0.8, 'arrive');
+        tr.pos = [to[0], to[1]];
+      }
+      return; // ett steg i taget
+    }
+  }
+
+  private queueFacing(ix: number): number {
+    const f = this.opts.queueFacings;
+    if (!f || f.length === 0) return -Math.PI / 2;
+    return f[Math.min(ix, f.length - 1)];
   }
 
   private queueSpot(ix: number): Vec2 {
@@ -616,6 +719,7 @@ export class WineBarDirector {
     // landat (Vision Owner 2026-09-30): varje gäst som går till bordet
     // flyttar sällskapets tid till sin egen landning, om den är senare.
     this.joinParty(tr, g, t + tr.walk.dur + sitSeconds(seat));
+    this.escort(tr, t);
     // ORDER 292 — de i sällskapet som redan sitter reser sig och hälsar när
     // den nya är framme vid bordet.
     const at = t + tr.walk.dur;
@@ -682,7 +786,7 @@ export class WineBarDirector {
       p = {
         key, group, members: [], seatedAt, menuDoneAt: seatedAt + MENU_MIN_S + hash(hIx, 3) * MENU_SPAN_S,
         orderTask: null, drinkDone: false, servedAt: -1, toastAt: -1, foodTask: null,
-        billAskAt: -1, billTask: null, cleared: false, visits: [], hIx
+        billAskAt: -1, billTask: null, cleared: false, visits: [], hIx, ritualsQueued: false
       };
       this.parties.set(key, p);
     } else if (!p.orderTask && seatedAt > p.seatedAt) {
@@ -734,6 +838,12 @@ export class WineBarDirector {
       if (p.billAskAt >= 0 || p.orderTask) continue;
       // ORDER 287a — alla i sällskapet har landat på sina sitsar.
       const landed = p.members.length > 0 && p.members.every((m) => m.mode === 'seated' && t >= m.sitT0 + sitSeconds(m.seat));
+      // ORDER 293 — ritualerna när sällskapet sitter (Designs scen 2): bröd och
+      // vatten till borden, fördrinken i loungen. Baren har inget bröd.
+      if (landed && !p.ritualsQueued) {
+        p.ritualsQueued = true;
+        this.queueRituals(p, t);
+      }
       if (!landed || t < p.menuDoneAt) continue;
       const g = p.group;
       p.orderTask = this.addTask({
@@ -741,6 +851,33 @@ export class WineBarDirector {
         onDone: (done) => this.serveDrinks(p, done)
       });
     }
+  }
+
+  private queueRituals(p: PartyTrack, t: number): void {
+    const g = p.group;
+    if (g.kind === 'bar') return;
+    p.visits.push(this.addTask({
+      party: p, roles: ['server'], target: g.serveAt, facing: g.serveFacing, pose: 'setBread', dur: RITUAL_S.bread,
+      carry: 'plate', pickup: PASS_FLOOR, pickupHold: 0.8, ready: t + 0.5,
+      onDone: (done) => {
+        if (p.billAskAt >= 0 || !this.parties.has(p.key)) return;
+        p.visits.push(this.addTask({ party: p, roles: ['server'], target: g.serveAt, facing: g.serveFacing, pose: 'pourWater', dur: RITUAL_S.water, ready: done }));
+      }
+    }));
+    if (g.kind === 'lounge') {
+      p.visits.push(this.addTask({
+        party: p, roles: ['sommelier'], target: g.serveAt, facing: g.serveFacing, pose: 'serveAperitif', dur: RITUAL_S.aperitif,
+        carry: 'glass', pickup: BOTTLE_PICKUP, pickupHold: 0.8, ready: t + 1.5
+      }));
+    }
+  }
+
+  /** ORDER 293 — värden visar vägen och räcker över menyerna (scen 2). */
+  private escort(tr: GuestTrack, t: number): void {
+    const p = tr.party;
+    if (!p || p.members.length > 1) return; // en gång per sällskap, när den första går till bordet
+    const g = p.group;
+    this.addTask({ party: p, roles: ['host'], target: g.serveAt, facing: g.serveFacing, pose: 'presentMenu', dur: RITUAL_S.menus, ready: t + (tr.walk?.dur ?? 0) * 0.5 });
   }
 
   private simState(tr: GuestTrack, input: FrameInput): GuestState | null {
@@ -950,7 +1087,7 @@ export class WineBarDirector {
       tt += d0;
     }
     task.arrive = tt;
-    a.segs.push({ t0: tt, t1: tt + task.dur, kind: 'hold', at: task.target, facing: task.facing, pose: task.pose, envelope: true, targetYaw: 0, carrying: task.pose === 'serve' ? task.carry ?? null : null });
+    a.segs.push({ t0: tt, t1: tt + task.dur, kind: 'hold', at: task.target, facing: task.facing, pose: task.pose, envelope: true, targetYaw: 0, carrying: CARRY_WHILE_HOLDING.includes(task.pose) ? task.carry ?? null : null });
     tt += task.dur;
     task.done = tt;
     if (task.carryBack) {
@@ -989,24 +1126,108 @@ export class WineBarDirector {
   // innanför), välkomnar den som kommer och håller kön under uppsikt. Utan kö
   // går hen tillbaka till sin plats.
   hosting = false;
-  private hostBase: { home: Vec2; facing: number; pose: DirectorPose } | null = null;
-  private hostAtDoor(t: number): void {
-    const a = this.actors.find((x) => x.key === 'sommelier');
-    if (!a) return;
-    if (!this.hostBase) this.hostBase = { home: [a.home[0], a.home[1]], facing: a.homeFacing, pose: a.idlePose };
-    const queue = [...this.tracks.values()].filter((g) => g.mode === 'queue');
-    const hosting = queue.length > 0;
-    if (hosting) {
-      const justCame = queue.some((g) => t - g.leavingSince < WELCOME_S);
-      a.home = [this.room.entrance[0] - HOST_IN_M, this.room.entrance[1]];
-      a.homeFacing = Math.PI / 2;
-      a.idlePose = justCame ? 'welcome' : 'attend';
-    } else if (this.hosting) {
-      a.home = this.hostBase.home;
-      a.homeFacing = this.hostBase.facing;
-      a.idlePose = this.hostBase.pose;
+  private prepWas = false;
+  private doorHeldUntil = -Infinity;
+
+  // ORDER 293 — mise en place före öppning (LEVERANSNOT §6, scen 1): en uppgift
+  // per roll vid sin plats. Per skriver på tavlan, servitören dukar småborden,
+  // sommeliern fyller vinkylen och bartendern putsar glas. När dörrarna öppnar
+  // håller Per dörren en stund och alla går tillbaka till sina stationer.
+  private miseEnPlace(t: number, prep: boolean): void {
+    const spots = this.opts.miseSpots ?? [];
+    const spot = (id: string) => spots.find((m) => m.id === id);
+    const plan: Partial<Record<StaffKey, { id: string; pose: DirectorPose }>> = {
+      host: { id: 'board', pose: 'writeBoard' },
+      server: { id: 'setTables', pose: 'setTable' },
+      server2: { id: 'polish', pose: 'polishGlass' },
+      sommelier: { id: 'fridge', pose: 'stockFridge' },
+      bartender: { id: 'polish', pose: 'polishGlass' }
+    };
+    if (prep) {
+      for (const a of this.actors) {
+        const m = plan[a.key];
+        const at = m ? spot(m.id) : undefined;
+        if (!m || !at) continue;
+        // Två på samma plats står bredvid varandra.
+        const side = a.key === 'server2' ? 0.7 : 0;
+        a.home = [at.local[0] + side, at.local[1]];
+        a.homeFacing = at.facing;
+        a.idlePose = m.pose;
+      }
+    } else if (this.prepWas) {
+      for (const a of this.actors) if (a.base) { a.home = [a.base.home[0], a.base.home[1]]; a.homeFacing = a.base.facing; a.idlePose = a.base.pose; }
+      this.doorHeldUntil = t + RITUAL_S.door;
     }
-    this.hosting = hosting;
+    this.prepWas = prep;
+  }
+
+  // ORDER 293 — Per i dörren (vardagens koreografi, scen 2 och 5). Han läser
+  // bokningarna vid pulten mellan gästerna (host.checkBook). När ett sällskap
+  // kommer kliver han fram och hälsar (host.greetDoor). Står någon otålig i
+  // kön går han ut och pratar med dem, och de lugnar sig (staff.chat).
+  private hostAtDoor(t: number, input: FrameInput): void {
+    const a = this.actors.find((x) => x.key === 'host');
+    if (!a || !a.base || input.prep) return;
+    const queue = [...this.tracks.values()].filter((g) => g.mode === 'queue');
+    const door: Vec2 = [this.room.entrance[0] - HOST_IN_M, this.room.entrance[1]];
+    if (t < this.doorHeldUntil) {
+      a.home = door; a.homeFacing = Math.PI / 2; a.idlePose = 'holdDoor';
+    } else if (queue.length > 0) {
+      const justCame = queue.find((g) => t - g.arrivedAt < WELCOME_S + 2);
+      const impatient = justCame ? undefined : queue.find((g) => {
+        const sim = input.guests.find((x) => x.id === g.id);
+        const wait = sim && sim.state === 'waiting' ? Math.max(0, t - sim.stateTime) : 0;
+        return t >= g.calmUntil && guestPatience(true, wait, g.satisfaction, input.patienceSeconds, input.giveUpSatisfaction) < WAIT_THRESHOLDS.impatient;
+      });
+      if (impatient && a.tasks.length === 0) {
+        // Ställer sig bredvid sällskapet, vänd mot dem.
+        const at = impatient.pos;
+        a.home = [at[0] - 0.7, at[1]];
+        a.homeFacing = -Math.PI / 2 + Math.PI;
+        a.idlePose = 'chat';
+        if (Math.hypot(a.pos[0] - a.home[0], a.pos[1] - a.home[1]) < 0.3) {
+          for (const m of queue) if (m.partyKey === impatient.partyKey) m.calmUntil = t + QUEUE_MOOD.hostCalmSeconds;
+        }
+      } else {
+        a.home = door;
+        a.homeFacing = Math.PI / 2;
+        a.idlePose = justCame ? 'greetDoor' : 'checkBook';
+      }
+    } else {
+      a.home = [a.base.home[0], a.base.home[1]];
+      a.homeFacing = a.base.facing;
+      a.idlePose = a.base.pose;
+    }
+    this.hosting = queue.length > 0;
+  }
+
+  // ORDER 293 — personalens små stunder (LEVERANSNOT §6): när en roll inte har
+  // någon uppgift väljs en stund med syfte, i ordningen kontrollera ett dukat
+  // bord, torka bordet, fylla på vatten, putsa glas och sist byta några ord.
+  // staff.idle bara när figuren väntar på något bestämt.
+  private smallMoments(t: number, prep: boolean): void {
+    if (prep) return;
+    for (const a of this.actors) {
+      if (a.role !== 'server' && a.role !== 'sommelier') continue;
+      if (a.tasks.length > 0 || a.free > t) continue;
+      if (this.pending.some((k) => k.roles.includes(a.role) && k.ready <= t + 3)) continue;
+      if ((a.fillerAt ?? -Infinity) > t) continue;
+      const busy = new Set([...this.parties.values()].map((p) => p.group.id));
+      const groups = this.opts.groups.filter((g) => g.kind !== 'bar');
+      if (groups.length === 0) continue;
+      const ix = (a.fillerIx ?? (a.key === 'server2' ? 2 : 0)) % 4;
+      a.fillerIx = ix + 1;
+      const free = groups.filter((g) => !busy.has(g.id));
+      const taken = groups.filter((g) => busy.has(g.id));
+      const pick = <T,>(xs: T[]) => xs[(hashStr(a.key) + (a.fillerIx ?? 0)) % xs.length];
+      let target: Group | undefined;
+      let pose: DirectorPose;
+      if ((ix === 0 || ix === 1) && free.length > 0) { target = pick(free); pose = ix === 0 ? 'checkTable' : 'wipeTable'; }
+      else if (ix === 2 && taken.length > 0) { target = pick(taken); pose = 'pourWater'; }
+      else { a.fillerAt = t + RITUAL_S.fillerGap; continue; }
+      a.fillerAt = t + RITUAL_S.filler + RITUAL_S.fillerGap;
+      this.addTask({ party: null, roles: [a.role], target: target.serveAt, facing: target.serveFacing, pose, dur: RITUAL_S.filler, ready: t });
+    }
   }
 
   private sendIdleHome(t: number): void {
@@ -1228,7 +1449,7 @@ export class WineBarDirector {
 
     if (tr.mode === 'queue') {
       out.x = tr.pos[0]; out.z = tr.pos[1]; out.y = floorAt(tr.pos[0], tr.pos[1]);
-      out.facing = -Math.PI / 2; // mot dörren (entrén i +X)
+      out.facing = this.queueFacing(tr.queueIx); // ORDER 293 — köplatsens riktning
       out.seated = false;
       this.queuePose(tr, input, out);
       return;
@@ -1267,7 +1488,10 @@ export class WineBarDirector {
     const g = input.guests.find((x) => x.id === tr.id);
     const wait = g && g.state === 'waiting' ? Math.max(0, t - g.stateTime) : 0;
     const patience = guestPatience(true, wait, tr.satisfaction, input.patienceSeconds, input.giveUpSatisfaction);
-    this.waitPose(tr, patience, t, out);
+    // ORDER 293 — värden har pratat med sällskapet: lugnt en stund (scen 5),
+    // så länge simuleringen inte låter dem gå.
+    const calmed = t < tr.calmUntil && patience >= WAIT_THRESHOLDS.leaving;
+    this.waitPose(tr, calmed ? 1 : patience, t, out);
     out.targetYaw = 0;
   }
 

@@ -2542,6 +2542,710 @@
         "outcome": "The staff take over: they do a bit of both, and the bar is without ice for a long while.",
         "ongoing": "The ice has run out at the bar. The guests are waiting for their drinks."
       }
+    },
+    "vb32-fodelsedagen": {
+      "title": "The birthday",
+      "body": "The host in lounge A waves discreetly to Per, leans in and whispers that it is Karin’s birthday tonight.",
+      "steps": [
+        {
+          "question": "What does the kitchen need to know first?",
+          "options": {
+            "a": {
+              "label": "That candles and a lighter go on the tray",
+              "explanation": "The kitchen plans in numbers and time. Allergies come before everything else, even at a party."
+            },
+            "b": {
+              "label": "How many it’s for and when it goes out",
+              "explanation": "The kitchen plans in numbers and time. Allergies come before everything else, even at a party."
+            },
+            "c": {
+              "label": "Numbers, allergies and when it goes out",
+              "explanation": "The kitchen plans in numbers and time. Allergies come before everything else, even at a party."
+            },
+            "d": {
+              "label": "Which dessert the host would prefer",
+              "explanation": "The kitchen plans in numbers and time. Allergies come before everything else, even at a party."
+            }
+          },
+          "fail": {
+            "outcome": "I’ll take care of it."
+          }
+        },
+        {
+          "question": "How does Sara carry out a dessert with lit candles?",
+          "options": {
+            "a": {
+              "label": "Quickly, so the candles don’t have time to burn down",
+              "explanation": "An open flame among guests needs a clear path, a low grip and a calm pace."
+            },
+            "b": {
+              "label": "Lit at the hatch, carried low and slowly, path clear",
+              "explanation": "An open flame among guests needs a clear path, a low grip and a calm pace."
+            },
+            "c": {
+              "label": "Lit at the hatch and carried high above the guests",
+              "explanation": "An open flame among guests needs a clear path, a low grip and a calm pace."
+            },
+            "d": {
+              "label": "Through the bar runway, the shortest way to the lounge",
+              "explanation": "An open flame among guests needs a clear path, a low grip and a calm pace."
+            }
+          },
+          "fail": {
+            "outcome": "I’ll take care of it."
+          }
+        },
+        {
+          "question": "In lounge B two guests are in a business meeting and want quiet. The party wants to sing. What do you do?",
+          "options": {
+            "a": {
+              "label": "Asks the party to wait until the neighbours leave",
+              "explanation": "Considerate, but the neighbours may stay a long time, and then there’s no song at all."
+            },
+            "b": {
+              "label": "Asks the neighbours first if a short song is all right",
+              "explanation": "Polite, but it leaves the neighbours to say no to a birthday. That choice is yours to make, not theirs."
+            },
+            "c": {
+              "label": "Lets them sing one verse and treats the neighbours",
+              "explanation": "The evening belongs to every table. A short celebration and a gesture to the neighbours keeps both happy."
+            },
+            "d": {
+              "label": "Asks the DJ to turn up the music so the song blends in",
+              "explanation": "The evening belongs to every table. A short celebration and a gesture to the neighbours keeps both happy."
+            }
+          },
+          "fail": {
+            "outcome": "I’ll take care of it.",
+            "ongoing": "I’ll take care of it."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "One verse, then we bring it down."
+      },
+      "staff": {
+        "outcome": "Per takes over."
+      }
+    },
+    "vb33-vasen": {
+      "title": "The vase on the desk",
+      "body": "A guest in a wheelchair comes in between the host’s desk and the coat rail. A hand on the wheel catches the desk, and the vase smashes on the floor.",
+      "steps": [
+        {
+          "question": "What is the risk right now?",
+          "options": {
+            "a": {
+              "label": "That the guest has hurt a hand on the desk",
+              "explanation": "Glass and water in the entrance are a hazard for everyone coming in, including the guest in the wheelchair. You ask how the guest is in the next step."
+            },
+            "b": {
+              "label": "That the entrance is blocked for the next party",
+              "explanation": "Glass and water in the entrance are a hazard for everyone coming in, including the guest in the wheelchair. You ask how the guest is in the next step."
+            },
+            "c": {
+              "label": "Broken glass and water where guests walk in",
+              "explanation": "Glass and water in the entrance are a hazard for everyone coming in, including the guest in the wheelchair. You ask how the guest is in the next step."
+            },
+            "d": {
+              "label": "That the water ruins the booking book on the desk",
+              "explanation": "Glass and water in the entrance are a hazard for everyone coming in, including the guest in the wheelchair. You ask how the guest is in the next step."
+            }
+          },
+          "fail": {
+            "outcome": "I’ll take care of it."
+          }
+        },
+        {
+          "question": "How do you deal with it?",
+          "options": {
+            "a": {
+              "label": "Mops up the water first, so no one slips",
+              "explanation": "The person first, then the hazard, then the clean-up."
+            },
+            "b": {
+              "label": "Asks how the guest is, closes it off, sweeps, then mops",
+              "explanation": "The person first, then the hazard, then the clean-up."
+            },
+            "c": {
+              "label": "Picks up the big shards by hand, then mops",
+              "explanation": "The person first, then the hazard, then the clean-up."
+            },
+            "d": {
+              "label": "Fetches a brush and dustpan and sweeps it all up at once",
+              "explanation": "The person first, then the hazard, then the clean-up."
+            }
+          },
+          "fail": {
+            "outcome": "I’ll take care of it."
+          }
+        },
+        {
+          "question": "The guest is embarrassed and wants to go home. What do you do?",
+          "options": {
+            "a": {
+              "label": "Treats the party to the evening and apologises",
+              "explanation": "Generous, but without an explanation the guest may think you’re paying because they did something wrong."
+            },
+            "b": {
+              "label": "Says it could happen to anyone and shows the way",
+              "explanation": "The entrance was too narrow for a wheelchair. The fault is ours, not the guest’s. Say so and put it right."
+            },
+            "c": {
+              "label": "Says it was our fault, moves the vase, shows the way",
+              "explanation": "The entrance was too narrow for a wheelchair. The fault is ours, not the guest’s. Say so and put it right."
+            },
+            "d": {
+              "label": "Respects that and books them a table another evening",
+              "explanation": "Respectful, but the fault is still there in the entrance for the next guest."
+            }
+          },
+          "fail": {
+            "outcome": "I’ll take care of it.",
+            "ongoing": "I’ll take care of it."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "The vase was in the wrong place. We’ll move it now."
+      },
+      "staff": {
+        "outcome": "Per takes over."
+      }
+    },
+    "vb34-vinglar": {
+      "title": "The unsteady guest",
+      "body": "A guest slides off his bar stool, takes one step too far back and walks straight into Sara’s tray.",
+      "steps": [
+        {
+          "question": "What does the Alcohol Act say about a guest who is noticeably intoxicated?",
+          "options": {
+            "a": {
+              "label": "He may be served if he eats something first",
+              "explanation": "Anyone noticeably intoxicated may not be served alcohol, whatever the drink. Whether he may stay is for you to judge by how he is and how he behaves."
+            },
+            "b": {
+              "label": "He may be served beer, but not spirits",
+              "explanation": "Anyone noticeably intoxicated may not be served alcohol, whatever the drink. Whether he may stay is for you to judge by how he is and how he behaves."
+            },
+            "c": {
+              "label": "He must leave the premises at once",
+              "explanation": "Anyone noticeably intoxicated may not be served alcohol, whatever the drink. Whether he may stay is for you to judge by how he is and how he behaves."
+            },
+            "d": {
+              "label": "He may not be served any more alcohol",
+              "explanation": "Anyone noticeably intoxicated may not be served alcohol, whatever the drink. Whether he may stay is for you to judge by how he is and how he behaves."
+            }
+          },
+          "fail": {
+            "outcome": "I’ll handle this."
+          }
+        },
+        {
+          "question": "How does Mira tell him?",
+          "options": {
+            "a": {
+              "label": "Loud enough for his friends to hear and help",
+              "explanation": "A no given calmly and privately, with something in return, is taken better."
+            },
+            "b": {
+              "label": "Calmly and quietly, offering water and food",
+              "explanation": "A no given calmly and privately, with something in return, is taken better."
+            },
+            "c": {
+              "label": "Says the bar is closing soon for the night",
+              "explanation": "A no given calmly and privately, with something in return, is taken better."
+            },
+            "d": {
+              "label": "Pours a low-alcohol beer without a word",
+              "explanation": "A no given calmly and privately, with something in return, is taken better."
+            }
+          },
+          "fail": {
+            "outcome": "I’ll handle this."
+          }
+        },
+        {
+          "question": "His friends are regulars and want to order for him. What do you do?",
+          "options": {
+            "a": {
+              "label": "Serves the friends but asks them not to give him any",
+              "explanation": "The friends may be served, but if the glass goes on to him you have served him. You have to watch for that."
+            },
+            "b": {
+              "label": "Says no, notes the time and offers a taxi",
+              "explanation": "The ban applies whoever orders. Noting the time shows you did the right thing."
+            },
+            "c": {
+              "label": "Says no and asks the whole party to leave for the night",
+              "explanation": "Clear, but the friends have done nothing wrong, and you lose regulars."
+            },
+            "d": {
+              "label": "Lets them order, he’s only had water since",
+              "explanation": "The ban applies whoever orders. Noting the time shows you did the right thing."
+            }
+          },
+          "fail": {
+            "outcome": "I’ll handle this.",
+            "ongoing": "I’ll handle this."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "I’ll write it down: refused at {klockan}."
+      },
+      "staff": {
+        "outcome": "Per takes over."
+      }
+    },
+    "vb36-passet": {
+      "title": "The guest at the pass",
+      "body": "A guest gets up from lounge A and heads straight for the kitchen. At the hatch she asks if she may look inside.",
+      "steps": [
+        {
+          "question": "What applies when a guest wants to go into a restaurant kitchen?",
+          "options": {
+            "a": {
+              "label": "That she touches nothing and stays by the door",
+              "explanation": "The kitchen is food premises. Anyone going in follows the same hygiene rules as the staff."
+            },
+            "b": {
+              "label": "Protective clothing, hand-washing and an escort",
+              "explanation": "The kitchen is food premises. Anyone going in follows the same hygiene rules as the staff."
+            },
+            "c": {
+              "label": "That she isn’t ill; the chef answers for the rest",
+              "explanation": "The kitchen is food premises. Anyone going in follows the same hygiene rules as the staff."
+            },
+            "d": {
+              "label": "That it’s only allowed when nothing is being cooked",
+              "explanation": "The kitchen is food premises. Anyone going in follows the same hygiene rules as the staff."
+            }
+          },
+          "fail": {
+            "outcome": "Let’s do it after service."
+          }
+        },
+        {
+          "question": "How do you manage it in the middle of the rush?",
+          "options": {
+            "a": {
+              "label": "Asks Sara to show her round while you finish cooking",
+              "explanation": "A short, safe yes beats both a no and a kitchen in disarray."
+            },
+            "b": {
+              "label": "Takes her straight in and shows her the stations",
+              "explanation": "A short, safe yes beats both a no and a kitchen in disarray."
+            },
+            "c": {
+              "label": "Asks her to wait, then shows her from the door in an apron",
+              "explanation": "A short, safe yes beats both a no and a kitchen in disarray."
+            },
+            "d": {
+              "label": "Says kindly that the kitchen isn’t taking visitors tonight",
+              "explanation": "A short, safe yes beats both a no and a kitchen in disarray."
+            }
+          },
+          "fail": {
+            "outcome": "Let’s do it after service."
+          }
+        },
+        {
+          "question": "You recognise her: she writes about food for Grythyttebladet. What do you do?",
+          "options": {
+            "a": {
+              "label": "Treats her like everyone else and says nothing about it",
+              "explanation": "Fair, but she asked for something you can give. Not answering is a no as well."
+            },
+            "b": {
+              "label": "Offers a tour after service and a taste now",
+              "explanation": "The same rules for everyone. What you can give extra is time, when the kitchen has time."
+            },
+            "c": {
+              "label": "Asks Elin to look after her specially for the rest of the night",
+              "explanation": "The same rules for everyone. What you can give extra is time, when the kitchen has time."
+            },
+            "d": {
+              "label": "Asks her to come back on a quieter night for a tour",
+              "explanation": "Reasonable, but she is here tonight. If she doesn’t come back, nothing comes of it."
+            }
+          },
+          "fail": {
+            "outcome": "Let’s do it after service.",
+            "ongoing": "Let’s do it after service."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "A tour after service? I’d love that!"
+      },
+      "staff": {
+        "outcome": "Per takes over."
+      }
+    },
+    "vb35-tillsynen-a": {
+      "title": "The inspection",
+      "body": "Two guests at the high table haven’t touched their glasses for a while. Now they each show Per an ID card.",
+      "steps": [
+        {
+          "question": "Who must be on the premises throughout serving hours?",
+          "options": {
+            "a": {
+              "label": "Someone who has done the responsible alcohol serving course",
+              "explanation": "The licence holder or a registered serving supervisor must be on the premises throughout serving hours. A course is not enough; the name must be on the council’s list."
+            },
+            "b": {
+              "label": "The bartender, since she is the one pouring",
+              "explanation": "The licence holder or a registered serving supervisor must be on the premises throughout serving hours. A course is not enough; the name must be on the council’s list."
+            },
+            "c": {
+              "label": "The licence holder or a registered serving supervisor",
+              "explanation": "The licence holder or a registered serving supervisor must be on the premises throughout serving hours. A course is not enough; the name must be on the council’s list."
+            },
+            "d": {
+              "label": "The owner in person, every evening serving is on",
+              "explanation": "The licence holder or a registered serving supervisor must be on the premises throughout serving hours. A course is not enough; the name must be on the council’s list."
+            }
+          },
+          "fail": {
+            "outcome": "Risk of a formal reminder"
+          }
+        },
+        {
+          "question": "What do you show them?",
+          "options": {
+            "a": {
+              "label": "The licence and the staff register for tonight",
+              "explanation": "The inspection is about the licence and how you follow it: who is responsible and how you work to the self-monitoring plan."
+            },
+            "b": {
+              "label": "The till report and all of tonight’s receipts",
+              "explanation": "The inspection is about the licence and how you follow it: who is responsible and how you work to the self-monitoring plan."
+            },
+            "c": {
+              "label": "The licence and course certificates for all staff",
+              "explanation": "The inspection is about the licence and how you follow it: who is responsible and how you work to the self-monitoring plan."
+            },
+            "d": {
+              "label": "The licence, supervisor list and our own checks",
+              "explanation": "The inspection is about the licence and how you follow it: who is responsible and how you work to the self-monitoring plan."
+            }
+          },
+          "fail": {
+            "outcome": "Risk of a formal reminder"
+          }
+        },
+        {
+          "question": "The police officer nods towards the guest at the bar who was unsteady earlier. What do you say?",
+          "options": {
+            "a": {
+              "label": "Says he has only been drinking water tonight",
+              "explanation": "Openness and a written note count for most in front of the inspectors.",
+              "fail": {
+                "outcome": "Risk of a warning"
+              }
+            },
+            "b": {
+              "label": "Asks his friends to take him home before they ask",
+              "explanation": "Openness and a written note count for most in front of the inspectors.",
+              "fail": {
+                "outcome": "Risk of a formal reminder"
+              }
+            },
+            "c": {
+              "label": "Refers them to Mira, who was the one who refused him tonight",
+              "explanation": "Mira knows most, but you are the serving supervisor. The answer has to come from you."
+            },
+            "d": {
+              "label": "Tells it straight: refused at {klockan}, shows the note",
+              "explanation": "Openness and a written note count for most in front of the inspectors."
+            }
+          },
+          "fail": {
+            "outcome": "Risk of a formal reminder",
+            "ongoing": "A remark in the report, no sanction"
+          }
+        }
+      ],
+      "success": {
+        "outcome": "He was refused at {klockan}. Here’s the note."
+      },
+      "staff": {
+        "outcome": "We’ll put that in the report."
+      }
+    },
+    "vb35-tillsynen-b": {
+      "title": "The inspection",
+      "body": "Two guests at the high table haven’t touched their glasses for a while. Now they each show Per an ID card.",
+      "steps": [
+        {
+          "question": "Who must be on the premises throughout serving hours?",
+          "options": {
+            "a": {
+              "label": "Someone who has done the responsible alcohol serving course",
+              "explanation": "The licence holder or a registered serving supervisor must be on the premises throughout serving hours. A course is not enough; the name must be on the council’s list."
+            },
+            "b": {
+              "label": "The bartender, since she is the one pouring",
+              "explanation": "The licence holder or a registered serving supervisor must be on the premises throughout serving hours. A course is not enough; the name must be on the council’s list."
+            },
+            "c": {
+              "label": "The licence holder or a registered serving supervisor",
+              "explanation": "The licence holder or a registered serving supervisor must be on the premises throughout serving hours. A course is not enough; the name must be on the council’s list."
+            },
+            "d": {
+              "label": "The owner in person, every evening serving is on",
+              "explanation": "The licence holder or a registered serving supervisor must be on the premises throughout serving hours. A course is not enough; the name must be on the council’s list."
+            }
+          },
+          "fail": {
+            "outcome": "Risk of a formal reminder"
+          }
+        },
+        {
+          "question": "What do you show them?",
+          "options": {
+            "a": {
+              "label": "The licence and the staff register for tonight",
+              "explanation": "The inspection is about the licence and how you follow it: who is responsible and how you work to the self-monitoring plan."
+            },
+            "b": {
+              "label": "The till report and all of tonight’s receipts",
+              "explanation": "The inspection is about the licence and how you follow it: who is responsible and how you work to the self-monitoring plan."
+            },
+            "c": {
+              "label": "The licence and course certificates for all staff",
+              "explanation": "The inspection is about the licence and how you follow it: who is responsible and how you work to the self-monitoring plan."
+            },
+            "d": {
+              "label": "The licence, supervisor list and our own checks",
+              "explanation": "The inspection is about the licence and how you follow it: who is responsible and how you work to the self-monitoring plan."
+            }
+          },
+          "fail": {
+            "outcome": "Risk of a formal reminder"
+          }
+        },
+        {
+          "question": "Two young guests in lounge B order wine from Sara. The licensing officer looks over. What do you do?",
+          "options": {
+            "a": {
+              "label": "Asks how old they are and trusts the answer",
+              "explanation": "Whoever serves must be sure the guest is 18 or over. If you are unsure, ask for ID.",
+              "fail": {
+                "outcome": "Risk of a warning"
+              }
+            },
+            "b": {
+              "label": "Asks Sara to check ID before she pours",
+              "explanation": "Whoever serves must be sure the guest is 18 or over. If you are unsure, ask for ID."
+            },
+            "c": {
+              "label": "Asks everyone in the lounge for ID, older guests too",
+              "explanation": "Legal and safe, but the older guests feel mistrusted. Ask the ones it concerns."
+            },
+            "d": {
+              "label": "Trusts Sara to spot anyone who is too young",
+              "explanation": "Whoever serves must be sure the guest is 18 or over. If you are unsure, ask for ID.",
+              "fail": {
+                "outcome": "Risk of a warning"
+              }
+            }
+          },
+          "fail": {
+            "outcome": "Risk of a formal reminder",
+            "ongoing": "A remark in the report, no sanction"
+          }
+        }
+      ],
+      "success": {
+        "outcome": "May I see some ID, please?"
+      },
+      "staff": {
+        "outcome": "We’ll put that in the report."
+      }
+    },
+    "vb35-tillsynen-c": {
+      "title": "The inspection",
+      "body": "Two guests at the high table haven’t touched their glasses for a while. Now they each show Per an ID card.",
+      "steps": [
+        {
+          "question": "Who must be on the premises throughout serving hours?",
+          "options": {
+            "a": {
+              "label": "Someone who has done the responsible alcohol serving course",
+              "explanation": "The licence holder or a registered serving supervisor must be on the premises throughout serving hours. A course is not enough; the name must be on the council’s list."
+            },
+            "b": {
+              "label": "The bartender, since she is the one pouring",
+              "explanation": "The licence holder or a registered serving supervisor must be on the premises throughout serving hours. A course is not enough; the name must be on the council’s list."
+            },
+            "c": {
+              "label": "The licence holder or a registered serving supervisor",
+              "explanation": "The licence holder or a registered serving supervisor must be on the premises throughout serving hours. A course is not enough; the name must be on the council’s list."
+            },
+            "d": {
+              "label": "The owner in person, every evening serving is on",
+              "explanation": "The licence holder or a registered serving supervisor must be on the premises throughout serving hours. A course is not enough; the name must be on the council’s list."
+            }
+          },
+          "fail": {
+            "outcome": "Risk of a formal reminder"
+          }
+        },
+        {
+          "question": "What do you show them?",
+          "options": {
+            "a": {
+              "label": "The licence and the staff register for tonight",
+              "explanation": "The inspection is about the licence and how you follow it: who is responsible and how you work to the self-monitoring plan."
+            },
+            "b": {
+              "label": "The till report and all of tonight’s receipts",
+              "explanation": "The inspection is about the licence and how you follow it: who is responsible and how you work to the self-monitoring plan."
+            },
+            "c": {
+              "label": "The licence and course certificates for all staff",
+              "explanation": "The inspection is about the licence and how you follow it: who is responsible and how you work to the self-monitoring plan."
+            },
+            "d": {
+              "label": "The licence, supervisor list and our own checks",
+              "explanation": "The inspection is about the licence and how you follow it: who is responsible and how you work to the self-monitoring plan."
+            }
+          },
+          "fail": {
+            "outcome": "Risk of a formal reminder"
+          }
+        },
+        {
+          "question": "The licensing officer leafs through the self-monitoring plan and asks how the staff know what’s in it. What do you say?",
+          "options": {
+            "a": {
+              "label": "It’s in the folder by the till, where everyone can read it",
+              "explanation": "The self-monitoring plan must be known by everyone who serves, not just sit in a folder.",
+              "fail": {
+                "outcome": "Risk of a formal reminder"
+              }
+            },
+            "b": {
+              "label": "Everyone has done the responsible serving course",
+              "explanation": "The course is good, but it covers the law. Your self-monitoring plan is your own routines."
+            },
+            "c": {
+              "label": "I wrote it myself, so I answer for it",
+              "explanation": "The self-monitoring plan must be known by everyone who serves, not just sit in a folder.",
+              "fail": {
+                "outcome": "Risk of a formal reminder"
+              }
+            },
+            "d": {
+              "label": "Every new starter goes through it, and we review it often",
+              "explanation": "The self-monitoring plan must be known by everyone who serves, not just sit in a folder."
+            }
+          },
+          "fail": {
+            "outcome": "Risk of a formal reminder",
+            "ongoing": "A remark in the report, no sanction"
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Every new starter goes through it with me."
+      },
+      "staff": {
+        "outcome": "We’ll put that in the report."
+      }
+    },
+    "vb35-tillsynen-d": {
+      "title": "The inspection",
+      "body": "Two guests at the high table haven’t touched their glasses for a while. Now they each show Per an ID card.",
+      "steps": [
+        {
+          "question": "Who must be on the premises throughout serving hours?",
+          "options": {
+            "a": {
+              "label": "Someone who has done the responsible alcohol serving course",
+              "explanation": "The licence holder or a registered serving supervisor must be on the premises throughout serving hours. A course is not enough; the name must be on the council’s list."
+            },
+            "b": {
+              "label": "The bartender, since she is the one pouring",
+              "explanation": "The licence holder or a registered serving supervisor must be on the premises throughout serving hours. A course is not enough; the name must be on the council’s list."
+            },
+            "c": {
+              "label": "The licence holder or a registered serving supervisor",
+              "explanation": "The licence holder or a registered serving supervisor must be on the premises throughout serving hours. A course is not enough; the name must be on the council’s list."
+            },
+            "d": {
+              "label": "The owner in person, every evening serving is on",
+              "explanation": "The licence holder or a registered serving supervisor must be on the premises throughout serving hours. A course is not enough; the name must be on the council’s list."
+            }
+          },
+          "fail": {
+            "outcome": "Risk of a formal reminder"
+          }
+        },
+        {
+          "question": "What do you show them?",
+          "options": {
+            "a": {
+              "label": "The licence and the staff register for tonight",
+              "explanation": "The inspection is about the licence and how you follow it: who is responsible and how you work to the self-monitoring plan."
+            },
+            "b": {
+              "label": "The till report and all of tonight’s receipts",
+              "explanation": "The inspection is about the licence and how you follow it: who is responsible and how you work to the self-monitoring plan."
+            },
+            "c": {
+              "label": "The licence and course certificates for all staff",
+              "explanation": "The inspection is about the licence and how you follow it: who is responsible and how you work to the self-monitoring plan."
+            },
+            "d": {
+              "label": "The licence, supervisor list and our own checks",
+              "explanation": "The inspection is about the licence and how you follow it: who is responsible and how you work to the self-monitoring plan."
+            }
+          },
+          "fail": {
+            "outcome": "Risk of a formal reminder"
+          }
+        },
+        {
+          "question": "The licensing officer wants to order something to eat. The chef has just said the food has run out. What do you do?",
+          "options": {
+            "a": {
+              "label": "Says the kitchen closes earlier than the bar tonight",
+              "explanation": "Cooked food must be available to order throughout serving hours. A simple choice is enough, but snacks don’t count.",
+              "fail": {
+                "outcome": "Risk of a warning"
+              }
+            },
+            "b": {
+              "label": "Has the chef make something simple from what’s left",
+              "explanation": "Cooked food must be available to order throughout serving hours. A simple choice is enough, but snacks don’t count."
+            },
+            "c": {
+              "label": "Offers them olives and nuts from the bar instead",
+              "explanation": "Cooked food must be available to order throughout serving hours. A simple choice is enough, but snacks don’t count.",
+              "fail": {
+                "outcome": "Risk of a formal reminder"
+              }
+            },
+            "d": {
+              "label": "Tells it straight and pauses alcohol until there’s food",
+              "explanation": "Legal and honest, but the bar loses the evening. The kitchen can almost always make something simple."
+            }
+          },
+          "fail": {
+            "outcome": "Risk of a formal reminder",
+            "ongoing": "A remark in the report, no sanction"
+          }
+        }
+      ],
+      "success": {
+        "outcome": "The chef will make a simple dish from what we have."
+      },
+      "staff": {
+        "outcome": "We’ll put that in the report."
+      }
     }
   }
 }

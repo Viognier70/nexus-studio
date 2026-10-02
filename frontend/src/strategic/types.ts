@@ -1844,6 +1844,8 @@ export type SimAction =
   | { type: 'RETURN_ITEMS'; items: Record<string, number> }
   // ORDER 280 — Back your knowledge: spelaren startar själv en raket.
   | { type: 'START_BACK' }
+  // ORDER 293 — provspel: köa en raket till kvällens nästa plats (#playtest=1&rocket=…).
+  | { type: 'QUEUE_INCIDENT'; incidentId: string }
   // ORDER 284 — Back your knowledge: svaret låses och klockan stannar.
   | { type: 'PICK_BACK_ANSWER'; optionId: string }
   // ORDER 285 — gårdagens rester: svaret på frågan, och kortet stängt.

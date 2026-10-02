@@ -30,14 +30,19 @@ export type PropId =
   | 'wineGlass' | 'waterGlass'
   | 'wineBottle' | 'waterBottle' | 'carafe'
   | 'tray' | 'fork' | 'knife' | 'spoon' | 'napkin'
-  | 'cake' | 'menu' | 'pad' | 'billFolder';
+  | 'cake' | 'menu' | 'pad' | 'billFolder'
+  // Leverans 3, händelserna
+  | 'hostDesk' | 'wheelchair' | 'vase' | 'broom' | 'dustpan'
+  | 'councilId' | 'policeId' | 'licenceFolder' | 'apron' | 'lighter'
+  // Vardagens koreografi (efter leverans 3): brödkorgen, karaffen att dekantera i, fördrinksglaset och backen
+  | 'breadBasket' | 'decanter' | 'flute' | 'crate';
 
 export type HandSide = 'L' | 'R';
 
 /** Handpunkterna. Varje föremål har ett grepp; greppet bestämmer var i handen det ligger. */
-export type GripId = 'flat' | 'palm' | 'stem' | 'tumbler' | 'body' | 'neck' | 'handle' | 'pinch' | 'book' | 'twoHands';
+export type GripId = 'flat' | 'palm' | 'stem' | 'tumbler' | 'body' | 'neck' | 'handle' | 'pinch' | 'book' | 'twoHands' | 'pole' | 'card' | 'push' | 'none';
 
-export type Surface = 'table' | 'bar' | 'pass' | 'station' | 'sink' | 'tray' | 'plate';
+export type Surface = 'table' | 'bar' | 'pass' | 'station' | 'sink' | 'tray' | 'plate' | 'desk' | 'floor';
 
 export interface PropSpec {
   id: PropId;
@@ -49,7 +54,7 @@ export interface PropSpec {
   /** Ytor föremålet kan ställas på. */
   restsOn: Surface[];
   /** Har en fyllning som kan slås av och på: mat, soppa, vin, vatten, ljusens lågor. */
-  fill?: 'food' | 'soup' | 'dessert' | 'wine' | 'water' | 'flames';
+  fill?: 'food' | 'soup' | 'dessert' | 'wine' | 'water' | 'flames' | 'flowers';
 }
 
 export interface Handpoint {
@@ -79,7 +84,7 @@ export interface PropHandle {
 //
 // Höjderna över golvet som rummen redan använder. Ett föremål som släpps läggs på ytans höjd.
 
-export const SURFACE = { table: 0.75, bar: 1.05, pass: 0.95, station: 0.90, sink: 0.88 };
+export const SURFACE = { table: 0.75, bar: 1.05, pass: 0.95, station: 0.90, sink: 0.88, desk: 1.10, floor: 0 };
 
 // ---------- handpunkterna ---------------------------------------------
 //
@@ -102,7 +107,11 @@ export const HANDPOINTS: Record<GripId, Handpoint> = {
   handle:   { offset: [0, 0.004, 0.01], pitch: 0.45, note: 'Skaftet i handen, spetsen framåt och nedåt.' },
   pinch:    { offset: [0, -0.008, 0.02], pitch: 0, note: 'Servetten mellan fingrarna.' },
   book:     { offset: [0, 0.01, 0.035], pitch: -1.05, note: 'Kortet lutat upp mot den som läser.' },
-  twoHands: { offset: [0.16, 0.012, 0.04], pitch: 0, note: 'Tårtan bärs med båda händer. Fästet i höger hand, mitten mellan händerna.' }
+  twoHands: { offset: [0.16, 0.012, 0.04], pitch: 0, note: 'Tårtan bärs med båda händer. Fästet i höger hand, mitten mellan händerna.' },
+  pole:     { offset: [0, 0, 0.02], pitch: 0.35, note: 'Handen runt skaftet, borsten framåt mot golvet.' },
+  card:     { offset: [0, 0.006, 0.03], pitch: -1.2, note: 'Legitimationen hålls upp mot den som ska läsa den.' },
+  push:     { offset: [0.22, 0, 0.02], pitch: 0, note: 'Båda händerna på handtagen. Fästet i höger hand, mitten mellan handtagen.' },
+  none:     { offset: [0, 0, 0], pitch: 0, note: 'Står på golvet och hålls inte.' }
 };
 
 // ---------- katalogen -------------------------------------------------
@@ -121,10 +130,27 @@ export const CATALOGUE: Record<PropId, PropSpec> = {
   knife:       { id: 'knife', size: [0.018, 0.008, 0.22], attach: [0, 0, -0.08], grip: 'handle', restsOn: ['table', 'plate', 'tray'] },
   spoon:       { id: 'spoon', size: [0.04, 0.008, 0.18], attach: [0, 0, -0.06], grip: 'handle', restsOn: ['table', 'plate', 'tray'] },
   napkin:      { id: 'napkin', size: [0.12, 0.014, 0.12], attach: [0, 0.007, -0.05], grip: 'pinch', restsOn: ['table', 'bar', 'plate'] },
-  cake:        { id: 'cake', size: [0.30, 0.213, 0.30], attach: [0, 0, 0], grip: 'twoHands', restsOn: ['table', 'pass'], fill: 'flames' },
+  cake:        { id: 'cake', size: [0.30, 0.213, 0.30], attach: [0, 0, 0], grip: 'twoHands', restsOn: ['table', 'pass', 'tray'], fill: 'flames' },
   menu:        { id: 'menu', size: [0.22, 0.008, 0.31], attach: [0, 0, -0.12], grip: 'book', restsOn: ['table'] },
   pad:         { id: 'pad', size: [0.08, 0.012, 0.11], attach: [0, 0, -0.04], grip: 'book', restsOn: ['table'] },
-  billFolder:  { id: 'billFolder', size: [0.11, 0.012, 0.21], attach: [0, 0, -0.08], grip: 'book', restsOn: ['table'] }
+  billFolder:  { id: 'billFolder', size: [0.11, 0.012, 0.21], attach: [0, 0, -0.08], grip: 'book', restsOn: ['table'] },
+  // Leverans 3. Värdpulten och rullstolen står på golvet. Vasen står på pulten.
+  hostDesk:    { id: 'hostDesk', size: [0.60, 1.10, 0.45], attach: [0, 1.10, 0], grip: 'none', restsOn: ['floor'] },
+  wheelchair:  { id: 'wheelchair', size: [0.62, 0.92, 1.05], attach: [0, 0.905, -0.30], grip: 'push', restsOn: ['floor'] },
+  vase:        { id: 'vase', size: [0.12, 0.42, 0.12], attach: [0, 0.12, 0], grip: 'body', restsOn: ['desk', 'table', 'bar', 'floor'], fill: 'flowers' },
+  broom:       { id: 'broom', size: [0.30, 1.30, 0.06], attach: [0, 0.95, 0], grip: 'pole', restsOn: ['floor'] },
+  dustpan:     { id: 'dustpan', size: [0.24, 0.10, 0.34], attach: [0, 0.09, -0.14], grip: 'handle', restsOn: ['floor'] },
+  councilId:   { id: 'councilId', size: [0.086, 0.004, 0.054], attach: [0, 0.002, -0.02], grip: 'card', restsOn: ['table', 'bar', 'desk'] },
+  policeId:    { id: 'policeId', size: [0.075, 0.014, 0.105], attach: [0, 0.006, -0.04], grip: 'card', restsOn: ['table', 'bar', 'desk'] },
+  licenceFolder: { id: 'licenceFolder', size: [0.24, 0.03, 0.32], attach: [0, 0.015, -0.12], grip: 'book', restsOn: ['table', 'bar', 'desk'] },
+  apron:       { id: 'apron', size: [0.30, 0.02, 0.25], attach: [0, 0.01, -0.1], grip: 'pinch', restsOn: ['table', 'bar', 'station'] },
+  lighter:     { id: 'lighter', size: [0.025, 0.025, 0.24], attach: [0, 0.0125, -0.08], grip: 'handle', restsOn: ['table', 'bar', 'pass', 'tray'] },
+  // Vardagens koreografi. Brödkorgen bärs på handflatan, karaffen i halsen, glaset i foten, backen med båda händerna.
+  // ORDER 293 — höjden uppmätt (measureProp 0,0856 m); leveransen angav 0,09.
+  breadBasket: { id: 'breadBasket', size: [0.24, 0.086, 0.16], attach: [0, 0, -0.05], grip: 'flat', restsOn: ['table', 'tray', 'pass'], fill: 'food' },
+  decanter:    { id: 'decanter', size: [0.20, 0.30, 0.20], attach: [0, 0.24, 0], grip: 'neck', restsOn: ['table', 'bar', 'tray'], fill: 'wine' },
+  flute:       { id: 'flute', size: [0.064, 0.22, 0.064], attach: [0, 0.1, 0], grip: 'stem', restsOn: ['table', 'bar', 'tray'], fill: 'wine' },
+  crate:       { id: 'crate', size: [0.42, 0.33, 0.30], attach: [0, 0.2, 0], grip: 'twoHands', restsOn: ['floor', 'bar'] }
 };
 
 // ---------- färgerna --------------------------------------------------
@@ -156,7 +182,16 @@ export const PROP_COLOURS = {
   food: '#b5673a',
   greens: '#7c8a48',
   soup: '#d9a441',
-  dessert: '#e9c9a0'
+  dessert: '#e9c9a0',
+  // Leverans 3
+  desk: '#4a3122', deskTop: '#6a4630', brass: '#b88a3e',
+  chairFrame: '#3a3836', tyre: '#1c1a19', seatCloth: '#3d4450',
+  vase: '#2f5d62', blossom: '#e8c24a', blossom2: '#efe4d0',
+  pole: '#6b4a2e', bristle: '#c9a15a', pan: '#3c4a3f',
+  card: '#f4f1ea', cardBand: '#2f6db5', wallet: '#1e2b4a', badge: '#d7a24c',
+  licence: '#35506b', apron: '#efe4d0', lighter: '#2a2826',
+  // Vardagens koreografi
+  basket: '#b98a52', bread: '#d9a066', aperitif: '#e9c46a', crate: '#7a5a3a'
 };
 
 // ---------- bygget ----------------------------------------------------
@@ -192,6 +227,9 @@ function box(w: number, h: number, d: number): THREE.BufferGeometry {
 function cyl(r: number, h: number, seg?: number): THREE.BufferGeometry {
   return geo('cyl:' + r + ',' + h + ',' + (seg ?? 20), function () { return new THREE.CylinderGeometry(r, r, h, seg ?? 20); });
 }
+function sph(r: number): THREE.BufferGeometry {
+  return geo('sph:' + r, function () { return new THREE.SphereGeometry(r, 12, 8); });
+}
 function add(g: THREE.Group, geometry: THREE.BufferGeometry, material: THREE.Material, x: number, y: number, z: number): THREE.Mesh {
   const m = new THREE.Mesh(geometry, material);
   m.position.set(x, y, z);
@@ -214,7 +252,10 @@ const PROFILE = {
   waterBottle: [[0, 0], [0.035, 0], [0.035, 0.18], [0.02, 0.225], [0.014, 0.26], [0, 0.26]],
   carafe: [[0, 0], [0.062, 0], [0.065, 0.05], [0.058, 0.12], [0.03, 0.17], [0.022, 0.23], [0.028, 0.26]],
   tray: [[0, 0], [0.19, 0], [0.2, 0.02], [0.194, 0.02], [0.188, 0.006], [0, 0.006]],
-  cakePlate: [[0, 0], [0.11, 0], [0.13, 0.008], [0.15, 0.013], [0.15, 0.015], [0, 0.012]]
+  cakePlate: [[0, 0], [0.11, 0], [0.13, 0.008], [0.15, 0.013], [0.15, 0.015], [0, 0.012]],
+  flute: [[0, 0], [0.032, 0], [0.032, 0.003], [0.004, 0.008], [0.0035, 0.1], [0.018, 0.12], [0.025, 0.17], [0.026, 0.22]],
+  decanter: [[0, 0], [0.1, 0], [0.1, 0.01], [0.095, 0.05], [0.06, 0.11], [0.025, 0.18], [0.02, 0.28], [0.024, 0.3]],
+  vase: [[0, 0], [0.04, 0], [0.055, 0.06], [0.06, 0.13], [0.045, 0.21], [0.028, 0.25], [0.034, 0.26], [0.03, 0.26], [0.024, 0.25]]
 };
 
 function buildInto(g: THREE.Group, id: PropId): THREE.Object3D | null {
@@ -318,6 +359,99 @@ function buildInto(g: THREE.Group, id: PropId): THREE.Object3D | null {
     }
     case 'billFolder': {
       add(g, box(0.11, 0.012, 0.21), mat(C.folder, { rough: 0.5, metal: 0.3 }), 0, 0.006, 0);
+      return null;
+    }
+    case 'hostDesk': {
+      add(g, box(0.60, 0.06, 0.45), mat(C.desk, { rough: 0.7 }), 0, 0.03, 0);
+      add(g, box(0.56, 0.98, 0.41), mat(C.desk, { rough: 0.7 }), 0, 0.55, 0);
+      add(g, box(0.60, 0.04, 0.45), mat(C.deskTop, { rough: 0.5 }), 0, 1.08, 0);
+      add(g, box(0.56, 0.02, 0.006), mat(C.brass, { rough: 0.35, metal: 0.7 }), 0, 0.92, 0.208);
+      return null;
+    }
+    case 'wheelchair': {
+      const fr = mat(C.chairFrame, { rough: 0.4, metal: 0.6 }), ty = mat(C.tyre, { rough: 0.9 }), cl = mat(C.seatCloth, { rough: 0.9 });
+      [-1, 1].forEach(function (s) {
+        const w = add(g, cyl(0.30, 0.03, 28), ty, s * 0.295, 0.30, -0.20); w.rotation.z = Math.PI / 2;
+        const c = add(g, cyl(0.08, 0.03, 14), ty, s * 0.22, 0.08, 0.42); c.rotation.z = Math.PI / 2;
+        add(g, box(0.03, 0.44, 0.03), fr, s * 0.22, 0.70, -0.24);
+        add(g, box(0.03, 0.03, 0.14), fr, s * 0.22, 0.905, -0.30);
+        add(g, box(0.03, 0.36, 0.03), fr, s * 0.20, 0.30, 0.40);
+      });
+      add(g, box(0.46, 0.05, 0.44), cl, 0, 0.48, 0.02);
+      add(g, box(0.46, 0.42, 0.04), cl, 0, 0.70, -0.22);
+      add(g, box(0.40, 0.02, 0.14), fr, 0, 0.12, 0.48);
+      return null;
+    }
+    case 'vase': {
+      add(g, lathe('vase', PROFILE.vase, 20), mat(C.vase, { rough: 0.3 }), 0, 0, 0);
+      const f = new THREE.Group(); f.name = 'fill';
+      [[-0.025, 0.38, 0.005], [0.025, 0.39, 0.01], [0.0, 0.37, -0.03]].forEach(function (p, i) {
+        add(f, cyl(0.004, 0.16, 6), mat(C.greens, { rough: 0.8 }), p[0] * 0.5, 0.33, p[2] * 0.5);
+        add(f, sph(0.03), mat(i === 1 ? C.blossom2 : C.blossom, { rough: 0.7 }), p[0], p[1], p[2]);
+      });
+      g.add(f); return f;
+    }
+    case 'broom': {
+      add(g, cyl(0.013, 1.10, 10), mat(C.pole, { rough: 0.6 }), 0, 0.75, 0);
+      add(g, box(0.30, 0.05, 0.06), mat(C.pole, { rough: 0.6 }), 0, 0.175, 0);
+      add(g, box(0.28, 0.15, 0.05), mat(C.bristle, { rough: 0.95 }), 0, 0.075, 0);
+      return null;
+    }
+    case 'dustpan': {
+      const m = mat(C.pan, { rough: 0.5 });
+      add(g, box(0.24, 0.004, 0.22), m, 0, 0.002, 0.06);
+      add(g, box(0.24, 0.08, 0.01), m, 0, 0.04, -0.045);
+      add(g, box(0.03, 0.02, 0.12), m, 0, 0.09, -0.11);
+      return null;
+    }
+    case 'councilId': {
+      add(g, box(0.086, 0.003, 0.054), mat(C.card, { rough: 0.5 }), 0, 0.0015, 0);
+      add(g, box(0.084, 0.001, 0.012), mat(C.cardBand, { rough: 0.5 }), 0, 0.0035, -0.018);
+      return null;
+    }
+    case 'policeId': {
+      add(g, box(0.075, 0.012, 0.105), mat(C.wallet, { rough: 0.6 }), 0, 0.006, 0);
+      add(g, cyl(0.022, 0.002, 18), mat(C.badge, { rough: 0.3, metal: 0.8 }), 0, 0.013, 0.02);
+      return null;
+    }
+    case 'licenceFolder': {
+      add(g, box(0.24, 0.028, 0.32), mat(C.licence, { rough: 0.6 }), 0, 0.014, 0);
+      add(g, box(0.10, 0.002, 0.06), mat(C.label, { rough: 0.8 }), 0, 0.029, -0.06);
+      return null;
+    }
+    case 'apron': {
+      add(g, box(0.30, 0.02, 0.25), mat(C.apron, { rough: 0.95 }), 0, 0.01, 0);
+      return null;
+    }
+    case 'breadBasket': {
+      add(g, box(0.24, 0.05, 0.16), mat(C.basket, { rough: 0.9 }), 0, 0.025, 0);
+      const f = new THREE.Group(); f.name = 'fill';
+      [[-0.06, 0], [0.01, 0.02], [0.07, -0.02]].forEach(function (p) { const b = add(f, sph(0.032), mat(C.bread, { rough: 0.8 }), p[0], 0.06, p[1]); b.scale.set(1.2, 0.8, 1); });
+      g.add(f); return f;
+    }
+    case 'decanter': {
+      add(g, lathe('decanter', PROFILE.decanter, 24), mat(C.glass, { glass: true }), 0, 0, 0);
+      const f = new THREE.Group(); f.name = 'fill';
+      add(f, geo('decanterFill', function () { return new THREE.CylinderGeometry(0.09, 0.096, 0.04, 20); }), mat(C.wine, { rough: 0.2 }), 0, 0.026, 0);
+      g.add(f); return f;
+    }
+    case 'flute': {
+      add(g, lathe('flute', PROFILE.flute, 18), mat(C.glass, { glass: true }), 0, 0, 0);
+      const f = new THREE.Group(); f.name = 'fill';
+      add(f, geo('fluteFill', function () { return new THREE.CylinderGeometry(0.022, 0.017, 0.06, 14); }), mat(C.aperitif, { rough: 0.2 }), 0, 0.15, 0);
+      g.add(f); return f;
+    }
+    case 'crate': {
+      const m = mat(C.crate, { rough: 0.85 });
+      add(g, box(0.42, 0.02, 0.30), m, 0, 0.01, 0);
+      add(g, box(0.42, 0.2, 0.02), m, 0, 0.1, 0.14); add(g, box(0.42, 0.2, 0.02), m, 0, 0.1, -0.14);
+      add(g, box(0.02, 0.2, 0.30), m, 0.2, 0.1, 0); add(g, box(0.02, 0.2, 0.30), m, -0.2, 0.1, 0);
+      for (let i = 0; i < 6; i++) add(g, cyl(0.03, 0.12, 10), mat(C.bottle, { rough: 0.2, metal: 0.1 }), -0.13 + (i % 3) * 0.13, 0.27, i < 3 ? -0.065 : 0.065);
+      return null;
+    }
+    case 'lighter': {
+      add(g, box(0.025, 0.025, 0.12), mat(C.lighter, { rough: 0.5 }), 0, 0.0125, -0.06);
+      add(g, box(0.008, 0.008, 0.12), mat(C.steel, { metal: 0.85, rough: 0.3 }), 0, 0.0125, 0.06);
       return null;
     }
   }

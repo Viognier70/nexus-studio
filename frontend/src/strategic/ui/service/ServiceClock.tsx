@@ -109,7 +109,8 @@ export function ServiceClock() {
         </span>
         <div style={{ minWidth: 0 }}>
           <div className="nx-label" data-testid="service-clock-label" style={{ fontSize: u(16), color: accentLabel ? 'var(--w-candle)' : undefined }}>{label}</div>
-          <div data-testid="service-clock-left" style={{ fontSize: u(22), fontWeight: 700, whiteSpace: 'nowrap' }}>{sub}</div>
+          {/* ORDER 293 — raden får bryta: "Dörrarna öppnar 19.05" kapades i rutan. */}
+          <div data-testid="service-clock-left" style={{ fontSize: u(22), fontWeight: 700, lineHeight: 1.15, overflowWrap: 'anywhere' }}>{sub}</div>
         </div>
       </div>
       <div aria-hidden style={{ display: 'grid', gridTemplateColumns: `repeat(${CLOCK.cells}, 1fr)`, gap: u(4), marginTop: u(12) }} data-testid="service-clock-cells">

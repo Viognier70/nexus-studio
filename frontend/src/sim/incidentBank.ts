@@ -58,6 +58,10 @@ export interface IncidentCondition {
   maxWaiting?: number;
   minSeated?: number;
   maxSeated?: number;
+  // ORDER 293 — tillsynens variant i steg 3 (manus 4): A nekad gäst, B
+  // ålderskontroll, C egenkontroll, D kravet på mat (sim/incidents.ts
+  // inspectionVariant).
+  inspection?: 'A' | 'B' | 'C' | 'D';
 }
 
 // ORDER 270 — ett fel val låser: följden pågår synligt i rummet tills
@@ -139,6 +143,9 @@ export interface IncidentMeta {
   // återstod, `INCIDENTS.staffShareByFailedStep`).
   staff: IncidentOutcomeMeta;
   placeholder: boolean;
+  // ORDER 293 — händelser i samma familj kommer högst en gång per kväll
+  // (tillsynens fyra varianter är en tillsyn).
+  family?: string;
 }
 
 export interface OutcomeText {

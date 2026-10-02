@@ -52,6 +52,22 @@ export function staffClipFor(s: FigureSample, key: StaffKey): string | null {
     case 'fillWork': return key === 'bartender' ? 'bar.wipe' : key === 'cook' ? 'cook.station' : key === 'dish' ? 'dish.wash' : null;
     case 'attend':
     case 'welcome': return null;
+    // ORDER 293 — vardagens koreografi: värden, ritualerna, mise en place och
+    // de små stunderna (Designs klipp, LEVERANSNOT §4).
+    case 'checkBook': return 'host.checkBook';
+    case 'greetDoor': return 'host.greetDoor';
+    case 'presentMenu': return 'host.presentMenu';
+    case 'setBread': return 'waiter.setBread';
+    case 'pourWater': return key === 'bartender' ? 'bar.pourWater' : 'waiter.pourWater';
+    case 'serveAperitif': return 'waiter.serveAperitif';
+    case 'writeBoard': return 'staff.writeBoard';
+    case 'setTable': return 'waiter.setTable';
+    case 'stockFridge': return 'bar.stockFridge';
+    case 'polishGlass': return 'bar.polishGlass';
+    case 'holdDoor': return 'staff.holdDoor';
+    case 'checkTable': return 'staff.checkTable';
+    case 'wipeTable': return 'staff.wipeTable';
+    case 'chat': return 'staff.chat';
     default: return null;
   }
 }
@@ -64,6 +80,13 @@ export function guestClipFor(s: FigureSample, seat: SeatKind | null): string | n
     case 'leaveHappy':
     case 'leaveUnhappy': return 'guest.walk';
     default: break;
+  }
+  // ORDER 293 — kön: lugn, otålig och på väg att gå (Designs klipp; gränserna
+  // i balance.ts QUEUE_MOOD).
+  if (!s.seated) {
+    if (s.pose === 'waitCalm') return 'guest.queueCalm';
+    if (s.pose === 'waitImpatient') return 'guest.queueImpatient';
+    if (s.pose === 'waitLeaving') return 'guest.queueLeaving';
   }
   if (!seat) return null;
   switch (s.pose) {
@@ -93,7 +116,7 @@ export function guestClipFor(s: FigureSample, seat: SeatKind | null): string | n
 export function sampleForFigure(id: string, s: FigureSample, tempo: TempoId, seatKind?: SeatKind): ClipSample {
   const travel = id.endsWith('walk') || id.startsWith('waiter.carry') || id === 'rocket.walkToKitchen';
   if (travel) return sampleClip(id, 0, tempo, { phase: s.phase, stress: s.stress });
-  const oneShot = ['guest.riseGreet', 'guest.sit', 'guest.leave', 'guest.sitStool', 'guest.leaveStool', 'guest.sitLounge', 'guest.leaveLounge', 'guest.order', 'guest.toast', 'guest.waveStaff', 'guest.pay', 'waiter.serve', 'waiter.pickUp', 'waiter.clear', 'bar.pour', 'somm.pour', 'somm.present', 'cook.plate'].includes(id);
+  const oneShot = ['guest.queueLeaving', 'host.greetDoor', 'host.presentMenu', 'waiter.setBread', 'waiter.pourWater', 'waiter.serveAperitif', 'staff.checkTable', 'guest.riseGreet', 'guest.sit', 'guest.leave', 'guest.sitStool', 'guest.leaveStool', 'guest.sitLounge', 'guest.leaveLounge', 'guest.order', 'guest.toast', 'guest.waveStaff', 'guest.pay', 'waiter.serve', 'waiter.pickUp', 'waiter.clear', 'bar.pour', 'somm.pour', 'somm.present', 'cook.plate'].includes(id);
   // ORDER 287a — att sätta sig och resa sig börjar alltid i klippets början
   // (progress 0 är första bildrutan, inte slutposen).
   const seatMove = ['guest.sit', 'guest.leave', 'guest.sitStool', 'guest.leaveStool', 'guest.sitLounge', 'guest.leaveLounge'].includes(id);

@@ -37,6 +37,9 @@
 import { SERVICE_MODE_STRINGS } from './design/serviceModeStrings';
 import { PYRAMID_STRINGS } from './design/pyramidStrings';
 import { STAFF_RING_STRINGS } from './design/staffRingStrings';
+import { EVENT_STRINGS } from './design/eventStrings';
+import { THEATRE_STRINGS } from './design/theatreStrings';
+import { EVERYDAY_STRINGS } from './design/everydayStrings';
 
 export type Lang = 'sv' | 'en';
 // ORDER 289 — singular eller plural efter antalet ("1 bottles" skulle vara
@@ -174,7 +177,12 @@ export const STRINGS = {
   // pyramiden, ringen), inslagna oförändrade.
   ...SERVICE_MODE_STRINGS,
   ...PYRAMID_STRINGS,
-  ...STAFF_RING_STRINGS
+  ...STAFF_RING_STRINGS,
+  // ORDER 293 — Designs leverans 3 (händelserna, teaterns namn) och vardagens
+  // koreografi, inslagna oförändrade.
+  ...THEATRE_STRINGS,
+  ...EVENT_STRINGS,
+  ...EVERYDAY_STRINGS
 } satisfies Record<string, Entry>;
 
 export type StringKey = keyof typeof STRINGS;

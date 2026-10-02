@@ -169,6 +169,7 @@ import { tickRush } from './rush';
 import { coursesSekToday, eveningStake, eveningTransfer, passedStake, tillSek } from './eveningEconomy';
 import { assignGuestTypes, billionaireTreat, maybeBillionaireArrives, bookingFor, recordTypeRevenue, settleSocialGuest, settleSocialGuestAtClose } from './guestTypes';
 import { sustainabilityLevelsFor } from '../../sim/sustainabilityLevels';
+import { incidentBankFor } from '../../sim/incidentBank';
 import {
   WEEKLY_GATE_DAYS,
   activityById,
@@ -267,6 +268,12 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
     }
     case 'SEE_HOUSE_INTRO':
       return state.houseIntroSeen ? state : { ...state, houseIntroSeen: true };
+    case 'QUEUE_INCIDENT': {
+      const inc = state.incidents;
+      if (!inc || !inc.enabled || inc.queued.includes(action.incidentId)) return state;
+      if (!incidentBankFor(state.economy.businessClass).some((i) => i.id === action.incidentId)) return state;
+      return { ...state, incidents: { ...inc, queued: [action.incidentId, ...inc.queued] } };
+    }
     case 'START_BACK': {
       // ORDER 280 — Back your knowledge: spelaren startar själv en raket.
       if (!canStartBack(state)) return state;
