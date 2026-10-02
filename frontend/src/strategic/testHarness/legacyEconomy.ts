@@ -8,7 +8,7 @@ import { RISK } from '../../sim/balance';
 
 export const LEGACY_START_CASH_SEK = 120_000;
 
-const LEGACY = { downgrade: true, floorTopUp: true, amortiseDuringSeason: true, startCashSek: LEGACY_START_CASH_SEK } as const;
+const LEGACY = { downgrade: true, floorTopUp: true, amortiseDuringSeason: true, startCashSek: LEGACY_START_CASH_SEK, cashTurnsAwayGuests: true } as const;
 
 // `now`: reglerna slås på direkt, för filer som kör scenariot när filen läses
 // (utanför it och beforeAll). De slås av igen när filen är klar.

@@ -114,9 +114,10 @@ describe('ORDER 271 — raketkortet (R1–R3)', () => {
     expect(byTestId(container, 'incident-step-episteme')!.getAttribute('data-state')).toBe('current');
     expect(byTestId(container, 'incident-step-techne')!.getAttribute('data-state')).toBe('ahead');
     expect(byTestId(container, 'incident-countdown')!.textContent).toBe(String(Math.ceil(s.incidents.active!.secondsLeft)));
-    const { n, total } = rocketCounter(s);
+    const { n } = rocketCounter(s);
     // ORDER 289 — en raket ur kön är en följd och står utanför räkningen.
-    expect(card.textContent).toContain(s.incidents.active!.chained ? strings.rocket.card.followUp : strings.rocket.card.rocketOf(String(n), String(total)));
+    // ORDER 296c — "Raket n i kväll" (rummet utlöser raketerna; inget antal i förväg).
+    expect(card.textContent).toContain(s.incidents.active!.chained ? strings.rocket.card.followUp : strings.rocket.card.rocketN(String(Math.max(1, n))));
     fireEvent.keyDown(window, { key: '3' });
     const third = incidentById('vinbar', 'vb09-getosten')!.steps[0].options[2].id;
     expect(sim.dispatch).toHaveBeenCalledWith({ type: 'ANSWER_INCIDENT', optionId: third });

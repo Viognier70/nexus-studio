@@ -142,10 +142,11 @@ describe('ORDER 270 — kvällens båge', () => {
     expect(arcFor(4)).toEqual(['opening', 'rush', 'crisis', 'closing']);
   });
 
-  it('vinbarens service planerar raketer och inga scenarier vid dörren', () => {
+  // ORDER 296c — ingen plan i förväg: raketerna utlöses av rummet under kvällen.
+  it('vinbarens service har raketer och inga scenarier vid dörren', () => {
     const s = wineBarService(5);
     expect(s.incidents.enabled).toBe(true);
-    expect(s.incidents.slots.length).toBe(incidentsTonight(s.day.dayNumber));
+    expect(s.incidents.slots).toEqual([]);
     expect(s.day.scenarioTriggerTimes).toEqual([]);
   });
 

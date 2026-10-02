@@ -23,10 +23,10 @@ import { PLAYERS } from '../randomness';
 import { calendarFor, firstDayOfWeek } from '../../../sim/calendar';
 import { coverage } from '../../simulation/morningBuy';
 import { bookingFor } from '../../simulation/guestTypes';
-import type { SimulationState } from '../../types';
+import type { SimAction, SimulationState } from '../../types';
 import { misePlan } from '../../../sim/miseEnPlace';
 
-type PlayerId = 'mentorn' | 'rimlig' | 'halva' | 'halvbra' | 'slarvig';
+type PlayerId = 'mentorn' | 'klok' | 'per' | 'rimlig' | 'halva' | 'halvbra' | 'slarvig';
 // Den rimliga köper baspaketet bara när lagret inte räcker till bokningen
 // (fyller på); mentorn köper det varje morgon och svarar bäst; den halva
 // svarar rätt på varannan raket hela vägen; den halvbra svarar alltid fel;
@@ -36,8 +36,21 @@ const TOP_UP_SHARE = 1.1;
 // förberedelsen inte hinns (sim/miseEnPlace.ts misePlan, samma som morgonens
 // skärm visar); den slarviga gör det aldrig.
 const hand = (s: SimulationState) => (misePlan(s).backlogMin > 0 ? [{ type: 'HIRE_PREP_HAND' as const }] : []);
+// ORDER 296c — den kloka i butiken: köper det den har råd med i den här
+// ordningen (det som ger mest i vinbaren först) och lägger de bästa i facket.
+const WISE_SHOP = ['menuStory', 'sommBottle', 'fastPass', 'regulars', 'chefsTable', 'wineTasting', 'leftovers', 'mise', 'lova', 'birthday', 'wineFridge', 'signature', 'allergen', 'critic'];
+const wiseShop = (): SimAction[] => [
+  ...WISE_SHOP.map((id) => ({ type: 'SHOP_BUY' as const, id })),
+  ...WISE_SHOP.map((id) => ({ type: 'SHOP_SLOT' as const, id, on: false })),
+  ...WISE_SHOP.map((id) => ({ type: 'SHOP_SLOT' as const, id, on: true }))
+];
 const PLANS: Record<PlayerId, (s: SimulationState) => MorningPlan> = {
   mentorn: () => ({ actions: hand }),
+  // ORDER 296c (Vision Owner 2026-10-02): "en spelare som väljer klokt på
+  // nålarna och i butiken, och en som låter Per välja allt". Båda har
+  // mentorns morgon; Per-spelaren är densamma som mentorns.
+  klok: () => ({ actions: (s) => [...wiseShop(), ...hand(s)], pins: 'wise' }),
+  per: () => ({ actions: hand }),
   rimlig: (s) => ({ stock: coverage(s).covers >= bookingFor(s).total * TOP_UP_SHARE ? 'none' : 'base', actions: hand }),
   // ORDER 296b: varannan raket rätt hela vägen ('half' växlade per steg och
   // klarade nästan ingen raket).
@@ -86,7 +99,7 @@ function season(seed: number, player: PlayerId, weeks: number, start: number | n
       if (st.closedNow) break;
     }
   }
-  return { startCash, weeks: out, mornings, closedWeek: s.economy.risk?.closedWeek ?? null, renegotiated: !!s.economy.risk?.renegotiated };
+  return { startCash, weeks: out, mornings, closedWeek: s.economy.risk?.closedWeek ?? null, renegotiated: !!s.economy.risk?.renegotiated, owned: s.shop?.owned ?? [], star: !!s.star?.held };
 }
 
 describe.skipIf(!process.env.KARNAN_SEEDS)('ORDER 296 — kärnans tal', () => {
@@ -97,7 +110,9 @@ describe.skipIf(!process.env.KARNAN_SEEDS)('ORDER 296 — kärnans tal', () => {
     // Prövning av tal i minnet: KARNAN_VARIANT='{"INCIDENTS":{"wrongCashShare":1}}'.
     const balance = await import('../../../sim/balance');
     for (const [k, v] of Object.entries(JSON.parse(process.env.KARNAN_VARIANT ?? '{}') as Record<string, Record<string, unknown>>)) Object.assign((balance as unknown as Record<string, Record<string, unknown>>)[k], v);
-    const players: PlayerId[] = ['mentorn', 'rimlig', 'halva', 'halvbra', 'slarvig'];
+    const all: PlayerId[] = ['mentorn', 'klok', 'per', 'rimlig', 'halva', 'halvbra', 'slarvig'];
+    // KARNAN_PLAYERS=halva,rimlig kör bara de spelarna (kalibreringen).
+    const players = process.env.KARNAN_PLAYERS ? all.filter((p) => process.env.KARNAN_PLAYERS!.split(',').includes(p)) : all;
     const result: Record<string, unknown> = {};
     for (const p of players) {
       const runs = seeds.map((seed) => ({ seed, ...season(seed, p, weeks, start) }));
@@ -124,6 +139,8 @@ describe.skipIf(!process.env.KARNAN_SEEDS)('ORDER 296 — kärnans tal', () => {
         lowestCash: Math.min(...runs.flatMap((r) => r.weeks.map((w) => w.cashEnd))),
         meanCashEnd: mean(runs.map((r) => r.weeks[r.weeks.length - 1]?.cashEnd ?? r.startCash)),
         targetHitShare: Math.round((runs.flatMap((r) => r.weeks).filter((w) => w.targetHit).length / Math.max(1, runs.flatMap((r) => r.weeks).length)) * 100) / 100,
+        meanOwned: Math.round((runs.reduce((a, r) => a + r.owned.length, 0) / runs.length) * 10) / 10,
+        stars: runs.filter((r) => r.star).length,
         byWeek, repByWeek, mise, runs
       };
     }
@@ -135,6 +152,6 @@ describe.skipIf(!process.env.KARNAN_SEEDS)('ORDER 296 — kärnans tal', () => {
       mkdirSync(out, { recursive: true });
       writeFileSync(resolve(out, process.env.KARNAN_OUT ?? 'karnan.json'), JSON.stringify({ definition: 'Säsongen med spelets regler (balance.ts RISK): startkassan, veckomålet på intäkten, omförhandlingen och stängningen räknas av simuleringen (sim/economy.ts settleWeek). resultSek = kassans förändring vecka till vecka. Mise en place ur sim/miseEnPlace.ts misePlan (behov, hinns, eftersläp i spelminuter, och den extra handen).', start, variant: process.env.KARNAN_VARIANT ?? null, seeds, weeks, players: result }, null, 2) + '\n');
     }
-    expect(Object.keys(result).length).toBe(5);
+    expect(Object.keys(result).length).toBe(players.length);
   }, 3600000);
 });

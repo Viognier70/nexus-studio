@@ -221,6 +221,14 @@ export const STRINGS = {
   'host.place.table': { sv: 'Bord {table}', en: 'Table {table}' },
   'host.state.menu': { sv: 'Läser menyn', en: 'Reading the menu' },
   'host.state.paying': { sv: 'Betalar', en: 'Paying' },
+  // ORDER 296c — stjärnan i söndagstidningen.
+  'star.heading': { sv: 'Stjärnan', en: 'The star' },
+  'star.earned.title': { sv: '{name} får en stjärna', en: '{name} earns a star' },
+  'star.earned.body': { sv: 'Två veckor i rad med högt rykte och gott omdöme i servicen. Stjärnan ger en tredje plats i facket.', en: 'Two weeks in a row of a high reputation and sound judgement in service. The star adds a third slot for tomorrow.' },
+  'star.lost.title': { sv: '{name} förlorar stjärnan', en: '{name} loses its star' },
+  'star.lost.body': { sv: 'Nivån sjönk i veckan: ryktet {rep} av 100, och {judgement} % av raketerna klarades.', en: 'The level slipped this week: reputation {rep} out of 100, and {judgement}% of the rockets were cleared.' },
+  'star.kept': { sv: '{name} behåller sin stjärna en vecka till.', en: '{name} keeps its star for another week.' },
+  'star.close': { sv: 'En vecka till på samma nivå, och {name} får en stjärna.', en: 'One more week at this level, and {name} earns a star.' },
   // ORDER 296 (punkt 1) — hovmästarens kaffe på huset i kassaboken.
   'host.coffeeLedger': { sv: 'Kaffe på huset', en: 'Coffee on the house' },
   // ORDER 296 (punkt 5) — förberedelsen på morgonen.
@@ -2267,7 +2275,8 @@ export const TABLE = {
       en: 'You earned your credits in the House of the Meal exams and the service rockets. They can’t be bought and never convert to cash.'
     },
     start: { sv: 'Starta raketen', en: 'Launch the rocket' },
-    left: { sv: (n: number) => `${n} kvar i kväll`, en: (n: number) => `${n} left tonight` },
+    // ORDER 296c — det är satsningarna som är tre per kväll, inte raketerna.
+    left: { sv: (n: number) => `${n} satsningar kvar i kväll`, en: (n: number) => `${n} bets left tonight` },
     none: { sv: 'Inga fler i kväll.', en: 'No more tonight.' },
     track: { sv: 'Raketen', en: 'The rocket' },
     trackSub: { sv: 'Varje rätt steg lyfter den', en: 'Each right step lifts it' },
@@ -2937,9 +2946,15 @@ export const TABLE = {
         sv: (n: string, total: string) => `Raket ${n} av ${total}`,
         en: (n: string, total: string) => `Rocket ${n} of ${total}`
       },
+      // ORDER 296c — raketerna utlöses av rummet; kvällens antal är inte bestämt.
+      rocketN: {
+        sv: (n: string) => `Raket ${n} i kväll`,
+        en: (n: string) => `Rocket ${n} tonight`
+      },
       // ORDER 289 — följdraketer och egna raketer står utanför räkningen.
       followUp: { sv: 'Följd', en: 'Follow-up' },
-      backOf: { sv: (n: number, max: number) => `Egen raket ${n} av ${max}`, en: (n: number, max: number) => `Your rocket ${n} of ${max}` },
+      // ORDER 296c — taket gäller satsningarna (krediter i Stå för ditt svar).
+      backOf: { sv: (n: number, max: number) => `Satsning ${n} av ${max}`, en: (n: number, max: number) => `Bet ${n} of ${max}` },
       table: { sv: (n: string) => `Bord ${n}`, en: (n: string) => `Table ${n}` },
       room: { sv: 'Rummet', en: 'The room' },
       stepCleared: { sv: (ask: string) => `${ask} · klar ✓`, en: (ask: string) => `${ask} · done ✓` },

@@ -262,7 +262,7 @@ export function IncidentCard() {
   const lastFive = !isFrozen && left <= COUNTDOWN_ACCENT_SECONDS;
   const barShare = total > 0 ? Math.max(0, Math.min(1, left / total)) : 0;
 
-  const { n, total: rockets } = rocketCounter(sim);
+  const { n } = rocketCounter(sim);
   const where = incident.needsTable ? t.table(String(view.context.table)) : t.room;
   // ORDER 293 — händelserna som teater: manusets roll och plats (Designs
   // event.<händelse>.role, t.ex. "Hovmästaren · lounge A").
@@ -342,7 +342,7 @@ export function IncidentCard() {
     >
       <div className="nx-rocket-head">
         <div className="nx-label" data-testid={backed ? 'incident-back-kicker' : undefined}>{backed ? strings.back.kicker(view.context.staff, where) : eventRole ?? `${view.context.staff} · ${where}`}</div>
-        <div className="nx-rocket-count" data-testid="rocket-count">{active?.backed ? t.backOf(sim.incidents?.betsTonight ?? 1, BACK.maxPerEvening) : active?.chained ? t.followUp : t.rocketOf(String(Math.max(1, n)), String(Math.max(1, rockets, n)))}</div>
+        <div className="nx-rocket-count" data-testid="rocket-count">{active?.backed ? t.backOf(sim.incidents?.betsTonight ?? 1, BACK.maxPerEvening) : active?.chained ? t.followUp : t.rocketN(String(Math.max(1, n)))}</div>
       </div>
       {/* ORDER 284 — introduktionen står där raketen startas (EventsPanel):
           på kortet tryckte den ned svaren under skärmen (tredje provspelet). */}

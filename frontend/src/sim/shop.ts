@@ -65,8 +65,9 @@ export function creditsOf(state: SimulationState): number {
   return state.knowledgeCredits.episteme + state.knowledgeCredits.techne + state.knowledgeCredits.phronesis;
 }
 
-export function starReached(state: SimulationState): boolean {
-  return medalRank(state.medals[SHOP.starPavilion]) >= medalRank(SHOP.starMedal);
+// ORDER 296c — stjärnan delas ut i söndagstidningen (sim/economy.ts settleWeek, balance.ts STAR).
+export function starReached(state: Pick<SimulationState, 'star'>): boolean {
+  return !!state.star?.held;
 }
 
 export function slotCount(state: SimulationState): number {

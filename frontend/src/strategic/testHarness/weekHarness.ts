@@ -27,6 +27,9 @@ import type { PavilionKey, ScenarioChoice, SimAction, SimulationState } from '..
 
 // Simuleringens tick är 0,2 s (5 Hz), samma som SimulationProvider.
 const TICK_DT = 0.2;
+import { pinsOf, type PinKind } from '../../sim/hostPins';
+import { seatGroupsFree } from '../simulation/service';
+
 const MAX_TICKS_PER_PHASE = 200000;
 
 export interface MorningPlan {
@@ -56,6 +59,22 @@ export interface MorningPlan {
   // med den här säkerheten (svaren som i scenarioAnswer). Utelämnat =
   // ingen egen raket (harnessens spelare gör det inte i slumpmätningen).
   backConfidence?: 0 | 1 | 2;
+  // ORDER 296c — hovmästarens nålar: 'wise' svarar klokt på varje nål (se
+  // wisePinAnswer); utelämnat = Per väljer (det säkra) när tiden går ut.
+  pins?: 'wise';
+}
+
+// ORDER 296c — det kloka svaret på en nål: sätt sällskapet om det finns
+// plats, låt sommeliern föreslå flaskan, flytta servitören till baren när den
+// inte hinner med, och bjud den som väntat länge på ett glas.
+export function wisePinAnswer(s: SimulationState, kind: PinKind): 0 | 1 {
+  if (kind === 'door') return s.guests.some((g) => g.state === 'waiting') && seatGroupsFree(s).some((g) => g.free.length > 0) ? 0 : 1;
+  return 0;
+}
+
+function answerPinsWisely(s: SimulationState): SimulationState {
+  for (const p of pinsOf(s).open) s = reducer(s, { type: 'HOST_PIN_ANSWER', id: p.id, answer: wisePinAnswer(s, p.kind) });
+  return s;
 }
 
 // ORDER 296 — 'half' svarar bäst och sämst vartannat steg (efter raketens
@@ -85,10 +104,11 @@ export interface DayRecord {
   events: string[];
 }
 
-export function tickUntil(s: SimulationState, done: (s: SimulationState) => boolean, answer: ScenarioAnswer = 'best', backConfidence?: 0 | 1 | 2): SimulationState {
+export function tickUntil(s: SimulationState, done: (s: SimulationState) => boolean, answer: ScenarioAnswer = 'best', backConfidence?: 0 | 1 | 2, pins?: 'wise'): SimulationState {
   for (let i = 0; i < MAX_TICKS_PER_PHASE && !done(s); i++) {
     s = answerScenario(reducer(s, { type: 'TICK', dt: TICK_DT }), answer, backConfidence);
     if (backConfidence !== undefined && canStartBack(s)) s = reducer(s, { type: 'START_BACK' });
+    if (pins === 'wise' && (s.day.pins?.open.length ?? 0) > 0) s = answerPinsWisely(s);
   }
   return s;
 }
@@ -196,7 +216,7 @@ export function playDay(s: SimulationState, plan: MorningPlan): { state: Simulat
     s = tickUntil(opened, (x) => {
       for (const g of x.guests) seen.add(g.id);
       return x.day.period === 'evening' || x.day.period === 'morning';
-    }, plan.scenarioAnswer, plan.backConfidence);
+    }, plan.scenarioAnswer, plan.backConfidence, plan.pins);
   } else {
     s = reducer(s, { type: 'CLOSE_DAY' });
   }
