@@ -1,0 +1,30 @@
+import { it } from 'vitest';
+import { writeFileSync } from 'node:fs';
+import { makeNewGameState } from '../../simulation/model';
+import { reducer } from '../../simulation/reducer';
+import { playMorning, tickUntil } from '../weekHarness';
+import { mountRoomLikeScene } from '../roomParity';
+import { PLAYERS } from '../randomness';
+import { firstDayOfWeek, calendarFor } from '../../../sim/calendar';
+import { dailyGuestCap } from '../../../sim/economy';
+import { arrivalAttraction } from '../../simulation/arrivals';
+it('probe', () => {
+  const rows: unknown[] = [];
+  for (let seed = 1; seed <= 10; seed++) {
+    let s = makeNewGameState(seed);
+    s = { ...s, medals: { ...PLAYERS.baseline }, day: { ...s.day, dayNumber: firstDayOfWeek(2) } };
+    for (let d = 0; d < 6; d++) {
+      const day = s.day.dayNumber;
+      s = playMorning(s, {});
+      mountRoomLikeScene(s.businessClass);
+      const rep0 = s.reputation;
+      const cap = dailyGuestCap(s); const attr = arrivalAttraction(s);
+      s = reducer(s, { type: 'START_SERVICE' });
+      s = tickUntil(s, (x) => x.day.period === 'evening');
+      rows.push({ seed, wd: calendarFor(day).weekday, rep0: +rep0.toFixed(3), rep1: +s.reputation.toFixed(3), br: Object.fromEntries(Object.entries(s.metrics.reputationBreakdown ?? {}).map(([k, v]) => [k, +(+v).toFixed(3)])), arrivals: s.day.arrivalsToday, cap, attr: +attr.toFixed(2), sold: s.day.soldOutGuests ?? 0, walked: s.day.walkedCount ?? 0 });
+      s = reducer(s, { type: 'END_EVENING' });
+      s = tickUntil(s, (x) => x.day.dayNumber > day && x.day.period === 'morning');
+    }
+  }
+  writeFileSync(process.env.PROBE_OUT ?? '/tmp/probeRep.json', JSON.stringify(rows));
+});
