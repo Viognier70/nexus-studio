@@ -23,10 +23,12 @@ import { PLAYERS } from '../randomness';
 import { calendarFor, firstDayOfWeek } from '../../../sim/calendar';
 import { coverage } from '../../simulation/morningBuy';
 import { bookingFor } from '../../simulation/guestTypes';
-import type { SimAction, SimulationState } from '../../types';
+import type { MedalLevelId, PavilionKey, SimAction, SimulationState } from '../../types';
 import { misePlan } from '../../../sim/miseEnPlace';
+import { EXAM } from '../../../sim/balance';
+import { hashKey } from '../../util/hash';
 
-type PlayerId = 'mentorn' | 'klok' | 'per' | 'rimlig' | 'halva' | 'halvbra' | 'slarvig';
+type PlayerId = 'mentorn' | 'klok' | 'per' | 'stjarna' | 'rimlig' | 'halva' | 'halvbra' | 'slarvig';
 // Den rimliga köper baspaketet bara när lagret inte räcker till bokningen
 // (fyller på); mentorn köper det varje morgon och svarar bäst; den halva
 // svarar rätt på varannan raket hela vägen; den halvbra svarar alltid fel;
@@ -44,6 +46,32 @@ const wiseShop = (): SimAction[] => [
   ...WISE_SHOP.map((id) => ({ type: 'SHOP_SLOT' as const, id, on: false })),
   ...WISE_SHOP.map((id) => ({ type: 'SHOP_SLOT' as const, id, on: true }))
 ];
+// Vägen mot stjärnan: silver i två paviljonger (Teatern är låst till dess),
+// sedan Teatern brons, silver och guld. Ett prov om morgonen, med
+// spelarens kunskap (STAR_SKILL; sex rätt av åtta ger medaljen).
+const STAR_PATH: { pavilion: PavilionKey; level: MedalLevelId }[] = [
+  { pavilion: 'stensota', level: 'silver' },
+  { pavilion: 'metodkoket', level: 'silver' },
+  { pavilion: 'gastronomiskateatern', level: 'brons' },
+  { pavilion: 'gastronomiskateatern', level: 'silver' },
+  { pavilion: 'gastronomiskateatern', level: 'guld' }
+];
+// Spelarens kunskap: varje fråga rätt med den här sannolikheten (Teatern är
+// svårare). Antalet rätt dras ur fröet och dagen, så att proven ibland går
+// fel som för en riktig spelare; sex av åtta ger medaljen (balance.ts EXAM).
+const STAR_SKILL = { other: Number(process.env.STAR_SKILL ?? 0.65), theatre: Number(process.env.STAR_SKILL_THEATRE ?? 0.55) };
+const RANK: Record<string, number> = { brons: 1, silver: 2, guld: 3, platina: 4 };
+function correctCount(s: SimulationState, p: number): number {
+  let n = 0;
+  // Nyckeln börjar med det som skiljer (FNV sprider dåligt när bara slutet gör det).
+  for (let i = 0; i < EXAM.questionsDrawn; i++) if (hashKey(s.seed ?? 0, `${i * 7919 + s.day.dayNumber}|exam`) < p) n++;
+  return n;
+}
+function nextStarExam(s: SimulationState): MorningPlan['exams'] {
+  const next = STAR_PATH.find((p) => (RANK[s.medals[p.pavilion] ?? ''] ?? 0) < RANK[p.level]);
+  if (!next) return [];
+  return [{ pavilion: next.pavilion, correct: correctCount(s, next.pavilion === 'gastronomiskateatern' ? STAR_SKILL.theatre : STAR_SKILL.other) }];
+}
 const PLANS: Record<PlayerId, (s: SimulationState) => MorningPlan> = {
   mentorn: () => ({ actions: hand }),
   // ORDER 296c (Vision Owner 2026-10-02): "en spelare som väljer klokt på
@@ -51,6 +79,10 @@ const PLANS: Record<PlayerId, (s: SimulationState) => MorningPlan> = {
   // mentorns morgon; Per-spelaren är densamma som mentorns.
   klok: () => ({ actions: (s) => [...wiseShop(), ...hand(s)], pins: 'wise' }),
   per: () => ({ actions: hand }),
+  // ORDER 296d (Vision Owner 2026-10-02): "en spelare som siktar på stjärnan:
+  // tar paviljongerna mot guld i Teatern och väljer klokt." Som den kloka,
+  // och ett prov om morgonen tills guld i Teatern (STAR_PATH).
+  stjarna: (s) => ({ actions: (x) => [...wiseShop(), ...hand(x)], pins: 'wise', exams: nextStarExam(s) }),
   rimlig: (s) => ({ stock: coverage(s).covers >= bookingFor(s).total * TOP_UP_SHARE ? 'none' : 'base', actions: hand }),
   // ORDER 296b: varannan raket rätt hela vägen ('half' växlade per steg och
   // klarade nästan ingen raket).
@@ -70,6 +102,11 @@ function season(seed: number, player: PlayerId, weeks: number, start: number | n
   const mornings: Morning[] = [];
   let weekStartCash = s.cash;
   let lastWeek = -1;
+  // ORDER 296d — stjärnan: första veckan den delades ut, veckan med guld i
+  // Teatern, och nivån vid varje avräkning.
+  let starWeek: number | null = null;
+  let goldWeek: number | null = null;
+  const starWeeks: { week: number; held: boolean; reputation: number; judgement: number }[] = [];
   for (let d = 0; d < weeks * 7; d++) {
     const cal = calendarFor(s.day.dayNumber);
     const plan = PLANS[player](s);
@@ -96,10 +133,13 @@ function season(seed: number, player: PlayerId, weeks: number, start: number | n
         closedNow: !!st.closedNow
       });
       weekStartCash = s.cash;
+      if (st.star?.earnedNow && starWeek === null) starWeek = st.week;
+      if (goldWeek === null && s.medals.gastronomiskateatern === 'guld') goldWeek = st.week;
+      starWeeks.push({ week: st.week, held: !!st.star?.held, reputation: +(st.star?.reputation ?? 0).toFixed(3), judgement: +(st.star?.judgement ?? 0).toFixed(2) });
       if (st.closedNow) break;
     }
   }
-  return { startCash, weeks: out, mornings, closedWeek: s.economy.risk?.closedWeek ?? null, renegotiated: !!s.economy.risk?.renegotiated, owned: s.shop?.owned ?? [], star: !!s.star?.held };
+  return { startCash, weeks: out, mornings, closedWeek: s.economy.risk?.closedWeek ?? null, renegotiated: !!s.economy.risk?.renegotiated, owned: s.shop?.owned ?? [], star: !!s.star?.held, starWeek, goldWeek, starWeeks };
 }
 
 describe.skipIf(!process.env.KARNAN_SEEDS)('ORDER 296 — kärnans tal', () => {
@@ -110,7 +150,7 @@ describe.skipIf(!process.env.KARNAN_SEEDS)('ORDER 296 — kärnans tal', () => {
     // Prövning av tal i minnet: KARNAN_VARIANT='{"INCIDENTS":{"wrongCashShare":1}}'.
     const balance = await import('../../../sim/balance');
     for (const [k, v] of Object.entries(JSON.parse(process.env.KARNAN_VARIANT ?? '{}') as Record<string, Record<string, unknown>>)) Object.assign((balance as unknown as Record<string, Record<string, unknown>>)[k], v);
-    const all: PlayerId[] = ['mentorn', 'klok', 'per', 'rimlig', 'halva', 'halvbra', 'slarvig'];
+    const all: PlayerId[] = ['mentorn', 'klok', 'per', 'stjarna', 'rimlig', 'halva', 'halvbra', 'slarvig'];
     // KARNAN_PLAYERS=halva,rimlig kör bara de spelarna (kalibreringen).
     const players = process.env.KARNAN_PLAYERS ? all.filter((p) => process.env.KARNAN_PLAYERS!.split(',').includes(p)) : all;
     const result: Record<string, unknown> = {};
@@ -141,6 +181,11 @@ describe.skipIf(!process.env.KARNAN_SEEDS)('ORDER 296 — kärnans tal', () => {
         targetHitShare: Math.round((runs.flatMap((r) => r.weeks).filter((w) => w.targetHit).length / Math.max(1, runs.flatMap((r) => r.weeks).length)) * 100) / 100,
         meanOwned: Math.round((runs.reduce((a, r) => a + r.owned.length, 0) / runs.length) * 10) / 10,
         stars: runs.filter((r) => r.star).length,
+        starEarned: runs.filter((r) => r.starWeek !== null).length,
+        starWeeks: runs.map((r) => r.starWeek).filter((w): w is number => w !== null),
+        goldWeeks: runs.map((r) => r.goldWeek),
+        meanRepAtSettlement: Array.from({ length: weeks }, (_, i) => { const xs = runs.map((r) => r.starWeeks[i]?.reputation).filter((x): x is number => x !== undefined); return +(xs.reduce((a, b) => a + b, 0) / Math.max(1, xs.length)).toFixed(3); }),
+        meanJudgement: Array.from({ length: weeks }, (_, i) => { const xs = runs.map((r) => r.starWeeks[i]?.judgement).filter((x): x is number => x !== undefined); return +(xs.reduce((a, b) => a + b, 0) / Math.max(1, xs.length)).toFixed(2); }),
         byWeek, repByWeek, mise, runs
       };
     }
