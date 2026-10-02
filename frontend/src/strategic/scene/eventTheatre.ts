@@ -111,7 +111,12 @@ export class EventTheatre {
   script: EventScript | null = null;
   duration = 0;
 
-  constructor(parent: THREE.Object3D, floorY: number, seats: TheatreSeat[]) {
+  // ORDER 295 — rummets DJ-sken (wineBarRoom parts.djGlow), som musicUp pulserar.
+  private readonly djGlow: THREE.MeshStandardMaterial | null;
+  private djGlowBase: number | null = null;
+
+  constructor(parent: THREE.Object3D, floorY: number, seats: TheatreSeat[], djGlow?: THREE.MeshStandardMaterial | null) {
+    this.djGlow = djGlow ?? null;
     this.root.name = 'eventTheatre';
     this.root.position.y = floorY;
     this.root.add(this.propRoot, this.fxRoot);
@@ -157,6 +162,9 @@ export class EventTheatre {
     this.figs = {}; this.actors = {}; this.props = {}; this.events = []; this.fx = [];
     this.releaseCache.clear();
     this.script = null;
+    // ORDER 295 — rummets DJ-sken tillbaka som det var.
+    if (this.djGlow && this.djGlowBase !== null) this.djGlow.emissiveIntensity = this.djGlowBase;
+    this.djGlowBase = null;
   }
 
   dispose(): void {
@@ -392,6 +400,20 @@ export class EventTheatre {
           return m;
         });
       }
+      if (d.type === 'musicUp') {
+        // ORDER 295 (Designs felslut, teaterScen.js musicUp): DJ:n höjer. Kantljuset
+        // under pulten och ett sken över den pulserar i takten (120 bpm).
+        const at = d.at as [number, number, number];
+        if (this.djGlow && this.djGlowBase === null) this.djGlowBase = this.djGlow.emissiveIntensity;
+        const glow = this.glow(2.4, '#ff9a4a');
+        (glow.material as THREE.SpriteMaterial).opacity = 0;
+        glow.position.set(at[0], at[1], at[2]);
+        this.fxRoot.add(glow);
+        const light = new THREE.PointLight('#ff9a4a', 0, 7, 1.6);
+        light.position.set(at[0], at[1] + 0.4, at[2]);
+        this.fxRoot.add(light);
+        Object.assign(o, { glow, light });
+      }
       if (d.type === 'candleDrop') {
         const candle = new THREE.Group();
         this.fxRoot.add(candle);
@@ -452,6 +474,16 @@ export class EventTheatre {
         if (dry != null && t > dry) r *= Math.max(0, 1 - (t - dry) / 1.2);
         puddle.scale.setScalar(Math.max(0.001, r));
         puddle.position.set(lx + dx * 0.15, 0.012, lz + dz * 0.15);
+      }
+      if (d.type === 'musicUp') {
+        const until = d.until as number | undefined;
+        const u = clamp(k / 1.2, 0, 1) * (until != null ? clamp((until - t) / 1.2, 0, 1) : 1);
+        const beat = Math.pow(0.5 + 0.5 * Math.cos(t * Math.PI * 4), 3);
+        if (this.djGlow && this.djGlowBase !== null) this.djGlow.emissiveIntensity = this.djGlowBase + u * (1.1 + 1.2 * beat);
+        const glow = o.glow as THREE.Sprite;
+        (glow.material as THREE.SpriteMaterial).opacity = u * (0.3 + 0.4 * beat);
+        glow.scale.setScalar(2.2 + 0.7 * beat);
+        (o.light as THREE.PointLight).intensity = u * (3 + 4 * beat);
       }
       if (d.type === 'chalk') {
         const lines = o.lines as THREE.Mesh[];

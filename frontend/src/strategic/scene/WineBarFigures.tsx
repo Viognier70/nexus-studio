@@ -109,6 +109,7 @@ import { InteractionDirector } from './theatreInteractions';
 import { attachProps, type HeadToppingId, type PropHandle } from './figureProps';
 import { auditRig, publishFaults, type FigureFault } from './figureAudit';
 import { beforeDoors } from '../../sim/clock';
+import { calendarFor } from '../../sim/calendar';
 import { EventPlayer } from './theatreEvents';
 import { theatreSeats } from './eventTheatre';
 import type { CameraTarget } from '../types';
@@ -116,6 +117,8 @@ import type { CameraTarget } from '../types';
 // ORDER 293 — strålkastaren sänker rummets ljus (Designs teaterScen.js: 45 %),
 // och klipp där manuset lägger figuren lågt (figurvakten räknar dem inte).
 const THEATRE_SPOT = { dim: 0.55 };
+// ORDER 295 — helgkvällarna, då DJ:n står i båset vid födelsedagen.
+const WEEKEND_DAYS: readonly string[] = ['fri', 'sat'];
 // ORDER 294b — manusens personal (Designs handelserManus.js) mot rummets roller.
 const SCRIPT_ACTOR_OF: Record<StaffKey, string> = { host: 'per', server: 'sara', server2: '-', sommelier: 'elin', bartender: 'mira', cook: 'cook', dish: 'dish1' };
 const THEATRE_LOW_CLIPS = new Set(['staff.kneelTalk', 'staff.sweep', 'staff.wipeFloor', 'guest.slip', 'staff.smother', 'guest.wheel', 'guest.wheelRoll', 'guest.wheelTurn', 'guest.wheelToTable', 'bar.stockFridge', 'staff.carryCrate']);
@@ -426,7 +429,7 @@ export function WineBarFigures({ room, mood }: Props) {
       guestHandProps,
       auditTick: 0,
       interactions: new InteractionDirector(),
-      events: new EventPlayer(group, room.floorY, theatreSeats(room.seats)),
+      events: new EventPlayer(group, room.floorY, theatreSeats(room.seats), room.parts.djGlow),
       eventSaved: null,
       spotK: 0
     };
@@ -641,7 +644,7 @@ export function WineBarFigures({ room, mood }: Props) {
     const focusLocal = figureLocal ?? (ringAt ? { x: ringAt.x, y: room.floorY, z: ringAt.z } : active ? { x: 0, y: room.floorY, z: 0 } : null);
     // ORDER 293 — händelserna spelas som teater: manusets kamera och strålkastare,
     // och rummets egna figurer vilar medan scenen spelas.
-    const ev = cast.events.update(active, s.incidents?.log ?? [], Math.min(delta, 0.1));
+    const ev = cast.events.update(active, s.incidents?.log ?? [], Math.min(delta, 0.1), WEEKEND_DAYS.includes(calendarFor(s.day.dayNumber).weekday));
     cast.spotK = ev.spotK;
     cast.events.theatre.setSpot(ev.spot, ev.spotK);
     if (ev.playing) {

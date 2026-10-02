@@ -1,0 +1,213 @@
+{
+  "runs": [
+    {
+      "run": "fodelsedagen-fel1",
+      "id": "vb32-fodelsedagen",
+      "wrongAt": 0,
+      "shots": [
+        {
+          "label": "uppbyggnaden",
+          "file": "events-fodelsedagen-fel1-00-uppbyggnaden.jpg",
+          "cam": 12
+        },
+        {
+          "label": "fraga-1",
+          "file": "events-fodelsedagen-fel1-01-fraga-1.jpg",
+          "cam": 12
+        },
+        {
+          "label": "svar-1-fel",
+          "file": "events-fodelsedagen-fel1-02-svar-1-fel.jpg",
+          "cam": 12
+        },
+        {
+          "label": "slutet",
+          "file": "events-fodelsedagen-fel1-03-slutet.jpg",
+          "cam": 12
+        },
+        {
+          "label": "tillbaka",
+          "file": "events-fodelsedagen-fel1-04-tillbaka.jpg",
+          "cam": 24
+        }
+      ],
+      "maxDown": 0,
+      "faults": [],
+      "opened": true,
+      "finished": true,
+      "errors": []
+    },
+    {
+      "run": "fodelsedagen-fel3",
+      "id": "vb32-fodelsedagen",
+      "wrongAt": 2,
+      "shots": [
+        {
+          "label": "uppbyggnaden",
+          "file": "events-fodelsedagen-fel3-00-uppbyggnaden.jpg",
+          "cam": 12
+        },
+        {
+          "label": "fraga-1",
+          "file": "events-fodelsedagen-fel3-01-fraga-1.jpg",
+          "cam": 12
+        },
+        {
+          "label": "svar-1-ratt",
+          "file": "events-fodelsedagen-fel3-02-svar-1-ratt.jpg",
+          "cam": 12
+        },
+        {
+          "label": "fraga-2",
+          "file": "events-fodelsedagen-fel3-03-fraga-2.jpg",
+          "cam": 12
+        },
+        {
+          "label": "svar-2-ratt",
+          "file": "events-fodelsedagen-fel3-04-svar-2-ratt.jpg",
+          "cam": 12
+        },
+        {
+          "label": "fraga-3",
+          "file": "events-fodelsedagen-fel3-05-fraga-3.jpg",
+          "cam": 12
+        },
+        {
+          "label": "svar-3-fel",
+          "file": "events-fodelsedagen-fel3-06-svar-3-fel.jpg",
+          "cam": 12
+        },
+        {
+          "label": "slutet",
+          "file": "events-fodelsedagen-fel3-07-slutet.jpg",
+          "cam": 13
+        },
+        {
+          "label": "tillbaka",
+          "file": "events-fodelsedagen-fel3-08-tillbaka.jpg",
+          "cam": 23
+        }
+      ],
+      "maxDown": 0,
+      "faults": [],
+      "opened": true,
+      "finished": true,
+      "errors": []
+    },
+    {
+      "run": "tillsynen-c-fel3",
+      "id": "vb35-tillsynen-c",
+      "wrongAt": 2,
+      "shots": [
+        {
+          "label": "uppbyggnaden",
+          "file": "events-tillsynen-c-fel3-00-uppbyggnaden.jpg",
+          "cam": 13
+        },
+        {
+          "label": "fraga-1",
+          "file": "events-tillsynen-c-fel3-01-fraga-1.jpg",
+          "cam": 13
+        },
+        {
+          "label": "svar-1-ratt",
+          "file": "events-tillsynen-c-fel3-02-svar-1-ratt.jpg",
+          "cam": 13
+        },
+        {
+          "label": "fraga-2",
+          "file": "events-tillsynen-c-fel3-03-fraga-2.jpg",
+          "cam": 13
+        },
+        {
+          "label": "svar-2-ratt",
+          "file": "events-tillsynen-c-fel3-04-svar-2-ratt.jpg",
+          "cam": 13
+        },
+        {
+          "label": "fraga-3",
+          "file": "events-tillsynen-c-fel3-05-fraga-3.jpg",
+          "cam": 11
+        },
+        {
+          "label": "svar-3-fel",
+          "file": "events-tillsynen-c-fel3-06-svar-3-fel.jpg",
+          "cam": 11
+        },
+        {
+          "label": "slutet",
+          "file": "events-tillsynen-c-fel3-07-slutet.jpg",
+          "cam": 12
+        },
+        {
+          "label": "tillbaka",
+          "file": "events-tillsynen-c-fel3-08-tillbaka.jpg",
+          "cam": 24
+        }
+      ],
+      "maxDown": 0,
+      "faults": [],
+      "opened": true,
+      "finished": true,
+      "errors": []
+    },
+    {
+      "run": "tillsynen-b-fel3",
+      "id": "vb35-tillsynen-b",
+      "wrongAt": 2,
+      "shots": [
+        {
+          "label": "uppbyggnaden",
+          "file": "events-tillsynen-b-fel3-00-uppbyggnaden.jpg",
+          "cam": 13
+        },
+        {
+          "label": "fraga-1",
+          "file": "events-tillsynen-b-fel3-01-fraga-1.jpg",
+          "cam": 13
+        },
+        {
+          "label": "svar-1-ratt",
+          "file": "events-tillsynen-b-fel3-02-svar-1-ratt.jpg",
+          "cam": 13
+        },
+        {
+          "label": "fraga-2",
+          "file": "events-tillsynen-b-fel3-03-fraga-2.jpg",
+          "cam": 13
+        },
+        {
+          "label": "svar-2-ratt",
+          "file": "events-tillsynen-b-fel3-04-svar-2-ratt.jpg",
+          "cam": 13
+        },
+        {
+          "label": "fraga-3",
+          "file": "events-tillsynen-b-fel3-05-fraga-3.jpg",
+          "cam": 11
+        },
+        {
+          "label": "svar-3-fel",
+          "file": "events-tillsynen-b-fel3-06-svar-3-fel.jpg",
+          "cam": 11
+        },
+        {
+          "label": "slutet",
+          "file": "events-tillsynen-b-fel3-07-slutet.jpg",
+          "cam": 11
+        },
+        {
+          "label": "tillbaka",
+          "file": "events-tillsynen-b-fel3-08-tillbaka.jpg",
+          "cam": 24
+        }
+      ],
+      "maxDown": 0,
+      "faults": [],
+      "opened": true,
+      "finished": true,
+      "errors": []
+    }
+  ],
+  "note": "tillsynen-b-fel3 är omkörd efter rättelsen av figurvakten (figureAudit.ts HEAD_MIN_SEATED_M): första körningen flaggade den unga gästen lb1 i loungen (huvudet 0,90 m, sittande på dynan) som liggande."
+}
