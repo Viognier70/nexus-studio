@@ -560,6 +560,10 @@ export const INCIDENTS = {
   // återstod: fel på episteme ger hela, på techne två tredjedelar, på
   // phronesis en tredjedel. Talen är valda (F43).
   staffShareByFailedStep: [1, 2 / 3, 1 / 3] as readonly number[],
+  // ORDER 296b (Vision Owner 2026-10-02: "felsvar ska kosta mindre") — ett
+  // fel svars förlust i kassan (stegets följd och personalens utfall) gånger
+  // den här andelen. Vinsten av ett rätt svar är oförändrad.
+  wrongCashShare: 0.5,
   // ORDER 270 (F43) — valda tal.
   openQuestion: 'F43',
   // "fler fredag och lördag": antalet per veckodag, en till under en högtid
@@ -725,10 +729,14 @@ export const KNOWLEDGE_IN_SERVICE = {
 // (ordern: "Flytta först kollapsens och vädrets konstanter till
 // balance.ts"). Värdena är oförändrade. Sannolikhet per tick (5 Hz):
 // golv + (1 − svagaste axeln) × belastning × förstärkning.
+// ORDER 296b — en femtedel av talen från ORDER 046. Kvällen i v1 föll ihop
+// 22 % av kvällarna för mentorns spelare (reports/order296b/diag-steg2.json),
+// mot ORDER 046:s "ett starkt lag i vila ~1 %, ett svagt under tryck ~9 %".
+// Förhållandet mellan golvet och trycket är detsamma.
 export const COLLAPSE = {
   section: 'Servicen',
-  floorPerTick: 0.00003,
-  strainGainPerTick: 0.00025,
+  floorPerTick: 0.000006,
+  strainGainPerTick: 0.00005,
   reputationDrop: 0.15
 } as const;
 
@@ -870,6 +878,17 @@ export const STOCK = {
 // ORDER 277 — morgonen är insatsen (Vision Owner 2026-09-28, andra
 // provspelet): "Menyn och dryckeslistan (viner på glas och flaska, öl,
 // alkoholfritt) och mängder måste sättas innan servicen kan starta."
+// ORDER 296b — mise en place under kvällen. Förbrukningen per gäst
+// (mepConsumption.ts) var kalibrerad för en lunch med omkring 15 gäster
+// (ORDER 117); kvällen i v1 har fler, och servetterna, besticken och
+// garnityret tog slut efter en tredjedel av gästerna (reports/order296b/
+// nojdhet.json, diag-ready.json). Förbrukningen skalas nu med kvällens
+// bokning, så att ett förberett kök räcker kvällen.
+export const MEP_EVENING = {
+  section: 'Servicen',
+  calibratedGuests: 15
+} as const;
+
 // Servicen startar när minst så här många rätter och drycker finns i
 // lager (speldesignen, att bekräfta: mängden är spelarens sak).
 export const MORNING_STAKE = {
@@ -1140,7 +1159,31 @@ export const EVENING_ECONOMY = {
   // DJ som satsning: kostnaden, och fler gäster i kväll (marknadens tak
   // gånger 1 + djGuestShare). Lönar sig en fullsatt kväll, inte en lugn.
   djCostSek: 1500,
-  djGuestShare: 0.15,
+  // ORDER 296b — DJ:n drar inte längre fler gäster: en full kväll vänder dem
+  // vid kön, och en lugn kväll betalade de DJ:n (reports/order296b/steg4.json).
+  djGuestShare: 0,
+  // ORDER 296b (Vision Owner 2026-10-02: "DJ och springare ska löna sig när
+  // de används klokt … men inte när de används varje kväll"). DJ:n börjar
+  // spela 21.00, och då beställer varje gäst som sitter ett glas till (den
+  // sena rundan): det lönar sig när rummet är fullt, inte en lugn kväll.
+  djFromMinute: 21 * 60,
+  // Varje gäst tar den första drycken i listan som finns i lagret; vinet
+  // för DJ-kvällen köps till på morgonen (tillägget med husets vin).
+  djRoundDishIds: ['house-wine-glass', 'beer-pairing', 'fine-wine-glass', 'alcohol-free-glass'] as readonly string[],
+  djRoundGlassesPerGuest: 1,
+  // Musiken drar mest när den är något särskilt: de första DJ-kvällarna i
+  // veckan ger hela rundan, därefter beställer den här andelen av gästerna.
+  djFullRoundsPerWeek: 2,
+  djLaterRoundShare: 0.4,
+  djWinePackageId: 'vinbar-house-wine',
+  // Springaren: personalens uppgifter vid borden (ta upp beställningen,
+  // bära ut och duka av) tar den här andelen av tiden. Borden blir lediga
+  // tidigare och kön kortare; det lönar sig vid stor bokning.
+  runnerActivityId: 'runner-shift',
+  runnerTableTaskTime: 0.6,
+  // Springarens pris för en kväll: lönar sig vid stor bokning (torsdag–
+  // lördag), inte en lugn kväll (reports/order296b/steg5.json).
+  runnerCostSek: 1200,
   // Satsningar som räknas som kompetens i kvällens insats.
   competenceActivities: ['train-service', 'wine-tasting'] as readonly string[],
   // Kortet med kvällens insats står så här länge (verkliga sekunder).
@@ -1238,6 +1281,16 @@ export const QUEUE_MOOD = {
   impatientBelow: 0.55,
   leavingBelow: 0.2,
   hostCalmSeconds: 6
+} as const;
+
+// ORDER 296b — kön har ett tak (Designs Byn i kvällsljus: "Kön är högst sju
+// sällskap; den som kommer när det är fullt väljer en annan krog"). Utan
+// taket stod fredagens kö med bussens turister långt över rummets platser,
+// och de som gav upp i kön sänkte ryktet för den rimliga spelaren
+// (reports/order296b/nojdhet-efter-mep.json, diag-ready-efter.json).
+export const QUEUE_CAP = {
+  section: 'Servicen',
+  maxParties: 7
 } as const;
 
 export const RUSH = {

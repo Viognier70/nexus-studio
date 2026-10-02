@@ -1,4 +1,4 @@
-import { GAME_MINUTES_PER_SIM_SECOND, SITTING } from '../../sim/balance';
+import { EVENING_ECONOMY, GAME_MINUTES_PER_SIM_SECOND, SITTING } from '../../sim/balance';
 import { settleSocialGuest, stayFactor } from './guestTypes';
 import { INITIAL_CAPITAL_VALUE } from './model';
 import { INTERIOR } from '../content/layout';
@@ -1269,13 +1269,15 @@ function beginStaffTask(
 ) {
   staff.taskType = type;
   staff.taskProgress = 0;
+  // ORDER 296b — springaren gör uppgifterna vid borden snabbare.
+  const runner = (state.day.pickedActivityIds ?? []).includes(EVENING_ECONOMY.runnerActivityId) ? EVENING_ECONOMY.runnerTableTaskTime : 1;
   // ORDER 214 (C2 §4) — staff-rollens praktiska kompetens skalar duration.
   staff.taskDuration = taskDurationTicks(
     state.policies,
     type,
     state.capitals.values.social,
     roleCompetence(state.team, staff.role),
-    staffTempoFactor(state) *
+    runner * staffTempoFactor(state) *
     // ORDER 270 — följden av ett fel val kan göra personalen långsammare
     // tills nästa händelse (läses här för att undvika en importcirkel).
     (state.incidents?.ongoing?.tempoFactor ?? 1)

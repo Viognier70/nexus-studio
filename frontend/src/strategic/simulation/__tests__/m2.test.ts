@@ -17,6 +17,7 @@ import { makeInitialState } from '../model';
 import { runHarness } from './harness';
 import { ACTIVITY_CATALOGUE, scheduleSlotsFor } from '../activities';
 import { INITIAL_CASH_SEK } from '../constants';
+import { EVENING_ECONOMY } from '../../../sim/balance';
 
 describe('M2 DoD — morning activity model', () => {
   // ORDER 263 — v1: schemaplatserna kommer från kalendern (två på
@@ -41,7 +42,8 @@ describe('M2 DoD — morning activity model', () => {
     s = reducer(s, { type: 'PICK_ACTIVITY', id: 'wine-tasting' });
     expect(s.day.pickedActivityIds).toHaveLength(scheduleSlotsFor(s.day.dayNumber));
     // Cash reflects two costs
-    expect(s.cash).toBe(INITIAL_CASH_SEK - 3000 - 1800);
+    // ORDER 296b — springarens pris står i balance.ts.
+    expect(s.cash).toBe(INITIAL_CASH_SEK - 3000 - EVENING_ECONOMY.runnerCostSek);
   });
 
   it('DoD 1 — Sunday has four schedule slots', () => {

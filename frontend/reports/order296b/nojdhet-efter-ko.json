@@ -1,0 +1,70 @@
+{
+  "definition": "Gästerna som gick, efter nöjdheten när de gick; summan av nöjdhetens ändringar per källa och gäst (se filens huvud). Baspaketet, svaren SAT_ANSWER, vecka 1–2.",
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "days": 12,
+  "answer": "best",
+  "summary": {
+    "missnojda": {
+      "n": 213,
+      "meanStart": 0.706,
+      "meanEnd": 0.486,
+      "meanWaitTicks": 278.4,
+      "meanPerSource": {
+        "kö": -0.193,
+        "maten:miseEnPlace": -0.093,
+        "övrigt:ordering>leaving": -0.025,
+        "övrigt:ordering>ordering": -0.001,
+        "övrigt:waiting>seated": -0.001,
+        "övrigt:dining>dining": 0,
+        "raketen": 0,
+        "övrigt:waiting>leaving": 0,
+        "slumpen": 0.007,
+        "maten:värdekvoten": 0.037,
+        "plus": 0.054
+      }
+    },
+    "mitten": {
+      "n": 506,
+      "meanStart": 0.706,
+      "meanEnd": 0.776,
+      "meanWaitTicks": 103.3,
+      "meanPerSource": {
+        "maten:miseEnPlace": -0.048,
+        "kö": -0.009,
+        "övrigt:dining>dining": -0.002,
+        "övrigt:ordering>ordering": -0.001,
+        "övrigt:ordering>leaving": 0,
+        "övrigt:paying>paying": 0,
+        "övrigt:waiting>seated": 0,
+        "raketen": 0,
+        "slumpen": 0.002,
+        "maten:värdekvoten": 0.029,
+        "plus": 0.105
+      }
+    },
+    "nojda": {
+      "n": 643,
+      "meanStart": 0.711,
+      "meanEnd": 0.935,
+      "meanWaitTicks": 91.5,
+      "meanPerSource": {
+        "maten:miseEnPlace": -0.002,
+        "kö": -0.001,
+        "övrigt:dining>dining": -0.001,
+        "övrigt:ordering>ordering": 0,
+        "övrigt:paying>paying": 0,
+        "övrigt:waiting>seated": 0,
+        "maten:värdekvoten": 0.002,
+        "slumpen": 0.016,
+        "plus": 0.214
+      }
+    }
+  }
+}

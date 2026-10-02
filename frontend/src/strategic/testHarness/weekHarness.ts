@@ -58,11 +58,13 @@ export interface MorningPlan {
   backConfidence?: 0 | 1 | 2;
 }
 
-// ORDER 296 — 'half' svarar bäst och sämst vartannat (efter raketens
-// öppningstid och steg, eller dagen), en spelare som träffar ungefär hälften.
-export type ScenarioAnswer = 'best' | 'worst' | 'half';
+// ORDER 296 — 'half' svarar bäst och sämst vartannat steg (efter raketens
+// öppningstid och steg, eller dagen). 'halfRocket' (ORDER 296b) svarar rätt
+// på varannan raket hela vägen och fel på den andra, så att hälften av
+// raketerna klaras.
+export type ScenarioAnswer = 'best' | 'worst' | 'half' | 'halfRocket';
 function resolveAnswer(answer: ScenarioAnswer, key: number): 'best' | 'worst' {
-  return answer === 'half' ? (Math.round(key) % 2 === 0 ? 'best' : 'worst') : answer;
+  return answer === 'half' || answer === 'halfRocket' ? (Math.round(key) % 2 === 0 ? 'best' : 'worst') : answer;
 }
 
 export type PlayerPlan = (state: SimulationState) => MorningPlan;
@@ -116,7 +118,7 @@ export function answerScenario(s: SimulationState, given: ScenarioAnswer = 'best
       // krediterna räcker till.
       let c: 0 | 1 | 2 = active.backed ? (backConfidence ?? 0) : 0;
       while (c > 0 && !canBack(s, c)) c = (c - 1) as 0 | 1 | 2;
-      return reducer(s, { type: 'ANSWER_INCIDENT', optionId: rankedStepOption(step, resolveAnswer(given, active.openedAt + (active.step ?? 0)), active.struck, active.situation), confidence: c });
+      return reducer(s, { type: 'ANSWER_INCIDENT', optionId: rankedStepOption(step, resolveAnswer(given, given === 'halfRocket' ? active.openedAt : active.openedAt + (active.step ?? 0)), active.struck, active.situation), confidence: c });
     }
   }
   const answer = resolveAnswer(given, s.day.dayNumber);

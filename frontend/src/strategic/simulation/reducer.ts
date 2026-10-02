@@ -1,6 +1,6 @@
 import { calendarFor } from '../../sim/calendar';
 import { bestAnswerFactor, drinkRevenueFactor, enablersWithCredits } from '../../sim/knowledgeInService';
-import { EVENING, EVENING_ECONOMY, GUEST_TYPES, SERVICE, type BusinessClassId } from '../../sim/balance';
+import { EVENING, EVENING_ECONOMY, GUEST_TYPES, QUEUE_CAP, SERVICE, type BusinessClassId } from '../../sim/balance';
 import { answerSalvage, closeSalvage, discardUnresolvedSalvage } from './salvage';
 import { clockMinutes, formatClock, canBack, canStartBack, pickBackAnswer, closeIncidents, countDown, isIncidentOpen, maybeOpenIncident, planIncidents, resolveIncident, startBack, tickOngoing, type CreditChange } from '../../sim/incidents';
 import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
@@ -75,6 +75,7 @@ const EXAM_QUESTION_BANK: readonly Question[] = [
   ...ALL_TEMPLATE_EXAMPLES,
   ...R2_SEED_QUESTIONS
 ];
+import { tickDjRound } from '../../sim/satsningar';
 import { arrivalAttraction, maybeSpawnGuest, scenarioSpawnStep, walkAwayProbability } from './arrivals';
 import { planScenariosForService, scheduleScenarioTriggerTimes } from './day';
 import { revenuePerGuest } from './economics';
@@ -2492,19 +2493,21 @@ function advanceTick(state: SimulationState): SimulationState {
   // stödja sällskap (par/trio). Alla member i partiet har samma partyId
   // så findFreeSeat kan hålla dem på samma seat-grupp.
   if (!draft.scenario.awaitingChoice) {
-    const arrival = maybeSpawnGuest(draft, rng);
-    for (const g of arrival) {
+    const arrival = admitToQueue(draft, maybeSpawnGuest(draft, rng));
+    for (const g of arrival.admitted) {
       draft.guests.push(g);
     }
     // ORDER 265 — dagens ankomster mot marknadens tak.
-    if (arrival.length > 0) {
-      draft.day = { ...draft.day, arrivalsToday: (draft.day.arrivalsToday ?? 0) + arrival.length };
+    // De som vänder vid en full kö räknas som ankomster (de tog sin plats ur
+    // byns flöde) men väljer en annan krog.
+    if (arrival.all > 0) {
+      draft.day = { ...draft.day, arrivalsToday: (draft.day.arrivalsToday ?? 0) + arrival.all };
     }
     // ORDER 292 — rusningens vågor (rush.ts): sällskap som når dörren nu.
-    const wave = tickRush(draft, rng, arrivalAttraction(draft));
-    for (const g of wave) draft.guests.push(g);
-    if (wave.length > 0) {
-      draft.day = { ...draft.day, arrivalsToday: (draft.day.arrivalsToday ?? 0) + wave.length };
+    const wave = admitToQueue(draft, tickRush(draft, rng, arrivalAttraction(draft)));
+    for (const g of wave.admitted) draft.guests.push(g);
+    if (wave.all > 0) {
+      draft.day = { ...draft.day, arrivalsToday: (draft.day.arrivalsToday ?? 0) + wave.all };
     }
   }
 
@@ -2781,6 +2784,8 @@ function advanceTick(state: SimulationState): SimulationState {
   // ORDER 270 — följden av ett fel val pågår till nästa händelse, och
   // kvällens nästa händelse öppnas när dess tid har kommit.
   tickOngoing(draft, tickSeconds);
+  // ORDER 296b — DJ:ns sena runda när musiken börjar.
+  tickDjRound(draft);
   maybeOpenIncident(draft);
   maybeChance(draft);
 
@@ -3747,4 +3752,22 @@ function mentorCommentFor(
     return spec.choices[choice].mentor;
   }
   return strings.scenario.mentor[choice];
+}
+
+// ORDER 296b — kön har ett tak (balance.ts QUEUE_CAP). Ett sällskap som når
+// dörren när kön redan har maxParties sällskap väljer en annan krog: det
+// kommer inte in och kostar inget rykte, men räknas i day.turnedAwayFull.
+function admitToQueue(draft: SimulationState, arriving: Guest[]): { admitted: Guest[]; all: number } {
+  if (arriving.length === 0) return { admitted: arriving, all: 0 };
+  const parties = new Set<string>();
+  for (const g of draft.guests) if (g.state === 'waiting' || g.state === 'arriving') parties.add(g.partyId ?? g.id);
+  const admitted: Guest[] = [];
+  let turned = 0;
+  for (const g of arriving) {
+    const key = g.partyId ?? g.id;
+    if (parties.has(key) || parties.size < QUEUE_CAP.maxParties) { parties.add(key); admitted.push(g); }
+    else turned++;
+  }
+  if (turned > 0) draft.day = { ...draft.day, turnedAwayFull: (draft.day.turnedAwayFull ?? 0) + turned };
+  return { admitted, all: arriving.length };
 }

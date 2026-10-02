@@ -92,6 +92,7 @@ function evening(dayNumber: number) {
     maxQueue,
     gaveUp,
     queueLeft,
+    turnedAway: s.day.turnedAwayFull ?? 0,
     declinedAtDoor: declined,
     departures: sitting.length,
     sittingGameMinutes: Math.round(meanSimSec * GAME_MINUTES_PER_SIM_SECOND),
@@ -109,9 +110,12 @@ describe('ORDER 267 — trycket i vinbarens rum, vecka 2', () => {
       expect(report[name].maxQueue, `${name}: kö`).toBe(0);
       expect(report[name].gaveUp, `${name}: gav upp`).toBe(0);
     }
+    // ORDER 296b — kön har ett tak (balance.ts QUEUE_CAP): de som kommer när
+    // den är full väljer en annan krog (day.turnedAwayFull) i stället för att
+    // ge upp i kön. Båda räknas som gäster som går.
     for (const name of ['fre', 'lör'] as const) {
       expect(report[name].maxQueue, `${name}: kö`).toBeGreaterThan(0);
-      expect(report[name].queueLeft, `${name}: gäster som går ur kön`).toBeGreaterThan(0);
+      expect(report[name].queueLeft + report[name].turnedAway, `${name}: gäster som går ur kön eller vid full kö`).toBeGreaterThan(0);
     }
     for (const e of EVENINGS) {
       expect(report[e.name].seats).toBe(20);

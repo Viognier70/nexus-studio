@@ -1,0 +1,60 @@
+{
+  "definition": "Gästerna som gick, efter nöjdheten när de gick; summan av nöjdhetens ändringar per källa och gäst (se filens huvud). Baspaketet, svaren SAT_ANSWER, vecka 1–2.",
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "days": 12,
+  "answer": "best",
+  "summary": {
+    "missnojda": {
+      "n": 399,
+      "meanStart": 0.704,
+      "meanEnd": 0.505,
+      "meanWaitTicks": 73.1,
+      "meanPerSource": {
+        "maten:miseEnPlace": -0.229,
+        "övrigt:ordering>leaving": -0.026,
+        "kö": -0.008,
+        "övrigt:waiting>seated": 0,
+        "övrigt:waiting>leaving": 0,
+        "slumpen": 0.007,
+        "maten:värdekvoten": 0.022,
+        "plus": 0.038
+      }
+    },
+    "mitten": {
+      "n": 385,
+      "meanStart": 0.706,
+      "meanEnd": 0.774,
+      "meanWaitTicks": 77.4,
+      "meanPerSource": {
+        "maten:miseEnPlace": -0.061,
+        "övrigt:ordering>leaving": -0.001,
+        "kö": 0,
+        "övrigt:waiting>seated": 0,
+        "slumpen": 0.005,
+        "maten:värdekvoten": 0.02,
+        "plus": 0.111
+      }
+    },
+    "nojda": {
+      "n": 561,
+      "meanStart": 0.711,
+      "meanEnd": 0.943,
+      "meanWaitTicks": 70.3,
+      "meanPerSource": {
+        "maten:miseEnPlace": -0.003,
+        "övrigt:ordering>ordering": 0,
+        "övrigt:dining>dining": 0,
+        "maten:värdekvoten": 0.001,
+        "slumpen": 0.006,
+        "plus": 0.23
+      }
+    }
+  }
+}

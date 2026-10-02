@@ -128,17 +128,21 @@ describe('ORDER 288 — bussen', () => {
       let s = reducer(playMorning(s0, {}), { type: 'START_SERVICE' });
       let announcedAt: number | null = null;
       let choseAt: number | null = null;
+      // Händelseflödet behåller de senaste raderna (STREAM_KEEP); bussens rad
+      // läses när den skrivs, inte vid stängningen.
+      let busLine = false;
       for (let i = 0; i < 40000 && s.day.period === 'dinner'; i++) {
         s = reducer(s, { type: 'TICK', dt: 0.2 });
         if (announcedAt === null && s.day.villageNotice?.kind === 'busAnnounce') announcedAt = s.simTime;
         if (choseAt === null && s.day.villageNotice?.kind === 'busChose') choseAt = s.simTime;
+        busLine ||= s.eventStream.some((e) => e.kind === 'village_bus');
       }
       expect(announcedAt).not.toBeNull();
       expect(choseAt).not.toBeNull();
       expect(choseAt!).toBeGreaterThan(announcedAt!);
       expect(s.day.touristsToday).toBe(VILLAGE.bus.tourists);
       expect(poolArrivals(s.day)).toBeLessThanOrEqual(dailyGuestCap(s0));
-      expect(s.eventStream.some((e) => e.kind === 'village_bus')).toBe(true);
+      expect(busLine).toBe(true);
     }
     expect(found).toBe(true);
   });

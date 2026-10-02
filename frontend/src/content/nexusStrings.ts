@@ -1502,7 +1502,7 @@ export const TABLE = {
     },
     'book-dj': {
       name: { sv: 'DJ i kväll', en: 'A DJ tonight' },
-      description: { sv: 'Musik från nio. Fler gäster kommer, men bara en full kväll betalar den.', en: 'Music from nine o’clock. More guests come, but only a full evening pays for it.' }
+      description: { sv: 'Musik från nio, och alla som sitter tar ett glas till. Köp vin till. Lönar sig en full kväll, och mest när det inte är varje kväll.', en: 'Music from nine o’clock, and everyone seated orders another glass. Buy wine for it. It pays on a full evening, and most when it isn’t every evening.' }
     }
   },
   // ORDER 291 — rätter, råvaror och leverantörer (m4Catalogue.ts) på

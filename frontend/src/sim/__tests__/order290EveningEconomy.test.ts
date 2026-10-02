@@ -53,11 +53,14 @@ describe('ORDER 290 — kvällens insats och kvällskassan', () => {
     expect(tillSek(closed)).toBe(closed.day.tillAtClose);
   });
 
-  it('DJ:n räknas i insatsen och drar fler gäster', () => {
+  // ORDER 296b — DJ:n drar inte längre fler gäster (djGuestShare 0); hon ger
+  // den sena rundan när musiken börjar (sim/satsningar.ts, testas i
+  // order296bBalans.test.ts).
+  it('DJ:n räknas i insatsen', () => {
     const s0 = week2();
     const withDj = reducer(s0, { type: 'PICK_ACTIVITY', id: 'book-dj' });
     expect(withDj.day.pickedActivityIds).toContain('book-dj');
-    expect(dailyGuestCap(withDj)).toBeGreaterThan(dailyGuestCap(s0));
+    expect(dailyGuestCap(withDj)).toBe(dailyGuestCap(s0));
     const stake = eveningStake(withDj, 0);
     expect(stake.lines.find((l) => l.key === 'dj')?.sek).toBe(EVENING_ECONOMY.djCostSek);
   });

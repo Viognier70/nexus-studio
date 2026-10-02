@@ -38,14 +38,16 @@ const PLANS: Record<PlayerId, (s: SimulationState) => MorningPlan> = {
   rimlig: (s) => ({ stock: coverage(s).covers >= bookingFor(s).total * TOP_UP_SHARE ? 'none' : 'base' }),
   // Mentorn: baspaketet varje morgon och bästa svaret (som ORDER 291).
   mentorn: () => ({}),
-  // Baspaketet varje morgon, rätt på ungefär hälften av svaren.
-  halva: () => ({ scenarioAnswer: 'half' }),
+  // Baspaketet varje morgon, rätt på hälften av raketerna (ORDER 296b:
+  // varannan raket rätt hela vägen; 'half' växlade per steg och klarade
+  // nästan ingen raket).
+  halva: () => ({ scenarioAnswer: 'halfRocket' }),
   halvbra: () => ({ scenarioAnswer: 'worst' }),
   slarvig: () => weakMorning()
 };
 
 interface Week { week: number; opSek: number; amortisationSek: number; rentSek: number; wagesSek: number; revenueSek: number; floorSek: number; topUpSek: number; belowFloor: boolean }
-interface Morning { week: number; weekday: string; bought: number; covers: number; booked: number; staff: number }
+interface Morning { week: number; weekday: string; bought: number; covers: number; booked: number; staff: number; rep: number }
 
 // Kassan är så stor att dagens nedgradering aldrig slår till; veckornas
 // flöden är oberoende av kassans nivå (harnessens inköp prövar inte kassan),
@@ -67,7 +69,7 @@ function season(seed: number, player: PlayerId, weeks: number) {
       const before = coverage(s).covers;
       const m = playMorning(s, plan);
       const after = coverage(m).covers;
-      mornings.push({ week: cal.week, weekday: cal.weekday, bought: Math.max(0, after - before), covers: after, booked: bookingFor(m).total, staff: m.team.members.length });
+      mornings.push({ week: cal.week, weekday: cal.weekday, bought: Math.max(0, after - before), covers: after, booked: bookingFor(m).total, staff: m.team.members.length, rep: s.reputation });
     }
     s = playDay(s, plan).state;
     const st = s.economy.lastSettlement;
@@ -93,12 +95,12 @@ function season(seed: number, player: PlayerId, weeks: number) {
 }
 
 // Förslagen, räknade på veckornas flöden.
-const STARTS = [25000, 40000];
+const STARTS = [25000];
 // Amorteringen: lånet (startLoanSek) över 8 veckor (i dag), 16 veckor
 // (halva under säsongen) eller ingen under säsongen (bara räntan).
-const AMORT_WEEKS = [8, 16, 0];
+const AMORT_WEEKS = [0];
 // Veckomålet: veckans resultat före amorteringen (kr).
-const TARGETS = [-5000, 0, 3000];
+const TARGETS = [0];
 // Mise en place: minuter per inköpt portion och per bokad gäst; vad en
 // anställd hinner före öppning (spelminuter).
 const MISE = [
@@ -127,6 +129,9 @@ describe.skipIf(!process.env.KARNAN_SEEDS)('ORDER 296 — kärnans tal', () => {
   it('säsongen för tre spelare med förslagets startkassa', async () => {
     const seeds = Array.from({ length: Number(process.env.KARNAN_SEEDS ?? 4) }, (_, i) => i + 1);
     const weeks = Number(process.env.KARNAN_WEEKS ?? 8);
+    // Prövning av tal i minnet: KARNAN_VARIANT='{"INCIDENTS":{"wrongCashShare":1}}'.
+    const balance = await import('../../../sim/balance');
+    for (const [k, v] of Object.entries(JSON.parse(process.env.KARNAN_VARIANT ?? '{}') as Record<string, Record<string, unknown>>)) Object.assign((balance as unknown as Record<string, Record<string, unknown>>)[k], v);
     const players: PlayerId[] = ['mentorn', 'rimlig', 'halva', 'halvbra', 'slarvig'];
     const result: Record<string, unknown> = {};
     for (const p of players) {
@@ -156,7 +161,15 @@ describe.skipIf(!process.env.KARNAN_SEEDS)('ORDER 296 — kärnans tal', () => {
         const r = allMornings.filter((x) => x.weekday === wd);
         return [wd, { bought: mean(r.map((x) => x.bought)), covers: mean(r.map((x) => x.covers)), booked: mean(r.map((x) => x.booked)), staff: mean(r.map((x) => x.staff)) }];
       }));
-      result[p] = { byWeek, proposals, mise, mornings, floor: floorSek('vinbar', PLAYERS.baseline), runs };
+      // Ryktet på morgonen per veckodag (Vision Owner: "ryktet ska hålla över
+      // veckan för en rimlig spelare"): måndag mot lördag, v1–v8.
+      const repByWeekday = Object.fromEntries(['mon', 'tue', 'wed', 'thu', 'fri', 'sat'].map((wd) => [wd, +(allMornings.filter((x) => x.weekday === wd).reduce((a, x) => a + x.rep, 0) / Math.max(1, allMornings.filter((x) => x.weekday === wd).length)).toFixed(3)]));
+      const repByWeek = Array.from({ length: weeks }, (_, i) => {
+        const ms = allMornings.filter((x) => x.week === i + 1);
+        const at = (wd: string) => +(ms.filter((x) => x.weekday === wd).reduce((a, x) => a + x.rep, 0) / Math.max(1, ms.filter((x) => x.weekday === wd).length)).toFixed(3);
+        return { week: i + 1, mon: at('mon'), sat: at('sat') };
+      });
+      result[p] = { repByWeekday, repByWeek, byWeek, proposals, mise, mornings, floor: floorSek('vinbar', PLAYERS.baseline), runs };
     }
     if (process.env.WRITE_REPORTS === '1') {
       const { mkdirSync, writeFileSync } = await import('node:fs');
@@ -164,7 +177,7 @@ describe.skipIf(!process.env.KARNAN_SEEDS)('ORDER 296 — kärnans tal', () => {
       const { fileURLToPath } = await import('node:url');
       const out = resolve(dirname(fileURLToPath(import.meta.url)), '../../../../reports', process.env.REPORT_ORDER ?? 'order296');
       mkdirSync(out, { recursive: true });
-      writeFileSync(resolve(out, 'karnan.json'), JSON.stringify({ definition: 'Säsongen med dagens regler och stor kassa (ingen nedgradering). opSek = veckans resultat före amorteringen och utan golvets påfyllnad. Förslagen räknas på flödena: kassan = startkassan + opSek − amorteringen; stängning = kassan under noll tre avräkningar i rad; omförhandling = veckomålet missat två veckor i rad. Mise en place = inköpta portioner × perCover + bokade × perGuest mot personal × minutesPerStaff (spelminuter).', seeds, weeks, players: result }, null, 2) + '\n');
+      writeFileSync(resolve(out, process.env.KARNAN_OUT ?? 'karnan.json'), JSON.stringify({ definition: 'Säsongen med dagens regler och stor kassa (ingen nedgradering). opSek = veckans resultat före amorteringen och utan golvets påfyllnad. Förslagen räknas på flödena: kassan = startkassan + opSek − amorteringen; stängning = kassan under noll tre avräkningar i rad; omförhandling = veckomålet missat två veckor i rad. Mise en place = inköpta portioner × perCover + bokade × perGuest mot personal × minutesPerStaff (spelminuter).', seeds, weeks, players: result }, null, 2) + '\n');
     }
     expect(Object.keys(result).length).toBe(5);
   }, 3600000);

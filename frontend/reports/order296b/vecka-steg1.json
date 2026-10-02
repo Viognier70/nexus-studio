@@ -1,0 +1,256 @@
+{
+  "variant": {},
+  "definition": "Vecka 2, vinbaren, brons i tre, bästa svaret, baspaketet efter bokningen. utan = inga satsningar; klokt = DJ fredag och lördag, springaren när bokningen (bookingFor) är minst bigBooking; varjeKvall = båda varje kväll. weekResultSek = kassans förändring måndag till måndag utan golvets påfyllnad, med amorteringen återlagd. weekendBills = notorna fredag och lördag. Kvällens resultat räknas i en parad gren från samma morgon (samma som evening()).",
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "bigBooking": 45,
+  "plans": {
+    "utan": {
+      "meanWeekResultSek": 8770.9,
+      "meanEveningsSek": 16759.8,
+      "meanWeekendBills": 40.7,
+      "meanReputationSaturday": 0.26,
+      "weeksWithLoss": 0,
+      "weeks": [
+        {
+          "seed": 1,
+          "weekResultSek": 12863,
+          "eveningsSek": 20851,
+          "weekendBills": 47,
+          "reputationSaturday": 0.295
+        },
+        {
+          "seed": 2,
+          "weekResultSek": 76,
+          "eveningsSek": 8067,
+          "weekendBills": 30,
+          "reputationSaturday": 0.254
+        },
+        {
+          "seed": 3,
+          "weekResultSek": 7281,
+          "eveningsSek": 15275,
+          "weekendBills": 30,
+          "reputationSaturday": 0.345
+        },
+        {
+          "seed": 4,
+          "weekResultSek": 6616,
+          "eveningsSek": 14604,
+          "weekendBills": 38,
+          "reputationSaturday": 0.324
+        },
+        {
+          "seed": 5,
+          "weekResultSek": 10066,
+          "eveningsSek": 18054,
+          "weekendBills": 37,
+          "reputationSaturday": 0.255
+        },
+        {
+          "seed": 6,
+          "weekResultSek": 6672,
+          "eveningsSek": 14660,
+          "weekendBills": 40,
+          "reputationSaturday": 0.333
+        },
+        {
+          "seed": 7,
+          "weekResultSek": 13820,
+          "eveningsSek": 21807,
+          "weekendBills": 48,
+          "reputationSaturday": 0.193
+        },
+        {
+          "seed": 8,
+          "weekResultSek": 10879,
+          "eveningsSek": 18867,
+          "weekendBills": 52,
+          "reputationSaturday": 0.265
+        },
+        {
+          "seed": 9,
+          "weekResultSek": 12685,
+          "eveningsSek": 20674,
+          "weekendBills": 40,
+          "reputationSaturday": 0.12
+        },
+        {
+          "seed": 10,
+          "weekResultSek": 6751,
+          "eveningsSek": 14739,
+          "weekendBills": 45,
+          "reputationSaturday": 0.208
+        }
+      ]
+    },
+    "klokt": {
+      "meanWeekResultSek": 5025.4,
+      "meanEveningsSek": 13013.4,
+      "meanWeekendBills": 48.3,
+      "meanReputationSaturday": 0.23,
+      "weeksWithLoss": 1,
+      "weeks": [
+        {
+          "seed": 1,
+          "weekResultSek": 6825,
+          "eveningsSek": 14812,
+          "weekendBills": 53,
+          "reputationSaturday": 0.29
+        },
+        {
+          "seed": 2,
+          "weekResultSek": -1734,
+          "eveningsSek": 6255,
+          "weekendBills": 29,
+          "reputationSaturday": 0.391
+        },
+        {
+          "seed": 3,
+          "weekResultSek": 6351,
+          "eveningsSek": 14341,
+          "weekendBills": 44,
+          "reputationSaturday": 0.26
+        },
+        {
+          "seed": 4,
+          "weekResultSek": 1069,
+          "eveningsSek": 9057,
+          "weekendBills": 38,
+          "reputationSaturday": 0.293
+        },
+        {
+          "seed": 5,
+          "weekResultSek": 8448,
+          "eveningsSek": 16435,
+          "weekendBills": 56,
+          "reputationSaturday": 0.12
+        },
+        {
+          "seed": 6,
+          "weekResultSek": 2567,
+          "eveningsSek": 10554,
+          "weekendBills": 48,
+          "reputationSaturday": 0.305
+        },
+        {
+          "seed": 7,
+          "weekResultSek": 8392,
+          "eveningsSek": 16380,
+          "weekendBills": 55,
+          "reputationSaturday": 0.137
+        },
+        {
+          "seed": 8,
+          "weekResultSek": 7472,
+          "eveningsSek": 15459,
+          "weekendBills": 54,
+          "reputationSaturday": 0.171
+        },
+        {
+          "seed": 9,
+          "weekResultSek": 10241,
+          "eveningsSek": 18230,
+          "weekendBills": 51,
+          "reputationSaturday": 0.187
+        },
+        {
+          "seed": 10,
+          "weekResultSek": 623,
+          "eveningsSek": 8611,
+          "weekendBills": 55,
+          "reputationSaturday": 0.192
+        }
+      ]
+    },
+    "varjeKvall": {
+      "meanWeekResultSek": -3840.3,
+      "meanEveningsSek": 4147.7,
+      "meanWeekendBills": 56.2,
+      "meanReputationSaturday": 0.23,
+      "weeksWithLoss": 8,
+      "weeks": [
+        {
+          "seed": 1,
+          "weekResultSek": -478,
+          "eveningsSek": 7510,
+          "weekendBills": 67,
+          "reputationSaturday": 0.299
+        },
+        {
+          "seed": 2,
+          "weekResultSek": -3854,
+          "eveningsSek": 4133,
+          "weekendBills": 57,
+          "reputationSaturday": 0.368
+        },
+        {
+          "seed": 3,
+          "weekResultSek": -3646,
+          "eveningsSek": 4341,
+          "weekendBills": 73,
+          "reputationSaturday": 0.12
+        },
+        {
+          "seed": 4,
+          "weekResultSek": -8122,
+          "eveningsSek": -135,
+          "weekendBills": 43,
+          "reputationSaturday": 0.249
+        },
+        {
+          "seed": 5,
+          "weekResultSek": -1531,
+          "eveningsSek": 6457,
+          "weekendBills": 60,
+          "reputationSaturday": 0.12
+        },
+        {
+          "seed": 6,
+          "weekResultSek": -14205,
+          "eveningsSek": -6213,
+          "weekendBills": 34,
+          "reputationSaturday": 0.421
+        },
+        {
+          "seed": 7,
+          "weekResultSek": 419,
+          "eveningsSek": 8407,
+          "weekendBills": 53,
+          "reputationSaturday": 0.12
+        },
+        {
+          "seed": 8,
+          "weekResultSek": -2124,
+          "eveningsSek": 5864,
+          "weekendBills": 67,
+          "reputationSaturday": 0.197
+        },
+        {
+          "seed": 9,
+          "weekResultSek": 73,
+          "eveningsSek": 8061,
+          "weekendBills": 55,
+          "reputationSaturday": 0.216
+        },
+        {
+          "seed": 10,
+          "weekResultSek": -4935,
+          "eveningsSek": 3052,
+          "weekendBills": 53,
+          "reputationSaturday": 0.201
+        }
+      ]
+    }
+  }
+}

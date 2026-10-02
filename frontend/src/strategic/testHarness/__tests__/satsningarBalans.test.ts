@@ -30,8 +30,14 @@ import type { SimulationState } from '../../types';
 
 interface Evening { resultSek: number; booked: number; bills: number; walked: number; reputationDelta: number; unhappy: number }
 
+// ORDER 296b — DJ-kvällen planeras med vin: tillägget med husets vin köps
+// samma morgon (EVENING_ECONOMY.djWinePackageId), som den kloka spelaren gör.
+function djWine(activities: readonly string[]) {
+  return activities.includes('book-dj') ? [{ type: 'BUY_PACKAGE' as const, packageId: EVENING_ECONOMY.djWinePackageId }] : [];
+}
+
 function evening(s: SimulationState, activities: string[]): Evening {
-  s = playMorning(s, { activities });
+  s = playMorning(s, { activities, actions: djWine(activities) });
   mountRoomLikeScene(s.businessClass);
   const booked = s.day.booking?.total ?? 0;
   const rep0 = s.reputation;
@@ -128,9 +134,9 @@ describe.skipIf(!process.env.SATS_SEEDS)('Satsningarna — lönar de sig?', () =
         const a: string[] = [];
         if (wd === 'fri' || wd === 'sat') a.push('book-dj');
         if (bookingFor(s).total >= bigBooking) a.push('runner-shift');
-        return { activities: a };
+        return { activities: a, actions: djWine(a) };
       },
-      varjeKvall: () => ({ activities: ['book-dj', 'runner-shift'] })
+      varjeKvall: () => ({ activities: ['book-dj', 'runner-shift'], actions: djWine(['book-dj']) })
     };
     const result: Record<string, unknown> = {};
     for (const [name, plan] of Object.entries(plans)) {

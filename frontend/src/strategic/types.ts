@@ -924,6 +924,12 @@ export interface DayState {
   // at day rollover with the rest of DayState.
   substitutedCount: number;
   walkedCount: number;
+  // ORDER 296b — gäster som kom när kön var full och valde en annan krog.
+  turnedAwayFull?: number;
+  // ORDER 296b — DJ:ns sena runda: när, hur många glas och vad den sålde.
+  djRoundAt?: number | null;
+  djRoundGlasses?: number;
+  djRoundSek?: number;
   // ORDER 277 — sällskap som har en flaska på bordet i kväll (den räcker
   // till hela bordet). Nollas med resten av dagen.
   bottlePartyIds?: string[];
@@ -1568,6 +1574,8 @@ export interface SimulationState {
   // ORDER 287a — ryktet från gästen med socialt kapital: marknadens tak
   // gånger 1 + factor dag fromDay till untilDay (sim/guestTypes.ts).
   guestBuzz?: { fromDay: number; untilDay: number; factor: number; nameIndex: number }[];
+  // ORDER 296b — DJ-kvällarna den här veckan (sim/satsningar.ts).
+  djWeek?: { week: number; evenings: number };
   // ORDER 288 — konkurrensen i byn: rivalerna (rykte och vem som styr dem).
   // Saknas i äldre sparfiler; sim/village.ts villageOf ger startläget.
   competition?: import('../sim/village').VillageState;

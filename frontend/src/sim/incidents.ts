@@ -786,6 +786,8 @@ function applyOutcome(
   // Kassan: enheter av klassens normala veckointäkt, inom veckans ±20 %.
   let cashSek = e.cash * share * scenarioUnitSek(draft);
   if (cashSek > 0 && best) cashSek *= bestAnswerFactor(draft);
+  // ORDER 296b — ett fel kostar hälften så mycket i kassan.
+  if (cashSek < 0 && !best) cashSek *= INCIDENTS.wrongCashShare;
   cashSek = clampScenarioCash(draft, cashSek);
   if (cashSek !== 0) {
     draft.economy = { ...draft.economy, weekScenarioCashSek: (draft.economy.weekScenarioCashSek ?? 0) + cashSek };
