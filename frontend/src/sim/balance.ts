@@ -247,6 +247,10 @@ export const RENT = {
   section: 'Ekonomin > Hyran och lönerna',
   openQuestion: 'F59',
   shareOfNormalWeeklyRevenue: 0.32,
+  // ORDER 294 (Vision Owner 2026-10-02): "första och andra veckan ligger på den
+  // gamla nivån (17 %), därefter full hyra (32 %)". Säsongens veckor 1–2.
+  introShareOfNormalWeeklyRevenue: 0.17,
+  introWeeks: 2,
   reasonableResultShare: [0.05, 0.1] as readonly number[],
   weakDowngradeWeeks: [2, 3] as readonly number[]
 } as const;

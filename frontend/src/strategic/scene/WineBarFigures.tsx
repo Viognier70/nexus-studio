@@ -651,7 +651,17 @@ export function WineBarFigures({ room, mood }: Props) {
       } else if (cast.eventSaved) {
         targetRef.current = { ...cast.eventSaved, focus: { ...cast.eventSaved.focus } };
       }
-      for (const r of cast.guestRigs) r.root.visible = false;
+      // ORDER 294 (Vision Owner 2026-10-02): "Rummets gäster under en händelse
+      // ska inte döljas. De är kvar och dämpas av strålkastaren, eftersom
+      // rummet aldrig stannar." Bara en gäst på en sits manuset använder döljs,
+      // så att två figurer aldrig sitter på samma stol. Personalen döljs: manuset
+      // har sin egen (Per, Sara, Elin, Mira och kocken).
+      const scriptSeats = cast.events.theatre.seatIds();
+      for (let i = 0; i < cast.guestRigs.length; i++) {
+        const id = gs[i]?.guestId;
+        const seat = id ? cast.director.guestSeat(id) : null;
+        if (seat && scriptSeats.has(seat.id)) cast.guestRigs[i].root.visible = false;
+      }
       for (const r of cast.staffRigs) r.root.visible = false;
       for (const mk of cast.staffMarks) mk.group.visible = false;
       cast.ring.group.visible = false;

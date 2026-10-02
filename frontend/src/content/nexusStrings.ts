@@ -871,6 +871,11 @@ export const TABLE = {
     bankButton: { sv: 'Banken', en: 'The bank' },
     bankHeading: { sv: 'Banken', en: 'The bank' },
     bankCurrent: { sv: (name: string) => `Du driver ${name}.`, en: (name: string) => `You run ${name}.` },
+    // ORDER 294 — introduktionshyran de två första veckorna.
+    introRent: {
+      sv: (intro: string, full: string) => `De två första veckorna har du introduktionshyra: ${intro} kr i veckan. Från vecka 3 är hyran ${full} kr.`,
+      en: (intro: string, full: string) => `For your first two weeks you pay an introductory rent of ${intro} kr a week. From week 3 the rent is ${full} kr.`
+    },
     bankNone: { sv: 'Du har ingen verksamhet.', en: 'You have no business.' },
     bankNoLoan: {
       sv: 'Banken ger inget lån utan en medalj. Gå och öva.',
