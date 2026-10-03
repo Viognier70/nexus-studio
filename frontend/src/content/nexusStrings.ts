@@ -289,6 +289,13 @@ export const STRINGS = {
   'rival.title': { sv: 'Byn i kväll', en: 'The village tonight' },
   'rival.rank': { sv: '{rank} i byn', en: '{rank} in the village' },
   'rival.guests': { sv: '{n} gäster', en: '{n} guests' },
+  // ORDER 298 — vad placeringen mäter, ingen placering utan gäster, och före öppning.
+  'rival.measures': { sv: 'Placering efter kvällens gäster vid bord', en: 'Ranked by tonight’s seated guests' },
+  'rival.noGuests': { sv: 'Väntar på gäster', en: 'Waiting for guests' },
+  'rival.yesterday': { sv: 'I går: {rank} i byn', en: 'Yesterday: {rank} in the village' },
+  'rival.opens': { sv: 'Byn öppnar {time}', en: 'The village opens at {time}' },
+  // ORDER 298 — kvällskassans prognos.
+  'till.forecast': { sv: 'I den här takten: {n}', en: 'At this pace: {n}' },
   'rival.overtake': { sv: 'Förbi {name}', en: 'Past {name}' },
   'rival.us': { sv: 'Vi', en: 'Us' },
   // Namnen är desamma som byk.venue.* och byTruckar.js. {company} är företagets namn i liggaren.
@@ -2169,8 +2176,8 @@ export const TABLE = {
     left: { sv: (h: number, mm: string) => `${h} h ${mm} min kvar`, en: (h: number, mm: string) => `${h} h ${mm} min left` },
     leftMin: { sv: (m: number) => `${m} min kvar`, en: (m: number) => `${m} min left` },
     label: {
-      sv: { service: 'Servicen', rush: 'Rusning', lastOrders: 'Sista beställning', closed: 'Stängt', morning: 'Morgon', evening: 'Kväll', prep: 'Förberedelser' } as Record<string, string>,
-      en: { service: 'Service', rush: 'Rush', lastOrders: 'Last orders', closed: 'Closed', morning: 'Morning', evening: 'Evening', prep: 'Getting ready' } as Record<string, string>
+      sv: { service: 'Servicen', rush: 'Rusning', lastOrders: 'Sista beställning', closed: 'Stängt', morning: 'Morgon', evening: 'Kväll', prep: 'Förberedelser', calm: 'Lugnt', waiting: 'Väntar på gäster' } as Record<string, string>,
+      en: { service: 'Service', rush: 'Rush', lastOrders: 'Last orders', closed: 'Closed', morning: 'Morning', evening: 'Evening', prep: 'Getting ready', calm: 'Quiet', waiting: 'Waiting for guests' } as Record<string, string>
     },
     doorsAt: { sv: 'Dörrarna öppnar 18.00', en: 'Doors open 18:00' },
     // ORDER 292b — när dörrarna faktiskt öppnar (efter förberedelserna).

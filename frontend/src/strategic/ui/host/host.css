@@ -195,3 +195,8 @@
 /* Grenen är 0 bred (den står på vägens punkt); stenarna och grinden tar sin egen bredd. */
 .nx-shop-branch { align-items: flex-start; }
 .nx-shop-gate, .nx-shop-stone, .nx-shop-star { flex: none; width: max-content; }
+/* ORDER 298 — bandet utan linjen: rubriken, vad placeringen mäter och ryktet. */
+.nx-rival-band { grid-template-columns: 1fr; }
+.nx-rival-head { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: calc(18 * var(--nx-u)); row-gap: 2px; position: relative; }
+.nx-rival-measure { font-size: max(10px, calc(13 * var(--nx-u))); color: rgba(244,230,204,.7); }
+.nx-rival-overtake-static { position: static; margin-left: auto; }

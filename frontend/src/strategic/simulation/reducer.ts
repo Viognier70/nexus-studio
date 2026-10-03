@@ -1,6 +1,6 @@
 import { calendarFor } from '../../sim/calendar';
 import { bestAnswerFactor, drinkRevenueFactor, enablersWithCredits } from '../../sim/knowledgeInService';
-import { EVENING, EVENING_ECONOMY, GUEST_TYPES, QUEUE_CAP, SERVICE, SHOP, type BusinessClassId } from '../../sim/balance';
+import { EVENING, EVENING_ECONOMY, GUEST_TYPES, OPENING, QUEUE_CAP, SERVICE, SHOP, type BusinessClassId } from '../../sim/balance';
 import { answerSalvage, closeSalvage, discardUnresolvedSalvage } from './salvage';
 import { clockMinutes, formatClock, canBack, canStartBack, pickBackAnswer, closeIncidents, countDown, isIncidentOpen, maybeOpenIncident, planIncidents, resolveIncident, startBack, tickOngoing, type CreditChange } from '../../sim/incidents';
 import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
@@ -1426,9 +1426,11 @@ function openService(
   // ceiling.
   const waitingCap = 6;
   const baseWaiting = waitingAtOpeningCount(state.reputation, weather);
-  const waitingAtOpening = Math.min(
-    waitingCap,
-    Math.round(baseWaiting * worldFactorWaitingMultiplier(worldFactors))
+  // ORDER 298 — de bokade till öppningen står vid dörren (balance.ts OPENING),
+  // så att kvällen inte börjar med en tom krog.
+  const waitingAtOpening = Math.max(
+    OPENING.minPartiesAtDoor,
+    Math.min(waitingCap, Math.round(baseWaiting * worldFactorWaitingMultiplier(worldFactors)))
   );
   const day: DayState = {
     ...state.day,

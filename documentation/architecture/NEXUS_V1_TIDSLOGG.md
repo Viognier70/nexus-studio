@@ -132,6 +132,7 @@ Uppskattningen skrivs innan etappen börjar. Faktisk tid fylls i när etappen ä
 | Talen låsta, stjärnan, raketerna ur rummet | 296c | ~15: regeln borttagen, raketerna ur rummet (två kalibreringar), stjärnan, två spelare, kalibreringen (fyra startkassor), tester, produktionsbygget (tre körningar), rapport | 3–4 h | Harnessen tog 11–14 minuter med sju spelare | | — | 2026-10-02 sent | Inom uppskattningen. |
 | Spelaren som siktar på stjärnan | 296d | ~4: spelaren, kunskapen i proven, gränserna prövade, kontrollen i spelet, rapport | 1 h | Att FNV sprider dåligt när bara nyckelns slut skiljer (proven gick för lätt) | | — | 2026-10-02 sent | Inom uppskattningen. |
 | Stjärnan med tre veckor, 0,75 per steg | 296e | ~4: regeln, stegen i avräkningen, svaret 'skill', harnessen, måtten prövade, rapport | 1 h | | | — | 2026-10-03 | Inom uppskattningen. |
+| Gästerna och kvällskassan | 298 | ~6: loggningen, rättelsen vid dörren, räkningen vid bord, prognosen, Byn i kväll, statusen, kontrollen i spelet, rapport | 1,5 h | Att produktionskontrollen läste fälten ett i taget (bandet lästes efter öppningen) | | — | 2026-10-03 | Inom uppskattningen. |
 
 ## Omräkning efter etapp 2
 

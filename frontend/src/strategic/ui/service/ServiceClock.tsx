@@ -16,7 +16,7 @@
 
 import { strings } from '../../../content/strings';
 import { CLOCK, INCIDENTS, SITTING } from '../../../sim/balance';
-import { clockCells, clockLabel, serviceClock } from '../../../sim/serviceClock';
+import { clockCells, serviceLabel, serviceClock } from '../../../sim/serviceClock';
 import { beforeDoors, doorsOpenMinutes } from '../../../sim/clock';
 import { useSimState } from '../../simulation/SimulationProvider';
 import { u } from '../system/components';
@@ -55,7 +55,8 @@ export function ServiceClock() {
     since = c.nowMinutes - c.startMinutes;
     dataLabel = 'prep';
   } else if (c) {
-    const l = clockLabel(c);
+    // ORDER 298 — etiketten följer rummet (Rusning bara när det är fullt).
+    const l = serviceLabel(sim, c);
     time = hhmm(c.nowMinutes);
     label = t.label[l];
     const h = Math.floor(c.leftMinutes / MINUTES_PER_HOUR);

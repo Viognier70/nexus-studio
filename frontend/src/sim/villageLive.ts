@@ -7,7 +7,7 @@
 // villageEvening med spelarens tak. Rivalernas gäster hittills är planen
 // gånger andelen som har kommit vid klockslaget (triangelfördelningen över
 // VILLAGE.arriveFromMinute–arriveUntilMinute, samma som figurerna). Spelarens
-// gäster är de som har kommit in i rummet (day.guestTypeArrivals).
+// gäster är de som har suttit vid ett bord (day.seatedTonight, ORDER 298).
 
 import type { SimulationState } from '../strategic/types';
 import { GUEST_TYPES, VILLAGE } from './balance';
@@ -46,7 +46,8 @@ export function villageLive(state: SimulationState): VenueLive[] {
   const venues = venuesTonight(state);
   const plan = plannedVillage(state);
   const share = arrivedShare(clockMinutes(state));
-  const ours = Object.values(state.day.guestTypeArrivals ?? {}).reduce((a, n) => a + (n ?? 0), 0);
+  // ORDER 298 — våra gäster är de som har suttit vid ett bord i kväll.
+  const ours = state.day.seatedTonight ?? 0;
   return venues
     .filter((v) => v.open)
     .map((v) => ({
@@ -56,8 +57,11 @@ export function villageLive(state: SimulationState): VenueLive[] {
     }));
 }
 
-// Platsen i byn just nu (1 = flest gäster), som bandet visar.
-export function villageRank(rows: VenueLive[]): number {
+// Platsen i byn just nu efter kvällens gäster (1 = flest), som bandet visar.
+// ORDER 298 — utan gäster finns ingen plats (null): det går inte att vara 1:a
+// med 0 gäster. Vid lika antal står vi efter rivalerna.
+export function villageRank(rows: VenueLive[]): number | null {
   const ours = rows.find((r) => r.id === PLAYER_VENUE)?.guests ?? 0;
-  return 1 + rows.filter((r) => r.id !== PLAYER_VENUE && r.guests > ours).length;
+  if (ours <= 0) return null;
+  return 1 + rows.filter((r) => r.id !== PLAYER_VENUE && r.guests >= ours).length;
 }

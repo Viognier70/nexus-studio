@@ -405,6 +405,8 @@ export interface Guest {
   billBonus?: number;
   // ORDER 296 — hovmästarens vinbeslut: flaskan (sommeliern) eller husets vin (Per).
   hostDrink?: 'bottle' | 'house';
+  // ORDER 298 — gästen har suttit vid ett bord i kväll (räknas i day.seatedTonight).
+  seatedTonight?: boolean;
   partySize?: number;
   // ORDER 260 — timing-diagnostik. Sätts när guest transitionerar in i
   // seated respektive dining. `orderCompleteAtSimTime − seatedAtSimTime`
@@ -938,6 +940,9 @@ export interface DayState {
   prepNeedMin?: number;
   prepCapacityMin?: number;
   prepBacklogMin?: number;
+  // ORDER 298 — gästerna som satt vid ett bord i kväll: det som räknas i
+  // ekonomin, byn och bandet (det som räknas ska synas).
+  seatedTonight?: number;
   // ORDER 296 — kockens bord i kväll: sällskapets nyckel (förmågan chefsTable).
   chefsTableParty?: string | null;
   // ORDER 296 — hovmästarens Ge bord: bordet spelaren valde för sällskapet.

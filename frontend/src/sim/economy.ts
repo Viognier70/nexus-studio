@@ -114,7 +114,9 @@ export function recordEvening(before: SimulationState, after: SimulationState): 
     dayNumber: d.dayNumber,
     revenueSek: Math.round(after.revenue - (d.revenueAtServiceStart ?? after.revenue)),
     reputationDelta: after.reputation - (d.reputationAtServiceStart ?? before.reputation),
-    guests: d.arrivalsToday ?? 0,
+    // ORDER 298 — kvällens gäster är de som satt vid ett bord (inte de som
+    // vände vid dörren eller i kön).
+    guests: after.day.seatedTonight ?? d.seatedTonight ?? 0,
     marketCap: dailyGuestCap(before),
     gaveUp: before.metrics.giveUpsThisService,
     typeGuests: { ...(d.guestTypeArrivals ?? {}) },
@@ -138,10 +140,9 @@ export function recordEvening(before: SimulationState, after: SimulationState): 
       billSek: Math.round(d.billionaireVisit?.billSek ?? 0)
     }
   };
-  // ORDER 288 — i byn räknas alla som kom in (typerna), också gästerna som
-  // ett rätt svar släppte in (de räknas inte i arrivalsToday).
-  const cameIn = Object.values(record.typeGuests ?? {}).reduce((a, n) => a + (n ?? 0), 0);
-  record.village = villageEvening(before, { guests: Math.max(record.guests, cameIn), revenueSek: record.revenueSek, typeGuests: record.typeGuests ?? {}, tourists: d.touristsToday ?? 0 });
+  // ORDER 288/298 — i byn räknas spelarens gäster som de som satt vid ett
+  // bord, också gästerna som ett rätt svar släppte in.
+  record.village = villageEvening(before, { guests: record.guests, revenueSek: record.revenueSek, typeGuests: record.typeGuests ?? {}, tourists: d.touristsToday ?? 0 });
   return { ...after.economy, weekEvenings: [...(after.economy.weekEvenings ?? []), record] };
 }
 
