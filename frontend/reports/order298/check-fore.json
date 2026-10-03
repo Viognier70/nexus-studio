@@ -1,0 +1,96 @@
+{
+  "errors": [],
+  "samples": [
+    {
+      "clock": "18.20",
+      "label": "Förberedelser",
+      "till": "0 kr",
+      "forecast": null,
+      "rank": "1:a i byn",
+      "simSeated": "0",
+      "roomSeated": "0",
+      "roomGuests": "0"
+    },
+    {
+      "clock": "18.50",
+      "label": "Förberedelser",
+      "till": "0 kr",
+      "forecast": null,
+      "rank": "1:a i byn",
+      "simSeated": "0",
+      "roomSeated": "0",
+      "roomGuests": "0"
+    },
+    {
+      "clock": "19.20",
+      "label": "Servicen",
+      "till": "0 kr",
+      "forecast": null,
+      "rank": "1:a i byn",
+      "simSeated": "5",
+      "roomSeated": "2",
+      "roomGuests": "8"
+    },
+    {
+      "clock": "19.55",
+      "label": "Rusning",
+      "till": "285 kr",
+      "forecast": null,
+      "rank": "1:a i byn",
+      "simSeated": "15",
+      "roomSeated": "13",
+      "roomGuests": "16"
+    },
+    {
+      "clock": "20.25",
+      "label": "Rusning",
+      "till": "1 073 kr",
+      "forecast": null,
+      "rank": "1:a i byn",
+      "simSeated": "20",
+      "roomSeated": "18",
+      "roomGuests": "26"
+    },
+    {
+      "clock": "20.55",
+      "label": "Rusning",
+      "till": "4 516 kr",
+      "forecast": null,
+      "rank": "1:a i byn",
+      "simSeated": "19",
+      "roomSeated": "17",
+      "roomGuests": "23"
+    },
+    {
+      "clock": "21.30",
+      "label": "Servicen",
+      "till": "6 685 kr",
+      "forecast": null,
+      "rank": "1:a i byn",
+      "simSeated": "14",
+      "roomSeated": "14",
+      "roomGuests": "15"
+    },
+    {
+      "clock": "22.00",
+      "label": "Servicen",
+      "till": "8 369 kr",
+      "forecast": null,
+      "rank": "1:a i byn",
+      "simSeated": "7",
+      "roomSeated": "7",
+      "roomGuests": "9"
+    },
+    {
+      "clock": "22.35",
+      "label": "Sista beställning",
+      "till": "10 154 kr",
+      "forecast": null,
+      "rank": null,
+      "simSeated": "2",
+      "roomSeated": "2",
+      "roomGuests": "3"
+    }
+  ],
+  "rankBefore": null
+}
