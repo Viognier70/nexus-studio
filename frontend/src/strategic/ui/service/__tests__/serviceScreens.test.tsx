@@ -42,6 +42,7 @@ import { EveningBar } from '../../../scenario/EveningBar';
 import { NoBusinessBox } from '../../../economy/NoBusinessBox';
 import { cellsFor, deltaSteps, pickLessonIndex, rocketCounter, METER_EMPHASIS_MS } from '../serviceView';
 import { stocked } from '../../../testHarness/stocked';
+import { CONSEQUENCE } from '../../../scene/guestMood';
 
 afterEach(() => {
   cleanup();
@@ -144,7 +145,7 @@ describe('ORDER 271 — raketkortet (R1–R3)', () => {
     expect(byTestId(container, 'incident-card')!.getAttribute('data-step')).toBe('1');
   });
 
-  it('R3: fel svar streckas, det rätta fylls, personalen tar över, och kortet stängs efter 2,4 s', () => {
+  it('R3: fel svar streckas, det rätta fylls, personalen tar över, och kortet stängs efter konsekvensögonblicket', () => {
     vi.useFakeTimers();
     const open = openNow(wineBarService(), 'vb09-getosten');
     sim.state = open;
@@ -161,7 +162,12 @@ describe('ORDER 271 — raketkortet (R1–R3)', () => {
     const role = after.incidents.lastOutcome!.takeover!.role;
     const word = strings.service.incident.staffRoles[role];
     expect(byTestId(container, 'incident-band')!.textContent).toContain(strings.rocket.card.wrong(word));
+    // ORDER 299 — kortet står kvar under konsekvensögonblicket (Designs D1: 3,8 s),
+    // med raden som binder ihop svaret med gästens reaktion.
+    expect(byTestId(container, 'consequence-line')).not.toBeNull();
     act(() => { vi.advanceTimersByTime(INCIDENTS.revealSeconds * 1000 + 10); });
+    expect(byTestId(container, 'incident-card')).not.toBeNull();
+    act(() => { vi.advanceTimersByTime((CONSEQUENCE.durationS - INCIDENTS.revealSeconds) * 1000 + 10); });
     expect(byTestId(container, 'incident-card')).toBeNull();
   });
 });

@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import type { PRESETS } from './viewLevels';
 import { useCamera } from './CameraContext';
+import { atRoom } from './roomBounds';
 
 interface Options {
   enabled: boolean;
@@ -9,6 +10,9 @@ interface Options {
 }
 
 // Wheel = zoom (continuous). LMB drag = pan. RMB or MMB drag = rotate.
+// ORDER 299 (Vision Owner 2026-10-03: "Musen drar för att vrida och scrollen
+// zoomar.") — i krogen (roomBounds.ts) vrider vänster knapp och höger knapp
+// panorerar; ute i byn som förut.
 // Q / E = rotate yaw. Escape = outward.
 // Digit dev-presets: 1 village, 2 district, 3 business, 4 myBusiness.
 export function useDesktopControls({ enabled, targetElement, onJumpPreset }: Options) {
@@ -40,7 +44,8 @@ export function useDesktopControls({ enabled, targetElement, onJumpPreset }: Opt
       const dy = event.clientY - lastY;
       lastX = event.clientX;
       lastY = event.clientY;
-      if (dragButton === 0) {
+      const rotateWithLeft = atRoom(camera.targetRef.current);
+      if ((dragButton === 0) !== rotateWithLeft) {
         // pan
         camera.pan(-dx, dy);
       } else {

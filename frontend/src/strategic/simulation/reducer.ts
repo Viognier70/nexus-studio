@@ -293,7 +293,10 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       // ORDER 284 — ett låst svar går inte att byta.
       const lockedPick = state.incidents?.active?.backed ? state.incidents.active.picked : null;
       if (lockedPick && lockedPick !== action.optionId) return state;
-      const draft: SimulationState = { ...state, guests: state.guests.map((g) => ({ ...g })) };
+      // ORDER 299 — dagen kopieras också: svarets följd skriver i day (lagret,
+      // kvällens glas), och React kan lägga om ett svar på köade TICK när spelet
+      // går fort; reducern får då inte ändra det tidigare läget.
+      const draft: SimulationState = { ...state, guests: state.guests.map((g) => ({ ...g })), day: { ...state.day } };
       const credit = resolveIncident(draft, action.optionId, confidence);
       // Ett struket eller okänt svar ändrar ingenting. Ett klarat steg
       // lämnar raketen öppen på nästa steg (ORDER 270, 2026-09-27).
@@ -1467,6 +1470,7 @@ function openService(
     doorsOpenedThisService: false,
     partiesTonight: 0,
     tastingPartiesTonight: 0,
+    consequence: null,
     worldFactors,
     // ORDER 046 §1 — new service opens with a clean collapse slate.
     serviceCollapsed: false,

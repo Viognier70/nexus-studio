@@ -15,6 +15,7 @@ import { reducer } from './reducer';
 import { harnessParams } from '../testHarness/urlParams';
 import { capacityForBusiness } from '../business/businessClass';
 import { TASK_BASE_TICKS } from './economics';
+import { effectiveSpeed } from './consequence';
 
 // ORDER 260 — dev-only tempo-övergång. Skriv om greet/order/serve till
 // förr-ORDER-253-värden (ORDER 251-tempot) när `#playtest=1&tempo=251`.
@@ -167,8 +168,9 @@ export function SimulationProvider({ children, seed = DEFAULT_SEED, startIntrodu
     const start = makeNewGameState(seed);
     return applyDevStartOverride(applyDevFoodtruckSeed(applyDevBusinessOverride(startIntroduction ? beginIntroduction(start) : start)));
   });
-  const speedRef = useRef(state.speed);
-  speedRef.current = state.speed;
+  // ORDER 299 — konsekvensögonblicket går i normal hastighet (consequence.ts).
+  const speedRef = useRef(effectiveSpeed(state));
+  speedRef.current = effectiveSpeed(state);
 
   // ORDER 083 — dev-only hooks for the pitch-probe measurement.
   // Publishes the dispatch and current state on window so a headless

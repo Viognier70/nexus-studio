@@ -1,0 +1,1164 @@
+{
+  "definition": "Vinbaren vecka 2 (mån, ons, fre), frö 1–3, mentorns morgon, raketerna med 0,75 rätt per steg. Rummets läge som mätaren läser det (sim/guestMood.ts roomMoodValue, stableRoomMood) varje tick efter öppning; up/down = byten uppåt/nedåt, afterAnswer = byten inom konsekvensögonblicket efter ett raketsvar, timeShare = andel av kvällen i varje läge. meterUp/meterDown = mätarens synliga rörelser (fyllningen flyttad minst MOOD_BALANCE.meterVisibleSteps steg, meterFill/meterMove), meterAfterAnswer = de inom konsekvensögonblicket (där räcker MOOD_BALANCE.meterVisibleStepsAfterAnswer).",
+  "summary": {
+    "evenings": 9,
+    "meanUp": 0.3,
+    "meanDown": 1.2,
+    "meanAfterAnswer": 0.3,
+    "meanAnswers": 2,
+    "meanMeterUp": 6.4,
+    "meanMeterDown": 7,
+    "meanMeterAfterAnswer": 2.6,
+    "meanTimeShare": {
+      "delighted": 0.009000000000000001,
+      "content": 0.731,
+      "waiting": 0.168,
+      "impatient": 0.092,
+      "displeased": 0.001
+    }
+  },
+  "runs": [
+    {
+      "seed": 1,
+      "weekday": "mon",
+      "answers": 0,
+      "up": 1,
+      "down": 1,
+      "afterAnswer": 0,
+      "meterUp": 8,
+      "meterDown": 5,
+      "meterAfterAnswer": 0,
+      "moves": [
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:24",
+          "dir": "up",
+          "from": 3.49,
+          "to": 3.72,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:56",
+          "dir": "up",
+          "from": 3.72,
+          "to": 3.94,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:26",
+          "dir": "down",
+          "from": 3.94,
+          "to": 3.72,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:02",
+          "dir": "down",
+          "from": 3.72,
+          "to": 3.5,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:39",
+          "dir": "down",
+          "from": 3.5,
+          "to": 3.28,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:44",
+          "dir": "down",
+          "from": 3.28,
+          "to": 3.06,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:55",
+          "dir": "up",
+          "from": 3.06,
+          "to": 3.27,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:05",
+          "dir": "up",
+          "from": 3.27,
+          "to": 3.47,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:16",
+          "dir": "up",
+          "from": 3.47,
+          "to": 3.67,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:26",
+          "dir": "up",
+          "from": 3.67,
+          "to": 4.08,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:40",
+          "dir": "up",
+          "from": 4.08,
+          "to": 4.35,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:48",
+          "dir": "down",
+          "from": 4.35,
+          "to": 3.75,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.08,
+        "content": 0.92,
+        "waiting": 0,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "22:31",
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:48",
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        }
+      ]
+    },
+    {
+      "seed": 2,
+      "weekday": "mon",
+      "answers": 0,
+      "up": 0,
+      "down": 1,
+      "afterAnswer": 0,
+      "meterUp": 6,
+      "meterDown": 4,
+      "meterAfterAnswer": 0,
+      "moves": [
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:42",
+          "dir": "up",
+          "from": 3.49,
+          "to": 3.72,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:29",
+          "dir": "down",
+          "from": 3.72,
+          "to": 3.52,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:36",
+          "dir": "up",
+          "from": 3.52,
+          "to": 3.77,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:46",
+          "dir": "down",
+          "from": 3.77,
+          "to": 3.54,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:20",
+          "dir": "up",
+          "from": 3.54,
+          "to": 3.74,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:36",
+          "dir": "down",
+          "from": 3.74,
+          "to": 3.05,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:45",
+          "dir": "up",
+          "from": 3.05,
+          "to": 3.28,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:49",
+          "dir": "down",
+          "from": 3.28,
+          "to": 2.36,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:58",
+          "dir": "up",
+          "from": 2.36,
+          "to": 2.59,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0,
+        "content": 0.94,
+        "waiting": 0.06,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "22:49",
+          "from": "content",
+          "to": "waiting",
+          "dir": "down",
+          "afterAnswer": false
+        }
+      ]
+    },
+    {
+      "seed": 3,
+      "weekday": "mon",
+      "answers": 0,
+      "up": 0,
+      "down": 1,
+      "afterAnswer": 0,
+      "meterUp": 6,
+      "meterDown": 8,
+      "meterAfterAnswer": 0,
+      "moves": [
+        {
+          "clock": "19:29",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.5,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:46",
+          "dir": "up",
+          "from": 3.5,
+          "to": 3.71,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:44",
+          "dir": "down",
+          "from": 3.71,
+          "to": 3.48,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:18",
+          "dir": "down",
+          "from": 3.48,
+          "to": 3.27,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:50",
+          "dir": "down",
+          "from": 3.27,
+          "to": 3.05,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:56",
+          "dir": "down",
+          "from": 3.05,
+          "to": 2.81,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:13",
+          "dir": "down",
+          "from": 2.81,
+          "to": 2.4,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:14",
+          "dir": "down",
+          "from": 2.4,
+          "to": 2.09,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:20",
+          "dir": "up",
+          "from": 2.09,
+          "to": 2.38,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:21",
+          "dir": "down",
+          "from": 2.38,
+          "to": 1.97,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:24",
+          "dir": "up",
+          "from": 1.97,
+          "to": 2.26,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:35",
+          "dir": "down",
+          "from": 2.26,
+          "to": 1.89,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:43",
+          "dir": "up",
+          "from": 1.89,
+          "to": 2.1,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:52",
+          "dir": "up",
+          "from": 2.1,
+          "to": 2.34,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0,
+        "content": 0.73,
+        "waiting": 0.27,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "21:56",
+          "from": "content",
+          "to": "waiting",
+          "dir": "down",
+          "afterAnswer": false
+        }
+      ]
+    },
+    {
+      "seed": 1,
+      "weekday": "wed",
+      "answers": 1,
+      "up": 0,
+      "down": 2,
+      "afterAnswer": 1,
+      "meterUp": 5,
+      "meterDown": 8,
+      "meterAfterAnswer": 2,
+      "moves": [
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:24",
+          "dir": "up",
+          "from": 3.49,
+          "to": 3.72,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:44",
+          "dir": "up",
+          "from": 3.72,
+          "to": 3.94,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:33",
+          "dir": "down",
+          "from": 3.94,
+          "to": 3.68,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:54",
+          "dir": "down",
+          "from": 3.68,
+          "to": 3.43,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:06",
+          "dir": "down",
+          "from": 3.43,
+          "to": 3.22,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:25",
+          "dir": "down",
+          "from": 3.22,
+          "to": 2.45,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:26",
+          "dir": "down",
+          "from": 2.45,
+          "to": 2.39,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:01",
+          "dir": "up",
+          "from": 2.39,
+          "to": 2.59,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:02",
+          "dir": "down",
+          "from": 2.59,
+          "to": 2.39,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:13",
+          "dir": "up",
+          "from": 2.39,
+          "to": 2.62,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:18",
+          "dir": "down",
+          "from": 2.62,
+          "to": 2.3,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:30",
+          "dir": "down",
+          "from": 2.3,
+          "to": 1.84,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0,
+        "content": 0.67,
+        "waiting": 0.32,
+        "impatient": 0.02,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "21:25",
+          "from": "content",
+          "to": "waiting",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:30",
+          "from": "waiting",
+          "to": "impatient",
+          "dir": "down",
+          "afterAnswer": false
+        }
+      ]
+    },
+    {
+      "seed": 2,
+      "weekday": "wed",
+      "answers": 1,
+      "up": 0,
+      "down": 0,
+      "afterAnswer": 0,
+      "meterUp": 4,
+      "meterDown": 3,
+      "meterAfterAnswer": 2,
+      "moves": [
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:44",
+          "dir": "up",
+          "from": 3.49,
+          "to": 3.7,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:32",
+          "dir": "down",
+          "from": 3.7,
+          "to": 3.36,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:33",
+          "dir": "down",
+          "from": 3.36,
+          "to": 3.31,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:45",
+          "dir": "down",
+          "from": 3.31,
+          "to": 3.09,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:59",
+          "dir": "up",
+          "from": 3.09,
+          "to": 3.4,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:12",
+          "dir": "up",
+          "from": 3.4,
+          "to": 3.75,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0,
+        "content": 1,
+        "waiting": 0,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": []
+    },
+    {
+      "seed": 3,
+      "weekday": "wed",
+      "answers": 3,
+      "up": 0,
+      "down": 1,
+      "afterAnswer": 0,
+      "meterUp": 5,
+      "meterDown": 8,
+      "meterAfterAnswer": 3,
+      "moves": [
+        {
+          "clock": "19:23",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.51,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:30",
+          "dir": "up",
+          "from": 3.51,
+          "to": 3.72,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:29",
+          "dir": "down",
+          "from": 3.72,
+          "to": 3.5,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:36",
+          "dir": "down",
+          "from": 3.5,
+          "to": 3.28,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:32",
+          "dir": "up",
+          "from": 3.28,
+          "to": 3.43,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:32",
+          "dir": "up",
+          "from": 3.43,
+          "to": 3.52,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:32",
+          "dir": "down",
+          "from": 3.52,
+          "to": 3.32,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:55",
+          "dir": "down",
+          "from": 3.32,
+          "to": 3.1,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:00",
+          "dir": "down",
+          "from": 3.1,
+          "to": 2.78,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:24",
+          "dir": "down",
+          "from": 2.78,
+          "to": 2.5,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:36",
+          "dir": "down",
+          "from": 2.5,
+          "to": 1.92,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:44",
+          "dir": "up",
+          "from": 1.92,
+          "to": 2.14,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:55",
+          "dir": "down",
+          "from": 2.14,
+          "to": 1.93,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0,
+        "content": 0.74,
+        "waiting": 0.26,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "22:00",
+          "from": "content",
+          "to": "waiting",
+          "dir": "down",
+          "afterAnswer": false
+        }
+      ]
+    },
+    {
+      "seed": 1,
+      "weekday": "fri",
+      "answers": 2,
+      "up": 1,
+      "down": 1,
+      "afterAnswer": 1,
+      "meterUp": 9,
+      "meterDown": 8,
+      "meterAfterAnswer": 3,
+      "moves": [
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:44",
+          "dir": "up",
+          "from": 3.49,
+          "to": 3.71,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:22",
+          "dir": "down",
+          "from": 3.71,
+          "to": 3.5,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:28",
+          "dir": "down",
+          "from": 3.5,
+          "to": 3.3,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:33",
+          "dir": "down",
+          "from": 3.3,
+          "to": 3.1,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:35",
+          "dir": "down",
+          "from": 3.1,
+          "to": 1.84,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:36",
+          "dir": "down",
+          "from": 1.84,
+          "to": 1.82,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:36",
+          "dir": "up",
+          "from": 1.82,
+          "to": 1.87,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:46",
+          "dir": "down",
+          "from": 1.87,
+          "to": 1.66,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:04",
+          "dir": "down",
+          "from": 1.66,
+          "to": 1.39,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:10",
+          "dir": "up",
+          "from": 1.39,
+          "to": 1.59,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:07",
+          "dir": "up",
+          "from": 1.59,
+          "to": 1.9,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:22",
+          "dir": "up",
+          "from": 1.9,
+          "to": 2.16,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:28",
+          "dir": "up",
+          "from": 2.16,
+          "to": 2.46,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:42",
+          "dir": "up",
+          "from": 2.46,
+          "to": 2.74,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:49",
+          "dir": "up",
+          "from": 2.74,
+          "to": 3.06,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:59",
+          "dir": "down",
+          "from": 3.06,
+          "to": 2.8,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0,
+        "content": 0.38,
+        "waiting": 0.16,
+        "impatient": 0.46,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "20:35",
+          "from": "content",
+          "to": "impatient",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:22",
+          "from": "impatient",
+          "to": "waiting",
+          "dir": "up",
+          "afterAnswer": false
+        }
+      ]
+    },
+    {
+      "seed": 2,
+      "weekday": "fri",
+      "answers": 5,
+      "up": 1,
+      "down": 3,
+      "afterAnswer": 1,
+      "meterUp": 7,
+      "meterDown": 7,
+      "meterAfterAnswer": 6,
+      "moves": [
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:50",
+          "dir": "up",
+          "from": 3.49,
+          "to": 3.72,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:51",
+          "dir": "down",
+          "from": 3.72,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:55",
+          "dir": "down",
+          "from": 3.49,
+          "to": 3.22,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:30",
+          "dir": "down",
+          "from": 3.22,
+          "to": 3.02,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:32",
+          "dir": "up",
+          "from": 3.02,
+          "to": 3.08,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:32",
+          "dir": "up",
+          "from": 3.08,
+          "to": 3.17,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:32",
+          "dir": "down",
+          "from": 3.17,
+          "to": 2.99,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:34",
+          "dir": "down",
+          "from": 2.99,
+          "to": 2.97,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:53",
+          "dir": "down",
+          "from": 2.97,
+          "to": 2.73,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:36",
+          "dir": "down",
+          "from": 2.73,
+          "to": 1.05,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:41",
+          "dir": "up",
+          "from": 1.05,
+          "to": 1.31,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:42",
+          "dir": "up",
+          "from": 1.31,
+          "to": 1.57,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:54",
+          "dir": "up",
+          "from": 1.57,
+          "to": 1.78,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0,
+        "content": 0.43,
+        "waiting": 0.21,
+        "impatient": 0.35,
+        "displeased": 0.01
+      },
+      "changes": [
+        {
+          "clock": "20:46",
+          "from": "content",
+          "to": "waiting",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:36",
+          "from": "waiting",
+          "to": "impatient",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:37",
+          "from": "impatient",
+          "to": "displeased",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:38",
+          "from": "displeased",
+          "to": "impatient",
+          "dir": "up",
+          "afterAnswer": false
+        }
+      ]
+    },
+    {
+      "seed": 3,
+      "weekday": "fri",
+      "answers": 6,
+      "up": 0,
+      "down": 1,
+      "afterAnswer": 0,
+      "meterUp": 8,
+      "meterDown": 12,
+      "meterAfterAnswer": 7,
+      "moves": [
+        {
+          "clock": "19:23",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.51,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:30",
+          "dir": "up",
+          "from": 3.51,
+          "to": 3.73,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:23",
+          "dir": "down",
+          "from": 3.73,
+          "to": 3.5,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:33",
+          "dir": "down",
+          "from": 3.5,
+          "to": 3.26,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:42",
+          "dir": "up",
+          "from": 3.26,
+          "to": 3.31,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:42",
+          "dir": "up",
+          "from": 3.31,
+          "to": 3.41,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:42",
+          "dir": "up",
+          "from": 3.41,
+          "to": 4.12,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:44",
+          "dir": "down",
+          "from": 4.12,
+          "to": 4.05,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:51",
+          "dir": "down",
+          "from": 4.05,
+          "to": 3.85,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:00",
+          "dir": "down",
+          "from": 3.85,
+          "to": 3.63,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:05",
+          "dir": "down",
+          "from": 3.63,
+          "to": 3.42,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:14",
+          "dir": "down",
+          "from": 3.42,
+          "to": 3.19,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:15",
+          "dir": "up",
+          "from": 3.19,
+          "to": 3.3,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:15",
+          "dir": "up",
+          "from": 3.3,
+          "to": 3.42,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:15",
+          "dir": "up",
+          "from": 3.42,
+          "to": 3.58,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:22",
+          "dir": "down",
+          "from": 3.58,
+          "to": 3.37,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:42",
+          "dir": "down",
+          "from": 3.37,
+          "to": 3.17,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:57",
+          "dir": "down",
+          "from": 3.17,
+          "to": 2.91,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:06",
+          "dir": "down",
+          "from": 2.91,
+          "to": 2.63,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:37",
+          "dir": "down",
+          "from": 2.63,
+          "to": 2.35,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0,
+        "content": 0.77,
+        "waiting": 0.23,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "22:06",
+          "from": "content",
+          "to": "waiting",
+          "dir": "down",
+          "afterAnswer": false
+        }
+      ]
+    }
+  ]
+}

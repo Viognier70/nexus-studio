@@ -22,7 +22,8 @@
 //
 // Talen står i `balance.ts` `INCIDENTS`; händelserna i händelsebanken.
 
-import type { Guest, GuestType, KnowledgeAxis, SimulationState, StaffRole, YrkesSpar } from '../strategic/types';
+import type { Guest, GuestType, KnowledgeAxis, RoomReaction, SimulationState, StaffRole, YrkesSpar } from '../strategic/types';
+import { moveWitnesses } from './guestMood';
 import { createRng } from '../strategic/util/rng';
 import { bumpMorale } from '../strategic/simulation/morale';
 import { applyCashDelta, applyCashRevenue, postLedger } from '../strategic/simulation/cashReading';
@@ -669,6 +670,7 @@ function answerConsequence(draft: SimulationState, ctx: IncidentContext, right: 
   let left = 0;
   let amountSek = 0;
   let leftGuestId: string | null = null;
+  let detail: NonNullable<RoomReaction['detail']> = right ? 'more' : 'queue';
   if (right) {
     // ORDER 292 — ett glas till ur lagret, till listans pris; annars en andel av notan.
     const extra = draft.menu.find((m) => m.dishId === ANSWER_EFFECTS.rightExtraDishId);
@@ -676,6 +678,7 @@ function answerConsequence(draft: SimulationState, ctx: IncidentContext, right: 
     if (extra && inStock && table.length > 0) {
       takeFromStock(draft, extra.dishId, draft.simTime);
       amountSek = Math.round(extra.price);
+      detail = 'glass';
     } else {
       const stake = tableStake(draft, ctx.guestIds);
       amountSek = stake ? Math.round(stake.billSek * ANSWER_EFFECTS.rightBillShare) : 0;
@@ -699,6 +702,7 @@ function answerConsequence(draft: SimulationState, ctx: IncidentContext, right: 
     // nästa raket), men bordet beställer mindre.
     const stake = tableStake(draft, ctx.guestIds);
     amountSek = stake ? Math.round(stake.billSek * ANSWER_EFFECTS.wrongBillShare) : 0;
+    detail = 'less';
     for (const g of table) {
       g.billBonus = (g.billBonus ?? 0) + ANSWER_EFFECTS.wrongBillShare;
       g.satisfaction = Math.max(0, g.satisfaction + ANSWER_EFFECTS.wrongSatisfaction);
@@ -711,17 +715,24 @@ function answerConsequence(draft: SimulationState, ctx: IncidentContext, right: 
     goer.order = undefined;
     sendAway(draft, [goer], 1);
     left = 1;
+    detail = 'leaves';
     for (const g of table) if (g.id !== goer.id) g.satisfaction = Math.max(0, g.satisfaction + ANSWER_EFFECTS.wrongSatisfaction);
   } else {
     const queue = draft.guests.filter((g) => g.state === 'waiting' || g.state === 'arriving');
     left = Math.min(queue.length, ANSWER_EFFECTS.wrongGuestsLeave);
     sendAway(draft, queue, left);
   }
+  // ORDER 299 — de som såg svaret blir gladare eller missnöjda (sim/guestMood.ts).
+  const witnessIds = moveWitnesses(draft, table, right);
   const t = strings.answerEffects;
   const text = right ? t.up(ctx.table, guestsIn) : leftGuestId ? t.tableLeaves(ctx.table) : t.down(ctx.table, left);
   const now = draft.simTime;
   const keep = (draft.day.roomReactions ?? []).filter((r) => now - r.at <= ANSWER_EFFECTS.reactionSimSeconds);
-  draft.day = { ...draft.day, roomReactions: [...keep, { at: now, kind: right ? 'up' : 'down', table: ctx.table, guestIds: table.map((g) => g.id), text, amountSek, leftGuestId }] };
+  draft.day = {
+    ...draft.day,
+    roomReactions: [...keep, { at: now, kind: right ? 'up' : 'down', table: ctx.table, guestIds: table.map((g) => g.id), text, amountSek, leftGuestId, detail, guestsIn, left, witnessIds }],
+    consequence: { at: now, kind: right ? 'right' : 'wrong', table: ctx.table, tableGuestIds: table.map((g) => g.id), witnessIds }
+  };
 }
 
 export interface CreditChange { axis: KnowledgeAxis; track: YrkesSpar | null; amount: number }

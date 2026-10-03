@@ -999,6 +999,8 @@ export interface DayState {
   ingredientPaidTonight?: number;
   // ORDER 290 — händelser i rummet efter svaren (över bordet).
   roomReactions?: RoomReaction[];
+  // ORDER 299 — det senaste raketsvarets ögonblick (konsekvensögonblicket).
+  consequence?: ConsequenceMoment | null;
   // ORDER 292 — rusningarna (rush.ts): vågorna som börjat, sällskapen på väg
   // till dörren, aviseringen om den senaste vågen och sällskapet spelaren
   // valt att ge bord först (partyId eller gästens id).
@@ -1051,6 +1053,25 @@ export interface RoomReaction {
   amountSek?: number;
   // ORDER 292 — gästen som gick vid fel svar (den tomma stolen).
   leftGuestId?: string | null;
+  // ORDER 299 — vad som hände, för raden som binder ihop svaret med gästens
+  // reaktion: ett glas till, mer på notan, en gäst går, bordet beställer
+  // mindre, eller gäster i kön går. guestsIn = gästerna som släpptes in.
+  detail?: 'glass' | 'more' | 'leaves' | 'less' | 'queue';
+  guestsIn?: number;
+  left?: number;
+  // ORDER 299 — gästerna som såg svaret (sim/guestMood.ts moveWitnesses).
+  witnessIds?: string[];
+}
+
+// ORDER 299 (Vision Owner 2026-10-03, konsekvensögonblicket; Designs D1 §6):
+// de sekunderna efter ett raketsvar. Spelet går ned till normal hastighet,
+// kameran går in på bordet och gästerna reagerar. `at` är svarets simtid.
+export interface ConsequenceMoment {
+  at: number;
+  kind: 'right' | 'wrong';
+  table: number | null;
+  tableGuestIds: string[];
+  witnessIds: string[];
 }
 
 // ORDER 077 §4 (M4) — supplier, ingredient, and dish domain types.

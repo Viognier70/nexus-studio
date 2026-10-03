@@ -1,6 +1,7 @@
 import { GRAY_BOX_CAMERA } from '../content/grythyttan';
 import { LANDMARK_BY_ID } from '../content/world';
 import type { CameraTarget, ViewLabel } from '../types';
+import { clampToRoom } from './roomBounds';
 
 export interface Preset {
   label: ViewLabel;
@@ -136,7 +137,8 @@ export function labelForDistance(distance: number): ViewLabel {
 }
 
 export function clampTarget(target: CameraTarget): CameraTarget {
-  return {
+  // ORDER 299 — i krogen hålls kameran där väggarna skärs bort (roomBounds.ts).
+  return clampToRoom({
     ...target,
     distance: Math.max(
       GRAY_BOX_CAMERA.minDistance,
@@ -146,5 +148,5 @@ export function clampTarget(target: CameraTarget): CameraTarget {
       GRAY_BOX_CAMERA.pitchMin,
       Math.min(GRAY_BOX_CAMERA.pitchMax, target.pitch)
     )
-  };
+  });
 }
