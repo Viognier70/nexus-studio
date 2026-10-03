@@ -82,7 +82,8 @@ const PLANS: Record<PlayerId, (s: SimulationState) => MorningPlan> = {
   // ORDER 296d (Vision Owner 2026-10-02): "en spelare som siktar på stjärnan:
   // tar paviljongerna mot guld i Teatern och väljer klokt." Som den kloka,
   // och ett prov om morgonen tills guld i Teatern (STAR_PATH).
-  stjarna: (s) => ({ actions: (x) => [...wiseShop(), ...hand(x)], pins: 'wise', exams: nextStarExam(s) }),
+  // ORDER 296e: svarar rätt på varje raketsteg med sannolikheten 0,75 ('skill').
+  stjarna: (s) => ({ actions: (x) => [...wiseShop(), ...hand(x)], pins: 'wise', exams: nextStarExam(s), scenarioAnswer: 'skill' }),
   rimlig: (s) => ({ stock: coverage(s).covers >= bookingFor(s).total * TOP_UP_SHARE ? 'none' : 'base', actions: hand }),
   // ORDER 296b: varannan raket rätt hela vägen ('half' växlade per steg och
   // klarade nästan ingen raket).
@@ -106,7 +107,7 @@ function season(seed: number, player: PlayerId, weeks: number, start: number | n
   // Teatern, och nivån vid varje avräkning.
   let starWeek: number | null = null;
   let goldWeek: number | null = null;
-  const starWeeks: { week: number; held: boolean; reputation: number; judgement: number }[] = [];
+  const starWeeks: { week: number; held: boolean; reputation: number; judgement: number; stepShare: number; rockets: number }[] = [];
   for (let d = 0; d < weeks * 7; d++) {
     const cal = calendarFor(s.day.dayNumber);
     const plan = PLANS[player](s);
@@ -135,7 +136,7 @@ function season(seed: number, player: PlayerId, weeks: number, start: number | n
       weekStartCash = s.cash;
       if (st.star?.earnedNow && starWeek === null) starWeek = st.week;
       if (goldWeek === null && s.medals.gastronomiskateatern === 'guld') goldWeek = st.week;
-      starWeeks.push({ week: st.week, held: !!st.star?.held, reputation: +(st.star?.reputation ?? 0).toFixed(3), judgement: +(st.star?.judgement ?? 0).toFixed(2) });
+      starWeeks.push({ week: st.week, held: !!st.star?.held, reputation: +(st.star?.reputation ?? 0).toFixed(3), judgement: +(st.star?.judgement ?? 0).toFixed(2), stepShare: +(st.star?.stepShare ?? 0).toFixed(2), rockets: st.star?.rockets ?? 0 });
       if (st.closedNow) break;
     }
   }
