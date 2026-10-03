@@ -689,3 +689,5 @@ body:has(.nx-screen) .nx-village-notice, body:has(.nx-rocket) .nx-village-notice
 .nx-open-short-actions .nx-btn { width: auto; }
 /* ORDER 296 — ringens förklaring vid hovring. */
 .nx-ring-tag { padding: 4px 10px; border-radius: 999px; background: rgba(30, 20, 13, 0.92); border: 1px solid rgba(216, 184, 119, 0.55); color: #f4e6cc; font-size: 13px; font-weight: 700; white-space: nowrap; pointer-events: none; }
+/* ORDER 298 — kvällskassans prognos under stapeln (efter insatsens etikett). */
+.nx-till-forecast { display: block; margin-top: calc(26 * var(--nx-u)); font-size: max(11px, calc(14 * var(--nx-u))); font-weight: 700; color: rgba(244,230,204,.85); }

@@ -560,6 +560,24 @@ export const STAR = {
   weeksToEarn: 3
 } as const;
 
+// ORDER 298 (Vision Owner, provspel: "kl. 19.37 med status Rusning var
+// krogen tom och kvällskassan stod på 0 kr"). Gästerna fördelas över hela
+// kvällen (marknadens tak delat på minuterna med öppna dörrar), och bara de
+// som väntar vid dörren när den öppnar (reputation × väder) kommer direkt.
+// Med lågt rykte eller dåligt väder stod ingen där, och första gästen kom
+// efter en halvtimme (reports/order298/kvallen-fore.json). Minst så här
+// många sällskap har bokat till öppningen och står vid dörren.
+//   - Klockans etikett: Rusning när trycket i rummet (de som sitter och kön
+//     mot platserna, sim/incidents.ts roomPressure) är minst rushPressure;
+//     Väntar på gäster när ingen är i rummet; annars Lugnt.
+//   - Kvällskassans prognos visas efter forecastAfterMinutes minuters service.
+export const OPENING = {
+  section: 'Servicen',
+  minPartiesAtDoor: 2,
+  rushPressure: 0.8,
+  forecastAfterMinutes: 30
+} as const;
+
 export const DOWNGRADE = {
   section: 'Ekonomin > Nedgradering',
   consecutiveNegativeDayEnds: 3, // "under minus veckogolvet vid tre dagsavslut i rad"

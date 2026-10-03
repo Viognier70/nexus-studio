@@ -554,6 +554,13 @@ export function WineBarFigures({ room, mood }: Props) {
     }
     if (!cast.group.visible) return;
 
+    // ORDER 298 — det som räknas ska synas: hur många simuleringen har vid
+    // bord, och hur många figurer som sitter i rummet (för mätningen).
+    if (typeof document !== 'undefined') {
+      document.body.dataset.simSeated = String(s.seatedIds.length);
+      document.body.dataset.roomSeated = String(cast.director.guestSamples.filter((x) => x.visible && x.seated).length);
+      document.body.dataset.roomGuests = String(cast.director.guestSamples.filter((x) => x.visible).length);
+    }
     // ORDER 296 — DJ:n bakom båset när satsningen är vald (kockens klipp vid
     // disken tills DJ-klippen finns, som i händelserna). Musiken börjar 21.00:
     // båsets sken pulserar i takten. Under en händelse med egen DJ står hennes.

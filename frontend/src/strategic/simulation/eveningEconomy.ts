@@ -22,7 +22,8 @@
 // samma tal som nästa morgon, bortsett från köksdriften mellan servicerna.
 
 import type { EveningStake, EveningTransfer, SimulationState, StakeKey } from '../types';
-import { EVENING_ECONOMY, SEASON, WEEK } from '../../sim/balance';
+import { EVENING_ECONOMY, INCIDENTS, OPENING, SEASON, SITTING, WEEK } from '../../sim/balance';
+import { clockMinutes, doorsOpenMinutes } from '../../sim/clock';
 import { calendarFor } from '../../sim/calendar';
 import { creditLineSek, dailyInterestSek, dailyWagesSek, dayEndCash, weeklyRentSek } from '../../sim/economy';
 import { activityById } from './activities';
@@ -76,6 +77,21 @@ export function tillSek(state: SimulationState): number {
   const start = state.day.revenueAtServiceStart;
   if (start === null || start === undefined) return state.day.tillAtClose ?? 0;
   return state.revenue - start;
+}
+
+// ORDER 298 — kvällskassans prognos: "I den här takten: X kr", räknad på
+// kvällens tempo hittills (det som betalats och det som beställts men inte
+// betalats än, eftersom gästerna betalar när de går) från dörrarnas öppning,
+// uppskrivet till hela kvällen. Visas först efter OPENING.forecastAfterMinutes.
+const UNPAID: readonly string[] = ['seated', 'ordering', 'dining', 'paying'];
+export function tillForecast(state: SimulationState): number | null {
+  if (state.day.period !== 'dinner' || !state.day.doorsOpenedThisService) return null;
+  const open = doorsOpenMinutes(state);
+  const elapsed = clockMinutes(state) - open;
+  if (elapsed < OPENING.forecastAfterMinutes) return null;
+  const total = SITTING.serviceEndHour * INCIDENTS.minutesPerHour - open;
+  const unpaid = state.guests.reduce((a, g) => a + (UNPAID.includes(g.state) ? g.order?.revenueSek ?? 0 : 0), 0);
+  return Math.round(((tillSek(state) + unpaid) / Math.max(1, elapsed)) * total);
 }
 
 // Raketernas kassa i kväll (kassabokens 'scenario'), som egen rad efter servicen.

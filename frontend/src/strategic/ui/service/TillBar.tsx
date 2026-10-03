@@ -17,7 +17,7 @@ import { strings } from '../../../content/strings';
 import { useLanguage } from '../../../content/language';
 import { EVENING_ECONOMY } from '../../../sim/balance';
 import { useSimState } from '../../simulation/SimulationProvider';
-import { tillSek } from '../../simulation/eveningEconomy';
+import { tillForecast, tillSek } from '../../simulation/eveningEconomy';
 import { formatSek, useCountedNumber } from '../CashCounter';
 import { play } from '../sound/sound';
 
@@ -37,6 +37,7 @@ function TillBarInService() {
   const lang = useLanguage();
   const inService = true;
   const till = tillSek(sim);
+  const forecast = tillForecast(sim);
   const stake = sim.day.stake?.total ?? 0;
   const over = stake > 0 && till >= stake;
   const counted = useCountedNumber('cash', till, formatSek, TICKS);
@@ -119,6 +120,8 @@ function TillBarInService() {
           {stake > 0 && <span className="nx-till-line" style={{ left: `${line * 100}%` }} />}
           {stake > 0 && <span className="nx-till-caption" style={{ left: `${line * 100}%` }}>{tt(lang, 'serviceMode.stake', { n: formatSek(stake) })}</span>}
         </span>
+        {/* ORDER 298 — prognosen på kvällens tempo hittills, efter 30 minuters service. */}
+        {forecast !== null && <span className="nx-till-forecast" data-testid="till-forecast" data-value={forecast}>{tt(lang, 'till.forecast', { n: formatSek(forecast) })}</span>}
       </button>
       {open && s && (
         <div className="nx-paper nx-stake-paper" data-testid="stake-card" role="status">

@@ -8,7 +8,8 @@
 // `clockMinutes`, samma som raketernas klockslag.
 
 import type { SimulationState } from '../strategic/types';
-import { CLOCK, GAME_MINUTES_PER_SIM_SECOND, INCIDENTS, SITTING } from './balance';
+import { CLOCK, GAME_MINUTES_PER_SIM_SECOND, INCIDENTS, OPENING, SITTING } from './balance';
+import { roomPressure } from './incidents';
 import { clockMinutes } from './clock';
 
 export interface ServiceClock {
@@ -52,7 +53,7 @@ export function serviceClock(state: SimulationState): ServiceClock | null {
 // serviceClock): Servicen, Rusning (19.30–21.00), Sista beställning och
 // Stängt; tio halvtimmesrutor där passerade är fyllda och den aktuella
 // fylls från vänster. Den sista rutan har accent hela kvällen.
-export type ClockLabel = 'service' | 'rush' | 'lastOrders' | 'closed';
+export type ClockLabel = 'service' | 'rush' | 'lastOrders' | 'closed' | 'calm' | 'waiting';
 
 export function clockLabel(c: ServiceClock): ClockLabel {
   const since = c.nowMinutes - c.startMinutes;
@@ -67,4 +68,15 @@ export function clockCells(sinceStartMinutes: number): { fill: number; accent: b
     fill: Math.max(0, Math.min(1, (sinceStartMinutes - i * CLOCK.cellMinutes) / CLOCK.cellMinutes)),
     accent: i === CLOCK.cells - 1
   }));
+}
+
+// ORDER 298 — etiketten efter det som händer i rummet, inte bara klockan:
+// Rusning när trycket i rummet är minst OPENING.rushPressure, Väntar på
+// gäster när ingen sitter eller väntar, annars Lugnt. Sista beställning och
+// Stängt följer klockan som förut.
+export function serviceLabel(state: SimulationState, c: ServiceClock): ClockLabel {
+  const l = clockLabel(c);
+  if (l === 'lastOrders' || l === 'closed') return l;
+  if (state.seatedIds.length + state.waitingIds.length === 0) return 'waiting';
+  return roomPressure(state) >= OPENING.rushPressure ? 'rush' : 'calm';
 }

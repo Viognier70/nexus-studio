@@ -699,6 +699,11 @@ function setGuestSeated(state: SimulationState, guest: Guest, seat: number) {
   guest.seatedAtSimTime = state.simTime;
   state.seatedIds.push(guest.id);
   moveGuest(guest, seatSlot(state, seat));
+  // ORDER 298 — det som räknas ska synas: kvällens gäster är de som satt vid ett bord.
+  if (!guest.seatedTonight) {
+    guest.seatedTonight = true;
+    state.day = { ...state.day, seatedTonight: (state.day.seatedTonight ?? 0) + 1 };
+  }
   chefsTableOnSeat(state, guest);
 }
 
