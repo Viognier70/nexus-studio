@@ -1,0 +1,282 @@
+{
+  "errors": [],
+  "morning": {
+    "calmLine": "Lugn kväll: ryktet är ännu lågt i byn",
+    "tastingInGroup": true,
+    "tastingParties": "4 sällskap till i kväll. Fler med medaljer i Stensöta och Kalastorget.",
+    "firstRow": "activity-square-tasting",
+    "bandCalm": "Lugn kväll: ryktet är ännu lågt i byn"
+  },
+  "beforeOpen": {
+    "clock": "18.16",
+    "label": "Förberedelser",
+    "bandState": "before",
+    "calm": "Lugn kväll: ryktet är ännu lågt i byn",
+    "rank": "Byn öppnar 19.05",
+    "simSeated": "0",
+    "roomSeated": "0"
+  },
+  "samples": [
+    {
+      "clock": "18.20",
+      "label": "Förberedelser",
+      "bandState": "before",
+      "calm": "Lugn kväll: ryktet är ännu lågt i byn",
+      "rank": "Byn öppnar 19.05",
+      "simSeated": "0",
+      "roomSeated": "0"
+    },
+    {
+      "clock": "18.30",
+      "label": "Förberedelser",
+      "bandState": "before",
+      "calm": "Lugn kväll: ryktet är ännu lågt i byn",
+      "rank": "Byn öppnar 19.05",
+      "simSeated": "0",
+      "roomSeated": "0"
+    },
+    {
+      "clock": "18.40",
+      "label": "Förberedelser",
+      "bandState": "before",
+      "calm": "Lugn kväll: ryktet är ännu lågt i byn",
+      "rank": "Byn öppnar 19.05",
+      "simSeated": "0",
+      "roomSeated": "0"
+    },
+    {
+      "clock": "18.50",
+      "label": "Förberedelser",
+      "bandState": "before",
+      "calm": "Lugn kväll: ryktet är ännu lågt i byn",
+      "rank": "Byn öppnar 19.05",
+      "simSeated": "0",
+      "roomSeated": "0"
+    },
+    {
+      "clock": "19.00",
+      "label": "Förberedelser",
+      "bandState": "before",
+      "calm": "Lugn kväll: ryktet är ännu lågt i byn",
+      "rank": "Byn öppnar 19.05",
+      "simSeated": "0",
+      "roomSeated": "0"
+    },
+    {
+      "clock": "19.10",
+      "label": "Lugnt",
+      "bandState": "service",
+      "calm": "Lugn kväll: ryktet är ännu lågt i byn",
+      "rank": "1:a i byn",
+      "simSeated": "1",
+      "roomSeated": "0"
+    },
+    {
+      "clock": "19.20",
+      "label": "Lugnt",
+      "bandState": "service",
+      "calm": "Lugn kväll: ryktet är ännu lågt i byn",
+      "rank": "1:a i byn",
+      "simSeated": "5",
+      "roomSeated": "2"
+    },
+    {
+      "clock": "19.30",
+      "label": "Lugnt",
+      "bandState": "service",
+      "calm": "Lugn kväll: ryktet är ännu lågt i byn",
+      "rank": "1:a i byn",
+      "simSeated": "8",
+      "roomSeated": "6"
+    },
+    {
+      "clock": "19.40",
+      "label": "Lugnt",
+      "bandState": "service",
+      "calm": "Lugn kväll: ryktet är ännu lågt i byn",
+      "rank": "1:a i byn",
+      "simSeated": "8",
+      "roomSeated": "8"
+    },
+    {
+      "clock": "19.50",
+      "label": "Lugnt",
+      "bandState": "service",
+      "calm": "Lugn kväll: ryktet är ännu lågt i byn",
+      "rank": "1:a i byn",
+      "simSeated": "9",
+      "roomSeated": "8"
+    },
+    {
+      "clock": "20.00",
+      "label": "Lugnt",
+      "bandState": "service",
+      "calm": "Lugn kväll: ryktet är ännu lågt i byn",
+      "rank": "1:a i byn",
+      "simSeated": "9",
+      "roomSeated": "9"
+    },
+    {
+      "clock": "20.10",
+      "label": "Lugnt",
+      "bandState": "service",
+      "calm": "Lugn kväll: ryktet är ännu lågt i byn",
+      "rank": "1:a i byn",
+      "simSeated": "11",
+      "roomSeated": "10"
+    },
+    {
+      "clock": "20.20",
+      "label": "Lugnt",
+      "bandState": "service",
+      "calm": "Lugn kväll: ryktet är ännu lågt i byn",
+      "rank": "1:a i byn",
+      "simSeated": "13",
+      "roomSeated": "11"
+    },
+    {
+      "clock": "20.30",
+      "label": "Lugnt",
+      "bandState": "service",
+      "calm": "Lugn kväll: ryktet är ännu lågt i byn",
+      "rank": "1:a i byn",
+      "simSeated": "13",
+      "roomSeated": "11"
+    },
+    {
+      "clock": "20.40",
+      "label": "Lugnt",
+      "bandState": "service",
+      "calm": "Lugn kväll: ryktet är ännu lågt i byn",
+      "rank": "1:a i byn",
+      "simSeated": "12",
+      "roomSeated": "12"
+    },
+    {
+      "clock": "20.50",
+      "label": "Lugnt",
+      "bandState": "service",
+      "calm": "Lugn kväll: ryktet är ännu lågt i byn",
+      "rank": "1:a i byn",
+      "simSeated": "13",
+      "roomSeated": "11"
+    },
+    {
+      "clock": "21.00",
+      "label": "Lugnt",
+      "bandState": "service",
+      "calm": "Lugn kväll: ryktet är ännu lågt i byn",
+      "rank": "1:a i byn",
+      "simSeated": "13",
+      "roomSeated": "12"
+    },
+    {
+      "clock": "21.10",
+      "label": "Lugnt",
+      "bandState": "service",
+      "calm": "Lugn kväll: ryktet är ännu lågt i byn",
+      "rank": "1:a i byn",
+      "simSeated": "13",
+      "roomSeated": "12"
+    },
+    {
+      "clock": "21.20",
+      "label": "Lugnt",
+      "bandState": "service",
+      "calm": "Lugn kväll: ryktet är ännu lågt i byn",
+      "rank": "2:a i byn",
+      "simSeated": "13",
+      "roomSeated": "12"
+    },
+    {
+      "clock": "21.30",
+      "label": "Lugnt",
+      "bandState": "service",
+      "calm": "Lugn kväll: ryktet är ännu lågt i byn",
+      "rank": "1:a i byn",
+      "simSeated": "14",
+      "roomSeated": "13"
+    },
+    {
+      "clock": "21.40",
+      "label": "Lugnt",
+      "bandState": "service",
+      "calm": "Lugn kväll: ryktet är ännu lågt i byn",
+      "rank": "2:a i byn",
+      "simSeated": "11",
+      "roomSeated": "11"
+    },
+    {
+      "clock": "21.50",
+      "label": "Lugnt",
+      "bandState": "service",
+      "calm": "Lugn kväll: ryktet är ännu lågt i byn",
+      "rank": "2:a i byn",
+      "simSeated": "10",
+      "roomSeated": "10"
+    },
+    {
+      "clock": "22.00",
+      "label": "Lugnt",
+      "bandState": "service",
+      "calm": "Lugn kväll: ryktet är ännu lågt i byn",
+      "rank": "2:a i byn",
+      "simSeated": "8",
+      "roomSeated": "8"
+    },
+    {
+      "clock": "22.10",
+      "label": "Lugnt",
+      "bandState": "service",
+      "calm": "Lugn kväll: ryktet är ännu lågt i byn",
+      "rank": "2:a i byn",
+      "simSeated": "5",
+      "roomSeated": "5"
+    },
+    {
+      "clock": "22.20",
+      "label": "Lugnt",
+      "bandState": "service",
+      "calm": "Lugn kväll: ryktet är ännu lågt i byn",
+      "rank": "2:a i byn",
+      "simSeated": "4",
+      "roomSeated": "4"
+    },
+    {
+      "clock": "22.30",
+      "label": "Sista beställning",
+      "bandState": "service",
+      "calm": "Lugn kväll: ryktet är ännu lågt i byn",
+      "rank": "3:e i byn",
+      "simSeated": "2",
+      "roomSeated": "2"
+    },
+    {
+      "clock": "22.40",
+      "label": "Sista beställning",
+      "bandState": "service",
+      "calm": "Lugn kväll: ryktet är ännu lågt i byn",
+      "rank": "2:a i byn",
+      "simSeated": "2",
+      "roomSeated": "2"
+    },
+    {
+      "clock": "22.50",
+      "label": "Sista beställning",
+      "bandState": "service",
+      "calm": "Lugn kväll: ryktet är ännu lågt i byn",
+      "rank": "2:a i byn",
+      "simSeated": "3",
+      "roomSeated": "2"
+    },
+    {
+      "clock": "23.40",
+      "label": "Stängt",
+      "bandState": null,
+      "calm": null,
+      "rank": null,
+      "simSeated": "2",
+      "roomSeated": "2"
+    }
+  ]
+}
