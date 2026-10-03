@@ -7,16 +7,18 @@
  */
 
 /* ------------------------------------------------------------------ */
-/* R1–R3 raketkortet: 632 px brett i högerkanten                        */
+/* R1–R3 raketkortet. ORDER 299: smalare och till vänster, under HUD:en  */
+/* (Designs D1 §6: kortet 3,5–32,5 % av bredden, rummet ramas 36–96 %).  */
 /* ------------------------------------------------------------------ */
 
 .nx-rocket {
   position: fixed;
-  /* ORDER 280 — under HUD:ens översta rad (Designs K1/B1: 220). */
-  top: calc(220 * var(--nx-u));
-  right: calc(72 * var(--nx-u));
-  bottom: calc(60 * var(--nx-u));
-  width: calc(632 * var(--nx-u));
+  /* ORDER 299 (Vision Owner: "Minst 50 % av bilden i mitten är rummet")
+     — under klockan, kassan och Byn i kväll, till vänster. */
+  top: max(calc(120 * var(--nx-u)), calc(var(--nx-hud-bottom, 0px) + 12px));
+  left: calc(67 * var(--nx-u));
+  bottom: calc(40 * var(--nx-u));
+  width: calc(557 * var(--nx-u));
   min-width: min(320px, calc(100vw - 32px));
   display: flex;
   flex-direction: column;
@@ -308,19 +310,6 @@
 .nx-back-lock { margin-top: calc(12 * var(--nx-u)); width: 100%; }
 .nx-back-lock[data-ready='false'] { opacity: 0.45; }
 
-/* ORDER 280 — B1 raketen och hur säker du var, till vänster. */
-.nx-back-track { position: fixed; top: calc(220 * var(--nx-u)); left: calc(72 * var(--nx-u)); width: calc(636 * var(--nx-u)); padding: 0; z-index: 34; }
-.nx-back-track-head { display: flex; justify-content: space-between; align-items: baseline; padding: calc(18 * var(--nx-u)) calc(22 * var(--nx-u)); border-bottom: 1px solid var(--nx-rule); }
-.nx-back-track-body { position: relative; padding: calc(14 * var(--nx-u)) calc(22 * var(--nx-u)) calc(14 * var(--nx-u)) calc(120 * var(--nx-u)); }
-.nx-back-track-step { display: flex; justify-content: space-between; align-items: center; min-height: calc(96 * var(--nx-u)); margin-top: calc(10 * var(--nx-u)); padding: calc(10 * var(--nx-u)) calc(18 * var(--nx-u)); border: var(--nx-line) solid var(--nx-rule); color: var(--nx-ink-2); }
-.nx-back-track-step[data-state='cleared'] { background: var(--w-gold); color: var(--w-ink); border-color: var(--w-gold); }
-.nx-back-track-step[data-state='current'] { border: calc(3 * var(--nx-u)) solid var(--nx-accent); color: var(--nx-ink); }
-.nx-back-mult { font-size: calc(44 * var(--nx-u)); font-weight: 800; }
-.nx-back-rocket { position: absolute; left: calc(24 * var(--nx-u)); width: calc(64 * var(--nx-u)); height: calc(64 * var(--nx-u)); padding: calc(12 * var(--nx-u)); background: var(--nx-accent); transition: bottom 700ms cubic-bezier(.2,1.4,.4,1), transform 700ms ease, background 700ms ease; box-sizing: border-box; }
-.nx-back-rocket[data-failed='true'] { transform: rotate(24deg) translateY(calc(44 * var(--nx-u))); background: #8c8784; }
-.nx-back-calib { position: fixed; top: calc(640 * var(--nx-u)); left: calc(72 * var(--nx-u)); width: calc(636 * var(--nx-u)); padding: 0; z-index: 34; }
-.nx-back-calib-row { display: grid; grid-template-columns: calc(130 * var(--nx-u)) minmax(0, 1fr) calc(130 * var(--nx-u)); align-items: center; gap: calc(14 * var(--nx-u)); padding: calc(8 * var(--nx-u)) calc(22 * var(--nx-u)); border-bottom: 1px solid var(--nx-rule); }
-@media (prefers-reduced-motion: reduce) { .nx-back-rocket { transition: none; } }
 
 /* ORDER 280 — S1 sopbilen (Designs leverans kassan och kvällen). */
 .nx-screen.nx-waste-screen { background: rgba(36, 31, 29, 0.55); padding: calc(220 * var(--nx-u)) calc(72 * var(--nx-u)) calc(60 * var(--nx-u)); z-index: 44; }
@@ -430,7 +419,6 @@ body:has(.nx-screen) .nx-hud-tools { display: none; }
 :root { --w-right: #5cb86a; --w-right-glow: rgba(92,184,106,.55); --w-wrong: #e0533f; --w-wrong-glow: rgba(224,83,63,.45); --w-wrong-bg: #e0533f; }
 
 /* ORDER 290 — kunskapspyramiden (Designs WARM_RIGHT_WRONG.floor och .motion). */
-.nx-rocket-pyramid { background: rgba(244,230,204,.05); border-radius: calc(18 * var(--nx-u)); padding: calc(14 * var(--nx-u)) calc(20 * var(--nx-u)); margin-bottom: calc(14 * var(--nx-u)); }
 .nx-pyramid { position: relative; display: flex; align-items: center; gap: calc(26 * var(--nx-u)); }
 .nx-pyramid[data-small='true'] { display: inline-block; }
 .nx-pyr-svg { width: 22vh; height: 18.3vh; max-width: 42%; overflow: visible; }
@@ -691,3 +679,63 @@ body:has(.nx-screen) .nx-village-notice, body:has(.nx-rocket) .nx-village-notice
 .nx-ring-tag { padding: 4px 10px; border-radius: 999px; background: rgba(30, 20, 13, 0.92); border: 1px solid rgba(216, 184, 119, 0.55); color: #f4e6cc; font-size: 13px; font-weight: 700; white-space: nowrap; pointer-events: none; }
 /* ORDER 298 — kvällskassans prognos under stapeln (efter insatsens etikett). */
 .nx-till-forecast { display: block; margin-top: calc(26 * var(--nx-u)); font-size: max(11px, calc(14 * var(--nx-u))); font-weight: 700; color: rgba(244,230,204,.85); }
+
+/* ORDER 299 — pyramiden som en smal list: våningarna, multiplikatorerna och
+   säkerheten på en rad. */
+.nx-pyr-strip { display: flex; align-items: center; gap: calc(12 * var(--nx-u)); padding: calc(8 * var(--nx-u)) calc(14 * var(--nx-u)); margin: calc(10 * var(--nx-u)) 0; background: rgba(244,230,204,.05); border-radius: calc(14 * var(--nx-u)); min-height: 32px; }
+.nx-pyr-strip .nx-pyramid[data-small='true'] .nx-pyr-svg { width: calc(40 * var(--nx-u)); min-width: 26px; }
+.nx-pyr-chips { list-style: none; display: flex; flex-wrap: wrap; gap: calc(6 * var(--nx-u)) calc(12 * var(--nx-u)); margin: 0; padding: 0; flex: 1; min-width: 0; }
+.nx-pyr-chip { display: inline-flex; align-items: center; gap: calc(6 * var(--nx-u)); font-size: max(11px, calc(17 * var(--nx-u))); color: var(--w-cream); white-space: nowrap; }
+.nx-pyr-chip[data-state='above'], .nx-pyr-chip[data-state='empty'] { opacity: .55; }
+.nx-pyr-chip[data-state='current'] { font-weight: 800; }
+.nx-pyr-chip[data-state='filled'] .nx-pyr-dot { background: #5cb86a; border-color: #5cb86a; }
+.nx-pyr-chip[data-state='cracked'] .nx-pyr-dot { background: #e0533f; border-color: #e0533f; }
+.nx-pyr-chip[data-state='current'] .nx-pyr-dot { border-color: #ffd58f; }
+.nx-pyr-chip[data-state='gold'] .nx-pyr-dot { background: #e8b93a; border-color: #e8b93a; }
+.nx-pyr-chip .nx-pyr-mult { margin-left: 0; }
+.nx-pyr-sure { margin-left: auto; padding: calc(4 * var(--nx-u)) calc(12 * var(--nx-u)); border-radius: 999px; border: 1px solid rgba(232,185,58,.5); color: var(--w-gold); font-size: max(11px, calc(16 * var(--nx-u))); font-weight: 800; white-space: nowrap; }
+
+/* ORDER 299 — under raketen syns rummet: kön, händelserna, flikarna och
+   bemanningens erbjudande viker undan så länge kortet står. */
+body:has(.nx-rocket) .nx-feed,
+body:has(.nx-rocket) .nx-queue,
+body:has(.nx-rocket) .nx-agency,
+body:has(.nx-rocket) .nx-tabs,
+body:has(.nx-rocket) .nx-tab-dock { display: none; }
+
+/* ORDER 299 — raden som binder ihop svaret med gästens reaktion. */
+.nx-rocket-link { margin: calc(6 * var(--nx-u)) 0 0; font-size: max(12px, calc(20 * var(--nx-u))); line-height: 1.3; font-weight: 700; }
+
+/* ORDER 299 — notiserna: en per händelse, 3 s, högst tre, i rummets fria del. */
+.nx-room-notices { position: fixed; left: 66%; bottom: max(calc(150 * var(--nx-u)), 110px); transform: translateX(-50%); display: flex; flex-direction: column-reverse; align-items: center; gap: calc(8 * var(--nx-u)); z-index: 47; pointer-events: none; max-width: min(calc(560 * var(--nx-u)), 56vw); }
+.nx-room-notice { white-space: normal; text-align: center; transition: opacity 0.4s ease; }
+.nx-room-notice[data-fading='true'] { opacity: 0; }
+
+/* ORDER 299 — kamerans knappar bredvid nivåerna, i den varma formen. */
+.nx-cam-buttons { display: flex; gap: calc(4 * var(--nx-u)); padding: calc(4 * var(--nx-u)); border-radius: 999px; background: var(--w-hud, rgba(36,24,16,.86)); border: 1px solid var(--w-hud-border, rgba(216,184,119,.45)); box-shadow: var(--w-shadow-hud, none); pointer-events: auto; }
+.nx-cam-btn { display: inline-flex; align-items: center; justify-content: center; width: max(36px, calc(52 * var(--nx-u))); height: max(36px, calc(52 * var(--nx-u))); border-radius: 999px; border: 0; background: transparent; color: var(--w-cream, #f4e6cc); cursor: pointer; }
+.nx-cam-btn:hover { background: rgba(232,185,58,.16); color: var(--w-gold, #e8b93a); }
+.nx-cam-btn:focus-visible { outline: 2px solid var(--w-gold, #e8b93a); outline-offset: 2px; }
+
+/* ORDER 299 — under raketen står bara Stämningen i rummet kvar i bandet
+   (platsen, ryktet och Lugn kväll viker undan), så att kortet börjar högre. */
+body:has(.nx-rocket) .nx-rival-head,
+body:has(.nx-rocket) .nx-rival-calm { display: none; }
+body:has(.nx-rocket) .nx-mood-meter { margin-top: 0; padding-top: 0; border-top: 0; }
+
+/* ORDER 299 — det smalare kortet på låga skärmar (1280 × 720): berättelsen
+   högst tre rader och svaren lite tätare, så att frågan och svaren ryms. */
+@media (max-height: 800px) {
+  .nx-rocket { padding: calc(24 * var(--nx-u)) calc(26 * var(--nx-u)) 0; }
+  .nx-rocket-story { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; flex-shrink: 0; }
+  .nx-rocket-option { min-height: 40px; margin-bottom: 6px; padding: 4px calc(14 * var(--nx-u)); }
+  .nx-rocket-ask { margin-top: calc(10 * var(--nx-u)); }
+  .nx-rocket-bar { margin: calc(8 * var(--nx-u)) 0 calc(10 * var(--nx-u)); }
+}
+/* ORDER 299 — under raketen står mätaren på en rad (etiketten, läget och
+   spåret), så att kortet får plats för alla fyra svar också i 1280 × 720. */
+body:has(.nx-rocket) .nx-mood-meter { grid-template-columns: auto auto minmax(120px, 1fr); align-items: center; column-gap: calc(18 * var(--nx-u)); }
+body:has(.nx-rocket) .nx-mood-word { font-size: max(14px, calc(24 * var(--nx-u))); }
+@media (max-height: 760px) {
+  .nx-rocket-story { -webkit-line-clamp: 2; }
+}

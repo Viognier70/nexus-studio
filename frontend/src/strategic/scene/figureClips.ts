@@ -45,6 +45,8 @@ export type Stance = 'stand' | 'seated' | 'walk' | 'hurt';
 export type Needs = 'floor' | 'chair' | 'stool' | 'lounge' | 'table' | 'bar' | 'pass' | 'station' | 'sink' | 'desk' | 'wheelchair';
 /** Sittplatsens sort. Vinbarens 'bar' är 'stool' och 'twotop' är 'chair' (seatKindFromRoom). */
 export type SeatKind = 'chair' | 'stool' | 'lounge';
+/** Stämningen ett klipp uttrycker (guestMood.ts). Leverans 2026-10-03. */
+export type MoodId = 'delighted' | 'content' | 'waiting' | 'impatient' | 'displeased';
 export type ClipEventType =
   | 'grab' | 'release' | 'give' | 'switch' | 'stack'
   | 'clink' | 'cork' | 'plated' | 'bell' | 'pay' | 'cut'
@@ -120,6 +122,8 @@ export interface ClipSpec {
   chair?: (u: number) => number;
   /** Sittplatsen klippet är författat för. Saknas = stol. Klipp med egen sort läggs inte om. */
   seatKind?: SeatKind;
+  /** Stämningsgesterna: vilken stämning klippet visar. Tempot är styrkan: lugn = antydd, stressad = tydlig. */
+  mood?: MoodId;
 }
 
 export interface ClipSample {
@@ -1939,6 +1943,166 @@ reg(def({
     return keys(u, [[0, STAND], [0.25, up], [0.42, P(STAND, { armL: A(0.5, 0.1, 1.3), armR: A(0.5, 0.1, 1.3) })], [0.62, sleeves], [0.8, P(STAND, { lift: 0.015, torso: { pitch: -0.04 }, armL: A(0.4, 0.05, 1.4), armR: A(0.4, 0.05, 1.4) })], [1, STAND]]);
   }
 }));
+
+// ----- stämningen (leverans 2026-10-03) -----
+// Åtta gester för gästens stämning, sittande på stol, barstol och lounge (reseat). Tempot är styrkan:
+// c.stress 0 (lugn) ger en antydan, 1 (stressad) en gest som läses från 24 m. Stämningen läses på armarna,
+// höjden och bålens lutning. Ansiktet (figureFace.ts) syns först när kameran är närmare än 9 m.
+
+const ARMS_X: PoseArm = A(0.32, -0.28, 1.9);
+function moodK(c: ClipCtx): number { return 0.75 + 0.5 * (c.stress ?? 0.3); }
+
+reg(def({
+  id: 'guest.leanCurious', group: 'guest', roles: ['guest'], loop: false, travel: false, base: 3.2, mood: 'content',
+  from: 'seated', to: 'seated', needs: 'chair', holds: {}, ends: {}, events: [],
+  next: ['guest.nodApprove', 'guest.laugh', 'guest.seatedIdle', 'guest.lean'],
+  pose: function (u, c) {
+    // Lutar sig fram mot det som händer, underarmarna mot knäna, huvudet upp och lite på sned.
+    const k = moodK(c), lean = win(u, 0.1, 0.88, 0.2), tip = bell(u, 0.52, 0.14);
+    const b = base(c, true);
+    return breathe(withYaw(P(b, {
+      torso: { pitch: 0.06 + 0.34 * k * lean },
+      head: { pitch: 0.06 - 0.24 * lean },
+      armL: blendArm(A(0.78, 0.1, 0.95), A(0.95, 0.16, 1.7), lean), armR: blendArm(A(0.78, 0.1, 0.95), A(0.95, 0.12, 1.7), lean)
+    }), (c.yaw ?? 0) * 0.35 * lean, (c.yaw ?? 0) * 0.8 * lean + 0.14 * tip), c.t ?? 0);
+  }
+}));
+
+reg(def({
+  id: 'guest.laugh', group: 'guest', roles: ['guest'], loop: false, travel: false, base: 2.4, mood: 'delighted',
+  from: 'seated', to: 'seated', needs: 'chair', holds: {}, ends: {}, events: [],
+  next: ['guest.seatedIdle', 'guest.gesture', 'guest.cheers', 'guest.lean'],
+  pose: function (u, c) {
+    // Huvudet bakåt, axlarna som studsar, en hand mot bröstet. Sedan framåt, nästan dubbelvikt, och tillbaka.
+    const k = moodK(c), a = win(u, 0.05, 0.92, 0.12), back = a * (1 - ramp(u, 0.5, 0.62)), fold = bell(u, 0.66, 0.11);
+    const ha = Math.sin(u * TAU * 5) * a;
+    const b = base(c, true);
+    return withYaw(P(b, {
+      lift: 0.012 * k * ha,
+      torso: { pitch: 0.06 - 0.2 * k * back + 0.3 * k * fold + 0.03 * ha },
+      head: { pitch: 0.06 - 0.42 * k * back + 0.18 * fold },
+      armR: A(0.78 + 0.45 * a, 0.1, 0.95 + 1.0 * a),
+      armL: A(0.78 + 0.25 * fold, 0.1 + 0.2 * fold, 0.95 - 0.3 * fold)
+    }), (c.yaw ?? 0) * 0.3, (c.yaw ?? 0) * 0.7 * (1 - back));
+  }
+}));
+
+reg(def({
+  id: 'guest.cheers', group: 'guest', roles: ['guest'], loop: false, travel: false, handed: true, base: 3.4, mood: 'delighted',
+  from: 'seated', to: 'seated', needs: 'table', holds: {}, ends: {},
+  events: [{ u: 0.1, type: 'grab', hand: 'R', at: 'table' }, { u: 0.48, type: 'clink' }, { u: 0.9, type: 'release', hand: 'R', at: 'table' }],
+  next: ['guest.seatedIdle', 'guest.laugh', 'guest.gesture'],
+  pose: function (u, c) {
+    // Skålen med hela bordet: glaset över huvudhöjd, mot bordets mitt, och ingen klunk. guest.toast är skålen och klunken.
+    const k = moodK(c), b = base(c, true), hi = 1.9 + 0.45 * (k - 0.75) * 2;
+    const jig = 0.05 * Math.sin(u * TAU * 6) * win(u, 0.4, 0.62, 0.04);
+    const up = P(b, { torso: { pitch: 0.16 }, head: { pitch: -0.3 }, armR: A(hi, 0.14 + jig, 0.35), armL: A(0.9, 0.18, 1.0) });
+    const toward = (c.yaw ?? 0) * win(u, 0.15, 0.8, 0.12);
+    return withYaw(keys(u, [
+      [0, b],
+      [0.14, P(b, { armR: A(0.85, 0.1, 0.9) })],
+      [0.38, up], [0.6, up],
+      [0.74, P(b, { torso: { pitch: 0.08 }, armR: A(1.3, 0.1, 0.8) })],
+      [0.88, P(b, { armR: A(0.8, 0.1, 0.92) })],
+      [1, b]
+    ]), toward * 0.4, toward * 0.6);
+  }
+}));
+
+reg(def({
+  id: 'guest.nodApprove', group: 'guest', roles: ['guest'], loop: false, travel: false, base: 2.2, mood: 'content',
+  from: 'seated', to: 'seated', needs: 'chair', holds: {}, ends: {}, events: [],
+  next: ['guest.seatedIdle', 'guest.leanCurious', 'guest.gesture', 'guest.cheers'],
+  pose: function (u, c) {
+    // Två långsamma nickar mot den som gjorde något, med handflatan öppen åt hen.
+    const k = moodK(c), nod = 0.3 * k * (bell(u, 0.3, 0.075) + bell(u, 0.56, 0.075)), palm = win(u, 0.14, 0.82, 0.14);
+    const b = base(c, true);
+    return breathe(withYaw(P(b, {
+      torso: { pitch: 0.06 + 0.06 * palm }, head: { pitch: 0.04 + nod },
+      armR: A(0.78 + 0.18 * palm, 0.1 + 0.26 * palm, 0.95 - 0.3 * palm)
+    }), (c.yaw ?? 0) * 0.3 * palm, (c.yaw ?? 0) * 0.85), c.t ?? 0);
+  }
+}));
+
+reg(def({
+  id: 'guest.armsCrossed', group: 'guest', roles: ['guest'], loop: true, travel: false, base: 4, mood: 'displeased',
+  from: 'seated', to: 'seated', needs: 'chair', holds: {}, ends: {}, events: [],
+  next: ['guest.armsCrossed', 'guest.checkWatch', 'guest.waveWaiter', 'guest.seatedIdle', 'guest.pushPlate'],
+  pose: function (u, c) {
+    // Armarna i kors, bålen tillbaka från bordet och blicken bort från det som stör. En suck per varv.
+    const k = moodK(c), sigh = bell(u, 0.62, 0.08), s = Math.sin(u * TAU);
+    const b = base(c, true);
+    return withYaw(P(b, {
+      lift: 0.01 * sigh,
+      torso: { pitch: 0.02 - 0.12 * k + 0.03 * s, roll: 0.04 * s },
+      head: { pitch: 0.1 + 0.08 * sigh },
+      armL: ARMS_X, armR: ARMS_X
+    }), -(c.yaw ?? 0) * 0.1, -(c.yaw ?? 0) * 0.45 * k);
+  }
+}));
+
+reg(def({
+  id: 'guest.checkWatch', group: 'guest', roles: ['guest'], loop: false, travel: false, base: 2.6, mood: 'waiting',
+  from: 'seated', to: 'seated', needs: 'chair', holds: {}, ends: {}, events: [],
+  next: ['guest.seatedIdle', 'guest.armsCrossed', 'guest.waveWaiter', 'guest.checkWatch'],
+  pose: function (u, c) {
+    // Vänster handled upp, blicken ned på klockan och sedan ut i rummet efter personalen.
+    const k = moodK(c), watch = win(u, 0.1, 0.62, 0.12), look = win(u, 0.6, 0.96, 0.1);
+    const b = base(c, true);
+    return withYaw(P(b, {
+      lift: 0.008 * k * look,
+      torso: { pitch: 0.06 + 0.06 * watch },
+      head: { pitch: 0.06 + 0.44 * watch - 0.06 * look },
+      armL: blendArm(A(0.78, 0.1, 0.95), A(0.62, 0.0, 1.95), watch)
+    }), (c.yaw ?? 0) * 0.3 * look * k, (c.yaw ?? 0) * 0.9 * look);
+  }
+}));
+
+reg(def({
+  id: 'guest.waveWaiter', group: 'guest', roles: ['guest'], loop: false, travel: false, handed: true, base: 2.8, mood: 'impatient',
+  from: 'seated', to: 'seated', needs: 'chair', holds: {}, ends: {}, events: [],
+  next: ['guest.seatedIdle', 'guest.armsCrossed', 'guest.pay', 'guest.waveWaiter'],
+  pose: function (u, c) {
+    // Inte guest.waveStaff (fingret upp, vi vill beställa): armen rakt upp, halvvägs upp från sitsen, stora svep.
+    const k = moodK(c), up = win(u, 0.08, 0.9, 0.1), wv = Math.sin(u * TAU * 5) * win(u, 0.2, 0.8, 0.06);
+    const b = base(c, true);
+    return withYaw(P(b, {
+      lift: 0.05 * k * up,
+      torso: { pitch: 0.02 - 0.04 * up, roll: -0.1 * k * up },
+      head: { pitch: 0.02 - 0.12 * up },
+      armR: A(0.78 + (1.6 + 0.5 * (k - 0.75) * 2) * up, 0.1 + 0.14 * up + 0.24 * k * wv, 0.95 - 0.7 * up),
+      armL: A(0.78 + 0.1 * up, 0.12 + 0.06 * up, 0.95 - 0.4 * up)
+    }), (c.yaw ?? 0) * 0.35 * up, (c.yaw ?? 0) * 0.9 * up);
+  }
+}));
+
+reg(def({
+  id: 'guest.pushPlate', group: 'guest', roles: ['guest'], loop: false, travel: false, handed: true, base: 3, mood: 'displeased',
+  from: 'seated', to: 'seated', needs: 'table', holds: {}, ends: {},
+  events: [{ u: 0.22, type: 'grab', hand: 'R', at: 'table' }, { u: 0.5, type: 'release', hand: 'R', at: 'table' }],
+  next: ['guest.armsCrossed', 'guest.seatedIdle', 'guest.waveWaiter'],
+  pose: function (u, c) {
+    // Handen på tallrikens kant, en raksträckt arm som skjuter den ifrån sig, och sedan armarna i kors.
+    const k = moodK(c), b = base(c, true);
+    const crossed = P(b, { torso: { pitch: -0.1 * k }, head: { pitch: 0.12 }, armL: ARMS_X, armR: ARMS_X });
+    return keys(u, [
+      [0, b],
+      [0.2, P(b, { torso: { pitch: 0.16 }, head: { pitch: 0.3 }, armR: A(0.78, 0.08, 1.0) })],
+      [0.48, P(b, { torso: { pitch: 0.12 + 0.1 * k }, head: { pitch: 0.2 }, armR: A(1.12, 0.08, 0.28) })],
+      [0.62, P(b, { torso: { pitch: 0.0 }, armR: A(0.9, 0.1, 0.8) })],
+      [0.8, crossed], [1, crossed]
+    ]);
+  }
+}));
+
+/** Gesterna per stämning, i den ordning sim-lagret väljer dem. Sittande; stående i kön har egna klipp. */
+export const MOOD_GESTURES: Record<MoodId, string[]> = {
+  delighted: ['guest.laugh', 'guest.cheers'],
+  content: ['guest.nodApprove', 'guest.leanCurious'],
+  waiting: ['guest.checkWatch'],
+  impatient: ['guest.waveWaiter', 'guest.checkWatch'],
+  displeased: ['guest.armsCrossed', 'guest.pushPlate']
+};
 
 function blendArm(a: PoseArm, b: PoseArm, k: number): PoseArm {
   const m = function (x: number | undefined, y: number | undefined) { return (x ?? 0) + ((y ?? 0) - (x ?? 0)) * k; };

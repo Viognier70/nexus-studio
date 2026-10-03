@@ -11,9 +11,10 @@ import { CATALOGUE, createProp, measureProp } from '../tableware';
 
 describe('ORDER 286a — leveransens kontroller', () => {
   // ORDER 293 — leverans 3 (38 klipp och guest.showIdSeated) och vardagens
-  // koreografi (21 klipp, guest.wheelRoll m.fl.): 107 klipp.
-  it('107 klipp (till och med vardagens koreografi), och varje efterföljare finns och passar', () => {
-    expect(Object.keys(CLIPS)).toHaveLength(107);
+  // koreografi (21 klipp, guest.wheelRoll m.fl.): 107 klipp. ORDER 299 —
+  // Designs D1 (stämningen) lägger till åtta gester: 115.
+  it('115 klipp (till och med stämningens gester), och varje efterföljare finns och passar', () => {
+    expect(Object.keys(CLIPS)).toHaveLength(115);
     expect(validateClips()).toEqual([]);
   });
 

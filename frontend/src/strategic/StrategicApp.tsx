@@ -40,7 +40,6 @@ import { AboutPanel } from './ui/AboutPanel';
 import { ControlsHint } from './ui/ControlsHint';
 import { DevPanel } from './ui/DevPanel';
 import { EventsPanel } from './ui/service/EventsPanel';
-import { BackPanels } from './scenario/BackPanels';
 import { primeStreamAudio } from './ui/streamArrivalCue';
 import { OutwardButton } from './ui/OutwardButton';
 import { SpeedToggle } from './ui/SpeedToggle';
@@ -55,6 +54,10 @@ import { ServiceClock } from './ui/service/ServiceClock';
 import { CashCounter } from './ui/CashCounter';
 import { MorningBuyScreen } from './business/MorningBuyScreen';
 import { useLanguage } from '../content/language';
+import { RoomNotices } from './ui/service/RoomNotices';
+import { CameraButtons } from './ui/CameraButtons';
+import { RoomCameraBounds } from './camera/RoomCameraBounds';
+import { HudBottom } from './ui/service/HudBottom';
 
 interface StrategicAppProps {
   // ORDER 267 — spelaren kommer från bussen (VS001): introduktionen börjar.
@@ -312,6 +315,8 @@ function StrategicShell() {
       {/* ORDER 288 — fyra nivåer med egna knappar och tangenter (byn och
           tillbaka med V som i ORDER 290), och byns aviseringar. */}
       <div className="nx-hud-tools">
+        {/* ORDER 299 — kamerans knappar (vrid, zooma, återställ). */}
+        <CameraButtons />
         <LevelBar />
       </div>
       <VillageNotice />
@@ -333,7 +338,6 @@ function StrategicShell() {
       <ScenarioOverlay />
       {/* ORDER 280 — händelserna i högerkanten (Designs H1), med Back your knowledge. */}
       <EventsPanel mode="back" />
-      <BackPanels />
       <DayActionBar
         onOpenHouse={() => setHouseOpen(true)}
         onOpenBank={() => setBankOpen(true)}
@@ -364,6 +368,10 @@ function StrategicShell() {
       {/* ORDER 290 — kameran till krogen när servicen och raketen börjar. */}
       <ServiceCamera />
       <IncidentCard />
+      {/* ORDER 299 — svarens händelser som notiser i rummets fria del. */}
+      <RoomNotices />
+      <RoomCameraBounds />
+      <HudBottom />
       <MaltidensHusDialog open={houseOpen} onClose={() => setHouseOpen(false)} />
       {/* ORDER 271 — mentorn (M1/M2) inne i .gb-root, så att banken, huset och tidningen ligger över den. */}
       <MentorPanel />

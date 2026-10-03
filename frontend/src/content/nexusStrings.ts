@@ -40,6 +40,8 @@ import { STAFF_RING_STRINGS } from './design/staffRingStrings';
 import { EVENT_STRINGS } from './design/eventStrings';
 import { THEATRE_STRINGS } from './design/theatreStrings';
 import { EVERYDAY_STRINGS } from './design/everydayStrings';
+// ORDER 299 — Designs leverans D1 (stämningen), oförändrad.
+import { MOOD_STRINGS } from './design/moodStrings';
 
 export type Lang = 'sv' | 'en';
 // ORDER 289 — singular eller plural efter antalet ("1 bottles" skulle vara
@@ -297,6 +299,27 @@ export const STRINGS = {
   // ORDER 298b — när ryktet håller nere gästerna (arrivals.ts reputationHoldsGuests),
   // och provsmakningens sällskap med spelarens medaljer.
   'calm.evening': { sv: 'Lugn kväll: ryktet är ännu lågt i byn', en: 'A quiet evening: your name is still small in the village' },
+  // ORDER 299 — kamerans knappar.
+  'cam.group': { sv: 'Kameran', en: 'Camera' },
+  'cam.left': { sv: 'Vrid åt vänster (Q)', en: 'Turn left (Q)' },
+  'cam.right': { sv: 'Vrid åt höger (E)', en: 'Turn right (E)' },
+  'cam.in': { sv: 'Zooma in', en: 'Zoom in' },
+  'cam.out': { sv: 'Zooma ut', en: 'Zoom out' },
+  'cam.reset': { sv: 'Återställ kameran', en: 'Reset the camera' },
+  // ORDER 299 — raden som binder ihop svaret med gästens reaktion (konsekvensögonblicket).
+  'consequence.line': { sv: 'Du valde {choice} → {reaction}', en: 'You chose {choice} → {reaction}' },
+  'consequence.timeout': { sv: 'Tiden gick ut → {reaction}', en: 'Time ran out → {reaction}' },
+  'consequence.glass': { sv: 'bord {t} beställer ett glas till', en: 'table {t} orders another glass' },
+  'consequence.more': { sv: 'bord {t} beställer mer', en: 'table {t} orders more' },
+  'consequence.moreRoom': { sv: 'gästerna nickar', en: 'the guests nod' },
+  'consequence.leaves': { sv: 'en gäst vid bord {t} går utan att betala', en: 'a guest at table {t} leaves without paying' },
+  'consequence.less': { sv: 'bord {t} beställer mindre', en: 'table {t} orders less' },
+  'consequence.queue': { sv: '{n} i kön går', en: '{n} in the queue leave' },
+  'consequence.queueStays': { sv: 'kön väntar kvar', en: 'the queue waits on' },
+  'consequence.in': { sv: '{n} ny gäst in', en: '{n} new guest comes in' },
+  'consequence.inMany': { sv: '{n} nya gäster in', en: '{n} new guests come in' },
+  'consequence.witnessUp': { sv: 'grannarna nickar', en: 'the neighbours nod' },
+  'consequence.witnessDown': { sv: 'grannarna suckar', en: 'the neighbours sigh' },
   'tasting.parties': { sv: '{n} sällskap till i kväll. Fler med medaljer i Stensöta och Kalastorget.', en: '{n} more parties tonight. More with medals in Stensöta and Kalastorget.' },
   // ORDER 298 — kvällskassans prognos.
   'till.forecast': { sv: 'I den här takten: {n}', en: 'At this pace: {n}' },
@@ -404,7 +427,8 @@ export const STRINGS = {
   // koreografi, inslagna oförändrade.
   ...THEATRE_STRINGS,
   ...EVENT_STRINGS,
-  ...EVERYDAY_STRINGS
+  ...EVERYDAY_STRINGS,
+  ...MOOD_STRINGS
 } satisfies Record<string, Entry>;
 
 export type StringKey = keyof typeof STRINGS;

@@ -42,7 +42,7 @@ export function PrepPanel() {
   if (!businessHasMiseEnPlace(sim.businessClass)) return null;
   const inService = sim.day.period === 'lunch' || sim.day.period === 'dinner';
   if (!inService || !panelOpen(drawer, 'stock')) return null;
-  // ORDER 280 — under en egen raket står raketen här (BackPanels).
+  // ORDER 280 — under en egen raket stod raketen här (BackPanels, borttagen i ORDER 299).
   if (sim.incidents?.active?.backed) return null;
   const readiness = sim.day.prepReadiness;
   if (!readiness || Object.keys(readiness).length === 0) return null;

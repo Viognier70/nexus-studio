@@ -625,6 +625,37 @@ export const TASTING = {
   pavilions: ['stensota', 'kalastorget'] as readonly ('stensota' | 'kalastorget')[]
 } as const;
 
+// ORDER 299 (Vision Owner 2026-10-03, Designs leverans D1 §5 och §7):
+// gästernas stämning. Värdet är gästens nöjdhet 0..1 (Guest.satisfaction);
+// läget kommer ur gränserna nedan (under gränsen gäller nästa läge, sämst
+// missnöjd). Gränserna är satta mot en vanlig kväll (vecka 2, mån/ons/fre):
+// gästerna ligger i median på 0,72 (startvärdet), 10 % under 0,48 och 10 %
+// över 0,87. En ny gäst är därför nöjd; glad är samma gräns som rummets glada
+// gäster (reputation.ts HAPPY_THRESHOLD).
+//   - rocket: ett raketsvar flyttar de gäster som såg det, inom
+//     witnessRadiusM från bordet: gain vid rätt, loss vid fel (bordet självt
+//     får svarets följd som förut, sim/incidents.ts answerConsequence).
+//   - decayPerGameMinute: väntan i kön utan att någon kommer (förut
+//     service.ts WAITING_SAT_DROP_PER_SEC = 0,007 per simsekund, oförändrad).
+//   - Rummets mätare är medelvärdet per sällskap.
+export const MOOD_BALANCE = {
+  section: 'Servicen > Gästerna',
+  threshold: { delighted: 0.85, content: 0.68, waiting: 0.55, impatient: 0.4 },
+  rocket: { gain: 0.06, loss: 0.08, witnessRadiusM: 3.5 },
+  decayPerGameMinute: 0.014,
+  roomWeighting: 'perParty' as 'perParty' | 'perGuest',
+  // Rummets läge byter först när medelvärdet gått så här långt förbi gränsen,
+  // så att mätaren inte fladdrar när rummet ligger på en gräns.
+  roomHysteresis: 0.02,
+  // Mätarens fyllning läggs på de fem stegen mellan gränserna (Designs
+  // skärmar: fyllningen står mitt i ett steg). Den syns stiga eller sjunka
+  // när den flyttat minst så här många steg sedan sist.
+  meterVisibleSteps: 0.2,
+  // Efter ett raketsvar visar mätaren svarets följd också när den är liten
+  // (Designs konsekvensögonblick: mätaren stiger eller sjunker vid 1,25 s).
+  meterVisibleStepsAfterAnswer: 0.02
+} as const;
+
 export const DOWNGRADE = {
   section: 'Ekonomin > Nedgradering',
   consecutiveNegativeDayEnds: 3, // "under minus veckogolvet vid tre dagsavslut i rad"
@@ -847,8 +878,6 @@ export const INCIDENTS = {
   // så här många bord.
   seatsPerTable: 2,
   fallbackTables: 10,
-  // Svarets rad i rummet syns så här länge (spelsekunder).
-  outcomeBubbleSimSeconds: 14,
   // ORDER 271 (Design paket 6, R2/R3): efter ett svar visas rätt och fel i
   // kortet så här många sekunder (verklig tid) innan nästa steg öppnas på
   // full tid, eller kortet stängs.

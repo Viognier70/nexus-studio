@@ -30,13 +30,16 @@
 import { Check, X } from 'lucide-react';
 import { t as tt } from '../../content/nexusStrings';
 import { useLanguage } from '../../content/language';
-import { KnowledgePyramid } from '../ui/service/KnowledgePyramid';
+import { PyramidStrip } from '../ui/service/KnowledgePyramid';
+import { consequenceLine } from '../ui/service/consequenceLine';
+import { CONSEQUENCE } from '../scene/guestMood';
 import { panelOpen, useServiceDrawer } from '../ui/service/serviceDrawer';
 import { useEffect, useRef, useState } from 'react';
 import { strings } from '../../content/strings';
 import { ANSWER_EFFECTS, BACK, INCIDENTS, type Confidence } from '../../sim/balance';
 import { incidentById, type Incident, type IncidentStep } from '../../sim/incidentBank';
 import {
+  calibrationNote,
   canBack,
   formatIncidentText,
   secondsFor,
@@ -96,7 +99,8 @@ function useHeldOutcome(sim: SimulationState): Held | null {
     const record = log[log.length - 1];
     if (!record || record.id !== last.incidentId) return;
     setHeld({ outcome: last, record });
-    const t = window.setTimeout(() => setHeld(null), INCIDENTS.revealSeconds * 1000);
+    // ORDER 299 — kortet står kvar under konsekvensögonblicket (Designs D1 §6: 3,8 s).
+    const t = window.setTimeout(() => setHeld(null), Math.max(INCIDENTS.revealSeconds, CONSEQUENCE.durationS) * 1000);
     return () => window.clearTimeout(t);
     // `key` bär utfallets identitet.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -127,6 +131,14 @@ export function IncidentCard() {
   const defaultConf = (): Confidence => (canBack(sim, BACK.defaultConfidence) ? BACK.defaultConfidence : 0);
   const [conf, setConf] = useState<Confidence | null>(defaultConf);
   const cardRef = useRef<HTMLElement>(null);
+  // ORDER 299 — kortet är smalare: när bandet med svaret kommer rullas kortet
+  // ned till det, så att förklaringen och raden om reaktionen syns.
+  const bandRef = useRef<HTMLDivElement>(null);
+  const bandKind = sim.incidents?.lastOutcome?.at ?? sim.day.roomReactions?.at(-1)?.at ?? null;
+  useEffect(() => {
+    const el = bandRef.current;
+    if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ block: 'end', behavior: 'smooth' });
+  }, [bandKind]);
   const stepKey = active ? `${active.id}:${active.step}` : null;
   useEffect(() => { setConf(defaultConf()); }, [stepKey]);
   const lastBack = sim.incidents?.lastBack ?? null;
@@ -206,6 +218,13 @@ export function IncidentCard() {
 
   const mode = view?.mode ?? null;
   const step = view ? view.incident.steps[view.shown] : undefined;
+
+  // ORDER 299 — ett nytt steg börjar överst i kortet (berättelsen, listen och
+  // frågan), också om förra stegets band rullade ned kortet.
+  const askKey = mode === 'ask' && active ? `${active.id}:${active.step}:${active.openedAt}` : null;
+  useEffect(() => {
+    if (askKey && cardRef.current) cardRef.current.scrollTop = 0;
+  }, [askKey]);
 
   // Tangenterna 1–4 väljer medan steget frågar. Lyssnaren ligger i
   // capture-fasen så att siffran inte också flyttar kameran.
@@ -319,6 +338,8 @@ export function IncidentCard() {
   // just nu), med beloppet som flyger till kvällskassan eller försvinner.
   const lastReaction = sim.day.roomReactions?.at(-1);
   const reaction = band && lastReaction && sim.simTime - lastReaction.at <= ANSWER_EFFECTS.reactionSimSeconds && lastReaction.amountSek ? lastReaction : null;
+  const freshReaction = band && lastReaction && sim.simTime - lastReaction.at <= CONSEQUENCE.camera.backTo ? lastReaction : null;
+  const linkLine = freshReaction ? consequenceLine(lang, freshReaction, view.chosen ? f(step.text.options[view.chosen].label) : null) : null;
 
   // ORDER 280 — Back your knowledge: bandet säger vad svaret gav i krediter.
   const backResult = lastBack && (view.mode === 'right' ? lastBack.step === view.shown : view.mode === 'done' || view.mode === 'wrong') ? lastBack : null;
@@ -326,6 +347,12 @@ export function IncidentCard() {
     const sentence = backResult.correct ? strings.back.bandRight[backResult.confidence] : strings.back.bandWrong[backResult.confidence];
     const credits = backResult.delta === 0 ? '±0' : `${backResult.delta > 0 ? '+' : '−'}${Math.abs(backResult.delta)}`;
     band = { ...band, label: `${band.label} · ${credits} ${strings.back.credits.toLowerCase()}`, text: `${sentence} ${band.text}` };
+    // ORDER 299 — "Hur säker du var" stod i en panel till vänster; meningen
+    // om kvällens träffsäkerhet står nu i bandet när satsningen är avgjord.
+    if (view.mode === 'done' || view.mode === 'wrong') {
+      const know = sim.incidents?.calibration?.[2] ?? [0, 0];
+      band = { ...band, text: `${band.text} ${strings.back.calibNote[calibrationNote(sim.incidents?.calibration)](know[0], know[1])}` };
+    }
   }
 
   return (
@@ -366,16 +393,16 @@ export function IncidentCard() {
           (BackPanels); rutorna här tas bort så att svaren ryms. */}
       {/* ORDER 290 — Designs rätt, fel och pyramiden §3: lyktorna blir
           kunskapspyramiden, under rubriken, med våningarnas namn till höger. */}
-      {!(backed && pick !== null) && (
-        <div className="nx-rocket-pyramid">
-          <KnowledgePyramid
-            testId="incident-pyramid"
-            full={view.mode === 'done'}
-            showMult={backed}
-            levels={incident.steps.map((_, i) => { const b = boxFor(i); return b === 'cleared' ? 'filled' : b === 'current' ? 'current' : b === 'failed' ? 'cracked' : 'empty'; })}
-          />
-        </div>
-      )}
+      {/* ORDER 299 — pyramiden som en smal list med multiplikatorerna och
+          säkerheten på en rad; panelerna till vänster (BackPanels) är borta,
+          så att rummet syns under raketen. */}
+      <PyramidStrip
+        testId="incident-pyramid"
+        full={view.mode === 'done'}
+        showMult={backed}
+        confidence={backed && conf !== null ? strings.back.confidence[conf] : null}
+        levels={incident.steps.map((_, i) => { const b = boxFor(i); return b === 'cleared' ? 'filled' : b === 'current' ? 'current' : b === 'failed' ? 'cracked' : 'empty'; })}
+      />
       <ol hidden style={{ display: 'none' }} className="nx-rocket-steps" data-testid="incident-steps" aria-label={s.stepOf(String(view.shown + 1), String(incident.steps.length))}>
         {incident.steps.map((st, i) => {
           const state = boxFor(i);
@@ -478,10 +505,12 @@ export function IncidentCard() {
       )}
 
       {band ? (
-        <div className="nx-rocket-band" data-kind={band.kind} data-testid="incident-band" aria-live="polite">
+        <div ref={bandRef} className="nx-rocket-band" data-kind={band.kind} data-testid="incident-band" aria-live="polite">
           {/* ORDER 290 — domen är Rätt eller Inte den här gången, aldrig Fel;
               förklaringen är lika vänlig i båda fallen. */}
           <span className="nx-verdict" data-kind={band.kind}>{band.kind === 'right' ? <Check size={16} aria-hidden /> : <X size={16} aria-hidden />}{band.kind === 'right' ? tt(lang, 'verdict.right') : tt(lang, 'verdict.wrong')}</span>
+          {/* ORDER 299 — raden som binder ihop svaret med gästens reaktion. */}
+          {linkLine && <p className="nx-rocket-link" data-testid="consequence-line">{linkLine}</p>}
           <p className="nx-rocket-band-text">{band.text}</p>
           {reaction && <BandAmount reaction={reaction} />}
           <div className="nx-rocket-band-foot">{view.mode === 'done' ? tt(lang, 'pyramid.full.sub') : band.label}</div>

@@ -202,3 +202,26 @@
 .nx-rival-overtake-static { position: static; margin-left: auto; }
 /* ORDER 298b — Lugn kväll under bandets rad, före och under kvällen. */
 .nx-rival-calm { margin-top: calc(6 * var(--nx-u)); font-size: max(12px, calc(17 * var(--nx-u))); line-height: 1.3; color: var(--w-ink-label-dark, #d8b877); }
+
+/* ORDER 299 — Stämningen i rummet (Designs D1 §5, MOOD_METER), i bandet där
+   lyktornas linje satt. Trä och mässing, fyllning i guld, inga siffror. */
+.nx-mood-meter { display: grid; gap: calc(6 * var(--nx-u)); margin-top: calc(10 * var(--nx-u)); padding-top: calc(10 * var(--nx-u)); border-top: 1px solid var(--w-divider, rgba(216,184,119,.25)); min-width: min(230px, 100%); }
+.nx-mood-meter .nx-label { color: var(--w-ink-label-dark, #d8b877); }
+.nx-mood-head { display: flex; align-items: center; gap: calc(10 * var(--nx-u)); }
+.nx-mood-word { font-family: var(--w-font-heading); font-size: max(16px, calc(28 * var(--nx-u))); line-height: 1.1; color: var(--w-candle, #ffd58f); }
+.nx-mood-sym { display: inline-flex; }
+.nx-mood-sym[data-change='up'] { animation: nx-mood-lift 0.52s ease-out; }
+.nx-mood-sym[data-change='down'] { animation: nx-mood-shake 0.48s ease-out; }
+.nx-mood-track { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; height: max(8px, calc(12 * var(--nx-u))); }
+.nx-mood-step { position: relative; overflow: hidden; border-radius: 999px; background: rgba(245,234,213,.1); }
+.nx-mood-fill { position: absolute; left: 0; top: 0; bottom: 0; background: linear-gradient(90deg, #d9b476, #ffd58f); transition: width 0.9s cubic-bezier(.4,0,.2,1); }
+.nx-mood-track[data-glow='true'] .nx-mood-fill { box-shadow: 0 0 12px rgba(232,185,58,.6); }
+.nx-mood-lost { position: absolute; top: 0; bottom: 0; box-sizing: border-box; border: 2px dashed rgba(244,230,204,.75); border-radius: 999px; animation: nx-mood-lost 1.6s ease-in forwards; }
+@keyframes nx-mood-lift { 0% { transform: scale(.6); } 42% { transform: translateY(-6px) scale(1.08); } 100% { transform: none; } }
+@keyframes nx-mood-shake { 0%, 100% { transform: none; } 25% { transform: translateX(-4px); } 50% { transform: translateX(3px); } 75% { transform: translateX(-2px); } }
+@keyframes nx-mood-lost { 0%, 70% { opacity: 1; } 100% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .nx-mood-sym[data-change] { animation: none; }
+  .nx-mood-fill { transition: none; }
+  .nx-mood-lost { animation: none; opacity: 0; }
+}

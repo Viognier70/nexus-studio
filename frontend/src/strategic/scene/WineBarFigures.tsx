@@ -95,16 +95,35 @@ import {
   PASS_FLOOR
 } from './wineBarDirector';
 import { TheatreStage } from './theatreStage';
+import { ConsequenceCamera } from './consequenceCamera';
+import { ROOM_CAMERA } from '../camera/roomBounds';
+import { MoodSymbolLayer, type MoodGroup } from './moodSymbols';
+import { attachFace, type FaceHandle } from './figureFace';
+import { MoodGestures } from './moodGestures';
+import { moodOf } from '../../sim/guestMood';
+import { CONSEQUENCE, FACE, MOOD_SYMBOL } from './guestMood';
+
+// ORDER 299 — klick på ett bord: inom så här många meter från bordets mitt,
+// och ett klick är inget drag (pekaren rörde sig högst så här många px).
+const TABLE_CLICK_RADIUS_M = 1.5;
+const CLICK_SLOP_PX = 5;
+// ORDER 299 — symbolen över en ensam gäst: hjässan över sitsen (barstolen) och
+// över golvet (stående i kön), plus MOOD_SYMBOL.anchor.guestHeadM.
+const SEATED_HEAD_ABOVE_SEAT_M = 0.85;
+const STANDING_HEAD_M = 1.7;
+const IN_ROOM_STATES = new Set(['waiting', 'seated', 'ordering', 'dining', 'paying']);
+import { consequenceElapsed, effectiveSpeed } from '../simulation/consequence';
+import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
 import { play } from '../ui/sound/sound';
 import { createStaffMark, disposeStaffMark, updateStaffMark, type StaffMark } from './staffMarks';
 import { seatKindFromRoom, type ClipSample } from './figureClips';
 import { WARM } from '../../ui/theme/nexusTheme.warm';
 import type { GuestType } from '../types';
-import { ANSWER_EFFECTS, THEATRE } from '../../sim/balance';
+import { THEATRE } from '../../sim/balance';
 import type { ActiveIncident } from '../../sim/incidents';
 import { strings } from '../../content/strings';
 import { TheatreCaption } from '../ui/TheatreCaption';
-import { RoomReactionTag } from '../ui/RoomReactionTag';
+import { safeCaptionPosition } from './safeCaption';
 import { InteractionDirector } from './theatreInteractions';
 import { attachProps, type HeadToppingId, type PropHandle } from './figureProps';
 import { auditRig, publishFaults, type FigureFault } from './figureAudit';
@@ -300,6 +319,15 @@ interface Cast {
   djGlowBase: number;
   eventSaved: CameraTarget | null;
   spotK: number;
+  /** ORDER 299 — konsekvensögonblicket efter ett raketsvar (consequenceCamera.ts). */
+  consequence: ConsequenceCamera;
+  momentPoint: { x: number; z: number } | null;
+  rocketPoint: { x: number; z: number } | null;
+  /** ORDER 299 — ansiktena (figureFace.ts): gästernas följer stämningen, personalens är nöjda. */
+  guestFaces: FaceHandle[];
+  staffFaces: FaceHandle[];
+  /** ORDER 299 — gästernas gester efter stämningen. */
+  moodGestures: MoodGestures;
 }
 
 /** Bildtexten vid figuren när raketen börjar i rummet (nexusStrings theatre.caption). */
@@ -328,6 +356,10 @@ export function WineBarFigures({ room, mood }: Props) {
   const simRef = useRef<SimulationState>(sim);
   simRef.current = sim;
   const { actualRef, targetRef } = useCamera();
+  // ORDER 299 — konsekvensögonblicket: reducerad rörelse (kameran nedan).
+  const reducedMotion = usePrefersReducedMotion();
+  const reducedMotionRef = useRef(reducedMotion);
+  reducedMotionRef.current = reducedMotion;
   const castRef = useRef<Cast | null>(null);
   const captionRef = useRef<THREE.Group>(null);
   // ORDER 296 — ringens förklaring vid hovring.
@@ -340,25 +372,77 @@ export function WineBarFigures({ room, mood }: Props) {
   const glEl = useThree((x) => x.gl.domElement);
   const dispatchSim = useSimDispatch();
   const langNow = useLanguage();
-  useEffect(() => {
-    const onClick = () => {
-      const w = ringWorldRef.current;
-      if (w && simRef.current.day.period === 'dinner') setMoveMenu(w);
-      else setMoveMenu(null);
-    };
-    glEl.addEventListener('click', onClick);
-    return () => glEl.removeEventListener('click', onClick);
-  }, [glEl]);
   const pointer = useThree((x) => x.pointer);
   const camera = useThree((x) => x.camera);
   const raycaster = useMemo(() => new THREE.Raycaster(), []);
+  const { focusOn } = useCamera();
+  // ORDER 299 — borden (sitsarna per möbel, inte bardisken) för "klick på ett
+  // bord gör att kameran glider dit".
+  const tableCentres = useMemo(() => {
+    const by = new Map<string, { x: number; z: number; n: number }>();
+    for (const seat of room.seats) {
+      if (seat.kind === 'bar') continue;
+      const t = by.get(seat.furnitureId) ?? { x: 0, z: 0, n: 0 };
+      by.set(seat.furnitureId, { x: t.x + seat.local[0], z: t.z + seat.local[1], n: t.n + 1 });
+    }
+    return [...by.values()].map((t) => ({ x: t.x / t.n, z: t.z / t.n }));
+  }, [room]);
+  // ORDER 299 — stämningens symboler över borden (moodSymbols.ts) på en duk över scenen.
+  const moodLayerRef = useRef<MoodSymbolLayer | null>(null);
+  useEffect(() => {
+    const parent = glEl.parentElement;
+    if (!parent) return;
+    const layer = new MoodSymbolLayer(parent);
+    moodLayerRef.current = layer;
+    return () => { layer.dispose(); moodLayerRef.current = null; };
+  }, [glEl]);
+  const furniture = useMemo(() => {
+    const seatOf = new Map<number, { kind: string; furnitureId: string }>();
+    const sum = new Map<string, { x: number; z: number; n: number }>();
+    for (const seat of room.seats) {
+      seatOf.set(seat.seatIndex, { kind: seat.kind, furnitureId: seat.furnitureId });
+      const t = sum.get(seat.furnitureId) ?? { x: 0, z: 0, n: 0 };
+      sum.set(seat.furnitureId, { x: t.x + seat.local[0], z: t.z + seat.local[1], n: t.n + 1 });
+    }
+    const centre = new Map([...sum].map(([k, t]) => [k, { x: t.x / t.n, z: t.z / t.n }]));
+    return { seatOf, centre };
+  }, [room]);
+  useEffect(() => {
+    let downAt: { x: number; y: number } | null = null;
+    const onDown = (e: PointerEvent) => { downAt = { x: e.clientX, y: e.clientY }; };
+    const onClick = (e: MouseEvent) => {
+      // Ett drag (vrid eller panorera) är inget klick.
+      if (downAt && Math.hypot(e.clientX - downAt.x, e.clientY - downAt.y) > CLICK_SLOP_PX) return;
+      const w = ringWorldRef.current;
+      if (w && simRef.current.day.period === 'dinner') { setMoveMenu(w); return; }
+      setMoveMenu(null);
+      const cast = castRef.current;
+      if (!cast || !roomShownRef.current) return;
+      raycaster.setFromCamera(pointer, camera);
+      const floorY = cast.group.localToWorld(new THREE.Vector3(0, room.floorY, 0)).y;
+      const hit = raycaster.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 1, 0), -floorY), new THREE.Vector3());
+      if (!hit) return;
+      const local = cast.group.worldToLocal(hit.clone());
+      let best: { x: number; z: number } | null = null;
+      let bestD = TABLE_CLICK_RADIUS_M;
+      for (const t of tableCentres) {
+        const d = Math.hypot(t.x - local.x, t.z - local.z);
+        if (d <= bestD) { best = t; bestD = d; }
+      }
+      if (!best) return;
+      const at = cast.group.localToWorld(new THREE.Vector3(best.x, room.floorY, best.z));
+      focusOn({ x: at.x, z: at.z }, Math.min(targetRef.current.distance, ROOM_CAMERA.tableDistanceM));
+    };
+    glEl.addEventListener('pointerdown', onDown);
+    glEl.addEventListener('click', onClick);
+    return () => { glEl.removeEventListener('pointerdown', onDown); glEl.removeEventListener('click', onClick); };
+  }, [glEl, tableCentres, raycaster, pointer, camera, room, focusOn, targetRef]);
   // ORDER 292 — svarets händelse står över bordet (rummets reaktion).
-  const reactionRef = useRef<THREE.Group>(null);
+  const captionDivRef = useRef<HTMLDivElement>(null);
   // ORDER 292b — rummets etiketter (bildtexten och händelsen) ritas bara när
   // rummet syns; drei:s Html ritar annars sin DOM över byn när kameran är ute.
   const [roomShown, setRoomShown] = useState(false);
   const roomShownRef = useRef(false);
-  const reactionAt = useRef<{ x: number; z: number } | null>(null);
   const clockRef = useRef<number>(-Infinity);
 
   // Övertagandet som direktören läser: byggs när utfallet byts, inte per bildruta.
@@ -436,6 +520,7 @@ export function WineBarFigures({ room, mood }: Props) {
     );
     const guestRigs: FigureRig[] = [];
     const guestHandProps: { briefcase: PropHandle; camera: PropHandle }[] = [];
+    const guestFaces: FaceHandle[] = [];
     for (let i = 0; i < WINE_BAR_GUEST_POOL; i++) {
       const rig = createFigureRig({ variant: 'guest', garmentColour: GUEST_GARMENTS[i % GUEST_GARMENTS.length] });
       rig.root.visible = false;
@@ -449,12 +534,16 @@ export function WineBarFigures({ room, mood }: Props) {
       briefcase.group.visible = false;
       camera.group.visible = false;
       guestHandProps.push({ briefcase, camera });
+      // ORDER 299 — ansiktet i närbild (Designs figureFace.ts).
+      guestFaces.push(attachFace(rig));
     }
     const staffRigs: FigureRig[] = STAFF_KEYS.map((k) => {
       const rig = createFigureRig({ variant: 'staff', garmentColour: STAFF_COLOUR[k] });
       group.add(rig.root);
       return rig;
     });
+    // ORDER 299 — personalen har alltid uttrycket nöjd (FACE.staffMood).
+    const staffFaces = staffRigs.map((rig) => attachFace(rig, FACE.staffMood));
     // ORDER 296 (punkt 6, "DJ:n som spelaren betalat för ska synas"): DJ:n bakom
     // båset när satsningen book-dj är vald, på samma plats som i händelserna.
     const djRig = createFigureRig({ variant: 'staff', garmentColour: STAFF_UNIFORMS.dj });
@@ -496,7 +585,13 @@ export function WineBarFigures({ room, mood }: Props) {
       djGlowBase: -1,
       events: new EventPlayer(group, room.floorY, theatreSeats(room.seats), room.parts.djGlow),
       eventSaved: null,
-      spotK: 0
+      spotK: 0,
+      consequence: new ConsequenceCamera(),
+      momentPoint: null,
+      rocketPoint: null,
+      guestFaces,
+      staffFaces,
+      moodGestures: new MoodGestures(WINE_BAR_GUEST_POOL)
     };
     if (import.meta.env.DEV && typeof window !== 'undefined') {
       (window as unknown as { __nxWineBarDirector?: unknown }).__nxWineBarDirector = director;
@@ -560,6 +655,16 @@ export function WineBarFigures({ room, mood }: Props) {
       document.body.dataset.simSeated = String(s.seatedIds.length);
       document.body.dataset.roomSeated = String(cast.director.guestSamples.filter((x) => x.visible && x.seated).length);
       document.body.dataset.roomGuests = String(cast.director.guestSamples.filter((x) => x.visible).length);
+      // ORDER 299 — kamerans faktiska avstånd och vinkel, spelets hastighet just
+      // nu och sekunderna i konsekvensögonblicket (för kontrollen i spelet).
+      const a = actualRef.current;
+      document.body.dataset.camDist = a.distance.toFixed(2);
+      document.body.dataset.camPitch = a.pitch.toFixed(3);
+      document.body.dataset.camYaw = a.yaw.toFixed(3);
+      document.body.dataset.speedNow = String(effectiveSpeed(s));
+      const m = consequenceElapsed(s);
+      document.body.dataset.moment = m === null ? '' : m.toFixed(2);
+      document.body.dataset.reactions = (s.day.roomReactions ?? []).map((r) => `${r.at.toFixed(1)}:${r.kind}:${r.table ?? '-'}`).join(',');
     }
     // ORDER 296 — DJ:n bakom båset när satsningen är vald (kockens klipp vid
     // disken tills DJ-klippen finns, som i händelserna). Musiken börjar 21.00:
@@ -661,9 +766,16 @@ export function WineBarFigures({ room, mood }: Props) {
       if (clip && walkSample === sample && seat && (sample.seated || sample.pose === 'sitDown' || sample.pose === 'standUp')) {
         walkSample = { ...sample, y: room.floorY };
       }
-      cast.guestClips[i] = clip;
-      cast.guestClipIds[i] = clip ? cast.stage.guestClipId(i) : null;
-      applySample(rig, walkSample, false, visibility, clip);
+      // ORDER 299 — gesten efter stämningen när gästen bara sitter (moodGestures.ts).
+      let gesture: { id: string; clip: ClipSample } | null = null;
+      if (walkSample === sample && sample.seated && !isFigure && simGuest) {
+        gesture = cast.moodGestures.sample(i, sample.guestId, clip ? cast.stage.guestClipId(i) : null, simGuest.satisfaction, s.simTime, seatKind, s.day.consequence, s.seed ?? 0);
+      } else {
+        cast.moodGestures.reset(i);
+      }
+      cast.guestClips[i] = gesture ? gesture.clip : clip;
+      cast.guestClipIds[i] = gesture ? gesture.id : clip ? cast.stage.guestClipId(i) : null;
+      applySample(rig, walkSample, false, visibility, gesture ? gesture.clip : clip);
       if (isFigure) figureLocal = { x: rig.root.position.x, y: rig.root.position.y, z: rig.root.position.z };
     }
     const ss = cast.director.staffSamples;
@@ -757,7 +869,7 @@ export function WineBarFigures({ room, mood }: Props) {
     if (shadows !== cast.shadowsOn) {
       cast.shadowsOn = shadows;
       const marks = new Set(cast.staffMarks.map((m) => m.group));
-      cast.group.traverse((o) => { if ((o as THREE.Mesh).isMesh && o.parent !== cast.ring.group && !(o.parent && marks.has(o.parent as THREE.Group))) o.castShadow = shadows; });
+      cast.group.traverse((o) => { if ((o as THREE.Mesh).isMesh && o.name !== 'face' && o.parent !== cast.ring.group && !(o.parent && marks.has(o.parent as THREE.Group))) o.castShadow = shadows; });
     }
 
     // Ringen: vid figuren raketen pekar på (annars vid sällskapet), fylld med stegets tid.
@@ -775,6 +887,9 @@ export function WineBarFigures({ room, mood }: Props) {
     // Kameran glider in mot figuren och tillbaka efter svaret. ORDER 292 —
     // vid varje raket: figuren, annars bordet, annars rummets mitt.
     const focusLocal = figureLocal ?? (ringAt ? { x: ringAt.x, y: room.floorY, z: ringAt.z } : active ? { x: 0, y: room.floorY, z: 0 } : null);
+    // ORDER 299 — konsekvensögonblicket är ett lager över spelets kamera:
+    // spelets eget mål tillbaka före kameralogiken nedan.
+    cast.consequence.restore(targetRef);
     // ORDER 293 — händelserna spelas som teater: manusets kamera och strålkastare,
     // och rummets egna figurer vilar medan scenen spelas.
     const ev = cast.events.update(active, s.incidents?.log ?? [], Math.min(delta, 0.1), WEEKEND_DAYS.includes(calendarFor(s.day.dayNumber).weekday));
@@ -813,6 +928,78 @@ export function WineBarFigures({ room, mood }: Props) {
       if (cast.eventSaved) { targetRef.current = { ...cast.eventSaved, focus: { ...cast.eventSaved.focus } }; cast.eventSaved = null; }
       cast.stage.camera(targetRef, active, focusLocal, Math.min(delta, 0.1));
     }
+    // ORDER 299 — raketens punkt medan den står, för ett svar som bara gällde kön.
+    if (active && focusLocal) cast.rocketPoint = { x: focusLocal.x, z: focusLocal.z };
+    // ORDER 299 — kameran stannar på bordet efter svaret: bordets gäster,
+    // annars punkten raketen pekade på (figuren eller rummets mitt).
+    const moment = s.day.consequence;
+    const momentAt = consequenceElapsed(s);
+    if (moment && momentAt !== null) {
+      let x = 0; let z = 0; let n = 0;
+      for (let i = 0; i < gs.length; i++) {
+        const g = gs[i];
+        if (!g.visible || !g.guestId || !moment.tableGuestIds.includes(g.guestId)) continue;
+        x += g.x; z += g.z; n++;
+      }
+      // I händelsernas manus spelar manusets figurer; kameran går mot manusets punkt.
+      // Utan gäster vid bordet (svaret gällde kön) går kameran dit raketen pekade.
+      const local = ev.playing && ev.view ? { x: ev.view.tx, z: ev.view.tz } : n > 0 ? { x: x / n, z: z / n } : focusLocal ? { x: focusLocal.x, z: focusLocal.z } : cast.momentPoint ?? cast.rocketPoint;
+      cast.momentPoint = local;
+      const w = local ? cast.group.localToWorld(new THREE.Vector3(local.x, room.floorY, local.z)) : null;
+      const aspect = (camera as THREE.PerspectiveCamera).aspect || 16 / 9;
+      cast.consequence.update(targetRef, moment, momentAt, w ? { x: w.x, z: w.z } : null, aspect, reducedMotionRef.current);
+    } else {
+      cast.momentPoint = null;
+    }
+
+    // ORDER 299 — stämningens symboler: per bord (småbord och lounge), annars
+    // per ensam gäst vid baren eller i kön.
+    const layer = moodLayerRef.current;
+    if (layer) {
+      const byId = new Map(s.guests.map((g) => [g.id, g]));
+      const groups = new Map<string, MoodGroup & { n: number }>();
+      if (s.day.period === 'dinner') {
+        for (let i = 0; i < gs.length; i++) {
+          const sample = gs[i];
+          if (!sample.visible || !sample.guestId) continue;
+          const g = byId.get(sample.guestId);
+          if (!g || !IN_ROOM_STATES.has(g.state)) continue;
+          const seat = cast.director.guestSeat(sample.guestId);
+          const spec = seat ? furniture.seatOf.get(seat.seatIndex) : undefined;
+          let key: string;
+          let local: THREE.Vector3;
+          if (seat && spec && spec.kind !== 'bar') {
+            const c = furniture.centre.get(spec.furnitureId)!;
+            key = `t:${spec.furnitureId}`;
+            local = new THREE.Vector3(c.x, room.floorY + (spec.kind === 'lounge' ? MOOD_SYMBOL.anchor.loungeM : MOOD_SYMBOL.anchor.tableM), c.z);
+          } else if (seat) {
+            key = `g:${g.partyId ?? g.id}`;
+            local = new THREE.Vector3(sample.x, seat.seatSurfaceY + SEATED_HEAD_ABOVE_SEAT_M + MOOD_SYMBOL.anchor.guestHeadM, sample.z);
+          } else {
+            key = `q:${g.partyId ?? g.id}`;
+            local = new THREE.Vector3(sample.x, sample.y + STANDING_HEAD_M + MOOD_SYMBOL.anchor.guestHeadM, sample.z);
+          }
+          const prev = groups.get(key);
+          if (prev) { prev.value += g.satisfaction; prev.n++; }
+          else groups.set(key, { key, world: cast.group.localToWorld(local), value: g.satisfaction, n: 1 });
+        }
+      }
+      const list = [...groups.values()].map((x) => ({ key: x.key, world: x.world, value: x.value / x.n }));
+      const hold = momentAt !== null && momentAt < CONSEQUENCE.symbol.at;
+      layer.draw(list, camera, performance.now(), hold, reducedMotionRef.current, roomShownRef.current);
+    }
+
+    // ORDER 299 — ansiktena tänds från 9 m och syns helt vid 7 m. Uttrycket
+    // följer gästens stämning och byts i konsekvensögonblicket vid faceSwapAt.
+    const faceHold = momentAt !== null && momentAt < CONSEQUENCE.guests.faceSwapAt;
+    for (let i = 0; i < cast.guestFaces.length; i++) {
+      const face = cast.guestFaces[i];
+      const id = gs[i]?.guestId;
+      const g = id ? s.guests.find((x) => x.id === id) : undefined;
+      if (g && !faceHold) face.set(moodOf(g.satisfaction));
+      face.update(camera);
+    }
+    for (const face of cast.staffFaces) face.update(camera);
     if (active && ringAt && !ev.playing) {
       cast.ring.group.visible = true;
       cast.ring.group.position.set(ringAt.x, room.floorY, ringAt.z);
@@ -823,36 +1010,17 @@ export function WineBarFigures({ room, mood }: Props) {
       cast.ring.group.visible = false;
     }
 
-    // ORDER 292 — svarets händelse över bordet: vid sällskapet (eller gästen
-    // som gick, så länge hen syns), annars där den senast stod.
-    const reactionGroup = reactionRef.current;
-    const react = simRef.current.day.roomReactions?.at(-1);
-    if (reactionGroup) {
-      const fresh = !!react && simRef.current.simTime - react.at <= ANSWER_EFFECTS.reactionSimSeconds;
-      if (fresh && react) {
-        const ids = react.leftGuestId ? [react.leftGuestId, ...react.guestIds] : react.guestIds;
-        let x = 0; let z = 0; let n = 0;
-        for (let i = 0; i < gs.length; i++) {
-          const g = gs[i];
-          if (!g.visible || !g.guestId || !ids.includes(g.guestId)) continue;
-          x += g.x; z += g.z; n++;
-        }
-        if (n > 0) reactionAt.current = { x: x / n, z: z / n };
-      }
-      const at = reactionAt.current;
-      reactionGroup.visible = fresh && !!at;
-      if (fresh && at && reactionGroup.parent) {
-        const p = cast.group.localToWorld(new THREE.Vector3(at.x, room.floorY + THEATRE.captionHeightM, at.z));
-        reactionGroup.parent.worldToLocal(p);
-        reactionGroup.position.copy(p);
-      }
-    }
+    // ORDER 299 — svarets händelse står som en notis (ui/service/RoomNotices.tsx),
+    // inte längre över bordet: drei-Html följer inte gruppens synlighet, så
+    // taggen stod kvar tills nästa svar (provspelet: 15 spelminuter).
 
     // Bildtexten står ovanför figuren.
     const cap = captionRef.current;
     if (cap) {
       const w = cast.stage.figureWorld;
       cap.visible = !!w;
+      // ORDER 299 — drei-Html döljs inte av gruppen; texten döljs själv.
+      if (captionDivRef.current) captionDivRef.current.style.display = w ? '' : 'none';
       if (w && cap.parent) {
         const p = w.clone();
         p.y += THEATRE.captionHeightM;
@@ -863,7 +1031,6 @@ export function WineBarFigures({ room, mood }: Props) {
   });
 
   const caption = theatreCaption(sim.incidents?.active ?? null);
-  const reaction = sim.day.roomReactions?.at(-1) ?? null;
   return (
     <>
       {/* ORDER 296 (kärnan punkt 1) — hovmästarens nålar och handgrepp. */}
@@ -882,15 +1049,11 @@ export function WineBarFigures({ room, mood }: Props) {
       )}
       {caption && roomShown && (
         <group ref={captionRef} visible={false}>
-          <Html center zIndexRange={[20, 0]}>
-            <TheatreCaption text={caption} />
-          </Html>
-        </group>
-      )}
-      {reaction && roomShown && (
-        <group ref={reactionRef} visible={false}>
-          <Html center zIndexRange={[20, 0]} style={{ pointerEvents: 'none' }}>
-            <RoomReactionTag reaction={reaction} />
+          {/* ORDER 299 — bildtexten hålls där ingen panel täcker den (safeCaptionPosition). */}
+          <Html center zIndexRange={[47, 0]} calculatePosition={safeCaptionPosition}>
+            <div ref={captionDivRef} style={{ display: 'none' }}>
+              <TheatreCaption text={caption} />
+            </div>
           </Html>
         </group>
       )}

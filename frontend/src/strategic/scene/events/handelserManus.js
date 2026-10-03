@@ -17,7 +17,7 @@ const lounge = (x, z, dist) => ({ tx: x, ty: 0.6, tz: z, dist: dist || 12, yaw: 
 export function birthday(C, variant) {
   const fs = stepOf(variant), w1 = fs === 0, w2 = fs === 1, w3 = fs === 2, wrong = w2;
   const T = { ask1: 9.5, ans1: 13, ask2: 16, ans2: 19.5, ask3: 32.5, ans3: 36 };
-  const END = w1 ? 36.4 : w2 ? 36 : w3 ? 58 : 47, BACK = w1 ? 32.8 : w2 ? 32.5 : w3 ? 54.8 : 43.5;
+  const END = w1 ? 36.4 : w2 ? 36 : w3 ? 51.6 : 47, BACK = w1 ? 32.8 : w2 ? 32.5 : w3 ? 48.4 : 43.5;
   const tableY = 0.45, passY = 0.99;
 
   const props = {
@@ -39,8 +39,8 @@ export function birthday(C, variant) {
         : [{ clip: 'guest.seatedIdle', until: 30, look: 'per' }])
     ] : []),
     ...(w1 ? [] : w2 ? [{ clip: 'guest.seatedIdle', until: END, look: 'per' }] : [
-      { clip: 'guest.clap', until: 33 }, { clip: 'guest.seatedIdle', until: w3 ? 43.2 : 36 },
-      { clip: 'guest.sing', until: w3 ? 49.2 : 42 }, { clip: 'guest.seatedIdle', until: END, look: 'nb1' }
+      { clip: 'guest.clap', until: 33 }, { clip: 'guest.seatedIdle', until: w3 ? 36.8 : 36 },
+      { clip: 'guest.sing', until: w3 ? 42.8 : 42 }, { clip: 'guest.seatedIdle', until: END, look: 'nb1' }
     ])
   ] });
   const actors = {
@@ -48,15 +48,18 @@ export function birthday(C, variant) {
     karin: { ...party('karin', 'loungeA2', 'social', 0.94, 'friend') },
     friend: party('friend', 'loungeA3', 'medel2', 1.02, 'karin'),
     nb1: { kind: 'guest', look: 'hog', hm: 1.05, pos: [0, 0], steps: w3 ? [
-      { clip: 'guest.lean', until: 44.5, seat: 'loungeB1', look: 'nb2' },
-      { clip: 'guest.seatedIdle', until: 45.5, look: 'host' },
+      // Beslut 2026-10-03: musiken går upp direkt, och grannarna reagerar inom konsekvensögonblicket (stamningManus, guestMood.CONSEQUENCE).
+      { clip: 'guest.lean', until: 37.1, seat: 'loungeB1', look: 'nb2' },
+      { clip: 'guest.armsCrossed', tempo: 'stressed', until: 39.1, look: 'karin' },
       { clip: 'guest.waveStaff', look: 'per' },
-      { clip: 'guest.seatedIdle', until: 51.4, look: 'per' },
+      { clip: 'guest.seatedIdle', until: 45.0, look: 'per' },
       { clip: 'guest.pay', look: 'per' },
       { clip: 'guest.seatedIdle', until: END, look: 'nb2' }
     ] : [{ clip: 'guest.lean', until: 40.4, seat: 'loungeB1', look: 'nb2' }, ...(w1 || w2 ? [{ clip: 'guest.seatedIdle', until: END }] : [{ clip: 'guest.toast', look: 'host' }, { clip: 'guest.seatedIdle', until: END, look: 'host' }])] },
     nb2: { kind: 'guest', look: 'medel3', hm: 0.97, pos: [0, 0], steps: w3 ? [
-      { clip: 'guest.gesture', until: 44.5, seat: 'loungeB2', look: 'nb1' },
+      { clip: 'guest.gesture', until: 37.3, seat: 'loungeB2', look: 'nb1' },
+      { clip: 'guest.waveWaiter', tempo: 'stressed', look: 'per' },
+      { clip: 'guest.checkWatch', look: 'per' },
       { clip: 'guest.seatedIdle', until: END, look: 'host' }
     ] : [{ clip: 'guest.gesture', until: 40.4, seat: 'loungeB2', look: 'nb1' }, ...(w1 || w2 ? [{ clip: 'guest.seatedIdle', until: END }] : [{ clip: 'guest.toast', look: 'host' }, { clip: 'guest.seatedIdle', until: END, look: 'host' }])] },
     b1: { kind: 'guest', look: 'student', hm: 0.98, pos: [0, 0], steps: [{ clip: 'guest.seatedIdle', until: END, seat: 'bar1', look: 'b2' }] },
@@ -83,12 +86,11 @@ export function birthday(C, variant) {
         { clip: 'staff.walk', path: [[-3.9, 2.3], [-4.45, 1.3], [-5.1, 1.25], [-5.1, 2.15]], until: 29.6 },
         { clip: 'staff.listen', until: END, face: -0.59, look: 'cook' }
       ] : w3 ? [
-        // Steg 3 fel: Per vinkar till sig Elin och pekar mot DJ:n. Sedan tar han notan till lounge B.
-        { clip: 'staff.idle', until: T.ans3 + 0.3, face: -Math.PI / 2, look: 'cook' },
-        { clip: 'staff.beckon', face: 1.81, look: 'elin' },
+        // Steg 3 fel (beslut 2026-10-03): Per ger DJ:n tecken direkt, och musiken går upp 0,6 s efter svaret. Sedan tar han notan till lounge B.
+        { clip: 'staff.idle', until: T.ans3 + 0.2, face: -Math.PI / 2, look: 'cook' },
         { clip: 'host.point', face: 2.24 },
-        { clip: 'staff.idle', until: 46.0, face: 1.81, look: 'elin' },
-        { clip: 'staff.walk', path: [[-2.4, 3.15], [1.4, 3.15], [1.7, 3.3]], until: 50.4, ev: [{ type: 'show', prop: 'bill', at: 0 }] },
+        { clip: 'staff.idle', until: 39.6, face: 1.81, look: 'nb1' },
+        { clip: 'staff.walk', path: [[-2.4, 3.15], [1.4, 3.15], [1.7, 3.3]], until: 44.0, ev: [{ type: 'show', prop: 'bill', at: 0 }] },
         { clip: 'waiter.presentBill', face: 0 },
         { clip: 'staff.idle', until: END, face: 0, look: 'nb1' }
       ] : [
@@ -146,12 +148,8 @@ export function birthday(C, variant) {
     elin: { kind: 'staff', look: 'sommelier', pos: [3.3, 1.6], yaw: 0, steps: w1 || w2
       ? [{ clip: 'staff.idle', until: END, look: 'nb1', keep: 'L' }]
       : w3 ? [
-        // Elin går med brickan till DJ-hörnet och tillbaka. Glasen till grannarna blir aldrig serverade.
-        { clip: 'staff.idle', until: 37.2, look: 'nb1', keep: 'L' },
-        { clip: 'staff.idle', until: 37.9, look: 'per', keep: 'L' },
-        { clip: 'waiter.carryTray', path: [[3.6, 0.6], [3.6, -2.9], [4.7, -3.1]], until: 42.0 },
-        { clip: 'staff.idle', until: 43.2, face: 2.39, look: 'dj', keep: 'L' },
-        { clip: 'waiter.carryTray', path: [[3.6, -2.9], [3.6, 0.6], [3.3, 1.6]], until: 47.6 },
+        // Elin står kvar med brickan. Glasen till grannarna blir aldrig serverade.
+        { clip: 'staff.idle', until: 37.0, look: 'per', keep: 'L' },
         { clip: 'staff.idle', until: END, face: 0, look: 'nb1', keep: 'L' }
       ] : [
         { clip: 'staff.idle', until: T.ans3 + 0.3, look: 'nb1', keep: 'L' },
@@ -162,26 +160,27 @@ export function birthday(C, variant) {
     mira: { kind: 'staff', look: 'bartender', pos: [-0.9, -0.74], yaw: 0, steps: [{ clip: 'bar.wipe', until: END, face: 0 }] },
     // DJ:n står i sydöstra hörnet i alla varianter (helgkvällen). Inga egna klipp ännu: arbetet vid pulten är cook.station.
     dj: { kind: 'staff', look: 'dj', pos: [6.15, -4.65], yaw: -Math.PI / 4, stand: 0.25, steps: w3 ? [
-      { clip: 'cook.station', until: 42.0, face: -Math.PI / 4 },
-      { clip: 'staff.listen', until: 43.0, face: -0.75, look: 'elin' },
+      { clip: 'cook.station', until: 36.4, face: -Math.PI / 4 },
+      { clip: 'staff.listen', until: 37.0, face: -0.75, look: 'per' },
       { clip: 'cook.station', until: END, face: -Math.PI / 4 }
     ] : [{ clip: 'cook.station', until: END, face: -Math.PI / 4 }] }
   };
   const effects = wrong ? [{ type: 'candleDrop', t: 25.25, from: 'cake', to: [-1.45, tableY + 0.004, 3.62], out: 28.95 }]
-    : w3 ? [{ type: 'musicUp', t: 43.0, at: [5.75, 1.45, -4.25] }] : [];
+    : w3 ? [{ type: 'musicUp', t: T.ans3 + 0.6, at: [5.75, 1.45, -4.25] }] : [];
   const cam = w1
     ? [{ t: 0, v: GAME }, { t: 0.2, v: lounge(-1.8, 3.75) }, { t: T.ans1 + 0.3, v: near(-3.0, 3.6) }, { t: 19.6, v: near(-4.0, 3.0, 11, 0.6) }, { t: 25.6, v: near(-4.6, 2.4, 12, 0.8) }, { t: BACK, v: GAME, rate: 1.9 }]
     : wrong
     ? [{ t: 0, v: GAME }, { t: 0.2, v: lounge(-1.8, 3.75) }, { t: 21.5, follow: 'sara', dist: 13 }, { t: 26.8, v: lounge(-1.7, 3.6) }, { t: BACK, v: GAME, rate: 1.9 }]
     : [{ t: 0, v: GAME }, { t: 0.2, v: lounge(-1.8, 3.75) }, { t: T.ans1 + 0.3, v: near(-3.0, 3.6) }, { t: 21.5, follow: 'sara', dist: 13 }, { t: 28, v: lounge(-1.8, 3.75) },
-      ...(w3 ? [{ t: T.ans3 + 0.3, v: near(-1.2, 3.0, 13) }, { t: 37.9, follow: 'elin', dist: 13 }, { t: 44.4, v: lounge(0.1, 3.9, 13) }]
+      // Konsekvensögonblicket (guestMood.CONSEQUENCE): in till 7 m, sista 1,5 s till 5,5 m, sedan tillbaka.
+      ...(w3 ? [{ t: T.ans3 + 0.6, v: { ...lounge(0.4, 4.2, 7), pitch: 0.7 } }, { t: T.ans3 + 2.3, v: { ...lounge(0.4, 4.3, 5.5), pitch: 0.7, rate: 1.2 } }, { t: T.ans3 + 3.8, v: lounge(0.1, 3.9, 13) }]
         : [{ t: T.ans3 + 0.3, v: lounge(0.1, 3.9, 13) }]), { t: BACK, v: GAME, rate: 1.9 }];
   const spot = w1
     ? [{ t: 0.2, who: 'host' }, { t: 6.4, who: 'per' }, { t: 16.4, who: 'cook' }, { t: 18.9, who: 'sara' }, { t: 19.6, who: 'host' }, { t: 20.4, who: 'per' }, { t: 31.2, who: 'cook' }, { t: BACK, who: null }]
     : wrong
     ? [{ t: 0.2, who: 'host' }, { t: 6.4, who: 'per' }, { t: T.ans1 + 0.3, who: 'per' }, { t: 21.2, who: 'sara' }, { t: 25.4, who: 'per' }, { t: BACK, who: null }]
     : [{ t: 0.2, who: 'host' }, { t: 6.4, who: 'per' }, { t: 17.5, who: 'cook' }, { t: 21.2, who: 'sara' }, { t: 28.6, who: 'karin' },
-      ...(w3 ? [{ t: T.ans3 + 0.3, who: 'per' }, { t: 37.9, who: 'elin' }, { t: 42.0, who: 'dj' }, { t: 43.4, who: 'karin' }, { t: 45.5, who: 'nb1' }, { t: 46.0, who: 'per' }]
+      ...(w3 ? [{ t: T.ans3 + 0.2, who: 'per' }, { t: T.ans3 + 0.6, who: 'karin' }, { t: 37.1, who: 'nb1' }, { t: 39.6, who: 'per' }]
         : [{ t: T.ans3 + 0.3, who: 'elin' }, { t: 40.4, who: 'nb1' }]), { t: BACK, who: null }];
   return { set: 'winebar', roomOpts: { mood: 'helg' }, tempo: 'normal', end: END, props, actors, effects, beats: { cam, spot, card: cardOf(T, fs, BACK), chapters: chaptersOf('', T, fs, BACK) } };
 }
@@ -414,7 +413,8 @@ export function drunk(C, variant) {
     elin: { kind: 'staff', look: 'sommelier', pos: [1.3, 0.74], yaw: 0, steps: [{ clip: 'staff.idle', until: END, look: 'g' }] },
     cook: { kind: 'staff', look: 'kock', pos: [-6.2, 3.9], yaw: -Math.PI / 2, steps: [{ clip: 'cook.station', until: END, face: -Math.PI / 2 }] }
   };
-  const cam = [{ t: 0, v: GAME }, { t: 0.1, v: near(-0.9, 2.5, 12, 0.2) }, ...(failAt ? [{ t: failAt + 3.5, v: near(-0.4, 2.7, 13, 0.25) }] : []), { t: BACK, v: GAME, rate: 1.9 }];
+  // Beslut 2026-10-03: från söder, som i loungen, så att ansiktena vid de norra barstolarna syns när kameran går in.
+  const cam = [{ t: 0, v: GAME }, { t: 0.1, v: lounge(-1.4, 3.6, 12) }, ...(failAt ? [{ t: failAt + 3.5, v: lounge(-0.6, 3.4, 13) }] : []), { t: BACK, v: GAME, rate: 1.9 }];
   const spot = [{ t: 0.1, who: 'g' },
     ...(w1 ? [{ t: T.ans1, who: 'mira' }, { t: T.ans1 + 3, who: 'g' }, { t: T.ans1 + 6.5, who: 'per' }]
       : [{ t: T.ans1, who: 'mira' }, ...(w2 ? [{ t: T.ans2, who: 'g' }, { t: T.ans2 + 6.5, who: 'per' }]

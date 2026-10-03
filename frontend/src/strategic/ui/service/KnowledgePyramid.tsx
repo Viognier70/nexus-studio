@@ -75,3 +75,29 @@ export function KnowledgePyramid({ levels, full, small = false, testId, showMult
     </div>
   );
 }
+
+// ORDER 299 (Vision Owner 2026-10-03, "Raketen och rummet"): "Pyramidpanelen
+// krymps till en smal list med multiplikatorerna och säkerheten på en rad."
+// Pyramiden i liten form, våningarna som tre chips med sin multiplikator, och
+// säkerheten i Back your knowledge. Våningarnas tillstånd som i den stora.
+export function PyramidStrip({ levels, full, testId, showMult, confidence }: { levels: LevelState[]; full: boolean; testId?: string; showMult: boolean; confidence: string | null }) {
+  const lang = useLanguage();
+  const cracked = levels.indexOf('cracked');
+  const stateOf = (i: number): string => (full ? 'gold' : cracked >= 0 && i > cracked ? 'above' : levels[i] ?? 'empty');
+  const mult = (i: number) => `×${(BACK.stepMultiplier[i] ?? 1).toLocaleString(lang === 'sv' ? 'sv-SE' : 'en-GB')}`;
+  return (
+    <div className="nx-pyr-strip" data-testid={testId} data-full={full}>
+      <KnowledgePyramid levels={levels} full={full} small testId={testId ? `${testId}-mini` : undefined} />
+      <ol className="nx-pyr-chips">
+        {AXES.map((a, i) => (
+          <li key={a} className="nx-pyr-chip" data-state={stateOf(i)} data-testid={testId ? `${testId}-${a}` : undefined}>
+            <span className="nx-pyr-dot" />
+            <span>{strings.service.incident.stepName[a]}</span>
+            {showMult && <strong className="nx-pyr-mult">{mult(i)}</strong>}
+          </li>
+        ))}
+      </ol>
+      {confidence && <span className="nx-pyr-sure" data-testid="pyramid-strip-confidence">{confidence}</span>}
+    </div>
+  );
+}

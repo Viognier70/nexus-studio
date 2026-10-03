@@ -1,4 +1,4 @@
-import { EVENING_ECONOMY, GAME_MINUTES_PER_SIM_SECOND, SHOP, SITTING } from '../../sim/balance';
+import { EVENING_ECONOMY, GAME_MINUTES_PER_SIM_SECOND, MOOD_BALANCE, SHOP, SITTING } from '../../sim/balance';
 import { abilityActive } from '../../sim/shop';
 import { helpTaskTime } from '../../sim/hostZones';
 import { clockMinutes as clockNowMinutes } from '../../sim/clock';
@@ -57,7 +57,8 @@ const PAYING_PHASE_SEC = 8;
 // (mediocre-bandet, inte botten). Räknat ur mätdata: normal gäst
 // utan kö landar på 0.87 (initial 0.72 + service-bumps ≈ 0.15).
 // Vid 40 s × 0.007 = 0.28 sat-loss → 0.87 - 0.28 = 0.59 ≈ 0.6 ✓.
-const WAITING_SAT_DROP_PER_SEC = 0.007;
+// ORDER 299 — väntans avklingning står i balance.ts MOOD_BALANCE (per spelminut).
+const WAITING_SAT_DROP_PER_SEC = MOOD_BALANCE.decayPerGameMinute * GAME_MINUTES_PER_SIM_SECOND;
 
 function distance(a: Vec2, b: Vec2): number {
   const dx = a.x - b.x;
