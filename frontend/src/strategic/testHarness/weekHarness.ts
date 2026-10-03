@@ -28,6 +28,7 @@ import type { PavilionKey, ScenarioChoice, SimAction, SimulationState } from '..
 // Simuleringens tick är 0,2 s (5 Hz), samma som SimulationProvider.
 const TICK_DT = 0.2;
 import { pinsOf, type PinKind } from '../../sim/hostPins';
+import { hashKey } from '../util/hash';
 import { seatGroupsFree } from '../simulation/service';
 
 const MAX_TICKS_PER_PHASE = 200000;
@@ -81,8 +82,14 @@ function answerPinsWisely(s: SimulationState): SimulationState {
 // öppningstid och steg, eller dagen). 'halfRocket' (ORDER 296b) svarar rätt
 // på varannan raket hela vägen och fel på den andra, så att hälften av
 // raketerna klaras.
-export type ScenarioAnswer = 'best' | 'worst' | 'half' | 'halfRocket';
-function resolveAnswer(answer: ScenarioAnswer, key: number): 'best' | 'worst' {
+// ORDER 296e — 'skill' svarar rätt på varje steg med sannolikheten
+// ROCKET_SKILL (förvalt 0,75, Vision Owner 2026-10-03), dragen ur fröet,
+// raketen och steget.
+export type ScenarioAnswer = 'best' | 'worst' | 'half' | 'halfRocket' | 'skill';
+export const ROCKET_SKILL = Number(process.env.ROCKET_SKILL ?? 0.75);
+function resolveAnswer(answer: ScenarioAnswer, key: number, seed = 0): 'best' | 'worst' {
+  // Nyckeln börjar med det som skiljer (FNV sprider dåligt när bara slutet gör det).
+  if (answer === 'skill') return hashKey(seed, `${Math.round(key * 1000)}|skill`) < ROCKET_SKILL ? 'best' : 'worst';
   return answer === 'half' || answer === 'halfRocket' ? (Math.round(key) % 2 === 0 ? 'best' : 'worst') : answer;
 }
 
@@ -138,7 +145,7 @@ export function answerScenario(s: SimulationState, given: ScenarioAnswer = 'best
       // krediterna räcker till.
       let c: 0 | 1 | 2 = active.backed ? (backConfidence ?? 0) : 0;
       while (c > 0 && !canBack(s, c)) c = (c - 1) as 0 | 1 | 2;
-      return reducer(s, { type: 'ANSWER_INCIDENT', optionId: rankedStepOption(step, resolveAnswer(given, given === 'halfRocket' ? active.openedAt : active.openedAt + (active.step ?? 0)), active.struck, active.situation), confidence: c });
+      return reducer(s, { type: 'ANSWER_INCIDENT', optionId: rankedStepOption(step, resolveAnswer(given, given === 'halfRocket' ? active.openedAt : given === 'skill' ? active.openedAt + (active.step ?? 0) / 10 : active.openedAt + (active.step ?? 0), s.seed ?? 0), active.struck, active.situation), confidence: c });
     }
   }
   const answer = resolveAnswer(given, s.day.dayNumber);

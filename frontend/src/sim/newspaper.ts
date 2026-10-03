@@ -12,7 +12,7 @@
 // nedåt veckans sämsta.
 
 import { strings } from '../content/strings';
-import { NEWSPAPER, HOLIDAYS, REPUTATION, SEASON, type BusinessClassId } from './balance';
+import { NEWSPAPER, HOLIDAYS, REPUTATION, SEASON, STAR, type BusinessClassId } from './balance';
 import { calendarFor } from './calendar';
 import { BUSINESS_CLASSES } from './balance';
 import { classOptions, classSpec, meetsRequirement, requirementsFor, type EveningRecord } from './economy';
@@ -177,7 +177,7 @@ function starSection(sim: SimulationState, name: string): NewspaperSection | nul
   if (st.earnedNow) return { id: 'star', heading: tt(lang, 'star.heading'), title: tt(lang, 'star.earned.title', { name }), lines: [tt(lang, 'star.earned.body')] };
   if (st.lostNow) return { id: 'star', heading: tt(lang, 'star.heading'), title: tt(lang, 'star.lost.title', { name }), lines: [tt(lang, 'star.lost.body', { rep: pct(st.reputation), judgement: Math.round(st.judgement * REPUTATION.scale) })] };
   if (st.held) return { id: 'star', heading: tt(lang, 'star.heading'), lines: [tt(lang, 'star.kept', { name })] };
-  if (st.weeksQualified > 0) return { id: 'star', heading: tt(lang, 'star.heading'), lines: [tt(lang, 'star.close', { name })] };
+  if (st.weeksQualified > 0) return { id: 'star', heading: tt(lang, 'star.heading'), lines: [tt(lang, 'star.close', { name, n: STAR.weeksToEarn - st.weeksQualified })] };
   return null;
 }
 

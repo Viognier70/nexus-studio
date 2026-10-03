@@ -24,11 +24,14 @@ function base(): SimulationState {
 }
 
 describe('ORDER 296c — stjärnan', () => {
-  it('två veckor i rad på nivån ger stjärnan och en tredje plats i facket', () => {
+  // ORDER 296e — tre veckor i rad (STAR.weeksToEarn).
+  it('STAR.weeksToEarn veckor i rad på nivån ger stjärnan och en tredje plats i facket', () => {
     let s = base();
     expect(slotCount(s)).toBe(SHOP.slots);
-    s = week(s, STAR.reputationAtLeast, STAR.minRocketsInWeek, STAR.minRocketsInWeek);
-    expect(s.star?.held).toBe(false);
+    for (let i = 0; i < STAR.weeksToEarn - 1; i++) {
+      s = week(s, STAR.reputationAtLeast, STAR.minRocketsInWeek, STAR.minRocketsInWeek);
+      expect(s.star?.held).toBe(false);
+    }
     s = week(s, STAR.reputationAtLeast, STAR.minRocketsInWeek, STAR.minRocketsInWeek);
     expect(s.star?.held).toBe(true);
     expect(s.economy.lastSettlement?.star?.earnedNow).toBe(true);
@@ -38,8 +41,7 @@ describe('ORDER 296c — stjärnan', () => {
 
   it('en vecka under nivån tar stjärnan', () => {
     let s = base();
-    s = week(s, 0.9, 10, 10);
-    s = week(s, 0.9, 10, 10);
+    for (let i = 0; i < STAR.weeksToEarn; i++) s = week(s, 0.9, 10, 10);
     expect(s.star?.held).toBe(true);
     s = week(s, 0.9, 10, Math.floor(10 * STAR.judgementAtLeast) - 1);
     expect(s.star?.held).toBe(false);
@@ -49,12 +51,10 @@ describe('ORDER 296c — stjärnan', () => {
 
   it('utan guld i Teatern, eller med för lågt rykte, ingen stjärna', () => {
     let s: SimulationState = { ...base(), medals: { gastronomiskateatern: 'silver' } };
-    s = week(s, 0.9, 10, 10);
-    s = week(s, 0.9, 10, 10);
+    for (let i = 0; i < STAR.weeksToEarn; i++) s = week(s, 0.9, 10, 10);
     expect(s.star?.held).toBe(false);
     let t = base();
-    t = week(t, STAR.reputationAtLeast - 0.01, 10, 10);
-    t = week(t, STAR.reputationAtLeast - 0.01, 10, 10);
+    for (let i = 0; i < STAR.weeksToEarn; i++) t = week(t, STAR.reputationAtLeast - 0.01, 10, 10);
     expect(t.star?.held).toBe(false);
   });
 });

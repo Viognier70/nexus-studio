@@ -224,11 +224,11 @@ export const STRINGS = {
   // ORDER 296c — stjärnan i söndagstidningen.
   'star.heading': { sv: 'Stjärnan', en: 'The star' },
   'star.earned.title': { sv: '{name} får en stjärna', en: '{name} earns a star' },
-  'star.earned.body': { sv: 'Två veckor i rad med högt rykte och gott omdöme i servicen. Stjärnan ger en tredje plats i facket.', en: 'Two weeks in a row of a high reputation and sound judgement in service. The star adds a third slot for tomorrow.' },
+  'star.earned.body': { sv: 'Tre veckor i rad med högt rykte och gott omdöme i servicen. Stjärnan ger en tredje plats i facket.', en: 'Three weeks in a row of a high reputation and sound judgement in service. The star adds a third slot for tomorrow.' },
   'star.lost.title': { sv: '{name} förlorar stjärnan', en: '{name} loses its star' },
   'star.lost.body': { sv: 'Nivån sjönk i veckan: ryktet {rep} av 100, och {judgement} % av raketerna klarades.', en: 'The level slipped this week: reputation {rep} out of 100, and {judgement}% of the rockets were cleared.' },
   'star.kept': { sv: '{name} behåller sin stjärna en vecka till.', en: '{name} keeps its star for another week.' },
-  'star.close': { sv: 'En vecka till på samma nivå, och {name} får en stjärna.', en: 'One more week at this level, and {name} earns a star.' },
+  'star.close': { sv: '{n} veckor till på samma nivå, och {name} får en stjärna.', en: '{n} more weeks at this level, and {name} earns a star.' },
   // ORDER 296 (punkt 1) — hovmästarens kaffe på huset i kassaboken.
   'host.coffeeLedger': { sv: 'Kaffe på huset', en: 'Coffee on the house' },
   // ORDER 296 (punkt 5) — förberedelsen på morgonen.
