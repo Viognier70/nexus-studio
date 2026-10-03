@@ -10,6 +10,8 @@
 //   - linjen med lyktorna (vår gula prick med krogens namn) är borttagen: den
 //     visade bara ställningen och styrde ingenting. Mätaren som ersätter den
 //     kommer i ORDER 299.
+// ORDER 298b — när ryktet håller nere gästerna står "Lugn kväll: ryktet är
+// ännu lågt i byn" under raden, före och under kvällen.
 // Ryktet står kvar, med ändringen sedan dagen började. Vid en omkörning visas
 // "Förbi …" och kassans ljud spelas svagare.
 
@@ -25,6 +27,7 @@ import { useSimState } from '../../simulation/SimulationProvider';
 import { play } from '../sound/sound';
 import { rankedVillage } from '../../scenario/CompareScreen';
 import { RIVAL_BAND } from './hostShop';
+import { reputationHoldsGuests } from '../../simulation/arrivals';
 import type { SimulationState } from '../../types';
 import './host.css';
 
@@ -49,6 +52,11 @@ export function yesterdayRank(sim: SimulationState): number | null {
   return rows.indexOf(ours) + 1;
 }
 
+function CalmLine({ sim, lang }: { sim: SimulationState; lang: Lang }) {
+  if (!reputationHoldsGuests(sim)) return null;
+  return <div className="nx-rival-calm" data-testid="calm-evening">{tt(lang, 'calm.evening')}</div>;
+}
+
 export function RivalBand() {
   const sim = useSimState();
   if (!sim.economy.businessClass) return null;
@@ -70,6 +78,7 @@ function RivalBandBefore() {
         </div>
         <div className="nx-rival-measure">{tt(lang, 'rival.measures')}</div>
       </div>
+      <CalmLine sim={sim} lang={lang} />
     </div>
   );
 }
@@ -109,6 +118,7 @@ function RivalBandInService() {
         </div>
         {overtook && <span className="nx-rival-overtake nx-rival-overtake-static" data-testid="rival-overtake">{tt(lang, 'rival.overtake', { name: strings.village.venues[overtook] ?? overtook })}</span>}
       </div>
+      <CalmLine sim={sim} lang={lang} />
     </div>
   );
 }

@@ -1,4 +1,7 @@
-import { RISK } from '../../sim/balance';
+import { BUSINESS_CLASSES, GAME_MINUTES_PER_SIM_SECOND, GUEST_FLOOR, RISK, SITTING, TASTING } from '../../sim/balance';
+import { clockMinutes } from '../../sim/clock';
+import { hashKey } from '../util/hash';
+import { medalRank } from '../knowledge/pavilionVisit';
 import type { Rng } from '../util/rng';
 import type { DayPeriod, Guest, SimulationState } from '../types';
 import { makeGuest, nextPartyId } from './model';
@@ -281,4 +284,86 @@ export function scenarioSpawnStep(state: SimulationState): Guest | null {
   if (state.scenario.spawnedRemaining <= 0) return null;
   if (state.simTime < state.scenario.nextSpawnAt) return null;
   return makeGuest(state.simTime, true, false);
+}
+
+// ORDER 298b (Vision Owner 2026-10-03) — golvet och provsmakningen.
+// "Lågt rykte ska fortfarande ge färre gäster, men golvet blir 10 sällskap
+// per kväll" (balance.ts GUEST_FLOOR), och satsningen "Provsmakning på
+// torget" ger fler sällskap samma kväll (balance.ts TASTING).
+//
+// Båda kommer jämnt fram till GUEST_FLOOR.reachBeforeCloseMinutes före
+// stängningen. Golvet fyller bara upp skillnaden mot marknadens takt, så en
+// vanlig kväll är oförändrad. Dragningen görs med hashKey och inte med
+// servicens rng, så att marknadens gäster kommer som förut.
+
+// Ryktets del av dragningskraften: rykteskurvan gånger andelen mot byns krogar.
+export function reputationArrivalFactor(state: SimulationState): number {
+  return reputationArrivalMultiplier(state.reputation) * computeShareFactor(state.reputation, state.businessClass);
+}
+
+// Kvällens väntade gäster med det här ryktet: dagens tak gånger ryktets del
+// av dragningskraften. Taket och ryktet står stilla under dagen, så raden säger
+// samma sak på morgonen som under kvällen (vädret och världens faktorer, som
+// sätts när dörrarna öppnar, räknas inte: raden handlar om ryktet).
+export function expectedMarketGuests(state: SimulationState): number {
+  const cap = dailyGuestCap(state);
+  if (!Number.isFinite(cap)) return Number.POSITIVE_INFINITY;
+  return cap * reputationArrivalFactor(state);
+}
+
+// "Lugn kväll: ryktet är ännu lågt i byn" — när ryktet håller nere gästerna:
+// ryktet drar ner (dess del av dragningskraften är under
+// calmReputationFactorBelow), och kvällen blir tunn (marknaden väntas ge
+// färre än calmSeatsShare av rummets platser). En kväll när rummet ändå
+// fylls står raden inte, och då lönar sig inte heller provsmakningen.
+export function reputationHoldsGuests(state: SimulationState): boolean {
+  const cls = state.economy?.businessClass;
+  // Söndag är stängt: ingen kväll att vara lugn (och marknaden ger då 0).
+  if (!cls || !calendarFor(state.day.dayNumber).isServiceDay) return false;
+  const seats = BUSINESS_CLASSES.list.find((c) => c.id === cls)?.seats ?? 0;
+  return reputationArrivalFactor(state) < GUEST_FLOOR.calmReputationFactorBelow && expectedMarketGuests(state) < GUEST_FLOOR.calmSeatsShare * seats;
+}
+
+// Provsmakningens sällskap i kväll: grunden och ett per medaljsteg i
+// Stensöta och Kalastorget.
+export function tastingPartiesFor(state: Pick<SimulationState, 'medals'>): number {
+  const steps = TASTING.pavilions.reduce((a, p) => a + medalRank(state.medals[p]), 0);
+  return TASTING.baseParties + TASTING.partiesPerMedalStep * steps;
+}
+
+export function tastingTonight(state: SimulationState): boolean {
+  return (state.day.pickedActivityIds ?? []).includes(TASTING.activityId);
+}
+
+function pacedMinutesLeft(state: SimulationState): number | null {
+  // doorsOpenAt nollställs när dörrarna har öppnat (reducer.ts).
+  if (state.day.period !== 'dinner' || !state.day.doorsOpenedThisService) return null;
+  if (!Number.isFinite(dailyGuestCap(state))) return null;
+  const left = SITTING.serviceEndHour * 60 - GUEST_FLOOR.reachBeforeCloseMinutes - clockMinutes(state);
+  return left > 0 ? left : null;
+}
+
+// Sannolikheten per tick att ett sällskap kommer i en takt som når `missing`
+// sällskap före tiden (spelminuter omräknade till simulerade 5 Hz-tick).
+function pacedProbability(missing: number, minutesLeft: number): number {
+  return Math.min(1, (missing / Math.max(1, minutesLeft)) * GAME_MINUTES_PER_SIM_SECOND / 5);
+}
+
+export function pacedArrivals(state: SimulationState): { floor: Guest[]; tasting: Guest[] } {
+  const none = { floor: [] as Guest[], tasting: [] as Guest[] };
+  const left = pacedMinutesLeft(state);
+  if (left === null) return none;
+  const tick = Math.round(state.simTime * 5);
+  const seed = state.seed ?? 0;
+  const out = { floor: [] as Guest[], tasting: [] as Guest[] };
+  const missing = GUEST_FLOOR.partiesPerEvening - (state.day.partiesTonight ?? 0);
+  if (missing > 0) {
+    const p = Math.max(0, pacedProbability(missing, left) - arrivalProbability(state));
+    if (p > 0 && hashKey(seed, `${tick}|floor`) < p) out.floor.push(makeGuest(state.simTime, false, false));
+  }
+  if (tastingTonight(state)) {
+    const due = tastingPartiesFor(state) - (state.day.tastingPartiesTonight ?? 0);
+    if (due > 0 && hashKey(seed, `${tick}|tasting`) < pacedProbability(due, left)) out.tasting.push(makeGuest(state.simTime, false, false));
+  }
+  return out;
 }

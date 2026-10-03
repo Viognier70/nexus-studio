@@ -1,0 +1,1899 @@
+{
+  "definition": "Stjärnans regel räknad på stjärnspelarens veckor (40 säsonger per skicklighet). Målen (Vision Owner 2026-10-03): 0,85 per steg minst 70 % i snitt vecka 5–6 (här 5–6,5), 0,75 20–40 %, 0,6 aldrig. measure: raketer = andel klarade raketer, steg = andel rätta steg.",
+  "level": {
+    "0.85": {
+      "reputation": 0.335,
+      "judgement": 0.649,
+      "stepShare": 0.862,
+      "rockets": 15.744
+    },
+    "0.75": {
+      "reputation": 0.3,
+      "judgement": 0.444,
+      "stepShare": 0.752,
+      "rockets": 13.934
+    },
+    "0.6": {
+      "reputation": 0.286,
+      "judgement": 0.236,
+      "stepShare": 0.598,
+      "rockets": 12.256
+    }
+  },
+  "meetsGoals": [
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.2,
+      "judgementAtLeast": 0.4,
+      "skill085": {
+        "share": 0.78,
+        "meanWeek": 5.61
+      },
+      "skill075": {
+        "share": 0.38,
+        "meanWeek": 5.8
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": true
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.2,
+      "judgementAtLeast": 0.45,
+      "skill085": {
+        "share": 0.75,
+        "meanWeek": 5.63
+      },
+      "skill075": {
+        "share": 0.28,
+        "meanWeek": 5.55
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": true
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.2,
+      "judgementAtLeast": 0.74,
+      "skill085": {
+        "share": 0.8,
+        "meanWeek": 5.59
+      },
+      "skill075": {
+        "share": 0.38,
+        "meanWeek": 5.67
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": true
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.2,
+      "judgementAtLeast": 0.76,
+      "skill085": {
+        "share": 0.75,
+        "meanWeek": 5.67
+      },
+      "skill075": {
+        "share": 0.35,
+        "meanWeek": 5.5
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": true
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.2,
+      "judgementAtLeast": 0.78,
+      "skill085": {
+        "share": 0.7,
+        "meanWeek": 5.54
+      },
+      "skill075": {
+        "share": 0.23,
+        "meanWeek": 5.44
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": true
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.25,
+      "judgementAtLeast": 0.7,
+      "skill085": {
+        "share": 0.75,
+        "meanWeek": 5.87
+      },
+      "skill075": {
+        "share": 0.2,
+        "meanWeek": 5.75
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": true
+    }
+  ],
+  "rows": [
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.2,
+      "judgementAtLeast": 0.4,
+      "skill085": {
+        "share": 0.78,
+        "meanWeek": 5.61
+      },
+      "skill075": {
+        "share": 0.38,
+        "meanWeek": 5.8
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": true
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.2,
+      "judgementAtLeast": 0.45,
+      "skill085": {
+        "share": 0.75,
+        "meanWeek": 5.63
+      },
+      "skill075": {
+        "share": 0.28,
+        "meanWeek": 5.55
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": true
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.2,
+      "judgementAtLeast": 0.5,
+      "skill085": {
+        "share": 0.68,
+        "meanWeek": 5.44
+      },
+      "skill075": {
+        "share": 0.15,
+        "meanWeek": 5.83
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.2,
+      "judgementAtLeast": 0.55,
+      "skill085": {
+        "share": 0.63,
+        "meanWeek": 5.56
+      },
+      "skill075": {
+        "share": 0.07,
+        "meanWeek": 5.67
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.2,
+      "judgementAtLeast": 0.6,
+      "skill085": {
+        "share": 0.47,
+        "meanWeek": 5.68
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.2,
+      "judgementAtLeast": 0.65,
+      "skill085": {
+        "share": 0.23,
+        "meanWeek": 6.11
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.2,
+      "judgementAtLeast": 0.7,
+      "skill085": {
+        "share": 0.1,
+        "meanWeek": 6.5
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.25,
+      "judgementAtLeast": 0.4,
+      "skill085": {
+        "share": 0.7,
+        "meanWeek": 5.93
+      },
+      "skill075": {
+        "share": 0.13,
+        "meanWeek": 5.6
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.25,
+      "judgementAtLeast": 0.45,
+      "skill085": {
+        "share": 0.68,
+        "meanWeek": 5.89
+      },
+      "skill075": {
+        "share": 0.13,
+        "meanWeek": 5.6
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.25,
+      "judgementAtLeast": 0.5,
+      "skill085": {
+        "share": 0.63,
+        "meanWeek": 5.88
+      },
+      "skill075": {
+        "share": 0.1,
+        "meanWeek": 5.75
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.25,
+      "judgementAtLeast": 0.55,
+      "skill085": {
+        "share": 0.57,
+        "meanWeek": 5.96
+      },
+      "skill075": {
+        "share": 0.05,
+        "meanWeek": 5.5
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.25,
+      "judgementAtLeast": 0.6,
+      "skill085": {
+        "share": 0.45,
+        "meanWeek": 5.89
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.25,
+      "judgementAtLeast": 0.65,
+      "skill085": {
+        "share": 0.23,
+        "meanWeek": 6.11
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.25,
+      "judgementAtLeast": 0.7,
+      "skill085": {
+        "share": 0.1,
+        "meanWeek": 6.5
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.28,
+      "judgementAtLeast": 0.4,
+      "skill085": {
+        "share": 0.53,
+        "meanWeek": 6.29
+      },
+      "skill075": {
+        "share": 0.1,
+        "meanWeek": 5.5
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.28,
+      "judgementAtLeast": 0.45,
+      "skill085": {
+        "share": 0.53,
+        "meanWeek": 6.29
+      },
+      "skill075": {
+        "share": 0.1,
+        "meanWeek": 5.5
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.28,
+      "judgementAtLeast": 0.5,
+      "skill085": {
+        "share": 0.5,
+        "meanWeek": 6.2
+      },
+      "skill075": {
+        "share": 0.07,
+        "meanWeek": 5.67
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.28,
+      "judgementAtLeast": 0.55,
+      "skill085": {
+        "share": 0.47,
+        "meanWeek": 6.26
+      },
+      "skill075": {
+        "share": 0.05,
+        "meanWeek": 6
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.28,
+      "judgementAtLeast": 0.6,
+      "skill085": {
+        "share": 0.35,
+        "meanWeek": 6.14
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.28,
+      "judgementAtLeast": 0.65,
+      "skill085": {
+        "share": 0.13,
+        "meanWeek": 6.4
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.28,
+      "judgementAtLeast": 0.7,
+      "skill085": {
+        "share": 0.03,
+        "meanWeek": 7
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.3,
+      "judgementAtLeast": 0.4,
+      "skill085": {
+        "share": 0.42,
+        "meanWeek": 6.41
+      },
+      "skill075": {
+        "share": 0.05,
+        "meanWeek": 5.5
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.3,
+      "judgementAtLeast": 0.45,
+      "skill085": {
+        "share": 0.42,
+        "meanWeek": 6.41
+      },
+      "skill075": {
+        "share": 0.05,
+        "meanWeek": 5.5
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.3,
+      "judgementAtLeast": 0.5,
+      "skill085": {
+        "share": 0.4,
+        "meanWeek": 6.31
+      },
+      "skill075": {
+        "share": 0.03,
+        "meanWeek": 6
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.3,
+      "judgementAtLeast": 0.55,
+      "skill085": {
+        "share": 0.33,
+        "meanWeek": 6.38
+      },
+      "skill075": {
+        "share": 0.03,
+        "meanWeek": 6
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.3,
+      "judgementAtLeast": 0.6,
+      "skill085": {
+        "share": 0.23,
+        "meanWeek": 6.22
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.3,
+      "judgementAtLeast": 0.65,
+      "skill085": {
+        "share": 0.07,
+        "meanWeek": 5.67
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.3,
+      "judgementAtLeast": 0.7,
+      "skill085": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.32,
+      "judgementAtLeast": 0.4,
+      "skill085": {
+        "share": 0.33,
+        "meanWeek": 6.54
+      },
+      "skill075": {
+        "share": 0.05,
+        "meanWeek": 5.5
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.32,
+      "judgementAtLeast": 0.45,
+      "skill085": {
+        "share": 0.33,
+        "meanWeek": 6.54
+      },
+      "skill075": {
+        "share": 0.05,
+        "meanWeek": 5.5
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.32,
+      "judgementAtLeast": 0.5,
+      "skill085": {
+        "share": 0.3,
+        "meanWeek": 6.42
+      },
+      "skill075": {
+        "share": 0.03,
+        "meanWeek": 6
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.32,
+      "judgementAtLeast": 0.55,
+      "skill085": {
+        "share": 0.23,
+        "meanWeek": 6.33
+      },
+      "skill075": {
+        "share": 0.03,
+        "meanWeek": 6
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.32,
+      "judgementAtLeast": 0.6,
+      "skill085": {
+        "share": 0.15,
+        "meanWeek": 6
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.32,
+      "judgementAtLeast": 0.65,
+      "skill085": {
+        "share": 0.05,
+        "meanWeek": 5.5
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.32,
+      "judgementAtLeast": 0.7,
+      "skill085": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.34,
+      "judgementAtLeast": 0.4,
+      "skill085": {
+        "share": 0.28,
+        "meanWeek": 6.27
+      },
+      "skill075": {
+        "share": 0.03,
+        "meanWeek": 6
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.34,
+      "judgementAtLeast": 0.45,
+      "skill085": {
+        "share": 0.28,
+        "meanWeek": 6.27
+      },
+      "skill075": {
+        "share": 0.03,
+        "meanWeek": 6
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.34,
+      "judgementAtLeast": 0.5,
+      "skill085": {
+        "share": 0.28,
+        "meanWeek": 6.27
+      },
+      "skill075": {
+        "share": 0.03,
+        "meanWeek": 6
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.34,
+      "judgementAtLeast": 0.55,
+      "skill085": {
+        "share": 0.2,
+        "meanWeek": 6.13
+      },
+      "skill075": {
+        "share": 0.03,
+        "meanWeek": 6
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.34,
+      "judgementAtLeast": 0.6,
+      "skill085": {
+        "share": 0.15,
+        "meanWeek": 6
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.34,
+      "judgementAtLeast": 0.65,
+      "skill085": {
+        "share": 0.03,
+        "meanWeek": 4
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.34,
+      "judgementAtLeast": 0.7,
+      "skill085": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.36,
+      "judgementAtLeast": 0.4,
+      "skill085": {
+        "share": 0.17,
+        "meanWeek": 6.86
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.36,
+      "judgementAtLeast": 0.45,
+      "skill085": {
+        "share": 0.17,
+        "meanWeek": 6.86
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.36,
+      "judgementAtLeast": 0.5,
+      "skill085": {
+        "share": 0.17,
+        "meanWeek": 6.86
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.36,
+      "judgementAtLeast": 0.55,
+      "skill085": {
+        "share": 0.15,
+        "meanWeek": 6.83
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.36,
+      "judgementAtLeast": 0.6,
+      "skill085": {
+        "share": 0.1,
+        "meanWeek": 7
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.36,
+      "judgementAtLeast": 0.65,
+      "skill085": {
+        "share": 0.03,
+        "meanWeek": 7
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "raketer",
+      "reputationAtLeast": 0.36,
+      "judgementAtLeast": 0.7,
+      "skill085": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.2,
+      "judgementAtLeast": 0.7,
+      "skill085": {
+        "share": 0.82,
+        "meanWeek": 5.58
+      },
+      "skill075": {
+        "share": 0.55,
+        "meanWeek": 5.73
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.2,
+      "judgementAtLeast": 0.72,
+      "skill085": {
+        "share": 0.8,
+        "meanWeek": 5.53
+      },
+      "skill075": {
+        "share": 0.42,
+        "meanWeek": 5.71
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.2,
+      "judgementAtLeast": 0.74,
+      "skill085": {
+        "share": 0.8,
+        "meanWeek": 5.59
+      },
+      "skill075": {
+        "share": 0.38,
+        "meanWeek": 5.67
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": true
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.2,
+      "judgementAtLeast": 0.76,
+      "skill085": {
+        "share": 0.75,
+        "meanWeek": 5.67
+      },
+      "skill075": {
+        "share": 0.35,
+        "meanWeek": 5.5
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": true
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.2,
+      "judgementAtLeast": 0.78,
+      "skill085": {
+        "share": 0.7,
+        "meanWeek": 5.54
+      },
+      "skill075": {
+        "share": 0.23,
+        "meanWeek": 5.44
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": true
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.2,
+      "judgementAtLeast": 0.8,
+      "skill085": {
+        "share": 0.68,
+        "meanWeek": 5.44
+      },
+      "skill075": {
+        "share": 0.07,
+        "meanWeek": 5.67
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.2,
+      "judgementAtLeast": 0.82,
+      "skill085": {
+        "share": 0.57,
+        "meanWeek": 5.57
+      },
+      "skill075": {
+        "share": 0.07,
+        "meanWeek": 6
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.25,
+      "judgementAtLeast": 0.7,
+      "skill085": {
+        "share": 0.75,
+        "meanWeek": 5.87
+      },
+      "skill075": {
+        "share": 0.2,
+        "meanWeek": 5.75
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": true
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.25,
+      "judgementAtLeast": 0.72,
+      "skill085": {
+        "share": 0.72,
+        "meanWeek": 5.83
+      },
+      "skill075": {
+        "share": 0.17,
+        "meanWeek": 5.71
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.25,
+      "judgementAtLeast": 0.74,
+      "skill085": {
+        "share": 0.72,
+        "meanWeek": 5.9
+      },
+      "skill075": {
+        "share": 0.13,
+        "meanWeek": 5.6
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.25,
+      "judgementAtLeast": 0.76,
+      "skill085": {
+        "share": 0.68,
+        "meanWeek": 5.96
+      },
+      "skill075": {
+        "share": 0.13,
+        "meanWeek": 5.6
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.25,
+      "judgementAtLeast": 0.78,
+      "skill085": {
+        "share": 0.65,
+        "meanWeek": 5.96
+      },
+      "skill075": {
+        "share": 0.1,
+        "meanWeek": 5.75
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.25,
+      "judgementAtLeast": 0.8,
+      "skill085": {
+        "share": 0.63,
+        "meanWeek": 5.88
+      },
+      "skill075": {
+        "share": 0.05,
+        "meanWeek": 5.5
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.25,
+      "judgementAtLeast": 0.82,
+      "skill085": {
+        "share": 0.55,
+        "meanWeek": 6
+      },
+      "skill075": {
+        "share": 0.05,
+        "meanWeek": 6
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.28,
+      "judgementAtLeast": 0.7,
+      "skill085": {
+        "share": 0.6,
+        "meanWeek": 6.17
+      },
+      "skill075": {
+        "share": 0.17,
+        "meanWeek": 5.71
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.28,
+      "judgementAtLeast": 0.72,
+      "skill085": {
+        "share": 0.57,
+        "meanWeek": 6.13
+      },
+      "skill075": {
+        "share": 0.15,
+        "meanWeek": 5.67
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.28,
+      "judgementAtLeast": 0.74,
+      "skill085": {
+        "share": 0.55,
+        "meanWeek": 6.23
+      },
+      "skill075": {
+        "share": 0.1,
+        "meanWeek": 5.5
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.28,
+      "judgementAtLeast": 0.76,
+      "skill085": {
+        "share": 0.53,
+        "meanWeek": 6.29
+      },
+      "skill075": {
+        "share": 0.1,
+        "meanWeek": 5.5
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.28,
+      "judgementAtLeast": 0.78,
+      "skill085": {
+        "share": 0.53,
+        "meanWeek": 6.29
+      },
+      "skill075": {
+        "share": 0.07,
+        "meanWeek": 5.67
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.28,
+      "judgementAtLeast": 0.8,
+      "skill085": {
+        "share": 0.5,
+        "meanWeek": 6.2
+      },
+      "skill075": {
+        "share": 0.05,
+        "meanWeek": 6
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.28,
+      "judgementAtLeast": 0.82,
+      "skill085": {
+        "share": 0.45,
+        "meanWeek": 6.33
+      },
+      "skill075": {
+        "share": 0.05,
+        "meanWeek": 6
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.3,
+      "judgementAtLeast": 0.7,
+      "skill085": {
+        "share": 0.47,
+        "meanWeek": 6.37
+      },
+      "skill075": {
+        "share": 0.13,
+        "meanWeek": 5.8
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.3,
+      "judgementAtLeast": 0.72,
+      "skill085": {
+        "share": 0.45,
+        "meanWeek": 6.33
+      },
+      "skill075": {
+        "share": 0.1,
+        "meanWeek": 5.75
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.3,
+      "judgementAtLeast": 0.74,
+      "skill085": {
+        "share": 0.42,
+        "meanWeek": 6.41
+      },
+      "skill075": {
+        "share": 0.05,
+        "meanWeek": 5.5
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.3,
+      "judgementAtLeast": 0.76,
+      "skill085": {
+        "share": 0.42,
+        "meanWeek": 6.41
+      },
+      "skill075": {
+        "share": 0.05,
+        "meanWeek": 5.5
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.3,
+      "judgementAtLeast": 0.78,
+      "skill085": {
+        "share": 0.4,
+        "meanWeek": 6.44
+      },
+      "skill075": {
+        "share": 0.03,
+        "meanWeek": 6
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.3,
+      "judgementAtLeast": 0.8,
+      "skill085": {
+        "share": 0.38,
+        "meanWeek": 6.33
+      },
+      "skill075": {
+        "share": 0.03,
+        "meanWeek": 6
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.3,
+      "judgementAtLeast": 0.82,
+      "skill085": {
+        "share": 0.3,
+        "meanWeek": 6.5
+      },
+      "skill075": {
+        "share": 0.03,
+        "meanWeek": 6
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.32,
+      "judgementAtLeast": 0.7,
+      "skill085": {
+        "share": 0.38,
+        "meanWeek": 6.47
+      },
+      "skill075": {
+        "share": 0.13,
+        "meanWeek": 5.8
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.32,
+      "judgementAtLeast": 0.72,
+      "skill085": {
+        "share": 0.35,
+        "meanWeek": 6.43
+      },
+      "skill075": {
+        "share": 0.1,
+        "meanWeek": 5.75
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.32,
+      "judgementAtLeast": 0.74,
+      "skill085": {
+        "share": 0.33,
+        "meanWeek": 6.54
+      },
+      "skill075": {
+        "share": 0.05,
+        "meanWeek": 5.5
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.32,
+      "judgementAtLeast": 0.76,
+      "skill085": {
+        "share": 0.33,
+        "meanWeek": 6.54
+      },
+      "skill075": {
+        "share": 0.05,
+        "meanWeek": 5.5
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.32,
+      "judgementAtLeast": 0.78,
+      "skill085": {
+        "share": 0.33,
+        "meanWeek": 6.54
+      },
+      "skill075": {
+        "share": 0.03,
+        "meanWeek": 6
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.32,
+      "judgementAtLeast": 0.8,
+      "skill085": {
+        "share": 0.3,
+        "meanWeek": 6.42
+      },
+      "skill075": {
+        "share": 0.03,
+        "meanWeek": 6
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.32,
+      "judgementAtLeast": 0.82,
+      "skill085": {
+        "share": 0.2,
+        "meanWeek": 6.5
+      },
+      "skill075": {
+        "share": 0.03,
+        "meanWeek": 6
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.34,
+      "judgementAtLeast": 0.7,
+      "skill085": {
+        "share": 0.3,
+        "meanWeek": 6.17
+      },
+      "skill075": {
+        "share": 0.05,
+        "meanWeek": 5
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.34,
+      "judgementAtLeast": 0.72,
+      "skill085": {
+        "share": 0.3,
+        "meanWeek": 6.17
+      },
+      "skill075": {
+        "share": 0.05,
+        "meanWeek": 5
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.34,
+      "judgementAtLeast": 0.74,
+      "skill085": {
+        "share": 0.28,
+        "meanWeek": 6.27
+      },
+      "skill075": {
+        "share": 0.03,
+        "meanWeek": 6
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.34,
+      "judgementAtLeast": 0.76,
+      "skill085": {
+        "share": 0.28,
+        "meanWeek": 6.27
+      },
+      "skill075": {
+        "share": 0.03,
+        "meanWeek": 6
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.34,
+      "judgementAtLeast": 0.78,
+      "skill085": {
+        "share": 0.28,
+        "meanWeek": 6.27
+      },
+      "skill075": {
+        "share": 0.03,
+        "meanWeek": 6
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.34,
+      "judgementAtLeast": 0.8,
+      "skill085": {
+        "share": 0.28,
+        "meanWeek": 6.27
+      },
+      "skill075": {
+        "share": 0.03,
+        "meanWeek": 6
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.34,
+      "judgementAtLeast": 0.82,
+      "skill085": {
+        "share": 0.17,
+        "meanWeek": 6.29
+      },
+      "skill075": {
+        "share": 0.03,
+        "meanWeek": 6
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.36,
+      "judgementAtLeast": 0.7,
+      "skill085": {
+        "share": 0.2,
+        "meanWeek": 6.63
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.36,
+      "judgementAtLeast": 0.72,
+      "skill085": {
+        "share": 0.2,
+        "meanWeek": 6.63
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.36,
+      "judgementAtLeast": 0.74,
+      "skill085": {
+        "share": 0.17,
+        "meanWeek": 6.86
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.36,
+      "judgementAtLeast": 0.76,
+      "skill085": {
+        "share": 0.17,
+        "meanWeek": 6.86
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.36,
+      "judgementAtLeast": 0.78,
+      "skill085": {
+        "share": 0.17,
+        "meanWeek": 6.86
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.36,
+      "judgementAtLeast": 0.8,
+      "skill085": {
+        "share": 0.17,
+        "meanWeek": 6.86
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    },
+    {
+      "measure": "steg",
+      "reputationAtLeast": 0.36,
+      "judgementAtLeast": 0.82,
+      "skill085": {
+        "share": 0.13,
+        "meanWeek": 7.2
+      },
+      "skill075": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "skill06": {
+        "share": 0,
+        "meanWeek": null
+      },
+      "meetsGoals": false
+    }
+  ]
+}

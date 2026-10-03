@@ -294,6 +294,10 @@ export const STRINGS = {
   'rival.noGuests': { sv: 'Väntar på gäster', en: 'Waiting for guests' },
   'rival.yesterday': { sv: 'I går: {rank} i byn', en: 'Yesterday: {rank} in the village' },
   'rival.opens': { sv: 'Byn öppnar {time}', en: 'The village opens at {time}' },
+  // ORDER 298b — när ryktet håller nere gästerna (arrivals.ts reputationHoldsGuests),
+  // och provsmakningens sällskap med spelarens medaljer.
+  'calm.evening': { sv: 'Lugn kväll: ryktet är ännu lågt i byn', en: 'A quiet evening: your name is still small in the village' },
+  'tasting.parties': { sv: '{n} sällskap till i kväll. Fler med medaljer i Stensöta och Kalastorget.', en: '{n} more parties tonight. More with medals in Stensöta and Kalastorget.' },
   // ORDER 298 — kvällskassans prognos.
   'till.forecast': { sv: 'I den här takten: {n}', en: 'At this pace: {n}' },
   'rival.overtake': { sv: 'Förbi {name}', en: 'Past {name}' },
@@ -1710,6 +1714,10 @@ export const TABLE = {
     'compost-audit': {
       name: { sv: 'Genomgång av kökets kompost', en: 'Review of the kitchen compost' },
       description: { sv: 'Gå igenom kärlen och flödet i förberedelsen. Små ändringar håller när någon har ett öga på dem.', en: 'Go through the bins and the flow in the prep. Small changes hold when someone keeps an eye on them.' }
+    },
+    'square-tasting': {
+      name: { sv: 'Provsmakning på torget', en: 'A tasting on the square' },
+      description: { sv: 'Ett bord på torget med vinet och något att äta till. Den som smakar kommer in i kväll.', en: 'A table on the square with the wine and a bite to go with it. Those who taste come in tonight.' }
     },
     'book-dj': {
       name: { sv: 'DJ i kväll', en: 'A DJ tonight' },

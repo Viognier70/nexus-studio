@@ -79,7 +79,7 @@ import { tickDjRound } from '../../sim/satsningar';
 import { applyMiseAtDoors, hirePrepHand, tickPrepBacklog } from '../../sim/miseEnPlace';
 import { abilityUnlocked, creditsOf, setSlot, shopOf } from '../../sim/shop';
 import { answerPin, comp, moveHelp, seatPartyNow, tickPins, upsell } from '../../sim/hostPins';
-import { arrivalAttraction, maybeSpawnGuest, scenarioSpawnStep, walkAwayProbability } from './arrivals';
+import { arrivalAttraction, maybeSpawnGuest, pacedArrivals, scenarioSpawnStep, walkAwayProbability } from './arrivals';
 import { planScenariosForService, scheduleScenarioTriggerTimes } from './day';
 import { revenuePerGuest } from './economics';
 import { poolArrivals, settleVillage, villageOf } from '../../sim/village';
@@ -1465,6 +1465,8 @@ function openService(
     weather,
     waitingAtOpening,
     doorsOpenedThisService: false,
+    partiesTonight: 0,
+    tastingPartiesTonight: 0,
     worldFactors,
     // ORDER 046 §1 — new service opens with a clean collapse slate.
     serviceCollapsed: false,
@@ -2567,6 +2569,14 @@ function advanceTick(state: SimulationState): SimulationState {
     if (wave.all > 0) {
       draft.day = { ...draft.day, arrivalsToday: (draft.day.arrivalsToday ?? 0) + wave.all };
     }
+    // ORDER 298b — golvet på tio sällskap och provsmakningen på torget
+    // (arrivals.ts pacedArrivals), utöver marknadens tak.
+    const paced = pacedArrivals(draft);
+    for (const [list, counter] of [[paced.floor, 'partiesTonight'], [paced.tasting, 'tastingPartiesTonight']] as const) {
+      const extra = admitToQueue(draft, list, counter);
+      for (const g of extra.admitted) draft.guests.push(g);
+      if (extra.all > 0) draft.day = { ...draft.day, arrivalsToday: (draft.day.arrivalsToday ?? 0) + extra.all };
+    }
   }
 
   // Scenario spawning.
@@ -2772,7 +2782,7 @@ function advanceTick(state: SimulationState): SimulationState {
       const walkAwayCeil = walkAwayProbability(draft);
       // ORDER 265 — de som väntar vid dörren räknas också mot marknadens tak.
       const waitingAllowed = Math.max(0, Math.min(draft.day.waitingAtOpening, dailyGuestCap(draft) - poolArrivals(draft.day)));
-      draft.day = { ...draft.day, arrivalsToday: (draft.day.arrivalsToday ?? 0) + waitingAllowed };
+      draft.day = { ...draft.day, arrivalsToday: (draft.day.arrivalsToday ?? 0) + waitingAllowed, partiesTonight: (draft.day.partiesTonight ?? 0) + waitingAllowed };
       for (let i = 0; i < waitingAllowed; i++) {
         const walkAway = rng.chance(walkAwayCeil);
         draft.guests.push(makeGuest(draft.simTime, false, walkAway));
@@ -3821,8 +3831,11 @@ function mentorCommentFor(
 // ORDER 296b — kön har ett tak (balance.ts QUEUE_CAP). Ett sällskap som når
 // dörren när kön redan har maxParties sällskap väljer en annan krog: det
 // kommer inte in och kostar inget rykte, men räknas i day.turnedAwayFull.
-function admitToQueue(draft: SimulationState, arriving: Guest[]): { admitted: Guest[]; all: number } {
+function admitToQueue(draft: SimulationState, arriving: Guest[], counter: 'partiesTonight' | 'tastingPartiesTonight' = 'partiesTonight'): { admitted: Guest[]; all: number } {
   if (arriving.length === 0) return { admitted: arriving, all: 0 };
+  // ORDER 298b — kvällens sällskap mot golvet (provsmakningens för sig).
+  const arrivingParties = new Set(arriving.map((g) => g.partyId ?? g.id)).size;
+  draft.day = { ...draft.day, [counter]: (draft.day[counter] ?? 0) + arrivingParties };
   const parties = new Set<string>();
   for (const g of draft.guests) if (g.state === 'waiting' || g.state === 'arriving') parties.add(g.partyId ?? g.id);
   const admitted: Guest[] = [];

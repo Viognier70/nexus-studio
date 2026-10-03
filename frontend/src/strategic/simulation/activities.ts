@@ -4,7 +4,7 @@
 // named work carrying visible three-column effects.
 
 import { calendarFor } from '../../sim/calendar';
-import { EVENING_ECONOMY, WEEK } from '../../sim/balance';
+import { EVENING_ECONOMY, TASTING, WEEK } from '../../sim/balance';
 import type { SustainabilityKey } from '../types';
 import { strings } from '../../content/strings';
 
@@ -79,6 +79,16 @@ export const ACTIVITY_CATALOGUE: readonly Activity[] = [
     name: 'A DJ tonight',
     description: 'Music from nine o’clock, and everyone seated orders another glass. Buy wine for it. It pays on a full evening, and most when it isn’t every evening.',
     costSek: EVENING_ECONOMY.djCostSek,
+    effect: { economic: 0, social: 0.01, ecological: 0 },
+    availability: 'always'
+  },
+  // ORDER 298b — provsmakningen på torget: fler sällskap i kväll
+  // (strategic/simulation/arrivals.ts pacedArrivals), priset i balance.ts TASTING.
+  {
+    id: TASTING.activityId,
+    name: 'A tasting on the square',
+    description: 'A table on the square with the wine and a bite to go with it. Those who taste come in tonight.',
+    costSek: TASTING.costSek,
     effect: { economic: 0, social: 0.01, ecological: 0 },
     availability: 'always'
   },
