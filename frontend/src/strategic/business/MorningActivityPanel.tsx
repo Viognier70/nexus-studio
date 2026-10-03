@@ -20,12 +20,21 @@ import { strings } from '../../content/strings';
 import { scheduleSlotsUsed } from '../knowledge/pavilionVisit';
 import type { Activity } from '../simulation/activities';
 import { NxIcon, ACTIVITY_ICON } from '../ui/screens/icons';
+import { t as tt } from '../../content/nexusStrings';
+import { useLanguage } from '../../content/language';
+import { TASTING } from '../../sim/balance';
+import { reputationHoldsGuests, tastingPartiesFor } from '../simulation/arrivals';
 import '../ui/screens/screens.css';
 
 export function MorningActivityPanel() {
   const sim = useSimState();
   const dispatch = useSimDispatch();
+  const lang = useLanguage();
   if (sim.day.period !== 'morning') return null;
+  // ORDER 298b (Vision Owner 2026-10-03): "Lugn kväll" står redan på
+  // morgonen, bredvid provsmakningen, "så att spelaren ser både orsaken och
+  // vad hon kan göra åt den".
+  const calm = reputationHoldsGuests(sim);
 
   // ORDER 263/264 — schemaplatserna kommer från kalendern (2, söndag 4)
   // och delas med paviljongsbesöken.
@@ -41,11 +50,12 @@ export function MorningActivityPanel() {
 
   return (
     <div className="nx" aria-label={strings.panels.activityEffects.panelAria} data-testid="morning-activities">
-      {ACTIVITY_CATALOGUE.map((a) => {
+      {(calm ? [...ACTIVITY_CATALOGUE].sort((a, b) => Number(b.id === TASTING.activityId) - Number(a.id === TASTING.activityId)) : ACTIVITY_CATALOGUE).map((a) => {
         const picked = sim.day.pickedActivityIds.includes(a.id);
         const gated = isWeeklyGated(a);
         const disabled = !picked && (atCap || gated);
-        return (
+        const tasting = a.id === TASTING.activityId;
+        const row = (
           <button
             key={a.id}
             type="button"
@@ -66,9 +76,17 @@ export function MorningActivityPanel() {
                 {activityDescription(a)}
                 {a.availability === 'weekly' && <> · {strings.morning.weekly}</>}
               </span>
+              {tasting && <span className="nxs-row-sub" style={{ display: 'block' }} data-testid="tasting-parties" data-parties={tastingPartiesFor(sim)}>{tt(lang, 'tasting.parties', { n: tastingPartiesFor(sim) })}</span>}
             </span>
             {picked && <span className="nx-label nx-accent-text nxs-tag">{strings.screens.morning.picked}</span>}
           </button>
+        );
+        if (!tasting || !calm) return row;
+        return (
+          <div key={a.id} className="nx-calm-group" data-testid="calm-morning">
+            <div className="nx-calm-evening" data-testid="calm-evening">{tt(lang, 'calm.evening')}</div>
+            {row}
+          </div>
         );
       })}
     </div>

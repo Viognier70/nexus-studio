@@ -27,6 +27,8 @@ import type { MedalLevelId, PavilionKey, SimAction, SimulationState } from '../.
 import { misePlan } from '../../../sim/miseEnPlace';
 import { EXAM } from '../../../sim/balance';
 import { hashKey } from '../../util/hash';
+import { reputationHoldsGuests } from '../../simulation/arrivals';
+import { TASTING } from '../../../sim/balance';
 
 type PlayerId = 'mentorn' | 'klok' | 'per' | 'stjarna' | 'rimlig' | 'halva' | 'halvbra' | 'slarvig';
 // Den rimliga köper baspaketet bara när lagret inte räcker till bokningen
@@ -92,6 +94,15 @@ const PLANS: Record<PlayerId, (s: SimulationState) => MorningPlan> = {
   slarvig: () => weakMorning()
 };
 
+// ORDER 298b — KARNAN_TASTING=1: spelaren köper "Provsmakning på torget" de
+// morgnar raden "Lugn kväll" står (arrivals.ts reputationHoldsGuests), som
+// morgonens skärm föreslår.
+const TASTING_ON = process.env.KARNAN_TASTING === '1';
+function withTasting(s: SimulationState, plan: MorningPlan): MorningPlan {
+  if (!TASTING_ON || !reputationHoldsGuests(s)) return plan;
+  return { ...plan, activities: [...(plan.activities ?? []), TASTING.activityId] };
+}
+
 interface Week { week: number; credits: number; resultSek: number; revenueSek: number; rentSek: number; wagesSek: number; cashEnd: number; targetSek: number; targetHit: boolean; renegotiatedNow: boolean; closedNow: boolean }
 interface Morning { week: number; weekday: string; needMin: number; capacityMin: number; backlogMin: number; hand: boolean; booked: number; rep: number }
 
@@ -107,10 +118,12 @@ function season(seed: number, player: PlayerId, weeks: number, start: number | n
   // Teatern, och nivån vid varje avräkning.
   let starWeek: number | null = null;
   let goldWeek: number | null = null;
+  let tastings = 0;
   const starWeeks: { week: number; held: boolean; reputation: number; judgement: number; stepShare: number; rockets: number }[] = [];
   for (let d = 0; d < weeks * 7; d++) {
     const cal = calendarFor(s.day.dayNumber);
-    const plan = PLANS[player](s);
+    const plan = withTasting(s, PLANS[player](s));
+    if (plan.activities?.includes(TASTING.activityId)) tastings++;
     if (cal.isServiceDay && s.economy.businessClass) {
       const m = playMorning(s, plan);
       const mp = misePlan(m);
@@ -140,7 +153,7 @@ function season(seed: number, player: PlayerId, weeks: number, start: number | n
       if (st.closedNow) break;
     }
   }
-  return { startCash, weeks: out, mornings, closedWeek: s.economy.risk?.closedWeek ?? null, renegotiated: !!s.economy.risk?.renegotiated, owned: s.shop?.owned ?? [], star: !!s.star?.held, starWeek, goldWeek, starWeeks };
+  return { startCash, weeks: out, mornings, closedWeek: s.economy.risk?.closedWeek ?? null, renegotiated: !!s.economy.risk?.renegotiated, owned: s.shop?.owned ?? [], star: !!s.star?.held, starWeek, goldWeek, starWeeks, tastings };
 }
 
 describe.skipIf(!process.env.KARNAN_SEEDS)('ORDER 296 — kärnans tal', () => {
@@ -180,6 +193,7 @@ describe.skipIf(!process.env.KARNAN_SEEDS)('ORDER 296 — kärnans tal', () => {
         lowestCash: Math.min(...runs.flatMap((r) => r.weeks.map((w) => w.cashEnd))),
         meanCashEnd: mean(runs.map((r) => r.weeks[r.weeks.length - 1]?.cashEnd ?? r.startCash)),
         targetHitShare: Math.round((runs.flatMap((r) => r.weeks).filter((w) => w.targetHit).length / Math.max(1, runs.flatMap((r) => r.weeks).length)) * 100) / 100,
+        meanTastings: Math.round((runs.reduce((a, r) => a + r.tastings, 0) / runs.length) * 10) / 10,
         meanOwned: Math.round((runs.reduce((a, r) => a + r.owned.length, 0) / runs.length) * 10) / 10,
         stars: runs.filter((r) => r.star).length,
         starEarned: runs.filter((r) => r.starWeek !== null).length,
@@ -196,7 +210,7 @@ describe.skipIf(!process.env.KARNAN_SEEDS)('ORDER 296 — kärnans tal', () => {
       const { fileURLToPath } = await import('node:url');
       const out = resolve(dirname(fileURLToPath(import.meta.url)), '../../../../reports', process.env.REPORT_ORDER ?? 'order296');
       mkdirSync(out, { recursive: true });
-      writeFileSync(resolve(out, process.env.KARNAN_OUT ?? 'karnan.json'), JSON.stringify({ definition: 'Säsongen med spelets regler (balance.ts RISK): startkassan, veckomålet på intäkten, omförhandlingen och stängningen räknas av simuleringen (sim/economy.ts settleWeek). resultSek = kassans förändring vecka till vecka. Mise en place ur sim/miseEnPlace.ts misePlan (behov, hinns, eftersläp i spelminuter, och den extra handen).', start, variant: process.env.KARNAN_VARIANT ?? null, seeds, weeks, players: result }, null, 2) + '\n');
+      writeFileSync(resolve(out, process.env.KARNAN_OUT ?? 'karnan.json'), JSON.stringify({ tasting: TASTING_ON, definition: 'Säsongen med spelets regler (balance.ts RISK): startkassan, veckomålet på intäkten, omförhandlingen och stängningen räknas av simuleringen (sim/economy.ts settleWeek). resultSek = kassans förändring vecka till vecka. Mise en place ur sim/miseEnPlace.ts misePlan (behov, hinns, eftersläp i spelminuter, och den extra handen).', start, variant: process.env.KARNAN_VARIANT ?? null, seeds, weeks, players: result }, null, 2) + '\n');
     }
     expect(Object.keys(result).length).toBe(players.length);
   }, 3600000);

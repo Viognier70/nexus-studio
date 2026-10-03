@@ -347,3 +347,8 @@
   height: max(110px, calc(200 * var(--nx-u)));
   background: var(--w-walnut-900);
 }
+
+/* ORDER 298b — "Lugn kväll: ryktet är ännu lågt i byn" ovanför provsmakningen
+   på morgonen: orsaken och vad spelaren kan göra åt den, i samma grupp. */
+.nx-calm-group { border-left: max(2px, calc(4 * var(--nx-u))) solid var(--nx-accent); background: rgba(232, 178, 58, 0.07); }
+.nx-calm-evening { padding: calc(12 * var(--nx-u)) calc(12 * var(--nx-u)) 0; font-size: calc(22 * var(--nx-u)); line-height: 1.35; font-weight: 700; color: var(--nx-accent); }

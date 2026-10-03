@@ -550,12 +550,19 @@ export const HOST = {
 //     (omdömet i servicen), av minst minRocketsInWeek raketer;
 //   - tre veckor i rad (weeksToEarn) ger stjärnan, en vecka under någon
 //     gräns tar den.
+// ORDER 298b (Vision Owner 2026-10-03): gränserna kalibreras mot målen, inte
+// fasta tal. Med 0,85 rätt per steg nås stjärnan i minst 70 % av säsongerna,
+// i snitt vecka 5–6; med 0,75 i 20–40 %; med 0,6 eller sämre aldrig. Ryktet
+// ligger omkring 0,33 också för den skickliga spelaren, så 0,36 höll sällan
+// tre veckor; gränsen är 0,20. Omdömet räknas på klarade raketer (0,45), som
+// sprider spelarna mer än andelen rätta steg (reports/order298b/stjarna-svep.json;
+// kontrollen med gränserna i stjarna-085.json, stjarna-075.json, stjarna-06.json).
 export const STAR = {
   section: 'Kunskapen',
   pavilion: 'gastronomiskateatern' as const,
   medal: 'guld' as const,
-  reputationAtLeast: 0.36,
-  judgementAtLeast: 0.7,
+  reputationAtLeast: 0.2,
+  judgementAtLeast: 0.45,
   minRocketsInWeek: 5,
   weeksToEarn: 3
 } as const;
@@ -576,6 +583,46 @@ export const OPENING = {
   minPartiesAtDoor: 2,
   rushPressure: 0.8,
   forecastAfterMinutes: 30
+} as const;
+
+// ORDER 298b (Vision Owner 2026-10-03): "Lågt rykte ska fortfarande ge färre
+// gäster, men golvet blir 10 sällskap per kväll." Marknaden ger sina gäster
+// som förut; när de inte räcker för att nå golvet i tid kommer fler, så att
+// partiesPerEvening sällskap har kommit senast reachBeforeCloseMinutes
+// spelminuter före stängningen (strategic/simulation/arrivals.ts
+// pacedArrivals). Provsmakningens sällskap räknas inte mot golvet.
+//   - Lugn kväll: raden "Lugn kväll: ryktet är ännu lågt i byn" står när
+//     ryktet drar ner gästerna (dess del av dragningskraften, rykteskurvan
+//     gånger andelen mot byns krogar, är under calmReputationFactorBelow) och
+//     kvällen blir tunn: dagens tak gånger ryktets del ger färre gäster än
+//     calmSeatsShare av rummets platser. Vinbarens rum tar omkring 30 notor en kväll; en
+//     kväll med fler än 15 väntade gäster fylls rummet ändå, och
+//     provsmakningen gav där ingenting (reports/order298b/kvallarna.json).
+export const GUEST_FLOOR = {
+  section: 'Ekonomin > Marknaden',
+  partiesPerEvening: 10,
+  reachBeforeCloseMinutes: 90,
+  calmReputationFactorBelow: 1,
+  calmSeatsShare: 0.75
+} as const;
+
+// ORDER 298b (Vision Owner 2026-10-03): satsningen "Provsmakning på torget".
+// "Den kostar pengar … ger fler sällskap samma kväll. Effekten växer med
+// spelarens medaljer i Stensöta och Kalastorget." Sällskapen kommer utöver
+// marknaden, jämnt över kvällen fram till samma tid som golvet: baseParties
+// och partiesPerMedalStep för varje medaljsteg (brons 1 … platina 4) i
+// paviljongerna.
+// Priset: en lugn kväll ger provsmakningen omkring 820 kr mer i kvällskassan
+// med brons i Stensöta och 1 070 kr med silver; en kväll som fylls ändå
+// omkring 240–370 kr (reports/order298b/kvallarna.json summary). Med 600 kr lönar den
+// sig lite en lugn kväll, mer med medaljerna, och inte när rummet fylls ändå.
+export const TASTING = {
+  section: 'Ekonomin > Marknaden',
+  activityId: 'square-tasting',
+  costSek: 600,
+  baseParties: 2,
+  partiesPerMedalStep: 1,
+  pavilions: ['stensota', 'kalastorget'] as readonly ('stensota' | 'kalastorget')[]
 } as const;
 
 export const DOWNGRADE = {

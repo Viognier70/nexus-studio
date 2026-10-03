@@ -185,5 +185,6 @@ export const ACTIVITY_ICON: Record<string, IconName> = {
   'local-sourcing': 'leaf',
   'wine-tasting': 'wine',
   'guest-chef': 'chef',
-  'compost-audit': 'leaf'
+  'compost-audit': 'leaf',
+  'square-tasting': 'wine'
 };

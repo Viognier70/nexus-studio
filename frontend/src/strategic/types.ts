@@ -943,6 +943,10 @@ export interface DayState {
   // ORDER 298 — gästerna som satt vid ett bord i kväll: det som räknas i
   // ekonomin, byn och bandet (det som räknas ska synas).
   seatedTonight?: number;
+  // ORDER 298b — kvällens sällskap mot golvet (balance.ts GUEST_FLOOR), och
+  // provsmakningens sällskap som har kommit (räknas inte mot golvet).
+  partiesTonight?: number;
+  tastingPartiesTonight?: number;
   // ORDER 296 — kockens bord i kväll: sällskapets nyckel (förmågan chefsTable).
   chefsTableParty?: string | null;
   // ORDER 296 — hovmästarens Ge bord: bordet spelaren valde för sällskapet.

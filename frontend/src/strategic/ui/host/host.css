@@ -200,3 +200,5 @@
 .nx-rival-head { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: calc(18 * var(--nx-u)); row-gap: 2px; position: relative; }
 .nx-rival-measure { font-size: max(10px, calc(13 * var(--nx-u))); color: rgba(244,230,204,.7); }
 .nx-rival-overtake-static { position: static; margin-left: auto; }
+/* ORDER 298b — Lugn kväll under bandets rad, före och under kvällen. */
+.nx-rival-calm { margin-top: calc(6 * var(--nx-u)); font-size: max(12px, calc(17 * var(--nx-u))); line-height: 1.3; color: var(--w-ink-label-dark, #d8b877); }
