@@ -1,0 +1,1000 @@
+{
+  "build": "produktion (vite build + preview)",
+  "sizes": [
+    "1280×720",
+    "1366×768",
+    "1440×900",
+    "1512×982",
+    "1500×950"
+  ],
+  "screenShare": 0.6,
+  "minFontPx": 12,
+  "screens": {
+    "start": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1280×720",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 13,
+          "minFontAt": "div.business-name-kicker: Grythyttan",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 13,
+          "minFontAt": "div.business-name-kicker: Grythyttan",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 13,
+          "minFontAt": "div.business-name-kicker: Grythyttan",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 13,
+          "minFontAt": "div.business-name-kicker: Grythyttan",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 13,
+          "minFontAt": "div.business-name-kicker: Grythyttan",
+          "clipped": []
+        }
+      ]
+    },
+    "registrering": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1280×720",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 13,
+          "minFontAt": "div.business-name-kicker: Måltidens hus · Liggaren",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 13,
+          "minFontAt": "div.business-name-kicker: Måltidens hus · Liggaren",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 13,
+          "minFontAt": "div.business-name-kicker: Måltidens hus · Liggaren",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 13,
+          "minFontAt": "div.business-name-kicker: Måltidens hus · Liggaren",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 13,
+          "minFontAt": "div.business-name-kicker: Måltidens hus · Liggaren",
+          "clipped": []
+        }
+      ]
+    },
+    "regelkortet": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1280×720",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 511,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 13.3,
+          "minFontAt": "div.nx-label.nx-accent-text: Spelets regler",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 541,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 14.2,
+          "minFontAt": "div.nx-label.nx-accent-text: Spelets regler",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.11,
+              "over": 478,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 15,
+          "minFontAt": "div.nx-label.nx-accent-text: Spelets regler",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.11,
+              "over": 465,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 15.8,
+          "minFontAt": "div.nx-label.nx-accent-text: Spelets regler",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.11,
+              "over": 485,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 15.6,
+          "minFontAt": "div.nx-label.nx-accent-text: Spelets regler",
+          "clipped": []
+        }
+      ]
+    },
+    "mentorn": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1280×720",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 511,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 13.3,
+          "minFontAt": "screen-M1: Måndag · Campus · Vecka 1 av 8",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 541,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 14.2,
+          "minFontAt": "screen-M1: Måndag · Campus · Vecka 1 av 8",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.11,
+              "over": 478,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 15,
+          "minFontAt": "screen-M1: Måndag · Campus · Vecka 1 av 8",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.11,
+              "over": 465,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 15.8,
+          "minFontAt": "screen-M1: Måndag · Campus · Vecka 1 av 8",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.11,
+              "over": 485,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 15.6,
+          "minFontAt": "screen-M1: Måndag · Campus · Vecka 1 av 8",
+          "clipped": []
+        }
+      ]
+    },
+    "morgonen-dag1": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1280×720",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 511,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 13.3,
+          "minFontAt": "span.nx-label: Kassa",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 541,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 14.2,
+          "minFontAt": "span.nx-label: Kassa",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.11,
+              "over": 478,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 15,
+          "minFontAt": "span.nx-label: Kassa",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.11,
+              "over": 465,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 15.8,
+          "minFontAt": "span.nx-label: Kassa",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.11,
+              "over": 485,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 15.6,
+          "minFontAt": "span.nx-label: Kassa",
+          "clipped": []
+        }
+      ]
+    },
+    "reglerna": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1280×720",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 511,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 13.3,
+          "minFontAt": "div.nx-label.nx-accent-text: Spelets regler",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 541,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 14.2,
+          "minFontAt": "div.nx-label.nx-accent-text: Spelets regler",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.11,
+              "over": 478,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 15,
+          "minFontAt": "div.nx-label.nx-accent-text: Spelets regler",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.11,
+              "over": 465,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 15.8,
+          "minFontAt": "div.nx-label.nx-accent-text: Spelets regler",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.11,
+              "over": 485,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 15.6,
+          "minFontAt": "div.nx-label.nx-accent-text: Spelets regler",
+          "clipped": []
+        }
+      ]
+    },
+    "morgonen": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1280×720",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 511,
+              "screen": false
+            },
+            {
+              "el": "div.nxs-morning-right",
+              "share": 0.16,
+              "over": 349,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 541,
+              "screen": false
+            },
+            {
+              "el": "div.nxs-morning-right",
+              "share": 0.16,
+              "over": 372,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.11,
+              "over": 478,
+              "screen": false
+            },
+            {
+              "el": "div.nxs-morning-right",
+              "share": 0.17,
+              "over": 302,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.11,
+              "over": 465,
+              "screen": false
+            },
+            {
+              "el": "div.nxs-morning-right",
+              "share": 0.18,
+              "over": 279,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.11,
+              "over": 485,
+              "screen": false
+            },
+            {
+              "el": "div.nxs-morning-right",
+              "share": 0.17,
+              "over": 301,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "clipped": []
+        }
+      ]
+    },
+    "inkopen": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1280×720",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "div.nxs-buy-rows",
+              "share": 0.19,
+              "over": 209,
+              "screen": false
+            },
+            {
+              "el": "buy-side",
+              "share": 0.2,
+              "over": 283,
+              "screen": false
+            }
+          ],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "div.nxs-buy-rows",
+              "share": 0.19,
+              "over": 221,
+              "screen": false
+            },
+            {
+              "el": "buy-side",
+              "share": 0.2,
+              "over": 297,
+              "screen": false
+            }
+          ],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "div.nxs-buy-rows",
+              "share": 0.2,
+              "over": 143,
+              "screen": false
+            },
+            {
+              "el": "buy-side",
+              "share": 0.21,
+              "over": 221,
+              "screen": false
+            }
+          ],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "div.nxs-buy-rows",
+              "share": 0.21,
+              "over": 112,
+              "screen": false
+            },
+            {
+              "el": "buy-side",
+              "share": 0.21,
+              "over": 192,
+              "screen": false
+            }
+          ],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "div.nxs-buy-rows",
+              "share": 0.2,
+              "over": 135,
+              "screen": false
+            },
+            {
+              "el": "buy-side",
+              "share": 0.21,
+              "over": 216,
+              "screen": false
+            }
+          ],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "clipped": []
+        }
+      ]
+    },
+    "byn-fore-oppning": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1280×720",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "clipped": []
+        }
+      ]
+    },
+    "gatan-fore-oppning": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1280×720",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "clipped": []
+        }
+      ]
+    },
+    "servicen": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1280×720",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "clipped": []
+        }
+      ]
+    }
+  },
+  "errors": []
+}
