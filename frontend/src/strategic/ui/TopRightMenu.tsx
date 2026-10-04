@@ -34,6 +34,8 @@ interface Props {
   onOpenAbout: () => void;
   // ORDER 300 §5 — sidan Spelets regler.
   onOpenRules: () => void;
+  // ORDER 301 — eftertexterna med Kunskapsgrundens källor.
+  onOpenCredits: () => void;
   // ORDER 263 — öppnar sparmenyn.
   onOpenSave: () => void;
 }
@@ -109,7 +111,7 @@ const LANGUAGE_ACTIVE_STYLE: React.CSSProperties = {
   fontWeight: 700
 };
 
-export function TopRightMenu({ onOpenAbout, onOpenRules, onOpenSave }: Props) {
+export function TopRightMenu({ onOpenAbout, onOpenRules, onOpenCredits, onOpenSave }: Props) {
   const sound = useSoundSettings();
   const [open, setOpen] = useState(false);
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
@@ -184,6 +186,20 @@ export function TopRightMenu({ onOpenAbout, onOpenRules, onOpenSave }: Props) {
             }}
           >
             {strings.rules.menuItem}
+          </button>
+          <button
+            role="menuitem"
+            type="button"
+            data-testid="menu-credits"
+            style={itemStyle(0)}
+            onMouseEnter={() => setHoverIdx(0)}
+            onMouseLeave={() => setHoverIdx(null)}
+            onClick={() => {
+              onOpenCredits();
+              setOpen(false);
+            }}
+          >
+            {strings.credits.menuItem}
           </button>
           <button
             role="menuitem"

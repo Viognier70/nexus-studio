@@ -41,6 +41,7 @@ import { AboutPanel } from './ui/AboutPanel';
 import { RulesPanel } from './ui/RulesPanel';
 import { StatusButton } from './ui/StatusButton';
 import { FocusMode } from './ui/FocusMode';
+import { KnowledgeFoundationLayer, openCredits } from './knowledge/ui/KnowledgeFoundation';
 import { PrepHint } from './ui/service/PrepHint';
 import { ControlsHint } from './ui/ControlsHint';
 import { DevPanel } from './ui/DevPanel';
@@ -343,7 +344,7 @@ function StrategicShell() {
       <div className="gb-topright">
         <CashCounter />
         <SpeedToggle />
-        <TopRightMenu onOpenAbout={() => setAboutOpen(true)} onOpenRules={() => setRulesOpen(true)} onOpenSave={save.openMenu} />
+        <TopRightMenu onOpenAbout={() => setAboutOpen(true)} onOpenRules={() => setRulesOpen(true)} onOpenCredits={openCredits} onOpenSave={save.openMenu} />
       </div>
       {/* ORDER 300 §6 — den separata knappen Tillbaka är borttagen; nivåraden och Esc (Krogen) räcker. */}
       <ControlsHint />
@@ -422,6 +423,8 @@ function StrategicShell() {
       <FocusMode />
       {/* ORDER 300 §5 — regelkortet första morgonen och sidan i menyn. */}
       <RulesPanel open={rulesOpen} onClose={() => setRulesOpen(false)} />
+      {/* ORDER 301 — Kunskapsgrunden i Måltidsbiblioteket och eftertexterna. */}
+      <KnowledgeFoundationLayer />
     </div>
   );
 }

@@ -10,7 +10,7 @@
         "The tannins markedly strengthen the meat's umami",
         "The protein blocks every taste impression from the wine"
       ],
-      "explanation": "Tannin binding is the core: tannins react with proteins and bind to them. The meat 'takes care of' the tannin — the astringency softens and the wine opens up. Herdenstam describes how this analysis happens during the twelve seconds in the mouth, in the actual situation."
+      "explanation": "Tannin binding is the core: tannins react with proteins and bind to them. The meat 'takes care of' the tannin — the astringency softens and the wine opens up. Crichton-Fock (formerly Herdenstam) describes how this analysis happens during the twelve seconds in the mouth, in the actual situation."
     },
     "somm-v2": {
       "prompt": "A guest at Herrgårdsköket orders a full-bodied Alsace Riesling with their foie gras. Your colleague questions the choice: 'Riesling and foie gras? That can't work.' Which scientific reasoning defends the pairing best?",
@@ -30,7 +30,7 @@
         "You forget the first wines",
         "Alcohol, tannins and high taste intensity tire the taste receptors — palate fatigue — so the distinctions blur"
       ],
-      "explanation": "Herdenstam describes this precisely from his working life: the alcohol numbs, the tannic grip lingers, and the intensity of powerful wines makes it hard to reset the palate for subtle ones. The remedy is water, neutral food and the right tasting order."
+      "explanation": "Crichton-Fock (formerly Herdenstam) describes this precisely from his working life: the alcohol numbs, the tannic grip lingers, and the intensity of powerful wines makes it hard to reset the palate for subtle ones. The remedy is water, neutral food and the right tasting order."
     },
     "somm-v4": {
       "prompt": "You are training new staff at Lärkan. A new colleague asks why you always start a tasting with sight, then smell, then taste — in that order. Why is the WSET SAT order (Appearance → Nose → Palate → Conclusions) designed that way?",
@@ -40,7 +40,7 @@
         "The order is arbitrary — every order gives the same result",
         "The structure makes sure each sense is judged without being swayed by the next: what you see does not colour the nose, the nose does not colour the palate"
       ],
-      "explanation": "WSET SAT is designed to reduce bias. Herdenstam stresses that sensory analysis needs a system to capture what can be measured — and reminds us that this analytical method must be complemented by the creative grip to capture the whole."
+      "explanation": "WSET SAT is designed to reduce bias. Crichton-Fock (formerly Herdenstam) stresses that sensory analysis needs a system to capture what can be measured — and reminds us that this analytical method must be complemented by the creative grip to capture the whole."
     },
     "somm-v5": {
       "prompt": "Nocturne is building a new wine list focused on sustainability. You are to argue to the owner why biodynamic farming (Demeter) is a stronger choice than ordinary organic certification. Which argument is the most soundly based?",
@@ -60,7 +60,7 @@
         "The guest's taste memory is faulty",
         "The shape of the glass changes the aromas chemically"
       ],
-      "explanation": "Herdenstam stresses retronasal smell as central to the taster's work: 'what we call taste is largely a smell experienced the back way'. Pairing food and drink is very much about harmonising these retronasal aromas between food and wine."
+      "explanation": "Crichton-Fock (formerly Herdenstam) stresses retronasal smell as central to the taster's work: 'what we call taste is largely a smell experienced the back way'. Pairing food and drink is very much about harmonising these retronasal aromas between food and wine."
     },
     "somm-v7": {
       "prompt": "You are training the staff at Järnvägshotellet. You are to explain Harrington's Food & Beverage Pyramid and why you always start with the basic tastes. Why is Harrington's hierarchy (basic tastes → texture → flavours) right, both for teaching and in practice?",
@@ -80,7 +80,7 @@
         "Decant it for 30 minutes and check that it is at 16–18 °C: young, powerful reds need oxygen to open and the right temperature to show their complexity",
         "Warm the bottle under hot water to 22 °C"
       ],
-      "explanation": "Herdenstam describes this as the heart of craft knowledge: knowing how to use the tool. Young Barolo has high tannins and a complex structure that needs oxygen. 16–18 °C is the ideal serving temperature for full-bodied reds; warmer dulls the fruit, colder hides the complexity and hardens the tannins."
+      "explanation": "Crichton-Fock (formerly Herdenstam) describes this as the heart of craft knowledge: knowing how to use the tool. Young Barolo has high tannins and a complex structure that needs oxygen. 16–18 °C is the ideal serving temperature for full-bodied reds; warmer dulls the fruit, colder hides the complexity and hardens the tannins."
     },
     "somm-h2": {
       "prompt": "A regular at Bryggan brings a bottle of 2005 Chambolle-Musigny (Premier Cru, twenty years old) and wants you to handle it professionally. What is the right way to handle an old, fine Burgundy?",
@@ -90,7 +90,7 @@
         "Serve it straight from cellar temperature (10 °C)",
         "Shake it gently to wake the sediment"
       ],
-      "explanation": "Herdenstam describes how judgement built on experience — familiarity knowledge — decides such things. Old fine Burgundy has a delicate structure that can collapse if exposed to oxygen too long. Sediment is separated with a gentle decant, but exposure is kept to a minimum. The right temperature is 14–16 °C."
+      "explanation": "Crichton-Fock (formerly Herdenstam) describes how judgement built on experience — familiarity knowledge — decides such things. Old fine Burgundy has a delicate structure that can collapse if exposed to oxygen too long. Sediment is separated with a gentle decant, but exposure is kept to a minimum. The right temperature is 14–16 °C."
     },
     "somm-h3": {
       "prompt": "Halfway through a large wedding banquet at Ekbacken, the champagne guests start to complain that the mousse is flat and the aroma weak. You change the glasses and pour fresh wine. What was most likely the main cause, and how do you prevent it from now on?",
@@ -100,7 +100,7 @@
         "The champagne was of too low a quality",
         "The champagne stood too long and lost its fizz naturally"
       ],
-      "explanation": "Detergent residue is the most common cause of flat champagne. Herdenstam stresses that craft knowledge means knowing how the tools work and where the faults come from. Rinsing with wine is a simple professional routine that removes the problem."
+      "explanation": "Detergent residue is the most common cause of flat champagne. Crichton-Fock (formerly Herdenstam) stresses that craft knowledge means knowing how the tools work and where the faults come from. Rinsing with wine is a simple professional routine that removes the problem."
     },
     "somm-h4": {
       "prompt": "You are building a seven-course tasting menu at Qvarnen with seven wines. A colleague suggests opening with a powerful Amarone to 'impress straight away'. Why is it wrong to open with a powerful wine, and what is the right order?",
@@ -110,7 +110,7 @@
         "It is not wrong — always start with the most expensive",
         "Powerful wines tire the palate early; the right order is sparkling → light whites → full whites → light reds → full reds → dessert wines: dry to sweet, light to full"
       ],
-      "explanation": "Herdenstam describes from his own experience at wine fairs how the palate tires and how the wrong order makes subtle wines taste flat after powerful ones. Progression is one of the craft's basic tools: sparkling wine opens the palate, dessert wines close without cloying it."
+      "explanation": "Crichton-Fock (formerly Herdenstam) describes from his own experience at wine fairs how the palate tires and how the wrong order makes subtle wines taste flat after powerful ones. Progression is one of the craft's basic tools: sparkling wine opens the palate, dessert wines close without cloying it."
     },
     "somm-h5": {
       "prompt": "One of Nocturne's best-selling wines is a natural wine fined with egg white. A new regular quietly mentions that her son is allergic to egg. What do you do, and what should you already have done?",
@@ -120,7 +120,7 @@
         "Tell the guest the wine is fined with egg white and offer an alternative without animal-based fining; speaking up first is the sommelier team's responsibility, not the producer's",
         "Say all natural wines are vegan and serve it"
       ],
-      "explanation": "Social sustainability requires inclusion and speaking up first. Herdenstam stresses that a sommelier's professional knowledge includes knowing their products in every detail. Declaring allergens is both a legal requirement and professional ethics — and it builds the guests' trust."
+      "explanation": "Social sustainability requires inclusion and speaking up first. Crichton-Fock (formerly Herdenstam) stresses that a sommelier's professional knowledge includes knowing their products in every detail. Declaring allergens is both a legal requirement and professional ethics — and it builds the guests' trust."
     },
     "somm-h6": {
       "prompt": "Lärkan wants to cut its wine list's climate footprint by 40 % within a year without compromising on quality. You present a plan to the owner. Which set of measures has the greatest environmental effect?",
@@ -133,14 +133,14 @@
       "explanation": "Transport and packaging dominate a wine's climate footprint. Local producers remove long transport chains. Bag-in-box gives a far smaller packaging footprint per litre. Documentation also lets you talk to guests about climate choices — a social and environmental gain in one."
     },
     "somm-e1": {
-      "prompt": "Ekbacken is expecting a well-known food writer for a review. You are thinking about how to create a memorable experience without changing a single dish on the menu. Which approach is most in line with Herdenstam's double grip and Crichton-Fock's atmospheric influence?",
+      "prompt": "Ekbacken is expecting a well-known food writer for a review. You are thinking about how to create a memorable experience without changing a single dish on the menu. Which approach is most in line with the double grip and the influence of the atmosphere, as Crichton-Fock (formerly Herdenstam) describes them?",
       "options": [
         "Match the room's lighting, music and pace of service to the character of the wines — and tell the story of each wine's origin, the grower's philosophy and the vintage",
         "Switch to more expensive wines for the reviewer",
         "Let the reviewer choose everything without guidance",
         "Lower the prices that evening to impress"
       ],
-      "explanation": "Herdenstam: 'What happens, the knowledge in the doing, is what matters.' Crichton-Fock shows that every sensory impression in the room works together and sets a mood. Crossmodal correspondence (Spence) confirms that light and music change how things taste. Creating the experience means orchestrating the whole setting."
+      "explanation": "Crichton-Fock (formerly Herdenstam): 'What happens, the knowledge in the doing, is what matters.' Crichton-Fock shows that every sensory impression in the room works together and sets a mood. Crossmodal correspondence (Spence) confirms that light and music change how things taste. Creating the experience means orchestrating the whole setting."
     },
     "somm-e2": {
       "prompt": "A regular at Bryggan always orders 'the best red wine'. Today he tells you he is turning 60. You have three to choose from: a 2015 Barolo, a 2018 Châteauneuf-du-Pape and a 2010 Pinot Noir from Burgundy. What is the creative decision here, and how do you make it?",
@@ -150,7 +150,7 @@
         "Choose the most expensive automatically — it is always safest",
         "Ask discreetly whether he has a link to a region, a memory or a moment in his life — then choose the wine whose story best matches his"
       ],
-      "explanation": "Herdenstam shows that creating an experience starts with listening and reading the situation. Expectation priming: when the guest understands the story behind the wine, more layers of thought come into play and the experience deepens. A personal choice always says more than the price."
+      "explanation": "Crichton-Fock (formerly Herdenstam) shows that creating an experience starts with listening and reading the situation. Expectation priming: when the guest understands the story behind the wine, more layers of thought come into play and the experience deepens. A personal choice always says more than the price."
     },
     "somm-e3": {
       "prompt": "You are writing the menu texts for a new tasting menu at Herrgårdsköket. Your colleague suggests short, neutral descriptions: 'Riesling, Mosel, 2019'. Why does expectation priming matter here, and how do you write a better text?",
@@ -160,17 +160,17 @@
         "The menu text primes the experience before the first sip: words that call up an image, a memory or a feeling change how the guest tastes the wine. Write: 'Riesling from the Mosel — steep-slope minerality, fresh citrus-blossom acidity, a scent of slate after rain'",
         "Longer texts are always worse — keep it short"
       ],
-      "explanation": "Expectation priming is well documented: a well-written menu text sets expectations that change how the guest experiences the taste. Herdenstam: 'In science we measure what is. In creation we make what becomes.' The menu text is a creative tool."
+      "explanation": "Expectation priming is well documented: a well-written menu text sets expectations that change how the guest experiences the taste. Crichton-Fock (formerly Herdenstam): 'In science we measure what is. In creation we make what becomes.' The menu text is a creative tool."
     },
     "somm-e4": {
-      "prompt": "You are hosting a terroir dinner at Viken focused on the Loire Valley. One guest, a professor of cultural geography, asks how you can convey the feeling of the river and the limestone when the guest is not there. Which answer best shows Herdenstam's creative grip?",
+      "prompt": "You are hosting a terroir dinner at Viken focused on the Loire Valley. One guest, a professor of cultural geography, asks how you can convey the feeling of the river and the limestone when the guest is not there. Which answer best shows Crichton-Fock's (formerly Herdenstam) creative grip?",
       "options": [
         "It is impossible — terroir can only be experienced on the spot",
         "Tell the grower's story, put a piece of limestone on the table, show a picture of the river landscape, and let the mineral scent of the wine carry the story: analogies and sensory impressions create shared understanding without being there",
         "Serve only wines with strong character and hope the guest understands",
         "Explain terroir in chemical terms"
       ],
-      "explanation": "Herdenstam: 'The link to reality becomes important, and the insight that there is not one reality but several even more so.' Analogies, sensory impressions and stories create understanding — the guest tastes with their whole cultural background. That is creating the experience in practice."
+      "explanation": "Crichton-Fock (formerly Herdenstam): 'The link to reality becomes important, and the insight that there is not one reality but several even more so.' Analogies, sensory impressions and stories create understanding — the guest tastes with their whole cultural background. That is creating the experience in practice."
     },
     "somm-e5": {
       "prompt": "Nocturne is launching an alcohol-free pairing menu. A colleague is sceptical: 'No real sommelier spends time on alcohol-free — there is no prestige in it.' How do you answer, from the point of view of sustainability and creating the experience?",
@@ -180,7 +180,7 @@
         "Alcohol-free is always inferior and should be kept to a minimum",
         "The colleague is right — put the wine menu first"
       ],
-      "explanation": "Social sustainability means every guest is welcome, whatever they choose. Herdenstam shows that creative knowledge is about making an experience for the guest, not about one's own prestige. An alcohol-free pairing menu with the same story and presentation is fully worthy of the sommelier's craft."
+      "explanation": "Social sustainability means every guest is welcome, whatever they choose. Crichton-Fock (formerly Herdenstam) shows that creative knowledge is about making an experience for the guest, not about one's own prestige. An alcohol-free pairing menu with the same story and presentation is fully worthy of the sommelier's craft."
     },
     "somm-e6": {
       "prompt": "During a tasting menu at Ekbacken you are playing music you chose. A guest remarks that the third wine, a powerful Syrah, seems 'sweeter and rounder' now than at the pre-tasting this evening — then you played heavier jazz, now a lighter string quartet. Which phenomenon explains the guest's experience, and what does it teach us about the sommelier's role?",
@@ -190,7 +190,7 @@
         "The guest is wrong — music does not change the wine",
         "Crossmodal correspondence (Spence): high, bright music brings out perceived sweetness and elegance; heavier music brings out bitterness and astringency. The sommelier who orchestrates the setting is part of the taste"
       ],
-      "explanation": "Spence's research (Oxford) is well documented: sound, light and setting change how we perceive taste. Herdenstam and Crichton-Fock: every sensory impression in the dining room works together. The sommelier who orchestrates the setting on purpose is practising creative knowledge at its highest level."
+      "explanation": "Spence's research (Oxford) is well documented: sound, light and setting change how we perceive taste. Crichton-Fock (formerly Herdenstam): every sensory impression in the dining room works together. The sommelier who orchestrates the setting on purpose is practising creative knowledge at its highest level."
     },
     "somm-h7": {
       "prompt": "You are tasting a wine at a trade fair. After three seconds you sense that something is fundamentally wrong — the wine has a sharp, musty smell. What is most likely wrong, and what do you do?",
@@ -200,7 +200,7 @@
         "The wine is probably corked (TCA, trichloroanisole): politely decline and ask for a new bottle or another wine. Cork taint ruins every aroma",
         "The smell is typical of the grape"
       ],
-      "explanation": "Herdenstam describes how experienced sommeliers make the call in seconds — 'even before it takes shape'. TCA cork taint is the most common fault and is recognised as a damp, mouldy, musty note. Spotting and handling it quickly is core craft."
+      "explanation": "Crichton-Fock (formerly Herdenstam) describes how experienced sommeliers make the call in seconds — 'even before it takes shape'. TCA cork taint is the most common fault and is recognised as a damp, mouldy, musty note. Spotting and handling it quickly is core craft."
     },
     "somm-v8": {
       "prompt": "A guest at Qvarnen wonders why her favourite Sauvignon Blanc tastes 'flatter' with her cream sauce than with oysters. What is the scientific explanation?",
@@ -220,10 +220,10 @@
         "Offer the most expensive wine to make up for it",
         "Pour from the nearest open bottle and leave her in peace"
       ],
-      "explanation": "Herdenstam shows that the sommelier's craft includes reading situations and social skill. The creative grip is about making an experience that meets the guest where she is. A short story in the right tone is an aesthetic choice, not just a product presentation."
+      "explanation": "Crichton-Fock (formerly Herdenstam) shows that the sommelier's craft includes reading situations and social skill. The creative grip is about making an experience that meets the guest where she is. A short story in the right tone is an aesthetic choice, not just a product presentation."
     },
     "somm-dg1": {
-      "prompt": "You are leading a Double-Grip Analysis session with your sommelier team before a tasting menu at Ekbacken. You hand out paper and ask everyone to taste a Burgundy in silence — without the WSET protocol. Your first question is not 'What do you find in the glass?' What is the right opening question in the analogical tasting of Double-Grip Analysis? (Crichton-Fock & Spence, 2024)",
+      "prompt": "You are leading a Double-Grip Analysis session with your sommelier team before a tasting menu at Ekbacken. You hand out paper and ask everyone to taste a Burgundy in silence — without the WSET protocol. Your first question is not 'What do you find in the glass?' What is the right opening question in the analogical tasting of Double-Grip Analysis? (Crichton-Fock, formerly Herdenstam, & Spence, 2024)",
       "options": [
         "'Which grape is this most likely?'",
         "'Describe the nose in WSET terms'",
@@ -233,34 +233,34 @@
       "explanation": "Double-Grip Analysis has two parallel tastings: analytical (deductive — what do I find in the glass?) and analogical (inductive — what is awakened in me?). The analogical one starts with autobiographical tasting, where personal smell memories and associations flow freely without ready-made templates. Groups in the study reached 8 shared attributes in both categories and created analogue wines that were rated higher than commercial equivalents."
     },
     "somm-dg2": {
-      "prompt": "In a dialogue seminar (Herdenstam et al., 2018) a sommelier shares an autobiographical tasting: 'It's summer, tall grass, my grandmother's garden, the strawberry cake has stood too long in the sun...' A colleague cuts in: 'That's not a wine description — it's a fairy tale.' Why is the colleague's objection wrong from the point of view of phronesis?",
+      "prompt": "In a dialogue seminar (Crichton-Fock, formerly Herdenstam, et al., 2018) a sommelier shares an autobiographical tasting: 'It's summer, tall grass, my grandmother's garden, the strawberry cake has stood too long in the sun...' A colleague cuts in: 'That's not a wine description — it's a fairy tale.' Why is the colleague's objection wrong from the point of view of phronesis?",
       "options": [
         "Autobiographical descriptions are teaching exercises, not professional tools",
         "The colleague is right — wine descriptions should be objective and analytical",
         "Analogies and autobiographical memories carry knowledge that is harder to measure but easier to understand: they capture the character of the whole, which isolated analytical attributes cannot",
         "The description is only useful if the sommelier and guest share exactly the same cultural background"
       ],
-      "explanation": "Herdenstam (2011, 2018, 2020): analogies and autobiographical stories are legitimate carriers of knowledge — 'lower measurability but high power of understanding' — and they capture the shape of the wine. 'Breaking the Silence' (2020) shows that analogical training actually increases the consistency of judgements and widens the shared vocabulary from 3 to 8 categories."
+      "explanation": "Crichton-Fock (formerly Herdenstam, 2011, 2018, 2020): analogies and autobiographical stories are legitimate carriers of knowledge — 'lower measurability but high power of understanding' — and they capture the shape of the wine. 'Breaking the Silence' (2020) shows that analogical training actually increases the consistency of judgements and widens the shared vocabulary from 3 to 8 categories."
     },
     "somm-cc1": {
-      "prompt": "Crichton-Fock, Spence & Pettersson (2023, Frontiers in Psychology) studied 329 wine consumers and crossmodal communication. The team at Nocturne discusses how to use the findings when talking to guests. Which finding matters most for a sommelier who wants to communicate the range more effectively?",
+      "prompt": "Crichton-Fock (formerly Herdenstam), Spence & Pettersson (2023, Frontiers in Psychology) studied 329 wine consumers and crossmodal communication. The team at Nocturne discusses how to use the findings when talking to guests. Which finding matters most for a sommelier who wants to communicate the range more effectively?",
       "options": [
         "Consumers prefer purely analytical terms — grapes and acidity levels",
         "Visual communication through shapes and colours ranked highest (54 %), and 91 % were positive to buying wine on sensory information alone: consumers are more open to crossmodal communication than the trade assumes",
         "Sound (music) was the most popular alternative form of communication",
         "Consumers want no alternative communication — price and origin are enough"
       ],
-      "explanation": "Crichton-Fock et al. (2023): 91 % were positive to buying wine on sensory information alone. Shapes and colours (54 %), taste (45 %) and smell (38 %) dominated. A sommelier who uses crossmodal communication — shapes, analogies, storytelling — meets consumers' actual preferences better and can reduce waste of wines with an unconventional profile."
+      "explanation": "Crichton-Fock (formerly Herdenstam) et al. (2023): 91 % were positive to buying wine on sensory information alone. Shapes and colours (54 %), taste (45 %) and smell (38 %) dominated. A sommelier who uses crossmodal communication — shapes, analogies, storytelling — meets consumers' actual preferences better and can reduce waste of wines with an unconventional profile."
     },
     "somm-bs1": {
-      "prompt": "In 'Breaking the Silence' (Herdenstam et al., 2020), dialogue seminars built on classic literature — Proust, Faulkner, Woolf, Joyce — were used to stimulate analogical thinking in sommeliers. Your colleague asks why fiction is used in wine-tasting training. What was the scientific reason for using modernist literary extracts in the training?",
+      "prompt": "In 'Breaking the Silence' (Crichton-Fock, formerly Herdenstam, et al., 2020), dialogue seminars built on classic literature — Proust, Faulkner, Woolf, Joyce — were used to stimulate analogical thinking in sommeliers. Your colleague asks why fiction is used in wine-tasting training. What was the scientific reason for using modernist literary extracts in the training?",
       "options": [
         "Modernist texts stimulate analogical and associative thinking: they encourage capturing the whole and the progression of an experience rather than analysing parts, which is exactly what phronesis asks for in tasting",
         "The literature distracted the sommeliers from technical terms, which was unwanted",
         "It was an arbitrary method with no particular teaching purpose",
         "The literature taught the sommeliers new wine vocabulary directly"
       ],
-      "explanation": "Herdenstam et al. (2020): Proust, Faulkner, Woolf and Joyce were chosen for their avant-garde experimentation and their ability to capture sensory progression, shape and dynamics. The results: participants moved from analytical lists to narrative descriptions of the whole with stronger personal anchors, and their judgements became more consistent even though the number of attributes nearly doubled."
+      "explanation": "Crichton-Fock et al. (formerly Herdenstam, 2020): Proust, Faulkner, Woolf and Joyce were chosen for their avant-garde experimentation and their ability to capture sensory progression, shape and dynamics. The results: participants moved from analytical lists to narrative descriptions of the whole with stronger personal anchors, and their judgements became more consistent even though the number of attributes nearly doubled."
     },
     "somm-hs1": {
       "prompt": "Nocturne has an open kitchen — no doors, a toilet shared with guests, wine bottles visible all along the bar. Guests see the sommelier team rinsing glasses, tasting and sometimes taking a sip of water. A colleague is uncomfortable: 'We should have a clearer backstage.' What view do Hult & Scander (2024) support on dissolving frontstage and backstage?",
@@ -290,7 +290,7 @@
         "They are friends, and that is all that matters",
         "Their work is routine and needs no active skill"
       ],
-      "explanation": "Hult & Scander (2024) describe this as organic service: 'Without having communicated, one follows the other's work.' This is techne at its most refined — familiarity with a colleague's rhythm and reading of the situation that makes silent coordination possible. Herdenstam (2011) calls a similar phenomenon 'the silent science of the working palate'."
+      "explanation": "Hult & Scander (2024) describe this as organic service: 'Without having communicated, one follows the other's work.' This is techne at its most refined — familiarity with a colleague's rhythm and reading of the situation that makes silent coordination possible. Crichton-Fock (formerly Herdenstam, 2011) calls a similar phenomenon 'the silent science of the working palate'."
     },
     "somm-hs4": {
       "prompt": "Ekbacken is recruiting a new floor sommelier. Candidate A is technically perfect — correct, formal, flawless WSET knowledge. Candidate B's technique is a little more uneven, but B has a strong personality, deep taste preferences for natural wine and a lively way of talking about producers. Guests remember B's tables for a long time. What view do Hult & Scander (2024) support on what professionalism in the dining room requires today?",
