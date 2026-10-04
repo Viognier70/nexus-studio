@@ -29,7 +29,7 @@ import * as THREE from 'three';
 import { useCamera } from '../../camera/CameraContext';
 import { useSimState } from '../../simulation/SimulationProvider';
 import { WARM } from '../../../ui/theme/nexusTheme.warm';
-import { GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, VILLAGE } from '../../../sim/balance';
+import { GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, VILLAGE, VILLAGE_QUEUE } from '../../../sim/balance';
 import { clockMinutes } from '../../../sim/clock';
 import { busTonight, PLAYER_VENUE, POOL_TYPES, venuesTonight, type PoolType } from '../../../sim/village';
 import { plannedVillage } from '../../../sim/villageLive';
@@ -146,6 +146,25 @@ function startNode(type: WalkerKind, rnd: () => number, door: Vec2): { node: num
   return { ...homeNear(door, rnd), byCar: false };
 }
 
+/** ORDER 297 — vår kö är full: lika många sällskap i kön som köplatserna (VILLAGE_QUEUE). */
+export function queueFull(state: SimulationState): boolean {
+  const parties = new Set(state.guests.filter((g) => state.waitingIds.includes(g.id)).map((g) => g.partyId ?? g.id));
+  return state.day.period === 'dinner' && parties.size >= VILLAGE_QUEUE.maxParties;
+}
+
+/** Närmaste krog i byn som har öppet i kväll (inte vagnarna, inte vår). */
+export function nearestOpenRival(from: Vec2, venues: ReturnType<typeof venuesTonight>): string | null {
+  const places = venuePlaces();
+  let best: string | null = null;
+  let bestD = Infinity;
+  for (const v of venues) {
+    if (v.id === PLAYER_VENUE || v.kind === 'truck' || !v.open || !places[v.id]) continue;
+    const d = Math.hypot(places[v.id].doorPoint[0] - from[0], places[v.id].doorPoint[1] - from[1]);
+    if (d < bestD) { bestD = d; best = v.id; }
+  }
+  return best;
+}
+
 /** Krogens dörr i byns ram (vagnarna på kvällens plats). */
 function doorPointOf(venueId: string, venues: ReturnType<typeof venuesTonight>): Vec2 {
   const v = venues.find((x) => x.id === venueId);
@@ -234,6 +253,8 @@ export function VillageLife() {
     arrived: {} as Record<string, number>,
     // ORDER 297 — hur många som sitter inne på varje krog just nu (gloria och fönster).
     inside: {} as Record<string, number>,
+    // ORDER 297 — sällskap som vände vid vår fulla kö och gick till en annan krog.
+    turnedAway: 0,
     wavesSeen: new Set<string>(),
     leaving: [] as Array<{ at: number; w: Walker }>,
     busDone: { announce: false, chose: false },
@@ -315,6 +336,7 @@ export function VillageLife() {
       L.cars = [];
       L.arrived = {};
       L.inside = {};
+      L.turnedAway = 0;
       L.wavesSeen = new Set();
       L.leaving = [];
       L.busDone = { announce: false, chose: false };
@@ -407,6 +429,19 @@ export function VillageLife() {
         w.arrived = true;
         continue;
       }
+      if (w.s >= w.length && w.venueId === PLAYER_VENUE && !w.homeward && queueFull(s)) {
+        // ORDER 297 (Designs Byn i kvällsljus §3, balance.ts VILLAGE_QUEUE):
+        // kön vid vår dörr är full, så sällskapet väljer en annan krog i byn.
+        const other = nearestOpenRival(w.route[w.route.length - 1], venues);
+        if (other) {
+          const route = routeBetween(g, doorFor(PLAYER_VENUE, s, venues), doorFor(other, s, venues));
+          if (route.length >= 2) {
+            Object.assign(w, { venueId: other, route, length: routeLength(route), s: 0, key: `${w.key}:annan` });
+            L.turnedAway = (L.turnedAway ?? 0) + w.n;
+            continue;
+          }
+        }
+      }
       if (w.s >= w.length) {
         L.arrived[w.venueId] = (L.arrived[w.venueId] ?? 0) + w.n;
         const v = venues.find((x) => x.id === w.venueId);
@@ -479,7 +514,7 @@ export function VillageLife() {
       const out = new Set<string>();
       for (const w of L.walkers) if (w.homeId) out.add(w.homeId);
       for (const { w } of L.leaving) if (w.homeId) out.add(w.homeId);
-      publishVillageLive({ arrived: { ...L.arrived }, onWay, groupsWalking: L.walkers.length, inside: { ...L.inside }, outHomes: [...out] });
+      publishVillageLive({ arrived: { ...L.arrived }, onWay, groupsWalking: L.walkers.length, inside: { ...L.inside }, outHomes: [...out], turnedAway: L.turnedAway });
     }
   });
 

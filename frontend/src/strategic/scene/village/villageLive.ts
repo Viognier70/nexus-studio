@@ -21,9 +21,11 @@ export interface VillageLiveState {
   // sällskap är ute i kväll (Designs Byn i kvällsljus: fönster och gloria).
   inside: Record<string, number>;
   outHomes: string[];
+  // Sällskap som vände vid vår fulla kö och valde en annan krog.
+  turnedAway: number;
 }
 
-let state: VillageLiveState = { arrived: {}, onWay: [], groupsWalking: 0, inside: {}, outHomes: [] };
+let state: VillageLiveState = { arrived: {}, onWay: [], groupsWalking: 0, inside: {}, outHomes: [], turnedAway: 0 };
 const listeners = new Set<() => void>();
 
 export function villageLive(): VillageLiveState {
@@ -35,6 +37,7 @@ export function publishVillageLive(next: VillageLiveState): void {
   if (typeof document !== 'undefined') {
     document.body.dataset.villageOnWay = String(next.onWay.reduce((a, g) => a + g.n, 0));
     document.body.dataset.villageGroups = String(next.groupsWalking);
+    document.body.dataset.villageTurnedAway = String(next.turnedAway);
   }
   for (const l of listeners) l();
 }

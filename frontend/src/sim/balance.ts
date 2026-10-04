@@ -1620,6 +1620,25 @@ export const QUEUE_CAP = {
   maxParties: 7
 } as const;
 
+// ORDER 297 (Designs leverans Byn i kvällsljus, villageQueue.balance.ts): kön
+// vid spelarens dörr i byn. Platserna är rummets köplatser (wineBarRoom.ts
+// queueSpots, sju: dörrmattan och trottoaren), och kön är aldrig längre än
+// platserna (QUEUE_CAP). Ett sällskap som kommer när kön är full väljer en
+// annan krog i byn (scene/village/VillageLife.tsx). Leveransen lät Code sätta
+// talen; de är desamma som servicens, så att byn och rummet är lika:
+//   - seats: när ett sällskap ställer sig i kö, rummets platser (vinbaren 20);
+//   - patienceSimSeconds: servicens tålamod (QUEUE; kunskapens tillägg läggs
+//     på i knowledgeInService.ts queuePatienceSeconds);
+//   - impatientBelow: när kön blir otålig (QUEUE_MOOD).
+export const VILLAGE_QUEUE = {
+  section: 'Servicen',
+  openQuestion: 'F29',
+  seats: BUSINESS_CLASSES.list.find((c) => c.id === 'vinbar')?.seats ?? 0,
+  patienceSimSeconds: QUEUE.patienceSimSeconds,
+  impatientBelow: QUEUE_MOOD.impatientBelow,
+  maxParties: QUEUE_CAP.maxParties
+} as const;
+
 export const RUSH = {
   section: 'Servicen',
   openQuestion: 'F61',
