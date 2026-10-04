@@ -31,6 +31,7 @@ import {
 import { buildFacade, type FacadeGeometry } from '../../lib/facade/buildFacade';
 import { paramsFor } from '../../lib/facade/paramsFor';
 import { skyState } from '../../lib/lighting/skyState';
+import { villageLive } from './village/villageLive';
 
 // Distance thresholds in metres, measured camera → building centroid.
 // Adjust in one place so LOD tuning stays legible.
@@ -220,6 +221,8 @@ export function ProceduralFacades() {
   // the physical glass at all times.
   const litGlassMeshesRef = useRef<Map<string, THREE.Mesh>>(new Map());
   const litSwapStateRef = useRef<'day' | 'night'>('day');
+  // ORDER 297 — husen som är släckta för att sällskapet är ute (nyckeln är listan).
+  const outKeyRef = useRef('');
   // ORDER 061 Thread A — per-building LOD 1 emissive band mesh ref.
   // Populated only for `windowsLit` buildings. Kept hidden during the
   // day and made visible when nightFactor crosses the twilight
@@ -281,6 +284,22 @@ export function ProceduralFacades() {
       for (const mesh of lod1EmissiveMeshesRef.current.values()) {
         mesh.visible = wantsNight === 'night';
       }
+    }
+    // ORDER 297 (Designs Byn i kvällsljus, LIGHTS.homes): ett hus vars sällskap
+    // är ute i kväll är släckt och tänds när sällskapet är hemma igen
+    // (scene/village/villageLive.ts outHomes, VillageLife).
+    if (wantsNight === 'night') {
+      const out = villageLive().outHomes;
+      const key = out.join(',');
+      if (key !== outKeyRef.current) {
+        outKeyRef.current = key;
+        const outSet = new Set(out);
+        for (const [id, mesh] of litGlassMeshesRef.current) mesh.material = outSet.has(id) ? getGlassMaterial() : litMat;
+        for (const [id, mesh] of lod1EmissiveMeshesRef.current) mesh.visible = !outSet.has(id);
+        if (typeof document !== 'undefined') document.body.dataset.villageHomesDark = String([...litGlassMeshesRef.current.keys()].filter((id) => outSet.has(id)).length);
+      }
+    } else {
+      outKeyRef.current = '';
     }
   });
 

@@ -38,6 +38,7 @@ export function publishVillageLive(next: VillageLiveState): void {
     document.body.dataset.villageOnWay = String(next.onWay.reduce((a, g) => a + g.n, 0));
     document.body.dataset.villageGroups = String(next.groupsWalking);
     document.body.dataset.villageTurnedAway = String(next.turnedAway);
+    document.body.dataset.villageOutHomes = String(next.outHomes.length);
   }
   for (const l of listeners) l();
 }
