@@ -2,6 +2,7 @@ import { GRAY_BOX_CAMERA } from '../content/grythyttan';
 import { LANDMARK_BY_ID } from '../content/world';
 import type { CameraTarget, ViewLabel } from '../types';
 import { clampToRoom } from './roomBounds';
+import { levelById, levelTarget } from './eveningLevels';
 
 export interface Preset {
   label: ViewLabel;
@@ -13,15 +14,11 @@ export interface Preset {
 // onto the plaza itself; the business preset holds tight over Torget where
 // the (placeholder) wine bar sits.
 const TORGET = LANDMARK_BY_ID['gry-torget']?.position ?? [0, 0];
-const CAMPUS = LANDMARK_BY_ID['gry-campus']?.position ?? TORGET;
 // Village view focuses roughly midway between Torget and Campus so the two
 // canonical anchors both fall in frame. Grythyttan is a linear village along
 // the road between the old core and the hospitality-education campus, and
 // showing both in the establishing shot is what makes it recognisable.
-const VILLAGE_FOCUS: [number, number] = [
-  (TORGET[0] + CAMPUS[0]) / 2,
-  (TORGET[1] + CAMPUS[1]) / 2 + 20
-];
+// ORDER 297 — byns mål står i Designs nivåer (eveningLevels.ts).
 
 // ORDER 042 §3.1 developer preset — jumps the camera to the player-
 // business building (w869907975, centroid ≈ (31.6, −16.7)) at a
@@ -38,8 +35,11 @@ const VILLAGE_FOCUS: [number, number] = [
 // within 5 m). See the corresponding note in PLAYER_BUSINESS_
 // BUILDING_IDS in world.ts and the 2026-07-30 mechanism-note in
 // APPROXIMATION_REGISTER.md.
-const PLAYER_BUSINESS_CENTROID: [number, number] = [31.6, -16.7];
+// ORDER 297 — krogens och gatans mål står i rummets ram (eveningLevels.ts).
 
+// ORDER 297 — byn, kvarteret, gatan och krogen är Designs nivåer (Byn i
+// kvällsljus, andra omtaget: 660, 90, 42 och 24 m; camera/eveningLevels.ts).
+// Kommentarerna nedan om tidigare avstånd är historik.
 export const PRESETS: Record<'village' | 'district' | 'business' | 'street' | 'myBusiness', Preset> = {
   village: {
     label: 'grythyttan',
@@ -52,12 +52,7 @@ export const PRESETS: Record<'village' | 'district' | 'business' | 'street' | 'm
     //   distance × sin(pitch) = altitude
     //   900     × sin(32°)    ≈ 477 m altitude
     //   900     × cos(32°)    ≈ 763 m horizontal reach
-    target: {
-      focus: { x: VILLAGE_FOCUS[0], z: VILLAGE_FOCUS[1] },
-      distance: 900,
-      yaw: -0.35,
-      pitch: (32 * Math.PI) / 180
-    }
+    target: levelTarget(levelById('village'))
   },
   district: {
     label: 'kvarteret',
@@ -69,12 +64,7 @@ export const PRESETS: Record<'village' | 'district' | 'business' | 'street' | 'm
     //
     //   210 × sin(40°) ≈ 135 m altitude
     //   210 × cos(40°) ≈ 161 m horizontal reach
-    target: {
-      focus: { x: TORGET[0] - 12, z: TORGET[1] + 4 },
-      distance: 210,
-      yaw: -0.30,
-      pitch: (40 * Math.PI) / 180
-    }
+    target: levelTarget(levelById('block'))
   },
   business: {
     // Developer shortcut only per Vision Owner ORDER 002A. Kept in place
@@ -93,12 +83,7 @@ export const PRESETS: Record<'village' | 'district' | 'business' | 'street' | 'm
   // syns och inte rummet.
   street: {
     label: 'kvarteret',
-    target: {
-      focus: { x: PLAYER_BUSINESS_CENTROID[0], z: PLAYER_BUSINESS_CENTROID[1] },
-      distance: 95,
-      yaw: 0.4,
-      pitch: (38 * Math.PI) / 180
-    }
+    target: levelTarget(levelById('street'))
   },
   myBusiness: {
     // Developer shortcut per ORDER 042 §3.1 review request. Centres on
@@ -116,15 +101,7 @@ export const PRESETS: Record<'village' | 'district' | 'business' | 'street' | 'm
     // 50° keeps the camera above the roof line but tilted enough to
     // see the interior in perspective (not top-down plan view).
     label: 'vinbaren',
-    target: {
-      focus: { x: PLAYER_BUSINESS_CENTROID[0], z: PLAYER_BUSINESS_CENTROID[1] },
-      distance:
-        GRAY_BOX_CAMERA.restaurantRoofFadeMid -
-        GRAY_BOX_CAMERA.restaurantRoofFadeHalf -
-        4,
-      yaw: 0.4,
-      pitch: (50 * Math.PI) / 180
-    }
+    target: levelTarget(levelById('venue'))
   }
 };
 

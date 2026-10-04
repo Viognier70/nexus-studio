@@ -24,6 +24,14 @@ import { walkNetwork } from '../../content/villageNetwork';
 import { readabilityScale } from '../../util/readability';
 import { subscribeVillageLive, villageLive } from './villageLive';
 import { VenueLabel } from '../../ui/VillageLabels';
+import { BLEND, LIGHTS } from '../../village/villageEvening';
+import { venueLightTargets } from './venueLight';
+
+// ORDER 297 — glorian: grundstorleken och "fullt hus" för skenets styrka (Designs byKvall.js: 14 m, 14 gäster).
+const HALO_BASE_M = 14;
+const FULL_HOUSE_GUESTS = 14;
+const smoothRange = (a: number, b: number, x: number) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+const approach = (v: number, target: number, step: number) => (v < target ? Math.min(target, v + step) : Math.max(target, v - step));
 
 const LABELS_FROM_M = 110;
 const COMPACT_FROM_M = 450;
@@ -91,6 +99,7 @@ export function VillageVenues() {
   const root = useMemo(() => new THREE.Group(), []);
   const glows = useRef<Array<{ id: string; sprite: THREE.Sprite; lamp: THREE.Mesh }>>([]);
   const trucks = useRef<Map<string, THREE.Group>>(new Map());
+  const venueK = useRef<Record<string, number>>({});
 
   // Skenet vid varje krog med dörr (vagnarna har sin lucka).
   useEffect(() => {
@@ -155,19 +164,26 @@ export function VillageVenues() {
     tex.dispose();
   }, [root, tex]);
 
-  useFrame(() => {
+  useFrame((_, delta) => {
     const dist = actualRef.current.distance;
     const night = Math.max(0.35, skyState.nightFactor);
-    const evening = sim.day.period === 'dinner' || sim.day.period === 'evening';
     const scale = readabilityScale(dist, { rampStart: 150, rampEnd: 1200, maxScale: 6 });
+    // ORDER 297 — krogens fyra lägen (venueLight.ts) och glorian som växer med
+    // gästerna (Designs LIGHTS.venue: haloPerGuest, rampS; BLEND.halo).
+    const halo = smoothRange(BLEND.halo[0], BLEND.halo[1], dist);
+    const inside = villageLive().inside;
+    const step = Math.min(delta, 0.1) / LIGHTS.venue.rampS;
     for (const gl of glows.current) {
       const v = venues.find((x) => x.id === gl.id);
-      const on = !!v?.open && evening;
-      const target = on ? night : 0;
-      (gl.sprite.material as THREE.SpriteMaterial).opacity = target;
-      gl.sprite.visible = target > 0.01 && dist > 40;
-      gl.sprite.scale.setScalar(16 * scale);
-      (gl.lamp.material as THREE.MeshStandardMaterial).emissiveIntensity = on ? 1.6 * night : 0;
+      const t = venueLightTargets(sim, gl.id, !!v?.open);
+      const k = (venueK.current[gl.id] = approach(venueK.current[gl.id] ?? 0, t.open, step));
+      const n = gl.id === PLAYER_VENUE ? sim.seatedIds.length : inside[gl.id] ?? 0;
+      const fill = Math.min(1, n / FULL_HOUSE_GUESTS);
+      const opacity = 0.5 * k * halo * (0.5 + 0.5 * fill) * night;
+      (gl.sprite.material as THREE.SpriteMaterial).opacity = opacity;
+      gl.sprite.visible = opacity > 0.01;
+      gl.sprite.scale.setScalar((HALO_BASE_M + LIGHTS.venue.haloPerGuest * Math.sqrt(n)) * scale);
+      (gl.lamp.material as THREE.MeshStandardMaterial).emissiveIntensity = 1.6 * k * night;
     }
     const want = dist > LABELS_FROM_M;
     if (want !== shownRef.current) {
@@ -188,8 +204,11 @@ export function VillageVenues() {
         const p = v.spot ? truckSpotPlace(v.spot).doorPoint : places[v.id]?.centre;
         if (!el || !p) return [];
         proj.set(p[0], v.kind === 'truck' ? 6 : 14, p[1]).project(camera);
-        return [{ el, x: (proj.x * 0.5 + 0.5) * size.width, y: (-proj.y * 0.5 + 0.5) * size.height, w: el.offsetWidth, h: el.offsetHeight }];
-      }).sort((a, b) => b.y - a.y);
+        return [{ el, ours: v.id === PLAYER_VENUE, x: (proj.x * 0.5 + 0.5) * size.width, y: (-proj.y * 0.5 + 0.5) * size.height, w: el.offsetWidth, h: el.offsetHeight }];
+      // ORDER 297 (Designs Byn i kvällsljus omtag §9: "en regel för när namn
+      // krockar, till exempel att vår krog alltid ligger överst"): vår krogs
+      // namn placeras först och flyttas aldrig, och ritas överst.
+      }).sort((a, b) => (a.ours === b.ours ? b.y - a.y : a.ours ? -1 : 1));
       for (const it of items) {
         let y0 = it.y - it.h / 2;
         const x0 = it.x - it.w / 2;
@@ -202,6 +221,7 @@ export function VillageVenues() {
         placed.push({ x0, x1, y0, y1: y0 + it.h });
         const dy = Math.round(y0 - (it.y - it.h / 2));
         it.el.style.transform = dy !== 0 ? `translateY(${dy}px)` : '';
+        if (it.el.parentElement) it.el.parentElement.style.zIndex = it.ours ? '2' : '1';
       }
     }
   });

@@ -42,6 +42,11 @@ export class MoodSymbolLayer {
     this.ctx = this.canvas.getContext('2d');
   }
 
+  /** Tömmer duken (när rummet inte syns och ingen ritning görs). */
+  clear(): void {
+    this.ctx?.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
   dispose(): void {
     this.canvas.remove();
   }

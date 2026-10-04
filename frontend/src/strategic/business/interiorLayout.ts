@@ -29,6 +29,7 @@ import type { OBB } from '../procgen/geom';
 import type { BusinessClass } from './businessClass';
 import { businessHasSeats } from './businessClass';
 import { businessRoomRef } from '../scene/interiorSharedState';
+import { entranceObb } from './venueEntrance';
 
 // ---------- Compile-time layout constants ----------
 // Every measurement below is metres in the OBB local frame:
@@ -163,6 +164,17 @@ export interface InteriorLayout {
   totalSeats: number;                    // = TOTAL_SEATS (runtime echo)
 }
 
+const landmarkPoint = (id: string): [number, number] | null => {
+  const l = WORLD.landmarks.find((x) => x.id === id);
+  return l ? [l.position[0], l.position[1]] : null;
+};
+
+/** ORDER 297 — rummets ram: orientedBbox, vänd så att entrén vetter dit byggnadsposten säger. */
+export function playerObb(building: RawBuilding): OBB {
+  const e = entranceObb({ id: building.id, poly: building.poly as [number, number][] }, (poly) => orientedBbox(poly), landmarkPoint);
+  return { centre: e.centre, w: e.w, d: e.d, angle: e.angle } as OBB;
+}
+
 function findPlayerBuilding(): RawBuilding | null {
   const targetId = [...PLAYER_BUSINESS_BUILDING_IDS][0];
   if (!targetId) return null;
@@ -218,7 +230,11 @@ export function computePlayerBusinessInterior(
   const building = findPlayerBuilding();
   if (!building) return null;
 
-  const obb = orientedBbox(building.poly);
+  // ORDER 297 (Designs leverans byn, andra omtaget, venueEntrance.ts): entrén
+  // är data i byggnadsposten. orientedBbox valde kanten efter 9 mm skillnad, så
+  // att dörren vette mot Prästgatan i söder; nu vänds rummet så att entrén
+  // (lokala +X) vetter dit posten säger, för w869907975 mot torget.
+  const obb = playerObb(building);
   const halfW = obb.w / 2;
   const halfD = obb.d / 2;
 

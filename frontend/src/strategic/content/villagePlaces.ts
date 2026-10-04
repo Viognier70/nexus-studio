@@ -75,10 +75,15 @@ export function truckSpotPlace(spot: TruckSpot): VenuePlace {
 
 // Där gästtyperna kommer ifrån: studenterna från Måltidens hus, par och
 // familjer från bostadshusen, höginkomsttagarna från hotellet eller bilarna.
+export interface HomeBuilding { id: string; centre: Vec2; node: number }
+
 export interface Sources {
   campus: number;
   hotel: number;
   homes: number[];
+  // ORDER 297 — alla bostadshus inom byn, med byggnadens id (fönstren släcks
+  // när sällskapet går ut; Designs leverans Byn i kvällsljus, LIGHTS.homes).
+  homeBuildings: HomeBuilding[];
   parking: number;
   // Bilarnas och bussens väg in: noden i bilnätet där de kommer in, och
   // parkeringen och hållplatsen i bilnätet.
@@ -95,6 +100,11 @@ export function villageSources(): Sources {
   const g = walkNetwork();
   const d = driveNetwork();
   const homesKinds = new Set(['house', 'residential', 'apartments', 'detached', 'terrace']);
+  const homeBuildings: HomeBuilding[] = WORLD_RAW_BUILDINGS
+    .filter((b) => homesKinds.has(b.kind ?? ''))
+    .map((b) => ({ id: b.id, centre: centroid(b.poly as Vec2[]) }))
+    .filter((h) => Math.hypot(h.centre[0] - TORGET[0], h.centre[1] - TORGET[1]) < 700)
+    .map((h) => ({ ...h, node: nearestNode(g, h.centre[0], h.centre[1]) }));
   const homes = WORLD_RAW_BUILDINGS
     .filter((b) => homesKinds.has(b.kind ?? ''))
     .map((b) => centroid(b.poly as Vec2[]))
@@ -120,6 +130,7 @@ export function villageSources(): Sources {
     campus: nearestNode(g, CAMPUS[0], CAMPUS[1]),
     hotel,
     homes: homes.length > 0 ? homes : [nearestNode(g, TORGET[0], TORGET[1])],
+    homeBuildings,
     parking: nearestNode(g, d.nodes[driveParking][0], d.nodes[driveParking][1]),
     driveEntry: driveEntry.length > 0 ? driveEntry : [driveParking],
     driveParking,
@@ -128,6 +139,9 @@ export function villageSources(): Sources {
   };
   return sourcesCache;
 }
+
+/** ORDER 297 — campus (Måltidens hus) i byns ram. */
+export const CAMPUS_POINT: Vec2 = CAMPUS;
 
 export function landmarkPoint(id: string): Vec2 | null {
   const l = LANDMARK_BY_ID[id];

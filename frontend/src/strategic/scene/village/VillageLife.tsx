@@ -29,16 +29,17 @@ import * as THREE from 'three';
 import { useCamera } from '../../camera/CameraContext';
 import { useSimState } from '../../simulation/SimulationProvider';
 import { WARM } from '../../../ui/theme/nexusTheme.warm';
-import { GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, VILLAGE } from '../../../sim/balance';
+import { GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, VILLAGE, VILLAGE_QUEUE } from '../../../sim/balance';
 import { clockMinutes } from '../../../sim/clock';
 import { busTonight, PLAYER_VENUE, POOL_TYPES, venuesTonight, type PoolType } from '../../../sim/village';
 import { plannedVillage } from '../../../sim/villageLive';
 import { driveNetwork, pointAlong, routeBetween, routeLength, walkNetwork } from '../../content/villageNetwork';
-import { truckSpotPlace, venuePlaces, villageSources } from '../../content/villagePlaces';
+import { CAMPUS_POINT, truckSpotPlace, venuePlaces, villageSources } from '../../content/villagePlaces';
 import { createRng } from '../../util/rng';
 import { readabilityScale } from '../../util/readability';
 import { publishVillageLive, type OnWayGroup } from './villageLive';
 import type { SimulationState } from '../../types';
+import { BLEND, LEVELS } from '../../village/villageEvening';
 
 type Vec2 = [number, number];
 type WalkerKind = PoolType | 'social' | 'billionaire' | 'tourist';
@@ -59,8 +60,6 @@ const EAT_AT_TRUCK_MIN = 12;
 const STAY_MIN: [number, number] = [70, 130];
 const MAX_FIGURES = 360;
 const MAX_CARS = 24;
-const FIGURE_CURVE = { rampStart: 30, rampEnd: 700, maxScale: 6 };
-const MARKER_FROM_M = 150;
 const ON_WAY_RADIUS_M = 160;
 const MAX_HEAT = 700;
 const HEAT_CELL_M = 8;
@@ -84,6 +83,8 @@ interface Planned {
   byCar: boolean;
   source: number;
   key: string;
+  // ORDER 297 — huset sällskapet bor i (fönstren släcks medan de är ute).
+  homeId?: string | null;
 }
 
 interface Walker {
@@ -102,6 +103,7 @@ interface Walker {
   // På väg hem efter måltiden (räknas inte som gäst på väg in).
   homeward: boolean;
   source: number;
+  homeId?: string | null;
 }
 
 interface Car {
@@ -116,12 +118,58 @@ interface Car {
   speed: number;
 }
 
-function startNode(type: WalkerKind, rnd: () => number): { node: number; byCar: boolean } {
+// ORDER 297 (Designs leverans Byn i kvällsljus §6): sällskapen kommer från
+// bostadshus inom HOME_RADIUS_M från krogen, och studenterna från campus när
+// krogen ligger inom CAMPUS_RADIUS_M; annars från ett hus nära krogen.
+const HOME_RADIUS_M = 260;
+const CAMPUS_RADIUS_M = 380;
+const NEAREST_HOMES = 6;
+
+function homeNear(door: Vec2, rnd: () => number): { node: number; homeId: string | null } {
   const src = villageSources();
-  if (type === 'student') return { node: src.campus, byCar: false };
-  if (type === 'high') return rnd() < 0.5 ? { node: src.hotel, byCar: false } : { node: src.parking, byCar: true };
-  if (type === 'middle' && rnd() < 0.25) return { node: src.parking, byCar: true };
-  return { node: src.homes[Math.floor(rnd() * src.homes.length)], byCar: false };
+  const near = src.homeBuildings.filter((h) => Math.hypot(h.centre[0] - door[0], h.centre[1] - door[1]) < HOME_RADIUS_M);
+  const pool = near.length > 0 ? near : [...src.homeBuildings].sort((a, b) => Math.hypot(a.centre[0] - door[0], a.centre[1] - door[1]) - Math.hypot(b.centre[0] - door[0], b.centre[1] - door[1])).slice(0, NEAREST_HOMES);
+  if (pool.length === 0) return { node: src.homes[Math.floor(rnd() * src.homes.length)], homeId: null };
+  const h = pool[Math.floor(rnd() * pool.length)];
+  return { node: h.node, homeId: h.id };
+}
+
+function startNode(type: WalkerKind, rnd: () => number, door: Vec2): { node: number; byCar: boolean; homeId: string | null } {
+  const src = villageSources();
+  if (type === 'student') {
+    if (Math.hypot(CAMPUS_POINT[0] - door[0], CAMPUS_POINT[1] - door[1]) < CAMPUS_RADIUS_M) return { node: src.campus, byCar: false, homeId: null };
+    return { ...homeNear(door, rnd), byCar: false };
+  }
+  if (type === 'high') return rnd() < 0.5 ? { node: src.hotel, byCar: false, homeId: null } : { node: src.parking, byCar: true, homeId: null };
+  if (type === 'middle' && rnd() < 0.25) return { node: src.parking, byCar: true, homeId: null };
+  return { ...homeNear(door, rnd), byCar: false };
+}
+
+/** ORDER 297 — vår kö är full: lika många sällskap i kön som köplatserna (VILLAGE_QUEUE). */
+export function queueFull(state: SimulationState): boolean {
+  const parties = new Set(state.guests.filter((g) => state.waitingIds.includes(g.id)).map((g) => g.partyId ?? g.id));
+  return state.day.period === 'dinner' && parties.size >= VILLAGE_QUEUE.maxParties;
+}
+
+/** Närmaste krog i byn som har öppet i kväll (inte vagnarna, inte vår). */
+export function nearestOpenRival(from: Vec2, venues: ReturnType<typeof venuesTonight>): string | null {
+  const places = venuePlaces();
+  let best: string | null = null;
+  let bestD = Infinity;
+  for (const v of venues) {
+    if (v.id === PLAYER_VENUE || v.kind === 'truck' || !v.open || !places[v.id]) continue;
+    const d = Math.hypot(places[v.id].doorPoint[0] - from[0], places[v.id].doorPoint[1] - from[1]);
+    if (d < bestD) { bestD = d; best = v.id; }
+  }
+  return best;
+}
+
+/** Krogens dörr i byns ram (vagnarna på kvällens plats). */
+function doorPointOf(venueId: string, venues: ReturnType<typeof venuesTonight>): Vec2 {
+  const v = venues.find((x) => x.id === venueId);
+  const g = walkNetwork();
+  const node = v?.spot ? truckSpotPlace(v.spot).door : (venuePlaces()[venueId] ?? venuePlaces()[PLAYER_VENUE]).door;
+  return g.nodes[node] as Vec2;
 }
 
 function doorFor(venueId: string, _state: SimulationState, venues: ReturnType<typeof venuesTonight>): number {
@@ -145,18 +193,49 @@ function planEvening(state: SimulationState): Planned[] {
       while (left > 0) {
         const n = Math.min(left, t === 'student' ? 2 + Math.floor(rnd() * 3) : 1 + Math.floor(rnd() * 3));
         left -= n;
-        const s = startNode(t, rnd);
+        const s = startNode(t, rnd, doorPointOf(row.id, venues));
         // Flest kommer mitt i kvällen (triangelfördelning över fönstret).
-        out.push({ at: ARRIVE_FROM + ((rnd() + rnd()) / 2) * (ARRIVE_UNTIL - ARRIVE_FROM), venueId: row.id, type: t, n, byCar: s.byCar, source: s.node, key: `${row.id}:${t}:${out.length}` });
+        out.push({ at: ARRIVE_FROM + ((rnd() + rnd()) / 2) * (ARRIVE_UNTIL - ARRIVE_FROM), venueId: row.id, type: t, n, byCar: s.byCar, source: s.node, key: `${row.id}:${t}:${out.length}`, homeId: s.homeId });
       }
     }
   });
   // Gästen med socialt kapital går till spelarens krog när hon kommer.
   const social = state.day.booking?.social;
   if (social && venues[0].open) {
-    out.push({ at: 18 * 60 + GUEST_TYPES.arrivesAfterMinutes.social, venueId: PLAYER_VENUE, type: 'social', n: 1, byCar: false, source: villageSources().homes[0], key: 'social' });
+    out.push({ at: 18 * 60 + GUEST_TYPES.arrivesAfterMinutes.social, venueId: PLAYER_VENUE, type: 'social', n: 1, byCar: false, source: villageSources().homes[0], key: 'social', homeId: null });
   }
   return out.sort((a, b) => a.at - b.at);
+}
+
+// ORDER 297 — figurernas förstoring på ett avstånd: nivåernas figureScale,
+// logaritmiskt mellan nivåerna (byns nivå räknas som 2, som i Designs frameAt).
+function figureScaleAt(d: number): number {
+  const L = LEVELS;
+  const sc = (i: number) => L[i].figureScale || 2;
+  if (d >= L[0].dist) return sc(0);
+  if (d <= L[L.length - 1].dist) return sc(L.length - 1);
+  let i = 0;
+  while (i < L.length - 2 && d < L[i + 1].dist) i++;
+  const k = Math.max(0, Math.min(1, Math.log(L[i].dist / d) / Math.log(L[i].dist / L[i + 1].dist)));
+  return sc(i) + (sc(i + 1) - sc(i)) * k;
+}
+
+function smoothBand(a: number, b: number, x: number): number {
+  const t = Math.max(0, Math.min(1, (x - a) / (b - a)));
+  return t * t * (3 - 2 * t);
+}
+
+function glowTexture(): THREE.Texture {
+  const c = document.createElement('canvas');
+  c.width = c.height = 64;
+  const x = c.getContext('2d')!;
+  const g = x.createRadialGradient(32, 32, 0, 32, 32, 32);
+  g.addColorStop(0, 'rgba(255,255,255,1)');
+  g.addColorStop(0.3, 'rgba(255,255,255,.42)');
+  g.addColorStop(1, 'rgba(255,255,255,0)');
+  x.fillStyle = g;
+  x.fillRect(0, 0, 64, 64);
+  return new THREE.CanvasTexture(c);
 }
 
 function makeFigureMesh(): THREE.InstancedMesh {
@@ -202,6 +281,10 @@ export function VillageLife() {
     walkers: [] as Walker[],
     cars: [] as Car[],
     arrived: {} as Record<string, number>,
+    // ORDER 297 — hur många som sitter inne på varje krog just nu (gloria och fönster).
+    inside: {} as Record<string, number>,
+    // ORDER 297 — sällskap som vände vid vår fulla kö och gick till en annan krog.
+    turnedAway: 0,
     wavesSeen: new Set<string>(),
     leaving: [] as Array<{ at: number; w: Walker }>,
     busDone: { announce: false, chose: false },
@@ -216,7 +299,19 @@ export function VillageLife() {
     const figures = makeFigureMesh();
     // Gruppens markering i byn: en skiva som vänder sig mot kameran.
     const markerGeo = new THREE.CircleGeometry(1, 20);
-    const markers = new THREE.InstancedMesh(markerGeo, new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.92, depthWrite: false }), MAX_FIGURES);
+    // ORDER 297 — sällskapets lykta i byn (Designs createGuests): ett sken i
+    // gästtypens färg, en kärna på marken, och fläcken under sällskapet i kvarteret.
+    const markers = new THREE.InstancedMesh(markerGeo, new THREE.MeshBasicMaterial({ map: glowTexture(), transparent: true, opacity: 0.4, depthWrite: false, blending: THREE.AdditiveBlending }), MAX_FIGURES);
+    const flatGeo = new THREE.CircleGeometry(1, 28);
+    flatGeo.rotateX(-Math.PI / 2);
+    const cores = new THREE.InstancedMesh(flatGeo, new THREE.MeshBasicMaterial({ transparent: true, opacity: 1, toneMapped: false }), MAX_FIGURES);
+    cores.count = 0;
+    cores.frustumCulled = false;
+    cores.renderOrder = 3;
+    const patches = new THREE.InstancedMesh(flatGeo, new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false }), MAX_FIGURES);
+    patches.count = 0;
+    patches.frustumCulled = false;
+    patches.renderOrder = 1;
     markers.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
     markers.count = 0;
     markers.frustumCulled = false;
@@ -244,8 +339,11 @@ export function VillageLife() {
     heat.count = 0;
     heat.frustumCulled = false;
     heat.renderOrder = 2;
-    root.add(figures, markers, rings, cars, bus, heat);
-    return { figures, markers, rings, cars, bus, heat };
+    // ORDER 297 — gästflödets band finns inte i Designs leverans Byn i kvällsljus;
+    // där bär sällskapens lyktor flödet. Banden ritas inte längre.
+    heat.visible = false;
+    root.add(figures, markers, rings, cars, bus, heat, cores, patches);
+    return { figures, markers, rings, cars, bus, heat, cores, patches };
   }, [root]);
 
   useEffect(() => () => {
@@ -282,6 +380,8 @@ export function VillageLife() {
       L.walkers = [];
       L.cars = [];
       L.arrived = {};
+      L.inside = {};
+      L.turnedAway = 0;
       L.wavesSeen = new Set();
       L.leaving = [];
       L.busDone = { announce: false, chose: false };
@@ -374,6 +474,19 @@ export function VillageLife() {
         w.arrived = true;
         continue;
       }
+      if (w.s >= w.length && w.venueId === PLAYER_VENUE && !w.homeward && queueFull(s)) {
+        // ORDER 297 (Designs Byn i kvällsljus §3, balance.ts VILLAGE_QUEUE):
+        // kön vid vår dörr är full, så sällskapet väljer en annan krog i byn.
+        const other = nearestOpenRival(w.route[w.route.length - 1], venues);
+        if (other) {
+          const route = routeBetween(g, doorFor(PLAYER_VENUE, s, venues), doorFor(other, s, venues));
+          if (route.length >= 2) {
+            Object.assign(w, { venueId: other, route, length: routeLength(route), s: 0, key: `${w.key}:annan` });
+            L.turnedAway = (L.turnedAway ?? 0) + w.n;
+            continue;
+          }
+        }
+      }
       if (w.s >= w.length) {
         L.arrived[w.venueId] = (L.arrived[w.venueId] ?? 0) + w.n;
         const v = venues.find((x) => x.id === w.venueId);
@@ -385,6 +498,7 @@ export function VillageLife() {
           w.eatUntil = now + EAT_AT_TRUCK_MIN;
         } else {
           w.arrived = true;
+          L.inside[w.venueId] = (L.inside[w.venueId] ?? 0) + w.n;
           // Efter måltiden går sällskapet hem igen.
           if (!w.homeward && w.type !== 'billionaire') {
             const stay = STAY_MIN[0] + (Math.abs(Math.sin(w.length * 7.13)) * (STAY_MIN[1] - STAY_MIN[0]));
@@ -400,6 +514,7 @@ export function VillageLife() {
       if (due.length > 0) {
         L.leaving = L.leaving.filter((x) => x.at > now);
         for (const { w } of due) {
+          L.inside[w.venueId] = Math.max(0, (L.inside[w.venueId] ?? 0) - w.n);
           const from = w.route[w.route.length - 1];
           const back = [...w.route].reverse();
           if (back.length >= 2 && from) {
@@ -440,7 +555,11 @@ export function VillageLife() {
         .filter((w) => w.near < ON_WAY_RADIUS_M)
         .sort((a, b) => a.metres - b.metres)
         .map(({ near: _n, ...rest }) => rest);
-      publishVillageLive({ arrived: { ...L.arrived }, onWay, groupsWalking: L.walkers.length });
+      // ORDER 297 — husen vars sällskap är ute (på väg, på krogen eller på väg hem).
+      const out = new Set<string>();
+      for (const w of L.walkers) if (w.homeId) out.add(w.homeId);
+      for (const { w } of L.leaving) if (w.homeId) out.add(w.homeId);
+      publishVillageLive({ arrived: { ...L.arrived }, onWay, groupsWalking: L.walkers.length, inside: { ...L.inside }, outHomes: [...out], turnedAway: L.turnedAway });
     }
   });
 
@@ -452,7 +571,8 @@ export function VillageLife() {
       ring: p.type === 'billionaire' ? WARM.guest.billionaire : p.type === 'social' ? WARM.guest.social : null,
       arrived: false,
       homeward: false,
-      source: p.source
+      source: p.source,
+      homeId: p.homeId ?? null
     });
   }
 
@@ -490,17 +610,27 @@ export function VillageLife() {
   function draw(_s: SimulationState, now: number): void {
     const L = live.current;
     const dist = actualRef.current.distance;
-    const scale = readabilityScale(dist, FIGURE_CURVE);
-    const { figures, markers, rings, cars, bus, heat } = meshes;
+    // ORDER 297 — sätten att rita på nivåerna (Designs byKvall.js frameAt och
+    // createGuests): figurerna i nivåns förstoring närmare än figuresUntil,
+    // lyktorna längre ut (BLEND.lantern) och fläcken i kvarteret (BLEND.patch).
+    const scale = figureScaleAt(dist);
+    const { figures, markers, rings, cars, bus, heat, cores, patches } = meshes;
     let fi = 0;
     let mi = 0;
     let ri = 0;
-    const markerSize = Math.max(1.6, dist * 0.012);
-    const showMarkers = dist > MARKER_FROM_M;
+    let pi = 0;
+    const lantern = smoothBand(BLEND.lantern[0], BLEND.lantern[1], dist);
+    const patch = smoothBand(BLEND.patch[0], BLEND.patch[1], dist) * (1 - smoothBand(BLEND.patch[2], BLEND.patch[3], dist));
+    const kd = Math.max(0.7, Math.min(2.4, dist / 150));
+    const showMarkers = lantern > 0.01;
+    const showFigures = dist < BLEND.figuresUntil;
+    (markers.material as THREE.MeshBasicMaterial).opacity = 0.4 * lantern;
+    (cores.material as THREE.MeshBasicMaterial).opacity = lantern;
+    (patches.material as THREE.MeshBasicMaterial).opacity = 0.16 * patch;
     for (const w of L.walkers) {
       const p = w.standAt ? { x: w.standAt[0], z: w.standAt[1], heading: 0 } : pointAlong(w.route, w.s);
       tmp.c.set(TYPE_COLOUR[w.type]);
-      for (let k = 0; k < w.n && fi < MAX_FIGURES; k++) {
+      for (let k = 0; showFigures && k < w.n && fi < MAX_FIGURES; k++) {
         const back = w.standAt ? null : pointAlong(w.route, w.s - k * 0.9 * scale);
         const side = ((k % 2) * 2 - 1) * 0.35 * scale * (k > 0 ? 1 : 0);
         const x = (back?.x ?? p.x) + Math.cos(p.heading) * side;
@@ -514,19 +644,36 @@ export function VillageLife() {
         fi++;
       }
       if (showMarkers && mi < MAX_FIGURES) {
-        const r = markerSize * (0.8 + Math.min(4, w.n) * 0.18);
+        const ls = (4 + 1.6 * Math.sqrt(w.n)) * kd;
         tmp.q.copy(camera.quaternion);
-        tmp.p.set(p.x, 2.5 + r, p.z);
-        tmp.s.set(r, r, 1);
+        tmp.p.set(p.x, 1.5, p.z);
+        tmp.s.set(ls / 2, ls / 2, 1);
         tmp.m.compose(tmp.p, tmp.q, tmp.s);
         markers.setMatrixAt(mi, tmp.m);
         markers.setColorAt(mi, tmp.c);
+        const cr = (0.9 + 0.35 * Math.sqrt(w.n)) * kd;
+        tmp.q.identity();
+        tmp.p.set(p.x, 0.14, p.z);
+        tmp.s.set(cr, 1, cr);
+        tmp.m.compose(tmp.p, tmp.q, tmp.s);
+        cores.setMatrixAt(mi, tmp.m);
+        cores.setColorAt(mi, tmp.c);
         mi++;
+      }
+      if (showFigures && patch > 0.01 && pi < MAX_FIGURES) {
+        const pr = (0.6 + 0.3 * w.n) * scale;
+        tmp.q.identity();
+        tmp.p.set(p.x, 0.1, p.z);
+        tmp.s.set(pr, 1, pr);
+        tmp.m.compose(tmp.p, tmp.q, tmp.s);
+        patches.setMatrixAt(pi, tmp.m);
+        patches.setColorAt(pi, tmp.c);
+        pi++;
       }
       if (w.ring && ri < 16) {
         tmp.q.identity();
         tmp.p.set(p.x, 0.15, p.z);
-        const r = Math.max(1.4 * scale, showMarkers ? markerSize * 2 : 0);
+        const r = 2.4 * Math.max(0.45, Math.min(3, dist / 120));
         tmp.s.set(r, 1, r);
         tmp.m.compose(tmp.p, tmp.q, tmp.s);
         rings.setMatrixAt(ri, tmp.m);
@@ -541,6 +688,12 @@ export function VillageLife() {
     markers.count = mi;
     markers.instanceMatrix.needsUpdate = true;
     if (markers.instanceColor) markers.instanceColor.needsUpdate = true;
+    cores.count = mi;
+    cores.instanceMatrix.needsUpdate = true;
+    if (cores.instanceColor) cores.instanceColor.needsUpdate = true;
+    patches.count = pi;
+    patches.instanceMatrix.needsUpdate = true;
+    if (patches.instanceColor) patches.instanceColor.needsUpdate = true;
     rings.count = ri;
     rings.instanceMatrix.needsUpdate = true;
     if (rings.instanceColor) rings.instanceColor.needsUpdate = true;
@@ -597,7 +750,7 @@ export function VillageLife() {
       heat.instanceMatrix.needsUpdate = true;
       if (heat.instanceColor) heat.instanceColor.needsUpdate = true;
     }
-    heat.visible = dist > 60 && dist < 900;
+    heat.visible = false; // ORDER 297 — banden ritas inte (Designs lyktor bär flödet).
     figures.visible = dist > 20;
   }
 

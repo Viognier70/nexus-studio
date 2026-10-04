@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { GRAY_BOX_CAMERA } from '../content/grythyttan';
 import { damp, dampAngle } from '../util/smoothing';
 import { useCamera } from './CameraContext';
+import { fovForDistance } from './eveningLevels';
 
 // Reads targetRef every frame and damps actualRef toward it. Applies the
 // result to the R3F camera. Does not touch any React state per frame.
@@ -70,6 +71,9 @@ export function CameraController() {
     if (typeof document !== 'undefined') {
       document.body.dataset.camDistance = String(Math.round(actual.distance));
       document.body.dataset.camTarget = String(Math.round(target.distance));
+      // ORDER 297 — synfältet och kamerans plats i byn, för kontrollen av nivåerna.
+      document.body.dataset.camFov = ((camera as THREE.PerspectiveCamera).fov ?? 0).toFixed(1);
+      document.body.dataset.camFocus = `${actual.focus.x.toFixed(1)},${actual.focus.z.toFixed(1)}`;
     }
   });
 
@@ -93,7 +97,9 @@ function apply(
   camera.position.set(px, py, pz);
   camera.lookAt(state.focus.x, 0, state.focus.z);
   if ((camera as THREE.PerspectiveCamera).fov !== undefined) {
-    (camera as THREE.PerspectiveCamera).fov = 45;
+    // ORDER 297 — synfältet följer avståndet: 34° ute i byn, 42° vid krogen
+    // (Designs nivåer, camera/eveningLevels.ts). Förut alltid 45°.
+    (camera as THREE.PerspectiveCamera).fov = fovForDistance(state.distance);
     (camera as THREE.PerspectiveCamera).updateProjectionMatrix();
   }
 }

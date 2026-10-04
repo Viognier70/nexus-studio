@@ -3,7 +3,7 @@
 // den vidare).
 
 import type { SimulationState } from '../strategic/types';
-import { GAME_MINUTES_PER_SIM_SECOND, INCIDENTS, SITTING } from './balance';
+import { GAME_MINUTES_PER_SIM_SECOND, INCIDENTS, SITTING, VILLAGE_EVENING } from './balance';
 import { strings } from '../content/strings';
 import { OPENING_DURATION_SEC, PREP_DURATION_SEC } from '../strategic/simulation/constants';
 import { businessHasMiseEnPlace } from '../strategic/business/businessClass';
@@ -41,4 +41,14 @@ export function formatClock(minutes: number): string {
   const h = Math.floor(minutes / MINUTES_PER_HOUR);
   const m = minutes % MINUTES_PER_HOUR;
   return strings.service.clock.hhmm(String(h), String(m).padStart(INCIDENTS.clockDigits, '0'));
+}
+
+// ORDER 297 — kvällens gång e (0–1) för byns kvällsljus: från att servicen
+// börjar till att den sista krogen har stängt och de sista gått
+// (balance.ts VILLAGE_EVENING). Efter servicen är det natt (1); på dagen null.
+export function eveningProgress(state: SimulationState): number | null {
+  if (state.day.period === 'evening') return 1;
+  if (state.day.period !== 'dinner') return null;
+  const span = VILLAGE_EVENING.toMinute - VILLAGE_EVENING.fromMinute;
+  return Math.max(0, Math.min(1, (clockMinutes(state) - VILLAGE_EVENING.fromMinute) / span));
 }

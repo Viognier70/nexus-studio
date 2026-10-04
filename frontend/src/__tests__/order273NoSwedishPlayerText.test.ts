@@ -29,6 +29,8 @@ const ALLOWED = [
   'Grythyttan', 'Hjälmaren', 'Hjälmarens', 'Örebro', 'Bergslagen', 'Bergslagens', 'Nora', 'Sävsjön',
   'Måltidens hus', 'Måltidens Hus', 'Måltidsbiblioteket', 'Metodköket', 'Stensöta', 'Kalastorget', 'Gastronomiska Teatern',
   'Björken', 'Prästgatans krog', 'Bergsmansöl', 'Torgets vinkällare', 'prästgatans', 'bergsmansöl', 'vinkällare',
+  // ORDER 297 — byns krogar (Designs Byn i kvällsljus).
+  'Sjöboden',
   // Kodens interna nycklar (typer och uppräkningar), inte spelartext.
   'värd', 'servitör', 'kock', 'lärling', 'ölkrog', 'gästgiveri', 'säsong', 'låg', 'hög', 'förbättras', 'försämras',
   'besökare', 'gäst', 'leverantör', 'boende', 'faluröd'
