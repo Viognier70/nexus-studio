@@ -78,7 +78,9 @@ async function run(width, height) {
       for (const [key, name] of [['v', 'byn'], ['c', 'kvarteret'], ['x', 'gatan'], ['z', 'krogen']]) {
         await page.keyboard.press(key);
         await delay(3500);
-        const p = await probe();
+        // Bildrutor per sekund under två sekunder (prestandan på nivån).
+        const fps = await page.evaluate(() => new Promise((res) => { let n = 0; const t0 = performance.now(); const f = () => { n++; if (performance.now() - t0 < 2000) requestAnimationFrame(f); else res(+(n / ((performance.now() - t0) / 1000)).toFixed(1)); }; requestAnimationFrame(f); }));
+        const p = { ...(await probe()), fps };
         levels.push({ level: name, ...p });
         await page.screenshot({ path: resolve(OUT, `check-${tag}-${stop.replace('.', '')}-${name}.png`) });
       }

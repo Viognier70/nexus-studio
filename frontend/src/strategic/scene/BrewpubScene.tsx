@@ -61,6 +61,7 @@ import { buildNav, type XZ } from './roomNav';
 import { useCamera } from '../camera/CameraContext';
 import { IndoorLamps } from './IndoorLamps';
 import type { Vec2 } from './businessRoom';
+import { applyWineBarRoof, CUT_BELOW, roofAt, STAGE_LIGHT, stageLightIntensity } from '../village/roofBlend';
 
 // ORDER 184 — skalets tonning: businessRoom.shellOpacityForDistance (samma
 // smoothstep som PlayerBusiness roof-fade; flyttad dit i ORDER 271).
@@ -102,6 +103,7 @@ function ContractRoomScene({ roomClass, plinth, disposeGeometry }: ContractRoomS
   const mood = isWineBar ? wineBarMood(sim) : 'tidig';
   const wallLevel: WineWallLevel = sim.medals?.stensota === 'platina' ? 'platina' : 'bas';
   const cutRef = useRef({ yaw: NaN, x: NaN, z: NaN, d: NaN });
+  const stageRef = useRef<THREE.SpotLight>(null);
   const appliedRef = useRef<{ mood: MoodId | null; wall: WineWallLevel | null }>({ mood: null, wall: null });
   const djPlaying = useMemo(() => LIGHT_MOODS[mood].djPlaying, [mood]);
 
@@ -268,9 +270,24 @@ function ContractRoomScene({ roomClass, plinth, disposeGeometry }: ContractRoomS
       // inte varje bildruta (wineBarRoom FLAGS.cutaway).
       const a = actualRef.current;
       const c = cutRef.current;
-      if (!(Math.abs(a.yaw - c.yaw) < 0.02 && Math.abs(a.focus.x - c.x) < 0.5 && Math.abs(a.focus.z - c.z) < 0.5 && Math.abs(a.distance - c.d) < 1)) {
+      // ORDER 297 — taket lyfts och tonar ut mellan 40 och 26 m, och väggarna
+      // kapas först när taket är under hälften (village/roofBlend.ts).
+      const rk = roofAt(a.distance);
+      applyWineBarRoof(raw, rk);
+      if (rk >= CUT_BELOW) {
+        if (c.d !== -1) { for (const u of Object.values(raw.parts.wallUpper)) u.visible = true; cutRef.current = { ...c, d: -1 }; }
+      } else if (!(Math.abs(a.yaw - c.yaw) < 0.02 && Math.abs(a.focus.x - c.x) < 0.5 && Math.abs(a.focus.z - c.z) < 0.5 && Math.abs(a.distance - c.d) < 1)) {
         updateCutaway(raw, camera);
         cutRef.current = { yaw: a.yaw, x: a.focus.x, z: a.focus.z, d: a.distance };
+      }
+      const light = stageRef.current;
+      if (light) {
+        const open = sim.day.period === 'dinner' && sim.day.doorsOpenedThisService ? 1 : 0;
+        const busy = open || sim.day.period === 'dinner' || sim.day.period === 'evening' ? 1 : 0;
+        light.intensity = stageLightIntensity(rk, open, busy);
+        light.position.set(room.group.position.x, STAGE_LIGHT.heightM, room.group.position.z);
+        light.target.position.set(room.group.position.x, 0, room.group.position.z);
+        light.target.updateMatrixWorld();
       }
     } else {
       updateRoom(room, 0);
@@ -278,13 +295,11 @@ function ContractRoomScene({ roomClass, plinth, disposeGeometry }: ContractRoomS
     // ORDER 184 — samma roof-fade som PlayerBusiness hade före den
     // skippades vid contract-monterat läge. Vid distance ≤ 28 m är
     // skalet helt borta; över 52 m helt opakt.
-    const dist = actualRef.current.distance;
-    const shellOpacity = shellOpacityForDistance(dist);
-    setShellOpacity(room, shellOpacity);
-    // ORDER 271 — vinbarens tak döljs helt när det tonats bort, så att det
-    // inte fångar skuggan och kameraprovet (checkCameraView läser `visible`)
-    // ser samma rum som spelaren.
-    if (roomClass === 'vinbaren') (room.raw as WineBarRoom).parts.roof.visible = shellOpacity > 0.01;
+    // ORDER 297 — vinbarens skal tonas inte längre; taket sköts ovan.
+    if (roomClass !== 'vinbaren') {
+      const dist = actualRef.current.distance;
+      setShellOpacity(room, shellOpacityForDistance(dist));
+    }
   });
 
   if (!isBrewpub) return null;
@@ -293,6 +308,8 @@ function ContractRoomScene({ roomClass, plinth, disposeGeometry }: ContractRoomS
       <group ref={groupRef} />
       <IndoorLamps tables={tables} />
       {isWineBar && wineBar && <WineBarFigures room={wineBar} mood={mood} />}
+      {/* ORDER 297 — scenljuset när taket lyfts (village/roofBlend.ts). */}
+      {isWineBar && <spotLight ref={stageRef} color="#ffe2b4" intensity={0} distance={STAGE_LIGHT.distance} angle={STAGE_LIGHT.angle} penumbra={STAGE_LIGHT.penumbra} decay={STAGE_LIGHT.decay} />}
     </>
   );
 }
