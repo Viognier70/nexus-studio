@@ -14,10 +14,13 @@
 // vanish until the player asks for them.
 
 import { setSound, useSoundSettings } from './sound/sound';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { getJuice, setJuice, type Juice } from './juice/juice';
 import { strings } from '../../content/strings';
 import { LANGUAGES, setLanguage, useLanguage, type Lang } from '../../content/language';
+import { t as tt, type StringKey } from '../../content/nexusStrings';
+import { VILLAGE_LIGHT } from '../village/villageEvening';
+import { setVillageLightLevel, subscribeVillageLight, villageLightLevel } from '../village/villageLight';
 
 // ORDER 273 — språkvalet (Designs leverans 2026-09-28 §2: spelet går på
 // engelska som standard och byter språk med en inställning). Namnen på
@@ -110,6 +113,7 @@ export function TopRightMenu({ onOpenAbout, onOpenSave }: Props) {
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const lang = useLanguage();
+  const lightLevel = useSyncExternalStore(subscribeVillageLight, villageLightLevel, villageLightLevel);
   const [juice, setJuiceState] = useState<Juice>(getJuice());
 
   useEffect(() => {
@@ -226,6 +230,21 @@ export function TopRightMenu({ onOpenAbout, onOpenSave }: Props) {
               data-testid="menu-sound-volume"
               disabled={!sound.enabled}
               onChange={(e) => setSound({ volume: Number(e.target.value) / 100 })}
+              style={{ flex: 1, minWidth: 80, accentColor: '#e8b93a' }}
+            />
+          </div>
+          {/* ORDER 297 — ljusnivån i byn (Designs VILLAGE_LIGHT, 0,5–2). */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }} data-testid="menu-village-light">
+            <span style={LANGUAGE_LABEL_STYLE}>{tt(lang, 'byk.light' as StringKey)}</span>
+            <input
+              type="range"
+              min={VILLAGE_LIGHT.range[0]}
+              max={VILLAGE_LIGHT.range[1]}
+              step={0.1}
+              value={lightLevel}
+              aria-label={tt(lang, 'byk.light' as StringKey)}
+              data-testid="menu-village-light-range"
+              onChange={(e) => setVillageLightLevel(Number(e.target.value))}
               style={{ flex: 1, minWidth: 80, accentColor: '#e8b93a' }}
             />
           </div>

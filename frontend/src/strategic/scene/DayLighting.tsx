@@ -19,7 +19,8 @@ import { SunLightRig } from '../../lib/lighting/SunLightRig';
 import { devToggles, SEASON_DATE, type SeasonKey } from '../../lib/devToggles';
 import { harnessParams } from '../testHarness/urlParams';
 import type { DayPeriod } from '../types';
-import { clockMinutes } from '../../sim/clock';
+import { clockMinutes, eveningProgress } from '../../sim/clock';
+import { EveningLighting } from '../village/EveningLighting';
 
 // Hour-of-day per game period. Local civil time. Autumn-calibrated
 // so the sun tracks the season the game is set in.
@@ -88,6 +89,11 @@ export function DayLighting() {
   // builds always read 'autumn' (the module default).
   const season = useDevSeason();
   const date = SEASON_DATE[season];
+  // ORDER 297 — under servicen och kvällen gäller byns kvällsljus (Designs
+  // leverans Byn i kvällsljus): egen himmel efter kvällens gång e.
+  const e = eveningProgress(sim);
+  const evening = e === null || harnessParams.light === 'day' ? null : Math.round(e * 200) / 200;
+  if (evening !== null) return <EveningLighting e={evening} />;
   return (
     <SunLightRig
       hourOfDay={hour}

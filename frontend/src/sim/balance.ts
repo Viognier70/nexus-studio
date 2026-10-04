@@ -981,6 +981,17 @@ export const SITTING = {
   minDiningGameMinutes: 10
 } as const;
 
+// ORDER 297 (Designs leverans Byn i kvällsljus): kvällens gång e, 0–1, från
+// att byn börjar skymma (servicen börjar) till att den sista krogen har stängt
+// och de sista har gått (stängningen plus CLOCK.pickupAfterCloseMinutes).
+// Byns krogar stänger när servicen slutar. Presentationen (village/
+// villageEvening.ts) läser bara e.
+export const VILLAGE_EVENING = {
+  section: 'Tiden',
+  fromMinute: SITTING.serviceStartHour * 60,
+  toMinute: SITTING.serviceEndHour * 60 + CLOCK.pickupAfterCloseMinutes
+} as const;
+
 // Spelminuter per simsekund under servicen (F31).
 export const GAME_MINUTES_PER_SIM_SECOND =
   ((SITTING.serviceEndHour - SITTING.serviceStartHour) * 60) / (SERVICE.simMinutes * 60);

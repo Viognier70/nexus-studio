@@ -35,13 +35,15 @@ const toMin = (c) => { const [h, m] = c.split('.').map(Number); return h * 60 + 
 
 async function run(width, height) {
   const ctx = await browser.newContext({ viewport: { width, height } });
-  await ctx.addInitScript(([k, v]) => {
+  await ctx.addInitScript(([k, v, scale]) => {
     if (!sessionStorage.getItem('n-seeded')) { localStorage.setItem(k, v); localStorage.setItem('nexus.lang', 'sv'); sessionStorage.setItem('n-seeded', '1'); }
-  }, ['nexus.v1.slot1', JSON.stringify(save)]);
+    // Kalibreringen av kvällsljuset (village/EveningLighting.tsx), bara när den sätts.
+    if (scale) localStorage.setItem('nexus.eveningPaletteScale', scale);
+  }, ['nexus.v1.slot1', JSON.stringify(save), process.env.CHECK_LIGHT_SCALE ?? '']);
   const page = await ctx.newPage();
   const errors = [];
   page.on('pageerror', (e) => errors.push(e.message));
-  const tag = `${width}x${height}`;
+  const tag = `${width}x${height}${process.env.CHECK_LIGHT_SCALE ? '-s' + process.env.CHECK_LIGHT_SCALE : ''}`;
   const report = { viewport: tag, errors, stops: [] };
   const probe = () => page.evaluate(() => ({ ...document.body.dataset, clock: document.querySelector('[data-testid=service-clock-time]')?.textContent ?? null }));
   try {

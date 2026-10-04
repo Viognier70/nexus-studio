@@ -647,7 +647,11 @@ export function WineBarFigures({ room, mood }: Props) {
       roomShownRef.current = cast.group.visible;
       setRoomShown(cast.group.visible);
     }
-    if (!cast.group.visible) return;
+    if (!cast.group.visible) {
+      // ORDER 297 — stämningens symboler står inte kvar när rummet inte syns.
+      moodLayerRef.current?.clear();
+      return;
+    }
 
     // ORDER 298 — det som räknas ska synas: hur många simuleringen har vid
     // bord, och hur många figurer som sitter i rummet (för mätningen).

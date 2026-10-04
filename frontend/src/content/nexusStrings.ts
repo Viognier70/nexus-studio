@@ -42,6 +42,8 @@ import { THEATRE_STRINGS } from './design/theatreStrings';
 import { EVERYDAY_STRINGS } from './design/everydayStrings';
 // ORDER 299 — Designs leverans D1 (stämningen), oförändrad.
 import { MOOD_STRINGS } from './design/moodStrings';
+// ORDER 297 — Designs leverans Byn i kvällsljus (andra omtaget), oförändrad.
+import { VILLAGE_EVENING_STRINGS } from './design/villageEveningStrings';
 
 export type Lang = 'sv' | 'en';
 // ORDER 289 — singular eller plural efter antalet ("1 bottles" skulle vara
@@ -428,7 +430,8 @@ export const STRINGS = {
   ...THEATRE_STRINGS,
   ...EVENT_STRINGS,
   ...EVERYDAY_STRINGS,
-  ...MOOD_STRINGS
+  ...MOOD_STRINGS,
+  ...VILLAGE_EVENING_STRINGS
 } satisfies Record<string, Entry>;
 
 export type StringKey = keyof typeof STRINGS;
