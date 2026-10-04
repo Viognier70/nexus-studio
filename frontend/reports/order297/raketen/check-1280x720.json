@@ -1,0 +1,1947 @@
+{
+  "viewport": "1280x720",
+  "errors": [],
+  "rockets": [
+    {
+      "incident": "vb32-fodelsedagen",
+      "step": 0,
+      "quality": "best",
+      "layout": {
+        "rows": [
+          0.706,
+          0.706
+        ],
+        "card": {
+          "left": 45,
+          "right": 416,
+          "leftShare": 0.035,
+          "rightShare": 0.325
+        },
+        "stripHeight": 36,
+        "meter": {
+          "left": 781,
+          "top": 33,
+          "tillRight": 768,
+          "tillTop": 33,
+          "width": 230
+        },
+        "bandShown": false
+      },
+      "before": {
+        "clock": "20.28",
+        "speedNow": "4",
+        "moment": "",
+        "reactions": "",
+        "camDist": 12,
+        "camPitch": 0.96,
+        "camYaw": 4.485,
+        "card": true,
+        "line": null,
+        "notices": [],
+        "meter": {
+          "mood": "content",
+          "fill": "3.47",
+          "change": "down"
+        }
+      },
+      "samples": [
+        {
+          "ms": 21,
+          "clock": "20.30",
+          "speedNow": "1",
+          "moment": "0.20",
+          "reactions": "310.6:up:10",
+          "camDist": 12,
+          "camPitch": 0.96,
+          "camYaw": 4.485,
+          "card": true,
+          "line": "Du valde Antal, allergier och när den ska ut → bord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "310.5999999999909",
+              "text": "+115 krbord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "content",
+            "fill": "3.47",
+            "change": ""
+          }
+        },
+        {
+          "ms": 142,
+          "clock": "20.30",
+          "speedNow": "1",
+          "moment": "0.40",
+          "reactions": "310.6:up:10",
+          "camDist": 12,
+          "camPitch": 0.96,
+          "camYaw": 4.485,
+          "card": true,
+          "line": "Du valde Antal, allergier och när den ska ut → bord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "310.5999999999909",
+              "text": "+115 krbord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "content",
+            "fill": "3.47",
+            "change": ""
+          }
+        },
+        {
+          "ms": 323,
+          "clock": "20.30",
+          "speedNow": "1",
+          "moment": "0.40",
+          "reactions": "310.6:up:10",
+          "camDist": 12,
+          "camPitch": 0.96,
+          "camYaw": 4.485,
+          "card": true,
+          "line": "Du valde Antal, allergier och när den ska ut → bord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "310.5999999999909",
+              "text": "+115 krbord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "content",
+            "fill": "3.47",
+            "change": ""
+          }
+        },
+        {
+          "ms": 441,
+          "clock": "20.30",
+          "speedNow": "1",
+          "moment": "0.60",
+          "reactions": "310.6:up:10",
+          "camDist": 11.72,
+          "camPitch": 0.925,
+          "camYaw": 4.506,
+          "card": true,
+          "line": "Du valde Antal, allergier och när den ska ut → bord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "310.5999999999909",
+              "text": "+115 krbord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "content",
+            "fill": "3.47",
+            "change": ""
+          }
+        },
+        {
+          "ms": 562,
+          "clock": "20.30",
+          "speedNow": "1",
+          "moment": "0.80",
+          "reactions": "310.6:up:10",
+          "camDist": 11.45,
+          "camPitch": 0.894,
+          "camYaw": 4.526,
+          "card": true,
+          "line": "Du valde Antal, allergier och när den ska ut → bord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "310.5999999999909",
+              "text": "+115 krbord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "content",
+            "fill": "3.47",
+            "change": ""
+          }
+        },
+        {
+          "ms": 728,
+          "clock": "20.30",
+          "speedNow": "1",
+          "moment": "0.80",
+          "reactions": "310.6:up:10",
+          "camDist": 10.98,
+          "camPitch": 0.843,
+          "camYaw": 4.557,
+          "card": true,
+          "line": "Du valde Antal, allergier och när den ska ut → bord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "310.5999999999909",
+              "text": "+115 krbord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "content",
+            "fill": "3.47",
+            "change": ""
+          }
+        },
+        {
+          "ms": 851,
+          "clock": "20.30",
+          "speedNow": "1",
+          "moment": "1.00",
+          "reactions": "310.6:up:10",
+          "camDist": 10.27,
+          "camPitch": 0.775,
+          "camYaw": 4.599,
+          "card": true,
+          "line": "Du valde Antal, allergier och när den ska ut → bord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "310.5999999999909",
+              "text": "+115 krbord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "content",
+            "fill": "3.47",
+            "change": ""
+          }
+        },
+        {
+          "ms": 955,
+          "clock": "20.30",
+          "speedNow": "1",
+          "moment": "1.20",
+          "reactions": "310.6:up:10",
+          "camDist": 9.96,
+          "camPitch": 0.749,
+          "camYaw": 4.615,
+          "card": true,
+          "line": "Du valde Antal, allergier och när den ska ut → bord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "310.5999999999909",
+              "text": "+115 krbord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "content",
+            "fill": "3.47",
+            "change": ""
+          }
+        },
+        {
+          "ms": 1146,
+          "clock": "20.30",
+          "speedNow": "1",
+          "moment": "1.20",
+          "reactions": "310.6:up:10",
+          "camDist": 9.56,
+          "camPitch": 0.716,
+          "camYaw": 4.635,
+          "card": true,
+          "line": "Du valde Antal, allergier och när den ska ut → bord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "310.5999999999909",
+              "text": "+115 krbord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "content",
+            "fill": "3.47",
+            "change": ""
+          }
+        },
+        {
+          "ms": 1305,
+          "clock": "20.31",
+          "speedNow": "1",
+          "moment": "1.40",
+          "reactions": "310.6:up:10",
+          "camDist": 9.12,
+          "camPitch": 0.687,
+          "camYaw": 4.653,
+          "card": true,
+          "line": "Du valde Antal, allergier och när den ska ut → bord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "310.5999999999909",
+              "text": "+115 krbord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.36",
+            "change": "up"
+          }
+        },
+        {
+          "ms": 1426,
+          "clock": "20.31",
+          "speedNow": "1",
+          "moment": "1.60",
+          "reactions": "310.6:up:10",
+          "camDist": 8.67,
+          "camPitch": 0.661,
+          "camYaw": 4.669,
+          "card": true,
+          "line": "Du valde Antal, allergier och när den ska ut → bord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "310.5999999999909",
+              "text": "+115 krbord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.36",
+            "change": "up"
+          }
+        },
+        {
+          "ms": 1931,
+          "clock": "20.31",
+          "speedNow": "1",
+          "moment": "2.00",
+          "reactions": "310.6:up:10",
+          "camDist": 7.92,
+          "camPitch": 0.633,
+          "camYaw": 4.687,
+          "card": true,
+          "line": "Du valde Antal, allergier och när den ska ut → bord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "310.5999999999909",
+              "text": "+115 krbord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.36",
+            "change": "up"
+          }
+        },
+        {
+          "ms": 2049,
+          "clock": "20.31",
+          "speedNow": "1",
+          "moment": "2.20",
+          "reactions": "310.6:up:10",
+          "camDist": 7.73,
+          "camPitch": 0.628,
+          "camYaw": 4.69,
+          "card": true,
+          "line": "Du valde Antal, allergier och när den ska ut → bord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "310.5999999999909",
+              "text": "+115 krbord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.36",
+            "change": "up"
+          }
+        },
+        {
+          "ms": 2172,
+          "clock": "20.31",
+          "speedNow": "1",
+          "moment": "2.40",
+          "reactions": "310.6:up:10",
+          "camDist": 7.63,
+          "camPitch": 0.626,
+          "camYaw": 4.691,
+          "card": true,
+          "line": "Du valde Antal, allergier och när den ska ut → bord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "310.5999999999909",
+              "text": "+115 krbord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.36",
+            "change": ""
+          }
+        },
+        {
+          "ms": 2356,
+          "clock": "20.31",
+          "speedNow": "1",
+          "moment": "2.60",
+          "reactions": "310.6:up:10",
+          "camDist": 7.49,
+          "camPitch": 0.624,
+          "camYaw": 4.692,
+          "card": true,
+          "line": "Du valde Antal, allergier och när den ska ut → bord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "310.5999999999909",
+              "text": "+115 krbord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.36",
+            "change": ""
+          }
+        },
+        {
+          "ms": 2537,
+          "clock": "20.31",
+          "speedNow": "1",
+          "moment": "2.80",
+          "reactions": "310.6:up:10",
+          "camDist": 7.36,
+          "camPitch": 0.622,
+          "camYaw": 4.693,
+          "card": true,
+          "line": "Du valde Antal, allergier och när den ska ut → bord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "310.5999999999909",
+              "text": "+115 krbord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.36",
+            "change": ""
+          }
+        },
+        {
+          "ms": 2653,
+          "clock": "20.31",
+          "speedNow": "1",
+          "moment": "2.80",
+          "reactions": "310.6:up:10",
+          "camDist": 7.23,
+          "camPitch": 0.622,
+          "camYaw": 4.694,
+          "card": true,
+          "line": "Du valde Antal, allergier och när den ska ut → bord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "310.5999999999909",
+              "text": "+115 krbord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.36",
+            "change": ""
+          }
+        },
+        {
+          "ms": 2775,
+          "clock": "20.31",
+          "speedNow": "1",
+          "moment": "3.00",
+          "reactions": "310.6:up:10",
+          "camDist": 7.14,
+          "camPitch": 0.621,
+          "camYaw": 4.694,
+          "card": true,
+          "line": "Du valde Antal, allergier och när den ska ut → bord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "310.5999999999909",
+              "text": "+115 krbord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.36",
+            "change": ""
+          }
+        },
+        {
+          "ms": 2950,
+          "clock": "20.31",
+          "speedNow": "1",
+          "moment": "3.20",
+          "reactions": "310.6:up:10",
+          "camDist": 6.97,
+          "camPitch": 0.621,
+          "camYaw": 4.694,
+          "card": true,
+          "line": "Du valde Antal, allergier och när den ska ut → bord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "310.5999999999909",
+              "text": "+115 krbord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.36",
+            "change": ""
+          }
+        },
+        {
+          "ms": 3128,
+          "clock": "20.31",
+          "speedNow": "1",
+          "moment": "3.20",
+          "reactions": "310.6:up:10",
+          "camDist": 6.81,
+          "camPitch": 0.62,
+          "camYaw": 4.694,
+          "card": true,
+          "line": "Du valde Antal, allergier och när den ska ut → bord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "310.5999999999909",
+              "text": "+115 krbord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "true",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.36",
+            "change": ""
+          }
+        },
+        {
+          "ms": 3242,
+          "clock": "20.32",
+          "speedNow": "1",
+          "moment": "3.40",
+          "reactions": "310.6:up:10",
+          "camDist": 6.61,
+          "camPitch": 0.62,
+          "camYaw": 4.694,
+          "card": true,
+          "line": "Du valde Antal, allergier och när den ska ut → bord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "310.5999999999909",
+              "text": "+115 krbord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "true",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.36",
+            "change": ""
+          }
+        },
+        {
+          "ms": 3362,
+          "clock": "20.32",
+          "speedNow": "1",
+          "moment": "3.60",
+          "reactions": "310.6:up:10",
+          "camDist": 6.49,
+          "camPitch": 0.62,
+          "camYaw": 4.695,
+          "card": true,
+          "line": "Du valde Antal, allergier och när den ska ut → bord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.36",
+            "change": ""
+          }
+        },
+        {
+          "ms": 3742,
+          "clock": "20.32",
+          "speedNow": "1",
+          "moment": "4.00",
+          "reactions": "310.6:up:10",
+          "camDist": 6.11,
+          "camPitch": 0.62,
+          "camYaw": 4.695,
+          "card": true,
+          "line": "Du valde Antal, allergier och när den ska ut → bord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.36",
+            "change": ""
+          }
+        },
+        {
+          "ms": 3920,
+          "clock": "20.32",
+          "speedNow": "1",
+          "moment": "4.00",
+          "reactions": "310.6:up:10",
+          "camDist": 7.12,
+          "camPitch": 0.699,
+          "camYaw": 3.892,
+          "card": true,
+          "line": "Du valde Antal, allergier och när den ska ut → bord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.36",
+            "change": ""
+          }
+        },
+        {
+          "ms": 4039,
+          "clock": "20.32",
+          "speedNow": "1",
+          "moment": "4.20",
+          "reactions": "310.6:up:10",
+          "camDist": 8.15,
+          "camPitch": 0.765,
+          "camYaw": 3.226,
+          "card": true,
+          "line": "Du valde Antal, allergier och när den ska ut → bord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.36",
+            "change": ""
+          }
+        },
+        {
+          "ms": 4160,
+          "clock": "20.32",
+          "speedNow": "1",
+          "moment": "4.40",
+          "reactions": "310.6:up:10",
+          "camDist": 8.66,
+          "camPitch": 0.792,
+          "camYaw": 2.954,
+          "card": true,
+          "line": "Du valde Antal, allergier och när den ska ut → bord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.36",
+            "change": ""
+          }
+        },
+        {
+          "ms": 4340,
+          "clock": "20.32",
+          "speedNow": "1",
+          "moment": "4.60",
+          "reactions": "310.6:up:10",
+          "camDist": 9.36,
+          "camPitch": 0.822,
+          "camYaw": 2.646,
+          "card": true,
+          "line": "Du valde Antal, allergier och när den ska ut → bord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.36",
+            "change": ""
+          }
+        },
+        {
+          "ms": 4518,
+          "clock": "20.32",
+          "speedNow": "1",
+          "moment": "4.60",
+          "reactions": "310.6:up:10",
+          "camDist": 9.81,
+          "camPitch": 0.838,
+          "camYaw": 2.487,
+          "card": true,
+          "line": "Du valde Antal, allergier och när den ska ut → bord 10 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.36",
+            "change": ""
+          }
+        },
+        {
+          "ms": 4639,
+          "clock": "20.32",
+          "speedNow": "1",
+          "moment": "4.80",
+          "reactions": "310.6:up:10",
+          "camDist": 10.28,
+          "camPitch": 0.851,
+          "camYaw": 2.352,
+          "card": true,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.36",
+            "change": ""
+          }
+        },
+        {
+          "ms": 4762,
+          "clock": "20.32",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "310.6:up:10",
+          "camDist": 10.51,
+          "camPitch": 0.857,
+          "camYaw": 2.297,
+          "card": true,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.36",
+            "change": ""
+          }
+        },
+        {
+          "ms": 4930,
+          "clock": "20.33",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "310.6:up:10",
+          "camDist": 10.67,
+          "camPitch": 0.86,
+          "camYaw": 2.264,
+          "card": true,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.36",
+            "change": ""
+          }
+        },
+        {
+          "ms": 5099,
+          "clock": "20.33",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "310.6:up:10",
+          "camDist": 10.86,
+          "camPitch": 0.864,
+          "camYaw": 2.228,
+          "card": true,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.36",
+            "change": ""
+          }
+        },
+        {
+          "ms": 5266,
+          "clock": "20.33",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "310.6:up:10",
+          "camDist": 11.03,
+          "camPitch": 0.866,
+          "camYaw": 2.202,
+          "card": true,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.36",
+            "change": ""
+          }
+        },
+        {
+          "ms": 5453,
+          "clock": "20.34",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "310.6:up:10",
+          "camDist": 11.24,
+          "camPitch": 0.869,
+          "camYaw": 2.176,
+          "card": true,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.36",
+            "change": ""
+          }
+        },
+        {
+          "ms": 5618,
+          "clock": "20.34",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "310.6:up:10",
+          "camDist": 11.35,
+          "camPitch": 0.87,
+          "camYaw": 2.164,
+          "card": true,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.36",
+            "change": ""
+          }
+        },
+        {
+          "ms": 5792,
+          "clock": "20.34",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "310.6:up:10",
+          "camDist": 11.45,
+          "camPitch": 0.871,
+          "camYaw": 2.156,
+          "card": true,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.36",
+            "change": ""
+          }
+        },
+        {
+          "ms": 5958,
+          "clock": "20.35",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "310.6:up:10",
+          "camDist": 11.53,
+          "camPitch": 0.871,
+          "camYaw": 2.149,
+          "card": true,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.36",
+            "change": ""
+          }
+        }
+      ],
+      "later": [
+        {
+          "ms": 6060,
+          "notices": 0
+        },
+        {
+          "ms": 6377,
+          "notices": 0
+        },
+        {
+          "ms": 6680,
+          "notices": 0
+        },
+        {
+          "ms": 7001,
+          "notices": 0
+        },
+        {
+          "ms": 7334,
+          "notices": 0
+        },
+        {
+          "ms": 7610,
+          "notices": 0
+        },
+        {
+          "ms": 7926,
+          "notices": 0
+        },
+        {
+          "ms": 8205,
+          "notices": 0
+        },
+        {
+          "ms": 8542,
+          "notices": 0
+        },
+        {
+          "ms": 8860,
+          "notices": 0
+        },
+        {
+          "ms": 9138,
+          "notices": 0
+        },
+        {
+          "ms": 9511,
+          "notices": 0
+        },
+        {
+          "ms": 9847,
+          "notices": 0
+        }
+      ]
+    },
+    {
+      "incident": "vb32-fodelsedagen",
+      "step": 1,
+      "quality": "wrong",
+      "layout": {
+        "rows": [
+          0.706,
+          0.706
+        ],
+        "card": {
+          "left": 45,
+          "right": 416,
+          "leftShare": 0.035,
+          "rightShare": 0.325
+        },
+        "stripHeight": 32,
+        "meter": {
+          "left": 801,
+          "top": 33,
+          "tillRight": 788,
+          "tillTop": 33,
+          "width": 230
+        },
+        "bandShown": false
+      },
+      "before": {
+        "clock": "20.47",
+        "speedNow": "4",
+        "moment": "",
+        "reactions": "310.6:up:10",
+        "camDist": 12,
+        "camPitch": 0.873,
+        "camYaw": 2.133,
+        "card": true,
+        "line": null,
+        "notices": [],
+        "meter": {
+          "mood": "delighted",
+          "fill": "4.16",
+          "change": ""
+        }
+      },
+      "samples": [
+        {
+          "ms": 87,
+          "clock": "20.49",
+          "speedNow": "1",
+          "moment": "0.00",
+          "reactions": "349.2:down:10",
+          "camDist": 12,
+          "camPitch": 0.886,
+          "camYaw": 2.481,
+          "card": true,
+          "line": "Du valde Fort, så att ljusen inte hinner brinna ned → en gäst vid bord 10 går utan att betala · grannarna suckar",
+          "notices": [
+            {
+              "at": "349.19999999998873",
+              "text": "693 kren gäst vid bord 10 går utan att betala · grannarna suckar · Värden tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "3.95",
+            "change": "down"
+          }
+        },
+        {
+          "ms": 256,
+          "clock": "20.49",
+          "speedNow": "1",
+          "moment": "0.40",
+          "reactions": "349.2:down:10",
+          "camDist": 12,
+          "camPitch": 0.916,
+          "camYaw": 3.295,
+          "card": true,
+          "line": "Du valde Fort, så att ljusen inte hinner brinna ned → en gäst vid bord 10 går utan att betala · grannarna suckar",
+          "notices": [
+            {
+              "at": "349.19999999998873",
+              "text": "693 kren gäst vid bord 10 går utan att betala · grannarna suckar · Värden tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "3.95",
+            "change": "down"
+          }
+        },
+        {
+          "ms": 427,
+          "clock": "20.49",
+          "speedNow": "1",
+          "moment": "0.60",
+          "reactions": "349.2:down:10",
+          "camDist": 12,
+          "camPitch": 0.932,
+          "camYaw": 3.725,
+          "card": true,
+          "line": "Du valde Fort, så att ljusen inte hinner brinna ned → en gäst vid bord 10 går utan att betala · grannarna suckar",
+          "notices": [
+            {
+              "at": "349.19999999998873",
+              "text": "693 kren gäst vid bord 10 går utan att betala · grannarna suckar · Värden tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "3.95",
+            "change": "down"
+          }
+        },
+        {
+          "ms": 544,
+          "clock": "20.49",
+          "speedNow": "1",
+          "moment": "0.60",
+          "reactions": "349.2:down:10",
+          "camDist": 12,
+          "camPitch": 0.941,
+          "camYaw": 3.961,
+          "card": true,
+          "line": "Du valde Fort, så att ljusen inte hinner brinna ned → en gäst vid bord 10 går utan att betala · grannarna suckar",
+          "notices": [
+            {
+              "at": "349.19999999998873",
+              "text": "693 kren gäst vid bord 10 går utan att betala · grannarna suckar · Värden tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "3.95",
+            "change": "down"
+          }
+        },
+        {
+          "ms": 666,
+          "clock": "20.49",
+          "speedNow": "1",
+          "moment": "0.80",
+          "reactions": "349.2:down:10",
+          "camDist": 11.96,
+          "camPitch": 0.941,
+          "camYaw": 4.092,
+          "card": true,
+          "line": "Du valde Fort, så att ljusen inte hinner brinna ned → en gäst vid bord 10 går utan att betala · grannarna suckar",
+          "notices": [
+            {
+              "at": "349.19999999998873",
+              "text": "693 kren gäst vid bord 10 går utan att betala · grannarna suckar · Värden tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "3.95",
+            "change": "down"
+          }
+        },
+        {
+          "ms": 827,
+          "clock": "20.50",
+          "speedNow": "1",
+          "moment": "1.00",
+          "reactions": "349.2:down:10",
+          "camDist": 11.85,
+          "camPitch": 0.936,
+          "camYaw": 4.222,
+          "card": true,
+          "line": "Du valde Fort, så att ljusen inte hinner brinna ned → en gäst vid bord 10 går utan att betala · grannarna suckar",
+          "notices": [
+            {
+              "at": "349.19999999998873",
+              "text": "693 kren gäst vid bord 10 går utan att betala · grannarna suckar · Värden tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "3.95",
+            "change": "down"
+          }
+        },
+        {
+          "ms": 930,
+          "clock": "20.50",
+          "speedNow": "1",
+          "moment": "1.00",
+          "reactions": "349.2:down:10",
+          "camDist": 11.53,
+          "camPitch": 0.91,
+          "camYaw": 4.296,
+          "card": true,
+          "line": "Du valde Fort, så att ljusen inte hinner brinna ned → en gäst vid bord 10 går utan att betala · grannarna suckar",
+          "notices": [
+            {
+              "at": "349.19999999998873",
+              "text": "693 kren gäst vid bord 10 går utan att betala · grannarna suckar · Värden tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "3.95",
+            "change": "down"
+          }
+        },
+        {
+          "ms": 1054,
+          "clock": "20.50",
+          "speedNow": "1",
+          "moment": "1.20",
+          "reactions": "349.2:down:10",
+          "camDist": 11.28,
+          "camPitch": 0.893,
+          "camYaw": 4.343,
+          "card": true,
+          "line": "Du valde Fort, så att ljusen inte hinner brinna ned → en gäst vid bord 10 går utan att betala · grannarna suckar",
+          "notices": [
+            {
+              "at": "349.19999999998873",
+              "text": "693 kren gäst vid bord 10 går utan att betala · grannarna suckar · Värden tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "3.95",
+            "change": "down"
+          }
+        },
+        {
+          "ms": 1177,
+          "clock": "20.50",
+          "speedNow": "1",
+          "moment": "1.20",
+          "reactions": "349.2:down:10",
+          "camDist": 10.7,
+          "camPitch": 0.847,
+          "camYaw": 4.389,
+          "card": true,
+          "line": "Du valde Fort, så att ljusen inte hinner brinna ned → en gäst vid bord 10 går utan att betala · grannarna suckar",
+          "notices": [
+            {
+              "at": "349.19999999998873",
+              "text": "693 kren gäst vid bord 10 går utan att betala · grannarna suckar · Värden tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "displeased",
+            "fill": "0.81",
+            "change": "down"
+          }
+        },
+        {
+          "ms": 1281,
+          "clock": "20.50",
+          "speedNow": "1",
+          "moment": "1.40",
+          "reactions": "349.2:down:10",
+          "camDist": 10.38,
+          "camPitch": 0.825,
+          "camYaw": 4.408,
+          "card": true,
+          "line": "Du valde Fort, så att ljusen inte hinner brinna ned → en gäst vid bord 10 går utan att betala · grannarna suckar",
+          "notices": [
+            {
+              "at": "349.19999999998873",
+              "text": "693 kren gäst vid bord 10 går utan att betala · grannarna suckar · Värden tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "displeased",
+            "fill": "0.81",
+            "change": "down"
+          }
+        },
+        {
+          "ms": 1463,
+          "clock": "20.50",
+          "speedNow": "1",
+          "moment": "1.60",
+          "reactions": "349.2:down:10",
+          "camDist": 9.68,
+          "camPitch": 0.778,
+          "camYaw": 4.437,
+          "card": true,
+          "line": "Du valde Fort, så att ljusen inte hinner brinna ned → en gäst vid bord 10 går utan att betala · grannarna suckar",
+          "notices": [
+            {
+              "at": "349.19999999998873",
+              "text": "693 kren gäst vid bord 10 går utan att betala · grannarna suckar · Värden tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "displeased",
+            "fill": "0.81",
+            "change": "down"
+          }
+        },
+        {
+          "ms": 1855,
+          "clock": "20.50",
+          "speedNow": "1",
+          "moment": "2.00",
+          "reactions": "349.2:down:10",
+          "camDist": 8.59,
+          "camPitch": 0.728,
+          "camYaw": 4.468,
+          "card": true,
+          "line": "Du valde Fort, så att ljusen inte hinner brinna ned → en gäst vid bord 10 går utan att betala · grannarna suckar",
+          "notices": [
+            {
+              "at": "349.19999999998873",
+              "text": "693 kren gäst vid bord 10 går utan att betala · grannarna suckar · Värden tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "displeased",
+            "fill": "0.81",
+            "change": "down"
+          }
+        },
+        {
+          "ms": 2039,
+          "clock": "20.50",
+          "speedNow": "1",
+          "moment": "2.00",
+          "reactions": "349.2:down:10",
+          "camDist": 8.31,
+          "camPitch": 0.719,
+          "camYaw": 4.473,
+          "card": true,
+          "line": "Du valde Fort, så att ljusen inte hinner brinna ned → en gäst vid bord 10 går utan att betala · grannarna suckar",
+          "notices": [
+            {
+              "at": "349.19999999998873",
+              "text": "693 kren gäst vid bord 10 går utan att betala · grannarna suckar · Värden tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "displeased",
+            "fill": "0.81",
+            "change": "down"
+          }
+        },
+        {
+          "ms": 2160,
+          "clock": "20.50",
+          "speedNow": "1",
+          "moment": "2.20",
+          "reactions": "349.2:down:10",
+          "camDist": 8.03,
+          "camPitch": 0.712,
+          "camYaw": 4.478,
+          "card": true,
+          "line": "Du valde Fort, så att ljusen inte hinner brinna ned → en gäst vid bord 10 går utan att betala · grannarna suckar",
+          "notices": [
+            {
+              "at": "349.19999999998873",
+              "text": "693 kren gäst vid bord 10 går utan att betala · grannarna suckar · Värden tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "displeased",
+            "fill": "0.81",
+            "change": "down"
+          }
+        },
+        {
+          "ms": 2281,
+          "clock": "20.50",
+          "speedNow": "1",
+          "moment": "2.40",
+          "reactions": "349.2:down:10",
+          "camDist": 7.89,
+          "camPitch": 0.709,
+          "camYaw": 4.479,
+          "card": true,
+          "line": "Du valde Fort, så att ljusen inte hinner brinna ned → en gäst vid bord 10 går utan att betala · grannarna suckar",
+          "notices": [
+            {
+              "at": "349.19999999998873",
+              "text": "693 kren gäst vid bord 10 går utan att betala · grannarna suckar · Värden tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "displeased",
+            "fill": "0.81",
+            "change": "down"
+          }
+        },
+        {
+          "ms": 2464,
+          "clock": "20.50",
+          "speedNow": "1",
+          "moment": "2.60",
+          "reactions": "349.2:down:10",
+          "camDist": 7.7,
+          "camPitch": 0.705,
+          "camYaw": 4.481,
+          "card": true,
+          "line": "Du valde Fort, så att ljusen inte hinner brinna ned → en gäst vid bord 10 går utan att betala · grannarna suckar",
+          "notices": [
+            {
+              "at": "349.19999999998873",
+              "text": "693 kren gäst vid bord 10 går utan att betala · grannarna suckar · Värden tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "displeased",
+            "fill": "0.81",
+            "change": "down"
+          }
+        },
+        {
+          "ms": 2646,
+          "clock": "20.50",
+          "speedNow": "1",
+          "moment": "2.80",
+          "reactions": "349.2:down:10",
+          "camDist": 7.52,
+          "camPitch": 0.703,
+          "camYaw": 4.483,
+          "card": true,
+          "line": "Du valde Fort, så att ljusen inte hinner brinna ned → en gäst vid bord 10 går utan att betala · grannarna suckar",
+          "notices": [
+            {
+              "at": "349.19999999998873",
+              "text": "693 kren gäst vid bord 10 går utan att betala · grannarna suckar · Värden tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "displeased",
+            "fill": "0.81",
+            "change": "down"
+          }
+        },
+        {
+          "ms": 2832,
+          "clock": "20.51",
+          "speedNow": "1",
+          "moment": "2.80",
+          "reactions": "349.2:down:10",
+          "camDist": 7.36,
+          "camPitch": 0.702,
+          "camYaw": 4.483,
+          "card": true,
+          "line": "Du valde Fort, så att ljusen inte hinner brinna ned → en gäst vid bord 10 går utan att betala · grannarna suckar",
+          "notices": [
+            {
+              "at": "349.19999999998873",
+              "text": "693 kren gäst vid bord 10 går utan att betala · grannarna suckar · Värden tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "displeased",
+            "fill": "0.81",
+            "change": ""
+          }
+        },
+        {
+          "ms": 2952,
+          "clock": "20.51",
+          "speedNow": "1",
+          "moment": "3.00",
+          "reactions": "349.2:down:10",
+          "camDist": 7.16,
+          "camPitch": 0.701,
+          "camYaw": 4.484,
+          "card": true,
+          "line": "Du valde Fort, så att ljusen inte hinner brinna ned → en gäst vid bord 10 går utan att betala · grannarna suckar",
+          "notices": [
+            {
+              "at": "349.19999999998873",
+              "text": "693 kren gäst vid bord 10 går utan att betala · grannarna suckar · Värden tar över",
+              "fading": "true",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "displeased",
+            "fill": "0.81",
+            "change": ""
+          }
+        },
+        {
+          "ms": 3056,
+          "clock": "20.51",
+          "speedNow": "1",
+          "moment": "3.20",
+          "reactions": "349.2:down:10",
+          "camDist": 7.07,
+          "camPitch": 0.701,
+          "camYaw": 4.484,
+          "card": true,
+          "line": "Du valde Fort, så att ljusen inte hinner brinna ned → en gäst vid bord 10 går utan att betala · grannarna suckar",
+          "notices": [
+            {
+              "at": "349.19999999998873",
+              "text": "693 kren gäst vid bord 10 går utan att betala · grannarna suckar · Värden tar över",
+              "fading": "true",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "displeased",
+            "fill": "0.81",
+            "change": ""
+          }
+        },
+        {
+          "ms": 3234,
+          "clock": "20.51",
+          "speedNow": "1",
+          "moment": "3.20",
+          "reactions": "349.2:down:10",
+          "camDist": 6.89,
+          "camPitch": 0.701,
+          "camYaw": 4.484,
+          "card": true,
+          "line": "Du valde Fort, så att ljusen inte hinner brinna ned → en gäst vid bord 10 går utan att betala · grannarna suckar",
+          "notices": [
+            {
+              "at": "349.19999999998873",
+              "text": "693 kren gäst vid bord 10 går utan att betala · grannarna suckar · Värden tar över",
+              "fading": "true",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "displeased",
+            "fill": "0.81",
+            "change": ""
+          }
+        },
+        {
+          "ms": 3344,
+          "clock": "20.51",
+          "speedNow": "1",
+          "moment": "3.40",
+          "reactions": "349.2:down:10",
+          "camDist": 6.68,
+          "camPitch": 0.7,
+          "camYaw": 4.484,
+          "card": true,
+          "line": "Du valde Fort, så att ljusen inte hinner brinna ned → en gäst vid bord 10 går utan att betala · grannarna suckar",
+          "notices": [],
+          "meter": {
+            "mood": "displeased",
+            "fill": "0.81",
+            "change": ""
+          }
+        },
+        {
+          "ms": 3463,
+          "clock": "20.51",
+          "speedNow": "1",
+          "moment": "3.60",
+          "reactions": "349.2:down:10",
+          "camDist": 6.55,
+          "camPitch": 0.7,
+          "camYaw": 4.484,
+          "card": true,
+          "line": "Du valde Fort, så att ljusen inte hinner brinna ned → en gäst vid bord 10 går utan att betala · grannarna suckar",
+          "notices": [],
+          "meter": {
+            "mood": "displeased",
+            "fill": "0.81",
+            "change": ""
+          }
+        },
+        {
+          "ms": 3840,
+          "clock": "20.51",
+          "speedNow": "1",
+          "moment": "4.00",
+          "reactions": "349.2:down:10",
+          "camDist": 6.15,
+          "camPitch": 0.7,
+          "camYaw": 4.485,
+          "card": false,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "displeased",
+            "fill": "0.81",
+            "change": ""
+          }
+        },
+        {
+          "ms": 3960,
+          "clock": "20.51",
+          "speedNow": "1",
+          "moment": "4.00",
+          "reactions": "349.2:down:10",
+          "camDist": 7.15,
+          "camPitch": 0.782,
+          "camYaw": 4.485,
+          "card": false,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "displeased",
+            "fill": "0.81",
+            "change": ""
+          }
+        },
+        {
+          "ms": 4081,
+          "clock": "20.51",
+          "speedNow": "1",
+          "moment": "4.20",
+          "reactions": "349.2:down:10",
+          "camDist": 7.8,
+          "camPitch": 0.826,
+          "camYaw": 4.485,
+          "card": false,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "displeased",
+            "fill": "0.81",
+            "change": ""
+          }
+        },
+        {
+          "ms": 4261,
+          "clock": "20.51",
+          "speedNow": "1",
+          "moment": "4.40",
+          "reactions": "349.2:down:10",
+          "camDist": 8.7,
+          "camPitch": 0.877,
+          "camYaw": 4.485,
+          "card": false,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "displeased",
+            "fill": "0.81",
+            "change": ""
+          }
+        },
+        {
+          "ms": 4440,
+          "clock": "20.51",
+          "speedNow": "1",
+          "moment": "4.40",
+          "reactions": "349.2:down:10",
+          "camDist": 9.26,
+          "camPitch": 0.903,
+          "camYaw": 4.485,
+          "card": false,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "displeased",
+            "fill": "0.81",
+            "change": ""
+          }
+        },
+        {
+          "ms": 4560,
+          "clock": "20.51",
+          "speedNow": "1",
+          "moment": "4.60",
+          "reactions": "349.2:down:10",
+          "camDist": 9.84,
+          "camPitch": 0.925,
+          "camYaw": 4.485,
+          "card": false,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "displeased",
+            "fill": "0.81",
+            "change": ""
+          }
+        },
+        {
+          "ms": 4681,
+          "clock": "20.51",
+          "speedNow": "1",
+          "moment": "4.80",
+          "reactions": "349.2:down:10",
+          "camDist": 10.13,
+          "camPitch": 0.934,
+          "camYaw": 4.485,
+          "card": false,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "displeased",
+            "fill": "0.81",
+            "change": ""
+          }
+        },
+        {
+          "ms": 4879,
+          "clock": "20.52",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "349.2:down:10",
+          "camDist": 10.53,
+          "camPitch": 0.944,
+          "camYaw": 4.485,
+          "card": false,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "displeased",
+            "fill": "0.81",
+            "change": ""
+          }
+        },
+        {
+          "ms": 5018,
+          "clock": "20.52",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "349.2:down:10",
+          "camDist": 10.76,
+          "camPitch": 0.948,
+          "camYaw": 4.485,
+          "card": false,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "displeased",
+            "fill": "0.81",
+            "change": ""
+          }
+        },
+        {
+          "ms": 5195,
+          "clock": "20.52",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "349.2:down:10",
+          "camDist": 10.89,
+          "camPitch": 0.951,
+          "camYaw": 4.485,
+          "card": false,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "displeased",
+            "fill": "0.81",
+            "change": ""
+          }
+        },
+        {
+          "ms": 5303,
+          "clock": "20.52",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "349.2:down:10",
+          "camDist": 11.05,
+          "camPitch": 0.953,
+          "camYaw": 4.485,
+          "card": false,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "displeased",
+            "fill": "0.81",
+            "change": ""
+          }
+        },
+        {
+          "ms": 5472,
+          "clock": "20.53",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "349.2:down:10",
+          "camDist": 11.15,
+          "camPitch": 0.955,
+          "camYaw": 4.485,
+          "card": false,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "displeased",
+            "fill": "0.81",
+            "change": ""
+          }
+        },
+        {
+          "ms": 5640,
+          "clock": "20.53",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "349.2:down:10",
+          "camDist": 11.43,
+          "camPitch": 0.956,
+          "camYaw": 4.485,
+          "card": false,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "displeased",
+            "fill": "0.81",
+            "change": ""
+          }
+        },
+        {
+          "ms": 5827,
+          "clock": "20.53",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "349.2:down:10",
+          "camDist": 11.76,
+          "camPitch": 0.958,
+          "camYaw": 4.485,
+          "card": false,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "displeased",
+            "fill": "0.81",
+            "change": ""
+          }
+        },
+        {
+          "ms": 5996,
+          "clock": "20.54",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "349.2:down:10",
+          "camDist": 11.95,
+          "camPitch": 0.958,
+          "camYaw": 4.485,
+          "card": false,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "displeased",
+            "fill": "0.81",
+            "change": ""
+          }
+        }
+      ],
+      "later": [
+        {
+          "ms": 6098,
+          "notices": 0
+        },
+        {
+          "ms": 6418,
+          "notices": 0
+        },
+        {
+          "ms": 6739,
+          "notices": 0
+        },
+        {
+          "ms": 7019,
+          "notices": 0
+        },
+        {
+          "ms": 7342,
+          "notices": 0
+        },
+        {
+          "ms": 7617,
+          "notices": 0
+        },
+        {
+          "ms": 7954,
+          "notices": 0
+        },
+        {
+          "ms": 8245,
+          "notices": 0
+        },
+        {
+          "ms": 8521,
+          "notices": 0
+        },
+        {
+          "ms": 8847,
+          "notices": 0
+        },
+        {
+          "ms": 9123,
+          "notices": 0
+        }
+      ]
+    }
+  ],
+  "camera": {
+    "start": {
+      "clock": "18.18",
+      "speedNow": "4",
+      "moment": "",
+      "reactions": "",
+      "camDist": 24,
+      "camPitch": 0.873,
+      "camYaw": 2.393,
+      "card": false,
+      "line": null,
+      "notices": [],
+      "meter": {
+        "mood": "",
+        "fill": "0.00",
+        "change": ""
+      }
+    },
+    "afterIn": {
+      "clock": "18.22",
+      "speedNow": "4",
+      "moment": "",
+      "reactions": "",
+      "camDist": 19.58,
+      "camPitch": 0.873,
+      "camYaw": 2.393,
+      "card": false,
+      "line": null,
+      "notices": [],
+      "meter": {
+        "mood": "",
+        "fill": "0.00",
+        "change": ""
+      }
+    },
+    "afterLeft": {
+      "clock": "18.27",
+      "speedNow": "4",
+      "moment": "",
+      "reactions": "",
+      "camDist": 18.76,
+      "camPitch": 0.873,
+      "camYaw": 2.14,
+      "card": false,
+      "line": null,
+      "notices": [],
+      "meter": {
+        "mood": "",
+        "fill": "0.00",
+        "change": ""
+      }
+    },
+    "afterDrag": {
+      "clock": "18.36",
+      "speedNow": "4",
+      "moment": "",
+      "reactions": "",
+      "camDist": 18.69,
+      "camPitch": 0.873,
+      "camYaw": 1.183,
+      "card": false,
+      "line": null,
+      "notices": [],
+      "meter": {
+        "mood": "",
+        "fill": "0.00",
+        "change": ""
+      }
+    },
+    "afterReset": {
+      "clock": "18.42",
+      "speedNow": "4",
+      "moment": "",
+      "reactions": "",
+      "camDist": 23.66,
+      "camPitch": 0.873,
+      "camYaw": 2.388,
+      "card": false,
+      "line": null,
+      "notices": [],
+      "meter": {
+        "mood": "",
+        "fill": "0.00",
+        "change": ""
+      }
+    },
+    "tableClick": {
+      "fx": 0.5,
+      "fy": 0.75,
+      "clock": "19.46",
+      "speedNow": "4",
+      "moment": "",
+      "reactions": "",
+      "camDist": 14.27,
+      "camPitch": 0.873,
+      "camYaw": 2.393,
+      "card": false,
+      "line": null,
+      "notices": [],
+      "meter": {
+        "mood": "content",
+        "fill": "3.67",
+        "change": ""
+      }
+    }
+  },
+  "notices": null
+}

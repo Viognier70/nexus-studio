@@ -1,0 +1,77 @@
+{
+  "definition": "Medelluminans (Rec. 709, 0–255) i bildens mitt, 30–70 % i båda leden (scripts/luminance.mjs).",
+  "rows": [
+    {
+      "file": "../documentation/leveranser/nexus-leverans-2026-10-02-byn-omtag-2/bilder/1440x900/byn-1-660m-skymningen.jpg",
+      "luminance": 95.2
+    },
+    {
+      "file": "../documentation/leveranser/nexus-leverans-2026-10-02-byn-omtag-2/bilder/1440x900/byn-3-660m-kvallen.jpg",
+      "luminance": 73.6
+    },
+    {
+      "file": "../documentation/leveranser/nexus-leverans-2026-10-02-byn-omtag-2/bilder/1440x900/byn-4-660m-natten.jpg",
+      "luminance": 61
+    },
+    {
+      "file": "../documentation/leveranser/nexus-leverans-2026-10-02-byn-omtag-2/bilder/1440x900/kvarteret-1-90m-kvallen.jpg",
+      "luminance": 81.6
+    },
+    {
+      "file": "../documentation/leveranser/nexus-leverans-2026-10-02-byn-omtag-2/bilder/1440x900/gatan-1-42m-kvallen.jpg",
+      "luminance": 98.8
+    },
+    {
+      "file": "../documentation/leveranser/nexus-leverans-2026-10-02-byn-omtag-2/bilder/1440x900/krogen-2-24m-kon.jpg",
+      "luminance": 141.4
+    },
+    {
+      "file": "reports/order297/check-1440x900-1820-byn.jpg",
+      "luminance": 81.8
+    },
+    {
+      "file": "reports/order297/check-1440x900-1820-gatan.jpg",
+      "luminance": 100.5
+    },
+    {
+      "file": "reports/order297/check-1440x900-1820-krogen.jpg",
+      "luminance": 122.2
+    },
+    {
+      "file": "reports/order297/check-1440x900-1820-kvarteret.jpg",
+      "luminance": 86.4
+    },
+    {
+      "file": "reports/order297/check-1440x900-1930-byn.jpg",
+      "luminance": 72.2
+    },
+    {
+      "file": "reports/order297/check-1440x900-1930-gatan.jpg",
+      "luminance": 98.6
+    },
+    {
+      "file": "reports/order297/check-1440x900-1930-krogen.jpg",
+      "luminance": 115.8
+    },
+    {
+      "file": "reports/order297/check-1440x900-1930-kvarteret.jpg",
+      "luminance": 80.7
+    },
+    {
+      "file": "reports/order297/check-1440x900-2250-byn.jpg",
+      "luminance": 56.2
+    },
+    {
+      "file": "reports/order297/check-1440x900-2250-gatan.jpg",
+      "luminance": 81.9
+    },
+    {
+      "file": "reports/order297/check-1440x900-2250-krogen.jpg",
+      "luminance": 97
+    },
+    {
+      "file": "reports/order297/check-1440x900-2250-kvarteret.jpg",
+      "luminance": 63.9
+    }
+  ]
+}
