@@ -1,6 +1,6 @@
 import { calendarFor } from '../../sim/calendar';
 import { bestAnswerFactor, drinkRevenueFactor, enablersWithCredits } from '../../sim/knowledgeInService';
-import { EVENING, EVENING_ECONOMY, GUEST_TYPES, OPENING, QUEUE_CAP, SERVICE, SHOP, type BusinessClassId } from '../../sim/balance';
+import { EVENING, EVENING_ECONOMY, GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, OPENING, QUEUE_CAP, SERVICE, SHOP, type BusinessClassId } from '../../sim/balance';
 import { answerSalvage, closeSalvage, discardUnresolvedSalvage } from './salvage';
 import { clockMinutes, formatClock, canBack, canStartBack, pickBackAnswer, closeIncidents, countDown, isIncidentOpen, maybeOpenIncident, planIncidents, resolveIncident, startBack, tickOngoing, type CreditChange } from '../../sim/incidents';
 import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
@@ -201,6 +201,7 @@ import {
   THEME_HISTORY_LIMIT,
   SCENARIO_CAPITAL_DELTA
 } from './constants';
+import { decayMoodLift } from '../../sim/guestMood';
 export {
   CAPITAL_MIN,
   CAPITAL_MAX,
@@ -1471,6 +1472,7 @@ function openService(
     partiesTonight: 0,
     tastingPartiesTonight: 0,
     consequence: null,
+    roomMoodLift: 0,
     worldFactors,
     // ORDER 046 §1 — new service opens with a clean collapse slate.
     serviceCollapsed: false,
@@ -2551,6 +2553,9 @@ function advanceTick(state: SimulationState): SimulationState {
       draft.delivery.progress = 0;
     }
   }
+
+  // ORDER 299b — kunskapens lyft på stämningen klingar av (sim/guestMood.ts).
+  decayMoodLift(draft, tickSeconds * GAME_MINUTES_PER_SIM_SECOND);
 
   // Regular arrivals.
   // ORDER 187 — maybeSpawnGuest returnerar en LIST (0-3 gäster) för att

@@ -626,22 +626,48 @@ export const TASTING = {
 } as const;
 
 // ORDER 299 (Vision Owner 2026-10-03, Designs leverans D1 §5 och §7):
-// gästernas stämning. Värdet är gästens nöjdhet 0..1 (Guest.satisfaction);
-// läget kommer ur gränserna nedan (under gränsen gäller nästa läge, sämst
-// missnöjd). Gränserna är satta mot en vanlig kväll (vecka 2, mån/ons/fre):
-// gästerna ligger i median på 0,72 (startvärdet), 10 % under 0,48 och 10 %
-// över 0,87. En ny gäst är därför nöjd; glad är samma gräns som rummets glada
-// gäster (reputation.ts HAPPY_THRESHOLD).
-//   - rocket: ett raketsvar flyttar de gäster som såg det, inom
-//     witnessRadiusM från bordet: gain vid rätt, loss vid fel (bordet självt
-//     får svarets följd som förut, sim/incidents.ts answerConsequence).
-//   - decayPerGameMinute: väntan i kön utan att någon kommer (förut
-//     service.ts WAITING_SAT_DROP_PER_SEC = 0,007 per simsekund, oförändrad).
+// gästernas stämning. Läget kommer ur gränserna nedan (under gränsen gäller
+// nästa läge, sämst missnöjd). Gränserna är satta mot en vanlig kväll (vecka 2,
+// mån/ons/fre): gästernas nöjdhet ligger i median på 0,72 (startvärdet), 10 %
+// under 0,48 och 10 % över 0,87. En ny gäst är därför nöjd; glad är samma gräns
+// som rummets glada gäster (reputation.ts HAPPY_THRESHOLD).
+//
+// ORDER 299b (Vision Owner 2026-10-04): "Stämningen ska kunna lyftas av
+// kunskap", utan att ekonomins trappa ändras. Stämningen är gästens nöjdhet
+// plus ett lyft av raketsvaren (Guest.moodLift), som ekonomin inte läser.
+//   - rocket.table: bordet där svaret gällde, rätt och fel;
+//   - rocket.witness: de som såg svaret, inom witnessRadiusM från bordet;
+//   - rocket.room: spridningen till rummet, ett lyft för rummet självt (alla i
+//     rummet, också de som kommer senare; klingar av roomLiftDecayPerGameMinute);
+//   - liftDecayPerGameMinute: lyftet klingar av mot noll;
+//   - departure: en gäst som går missnöjd (utan mat eller ur kön) sänker de
+//     nära (witness) och rummet (room);
+//   - liftMax: lyftet stannar inom ±liftMax.
+// Kalibrerat i harness (reports/order299b/stamning-*.json): med 0,85 rätt per
+// steg stiger rummets läge minst lika ofta som det sjunker, med 0,6 sjunker det
+// oftare, och den slarviga får ett otåligt eller missnöjt rum de flesta kvällar.
+//   - decayPerGameMinute: väntan i kön (förut service.ts WAITING_SAT_DROP_PER_SEC
+//     = 0,007 per simsekund, oförändrad).
 //   - Rummets mätare är medelvärdet per sällskap.
 export const MOOD_BALANCE = {
   section: 'Servicen > Gästerna',
   threshold: { delighted: 0.85, content: 0.68, waiting: 0.55, impatient: 0.4 },
-  rocket: { gain: 0.06, loss: 0.08, witnessRadiusM: 3.5 },
+  // Fel väger omkring dubbelt så tungt som rätt: då lyfter 0,85 rätt per steg
+  // rummet och 0,6 sänker det (0,6 × 0,17 − 0,4 × 0,3 < 0).
+  rocket: {
+    table: { right: 0.15, wrong: -0.3 },
+    witness: { right: 0.1, wrong: -0.2 },
+    witnessRadiusM: 3.5,
+    room: { right: 0.17, wrong: -0.3 }
+  },
+  // En gäst som går missnöjd (utan mat, eller som ger upp i kön) syns i
+  // rummet: de nära sänks witness, rummet room.
+  departure: { witness: -0.1, room: -0.02 },
+  liftDecayPerGameMinute: 0.0005,
+  // Rummets lyft (rocket.room och departure.room) gäller alla i rummet, också de
+  // som kommer senare, och står kvar kvällen ut (det börjar på noll varje kväll).
+  roomLiftDecayPerGameMinute: 0,
+  liftMax: 0.4,
   decayPerGameMinute: 0.014,
   roomWeighting: 'perParty' as 'perParty' | 'perGuest',
   // Rummets läge byter först när medelvärdet gått så här långt förbi gränsen,
@@ -654,7 +680,7 @@ export const MOOD_BALANCE = {
   // Efter ett raketsvar visar mätaren svarets följd också när den är liten
   // (Designs konsekvensögonblick: mätaren stiger eller sjunker vid 1,25 s).
   meterVisibleStepsAfterAnswer: 0.02
-} as const;
+};
 
 export const DOWNGRADE = {
   section: 'Ekonomin > Nedgradering',

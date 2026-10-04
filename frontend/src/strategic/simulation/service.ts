@@ -27,6 +27,7 @@ import {
 } from './morale';
 import { valueQuotaSatisfactionDelta } from './valueQuota';
 import { applyMissingMepHit, consumeMepForOneGuest } from './mepConsumption';
+import { spreadDeparture } from '../../sim/guestMood';
 
 const TICK_SECONDS = 0.2;
 
@@ -518,6 +519,8 @@ export function tickGuests(state: SimulationState) {
         bumpMorale(state, -MORALE_GIVE_UP_HIT);
         // ORDER 287a — gästen med socialt kapital gav upp i kön.
         settleSocialGuest(state, guest, true);
+        // ORDER 299b — rummet ser gästen ge upp (stämningen, inte nöjdheten).
+        spreadDeparture(state, guest);
       }
       continue;
     }

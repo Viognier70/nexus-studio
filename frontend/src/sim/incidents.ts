@@ -23,7 +23,7 @@
 // Talen står i `balance.ts` `INCIDENTS`; händelserna i händelsebanken.
 
 import type { Guest, GuestType, KnowledgeAxis, RoomReaction, SimulationState, StaffRole, YrkesSpar } from '../strategic/types';
-import { moveWitnesses } from './guestMood';
+import { applyAnswerMood } from './guestMood';
 import { createRng } from '../strategic/util/rng';
 import { bumpMorale } from '../strategic/simulation/morale';
 import { applyCashDelta, applyCashRevenue, postLedger } from '../strategic/simulation/cashReading';
@@ -722,8 +722,9 @@ function answerConsequence(draft: SimulationState, ctx: IncidentContext, right: 
     left = Math.min(queue.length, ANSWER_EFFECTS.wrongGuestsLeave);
     sendAway(draft, queue, left);
   }
-  // ORDER 299 — de som såg svaret blir gladare eller missnöjda (sim/guestMood.ts).
-  const witnessIds = moveWitnesses(draft, table, right);
+  // ORDER 299b — svaret lyfter eller sänker stämningen vid bordet, hos dem som
+  // såg det och i rummet (sim/guestMood.ts); nöjdheten och ekonomin rörs inte.
+  const witnessIds = applyAnswerMood(draft, table, right);
   const t = strings.answerEffects;
   const text = right ? t.up(ctx.table, guestsIn) : leftGuestId ? t.tableLeaves(ctx.table) : t.down(ctx.table, left);
   const now = draft.simTime;

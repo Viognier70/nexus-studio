@@ -9,7 +9,7 @@
 //   - före öppning står gårdagens placering ("I går: …"), eller "Byn öppnar …";
 //   - linjen med lyktorna (vår gula prick med krogens namn) är borttagen: den
 //     visade bara ställningen och styrde ingenting. ORDER 299: Stämningen i
-//     rummet står där (MoodMeter.tsx).
+//     rummet stod där; ORDER 299b flyttar den till höger om kassan (MoodMeter.tsx).
 // ORDER 298b — när ryktet håller nere gästerna står "Lugn kväll: ryktet är
 // ännu lågt i byn" under raden, före och under kvällen.
 // Ryktet står kvar, med ändringen sedan dagen började. Vid en omkörning visas
@@ -28,7 +28,6 @@ import { play } from '../sound/sound';
 import { rankedVillage } from '../../scenario/CompareScreen';
 import { RIVAL_BAND } from './hostShop';
 import { reputationHoldsGuests } from '../../simulation/arrivals';
-import { MoodMeter } from './MoodMeter';
 import type { SimulationState } from '../../types';
 import './host.css';
 
@@ -120,8 +119,6 @@ function RivalBandInService() {
         {overtook && <span className="nx-rival-overtake nx-rival-overtake-static" data-testid="rival-overtake">{tt(lang, 'rival.overtake', { name: strings.village.venues[overtook] ?? overtook })}</span>}
       </div>
       <CalmLine sim={sim} lang={lang} />
-      {/* ORDER 299 — Stämningen i rummet, där lyktornas linje satt. */}
-      <MoodMeter />
     </div>
   );
 }

@@ -717,11 +717,9 @@ body:has(.nx-rocket) .nx-tab-dock { display: none; }
 .nx-cam-btn:hover { background: rgba(232,185,58,.16); color: var(--w-gold, #e8b93a); }
 .nx-cam-btn:focus-visible { outline: 2px solid var(--w-gold, #e8b93a); outline-offset: 2px; }
 
-/* ORDER 299 — under raketen står bara Stämningen i rummet kvar i bandet
-   (platsen, ryktet och Lugn kväll viker undan), så att kortet börjar högre. */
-body:has(.nx-rocket) .nx-rival-head,
-body:has(.nx-rocket) .nx-rival-calm { display: none; }
-body:has(.nx-rocket) .nx-mood-meter { margin-top: 0; padding-top: 0; border-top: 0; }
+/* ORDER 299b — under raketen viker bandet Byn i kväll undan (mätaren står i
+   raden bredvid kassan), så att kortet börjar högre. */
+body:has(.nx-rocket) .nx-rival-band { display: none; }
 
 /* ORDER 299 — det smalare kortet på låga skärmar (1280 × 720): berättelsen
    högst tre rader och svaren lite tätare, så att frågan och svaren ryms. */
@@ -732,10 +730,10 @@ body:has(.nx-rocket) .nx-mood-meter { margin-top: 0; padding-top: 0; border-top:
   .nx-rocket-ask { margin-top: calc(10 * var(--nx-u)); }
   .nx-rocket-bar { margin: calc(8 * var(--nx-u)) 0 calc(10 * var(--nx-u)); }
 }
-/* ORDER 299 — under raketen står mätaren på en rad (etiketten, läget och
-   spåret), så att kortet får plats för alla fyra svar också i 1280 × 720. */
-body:has(.nx-rocket) .nx-mood-meter { grid-template-columns: auto auto minmax(120px, 1fr); align-items: center; column-gap: calc(18 * var(--nx-u)); }
-body:has(.nx-rocket) .nx-mood-word { font-size: max(14px, calc(24 * var(--nx-u))); }
 @media (max-height: 760px) {
   .nx-rocket-story { -webkit-line-clamp: 2; }
 }
+
+/* ORDER 299b — kassans översta rad (beloppet och "kvar till insatsen") får
+   plats i rutan: rutan växer med texten, så att mätaren till höger inte täcker den. */
+.nx-till-box { width: max-content; min-width: calc(520 * var(--nx-u)); }

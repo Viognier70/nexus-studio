@@ -33,22 +33,30 @@ export function guestsInRoom(state: Pick<SimulationState, 'guests'>): Guest[] {
   return state.guests.filter((g) => IN_ROOM.has(g.state) && !g.walkAwayOnArrival);
 }
 
+/** ORDER 299b — gästens stämning: nöjdheten, gästens lyft och rummets lyft, inom 0..1. */
+export function guestMoodValue(g: Pick<Guest, 'satisfaction' | 'moodLift'>, roomLift = 0): number {
+  return Math.max(0, Math.min(1, g.satisfaction + (g.moodLift ?? 0) + roomLift));
+}
+
+type MoodState = Pick<SimulationState, 'guests'> & { day?: Pick<SimulationState['day'], 'roomMoodLift'> };
+
 /** Rummets stämning just nu: medelvärdet per sällskap (eller per gäst), null utan gäster. */
-export function roomMoodValue(state: Pick<SimulationState, 'guests'>): number | null {
+export function roomMoodValue(state: MoodState): number | null {
   const guests = guestsInRoom(state);
   if (guests.length === 0) return null;
-  if (MOOD_BALANCE.roomWeighting === 'perGuest') return guests.reduce((a, g) => a + g.satisfaction, 0) / guests.length;
+  const room = state.day?.roomMoodLift ?? 0;
+  if (MOOD_BALANCE.roomWeighting === 'perGuest') return guests.reduce((a, g) => a + guestMoodValue(g, room), 0) / guests.length;
   const parties = new Map<string, { sum: number; n: number }>();
   for (const g of guests) {
     const key = g.partyId ?? g.id;
     const p = parties.get(key) ?? { sum: 0, n: 0 };
-    parties.set(key, { sum: p.sum + g.satisfaction, n: p.n + 1 });
+    parties.set(key, { sum: p.sum + guestMoodValue(g, room), n: p.n + 1 });
   }
   const means = [...parties.values()].map((p) => p.sum / p.n);
   return means.reduce((a, b) => a + b, 0) / means.length;
 }
 
-export function roomMood(state: Pick<SimulationState, 'guests'>): MoodId | null {
+export function roomMood(state: MoodState): MoodId | null {
   const v = roomMoodValue(state);
   return v === null ? null : moodOf(v);
 }
@@ -68,12 +76,58 @@ export function witnessesOf(state: Pick<SimulationState, 'guests'>, table: reado
   return guestsInRoom(state).filter((g) => !ids.has(g.id) && Math.hypot(g.position.x - cx, g.position.z - cz) <= r);
 }
 
-/** Svaret flyttar dem som såg det. Returnerar deras id (för konsekvensögonblicket). */
-export function moveWitnesses(draft: SimulationState, table: readonly Guest[], right: boolean): string[] {
+function liftRoom(draft: SimulationState, delta: number): void {
+  const max = MOOD_BALANCE.liftMax;
+  draft.day = { ...draft.day, roomMoodLift: Math.max(-max, Math.min(max, (draft.day.roomMoodLift ?? 0) + delta)) };
+}
+
+function lift(g: Guest, delta: number): void {
+  const max = MOOD_BALANCE.liftMax;
+  g.moodLift = Math.max(-max, Math.min(max, (g.moodLift ?? 0) + delta));
+}
+
+/**
+ * ORDER 299b — svaret lyfter eller sänker stämningen (inte nöjdheten): bordet,
+ * de som såg det inom witnessRadiusM och, svagare, alla i rummet. Returnerar
+ * de som såg det (för konsekvensögonblicket).
+ */
+export function applyAnswerMood(draft: SimulationState, table: readonly Guest[], right: boolean): string[] {
+  const r = MOOD_BALANCE.rocket;
+  const pick = (e: { right: number; wrong: number }) => (right ? e.right : e.wrong);
   const seen = witnessesOf(draft, table);
-  const delta = right ? MOOD_BALANCE.rocket.gain : -MOOD_BALANCE.rocket.loss;
-  for (const g of seen) g.satisfaction = Math.max(0, Math.min(1, g.satisfaction + delta));
+  const tableIds = new Set(table.map((g) => g.id));
+  const seenIds = new Set(seen.map((g) => g.id));
+  for (const g of guestsInRoom(draft)) {
+    if (tableIds.has(g.id)) lift(g, pick(r.table));
+    else if (seenIds.has(g.id)) lift(g, pick(r.witness));
+  }
+  liftRoom(draft, pick(r.room));
   return seen.map((g) => g.id);
+}
+
+/** ORDER 299b — en gäst som går missnöjd syns: de nära och rummet sänks. */
+export function spreadDeparture(draft: SimulationState, leaver: Guest): void {
+  const d = MOOD_BALANCE.departure;
+  const near = new Set(witnessesOf(draft, [leaver]).map((g) => g.id));
+  for (const g of guestsInRoom(draft)) {
+    if (g.id !== leaver.id && near.has(g.id)) lift(g, d.witness);
+  }
+  liftRoom(draft, d.room);
+}
+
+/** Lyftet klingar av mot noll (anropas varje tick med spelminuterna). */
+export function decayMoodLift(draft: SimulationState, gameMinutes: number): void {
+  const room = draft.day.roomMoodLift ?? 0;
+  if (room) {
+    const r = MOOD_BALANCE.roomLiftDecayPerGameMinute * gameMinutes;
+    draft.day = { ...draft.day, roomMoodLift: Math.abs(room) <= r ? 0 : room - Math.sign(room) * r };
+  }
+  const step = MOOD_BALANCE.liftDecayPerGameMinute * gameMinutes;
+  for (const g of draft.guests) {
+    const l = g.moodLift;
+    if (!l) continue;
+    g.moodLift = Math.abs(l) <= step ? 0 : l - Math.sign(l) * step;
+  }
 }
 
 /**
