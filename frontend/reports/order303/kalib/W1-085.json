@@ -1,0 +1,1778 @@
+{
+  "variant": "{}",
+  "consequences": {
+    "section": "Servicen > Händelserna i servicen",
+    "graveSatisfactionAtMost": -0.2,
+    "mediumSatisfactionAtMost": -0.1,
+    "graveReputationAtMost": -2,
+    "wrong": {
+      "mild": {
+        "tipShare": -0.1,
+        "billShare": 0,
+        "satisfaction": -0.04,
+        "reputation": -1.5,
+        "staffMorale": 0
+      },
+      "medium": {
+        "tipShare": -0.1,
+        "billShare": -0.5,
+        "satisfaction": -0.08,
+        "reputation": -3,
+        "staffMorale": -0.03
+      },
+      "grave": {
+        "tipShare": 0,
+        "billShare": 0,
+        "satisfaction": -0.08,
+        "reputation": -6,
+        "staffMorale": -0.05,
+        "tableShareLeaving": 1
+      }
+    },
+    "right": {
+      "stepReputation": 0.3,
+      "clearedReputation": 1,
+      "avecShare": 0.2
+    },
+    "street": {
+      "perWrong": -0.08,
+      "perCleared": 0.04,
+      "min": -0.4,
+      "max": 0.2,
+      "decayPerGameMinute": 0.004
+    },
+    "moodBillPerLift": 1.4,
+    "moodBillPerLiftUp": 0.3,
+    "rivalContentBase": 0.4,
+    "rivalContentPerReputation": 0.6
+  },
+  "definition": "Vinbaren vecka 1–3, mentorns morgon (baspaketet, extra hand vid behov), brons i tre (PLAYERS.baseline). tillMinusStakeSek = kvällskassan (tillSek, sista ticken under servicen) minus insatsen (day.stake.total). rep* på skalan 0–100: före morgonen, när servicen börjar, efter kvällen och nästa morgon. rank = placeringen i byn efter gäster (economy.weekEvenings village, rankedVillage), som bandet visar nästa morgon. answers = kvällens raketsvar (incidents.log, planerade): kvalitet, steg där det föll, ryktets ändring (deltas.reputation, 0–100) och kassan. breakdown = metrics.reputationBreakdown (0–100). wrongDataLeave = fel svar i vinbar.meta.json vars följd skickar gäster ur rummet (fail.room.leave > 0).",
+  "summary": {
+    "player": "skill",
+    "skill": 0.85,
+    "seeds": [
+      1,
+      2
+    ],
+    "byWeek": [
+      {
+        "week": 1,
+        "evenings": 12,
+        "meanTillMinusStakeSek": 1814,
+        "eveningsWithLoss": 2,
+        "meanRepChangeEvening": -7.3,
+        "meanRepChangeOvernight": 1.7,
+        "rankFirst": 6,
+        "meanRank": 2
+      },
+      {
+        "week": 2,
+        "evenings": 12,
+        "meanTillMinusStakeSek": -164,
+        "eveningsWithLoss": 7,
+        "meanRepChangeEvening": -1.5,
+        "meanRepChangeOvernight": 2,
+        "rankFirst": 3,
+        "meanRank": 3
+      },
+      {
+        "week": 3,
+        "evenings": 12,
+        "meanTillMinusStakeSek": 847,
+        "eveningsWithLoss": 7,
+        "meanRepChangeEvening": -4.5,
+        "meanRepChangeOvernight": 2,
+        "rankFirst": 2,
+        "meanRank": 3.3
+      }
+    ],
+    "answers": {
+      "best": {
+        "n": 41,
+        "meanRep": 1.49,
+        "meanCashSek": 197
+      },
+      "wrong": {
+        "n": 39,
+        "meanRep": -3.53,
+        "meanCashSek": -131
+      },
+      "staff": {
+        "n": 0,
+        "meanRep": 0,
+        "meanCashSek": 0
+      }
+    },
+    "wrongDataLeave": {
+      "outcomes": 300,
+      "withLeave": 12,
+      "withLeaveAll": 12
+    }
+  },
+  "rows": [
+    {
+      "week": 1,
+      "weekday": "mon",
+      "seed": 1,
+      "tillSek": 6518,
+      "stakeSek": 5109,
+      "tillMinusStakeSek": 1409,
+      "revenueSek": 6518,
+      "repMorning": 60,
+      "repServiceStart": 60,
+      "repEvening": 49.3,
+      "repNextMorning": 50,
+      "rank": 1,
+      "venues": 4,
+      "guests": 25,
+      "gaveUp": 0,
+      "rockets": 1,
+      "cleared": 0,
+      "answers": [
+        {
+          "quality": "wrong",
+          "step": 2,
+          "rep": -2.8,
+          "cashSek": -56
+        }
+      ],
+      "breakdown": {
+        "queueStrain": 0,
+        "teamStrain": 0,
+        "giveUp": 0,
+        "happy": 3.6,
+        "unhappy": -8,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 1,
+      "weekday": "tue",
+      "seed": 1,
+      "tillSek": 7909,
+      "stakeSek": 5326,
+      "tillMinusStakeSek": 2583,
+      "revenueSek": 8276,
+      "repMorning": 50,
+      "repServiceStart": 50,
+      "repEvening": 36.8,
+      "repNextMorning": 38.8,
+      "rank": 1,
+      "venues": 5,
+      "guests": 28,
+      "gaveUp": 0,
+      "rockets": 2,
+      "cleared": 1,
+      "answers": [
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 1.1,
+          "cashSek": -84
+        },
+        {
+          "quality": "wrong",
+          "step": 2,
+          "rep": -4,
+          "cashSek": -84
+        }
+      ],
+      "breakdown": {
+        "queueStrain": 0,
+        "teamStrain": -0.8,
+        "giveUp": 0,
+        "happy": 5.4,
+        "unhappy": -12,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 1,
+      "weekday": "wed",
+      "seed": 1,
+      "tillSek": 3724,
+      "stakeSek": 5326,
+      "tillMinusStakeSek": -1602,
+      "revenueSek": 4509,
+      "repMorning": 38.8,
+      "repServiceStart": 38.8,
+      "repEvening": 44.2,
+      "repNextMorning": 46.2,
+      "rank": 2,
+      "venues": 7,
+      "guests": 18,
+      "gaveUp": 0,
+      "rockets": 1,
+      "cleared": 0,
+      "answers": [
+        {
+          "quality": "wrong",
+          "step": 0,
+          "rep": -3,
+          "cashSek": -168
+        }
+      ],
+      "breakdown": {
+        "queueStrain": 0,
+        "teamStrain": 0,
+        "giveUp": 0,
+        "happy": 5.4,
+        "unhappy": 0,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 1,
+      "weekday": "thu",
+      "seed": 1,
+      "tillSek": 8138,
+      "stakeSek": 5677,
+      "tillMinusStakeSek": 2461,
+      "revenueSek": 9962,
+      "repMorning": 46.2,
+      "repServiceStart": 46.2,
+      "repEvening": 55.8,
+      "repNextMorning": 55.8,
+      "rank": 1,
+      "venues": 7,
+      "guests": 36,
+      "gaveUp": 0,
+      "rockets": 1,
+      "cleared": 1,
+      "answers": [
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 1.1,
+          "cashSek": -84
+        }
+      ],
+      "breakdown": {
+        "queueStrain": 0,
+        "teamStrain": -0.2,
+        "giveUp": 0,
+        "happy": 10.2,
+        "unhappy": 0,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 1,
+      "weekday": "fri",
+      "seed": 1,
+      "tillSek": 9693,
+      "stakeSek": 5677,
+      "tillMinusStakeSek": 4016,
+      "revenueSek": 10108,
+      "repMorning": 55.8,
+      "repServiceStart": 55.8,
+      "repEvening": 26.7,
+      "repNextMorning": 28.7,
+      "rank": 3,
+      "venues": 7,
+      "guests": 49,
+      "gaveUp": 6,
+      "rockets": 5,
+      "cleared": 3,
+      "answers": [
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 2.1,
+          "cashSek": 158
+        },
+        {
+          "quality": "wrong",
+          "step": 0,
+          "rep": -3,
+          "cashSek": 0
+        },
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 2.1,
+          "cashSek": 158
+        },
+        {
+          "quality": "wrong",
+          "step": 2,
+          "rep": -2.5,
+          "cashSek": -84
+        },
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 1.1,
+          "cashSek": 210
+        }
+      ],
+      "breakdown": {
+        "queueStrain": -1.5,
+        "teamStrain": -3.9,
+        "giveUp": -12,
+        "happy": 6.6,
+        "unhappy": -20,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 1,
+      "weekday": "sat",
+      "seed": 1,
+      "tillSek": 7019,
+      "stakeSek": 5677,
+      "tillMinusStakeSek": 1342,
+      "revenueSek": 8170,
+      "repMorning": 28.7,
+      "repServiceStart": 28.7,
+      "repEvening": 12.8,
+      "repNextMorning": 14.9,
+      "rank": 3,
+      "venues": 7,
+      "guests": 46,
+      "gaveUp": 0,
+      "rockets": 4,
+      "cleared": 2,
+      "answers": [
+        {
+          "quality": "wrong",
+          "step": 0,
+          "rep": -3,
+          "cashSek": 0
+        },
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 1,
+          "cashSek": 421
+        },
+        {
+          "quality": "wrong",
+          "step": 2,
+          "rep": -2.5,
+          "cashSek": -84
+        },
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 2,
+          "cashSek": 158
+        }
+      ],
+      "breakdown": {
+        "queueStrain": -0.3,
+        "teamStrain": -2.4,
+        "giveUp": 0,
+        "happy": 1.8,
+        "unhappy": -12,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 2,
+      "weekday": "mon",
+      "seed": 1,
+      "tillSek": 4781,
+      "stakeSek": 5677,
+      "tillMinusStakeSek": -896,
+      "revenueSek": 6807,
+      "repMorning": 16.9,
+      "repServiceStart": 16.9,
+      "repEvening": 19.5,
+      "repNextMorning": 21.5,
+      "rank": 4,
+      "venues": 4,
+      "guests": 23,
+      "gaveUp": 0,
+      "rockets": 1,
+      "cleared": 0,
+      "answers": [
+        {
+          "quality": "wrong",
+          "step": 1,
+          "rep": -3,
+          "cashSek": 0
+        }
+      ],
+      "breakdown": {
+        "queueStrain": 0,
+        "teamStrain": 0,
+        "giveUp": 0,
+        "happy": 2.4,
+        "unhappy": 0,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 2,
+      "weekday": "tue",
+      "seed": 1,
+      "tillSek": 7712,
+      "stakeSek": 5653,
+      "tillMinusStakeSek": 2059,
+      "revenueSek": 9009,
+      "repMorning": 21.5,
+      "repServiceStart": 21.5,
+      "repEvening": 41.9,
+      "repNextMorning": 43.9,
+      "rank": 1,
+      "venues": 5,
+      "guests": 38,
+      "gaveUp": 0,
+      "rockets": 3,
+      "cleared": 3,
+      "answers": [
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 2,
+          "cashSek": 158
+        },
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 2,
+          "cashSek": 158
+        },
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 2,
+          "cashSek": 158
+        }
+      ],
+      "breakdown": {
+        "queueStrain": 0,
+        "teamStrain": -2.2,
+        "giveUp": 0,
+        "happy": 12,
+        "unhappy": 0,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 2,
+      "weekday": "wed",
+      "seed": 1,
+      "tillSek": 516,
+      "stakeSek": 5677,
+      "tillMinusStakeSek": -5161,
+      "revenueSek": 5134,
+      "repMorning": 43.9,
+      "repServiceStart": 43.9,
+      "repEvening": 24.7,
+      "repNextMorning": 26.7,
+      "rank": 2,
+      "venues": 7,
+      "guests": 20,
+      "gaveUp": 0,
+      "rockets": 1,
+      "cleared": 1,
+      "answers": [
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 1.1,
+          "cashSek": 316
+        }
+      ],
+      "breakdown": {
+        "queueStrain": 0,
+        "teamStrain": -0.8,
+        "giveUp": 0,
+        "happy": 0,
+        "unhappy": 0,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": -15,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 2,
+      "weekday": "thu",
+      "seed": 1,
+      "tillSek": 4155,
+      "stakeSek": 5677,
+      "tillMinusStakeSek": -1522,
+      "revenueSek": 6710,
+      "repMorning": 26.7,
+      "repServiceStart": 26.7,
+      "repEvening": 27.2,
+      "repNextMorning": 29.2,
+      "rank": 5,
+      "venues": 7,
+      "guests": 27,
+      "gaveUp": 0,
+      "rockets": 1,
+      "cleared": 0,
+      "answers": [
+        {
+          "quality": "wrong",
+          "step": 1,
+          "rep": -3,
+          "cashSek": 0
+        }
+      ],
+      "breakdown": {
+        "queueStrain": 0,
+        "teamStrain": 0,
+        "giveUp": 0,
+        "happy": 4.2,
+        "unhappy": -4,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 2,
+      "weekday": "fri",
+      "seed": 1,
+      "tillSek": 9340,
+      "stakeSek": 5677,
+      "tillMinusStakeSek": 3663,
+      "revenueSek": 10257,
+      "repMorning": 29.2,
+      "repServiceStart": 29.2,
+      "repEvening": 10.5,
+      "repNextMorning": 12.5,
+      "rank": 3,
+      "venues": 7,
+      "guests": 46,
+      "gaveUp": 0,
+      "rockets": 5,
+      "cleared": 3,
+      "answers": [
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 2.1,
+          "cashSek": 158
+        },
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 1.1,
+          "cashSek": 631
+        },
+        {
+          "quality": "wrong",
+          "step": 0,
+          "rep": -3,
+          "cashSek": -337
+        },
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 1,
+          "cashSek": 0
+        },
+        {
+          "quality": "wrong",
+          "step": 0,
+          "rep": -3,
+          "cashSek": -168
+        }
+      ],
+      "breakdown": {
+        "queueStrain": 0,
+        "teamStrain": -3.9,
+        "giveUp": 0,
+        "happy": 3.6,
+        "unhappy": -14,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 2,
+      "weekday": "sat",
+      "seed": 1,
+      "tillSek": 4134,
+      "stakeSek": 5677,
+      "tillMinusStakeSek": -1543,
+      "revenueSek": 5934,
+      "repMorning": 12.5,
+      "repServiceStart": 12.5,
+      "repEvening": 18.9,
+      "repNextMorning": 20.9,
+      "rank": 5,
+      "venues": 7,
+      "guests": 22,
+      "gaveUp": 0,
+      "rockets": 0,
+      "cleared": 0,
+      "answers": [],
+      "breakdown": {
+        "queueStrain": 0,
+        "teamStrain": 0,
+        "giveUp": 0,
+        "happy": 8.4,
+        "unhappy": 0,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 3,
+      "weekday": "mon",
+      "seed": 1,
+      "tillSek": 4267,
+      "stakeSek": 5677,
+      "tillMinusStakeSek": -1410,
+      "revenueSek": 6203,
+      "repMorning": 22.9,
+      "repServiceStart": 22.9,
+      "repEvening": 24.5,
+      "repNextMorning": 26.5,
+      "rank": 2,
+      "venues": 4,
+      "guests": 27,
+      "gaveUp": 0,
+      "rockets": 1,
+      "cleared": 0,
+      "answers": [
+        {
+          "quality": "wrong",
+          "step": 1,
+          "rep": -6,
+          "cashSek": -365
+        }
+      ],
+      "breakdown": {
+        "queueStrain": 0,
+        "teamStrain": -1.1,
+        "giveUp": 0,
+        "happy": 5.4,
+        "unhappy": 0,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 3,
+      "weekday": "tue",
+      "seed": 1,
+      "tillSek": 2681,
+      "stakeSek": 5677,
+      "tillMinusStakeSek": -2996,
+      "revenueSek": 4169,
+      "repMorning": 26.5,
+      "repServiceStart": 26.5,
+      "repEvening": 13.8,
+      "repNextMorning": 15.8,
+      "rank": 5,
+      "venues": 5,
+      "guests": 26,
+      "gaveUp": 0,
+      "rockets": 1,
+      "cleared": 0,
+      "answers": [
+        {
+          "quality": "wrong",
+          "step": 0,
+          "rep": -7,
+          "cashSek": -168
+        }
+      ],
+      "breakdown": {
+        "queueStrain": 0,
+        "teamStrain": -0.1,
+        "giveUp": 0,
+        "happy": 2.4,
+        "unhappy": -6,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 3,
+      "weekday": "wed",
+      "seed": 1,
+      "tillSek": 4201,
+      "stakeSek": 5677,
+      "tillMinusStakeSek": -1476,
+      "revenueSek": 7059,
+      "repMorning": 15.8,
+      "repServiceStart": 15.8,
+      "repEvening": 26.3,
+      "repNextMorning": 28.3,
+      "rank": 2,
+      "venues": 7,
+      "guests": 23,
+      "gaveUp": 0,
+      "rockets": 1,
+      "cleared": 1,
+      "answers": [
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 1,
+          "cashSek": -168
+        }
+      ],
+      "breakdown": {
+        "queueStrain": 0,
+        "teamStrain": 0,
+        "giveUp": 0,
+        "happy": 6,
+        "unhappy": 0,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 3,
+      "weekday": "thu",
+      "seed": 1,
+      "tillSek": 8606,
+      "stakeSek": 5677,
+      "tillMinusStakeSek": 2929,
+      "revenueSek": 11858,
+      "repMorning": 28.3,
+      "repServiceStart": 28.3,
+      "repEvening": 43.6,
+      "repNextMorning": 45.6,
+      "rank": 1,
+      "venues": 7,
+      "guests": 38,
+      "gaveUp": 0,
+      "rockets": 3,
+      "cleared": 3,
+      "answers": [
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 1,
+          "cashSek": 842
+        },
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 2,
+          "cashSek": 158
+        },
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 1,
+          "cashSek": -84
+        }
+      ],
+      "breakdown": {
+        "queueStrain": -0.8,
+        "teamStrain": -2.1,
+        "giveUp": 0,
+        "happy": 9.6,
+        "unhappy": 0,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 3,
+      "weekday": "fri",
+      "seed": 1,
+      "tillSek": 15001,
+      "stakeSek": 5677,
+      "tillMinusStakeSek": 9324,
+      "revenueSek": 15715,
+      "repMorning": 45.6,
+      "repServiceStart": 45.6,
+      "repEvening": 29.8,
+      "repNextMorning": 31.8,
+      "rank": 3,
+      "venues": 7,
+      "guests": 45,
+      "gaveUp": 5,
+      "rockets": 6,
+      "cleared": 5,
+      "answers": [
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 2,
+          "cashSek": 158
+        },
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 2,
+          "cashSek": 158
+        },
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 1,
+          "cashSek": 1052
+        },
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 2,
+          "cashSek": 158
+        },
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 1.1,
+          "cashSek": 0
+        },
+        {
+          "quality": "wrong",
+          "step": 0,
+          "rep": -1.5,
+          "cashSek": 0
+        }
+      ],
+      "breakdown": {
+        "queueStrain": -2.4,
+        "teamStrain": -4.1,
+        "giveUp": -10,
+        "happy": 3.6,
+        "unhappy": -12,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 3,
+      "weekday": "sat",
+      "seed": 1,
+      "tillSek": 3672,
+      "stakeSek": 5677,
+      "tillMinusStakeSek": -2005,
+      "revenueSek": 3672,
+      "repMorning": 31.8,
+      "repServiceStart": 31.8,
+      "repEvening": 10,
+      "repNextMorning": 12,
+      "rank": 7,
+      "venues": 7,
+      "guests": 41,
+      "gaveUp": 3,
+      "rockets": 5,
+      "cleared": 1,
+      "answers": [
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 1.1,
+          "cashSek": -168
+        },
+        {
+          "quality": "wrong",
+          "step": 1,
+          "rep": -3,
+          "cashSek": -295
+        },
+        {
+          "quality": "wrong",
+          "step": 0,
+          "rep": -3,
+          "cashSek": 0
+        },
+        {
+          "quality": "wrong",
+          "step": 1,
+          "rep": -3,
+          "cashSek": -196
+        },
+        {
+          "quality": "wrong",
+          "step": 0,
+          "rep": 0,
+          "cashSek": 0
+        }
+      ],
+      "breakdown": {
+        "queueStrain": -1.1,
+        "teamStrain": -4.1,
+        "giveUp": -6,
+        "happy": 0,
+        "unhappy": -18,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 1,
+      "weekday": "mon",
+      "seed": 2,
+      "tillSek": 6941,
+      "stakeSek": 5109,
+      "tillMinusStakeSek": 1832,
+      "revenueSek": 6941,
+      "repMorning": 60,
+      "repServiceStart": 60,
+      "repEvening": 43.7,
+      "repNextMorning": 45.7,
+      "rank": 1,
+      "venues": 4,
+      "guests": 31,
+      "gaveUp": 0,
+      "rockets": 1,
+      "cleared": 1,
+      "answers": [
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 1.1,
+          "cashSek": 421
+        }
+      ],
+      "breakdown": {
+        "queueStrain": 0,
+        "teamStrain": -1,
+        "giveUp": 0,
+        "happy": 5.4,
+        "unhappy": -10,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 1,
+      "weekday": "tue",
+      "seed": 2,
+      "tillSek": 4110,
+      "stakeSek": 5653,
+      "tillMinusStakeSek": -1543,
+      "revenueSek": 4540,
+      "repMorning": 45.7,
+      "repServiceStart": 45.7,
+      "repEvening": 28.3,
+      "repNextMorning": 30.3,
+      "rank": 5,
+      "venues": 5,
+      "guests": 27,
+      "gaveUp": 0,
+      "rockets": 1,
+      "cleared": 0,
+      "answers": [
+        {
+          "quality": "wrong",
+          "step": 0,
+          "rep": -7,
+          "cashSek": -168
+        }
+      ],
+      "breakdown": {
+        "queueStrain": 0,
+        "teamStrain": 0,
+        "giveUp": 0,
+        "happy": 3.6,
+        "unhappy": -12,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 1,
+      "weekday": "wed",
+      "seed": 2,
+      "tillSek": 9716,
+      "stakeSek": 5350,
+      "tillMinusStakeSek": 4366,
+      "revenueSek": 9912,
+      "repMorning": 30.3,
+      "repServiceStart": 30.3,
+      "repEvening": 25.6,
+      "repNextMorning": 27.6,
+      "rank": 1,
+      "venues": 7,
+      "guests": 37,
+      "gaveUp": 0,
+      "rockets": 4,
+      "cleared": 3,
+      "answers": [
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 1.1,
+          "cashSek": 316
+        },
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 1.1,
+          "cashSek": 210
+        },
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 1.1,
+          "cashSek": 0
+        },
+        {
+          "quality": "wrong",
+          "step": 0,
+          "rep": -7,
+          "cashSek": -168
+        }
+      ],
+      "breakdown": {
+        "queueStrain": 0,
+        "teamStrain": -1.5,
+        "giveUp": 0,
+        "happy": 9,
+        "unhappy": -6,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 1,
+      "weekday": "thu",
+      "seed": 2,
+      "tillSek": 6320,
+      "stakeSek": 5677,
+      "tillMinusStakeSek": 643,
+      "revenueSek": 8081,
+      "repMorning": 27.6,
+      "repServiceStart": 27.6,
+      "repEvening": 39,
+      "repNextMorning": 41,
+      "rank": 1,
+      "venues": 7,
+      "guests": 23,
+      "gaveUp": 0,
+      "rockets": 0,
+      "cleared": 0,
+      "answers": [],
+      "breakdown": {
+        "queueStrain": 0,
+        "teamStrain": 0,
+        "giveUp": 0,
+        "happy": 8.4,
+        "unhappy": 0,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 1,
+      "weekday": "fri",
+      "seed": 2,
+      "tillSek": 11018,
+      "stakeSek": 5677,
+      "tillMinusStakeSek": 5341,
+      "revenueSek": 11212,
+      "repMorning": 41,
+      "repServiceStart": 41,
+      "repEvening": 25.7,
+      "repNextMorning": 27.7,
+      "rank": 2,
+      "venues": 7,
+      "guests": 51,
+      "gaveUp": 4,
+      "rockets": 6,
+      "cleared": 4,
+      "answers": [
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 2.1,
+          "cashSek": 158
+        },
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 1.1,
+          "cashSek": 0
+        },
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 2.1,
+          "cashSek": 158
+        },
+        {
+          "quality": "wrong",
+          "step": 1,
+          "rep": -3,
+          "cashSek": 0
+        },
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 1.1,
+          "cashSek": 0
+        },
+        {
+          "quality": "wrong",
+          "step": 1,
+          "rep": -6,
+          "cashSek": 0
+        }
+      ],
+      "breakdown": {
+        "queueStrain": -2.4,
+        "teamStrain": -4.1,
+        "giveUp": -8,
+        "happy": 11.4,
+        "unhappy": -10,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 1,
+      "weekday": "sat",
+      "seed": 2,
+      "tillSek": 6598,
+      "stakeSek": 5677,
+      "tillMinusStakeSek": 921,
+      "revenueSek": 8050,
+      "repMorning": 27.7,
+      "repServiceStart": 27.7,
+      "repEvening": 36,
+      "repNextMorning": 38,
+      "rank": 3,
+      "venues": 7,
+      "guests": 24,
+      "gaveUp": 0,
+      "rockets": 1,
+      "cleared": 0,
+      "answers": [
+        {
+          "quality": "wrong",
+          "step": 2,
+          "rep": -3,
+          "cashSek": -140
+        }
+      ],
+      "breakdown": {
+        "queueStrain": 0,
+        "teamStrain": 0,
+        "giveUp": 0,
+        "happy": 7.8,
+        "unhappy": 0,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 2,
+      "weekday": "mon",
+      "seed": 2,
+      "tillSek": 4866,
+      "stakeSek": 5677,
+      "tillMinusStakeSek": -811,
+      "revenueSek": 6236,
+      "repMorning": 40,
+      "repServiceStart": 40,
+      "repEvening": 34.8,
+      "repNextMorning": 36.9,
+      "rank": 4,
+      "venues": 4,
+      "guests": 33,
+      "gaveUp": 0,
+      "rockets": 2,
+      "cleared": 0,
+      "answers": [
+        {
+          "quality": "wrong",
+          "step": 0,
+          "rep": -1.5,
+          "cashSek": -337
+        },
+        {
+          "quality": "wrong",
+          "step": 2,
+          "rep": -7,
+          "cashSek": -56
+        }
+      ],
+      "breakdown": {
+        "queueStrain": 0,
+        "teamStrain": -1.6,
+        "giveUp": 0,
+        "happy": 5.4,
+        "unhappy": -4,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 2,
+      "weekday": "tue",
+      "seed": 2,
+      "tillSek": 9284,
+      "stakeSek": 5677,
+      "tillMinusStakeSek": 3607,
+      "revenueSek": 10048,
+      "repMorning": 36.9,
+      "repServiceStart": 36.9,
+      "repEvening": 38.5,
+      "repNextMorning": 40.5,
+      "rank": 1,
+      "venues": 5,
+      "guests": 34,
+      "gaveUp": 0,
+      "rockets": 0,
+      "cleared": 0,
+      "answers": [],
+      "breakdown": {
+        "queueStrain": 0,
+        "teamStrain": -1.9,
+        "giveUp": 0,
+        "happy": 6.6,
+        "unhappy": -6,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 2,
+      "weekday": "wed",
+      "seed": 2,
+      "tillSek": 6993,
+      "stakeSek": 5677,
+      "tillMinusStakeSek": 1316,
+      "revenueSek": 7501,
+      "repMorning": 40.5,
+      "repServiceStart": 40.5,
+      "repEvening": 30.5,
+      "repNextMorning": 32.5,
+      "rank": 1,
+      "venues": 7,
+      "guests": 46,
+      "gaveUp": 0,
+      "rockets": 5,
+      "cleared": 2,
+      "answers": [
+        {
+          "quality": "wrong",
+          "step": 0,
+          "rep": -1.5,
+          "cashSek": -168
+        },
+        {
+          "quality": "wrong",
+          "step": 1,
+          "rep": -6,
+          "cashSek": 0
+        },
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 1.1,
+          "cashSek": 842
+        },
+        {
+          "quality": "wrong",
+          "step": 2,
+          "rep": -4,
+          "cashSek": -84
+        },
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 2,
+          "cashSek": 158
+        }
+      ],
+      "breakdown": {
+        "queueStrain": -0.4,
+        "teamStrain": -2.3,
+        "giveUp": 0,
+        "happy": 5.4,
+        "unhappy": 0,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 2,
+      "weekday": "thu",
+      "seed": 2,
+      "tillSek": 3842,
+      "stakeSek": 5677,
+      "tillMinusStakeSek": -1835,
+      "revenueSek": 4678,
+      "repMorning": 32.5,
+      "repServiceStart": 32.5,
+      "repEvening": 42.7,
+      "repNextMorning": 44.7,
+      "rank": 3,
+      "venues": 7,
+      "guests": 16,
+      "gaveUp": 0,
+      "rockets": 0,
+      "cleared": 0,
+      "answers": [],
+      "breakdown": {
+        "queueStrain": 0,
+        "teamStrain": 0,
+        "giveUp": 0,
+        "happy": 7.2,
+        "unhappy": 0,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 2,
+      "weekday": "fri",
+      "seed": 2,
+      "tillSek": 1136,
+      "stakeSek": 5677,
+      "tillMinusStakeSek": -4541,
+      "revenueSek": 4607,
+      "repMorning": 44.7,
+      "repServiceStart": 44.7,
+      "repEvening": 28.7,
+      "repNextMorning": 30.7,
+      "rank": 4,
+      "venues": 7,
+      "guests": 21,
+      "gaveUp": 0,
+      "rockets": 1,
+      "cleared": 0,
+      "answers": [
+        {
+          "quality": "wrong",
+          "step": 0,
+          "rep": -1.5,
+          "cashSek": -337
+        }
+      ],
+      "breakdown": {
+        "queueStrain": -0.2,
+        "teamStrain": -1.4,
+        "giveUp": 0,
+        "happy": 0.6,
+        "unhappy": 0,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": -15,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 2,
+      "weekday": "sat",
+      "seed": 2,
+      "tillSek": 9376,
+      "stakeSek": 5677,
+      "tillMinusStakeSek": 3699,
+      "revenueSek": 10281,
+      "repMorning": 30.7,
+      "repServiceStart": 30.7,
+      "repEvening": 39.7,
+      "repNextMorning": 41.7,
+      "rank": 3,
+      "venues": 7,
+      "guests": 29,
+      "gaveUp": 0,
+      "rockets": 2,
+      "cleared": 1,
+      "answers": [
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 1.1,
+          "cashSek": -168
+        },
+        {
+          "quality": "wrong",
+          "step": 1,
+          "rep": -1.5,
+          "cashSek": -112
+        }
+      ],
+      "breakdown": {
+        "queueStrain": 0,
+        "teamStrain": -0.8,
+        "giveUp": 0,
+        "happy": 8.4,
+        "unhappy": -2,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 3,
+      "weekday": "mon",
+      "seed": 2,
+      "tillSek": 9598,
+      "stakeSek": 5677,
+      "tillMinusStakeSek": 3921,
+      "revenueSek": 10046,
+      "repMorning": 43.7,
+      "repServiceStart": 43.7,
+      "repEvening": 37.6,
+      "repNextMorning": 39.6,
+      "rank": 1,
+      "venues": 4,
+      "guests": 39,
+      "gaveUp": 0,
+      "rockets": 5,
+      "cleared": 2,
+      "answers": [
+        {
+          "quality": "wrong",
+          "step": 2,
+          "rep": -3,
+          "cashSek": -210
+        },
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 1.1,
+          "cashSek": 210
+        },
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 1.1,
+          "cashSek": 842
+        },
+        {
+          "quality": "wrong",
+          "step": 1,
+          "rep": -3,
+          "cashSek": -196
+        },
+        {
+          "quality": "wrong",
+          "step": 1,
+          "rep": -6.7,
+          "cashSek": -112
+        }
+      ],
+      "breakdown": {
+        "queueStrain": -0.8,
+        "teamStrain": -2.7,
+        "giveUp": 0,
+        "happy": 9,
+        "unhappy": -6,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 3,
+      "weekday": "tue",
+      "seed": 2,
+      "tillSek": 4001,
+      "stakeSek": 5677,
+      "tillMinusStakeSek": -1676,
+      "revenueSek": 5734,
+      "repMorning": 39.6,
+      "repServiceStart": 39.6,
+      "repEvening": 31,
+      "repNextMorning": 33,
+      "rank": 3,
+      "venues": 5,
+      "guests": 29,
+      "gaveUp": 0,
+      "rockets": 2,
+      "cleared": 0,
+      "answers": [
+        {
+          "quality": "wrong",
+          "step": 1,
+          "rep": -4.7,
+          "cashSek": -112
+        },
+        {
+          "quality": "wrong",
+          "step": 2,
+          "rep": -3,
+          "cashSek": -393
+        }
+      ],
+      "breakdown": {
+        "queueStrain": 0,
+        "teamStrain": -0.4,
+        "giveUp": 0,
+        "happy": 4.8,
+        "unhappy": -4,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 3,
+      "weekday": "wed",
+      "seed": 2,
+      "tillSek": 4232,
+      "stakeSek": 5677,
+      "tillMinusStakeSek": -1445,
+      "revenueSek": 5323,
+      "repMorning": 33,
+      "repServiceStart": 33,
+      "repEvening": 10,
+      "repNextMorning": 12,
+      "rank": 7,
+      "venues": 7,
+      "guests": 27,
+      "gaveUp": 0,
+      "rockets": 1,
+      "cleared": 0,
+      "answers": [
+        {
+          "quality": "wrong",
+          "step": 2,
+          "rep": -4.3,
+          "cashSek": -56
+        }
+      ],
+      "breakdown": {
+        "queueStrain": 0,
+        "teamStrain": -1.4,
+        "giveUp": 0,
+        "happy": 1.8,
+        "unhappy": -24,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 3,
+      "weekday": "thu",
+      "seed": 2,
+      "tillSek": 5344,
+      "stakeSek": 5556,
+      "tillMinusStakeSek": -212,
+      "revenueSek": 7820,
+      "repMorning": 12,
+      "repServiceStart": 12,
+      "repEvening": 22.3,
+      "repNextMorning": 24.3,
+      "rank": 2,
+      "venues": 7,
+      "guests": 23,
+      "gaveUp": 0,
+      "rockets": 2,
+      "cleared": 1,
+      "answers": [
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 3,
+          "cashSek": 0
+        },
+        {
+          "quality": "wrong",
+          "step": 0,
+          "rep": -1.5,
+          "cashSek": 0
+        }
+      ],
+      "breakdown": {
+        "queueStrain": 0,
+        "teamStrain": 0,
+        "giveUp": 0,
+        "happy": 5.4,
+        "unhappy": 0,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 3,
+      "weekday": "fri",
+      "seed": 2,
+      "tillSek": 6794,
+      "stakeSek": 5677,
+      "tillMinusStakeSek": 1117,
+      "revenueSek": 8800,
+      "repMorning": 24.3,
+      "repServiceStart": 24.3,
+      "repEvening": 12.4,
+      "repNextMorning": 14.4,
+      "rank": 5,
+      "venues": 7,
+      "guests": 31,
+      "gaveUp": 0,
+      "rockets": 2,
+      "cleared": 1,
+      "answers": [
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 1,
+          "cashSek": 0
+        },
+        {
+          "quality": "wrong",
+          "step": 1,
+          "rep": -3,
+          "cashSek": -281
+        }
+      ],
+      "breakdown": {
+        "queueStrain": 0,
+        "teamStrain": -1.6,
+        "giveUp": 0,
+        "happy": 6,
+        "unhappy": 0,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": -15,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    },
+    {
+      "week": 3,
+      "weekday": "sat",
+      "seed": 2,
+      "tillSek": 9772,
+      "stakeSek": 5677,
+      "tillMinusStakeSek": 4095,
+      "revenueSek": 10447,
+      "repMorning": 14.4,
+      "repServiceStart": 14.4,
+      "repEvening": 22.6,
+      "repNextMorning": 24.7,
+      "rank": 2,
+      "venues": 7,
+      "guests": 44,
+      "gaveUp": 0,
+      "rockets": 3,
+      "cleared": 2,
+      "answers": [
+        {
+          "quality": "wrong",
+          "step": 2,
+          "rep": -3,
+          "cashSek": -182
+        },
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 2,
+          "cashSek": 158
+        },
+        {
+          "quality": "best",
+          "step": null,
+          "rep": 2,
+          "cashSek": 158
+        }
+      ],
+      "breakdown": {
+        "queueStrain": -0.8,
+        "teamStrain": -3.6,
+        "giveUp": 0,
+        "happy": 7.2,
+        "unhappy": 0,
+        "walkout": 0,
+        "substitute": 0,
+        "collapse": 0,
+        "ceilingDrift": 0,
+        "other": 0
+      }
+    }
+  ]
+}

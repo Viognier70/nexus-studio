@@ -52,9 +52,9 @@ describe('ORDER 296b — kön har ett tak', () => {
 });
 
 describe('ORDER 296b — felsvar kostar mindre', () => {
-  it('andelen av ett fels förlust i kassan är under ett', () => {
-    expect(INCIDENTS.wrongCashShare).toBeGreaterThan(0);
-    expect(INCIDENTS.wrongCashShare).toBeLessThan(1);
+  // ORDER 303 (Anders 2026-10-04: "Följderna är för svaga") — hela förlusten igen.
+  it('andelen av ett fels förlust i kassan är hela förlusten (ORDER 303)', () => {
+    expect(INCIDENTS.wrongCashShare).toBe(1);
   });
   it('kollapsen är en femtedel av ORDER 046:s tal', () => {
     expect(COLLAPSE.floorPerTick).toBeLessThan(COLLAPSE.strainGainPerTick);

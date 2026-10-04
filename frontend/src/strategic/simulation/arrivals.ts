@@ -1,3 +1,4 @@
+import { streetWordNow } from '../../sim/streetWord';
 import { BUSINESS_CLASSES, GAME_MINUTES_PER_SIM_SECOND, GUEST_FLOOR, RISK, SITTING, TASTING } from '../../sim/balance';
 import { clockMinutes } from '../../sim/clock';
 import { hashKey } from '../util/hash';
@@ -162,7 +163,9 @@ export function arrivalAttraction(state: SimulationState): number {
     currentRhythmMultiplier(state) *
     competitionMult *
     valueMult *
-    shareMult
+    shareMult *
+    // ORDER 303 C — ordet på gatan i kväll (sim/streetWord.ts).
+    (1 + streetWordNow(state))
   );
 }
 

@@ -856,7 +856,9 @@ export const INCIDENTS = {
   // ORDER 296b (Vision Owner 2026-10-02: "felsvar ska kosta mindre") — ett
   // fel svars förlust i kassan (stegets följd och personalens utfall) gånger
   // den här andelen. Vinsten av ett rätt svar är oförändrad.
-  wrongCashShare: 0.5,
+  // ORDER 303 (Anders 2026-10-04: "Följderna är för svaga") — tillbaka till
+  // hela förlusten (reports/order303/kalib/V5-*.json).
+  wrongCashShare: 1,
   // ORDER 270 (F43) — valda tal.
   openQuestion: 'F43',
   // "fler fredag och lördag": antalet per veckodag, en till under en högtid
@@ -1551,6 +1553,82 @@ export const ANSWER_EFFECTS = {
   // den här drycken, ur lagret och till listans pris. Finns den inte i lagret
   // gäller rightBillShare av bordets nota.
   rightExtraDishId: 'house-wine-glass'
+} as const;
+
+// ORDER 303 D (Anders 2026-10-04, provspel: "Fel svar slutar nästan alltid
+// med att gästen går utan att betala … borde få fler och mer varierade
+// följder") — följden av ett svar efter hur allvarligt felet är. Graden läses
+// ur raketens egen data: felets nöjdhetseffekt (fail.effects.satisfaction),
+// eller grovt om felet skickar ut gäster (fail.room.leave) eller kostar
+// ryktet (fail.effects.reputation ≤ graveReputationAtMost).
+//   - lätt: mindre dricks;
+//   - medel: bordet beställer mindre (ingen flaska till, ingen dessert), gästen
+//     klagar och personalen lägger tid på att lugna (orken sjunker);
+//   - grovt: gästen går utan att betala (som ORDER 292 gjorde vid varje fel).
+// Rätt svar har skalan uppåt: mer dricks per klarat steg, en flaska till, och
+// när raketen klaras med säkerheten "vet det" stannar bordet för avec.
+// reputation är poäng på skalan 0–100 och går till morgonens recension.
+// ORDER 303 C — samma kväll sprids ordet till gatan: varje fel svar sänker
+// krogens dragningskraft för sällskapen som inte valt än (street), varje
+// klarad raket höjer den; ordet klingar av under kvällen.
+export const CONSEQUENCES = {
+  section: 'Servicen > Händelserna i servicen',
+  graveSatisfactionAtMost: -0.2,
+  mediumSatisfactionAtMost: -0.1,
+  graveReputationAtMost: -2,
+  wrong: {
+    mild: { tipShare: -0.1, billShare: 0, satisfaction: -0.04, reputation: -1.5, staffMorale: 0 },
+    medium: { tipShare: -0.1, billShare: -0.5, satisfaction: -0.08, reputation: -3, staffMorale: -0.03 },
+    // tableShareLeaving: andelen av bordet som går utan att betala (minst en gäst).
+    grave: { tipShare: 0, billShare: 0, satisfaction: -0.08, reputation: -6, staffMorale: -0.05, tableShareLeaving: 1 }
+  },
+  right: {
+    stepReputation: 0.3,
+    clearedReputation: 1,
+    avecShare: 0.2
+  },
+  street: { perWrong: -0.08, perCleared: 0.04, min: -0.4, max: 0.2, decayPerGameMinute: 0.004 },
+  // ORDER 303 B — notan följer kunskapens lyft i stämningen (MOOD_BALANCE:
+  // gästens moodLift och rummets roomMoodLift, inom ±liftMax): notan gånger
+  // 1 + moodBillPerLift × lyftet när lyftet är negativt, och
+  // 1 + moodBillPerLiftUp × lyftet när det är positivt (uppåt mindre, så att
+  // den skickliga spelarens kassa inte skenar; reports/order303/kalib).
+  moodBillPerLift: 1.4,
+  moodBillPerLiftUp: 0.9,
+  // ORDER 303 B — placeringen i byn räknas på kvällens nöjda gäster vid bord:
+  // hos oss gästerna vars stämning var minst nöjd när de betalade
+  // (MOOD_BALANCE.threshold.content); hos konkurrenterna gästerna gånger en
+  // nöjd andel efter deras rykte (rivalContentBase + rivalContentPerReputation × ryktet).
+  rivalContentBase: 0.4,
+  rivalContentPerReputation: 0.6
+} as const;
+
+// ORDER 303 E (Anders 2026-10-04) — personalens ork och trivsel, och
+// kunskapen i personalen (sim/staffCondition.ts).
+//   - Orken (0–1) sjunker under kvällen (per spelminut med öppna dörrar) och
+//     när en gäst klagar, och stiger med god dricks; natten ger vilan.
+//   - Trivseln (0–1) följer dricksen, satsningarna på personalen (kurserna på
+//     morgonen) och hur ofta de står i en händelse de inte har kunskap för;
+//     den drar långsamt mot sitt vilovärde.
+//   - Låg ork eller trivsel: personalen går saktare (uppgifternas tid gånger
+//     1 + slowAtZero × bristen under slowBelow), och ett rätt svar ger mindre
+//     (effekten gånger effectAtZero + (1 − effectAtZero) × min(ork, trivsel)).
+//   - Kunskapsområdena: vin (raketernas spår sommellerie), mat (kök) och
+//     service. Saknar personalen området tvekar de: ett fel svar blir ett
+//     steg allvarligare (CONSEQUENCES).
+export const STAFF_CONDITION = {
+  section: 'Servicen > Personalen',
+  stamina: { start: 1, drainPerGameMinute: 0.0008, complaint: -0.06, perTipSek: 0.0002, afterNight: 1 },
+  wellbeing: { start: 0.75, restingValue: 0.75, driftPerDay: 0.1, perTipSekEvening: 0.00003, perTraining: 0.06, perHesitation: -0.03 },
+  slowBelow: 0.5,
+  slowAtZero: 0.6,
+  // Tvekan gör ett lätt fel till medel; med hesitationToGrave också medel till grovt.
+  hesitationToGrave: 0,
+  effectAtZero: 0.4,
+  skillsByRole: { värd: ['service'], servitör: ['service'], kock: ['mat'], lärling: [] } as Record<string, readonly string[]>,
+  // Morgonens satsningar som lär personalen ett område och lyfter trivseln.
+  trainingActivities: { 'train-service': 'service', 'wine-tasting': 'vin', 'guest-chef': 'mat' } as Record<string, string>,
+  areaByTrack: { sommellerie: 'vin', kok: 'mat' } as Record<string, string>
 } as const;
 
 // ORDER 287a — gästen med socialt kapital sprider ryktet (speldesign >

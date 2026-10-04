@@ -407,3 +407,6 @@
 
 /* ORDER 300 §3 — rubrikradens högra del: Måltidens hus och dagens val. */
 .nxs-head-side { display: flex; align-items: baseline; gap: calc(28 * var(--nx-u)); white-space: nowrap; }
+
+/* ORDER 303 C — Recensioner i morse, överst i morgonens högerspalt. */
+.nxs-review-box { margin-bottom: calc(16 * var(--nx-u)); padding: calc(16 * var(--nx-u)) calc(22 * var(--nx-u)); }

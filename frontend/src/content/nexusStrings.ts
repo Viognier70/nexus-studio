@@ -294,7 +294,8 @@ export const STRINGS = {
   'rival.rank': { sv: '{rank} i byn', en: '{rank} in the village' },
   'rival.guests': { sv: '{n} gäster', en: '{n} guests' },
   // ORDER 298 — vad placeringen mäter, ingen placering utan gäster, och före öppning.
-  'rival.measures': { sv: 'Placering efter kvällens gäster vid bord', en: 'Ranked by tonight’s seated guests' },
+  // ORDER 303 B — placeringen räknas på kvällens nöjda gäster vid bord.
+  'rival.measures': { sv: 'Placering efter kvällens nöjda gäster vid bord', en: 'Ranked by tonight’s satisfied seated guests' },
   'rival.noGuests': { sv: 'Väntar på gäster', en: 'Waiting for guests' },
   'rival.yesterday': { sv: 'I går: {rank} i byn', en: 'Yesterday: {rank} in the village' },
   'rival.opens': { sv: 'Byn öppnar {time}', en: 'The village opens at {time}' },
@@ -1223,6 +1224,11 @@ export const TABLE = {
         sv: (sek: string) => `Lönerna för veckan blev ${sek}.`,
         en: (sek: string) => `Wages for the week came to ${sek}.`
       },
+      // ORDER 303 E — dricksen och den sociala hållbarheten.
+      social: {
+        sv: (tips: string, stamina: number, wellbeing: number) => `Personalen fick ${tips} i dricks. Den sociala hållbarheten: orken ${stamina} %, trivseln ${wellbeing} %.`,
+        en: (tips: string, stamina: number, wellbeing: number) => `The staff received ${tips} in tips. Social sustainability: stamina ${stamina}%, wellbeing ${wellbeing}%.`
+      },
       // ORDER 291 — kurserna är investeringar, inte kvällens kostnad.
       courses: {
         sv: (sek: string) => `Kurserna för laget kostade ${sek}, en investering i vad laget kan.`,
@@ -2045,6 +2051,21 @@ export const TABLE = {
     down: {
       sv: (table: number | null, n: number) => `${table !== null ? `Bord ${table} blir missnöjt` : 'Bordet blir missnöjt'}${n > 0 ? ` · ${n} ${pl(n, 'gäst', 'gäster')} i kön går` : ''}`,
       en: (table: number | null, n: number) => `${table !== null ? `Table ${table} is unhappy` : 'The table is unhappy'}${n > 0 ? ` · ${n} ${pl(n, 'guest', 'guests')} in the queue ${pl(n, 'leaves', 'leave')}` : ''}`
+    },
+    // ORDER 303 E — personalen saknade kunskapen för händelsen.
+    hesitated: { sv: 'Personalen tvekar', en: 'The staff hesitate' },
+    // ORDER 303 D — följderna efter hur allvarligt felet är, och avec vid rätt hela vägen.
+    tips: {
+      sv: (table: number | null) => `${table !== null ? `Bord ${table}` : 'Bordet'} lämnar mindre dricks`,
+      en: (table: number | null) => `${table !== null ? `Table ${table}` : 'The table'} leaves a smaller tip`
+    },
+    complaint: {
+      sv: (table: number | null) => `${table !== null ? `Bord ${table}` : 'Bordet'} klagar och beställer mindre`,
+      en: (table: number | null) => `${table !== null ? `Table ${table}` : 'The table'} complains and orders less`
+    },
+    avec: {
+      sv: (table: number | null) => `${table !== null ? `Bord ${table}` : 'Bordet'} stannar för avec`,
+      en: (table: number | null) => `${table !== null ? `Table ${table}` : 'The table'} stays for an after-dinner drink`
     },
     // ORDER 292 — fel svar: en gäst vid bordet går och stolen blir tom.
     tableLeaves: {
@@ -3146,6 +3167,45 @@ export const TABLE = {
       toHouse: { sv: 'Gå till Måltidens hus', en: 'Go to the House of the Meal' },
       title: { sv: 'Banken lånar inte ut i dag.', en: 'The bank won’t lend today.' }
     }
+  },
+  // ORDER 303 G — pyramidens ögonblick.
+  pyramidMoment: {
+    label: { sv: 'Säkerhet × steg → kvällens utfall', en: 'Confidence × step → tonight’s outcome' },
+    line: { sv: (sure: string, step: string, outcome: string) => `${sure} × ${step} → ${outcome}`, en: (sure: string, step: string, outcome: string) => `${sure} × ${step} → ${outcome}` },
+    credits: { sv: (n: number) => `${n > 0 ? '+' : n < 0 ? '−' : '±'}${Math.abs(n)} krediter`, en: (n: number) => `${n > 0 ? '+' : n < 0 ? '−' : '±'}${Math.abs(n)} credits` },
+    guests: { sv: (n: number) => `${n} ${n === 1 ? 'ny gäst' : 'nya gäster'} in`, en: (n: number) => `${n} new ${n === 1 ? 'guest' : 'guests'} in` },
+    more: { sv: 'bordet beställer mer', en: 'the table orders more' },
+    noStake: { sv: 'Utan insats', en: 'No stake' }
+  },
+  // ORDER 303 F — statusläget och korten för gäst och personal.
+  status: {
+    button: { sv: 'Status', en: 'Status' },
+    hint: { sv: 'Stämningen vid alla bord och personalens ork', en: 'The mood at every table and the staff’s stamina' },
+    stamina: { sv: 'Ork', en: 'Stamina' },
+    wellbeing: { sv: 'Trivsel', en: 'Wellbeing' },
+    skills: { sv: 'Kan', en: 'Knows' },
+    level: { sv: ['låg', 'mellan', 'god'] as readonly string[], en: ['low', 'medium', 'good'] as readonly string[] },
+    area: { sv: { vin: 'vin', mat: 'mat', service: 'service' } as Record<string, string>, en: { vin: 'wine', mat: 'food', service: 'service' } as Record<string, string> },
+    noSkills: { sv: 'inget område ännu', en: 'no area yet' },
+    mood: { sv: 'Stämning', en: 'Mood' }
+  },
+  // ORDER 303 C — Recensioner i morse.
+  reviews: {
+    label: { sv: 'Recensioner i morse', en: 'Reviews this morning' },
+    change: { sv: (n: number) => `Ryktet ${n > 0 ? '+' : n < 0 ? '−' : '±'}${Math.abs(n)}`, en: (n: number) => `Reputation ${n > 0 ? '+' : n < 0 ? '−' : '±'}${Math.abs(n)}` },
+    wrong: {
+      sv: (n: number, titles: string) => `${n === 1 ? 'ett bord' : `${n} bord`} fick fel svar (${titles})`,
+      en: (n: number, titles: string) => `${n === 1 ? 'one table' : `${n} tables`} got a wrong answer (${titles})`
+    },
+    right: {
+      sv: (n: number, titles: string) => `${n === 1 ? 'ett bord' : `${n} bord`} fick rätt hela vägen (${titles})`,
+      en: (n: number, titles: string) => `${n === 1 ? 'one table' : `${n} tables`} got it right all the way (${titles})`
+    },
+    guests: {
+      sv: (n: number) => `gästernas kväll i övrigt ${n > 0 ? '+' : '−'}${Math.abs(n)}`,
+      en: (n: number) => `the guests' evening otherwise ${n > 0 ? '+' : '−'}${Math.abs(n)}`
+    },
+    quiet: { sv: 'inga händelser vid borden', en: 'no incidents at the tables' }
   },
   // ORDER 300 §6 — förberedelsetiden före dörröppningen.
   prepHint: {

@@ -92,8 +92,11 @@ function RivalBandInService() {
   const repDelta = rep - Math.round((sim.day.reputationAtDayStart ?? sim.reputation) * REPUTATION.scale);
   const [overtook, setOvertook] = useState<string | null>(null);
   const prev = useRef<{ rank: number | null; ahead: string[] } | null>(null);
-  const ours = rows.find((r) => r.id === PLAYER_VENUE)?.guests ?? 0;
-  const ahead = rows.filter((r) => r.id !== PLAYER_VENUE && r.guests >= ours).map((r) => r.id);
+  // ORDER 303 B — efter nöjda gäster vid bord, som placeringen.
+  const score = (r: (typeof rows)[number]) => r.content ?? r.guests;
+  const ourRow = rows.find((r) => r.id === PLAYER_VENUE);
+  const ours = ourRow ? score(ourRow) : 0;
+  const ahead = rows.filter((r) => r.id !== PLAYER_VENUE && score(r) >= ours).map((r) => r.id);
   useEffect(() => {
     const before = prev.current;
     prev.current = { rank, ahead };

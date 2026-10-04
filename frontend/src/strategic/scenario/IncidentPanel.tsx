@@ -27,6 +27,7 @@
 // som simuleringen (sim/incidents.ts `serviceMeters`; stegen räknas i
 // ui/service/serviceView.ts).
 
+import { PyramidMoment } from '../ui/service/PyramidMoment';
 import { Check, X } from 'lucide-react';
 import { t as tt } from '../../content/nexusStrings';
 import { useLanguage } from '../../content/language';
@@ -403,6 +404,18 @@ export function IncidentCard() {
         confidence={backed && conf !== null ? strings.back.confidence[conf] : null}
         levels={incident.steps.map((_, i) => { const b = boxFor(i); return b === 'cleared' ? 'filled' : b === 'current' ? 'current' : b === 'failed' ? 'cracked' : 'empty'; })}
       />
+      {/* ORDER 303 G — pyramidens ögonblick när raketen klättrar ett steg. */}
+      {(view.mode === 'right' || view.mode === 'done') && (
+        <PyramidMoment
+          key={`${incident.id}:${active?.openedAt ?? ''}:${view.shown}:${view.mode}`}
+          step={view.shown}
+          full={view.mode === 'done'}
+          confidence={backResult && backResult.correct ? backResult.confidence : null}
+          credits={backResult && backResult.correct ? backResult.delta : null}
+          guestsIn={view.guestsIn ?? 0}
+          levels={incident.steps.map((_, i) => { const b = boxFor(i); return b === 'cleared' ? 'filled' : b === 'current' ? 'current' : b === 'failed' ? 'cracked' : 'empty'; })}
+        />
+      )}
       <ol hidden style={{ display: 'none' }} className="nx-rocket-steps" data-testid="incident-steps" aria-label={s.stepOf(String(view.shown + 1), String(incident.steps.length))}>
         {incident.steps.map((st, i) => {
           const state = boxFor(i);

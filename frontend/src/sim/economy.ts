@@ -6,6 +6,7 @@
 // Kassa och krediter byter aldrig plats: här läses medaljer, aldrig
 // krediter, och inget i filen skriver krediter.
 
+import { staffSnapshot } from './staffCondition';
 import {
   BUSINESS_CLASSES,
   EVENING_ECONOMY,
@@ -102,6 +103,9 @@ export interface EveningRecord {
   // ORDER 296c — kvällens raketer (inte egna eller följder) och de som klarades,
   // till stjärnans serviceomdöme.
   rockets?: { fired: number; cleared: number; steps?: number; stepsRight?: number };
+  // ORDER 303 E — personalen när kvällen stängde: orken och trivseln (medel,
+  // 0–1) och kvällens dricks, som gick till personalen.
+  staff?: { stamina: number; wellbeing: number; tipsSek: number };
 }
 
 // Kvällen till veckans lista när servicen stänger, både vid vanlig
@@ -131,6 +135,7 @@ export function recordEvening(before: SimulationState, after: SimulationState): 
       const steps = log.reduce((a, r) => a + (r.quality === 'best' ? stepsOf(r) : (r.step ?? 0) + 1), 0);
       return { fired: log.length, cleared: log.filter((r) => r.quality === 'best').length, steps, stepsRight };
     })(),
+    staff: { ...staffSnapshot(after), tipsSek: Math.round(after.day.tipsSek ?? d.tipsSek ?? 0) },
     billionaire: {
       inTown: d.booking?.billionaireInTown ?? false,
       ours: (d.billionaireVisit?.billSek ?? 0) > 0,
@@ -142,8 +147,19 @@ export function recordEvening(before: SimulationState, after: SimulationState): 
   };
   // ORDER 288/298 — i byn räknas spelarens gäster som de som satt vid ett
   // bord, också gästerna som ett rätt svar släppte in.
-  record.village = villageEvening(before, { guests: record.guests, revenueSek: record.revenueSek, typeGuests: record.typeGuests ?? {}, tourists: d.touristsToday ?? 0 });
+  record.village = villageEvening(before, { guests: record.guests, revenueSek: record.revenueSek, typeGuests: record.typeGuests ?? {}, tourists: d.touristsToday ?? 0, content: after.day.contentTonight ?? d.contentTonight ?? 0 });
   return { ...after.economy, weekEvenings: [...(after.economy.weekEvenings ?? []), record] };
+}
+
+// ORDER 303 E — veckans sociala hållbarhet ur kvällarnas personalrad.
+function weekSocial(evenings: EveningRecord[]): { tipsSek: number; stamina: number; wellbeing: number } | undefined {
+  const rows = evenings.map((x) => x.staff).filter((x): x is NonNullable<EveningRecord['staff']> => !!x);
+  if (rows.length === 0) return undefined;
+  return {
+    tipsSek: rows.reduce((a, r) => a + r.tipsSek, 0),
+    stamina: rows.reduce((a, r) => a + r.stamina, 0) / rows.length,
+    wellbeing: rows.reduce((a, r) => a + r.wellbeing, 0) / rows.length
+  };
 }
 
 export interface SettlementRecord {
@@ -168,6 +184,8 @@ export interface SettlementRecord {
   cashAfterSek?: number;
   // ORDER 296c — stjärnan vid avräkningen (söndagstidningen).
   star?: { earnedNow: boolean; lostNow: boolean; held: boolean; judgement: number; stepShare?: number; rockets?: number; reputation: number; weeksQualified: number };
+  // ORDER 303 E — veckans sociala hållbarhet: personalens dricks, ork och trivsel (medel över kvällarna).
+  social?: { tipsSek: number; stamina: number; wellbeing: number };
   downgradedFrom: BusinessClassId | null;
   downgradedTo: BusinessClassId | null;
 }
@@ -683,7 +701,7 @@ export function settleWeek(state: SimulationState): SimulationState {
     ...next,
     economy: {
       ...next.economy,
-      lastSettlement: { week, evenings: e.weekEvenings ?? [], revenueSek, floorSek: floor, topUpSek, amortisationSek, rentSek, wagesSek, coursesSek, targetSek, targetHit, renegotiatedNow, closedNow, cashAfterSek: Math.round(next.cash), star: { earnedNow, lostNow, held: star.held, judgement, stepShare, rockets: rockets.fired, reputation: state.reputation, weeksQualified }, downgradedFrom, downgradedTo }
+      lastSettlement: { week, evenings: e.weekEvenings ?? [], revenueSek, floorSek: floor, topUpSek, amortisationSek, rentSek, wagesSek, coursesSek, targetSek, targetHit, renegotiatedNow, closedNow, cashAfterSek: Math.round(next.cash), star: { earnedNow, lostNow, held: star.held, judgement, stepShare, rockets: rockets.fired, reputation: state.reputation, weeksQualified }, social: weekSocial(e.weekEvenings ?? []), downgradedFrom, downgradedTo }
     }
   };
 }

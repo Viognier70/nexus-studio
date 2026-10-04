@@ -13,7 +13,7 @@ import type { SimulationState } from '../strategic/types';
 import { GUEST_TYPES, VILLAGE } from './balance';
 import { dailyGuestCap } from './economy';
 import { clockMinutes } from './clock';
-import { PLAYER_VENUE, venuesTonight, villageEvening, type VenueEvening } from './village';
+import { PLAYER_VENUE, rivalContentShare, venuesTonight, villageEvening, type VenueEvening } from './village';
 
 // Kvällens plan för byn, med spelarens tak som spelarens rad.
 export function plannedVillage(state: SimulationState): VenueEvening[] {
@@ -40,6 +40,8 @@ export interface VenueLive {
   id: string;
   kind: 'player' | 'restaurant' | 'truck';
   guests: number;
+  // ORDER 303 B — nöjda gäster vid bord: placeringen (utan värde: gästerna).
+  content?: number;
 }
 
 export function villageLive(state: SimulationState): VenueLive[] {
@@ -53,15 +55,19 @@ export function villageLive(state: SimulationState): VenueLive[] {
     .map((v) => ({
       id: v.id,
       kind: v.kind,
-      guests: v.id === PLAYER_VENUE ? ours : Math.floor((plan.find((r) => r.id === v.id)?.guests ?? 0) * share)
+      guests: v.id === PLAYER_VENUE ? ours : Math.floor((plan.find((r) => r.id === v.id)?.guests ?? 0) * share),
+      content: v.id === PLAYER_VENUE ? state.day.contentTonight ?? 0 : Math.floor((plan.find((r) => r.id === v.id)?.guests ?? 0) * share * rivalContentShare(v.reputation))
     }));
 }
 
 // Platsen i byn just nu efter kvällens gäster (1 = flest), som bandet visar.
 // ORDER 298 — utan gäster finns ingen plats (null): det går inte att vara 1:a
 // med 0 gäster. Vid lika antal står vi efter rivalerna.
+// ORDER 303 B — efter kvällens nöjda gäster vid bord.
 export function villageRank(rows: VenueLive[]): number | null {
-  const ours = rows.find((r) => r.id === PLAYER_VENUE)?.guests ?? 0;
+  const score = (r: VenueLive) => r.content ?? r.guests;
+  const row = rows.find((r) => r.id === PLAYER_VENUE);
+  const ours = row ? score(row) : 0;
   if (ours <= 0) return null;
-  return 1 + rows.filter((r) => r.id !== PLAYER_VENUE && r.guests >= ours).length;
+  return 1 + rows.filter((r) => r.id !== PLAYER_VENUE && score(r) >= ours).length;
 }

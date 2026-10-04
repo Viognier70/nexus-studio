@@ -1,0 +1,16 @@
+{
+  "size": "1440×900",
+  "steps": {
+    "card": true,
+    "momentGone": true,
+    "moments": 1,
+    "momentLines": [
+      "Utan insats × Episteme ×1 → 1 ny gäst in"
+    ],
+    "status": {
+      "pressed": "true"
+    },
+    "focus": "1"
+  },
+  "errors": []
+}

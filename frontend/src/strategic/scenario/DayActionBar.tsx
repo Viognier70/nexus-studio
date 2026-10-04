@@ -19,6 +19,7 @@
 //
 // Visas på morgonen (och eftermiddagen). Döljs under service och kväll.
 
+import { MorningReviewLine } from '../ui/MorningReviewLine';
 import { SalvageCard } from './SalvageCard';
 import { BookingBook } from './BookingBook';
 import { useEffect, useRef, useState } from 'react';
@@ -255,6 +256,8 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenB
         </div>
 
         <div className="nxs-morning-right">
+          {/* ORDER 303 C — Recensioner i morse. */}
+          {period === 'morning' && <MorningReviewLine review={sim.day.morningReview} />}
           {/* ORDER 300 §3 — mentorns rad står här, inte i bottenraden över listan. */}
           {mentorLine && (
             <div className="nxs-dark-box nxs-mentor-box" data-testid="mentor-line" data-step={mentor.step ?? undefined}>

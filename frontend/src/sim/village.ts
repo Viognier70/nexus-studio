@@ -29,7 +29,7 @@
 // Allt läses ur fröet och dagen (hashKey), så att byn kan spelas om och
 // simuleringens slumpflöde inte flyttas.
 
-import { BUSINESS_CLASSES, MARKET, RUSH, VILLAGE, type Weekday } from './balance';
+import { BUSINESS_CLASSES, CONSEQUENCES, MARKET, RUSH, VILLAGE, type Weekday } from './balance';
 import { calendarFor } from './calendar';
 import { hashKey, signedKey } from '../strategic/util/hash';
 import type { SimulationState } from '../strategic/types';
@@ -78,6 +78,8 @@ export interface VenueEvening {
   // Turisterna från bussen (ingår i guests).
   bus: number;
   spot: TruckSpot | null;
+  // ORDER 303 B — kvällens nöjda gäster vid bord (placeringen i byn).
+  content?: number;
 }
 
 export interface RivalController {
@@ -263,7 +265,7 @@ export function busTonight(state: SimulationState, dayNumber = state.day.dayNumb
 // till den krog den valde.
 export function villageEvening(
   state: SimulationState,
-  player: { guests: number; revenueSek: number; typeGuests: Partial<Record<string, number>>; tourists?: number }
+  player: { guests: number; revenueSek: number; typeGuests: Partial<Record<string, number>>; tourists?: number; content?: number }
 ): VenueEvening[] {
   const day = state.day.dayNumber;
   const seed = state.seed ?? 0;
@@ -278,6 +280,7 @@ export function villageEvening(
   const playerRow = rows[0];
   playerRow.guests = player.guests;
   playerRow.revenueSek = Math.round(player.revenueSek);
+  playerRow.content = player.content ?? player.guests;
   for (const t of POOL_TYPES) playerRow.typeGuests[t] = player.typeGuests[t] ?? 0;
   for (const t of POOL_TYPES) {
     // Bussens turister är inte byns gäster: de dras inte från poolen.
@@ -305,9 +308,15 @@ export function villageEvening(
     }
     const spread = signedKey(seed, `village|${r.id}|bill|${day}`) * VILLAGE.billSpread;
     r.revenueSek = Math.round(r.guests * venues[i].billSek * (1 + spread));
+    r.content = Math.round(r.guests * rivalContentShare(venues[i].reputation));
   }
   if (bus && bus.venueId === PLAYER_VENUE) playerRow.bus = bus.tourists;
   return rows;
+}
+
+// ORDER 303 B — konkurrentens nöjda andel efter ryktet.
+export function rivalContentShare(reputation: number): number {
+  return Math.max(0, Math.min(1, CONSEQUENCES.rivalContentBase + CONSEQUENCES.rivalContentPerReputation * reputation));
 }
 
 // Rivalernas rykte efter kvällen (varje rival efter sin controller).
