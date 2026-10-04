@@ -1,0 +1,906 @@
+{
+  "language": "en",
+  "status": "draft",
+  "texts": {
+    "vara-gos-1": {
+      "prompt": "The lakeside fisherman delivers pike-perch for tonight's menu. A guest asks what fish it is related to. Which family does pike-perch belong to?",
+      "options": [
+        "The perch family",
+        "The salmon family",
+        "The pike family",
+        "The carp family"
+      ],
+      "explanation": "Pike-perch belongs to the perch family (Percidae), like the perch. You can tell from the spiny dorsal fins and the firm, white flesh."
+    },
+    "vara-gos-2": {
+      "prompt": "The pike-perch on the menu comes from a lake nearby. Which lake near Grythyttan is known for its pike-perch fishing?",
+      "options": [
+        "Storsjön",
+        "Hjälmaren",
+        "Vättern",
+        "Siljan"
+      ],
+      "explanation": "Hjälmaren is shallow, nutrient-rich and warm in summer, one of Sweden's best pike-perch lakes. Vättern is deep and cold and known for Arctic char."
+    },
+    "vara-gos-3": {
+      "prompt": "The cook is filleting today's pike-perch. What does the cook need to watch out for when handling it?",
+      "options": [
+        "A gall bladder that makes the flesh bitter if it bursts",
+        "That the skin must be pulled off before filleting",
+        "The sharp spines of the dorsal fin",
+        "Poisonous gills"
+      ],
+      "explanation": "The front dorsal fin has sharp spines that prick easily. Cut the fins off first and fillet along the backbone. The skin can stay on and be fried crisp."
+    },
+    "vara-gos-4": {
+      "prompt": "The pike-perch fillet is to be fried with the skin on. How does the skin get crisp and the flesh stay juicy?",
+      "options": [
+        "Fry the flesh side first and put the skin down last",
+        "Put the fillet in a cold pan with a lid on",
+        "Turn the fillet often so it cooks evenly",
+        "Fry mostly skin side down in a hot pan and turn only briefly at the end"
+      ],
+      "explanation": "Most of the heat goes through the skin, which protects the lean flesh and turns crisp. A short turn on the flesh side at the end is enough. Turning it often makes the skin leathery."
+    },
+    "vara-gos-5": {
+      "prompt": "A guest says she doesn't like fish that tastes \"too fishy\", but would like to try something local. What do you suggest?",
+      "options": [
+        "The pike-perch from Hjälmaren, with mild, firm white flesh",
+        "The cured Arctic char, which has the most flavour",
+        "A meat dish, since fish doesn't suit her",
+        "That she tries the strongest fish dish to get used to it"
+      ],
+      "explanation": "Pike-perch is mild and firm, without the oily taste she probably means, and it is local. That answers both wishes without talking her into anything."
+    },
+    "vara-gos-6": {
+      "prompt": "The fisherman delivered less pike-perch than ordered. It is enough for about six portions, and the evening is fully booked. What do you do?",
+      "options": [
+        "Make the portions smaller so more people can have it",
+        "Tell the staff right away, and offer the pike-perch early with an alternative ready when it runs out",
+        "Let the staff take orders as usual and apologise when it is gone",
+        "Take the pike-perch off the menu to avoid disappointment"
+      ],
+      "explanation": "Guests are less disappointed if they know in advance. The staff can mention that the pike-perch is limited and have an alternative ready. Smaller portions at the same price let the guest down quietly."
+    },
+    "vara-roding-1": {
+      "prompt": "The Arctic char on tonight's menu comes from a cold mountain lake. Which fish family does it belong to?",
+      "options": [
+        "The cod family",
+        "The whitefish family",
+        "The salmon family",
+        "The perch family"
+      ],
+      "explanation": "Arctic char is a salmonid (Salmonidae), like salmon and trout. That is why its flesh is pink and oily."
+    },
+    "vara-roding-2": {
+      "prompt": "Why does Arctic char thrive in Vättern and in mountain lakes but not in shallow lowland lakes?",
+      "options": [
+        "It only lives in salt water",
+        "It needs warm water to spawn",
+        "It only eats reeds and plants from the bottom",
+        "It needs cold, clear, oxygen-rich water"
+      ],
+      "explanation": "Arctic char is a cold-water fish that needs oxygen-rich water all year. Shallow lakes get too warm and low in oxygen in summer."
+    },
+    "vara-roding-3": {
+      "prompt": "The cook wants to serve cured Arctic char from wild-caught fish. What must be done before curing?",
+      "options": [
+        "Freeze the fish, at least a day at −20 °C, to kill parasites",
+        "Rinse the fish in vinegar",
+        "Leave the fish at room temperature for a few hours",
+        "Nothing, the salt and sugar are enough"
+      ],
+      "explanation": "Wild-caught fish to be eaten raw or cured can carry parasites such as tapeworm. The Swedish Food Agency advises freezing it first. The salt does not kill them."
+    },
+    "vara-roding-4": {
+      "prompt": "The char is to be cured for tomorrow's starter. How does the cook do it?",
+      "options": [
+        "Hot-smoke the fillet and sprinkle dill on top",
+        "Salt, sugar and dill over the fillet, under light pressure in the fridge for one to two days",
+        "Salt over the fillet at room temperature overnight",
+        "Boil the fillet in brine and chill it"
+      ],
+      "explanation": "Curing is salt and sugar drawing out moisture and adding flavour. It is done in the fridge, and light pressure gives an even texture. Hot-smoking is a different method."
+    },
+    "vara-roding-5": {
+      "prompt": "A guest orders the char but is not drinking alcohol tonight. What do you suggest?",
+      "options": [
+        "Water, since nothing else goes with it",
+        "A glass of wine anyway, since the dish is made for it",
+        "Something alcohol-free with fresh acidity, such as a dry apple juice or a sparkling tea",
+        "A glass of milk, mild against the fish"
+      ],
+      "explanation": "The acidity does what it would do in a white wine: it lifts the oily flesh. The guest gets something chosen for the dish, not just whatever is left."
+    },
+    "vara-roding-6": {
+      "prompt": "A guest asks whether the char is wild-caught or farmed. You are not sure. What do you do?",
+      "options": [
+        "Say wild-caught, since it sounds best",
+        "Say it makes no difference to the taste",
+        "Change the subject to the wine",
+        "Say you will find out, and ask the kitchen or check the delivery"
+      ],
+      "explanation": "An honest \"I'll find out\" builds trust. Guesses that turn out wrong do the opposite, and the question may be about taste as well as sustainability."
+    },
+    "vara-priorat-1": {
+      "prompt": "The wine merchant has delivered a Priorat. A guest asks where the wine comes from. Where is Priorat?",
+      "options": [
+        "In Catalonia in north-east Spain",
+        "In Rioja in northern Spain",
+        "In the Douro in Portugal",
+        "In the southern Rhône in France"
+      ],
+      "explanation": "Priorat is in Catalonia, in the hills inland from Tarragona. It is one of Spain's two highest-classified wine regions (DOQ)."
+    },
+    "vara-priorat-2": {
+      "prompt": "What gives Priorat wines their concentration and mineral character?",
+      "options": [
+        "Volcanic ash and Pinot Noir",
+        "The dark slate soil licorella and old, low-yielding Garnacha and Cariñena vines",
+        "Limestone and Tempranillo from irrigated vineyards",
+        "Clay soil by the sea and Monastrell"
+      ],
+      "explanation": "Licorella is a dark slate that holds little water. The old Garnacha and Cariñena vines give small crops and concentrated wines."
+    },
+    "vara-priorat-3": {
+      "prompt": "A young, powerful Priorat is to be served tonight. What temperature should it be in the glass?",
+      "options": [
+        "Room temperature in a warm bar, about 24 °C",
+        "As cold as possible",
+        "About 16–18 °C",
+        "About 8–10 °C"
+      ],
+      "explanation": "Powerful red wines taste best cool, about 16–18 °C. At 24 °C the alcohol takes over, and too cold makes the tannins hard."
+    },
+    "vara-priorat-4": {
+      "prompt": "A young Priorat feels closed and harsh when the bottle is opened. What do you do?",
+      "options": [
+        "Serve it straight away and top up the glass often",
+        "Chill it in an ice bath",
+        "Add a little water to the decanter",
+        "Decant it and let it breathe for a while before serving"
+      ],
+      "explanation": "Oxygen opens a young, concentrated wine and softens it. A decanter gives the wine surface against the air, and a while is often enough."
+    },
+    "vara-priorat-5": {
+      "prompt": "A guest has ordered Priorat but finds it too heavy with her fish dish. What do you do?",
+      "options": [
+        "Offer a glass of something lighter with the fish, and save the Priorat for the cheese",
+        "Explain that Priorat is one of Spain's best wines",
+        "Suggest she switches to a meat dish",
+        "Leave it, since she chose the wine herself"
+      ],
+      "explanation": "The guest is right: a powerful red overwhelms a fish dish. Helping her to a better match is judgement, not defending the wine."
+    },
+    "vara-priorat-6": {
+      "prompt": "A party asks for \"the best red you have\", but you can see them looking anxiously at the prices. What do you do?",
+      "options": [
+        "Wait until they name a price limit themselves",
+        "Ask what they like and suggest two wines at different prices",
+        "Sell the most expensive, since they asked for it",
+        "Say the cheapest is just as good"
+      ],
+      "explanation": "Offering two choices lets the guests choose without having to name a budget. They feel looked after, whichever they pick."
+    },
+    "vara-chablis-1": {
+      "prompt": "Chablis is on the wine list. Which grape is Chablis made from?",
+      "options": [
+        "Riesling",
+        "Chenin Blanc",
+        "Chardonnay",
+        "Sauvignon Blanc"
+      ],
+      "explanation": "Chablis is Chardonnay from the northernmost part of Burgundy. The cool climate gives a fresh, dry wine, often without oak."
+    },
+    "vara-chablis-2": {
+      "prompt": "What is the Kimmeridgian soil of Chablis?",
+      "options": [
+        "Volcanic basalt",
+        "Red sandstone",
+        "Granite and quartz",
+        "Limestone and clay with fossil oyster shells"
+      ],
+      "explanation": "Kimmeridgian soil is limestone and clay with fossils of small oysters. It is associated with the wines' mineral, saline character."
+    },
+    "vara-chablis-3": {
+      "prompt": "What temperature should a Chablis be served at?",
+      "options": [
+        "About 10–12 °C",
+        "About 4 °C, straight from the fridge",
+        "About 16–18 °C",
+        "Room temperature"
+      ],
+      "explanation": "Too cold dulls the aroma of a fine white wine. About 10–12 °C keeps the freshness and lets the aromas come through."
+    },
+    "vara-chablis-4": {
+      "prompt": "Which glass do you choose for a Chablis?",
+      "options": [
+        "A water glass",
+        "A medium-sized, tulip-shaped white wine glass",
+        "A large, wide red wine glass",
+        "A champagne coupe"
+      ],
+      "explanation": "A tulip-shaped glass gathers the aroma towards the nose and keeps the wine cool. A large red glass lets the wine warm up and the aroma spread."
+    },
+    "vara-chablis-5": {
+      "prompt": "A table orders oysters. One guest asks what goes with them, but another doesn't drink wine. What do you suggest?",
+      "options": [
+        "Nothing, since oysters are best without a drink",
+        "A red wine, since the table already has one",
+        "Chablis for the one who wants wine, and something alcohol-free with acidity and salinity for the other",
+        "Chablis for the whole table, because that is tradition"
+      ],
+      "explanation": "Chablis and oysters are a classic match of salinity and acidity. The guest who doesn't drink wine should get something chosen with the same care."
+    },
+    "vara-chablis-6": {
+      "prompt": "A guest says: \"Chablis, that's a sweet wine, isn't it?\" What do you answer?",
+      "options": [
+        "That she is wrong and should read up",
+        "That it depends on the producer",
+        "Nothing, and serve what she orders",
+        "That Chablis is dry and fresh, and offer a small taste"
+      ],
+      "explanation": "Correcting kindly and letting her taste makes her curious instead of embarrassed. Knowledge should help the guest, not show who knows most."
+    },
+    "vara-mosel-riesling-1": {
+      "prompt": "The wine merchant has delivered a Riesling Kabinett from the Mosel. What does Kabinett mean?",
+      "options": [
+        "The lightest level of German predicate quality wines, often low in alcohol with a little residual sugar",
+        "A wine that has been stored in a cellar cabinet",
+        "A dry wine with high alcohol",
+        "A sweet dessert wine from shrivelled grapes"
+      ],
+      "explanation": "Kabinett is the lightest level of the German predicate scale, based on the ripeness of the grapes. The wines are often 8–10% alcohol and may have a little residual sugar."
+    },
+    "vara-mosel-riesling-2": {
+      "prompt": "Why can Riesling ripen in the Mosel, so far north?",
+      "options": [
+        "The grapes are harvested already in July",
+        "The steep slate slopes facing the river catch sun and heat",
+        "The river is warm all year",
+        "The vineyards are irrigated with warm water"
+      ],
+      "explanation": "The steep slopes face the sun, the river reflects light and the slate holds heat. That brings ripeness in a cool climate."
+    },
+    "vara-mosel-riesling-3": {
+      "prompt": "What temperature should a Riesling Kabinett have?",
+      "options": [
+        "Room temperature",
+        "Just above freezing",
+        "About 8–10 °C",
+        "About 16 °C"
+      ],
+      "explanation": "A light, fresh wine with a little sweetness should be cold, but not ice-cold. At 8–10 °C the sweetness and acidity are in balance."
+    },
+    "vara-mosel-riesling-4": {
+      "prompt": "A Riesling with a screw cap smells of struck match when opened. What do you do?",
+      "options": [
+        "Discard the bottle as corked",
+        "Chill it harder",
+        "Serve it straight away, the guest won't notice",
+        "Pour a little, let it breathe and taste again; it is often reduction that passes"
+      ],
+      "explanation": "A struck-match smell is reduction, sulphur compounds that often disappear with air. Cork taint smells of damp cellar and cannot be aired away."
+    },
+    "vara-mosel-riesling-5": {
+      "prompt": "A table has ordered a spicy dish and wants \"a dry white\". What do you do?",
+      "options": [
+        "Suggest a Riesling Kabinett with a little sweetness, explain why and offer a taste",
+        "Give them the driest wine on the list without comment",
+        "Say that wine doesn't go with spicy food",
+        "Suggest a powerful red instead"
+      ],
+      "explanation": "A little sweetness and low alcohol calm the heat, while alcohol strengthens it. The guests decide, but they learn why the suggestion may taste better."
+    },
+    "vara-mosel-riesling-6": {
+      "prompt": "A guest will drive home later but would like a glass of wine with the meal. What do you suggest?",
+      "options": [
+        "Two glasses of a light wine, since it is weak",
+        "A small glass of a light wine, such as a low-alcohol Kabinett, with water",
+        "The wine she wants, since it is her business",
+        "Nothing, you don't serve alcohol to a driver"
+      ],
+      "explanation": "Suggesting a light wine and water respects the guest's choice and takes responsibility. She decides, but you make it easy to choose wisely."
+    },
+    "vara-brie-de-meaux-1": {
+      "prompt": "The cheese affineur has delivered Brie de Meaux. Which cheese family does it belong to?",
+      "options": [
+        "Washed-rind cheese",
+        "Hard cheese",
+        "White mould cheese, a soft cheese with a bloomy rind",
+        "Blue cheese"
+      ],
+      "explanation": "Brie de Meaux is a soft cheese with a white, downy mould rind. The same family as camembert."
+    },
+    "vara-brie-de-meaux-2": {
+      "prompt": "What does the protected designation for Brie de Meaux require of the milk?",
+      "options": [
+        "That it is pasteurised goat's milk",
+        "That it is sheep's milk",
+        "That it is skimmed milk",
+        "That it is unpasteurised cow's milk"
+      ],
+      "explanation": "Brie de Meaux AOP is made from unpasteurised cow's milk from a defined area east of Paris. That matters for the flavour and for who should avoid it."
+    },
+    "vara-brie-de-meaux-3": {
+      "prompt": "When should the Brie de Meaux be taken out of the fridge before serving?",
+      "options": [
+        "About an hour before, so it reaches room temperature",
+        "Just when it is to be served",
+        "The evening before",
+        "It should be served cold"
+      ],
+      "explanation": "Cold cheese tastes closed and feels firm. At room temperature the brie's interior turns creamy and the aromas come through."
+    },
+    "vara-brie-de-meaux-4": {
+      "prompt": "How do you cut the brie on the cheese trolley?",
+      "options": [
+        "With a cheese slicer",
+        "In wedges from the centre outwards, so everyone gets both heart and edge",
+        "Straight slices from one side",
+        "Only the middle, which is creamiest"
+      ],
+      "explanation": "Brie is ripest near the rind and mildest in the middle. Wedges give each guest the whole cheese, and nobody gets only the edge."
+    },
+    "vara-brie-de-meaux-5": {
+      "prompt": "A pregnant guest wants to taste the Brie de Meaux from the cheese trolley. What do you do?",
+      "options": [
+        "Say out loud that pregnant women may not eat cheese",
+        "Give her a smaller piece",
+        "Say discreetly that it is made from unpasteurised milk, and offer an aged hard cheese instead",
+        "Serve it, since she decides for herself"
+      ],
+      "explanation": "Pregnant women are advised against cheese from unpasteurised milk because of listeria. A discreet word and a good alternative mean she doesn't feel singled out."
+    },
+    "vara-brie-de-meaux-6": {
+      "prompt": "A guest says she wants \"a mild cheese that doesn't smell much\". What do you show her?",
+      "options": [
+        "Munster, to challenge her",
+        "Nothing, since cheese always smells",
+        "The oldest cheese on the trolley",
+        "Brie de Meaux, mild and creamy, and tell her where it comes from"
+      ],
+      "explanation": "Listening to what the guest actually asks for and meeting it, with a story, is better than trying to convert her."
+    },
+    "vara-munster-1": {
+      "prompt": "Munster is on the cheese trolley. Where does the cheese come from?",
+      "options": [
+        "From Alsace and the Vosges in north-east France",
+        "From Normandy",
+        "From Switzerland",
+        "From Burgundy"
+      ],
+      "explanation": "Munster comes from the Vosges, on the border of Alsace and Lorraine. The monks of the town of Munster made it already in the Middle Ages."
+    },
+    "vara-munster-2": {
+      "prompt": "What gives Munster its strong smell and orange rind?",
+      "options": [
+        "It is smoked over beech wood",
+        "The rind is washed with brine during ageing, so smear bacteria grow",
+        "It is aged in ash",
+        "It has blue mould inside"
+      ],
+      "explanation": "Munster is a washed-rind cheese: the rind is washed with brine, and the bacteria that thrive there give the orange colour and strong smell. Inside it is mild."
+    },
+    "vara-munster-3": {
+      "prompt": "Which wine do you suggest with Munster?",
+      "options": [
+        "A dry Fino",
+        "A light rosé",
+        "An aromatic Gewürztraminer from Alsace",
+        "A tannic young red"
+      ],
+      "explanation": "Gewürztraminer's aromas and body stand up to the cheese, and it is wine from the same region. Tannins clash with the saltiness of washed-rind cheese."
+    },
+    "vara-munster-4": {
+      "prompt": "How do you store Munster in the fridge?",
+      "options": [
+        "Open on the shelf so it can breathe",
+        "In the same box as the brie",
+        "In the freezer until served",
+        "In its own airtight box so the smell doesn't get into other cheeses"
+      ],
+      "explanation": "A washed-rind cheese's smell spreads and taints other cheeses and the butter. Its own airtight box protects the rest of the fridge."
+    },
+    "vara-munster-5": {
+      "prompt": "The cheese trolley is going to a table, but at the next table a couple has just been served their fish. What do you do?",
+      "options": [
+        "Bring the Munster out only at the ordering table, and don't leave it open next to the fish",
+        "Park the trolley between the tables to save steps",
+        "Take the Munster off entirely tonight",
+        "Tell the next table they will have to put up with the smell"
+      ],
+      "explanation": "Guests at other tables have their evening too. Thinking about where and when the strong cheese comes out is care for the whole room."
+    },
+    "vara-munster-6": {
+      "prompt": "A guest looks doubtfully at the Munster and says it smells too strong. What do you do?",
+      "options": [
+        "Give her a large piece so she understands",
+        "Offer a small piece with a warm potato, as they do in Alsace, and tell her it is mild inside",
+        "Tell her she doesn't know what she is missing",
+        "Take it away at once"
+      ],
+      "explanation": "A small taste with something familiar makes it easy to try without pressure. If she still doesn't want it, she has chosen for herself."
+    },
+    "vara-vasterbottensost-1": {
+      "prompt": "Västerbotten cheese is on the cheese trolley. Where does it come from?",
+      "options": [
+        "From Gotland",
+        "From Jämtland",
+        "From Burträsk in Västerbotten",
+        "From Grythyttan"
+      ],
+      "explanation": "Västerbotten cheese is made in Burträsk, where according to the story it was first made in the 1870s. It is one of Sweden's best-known cheeses."
+    },
+    "vara-vasterbottensost-2": {
+      "prompt": "How long is Västerbotten cheese aged before it is sold?",
+      "options": [
+        "Two weeks",
+        "Three months",
+        "Five years",
+        "At least about 14 months"
+      ],
+      "explanation": "The long ageing gives the strong, slightly bitter taste and the crunchy crystals. It also means the cheese contains almost no lactose."
+    },
+    "vara-vasterbottensost-3": {
+      "prompt": "The kitchen is making Västerbotten tart as a starter. How is the cheese handled?",
+      "options": [
+        "Grated finely just before and mixed into the egg custard",
+        "Melted first in a saucepan",
+        "Cut into large cubes placed on the base",
+        "Grated the day before and left out"
+      ],
+      "explanation": "Freshly grated cheese has the most aroma and spreads evenly in the custard. Cheese grated too early dries out and loses flavour."
+    },
+    "vara-vasterbottensost-4": {
+      "prompt": "How do you store an opened piece of Västerbotten cheese?",
+      "options": [
+        "Open on the counter",
+        "Wrapped in cheese paper or wax cloth in the fridge",
+        "Tightly wrapped in cling film",
+        "In a glass of water"
+      ],
+      "explanation": "Cheese paper lets the cheese breathe without drying out. Cling film traps moisture and gives the surface a sour taste."
+    },
+    "vara-vasterbottensost-5": {
+      "prompt": "A guest with lactose intolerance would like cheese with the coffee. What do you suggest?",
+      "options": [
+        "Brie de Meaux, which is mild",
+        "A fresh cheese",
+        "Västerbotten cheese, aged so long it contains almost no lactose",
+        "No cheese at all"
+      ],
+      "explanation": "During long ageing the lactose breaks down, so aged hard cheeses contain almost none. The guest doesn't need to go without."
+    },
+    "vara-vasterbottensost-6": {
+      "prompt": "A party of tourists asks for something \"really Swedish\" with the coffee. What do you do?",
+      "options": [
+        "Say that all the cheeses are Swedish",
+        "Give them the most expensive French cheese",
+        "Send them to a shop in the village",
+        "Show the Västerbotten cheese and tell them briefly about Burträsk and the ageing"
+      ],
+      "explanation": "The guests are asking for an experience, not just a product. A short story about where the cheese comes from makes the taste a memory."
+    },
+    "vara-jamon-iberico-1": {
+      "prompt": "The charcutier has delivered jamón ibérico de bellota. What does \"de bellota\" mean?",
+      "options": [
+        "That the pigs have grazed on acorns in the oak woods during their final period",
+        "That the ham has been aged in oak casks",
+        "That it comes from the town of Bellota",
+        "That it is smoked"
+      ],
+      "explanation": "Bellota means acorn. During the montanera, autumn and winter, the Iberian pigs roam free in the oak woods eating acorns, which gives the fat its nutty taste."
+    },
+    "vara-jamon-iberico-2": {
+      "prompt": "What does a black label on a Spanish ibérico ham mean?",
+      "options": [
+        "That it comes from a cross with a white pig",
+        "That the pig is 100% Iberian and has eaten acorns",
+        "That the ham is the cheapest",
+        "That it has been aged the shortest time"
+      ],
+      "explanation": "Since 2014 the label colour shows the pig's breed and diet. Black means a 100% Iberian pig that has eaten acorns, the top category."
+    },
+    "vara-jamon-iberico-3": {
+      "prompt": "How is jamón ibérico carved at the counter?",
+      "options": [
+        "With a slicing machine straight from the fridge",
+        "In cubes",
+        "With a long, thin, flexible knife into very thin slices, with the ham in a ham stand",
+        "In thick slices with a bread knife"
+      ],
+      "explanation": "Thin slices melt on the tongue and show the marbling of the fat. The ham stand holds the ham still so the knife runs evenly."
+    },
+    "vara-jamon-iberico-4": {
+      "prompt": "At what temperature should the slices be served?",
+      "options": [
+        "Straight from the fridge",
+        "Warmed in the oven",
+        "Frozen and thinly sliced",
+        "Room temperature, so the fat turns translucent and fragrant"
+      ],
+      "explanation": "At room temperature the fat softens, turns glossy and releases its aroma. Cold ham tastes of much less."
+    },
+    "vara-jamon-iberico-5": {
+      "prompt": "You want to offer a table a taste of the ham. What do you think about before doing so?",
+      "options": [
+        "To say it is pork, so anyone who doesn't eat it can decline",
+        "To give the biggest piece to the one who talks most",
+        "Not to say what it is, as a surprise",
+        "To offer it only to those who ordered wine"
+      ],
+      "explanation": "Guests may avoid pork for faith, conviction or health. Saying what it is lets everyone choose without having to explain themselves."
+    },
+    "vara-jamon-iberico-6": {
+      "prompt": "A guest orders the ham and asks what to drink. She wants something \"like in Spain\". What do you suggest?",
+      "options": [
+        "A beer, since it is cheapest",
+        "A glass of dry Fino or Manzanilla, well chilled",
+        "A sweet Pedro Ximénez",
+        "A powerful Priorat"
+      ],
+      "explanation": "Dry, chilled sherry is classic with jamón: the salinity and nuttiness meet the fat. It also answers her wish for Spain."
+    },
+    "vara-havannacigarr-1": {
+      "prompt": "A guest asks for a mild cigar. Which wrapper gives milder notes?",
+      "options": [
+        "An almost black wrapper, oscuro",
+        "The wrapper doesn't affect the flavour",
+        "A light wrapper, claro",
+        "A dark wrapper, maduro"
+      ],
+      "explanation": "Light wrappers, claro, are shade-grown or fermented for less time and give milder notes. Dark wrappers have fermented longer and give a stronger, sweeter flavour."
+    },
+    "vara-havannacigarr-2": {
+      "prompt": "Which area of Cuba is best known for its cigar tobacco?",
+      "options": [
+        "Varadero",
+        "Santiago de Cuba",
+        "Old Havana",
+        "Vuelta Abajo in Pinar del Río"
+      ],
+      "explanation": "Vuelta Abajo in the province of Pinar del Río, west of Havana, is considered the world's finest area for cigar tobacco."
+    },
+    "vara-havannacigarr-3": {
+      "prompt": "How do you cut a cigar?",
+      "options": [
+        "Cut the head, the closed end, a millimetre or two above where the wrapper meets the cap",
+        "Cut the foot, the open end",
+        "Cut it in the middle",
+        "Bite off the head"
+      ],
+      "explanation": "Cut too low and the wrapper unravels and the cigar falls apart. A small cut above the cap gives draw and keeps the cigar whole."
+    },
+    "vara-havannacigarr-4": {
+      "prompt": "How is a cigar lit?",
+      "options": [
+        "By drawing hard while holding the flame to the middle",
+        "The foot is warmed evenly with a cedar spill or a gas lighter, while the cigar is turned",
+        "With a petrol lighter directly against the foot",
+        "With a candle"
+      ],
+      "explanation": "Petrol and candle wax add flavour to the smoke. Warming the foot evenly first and turning the cigar gives an even burn."
+    },
+    "vara-havannacigarr-5": {
+      "prompt": "A guest on the terrace wants to light his cigar at the table after the meal. What do you do?",
+      "options": [
+        "Ask the neighbouring tables for permission",
+        "Say no without explanation",
+        "Explain kindly that smoking is not allowed on the terrace, and show him where he can smoke",
+        "Let him smoke, since it is outdoors"
+      ],
+      "explanation": "Smoking has been banned on Swedish outdoor terraces since 2019. A kind word and an alternative mean the guest doesn't feel told off."
+    },
+    "vara-havannacigarr-6": {
+      "prompt": "A guest is about to smoke his first cigar ever and asks for advice. What do you say?",
+      "options": [
+        "Suggest the biggest and strongest, for the experience",
+        "Tell him to wait until he knows more",
+        "Give him a cigarette instead",
+        "Suggest a mild, short cigar and say that the smoke should not be inhaled"
+      ],
+      "explanation": "A beginner has a better experience with a mild, short cigar. Saying the smoke should not be inhaled is care for the guest, not a lesson."
+    },
+    "vara-vinkyl-1": {
+      "prompt": "The restaurant has bought a fine wine cabinet for storage. What temperature and humidity are good for storing wine?",
+      "options": [
+        "About 12–14 °C and 60–75% humidity",
+        "About 4 °C and dry air",
+        "Room temperature and dry air",
+        "About 20 °C and high humidity"
+      ],
+      "explanation": "Wine keeps best cool and steady. Moderately humid air stops the cork from drying out without the labels going mouldy."
+    },
+    "vara-vinkyl-2": {
+      "prompt": "Why are wine bottles with corks stored lying down?",
+      "options": [
+        "So the label is visible",
+        "So the wine keeps the cork moist and it doesn't dry out and let in air",
+        "So the sediment settles in the neck",
+        "So they take less space"
+      ],
+      "explanation": "A dry cork shrinks and lets in oxygen, which oxidises the wine. Lying bottles keep the cork against the wine."
+    },
+    "vara-vinkyl-3": {
+      "prompt": "The wine cabinet has two zones. How do you use them during service?",
+      "options": [
+        "One for wine and the other for food",
+        "Only one zone, to save electricity",
+        "A cooler zone for white and sparkling to serve, and a warmer one for red at serving temperature",
+        "All wine in the coldest zone"
+      ],
+      "explanation": "Two zones mean both white and red stand ready at the right temperature. Then no wine needs to be crash-cooled or warmed."
+    },
+    "vara-vinkyl-4": {
+      "prompt": "Where in the room do you place the wine cabinet?",
+      "options": [
+        "By the window, so guests can see it",
+        "Next to the dishwasher, near the kitchen",
+        "In the middle of the aisle where the staff walk",
+        "Where it is out of direct sun, away from the oven and dishwasher, and not shaken"
+      ],
+      "explanation": "Light, heat and vibration age wine. A quiet spot protects both the wine and the cabinet's compressor."
+    },
+    "vara-vinkyl-5": {
+      "prompt": "It is 26 °C in the bar on a summer evening. A guest wants his red wine \"chambré\". What do you do?",
+      "options": [
+        "Serve the wine from the cabinet's red zone, cool, and explain that chambré means room temperature in a cool cellar",
+        "Put the bottle in the sun for a while",
+        "Serve it at 26 °C as he asked",
+        "Give him a white wine instead"
+      ],
+      "explanation": "Chambré comes from a time when rooms were cool. In a warm bar red tastes best cooler, and a short explanation gives the guest what he actually wants."
+    },
+    "vara-vinkyl-6": {
+      "prompt": "The wine cabinet can't hold everything for a fully booked Friday. What do you prioritise?",
+      "options": [
+        "Those that have been in stock longest",
+        "The wines that sell most tonight and those that take longest to bring to temperature",
+        "The most expensive wines",
+        "The wines you like best"
+      ],
+      "explanation": "The cabinet should serve the evening: what sells and what is hard to chill quickly. The rest can stay cool in the store room."
+    },
+    "vara-flamberingsvagn-1": {
+      "prompt": "The restaurant has bought a flambé trolley. What is it that burns when a dish is flambéed?",
+      "options": [
+        "The butter in the pan",
+        "The liquid of the spirit itself",
+        "The alcohol vapour from the warmed spirit",
+        "The sugar in the sauce"
+      ],
+      "explanation": "When the spirit is warmed the alcohol evaporates, and it is the vapour that catches fire. That is why cold spirit burns poorly."
+    },
+    "vara-flamberingsvagn-2": {
+      "prompt": "Which dessert is classically flambéed at the table?",
+      "options": [
+        "Crème brûlée",
+        "Panna cotta",
+        "Chocolate mousse",
+        "Crêpes Suzette, with orange and orange liqueur"
+      ],
+      "explanation": "Crêpes Suzette is made at the table: crêpes in a sauce of butter, sugar and orange, flambéed with orange liqueur. Crème brûlée's sugar is burnt with a torch, not with spirit."
+    },
+    "vara-flamberingsvagn-3": {
+      "prompt": "How do you pour the spirit when flambéing at the table?",
+      "options": [
+        "Measure it into a small vessel first and pour from there, never straight from the bottle",
+        "Straight from the bottle over the flame",
+        "Spray it over the pan",
+        "Pour it into the pan while it is burning most"
+      ],
+      "explanation": "A flame can flash back into the bottle and make it explode. A small measured vessel gives the right amount and no danger."
+    },
+    "vara-flamberingsvagn-4": {
+      "prompt": "Where do you place the flambé trolley at the table?",
+      "options": [
+        "In the aisle where the staff pass",
+        "With the flame some distance from the guests, not under lamps or curtains, and the trolley still",
+        "As close to the guests as possible, so they can see",
+        "Under the ceiling decorations, for the atmosphere"
+      ],
+      "explanation": "The flame can rise high. Distance from guests, fabric and decorations keeps the show from turning into an accident."
+    },
+    "vara-flamberingsvagn-5": {
+      "prompt": "A table with small children orders crêpes Suzette. What do you do?",
+      "options": [
+        "Refuse to flambé at the table",
+        "Flambé without spirit",
+        "Ask the parents whether the flambé should be done at the table, and offer to do it a little way off",
+        "Flambé as usual, children like flames"
+      ],
+      "explanation": "The parents know their children. Asking and offering an alternative gives the table its show without worry."
+    },
+    "vara-flamberingsvagn-6": {
+      "prompt": "A guest who doesn't drink alcohol orders crêpes Suzette and asks whether the alcohol burns off. What do you answer?",
+      "options": [
+        "That all the alcohol burns off",
+        "That it is so little it makes no difference",
+        "That she can choose something else",
+        "That much of the alcohol remains after flambéing, and offer to make the dessert without liqueur"
+      ],
+      "explanation": "Flambéing removes only part of the alcohol; much stays in the sauce. An honest answer and an alternative respect her reasons."
+    },
+    "vara-ostvagn-1": {
+      "prompt": "The restaurant has bought a cheese trolley. In what order should the cheeses be tasted?",
+      "options": [
+        "From mild to strong: fresh, white mould, hard, washed rind and blue last",
+        "From strong to mild",
+        "In alphabetical order",
+        "The order doesn't matter"
+      ],
+      "explanation": "A strong cheese overwhelms the palate so that the mild ones afterwards taste of nothing. From mild to strong, each cheese gets its due."
+    },
+    "vara-ostvagn-2": {
+      "prompt": "Why does each cheese on the trolley have its own knife?",
+      "options": [
+        "Because each cheese has a different temperature",
+        "So flavours and mould, especially blue mould, are not carried between cheeses",
+        "So the knives wear evenly",
+        "Because it looks nicer"
+      ],
+      "explanation": "Blue mould spores and washed-rind bacteria follow the knife and taint other cheeses. One knife per cheese keeps the flavours clean."
+    },
+    "vara-ostvagn-3": {
+      "prompt": "How long may the cheese trolley stand out in the room during an evening?",
+      "options": [
+        "Only five minutes per table",
+        "Until the cheese runs out",
+        "A few hours, and leftover cheese goes back into the fridge wrapped",
+        "All evening and night"
+      ],
+      "explanation": "Cheese benefits from being at room temperature for a while but dries out and sweats if left too long. Leftovers go back in the fridge."
+    },
+    "vara-ostvagn-4": {
+      "prompt": "How do you cut a block of hard cheese on the trolley?",
+      "options": [
+        "In large cubes",
+        "In thick slices across the block",
+        "It is broken by hand",
+        "In thin slices or shavings, so the guest gets flavour without filling up"
+      ],
+      "explanation": "Thin slices give a lot of flavour and aroma per piece. The guest has room to taste several cheeses."
+    },
+    "vara-ostvagn-5": {
+      "prompt": "A guest would like cheese but says she is full. What do you do?",
+      "options": [
+        "Suggest two or three small pieces that you choose to match what she has eaten",
+        "Give her the whole trolley to choose from",
+        "Say she can have cheese another time",
+        "Give her a large portion anyway"
+      ],
+      "explanation": "A small selection suited to the evening's food gives the experience without being too much. It shows you have listened."
+    },
+    "vara-ostvagn-6": {
+      "prompt": "A guest asks for a cheese to go with her glass of Sauternes. What do you suggest?",
+      "options": [
+        "No cheese, since sweet wine doesn't go with it",
+        "A blue cheese, such as Roquefort",
+        "A mild fresh cheese",
+        "A young hard cheese with little flavour"
+      ],
+      "explanation": "Sweet and salty is a classic match: the sweet wine balances the blue cheese's saltiness and sharpness."
+    },
+    "vara-avecvagn-1": {
+      "prompt": "The restaurant has bought a digestif trolley. What does VSOP on a bottle of cognac mean?",
+      "options": [
+        "That it is made from apples",
+        "That it has been aged at least thirty years",
+        "That the youngest brandy in the blend has been aged at least four years in oak",
+        "That it is distilled once"
+      ],
+      "explanation": "VSOP means the youngest brandy in the blend has spent at least four years in oak. XO requires at least ten years."
+    },
+    "vara-avecvagn-2": {
+      "prompt": "What is calvados?",
+      "options": [
+        "A grape brandy from Cognac",
+        "A cherry liqueur",
+        "A French whisky",
+        "A brandy made from apples and pears from Normandy"
+      ],
+      "explanation": "Calvados is distilled from apple cider, sometimes with pears, and aged in oak. It comes from Normandy."
+    },
+    "vara-avecvagn-3": {
+      "prompt": "How do you serve a cognac from the digestif trolley?",
+      "options": [
+        "About 2–4 cl at room temperature, in a tulip-shaped glass",
+        "With ice and soda",
+        "Warmed over a flame",
+        "In a large water glass"
+      ],
+      "explanation": "A tulip glass gathers the aroma. Warming cognac over a flame drives off the aromas and brings out the alcohol."
+    },
+    "vara-avecvagn-4": {
+      "prompt": "What do you do with the opened bottles on the digestif trolley after the evening?",
+      "options": [
+        "Put them in the window",
+        "Stopper them well and store them upright, cool and dark",
+        "Leave them open so they breathe",
+        "Lay them down like wine"
+      ],
+      "explanation": "Spirits should stand upright so the strong alcohol doesn't break down the cork. Light and heat change the flavour."
+    },
+    "vara-avecvagn-5": {
+      "prompt": "A guest will drive home but would like to finish with something from the digestif trolley. What do you suggest?",
+      "options": [
+        "Nothing, he should go home",
+        "A double calvados, since it is mild",
+        "An alcohol-free digestif, such as coffee with a small sweet or an alcohol-free option on the trolley",
+        "A small cognac, it doesn't matter"
+      ],
+      "explanation": "The guest wants a finish, not necessarily alcohol. An alcohol-free choice on the trolley gives him that without risk."
+    },
+    "vara-avecvagn-6": {
+      "prompt": "A celebrating party wants another round from the digestif trolley, but one of the guests is clearly drunk. What do you do?",
+      "options": [
+        "Serve everyone, since they are celebrating",
+        "Refuse the whole party",
+        "Ask the other guests to look after him",
+        "Serve the party but not the drunk guest, and offer him water and coffee discreetly"
+      ],
+      "explanation": "Swedish law forbids serving alcohol to anyone who is noticeably drunk. Doing it discreetly and offering something else keeps the mood."
+    },
+    "vara-humidor-1": {
+      "prompt": "The restaurant has bought a humidor for the cigars. What climate should it keep?",
+      "options": [
+        "About 65–72% humidity and 16–20 °C",
+        "About 30% humidity and 25 °C",
+        "Fridge temperature",
+        "As humid as possible"
+      ],
+      "explanation": "Cigars dry and crack in dry air and go mouldy in air that is too humid. A steady climate around 70% and cool keeps them in shape."
+    },
+    "vara-humidor-2": {
+      "prompt": "Why are humidors often lined with Spanish cedar?",
+      "options": [
+        "Because it is waterproof",
+        "The wood holds moisture evenly, smells good and repels the tobacco beetle",
+        "Because it is cheapest",
+        "Because it conducts heat well"
+      ],
+      "explanation": "Spanish cedar buffers humidity, gives the cigars a mild scent and repels the tobacco beetle."
+    },
+    "vara-humidor-3": {
+      "prompt": "The humidor is new. What do you do before the cigars go in?",
+      "options": [
+        "Wipe it out with a warm cloth",
+        "Fill the humidifier with tap water",
+        "Season the wood and let the humidor stand until the humidity is steady, with distilled water in the humidifier",
+        "Put the cigars in straight away, they will season it"
+      ],
+      "explanation": "Dry cedar draws moisture out of the cigars. Distilled water prevents scale and mould in the humidifier."
+    },
+    "vara-humidor-4": {
+      "prompt": "How do you check that the humidor's hygrometer reads correctly?",
+      "options": [
+        "By comparing with the weather report",
+        "By breathing on it",
+        "It never needs checking",
+        "With a salt test: the hygrometer in a sealed bag with damp salt should read about 75%"
+      ],
+      "explanation": "Damp table salt in a sealed space gives about 75% humidity. The difference shows how far off the hygrometer is."
+    },
+    "vara-humidor-5": {
+      "prompt": "A guest wants to buy two cigars from the humidor to take home. What do you consider?",
+      "options": [
+        "That the restaurant has a licence to sell tobacco and that the guest is over 18",
+        "Nothing, just sell them",
+        "To give him the driest ones first",
+        "To say no, tobacco is only sold in shops"
+      ],
+      "explanation": "Since 2019 a licence is needed to sell tobacco in Sweden, and the age limit is 18. Knowing that protects both the restaurant and the guest."
+    },
+    "vara-humidor-6": {
+      "prompt": "Two guests each want a cigar with their coffee, but one likes mild and the other strong. What do you do?",
+      "options": [
+        "Ask them to agree on one",
+        "Show the humidor and suggest a light, mild cigar for one and a darker, stronger one for the other",
+        "Give both the same cigar so they can compare",
+        "Give both the strongest"
+      ],
+      "explanation": "Each guest has their own taste. Being able to explain the difference between wrappers and choose for each is judgement in practice."
+    }
+  }
+}

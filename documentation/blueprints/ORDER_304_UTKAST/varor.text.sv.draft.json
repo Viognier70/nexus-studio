@@ -1,0 +1,906 @@
+{
+  "language": "sv",
+  "status": "draft",
+  "texts": {
+    "vara-gos-1": {
+      "prompt": "Fiskaren vid sjön levererar gös till kvällens meny. En gäst frågar vilken fisk gösen egentligen är släkt med. Vilken familj hör gösen till?",
+      "options": [
+        "Abborrfiskarna",
+        "Laxfiskarna",
+        "Gäddfiskarna",
+        "Karpfiskarna"
+      ],
+      "explanation": "Gösen hör till abborrfiskarna (Percidae), som abborren. Det märks på de taggiga ryggfenorna och det fasta, vita köttet."
+    },
+    "vara-gos-2": {
+      "prompt": "Gösen på menyn kommer från en sjö i grannskapet. Vilken sjö nära Grythyttan är känd för sitt gösfiske?",
+      "options": [
+        "Storsjön",
+        "Hjälmaren",
+        "Vättern",
+        "Siljan"
+      ],
+      "explanation": "Hjälmaren är grund, näringsrik och varm om sommaren, och en av Sveriges främsta gössjöar. Vättern är djup och kall och känd för röding."
+    },
+    "vara-gos-3": {
+      "prompt": "Kocken filéar dagens gös. Vad behöver kocken se upp med när gösen hanteras?",
+      "options": [
+        "Ett galltryck som gör köttet bittert om det spricker",
+        "Att skinnet måste dras av före filéingen",
+        "Ryggfenans vassa taggstrålar",
+        "Giftiga gälar"
+      ],
+      "explanation": "Gösens främre ryggfena har vassa taggstrålar som lätt sticker. Klipp av fenorna först och filéa längs ryggbenet. Skinnet kan sitta kvar och stekas krispigt."
+    },
+    "vara-gos-4": {
+      "prompt": "Gösfilén ska stekas med skinnet kvar. Hur blir skinnet krispigt och köttet saftigt?",
+      "options": [
+        "Stek på köttsidan först och lägg skinnet nedåt sist",
+        "Lägg filén i kall panna med lock på",
+        "Vänd filén ofta så att den blir jämnt stekt",
+        "Stek mest på skinnsidan i varm panna och vänd bara kort i slutet"
+      ],
+      "explanation": "Det mesta av värmen går genom skinnet, som skyddar det magra köttet och blir krispigt. Ett kort varv på köttsidan i slutet räcker. Ofta vända gör skinnet segt."
+    },
+    "vara-gos-5": {
+      "prompt": "En gäst säger att hon inte tycker om fisk som smakar \"för mycket fisk\", men vill gärna pröva något från trakten. Vad föreslår du?",
+      "options": [
+        "Gösen från Hjälmaren, som har ett milt, fast vitt kött",
+        "Den gravade rödingen, som har mest smak",
+        "Ett köttalternativ, eftersom fisk inte passar henne",
+        "Att hon provar kockens starkaste fiskrätt för att vänja sig"
+      ],
+      "explanation": "Gösens kött är milt och fast, utan den feta smak hon troligen menar, och den kommer från trakten. Det svarar på båda önskemålen utan att övertala henne."
+    },
+    "vara-gos-6": {
+      "prompt": "Fiskaren levererade mindre gös än beställt. Det räcker till ungefär sex portioner, och kvällen är fullbokad. Vad gör du?",
+      "options": [
+        "Gör portionerna mindre så att fler kan få",
+        "Säger till personalen direkt, och erbjuder gösen tidigt med ett alternativ när den tar slut",
+        "Låter personalen ta beställningar som vanligt och ber om ursäkt när den är slut",
+        "Stryker gösen från menyn för att undvika besvikelse"
+      ],
+      "explanation": "Gästerna blir mindre besvikna om de vet förut. Personalen kan nämna att gösen är begränsad och ha ett alternativ redo. Mindre portioner till samma pris sviker gästen i tysthet."
+    },
+    "vara-roding-1": {
+      "prompt": "Rödingen på kvällens meny kommer från en kall fjällsjö. Vilken fiskfamilj hör rödingen till?",
+      "options": [
+        "Torskfiskarna",
+        "Sikfiskarna",
+        "Laxfiskarna",
+        "Abborrfiskarna"
+      ],
+      "explanation": "Rödingen är en laxfisk (Salmonidae), som lax och öring. Därför har den ett rosa, fett kött."
+    },
+    "vara-roding-2": {
+      "prompt": "Varför trivs rödingen i Vättern och i fjällsjöar men inte i grunda slättsjöar?",
+      "options": [
+        "Den lever bara i saltvatten",
+        "Den behöver varmt vatten för att leka",
+        "Den äter bara vass och växter från botten",
+        "Den behöver kallt, klart och syrerikt vatten"
+      ],
+      "explanation": "Rödingen är en kallvattenfisk som behöver syrerikt vatten året om. Grunda sjöar blir för varma och syrefattiga om sommaren."
+    },
+    "vara-roding-3": {
+      "prompt": "Kocken vill servera gravad röding av vildfångad fisk. Vad måste göras innan fisken gravas?",
+      "options": [
+        "Frysa fisken, minst ett dygn vid −20 °C, för att döda parasiter",
+        "Skölja fisken i ättika",
+        "Låta fisken ligga i rumstemperatur några timmar",
+        "Ingenting, saltet och sockret räcker"
+      ],
+      "explanation": "Vildfångad fisk som ska ätas rå eller gravad kan bära parasiter, till exempel bandmask. Livsmedelsverket råder att frysa den först. Saltet dödar dem inte."
+    },
+    "vara-roding-4": {
+      "prompt": "Rödingen ska gravas till morgondagens förrätt. Hur gör kocken?",
+      "options": [
+        "Röker filén varmt och strör dill över",
+        "Salt, socker och dill över filén, under lätt press i kylen ett till två dygn",
+        "Salt över filén i rumstemperatur över natten",
+        "Kokar filén i saltlake och kyler den"
+      ],
+      "explanation": "Gravning är salt och socker som drar ut vätska och smaksätter. Det görs i kylen, och en lätt press ger en jämn konsistens. Varmrökning är en annan metod."
+    },
+    "vara-roding-5": {
+      "prompt": "En gäst beställer rödingen men dricker ingen alkohol i kväll. Vad föreslår du att dricka?",
+      "options": [
+        "Vatten, eftersom inget annat passar",
+        "Ett glas vin ändå, eftersom rätten är gjord för det",
+        "Något alkoholfritt med frisk syra, till exempel en torr äppelmust eller ett mousserande te",
+        "Ett glas mjölk, som milt mot fisken"
+      ],
+      "explanation": "Syran gör samma sak som i ett vitt vin: den lyfter det feta köttet. Gästen får något som är valt till rätten, inte bara det som blir över."
+    },
+    "vara-roding-6": {
+      "prompt": "En gäst frågar om rödingen är vildfångad eller odlad. Du är inte säker. Vad gör du?",
+      "options": [
+        "Säger vildfångad, eftersom det låter bäst",
+        "Säger att det inte spelar någon roll för smaken",
+        "Byter samtalsämne till vinet",
+        "Säger att du tar reda på det, och frågar köket eller leveransen"
+      ],
+      "explanation": "Ett ärligt \"jag tar reda på det\" bygger förtroende. Gissningar som visar sig fel gör det motsatta, och frågan kan gälla både smak och hållbarhet."
+    },
+    "vara-priorat-1": {
+      "prompt": "Vinhandlaren har levererat ett Priorat. En gäst frågar var vinet kommer ifrån. Var ligger Priorat?",
+      "options": [
+        "I Katalonien i nordöstra Spanien",
+        "I Rioja i norra Spanien",
+        "I Douro i Portugal",
+        "I södra Rhône i Frankrike"
+      ],
+      "explanation": "Priorat ligger i Katalonien, i bergen inåt land från Tarragona. Det är ett av Spaniens två högst klassade vindistrikt (DOQ)."
+    },
+    "vara-priorat-2": {
+      "prompt": "Vad är det som ger Priorats viner deras koncentration och mineraliska karaktär?",
+      "options": [
+        "Vulkanisk aska och Pinot Noir",
+        "Den mörka skifferjorden licorella och gamla, lågavkastande stockar av Garnacha och Cariñena",
+        "Kalkjord och Tempranillo från bevattnade odlingar",
+        "Lerjord vid havet och Monastrell"
+      ],
+      "explanation": "Licorella är en mörk skiffer som håller lite vatten. De gamla stockarna av Garnacha och Cariñena ger små skördar och koncentrerade viner."
+    },
+    "vara-priorat-3": {
+      "prompt": "Ett ungt, kraftigt Priorat ska serveras i kväll. Vilken temperatur ska vinet ha i glaset?",
+      "options": [
+        "Rumstemperatur i en varm bar, omkring 24 °C",
+        "Så kallt som möjligt",
+        "Omkring 16–18 °C",
+        "Omkring 8–10 °C"
+      ],
+      "explanation": "Kraftiga röda viner smakar bäst svalt, omkring 16–18 °C. Vid 24 °C tar alkoholen över, och för kallt blir tanninerna hårda."
+    },
+    "vara-priorat-4": {
+      "prompt": "Ett ungt Priorat känns stängt och strävt när flaskan öppnas. Vad gör du?",
+      "options": [
+        "Serverar det direkt och fyller på glaset ofta",
+        "Kyler det i isbad",
+        "Häller i lite vatten i karaffen",
+        "Dekanterar det och låter det luftas en stund innan det serveras"
+      ],
+      "explanation": "Syre öppnar ett ungt, koncentrerat vin och mjukar upp det. En karaff ger vinet yta mot luften, och en stund räcker ofta."
+    },
+    "vara-priorat-5": {
+      "prompt": "En gäst har beställt Priorat men tycker att det blir för tungt till sin fiskrätt. Vad gör du?",
+      "options": [
+        "Erbjuder ett glas av något lättare till fisken, och sparar Priorat till osten",
+        "Förklarar att Priorat är ett av Spaniens bästa viner",
+        "Föreslår att hon byter till en kötträtt",
+        "Låter det vara, eftersom hon själv valde vinet"
+      ],
+      "explanation": "Gästen har rätt i känslan: ett kraftigt rött tar över en fiskrätt. Att hjälpa henne till en bättre kombination är omdöme, inte att försvara vinet."
+    },
+    "vara-priorat-6": {
+      "prompt": "Ett sällskap vill ha \"det bästa röda ni har\", men du ser att de tittar oroligt på priserna. Vad gör du?",
+      "options": [
+        "Väntar tills de själva säger en prisgräns",
+        "Frågar vad de tycker om och föreslår två viner i olika prisklass",
+        "Säljer det dyraste, eftersom de bad om det",
+        "Säger att det billigaste är lika bra"
+      ],
+      "explanation": "Att ge två förslag låter gästerna välja utan att behöva säga sin budget. De känner sig väl omhändertagna, oavsett vilket de väljer."
+    },
+    "vara-chablis-1": {
+      "prompt": "Chablis står på vinlistan. Vilken druva är Chablis gjort på?",
+      "options": [
+        "Riesling",
+        "Chenin Blanc",
+        "Chardonnay",
+        "Sauvignon Blanc"
+      ],
+      "explanation": "Chablis är Chardonnay från Bourgognes nordligaste del. Det svala klimatet ger ett friskt, torrt vin, ofta utan ek."
+    },
+    "vara-chablis-2": {
+      "prompt": "Vad är kimmeridgejorden i Chablis?",
+      "options": [
+        "Vulkanisk basalt",
+        "Röd sandsten",
+        "Granit och kvarts",
+        "Kalksten och lera med fossila ostronskal"
+      ],
+      "explanation": "Kimmeridgejorden består av kalk och lera med fossil av små ostron. Den förknippas med vinernas mineraliska, salta karaktär."
+    },
+    "vara-chablis-3": {
+      "prompt": "Vilken temperatur ska en Chablis serveras vid?",
+      "options": [
+        "Omkring 10–12 °C",
+        "Omkring 4 °C, direkt ur kylen",
+        "Omkring 16–18 °C",
+        "Rumstemperatur"
+      ],
+      "explanation": "För kallt dämpar doften i ett fint vitt vin. Omkring 10–12 °C behåller friskheten och låter aromerna komma fram."
+    },
+    "vara-chablis-4": {
+      "prompt": "Vilket glas väljer du till en Chablis?",
+      "options": [
+        "Ett vattenglas",
+        "Ett tulpanformat vitvinsglas av medelstorlek",
+        "Ett stort, vidbukigt glas för rött vin",
+        "En champagneskål"
+      ],
+      "explanation": "Ett tulpanformat glas samlar doften mot näsan och håller vinet svalt. Ett stort rödvinsglas låter vinet bli varmt och doften sprida sig."
+    },
+    "vara-chablis-5": {
+      "prompt": "Ett bord beställer ostron. En av gästerna frågar vad som passar, men en annan dricker inte vin. Vad föreslår du?",
+      "options": [
+        "Inget, eftersom ostron bäst äts utan dryck",
+        "Ett rött vin, för att det är det bordet redan har",
+        "Chablis till den som vill ha vin, och något alkoholfritt med syra och sälta till den andra",
+        "Chablis till hela bordet, för att det hör till"
+      ],
+      "explanation": "Chablis och ostron är en klassisk kombination av sälta och syra. Gästen som inte dricker vin ska få något valt med samma omsorg."
+    },
+    "vara-chablis-6": {
+      "prompt": "En gäst säger: \"Chablis, det är väl ett sött vin?\" Vad svarar du?",
+      "options": [
+        "Att hon har fel och borde läsa på",
+        "Att det beror på producenten",
+        "Ingenting, och serverar det hon beställer",
+        "Att Chablis är torrt och friskt, och erbjuder en liten smak"
+      ],
+      "explanation": "Att rätta vänligt och låta henne smaka gör henne nyfiken i stället för generad. Kunskapen ska hjälpa gästen, inte visa vem som vet mest."
+    },
+    "vara-mosel-riesling-1": {
+      "prompt": "Vinhandlaren har levererat en Riesling Kabinett från Mosel. Vad betyder Kabinett?",
+      "options": [
+        "Den lättaste nivån av tyska kvalitetsviner med predikat, ofta med låg alkohol och lite restsötma",
+        "Ett vin som har lagrats i ett källarskåp",
+        "Ett torrt vin med hög alkoholhalt",
+        "Ett söt dessertvin av russinade druvor"
+      ],
+      "explanation": "Kabinett är den lättaste nivån i den tyska predikatskalan, som räknas ur druvornas mognad. Vinerna har ofta 8–10 % alkohol och kan ha lite restsötma."
+    },
+    "vara-mosel-riesling-2": {
+      "prompt": "Varför kan Riesling mogna i Mosel, så långt norrut?",
+      "options": [
+        "Druvorna skördas redan i juli",
+        "De branta skiffersluttningarna mot floden fångar sol och värme",
+        "Floden är varm året om",
+        "Vingårdarna bevattnas med varmt vatten"
+      ],
+      "explanation": "De branta sluttningarna vänder sig mot solen, floden speglar ljus och skiffern håller värme. Det ger mognad i ett svalt klimat."
+    },
+    "vara-mosel-riesling-3": {
+      "prompt": "Vilken temperatur ska en Riesling Kabinett ha?",
+      "options": [
+        "Rumstemperatur",
+        "Strax över noll",
+        "Omkring 8–10 °C",
+        "Omkring 16 °C"
+      ],
+      "explanation": "Ett lätt, friskt vin med lite restsötma ska vara kallt, men inte iskallt. Vid 8–10 °C är sötman och syran i balans."
+    },
+    "vara-mosel-riesling-4": {
+      "prompt": "En Riesling med skruvkork luktar tändsticka när den öppnas. Vad gör du?",
+      "options": [
+        "Kasserar flaskan som korkad",
+        "Kyler den hårdare",
+        "Serverar den direkt, gästen märker inget",
+        "Häller upp lite, låter det luftas och provar igen; det är ofta reduktion som går över"
+      ],
+      "explanation": "Doften av tändsticka är reduktion, svavelföreningar som ofta försvinner med luft. Korksmak luktar fuktig källare och kan inte luftas bort."
+    },
+    "vara-mosel-riesling-5": {
+      "prompt": "Ett bord har beställt en kryddstark rätt och vill ha \"ett torrt vitt\". Vad gör du?",
+      "options": [
+        "Föreslår en Riesling Kabinett med lite sötma, förklarar varför och erbjuder en smak",
+        "Ger dem det torraste vinet på listan utan kommentar",
+        "Säger att vin inte passar till stark mat",
+        "Föreslår ett kraftigt rött i stället"
+      ],
+      "explanation": "Lite sötma och låg alkohol dämpar hettan, medan alkohol förstärker den. Gästerna bestämmer, men de får veta varför förslaget kan smaka bättre."
+    },
+    "vara-mosel-riesling-6": {
+      "prompt": "En gäst ska köra hem senare men vill ha ett glas vin till maten. Vad föreslår du?",
+      "options": [
+        "Två glas av ett lätt vin, eftersom det är svagt",
+        "Ett litet glas av ett lätt vin, som en Kabinett med låg alkohol, och vatten till",
+        "Det vin hon vill ha, eftersom det är hennes sak",
+        "Ingenting, du serverar inte alkohol till den som kör"
+      ],
+      "explanation": "Att föreslå ett lätt vin och vatten respekterar gästens val och tar ansvar. Hon bestämmer själv, men du gör det lätt att välja klokt."
+    },
+    "vara-brie-de-meaux-1": {
+      "prompt": "Ostaffinören har levererat Brie de Meaux. Vilken ostfamilj hör den till?",
+      "options": [
+        "Rödkittost",
+        "Hårdost",
+        "Vitmögelost, en mjukost med blomskorpa",
+        "Blåmögelost"
+      ],
+      "explanation": "Brie de Meaux är en mjukost med en vit, luddig skorpa av mögel. Samma familj som camembert."
+    },
+    "vara-brie-de-meaux-2": {
+      "prompt": "Vad kräver ursprungsskyddet för Brie de Meaux av mjölken?",
+      "options": [
+        "Att den är pastöriserad getmjölk",
+        "Att den är fårmjölk",
+        "Att den är skummjölk",
+        "Att den är opastöriserad komjölk"
+      ],
+      "explanation": "Brie de Meaux AOP görs på opastöriserad komjölk från ett avgränsat område öster om Paris. Det har betydelse för smaken och för vem som bör undvika den."
+    },
+    "vara-brie-de-meaux-3": {
+      "prompt": "När ska Brie de Meaux tas ut ur kylen före serveringen?",
+      "options": [
+        "Omkring en timme före, så att den hinner bli rumstempererad",
+        "Precis när den ska serveras",
+        "Kvällen före",
+        "Den ska serveras kall"
+      ],
+      "explanation": "Kall ost har en stängd smak och en fast konsistens. I rumstemperatur blir briens inre krämig och aromerna kommer fram."
+    },
+    "vara-brie-de-meaux-4": {
+      "prompt": "Hur skär du briebiten på ostvagnen?",
+      "options": [
+        "Med en osthyvel",
+        "I tårtbitar från mitten och ut, så att alla får både kärna och kant",
+        "Raka skivor från ena kanten",
+        "Bara mittbiten, som är krämigast"
+      ],
+      "explanation": "Brien är mognast närmast skorpan och mildast i mitten. Tårtbitar ger varje gäst hela osten, och ingen får bara kanten."
+    },
+    "vara-brie-de-meaux-5": {
+      "prompt": "En gravid gäst vill smaka Brie de Meaux från ostvagnen. Vad gör du?",
+      "options": [
+        "Säger högt att gravida inte får äta ost",
+        "Ger henne en mindre bit",
+        "Säger diskret att osten är gjord på opastöriserad mjölk, och erbjuder en lagrad hårdost i stället",
+        "Serverar den, eftersom hon själv bestämmer"
+      ],
+      "explanation": "Gravida avråds från ost av opastöriserad mjölk på grund av listeria. Ett diskret besked och ett gott alternativ gör att hon inte känner sig utpekad."
+    },
+    "vara-brie-de-meaux-6": {
+      "prompt": "En gäst säger att hon vill ha \"en mild ost som inte luktar så mycket\". Vad visar du?",
+      "options": [
+        "Munster, för att utmana henne",
+        "Inget, eftersom ost alltid luktar",
+        "Den äldsta osten på vagnen",
+        "Brie de Meaux, mild och krämig, och berättar var den kommer ifrån"
+      ],
+      "explanation": "Att lyssna på vad gästen faktiskt ber om och möta det, med en berättelse, är bättre än att försöka omvända henne."
+    },
+    "vara-munster-1": {
+      "prompt": "Munster står på ostvagnen. Varifrån kommer osten?",
+      "options": [
+        "Från Alsace och Vogeserna i nordöstra Frankrike",
+        "Från Normandie",
+        "Från Schweiz",
+        "Från Bourgogne"
+      ],
+      "explanation": "Munster kommer från Vogeserna, på gränsen mellan Alsace och Lothringen. Munkarna i staden Munster gjorde osten redan på medeltiden."
+    },
+    "vara-munster-2": {
+      "prompt": "Vad är det som ger Munster dess starka doft och orange skorpa?",
+      "options": [
+        "Den röks över bokved",
+        "Skorpan tvättas med saltlake under lagringen, så att kittbakterier växer",
+        "Den lagras i aska",
+        "Den har blåmögel inuti"
+      ],
+      "explanation": "Munster är en kittost: skorpan tvättas med saltlake, och bakterierna som trivs där ger den orange färgen och den starka doften. Inuti är den mild."
+    },
+    "vara-munster-3": {
+      "prompt": "Vilket vin föreslår du till Munster?",
+      "options": [
+        "En torr Fino",
+        "Ett lätt rosévin",
+        "En aromatisk Gewürztraminer från Alsace",
+        "Ett tanninrikt ungt rött"
+      ],
+      "explanation": "Gewürztraminers aromer och fyllighet står emot ostens kraft, och det är vin från samma trakt. Tanniner krockar med kittostens sälta."
+    },
+    "vara-munster-4": {
+      "prompt": "Hur förvarar du Munster i kylen?",
+      "options": [
+        "Öppet på hyllan för att den ska andas",
+        "I samma låda som brien",
+        "I frysen tills den ska serveras",
+        "I en egen, tät låda så att doften inte tar sig in i andra ostar"
+      ],
+      "explanation": "Kittostens doft sprider sig och smittar andra ostar och smöret. En egen tät låda skyddar resten av kylen."
+    },
+    "vara-munster-5": {
+      "prompt": "Ostvagnen ska till ett bord, men vid bordet bredvid sitter ett par som just fått sin fisk. Vad gör du?",
+      "options": [
+        "Tar fram Munstern först vid det beställande bordet, och låter den inte stå öppen intill fisken",
+        "Ställer vagnen mellan borden för att spara steg",
+        "Lyfter ut Munstern helt den här kvällen",
+        "Säger till grannbordet att de får tåla doften"
+      ],
+      "explanation": "Gäster vid andra bord har också sin kväll. Att tänka på var och när den starka osten tas fram är omtanke om hela rummet."
+    },
+    "vara-munster-6": {
+      "prompt": "En gäst tittar tveksamt på Munstern och säger att den luktar för mycket. Vad gör du?",
+      "options": [
+        "Ger henne en stor bit för att hon ska förstå",
+        "Erbjuder en liten bit med en varm potatis, som man gör i Alsace, och berättar att den är mild inuti",
+        "Säger att hon inte vet vad hon missar",
+        "Tar bort den direkt"
+      ],
+      "explanation": "En liten smak med något välbekant gör det lätt att pröva utan press. Om hon ändå inte vill har hon fått välja själv."
+    },
+    "vara-vasterbottensost-1": {
+      "prompt": "Västerbottensost ligger på ostvagnen. Varifrån kommer den?",
+      "options": [
+        "Från Gotland",
+        "Från Jämtland",
+        "Från Burträsk i Västerbotten",
+        "Från Grythyttan"
+      ],
+      "explanation": "Västerbottensost görs i Burträsk, där osten enligt berättelsen kom till på 1870-talet. Den räknas som en av Sveriges mest kända ostar."
+    },
+    "vara-vasterbottensost-2": {
+      "prompt": "Hur länge lagras Västerbottensost innan den säljs?",
+      "options": [
+        "Två veckor",
+        "Tre månader",
+        "Fem år",
+        "Minst omkring 14 månader"
+      ],
+      "explanation": "Den långa lagringen ger den kraftiga, lätt bittra smaken och de knastriga kristallerna. Det gör också att osten nästan saknar laktos."
+    },
+    "vara-vasterbottensost-3": {
+      "prompt": "Köket gör Västerbottenpaj till förrätt. Hur hanteras osten?",
+      "options": [
+        "Rivs fint strax innan och blandas i äggstanningen",
+        "Smälts först i en kastrull",
+        "Skärs i stora kuber som läggs på botten",
+        "Rivs dagen före och står framme"
+      ],
+      "explanation": "Nyriven ost har mest arom och fördelar sig jämnt i stanningen. Ost som rivits för tidigt torkar och tappar smak."
+    },
+    "vara-vasterbottensost-4": {
+      "prompt": "Hur förvarar du en påbörjad bit Västerbottensost?",
+      "options": [
+        "Öppen på diskbänken",
+        "Inslagen i ostpapper eller vaxduk i kylen",
+        "Tätt inplastad i plastfilm",
+        "I ett glas vatten"
+      ],
+      "explanation": "Ostpapper låter osten andas utan att torka. Plastfilm stänger in fukten och ger en sur smak på ytan."
+    },
+    "vara-vasterbottensost-5": {
+      "prompt": "En gäst med laktosintolerans vill gärna ha ost till kaffet. Vad föreslår du?",
+      "options": [
+        "Brie de Meaux, som är mild",
+        "En färskost",
+        "Västerbottensost, som är lagrad så länge att den nästan saknar laktos",
+        "Ingen ost alls"
+      ],
+      "explanation": "Under lång lagring bryts laktosen ned, så lagrade hårdostar innehåller nästan ingen. Gästen behöver inte avstå."
+    },
+    "vara-vasterbottensost-6": {
+      "prompt": "Ett sällskap turister frågar om något \"riktigt svenskt\" till kaffet. Vad gör du?",
+      "options": [
+        "Säger att alla ostarna är svenska",
+        "Ger dem den dyraste franska osten",
+        "Hänvisar till en affär i byn",
+        "Visar Västerbottensosten och berättar kort om Burträsk och lagringen"
+      ],
+      "explanation": "Gästen frågar efter en upplevelse, inte bara en vara. En kort berättelse om var osten kommer ifrån gör smaken till ett minne."
+    },
+    "vara-jamon-iberico-1": {
+      "prompt": "Charkuteristen har levererat jamón ibérico de bellota. Vad betyder \"de bellota\"?",
+      "options": [
+        "Att grisarna har betat ekollon i ekskogen under sin sista period",
+        "Att skinkan har lagrats i ekfat",
+        "Att den kommer från staden Bellota",
+        "Att den är rökt"
+      ],
+      "explanation": "Bellota betyder ekollon. Under montanera, hösten och vintern, går de iberiska grisarna fritt i ekskogen och äter ekollon, vilket ger fettet dess nötiga smak."
+    },
+    "vara-jamon-iberico-2": {
+      "prompt": "Vad betyder en svart etikett på en spansk ibérico-skinka?",
+      "options": [
+        "Att den kommer från en korsning med vit gris",
+        "Att grisen är 100 % iberisk och har ätit ekollon",
+        "Att skinkan är billigast",
+        "Att den har lagrats kortast"
+      ],
+      "explanation": "Sedan 2014 visar etikettens färg grisens ras och föda. Svart betyder 100 % iberisk gris som har ätit ekollon, den högsta klassen."
+    },
+    "vara-jamon-iberico-3": {
+      "prompt": "Hur skärs jamón ibérico på bänken?",
+      "options": [
+        "Med en skärmaskin direkt från kylen",
+        "I tärningar",
+        "Med en lång, smal och flexibel kniv i mycket tunna skivor, med skinkan i ett skinkställ",
+        "I tjocka skivor med en brödkniv"
+      ],
+      "explanation": "Tunna skivor smälter på tungan och visar fettets marmorering. Skinkstället håller skinkan stilla så att kniven går jämnt."
+    },
+    "vara-jamon-iberico-4": {
+      "prompt": "Vid vilken temperatur ska skivorna serveras?",
+      "options": [
+        "Direkt ur kylen",
+        "Uppvärmda i ugn",
+        "Frysta och tunt skivade",
+        "Rumstemperatur, så att fettet blir genomskinligt och doftande"
+      ],
+      "explanation": "I rumstemperatur mjuknar fettet, blir glansigt och släpper sin arom. Kall skinka smakar mycket mindre."
+    },
+    "vara-jamon-iberico-5": {
+      "prompt": "Du vill bjuda ett bord på en smakbit av skinkan. Vad tänker du på innan du gör det?",
+      "options": [
+        "Att säga att det är fläsk, så att den som inte äter det kan tacka nej",
+        "Att ge den största biten till den som pratar mest",
+        "Att inte säga vad det är, för att överraska",
+        "Att bara erbjuda den som beställt vin"
+      ],
+      "explanation": "Gäster kan avstå fläsk av tro, övertygelse eller hälsa. Att säga vad det är ger alla möjlighet att välja utan att behöva förklara sig."
+    },
+    "vara-jamon-iberico-6": {
+      "prompt": "En gäst beställer skinkan och frågar vad hon ska dricka. Hon vill ha något \"som i Spanien\". Vad föreslår du?",
+      "options": [
+        "En öl, för att det är billigast",
+        "Ett glas torr Fino eller Manzanilla, väl kyld",
+        "En söt Pedro Ximénez",
+        "En kraftig Priorat"
+      ],
+      "explanation": "Torr, kyld sherry är klassisk till jamón: sältan och nötigheten möter fettet. Det svarar också på hennes önskan om Spanien."
+    },
+    "vara-havannacigarr-1": {
+      "prompt": "En gäst frågar efter en mild cigarr. Vilket täckblad ger mildare toner?",
+      "options": [
+        "Ett nästan svart täckblad, oscuro",
+        "Täckbladet påverkar inte smaken",
+        "Ett ljust täckblad, claro",
+        "Ett mörkt täckblad, maduro"
+      ],
+      "explanation": "Ljusa täckblad, claro, är skuggodlade eller kortare jästa och ger mildare toner. Mörka täckblad har jäst längre och ger en kraftigare, sötare smak."
+    },
+    "vara-havannacigarr-2": {
+      "prompt": "Vilket område på Kuba är mest känt för sin cigarrtobak?",
+      "options": [
+        "Varadero",
+        "Santiago de Cuba",
+        "Havannas gamla stad",
+        "Vuelta Abajo i Pinar del Río"
+      ],
+      "explanation": "Vuelta Abajo i provinsen Pinar del Río, väster om Havanna, räknas som världens främsta område för cigarrtobak."
+    },
+    "vara-havannacigarr-3": {
+      "prompt": "Hur klipper du en cigarr?",
+      "options": [
+        "Klipper av huvudet, den slutna änden, någon millimeter ovanför där täckbladet möter locket",
+        "Klipper av foten, den öppna änden",
+        "Klipper mitt på cigarren",
+        "Biter av huvudet"
+      ],
+      "explanation": "Klipps det för långt ned rivs täckbladet upp och cigarren faller isär. Ett litet snitt ovanför locket ger drag och håller cigarren hel."
+    },
+    "vara-havannacigarr-4": {
+      "prompt": "Hur tänds en cigarr?",
+      "options": [
+        "Genom att dra hårt medan lågan hålls mot mitten",
+        "Foten värms jämnt med cederspån eller en gaständare, medan cigarren vrids",
+        "Med en bensinständare direkt mot foten",
+        "Med ett stearinljus"
+      ],
+      "explanation": "Bensin och stearin ger smak åt röken. Att först värma foten jämnt och vrida cigarren ger en jämn glöd."
+    },
+    "vara-havannacigarr-5": {
+      "prompt": "En gäst på uteserveringen vill tända sin cigarr vid bordet efter maten. Vad gör du?",
+      "options": [
+        "Ber grannborden om lov",
+        "Säger nej utan förklaring",
+        "Förklarar vänligt att rökning inte är tillåten på uteserveringen, och visar var han kan röka",
+        "Låter honom röka, eftersom det är utomhus"
+      ],
+      "explanation": "Rökning är förbjuden på uteserveringar sedan 2019. Ett vänligt besked och ett alternativ gör att gästen inte känner sig tillrättavisad."
+    },
+    "vara-havannacigarr-6": {
+      "prompt": "En gäst ska röka sin första cigarr någonsin och ber om råd. Vad säger du?",
+      "options": [
+        "Föreslår den största och starkaste, för upplevelsens skull",
+        "Säger att han ska vänta tills han vet mer",
+        "Ger honom en cigarett i stället",
+        "Föreslår en mild, kort cigarr och säger att röken inte ska dras ned i lungorna"
+      ],
+      "explanation": "En nybörjare får en bättre upplevelse av en mild, kort cigarr. Att säga att röken inte ska dras ned är omsorg om gästen, inte en lektion."
+    },
+    "vara-vinkyl-1": {
+      "prompt": "Krogen har köpt en finare vinkyl för lagring. Vilken temperatur och luftfuktighet är bra för att lagra vin?",
+      "options": [
+        "Omkring 12–14 °C och 60–75 % luftfuktighet",
+        "Omkring 4 °C och torr luft",
+        "Rumstemperatur och torr luft",
+        "Omkring 20 °C och hög luftfuktighet"
+      ],
+      "explanation": "Vin lagras bäst svalt och jämnt. Lagom fuktig luft hindrar korken från att torka utan att etiketterna mögla."
+    },
+    "vara-vinkyl-2": {
+      "prompt": "Varför lagras korkade vinflaskor liggande?",
+      "options": [
+        "Så att etiketten syns",
+        "Så att vinet håller korken fuktig och den inte torkar och släpper in luft",
+        "Så att bottensatsen lägger sig i halsen",
+        "Så att de tar mindre plats"
+      ],
+      "explanation": "En torr kork krymper och släpper in syre, som oxiderar vinet. Liggande flaskor håller korken mot vinet."
+    },
+    "vara-vinkyl-3": {
+      "prompt": "Vinkylen har två zoner. Hur använder du dem under servicen?",
+      "options": [
+        "Den ena för vin och den andra för mat",
+        "Bara den ena zonen, för att spara ström",
+        "En svalare zon för vitt och mousserande att servera, och en varmare för rött vid serveringstemperatur",
+        "Allt vin i den kallaste zonen"
+      ],
+      "explanation": "Två zoner gör att både vitt och rött kan stå redo vid rätt temperatur. Då behöver inget vin snabbkylas eller värmas."
+    },
+    "vara-vinkyl-4": {
+      "prompt": "Var i rummet ställer du vinkylen?",
+      "options": [
+        "Vid fönstret, så att gästerna ser den",
+        "Bredvid diskmaskinen, nära köket",
+        "Mitt i gången där personalen går",
+        "Där den inte står i direkt sol eller nära ugn och diskmaskin, och inte skakas"
+      ],
+      "explanation": "Ljus, värme och vibrationer åldrar vinet. En lugn plats skyddar både vinet och kylens kompressor."
+    },
+    "vara-vinkyl-5": {
+      "prompt": "Det är 26 °C i baren en sommarkväll. En gäst vill ha sitt röda vin \"chambré\". Vad gör du?",
+      "options": [
+        "Serverar vinet från kylens röda zon, svalt, och förklarar att chambré betyder rumstemperatur i en sval källare",
+        "Ställer flaskan i solen en stund",
+        "Serverar det vid 26 °C som han bad om",
+        "Ger honom ett vitt vin i stället"
+      ],
+      "explanation": "Chambré kommer från en tid då rummen var svala. I en varm bar smakar rött bäst svalare, och en kort förklaring gör att gästen får det han egentligen vill ha."
+    },
+    "vara-vinkyl-6": {
+      "prompt": "Vinkylen rymmer inte allt inför en fullbokad fredag. Vad prioriterar du?",
+      "options": [
+        "De som har stått längst i lagret",
+        "De viner som säljs mest i kväll och de som tar längst tid att få i rätt temperatur",
+        "De dyraste vinerna",
+        "De viner du själv tycker bäst om"
+      ],
+      "explanation": "Kylen ska tjäna kvällen: det som säljs och det som är svårt att kyla snabbt. Resten kan stå svalt i lagret."
+    },
+    "vara-flamberingsvagn-1": {
+      "prompt": "Krogen har köpt en flamberingsvagn. Vad är det som brinner när en rätt flamberas?",
+      "options": [
+        "Smöret i pannan",
+        "Själva vätskan i spriten",
+        "Alkoholångorna från den uppvärmda spriten",
+        "Sockret i såsen"
+      ],
+      "explanation": "När spriten värms förångas alkoholen, och det är ångorna som tar eld. Därför brinner kall sprit dåligt."
+    },
+    "vara-flamberingsvagn-2": {
+      "prompt": "Vilken efterrätt flamberas klassiskt vid bordet?",
+      "options": [
+        "Crème brûlée",
+        "Pannacotta",
+        "Chokladmousse",
+        "Crêpes Suzette, med apelsin och apelsinlikör"
+      ],
+      "explanation": "Crêpes Suzette görs vid bordet: crêpes i en sås av smör, socker och apelsin, flamberade med apelsinlikör. Crème brûléens socker bränns med brännare, inte med sprit."
+    },
+    "vara-flamberingsvagn-3": {
+      "prompt": "Hur häller du spriten när du flamberar vid bordet?",
+      "options": [
+        "Mäter upp den i ett litet kärl först och häller därifrån, aldrig direkt ur flaskan",
+        "Direkt ur flaskan över lågan",
+        "Sprejar den över pannan",
+        "Häller den i pannan medan den brinner som mest"
+      ],
+      "explanation": "En låga kan slå tillbaka in i flaskan och få den att explodera. Ett litet uppmätt kärl ger rätt mängd och ingen fara."
+    },
+    "vara-flamberingsvagn-4": {
+      "prompt": "Var ställer du flamberingsvagnen vid bordet?",
+      "options": [
+        "I gången där personalen går förbi",
+        "Med lågan en bit från gästerna, inte under lampor eller gardiner, och med vagnen stilla",
+        "Så nära gästerna som möjligt, för att de ska se",
+        "Under takets dekorationer, för stämningens skull"
+      ],
+      "explanation": "Lågan kan bli hög. Avstånd till gäster, tyg och dekor gör att showen inte blir en olycka."
+    },
+    "vara-flamberingsvagn-5": {
+      "prompt": "Ett bord med små barn beställer crêpes Suzette. Vad gör du?",
+      "options": [
+        "Vägrar flambera vid bordet",
+        "Flamberar utan sprit",
+        "Frågar föräldrarna om flamberingen ska göras vid bordet, och erbjuder att göra den en bit bort",
+        "Flamberar som vanligt, barn tycker om lågor"
+      ],
+      "explanation": "Föräldrarna känner sina barn. Att fråga och erbjuda ett alternativ gör att bordet får sin show utan oro."
+    },
+    "vara-flamberingsvagn-6": {
+      "prompt": "En gäst som inte dricker alkohol beställer crêpes Suzette och frågar om alkoholen brinner bort. Vad svarar du?",
+      "options": [
+        "Att all alkohol brinner bort",
+        "Att det är så lite att det inte spelar någon roll",
+        "Att hon kan välja något annat",
+        "Att en stor del av alkoholen finns kvar efter flamberingen, och erbjuder att göra efterrätten utan likör"
+      ],
+      "explanation": "Flambering tar bort bara en del av alkoholen, mycket finns kvar i såsen. Ett ärligt svar och ett alternativ respekterar hennes skäl."
+    },
+    "vara-ostvagn-1": {
+      "prompt": "Krogen har köpt en ostvagn. I vilken ordning bör ostarna smakas?",
+      "options": [
+        "Från mild till kraftig: färskost, vitmögel, hårdost, kittost och sist blåmögel",
+        "Från kraftig till mild",
+        "I bokstavsordning",
+        "Ordningen spelar ingen roll"
+      ],
+      "explanation": "En kraftig ost tar över smaklökarna, så att de milda efteråt smakar ingenting. Från mild till kraftig får varje ost komma till sin rätt."
+    },
+    "vara-ostvagn-2": {
+      "prompt": "Varför har varje ost på vagnen sin egen kniv?",
+      "options": [
+        "För att varje ost har olika temperatur",
+        "Så att smaker och mögel, särskilt blåmögel, inte förs över mellan ostarna",
+        "För att knivarna ska slitas jämnt",
+        "För att det ser finare ut"
+      ],
+      "explanation": "Blåmögelsporer och kittostens bakterier följer med kniven och smittar andra ostar. En kniv per ost håller smakerna rena."
+    },
+    "vara-ostvagn-3": {
+      "prompt": "Hur länge får ostvagnen stå framme i rummet under en kväll?",
+      "options": [
+        "Bara fem minuter per bord",
+        "Tills osten är slut",
+        "Några timmar, och osten som blir över går tillbaka till kylen inslagen",
+        "Hela kvällen och natten"
+      ],
+      "explanation": "Ost mår bra av att vara rumstempererad en stund men torkar och svettas om den står för länge. Det som blir över ska in i kylen igen."
+    },
+    "vara-ostvagn-4": {
+      "prompt": "Hur skär du en hårdost i block på vagnen?",
+      "options": [
+        "I stora kuber",
+        "I tjocka skivor tvärs över blocket",
+        "Den bryts med händerna",
+        "I tunna skivor eller flarn, så att gästen får smak utan att mättas"
+      ],
+      "explanation": "Tunna skivor ger mycket smak och doft per bit. Gästen orkar smaka flera ostar."
+    },
+    "vara-ostvagn-5": {
+      "prompt": "En gäst vill gärna ha ost men säger att hon är mätt. Vad gör du?",
+      "options": [
+        "Föreslår två eller tre små bitar som du väljer efter vad hon har ätit",
+        "Ger henne hela vagnen att välja från",
+        "Säger att hon kan ta ost en annan gång",
+        "Ger henne en stor portion ändå"
+      ],
+      "explanation": "Ett litet urval som passar kvällens mat ger upplevelsen utan att bli för mycket. Det visar att du har lyssnat."
+    },
+    "vara-ostvagn-6": {
+      "prompt": "En gäst frågar efter en ost till sitt glas Sauternes. Vad föreslår du?",
+      "options": [
+        "Ingen ost, eftersom sött vin inte passar",
+        "En blåmögelost, som Roquefort",
+        "En mild färskost",
+        "En ung hårdost utan smak"
+      ],
+      "explanation": "Sött och salt är en klassisk kombination: det söta vinet balanserar blåmögelostens sälta och skärpa."
+    },
+    "vara-avecvagn-1": {
+      "prompt": "Krogen har köpt en avecvagn. Vad betyder VSOP på en flaska cognac?",
+      "options": [
+        "Att den är gjord av äpplen",
+        "Att den har lagrats minst trettio år",
+        "Att den yngsta konjaken i blandningen har lagrats minst fyra år på ekfat",
+        "Att den är destillerad en gång"
+      ],
+      "explanation": "VSOP betyder att den yngsta brandyn i blandningen har legat minst fyra år på ek. XO kräver minst tio år."
+    },
+    "vara-avecvagn-2": {
+      "prompt": "Vad är calvados?",
+      "options": [
+        "Ett vinbrännvin från Cognac",
+        "En likör av körsbär",
+        "En whisky från Frankrike",
+        "Ett brännvin av äpplen och päron från Normandie"
+      ],
+      "explanation": "Calvados destilleras av cider från äpplen, ibland med päron, och lagras på ek. Den kommer från Normandie."
+    },
+    "vara-avecvagn-3": {
+      "prompt": "Hur serverar du en cognac från avecvagnen?",
+      "options": [
+        "Omkring 2–4 cl i rumstemperatur, i ett tulpanformat glas",
+        "Med is och läsk",
+        "Uppvärmd över en låga",
+        "I ett stort vattenglas"
+      ],
+      "explanation": "Ett tulpanglas samlar doften. Att värma cognacen över en låga driver bort aromerna och lyfter fram alkoholen."
+    },
+    "vara-avecvagn-4": {
+      "prompt": "Vad gör du med de öppnade flaskorna på avecvagnen efter kvällen?",
+      "options": [
+        "Ställer dem i fönstret",
+        "Korkar dem väl och ställer dem upprätt, svalt och mörkt",
+        "Låter dem stå öppna så att de luftas",
+        "Lägger dem ned som vin"
+      ],
+      "explanation": "Sprit ska stå upprätt så att den starka alkoholen inte bryter ned korken. Ljus och värme förändrar smaken."
+    },
+    "vara-avecvagn-5": {
+      "prompt": "En gäst ska köra hem men vill avsluta med något från avecvagnen. Vad föreslår du?",
+      "options": [
+        "Ingenting, han får gå hem",
+        "En dubbel calvados, för att den är mild",
+        "En alkoholfri avec, till exempel kaffe med en liten söt bit eller ett alkoholfritt alternativ på vagnen",
+        "En liten cognac, det gör inget"
+      ],
+      "explanation": "Gästen vill ha ett avslut, inte nödvändigtvis alkohol. Ett alkoholfritt val på vagnen ger honom det utan risk."
+    },
+    "vara-avecvagn-6": {
+      "prompt": "Ett firande sällskap vill ha en runda till från avecvagnen, men en av gästerna är tydligt berusad. Vad gör du?",
+      "options": [
+        "Serverar alla, eftersom de firar",
+        "Vägrar hela sällskapet",
+        "Ber de andra gästerna att ta hand om honom",
+        "Serverar sällskapet men inte den berusade gästen, och erbjuder honom vatten och kaffe diskret"
+      ],
+      "explanation": "Alkohollagen förbjuder servering till den som är påtagligt berusad. Att göra det diskret och erbjuda något annat bevarar stämningen."
+    },
+    "vara-humidor-1": {
+      "prompt": "Krogen har köpt en humidor för cigarrerna. Vilket klimat ska den hålla?",
+      "options": [
+        "Omkring 65–72 % luftfuktighet och 16–20 °C",
+        "Omkring 30 % luftfuktighet och 25 °C",
+        "Kylskåpstemperatur",
+        "Så fuktigt som möjligt"
+      ],
+      "explanation": "Cigarrer torkar och spricker i torr luft och möglar i för fuktig. Ett jämnt klimat runt 70 % och svalt håller dem i form."
+    },
+    "vara-humidor-2": {
+      "prompt": "Varför är humidorer ofta klädda med spansk ceder?",
+      "options": [
+        "För att det är vattentätt",
+        "Träet håller fukt jämnt, doftar gott och stöter bort tobaksbaggen",
+        "För att det är billigast",
+        "För att det leder värme bra"
+      ],
+      "explanation": "Spansk ceder buffrar fukten, ger cigarrerna en mild doft och stöter bort tobaksbaggen."
+    },
+    "vara-humidor-3": {
+      "prompt": "Humidorn är ny. Vad gör du innan cigarrerna läggs in?",
+      "options": [
+        "Torkar ur den med en varm trasa",
+        "Fyller befuktaren med kranvatten",
+        "Fuktar upp träet och låter humidorn stå tills luftfuktigheten är jämn, med destillerat vatten i befuktaren",
+        "Lägger in cigarrerna direkt, de fuktar upp den"
+      ],
+      "explanation": "Torrt cederträ suger fukt ur cigarrerna. Destillerat vatten hindrar kalk och mögel i befuktaren."
+    },
+    "vara-humidor-4": {
+      "prompt": "Hur kontrollerar du att humidorns hygrometer visar rätt?",
+      "options": [
+        "Genom att jämföra med väderleksrapporten",
+        "Genom att andas på den",
+        "Den behöver aldrig kontrolleras",
+        "Med ett salttest: hygrometern i en tät påse med fuktigt salt ska visa omkring 75 %"
+      ],
+      "explanation": "Fuktigt bordssalt i ett tätt utrymme ger omkring 75 % luftfuktighet. Skillnaden visar hur mycket hygrometern visar fel."
+    },
+    "vara-humidor-5": {
+      "prompt": "En gäst vill köpa två cigarrer ur humidorn att ta med hem. Vad tänker du på?",
+      "options": [
+        "Att krogen har tillstånd att sälja tobak och att gästen har fyllt 18",
+        "Inget, det är bara att sälja",
+        "Att ge honom de torraste först",
+        "Att säga nej, tobak säljs bara i affär"
+      ],
+      "explanation": "Sedan 2019 krävs tillstånd för att sälja tobak, och åldersgränsen är 18 år. Att veta det skyddar både krogen och gästen."
+    },
+    "vara-humidor-6": {
+      "prompt": "Två gäster vill ha var sin cigarr till kaffet, men den ena tycker om milda och den andra kraftiga. Vad gör du?",
+      "options": [
+        "Ber dem enas om en",
+        "Visar humidorn och föreslår en ljus, mild cigarr till den ena och en mörkare, kraftigare till den andra",
+        "Ger båda samma cigarr, så att de kan jämföra",
+        "Ger båda den starkaste"
+      ],
+      "explanation": "Varje gäst har sin smak. Att kunna förklara skillnaden mellan täckbladen och välja till var och en är omdöme i praktiken."
+    }
+  }
+}

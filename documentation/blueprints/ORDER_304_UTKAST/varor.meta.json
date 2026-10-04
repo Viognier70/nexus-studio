@@ -1,0 +1,1806 @@
+{
+  "schemaVersion": 1,
+  "note": "ORDER 304 §5 — utkast till frågebanken per vara och sak i utrustningen, för Anders granskning innan det byggs in. Sex frågor per vara, två per kunskapsform (episteme → Måltidsbiblioteket, techne → Metodköket eller Stensöta efter spåret, phronesis → Kalastorget). Formatet är detsamma som för de 37 frågorna (drafts.meta.json), med commodity, commodityKind och supplier tillagda. Svaren är roterade så att rätt svar inte alltid står först. Referenserna är tomma tills källorna är valda.",
+  "questions": [
+    {
+      "id": "vara-gos-1",
+      "commodity": "gos",
+      "commodityKind": "vara",
+      "supplier": "fiskaren",
+      "pavilion": "maltidbiblioteket",
+      "level": "brons",
+      "asker": "chef",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-gos-2",
+      "commodity": "gos",
+      "commodityKind": "vara",
+      "supplier": "fiskaren",
+      "pavilion": "maltidbiblioteket",
+      "level": "silver",
+      "asker": "chef",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-gos-3",
+      "commodity": "gos",
+      "commodityKind": "vara",
+      "supplier": "fiskaren",
+      "pavilion": "metodkoket",
+      "level": "brons",
+      "asker": "chef",
+      "axis": "techne",
+      "track": "kok",
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-gos-4",
+      "commodity": "gos",
+      "commodityKind": "vara",
+      "supplier": "fiskaren",
+      "pavilion": "metodkoket",
+      "level": "silver",
+      "asker": "chef",
+      "axis": "techne",
+      "track": "kok",
+      "correctIndex": 3,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-gos-5",
+      "commodity": "gos",
+      "commodityKind": "vara",
+      "supplier": "fiskaren",
+      "pavilion": "kalastorget",
+      "level": "brons",
+      "asker": "chef",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-gos-6",
+      "commodity": "gos",
+      "commodityKind": "vara",
+      "supplier": "fiskaren",
+      "pavilion": "kalastorget",
+      "level": "silver",
+      "asker": "chef",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-roding-1",
+      "commodity": "roding",
+      "commodityKind": "vara",
+      "supplier": "fiskaren",
+      "pavilion": "maltidbiblioteket",
+      "level": "brons",
+      "asker": "chef",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-roding-2",
+      "commodity": "roding",
+      "commodityKind": "vara",
+      "supplier": "fiskaren",
+      "pavilion": "maltidbiblioteket",
+      "level": "silver",
+      "asker": "chef",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 3,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-roding-3",
+      "commodity": "roding",
+      "commodityKind": "vara",
+      "supplier": "fiskaren",
+      "pavilion": "metodkoket",
+      "level": "brons",
+      "asker": "chef",
+      "axis": "techne",
+      "track": "kok",
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-roding-4",
+      "commodity": "roding",
+      "commodityKind": "vara",
+      "supplier": "fiskaren",
+      "pavilion": "metodkoket",
+      "level": "silver",
+      "asker": "chef",
+      "axis": "techne",
+      "track": "kok",
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-roding-5",
+      "commodity": "roding",
+      "commodityKind": "vara",
+      "supplier": "fiskaren",
+      "pavilion": "kalastorget",
+      "level": "brons",
+      "asker": "chef",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-roding-6",
+      "commodity": "roding",
+      "commodityKind": "vara",
+      "supplier": "fiskaren",
+      "pavilion": "kalastorget",
+      "level": "silver",
+      "asker": "chef",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 3,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-priorat-1",
+      "commodity": "priorat",
+      "commodityKind": "vara",
+      "supplier": "vinhandlaren",
+      "pavilion": "maltidbiblioteket",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-priorat-2",
+      "commodity": "priorat",
+      "commodityKind": "vara",
+      "supplier": "vinhandlaren",
+      "pavilion": "maltidbiblioteket",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-priorat-3",
+      "commodity": "priorat",
+      "commodityKind": "vara",
+      "supplier": "vinhandlaren",
+      "pavilion": "stensota",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-priorat-4",
+      "commodity": "priorat",
+      "commodityKind": "vara",
+      "supplier": "vinhandlaren",
+      "pavilion": "stensota",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 3,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-priorat-5",
+      "commodity": "priorat",
+      "commodityKind": "vara",
+      "supplier": "vinhandlaren",
+      "pavilion": "kalastorget",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-priorat-6",
+      "commodity": "priorat",
+      "commodityKind": "vara",
+      "supplier": "vinhandlaren",
+      "pavilion": "kalastorget",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-chablis-1",
+      "commodity": "chablis",
+      "commodityKind": "vara",
+      "supplier": "vinhandlaren",
+      "pavilion": "maltidbiblioteket",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-chablis-2",
+      "commodity": "chablis",
+      "commodityKind": "vara",
+      "supplier": "vinhandlaren",
+      "pavilion": "maltidbiblioteket",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 3,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-chablis-3",
+      "commodity": "chablis",
+      "commodityKind": "vara",
+      "supplier": "vinhandlaren",
+      "pavilion": "stensota",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-chablis-4",
+      "commodity": "chablis",
+      "commodityKind": "vara",
+      "supplier": "vinhandlaren",
+      "pavilion": "stensota",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-chablis-5",
+      "commodity": "chablis",
+      "commodityKind": "vara",
+      "supplier": "vinhandlaren",
+      "pavilion": "kalastorget",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-chablis-6",
+      "commodity": "chablis",
+      "commodityKind": "vara",
+      "supplier": "vinhandlaren",
+      "pavilion": "kalastorget",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 3,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-mosel-riesling-1",
+      "commodity": "mosel-riesling",
+      "commodityKind": "vara",
+      "supplier": "vinhandlaren",
+      "pavilion": "maltidbiblioteket",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-mosel-riesling-2",
+      "commodity": "mosel-riesling",
+      "commodityKind": "vara",
+      "supplier": "vinhandlaren",
+      "pavilion": "maltidbiblioteket",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-mosel-riesling-3",
+      "commodity": "mosel-riesling",
+      "commodityKind": "vara",
+      "supplier": "vinhandlaren",
+      "pavilion": "stensota",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-mosel-riesling-4",
+      "commodity": "mosel-riesling",
+      "commodityKind": "vara",
+      "supplier": "vinhandlaren",
+      "pavilion": "stensota",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 3,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-mosel-riesling-5",
+      "commodity": "mosel-riesling",
+      "commodityKind": "vara",
+      "supplier": "vinhandlaren",
+      "pavilion": "kalastorget",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-mosel-riesling-6",
+      "commodity": "mosel-riesling",
+      "commodityKind": "vara",
+      "supplier": "vinhandlaren",
+      "pavilion": "kalastorget",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-brie-de-meaux-1",
+      "commodity": "brie-de-meaux",
+      "commodityKind": "vara",
+      "supplier": "ostaffinoren",
+      "pavilion": "maltidbiblioteket",
+      "level": "brons",
+      "asker": "chef",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-brie-de-meaux-2",
+      "commodity": "brie-de-meaux",
+      "commodityKind": "vara",
+      "supplier": "ostaffinoren",
+      "pavilion": "maltidbiblioteket",
+      "level": "silver",
+      "asker": "chef",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 3,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-brie-de-meaux-3",
+      "commodity": "brie-de-meaux",
+      "commodityKind": "vara",
+      "supplier": "ostaffinoren",
+      "pavilion": "metodkoket",
+      "level": "brons",
+      "asker": "chef",
+      "axis": "techne",
+      "track": "kok",
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-brie-de-meaux-4",
+      "commodity": "brie-de-meaux",
+      "commodityKind": "vara",
+      "supplier": "ostaffinoren",
+      "pavilion": "metodkoket",
+      "level": "silver",
+      "asker": "chef",
+      "axis": "techne",
+      "track": "kok",
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-brie-de-meaux-5",
+      "commodity": "brie-de-meaux",
+      "commodityKind": "vara",
+      "supplier": "ostaffinoren",
+      "pavilion": "kalastorget",
+      "level": "brons",
+      "asker": "chef",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-brie-de-meaux-6",
+      "commodity": "brie-de-meaux",
+      "commodityKind": "vara",
+      "supplier": "ostaffinoren",
+      "pavilion": "kalastorget",
+      "level": "silver",
+      "asker": "chef",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 3,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-munster-1",
+      "commodity": "munster",
+      "commodityKind": "vara",
+      "supplier": "ostaffinoren",
+      "pavilion": "maltidbiblioteket",
+      "level": "brons",
+      "asker": "chef",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-munster-2",
+      "commodity": "munster",
+      "commodityKind": "vara",
+      "supplier": "ostaffinoren",
+      "pavilion": "maltidbiblioteket",
+      "level": "silver",
+      "asker": "chef",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-munster-3",
+      "commodity": "munster",
+      "commodityKind": "vara",
+      "supplier": "ostaffinoren",
+      "pavilion": "metodkoket",
+      "level": "brons",
+      "asker": "chef",
+      "axis": "techne",
+      "track": "kok",
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-munster-4",
+      "commodity": "munster",
+      "commodityKind": "vara",
+      "supplier": "ostaffinoren",
+      "pavilion": "metodkoket",
+      "level": "silver",
+      "asker": "chef",
+      "axis": "techne",
+      "track": "kok",
+      "correctIndex": 3,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-munster-5",
+      "commodity": "munster",
+      "commodityKind": "vara",
+      "supplier": "ostaffinoren",
+      "pavilion": "kalastorget",
+      "level": "brons",
+      "asker": "chef",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-munster-6",
+      "commodity": "munster",
+      "commodityKind": "vara",
+      "supplier": "ostaffinoren",
+      "pavilion": "kalastorget",
+      "level": "silver",
+      "asker": "chef",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-vasterbottensost-1",
+      "commodity": "vasterbottensost",
+      "commodityKind": "vara",
+      "supplier": "ostaffinoren",
+      "pavilion": "maltidbiblioteket",
+      "level": "brons",
+      "asker": "chef",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-vasterbottensost-2",
+      "commodity": "vasterbottensost",
+      "commodityKind": "vara",
+      "supplier": "ostaffinoren",
+      "pavilion": "maltidbiblioteket",
+      "level": "silver",
+      "asker": "chef",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 3,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-vasterbottensost-3",
+      "commodity": "vasterbottensost",
+      "commodityKind": "vara",
+      "supplier": "ostaffinoren",
+      "pavilion": "metodkoket",
+      "level": "brons",
+      "asker": "chef",
+      "axis": "techne",
+      "track": "kok",
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-vasterbottensost-4",
+      "commodity": "vasterbottensost",
+      "commodityKind": "vara",
+      "supplier": "ostaffinoren",
+      "pavilion": "metodkoket",
+      "level": "silver",
+      "asker": "chef",
+      "axis": "techne",
+      "track": "kok",
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-vasterbottensost-5",
+      "commodity": "vasterbottensost",
+      "commodityKind": "vara",
+      "supplier": "ostaffinoren",
+      "pavilion": "kalastorget",
+      "level": "brons",
+      "asker": "chef",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-vasterbottensost-6",
+      "commodity": "vasterbottensost",
+      "commodityKind": "vara",
+      "supplier": "ostaffinoren",
+      "pavilion": "kalastorget",
+      "level": "silver",
+      "asker": "chef",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 3,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-jamon-iberico-1",
+      "commodity": "jamon-iberico",
+      "commodityKind": "vara",
+      "supplier": "charkuteristen",
+      "pavilion": "maltidbiblioteket",
+      "level": "brons",
+      "asker": "chef",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-jamon-iberico-2",
+      "commodity": "jamon-iberico",
+      "commodityKind": "vara",
+      "supplier": "charkuteristen",
+      "pavilion": "maltidbiblioteket",
+      "level": "silver",
+      "asker": "chef",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-jamon-iberico-3",
+      "commodity": "jamon-iberico",
+      "commodityKind": "vara",
+      "supplier": "charkuteristen",
+      "pavilion": "metodkoket",
+      "level": "brons",
+      "asker": "chef",
+      "axis": "techne",
+      "track": "kok",
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-jamon-iberico-4",
+      "commodity": "jamon-iberico",
+      "commodityKind": "vara",
+      "supplier": "charkuteristen",
+      "pavilion": "metodkoket",
+      "level": "silver",
+      "asker": "chef",
+      "axis": "techne",
+      "track": "kok",
+      "correctIndex": 3,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-jamon-iberico-5",
+      "commodity": "jamon-iberico",
+      "commodityKind": "vara",
+      "supplier": "charkuteristen",
+      "pavilion": "kalastorget",
+      "level": "brons",
+      "asker": "chef",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-jamon-iberico-6",
+      "commodity": "jamon-iberico",
+      "commodityKind": "vara",
+      "supplier": "charkuteristen",
+      "pavilion": "kalastorget",
+      "level": "silver",
+      "asker": "chef",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-havannacigarr-1",
+      "commodity": "havannacigarr",
+      "commodityKind": "vara",
+      "supplier": "vinhandlaren",
+      "pavilion": "maltidbiblioteket",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-havannacigarr-2",
+      "commodity": "havannacigarr",
+      "commodityKind": "vara",
+      "supplier": "vinhandlaren",
+      "pavilion": "maltidbiblioteket",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 3,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-havannacigarr-3",
+      "commodity": "havannacigarr",
+      "commodityKind": "vara",
+      "supplier": "vinhandlaren",
+      "pavilion": "stensota",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-havannacigarr-4",
+      "commodity": "havannacigarr",
+      "commodityKind": "vara",
+      "supplier": "vinhandlaren",
+      "pavilion": "stensota",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-havannacigarr-5",
+      "commodity": "havannacigarr",
+      "commodityKind": "vara",
+      "supplier": "vinhandlaren",
+      "pavilion": "kalastorget",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-havannacigarr-6",
+      "commodity": "havannacigarr",
+      "commodityKind": "vara",
+      "supplier": "vinhandlaren",
+      "pavilion": "kalastorget",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 3,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-vinkyl-1",
+      "commodity": "vinkyl",
+      "commodityKind": "utrustning",
+      "supplier": "butiken",
+      "pavilion": "maltidbiblioteket",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-vinkyl-2",
+      "commodity": "vinkyl",
+      "commodityKind": "utrustning",
+      "supplier": "butiken",
+      "pavilion": "maltidbiblioteket",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-vinkyl-3",
+      "commodity": "vinkyl",
+      "commodityKind": "utrustning",
+      "supplier": "butiken",
+      "pavilion": "stensota",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-vinkyl-4",
+      "commodity": "vinkyl",
+      "commodityKind": "utrustning",
+      "supplier": "butiken",
+      "pavilion": "stensota",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 3,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-vinkyl-5",
+      "commodity": "vinkyl",
+      "commodityKind": "utrustning",
+      "supplier": "butiken",
+      "pavilion": "kalastorget",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-vinkyl-6",
+      "commodity": "vinkyl",
+      "commodityKind": "utrustning",
+      "supplier": "butiken",
+      "pavilion": "kalastorget",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-flamberingsvagn-1",
+      "commodity": "flamberingsvagn",
+      "commodityKind": "utrustning",
+      "supplier": "butiken",
+      "pavilion": "maltidbiblioteket",
+      "level": "brons",
+      "asker": "chef",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-flamberingsvagn-2",
+      "commodity": "flamberingsvagn",
+      "commodityKind": "utrustning",
+      "supplier": "butiken",
+      "pavilion": "maltidbiblioteket",
+      "level": "silver",
+      "asker": "chef",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 3,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-flamberingsvagn-3",
+      "commodity": "flamberingsvagn",
+      "commodityKind": "utrustning",
+      "supplier": "butiken",
+      "pavilion": "metodkoket",
+      "level": "brons",
+      "asker": "chef",
+      "axis": "techne",
+      "track": "kok",
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-flamberingsvagn-4",
+      "commodity": "flamberingsvagn",
+      "commodityKind": "utrustning",
+      "supplier": "butiken",
+      "pavilion": "metodkoket",
+      "level": "silver",
+      "asker": "chef",
+      "axis": "techne",
+      "track": "kok",
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-flamberingsvagn-5",
+      "commodity": "flamberingsvagn",
+      "commodityKind": "utrustning",
+      "supplier": "butiken",
+      "pavilion": "kalastorget",
+      "level": "brons",
+      "asker": "chef",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-flamberingsvagn-6",
+      "commodity": "flamberingsvagn",
+      "commodityKind": "utrustning",
+      "supplier": "butiken",
+      "pavilion": "kalastorget",
+      "level": "silver",
+      "asker": "chef",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 3,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-ostvagn-1",
+      "commodity": "ostvagn",
+      "commodityKind": "utrustning",
+      "supplier": "butiken",
+      "pavilion": "maltidbiblioteket",
+      "level": "brons",
+      "asker": "chef",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-ostvagn-2",
+      "commodity": "ostvagn",
+      "commodityKind": "utrustning",
+      "supplier": "butiken",
+      "pavilion": "maltidbiblioteket",
+      "level": "silver",
+      "asker": "chef",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-ostvagn-3",
+      "commodity": "ostvagn",
+      "commodityKind": "utrustning",
+      "supplier": "butiken",
+      "pavilion": "metodkoket",
+      "level": "brons",
+      "asker": "chef",
+      "axis": "techne",
+      "track": "kok",
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-ostvagn-4",
+      "commodity": "ostvagn",
+      "commodityKind": "utrustning",
+      "supplier": "butiken",
+      "pavilion": "metodkoket",
+      "level": "silver",
+      "asker": "chef",
+      "axis": "techne",
+      "track": "kok",
+      "correctIndex": 3,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-ostvagn-5",
+      "commodity": "ostvagn",
+      "commodityKind": "utrustning",
+      "supplier": "butiken",
+      "pavilion": "kalastorget",
+      "level": "brons",
+      "asker": "chef",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-ostvagn-6",
+      "commodity": "ostvagn",
+      "commodityKind": "utrustning",
+      "supplier": "butiken",
+      "pavilion": "kalastorget",
+      "level": "silver",
+      "asker": "chef",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-avecvagn-1",
+      "commodity": "avecvagn",
+      "commodityKind": "utrustning",
+      "supplier": "butiken",
+      "pavilion": "maltidbiblioteket",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-avecvagn-2",
+      "commodity": "avecvagn",
+      "commodityKind": "utrustning",
+      "supplier": "butiken",
+      "pavilion": "maltidbiblioteket",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 3,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-avecvagn-3",
+      "commodity": "avecvagn",
+      "commodityKind": "utrustning",
+      "supplier": "butiken",
+      "pavilion": "stensota",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-avecvagn-4",
+      "commodity": "avecvagn",
+      "commodityKind": "utrustning",
+      "supplier": "butiken",
+      "pavilion": "stensota",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-avecvagn-5",
+      "commodity": "avecvagn",
+      "commodityKind": "utrustning",
+      "supplier": "butiken",
+      "pavilion": "kalastorget",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-avecvagn-6",
+      "commodity": "avecvagn",
+      "commodityKind": "utrustning",
+      "supplier": "butiken",
+      "pavilion": "kalastorget",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 3,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-humidor-1",
+      "commodity": "humidor",
+      "commodityKind": "utrustning",
+      "supplier": "butiken",
+      "pavilion": "maltidbiblioteket",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-humidor-2",
+      "commodity": "humidor",
+      "commodityKind": "utrustning",
+      "supplier": "butiken",
+      "pavilion": "maltidbiblioteket",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "episteme",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-humidor-3",
+      "commodity": "humidor",
+      "commodityKind": "utrustning",
+      "supplier": "butiken",
+      "pavilion": "stensota",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 2,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-humidor-4",
+      "commodity": "humidor",
+      "commodityKind": "utrustning",
+      "supplier": "butiken",
+      "pavilion": "stensota",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "techne",
+      "track": "sommellerie",
+      "correctIndex": 3,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-humidor-5",
+      "commodity": "humidor",
+      "commodityKind": "utrustning",
+      "supplier": "butiken",
+      "pavilion": "kalastorget",
+      "level": "brons",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 0,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    },
+    {
+      "id": "vara-humidor-6",
+      "commodity": "humidor",
+      "commodityKind": "utrustning",
+      "supplier": "butiken",
+      "pavilion": "kalastorget",
+      "level": "silver",
+      "asker": "sommelier",
+      "axis": "phronesis",
+      "track": null,
+      "correctIndex": 1,
+      "anchor": {
+        "phase": "service",
+        "rawText": "varan på kvällens meny eller i rummet"
+      },
+      "placeholder": false,
+      "reference": null,
+      "status": "utkast",
+      "source": "ORDER 304 utkast (Claude Code)"
+    }
+  ]
+}
