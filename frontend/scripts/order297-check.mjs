@@ -72,7 +72,15 @@ async function run(width, height) {
         if (await page.$('[data-testid=waste-continue], [data-testid=screen-T2], [data-testid=transfer-do]')) break;
         await delay(200);
       }
-      // Spelet står still medan nivåerna fotograferas.
+      // Inget raketkort och inget konsekvensögonblick medan nivåerna fotograferas
+      // (ögonblickets kamera går före nivåknapparna).
+      for (let i = 0; i < 100; i++) {
+        const opt = await page.$('[data-testid=incident-card][data-mode=ask] [data-testid^=incident-option-]');
+        if (opt) await opt.click().catch(() => {});
+        const busy = await page.evaluate(() => !!document.querySelector('[data-testid=incident-card]') || (document.body.dataset.moment ?? '') !== '');
+        if (!busy) break;
+        await delay(300);
+      }
       await page.locator('[data-testid=speed-toggle] button').nth(0).click().catch(() => {});
       const levels = [];
       for (const [key, name] of [['v', 'byn'], ['c', 'kvarteret'], ['x', 'gatan'], ['z', 'krogen']]) {

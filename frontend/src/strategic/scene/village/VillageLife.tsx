@@ -39,6 +39,7 @@ import { createRng } from '../../util/rng';
 import { readabilityScale } from '../../util/readability';
 import { publishVillageLive, type OnWayGroup } from './villageLive';
 import type { SimulationState } from '../../types';
+import { BLEND, LEVELS } from '../../village/villageEvening';
 
 type Vec2 = [number, number];
 type WalkerKind = PoolType | 'social' | 'billionaire' | 'tourist';
@@ -59,8 +60,6 @@ const EAT_AT_TRUCK_MIN = 12;
 const STAY_MIN: [number, number] = [70, 130];
 const MAX_FIGURES = 360;
 const MAX_CARS = 24;
-const FIGURE_CURVE = { rampStart: 30, rampEnd: 700, maxScale: 6 };
-const MARKER_FROM_M = 150;
 const ON_WAY_RADIUS_M = 160;
 const MAX_HEAT = 700;
 const HEAT_CELL_M = 8;
@@ -208,6 +207,37 @@ function planEvening(state: SimulationState): Planned[] {
   return out.sort((a, b) => a.at - b.at);
 }
 
+// ORDER 297 — figurernas förstoring på ett avstånd: nivåernas figureScale,
+// logaritmiskt mellan nivåerna (byns nivå räknas som 2, som i Designs frameAt).
+function figureScaleAt(d: number): number {
+  const L = LEVELS;
+  const sc = (i: number) => L[i].figureScale || 2;
+  if (d >= L[0].dist) return sc(0);
+  if (d <= L[L.length - 1].dist) return sc(L.length - 1);
+  let i = 0;
+  while (i < L.length - 2 && d < L[i + 1].dist) i++;
+  const k = Math.max(0, Math.min(1, Math.log(L[i].dist / d) / Math.log(L[i].dist / L[i + 1].dist)));
+  return sc(i) + (sc(i + 1) - sc(i)) * k;
+}
+
+function smoothBand(a: number, b: number, x: number): number {
+  const t = Math.max(0, Math.min(1, (x - a) / (b - a)));
+  return t * t * (3 - 2 * t);
+}
+
+function glowTexture(): THREE.Texture {
+  const c = document.createElement('canvas');
+  c.width = c.height = 64;
+  const x = c.getContext('2d')!;
+  const g = x.createRadialGradient(32, 32, 0, 32, 32, 32);
+  g.addColorStop(0, 'rgba(255,255,255,1)');
+  g.addColorStop(0.3, 'rgba(255,255,255,.42)');
+  g.addColorStop(1, 'rgba(255,255,255,0)');
+  x.fillStyle = g;
+  x.fillRect(0, 0, 64, 64);
+  return new THREE.CanvasTexture(c);
+}
+
 function makeFigureMesh(): THREE.InstancedMesh {
   const body = new THREE.CylinderGeometry(0.2, 0.26, 1.15, 8);
   body.translate(0, 0.62, 0);
@@ -269,7 +299,19 @@ export function VillageLife() {
     const figures = makeFigureMesh();
     // Gruppens markering i byn: en skiva som vänder sig mot kameran.
     const markerGeo = new THREE.CircleGeometry(1, 20);
-    const markers = new THREE.InstancedMesh(markerGeo, new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.92, depthWrite: false }), MAX_FIGURES);
+    // ORDER 297 — sällskapets lykta i byn (Designs createGuests): ett sken i
+    // gästtypens färg, en kärna på marken, och fläcken under sällskapet i kvarteret.
+    const markers = new THREE.InstancedMesh(markerGeo, new THREE.MeshBasicMaterial({ map: glowTexture(), transparent: true, opacity: 0.4, depthWrite: false, blending: THREE.AdditiveBlending }), MAX_FIGURES);
+    const flatGeo = new THREE.CircleGeometry(1, 28);
+    flatGeo.rotateX(-Math.PI / 2);
+    const cores = new THREE.InstancedMesh(flatGeo, new THREE.MeshBasicMaterial({ transparent: true, opacity: 1, toneMapped: false }), MAX_FIGURES);
+    cores.count = 0;
+    cores.frustumCulled = false;
+    cores.renderOrder = 3;
+    const patches = new THREE.InstancedMesh(flatGeo, new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false }), MAX_FIGURES);
+    patches.count = 0;
+    patches.frustumCulled = false;
+    patches.renderOrder = 1;
     markers.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
     markers.count = 0;
     markers.frustumCulled = false;
@@ -297,8 +339,11 @@ export function VillageLife() {
     heat.count = 0;
     heat.frustumCulled = false;
     heat.renderOrder = 2;
-    root.add(figures, markers, rings, cars, bus, heat);
-    return { figures, markers, rings, cars, bus, heat };
+    // ORDER 297 — gästflödets band finns inte i Designs leverans Byn i kvällsljus;
+    // där bär sällskapens lyktor flödet. Banden ritas inte längre.
+    heat.visible = false;
+    root.add(figures, markers, rings, cars, bus, heat, cores, patches);
+    return { figures, markers, rings, cars, bus, heat, cores, patches };
   }, [root]);
 
   useEffect(() => () => {
@@ -565,17 +610,27 @@ export function VillageLife() {
   function draw(_s: SimulationState, now: number): void {
     const L = live.current;
     const dist = actualRef.current.distance;
-    const scale = readabilityScale(dist, FIGURE_CURVE);
-    const { figures, markers, rings, cars, bus, heat } = meshes;
+    // ORDER 297 — sätten att rita på nivåerna (Designs byKvall.js frameAt och
+    // createGuests): figurerna i nivåns förstoring närmare än figuresUntil,
+    // lyktorna längre ut (BLEND.lantern) och fläcken i kvarteret (BLEND.patch).
+    const scale = figureScaleAt(dist);
+    const { figures, markers, rings, cars, bus, heat, cores, patches } = meshes;
     let fi = 0;
     let mi = 0;
     let ri = 0;
-    const markerSize = Math.max(1.6, dist * 0.012);
-    const showMarkers = dist > MARKER_FROM_M;
+    let pi = 0;
+    const lantern = smoothBand(BLEND.lantern[0], BLEND.lantern[1], dist);
+    const patch = smoothBand(BLEND.patch[0], BLEND.patch[1], dist) * (1 - smoothBand(BLEND.patch[2], BLEND.patch[3], dist));
+    const kd = Math.max(0.7, Math.min(2.4, dist / 150));
+    const showMarkers = lantern > 0.01;
+    const showFigures = dist < BLEND.figuresUntil;
+    (markers.material as THREE.MeshBasicMaterial).opacity = 0.4 * lantern;
+    (cores.material as THREE.MeshBasicMaterial).opacity = lantern;
+    (patches.material as THREE.MeshBasicMaterial).opacity = 0.16 * patch;
     for (const w of L.walkers) {
       const p = w.standAt ? { x: w.standAt[0], z: w.standAt[1], heading: 0 } : pointAlong(w.route, w.s);
       tmp.c.set(TYPE_COLOUR[w.type]);
-      for (let k = 0; k < w.n && fi < MAX_FIGURES; k++) {
+      for (let k = 0; showFigures && k < w.n && fi < MAX_FIGURES; k++) {
         const back = w.standAt ? null : pointAlong(w.route, w.s - k * 0.9 * scale);
         const side = ((k % 2) * 2 - 1) * 0.35 * scale * (k > 0 ? 1 : 0);
         const x = (back?.x ?? p.x) + Math.cos(p.heading) * side;
@@ -589,19 +644,36 @@ export function VillageLife() {
         fi++;
       }
       if (showMarkers && mi < MAX_FIGURES) {
-        const r = markerSize * (0.8 + Math.min(4, w.n) * 0.18);
+        const ls = (4 + 1.6 * Math.sqrt(w.n)) * kd;
         tmp.q.copy(camera.quaternion);
-        tmp.p.set(p.x, 2.5 + r, p.z);
-        tmp.s.set(r, r, 1);
+        tmp.p.set(p.x, 1.5, p.z);
+        tmp.s.set(ls / 2, ls / 2, 1);
         tmp.m.compose(tmp.p, tmp.q, tmp.s);
         markers.setMatrixAt(mi, tmp.m);
         markers.setColorAt(mi, tmp.c);
+        const cr = (0.9 + 0.35 * Math.sqrt(w.n)) * kd;
+        tmp.q.identity();
+        tmp.p.set(p.x, 0.14, p.z);
+        tmp.s.set(cr, 1, cr);
+        tmp.m.compose(tmp.p, tmp.q, tmp.s);
+        cores.setMatrixAt(mi, tmp.m);
+        cores.setColorAt(mi, tmp.c);
         mi++;
+      }
+      if (showFigures && patch > 0.01 && pi < MAX_FIGURES) {
+        const pr = (0.6 + 0.3 * w.n) * scale;
+        tmp.q.identity();
+        tmp.p.set(p.x, 0.1, p.z);
+        tmp.s.set(pr, 1, pr);
+        tmp.m.compose(tmp.p, tmp.q, tmp.s);
+        patches.setMatrixAt(pi, tmp.m);
+        patches.setColorAt(pi, tmp.c);
+        pi++;
       }
       if (w.ring && ri < 16) {
         tmp.q.identity();
         tmp.p.set(p.x, 0.15, p.z);
-        const r = Math.max(1.4 * scale, showMarkers ? markerSize * 2 : 0);
+        const r = 2.4 * Math.max(0.45, Math.min(3, dist / 120));
         tmp.s.set(r, 1, r);
         tmp.m.compose(tmp.p, tmp.q, tmp.s);
         rings.setMatrixAt(ri, tmp.m);
@@ -616,6 +688,12 @@ export function VillageLife() {
     markers.count = mi;
     markers.instanceMatrix.needsUpdate = true;
     if (markers.instanceColor) markers.instanceColor.needsUpdate = true;
+    cores.count = mi;
+    cores.instanceMatrix.needsUpdate = true;
+    if (cores.instanceColor) cores.instanceColor.needsUpdate = true;
+    patches.count = pi;
+    patches.instanceMatrix.needsUpdate = true;
+    if (patches.instanceColor) patches.instanceColor.needsUpdate = true;
     rings.count = ri;
     rings.instanceMatrix.needsUpdate = true;
     if (rings.instanceColor) rings.instanceColor.needsUpdate = true;
@@ -672,7 +750,7 @@ export function VillageLife() {
       heat.instanceMatrix.needsUpdate = true;
       if (heat.instanceColor) heat.instanceColor.needsUpdate = true;
     }
-    heat.visible = dist > 60 && dist < 900;
+    heat.visible = false; // ORDER 297 — banden ritas inte (Designs lyktor bär flödet).
     figures.visible = dist > 20;
   }
 
