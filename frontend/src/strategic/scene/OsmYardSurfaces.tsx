@@ -12,6 +12,7 @@ import {
   orientedBbox,
   polygonArea
 } from '../procgen/geom';
+import { STATIC_INSTANCE_FRAMES } from './staticInstances';
 
 // ORDER 031 — Property character (Phase 2).
 //
@@ -135,7 +136,7 @@ export function OsmYardSurfaces() {
         if (stylePatches.length === 0) return null;
         const appearance = SURFACE_APPEARANCE[style];
         return (
-          <Instances key={style} limit={stylePatches.length} range={stylePatches.length}>
+          <Instances frames={STATIC_INSTANCE_FRAMES} key={style} limit={stylePatches.length} range={stylePatches.length}>
             <boxGeometry args={[1, 0.02, 1]} />
             <meshStandardMaterial color={appearance.colour} roughness={appearance.roughness} />
             {stylePatches.map((p, i) => (

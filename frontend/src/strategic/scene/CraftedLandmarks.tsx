@@ -2148,9 +2148,11 @@ function ChurchLandmark({ landmark }: { landmark: Landmark }) {
 
       {/* Bell tower — west end. */}
       <group position={[TOWER_DX, 0, 0]}>
-        <mesh position={[0, TOWER_BODY_H / 2, 0]}>
+        {/* ORDER 297b — tornet belyses från marken på kvällen
+            (village/EveningAccents.tsx hittar det på namnet). */}
+        <mesh name="church-tower" position={[0, TOWER_BODY_H / 2, 0]}>
           <boxGeometry args={[TOWER_SIZE, TOWER_BODY_H, TOWER_SIZE]} />
-          <meshStandardMaterial color={WALL} roughness={0.9} />
+          <meshStandardMaterial color={WALL} roughness={0.9} emissive="#ffcf9a" emissiveIntensity={0} />
         </mesh>
         {/* Clock face on west face — verified in kyrkan2.jpeg. */}
         <mesh

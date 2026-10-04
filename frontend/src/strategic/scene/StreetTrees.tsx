@@ -8,6 +8,7 @@ import {
   type VegetationDensity
 } from '../content/streetProfiles';
 import { inAnyWater, nearAnyBuilding } from '../procgen/geom';
+import { STATIC_INSTANCE_FRAMES } from './staticInstances';
 
 // ORDER 031 — Street vegetation from StreetProfile (Phase 8).
 //
@@ -204,7 +205,7 @@ export function StreetTrees() {
         const geo = SPECIES[species];
         return (
           <group key={species}>
-            <Instances limit={speciesTrees.length} range={speciesTrees.length}>
+            <Instances frames={STATIC_INSTANCE_FRAMES} limit={speciesTrees.length} range={speciesTrees.length}>
               <cylinderGeometry args={[geo.trunkTop, geo.trunkBottom, geo.trunkHeight, 6]} />
               <meshStandardMaterial color={geo.trunkColour} roughness={1} />
               {speciesTrees.map((t, i) => (
@@ -216,7 +217,7 @@ export function StreetTrees() {
                 />
               ))}
             </Instances>
-            <Instances limit={speciesTrees.length} range={speciesTrees.length}>
+            <Instances frames={STATIC_INSTANCE_FRAMES} limit={speciesTrees.length} range={speciesTrees.length}>
               {species === 'conifer'
                 ? <coneGeometry args={[geo.canopyRadius, geo.canopyRadius * 3.0, 8]} />
                 : <sphereGeometry args={[geo.canopyRadius, 10, 8]} />}

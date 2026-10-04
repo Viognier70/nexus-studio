@@ -13,6 +13,7 @@ import { nearestStreetProfile } from '../content/streetProfiles';
 import { inside } from '../procgen/geom';
 import { SKIP_PROCEDURAL_IDS } from './ProceduralFacades';
 import { BUILDINGS_ON_ROADS } from '../content/buildingsOnRoads';
+import { STATIC_INSTANCE_FRAMES } from './staticInstances';
 
 type WealthTier = 'modest' | 'standard' | 'prosperous';
 
@@ -1413,7 +1414,7 @@ export function OsmBuildings() {
           a horizontal band and readable as individual panes at close
           zoom without the earlier blank-slab feel. */}
       {windows.length > 0 && (
-        <Instances limit={windows.length} range={windows.length}>
+        <Instances frames={STATIC_INSTANCE_FRAMES} limit={windows.length} range={windows.length}>
           <boxGeometry args={[0.95, 1.35, 0.06]} />
           <meshStandardMaterial
             color="#efe6d4"

@@ -15,12 +15,16 @@ for (const f of process.argv.slice(2)) {
     const c = document.createElement('canvas'); c.width = img.width; c.height = img.height;
     const x = c.getContext('2d'); x.drawImage(img, 0, 0);
     const x0 = Math.round(img.width * 0.3), y0 = Math.round(img.height * 0.3), w = Math.round(img.width * 0.4), h = Math.round(img.height * 0.4);
-    const d = x.getImageData(x0, y0, w, h).data; let s = 0;
-    for (let i = 0; i < d.length; i += 4) s += 0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2];
-    return s / (d.length / 4);
+    const d = x.getImageData(x0, y0, w, h).data; let s = 0; const all = [];
+    for (let i = 0; i < d.length; i += 4) { const l = 0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2]; s += l; all.push(l); }
+    all.sort((a, b) => a - b);
+    const q = (p) => all[Math.floor(p * (all.length - 1))];
+    return { mean: s / (d.length / 4), p10: q(0.1), p50: q(0.5), p90: q(0.9) };
   }, url);
-  console.log(v.toFixed(1), f);
-  rows.push({ file: f, luminance: +v.toFixed(1) });
+  // ORDER 297b — strålkastarnas verkan: de ljusaste mot de mörkaste, p90 / p10
+  // och p90 − p50 (luminans i samma utsnitt).
+  console.log(v.mean.toFixed(1), 'p90/p10', (v.p90 / Math.max(1, v.p10)).toFixed(2), 'p90-p50', (v.p90 - v.p50).toFixed(1), f);
+  rows.push({ file: f, luminance: +v.mean.toFixed(1), p10: +v.p10.toFixed(1), p50: +v.p50.toFixed(1), p90: +v.p90.toFixed(1), contrast: +(v.p90 / Math.max(1, v.p10)).toFixed(2), spread: +(v.p90 - v.p50).toFixed(1) });
 }
 await browser.close();
-if (process.env.LUM_OUT) { const { writeFileSync } = await import('node:fs'); writeFileSync(process.env.LUM_OUT, JSON.stringify({ definition: 'Medelluminans (Rec. 709, 0–255) i bildens mitt, 30–70 % i båda leden (scripts/luminance.mjs).', rows }, null, 2) + '\n'); }
+if (process.env.LUM_OUT) { const { writeFileSync } = await import('node:fs'); writeFileSync(process.env.LUM_OUT, JSON.stringify({ definition: 'Medelluminans (Rec. 709, 0–255) i bildens mitt, 30–70 % i båda leden, med percentilerna p10/p50/p90, contrast = p90/p10 och spread = p90 − p50 (scripts/luminance.mjs).', rows }, null, 2) + '\n'); }

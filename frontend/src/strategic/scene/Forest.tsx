@@ -2,6 +2,7 @@ import { Instance, Instances } from '@react-three/drei';
 import { useMemo } from 'react';
 import { createRng } from '../util/rng';
 import { VILLAGE_BOUNDS, LANDMARKS } from '../content/grythyttan';
+import { STATIC_INSTANCE_FRAMES } from './staticInstances';
 
 interface Tree {
   x: number;
@@ -63,7 +64,7 @@ export function Forest() {
 
   return (
     <group>
-      <Instances limit={trees.length} range={trees.length}>
+      <Instances frames={STATIC_INSTANCE_FRAMES} limit={trees.length} range={trees.length}>
         <cylinderGeometry args={[0.14, 0.22, 1.4, 6]} />
         <meshStandardMaterial color="#3f382e" roughness={1} />
         {trees.map((t, i) => (
@@ -75,7 +76,7 @@ export function Forest() {
           />
         ))}
       </Instances>
-      <Instances limit={trees.length} range={trees.length}>
+      <Instances frames={STATIC_INSTANCE_FRAMES} limit={trees.length} range={trees.length}>
         <coneGeometry args={[1.1, 3.6, 8]} />
         <meshStandardMaterial color="#4b5148" roughness={1} />
         {trees.map((t, i) => (

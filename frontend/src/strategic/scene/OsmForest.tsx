@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { createRng } from '../util/rng';
 import { WORLD } from '../content/world';
 import type { Vec2Tuple } from '../content/world';
+import { STATIC_INSTANCE_FRAMES } from './staticInstances';
 
 type TreeKind = 'coniferous' | 'deciduous';
 
@@ -168,7 +169,7 @@ export function OsmForest() {
     <group>
       {/* Coniferous trunks */}
       {conifers.length > 0 && (
-        <Instances limit={conifers.length} range={conifers.length}>
+        <Instances frames={STATIC_INSTANCE_FRAMES} limit={conifers.length} range={conifers.length}>
           <cylinderGeometry args={[0.16, 0.24, 1.4, 6]} />
           <meshStandardMaterial color="#3f382e" roughness={1} />
           {conifers.map((t, i) => (
@@ -183,7 +184,7 @@ export function OsmForest() {
       )}
       {/* Coniferous canopies */}
       {conifers.length > 0 && (
-        <Instances limit={conifers.length} range={conifers.length}>
+        <Instances frames={STATIC_INSTANCE_FRAMES} limit={conifers.length} range={conifers.length}>
           <coneGeometry args={[1.2, 3.8, 8]} />
           <meshStandardMaterial color="#4a5148" roughness={1} />
           {conifers.map((t, i) => (
@@ -198,7 +199,7 @@ export function OsmForest() {
       )}
       {/* Deciduous trunks — slightly wider base, warmer bark */}
       {deciduous.length > 0 && (
-        <Instances limit={deciduous.length} range={deciduous.length}>
+        <Instances frames={STATIC_INSTANCE_FRAMES} limit={deciduous.length} range={deciduous.length}>
           <cylinderGeometry args={[0.2, 0.3, 1.6, 6]} />
           <meshStandardMaterial color="#4a3a2e" roughness={1} />
           {deciduous.map((t, i) => (
@@ -213,7 +214,7 @@ export function OsmForest() {
       )}
       {/* Deciduous canopies — rounder, warmer green */}
       {deciduous.length > 0 && (
-        <Instances limit={deciduous.length} range={deciduous.length}>
+        <Instances frames={STATIC_INSTANCE_FRAMES} limit={deciduous.length} range={deciduous.length}>
           <sphereGeometry args={[1.4, 10, 8]} />
           <meshStandardMaterial color="#5a744d" roughness={1} />
           {deciduous.map((t, i) => (

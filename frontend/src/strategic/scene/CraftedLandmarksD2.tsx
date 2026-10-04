@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import * as THREE from 'three';
 import { WORLD } from '../content/world';
 import type { RawBuilding, Vec2Tuple } from '../content/world';
+import { STATIC_INSTANCE_FRAMES } from './staticInstances';
 
 // District 2 handcrafted landmarks. Separate from CraftedLandmarks
 // (District 1, frozen) so ORDER 014 work has its own file and cannot
@@ -220,7 +221,7 @@ function KarnhusetD2Pass5({ landmark }: { landmark?: unknown } = {}) {
           window is 0.95 × 1.35 m; box depth 0.06 m sits 0.06 m proud
           of the wall so it depth-writes cleanly above the wall face. */}
       {decor.windows.length > 0 && (
-        <Instances
+        <Instances frames={STATIC_INSTANCE_FRAMES}
           limit={decor.windows.length}
           range={decor.windows.length}
         >
@@ -245,7 +246,7 @@ function KarnhusetD2Pass5({ landmark }: { landmark?: unknown } = {}) {
           vertices. Reads as the classic Bergslag painted-timber
           cornerboard trim. */}
       {decor.cornerposts.length > 0 && (
-        <Instances
+        <Instances frames={STATIC_INSTANCE_FRAMES}
           limit={decor.cornerposts.length}
           range={decor.cornerposts.length}
         >
@@ -265,7 +266,7 @@ function KarnhusetD2Pass5({ landmark }: { landmark?: unknown } = {}) {
           institutional-timber drainage detail; every cornerboard
           gets a paired downpipe on the outer side. */}
       {decor.cornerposts.length > 0 && (
-        <Instances
+        <Instances frames={STATIC_INSTANCE_FRAMES}
           limit={decor.cornerposts.length}
           range={decor.cornerposts.length}
         >
@@ -283,7 +284,7 @@ function KarnhusetD2Pass5({ landmark }: { landmark?: unknown } = {}) {
       {/* Fascia — dark line along every outer edge at the wall / roof
           junction. Reads as the parapet-shadow band. */}
       {decor.fascia.length > 0 && (
-        <Instances
+        <Instances frames={STATIC_INSTANCE_FRAMES}
           limit={decor.fascia.length}
           range={decor.fascia.length}
         >
@@ -439,7 +440,7 @@ function IndustrialShedD2Pass5({
       {/* Dark cornerposts at convex polygon vertices — industrial
           reinforcement / iron corner cladding. */}
       {decor.cornerposts.length > 0 && (
-        <Instances
+        <Instances frames={STATIC_INSTANCE_FRAMES}
           limit={decor.cornerposts.length}
           range={decor.cornerposts.length}
         >
@@ -457,7 +458,7 @@ function IndustrialShedD2Pass5({
       {/* PHASE 5 — Dark downpipes at every convex vertex (industrial
           drainage standard). Same positions as the cornerposts. */}
       {decor.cornerposts.length > 0 && (
-        <Instances
+        <Instances frames={STATIC_INSTANCE_FRAMES}
           limit={decor.cornerposts.length}
           range={decor.cornerposts.length}
         >
@@ -487,7 +488,7 @@ function IndustrialShedD2Pass5({
 
       {/* Fascia at wall/roof junction — matches parapet colour. */}
       {decor.fascia.length > 0 && (
-        <Instances
+        <Instances frames={STATIC_INSTANCE_FRAMES}
           limit={decor.fascia.length}
           range={decor.fascia.length}
         >
@@ -737,7 +738,7 @@ function SchoolBuildingD2Pass5({
           the correct rotation. Emit the second storey only for
           buildings tall enough. */}
       {decor.windows.length > 0 && (
-        <Instances
+        <Instances frames={STATIC_INSTANCE_FRAMES}
           limit={decor.windows.length}
           range={decor.windows.length}
         >
@@ -763,7 +764,7 @@ function SchoolBuildingD2Pass5({
       {/* Cornerposts — cream painted vertical trim at every convex
           polygon vertex. */}
       {decor.cornerposts.length > 0 && (
-        <Instances
+        <Instances frames={STATIC_INSTANCE_FRAMES}
           limit={decor.cornerposts.length}
           range={decor.cornerposts.length}
         >
@@ -781,7 +782,7 @@ function SchoolBuildingD2Pass5({
       {/* PHASE 5 — Dark drainpipes at every convex vertex,
           co-located with the cornerposts. */}
       {decor.cornerposts.length > 0 && (
-        <Instances
+        <Instances frames={STATIC_INSTANCE_FRAMES}
           limit={decor.cornerposts.length}
           range={decor.cornerposts.length}
         >
@@ -798,7 +799,7 @@ function SchoolBuildingD2Pass5({
 
       {/* Fascia at wall/roof junction. */}
       {decor.fascia.length > 0 && (
-        <Instances
+        <Instances frames={STATIC_INSTANCE_FRAMES}
           limit={decor.fascia.length}
           range={decor.fascia.length}
         >

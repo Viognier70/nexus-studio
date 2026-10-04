@@ -2,6 +2,7 @@ import { Instance, Instances } from '@react-three/drei';
 import { useMemo } from 'react';
 import * as THREE from 'three';
 import { WORLD } from '../content/world';
+import { STATIC_INSTANCE_FRAMES } from './staticInstances';
 
 // ORDER 031 — Public Realm (Phase 7).
 // Extended by ORDER 032 with landmark-specific canopies + yards.
@@ -90,7 +91,7 @@ function FotbollsplanGoals() {
     <group>
       {/* Goal frames — 2 uprights + 1 crossbar each, rendered as a
           single Instances group across both goals. */}
-      <Instances limit={6} range={6}>
+      <Instances frames={STATIC_INSTANCE_FRAMES} limit={6} range={6}>
         <boxGeometry args={[1, GOAL_BAR_THICK, GOAL_BAR_THICK]} />
         <meshStandardMaterial color={GOAL_COLOUR} roughness={0.7} />
         {[goals.goalA, goals.goalB].flatMap((g, gi) => [
@@ -115,7 +116,7 @@ function FotbollsplanGoals() {
       </Instances>
 
       {/* Goal nets — very simple side triangles hinting the net depth. */}
-      <Instances limit={4} range={4}>
+      <Instances frames={STATIC_INSTANCE_FRAMES} limit={4} range={4}>
         <boxGeometry args={[0.02, GOAL_HEIGHT, 1]} />
         <meshStandardMaterial color={GOAL_COLOUR} roughness={1} opacity={0.45} transparent />
         {[goals.goalA, goals.goalB].flatMap((g, gi) => [
@@ -133,7 +134,7 @@ function FotbollsplanGoals() {
       </Instances>
 
       {/* Touch lines — 4 sides of the pitch, one box each. */}
-      <Instances limit={4} range={4}>
+      <Instances frames={STATIC_INSTANCE_FRAMES} limit={4} range={4}>
         <boxGeometry args={[1, 0.01, PITCH_LINE_THICK]} />
         <meshStandardMaterial color={PITCH_LINE_COLOUR} roughness={1} />
         <Instance
@@ -161,7 +162,7 @@ function FotbollsplanGoals() {
       </Instances>
 
       {/* Centre line + centre circle. */}
-      <Instances limit={1 + CIRCLE_SEGS} range={1 + CIRCLE_SEGS}>
+      <Instances frames={STATIC_INSTANCE_FRAMES} limit={1 + CIRCLE_SEGS} range={1 + CIRCLE_SEGS}>
         <boxGeometry args={[1, 0.01, PITCH_LINE_THICK]} />
         <meshStandardMaterial color={PITCH_LINE_COLOUR} roughness={1} />
         <Instance
@@ -246,7 +247,7 @@ function ChurchyardBoundary() {
 
   return (
     <group>
-      <Instances limit={4} range={4}>
+      <Instances frames={STATIC_INSTANCE_FRAMES} limit={4} range={4}>
         <boxGeometry args={[1, CHURCHYARD_HEIGHT, CHURCHYARD_THICK]} />
         <meshStandardMaterial color={CHURCHYARD_COLOUR} roughness={0.95} />
         {segments.map((s, i) => (
@@ -259,7 +260,7 @@ function ChurchyardBoundary() {
         ))}
       </Instances>
       {/* Corner posts. */}
-      <Instances limit={4} range={4}>
+      <Instances frames={STATIC_INSTANCE_FRAMES} limit={4} range={4}>
         <boxGeometry args={[0.14, CHURCHYARD_HEIGHT + 0.15, 0.14]} />
         <meshStandardMaterial color={CHURCHYARD_POST_COLOUR} roughness={1} />
         {segments.slice(0, 4).map((s, i) => {
@@ -292,7 +293,7 @@ function SchoolPlayground() {
   return (
     <group position={[cx, PLAYGROUND_Y, cz]}>
       {/* Swing frame — 2 posts + 1 crossbar, 3 m wide 2.4 m tall. */}
-      <Instances limit={3} range={3}>
+      <Instances frames={STATIC_INSTANCE_FRAMES} limit={3} range={3}>
         <boxGeometry args={[1, 0.1, 0.1]} />
         <meshStandardMaterial color="#4a3a2e" roughness={1} />
         <Instance key="swing-l" position={[-1.5, 1.2, 0]} rotation={[0, 0, Math.PI / 2]} scale={[2.4, 1, 1]} />
@@ -305,7 +306,7 @@ function SchoolPlayground() {
         <meshStandardMaterial color="#c9b28e" roughness={1} />
       </mesh>
       {/* Climbing frame — a simple 2 m cube with cross bars. */}
-      <Instances limit={4} range={4}>
+      <Instances frames={STATIC_INSTANCE_FRAMES} limit={4} range={4}>
         <boxGeometry args={[1, 0.08, 0.08]} />
         <meshStandardMaterial color="#c2582a" roughness={1} />
         <Instance key="cf-1" position={[-4, 0.5, 4]} rotation={[0, 0, Math.PI / 2]} scale={[1, 1, 1]} />
@@ -421,7 +422,7 @@ function IngoCanopy() {
         <meshStandardMaterial color={INGO_TRIM} roughness={0.85} />
       </mesh>
       {/* Four steel columns supporting the canopy. */}
-      <Instances limit={4} range={4}>
+      <Instances frames={STATIC_INSTANCE_FRAMES} limit={4} range={4}>
         <boxGeometry args={[INGO_COLUMN_SIZE, INGO_CANOPY_HEIGHT, INGO_COLUMN_SIZE]} />
         <meshStandardMaterial color={INGO_COLUMN_COLOUR} roughness={0.55} />
         {geo.columns.map((c, i) => (
@@ -429,7 +430,7 @@ function IngoCanopy() {
         ))}
       </Instances>
       {/* Fuel pumps under the canopy — squat orange machines. */}
-      <Instances limit={2} range={2}>
+      <Instances frames={STATIC_INSTANCE_FRAMES} limit={2} range={2}>
         <boxGeometry args={[0.55, 1.6, 0.9]} />
         <meshStandardMaterial color={INGO_PUMP_COLOUR} roughness={0.85} />
         {geo.pumps.map((p, i) => (

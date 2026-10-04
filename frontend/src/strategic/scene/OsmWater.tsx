@@ -178,7 +178,9 @@ export function OsmWater() {
           than shiny mercury. The animated shimmer in useFrame supplies
           the "this is water" cue without a constant self-illumination
           baseline. */}
-      <group ref={surfaceRef}>
+      {/* ORDER 297b — sjöns färg följer kvällens himmel
+          (village/EveningAccents.tsx hittar ytan på namnet). */}
+      <group ref={surfaceRef} name="lake-surface">
         {geometries.map(({ id, surfGeo }) => (
           <mesh
             key={`surf-${id}`}

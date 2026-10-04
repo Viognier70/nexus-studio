@@ -13,6 +13,7 @@ import {
   segmentCrossesAnyBuilding,
   segmentIntersection
 } from '../procgen/geom';
+import { STATIC_INSTANCE_FRAMES } from './staticInstances';
 
 // Deterministic parcel boundaries — one line of fence, hedge or stone
 // edge along each of the four OBB sides of every eligible residential
@@ -351,7 +352,7 @@ export function OsmParcelBoundaries() {
     <group>
       {/* Painted timber fence: white board fence, ~1.1 m tall */}
       {paintedTimber.length > 0 && (
-        <Instances limit={paintedTimber.length} range={paintedTimber.length}>
+        <Instances frames={STATIC_INSTANCE_FRAMES} limit={paintedTimber.length} range={paintedTimber.length}>
           <boxGeometry args={[1, 1.1, 0.08]} />
           <meshStandardMaterial color="#efe6d4" roughness={0.85} />
           {paintedTimber.map((s, i) => (
@@ -366,7 +367,7 @@ export function OsmParcelBoundaries() {
       )}
       {/* Wire fence: dark thin, ~0.9 m tall */}
       {wire.length > 0 && (
-        <Instances limit={wire.length} range={wire.length}>
+        <Instances frames={STATIC_INSTANCE_FRAMES} limit={wire.length} range={wire.length}>
           <boxGeometry args={[1, 0.9, 0.03]} />
           <meshStandardMaterial color="#3f3830" roughness={0.9} />
           {wire.map((s, i) => (
@@ -381,7 +382,7 @@ export function OsmParcelBoundaries() {
       )}
       {/* Hedge: green box, ~0.9 m tall × 0.65 m thick */}
       {hedge.length > 0 && (
-        <Instances limit={hedge.length} range={hedge.length}>
+        <Instances frames={STATIC_INSTANCE_FRAMES} limit={hedge.length} range={hedge.length}>
           <boxGeometry args={[1, 0.9, 0.65]} />
           <meshStandardMaterial color="#586a4a" roughness={1} />
           {hedge.map((s, i) => (
@@ -396,7 +397,7 @@ export function OsmParcelBoundaries() {
       )}
       {/* Stone edge: low pale-grey box, ~0.35 m tall */}
       {stone.length > 0 && (
-        <Instances limit={stone.length} range={stone.length}>
+        <Instances frames={STATIC_INSTANCE_FRAMES} limit={stone.length} range={stone.length}>
           <boxGeometry args={[1, 0.35, 0.28]} />
           <meshStandardMaterial color="#8a8478" roughness={0.95} />
           {stone.map((s, i) => (
@@ -412,7 +413,7 @@ export function OsmParcelBoundaries() {
       {/* Corner posts — small dark-timber posts at each parcel corner
           adjacent to at least one valid fence / hedge / stone side. */}
       {cornerPosts.length > 0 && (
-        <Instances limit={cornerPosts.length} range={cornerPosts.length}>
+        <Instances frames={STATIC_INSTANCE_FRAMES} limit={cornerPosts.length} range={cornerPosts.length}>
           <boxGeometry args={[0.16, 1.2, 0.16]} />
           <meshStandardMaterial color="#3f382e" roughness={0.9} />
           {cornerPosts.map((c, i) => (
