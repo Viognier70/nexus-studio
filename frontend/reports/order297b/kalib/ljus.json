@@ -1,0 +1,77 @@
+{
+  "definition": "Medelluminans (Rec. 709, 0–255) i bildens mitt, 30–70 % i båda leden, med percentilerna p10/p50/p90, contrast = p90/p10 och spread = p90 − p50 (scripts/luminance.mjs).",
+  "rows": [
+    {
+      "file": "reports/order297b/kalib/check-1440x900-s0.8-1930-byn.jpg",
+      "luminance": 107.1,
+      "p10": 67.1,
+      "p50": 112.3,
+      "p90": 126.2,
+      "contrast": 1.88,
+      "spread": 13.9
+    },
+    {
+      "file": "reports/order297b/kalib/check-1440x900-s0.8-1930-gatan.jpg",
+      "luminance": 74.9,
+      "p10": 38.7,
+      "p50": 65.7,
+      "p90": 135.1,
+      "contrast": 3.49,
+      "spread": 69.4
+    },
+    {
+      "file": "reports/order297b/kalib/check-1440x900-s0.8-1930-krogen.jpg",
+      "luminance": 140.8,
+      "p10": 60.2,
+      "p50": 156.7,
+      "p90": 180,
+      "contrast": 2.99,
+      "spread": 23.4
+    },
+    {
+      "file": "reports/order297b/kalib/check-1440x900-s0.8-1930-kvarteret.jpg",
+      "luminance": 98.9,
+      "p10": 44.8,
+      "p50": 105.4,
+      "p90": 153.1,
+      "contrast": 3.42,
+      "spread": 47.6
+    },
+    {
+      "file": "reports/order297b/kalib/check-1440x900-s1.1-1930-byn.jpg",
+      "luminance": 119.8,
+      "p10": 77.2,
+      "p50": 126,
+      "p90": 140.6,
+      "contrast": 1.82,
+      "spread": 14.6
+    },
+    {
+      "file": "reports/order297b/kalib/check-1440x900-s1.1-1930-gatan.jpg",
+      "luminance": 84,
+      "p10": 45.8,
+      "p50": 76.1,
+      "p90": 145.8,
+      "contrast": 3.18,
+      "spread": 69.7
+    },
+    {
+      "file": "reports/order297b/kalib/check-1440x900-s1.1-1930-krogen.jpg",
+      "luminance": 143.6,
+      "p10": 64.3,
+      "p50": 159.9,
+      "p90": 181.6,
+      "contrast": 2.82,
+      "spread": 21.8
+    },
+    {
+      "file": "reports/order297b/kalib/check-1440x900-s1.1-1930-kvarteret.jpg",
+      "luminance": 109.9,
+      "p10": 52.2,
+      "p50": 118.6,
+      "p90": 163.4,
+      "contrast": 3.13,
+      "spread": 44.8
+    }
+  ]
+}

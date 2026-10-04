@@ -50,6 +50,14 @@ Spelets palett är ljusare än Designs. Därför har kvällsljuset en faktor per
 - Byn på natten (22.50): 56,2 mot 61,0.
 - **Krogen är mörkare än Designs bild.** Där dominerar teaterns egna ljus (ORDER 290), och Designs bild visar en kö i fullt ljus vid dörren. Jag har inte jagat ikapp den skillnaden.
 
+**Rättelse (ORDER 297b, 2026-10-04).** Tabellen ovan mätte bilder från en tidigare körning, innan rummet vändes mot Torget. Bilderna som ligger i `reports/order297/` är från den sista körningen och ger andra tal. Kväll 19.30, 1440 × 900:
+- byn 70,7;
+- kvarteret 73,0;
+- gatan 67,0;
+- krogen 138,1.
+
+Tabellen och "krogen 116" stämde alltså inte med de incheckade bilderna. Talen står i `frontend/reports/order297b/ljus-order297-bilder.json`. De nya talen efter 297b står i `ORDER_297B_RAPPORT.md` §2.
+
 ## 4. Gatlyktorna
 
 `StreetLamps.tsx` är skriven om efter Designs `byKvall.js`:

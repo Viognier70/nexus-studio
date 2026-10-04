@@ -1,0 +1,239 @@
+{
+  "definition": "Medelluminans (Rec. 709, 0–255) i bildens mitt, 30–70 % i båda leden, med percentilerna p10/p50/p90, contrast = p90/p10 och spread = p90 − p50 (scripts/luminance.mjs).",
+  "rows": [
+    {
+      "file": "../documentation/leveranser/nexus-leverans-2026-10-02-byn-omtag-2/bilder/1440x900/byn-3-660m-kvallen.png",
+      "luminance": 73.6,
+      "p10": 70.4,
+      "p50": 72.9,
+      "p90": 77.5,
+      "contrast": 1.1,
+      "spread": 4.6
+    },
+    {
+      "file": "../documentation/leveranser/nexus-leverans-2026-10-02-byn-omtag-2/bilder/1440x900/kvarteret-1-90m-kvallen.png",
+      "luminance": 81.6,
+      "p10": 61.9,
+      "p50": 72.4,
+      "p90": 110.9,
+      "contrast": 1.79,
+      "spread": 38.5
+    },
+    {
+      "file": "../documentation/leveranser/nexus-leverans-2026-10-02-byn-omtag-2/bilder/1440x900/gatan-1-42m-kvallen.png",
+      "luminance": 98.8,
+      "p10": 60.2,
+      "p50": 93.7,
+      "p90": 145.5,
+      "contrast": 2.41,
+      "spread": 51.8
+    },
+    {
+      "file": "../documentation/leveranser/nexus-leverans-2026-10-02-byn-omtag-2/bilder/1440x900/krogen-2-24m-kon.png",
+      "luminance": 141.4,
+      "p10": 57.6,
+      "p50": 165,
+      "p90": 181,
+      "contrast": 3.14,
+      "spread": 16
+    },
+    {
+      "file": "reports/order297b/fore/check-1440x900-1820-krogen.jpg",
+      "luminance": 136,
+      "p10": 63.7,
+      "p50": 148.6,
+      "p90": 173.7,
+      "contrast": 2.72,
+      "spread": 25
+    },
+    {
+      "file": "reports/order297b/fore/check-1440x900-1930-krogen.jpg",
+      "luminance": 138.7,
+      "p10": 57.7,
+      "p50": 154.3,
+      "p90": 178.8,
+      "contrast": 3.1,
+      "spread": 24.5
+    },
+    {
+      "file": "reports/order297b/fore/check-1440x900-2100-krogen.jpg",
+      "luminance": 129.4,
+      "p10": 43.6,
+      "p50": 146.6,
+      "p90": 172.8,
+      "contrast": 3.96,
+      "spread": 26.1
+    },
+    {
+      "file": "reports/order297b/check-1440x900-1820-byn.jpg",
+      "luminance": 81.7,
+      "p10": 50.2,
+      "p50": 84.8,
+      "p90": 96.7,
+      "contrast": 1.92,
+      "spread": 11.9
+    },
+    {
+      "file": "reports/order297b/check-1440x900-1820-kvarteret.jpg",
+      "luminance": 75.5,
+      "p10": 35.3,
+      "p50": 82.7,
+      "p90": 122.5,
+      "contrast": 3.47,
+      "spread": 39.8
+    },
+    {
+      "file": "reports/order297b/check-1440x900-1820-gatan.jpg",
+      "luminance": 75.3,
+      "p10": 41.9,
+      "p50": 66.6,
+      "p90": 136.8,
+      "contrast": 3.27,
+      "spread": 70.3
+    },
+    {
+      "file": "reports/order297b/check-1440x900-1820-krogen.jpg",
+      "luminance": 139.6,
+      "p10": 66.8,
+      "p50": 152.7,
+      "p90": 175.9,
+      "contrast": 2.63,
+      "spread": 23.1
+    },
+    {
+      "file": "reports/order297b/check-1440x900-1930-byn.jpg",
+      "luminance": 70.9,
+      "p10": 43.4,
+      "p50": 72.7,
+      "p90": 85.1,
+      "contrast": 1.96,
+      "spread": 12.4
+    },
+    {
+      "file": "reports/order297b/check-1440x900-1930-kvarteret.jpg",
+      "luminance": 73,
+      "p10": 30.8,
+      "p50": 72.9,
+      "p90": 119.8,
+      "contrast": 3.9,
+      "spread": 46.9
+    },
+    {
+      "file": "reports/order297b/check-1440x900-1930-gatan.jpg",
+      "luminance": 67.1,
+      "p10": 33.7,
+      "p50": 57.5,
+      "p90": 124.9,
+      "contrast": 3.71,
+      "spread": 67.5
+    },
+    {
+      "file": "reports/order297b/check-1440x900-1930-krogen.jpg",
+      "luminance": 140.7,
+      "p10": 59.9,
+      "p50": 156.6,
+      "p90": 179.9,
+      "contrast": 3.01,
+      "spread": 23.3
+    },
+    {
+      "file": "reports/order297b/check-1440x900-2100-byn.jpg",
+      "luminance": 62.6,
+      "p10": 38.2,
+      "p50": 64,
+      "p90": 75.6,
+      "contrast": 1.98,
+      "spread": 11.6
+    },
+    {
+      "file": "reports/order297b/check-1440x900-2100-kvarteret.jpg",
+      "luminance": 66.6,
+      "p10": 27.8,
+      "p50": 64.7,
+      "p90": 109.8,
+      "contrast": 3.96,
+      "spread": 45.1
+    },
+    {
+      "file": "reports/order297b/check-1440x900-2100-gatan.jpg",
+      "luminance": 59.9,
+      "p10": 29.5,
+      "p50": 50.7,
+      "p90": 112,
+      "contrast": 3.8,
+      "spread": 61.3
+    },
+    {
+      "file": "reports/order297b/check-1440x900-2100-krogen.jpg",
+      "luminance": 131.2,
+      "p10": 47.7,
+      "p50": 148.7,
+      "p90": 174.1,
+      "contrast": 3.65,
+      "spread": 25.4
+    },
+    {
+      "file": "reports/order297b/check-1440x900-2250-byn.jpg",
+      "luminance": 54,
+      "p10": 33,
+      "p50": 55.1,
+      "p90": 64.9,
+      "contrast": 1.96,
+      "spread": 9.8
+    },
+    {
+      "file": "reports/order297b/check-1440x900-2250-kvarteret.jpg",
+      "luminance": 58.9,
+      "p10": 23.8,
+      "p50": 55.6,
+      "p90": 97.7,
+      "contrast": 4.11,
+      "spread": 42.1
+    },
+    {
+      "file": "reports/order297b/check-1440x900-2250-gatan.jpg",
+      "luminance": 52.5,
+      "p10": 25.2,
+      "p50": 43.9,
+      "p90": 99.1,
+      "contrast": 3.93,
+      "spread": 55.2
+    },
+    {
+      "file": "reports/order297b/check-1440x900-2250-krogen.jpg",
+      "luminance": 41.1,
+      "p10": 27.2,
+      "p50": 30.3,
+      "p90": 72.3,
+      "contrast": 2.66,
+      "spread": 42
+    },
+    {
+      "file": "reports/order297b/check-1280x720-1820-krogen.jpg",
+      "luminance": 135.2,
+      "p10": 63,
+      "p50": 149.4,
+      "p90": 174.2,
+      "contrast": 2.76,
+      "spread": 24.9
+    },
+    {
+      "file": "reports/order297b/check-1280x720-1930-krogen.jpg",
+      "luminance": 136.4,
+      "p10": 59.4,
+      "p50": 153.1,
+      "p90": 178.1,
+      "contrast": 3,
+      "spread": 25
+    },
+    {
+      "file": "reports/order297b/check-1280x720-2100-krogen.jpg",
+      "luminance": 128.8,
+      "p10": 50.3,
+      "p50": 146.6,
+      "p90": 170.8,
+      "contrast": 3.4,
+      "spread": 24.2
+    }
+  ]
+}
