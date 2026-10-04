@@ -79,6 +79,10 @@ export function EveningAccents({ e, sky }: { e: number; sky: SkyNow }) {
     };
   }, [scene, pool]);
 
+  // Tornet söks en gång (en sökning i hela scenen per bildruta kostade 13 %
+  // av processortiden på byns nivå, reports/order297b/utan-rattelse/).
+  const towerRef = useRef<THREE.Mesh | null>(null);
+
   useFrame(() => {
     // Sjöns färg: ytans medelfärg × materialets färg = himlens sjöfärg.
     if (!lake.current) lake.current = findLake();
@@ -87,7 +91,8 @@ export function EveningAccents({ e, sky }: { e: number; sky: SkyNow }) {
       for (const { mat, mean } of lake.current) mat.color.setRGB(sky.lake.r / Math.max(mean.r, 0.01), sky.lake.g / Math.max(mean.g, 0.01), sky.lake.b / Math.max(mean.b, 0.01));
     }
     const ch = smooth(LIGHTS.church.on[0], LIGHTS.church.on[1], e);
-    const tower = scene.getObjectByName('church-tower') as THREE.Mesh | undefined;
+    if (!towerRef.current) towerRef.current = (scene.getObjectByName('church-tower') as THREE.Mesh | undefined) ?? null;
+    const tower = towerRef.current;
     if (!tower) return;
     (tower.material as THREE.MeshStandardMaterial).emissiveIntensity = TOWER_GLOW * ch;
     if (!pool.visible) {
