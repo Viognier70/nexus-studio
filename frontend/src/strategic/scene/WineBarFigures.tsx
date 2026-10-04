@@ -104,6 +104,7 @@ const ROOM_SHOWN_ROOF = 0.99;
 import { MoodSymbolLayer, type MoodGroup } from './moodSymbols';
 import { attachFace, type FaceHandle } from './figureFace';
 import { MoodGestures } from './moodGestures';
+import { FACE_STEP, scriptFaceMood } from './scriptFaces';
 import { guestMoodValue, moodOf } from '../../sim/guestMood';
 import { CONSEQUENCE, FACE, MOOD_SYMBOL } from './guestMood';
 
@@ -332,6 +333,8 @@ interface Cast {
   staffFaces: FaceHandle[];
   /** ORDER 299 — gästernas gester efter stämningen. */
   moodGestures: MoodGestures;
+  /** ORDER 297 — ansiktena på manusfigurerna och svaren i händelsen. */
+  scriptFaces: { key: string | null; answers: number; lastAt: number; answer: { at: number; kind: 'right' | 'wrong' } | null; faces: WeakMap<FigureRig, FaceHandle> };
 }
 
 /** Bildtexten vid figuren när raketen börjar i rummet (nexusStrings theatre.caption). */
@@ -595,7 +598,8 @@ export function WineBarFigures({ room, mood }: Props) {
       rocketPoint: null,
       guestFaces,
       staffFaces,
-      moodGestures: new MoodGestures(WINE_BAR_GUEST_POOL)
+      moodGestures: new MoodGestures(WINE_BAR_GUEST_POOL),
+      scriptFaces: { key: null, answers: 0, lastAt: -Infinity, answer: null, faces: new WeakMap() }
     };
     if (import.meta.env.DEV && typeof window !== 'undefined') {
       (window as unknown as { __nxWineBarDirector?: unknown }).__nxWineBarDirector = director;
@@ -999,6 +1003,30 @@ export function WineBarFigures({ room, mood }: Props) {
       const list = [...groups.values()].map((x) => ({ key: x.key, world: x.world, value: x.value / x.n }));
       const hold = momentAt !== null && momentAt < CONSEQUENCE.symbol.at;
       layer.draw(list, camera, performance.now(), hold, reducedMotionRef.current, roomShownRef.current);
+    }
+
+    // ORDER 297 — ansiktena på händelsernas manusfigurer (scriptFaces.ts): Designs
+    // tidslinjer efter svaret som hör till händelsen.
+    if (ev.playing) {
+      const key = cast.events.currentKey;
+      const event = cast.events.currentEvent;
+      const sf = cast.scriptFaces;
+      if (sf.key !== key) { sf.key = key; sf.answers = 0; sf.lastAt = -Infinity; sf.answer = null; }
+      const c = s.day.consequence;
+      if (c && c.at - sf.lastAt > 1) {
+        sf.lastAt = c.at;
+        sf.answers++;
+        const step = FACE_STEP[event];
+        const matches = step === 'first' ? sf.answers === 1 : step === 'last' ? !s.incidents?.active : false;
+        if (matches) sf.answer = { at: c.at, kind: c.kind };
+      }
+      const answer = sf.answer ? { kind: sf.answer.kind, elapsed: s.simTime - sf.answer.at } : null;
+      for (const r of cast.events.theatre.rigs()) {
+        let face = sf.faces.get(r.rig);
+        if (!face) { face = attachFace(r.rig, scriptFaceMood(event, r.id, r.kind, null)); sf.faces.set(r.rig, face); }
+        face.set(scriptFaceMood(event, r.id, r.kind, answer));
+        face.update(camera);
+      }
     }
 
     // ORDER 299 — ansiktena tänds från 9 m och syns helt vid 7 m. Uttrycket

@@ -93,3 +93,23 @@ describe('ORDER 297 — kön vid vår dörr i byn', () => {
     expect(venues.find((v) => v.id === other)?.kind).toBe('restaurant');
   });
 });
+
+describe('ORDER 297 — ansiktena på manusfigurerna', () => {
+  it('födelsedagen: sällskapet väntar och blir glatt; grannarna blir missnöjda vid fel, i tur och ordning', async () => {
+    const { scriptFaceMood } = await import('../../strategic/scene/scriptFaces');
+    expect(scriptFaceMood('bday', 'karin', 'guest', null)).toBe('waiting');
+    expect(scriptFaceMood('bday', 'karin', 'guest', { kind: 'right', elapsed: 0.2 })).toBe('waiting');
+    expect(scriptFaceMood('bday', 'karin', 'guest', { kind: 'right', elapsed: 1 })).toBe('delighted');
+    expect(scriptFaceMood('bday', 'nb1', 'guest', { kind: 'wrong', elapsed: 2 })).toBe('displeased');
+    expect(scriptFaceMood('bday', 'nb1', 'guest', { kind: 'right', elapsed: 2 })).toBe('content');
+    expect(scriptFaceMood('bday', 'per', 'staff', { kind: 'wrong', elapsed: 2 })).toBe('content');
+  });
+
+  it('gästen som vinglar: grannarna väntar och blir nöjda vid rätt, gästen själv glad vid fel', async () => {
+    const { scriptFaceMood } = await import('../../strategic/scene/scriptFaces');
+    expect(scriptFaceMood('drunk', 'b2', 'guest', null)).toBe('waiting');
+    expect(scriptFaceMood('drunk', 'b2', 'guest', { kind: 'right', elapsed: 1 })).toBe('content');
+    expect(scriptFaceMood('drunk', 'g', 'guest', { kind: 'wrong', elapsed: 1 })).toBe('delighted');
+    expect(scriptFaceMood('drunk', 'la1', 'guest', { kind: 'wrong', elapsed: 3 })).toBe('displeased');
+  });
+});

@@ -204,8 +204,11 @@ export function VillageVenues() {
         const p = v.spot ? truckSpotPlace(v.spot).doorPoint : places[v.id]?.centre;
         if (!el || !p) return [];
         proj.set(p[0], v.kind === 'truck' ? 6 : 14, p[1]).project(camera);
-        return [{ el, x: (proj.x * 0.5 + 0.5) * size.width, y: (-proj.y * 0.5 + 0.5) * size.height, w: el.offsetWidth, h: el.offsetHeight }];
-      }).sort((a, b) => b.y - a.y);
+        return [{ el, ours: v.id === PLAYER_VENUE, x: (proj.x * 0.5 + 0.5) * size.width, y: (-proj.y * 0.5 + 0.5) * size.height, w: el.offsetWidth, h: el.offsetHeight }];
+      // ORDER 297 (Designs Byn i kvällsljus omtag §9: "en regel för när namn
+      // krockar, till exempel att vår krog alltid ligger överst"): vår krogs
+      // namn placeras först och flyttas aldrig, och ritas överst.
+      }).sort((a, b) => (a.ours === b.ours ? b.y - a.y : a.ours ? -1 : 1));
       for (const it of items) {
         let y0 = it.y - it.h / 2;
         const x0 = it.x - it.w / 2;
@@ -218,6 +221,7 @@ export function VillageVenues() {
         placed.push({ x0, x1, y0, y1: y0 + it.h });
         const dy = Math.round(y0 - (it.y - it.h / 2));
         it.el.style.transform = dy !== 0 ? `translateY(${dy}px)` : '';
+        if (it.el.parentElement) it.el.parentElement.style.zIndex = it.ours ? '2' : '1';
       }
     }
   });

@@ -99,6 +99,9 @@ export class EventPlayer {
   get playing(): boolean { return this.key !== null; }
   get scriptTime(): number { return this.t; }
   get currentVariant(): string { return this.variant; }
+  // ORDER 297 — händelsen och dess nyckel (ansiktena på manusfigurerna, scriptFaces.ts).
+  get currentEvent(): string { return this.event; }
+  get currentKey(): string | null { return this.key; }
 
   dispose(): void { this.theatre.dispose(); }
 
