@@ -342,6 +342,7 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 
 - `DESIGN_DECISIONS_001.md`: Design Decisions 001.
 - `EXECUTIVE_DESIGN_DIRECTIVE_001.md`: Executive Design Directive 001.
+- `KUNSKAPSGRUND_TRIAD.md`: Kunskapsgrunden — TRIAD och det dubbla greppet (Anders, ORDER 301). Står över tidigare beskrivningar av kunskapsformerna.
 - `RIGHTS_REGISTER.md`: RIGHTS REGISTER.
 - `SD_001_RECONSTRUCTION_RECORD.md`: SD_001_RECONSTRUCTION_RECORD — Evidence gathering for Superseding Directive 001.
 - `SUPERSEDING_DIRECTIVE_002.md`: Superseding Directive 002.

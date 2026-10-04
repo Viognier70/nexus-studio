@@ -19,6 +19,7 @@
 // är öppen så länge ett besök pågår, också efter en omladdning mitt i
 // ett besök (besöket ligger i simuleringens tillstånd).
 
+import { openKnowledgeFoundation } from './KnowledgeFoundation';
 import { useEffect, useState } from 'react';
 import { strings } from '../../../content/strings';
 import { EXAM, MEDAL_LEVELS } from '../../../sim/balance';
@@ -219,22 +220,20 @@ export function MaltidensHusDialog({ open, onClose }: Props) {
         <div className="nx-label nx-accent-text">{t.label}</div>
         <h1 className="nx-heading">{t.heading}</h1>
         <p className="nx-body nxs-measure" style={{ marginTop: 'calc(12 * var(--nx-u))' }}>{t.lead}</p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, calc(480 * var(--nx-u))), 1fr))', gap: 'calc(32 * var(--nx-u))', marginTop: 'calc(32 * var(--nx-u))' }}>
+        {/* ORDER 301 — tre korta kort och en rad om det dubbla greppet; citaten och källorna i biblioteket. */}
+        <div className="nxs-ways">
           {t.forms.map((f) => (
-            <section key={f.name} data-testid={`house-intro-${f.name.toLowerCase()}`} style={{ borderTop: '1px solid var(--nx-rule)', paddingTop: 'calc(16 * var(--nx-u))' }}>
-              <div className="nx-label">{f.name} · {f.title}</div>
-              <h2 className="nx-heading" style={{ fontSize: 'calc(30 * var(--nx-u))', marginTop: 'calc(8 * var(--nx-u))' }}>{f.question}</h2>
-              <p className="nx-body" style={{ marginTop: 'calc(8 * var(--nx-u))' }}>{f.summary}</p>
-              <div className="nx-label nx-muted" style={{ marginTop: 'calc(12 * var(--nx-u))' }}>{t.inPractice}</div>
-              <ul className="nx-small" style={{ margin: 'calc(6 * var(--nx-u)) 0 0', paddingLeft: '1.2em' }}>
-                {f.practice.map((line) => <li key={line}>{line}</li>)}
-              </ul>
-              <p className="nx-small nx-muted" style={{ marginTop: 'calc(12 * var(--nx-u))', fontStyle: 'italic' }}>{f.quote}</p>
-              <div className="nx-small" style={{ marginTop: 'calc(8 * var(--nx-u))', fontWeight: 700 }}>{t.where(f.pavilion)}</div>
+            <section key={f.name} className="nxs-way" data-testid={`house-intro-${f.name.toLowerCase()}`}>
+              <div className="nxs-way-name">{f.name} – {f.title}.</div>
+              <p className="nxs-way-q">{f.question}</p>
+              <div className="nx-small nx-muted nxs-mt-16">{t.where(f.pavilion)}</div>
             </section>
           ))}
         </div>
-        <p className="nx-small nx-muted" style={{ marginTop: 'calc(24 * var(--nx-u))' }}>{t.sources}</p>
+        <p className="nxs-grip-line" data-testid="house-intro-grip">{t.doubleGrip}</p>
+        <div className="nxs-mt-8">
+          <NxButton kind="quiet" testId="house-intro-read-more" onClick={openKnowledgeFoundation}>{t.readMore}</NxButton>
+        </div>
         <div style={{ marginTop: 'calc(24 * var(--nx-u))', maxWidth: 'calc(420 * var(--nx-u))' }}>
           <NxButton testId="house-intro-continue" onClick={() => dispatch({ type: 'SEE_HOUSE_INTRO' })} autoFocus>{t.continue}</NxButton>
         </div>
@@ -288,6 +287,10 @@ export function MaltidensHusDialog({ open, onClose }: Props) {
                   <div className="nxs-row-sub" data-testid={`medal-${p}`}>{held ? k.medalLine(k.medals[held]) : k.noMedal}</div>
                 )}
                 <div className="nxs-mtable-actions">
+                  {/* ORDER 301 — sidan Kunskapsgrunden ligger i Måltidsbiblioteket. */}
+                  {p === 'maltidbiblioteket' && (
+                    <NxButton kind="quiet" testId="open-knowledge-foundation" onClick={openKnowledgeFoundation}>{strings.knowledgeBase.open}</NxButton>
+                  )}
                   <NxButton
                     kind="quiet"
                     testId={`practice-${p}`}

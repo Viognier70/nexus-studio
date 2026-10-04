@@ -2180,70 +2180,117 @@ export const TABLE = {
     }
   },
   // ORDER 283 — introduktionen till de tre kunskapsformerna, första gången
-  // spelaren kommer till Måltidens hus. Utkast för Vision Owners granskning,
-  // ur DOMAIN_INTRO i Sommelier Championship.
+  // spelaren kommer till Måltidens hus.
+  // ORDER 301 (Anders 2026-10-04, documentation/foundation/KUNSKAPSGRUND_TRIAD.md):
+  // tre korta kort och en rad om det dubbla greppet; citaten och källorna står
+  // på sidan Kunskapsgrunden i Måltidsbiblioteket ("Läs mer"). Formerna är
+  // TRIAD-modellens; ingen text påstår att Aristoteles definierade dem så.
   houseIntro: {
     label: { sv: 'Måltidens hus', en: 'The House of the Meal' },
     heading: { sv: 'Tre sätt att kunna', en: 'Three ways of knowing' },
-    lead: {
-      sv: 'Allt du lär dig här hör till en av tre kunskapsformer, efter Aristoteles. En skicklig sommelier behöver alla tre, och byter mellan dem i stunden.',
-      en: 'Everything you learn here belongs to one of three forms of knowledge, after Aristotle. A skilled sommelier needs all three, and moves between them in the moment.'
-    },
+    lead: { sv: 'Kunskapsformerna enligt TRIAD-modellen.', en: 'The forms of knowledge according to the TRIAD model.' },
     forms: {
       sv: [
-        {
-          name: 'Episteme', title: 'Vetenskaplig kunskap', pavilion: 'Måltidsbiblioteket',
-          question: 'Vad kan jag identifiera i glaset?',
-          summary: 'Den teoretiska och analytiska kunskapen om vin och måltid: det som går att mäta, pröva och generalisera. Syra, sötma, tannin och arom, bedömda med en systematisk metod.',
-          practice: ['Prova systematiskt: utseende, doft, smak, slutsats.', 'Förklara varför tannin mjuknar mot protein och syra skär igenom fett.', 'Förstå hur ljus, musik och form påverkar smaken.'],
-          quote: '”Det som pågår här är en form av sensorisk analys — inte i ett laboratorium utan på golvet, i en faktisk situation.” — Herdenstam, Den arbetande gommen (2011)'
-        },
-        {
-          name: 'Techne', title: 'Hantverksmässig kunskap', pavilion: 'Metodköket och Stensöta',
-          question: 'Hur gör jag det här rätt, just nu?',
-          summary: 'Färdighetskunskapen: att veta hur man gör, i rörelse, med rätt teknik och i rätt ordning. Temperatur, glas, dekantering och provningsordning.',
-          practice: ['Välja temperatur, glas och dekantering efter vinet.', 'Hitta felen i tid: korksmak, diskmedel, fel temperatur.', 'Arbeta i takt med kollegorna, utan ord.'],
-          quote: '”Novisen har verktygen men vet inte hur han skall använda dem.” — Herdenstam, Den arbetande gommen (2011)'
-        },
-        {
-          name: 'Phronesis', title: 'Praktisk klokhet', pavilion: 'Kalastorget',
-          question: 'Vad behöver den här gästen, i den här stunden?',
-          summary: 'Omdömet och förtrogenheten: att läsa situationen och forma en upplevelse för gästen. Berättelsen, stämningen och valet som passar just nu.',
-          practice: ['Lyssna på gästen innan du väljer.', 'Berätta om vinet så att gästen smakar mer.', 'Ge alla gäster samma omsorg, också den som inte dricker alkohol.'],
-          quote: '”I gestaltande aktiviteter är det formella kravet på sanning inte intressant. Det som blir är det väsentliga.” — Herdenstam, Den arbetande gommen (2011)'
-        }
-      ] as { name: string; title: string; pavilion: string; question: string; summary: string; practice: string[]; quote: string }[],
+        { name: 'Episteme', title: 'Att veta', question: 'Vad finns i glaset?', pavilion: 'Måltidsbiblioteket' },
+        { name: 'Phronesis', title: 'Att bedöma', question: 'Vad väcker det, för just den här gästen?', pavilion: 'Kalastorget' },
+        { name: 'Techne', title: 'Att göra', question: 'Vad gör du nu?', pavilion: 'Metodköket och Stensöta' }
+      ] as { name: string; title: string; question: string; pavilion: string }[],
       en: [
-        {
-          name: 'Episteme', title: 'Scientific knowledge', pavilion: 'Måltidsbiblioteket',
-          question: 'What can I identify in the glass?',
-          summary: 'The theoretical and analytical knowledge of wine and the meal: what can be measured, tested and generalised. Acidity, sweetness, tannin and aroma, judged with a systematic method.',
-          practice: ['Taste systematically: appearance, nose, palate, conclusions.', 'Explain why tannin softens against protein and acidity cuts through fat.', 'Understand how light, music and shape change taste.'],
-          quote: '“What goes on here is a form of sensory analysis — not in a laboratory but on the floor, in a real situation.” — Herdenstam, Den arbetande gommen (2011)'
-        },
-        {
-          name: 'Techne', title: 'Craft knowledge', pavilion: 'Metodköket and Stensöta',
-          question: 'How do I do this right, right now?',
-          summary: 'Skill: knowing how, in motion, with the right technique and in the right order. Temperature, glass, decanting and the order of a tasting.',
-          practice: ['Choose temperature, glass and decanting to suit the wine.', 'Catch faults in time: cork taint, detergent, the wrong temperature.', 'Work in step with your colleagues, without words.'],
-          quote: '“The novice has the tools but does not know how to use them.” — Herdenstam, Den arbetande gommen (2011)'
-        },
-        {
-          name: 'Phronesis', title: 'Practical wisdom', pavilion: 'Kalastorget',
-          question: 'What does this guest need, in this moment?',
-          summary: 'Judgement and familiarity: reading the situation and shaping an experience for the guest. The story, the mood and the choice that fits right now.',
-          practice: ['Listen to the guest before you choose.', 'Tell the wine\'s story so the guest tastes more.', 'Give every guest the same care, including those who do not drink alcohol.'],
-          quote: '“In creative work the formal demand for truth is not what matters. What becomes is what is essential.” — Herdenstam, Den arbetande gommen (2011)'
-        }
-      ] as { name: string; title: string; pavilion: string; question: string; summary: string; practice: string[]; quote: string }[]
+        { name: 'Episteme', title: 'To know', question: 'What is in the glass?', pavilion: 'Måltidsbiblioteket' },
+        { name: 'Phronesis', title: 'To judge', question: 'What does it evoke, for this particular guest?', pavilion: 'Kalastorget' },
+        { name: 'Techne', title: 'To do', question: 'What do you do now?', pavilion: 'Metodköket and Stensöta' }
+      ] as { name: string; title: string; question: string; pavilion: string }[]
     },
-    inPractice: { sv: 'I praktiken', en: 'In practice' },
+    doubleGrip: {
+      sv: 'Det dubbla greppet: att hålla analys och upplevelse samtidigt, och handla. (Anders Crichton-Fock, tidigare Herdenstam)',
+      en: 'The double grip: holding analysis and experience at the same time, and acting. (Anders Crichton-Fock, formerly Herdenstam)'
+    },
+    readMore: { sv: 'Läs mer', en: 'Read more' },
     where: { sv: (p: string) => `Övas i ${p}`, en: (p: string) => `Practised in ${p}` },
-    sources: {
-      sv: 'Bygger på Herdenstam (2011), Crichton-Fock & Spence (2024), Herdenstam m.fl. (2018, 2020), Crichton-Fock, Spence & Pettersson (2023). Utkast.',
-      en: 'Based on Herdenstam (2011), Crichton-Fock & Spence (2024), Herdenstam et al. (2018, 2020), Crichton-Fock, Spence & Pettersson (2023). Draft.'
-    },
     continue: { sv: 'Till paviljongerna', en: 'To the pavilions' }
+  },
+  // ORDER 301 — sidan Kunskapsgrunden i Måltidsbiblioteket, och källorna i
+  // eftertexterna (documentation/foundation/KUNSKAPSGRUND_TRIAD.md §1–2).
+  knowledgeBase: {
+    open: { sv: 'Kunskapsgrunden', en: 'The knowledge foundation' },
+    label: { sv: 'Måltidsbiblioteket', en: 'Måltidsbiblioteket' },
+    heading: { sv: 'Kunskapsgrunden', en: 'The knowledge foundation' },
+    attribution: {
+      sv: 'Kunskapsformerna episteme, techne och phronesis kommer från Aristoteles. Urvalet, tolkningen och hur de används i professionell praktik är TRIAD-modellen, utvecklad av Anders Crichton-Fock (tidigare Herdenstam), Campus Grythyttan, Örebro universitet.',
+      en: 'The forms of knowledge episteme, techne and phronesis come from Aristotle. The selection, the interpretation and how they are used in professional practice are the TRIAD model, developed by Anders Crichton-Fock (formerly Herdenstam), Campus Grythyttan, Örebro University.'
+    },
+    formsHeading: { sv: 'Tre kunskapsformer', en: 'Three forms of knowledge' },
+    forms: {
+      sv: [
+        { name: 'Episteme · Att veta', register: 'Analytiskt: avgränsar, standardiserar, jämför.', inference: 'Deduktion: från regel till fall.', question: 'Vad finns i glaset?' },
+        { name: 'Phronesis · Att bedöma', register: 'Analogiskt: bevarar sammanhang, relationer och helhet.', inference: 'Induktion: ur erfarenhet, jämförelse och situation.', question: 'Vad väcker det, för just den här gästen, i kväll?' },
+        { name: 'Techne · Att göra', register: 'Där registren möts i handling.', inference: 'Abduktion: den bästa förklaringen blir en handling som prövas.', question: 'Vad gör jag nu?' }
+      ] as { name: string; register: string; inference: string; question: string }[],
+      en: [
+        { name: 'Episteme · To know', register: 'Analytical: delimits, standardises, compares.', inference: 'Deduction: from rule to case.', question: 'What is in the glass?' },
+        { name: 'Phronesis · To judge', register: 'Analogical: keeps context, relations and the whole.', inference: 'Induction: from experience, comparison and situation.', question: 'What does it evoke, for this particular guest, tonight?' },
+        { name: 'Techne · To do', register: 'Where the registers meet in action.', inference: 'Abduction: the best explanation becomes an action that is tried.', question: 'What do I do now?' }
+      ] as { name: string; register: string; inference: string; question: string }[]
+    },
+    gripHeading: { sv: 'Det dubbla greppet', en: 'The double grip' },
+    grip: {
+      sv: [
+        'Det dubbla greppet är Crichton-Focks begrepp. Det utvecklar spänningen i Diderots Paradoxe sur le comédien (ca 1773), men termen är inte Diderots.',
+        'Greppet håller analys och upplevelse samtidigt. Det är inte först analys och sedan upplevelse.',
+        'Analysen isolerar, praktiken förverkligar, omdömet integrerar.',
+        'Analytiskt och analogiskt är två register, inte två nivåer. Inget av dem är finare än det andra.',
+        'Tyst kunskap är ingen fjärde form. Den finns i alla tre.'
+      ] as string[],
+      en: [
+        'The double grip is Crichton-Fock’s concept. It develops the tension in Diderot’s Paradoxe sur le comédien (c. 1773), but the term is not Diderot’s.',
+        'The grip holds analysis and experience at the same time. It is not analysis first and experience after.',
+        'Analysis isolates, practice realises, judgement integrates.',
+        'Analytical and analogical are two registers, not two levels. Neither is finer than the other.',
+        'Tacit knowledge is not a fourth form. It is present in all three.'
+      ] as string[]
+    },
+    quotesHeading: { sv: 'Ur Den arbetande gommen', en: 'From Den arbetande gommen' },
+    quotes: {
+      sv: [
+        '”Det som pågår här är en form av sensorisk analys — inte i ett laboratorium utan på golvet, i en faktisk situation.”',
+        '”Novisen har verktygen men vet inte hur han skall använda dem.”',
+        '”I gestaltande aktiviteter är det formella kravet på sanning inte intressant. Det som blir är det väsentliga.”'
+      ] as string[],
+      en: [
+        '“What goes on here is a form of sensory analysis — not in a laboratory but on the floor, in a real situation.”',
+        '“The novice has the tools but does not know how to use them.”',
+        '“In creative work the formal demand for truth is not what matters. What becomes is what is essential.”'
+      ] as string[]
+    },
+    quoteBy: { sv: '— Crichton-Fock, Den arbetande gommen (2011)', en: '— Crichton-Fock, Den arbetande gommen (2011)' },
+    sourcesHeading: { sv: 'Källor', en: 'Sources' },
+    sources: {
+      sv: [
+        'Herdenstam, A. P. F. (2004). Sinnesupplevelsens estetik: vinprovaren, i gränslandet mellan konsten och vetenskapen. Licentiatavhandling, KTH.',
+        'Herdenstam, A. P. F. (2011). Den arbetande gommen: vinprovarens dubbla grepp, från analys till upplevelse. Doktorsavhandling, KTH.',
+        'Crichton-Fock, A. P. F. & Spence, C. (2024). The imitation game – exploring the double-grip analysis for creating analog wines. Journal of Wine Research, 35(2), 139–159.'
+      ] as string[],
+      en: [
+        'Herdenstam, A. P. F. (2004). Sinnesupplevelsens estetik: vinprovaren, i gränslandet mellan konsten och vetenskapen. Licentiate thesis, KTH.',
+        'Herdenstam, A. P. F. (2011). Den arbetande gommen: vinprovarens dubbla grepp, från analys till upplevelse. Doctoral thesis, KTH.',
+        'Crichton-Fock, A. P. F. & Spence, C. (2024). The imitation game – exploring the double-grip analysis for creating analog wines. Journal of Wine Research, 35(2), 139–159.'
+      ] as string[]
+    },
+    sourcesNote: {
+      sv: 'Avhandlingarna från 2004 och 2011 publicerades under namnet Herdenstam. ORCID: 0000-0003-3762-483X.',
+      en: 'The theses from 2004 and 2011 were published under the name Herdenstam. ORCID: 0000-0003-3762-483X.'
+    },
+    more: { sv: 'Mer om modellen: gusto.science/foundation', en: 'More about the model: gusto.science/foundation' },
+    close: { sv: 'Stäng', en: 'Close' }
+  },
+  credits: {
+    menuItem: { sv: 'Eftertexter', en: 'Credits' },
+    heading: { sv: 'Eftertexter', en: 'Credits' },
+    studio: { sv: 'Nexus Studio', en: 'Nexus Studio' },
+    model: {
+      sv: 'Kunskapsgrunden: TRIAD-modellen och det dubbla greppet, Anders Crichton-Fock (tidigare Herdenstam), Campus Grythyttan, Örebro universitet.',
+      en: 'The knowledge foundation: the TRIAD model and the double grip, Anders Crichton-Fock (formerly Herdenstam), Campus Grythyttan, Örebro University.'
+    }
   },
   // ORDER 280 — Designs leverans kassan och kvällen (nexusStrings.kassan.ts),
   // i spelets form: M1 morgonens inköp, L1 lagret, H1 händelserna, B1 Back

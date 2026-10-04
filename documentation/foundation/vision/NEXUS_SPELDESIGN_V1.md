@@ -104,6 +104,18 @@ Midsommar och kräftskiva är fasta. Veckorna 3 och 5 är förslag som kan bytas
 
 Kunskap mäts på två sätt. **Medaljer** per paviljong visar vilken nivå spelaren har bevisat, och styr banken och golvet. **Krediter** per axel (episteme, techne, fronesis) samlas av varje rätt svar och bildar kunskapsprofilen som bankmötet och portfolion läser.
 
+*Beslut 2026-10-04 (Anders, ORDER 301): kunskapsgrunden.* `documentation/foundation/KUNSKAPSGRUND_TRIAD.md` står över alla tidigare beskrivningar av kunskapsformerna i spelet.
+- **Formerna.** Episteme (att veta), phronesis (att bedöma) och techne (att göra) kommer från Aristoteles. Urvalet, tolkningen och operationaliseringen är TRIAD-modellen, utvecklad av Anders Crichton-Fock (tidigare Herdenstam).
+- **Det dubbla greppet** är Crichton-Focks begrepp: att hålla analys och upplevelse samtidigt, och handla.
+- **Namnet.** Spelet påstår aldrig att Aristoteles definierade formerna så som spelet använder dem. Namnet skrivs "Crichton-Fock (tidigare Herdenstam)" första gången på en skärm och därefter "Crichton-Fock". Ingen text citerar "Herdenstam" ensamt.
+- **Källorna** står på sidan Kunskapsgrunden i Måltidsbiblioteket och i eftertexterna.
+- **Paviljongernas register** följer filens §3.1:
+  - Måltidsbiblioteket är det analytiska registret;
+  - Kalastorget det analogiska;
+  - Metodköket och Stensöta abduktion i handling;
+  - Gastronomiska Teatern är platsen för det dubbla greppet.
+- **Raketen med analys, upplevelse och handling** och halvt grepp (§3.2) beslutas efter ett förslag (`documentation/architecture/ORDER_301_RAPPORT.md`).
+
 ### Paviljongerna
 
 | Paviljong | Axel | Spår | Vem ställer frågan |
