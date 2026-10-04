@@ -11,8 +11,8 @@
 import type { MutableRefObject } from 'react';
 import type { CameraTarget, ConsequenceMoment } from '../types';
 import { CONSEQUENCE } from './guestMood';
+import { fovForDistance } from '../camera/eveningLevels';
 
-const FOV_DEG = 45; // CameraController apply()
 const SAME_ANSWER_SIM_S = 1;
 
 const easeOutCubic = (u: number) => 1 - Math.pow(1 - u, 3);
@@ -21,7 +21,8 @@ const clamp01 = (u: number) => Math.max(0, Math.min(1, u));
 
 /** Fokus som lägger punkten på frameX av skärmens bredd (0,5 = mitten). */
 export function framedFocus(point: { x: number; z: number }, distance: number, yaw: number, aspect: number, frameX: number): { x: number; z: number } {
-  const halfWidth = distance * Math.tan((FOV_DEG * Math.PI) / 360) * aspect;
+  // ORDER 297 — synfältet på avståndet (CameraController apply(), eveningLevels.ts).
+  const halfWidth = distance * Math.tan((fovForDistance(distance) * Math.PI) / 360) * aspect;
   const w = (frameX - 0.5) * 2 * halfWidth;
   // Skärmens högerriktning i golvplanet för kameran i apply(): (cos yaw, −sin yaw).
   return { x: point.x - Math.cos(yaw) * w, z: point.z + Math.sin(yaw) * w };

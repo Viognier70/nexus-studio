@@ -268,7 +268,9 @@ export const VILLAGE_BOUNDS = {
 // Google-Earth-like float.
 export const GRAY_BOX_CAMERA = {
   minDistance: 10,
-  maxDistance: 1800,
+  // ORDER 297 — hjulets yttre gräns är Designs (Byn i kvällsljus, BLEND.zoom: 760 m);
+  // byns nivå står på 660 m. Förut 1800.
+  maxDistance: 760,
   districtDistance: 200,
   labelVillageOver: 320,
   labelBusinessUnder: 65,

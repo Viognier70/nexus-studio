@@ -17,6 +17,7 @@ import { strings } from '../../content/strings';
 import { useCamera } from '../camera/CameraContext';
 import { subscribeVillageLive, villageLive } from '../scene/village/villageLive';
 import type { CameraTarget } from '../types';
+import { nearestLevel } from '../camera/eveningLevels';
 
 export type Level = 'room' | 'street' | 'district' | 'village';
 
@@ -26,11 +27,10 @@ const ORDER: Level[] = ['village', 'district', 'street', 'room'];
 
 // Avståndet där nivån byts (meter): rummet syns under 55 m, gatan till 150 m,
 // kvarteret till 450 m.
+// ORDER 297 — nivån närmast avståndet bland Designs nivåer (24, 42, 90, 660 m).
+const LEVEL_OF: Record<string, Level> = { venue: 'room', street: 'street', block: 'district', village: 'village' };
 export function levelForDistance(d: number): Level {
-  if (d < 55) return 'room';
-  if (d < 150) return 'street';
-  if (d < 450) return 'district';
-  return 'village';
+  return LEVEL_OF[nearestLevel(d)];
 }
 
 export function LevelBar() {
