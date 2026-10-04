@@ -18,6 +18,7 @@ import { useCamera } from '../camera/CameraContext';
 import { writeSkyState } from '../../lib/lighting/skyState';
 import { LEVELS, PHASES, SKY, VILLAGE_LIGHT, type SkyKey } from './villageEvening';
 import { subscribeVillageLight, villageLightLevel } from './villageLight';
+import { EveningAccents } from './EveningAccents';
 
 // Spelets material är ljusare än Designs (Designs mark #3a4434, gator #4f4030,
 // bruna väggar), och Designs ljusvärden är satta mot deras palett. Faktorn per
@@ -26,7 +27,9 @@ import { subscribeVillageLight, villageLightLevel } from './villageLight';
 // byn 0,25, kvarteret 0,29, gatan 0,59. På krogens nivå styr teaterns egna ljus
 // rummet; den får gatans faktor. Under kalibreringen kan en fast faktor sättas
 // i webbläsaren (nexus.eveningPaletteScale).
-const PALETTE_BY_LEVEL: Record<string, number> = { village: 0.25, block: 0.29, street: 0.59, venue: 0.59 };
+// ORDER 297b: krogens nivå höjd från 0,59 till 0,8 (Vision Owner: minst 130
+// i bildens mitt, där spelet pågår; reports/order297b/ljus-kalibrering.json).
+const PALETTE_BY_LEVEL: Record<string, number> = { village: 0.25, block: 0.29, street: 0.59, venue: 0.8 };
 function paletteOverride(): number | null {
   try {
     const v = Number(localStorage.getItem('nexus.eveningPaletteScale'));
@@ -140,6 +143,7 @@ export function EveningLighting({ e }: { e: number }) {
       <hemisphereLight ref={hemi} args={[sky.hemiSky, sky.hemiGround, sky.hemi]} />
       <directionalLight ref={moon} castShadow shadow-mapSize={[SHADOW_MAP, SHADOW_MAP]} shadow-bias={-0.0004} shadow-normalBias={0.04} />
       <primitive object={target} />
+      <EveningAccents e={e} sky={sky} />
     </>
   );
 }

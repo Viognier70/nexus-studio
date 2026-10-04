@@ -10,6 +10,7 @@ import {
   orientedBbox,
   polygonArea
 } from '../procgen/geom';
+import { STATIC_INSTANCE_FRAMES } from './staticInstances';
 
 // One gravel driveway per eligible residential building — a straight
 // line from the entrance-pad side of the OBB out to the nearest point
@@ -90,7 +91,7 @@ export function OsmDriveways() {
   // ~0.16 m above the pad — invisible at wide zoom, awkward at kvarteret.
   const DRIVEWAY_Y = 0.16;
   return (
-    <Instances limit={driveways.length} range={driveways.length}>
+    <Instances frames={STATIC_INSTANCE_FRAMES} limit={driveways.length} range={driveways.length}>
       <boxGeometry args={[1, 0.02, 2.6]} />
       <meshStandardMaterial color="#a89e88" roughness={0.95} />
       {driveways.map((d, i) => (

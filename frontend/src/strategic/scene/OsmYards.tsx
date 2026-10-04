@@ -10,6 +10,7 @@ import {
   polygonArea
 } from '../procgen/geom';
 import { outbuildingSideFor } from '../procgen/parcel';
+import { STATIC_INSTANCE_FRAMES } from './staticInstances';
 
 // Two restrained yard features on top of the existing property system:
 //   - Kitchen garden patch on ~20 % of eligible houses (tilled dark
@@ -154,7 +155,7 @@ export function OsmYards() {
           just above landcover so grass shows around it. Per-instance
           rotation and scale add small deterministic variance. */}
       {gardens.length > 0 && (
-        <Instances limit={gardens.length} range={gardens.length}>
+        <Instances frames={STATIC_INSTANCE_FRAMES} limit={gardens.length} range={gardens.length}>
           <boxGeometry args={[3.6, 0.06, 2.8]} />
           <meshStandardMaterial color="#4a4030" roughness={1} />
           {gardens.map((p, i) => (
@@ -172,7 +173,7 @@ export function OsmYards() {
           share single geometries. */}
       {yardTrees.length > 0 && (
         <>
-          <Instances limit={yardTrees.length} range={yardTrees.length}>
+          <Instances frames={STATIC_INSTANCE_FRAMES} limit={yardTrees.length} range={yardTrees.length}>
             <cylinderGeometry args={[0.14, 0.2, 1.2, 6]} />
             <meshStandardMaterial color="#4a3a2e" roughness={1} />
             {yardTrees.map((tr, i) => (
@@ -184,7 +185,7 @@ export function OsmYards() {
               />
             ))}
           </Instances>
-          <Instances limit={yardTrees.length} range={yardTrees.length}>
+          <Instances frames={STATIC_INSTANCE_FRAMES} limit={yardTrees.length} range={yardTrees.length}>
             <sphereGeometry args={[1.1, 10, 8]} />
             <meshStandardMaterial color="#5a744d" roughness={1} />
             {yardTrees.map((tr, i) => (

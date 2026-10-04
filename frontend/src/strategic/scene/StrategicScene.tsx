@@ -1,6 +1,6 @@
 import { SceneSnapshot } from './SceneSnapshot';
 import { Canvas } from '@react-three/fiber';
-import { Suspense, type CSSProperties } from 'react';
+import { memo, Suspense, type CSSProperties } from 'react';
 import * as THREE from 'three';
 import { CameraController } from '../camera/CameraController';
 import type { Landmark } from '../content/world';
@@ -10,6 +10,7 @@ import { ChimneySmoke } from './ChimneySmoke';
 import { ProceduralFacades } from './ProceduralFacades';
 import { ScaleReference } from '../../scene/ScaleReference';
 import { FpsProbe } from '../../lib/FpsProbe';
+import { RenderProfileProbe } from '../../lib/RenderProfileProbe';
 import { PixelSampleProbe } from '../../lib/PixelSampleProbe';
 import { WallSurfaceAuditProbe } from '../../lib/WallSurfaceAuditProbe';
 import { CalibrationQuad } from './CalibrationQuad';
@@ -97,7 +98,12 @@ interface Props {
   showScaleRef?: boolean;
 }
 
-export function StrategicScene({ onSelect, selectedId, showScaleRef = false }: Props) {
+// ORDER 297b — scenen ritas om bara när dess egna props ändras. Utan memo
+// renderade StrategicApp (som läser simuleringen) om hela Canvas-trädet vid
+// varje simuleringssteg, med byns tusentals <Instance>-barn: den största
+// kostnaden på byns nivå medan kvällen går (reports/order297b/profil-*.json).
+// Komponenterna som följer simuleringen läser den själva (useSimState).
+export const StrategicScene = memo(function StrategicScene({ onSelect, selectedId, showScaleRef = false }: Props) {
   return (
     <Canvas
       gl={CANVAS_GL}
@@ -114,56 +120,57 @@ export function StrategicScene({ onSelect, selectedId, showScaleRef = false }: P
       {/* ORDER 285 — tidningens foto ur scenen. */}
       <SceneSnapshot />
       <Suspense fallback={null}>
-        <OsmTerrain />
-        <OsmDistricts />
-        <OsmWater />
-        <HorizonForest />
-        <OsmForest />
-        <OsmMeadowVegetation />
-        <OsmRoads />
-        <OsmDriveways />
-        <TorgetPlaza />
-        <OsmYardSurfaces />
-        <RetainingWalls />
-        <OsmBuildings />
-        <ProceduralFacades />
-        <OsmFences />
-        <StreetTrees />
-        <PublicRealm />
-        <OsmOutbuildings />
-        <OsmParcelBoundaries />
-        <OsmPropertyDetail />
-        <OsmYards />
-        <CraftedLandmarks />
-        <CraftedLandmarksD2 />
-        <PlayerBusiness />
-        <RestaurantScene />
-        <BrewpubScene />
-        <WineBarScene />
-        <InteriorGuests />
-        <InteriorStaff />
+        <group name="part:OsmTerrain"><OsmTerrain /></group>
+        <group name="part:OsmDistricts"><OsmDistricts /></group>
+        <group name="part:OsmWater"><OsmWater /></group>
+        <group name="part:HorizonForest"><HorizonForest /></group>
+        <group name="part:OsmForest"><OsmForest /></group>
+        <group name="part:OsmMeadowVegetation"><OsmMeadowVegetation /></group>
+        <group name="part:OsmRoads"><OsmRoads /></group>
+        <group name="part:OsmDriveways"><OsmDriveways /></group>
+        <group name="part:TorgetPlaza"><TorgetPlaza /></group>
+        <group name="part:OsmYardSurfaces"><OsmYardSurfaces /></group>
+        <group name="part:RetainingWalls"><RetainingWalls /></group>
+        <group name="part:OsmBuildings"><OsmBuildings /></group>
+        <group name="part:ProceduralFacades"><ProceduralFacades /></group>
+        <group name="part:OsmFences"><OsmFences /></group>
+        <group name="part:StreetTrees"><StreetTrees /></group>
+        <group name="part:PublicRealm"><PublicRealm /></group>
+        <group name="part:OsmOutbuildings"><OsmOutbuildings /></group>
+        <group name="part:OsmParcelBoundaries"><OsmParcelBoundaries /></group>
+        <group name="part:OsmPropertyDetail"><OsmPropertyDetail /></group>
+        <group name="part:OsmYards"><OsmYards /></group>
+        <group name="part:CraftedLandmarks"><CraftedLandmarks /></group>
+        <group name="part:CraftedLandmarksD2"><CraftedLandmarksD2 /></group>
+        <group name="part:PlayerBusiness"><PlayerBusiness /></group>
+        <group name="part:RestaurantScene"><RestaurantScene /></group>
+        <group name="part:BrewpubScene"><BrewpubScene /></group>
+        <group name="part:WineBarScene"><WineBarScene /></group>
+        <group name="part:InteriorGuests"><InteriorGuests /></group>
+        <group name="part:InteriorStaff"><InteriorStaff /></group>
         {/* ORDER 292b — prototypgästen (AnimationPrototype.tsx) monteras inte:
             den satte sig på golvet där den gamla krogens stol stod. */}
-        <EntranceDoorPulse />
-        <DeliveryVan />
-        <MentorComment />
-        <IncidentOutcomeBubble />
-        <OsmLandmarks onSelect={onSelect} selectedId={selectedId} />
-        <OsmTraffic />
-        <OsmPedestrians />
+        <group name="part:EntranceDoorPulse"><EntranceDoorPulse /></group>
+        <group name="part:DeliveryVan"><DeliveryVan /></group>
+        <group name="part:MentorComment"><MentorComment /></group>
+        <group name="part:IncidentOutcomeBubble"><IncidentOutcomeBubble /></group>
+        <group name="part:OsmLandmarks"><OsmLandmarks onSelect={onSelect} selectedId={selectedId} /></group>
+        <group name="part:OsmTraffic"><OsmTraffic /></group>
+        <group name="part:OsmPedestrians"><OsmPedestrians /></group>
         {/* ORDER 288 — byn och konkurrensen: gatlyktorna, krogarna som lyser
             när de har öppet (med etiketter i HUD-lagret), gästerna, bilarna,
             bussen och vagnarna, och vem som är på väg in på gatan. */}
-        <StreetLamps />
+        <group name="part:StreetLamps"><StreetLamps /></group>
         {/* ORDER 297 — byns fönster i kvällsljuset (Designs Byn i kvällsljus). */}
-        <VillageWindows />
-        <VillageVenues />
-        <VillageLife />
-        <StreetArrivals />
-        <LandmarkGatherers />
-        <OsmBoats />
-        <ChimneySmoke />
-        <StreetLabels />
+        <group name="part:VillageWindows"><VillageWindows /></group>
+        <group name="part:VillageVenues"><VillageVenues /></group>
+        <group name="part:VillageLife"><VillageLife /></group>
+        <group name="part:StreetArrivals"><StreetArrivals /></group>
+        <group name="part:LandmarkGatherers"><LandmarkGatherers /></group>
+        <group name="part:OsmBoats"><OsmBoats /></group>
+        <group name="part:ChimneySmoke"><ChimneySmoke /></group>
+        <group name="part:StreetLabels"><StreetLabels /></group>
+        <RenderProfileProbe />
         <ScaleReference enabled={showScaleRef} halfSize={80} groundY={0.02} />
         {import.meta.env.DEV && <FpsProbe />}
         {import.meta.env.DEV && <PixelSampleProbe />}
@@ -173,4 +180,4 @@ export function StrategicScene({ onSelect, selectedId, showScaleRef = false }: P
       <CameraController />
     </Canvas>
   );
-}
+});

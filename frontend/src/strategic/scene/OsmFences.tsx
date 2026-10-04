@@ -12,6 +12,7 @@ import {
   orientedBbox,
   polygonArea
 } from '../procgen/geom';
+import { STATIC_INSTANCE_FRAMES } from './staticInstances';
 
 // ORDER 031 — Boundary System.
 //
@@ -263,7 +264,7 @@ export function OsmFences() {
         return (
           <group key={style}>
             {stylePanels.length > 0 && (
-              <Instances limit={stylePanels.length} range={stylePanels.length}>
+              <Instances frames={STATIC_INSTANCE_FRAMES} limit={stylePanels.length} range={stylePanels.length}>
                 <boxGeometry args={[1, spec.panelHeight, spec.panelThick]} />
                 <meshStandardMaterial color={spec.panelColour} roughness={0.95} />
                 {stylePanels.map((p, i) => {
@@ -280,7 +281,7 @@ export function OsmFences() {
               </Instances>
             )}
             {stylePosts.length > 0 && spec.postHeight > 0 && (
-              <Instances limit={stylePosts.length} range={stylePosts.length}>
+              <Instances frames={STATIC_INSTANCE_FRAMES} limit={stylePosts.length} range={stylePosts.length}>
                 <boxGeometry args={[spec.postSize, spec.postHeight, spec.postSize]} />
                 <meshStandardMaterial color={spec.postColour} roughness={1} />
                 {stylePosts.map((p, i) => (

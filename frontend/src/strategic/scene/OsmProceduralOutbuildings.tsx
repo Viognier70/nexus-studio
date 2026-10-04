@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { WORLD } from '../content/world';
 import { idHash, orientedBbox } from '../procgen/geom';
 import { outbuildingPlacementFor } from '../procgen/parcel';
+import { STATIC_INSTANCE_FRAMES } from './staticInstances';
 
 // Small secondary structures (garden sheds, small outbuildings) placed
 // deterministically alongside larger residential buildings so a farm
@@ -61,7 +62,7 @@ export function OsmOutbuildings() {
     <group>
       {/* Small shed walls (3.6 × 2.6 × 3.0 m) */}
       {smalls.length > 0 && (
-        <Instances limit={smalls.length} range={smalls.length}>
+        <Instances frames={STATIC_INSTANCE_FRAMES} limit={smalls.length} range={smalls.length}>
           <boxGeometry args={[3.6, 2.6, 3.0]} />
           <meshStandardMaterial roughness={0.95} />
           {smalls.map((o, i) => (
@@ -76,7 +77,7 @@ export function OsmOutbuildings() {
       )}
       {/* Small shed roofs (thin dark box, slightly wider than walls) */}
       {smalls.length > 0 && (
-        <Instances limit={smalls.length} range={smalls.length}>
+        <Instances frames={STATIC_INSTANCE_FRAMES} limit={smalls.length} range={smalls.length}>
           <boxGeometry args={[3.9, 0.3, 3.3]} />
           <meshStandardMaterial color="#2a251f" roughness={0.9} />
           {smalls.map((o, i) => (
@@ -90,7 +91,7 @@ export function OsmOutbuildings() {
       )}
       {/* Medium outbuilding walls (5.6 × 3.2 × 4.2 m) */}
       {mediums.length > 0 && (
-        <Instances limit={mediums.length} range={mediums.length}>
+        <Instances frames={STATIC_INSTANCE_FRAMES} limit={mediums.length} range={mediums.length}>
           <boxGeometry args={[5.6, 3.2, 4.2]} />
           <meshStandardMaterial roughness={0.95} />
           {mediums.map((o, i) => (
@@ -105,7 +106,7 @@ export function OsmOutbuildings() {
       )}
       {/* Medium outbuilding roofs */}
       {mediums.length > 0 && (
-        <Instances limit={mediums.length} range={mediums.length}>
+        <Instances frames={STATIC_INSTANCE_FRAMES} limit={mediums.length} range={mediums.length}>
           <boxGeometry args={[5.9, 0.35, 4.5]} />
           <meshStandardMaterial color="#2a251f" roughness={0.9} />
           {mediums.map((o, i) => (

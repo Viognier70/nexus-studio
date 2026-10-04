@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { LANDMARK_BY_ID } from '../content/world';
 import { inAnyWater } from '../procgen/geom';
 import { createRng } from '../util/rng';
+import { STATIC_INSTANCE_FRAMES } from './staticInstances';
 
 // Distant Bergslag forest ring.
 //
@@ -106,7 +107,7 @@ export function HorizonForest() {
     <group>
       {/* Cool distant conifers — dominant, deep Bergslag pine tone. */}
       {cool.length > 0 && (
-        <Instances limit={cool.length} range={cool.length}>
+        <Instances frames={STATIC_INSTANCE_FRAMES} limit={cool.length} range={cool.length}>
           <coneGeometry args={[1.0, 3.6, 6]} />
           <meshStandardMaterial color="#3a4a3f" roughness={1} />
           {cool.map((t, i) => (
@@ -122,7 +123,7 @@ export function HorizonForest() {
       {/* Warm distant broadleaf — sparser, warmer green so the ring
           reads as mixed forest rather than a monoculture stripe. */}
       {warm.length > 0 && (
-        <Instances limit={warm.length} range={warm.length}>
+        <Instances frames={STATIC_INSTANCE_FRAMES} limit={warm.length} range={warm.length}>
           <coneGeometry args={[1.15, 3.2, 6]} />
           <meshStandardMaterial color="#4d5842" roughness={1} />
           {warm.map((t, i) => (

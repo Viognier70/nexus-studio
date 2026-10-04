@@ -1,0 +1,600 @@
+{
+  "viewport": "1440x900",
+  "stop": "19.30",
+  "levelKey": "v",
+  "errors": [],
+  "all": {
+    "fps": 43.4,
+    "calls": 2153,
+    "triangles": 2003722,
+    "camDistance": "660",
+    "clock": "19.30"
+  },
+  "parts": [
+    {
+      "part": "CraftedLandmarks",
+      "fps": 49.6,
+      "calls": 1516,
+      "triangles": 1988148,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": 637,
+      "trianglesSaved": 15574
+    },
+    {
+      "part": "OsmBuildings",
+      "fps": 49.5,
+      "calls": 1597,
+      "triangles": 1984910,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": 556,
+      "trianglesSaved": 18812
+    },
+    {
+      "part": "OsmMeadowVegetation",
+      "fps": 47.4,
+      "calls": 2152,
+      "triangles": 804706,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": 1,
+      "trianglesSaved": 1199016
+    },
+    {
+      "part": "OsmRoads",
+      "fps": 46.3,
+      "calls": 1924,
+      "triangles": 1842976,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": 229,
+      "trianglesSaved": 160746
+    },
+    {
+      "part": "ProceduralFacades",
+      "fps": 46.2,
+      "calls": 1897,
+      "triangles": 1999169,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": 256,
+      "trianglesSaved": 4553
+    },
+    {
+      "part": "StreetTrees",
+      "fps": 45.8,
+      "calls": 2149,
+      "triangles": 1698778,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": 4,
+      "trianglesSaved": 304944
+    },
+    {
+      "part": "CraftedLandmarksD2",
+      "fps": 45.3,
+      "calls": 2118,
+      "triangles": 1997938,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": 35,
+      "trianglesSaved": 5784
+    },
+    {
+      "part": "OsmForest",
+      "fps": 45.1,
+      "calls": 2155,
+      "triangles": 1879406,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": -2,
+      "trianglesSaved": 124316
+    },
+    {
+      "part": "WineBarScene",
+      "fps": 45.1,
+      "calls": 1969,
+      "triangles": 1988492,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": 184,
+      "trianglesSaved": 15230
+    },
+    {
+      "part": "RestaurantScene",
+      "fps": 44.9,
+      "calls": 2157,
+      "triangles": 2003770,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": -4,
+      "trianglesSaved": -48
+    },
+    {
+      "part": "BrewpubScene",
+      "fps": 44.9,
+      "calls": 2157,
+      "triangles": 2003770,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": -4,
+      "trianglesSaved": -48
+    },
+    {
+      "part": "OsmYards",
+      "fps": 44.8,
+      "calls": 2152,
+      "triangles": 1997626,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": 1,
+      "trianglesSaved": 6096
+    },
+    {
+      "part": "PlayerBusiness",
+      "fps": 44.8,
+      "calls": 2154,
+      "triangles": 2003734,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": -1,
+      "trianglesSaved": -12
+    },
+    {
+      "part": "RetainingWalls",
+      "fps": 44.6,
+      "calls": 2156,
+      "triangles": 1999294,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": -3,
+      "trianglesSaved": 4428
+    },
+    {
+      "part": "OsmOutbuildings",
+      "fps": 44.6,
+      "calls": 2149,
+      "triangles": 2002282,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": 4,
+      "trianglesSaved": 1440
+    },
+    {
+      "part": "OsmParcelBoundaries",
+      "fps": 44.6,
+      "calls": 2150,
+      "triangles": 2000062,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": 3,
+      "trianglesSaved": 3660
+    },
+    {
+      "part": "StreetLamps",
+      "fps": 44.6,
+      "calls": 2147,
+      "triangles": 1983876,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": 6,
+      "trianglesSaved": 19846
+    },
+    {
+      "part": "OsmDriveways",
+      "fps": 44.5,
+      "calls": 2154,
+      "triangles": 2002450,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": -1,
+      "trianglesSaved": 1272
+    },
+    {
+      "part": "TorgetPlaza",
+      "fps": 44.5,
+      "calls": 2154,
+      "triangles": 2003740,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": -1,
+      "trianglesSaved": -18
+    },
+    {
+      "part": "PublicRealm",
+      "fps": 44.5,
+      "calls": 2144,
+      "triangles": 2003494,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": 9,
+      "trianglesSaved": 228
+    },
+    {
+      "part": "OsmPropertyDetail",
+      "fps": 44.5,
+      "calls": 2151,
+      "triangles": 2001082,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": 2,
+      "trianglesSaved": 2640
+    },
+    {
+      "part": "VillageLife",
+      "fps": 44.5,
+      "calls": 2144,
+      "triangles": 2003430,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": 9,
+      "trianglesSaved": 292
+    },
+    {
+      "part": "ChimneySmoke",
+      "fps": 44.5,
+      "calls": 2084,
+      "triangles": 1998202,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": 69,
+      "trianglesSaved": 5520
+    },
+    {
+      "part": "LandmarkGatherers",
+      "fps": 44.4,
+      "calls": 2137,
+      "triangles": 1999950,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": 16,
+      "trianglesSaved": 3772
+    },
+    {
+      "part": "OsmYardSurfaces",
+      "fps": 44.3,
+      "calls": 2154,
+      "triangles": 2000542,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": -1,
+      "trianglesSaved": 3180
+    },
+    {
+      "part": "OsmFences",
+      "fps": 44.3,
+      "calls": 2145,
+      "triangles": 1983934,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": 8,
+      "trianglesSaved": 19788
+    },
+    {
+      "part": "VillageVenues",
+      "fps": 44.3,
+      "calls": 2109,
+      "triangles": 2002812,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": 44,
+      "trianglesSaved": 910
+    },
+    {
+      "part": "StreetArrivals",
+      "fps": 44.3,
+      "calls": 2149,
+      "triangles": 2003674,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": 4,
+      "trianglesSaved": 48
+    },
+    {
+      "part": "IncidentOutcomeBubble",
+      "fps": 44.2,
+      "calls": 2151,
+      "triangles": 2003698,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": 2,
+      "trianglesSaved": 24
+    },
+    {
+      "part": "VillageWindows",
+      "fps": 44.2,
+      "calls": 2149,
+      "triangles": 1999016,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": 4,
+      "trianglesSaved": 4706
+    },
+    {
+      "part": "OsmTerrain",
+      "fps": 44.1,
+      "calls": 2152,
+      "triangles": 1974922,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": 1,
+      "trianglesSaved": 28800
+    },
+    {
+      "part": "EntranceDoorPulse",
+      "fps": 44.1,
+      "calls": 2156,
+      "triangles": 2003758,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": -3,
+      "trianglesSaved": -36
+    },
+    {
+      "part": "MentorComment",
+      "fps": 44.1,
+      "calls": 2153,
+      "triangles": 2003722,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": 0,
+      "trianglesSaved": 0
+    },
+    {
+      "part": "OsmLandmarks",
+      "fps": 44.1,
+      "calls": 2134,
+      "triangles": 2003358,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": 19,
+      "trianglesSaved": 364
+    },
+    {
+      "part": "OsmPedestrians",
+      "fps": 44.1,
+      "calls": 2149,
+      "triangles": 1993578,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": 4,
+      "trianglesSaved": 10144
+    },
+    {
+      "part": "OsmBoats",
+      "fps": 44.1,
+      "calls": 2153,
+      "triangles": 2003722,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": 0,
+      "trianglesSaved": 0
+    },
+    {
+      "part": "InteriorGuests",
+      "fps": 44,
+      "calls": 2161,
+      "triangles": 2003818,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": -8,
+      "trianglesSaved": -96
+    },
+    {
+      "part": "InteriorStaff",
+      "fps": 44,
+      "calls": 2159,
+      "triangles": 2003794,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": -6,
+      "trianglesSaved": -72
+    },
+    {
+      "part": "OsmTraffic",
+      "fps": 44,
+      "calls": 2133,
+      "triangles": 2003482,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": 20,
+      "trianglesSaved": 240
+    },
+    {
+      "part": "DeliveryVan",
+      "fps": 43.9,
+      "calls": 2155,
+      "triangles": 2003746,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": -2,
+      "trianglesSaved": -24
+    },
+    {
+      "part": "StreetLabels",
+      "fps": 43.8,
+      "calls": 2155,
+      "triangles": 2003746,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": -2,
+      "trianglesSaved": -24
+    },
+    {
+      "part": "HorizonForest",
+      "fps": 43.5,
+      "calls": 2152,
+      "triangles": 1976398,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": 1,
+      "trianglesSaved": 27324
+    },
+    {
+      "part": "OsmWater",
+      "fps": 43.2,
+      "calls": 2147,
+      "triangles": 1993982,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": 6,
+      "trianglesSaved": 9740
+    },
+    {
+      "part": "OsmDistricts",
+      "fps": 42.4,
+      "calls": 2151,
+      "triangles": 2003709,
+      "camDistance": "660",
+      "clock": "19.30",
+      "callsSaved": 2,
+      "trianglesSaved": 13
+    }
+  ],
+  "noShadows": {
+    "fps": 52.8,
+    "calls": 2155,
+    "triangles": 2003746,
+    "camDistance": "660",
+    "clock": "19.30"
+  },
+  "allAgain": {
+    "fps": 44.6,
+    "calls": 2153,
+    "triangles": 2003722,
+    "camDistance": "660",
+    "clock": "19.30"
+  },
+  "running": {
+    "fps": 15.1,
+    "calls": 2146,
+    "triangles": 2003765,
+    "camDistance": "656",
+    "clock": "20.02",
+    "camBefore": "602",
+    "tries": 6
+  },
+  "cpu": [
+    {
+      "fn": "(program) :-1",
+      "share": 0.194
+    },
+    {
+      "fn": "hy index-vdGE3SEi.js:3909",
+      "share": 0.148
+    },
+    {
+      "fn": "equ index-vdGE3SEi.js:3913",
+      "share": 0.084
+    },
+    {
+      "fn": "(garbage collector) :-1",
+      "share": 0.058
+    },
+    {
+      "fn": "(anon) index-vdGE3SEi.js:4107",
+      "share": 0.049
+    },
+    {
+      "fn": "updateMatrixWorld index-vdGE3SEi.js:45",
+      "share": 0.045
+    },
+    {
+      "fn": "QI index-vdGE3SEi.js:3909",
+      "share": 0.042
+    },
+    {
+      "fn": "multiplyMatrices index-vdGE3SEi.js:45",
+      "share": 0.035
+    },
+    {
+      "fn": "iJ index-vdGE3SEi.js:3909",
+      "share": 0.033
+    },
+    {
+      "fn": "Va index-vdGE3SEi.js:3879",
+      "share": 0.025
+    },
+    {
+      "fn": "S index-vdGE3SEi.js:3855",
+      "share": 0.023
+    },
+    {
+      "fn": "decompose index-vdGE3SEi.js:45",
+      "share": 0.021
+    },
+    {
+      "fn": "aI index-vdGE3SEi.js:3907",
+      "share": 0.019
+    },
+    {
+      "fn": "(anon) index-vdGE3SEi.js:3913",
+      "share": 0.017
+    },
+    {
+      "fn": "hx index-vdGE3SEi.js:3907",
+      "share": 0.017
+    },
+    {
+      "fn": "Kt index-vdGE3SEi.js:3907",
+      "share": 0.013
+    },
+    {
+      "fn": "qz index-vdGE3SEi.js:16",
+      "share": 0.011
+    },
+    {
+      "fn": "mo index-vdGE3SEi.js:3907",
+      "share": 0.011
+    },
+    {
+      "fn": "Ke index-vdGE3SEi.js:3907",
+      "share": 0.01
+    },
+    {
+      "fn": "tI index-vdGE3SEi.js:3907",
+      "share": 0.009
+    },
+    {
+      "fn": "renderBufferDirect index-vdGE3SEi.js:3879",
+      "share": 0.008
+    },
+    {
+      "fn": "(anon) index-vdGE3SEi.js:4373",
+      "share": 0.008
+    },
+    {
+      "fn": "bindVertexArray :-1",
+      "share": 0.007
+    },
+    {
+      "fn": "qAe index-vdGE3SEi.js:4373",
+      "share": 0.006
+    },
+    {
+      "fn": "i index-vdGE3SEi.js:3777",
+      "share": 0.006
+    },
+    {
+      "fn": "Py index-vdGE3SEi.js:3909",
+      "share": 0.006
+    },
+    {
+      "fn": "zt index-vdGE3SEi.js:3879",
+      "share": 0.005
+    },
+    {
+      "fn": "iI index-vdGE3SEi.js:3907",
+      "share": 0.004
+    },
+    {
+      "fn": "setFromRotationMatrix index-vdGE3SEi.js:45",
+      "share": 0.003
+    },
+    {
+      "fn": "s index-vdGE3SEi.js:3879",
+      "share": 0.003
+    }
+  ]
+}

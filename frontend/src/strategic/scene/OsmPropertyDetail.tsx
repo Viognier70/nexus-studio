@@ -10,6 +10,7 @@ import {
   polygonArea
 } from '../procgen/geom';
 import { outbuildingSideFor } from '../procgen/parcel';
+import { STATIC_INSTANCE_FRAMES } from './staticInstances';
 
 // Property-scale decor around every eligible residential building:
 //   - Small gravel pad in front of the entrance
@@ -82,7 +83,7 @@ export function OsmPropertyDetail() {
           they read as loose gravel over grass. Positioned above the
           landcover so nothing hides them. */}
       {pads.length > 0 && (
-        <Instances limit={pads.length} range={pads.length}>
+        <Instances frames={STATIC_INSTANCE_FRAMES} limit={pads.length} range={pads.length}>
           <boxGeometry args={[3.5, 0.05, 3.0]} />
           <meshStandardMaterial color="#a89e88" roughness={0.95} />
           {pads.map((p, i) => (
@@ -99,7 +100,7 @@ export function OsmPropertyDetail() {
           at pile positions so the whole village adds 3 draw calls. */}
       {woodPiles.length > 0 && (
         <>
-          <Instances limit={woodPiles.length} range={woodPiles.length}>
+          <Instances frames={STATIC_INSTANCE_FRAMES} limit={woodPiles.length} range={woodPiles.length}>
             <boxGeometry args={[2.4, 0.4, 0.6]} />
             <meshStandardMaterial color="#5a4632" roughness={0.95} />
             {woodPiles.map((p, i) => (
@@ -110,7 +111,7 @@ export function OsmPropertyDetail() {
               />
             ))}
           </Instances>
-          <Instances limit={woodPiles.length} range={woodPiles.length}>
+          <Instances frames={STATIC_INSTANCE_FRAMES} limit={woodPiles.length} range={woodPiles.length}>
             <boxGeometry args={[2.3, 0.35, 0.55]} />
             <meshStandardMaterial color="#5f4b35" roughness={0.95} />
             {woodPiles.map((p, i) => (
@@ -121,7 +122,7 @@ export function OsmPropertyDetail() {
               />
             ))}
           </Instances>
-          <Instances limit={woodPiles.length} range={woodPiles.length}>
+          <Instances frames={STATIC_INSTANCE_FRAMES} limit={woodPiles.length} range={woodPiles.length}>
             <boxGeometry args={[2.2, 0.3, 0.5]} />
             <meshStandardMaterial color="#645038" roughness={0.95} />
             {woodPiles.map((p, i) => (

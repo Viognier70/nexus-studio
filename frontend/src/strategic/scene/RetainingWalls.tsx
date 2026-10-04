@@ -2,6 +2,7 @@ import { Instance, Instances } from '@react-three/drei';
 import { useMemo } from 'react';
 import { WORLD } from '../content/world';
 import { streetProfile } from '../content/streetProfiles';
+import { STATIC_INSTANCE_FRAMES } from './staticInstances';
 
 // ORDER 031 — Terrain character (Phase 6).
 //
@@ -93,7 +94,7 @@ export function RetainingWalls() {
   if (segments.length === 0) return null;
 
   return (
-    <Instances limit={segments.length} range={segments.length}>
+    <Instances frames={STATIC_INSTANCE_FRAMES} limit={segments.length} range={segments.length}>
       <boxGeometry args={[1, WALL_HEIGHT, WALL_THICK]} />
       <meshStandardMaterial color={WALL_COLOUR} roughness={1} />
       {segments.map((s, i) => (

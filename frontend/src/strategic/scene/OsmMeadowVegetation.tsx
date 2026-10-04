@@ -2,6 +2,7 @@ import { Instance, Instances } from '@react-three/drei';
 import { useMemo } from 'react';
 import { WORLD, WORLD_BOUNDS } from '../content/world';
 import type { Vec2Tuple } from '../content/world';
+import { STATIC_INSTANCE_FRAMES } from './staticInstances';
 
 // Two flavours of open-country vegetation that live outside the
 // polygonal OsmForest:
@@ -282,7 +283,7 @@ export function OsmMeadowVegetation() {
       {/* Isolated pasture conifers — a single trunk + cone. */}
       {conifers.length > 0 && (
         <>
-          <Instances limit={conifers.length} range={conifers.length}>
+          <Instances frames={STATIC_INSTANCE_FRAMES} limit={conifers.length} range={conifers.length}>
             <cylinderGeometry args={[0.16, 0.24, 1.4, 6]} />
             <meshStandardMaterial color="#3f382e" roughness={1} />
             {conifers.map((t, i) => (
@@ -294,7 +295,7 @@ export function OsmMeadowVegetation() {
               />
             ))}
           </Instances>
-          <Instances limit={conifers.length} range={conifers.length}>
+          <Instances frames={STATIC_INSTANCE_FRAMES} limit={conifers.length} range={conifers.length}>
             <coneGeometry args={[1.2, 3.8, 8]} />
             <meshStandardMaterial color="#4a5148" roughness={1} />
             {conifers.map((t, i) => (
@@ -311,7 +312,7 @@ export function OsmMeadowVegetation() {
       {/* Isolated pasture deciduous — trunk + sphere canopy. */}
       {decs.length > 0 && (
         <>
-          <Instances limit={decs.length} range={decs.length}>
+          <Instances frames={STATIC_INSTANCE_FRAMES} limit={decs.length} range={decs.length}>
             <cylinderGeometry args={[0.2, 0.3, 1.6, 6]} />
             <meshStandardMaterial color="#4a3a2e" roughness={1} />
             {decs.map((t, i) => (
@@ -323,7 +324,7 @@ export function OsmMeadowVegetation() {
               />
             ))}
           </Instances>
-          <Instances limit={decs.length} range={decs.length}>
+          <Instances frames={STATIC_INSTANCE_FRAMES} limit={decs.length} range={decs.length}>
             <sphereGeometry args={[1.4, 10, 8]} />
             <meshStandardMaterial color="#5a744d" roughness={1} />
             {decs.map((t, i) => (
@@ -339,7 +340,7 @@ export function OsmMeadowVegetation() {
       )}
       {/* Roadside bushes — small warm-green spheres, one draw call. */}
       {bushes.length > 0 && (
-        <Instances limit={bushes.length} range={bushes.length}>
+        <Instances frames={STATIC_INSTANCE_FRAMES} limit={bushes.length} range={bushes.length}>
           <sphereGeometry args={[0.65, 8, 6]} />
           <meshStandardMaterial color="#6f8560" roughness={1} />
           {bushes.map((b, i) => (
