@@ -28,7 +28,11 @@
 // spelar sitt klipp, kameran glider in, ringen står vid figuren och
 // bildtexten visas vid den tills svaret är satt.
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
+import { statusModeOn, subscribeStatusMode } from '../ui/statusMode';
+import { skillsOf, staminaOf, wellbeingOf } from '../../sim/staffCondition';
+import { conditionLevel } from '../ui/StaffRingTag';
+import { GuestStatusCard } from '../ui/GuestStatusCard';
 import { Html } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
@@ -88,6 +92,7 @@ import {
 } from './wineBarRoom';
 import {
   WineBarDirector,
+  SIM_ROLE_TO_STAFF,
   STAFF_KEYS,
   type FigureSample,
   type StaffKey,
@@ -362,6 +367,23 @@ export function WineBarFigures({ room, mood }: Props) {
   const sim = useSimState();
   const simRef = useRef<SimulationState>(sim);
   simRef.current = sim;
+  // ORDER 303 F — statusläget: alla bords stämning, personalens ork vid
+  // fötterna, och korten vid klick.
+  const statusOn = useSyncExternalStore(subscribeStatusMode, statusModeOn, statusModeOn);
+  const statusRef = useRef(false);
+  statusRef.current = statusOn;
+  const pinnedStaffRef = useRef<number | null>(null);
+  const [guestCard, setGuestCard] = useState<{ id: string } | null>(null);
+  const guestCardRef = useRef<THREE.Group>(null);
+  const staminaRings = useMemo(() => {
+    const geos = [1, 2, 3].map((k) => new THREE.RingGeometry(0.4, 0.46, 32, 1, Math.PI / 2, (2 * Math.PI * k) / 3));
+    for (const g of geos) g.rotateX(-Math.PI / 2);
+    const mat = new THREE.MeshBasicMaterial({ color: '#f4e6cc', transparent: true, opacity: 0.9, depthWrite: false, toneMapped: false, side: THREE.DoubleSide });
+    const meshes = STAFF_KEYS.map(() => { const m = new THREE.Mesh(geos[2], mat); m.visible = false; m.renderOrder = 6; return m; });
+    return { geos, mat, meshes };
+  }, []);
+  useEffect(() => () => { staminaRings.geos.forEach((g) => g.dispose()); staminaRings.mat.dispose(); }, [staminaRings]);
+  if (!statusOn && pinnedStaffRef.current !== null) pinnedStaffRef.current = null;
   const { actualRef, targetRef } = useCamera();
   // ORDER 299 — konsekvensögonblicket: reducerad rörelse (kameran nedan).
   const reducedMotion = usePrefersReducedMotion();
@@ -426,6 +448,20 @@ export function WineBarFigures({ room, mood }: Props) {
       const cast = castRef.current;
       if (!cast || !roomShownRef.current) return;
       raycaster.setFromCamera(pointer, camera);
+      // ORDER 303 F — i statusläget öppnar ett klick på en gäst eller i
+      // personalen ett litet kort.
+      if (statusRef.current) {
+        const owner = new Map<THREE.Object3D, { kind: 'staff'; i: number } | { kind: 'guest'; id: string }>();
+        const targets: THREE.Object3D[] = [];
+        cast.staffRigs.forEach((r, i) => { if (r.root.visible) { targets.push(r.root); owner.set(r.root, { kind: 'staff', i }); } });
+        cast.guestRigs.forEach((r, i) => { const id = cast.guestIds[i]; if (r.root.visible && id) { targets.push(r.root); owner.set(r.root, { kind: 'guest', id }); } });
+        const h = raycaster.intersectObjects(targets, true)[0];
+        let picked: { kind: 'staff'; i: number } | { kind: 'guest'; id: string } | null = null;
+        for (let o: THREE.Object3D | null = h?.object ?? null; o; o = o.parent) { if (owner.has(o)) { picked = owner.get(o)!; break; } }
+        pinnedStaffRef.current = picked?.kind === 'staff' ? picked.i : null;
+        setGuestCard(picked?.kind === 'guest' ? { id: picked.id } : null);
+        if (picked) return;
+      }
       const floorY = cast.group.localToWorld(new THREE.Vector3(0, room.floorY, 0)).y;
       const hit = raycaster.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 1, 0), -floorY), new THREE.Vector3());
       if (!hit) return;
@@ -833,6 +869,8 @@ export function WineBarFigures({ room, mood }: Props) {
         }
         const h = raycaster.intersectObjects(targets, true)[0];
         for (let o: THREE.Object3D | null = h?.object ?? null; o; o = o.parent) { if (owner.has(o)) { hit = owner.get(o)!; break; } }
+        // ORDER 303 F — ett kort som öppnats med klick står kvar.
+        if (statusRef.current && pinnedStaffRef.current !== null) hit = pinnedStaffRef.current;
       }
       const key = hit >= 0 ? `${hit}:${ringTaskFor(ss[hit], cast.director.staffTaskDetail(STAFF_KEYS[hit], t)?.kind ?? null)}` : '';
       if (key !== ringTagKey.current) {
@@ -847,6 +885,27 @@ export function WineBarFigures({ room, mood }: Props) {
         const p = cast.group.localToWorld(new THREE.Vector3(ss[hit].x, room.floorY + RING_TAG_HEIGHT_M, ss[hit].z));
         g.parent.worldToLocal(p);
         g.position.copy(p);
+      }
+    }
+
+    // ORDER 303 F — orken som en ring vid fötterna (tre lägen), i statusläget.
+    for (let i = 0; i < STAFF_KEYS.length; i++) {
+      const m = staminaRings.meshes[i];
+      if (m.parent !== cast.group) cast.group.add(m);
+      const member = s.staff.find((x) => SIM_ROLE_TO_STAFF[x.role] === STAFF_KEYS[i]);
+      const show = statusRef.current && roomShownRef.current && inService && ss[i].visible && !!member;
+      m.visible = show;
+      if (!show || !member) continue;
+      m.geometry = staminaRings.geos[conditionLevel(staminaOf(member))];
+      m.position.set(ss[i].x, room.floorY + 0.03, ss[i].z);
+    }
+    // ORDER 303 F — gästens kort följer gästen.
+    if (guestCard && guestCardRef.current?.parent) {
+      const idx = cast.guestIds.indexOf(guestCard.id);
+      if (idx >= 0) {
+        const p = cast.group.localToWorld(new THREE.Vector3(gs[idx].x, room.floorY + RING_TAG_HEIGHT_M, gs[idx].z));
+        guestCardRef.current.parent.worldToLocal(p);
+        guestCardRef.current.position.copy(p);
       }
     }
 
@@ -1002,7 +1061,7 @@ export function WineBarFigures({ room, mood }: Props) {
       }
       const list = [...groups.values()].map((x) => ({ key: x.key, world: x.world, value: x.value / x.n }));
       const hold = momentAt !== null && momentAt < CONSEQUENCE.symbol.at;
-      layer.draw(list, camera, performance.now(), hold, reducedMotionRef.current, roomShownRef.current);
+      layer.draw(list, camera, performance.now(), hold, reducedMotionRef.current, roomShownRef.current, statusRef.current);
     }
 
     // ORDER 297 — ansiktena på händelsernas manusfigurer (scriptFaces.ts): Designs
@@ -1084,10 +1143,22 @@ export function WineBarFigures({ room, mood }: Props) {
       {ringTag && roomShown && (
         <group ref={ringTagRef}>
           <Html center zIndexRange={[22, 0]} style={{ pointerEvents: 'none' }}>
-            <StaffRingTag role={ringTag.role} task={ringTag.task} />
+            <StaffRingTag role={ringTag.role} task={ringTag.task} condition={statusOn ? (() => { const m = sim.staff.find((x) => SIM_ROLE_TO_STAFF[x.role] === STAFF_KEYS[ringTag.i]); return m ? { stamina: staminaOf(m), wellbeing: wellbeingOf(m), skills: skillsOf(m) } : null; })() : null} />
           </Html>
         </group>
       )}
+      {statusOn && guestCard && roomShown && (() => {
+        const g = sim.guests.find((x) => x.id === guestCard.id);
+        if (!g) return null;
+        const mood = moodOf(guestMoodValue(g, sim.day.roomMoodLift ?? 0));
+        return (
+          <group ref={guestCardRef}>
+            <Html center zIndexRange={[22, 0]} style={{ pointerEvents: 'none' }}>
+              <GuestStatusCard who={g.guestType ? strings.guestTypes.label[g.guestType] : strings.feed.guest} mood={mood} />
+            </Html>
+          </group>
+        );
+      })()}
       {caption && roomShown && (
         <group ref={captionRef} visible={false}>
           {/* ORDER 299 — bildtexten hålls där ingen panel täcker den (safeCaptionPosition). */}

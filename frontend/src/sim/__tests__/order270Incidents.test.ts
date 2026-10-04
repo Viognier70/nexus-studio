@@ -383,7 +383,9 @@ describe('ORDER 270 — tillägg efter provspel 2026-09-27', () => {
     }
     s = openNow(s, 'vb31-servetter-och-isen');
     expect(s.incidents.active?.situation).toBe('efter-middag');
-    expect(s.incidents.active?.context.clock.startsWith('20:')).toBe(true);
+    // ORDER 303 — raketen kan öppna senare när andra bords raketer drar ut;
+    // det som prövas är att den öppnar efter åtta.
+    expect(Number(s.incidents.active?.context.clock.slice(0, 2))).toBeGreaterThanOrEqual(20);
   });
 
   it('fel val låser: följden pågår i rummet tills nästa raket, och svaret går inte att ändra', () => {

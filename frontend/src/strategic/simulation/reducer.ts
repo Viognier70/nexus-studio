@@ -1,6 +1,9 @@
+import { drainStamina, staffNight, tipStamina } from '../../sim/staffCondition';
+import { guestMoodValue } from '../../sim/guestMood';
+import { buildMorningReview } from '../../sim/morningReview';
 import { calendarFor } from '../../sim/calendar';
 import { bestAnswerFactor, drinkRevenueFactor, enablersWithCredits } from '../../sim/knowledgeInService';
-import { EVENING, EVENING_ECONOMY, GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, OPENING, QUEUE_CAP, SERVICE, SHOP, type BusinessClassId } from '../../sim/balance';
+import { CONSEQUENCES, MOOD_BALANCE, EVENING, EVENING_ECONOMY, GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, OPENING, QUEUE_CAP, SERVICE, SHOP, type BusinessClassId } from '../../sim/balance';
 import { answerSalvage, closeSalvage, discardUnresolvedSalvage } from './salvage';
 import { clockMinutes, formatClock, canBack, canStartBack, pickBackAnswer, closeIncidents, countDown, isIncidentOpen, maybeOpenIncident, planIncidents, resolveIncident, startBack, tickOngoing, type CreditChange } from '../../sim/incidents';
 import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
@@ -1731,7 +1734,13 @@ function payGuest(draft: SimulationState, guest: Guest, revenueMult: number, inL
         return;
       }
       // ORDER 290 — rätt och fel svar vid bordet höjer eller sänker notan.
-      rev = bill * revenueMult * Math.max(0, 1 + (guest.billBonus ?? 0));
+      // ORDER 303 B/D — och kunskapens lyft i stämningen (gästens och rummets,
+      // sim/guestMood.ts) flyttar vad gästen beställer: ett rum som har sett
+      // fel svar beställer mindre, ett som har sett rätt beställer mer.
+      const lift = (guest.moodLift ?? 0) + (draft.day.roomMoodLift ?? 0);
+      rev = bill * revenueMult * Math.max(0, 1 + (guest.billBonus ?? 0) + (lift < 0 ? CONSEQUENCES.moodBillPerLift : CONSEQUENCES.moodBillPerLiftUp) * lift);
+      // ORDER 303 B — en nöjd gäst vid bord räknas i byns placering.
+      if (guestMoodValue(guest, draft.day.roomMoodLift ?? 0) >= MOOD_BALANCE.threshold.content) draft.day.contentTonight = (draft.day.contentTonight ?? 0) + 1;
     } else if (draft.menu.length > 0) {
       const rng = createRng(draft.rngState);
       const targetRoll = rng.next();
@@ -1767,6 +1776,8 @@ function payGuest(draft: SimulationState, guest: Guest, revenueMult: number, inL
       streamOrderLine(draft, strings.feed.pay(tt), 'guest_paid', { feed: 'paid', table: t, amountSek: Math.round(rev) });
       if (tip > 0) streamOrderLine(draft, strings.feed.tipLine(tt), 'guest_tip', { feed: 'tip', table: t, amountSek: tip });
       draft.day.tipsSek = (draft.day.tipsSek ?? 0) + tip;
+      // ORDER 303 E — god dricks lyfter personalens ork.
+      tipStamina(draft, tip);
       draft.staffTipPotSek = (draft.staffTipPotSek ?? 0) + tip;
     }
     // ORDER 050 §3 (2026-08-10) — paired write: revenue accumulator
@@ -2209,6 +2220,10 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       nextForDay.day = { ...nextForDay.day, pickedActivityIds: [] };
       // ORDER 266 — självläkning, inspektion och samtal från banken.
       onNewMorning(nextForDay, state.economy.warning);
+      // ORDER 303 E — natten: orken vilar upp sig, trivseln följer dricksen och kurserna.
+      nextForDay.staff = staffNight(state, nextForDay);
+      // ORDER 303 C — Recensioner i morse: gårdagens kväll och nattens ändring.
+      nextForDay.day = { ...nextForDay.day, morningReview: buildMorningReview(state, nextForDay) };
       // ORDER 265 — v1-lånets ränta varje dygn, och veckoavräkningen när
       // söndagen (den stängda dagen) börjar.
       if (!charged) postDailyInterest(nextForDay);
@@ -2518,6 +2533,8 @@ function advanceTick(state: SimulationState): SimulationState {
   const rng = createRng(draft.rngState);
   const tickSeconds = 0.2;
   draft.simTime += tickSeconds;
+  // ORDER 303 E — personalens ork sjunker under kvällen med öppna dörrar.
+  if ((draft.day.period === 'dinner' || draft.day.period === 'lunch') && draft.day.doorsOpenAt !== null && draft.simTime >= draft.day.doorsOpenAt) drainStamina(draft, tickSeconds);
   draft.tick += 1;
 
   // Village cosmetics.

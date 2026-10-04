@@ -350,6 +350,8 @@ export function settlementInWords(sim: SimulationState): string[] {
     lines.push(tt(lang, s.targetHit ? 'risk.settle.hit' : 'risk.settle.miss', { n: sek(s.revenueSek), target: sek(s.targetSek) }));
   }
   if (s.renegotiatedNow) lines.push(tt(lang, 'risk.settle.renegotiated'));
+  // ORDER 303 E — dricksen till personalen och veckans sociala hållbarhet.
+  if (s.social) lines.push(e.settlement.social(sek(s.social.tipsSek), Math.round(s.social.stamina * 100), Math.round(s.social.wellbeing * 100)));
   const below = sim.economy.risk?.belowZeroInRow ?? 0;
   if (below > 0 && !s.closedNow) lines.push(tt(lang, 'risk.settle.below', { weeks: below, max: RISK.closeAfterWeeksBelowZero }));
   if (s.downgradedFrom) {

@@ -60,7 +60,8 @@ export class MoodSymbolLayer {
    * Ritar symbolerna. `hold` håller kvar de gamla lägena (konsekvensögonblicket
    * byter symbolerna först vid CONSEQUENCE.symbol.at).
    */
-  draw(groups: MoodGroup[], camera: THREE.Camera, nowMs: number, hold: boolean, reducedMotion: boolean, visible: boolean): void {
+  // ORDER 303 F — all: statusläget, alla bords symboler samtidigt.
+  draw(groups: MoodGroup[], camera: THREE.Camera, nowMs: number, hold: boolean, reducedMotion: boolean, visible: boolean, all = false): void {
     const ctx = this.ctx;
     if (!ctx) return;
     const dpr = window.devicePixelRatio || 1;
@@ -86,7 +87,7 @@ export class MoodSymbolLayer {
       }
       if (!visible) continue;
       const since = (nowMs - t.changedAt) / 1000;
-      const always = MOOD_SYMBOL.show.always.includes(t.mood);
+      const always = all || MOOD_SYMBOL.show.always.includes(t.mood);
       const showS = MOOD_SYMBOL.show.showPositiveS;
       const alpha = always ? 1 : since <= showS ? 1 : Math.max(0, 1 - (since - showS) / MOOD_SYMBOL.show.fadeS);
       if (alpha <= 0) continue;

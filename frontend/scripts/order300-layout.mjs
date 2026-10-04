@@ -18,6 +18,7 @@
 //     mindre är en lista i sin panel: tillåten;
 //   - minFontPx: den minsta teckenstorleken bland synlig text (getComputedStyle),
 //     mot golvet MIN_FONT_PX;
+//   - overlaps: HUD:ens paneler som ligger på varandra (ORDER 303 G), när ingen helskärm är öppen;
 //   - shelfHidden: paviljongerna i morgonens lista som inte syns utan att listan rullas (§3);
 //   - clipped: knappar vars text radbryts eller skärs (scrollWidth > clientWidth
 //     eller två rader), bland dem som anges per skärm.
@@ -95,7 +96,23 @@ async function probe(page, buttons) {
       const box = (el.closest('.nxs-list-scroll') ?? document.body).getBoundingClientRect();
       return !(r.top >= box.top - 0.5 && r.bottom <= box.bottom + 0.5 && r.bottom <= H);
     }).map((el) => el.getAttribute('data-testid'));
-    return { pageScroll, scrollers, shelfRows: shelf.length, shelfHidden, screenScroll: scrollers.filter((s) => s.screen).map((s) => s.el), minFontPx: minFont === Infinity ? null : +minFont.toFixed(1), minFontAt, clipped };
+    // ORDER 303 G — panelerna får aldrig ligga ovanpå varandra (HUD:ens
+    // paneler, när ingen helskärm är öppen). Par som skär varandra mer än
+    // 4 px², där ingen innehåller den andra.
+    const overlaps = [];
+    if (!document.querySelector('.nx-screen, .nxs-mentor-screen, .business-name-overlay, .nxs-rules')) {
+      const sel = '.gb-topleft > *, .nx-hud-stack > *, .nx-hud-row > *, .gb-topright > *, .nx-hud-tools > *, .nx-tabs, .nx-tab-dock, .nx-queue, [data-testid=event-stream], .nx-rocket, .nx-agency, .nx-mood-meter, .nx-prep-hint';
+      const els = [...new Set(document.querySelectorAll(sel))].filter((el) => visibleEl(el) && !el.matches('.nx-hud-stack, .nx-hud-row'));
+      for (let i = 0; i < els.length; i++) for (let j = i + 1; j < els.length; j++) {
+        const a = els[i], b = els[j];
+        if (a.contains(b) || b.contains(a)) continue;
+        const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
+        const w = Math.min(ra.right, rb.right) - Math.max(ra.left, rb.left);
+        const hh = Math.min(ra.bottom, rb.bottom) - Math.max(ra.top, rb.top);
+        if (w > 2 && hh > 2) overlaps.push({ a: name(a), b: name(b), px: Math.round(w * hh) });
+      }
+    }
+    return { pageScroll, scrollers, shelfRows: shelf.length, shelfHidden, overlaps, screenScroll: scrollers.filter((s) => s.screen).map((s) => s.el), minFontPx: minFont === Infinity ? null : +minFont.toFixed(1), minFontAt, clipped };
   }, [SCREEN_SHARE, buttons]);
 }
 
@@ -106,7 +123,7 @@ async function measure(page, name, buttons = []) {
     await page.setViewportSize({ width: w, height: h });
     await delay(500);
     const p = await probe(page, buttons);
-    const ok = !p.pageScroll && p.shelfHidden.length === 0 && p.screenScroll.length === 0 && (p.minFontPx ?? 99) >= MIN_FONT_PX && p.clipped.length === 0;
+    const ok = !p.pageScroll && p.overlaps.length === 0 && p.shelfHidden.length === 0 && p.screenScroll.length === 0 && (p.minFontPx ?? 99) >= MIN_FONT_PX && p.clipped.length === 0;
     rows.push({ size: `${w}×${h}`, ok, ...p });
     await page.screenshot({ path: resolve(OUT, `layout-${name}-${w}x${h}.png`) });
   }
@@ -195,6 +212,9 @@ try {
     await page.keyboard.press('z');
     await delay(3000);
     await measure(page, 'servicen', ['[data-testid=level-bar] button', '[data-testid=back-start]']);
+    // ORDER 303 G — med ett raketkort öppet (panelerna får inte ligga på varandra).
+    await page.waitForSelector('[data-testid=incident-card][data-mode=ask]', { timeout: 180000 }).catch(() => {});
+    await measure(page, 'raketen', []);
     await ctx.close();
   }
 } catch (e) {

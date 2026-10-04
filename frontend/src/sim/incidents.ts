@@ -22,8 +22,10 @@
 //
 // Talen står i `balance.ts` `INCIDENTS`; händelserna i händelsebanken.
 
-import type { Guest, GuestType, KnowledgeAxis, RoomReaction, SimulationState, StaffRole, YrkesSpar } from '../strategic/types';
+import type { ConsequenceSeverity, Guest, GuestType, KnowledgeAxis, RoomReaction, SimulationState, StaffRole, YrkesSpar } from '../strategic/types';
 import { applyAnswerMood } from './guestMood';
+import { spreadWord } from './streetWord';
+import { complaintStamina, hesitationWellbeing, incidentArea, staffEffect, staffKnows } from './staffCondition';
 import { createRng } from '../strategic/util/rng';
 import { bumpMorale } from '../strategic/simulation/morale';
 import { applyCashDelta, applyCashRevenue, postLedger } from '../strategic/simulation/cashReading';
@@ -32,7 +34,7 @@ import { clockMinutes, formatClock } from './clock';
 import { clampReputation } from '../strategic/simulation/reputation';
 import { strings } from '../content/strings';
 import { rocketClipFor, rocketFigure, type RocketFigure } from './theatreTriggers';
-import { ANSWER_EFFECTS, THEATRE, BACK, type Confidence, INCIDENTS, MENU_ROCKETS, REPUTATION, SERVICE_STREAM, SHOP } from './balance';
+import { ANSWER_EFFECTS, CONSEQUENCES, STAFF_CONDITION, THEATRE, BACK, type Confidence, INCIDENTS, MENU_ROCKETS, REPUTATION, SERVICE_STREAM, SHOP } from './balance';
 import { abilityActive } from './shop';
 import { calendarFor } from './calendar';
 import { clampScenarioCash, scenarioUnitSek } from './economy';
@@ -665,7 +667,20 @@ function raiseTips(draft: SimulationState, ctx: IncidentContext, share: number):
 // andel på notan vid betalningen). Fel svar: en gäst vid bordet går utan att
 // betala, stolen blir tom och hens nota går förlorad; de andra vid bordet blir
 // missnöjda. Utan gäster vid bordet går en gäst i kön, som förut.
-function answerConsequence(draft: SimulationState, ctx: IncidentContext, right: boolean, guestsIn: number, keepTable = false): void {
+// ORDER 303 D — hur allvarligt ett fel är, ur raketens egen data (balance.ts
+// CONSEQUENCES): grovt om felet skickar ut gäster eller kostar ryktet eller
+// nöjdheten mycket, medel om nöjdheten sjunker en del, annars lätt.
+export function failSeverity(fail: IncidentOutcomeMeta | undefined): ConsequenceSeverity {
+  const e = fail?.effects;
+  const sat = e?.satisfaction ?? 0;
+  if ((fail?.room?.leave ?? 0) > 0 || (e?.reputation ?? 0) <= CONSEQUENCES.graveReputationAtMost || sat <= CONSEQUENCES.graveSatisfactionAtMost) return 'grave';
+  if (sat <= CONSEQUENCES.mediumSatisfactionAtMost) return 'medium';
+  return 'mild';
+}
+
+const worse = (s: ConsequenceSeverity): ConsequenceSeverity => (s === 'mild' ? 'medium' : s === 'medium' && STAFF_CONDITION.hesitationToGrave > 0 ? 'grave' : s);
+
+function answerConsequence(draft: SimulationState, ctx: IncidentContext, right: boolean, guestsIn: number, keepTable = false, severity: ConsequenceSeverity = 'grave', rocketCleared = false, incidentId: string | null = null, hesitated = false): void {
   const table = draft.guests.filter((g) => ctx.guestIds.includes(g.id) && PRESENT.includes(g.state));
   let left = 0;
   let amountSek = 0;
@@ -707,26 +722,80 @@ function answerConsequence(draft: SimulationState, ctx: IncidentContext, right: 
       g.billBonus = (g.billBonus ?? 0) + ANSWER_EFFECTS.wrongBillShare;
       g.satisfaction = Math.max(0, g.satisfaction + ANSWER_EFFECTS.wrongSatisfaction);
     }
+  } else if (table.length > 0 && severity === 'medium') {
+    // ORDER 303 D — medel: bordet beställer mindre (ingen flaska till, ingen
+    // dessert) och klagar; personalen lägger tid på att lugna (orken sjunker).
+    const c = CONSEQUENCES.wrong.medium;
+    const stake = tableStake(draft, ctx.guestIds);
+    amountSek = stake ? Math.round(stake.billSek * c.billShare) : 0;
+    detail = 'complaint';
+    for (const g of table) {
+      g.billBonus = (g.billBonus ?? 0) + c.billShare;
+      g.tipBonus = (g.tipBonus ?? 0) + c.tipShare;
+      g.satisfaction = Math.max(0, g.satisfaction + c.satisfaction);
+    }
+    bumpMorale(draft, c.staffMorale);
+    complaintStamina(draft);
+  } else if (table.length > 0 && severity === 'mild') {
+    // ORDER 303 D — lätt: mindre dricks, bordet lite mindre nöjt.
+    const c = CONSEQUENCES.wrong.mild;
+    detail = 'tips';
+    for (const g of table) {
+      g.tipBonus = (g.tipBonus ?? 0) + c.tipShare;
+      g.satisfaction = Math.max(0, g.satisfaction + c.satisfaction);
+    }
   } else if (table.length > 0) {
+    // ORDER 303 D — grovt: gästen med den största notan går utan att betala.
+    bumpMorale(draft, CONSEQUENCES.wrong.grave.staffMorale);
     const typical = expectedBillSek(draft);
-    const goer = [...table].sort((a, b) => (b.order?.revenueSek ?? typical) - (a.order?.revenueSek ?? typical))[0];
-    amountSek = -Math.round(goer.order?.revenueSek ?? typical);
-    leftGuestId = goer.id;
-    goer.order = undefined;
-    sendAway(draft, [goer], 1);
-    left = 1;
+    const sorted = [...table].sort((a, b) => (b.order?.revenueSek ?? typical) - (a.order?.revenueSek ?? typical));
+    const n = Math.max(1, Math.round(table.length * CONSEQUENCES.wrong.grave.tableShareLeaving));
+    const goers = sorted.slice(0, n);
+    amountSek = -Math.round(goers.reduce((a, g) => a + (g.order?.revenueSek ?? typical), 0));
+    leftGuestId = goers[0].id;
+    for (const g of goers) g.order = undefined;
+    sendAway(draft, goers, goers.length);
+    left = goers.length;
     detail = 'leaves';
-    for (const g of table) if (g.id !== goer.id) g.satisfaction = Math.max(0, g.satisfaction + ANSWER_EFFECTS.wrongSatisfaction);
-  } else {
+    for (const g of table) if (!goers.includes(g)) g.satisfaction = Math.max(0, g.satisfaction + ANSWER_EFFECTS.wrongSatisfaction);
+  } else if (severity === 'grave') {
     const queue = draft.guests.filter((g) => g.state === 'waiting' || g.state === 'arriving');
     left = Math.min(queue.length, ANSWER_EFFECTS.wrongGuestsLeave);
     sendAway(draft, queue, left);
   }
+  // ORDER 303 D — rätt hela vägen: bordet stannar för avec.
+  if (right && rocketCleared && table.length > 0 && (draft.day.period === 'dinner' || draft.day.period === 'lunch')) {
+    const stake = tableStake(draft, ctx.guestIds);
+    // ORDER 303 E — trött eller otrivd personal ger mindre av ett rätt svar.
+    const avec = stake ? Math.round(stake.billSek * CONSEQUENCES.right.avecShare * staffEffect(draft)) : 0;
+    if (avec > 0) {
+      applyCashRevenue(draft, avec);
+      if (draft.day.period === 'dinner') draft.serviceRevenueToday = { ...draft.serviceRevenueToday, dinner: draft.serviceRevenueToday.dinner + avec / SERVICE_STREAM.sekPerKsek };
+      else draft.serviceRevenueToday = { ...draft.serviceRevenueToday, lunch: draft.serviceRevenueToday.lunch + avec / SERVICE_STREAM.sekPerKsek };
+      amountSek += avec;
+      detail = 'avec';
+    }
+  }
+  // ORDER 303 C — ryktet per svar (poäng 0–100), recensionen i morgon och
+  // ordet på gatan i kväll.
+  const repPoints = right
+    ? (CONSEQUENCES.right.stepReputation + (rocketCleared ? CONSEQUENCES.right.clearedReputation : 0)) * staffEffect(draft)
+    : CONSEQUENCES.wrong[severity].reputation;
+  draft.reputation = clampReputation(draft.reputation + repPoints / REPUTATION.scale);
+  if (incidentId) {
+    draft.day = { ...draft.day, answerReviews: [...(draft.day.answerReviews ?? []), { incidentId, right, severity: right ? null : severity, reputation: repPoints, table: ctx.table }] };
+  }
+  if (!right) spreadWord(draft, CONSEQUENCES.street.perWrong);
+  else if (rocketCleared) spreadWord(draft, CONSEQUENCES.street.perCleared);
   // ORDER 299b — svaret lyfter eller sänker stämningen vid bordet, hos dem som
   // såg det och i rummet (sim/guestMood.ts); nöjdheten och ekonomin rörs inte.
   const witnessIds = applyAnswerMood(draft, table, right);
   const t = strings.answerEffects;
-  const text = right ? t.up(ctx.table, guestsIn) : leftGuestId ? t.tableLeaves(ctx.table) : t.down(ctx.table, left);
+  const base = right
+    ? (detail === 'avec' ? t.avec(ctx.table) : t.up(ctx.table, guestsIn))
+    : leftGuestId ? t.tableLeaves(ctx.table) : detail === 'complaint' ? t.complaint(ctx.table) : detail === 'tips' ? t.tips(ctx.table) : t.down(ctx.table, left);
+  // ORDER 303 E — tvekan syns: personalen saknade kunskapen.
+  const text = hesitated ? `${t.hesitated} · ${base}` : base;
   const now = draft.simTime;
   const keep = (draft.day.roomReactions ?? []).filter((r) => now - r.at <= ANSWER_EFFECTS.reactionSimSeconds);
   draft.day = {
@@ -912,7 +981,7 @@ export function resolveIncident(draft: SimulationState, optionId: string | null,
     const secondsTotal = secondsFor(draft, next);
     const guestsIn = letGuestsIn(draft, INCIDENTS.guestsPerClearedStep);
     raiseTips(draft, active.context, MENU_ROCKETS.tipBonusPerClearedStep);
-    answerConsequence(draft, active.context, true, guestsIn);
+    answerConsequence(draft, active.context, true, guestsIn, false, 'grave', false, incident.id);
     const revealed: StepReveal = { step: stepIndex, optionId: option.id, correctId: correctOptionId(step, active.situation), cleared: true, guestsIn };
     const stepCredit = quality === 'best' ? INCIDENTS.bestAnswerCredit : 0;
     const earned = { credits: (active.earned?.credits ?? 0) + stepCredit + (backResult?.delta ?? 0), guestsIn: (active.earned?.guestsIn ?? 0) + guestsIn };
@@ -960,7 +1029,12 @@ export function resolveIncident(draft: SimulationState, optionId: string | null,
   if (cleared) raiseTips(draft, ctx, MENU_ROCKETS.tipBonusPerClearedStep + MENU_ROCKETS.tipBonusOnRocketCleared);
   // ORDER 292 — ett fel som köar en följdraket vid samma bord låter gästerna sitta kvar.
   const chains = cleared ? [] : [...((option?.fail ?? step.fail).triggers ?? []), ...(incident.staff.triggers ?? [])];
-  answerConsequence(draft, ctx, cleared, guestsIn, chains.length > 0);
+  // ORDER 303 E — saknar personalen händelsens kunskapsområde tvekar de: ett
+  // fel svar blir ett steg allvarligare, och trivseln sjunker.
+  const hesitated = !cleared && !staffKnows(draft, incidentArea(incident.track));
+  if (hesitated) hesitationWellbeing(draft);
+  const severity = cleared ? 'grave' : hesitated ? worse(failSeverity(option?.fail ?? step.fail)) : failSeverity(option?.fail ?? step.fail);
+  answerConsequence(draft, ctx, cleared, guestsIn, chains.length > 0, severity, cleared, incident.id, hesitated);
   const reveal: StepReveal = { step: stepIndex, optionId: option?.id ?? null, correctId: correctOptionId(step, active.situation), cleared, guestsIn };
   const takeover = cleared ? null : takeoverFor(draft, incident, step);
   const now = draft.incidents!;

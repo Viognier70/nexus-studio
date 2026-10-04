@@ -1,3 +1,4 @@
+import { slowFactor } from '../../sim/staffCondition';
 import { EVENING_ECONOMY, GAME_MINUTES_PER_SIM_SECOND, MOOD_BALANCE, SHOP, SITTING } from '../../sim/balance';
 import { abilityActive } from '../../sim/shop';
 import { helpTaskTime } from '../../sim/hostZones';
@@ -878,7 +879,9 @@ function beginBackgroundTask(state: SimulationState, staff: StaffMember, type: T
     staffTempoFactor(state) *
     // ORDER 270 — följden av ett fel val kan göra personalen långsammare
     // tills nästa händelse (läses här för att undvika en importcirkel).
-    (state.incidents?.ongoing?.tempoFactor ?? 1)
+    (state.incidents?.ongoing?.tempoFactor ?? 1) *
+    // ORDER 303 E — låg ork eller trivsel: personalen går saktare.
+    slowFactor(staff)
   );
   staff.targetGuestId = null;
   // Bakgrundsarbete håller personalen vid rollens home-punkt — kock i
@@ -1316,7 +1319,9 @@ function beginStaffTask(
     runner * pass * help * backlogTaskTime(state) * staffTempoFactor(state) *
     // ORDER 270 — följden av ett fel val kan göra personalen långsammare
     // tills nästa händelse (läses här för att undvika en importcirkel).
-    (state.incidents?.ongoing?.tempoFactor ?? 1)
+    (state.incidents?.ongoing?.tempoFactor ?? 1) *
+    // ORDER 303 E — låg ork eller trivsel: personalen går saktare.
+    slowFactor(staff)
   );
   staff.targetGuestId = targetGuestId;
   const guest = state.guests.find((g) => g.id === targetGuestId);

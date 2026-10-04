@@ -39,6 +39,8 @@ import { harnessParams } from './testHarness/urlParams';
 import { SimulationProvider, useSimDispatch, useSimState } from './simulation/SimulationProvider';
 import { AboutPanel } from './ui/AboutPanel';
 import { RulesPanel } from './ui/RulesPanel';
+import { StatusButton } from './ui/StatusButton';
+import { FocusMode } from './ui/FocusMode';
 import { PrepHint } from './ui/service/PrepHint';
 import { ControlsHint } from './ui/ControlsHint';
 import { DevPanel } from './ui/DevPanel';
@@ -242,12 +244,13 @@ function StrategicShell() {
       ) {
         setShowScaleRef((v) => !v);
       }
-      // ORDER 056 Del A — H toggles the season dev override so 21 Jun
+      // ORDER 056 Del A — J toggles the season dev override so 21 Jun
       // and 25 Sep sun paths can be compared in the browser. Default
       // is autumn (25 Sep); the toggle flips summer/autumn.
+      // ORDER 303 G — flyttad från H, som nu är fokusläget.
       if (
         import.meta.env.DEV &&
-        (event.key === 'h' || event.key === 'H')
+        (event.key === 'j' || event.key === 'J')
       ) {
         devToggles.toggleSeason();
       }
@@ -328,6 +331,8 @@ function StrategicShell() {
       <div className="nx-hud-tools">
         {/* ORDER 299 — kamerans knappar (vrid, zooma, återställ). */}
         <CameraButtons />
+        {/* ORDER 303 F — statusläget (S). */}
+        <StatusButton />
         <LevelBar />
       </div>
       <VillageNotice />
@@ -413,6 +418,8 @@ function StrategicShell() {
       <EveningAccountPanel />
       <DevPanel lastKey={lastKey} />
       <AboutPanel open={aboutOpen} onClose={() => setAboutOpen(false)} />
+      {/* ORDER 303 G — fokusläget (under 14 m eller H). */}
+      <FocusMode />
       {/* ORDER 300 §5 — regelkortet första morgonen och sidan i menyn. */}
       <RulesPanel open={rulesOpen} onClose={() => setRulesOpen(false)} />
     </div>

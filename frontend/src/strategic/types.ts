@@ -260,6 +260,10 @@ export interface StaffMember {
    * 137 §2.3-listorna oförändrade i C1.
    */
   taskQueue: TaskAssignment[];
+  // ORDER 303 E — orken och trivseln (0–1) och kunskapsområdena (sim/staffCondition.ts).
+  stamina?: number;
+  wellbeing?: number;
+  skills?: string[];
 }
 
 /**
@@ -947,6 +951,15 @@ export interface DayState {
   // ORDER 298 — gästerna som satt vid ett bord i kväll: det som räknas i
   // ekonomin, byn och bandet (det som räknas ska synas).
   seatedTonight?: number;
+  // ORDER 303 C — kvällens svar till morgonens recension (Recensioner i
+  // morse), och ordet på gatan samma kväll (−/+ dragningskraft, klingar av).
+  answerReviews?: AnswerReview[];
+  // ORDER 303 B — gästerna som var minst nöjda när de betalade (placeringen i byn).
+  contentTonight?: number;
+  // ORDER 303 C — gårdagens kväll som byn såg den (sim/morningReview.ts).
+  morningReview?: import('../sim/morningReview').MorningReview | null;
+  streetWord?: number;
+  streetWordAt?: number;
   // ORDER 298b — kvällens sällskap mot golvet (balance.ts GUEST_FLOOR), och
   // provsmakningens sällskap som har kommit (räknas inte mot golvet).
   partiesTonight?: number;
@@ -1063,7 +1076,9 @@ export interface RoomReaction {
   // ORDER 299 — vad som hände, för raden som binder ihop svaret med gästens
   // reaktion: ett glas till, mer på notan, en gäst går, bordet beställer
   // mindre, eller gäster i kön går. guestsIn = gästerna som släpptes in.
-  detail?: 'glass' | 'more' | 'leaves' | 'less' | 'queue';
+  // ORDER 303 D — 'tips': mindre dricks (lätt fel); 'complaint': bordet
+  // beställer mindre och klagar (medel); 'avec': bordet stannar för avec.
+  detail?: 'glass' | 'more' | 'leaves' | 'less' | 'queue' | 'tips' | 'complaint' | 'avec';
   guestsIn?: number;
   left?: number;
   // ORDER 299 — gästerna som såg svaret (sim/guestMood.ts moveWitnesses).
@@ -1980,4 +1995,15 @@ export interface BuildingRef {
 export interface PlayerRegistration {
   name: string;
   consent: boolean;
+}
+
+// ORDER 303 C — ett svar i kväll, för morgonens recension.
+export type ConsequenceSeverity = 'mild' | 'medium' | 'grave';
+export interface AnswerReview {
+  incidentId: string;
+  right: boolean;
+  severity: ConsequenceSeverity | null;
+  // Ryktet, poäng på skalan 0–100.
+  reputation: number;
+  table: number | null;
 }

@@ -110,6 +110,15 @@ function leaveShare(): { outcomes: number; withLeave: number; withLeaveAll: numb
 
 describe.skipIf(!process.env.FOLJD)('ORDER 303 A — följderna i dag', () => {
   it('kvällarna vecka 1–3 för en spelartyp', async () => {
+    // Prövning av tal i minnet: FOLJD_VARIANT='{"CONSEQUENCES":{"street":{"perWrong":-0.2}}}'.
+    const balance = await import('../../../sim/balance');
+    const merge = (into: Record<string, unknown>, from: Record<string, unknown>) => {
+      for (const [k, v] of Object.entries(from)) {
+        if (v && typeof v === 'object' && !Array.isArray(v)) merge(into[k] as Record<string, unknown>, v as Record<string, unknown>);
+        else into[k] = v;
+      }
+    };
+    merge(balance as unknown as Record<string, unknown>, JSON.parse(process.env.FOLJD_VARIANT || '{}'));
     const seeds = (process.env.FOLJD_SEEDS ?? '1,2,3,4').split(',').map(Number);
     const weeks = Number(process.env.FOLJD_WEEKS ?? 3);
     const rows = seeds.flatMap((seed) => season(seed, weeks));
@@ -133,7 +142,7 @@ describe.skipIf(!process.env.FOLJD)('ORDER 303 A — följderna i dag', () => {
       const { mkdirSync, writeFileSync } = await import('node:fs');
       const out = resolve(dirname(fileURLToPath(import.meta.url)), '../../../../reports', process.env.REPORT_ORDER ?? 'order303');
       mkdirSync(out, { recursive: true });
-      writeFileSync(resolve(out, process.env.FOLJD_OUT ?? `kvallar-${PLAYER}${PLAYER === 'skill' ? '-' + (process.env.ROCKET_SKILL ?? '0.75') : ''}.json`), JSON.stringify({ definition: 'Vinbaren vecka 1–3, mentorns morgon (baspaketet, extra hand vid behov), brons i tre (PLAYERS.baseline). tillMinusStakeSek = kvällskassan (tillSek, sista ticken under servicen) minus insatsen (day.stake.total). rep* på skalan 0–100: före morgonen, när servicen börjar, efter kvällen och nästa morgon. rank = placeringen i byn efter gäster (economy.weekEvenings village, rankedVillage), som bandet visar nästa morgon. answers = kvällens raketsvar (incidents.log, planerade): kvalitet, steg där det föll, ryktets ändring (deltas.reputation, 0–100) och kassan. breakdown = metrics.reputationBreakdown (0–100). wrongDataLeave = fel svar i vinbar.meta.json vars följd skickar gäster ur rummet (fail.room.leave > 0).', summary, rows }, null, 2) + '\n');
+      writeFileSync(resolve(out, process.env.FOLJD_OUT ?? `kvallar-${PLAYER}${PLAYER === 'skill' ? '-' + (process.env.ROCKET_SKILL ?? '0.75') : ''}.json`), JSON.stringify({ variant: process.env.FOLJD_VARIANT || null, consequences: balance.CONSEQUENCES, definition: 'Vinbaren vecka 1–3, mentorns morgon (baspaketet, extra hand vid behov), brons i tre (PLAYERS.baseline). tillMinusStakeSek = kvällskassan (tillSek, sista ticken under servicen) minus insatsen (day.stake.total). rep* på skalan 0–100: före morgonen, när servicen börjar, efter kvällen och nästa morgon. rank = placeringen i byn efter gäster (economy.weekEvenings village, rankedVillage), som bandet visar nästa morgon. answers = kvällens raketsvar (incidents.log, planerade): kvalitet, steg där det föll, ryktets ändring (deltas.reputation, 0–100) och kassan. breakdown = metrics.reputationBreakdown (0–100). wrongDataLeave = fel svar i vinbar.meta.json vars följd skickar gäster ur rummet (fail.room.leave > 0).', summary, rows }, null, 2) + '\n');
     }
     expect(rows.length).toBeGreaterThan(0);
   }, 3600000);

@@ -28,7 +28,8 @@ export function eveningVillage(sim: SimulationState): VenueEvening[] | null {
 }
 
 export function rankedVillage(rows: VenueEvening[]): VenueEvening[] {
-  return rows.filter((r) => r.open || r.id === PLAYER_VENUE).slice().sort((a, b) => b.guests - a.guests || b.revenueSek - a.revenueSek);
+  // ORDER 303 B — efter kvällens nöjda gäster vid bord, sedan intäkten.
+  return rows.filter((r) => r.open || r.id === PLAYER_VENUE).slice().sort((a, b) => (b.content ?? b.guests) - (a.content ?? a.guests) || b.revenueSek - a.revenueSek);
 }
 
 const isTruck = (id: string) => VILLAGE.rivals.find((r) => r.id === id)?.kind === 'truck';
