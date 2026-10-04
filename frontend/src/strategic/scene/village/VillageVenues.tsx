@@ -24,6 +24,10 @@ import { walkNetwork } from '../../content/villageNetwork';
 import { readabilityScale } from '../../util/readability';
 import { subscribeVillageLive, villageLive } from './villageLive';
 import { VenueLabel } from '../../ui/VillageLabels';
+import { computePlayerBusinessInterior } from '../../business/interiorLayout';
+import { roofAt } from '../../village/roofBlend';
+import { useBusiness } from '../../business/BusinessContext';
+import { strings } from '../../../content/strings';
 import { BLEND, LIGHTS } from '../../village/villageEvening';
 import { venueLightTargets } from './venueLight';
 
@@ -33,7 +37,11 @@ const FULL_HOUSE_GUESTS = 14;
 const smoothRange = (a: number, b: number, x: number) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 const approach = (v: number, target: number, step: number) => (v < target ? Math.min(target, v + step) : Math.max(target, v - step));
 
-const LABELS_FROM_M = 110;
+export const LABELS_FROM_M = 110;
+// ORDER 300 §7 — vår skylt nära: så länge taket står nästan helt (roofBlend.ts),
+// ovanför dörren.
+const NEAR_SIGN_ROOF = 0.9;
+const NEAR_SIGN_Y_M = 6;
 const COMPACT_FROM_M = 450;
 const TRUCK_COLOURS: Record<string, { body: string; awning: [string, string] }> = {
   grillvagnen: { body: '#8a3f2c', awning: ['#e9c46a', '#8a3f2c'] },
@@ -81,11 +89,20 @@ function makeTruck(id: string): THREE.Group {
 
 export function VillageVenues() {
   const sim = useSimState();
+  const { business: playerBusiness } = useBusiness();
+  const playerClass = sim.economy.businessClass;
+  const playerStyle = playerClass ? strings.economy.classes[playerClass] : null;
   const { actualRef } = useCamera();
   const venues = useMemo(() => venuesTonight(sim), [sim.day.dayNumber, sim.competition, sim.reputation, sim.economy?.businessClass]); // eslint-disable-line react-hooks/exhaustive-deps
   const places = useMemo(() => venuePlaces(), []);
   const live = useSyncExternalStore(subscribeVillageLive, villageLive, villageLive);
   const [labelsShown, setLabelsShown] = useState(false);
+  // ORDER 300 §7 — vår krogs skylt på kvarterets och gatans nivå (närmare än
+  // etiketterna i byn, så länge taket står), vid entrén.
+  const [nearSign, setNearSign] = useState(false);
+  const nearRef = useRef(false);
+  const entrance = useMemo(() => computePlayerBusinessInterior()?.entrance ?? null, []);
+  const ourVenue = venues.find((v) => v.kind === 'player') ?? null;
   // I byn (längre bort än kvarteret) är etiketterna korta: namn, stjärnor, gäster.
   const [compact, setCompact] = useState(false);
   const compactRef = useRef(false);
@@ -185,6 +202,11 @@ export function VillageVenues() {
       gl.sprite.scale.setScalar((HALO_BASE_M + LIGHTS.venue.haloPerGuest * Math.sqrt(n)) * scale);
       (gl.lamp.material as THREE.MeshStandardMaterial).emissiveIntensity = 1.6 * k * night;
     }
+    const near = !!entrance && !!ourVenue && !!playerBusiness.name && dist <= LABELS_FROM_M && roofAt(dist) >= NEAR_SIGN_ROOF;
+    if (near !== nearRef.current) {
+      nearRef.current = near;
+      setNearSign(near);
+    }
     const want = dist > LABELS_FROM_M;
     if (want !== shownRef.current) {
       shownRef.current = want;
@@ -209,14 +231,25 @@ export function VillageVenues() {
       // krockar, till exempel att vår krog alltid ligger överst"): vår krogs
       // namn placeras först och flyttas aldrig, och ritas överst.
       }).sort((a, b) => (a.ours === b.ours ? b.y - a.y : a.ours ? -1 : 1));
+      // ORDER 300 §7 — HUD:ens rutor räknas som upptagna, så att en etikett
+      // inte flyttas in under klockan, kassan eller nivåraden. Först uppåt;
+      // når den HUD:en prövas nedåt från sin plats.
+      const hud = [...document.querySelectorAll('.gb-topleft > *, .gb-topright, .nx-hud-tools, [data-testid=service-tabs], .nx-feed-back')].map((e) => {
+        const r = e.getBoundingClientRect();
+        return { x0: r.left, x1: r.right, y0: r.top, y1: r.bottom };
+      }).filter((r) => r.x1 > r.x0 && r.y1 > r.y0);
       for (const it of items) {
-        let y0 = it.y - it.h / 2;
+        const start = it.y - it.h / 2;
+        let y0 = start;
         const x0 = it.x - it.w / 2;
         const x1 = x0 + it.w;
-        for (let guard = 0; guard < 12; guard++) {
-          const hit = placed.find((r) => x0 < r.x1 && x1 > r.x0 && y0 < r.y1 && y0 + it.h > r.y0);
+        const hitAt = (y: number) => placed.find((r) => x0 < r.x1 && x1 > r.x0 && y < r.y1 && y + it.h > r.y0) ?? hud.find((r) => x0 < r.x1 && x1 > r.x0 && y < r.y1 && y + it.h > r.y0);
+        let dir = -1;
+        for (let guard = 0; guard < 16; guard++) {
+          const hit = hitAt(y0);
           if (!hit) break;
-          y0 = hit.y0 - it.h - 4;
+          if (dir < 0 && hud.includes(hit)) { dir = 1; y0 = start; continue; }
+          y0 = dir < 0 ? hit.y0 - it.h - 4 : hit.y1 + 4;
         }
         placed.push({ x0, x1, y0, y1: y0 + it.h });
         const dy = Math.round(y0 - (it.y - it.h / 2));
@@ -229,6 +262,13 @@ export function VillageVenues() {
   return (
     <>
       <primitive object={root} />
+      {nearSign && entrance && ourVenue && (
+        <group position={[entrance[0], NEAR_SIGN_Y_M, entrance[1]]}>
+          <Html center zIndexRange={[12, 0]} style={{ pointerEvents: 'none' }}>
+            <VenueLabel v={ourVenue} guests={sim.day.arrivalsToday ?? 0} compact={false} near playerName={playerBusiness.name} playerStyle={playerStyle} innerRef={() => {}} />
+          </Html>
+        </group>
+      )}
       {labelsShown && venues.map((v) => {
         const p = v.spot ? truckSpotPlace(v.spot).doorPoint : places[v.id]?.centre;
         if (!p) return null;
@@ -236,7 +276,7 @@ export function VillageVenues() {
         return (
           <group key={v.id} position={[p[0], v.kind === 'truck' ? 6 : 14, p[1]]}>
             <Html center zIndexRange={[12, 0]} style={{ pointerEvents: 'none' }}>
-              <VenueLabel v={v} guests={guests} compact={compact} innerRef={(el) => { if (el) labelEls.current.set(v.id, el); else labelEls.current.delete(v.id); }} />
+              <VenueLabel v={v} guests={guests} compact={compact} playerName={playerBusiness.name} playerStyle={playerStyle} innerRef={(el) => { if (el) labelEls.current.set(v.id, el); else labelEls.current.delete(v.id); }} />
             </Html>
           </group>
         );

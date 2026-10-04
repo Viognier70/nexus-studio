@@ -69,7 +69,8 @@ export function useDesktopControls({ enabled, targetElement, onJumpPreset }: Opt
       if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) {
         return;
       }
-      if (event.key === 'Escape') camera.outward();
+      // ORDER 300 §6 (Anders 2026-10-04): Esc går till Krogen (förut ett steg utåt).
+      if (event.key === 'Escape') { if (onJumpPreset) onJumpPreset('myBusiness'); else camera.outward(); }
       if (event.key === 'q' || event.key === 'Q') camera.rotate(-0.08, 0);
       if (event.key === 'e' || event.key === 'E') camera.rotate(0.08, 0);
       if (event.key === '1' && onJumpPreset) onJumpPreset('village');

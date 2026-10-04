@@ -32,6 +32,8 @@ const LANGUAGE_NAME: Record<Lang, () => string> = {
 
 interface Props {
   onOpenAbout: () => void;
+  // ORDER 300 §5 — sidan Spelets regler.
+  onOpenRules: () => void;
   // ORDER 263 — öppnar sparmenyn.
   onOpenSave: () => void;
 }
@@ -107,7 +109,7 @@ const LANGUAGE_ACTIVE_STYLE: React.CSSProperties = {
   fontWeight: 700
 };
 
-export function TopRightMenu({ onOpenAbout, onOpenSave }: Props) {
+export function TopRightMenu({ onOpenAbout, onOpenRules, onOpenSave }: Props) {
   const sound = useSoundSettings();
   const [open, setOpen] = useState(false);
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
@@ -167,16 +169,22 @@ export function TopRightMenu({ onOpenAbout, onOpenSave }: Props) {
           >
             {strings.save.menuItem}
           </button>
-          <a
+          {/* ORDER 300 §4 — den gamla vildmarksstarten är borttagen; länken
+              till förstapersonsprototypen också. §5 — Spelets regler. */}
+          <button
             role="menuitem"
-            href="#/first-person-prototype"
+            type="button"
+            data-testid="menu-rules"
             style={itemStyle(0)}
             onMouseEnter={() => setHoverIdx(0)}
             onMouseLeave={() => setHoverIdx(null)}
-            onClick={() => setOpen(false)}
+            onClick={() => {
+              onOpenRules();
+              setOpen(false);
+            }}
           >
-            {strings.menu.firstPerson}
-          </a>
+            {strings.rules.menuItem}
+          </button>
           <button
             role="menuitem"
             type="button"

@@ -1,3 +1,4 @@
+import type { PlayerRegistration } from './types';
 import { useBusiness } from './business/BusinessContext';
 import { ServiceCamera } from './camera/ServiceCamera';
 import { SoundDirector } from './ui/sound/SoundDirector';
@@ -37,11 +38,12 @@ import { DollhouseFrame } from './ui/DollhouseFrame';
 import { harnessParams } from './testHarness/urlParams';
 import { SimulationProvider, useSimDispatch, useSimState } from './simulation/SimulationProvider';
 import { AboutPanel } from './ui/AboutPanel';
+import { RulesPanel } from './ui/RulesPanel';
+import { PrepHint } from './ui/service/PrepHint';
 import { ControlsHint } from './ui/ControlsHint';
 import { DevPanel } from './ui/DevPanel';
 import { EventsPanel } from './ui/service/EventsPanel';
 import { primeStreamAudio } from './ui/streamArrivalCue';
-import { OutwardButton } from './ui/OutwardButton';
 import { SpeedToggle } from './ui/SpeedToggle';
 import { TopRightMenu } from './ui/TopRightMenu';
 import { SelectionChrome } from './ui/SelectionChrome';
@@ -61,13 +63,15 @@ import { HudBottom } from './ui/service/HudBottom';
 import { MoodMeter } from './ui/host/MoodMeter';
 
 interface StrategicAppProps {
-  // ORDER 267 — spelaren kommer från bussen (VS001): introduktionen börjar.
+  // ORDER 267 — introduktionen börjar (ORDER 300: efter registreringen).
   startIntroduction?: boolean;
-  // ORDER 267 — "Nytt spel" på startrutan: till bussen.
-  onNewGame?: () => void;
+  // ORDER 300 §4 — "Nytt spel" på startrutan: registreringen (namn och
+  // samtycke) och sedan första morgonen.
+  onNewGame?: (player: PlayerRegistration) => void;
+  player?: PlayerRegistration;
 }
 
-export function StrategicApp({ startIntroduction = false, onNewGame }: StrategicAppProps = {}) {
+export function StrategicApp({ startIntroduction = false, onNewGame, player }: StrategicAppProps = {}) {
   const [webglOk] = useState<boolean>(() => detectWebGL());
   // ORDER 273 — språkbytet (menyn) ritar om hela gränssnittet: roten ritas
   // om när språket byts, och alla komponenter under läser `strings` på nytt.
@@ -79,7 +83,7 @@ export function StrategicApp({ startIntroduction = false, onNewGame }: Strategic
   return (
     <BusinessProvider>
       <CameraProvider>
-        <SimulationProvider seed={harnessParams.seed ?? undefined} startIntroduction={startIntroduction}>
+        <SimulationProvider seed={harnessParams.seed ?? undefined} startIntroduction={startIntroduction} player={player}>
           <SaveProvider>
             <StrategicShell />
             <NameEntryOverlay onNewGame={onNewGame} />
@@ -96,6 +100,7 @@ function StrategicShell() {
   // ORDER 289 — morgonen visas först när krogen har ett namn.
   const { hasName } = useBusiness();
   const [aboutOpen, setAboutOpen] = useState(false);
+  const [rulesOpen, setRulesOpen] = useState(false);
   // ORDER 264 — Måltidens hus öppnas från morgonens rad.
   const [houseOpen, setHouseOpen] = useState(false);
   // ORDER 280 — morgonens inköp (Designs M1).
@@ -311,6 +316,8 @@ function StrategicShell() {
             <TillBar />
           </div>
           <RivalBand />
+          {/* ORDER 300 §6 — vad spelaren kan göra före dörröppningen. */}
+          <PrepHint />
         </div>
         {/* ORDER 299b — Stämningen i rummet till höger om kassan (Designs D1 §5);
             bredvid kolumnen, så att bandet under klockan och kassan inte blir bredare. */}
@@ -331,9 +338,9 @@ function StrategicShell() {
       <div className="gb-topright">
         <CashCounter />
         <SpeedToggle />
-        <TopRightMenu onOpenAbout={() => setAboutOpen(true)} onOpenSave={save.openMenu} />
+        <TopRightMenu onOpenAbout={() => setAboutOpen(true)} onOpenRules={() => setRulesOpen(true)} onOpenSave={save.openMenu} />
       </div>
-      <OutwardButton />
+      {/* ORDER 300 §6 — den separata knappen Tillbaka är borttagen; nivåraden och Esc (Krogen) räcker. */}
       <ControlsHint />
       <SelectionChrome
         landmark={selected}
@@ -406,6 +413,8 @@ function StrategicShell() {
       <EveningAccountPanel />
       <DevPanel lastKey={lastKey} />
       <AboutPanel open={aboutOpen} onClose={() => setAboutOpen(false)} />
+      {/* ORDER 300 §5 — regelkortet första morgonen och sidan i menyn. */}
+      <RulesPanel open={rulesOpen} onClose={() => setRulesOpen(false)} />
     </div>
   );
 }

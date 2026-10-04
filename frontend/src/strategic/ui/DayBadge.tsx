@@ -41,7 +41,7 @@ const BADGE_STYLE: React.CSSProperties = {
 };
 
 const HOLIDAY_STYLE: React.CSSProperties = {
-  fontSize: 'max(11px, calc(16 * var(--nx-u)))',
+  fontSize: 'max(12px, calc(16 * var(--nx-u)))',
   color: 'var(--nx-ink-2, #6f6b69)'
 };
 

@@ -326,6 +326,8 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
     }
     case 'SET_SPEED':
       return { ...state, speed: action.speed };
+    case 'RULES_SEEN':
+      return { ...state, rulesSeen: true };
     case 'SET_POLICY':
       return applyPolicyPatch(state, action.patch);
     case 'RESOLVE_SCENARIO':

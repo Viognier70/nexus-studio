@@ -137,7 +137,8 @@ export function EventsPanel({ mode = 'both' }: { mode?: 'both' | 'feed' | 'back'
         <div style={{ minWidth: 0 }}>
           <div className="nx-label nx-accent-text">{strings.back.title}</div>
           {/* ORDER 289 — när knappen är grå står skälet här, bredvid den. */}
-          <div className="nx-small nx-muted" data-testid="back-why" id="back-why">{whyNotBack(sim) === 'notOpen' && beforeDoors(sim) ? strings.back.why.notOpenAt(clockText(doorsOpenMinutes(sim))) : whyNotBack(sim) ? strings.back.why[whyNotBack(sim)!] : backsLeft > 0 ? strings.back.left(backsLeft) : strings.back.none}</div>
+          {/* ORDER 300 §6 — före öppning står tiden på knappen; raden säger då hur många satsningar kvällen har. */}
+          <div className="nx-small nx-muted" data-testid="back-why" id="back-why">{whyNotBack(sim) === 'notOpen' && beforeDoors(sim) ? (backsLeft > 0 ? strings.back.left(backsLeft) : strings.back.none) : whyNotBack(sim) ? strings.back.why[whyNotBack(sim)!] : backsLeft > 0 ? strings.back.left(backsLeft) : strings.back.none}</div>
           {/* ORDER 284 — introduktionen före kvällens första raket (flyttad från kortet). */}
           {open && (sim.incidents?.betsTonight ?? 0) === 0 && (
             <p className="nx-small" data-testid="incident-back-intro" style={{ margin: 'calc(6 * var(--nx-u)) 0 0' }}>
@@ -148,7 +149,10 @@ export function EventsPanel({ mode = 'both' }: { mode?: 'both' | 'feed' | 'back'
           {open && totalCredits(sim) < BACK.confidence[1].loss && <div className="nx-small" data-testid="back-earn" style={{ marginTop: 'calc(6 * var(--nx-u))' }}>{strings.back.earn}</div>}
         </div>
         {/* Provspel av 285: en grå knapp säger varför. */}
-        <NxButton testId="back-start" disabled={!canStartBack(sim)} onClick={() => dispatch({ type: 'START_BACK' })}>{strings.back.start}</NxButton>
+        {/* ORDER 300 §6 (Anders 2026-10-04): tydligt avstängd (grå) före öppning, med texten "Öppnar 19.05", utan radbrytning. */}
+        <NxButton testId="back-start" disabled={!canStartBack(sim)} arrow={!(whyNotBack(sim) === 'notOpen' && beforeDoors(sim))} onClick={() => dispatch({ type: 'START_BACK' })}>
+          {whyNotBack(sim) === 'notOpen' && beforeDoors(sim) ? strings.back.opensAt(clockText(doorsOpenMinutes(sim))) : strings.back.start}
+        </NxButton>
       </div>}
     </section>
   );

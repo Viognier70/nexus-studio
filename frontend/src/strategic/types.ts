@@ -1523,6 +1523,12 @@ export interface SimulationState {
   // bussen tills banken öppnat hennes första verksamhet; saknas annars.
   // Stegen härleds i sim/introduction.ts.
   introduction?: { practiced: boolean } | null;
+  // ORDER 300 §4 — spelaren skriver in sig efter startskärmen: namnet och
+  // samtycket (Vision Owner 2026-09-30: "ankomsten frågar efter spelarens
+  // namn och efter samtycke"). Saknas i spel som började före ORDER 300.
+  player?: PlayerRegistration;
+  // ORDER 300 §5 — regelkortet har visats (första morgonen).
+  rulesSeen?: boolean;
   // ORDER 265 — v1-ekonomin: klass, lån, veckoavräkning, nedgradering
   // (src/sim/economy.ts).
   economy: import('../sim/economy').EconomyState;
@@ -1779,6 +1785,8 @@ export type SimAction =
   | { type: 'SET_RIVAL_CONTROL'; rivalId: string; control: 'computer' | 'human' }
   | { type: 'SET_RIVAL_PLAN'; rivalId: string; plan: import('../sim/village').RivalPlan | null }
   | { type: 'SET_SPEED'; speed: 0 | 1 | 2 | 4 }
+  // ORDER 300 §5 — regelkortet första morgonen är läst.
+  | { type: 'RULES_SEEN' }
   | { type: 'SET_POLICY'; patch: Partial<Policies> }
   | { type: 'RESOLVE_SCENARIO'; choice: ScenarioChoice }
   | { type: 'TRIGGER_SCENARIO' }
@@ -1966,4 +1974,10 @@ export interface BuildingRef {
   label: string;
   sub: string;
   position: Vec2;
+}
+
+// ORDER 300 §4 — spelarens namn och samtycket att framstegen sparas.
+export interface PlayerRegistration {
+  name: string;
+  consent: boolean;
 }

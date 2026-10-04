@@ -193,11 +193,17 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenB
           </NxLabel>
           <h1 className="nx-heading">{sunday ? s.sundayHeading : s.heading}</h1>
         </div>
-        <div className="nx-small nx-muted" data-testid="schedule-slots">{strings.morning.slots(used, cal.scheduleSlots)}</div>
+        <div className="nxs-head-side">
+          {/* ORDER 300 §3 — Måltidens hus i rubrikraden, så att listan får höjden. */}
+          {period === 'morning' && (
+            <NxButton kind="quiet" testId="open-house" onClick={onOpenHouse}>{strings.knowledge.houseButton}</NxButton>
+          )}
+          <div className="nx-small nx-muted" data-testid="schedule-slots">{strings.morning.slots(used, cal.scheduleSlots)}</div>
+        </div>
       </header>
 
       <div className="nxs-morning-grid">
-        <div>
+        <div className="nxs-morning-left">
           <p className="nx-body">
             {business === null
               ? strings.economy.noBusinessBody
@@ -235,23 +241,32 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenB
           )}
 
           <div className="nxs-two-col">
+            {/* ORDER 300 §1/§3 — listorna scrollar i sin egen panel om de
+                inte ryms; skärmen scrollar inte. */}
             <div>
               <div className="nxs-list-head"><NxLabel>{s.activities}</NxLabel></div>
-              <MorningActivityPanel />
+              <div className="nxs-list-scroll" data-testid="morning-activities-scroll"><MorningActivityPanel /></div>
             </div>
             <div>
               <div className="nxs-list-head"><NxLabel>{s.pavilions}</NxLabel></div>
-              <MedalShelf onOpenHouse={period === 'morning' ? onOpenHouse : undefined} />
-              {period === 'morning' && (
-                <div className="nxs-mt-8">
-                  <NxButton kind="quiet" testId="open-house" onClick={onOpenHouse}>{strings.knowledge.houseButton}</NxButton>
-                </div>
-              )}
+              <div className="nxs-list-scroll nxs-shelf-list"><MedalShelf onOpenHouse={period === 'morning' ? onOpenHouse : undefined} /></div>
             </div>
           </div>
         </div>
 
-        <div>
+        <div className="nxs-morning-right">
+          {/* ORDER 300 §3 — mentorns rad står här, inte i bottenraden över listan. */}
+          {mentorLine && (
+            <div className="nxs-dark-box nxs-mentor-box" data-testid="mentor-line" data-step={mentor.step ?? undefined}>
+              <div style={{ flex: 1 }}>
+                <div className="nx-label nx-accent-text">{strings.introduction.mentor}</div>
+                <p className="nx-small nxs-mt-8"><span className="nxs-quote-mark">{mentorLine}</span></p>
+                {mentor.step === 'farewell' && (
+                  <div className="nxs-mt-8"><NxButton kind="quiet" testId="mentor-close" onClick={mentor.closeFarewell}>{strings.introduction.farewellClose}</NxButton></div>
+                )}
+              </div>
+            </div>
+          )}
           {business !== null ? (
             <>
               {/* ORDER 275 — klasser med paket köper lagret som paket.
@@ -305,14 +320,6 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenB
             <p className="nx-small nx-accent-text" style={{ fontWeight: 700 }} data-testid="start-blocked" role="status">
               {strings.stock.notReady(readiness.dishes, readiness.drinks)}
             </p>
-          )}
-          {mentorLine && (
-            <p className="nx-small nx-muted" data-testid="mentor-line" data-step={mentor.step ?? undefined}>
-              {strings.introduction.mentor}: <span className="nxs-quote-mark">{mentorLine}</span>
-            </p>
-          )}
-          {mentorLine && mentor.step === 'farewell' && (
-            <NxButton kind="quiet" testId="mentor-close" onClick={mentor.closeFarewell}>{strings.introduction.farewellClose}</NxButton>
           )}
         </div>
         <div className="nxs-foot-buttons">

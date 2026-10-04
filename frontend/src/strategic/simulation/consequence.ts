@@ -8,6 +8,7 @@
 
 import type { SimulationState } from '../types';
 import { CONSEQUENCE } from '../scene/guestMood';
+import { PREP_TIME } from '../../sim/balance';
 
 /** Sekunder sedan svaret, eller null utan pågående konsekvensögonblick. */
 export function consequenceElapsed(state: Pick<SimulationState, 'simTime' | 'day'>): number | null {
@@ -19,5 +20,8 @@ export function consequenceElapsed(state: Pick<SimulationState, 'simTime' | 'day
 
 /** Spelets hastighet just nu: normal (1×) under ögonblicket och återgången, annars spelarens. */
 export function effectiveSpeed(state: Pick<SimulationState, 'simTime' | 'day' | 'speed'>): number {
-  return consequenceElapsed(state) !== null && state.speed > 1 ? 1 : state.speed;
+  if (consequenceElapsed(state) !== null && state.speed > 1) return 1;
+  // ORDER 300 §6 — förberedelserna fram till dörröppningen går fortare.
+  const prep = (state.day.period === 'dinner' || state.day.period === 'lunch') && state.day.doorsOpenAt !== null && state.simTime < state.day.doorsOpenAt;
+  return prep && state.speed > 0 ? Math.max(state.speed, PREP_TIME.speedAtLeast) : state.speed;
 }

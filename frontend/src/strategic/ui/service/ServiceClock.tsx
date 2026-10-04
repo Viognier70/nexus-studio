@@ -109,7 +109,7 @@ export function ServiceClock() {
           {time ?? '—'}
         </span>
         <div style={{ minWidth: 0 }}>
-          <div className="nx-label" data-testid="service-clock-label" style={{ fontSize: u(16), color: accentLabel ? 'var(--w-candle)' : undefined }}>{label}</div>
+          <div className="nx-label" data-testid="service-clock-label" style={{ fontSize: `max(12px, ${u(16)})`, color: accentLabel ? 'var(--w-candle)' : undefined }}>{label}</div>
           {/* ORDER 293 — raden får bryta: "Dörrarna öppnar 19.05" kapades i rutan. */}
           <div data-testid="service-clock-left" style={{ fontSize: u(22), fontWeight: 700, lineHeight: 1.15, overflowWrap: 'anywhere' }}>{sub}</div>
         </div>

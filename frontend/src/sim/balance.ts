@@ -992,6 +992,16 @@ export const VILLAGE_EVENING = {
   toMinute: SITTING.serviceEndHour * 60 + CLOCK.pickupAfterCloseMinutes
 } as const;
 
+// ORDER 300 §6 (Anders 2026-10-04): "Förberedelsetiden mellan 18.00 och
+// dörröppning visar en tydlig rad om vad spelaren kan göra nu […] Om det inte
+// finns något att göra kan klockan gå fortare fram till öppning." Under
+// förberedelserna gör personalen mise en place; spelaren kan titta på byn.
+// Klockan går minst i speedAtLeast (simulation/consequence.ts effectiveSpeed).
+export const PREP_TIME = {
+  section: 'Tiden',
+  speedAtLeast: 4
+} as const;
+
 // Spelminuter per simsekund under servicen (F31).
 export const GAME_MINUTES_PER_SIM_SECOND =
   ((SITTING.serviceEndHour - SITTING.serviceStartHour) * 60) / (SERVICE.simMinutes * 60);

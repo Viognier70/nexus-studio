@@ -19,7 +19,7 @@
 //   - Walls, extruded from the OSM footprint at a fixed height
 //   - A roof cap whose opacity fades with camera distance
 //   - A stub interior (floor, bar, tables, entrance marker) below the roof
-//   - A drei <Html> label with the business name above the roof
+//   - (ORDER 300 §7: the name sign moved to village/VillageVenues.tsx)
 //
 // Interior geometry sizes itself from the building's bbox (dynamic), so
 // a building swap adapts the table layout automatically — a compact
@@ -31,17 +31,14 @@
 //   - restaurantRoofFadeMid: 40      restaurantRoofFadeHalf: 12
 //   - restaurantInteriorFadeMid: 55  restaurantInteriorFadeHalf: 20
 
-import { Html } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { useCamera } from '../camera/CameraContext';
 import { GRAY_BOX_CAMERA } from '../content/grythyttan';
-import { useBusiness } from '../business/BusinessContext';
 import { usePlayerBusinessInterior } from '../business/interiorLayout';
 import { useSimState } from '../simulation/SimulationProvider';
 import { skyState } from '../../lib/lighting/skyState';
-import { strings } from '../../content/strings';
 import { businessRoomRef } from './interiorSharedState';
 
 // Business volume constants — the D01 historic-centre building is a
@@ -61,7 +58,6 @@ const WALL_FLOOR_COUNT  = 2;
 const WALL_TAKFOT_M     = 0.75;
 const WALL_HEIGHT_M     =
   WALL_SOCKEL_M + WALL_FLOOR_HEIGHT_M * WALL_FLOOR_COUNT + WALL_TAKFOT_M;
-const ROOF_RIDGE_ADD_M = 2.4;
 // ORDER 054 Del D — Falu red baseline (~#7C2E24 per spec), keeping the
 // restaurant a shade cooler-darker than the residential palette so the
 // building reads as "public house / krog" not "villa".
@@ -166,7 +162,6 @@ function sideWallGeometry(
 }
 
 export function PlayerBusiness() {
-  const { business, hasName } = useBusiness();
   const { actualRef } = useCamera();
   // ORDER 174 — skicka sim.businessClass så interiorLayout kan läsa
   // per-klass-kontraktet i stället för att default:a till restaurangens matsal.
@@ -268,19 +263,10 @@ export function PlayerBusiness() {
     return { wallGeo, capGeo };
   }, [layout]);
 
-  const signRef = useRef<HTMLDivElement>(null);
   // Camera-distance driven opacity — the roof crossfade and interior
   // reveal that CAMERA_AND_GAMEPLAY_BIBLE.md §4.1 specifies.
   useFrame(() => {
     const dist = actualRef.current.distance;
-    // ORDER 291 punkt 4 — skylten står över taket och växer när kameran
-    // kommer nära; vid krogens avstånd (24 m) låg den i skärmens överkant
-    // och klipptes till en halv rad ("Ölkrog …"). När taket tonas bort och
-    // rummet syns behövs den inte: den döljs under takets tonings mitt.
-    if (signRef.current) {
-      const show = dist > GRAY_BOX_CAMERA.restaurantRoofFadeMid;
-      if ((signRef.current.style.display !== 'none') !== show) signRef.current.style.display = show ? '' : 'none';
-    }
     // Roof opaque above (mid + half), transparent below (mid - half)
     const roofOpacity = smoothstep(
       GRAY_BOX_CAMERA.restaurantRoofFadeMid - GRAY_BOX_CAMERA.restaurantRoofFadeHalf,
@@ -433,17 +419,9 @@ export function PlayerBusiness() {
   // OBB's local X.
   const roomRotY = -layout.worldAngle;
 
-  // Business name label — floats slightly above the roof line at the
-  // building centre, always visible. Once `hasName` is false the
-  // NameEntryOverlay is capturing the player's input, so we don't show
-  // the label until a name exists.
-  // ORDER 267 — prefixet är spelarens v1-klass (Vinbar, Food truck …),
-  // inte det fasta "Restaurang".
-  const v1Class = sim.economy.businessClass;
-  const labelPrefix = v1Class ? strings.economy.classes[v1Class] : strings.business.labelPrefix;
-  const labelText = hasName && business.name
-    ? `${labelPrefix} ${business.name}`
-    : '';
+  // ORDER 300 §7 — skylten över taket ritas inte längre här: vår krogs skylt
+  // ("Tannin, din krog", stil och pris) står i VillageVenues.tsx vid entrén,
+  // i samma form som konkurrenternas, och ligger aldrig ovanpå dem.
 
   // ORDER 159 — plinth-dimensioner i OBB-lokalt rum. Bredd = layout.width
   // + PLINTH_OUTWARD_M (10 cm bredare än ridge-facen så plinthen syns
@@ -617,41 +595,6 @@ export function PlayerBusiness() {
         </mesh>
       </group>
 
-      {/* Business name label — floats above the roof, always readable
-          when the business has been named. Uses drei <Html> so the label
-          scales with distance and stays legible from the strategic view. */}
-      {labelText && (
-        <Html
-          position={[cx, WALL_HEIGHT_M + ROOF_RIDGE_ADD_M + 1.5, cz]}
-          center
-          distanceFactor={45}
-          // ORDER 264 — under panelerna och dialogerna (Måltidens hus,
-          // sparmenyn). drei:s standard lade skylten över allt och
-          // täckte dialogens rubrik och Stäng-knapp.
-          zIndexRange={[30, 0]}
-          style={{ pointerEvents: 'none' }}
-        >
-          <div
-            ref={signRef}
-            className="nx-business-sign"
-            style={{
-              color: '#f5f0e0',
-              background: 'rgba(45, 32, 22, 0.85)',
-              padding: '3px 10px',
-              borderRadius: 3,
-              border: '1px solid #a8926a',
-              fontFamily: 'system-ui, sans-serif',
-              fontSize: 13,
-              fontWeight: 600,
-              letterSpacing: 0.3,
-              whiteSpace: 'nowrap',
-              textShadow: '0 1px 2px rgba(0,0,0,0.5)'
-            }}
-          >
-            {labelText}
-          </div>
-        </Html>
-      )}
     </group>
   );
 }

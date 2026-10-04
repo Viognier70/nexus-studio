@@ -1,3 +1,4 @@
+import type { PlayerRegistration } from '../types';
 import {
   createContext,
   useContext,
@@ -156,17 +157,19 @@ export const SimDispatchCtx = createContext<Dispatch<SimAction> | null>(null);
 interface Props {
   children: ReactNode;
   seed?: number;
-  // ORDER 267 — spelaren kommer från bussen: introduktionen börjar.
+  // ORDER 267 — introduktionen börjar (ORDER 300: efter registreringen).
   startIntroduction?: boolean;
+  // ORDER 300 §4 — spelarens namn och samtycke från registreringen.
+  player?: PlayerRegistration;
 }
 
 const TICK_HZ = 5;
 const TICK_MS = 1000 / TICK_HZ;
 
-export function SimulationProvider({ children, seed = DEFAULT_SEED, startIntroduction = false }: Props) {
+export function SimulationProvider({ children, seed = DEFAULT_SEED, startIntroduction = false, player }: Props) {
   const [state, dispatch] = useReducer(reducer, undefined, () => {
     const start = makeNewGameState(seed);
-    return applyDevStartOverride(applyDevFoodtruckSeed(applyDevBusinessOverride(startIntroduction ? beginIntroduction(start) : start)));
+    return applyDevStartOverride(applyDevFoodtruckSeed(applyDevBusinessOverride(startIntroduction ? beginIntroduction(start, player) : start)));
   });
   // ORDER 299 — konsekvensögonblicket går i normal hastighet (consequence.ts).
   const speedRef = useRef(effectiveSpeed(state));

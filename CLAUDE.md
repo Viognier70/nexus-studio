@@ -115,10 +115,10 @@ Playtest-genvägar, satta i `useDesktopControls.ts` (kamera) och `StrategicApp.t
 | `,` / `.` / `/` | Cycle social / economic / ecological capital | `StrategicApp.tsx:175-177` |
 | `q` / `Q` | Rotera kameran vänster | `useDesktopControls.ts:58` |
 | `e` / `E` | Rotera kameran höger | `useDesktopControls.ts:59` |
-| `Escape` | Zooma utåt | `useDesktopControls.ts:57` |
+| `Escape` | Kamera → Krogen (ORDER 300 §6; förut zooma utåt) | `useDesktopControls.ts` |
 | `g` / `G` (DEV) | Toggle scale-reference | `StrategicApp.tsx:180-185` |
 | `h` / `H` (DEV) | Toggle säsong (autumn ↔ summer) | `StrategicApp.tsx:189-194` |
-| `v` / `V` | Byn och tillbaka (ORDER 290). Gäller utan `#playtest=1`. | `ui/LevelBar.tsx` |
+| `v` / `V` | Nivån byn, 660 m (ORDER 300 §6: knappen heter Byn (V); förut byn och tillbaka, ORDER 290). Gäller utan `#playtest=1`. | `ui/LevelBar.tsx` |
 | `c` / `C` | Nivån kvarteret, 210 m (ORDER 288). Gäller också under servicen. | `ui/LevelBar.tsx` |
 | `x` / `X` | Nivån gatan, 95 m vid spelarens krog (ORDER 288). Gäller också under servicen. | `ui/LevelBar.tsx` |
 | `z` / `Z` | Nivån krogen, rummet (ORDER 288). Gäller också under servicen. | `ui/LevelBar.tsx` |

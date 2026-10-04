@@ -11,13 +11,20 @@ import { BLEND, LEVELS, type LevelId, type LevelSpec } from '../village/villageE
 
 const ROOM = computePlayerBusinessInterior();
 
+// ORDER 300 §7 (Anders 2026-10-04): "På gatunivån syns spelarens krog
+// tydligt och skylten går att läsa i 1280 × 720." Med rummet vänt mot Torget
+// (ORDER 297) låg krogen uppe till vänster under HUD:en med Designs mål
+// [9, −2]; målet flyttas till krogen. Designs fil (villageEvening.ts) är
+// oförändrad; avvikelsen står här.
+const TARGET_OVERRIDE: Partial<Record<LevelId, [number, number]>> = { street: [0, 0] };
+
 /** En nivås mål och vridning i byns ram (Designs byKvall.js toWorld/worldOf). */
 export function levelTarget(lv: LevelSpec): CameraTarget {
   if (lv.frame === 'world' || !ROOM) return { focus: { x: lv.target[0], z: lv.target[1] }, distance: lv.dist, yaw: lv.yaw, pitch: lv.pitch };
   const a = ROOM.worldAngle;
   const c = Math.cos(a);
   const s = Math.sin(a);
-  const [lx, lz] = lv.target;
+  const [lx, lz] = TARGET_OVERRIDE[lv.id] ?? lv.target;
   const ox = Math.sin(lv.yaw);
   const oz = Math.cos(lv.yaw);
   return {
