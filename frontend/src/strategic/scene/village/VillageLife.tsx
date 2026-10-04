@@ -34,7 +34,7 @@ import { clockMinutes } from '../../../sim/clock';
 import { busTonight, PLAYER_VENUE, POOL_TYPES, venuesTonight, type PoolType } from '../../../sim/village';
 import { plannedVillage } from '../../../sim/villageLive';
 import { driveNetwork, pointAlong, routeBetween, routeLength, walkNetwork } from '../../content/villageNetwork';
-import { truckSpotPlace, venuePlaces, villageSources } from '../../content/villagePlaces';
+import { CAMPUS_POINT, truckSpotPlace, venuePlaces, villageSources } from '../../content/villagePlaces';
 import { createRng } from '../../util/rng';
 import { readabilityScale } from '../../util/readability';
 import { publishVillageLive, type OnWayGroup } from './villageLive';
@@ -84,6 +84,8 @@ interface Planned {
   byCar: boolean;
   source: number;
   key: string;
+  // ORDER 297 — huset sällskapet bor i (fönstren släcks medan de är ute).
+  homeId?: string | null;
 }
 
 interface Walker {
@@ -102,6 +104,7 @@ interface Walker {
   // På väg hem efter måltiden (räknas inte som gäst på väg in).
   homeward: boolean;
   source: number;
+  homeId?: string | null;
 }
 
 interface Car {
@@ -116,12 +119,39 @@ interface Car {
   speed: number;
 }
 
-function startNode(type: WalkerKind, rnd: () => number): { node: number; byCar: boolean } {
+// ORDER 297 (Designs leverans Byn i kvällsljus §6): sällskapen kommer från
+// bostadshus inom HOME_RADIUS_M från krogen, och studenterna från campus när
+// krogen ligger inom CAMPUS_RADIUS_M; annars från ett hus nära krogen.
+const HOME_RADIUS_M = 260;
+const CAMPUS_RADIUS_M = 380;
+const NEAREST_HOMES = 6;
+
+function homeNear(door: Vec2, rnd: () => number): { node: number; homeId: string | null } {
   const src = villageSources();
-  if (type === 'student') return { node: src.campus, byCar: false };
-  if (type === 'high') return rnd() < 0.5 ? { node: src.hotel, byCar: false } : { node: src.parking, byCar: true };
-  if (type === 'middle' && rnd() < 0.25) return { node: src.parking, byCar: true };
-  return { node: src.homes[Math.floor(rnd() * src.homes.length)], byCar: false };
+  const near = src.homeBuildings.filter((h) => Math.hypot(h.centre[0] - door[0], h.centre[1] - door[1]) < HOME_RADIUS_M);
+  const pool = near.length > 0 ? near : [...src.homeBuildings].sort((a, b) => Math.hypot(a.centre[0] - door[0], a.centre[1] - door[1]) - Math.hypot(b.centre[0] - door[0], b.centre[1] - door[1])).slice(0, NEAREST_HOMES);
+  if (pool.length === 0) return { node: src.homes[Math.floor(rnd() * src.homes.length)], homeId: null };
+  const h = pool[Math.floor(rnd() * pool.length)];
+  return { node: h.node, homeId: h.id };
+}
+
+function startNode(type: WalkerKind, rnd: () => number, door: Vec2): { node: number; byCar: boolean; homeId: string | null } {
+  const src = villageSources();
+  if (type === 'student') {
+    if (Math.hypot(CAMPUS_POINT[0] - door[0], CAMPUS_POINT[1] - door[1]) < CAMPUS_RADIUS_M) return { node: src.campus, byCar: false, homeId: null };
+    return { ...homeNear(door, rnd), byCar: false };
+  }
+  if (type === 'high') return rnd() < 0.5 ? { node: src.hotel, byCar: false, homeId: null } : { node: src.parking, byCar: true, homeId: null };
+  if (type === 'middle' && rnd() < 0.25) return { node: src.parking, byCar: true, homeId: null };
+  return { ...homeNear(door, rnd), byCar: false };
+}
+
+/** Krogens dörr i byns ram (vagnarna på kvällens plats). */
+function doorPointOf(venueId: string, venues: ReturnType<typeof venuesTonight>): Vec2 {
+  const v = venues.find((x) => x.id === venueId);
+  const g = walkNetwork();
+  const node = v?.spot ? truckSpotPlace(v.spot).door : (venuePlaces()[venueId] ?? venuePlaces()[PLAYER_VENUE]).door;
+  return g.nodes[node] as Vec2;
 }
 
 function doorFor(venueId: string, _state: SimulationState, venues: ReturnType<typeof venuesTonight>): number {
@@ -145,16 +175,16 @@ function planEvening(state: SimulationState): Planned[] {
       while (left > 0) {
         const n = Math.min(left, t === 'student' ? 2 + Math.floor(rnd() * 3) : 1 + Math.floor(rnd() * 3));
         left -= n;
-        const s = startNode(t, rnd);
+        const s = startNode(t, rnd, doorPointOf(row.id, venues));
         // Flest kommer mitt i kvällen (triangelfördelning över fönstret).
-        out.push({ at: ARRIVE_FROM + ((rnd() + rnd()) / 2) * (ARRIVE_UNTIL - ARRIVE_FROM), venueId: row.id, type: t, n, byCar: s.byCar, source: s.node, key: `${row.id}:${t}:${out.length}` });
+        out.push({ at: ARRIVE_FROM + ((rnd() + rnd()) / 2) * (ARRIVE_UNTIL - ARRIVE_FROM), venueId: row.id, type: t, n, byCar: s.byCar, source: s.node, key: `${row.id}:${t}:${out.length}`, homeId: s.homeId });
       }
     }
   });
   // Gästen med socialt kapital går till spelarens krog när hon kommer.
   const social = state.day.booking?.social;
   if (social && venues[0].open) {
-    out.push({ at: 18 * 60 + GUEST_TYPES.arrivesAfterMinutes.social, venueId: PLAYER_VENUE, type: 'social', n: 1, byCar: false, source: villageSources().homes[0], key: 'social' });
+    out.push({ at: 18 * 60 + GUEST_TYPES.arrivesAfterMinutes.social, venueId: PLAYER_VENUE, type: 'social', n: 1, byCar: false, source: villageSources().homes[0], key: 'social', homeId: null });
   }
   return out.sort((a, b) => a.at - b.at);
 }
@@ -202,6 +232,8 @@ export function VillageLife() {
     walkers: [] as Walker[],
     cars: [] as Car[],
     arrived: {} as Record<string, number>,
+    // ORDER 297 — hur många som sitter inne på varje krog just nu (gloria och fönster).
+    inside: {} as Record<string, number>,
     wavesSeen: new Set<string>(),
     leaving: [] as Array<{ at: number; w: Walker }>,
     busDone: { announce: false, chose: false },
@@ -282,6 +314,7 @@ export function VillageLife() {
       L.walkers = [];
       L.cars = [];
       L.arrived = {};
+      L.inside = {};
       L.wavesSeen = new Set();
       L.leaving = [];
       L.busDone = { announce: false, chose: false };
@@ -385,6 +418,7 @@ export function VillageLife() {
           w.eatUntil = now + EAT_AT_TRUCK_MIN;
         } else {
           w.arrived = true;
+          L.inside[w.venueId] = (L.inside[w.venueId] ?? 0) + w.n;
           // Efter måltiden går sällskapet hem igen.
           if (!w.homeward && w.type !== 'billionaire') {
             const stay = STAY_MIN[0] + (Math.abs(Math.sin(w.length * 7.13)) * (STAY_MIN[1] - STAY_MIN[0]));
@@ -400,6 +434,7 @@ export function VillageLife() {
       if (due.length > 0) {
         L.leaving = L.leaving.filter((x) => x.at > now);
         for (const { w } of due) {
+          L.inside[w.venueId] = Math.max(0, (L.inside[w.venueId] ?? 0) - w.n);
           const from = w.route[w.route.length - 1];
           const back = [...w.route].reverse();
           if (back.length >= 2 && from) {
@@ -440,7 +475,11 @@ export function VillageLife() {
         .filter((w) => w.near < ON_WAY_RADIUS_M)
         .sort((a, b) => a.metres - b.metres)
         .map(({ near: _n, ...rest }) => rest);
-      publishVillageLive({ arrived: { ...L.arrived }, onWay, groupsWalking: L.walkers.length });
+      // ORDER 297 — husen vars sällskap är ute (på väg, på krogen eller på väg hem).
+      const out = new Set<string>();
+      for (const w of L.walkers) if (w.homeId) out.add(w.homeId);
+      for (const { w } of L.leaving) if (w.homeId) out.add(w.homeId);
+      publishVillageLive({ arrived: { ...L.arrived }, onWay, groupsWalking: L.walkers.length, inside: { ...L.inside }, outHomes: [...out] });
     }
   });
 
@@ -452,7 +491,8 @@ export function VillageLife() {
       ring: p.type === 'billionaire' ? WARM.guest.billionaire : p.type === 'social' ? WARM.guest.social : null,
       arrived: false,
       homeward: false,
-      source: p.source
+      source: p.source,
+      homeId: p.homeId ?? null
     });
   }
 

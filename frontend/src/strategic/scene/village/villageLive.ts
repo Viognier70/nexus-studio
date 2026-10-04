@@ -17,9 +17,13 @@ export interface VillageLiveState {
   arrived: Record<string, number>;
   onWay: OnWayGroup[];
   groupsWalking: number;
+  // ORDER 297 — hur många som sitter inne på varje krog, och husen vars
+  // sällskap är ute i kväll (Designs Byn i kvällsljus: fönster och gloria).
+  inside: Record<string, number>;
+  outHomes: string[];
 }
 
-let state: VillageLiveState = { arrived: {}, onWay: [], groupsWalking: 0 };
+let state: VillageLiveState = { arrived: {}, onWay: [], groupsWalking: 0, inside: {}, outHomes: [] };
 const listeners = new Set<() => void>();
 
 export function villageLive(): VillageLiveState {

@@ -52,6 +52,7 @@ import { StreetLamps } from './village/StreetLamps';
 import { VillageVenues } from './village/VillageVenues';
 import { VillageLife } from './village/VillageLife';
 import { StreetArrivals } from './village/StreetArrivals';
+import { VillageWindows } from './village/VillageWindows';
 
 // GL config for stable rendering.
 //
@@ -154,6 +155,8 @@ export function StrategicScene({ onSelect, selectedId, showScaleRef = false }: P
             när de har öppet (med etiketter i HUD-lagret), gästerna, bilarna,
             bussen och vagnarna, och vem som är på väg in på gatan. */}
         <StreetLamps />
+        {/* ORDER 297 — byns fönster i kvällsljuset (Designs Byn i kvällsljus). */}
+        <VillageWindows />
         <VillageVenues />
         <VillageLife />
         <StreetArrivals />

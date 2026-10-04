@@ -1433,3 +1433,10 @@ export function OsmBuildings() {
     </group>
   );
 }
+
+// ORDER 297 — väggens höjd som husen ritas här (samma sort och samma höjd),
+// för byns fönster i kvällsljuset (village/VillageWindows.tsx).
+export function osmWallHeight(b: RawBuilding): number {
+  const obb = orientedBbox(b.poly);
+  return heightFor(b, postObbKind(effectiveKindFor(b), obb.w, obb.d));
+}
