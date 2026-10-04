@@ -58,6 +58,7 @@ import { RoomNotices } from './ui/service/RoomNotices';
 import { CameraButtons } from './ui/CameraButtons';
 import { RoomCameraBounds } from './camera/RoomCameraBounds';
 import { HudBottom } from './ui/service/HudBottom';
+import { MoodMeter } from './ui/host/MoodMeter';
 
 interface StrategicAppProps {
   // ORDER 267 — spelaren kommer från bussen (VS001): introduktionen börjar.
@@ -311,6 +312,9 @@ function StrategicShell() {
           </div>
           <RivalBand />
         </div>
+        {/* ORDER 299b — Stämningen i rummet till höger om kassan (Designs D1 §5);
+            bredvid kolumnen, så att bandet under klockan och kassan inte blir bredare. */}
+        <MoodMeter />
       </div>
       {/* ORDER 288 — fyra nivåer med egna knappar och tangenter (byn och
           tillbaka med V som i ORDER 290), och byns aviseringar. */}

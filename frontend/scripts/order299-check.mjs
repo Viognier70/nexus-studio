@@ -1,4 +1,4 @@
-// ORDER 299 — Raketen och rummet i produktionsbygget, i spelarens flöde:
+// ORDER 299 (och 299b: mätaren till höger om kassan) — Raketen och rummet i produktionsbygget, i spelarens flöde:
 // sparfilen måndag i vinbaren flyttad till fredag (SAVE_DAY_OFFSET, förvalt 4),
 // på svenska, baspaketet, spelaren kör 4×. Körs i 1280 × 720 och 1440 × 900.
 // - Raketen: hur stor del av bildens mitt som är rummet (elementsFromPoint längs
@@ -72,7 +72,13 @@ async function run(width, height) {
     });
     const card = document.querySelector('[data-testid=incident-card]')?.getBoundingClientRect();
     const strip = document.querySelector('[data-testid=incident-pyramid]')?.getBoundingClientRect();
-    return { rows, card: card ? { left: Math.round(card.left), right: Math.round(card.right), leftShare: +(card.left / W).toFixed(3), rightShare: +(card.right / W).toFixed(3) } : null, stripHeight: strip ? Math.round(strip.height) : null };
+    // ORDER 299b — mätaren till höger om kassan, i samma rad.
+    const till = document.querySelector('.nx-till-box')?.getBoundingClientRect();
+    const meter = document.querySelector('[data-testid=mood-meter]')?.getBoundingClientRect();
+    const band = document.querySelector('[data-testid=rival-band]');
+    return { rows, card: card ? { left: Math.round(card.left), right: Math.round(card.right), leftShare: +(card.left / W).toFixed(3), rightShare: +(card.right / W).toFixed(3) } : null, stripHeight: strip ? Math.round(strip.height) : null,
+      meter: meter && till ? { left: Math.round(meter.left), top: Math.round(meter.top), tillRight: Math.round(till.right), tillTop: Math.round(till.top), width: Math.round(meter.width) } : null,
+      bandShown: !!band && getComputedStyle(band).display !== 'none' };
   });
   try {
     await page.goto(`${URL}/`, { waitUntil: 'domcontentloaded' });

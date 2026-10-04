@@ -100,7 +100,7 @@ import { ROOM_CAMERA } from '../camera/roomBounds';
 import { MoodSymbolLayer, type MoodGroup } from './moodSymbols';
 import { attachFace, type FaceHandle } from './figureFace';
 import { MoodGestures } from './moodGestures';
-import { moodOf } from '../../sim/guestMood';
+import { guestMoodValue, moodOf } from '../../sim/guestMood';
 import { CONSEQUENCE, FACE, MOOD_SYMBOL } from './guestMood';
 
 // ORDER 299 — klick på ett bord: inom så här många meter från bordets mitt,
@@ -769,7 +769,7 @@ export function WineBarFigures({ room, mood }: Props) {
       // ORDER 299 — gesten efter stämningen när gästen bara sitter (moodGestures.ts).
       let gesture: { id: string; clip: ClipSample } | null = null;
       if (walkSample === sample && sample.seated && !isFigure && simGuest) {
-        gesture = cast.moodGestures.sample(i, sample.guestId, clip ? cast.stage.guestClipId(i) : null, simGuest.satisfaction, s.simTime, seatKind, s.day.consequence, s.seed ?? 0);
+        gesture = cast.moodGestures.sample(i, sample.guestId, clip ? cast.stage.guestClipId(i) : null, guestMoodValue(simGuest, s.day.roomMoodLift ?? 0), s.simTime, seatKind, s.day.consequence, s.seed ?? 0);
       } else {
         cast.moodGestures.reset(i);
       }
@@ -980,8 +980,8 @@ export function WineBarFigures({ room, mood }: Props) {
             local = new THREE.Vector3(sample.x, sample.y + STANDING_HEAD_M + MOOD_SYMBOL.anchor.guestHeadM, sample.z);
           }
           const prev = groups.get(key);
-          if (prev) { prev.value += g.satisfaction; prev.n++; }
-          else groups.set(key, { key, world: cast.group.localToWorld(local), value: g.satisfaction, n: 1 });
+          if (prev) { prev.value += guestMoodValue(g, s.day.roomMoodLift ?? 0); prev.n++; }
+          else groups.set(key, { key, world: cast.group.localToWorld(local), value: guestMoodValue(g, s.day.roomMoodLift ?? 0), n: 1 });
         }
       }
       const list = [...groups.values()].map((x) => ({ key: x.key, world: x.world, value: x.value / x.n }));
@@ -996,7 +996,7 @@ export function WineBarFigures({ room, mood }: Props) {
       const face = cast.guestFaces[i];
       const id = gs[i]?.guestId;
       const g = id ? s.guests.find((x) => x.id === id) : undefined;
-      if (g && !faceHold) face.set(moodOf(g.satisfaction));
+      if (g && !faceHold) face.set(moodOf(guestMoodValue(g, s.day.roomMoodLift ?? 0)));
       face.update(camera);
     }
     for (const face of cast.staffFaces) face.update(camera);

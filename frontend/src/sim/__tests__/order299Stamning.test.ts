@@ -3,7 +3,7 @@
 
 import { describe, expect, it } from 'vitest';
 import { makeNewGameState, makeGuest } from '../../strategic/simulation/model';
-import { meterFill, meterMove, moodOf, moveWitnesses, roomMoodValue, stableRoomMood, witnessesOf } from '../guestMood';
+import { applyAnswerMood, decayMoodLift, guestMoodValue, meterFill, meterMove, moodOf, roomMoodValue, stableRoomMood, witnessesOf } from '../guestMood';
 import { MOOD_BALANCE } from '../balance';
 import { consequenceElapsed, effectiveSpeed } from '../../strategic/simulation/consequence';
 import { CONSEQUENCE } from '../../strategic/scene/guestMood';
@@ -50,17 +50,29 @@ describe('ORDER 299 — stämningen', () => {
     expect(meterMove(3, 2.7)).toBe('down');
   });
 
-  it('svaret flyttar dem som såg det, inte de längre bort', () => {
-    const table = [guest(0.7, 0, 0)];
-    const near = guest(0.7, MOOD_BALANCE.rocket.witnessRadiusM - 0.5, 0);
-    const far = guest(0.7, MOOD_BALANCE.rocket.witnessRadiusM + 2, 0);
+  // ORDER 299b — svaret lyfter stämningen (inte nöjdheten): bordet mest, de som
+  // såg det, och svagare hela rummet. Lyftet klingar av.
+  it('svaret lyfter bordet, dem som såg det och rummet, utan att röra nöjdheten', () => {
+    const r = MOOD_BALANCE.rocket;
+    const table = [guest(0.5, 0, 0)];
+    const near = guest(0.5, r.witnessRadiusM - 0.5, 0);
+    const far = guest(0.5, r.witnessRadiusM + 2, 0);
     const s = { ...makeNewGameState(1), guests: [...table, near, far] } as SimulationState;
     expect(witnessesOf(s, table).map((g) => g.id)).toEqual([near.id]);
-    moveWitnesses(s, table, true);
-    expect(near.satisfaction).toBeCloseTo(0.7 + MOOD_BALANCE.rocket.gain, 5);
-    expect(far.satisfaction).toBe(0.7);
-    moveWitnesses(s, table, false);
-    expect(near.satisfaction).toBeCloseTo(0.7 + MOOD_BALANCE.rocket.gain - MOOD_BALANCE.rocket.loss, 5);
+    applyAnswerMood(s, table, true);
+    const room = () => s.day.roomMoodLift ?? 0;
+    expect(room()).toBeCloseTo(r.room.right, 5);
+    expect(guestMoodValue(table[0], room())).toBeCloseTo(0.5 + r.table.right + r.room.right, 5);
+    expect(guestMoodValue(near, room())).toBeCloseTo(0.5 + r.witness.right + r.room.right, 5);
+    expect(guestMoodValue(far, room())).toBeCloseTo(0.5 + r.room.right, 5);
+    expect(near.satisfaction).toBe(0.5);
+    // Rummets lyft gäller också en gäst som kommer efteråt.
+    expect(roomMoodValue({ guests: [guest(0.5, 9, 9)], day: s.day })).toBeCloseTo(0.5 + r.room.right, 5);
+    applyAnswerMood(s, table, false);
+    expect(guestMoodValue(near)).toBeCloseTo(0.5 + r.witness.right + r.witness.wrong, 5);
+    near.moodLift = 0.1;
+    decayMoodLift(s, 0.1 / MOOD_BALANCE.liftDecayPerGameMinute + 1);
+    expect(near.moodLift).toBe(0);
   });
 });
 

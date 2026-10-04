@@ -26,6 +26,7 @@ import { dishAllergens, dishDiet, findDish } from './m4Catalogue';
 import { takeFromStock } from './stockPackages';
 import { REPEAT_GUARD_SEC } from './eventStream';
 import { hashKey } from '../util/hash';
+import { spreadDeparture } from '../../sim/guestMood';
 
 export type GuestDiet = 'any' | 'vegetarian' | 'vegan';
 export type Wallet = keyof typeof GUESTS.walletSek;
@@ -177,6 +178,8 @@ export function orderForGuest(draft: SimulationState, guest: Guest, rand: () => 
     const cards = abilityActive(draft, 'allergen') && reason !== 'soldOut' && reason !== 'wallet';
     if (!cards) draft.reputation = clampReputation(draft.reputation - GUESTS.missingOptionReputation);
     const partyLeft = !cards && rand() < GUESTS.partyLeavesChance ? partyLeaves(draft, guest) : 0;
+    // ORDER 299b — rummet ser gästen gå utan mat (stämningen, inte nöjdheten).
+    spreadDeparture(draft, guest);
     // ORDER 289 — gäster som gick utan mat, till rådet efter kvällen.
     if (reason === 'soldOut') draft.day.soldOutGuests = (draft.day.soldOutGuests ?? 0) + 1 + partyLeft;
     streamLine(draft, s.lost(reason, table, partyLeft), 'guest_lost_sale');

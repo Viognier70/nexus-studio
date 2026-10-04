@@ -205,7 +205,9 @@
 
 /* ORDER 299 — Stämningen i rummet (Designs D1 §5, MOOD_METER), i bandet där
    lyktornas linje satt. Trä och mässing, fyllning i guld, inga siffror. */
-.nx-mood-meter { display: grid; gap: calc(6 * var(--nx-u)); margin-top: calc(10 * var(--nx-u)); padding-top: calc(10 * var(--nx-u)); border-top: 1px solid var(--w-divider, rgba(216,184,119,.25)); min-width: min(230px, 100%); }
+.nx-mood-meter { display: grid; gap: calc(8 * var(--nx-u)); min-width: min(230px, 100%); }
+/* ORDER 299b — egen ruta till höger om kassan, i kassans trä och mässing (D1 §5: minst 230 px). */
+.nx-mood-panel { box-sizing: border-box; align-content: start; width: max(230px, calc(340 * var(--nx-u))); padding: calc(16 * var(--nx-u)) calc(22 * var(--nx-u)) calc(20 * var(--nx-u)); background: var(--w-panel, rgba(38,25,17,.92)); border: 1px solid var(--w-panel-border, rgba(216,184,119,.35)); border-radius: var(--w-radius-panel, 22px); box-shadow: var(--w-shadow-hud, 0 8px 24px rgba(0,0,0,.35)); color: var(--w-cream, #f4e6cc); pointer-events: auto; }
 .nx-mood-meter .nx-label { color: var(--w-ink-label-dark, #d8b877); }
 .nx-mood-head { display: flex; align-items: center; gap: calc(10 * var(--nx-u)); }
 .nx-mood-word { font-family: var(--w-font-heading); font-size: max(16px, calc(28 * var(--nx-u))); line-height: 1.1; color: var(--w-candle, #ffd58f); }

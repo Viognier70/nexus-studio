@@ -1,5 +1,6 @@
 // ORDER 299 (Vision Owner 2026-10-03): "Mätaren 'Stämningen i rummet' står där
-// linjen med lyktorna satt. Den visar rummets samlade stämning just nu, som
+// linjen med lyktorna satt." ORDER 299b (Vision Owner 2026-10-04): mätaren står
+// till höger om kassan i HUD:ens översta rad, som Designs D1 visar (§5). Den visar rummets samlade stämning just nu, som
 // ett medel av gästernas stämningsvärden." Designs D1 §5 (MOOD_METER):
 // etiketten, symbolen för rummets läge med ordet, och ett spår i fem steg med
 // en fyllning i guld. Inga siffror.
@@ -20,6 +21,13 @@ import { MoodSymbol } from './MoodSymbol';
 import './host.css';
 
 export function MoodMeter() {
+  const sim = useSimState();
+  // Under servicen, som kvällskassan bredvid.
+  const inService = sim.day.period === 'lunch' || sim.day.period === 'dinner';
+  return inService ? <MoodMeterInService /> : null;
+}
+
+function MoodMeterInService() {
   const sim = useSimState();
   const lang = useLanguage();
   const value = roomMoodValue(sim);
@@ -56,7 +64,7 @@ export function MoodMeter() {
   const word = shown.mood ? tt(lang, `mood.${shown.mood}` as StringKey) : tt(lang, 'rival.noGuests');
   const lostFrom = change?.dir === 'down' ? change.from : shown.fill;
   return (
-    <div className="nx-mood-meter" data-testid="mood-meter" data-mood={shown.mood ?? ''} data-fill={shown.fill.toFixed(2)} data-change={change?.dir ?? ''}
+    <div className="nx-mood-meter nx-mood-panel" data-testid="mood-meter" data-mood={shown.mood ?? ''} data-fill={shown.fill.toFixed(2)} data-change={change?.dir ?? ''}
       role="img" aria-label={tt(lang, 'hud.mood.a11y' as StringKey, { mood: word })}>
       <div className="nx-label">{tt(lang, 'hud.mood.title' as StringKey)}</div>
       <div className="nx-mood-head">

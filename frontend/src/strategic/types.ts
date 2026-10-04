@@ -407,6 +407,10 @@ export interface Guest {
   hostDrink?: 'bottle' | 'house';
   // ORDER 298 — gästen har suttit vid ett bord i kväll (räknas i day.seatedTonight).
   seatedTonight?: boolean;
+  // ORDER 299b — stämningens lyft av kunskap: raketsvaren flyttar det, och det
+  // klingar av. Stämningen är nöjdheten plus lyftet (sim/guestMood.ts); ekonomin
+  // läser bara nöjdheten.
+  moodLift?: number;
   partySize?: number;
   // ORDER 260 — timing-diagnostik. Sätts när guest transitionerar in i
   // seated respektive dining. `orderCompleteAtSimTime − seatedAtSimTime`
@@ -1001,6 +1005,9 @@ export interface DayState {
   roomReactions?: RoomReaction[];
   // ORDER 299 — det senaste raketsvarets ögonblick (konsekvensögonblicket).
   consequence?: ConsequenceMoment | null;
+  // ORDER 299b — rummets eget lyft av kunskap: gäller alla i rummet, också de
+  // som kommer senare, och klingar av långsamt (sim/guestMood.ts).
+  roomMoodLift?: number;
   // ORDER 292 — rusningarna (rush.ts): vågorna som börjat, sällskapen på väg
   // till dörren, aviseringen om den senaste vågen och sällskapet spelaren
   // valt att ge bord först (partyId eller gästens id).

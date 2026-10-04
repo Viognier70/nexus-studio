@@ -135,6 +135,7 @@ Uppskattningen skrivs innan etappen börjar. Faktisk tid fylls i när etappen ä
 | Gästerna och kvällskassan | 298 | ~6: loggningen, rättelsen vid dörren, räkningen vid bord, prognosen, Byn i kväll, statusen, kontrollen i spelet, rapport | 1,5 h | Att produktionskontrollen läste fälten ett i taget (bandet lästes efter öppningen) | | — | 2026-10-03 | Inom uppskattningen. |
 | Golvet, Lugn kväll, provsmakningen, stjärnan | 298b | ~6: golvet, raden, satsningen, priset, trappan, stjärnans prövning, kontrollen i spelet, rapport | 2,5 h | Raden stod när rummet fylldes ändå och på söndagar; provsmakningen till 1 500 kr var en fälla; dörrarnas öppningstid nollställs efter öppning | | — | 2026-10-03 | Över uppskattningen. |
 | Raketen och rummet | 299 | ~10: panelerna, konsekvensögonblicket, notiserna, kameran, mätaren, symbolerna, gesterna, ansiktena, kontrollen i två storlekar, rapport | 4 h | React lägger om ett svar på köade TICK vid 4× (dubbla notiser); drei-Html följer inte gruppens synlighet; kortet under HUD:en | | — | 2026-10-03 | Över uppskattningen. |
+| Mätaren vid kassan, stämningen av kunskap | 299b | ~5: mätarens plats, lyftet skilt från nöjdheten, kalibreringen (14 varianter), trappans kontroll, kontrollen i spelet, rapport | 3 h | Ett lyft per gäst följs alltid av ett fall (spridningen fick bli rummets); den slarviga tömmer rummet i stället för att göra det otåligt | | — | 2026-10-04 | Över uppskattningen. |
 
 ## Omräkning efter etapp 2
 
