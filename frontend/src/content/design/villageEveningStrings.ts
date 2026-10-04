@@ -56,7 +56,7 @@ export const VILLAGE_EVENING_STRINGS: Record<string, { sv: string; en: string }>
   'byk.state.prep': { sv: 'Förbereder', en: 'Getting ready' },
   'byk.state.cleaning': { sv: 'Städar', en: 'Cleaning up' },
   'byk.state.byHand': { sv: 'för hand', en: 'set by hand' },
-  'byk.resetSchedule': { sv: 'Följ kvällens schema', en: 'Follow tonight’s schedule' },
+  'byk.resetSchedule': { sv: 'Följ kvällens gång', en: 'Follow the evening' },
   'byk.names': { sv: 'Namnen i HUD:en', en: 'Names in the HUD' },
   'byk.size': { sv: 'Skärmstorlek', en: 'Screen size' },
   'byk.light': { sv: 'Ljusnivå', en: 'Light level' },

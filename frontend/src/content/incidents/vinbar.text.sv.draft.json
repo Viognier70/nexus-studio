@@ -1990,8 +1990,8 @@
               "explanation": "Köket kan stänga före baren. Det är serveringstiden i tillståndet som sätter gränsen för alkohol."
             },
             "b": {
-              "label": "När personalen går hem enligt schemat",
-              "explanation": "Schemat säger vem som jobbar, inte vad ni får göra. Gränsen står i serveringstillståndet."
+              "label": "När personalen går hem enligt arbetstiderna",
+              "explanation": "Arbetstiderna säger vem som jobbar, inte vad ni får göra. Gränsen står i serveringstillståndet."
             },
             "c": {
               "label": "Serveringstiden i serveringstillståndet",

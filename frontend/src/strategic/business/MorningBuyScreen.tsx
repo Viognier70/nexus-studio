@@ -43,7 +43,7 @@ function Stepper({ id, qty, unit, name, onLess, onMore }: { id: string; qty: num
       </button>
       <div style={{ textAlign: 'center', minWidth: u(52) }}>
         <div className="nx-num" style={{ fontSize: u(34), lineHeight: 1 }} data-testid={`buy-qty-${id}`}>{qty}</div>
-        <div className="nx-label" style={{ fontSize: u(14) }}>{unit}</div>
+        <div className="nx-label" style={{ fontSize: `max(12px, ${u(14)})`, letterSpacing: '0.06em' }}>{unit}</div>
       </div>
       <button ref={moreRef} type="button" className="nx-btn nx-btn-primary nxs-buy-more" style={{ ...btn, background: 'var(--w-ink)', color: 'var(--w-paper)' }} aria-label={T.more(name)} data-testid={`buy-more-${id}`} onClick={() => moreRef.current && onMore(moreRef.current)}>
         <span>+</span>

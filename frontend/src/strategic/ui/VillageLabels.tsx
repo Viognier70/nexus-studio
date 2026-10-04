@@ -14,17 +14,22 @@ export function Stars({ n }: { n: number }) {
   );
 }
 
-export function VenueLabel({ v, guests, compact, innerRef }: { v: VenueTonight; guests: number; compact: boolean; innerRef: (el: HTMLDivElement | null) => void }) {
-  const name = strings.village.venues[v.id] ?? v.id;
-  const food = v.kind === 'player' ? null : strings.village.food[v.id] ?? null;
+// ORDER 300 §7 (Anders 2026-10-04): spelarens skylt visar krogens namn
+// ("Tannin, din krog") och stil och pris, som konkurrenternas skyltar.
+// drei:s Html ritar i en egen rot utan spelets kontexter, så namnet och
+// stilen kommer som props (VillageVenues.tsx).
+export function VenueLabel({ v, guests, compact, near = false, innerRef, playerName, playerStyle }: { v: VenueTonight; guests: number; compact: boolean; near?: boolean; innerRef: (el: HTMLDivElement | null) => void; playerName?: string | null; playerStyle?: string | null }) {
+  const ours = v.kind === 'player';
+  const name = ours && playerName ? strings.village.playerNamed(playerName) : strings.village.venues[v.id] ?? v.id;
+  const food = ours ? playerStyle ?? null : strings.village.food[v.id] ?? null;
   const where = v.spot ? strings.village.spots[v.spot] : null;
   return (
-    <div ref={innerRef} className={`nx-venue-label${v.kind === 'player' ? ' is-player' : ''}${v.open ? '' : ' is-closed'}${compact ? ' is-compact' : ''}`} data-testid="village-venue" data-venue={v.id}>
+    <div ref={innerRef} className={`nx-venue-label${v.kind === 'player' ? ' is-player' : ''}${v.open || near ? '' : ' is-closed'}${compact ? ' is-compact' : ''}${near ? ' is-near' : ''}`} data-testid={near ? 'player-sign' : 'village-venue'} data-venue={v.id}>
       <div className="nx-venue-name">{name}{v.control === 'human' ? <span className="nx-venue-human"> · {strings.village.controlHuman}</span> : null}</div>
       {food && !compact && <div className="nx-venue-food">{food}{where ? ` ${where}` : ''}</div>}
       <div className="nx-venue-meta">
         <Stars n={v.stars} />
-        {v.kind !== 'player' && !compact && <span className="nx-venue-price">{strings.village.priceTag(String(Math.round(v.billSek / 10) * 10))}</span>}
+        {!compact && v.billSek > 0 && <span className="nx-venue-price">{strings.village.priceTag(String(Math.round(v.billSek / 10) * 10))}</span>}
       </div>
       <div className="nx-venue-state">{v.open ? strings.village.tonight(guests) : strings.village.closed}</div>
     </div>

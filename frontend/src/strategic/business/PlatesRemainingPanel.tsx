@@ -36,14 +36,14 @@ function Row({ r }: { r: StockRow }) {
   return (
     <div ref={ref} data-testid={`service-stock-${r.id}`} data-left={r.left} data-status={r.status}
       style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) auto', columnGap: u(10), alignItems: 'center', padding: `${u(3)} ${u(6)}`, background: low ? 'var(--nx-accent-100, #fde7e2)' : undefined, opacity: out ? 0.55 : 1 }}>
-      <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: u(17) }}>{r.name}</span>
+      <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: `max(12px, ${u(17)})` }}>{r.name}</span>
       <span style={{ display: 'flex', alignItems: 'center', gap: u(8) }}>
-        <strong className="nx-num" style={{ fontSize: u(17), textDecoration: out ? 'line-through' : undefined }}>{amount}</strong>
+        <strong className="nx-num" style={{ fontSize: `max(12px, ${u(17)})`, textDecoration: out ? 'line-through' : undefined }}>{amount}</strong>
         <span aria-hidden style={{ width: u(60), height: u(8), border: '1px solid var(--nx-ink)', display: 'inline-block', position: 'relative' }}>
           <span style={{ position: 'absolute', inset: 0, width: `${share * 100}%`, background: low || out ? 'var(--nx-accent)' : 'var(--nx-ink)' }} />
         </span>
         <span className="nx-label" style={{
-          fontSize: u(12), padding: `${u(2)} ${u(6)}`, minWidth: u(84), textAlign: 'center',
+          fontSize: `max(12px, ${u(12)})`, padding: `${u(2)} ${u(6)}`, minWidth: u(84), textAlign: 'center',
           // ORDER 290 — rött betyder bara fel svar: snart slut är ljuslåga.
           background: low ? 'var(--w-candle)' : undefined, color: low ? 'var(--w-ink)' : 'var(--nx-ink-2)',
           border: out ? '1px dashed var(--nx-ink)' : low ? '1px solid var(--nx-accent)' : '1px solid var(--nx-rule)'

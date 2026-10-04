@@ -6,7 +6,7 @@
 // ett prov och bankmötet. Målet är att en ny spelare står i sin första
 // verksamhet inom 20 minuter."
 //
-// Bussen (VS001) är en egen vy (src/App.tsx); härifrån börjar
+// ORDER 300 §4: bussen (VS001) är borttagen ur starten. Härifrån börjar
 // introduktionen i strategiska spelet, måndag morgon vecka 1, utan
 // verksamhet och utan lån. Stegen härleds ur tillståndet:
 //   practice — inget övningsbesök gjort ännu
@@ -19,7 +19,7 @@
 
 import { ALL_PAVILIONS, initialEconomy } from './economy';
 import { SEASON } from './balance';
-import type { SimulationState } from '../strategic/types';
+import type { PlayerRegistration, SimulationState } from '../strategic/types';
 
 export type IntroductionStep = 'practice' | 'exam' | 'bank';
 
@@ -33,10 +33,12 @@ export function inIntroduction(s: SimulationState): boolean {
   return introductionStep(s) !== null;
 }
 
-// Ett nytt spel efter bussen: ingen verksamhet, inget lån.
-export function beginIntroduction(s: SimulationState): SimulationState {
+// Ett nytt spel efter registreringen (ORDER 300 §4: startskärmen → namn
+// och samtycke → första morgonen): ingen verksamhet, inget lån.
+export function beginIntroduction(s: SimulationState, player?: PlayerRegistration): SimulationState {
   return {
     ...s,
+    ...(player ? { player } : {}),
     introduction: { practiced: false },
     economy: initialEconomy(null, SEASON.weeks, s.economy.weekRevenueStartSek)
   };

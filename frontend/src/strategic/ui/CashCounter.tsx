@@ -137,8 +137,12 @@ export function CashCounter() {
         aria-label={strings.back.creditsAria(creditsValue)}
         data-testid="credits-counter"
         data-value={creditsValue}
-        style={{ display: 'flex', alignItems: 'baseline', gap: 'calc(12 * var(--nx-u))', padding: 'calc(14 * var(--nx-u)) calc(18 * var(--nx-u))', borderTop: 'calc(6 * var(--nx-u)) solid var(--nx-accent)', whiteSpace: 'nowrap' }}
+        style={{ position: 'relative', display: 'flex', alignItems: 'baseline', gap: 'calc(12 * var(--nx-u))', padding: 'calc(14 * var(--nx-u)) calc(18 * var(--nx-u))', whiteSpace: 'nowrap' }}
       >
+        {/* ORDER 300 §2 — den gula markeringen ligger inom ramen (förut en
+            tjockare övre kant som bågnade över den rundade ramen och gjorde
+            rutan högre än kassans). */}
+        <span className="nx-credits-mark" aria-hidden />
         <span className="nx-label">{strings.back.credits}</span>
         <span ref={credits.numRef} className="nx-num" data-testid="credits-counter-num" style={{ fontSize: 'calc(30 * var(--nx-u))' }} />
       </div>

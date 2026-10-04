@@ -18,7 +18,7 @@ import { SEASON } from '../../sim/balance';
 import { useSimState } from '../simulation/SimulationProvider';
 import { NxButton } from './system/components';
 import { MENTOR_STEPS, useMentor } from './screens/mentor';
-import { Portrait } from './screens/Portrait';
+import { Monogram } from './screens/Monogram';
 import './screens/screens.css';
 
 const t = strings.introduction;
@@ -59,7 +59,7 @@ export function MentorPanel() {
       <div className="nx-label nxs-on-dark" data-testid="screen-M1">
         {strings.calendar.weekdays[cal.weekday]} · {s.mentor.campus} · {strings.calendar.week(cal.week, SEASON.weeks)}
       </div>
-      <Portrait who="mentor" className="nxs-mentor-portrait" />
+      <Monogram name={t.mentor} caption={s.mentor.label} className="nxs-mentor-portrait" testId="portrait-mentor" />
       <div className="nxs-mentor-dialog">
         <div className="nxs-row-between">
           <div className="nx-label nx-accent-text">{s.mentor.label}</div>

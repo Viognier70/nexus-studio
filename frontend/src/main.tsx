@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import { StrategicApp } from './strategic/StrategicApp';
+import type { PlayerRegistration } from './strategic/types';
 import { useLanguage } from './content/language';
 import './index.css';
 // ORDER 285 — den varma formen: typsnitten och tokens (Designs leverans 2026-09-29).
@@ -16,15 +17,17 @@ function currentRoute(): 'strategic' | 'first-person' {
   return window.location.hash === VS01_HASH ? 'first-person' : 'strategic';
 }
 
-// ORDER 267 (Nexus v1 etapp 5) — ett nytt spel börjar med bussen
-// (VS001) och fortsätter i introduktionen i strategiska spelet:
-//   startrutan → "Nytt spel" → bussen → registreringen → introduktionen.
-// `#/first-person-prototype` öppnar bussen fristående, som förut.
-type Flow = 'start' | 'bus' | 'introduction';
+// ORDER 300 §4 (Anders 2026-10-04) — den gamla vildmarksstarten (bussen,
+// VS001) är borttagen ur starten. Ordningen är
+//   startskärmen → "Nytt spel" → namn och samtycke → första morgonen.
+// Designs nya öppning (D2) kopplas in när den har levererats.
+// `#/first-person-prototype` öppnar den gamla bussen fristående, som förut.
+type Flow = 'start' | 'introduction';
 
 function Root() {
   const [route, setRoute] = useState(currentRoute);
   const [flow, setFlow] = useState<Flow>('start');
+  const [player, setPlayer] = useState<PlayerRegistration | undefined>(undefined);
   // ORDER 273 — språket; bussen (VS001) ritas också om vid byte.
   const lang = useLanguage();
   useEffect(() => {
@@ -36,9 +39,8 @@ function Root() {
     return () => window.removeEventListener('hashchange', onHashChange);
   }, []);
   if (route === 'first-person') return <App />;
-  if (flow === 'bus') return <App onFinished={() => setFlow('introduction')} />;
-  if (flow === 'introduction') return <StrategicApp key="introduction" startIntroduction />;
-  return <StrategicApp key="start" onNewGame={() => setFlow('bus')} />;
+  if (flow === 'introduction') return <StrategicApp key="introduction" startIntroduction player={player} />;
+  return <StrategicApp key="start" onNewGame={(p) => { setPlayer(p); setFlow('introduction'); }} />;
 }
 
 const rootElement = document.getElementById('root');

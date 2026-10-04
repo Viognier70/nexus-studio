@@ -294,7 +294,9 @@
 .nx-feed-tonight { padding: calc(14 * var(--nx-u)) calc(22 * var(--nx-u)); border-top: 1px solid var(--nx-rule); }
 .nx-feed-tonight-row { display: flex; justify-content: space-between; padding-top: calc(6 * var(--nx-u)); font-size: calc(19 * var(--nx-u)); font-weight: 700; }
 .nx-feed-back { display: flex; align-items: center; justify-content: space-between; gap: calc(16 * var(--nx-u)); padding: calc(14 * var(--nx-u)) calc(22 * var(--nx-u)); border-top: 1px solid var(--nx-rule); }
-.nx-feed-back .nx-btn { width: auto; min-width: calc(260 * var(--nx-u)); }
+.nx-feed-back .nx-btn { width: auto; min-width: calc(260 * var(--nx-u)); flex-shrink: 0; }
+/* ORDER 300 §6 — knapptexten radbryts inte. */
+.nx-feed-back .nx-btn span { white-space: nowrap; }
 @media (prefers-reduced-motion: reduce) { .nx-feed-row[data-fresh='true'] { animation: none; } }
 
 /* ORDER 280 — B1 Back your knowledge i raketkortet: säkerheten och låset. */
@@ -382,7 +384,7 @@ body:has(.nx-screen) .nx-hud-tools { display: none; }
 .nx-drawer-btn[aria-expanded='true'], .nx-village-btn[aria-pressed='true'] { background: var(--w-gold, #e8b93a); color: var(--w-ink, #2a1c13); }
 /* Ihopfällt står bara Back your knowledge kvar, nere till höger och lågt. */
 .nx-feed[data-open='false'] { top: auto; width: calc(560 * var(--nx-u)); }
-.nx-feed-amounts { font-size: max(11px, calc(16 * var(--nx-u))); padding: calc(4 * var(--nx-u)) calc(10 * var(--nx-u)); }
+.nx-feed-amounts { font-size: max(12px, calc(16 * var(--nx-u))); padding: calc(4 * var(--nx-u)) calc(10 * var(--nx-u)); }
 
 /* ORDER 290 — kvällens insats när dörrarna öppnas: papper under klockan. */
 .nx-stake-card { position: absolute; top: calc(200 * var(--nx-u)); left: 50%; transform: translateX(-50%); z-index: 40; min-width: calc(420 * var(--nx-u)); padding: calc(20 * var(--nx-u)) calc(26 * var(--nx-u)); display: grid; gap: calc(8 * var(--nx-u)); cursor: pointer; animation: nx-stake-in .35s ease-out both; }
@@ -481,7 +483,7 @@ body[data-room-grade='service'] .gb-daybadge { display: none !important; }
 .nx-till-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 999px; background: var(--w-candle, #ffd58f); transition: width .45s ease-out, background .3s; }
 .nx-till-bar[data-over='true'] .nx-till-fill { background: var(--w-gold, #e8b93a); box-shadow: var(--w-glow-cleared, 0 0 14px rgba(232,185,58,.6)); }
 .nx-till-line { position: absolute; top: calc(-5 * var(--nx-u)); bottom: calc(-5 * var(--nx-u)); width: 2px; background: var(--w-cream, #f4e6cc); }
-.nx-till-caption { position: absolute; top: calc(100% + 6 * var(--nx-u)); transform: translateX(-50%); font-size: max(10px, calc(14 * var(--nx-u))); font-weight: 700; white-space: nowrap; }
+.nx-till-caption { position: absolute; top: calc(100% + 6 * var(--nx-u)); transform: translateX(-50%); font-size: max(12px, calc(14 * var(--nx-u))); font-weight: 700; white-space: nowrap; }
 .nx-stake-paper { position: absolute; top: calc(100% + 10 * var(--nx-u)); left: 0; right: 0; z-index: 40; padding: calc(20 * var(--nx-u)) calc(24 * var(--nx-u)); display: grid; gap: calc(10 * var(--nx-u)); background: var(--w-paper, #f5ead5); color: var(--w-ink, #2a1c13); border-radius: var(--w-radius-panel, 22px); box-shadow: var(--w-shadow-paper, 0 12px 30px rgba(0,0,0,.35)); animation: nx-stake-in .22s cubic-bezier(.2,.8,.2,1) both; }
 .nx-stake-paper .nx-label { color: var(--w-ink-label, #9a6a2a); }
 .nx-stake-paper .nx-stake-lines li { border-bottom: 1px dashed rgba(42,28,19,.2); padding-bottom: calc(6 * var(--nx-u)); align-items: baseline; }
@@ -612,7 +614,7 @@ body:has(.nx-agency) .nx-queue { max-height: calc(100vh - max(150px, calc(230 * 
 /* ORDER 288 — byn och konkurrensen: nivåraden (byn, kvarteret, gatan,
    krogen), byns aviseringar, krogarnas etiketter och gatans etiketter. */
 .nx-levels { display: flex; align-items: center; gap: calc(6 * var(--nx-u)); padding: calc(5 * var(--nx-u)); background: rgba(38, 25, 17, 0.9); border: 1px solid rgba(216, 184, 119, 0.5); border-radius: 999px; }
-.nx-level { display: inline-flex; align-items: center; gap: calc(8 * var(--nx-u)); min-height: 36px; padding: 0 calc(14 * var(--nx-u)); border: 0; border-radius: 999px; background: transparent; color: var(--w-cream, #f4e6cc); font: inherit; font-size: max(12px, calc(18 * var(--nx-u))); font-weight: 700; cursor: pointer; }
+.nx-level { white-space: nowrap; display: inline-flex; align-items: center; gap: calc(8 * var(--nx-u)); min-height: 36px; padding: 0 calc(14 * var(--nx-u)); border: 0; border-radius: 999px; background: transparent; color: var(--w-cream, #f4e6cc); font: inherit; font-size: max(12px, calc(18 * var(--nx-u))); font-weight: 700; cursor: pointer; }
 .nx-level:hover { background: rgba(244, 230, 204, 0.08); }
 .nx-level.is-on { background: var(--w-gold, #e8b93a); color: var(--w-ink, #2a1c13); }
 .nx-level-key { font: inherit; font-size: 0.72em; font-weight: 800; opacity: 0.7; padding: 0 calc(5 * var(--nx-u)); border: 1px solid currentColor; border-radius: calc(5 * var(--nx-u)); line-height: 1.3; }
@@ -678,14 +680,14 @@ body:has(.nx-screen) .nx-village-notice, body:has(.nx-rocket) .nx-village-notice
 /* ORDER 296 — ringens förklaring vid hovring. */
 .nx-ring-tag { padding: 4px 10px; border-radius: 999px; background: rgba(30, 20, 13, 0.92); border: 1px solid rgba(216, 184, 119, 0.55); color: #f4e6cc; font-size: 13px; font-weight: 700; white-space: nowrap; pointer-events: none; }
 /* ORDER 298 — kvällskassans prognos under stapeln (efter insatsens etikett). */
-.nx-till-forecast { display: block; margin-top: calc(26 * var(--nx-u)); font-size: max(11px, calc(14 * var(--nx-u))); font-weight: 700; color: rgba(244,230,204,.85); }
+.nx-till-forecast { display: block; margin-top: calc(26 * var(--nx-u)); font-size: max(12px, calc(14 * var(--nx-u))); font-weight: 700; color: rgba(244,230,204,.85); }
 
 /* ORDER 299 — pyramiden som en smal list: våningarna, multiplikatorerna och
    säkerheten på en rad. */
 .nx-pyr-strip { display: flex; align-items: center; gap: calc(12 * var(--nx-u)); padding: calc(8 * var(--nx-u)) calc(14 * var(--nx-u)); margin: calc(10 * var(--nx-u)) 0; background: rgba(244,230,204,.05); border-radius: calc(14 * var(--nx-u)); min-height: 32px; }
 .nx-pyr-strip .nx-pyramid[data-small='true'] .nx-pyr-svg { width: calc(40 * var(--nx-u)); min-width: 26px; }
 .nx-pyr-chips { list-style: none; display: flex; flex-wrap: wrap; gap: calc(6 * var(--nx-u)) calc(12 * var(--nx-u)); margin: 0; padding: 0; flex: 1; min-width: 0; }
-.nx-pyr-chip { display: inline-flex; align-items: center; gap: calc(6 * var(--nx-u)); font-size: max(11px, calc(17 * var(--nx-u))); color: var(--w-cream); white-space: nowrap; }
+.nx-pyr-chip { display: inline-flex; align-items: center; gap: calc(6 * var(--nx-u)); font-size: max(12px, calc(17 * var(--nx-u))); color: var(--w-cream); white-space: nowrap; }
 .nx-pyr-chip[data-state='above'], .nx-pyr-chip[data-state='empty'] { opacity: .55; }
 .nx-pyr-chip[data-state='current'] { font-weight: 800; }
 .nx-pyr-chip[data-state='filled'] .nx-pyr-dot { background: #5cb86a; border-color: #5cb86a; }
@@ -693,7 +695,7 @@ body:has(.nx-screen) .nx-village-notice, body:has(.nx-rocket) .nx-village-notice
 .nx-pyr-chip[data-state='current'] .nx-pyr-dot { border-color: #ffd58f; }
 .nx-pyr-chip[data-state='gold'] .nx-pyr-dot { background: #e8b93a; border-color: #e8b93a; }
 .nx-pyr-chip .nx-pyr-mult { margin-left: 0; }
-.nx-pyr-sure { margin-left: auto; padding: calc(4 * var(--nx-u)) calc(12 * var(--nx-u)); border-radius: 999px; border: 1px solid rgba(232,185,58,.5); color: var(--w-gold); font-size: max(11px, calc(16 * var(--nx-u))); font-weight: 800; white-space: nowrap; }
+.nx-pyr-sure { margin-left: auto; padding: calc(4 * var(--nx-u)) calc(12 * var(--nx-u)); border-radius: 999px; border: 1px solid rgba(232,185,58,.5); color: var(--w-gold); font-size: max(12px, calc(16 * var(--nx-u))); font-weight: 800; white-space: nowrap; }
 
 /* ORDER 299 — under raketen syns rummet: kön, händelserna, flikarna och
    bemanningens erbjudande viker undan så länge kortet står. */
@@ -737,3 +739,19 @@ body:has(.nx-rocket) .nx-rival-band { display: none; }
 /* ORDER 299b — kassans översta rad (beloppet och "kvar till insatsen") får
    plats i rutan: rutan växer med texten, så att mätaren till höger inte täcker den. */
 .nx-till-box { width: max-content; min-width: calc(520 * var(--nx-u)); }
+
+/* ORDER 300 §6 (Anders 2026-10-04) — tangenttipsen nere till vänster på en
+ * egen platta, inte direkt på kartan; ikonernas etiketter syns vid hovring. */
+.nx-tabs { padding: calc(6 * var(--nx-u)) calc(16 * var(--nx-u)) calc(6 * var(--nx-u)) calc(6 * var(--nx-u)); background: rgba(38, 25, 17, 0.92); border: 1px solid rgba(216, 184, 119, 0.5); border-radius: 999px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35); }
+.nx-tab-label { display: none; white-space: nowrap; }
+.nx-tab-label[data-active='true'] { display: inline; }
+.nx-tabs-keys { white-space: nowrap; }
+
+/* ORDER 300 §6 — förberedelserna: raden under bandet i HUD:en. */
+.nx-prep-hint { display: flex; flex-wrap: wrap; align-items: baseline; gap: calc(6 * var(--nx-u)) calc(14 * var(--nx-u)); margin-top: calc(8 * var(--nx-u)); padding: calc(10 * var(--nx-u)) calc(18 * var(--nx-u)); background: rgba(38, 25, 17, 0.92); border: 1px solid var(--w-gold, #e8b93a); border-radius: calc(14 * var(--nx-u)); color: var(--w-cream, #f4e6cc); font-size: max(13px, calc(20 * var(--nx-u))); font-weight: 700; max-width: 100%; }
+.nx-prep-hint-fast { font-weight: 500; opacity: 0.8; }
+
+/* ORDER 300 §7 — vår krogs skylt på kvarterets och gatans nivå: läsbar i 1280 × 720. */
+.nx-venue-label.is-near { font-size: max(13px, calc(20 * var(--nx-u))); min-width: 0; max-width: 280px; }
+.nx-venue-label.is-near .nx-venue-name { font-size: max(15px, calc(24 * var(--nx-u))); }
+.nx-venue-label.is-compact.is-player { min-width: 150px; }

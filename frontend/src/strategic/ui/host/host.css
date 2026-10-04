@@ -23,11 +23,11 @@
 .nx-rival-lantern[data-kind='venue'] { z-index: 2; }
 .nx-rival-lantern[data-kind='ours'] { z-index: 3; }
 .nx-rival-lantern[data-kind='ours'] .nx-rival-dot { width: max(16px, 2.4vh); height: max(16px, 2.4vh); background: #e8b93a; border: 2px solid #f0cd82; box-shadow: 0 0 14px rgba(232,185,58,.8); }
-.nx-rival-name { position: absolute; top: calc(100% + 2px); white-space: nowrap; font-size: max(10px, calc(14 * var(--nx-u))); font-weight: 700; color: var(--w-candle, #ffd58f); }
+.nx-rival-name { position: absolute; top: calc(100% + 2px); white-space: nowrap; font-size: max(12px, calc(14 * var(--nx-u))); font-weight: 700; color: var(--w-candle, #ffd58f); }
 .nx-rival-tip, .nx-rival-overtake {
   position: absolute; top: calc(100% + 14 * var(--nx-u)); white-space: nowrap; z-index: 5;
   padding: calc(6 * var(--nx-u)) calc(12 * var(--nx-u)); border-radius: 999px;
-  font-size: max(11px, calc(15 * var(--nx-u)));
+  font-size: max(12px, calc(15 * var(--nx-u)));
 }
 .nx-rival-tip { background: var(--w-paper, #f5ead5); color: var(--w-ink, #2a1c13); box-shadow: var(--w-shadow-paper, 0 6px 16px rgba(0,0,0,.35)); }
 .nx-rival-overtake { top: calc(100% + 26 * var(--nx-u)); background: var(--w-gold, #e8b93a); color: var(--w-ink, #2a1c13); font-weight: 700; animation: nx-stake-in .22s ease-out both; }
@@ -44,7 +44,7 @@
 .nx-cmp-place { font-weight: 700; color: var(--w-ink-label, #9a6a2a); white-space: nowrap; }
 .nx-cmp-table { width: 100%; border-collapse: collapse; margin-top: calc(10 * var(--nx-u)); }
 .nx-cmp-table th, .nx-cmp-table td { text-align: left; padding: calc(10 * var(--nx-u)) calc(12 * var(--nx-u)); border-bottom: 1px dashed rgba(42,28,19,.18); vertical-align: top; }
-.nx-cmp-table thead th { font-size: max(10px, calc(13 * var(--nx-u))); letter-spacing: .12em; text-transform: uppercase; color: var(--w-ink-label, #9a6a2a); border-bottom: 0; }
+.nx-cmp-table thead th { font-size: max(12px, calc(13 * var(--nx-u))); letter-spacing: .12em; text-transform: uppercase; color: var(--w-ink-label, #9a6a2a); border-bottom: 0; }
 .nx-cmp-table tbody th { font-weight: 700; white-space: nowrap; }
 .nx-cmp-table tr.is-player { background: rgba(232,185,58,.22); }
 .nx-cmp-table tr.is-player th:first-child { border-radius: 12px 0 0 12px; }
@@ -54,7 +54,7 @@
 .nx-cmp-dot { display: inline-block; width: max(10px, calc(14 * var(--nx-u))); height: max(10px, calc(14 * var(--nx-u))); border-radius: 50%; background: #cdb48d; margin-right: calc(16 * var(--nx-u)); vertical-align: middle; }
 .nx-cmp-dot[data-kind='truck'] { width: max(7px, calc(10 * var(--nx-u))); height: max(7px, calc(10 * var(--nx-u))); }
 .nx-cmp-dot[data-kind='ours'] { background: #e8b93a; box-shadow: 0 0 10px rgba(232,185,58,.7); }
-.nx-cmp-tag { margin-left: calc(8 * var(--nx-u)); font-weight: 500; font-size: max(10px, calc(13 * var(--nx-u))); color: rgba(42,28,19,.65); }
+.nx-cmp-tag { margin-left: calc(8 * var(--nx-u)); font-weight: 500; font-size: max(12px, calc(13 * var(--nx-u))); color: rgba(42,28,19,.65); }
 .nx-cmp-bar { display: block; height: 4px; margin-top: calc(6 * var(--nx-u)); border-radius: 2px; background: rgba(42,28,19,.1); }
 .nx-cmp-bar > span { display: block; height: 100%; border-radius: 2px; background: rgba(42,28,19,.35); }
 .nx-cmp-bar[data-ours='true'] > span { background: #d79a1f; }
@@ -136,7 +136,7 @@
   .nx-shop-grid { grid-template-columns: 1fr; }
   .nx-shop-road { min-height: 640px; overflow-x: auto; }
 }
-.nx-rival-rep { margin-top: 4px; font-size: max(11px, calc(14 * var(--nx-u))); color: rgba(244,230,204,.8); white-space: nowrap; }
+.nx-rival-rep { margin-top: 4px; font-size: max(12px, calc(14 * var(--nx-u))); color: rgba(244,230,204,.8); white-space: nowrap; }
 .nx-rival-rep strong { color: var(--w-cream, #f4e6cc); margin: 0 4px; }
 .nx-rival-rep span[data-dir='up'] { color: #9fd18b; }
 .nx-rival-rep span[data-dir='down'] { color: #f08a6a; }
@@ -198,7 +198,7 @@
 /* ORDER 298 — bandet utan linjen: rubriken, vad placeringen mäter och ryktet. */
 .nx-rival-band { grid-template-columns: 1fr; }
 .nx-rival-head { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: calc(18 * var(--nx-u)); row-gap: 2px; position: relative; }
-.nx-rival-measure { font-size: max(10px, calc(13 * var(--nx-u))); color: rgba(244,230,204,.7); }
+.nx-rival-measure { font-size: max(12px, calc(15 * var(--nx-u))); /* ORDER 300 §1: golvet 12 px */ color: rgba(244,230,204,.7); }
 .nx-rival-overtake-static { position: static; margin-left: auto; }
 /* ORDER 298b — Lugn kväll under bandets rad, före och under kvällen. */
 .nx-rival-calm { margin-top: calc(6 * var(--nx-u)); font-size: max(12px, calc(17 * var(--nx-u))); line-height: 1.3; color: var(--w-ink-label-dark, #d8b877); }

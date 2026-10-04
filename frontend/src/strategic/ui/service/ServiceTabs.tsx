@@ -93,7 +93,8 @@ export function ServiceTabs() {
             <button key={p} type="button" role="tab" aria-selected={active} className="nx-tab" data-active={active} data-testid={`service-tab-${p}`}
               aria-label={tt(lang, LABEL_KEY[p])} title={tt(lang, LABEL_KEY[p])} onClick={() => toggleServicePanel(p)}>
               <Icon size={20} aria-hidden />
-              {active && <span className="nx-tab-label">{tt(lang, LABEL_KEY[p])}</span>}
+              {/* ORDER 300 §6 — etiketten syns när panelen är öppen och när muspekaren ligger över ikonen. */}
+              <span className="nx-tab-label" data-active={active}>{tt(lang, LABEL_KEY[p])}</span>
               {fresh && <span className="nx-tab-dot" data-testid={`service-tab-dot-${p}`} aria-hidden />}
             </button>
           );

@@ -674,6 +674,22 @@ export const TABLE = {
     startHeading: { sv: 'Nexus', en: 'Nexus' },
     startSubtitle: { sv: 'Grythyttan', en: 'Grythyttan' },
     newGame: { sv: 'Nytt spel', en: 'New game' },
+    // ORDER 300 §4 — registreringen efter startskärmen: namnet och
+    // samtycket. Texten om liggaren är Designs (leveransen början i
+    // Grythyttan, arrivalStrings.ts arrival.ingrid.1, arrival.ingrid.3 och
+    // arrival.ledger.sign), utan Ingrid och Noor, som ännu inte finns i spelet.
+    register: {
+      kicker: { sv: 'Måltidens hus · Liggaren', en: 'The House of the Meal · The ledger' },
+      heading: { sv: 'Alla som bor här skriver in sig.', en: 'Everyone who lives here signs in.' },
+      nameLabel: { sv: 'Ditt namn', en: 'Your name' },
+      consentBody: {
+        sv: 'Det du lär dig här skrivs in i boken och följer med dig. Skriv under, så vet huset att det är ditt.',
+        en: "What you learn here goes into the book and stays with you. Sign, so the house knows it's yours."
+      },
+      sign: { sv: 'Skriv under', en: 'Sign' },
+      withoutSigning: { sv: 'Fortsätt utan att skriva under', en: 'Continue without signing' },
+      back: { sv: 'Tillbaka', en: 'Back' }
+    },
     mentor: { sv: 'Mentorn', en: 'The Mentor' },
     steps: {
       practice: {
@@ -681,8 +697,8 @@ export const TABLE = {
         en: "Welcome to Grythyttan. I'm from Campus and I'll be with you today. The bank won't lend you anything until it has seen what you can do, so we start by practising. Open the House of the Meal and practise in Stensöta, where the sommeliers are. Nothing is at stake."
       },
       exam: {
-        sv: 'Bra. Nu provet i samma paviljong: åtta frågor, och sex rätt ger brons. Med brons i Stensöta kan banken låna ut till en vinbar. Går det inte, gör om det. I dag kostar besöken ingen plats i schemat.',
-        en: "Good. Now the exam in the same pavilion: eight questions, and six right gives bronze. With bronze in Stensöta the bank can lend you enough for a wine bar. If it doesn't work, try again. Today the visits don't take a slot in the schedule."
+        sv: 'Bra. Nu provet i samma paviljong: åtta frågor, och sex rätt ger brons. Med brons i Stensöta kan banken låna ut till en vinbar. Går det inte, gör om det. I dag räknas besöken inte bland dagens val.',
+        en: "Good. Now the exam in the same pavilion: eight questions, and six right gives bronze. With bronze in Stensöta the bank can lend you enough for a wine bar. If it doesn't work, try again. Today the visits don't use up any of today's choices."
       },
       bank: {
         sv: 'Brons. Gå till Banken i morgonraden. Där får du höra vad du har visat och vad du kan låna till.',
@@ -772,16 +788,18 @@ export const TABLE = {
   morning: {
     heading: { sv: 'Morgon', en: 'Morning' },
     serviceDayBody: {
-      sv: 'Fyll dagens schema och öppna för kvällen.',
-      en: "Fill today's schedule and open for the evening."
+      sv: 'Gör dagens val och öppna för kvällen.',
+      en: "Make today's choices and open for the evening."
     },
     sundayBody: {
-      sv: 'Söndag. Krogen är stängd, och du har fyra platser i schemat.',
-      en: 'Sunday. The restaurant is closed, and you have four slots in the schedule.'
+      // ORDER 300 (Anders 2026-10-04): ordet "schemat" ersatt med dagens val.
+      sv: 'Söndag. Krogen är stängd, och du har fyra val i dag.',
+      en: 'Sunday. The restaurant is closed, and you have four choices today.'
     },
+    // ORDER 300 §3 (Anders 2026-10-04): "Dagens val: 0 av 2".
     slots: {
-      sv: (used: number, total: number) => `Schemat: ${used} av ${total} ${pl(total, 'plats', 'platser')}`,
-      en: (used: number, total: number) => `Schedule: ${used} of ${total} ${pl(total, 'slot', 'slots')}`
+      sv: (used: number, total: number) => `Dagens val: ${used} av ${total}`,
+      en: (used: number, total: number) => `Today’s choices: ${used} of ${total}`
     },
     startService: { sv: 'Öppna för kvällen', en: 'Open for the evening' },
     closeSunday: { sv: 'Avsluta söndagen', en: 'End Sunday' },
@@ -794,8 +812,8 @@ export const TABLE = {
     houseButton: { sv: 'Måltidens hus', en: 'The House of the Meal' },
     houseHeading: { sv: 'Måltidens hus', en: 'The House of the Meal' },
     houseBody: {
-      sv: 'Ett besök tar en plats i dagens schema. Öva för krediter, eller gör prov för nästa medalj.',
-      en: 'A visit takes one slot in today’s schedule. Practise for credits, or take an exam for the next medal.'
+      sv: 'Ett besök är ett av dagens val. Öva för krediter, eller gör prov för nästa medalj.',
+      en: 'A visit is one of today’s choices. Practise for credits, or take an exam for the next medal.'
     },
     close: { sv: 'Stäng', en: 'Close' },
     pavilions: {
@@ -827,7 +845,7 @@ export const TABLE = {
       sv: 'Öppnas när du har silver i två paviljonger',
       en: 'Opens when you have silver in two pavilions'
     },
-    noSlotsLeft: { sv: 'Dagens schema är fullt', en: "Today's schedule is full" },
+    noSlotsLeft: { sv: 'Dagens val är gjorda', en: "Today's choices are made" },
     askers: {
       kock: { sv: 'Kocken', en: 'The cook' },
       sommelier: { sv: 'Sommelieren', en: 'The sommelier' },
@@ -932,7 +950,7 @@ export const TABLE = {
       pavilions: { sv: 'Paviljonger i Måltidens hus', en: 'Pavilions in the House of the Meal' },
       picked: { sv: 'Vald', en: 'Chosen' },
       aside: { sv: 'Rummet och personalen', en: 'The room and the staff' },
-      backToSchedule: { sv: 'Tillbaka till schemat', en: 'Back to the schedule' }
+      backToSchedule: { sv: 'Tillbaka till dagens val', en: 'Back to today’s choices' }
     },
     bank: {
       speaker: { sv: 'Banken', en: 'The bank' },
@@ -1917,6 +1935,8 @@ export const TABLE = {
     out: { sv: 'Byn', en: 'Village' },
     back: { sv: 'Tillbaka till krogen', en: 'Back to the bar' },
     keyHint: { sv: 'Tangenten V', en: 'Key V' },
+    // ORDER 300 §7 — "Tannin, din krog".
+    playerNamed: { sv: (name: string) => `${name}, din krog`, en: (name: string) => `${name}, your place` },
     venues: {
       player: { sv: 'Din krog', en: 'Your place' },
       torgkrogen: { sv: 'Torgkrogen', en: 'Torgkrogen' },
@@ -1954,6 +1974,8 @@ export const TABLE = {
       district: { sv: 'Kvarteret', en: 'Quarter' },
       street: { sv: 'Gatan', en: 'Street' },
       room: { sv: 'Krogen', en: 'Your place' },
+      // ORDER 300 §6 — "Byn (V)".
+      withKey: { sv: (name: string, key: string) => `${name} (${key})`, en: (name: string, key: string) => `${name} (${key})` },
       hint: {
         village: { sv: 'Krogarna och grupperna i byn', en: 'The restaurants and the groups in the village' },
         district: { sv: 'Gästflödet i kvarteret', en: 'The flow of guests in the quarter' },
@@ -2259,7 +2281,7 @@ export const TABLE = {
     potentialIn: { sv: (kr: string) => `${kr} in`, en: (kr: string) => `${kr} in` },
     openDoors: { sv: 'Öppna dörrarna 18.00', en: 'Open the doors 18:00' },
     base: { sv: '+ Baspaketet', en: '+ Base package' },
-    back: { sv: 'Tillbaka till schemat', en: 'Back to the schedule' },
+    back: { sv: 'Tillbaka till dagens val', en: 'Back to today’s choices' },
     notEnough: { sv: 'Kassan räcker inte till partiet.', en: 'The till cannot cover that batch.' },
     unitPortion: { sv: 'port', en: 'ptn' },
     unitBottle: { sv: 'fl', en: 'btl' },
@@ -2317,6 +2339,8 @@ export const TABLE = {
       en: 'You earned your credits in the House of the Meal exams and the service rockets. They can’t be bought and never convert to cash.'
     },
     start: { sv: 'Starta raketen', en: 'Launch the rocket' },
+    // ORDER 300 §6 — raketknappen före öppning.
+    opensAt: { sv: (hhmm: string) => `Öppnar ${hhmm}`, en: (hhmm: string) => `Opens ${hhmm}` },
     // ORDER 296c — det är satsningarna som är tre per kväll, inte raketerna.
     left: { sv: (n: number) => `${n} satsningar kvar i kväll`, en: (n: number) => `${n} bets left tonight` },
     none: { sv: 'Inga fler i kväll.', en: 'No more tonight.' },
@@ -3121,6 +3145,61 @@ export const TABLE = {
       cashShort: { sv: 'Kassan räcker inte till en ny insats.', en: 'Your cash won’t cover a new stake.' },
       toHouse: { sv: 'Gå till Måltidens hus', en: 'Go to the House of the Meal' },
       title: { sv: 'Banken lånar inte ut i dag.', en: 'The bank won’t lend today.' }
+    }
+  },
+  // ORDER 300 §6 — förberedelsetiden före dörröppningen.
+  prepHint: {
+    label: { sv: 'Förberedelser', en: 'Getting ready' },
+    now: {
+      sv: 'Personalen gör mise en place. Titta på konkurrenterna i byn (V) under tiden.',
+      en: 'The staff are doing the mise en place. Look at the competition in the village (V) meanwhile.'
+    },
+    faster: {
+      sv: (hhmm: string, x: number) => `Klockan går i ${x}× fram till öppningen ${hhmm}.`,
+      en: (hhmm: string, x: number) => `The clock runs at ${x}× until the doors open at ${hhmm}.`
+    }
+  },
+  // ORDER 300 §5 (Anders 2026-10-04) — regelkortet dag 1 och sidan Spelets
+  // regler i menyn. Talen kommer ur balance.ts (SEASON, RISK, STAR) genom
+  // argumenten; inga tal skrivs i texten.
+  rules: {
+    menuItem: { sv: 'Spelets regler', en: 'Rules of the game' },
+    heading: { sv: 'Spelets regler', en: 'Rules of the game' },
+    tagline: {
+      sv: (weeks: string) => `En säsong. ${weeks} veckor. Din krog i Grythyttan. Kunskap är ditt kapital.`,
+      en: (weeks: string) => `One season. ${weeks} weeks. Your restaurant in Grythyttan. Knowledge is your capital.`
+    },
+    rule1: {
+      sv: (closings: string) => `Klarar du veckans mål blir krogen kvar. ${closings} bokslut under noll, och den stänger.`,
+      en: (closings: string) => `Meet the week's target and the restaurant stays. ${closings} accounts below zero, and it closes.`
+    },
+    rule2: {
+      sv: 'Det du visar i Måltidens hus öppnar satsningar och lån.',
+      en: 'What you show in the House of the Meal opens up initiatives and loans.'
+    },
+    rule3: {
+      sv: 'Byn tävlar med dig. Stjärnan går till den som håller det dubbla greppet över tid.',
+      en: 'The village competes with you. The star goes to whoever holds the double grip over time.'
+    },
+    begin: { sv: 'Börja', en: 'Begin' },
+    close: { sv: 'Stäng', en: 'Close' },
+    notHeading: { sv: 'Det här gäller inte', en: 'What does not apply' },
+    notMoney: { sv: 'Inget går att köpa för riktiga pengar.', en: 'Nothing can be bought with real money.' },
+    notAnswers: {
+      sv: 'Rätt svar ger aldrig pengar direkt, bara möjligheter.',
+      en: 'A right answer never gives money directly, only opportunities.'
+    },
+    notLuck: { sv: 'Turen finns, men avgör aldrig ensam.', en: 'Luck exists, but it never decides on its own.' },
+    starHeading: { sv: 'Stjärnan', en: 'The star' },
+    star: {
+      sv: (p: { medal: string; pavilion: string; reputation: number; judgementPct: number; minRockets: number; weeks: string }) =>
+        `Stjärnan kräver ${p.medal} i ${p.pavilion}, ett rykte på minst ${p.reputation} av 100 och att du klarar minst ${p.judgementPct} % av veckans raketer, av minst ${p.minRockets}. Gränserna ska hålla ${p.weeks} veckor i rad. En vecka under någon av dem, och stjärnan går förlorad.`,
+      en: (p: { medal: string; pavilion: string; reputation: number; judgementPct: number; minRockets: number; weeks: string }) =>
+        `The star needs ${p.medal} in ${p.pavilion}, a reputation of at least ${p.reputation} out of 100, and clearing at least ${p.judgementPct}% of the week's rockets, out of at least ${p.minRockets}. The thresholds must hold for ${p.weeks} weeks in a row. One week below any of them, and the star is lost.`
+    },
+    numberWord: {
+      sv: ['noll', 'en', 'två', 'tre', 'fyra', 'fem', 'sex', 'sju', 'åtta', 'nio', 'tio', 'elva', 'tolv'] as readonly string[],
+      en: ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'] as readonly string[]
     }
   },
   menu: {

@@ -52,3 +52,9 @@
 .business-name-card button[data-testid='continue-saved'] { background: transparent; color: var(--w-ink, #2a1c13); border: 1px solid rgba(42, 28, 19, 0.3); }
 .business-name-hint { color: var(--w-ink-soft, #6b5443); }
 .business-name-kicker { font-family: var(--w-font-body, 'Figtree', system-ui, sans-serif); font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; font-size: 13px; color: var(--w-ink-label, #9a6a2a); }
+
+/* ORDER 300 §4 — registreringen: namnet och samtycket. */
+.business-name-label { display: flex; flex-direction: column; gap: 6px; font-weight: 700; font-size: 14px; color: var(--w-ink, #2a1c13); }
+.business-name-actions { flex-wrap: wrap; }
+.business-name-card button.is-quiet { background: transparent; color: var(--w-ink, #2a1c13); border: 1px solid rgba(42, 28, 19, 0.3); }
+.business-name-card button.is-quiet:hover:not(:disabled) { background: rgba(42, 28, 19, 0.06); }

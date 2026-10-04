@@ -16,12 +16,14 @@ import { useCamera } from '../camera/CameraContext';
 import './name-entry.css';
 import { useSave } from '../save/SaveContext';
 import { useSimState } from '../simulation/SimulationProvider';
+import type { PlayerRegistration } from '../types';
 
 const intro = strings.introduction;
 
 interface Props {
-  // ORDER 267 — "Nytt spel": till bussen (VS001) och introduktionen.
-  onNewGame?: () => void;
+  // ORDER 300 §4 — "Nytt spel": registreringen (namn och samtycke), sedan
+  // introduktionen och första morgonen.
+  onNewGame?: (player: PlayerRegistration) => void;
 }
 
 // ORDER 267 (Nexus v1 etapp 5) — tre lägen innan verksamheten har ett namn:
@@ -36,8 +38,46 @@ export function NameEntryOverlay({ onNewGame }: Props) {
   const sim = useSimState();
   const { jumpToPreset } = useCamera();
   const [draft, setDraft] = useState('');
+  const [registering, setRegistering] = useState(false);
+  const [playerName, setPlayerName] = useState('');
   if (hasName) return null;
   if (sim.introduction) return null;
+  if (sim.introduction === undefined && onNewGame && registering) {
+    // ORDER 300 §4 — namn och samtycke, sedan första morgonen.
+    const reg = intro.register;
+    const name = playerName.trim();
+    const done = (consent: boolean) => { if (name.length > 0) onNewGame({ name, consent }); };
+    return (
+      <div className="business-name-overlay" role="dialog" aria-modal="true">
+        <form
+          className="business-name-card"
+          data-testid="register-screen"
+          onSubmit={(e) => { e.preventDefault(); done(true); }}
+          onKeyDown={(e) => e.stopPropagation()}
+        >
+          <div className="business-name-kicker">{reg.kicker}</div>
+          <h2>{reg.heading}</h2>
+          <label className="business-name-label">
+            <span>{reg.nameLabel}</span>
+            <input
+              type="text"
+              autoFocus
+              value={playerName}
+              onChange={(e) => setPlayerName(e.target.value)}
+              maxLength={40}
+              data-testid="register-name"
+            />
+          </label>
+          <p>{reg.consentBody}</p>
+          <div className="business-name-actions">
+            <button type="button" className="is-quiet" onClick={() => setRegistering(false)}>{reg.back}</button>
+            <button type="button" className="is-quiet" disabled={name.length === 0} data-testid="register-skip" onClick={() => done(false)}>{reg.withoutSigning}</button>
+            <button type="submit" disabled={name.length === 0} data-testid="register-sign">{reg.sign}</button>
+          </div>
+        </form>
+      </div>
+    );
+  }
   if (sim.introduction === undefined && onNewGame) {
     return (
       <div className="business-name-overlay" role="dialog" aria-modal="true">
@@ -45,7 +85,7 @@ export function NameEntryOverlay({ onNewGame }: Props) {
           <div className="business-name-kicker">{intro.startSubtitle}</div>
           <h2>{intro.startHeading}</h2>
           <div className="business-name-actions">
-            <button type="button" data-testid="new-game" onClick={onNewGame}>
+            <button type="button" data-testid="new-game" onClick={() => setRegistering(true)}>
               {intro.newGame}
             </button>
             {save.hasAnySave && (

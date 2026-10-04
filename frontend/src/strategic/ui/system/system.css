@@ -261,3 +261,9 @@
 @keyframes nx-pulse-candle { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
 .nx-pulse { animation: nx-pulse-candle 1.6s ease-in-out infinite; color: var(--w-candle, #ffd58f); text-shadow: 0 0 12px rgba(255,190,90,.75); }
 @media (prefers-reduced-motion: reduce) { .nx-pulse { animation: none; opacity: 1; } }
+
+/* ORDER 300 §2 — krediternas gula markering: ett rakt streck inom ramen,
+ * indraget med ramens radie, så att bågen inte ligger ovanpå ramen. */
+.nx-credits-mark { position: absolute; top: max(2px, calc(5 * var(--nx-u))); left: var(--nx-radius); right: var(--nx-radius); height: max(2px, calc(4 * var(--nx-u))); border-radius: 999px; background: var(--nx-accent); pointer-events: none; }
+/* ORDER 300 §6 — en avstängd huvudknapp är tydligt grå, inte en blek gul. */
+.nx-btn-primary:disabled { background: #5d5450; border-color: #5d5450; color: rgba(244, 230, 204, 0.78); box-shadow: none; opacity: 1; }

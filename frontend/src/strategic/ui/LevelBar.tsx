@@ -12,11 +12,10 @@
 // Nivån som visas räknas ur kamerans avstånd (body.dataset.level), så att
 // knappen följer också när spelaren zoomar med hjulet.
 
-import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
 import { strings } from '../../content/strings';
 import { useCamera } from '../camera/CameraContext';
 import { subscribeVillageLive, villageLive } from '../scene/village/villageLive';
-import type { CameraTarget } from '../types';
 import { nearestLevel } from '../camera/eveningLevels';
 
 export type Level = 'room' | 'street' | 'district' | 'village';
@@ -34,8 +33,7 @@ export function levelForDistance(d: number): Level {
 }
 
 export function LevelBar() {
-  const { targetRef, actualRef, jumpToPreset } = useCamera();
-  const saved = useRef<CameraTarget | null>(null);
+  const { actualRef, jumpToPreset } = useCamera();
   const [level, setLevel] = useState<Level>(() => levelForDistance(actualRef.current.distance));
   const live = useSyncExternalStore(subscribeVillageLive, villageLive, villageLive);
   const onWay = live.onWay.reduce((a, g) => a + g.n, 0);
@@ -49,21 +47,13 @@ export function LevelBar() {
     return () => window.clearInterval(id);
   }, [actualRef]);
 
+  // ORDER 300 §6 (Anders 2026-10-04): knapparna heter exakt Byn (V) ·
+  // Kvarteret (C) · Gatan (X) · Krogen (Z), och den aktiva vyn markeras.
+  // Byn går alltid till byn (förut "Byn och tillbaka", ORDER 290, med texten
+  // "Tillbaka till krogen"); tillbaka är Krogen (Z) eller Esc.
   const go = useCallback((l: Level) => {
-    if (l === 'village') {
-      // Byn och tillbaka (ORDER 290).
-      if (saved.current && levelForDistance(targetRef.current.distance) === 'village') {
-        targetRef.current = { ...saved.current, focus: { ...saved.current.focus } };
-        saved.current = null;
-        return;
-      }
-      const t = targetRef.current;
-      saved.current = { ...t, focus: { ...t.focus } };
-    } else {
-      saved.current = null;
-    }
     jumpToPreset(PRESET[l]);
-  }, [targetRef, jumpToPreset]);
+  }, [jumpToPreset]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -91,8 +81,7 @@ export function LevelBar() {
           title={`${strings.village.levels.hint[l]} · ${LEVEL_KEYS[l].toUpperCase()}`}
           onClick={() => go(l)}
         >
-          <span className="nx-level-name">{l === 'village' && level === 'village' && saved.current ? strings.village.back : strings.village.levels[l]}</span>
-          <kbd className="nx-level-key">{LEVEL_KEYS[l].toUpperCase()}</kbd>
+          <span className="nx-level-name">{strings.village.levels.withKey(strings.village.levels[l], LEVEL_KEYS[l].toUpperCase())}</span>
         </button>
       ))}
       {onWay > 0 && level === 'street' && (
