@@ -62,7 +62,8 @@ describe('ORDER 283 — kriskorten som raketutkast', () => {
 
 describe('ORDER 283 — introduktionen i Måltidens hus', () => {
   it('tre kunskapsformer, och den visas en gång', () => {
-    expect(strings.houseIntro.forms.map((f) => f.name)).toEqual(['Episteme', 'Techne', 'Phronesis']);
+    // ORDER 301 — ordningen i kunskapsgrunden: att veta, att bedöma, att göra.
+    expect(strings.houseIntro.forms.map((f) => f.name)).toEqual(['Episteme', 'Phronesis', 'Techne']);
     const s = makeNewGameState(1);
     expect(s.houseIntroSeen ?? false).toBe(false);
     const seen = reducer(s, { type: 'SEE_HOUSE_INTRO' });

@@ -31,6 +31,8 @@ const ALLOWED = [
   'Björken', 'Prästgatans krog', 'Bergsmansöl', 'Torgets vinkällare', 'prästgatans', 'bergsmansöl', 'vinkällare',
   // ORDER 297 — byns krogar (Designs Byn i kvällsljus).
   'Sjöboden',
+  // ORDER 301 — avhandlingarnas titlar i Kunskapsgrundens källor (egennamn).
+  'Sinnesupplevelsens estetik: vinprovaren, i gränslandet mellan konsten och vetenskapen', 'Den arbetande gommen: vinprovarens dubbla grepp, från analys till upplevelse',
   // Kodens interna nycklar (typer och uppräkningar), inte spelartext.
   'värd', 'servitör', 'kock', 'lärling', 'ölkrog', 'gästgiveri', 'säsong', 'låg', 'hög', 'förbättras', 'försämras',
   'besökare', 'gäst', 'leverantör', 'boende', 'faluröd'
