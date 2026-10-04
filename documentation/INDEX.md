@@ -193,6 +193,8 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 
 ## documentation/blueprints/
 
+- `ORDER_304_FORSLAG.md`: ORDER 304 — Konceptet och varukorgen: förslag till datamodell och balans (för beslut, inget byggt).
+- `ORDER_304_UTKAST/`: utkastet till frågebanken per vara och utrustning, 90 frågor (`UTKAST_FRAGOR.md` för granskning, JSON i spelets format).
 - `M9_MEDGANG_REPORT_ORDER_089.md`: M9 — Medgången: rapportgrind (ORDER 089).
 - `MILSTOLPAR_MOT_SCHEMAT.md`: Milstolpar mot schemat — omskrivning.
 - `ORDER_130_KARTAN_MATS.md`: ORDER 130 — Kartan mäts.
