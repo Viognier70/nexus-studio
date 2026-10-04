@@ -1,0 +1,7532 @@
+{
+  "variant": null,
+  "moodBalance": {
+    "section": "Servicen > Gästerna",
+    "threshold": {
+      "delighted": 0.85,
+      "content": 0.68,
+      "waiting": 0.55,
+      "impatient": 0.4
+    },
+    "rocket": {
+      "table": {
+        "right": 0.15,
+        "wrong": -0.3
+      },
+      "witness": {
+        "right": 0.1,
+        "wrong": -0.2
+      },
+      "witnessRadiusM": 3.5,
+      "room": {
+        "right": 0.17,
+        "wrong": -0.3
+      }
+    },
+    "departure": {
+      "witness": -0.1,
+      "room": -0.02
+    },
+    "liftDecayPerGameMinute": 0.0005,
+    "roomLiftDecayPerGameMinute": 0,
+    "liftMax": 0.4,
+    "decayPerGameMinute": 0.014,
+    "roomWeighting": "perParty",
+    "roomHysteresis": 0.02,
+    "meterVisibleSteps": 0.2,
+    "meterVisibleStepsAfterAnswer": 0.02
+  },
+  "definition": "Vinbaren vecka 2 (STAMNING_DAYS, förvalt mån, ons, fre), fröna STAMNING_SEEDS (förvalt 1–3). Spelaren: skill = mentorns morgon och ROCKET_SKILL rätt per steg; slarvig = weakMorning och fel svar. restless = rummet otåligt eller missnöjt minst 15 spelminuter. Rummets läge som mätaren läser det (sim/guestMood.ts roomMoodValue, stableRoomMood) varje tick efter öppning; up/down = byten uppåt/nedåt, afterAnswer = byten inom konsekvensögonblicket efter ett raketsvar, timeShare = andel av kvällen i varje läge. meterUp/meterDown = mätarens synliga rörelser (fyllningen flyttad minst MOOD_BALANCE.meterVisibleSteps steg, meterFill/meterMove), meterAfterAnswer = de inom konsekvensögonblicket (där räcker MOOD_BALANCE.meterVisibleStepsAfterAnswer).",
+  "summary": {
+    "player": "skill",
+    "skill": 0.85,
+    "restlessEvenings": 19,
+    "upMinusDown": 0.1,
+    "meanUpBeforeLastOrders": 2,
+    "meanDownBeforeLastOrders": 1.5,
+    "evenings": 48,
+    "meanUp": 2.1,
+    "meanDown": 1.9,
+    "meanAfterAnswer": 2.2,
+    "meanAnswers": 6,
+    "meanMeterUp": 7,
+    "meanMeterDown": 7,
+    "meanMeterAfterAnswer": 4.4,
+    "meanTimeShare": {
+      "delighted": 0.325,
+      "content": 0.48,
+      "waiting": 0.043,
+      "impatient": 0.035,
+      "displeased": 0.11699999999999999
+    }
+  },
+  "runs": [
+    {
+      "seed": 1,
+      "weekday": "mon",
+      "answers": 0,
+      "up": 1,
+      "down": 1,
+      "afterAnswer": 0,
+      "upBeforeLastOrders": 0,
+      "downBeforeLastOrders": 0,
+      "restlessMinutes": 0,
+      "restless": false,
+      "meterUp": 8,
+      "meterDown": 5,
+      "meterAfterAnswer": 0,
+      "moves": [
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:24",
+          "dir": "up",
+          "from": 3.49,
+          "to": 3.72,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:56",
+          "dir": "up",
+          "from": 3.72,
+          "to": 3.94,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:26",
+          "dir": "down",
+          "from": 3.94,
+          "to": 3.72,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:02",
+          "dir": "down",
+          "from": 3.72,
+          "to": 3.5,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:39",
+          "dir": "down",
+          "from": 3.5,
+          "to": 3.28,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:44",
+          "dir": "down",
+          "from": 3.28,
+          "to": 3.06,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:55",
+          "dir": "up",
+          "from": 3.06,
+          "to": 3.27,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:05",
+          "dir": "up",
+          "from": 3.27,
+          "to": 3.47,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:16",
+          "dir": "up",
+          "from": 3.47,
+          "to": 3.67,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:26",
+          "dir": "up",
+          "from": 3.67,
+          "to": 4.08,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:40",
+          "dir": "up",
+          "from": 4.08,
+          "to": 4.35,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:48",
+          "dir": "down",
+          "from": 4.35,
+          "to": 3.75,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.08,
+        "content": 0.92,
+        "waiting": 0,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "22:31",
+          "minute": 1351,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:48",
+          "minute": 1368,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        }
+      ]
+    },
+    {
+      "seed": 2,
+      "weekday": "mon",
+      "answers": 0,
+      "up": 0,
+      "down": 1,
+      "afterAnswer": 0,
+      "upBeforeLastOrders": 0,
+      "downBeforeLastOrders": 0,
+      "restlessMinutes": 0,
+      "restless": false,
+      "meterUp": 6,
+      "meterDown": 4,
+      "meterAfterAnswer": 0,
+      "moves": [
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:42",
+          "dir": "up",
+          "from": 3.49,
+          "to": 3.72,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:29",
+          "dir": "down",
+          "from": 3.72,
+          "to": 3.52,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:36",
+          "dir": "up",
+          "from": 3.52,
+          "to": 3.77,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:46",
+          "dir": "down",
+          "from": 3.77,
+          "to": 3.54,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:20",
+          "dir": "up",
+          "from": 3.54,
+          "to": 3.74,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:36",
+          "dir": "down",
+          "from": 3.74,
+          "to": 3.05,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:45",
+          "dir": "up",
+          "from": 3.05,
+          "to": 3.28,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:49",
+          "dir": "down",
+          "from": 3.28,
+          "to": 2.36,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:58",
+          "dir": "up",
+          "from": 2.36,
+          "to": 2.59,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0,
+        "content": 0.94,
+        "waiting": 0.06,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "22:49",
+          "minute": 1369,
+          "from": "content",
+          "to": "waiting",
+          "dir": "down",
+          "afterAnswer": false
+        }
+      ]
+    },
+    {
+      "seed": 3,
+      "weekday": "mon",
+      "answers": 0,
+      "up": 0,
+      "down": 2,
+      "afterAnswer": 0,
+      "upBeforeLastOrders": 0,
+      "downBeforeLastOrders": 1,
+      "restlessMinutes": 25,
+      "restless": true,
+      "meterUp": 6,
+      "meterDown": 9,
+      "meterAfterAnswer": 0,
+      "moves": [
+        {
+          "clock": "19:29",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.5,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:46",
+          "dir": "up",
+          "from": 3.5,
+          "to": 3.71,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:44",
+          "dir": "down",
+          "from": 3.71,
+          "to": 3.48,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:18",
+          "dir": "down",
+          "from": 3.48,
+          "to": 3.27,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:50",
+          "dir": "down",
+          "from": 3.27,
+          "to": 3.05,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:56",
+          "dir": "down",
+          "from": 3.05,
+          "to": 2.81,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:13",
+          "dir": "down",
+          "from": 2.81,
+          "to": 2.4,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:14",
+          "dir": "down",
+          "from": 2.4,
+          "to": 2.09,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:20",
+          "dir": "up",
+          "from": 2.09,
+          "to": 2.38,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:21",
+          "dir": "down",
+          "from": 2.38,
+          "to": 1.97,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:24",
+          "dir": "up",
+          "from": 1.97,
+          "to": 2.26,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:35",
+          "dir": "down",
+          "from": 2.26,
+          "to": 1.22,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:43",
+          "dir": "up",
+          "from": 1.22,
+          "to": 1.45,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:52",
+          "dir": "up",
+          "from": 1.45,
+          "to": 1.67,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:58",
+          "dir": "down",
+          "from": 1.67,
+          "to": 1.43,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0,
+        "content": 0.73,
+        "waiting": 0.17,
+        "impatient": 0.11,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "21:56",
+          "minute": 1316,
+          "from": "content",
+          "to": "waiting",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:35",
+          "minute": 1355,
+          "from": "waiting",
+          "to": "impatient",
+          "dir": "down",
+          "afterAnswer": false
+        }
+      ]
+    },
+    {
+      "seed": 4,
+      "weekday": "mon",
+      "answers": 3,
+      "up": 1,
+      "down": 1,
+      "afterAnswer": 1,
+      "upBeforeLastOrders": 1,
+      "downBeforeLastOrders": 1,
+      "restlessMinutes": 0,
+      "restless": false,
+      "meterUp": 7,
+      "meterDown": 5,
+      "meterAfterAnswer": 1,
+      "moves": [
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:29",
+          "dir": "up",
+          "from": 3.49,
+          "to": 3.79,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:39",
+          "dir": "up",
+          "from": 3.79,
+          "to": 4.01,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:46",
+          "dir": "up",
+          "from": 4.01,
+          "to": 4.99,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:11",
+          "dir": "down",
+          "from": 4.99,
+          "to": 4.72,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:32",
+          "dir": "down",
+          "from": 4.72,
+          "to": 4.27,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:39",
+          "dir": "down",
+          "from": 4.27,
+          "to": 3.9,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:52",
+          "dir": "up",
+          "from": 3.9,
+          "to": 4.15,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:14",
+          "dir": "down",
+          "from": 4.15,
+          "to": 3.85,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:21",
+          "dir": "down",
+          "from": 3.85,
+          "to": 3.41,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:28",
+          "dir": "up",
+          "from": 3.41,
+          "to": 3.64,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:38",
+          "dir": "up",
+          "from": 3.64,
+          "to": 3.84,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.64,
+        "content": 0.36,
+        "waiting": 0,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "19:46",
+          "minute": 1186,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:14",
+          "minute": 1334,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        }
+      ]
+    },
+    {
+      "seed": 5,
+      "weekday": "mon",
+      "answers": 3,
+      "up": 2,
+      "down": 2,
+      "afterAnswer": 1,
+      "upBeforeLastOrders": 2,
+      "downBeforeLastOrders": 1,
+      "restlessMinutes": 0,
+      "restless": false,
+      "meterUp": 8,
+      "meterDown": 9,
+      "meterAfterAnswer": 3,
+      "moves": [
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:42",
+          "dir": "up",
+          "from": 3.49,
+          "to": 3.73,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:54",
+          "dir": "up",
+          "from": 3.73,
+          "to": 3.95,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:04",
+          "dir": "up",
+          "from": 3.95,
+          "to": 4.17,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:13",
+          "dir": "down",
+          "from": 4.17,
+          "to": 3.94,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:23",
+          "dir": "down",
+          "from": 3.94,
+          "to": 3.73,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:29",
+          "dir": "down",
+          "from": 3.73,
+          "to": 3.53,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:45",
+          "dir": "down",
+          "from": 3.53,
+          "to": 3.33,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:17",
+          "dir": "up",
+          "from": 3.33,
+          "to": 4.6,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:18",
+          "dir": "up",
+          "from": 4.6,
+          "to": 4.96,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:18",
+          "dir": "up",
+          "from": 4.96,
+          "to": 5,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:05",
+          "dir": "down",
+          "from": 5,
+          "to": 4.59,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:33",
+          "dir": "down",
+          "from": 4.59,
+          "to": 4.38,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:39",
+          "dir": "down",
+          "from": 4.38,
+          "to": 4.18,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:41",
+          "dir": "down",
+          "from": 4.18,
+          "to": 3.55,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:45",
+          "dir": "down",
+          "from": 3.55,
+          "to": 3.08,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:51",
+          "dir": "up",
+          "from": 3.08,
+          "to": 3.53,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.43,
+        "content": 0.57,
+        "waiting": 0,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "20:03",
+          "minute": 1203,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:19",
+          "minute": 1219,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:17",
+          "minute": 1277,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:41",
+          "minute": 1361,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        }
+      ]
+    },
+    {
+      "seed": 6,
+      "weekday": "mon",
+      "answers": 0,
+      "up": 1,
+      "down": 2,
+      "afterAnswer": 0,
+      "upBeforeLastOrders": 1,
+      "downBeforeLastOrders": 1,
+      "restlessMinutes": 0,
+      "restless": false,
+      "meterUp": 5,
+      "meterDown": 7,
+      "meterAfterAnswer": 0,
+      "moves": [
+        {
+          "clock": "19:19",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.54,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:35",
+          "dir": "up",
+          "from": 3.54,
+          "to": 3.84,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:44",
+          "dir": "up",
+          "from": 3.84,
+          "to": 4.04,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:48",
+          "dir": "up",
+          "from": 4.04,
+          "to": 4.27,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:58",
+          "dir": "down",
+          "from": 4.27,
+          "to": 4.01,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:25",
+          "dir": "down",
+          "from": 4.01,
+          "to": 3.8,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:32",
+          "dir": "down",
+          "from": 3.8,
+          "to": 3.53,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:09",
+          "dir": "down",
+          "from": 3.53,
+          "to": 3.16,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:16",
+          "dir": "down",
+          "from": 3.16,
+          "to": 2.85,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:26",
+          "dir": "up",
+          "from": 2.85,
+          "to": 3.05,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:40",
+          "dir": "down",
+          "from": 3.05,
+          "to": 2.68,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:49",
+          "dir": "down",
+          "from": 2.68,
+          "to": 2.02,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.32,
+        "content": 0.59,
+        "waiting": 0.08,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "19:47",
+          "minute": 1187,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:02",
+          "minute": 1262,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:40",
+          "minute": 1360,
+          "from": "content",
+          "to": "waiting",
+          "dir": "down",
+          "afterAnswer": false
+        }
+      ]
+    },
+    {
+      "seed": 7,
+      "weekday": "mon",
+      "answers": 6,
+      "up": 5,
+      "down": 4,
+      "afterAnswer": 1,
+      "upBeforeLastOrders": 4,
+      "downBeforeLastOrders": 2,
+      "restlessMinutes": 0,
+      "restless": false,
+      "meterUp": 15,
+      "meterDown": 11,
+      "meterAfterAnswer": 5,
+      "moves": [
+        {
+          "clock": "19:14",
+          "dir": "up",
+          "from": 2.92,
+          "to": 3.14,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.14,
+          "to": 3.39,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:19",
+          "dir": "up",
+          "from": 3.39,
+          "to": 3.64,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:23",
+          "dir": "up",
+          "from": 3.64,
+          "to": 3.88,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:33",
+          "dir": "up",
+          "from": 3.88,
+          "to": 4.13,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:43",
+          "dir": "down",
+          "from": 4.13,
+          "to": 3.8,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:46",
+          "dir": "up",
+          "from": 3.8,
+          "to": 4.01,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:56",
+          "dir": "down",
+          "from": 4.01,
+          "to": 3.75,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:13",
+          "dir": "up",
+          "from": 3.75,
+          "to": 3.98,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:15",
+          "dir": "up",
+          "from": 3.98,
+          "to": 4.95,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:15",
+          "dir": "up",
+          "from": 4.95,
+          "to": 5,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:00",
+          "dir": "down",
+          "from": 5,
+          "to": 4.78,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:09",
+          "dir": "down",
+          "from": 4.78,
+          "to": 4.32,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:17",
+          "dir": "down",
+          "from": 4.32,
+          "to": 3.86,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:23",
+          "dir": "up",
+          "from": 3.86,
+          "to": 4.26,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:24",
+          "dir": "down",
+          "from": 4.26,
+          "to": 3.9,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:29",
+          "dir": "up",
+          "from": 3.9,
+          "to": 4.35,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:29",
+          "dir": "up",
+          "from": 4.35,
+          "to": 4.65,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:30",
+          "dir": "down",
+          "from": 4.65,
+          "to": 4.1,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:31",
+          "dir": "down",
+          "from": 4.1,
+          "to": 3.31,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:32",
+          "dir": "up",
+          "from": 3.31,
+          "to": 4.11,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:36",
+          "dir": "up",
+          "from": 4.11,
+          "to": 4.48,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:39",
+          "dir": "up",
+          "from": 4.48,
+          "to": 5,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:40",
+          "dir": "down",
+          "from": 5,
+          "to": 4.53,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:46",
+          "dir": "down",
+          "from": 4.53,
+          "to": 4.08,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:50",
+          "dir": "down",
+          "from": 4.08,
+          "to": 3.66,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.67,
+        "content": 0.3,
+        "waiting": 0.03,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "19:14",
+          "minute": 1154,
+          "from": "waiting",
+          "to": "content",
+          "dir": "up",
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:37",
+          "minute": 1177,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:43",
+          "minute": 1183,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:15",
+          "minute": 1215,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:17",
+          "minute": 1337,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:23",
+          "minute": 1343,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:31",
+          "minute": 1351,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:35",
+          "minute": 1355,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:50",
+          "minute": 1370,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        }
+      ]
+    },
+    {
+      "seed": 8,
+      "weekday": "mon",
+      "answers": 3,
+      "up": 2,
+      "down": 2,
+      "afterAnswer": 1,
+      "upBeforeLastOrders": 1,
+      "downBeforeLastOrders": 1,
+      "restlessMinutes": 0,
+      "restless": false,
+      "meterUp": 6,
+      "meterDown": 6,
+      "meterAfterAnswer": 2,
+      "moves": [
+        {
+          "clock": "19:19",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.54,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:20",
+          "dir": "up",
+          "from": 3.54,
+          "to": 3.76,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:21",
+          "dir": "up",
+          "from": 3.76,
+          "to": 4.88,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:21",
+          "dir": "up",
+          "from": 4.88,
+          "to": 5,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:35",
+          "dir": "down",
+          "from": 5,
+          "to": 4.62,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:41",
+          "dir": "down",
+          "from": 4.62,
+          "to": 4.38,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:48",
+          "dir": "down",
+          "from": 4.38,
+          "to": 4.11,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:57",
+          "dir": "down",
+          "from": 4.11,
+          "to": 3.65,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:11",
+          "dir": "up",
+          "from": 3.65,
+          "to": 3.93,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:35",
+          "dir": "up",
+          "from": 3.93,
+          "to": 5,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:42",
+          "dir": "down",
+          "from": 5,
+          "to": 4.18,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:46",
+          "dir": "down",
+          "from": 4.18,
+          "to": 3.41,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.49,
+        "content": 0.51,
+        "waiting": 0,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "20:21",
+          "minute": 1221,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:57",
+          "minute": 1317,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:35",
+          "minute": 1355,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:46",
+          "minute": 1366,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        }
+      ]
+    },
+    {
+      "seed": 1,
+      "weekday": "tue",
+      "answers": 6,
+      "up": 1,
+      "down": 1,
+      "afterAnswer": 1,
+      "upBeforeLastOrders": 1,
+      "downBeforeLastOrders": 1,
+      "restlessMinutes": 0,
+      "restless": false,
+      "meterUp": 6,
+      "meterDown": 6,
+      "meterAfterAnswer": 2,
+      "moves": [
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:24",
+          "dir": "up",
+          "from": 3.49,
+          "to": 3.72,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:41",
+          "dir": "down",
+          "from": 3.72,
+          "to": 3.4,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:12",
+          "dir": "up",
+          "from": 3.4,
+          "to": 4.61,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:12",
+          "dir": "up",
+          "from": 4.61,
+          "to": 5,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:09",
+          "dir": "down",
+          "from": 5,
+          "to": 4.5,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:15",
+          "dir": "down",
+          "from": 4.5,
+          "to": 4.07,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:29",
+          "dir": "down",
+          "from": 4.07,
+          "to": 3.67,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:34",
+          "dir": "up",
+          "from": 3.67,
+          "to": 3.88,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:37",
+          "dir": "down",
+          "from": 3.88,
+          "to": 3.57,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:45",
+          "dir": "down",
+          "from": 3.57,
+          "to": 2.91,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:52",
+          "dir": "up",
+          "from": 2.91,
+          "to": 3.11,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.33,
+        "content": 0.67,
+        "waiting": 0,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "21:12",
+          "minute": 1272,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:29",
+          "minute": 1349,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        }
+      ]
+    },
+    {
+      "seed": 2,
+      "weekday": "tue",
+      "answers": 4,
+      "up": 3,
+      "down": 3,
+      "afterAnswer": 4,
+      "upBeforeLastOrders": 3,
+      "downBeforeLastOrders": 3,
+      "restlessMinutes": 65,
+      "restless": true,
+      "meterUp": 8,
+      "meterDown": 9,
+      "meterAfterAnswer": 5,
+      "moves": [
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:42",
+          "dir": "up",
+          "from": 3.49,
+          "to": 3.69,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:32",
+          "dir": "down",
+          "from": 3.69,
+          "to": 1.06,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:33",
+          "dir": "down",
+          "from": 1.06,
+          "to": 1,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:37",
+          "dir": "up",
+          "from": 1,
+          "to": 2.47,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:37",
+          "dir": "up",
+          "from": 2.47,
+          "to": 3.97,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:37",
+          "dir": "up",
+          "from": 3.97,
+          "to": 4.95,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:50",
+          "dir": "down",
+          "from": 4.95,
+          "to": 4.74,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:50",
+          "dir": "down",
+          "from": 4.74,
+          "to": 4.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:58",
+          "dir": "down",
+          "from": 4.49,
+          "to": 4.22,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:07",
+          "dir": "down",
+          "from": 4.22,
+          "to": 3.77,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:12",
+          "dir": "down",
+          "from": 3.77,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:14",
+          "dir": "down",
+          "from": 3.49,
+          "to": 3.02,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:23",
+          "dir": "up",
+          "from": 3.02,
+          "to": 3.24,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:34",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.46,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:40",
+          "dir": "up",
+          "from": 3.46,
+          "to": 3.67,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:51",
+          "dir": "down",
+          "from": 3.67,
+          "to": 3.18,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.13,
+        "content": 0.59,
+        "waiting": 0,
+        "impatient": 0.06,
+        "displeased": 0.22
+      },
+      "changes": [
+        {
+          "clock": "20:32",
+          "minute": 1232,
+          "from": "content",
+          "to": "impatient",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:45",
+          "minute": 1245,
+          "from": "impatient",
+          "to": "displeased",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:37",
+          "minute": 1297,
+          "from": "displeased",
+          "to": "waiting",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:37",
+          "minute": 1297,
+          "from": "waiting",
+          "to": "content",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:37",
+          "minute": 1297,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:07",
+          "minute": 1327,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        }
+      ]
+    },
+    {
+      "seed": 3,
+      "weekday": "tue",
+      "answers": 0,
+      "up": 0,
+      "down": 2,
+      "afterAnswer": 0,
+      "upBeforeLastOrders": 0,
+      "downBeforeLastOrders": 1,
+      "restlessMinutes": 30,
+      "restless": true,
+      "meterUp": 6,
+      "meterDown": 8,
+      "meterAfterAnswer": 0,
+      "moves": [
+        {
+          "clock": "19:23",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.51,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:30",
+          "dir": "up",
+          "from": 3.51,
+          "to": 3.72,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:48",
+          "dir": "up",
+          "from": 3.72,
+          "to": 3.92,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:23",
+          "dir": "down",
+          "from": 3.92,
+          "to": 3.72,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:33",
+          "dir": "down",
+          "from": 3.72,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:15",
+          "dir": "down",
+          "from": 3.49,
+          "to": 3.28,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:59",
+          "dir": "down",
+          "from": 3.28,
+          "to": 3.03,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:00",
+          "dir": "down",
+          "from": 3.03,
+          "to": 2.74,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:10",
+          "dir": "up",
+          "from": 2.74,
+          "to": 2.94,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:28",
+          "dir": "down",
+          "from": 2.94,
+          "to": 2.21,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:30",
+          "dir": "down",
+          "from": 2.21,
+          "to": 1.81,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:34",
+          "dir": "down",
+          "from": 1.81,
+          "to": 1.23,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:43",
+          "dir": "up",
+          "from": 1.23,
+          "to": 1.46,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:52",
+          "dir": "up",
+          "from": 1.46,
+          "to": 1.69,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0,
+        "content": 0.74,
+        "waiting": 0.13,
+        "impatient": 0.13,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "22:00",
+          "minute": 1320,
+          "from": "content",
+          "to": "waiting",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:30",
+          "minute": 1350,
+          "from": "waiting",
+          "to": "impatient",
+          "dir": "down",
+          "afterAnswer": false
+        }
+      ]
+    },
+    {
+      "seed": 4,
+      "weekday": "tue",
+      "answers": 12,
+      "up": 3,
+      "down": 2,
+      "afterAnswer": 2,
+      "upBeforeLastOrders": 3,
+      "downBeforeLastOrders": 2,
+      "restlessMinutes": 0,
+      "restless": false,
+      "meterUp": 9,
+      "meterDown": 8,
+      "meterAfterAnswer": 8,
+      "moves": [
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:24",
+          "dir": "up",
+          "from": 3.49,
+          "to": 3.72,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:36",
+          "dir": "up",
+          "from": 3.72,
+          "to": 3.93,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:52",
+          "dir": "up",
+          "from": 3.93,
+          "to": 4.13,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:34",
+          "dir": "down",
+          "from": 4.13,
+          "to": 3.89,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:48",
+          "dir": "down",
+          "from": 3.89,
+          "to": 3.62,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:54",
+          "dir": "down",
+          "from": 3.62,
+          "to": 3.31,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:55",
+          "dir": "up",
+          "from": 3.31,
+          "to": 4.72,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:55",
+          "dir": "up",
+          "from": 4.72,
+          "to": 5,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:36",
+          "dir": "down",
+          "from": 5,
+          "to": 4.04,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:37",
+          "dir": "down",
+          "from": 4.04,
+          "to": 4,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:37",
+          "dir": "down",
+          "from": 4,
+          "to": 3.94,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:54",
+          "dir": "down",
+          "from": 3.94,
+          "to": 3.7,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:09",
+          "dir": "up",
+          "from": 3.7,
+          "to": 4.56,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:09",
+          "dir": "up",
+          "from": 4.56,
+          "to": 4.91,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:09",
+          "dir": "up",
+          "from": 4.91,
+          "to": 4.98,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:41",
+          "dir": "down",
+          "from": 4.98,
+          "to": 4.76,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.63,
+        "content": 0.37,
+        "waiting": 0,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "19:53",
+          "minute": 1193,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:41",
+          "minute": 1241,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:55",
+          "minute": 1255,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:43",
+          "minute": 1303,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:09",
+          "minute": 1329,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        }
+      ]
+    },
+    {
+      "seed": 5,
+      "weekday": "tue",
+      "answers": 5,
+      "up": 2,
+      "down": 4,
+      "afterAnswer": 2,
+      "upBeforeLastOrders": 2,
+      "downBeforeLastOrders": 2,
+      "restlessMinutes": 16,
+      "restless": true,
+      "meterUp": 10,
+      "meterDown": 11,
+      "meterAfterAnswer": 6,
+      "moves": [
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:29",
+          "dir": "up",
+          "from": 3.49,
+          "to": 3.71,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:45",
+          "dir": "up",
+          "from": 3.71,
+          "to": 3.92,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:55",
+          "dir": "up",
+          "from": 3.92,
+          "to": 4.12,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:04",
+          "dir": "up",
+          "from": 4.12,
+          "to": 4.32,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:09",
+          "dir": "down",
+          "from": 4.32,
+          "to": 4.09,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:23",
+          "dir": "down",
+          "from": 4.09,
+          "to": 3.83,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:39",
+          "dir": "down",
+          "from": 3.83,
+          "to": 3.61,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:51",
+          "dir": "down",
+          "from": 3.61,
+          "to": 3.33,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:17",
+          "dir": "up",
+          "from": 3.33,
+          "to": 4.69,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:18",
+          "dir": "up",
+          "from": 4.69,
+          "to": 4.97,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:18",
+          "dir": "up",
+          "from": 4.97,
+          "to": 5,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:06",
+          "dir": "down",
+          "from": 5,
+          "to": 4.79,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:21",
+          "dir": "down",
+          "from": 4.79,
+          "to": 4.53,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:29",
+          "dir": "up",
+          "from": 4.53,
+          "to": 4.75,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:29",
+          "dir": "down",
+          "from": 4.75,
+          "to": 2.74,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:31",
+          "dir": "up",
+          "from": 2.74,
+          "to": 2.76,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:36",
+          "dir": "down",
+          "from": 2.76,
+          "to": 2.2,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:44",
+          "dir": "down",
+          "from": 2.2,
+          "to": 1.34,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:45",
+          "dir": "down",
+          "from": 1.34,
+          "to": 1.08,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:54",
+          "dir": "down",
+          "from": 1.08,
+          "to": 0.83,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.43,
+        "content": 0.44,
+        "waiting": 0.06,
+        "impatient": 0.03,
+        "displeased": 0.04
+      },
+      "changes": [
+        {
+          "clock": "19:56",
+          "minute": 1196,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:23",
+          "minute": 1223,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:17",
+          "minute": 1277,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:29",
+          "minute": 1349,
+          "from": "delighted",
+          "to": "waiting",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:44",
+          "minute": 1364,
+          "from": "waiting",
+          "to": "impatient",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:51",
+          "minute": 1371,
+          "from": "impatient",
+          "to": "displeased",
+          "dir": "down",
+          "afterAnswer": false
+        }
+      ]
+    },
+    {
+      "seed": 6,
+      "weekday": "tue",
+      "answers": 8,
+      "up": 4,
+      "down": 3,
+      "afterAnswer": 4,
+      "upBeforeLastOrders": 4,
+      "downBeforeLastOrders": 2,
+      "restlessMinutes": 0,
+      "restless": false,
+      "meterUp": 7,
+      "meterDown": 9,
+      "meterAfterAnswer": 5,
+      "moves": [
+        {
+          "clock": "19:19",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.54,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:35",
+          "dir": "up",
+          "from": 3.54,
+          "to": 3.76,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:50",
+          "dir": "up",
+          "from": 3.76,
+          "to": 4.05,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:23",
+          "dir": "down",
+          "from": 4.05,
+          "to": 3.85,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:30",
+          "dir": "up",
+          "from": 3.85,
+          "to": 4.69,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:30",
+          "dir": "down",
+          "from": 4.69,
+          "to": 2.68,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:36",
+          "dir": "down",
+          "from": 2.68,
+          "to": 2.48,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:42",
+          "dir": "down",
+          "from": 2.48,
+          "to": 2.28,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:18",
+          "dir": "down",
+          "from": 2.28,
+          "to": 2.05,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:27",
+          "dir": "up",
+          "from": 2.05,
+          "to": 3.6,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:27",
+          "dir": "up",
+          "from": 3.6,
+          "to": 4.71,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:27",
+          "dir": "up",
+          "from": 4.71,
+          "to": 4.95,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:34",
+          "dir": "down",
+          "from": 4.95,
+          "to": 4.64,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:42",
+          "dir": "down",
+          "from": 4.64,
+          "to": 4.38,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:49",
+          "dir": "down",
+          "from": 4.38,
+          "to": 3.93,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:56",
+          "dir": "down",
+          "from": 3.93,
+          "to": 3.52,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.49,
+        "content": 0.26,
+        "waiting": 0.25,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "19:54",
+          "minute": 1194,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:23",
+          "minute": 1223,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:30",
+          "minute": 1230,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:30",
+          "minute": 1230,
+          "from": "delighted",
+          "to": "waiting",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:27",
+          "minute": 1287,
+          "from": "waiting",
+          "to": "content",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:27",
+          "minute": 1287,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:52",
+          "minute": 1372,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        }
+      ]
+    },
+    {
+      "seed": 7,
+      "weekday": "tue",
+      "answers": 9,
+      "up": 5,
+      "down": 3,
+      "afterAnswer": 3,
+      "upBeforeLastOrders": 5,
+      "downBeforeLastOrders": 3,
+      "restlessMinutes": 0,
+      "restless": false,
+      "meterUp": 13,
+      "meterDown": 13,
+      "meterAfterAnswer": 6,
+      "moves": [
+        {
+          "clock": "19:14",
+          "dir": "up",
+          "from": 2.92,
+          "to": 3.14,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.14,
+          "to": 3.39,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:19",
+          "dir": "up",
+          "from": 3.39,
+          "to": 3.64,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:23",
+          "dir": "up",
+          "from": 3.64,
+          "to": 3.88,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:33",
+          "dir": "up",
+          "from": 3.88,
+          "to": 4.14,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:43",
+          "dir": "down",
+          "from": 4.14,
+          "to": 3.8,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:46",
+          "dir": "up",
+          "from": 3.8,
+          "to": 4.01,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:56",
+          "dir": "down",
+          "from": 4.01,
+          "to": 3.75,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:13",
+          "dir": "up",
+          "from": 3.75,
+          "to": 3.99,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:15",
+          "dir": "up",
+          "from": 3.99,
+          "to": 4.95,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:15",
+          "dir": "up",
+          "from": 4.95,
+          "to": 5,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:09",
+          "dir": "down",
+          "from": 5,
+          "to": 4.08,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:21",
+          "dir": "down",
+          "from": 4.08,
+          "to": 3.87,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:32",
+          "dir": "down",
+          "from": 3.87,
+          "to": 3.64,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:38",
+          "dir": "down",
+          "from": 3.64,
+          "to": 3.28,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:54",
+          "dir": "down",
+          "from": 3.28,
+          "to": 3.04,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:09",
+          "dir": "down",
+          "from": 3.04,
+          "to": 2.82,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:17",
+          "dir": "down",
+          "from": 2.82,
+          "to": 2.61,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:18",
+          "dir": "down",
+          "from": 2.61,
+          "to": 2.28,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:26",
+          "dir": "down",
+          "from": 2.28,
+          "to": 1.98,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:27",
+          "dir": "up",
+          "from": 1.98,
+          "to": 3.76,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:27",
+          "dir": "up",
+          "from": 3.76,
+          "to": 4.92,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:27",
+          "dir": "up",
+          "from": 4.92,
+          "to": 5,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:39",
+          "dir": "down",
+          "from": 5,
+          "to": 4.78,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:57",
+          "dir": "down",
+          "from": 4.78,
+          "to": 4.44,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:59",
+          "dir": "up",
+          "from": 4.44,
+          "to": 4.74,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.46,
+        "content": 0.43,
+        "waiting": 0.1,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "19:14",
+          "minute": 1154,
+          "from": "waiting",
+          "to": "content",
+          "dir": "up",
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:33",
+          "minute": 1173,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:43",
+          "minute": 1183,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:15",
+          "minute": 1215,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:21",
+          "minute": 1281,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:09",
+          "minute": 1329,
+          "from": "content",
+          "to": "waiting",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:27",
+          "minute": 1347,
+          "from": "waiting",
+          "to": "content",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:27",
+          "minute": 1347,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        }
+      ]
+    },
+    {
+      "seed": 8,
+      "weekday": "tue",
+      "answers": 3,
+      "up": 2,
+      "down": 1,
+      "afterAnswer": 1,
+      "upBeforeLastOrders": 1,
+      "downBeforeLastOrders": 1,
+      "restlessMinutes": 0,
+      "restless": false,
+      "meterUp": 5,
+      "meterDown": 6,
+      "meterAfterAnswer": 2,
+      "moves": [
+        {
+          "clock": "19:19",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.54,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:14",
+          "dir": "up",
+          "from": 3.54,
+          "to": 3.79,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:21",
+          "dir": "up",
+          "from": 3.79,
+          "to": 4.89,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:21",
+          "dir": "up",
+          "from": 4.89,
+          "to": 5,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:43",
+          "dir": "down",
+          "from": 5,
+          "to": 4.76,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:56",
+          "dir": "down",
+          "from": 4.76,
+          "to": 4.5,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:07",
+          "dir": "down",
+          "from": 4.5,
+          "to": 4.12,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:18",
+          "dir": "down",
+          "from": 4.12,
+          "to": 3.89,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:35",
+          "dir": "up",
+          "from": 3.89,
+          "to": 5,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:42",
+          "dir": "down",
+          "from": 5,
+          "to": 4.25,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:46",
+          "dir": "down",
+          "from": 4.25,
+          "to": 3.99,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.64,
+        "content": 0.36,
+        "waiting": 0,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "20:21",
+          "minute": 1221,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:23",
+          "minute": 1343,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:35",
+          "minute": 1355,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": false
+        }
+      ]
+    },
+    {
+      "seed": 1,
+      "weekday": "wed",
+      "answers": 1,
+      "up": 0,
+      "down": 1,
+      "afterAnswer": 1,
+      "upBeforeLastOrders": 0,
+      "downBeforeLastOrders": 1,
+      "restlessMinutes": 69,
+      "restless": true,
+      "meterUp": 3,
+      "meterDown": 5,
+      "meterAfterAnswer": 1,
+      "moves": [
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:24",
+          "dir": "up",
+          "from": 3.49,
+          "to": 3.72,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:44",
+          "dir": "up",
+          "from": 3.72,
+          "to": 3.94,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:33",
+          "dir": "down",
+          "from": 3.94,
+          "to": 3.68,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:54",
+          "dir": "down",
+          "from": 3.68,
+          "to": 3.43,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:06",
+          "dir": "down",
+          "from": 3.43,
+          "to": 3.22,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:25",
+          "dir": "down",
+          "from": 3.22,
+          "to": 0.68,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:27",
+          "dir": "down",
+          "from": 0.68,
+          "to": 0.47,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0,
+        "content": 0.67,
+        "waiting": 0,
+        "impatient": 0,
+        "displeased": 0.33
+      },
+      "changes": [
+        {
+          "clock": "21:25",
+          "minute": 1285,
+          "from": "content",
+          "to": "displeased",
+          "dir": "down",
+          "afterAnswer": true
+        }
+      ]
+    },
+    {
+      "seed": 2,
+      "weekday": "wed",
+      "answers": 1,
+      "up": 1,
+      "down": 1,
+      "afterAnswer": 1,
+      "upBeforeLastOrders": 1,
+      "downBeforeLastOrders": 1,
+      "restlessMinutes": 103,
+      "restless": true,
+      "meterUp": 4,
+      "meterDown": 2,
+      "meterAfterAnswer": 2,
+      "moves": [
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:44",
+          "dir": "up",
+          "from": 3.49,
+          "to": 3.7,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:32",
+          "dir": "down",
+          "from": 3.7,
+          "to": 0.97,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:33",
+          "dir": "down",
+          "from": 0.97,
+          "to": 0.94,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:32",
+          "dir": "up",
+          "from": 0.94,
+          "to": 1.15,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:03",
+          "dir": "up",
+          "from": 1.15,
+          "to": 1.39,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0,
+        "content": 0.45,
+        "waiting": 0,
+        "impatient": 0.23,
+        "displeased": 0.32
+      },
+      "changes": [
+        {
+          "clock": "20:32",
+          "minute": 1232,
+          "from": "content",
+          "to": "displeased",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:32",
+          "minute": 1292,
+          "from": "displeased",
+          "to": "impatient",
+          "dir": "up",
+          "afterAnswer": false
+        }
+      ]
+    },
+    {
+      "seed": 3,
+      "weekday": "wed",
+      "answers": 3,
+      "up": 1,
+      "down": 2,
+      "afterAnswer": 2,
+      "upBeforeLastOrders": 1,
+      "downBeforeLastOrders": 2,
+      "restlessMinutes": 0,
+      "restless": false,
+      "meterUp": 5,
+      "meterDown": 8,
+      "meterAfterAnswer": 3,
+      "moves": [
+        {
+          "clock": "19:23",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.51,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:30",
+          "dir": "up",
+          "from": 3.51,
+          "to": 3.72,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:29",
+          "dir": "down",
+          "from": 3.72,
+          "to": 3.5,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:36",
+          "dir": "down",
+          "from": 3.5,
+          "to": 3.28,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:32",
+          "dir": "up",
+          "from": 3.28,
+          "to": 4.56,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:32",
+          "dir": "up",
+          "from": 4.56,
+          "to": 5,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:32",
+          "dir": "down",
+          "from": 5,
+          "to": 3.5,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:55",
+          "dir": "down",
+          "from": 3.5,
+          "to": 3.27,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:00",
+          "dir": "down",
+          "from": 3.27,
+          "to": 2.99,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:24",
+          "dir": "down",
+          "from": 2.99,
+          "to": 2.72,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:36",
+          "dir": "down",
+          "from": 2.72,
+          "to": 2.22,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:44",
+          "dir": "up",
+          "from": 2.22,
+          "to": 2.45,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:55",
+          "dir": "down",
+          "from": 2.45,
+          "to": 2.23,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0,
+        "content": 0.84,
+        "waiting": 0.16,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "21:32",
+          "minute": 1292,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:32",
+          "minute": 1292,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:24",
+          "minute": 1344,
+          "from": "content",
+          "to": "waiting",
+          "dir": "down",
+          "afterAnswer": false
+        }
+      ]
+    },
+    {
+      "seed": 4,
+      "weekday": "wed",
+      "answers": 9,
+      "up": 3,
+      "down": 2,
+      "afterAnswer": 3,
+      "upBeforeLastOrders": 3,
+      "downBeforeLastOrders": 2,
+      "restlessMinutes": 0,
+      "restless": false,
+      "meterUp": 7,
+      "meterDown": 6,
+      "meterAfterAnswer": 8,
+      "moves": [
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:23",
+          "dir": "up",
+          "from": 3.49,
+          "to": 3.8,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:29",
+          "dir": "up",
+          "from": 3.8,
+          "to": 4.02,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:40",
+          "dir": "down",
+          "from": 4.02,
+          "to": 3.76,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:46",
+          "dir": "up",
+          "from": 3.76,
+          "to": 4.81,
+          "afterAnswer": true
+        },
+        {
+          "clock": "19:46",
+          "dir": "up",
+          "from": 4.81,
+          "to": 5,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:53",
+          "dir": "down",
+          "from": 5,
+          "to": 4.92,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:54",
+          "dir": "down",
+          "from": 4.92,
+          "to": 3.6,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:54",
+          "dir": "down",
+          "from": 3.6,
+          "to": 3.51,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:03",
+          "dir": "down",
+          "from": 3.51,
+          "to": 3.06,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:47",
+          "dir": "up",
+          "from": 3.06,
+          "to": 4.35,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:47",
+          "dir": "up",
+          "from": 4.35,
+          "to": 4.86,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:49",
+          "dir": "down",
+          "from": 4.86,
+          "to": 4.81,
+          "afterAnswer": true
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.62,
+        "content": 0.38,
+        "waiting": 0,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "19:33",
+          "minute": 1173,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:37",
+          "minute": 1177,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:46",
+          "minute": 1186,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:54",
+          "minute": 1254,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:47",
+          "minute": 1307,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        }
+      ]
+    },
+    {
+      "seed": 5,
+      "weekday": "wed",
+      "answers": 5,
+      "up": 1,
+      "down": 2,
+      "afterAnswer": 2,
+      "upBeforeLastOrders": 1,
+      "downBeforeLastOrders": 1,
+      "restlessMinutes": 0,
+      "restless": false,
+      "meterUp": 4,
+      "meterDown": 7,
+      "meterAfterAnswer": 4,
+      "moves": [
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:29",
+          "dir": "up",
+          "from": 3.49,
+          "to": 3.71,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:59",
+          "dir": "down",
+          "from": 3.71,
+          "to": 3.45,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:17",
+          "dir": "up",
+          "from": 3.45,
+          "to": 4.94,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:18",
+          "dir": "up",
+          "from": 4.94,
+          "to": 5,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:29",
+          "dir": "down",
+          "from": 5,
+          "to": 4.98,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:29",
+          "dir": "down",
+          "from": 4.98,
+          "to": 3.12,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:40",
+          "dir": "down",
+          "from": 3.12,
+          "to": 2.66,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:48",
+          "dir": "down",
+          "from": 2.66,
+          "to": 2.45,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:51",
+          "dir": "down",
+          "from": 2.45,
+          "to": 2.25,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:53",
+          "dir": "down",
+          "from": 2.25,
+          "to": 1.98,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.31,
+        "content": 0.6,
+        "waiting": 0.09,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "21:17",
+          "minute": 1277,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:29",
+          "minute": 1349,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:40",
+          "minute": 1360,
+          "from": "content",
+          "to": "waiting",
+          "dir": "down",
+          "afterAnswer": false
+        }
+      ]
+    },
+    {
+      "seed": 6,
+      "weekday": "wed",
+      "answers": 6,
+      "up": 1,
+      "down": 0,
+      "afterAnswer": 1,
+      "upBeforeLastOrders": 1,
+      "downBeforeLastOrders": 0,
+      "restlessMinutes": 0,
+      "restless": false,
+      "meterUp": 6,
+      "meterDown": 3,
+      "meterAfterAnswer": 2,
+      "moves": [
+        {
+          "clock": "19:19",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.54,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:35",
+          "dir": "up",
+          "from": 3.54,
+          "to": 3.77,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:16",
+          "dir": "up",
+          "from": 3.77,
+          "to": 3.98,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:26",
+          "dir": "down",
+          "from": 3.98,
+          "to": 3.76,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:44",
+          "dir": "up",
+          "from": 3.76,
+          "to": 4.01,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:49",
+          "dir": "up",
+          "from": 4.01,
+          "to": 4.85,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:49",
+          "dir": "up",
+          "from": 4.85,
+          "to": 5,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:40",
+          "dir": "down",
+          "from": 5,
+          "to": 4.7,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:54",
+          "dir": "down",
+          "from": 4.7,
+          "to": 4.45,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.56,
+        "content": 0.44,
+        "waiting": 0,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "20:49",
+          "minute": 1249,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        }
+      ]
+    },
+    {
+      "seed": 7,
+      "weekday": "wed",
+      "answers": 12,
+      "up": 5,
+      "down": 4,
+      "afterAnswer": 5,
+      "upBeforeLastOrders": 5,
+      "downBeforeLastOrders": 4,
+      "restlessMinutes": 31,
+      "restless": true,
+      "meterUp": 15,
+      "meterDown": 8,
+      "meterAfterAnswer": 9,
+      "moves": [
+        {
+          "clock": "19:14",
+          "dir": "up",
+          "from": 2.92,
+          "to": 3.14,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.14,
+          "to": 3.39,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:19",
+          "dir": "up",
+          "from": 3.39,
+          "to": 3.64,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:23",
+          "dir": "up",
+          "from": 3.64,
+          "to": 3.89,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:33",
+          "dir": "up",
+          "from": 3.89,
+          "to": 4.14,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:34",
+          "dir": "down",
+          "from": 4.14,
+          "to": 3.9,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:58",
+          "dir": "up",
+          "from": 3.9,
+          "to": 4.13,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:15",
+          "dir": "up",
+          "from": 4.13,
+          "to": 4.99,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:09",
+          "dir": "down",
+          "from": 4.99,
+          "to": 4.04,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:09",
+          "dir": "down",
+          "from": 4.04,
+          "to": 3.84,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:30",
+          "dir": "down",
+          "from": 3.84,
+          "to": 3.62,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:30",
+          "dir": "down",
+          "from": 3.62,
+          "to": 0.53,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:01",
+          "dir": "up",
+          "from": 0.53,
+          "to": 0.91,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:01",
+          "dir": "up",
+          "from": 0.91,
+          "to": 2.04,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:01",
+          "dir": "up",
+          "from": 2.04,
+          "to": 3.29,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:08",
+          "dir": "up",
+          "from": 3.29,
+          "to": 3.51,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:20",
+          "dir": "up",
+          "from": 3.51,
+          "to": 3.77,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:25",
+          "dir": "down",
+          "from": 3.77,
+          "to": 3.52,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:28",
+          "dir": "up",
+          "from": 3.52,
+          "to": 4.12,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:29",
+          "dir": "down",
+          "from": 4.12,
+          "to": 2.29,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:49",
+          "dir": "up",
+          "from": 2.29,
+          "to": 2.64,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:52",
+          "dir": "down",
+          "from": 2.64,
+          "to": 2.39,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:57",
+          "dir": "up",
+          "from": 2.39,
+          "to": 2.85,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.3,
+        "content": 0.4,
+        "waiting": 0.16,
+        "impatient": 0,
+        "displeased": 0.13
+      },
+      "changes": [
+        {
+          "clock": "19:14",
+          "minute": 1154,
+          "from": "waiting",
+          "to": "content",
+          "dir": "up",
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:33",
+          "minute": 1173,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:38",
+          "minute": 1178,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:03",
+          "minute": 1203,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:09",
+          "minute": 1269,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:30",
+          "minute": 1290,
+          "from": "content",
+          "to": "displeased",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:01",
+          "minute": 1321,
+          "from": "displeased",
+          "to": "waiting",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:01",
+          "minute": 1321,
+          "from": "waiting",
+          "to": "content",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:29",
+          "minute": 1349,
+          "from": "content",
+          "to": "waiting",
+          "dir": "down",
+          "afterAnswer": true
+        }
+      ]
+    },
+    {
+      "seed": 8,
+      "weekday": "wed",
+      "answers": 1,
+      "up": 0,
+      "down": 1,
+      "afterAnswer": 1,
+      "upBeforeLastOrders": 0,
+      "downBeforeLastOrders": 1,
+      "restlessMinutes": 179,
+      "restless": true,
+      "meterUp": 1,
+      "meterDown": 3,
+      "meterAfterAnswer": 1,
+      "moves": [
+        {
+          "clock": "19:19",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.54,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:00",
+          "dir": "down",
+          "from": 3.54,
+          "to": 0.99,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:18",
+          "dir": "down",
+          "from": 0.99,
+          "to": 0.77,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:37",
+          "dir": "down",
+          "from": 0.77,
+          "to": 0.5,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0,
+        "content": 0.23,
+        "waiting": 0,
+        "impatient": 0,
+        "displeased": 0.77
+      },
+      "changes": [
+        {
+          "clock": "20:00",
+          "minute": 1200,
+          "from": "content",
+          "to": "displeased",
+          "dir": "down",
+          "afterAnswer": true
+        }
+      ]
+    },
+    {
+      "seed": 1,
+      "weekday": "thu",
+      "answers": 3,
+      "up": 1,
+      "down": 0,
+      "afterAnswer": 1,
+      "upBeforeLastOrders": 1,
+      "downBeforeLastOrders": 0,
+      "restlessMinutes": 0,
+      "restless": false,
+      "meterUp": 7,
+      "meterDown": 6,
+      "meterAfterAnswer": 2,
+      "moves": [
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:24",
+          "dir": "up",
+          "from": 3.49,
+          "to": 3.72,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:44",
+          "dir": "up",
+          "from": 3.72,
+          "to": 3.94,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:29",
+          "dir": "down",
+          "from": 3.94,
+          "to": 3.69,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:42",
+          "dir": "down",
+          "from": 3.69,
+          "to": 3.46,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:09",
+          "dir": "down",
+          "from": 3.46,
+          "to": 3.19,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:31",
+          "dir": "up",
+          "from": 3.19,
+          "to": 4.6,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:31",
+          "dir": "up",
+          "from": 4.6,
+          "to": 5,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:27",
+          "dir": "down",
+          "from": 5,
+          "to": 4.76,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:35",
+          "dir": "down",
+          "from": 4.76,
+          "to": 4.41,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:43",
+          "dir": "down",
+          "from": 4.41,
+          "to": 4.06,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:52",
+          "dir": "up",
+          "from": 4.06,
+          "to": 4.29,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:53",
+          "dir": "up",
+          "from": 4.29,
+          "to": 4.55,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.38,
+        "content": 0.62,
+        "waiting": 0,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "21:31",
+          "minute": 1291,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        }
+      ]
+    },
+    {
+      "seed": 2,
+      "weekday": "thu",
+      "answers": 4,
+      "up": 3,
+      "down": 3,
+      "afterAnswer": 4,
+      "upBeforeLastOrders": 3,
+      "downBeforeLastOrders": 1,
+      "restlessMinutes": 29,
+      "restless": true,
+      "meterUp": 8,
+      "meterDown": 11,
+      "meterAfterAnswer": 5,
+      "moves": [
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:44",
+          "dir": "up",
+          "from": 3.49,
+          "to": 3.7,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:08",
+          "dir": "up",
+          "from": 3.7,
+          "to": 3.9,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:20",
+          "dir": "down",
+          "from": 3.9,
+          "to": 3.7,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:29",
+          "dir": "down",
+          "from": 3.7,
+          "to": 3.45,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:32",
+          "dir": "down",
+          "from": 3.45,
+          "to": 0.92,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:33",
+          "dir": "down",
+          "from": 0.92,
+          "to": 0.88,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:00",
+          "dir": "up",
+          "from": 0.88,
+          "to": 2.26,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:01",
+          "dir": "up",
+          "from": 2.26,
+          "to": 3.6,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:01",
+          "dir": "up",
+          "from": 3.6,
+          "to": 4.73,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:06",
+          "dir": "down",
+          "from": 4.73,
+          "to": 4.34,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:20",
+          "dir": "down",
+          "from": 4.34,
+          "to": 4,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:31",
+          "dir": "down",
+          "from": 4,
+          "to": 3.61,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:37",
+          "dir": "down",
+          "from": 3.61,
+          "to": 3.22,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:38",
+          "dir": "up",
+          "from": 3.22,
+          "to": 3.44,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:42",
+          "dir": "up",
+          "from": 3.44,
+          "to": 3.73,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:44",
+          "dir": "down",
+          "from": 3.73,
+          "to": 3.41,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:50",
+          "dir": "down",
+          "from": 3.41,
+          "to": 3.09,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:56",
+          "dir": "down",
+          "from": 3.09,
+          "to": 2.79,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.39,
+        "content": 0.47,
+        "waiting": 0.02,
+        "impatient": 0,
+        "displeased": 0.12
+      },
+      "changes": [
+        {
+          "clock": "20:32",
+          "minute": 1232,
+          "from": "content",
+          "to": "displeased",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:00",
+          "minute": 1260,
+          "from": "displeased",
+          "to": "waiting",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:01",
+          "minute": 1261,
+          "from": "waiting",
+          "to": "content",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:01",
+          "minute": 1261,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:31",
+          "minute": 1351,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:56",
+          "minute": 1376,
+          "from": "content",
+          "to": "waiting",
+          "dir": "down",
+          "afterAnswer": false
+        }
+      ]
+    },
+    {
+      "seed": 3,
+      "weekday": "thu",
+      "answers": 3,
+      "up": 1,
+      "down": 0,
+      "afterAnswer": 1,
+      "upBeforeLastOrders": 1,
+      "downBeforeLastOrders": 0,
+      "restlessMinutes": 0,
+      "restless": false,
+      "meterUp": 5,
+      "meterDown": 4,
+      "meterAfterAnswer": 2,
+      "moves": [
+        {
+          "clock": "19:23",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.51,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:30",
+          "dir": "up",
+          "from": 3.51,
+          "to": 3.72,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:11",
+          "dir": "up",
+          "from": 3.72,
+          "to": 4.75,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:11",
+          "dir": "up",
+          "from": 4.75,
+          "to": 5,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:00",
+          "dir": "down",
+          "from": 5,
+          "to": 4.8,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:28",
+          "dir": "down",
+          "from": 4.8,
+          "to": 4.6,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:33",
+          "dir": "down",
+          "from": 4.6,
+          "to": 4.35,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:54",
+          "dir": "up",
+          "from": 4.35,
+          "to": 4.61,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:59",
+          "dir": "down",
+          "from": 4.61,
+          "to": 4.37,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.73,
+        "content": 0.27,
+        "waiting": 0,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "20:11",
+          "minute": 1211,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        }
+      ]
+    },
+    {
+      "seed": 4,
+      "weekday": "thu",
+      "answers": 12,
+      "up": 5,
+      "down": 5,
+      "afterAnswer": 7,
+      "upBeforeLastOrders": 5,
+      "downBeforeLastOrders": 4,
+      "restlessMinutes": 0,
+      "restless": false,
+      "meterUp": 12,
+      "meterDown": 9,
+      "meterAfterAnswer": 11,
+      "moves": [
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:24",
+          "dir": "up",
+          "from": 3.49,
+          "to": 3.72,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:36",
+          "dir": "up",
+          "from": 3.72,
+          "to": 3.94,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:46",
+          "dir": "up",
+          "from": 3.94,
+          "to": 4.9,
+          "afterAnswer": true
+        },
+        {
+          "clock": "19:46",
+          "dir": "up",
+          "from": 4.9,
+          "to": 5,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:29",
+          "dir": "down",
+          "from": 5,
+          "to": 3.3,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:48",
+          "dir": "down",
+          "from": 3.3,
+          "to": 3.1,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:50",
+          "dir": "down",
+          "from": 3.1,
+          "to": 2.87,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:55",
+          "dir": "up",
+          "from": 2.87,
+          "to": 3.99,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:55",
+          "dir": "up",
+          "from": 3.99,
+          "to": 4.62,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:31",
+          "dir": "down",
+          "from": 4.62,
+          "to": 2.93,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:33",
+          "dir": "up",
+          "from": 2.93,
+          "to": 3.06,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:14",
+          "dir": "up",
+          "from": 3.06,
+          "to": 3.31,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:24",
+          "dir": "up",
+          "from": 3.31,
+          "to": 4.45,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:24",
+          "dir": "up",
+          "from": 4.45,
+          "to": 4.97,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:25",
+          "dir": "down",
+          "from": 4.97,
+          "to": 3.24,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:25",
+          "dir": "down",
+          "from": 3.24,
+          "to": 3.19,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:43",
+          "dir": "down",
+          "from": 3.19,
+          "to": 2.89,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:57",
+          "dir": "down",
+          "from": 2.89,
+          "to": 2.69,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:58",
+          "dir": "up",
+          "from": 2.69,
+          "to": 2.95,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:59",
+          "dir": "down",
+          "from": 2.95,
+          "to": 2.74,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.34,
+        "content": 0.56,
+        "waiting": 0.1,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "19:46",
+          "minute": 1186,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:29",
+          "minute": 1229,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:53",
+          "minute": 1253,
+          "from": "content",
+          "to": "waiting",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:55",
+          "minute": 1255,
+          "from": "waiting",
+          "to": "content",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:55",
+          "minute": 1255,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:31",
+          "minute": 1291,
+          "from": "delighted",
+          "to": "waiting",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:40",
+          "minute": 1300,
+          "from": "waiting",
+          "to": "content",
+          "dir": "up",
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:24",
+          "minute": 1344,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:25",
+          "minute": 1345,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:48",
+          "minute": 1368,
+          "from": "content",
+          "to": "waiting",
+          "dir": "down",
+          "afterAnswer": false
+        }
+      ]
+    },
+    {
+      "seed": 5,
+      "weekday": "thu",
+      "answers": 3,
+      "up": 1,
+      "down": 2,
+      "afterAnswer": 3,
+      "upBeforeLastOrders": 1,
+      "downBeforeLastOrders": 2,
+      "restlessMinutes": 169,
+      "restless": true,
+      "meterUp": 5,
+      "meterDown": 4,
+      "meterAfterAnswer": 4,
+      "moves": [
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:29",
+          "dir": "up",
+          "from": 3.49,
+          "to": 3.71,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:50",
+          "dir": "up",
+          "from": 3.71,
+          "to": 4.86,
+          "afterAnswer": true
+        },
+        {
+          "clock": "19:50",
+          "dir": "down",
+          "from": 4.86,
+          "to": 1.93,
+          "afterAnswer": true
+        },
+        {
+          "clock": "19:50",
+          "dir": "up",
+          "from": 1.93,
+          "to": 1.95,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:26",
+          "dir": "down",
+          "from": 1.95,
+          "to": 1.72,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:33",
+          "dir": "up",
+          "from": 1.72,
+          "to": 1.97,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:05",
+          "dir": "down",
+          "from": 1.97,
+          "to": 1.75,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:17",
+          "dir": "down",
+          "from": 1.75,
+          "to": 0.01,
+          "afterAnswer": true
+        }
+      ],
+      "timeShare": {
+        "delighted": 0,
+        "content": 0.2,
+        "waiting": 0,
+        "impatient": 0.41,
+        "displeased": 0.39
+      },
+      "changes": [
+        {
+          "clock": "19:50",
+          "minute": 1190,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "19:50",
+          "minute": 1190,
+          "from": "delighted",
+          "to": "impatient",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:17",
+          "minute": 1277,
+          "from": "impatient",
+          "to": "displeased",
+          "dir": "down",
+          "afterAnswer": true
+        }
+      ]
+    },
+    {
+      "seed": 6,
+      "weekday": "thu",
+      "answers": 5,
+      "up": 3,
+      "down": 2,
+      "afterAnswer": 4,
+      "upBeforeLastOrders": 3,
+      "downBeforeLastOrders": 2,
+      "restlessMinutes": 21,
+      "restless": true,
+      "meterUp": 7,
+      "meterDown": 8,
+      "meterAfterAnswer": 5,
+      "moves": [
+        {
+          "clock": "19:19",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.54,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:37",
+          "dir": "up",
+          "from": 3.54,
+          "to": 3.75,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:14",
+          "dir": "up",
+          "from": 3.75,
+          "to": 3.96,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:24",
+          "dir": "down",
+          "from": 3.96,
+          "to": 3.75,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:29",
+          "dir": "down",
+          "from": 3.75,
+          "to": 3.54,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:30",
+          "dir": "up",
+          "from": 3.54,
+          "to": 4.61,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:30",
+          "dir": "down",
+          "from": 4.61,
+          "to": 2.31,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:59",
+          "dir": "down",
+          "from": 2.31,
+          "to": 2.1,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:27",
+          "dir": "down",
+          "from": 2.1,
+          "to": 1.9,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:53",
+          "dir": "up",
+          "from": 1.9,
+          "to": 3.35,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:53",
+          "dir": "up",
+          "from": 3.35,
+          "to": 4.46,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:53",
+          "dir": "up",
+          "from": 4.46,
+          "to": 4.97,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:43",
+          "dir": "down",
+          "from": 4.97,
+          "to": 4.7,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:49",
+          "dir": "down",
+          "from": 4.7,
+          "to": 4.35,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:59",
+          "dir": "down",
+          "from": 4.35,
+          "to": 4,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.29,
+        "content": 0.35,
+        "waiting": 0.27,
+        "impatient": 0.09,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "20:30",
+          "minute": 1230,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:30",
+          "minute": 1230,
+          "from": "delighted",
+          "to": "waiting",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:32",
+          "minute": 1292,
+          "from": "waiting",
+          "to": "impatient",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:53",
+          "minute": 1313,
+          "from": "impatient",
+          "to": "content",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:53",
+          "minute": 1313,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        }
+      ]
+    },
+    {
+      "seed": 7,
+      "weekday": "thu",
+      "answers": 16,
+      "up": 3,
+      "down": 2,
+      "afterAnswer": 2,
+      "upBeforeLastOrders": 3,
+      "downBeforeLastOrders": 1,
+      "restlessMinutes": 0,
+      "restless": false,
+      "meterUp": 7,
+      "meterDown": 5,
+      "meterAfterAnswer": 4,
+      "moves": [
+        {
+          "clock": "19:14",
+          "dir": "up",
+          "from": 2.92,
+          "to": 3.14,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.14,
+          "to": 3.39,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:19",
+          "dir": "up",
+          "from": 3.39,
+          "to": 3.64,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:23",
+          "dir": "up",
+          "from": 3.64,
+          "to": 3.89,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:33",
+          "dir": "up",
+          "from": 3.89,
+          "to": 4.14,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:34",
+          "dir": "down",
+          "from": 4.14,
+          "to": 3.9,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:04",
+          "dir": "up",
+          "from": 3.9,
+          "to": 4.87,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:04",
+          "dir": "up",
+          "from": 4.87,
+          "to": 5,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:31",
+          "dir": "down",
+          "from": 5,
+          "to": 3.84,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:31",
+          "dir": "down",
+          "from": 3.84,
+          "to": 3.79,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:45",
+          "dir": "down",
+          "from": 3.79,
+          "to": 3.54,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:54",
+          "dir": "down",
+          "from": 3.54,
+          "to": 3.09,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.65,
+        "content": 0.32,
+        "waiting": 0.03,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "19:14",
+          "minute": 1154,
+          "from": "waiting",
+          "to": "content",
+          "dir": "up",
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:33",
+          "minute": 1173,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:38",
+          "minute": 1178,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:04",
+          "minute": 1204,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:31",
+          "minute": 1351,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": true
+        }
+      ]
+    },
+    {
+      "seed": 8,
+      "weekday": "thu",
+      "answers": 1,
+      "up": 0,
+      "down": 1,
+      "afterAnswer": 1,
+      "upBeforeLastOrders": 0,
+      "downBeforeLastOrders": 1,
+      "restlessMinutes": 179,
+      "restless": true,
+      "meterUp": 1,
+      "meterDown": 3,
+      "meterAfterAnswer": 1,
+      "moves": [
+        {
+          "clock": "19:19",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.54,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:00",
+          "dir": "down",
+          "from": 3.54,
+          "to": 0.99,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:27",
+          "dir": "down",
+          "from": 0.99,
+          "to": 0.77,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:52",
+          "dir": "down",
+          "from": 0.77,
+          "to": 0.44,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0,
+        "content": 0.23,
+        "waiting": 0,
+        "impatient": 0,
+        "displeased": 0.77
+      },
+      "changes": [
+        {
+          "clock": "20:00",
+          "minute": 1200,
+          "from": "content",
+          "to": "displeased",
+          "dir": "down",
+          "afterAnswer": true
+        }
+      ]
+    },
+    {
+      "seed": 1,
+      "weekday": "fri",
+      "answers": 2,
+      "up": 1,
+      "down": 1,
+      "afterAnswer": 1,
+      "upBeforeLastOrders": 1,
+      "downBeforeLastOrders": 1,
+      "restlessMinutes": 145,
+      "restless": true,
+      "meterUp": 6,
+      "meterDown": 7,
+      "meterAfterAnswer": 2,
+      "moves": [
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:44",
+          "dir": "up",
+          "from": 3.49,
+          "to": 3.71,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:22",
+          "dir": "down",
+          "from": 3.71,
+          "to": 3.5,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:28",
+          "dir": "down",
+          "from": 3.5,
+          "to": 3.3,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:33",
+          "dir": "down",
+          "from": 3.3,
+          "to": 3.1,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:35",
+          "dir": "up",
+          "from": 3.1,
+          "to": 4.06,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:35",
+          "dir": "down",
+          "from": 4.06,
+          "to": 0.91,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:17",
+          "dir": "up",
+          "from": 0.91,
+          "to": 1.13,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:28",
+          "dir": "up",
+          "from": 1.13,
+          "to": 1.53,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:41",
+          "dir": "down",
+          "from": 1.53,
+          "to": 1.32,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:48",
+          "dir": "down",
+          "from": 1.32,
+          "to": 1.06,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:49",
+          "dir": "up",
+          "from": 1.06,
+          "to": 1.54,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:59",
+          "dir": "down",
+          "from": 1.54,
+          "to": 1.31,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0,
+        "content": 0.38,
+        "waiting": 0,
+        "impatient": 0.18,
+        "displeased": 0.44
+      },
+      "changes": [
+        {
+          "clock": "20:35",
+          "minute": 1235,
+          "from": "content",
+          "to": "displeased",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:17",
+          "minute": 1337,
+          "from": "displeased",
+          "to": "impatient",
+          "dir": "up",
+          "afterAnswer": false
+        }
+      ]
+    },
+    {
+      "seed": 2,
+      "weekday": "fri",
+      "answers": 5,
+      "up": 2,
+      "down": 2,
+      "afterAnswer": 4,
+      "upBeforeLastOrders": 2,
+      "downBeforeLastOrders": 2,
+      "restlessMinutes": 185,
+      "restless": true,
+      "meterUp": 5,
+      "meterDown": 4,
+      "meterAfterAnswer": 5,
+      "moves": [
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:50",
+          "dir": "up",
+          "from": 3.49,
+          "to": 3.72,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:51",
+          "dir": "down",
+          "from": 3.72,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:55",
+          "dir": "down",
+          "from": 3.49,
+          "to": 0.9,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:32",
+          "dir": "up",
+          "from": 0.9,
+          "to": 2.09,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:32",
+          "dir": "up",
+          "from": 2.09,
+          "to": 3.51,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:32",
+          "dir": "down",
+          "from": 3.51,
+          "to": 0.97,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:36",
+          "dir": "down",
+          "from": 0.97,
+          "to": 0.06,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:48",
+          "dir": "up",
+          "from": 0.06,
+          "to": 0.27,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0,
+        "content": 0.2,
+        "waiting": 0,
+        "impatient": 0,
+        "displeased": 0.8
+      },
+      "changes": [
+        {
+          "clock": "19:55",
+          "minute": 1195,
+          "from": "content",
+          "to": "displeased",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:32",
+          "minute": 1232,
+          "from": "displeased",
+          "to": "waiting",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:32",
+          "minute": 1232,
+          "from": "waiting",
+          "to": "content",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:32",
+          "minute": 1232,
+          "from": "content",
+          "to": "displeased",
+          "dir": "down",
+          "afterAnswer": true
+        }
+      ]
+    },
+    {
+      "seed": 3,
+      "weekday": "fri",
+      "answers": 6,
+      "up": 1,
+      "down": 0,
+      "afterAnswer": 1,
+      "upBeforeLastOrders": 1,
+      "downBeforeLastOrders": 0,
+      "restlessMinutes": 0,
+      "restless": false,
+      "meterUp": 4,
+      "meterDown": 5,
+      "meterAfterAnswer": 3,
+      "moves": [
+        {
+          "clock": "19:23",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.51,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:30",
+          "dir": "up",
+          "from": 3.51,
+          "to": 3.73,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:23",
+          "dir": "down",
+          "from": 3.73,
+          "to": 3.5,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:33",
+          "dir": "down",
+          "from": 3.5,
+          "to": 3.26,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:42",
+          "dir": "up",
+          "from": 3.26,
+          "to": 4.43,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:42",
+          "dir": "up",
+          "from": 4.43,
+          "to": 4.98,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:15",
+          "dir": "down",
+          "from": 4.98,
+          "to": 4.89,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:06",
+          "dir": "down",
+          "from": 4.89,
+          "to": 4.66,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:56",
+          "dir": "down",
+          "from": 4.66,
+          "to": 4.3,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.59,
+        "content": 0.41,
+        "waiting": 0,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "20:42",
+          "minute": 1242,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        }
+      ]
+    },
+    {
+      "seed": 4,
+      "weekday": "fri",
+      "answers": 11,
+      "up": 1,
+      "down": 1,
+      "afterAnswer": 1,
+      "upBeforeLastOrders": 1,
+      "downBeforeLastOrders": 1,
+      "restlessMinutes": 0,
+      "restless": false,
+      "meterUp": 3,
+      "meterDown": 4,
+      "meterAfterAnswer": 3,
+      "moves": [
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:23",
+          "dir": "up",
+          "from": 3.49,
+          "to": 4.97,
+          "afterAnswer": true
+        },
+        {
+          "clock": "19:24",
+          "dir": "up",
+          "from": 4.97,
+          "to": 5,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:22",
+          "dir": "down",
+          "from": 5,
+          "to": 4.05,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:29",
+          "dir": "down",
+          "from": 4.05,
+          "to": 3.68,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:35",
+          "dir": "down",
+          "from": 3.68,
+          "to": 3.38,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:52",
+          "dir": "down",
+          "from": 3.38,
+          "to": 3.16,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.8,
+        "content": 0.2,
+        "waiting": 0,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "19:23",
+          "minute": 1163,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:29",
+          "minute": 1349,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        }
+      ]
+    },
+    {
+      "seed": 5,
+      "weekday": "fri",
+      "answers": 9,
+      "up": 5,
+      "down": 3,
+      "afterAnswer": 8,
+      "upBeforeLastOrders": 5,
+      "downBeforeLastOrders": 3,
+      "restlessMinutes": 151,
+      "restless": true,
+      "meterUp": 10,
+      "meterDown": 6,
+      "meterAfterAnswer": 11,
+      "moves": [
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:29",
+          "dir": "up",
+          "from": 3.49,
+          "to": 3.71,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:50",
+          "dir": "up",
+          "from": 3.71,
+          "to": 4.87,
+          "afterAnswer": true
+        },
+        {
+          "clock": "19:50",
+          "dir": "down",
+          "from": 4.87,
+          "to": 1.93,
+          "afterAnswer": true
+        },
+        {
+          "clock": "19:50",
+          "dir": "up",
+          "from": 1.93,
+          "to": 1.96,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:09",
+          "dir": "up",
+          "from": 1.96,
+          "to": 3.75,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:09",
+          "dir": "down",
+          "from": 3.75,
+          "to": 1.94,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:26",
+          "dir": "down",
+          "from": 1.94,
+          "to": 1.65,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:05",
+          "dir": "up",
+          "from": 1.65,
+          "to": 3.05,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:05",
+          "dir": "down",
+          "from": 3.05,
+          "to": 0.47,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:06",
+          "dir": "down",
+          "from": 0.47,
+          "to": 0.43,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:45",
+          "dir": "up",
+          "from": 0.43,
+          "to": 0.64,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:21",
+          "dir": "up",
+          "from": 0.64,
+          "to": 1.61,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:21",
+          "dir": "up",
+          "from": 1.61,
+          "to": 3.1,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:21",
+          "dir": "up",
+          "from": 3.1,
+          "to": 4.07,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:47",
+          "dir": "down",
+          "from": 4.07,
+          "to": 3.81,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0,
+        "content": 0.35,
+        "waiting": 0,
+        "impatient": 0.32,
+        "displeased": 0.33
+      },
+      "changes": [
+        {
+          "clock": "19:50",
+          "minute": 1190,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "19:50",
+          "minute": 1190,
+          "from": "delighted",
+          "to": "impatient",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:09",
+          "minute": 1209,
+          "from": "impatient",
+          "to": "content",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:09",
+          "minute": 1209,
+          "from": "content",
+          "to": "impatient",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:05",
+          "minute": 1265,
+          "from": "impatient",
+          "to": "content",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:05",
+          "minute": 1265,
+          "from": "content",
+          "to": "displeased",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:21",
+          "minute": 1341,
+          "from": "displeased",
+          "to": "impatient",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:21",
+          "minute": 1341,
+          "from": "impatient",
+          "to": "content",
+          "dir": "up",
+          "afterAnswer": true
+        }
+      ]
+    },
+    {
+      "seed": 6,
+      "weekday": "fri",
+      "answers": 12,
+      "up": 1,
+      "down": 0,
+      "afterAnswer": 1,
+      "upBeforeLastOrders": 1,
+      "downBeforeLastOrders": 0,
+      "restlessMinutes": 0,
+      "restless": false,
+      "meterUp": 6,
+      "meterDown": 6,
+      "meterAfterAnswer": 5,
+      "moves": [
+        {
+          "clock": "19:19",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.54,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:37",
+          "dir": "up",
+          "from": 3.54,
+          "to": 3.75,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:26",
+          "dir": "down",
+          "from": 3.75,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:30",
+          "dir": "up",
+          "from": 3.49,
+          "to": 4.53,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:30",
+          "dir": "up",
+          "from": 4.53,
+          "to": 4.99,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:43",
+          "dir": "down",
+          "from": 4.99,
+          "to": 4.79,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:43",
+          "dir": "up",
+          "from": 4.79,
+          "to": 4.82,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:02",
+          "dir": "up",
+          "from": 4.82,
+          "to": 4.87,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:04",
+          "dir": "down",
+          "from": 4.87,
+          "to": 4.84,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:23",
+          "dir": "down",
+          "from": 4.84,
+          "to": 4.64,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:37",
+          "dir": "down",
+          "from": 4.64,
+          "to": 4.43,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:45",
+          "dir": "down",
+          "from": 4.43,
+          "to": 4.18,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.65,
+        "content": 0.35,
+        "waiting": 0,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "20:30",
+          "minute": 1230,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        }
+      ]
+    },
+    {
+      "seed": 7,
+      "weekday": "fri",
+      "answers": 3,
+      "up": 4,
+      "down": 2,
+      "afterAnswer": 1,
+      "upBeforeLastOrders": 4,
+      "downBeforeLastOrders": 2,
+      "restlessMinutes": 0,
+      "restless": false,
+      "meterUp": 8,
+      "meterDown": 6,
+      "meterAfterAnswer": 2,
+      "moves": [
+        {
+          "clock": "19:14",
+          "dir": "up",
+          "from": 2.92,
+          "to": 3.14,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.14,
+          "to": 3.39,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:19",
+          "dir": "up",
+          "from": 3.39,
+          "to": 3.65,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:23",
+          "dir": "up",
+          "from": 3.65,
+          "to": 3.89,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:33",
+          "dir": "up",
+          "from": 3.89,
+          "to": 4.14,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:34",
+          "dir": "down",
+          "from": 4.14,
+          "to": 3.9,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:28",
+          "dir": "down",
+          "from": 3.9,
+          "to": 3.7,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:32",
+          "dir": "up",
+          "from": 3.7,
+          "to": 4.15,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:43",
+          "dir": "down",
+          "from": 4.15,
+          "to": 3.9,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:02",
+          "dir": "down",
+          "from": 3.9,
+          "to": 3.67,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:16",
+          "dir": "down",
+          "from": 3.67,
+          "to": 3.46,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:42",
+          "dir": "down",
+          "from": 3.46,
+          "to": 3.08,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:45",
+          "dir": "up",
+          "from": 3.08,
+          "to": 4.36,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:45",
+          "dir": "up",
+          "from": 4.36,
+          "to": 5,
+          "afterAnswer": true
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.44,
+        "content": 0.53,
+        "waiting": 0.03,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "19:14",
+          "minute": 1154,
+          "from": "waiting",
+          "to": "content",
+          "dir": "up",
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:33",
+          "minute": 1173,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:41",
+          "minute": 1181,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:32",
+          "minute": 1232,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:53",
+          "minute": 1253,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:45",
+          "minute": 1305,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        }
+      ]
+    },
+    {
+      "seed": 8,
+      "weekday": "fri",
+      "answers": 3,
+      "up": 1,
+      "down": 0,
+      "afterAnswer": 1,
+      "upBeforeLastOrders": 1,
+      "downBeforeLastOrders": 0,
+      "restlessMinutes": 0,
+      "restless": false,
+      "meterUp": 4,
+      "meterDown": 0,
+      "meterAfterAnswer": 2,
+      "moves": [
+        {
+          "clock": "19:19",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.54,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:58",
+          "dir": "up",
+          "from": 3.54,
+          "to": 3.74,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:21",
+          "dir": "up",
+          "from": 3.74,
+          "to": 4.66,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:21",
+          "dir": "up",
+          "from": 4.66,
+          "to": 5,
+          "afterAnswer": true
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.26,
+        "content": 0.74,
+        "waiting": 0,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "20:21",
+          "minute": 1221,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        }
+      ]
+    },
+    {
+      "seed": 1,
+      "weekday": "sat",
+      "answers": 7,
+      "up": 3,
+      "down": 2,
+      "afterAnswer": 5,
+      "upBeforeLastOrders": 3,
+      "downBeforeLastOrders": 2,
+      "restlessMinutes": 86,
+      "restless": true,
+      "meterUp": 9,
+      "meterDown": 8,
+      "meterAfterAnswer": 8,
+      "moves": [
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:45",
+          "dir": "up",
+          "from": 3.49,
+          "to": 3.7,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:24",
+          "dir": "down",
+          "from": 3.7,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:30",
+          "dir": "down",
+          "from": 3.49,
+          "to": 3.29,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:34",
+          "dir": "down",
+          "from": 3.29,
+          "to": 3.05,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:35",
+          "dir": "up",
+          "from": 3.05,
+          "to": 4.1,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:35",
+          "dir": "down",
+          "from": 4.1,
+          "to": 0.93,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:41",
+          "dir": "up",
+          "from": 0.93,
+          "to": 2.42,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:41",
+          "dir": "down",
+          "from": 2.42,
+          "to": 0.25,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:43",
+          "dir": "down",
+          "from": 0.25,
+          "to": 0.23,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:01",
+          "dir": "up",
+          "from": 0.23,
+          "to": 0.64,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:01",
+          "dir": "up",
+          "from": 0.64,
+          "to": 1.45,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:01",
+          "dir": "up",
+          "from": 1.45,
+          "to": 3.49,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:13",
+          "dir": "up",
+          "from": 3.49,
+          "to": 3.71,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:22",
+          "dir": "up",
+          "from": 3.71,
+          "to": 3.92,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:41",
+          "dir": "down",
+          "from": 3.92,
+          "to": 3.7,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:48",
+          "dir": "down",
+          "from": 3.7,
+          "to": 3.45,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0,
+        "content": 0.63,
+        "waiting": 0,
+        "impatient": 0,
+        "displeased": 0.37
+      },
+      "changes": [
+        {
+          "clock": "20:35",
+          "minute": 1235,
+          "from": "content",
+          "to": "displeased",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:41",
+          "minute": 1301,
+          "from": "displeased",
+          "to": "waiting",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:41",
+          "minute": 1301,
+          "from": "waiting",
+          "to": "displeased",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:01",
+          "minute": 1321,
+          "from": "displeased",
+          "to": "impatient",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:01",
+          "minute": 1321,
+          "from": "impatient",
+          "to": "content",
+          "dir": "up",
+          "afterAnswer": true
+        }
+      ]
+    },
+    {
+      "seed": 2,
+      "weekday": "sat",
+      "answers": 7,
+      "up": 3,
+      "down": 2,
+      "afterAnswer": 5,
+      "upBeforeLastOrders": 3,
+      "downBeforeLastOrders": 2,
+      "restlessMinutes": 102,
+      "restless": true,
+      "meterUp": 9,
+      "meterDown": 5,
+      "meterAfterAnswer": 9,
+      "moves": [
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:50",
+          "dir": "up",
+          "from": 3.49,
+          "to": 3.7,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:51",
+          "dir": "down",
+          "from": 3.7,
+          "to": 3.47,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:55",
+          "dir": "down",
+          "from": 3.47,
+          "to": 0.89,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:42",
+          "dir": "up",
+          "from": 0.89,
+          "to": 1.78,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:42",
+          "dir": "down",
+          "from": 1.78,
+          "to": 0.4,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:43",
+          "dir": "down",
+          "from": 0.4,
+          "to": 0.38,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:44",
+          "dir": "up",
+          "from": 0.38,
+          "to": 0.4,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:22",
+          "dir": "down",
+          "from": 0.4,
+          "to": 0.26,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:37",
+          "dir": "up",
+          "from": 0.26,
+          "to": 0.76,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:37",
+          "dir": "up",
+          "from": 0.76,
+          "to": 1.71,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:37",
+          "dir": "up",
+          "from": 1.71,
+          "to": 3.19,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:10",
+          "dir": "up",
+          "from": 3.19,
+          "to": 3.39,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:33",
+          "dir": "up",
+          "from": 3.39,
+          "to": 3.59,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0,
+        "content": 0.56,
+        "waiting": 0,
+        "impatient": 0,
+        "displeased": 0.44
+      },
+      "changes": [
+        {
+          "clock": "19:55",
+          "minute": 1195,
+          "from": "content",
+          "to": "displeased",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:42",
+          "minute": 1242,
+          "from": "displeased",
+          "to": "impatient",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:42",
+          "minute": 1242,
+          "from": "impatient",
+          "to": "displeased",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:37",
+          "minute": 1297,
+          "from": "displeased",
+          "to": "impatient",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:37",
+          "minute": 1297,
+          "from": "impatient",
+          "to": "content",
+          "dir": "up",
+          "afterAnswer": true
+        }
+      ]
+    },
+    {
+      "seed": 3,
+      "weekday": "sat",
+      "answers": 12,
+      "up": 1,
+      "down": 0,
+      "afterAnswer": 1,
+      "upBeforeLastOrders": 1,
+      "downBeforeLastOrders": 0,
+      "restlessMinutes": 0,
+      "restless": false,
+      "meterUp": 7,
+      "meterDown": 7,
+      "meterAfterAnswer": 7,
+      "moves": [
+        {
+          "clock": "19:23",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.51,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:30",
+          "dir": "up",
+          "from": 3.51,
+          "to": 3.73,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:23",
+          "dir": "down",
+          "from": 3.73,
+          "to": 3.5,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:33",
+          "dir": "down",
+          "from": 3.5,
+          "to": 3.26,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:58",
+          "dir": "up",
+          "from": 3.26,
+          "to": 4.49,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:58",
+          "dir": "up",
+          "from": 4.49,
+          "to": 4.95,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:58",
+          "dir": "up",
+          "from": 4.95,
+          "to": 5,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:34",
+          "dir": "down",
+          "from": 5,
+          "to": 4.92,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:50",
+          "dir": "up",
+          "from": 4.92,
+          "to": 4.95,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:18",
+          "dir": "down",
+          "from": 4.95,
+          "to": 4.75,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:30",
+          "dir": "down",
+          "from": 4.75,
+          "to": 4.55,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:31",
+          "dir": "up",
+          "from": 4.55,
+          "to": 4.58,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:33",
+          "dir": "down",
+          "from": 4.58,
+          "to": 4.54,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:47",
+          "dir": "down",
+          "from": 4.54,
+          "to": 4.32,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.52,
+        "content": 0.48,
+        "waiting": 0,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "20:58",
+          "minute": 1258,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        }
+      ]
+    },
+    {
+      "seed": 4,
+      "weekday": "sat",
+      "answers": 13,
+      "up": 1,
+      "down": 4,
+      "afterAnswer": 2,
+      "upBeforeLastOrders": 1,
+      "downBeforeLastOrders": 3,
+      "restlessMinutes": 39,
+      "restless": true,
+      "meterUp": 6,
+      "meterDown": 14,
+      "meterAfterAnswer": 10,
+      "moves": [
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:57",
+          "dir": "up",
+          "from": 3.49,
+          "to": 4.68,
+          "afterAnswer": true
+        },
+        {
+          "clock": "19:57",
+          "dir": "up",
+          "from": 4.68,
+          "to": 5,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:27",
+          "dir": "down",
+          "from": 5,
+          "to": 4.97,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:50",
+          "dir": "down",
+          "from": 4.97,
+          "to": 4.77,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:15",
+          "dir": "up",
+          "from": 4.77,
+          "to": 4.82,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:15",
+          "dir": "up",
+          "from": 4.82,
+          "to": 4.91,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:39",
+          "dir": "down",
+          "from": 4.91,
+          "to": 4.85,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:39",
+          "dir": "up",
+          "from": 4.85,
+          "to": 4.94,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:55",
+          "dir": "down",
+          "from": 4.94,
+          "to": 3.46,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:56",
+          "dir": "down",
+          "from": 3.46,
+          "to": 3.44,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:56",
+          "dir": "down",
+          "from": 3.44,
+          "to": 3.41,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:03",
+          "dir": "down",
+          "from": 3.41,
+          "to": 3.21,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:11",
+          "dir": "down",
+          "from": 3.21,
+          "to": 3.01,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:14",
+          "dir": "down",
+          "from": 3.01,
+          "to": 2.36,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:19",
+          "dir": "down",
+          "from": 2.36,
+          "to": 2.16,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:21",
+          "dir": "down",
+          "from": 2.16,
+          "to": 1.73,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:27",
+          "dir": "down",
+          "from": 1.73,
+          "to": 1.27,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:31",
+          "dir": "down",
+          "from": 1.27,
+          "to": 1.03,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:59",
+          "dir": "down",
+          "from": 1.03,
+          "to": 0.81,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.51,
+        "content": 0.3,
+        "waiting": 0.03,
+        "impatient": 0.08,
+        "displeased": 0.09
+      },
+      "changes": [
+        {
+          "clock": "19:57",
+          "minute": 1197,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:55",
+          "minute": 1315,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:14",
+          "minute": 1334,
+          "from": "content",
+          "to": "waiting",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:21",
+          "minute": 1341,
+          "from": "waiting",
+          "to": "impatient",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:39",
+          "minute": 1359,
+          "from": "impatient",
+          "to": "displeased",
+          "dir": "down",
+          "afterAnswer": false
+        }
+      ]
+    },
+    {
+      "seed": 5,
+      "weekday": "sat",
+      "answers": 18,
+      "up": 5,
+      "down": 5,
+      "afterAnswer": 7,
+      "upBeforeLastOrders": 5,
+      "downBeforeLastOrders": 5,
+      "restlessMinutes": 24,
+      "restless": true,
+      "meterUp": 13,
+      "meterDown": 17,
+      "meterAfterAnswer": 18,
+      "moves": [
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:35",
+          "dir": "up",
+          "from": 3.49,
+          "to": 3.71,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:47",
+          "dir": "up",
+          "from": 3.71,
+          "to": 4.8,
+          "afterAnswer": true
+        },
+        {
+          "clock": "19:47",
+          "dir": "up",
+          "from": 4.8,
+          "to": 5,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:37",
+          "dir": "down",
+          "from": 5,
+          "to": 3.07,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:38",
+          "dir": "down",
+          "from": 3.07,
+          "to": 3.05,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:39",
+          "dir": "up",
+          "from": 3.05,
+          "to": 3.08,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:39",
+          "dir": "up",
+          "from": 3.08,
+          "to": 3.1,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:45",
+          "dir": "down",
+          "from": 3.1,
+          "to": 2.9,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:53",
+          "dir": "down",
+          "from": 2.9,
+          "to": 2.66,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:59",
+          "dir": "up",
+          "from": 2.66,
+          "to": 3.73,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:59",
+          "dir": "up",
+          "from": 3.73,
+          "to": 4.55,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:59",
+          "dir": "up",
+          "from": 4.55,
+          "to": 4.64,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:00",
+          "dir": "down",
+          "from": 4.64,
+          "to": 4.62,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:17",
+          "dir": "down",
+          "from": 4.62,
+          "to": 2.75,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:18",
+          "dir": "up",
+          "from": 2.75,
+          "to": 2.8,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:18",
+          "dir": "down",
+          "from": 2.8,
+          "to": 2.77,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:19",
+          "dir": "down",
+          "from": 2.77,
+          "to": 2.75,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:29",
+          "dir": "down",
+          "from": 2.75,
+          "to": 2.55,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:36",
+          "dir": "down",
+          "from": 2.55,
+          "to": 2.31,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:41",
+          "dir": "down",
+          "from": 2.31,
+          "to": 2.11,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:47",
+          "dir": "down",
+          "from": 2.11,
+          "to": 1.91,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:52",
+          "dir": "down",
+          "from": 1.91,
+          "to": 1.32,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:00",
+          "dir": "down",
+          "from": 1.32,
+          "to": 0.95,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:13",
+          "dir": "up",
+          "from": 0.95,
+          "to": 2.1,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:13",
+          "dir": "up",
+          "from": 2.1,
+          "to": 3.49,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:13",
+          "dir": "up",
+          "from": 3.49,
+          "to": 3.8,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:15",
+          "dir": "down",
+          "from": 3.8,
+          "to": 3.75,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:50",
+          "dir": "down",
+          "from": 3.75,
+          "to": 3.55,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:55",
+          "dir": "down",
+          "from": 3.55,
+          "to": 3.22,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.29,
+        "content": 0.42,
+        "waiting": 0.18,
+        "impatient": 0.06,
+        "displeased": 0.04
+      },
+      "changes": [
+        {
+          "clock": "19:47",
+          "minute": 1187,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:37",
+          "minute": 1237,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:48",
+          "minute": 1248,
+          "from": "content",
+          "to": "waiting",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:59",
+          "minute": 1259,
+          "from": "waiting",
+          "to": "content",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:59",
+          "minute": 1259,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:17",
+          "minute": 1277,
+          "from": "delighted",
+          "to": "waiting",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:49",
+          "minute": 1309,
+          "from": "waiting",
+          "to": "impatient",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:03",
+          "minute": 1323,
+          "from": "impatient",
+          "to": "displeased",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:13",
+          "minute": 1333,
+          "from": "displeased",
+          "to": "waiting",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:13",
+          "minute": 1333,
+          "from": "waiting",
+          "to": "content",
+          "dir": "up",
+          "afterAnswer": true
+        }
+      ]
+    },
+    {
+      "seed": 6,
+      "weekday": "sat",
+      "answers": 14,
+      "up": 3,
+      "down": 4,
+      "afterAnswer": 4,
+      "upBeforeLastOrders": 3,
+      "downBeforeLastOrders": 2,
+      "restlessMinutes": 0,
+      "restless": false,
+      "meterUp": 9,
+      "meterDown": 12,
+      "meterAfterAnswer": 9,
+      "moves": [
+        {
+          "clock": "19:19",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.54,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:37",
+          "dir": "up",
+          "from": 3.54,
+          "to": 3.75,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:26",
+          "dir": "down",
+          "from": 3.75,
+          "to": 3.53,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:30",
+          "dir": "up",
+          "from": 3.53,
+          "to": 4.6,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:30",
+          "dir": "up",
+          "from": 4.6,
+          "to": 5,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:23",
+          "dir": "down",
+          "from": 5,
+          "to": 3.89,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:35",
+          "dir": "down",
+          "from": 3.89,
+          "to": 3.69,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:49",
+          "dir": "down",
+          "from": 3.69,
+          "to": 3.49,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:52",
+          "dir": "up",
+          "from": 3.49,
+          "to": 4.26,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:52",
+          "dir": "up",
+          "from": 4.26,
+          "to": 4.71,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:53",
+          "dir": "down",
+          "from": 4.71,
+          "to": 4.69,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:59",
+          "dir": "down",
+          "from": 4.69,
+          "to": 4.36,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:06",
+          "dir": "down",
+          "from": 4.36,
+          "to": 4,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:16",
+          "dir": "up",
+          "from": 4,
+          "to": 4.2,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:16",
+          "dir": "up",
+          "from": 4.2,
+          "to": 4.38,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:16",
+          "dir": "up",
+          "from": 4.38,
+          "to": 4.46,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:34",
+          "dir": "down",
+          "from": 4.46,
+          "to": 4.26,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:38",
+          "dir": "down",
+          "from": 4.26,
+          "to": 3.83,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:42",
+          "dir": "down",
+          "from": 3.83,
+          "to": 3.44,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:49",
+          "dir": "down",
+          "from": 3.44,
+          "to": 3.24,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:57",
+          "dir": "down",
+          "from": 3.24,
+          "to": 2.74,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.42,
+        "content": 0.57,
+        "waiting": 0.01,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "20:30",
+          "minute": 1230,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:25",
+          "minute": 1285,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:52",
+          "minute": 1312,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:12",
+          "minute": 1332,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:16",
+          "minute": 1336,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:38",
+          "minute": 1358,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:57",
+          "minute": 1377,
+          "from": "content",
+          "to": "waiting",
+          "dir": "down",
+          "afterAnswer": false
+        }
+      ]
+    },
+    {
+      "seed": 7,
+      "weekday": "sat",
+      "answers": 14,
+      "up": 5,
+      "down": 4,
+      "afterAnswer": 4,
+      "upBeforeLastOrders": 5,
+      "downBeforeLastOrders": 3,
+      "restlessMinutes": 0,
+      "restless": false,
+      "meterUp": 9,
+      "meterDown": 11,
+      "meterAfterAnswer": 6,
+      "moves": [
+        {
+          "clock": "19:14",
+          "dir": "up",
+          "from": 2.92,
+          "to": 3.14,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:15",
+          "dir": "up",
+          "from": 3.14,
+          "to": 3.39,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:19",
+          "dir": "up",
+          "from": 3.39,
+          "to": 3.65,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:23",
+          "dir": "up",
+          "from": 3.65,
+          "to": 3.89,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:33",
+          "dir": "up",
+          "from": 3.89,
+          "to": 4.15,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:34",
+          "dir": "down",
+          "from": 4.15,
+          "to": 3.91,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:55",
+          "dir": "up",
+          "from": 3.91,
+          "to": 4.98,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:55",
+          "dir": "down",
+          "from": 4.98,
+          "to": 3.9,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:56",
+          "dir": "down",
+          "from": 3.9,
+          "to": 3.88,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:05",
+          "dir": "down",
+          "from": 3.88,
+          "to": 3.68,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:10",
+          "dir": "down",
+          "from": 3.68,
+          "to": 3.47,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:18",
+          "dir": "down",
+          "from": 3.47,
+          "to": 3.27,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:25",
+          "dir": "down",
+          "from": 3.27,
+          "to": 3,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:35",
+          "dir": "down",
+          "from": 3,
+          "to": 2.73,
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:42",
+          "dir": "up",
+          "from": 2.73,
+          "to": 3.9,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:42",
+          "dir": "up",
+          "from": 3.9,
+          "to": 4.63,
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:55",
+          "dir": "up",
+          "from": 4.63,
+          "to": 4.66,
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:36",
+          "dir": "down",
+          "from": 4.66,
+          "to": 4.46,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:42",
+          "dir": "down",
+          "from": 4.46,
+          "to": 4.21,
+          "afterAnswer": false
+        },
+        {
+          "clock": "22:48",
+          "dir": "down",
+          "from": 4.21,
+          "to": 4,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.59,
+        "content": 0.32,
+        "waiting": 0.09,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "19:14",
+          "minute": 1154,
+          "from": "waiting",
+          "to": "content",
+          "dir": "up",
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:33",
+          "minute": 1173,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:41",
+          "minute": 1181,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:55",
+          "minute": 1195,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:56",
+          "minute": 1256,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:28",
+          "minute": 1288,
+          "from": "content",
+          "to": "waiting",
+          "dir": "down",
+          "afterAnswer": false
+        },
+        {
+          "clock": "21:42",
+          "minute": 1302,
+          "from": "waiting",
+          "to": "content",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "21:42",
+          "minute": 1302,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "22:52",
+          "minute": 1372,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        }
+      ]
+    },
+    {
+      "seed": 8,
+      "weekday": "sat",
+      "answers": 4,
+      "up": 1,
+      "down": 1,
+      "afterAnswer": 1,
+      "upBeforeLastOrders": 1,
+      "downBeforeLastOrders": 1,
+      "restlessMinutes": 0,
+      "restless": false,
+      "meterUp": 4,
+      "meterDown": 5,
+      "meterAfterAnswer": 3,
+      "moves": [
+        {
+          "clock": "19:19",
+          "dir": "up",
+          "from": 3.24,
+          "to": 3.54,
+          "afterAnswer": false
+        },
+        {
+          "clock": "19:53",
+          "dir": "up",
+          "from": 3.54,
+          "to": 3.75,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:07",
+          "dir": "up",
+          "from": 3.75,
+          "to": 4.86,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:07",
+          "dir": "up",
+          "from": 4.86,
+          "to": 5,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:20",
+          "dir": "down",
+          "from": 5,
+          "to": 4.11,
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:28",
+          "dir": "down",
+          "from": 4.11,
+          "to": 3.91,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:37",
+          "dir": "down",
+          "from": 3.91,
+          "to": 3.71,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:41",
+          "dir": "down",
+          "from": 3.71,
+          "to": 3.5,
+          "afterAnswer": false
+        },
+        {
+          "clock": "20:46",
+          "dir": "down",
+          "from": 3.5,
+          "to": 3.26,
+          "afterAnswer": false
+        }
+      ],
+      "timeShare": {
+        "delighted": 0.23,
+        "content": 0.77,
+        "waiting": 0,
+        "impatient": 0,
+        "displeased": 0
+      },
+      "changes": [
+        {
+          "clock": "20:07",
+          "minute": 1207,
+          "from": "content",
+          "to": "delighted",
+          "dir": "up",
+          "afterAnswer": true
+        },
+        {
+          "clock": "20:29",
+          "minute": 1229,
+          "from": "delighted",
+          "to": "content",
+          "dir": "down",
+          "afterAnswer": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1025 @@
+{
+  "definition": "ORDER 299b — prövade värden för MOOD_BALANCE (stämningens lyft av kunskap) i order299StamningKvall.test.ts med MOOD_VARIANT. Vinbaren vecka 2 mån–lör; fröna 1–4 (24 kvällar) eller 1–8 (varianterna med 8, 48 kvällar). up/down = rummets läge byter uppåt/nedåt per kväll; restlessEvenings = kvällar med rummet otåligt eller missnöjt minst 15 spelminuter. Valt: M8 (balance.ts).",
+  "variants": [
+    {
+      "variant": "A",
+      "moodBalance": {
+        "section": "Servicen > Gästerna",
+        "threshold": {
+          "delighted": 0.85,
+          "content": 0.68,
+          "waiting": 0.55,
+          "impatient": 0.4
+        },
+        "rocket": {
+          "table": {
+            "right": 0.12,
+            "wrong": -0.3
+          },
+          "witness": {
+            "right": 0.08,
+            "wrong": -0.2
+          },
+          "witnessRadiusM": 3.5,
+          "room": {
+            "right": 0.04,
+            "wrong": -0.1
+          }
+        },
+        "departure": {
+          "witness": -0.12,
+          "room": -0.05
+        },
+        "liftDecayPerGameMinute": 0.004,
+        "liftMax": 0.25,
+        "decayPerGameMinute": 0.014,
+        "roomWeighting": "perParty",
+        "roomHysteresis": 0.02,
+        "meterVisibleSteps": 0.2,
+        "meterVisibleStepsAfterAnswer": 0.02
+      },
+      "players": {
+        "060": {
+          "evenings": 24,
+          "up": 2,
+          "down": 2.9,
+          "upBeforeLastOrders": null,
+          "downBeforeLastOrders": null,
+          "restlessEvenings": 17
+        },
+        "085": {
+          "evenings": 24,
+          "up": 2.2,
+          "down": 3.3,
+          "upBeforeLastOrders": null,
+          "downBeforeLastOrders": null,
+          "restlessEvenings": 14
+        },
+        "fel": {
+          "evenings": 24,
+          "up": 2.3,
+          "down": 2.5,
+          "upBeforeLastOrders": null,
+          "downBeforeLastOrders": null,
+          "restlessEvenings": 16
+        },
+        "slarvig": {
+          "evenings": 24,
+          "up": 4.3,
+          "down": 5.6,
+          "upBeforeLastOrders": null,
+          "downBeforeLastOrders": null,
+          "restlessEvenings": 20
+        }
+      }
+    },
+    {
+      "variant": "B",
+      "moodBalance": {
+        "section": "Servicen > Gästerna",
+        "threshold": {
+          "delighted": 0.85,
+          "content": 0.68,
+          "waiting": 0.55,
+          "impatient": 0.4
+        },
+        "rocket": {
+          "table": {
+            "right": 0.15,
+            "wrong": -0.3
+          },
+          "witness": {
+            "right": 0.1,
+            "wrong": -0.2
+          },
+          "witnessRadiusM": 3.5,
+          "room": {
+            "right": 0.06,
+            "wrong": -0.12
+          }
+        },
+        "departure": {
+          "witness": -0.15,
+          "room": -0.06
+        },
+        "liftDecayPerGameMinute": 0.004,
+        "liftMax": 0.25,
+        "decayPerGameMinute": 0.014,
+        "roomWeighting": "perParty",
+        "roomHysteresis": 0.02,
+        "meterVisibleSteps": 0.2,
+        "meterVisibleStepsAfterAnswer": 0.02
+      },
+      "players": {
+        "060": {
+          "evenings": 24,
+          "up": 2.1,
+          "down": 3.1,
+          "upBeforeLastOrders": null,
+          "downBeforeLastOrders": null,
+          "restlessEvenings": 17
+        },
+        "085": {
+          "evenings": 24,
+          "up": 2.5,
+          "down": 3.7,
+          "upBeforeLastOrders": null,
+          "downBeforeLastOrders": null,
+          "restlessEvenings": 15
+        },
+        "fel": {
+          "evenings": 24,
+          "up": 2.5,
+          "down": 2.9,
+          "upBeforeLastOrders": null,
+          "downBeforeLastOrders": null,
+          "restlessEvenings": 17
+        },
+        "slarvig": {
+          "evenings": 24,
+          "up": 5,
+          "down": 6.5,
+          "upBeforeLastOrders": null,
+          "downBeforeLastOrders": null,
+          "restlessEvenings": 23
+        }
+      }
+    },
+    {
+      "variant": "C",
+      "moodBalance": {
+        "section": "Servicen > Gästerna",
+        "threshold": {
+          "delighted": 0.85,
+          "content": 0.68,
+          "waiting": 0.55,
+          "impatient": 0.4
+        },
+        "rocket": {
+          "table": {
+            "right": 0.12,
+            "wrong": -0.3
+          },
+          "witness": {
+            "right": 0.08,
+            "wrong": -0.2
+          },
+          "witnessRadiusM": 3.5,
+          "room": {
+            "right": 0.05,
+            "wrong": -0.12
+          }
+        },
+        "departure": {
+          "witness": -0.12,
+          "room": -0.03
+        },
+        "liftDecayPerGameMinute": 0.004,
+        "roomLiftDecayPerGameMinute": 0.001,
+        "liftMax": 0.25,
+        "decayPerGameMinute": 0.014,
+        "roomWeighting": "perParty",
+        "roomHysteresis": 0.02,
+        "meterVisibleSteps": 0.2,
+        "meterVisibleStepsAfterAnswer": 0.02
+      },
+      "players": {
+        "060": {
+          "evenings": 24,
+          "up": 2,
+          "down": 2.8,
+          "upBeforeLastOrders": null,
+          "downBeforeLastOrders": null,
+          "restlessEvenings": 16
+        },
+        "085": {
+          "evenings": 24,
+          "up": 2.1,
+          "down": 2.8,
+          "upBeforeLastOrders": null,
+          "downBeforeLastOrders": null,
+          "restlessEvenings": 11
+        },
+        "fel": {
+          "evenings": 24,
+          "up": 1.7,
+          "down": 2.3,
+          "upBeforeLastOrders": null,
+          "downBeforeLastOrders": null,
+          "restlessEvenings": 20
+        },
+        "slarvig": {
+          "evenings": 24,
+          "up": 3.2,
+          "down": 5.8,
+          "upBeforeLastOrders": null,
+          "downBeforeLastOrders": null,
+          "restlessEvenings": 24
+        }
+      }
+    },
+    {
+      "variant": "D",
+      "moodBalance": {
+        "section": "Servicen > Gästerna",
+        "threshold": {
+          "delighted": 0.85,
+          "content": 0.68,
+          "waiting": 0.55,
+          "impatient": 0.4
+        },
+        "rocket": {
+          "table": {
+            "right": 0.15,
+            "wrong": -0.3
+          },
+          "witness": {
+            "right": 0.1,
+            "wrong": -0.2
+          },
+          "witnessRadiusM": 3.5,
+          "room": {
+            "right": 0.08,
+            "wrong": -0.18
+          }
+        },
+        "departure": {
+          "witness": -0.15,
+          "room": -0.04
+        },
+        "liftDecayPerGameMinute": 0.004,
+        "roomLiftDecayPerGameMinute": 0.0005,
+        "liftMax": 0.25,
+        "decayPerGameMinute": 0.014,
+        "roomWeighting": "perParty",
+        "roomHysteresis": 0.02,
+        "meterVisibleSteps": 0.2,
+        "meterVisibleStepsAfterAnswer": 0.02
+      },
+      "players": {
+        "060": {
+          "evenings": 24,
+          "up": 1.9,
+          "down": 2.5,
+          "upBeforeLastOrders": null,
+          "downBeforeLastOrders": null,
+          "restlessEvenings": 19
+        },
+        "085": {
+          "evenings": 24,
+          "up": 2,
+          "down": 2.6,
+          "upBeforeLastOrders": null,
+          "downBeforeLastOrders": null,
+          "restlessEvenings": 12
+        },
+        "fel": {
+          "evenings": 24,
+          "up": 1.1,
+          "down": 1.9,
+          "upBeforeLastOrders": null,
+          "downBeforeLastOrders": null,
+          "restlessEvenings": 22
+        },
+        "slarvig": {
+          "evenings": 24,
+          "up": 2.6,
+          "down": 5.2,
+          "upBeforeLastOrders": null,
+          "downBeforeLastOrders": null,
+          "restlessEvenings": 24
+        }
+      }
+    },
+    {
+      "variant": "E",
+      "moodBalance": {
+        "section": "Servicen > Gästerna",
+        "threshold": {
+          "delighted": 0.85,
+          "content": 0.68,
+          "waiting": 0.55,
+          "impatient": 0.4
+        },
+        "rocket": {
+          "table": {
+            "right": 0.15,
+            "wrong": -0.3
+          },
+          "witness": {
+            "right": 0.1,
+            "wrong": -0.2
+          },
+          "witnessRadiusM": 3.5,
+          "room": {
+            "right": 0.08,
+            "wrong": -0.18
+          }
+        },
+        "departure": {
+          "witness": -0.15,
+          "room": -0.04
+        },
+        "liftDecayPerGameMinute": 0.0015,
+        "roomLiftDecayPerGameMinute": 0.0005,
+        "liftMax": 0.25,
+        "decayPerGameMinute": 0.014,
+        "roomWeighting": "perParty",
+        "roomHysteresis": 0.02,
+        "meterVisibleSteps": 0.2,
+        "meterVisibleStepsAfterAnswer": 0.02
+      },
+      "players": {
+        "060": {
+          "evenings": 24,
+          "up": 1.8,
+          "down": 2.7,
+          "upBeforeLastOrders": 1.6,
+          "downBeforeLastOrders": 2.1,
+          "restlessEvenings": 19
+        },
+        "085": {
+          "evenings": 24,
+          "up": 2,
+          "down": 2.7,
+          "upBeforeLastOrders": 1.7,
+          "downBeforeLastOrders": 2,
+          "restlessEvenings": 12
+        },
+        "fel": {
+          "evenings": 24,
+          "up": 1.2,
+          "down": 2,
+          "upBeforeLastOrders": 0.9,
+          "downBeforeLastOrders": 1.8,
+          "restlessEvenings": 22
+        },
+        "slarvig": {
+          "evenings": 24,
+          "up": 2.5,
+          "down": 5,
+          "upBeforeLastOrders": 2.2,
+          "downBeforeLastOrders": 4.7,
+          "restlessEvenings": 24
+        }
+      }
+    },
+    {
+      "variant": "F",
+      "moodBalance": {
+        "section": "Servicen > Gästerna",
+        "threshold": {
+          "delighted": 0.85,
+          "content": 0.68,
+          "waiting": 0.55,
+          "impatient": 0.4
+        },
+        "rocket": {
+          "table": {
+            "right": 0.15,
+            "wrong": -0.3
+          },
+          "witness": {
+            "right": 0.1,
+            "wrong": -0.2
+          },
+          "witnessRadiusM": 3.5,
+          "room": {
+            "right": 0.1,
+            "wrong": -0.2
+          }
+        },
+        "departure": {
+          "witness": -0.15,
+          "room": -0.04
+        },
+        "liftDecayPerGameMinute": 0.0015,
+        "roomLiftDecayPerGameMinute": 0.0005,
+        "liftMax": 0.3,
+        "decayPerGameMinute": 0.014,
+        "roomWeighting": "perParty",
+        "roomHysteresis": 0.02,
+        "meterVisibleSteps": 0.2,
+        "meterVisibleStepsAfterAnswer": 0.02
+      },
+      "players": {
+        "060": {
+          "evenings": 24,
+          "up": 1.9,
+          "down": 2.6,
+          "upBeforeLastOrders": 1.6,
+          "downBeforeLastOrders": 2,
+          "restlessEvenings": 19
+        },
+        "085": {
+          "evenings": 24,
+          "up": 1.9,
+          "down": 2.4,
+          "upBeforeLastOrders": 1.7,
+          "downBeforeLastOrders": 1.8,
+          "restlessEvenings": 12
+        },
+        "fel": {
+          "evenings": 24,
+          "up": 0.8,
+          "down": 1.9,
+          "upBeforeLastOrders": 0.6,
+          "downBeforeLastOrders": 1.6,
+          "restlessEvenings": 22
+        },
+        "slarvig": {
+          "evenings": 24,
+          "up": 1.7,
+          "down": 4.3,
+          "upBeforeLastOrders": 1.5,
+          "downBeforeLastOrders": 4,
+          "restlessEvenings": 24
+        }
+      }
+    },
+    {
+      "variant": "G",
+      "moodBalance": {
+        "section": "Servicen > Gästerna",
+        "threshold": {
+          "delighted": 0.85,
+          "content": 0.68,
+          "waiting": 0.55,
+          "impatient": 0.4
+        },
+        "rocket": {
+          "table": {
+            "right": 0.15,
+            "wrong": -0.3
+          },
+          "witness": {
+            "right": 0.1,
+            "wrong": -0.2
+          },
+          "witnessRadiusM": 3.5,
+          "room": {
+            "right": 0.12,
+            "wrong": -0.24
+          }
+        },
+        "departure": {
+          "witness": -0.1,
+          "room": -0.02
+        },
+        "liftDecayPerGameMinute": 0.0015,
+        "roomLiftDecayPerGameMinute": 0.0005,
+        "liftMax": 0.3,
+        "decayPerGameMinute": 0.014,
+        "roomWeighting": "perParty",
+        "roomHysteresis": 0.02,
+        "meterVisibleSteps": 0.2,
+        "meterVisibleStepsAfterAnswer": 0.02
+      },
+      "players": {
+        "060": {
+          "evenings": 24,
+          "up": 1.8,
+          "down": 2.2,
+          "upBeforeLastOrders": 1.5,
+          "downBeforeLastOrders": 1.9,
+          "restlessEvenings": 19
+        },
+        "085": {
+          "evenings": 24,
+          "up": 1.8,
+          "down": 2,
+          "upBeforeLastOrders": 1.6,
+          "downBeforeLastOrders": 1.5,
+          "restlessEvenings": 11
+        },
+        "fel": {
+          "evenings": 24,
+          "up": 0.8,
+          "down": 1.8,
+          "upBeforeLastOrders": 0.5,
+          "downBeforeLastOrders": 1.5,
+          "restlessEvenings": 22
+        },
+        "slarvig": {
+          "evenings": 24,
+          "up": 1.8,
+          "down": 4.4,
+          "upBeforeLastOrders": 1.6,
+          "downBeforeLastOrders": 4.2,
+          "restlessEvenings": 24
+        }
+      }
+    },
+    {
+      "variant": "H",
+      "moodBalance": {
+        "section": "Servicen > Gästerna",
+        "threshold": {
+          "delighted": 0.85,
+          "content": 0.68,
+          "waiting": 0.55,
+          "impatient": 0.4
+        },
+        "rocket": {
+          "table": {
+            "right": 0.2,
+            "wrong": -0.35
+          },
+          "witness": {
+            "right": 0.12,
+            "wrong": -0.22
+          },
+          "witnessRadiusM": 3.5,
+          "room": {
+            "right": 0.12,
+            "wrong": -0.24
+          }
+        },
+        "departure": {
+          "witness": -0.1,
+          "room": -0.015
+        },
+        "liftDecayPerGameMinute": 0.0015,
+        "roomLiftDecayPerGameMinute": 0.0005,
+        "liftMax": 0.3,
+        "decayPerGameMinute": 0.014,
+        "roomWeighting": "perParty",
+        "roomHysteresis": 0.02,
+        "meterVisibleSteps": 0.2,
+        "meterVisibleStepsAfterAnswer": 0.02
+      },
+      "players": {
+        "060": {
+          "evenings": 24,
+          "up": 1.7,
+          "down": 2.2,
+          "upBeforeLastOrders": 1.5,
+          "downBeforeLastOrders": 1.9,
+          "restlessEvenings": 18
+        },
+        "085": {
+          "evenings": 24,
+          "up": 1.7,
+          "down": 2,
+          "upBeforeLastOrders": 1.5,
+          "downBeforeLastOrders": 1.5,
+          "restlessEvenings": 11
+        },
+        "fel": {
+          "evenings": 24,
+          "up": 0.8,
+          "down": 1.7,
+          "upBeforeLastOrders": 0.5,
+          "downBeforeLastOrders": 1.5,
+          "restlessEvenings": 22
+        },
+        "slarvig": {
+          "evenings": 24,
+          "up": 1.9,
+          "down": 4.5,
+          "upBeforeLastOrders": 1.8,
+          "downBeforeLastOrders": 4.2,
+          "restlessEvenings": 24
+        }
+      }
+    },
+    {
+      "variant": "I",
+      "moodBalance": {
+        "section": "Servicen > Gästerna",
+        "threshold": {
+          "delighted": 0.85,
+          "content": 0.68,
+          "waiting": 0.55,
+          "impatient": 0.4
+        },
+        "rocket": {
+          "table": {
+            "right": 0.15,
+            "wrong": -0.3
+          },
+          "witness": {
+            "right": 0.1,
+            "wrong": -0.2
+          },
+          "witnessRadiusM": 3.5,
+          "room": {
+            "right": 0.12,
+            "wrong": -0.24
+          }
+        },
+        "departure": {
+          "witness": -0.1,
+          "room": -0.02
+        },
+        "liftDecayPerGameMinute": 0.0005,
+        "roomLiftDecayPerGameMinute": 0,
+        "liftMax": 0.3,
+        "decayPerGameMinute": 0.014,
+        "roomWeighting": "perParty",
+        "roomHysteresis": 0.02,
+        "meterVisibleSteps": 0.2,
+        "meterVisibleStepsAfterAnswer": 0.02
+      },
+      "players": {
+        "060": {
+          "evenings": 24,
+          "up": 1.7,
+          "down": 2.3,
+          "upBeforeLastOrders": 1.5,
+          "downBeforeLastOrders": 1.8,
+          "restlessEvenings": 19
+        },
+        "085": {
+          "evenings": 24,
+          "up": 1.7,
+          "down": 2.1,
+          "upBeforeLastOrders": 1.5,
+          "downBeforeLastOrders": 1.5,
+          "restlessEvenings": 11
+        },
+        "fel": {
+          "evenings": 24,
+          "up": 0.4,
+          "down": 1.6,
+          "upBeforeLastOrders": 0.3,
+          "downBeforeLastOrders": 1.4,
+          "restlessEvenings": 22
+        },
+        "slarvig": {
+          "evenings": 24,
+          "up": 0.4,
+          "down": 3.1,
+          "upBeforeLastOrders": 0.4,
+          "downBeforeLastOrders": 3.1,
+          "restlessEvenings": 24
+        }
+      }
+    },
+    {
+      "variant": "J",
+      "moodBalance": {
+        "section": "Servicen > Gästerna",
+        "threshold": {
+          "delighted": 0.85,
+          "content": 0.68,
+          "waiting": 0.55,
+          "impatient": 0.4
+        },
+        "rocket": {
+          "table": {
+            "right": 0.15,
+            "wrong": -0.3
+          },
+          "witness": {
+            "right": 0.1,
+            "wrong": -0.2
+          },
+          "witnessRadiusM": 3.5,
+          "room": {
+            "right": 0.14,
+            "wrong": -0.26
+          }
+        },
+        "departure": {
+          "witness": -0.1,
+          "room": -0.02
+        },
+        "liftDecayPerGameMinute": 0.0005,
+        "roomLiftDecayPerGameMinute": 0,
+        "liftMax": 0.3,
+        "decayPerGameMinute": 0.014,
+        "roomWeighting": "perParty",
+        "roomHysteresis": 0.02,
+        "meterVisibleSteps": 0.2,
+        "meterVisibleStepsAfterAnswer": 0.02
+      },
+      "players": {
+        "060": {
+          "evenings": 24,
+          "up": 1.5,
+          "down": 2.2,
+          "upBeforeLastOrders": 1.4,
+          "downBeforeLastOrders": 1.8,
+          "restlessEvenings": 19
+        },
+        "085": {
+          "evenings": 24,
+          "up": 1.6,
+          "down": 2,
+          "upBeforeLastOrders": 1.5,
+          "downBeforeLastOrders": 1.5,
+          "restlessEvenings": 11
+        },
+        "fel": {
+          "evenings": 24,
+          "up": 0.4,
+          "down": 1.5,
+          "upBeforeLastOrders": 0.3,
+          "downBeforeLastOrders": 1.3,
+          "restlessEvenings": 22
+        },
+        "slarvig": {
+          "evenings": 24,
+          "up": 0.4,
+          "down": 3.1,
+          "upBeforeLastOrders": 0.4,
+          "downBeforeLastOrders": 3.1,
+          "restlessEvenings": 24
+        }
+      }
+    },
+    {
+      "variant": "K",
+      "moodBalance": {
+        "section": "Servicen > Gästerna",
+        "threshold": {
+          "delighted": 0.85,
+          "content": 0.68,
+          "waiting": 0.55,
+          "impatient": 0.4
+        },
+        "rocket": {
+          "table": {
+            "right": 0.15,
+            "wrong": -0.3
+          },
+          "witness": {
+            "right": 0.1,
+            "wrong": -0.2
+          },
+          "witnessRadiusM": 3.5,
+          "room": {
+            "right": 0.15,
+            "wrong": -0.3
+          }
+        },
+        "departure": {
+          "witness": -0.1,
+          "room": -0.02
+        },
+        "liftDecayPerGameMinute": 0.0005,
+        "roomLiftDecayPerGameMinute": 0,
+        "liftMax": 0.4,
+        "decayPerGameMinute": 0.014,
+        "roomWeighting": "perParty",
+        "roomHysteresis": 0.02,
+        "meterVisibleSteps": 0.2,
+        "meterVisibleStepsAfterAnswer": 0.02
+      },
+      "players": {
+        "060": {
+          "evenings": 24,
+          "up": 1.6,
+          "down": 2,
+          "upBeforeLastOrders": 1.5,
+          "downBeforeLastOrders": 1.6,
+          "restlessEvenings": 18
+        },
+        "085": {
+          "evenings": 24,
+          "up": 1.7,
+          "down": 1.8,
+          "upBeforeLastOrders": 1.5,
+          "downBeforeLastOrders": 1.4,
+          "restlessEvenings": 11
+        },
+        "fel": {
+          "evenings": 24,
+          "up": 0.4,
+          "down": 1.4,
+          "upBeforeLastOrders": 0.3,
+          "downBeforeLastOrders": 1.2,
+          "restlessEvenings": 22
+        },
+        "slarvig": {
+          "evenings": 24,
+          "up": 0.5,
+          "down": 3.1,
+          "upBeforeLastOrders": 0.5,
+          "downBeforeLastOrders": 3.1,
+          "restlessEvenings": 24
+        }
+      }
+    },
+    {
+      "variant": "K8",
+      "moodBalance": {
+        "section": "Servicen > Gästerna",
+        "threshold": {
+          "delighted": 0.85,
+          "content": 0.68,
+          "waiting": 0.55,
+          "impatient": 0.4
+        },
+        "rocket": {
+          "table": {
+            "right": 0.15,
+            "wrong": -0.3
+          },
+          "witness": {
+            "right": 0.1,
+            "wrong": -0.2
+          },
+          "witnessRadiusM": 3.5,
+          "room": {
+            "right": 0.15,
+            "wrong": -0.3
+          }
+        },
+        "departure": {
+          "witness": -0.1,
+          "room": -0.02
+        },
+        "liftDecayPerGameMinute": 0.0005,
+        "roomLiftDecayPerGameMinute": 0,
+        "liftMax": 0.4,
+        "decayPerGameMinute": 0.014,
+        "roomWeighting": "perParty",
+        "roomHysteresis": 0.02,
+        "meterVisibleSteps": 0.2,
+        "meterVisibleStepsAfterAnswer": 0.02
+      },
+      "players": {
+        "060": {
+          "evenings": 48,
+          "up": 2.1,
+          "down": 2.3,
+          "upBeforeLastOrders": 2,
+          "downBeforeLastOrders": 2,
+          "restlessEvenings": 34
+        },
+        "085": {
+          "evenings": 48,
+          "up": 2.2,
+          "down": 2.1,
+          "upBeforeLastOrders": 2,
+          "downBeforeLastOrders": 1.6,
+          "restlessEvenings": 19
+        },
+        "fel": {
+          "evenings": 48,
+          "up": 0.7,
+          "down": 1.6,
+          "upBeforeLastOrders": 0.6,
+          "downBeforeLastOrders": 1.5,
+          "restlessEvenings": 45
+        },
+        "slarvig": {
+          "evenings": 48,
+          "up": 0.9,
+          "down": 3.4,
+          "upBeforeLastOrders": 0.9,
+          "downBeforeLastOrders": 3.4,
+          "restlessEvenings": 48
+        }
+      }
+    },
+    {
+      "variant": "L",
+      "moodBalance": {
+        "section": "Servicen > Gästerna",
+        "threshold": {
+          "delighted": 0.85,
+          "content": 0.68,
+          "waiting": 0.55,
+          "impatient": 0.4
+        },
+        "rocket": {
+          "table": {
+            "right": 0.2,
+            "wrong": -0.3
+          },
+          "witness": {
+            "right": 0.12,
+            "wrong": -0.2
+          },
+          "witnessRadiusM": 3.5,
+          "room": {
+            "right": 0.15,
+            "wrong": -0.3
+          }
+        },
+        "departure": {
+          "witness": -0.1,
+          "room": -0.02
+        },
+        "liftDecayPerGameMinute": 0.0005,
+        "roomLiftDecayPerGameMinute": 0,
+        "liftMax": 0.4,
+        "decayPerGameMinute": 0.014,
+        "roomWeighting": "perParty",
+        "roomHysteresis": 0.02,
+        "meterVisibleSteps": 0.2,
+        "meterVisibleStepsAfterAnswer": 0.02
+      },
+      "players": {
+        "060": {
+          "evenings": 24,
+          "up": 1.5,
+          "down": 2.1,
+          "upBeforeLastOrders": 1.5,
+          "downBeforeLastOrders": 1.7,
+          "restlessEvenings": 18
+        },
+        "085": {
+          "evenings": 24,
+          "up": 1.5,
+          "down": 1.7,
+          "upBeforeLastOrders": 1.4,
+          "downBeforeLastOrders": 1.3,
+          "restlessEvenings": 11
+        },
+        "fel": {
+          "evenings": 24,
+          "up": 0.4,
+          "down": 1.4,
+          "upBeforeLastOrders": 0.3,
+          "downBeforeLastOrders": 1.2,
+          "restlessEvenings": 22
+        },
+        "slarvig": {
+          "evenings": 24,
+          "up": 0.5,
+          "down": 3.1,
+          "upBeforeLastOrders": 0.5,
+          "downBeforeLastOrders": 3.1,
+          "restlessEvenings": 24
+        }
+      }
+    },
+    {
+      "variant": "M8",
+      "moodBalance": {
+        "section": "Servicen > Gästerna",
+        "threshold": {
+          "delighted": 0.85,
+          "content": 0.68,
+          "waiting": 0.55,
+          "impatient": 0.4
+        },
+        "rocket": {
+          "table": {
+            "right": 0.15,
+            "wrong": -0.3
+          },
+          "witness": {
+            "right": 0.1,
+            "wrong": -0.2
+          },
+          "witnessRadiusM": 3.5,
+          "room": {
+            "right": 0.17,
+            "wrong": -0.3
+          }
+        },
+        "departure": {
+          "witness": -0.1,
+          "room": -0.02
+        },
+        "liftDecayPerGameMinute": 0.0005,
+        "roomLiftDecayPerGameMinute": 0,
+        "liftMax": 0.4,
+        "decayPerGameMinute": 0.014,
+        "roomWeighting": "perParty",
+        "roomHysteresis": 0.02,
+        "meterVisibleSteps": 0.2,
+        "meterVisibleStepsAfterAnswer": 0.02
+      },
+      "players": {
+        "060": {
+          "evenings": 48,
+          "up": 2,
+          "down": 2.3,
+          "upBeforeLastOrders": 1.9,
+          "downBeforeLastOrders": 2,
+          "restlessEvenings": 33
+        },
+        "085": {
+          "evenings": 48,
+          "up": 2.1,
+          "down": 1.9,
+          "upBeforeLastOrders": 2,
+          "downBeforeLastOrders": 1.5,
+          "restlessEvenings": 19
+        },
+        "fel": {
+          "evenings": 48,
+          "up": 0.7,
+          "down": 1.6,
+          "upBeforeLastOrders": 0.6,
+          "downBeforeLastOrders": 1.5,
+          "restlessEvenings": 45
+        },
+        "slarvig": {
+          "evenings": 48,
+          "up": 0.9,
+          "down": 3.4,
+          "upBeforeLastOrders": 0.9,
+          "downBeforeLastOrders": 3.4,
+          "restlessEvenings": 48
+        }
+      }
+    }
+  ]
+}

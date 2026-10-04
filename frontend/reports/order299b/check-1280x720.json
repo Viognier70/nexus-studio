@@ -1,0 +1,2048 @@
+{
+  "viewport": "1280x720",
+  "errors": [],
+  "rockets": [
+    {
+      "incident": "vb06-kylen",
+      "step": 0,
+      "quality": "best",
+      "layout": {
+        "rows": [
+          0.706,
+          0.706
+        ],
+        "card": {
+          "left": 45,
+          "right": 416,
+          "leftShare": 0.035,
+          "rightShare": 0.325
+        },
+        "stripHeight": 40,
+        "meter": {
+          "left": 753,
+          "top": 33,
+          "tillRight": 740,
+          "tillTop": 33,
+          "width": 230
+        },
+        "bandShown": false
+      },
+      "before": {
+        "clock": "19.49",
+        "speedNow": "4",
+        "moment": "",
+        "reactions": "",
+        "camDist": 14.6,
+        "camPitch": 0.873,
+        "camYaw": 0.4,
+        "card": true,
+        "line": null,
+        "notices": [],
+        "meter": {
+          "mood": "content",
+          "fill": "3.67",
+          "change": ""
+        }
+      },
+      "samples": [
+        {
+          "ms": 81,
+          "clock": "19.50",
+          "speedNow": "1",
+          "moment": "0.00",
+          "reactions": "232.0:up:5",
+          "camDist": 13.04,
+          "camPitch": 0.873,
+          "camYaw": 0.4,
+          "card": true,
+          "line": "Du valde Över gränsen, en avvikelse som kräver åtgärd → bord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "231.99999999999537",
+              "text": "+115 krbord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "content",
+            "fill": "3.67",
+            "change": ""
+          }
+        },
+        {
+          "ms": 213,
+          "clock": "19.50",
+          "speedNow": "1",
+          "moment": "0.40",
+          "reactions": "232.0:up:5",
+          "camDist": 12.84,
+          "camPitch": 0.873,
+          "camYaw": 0.4,
+          "card": true,
+          "line": "Du valde Över gränsen, en avvikelse som kräver åtgärd → bord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "231.99999999999537",
+              "text": "+115 krbord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "content",
+            "fill": "3.67",
+            "change": ""
+          }
+        },
+        {
+          "ms": 402,
+          "clock": "19.50",
+          "speedNow": "1",
+          "moment": "0.60",
+          "reactions": "232.0:up:5",
+          "camDist": 12.66,
+          "camPitch": 0.873,
+          "camYaw": 0.4,
+          "card": true,
+          "line": "Du valde Över gränsen, en avvikelse som kräver åtgärd → bord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "231.99999999999537",
+              "text": "+115 krbord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "content",
+            "fill": "3.67",
+            "change": ""
+          }
+        },
+        {
+          "ms": 581,
+          "clock": "19.51",
+          "speedNow": "1",
+          "moment": "0.60",
+          "reactions": "232.0:up:5",
+          "camDist": 12.23,
+          "camPitch": 0.843,
+          "camYaw": 0.425,
+          "card": true,
+          "line": "Du valde Över gränsen, en avvikelse som kräver åtgärd → bord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "231.99999999999537",
+              "text": "+115 krbord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "content",
+            "fill": "3.67",
+            "change": ""
+          }
+        },
+        {
+          "ms": 700,
+          "clock": "19.51",
+          "speedNow": "1",
+          "moment": "0.80",
+          "reactions": "232.0:up:5",
+          "camDist": 11.51,
+          "camPitch": 0.793,
+          "camYaw": 0.466,
+          "card": true,
+          "line": "Du valde Över gränsen, en avvikelse som kräver åtgärd → bord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "231.99999999999537",
+              "text": "+115 krbord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "content",
+            "fill": "3.67",
+            "change": ""
+          }
+        },
+        {
+          "ms": 806,
+          "clock": "19.51",
+          "speedNow": "1",
+          "moment": "1.00",
+          "reactions": "232.0:up:5",
+          "camDist": 11.19,
+          "camPitch": 0.773,
+          "camYaw": 0.483,
+          "card": true,
+          "line": "Du valde Över gränsen, en avvikelse som kräver åtgärd → bord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "231.99999999999537",
+              "text": "+115 krbord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "content",
+            "fill": "3.67",
+            "change": ""
+          }
+        },
+        {
+          "ms": 986,
+          "clock": "19.51",
+          "speedNow": "1",
+          "moment": "1.00",
+          "reactions": "232.0:up:5",
+          "camDist": 10.52,
+          "camPitch": 0.731,
+          "camYaw": 0.518,
+          "card": true,
+          "line": "Du valde Över gränsen, en avvikelse som kräver åtgärd → bord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "231.99999999999537",
+              "text": "+115 krbord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "content",
+            "fill": "3.67",
+            "change": ""
+          }
+        },
+        {
+          "ms": 1104,
+          "clock": "19.51",
+          "speedNow": "1",
+          "moment": "1.20",
+          "reactions": "232.0:up:5",
+          "camDist": 9.81,
+          "camPitch": 0.692,
+          "camYaw": 0.55,
+          "card": true,
+          "line": "Du valde Över gränsen, en avvikelse som kräver åtgärd → bord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "231.99999999999537",
+              "text": "+115 krbord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "content",
+            "fill": "3.67",
+            "change": ""
+          }
+        },
+        {
+          "ms": 1218,
+          "clock": "19.51",
+          "speedNow": "1",
+          "moment": "1.40",
+          "reactions": "232.0:up:5",
+          "camDist": 9.46,
+          "camPitch": 0.676,
+          "camYaw": 0.564,
+          "card": true,
+          "line": "Du valde Över gränsen, en avvikelse som kräver åtgärd → bord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "231.99999999999537",
+              "text": "+115 krbord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": "up"
+          }
+        },
+        {
+          "ms": 1397,
+          "clock": "19.51",
+          "speedNow": "1",
+          "moment": "1.60",
+          "reactions": "232.0:up:5",
+          "camDist": 8.94,
+          "camPitch": 0.654,
+          "camYaw": 0.581,
+          "card": true,
+          "line": "Du valde Över gränsen, en avvikelse som kräver åtgärd → bord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "231.99999999999537",
+              "text": "+115 krbord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": "up"
+          }
+        },
+        {
+          "ms": 1798,
+          "clock": "19.51",
+          "speedNow": "1",
+          "moment": "2.00",
+          "reactions": "232.0:up:5",
+          "camDist": 8.12,
+          "camPitch": 0.631,
+          "camYaw": 0.6,
+          "card": true,
+          "line": "Du valde Över gränsen, en avvikelse som kräver åtgärd → bord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "231.99999999999537",
+              "text": "+115 krbord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": "up"
+          }
+        },
+        {
+          "ms": 1973,
+          "clock": "19.51",
+          "speedNow": "1",
+          "moment": "2.00",
+          "reactions": "232.0:up:5",
+          "camDist": 7.93,
+          "camPitch": 0.628,
+          "camYaw": 0.603,
+          "card": true,
+          "line": "Du valde Över gränsen, en avvikelse som kräver åtgärd → bord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "231.99999999999537",
+              "text": "+115 krbord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": "up"
+          }
+        },
+        {
+          "ms": 2077,
+          "clock": "19.51",
+          "speedNow": "1",
+          "moment": "2.20",
+          "reactions": "232.0:up:5",
+          "camDist": 7.75,
+          "camPitch": 0.625,
+          "camYaw": 0.606,
+          "card": true,
+          "line": "Du valde Över gränsen, en avvikelse som kräver åtgärd → bord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "231.99999999999537",
+              "text": "+115 krbord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": "up"
+          }
+        },
+        {
+          "ms": 2189,
+          "clock": "19.51",
+          "speedNow": "1",
+          "moment": "2.40",
+          "reactions": "232.0:up:5",
+          "camDist": 7.66,
+          "camPitch": 0.624,
+          "camYaw": 0.607,
+          "card": true,
+          "line": "Du valde Över gränsen, en avvikelse som kräver åtgärd → bord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "231.99999999999537",
+              "text": "+115 krbord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 2300,
+          "clock": "19.51",
+          "speedNow": "1",
+          "moment": "2.40",
+          "reactions": "232.0:up:5",
+          "camDist": 7.55,
+          "camPitch": 0.623,
+          "camYaw": 0.608,
+          "card": true,
+          "line": "Du valde Över gränsen, en avvikelse som kräver åtgärd → bord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "231.99999999999537",
+              "text": "+115 krbord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 2409,
+          "clock": "19.51",
+          "speedNow": "1",
+          "moment": "2.60",
+          "reactions": "232.0:up:5",
+          "camDist": 7.47,
+          "camPitch": 0.622,
+          "camYaw": 0.608,
+          "card": true,
+          "line": "Du valde Över gränsen, en avvikelse som kräver åtgärd → bord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "231.99999999999537",
+              "text": "+115 krbord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 2589,
+          "clock": "19.52",
+          "speedNow": "1",
+          "moment": "2.80",
+          "reactions": "232.0:up:5",
+          "camDist": 7.34,
+          "camPitch": 0.621,
+          "camYaw": 0.609,
+          "card": true,
+          "line": "Du valde Över gränsen, en avvikelse som kräver åtgärd → bord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "231.99999999999537",
+              "text": "+115 krbord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 2698,
+          "clock": "19.52",
+          "speedNow": "1",
+          "moment": "2.80",
+          "reactions": "232.0:up:5",
+          "camDist": 7.23,
+          "camPitch": 0.621,
+          "camYaw": 0.609,
+          "card": true,
+          "line": "Du valde Över gränsen, en avvikelse som kräver åtgärd → bord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "231.99999999999537",
+              "text": "+115 krbord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 2806,
+          "clock": "19.52",
+          "speedNow": "1",
+          "moment": "3.00",
+          "reactions": "232.0:up:5",
+          "camDist": 7.15,
+          "camPitch": 0.621,
+          "camYaw": 0.609,
+          "card": true,
+          "line": "Du valde Över gränsen, en avvikelse som kräver åtgärd → bord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "231.99999999999537",
+              "text": "+115 krbord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "false",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 2983,
+          "clock": "19.52",
+          "speedNow": "1",
+          "moment": "3.00",
+          "reactions": "232.0:up:5",
+          "camDist": 7.01,
+          "camPitch": 0.62,
+          "camYaw": 0.61,
+          "card": true,
+          "line": "Du valde Över gränsen, en avvikelse som kräver åtgärd → bord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "231.99999999999537",
+              "text": "+115 krbord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "true",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 3095,
+          "clock": "19.52",
+          "speedNow": "1",
+          "moment": "3.20",
+          "reactions": "232.0:up:5",
+          "camDist": 6.83,
+          "camPitch": 0.62,
+          "camYaw": 0.61,
+          "card": true,
+          "line": "Du valde Över gränsen, en avvikelse som kräver åtgärd → bord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "231.99999999999537",
+              "text": "+115 krbord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "true",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 3206,
+          "clock": "19.52",
+          "speedNow": "1",
+          "moment": "3.40",
+          "reactions": "232.0:up:5",
+          "camDist": 6.72,
+          "camPitch": 0.62,
+          "camYaw": 0.61,
+          "card": true,
+          "line": "Du valde Över gränsen, en avvikelse som kräver åtgärd → bord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [
+            {
+              "at": "231.99999999999537",
+              "text": "+115 krbord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+              "fading": "true",
+              "guestsIn": "1"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 3378,
+          "clock": "19.52",
+          "speedNow": "1",
+          "moment": "3.40",
+          "reactions": "232.0:up:5",
+          "camDist": 6.56,
+          "camPitch": 0.62,
+          "camYaw": 0.61,
+          "card": true,
+          "line": "Du valde Över gränsen, en avvikelse som kräver åtgärd → bord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 3494,
+          "clock": "19.52",
+          "speedNow": "1",
+          "moment": "3.60",
+          "reactions": "232.0:up:5",
+          "camDist": 6.36,
+          "camPitch": 0.62,
+          "camYaw": 0.61,
+          "card": true,
+          "line": "Du valde Över gränsen, en avvikelse som kräver åtgärd → bord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 3902,
+          "clock": "19.52",
+          "speedNow": "1",
+          "moment": "4.00",
+          "reactions": "232.0:up:5",
+          "camDist": 7.03,
+          "camPitch": 0.694,
+          "camYaw": 0.548,
+          "card": true,
+          "line": "Du valde Över gränsen, en avvikelse som kräver åtgärd → bord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 4010,
+          "clock": "19.52",
+          "speedNow": "1",
+          "moment": "4.20",
+          "reactions": "232.0:up:5",
+          "camDist": 7.64,
+          "camPitch": 0.735,
+          "camYaw": 0.514,
+          "card": true,
+          "line": "Du valde Över gränsen, en avvikelse som kräver åtgärd → bord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 4171,
+          "clock": "19.52",
+          "speedNow": "1",
+          "moment": "4.40",
+          "reactions": "232.0:up:5",
+          "camDist": 8.48,
+          "camPitch": 0.783,
+          "camYaw": 0.474,
+          "card": true,
+          "line": "Du valde Över gränsen, en avvikelse som kräver åtgärd → bord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 4278,
+          "clock": "19.52",
+          "speedNow": "1",
+          "moment": "4.40",
+          "reactions": "232.0:up:5",
+          "camDist": 9.04,
+          "camPitch": 0.809,
+          "camYaw": 0.453,
+          "card": true,
+          "line": "Du valde Över gränsen, en avvikelse som kräver åtgärd → bord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 4390,
+          "clock": "19.52",
+          "speedNow": "1",
+          "moment": "4.60",
+          "reactions": "232.0:up:5",
+          "camDist": 9.41,
+          "camPitch": 0.824,
+          "camYaw": 0.44,
+          "card": true,
+          "line": "Du valde Över gränsen, en avvikelse som kräver åtgärd → bord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 4498,
+          "clock": "19.53",
+          "speedNow": "1",
+          "moment": "4.60",
+          "reactions": "232.0:up:5",
+          "camDist": 9.81,
+          "camPitch": 0.838,
+          "camYaw": 0.429,
+          "card": true,
+          "line": "Du valde Över gränsen, en avvikelse som kräver åtgärd → bord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 4607,
+          "clock": "19.53",
+          "speedNow": "1",
+          "moment": "4.80",
+          "reactions": "232.0:up:5",
+          "camDist": 10.08,
+          "camPitch": 0.846,
+          "camYaw": 0.422,
+          "card": true,
+          "line": "Du valde Över gränsen, en avvikelse som kräver åtgärd → bord 5 beställer ett glas till · 1 ny gäst in · grannarna nickar",
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 4778,
+          "clock": "19.53",
+          "speedNow": "1",
+          "moment": "4.80",
+          "reactions": "232.0:up:5",
+          "camDist": 10.39,
+          "camPitch": 0.854,
+          "camYaw": 0.416,
+          "card": true,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 4904,
+          "clock": "19.53",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "232.0:up:5",
+          "camDist": 10.7,
+          "camPitch": 0.86,
+          "camYaw": 0.41,
+          "card": true,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 5063,
+          "clock": "19.53",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "232.0:up:5",
+          "camDist": 10.89,
+          "camPitch": 0.864,
+          "camYaw": 0.407,
+          "card": true,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 5221,
+          "clock": "19.53",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "232.0:up:5",
+          "camDist": 11.05,
+          "camPitch": 0.866,
+          "camYaw": 0.405,
+          "card": true,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 5383,
+          "clock": "19.54",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "232.0:up:5",
+          "camDist": 11.19,
+          "camPitch": 0.868,
+          "camYaw": 0.404,
+          "card": true,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 5545,
+          "clock": "19.54",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "232.0:up:5",
+          "camDist": 11.31,
+          "camPitch": 0.869,
+          "camYaw": 0.403,
+          "card": true,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 5704,
+          "clock": "19.54",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "232.0:up:5",
+          "camDist": 11.41,
+          "camPitch": 0.87,
+          "camYaw": 0.402,
+          "card": true,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 5865,
+          "clock": "19.55",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "232.0:up:5",
+          "camDist": 11.5,
+          "camPitch": 0.871,
+          "camYaw": 0.401,
+          "card": true,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 5989,
+          "clock": "19.55",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "232.0:up:5",
+          "camDist": 11.54,
+          "camPitch": 0.871,
+          "camYaw": 0.401,
+          "card": true,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        }
+      ],
+      "later": [
+        {
+          "ms": 6091,
+          "notices": 0
+        },
+        {
+          "ms": 6429,
+          "notices": 0
+        },
+        {
+          "ms": 6756,
+          "notices": 0
+        },
+        {
+          "ms": 7076,
+          "notices": 0
+        },
+        {
+          "ms": 7397,
+          "notices": 0
+        },
+        {
+          "ms": 7717,
+          "notices": 0
+        },
+        {
+          "ms": 8037,
+          "notices": 0
+        },
+        {
+          "ms": 8354,
+          "notices": 0
+        },
+        {
+          "ms": 8674,
+          "notices": 0
+        },
+        {
+          "ms": 8994,
+          "notices": 0
+        },
+        {
+          "ms": 9278,
+          "notices": 0
+        },
+        {
+          "ms": 9595,
+          "notices": 0
+        },
+        {
+          "ms": 9921,
+          "notices": 0
+        }
+      ]
+    },
+    {
+      "incident": "vb06-kylen",
+      "step": 1,
+      "quality": "wrong",
+      "layout": {
+        "rows": [
+          0.706,
+          0.706
+        ],
+        "card": {
+          "left": 45,
+          "right": 416,
+          "leftShare": 0.035,
+          "rightShare": 0.325
+        },
+        "stripHeight": 32,
+        "meter": {
+          "left": 781,
+          "top": 33,
+          "tillRight": 768,
+          "tillTop": 33,
+          "width": 230
+        },
+        "bandShown": false
+      },
+      "before": {
+        "clock": "20.08",
+        "speedNow": "4",
+        "moment": "",
+        "reactions": "232.0:up:5",
+        "camDist": 12,
+        "camPitch": 0.873,
+        "camYaw": 0.4,
+        "card": true,
+        "line": null,
+        "notices": [],
+        "meter": {
+          "mood": "delighted",
+          "fill": "4.76",
+          "change": ""
+        }
+      },
+      "samples": [
+        {
+          "ms": 17,
+          "clock": "20.09",
+          "speedNow": "1",
+          "moment": "0.20",
+          "reactions": "270.2:down:5",
+          "camDist": 12.02,
+          "camPitch": 0.873,
+          "camYaw": 0.4,
+          "card": true,
+          "line": "Du valde Skriv 8 grader i pärmen och mät igen i morgon → bord 5 beställer mindre · grannarna suckar",
+          "notices": [
+            {
+              "at": "270.1999999999932",
+              "text": "16 krbord 5 beställer mindre · grannarna suckar · Kocken tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 131,
+          "clock": "20.09",
+          "speedNow": "1",
+          "moment": "0.40",
+          "reactions": "270.2:down:5",
+          "camDist": 12.05,
+          "camPitch": 0.873,
+          "camYaw": 0.4,
+          "card": true,
+          "line": "Du valde Skriv 8 grader i pärmen och mät igen i morgon → bord 5 beställer mindre · grannarna suckar",
+          "notices": [
+            {
+              "at": "270.1999999999932",
+              "text": "16 krbord 5 beställer mindre · grannarna suckar · Kocken tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 308,
+          "clock": "20.10",
+          "speedNow": "1",
+          "moment": "0.40",
+          "reactions": "270.2:down:5",
+          "camDist": 12.09,
+          "camPitch": 0.873,
+          "camYaw": 0.4,
+          "card": true,
+          "line": "Du valde Skriv 8 grader i pärmen och mät igen i morgon → bord 5 beställer mindre · grannarna suckar",
+          "notices": [
+            {
+              "at": "270.1999999999932",
+              "text": "16 krbord 5 beställer mindre · grannarna suckar · Kocken tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 422,
+          "clock": "20.10",
+          "speedNow": "1",
+          "moment": "0.60",
+          "reactions": "270.2:down:5",
+          "camDist": 12.13,
+          "camPitch": 0.873,
+          "camYaw": 0.4,
+          "card": true,
+          "line": "Du valde Skriv 8 grader i pärmen och mät igen i morgon → bord 5 beställer mindre · grannarna suckar",
+          "notices": [
+            {
+              "at": "270.1999999999932",
+              "text": "16 krbord 5 beställer mindre · grannarna suckar · Kocken tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 536,
+          "clock": "20.10",
+          "speedNow": "1",
+          "moment": "0.80",
+          "reactions": "270.2:down:5",
+          "camDist": 12.13,
+          "camPitch": 0.871,
+          "camYaw": 0.4,
+          "card": true,
+          "line": "Du valde Skriv 8 grader i pärmen och mät igen i morgon → bord 5 beställer mindre · grannarna suckar",
+          "notices": [
+            {
+              "at": "270.1999999999932",
+              "text": "16 krbord 5 beställer mindre · grannarna suckar · Kocken tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 697,
+          "clock": "20.10",
+          "speedNow": "1",
+          "moment": "1.00",
+          "reactions": "270.2:down:5",
+          "camDist": 12.02,
+          "camPitch": 0.864,
+          "camYaw": 0.4,
+          "card": true,
+          "line": "Du valde Skriv 8 grader i pärmen och mät igen i morgon → bord 5 beställer mindre · grannarna suckar",
+          "notices": [
+            {
+              "at": "270.1999999999932",
+              "text": "16 krbord 5 beställer mindre · grannarna suckar · Kocken tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 811,
+          "clock": "20.10",
+          "speedNow": "1",
+          "moment": "1.00",
+          "reactions": "270.2:down:5",
+          "camDist": 11.67,
+          "camPitch": 0.843,
+          "camYaw": 0.4,
+          "card": true,
+          "line": "Du valde Skriv 8 grader i pärmen och mät igen i morgon → bord 5 beställer mindre · grannarna suckar",
+          "notices": [
+            {
+              "at": "270.1999999999932",
+              "text": "16 krbord 5 beställer mindre · grannarna suckar · Kocken tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 924,
+          "clock": "20.10",
+          "speedNow": "1",
+          "moment": "1.20",
+          "reactions": "270.2:down:5",
+          "camDist": 11.44,
+          "camPitch": 0.831,
+          "camYaw": 0.4,
+          "card": true,
+          "line": "Du valde Skriv 8 grader i pärmen och mät igen i morgon → bord 5 beställer mindre · grannarna suckar",
+          "notices": [
+            {
+              "at": "270.1999999999932",
+              "text": "16 krbord 5 beställer mindre · grannarna suckar · Kocken tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 1100,
+          "clock": "20.10",
+          "speedNow": "1",
+          "moment": "1.20",
+          "reactions": "270.2:down:5",
+          "camDist": 10.88,
+          "camPitch": 0.802,
+          "camYaw": 0.4,
+          "card": true,
+          "line": "Du valde Skriv 8 grader i pärmen och mät igen i morgon → bord 5 beställer mindre · grannarna suckar",
+          "notices": [
+            {
+              "at": "270.1999999999932",
+              "text": "16 krbord 5 beställer mindre · grannarna suckar · Kocken tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "delighted",
+            "fill": "4.76",
+            "change": ""
+          }
+        },
+        {
+          "ms": 1219,
+          "clock": "20.10",
+          "speedNow": "1",
+          "moment": "1.40",
+          "reactions": "270.2:down:5",
+          "camDist": 10.12,
+          "camPitch": 0.767,
+          "camYaw": 0.4,
+          "card": true,
+          "line": "Du valde Skriv 8 grader i pärmen och mät igen i morgon → bord 5 beställer mindre · grannarna suckar",
+          "notices": [
+            {
+              "at": "270.1999999999932",
+              "text": "16 krbord 5 beställer mindre · grannarna suckar · Kocken tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "waiting",
+            "fill": "2.40",
+            "change": "down"
+          }
+        },
+        {
+          "ms": 1331,
+          "clock": "20.10",
+          "speedNow": "1",
+          "moment": "1.60",
+          "reactions": "270.2:down:5",
+          "camDist": 9.73,
+          "camPitch": 0.751,
+          "camYaw": 0.4,
+          "card": true,
+          "line": "Du valde Skriv 8 grader i pärmen och mät igen i morgon → bord 5 beställer mindre · grannarna suckar",
+          "notices": [
+            {
+              "at": "270.1999999999932",
+              "text": "16 krbord 5 beställer mindre · grannarna suckar · Kocken tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "waiting",
+            "fill": "2.40",
+            "change": "down"
+          }
+        },
+        {
+          "ms": 1723,
+          "clock": "20.10",
+          "speedNow": "1",
+          "moment": "2.00",
+          "reactions": "270.2:down:5",
+          "camDist": 8.6,
+          "camPitch": 0.718,
+          "camYaw": 0.4,
+          "card": true,
+          "line": "Du valde Skriv 8 grader i pärmen och mät igen i morgon → bord 5 beställer mindre · grannarna suckar",
+          "notices": [
+            {
+              "at": "270.1999999999932",
+              "text": "16 krbord 5 beställer mindre · grannarna suckar · Kocken tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "waiting",
+            "fill": "2.40",
+            "change": "down"
+          }
+        },
+        {
+          "ms": 1902,
+          "clock": "20.10",
+          "speedNow": "1",
+          "moment": "2.00",
+          "reactions": "270.2:down:5",
+          "camDist": 8.33,
+          "camPitch": 0.712,
+          "camYaw": 0.4,
+          "card": true,
+          "line": "Du valde Skriv 8 grader i pärmen och mät igen i morgon → bord 5 beställer mindre · grannarna suckar",
+          "notices": [
+            {
+              "at": "270.1999999999932",
+              "text": "16 krbord 5 beställer mindre · grannarna suckar · Kocken tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "waiting",
+            "fill": "2.40",
+            "change": "down"
+          }
+        },
+        {
+          "ms": 2020,
+          "clock": "20.10",
+          "speedNow": "1",
+          "moment": "2.20",
+          "reactions": "270.2:down:5",
+          "camDist": 8.04,
+          "camPitch": 0.707,
+          "camYaw": 0.4,
+          "card": true,
+          "line": "Du valde Skriv 8 grader i pärmen och mät igen i morgon → bord 5 beställer mindre · grannarna suckar",
+          "notices": [
+            {
+              "at": "270.1999999999932",
+              "text": "16 krbord 5 beställer mindre · grannarna suckar · Kocken tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "waiting",
+            "fill": "2.40",
+            "change": "down"
+          }
+        },
+        {
+          "ms": 2130,
+          "clock": "20.10",
+          "speedNow": "1",
+          "moment": "2.40",
+          "reactions": "270.2:down:5",
+          "camDist": 7.91,
+          "camPitch": 0.706,
+          "camYaw": 0.4,
+          "card": true,
+          "line": "Du valde Skriv 8 grader i pärmen och mät igen i morgon → bord 5 beställer mindre · grannarna suckar",
+          "notices": [
+            {
+              "at": "270.1999999999932",
+              "text": "16 krbord 5 beställer mindre · grannarna suckar · Kocken tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "waiting",
+            "fill": "2.40",
+            "change": "down"
+          }
+        },
+        {
+          "ms": 2309,
+          "clock": "20.11",
+          "speedNow": "1",
+          "moment": "2.40",
+          "reactions": "270.2:down:5",
+          "camDist": 7.76,
+          "camPitch": 0.704,
+          "camYaw": 0.4,
+          "card": true,
+          "line": "Du valde Skriv 8 grader i pärmen och mät igen i morgon → bord 5 beställer mindre · grannarna suckar",
+          "notices": [
+            {
+              "at": "270.1999999999932",
+              "text": "16 krbord 5 beställer mindre · grannarna suckar · Kocken tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "waiting",
+            "fill": "2.40",
+            "change": "down"
+          }
+        },
+        {
+          "ms": 2421,
+          "clock": "20.11",
+          "speedNow": "1",
+          "moment": "2.60",
+          "reactions": "270.2:down:5",
+          "camDist": 7.58,
+          "camPitch": 0.702,
+          "camYaw": 0.4,
+          "card": true,
+          "line": "Du valde Skriv 8 grader i pärmen och mät igen i morgon → bord 5 beställer mindre · grannarna suckar",
+          "notices": [
+            {
+              "at": "270.1999999999932",
+              "text": "16 krbord 5 beställer mindre · grannarna suckar · Kocken tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "waiting",
+            "fill": "2.40",
+            "change": "down"
+          }
+        },
+        {
+          "ms": 2530,
+          "clock": "20.11",
+          "speedNow": "1",
+          "moment": "2.80",
+          "reactions": "270.2:down:5",
+          "camDist": 7.48,
+          "camPitch": 0.702,
+          "camYaw": 0.4,
+          "card": true,
+          "line": "Du valde Skriv 8 grader i pärmen och mät igen i morgon → bord 5 beställer mindre · grannarna suckar",
+          "notices": [
+            {
+              "at": "270.1999999999932",
+              "text": "16 krbord 5 beställer mindre · grannarna suckar · Kocken tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "waiting",
+            "fill": "2.40",
+            "change": "down"
+          }
+        },
+        {
+          "ms": 2708,
+          "clock": "20.11",
+          "speedNow": "1",
+          "moment": "2.80",
+          "reactions": "270.2:down:5",
+          "camDist": 7.34,
+          "camPitch": 0.701,
+          "camYaw": 0.4,
+          "card": true,
+          "line": "Du valde Skriv 8 grader i pärmen och mät igen i morgon → bord 5 beställer mindre · grannarna suckar",
+          "notices": [
+            {
+              "at": "270.1999999999932",
+              "text": "16 krbord 5 beställer mindre · grannarna suckar · Kocken tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "waiting",
+            "fill": "2.40",
+            "change": "down"
+          }
+        },
+        {
+          "ms": 2821,
+          "clock": "20.11",
+          "speedNow": "1",
+          "moment": "3.00",
+          "reactions": "270.2:down:5",
+          "camDist": 7.15,
+          "camPitch": 0.701,
+          "camYaw": 0.4,
+          "card": true,
+          "line": "Du valde Skriv 8 grader i pärmen och mät igen i morgon → bord 5 beställer mindre · grannarna suckar",
+          "notices": [
+            {
+              "at": "270.1999999999932",
+              "text": "16 krbord 5 beställer mindre · grannarna suckar · Kocken tar över",
+              "fading": "false",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "waiting",
+            "fill": "2.40",
+            "change": ""
+          }
+        },
+        {
+          "ms": 2935,
+          "clock": "20.11",
+          "speedNow": "1",
+          "moment": "3.20",
+          "reactions": "270.2:down:5",
+          "camDist": 7.04,
+          "camPitch": 0.701,
+          "camYaw": 0.4,
+          "card": true,
+          "line": "Du valde Skriv 8 grader i pärmen och mät igen i morgon → bord 5 beställer mindre · grannarna suckar",
+          "notices": [
+            {
+              "at": "270.1999999999932",
+              "text": "16 krbord 5 beställer mindre · grannarna suckar · Kocken tar över",
+              "fading": "true",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "waiting",
+            "fill": "2.40",
+            "change": ""
+          }
+        },
+        {
+          "ms": 3102,
+          "clock": "20.11",
+          "speedNow": "1",
+          "moment": "3.40",
+          "reactions": "270.2:down:5",
+          "camDist": 6.84,
+          "camPitch": 0.7,
+          "camYaw": 0.4,
+          "card": true,
+          "line": "Du valde Skriv 8 grader i pärmen och mät igen i morgon → bord 5 beställer mindre · grannarna suckar",
+          "notices": [
+            {
+              "at": "270.1999999999932",
+              "text": "16 krbord 5 beställer mindre · grannarna suckar · Kocken tar över",
+              "fading": "true",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "waiting",
+            "fill": "2.40",
+            "change": ""
+          }
+        },
+        {
+          "ms": 3220,
+          "clock": "20.11",
+          "speedNow": "1",
+          "moment": "3.40",
+          "reactions": "270.2:down:5",
+          "camDist": 6.66,
+          "camPitch": 0.7,
+          "camYaw": 0.4,
+          "card": true,
+          "line": "Du valde Skriv 8 grader i pärmen och mät igen i morgon → bord 5 beställer mindre · grannarna suckar",
+          "notices": [
+            {
+              "at": "270.1999999999932",
+              "text": "16 krbord 5 beställer mindre · grannarna suckar · Kocken tar över",
+              "fading": "true",
+              "guestsIn": "0"
+            }
+          ],
+          "meter": {
+            "mood": "waiting",
+            "fill": "2.40",
+            "change": ""
+          }
+        },
+        {
+          "ms": 3330,
+          "clock": "20.11",
+          "speedNow": "1",
+          "moment": "3.60",
+          "reactions": "270.2:down:5",
+          "camDist": 6.54,
+          "camPitch": 0.7,
+          "camYaw": 0.4,
+          "card": true,
+          "line": "Du valde Skriv 8 grader i pärmen och mät igen i morgon → bord 5 beställer mindre · grannarna suckar",
+          "notices": [],
+          "meter": {
+            "mood": "waiting",
+            "fill": "2.40",
+            "change": ""
+          }
+        },
+        {
+          "ms": 3715,
+          "clock": "20.11",
+          "speedNow": "1",
+          "moment": "4.00",
+          "reactions": "270.2:down:5",
+          "camDist": 6.13,
+          "camPitch": 0.7,
+          "camYaw": 0.4,
+          "card": true,
+          "line": "Du valde Skriv 8 grader i pärmen och mät igen i morgon → bord 5 beställer mindre · grannarna suckar",
+          "notices": [],
+          "meter": {
+            "mood": "waiting",
+            "fill": "2.40",
+            "change": ""
+          }
+        },
+        {
+          "ms": 3817,
+          "clock": "20.11",
+          "speedNow": "1",
+          "moment": "4.00",
+          "reactions": "270.2:down:5",
+          "camDist": 8.82,
+          "camPitch": 0.748,
+          "camYaw": 0.4,
+          "card": false,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "waiting",
+            "fill": "2.40",
+            "change": ""
+          }
+        },
+        {
+          "ms": 3930,
+          "clock": "20.11",
+          "speedNow": "1",
+          "moment": "4.20",
+          "reactions": "270.2:down:5",
+          "camDist": 10.69,
+          "camPitch": 0.777,
+          "camYaw": 0.4,
+          "card": false,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "waiting",
+            "fill": "2.40",
+            "change": ""
+          }
+        },
+        {
+          "ms": 4186,
+          "clock": "20.11",
+          "speedNow": "1",
+          "moment": "4.40",
+          "reactions": "270.2:down:5",
+          "camDist": 13.78,
+          "camPitch": 0.816,
+          "camYaw": 0.4,
+          "card": false,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "waiting",
+            "fill": "2.40",
+            "change": ""
+          }
+        },
+        {
+          "ms": 4328,
+          "clock": "20.12",
+          "speedNow": "1",
+          "moment": "4.60",
+          "reactions": "270.2:down:5",
+          "camDist": 15.36,
+          "camPitch": 0.832,
+          "camYaw": 0.4,
+          "card": false,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "waiting",
+            "fill": "2.40",
+            "change": ""
+          }
+        },
+        {
+          "ms": 4508,
+          "clock": "20.12",
+          "speedNow": "1",
+          "moment": "4.60",
+          "reactions": "270.2:down:5",
+          "camDist": 16.84,
+          "camPitch": 0.845,
+          "camYaw": 0.4,
+          "card": false,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "waiting",
+            "fill": "2.40",
+            "change": ""
+          }
+        },
+        {
+          "ms": 4626,
+          "clock": "20.12",
+          "speedNow": "1",
+          "moment": "4.80",
+          "reactions": "270.2:down:5",
+          "camDist": 18.37,
+          "camPitch": 0.856,
+          "camYaw": 0.4,
+          "card": false,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "waiting",
+            "fill": "2.40",
+            "change": ""
+          }
+        },
+        {
+          "ms": 4742,
+          "clock": "20.12",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "270.2:down:5",
+          "camDist": 19.08,
+          "camPitch": 0.86,
+          "camYaw": 0.4,
+          "card": false,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "waiting",
+            "fill": "2.40",
+            "change": ""
+          }
+        },
+        {
+          "ms": 4918,
+          "clock": "20.12",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "270.2:down:5",
+          "camDist": 19.92,
+          "camPitch": 0.864,
+          "camYaw": 0.4,
+          "card": false,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "waiting",
+            "fill": "2.40",
+            "change": ""
+          }
+        },
+        {
+          "ms": 5081,
+          "clock": "20.12",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "270.2:down:5",
+          "camDist": 20.53,
+          "camPitch": 0.866,
+          "camYaw": 0.4,
+          "card": false,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "waiting",
+            "fill": "2.40",
+            "change": ""
+          }
+        },
+        {
+          "ms": 5242,
+          "clock": "20.13",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "270.2:down:5",
+          "camDist": 21.04,
+          "camPitch": 0.868,
+          "camYaw": 0.4,
+          "card": false,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "waiting",
+            "fill": "2.40",
+            "change": ""
+          }
+        },
+        {
+          "ms": 5406,
+          "clock": "20.13",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "270.2:down:5",
+          "camDist": 21.48,
+          "camPitch": 0.869,
+          "camYaw": 0.4,
+          "card": false,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "waiting",
+            "fill": "2.40",
+            "change": ""
+          }
+        },
+        {
+          "ms": 5568,
+          "clock": "20.13",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "270.2:down:5",
+          "camDist": 21.85,
+          "camPitch": 0.87,
+          "camYaw": 0.4,
+          "card": false,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "waiting",
+            "fill": "2.40",
+            "change": ""
+          }
+        },
+        {
+          "ms": 5734,
+          "clock": "20.14",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "270.2:down:5",
+          "camDist": 22.17,
+          "camPitch": 0.871,
+          "camYaw": 0.4,
+          "card": false,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "waiting",
+            "fill": "2.40",
+            "change": ""
+          }
+        },
+        {
+          "ms": 5900,
+          "clock": "20.14",
+          "speedNow": "4",
+          "moment": "",
+          "reactions": "270.2:down:5",
+          "camDist": 22.44,
+          "camPitch": 0.871,
+          "camYaw": 0.4,
+          "card": false,
+          "line": null,
+          "notices": [],
+          "meter": {
+            "mood": "waiting",
+            "fill": "2.40",
+            "change": ""
+          }
+        }
+      ],
+      "later": [
+        {
+          "ms": 6002,
+          "notices": 0
+        },
+        {
+          "ms": 6314,
+          "notices": 0
+        },
+        {
+          "ms": 6641,
+          "notices": 0
+        },
+        {
+          "ms": 6968,
+          "notices": 0
+        },
+        {
+          "ms": 7288,
+          "notices": 0
+        },
+        {
+          "ms": 7615,
+          "notices": 0
+        },
+        {
+          "ms": 7912,
+          "notices": 0
+        },
+        {
+          "ms": 8246,
+          "notices": 0
+        },
+        {
+          "ms": 8573,
+          "notices": 0
+        },
+        {
+          "ms": 8898,
+          "notices": 0
+        },
+        {
+          "ms": 9218,
+          "notices": 0
+        },
+        {
+          "ms": 9545,
+          "notices": 0
+        },
+        {
+          "ms": 9873,
+          "notices": 0
+        }
+      ]
+    }
+  ],
+  "camera": {
+    "start": {
+      "clock": "18.17",
+      "speedNow": "4",
+      "moment": "",
+      "reactions": "",
+      "camDist": 24,
+      "camPitch": 0.873,
+      "camYaw": 0.4,
+      "card": false,
+      "line": null,
+      "notices": [],
+      "meter": {
+        "mood": "",
+        "fill": "0.00",
+        "change": ""
+      }
+    },
+    "afterIn": {
+      "clock": "18.22",
+      "speedNow": "4",
+      "moment": "",
+      "reactions": "",
+      "camDist": 19.51,
+      "camPitch": 0.873,
+      "camYaw": 0.4,
+      "card": false,
+      "line": null,
+      "notices": [],
+      "meter": {
+        "mood": "",
+        "fill": "0.00",
+        "change": ""
+      }
+    },
+    "afterLeft": {
+      "clock": "18.27",
+      "speedNow": "4",
+      "moment": "",
+      "reactions": "",
+      "camDist": 18.76,
+      "camPitch": 0.873,
+      "camYaw": 0.147,
+      "card": false,
+      "line": null,
+      "notices": [],
+      "meter": {
+        "mood": "",
+        "fill": "0.00",
+        "change": ""
+      }
+    },
+    "afterDrag": {
+      "clock": "18.35",
+      "speedNow": "4",
+      "moment": "",
+      "reactions": "",
+      "camDist": 18.69,
+      "camPitch": 0.873,
+      "camYaw": -0.813,
+      "card": false,
+      "line": null,
+      "notices": [],
+      "meter": {
+        "mood": "",
+        "fill": "0.00",
+        "change": ""
+      }
+    },
+    "afterReset": {
+      "clock": "18.42",
+      "speedNow": "4",
+      "moment": "",
+      "reactions": "",
+      "camDist": 23.71,
+      "camPitch": 0.873,
+      "camYaw": 0.396,
+      "card": false,
+      "line": null,
+      "notices": [],
+      "meter": {
+        "mood": "",
+        "fill": "0.00",
+        "change": ""
+      }
+    },
+    "tableClick": {
+      "fx": 0.7,
+      "fy": 0.45,
+      "clock": "18.57",
+      "speedNow": "4",
+      "moment": "",
+      "reactions": "",
+      "camDist": 14.17,
+      "camPitch": 0.873,
+      "camYaw": 0.4,
+      "card": false,
+      "line": null,
+      "notices": [],
+      "meter": {
+        "mood": "",
+        "fill": "0.00",
+        "change": ""
+      }
+    }
+  },
+  "notices": null
+}
