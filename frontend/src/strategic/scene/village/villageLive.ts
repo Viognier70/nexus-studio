@@ -23,6 +23,9 @@ export interface VillageLiveState {
   outHomes: string[];
   // Sällskap som vände vid vår fulla kö och valde en annan krog.
   turnedAway: number;
+  // ORDER 302 — gatans folk just nu: sällskapen per storlek, sidan, pauserna
+  // och samlingen vid dörren, och de som vände för ordet på gatan (ORDER 303 C).
+  street?: { sizes: number[]; left: number; right: number; pausing: number; gathering: number; wordAway: number };
 }
 
 let state: VillageLiveState = { arrived: {}, onWay: [], groupsWalking: 0, inside: {}, outHomes: [], turnedAway: 0 };
@@ -39,6 +42,7 @@ export function publishVillageLive(next: VillageLiveState): void {
     document.body.dataset.villageGroups = String(next.groupsWalking);
     document.body.dataset.villageTurnedAway = String(next.turnedAway);
     document.body.dataset.villageOutHomes = String(next.outHomes.length);
+    if (next.street) document.body.dataset.villageStreet = JSON.stringify(next.street);
   }
   for (const l of listeners) l();
 }
