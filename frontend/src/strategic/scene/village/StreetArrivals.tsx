@@ -14,6 +14,9 @@ import { StreetTag } from '../../ui/VillageLabels';
 const SHOW_FROM_M = 32;
 const SHOW_UNTIL_M = 140;
 const MAX_LABELS = 5;
+// ORDER 302 — etiketten försvinner de sista metrarna, så att den inte ligger
+// på vår skylt vid dörren (ORDER 300 §7: skyltarna ligger inte på varandra).
+const HIDE_WITHIN_M = 15;
 
 function typeLabel(type: string): string {
   if (type === 'tourist') return strings.rush.waves.bus;
@@ -37,7 +40,7 @@ export function StreetArrivals() {
   const to = strings.village.venues.player;
   return (
     <>
-      {live.onWay.slice(0, MAX_LABELS).map((g) => (
+      {live.onWay.filter((g) => g.metres >= HIDE_WITHIN_M).slice(0, MAX_LABELS).map((g) => (
         <group key={g.key} position={[g.x, 3.2, g.z]}>
           <Html center zIndexRange={[14, 0]} style={{ pointerEvents: 'none' }}>
             <StreetTag n={g.n} who={typeLabel(g.type)} to={to} metres={g.metres} />

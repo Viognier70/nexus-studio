@@ -33,7 +33,9 @@ import { GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, VILLAGE, VILLAGE_QUEUE } from
 import { clockMinutes } from '../../../sim/clock';
 import { busTonight, PLAYER_VENUE, POOL_TYPES, venuesTonight, type PoolType } from '../../../sim/village';
 import { plannedVillage } from '../../../sim/villageLive';
-import { driveNetwork, pointAlong, routeBetween, routeLength, walkNetwork } from '../../content/villageNetwork';
+import { driveNetwork, pointAlong, pointAlongSeg, routeBetween, routeLength, sidewalkOffsets, walkNetwork } from '../../content/villageNetwork';
+import { streetWordNow } from '../../../sim/streetWord';
+import { hashKey } from '../../util/hash';
 import { CAMPUS_POINT, truckSpotPlace, venuePlaces, villageSources } from '../../content/villagePlaces';
 import { createRng } from '../../util/rng';
 import { readabilityScale } from '../../util/readability';
@@ -65,6 +67,34 @@ const MAX_HEAT = 700;
 const HEAT_CELL_M = 8;
 // Hur mycket en gäst som går genom en ruta lyser upp den (per spelminut).
 const HEAT_PER_GUEST_MIN = 0.6;
+
+// ORDER 302 (Anders 2026-10-04: "Folket på gatan går i rad, med samma avstånd
+// och samma fart") — gatans folk:
+//   - sällskapens storlek 1–4, få ensamma (PARTY_WEIGHTS);
+//   - varje sällskap sin fart (PACE_SPREAD kring gästtypens) och sin sida av
+//     gatan; medlemmarna går bredvid varandra, två i bredd (ABREAST_M), och
+//     raderna efter varandra (ROW_M);
+//   - pauser: ibland stannar ett sällskap, pekar eller pratar en stund
+//     (PAUSE_CHANCE, PAUSE_MIN), och vid en annan krogs dörr läser det menyn
+//     (MENU_CHANCE inom MENU_NEAR_M);
+//   - vid dörren samlas sällskapet innan det går in (GATHER_MIN), också hos
+//     konkurrenterna, så att valet syns;
+//   - ORDER 303 C, ordet på gatan: efter fel svar stannar några sällskap på väg
+//     till oss vid vår dörr, läser menyn och går vidare till en konkurrent.
+const PARTY_WEIGHTS: Array<[number, number]> = [[1, 0.08], [2, 0.47], [3, 0.25], [4, 0.2]];
+const PACE_SPREAD = 0.25;
+const ABREAST_M = 0.62;
+const ROW_M = 0.95;
+const PAUSE_CHANCE = 0.35;
+const PAUSE_MIN: [number, number] = [0.6, 1.8];
+const MENU_CHANCE = 0.3;
+const MENU_NEAR_M = 9;
+const GATHER_MIN = 0.9;
+// Före 19.00 tätnar det mot krogarna: sällskapen ger sig av upp till
+// EARLY_LEAVE_MIN spelminuter tidigare, och den som är framme före sin tid
+// väntar utanför dörren (tittar på menyn) tills det är dags.
+const EARLY_LEAVE_MIN = 30;
+type PauseKind = 'point' | 'talk' | 'menu';
 
 const TYPE_COLOUR: Record<WalkerKind, string> = {
   student: WARM.guest.student,
@@ -104,6 +134,18 @@ interface Walker {
   homeward: boolean;
   source: number;
   homeId?: string | null;
+  // ORDER 302 — sidan av gatan (−1/1), trottoarens avstånd per punkt i rutten,
+  // pauserna längs vägen, pausen eller samlingen som pågår och vart de tittar.
+  side?: number;
+  offsets?: number[];
+  pauses?: Array<{ s: number; minutes: number; kind: PauseKind; look: number | null }>;
+  pauseUntil?: number | null;
+  pauseKind?: PauseKind | null;
+  look?: number | null;
+  gatherUntil?: number | null;
+  wordAway?: boolean;
+  // Planens tid vid dörren: den som är framme tidigare väntar utanför.
+  dueAt?: number;
 }
 
 interface Car {
@@ -191,7 +233,11 @@ function planEvening(state: SimulationState): Planned[] {
     for (const t of POOL_TYPES) {
       let left = Math.round(row.typeGuests[t]);
       while (left > 0) {
-        const n = Math.min(left, t === 'student' ? 2 + Math.floor(rnd() * 3) : 1 + Math.floor(rnd() * 3));
+        // ORDER 302 — 1–4 i sällskapet, få ensamma.
+        let x = rnd();
+        let size = PARTY_WEIGHTS[PARTY_WEIGHTS.length - 1][0];
+        for (const [k, w] of PARTY_WEIGHTS) { if (x < w) { size = k; break; } x -= w; }
+        const n = Math.min(left, size);
         left -= n;
         const s = startNode(t, rnd, doorPointOf(row.id, venues));
         // Flest kommer mitt i kvällen (triangelfördelning över fönstret).
@@ -285,6 +331,8 @@ export function VillageLife() {
     inside: {} as Record<string, number>,
     // ORDER 297 — sällskap som vände vid vår fulla kö och gick till en annan krog.
     turnedAway: 0,
+    // ORDER 303 C — sällskap som vände vid vår dörr för ordet på gatan.
+    wordAway: 0,
     wavesSeen: new Set<string>(),
     leaving: [] as Array<{ at: number; w: Walker }>,
     busDone: { announce: false, chose: false },
@@ -382,6 +430,7 @@ export function VillageLife() {
       L.arrived = {};
       L.inside = {};
       L.turnedAway = 0;
+      L.wordAway = 0;
       L.wavesSeen = new Set();
       L.leaving = [];
       L.busDone = { announce: false, chose: false };
@@ -401,7 +450,8 @@ export function VillageLife() {
         const door = doorFor(p.venueId, s, venues);
         const route = routeBetween(g, p.source, door);
         const len = routeLength(route);
-        const travel = len / (WALK_M_PER_GAME_MIN * TYPE_PACE[p.type]) + (p.byCar ? 2 : 0);
+        const early = p.byCar ? 0 : EARLY_LEAVE_MIN * Math.abs(Math.sin(p.at * 12.9898 + p.n));
+        const travel = len / (WALK_M_PER_GAME_MIN * TYPE_PACE[p.type]) + (p.byCar ? 2 : 0) + early;
         if (now < p.at - travel) break;
         L.next++;
         if (p.byCar) spawnCar(L, p);
@@ -466,13 +516,42 @@ export function VillageLife() {
         if (now >= w.eatUntil) w.arrived = true;
         continue;
       }
+      // ORDER 302 — en paus eller samlingen vid dörren pågår.
+      if (w.pauseUntil != null) {
+        if (now < w.pauseUntil) continue;
+        w.pauseUntil = null;
+        w.pauseKind = null;
+        w.look = null;
+      }
+      if (w.gatherUntil != null && now < w.gatherUntil) continue;
       const before = pointAlong(w.route, w.s);
+      const nextPause = w.pauses?.[0];
       w.s += dGameMin * WALK_M_PER_GAME_MIN * w.pace;
+      if (nextPause && !w.homeward && w.s >= nextPause.s) {
+        w.s = nextPause.s;
+        w.pauses!.shift();
+        w.pauseUntil = now + nextPause.minutes;
+        w.pauseKind = nextPause.kind;
+        w.look = nextPause.look;
+      }
       const at = pointAlong(w.route, w.s);
       addHeat(L, before, at, w.n * dGameMin);
       if (w.s >= w.length && w.homeward) {
         w.arrived = true;
         continue;
+      }
+      // ORDER 303 C — ordet på gatan: sällskapet stannar vid vår dörr, läser
+      // menyn och går vidare till en konkurrent.
+      if (w.s >= w.length && w.venueId === PLAYER_VENUE && !w.homeward && w.wordAway) {
+        const other = nearestOpenRival(w.route[w.route.length - 1], venues);
+        const route = other ? routeBetween(g, doorFor(PLAYER_VENUE, s, venues), doorFor(other, s, venues)) : [];
+        if (other && route.length >= 2) {
+          const last = w.route[w.route.length - 1];
+          const prev = w.route[w.route.length - 2];
+          Object.assign(w, { venueId: other, route, length: routeLength(route), s: 0, key: `${w.key}:ordet`, offsets: sidewalkOffsets(route), pauses: [], wordAway: false, pauseUntil: now + PAUSE_MIN[1], pauseKind: 'menu', look: Math.atan2(last[0] - prev[0], last[1] - prev[1]) });
+          L.wordAway = (L.wordAway ?? 0) + w.n;
+          continue;
+        }
       }
       if (w.s >= w.length && w.venueId === PLAYER_VENUE && !w.homeward && queueFull(s)) {
         // ORDER 297 (Designs Byn i kvällsljus §3, balance.ts VILLAGE_QUEUE):
@@ -496,6 +575,12 @@ export function VillageLife() {
           const end = w.route[w.route.length - 1];
           w.standAt = [end[0] + ((k % 3) - 1) * 1.6, end[1] + 2 + Math.floor(k / 3) * 1.4];
           w.eatUntil = now + EAT_AT_TRUCK_MIN;
+        } else if (!w.homeward && w.gatherUntil == null) {
+          // ORDER 302 — sällskapet samlas vid dörren innan det går in; den som
+          // är framme före sin tid väntar utanför.
+          w.gatherUntil = Math.max(now + GATHER_MIN, w.dueAt ?? 0);
+          L.arrived[w.venueId] = (L.arrived[w.venueId] ?? 0) - w.n;
+          continue;
         } else {
           w.arrived = true;
           L.inside[w.venueId] = (L.inside[w.venueId] ?? 0) + w.n;
@@ -518,7 +603,7 @@ export function VillageLife() {
           const from = w.route[w.route.length - 1];
           const back = [...w.route].reverse();
           if (back.length >= 2 && from) {
-            L.walkers.push({ ...w, key: `${w.key}:home`, route: back, length: routeLength(back), s: 0, arrived: false, homeward: true, eatUntil: null, standAt: null, ring: null });
+            L.walkers.push({ ...w, key: `${w.key}:home`, route: back, length: routeLength(back), s: 0, arrived: false, homeward: true, eatUntil: null, standAt: null, ring: null, offsets: sidewalkOffsets(back), pauses: [], pauseUntil: null, pauseKind: null, look: null, gatherUntil: null, wordAway: false });
           }
         }
       }
@@ -559,15 +644,44 @@ export function VillageLife() {
       const out = new Set<string>();
       for (const w of L.walkers) if (w.homeId) out.add(w.homeId);
       for (const { w } of L.leaving) if (w.homeId) out.add(w.homeId);
-      publishVillageLive({ arrived: { ...L.arrived }, onWay, groupsWalking: L.walkers.length, inside: { ...L.inside }, outHomes: [...out], turnedAway: L.turnedAway });
+      const walking = L.walkers.filter((w) => w.eatUntil === null && !w.standAt);
+      const sizes = [1, 2, 3, 4].map((k) => walking.filter((w) => w.n === k).length);
+      const street = { sizes, left: walking.filter((w) => (w.side ?? 1) < 0).length, right: walking.filter((w) => (w.side ?? 1) > 0).length, pausing: walking.filter((w) => w.pauseUntil != null).length, gathering: walking.filter((w) => w.gatherUntil != null).length, wordAway: L.wordAway ?? 0 };
+      publishVillageLive({ arrived: { ...L.arrived }, onWay, groupsWalking: L.walkers.length, inside: { ...L.inside }, outHomes: [...out], turnedAway: L.turnedAway, street });
     }
   });
 
-  function spawnWalker(L: typeof live.current, p: Planned, route: Vec2[], _venues: ReturnType<typeof venuesTonight>, startOffset = 0): void {
+  function spawnWalker(L: typeof live.current, p: Planned, route: Vec2[], venues: ReturnType<typeof venuesTonight>, startOffset = 0): void {
     if (route.length < 2) return;
+    // ORDER 302 — sällskapets egen fart, sida och pauser (fröet ur nyckeln).
+    const rng = createRng(Math.floor(hashKey(simRef.current.seed ?? 0, p.key) * 0x7fffffff));
+    const r = () => rng.next();
+    const length = routeLength(route);
+    const pauses: NonNullable<Walker['pauses']> = [];
+    if (r() < PAUSE_CHANCE) pauses.push({ s: length * (0.2 + 0.6 * r()), minutes: PAUSE_MIN[0] + r() * (PAUSE_MIN[1] - PAUSE_MIN[0]), kind: r() < 0.5 ? 'point' : 'talk', look: null });
+    // Vid en annan krogs dörr längs vägen: läser menyn ibland.
+    for (const v of venues) {
+      if (v.id === p.venueId || v.kind === 'truck' || !v.open) continue;
+      const d = doorPointOf(v.id, venues);
+      if (!d) continue;
+      let acc = 0;
+      for (let i = 1; i < route.length; i++) {
+        const seg = Math.hypot(route[i][0] - route[i - 1][0], route[i][1] - route[i - 1][1]);
+        if (Math.hypot(route[i][0] - d[0], route[i][1] - d[1]) < MENU_NEAR_M && acc + seg < length - MENU_NEAR_M) {
+          if (r() < MENU_CHANCE) pauses.push({ s: acc + seg, minutes: PAUSE_MIN[0] + r() * (PAUSE_MIN[1] - PAUSE_MIN[0]), kind: 'menu', look: Math.atan2(d[0] - route[i][0], d[1] - route[i][1]) });
+          break;
+        }
+        acc += seg;
+      }
+    }
+    pauses.sort((a, b) => a.s - b.s);
+    // ORDER 303 C — ordet på gatan: på väg till oss, men vänder vid dörren.
+    const word = streetWordNow(simRef.current);
+    const wordAway = p.venueId === PLAYER_VENUE && word < 0 && r() < -word;
     L.walkers.push({
-      key: p.key, type: p.type, n: p.n, venueId: p.venueId, route, length: routeLength(route), s: startOffset,
-      pace: TYPE_PACE[p.type], eatUntil: null, standAt: null,
+      key: p.key, type: p.type, n: p.n, venueId: p.venueId, route, length, s: startOffset,
+      pace: TYPE_PACE[p.type] * (1 - PACE_SPREAD + 2 * PACE_SPREAD * r()), eatUntil: null, standAt: null,
+      side: r() < 0.5 ? -1 : 1, offsets: sidewalkOffsets(route), pauses, pauseUntil: null, pauseKind: null, look: null, gatherUntil: null, wordAway, dueAt: p.at,
       ring: p.type === 'billionaire' ? WARM.guest.billionaire : p.type === 'social' ? WARM.guest.social : null,
       arrived: false,
       homeward: false,
@@ -628,14 +742,35 @@ export function VillageLife() {
     (cores.material as THREE.MeshBasicMaterial).opacity = lantern;
     (patches.material as THREE.MeshBasicMaterial).opacity = 0.16 * patch;
     for (const w of L.walkers) {
-      const p = w.standAt ? { x: w.standAt[0], z: w.standAt[1], heading: 0 } : pointAlong(w.route, w.s);
+      // ORDER 302 — sällskapet på sin trottoar (sidan och avståndet från
+      // mittlinjen), medlemmarna två i bredd.
+      const a = w.standAt ? null : pointAlongSeg(w.route, w.s);
+      const off = a && w.offsets ? w.offsets[a.seg] * (1 - a.t) + (w.offsets[a.seg + 1] ?? w.offsets[a.seg]) * a.t : 0;
+      const side = w.side ?? 1;
+      const p = w.standAt || !a ? { x: w.standAt?.[0] ?? 0, z: w.standAt?.[1] ?? 0, heading: 0 } : { x: a.x + Math.cos(a.heading) * off * side, z: a.z - Math.sin(a.heading) * off * side, heading: a.heading };
+      const gathering = w.gatherUntil != null;
       tmp.c.set(TYPE_COLOUR[w.type]);
       for (let k = 0; showFigures && k < w.n && fi < MAX_FIGURES; k++) {
-        const back = w.standAt ? null : pointAlong(w.route, w.s - k * 0.9 * scale);
-        const side = ((k % 2) * 2 - 1) * 0.35 * scale * (k > 0 ? 1 : 0);
-        const x = (back?.x ?? p.x) + Math.cos(p.heading) * side;
-        const z = (back?.z ?? p.z) - Math.sin(p.heading) * side;
-        tmp.q.setFromAxisAngle(tmp.up, back?.heading ?? p.heading);
+        const h = p.heading;
+        let back: number;
+        let col: number;
+        if (gathering || w.standAt) {
+          // Vid dörren i en rad, bredvid varandra.
+          back = 0;
+          col = (k - (w.n - 1) / 2) * ABREAST_M * scale;
+        } else {
+          const row = Math.floor(k / 2);
+          const inRow = w.n - row * 2 >= 2 ? 2 : 1;
+          back = row * ROW_M * scale;
+          col = inRow === 2 ? ((k % 2) - 0.5) * ABREAST_M * scale : 0;
+        }
+        const x = p.x - Math.sin(h) * back + Math.cos(h) * col;
+        const z = p.z - Math.cos(h) * back - Math.sin(h) * col;
+        // Pauserna: de pratar vända mot varandra, pekar eller läser menyn åt sidan.
+        let face = h;
+        if (w.pauseKind === 'talk' && w.n > 1) face = Math.atan2(p.x - x, p.z - z);
+        else if (w.pauseKind === 'menu' || w.pauseKind === 'point') face = w.look ?? Math.atan2(Math.cos(h) * side, -Math.sin(h) * side);
+        tmp.q.setFromAxisAngle(tmp.up, face);
         tmp.p.set(x, 0.05, z);
         tmp.s.setScalar(scale * (w.type === 'billionaire' ? 1.1 : 1));
         tmp.m.compose(tmp.p, tmp.q, tmp.s);

@@ -177,3 +177,48 @@ export function pointAlong(pts: Vec2[], s: number): { x: number; z: number; head
   const p = pts[pts.length - 1] ?? [0, 0];
   return { x: p[0], z: p[1], heading: 0, done: true };
 }
+
+// ORDER 302 (Anders 2026-10-04: "Båda trottoarerna används, och ingen går mitt
+// i gatan") — hur långt från vägens mittlinje trottoaren ligger vid varje punkt
+// i en rutt: halva gatans bredd plus kantstenen. På gångvägar och stigar (inte
+// bilväg) går man på vägen själv (0). Bredden som byns lyktor och Designs
+// prototyp läser (StreetLamps.tsx ROAD_W, OSM-taggen när den finns, högst 8 m).
+const KERB_M = 0.8;
+const ROAD_HALF: Record<string, number> = { secondary: 3.5, tertiary: 3, unclassified: 2.5, residential: 2.5, living_street: 2.3, service: 1.7, track: 1.5 };
+let sidewalkIndex: Map<string, number> | null = null;
+function sidewalkMap(): Map<string, number> {
+  if (sidewalkIndex) return sidewalkIndex;
+  const m = new Map<string, number>();
+  for (const road of WORLD.roads) {
+    const half = road.car ? (road.width ? Math.min(road.width, 8) / 2 : ROAD_HALF[road.kind] ?? 0) : 0;
+    const off = half > 0 ? half + KERB_M : 0;
+    for (const p of road.poly) {
+      const key = `${Math.round(p[0] / SNAP)}:${Math.round(p[1] / SNAP)}`;
+      m.set(key, Math.max(m.get(key) ?? 0, off));
+    }
+  }
+  return (sidewalkIndex = m);
+}
+
+/** Trottoarens avstånd från mittlinjen vid varje punkt i rutten (meter). */
+export function sidewalkOffsets(route: Vec2[]): number[] {
+  const m = sidewalkMap();
+  return route.map((p) => m.get(`${Math.round(p[0] / SNAP)}:${Math.round(p[1] / SNAP)}`) ?? 0);
+}
+
+/** Punkten längs rutten med segmentet och andelen (för trottoarens avstånd). */
+export function pointAlongSeg(pts: Vec2[], s: number): { x: number; z: number; heading: number; seg: number; t: number } {
+  let left = Math.max(0, s);
+  for (let i = 1; i < pts.length; i++) {
+    const [ax, az] = pts[i - 1];
+    const [bx, bz] = pts[i];
+    const seg = Math.hypot(bx - ax, bz - az);
+    if (left <= seg || i === pts.length - 1) {
+      const t = seg > 0 ? Math.min(1, left / seg) : 1;
+      return { x: ax + (bx - ax) * t, z: az + (bz - az) * t, heading: Math.atan2(bx - ax, bz - az), seg: i - 1, t };
+    }
+    left -= seg;
+  }
+  const p = pts[pts.length - 1] ?? [0, 0];
+  return { x: p[0], z: p[1], heading: 0, seg: Math.max(0, pts.length - 2), t: 1 };
+}
