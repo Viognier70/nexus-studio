@@ -1,0 +1,216 @@
+{
+ "tasting": false,
+ "definition": "Säsongen med spelets regler (balance.ts RISK): startkassan, veckomålet på intäkten, omförhandlingen och stängningen räknas av simuleringen (sim/economy.ts settleWeek). resultSek = kassans förändring vecka till vecka. Mise en place ur sim/miseEnPlace.ts misePlan (behov, hinns, eftersläp i spelminuter, och den extra handen).",
+ "start": null,
+ "variant": "{\"CONCEPT\": {\"touristOfMiddle\": {\"enkel\": 0.1, \"bistro\": 0.35, \"soigne\": 0.3}, \"highFullAt\": {\"enkel\": 0, \"bistro\": 0, \"soigne\": 0.9}, \"wageFactor\": {\"enkel\": 0.7, \"bistro\": 1, \"soigne\": 1.2}, \"goodsCostFactor\": {\"enkel\": 0.8, \"bistro\": 1, \"soigne\": 1.8}, \"billFactor\": {\"enkel\": 1, \"bistro\": 1, \"soigne\": 1.5}}, \"STAR\": {\"judgementAtLeast\": 0.4}}",
+ "seeds": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20
+ ],
+ "weeks": 8,
+ "players": {
+  "rimlig": {
+   "closed": 0,
+   "closedWeeks": [],
+   "renegotiated": 0,
+   "lowestCash": 23889,
+   "meanCashEnd": 80148,
+   "targetHitShare": 0.99,
+   "meanTastings": 0,
+   "meanOwned": 0,
+   "stars": 0,
+   "starEarned": 0,
+   "starWeeks": [],
+   "goldWeeks": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "meanRepAtSettlement": [
+    0.6,
+    0.712,
+    0.684,
+    0.782,
+    0.819,
+    0.774,
+    0.755,
+    0.693
+   ],
+   "meanJudgement": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "concepts": {
+    "enkel": 0,
+    "bistro": 1,
+    "soigne": 0
+   },
+   "byWeek": [
+    {
+     "week": 1,
+     "n": 20,
+     "meanResultSek": 18277,
+     "meanRevenueSek": 52815,
+     "meanCashEnd": 33277,
+     "meanCredits": 85,
+     "targetHit": 20,
+     "rentSek": 0
+    },
+    {
+     "week": 2,
+     "n": 20,
+     "meanResultSek": 16926,
+     "meanRevenueSek": 52495,
+     "meanCashEnd": 50202,
+     "meanCredits": 189,
+     "targetHit": 20,
+     "rentSek": 0
+    },
+    {
+     "week": 3,
+     "n": 20,
+     "meanResultSek": 13429,
+     "meanRevenueSek": 48559,
+     "meanCashEnd": 63631,
+     "meanCredits": 298,
+     "targetHit": 20,
+     "rentSek": 0
+    },
+    {
+     "week": 4,
+     "n": 20,
+     "meanResultSek": 15591,
+     "meanRevenueSek": 49852,
+     "meanCashEnd": 79222,
+     "meanCredits": 405,
+     "targetHit": 20,
+     "rentSek": 0
+    },
+    {
+     "week": 5,
+     "n": 20,
+     "meanResultSek": 950,
+     "meanRevenueSek": 49416,
+     "meanCashEnd": 80173,
+     "meanCredits": 516,
+     "targetHit": 20,
+     "rentSek": 13469
+    },
+    {
+     "week": 6,
+     "n": 20,
+     "meanResultSek": 128,
+     "meanRevenueSek": 47985,
+     "meanCashEnd": 80301,
+     "meanCredits": 615,
+     "targetHit": 19,
+     "rentSek": 13469
+    },
+    {
+     "week": 7,
+     "n": 20,
+     "meanResultSek": -560,
+     "meanRevenueSek": 47440,
+     "meanCashEnd": 79741,
+     "meanCredits": 718,
+     "targetHit": 19,
+     "rentSek": 13469
+    },
+    {
+     "week": 8,
+     "n": 20,
+     "meanResultSek": 407,
+     "meanRevenueSek": 48303,
+     "meanCashEnd": 80148,
+     "meanCredits": 823,
+     "targetHit": 20,
+     "rentSek": 13469
+    }
+   ],
+   "repByWeek": [
+    {
+     "week": 1,
+     "mon": 0.6,
+     "sat": 0.629
+    },
+    {
+     "week": 2,
+     "mon": 0.606,
+     "sat": 0.689
+    },
+    {
+     "week": 3,
+     "mon": 0.715,
+     "sat": 0.717
+    },
+    {
+     "week": 4,
+     "mon": 0.689,
+     "sat": 0.781
+    },
+    {
+     "week": 5,
+     "mon": 0.784,
+     "sat": 0.791
+    },
+    {
+     "week": 6,
+     "mon": 0.82,
+     "sat": 0.787
+    },
+    {
+     "week": 7,
+     "mon": 0.775,
+     "sat": 0.769
+    },
+    {
+     "week": 8,
+     "mon": 0.756,
+     "sat": 0.699
+    }
+   ]
+  }
+ },
+ "note": "ORDER 307b: runs/rows borttagna, summeringen kvar; hela körningen för de valda talen står i ../efter."
+}

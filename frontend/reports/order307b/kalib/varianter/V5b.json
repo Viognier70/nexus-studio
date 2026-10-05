@@ -1,0 +1,1 @@
+{"CONCEPT": {"touristOfMiddle": {"enkel": 0.1, "bistro": 0.2, "soigne": 0.3}, "highFullAt": {"enkel": 0, "bistro": 0, "soigne": 0.8}, "wageFactor": {"enkel": 0.8, "bistro": 1, "soigne": 1}, "goodsCostFactor": {"enkel": 0.9, "bistro": 1, "soigne": 2.0}, "billFactor": {"enkel": 1, "bistro": 1, "soigne": 1.3}}, "STAR": {"judgementAtLeast": 0.4}}

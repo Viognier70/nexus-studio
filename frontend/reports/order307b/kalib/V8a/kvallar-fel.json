@@ -1,0 +1,115 @@
+{
+ "variant": "{\"CONCEPT\": {\"touristOfMiddle\": {\"enkel\": 0.1, \"bistro\": 0.3, \"soigne\": 0.3}, \"highFullAt\": {\"enkel\": 0, \"bistro\": 0, \"soigne\": 0.95}, \"wageFactor\": {\"enkel\": 0.72, \"bistro\": 1, \"soigne\": 1.2}, \"goodsCostFactor\": {\"enkel\": 0.81, \"bistro\": 1, \"soigne\": 1.8}, \"billFactor\": {\"enkel\": 1, \"bistro\": 1.01, \"soigne\": 1.5}}, \"STAR\": {\"judgementAtLeast\": 0.4}}",
+ "consequences": {
+  "section": "Servicen > Händelserna i servicen",
+  "graveSatisfactionAtMost": -0.2,
+  "mediumSatisfactionAtMost": -0.1,
+  "graveReputationAtMost": -2,
+  "wrong": {
+   "mild": {
+    "tipShare": -0.1,
+    "billShare": 0,
+    "satisfaction": -0.04,
+    "reputation": -1.5,
+    "staffMorale": 0
+   },
+   "medium": {
+    "tipShare": -0.1,
+    "billShare": -0.5,
+    "satisfaction": -0.08,
+    "reputation": -3,
+    "staffMorale": -0.03
+   },
+   "grave": {
+    "tipShare": 0,
+    "billShare": 0,
+    "satisfaction": -0.08,
+    "reputation": -6,
+    "staffMorale": -0.05,
+    "tableShareLeaving": 1
+   }
+  },
+  "right": {
+   "stepReputation": 0.3,
+   "clearedReputation": 1,
+   "avecShare": 0
+  },
+  "street": {
+   "perWrong": -0.08,
+   "perCleared": 0.04,
+   "min": -0.4,
+   "max": 0.2,
+   "decayPerGameMinute": 0.004
+  },
+  "moodBillPerLift": 1.4,
+  "moodBillPerLiftUp": 0,
+  "rivalContentBase": 0.4,
+  "rivalContentPerReputation": 0.6
+ },
+ "definition": "Vinbaren vecka 1–3, mentorns morgon (baspaketet, extra hand vid behov), brons i tre (PLAYERS.baseline). tillMinusStakeSek = kvällskassan (tillSek, sista ticken under servicen) minus insatsen (day.stake.total). rep* på skalan 0–100: före morgonen, när servicen börjar, efter kvällen och nästa morgon. rank = placeringen i byn efter gäster (economy.weekEvenings village, rankedVillage), som bandet visar nästa morgon. answers = kvällens raketsvar (incidents.log, planerade): kvalitet, steg där det föll, ryktets ändring (deltas.reputation, 0–100) och kassan. breakdown = metrics.reputationBreakdown (0–100). wrongDataLeave = fel svar i vinbar.meta.json vars följd skickar gäster ur rummet (fail.room.leave > 0).",
+ "summary": {
+  "player": "fel",
+  "skill": null,
+  "seeds": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "byWeek": [
+   {
+    "week": 1,
+    "evenings": 24,
+    "meanTillMinusStakeSek": -560,
+    "eveningsWithLoss": 15,
+    "meanRepChangeEvening": -7.4,
+    "meanRepChangeOvernight": 1.1,
+    "rankFirst": 9,
+    "meanRank": 3.6
+   },
+   {
+    "week": 2,
+    "evenings": 24,
+    "meanTillMinusStakeSek": -1769,
+    "eveningsWithLoss": 21,
+    "meanRepChangeEvening": -3,
+    "meanRepChangeOvernight": 2,
+    "rankFirst": 0,
+    "meanRank": 5
+   },
+   {
+    "week": 3,
+    "evenings": 24,
+    "meanTillMinusStakeSek": -2201,
+    "eveningsWithLoss": 23,
+    "meanRepChangeEvening": -2.4,
+    "meanRepChangeOvernight": 2,
+    "rankFirst": 0,
+    "meanRank": 5
+   }
+  ],
+  "answers": {
+   "best": {
+    "n": 0,
+    "meanRep": 0,
+    "meanCashSek": 0
+   },
+   "wrong": {
+    "n": 107,
+    "meanRep": -2.37,
+    "meanCashSek": -124
+   },
+   "staff": {
+    "n": 0,
+    "meanRep": 0,
+    "meanCashSek": 0
+   }
+  },
+  "wrongDataLeave": {
+   "outcomes": 300,
+   "withLeave": 12,
+   "withLeaveAll": 12
+  }
+ },
+ "note": "ORDER 307b: runs/rows borttagna, summeringen kvar; hela körningen för de valda talen står i ../efter."
+}

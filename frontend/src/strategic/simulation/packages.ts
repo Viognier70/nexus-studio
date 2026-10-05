@@ -13,6 +13,8 @@
 // (`minIngredientCost`), samma som menyns frusna kostnad. Talen här är
 // innehåll (som katalogens priser), valda i ORDER 275 (F48).
 
+import { CONCEPT } from '../../sim/balance';
+import { tierOf } from '../../sim/goods';
 import { STOCK, type BusinessClassId } from '../../sim/balance';
 import { DISHES, findDish, minIngredientCost } from './m4Catalogue';
 
@@ -92,9 +94,16 @@ export function packageIngredients(pkg: StockPackage): Record<string, number> {
 }
 
 // Paketets pris i kronor: ingrediensernas kostnad, avrundad.
+// ORDER 307b — varornas inköpspris efter varans nivå (balance.ts CONCEPT.goodsCostFactor).
 export function packageCostSek(pkg: StockPackage): number {
-  const ing = packageIngredients(pkg);
-  return Math.round(Object.entries(ing).reduce((sum, [id, units]) => sum + minIngredientCost(id) * units, 0));
+  let sum = 0;
+  for (const item of pkg.items) {
+    const dish = findDish(item.dishId);
+    if (!dish) continue;
+    const per = dish.recipe.reduce((a, r) => a + minIngredientCost(r.ingredientId) * r.units, 0);
+    sum += per * item.portions * CONCEPT.goodsCostFactor[tierOf(item.dishId)];
+  }
+  return Math.round(sum);
 }
 
 // Rätterna och dryckerna som klassens paket kan innehålla (menyns

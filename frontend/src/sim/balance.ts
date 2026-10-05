@@ -469,7 +469,6 @@ export const SHOP = {
   slotsAtStar: 3,
   abilities: {
     sommBottle: { requires: 'brons', price: 40 },
-    wineFridge: { requires: 'silver', price: 70 },
     wineTasting: { requires: 'guld', price: 110 },
     fastPass: { requires: 'brons', price: 40 },
     leftovers: { requires: 'silver', price: 70 },
@@ -486,7 +485,6 @@ export const SHOP = {
   // Förmågornas verkan när de ligger i facket (texterna ab.*.fx).
   effects: {
     sommBottleChance: 0.25,        // sällskapets chans att ta en flaska, utöver GUESTS.bottleChance
-    wineFridgeSatisfaction: 0.04,  // nöjdheten hos den som dricker vin
     wineTastingSecondDrink: 0.15,  // chansen till ett glas till, utöver STOCK.secondDrinkChance
     fastPassOrderTime: 0.8,        // tiden för köket att få ut maten (uppgiften order)
     leftoversWasteShare: 0.5,      // sopbilens avgift
@@ -570,7 +568,8 @@ export const STAR = {
   reputationAtLeast: 0.2,
   // ORDER 303b — 0,45 före. Med den lägre uppsidan nådde 0,75 rätt per steg
   // stjärnan i 12–20 % av säsongerna; med 0,42 i 25 % (298b:s mål 20–40 %).
-  judgementAtLeast: 0.42,
+  // ORDER 307b — 0,40 (turisterna i bistro): 0,85 når stjärnan i 78 %, 0,75 i 32 %.
+  judgementAtLeast: 0.40,
   minRocketsInWeek: 5,
   weeksToEarn: 3
 } as const;
@@ -1547,17 +1546,32 @@ export const CONCEPT = {
     bistro: { student: 0.2, middle: 0.55, high: 0.25 },
     soigne: { student: 0.05, middle: 0.35, high: 0.6 }
   },
-  // Bistro 0: med turisternas betalningsvilja (1,1) i bistro slutade de bästa
-  // på 94 000–96 000 kr, över målet 70 000–90 000 (reports/order307/forsta,
-  // probe/m2–m4). Turisterna kommer till soigné tills Anders beslutar.
-  touristOfMiddle: { enkel: 0.1, bistro: 0, soigne: 0.3 },
+  // ORDER 307b (Anders 2026-10-05: "Låt turisterna komma till bistron") — 0,3.
+  touristOfMiddle: { enkel: 0.1, bistro: 0.3, soigne: 0.3 },
   gourmetOfHigh: { enkel: 0.3, bistro: 0.5, soigne: 0.55 },
   // Per koncept: krogarnas rykte ligger omkring 0,3 för den som svarar väl
   // (reports/order303c); soigné kräver mest.
   // Bistro 0: med 0,2 kom färre krävande gäster till den som alltid svarar
   // fel, och den blev 1:a en kväll vecka 3. Konceptets rykte styr soigné.
-  highFullAt: { enkel: 0, bistro: 0, soigne: 0.4 },
-  reputationDriftPerDay: 0.1
+  // ORDER 307b — soigné 1,0: de betalningsstarka kommer i proportion till
+  // soigné-ryktet, så att den som svarar fel i soigné tappar dem.
+  highFullAt: { enkel: 0, bistro: 0, soigne: 1 },
+  // ORDER 307b (Anders 2026-10-05: "varje koncept ska gå att driva för den
+  // som kan"; spakar: lägre personalkostnad och billigare varor i enkel,
+  // högre pris och betalningsvilja i soigné). Personalens dagslön gånger
+  // wageFactor efter kvällens koncept; varornas inköpspris gånger
+  // goodsCostFactor efter varans nivå; notan gånger billFactor efter kvällens
+  // koncept (reports/order307b/kalib).
+  // Kalibrerat mot Anders mål (reports/order307b/kalib/B0–V11b, slutkörningen i efter/).
+  // Soigné har dyrare råvaror och mer personal (fler händer vid borden) men
+  // högre notor; notan skalar med intäkten och gynnar den som kan.
+  wageFactor: { enkel: 0.63, bistro: 1, soigne: 1.4 },
+  goodsCostFactor: { enkel: 0.81, bistro: 1, soigne: 1.8 },
+  billFactor: { enkel: 0.94, bistro: 1.005, soigne: 1.6 },
+  // Ett fel svars förlust i kassan gånger detta (304: hårdare följder av fel i högre klass).
+  wrongFactor: { enkel: 1, bistro: 1, soigne: 1.5 },
+  // ORDER 307b — 0,05 (förut 0,1): konceptets rykte minns längre.
+  reputationDriftPerDay: 0.05
 } as const;
 
 // ORDER 307 (ORDER 304 §6) — krogens leverantörer. Grossisten är öppen från
@@ -1582,7 +1596,9 @@ export const EQUIPMENT = {
   section: 'Verksamhetsklasserna',
   // ORDER 304 §6: "Krediterna köper tillgången, och kassan köper saken" —
   // credits öppnar (en gång), priceSek köper.
-  vinkyl: { tier: 'soigne', priceSek: 15000, pavilion: 'stensota', medal: 'brons', credits: 20 },
+  // ORDER 307b — förmågan Vinkylen är borttagen; utrustningen ger dess verkan:
+  // nöjdheten hos den som dricker vin (satisfaction).
+  vinkyl: { tier: 'soigne', priceSek: 15000, pavilion: 'stensota', medal: 'brons', credits: 20, satisfaction: 0.04 },
   flamberingsvagn: { tier: 'soigne', priceSek: 12000, pavilion: 'metodkoket', medal: 'silver', credits: 40 },
   ostvagn: { tier: 'bistro', priceSek: 9000, pavilion: 'kalastorget', medal: 'silver', credits: 30 },
   avecvagn: { tier: 'bistro', priceSek: 8000, pavilion: 'stensota', medal: 'silver', credits: 30, avecShare: 0.2 },

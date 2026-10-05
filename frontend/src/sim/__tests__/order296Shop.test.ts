@@ -29,7 +29,7 @@ describe('ORDER 296 — butiken', () => {
   it('medaljen öppnar stenen, krediterna betalar, och köpet läggs i facket', () => {
     const s = player(SHOP.abilities.sommBottle.price, { stensota: 'brons' });
     expect(stoneState(s, 'sommBottle')).toBe('open');
-    expect(stoneState(s, 'wineFridge')).toBe('locked');
+    expect(stoneState(s, 'wineTasting')).toBe('locked');
     const after = reducer(s, { type: 'SHOP_BUY', id: 'sommBottle' });
     expect(creditsOf(after)).toBe(0);
     expect(after.shop?.owned).toEqual(['sommBottle']);

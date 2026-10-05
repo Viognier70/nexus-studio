@@ -14,7 +14,7 @@ export const GOODS_SUPPLIER_IDS: readonly GoodsSupplierId[] = ['grossisten', 'fi
 export type EquipmentId = 'vinkyl' | 'flamberingsvagn' | 'ostvagn' | 'avecvagn' | 'humidor';
 // Tabellerna i balance.ts utan fältet section.
 const SUPPLIER_SPEC = GOODS_SUPPLIERS as unknown as Record<Exclude<GoodsSupplierId, 'grossisten'>, { pavilion: PavilionKey; medal: string; credits: number }>;
-const EQUIPMENT_SPEC = EQUIPMENT as unknown as Record<EquipmentId, { tier: Tier; priceSek: number; pavilion: PavilionKey; medal: string; credits: number; avecShare?: number }>;
+const EQUIPMENT_SPEC = EQUIPMENT as unknown as Record<EquipmentId, { tier: Tier; priceSek: number; pavilion: PavilionKey; medal: string; credits: number; avecShare?: number; satisfaction?: number }>;
 export function equipmentSpec(id: EquipmentId) {
   return EQUIPMENT_SPEC[id];
 }
@@ -186,4 +186,12 @@ export function moveConceptReputation(draft: SimulationState, tier: Tier, points
   const r = { ...reputationByTier(draft) };
   r[tier] = Math.max(0, Math.min(1, r[tier] + points / scale));
   draft.reputationByTier = r;
+}
+
+// ORDER 307b — hårdare följder av fel svar i högre klass (CONCEPT.wrongFactor),
+// efter kvällens koncept i bokningen.
+export function conceptWrongFactor(state: Pick<SimulationState, 'day'>): number {
+  const b = state.day.booking;
+  const c = b && b.dayNumber === state.day.dayNumber ? b.concept : null;
+  return c ? CONCEPT.wrongFactor[c] : 1;
 }

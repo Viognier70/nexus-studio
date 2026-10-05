@@ -1,7 +1,7 @@
 // ORDER 292 — dygnets kostnader vid stängningen (reducer.ts och collapse.ts).
 
 import { strings } from '../../content/strings';
-import { dailyWagesSek, postDailyInterest } from '../../sim/economy';
+import { dailyWagesSek, postDailyInterest, wageFactor } from '../../sim/economy';
 import type { SimulationState } from '../types';
 import { activityById, activityName } from './activities';
 import { applyCashCost, applyCashDelta, postLedger } from './cashReading';
@@ -47,7 +47,7 @@ export function chargeWages(draft: SimulationState, from: SimulationState): void
   // §7 step 3 — one line per member per day so the book names who was paid.
   for (const m of from.team.members.filter((x) => !x.isAgency)) {
     if (m.dailyCost <= 0) continue;
-    postLedger(draft, { category: 'wage', amount: -m.dailyCost, cause: strings.ledgerCause.wage(roleText(m.role)), causeId: m.id });
+    postLedger(draft, { category: 'wage', amount: -Math.round(m.dailyCost * wageFactor(from)), cause: strings.ledgerCause.wage(roleText(m.role)), causeId: m.id });
   }
 }
 

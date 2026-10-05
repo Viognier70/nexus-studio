@@ -31,7 +31,7 @@ import { reputationHoldsGuests } from '../../simulation/arrivals';
 import { TASTING } from '../../../sim/balance';
 import { conceptTonight } from '../../simulation/guestTypes';
 
-type PlayerId = 'mentorn' | 'klok' | 'per' | 'stjarna' | 'rimlig' | 'halva' | 'halvbra' | 'slarvig' | 'enkel' | 'soigne';
+type PlayerId = 'mentorn' | 'klok' | 'per' | 'stjarna' | 'rimlig' | 'halva' | 'halvbra' | 'slarvig' | 'enkel' | 'bistro' | 'soigne';
 // Den rimliga köper baspaketet bara när lagret inte räcker till bokningen
 // (fyller på); mentorn köper det varje morgon och svarar bäst; den halva
 // svarar rätt på varannan raket hela vägen; den halvbra svarar alltid fel;
@@ -43,7 +43,7 @@ const TOP_UP_SHARE = 1.1;
 const hand = (s: SimulationState) => (misePlan(s).backlogMin > 0 ? [{ type: 'HIRE_PREP_HAND' as const }] : []);
 // ORDER 296c — den kloka i butiken: köper det den har råd med i den här
 // ordningen (det som ger mest i vinbaren först) och lägger de bästa i facket.
-const WISE_SHOP = ['menuStory', 'sommBottle', 'fastPass', 'regulars', 'chefsTable', 'wineTasting', 'leftovers', 'mise', 'lova', 'birthday', 'wineFridge', 'signature', 'allergen', 'critic'];
+const WISE_SHOP = ['menuStory', 'sommBottle', 'fastPass', 'regulars', 'chefsTable', 'wineTasting', 'leftovers', 'mise', 'lova', 'birthday', 'signature', 'allergen', 'critic'];
 const wiseShop = (): SimAction[] => [
   ...WISE_SHOP.map((id) => ({ type: 'SHOP_BUY' as const, id })),
   ...WISE_SHOP.map((id) => ({ type: 'SHOP_SLOT' as const, id, on: false })),
@@ -81,8 +81,12 @@ function nextStarExam(s: SimulationState): MorningPlan['exams'] {
 const SIMPLE_BASKET: Record<string, number> = { 'root-soup': 14, 'lentil-plate': 12, 'chicken-plate': 8, 'dairy-dessert': 6, 'lingon-sorbet': 4, 'beer-pairing': 20, 'alcohol-free-glass': 8, 'house-wine-glass': 10 };
 const SOIGNE_BASKET: Record<string, number> = { 'game-plate': 16, 'lamb-plate': 12, 'chanterelle-toast': 8, 'fine-wine-glass': 30, 'fine-wine-bottle': 4, 'alcohol-free-glass': 6 };
 const PLANS: Record<PlayerId, (s: SimulationState) => MorningPlan> = {
-  enkel: () => ({ stock: 'none', scenarioAnswer: 'skill', actions: (s) => [{ type: 'BUY_ITEMS', items: SIMPLE_BASKET }, ...hand(s)] }),
-  soigne: () => ({ stock: 'none', scenarioAnswer: 'skill', actions: (s) => [{ type: 'BUY_ITEMS', items: SOIGNE_BASKET }, ...hand(s)] }),
+  // ORDER 307b — den som kan: väljer klokt i butiken och på nålarna och gör
+  // proven mot guld i Teatern, som stjärnjägaren (bistro med 0,85 = stjärnjägaren).
+  enkel: (s0) => ({ stock: 'none', scenarioAnswer: 'skill', pins: 'wise', exams: nextStarExam(s0), actions: (s) => [...wiseShop(), { type: 'BUY_ITEMS', items: SIMPLE_BASKET }, ...hand(s)] }),
+  // ORDER 307b — bistro: baspaketet (nivå 0,74) med ROCKET_SKILL rätt per steg.
+  bistro: (s0) => ({ scenarioAnswer: 'skill', pins: 'wise', exams: nextStarExam(s0), actions: (s) => [...wiseShop(), ...hand(s)] }),
+  soigne: (s0) => ({ stock: 'none', scenarioAnswer: 'skill', pins: 'wise', exams: nextStarExam(s0), actions: (s) => [...wiseShop(), { type: 'BUY_ITEMS', items: SOIGNE_BASKET }, ...hand(s)] }),
   mentorn: () => ({ actions: hand }),
   // ORDER 296c (Vision Owner 2026-10-02): "en spelare som väljer klokt på
   // nålarna och i butiken, och en som låter Per välja allt". Båda har
@@ -172,7 +176,7 @@ describe.skipIf(!process.env.KARNAN_SEEDS)('ORDER 296 — kärnans tal', () => {
     // Prövning av tal i minnet: KARNAN_VARIANT='{"INCIDENTS":{"wrongCashShare":1}}'.
     const balance = await import('../../../sim/balance');
     for (const [k, v] of Object.entries(JSON.parse(process.env.KARNAN_VARIANT ?? '{}') as Record<string, Record<string, unknown>>)) Object.assign((balance as unknown as Record<string, Record<string, unknown>>)[k], v);
-    const all: PlayerId[] = ['mentorn', 'klok', 'per', 'stjarna', 'rimlig', 'halva', 'halvbra', 'slarvig', 'enkel', 'soigne'];
+    const all: PlayerId[] = ['mentorn', 'klok', 'per', 'stjarna', 'rimlig', 'halva', 'halvbra', 'slarvig', 'enkel', 'bistro', 'soigne'];
     // KARNAN_PLAYERS=halva,rimlig kör bara de spelarna (kalibreringen).
     const players = process.env.KARNAN_PLAYERS ? all.filter((p) => process.env.KARNAN_PLAYERS!.split(',').includes(p)) : all;
     const result: Record<string, unknown> = {};
