@@ -65,7 +65,7 @@
 
 /* ---------- Recensioner i morse ---------- */
 .nx-review-backdrop {
-  position: fixed; inset: 0; z-index: 45; pointer-events: auto;
+  position: fixed; inset: 0; z-index: 49; pointer-events: auto; /* över HUD:en (.gb-topleft 46), under dialogerna (150) */
   background: rgba(20, 13, 9, 0.45);
   display: flex; align-items: flex-start; justify-content: flex-start;
   padding: max(64px, 11.5vh) 16px 16px max(16px, 3.5vw); box-sizing: border-box;

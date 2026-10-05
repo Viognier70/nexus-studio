@@ -1,0 +1,544 @@
+{
+  "build": "produktion (vite build + preview)",
+  "size": "1440×900",
+  "saveEdit": {
+    "field": "sim.equipment",
+    "value": [
+      "vinkyl",
+      "flamberingsvagn",
+      "ostvagn",
+      "avecvagn",
+      "humidor"
+    ],
+    "why": "utrustningen öppnas med silver och guld; sparfilen har brons"
+  },
+  "steps": {
+    "room": {
+      "camDistance": "24",
+      "roomEquipment": "wineFridge,flambeCart,cheeseCart,avecCart,humidor",
+      "guestGroups": "tourist,gourmet,business,villager,student",
+      "focus": ""
+    },
+    "status": {
+      "pressed": "true",
+      "orkRings": "server:fresh,cook:fresh,host:fresh",
+      "wellbeingPlates": "server:thriving,cook:thriving,host:thriving",
+      "guestGroups": "tourist,gourmet,business,villager,student",
+      "panels": {
+        "rects": [
+          {
+            "el": "service-clock",
+            "x": 54,
+            "y": 38,
+            "w": 330,
+            "h": 109
+          },
+          {
+            "el": "div.nx.nx-till-wrap",
+            "x": 399,
+            "y": 38,
+            "w": 422,
+            "h": 118
+          },
+          {
+            "el": "rival-band",
+            "x": 54,
+            "y": 165,
+            "w": 767,
+            "h": 47
+          },
+          {
+            "el": "mood-meter",
+            "x": 836,
+            "y": 38,
+            "w": 255,
+            "h": 111
+          },
+          {
+            "el": "camera-buttons",
+            "x": 458,
+            "y": 834,
+            "w": 213,
+            "h": 46
+          },
+          {
+            "el": "mode-keys",
+            "x": 679,
+            "y": 834,
+            "w": 233,
+            "h": 46
+          },
+          {
+            "el": "level-bar",
+            "x": 919,
+            "y": 834,
+            "w": 364,
+            "h": 46
+          },
+          {
+            "el": "service-tabs",
+            "x": 27,
+            "y": 822,
+            "w": 368,
+            "h": 58
+          },
+          {
+            "el": "speed-toggle",
+            "x": 1207,
+            "y": 38,
+            "w": 124,
+            "h": 31
+          },
+          {
+            "el": "div.",
+            "x": 1340,
+            "y": 38,
+            "w": 47,
+            "h": 31
+          },
+          {
+            "el": "event-stream",
+            "x": 966,
+            "y": 703,
+            "w": 420,
+            "h": 109
+          }
+        ],
+        "overlaps": []
+      }
+    },
+    "staffScreen": "server@0.575,0.338;cook@0.252,0.404;host@0.389,0.352",
+    "clicks": [
+      {
+        "kind": "staff",
+        "item": "server@0.575,0.338",
+        "x": 828,
+        "y": 304,
+        "card": true,
+        "any": [
+          "staff-card:visible"
+        ]
+      },
+      {
+        "kind": "guest",
+        "item": "gst-2@gourmet@0.501,0.248",
+        "x": 721,
+        "y": 223,
+        "card": true,
+        "any": [
+          "guest-card:visible"
+        ]
+      }
+    ],
+    "staffCard": {
+      "figure": {
+        "id": "server",
+        "type": null,
+        "x": 828,
+        "y": 304
+      },
+      "card": {
+        "state": "fresh:thriving",
+        "text": "×\nSERVITÖR\nSara\nORK\nPigg\nTRIVSEL\nTrivs\nDRICKS I KVÄLL\n0 kr\nKAN\nVin\nSaknas\nKöket\nSaknas\nService\n\nKlarar en rusning till.",
+        "x": 488,
+        "y": 221
+      },
+      "panels": {
+        "rects": [
+          {
+            "el": "service-clock",
+            "x": 54,
+            "y": 38,
+            "w": 330,
+            "h": 109
+          },
+          {
+            "el": "div.nx.nx-till-wrap",
+            "x": 399,
+            "y": 38,
+            "w": 422,
+            "h": 118
+          },
+          {
+            "el": "rival-band",
+            "x": 54,
+            "y": 165,
+            "w": 767,
+            "h": 47
+          },
+          {
+            "el": "mood-meter",
+            "x": 836,
+            "y": 38,
+            "w": 255,
+            "h": 111
+          },
+          {
+            "el": "camera-buttons",
+            "x": 458,
+            "y": 834,
+            "w": 213,
+            "h": 46
+          },
+          {
+            "el": "mode-keys",
+            "x": 679,
+            "y": 834,
+            "w": 233,
+            "h": 46
+          },
+          {
+            "el": "level-bar",
+            "x": 919,
+            "y": 834,
+            "w": 364,
+            "h": 46
+          },
+          {
+            "el": "service-tabs",
+            "x": 27,
+            "y": 822,
+            "w": 368,
+            "h": 58
+          },
+          {
+            "el": "speed-toggle",
+            "x": 1207,
+            "y": 38,
+            "w": 124,
+            "h": 31
+          },
+          {
+            "el": "div.",
+            "x": 1340,
+            "y": 38,
+            "w": 47,
+            "h": 31
+          },
+          {
+            "el": "event-stream",
+            "x": 966,
+            "y": 703,
+            "w": 420,
+            "h": 109
+          },
+          {
+            "el": "staff-card",
+            "x": 488,
+            "y": 221,
+            "w": 306,
+            "h": 375
+          }
+        ],
+        "overlaps": []
+      }
+    },
+    "staffCardClosed": true,
+    "guestCard": {
+      "figure": {
+        "id": "gst-2",
+        "type": "gourmet",
+        "x": 721,
+        "y": 223
+      },
+      "card": {
+        "state": "gourmet:delighted",
+        "text": "×\nGOURMETER\nEn gäst\nSTÄMNING\nGlad\nFÖRLÅTER\nlite"
+      },
+      "panels": {
+        "rects": [
+          {
+            "el": "service-clock",
+            "x": 54,
+            "y": 38,
+            "w": 330,
+            "h": 109
+          },
+          {
+            "el": "div.nx.nx-till-wrap",
+            "x": 399,
+            "y": 38,
+            "w": 422,
+            "h": 118
+          },
+          {
+            "el": "rival-band",
+            "x": 54,
+            "y": 165,
+            "w": 767,
+            "h": 47
+          },
+          {
+            "el": "mood-meter",
+            "x": 836,
+            "y": 38,
+            "w": 255,
+            "h": 111
+          },
+          {
+            "el": "camera-buttons",
+            "x": 458,
+            "y": 834,
+            "w": 213,
+            "h": 46
+          },
+          {
+            "el": "mode-keys",
+            "x": 679,
+            "y": 834,
+            "w": 233,
+            "h": 46
+          },
+          {
+            "el": "level-bar",
+            "x": 919,
+            "y": 834,
+            "w": 364,
+            "h": 46
+          },
+          {
+            "el": "service-tabs",
+            "x": 27,
+            "y": 822,
+            "w": 368,
+            "h": 58
+          },
+          {
+            "el": "speed-toggle",
+            "x": 1207,
+            "y": 38,
+            "w": 124,
+            "h": 31
+          },
+          {
+            "el": "div.",
+            "x": 1340,
+            "y": 38,
+            "w": 47,
+            "h": 31
+          },
+          {
+            "el": "event-stream",
+            "x": 966,
+            "y": 703,
+            "w": 420,
+            "h": 109
+          },
+          {
+            "el": "guest-card",
+            "x": 758,
+            "y": 218,
+            "w": 306,
+            "h": 182
+          }
+        ],
+        "overlaps": []
+      }
+    },
+    "focusKey": {
+      "focus": "1",
+      "panels": {
+        "rects": [
+          {
+            "el": "service-clock",
+            "x": 54,
+            "y": 38,
+            "w": 205,
+            "h": 68
+          },
+          {
+            "el": "div.nx.nx-till-wrap",
+            "x": 268,
+            "y": 38,
+            "w": 262,
+            "h": 46
+          },
+          {
+            "el": "rival-band",
+            "x": 54,
+            "y": 111,
+            "w": 476,
+            "h": 4
+          },
+          {
+            "el": "mood-meter",
+            "x": 539,
+            "y": 38,
+            "w": 158,
+            "h": 69
+          },
+          {
+            "el": "camera-buttons",
+            "x": 607,
+            "y": 842,
+            "w": 175,
+            "h": 37
+          },
+          {
+            "el": "mode-keys",
+            "x": 788,
+            "y": 842,
+            "w": 191,
+            "h": 37
+          },
+          {
+            "el": "level-bar",
+            "x": 984,
+            "y": 842,
+            "w": 298,
+            "h": 37
+          },
+          {
+            "el": "service-tabs",
+            "x": 27,
+            "y": 832,
+            "w": 142,
+            "h": 47
+          },
+          {
+            "el": "speed-toggle",
+            "x": 1207,
+            "y": 38,
+            "w": 124,
+            "h": 31
+          },
+          {
+            "el": "div.",
+            "x": 1340,
+            "y": 38,
+            "w": 47,
+            "h": 31
+          },
+          {
+            "el": "event-stream",
+            "x": 966,
+            "y": 746,
+            "w": 420,
+            "h": 66
+          }
+        ],
+        "overlaps": []
+      },
+      "pressed": "true"
+    },
+    "focusOff": "",
+    "focusNear": {
+      "camDistance": "10",
+      "focus": "1",
+      "panels": {
+        "rects": [
+          {
+            "el": "service-clock",
+            "x": 54,
+            "y": 38,
+            "w": 205,
+            "h": 68
+          },
+          {
+            "el": "div.nx.nx-till-wrap",
+            "x": 268,
+            "y": 38,
+            "w": 262,
+            "h": 46
+          },
+          {
+            "el": "rival-band",
+            "x": 54,
+            "y": 111,
+            "w": 476,
+            "h": 4
+          },
+          {
+            "el": "mood-meter",
+            "x": 539,
+            "y": 38,
+            "w": 158,
+            "h": 69
+          },
+          {
+            "el": "camera-buttons",
+            "x": 607,
+            "y": 842,
+            "w": 175,
+            "h": 37
+          },
+          {
+            "el": "mode-keys",
+            "x": 788,
+            "y": 842,
+            "w": 191,
+            "h": 37
+          },
+          {
+            "el": "level-bar",
+            "x": 984,
+            "y": 842,
+            "w": 298,
+            "h": 37
+          },
+          {
+            "el": "service-tabs",
+            "x": 27,
+            "y": 832,
+            "w": 142,
+            "h": 47
+          },
+          {
+            "el": "speed-toggle",
+            "x": 1207,
+            "y": 38,
+            "w": 124,
+            "h": 31
+          },
+          {
+            "el": "div.",
+            "x": 1340,
+            "y": 38,
+            "w": 47,
+            "h": 31
+          },
+          {
+            "el": "event-stream",
+            "x": 966,
+            "y": 746,
+            "w": 420,
+            "h": 66
+          }
+        ],
+        "overlaps": []
+      },
+      "guestGroups": "tourist,gourmet,business,villager,student",
+      "roomEquipment": "wineFridge,flambeCart,cheeseCart,avecCart,humidor"
+    },
+    "focusBackOut": {
+      "camDistance": "24",
+      "focus": ""
+    },
+    "review": {
+      "change": "-2",
+      "rep": {
+        "from": "60",
+        "to": "58"
+      },
+      "lines": [
+        {
+          "kind": "wrong",
+          "delta": -3,
+          "voice": "student",
+          "text": "Ryktet −3\n\n”Personalen verkade osäker.”\n\nEn student · Ett bord fick fel svar (För varmt)."
+        },
+        {
+          "kind": "rest",
+          "delta": 1,
+          "voice": "village",
+          "text": "Ryktet +1\n\n”Det var varmt och livligt.”\n\nByn · Gästernas kväll i övrigt."
+        }
+      ]
+    },
+    "reviewNext": {
+      "buyOpen": true,
+      "cardGone": true
+    }
+  },
+  "errors": []
+}

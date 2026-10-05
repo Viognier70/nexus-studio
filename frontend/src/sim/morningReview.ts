@@ -16,6 +16,7 @@ import { CONSEQUENCES, REPUTATION } from './balance';
 import { incidentById } from './incidentBank';
 import { REVIEW_CARD } from '../strategic/ui/morningReviews';
 import { staminaOf } from './staffCondition';
+import { staminaOf as staminaBand } from '../strategic/scene/staffStatus';
 
 export type ReviewVoice = 'student' | 'villager' | 'tourist' | 'gourmet' | 'business' | 'village' | 'staff';
 export type ReviewKind = 'wrong' | 'grave' | 'cleared' | 'rest' | 'staff' | 'quiet';
@@ -51,17 +52,18 @@ export interface MorningReview {
   lines?: ReviewEntry[];
 }
 
-// Under den här orken räknas personen som slut (D5 staffStatus.ts staminaOf, gränsen 0,33).
-export const SPENT_BELOW = 0.33;
+// Slut: D5:s gräns i staffStatus.ts staminaOf (samma som orkringen).
+export const isSpent = (stamina: number): boolean => staminaBand(stamina) === 'spent';
 
 const VOICE_OF: Record<GuestType, ReviewVoice> = {
   student: 'student', middle: 'villager', social: 'villager', tourist: 'tourist', gourmet: 'gourmet', business: 'business', high: 'business', billionaire: 'business'
 };
 
+// Citatets frö: teckenkodernas summa (stabilt för samma kväll och rad).
 function hash(s: string): number {
-  let h = 2166136261;
-  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
-  return h >>> 0;
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h += s.charCodeAt(i);
+  return h;
 }
 
 /** Den vanligaste rösten bland borden (byn när ingen typ finns). */
@@ -95,7 +97,7 @@ export function reviewLines(evening: SimulationState, change: number, dayNumber:
   const counted = out.reduce((a, l) => a + l.delta, 0);
   const rest = change - counted;
   // Personalen som var slut när kvällen tog slut (före nattens vila).
-  const spent = evening.staff.filter((s) => staminaOf(s) < SPENT_BELOW).map((s) => s.role as string);
+  const spent = evening.staff.filter((s) => isSpent(staminaOf(s))).map((s) => s.role as string);
   if (rest !== 0) {
     const staffLine = rest < 0 && spent.length > 0;
     out.push({ kind: staffLine ? 'staff' : 'rest', voice: staffLine ? 'staff' : 'village', delta: rest, tables: 0, titles: [], staff: staffLine ? spent : undefined, seed: hash(`${dayNumber}:rest`) });

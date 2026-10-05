@@ -94,6 +94,7 @@ async function clickFigure(kind) {
     await page.mouse.move(x, y);
     await page.mouse.click(x, y);
     const card = await page.waitForSelector(`[data-testid=${kind}-card]`, { timeout: 1500 }).catch(() => null);
+    (report.steps.clicks ??= []).push({ kind, item, x, y, card: !!card, any: await page.evaluate(() => [...document.querySelectorAll("[data-testid$=-card]")].map((e) => e.getAttribute("data-testid") + ":" + e.style.visibility)) });
     if (card) { await delay(400); return { id: parts[0], type: parts.length > 2 ? parts[1] : null, x, y }; }
   }
   return null;
@@ -138,6 +139,7 @@ try {
   };
   await shot('statuslaget');
   // 3. Kortet för personal och gäst.
+  report.steps.staffScreen = await ds('staffScreen');
   const staff = await clickFigure('staff');
   report.steps.staffCard = staff ? {
     figure: staff,
@@ -211,8 +213,7 @@ try {
     report.steps.reviewNext = { buyOpen: !!(await page.$('[data-testid=screen-M1]')), cardGone: !(await page.$('[data-testid=morning-review]')) };
   }
 } catch (e) {
-  if (!e?.stop) report.error = String(e?.message ?? e);
-  await shot('fel').catch(() => {});
+  if (!e?.stop) { report.error = String(e?.message ?? e); await shot('fel').catch(() => {}); }
 } finally {
   writeFileSync(resolve(OUT, process.env.CHECK_OUT ?? 'check.json'), JSON.stringify(report, null, 2) + '\n');
   await browser.close();

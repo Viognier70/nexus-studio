@@ -11,7 +11,7 @@ import { orkArcs, orkFacing, orkFilled, orkRingShown, parseRgba, createOrkRing }
 import { checkAll, checkOverlaps, layout, placeCard, type Rect } from '../ui/hudLayout';
 import { placeCardAmong, threadEnd } from '../ui/cardPlacement';
 import { focusStep, focusToggle } from '../ui/focusState';
-import { reviewLines, buildMorningReview, SPENT_BELOW } from '../../sim/morningReview';
+import { reviewLines, buildMorningReview } from '../../sim/morningReview';
 import { REVIEW_CARD } from '../ui/morningReviews';
 import { GROUP_IDS, groupOfGuestType, lookForGuestType, forgivesOf, dressAllGroups, showGroup, BILLIONAIRE_GOLD, HEAD_SIGNS } from '../scene/guestLooks';
 import { GUEST_GROUPS } from '../scene/guestGroups';
@@ -174,7 +174,7 @@ describe('ORDER 309 — Recensioner i morse (D5 morningReviews.ts)', () => {
   });
 
   it('personalen som var slut bär resten när kvällen i övrigt drog ned', () => {
-    const ev = evening([{ incidentId: 'vb01-korken', right: false, severity: 'mild', reputation: W.mild.reputation, guestType: 'middle' }], SPENT_BELOW / 2);
+    const ev = evening([{ incidentId: 'vb01-korken', right: false, severity: 'mild', reputation: W.mild.reputation, guestType: 'middle' }], 0.1);
     const lines = reviewLines(ev, -6, 3);
     const staff = lines.find((l) => l.kind === 'staff');
     expect(staff).toBeDefined();

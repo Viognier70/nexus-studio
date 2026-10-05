@@ -118,8 +118,8 @@ Playtest-genvägar, satta i `useDesktopControls.ts` (kamera) och `StrategicApp.t
 | `Escape` | Kamera → Krogen (ORDER 300 §6; förut zooma utåt) | `useDesktopControls.ts` |
 | `g` / `G` (DEV) | Toggle scale-reference | `StrategicApp.tsx:180-185` |
 | `j` / `J` (DEV) | Toggle säsong (autumn ↔ summer); flyttad från H i ORDER 303 | `StrategicApp.tsx` |
-| `h` / `H` | Fokusläget: panelerna fälls ihop, kassan, klockan och mätaren står kvar (ORDER 303 G; också under 14 m) | `ui/FocusMode.tsx` |
-| `s` / `S` | Statusläget: stämningen vid alla bord och personalens ork (ORDER 303 F) | `ui/StatusButton.tsx` |
+| `h` / `H` | Fokusläget (Designs D5, ORDER 309): panelerna fälls till lister, kassan, klockan och mätaren står kvar; slås på under 14 m och av över 15,5 m, H växlar | `ui/FocusMode.tsx`, `ui/focusState.ts` |
+| `s` / `S` | Statusläget (Designs D5, ORDER 309): stämningen vid alla bord, orkringen och trivselplattan vid personalen; klick på en figur öppnar kortet, Esc stänger | `ui/StatusButton.tsx` (`ModeKeys`), `ui/StatusCard.tsx` |
 | `v` / `V` | Nivån byn, 660 m (ORDER 300 §6: knappen heter Byn (V); förut byn och tillbaka, ORDER 290). Gäller utan `#playtest=1`. | `ui/LevelBar.tsx` |
 | `c` / `C` | Nivån kvarteret, 210 m (ORDER 288). Gäller också under servicen. | `ui/LevelBar.tsx` |
 | `x` / `X` | Nivån gatan, 95 m vid spelarens krog (ORDER 288). Gäller också under servicen. | `ui/LevelBar.tsx` |
