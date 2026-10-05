@@ -144,6 +144,7 @@ Uppskattningen skrivs innan etappen börjar. Faktisk tid fylls i när etappen ä
 | Gatans folk | 302 | ~6: Designs koreografi genomgången, storlek och formation, fart och sida med trottoaren per gata, pauserna, före 19 och efter 22, samlingen vid dörren och ordet på gatan, kontrollen, rapport | 2 h | Gångnätet går på mittlinjen (trottoaren per gatans bredd); hemvägen ärvde samlingen; ett skript tömde VillageLife.tsx (återställd ur git) | | — | 2026-10-05 | |
 | Konceptet och varukorgen, förslag | 304 | ~3: genomgång av det som finns, förslaget till datamodell och balans, utkastet till 90 frågor på två språk, faktakontroll | 2 h | Faktauppgifterna i frågorna (lagstiftning, ursprungsskydd, temperaturer) kontrollerades en gång till; humidorns temperatur rättad | | — | 2026-10-05 | Väntar på beslut. |
 | Början efter besluten | 300b | ~5: samtyckets andra stycke och knapparna, svaret i tillståndet och menyn, regel 1, fyra skript via den nya starten, kontrollen i spelarens flöde och layouten, rapport | 1,5 h | Hela sviten under hög belastning från en parallell harness: två långa tester nådde tidsgränsen | | — | 2026-10-05 | |
+| Ekonomin efter följderna | 303b | ~4: utgångsläget, fyra varianter i harness (trappan, stjärnan 40 säsonger med tre färdigheter, 303 B), talen, slutkörningen, rapport | 2 h | Stjärnan föll under målet när belöningen sänktes; gränsen för klarade raketer fick sänkas | | — | 2026-10-05 | |
 
 ## Omräkning efter etapp 2
 
