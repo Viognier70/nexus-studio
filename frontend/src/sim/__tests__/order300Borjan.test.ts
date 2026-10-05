@@ -35,7 +35,9 @@ describe('ORDER 300 — början och layouten', () => {
   it('§4: startskärmen går till namn och samtycke och sedan första morgonen, utan bussen', () => {
     const main = readFileSync(resolve(SRC, 'main.tsx'), 'utf8');
     expect(main).not.toMatch(/setFlow\('bus'\)/);
-    expect(main).toMatch(/type Flow = 'start' \| 'introduction';/);
+    // ORDER 308 — flödet är en reducer (strategic/opening/newGameFlow.ts); öppningen ligger mellan registreringen och morgonen.
+    expect(main).toMatch(/useReducer\(newGameFlow, NEW_GAME_FLOW_START\)/);
+    expect(readFileSync(resolve(SRC, 'strategic/opening/newGameFlow.ts'), 'utf8')).toMatch(/flow: 'start' \| 'introduction';/);
     const s = beginIntroduction(makeNewGameState(1), { name: 'Anders', consent: true });
     expect(s.player).toEqual({ name: 'Anders', consent: true });
     expect(s.introduction).toEqual({ practiced: false });

@@ -1,0 +1,544 @@
+{
+  "build": "produktion (vite build + preview)",
+  "size": "1280×720",
+  "errors": [],
+  "externalRequests": [],
+  "flows": {
+    "full": {
+      "steps": [
+        "start-screen",
+        "register-screen",
+        "opening",
+        "rules-card"
+      ],
+      "shots": [
+        {
+          "name": "oppning-texten",
+          "want": 9,
+          "t": 9.27,
+          "shot": "fly",
+          "title": [
+            "Grythyttan",
+            "En säsong. Åtta veckor.",
+            "Från midsommar till kräftskiva."
+          ],
+          "caption": null,
+          "pins": [],
+          "black": 0,
+          "skip": true,
+          "rulesVisible": false,
+          "villageLabelsVisible": 0,
+          "mentor": {
+            "visible": false,
+            "x": 0,
+            "z": 0
+          },
+          "streetLampsLit": 181,
+          "camDistance": 344
+        },
+        {
+          "name": "oppning-nalen-din-vinbar",
+          "want": 14.6,
+          "t": 14.73,
+          "shot": "descend",
+          "title": [],
+          "caption": null,
+          "pins": [
+            {
+              "id": "opening-pin-venue",
+              "label": "Din vinbar",
+              "x": 608,
+              "y": 242
+            }
+          ],
+          "black": 0,
+          "skip": true,
+          "rulesVisible": false,
+          "villageLabelsVisible": 0,
+          "mentor": {
+            "visible": false,
+            "x": 0,
+            "z": 0
+          },
+          "streetLampsLit": 187,
+          "camDistance": 45
+        },
+        {
+          "name": "oppning-taket-lyfts",
+          "want": 16.3,
+          "t": 16.38,
+          "shot": "descend",
+          "title": [],
+          "caption": null,
+          "pins": [],
+          "black": 0,
+          "skip": true,
+          "rulesVisible": false,
+          "villageLabelsVisible": 0,
+          "mentor": {
+            "visible": false,
+            "x": 0,
+            "z": 0
+          },
+          "streetLampsLit": 187,
+          "camDistance": 26
+        },
+        {
+          "name": "oppning-raden-tom",
+          "want": 21,
+          "t": 21.07,
+          "shot": "empty",
+          "title": [],
+          "caption": "Än så länge är den tom.",
+          "pins": [],
+          "black": 0,
+          "skip": true,
+          "rulesVisible": false,
+          "villageLabelsVisible": 0,
+          "mentor": {
+            "visible": false,
+            "x": 0,
+            "z": 0
+          },
+          "streetLampsLit": 187,
+          "camDistance": 40
+        },
+        {
+          "name": "oppning-raden-det-du-vet",
+          "want": 28.5,
+          "t": 28.73,
+          "shot": "decant",
+          "title": [],
+          "caption": "Det du vet fyller den.",
+          "pins": [],
+          "black": 0,
+          "skip": true,
+          "rulesVisible": false,
+          "villageLabelsVisible": 0,
+          "mentor": {
+            "visible": false,
+            "x": 0,
+            "z": 0
+          },
+          "streetLampsLit": 187,
+          "camDistance": 40
+        },
+        {
+          "name": "oppning-nalen-ingrid",
+          "want": 35.6,
+          "t": 35.7,
+          "shot": "mentor",
+          "title": [],
+          "caption": null,
+          "pins": [
+            {
+              "id": "opening-pin-mentor",
+              "label": "Ingrid, din mentor",
+              "x": 640,
+              "y": 282
+            }
+          ],
+          "black": 0,
+          "skip": true,
+          "rulesVisible": false,
+          "villageLabelsVisible": 0,
+          "mentor": {
+            "visible": true,
+            "x": 556.9,
+            "z": -103.9
+          },
+          "streetLampsLit": 187,
+          "camDistance": 37
+        },
+        {
+          "name": "oppning-raden-stjarnan",
+          "want": 38.6,
+          "t": 38.92,
+          "shot": "mentor",
+          "title": [],
+          "caption": "Målet är stjärnan.",
+          "pins": [],
+          "black": 0,
+          "skip": true,
+          "rulesVisible": false,
+          "villageLabelsVisible": 0,
+          "mentor": {
+            "visible": true,
+            "x": 556.9,
+            "z": -103.9
+          },
+          "streetLampsLit": 187,
+          "camDistance": 140
+        }
+      ],
+      "rulesDuringOpening": false,
+      "wallSeconds": 42,
+      "rulesAfter": true,
+      "seenFlag": "1"
+    },
+    "skip": {
+      "steps": [
+        "start-screen",
+        "register-screen",
+        "opening",
+        "skip",
+        "rules-card"
+      ],
+      "skipAt1": false,
+      "afterEarlyKey": {
+        "t": 1.7,
+        "shot": "fly",
+        "title": [],
+        "caption": null,
+        "pins": [],
+        "black": 0,
+        "skip": false,
+        "rulesVisible": false,
+        "villageLabelsVisible": 0,
+        "mentor": {
+          "visible": false,
+          "x": 0,
+          "z": 0
+        },
+        "streetLampsLit": 59,
+        "camDistance": 879
+      },
+      "earlyKeyIgnored": true,
+      "skipAt33": true,
+      "skipToRulesMs": 1884
+    },
+    "reduced": {
+      "steps": [
+        "start-screen",
+        "register-screen",
+        "opening",
+        "skip",
+        "rules-card"
+      ],
+      "samples": [
+        {
+          "t": 2.32,
+          "shot": "fly",
+          "title": [
+            "Grythyttan"
+          ],
+          "caption": null,
+          "pins": [],
+          "black": 0,
+          "skip": false,
+          "rulesVisible": false,
+          "villageLabelsVisible": 0,
+          "mentor": {
+            "visible": false,
+            "x": 0,
+            "z": 0
+          },
+          "streetLampsLit": 62,
+          "camDistance": 660
+        },
+        {
+          "t": 5.22,
+          "shot": "fly",
+          "title": [
+            "Grythyttan",
+            "En säsong. Åtta veckor."
+          ],
+          "caption": null,
+          "pins": [],
+          "black": 0,
+          "skip": true,
+          "rulesVisible": false,
+          "villageLabelsVisible": 0,
+          "mentor": {
+            "visible": false,
+            "x": 0,
+            "z": 0
+          },
+          "streetLampsLit": 107,
+          "camDistance": 660
+        },
+        {
+          "t": 8.07,
+          "shot": "fly",
+          "title": [
+            "Grythyttan",
+            "En säsong. Åtta veckor.",
+            "Från midsommar till kräftskiva."
+          ],
+          "caption": null,
+          "pins": [],
+          "black": 0,
+          "skip": true,
+          "rulesVisible": false,
+          "villageLabelsVisible": 0,
+          "mentor": {
+            "visible": false,
+            "x": 0,
+            "z": 0
+          },
+          "streetLampsLit": 159,
+          "camDistance": 660
+        },
+        {
+          "t": 11.07,
+          "shot": "fly",
+          "title": [
+            "Grythyttan",
+            "En säsong. Åtta veckor.",
+            "Från midsommar till kräftskiva."
+          ],
+          "caption": null,
+          "pins": [],
+          "black": 0,
+          "skip": true,
+          "rulesVisible": false,
+          "villageLabelsVisible": 0,
+          "mentor": {
+            "visible": false,
+            "x": 0,
+            "z": 0
+          },
+          "streetLampsLit": 187,
+          "camDistance": 660
+        },
+        {
+          "t": 13.27,
+          "shot": "descend",
+          "title": [],
+          "caption": null,
+          "pins": [
+            {
+              "id": "opening-pin-venue",
+              "label": "Din vinbar",
+              "x": 640,
+              "y": 220
+            }
+          ],
+          "black": 0,
+          "skip": true,
+          "rulesVisible": false,
+          "villageLabelsVisible": 0,
+          "mentor": {
+            "visible": false,
+            "x": 0,
+            "z": 0
+          },
+          "streetLampsLit": 187,
+          "camDistance": 42
+        },
+        {
+          "t": 16.12,
+          "shot": "descend",
+          "title": [],
+          "caption": null,
+          "pins": [],
+          "black": 0,
+          "skip": true,
+          "rulesVisible": false,
+          "villageLabelsVisible": 0,
+          "mentor": {
+            "visible": false,
+            "x": 0,
+            "z": 0
+          },
+          "streetLampsLit": 187,
+          "camDistance": 42
+        }
+      ],
+      "reducedAttr": "1",
+      "flyDistances": [
+        660,
+        660,
+        660,
+        660
+      ],
+      "descendDistances": [
+        42,
+        42
+      ],
+      "cameraStillInFly": true,
+      "cameraStillInDescend": true
+    },
+    "english": {
+      "steps": [
+        "start-screen",
+        "register-screen",
+        "opening"
+      ],
+      "shots": [
+        {
+          "name": "oppning-texten",
+          "want": 9,
+          "t": 9.17,
+          "shot": "fly",
+          "title": [
+            "Grythyttan",
+            "One season. Eight weeks.",
+            "From midsummer to the crayfish party."
+          ],
+          "caption": null,
+          "pins": [],
+          "black": 0,
+          "skip": true,
+          "rulesVisible": false,
+          "villageLabelsVisible": 0,
+          "mentor": {
+            "visible": false,
+            "x": 0,
+            "z": 0
+          },
+          "streetLampsLit": 181,
+          "camDistance": 358
+        },
+        {
+          "name": "oppning-nalen-din-vinbar",
+          "want": 14.6,
+          "t": 14.63,
+          "shot": "descend",
+          "title": [],
+          "caption": null,
+          "pins": [
+            {
+              "id": "opening-pin-venue",
+              "label": "Your wine bar",
+              "x": 598,
+              "y": 256
+            }
+          ],
+          "black": 0,
+          "skip": true,
+          "rulesVisible": false,
+          "villageLabelsVisible": 0,
+          "mentor": {
+            "visible": false,
+            "x": 0,
+            "z": 0
+          },
+          "streetLampsLit": 187,
+          "camDistance": 48
+        },
+        {
+          "name": "oppning-raden-tom",
+          "want": 21,
+          "t": 21.1,
+          "shot": "empty",
+          "title": [],
+          "caption": "For now, it is empty.",
+          "pins": [],
+          "black": 0,
+          "skip": true,
+          "rulesVisible": false,
+          "villageLabelsVisible": 0,
+          "mentor": {
+            "visible": false,
+            "x": 0,
+            "z": 0
+          },
+          "streetLampsLit": 187,
+          "camDistance": 40
+        }
+      ]
+    }
+  },
+  "summary": {
+    "order": "start-screen → register-screen → opening → rules-card",
+    "rulesHiddenDuringOpening": true,
+    "villageLabelsDuringOpening": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "mentorAtPin": {
+      "visible": true,
+      "x": 556.9,
+      "z": -103.9
+    },
+    "streetLampsLit": [
+      181,
+      187,
+      187,
+      187,
+      187,
+      187,
+      187
+    ],
+    "wallSeconds": 42,
+    "shotsWithText": [
+      {
+        "name": "oppning-texten",
+        "t": 9.27,
+        "text": [
+          "Grythyttan",
+          "En säsong. Åtta veckor.",
+          "Från midsommar till kräftskiva."
+        ]
+      },
+      {
+        "name": "oppning-nalen-din-vinbar",
+        "t": 14.73,
+        "text": [
+          "Din vinbar"
+        ]
+      },
+      {
+        "name": "oppning-taket-lyfts",
+        "t": 16.38,
+        "text": []
+      },
+      {
+        "name": "oppning-raden-tom",
+        "t": 21.07,
+        "text": [
+          "Än så länge är den tom."
+        ]
+      },
+      {
+        "name": "oppning-raden-det-du-vet",
+        "t": 28.73,
+        "text": [
+          "Det du vet fyller den."
+        ]
+      },
+      {
+        "name": "oppning-nalen-ingrid",
+        "t": 35.7,
+        "text": [
+          "Ingrid, din mentor"
+        ]
+      },
+      {
+        "name": "oppning-raden-stjarnan",
+        "t": 38.92,
+        "text": [
+          "Målet är stjärnan."
+        ]
+      }
+    ],
+    "skipHiddenBefore3s": true,
+    "earlyKeyIgnored": true,
+    "skipShownAt3s": true,
+    "skipToRulesMs": 1884,
+    "reducedAttr": "1",
+    "reducedCameraStillInFly": true,
+    "reducedCameraStillInDescend": true,
+    "english": [
+      [
+        "Grythyttan",
+        "One season. Eight weeks.",
+        "From midsummer to the crayfish party."
+      ],
+      [
+        "Your wine bar"
+      ],
+      [
+        "For now, it is empty."
+      ]
+    ],
+    "externalRequests": 0,
+    "errors": 0
+  }
+}
