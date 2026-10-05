@@ -1,0 +1,882 @@
+{
+  "language": "en",
+  "status": "draft",
+  "reviewedBy": null,
+  "note": "ORDER 306 — utkast för Anders granskning. Nya nycklar: steps[0].clue och steps[1].clue (ledtråden som står kvar på kortet när steget är besvarat, 'Analys: …' och 'Upplevelse: …') och halfGrip.analysis / halfGrip.experience (återkopplingen vid halvt grepp: halfGrip.analysis visas när valet har grip 'analysis', alltså höll för analysen men inte för upplevelsen; halfGrip.experience omvänt). Platshållare som i vinbar: {bord}, {gäst}, {vin}, {personal}.",
+  "texts": {
+    "vb01-korken": {
+      "title": "The first bottle",
+      "body": "The first bottle of the evening: {gäst} at table {bord} has ordered a {vin}. When {personal} pulls the cork, it smells of damp cellar and wet cardboard.",
+      "steps": [
+        {
+          "question": "The cork is out. What does the smell of damp cellar and wet cardboard tell you?",
+          "clue": "Cork taint (TCA). The fault is in this particular bottle.",
+          "options": {
+            "a": {
+              "label": "Reduction, meaning sulphur compounds",
+              "explanation": "Reduction smells of struck matches, sulphur or rotten egg. It can often be aired out. Damp cellar is something else."
+            },
+            "b": {
+              "label": "Oxidation, the wine has had too much oxygen",
+              "explanation": "An oxidised wine smells of tired apple, nuts or sherry and can have a brownish colour. Cellar and wet cardboard point to the cork."
+            },
+            "c": {
+              "label": "Cork taint, the compound TCA",
+              "explanation": "The smell of damp cellar and wet cardboard is cork taint, caused by the compound TCA. It is a fault in that particular bottle, not in the wine as such."
+            },
+            "d": {
+              "label": "A young wine that needs air",
+              "explanation": "A young wine can be closed and give little away, but it does not smell of cellar. That smell is a fault, not an age."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} puts the bottle on the table without knowing what is wrong. The guest waits."
+          }
+        },
+        {
+          "question": "{gäst} saw you smell the cork and says, a little worried: \"Nothing wrong, is there? We have been looking forward to this very wine all week.\" What is the guest looking for?",
+          "clue": "The guest wants this very wine, and an honest answer.",
+          "options": {
+            "a": {
+              "label": "To be spared any trouble, the evening should feel easy",
+              "explanation": "The guest asked straight out whether something was wrong. Someone who asks wants an answer, not a silence."
+            },
+            "b": {
+              "label": "The very wine they chose, and an honest word about the bottle",
+              "explanation": "Two things in one sentence: the wine they have looked forward to, and the question of whether something is wrong. Both need an answer."
+            },
+            "c": {
+              "label": "A good wine to get started, any wine will do",
+              "explanation": "The guest wants to get started, but also said \"this very wine\". A different wine misses half the sentence."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} only hears that the guest wants to get started. The question about the bottle is left hanging."
+          }
+        },
+        {
+          "question": "You have the analysis and the guest's words in front of you. What do you do?",
+          "options": {
+            "a": {
+              "label": "Say honestly that something is wrong with the wine, and decant it so the smell airs out",
+              "explanation": "The honesty is right, but airing helps with reduction, not with cork taint. TCA does not go away with oxygen."
+            },
+            "b": {
+              "label": "Serve it anyway, it is probably the wine's character",
+              "explanation": "Cork taint is a fault in the bottle, not the wine's character. The guest notices, and trust in the whole wine list drops.",
+              "fail": {
+                "outcome": "The guest tastes, frowns and puts the glass down.",
+                "ongoing": "The guest at table {bord} sits with an untouched glass and looks around for the staff."
+              }
+            },
+            "c": {
+              "label": "Open a new bottle of the same wine and change the glasses, but say nothing about the fault",
+              "explanation": "The bottle and glasses are changed correctly. But the guest saw you smell the cork and asked. Silence looks as if the place is hiding something."
+            },
+            "d": {
+              "label": "Say plainly that the bottle is corked, open a new one of the same wine, change the glasses and let the guest taste. Only the new one goes on the bill",
+              "explanation": "A corked bottle is always replaced, and new glasses are needed because the smell stays in the old ones. Cork taint is nothing to be ashamed of; it affects some bottles with natural cork. Saying it openly and not charging for the fault builds trust."
+            }
+          },
+          "fail": {
+            "outcome": "The bottle stands open on the table. Nobody says anything about the smell.",
+            "ongoing": "The bottle stands open on the table. The smell of cellar is still there."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "A new bottle and new glasses on the table. The guest nods after the first taste."
+      },
+      "staff": {
+        "outcome": "The staff take over: the bottle was served as it was, and the guest sent it back after the first glass."
+      },
+      "halfGrip": {
+        "analysis": "Half grip: the choice held for the analysis, but not for the guest's experience. The bottle and glasses were changed correctly, but the guest got no answer to the question and still wonders what happened.",
+        "experience": "Half grip: the choice held for the guest's experience, but not for the analysis. The guest got an honest answer, but cork taint cannot be aired out. Only a new bottle helps."
+      }
+    },
+    "vb02-rosen": {
+      "title": "The rosé's temperature",
+      "body": "The evening is warm. {personal} says the white wines are at 10 degrees in the fridge, but the rosés that just arrived are at 24 degrees. The first guests want rosé.",
+      "steps": [
+        {
+          "question": "The thermometer in the case shows 24 degrees. At what temperature should a rosé be served?",
+          "clue": "Rosé should be 8–10 degrees. The bottles are at 24.",
+          "options": {
+            "a": {
+              "label": "Room temperature, around 22 degrees",
+              "explanation": "That warm, the rosé tastes heavy and sweet, and the alcohol sticks out. Room temperature is not even right for red."
+            },
+            "b": {
+              "label": "16–18 degrees, like a red",
+              "explanation": "That suits many red wines. A rosé needs to be colder for its freshness and acidity to come through."
+            },
+            "c": {
+              "label": "Ice cold, 2–4 degrees",
+              "explanation": "Too cold closes up the aroma, and the wine tastes of almost nothing. Cold is good, but not colder than the fridge."
+            },
+            "d": {
+              "label": "8–10 degrees",
+              "explanation": "A rosé is served at 8–10 degrees. Then it is fresh without the aroma disappearing."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} pours a glass of rosé from the shelf. It tastes lukewarm."
+          }
+        },
+        {
+          "question": "The first guests lean on the bar: \"Something cold and fresh, rosé if you have it. We have been walking in the sun all day.\" What are the guests looking for?",
+          "clue": "The guests want something cold in their hands now, and a fresh rosé.",
+          "options": {
+            "a": {
+              "label": "Rosé, and the temperature matters less",
+              "explanation": "They said \"cold and fresh\" first. A lukewarm rosé on a warm evening is what they will remember."
+            },
+            "b": {
+              "label": "Something to drink quickly, anything at all",
+              "explanation": "There is a hurry, that is true. But they asked for rosé, and for something fresh."
+            },
+            "c": {
+              "label": "Something cold in hand right away, and a rosé that is fresh when it comes",
+              "explanation": "Two wishes: cool relief now, and the rosé they asked for. A day in the sun means that waiting with nothing in hand feels long."
+            }
+          },
+          "fail": {
+            "outcome": "The guests at the bar exchange looks. Some order beer instead."
+          }
+        },
+        {
+          "question": "The bottles need chilling and the guests are at the bar. What do you do?",
+          "options": {
+            "a": {
+              "label": "Put the rosé bottles in a bucket of ice and water, say they will be cold in ten minutes and offer a cold glass of white or water meanwhile",
+              "explanation": "Ice and water chill a bottle in about ten minutes, much faster than the fridge. The guests know why it takes a moment and get something cold straight away."
+            },
+            "b": {
+              "label": "Serve the rosé straight away, with ice cubes in the glass",
+              "explanation": "The guests get something cold at once. But the ice dilutes the wine and takes away both aroma and acidity. It is the bottle that should be chilled."
+            },
+            "c": {
+              "label": "Serve the warm rosé and hope nobody notices",
+              "explanation": "The guests notice on the first sip. Room temperature makes the rosé heavy and sweet, and the alcohol sticks out."
+            },
+            "d": {
+              "label": "Put the bottles in ice and water and take the order, without saying anything about the wait",
+              "explanation": "The chilling is right. But the guests stand empty-handed and do not know why it is taking so long. Ten minutes without a word feel longer."
+            }
+          },
+          "fail": {
+            "outcome": "The ice cubes clink. After a while the wine tastes of water.",
+            "ongoing": "The rosé glasses stand half full on the tables. The guests order nothing more."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "The buckets stand on the bar. The first rosé glasses are cold and misted."
+      },
+      "staff": {
+        "outcome": "The staff take over: the rosé was served as it was. It tasted warm and sweet."
+      },
+      "halfGrip": {
+        "analysis": "Half grip: the choice held for the analysis, but not for the guests' experience. The rosé got cold, but the guests stood with nothing in hand and no word.",
+        "experience": "Half grip: the choice held for the guests' experience, but not for the analysis. They got something cold at once, but the ice dilutes the rosé. The bottle should come down to 8–10 degrees in ice and water."
+      }
+    },
+    "vb03-notallergi": {
+      "title": "Nut allergy",
+      "body": "{gäst} at table {bord} has a nut allergy and asks if the bruschetta with basil pesto is fine. {personal} is unsure what is in the pesto.",
+      "steps": [
+        {
+          "question": "What does the recipe for a classic basil pesto say? Which nuts does it usually contain?",
+          "clue": "Classic pesto has pine nuts. Tonight's recipe still has to be checked.",
+          "options": {
+            "a": {
+              "label": "Pine nuts",
+              "explanation": "Classic pesto is made with basil, pine nuts, garlic, hard cheese and olive oil. Other versions can have other nuts, so the recipe must still be checked."
+            },
+            "b": {
+              "label": "Peanuts",
+              "explanation": "Peanuts are not part of classic pesto. But a pesto without peanuts is not necessarily a pesto without nuts."
+            },
+            "c": {
+              "label": "Hazelnuts",
+              "explanation": "Hazelnuts are not in the classic pesto. The nut in the original is the pine nut."
+            },
+            "d": {
+              "label": "None, just basil, cheese and oil",
+              "explanation": "That is a common mistake. Classic pesto contains pine nuts, and that is exactly why the question must be taken seriously."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} stays at the table without an answer. The guest waits for a reply."
+          }
+        },
+        {
+          "question": "{gäst} says quietly: \"I usually don't dare order anything with a sauce when I eat out. Tonight I just want to eat without worrying.\" What is the guest looking for?",
+          "clue": "The guest wants a safe answer and a dish they can eat without worry.",
+          "options": {
+            "a": {
+              "label": "To avoid the pesto",
+              "explanation": "That is part of the answer. But the guest wants to eat without worry all evening, not only avoid one sauce."
+            },
+            "b": {
+              "label": "To be reassured that it will probably be fine",
+              "explanation": "\"Probably\" is exactly what makes the guest worried. A guess about allergens is never a reassuring answer."
+            },
+            "c": {
+              "label": "A safe answer, and a dish they can eat without worrying",
+              "explanation": "The guest asks for two things: facts about the pesto and an evening without worry. Both need the kitchen to know about the allergy."
+            }
+          },
+          "fail": {
+            "outcome": "The guest gets a vague answer and sits quietly with the menu."
+          }
+        },
+        {
+          "question": "What do you do now?",
+          "options": {
+            "a": {
+              "label": "Check the recipe with the kitchen, say the pesto has pine nuts and let the guest choose from the menu on their own",
+              "explanation": "The answer is right and based on the recipe. But the guest is now alone with the same worry about the next dish. Better to help find a dish the kitchen knows is safe."
+            },
+            "b": {
+              "label": "Check the recipe with the kitchen, say plainly that the pesto has pine nuts, suggest a dish the kitchen has confirmed and mark the order as an allergy",
+              "explanation": "An allergy question is answered with facts from the recipe and from the kitchen. When the order is marked, the kitchen knows to keep it free of nuts all the way to the table, and the guest can eat without worry."
+            },
+            "c": {
+              "label": "Advise against the bruschetta right away and suggest a dish without pesto, without asking the kitchen",
+              "explanation": "The guest feels looked after, and that is good. But nobody knows what is in the new dish, and the kitchen knows nothing about the allergy. The same board or knife may be used."
+            },
+            "d": {
+              "label": "Say there are probably no nuts in it",
+              "explanation": "Classic pesto is made with pine nuts. Guessing about allergens is the most dangerous mistake in service, and under food law the guest must be given correct allergen information."
+            }
+          },
+          "fail": {
+            "outcome": "The bruschetta goes out to the table.",
+            "ongoing": "The bruschetta is on the table. Nobody knows what is in the pesto."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "The guest gets a dish the kitchen has confirmed. They nod and say thank you for taking the question seriously."
+      },
+      "staff": {
+        "outcome": "The staff take over: they answered at random and served the bruschetta."
+      },
+      "halfGrip": {
+        "analysis": "Half grip: the choice held for the analysis, but not for the guest's experience. The answer about the pine nuts was right, but the guest had to search alone and is still worried.",
+        "experience": "Half grip: the choice held for the guest's experience, but not for the analysis. The guest felt looked after, but nobody checked the recipe and the kitchen knows nothing about the allergy."
+      }
+    },
+    "vb07-provningen": {
+      "title": "A tasting for four",
+      "body": "A party of four at table {bord} want a tasting with three wines. {personal} wonders which glasses to bring out.",
+      "steps": [
+        {
+          "question": "Three wines are to be tasted. What does the order of a tasting say?",
+          "clue": "Light before full-bodied, dry before sweet.",
+          "options": {
+            "a": {
+              "label": "Most expensive first, while the palate is fresh",
+              "explanation": "The price says nothing about the order. A powerful, expensive wine first makes the lighter wines afterwards taste thin."
+            },
+            "b": {
+              "label": "Fullest first, to warm up the palate",
+              "explanation": "A full-bodied wine takes over the taste, and the light wines afterwards disappear. You build up, not down."
+            },
+            "c": {
+              "label": "Sweet first, to wake up the appetite",
+              "explanation": "Sweetness stays in the mouth and makes dry wines afterwards taste sour and thin."
+            },
+            "d": {
+              "label": "Light before full-bodied, dry before sweet",
+              "explanation": "Each wine can then show itself without the one before taking over. That is how a tasting is built."
+            }
+          },
+          "fail": {
+            "outcome": "The most powerful wine goes first. The guests think the rest taste thin."
+          }
+        },
+        {
+          "question": "One of the party says: \"I'm driving home tonight, but I don't want to sit and watch.\" What is the guest looking for?",
+          "clue": "The guest who is driving wants to take full part, without drinking.",
+          "options": {
+            "a": {
+              "label": "To get as much as the others, the glasses are small after all",
+              "explanation": "Three small glasses add up to a couple of glasses of wine. The guest said themselves that they are driving."
+            },
+            "b": {
+              "label": "To take full part in the tasting, without drinking",
+              "explanation": "The guest wants to taste, compare and talk with the others. Tasting without drinking is possible, and that is what is needed."
+            },
+            "c": {
+              "label": "Something of their own to drink while the others taste",
+              "explanation": "Thoughtful, but the guest said they do not want to sit on the side. A glass of their own is still sitting on the side."
+            },
+            "d": {
+              "label": "To be let off the tasting",
+              "explanation": "The guest said the opposite. Leaving them out spoils the evening for the whole party."
+            }
+          },
+          "fail": {
+            "outcome": "The guest who is driving sits with full glasses and looks uncomfortable."
+          }
+        },
+        {
+          "question": "How do you set and pour the tasting?",
+          "options": {
+            "a": {
+              "label": "The same tulip-shaped tasting glasses, a new glass per wine and person, the wines from light to full-bodied and the same pour for everyone",
+              "explanation": "The glasses and the order are right. But the guest who is driving gets the same pour as the others and has no way to taste without drinking."
+            },
+            "b": {
+              "label": "Whatever glasses are nearest, the fullest wine first and the same for everyone",
+              "explanation": "A full-bodied wine first makes the lighter wines afterwards taste thin, and the guest who is driving is left with full glasses."
+            },
+            "c": {
+              "label": "The same tulip-shaped tasting glasses, a new glass per wine and person, light before full-bodied, and a spittoon and water on the table with a smaller pour for the driver",
+              "explanation": "A neutral tasting glass makes the wines comparable, and new glasses keep the aromas from mixing. Spitting is perfectly normal at a tasting. The guest takes full part, and the restaurant takes its responsibility for serving alcohol."
+            },
+            "d": {
+              "label": "A spittoon and water on the table, and one glass per person rinsed with water between the wines",
+              "explanation": "The guest who is driving can take part, and that is right. But the water dilutes the next wine and carries aroma with it. If you rinse, you rinse with a splash of the next wine."
+            }
+          },
+          "fail": {
+            "outcome": "The glasses are rinsed at the table. The next wine tastes thin.",
+            "ongoing": "The table compares wines that taste of water. The tasting goes quiet."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Twelve glasses in rows on the table. The guests compare and discuss."
+      },
+      "staff": {
+        "outcome": "The staff take over: they took the glasses that were closest."
+      },
+      "halfGrip": {
+        "analysis": "Half grip: the choice held for the analysis, but not for the guests' experience. The tasting was built correctly, but the guest who is driving had no way to take part without drinking.",
+        "experience": "Half grip: the choice held for the guests' experience, but not for the analysis. Everyone could take part, but water in the glass dilutes the next wine. A new glass per wine keeps the aromas apart."
+      }
+    },
+    "vb09-getosten": {
+      "title": "Wine for the goat's cheese",
+      "body": "{gäst} at table {bord} orders the fresh goat's cheese with honey and asks which wine goes with it.",
+      "steps": [
+        {
+          "question": "What does the plate tell you? What shapes the flavour of a fresh goat's cheese?",
+          "clue": "Fresh acidity and creaminess. The wine has to meet the acidity.",
+          "options": {
+            "a": {
+              "label": "A strong, aged, nutty flavour",
+              "explanation": "That applies to aged cheeses. A fresh goat's cheese has not had time to develop aged flavours."
+            },
+            "b": {
+              "label": "Sweetness, as in a cream cheese",
+              "explanation": "Fresh goat's cheese is mild but not sweet. The sweetness on the plate comes from the honey."
+            },
+            "c": {
+              "label": "Fresh acidity and creaminess",
+              "explanation": "Fresh goat's cheese is tangy and creamy. The acidity is what the wine has to meet, or the wine tastes flat."
+            },
+            "d": {
+              "label": "Saltiness from brine",
+              "explanation": "Brine belongs to cheeses like feta. The fresh goat's cheese here is tangy rather than salty."
+            }
+          },
+          "fail": {
+            "outcome": "You hesitate about the cheese, and the wine suggestion becomes a guess."
+          }
+        },
+        {
+          "question": "{gäst} says: \"I only drink red. White wine feels like a weekday lunch to me.\" What is the guest looking for?",
+          "clue": "The guest wants red, and an evening that feels like their own.",
+          "options": {
+            "a": {
+              "label": "A red wine, and an evening that feels like their own",
+              "explanation": "The guest said it straight out. The wish is not an obstacle; it is a clue to what should be chosen."
+            },
+            "b": {
+              "label": "Something that feels more festive, the colour matters less",
+              "explanation": "There is something in that; the evening should feel special. But the guest said \"only red\", and that should be taken at its word."
+            },
+            "c": {
+              "label": "To be persuaded that white suits the cheese best",
+              "explanation": "The guest did not ask for a lesson. Someone whose wish is overruled remembers that, not the wine."
+            }
+          },
+          "fail": {
+            "outcome": "The guest gets a wine they did not want, or one that does not suit the cheese."
+          }
+        },
+        {
+          "question": "Which wine do you suggest for the goat's cheese with honey?",
+          "options": {
+            "a": {
+              "label": "The full-bodied, oaked Cabernet Sauvignon the guest points to",
+              "explanation": "The guest gets their red. But strong tannins against a fresh, tangy cheese give a metallic, bitter taste."
+            },
+            "b": {
+              "label": "A dry Sauvignon Blanc from the Loire, with an explanation of why white suits the cheese",
+              "explanation": "Fresh goat's cheese and Sauvignon Blanc from Sancerre are a classic pairing. But the guest said they only drink red and feels overruled."
+            },
+            "c": {
+              "label": "Say red does not go with goat's cheese and serve the house white",
+              "explanation": "That is not true; a light red can work well. And no wine suits every cheese. The guest gets neither their wish nor a pairing that looks at the cheese."
+            },
+            "d": {
+              "label": "A light, fruity red with soft tannins and fresh acidity",
+              "explanation": "You take the guest's wish seriously and still choose with the cheese in mind. Among the reds, low tannin and fresh acidity meet goat's cheese best."
+            }
+          },
+          "fail": {
+            "outcome": "The guest tastes. The cheese and the wine pull in different directions.",
+            "ongoing": "The cheese stays on the plate. The guest drinks the wine on its own."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "The guest tastes, nods and orders another glass."
+      },
+      "staff": {
+        "outcome": "The staff take over: the guest gets the house red. It does not suit the cheese."
+      },
+      "halfGrip": {
+        "analysis": "Half grip: the choice held for the analysis, but not for the guest's experience. The wine met the cheese's acidity, but the guest asked for red and got white.",
+        "experience": "Half grip: the choice held for the guest's experience, but not for the analysis. The guest got their red, but strong tannins make the fresh cheese bitter. A light red would have carried both."
+      }
+    },
+    "vb11-cremant": {
+      "title": "Is it champagne?",
+      "body": "{gäst} at table {bord} points to the sparkling wine by the glass and asks if it is champagne. It is a crémant de Loire.",
+      "steps": [
+        {
+          "question": "What does the label tell you? What sets a crémant apart from champagne?",
+          "clue": "The same traditional method, with the second fermentation in bottle, but made outside Champagne.",
+          "options": {
+            "a": {
+              "label": "Nothing, it is more or less the same thing",
+              "explanation": "Calling a crémant champagne is wrong and misleading. Champagne is a protected designation of origin."
+            },
+            "b": {
+              "label": "Only the price, crémant is cheaper",
+              "explanation": "It is often cheaper, but that says nothing about how it is made. The method and the origin are what make the difference."
+            },
+            "c": {
+              "label": "Crémant ferments in a tank, not in the bottle",
+              "explanation": "That is not true. Crémant is made with the traditional method, with the second fermentation in the bottle, just like champagne."
+            },
+            "d": {
+              "label": "The same method, but made outside Champagne",
+              "explanation": "Champagne is a protected designation of origin. Crémant is made with the same traditional method, with the second fermentation in the bottle, but in other French regions."
+            }
+          },
+          "fail": {
+            "outcome": "You answer that it is more or less champagne. Later the guest reads the label on the bottle.",
+            "ongoing": "The guest reads the label again and looks doubtful."
+          }
+        },
+        {
+          "question": "The guest hesitates: \"Crémant … sounds like champagne's little brother. I want to treat myself tonight.\" What is the guest looking for?",
+          "clue": "The guest wants to treat themselves, and to feel the choice is a good one.",
+          "options": {
+            "a": {
+              "label": "The cheapest sparkling wine there is",
+              "explanation": "The guest said \"treat myself\". It is not about price but about the feeling of having chosen something fine."
+            },
+            "b": {
+              "label": "Champagne, to be on the safe side",
+              "explanation": "Champagne can suit someone who wants to celebrate. But the guest asked about a glass, and the doubt is about what crémant is."
+            },
+            "c": {
+              "label": "Something that feels like a treat, and to know the choice is a good one",
+              "explanation": "The guest hesitates at the word, not the wine. Someone who knows what they are drinking can enjoy it."
+            }
+          },
+          "fail": {
+            "outcome": "The guest has a glass of red instead."
+          }
+        },
+        {
+          "question": "What do you do?",
+          "options": {
+            "a": {
+              "label": "Say briefly that crémant is made by the same method as champagne, outside Champagne, and offer a small taste",
+              "explanation": "The method is what sells a crémant, and a taste shows more than words. The guest decides with the wine in their mouth and knows the choice is a good one."
+            },
+            "b": {
+              "label": "Say most people can't tell the difference anyway",
+              "explanation": "It sounds as if you think the guest does not understand. It sells neither the wine nor trust."
+            },
+            "c": {
+              "label": "Suggest the champagne by the bottle instead, so the evening feels festive",
+              "explanation": "The guest gets something to celebrate with. But they asked about a glass, and you miss the chance to show that the crémant is made the same way and is a good buy."
+            },
+            "d": {
+              "label": "Explain the method, the second fermentation and the protected designation in detail, and leave the choice there",
+              "explanation": "All of it is true. But the guest wanted a treat, not a course. A short sentence and a taste would have done more."
+            }
+          },
+          "fail": {
+            "outcome": "The guest looks confused and takes something else."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "The guest gets curious, tastes and orders a glass."
+      },
+      "staff": {
+        "outcome": "The staff take over and give a vague answer. The guest has something else."
+      },
+      "halfGrip": {
+        "analysis": "Half grip: the choice held for the analysis, but not for the guest's experience. The facts about crémant were right, but the guest wanted a treat. A taste would have said more than the explanation.",
+        "experience": "Half grip: the choice held for the guest's experience, but not for the analysis. The evening became festive, but crémant is made the same way as champagne. It was already a good choice."
+      }
+    },
+    "vb12-varmt-rott": {
+      "title": "Too warm",
+      "body": "{gäst} at table {bord} sends back a glass of {vin}: the wine is too warm. The bottle has stood on the bar all evening.",
+      "steps": [
+        {
+          "question": "The bottle has stood on the bar all evening. At what temperature does a red wine taste best?",
+          "clue": "Red should be 16–18 degrees, cooler than a warm bar.",
+          "options": {
+            "a": {
+              "label": "Room temperature, as in a warm bar",
+              "explanation": "The room temperature rule comes from cool stone houses. A warm bar is too warm for red wine."
+            },
+            "b": {
+              "label": "Around 16–18 degrees, cooler than the room",
+              "explanation": "Room temperature means 16–18 degrees, not a warm bar. Then the alcohol is held back and the fruit tastes fresh."
+            },
+            "c": {
+              "label": "Fridge cold, like a white wine",
+              "explanation": "Red that is too cold turns tight, and the tannins feel hard. Red should be cool, not cold."
+            },
+            "d": {
+              "label": "Temperature does not affect the taste",
+              "explanation": "Temperature changes the taste a lot. Red that is too warm tastes of alcohol and jam."
+            }
+          },
+          "fail": {
+            "outcome": "You agree that the wine is at the right temperature. The guest does not look convinced."
+          }
+        },
+        {
+          "question": "{gäst} says: \"It tastes like warm cordial. I thought red was supposed to be at room temperature, but this isn't nice.\" What is the guest looking for?",
+          "clue": "The guest wants a cooler glass, and to hear they were right.",
+          "options": {
+            "a": {
+              "label": "An explanation of the room-temperature rule",
+              "explanation": "The guest knows the rule and still notices something is wrong. It is the wine that needs correcting, not the guest."
+            },
+            "b": {
+              "label": "A different wine",
+              "explanation": "Perhaps, but the guest ordered this wine. It is the temperature that is wrong, not the choice."
+            },
+            "c": {
+              "label": "A cooler glass of the same wine, and to hear they were right",
+              "explanation": "The guest doubts themselves (\"I thought …\") but tasted correctly. A cooler glass and a yes turn the complaint into something good."
+            }
+          },
+          "fail": {
+            "outcome": "The guest takes the glass but does not smile."
+          }
+        },
+        {
+          "question": "What do you do?",
+          "options": {
+            "a": {
+              "label": "Pour a new glass from a cooler bottle, move the open reds to the wine fridge and explain at length how heat lets the alcohol take over",
+              "explanation": "The wine is put right. But the guest wanted a cooler glass, not a lecture, and never heard that they were right."
+            },
+            "b": {
+              "label": "Tell the guest they are right, thank them for saying so and put an ice cube in the glass",
+              "explanation": "The guest feels heard, and that is good. But the ice dilutes the wine. It is the bottle that should be chilled, not the glass."
+            },
+            "c": {
+              "label": "Tell the guest they are right and thank them for saying so, pour a new glass from a cooler bottle and move the open reds to the wine fridge",
+              "explanation": "Red that is too warm tastes of alcohol and jam. A cool wine fridge, or a short while in ice water, saves it. The guest was right, and that should show."
+            },
+            "d": {
+              "label": "Explain that red wine should be served at room temperature",
+              "explanation": "The room-temperature rule comes from cool stone houses. In a warm bar the wine is too warm, and the guest is right."
+            }
+          },
+          "fail": {
+            "outcome": "The guest drinks the glass without saying anything more.",
+            "ongoing": "The glass stands untouched. The guest at table {bord} orders nothing more."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "A new glass on the table. The guest tastes and nods. The open bottles are moved away from the bar."
+      },
+      "staff": {
+        "outcome": "The staff take over but do not respond to the complaint. The guest leaves the glass standing."
+      },
+      "halfGrip": {
+        "analysis": "Half grip: the choice held for the analysis, but not for the guest's experience. The wine got cooler, but the guest got a lecture instead of a thank you.",
+        "experience": "Half grip: the choice held for the guest's experience, but not for the analysis. The guest was told they were right, but the ice dilutes the wine. The bottle should come down to 16–18 degrees."
+      }
+    },
+    "vb18-kavajen": {
+      "title": "Wine on the jacket",
+      "body": "{personal} drops a bottle of {vin} at table {bord}. It breaks, and wine splashes onto a guest's light-coloured jacket.",
+      "steps": [
+        {
+          "question": "What does the stain tell you? What in red wine is it that colours the fabric?",
+          "clue": "Colour compounds from the grape skins, anthocyanins. The stain is fresh.",
+          "options": {
+            "a": {
+              "label": "Colour pigments from the grape skins, anthocyanins",
+              "explanation": "The colour of red wine comes from the skins, which are left in the must during fermentation. Those pigments are what stick to the fabric."
+            },
+            "b": {
+              "label": "The tannins from the oak barrel",
+              "explanation": "Tannins give astringency, and most of them come from skins and seeds. The colour comes from the pigments in the skins."
+            },
+            "c": {
+              "label": "The alcohol, which burns the colour in",
+              "explanation": "Alcohol does not stain. It is the pigments from the grape skins that make the stain."
+            }
+          },
+          "fail": {
+            "outcome": "The staff stand uncertainly beside the guest while the stain spreads."
+          }
+        },
+        {
+          "question": "The guest looks down at the jacket and says quietly: \"It was my father's. I only wear it when it's something special.\" What is the guest looking for?",
+          "clue": "The jacket means something. The guest wants it taken seriously, and to be looked after.",
+          "options": {
+            "a": {
+              "label": "To be compensated for the jacket",
+              "explanation": "Dry cleaning is part of it, but the guest spoke of their father, not of money. Care is what is needed first."
+            },
+            "b": {
+              "label": "For the jacket to be taken seriously, and to be looked after",
+              "explanation": "The jacket is not just any garment. Showing you understand that, and doing the right thing for the fabric, looks after both the guest and the evening."
+            },
+            "c": {
+              "label": "For it to be over quickly with no fuss",
+              "explanation": "The guest said the opposite. Sweeping an accident away turns it into an insult."
+            }
+          },
+          "fail": {
+            "outcome": "The glass is swept up. The guest stays seated with a red stain.",
+            "ongoing": "The guest with the stained jacket stays seated, looking at the stain."
+          }
+        },
+        {
+          "question": "What do you do now, with the stain and with the guest?",
+          "options": {
+            "a": {
+              "label": "Apologise, take a napkin with warm water and rub the stain out with the guest",
+              "explanation": "The apology and the care are right. But rubbing presses the colour into the fabric, and heat can set the stain."
+            },
+            "b": {
+              "label": "Apologise, give the guest a clean napkin and cold water to dab with, without rubbing, offer to pay for dry cleaning and treat them to the evening's wine",
+              "explanation": "Cold water and gentle dabbing lift most of the wine without pressing in the colour, and the guest decides about their own jacket. An accident becomes a story about how the place looked after its guest."
+            },
+            "c": {
+              "label": "Give the guest a clean napkin and cold water to dab with, then sweep up the glass and move on",
+              "explanation": "The stain is handled correctly. But without an apology and without a word about the jacket, the accident becomes an insult. It is the response afterwards the guest remembers."
+            },
+            "d": {
+              "label": "Sprinkle salt on the stain, let it dry and sweep up the glass",
+              "explanation": "Salt can absorb a little liquid, but a stain that dries in is harder to remove. And the guest is left with it."
+            }
+          },
+          "fail": {
+            "outcome": "The stain grows larger and darker. The guest sighs."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "The guest shakes it off, laughs a little and accepts the offer."
+      },
+      "staff": {
+        "outcome": "The staff take over: the glass is swept up and someone briefly apologises."
+      },
+      "halfGrip": {
+        "analysis": "Half grip: the choice held for the analysis, but not for the guest's experience. The stain was handled correctly, but the jacket was their father's and nobody apologised.",
+        "experience": "Half grip: the choice held for the guest's experience, but not for the analysis. The care was right, but rubbing and warm water set the grape skins' colour in the fabric. Cold water and dabbing would have saved more."
+      }
+    },
+    "vb23-sott": {
+      "title": "Something sweet",
+      "body": "Table {bord} wants to finish with the chocolate truffle and asks what to drink with it.",
+      "steps": [
+        {
+          "question": "What does the dessert tell you? What happens to a dry wine drunk with a sweet dessert?",
+          "clue": "Sweetness in the food makes a dry wine taste sourer and thinner. The wine should be at least as sweet as the dessert.",
+          "options": {
+            "a": {
+              "label": "It tastes sweeter",
+              "explanation": "The opposite. The sweetness in the food makes the wine taste less sweet."
+            },
+            "b": {
+              "label": "It tastes fuller",
+              "explanation": "The wine does not get fuller. It loses fruit and feels thinner."
+            },
+            "c": {
+              "label": "Nothing, sweetness only affects the food",
+              "explanation": "Sweetness in the food affects how the wine tastes. It is one of the safest rules in food and wine."
+            },
+            "d": {
+              "label": "It tastes more sour and thinner",
+              "explanation": "Sweetness in the food makes a dry wine more sour and thinner. That is why the wine should be at least as sweet as the dessert."
+            }
+          },
+          "fail": {
+            "outcome": "The guests get a suggestion that does not fit and look doubtful."
+          }
+        },
+        {
+          "question": "The host at the table says: \"We want to finish with something that feels like a gift.\" One of the party puts a hand over their glass: they don't drink alcohol. What is the table looking for?",
+          "clue": "An ending the whole table can share, including the one who does not drink.",
+          "options": {
+            "a": {
+              "label": "Something festive for those who drink wine",
+              "explanation": "That is part of it. But the hand over the glass says that someone at the table needs a gift too."
+            },
+            "b": {
+              "label": "For the evening to wind up quickly, coffee and the bill",
+              "explanation": "The host asked for a gift, not for the bill. The ending is what the table remembers."
+            },
+            "c": {
+              "label": "An ending the whole table can share, including the one who does not drink",
+              "explanation": "Everyone at the table should be able to raise a glass. The one who does not drink showed it without words, and that is a wish too."
+            }
+          },
+          "fail": {
+            "outcome": "One guest sits without a glass while the others raise theirs."
+          }
+        },
+        {
+          "question": "What do you serve with the chocolate truffle?",
+          "options": {
+            "a": {
+              "label": "A glass of dry red for everyone, it always goes with chocolate",
+              "explanation": "The sweetness of the truffle makes the dry wine sour and thin, and the guest who does not drink gets a glass they do not want."
+            },
+            "b": {
+              "label": "A small glass of young ruby port, lightly chilled, and ask the guest who does not drink what they like: coffee or a sweet grape juice",
+              "explanation": "A young, fruity port handles the chocolate's sweetness and bitterness, and a small glass is enough. A suggestion of their own for the guest who does not drink shows their choice is taken seriously. The whole table raises a glass."
+            },
+            "c": {
+              "label": "A glass of dry sparkling wine for everyone, and alcohol-free bubbles for the one who does not drink",
+              "explanation": "Everyone can raise a glass, and that is the right idea. But sweetness in the food makes a dry wine sourer and thinner against the chocolate."
+            },
+            "d": {
+              "label": "Young ruby port for everyone at the table, the guest who does not drink can leave it",
+              "explanation": "The wine is right for the truffle. But a glass the guest does not want draws attention to what they have chosen not to have. Ask instead."
+            }
+          },
+          "fail": {
+            "outcome": "The guests taste. The wine turns sour and thin against the chocolate.",
+            "ongoing": "The glasses stay next to the truffle."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "The whole table toasts over the truffle and orders another glass."
+      },
+      "staff": {
+        "outcome": "The staff take over: the table gets the evening's red wine with the chocolate."
+      },
+      "halfGrip": {
+        "analysis": "Half grip: the choice held for the analysis, but not for the guests' experience. The port carried the chocolate, but the guest who does not drink got a glass they did not want.",
+        "experience": "Half grip: the choice held for the guests' experience, but not for the analysis. Everyone could raise a glass, but a dry wine turns sour against a sweet dessert. The wine should be at least as sweet as the truffle."
+      }
+    },
+    "vb32-fodelsedagen": {
+      "title": "The birthday",
+      "body": "The host in lounge A waves discreetly to Per, leans in and whispers that it is Karin’s birthday tonight.",
+      "steps": [
+        {
+          "question": "Per is ordering a dessert with candles. What does the kitchen need to know first?",
+          "clue": "The kitchen needs numbers, allergies and when it goes out.",
+          "options": {
+            "a": {
+              "label": "That candles and a lighter go on the tray",
+              "explanation": "The kitchen plans in numbers and time. Allergies come before everything else, even at a party."
+            },
+            "b": {
+              "label": "How many it’s for and when it goes out",
+              "explanation": "The kitchen plans in numbers and time. Allergies come before everything else, even at a party."
+            },
+            "c": {
+              "label": "Numbers, allergies and when it goes out",
+              "explanation": "The kitchen plans in numbers and time. Allergies come before everything else, even at a party."
+            },
+            "d": {
+              "label": "Which dessert the host would prefer",
+              "explanation": "The kitchen plans in numbers and time. Allergies come before everything else, even at a party."
+            }
+          },
+          "fail": {
+            "outcome": "I’ll take care of it."
+          }
+        },
+        {
+          "question": "The host whispers: \"She has no idea, and she loves to sing.\" In lounge B two guests are in a business meeting and want quiet. What does the evening need at the two tables?",
+          "clue": "A short celebration for Karin, and quiet for the neighbours in lounge B.",
+          "options": {
+            "a": {
+              "label": "A short celebration for Karin, and quiet for the neighbours in lounge B",
+              "explanation": "The evening belongs to every table. The surprise and the song are Karin's, the quiet is the neighbours'. Both can be given."
+            },
+            "b": {
+              "label": "As much music and noise as possible, so the party is felt in the whole room",
+              "explanation": "Then the neighbours cannot hear their own conversation. A party that takes over the room takes something from the other tables."
+            },
+            "c": {
+              "label": "For Karin to be celebrated, the neighbours can put up with it for a while",
+              "explanation": "Karin should be celebrated, that is true. But the neighbours asked for quiet, and they are guests tonight too."
+            }
+          },
+          "fail": {
+            "outcome": "I'll take care of it.",
+            "ongoing": "I'll take care of it."
+          }
+        },
+        {
+          "question": "What do you do?",
+          "options": {
+            "a": {
+              "label": "Give the kitchen numbers, allergies and time, and ask the party to wait with the song until the neighbours have left",
+              "explanation": "The kitchen gets what it needs. But the neighbours may stay a long time, and then there is no song at all for Karin."
+            },
+            "b": {
+              "label": "One verse for Karin and something on the house for the neighbours, and the cake out as fast as possible, without the kitchen asking about allergies",
+              "explanation": "The evening is right for both tables. But allergies come before everything else, even at a party. The kitchen plans in numbers, allergies and time."
+            },
+            "c": {
+              "label": "Ask the DJ to turn up the music so the song blends in, and the cake is carried high above the guests",
+              "explanation": "The neighbours get more noise, not less, and an open flame among guests needs a clear path, a low grip and a calm pace."
+            },
+            "d": {
+              "label": "Give the kitchen numbers, allergies and time, let the party sing one verse and treat the neighbours in lounge B",
+              "explanation": "The kitchen can make the dessert safe and on time. A short celebration and a gesture to the neighbours keeps both tables happy."
+            }
+          },
+          "fail": {
+            "outcome": "I'll take care of it."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "The cake is lit at the hatch and carried low along a clear path. One verse, then we bring it down."
+      },
+      "staff": {
+        "outcome": "Per takes over."
+      },
+      "halfGrip": {
+        "analysis": "Half grip: the choice held for the analysis, but not for the evening's experience. The kitchen got everything it needed, but Karin got no song.",
+        "experience": "Half grip: the choice held for the evening's experience, but not for the analysis. Both tables got what they needed, but nobody asked about allergies before the cake went out."
+      }
+    }
+  }
+}
