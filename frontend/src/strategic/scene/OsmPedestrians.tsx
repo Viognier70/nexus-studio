@@ -1,5 +1,5 @@
 import { useFrame } from '@react-three/fiber';
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { useCamera } from '../camera/CameraContext';
 import {
@@ -12,6 +12,9 @@ import {
 import type { RawRoad } from '../content/world';
 import { createRng } from '../util/rng';
 import { readabilityScale, type ReadabilityCurve } from '../util/readability';
+import { GUEST_GROUPS, type GuestGroupId } from './guestGroups';
+import { GROUP_IDS } from './guestLooks';
+import { streetSignGeometry, type SignFrame } from './village/streetLooks';
 
 // Village-scale readability treatment. At close and district range the
 // walker keeps its authored 1.2 m height; from ~320 m up the visual scale
@@ -38,6 +41,8 @@ interface Walker {
   forward: 1 | -1;
   swap: number;
   colour: string;
+  // ORDER 302b — D5:s färgvariant (0/1) för gruppens tecken.
+  variant: number;
   entering: number;
   // Group membership. A follower (leaderIndex ≥ 0) shadows the leader's
   // path with a small progress offset. Reads as walking together. This
@@ -138,13 +143,30 @@ function weightedPick(
 // Palette per role. The village should read as populated — residents in
 // muted earth tones, students in brighter accents, tourists in high-visibility
 // warm colours, conference guests in dark formals.
+//
+// ORDER 302b (Anders 2026-10-05) — byns folk i Designs D5-grupper
+// (guestGroups.ts): byborna i bybornas kläder och keps, studenterna med
+// ryggsäck, turisterna i solhatt och konferensgästerna som affärsfolk med vit
+// skjorta. Personalen från Måltidens hus är ingen gästgrupp och går som förut.
+// Kropparnas färger är D5:s två varianter (looks[].body); tecknet i gruppens
+// accentfärg (village/streetLooks.ts streetSignGeometry, ramen OSM_FRAME).
+const ROLE_GROUP: Record<WalkerRole, GuestGroupId | null> = {
+  resident: 'villager',
+  student: 'student',
+  tourist: 'tourist',
+  conference: 'business',
+  staff: null
+};
+const groupBodies = (g: GuestGroupId) => GUEST_GROUPS[g].looks.map((l) => l.body);
 const ROLE_PALETTE: Record<WalkerRole, string[]> = {
-  resident: ['#8b8478', '#7a7770', '#96917f', '#6f6a5a'],
-  student: ['#d6ac4f', '#5c8fa8', '#7ab27a', '#8874a8'],
-  tourist: ['#c9482f', '#e08c66', '#c69b6a', '#a05236'],
-  conference: ['#2d2b26', '#3a3630', '#4a453d'],
+  resident: groupBodies('villager'),
+  student: groupBodies('student'),
+  tourist: groupBodies('tourist'),
+  conference: groupBodies('business'),
   staff: ['#efe7d3', '#c9b28e']
 };
+// Kroppen är en låda 0,42 × 1,2 × 0,32 m (fötterna vid 0) och huvudet r 0,22 vid 1,35 m.
+const OSM_FRAME: SignFrame = { headY: 1.35, headR: 0.22, neckY: 1.2, frontZ: 0.17, backZ: 0.16 };
 
 // Rough share of population. Sums to 1.
 const ROLE_MIX: Array<[WalkerRole, number]> = [
@@ -186,6 +208,7 @@ export function OsmPedestrians() {
         forward: rng.chance(0.5) ? 1 : -1,
         swap: rng.range(35, 90),
         colour: rng.pick(ROLE_PALETTE[role]),
+        variant: 0,
         entering: 1,
         leaderIndex: -1,
         groupOffset: 0
@@ -230,6 +253,7 @@ export function OsmPedestrians() {
       }
       i += followerCount + 1;
     }
+    for (const w of list) w.variant = Math.max(0, ROLE_PALETTE[w.role].indexOf(w.colour));
     return list;
   }, [paths, weights]);
 
@@ -258,6 +282,35 @@ export function OsmPedestrians() {
     [walkers]
   );
   const fadedColour = useMemo(() => new THREE.Color(0x000000), []);
+  // ORDER 302b — tecknen: ett InstancedMesh per grupp, en plats per gående i
+  // gruppen, accentfärgen satt en gång.
+  const signs = useMemo(() => {
+    const slot = walkers.map(() => -1);
+    const meshes = {} as Record<GuestGroupId, THREE.InstancedMesh>;
+    const root = new THREE.Group();
+    for (const g of GROUP_IDS) {
+      const idx = walkers.map((w, i) => (ROLE_GROUP[w.role] === g ? i : -1)).filter((i) => i >= 0);
+      const mesh = new THREE.InstancedMesh(streetSignGeometry(g, OSM_FRAME), new THREE.MeshStandardMaterial({ roughness: 0.85 }), Math.max(1, idx.length));
+      mesh.count = idx.length;
+      mesh.frustumCulled = false;
+      mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+      const c = new THREE.Color();
+      idx.forEach((wi, k) => {
+        slot[wi] = k;
+        mesh.setColorAt(k, c.set(GUEST_GROUPS[g].looks[walkers[wi].variant % 2].accent));
+      });
+      if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+      meshes[g] = mesh;
+      root.add(mesh);
+    }
+    return { slot, meshes, root };
+  }, [walkers]);
+  useEffect(() => () => {
+    for (const g of GROUP_IDS) {
+      signs.meshes[g].geometry.dispose();
+      (signs.meshes[g].material as THREE.Material).dispose();
+    }
+  }, [signs]);
   // Random phase offset per walker so the crowd doesn't bob in unison.
   const walkerPhase = useMemo(
     () => walkers.map((_, i) => (i * 12.9898) % (Math.PI * 2)),
@@ -342,11 +395,19 @@ export function OsmPedestrians() {
           tempObj.updateMatrix();
           walkerHeadMesh.current.setMatrixAt(i, tempObj.matrix);
         }
+        // ORDER 302b — gruppens tecken i figurens ram (fötterna vid 0).
+        const group = ROLE_GROUP[w.role];
+        if (group) {
+          tempObj.position.set(p.x, bob * scale, p.z);
+          tempObj.updateMatrix();
+          signs.meshes[group].setMatrixAt(signs.slot[i], tempObj.matrix);
+        }
       }
       walkerMesh.current.instanceMatrix.needsUpdate = true;
       if (walkerHeadMesh.current) {
         walkerHeadMesh.current.instanceMatrix.needsUpdate = true;
       }
+      for (const g of GROUP_IDS) signs.meshes[g].instanceMatrix.needsUpdate = true;
       if (walkerMesh.current.instanceColor) {
         walkerMesh.current.instanceColor.needsUpdate = true;
       }
@@ -405,6 +466,7 @@ export function OsmPedestrians() {
           </instancedMesh>
           {/* Head — small warm neutral sphere. Shares per-instance colour
               with body via the head material fixed to a skin tone. */}
+          <primitive object={signs.root} />
           <instancedMesh
             ref={walkerHeadMesh}
             args={[undefined, undefined, walkers.length]}

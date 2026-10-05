@@ -18,7 +18,10 @@ const MAX_LABELS = 5;
 // på vår skylt vid dörren (ORDER 300 §7: skyltarna ligger inte på varandra).
 const HIDE_WITHIN_M = 15;
 
-function typeLabel(type: string): string {
+// ORDER 302b — de betalningsstarka bär gourmeternas sjal eller affärsfolkets
+// skjorta på gatan (village/streetLooks.ts); etiketten säger detsamma.
+function typeLabel(type: string, group?: string): string {
+  if (group === 'gourmet' || group === 'business') type = group;
   if (type === 'tourist') return strings.rush.waves.bus;
   return (strings.guestTypes.label as Record<string, string>)[type] ?? type;
 }
@@ -43,7 +46,7 @@ export function StreetArrivals() {
       {live.onWay.filter((g) => g.metres >= HIDE_WITHIN_M).slice(0, MAX_LABELS).map((g) => (
         <group key={g.key} position={[g.x, 3.2, g.z]}>
           <Html center zIndexRange={[14, 0]} style={{ pointerEvents: 'none' }}>
-            <StreetTag n={g.n} who={typeLabel(g.type)} to={to} metres={g.metres} />
+            <StreetTag n={g.n} who={typeLabel(g.type, g.group)} to={to} metres={g.metres} />
           </Html>
         </group>
       ))}

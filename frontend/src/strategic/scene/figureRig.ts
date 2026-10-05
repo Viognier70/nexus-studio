@@ -242,6 +242,9 @@ function joint(name: string, x: number, y: number, z: number): THREE.Group {
 // Byggs imperativt, en gång per figur. Ingen allokering sker sedan i
 // applyPose — den skriver bara rotation/position på befintliga noder.
 
+// Hyn när riggen inte får någon (också gatans figurer, village/streetLooks.ts).
+export const DEFAULT_SKIN = '#d8b48a';
+
 export function createFigureRig(options?: Partial<FigureRigOptions>): FigureRig {
   const opts = options ?? {};
   const variant = opts.variant ?? 'guest';
@@ -250,7 +253,7 @@ export function createFigureRig(options?: Partial<FigureRigOptions>): FigureRig 
   const shoulderWidth = opts.shoulderWidth ?? defaultWidth;
   const garmentColour = opts.garmentColour ?? '#c9c0a4';
   const limbColour = opts.limbColour ?? darken(garmentColour, 0.28);
-  const skinColour = opts.skinColour ?? '#d8b48a';
+  const skinColour = opts.skinColour ?? DEFAULT_SKIN;
   const anchorOffset = opts.headAnchorOffset ?? FIGURE.headAnchorOffset;
 
   const garment = new THREE.MeshStandardMaterial({ color: garmentColour, roughness: 0.85 });
