@@ -1,0 +1,614 @@
+{
+  "sizes": {
+    "1440x900": {
+      "attempt": 1,
+      "errors": [],
+      "seen": [
+        {
+          "phase": "wrong",
+          "step": "0",
+          "axis": "episteme",
+          "row": {
+            "step": "Steg 1Episteme",
+            "pot": "Potten var tom0",
+            "potValue": "0",
+            "ifRight": "1"
+          },
+          "choice": null,
+          "cardOptions": 4,
+          "floors": [
+            {
+              "slot": "0",
+              "axis": "episteme",
+              "state": "cracked"
+            },
+            {
+              "slot": "1",
+              "axis": "techne",
+              "state": "above"
+            },
+            {
+              "slot": "2",
+              "axis": "phronesis",
+              "state": "above"
+            }
+          ],
+          "parts": {
+            "stakePyramid": {
+              "x": 772,
+              "y": 209,
+              "w": 365,
+              "h": 304
+            },
+            "stakeRow": {
+              "x": 644,
+              "y": 538,
+              "w": 621,
+              "h": 85
+            },
+            "stakeChoice": null
+          },
+          "others": {
+            "rocketCard": {
+              "x": 50,
+              "y": 164,
+              "w": 418,
+              "h": 706
+            },
+            ".nx-hud-stack": {
+              "x": 54,
+              "y": 38,
+              "w": 767,
+              "h": 114
+            }
+          },
+          "overlaps": []
+        },
+        {
+          "phase": "right",
+          "step": "0",
+          "axis": "episteme",
+          "row": {
+            "step": "Steg 1Episteme",
+            "pot": "Stegets kredit1",
+            "potValue": "1",
+            "ifRight": "1"
+          },
+          "choice": null,
+          "cardOptions": 3,
+          "floors": [
+            {
+              "slot": "0",
+              "axis": "episteme",
+              "state": "filled"
+            },
+            {
+              "slot": "1",
+              "axis": "techne",
+              "state": "empty"
+            },
+            {
+              "slot": "2",
+              "axis": "phronesis",
+              "state": "empty"
+            }
+          ],
+          "parts": {
+            "stakePyramid": {
+              "x": 770,
+              "y": 207,
+              "w": 367,
+              "h": 306
+            },
+            "stakeRow": {
+              "x": 650,
+              "y": 538,
+              "w": 607,
+              "h": 85
+            },
+            "stakeChoice": null
+          },
+          "others": {
+            "rocketCard": {
+              "x": 50,
+              "y": 161,
+              "w": 418,
+              "h": 709
+            },
+            ".nx-hud-stack": {
+              "x": 54,
+              "y": 38,
+              "w": 767,
+              "h": 109
+            }
+          },
+          "overlaps": []
+        },
+        {
+          "phase": "choosing",
+          "step": "0",
+          "axis": "episteme",
+          "row": {
+            "step": "Steg 1Episteme",
+            "pot": "Stegets kredit1",
+            "potValue": "1",
+            "ifRight": "1"
+          },
+          "choice": {
+            "stop": "1Stanna, och ta det du har1 kredit är din",
+            "stopSub": "1 kredit är din",
+            "go": "2Gå vidare, med allt på spelTechne: 1 → 3 om rätt, 0 om fel",
+            "goSub": "Techne: 1 → 3 om rätt, 0 om fel",
+            "countdown": "8",
+            "last": false,
+            "note": "När tiden går ut stannar du"
+          },
+          "cardOptions": 0,
+          "floors": [
+            {
+              "slot": "0",
+              "axis": "episteme",
+              "state": "filled"
+            },
+            {
+              "slot": "1",
+              "axis": "techne",
+              "state": "next"
+            },
+            {
+              "slot": "2",
+              "axis": "phronesis",
+              "state": "empty"
+            }
+          ],
+          "parts": {
+            "stakePyramid": {
+              "x": 770,
+              "y": 207,
+              "w": 367,
+              "h": 306
+            },
+            "stakeRow": {
+              "x": 650,
+              "y": 538,
+              "w": 607,
+              "h": 85
+            },
+            "stakeChoice": {
+              "x": 504,
+              "y": 662,
+              "w": 900,
+              "h": 139
+            }
+          },
+          "others": {
+            "rocketCard": {
+              "x": 50,
+              "y": 161,
+              "w": 418,
+              "h": 709
+            },
+            ".nx-hud-stack": {
+              "x": 54,
+              "y": 38,
+              "w": 799,
+              "h": 109
+            }
+          },
+          "overlaps": []
+        },
+        {
+          "phase": "wrong",
+          "step": "1",
+          "axis": "techne",
+          "row": {
+            "step": "Steg 2Techne",
+            "pot": "Potten är borta1",
+            "potValue": "1",
+            "ifRight": "3"
+          },
+          "choice": null,
+          "cardOptions": 3,
+          "floors": [
+            {
+              "slot": "0",
+              "axis": "episteme",
+              "state": "filled"
+            },
+            {
+              "slot": "1",
+              "axis": "techne",
+              "state": "cracked"
+            },
+            {
+              "slot": "2",
+              "axis": "phronesis",
+              "state": "above"
+            }
+          ],
+          "parts": {
+            "stakePyramid": {
+              "x": 783,
+              "y": 225,
+              "w": 342,
+              "h": 285
+            },
+            "stakeRow": {
+              "x": 659,
+              "y": 538,
+              "w": 590,
+              "h": 85
+            },
+            "stakeChoice": null
+          },
+          "others": {
+            "rocketCard": {
+              "x": 50,
+              "y": 161,
+              "w": 418,
+              "h": 709
+            },
+            ".nx-hud-stack": {
+              "x": 54,
+              "y": 38,
+              "w": 799,
+              "h": 109
+            }
+          },
+          "overlaps": []
+        }
+      ],
+      "firstChoice": {
+        "phase": "choosing",
+        "step": "0",
+        "axis": "episteme",
+        "row": {
+          "step": "Steg 1Episteme",
+          "pot": "Stegets kredit1",
+          "potValue": "1",
+          "ifRight": "1"
+        },
+        "choice": {
+          "stop": "1Stanna, och ta det du har1 kredit är din",
+          "stopSub": "1 kredit är din",
+          "go": "2Gå vidare, med allt på spelTechne: 1 → 3 om rätt, 0 om fel",
+          "goSub": "Techne: 1 → 3 om rätt, 0 om fel",
+          "countdown": "8",
+          "last": false,
+          "note": "När tiden går ut stannar du"
+        },
+        "cardOptions": 0,
+        "floors": [
+          {
+            "slot": "0",
+            "axis": "episteme",
+            "state": "filled"
+          },
+          {
+            "slot": "1",
+            "axis": "techne",
+            "state": "next"
+          },
+          {
+            "slot": "2",
+            "axis": "phronesis",
+            "state": "empty"
+          }
+        ],
+        "parts": {
+          "stakePyramid": {
+            "x": 770,
+            "y": 207,
+            "w": 367,
+            "h": 306
+          },
+          "stakeRow": {
+            "x": 650,
+            "y": 538,
+            "w": 607,
+            "h": 85
+          },
+          "stakeChoice": {
+            "x": 504,
+            "y": 662,
+            "w": 900,
+            "h": 139
+          }
+        },
+        "others": {
+          "rocketCard": {
+            "x": 50,
+            "y": 161,
+            "w": 418,
+            "h": 709
+          },
+          ".nx-hud-stack": {
+            "x": 54,
+            "y": 38,
+            "w": 799,
+            "h": 109
+          }
+        },
+        "overlaps": []
+      },
+      "wentOn": true,
+      "secondChoice": null,
+      "clicks": 5,
+      "backsStarted": 3
+    },
+    "1280x720": {
+      "attempt": 0,
+      "errors": [],
+      "seen": [
+        {
+          "phase": "wrong",
+          "step": "0",
+          "axis": "episteme",
+          "row": {
+            "step": "Steg 1Episteme",
+            "pot": "Potten var tom0",
+            "potValue": "0",
+            "ifRight": "1"
+          },
+          "choice": null,
+          "cardOptions": 4,
+          "floors": [
+            {
+              "slot": "0",
+              "axis": "episteme",
+              "state": "cracked"
+            },
+            {
+              "slot": "1",
+              "axis": "techne",
+              "state": "above"
+            },
+            {
+              "slot": "2",
+              "axis": "phronesis",
+              "state": "above"
+            }
+          ],
+          "parts": {
+            "stakePyramid": {
+              "x": 726,
+              "y": 202,
+              "w": 243,
+              "h": 203
+            },
+            "stakeRow": {
+              "x": 599,
+              "y": 431,
+              "w": 498,
+              "h": 68
+            },
+            "stakeChoice": null
+          },
+          "others": {
+            "rocketCard": {
+              "x": 45,
+              "y": 151,
+              "w": 371,
+              "h": 542
+            },
+            ".nx-hud-stack": {
+              "x": 48,
+              "y": 33,
+              "w": 692,
+              "h": 105
+            }
+          },
+          "overlaps": []
+        },
+        {
+          "phase": "right",
+          "step": "0",
+          "axis": "episteme",
+          "row": {
+            "step": "Steg 1Episteme",
+            "pot": "Stegets kredit0",
+            "potValue": "0",
+            "ifRight": "1"
+          },
+          "choice": null,
+          "cardOptions": 3,
+          "floors": [
+            {
+              "slot": "0",
+              "axis": "episteme",
+              "state": "filled"
+            },
+            {
+              "slot": "1",
+              "axis": "techne",
+              "state": "empty"
+            },
+            {
+              "slot": "2",
+              "axis": "phronesis",
+              "state": "empty"
+            }
+          ],
+          "parts": {
+            "stakePyramid": {
+              "x": 704,
+              "y": 170,
+              "w": 288,
+              "h": 240
+            },
+            "stakeRow": {
+              "x": 605,
+              "y": 431,
+              "w": 485,
+              "h": 68
+            },
+            "stakeChoice": null
+          },
+          "others": {
+            "rocketCard": {
+              "x": 45,
+              "y": 153,
+              "w": 371,
+              "h": 540
+            },
+            ".nx-hud-stack": {
+              "x": 48,
+              "y": 33,
+              "w": 740,
+              "h": 107
+            }
+          },
+          "overlaps": []
+        },
+        {
+          "phase": "choosing",
+          "step": "0",
+          "axis": "episteme",
+          "row": {
+            "step": "Steg 1Episteme",
+            "pot": "Stegets kredit1",
+            "potValue": "1",
+            "ifRight": "1"
+          },
+          "choice": {
+            "stop": "1Stanna, och ta det du har1 kredit är din",
+            "stopSub": "1 kredit är din",
+            "go": "2Gå vidare, med allt på spelTechne: 1 → 3 om rätt, 0 om fel",
+            "goSub": "Techne: 1 → 3 om rätt, 0 om fel",
+            "countdown": "8",
+            "last": false,
+            "note": "När tiden går ut stannar du"
+          },
+          "cardOptions": 0,
+          "floors": [
+            {
+              "slot": "0",
+              "axis": "episteme",
+              "state": "filled"
+            },
+            {
+              "slot": "1",
+              "axis": "techne",
+              "state": "next"
+            },
+            {
+              "slot": "2",
+              "axis": "phronesis",
+              "state": "empty"
+            }
+          ],
+          "parts": {
+            "stakePyramid": {
+              "x": 701,
+              "y": 166,
+              "w": 294,
+              "h": 245
+            },
+            "stakeRow": {
+              "x": 605,
+              "y": 431,
+              "w": 485,
+              "h": 68
+            },
+            "stakeChoice": {
+              "x": 488,
+              "y": 529,
+              "w": 720,
+              "h": 111
+            }
+          },
+          "others": {
+            "rocketCard": {
+              "x": 45,
+              "y": 153,
+              "w": 371,
+              "h": 540
+            },
+            ".nx-hud-stack": {
+              "x": 48,
+              "y": 33,
+              "w": 740,
+              "h": 107
+            }
+          },
+          "overlaps": []
+        }
+      ],
+      "firstChoice": {
+        "phase": "choosing",
+        "step": "0",
+        "axis": "episteme",
+        "row": {
+          "step": "Steg 1Episteme",
+          "pot": "Stegets kredit1",
+          "potValue": "1",
+          "ifRight": "1"
+        },
+        "choice": {
+          "stop": "1Stanna, och ta det du har1 kredit är din",
+          "stopSub": "1 kredit är din",
+          "go": "2Gå vidare, med allt på spelTechne: 1 → 3 om rätt, 0 om fel",
+          "goSub": "Techne: 1 → 3 om rätt, 0 om fel",
+          "countdown": "8",
+          "last": false,
+          "note": "När tiden går ut stannar du"
+        },
+        "cardOptions": 0,
+        "floors": [
+          {
+            "slot": "0",
+            "axis": "episteme",
+            "state": "filled"
+          },
+          {
+            "slot": "1",
+            "axis": "techne",
+            "state": "next"
+          },
+          {
+            "slot": "2",
+            "axis": "phronesis",
+            "state": "empty"
+          }
+        ],
+        "parts": {
+          "stakePyramid": {
+            "x": 701,
+            "y": 166,
+            "w": 294,
+            "h": 245
+          },
+          "stakeRow": {
+            "x": 605,
+            "y": 431,
+            "w": 485,
+            "h": 68
+          },
+          "stakeChoice": {
+            "x": 488,
+            "y": 529,
+            "w": 720,
+            "h": 111
+          }
+        },
+        "others": {
+          "rocketCard": {
+            "x": 45,
+            "y": 153,
+            "w": 371,
+            "h": 540
+          },
+          ".nx-hud-stack": {
+            "x": 48,
+            "y": 33,
+            "w": 740,
+            "h": 107
+          }
+        },
+        "overlaps": []
+      },
+      "clicks": 4,
+      "backsStarted": 3
+    }
+  }
+}
