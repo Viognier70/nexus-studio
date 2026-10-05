@@ -188,6 +188,7 @@ export function initialDay(): DayState {
     revenueAtServiceStart: null,
     costAtServiceStart: null,
     reputationAtServiceStart: null,
+    conceptReputationAtServiceStart: null,
     knowledgeCreditsAtServiceStart: null,
     // ORDER 230 — dag-snapshotarna. Sätts av reducern vid dagens
     // start (både i makeInitialState och vid dygnsrollover). Null här

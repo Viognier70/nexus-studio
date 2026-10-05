@@ -12,7 +12,8 @@
 // raden förut (svarens ryktespoäng och resten), så att summan är ändringen.
 
 import type { GuestType, SimulationState } from '../strategic/types';
-import { CONSEQUENCES, REPUTATION } from './balance';
+import { CONSEQUENCES, GUEST_TYPES, REPUTATION } from './balance';
+import { reputationByTier, type Tier } from './goods';
 import { incidentById } from './incidentBank';
 import { REVIEW_CARD } from '../strategic/ui/morningReviews';
 import { staminaOf } from './staffCondition';
@@ -50,6 +51,25 @@ export interface MorningReview {
   to?: number;
   tier?: string | null;
   lines?: ReviewEntry[];
+  // ORDER 309b — vems rykte kortet visar: konceptets (reputationByTier) när
+  // kvällen hade ett koncept och dess startvärde sparades, annars krogens.
+  scope?: 'concept' | 'restaurant';
+}
+
+// ORDER 309b — ett svars poäng i det rykte kortet visar. Konceptet: poängen
+// som flyttade konceptets rykte (sim/incidents.ts, felen gånger förlåtelsen);
+// äldre svar utan fältet räknas om på samma sätt.
+type ReviewScope = 'concept' | 'restaurant';
+function answerPoints(r: { right: boolean; reputation: number; guestType?: GuestType | null; conceptReputation?: number | null }, scope: ReviewScope): number {
+  if (scope === 'restaurant') return r.reputation;
+  if (typeof r.conceptReputation === 'number') return r.conceptReputation;
+  return !r.right && r.guestType ? r.reputation * GUEST_TYPES.forgiveness[r.guestType] : r.reputation;
+}
+
+/** Kvällens koncept (bokningen, låst när dörrarna öppnade), eller null. */
+export function reviewTier(evening: SimulationState): Tier | null {
+  const b = evening.day.booking;
+  return b && b.dayNumber === evening.day.dayNumber ? b.concept ?? null : null;
 }
 
 // Slut: D5:s gräns i staffStatus.ts staminaOf (samma som orkringen).
@@ -77,14 +97,14 @@ function voiceOf(types: (GuestType | null | undefined)[]): ReviewVoice {
 }
 
 /** Kortets rader: svaren grupperade (fel, grovt fel, rätt hela vägen), och resten; största ändringen först, högst REVIEW_CARD.maxLines. */
-export function reviewLines(evening: SimulationState, change: number, dayNumber: number): ReviewEntry[] {
+export function reviewLines(evening: SimulationState, change: number, dayNumber: number, scope: ReviewScope = 'restaurant'): ReviewEntry[] {
   const reviews = evening.day.answerReviews ?? [];
   const title = (id: string) => incidentById(evening.economy.businessClass, id)?.text.title ?? id;
   const uniq = (xs: string[]) => [...new Set(xs)];
   const out: ReviewEntry[] = [];
   const group = (kind: 'wrong' | 'grave' | 'cleared', rs: typeof reviews) => {
     if (rs.length === 0) return;
-    const delta = Math.round(rs.reduce((a, r) => a + r.reputation, 0));
+    const delta = Math.round(rs.reduce((a, r) => a + answerPoints(r, scope), 0));
     const titles = uniq(rs.map((r) => title(r.incidentId)));
     out.push({ kind, voice: voiceOf(rs.map((r) => r.guestType)), delta, tables: rs.length, titles, seed: hash(`${dayNumber}:${kind}:${titles.join('|')}`) });
   };
@@ -110,29 +130,36 @@ export function reviewLines(evening: SimulationState, change: number, dayNumber:
 
 export function buildMorningReview(evening: SimulationState, morning: SimulationState): MorningReview | null {
   // Ryktet när gårdagen började (servicens startvärde nollställs när den stänger).
-  const start = evening.day.reputationAtServiceStart ?? evening.day.reputationAtDayStart;
+  const restaurantStart = evening.day.reputationAtServiceStart ?? evening.day.reputationAtDayStart;
   const served = (evening.day.seatedTonight ?? 0) > 0 || (evening.day.answerReviews?.length ?? 0) > 0;
-  if (start === undefined || start === null || !served) return null;
+  if (restaurantStart === undefined || restaurantStart === null || !served) return null;
+  // ORDER 309b — kvällens koncept: konceptets rykte när servicen öppnade
+  // (day.conceptReputationAtServiceStart) och på morgonen, efter nattens drift.
+  const tier = reviewTier(evening);
+  const conceptStart = evening.day.conceptReputationAtServiceStart;
+  const scope: ReviewScope = tier && typeof conceptStart === 'number' ? 'concept' : 'restaurant';
+  const start = scope === 'concept' ? (conceptStart as number) : restaurantStart;
+  const end = scope === 'concept' ? reputationByTier(morning)[tier as Tier] : morning.reputation;
   const reviews = evening.day.answerReviews ?? [];
   const title = (id: string) => incidentById(evening.economy.businessClass, id)?.text.title ?? id;
   const wrong = reviews.filter((r) => !r.right);
   // Raketer klarade hela vägen: svaret som också bar raketens ryktesdel.
   const cleared = reviews.filter((r) => r.right && r.reputation >= CONSEQUENCES.right.clearedReputation);
   const uniq = (xs: string[]) => [...new Set(xs)];
-  const change = Math.round((morning.reputation - start) * REPUTATION.scale);
-  const booking = evening.day.booking;
+  const change = Math.round((end - start) * REPUTATION.scale);
   return {
     dayNumber: evening.day.dayNumber,
     change,
-    fromAnswers: Math.round(reviews.reduce((a, r) => a + r.reputation, 0)),
+    fromAnswers: Math.round(reviews.reduce((a, r) => a + answerPoints(r, scope), 0)),
     wrongTables: wrong.length,
     rightTables: cleared.length,
     grave: wrong.filter((r) => r.severity === 'grave').length,
     wrongTitles: uniq(wrong.map((r) => title(r.incidentId))),
     rightTitles: uniq(cleared.map((r) => title(r.incidentId))),
     from: Math.round(start * REPUTATION.scale),
-    to: Math.round(morning.reputation * REPUTATION.scale),
-    tier: booking && booking.dayNumber === evening.day.dayNumber ? booking.concept ?? null : null,
-    lines: reviewLines(evening, change, evening.day.dayNumber)
+    to: Math.round(end * REPUTATION.scale),
+    tier,
+    scope,
+    lines: reviewLines(evening, change, evening.day.dayNumber, scope)
   };
 }
