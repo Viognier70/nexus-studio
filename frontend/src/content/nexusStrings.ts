@@ -3475,6 +3475,114 @@ export const TABLE = {
     // Spelets egna: knappen och skärmläsarens namn på öppningen.
     skip: { sv: 'Hoppa över', en: 'Skip' },
     label: { sv: 'Öppningen', en: 'The opening' }
+  },
+  // ORDER 309 — Designs D5, följderna och konceptet (foljderStrings.ts):
+  // statusläget och fokusläget, kortet för gäst och personal, och
+  // Recensioner i morse som tidningens kort. Designs ordval där de finns.
+  foljder: {
+    statusButton: { sv: 'Status', en: 'Status' },
+    focusButton: { sv: 'Fokus', en: 'Focus' },
+    statusHint: { sv: 'Statusläge: stämningen vid alla bord, och personalens ork och trivsel. Klicka på en figur för kortet.', en: 'Status view: the mood at every table, and the staff’s energy and morale. Click a figure for its card.' },
+    focusHint: { sv: 'Fokusläge: panelerna fälls till lister. Klockan, kassan och mätaren står kvar.', en: 'Focus view: the panels fold into strips. Clock, till and meter stay.' },
+    rocketStrip: { sv: 'Raketen', en: 'Rocket' },
+    stamina: { sv: 'Ork', en: 'Energy' },
+    staminaLevel: {
+      sv: { fresh: 'Pigg', tired: 'Trött', spent: 'Slut' } as Record<string, string>,
+      en: { fresh: 'Fresh', tired: 'Tired', spent: 'Worn out' } as Record<string, string>
+    },
+    wellbeing: { sv: 'Trivsel', en: 'Morale' },
+    wellbeingLevel: {
+      sv: { thriving: 'Trivs', okay: 'Lagom', low: 'Trivs inte' } as Record<string, string>,
+      en: { thriving: 'Happy', okay: 'All right', low: 'Unhappy' } as Record<string, string>
+    },
+    tips: { sv: 'Dricks i kväll', en: 'Tips tonight' },
+    topics: { sv: 'Kan', en: 'Knows' },
+    missing: { sv: 'Saknas', en: 'Missing' },
+    hint: {
+      sv: { fresh: 'Klarar en rusning till.', tired: 'Behöver en paus före stängning.', spent: 'Går saktare och tvekar vid borden.' } as Record<string, string>,
+      en: { fresh: 'Can take another rush.', tired: 'Needs a break before closing.', spent: 'Slower on the floor, hesitates at tables.' } as Record<string, string>
+    },
+    // Spelets kunskapsområden (balance.ts STAFF_CONDITION): vin, mat (köket) och service.
+    topic: {
+      sv: { vin: 'Vin', mat: 'Köket', service: 'Service' } as Record<string, string>,
+      en: { vin: 'Wine', mat: 'Kitchen', service: 'Service' } as Record<string, string>
+    },
+    // Namnen ur Designs manus (foljderManus.js, handelserManus.js).
+    staffName: {
+      sv: { host: 'Per', server: 'Sara', sommelier: 'Elin', bartender: 'Mira', cook: 'Jonas' } as Record<string, string>,
+      en: { host: 'Per', server: 'Sara', sommelier: 'Elin', bartender: 'Mira', cook: 'Jonas' } as Record<string, string>
+    },
+    group: {
+      sv: { student: 'Studenter', villager: 'Bybor', tourist: 'Turister', gourmet: 'Gourmeter', business: 'Affärsfolk' } as Record<string, string>,
+      en: { student: 'Students', villager: 'Villagers', tourist: 'Tourists', gourmet: 'Food lovers', business: 'Business guests' } as Record<string, string>
+    },
+    mood: { sv: 'Stämning', en: 'Mood' },
+    forgives: { sv: 'Förlåter', en: 'Forgives' },
+    forgivesLevel: {
+      sv: { much: 'mycket', some: 'en del', little: 'lite' } as Record<string, string>,
+      en: { much: 'a lot', some: 'some', little: 'little' } as Record<string, string>
+    },
+    party: {
+      sv: (n: number) => (n <= 1 ? 'En gäst' : `Sällskap om ${n}`),
+      en: (n: number) => (n <= 1 ? 'One guest' : `A party of ${n}`)
+    },
+    atBar: { sv: 'Vid baren', en: 'At the bar' },
+    close: { sv: 'Stäng', en: 'Close' },
+    review: {
+      kicker: { sv: 'Recensioner i morse', en: 'This morning’s reviews' },
+      title: { sv: 'Vad byn säger om i går', en: 'What the village says about last night' },
+      rep: { sv: 'Ryktet', en: 'Reputation' },
+      classLine: { sv: (cls: string) => `Ryktet som ${cls.toLowerCase()}`, en: (cls: string) => `Reputation as a ${cls.toLowerCase()}` },
+      down: { sv: (n: number) => `Ryktet −${n}`, en: (n: number) => `Reputation −${n}` },
+      up: { sv: (n: number) => `Ryktet +${n}`, en: (n: number) => `Reputation +${n}` },
+      even: { sv: 'Ryktet ±0', en: 'Reputation ±0' },
+      next: { sv: 'Till inköpen', en: 'On to purchasing' },
+      voice: {
+        sv: { student: 'En student', villager: 'En bybo', tourist: 'En turist', gourmet: 'En gourmet', business: 'En affärsresenär', village: 'Byn', staff: 'Personalen' } as Record<string, string>,
+        en: { student: 'A student', villager: 'A villager', tourist: 'A tourist', gourmet: 'A food lover', business: 'A business guest', village: 'The village', staff: 'The staff' } as Record<string, string>
+      },
+      quote: {
+        sv: {
+          wrong: ['”Det blev inte riktigt som vi hade tänkt oss.”', '”Personalen verkade osäker.”', '”Synd, för maten var fin.”'],
+          grave: ['”Vi gick innan vi hade ätit klart.”', '”Där går vi inte igen i första taget.”'],
+          cleared: ['”De visste precis vad de gjorde.”', '”Vi fick ett råd vi kommer att minnas.”', '”Vi stannade på ett glas till.”'],
+          restUp: ['”En fin kväll i vinbaren.”', '”Det var varmt och livligt.”'],
+          restDown: ['”Vi fick vänta länge.”', '”Det var en ojämn kväll.”'],
+          staff: ['”Personalen såg trött ut mot slutet.”'],
+          quiet: ['”Det var en lugn kväll.”']
+        } as Record<string, readonly string[]>,
+        en: {
+          wrong: ['“It wasn’t quite what we had hoped for.”', '“The staff seemed unsure.”', '“A pity, because the food was lovely.”'],
+          grave: ['“We left before we had finished.”', '“We won’t be back in a hurry.”'],
+          cleared: ['“They knew exactly what they were doing.”', '“We got a piece of advice we will remember.”', '“We stayed on for another glass.”'],
+          restUp: ['“A lovely evening at the wine bar.”', '“It was warm and lively.”'],
+          restDown: ['“We had a long wait.”', '“It was an uneven evening.”'],
+          staff: ['“The staff looked tired towards the end.”'],
+          quiet: ['“It was a quiet evening.”']
+        } as Record<string, readonly string[]>
+      },
+      reason: {
+        wrong: {
+          sv: (n: number, titles: string) => `${n === 1 ? 'Ett bord' : `${n} bord`} fick fel svar (${titles}).`,
+          en: (n: number, titles: string) => `${n === 1 ? 'One table' : `${n} tables`} got a wrong answer (${titles}).`
+        },
+        grave: {
+          sv: (n: number, titles: string) => `${n === 1 ? 'Ett bord' : `${n} bord`} gick utan att betala (${titles}).`,
+          en: (n: number, titles: string) => `${n === 1 ? 'One table' : `${n} tables`} left without paying (${titles}).`
+        },
+        cleared: {
+          sv: (n: number, titles: string) => `Rätt hela vägen vid ${n === 1 ? 'ett bord' : `${n} bord`} (${titles}).`,
+          en: (n: number, titles: string) => `Right all the way at ${n === 1 ? 'one table' : `${n} tables`} (${titles}).`
+        },
+        rest: { sv: 'Gästernas kväll i övrigt.', en: 'The rest of the guests’ evening.' },
+        staff: {
+          sv: (names: string) => `${names} var slut före stängning.`,
+          en: (names: string) => `${names} ${names.includes(' and ') ? 'were' : 'was'} worn out before closing.`
+        },
+        quiet: { sv: 'Inget svar flyttade ryktet.', en: 'No answer moved the reputation.' }
+      },
+      and: { sv: 'och', en: 'and' }
+    }
   }
 };
 

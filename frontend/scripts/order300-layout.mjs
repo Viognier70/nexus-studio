@@ -101,7 +101,7 @@ async function probe(page, buttons) {
     // 4 px², där ingen innehåller den andra.
     const overlaps = [];
     if (!document.querySelector('.nx-screen, .nxs-mentor-screen, .business-name-overlay, .nxs-rules')) {
-      const sel = '.gb-topleft > *, .nx-hud-stack > *, .nx-hud-row > *, .gb-topright > *, .nx-hud-tools > *, .nx-tabs, .nx-tab-dock, .nx-queue, [data-testid=event-stream], .nx-rocket, .nx-agency, .nx-mood-meter, .nx-prep-hint';
+      const sel = '.gb-topleft > *, .nx-hud-stack > *, .nx-hud-row > *, .gb-topright > *, .nx-hud-tools > *, .nx-tabs, .nx-tab-dock, .nx-queue, [data-testid=event-stream], .nx-rocket, .nx-agency, .nx-mood-meter, .nx-prep-hint, .nx-scard, .nx-focus-strip';
       const els = [...new Set(document.querySelectorAll(sel))].filter((el) => visibleEl(el) && !el.matches('.nx-hud-stack, .nx-hud-row'));
       for (let i = 0; i < els.length; i++) for (let j = i + 1; j < els.length; j++) {
         const a = els[i], b = els[j];
@@ -218,6 +218,33 @@ try {
     await page.keyboard.press('z');
     await delay(3000);
     await measure(page, 'servicen', ['[data-testid=level-bar] button', '[data-testid=back-start]']);
+    // ORDER 309 — Designs D5: statusläget med kortet för en gäst öppet (kortet
+    // räknas med bland panelerna), och fokusläget (H). Kortet placeras om i
+    // varje storlek (ui/cardPlacement.ts), så det mäts i alla fem.
+    if (!(await page.$('[data-testid=incident-card]'))) {
+      await page.keyboard.press('s');
+      await delay(800);
+      const raw = await page.evaluate(() => document.body.dataset.guestScreen ?? '');
+      for (const item of raw.split(';').filter(Boolean)) {
+        const [fx, fy] = item.split('@').pop().split(',').map(Number);
+        const vp = page.viewportSize();
+        const x = Math.round(fx * vp.width), y = Math.round(fy * vp.height);
+        if (!(await page.evaluate(([x, y]) => document.elementFromPoint(x, y)?.tagName === 'CANVAS', [x, y]))) continue;
+        await page.mouse.move(x - 4, y - 4);
+        await page.mouse.click(x, y);
+        if (await page.waitForSelector('[data-testid=guest-card]', { timeout: 1200 }).catch(() => null)) break;
+      }
+      await measure(page, 'statuslaget-kortet', ['[data-testid=mode-keys] button']);
+      await page.keyboard.press('Escape');
+      await page.keyboard.press('z');
+      await page.keyboard.press('s');
+      await delay(600);
+      await page.keyboard.press('h');
+      await delay(800);
+      await measure(page, 'fokuslaget', ['[data-testid=mode-keys] button']);
+      await page.keyboard.press('h');
+      await delay(600);
+    }
     // ORDER 303 G — med ett raketkort öppet (panelerna får inte ligga på varandra).
     await page.waitForSelector('[data-testid=incident-card][data-mode=ask]', { timeout: 180000 }).catch(() => {});
     await measure(page, 'raketen', []);

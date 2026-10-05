@@ -2033,4 +2033,6 @@ export interface AnswerReview {
   // Ryktet, poäng på skalan 0–100.
   reputation: number;
   table: number | null;
+  // ORDER 309 — bordets gästtyp (rösten i Recensioner i morse, D5 morningReviews.ts).
+  guestType?: GuestType | null;
 }

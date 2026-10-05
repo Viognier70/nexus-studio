@@ -39,7 +39,9 @@ import { harnessParams } from './testHarness/urlParams';
 import { SimulationProvider, useSimDispatch, useSimState } from './simulation/SimulationProvider';
 import { AboutPanel } from './ui/AboutPanel';
 import { RulesPanel } from './ui/RulesPanel';
-import { StatusButton } from './ui/StatusButton';
+import { ModeKeys } from './ui/StatusButton';
+import { StatusCard } from './ui/StatusCard';
+import { MorningReviewCard } from './ui/MorningReviewLine';
 import { FocusMode } from './ui/FocusMode';
 import { KnowledgeFoundationLayer, openCredits } from './knowledge/ui/KnowledgeFoundation';
 import { PrepHint } from './ui/service/PrepHint';
@@ -338,8 +340,8 @@ function StrategicShell() {
       <div className="nx-hud-tools">
         {/* ORDER 299 — kamerans knappar (vrid, zooma, återställ). */}
         <CameraButtons />
-        {/* ORDER 303 F — statusläget (S). */}
-        <StatusButton />
+        {/* ORDER 309 — Status (S) och Fokus (H), Designs D5. */}
+        <ModeKeys />
         <LevelBar />
       </div>
       <VillageNotice />
@@ -373,6 +375,8 @@ function StrategicShell() {
       />
       {/* ORDER 280 — morgonens inköp (Designs M1). */}
       <MorningBuyScreen open={buyOpen} onClose={() => setBuyOpen(false)} />
+      {/* ORDER 309 — Recensioner i morse som tidningens kort (Designs D5), före inköpen. */}
+      {!buyOpen && <MorningReviewCard onOpenBuy={() => setBuyOpen(true)} />}
       <NoBusinessBox hidden={houseOpen || bankOpen} onOpenHouse={() => setHouseOpen(true)} onOpenBank={() => setBankOpen(true)} />
       <BankDialog open={bankOpen} onClose={() => setBankOpen(false)} />
       {/* ORDER 296 — krogen har stängt: säsongen är slut. */}
@@ -425,7 +429,8 @@ function StrategicShell() {
       <EveningAccountPanel />
       <DevPanel lastKey={lastKey} />
       <AboutPanel open={aboutOpen} onClose={() => setAboutOpen(false)} />
-      {/* ORDER 303 G — fokusläget (under 14 m eller H). */}
+      {/* ORDER 309 — fokusläget (Designs D5: under 14 m eller H, av över 15,5 m) och kortet för gäst och personal. */}
+      <StatusCard />
       <FocusMode />
       {/* ORDER 300 §5 — regelkortet första morgonen och sidan i menyn. */}
       <RulesPanel open={rulesOpen} onClose={() => setRulesOpen(false)} />

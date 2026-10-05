@@ -756,22 +756,33 @@ body:has(.nx-rocket) .nx-rival-band { display: none; }
 .nx-venue-label.is-near .nx-venue-name { font-size: max(15px, calc(24 * var(--nx-u))); }
 .nx-venue-label.is-compact.is-player { min-width: 150px; }
 
-/* ORDER 303 F — statusläget: knappen i nivåraden och korten för gäst och personal. */
-.nx-status-button { border: 1px solid rgba(216, 184, 119, 0.5); background: rgba(38, 25, 17, 0.9); }
+/* ORDER 309 — statusläget och korten står i foljder.css (Designs D5). */
 .nx-status-card { border-radius: 12px; padding: 8px 12px; display: grid; gap: 2px; font-weight: 600; text-align: left; }
-.nx-status-card-head { font-weight: 800; color: var(--w-gold, #e8b93a); }
 
-/* ORDER 303 G — fokusläget: panelerna fälls ihop till smala lister i kanterna;
- * kassan, klockan och mätaren syns kvar (ui/FocusMode.tsx). */
-body[data-focus='1'] .nx-rival-band,
+/* ORDER 309 — fokusläget ur Designs D5 (hudLayout.ts FOCUS_MODE), ersätter
+ * ORDER 303 G:s form (ui/FocusMode.tsx). Klockan, kassan och mätaren krymper
+ * till en rad; ställningen blir en tunn rad lyktor; raketkortet en list i
+ * vänsterkanten (utom medan det frågar); flikarna en mindre rad. Panelerna
+ * fälls på 280 ms (FOCUS_MODE.foldMs, ease). */
+.gb-topleft, .nx-rocket, .nx-tabs, .nx-hud-tools { transition: transform 280ms cubic-bezier(.2,.8,.2,1), opacity 280ms cubic-bezier(.2,.8,.2,1); }
+body[data-focus='1'] .gb-topleft { transform: scale(0.62); transform-origin: left top; }
+body[data-focus='1'] .nx-rival-band .nx-rival-head,
+body[data-focus='1'] .nx-rival-band .nx-rival-calm,
+body[data-focus='1'] .nx-rival-band .nx-rival-name,
+body[data-focus='1'] [data-testid=service-clock-cells] + div,
+body[data-focus='1'] .nx-till-forecast,
 body[data-focus='1'] .nx-prep-hint,
 body[data-focus='1'] .nx-village-notice { display: none; }
+body[data-focus='1'] .nx-rival-band { padding-top: 2px; padding-bottom: 2px; }
+body[data-focus='1'] .nx-rival-band .nx-rival-line { height: max(16px, 2.2vh); }
 body[data-focus='1'] .nx-queue { max-height: max(34px, calc(48 * var(--nx-u))); overflow: hidden; opacity: 0.85; }
 body[data-focus='1'] .nx-tabs { transform: scale(0.82); transform-origin: left bottom; }
 body[data-focus='1'] .nx-tabs .nx-tabs-keys { display: none; }
 body[data-focus='1'] .nx-hud-tools { transform: scale(0.82); transform-origin: right bottom; opacity: 0.85; }
 body[data-focus='1'] .nx-feed-back { padding-top: calc(6 * var(--nx-u)); padding-bottom: calc(6 * var(--nx-u)); }
 body[data-focus='1'] .nx-feed-back #back-why { display: none; }
+body[data-focus='1']:not([data-focus-unfold='rocket']) .nx-rocket:not([data-mode='ask']):not([data-mode='right']) { transform: translateX(calc(-100% - 80px)); opacity: 0; pointer-events: none; }
+@media (prefers-reduced-motion: reduce) { .gb-topleft, .nx-rocket, .nx-tabs, .nx-hud-tools { transition: none; } }
 
 /* ORDER 303 G — förberedelseraden tar kolumnens bredd och breddar den inte
  * (layoutkontrollen: mätaren låg under farten före öppning). */

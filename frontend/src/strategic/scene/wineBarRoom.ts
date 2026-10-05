@@ -357,11 +357,12 @@ function allFigureColours(): string[] {
 }
 
 /** Hela paletten mot varje golvzon. Tom lista = godkänt. */
-export function checkPaletteAgainstFloors(minRatio?: number, maxRatio?: number) {
+// ORDER 309 — colours: andra figurfärger att pröva (Designs D5 gästgrupper, guestGroups.ts).
+export function checkPaletteAgainstFloors(minRatio?: number, maxRatio?: number, colours?: readonly string[]) {
   const lo = minRatio ?? 1.8;
   const hi = maxRatio ?? 3.6;
   const fails: { figure: string; zone: string; ratio: number }[] = [];
-  const figs = allFigureColours();
+  const figs = colours ? [...colours] : allFigureColours();
   for (let i = 0; i < figs.length; i++) {
     for (let z = 0; z < ZONE_FLOORS.length; z++) {
       const r = contrast(figs[i], ZONE_FLOORS[z].colour);

@@ -25,6 +25,7 @@ import { PROP_VISUAL_SCALE } from './staffRing';
 import type { CameraTarget } from '../types';
 import type { ActiveIncident } from '../../sim/incidents';
 import type { ClipOverride } from './theatreInteractions';
+import { conditionClip, type ConditionInput } from './conditionClips';
 
 const LEDGER_PROP: Record<LedgerEntry['item'], PropId> = { plate: 'plate', dishes: 'plate', glass: 'wineGlass', bottle: 'wineBottle' };
 // Det som följer klippets händer (inte ägarboken): kort, block, mapp, servett, bestick, bricka.
@@ -62,7 +63,8 @@ export class TheatreStage {
   }
 
   /** Personalens pose ur klippet, eller null när figureActs-posen gäller. */
-  staffPose(i: number, key: StaffKey, s: FigureSample, rocket: ActiveIncident | null, now: number, together?: ClipOverride | null): ClipSample | null {
+  // ORDER 309 — cond: orken och tvekan (conditionClips.ts, Designs D5 §2 och §7).
+  staffPose(i: number, key: StaffKey, s: FigureSample, rocket: ActiveIncident | null, now: number, together?: ClipOverride | null, cond?: ConditionInput | null): ClipSample | null {
     const fig = rocket?.context.figure;
     if (fig && fig.kind === 'staff' && fig.staffKey === key) {
       const introTotal = THEATRE.rocketIntroSeconds[fig.clip];
@@ -74,6 +76,11 @@ export class TheatreStage {
     if (together) {
       this.staffClip[i] = { id: together.id, tempo: 'normal' };
       return sampleClip(together.id, together.time, 'normal', { yaw: s.targetYaw, stress: s.stress });
+    }
+    const c = cond ? conditionClip(s.pose, !!s.carrying, cond) : null;
+    if (c) {
+      this.staffClip[i] = { id: c.id, tempo: 'normal' };
+      return sampleClip(c.id, c.time ?? now, 'normal', { yaw: s.targetYaw });
     }
     const id = staffClipFor(s, key);
     if (!id) { this.staffClip[i].id = null; return null; }

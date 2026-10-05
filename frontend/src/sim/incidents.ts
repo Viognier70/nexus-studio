@@ -769,7 +769,7 @@ function answerConsequence(draft: SimulationState, ctx: IncidentContext, right: 
     moveConceptReputation(draft, tier, repPoints * forgive, REPUTATION.scale);
   }
   if (incidentId) {
-    draft.day = { ...draft.day, answerReviews: [...(draft.day.answerReviews ?? []), { incidentId, right, severity: right ? null : severity, reputation: repPoints, table: ctx.table }] };
+    draft.day = { ...draft.day, answerReviews: [...(draft.day.answerReviews ?? []), { incidentId, right, severity: right ? null : severity, reputation: repPoints, table: ctx.table, guestType: table[0]?.guestType ?? null }] };
   }
   if (!right) spreadWord(draft, CONSEQUENCES.street.perWrong);
   else if (rocketCleared) spreadWord(draft, CONSEQUENCES.street.perCleared);
