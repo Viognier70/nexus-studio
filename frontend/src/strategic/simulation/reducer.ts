@@ -6,7 +6,7 @@ import { bestAnswerFactor, drinkRevenueFactor, enablersWithCredits } from '../..
 import { EQUIPMENT_IDS, GOODS_SUPPLIER_IDS, equipmentOpened, equipmentOwned, equipmentSpec, equipmentUnlocked, supplierOwned, supplierPrice, supplierUnlocked, type EquipmentId, type GoodsSupplierId } from '../../sim/goods';
 import { CONCEPT, CONSEQUENCES, MOOD_BALANCE, EVENING, EVENING_ECONOMY, GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, OPENING, QUEUE_CAP, SERVICE, SHOP, type BusinessClassId } from '../../sim/balance';
 import { answerSalvage, closeSalvage, discardUnresolvedSalvage } from './salvage';
-import { clockMinutes, formatClock, canStartBack, closeIncidents, countDown, isIncidentOpen, maybeOpenIncident, planIncidents, resolveIncident, startBack, stopIncident, goOnIncident, tickOngoing, type CreditChange } from '../../sim/incidents';
+import { clockMinutes, formatClock, canStartBack, closeIncidents, countDown, isIncidentOpen, lockAnswer, maybeOpenIncident, planIncidents, resolveIncident, settlePendingAnswer, startBack, stopIncident, goOnIncident, tickOngoing, type CreditChange } from '../../sim/incidents';
 import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
 import { afterVisitClosed, beginIntroduction } from '../../sim/introduction';
 import { isStrandedWithoutBusiness, canChangeClassToday, changeClass, classOptions, openFirstBusiness, recordEvening, creditLineSek, dailyGuestCap, dayEnd, dayEndHeadroom, dailyWagesSek, recordExamWithoutBusiness, scenarioUnitSek, scenarioChoiceUnits, clampScenarioCash, postDailyInterest, settleWeek, isClosed } from '../../sim/economy';
@@ -267,7 +267,14 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       const next = advanceTick(state);
       if (!isIncidentOpen(next)) return next;
       const draft: SimulationState = { ...next, guests: next.guests.map((g) => ({ ...g })) };
-      if (!countDown(draft, action.dt)) return draft;
+      const due = countDown(draft, action.dt);
+      if (!due) return draft;
+      // ORDER 310b — väntan är slut: det låsta svaret avgörs nu.
+      // Dagen kopieras som förut i ANSWER_INCIDENT (ORDER 299): svarets följd skriver i day.
+      if (due === 'verdict') {
+        draft.day = { ...draft.day };
+        return applyCreditChange(draft, settlePendingAnswer(draft));
+      }
       // ORDER 305 — kvitt eller dubbelt: valets tid är ute, spelaren stannar.
       if (draft.incidents?.active?.choosing) {
         stopIncident(draft);
@@ -293,15 +300,11 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       if (!isIncidentOpen(state)) return state;
       // ORDER 305 — kvitt eller dubbelt: först stanna eller gå vidare.
       if (state.incidents?.active?.choosing) return state;
-      // ORDER 299 — dagen kopieras också: svarets följd skriver i day (lagret,
-      // kvällens glas), och React kan lägga om ett svar på köade TICK när spelet
-      // går fort; reducern får då inte ändra det tidigare läget.
-      const draft: SimulationState = { ...state, guests: state.guests.map((g) => ({ ...g })), day: { ...state.day } };
-      const credit = resolveIncident(draft, action.optionId);
-      // Ett struket eller okänt svar ändrar ingenting. Ett klarat steg
-      // lämnar raketen öppen på nästa steg (ORDER 270, 2026-09-27).
-      if (draft.incidents === state.incidents) return state;
-      return applyCreditChange(draft, credit);
+      // ORDER 310b (Anders 2026-10-05) — svaret låses och avgörs först efter
+      // INCIDENTS.verdictSeconds (TICK, settlePendingAnswer). Ett struket eller
+      // okänt svar, och ett andra svar medan det första väntar, ändrar ingenting.
+      const draft: SimulationState = { ...state };
+      return lockAnswer(draft, action.optionId) ? draft : state;
     }
     // ORDER 305 — kvitt eller dubbelt: stanna och ta potten, eller gå vidare.
     case 'INCIDENT_STOP':

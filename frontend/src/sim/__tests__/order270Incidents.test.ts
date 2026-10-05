@@ -18,6 +18,7 @@ import { stocked } from '../../strategic/testHarness/stocked';
 import menuMeta from '../../content/incidents/menu.meta.json';
 import menuText from '../../content/incidents/menu.text.en.json';
 import { useLegacyEconomy } from '../../strategic/testHarness/legacyEconomy';
+import { answerAndWait } from './verdict';
 
 // ORDER 296 — filen prövar de äldre ekonomireglerna (nedgradering, golvets
 // påfyllnad, amortering och den förra startkassan); kärnans risk stänger av
@@ -46,7 +47,7 @@ const GO = { type: 'INCIDENT_GO' } as const;
 const goOn = (s: SimulationState) => (s.incidents.active?.choosing ? reducer(s, GO) : s);
 // Svaret på stegets fråga, och gå vidare om valet står öppet.
 function ans(s: SimulationState, optionId: string): SimulationState {
-  return reducer(goOn(s), { type: 'ANSWER_INCIDENT', optionId });
+  return answerAndWait(goOn(s), optionId);
 }
 
 // Svaret som harnessen ger på raketens aktuella steg.
@@ -54,7 +55,7 @@ function answer(s: SimulationState, rank: 'best' | 'worst' = 'best'): Simulation
   s = goOn(s);
   const a = s.incidents.active!;
   const step = incidentById('vinbar', a.id)!.steps[a.step];
-  return reducer(s, { type: 'ANSWER_INCIDENT', optionId: rankedStepOption(step, rank, a.struck, a.situation) });
+  return answerAndWait(s, rankedStepOption(step, rank, a.struck, a.situation));
 }
 
 // Öppna en bestämd händelse nu (samma väg som en kedjad händelse).
@@ -211,7 +212,7 @@ describe('ORDER 270 — en raket', () => {
 
   it('fel svar på ett steg: stegets konsekvens, personalen tar över resten, raketen är slut', () => {
     const s = openNow(wineBarService(), 'vb09-getosten');
-    const after = reducer(s, { type: 'ANSWER_INCIDENT', optionId: 'a' });
+    const after = answerAndWait(s, 'a');
     expect(after.incidents.active).toBeNull();
     expect(after.incidents.log.at(-1)).toMatchObject({ id: 'vb09-getosten', step: 0, optionId: 'a', quality: 'wrong' });
     const inc = incidentById('vinbar', 'vb09-getosten')!;
@@ -245,8 +246,8 @@ describe('ORDER 270 — en raket', () => {
   });
 
   it('medaljer i stegets paviljong ger mer tid på just det steget och stryker ett fel alternativ', () => {
-    const plain = reducer(openNow(wineBarService(0, { stensota: 'brons' }), 'vb09-getosten'), { type: 'ANSWER_INCIDENT', optionId: 'c' });
-    const silver = reducer(openNow(wineBarService(0, { stensota: 'silver' }), 'vb09-getosten'), { type: 'ANSWER_INCIDENT', optionId: 'c' });
+    const plain = answerAndWait(openNow(wineBarService(0, { stensota: 'brons' }), 'vb09-getosten'), 'c');
+    const silver = answerAndWait(openNow(wineBarService(0, { stensota: 'silver' }), 'vb09-getosten'), 'c');
     expect(plain.incidents.active!.step).toBe(1);
     expect(plain.incidents.active!.struck).toEqual([]);
     expect(silver.incidents.active!.secondsTotal).toBe(plain.incidents.active!.secondsTotal + INCIDENTS.extraSecondsPerMedalStep);
@@ -550,7 +551,7 @@ describe('ORDER 271 — svaret i stunden och vem som tar över', () => {
   it('vid fel tar den ordinarie personalen i rollen över en stund', async () => {
     const { takeoverActive } = await import('../incidents');
     const s = openNow(wineBarService(), 'vb09-getosten');
-    const after = reducer(s, { type: 'ANSWER_INCIDENT', optionId: 'a' });
+    const after = answerAndWait(s, 'a');
     const o = after.incidents.lastOutcome!;
     expect(o.reveal).toMatchObject({ step: 0, optionId: 'a', correctId: 'c', cleared: false });
     expect(o.takeover?.role).toBeDefined();

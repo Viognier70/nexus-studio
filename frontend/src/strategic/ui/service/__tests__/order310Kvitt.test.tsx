@@ -33,6 +33,7 @@ vi.mock('../../../simulation/SimulationProvider', () => ({
 }));
 
 import { reducer } from '../../../simulation/reducer';
+import { answerAndWait } from '../../../../sim/__tests__/verdict';
 import { makeNewGameState } from '../../../simulation/model';
 import { firstDayOfWeek } from '../../../../sim/calendar';
 import { DOUBLE_OR_NOTHING, INCIDENTS } from '../../../../sim/balance';
@@ -70,7 +71,8 @@ function answer(s: SimulationState, rank: 'best' | 'worst' = 'best'): Simulation
   const a = s.incidents.active!;
   if (a.choosing) return reducer(s, { type: 'INCIDENT_GO' });
   const step = incidentById('vinbar', a.id)!.steps[a.step];
-  return reducer(s, { type: 'ANSWER_INCIDENT', optionId: rankedStepOption(step, rank, a.struck, a.situation) });
+  // ORDER 310b — svaret avgörs efter låset och väntan.
+  return answerAndWait(s, rankedStepOption(step, rank, a.struck, a.situation));
 }
 function openNow(s: SimulationState, id: string): SimulationState {
   s = { ...s, incidents: { ...s.incidents, slots: [{ at: s.simTime, phase: 'rush' }, ...s.incidents.slots], queued: [id] } };

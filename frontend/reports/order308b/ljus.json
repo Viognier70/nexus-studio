@@ -1,0 +1,169 @@
+{
+  "definition": "Medelluminans (Rec. 709, 0–255): full = hela bilden, centre = 30–70 % i båda leden. ratio = spelet / Design. before = reports/order308b/fore/ (main 508822e:s ljus), after = reports/order308b/ (ORDER 308b). Designs skärmar: skarmar/1280x720/. scripts/order308b-ljus.mjs.",
+  "rows": [
+    {
+      "shot": "oppning-texten",
+      "scene": "village",
+      "design": {
+        "full": 68.1,
+        "centre": 80.3
+      },
+      "before": {
+        "file": "reports/order308b/fore/oppning-texten-1280x720.png",
+        "full": 39.7,
+        "centre": 50.8,
+        "ratioFull": 0.58,
+        "ratioCentre": 0.63
+      },
+      "after": {
+        "file": "reports/order308b/oppning-texten-1280x720.png",
+        "full": 63.4,
+        "centre": 83.3,
+        "ratioFull": 0.93,
+        "ratioCentre": 1.04
+      }
+    },
+    {
+      "shot": "oppning-nalen-din-vinbar",
+      "scene": "village",
+      "design": {
+        "full": 64.4,
+        "centre": 84.8
+      },
+      "before": {
+        "file": "reports/order308b/fore/oppning-nalen-din-vinbar-1280x720.png",
+        "full": 40.4,
+        "centre": 39.3,
+        "ratioFull": 0.63,
+        "ratioCentre": 0.46
+      },
+      "after": {
+        "file": "reports/order308b/oppning-nalen-din-vinbar-1280x720.png",
+        "full": 60.6,
+        "centre": 62.9,
+        "ratioFull": 0.94,
+        "ratioCentre": 0.74
+      }
+    },
+    {
+      "shot": "oppning-raden-tom",
+      "scene": "bar",
+      "design": {
+        "full": 57,
+        "centre": 91.5
+      },
+      "before": {
+        "file": "reports/order308b/fore/oppning-raden-tom-1280x720.png",
+        "full": 42.4,
+        "centre": 73.8,
+        "ratioFull": 0.74,
+        "ratioCentre": 0.81
+      },
+      "after": {
+        "file": "reports/order308b/oppning-raden-tom-1280x720.png",
+        "full": 52.5,
+        "centre": 91.2,
+        "ratioFull": 0.92,
+        "ratioCentre": 1
+      }
+    },
+    {
+      "shot": "oppning-raden-det-du-vet",
+      "scene": "bar",
+      "design": {
+        "full": 66.4,
+        "centre": 90.4
+      },
+      "before": {
+        "file": "reports/order308b/fore/oppning-raden-det-du-vet-1280x720.png",
+        "full": 50.4,
+        "centre": 73.5,
+        "ratioFull": 0.76,
+        "ratioCentre": 0.81
+      },
+      "after": {
+        "file": "reports/order308b/oppning-raden-det-du-vet-1280x720.png",
+        "full": 62.6,
+        "centre": 91.1,
+        "ratioFull": 0.94,
+        "ratioCentre": 1.01
+      }
+    },
+    {
+      "shot": "oppning-nalen-ingrid",
+      "scene": "village",
+      "design": {
+        "full": 49.5,
+        "centre": 59.3
+      },
+      "before": {
+        "file": "reports/order308b/fore/oppning-nalen-ingrid-1280x720.png",
+        "full": 41,
+        "centre": 61.8,
+        "ratioFull": 0.83,
+        "ratioCentre": 1.04
+      },
+      "after": {
+        "file": "reports/order308b/oppning-nalen-ingrid-1280x720.png",
+        "full": 48.5,
+        "centre": 73.6,
+        "ratioFull": 0.98,
+        "ratioCentre": 1.24
+      }
+    },
+    {
+      "shot": "oppning-raden-stjarnan",
+      "scene": "village",
+      "design": {
+        "full": 59.6,
+        "centre": 71.2
+      },
+      "before": {
+        "file": "reports/order308b/fore/oppning-raden-stjarnan-1280x720.png",
+        "full": 36.9,
+        "centre": 46.8,
+        "ratioFull": 0.62,
+        "ratioCentre": 0.66
+      },
+      "after": {
+        "file": "reports/order308b/oppning-raden-stjarnan-1280x720.png",
+        "full": 58.4,
+        "centre": 78.8,
+        "ratioFull": 0.98,
+        "ratioCentre": 1.11
+      }
+    }
+  ],
+  "summary": {
+    "before": {
+      "meanRatioFull": 0.69,
+      "meanRatioCentre": 0.74,
+      "villageMeanRatioFull": 0.67,
+      "barMeanRatioFull": 0.75,
+      "minRatioFull": 0.58,
+      "maxRatioFull": 0.83
+    },
+    "after": {
+      "meanRatioFull": 0.95,
+      "meanRatioCentre": 1.02,
+      "villageMeanRatioFull": 0.96,
+      "barMeanRatioFull": 0.93,
+      "minRatioFull": 0.92,
+      "maxRatioFull": 0.98
+    }
+  },
+  "controlMorningAfter": {
+    "shot": "oppning-morgonen-efter",
+    "before": {
+      "file": "reports/order308b/fore/oppning-morgonen-efter-1280x720.png",
+      "full": 28.9,
+      "centre": 52.5
+    },
+    "after": {
+      "file": "reports/order308b/oppning-morgonen-efter-1280x720.png",
+      "full": 28.9,
+      "centre": 52.5
+    },
+    "diffFull": 0
+  }
+}

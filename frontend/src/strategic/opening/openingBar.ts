@@ -10,6 +10,7 @@ import { createWineBarRoom, updateCutaway, updateWineBarRoom, type MoodId, type 
 import { EventTheatre, theatreSeats } from '../scene/eventTheatre';
 import type { EventScript } from '../scene/events/handelserManus';
 import type { OpeningScene, OpeningView } from './oppningManus';
+import { BAR_EXPOSURE_GAIN } from './openingLight';
 
 /** Teaterns grundljus (teaterScen.js createTheatre: hemi 0,95, nyckel 1,5, fyll 0,25). */
 const HEMI = 0.95;
@@ -33,7 +34,8 @@ export class OpeningBarStage {
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.3;
+    // ORDER 308b — teaterns 1,3, höjd mot Designs skärmar (openingLight.ts).
+    this.renderer.toneMappingExposure = 1.3 * BAR_EXPOSURE_GAIN;
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.scene.background = new THREE.Color('#140d09');
 

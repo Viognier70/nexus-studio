@@ -3178,7 +3178,11 @@ export const TABLE = {
         sv: (role: string) => `Tiden gick ut · ${role} tar över`,
         en: (role: string) => `Out of time · ${role} takes over`
       },
-      keys: { sv: 'Välj med 1–4', en: 'Choose with 1–4' }
+      keys: { sv: 'Välj med 1–4', en: 'Choose with 1–4' },
+      // ORDER 310b — Designs lås och väntan (kvitt eller dubbelt §3): svaret är
+      // låst, och avgörandet kommer när gästen reagerar.
+      locked: { sv: 'Låst', en: 'Locked' },
+      lockedNote: { sv: 'Svaret är låst. Avgörandet kommer när gästen reagerar.', en: 'Your answer is locked. The verdict comes when the guest reacts.' }
     },
     meters: {
       cash: { sv: 'Kassa', en: 'Takings' },
@@ -3359,6 +3363,8 @@ export const TABLE = {
     ifRight: { sv: 'Om rätt', en: 'If right' },
     none: { sv: 'Potten var tom', en: 'The pot was empty' },
     gone: { sv: 'Potten är borta', en: 'The pot is gone' },
+    // ORDER 310b — kvittStrings.ts stake.onTable: under låset och väntan.
+    onTable: { sv: 'Insatsen ligger på steget', en: 'Your stake is on the step' },
     rowAria: {
       sv: (step: string, a: number, b: number) => `${step}: potten ${a} → ${b} om rätt`,
       en: (step: string, a: number, b: number) => `${step}: the pot ${a} → ${b} if right`
@@ -3465,7 +3471,9 @@ export const TABLE = {
     place: { sv: 'Grythyttan', en: 'Grythyttan' },
     line1: { sv: 'En säsong. Åtta veckor.', en: 'One season. Eight weeks.' },
     line2: { sv: 'Från midsommar till kräftskiva.', en: 'From midsummer to the crayfish party.' },
-    yours: { sv: 'Din vinbar', en: 'Your wine bar' },
+    // ORDER 308b (Anders 2026-10-05): nålen säger vinbar redan innan banken har
+    // öppnat verksamheten, så den lovar inte mer än så. Designs förslag var Din vinbar / Your wine bar.
+    yours: { sv: 'Vinbaren som kan bli din', en: 'The wine bar that could be yours' },
     empty: { sv: 'Än så länge är den tom.', en: 'For now, it is empty.' },
     fill: { sv: 'Det du vet fyller den.', en: 'What you know fills it.' },
     mentor: { sv: 'Ingrid, din mentor', en: 'Ingrid, your mentor' },
