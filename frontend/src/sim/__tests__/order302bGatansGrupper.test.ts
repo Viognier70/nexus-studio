@@ -43,10 +43,11 @@ describe('ORDER 302b — gatans sorter i D5:s grupper', () => {
     expect(Math.abs(share(a, 'gourmet') - RIVAL_GOURMET_SHARE)).toBeLessThan(0.05);
     const soigne = keys(2000).map((k) => streetGroupOf('high', k, 7, true, 'soigne'));
     expect(Math.abs(share(soigne, 'gourmet') - CONCEPT.gourmetOfHigh.soigne)).toBeLessThan(0.05);
-    // Medelgruppen till vår krog: turister med konceptets andel (bistro 0).
+    // Medelgruppen till vår krog: turister med konceptets andel (ORDER 307b: bistro 0,3).
     const mid = keys(2000).map((k) => streetGroupOf('middle', k, 7, true, 'soigne'));
     expect(Math.abs(share(mid, 'tourist') - CONCEPT.touristOfMiddle.soigne)).toBeLessThan(0.05);
-    expect(keys(500).every((k) => streetGroupOf('middle', k, 7, true, 'bistro') === 'villager')).toBe(true);
+    const midBistro = keys(2000).map((k) => streetGroupOf('middle', k, 7, true, 'bistro'));
+    expect(Math.abs(share(midBistro, 'tourist') - CONCEPT.touristOfMiddle.bistro)).toBeLessThan(0.05);
   });
 
   it('kroppen och lemmarna ur D5:s utseende, två varianter; miljardären i guld', () => {
