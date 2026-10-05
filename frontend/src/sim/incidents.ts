@@ -33,8 +33,9 @@ import { takeFromStock } from '../strategic/simulation/stockPackages';
 import { clockMinutes, formatClock } from './clock';
 import { clampReputation } from '../strategic/simulation/reputation';
 import { strings } from '../content/strings';
+import { avecShareFor, moveConceptReputation } from './goods';
 import { rocketClipFor, rocketFigure, type RocketFigure } from './theatreTriggers';
-import { ANSWER_EFFECTS, CONSEQUENCES, DOUBLE_OR_NOTHING, STAFF_CONDITION, THEATRE, BACK, INCIDENTS, MENU_ROCKETS, REPUTATION, SERVICE_STREAM, SHOP } from './balance';
+import { ANSWER_EFFECTS, CONSEQUENCES, DOUBLE_OR_NOTHING, GUEST_TYPES, STAFF_CONDITION, THEATRE, BACK, INCIDENTS, MENU_ROCKETS, REPUTATION, SERVICE_STREAM, SHOP } from './balance';
 import { abilityActive } from './shop';
 import { calendarFor } from './calendar';
 import { clampScenarioCash, scenarioUnitSek } from './economy';
@@ -743,7 +744,8 @@ function answerConsequence(draft: SimulationState, ctx: IncidentContext, right: 
   if (right && rocketCleared && table.length > 0 && (draft.day.period === 'dinner' || draft.day.period === 'lunch')) {
     const stake = tableStake(draft, ctx.guestIds);
     // ORDER 303 E — trött eller otrivd personal ger mindre av ett rätt svar.
-    const avec = stake ? Math.round(stake.billSek * CONSEQUENCES.right.avecShare * staffEffect(draft)) : 0;
+    // ORDER 307 — avec kommer med avecvagnen (sim/goods.ts avecShareFor).
+    const avec = stake ? Math.round(stake.billSek * (CONSEQUENCES.right.avecShare + avecShareFor(draft)) * staffEffect(draft)) : 0;
     if (avec > 0) {
       applyCashRevenue(draft, avec);
       if (draft.day.period === 'dinner') draft.serviceRevenueToday = { ...draft.serviceRevenueToday, dinner: draft.serviceRevenueToday.dinner + avec / SERVICE_STREAM.sekPerKsek };
@@ -758,6 +760,14 @@ function answerConsequence(draft: SimulationState, ctx: IncidentContext, right: 
     ? (CONSEQUENCES.right.stepReputation + (rocketCleared ? CONSEQUENCES.right.clearedReputation : 0)) * staffEffect(draft)
     : CONSEQUENCES.wrong[severity].reputation;
   draft.reputation = clampReputation(draft.reputation + repPoints / REPUTATION.scale);
+  // ORDER 307 — ryktet i kvällens koncept: ett fel gånger förlåtelsen hos
+  // bordets gästtyp.
+  const tier = draft.day.booking?.dayNumber === draft.day.dayNumber ? draft.day.booking?.concept ?? null : null;
+  if (tier) {
+    const payerType = table[0]?.guestType;
+    const forgive = !right && payerType ? GUEST_TYPES.forgiveness[payerType] : 1;
+    moveConceptReputation(draft, tier, repPoints * forgive, REPUTATION.scale);
+  }
   if (incidentId) {
     draft.day = { ...draft.day, answerReviews: [...(draft.day.answerReviews ?? []), { incidentId, right, severity: right ? null : severity, reputation: repPoints, table: ctx.table }] };
   }

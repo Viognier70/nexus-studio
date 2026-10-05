@@ -56,7 +56,13 @@ const VINBAR: ClassPackages = {
     { id: 'vinbar-game', items: [{ dishId: 'game-plate', portions: 4 }] },
     { id: 'vinbar-fine-wine', items: [{ dishId: 'fine-wine-glass', portions: 12 }, { dishId: 'fine-wine-bottle', portions: 2 }] },
     { id: 'vinbar-house-wine', items: [{ dishId: 'house-wine-glass', portions: 18 }, { dishId: 'house-wine-bottle', portions: 2 }] },
-    { id: 'vinbar-alcohol-free', items: [{ dishId: 'alcohol-free-glass', portions: 8 }] }
+    { id: 'vinbar-alcohol-free', items: [{ dishId: 'alcohol-free-glass', portions: 8 }] },
+    // ORDER 307 — krogens leverantörer: köps när leverantören är öppnad i
+    // butiken (sim/goods.ts goodAvailable). Gösen i vinbar-fish är fiskarens.
+    { id: 'vinbar-char', items: [{ dishId: 'char-plate', portions: 6 }] },
+    { id: 'vinbar-wine-merchant', items: [{ dishId: 'chablis-glass', portions: 10 }, { dishId: 'riesling-glass', portions: 10 }, { dishId: 'priorat-bottle', portions: 2 }] },
+    { id: 'vinbar-cheese', items: [{ dishId: 'brie-plate', portions: 4 }, { dishId: 'munster-plate', portions: 4 }, { dishId: 'vasterbotten-plate', portions: 4 }] },
+    { id: 'vinbar-jamon', items: [{ dishId: 'jamon-plate', portions: 6 }] }
   ]
 };
 

@@ -12,6 +12,7 @@
 // kind 'v1_*' och en orsak i texten; morgonens händelser visas också på
 // morgonraden (strategic/scenario/DayActionBar.tsx).
 
+import { driftConceptReputationInPlace } from './goods';
 import { EVENTS, REPUTATION } from './balance';
 import { strings } from '../content/strings';
 import { applyCashCost, postLedger } from '../strategic/simulation/cashReading';
@@ -124,6 +125,8 @@ export function onNewMorning(draft: SimulationState, bankWarning: string | null)
     raiseReputation(draft, REPUTATION.dailyRecovery, target);
     post(draft, 'v1_recovery_slow', e.slowRecovery, true);
   }
+  // ORDER 307 — ryktet per koncept drar mot krogens (sim/goods.ts).
+  driftConceptReputationInPlace(draft);
   if (draft.serviceEvents.inspectionDue) {
     lowerReputation(draft, EVENTS.inspectionReputationHit);
     applyCashCost(draft, EVENTS.inspectionFineSek);

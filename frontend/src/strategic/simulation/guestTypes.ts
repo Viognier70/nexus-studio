@@ -16,7 +16,9 @@
 // kommer när boken är slut, får en typ efter andelarna.
 
 import type { Guest, GuestBooking, GuestType, SimulationState } from '../types';
-import { BILLIONAIRE, GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, SHOP, SOCIAL_GUEST } from '../../sim/balance';
+import { BILLIONAIRE, CONCEPT, GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, SHOP, SOCIAL_GUEST } from '../../sim/balance';
+import { conceptOf, reputationByTier, type Tier } from '../../sim/goods';
+import { packagesFor } from './packages';
 import { abilityActive } from '../../sim/shop';
 import { dailyGuestCap } from '../../sim/economy';
 import { venuesTonight } from '../../sim/village';
@@ -33,8 +35,41 @@ import { makeGuest } from './model';
 type BookedType = 'student' | 'middle' | 'high';
 const BOOKED: readonly BookedType[] = ['student', 'middle', 'high'];
 
-export function typeShares(state: Pick<SimulationState, 'businessClass'>): Record<BookedType, number> {
-  return GUEST_TYPES.share[state.businessClass] ?? GUEST_TYPES.share.default;
+// ORDER 307 — klasserna med lagerpaket har ett koncept ur varukorgen
+// (sim/goods.ts); de andra klasserna har ingen.
+export function conceptTonight(state: SimulationState): Tier | null {
+  if (!packagesFor(state.economy.businessClass)) return null;
+  const b = state.day.booking;
+  if (b && b.dayNumber === state.day.dayNumber && b.concept !== undefined) return b.concept;
+  return conceptOf(state);
+}
+
+// Andelarna av byns tre grupper. ORDER 307 — med ett koncept: konceptets
+// blandning, och de betalningsstarka kommer fullt först när konceptets rykte
+// är minst CONCEPT.highFullAt; platsen de lämnar går till studenter och bybor.
+export function typeShares(state: SimulationState, concept: Tier | null = null): Record<BookedType, number> {
+  if (!concept) return GUEST_TYPES.share[state.businessClass] ?? GUEST_TYPES.share.default;
+  const base = CONCEPT.share[concept];
+  const rep = reputationByTier(state)[concept];
+  const fullAt = CONCEPT.highFullAt[concept];
+  const high = fullAt > 0 ? base.high * Math.min(1, Math.max(0, rep / fullAt)) : base.high;
+  const freed = base.high - high;
+  const rest = base.student + base.middle;
+  return { student: base.student + (freed * base.student) / rest, middle: base.middle + (freed * base.middle) / rest, high };
+}
+
+// ORDER 307 — vid vår dörr blir en del av byns medelgrupp turister och de
+// betalningsstarka gourmeter eller affärsfolk (CONCEPT), dragen ur fröet.
+function atOurDoor(state: SimulationState, t: BookedType, concept: Tier | null, guestId: string): GuestType {
+  if (!concept) return t;
+  const r = hash01(state.seed ?? 0, `${guestId}|concept`);
+  if (t === 'middle') return r < CONCEPT.touristOfMiddle[concept] ? 'tourist' : 'middle';
+  if (t === 'high') return r < CONCEPT.gourmetOfHigh[concept] ? 'gourmet' : 'business';
+  return t;
+}
+// Byns grupp för en gästtyp vid vår dörr (bokningen räknas i byns grupper).
+function poolGroup(t: GuestType): BookedType | null {
+  return t === 'tourist' ? 'middle' : t === 'gourmet' || t === 'business' ? 'high' : t === 'student' || t === 'middle' || t === 'high' ? t : null;
 }
 
 // Kvällens bokningsbok ur tillståndet just nu. Låst i day.booking när
@@ -52,7 +87,8 @@ export function bookingFor(state: SimulationState): GuestBooking {
   const socialChance = SOCIAL_GUEST.chancePerEvening + (abilityActive(state, 'lova') ? SHOP.effects.lovaSocialChance : 0);
   const socialComing = cap > 0 && hash01(seed, `day${day}|social`) < socialChance;
   const booked = Math.round(cap * (1 - GUEST_TYPES.walkInShare));
-  const shares = typeShares(state);
+  const concept = packagesFor(state.economy.businessClass) ? conceptOf(state) : null;
+  const shares = typeShares(state, concept);
   const student = Math.round(booked * shares.student);
   const high = Math.round(booked * shares.high);
   const middle = Math.max(0, booked - student - high - (socialComing ? 1 : 0));
@@ -67,7 +103,8 @@ export function bookingFor(state: SimulationState): GuestBooking {
     total: capAll,
     billionaireInTown: inTown,
     billionaire: inTown && hash01(seed, `day${day}|billionaire`) < chance,
-    answers: state.answerBookings && state.answerBookings.forDay === day ? state.answerBookings.items : []
+    answers: state.answerBookings && state.answerBookings.forDay === day ? state.answerBookings.items : [],
+    concept
   };
 }
 
@@ -92,6 +129,14 @@ function weightedPick<T extends string>(keys: readonly T[], weights: number[], r
 }
 
 function pickType(state: SimulationState, book: GuestBooking, arrived: Partial<Record<GuestType, number>>, guest: Guest): GuestType {
+  const concept = book.concept ?? null;
+  // Byns grupper som redan kommit (turisterna räknas i medelgruppen och
+  // gourmeterna och affärsfolket i de betalningsstarka).
+  const inGroup: Partial<Record<BookedType, number>> = {};
+  for (const [t, n] of Object.entries(arrived) as [GuestType, number][]) {
+    const g = poolGroup(t);
+    if (g) inGroup[g] = (inGroup[g] ?? 0) + n;
+  }
   const at = GUEST_TYPES.arrivesAfterMinutes;
   const min = minutesIntoService(state);
   // En gäst som vänder vid dörren är aldrig miljardären eller den med
@@ -100,10 +145,10 @@ function pickType(state: SimulationState, book: GuestBooking, arrived: Partial<R
     if (book.social && !arrived.social && min >= at.social) return 'social';
   }
   const r = hash01(state.seed ?? 0, `${guest.id}|type`);
-  const left = BOOKED.map((t) => (min >= at[t] ? Math.max(0, book.counts[t] - (arrived[t] ?? 0)) : 0));
-  if (left.some((w) => w > 0)) return weightedPick(BOOKED, left, r);
-  const shares = typeShares(state);
-  return weightedPick(BOOKED, BOOKED.map((t) => shares[t]), r);
+  const left = BOOKED.map((t) => (min >= at[t] ? Math.max(0, book.counts[t] - (inGroup[t] ?? 0)) : 0));
+  if (left.some((w) => w > 0)) return atOurDoor(state, weightedPick(BOOKED, left, r), concept, guest.id);
+  const shares = typeShares(state, concept);
+  return atOurDoor(state, weightedPick(BOOKED, BOOKED.map((t) => shares[t]), r), concept, guest.id);
 }
 
 // Miljardären kommer när han har valt krogen, på sin tid, också när
@@ -314,7 +359,7 @@ export function eveningGuests(state: SimulationState): EveningGuests {
   const d = state.day;
   const arrived = d.guestTypeArrivals ?? {};
   const revenue = d.guestTypeRevenue ?? {};
-  const types: readonly GuestType[] = ['student', 'middle', 'high', 'social', 'billionaire'];
+  const types: readonly GuestType[] = ['student', 'middle', 'tourist', 'high', 'gourmet', 'business', 'social', 'billionaire'];
   const rows = types
     .filter((t) => (arrived[t] ?? 0) > 0)
     .map((t) => ({ type: t, guests: arrived[t] ?? 0, revenueSek: Math.round(revenue[t] ?? 0) }));
