@@ -33,7 +33,7 @@ import { takeFromStock } from '../strategic/simulation/stockPackages';
 import { clockMinutes, formatClock } from './clock';
 import { clampReputation } from '../strategic/simulation/reputation';
 import { strings } from '../content/strings';
-import { avecShareFor, moveConceptReputation } from './goods';
+import { avecShareFor, conceptWrongFactor, moveConceptReputation } from './goods';
 import { rocketClipFor, rocketFigure, type RocketFigure } from './theatreTriggers';
 import { ANSWER_EFFECTS, CONSEQUENCES, DOUBLE_OR_NOTHING, GUEST_TYPES, STAFF_CONDITION, THEATRE, BACK, INCIDENTS, MENU_ROCKETS, REPUTATION, SERVICE_STREAM, SHOP } from './balance';
 import { abilityActive } from './shop';
@@ -896,7 +896,10 @@ function applyOutcome(
   let cashSek = e.cash * share * scenarioUnitSek(draft);
   if (cashSek > 0 && best) cashSek *= bestAnswerFactor(draft);
   // ORDER 296b — ett fel kostar hälften så mycket i kassan.
-  if (cashSek < 0 && !best) cashSek *= INCIDENTS.wrongCashShare;
+  // ORDER 307b (304: "Ju högre klass … hårdare följder av fel svar") — ett fel
+  // svars förlust i kassan gånger kvällens koncepts wrongFactor; wrongCashShare
+  // är orörd (Anders 2026-10-05).
+  if (cashSek < 0 && !best) cashSek *= INCIDENTS.wrongCashShare * conceptWrongFactor(draft);
   cashSek = clampScenarioCash(draft, cashSek);
   if (cashSek !== 0) {
     draft.economy = { ...draft.economy, weekScenarioCashSek: (draft.economy.weekScenarioCashSek ?? 0) + cashSek };

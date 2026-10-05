@@ -187,3 +187,11 @@ export function moveConceptReputation(draft: SimulationState, tier: Tier, points
   r[tier] = Math.max(0, Math.min(1, r[tier] + points / scale));
   draft.reputationByTier = r;
 }
+
+// ORDER 307b — hårdare följder av fel svar i högre klass (CONCEPT.wrongFactor),
+// efter kvällens koncept i bokningen.
+export function conceptWrongFactor(state: Pick<SimulationState, 'day'>): number {
+  const b = state.day.booking;
+  const c = b && b.dayNumber === state.day.dayNumber ? b.concept : null;
+  return c ? CONCEPT.wrongFactor[c] : 1;
+}

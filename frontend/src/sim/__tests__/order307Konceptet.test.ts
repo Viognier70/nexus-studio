@@ -87,7 +87,10 @@ describe('ORDER 307 — gästerna och de två ryktena', () => {
     const s = morning();
     expect(typeShares(s, 'bistro')).toEqual(CONCEPT.share.bistro);
     const soigne = typeShares(s, 'soigne');
-    expect(soigne.high).toBeCloseTo(CONCEPT.share.soigne.high);
+    // ORDER 307b — i proportion till soigné-ryktet upp till CONCEPT.highFullAt.soigne.
+    expect(soigne.high).toBeCloseTo(CONCEPT.share.soigne.high * Math.min(1, s.reputation / CONCEPT.highFullAt.soigne));
+    const famous = { ...s, reputationByTier: { enkel: 0.6, bistro: 0.6, soigne: CONCEPT.highFullAt.soigne } };
+    expect(typeShares(famous, 'soigne').high).toBeCloseTo(CONCEPT.share.soigne.high);
     const lowRep = { ...s, reputationByTier: { enkel: 0.6, bistro: 0.6, soigne: CONCEPT.highFullAt.soigne / 2 } };
     expect(typeShares(lowRep, 'soigne').high).toBeCloseTo(CONCEPT.share.soigne.high / 2);
     expect(typeShares(lowRep, 'soigne').student + typeShares(lowRep, 'soigne').middle + typeShares(lowRep, 'soigne').high).toBeCloseTo(1);

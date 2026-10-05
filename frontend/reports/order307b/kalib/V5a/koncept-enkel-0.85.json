@@ -1,0 +1,234 @@
+{
+ "tasting": false,
+ "definition": "Säsongen med spelets regler (balance.ts RISK): startkassan, veckomålet på intäkten, omförhandlingen och stängningen räknas av simuleringen (sim/economy.ts settleWeek). resultSek = kassans förändring vecka till vecka. Mise en place ur sim/miseEnPlace.ts misePlan (behov, hinns, eftersläp i spelminuter, och den extra handen).",
+ "start": null,
+ "variant": "{\"CONCEPT\": {\"touristOfMiddle\": {\"enkel\": 0.1, \"bistro\": 0.2, \"soigne\": 0.3}, \"highFullAt\": {\"enkel\": 0, \"bistro\": 0, \"soigne\": 0.8}, \"wageFactor\": {\"enkel\": 0.75, \"bistro\": 1, \"soigne\": 1}, \"goodsCostFactor\": {\"enkel\": 0.85, \"bistro\": 1, \"soigne\": 1.8}, \"billFactor\": {\"enkel\": 1, \"bistro\": 1, \"soigne\": 1.25}}, \"STAR\": {\"judgementAtLeast\": 0.4}}",
+ "seeds": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20
+ ],
+ "weeks": 8,
+ "players": {
+  "enkel": {
+   "closed": 0,
+   "closedWeeks": [],
+   "renegotiated": 1,
+   "lowestCash": 17611,
+   "meanCashEnd": 53514,
+   "targetHitShare": 0.83,
+   "meanTastings": 0,
+   "meanOwned": 6,
+   "stars": 14,
+   "starEarned": 17,
+   "starWeeks": [
+    6,
+    6,
+    5,
+    4,
+    7,
+    6,
+    4,
+    5,
+    5,
+    5,
+    6,
+    8,
+    5,
+    8,
+    5,
+    4,
+    6
+   ],
+   "goldWeeks": [
+    2,
+    2,
+    3,
+    5,
+    3,
+    2,
+    5,
+    3,
+    2,
+    3,
+    3,
+    3,
+    4,
+    2,
+    2,
+    6,
+    7,
+    3,
+    2,
+    3
+   ],
+   "meanRepAtSettlement": [
+    0.456,
+    0.451,
+    0.393,
+    0.51,
+    0.493,
+    0.54,
+    0.503,
+    0.443
+   ],
+   "meanJudgement": [
+    0.64,
+    0.59,
+    0.61,
+    0.65,
+    0.63,
+    0.67,
+    0.63,
+    0.67
+   ],
+   "concepts": {
+    "enkel": 1,
+    "bistro": 0,
+    "soigne": 0
+   },
+   "byWeek": [
+    {
+     "week": 1,
+     "n": 20,
+     "meanResultSek": 12554,
+     "meanRevenueSek": 41124,
+     "meanCashEnd": 27554,
+     "meanCredits": 31,
+     "targetHit": 13,
+     "rentSek": 0
+    },
+    {
+     "week": 2,
+     "n": 20,
+     "meanResultSek": 12041,
+     "meanRevenueSek": 43386,
+     "meanCashEnd": 39595,
+     "meanCredits": 55,
+     "targetHit": 17,
+     "rentSek": 0
+    },
+    {
+     "week": 3,
+     "n": 20,
+     "meanResultSek": 11405,
+     "meanRevenueSek": 43310,
+     "meanCashEnd": 51000,
+     "meanCredits": 63,
+     "targetHit": 19,
+     "rentSek": 0
+    },
+    {
+     "week": 4,
+     "n": 20,
+     "meanResultSek": 11639,
+     "meanRevenueSek": 43320,
+     "meanCashEnd": 62639,
+     "meanCredits": 82,
+     "targetHit": 17,
+     "rentSek": 0
+    },
+    {
+     "week": 5,
+     "n": 20,
+     "meanResultSek": -1381,
+     "meanRevenueSek": 44352,
+     "meanCashEnd": 61258,
+     "meanCredits": 97,
+     "targetHit": 17,
+     "rentSek": 13469
+    },
+    {
+     "week": 6,
+     "n": 20,
+     "meanResultSek": -1826,
+     "meanRevenueSek": 43534,
+     "meanCashEnd": 59432,
+     "meanCredits": 93,
+     "targetHit": 17,
+     "rentSek": 13469
+    },
+    {
+     "week": 7,
+     "n": 20,
+     "meanResultSek": -2446,
+     "meanRevenueSek": 43629,
+     "meanCashEnd": 56987,
+     "meanCredits": 124,
+     "targetHit": 17,
+     "rentSek": 13469
+    },
+    {
+     "week": 8,
+     "n": 20,
+     "meanResultSek": -3473,
+     "meanRevenueSek": 42457,
+     "meanCashEnd": 53514,
+     "meanCredits": 183,
+     "targetHit": 16,
+     "rentSek": 13469
+    }
+   ],
+   "repByWeek": [
+    {
+     "week": 1,
+     "mon": 0.6,
+     "sat": 0.547
+    },
+    {
+     "week": 2,
+     "mon": 0.466,
+     "sat": 0.45
+    },
+    {
+     "week": 3,
+     "mon": 0.466,
+     "sat": 0.44
+    },
+    {
+     "week": 4,
+     "mon": 0.407,
+     "sat": 0.506
+    },
+    {
+     "week": 5,
+     "mon": 0.52,
+     "sat": 0.483
+    },
+    {
+     "week": 6,
+     "mon": 0.503,
+     "sat": 0.567
+    },
+    {
+     "week": 7,
+     "mon": 0.55,
+     "sat": 0.529
+    },
+    {
+     "week": 8,
+     "mon": 0.514,
+     "sat": 0.508
+    }
+   ]
+  }
+ },
+ "note": "ORDER 307b: runs/rows borttagna, summeringen kvar; hela körningen för de valda talen står i ../efter."
+}
