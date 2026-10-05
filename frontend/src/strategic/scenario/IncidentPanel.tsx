@@ -27,11 +27,11 @@
 // som simuleringen (sim/incidents.ts `serviceMeters`; stegen räknas i
 // ui/service/serviceView.ts).
 
-import { PyramidMoment } from '../ui/service/PyramidMoment';
+import { PyramidMoment, type StakePhase } from '../ui/service/PyramidMoment';
 import { Check, X } from 'lucide-react';
 import { t as tt } from '../../content/nexusStrings';
 import { useLanguage } from '../../content/language';
-import { PyramidStrip } from '../ui/service/KnowledgePyramid';
+import { PyramidStrip, axesOf, type LevelState } from '../ui/service/KnowledgePyramid';
 import { consequenceLine } from '../ui/service/consequenceLine';
 import { CONSEQUENCE } from '../scene/guestMood';
 import { panelOpen, useServiceDrawer } from '../ui/service/serviceDrawer';
@@ -118,6 +118,9 @@ export function IncidentCard() {
   const dispatch = useSimDispatch();
   const lang = useLanguage();
   const held = useHeldOutcome(sim);
+  // ORDER 310 — potten före steget, för raden i kvitt eller dubbelt
+  // (Steg n · potten a → b om rätt). Läses medan steget frågar.
+  const potBeforeRef = useRef<{ key: string; pot: number } | null>(null);
   const frozen = useRef<{ key: string; left: number; total: number } | null>(null);
   const active = sim.incidents?.active ?? null;
   const cls = sim.economy.businessClass;
@@ -230,16 +233,23 @@ export function IncidentCard() {
       if (i < 0) return;
       // ORDER 286a — inga svar medan figurens klipp spelas i rummet.
       if ((active?.introLeft ?? 0) > 0) return;
+      // ORDER 310 — Designs kvitt eller dubbelt: 1 stannar, 2 går vidare.
+      if (active?.choosing) {
+        if (i > 1) return;
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        dispatch({ type: i === 0 ? 'INCIDENT_STOP' : 'INCIDENT_GO' });
+        return;
+      }
       e.preventDefault();
       e.stopImmediatePropagation();
       const o = step.options[i];
       if (!o || (active?.struck ?? []).includes(o.id)) return;
-      if (active?.choosing) return;
       dispatch({ type: 'ANSWER_INCIDENT', optionId: o.id });
     };
     window.addEventListener('keydown', onKey, true);
     return () => window.removeEventListener('keydown', onKey, true);
-  }, [mode, step, active?.struck, dispatch, backed]);
+  }, [mode, step, active?.struck, active?.choosing, dispatch, backed]);
 
   if (!view || !step) return null;
   // ORDER 286a — raketen börjar i rummet: kortet öppnas när figurens klipp
@@ -252,6 +262,39 @@ export function IncidentCard() {
   const rocketKey = `${incident.id}:${view.shown}`;
   // ORDER 305 — kvitt eller dubbelt: valet står på kortet när svaret har visats.
   const choosing = !!active?.choosing && view.mode === 'ask';
+  // ORDER 310 — raketens egen ordning nedifrån och upp (incident.steps[].axis).
+  const axes = axesOf(incident.steps);
+
+  // ORDER 310 — Designs kvitt eller dubbelt: kolumnen med pyramiden, raden och valet.
+  if (view.mode === 'ask' && active && !choosing) potBeforeRef.current = { key: `${incident.id}:${active.step}`, pot: potCredits(active.pot) };
+  let stake: { phase: StakePhase; step: number; potBefore: number; potAfter: number } | null = null;
+  if (DOUBLE_OR_NOTHING.enabled) {
+    const before = (a: number, after: number) => {
+      const r = potBeforeRef.current;
+      if (r && r.key === `${incident.id}:${a}`) return r.pot;
+      return Math.max(0, Math.round((after - INCIDENTS.bestAnswerCredit) / DOUBLE_OR_NOTHING.growth));
+    };
+    const lastPot = held?.outcome.pot ?? null;
+    if (view.mode === 'right' && active) {
+      const after = potCredits(active.pot);
+      stake = { phase: 'right', step: view.shown, potBefore: before(view.shown, after), potAfter: after };
+    } else if (choosing && active) {
+      const a = Math.max(0, (active.step ?? 1) - 1);
+      const after = potCredits(active.pot);
+      stake = { phase: 'choosing', step: a, potBefore: before(a, after), potAfter: after };
+    } else if (view.mode === 'done') {
+      const after = lastPot?.taken ? lastPot.credits : 0;
+      stake = { phase: 'done', step: view.shown, potBefore: before(view.shown, after), potAfter: after };
+    } else if (view.mode === 'wrong') {
+      const lost = lastPot && !lastPot.taken ? lastPot.credits : 0;
+      stake = { phase: 'wrong', step: view.shown, potBefore: lost, potAfter: 0 };
+    } else if (view.mode === 'stopped') {
+      const took = lastPot?.taken ? lastPot.credits : 0;
+      stake = { phase: 'stopped', step: view.shown, potBefore: took, potAfter: took };
+    }
+  }
+  const stakeLevels = (a: number, wrong: boolean): LevelState[] =>
+    incident.steps.map((_, i) => (i < a ? 'filled' : i === a ? (wrong ? 'cracked' : 'filled') : 'empty'));
 
   // Nedräkningen: stegets egen tid. Efter ett svar står den still i grått
   // på det värde den hade.
@@ -355,6 +398,7 @@ export function IncidentCard() {
       data-step={view.mode === 'done' || view.mode === 'wrong' || view.mode === 'stopped' ? 'closed' : view.shown}
       data-step-axis={step.axis}
       data-mode={view.mode}
+      data-choosing={choosing || undefined}
       aria-label={f(incident.text.title)}
     >
       <div className="nx-rocket-head">
@@ -389,19 +433,25 @@ export function IncidentCard() {
       <PyramidStrip
         testId="incident-pyramid"
         full={view.mode === 'done'}
+        axes={axes}
         showMult
         confidence={active?.pot ? t.kvitt.potShort(potCredits(active.pot)) : null}
         levels={incident.steps.map((_, i) => { const b = boxFor(i); return b === 'cleared' ? 'filled' : b === 'current' ? 'current' : b === 'failed' ? 'cracked' : 'empty'; })}
       />
-      {/* ORDER 303 G — pyramidens ögonblick när raketen klättrar ett steg. */}
-      {(view.mode === 'right' || view.mode === 'done') && (
+      {/* ORDER 303 G / ORDER 310 — pyramidens ögonblick som Designs kvitt
+          eller dubbelt: kolumnen till höger om kortet, vid rätt och vid fel. */}
+      {stake && (
         <PyramidMoment
-          key={`${incident.id}:${active?.openedAt ?? ''}:${view.shown}:${view.mode}`}
-          step={view.shown}
-          full={view.mode === 'done'}
-          pot={active?.pot ? potCredits(active.pot) : view.mode === 'done' ? (sim.incidents?.lastOutcome?.pot?.credits ?? null) : null}
-          guestsIn={view.guestsIn ?? 0}
-          levels={incident.steps.map((_, i) => { const b = boxFor(i); return b === 'cleared' ? 'filled' : b === 'current' ? 'current' : b === 'failed' ? 'cracked' : 'empty'; })}
+          key={`${incident.id}:${held ? `held@${held.outcome.at}` : 'active'}:${stake.step}`}
+          phase={stake.phase}
+          axes={axes}
+          step={stake.step}
+          levels={stakeLevels(stake.step, stake.phase === 'wrong')}
+          potBefore={stake.potBefore}
+          potAfter={stake.potAfter}
+          choiceLeft={active?.choiceLeft ?? DOUBLE_OR_NOTHING.choiceSeconds}
+          onStop={() => dispatch({ type: 'INCIDENT_STOP' })}
+          onGo={() => dispatch({ type: 'INCIDENT_GO' })}
         />
       )}
       <ol hidden style={{ display: 'none' }} className="nx-rocket-steps" data-testid="incident-steps" aria-label={s.stepOf(String(view.shown + 1), String(incident.steps.length))}>
@@ -422,7 +472,7 @@ export function IncidentCard() {
         })}
       </ol>
 
-      <div className="nx-rocket-ask">
+      {!choosing && <div className="nx-rocket-ask">
         <h2 className="nx-rocket-question" data-testid="incident-question">{f(step.text.question)}</h2>
         <div
           className="nx-rocket-count-num"
@@ -434,20 +484,17 @@ export function IncidentCard() {
         >
           {left}
         </div>
-      </div>
-      <div className="nx-rocket-bar" aria-hidden data-last={lastFive} data-frozen={isFrozen}>
+      </div>}
+      {!choosing && <div className="nx-rocket-bar" aria-hidden data-last={lastFive} data-frozen={isFrozen}>
         <div style={{ width: `${barShare * 100}%` }} />
-      </div>
+      </div>}
 
-      {/* ORDER 305 — kvitt eller dubbelt: stanna eller satsa potten på nästa steg. */}
+      {/* ORDER 305 / ORDER 310 — kvitt eller dubbelt: valet står i kolumnen
+          (PyramidMoment); kortet visar potten och att tiden ut ger Stanna. */}
       {choosing && active && (
-        <div className="nx-rocket-kvitt" data-testid="incident-kvitt">
-          <p>{t.kvitt.pot(potCredits(active.pot))}</p>
-          <p>{t.kvitt.note}</p>
-          <div className="nx-rocket-kvitt-choices">
-            <button type="button" className="nx-btn" data-testid="incident-kvitt-stop" onClick={() => dispatch({ type: 'INCIDENT_STOP' })}>{t.kvitt.stop}</button>
-            <button type="button" className="nx-btn nx-btn-primary" data-testid="incident-kvitt-go" onClick={() => dispatch({ type: 'INCIDENT_GO' })}>{t.kvitt.go}</button>
-          </div>
+        <div className="nx-rocket-kvitt" data-testid="incident-kvitt-card">
+          <p data-testid="incident-kvitt-pot">{t.kvitt.pot(potCredits(active.pot))}</p>
+          <p className="nx-small">{t.kvitt.timeout}</p>
         </div>
       )}
       {!choosing && <div role="group" aria-label={f(step.text.question)}>

@@ -3076,9 +3076,25 @@ export const TABLE = {
         stoppedText: { sv: 'Du stannar och tar potten. Gästen får det du visste, och bordet går vidare med sin kväll.', en: 'You stop and take the pot. The guest gets what you knew, and the table carries on with its evening.' },
         potTaken: { sv: (n: number) => `+${n} ${n === 1 ? 'kredit' : 'krediter'} ur potten`, en: (n: number) => `+${n} ${n === 1 ? 'credit' : 'credits'} from the pot` },
         potLost: { sv: (n: number) => `potten förlorad (${n} ${n === 1 ? 'kredit' : 'krediter'})`, en: (n: number) => `pot lost (${n} ${n === 1 ? 'credit' : 'credits'})` },
-        stop: { sv: 'Stanna och ta potten', en: 'Stop and take the pot' },
-        go: { sv: 'Kvitt eller dubbelt: nästa steg', en: 'Double or nothing: next step' },
-        note: { sv: 'Rätt på nästa steg dubblar potten. Fel, och den är borta.', en: 'Right on the next step doubles the pot. Wrong, and it is gone.' }
+        // ORDER 310 — Designs kvitt eller dubbelt (leveransen 2026-10-05,
+        // kvittStrings.ts stake.*): valet står i kolumnen till höger om kortet.
+        stop: { sv: 'Stanna, och ta det du har', en: 'Stop, and take what you have' },
+        go: { sv: 'Gå vidare, med allt på spel', en: 'Go on, with everything at stake' },
+        // stake.stay.sub1 / stake.stay.sub
+        stopSub: {
+          sv: (n: number) => (n === 1 ? '1 kredit är din' : `${n} krediter är dina`),
+          en: (n: number) => (n === 1 ? '1 credit is yours' : `${n} credits are yours`)
+        },
+        // stake.goOn.sub
+        goSub: {
+          sv: (step: string, a: number, b: number) => `${step}: ${a} → ${b} om rätt, 0 om fel`,
+          en: (step: string, a: number, b: number) => `${step}: ${a} → ${b} if right, 0 if wrong`
+        },
+        timeout: { sv: 'När tiden går ut stannar du', en: 'When time runs out, you stop' },
+        pickedStop: { sv: 'Du stannar. Krediterna är dina.', en: 'You stop. The credits are yours.' },
+        pickedGo: { sv: 'Du går vidare. Potten ligger kvar.', en: 'You go on. The pot stays on the table.' },
+        aria: { sv: 'Kvitt eller dubbelt', en: 'Double or nothing' },
+        secondsLeft: { sv: (n: number) => `${n} sekunder att välja`, en: (n: number) => `${n} seconds to choose` }
       },
       rocketOf: {
         sv: (n: string, total: string) => `Raket ${n} av ${total}`,
@@ -3227,7 +3243,20 @@ export const TABLE = {
     credits: { sv: (n: number) => `${n > 0 ? '+' : n < 0 ? '−' : '±'}${Math.abs(n)} krediter`, en: (n: number) => `${n > 0 ? '+' : n < 0 ? '−' : '±'}${Math.abs(n)} credits` },
     guests: { sv: (n: number) => `${n} ${n === 1 ? 'ny gäst' : 'nya gäster'} in`, en: (n: number) => `${n} new ${n === 1 ? 'guest' : 'guests'} in` },
     more: { sv: 'bordet beställer mer', en: 'the table orders more' },
-    noStake: { sv: 'Utan insats', en: 'No stake' }
+    noStake: { sv: 'Utan insats', en: 'No stake' },
+    // ORDER 310 — raden under pyramiden i Designs kvitt eller dubbelt
+    // (kvittStrings.ts och D5 pyr.stepTerm): Steg 2 · Techne · potten 1 → 3 om rätt.
+    stepTerm: { sv: (n: number) => `Steg ${n}`, en: (n: number) => `Step ${n}` },
+    pot: { sv: 'Potten', en: 'The pot' },
+    doubled: { sv: 'Dubbelt + steget', en: 'Doubled + the step' },
+    first: { sv: 'Stegets kredit', en: 'The step’s credit' },
+    ifRight: { sv: 'Om rätt', en: 'If right' },
+    none: { sv: 'Potten var tom', en: 'The pot was empty' },
+    gone: { sv: 'Potten är borta', en: 'The pot is gone' },
+    rowAria: {
+      sv: (step: string, a: number, b: number) => `${step}: potten ${a} → ${b} om rätt`,
+      en: (step: string, a: number, b: number) => `${step}: the pot ${a} → ${b} if right`
+    }
   },
   // ORDER 303 F — statusläget och korten för gäst och personal.
   status: {
