@@ -433,8 +433,11 @@ export interface Guest {
 // ORDER 287a — gästerna med kapital (speldesign > Servicen > Gästerna).
 export interface SustainabilityLevels { social: number; economic: number; ecological: number }
 
-export type GuestType = 'student' | 'middle' | 'high' | 'social' | 'billionaire';
-export const GUEST_TYPE_IDS: readonly GuestType[] = ['student', 'middle', 'high', 'social', 'billionaire'];
+// ORDER 307 — turisterna, gourmeterna och affärsfolket vid vår dörr
+// (konceptet och varukorgen); 'high' är byns betalningsstarka grupp och
+// gästtypen i klasserna utan koncept.
+export type GuestType = 'student' | 'middle' | 'high' | 'social' | 'billionaire' | 'tourist' | 'gourmet' | 'business';
+export const GUEST_TYPE_IDS: readonly GuestType[] = ['student', 'middle', 'high', 'social', 'billionaire', 'tourist', 'gourmet', 'business'];
 
 // ORDER 287a — kvällens bokningsbok (Designs skärm 1): väntade gäster per
 // typ, gästen med socialt kapital, de utan bokning, och om miljardären är
@@ -450,6 +453,8 @@ export interface GuestBooking {
   billionaire: boolean;
   // ORDER 292 — gårdagens svar: bokningar per raketens spår (sim/nextDay.ts).
   answers?: Array<{ track: 'sommellerie' | 'kok' | 'service'; n: number }>;
+  // ORDER 307 — kvällens koncept ur varukorgen (sim/goods.ts), i klasserna med lagerpaket.
+  concept?: import('../sim/goods').Tier | null;
 }
 
 // ORDER 287a — vad miljardären gjorde i kväll.
@@ -1660,6 +1665,13 @@ export interface SimulationState {
   djWeek?: { week: number; evenings: number };
   // ORDER 296 — butiken: köpta förmågor (behålls) och facket (gäller nästa kväll).
   shop?: { owned: string[]; slot: string[] };
+  // ORDER 307 — krogens leverantörer (utöver grossisten) och utrustningen i
+  // rummet (sim/goods.ts), och ryktet per koncept.
+  goodsSuppliers?: string[];
+  equipment?: string[];
+  // Utrustning som krediterna har öppnat men kassan ännu inte köpt.
+  equipmentOpened?: string[];
+  reputationByTier?: Record<import('../sim/goods').Tier, number>;
   // ORDER 296c — stjärnan (balance.ts STAR): hålls den, och veckorna i rad på nivån.
   star?: { held: boolean; weeksQualified: number; earnedWeek: number | null; lostWeek: number | null };
   // ORDER 288 — konkurrensen i byn: rivalerna (rykte och vem som styr dem).
@@ -1877,6 +1889,10 @@ export type SimAction =
   | { type: 'ANSWER_INCIDENT'; optionId: string }
   // ORDER 305 — kvitt eller dubbelt efter ett rätt steg.
   | { type: 'INCIDENT_STOP' }
+  // ORDER 307 — butikens flikar: en leverantör (krediter) och utrustning (kassan).
+  | { type: 'BUY_SUPPLIER'; id: string }
+  | { type: 'OPEN_EQUIPMENT'; id: string }
+  | { type: 'BUY_EQUIPMENT'; id: string }
   | { type: 'INCIDENT_GO' }
   | { type: 'END_EVENING' }
   // ORDER 265 — byt verksamhet vid veckoavräkningen (banken).

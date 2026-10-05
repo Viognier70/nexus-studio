@@ -1482,16 +1482,17 @@ export const GUEST_TYPES = {
   section: 'Servicen > Gästerna',
   openQuestion: 'F57',
   // Plånboken per typ (nycklar i GUESTS.walletSek).
-  wallet: { student: 'tight', middle: 'normal', high: 'generous', social: 'normal', billionaire: 'gold' },
+  // ORDER 307 — turisterna, gourmeterna och affärsfolket (konceptet och varukorgen).
+  wallet: { student: 'tight', middle: 'normal', high: 'generous', social: 'normal', billionaire: 'gold', tourist: 'normal', gourmet: 'generous', business: 'generous' },
   // ORDER 291 (provspel av 4795192: "Gästtyperna betalar lika") — i klasserna
   // utan lagerpaket (food truck, ölkrogen) väljer gästen ur menyn utan
   // plånbok; notan gånger detta per plånbok. Med andelarna 0,2/0,55/0,25
   // blir snittet 1,05.
   legacyBillFactor: { tight: 0.8, normal: 1, generous: 1.35, gold: 3 },
   // Sittiden gånger detta: studenten tar platsen en lång stund.
-  stayFactor: { student: 1.25, middle: 1, high: 1, social: 1, billionaire: 1 },
+  stayFactor: { student: 1.25, middle: 1, high: 1, social: 1, billionaire: 1, tourist: 1, gourmet: 1, business: 1 },
   // Nöjdheten vid ankomst plus detta: höginkomsttagaren förväntar sig mer.
-  satisfactionOffset: { student: 0, middle: 0, high: -0.05, social: 0, billionaire: -0.05 },
+  satisfactionOffset: { student: 0, middle: 0, high: -0.05, social: 0, billionaire: -0.05, tourist: 0, gourmet: -0.05, business: -0.05 },
   // Bokningsboken: andelen av kvällens väntade gäster per typ (studenter,
   // medelinkomst, höginkomst) efter rummet. Resten av klasserna läser
   // `default`. Andelen utan bokning står i walkInShare.
@@ -1502,7 +1503,80 @@ export const GUEST_TYPES = {
   walkInShare: 0.15,
   // När typen brukar komma, i spelminuter efter att servicen börjat
   // (18.00). Före den tiden kommer inga bokade gäster av typen.
-  arrivesAfterMinutes: { student: 0, middle: 30, high: 60, social: 90, billionaire: 120 }
+  arrivesAfterMinutes: { student: 0, middle: 30, high: 60, social: 90, billionaire: 120, tourist: 30, gourmet: 60, business: 60 },
+  // ORDER 307 (ORDER 304 §4, Anders 2026-10-05) — betalningsviljan ovanpå
+  // plånboken (notan gånger detta när gästen betalar; gourmeterna och
+  // affärsfolket har den generösa plånboken), och förlåtelsen: ett fel svars
+  // rykte inom kvällens koncept gånger detta, efter bordets gästtyp.
+  payFactor: { student: 1, middle: 1, high: 1, social: 1, billionaire: 1, tourist: 1.1, gourmet: 1, business: 1 },
+  forgiveness: { student: 0.6, middle: 1, high: 1, social: 1, billionaire: 1, tourist: 1, gourmet: 1.8, business: 1.4 }
+} as const;
+
+// ORDER 307 (ORDER 304, Anders 2026-10-05: förslaget godkänt i sin helhet) —
+// konceptet ur varukorgen. Konceptet (enkel, bistro, soigné) räknas när
+// dörrarna öppnar ur det som står på menyn i kväll: varornas nivå, vägd med
+// värdet (portioner kvar × pris), och utrustningen i rummet som lyfter mot
+// sin nivå (equipmentWeight per sak). Gränserna på skalan 0–2.
+//   - Gästblandningen per koncept: byns tre grupper (studenter, medel och de
+//     betalningsstarka), och vid vår dörr blir en del av medelgruppen turister
+//     och de betalningsstarka gourmeter eller affärsfolk.
+//   - Ryktet per koncept (state.reputationByTier) flyttas av varje svar i
+//     kvällens koncept (felen gånger gästernas förlåtelse) och drar mot
+//     krogens rykte varje dag. De betalningsstarka kommer fullt när konceptets
+//     rykte är minst highFullAt; under det i proportion, och platsen går till
+//     studenter och bybor.
+//   - Bistro har dagens blandning, så att baspaketet (bistro) spelar som förut.
+export const CONCEPT = {
+  section: 'Verksamhetsklasserna',
+  tierValue: { enkel: 0, bistro: 1, soigne: 2 },
+  bistroFrom: 0.6,
+  soigneFrom: 1.4,
+  equipmentWeight: 0.15,
+  share: {
+    enkel: { student: 0.4, middle: 0.5, high: 0.1 },
+    bistro: { student: 0.2, middle: 0.55, high: 0.25 },
+    soigne: { student: 0.05, middle: 0.35, high: 0.6 }
+  },
+  // Bistro 0: med turisternas betalningsvilja (1,1) i bistro slutade de bästa
+  // på 94 000–96 000 kr, över målet 70 000–90 000 (reports/order307/forsta,
+  // probe/m2–m4). Turisterna kommer till soigné tills Anders beslutar.
+  touristOfMiddle: { enkel: 0.1, bistro: 0, soigne: 0.3 },
+  gourmetOfHigh: { enkel: 0.3, bistro: 0.5, soigne: 0.55 },
+  // Per koncept: krogarnas rykte ligger omkring 0,3 för den som svarar väl
+  // (reports/order303c); soigné kräver mest.
+  // Bistro 0: med 0,2 kom färre krävande gäster till den som alltid svarar
+  // fel, och den blev 1:a en kväll vecka 3. Konceptets rykte styr soigné.
+  highFullAt: { enkel: 0, bistro: 0, soigne: 0.4 },
+  reputationDriftPerDay: 0.1
+} as const;
+
+// ORDER 307 (ORDER 304 §6) — krogens leverantörer. Grossisten är öppen från
+// start; de andra öppnas med en medalj och krediter i butiken. Varorna är
+// rätter och drycker i morgonens inköp (frågorna per vara väntar på ORDER 306).
+// Cigarrerna står i vinhandlarens lista men säljs först med humidorn och
+// dess händelse.
+export const GOODS_SUPPLIERS = {
+  section: 'Verksamhetsklasserna',
+  fiskaren: { pavilion: 'metodkoket', medal: 'brons', credits: 20 },
+  vinhandlaren: { pavilion: 'stensota', medal: 'silver', credits: 40 },
+  ostaffinoren: { pavilion: 'kalastorget', medal: 'brons', credits: 30 },
+  charkuteristen: { pavilion: 'metodkoket', medal: 'silver', credits: 40 }
+} as const;
+
+// ORDER 307 (ORDER 304 §6) — utrustningen köps för kassan när medaljen öppnat
+// den, står i rummet och lyfter konceptet mot sin nivå. Avecvagnen öppnar avec
+// (Anders 2026-10-05: "Avec kommer tillbaka som något man investerar i"):
+// när raketen klaras stannar bordet för avec, avecShare av notan. Händelserna
+// som utrustningen öppnar (flambering, ostvagnen …) kommer med frågorna i ORDER 306.
+export const EQUIPMENT = {
+  section: 'Verksamhetsklasserna',
+  // ORDER 304 §6: "Krediterna köper tillgången, och kassan köper saken" —
+  // credits öppnar (en gång), priceSek köper.
+  vinkyl: { tier: 'soigne', priceSek: 15000, pavilion: 'stensota', medal: 'brons', credits: 20 },
+  flamberingsvagn: { tier: 'soigne', priceSek: 12000, pavilion: 'metodkoket', medal: 'silver', credits: 40 },
+  ostvagn: { tier: 'bistro', priceSek: 9000, pavilion: 'kalastorget', medal: 'silver', credits: 30 },
+  avecvagn: { tier: 'bistro', priceSek: 8000, pavilion: 'stensota', medal: 'silver', credits: 30, avecShare: 0.2 },
+  humidor: { tier: 'soigne', priceSek: 14000, pavilion: 'stensota', medal: 'guld', credits: 60 }
 } as const;
 
 // ORDER 290 — kvällens ekonomi (Vision Owner 2026-09-30, provspel):

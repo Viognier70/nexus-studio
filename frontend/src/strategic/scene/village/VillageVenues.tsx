@@ -11,6 +11,7 @@
 // Vagnarna står på kvällens plats (paket 2:s tre platser) med markis och
 // upplyst lucka, som i Designs byTruckar.js.
 
+import { conceptTonight } from '../../simulation/guestTypes';
 import { Html } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
@@ -91,7 +92,9 @@ export function VillageVenues() {
   const sim = useSimState();
   const { business: playerBusiness } = useBusiness();
   const playerClass = sim.economy.businessClass;
-  const playerStyle = playerClass ? strings.economy.classes[playerClass] : null;
+  // ORDER 307 — klassen och kvällens koncept ur varukorgen: "Vinbar · Bistro".
+  const playerConcept = conceptTonight(sim);
+  const playerStyle = playerClass ? (playerConcept ? `${strings.economy.classes[playerClass]} · ${strings.shopTabs.tier[playerConcept]}` : strings.economy.classes[playerClass]) : null;
   const { actualRef } = useCamera();
   const venues = useMemo(() => venuesTonight(sim), [sim.day.dayNumber, sim.competition, sim.reputation, sim.economy?.businessClass]); // eslint-disable-line react-hooks/exhaustive-deps
   const places = useMemo(() => venuePlaces(), []);

@@ -3,6 +3,7 @@ import { guestMoodValue } from '../../sim/guestMood';
 import { buildMorningReview } from '../../sim/morningReview';
 import { calendarFor } from '../../sim/calendar';
 import { bestAnswerFactor, drinkRevenueFactor, enablersWithCredits } from '../../sim/knowledgeInService';
+import { EQUIPMENT_IDS, GOODS_SUPPLIER_IDS, equipmentOpened, equipmentOwned, equipmentSpec, equipmentUnlocked, supplierOwned, supplierPrice, supplierUnlocked, type EquipmentId, type GoodsSupplierId } from '../../sim/goods';
 import { CONSEQUENCES, MOOD_BALANCE, EVENING, EVENING_ECONOMY, GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, OPENING, QUEUE_CAP, SERVICE, SHOP, type BusinessClassId } from '../../sim/balance';
 import { answerSalvage, closeSalvage, discardUnresolvedSalvage } from './salvage';
 import { clockMinutes, formatClock, canStartBack, closeIncidents, countDown, isIncidentOpen, maybeOpenIncident, planIncidents, resolveIncident, startBack, stopIncident, goOnIncident, tickOngoing, type CreditChange } from '../../sim/incidents';
@@ -466,6 +467,13 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       return hostAction(state, action);
     case 'SHOP_BUY':
       return shopBuy(state, action.id);
+    // ORDER 307 — butikens flikar: en leverantör för krediter, utrustning för kassan.
+    case 'BUY_SUPPLIER':
+      return buySupplier(state, action.id);
+    case 'OPEN_EQUIPMENT':
+      return openEquipment(state, action.id);
+    case 'BUY_EQUIPMENT':
+      return buyEquipment(state, action.id);
     case 'SHOP_SLOT':
       return setSlot(state, action.id, action.on);
     case 'RESTART_SEASON': {
@@ -1340,6 +1348,47 @@ function shopBuy(state: SimulationState, id: string): SimulationState {
   return setSlot(s, id, true);
 }
 
+// ORDER 307 — en leverantör öppnas med medaljen och betalas med krediter (en
+// i taget från axeln med flest, som butikens förmågor).
+function buySupplier(state: SimulationState, id: string): SimulationState {
+  const sid = id as GoodsSupplierId;
+  if (!GOODS_SUPPLIER_IDS.includes(sid) || sid === 'grossisten' || supplierOwned(state, sid) || !supplierUnlocked(state, sid)) return state;
+  const price = supplierPrice(sid);
+  if (creditsOf(state) < price) return state;
+  let s: SimulationState = state;
+  for (let i = 0; i < price; i++) {
+    const axis = BACK_AXES.reduce((best, a) => (s.knowledgeCredits[a] > s.knowledgeCredits[best] ? a : best), BACK_AXES[0]);
+    s = debitQuestion(s, axis, null, 1);
+  }
+  return { ...s, goodsSuppliers: [...(s.goodsSuppliers ?? []), sid] };
+}
+
+// ORDER 307 — krediterna öppnar utrustningen (en gång, medaljen krävs) …
+function openEquipment(state: SimulationState, id: string): SimulationState {
+  const eid = id as EquipmentId;
+  if (!EQUIPMENT_IDS.includes(eid) || equipmentOpened(state, eid) || !equipmentUnlocked(state, eid)) return state;
+  const price = equipmentSpec(eid).credits;
+  if (creditsOf(state) < price) return state;
+  let s: SimulationState = state;
+  for (let i = 0; i < price; i++) {
+    const axis = BACK_AXES.reduce((best, a) => (s.knowledgeCredits[a] > s.knowledgeCredits[best] ? a : best), BACK_AXES[0]);
+    s = debitQuestion(s, axis, null, 1);
+  }
+  return { ...s, equipmentOpened: [...(s.equipmentOpened ?? []), eid] };
+}
+
+// … och kassan köper den.
+function buyEquipment(state: SimulationState, id: string): SimulationState {
+  const eid = id as EquipmentId;
+  if (!EQUIPMENT_IDS.includes(eid) || equipmentOwned(state, eid) || !equipmentOpened(state, eid)) return state;
+  const price = equipmentSpec(eid).priceSek;
+  if (state.cash < price) return state;
+  const next: SimulationState = { ...state, ledger: [...state.ledger], equipment: [...(state.equipment ?? []), eid] };
+  applyCashDelta(next, -price);
+  postLedger(next, { category: 'other', amount: -price, cause: strings.shopTabs.equipmentLedger(strings.shopTabs.equipment[eid].name), causeId: `equipment:${eid}` });
+  return next;
+}
+
 // ORDER 263 — söndagen är stängd: morgonen (fyra schemaplatser) följs
 // direkt av kvällen, och dagen rullar till måndag som vanligt.
 function closeDay(state: SimulationState): SimulationState {
@@ -1736,6 +1785,8 @@ function payGuest(draft: SimulationState, guest: Guest, revenueMult: number, inL
       // fel svar beställer mindre, ett som har sett rätt beställer mer.
       const lift = (guest.moodLift ?? 0) + (draft.day.roomMoodLift ?? 0);
       rev = bill * revenueMult * Math.max(0, 1 + (guest.billBonus ?? 0) + (lift < 0 ? CONSEQUENCES.moodBillPerLift : CONSEQUENCES.moodBillPerLiftUp) * lift);
+      // ORDER 307 — betalningsviljan ovanpå plånboken (turisterna).
+      if (guest.guestType) rev *= GUEST_TYPES.payFactor[guest.guestType];
       // ORDER 303 B — en nöjd gäst vid bord räknas i byns placering.
       if (guestMoodValue(guest, draft.day.roomMoodLift ?? 0) >= MOOD_BALANCE.threshold.content) draft.day.contentTonight = (draft.day.contentTonight ?? 0) + 1;
     } else if (draft.menu.length > 0) {

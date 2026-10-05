@@ -281,7 +281,12 @@ export function villageEvening(
   playerRow.guests = player.guests;
   playerRow.revenueSek = Math.round(player.revenueSek);
   playerRow.content = player.content ?? player.guests;
-  for (const t of POOL_TYPES) playerRow.typeGuests[t] = player.typeGuests[t] ?? 0;
+  // ORDER 307 — våra turister räknas i byns medelgrupp och gourmeterna och
+  // affärsfolket i de betalningsstarka.
+  const pt = player.typeGuests;
+  playerRow.typeGuests.student = pt.student ?? 0;
+  playerRow.typeGuests.middle = (pt.middle ?? 0) + (pt.tourist ?? 0);
+  playerRow.typeGuests.high = (pt.high ?? 0) + (pt.gourmet ?? 0) + (pt.business ?? 0);
   for (const t of POOL_TYPES) {
     // Bussens turister är inte byns gäster: de dras inte från poolen.
     const fromPool = playerRow.typeGuests[t] - (t === VILLAGE.bus.type ? player.tourists ?? 0 : 0);

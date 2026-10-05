@@ -124,7 +124,8 @@ describe('ORDER 287a — gästernas typ, plånbok och sittid', () => {
     // Gästerna utan bokning får typ efter andelarna; de bokade följer boken.
     expect(arrived.student ?? 0).toBeGreaterThan(0);
     expect(arrived.middle ?? 0).toBeGreaterThan(0);
-    expect(arrived.high ?? 0).toBeGreaterThan(0);
+    // ORDER 307 — i vinbaren (koncept) kommer de betalningsstarka som gourmeter och affärsfolk.
+    expect((arrived.high ?? 0) + (arrived.gourmet ?? 0) + (arrived.business ?? 0)).toBeGreaterThan(0);
     if (booking.social) expect(arrived.social ?? 0).toBeLessThanOrEqual(1);
     expect(arrived.billionaire ?? 0).toBeLessThanOrEqual(1);
     // Intäkten per typ är kvällens intäkt.
@@ -416,7 +417,9 @@ describe('ORDER 287a — gästtyperna över veckan (rapport)', () => {
     // Studenten ger minst per gäst, höginkomsttagaren mer än medelinkomsttagaren.
     const pg = report.perType;
     expect(pg.student.perGuestSek).toBeLessThan(pg.middle.perGuestSek);
-    expect(pg.middle.perGuestSek).toBeLessThan(pg.high.perGuestSek);
+    // ORDER 307 — de betalningsstarka heter gourmeter och affärsfolk i vinbaren.
+    const highPer = Math.max(pg.high?.perGuestSek ?? 0, pg.gourmet?.perGuestSek ?? 0, pg.business?.perGuestSek ?? 0);
+    expect(pg.middle.perGuestSek).toBeLessThan(highPer);
   }, 1200000);
 });
 

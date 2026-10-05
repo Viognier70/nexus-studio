@@ -42,7 +42,11 @@ export function BookingBook({ sim }: { sim: SimulationState }) {
   ] as const;
   for (const r of typed) {
     if (r.n <= 0) continue;
-    rows.push({ key: r.key, time: when(at[r.key]), colour: WARM.guest[r.key], who: g.book[r.key], note: g.bookNote[r.key], n: r.n });
+    // ORDER 307 — med ett koncept är medelgruppen bybor och turister, och de
+    // betalningsstarka gourmeter och affärsfolk.
+    const who = b.concept && r.key === 'middle' ? g.book.conceptMiddle : b.concept && r.key === 'high' ? g.book.conceptHigh : g.book[r.key];
+    const note = b.concept && r.key === 'high' ? g.bookNote.conceptHigh : g.bookNote[r.key];
+    rows.push({ key: r.key, time: when(at[r.key]), colour: WARM.guest[b.concept && r.key === 'high' ? 'gourmet' : r.key], who, note, n: r.n });
   }
   if (b.social) {
     rows.push({ key: 'social', time: when(at.social), colour: WARM.guest.social, who: g.book.social(socialName(b.social.nameIndex)), note: g.bookNote.social, n: 1 });
@@ -66,6 +70,12 @@ export function BookingBook({ sim }: { sim: SimulationState }) {
         <span className="nx-mid">{strings.morningBuy.bookTitle(strings.calendar.weekdays[cal.weekday])}</span>
         <span className="nx-num nxs-book-n" data-testid="booking-guests">{b.total}</span>
       </div>
+      {/* ORDER 307 — kvällens koncept ur varukorgen. */}
+      {b.concept && (
+        <p className="nx-small" data-testid="booking-concept" data-concept={b.concept} style={{ margin: 0 }}>
+          <strong>{strings.shopTabs.tonight(strings.shopTabs.tier[b.concept])}</strong> · {strings.shopTabs.tonightNote}
+        </p>
+      )}
       <div className="nxs-book-list" data-testid="booking-rows">
         {rows.map((r) => (
           <div key={r.key} className="nxs-book-line" data-testid={`booking-row-${r.key}`}>

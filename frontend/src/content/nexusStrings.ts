@@ -1492,6 +1492,10 @@ export const TABLE = {
           'vinbar-base': { name: 'Baspaket', description: 'En vanlig vardagskväll: soppa, kyckling, fläsk, en vegansk rätt och desserter, med husets vin på glas och flaska, lokal öl och alkoholfritt.' },
           'vinbar-green': { name: 'Grönt', description: 'Linser med rostade rotfrukter (vegansk) och kantareller på toast (vegetarisk).' },
           'vinbar-alcohol-free': { name: 'Mer alkoholfritt', description: 'Alkoholfri lingondricka, till gäster som inte dricker vin eller öl.' },
+          'vinbar-char': { name: 'Röding från fiskaren', description: 'Rökt röding från sjön. Kräver fiskaren.' },
+          'vinbar-wine-merchant': { name: 'Vinhandlarens viner', description: 'Chablis och Riesling på glas, och en flaska Priorat. Kräver vinhandlaren.' },
+          'vinbar-cheese': { name: 'Ostaffinörens ostar', description: 'Brie de Meaux, Munster och Västerbottensost. Kräver ostaffinören.' },
+          'vinbar-jamon': { name: 'Jamón från charkuteristen', description: 'Jamón ibérico de bellota. Kräver charkuteristen.' },
           'vinbar-extra-covers': { name: 'Fler kuvert', description: 'Kyckling, fläsk och husets vin till en livligare kväll.' },
           'vinbar-fish': { name: 'Insjöfisk', description: 'Pocherad gös från Hjälmaren, till gäster som vill ha något lättare.' },
           'vinbar-lamb': { name: 'Lamm', description: 'Lamm med rotfrukter, en dyrare tallrik.' },
@@ -1503,6 +1507,10 @@ export const TABLE = {
           'vinbar-base': { name: 'Base package', description: 'An ordinary weekday evening: soup, chicken, pork, a vegan plate and desserts, with house wine by the glass and bottle, local beer and alcohol-free.' },
           'vinbar-green': { name: 'Green', description: 'Roast roots with lentils (vegan) and chanterelles on toast (vegetarian).' },
           'vinbar-alcohol-free': { name: 'More alcohol-free', description: 'Alcohol-free lingonberry sparkling, for guests who drink neither wine nor beer.' },
+          'vinbar-char': { name: 'Arctic char from the fisherman', description: 'Smoked Arctic char from the lake. Needs the fisherman.' },
+          'vinbar-wine-merchant': { name: 'The wine merchant’s wines', description: 'Chablis and Riesling by the glass, and a bottle of Priorat. Needs the wine merchant.' },
+          'vinbar-cheese': { name: 'The cheese affineur’s cheeses', description: 'Brie de Meaux, Munster and Västerbotten cheese. Needs the cheese affineur.' },
+          'vinbar-jamon': { name: 'Jamón from the charcutier', description: 'Jamón ibérico de bellota. Needs the charcutier.' },
           'vinbar-extra-covers': { name: 'More covers', description: 'Chicken, pork and house wine for a busier evening.' },
           'vinbar-fish': { name: 'Lake fish', description: 'Poached pike-perch from Hjälmaren, for guests who want something lighter.' },
           'vinbar-lamb': { name: 'Lamb', description: 'Lamb with root vegetables, a dearer plate.' },
@@ -1809,7 +1817,16 @@ export const TABLE = {
       'fine-wine-glass': { sv: 'Pinot Noir, per glas', en: 'Pinot Noir, by the glass' },
       'house-wine-bottle': { sv: 'Grüner Veltliner, flaska', en: 'Grüner Veltliner, bottle' },
       'fine-wine-bottle': { sv: 'Pinot Noir, flaska', en: 'Pinot Noir, bottle' },
-      'alcohol-free-glass': { sv: 'Alkoholfritt mousserande lingon', en: 'Alcohol-free lingonberry sparkling' }
+      'alcohol-free-glass': { sv: 'Alkoholfritt mousserande lingon', en: 'Alcohol-free lingonberry sparkling' },
+      // ORDER 307 — varorna från krogens leverantörer.
+      'char-plate': { sv: 'Rökt röding', en: 'Smoked Arctic char' },
+      'brie-plate': { sv: 'Brie de Meaux med honung', en: 'Brie de Meaux with honey' },
+      'munster-plate': { sv: 'Munster med kumminbröd', en: 'Munster with cumin bread' },
+      'vasterbotten-plate': { sv: 'Västerbottensost med hjortron', en: 'Västerbotten cheese with cloudberries' },
+      'jamon-plate': { sv: 'Jamón ibérico de bellota', en: 'Jamón ibérico de bellota' },
+      'chablis-glass': { sv: 'Chablis, per glas', en: 'Chablis, by the glass' },
+      'riesling-glass': { sv: 'Riesling från Mosel, per glas', en: 'Mosel Riesling, by the glass' },
+      'priorat-bottle': { sv: 'Priorat, flaska', en: 'Priorat, bottle' }
     },
     ingredient: {
       'root-veg': { sv: 'rotfrukter', en: 'root vegetables' },
@@ -1829,7 +1846,15 @@ export const TABLE = {
       beer: { sv: 'öl (dryck)', en: 'beer (drink)' },
       'house-wine': { sv: 'husets vin', en: 'house wine' },
       'fine-wine': { sv: 'fint vin', en: 'fine wine' },
-      'alcohol-free': { sv: 'alkoholfritt mousserande', en: 'alcohol-free sparkling' }
+      'alcohol-free': { sv: 'alkoholfritt mousserande', en: 'alcohol-free sparkling' },
+      char: { sv: 'röding', en: 'Arctic char' },
+      chablis: { sv: 'Chablis', en: 'Chablis' },
+      riesling: { sv: 'Riesling från Mosel', en: 'Mosel Riesling' },
+      priorat: { sv: 'Priorat', en: 'Priorat' },
+      brie: { sv: 'Brie de Meaux', en: 'Brie de Meaux' },
+      munster: { sv: 'Munster', en: 'Munster' },
+      vasterbotten: { sv: 'Västerbottensost', en: 'Västerbotten cheese' },
+      jamon: { sv: 'jamón ibérico', en: 'jamón ibérico' }
     },
     supplier: {
       wholesaler: { sv: 'Bergslagens grossist', en: 'Bergslagen wholesaler' },
@@ -2104,21 +2129,29 @@ export const TABLE = {
       middle: { sv: 'Medelinkomst', en: 'Middle income' },
       high: { sv: 'Höginkomst', en: 'High income' },
       social: { sv: 'Socialt kapital', en: 'Social capital' },
-      billionaire: { sv: 'Mannen i guld', en: 'The man in gold' }
+      billionaire: { sv: 'Mannen i guld', en: 'The man in gold' },
+      // ORDER 307 — konceptet och varukorgen.
+      tourist: { sv: 'Turister', en: 'Tourists' },
+      gourmet: { sv: 'Gourmeter', en: 'Gourmets' },
+      business: { sv: 'Affärsfolk', en: 'Business guests' }
     },
     book: {
       student: { sv: 'Studenter från Måltidens hus', en: 'Students from Måltidens hus' },
       middle: { sv: 'Par och familjer från byn', en: 'Couples and families from the village' },
       high: { sv: 'Bilar från Örebro och Karlstad', en: 'Cars from Örebro and Karlstad' },
       social: { sv: (name: string) => name, en: (name: string) => name },
-      walkIns: { sv: 'Utan bokning', en: 'Walk-ins' }
+      walkIns: { sv: 'Utan bokning', en: 'Walk-ins' },
+      // ORDER 307 — med kvällens koncept.
+      conceptMiddle: { sv: 'Bybor och turister', en: 'Villagers and tourists' },
+      conceptHigh: { sv: 'Gourmeter och affärsfolk', en: 'Gourmets and business guests' }
     },
     bookNote: {
       student: { sv: 'Billig öl · tar platsen länge', en: 'Cheap beer · keep the table a long time' },
       middle: { sv: 'Den vanliga notan', en: 'The usual bill' },
       high: { sv: 'Frågar efter vinlistan · förväntar sig mer', en: 'Ask for the wine list · expect more' },
       social: { sv: 'Hälsar på alla · tar med sig byn om hen trivs', en: 'Greets everyone · brings the village if they enjoy it' },
-      walkIns: { sv: 'Kommer när det finns plats', en: 'Come when there is room' }
+      walkIns: { sv: 'Kommer när det finns plats', en: 'Come when there is room' },
+      conceptHigh: { sv: 'Betalar mest · förlåter minst', en: 'Pay the most · forgive the least' }
     },
     bookNoteBuzz: {
       sv: (name: string, up: boolean) => up ? `${name} talade gott om er: fler gäster i kväll.` : `${name} talade illa om er: färre gäster i kväll.`,
@@ -3236,6 +3269,81 @@ export const TABLE = {
     }
   },
   // ORDER 303 G — pyramidens ögonblick.
+  // ORDER 307 — konceptet och varukorgen: butikens flikar (förmågorna,
+  // leverantörerna och utrustningen), konceptet på morgonen och skylten.
+  shopTabs: {
+    abilities: { sv: 'Förmågor', en: 'Abilities' },
+    suppliers: { sv: 'Leverantörer', en: 'Suppliers' },
+    equipmentTab: { sv: 'Utrustning', en: 'Equipment' },
+    suppliersIntro: { sv: 'Leverantörerna ger krogen nya varor i morgonens inköp. De öppnas med en medalj och betalas med krediter.', en: 'Suppliers bring new goods to the morning purchase. They open with a medal and are paid in credits.' },
+    equipmentIntro: { sv: 'Utrustningen köps för kassan, står i rummet och lyfter krogens koncept.', en: 'Equipment is bought with cash, stands in the room and lifts the restaurant’s concept.' },
+    open: { sv: 'Öppen från start', en: 'Open from the start' },
+    buyCredits: { sv: (n: number) => `Öppna för ${n} krediter`, en: (n: number) => `Open for ${n} credits` },
+    buyCash: { sv: (kr: string) => `Köp för ${kr} kr`, en: (kr: string) => `Buy for ${kr} kr` },
+    equipmentLedger: { sv: (name: string) => `Utrustning: ${name}`, en: (name: string) => `Equipment: ${name}` },
+    supplier: {
+      sv: {
+        grossisten: { name: 'Grossisten', note: 'Dagens baspaket.' },
+        fiskaren: { name: 'Fiskaren vid sjön', note: 'Gös och röding.' },
+        vinhandlaren: { name: 'Vinhandlaren', note: 'Chablis, Riesling och Priorat. Cigarrerna kommer med humidorn.' },
+        ostaffinoren: { name: 'Ostaffinören', note: 'Brie de Meaux, Munster och Västerbottensost.' },
+        charkuteristen: { name: 'Charkuteristen', note: 'Jamón ibérico de bellota.' }
+      } as Record<string, { name: string; note: string }>,
+      en: {
+        grossisten: { name: 'The wholesaler', note: 'Today’s base package.' },
+        fiskaren: { name: 'The fisherman by the lake', note: 'Pike-perch and Arctic char.' },
+        vinhandlaren: { name: 'The wine merchant', note: 'Chablis, Riesling and Priorat. The cigars come with the humidor.' },
+        ostaffinoren: { name: 'The cheese affineur', note: 'Brie de Meaux, Munster and Västerbotten cheese.' },
+        charkuteristen: { name: 'The charcutier', note: 'Jamón ibérico de bellota.' }
+      } as Record<string, { name: string; note: string }>
+    },
+    equipment: {
+      sv: {
+        vinkyl: { name: 'Finare vinkyl', note: 'Vinet i rätt temperatur.' },
+        flamberingsvagn: { name: 'Flamberingsvagn', note: 'Flambering vid bordet.' },
+        ostvagn: { name: 'Ostvagn', note: 'Ostarna vid borden.' },
+        avecvagn: { name: 'Avecvagn', note: 'Avec efter maten: bordet stannar för avec när raketen klaras.' },
+        humidor: { name: 'Humidor', note: 'Cigarren och uteserveringen.' }
+      } as Record<string, { name: string; note: string }>,
+      en: {
+        vinkyl: { name: 'A finer wine fridge', note: 'Wine at the right temperature.' },
+        flamberingsvagn: { name: 'Flambé trolley', note: 'Flambéing at the table.' },
+        ostvagn: { name: 'Cheese trolley', note: 'The cheeses at the tables.' },
+        avecvagn: { name: 'Digestif trolley', note: 'A digestif after the meal: the table stays for one when the rocket is cleared.' },
+        humidor: { name: 'Humidor', note: 'The cigar and the terrace.' }
+      } as Record<string, { name: string; note: string }>
+    },
+    tier: {
+      sv: { enkel: 'Enkel', bistro: 'Bistro', soigne: 'Soigné' } as Record<string, string>,
+      en: { enkel: 'Simple', bistro: 'Bistro', soigne: 'Soigné' } as Record<string, string>
+    },
+    // Designs ordval (D5 foljderStrings.ts shop.*).
+    classTitle: { sv: 'Krogens klass', en: 'Your venue’s class' },
+    classNote: { sv: 'Det du tar in avgör klassen, gästerna och frågorna.', en: 'What you bring in sets your class, your guests and their questions.' },
+    stone: {
+      sv: { owned: 'Din', open: 'Öppen', short: 'Räcker inte', locked: 'Låst' } as Record<string, string>,
+      en: { owned: 'Yours', open: 'Available', short: 'Not enough', locked: 'Locked' } as Record<string, string>
+    },
+    bringsLabel: { sv: 'Tar in:', en: 'Brings in:' },
+    questionsLabel: { sv: 'Nya frågor om', en: 'New questions on' },
+    questionsLater: { sv: 'Frågorna kommer med frågebanken.', en: 'The questions come with the question bank.' },
+    pullsLabel: { sv: 'Drar mot', en: 'Pulls towards' },
+    topic: {
+      sv: { fish: 'fisk', wine: 'vin', cheese: 'ost', charcuterie: 'chark', spirits: 'sprit', kitchen: 'köket', cigar: 'cigarrer' } as Record<string, string>,
+      en: { fish: 'fish', wine: 'wine', cheese: 'cheese', charcuterie: 'charcuterie', spirits: 'spirits', kitchen: 'the kitchen', cigar: 'cigars' } as Record<string, string>
+    },
+    unlockMedal: { sv: (medal: string, pav: string, n: number) => `Öppnas med ${medal}-medaljen i ${pav} och ${n} krediter`, en: (medal: string, pav: string, n: number) => `Unlocked with the ${medal} medal in ${pav} and ${n} credits` },
+    payTill: { sv: (kr: string) => `Köp för ${kr} kr ur kassan`, en: (kr: string) => `Buy for ${kr} kr from the till` },
+    payPurchases: { sv: 'Varorna betalas i morgonens inköp.', en: 'The goods are paid for in the morning purchase.' },
+    ownedSupplier: { sv: 'Levererar från morgon', en: 'Delivers from tomorrow' },
+    ownedEquipment: { sv: 'Står i rummet', en: 'In the room' },
+    locked: { sv: 'Låst', en: 'Locked' },
+    shortCredits: { sv: 'Krediterna räcker inte', en: 'Not enough credits' },
+    shortCash: { sv: 'Kassan räcker inte', en: 'Not enough in the till' },
+    done: { sv: 'Klar för i kväll', en: 'Ready for tonight' },
+    tonight: { sv: (tier: string) => `I kväll: ${tier}`, en: (tier: string) => `Tonight: ${tier}` },
+    tonightNote: { sv: 'Konceptet följer varukorgen: det du köper in avgör vilka gäster som kommer.', en: 'The concept follows the basket: what you buy decides which guests come.' }
+  },
   pyramidMoment: {
     // ORDER 305b — kvitt eller dubbelt ersätter säkerheten.
     label: { sv: 'Potten × steg → kvällens utfall', en: 'The pot × step → tonight’s outcome' },

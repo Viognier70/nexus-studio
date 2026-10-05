@@ -21,6 +21,7 @@ import { ROLE_COLOUR } from '../../scene/staffRing';
 import { MedalDisc } from '../screens/MedalDisc';
 import { SHOP as DESIGN } from './hostShop';
 import type { MedalLevelId } from '../../types';
+import { ClassStrip, GoodsShop, ShopTabBar, type ShopTab } from './ShopTabs';
 import './host.css';
 
 const ICON: Record<string, LucideIcon> = {
@@ -37,6 +38,8 @@ export function ShopScreen({ onDone }: { onDone: () => void }) {
   const sim = useSimState();
   const dispatch = useSimDispatch();
   const lang = useLanguage();
+  // ORDER 307 — flikarna Förmågor, Leverantörer och Utrustning (Designs D5).
+  const [tab, setTab] = useState<ShopTab>('abilities');
   const shop = shopOf(sim);
   const credits = creditsOf(sim);
   const slots = slotCount(sim);
@@ -72,6 +75,7 @@ export function ShopScreen({ onDone }: { onDone: () => void }) {
         <div>
           <div className="nx-label">{s(lang, 'shop.kicker')}</div>
           <h1 className="nx-heading" style={{ margin: 0 }}>{s(lang, 'shop.title')}</h1>
+          <ShopTabBar tab={tab} onTab={setTab} />
         </div>
         <div className="nx-shop-head-right">
           <span className="nx-label">{s(lang, 'shop.medals')}</span>
@@ -84,7 +88,8 @@ export function ShopScreen({ onDone }: { onDone: () => void }) {
           <span className="nx-shop-credits" data-testid="shop-credits"><GraduationCap size={18} aria-hidden /> {s(lang, 'shop.credits', { n: credits })}</span>
         </div>
       </header>
-      <div className="nx-shop-grid">
+      <ClassStrip />
+      {tab !== 'abilities' ? <GoodsShop kind={tab} onDone={onDone} /> : <div className="nx-shop-grid">
         <section className="nx-shop-road" aria-label={s(lang, 'shop.road')}>
           <div className="nx-label nx-shop-road-title">{s(lang, 'shop.road')}</div>
           <div className="nx-shop-map">
@@ -191,7 +196,7 @@ export function ShopScreen({ onDone }: { onDone: () => void }) {
             <span>{s(lang, 'shop.done')}</span><ArrowRight size={20} aria-hidden />
           </button>
         </aside>
-      </div>
+      </div>}
     </div>
   );
 }

@@ -38,7 +38,8 @@ export const WARM = {
     starOff: 'rgba(244,230,204,.18)'
   },
   interplay: { staffStaff: '#e2b457', staffGuest: '#ee8d6f', guestGuest: '#b9cc8c', event: '#ffcf7a' },
-  guest: { student: '#6fa3c0', middle: '#c9a878', high: '#a3a8bd', social: '#e07a8f', billionaire: '#e8b93a' },
+  // ORDER 307 — turisterna, gourmeterna och affärsfolket (spelets färger tills Designs D5).
+  guest: { student: '#6fa3c0', middle: '#c9a878', high: '#a3a8bd', social: '#e07a8f', billionaire: '#e8b93a', tourist: '#86b08f', gourmet: '#b48ab9', business: '#8a98ab' },
 
   surface: {
     panel: 'linear-gradient(180deg, #2e2016 0%, #231811 100%)',

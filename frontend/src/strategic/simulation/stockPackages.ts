@@ -20,6 +20,7 @@ import { discardUnresolvedSalvage, pickSalvage } from './salvage';
 import { clockMinutes, formatClock } from '../../sim/clock';
 import { findPackage, itemsCostSek, packageCostSek, packageDishIds, packageIngredients, packagesFor, scaledBaseItems } from './packages';
 import { dailyGuestCap } from '../../sim/economy';
+import { goodAvailable } from '../../sim/goods';
 import { numberLocale } from '../../content/language';
 
 type Menu = SimulationState['menu'];
@@ -87,6 +88,8 @@ export function buyPackage(state: SimulationState, packageId: string): Simulatio
   if (state.day.period !== 'morning') return state;
   const found = findPackage(state.economy.businessClass, packageId);
   if (!found) return state;
+  // ORDER 307 — varorna från en leverantör som inte är öppnad går inte att köpa.
+  if (!found.items.every((i) => goodAvailable(state, i.dishId))) return state;
   // ORDER 291 — baspaketet följer kvällens bokning (morningBuy.ts baseItemsFor).
   const pkg = found.id === packagesFor(state.economy.businessClass)?.base.id
     ? { ...found, items: Object.entries(scaledBaseItems(found, dailyGuestCap(state))).map(([dishId, portions]) => ({ dishId, portions })) }
@@ -110,7 +113,7 @@ export function buyPackage(state: SimulationState, packageId: string): Simulatio
 // paket. Kassan sjunker direkt.
 export function buyItems(state: SimulationState, items: Record<string, number>): SimulationState {
   if (state.day.period !== 'morning' || !usesPackages(state)) return state;
-  const allowed = new Set(packageDishIds(state.economy.businessClass));
+  const allowed = new Set(packageDishIds(state.economy.businessClass).filter((id) => goodAvailable(state, id)));
   const clean: Record<string, number> = {};
   for (const [id, n] of Object.entries(items)) if (allowed.has(id) && n > 0) clean[id] = Math.floor(n);
   if (Object.keys(clean).length === 0) return state;

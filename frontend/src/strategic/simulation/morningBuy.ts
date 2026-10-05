@@ -19,6 +19,7 @@ import { stockForecast } from '../../sim/stockForecast';
 import type { SimulationState } from '../types';
 import { findDish, GLASSES_PER_BOTTLE, minIngredientCost } from './m4Catalogue';
 import { packageDishIds, scaledBaseItems, type StockPackage } from './packages';
+import { goodAvailable } from '../../sim/goods';
 import { computePlatesRemaining, menuFromStock, usesPackages } from './stockPackages';
 
 export interface DishRow {
@@ -54,7 +55,8 @@ function dishCost(dishId: string): number {
 const BY_THE_GLASS = /, (by the glass|per glas)$/;
 
 export function morningRows(state: SimulationState): { dishes: DishRow[]; drinks: DrinkRow[] } {
-  const ids = packageDishIds(state.economy.businessClass);
+  // ORDER 307 — bara varor från öppnade leverantörer (sim/goods.ts).
+  const ids = packageDishIds(state.economy.businessClass).filter((id) => goodAvailable(state, id));
   const plates = computePlatesRemaining(ids.map((dishId) => ({ dishId, price: 0, ingredientCostSek: 0 })), state.stock, state.dishPortions);
   const dishes: DishRow[] = ids
     .filter((id) => findDish(id)?.kind !== 'drink')

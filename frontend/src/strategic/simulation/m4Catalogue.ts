@@ -44,7 +44,17 @@ export const INGREDIENTS: readonly Ingredient[] = [
   { id: 'house-wine', name: 'house wine',   baseCostSek: 24, unit: 'glass',   suppliers: ['wine-merchant'] },
   { id: 'fine-wine',  name: 'fine wine',    baseCostSek: 60, unit: 'glass',   suppliers: ['wine-merchant'] },
   // ORDER 277 — alkoholfritt på dryckeslistan.
-  { id: 'alcohol-free', name: 'alcohol-free sparkling', baseCostSek: 11, unit: 'glass', suppliers: ['brewery'] }
+  { id: 'alcohol-free', name: 'alcohol-free sparkling', baseCostSek: 11, unit: 'glass', suppliers: ['brewery'] },
+  // ORDER 307 — krogens leverantörer (sim/goods.ts): fiskaren, vinhandlaren,
+  // ostaffinören och charkuteristen.
+  { id: 'char',         name: 'Arctic char',     baseCostSek: 62, unit: 'portion', suppliers: ['lake-fish'], diet: 'fish' },
+  { id: 'chablis',      name: 'Chablis',         baseCostSek: 42, unit: 'glass',   suppliers: ['wine-merchant'] },
+  { id: 'riesling',     name: 'Mosel Riesling',  baseCostSek: 38, unit: 'glass',   suppliers: ['wine-merchant'] },
+  { id: 'priorat',      name: 'Priorat',         baseCostSek: 95, unit: 'glass',   suppliers: ['wine-merchant'] },
+  { id: 'brie',         name: 'Brie de Meaux',   baseCostSek: 34, unit: 'portion', suppliers: ['organic'], diet: 'vegetarian', allergen: 'lactose' },
+  { id: 'munster',      name: 'Munster',         baseCostSek: 30, unit: 'portion', suppliers: ['organic'], diet: 'vegetarian', allergen: 'lactose' },
+  { id: 'vasterbotten', name: 'Västerbotten cheese', baseCostSek: 28, unit: 'portion', suppliers: ['organic'], diet: 'vegetarian', allergen: 'lactose' },
+  { id: 'jamon',        name: 'jamón ibérico',   baseCostSek: 72, unit: 'portion', suppliers: ['meat-game'], diet: 'meat' }
 ] as const;
 
 export const DISHES: readonly Dish[] = [
@@ -83,7 +93,24 @@ export const DISHES: readonly Dish[] = [
   { id: 'fine-wine-bottle',  name: 'Pinot Noir, bottle',  suggestedPrice: 878, kind: 'drink', drink: 'wine-bottle', glassesPerBottle: 5,
     recipe: [{ ingredientId: 'fine-wine', units: 5 }] },
   { id: 'alcohol-free-glass', name: 'Alcohol-free lingonberry sparkling', suggestedPrice: 65, kind: 'drink', drink: 'alcohol-free',
-    recipe: [{ ingredientId: 'alcohol-free', units: 1 }] }
+    recipe: [{ ingredientId: 'alcohol-free', units: 1 }] },
+  // ORDER 307 — varorna från krogens leverantörer (sim/goods.ts GOODS).
+  { id: 'char-plate',    name: 'Smoked Arctic char',       suggestedPrice: 295,
+    recipe: [{ ingredientId: 'char', units: 1 }, { ingredientId: 'leaf-veg', units: 1 }, { ingredientId: 'herbs', units: 1 }] },
+  { id: 'brie-plate',    name: 'Brie de Meaux with honey', suggestedPrice: 195,
+    recipe: [{ ingredientId: 'brie', units: 1 }, { ingredientId: 'flour', units: 1 }] },
+  { id: 'munster-plate', name: 'Munster with cumin bread', suggestedPrice: 165,
+    recipe: [{ ingredientId: 'munster', units: 1 }, { ingredientId: 'flour', units: 1 }] },
+  { id: 'vasterbotten-plate', name: 'Västerbotten cheese with cloudberries', suggestedPrice: 155,
+    recipe: [{ ingredientId: 'vasterbotten', units: 1 }, { ingredientId: 'berries', units: 1 }] },
+  { id: 'jamon-plate',   name: 'Jamón ibérico de bellota', suggestedPrice: 265,
+    recipe: [{ ingredientId: 'jamon', units: 1 }, { ingredientId: 'flour', units: 1 }] },
+  { id: 'chablis-glass', name: 'Chablis, by the glass', suggestedPrice: 165, kind: 'drink', drink: 'wine-glass',
+    recipe: [{ ingredientId: 'chablis', units: 1 }] },
+  { id: 'riesling-glass', name: 'Mosel Riesling, by the glass', suggestedPrice: 155, kind: 'drink', drink: 'wine-glass',
+    recipe: [{ ingredientId: 'riesling', units: 1 }] },
+  { id: 'priorat-bottle', name: 'Priorat, bottle', suggestedPrice: 1450, kind: 'drink', drink: 'wine-bottle', glassesPerBottle: 5,
+    recipe: [{ ingredientId: 'priorat', units: 5 }] }
 ] as const;
 
 // ORDER 291 — namnen på spelarens språk: `name` blir en getter som läser

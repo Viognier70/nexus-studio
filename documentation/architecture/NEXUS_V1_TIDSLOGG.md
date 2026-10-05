@@ -150,6 +150,7 @@ Uppskattningen skrivs innan etappen börjar. Faktisk tid fylls i när etappen ä
 | Halva i trappan | 303c | ~5: sex rundor i harness (hyran, golvet, gästerna per steg, startkassan, de hyresfria veckorna), slutkörningen med 40 säsonger för halva, bankens text, rapport | 3 h | Spakar som verkar lika för alla flyttade inte halva; golvet gjorde "alltid fel" till 1:a; startkassan krockade med ett tidigare beslut | | — | 2026-10-05 | |
 | Öppningen före första morgonen | 308 | ~8: manuset och tidslinjen, byn och vinbaren i Designs bilder, Ingrid, texterna, hoppa över, flödet, kontrollen och layouten, rapport | 1,5 h (agent) | Byns ljus och kameran skiljer sig från prototypen | | — | 2026-10-05 | |
 | Kvitt eller dubbelt i Designs form | 310 | ~6: kolumnen, raden, valet och ringen, pyramiden i raketens ordning, kontrollen, rapport | 1,3 h (agent) | Designs lås och väntan före domen inte byggd (kräver beslut) | | — | 2026-10-05 | |
+| Konceptet och varukorgen, utan frågebanken | 307 | ~10: varornas nivå och konceptet, gästtyperna vid dörren, de två ryktena, leverantörerna och varorna, utrustningen i två steg och avec, butikens flikar, bokningsboken och skylten, harness med två korgar, rapport | 4 h | Turisternas betalningsvilja i bistro lyfte de bästa över målet; enkel stänger alltid | | — | 2026-10-05 | |
 
 ## Omräkning efter etapp 2
 
