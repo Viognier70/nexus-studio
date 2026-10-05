@@ -14,6 +14,7 @@
 // vanish until the player asks for them.
 
 import { setSound, useSoundSettings } from './sound/sound';
+import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { getJuice, setJuice, type Juice } from './juice/juice';
 import { strings } from '../../content/strings';
@@ -113,6 +114,8 @@ const LANGUAGE_ACTIVE_STYLE: React.CSSProperties = {
 
 export function TopRightMenu({ onOpenAbout, onOpenRules, onOpenCredits, onOpenSave }: Props) {
   const sound = useSoundSettings();
+  const player = useSimState().player;
+  const dispatch = useSimDispatch();
   const [open, setOpen] = useState(false);
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -257,6 +260,27 @@ export function TopRightMenu({ onOpenAbout, onOpenRules, onOpenCredits, onOpenSa
               style={{ flex: 1, minWidth: 80, accentColor: '#e8b93a' }}
             />
           </div>
+          {/* ORDER 300b — svaret om forskningen går att ändra här. Bara
+              lokalt i speltillståndet; ingen data skickas. Visas när spelaren
+              har registrerat sig. */}
+          {player && (
+            <div role="group" aria-label={strings.introduction.register.researchMenu} data-testid="menu-research" style={LANGUAGE_ROW_STYLE}>
+              <span style={LANGUAGE_LABEL_STYLE}>{strings.introduction.register.researchMenu}</span>
+              {([true, false] as const).map((on) => (
+                <button
+                  key={String(on)}
+                  role="menuitemradio"
+                  type="button"
+                  aria-checked={(player.research === true) === on}
+                  data-testid={`menu-research-${on ? 'yes' : 'no'}`}
+                  style={(player.research === true) === on ? LANGUAGE_ACTIVE_STYLE : LANGUAGE_BUTTON_STYLE}
+                  onClick={() => dispatch({ type: 'SET_RESEARCH_CONSENT', on })}
+                >
+                  {on ? strings.introduction.register.researchYes : strings.introduction.register.researchNo}
+                </button>
+              ))}
+            </div>
+          )}
           {/* ORDER 297 — ljusnivån i byn (Designs VILLAGE_LIGHT, 0,5–2). */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }} data-testid="menu-village-light">
             <span style={LANGUAGE_LABEL_STYLE}>{tt(lang, 'byk.light' as StringKey)}</span>

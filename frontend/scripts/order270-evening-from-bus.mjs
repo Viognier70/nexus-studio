@@ -19,6 +19,9 @@
 // raden i rummet och mätarna före och efter. Kvällen avslutas med kvällens
 // lärdom.
 // Utdata: reports/order270/evening-from-bus.json + skärmdumpar e01–e..
+//
+// ORDER 300b — startar nu i den nya starten (startskärmen → Nytt spel →
+// namn och samtycke → regelkortet → första morgonen); bussen är borttagen.
 
 import { spawn } from 'node:child_process';
 import { setTimeout as delay } from 'node:timers/promises';
@@ -107,18 +110,6 @@ async function visit(kind, pavilion, questions, resultShot) {
   return result;
 }
 
-// Håll en tangent tills HUD:en visar en uppmaning (eller tiden tar slut).
-async function walkUntilPrompt(key, prompt, maxMs) {
-  const until = Date.now() + maxMs;
-  while (Date.now() < until) {
-    const hud = await page.$eval('.hud-context', (e) => e.textContent).catch(() => '');
-    if (hud && hud.includes(prompt)) return true;
-    await page.keyboard.down(key);
-    await delay(120);
-    await page.keyboard.up(key);
-  }
-  return false;
-}
 
 try {
   await page.goto(`${URL}/`, { waitUntil: 'domcontentloaded' });
@@ -127,37 +118,16 @@ try {
   await page.click('[data-testid=new-game]');
   const tNewGame = Date.now();
   step('nytt spel');
-
-  // Titeln och bussen går av sig själva.
-  await page.waitForSelector('.bus-stage', { timeout: 30000 });
-  await delay(4000);
-  await shot('e02-bussen.png');
-  await page.waitForSelector('.hud', { timeout: 60000 });
-  await delay(2000);
-  await shot('e03-framme.png');
-  step('bussen framme');
-
-  if (!(await walkUntilPrompt('w', 'Prata', 20000))) throw new Error('kom inte fram till den andra sökande');
-  await page.keyboard.press('e');
-  await page.waitForSelector('.dialogue-panel .choice');
-  await page.$eval('.dialogue-panel .choice', (b) => b.click());
-  await page.waitForSelector('.dialogue-actions .btn');
-  await shot('e04-samtalet.png');
-  // Dialogen ritas om medan den visas; Playwrights träffprov landar då på
-  // panelen. Samma klick som spelarens, direkt på knappen.
-  await page.$eval('.dialogue-actions .btn', (b) => b.click());
-  await page.waitForSelector('.dialogue-panel', { state: 'detached', timeout: 10000 });
-  step('samtalet');
-
-  if (!(await walkUntilPrompt('w', 'Registrera', 30000))) {
-    await shot('e-fel-registreringen.png');
-    throw new Error('kom inte fram till registreringen');
-  }
-  await page.keyboard.press('e');
-  await page.waitForSelector('.end-stage', { timeout: 10000 });
-  await shot('e05-registreringen.png');
-  step('registreringen');
-  await page.$eval('.end-buttons .btn.primary', (b) => b.click());
+  // ORDER 300b — den nya starten (ORDER 300 §4): startskärmen → Nytt spel →
+  // namn och samtycke → regelkortet → första morgonen med mentorn. Bussen
+  // (VS001) finns inte längre i starten.
+  await page.waitForSelector('[data-testid=register-screen]', { timeout: 30000 });
+  await page.fill('[data-testid=register-name]', 'Anders');
+  await page.click('[data-testid=register-research-no]');
+  await page.click('[data-testid=register-sign]');
+  await page.waitForSelector('[data-testid=rules-card]', { timeout: 60000 });
+  await page.click('[data-testid=rules-close]');
+  step('namn och samtycke');
 
   // Introduktionen i strategiska spelet.
   await page.waitForSelector('[data-testid=mentor][data-step=practice]', { timeout: 120000 });

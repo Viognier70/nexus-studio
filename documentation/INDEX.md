@@ -141,6 +141,7 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 - `ORDER_274_RAPPORT.md`: ORDER 274 — Tiden kvar av servicen (rapport).
 - `ORDER_275_RAPPORT.md`: ORDER 275 — Lagret är insatsen (rapport).
 - `ORDER_276_RAPPORT.md`: ORDER 276 — Raketerna styr gästflödet (rapport).
+- `ORDER_300B_RAPPORT.md`: ORDER 300b — Början efter besluten: samtycket om forskningen, regel 1 och skripten utan bussen (rapport).
 - `ORDER_RECONSTRUCTION_004_005_019_020.md`: ORDER_RECONSTRUCTION_004_005_019_020 — Evidence record for four sprint orders.
 - `ORDER_REGISTRY.md`: ORDER REGISTRY.
 - `PERFORMANCE_PREPARATION_REFERENCE.md`: Performance Preparation Reference.
