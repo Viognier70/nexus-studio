@@ -687,6 +687,16 @@ export const TABLE = {
         sv: 'Det du lär dig här skrivs in i boken och följer med dig. Skriv under, så vet huset att det är ditt.',
         en: "What you learn here goes into the book and stays with you. Sign, so the house knows it's yours."
       },
+      // ORDER 300b (Anders 2026-10-05) — forskningen. PRELIMINÄR TEXT, i
+      // väntan på etikprövning: får inte användas för att samla in data
+      // förrän prövningen är klar. Svaret sparas lokalt; inget skickas.
+      researchBody: {
+        sv: 'Nexus kan spara dina val anonymt för forskning om hur professionell kompetens utvecklas, vid Campus Grythyttan, Örebro universitet. Det är frivilligt, och du kan spela fullt ut utan att delta. Du kan ändra dig när som helst i menyn.',
+        en: 'Nexus can save your choices anonymously for research on how professional competence develops, at Campus Grythyttan, Örebro University. It is voluntary, and you can play fully without taking part. You can change your mind at any time in the menu.'
+      },
+      researchYes: { sv: 'Jag vill delta', en: 'I want to take part' },
+      researchNo: { sv: 'Nej tack', en: 'No thanks' },
+      researchMenu: { sv: 'Forskningen', en: 'Research' },
       sign: { sv: 'Skriv under', en: 'Sign' },
       withoutSigning: { sv: 'Fortsätt utan att skriva under', en: 'Continue without signing' },
       back: { sv: 'Tillbaka', en: 'Back' }
@@ -3277,8 +3287,8 @@ export const TABLE = {
       en: (weeks: string) => `One season. ${weeks} weeks. Your restaurant in Grythyttan. Knowledge is your capital.`
     },
     rule1: {
-      sv: (closings: string) => `Klarar du veckans mål blir krogen kvar. ${closings} bokslut under noll, och den stänger.`,
-      en: (closings: string) => `Meet the week's target and the restaurant stays. ${closings} accounts below zero, and it closes.`
+      sv: (closings: string) => `Klarar du veckans mål blir krogen kvar. ${closings} bokslut under noll i rad, och den stänger.`,
+      en: (closings: string) => `Meet the week's target and the restaurant stays. ${closings} accounts below zero in a row, and it closes.`
     },
     rule2: {
       sv: 'Det du visar i Måltidens hus öppnar satsningar och lån.',

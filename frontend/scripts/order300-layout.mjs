@@ -152,7 +152,7 @@ try {
     await page.click('[data-testid=new-game]');
     await page.waitForSelector('[data-testid=register-screen]');
     await page.fill('[data-testid=register-name]', 'Anders');
-    await measure(page, 'registrering', ['[data-testid=register-sign]', '[data-testid=register-skip]']);
+    await measure(page, 'registrering', ['[data-testid=register-sign]', '[data-testid=register-skip]', '[data-testid=register-research-yes]', '[data-testid=register-research-no]']);
     await page.click('[data-testid=register-sign]');
     await page.waitForSelector('[data-testid=rules-card]', { timeout: 60000 });
     await delay(800);

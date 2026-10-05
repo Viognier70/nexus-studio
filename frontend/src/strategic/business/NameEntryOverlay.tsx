@@ -40,13 +40,15 @@ export function NameEntryOverlay({ onNewGame }: Props) {
   const [draft, setDraft] = useState('');
   const [registering, setRegistering] = useState(false);
   const [playerName, setPlayerName] = useState('');
+  // ORDER 300b — svaret om forskningen; inget svar räknas som Nej tack.
+  const [research, setResearch] = useState<boolean | null>(null);
   if (hasName) return null;
   if (sim.introduction) return null;
   if (sim.introduction === undefined && onNewGame && registering) {
     // ORDER 300 §4 — namn och samtycke, sedan första morgonen.
     const reg = intro.register;
     const name = playerName.trim();
-    const done = (consent: boolean) => { if (name.length > 0) onNewGame({ name, consent }); };
+    const done = (consent: boolean) => { if (name.length > 0) onNewGame({ name, consent, research: research === true }); };
     return (
       <div className="business-name-overlay" role="dialog" aria-modal="true">
         <form
@@ -69,6 +71,14 @@ export function NameEntryOverlay({ onNewGame }: Props) {
             />
           </label>
           <p>{reg.consentBody}</p>
+          {/* ORDER 300b — andra stycket, om forskningen. Preliminär text i
+              väntan på etikprövning (nexusStrings.ts researchBody). Svaret
+              sparas lokalt i speltillståndet; ingen data skickas. */}
+          <p data-testid="register-research">{reg.researchBody}</p>
+          <div className="business-name-actions" role="group" aria-label={reg.researchMenu}>
+            <button type="button" className={research === true ? undefined : 'is-quiet'} aria-pressed={research === true} data-testid="register-research-yes" onClick={() => setResearch(true)}>{reg.researchYes}</button>
+            <button type="button" className={research === false ? undefined : 'is-quiet'} aria-pressed={research === false} data-testid="register-research-no" onClick={() => setResearch(false)}>{reg.researchNo}</button>
+          </div>
           <div className="business-name-actions">
             <button type="button" className="is-quiet" onClick={() => setRegistering(false)}>{reg.back}</button>
             <button type="button" className="is-quiet" disabled={name.length === 0} data-testid="register-skip" onClick={() => done(false)}>{reg.withoutSigning}</button>

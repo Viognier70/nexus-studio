@@ -1876,6 +1876,8 @@ export type SimAction =
   // ORDER 265 — byt verksamhet vid veckoavräkningen (banken).
   | { type: 'CHOOSE_CLASS'; to: import('../sim/balance').BusinessClassId }
   | { type: 'BEGIN_INTRODUCTION' }
+  // ORDER 300b — spelaren ändrar svaret om forskningen i menyn.
+  | { type: 'SET_RESEARCH_CONSENT'; on: boolean }
   // ORDER 266 — rycka in själv (action-knappen).
   // ORDER 043 v3 §10 step 5 agency-staff mid-service offer response.
   | { type: 'ACCEPT_AGENCY' }
@@ -1995,6 +1997,11 @@ export interface BuildingRef {
 export interface PlayerRegistration {
   name: string;
   consent: boolean;
+  // ORDER 300b — svaret om forskningen (Jag vill delta / Nej tack), skilt
+  // från underskriften i liggaren. Sparas bara lokalt i speltillståndet och
+  // sparfilen; inget skickas någonstans. Saknas i äldre sparfiler: inget svar,
+  // alltså inget deltagande.
+  research?: boolean;
 }
 
 // ORDER 303 C — ett svar i kväll, för morgonens recension.

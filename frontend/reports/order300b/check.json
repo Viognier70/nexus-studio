@@ -1,0 +1,22 @@
+{
+  "build": "produktion",
+  "size": "1280×720",
+  "errors": [],
+  "externalRequests": [],
+  "researchText": "Nexus kan spara dina val anonymt för forskning om hur professionell kompetens utvecklas, vid Campus Grythyttan, Örebro universitet. Det är frivilligt, och du kan spela fullt ut utan att delta. Du kan ändra dig när som helst i menyn.",
+  "cardPressed": "true",
+  "cardPageScrolls": false,
+  "rulesText": "Spelets reglerEn säsong. Åtta veckor. Din krog i Grythyttan. Kunskap är ditt kapital.Klarar du veckans mål blir krogen kvar. Tre bokslut under noll i rad, och den stänger.Det du visar i Måltidens hus öppnar satsningar och lån.Byn tävlar med dig. Stjärnan går till den som håller det dubbla greppet över tid.Börja→",
+  "menuAfterYes": {
+    "yes": "true",
+    "no": "false"
+  },
+  "menuAfterNo": {
+    "yes": "false",
+    "no": "true"
+  },
+  "menuAfterYesAgain": {
+    "yes": "true",
+    "no": "false"
+  }
+}

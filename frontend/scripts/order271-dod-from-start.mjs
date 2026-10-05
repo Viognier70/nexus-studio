@@ -20,6 +20,9 @@
 // den tas i en andra körning med sparfilen reports/order270/save-utan-
 // verksamhet.json på sparplats 1 (redovisas i dod.json).
 // Utdata: reports/order271/dod-*.png och reports/order271/dod.json.
+//
+// ORDER 300b — startar nu i den nya starten (startskärmen → Nytt spel →
+// namn och samtycke → regelkortet → första morgonen); bussen är borttagen.
 
 import { spawn } from 'node:child_process';
 import { setTimeout as delay } from 'node:timers/promises';
@@ -122,15 +125,6 @@ const fps = () => page.evaluate(() => new Promise((res) => {
   requestAnimationFrame(f);
 }));
 
-async function walkUntilPrompt(key, prompt, maxMs) {
-  const until = Date.now() + maxMs;
-  while (Date.now() < until) {
-    const hud = await page.$eval('.hud-context', (e) => e.textContent).catch(() => '');
-    if (hud && hud.includes(prompt)) return true;
-    await page.keyboard.down(key); await delay(120); await page.keyboard.up(key);
-  }
-  return false;
-}
 async function answerQuestion(wantCorrect) {
   const prompt = await page.textContent('[data-testid=question-prompt]');
   const text = prompt.slice(prompt.indexOf(':') + 1).trim();
@@ -210,20 +204,16 @@ try {
   await page.waitForSelector('[data-testid=start-screen]', { timeout: 120000 });
   await shot('dod-00-startrutan.png', 'normal start');
   await page.click('[data-testid=new-game]');
-  await page.waitForSelector('.hud', { timeout: 90000 });
-  await delay(2000);
-  if (!(await walkUntilPrompt('w', process.env.GAME_LANG === 'sv' ? 'Prata' : 'Talk', 20000))) throw new Error('prata');
-  await page.keyboard.press('e');
-  await page.waitForSelector('.dialogue-panel .choice');
-  await page.$eval('.dialogue-panel .choice', (b) => b.click());
-  await page.waitForSelector('.dialogue-actions .btn');
-  await page.$eval('.dialogue-actions .btn', (b) => b.click());
-  await page.waitForSelector('.dialogue-panel', { state: 'detached', timeout: 10000 });
-  if (!(await walkUntilPrompt('w', process.env.GAME_LANG === 'sv' ? 'Registrera' : 'Register', 30000))) throw new Error('registrera');
-  await page.keyboard.press('e');
-  await page.waitForSelector('.end-stage', { timeout: 10000 });
-  await page.$eval('.end-buttons .btn.primary', (b) => b.click());
-  step('framme i Grythyttan');
+  // ORDER 300b — den nya starten (ORDER 300 §4): startskärmen → Nytt spel →
+  // namn och samtycke → regelkortet → första morgonen med mentorn. Bussen
+  // (VS001) finns inte längre i starten.
+  await page.waitForSelector('[data-testid=register-screen]', { timeout: 30000 });
+  await page.fill('[data-testid=register-name]', 'Anders');
+  await page.click('[data-testid=register-research-no]');
+  await page.click('[data-testid=register-sign]');
+  await page.waitForSelector('[data-testid=rules-card]', { timeout: 60000 });
+  await page.click('[data-testid=rules-close]');
+  step('namn och samtycke');
 
   await mentorNext('practice', 'dod-01-M1-mentorn-dag-1.png');
   await delay(500); await shot('dod-02-S1-schema-introduktionen.png', 'S1 schemat i introduktionen');

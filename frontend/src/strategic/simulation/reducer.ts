@@ -433,6 +433,10 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
     }
     case 'BEGIN_INTRODUCTION':
       return beginIntroduction(state);
+    case 'SET_RESEARCH_CONSENT':
+      // ORDER 300b — bara lokalt; ingen data skickas någonstans.
+      if (!state.player) return state;
+      return { ...state, player: { ...state.player, research: action.on } };
     case 'CHOOSE_CLASS':
       return chooseClass(state, action.to);
     case 'END_EVENING':
