@@ -109,7 +109,12 @@ describe('ORDER 265 — veckoavräkningen', () => {
     expect(st.wagesSek).toBe(21600);
     expect(s.economy.weekWagesSek).toBe(0);
     expect(s.cash).toBe(cash - st.amortisationSek - st.rentSek!);
-    expect(s.ledger.at(-1)).toMatchObject({ category: 'rent', amount: -st.rentSek! });
+    // ORDER 303c — ingen hyra de första veckorna: ingen hyresrad då.
+    if (st.rentSek! > 0) expect(s.ledger.at(-1)).toMatchObject({ category: 'rent', amount: -st.rentSek! });
+    else expect(s.ledger.some((l) => l.category === 'rent')).toBe(false);
+    const later = settleWeek({ ...s, revenue: ECONOMY.normalWeeklyRevenueSek.vinbar, day: { ...s.day, dayNumber: 7 * (RENT.introWeeks + 1) } });
+    expect(later.economy.lastSettlement!.rentSek).toBe(weeklyRentSek('vinbar'));
+    expect(later.ledger.at(-1)).toMatchObject({ category: 'rent', amount: -weeklyRentSek('vinbar') });
     expect(weeklyRentSek(null)).toBe(0);
   });
 

@@ -249,8 +249,14 @@ export const RENT = {
   shareOfNormalWeeklyRevenue: 0.32,
   // ORDER 294 (Vision Owner 2026-10-02): "första och andra veckan ligger på den
   // gamla nivån (17 %), därefter full hyra (32 %)". Säsongens veckor 1–2.
-  introShareOfNormalWeeklyRevenue: 0.17,
-  introWeeks: 2,
+  // ORDER 303c (Anders 2026-10-05: "Halva ska stänga 30–50 % av
+  // säsongerna … välj spak själv, till exempel … de fasta kostnaderna") —
+  // ingen hyra säsongens fyra första veckor (förut 17 % veckorna 1–2). En
+  // spelare som har hälften rätt hinner då längre innan kassan går under
+  // noll, utan att startkassan höjs (Vision Owner 2026-10-02: "Startkassan
+  // sänks kraftigt"). reports/order303c/kalib/H3.
+  introShareOfNormalWeeklyRevenue: 0,
+  introWeeks: 4,
   reasonableResultShare: [0.05, 0.1] as readonly number[],
   weakDowngradeWeeks: [2, 3] as readonly number[]
 } as const;
@@ -917,7 +923,10 @@ export const INCIDENTS = {
   // mer ur lagret." Varje klarat steg släpper in så här många gäster, och
   // en hel klarad raket så här många till. Ett fel släpper inte in någon.
   // Valda tal (F49).
-  guestsPerClearedStep: 1,
+  // ORDER 303c — 0: bara en klarad raket släpper in en gäst. Stegens gäster
+  // vidgade avståndet mellan den som har rätt och den som har hälften rätt
+  // (reports/order303c/kalib/G1–G2, S2–S6).
+  guestsPerClearedStep: 0,
   guestsOnRocketCleared: 1,
   // ORDER 271 (Vision Owner, FRAGOR §49): vid fel tar den ordinarie
   // personalen i rollen över och lämnar sin uppgift, så att andra bord
@@ -1594,8 +1603,8 @@ export const CONSEQUENCES = {
   right: {
     stepReputation: 0.3,
     clearedReputation: 1,
-    // ORDER 303b — 0,2 före (reports/order303b/kalib/V3).
-    avecShare: 0.07
+    // ORDER 303b — 0,2 före (reports/order303b/kalib/V3). ORDER 303c — 0.
+    avecShare: 0
   },
   street: { perWrong: -0.08, perCleared: 0.04, min: -0.4, max: 0.2, decayPerGameMinute: 0.004 },
   // ORDER 303 B — notan följer kunskapens lyft i stämningen (MOOD_BALANCE:
@@ -1606,7 +1615,9 @@ export const CONSEQUENCES = {
   moodBillPerLift: 1.4,
   // ORDER 303b (Anders 2026-10-05) — uppsidan sänkt från 0,9: de bästa
   // spelarna slutar säsongen på 70 000–90 000 kr (reports/order303b/kalib/V1–V4).
-  moodBillPerLiftUp: 0.12,
+  // ORDER 303c — 0: de hyresfria veckorna lyfter alla, och uppsidan tas bort
+  // så att de bästa stannar inom 70 000–90 000 kr (reports/order303c/kalib/H3).
+  moodBillPerLiftUp: 0,
   // ORDER 303 B — placeringen i byn räknas på kvällens nöjda gäster vid bord:
   // hos oss gästerna vars stämning var minst nöjd när de betalade
   // (MOOD_BALANCE.threshold.content); hos konkurrenterna gästerna gånger en

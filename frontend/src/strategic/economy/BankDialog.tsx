@@ -13,12 +13,13 @@
 // för den första vinbaren), annars klasstabellens krav.
 
 import { strings } from '../../content/strings';
-import { BUSINESS_CLASSES, MEDAL_LEVELS, RISK, type BusinessClassId, type MedalRequirement } from '../../sim/balance';
+import { BUSINESS_CLASSES, MEDAL_LEVELS, RENT, RISK, type BusinessClassId, type MedalRequirement } from '../../sim/balance';
 import { ALL_PAVILIONS, canChangeClassToday, classOptions, classSpec, isIntroRentWeek, meetsRequirement, requirementsFor, weeklyRentSek, weeklyTargetSek, type ClassOption } from '../../sim/economy';
 import { t as tt } from '../../content/nexusStrings';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 import type { PavilionKey, SimulationState } from '../types';
 import { calendarFor } from '../../sim/calendar';
+import { numberWord } from '../simulation/eveningAccount';
 import { NxButton } from '../ui/system/components';
 import { CLASS_ICON, NxIcon, PAVILION_ICON } from '../ui/screens/icons';
 import { MedalDisc } from '../ui/screens/MedalDisc';
@@ -37,7 +38,10 @@ function riskTermsLine(id: BusinessClassId): string {
 
 function introRentLine(id: BusinessClassId, week: number): string {
   const kr = (n: number) => n.toLocaleString(numberLocale());
-  return e.introRent(kr(weeklyRentSek(id, week)), kr(weeklyRentSek(id)));
+  const weeks = numberWord(RENT.introWeeks);
+  const firstFull = String(RENT.introWeeks + 1);
+  const intro = weeklyRentSek(id, week);
+  return intro === 0 ? e.introRentFree(weeks, firstFull, kr(weeklyRentSek(id))) : e.introRent(weeks, firstFull, kr(intro), kr(weeklyRentSek(id)));
 }
 
 function countWord(n: number): string {
