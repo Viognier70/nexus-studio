@@ -23,6 +23,7 @@ import { WORLD_RAW_BUILDINGS, type RawBuilding } from '../../content/world';
 import { VENUE_BUILDINGS } from '../../content/villagePlaces';
 import { useSimState } from '../../simulation/SimulationProvider';
 import { eveningProgress } from '../../../sim/clock';
+import { useOpeningEvening } from '../../opening/openingStage';
 import { venuesTonight, PLAYER_VENUE } from '../../../sim/village';
 import { COLOURS, LIGHTS } from '../../village/villageEvening';
 import { isRenderedByOsmBuildings, osmWallHeight } from '../OsmBuildings';
@@ -126,7 +127,9 @@ function paneTexture(cols: number, rows: number): THREE.Texture {
 
 export function VillageWindows() {
   const sim = useSimState();
-  const e = eveningProgress(sim);
+  // ORDER 308 — under öppningen tänds ljusen efter manusets kväll (oppningManus EVENING).
+  const opening = useOpeningEvening();
+  const e = opening ?? eveningProgress(sim);
   const built = useMemo(() => {
     const all = buildWindows();
     const groups = { home: all.filter((w) => w.kind !== 'venue'), venue: all.filter((w) => w.kind === 'venue') };

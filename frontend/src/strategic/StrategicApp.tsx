@@ -64,6 +64,7 @@ import { CameraButtons } from './ui/CameraButtons';
 import { RoomCameraBounds } from './camera/RoomCameraBounds';
 import { HudBottom } from './ui/service/HudBottom';
 import { MoodMeter } from './ui/host/MoodMeter';
+import { OpeningSequence } from './opening/OpeningSequence';
 
 interface StrategicAppProps {
   // ORDER 267 — introduktionen börjar (ORDER 300: efter registreringen).
@@ -72,9 +73,13 @@ interface StrategicAppProps {
   // samtycke) och sedan första morgonen.
   onNewGame?: (player: PlayerRegistration) => void;
   player?: PlayerRegistration;
+  // ORDER 308 — öppningen (Designs D2) spelas före första morgonen, över
+  // samma scen som morgonen sedan tonar upp i; onOpeningDone när den är slut.
+  opening?: boolean;
+  onOpeningDone?: () => void;
 }
 
-export function StrategicApp({ startIntroduction = false, onNewGame, player }: StrategicAppProps = {}) {
+export function StrategicApp({ startIntroduction = false, onNewGame, player, opening = false, onOpeningDone }: StrategicAppProps = {}) {
   const [webglOk] = useState<boolean>(() => detectWebGL());
   // ORDER 273 — språkbytet (menyn) ritar om hela gränssnittet: roten ritas
   // om när språket byts, och alla komponenter under läser `strings` på nytt.
@@ -91,6 +96,7 @@ export function StrategicApp({ startIntroduction = false, onNewGame, player }: S
             <StrategicShell />
             <NameEntryOverlay onNewGame={onNewGame} />
             <SaveMenu />
+            {opening && <OpeningSequence onDone={() => onOpeningDone?.()} />}
           </SaveProvider>
         </SimulationProvider>
       </CameraProvider>

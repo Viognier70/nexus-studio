@@ -21,6 +21,8 @@ import { harnessParams } from '../testHarness/urlParams';
 import type { DayPeriod } from '../types';
 import { clockMinutes, eveningProgress } from '../../sim/clock';
 import { EveningLighting } from '../village/EveningLighting';
+import { useOpeningEvening } from '../opening/openingStage';
+import { VILLAGE_LIGHT_LEVEL } from '../opening/oppningManus';
 
 // Hour-of-day per game period. Local civil time. Autumn-calibrated
 // so the sun tracks the season the game is set in.
@@ -93,6 +95,10 @@ export function DayLighting() {
   // leverans Byn i kvällsljus): egen himmel efter kvällens gång e.
   const e = eveningProgress(sim);
   const evening = e === null || harnessParams.light === 'day' ? null : Math.round(e * 200) / 200;
+  // ORDER 308 — öppningen före första morgonen: byn i skymningen efter
+  // manusets kväll (oppningManus EVENING) och ljusnivå (VILLAGE_LIGHT_LEVEL).
+  const opening = useOpeningEvening();
+  if (opening !== null) return <EveningLighting e={opening} level={VILLAGE_LIGHT_LEVEL} />;
   if (evening !== null) return <EveningLighting e={evening} />;
   return (
     <SunLightRig

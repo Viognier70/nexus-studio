@@ -90,10 +90,12 @@ export function nightFromEvening(e: number): number {
   return t * t * (3 - 2 * t);
 }
 
-export function EveningLighting({ e }: { e: number }) {
+export function EveningLighting({ e, level: fixedLevel }: { e: number; level?: number }) {
   const { scene, gl } = useThree();
   const { actualRef } = useCamera();
-  const level = useSyncExternalStore(subscribeVillageLight, villageLightLevel, villageLightLevel);
+  // ORDER 308 — öppningen sätter byns ljusnivå själv (oppningManus VILLAGE_LIGHT_LEVEL).
+  const playerLevel = useSyncExternalStore(subscribeVillageLight, villageLightLevel, villageLightLevel);
+  const level = fixedLevel ?? playerLevel;
   const hemi = useRef<THREE.HemisphereLight>(null);
   const moon = useRef<THREE.DirectionalLight>(null);
   const target = useMemo(() => new THREE.Object3D(), []);

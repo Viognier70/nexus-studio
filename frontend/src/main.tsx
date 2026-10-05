@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import { StrategicApp } from './strategic/StrategicApp';
-import type { PlayerRegistration } from './strategic/types';
+import { NEW_GAME_FLOW_START, newGameFlow } from './strategic/opening/newGameFlow';
 import { useLanguage } from './content/language';
 import './index.css';
 // ORDER 285 — den varma formen: typsnitten och tokens (Designs leverans 2026-09-29).
@@ -18,16 +18,18 @@ function currentRoute(): 'strategic' | 'first-person' {
 }
 
 // ORDER 300 §4 (Anders 2026-10-04) — den gamla vildmarksstarten (bussen,
-// VS001) är borttagen ur starten. Ordningen är
-//   startskärmen → "Nytt spel" → namn och samtycke → första morgonen.
-// Designs nya öppning (D2) kopplas in när den har levererats.
+// VS001) är borttagen ur starten.
+// ORDER 308 (Anders 2026-10-05) — Designs öppning (D2, omtag 2026-10-04)
+// spelas före första morgonen. Ordningen är
+//   startskärmen → "Nytt spel" → namn och samtycke → öppningen → första morgonen.
+// Öppningen spelas i samma StrategicApp som morgonen, så att morgonen tonar
+// upp ur öppningens svärta utan att scenen laddas om (strategic/opening/).
+// Flödet är en liten reducer (strategic/opening/newGameFlow.ts, med tester).
 // `#/first-person-prototype` öppnar den gamla bussen fristående, som förut.
-type Flow = 'start' | 'introduction';
 
 function Root() {
   const [route, setRoute] = useState(currentRoute);
-  const [flow, setFlow] = useState<Flow>('start');
-  const [player, setPlayer] = useState<PlayerRegistration | undefined>(undefined);
+  const [game, send] = useReducer(newGameFlow, NEW_GAME_FLOW_START);
   // ORDER 273 — språket; bussen (VS001) ritas också om vid byte.
   const lang = useLanguage();
   useEffect(() => {
@@ -39,8 +41,10 @@ function Root() {
     return () => window.removeEventListener('hashchange', onHashChange);
   }, []);
   if (route === 'first-person') return <App />;
-  if (flow === 'introduction') return <StrategicApp key="introduction" startIntroduction player={player} />;
-  return <StrategicApp key="start" onNewGame={(p) => { setPlayer(p); setFlow('introduction'); }} />;
+  if (game.flow === 'introduction') {
+    return <StrategicApp key="introduction" startIntroduction player={game.player} opening={game.opening} onOpeningDone={() => send({ type: 'openingDone' })} />;
+  }
+  return <StrategicApp key="start" onNewGame={(player) => send({ type: 'newGame', player })} />;
 }
 
 const rootElement = document.getElementById('root');

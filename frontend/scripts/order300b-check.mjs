@@ -1,6 +1,6 @@
 // ORDER 300b — samtycket om forskningen i spelarens flöde, produktionsbygget:
 // startskärmen → Nytt spel → namn och samtycke (andra stycket, Jag vill delta)
-// → regelkortet (regel 1) → mentorn → menyn, där svaret ändras till Nej tack
+// → öppningen (ORDER 308, hoppas över) → regelkortet (regel 1) → mentorn → menyn, där svaret ändras till Nej tack
 // och tillbaka. Svaret läses ur menyns knappar (aria-checked). Varje
 // nätverksanrop under körningen loggas; allt utom förhandsvisningens egen
 // server räknas som fel (ingen data får skickas).
@@ -48,6 +48,9 @@ try {
   report.cardPageScrolls = await page.evaluate(() => document.scrollingElement.scrollHeight > innerHeight + 1);
   await page.screenshot({ path: resolve(OUT, 'check-samtycket.png') });
   await page.click('[data-testid=register-sign]');
+  // ORDER 308 — öppningen spelas före första morgonen; den hoppas över (knappen syns efter 3 s).
+  await page.waitForSelector('[data-testid=opening-skip]', { timeout: 120000 });
+  await page.click('[data-testid=opening-skip]');
   await page.waitForSelector('[data-testid=rules-card]', { timeout: 60000 });
   report.rulesText = await page.textContent('[data-testid=rules-card]');
   await page.screenshot({ path: resolve(OUT, 'check-regelkortet.png') });

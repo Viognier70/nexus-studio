@@ -22,6 +22,7 @@ import { WORLD } from '../../content/world';
 import { useSimState } from '../../simulation/SimulationProvider';
 import { useCamera } from '../../camera/CameraContext';
 import { eveningProgress } from '../../../sim/clock';
+import { useOpeningEvening } from '../../opening/openingStage';
 import { computePlayerBusinessInterior } from '../../business/interiorLayout';
 import { BLEND, COLOURS, LIGHTS } from '../../village/villageEvening';
 
@@ -95,7 +96,9 @@ function glowTexture(): THREE.Texture {
 export function StreetLamps() {
   const sim = useSimState();
   const { actualRef } = useCamera();
-  const e = eveningProgress(sim);
+  // ORDER 308 — under öppningen tänds ljusen efter manusets kväll (oppningManus EVENING).
+  const opening = useOpeningEvening();
+  const e = opening ?? eveningProgress(sim);
   const built = useMemo(() => {
     const pos = lampPositions();
     const n = pos.length;
